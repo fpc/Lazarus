@@ -87,20 +87,13 @@ begin
   WizardForm.DirEdit.Parent.Handle;
 
   CheckSecondInstall := TCheckBox.Create(WizardForm);
-  CheckSecondInstall.Parent:=WizardForm.DirEdit.Parent;
-  CheckSecondInstall.Top := WizardForm.DirEdit.Top + WizardForm.DirEdit.Height + 10;
-  CheckSecondInstall.Left := WizardForm.DirEdit.Left;
-  CheckSecondInstall.Width := WizardForm.DirEdit.Parent.Width - WizardForm.DirEdit.Left;
+  AddComponentToPage(CheckSecondInstall, WizardForm.DirEdit, 10, 0, 1, 0);
   CheckSecondInstall.Caption := CustomMessage('CheckSecondClick');
 
   CheckSecondLabel := TLabel.Create(WizardForm);
-  CheckSecondLabel.Parent:=WizardForm.DirEdit.Parent;
+  AddComponentToPage(CheckSecondLabel, CheckSecondInstall, 10, 0, 1, -10);
   CheckSecondLabel.AutoSize := False;
   CheckSecondLabel.WordWrap := True;
-  CheckSecondLabel.Top := CheckSecondInstall.Top + CheckSecondInstall.Height + 10;
-  CheckSecondLabel.Left := WizardForm.DirEdit.Left;
-  CheckSecondLabel.Width := WizardForm.DirEdit.Parent.Width - WizardForm.DirEdit.Left;
-  CheckSecondLabel.Height := WizardForm.DirEdit.Parent.Height - CheckSecondLabel.Top - 15;
   CheckSecondLabel.Caption := CustomMessage('CheckSecondInfo');
 end;
 

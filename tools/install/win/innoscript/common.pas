@@ -105,5 +105,27 @@ begin
     Delete(Result, AmpersandPos, 1);
 end;
 
+// ALeftDistance, ARightDistance: 0 = align with AControlAbove
+//            other = distance to parent
+// AHeight: negative = distance to parent bottom
+//          0 = ignore
+Procedure AddComponentToPage(AControl: TControl; AControlAbove: TWinControl;
+  ATopDistance, ALeftDistance, ARightDistance, AHeight: Integer);
+begin
+  AControl.Parent := AControlAbove.Parent;
+  AControl.Top    :=  AControlAbove.Top + AControlAbove.Height + ATopDistance;
+  if ALeftDistance = 0 then
+    AControl.Left :=  AControlAbove.Left
+  else
+    AControl.Left := ALeftDistance;
+  if ARightDistance = 0 then
+    AControl.Width :=  AControlAbove.Left + AControlAbove.Width - AControl.Left
+  else
+    AControl.Width :=  AControlAbove.Width - AControl.Left - ARightDistance;
+  if AHeight < 0 then
+    AControl.Height := AControlAbove.Parent.Height - AControl.Top + AHeight;
+  if AHeight > 0 then
+    AControl.Height := AHeight;
+end;
 
 
