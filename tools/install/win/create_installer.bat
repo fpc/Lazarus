@@ -182,6 +182,7 @@ SET OutputFileName=lazarus-%LAZVERSION%-%LAZREVISION%-fpc-%FPCFULLVERSION%-%DATE
 if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LAZVERSION%-%LAZREVISION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-%FPCTARGETOS%
 
 :GO_ON
+SET OutputFileName=%OutputFileName::=_%
 
 %ISCC% lazarus.iss >> installer.log
 
