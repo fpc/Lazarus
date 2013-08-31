@@ -18,6 +18,10 @@ SET RELEASE_PPC=%3
 SET TARGETCPU=%4
 SET TARGETOS=%5
 
+SET SKIPCROSS=%6
+SET LOCAL_INST_PREFIX=%7
+if [%LOCAL_INST_PREFIX%] == [] SET LOCAL_INST_PREFIX=i386-win32
+
 ::=====================================================================
 :: Find required programs
 :: These settings are dependent on the configuration of the build machine
@@ -74,7 +78,7 @@ SET FPCFPMAKE=%COMPILER%
 %MAKEEXE% rtl_clean PP=%COMPILER%
 :: 271 needs packages too
 %MAKEEXE% rtl packages PP=%COMPILER% OPT="-Ur -CX"
-%MAKEEXE% utils PP=%COMPILER% OPT="-CX -XX -Xs" DATA2INC=%FPCSVNDIR%\fpcsrc\utils\data2inc
+%MAKEEXE% utils PP=%COMPILER% OPT="-Ur -CX -XX -Xs" DATA2INC=%FPCSVNDIR%\fpcsrc\utils\data2inc
 
 :: do NOT clean => or 2.7.1 will try to build a fpmake.exe for arm-wince (and fail)
 
@@ -90,32 +94,40 @@ IF "%FPCVERSION:~0,3%" == "2.6" SET FPCMAKE=%FPCSVNDIR%\fpcsrc\utils\fpcm\fpcmak
 ::=====================================================================
 :: Build cross FPC
 
+:: CROSSBINDIR and are used in the FPC makefiles
+SET CROSSBINDIR=%BINUTILSDIR%\%FPCFULLTARGET%
+SET BINUTILSPREFIX=%FPCFULLTARGET%-
+
+if NOT [%SKIPCROSS%] == [] GOTO NOCROSS
+
 %MAKEEXE% compiler FPC=%COMPILER% PPC_TARGET=%TARGETCPU% EXENAME=%PPCNAME%
 IF ERRORLEVEL 1 GOTO CLEANUP
 SET COMPILER=%FPCSVNDIR%\fpcsrc\compiler\%PPCNAME%
 SET CPU_TARGET=%TARGETCPU%
 SET OS_TARGET=%TARGETOS%
-:: CROSSBINDIR and are used in the FPC makefiles
-SET CROSSBINDIR=%BINUTILSDIR%\%FPCFULLTARGET%
-SET BINUTILSPREFIX=%FPCFULLTARGET%-
 
 %MAKEEXE% rtl packages FPC=%COMPILER% 
 IF ERRORLEVEL 1 GOTO CLEANUP
+
+:NOCROSS
 
 FOR /F %%L IN ('%COMPILER% -iV') DO SET FPCVERSION=%%L
 FOR /F %%L IN ('%COMPILER% -iW') DO SET FPCFULLVERSION=%%L
 
 SET INSTALL_BASE=%BUILDDIR%\image\fpc\%FPCVERSION%
-SET INSTALL_BINDIR=%INSTALL_BASE%\bin\i386-win32
+SET INSTALL_BINDIR=%INSTALL_BASE%\bin\%LOCAL_INST_PREFIX%
 
 :: copy the binutils
 rmdir /s /q %BUILDDIR%
 gmkdir -p %INSTALL_BINDIR%
-cp %CROSSBINDIR%\* %INSTALL_BINDIR%
 
 %MAKEEXE% rtl_install packages_install FPCMAKE=%FPCMAKE% INSTALL_PREFIX=%INSTALL_BASE% FPC=%COMPILER%
 
-copy %COMPILER% %INSTALL_BINDIR%
+:: delete any binaries: they will cause conflicts with existing native
+rm -f %INSTALL_BINDIR%\*.*
+
+cp %CROSSBINDIR%\* %INSTALL_BINDIR%
+copy %COMPILER% %INSTALL_BINDIR%\%PPCNAME%
 
 ::=====================================================================
 :: Re-Build some of the native FPC
@@ -214,11 +226,13 @@ goto STOP
 :USAGE
 @echo off
 echo Usage:
-echo build-cross.bat FPCSVNDIR LAZSVNDIR RELEASECOMPILER TARGETCPU TARGETOS
+echo build-cross.bat FPCSVNDIR LAZSVNDIR RELEASECOMPILER TARGETCPU TARGETOS [SKIPCROSS] [LOCAL_INST_PREFIX]
 echo FPCSVNDIR: directory that contains a svn version of the fpcbuild repository
 echo LAZSVNDIR: directory that contains a svn version of the lazarus repository
 echo RELEASECOMPILER: bootstrapping compiler for building fpc
 echo TARGETCPU: target CPU
 echo TARGETOS: target operating system
+echo SKIPCROSS build normal, instead of cross. Needed to build i386 on win64
+echo LOCAL_INST_PREFIX (default i386-win32) the prefix of the system on which it will be installed.
 
 :STOP
