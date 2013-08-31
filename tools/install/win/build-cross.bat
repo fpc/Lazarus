@@ -71,14 +71,12 @@ FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -P%TARGETCPU% -PB') DO
 SET FPCFPMAKE=%COMPILER%
 
 :: rebuild the rtl without WPO information
-rem %MAKEEXE% rtl_clean rtl PP=%COMPILER%
 %MAKEEXE% rtl_clean PP=%COMPILER%
 :: 271 needs packages too
 %MAKEEXE% rtl packages PP=%COMPILER% OPT="-Ur -CX"
-
-
-rem %MAKEEXE% -C utils fpcm_all FPC=%COMPILER%
 %MAKEEXE% utils PP=%COMPILER% OPT="-CX -XX -Xs" DATA2INC=%FPCSVNDIR%\fpcsrc\utils\data2inc
+
+:: do NOT clean => or 2.7.1 will try to build a fpmake.exe for arm-wince (and fail)
 
 :: find fpcmake
 FOR /F %%L IN ('%COMPILER% -iV') DO SET FPCVERSION=%%L
@@ -101,8 +99,6 @@ SET OS_TARGET=%TARGETOS%
 SET CROSSBINDIR=%BINUTILSDIR%\%FPCFULLTARGET%
 SET BINUTILSPREFIX=%FPCFULLTARGET%-
 
-%MAKEEXE% -C rtl clean FPC=%COMPILER%
-%MAKEEXE% -C packages clean FPC=%COMPILER%
 %MAKEEXE% rtl packages FPC=%COMPILER% 
 IF ERRORLEVEL 1 GOTO CLEANUP
 
@@ -124,12 +120,18 @@ copy %COMPILER% %INSTALL_BINDIR%
 ::=====================================================================
 :: Re-Build some of the native FPC
 
-%MAKEEXE% -C packages\fcl-base all FPC=%FPCFPMAKE% OS_TARGET=%FPCSourceOS% CPU_TARGET=%FPCSourceCPU%
-%MAKEEXE% -C packages\fcl-process all FPC=%FPCFPMAKE% OS_TARGET=%FPCSourceOS% CPU_TARGET=%FPCSourceCPU%
-%MAKEEXE% -C utils fpcmkcfg_all FPC=%FPCFPMAKE% OS_TARGET=%FPCSourceOS% CPU_TARGET=%FPCSourceCPU%
+::%MAKEEXE% -C packages\fcl-base all FPC=%FPCFPMAKE% OS_TARGET=%FPCSourceOS% CPU_TARGET=%FPCSourceCPU%
+::%MAKEEXE% -C packages\fcl-process all FPC=%FPCFPMAKE% OS_TARGET=%FPCSourceOS% CPU_TARGET=%FPCSourceCPU%
+::%MAKEEXE% -C utils fpcmkcfg_all FPC=%FPCFPMAKE% OS_TARGET=%FPCSourceOS% CPU_TARGET=%FPCSourceCPU%
 
 :: Create fpc.cfg
+IF "%FPCVERSION:~0,3%" == "2.6" GOTO M262
+%FPCSVNDIR%\fpcsrc\utils\fpcmkcfg\bin\%FPCFULLNATIVE%\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
+GOTO MCONT
+:M262
 %FPCSVNDIR%\fpcsrc\utils\fpcmkcfg\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
+:MCONT
+
 SET COMPILER=%INSTALL_BINDIR%\%PPCNAME%
 
 ::=====================================================================
@@ -194,6 +196,8 @@ FOR /F %%F IN ('%LAZSVNDIR%\tools\install\get_lazarus_version.bat') DO set LAZVE
 
 SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCFULLVERSION%-cross-%FPCFULLTARGET%-%FPCSourceOS%
 if [%BUILDLAZRELEASE%]==[] SET OutputFileName=lazarus-%LAZVERSION%-%LAZREVISION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-cross-%FPCFULLTARGET%-%FPCSourceOS%
+
+SET OutputFileName=%OutputFileName::=_%
 
 %ISCC% lazarus-cross.iss 
 
