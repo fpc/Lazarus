@@ -310,6 +310,8 @@ begin
     // index 0 is the caption/ 1 the checkbox
     WizardForm.TasksList.ItemEnabled[0] := not(IsSecondaryCheckBoxChecked or  IsSecondaryUpdate);
     WizardForm.TasksList.ItemEnabled[1] := not(IsSecondaryCheckBoxChecked or  IsSecondaryUpdate);
+	if IsSecondaryCheckBoxChecked or  IsSecondaryUpdate then
+      WizardForm.TasksList.Checked[1] := False;
   end;
 
   if CurPageId = wpSelectProgramGroup then begin
