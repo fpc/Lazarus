@@ -5,7 +5,21 @@ if [%3]==[] goto USAGE
 if [%4]==[] goto USAGE
 if [%5]==[] goto USAGE
 
+:: Set some environment variables from the command line
+:: Path to the fpc sources checked out of fpcbuild svn repository
+SET FPCSVNDIR=%1
 
+:: Path to the lazarus sources checked out of subversion
+SET LAZSVNDIR=%2
+
+:: Path to latest release compiler
+SET RELEASE_PPC=%3
+
+SET TARGETCPU=%4
+SET TARGETOS=%5
+
+::=====================================================================
+:: Find required programs
 :: These settings are dependent on the configuration of the build machine
 :: Path to the Inno Setup Compiler
 if [%ISCC%]==[] SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
@@ -20,19 +34,6 @@ SET BUILDDIR=c:\temp\lazbuild
 
 :: Path to the svn executable
 if [%SVN%]==[] SET SVN="c:\program files\subversion\bin\svn.exe"
-
-:: Set some environment variables from the command line
-:: Path to the fpc sources checked out of fpcbuild svn repository
-SET FPCSVNDIR=%1
-
-:: Path to the lazarus sources checked out of subversion
-SET LAZSVNDIR=%2
-
-:: Path to latest release compiler
-SET RELEASE_PPC=%3
-
-SET TARGETCPU=%4
-SET TARGETOS=%5
 
 :: Some internal variables
 SET OLDCURDIR=%CD%
@@ -55,6 +56,9 @@ PATH=%FPCBINDIR%;
 %FPCSVNDRIVE%
 cd %FPCSVNDIR%\fpcsrc
 
+::=====================================================================
+:: Build a native FPC
+
 %MAKEEXE% distclean FPC=%RELEASE_PPC% 
 rm -rf %FPCSVNDIR%\fpcsrc\compiler\*.exe
 :: create a native compiler + utils
@@ -72,6 +76,9 @@ SET FPCFPMAKE=%COMPILER%
 %MAKEEXE% -C utils fpcm_all FPC=%COMPILER%
 
 ::%MAKEEXE% -C utils fpcmkcfg_all FPC=%COMPILER% 
+
+::=====================================================================
+:: Build cross FPC
 
 %MAKEEXE% compiler FPC=%COMPILER% PPC_TARGET=%TARGETCPU% EXENAME=%PPCNAME%
 IF ERRORLEVEL 1 GOTO CLEANUP
