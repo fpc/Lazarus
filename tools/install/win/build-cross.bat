@@ -71,11 +71,23 @@ FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -P%TARGETCPU% -PB') DO
 SET FPCFPMAKE=%COMPILER%
 
 :: rebuild the rtl without WPO information
-%MAKEEXE% rtl_clean rtl PP=%COMPILER%
-::%MAKEEXE% -C packages fcl-base_all FPC=%COMPILER% 
-%MAKEEXE% -C utils fpcm_all FPC=%COMPILER%
+rem %MAKEEXE% rtl_clean rtl PP=%COMPILER%
+%MAKEEXE% rtl_clean PP=%COMPILER%
+:: 271 needs packages too
+%MAKEEXE% rtl packages PP=%COMPILER% OPT="-Ur -CX"
 
-::%MAKEEXE% -C utils fpcmkcfg_all FPC=%COMPILER% 
+
+rem %MAKEEXE% -C utils fpcm_all FPC=%COMPILER%
+%MAKEEXE% utils PP=%COMPILER% OPT="-CX -XX -Xs" DATA2INC=%FPCSVNDIR%\fpcsrc\utils\data2inc
+
+:: find fpcmake
+FOR /F %%L IN ('%COMPILER% -iV') DO SET FPCVERSION=%%L
+FOR /F %%L IN ('%COMPILER% -iTO') DO SET FPCTARGETOS=%%L
+FOR /F %%L IN ('%COMPILER% -iTP') DO SET FPCTARGETCPU=%%L
+SET FPCFULLNATIVE=%FPCTARGETCPU%-%FPCTARGETOS%
+
+SET FPCMAKE=%FPCSVNDIR%\fpcsrc\utils\fpcm\bin\%FPCFULLNATIVE%\fpcmake.exe
+IF "%FPCVERSION:~0,3%" == "2.6" SET FPCMAKE=%FPCSVNDIR%\fpcsrc\utils\fpcm\fpcmake.exe
 
 ::=====================================================================
 :: Build cross FPC
@@ -85,6 +97,7 @@ IF ERRORLEVEL 1 GOTO CLEANUP
 SET COMPILER=%FPCSVNDIR%\fpcsrc\compiler\%PPCNAME%
 SET CPU_TARGET=%TARGETCPU%
 SET OS_TARGET=%TARGETOS%
+:: CROSSBINDIR and are used in the FPC makefiles
 SET CROSSBINDIR=%BINUTILSDIR%\%FPCFULLTARGET%
 SET BINUTILSPREFIX=%FPCFULLTARGET%-
 
@@ -104,7 +117,7 @@ rmdir /s /q %BUILDDIR%
 gmkdir -p %INSTALL_BINDIR%
 cp %CROSSBINDIR%\* %INSTALL_BINDIR%
 
-%MAKEEXE% rtl_install packages_install FPCMAKE=%FPCSVNDIR%\fpcsrc\utils\fpcm\fpcmake.exe INSTALL_PREFIX=%INSTALL_BASE% FPC=%COMPILER%
+%MAKEEXE% rtl_install packages_install FPCMAKE=%FPCMAKE% INSTALL_PREFIX=%INSTALL_BASE% FPC=%COMPILER%
 
 copy %COMPILER% %INSTALL_BINDIR%
 %MAKEEXE% -C packages\fcl-base all FPC=%FPCFPMAKE% OS_TARGET=%FPCSourceOS% CPU_TARGET=%FPCSourceCPU%
