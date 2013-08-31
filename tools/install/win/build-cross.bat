@@ -132,6 +132,9 @@ copy %COMPILER% %INSTALL_BINDIR%
 %FPCSVNDIR%\fpcsrc\utils\fpcmkcfg\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
 SET COMPILER=%INSTALL_BINDIR%\%PPCNAME%
 
+::=====================================================================
+:: Build Lazarus
+
 gmkdir -p %BUILDDIR%\packager
 %SVN% export -q %LAZSVNDIR%\packager\registration %BUILDDIR%\packager\registration
 %BUILDDRIVE%
