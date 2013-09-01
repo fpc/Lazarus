@@ -7233,6 +7233,7 @@ procedure TGDBMIDebugger.Init;
 var
   Options: String;
   Cmd: TGDBMIDebuggerCommandInitDebugger;
+  env: TStringList;
 begin
   Exclude(FDebuggerFlags, dfForceBreakDetected);
   LockRelease;
@@ -7247,7 +7248,9 @@ begin
     if Length(TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options) > 0
     then Options := Options + ' ' + TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options;
 
-    DebuggerEnvironment := EnvironmentAsStringList;
+    env := EnvironmentAsStringList;
+    DebuggerEnvironment := env;
+    env.Free;
     DebuggerEnvironment.Values['LANG'] := 'C'; // try to prevent GDB from using localized messages
 
     if CreateDebugProcess(Options)
