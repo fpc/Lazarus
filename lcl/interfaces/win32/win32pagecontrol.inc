@@ -413,10 +413,7 @@ begin
     Result := inherited GetNotebookMinTabHeight(AWinControl);
     exit;
   end;
-  if TCustomTabControl(AWinControl).TabPosition = tpBottom then
-    Result := R.Bottom
-  else
-    Result := R.Top;
+  Result := Max(R.Top, -R.Bottom);
 end;
 
 class function TWin32WSCustomTabControl.GetNotebookMinTabWidth(const AWinControl: TWinControl): integer;
@@ -427,10 +424,7 @@ begin
     Result := inherited GetNotebookMinTabHeight(AWinControl);
     exit;
   end;
-  if TCustomTabControl(AWinControl).TabPosition = tpRight then
-    Result := R.Right
-  else
-    Result := R.Left;
+  Result := Max(R.Left, -R.Right);
 end;
 
 { -----------------------------------------------------------------------------

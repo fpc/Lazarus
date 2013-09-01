@@ -316,12 +316,12 @@ begin
       NewHeight:=TabHeight;
       if NewHeight<=0 then
         NewHeight:=FNoteBook.GetMinimumTabHeight;
-      NewHeight:=Min(TabControl.Height,NewHeight);
+      NewHeight:=Min(TabControl.ClientHeight,NewHeight);
       if TabControl.TabPosition=tpTop then
-        FNoteBook.SetBounds(0,0,TabControl.Width,NewHeight)
+        FNoteBook.SetBounds(0,0,TabControl.ClientWidth,NewHeight)
       else
-        FNoteBook.SetBounds(0,TabControl.Height-NewHeight,
-                            TabControl.Width,NewHeight);
+        FNoteBook.SetBounds(0,TabControl.ClientHeight-NewHeight,
+                            TabControl.ClientWidth,NewHeight);
     end;
 
   tpLeft,tpRight:
@@ -331,10 +331,10 @@ begin
         NewWidth:=FNoteBook.GetMinimumTabWidth;
       NewWidth:=Min(TabControl.Width,NewWidth);
       if TabControl.TabPosition=tpLeft then
-        FNoteBook.SetBounds(0,0,NewWidth,TabControl.Height)
+        FNoteBook.SetBounds(0,0,NewWidth,TabControl.ClientHeight)
       else
-        FNoteBook.SetBounds(TabControl.Width-NewWidth,0,
-                            NewWidth,TabControl.Height);
+        FNoteBook.SetBounds(TabControl.ClientWidth-NewWidth,0,
+                            NewWidth,TabControl.ClientHeight);
     end;
   end;
 end;
