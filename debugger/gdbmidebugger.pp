@@ -5975,11 +5975,11 @@ begin
   FSourceIndex := TStringList.Create;
   FSourceIndex.Sorted := True;
   FSourceIndex.Duplicates := dupError;
-  FSourceIndex.CaseSensitive := False;
+  FSourceIndex.CaseSensitive := True;
   FRequestedSources := TStringList.Create;
   FRequestedSources.Sorted := True;
   FRequestedSources.Duplicates := dupError;
-  FRequestedSources.CaseSensitive := False;
+  FRequestedSources.CaseSensitive := True;
   inherited;
 end;
 
