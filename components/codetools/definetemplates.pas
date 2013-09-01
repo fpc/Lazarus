@@ -6644,7 +6644,7 @@ begin
         end;
 
       'W':
-        case p[1] of
+        case p[2] of
         'p':
           begin
             s:=FindControllerUnit(copy(Param,4,255));
