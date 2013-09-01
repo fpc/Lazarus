@@ -176,6 +176,17 @@ begin
   FInHandleCreated := False;
 end;
 
+function TTabControlNoteBookStrings.GetTabPosition: TTabPosition;
+begin
+  Result := FNoteBook.TabPosition;
+end;
+
+procedure TTabControlNoteBookStrings.SetTabPosition(AValue: TTabPosition);
+begin
+  FNoteBook.TabPosition := AValue;
+  TabControlBoundsChange;
+end;
+
 function TTabControlNoteBookStrings.Get(Index: Integer): string;
 begin
   Result:=FNoteBook.Pages[Index];
@@ -207,6 +218,13 @@ begin
     FNoteBook.Images:=TImageList(AValue)
   else
     FNoteBook.Images:=nil;
+end;
+
+procedure TTabControlNoteBookStrings.SetMultiLine(const AValue: Boolean);
+begin
+  inherited SetMultiLine(AValue);
+  FNoteBook.MultiLine := AValue;
+  TabControlBoundsChange;
 end;
 
 procedure TTabControlNoteBookStrings.SetUpdateState(Updating: Boolean);
@@ -449,7 +467,7 @@ procedure TTabControl.SetTabPosition(const AValue: TTabPosition);
 begin
   if FTabPosition=AValue then exit;
   FTabPosition:=AValue;
-  TTabControlStrings(FTabs).TabControlBoundsChange;
+  TTabControlNoteBookStrings(FTabs).TabPosition := AValue;
   ReAlign;
 end;
 

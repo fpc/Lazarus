@@ -659,6 +659,7 @@ type
     function GetCount: Integer; override;
     function GetObject(Index: Integer): TObject; override;
     function GetTabIndex: integer; override;
+    function GetTabPosition: TTabPosition;
     procedure NBChanging(Sender: TObject; var AllowChange: Boolean); virtual;
     procedure NBGetImageIndex(Sender: TObject; TheTabIndex: Integer;
                               var ImageIndex: Integer); virtual;
@@ -667,9 +668,11 @@ type
     procedure Put(Index: Integer; const S: string); override;
     procedure PutObject(Index: Integer; AObject: TObject); override;
     procedure SetImages(const AValue: TCustomImageList); override;
+    procedure SetMultiLine(const AValue: Boolean); override;
     procedure SetTabIndex(const AValue: integer); override;
     procedure SetUpdateState(Updating: Boolean); override;
     procedure SetTabHeight(const AValue: Smallint); override;
+    procedure SetTabPosition(AValue: TTabPosition);
     procedure SetTabWidth(const AValue: Smallint); override;
   public
     constructor Create(TheTabControl: TTabControl); override;
@@ -680,6 +683,7 @@ type
     function GetSize: integer; override;
     procedure TabControlBoundsChange; override;
     function IndexOfTabAt(X, Y: Integer): Integer; override;
+    property TabPosition: TTabPosition read GetTabPosition write SetTabPosition;
   public
     property NoteBook: TCustomTabControl read FNoteBook;
   end;
