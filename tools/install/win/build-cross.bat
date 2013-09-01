@@ -18,8 +18,9 @@ SET RELEASE_PPC=%3
 SET TARGETCPU=%4
 SET TARGETOS=%5
 
-SET SKIPCROSS=%6
-SET LOCAL_INST_PREFIX=%7
+SET LAZSVNBINDIR=%6
+SET SKIPCROSS=%7
+SET LOCAL_INST_PREFIX=%8
 if [%LOCAL_INST_PREFIX%] == [] SET LOCAL_INST_PREFIX=i386-win32
 
 ::=====================================================================
@@ -129,6 +130,16 @@ rm -f %INSTALL_BINDIR%\*.*
 cp %CROSSBINDIR%\* %INSTALL_BINDIR%
 copy %COMPILER% %INSTALL_BINDIR%\%PPCNAME%
 
+:: Path to the directory containing the mingw gdb debugger installation
+:: it should have the debugger with the name gdb.exe in its bin subdirectory
+SET GDBDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\gdb
+::---------------------------------------------------------------------
+:: copy gdb into build dir
+if NOT exist %GDBDIR% goto NOGDB
+gmkdir -p %BUILDDIR%\image\mingw
+%SVN% export -q %GDBDIR% %BUILDDIR%\image\mingw\%FPCFULLTARGET%
+:NOGDB
+
 ::=====================================================================
 :: Re-Build some of the native FPC
 
@@ -226,13 +237,14 @@ goto STOP
 :USAGE
 @echo off
 echo Usage:
-echo build-cross.bat FPCSVNDIR LAZSVNDIR RELEASECOMPILER TARGETCPU TARGETOS [SKIPCROSS] [LOCAL_INST_PREFIX]
+echo build-cross.bat FPCSVNDIR LAZSVNDIR RELEASECOMPILER TARGETCPU TARGETOS [LAZSVNBINDIR] [SKIPCROSS] [LOCAL_INST_PREFIX]
 echo FPCSVNDIR: directory that contains a svn version of the fpcbuild repository
 echo LAZSVNDIR: directory that contains a svn version of the lazarus repository
 echo RELEASECOMPILER: bootstrapping compiler for building fpc
 echo TARGETCPU: target CPU
 echo TARGETOS: target operating system
-echo SKIPCROSS build normal, instead of cross. Needed to build i386 on win64
-echo LOCAL_INST_PREFIX (default i386-win32) the prefix of the system on which it will be installed.
+echo LAZSVNBINDIR (optional) Include GDB, if present for target // svn co http://svn.freepascal.org/svn/lazarus/binaries
+echo SKIPCROSS (optional) build normal, instead of cross. Needed to build i386 on win64
+echo LOCAL_INST_PREFIX (optional / default i386-win32) the prefix of the system on which it will be installed.
 
 :STOP
