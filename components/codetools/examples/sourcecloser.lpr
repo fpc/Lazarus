@@ -56,12 +56,10 @@ type
     FIncludePath: string;
     FLPKFilenames: TStrings;
     FRemoveComments: boolean;
-    FTargets: TObjectList;
     FUndefines: TStringToStringTree;
     FUnitFilenames: TStrings;
     FVerbosity: integer;
     fDefinesApplied: boolean;
-    function GetTargets(Index: integer): TTarget;
   protected
     procedure DoRun; override;
     procedure ApplyDefines;
@@ -78,8 +76,6 @@ type
     property IncludePath: string read FIncludePath write FIncludePath;
     property LPKFilenames: TStrings read FLPKFilenames;
     property UnitFilenames: TStrings read FUnitFilenames;
-    property Targets[Index: integer]: TTarget read GetTargets;
-    function TargetCount: integer;
   end;
 
 function IndexOfFilename(List: TStrings; Filename: string): integer;
@@ -115,15 +111,10 @@ end;
 
 { TSourceCloser }
 
-function TSourceCloser.GetTargets(Index: integer): TTarget;
-begin
-  Result:=TTarget(FTargets[Index]);
-end;
-
 procedure TSourceCloser.DoRun;
 const
   ShortOpts = 'hvqrd:u:i:t:';
-  LongOpts = 'help verbose quiet removecomments define: undefine: includepath: target:';
+  LongOpts = 'help verbose quiet removecomments define: undefine: includepath:';
 
   procedure E(Msg: string; WithHelp: boolean = false);
   begin
@@ -134,47 +125,9 @@ const
     Halt(1);
   end;
 
-  procedure AddTarget(const Param: string);
-  var
-    p: PChar;
-    MacroName: String;
-    Target: TTarget;
-    StartPos: PChar;
-    MacroValue: String;
-  begin
-    if Param='' then
-      E('invalid target:'+Param);
-    Target:=TTarget.Create;
-    p:=PChar(Param);
-    repeat
-      MacroName:=GetIdentifier(p);
-      if not IsValidIdent(MacroName) then
-        E('invalid target:'+Param);
-      inc(p,length(MacroName));
-      if p^<>'=' then
-        E('invalid target:'+Param);
-      inc(p);
-      StartPos:=p;
-      repeat
-        case p^ of
-        #0,',': break;
-        #1..#8,#10..#31:
-          E('invalid target:'+Param);
-        end;
-        inc(p);
-      until false;
-      MacroValue:=copy(Param,StartPos-PChar(Param),p-StartPos);
-      Target.Add(MacroName,MacroValue);
-      while p^=',' do inc(p);
-    until p^=#0;
-    FTargets.Add(Target);
-  end;
-
   procedure ParseValueParam(ShortOpt: char; Value: string);
   begin
     case ShortOpt of
-    't':
-      AddTarget(Value);
     'i':
       begin
         Value:=UTF8Trim(Value,[]);
@@ -311,8 +264,6 @@ begin
       debugln('Define:',S2SItem^.Name);
     for S2SItem in Undefines do
       debugln('Undefine:',S2SItem^.Name);
-    for i:=0 to TargetCount-1 do
-      debugln(['Target[',i+1,']:',Targets[i].AsString]);
     for i:=0 to LPKFilenames.Count-1 do
       debugln(['LPK[',i+1,']:',LPKFilenames[i]]);
     for i:=0 to UnitFilenames.Count-1 do
@@ -477,12 +428,10 @@ begin
   FUndefines:=TStringToStringTree.Create(false);
   FLPKFilenames:=TStringList.Create;
   FUnitFilenames:=TStringList.Create;
-  FTargets:=TObjectList.Create(true);
 end;
 
 destructor TSourceCloser.Destroy;
 begin
-  FreeAndNil(FTargets);
   FreeAndNil(FLPKFilenames);
   FreeAndNil(FUnitFilenames);
   FreeAndNil(FDefines);
@@ -519,10 +468,6 @@ begin
   writeln('          Undefine Free Pascal macro. Can be passed multiple times.');
   writeln('  -i <path>, --includepath=<path> :');
   writeln('         Append <path> to include search path. Can be passed multiple times.');
-  //writeln('  -t <target>, --target=<target> :');
-  //writeln('         Call lazbuild once for each target and each package.');
-  //writeln('         <target> is a comma separated list of name=value pairs.');
-  //writeln('         For example: --target=targetos=linux,targetcpu=i386,lclwidgettype=gtk2');
   writeln;
   writeln('Environment variables:');
   writeln('  PP            path to compiler,');
@@ -531,11 +476,6 @@ begin
   writeln('                target platform.');
   writeln('  FPCTARGET     target os, e.g. win32');
   writeln('  FPCTARGETCPU  target cpu, e.g. i386');
-end;
-
-function TSourceCloser.TargetCount: integer;
-begin
-  Result:=FTargets.Count;
 end;
 
 var
