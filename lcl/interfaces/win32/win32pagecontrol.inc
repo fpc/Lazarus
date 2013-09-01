@@ -405,6 +405,34 @@ begin
     AdjustSizeTabControlPages(ATabControl);
 end;
 
+class function TWin32WSCustomTabControl.GetNotebookMinTabHeight(const AWinControl: TWinControl): integer;
+var
+  R: TRect;
+begin
+  if (not GetLCLClientBoundsOffset(AWinControl, R)) then begin
+    Result := inherited GetNotebookMinTabHeight(AWinControl);
+    exit;
+  end;
+  if TCustomTabControl(AWinControl).TabPosition = tpBottom then
+    Result := R.Bottom
+  else
+    Result := R.Top;
+end;
+
+class function TWin32WSCustomTabControl.GetNotebookMinTabWidth(const AWinControl: TWinControl): integer;
+var
+  R: TRect;
+begin
+  if (not GetLCLClientBoundsOffset(AWinControl, R)) then begin
+    Result := inherited GetNotebookMinTabHeight(AWinControl);
+    exit;
+  end;
+  if TCustomTabControl(AWinControl).TabPosition = tpRight then
+    Result := R.Right
+  else
+    Result := R.Left;
+end;
+
 { -----------------------------------------------------------------------------
   Method: AddAllNBPages
   Adds all pages to tab control (showtabs becomes true)

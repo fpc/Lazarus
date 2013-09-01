@@ -139,6 +139,15 @@ procedure TTabControlStrings.ImageListChange(Sender: TObject);
 begin
 end;
 
+{ TNoteBookStringsTabControl }
+
+procedure TNoteBookStringsTabControl.CreateHandle;
+begin
+  inherited CreateHandle;
+  if FHandelCreated <> nil then
+    FHandelCreated(self);
+end;
+
 { TTabControlNoteBookStrings }
 
 procedure TTabControlNoteBookStrings.NBGetImageIndex(Sender: TObject;
@@ -156,6 +165,15 @@ end;
 procedure TTabControlNoteBookStrings.NBPageChanged(Sender: TObject);
 begin
   TabControl.Change;
+end;
+
+procedure TTabControlNoteBookStrings.NBHandleCreated(Sender: TObject);
+begin
+  if FInHandleCreated then
+    exit;
+  FInHandleCreated := True;
+  TabControlBoundsChange;
+  FInHandleCreated := False;
 end;
 
 function TTabControlNoteBookStrings.Get(Index: Integer): string;
@@ -226,12 +244,13 @@ end;
 constructor TTabControlNoteBookStrings.Create(TheTabControl: TTabControl);
 begin
   inherited Create(TheTabControl);
-  FNoteBook := TCustomTabControl{%H-}.Create(nil);
+  FNoteBook := TNoteBookStringsTabControl{%H-}.Create(nil);
   FNoteBook.ControlStyle := FNoteBook.ControlStyle + [csNoDesignSelectable];
   FNoteBook.Parent := TabControl;
   FNoteBook.OnGetImageIndex := @NBGetImageIndex;
   FNoteBook.OnChanging := @NBChanging;
   FNoteBook.OnChange := @NBPageChanged;
+  TNoteBookStringsTabControl(FNoteBook).FHandelCreated := @NBHandleCreated;
   TabControlBoundsChange;
 end;
 

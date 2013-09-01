@@ -640,11 +640,20 @@ type
     property TabWidth: Smallint read FTabWidth write SetTabWidth;
   end;
 
+  { TNoteBookStringsTabControl }
+
+  TNoteBookStringsTabControl = class(TCustomTabControl)
+  protected
+    FHandelCreated: TNotifyEvent;
+    procedure CreateHandle; override;
+  end;
+
   { TTabControlNoteBookStrings }
 
   TTabControlNoteBookStrings = class(TTabControlStrings)
   private
     FNoteBook: TCustomTabControl{%H-};
+    FInHandleCreated: Boolean;
   protected
     function Get(Index: Integer): string; override;
     function GetCount: Integer; override;
@@ -654,6 +663,7 @@ type
     procedure NBGetImageIndex(Sender: TObject; TheTabIndex: Integer;
                               var ImageIndex: Integer); virtual;
     procedure NBPageChanged(Sender: TObject); virtual;
+    procedure NBHandleCreated(Sender: TObject);
     procedure Put(Index: Integer; const S: string); override;
     procedure PutObject(Index: Integer; AObject: TObject); override;
     procedure SetImages(const AValue: TCustomImageList); override;
