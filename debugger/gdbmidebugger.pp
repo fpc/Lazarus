@@ -230,7 +230,7 @@ type
     procedure SetCommandState(NewState: TGDBMIDebuggerCommandState);
     procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); virtual;
     procedure DoLockQueueExecute; virtual;
-    procedure DoUnockQueueExecute; virtual;
+    procedure DoUnLockQueueExecute; virtual;
     function  DoExecute: Boolean; virtual; abstract;
     procedure DoOnExecuted;
     procedure DoCancel; virtual;
@@ -727,7 +727,7 @@ type
     FStepBreakPoint: Integer;
   protected
     procedure DoLockQueueExecute; override;
-    procedure DoUnockQueueExecute; override;
+    procedure DoUnLockQueueExecute; override;
     function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean;
     {$IFDEF MSWindows}
     function FixThreadForSigTrap: Boolean;
@@ -4509,7 +4509,7 @@ begin
   // prevent lock
 end;
 
-procedure TGDBMIDebuggerCommandExecute.DoUnockQueueExecute;
+procedure TGDBMIDebuggerCommandExecute.DoUnLockQueueExecute;
 begin
   // prevent lock
 end;
@@ -9887,7 +9887,7 @@ begin
   FTheDebugger.QueueExecuteLock;
 end;
 
-procedure TGDBMIDebuggerCommand.DoUnockQueueExecute;
+procedure TGDBMIDebuggerCommand.DoUnLockQueueExecute;
 begin
   FTheDebugger.QueueExecuteUnlock;
 end;
@@ -9991,6 +9991,7 @@ begin
   then ATimeOut := DefaultTimeOut;
 
   try
+    FTheDebugger.QueueExecuteLock;
     FTheDebugger.FErrorHandlingFlags := FTheDebugger.FErrorHandlingFlags
       + [ehfDeferReadWriteError] - [ehfGotReadError, ehfGotWriteError];
 
@@ -10007,6 +10008,7 @@ begin
       Result := RevorerTimeOut;
     end;
   finally
+    FTheDebugger.QueueExecuteUnlock;
     Exclude(FTheDebugger.FErrorHandlingFlags, ehfDeferReadWriteError);
   end;
 
@@ -11015,7 +11017,7 @@ begin
     end;
   end;
   // No re-raise in the except block. So no try-finally required
-  DoUnockQueueExecute;
+  DoUnLockQueueExecute;
   ReleaseReference;
 end;
 
