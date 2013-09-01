@@ -52,10 +52,10 @@ type
 
   TSourceCloser = class(TCustomApplication)
   private
+    FCompilerOptions: string;
     FDefines: TStringToStringTree;
     FIncludePath: string;
     FLPKFilenames: TStrings;
-    FRemoveComments: boolean;
     FUndefines: TStringToStringTree;
     FUnitFilenames: TStrings;
     FVerbosity: integer;
@@ -70,12 +70,12 @@ type
     destructor Destroy; override;
     procedure WriteHelp; virtual;
     property Verbosity: integer read FVerbosity write FVerbosity;
-    property RemoveComments: boolean read FRemoveComments write FRemoveComments;
     property Defines: TStringToStringTree read FDefines;
     property Undefines: TStringToStringTree read FUndefines;
     property IncludePath: string read FIncludePath write FIncludePath;
     property LPKFilenames: TStrings read FLPKFilenames;
     property UnitFilenames: TStrings read FUnitFilenames;
+    property CompilerOptions: string read FCompilerOptions write FCompilerOptions;
   end;
 
 function IndexOfFilename(List: TStrings; Filename: string): integer;
@@ -113,8 +113,8 @@ end;
 
 procedure TSourceCloser.DoRun;
 const
-  ShortOpts = 'hvqrd:u:i:t:';
-  LongOpts = 'help verbose quiet removecomments define: undefine: includepath:';
+  ShortOpts = 'hvqc:d:u:i:';
+  LongOpts = 'help verbose quiet compileroptions: define: undefine: includepath:';
 
   procedure E(Msg: string; WithHelp: boolean = false);
   begin
@@ -128,6 +128,10 @@ const
   procedure ParseValueParam(ShortOpt: char; Value: string);
   begin
     case ShortOpt of
+    'c':
+      begin
+        FCompilerOptions+=Value;
+      end;
     'i':
       begin
         Value:=UTF8Trim(Value,[]);
@@ -216,8 +220,6 @@ begin
       dec(fVerbosity)
     else if (Param='-v') or (Param='--verbose') then
       inc(fVerbosity)
-    else if (Param='-r') or (Param='--removecomments') then
-      RemoveComments:=true
     else if Param[1]<>'-' then begin
       Filename:=TrimAndExpandFilename(Param);
       if (Pos('*',ExtractFileName(Filename))>0) or (Pos('?',ExtractFileName(Filename))>0)
@@ -244,7 +246,7 @@ begin
         E('invalid option: '+Param);
       Option:=copy(Param,3,p-3);
       delete(Param,1,p);
-      if Option='target' then Option:='t'
+      if Option='compileroptions' then Option:='c'
       else if Option='define' then Option:='d'
       else if Option='undefine' then Option:='u'
       else if Option='includepath' then Option:='i'
@@ -258,7 +260,6 @@ begin
   if Verbosity>0 then begin
     debugln(['Options:']);
     debugln(['Verbosity=',Verbosity]);
-    debugln(['RemoveComments=',RemoveComments]);
     debugln(['IncludePath=',IncludePath]);
     for S2SItem in Defines do
       debugln('Define:',S2SItem^.Name);
@@ -326,6 +327,7 @@ const
 var
   xml: TXMLConfig;
   CustomOptions: String;
+  NewOptions: String;
 begin
   debugln(['Converting lpk: ',LPKFilename]);
   xml:=TXMLConfig.Create(LPKFilename);
@@ -335,11 +337,16 @@ begin
 
     // add -Ur to compiler options
     CustomOptions:=xml.GetValue(CustomOptionsPath,'');
-    if Pos('-Ur',CustomOptions)<1 then begin
-      if CustomOptions<>'' then CustomOptions+=' ';
-      CustomOptions+='-Ur';
-      xml.SetValue(CustomOptionsPath,CustomOptions);
+    NewOptions:=CustomOptions;
+    if Pos('-Ur',NewOptions)<1 then begin
+      if NewOptions<>'' then NewOptions+=' ';
+      NewOptions+='-Ur';
     end;
+    if FCompilerOptions<>'' then begin
+      if NewOptions<>'' then NewOptions+=' ';
+      NewOptions+=FCompilerOptions;
+    end;
+    xml.SetValue(CustomOptionsPath,NewOptions);
 
     // write
     xml.Flush;
@@ -452,16 +459,15 @@ begin
   writeln('  You can pass multiple lpk files and they will be edited in this order.');
   writeln('  If you pass a .pas or .pp file it will be treated as a pascal unit and');
   writeln('  will remove the implementation, initialization, finalization sections.');
-  //writeln('  If you pass the removecomments option the comments in the units will');
-  //writeln('  removed as well.');
-  //writeln('  If you pass the target option, lazbuild is called once for each lpk');
-  //writeln('  and each target.');
   writeln;
   writeln('Options:');
   writeln('  -h, --help    : This help messages.');
   writeln('  -v, --verbose : be more verbose.');
   writeln('  -q, --quiet   : be more quiet.');
-  writeln('  -r, --removecomments : remove comments from units');
+  writeln('Package/lpk options:');
+  writeln('  --compileroptions=<compiler options>');
+  writeln('          Add custom compiler options to lpk.');
+  writeln('Unit options:');
   writeln('  -d <MacroName>, --define=<MacroName> :');
   writeln('          Define Free Pascal macro. Can be passed multiple times.');
   writeln('  -u <MacroName>, --undefine=<MacroName> :');
