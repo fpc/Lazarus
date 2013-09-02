@@ -593,7 +593,7 @@ end;
 
 procedure TTabControl.Paint;
 var
-  ARect: TRect;
+  ARect, ARect2: TRect;
   TS: TTextStyle;
   Details: TThemedElementDetails;
   lCanvas: TCanvas;
@@ -607,7 +607,15 @@ begin
   AdjustDisplayRectWithBorder(ARect);
 
   Details := ThemeServices.GetElementDetails(ttPane);
-  ThemeServices.DrawElement(lCanvas.Handle, Details, ARect);
+  ARect2 := ARect;
+  // paint 1 pixel under the header, to avoid painting a closing border
+  case TabPosition of
+    tpTop:    ARect2.Top    := ARect2.Top    - 1;
+    tpBottom: ARect2.Bottom := ARect2.Bottom + 1;
+    tpLeft:   ARect2.Left   := ARect2.Left   - 1;
+    tpRight:  ARect2.Right  := ARect2.Right  + 1;
+  end;
+  ThemeServices.DrawElement(lCanvas.Handle, Details, ARect2);
 
   InflateRect(ARect,BorderWidth,BorderWidth);
   lCanvas.Frame3d(ARect, BorderWidth, bvRaised);
