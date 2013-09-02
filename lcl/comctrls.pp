@@ -784,8 +784,6 @@ type
     property Anchors;
     property BiDiMode;
     property BorderSpacing;
-    property BorderWidth;
-    property BorderStyle;
     property Constraints;
     property DockSite;
     property DragCursor;
