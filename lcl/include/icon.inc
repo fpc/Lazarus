@@ -164,6 +164,7 @@ var
 begin
   for n := 0 to FImages.Count - 1 do
     TObject(FImages[n]).Free;
+  FImages.Clear;
 end;
 
 function TSharedIcon.GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
