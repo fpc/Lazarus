@@ -312,7 +312,7 @@ begin
     FEffectiveFilter := edOptionsFilter.Text;
     FEffectiveShowModified := cbShowModified.Checked;
     {$IFDEF AllOptsFocusFilter}
-    if not not FInitialRender then
+    if FRenderedOnce then
       FocusControl(edOptionsFilter);
     {$ENDIF}
   finally
