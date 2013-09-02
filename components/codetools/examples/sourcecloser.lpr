@@ -56,6 +56,7 @@ type
     FDefines: TStringToStringTree;
     FIncludePath: string;
     FLPKFilenames: TStrings;
+    FRemovePrivateSections: boolean;
     FUndefines: TStringToStringTree;
     FUnitFilenames: TStrings;
     FVerbosity: integer;
@@ -76,6 +77,7 @@ type
     property LPKFilenames: TStrings read FLPKFilenames;
     property UnitFilenames: TStrings read FUnitFilenames;
     property CompilerOptions: string read FCompilerOptions write FCompilerOptions;
+    property RemovePrivateSections: boolean read FRemovePrivateSections write FRemovePrivateSections;
   end;
 
 function IndexOfFilename(List: TStrings; Filename: string): integer;
@@ -220,6 +222,8 @@ begin
       dec(fVerbosity)
     else if (Param='-v') or (Param='--verbose') then
       inc(fVerbosity)
+    else if Param='keepprivate' then
+      RemovePrivateSections:=false
     else if Param[1]<>'-' then begin
       Filename:=TrimAndExpandFilename(Param);
       if (Pos('*',ExtractFileName(Filename))>0) or (Pos('?',ExtractFileName(Filename))>0)
@@ -374,19 +378,42 @@ var
   i: Integer;
   StartCodePos: TCodePosition;
   EndCodePos: TCodePosition;
+  FromPos: Integer;
+  ToPos: Integer;
 begin
   debugln(['Converting unit: ',UnitFilename]);
   ApplyDefines;
 
+  // load file
   Code:=CodeToolBoss.LoadFile(UnitFilename,true,false);
   if Code=nil then
     E('unable to read "'+UnitFilename+'"');
+  // parse whole unit
   if (not CodeToolBoss.Explore(Code,Tool,false)) or (CodeToolBoss.ErrorMessage<>'') then
     E('parse error');
   if Tool.GetSourceType<>ctnUnit then
     E('not a unit, skipping "'+Code.Filename+'"');
+
+  // init SourceChangeCache
   Changer:=CodeToolBoss.SourceChangeCache;
   Changer.MainScanner:=Tool.Scanner;
+
+  if RemovePrivateSections then begin
+    // delete private sections in the interface
+    Node:=Tool.FindInterfaceNode;
+    while Node<>nil do begin
+      if Node.Desc=ctnClassPrivate then begin
+        FromPos:=Tool.FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
+        ToPos:=Tool.FindLineEndOrCodeInFrontOfPosition(Node.EndPos);
+        Changer.Replace(gtNone,gtNone,FromPos,ToPos,'');
+        Node:=Node.NextSkipChilds;
+      end else
+        Node:=Node.Next;
+      if Node=nil then break;
+      if Node.Desc in [ctnImplementation,ctnInitialization,ctnFinalization] then
+        break;
+    end;
+  end;
 
   // delete implementation, initialization and finalization section
   Node:=Tool.Tree.Root;
@@ -435,6 +462,7 @@ begin
   FUndefines:=TStringToStringTree.Create(false);
   FLPKFilenames:=TStringList.Create;
   FUnitFilenames:=TStringList.Create;
+  FRemovePrivateSections:=true;
 end;
 
 destructor TSourceCloser.Destroy;
@@ -453,6 +481,8 @@ begin
   writeln('  ',ExeName,' [options] [unit1.pas unit2.pp ...] [pkg1.lpk pk2.lpk ..]');
   writeln;
   writeln('Description:');
+  writeln('  This tool helps creating closed source Lazarus packages.');
+  writeln;
   writeln('  If the file names contain * or ? it will be used as mask.');
   writeln('  If you pass a lpk file, this tool will set "compile manually"');
   writeln('  and appends "-Ur" to the compiler options.');
@@ -474,6 +504,8 @@ begin
   writeln('          Undefine Free Pascal macro. Can be passed multiple times.');
   writeln('  -i <path>, --includepath=<path> :');
   writeln('         Append <path> to include search path. Can be passed multiple times.');
+  writeln('  --keepprivate');
+  writeln('         Keep private sections in interface.');
   writeln;
   writeln('Environment variables:');
   writeln('  PP            path to compiler,');
