@@ -668,7 +668,7 @@ begin
   FTabs:=TTabControlNoteBookStrings.Create(Self);
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
-  BorderWidth:=2;
+  BorderWidth:=0;
   FTabControlCreating:=false;
 
   FCanvas := TControlCanvas.Create;
