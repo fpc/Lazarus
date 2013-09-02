@@ -347,6 +347,7 @@ begin
     if List=nil then exit;
     for i:=0 to List.Count-1 do begin
       Pkg:=TLazPackage(List[i]);
+      if Pkg.AutoUpdate=pupManually then continue;
       AddDirectory(Pkg.Name,Pkg.CompilerOptions.GetUnitOutputDirectory(false),
         PkgOutMaskComboBox.Text);
     end;
