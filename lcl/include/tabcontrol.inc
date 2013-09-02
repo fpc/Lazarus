@@ -302,6 +302,7 @@ end;
 procedure TTabControlNoteBookStrings.Insert(Index: Integer; const S: string);
 begin
   FNoteBook.Pages.Insert(Index, S);
+  TabControlBoundsChange;
 end;
 
 function TTabControlNoteBookStrings.GetSize: integer;
