@@ -322,8 +322,12 @@ begin
   end;
   if not FDbgProcess.Running 
   then begin
-    FDbgProcess.Execute;
-    DebugLn('[TCmdLineDebugger] Debug PID: ', IntToStr(FDbgProcess.Handle));
+    try
+      FDbgProcess.Execute;
+      DebugLn('[TCmdLineDebugger] Debug PID: ', IntToStr(FDbgProcess.Handle));
+    except
+      on E: Exception do DebugLn('Exeption while executing debugger: ', E.Message);
+    end;
   end;
   Result := FDbgProcess.Running;
 end;

@@ -526,7 +526,7 @@ type
   
   { TCalcEdit }
   
-  TAcceptValueEvent = procedure(Sender: TObject; var AValue: Double; var Action: Boolean) of object;
+  TAcceptValueEvent = procedure(Sender: TObject; var AValue: Double; var Accept: Boolean) of object;
   TCalcEdit = class(TCustomEditButton)
   private
     FDialogTitle: String;
