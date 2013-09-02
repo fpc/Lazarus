@@ -130,10 +130,14 @@ end;
 
 function FilenameIsWinAbsolute(const TheFilename: string): boolean;
 begin
+  {$ifdef wince}
+  Result := (Length(TheFilename) > 0) and (TheFilename[1] = '\');
+  {$else wince}
   Result:=((length(TheFilename)>=3) and
            (TheFilename[1] in ['A'..'Z','a'..'z']) and (TheFilename[2]=':')  and (TheFilename[3]='\'))
       or ((length(TheFilename)>=2) and (TheFilename[1]='\') and (TheFilename[2]='\'))
       ;
+  {$endif wince}
 end;
 
 function FilenameIsUnixAbsolute(const TheFilename: string): boolean;
