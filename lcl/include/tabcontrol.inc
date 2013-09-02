@@ -187,6 +187,17 @@ begin
   TabControlBoundsChange;
 end;
 
+procedure TTabControlNoteBookStrings.SetStyle(AValue: TTabStyle);
+begin
+  FNoteBook.Style := AValue;
+  TabControlBoundsChange;
+end;
+
+function TTabControlNoteBookStrings.GetStyle: TTabStyle;
+begin
+  Result := FNoteBook.Style;
+end;
+
 function TTabControlNoteBookStrings.Get(Index: Integer): string;
 begin
   Result:=FNoteBook.Pages[Index];
@@ -453,11 +464,12 @@ begin
   TTabControlStrings(FTabs).ScrollOpposite:=AValue;
 end;
 
-procedure TTabControl.SetStyle(const AValue: TTabStyle);
+procedure TTabControl.SetStyle(AValue: TTabStyle);
 begin
+  inherited SetStyle(AValue);
   if FStyle=AValue then exit;
   FStyle:=AValue;
-  // ToDo
+  TTabControlNoteBookStrings(FTabs).Style := AValue;
 end;
 
 procedure TTabControl.SetTabHeight(const AValue: Smallint);
