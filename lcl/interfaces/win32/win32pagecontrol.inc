@@ -435,7 +435,10 @@ begin
     Result := inherited GetNotebookMinTabHeight(AWinControl);
     exit;
   end;
-  Result := Max(R.Top, -R.Bottom);
+  // The bigger offset is the height of the tab
+  Result := Max(R.Top, -R.Bottom)
+  // but includes spacing for the child
+          - Min(R.Top, -R.Bottom) div 2;
 end;
 
 class function TWin32WSCustomTabControl.GetNotebookMinTabWidth(const AWinControl: TWinControl): integer;
@@ -451,7 +454,8 @@ begin
     Result := inherited GetNotebookMinTabHeight(AWinControl);
     exit;
   end;
-  Result := Max(R.Left, -R.Right);
+  Result := Max(R.Left, -R.Right)
+          - Min(R.Left, -R.Right) div 2;
 end;
 
 { -----------------------------------------------------------------------------
