@@ -67,10 +67,9 @@ type
     SnapToGridCheckBox: TCheckBox;
     SnapToGuideLinesCheckBox: TCheckBox;
     procedure ColorBoxChange(Sender: TObject);
-    procedure ColorsListBoxGetColors(Sender: TCustomColorListBox;
-      Items: TStrings);
+    procedure ColorsListBoxGetColors(Sender: TCustomColorListBox; Items: TStrings);
     procedure ColorsListBoxSelectionChange(Sender: TObject; User: boolean);
-    procedure CreateCompFocusNameCheckBoxChange(Sender:TObject);
+    procedure CreateCompFocusNameCheckBoxChange(Sender: TObject);
     procedure FrameResize(Sender: TObject);
   private
     FLoaded: Boolean;
@@ -248,16 +247,14 @@ begin
   ColorsListBox.Invalidate;
 end;
 
-procedure TFormEditorOptionsFrame.ColorsListBoxSelectionChange(Sender: TObject;
-  User: boolean);
+procedure TFormEditorOptionsFrame.ColorsListBoxSelectionChange(Sender: TObject; User: boolean);
 begin
   if not (FLoaded and User) then
     Exit;
   ColorBox.Selected := ColorsListBox.Selected;
 end;
 
-procedure TFormEditorOptionsFrame.CreateCompFocusNameCheckBoxChange(Sender:
-  TObject);
+procedure TFormEditorOptionsFrame.CreateCompFocusNameCheckBoxChange(Sender: TObject);
 begin
   SwitchToFavoritesOITabCheckBox.Enabled := CreateCompFocusNameCheckBox.Checked;
 end;
