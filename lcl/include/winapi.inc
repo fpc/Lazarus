@@ -1107,6 +1107,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: CharUpperBuff
+  Params: pStr:
+          Len:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function CharUpperBuff(pStr: PChar; Len: Integer): Integer;
+begin
+  Result := len;
+  while len > 0 do
+  begin
+    pStr^ := UpperCaseChars[pStr^];
+    inc(pStr);
+    dec(len);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: CopyRect  pbd
   Params:
   Returns:

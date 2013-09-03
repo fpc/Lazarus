@@ -298,6 +298,7 @@ function AdjustWindowRectEx(Var Rect: TRect; Style1: Word; MenuExist : Boolean;
 function CharLower(c: char): char; inline;
 function CharLowerBuff(pStr : PChar; Len : Integer): Integer;
 function CharUpper(c: char): char; inline;
+function CharUpperBuff(pStr : PChar; Len : Integer): Integer;
 function CopyRect(var DestRect: TRect; const SrcRect: TRect): Boolean;
 function CreateEllipticRgnIndirect(const ARect: TRect): HRGN;
 function CreateFont(Height, Width, Escapement, Orientation, Weight: Integer;
