@@ -134,7 +134,7 @@ type
     );
 
   TEndUpdatePaletteEvent = procedure(Sender: TObject; PaletteChanged: boolean) of object;
-  TGetComponentClass = procedure(const AClass: TComponentClass) of object;
+  TGetComponentClassEvent = procedure(const AClass: TComponentClass) of object;
   TUpdateCompVisibleEvent = procedure(AComponent: TRegisteredComponent;
                       var VoteVisible: integer { Visible>0 }  ) of object;
   TComponentAddedEvent = procedure of object;
@@ -196,7 +196,7 @@ type
     function CreateNewClassName(const Prefix: string): string;
     function IndexOfPageComponent(AComponent: TComponent): integer;
     procedure UpdateVisible; virtual;
-    procedure IterateRegisteredClasses(Proc: TGetComponentClass);
+    procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
     procedure RegisterCustomIDEComponents(
                         const RegisterProc: RegisterUnitComponentProc); virtual;
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
@@ -787,7 +787,7 @@ begin
   EndUpdate;
 end;
 
-procedure TBaseComponentPalette.IterateRegisteredClasses(Proc: TGetComponentClass);
+procedure TBaseComponentPalette.IterateRegisteredClasses(Proc: TGetComponentClassEvent);
 var
   i, j: Integer;
   APage: TBaseComponentPage;
