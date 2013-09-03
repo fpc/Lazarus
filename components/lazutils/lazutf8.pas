@@ -2453,7 +2453,7 @@ function Utf8StringOfChar(AUtf8Char: Utf8String; N: Integer): Utf8String;
 var
   i: Integer;
   US: UniCodeString;
-  WC: WideChar;
+  WC: System.WideChar;
 begin
   Result := '';
   if Utf8Length(AUtf8Char) <> 1 then Exit;
