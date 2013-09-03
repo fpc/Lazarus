@@ -1869,6 +1869,7 @@ components/lazcontrols/dividerbevel.pas svneol=native#text/pascal
 components/lazcontrols/dividerbevel_icon.lrs svneol=native#text/pascal
 components/lazcontrols/extendednotebook.pas svneol=native#text/pascal
 components/lazcontrols/extendednotebook_icon.lrs svneol=native#text/pascal
+components/lazcontrols/extendedtabcontrols.pas svneol=native#text/pascal
 components/lazcontrols/fpmake.pp svneol=native#text/plain
 components/lazcontrols/images/dividerbevel.png -text
 components/lazcontrols/images/listfilteredit.png -text
