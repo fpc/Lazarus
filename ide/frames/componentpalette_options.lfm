@@ -1,0 +1,207 @@
+object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
+  Left = 0
+  Height = 458
+  Top = 0
+  Width = 814
+  ClientHeight = 458
+  ClientWidth = 814
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 309
+  DesignTop = 530
+  object PagesGroupBox: TGroupBox
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 458
+    Top = 0
+    Width = 227
+    Align = alLeft
+    Anchors = []
+    Caption = 'PagesGroupBox'
+    ClientHeight = 439
+    ClientWidth = 223
+    TabOrder = 0
+    object PagesListBox: TListBox
+      AnchorSideLeft.Control = PagesGroupBox
+      AnchorSideTop.Control = PagesGroupBox
+      AnchorSideRight.Control = PageMoveUpBtn
+      AnchorSideBottom.Control = AddPageButton
+      Left = 1
+      Height = 400
+      Top = 1
+      Width = 188
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Right = 5
+      BorderSpacing.Around = 1
+      DragMode = dmAutomatic
+      ItemHeight = 0
+      OnDragDrop = PagesListBoxDragDrop
+      OnDragOver = PagesListBoxDragOver
+      OnKeyDown = PagesListBoxKeyDown
+      OnSelectionChange = PagesListBoxSelectionChange
+      TabOrder = 0
+    end
+    object AddPageButton: TBitBtn
+      AnchorSideLeft.Control = PagesListBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Control = PagesGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 1
+      Height = 26
+      Top = 407
+      Width = 54
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      Caption = '&Add ...'
+      OnClick = AddPageButtonClick
+      TabOrder = 1
+    end
+    object RestoreButton: TBitBtn
+      AnchorSideLeft.Control = AddPageButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = AddPageButton
+      AnchorSideBottom.Side = asrBottom
+      Left = 64
+      Height = 26
+      Top = 407
+      Width = 110
+      AutoSize = True
+      BorderSpacing.Left = 9
+      BorderSpacing.Bottom = 6
+      Caption = '&Restore default'
+      OnClick = RestoreButtonClick
+      TabOrder = 2
+    end
+    object PageMoveDownBtn: TSpeedButton
+      AnchorSideLeft.Control = PageMoveUpBtn
+      AnchorSideTop.Control = PageMoveUpBtn
+      AnchorSideTop.Side = asrBottom
+      Left = 195
+      Height = 26
+      Top = 135
+      Width = 22
+      BorderSpacing.Top = 7
+      Enabled = False
+      OnClick = PageMoveDownBtnClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object PageMoveUpBtn: TSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = PagesGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 195
+      Height = 26
+      Top = 102
+      Width = 22
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Enabled = False
+      OnClick = PageMoveUpBtnClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+  end
+  object ComponentsGroupBox: TGroupBox
+    Left = 232
+    Height = 458
+    Top = 0
+    Width = 582
+    Align = alClient
+    Anchors = []
+    Caption = 'ComponentsGroupBox'
+    ClientHeight = 439
+    ClientWidth = 578
+    TabOrder = 1
+    object ComponentsListView: TListView
+      AnchorSideLeft.Control = ComponentsGroupBox
+      AnchorSideTop.Control = ComponentsGroupBox
+      AnchorSideRight.Control = CompMoveUpBtn
+      AnchorSideBottom.Control = ComponentsGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 1
+      Height = 437
+      Top = 1
+      Width = 543
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Right = 5
+      BorderSpacing.Around = 1
+      Columns = <      
+        item
+          Width = 35
+        end      
+        item
+          Caption = 'Name'
+          MaxWidth = 300
+          MinWidth = 50
+          Width = 145
+        end      
+        item
+          Caption = 'Page'
+          MaxWidth = 1000
+          Width = 201
+        end      
+        item
+          Caption = 'Package'
+          Width = 301
+        end>
+      DragMode = dmAutomatic
+      Items.LazData = {
+        4F00000001000000FFFFFFFFFFFFFFFFFFFFFFFF030000000000000008000000
+        54657374436F6D700800000054657374506167650B000000546573745061636B
+        616765FFFFFFFFFFFFFFFFFFFFFFFF
+      }
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      ViewStyle = vsReport
+      OnChange = ComponentsListViewChange
+      OnClick = ComponentsListViewClick
+      OnCustomDraw = ComponentsListViewCustomDraw
+      OnCustomDrawItem = ComponentsListViewCustomDrawItem
+      OnDragDrop = ComponentsListViewDragDrop
+      OnDragOver = ComponentsListViewDragOver
+      OnItemChecked = ComponentsListViewItemChecked
+      OnKeyDown = ComponentsListViewKeyDown
+    end
+    object CompMoveUpBtn: TSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = ComponentsGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 550
+      Height = 26
+      Top = 102
+      Width = 22
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Enabled = False
+      OnClick = CompMoveUpBtnClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object CompMoveDownBtn: TSpeedButton
+      AnchorSideLeft.Control = CompMoveUpBtn
+      AnchorSideTop.Control = CompMoveUpBtn
+      AnchorSideTop.Side = asrBottom
+      Left = 550
+      Height = 26
+      Top = 135
+      Width = 22
+      BorderSpacing.Top = 7
+      Enabled = False
+      OnClick = CompMoveDownBtnClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 227
+    Height = 458
+    Top = 0
+    Width = 5
+    Anchors = [akLeft]
+  end
+end
