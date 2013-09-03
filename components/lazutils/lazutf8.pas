@@ -76,6 +76,13 @@ function UTF8UpperCase(const AInStr: string; ALanguage: string=''): string;
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
                                   StopOnNonASCII: Boolean = false): PtrInt;
 function ValidUTF8String(const s: String): String;
+function Utf8StringOfChar(AUtf8Char: Utf8String; N: Integer): Utf8String;
+function Utf8AddChar(AUtf8Char: Utf8String; const S: Utf8String; N: Integer): Utf8String;
+function Utf8AddCharR(AUtf8Char: Utf8String; const S: Utf8String; N: Integer): Utf8String;
+function UTF8PadLeft(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
+function UTF8PadRight(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
+function UTF8PadCenter(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
+
 
 type
   TUTF8TrimFlag = (
@@ -2441,6 +2448,77 @@ begin
   if NeedFree then
     FreeMem(p);
 end;
+
+function Utf8StringOfChar(AUtf8Char: Utf8String; N: Integer): Utf8String;
+var
+  i: Integer;
+  US: UniCodeString;
+  WC: WideChar;
+begin
+  Result := '';
+  if Utf8Length(AUtf8Char) <> 1 then Exit;
+  if Length(AUtf8Char) = 1 then
+    Result := StringOfChar(AUtf8Char[1], N)
+  else
+  begin
+    //for i := 1 to N do Result := Result + AUtf8Char;  //ultimate lame version
+    WC := Utf8ToUtf16(AUtf8Char)[1];   //we know Utf8Length(AUtf8Char) = 1
+    SetLength(US, N);
+    System.FillWord(US[1], N, Word(WC));
+    Result := Utf16ToUtf8(US);
+  end;
+end;
+
+function Utf8AddChar(AUtf8Char: Utf8String; const S: Utf8String; N: Integer): Utf8String;
+var
+  L : Integer;
+begin
+  Result := S;
+  if Utf8Length(AUtf8Char) <> 1 then Exit;
+  L := Utf8Length(Result);
+  if L < N then
+  begin
+    Result := Utf8StringOfChar(AUtf8Char, N-l) + Result;
+  end;
+end;
+
+function Utf8AddCharR(AUtf8Char: Utf8String; const S: Utf8String; N: Integer): Utf8String;
+var
+  L : Integer;
+begin
+  Result := S;
+  if Utf8Length(AUtf8Char) <> 1 then Exit;
+  L := Utf8Length(Result);
+  if L < N then
+    Result := Result + Utf8StringOfChar(AUtf8Char, N-l);
+end;
+
+
+function UTF8PadLeft(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
+begin
+  Result := Utf8AddChar(AUtf8Char, S, N);
+end;
+
+function UTF8PadRight(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
+begin
+  Result := Utf8AddCharR(AUtf8Char, S, N);
+end;
+
+function UTF8PadCenter(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
+var
+  ULen: PtrInt;
+begin
+  ULen := Utf8Length(S);
+  if ULen < N then
+    begin
+      Result := Utf8StringOfChar(AUtf8Char,(N div 2) - (ULen div 2)) + S;
+      Result := Result + Utf8StringOfChar(AUtf8Char, N - Utf8Length(Result));
+    end
+  else
+    Result := S;
+end;
+
+
 
 function UTF8Trim(const s: string; Flags: TUTF8TrimFlags): string;
 var
