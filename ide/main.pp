@@ -2005,7 +2005,7 @@ begin
     Align := alRight;
     Caption := '';
     BevelOuter := bvNone;
-    Width:=28;
+    Width := 17;
     Visible := EnvironmentOptions.IDESpeedButtonsVisible;
   end;
 
@@ -2046,12 +2046,12 @@ begin
   MainIDEBar.SelComponentPageButton:=TSpeedButton.Create(MainIDEBar.pnlRightSpeedButtons);
   with MainIDEBar.SelComponentPageButton do
   begin
-    Name:='PalettePageSelectBtn';
-    Parent:=MainIDEBar.pnlRightSpeedButtons;
+    Name := 'PalettePageSelectBtn';
+    Parent := MainIDEBar.pnlRightSpeedButtons;
     LoadGlyphFromLazarusResource('SelCompPage');
     Flat := True;
+    SetBounds(1,31,16,16);
     Hint := 'Click to Select Palette Page';
-    SetBounds(1,27,26,26);
     OnClick := @SelComponentPageButtonClick;
   end;
 end;
