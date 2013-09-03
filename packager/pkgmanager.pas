@@ -1765,7 +1765,6 @@ end;
 procedure TPkgManager.UpdateVisibleComponentPalette;
 begin
   TComponentPalette(IDEComponentPalette).PageControl:=MainIDEBar.ComponentPageControl;
-  TComponentPalette(IDEComponentPalette).UpdateNoteBookButtons;
 end;
 
 procedure TPkgManager.ProcessCommand(Command: word; var Handled: boolean);
