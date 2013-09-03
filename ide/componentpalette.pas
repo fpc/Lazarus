@@ -418,7 +418,8 @@ end;
 
 procedure TComponentPalette.DoEndUpdate(Changed: boolean);
 begin
-  if Changed or fNoteBookNeedsUpdate then UpdateNoteBookButtons;
+  if Changed or fNoteBookNeedsUpdate then
+    UpdateNoteBookButtons;
   inherited DoEndUpdate(Changed);
 end;
 
