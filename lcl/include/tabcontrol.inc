@@ -665,6 +665,11 @@ begin
   AdjustDisplayRect(ARect);
 end;
 
+function TTabControl.CreateTabNoteBookStrings: TTabControlNoteBookStrings;
+begin
+  Result := TTabControlNoteBookStrings.Create(Self);
+end;
+
 constructor TTabControl.Create(TheOwner: TComponent);
 begin
   FTabControlCreating:=true;
@@ -674,7 +679,7 @@ begin
   FTabPosition:=tpTop;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
-  FTabs:=TTabControlNoteBookStrings.Create(Self);
+  FTabs := CreateTabNoteBookStrings;
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
   BorderWidth:=0;

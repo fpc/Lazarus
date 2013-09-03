@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <PathDelim Value="\"/>
@@ -19,7 +19,7 @@
     <Description Value="Some extra LCL controls needed by the IDE."/>
     <License Value="modified LGPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="12">
+    <Files Count="13">
       <Item1>
         <Filename Value="dividerbevel.pas"/>
         <HasRegisterProc Value="True"/>
@@ -74,6 +74,10 @@
         <Filename Value="listfilteredit_icon.lrs"/>
         <Type Value="LRS"/>
       </Item12>
+      <Item13>
+        <Filename Value="extendedtabcontrols.pas"/>
+        <UnitName Value="ExtendedTabControls"/>
+      </Item13>
     </Files>
     <LazDoc Paths="docs"/>
     <Type Value="RunAndDesignTime"/>
@@ -89,5 +93,8 @@
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>

@@ -7,8 +7,8 @@ unit LazControls;
 interface
 
 uses
-  DividerBevel, ExtendedNotebook, ListFilterEdit, TreeFilterEdit, 
-  ShortPathEdit, LvlGraphCtrl, LazarusPackageIntf;
+  DividerBevel, ExtendedNotebook, ListFilterEdit, TreeFilterEdit, ShortPathEdit, 
+  LvlGraphCtrl, ExtendedTabControls, LazarusPackageIntf;
 
 implementation
 

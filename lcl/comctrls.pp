@@ -744,6 +744,7 @@ type
     procedure Paint; virtual;
     procedure AdjustDisplayRectWithBorder(var ARect: TRect); virtual;
     procedure AdjustClientRect(var ARect: TRect); override;
+    function CreateTabNoteBookStrings: TTabControlNoteBookStrings; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -2054,8 +2055,8 @@ type
     procedure MoveSubMenuItems(SrcMenuItem, DestMenuItem: TMenuItem);
     procedure AddButton(Button: TToolButton);
     procedure RemoveButton(Button: TToolButton);
-    function IsVertical: Boolean;
   protected
+    function IsVertical: Boolean; virtual;
     class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var ARect: TRect); override;
     class function GetControlClassDefaultSize: TSize; override;
