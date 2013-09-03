@@ -228,7 +228,7 @@ end;
 procedure TEditorFileManagerForm.CheckListBox1KeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
-  if (ssCtrl in shift ) and ((Key = VK_UP) or (Key = VK_DOWN)) then begin
+  if (ssCtrl in Shift ) and ((Key = VK_UP) or (Key = VK_DOWN)) then begin
     if Key = VK_UP then
       MoveUpBtnClick(nil)
     else

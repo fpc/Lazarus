@@ -225,11 +225,12 @@ const
     EnvOptionsFiles         = 100;
     EnvOptionsDesktop       = 200;
     EnvOptionsWindow        = 300;
+    EnvOptionsCompPalette   = 350;
     EnvOptionsFormEd        = 400;
     EnvOptionsOI            = 500;
-    EnvOptionsBackup        = 600;
-    EnvOptionsNaming        = 700;
-    EnvOptionsFpDoc         = 800;
+    EnvOptionsFpDoc         = 600;
+    EnvOptionsBackup        = 700;
+    EnvOptionsNaming        = 800;
     EnvOptionsFileFilters   = 900;
 
   GroupEditor       = 200;

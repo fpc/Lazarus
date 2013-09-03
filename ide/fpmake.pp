@@ -217,6 +217,7 @@ begin
     P.Sources.AddSrc('frames/editor_mouseaction_options_advanced.pas');
     P.Sources.AddSrc('frames/editor_multiwindow_options.pas');
     P.Sources.AddSrc('frames/files_options.pas');
+    P.Sources.AddSrc('frames/componentpalette_options.pas');
     P.Sources.AddSrc('frames/formed_options.pas');
     P.Sources.AddSrc('frames/fpdoc_options.pas');
     P.Sources.AddSrc('frames/help_general_options.pas');

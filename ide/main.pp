@@ -115,7 +115,7 @@ uses
   // converter
   ChgEncodingDlg, ConvertDelphi, ConvCodeTool, MissingPropertiesDlg, LazXMLForms,
   // environment option frames
-  editor_general_options, formed_options, OI_options,
+  editor_general_options, componentpalette_options, formed_options, OI_options,
   files_options, desktop_options, window_options,
   Backup_Options, naming_options, fpdoc_options,
   editor_display_options, editor_keymapping_options, editor_mouseaction_options,

@@ -16,7 +16,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
     AnchorSideRight.Control = Panel1
     AnchorSideBottom.Control = ButtonPanel1
     Left = 3
-    Height = 305
+    Height = 299
     Top = 29
     Width = 533
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -29,11 +29,12 @@ object EditorFileManagerForm: TEditorFileManagerForm
     OnKeyDown = CheckListBox1KeyDown
     PopupMenu = PopupMenu1
     TabOrder = 0
+    TopIndex = -1
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 340
+    Height = 40
+    Top = 334
     Width = 710
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -53,11 +54,11 @@ object EditorFileManagerForm: TEditorFileManagerForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 536
-    Height = 327
+    Height = 328
     Top = 0
     Width = 186
     Anchors = [akTop, akRight, akBottom]
-    ClientHeight = 327
+    ClientHeight = 328
     ClientWidth = 186
     TabOrder = 2
     object CheckAllCheckBox: TCheckBox
@@ -65,9 +66,9 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideTop.Control = FileCountLabel
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 20
-      Top = 64
-      Width = 116
+      Height = 22
+      Top = 67
+      Width = 156
       BorderSpacing.Top = 11
       BorderSpacing.Around = 6
       Caption = 'CheckAllCheckBox'
@@ -81,8 +82,8 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
       Left = 7
-      Height = 25
-      Top = 90
+      Height = 28
+      Top = 95
       Width = 172
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -99,8 +100,8 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
       Left = 7
-      Height = 25
-      Top = 121
+      Height = 28
+      Top = 129
       Width = 172
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -117,11 +118,10 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideTop.Side = asrBottom
       Left = 82
       Height = 26
-      Top = 170
+      Top = 181
       Width = 22
       BorderSpacing.Top = 24
       Enabled = False
-      NumGlyphs = 0
       OnClick = MoveUpBtnClick
       ShowHint = True
       ParentShowHint = False
@@ -132,11 +132,10 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideTop.Side = asrBottom
       Left = 82
       Height = 26
-      Top = 203
+      Top = 214
       Width = 22
       BorderSpacing.Top = 7
       Enabled = False
-      NumGlyphs = 0
       OnClick = MoveDownBtnClick
       ShowHint = True
       ParentShowHint = False
@@ -145,9 +144,9 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 15
+      Height = 18
       Top = 32
-      Width = 77
+      Width = 104
       BorderSpacing.Around = 6
       Caption = 'FileCountLabel'
       ParentColor = False
@@ -169,13 +168,15 @@ object EditorFileManagerForm: TEditorFileManagerForm
       AnchorSideTop.Control = SortAlphabeticallyButton
       AnchorSideTop.Side = asrCenter
       Left = 76
-      Height = 24
-      Top = 2
+      Height = 26
+      Top = 1
       Width = 224
       ButtonWidth = 23
-      NumGlyphs = 0
+      NumGlyphs = 1
       BorderSpacing.Left = 11
+      Font.Color = clBtnShadow
       MaxLength = 0
+      ParentFont = False
       TabOrder = 0
       FilteredListbox = CheckListBox1
     end
@@ -194,7 +195,6 @@ object EditorFileManagerForm: TEditorFileManagerForm
       BorderSpacing.Left = 3
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
-      NumGlyphs = 0
       OnClick = ActivateButtonClick
       ShowHint = True
       ParentShowHint = False
@@ -215,7 +215,6 @@ object EditorFileManagerForm: TEditorFileManagerForm
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
       GroupIndex = 2
-      NumGlyphs = 0
       OnClick = SortAlphabeticallyButtonClick
       ShowHint = True
       ParentShowHint = False

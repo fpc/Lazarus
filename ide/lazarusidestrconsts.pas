@@ -44,6 +44,7 @@ resourcestring
   lisLazarus = 'Lazarus';
   lisAdd  = 'Add';
   lisBtnAdd = '&Add';
+  lisBtnDlgAdd = '&Add ...';
   lisApply = 'Apply';
   lisInsert = 'Insert';
   lisChange  = 'Change';
@@ -101,6 +102,8 @@ resourcestring
   lisVariable = 'Variable';
   lisPath = 'Path';
   lisId = 'ID';
+  lisPage = 'Page';
+  lisPackage = 'Package';
   lisCompile = 'Compile';
   lisCompileStage = 'Compile';
   lisBuild = 'Build';
@@ -3545,7 +3548,6 @@ resourcestring
     +'create a new Project';
   lisChooseOneOfTheseItemsToCreateANewPackage = 'Choose one of these items to '
     +'create a new Package';
-  lisPackage = 'Package';
   lisNewDlgCreateANewUnitWithALCLForm = 'Create a new unit with a LCL form.';
   lisNewDlgCreateANewUnitWithADataModule = 'Create a new unit with a datamodule.';
   lisNewDlgCreateANewUnitWithAFrame = 'Create a new unit with a frame.';
@@ -4361,7 +4363,9 @@ resourcestring
   lisProjInspRemovedRequiredPackages = 'Removed required packages';
   lisProjInspProjectInspector = 'Project Inspector - %s';
   
-  // components list form
+  // components palette settings and list form
+  lisCmpPages = 'Pages';
+  lisCmpRestoreDefaults = '&Restore defaults';
   lisCmpLstComponents = 'Components';
   lisCmpLstList = 'List';
   lisCmpLstPalette = 'Palette';
