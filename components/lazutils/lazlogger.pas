@@ -575,12 +575,15 @@ end;
 function TLazLoggerFile.GetLogFileName: string;
 var
   EnvVarName: string;
+  i: Integer;
 begin
   Result := '';
   FGetLogFileNameDone := True;
   if FParamForLogFileName <> '' then begin
     // first try to find the log file name in the command line parameters
-    Result := GetParamByName(FParamForLogFileName, 0);
+    i := GetParamByNameCount(FParamForLogFileName) - 1;
+    if i >= 0 then
+      Result := GetParamByName(FParamForLogFileName, i);
   end;
   if FEnvironmentForLogFileName <> '' then begin;
     // if not found yet, then try to find in the environment variables
