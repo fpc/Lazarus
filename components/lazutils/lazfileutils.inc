@@ -3,6 +3,7 @@
 
 function ResolveDots(const AFilename: string): String;
 //trim double path delims and expand special dirs like .. and .
+//on Windows change also '/' to '\'
 var SrcPos, DestPos, l, DirStart: integer;
   c: char;
   MacroPos: LongInt;
@@ -17,6 +18,10 @@ begin
   // trim double path delimiters and special dirs . and ..
   while (SrcPos<=l) do begin
     c:=AFilename[SrcPos];
+    {$ifdef windows}
+    //change / to \. The WinApi accepts both, but it leads to strange effects in other places
+    if (c='/') then c := PathDelim;
+    {$endif}
     // check for double path delims
     if (c=PathDelim) then begin
       inc(SrcPos);
@@ -120,6 +125,10 @@ begin
       inc(SrcPos);
       if (SrcPos>l) then break;
       c:=AFilename[SrcPos];
+      {$ifdef windows}
+      //change / to \. The WinApi accepts both, but it leads to strange effects in other places
+      if (c='/') then c := PathDelim;
+      {$endif}
       if c=PathDelim then break;
     until false;
   end;
