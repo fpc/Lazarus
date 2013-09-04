@@ -423,6 +423,7 @@ begin
   WindowDrawInfo.state := WindowWidgetDrawInfo.windowState;
   WindowDrawInfo.titleHeight := WindowWidgetDrawInfo.titleHeight;
   WindowDrawInfo.titleWidth := WindowWidgetDrawInfo.titleWidth;
+  WindowShape:=nil;
   HIThemeGetWindowShape(BtnRect, WindowDrawInfo, WindowRegion, WindowShape);
   HIShapeGetBounds(WindowShape, BtnRect);
   Offset := CGRectToRect(BtnRect).TopLeft;
@@ -597,6 +598,7 @@ begin
         WindowDrawInfo.titleHeight := 0;
         WindowDrawInfo.titleWidth := 0;
 
+        WindowShape:=nil;
         HIThemeGetWindowShape(BtnRect, WindowDrawInfo, kWindowCloseBoxRgn, WindowShape);
         HIShapeGetBounds(WindowShape, BtnRect);
         with BtnRect.size do
