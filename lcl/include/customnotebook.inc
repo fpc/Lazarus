@@ -17,13 +17,18 @@
 {------------------------------------------------------------------------------
   TNBPages Constructor
  ------------------------------------------------------------------------------}
-constructor TNBPages.Create(thePageList: TListWithEvent;
-  theNotebook: TCustomTabControl);
+constructor TNBPages.Create(theNotebook: TCustomTabControl);
 begin
   inherited Create;
-  FPageList := thePageList;
+  FPageList := TListWithEvent.Create;
   FPageList.OnChange:=@PageListChange;
   FNotebook := theNotebook;
+end;
+
+destructor TNBPages.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FPageList);
 end;
 
 {------------------------------------------------------------------------------
@@ -78,6 +83,26 @@ begin
     RaiseGDBException('TNBPages.Put Index out of bounds');
   //debugln(['TNBPages.Put ',DbgSName(FNotebook),' ',Index,' S="',S,'"']);
   TCustomPage(FPageList[Index]).Caption := S;
+end;
+
+function TNBPages.IndexOfPage(const AnObject: TPersistent): Integer;
+begin
+  Result := FPageList.IndexOf(AnObject);
+end;
+
+procedure TNBPages.InsertPage(Index: Integer; const APage: TCustomPage);
+begin
+  FPageList.Insert(Index, APage);
+end;
+
+procedure TNBPages.DeletePage(Index: Integer);
+begin
+  FPageList.Delete(Index);
+end;
+
+function TNBPages.GetPage(Index: Integer): TCustomPage;
+begin
+  Result := TCustomPage(FPageList.Items[Index]);
 end;
 
 {------------------------------------------------------------------------------
@@ -210,10 +235,7 @@ begin
   fCompStyle := csNoteBook;
 
   if not FUnPaged then
-  begin
-    FPageList := TListWithEvent.Create;
-    FAccess := TNBPages.Create(TListWithEvent(FPageList), Self);
-  end;
+    FAccess := TNBPages.Create(Self);
 
   FImageListChangeLink := TChangeLink.Create;
   FImageListChangeLink.OnChange := @DoImageListChange;
@@ -293,7 +315,6 @@ begin
   FImageListChangeLink.Free;
   Pages.Clear;
   FreeAndNil(FAccess);
-  FreeAndNil(FPageList);
   inherited Destroy;
 end;
 
@@ -355,7 +376,7 @@ begin
   if FUnPaged then
     Result := -1
   else
-    Result:=FPageList.IndexOf(APage);
+    Result:=TNBPages(FAccess).IndexOfPage(APage);
 end;
 
 function TCustomTabControl.CustomPage(Index: integer): TCustomPage;
@@ -500,7 +521,7 @@ end;
 procedure TCustomTabControl.SetActivePageComponent(const AValue: TCustomPage);
 begin
   if not FUnPaged then
-    PageIndex := FPageList.IndexOf(AValue);
+    PageIndex := IndexOf(AValue);
 end;
 
 procedure TCustomTabControl.SetImages(const AValue: TCustomImageList);
@@ -581,7 +602,7 @@ begin
     else
       NewZPosition := -1;
     Include(APage.FFlags, pfInserting);
-    FPageList.Insert(Index, APage);
+    TNBPages(FAccess).InsertPage(Index, APage);
     Exclude(APage.FFlags, pfInserting);
     APage.Parent := Self;
     if NewZPosition >= 0 then
@@ -728,7 +749,7 @@ begin
   // Make sure Index is in the range of valid pages to delete
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn(['TCustomTabControl.RemovePage A ',dbgsName(Self),' Index=',Index,
-    ' FPageList.Count=',PageCount,' PageIndex=',PageIndex]);
+    ' FAccess.Count=',PageCount,' PageIndex=',PageIndex]);
   {$ENDIF}
   if not FUnPaged and (Index >= 0) and (Index < PageCount) then
   begin
@@ -737,13 +758,13 @@ begin
     if HandleAllocated then
       AddRemovePageHandle(APage);
     PageRemoved(Index);
-    FPageList.Delete(Index);
+    TNBPages(FAccess).DeletePage(Index);
     APage.Parent:=nil;
     if FPageIndex >= Index then
       Dec(FPageIndex);
   end;
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn(['TCustomTabControl.RemovePage END ',dbgsName(Self),' Index=',Index,' FPageList.Count=',FPageList.Count,' PageIndex=',PageIndex]);
+  DebugLn(['TCustomTabControl.RemovePage END ',dbgsName(Self),' Index=',Index,' FAccess.Count=',FAccess.Count,' PageIndex=',PageIndex]);
   {$ENDIF}
 end;
 
@@ -780,9 +801,9 @@ end;
 function TCustomTabControl.GetPageCount: integer;
 begin
   if FUnPaged then
-    Result := FAccess.Count
+    Result := 0
   else
-    Result := FPageList.Count;
+    Result := FAccess.Count
 end;
 
 {------------------------------------------------------------------------------
@@ -798,9 +819,14 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomTabControl.GetPage(AIndex: Integer): TCustomPage;
 begin
-  if (AIndex < 0) or (AIndex >= PageCount) then
-    RaiseGDBException('TCustomTabControl.GetCustomPage Index out of bounds');
-  Result := TCustomPage(FPageList.Items[AIndex]);
+  if FUnPaged then
+    Result := nil
+  else
+  begin
+    if (AIndex < 0) or (AIndex >= PageCount) then
+      RaiseGDBException('TCustomTabControl.GetCustomPage Index out of bounds');
+    Result := TNBPages(FAccess).GetPage(AIndex);
+  end;
 end;
 
 {------------------------------------------------------------------------------

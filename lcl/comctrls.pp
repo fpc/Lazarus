@@ -270,9 +270,13 @@ type
     function GetCount: Integer; override;
     function GetObject(Index: Integer): TObject; override;
     procedure Put(Index: Integer; const S: String); override;
+    function IndexOfPage(const AnObject: TPersistent): Integer;
+    procedure InsertPage(Index: Integer; const APage: TCustomPage);
+    procedure DeletePage(Index: Integer);
+    function GetPage(Index: Integer): TCustomPage;
   public
-    constructor Create(thePageList: TListWithEvent;
-                       theNotebook: TCustomTabControl);
+    constructor Create(theNotebook: TCustomTabControl);
+    destructor Destroy; override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: String); override;
@@ -326,7 +330,7 @@ type
     FOwnerDraw: Boolean;
     FPageIndex: Integer;
     FPageIndexOnLastChange: integer;// needed for unique OnChange events
-    FPageList: TList;  // TListWithEvent of TCustomPage
+//    FPageList: TList;  // TListWithEvent of TCustomPage
     FRaggedRight: Boolean;
     FScrollOpposite: Boolean;
     FShowTabs: Boolean;
