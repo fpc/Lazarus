@@ -7,13 +7,11 @@ function ResolveDots(const AFilename: string): String;
 var SrcPos, DestPos, l, DirStart: integer;
   c: char;
   MacroPos: LongInt;
-  {$ifdef windows}
-  CannotTouchSeps: Boolean;
-  {$endif}
 begin
   Result:=AFilename;
   {$ifdef windows}
-  CannotTouchSeps := Pos('\\?\', AFilename) = 1;
+  //Special case: everything is literal after this, even dots (this does not apply to '//?/')
+  if (Pos('\\?\', AFilename) = 1) then Exit;
   {$endif}
 
   l:=length(AFilename);
@@ -26,7 +24,7 @@ begin
     c:=AFilename[SrcPos];
     {$ifdef windows}
     //change / to \. The WinApi accepts both, but it leads to strange effects in other places
-    if (c='/') and not CannotTouchSeps then c := PathDelim;
+    if (c='/') then c := PathDelim;
     {$endif}
     // check for double path delims
     if (c=PathDelim) then begin
@@ -36,7 +34,7 @@ begin
       {$ELSE}
       if (DestPos>1)
       {$ENDIF}
-      and (Result[DestPos-1]=PathDelim) and not CannotTouchSeps then begin
+      and (Result[DestPos-1]=PathDelim) then begin
         // skip second PathDelim
         continue;
       end;
@@ -133,7 +131,7 @@ begin
       c:=AFilename[SrcPos];
       {$ifdef windows}
       //change / to \. The WinApi accepts both, but it leads to strange effects in other places
-      if (c='/')  and not CannotTouchSeps then c := PathDelim;
+      if (c='/') then c := PathDelim;
       {$endif}
       if c=PathDelim then break;
     until false;
