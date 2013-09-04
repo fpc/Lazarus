@@ -2451,7 +2451,6 @@ end;
 
 function Utf8StringOfChar(AUtf8Char: Utf8String; N: Integer): Utf8String;
 var
-  i: Integer;
   US: UniCodeString;
   WC: System.WideChar;
 begin
