@@ -18,7 +18,7 @@ type
   protected
     FVertical: Boolean;
     function IsVertical: Boolean; override;
-    procedure GetChildren({%H-}Proc: TGetChildProc; Root: TComponent); override;
+    procedure GetChildren({%H-}Proc: TGetChildProc; {%H-}Root: TComponent); override;
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
