@@ -178,7 +178,7 @@ function WriteToStream(closure: Pointer; data: PByte; length: LongWord): cairo_s
 var
   Stream: TStream absolute closure;
 begin
-  if Stream.Write(data^, Length) = Length then
+  if Stream.Write(data^, Length) = int64(Length) then
     result := CAIRO_STATUS_SUCCESS
   else
     result := CAIRO_STATUS_WRITE_ERROR;
