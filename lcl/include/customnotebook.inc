@@ -607,7 +607,9 @@ procedure TCustomTabControl.InsertPage(APage: TCustomPage; Index: Integer);
 var
   NewZPosition: integer;
 begin
-  if FUnPaged or (IndexOf(APage) >= 0) then Exit;
+  // only called from TNBPages, but not TNBNoPages
+  // Also called from TCustomPage.SetParent
+  if (IndexOf(APage) >= 0) then Exit;
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn(['TCustomTabControl.InsertPage A ',dbgsName(Self),' Index=',Index,' Name=',
     APage.Name,' Caption=',APage.Caption]);
@@ -621,7 +623,7 @@ begin
     Include(APage.FFlags, pfInserting);
     TNBPages(FAccess).InsertPage(Index, APage);
     Exclude(APage.FFlags, pfInserting);
-    APage.Parent := Self;
+    APage.Parent := Self; // will recursively call
     if NewZPosition >= 0 then
       SetControlIndex(APage, NewZPosition);
     if PageIndex = -1 then

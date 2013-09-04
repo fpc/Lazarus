@@ -496,6 +496,11 @@ begin
   TTabControlStrings(FTabs).TabWidth:=AValue;
 end;
 
+procedure TTabControl.AddRemovePageHandle(APage: TCustomPage);
+begin
+  // There are no pages, don't create a handle
+end;
+
 function TTabControl.CanChange: Boolean;
 begin
   Result:=true;

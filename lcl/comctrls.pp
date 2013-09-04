@@ -384,7 +384,6 @@ type
     function GetMultiLine: Boolean;
     function FindVisiblePage(Index: Integer): Integer;
     function IsStoredActivePage: boolean;
-    procedure AddRemovePageHandle(APage: TCustomPage);
     procedure MoveTab(Sender: TObject; NewIndex: Integer);
     procedure SetMultiLine(const AValue: Boolean);
     procedure SetStyle(AValue: TTabStyle); virtual;
@@ -405,6 +404,7 @@ type
     PageClass: TCustomPageClass;
     function GetPageClass: TCustomPageClass; virtual;
     function GetListClass: TNBBasePagesClass; virtual;
+    procedure AddRemovePageHandle(APage: TCustomPage); virtual;
     procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     class procedure WSRegisterClass; override;
     procedure CreateWnd; override;
@@ -475,7 +475,7 @@ type
     property Pages: TStrings read FAccess write SetPages;
     property ShowTabs: Boolean read FShowTabs write SetShowTabs default True;
     property TabPosition: TTabPosition read FTabPosition write SetTabPosition default tpTop;
-    property IsUnpaged: boolean read FUnPaged;
+    property IsUnpaged: boolean read FUnPaged; deprecated;
   published
     property TabStop default true;
   end;
@@ -771,6 +771,7 @@ type
     procedure SetTabs(const AValue: TStrings);
     procedure SetTabWidth(const AValue: Smallint);
   protected
+    procedure AddRemovePageHandle(APage: TCustomPage); override;
     function CanChange: Boolean; override;
     function CanShowTab(ATabIndex: Integer): Boolean; virtual;
     procedure Change; override;
