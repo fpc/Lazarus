@@ -64,6 +64,11 @@ begin
   RegisterPropertyToSkip(TPageControl, 'TabFont', 'Needed when converting from VCL TabbedNotebook to TPageControl', '');
 end;
 
+function TPageControl.GetPageClass: TCustomPageClass;
+begin
+  Result := TTabSheet;
+end;
+
 procedure TPageControl.DoAddDockClient(Client: TControl; const ARect: TRect);
 var
   TabSheet: TTabSheet;
@@ -109,12 +114,6 @@ function TPageControl.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   Result:=(ChildClass<>nil) and (ChildClass.InheritsFrom(PageClass));
   if Widgetset.GetLCLCapability(lcAllowChildControlsInNativeControls) = LCL_CAPABILITY_YES then Result := True;
-end;
-
-constructor TPageControl.Create(TheOwner: TComponent);
-begin
-  PageClass:=TTabSheet;
-  inherited Create(TheOwner);
 end;
 
 function TPageControl.FindNextPage(CurPage: TTabSheet; GoForward,

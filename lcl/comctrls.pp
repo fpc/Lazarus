@@ -363,6 +363,7 @@ type
     procedure UpdateDesignerFlags(APageIndex: integer);
   protected
     PageClass: TCustomPageClass;
+    function GetPageClass: TCustomPageClass; virtual;
     procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     class procedure WSRegisterClass; override;
     procedure CreateWnd; override;
@@ -505,6 +506,7 @@ type
     function FindPageWithDockClient(Client: TControl): TTabSheet;
   protected
     class procedure WSRegisterClass; override;
+    function GetPageClass: TCustomPageClass; override;
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
     procedure DockOver(Source: TDragDockObject; X, Y: Integer;
                        State: TDragState; var Accept: Boolean); override;
@@ -512,7 +514,6 @@ type
     function DoUndockClientMsg(NewTarget, Client: TControl):boolean; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
-    constructor Create(TheOwner: TComponent); override;
     function FindNextPage(CurPage: TTabSheet;
                           GoForward, CheckTabVisible: Boolean): TTabSheet;
     procedure SelectNextPage(GoForward: Boolean);

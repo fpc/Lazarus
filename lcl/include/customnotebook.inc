@@ -203,7 +203,7 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCustomTabControl.Create(TheOwner: TComponent);
 begin
-  if PageClass=nil then PageClass := TCustomPage;
+  if PageClass=nil then PageClass := GetPageClass;
 
   inherited Create(TheOwner);
 
@@ -847,6 +847,11 @@ begin
   else
     Page[APageIndex].ControlStyle:=
       Page[APageIndex].ControlStyle-[csNoDesignVisible];
+end;
+
+function TCustomTabControl.GetPageClass: TCustomPageClass;
+begin
+  Result := TCustomPage;
 end;
 
 class procedure TCustomTabControl.WSRegisterClass;
