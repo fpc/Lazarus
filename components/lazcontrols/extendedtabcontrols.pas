@@ -39,6 +39,9 @@ type
     FToolBar: TExtendedTabToolbar;
     procedure SetShowToolBar(AValue: TTabControlToolBarSide);
     procedure ToolbarResized(Sender: TObject);
+  protected
+    procedure SetToolbar(AToolBar: TExtendedTabToolbar);
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
   public
     constructor Create(TheTabControl: TTabControl); override;
     destructor Destroy; override;
@@ -133,8 +136,6 @@ type
     function  GetChildOwner: TComponent; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure RequestNotification;
-    procedure UnRequestNotification;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -176,12 +177,8 @@ end;
 procedure TExtendedTabToolbar.Loaded;
 begin
   inherited Loaded;
-  if Parent is TExtendedTabControl then begin
-    TExtendedTabControl(Parent).UnRequestNotification;
-    FreeAndNil(TExtendedTabControl(Parent).AdvTabs.FToolBar);
-    TExtendedTabControl(Parent).AdvTabs.FToolBar := Self;
-    TExtendedTabControl(Parent).RequestNotification;
-  end;
+  if Parent is TExtendedTabControl then
+    TExtendedTabControl(Parent).AdvTabs.SetToolbar(Self);
 end;
 
 constructor TExtendedTabToolbar.Create(TheOwner: TComponent);
@@ -404,10 +401,31 @@ begin
   TabControlBoundsChange;
 end;
 
+procedure TExtendedTabControlNoteBookStrings.SetToolbar(AToolBar: TExtendedTabToolbar);
+begin
+  if FToolBar <> nil then begin
+    FToolBar.RemoveFreeNotification(TabControl);
+    FreeAndNil(FToolBar);
+  end;
+
+  FToolBar := AToolBar;
+
+  if FToolBar <> nil then
+    FToolBar.FreeNotification(TabControl);
+end;
+
+procedure TExtendedTabControlNoteBookStrings.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  if (Operation = opRemove) and (AComponent = FToolBar) then
+    FToolBar := nil;
+end;
+
 
 constructor TExtendedTabControlNoteBookStrings.Create(TheTabControl: TTabControl);
 begin
   FToolBar := TExtendedTabToolbar.Create(TheTabControl.Owner);
+  FToolBar.FreeNotification(TheTabControl);
   FToolBar.Parent := TheTabControl;
   FToolBar.OnResize := @ToolbarResized;
 
@@ -417,7 +435,7 @@ end;
 destructor TExtendedTabControlNoteBookStrings.Destroy;
 begin
   inherited Destroy;
-  FreeAndNil(FToolBar);
+  SetToolbar(nil);
 end;
 
 procedure TExtendedTabControlNoteBookStrings.SetShowToolBar(AValue: TTabControlToolBarSide);
@@ -547,7 +565,6 @@ end;
 function TCustomExtendedTabControl.CreateTabNoteBookStrings: TTabControlNoteBookStrings;
 begin
   Result := TExtendedTabControlNoteBookStrings.Create(Self);
-  TExtendedTabControlNoteBookStrings(Result).ToolBar.FreeNotification(Self);
 end;
 
 function TCustomExtendedTabControl.GetChildOwner: TComponent;
@@ -580,20 +597,8 @@ procedure TCustomExtendedTabControl.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AdvTabs <> nil) and (AComponent = AdvTabs.ToolBar) then
-    AdvTabs.FToolBar := nil;
-end;
-
-procedure TCustomExtendedTabControl.RequestNotification;
-begin
-  if AdvTabs.ToolBar<> nil then
-    AdvTabs.ToolBar.FreeNotification(Self);
-end;
-
-procedure TCustomExtendedTabControl.UnRequestNotification;
-begin
-  if AdvTabs.ToolBar<> nil then
-    AdvTabs.ToolBar.RemoveFreeNotification(Self);
+  if AdvTabs <> nil then
+    AdvTabs.Notification(AComponent, Operation);
 end;
 
 constructor TCustomExtendedTabControl.Create(TheOwner: TComponent);
@@ -604,7 +609,6 @@ end;
 
 destructor TCustomExtendedTabControl.Destroy;
 begin
-  UnRequestNotification;
   inherited Destroy;
   FreeAndNil(FToolBarWrapper);
 end;
