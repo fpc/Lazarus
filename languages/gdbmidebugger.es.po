@@ -61,9 +61,41 @@ msgstr "%0:sNo se puede enviar un comando a GDB.%0:s"
 msgid "%0:sThe GDB process is no longer running.%0:s"
 msgstr "%0:sEl proceso GDB ha dejado de funcionar.%0:s"
 
+#: gdbmidebugger.gdbmieventlogdebugoutput
+msgid "Debug Output: %s"
+msgstr ""
+
+#: gdbmidebugger.gdbmieventloggdbinternalerror
+msgid "GDB has encountered an internal error: %s"
+msgstr ""
+
+#: gdbmidebugger.gdbmieventlognosymbols
+msgid "File '%s' has no debug symbols"
+msgstr ""
+
+#: gdbmidebugger.gdbmieventlogprocessexitcode
+msgid "Process Exit: %s"
+msgstr ""
+
+#: gdbmidebugger.gdbmieventlogprocessexitnormally
+msgid "Process Exit: normally"
+msgstr ""
+
+#: gdbmidebugger.gdbmieventlogprocessstart
+msgid "Process Start: %s"
+msgstr ""
+
 #: gdbmidebugger.gdbmifatalerroroccured
 msgid "Unrecoverable error: \"%s\""
 msgstr "Error irrecuperable: \"%s\""
+
+#: gdbmidebugger.gdbmigdbinternalerror
+msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
+msgstr ""
+
+#: gdbmidebugger.gdbmigdbinternalerrorinfo
+msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
+msgstr ""
 
 #: gdbmidebugger.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"

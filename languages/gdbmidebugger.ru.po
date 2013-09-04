@@ -66,10 +66,42 @@ msgstr "%0:sНевозможно отправить команду GDB.%0:s"
 msgid "%0:sThe GDB process is no longer running.%0:s"
 msgstr "%0:sПроцесс GDB больше не выполняется.%0:s"
 
+#: gdbmidebugger.gdbmieventlogdebugoutput
+msgid "Debug Output: %s"
+msgstr "Вывод отладчика: %s"
+
+#: gdbmidebugger.gdbmieventloggdbinternalerror
+msgid "GDB has encountered an internal error: %s"
+msgstr "Произошла внутренняя ошибка GDB: %s"
+
+#: gdbmidebugger.gdbmieventlognosymbols
+msgid "File '%s' has no debug symbols"
+msgstr "Файл '%s' не имеет отладочной информации"
+
+#: gdbmidebugger.gdbmieventlogprocessexitcode
+msgid "Process Exit: %s"
+msgstr "Завершение процесса: %s"
+
+#: gdbmidebugger.gdbmieventlogprocessexitnormally
+msgid "Process Exit: normally"
+msgstr "Завершение процесса: нормальное"
+
+#: gdbmidebugger.gdbmieventlogprocessstart
+msgid "Process Start: %s"
+msgstr "Запуск процесса: %s"
+
 #: gdbmidebugger.gdbmifatalerroroccured
 #| msgid "Unrecoverable Error: \"%s\""
 msgid "Unrecoverable error: \"%s\""
 msgstr "Неустранимая ошибка: \"%s\""
+
+#: gdbmidebugger.gdbmigdbinternalerror
+msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
+msgstr "Произошла внутренняя ошибка GDB: %0:sНажмите \"ОК\" для продолжения отладки. Это может быть небезопасно!%0:sНажмите \"Остановить\", чтобы закончить отладку."
+
+#: gdbmidebugger.gdbmigdbinternalerrorinfo
+msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
+msgstr "Во время исполнения команды: %0:s\"%2:s\"%0:sGDB сообщил:%0:s\"%1:s\"%0:s"
 
 #: gdbmidebugger.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"

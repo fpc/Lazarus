@@ -53,8 +53,40 @@ msgstr ""
 msgid "%0:sThe GDB process is no longer running.%0:s"
 msgstr ""
 
+#: gdbmidebugger.gdbmieventlogdebugoutput
+msgid "Debug Output: %s"
+msgstr ""
+
+#: gdbmidebugger.gdbmieventloggdbinternalerror
+msgid "GDB has encountered an internal error: %s"
+msgstr ""
+
+#: gdbmidebugger.gdbmieventlognosymbols
+msgid "File '%s' has no debug symbols"
+msgstr ""
+
+#: gdbmidebugger.gdbmieventlogprocessexitcode
+msgid "Process Exit: %s"
+msgstr ""
+
+#: gdbmidebugger.gdbmieventlogprocessexitnormally
+msgid "Process Exit: normally"
+msgstr ""
+
+#: gdbmidebugger.gdbmieventlogprocessstart
+msgid "Process Start: %s"
+msgstr ""
+
 #: gdbmidebugger.gdbmifatalerroroccured
 msgid "Unrecoverable error: \"%s\""
+msgstr ""
+
+#: gdbmidebugger.gdbmigdbinternalerror
+msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
+msgstr ""
+
+#: gdbmidebugger.gdbmigdbinternalerrorinfo
+msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
 msgstr ""
 
 #: gdbmidebugger.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
