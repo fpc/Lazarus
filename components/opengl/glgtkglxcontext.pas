@@ -157,6 +157,7 @@ function gdk_x11_get_default_screen:gint;cdecl;external;
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
+function LOpenGLReleaseContext(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
              WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
              DoubleBuffered, RGBA: boolean;
@@ -905,6 +906,15 @@ begin
 
   // make current
   Result:=gtk_gl_area_make_current(glarea);
+end;
+
+function LOpenGLReleaseContext(Handle: HWND): boolean;
+var pd:PDIsplay;
+begin
+  Result := false;
+  pd := glXGetCurrentDisplay();
+  if Assigned(pd) then
+  Result := glXMakeCurrent(pd, 0, nil);
 end;
 
 {$IFDEF LCLGtk2}

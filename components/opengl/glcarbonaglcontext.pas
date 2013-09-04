@@ -24,6 +24,7 @@ uses
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
+function LOpenGLReleaseContext(Handle: HWND): boolean;
 procedure LOpenGLClip(Handle: HWND);
 function LOpenGLCreateContext(AWinControl: TWinControl;
               {%H-}WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
@@ -80,6 +81,11 @@ begin
   if Info=nil then exit;
   AGLContext:=Info^.AGLContext;
   Result:=aglSetCurrentContext(AGLContext)<>0;
+end;
+
+function LOpenGLReleaseContext(Handle: HWND): boolean;
+begin
+  Result := aglSetCurrentContext(nil)<>GL_FALSE;
 end;
 
 procedure LOpenGLClip(Handle: HWND);

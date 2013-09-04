@@ -20,6 +20,7 @@ uses
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
+function LOpenGLReleaseContext(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
                     WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
                     DoubleBuffered, RGBA: boolean;
@@ -244,6 +245,11 @@ var
 begin
   Info:=GetWGLControlInfo(Handle);
   Result:=wglMakeCurrent(Info^.DC,Info^.WGLContext);
+end;
+
+function LOpenGLReleaseContext(Handle: HWND): boolean;
+begin
+  Result:=wglMakeCurrent(0,0);
 end;
 
 function GlWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;

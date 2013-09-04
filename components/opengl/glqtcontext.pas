@@ -62,6 +62,7 @@ type
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
+function LOpenGLReleaseContext(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
              WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
              DoubleBuffered, RGBA: boolean;
@@ -175,6 +176,20 @@ begin
   Result:=boolean(glXMakeCurrent(Widget.xdisplay,
                                  Widget.GetGLXDrawable,
                                  Widget.glxcontext));
+end;
+
+function LOpenGLReleaseContext(Handle: HWND): boolean;
+var
+  Widget: TQtGLWidget;
+begin
+  Result := false;
+  if Handle=0 then
+    RaiseGDBException('LOpenGLSwapBuffers Handle=0');
+
+  Widget:=TQtGLWidget(Handle);
+  Result := glXMakeCurrent(Widget.xdisplay, 0, nil);
+end;
+
 end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;

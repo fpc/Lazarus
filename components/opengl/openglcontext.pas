@@ -148,6 +148,7 @@ type
     procedure DoOnPaint; virtual;
     procedure SwapBuffers; virtual;
     function MakeCurrent(SaveOldToStack: boolean = false): boolean; virtual;
+    function ReleaseContext: boolean; virtual;
     function RestoreOldOpenGLControl: boolean;
     function SharingControlCount: integer;
     property SharingControls[Index: integer]: TCustomOpenGLControl read GetSharingControls;
@@ -546,6 +547,13 @@ begin
       OpenGLControlStack:=TList.Create;
     OpenGLControlStack.Add(Self);
   end;
+end;
+
+function TCustomOpenGLControl.ReleaseContext: boolean;
+begin
+  Result:=false;
+  if not HandleAllocated then exit;
+  Result:=LOpenGLReleaseContext(Handle);
 end;
 
 function TCustomOpenGLControl.RestoreOldOpenGLControl: boolean;
