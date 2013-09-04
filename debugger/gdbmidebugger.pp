@@ -4937,7 +4937,6 @@ begin
 
     // also call execute -exec-arguments if there are no arguments in this run
     // so the possible arguments of a previous run are cleared
-    // TODO: on l-inux, the target may have a different ENV{LANG} setting
     ExecuteCommand('-exec-arguments %s', [UTF8ToSys(FTheDebugger.Arguments)], [cfCheckState]);
 
     {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
