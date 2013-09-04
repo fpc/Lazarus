@@ -18,7 +18,7 @@ type
   protected
     FVertical: Boolean;
     function IsVertical: Boolean; override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    procedure GetChildren({%H-}Proc: TGetChildProc; Root: TComponent); override;
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -170,7 +170,7 @@ end;
 
 procedure TAdvancedToolbar.GetChildren(Proc: TGetChildProc; Root: TComponent);
 begin
-  // toolbuttons are streamed by tabcontrol // that way the designer can see them
+  // toolbuttons are streamed by tabcontrol. that way the designer can see them
 end;
 
 procedure TAdvancedToolbar.Loaded;
