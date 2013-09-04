@@ -27,7 +27,7 @@ msgstr "Номера строк"
 
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
-msgstr "Граница строк"
+msgstr "Обзор строк"
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"

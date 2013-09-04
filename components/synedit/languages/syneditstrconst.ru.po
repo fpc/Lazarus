@@ -5,13 +5,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-08-11 02:43+0400\n"
+"PO-Revision-Date: 2013-09-04 23:26+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
-msgstr ""
+msgstr "Аннотация"
 
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
