@@ -19,7 +19,7 @@
  ------------------------------------------------------------------------------}
 constructor TNBPages.Create(theNotebook: TCustomTabControl);
 begin
-  inherited Create;
+  inherited Create(theNotebook);
   FPageList := TListWithEvent.Create;
   FPageList.OnChange:=@PageListChange;
   FNotebook := theNotebook;
@@ -102,6 +102,8 @@ end;
 
 function TNBPages.GetPage(Index: Integer): TCustomPage;
 begin
+  if (Index < 0) or (Index >= Count) then
+    RaiseGDBException('TCustomTabControl.GetCustomPage Index out of bounds');
   Result := TCustomPage(FPageList.Items[Index]);
 end;
 
@@ -219,6 +221,27 @@ begin
   end;
 end;
 
+{ TNBNoPages }
+
+function TNBNoPages.Get(Index: Integer): String;
+begin
+  Result := '';
+end;
+
+function TNBNoPages.GetCount: Integer;
+begin
+  Result := 0;
+end;
+
+function TNBNoPages.IndexOfPage(const AnObject: TPersistent): Integer;
+begin
+  Result := -1;
+end;
+
+function TNBNoPages.GetPage(Index: Integer): TCustomPage;
+begin
+  Result := nil;
+end;
 
 {******************************************************************************
                                 TCustomTabControl
@@ -234,8 +257,7 @@ begin
 
   fCompStyle := csNoteBook;
 
-  if not FUnPaged then
-    FAccess := TNBPages.Create(Self);
+  FAccess := GetListClass.Create(Self);
 
   FImageListChangeLink := TChangeLink.Create;
   FImageListChangeLink.OnChange := @DoImageListChange;
@@ -373,10 +395,7 @@ end;
 
 function TCustomTabControl.IndexOf(APage: TPersistent): integer;
 begin
-  if FUnPaged then
-    Result := -1
-  else
-    Result:=TNBPages(FAccess).IndexOfPage(APage);
+  Result:=TNBPages(FAccess).IndexOfPage(APage);
 end;
 
 function TCustomTabControl.CustomPage(Index: integer): TCustomPage;
@@ -445,7 +464,7 @@ begin
   Taken from win32 NotebookPageRealToLCLIndex
 *)
   Result := AIndex;
-  if FUnPaged or (csDesigning in ComponentState) then
+  if (csDesigning in ComponentState) then
     exit; //all pages are visible
   I := 0;
   while (I < PageCount) and (I <= Result) do
@@ -520,8 +539,7 @@ end;
 
 procedure TCustomTabControl.SetActivePageComponent(const AValue: TCustomPage);
 begin
-  if not FUnPaged then
-    PageIndex := IndexOf(AValue);
+  PageIndex := IndexOf(AValue); // -1 for unpaged
 end;
 
 procedure TCustomTabControl.SetImages(const AValue: TCustomImageList);
@@ -567,8 +585,7 @@ begin
   //debugln('TCustomTabControl.SetPageIndex B ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
 
   FPageIndex := AValue;
-  if not FUnPaged then
-    UpdateAllDesignerFlags;
+  UpdateAllDesignerFlags;
   DoSendPageIndex;
   if ([csDesigning, csLoading, csDestroying] * ComponentState = []) then
     DoChange;
@@ -751,7 +768,7 @@ begin
   DebugLn(['TCustomTabControl.RemovePage A ',dbgsName(Self),' Index=',Index,
     ' FAccess.Count=',PageCount,' PageIndex=',PageIndex]);
   {$ENDIF}
-  if not FUnPaged and (Index >= 0) and (Index < PageCount) then
+  if (Index >= 0) and (Index < PageCount) then
   begin
     APage:=Page[Index];
     APage.FTabVisible:=false;
@@ -800,10 +817,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomTabControl.GetPageCount: integer;
 begin
-  if FUnPaged then
-    Result := 0
-  else
-    Result := FAccess.Count
+  Result := FAccess.Count
 end;
 
 {------------------------------------------------------------------------------
@@ -819,14 +833,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomTabControl.GetPage(AIndex: Integer): TCustomPage;
 begin
-  if FUnPaged then
-    Result := nil
-  else
-  begin
-    if (AIndex < 0) or (AIndex >= PageCount) then
-      RaiseGDBException('TCustomTabControl.GetCustomPage Index out of bounds');
-    Result := TNBPages(FAccess).GetPage(AIndex);
-  end;
+  Result := TNBPages(FAccess).GetPage(AIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -856,8 +863,6 @@ procedure TCustomTabControl.UpdateAllDesignerFlags;
 var
   i: integer;
 begin
-  if FUnPaged then
-    exit;
   for i:=0 to PageCount-1 do
     UpdateDesignerFlags(i);
 end;
@@ -878,6 +883,14 @@ end;
 function TCustomTabControl.GetPageClass: TCustomPageClass;
 begin
   Result := TCustomPage;
+end;
+
+function TCustomTabControl.GetListClass: TNBBasePagesClass;
+begin
+  if FUnPaged then // TODO move to inherited / not used / never set
+    Result := TNBNoPages
+  else
+    Result := TNBPages;
 end;
 
 class procedure TCustomTabControl.WSRegisterClass;

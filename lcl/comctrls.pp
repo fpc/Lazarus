@@ -260,7 +260,21 @@ type
 
   TCustomTabControl = class;
 
-  TNBPages = class(TStrings)
+  { TNBBasePages }
+
+  TNBBasePages = class(TStrings)
+  protected
+    function IndexOfPage(const AnObject: TPersistent): Integer; virtual; abstract;
+    procedure InsertPage(Index: Integer; const APage: TCustomPage); virtual; abstract;
+    procedure DeletePage(Index: Integer); virtual; abstract;
+    function GetPage(Index: Integer): TCustomPage; virtual; abstract;
+  public
+    constructor Create(theNotebook: TCustomTabControl); virtual;
+  end;
+
+  TNBBasePagesClass = class of TNBBasePages;
+
+  TNBPages = class(TNBBasePages)
   private
     FPageList: TListWithEvent;
     FNotebook: TCustomTabControl;
@@ -270,17 +284,40 @@ type
     function GetCount: Integer; override;
     function GetObject(Index: Integer): TObject; override;
     procedure Put(Index: Integer; const S: String); override;
-    function IndexOfPage(const AnObject: TPersistent): Integer;
-    procedure InsertPage(Index: Integer; const APage: TCustomPage);
-    procedure DeletePage(Index: Integer);
-    function GetPage(Index: Integer): TCustomPage;
+    function IndexOfPage(const AnObject: TPersistent): Integer; override;
+    procedure InsertPage(Index: Integer; const APage: TCustomPage); override;
+    procedure DeletePage(Index: Integer); override;
+    function GetPage(Index: Integer): TCustomPage; override;
   public
-    constructor Create(theNotebook: TCustomTabControl);
+    constructor Create(theNotebook: TCustomTabControl); override;
     destructor Destroy; override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: String); override;
     procedure Move(CurIndex, NewIndex: Integer); override;
+  end;
+
+  { TNBNoPages }
+
+  TNBNoPages = class(TNBBasePages)
+  private
+    //FNotebook: TCustomTabControl;
+  protected
+    function Get(Index: Integer): String; override;
+    function GetCount: Integer; override;  // always 0
+    //function GetObject(Index: Integer): TObject; override;
+    //procedure Put(Index: Integer; const S: String); override;
+    function IndexOfPage(const AnObject: TPersistent): Integer; override;
+    //procedure InsertPage(Index: Integer; const APage: TCustomPage); override;
+    //procedure DeletePage(Index: Integer); override;
+    function GetPage(Index: Integer): TCustomPage; override;
+  public
+    //constructor Create(theNotebook: TCustomTabControl); override;
+    //destructor Destroy; override;
+    //procedure Clear; override;
+    //procedure Delete(Index: Integer); override;
+    //procedure Insert(Index: Integer; const S: String); override;
+    //procedure Move(CurIndex, NewIndex: Integer); override;
   end;
 
   { TCustomTabControl }
@@ -330,7 +367,6 @@ type
     FOwnerDraw: Boolean;
     FPageIndex: Integer;
     FPageIndexOnLastChange: integer;// needed for unique OnChange events
-//    FPageList: TList;  // TListWithEvent of TCustomPage
     FRaggedRight: Boolean;
     FScrollOpposite: Boolean;
     FShowTabs: Boolean;
@@ -368,6 +404,7 @@ type
   protected
     PageClass: TCustomPageClass;
     function GetPageClass: TCustomPageClass; virtual;
+    function GetListClass: TNBBasePagesClass; virtual;
     procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     class procedure WSRegisterClass; override;
     procedure CreateWnd; override;
@@ -3630,6 +3667,13 @@ uses
 const
   ScrollBarWidth = 0;
   AllPanelsParts = [Low(TPanelPart)..High(TPanelPart)];
+
+{ TNBBasePages }
+
+constructor TNBBasePages.Create(theNotebook: TCustomTabControl);
+begin
+  inherited Create;
+end;
 
 {$I custompage.inc}
 {$I customnotebook.inc}
