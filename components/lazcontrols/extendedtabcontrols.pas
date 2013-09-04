@@ -12,9 +12,9 @@ type
 
   TTabControlToolBarSide = (tsNone, tsLeft, tsRight);
 
-  { TAdvancedToolbar }
+  { TExtendedTabToolbar }
 
-  TAdvancedToolbar = class(TToolBar)
+  TExtendedTabToolbar = class(TToolBar)
   protected
     FVertical: Boolean;
     function IsVertical: Boolean; override;
@@ -24,19 +24,19 @@ type
     constructor Create(TheOwner: TComponent); override;
   end;
 
-  { TAdvancedToolButton }
+  { TExtendedTabToolButton }
 
-  TAdvancedToolButton = class(TToolButton)
+  TExtendedTabToolButton = class(TToolButton)
   protected
     procedure Loaded; override;
   end;
 
-  { TAdvancedTabControlNoteBookStrings }
+  { TExtendedTabControlNoteBookStrings }
 
-  TAdvancedTabControlNoteBookStrings = class(TTabControlNoteBookStrings)
+  TExtendedTabControlNoteBookStrings = class(TTabControlNoteBookStrings)
   private
     FShowToolBar: TTabControlToolBarSide;
-    FToolBar: TAdvancedToolbar;
+    FToolBar: TExtendedTabToolbar;
     procedure SetShowToolBar(AValue: TTabControlToolBarSide);
     procedure ToolbarResized(Sender: TObject);
   public
@@ -44,17 +44,17 @@ type
     destructor Destroy; override;
     procedure TabControlBoundsChange; override;
     property ShowToolBar: TTabControlToolBarSide read FShowToolBar write SetShowToolBar;
-    property ToolBar: TAdvancedToolbar read FToolBar;
+    property ToolBar: TExtendedTabToolbar read FToolBar;
   end;
 
-  TCustomAdvancedTabControl = class;
+  TCustomExtendedTabControl = class;
   // Expose only selected properties
 
   { TToolbarWrapper }
 
   TToolbarWrapper = class(TPersistent)
   private
-    FOwner: TCustomAdvancedTabControl;
+    FOwner: TCustomExtendedTabControl;
     function ToolBar: TToolBar;
     function GetButton(Index: Integer): TToolButton;
     function GetButtonCount: Integer;
@@ -95,7 +95,7 @@ type
     procedure SetShowHint(AValue: Boolean);
     procedure SetWrapable(AValue: Boolean);
   public
-    constructor Create(AnAdvTabControl: TCustomAdvancedTabControl);
+    constructor Create(AnAdvTabControl: TCustomExtendedTabControl);
     property ButtonCount: Integer read GetButtonCount;
     property Buttons[Index: Integer]: TToolButton read GetButton;
     property ButtonList: TList read GetButtonList;
@@ -120,15 +120,15 @@ type
     property OnDblClick: TNotifyEvent    read GetOnDblClick     write SetOnDblClick;
   end;
 
-  { TCustomAdvancedTabControl }
+  { TCustomExtendedTabControl }
 
-  TCustomAdvancedTabControl = class(TTabControl)
+  TCustomExtendedTabControl = class(TTabControl)
   private
     FToolBarWrapper: TToolbarWrapper;
     function GetShowToolBar: TTabControlToolBarSide;
     procedure SetShowToolBar(AValue: TTabControlToolBarSide);
   protected
-    function AdvTabs: TAdvancedTabControlNoteBookStrings;
+    function AdvTabs: TExtendedTabControlNoteBookStrings;
     function CreateTabNoteBookStrings: TTabControlNoteBookStrings; override;
     function  GetChildOwner: TComponent; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
@@ -142,9 +142,9 @@ type
     property ToolBar: TToolbarWrapper read FToolBarWrapper;
   end;
 
-  { TAdvancedTabControl }
+  { TExtendedTabControl }
 
-  TAdvancedTabControl = class(TCustomAdvancedTabControl)
+  TExtendedTabControl = class(TCustomExtendedTabControl)
   published
     property ShowToolBar;
     property ToolBar;
@@ -152,39 +152,39 @@ type
 
 implementation
 
-{ TAdvancedToolButton }
+{ TExtendedTabToolButton }
 
-procedure TAdvancedToolButton.Loaded;
+procedure TExtendedTabToolButton.Loaded;
 begin
   inherited Loaded;
-  if Parent is TAdvancedTabControl then
-    Parent := TAdvancedTabControl(Parent).AdvTabs.ToolBar;
+  if Parent is TExtendedTabControl then
+    Parent := TExtendedTabControl(Parent).AdvTabs.ToolBar;
 end;
 
-{ TAdvancedToolbar }
+{ TExtendedTabToolbar }
 
-function TAdvancedToolbar.IsVertical: Boolean;
+function TExtendedTabToolbar.IsVertical: Boolean;
 begin
   Result := FVertical;
 end;
 
-procedure TAdvancedToolbar.GetChildren(Proc: TGetChildProc; Root: TComponent);
+procedure TExtendedTabToolbar.GetChildren(Proc: TGetChildProc; Root: TComponent);
 begin
   // toolbuttons are streamed by tabcontrol. that way the designer can see them
 end;
 
-procedure TAdvancedToolbar.Loaded;
+procedure TExtendedTabToolbar.Loaded;
 begin
   inherited Loaded;
-  if Parent is TAdvancedTabControl then begin
-    TAdvancedTabControl(Parent).UnRequestNotification;
-    FreeAndNil(TAdvancedTabControl(Parent).AdvTabs.FToolBar);
-    TAdvancedTabControl(Parent).AdvTabs.FToolBar := Self;
-    TAdvancedTabControl(Parent).RequestNotification;
+  if Parent is TExtendedTabControl then begin
+    TExtendedTabControl(Parent).UnRequestNotification;
+    FreeAndNil(TExtendedTabControl(Parent).AdvTabs.FToolBar);
+    TExtendedTabControl(Parent).AdvTabs.FToolBar := Self;
+    TExtendedTabControl(Parent).RequestNotification;
   end;
 end;
 
-constructor TAdvancedToolbar.Create(TheOwner: TComponent);
+constructor TExtendedTabToolbar.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   //ControlStyle := ControlStyle + [csDesignFixedBounds];
@@ -390,44 +390,44 @@ begin
   ToolBar.Wrapable := AValue;
 end;
 
-constructor TToolbarWrapper.Create(AnAdvTabControl: TCustomAdvancedTabControl);
+constructor TToolbarWrapper.Create(AnAdvTabControl: TCustomExtendedTabControl);
 begin
   inherited Create;
   FOwner := AnAdvTabControl;
   ToolBar;
 end;
 
-{ TAdvancedTabControlNoteBookStrings }
+{ TExtendedTabControlNoteBookStrings }
 
-procedure TAdvancedTabControlNoteBookStrings.ToolbarResized(Sender: TObject);
+procedure TExtendedTabControlNoteBookStrings.ToolbarResized(Sender: TObject);
 begin
   TabControlBoundsChange;
 end;
 
 
-constructor TAdvancedTabControlNoteBookStrings.Create(TheTabControl: TTabControl);
+constructor TExtendedTabControlNoteBookStrings.Create(TheTabControl: TTabControl);
 begin
-  FToolBar := TAdvancedToolbar.Create(TheTabControl.Owner);
+  FToolBar := TExtendedTabToolbar.Create(TheTabControl.Owner);
   FToolBar.Parent := TheTabControl;
   FToolBar.OnResize := @ToolbarResized;
 
   inherited Create(TheTabControl);
 end;
 
-destructor TAdvancedTabControlNoteBookStrings.Destroy;
+destructor TExtendedTabControlNoteBookStrings.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(FToolBar);
 end;
 
-procedure TAdvancedTabControlNoteBookStrings.SetShowToolBar(AValue: TTabControlToolBarSide);
+procedure TExtendedTabControlNoteBookStrings.SetShowToolBar(AValue: TTabControlToolBarSide);
 begin
   if FShowToolBar = AValue then Exit;
   FShowToolBar := AValue;
   TabControlBoundsChange;
 end;
 
-procedure TAdvancedTabControlNoteBookStrings.TabControlBoundsChange;
+procedure TExtendedTabControlNoteBookStrings.TabControlBoundsChange;
 var
   NewTop, NewHeight, NewLeft, NewWidth, TBOffs: LongInt;
 begin
@@ -527,36 +527,36 @@ begin
   TabControl.Invalidate;
 end;
 
-{ TAdvancedTabControl }
+{ TExtendedTabControl }
 
-function TCustomAdvancedTabControl.GetShowToolBar: TTabControlToolBarSide;
+function TCustomExtendedTabControl.GetShowToolBar: TTabControlToolBarSide;
 begin
   Result := AdvTabs.ShowToolBar;
 end;
 
-procedure TCustomAdvancedTabControl.SetShowToolBar(AValue: TTabControlToolBarSide);
+procedure TCustomExtendedTabControl.SetShowToolBar(AValue: TTabControlToolBarSide);
 begin
   AdvTabs.ShowToolBar := AValue;
 end;
 
-function TCustomAdvancedTabControl.AdvTabs: TAdvancedTabControlNoteBookStrings;
+function TCustomExtendedTabControl.AdvTabs: TExtendedTabControlNoteBookStrings;
 begin
-  Result := TAdvancedTabControlNoteBookStrings(Tabs);
+  Result := TExtendedTabControlNoteBookStrings(Tabs);
 end;
 
-function TCustomAdvancedTabControl.CreateTabNoteBookStrings: TTabControlNoteBookStrings;
+function TCustomExtendedTabControl.CreateTabNoteBookStrings: TTabControlNoteBookStrings;
 begin
-  Result := TAdvancedTabControlNoteBookStrings.Create(Self);
-  TAdvancedTabControlNoteBookStrings(Result).ToolBar.FreeNotification(Self);
+  Result := TExtendedTabControlNoteBookStrings.Create(Self);
+  TExtendedTabControlNoteBookStrings(Result).ToolBar.FreeNotification(Self);
 end;
 
-function TCustomAdvancedTabControl.GetChildOwner: TComponent;
+function TCustomExtendedTabControl.GetChildOwner: TComponent;
 begin
   Result := inherited GetChildOwner;
   //Result := Self;
 end;
 
-procedure TCustomAdvancedTabControl.GetChildren(Proc: TGetChildProc; Root: TComponent);
+procedure TCustomExtendedTabControl.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
   I : Integer;
   Control : TControl;
@@ -576,7 +576,7 @@ begin
   end;
 end;
 
-procedure TCustomAdvancedTabControl.Notification(AComponent: TComponent;
+procedure TCustomExtendedTabControl.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -584,25 +584,25 @@ begin
     AdvTabs.FToolBar := nil;
 end;
 
-procedure TCustomAdvancedTabControl.RequestNotification;
+procedure TCustomExtendedTabControl.RequestNotification;
 begin
   if AdvTabs.ToolBar<> nil then
     AdvTabs.ToolBar.FreeNotification(Self);
 end;
 
-procedure TCustomAdvancedTabControl.UnRequestNotification;
+procedure TCustomExtendedTabControl.UnRequestNotification;
 begin
   if AdvTabs.ToolBar<> nil then
     AdvTabs.ToolBar.RemoveFreeNotification(Self);
 end;
 
-constructor TCustomAdvancedTabControl.Create(TheOwner: TComponent);
+constructor TCustomExtendedTabControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FToolBarWrapper := TToolbarWrapper.Create(Self);
 end;
 
-destructor TCustomAdvancedTabControl.Destroy;
+destructor TCustomExtendedTabControl.Destroy;
 begin
   UnRequestNotification;
   inherited Destroy;

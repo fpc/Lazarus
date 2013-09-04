@@ -10,9 +10,9 @@ uses
 
 type
 
-  { TAdvancedTabControlComponentEditor }
+  { TExtendedTabControlComponentEditor }
 
-  TAdvancedTabControlComponentEditor = class(TOldTabControlComponentEditor)
+  TExtendedTabControlComponentEditor = class(TOldTabControlComponentEditor)
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -27,14 +27,14 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('LazControls',[TAdvancedTabControl]);
-  RegisterNoIcon([TAdvancedToolbar, TAdvancedToolButton]);
-  RegisterComponentEditor(TAdvancedTabControl, TAdvancedTabControlComponentEditor);
+  RegisterComponents('LazControls',[TExtendedTabControl]);
+  RegisterNoIcon([TExtendedTabToolbar, TExtendedTabToolButton]);
+  RegisterComponentEditor(TExtendedTabControl, TExtendedTabControlComponentEditor);
 end;
 
-{ TAdvancedTabControlComponentEditor }
+{ TExtendedTabControlComponentEditor }
 
-procedure TAdvancedTabControlComponentEditor.ExecuteVerb(Index: Integer);
+procedure TExtendedTabControlComponentEditor.ExecuteVerb(Index: Integer);
 var
   NewStyle: TToolButtonStyle;
   Hook: TPropertyEditorHook;
@@ -62,7 +62,7 @@ begin
     exit;
   end;
   CurToolBar := ToolBar;
-  NewToolButton := TAdvancedToolButton.Create(CurToolBar.Owner);
+  NewToolButton := TExtendedTabToolButton.Create(CurToolBar.Owner);
   NewName := GetDesigner.CreateUniqueComponentName(NewToolButton.ClassName);
   NewToolButton.Caption := NewName;
   NewToolButton.Name := NewName;
@@ -81,7 +81,7 @@ begin
   Modified;
 end;
 
-function TAdvancedTabControlComponentEditor.GetVerb(Index: Integer): string;
+function TExtendedTabControlComponentEditor.GetVerb(Index: Integer): string;
 var
   c: Integer;
 begin
@@ -99,17 +99,17 @@ begin
     end;
 end;
 
-function TAdvancedTabControlComponentEditor.GetVerbCount: Integer;
+function TExtendedTabControlComponentEditor.GetVerbCount: Integer;
 begin
   Result := inherited GetVerbCount + 4;
 end;
 
-function TAdvancedTabControlComponentEditor.ToolBar: TToolBar;
+function TExtendedTabControlComponentEditor.ToolBar: TToolBar;
 begin
   Result := nil;
   if TabControl = nil then
     exit;
-  Result := TAdvancedTabControlNoteBookStrings(TCustomAdvancedTabControl(TabControl).Tabs).ToolBar;
+  Result := TExtendedTabControlNoteBookStrings(TCustomExtendedTabControl(TabControl).Tabs).ToolBar;
 end;
 
 end.
