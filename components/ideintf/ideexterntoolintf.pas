@@ -241,7 +241,8 @@ type
     FTool: TAbstractExternalTool;
   public
     destructor Destroy; override; // (main thread)
-    procedure Init; virtual; // called if process started, before first line (worker thread)
+    procedure Init; virtual; // called after macros resolved, before starting thread (main thread)
+    procedure InitReading; virtual; // called if process started, before first line (worker thread)
     procedure Done; virtual; // called after process stopped (worker thread)
     procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean); virtual; abstract; // (worker thread)
     function CreateMsgLine(OutputIndex: integer): TMessageLine; // (worker thread)
@@ -380,6 +381,7 @@ type
     FFreeData: boolean;
     FGroup: TExternalToolGroup;
     FResolveMacrosOnExecute: boolean;
+    FThread: TThread;
     FWorkerDirectory: string;
     FWorkerMessages: TMessageLines;
     FParsers: TFPList; // list of TExtToolParser
@@ -418,6 +420,7 @@ type
     destructor Destroy; override;
     procedure EnterCriticalSection; virtual; // always use before access
     procedure LeaveCriticalSection; virtual;
+    property Thread: TThread read FThread write FThread;
     procedure ConsistencyCheck; virtual;
 
     property Title: string read FTitle write SetTitle;
@@ -1219,6 +1222,11 @@ begin
 end;
 
 procedure TExtToolParser.Init;
+begin
+
+end;
+
+procedure TExtToolParser.InitReading;
 begin
 
 end;

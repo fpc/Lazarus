@@ -129,7 +129,6 @@ type
     function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
     {$IFDEF EnableNewExtTools}
-    procedure FPCMsgFilePoolLoadFile(aFilename: string; out s: string);
     {$ELSE}
     function OnRunCompilerWithOptions(ExtTool: TIDEExternalToolOptions;
                            CompOptions: TBaseCompilerOptions): TModalResult;
@@ -492,7 +491,6 @@ begin
   ExternalToolList.RegisterParser(TDefaultParser);
 
   FPCMsgFilePool:=TFPCMsgFilePool.Create(nil);
-  FPCMsgFilePool.OnLoadFile:=@FPCMsgFilePoolLoadFile;
 end;
 {$ENDIF}
 
@@ -1920,6 +1918,8 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
     CompilerFilename: String;
     ConfigCache: TFPCTargetConfigCache;
   begin
+    if OverrideFPCVer<>'' then
+      exit(OverrideFPCVer);
     Result:={$I %FPCVERSION%};   // Version.Release.Patch
     if CodeToolBoss<>nil then begin
       // fetch the FPC version from the current compiler
@@ -2115,25 +2115,6 @@ begin
 end;
 
 {$IFDEF EnableNewExtTools}
-procedure TBuildManager.FPCMsgFilePoolLoadFile(aFilename: string; out s: string
-  );
-// Note: called by any thread
-var
-  fs: TFileStreamUTF8;
-  Encoding: String;
-begin
-  s:='';
-  fs := TFileStreamUTF8.Create(aFilename, fmOpenRead or fmShareDenyNone);
-  try
-    SetLength(s,fs.Size);
-    if s<>'' then
-      fs.Read(s[1],length(s));
-    Encoding:=GuessEncoding(s);
-    s:=ConvertEncoding(s,Encoding,EncodingUTF8);
-  finally
-    fs.Free;
-  end;
-end;
 {$ELSE EnableNewExtTools}
 function TBuildManager.OnRunCompilerWithOptions(
   ExtTool: TIDEExternalToolOptions; CompOptions: TBaseCompilerOptions): TModalResult;

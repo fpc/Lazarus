@@ -51,7 +51,7 @@ type
     DefaultDirectory: string;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Init; override;
+    procedure InitReading; override;
     procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean); override;
     class function DefaultSubTool: string; override;
     class function Priority: integer; override;
@@ -232,10 +232,10 @@ begin
   inherited Destroy;
 end;
 
-procedure TIDEMakeParser.Init;
+procedure TIDEMakeParser.InitReading;
 begin
   DefaultDirectory:=Tool.WorkerDirectory;
-  inherited Init;
+  inherited InitReading;
 end;
 
 procedure TIDEMakeParser.ReadLine(Line: string; OutputIndex: integer;

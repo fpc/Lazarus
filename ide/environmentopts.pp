@@ -410,7 +410,7 @@ type
     function GetParsedLazarusDirectory: string;
     function GetParsedTestBuildDirectory: string;
     function GetParsedCompilerFilename: string;
-    function GetParsedFPCSourceDirectory: string;
+    function GetParsedFPCSourceDirectory(FPCVer: string = ''): string;
     function GetParsedMakeFilename: string;
     function GetParsedCompilerMessagesFilename: string;
     function GetParsedFPDocPaths: string;
@@ -658,6 +658,7 @@ type
   end;
 
 var
+  OverrideFPCVer: string = '';
   EnvironmentOptions: TEnvironmentOptions = nil;
 
 function PascalExtToType(const Ext: string): TPascalExtType;
@@ -1785,8 +1786,28 @@ begin
   Result:=GetParsedValue(eopTestBuildDirectory);
 end;
 
-function TEnvironmentOptions.GetParsedFPCSourceDirectory: string;
+function TEnvironmentOptions.GetParsedFPCSourceDirectory(FPCVer: string
+  ): string;
+var
+  s: String;
 begin
+  if (FPCVer<>'') and (Pos('$(',FPCSourceDirectory)>0) then begin
+    s:='$(FPCVer)';
+    GlobalMacroList.SubstituteStr(s);
+    if s<>FPCVer then begin
+      // override macro FPCVer
+      OverrideFPCVer:=FPCVer;
+      IncreaseCompilerParseStamp;
+      try
+        Result:=GetParsedValue(eopFPCSourceDirectory);
+        debugln(['TEnvironmentOptions.GetParsedFPCSourceDirectory FPCVer=',FPCVer,' FPCSrcDir=',Result]);
+      finally
+        OverrideFPCVer:='';
+        IncreaseCompilerParseStamp;
+      end;
+      exit;
+    end;
+  end;
   Result:=GetParsedValue(eopFPCSourceDirectory);
 end;
 

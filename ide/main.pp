@@ -108,7 +108,7 @@ uses
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
   SourceEditProcs, ViewUnit_dlg, FPDocEditWindow,
   {$IFDEF EnableNewExtTools}
-  etQuickFixes, etMessagesWnd,
+  etQuickFixes, etMessageFrame, etMessagesWnd,
   {$ELSE}
   OutputFilter, MsgQuickFixes, MsgView,
   {$ENDIF}
@@ -9032,6 +9032,9 @@ var
 begin
   Result:=false;
 
+  if Screen.GetCurrentModalForm<>nil then
+    exit;
+
   {$IFDEF EnableNewExtTools}
   if Msg=nil then begin
     if MessagesView.SelectFirstUrgentMessage(mluError,true) then
@@ -10598,7 +10601,8 @@ var
   Msg: TMessageLine;
   {$ENDIF}
 begin
-  if CodeToolBoss.ErrorMessage='' then begin
+  if (Screen.GetCurrentModalForm<>nil) or (CodeToolBoss.ErrorMessage='') then
+  begin
     SourceFileMgr.UpdateSourceNames;
     debugln('TMainIDE.DoJumpToCodeToolBossError No errormessage');
     exit;

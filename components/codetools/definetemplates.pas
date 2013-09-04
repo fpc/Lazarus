@@ -698,7 +698,7 @@ type
     RealTargetOS: string;
     RealTargetCPU: string;
     RealCompilerInPath: string; // the ppc<target> in PATH
-    FullVersion: string;
+    FullVersion: string; // Version.Release.Patch
     ConfigFiles: TFPCConfigFileStateList;
     UnitPaths: TStrings;
     Defines: TStringToStringTree; // macro to value
@@ -902,6 +902,8 @@ type
     property ConfigCaches: TFPCTargetConfigCaches read FConfigCaches write SetConfigCaches;
     property TestFilename: string read FTestFilename write FTestFilename; // an empty file to test the compiler, will be auto created
     property ExtraOptions: string read FExtraOptions write FExtraOptions; // additional compiler options not used as key
+    function GetFPCVersion(const CompilerFilename, TargetOS, TargetCPU: string;
+                           UseCompiledVersionAsDefault: boolean): string;
     function FindUnitSet(const CompilerFilename, TargetOS, TargetCPU,
                          Options, FPCSrcDir: string;
                          CreateIfNotExists: boolean): TFPCUnitSetCache;
@@ -926,6 +928,7 @@ function GetCompiledTargetCPU: string;
 function GetDefaultCompilerFilename(const TargetCPU: string = ''; Cross: boolean = false): string;
 function GetFPCTargetOS(TargetOS: string): string;
 function GetFPCTargetCPU(TargetCPU: string): string;
+function IsFPCExecutable(const CompilerFilename: string): boolean;
 
 // functions to quickly setup some defines
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
@@ -2658,6 +2661,19 @@ end;
 function GetFPCTargetCPU(TargetCPU: string): string;
 begin
   Result:=LowerCase(TargetCPU);
+end;
+
+function IsFPCExecutable(const CompilerFilename: string): boolean;
+var
+  ShortFilename: String;
+begin
+  Result:=false;
+  if not FilenameIsAbsolute(CompilerFilename) then exit;
+  if CompareFilenames(ExtractFileExt(CompilerFilename),ExeExt)<>0 then exit;
+  ShortFilename:=ExtractFileNameOnly(CompilerFilename);
+  if (CompareFilenames(ShortFilename,'fpc')<>0)
+  and (CompareFilenames(LeftStr(ShortFilename,3),'ppc')<>0) then exit;
+  Result:=true;
 end;
 
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
@@ -7443,7 +7459,7 @@ begin
     if FileExistsCached(Compiler) then begin
       ExtraOptions:=GetFPCInfoCmdLineOptions(ExtraOptions);
 
-      // get real OS and CPU
+      // get version and real OS and CPU
       InfoTypes:=[fpciTargetOS,fpciTargetProcessor,fpciFullVersion];
       Info:=RunFPCInfo(Compiler,InfoTypes,ExtraOptions);
       if ParseFPCInfo(Info,InfoTypes,Infos) then begin
@@ -8331,6 +8347,22 @@ begin
   if (SourceCaches<>nil) and (SourceCaches.ChangeStamp<>FSourceCachesSaveStamp)
   then exit;
   Result:=false;
+end;
+
+function TFPCDefinesCache.GetFPCVersion(const CompilerFilename, TargetOS,
+  TargetCPU: string; UseCompiledVersionAsDefault: boolean): string;
+var
+  CfgCache: TFPCTargetConfigCache;
+begin
+  if UseCompiledVersionAsDefault then
+    Result:={$I %FPCVersion%}
+  else
+    Result:='';
+  if not IsFPCExecutable(CompilerFilename) then exit;
+  CfgCache:=ConfigCaches.Find(CompilerFilename,ExtraOptions,TargetOS,TargetCPU,true);
+  if not CfgCache.Update(TestFilename,ExtraOptions) then exit;
+  if CfgCache.FullVersion='' then exit;
+  Result:=CfgCache.FullVersion;
 end;
 
 function TFPCDefinesCache.FindUnitSet(const CompilerFilename, TargetOS,

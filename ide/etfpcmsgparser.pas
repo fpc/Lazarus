@@ -32,8 +32,8 @@ interface
 uses
   Classes, SysUtils, strutils, FileProcs, KeywordFuncLists, IDEExternToolIntf,
   PackageIntf, LazIDEIntf, ProjectIntf, CodeToolsFPCMsgs, CodeToolsStructs,
-  CodeCache, CodeToolManager, DirectoryCacher, BasicCodeTools, LazUTF8,
-  etMakeMsgParser, EnvironmentOpts;
+  CodeCache, CodeToolManager, DirectoryCacher, BasicCodeTools, DefineTemplates,
+  LazUTF8, FileUtil, etMakeMsgParser, EnvironmentOpts;
 
 type
   TFPCMsgFilePool = class;
@@ -59,22 +59,30 @@ type
 
   TETLoadFileEvent = procedure(aFilename: string; out s: string) of object;
 
+  { TFPCMsgFilePool }
+
   TFPCMsgFilePool = class(TComponent)
   private
     fCritSec: TRTLCriticalSection;
     FDefaultEnglishFile: string;
-    FDefaultLocaleFile: string;
+    FDefaultTranslationFile: string;
     FFiles: TFPList; // list of TFPCMsgFilePoolItem sorted for loaded
     FOnLoadFile: TETLoadFileEvent;
+    fPendingLog: TStrings;
+    procedure Log(Msg: string; AThread: TThread);
+    procedure LogSync;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function LoadFile(aFilename: string; UpdateFromDisk: boolean): TFPCMsgFilePoolItem;
-    procedure UnloadFile(var aFile: TFPCMsgFilePoolItem);
+    function LoadFile(aFilename: string; UpdateFromDisk: boolean;
+      AThread: TThread): TFPCMsgFilePoolItem;
+    procedure UnloadFile(var aFile: TFPCMsgFilePoolItem; AThread: TThread);
     procedure EnterCriticalsection;
     procedure LeaveCriticalSection;
+    procedure GetMsgFileNames(CompilerFilename, TargetOS, TargetCPU: string;
+      out anEnglishFile, aTranslationFile: string); // (main thread)
     property DefaultEnglishFile: string read FDefaultEnglishFile write FDefaultEnglishFile;
-    property DefaultLocaleFile: string read FDefaultLocaleFile write FDefaultLocaleFile;
+    property DefaulTranslationFile: string read FDefaultTranslationFile write FDefaultTranslationFile;
     property OnLoadFile: TETLoadFileEvent read FOnLoadFile write FOnLoadFile; // (main or workerthread)
   end;
 
@@ -146,8 +154,9 @@ type
     TranslationFile: TFPCMsgFilePoolItem;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Init; override; // called before reading the output
-    procedure Done; override;
+    procedure Init; override; // called after macros resolved, before starting thread (main thread)
+    procedure InitReading; override; // called if process started, before first line (worker thread)
+    procedure Done; override; // called after process stopped (worker thread)
     procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean); override;
     function LongenFilename(aFilename: string): string;
     procedure ImproveMessages(aSynchronized: boolean); override;
@@ -599,11 +608,36 @@ end;
 
 { TFPCMsgFilePool }
 
+procedure TFPCMsgFilePool.Log(Msg: string; AThread: TThread);
+begin
+  EnterCriticalsection;
+  try
+    fPendingLog.Add(Msg);
+  finally
+    LeaveCriticalSection;
+  end;
+  if AThread<>nil then
+    LogSync
+  else
+    TThread.Synchronize(AThread,@LogSync);
+end;
+
+procedure TFPCMsgFilePool.LogSync;
+begin
+  EnterCriticalsection;
+  try
+    dbgout(fPendingLog.Text);
+  finally
+    LeaveCriticalSection;
+  end;
+end;
+
 constructor TFPCMsgFilePool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   InitCriticalSection(fCritSec);
   FFiles:=TFPList.Create;
+  fPendingLog:=TStringList.Create;
 end;
 
 destructor TFPCMsgFilePool.Destroy;
@@ -629,29 +663,52 @@ begin
     if FPCMsgFilePool=Self then
       FPCMsgFilePool:=nil;
     inherited Destroy;
+    FreeAndNil(fPendingLog);
   finally
     LeaveCriticalSection;
   end;
   DoneCriticalsection(fCritSec);
 end;
 
-function TFPCMsgFilePool.LoadFile(aFilename: string; UpdateFromDisk: boolean
-  ): TFPCMsgFilePoolItem;
+function TFPCMsgFilePool.LoadFile(aFilename: string; UpdateFromDisk: boolean;
+  AThread: TThread): TFPCMsgFilePoolItem;
+var
+  IsMainThread: Boolean;
+
+  procedure ResultOutdated;
+  begin
+    // cached file needs update
+    if Result.fUseCount=0 then begin
+      FFiles.Remove(Result);
+      Result.Free;
+    end;
+    Result:=nil;
+  end;
+
+  function FileExists: boolean;
+  begin
+    if IsMainThread then
+      Result:=FileExistsCached(aFilename)
+    else
+      Result:=FileExistsUTF8(aFilename);
+  end;
+
 var
   Item: TFPCMsgFilePoolItem;
   i: Integer;
   NewItem: TFPCMsgFilePoolItem;
   FileTxt: string;
+  Code: TCodeBuffer;
 begin
   Result:=nil;
   if aFilename='' then exit;
   aFilename:=TrimAndExpandFilename(aFilename);
-  //debugln(['TFPCMsgFilePool.LoadFile ',aFilename]);
+  //Log('TFPCMsgFilePool.LoadFile '+aFilename,aThread);
 
+  IsMainThread:=GetThreadID=MainThreadID;
   if UpdateFromDisk then begin
-    // Note: do not use FileExistsCached, called by threads
-    if not FileExistsUTF8(aFilename) then begin
-      debugln(['TFPCMsgFilePool.LoadFile file not found: ',aFilename]);
+    if not FileExists then begin
+      Log('TFPCMsgFilePool.LoadFile file not found: '+aFilename,AThread);
       exit;
     end;
   end;
@@ -665,19 +722,21 @@ begin
       Result:=Item;
       break;
     end;
+    Code:=nil;
     if UpdateFromDisk then begin
-      if (Result<>nil)
-      and (FileAgeUTF8(aFilename)<>Result.LoadedFileAge) then begin
-        // cached file needs update
-        if Result.fUseCount=0 then begin
-          FFiles.Remove(Result);
-          Result.Free;
-        end;
-        Result:=nil;
+      if IsMainThread then begin
+        Code:=CodeToolBoss.LoadFile(aFilename,true,false);
+        if (Code<>nil) and (Result<>nil) and (Code.FileDateOnDisk<>Result.LoadedFileAge)
+        then
+          ResultOutdated;
+      end else begin
+        if (Result<>nil)
+        and (FileAgeUTF8(aFilename)<>Result.LoadedFileAge) then
+          ResultOutdated;
       end;
     end else if Result=nil then begin
       // not yet loaded, not yet checked if file exists -> check now
-      if not FileExistsUTF8(aFilename) then
+      if not FileExists then
         exit;
     end;
 
@@ -687,20 +746,30 @@ begin
     end else begin
       // load for the first time
       NewItem:=TFPCMsgFilePoolItem.Create(Self,aFilename);
-      //debugln(['TFPCMsgFilePool.LoadFile ',NewItem.FFile<>nil,' ',aFilename]);
+      //Log('TFPCMsgFilePool.LoadFile '+dbgs(NewItem.FFile<>nil)+' '+aFilename,aThread);
       if Assigned(OnLoadFile) then begin
         OnLoadFile(aFilename,FileTxt);
         NewItem.FFile.LoadFromText(FileTxt);
+        NewItem.FLoadedFileAge:=FileAgeUTF8(aFilename);
       end else begin
-        NewItem.FFile.LoadFromFile(aFilename);
+        if IsMainThread then begin
+          if Code=nil then
+            Code:=CodeToolBoss.LoadFile(aFilename,true,false);
+          if Code=nil then
+            exit;
+          NewItem.FFile.LoadFromText(Code.Source);
+          NewItem.FLoadedFileAge:=Code.FileDateOnDisk;
+        end else begin
+          NewItem.FFile.LoadFromFile(aFilename);
+          NewItem.FLoadedFileAge:=FileAgeUTF8(aFilename);
+        end;
       end;
-      NewItem.FLoadedFileAge:=FileAgeUTF8(aFilename);
       // load successful
       Result:=NewItem;
       NewItem:=nil;
       FFiles.Add(Result);
       inc(Result.fUseCount);
-      //debugln(['TFPCMsgFilePool.LoadFile ',Result.Filename,' ',Result.fUseCount]);
+      //log('TFPCMsgFilePool.LoadFile '+Result.Filename+' '+dbgs(Result.fUseCount),aThread);
     end;
   finally
     FreeAndNil(NewItem);
@@ -708,7 +777,8 @@ begin
   end;
 end;
 
-procedure TFPCMsgFilePool.UnloadFile(var aFile: TFPCMsgFilePoolItem);
+procedure TFPCMsgFilePool.UnloadFile(var aFile: TFPCMsgFilePoolItem;
+  AThread: TThread);
 var
   i: Integer;
   Item: TFPCMsgFilePoolItem;
@@ -721,7 +791,7 @@ begin
     if FFiles.IndexOf(aFile)<0 then
       raise Exception.Create('TFPCMsgFilePool.UnloadFile unknown, maybe already freed');
     dec(aFile.fUseCount);
-    //debugln(['TFPCMsgFilePool.UnloadFile ',aFile.Filename,' UseCount=',aFile.fUseCount]);
+    //log('TFPCMsgFilePool.UnloadFile '+aFile.Filename+' UseCount='+dbgs(aFile.fUseCount),aThread);
     if aFile.fUseCount>0 then exit;
     // not used anymore
     if not FileExistsUTF8(aFile.Filename) then begin
@@ -742,7 +812,7 @@ begin
     if Keep then begin
       // this file is the newest version => keep it in cache
     end else begin
-      //debugln(['TFPCMsgFilePool.UnloadFile free: ',aFile.Filename]);
+      //log('TFPCMsgFilePool.UnloadFile free: '+aFile.Filename,aThread);
       FFiles.Remove(aFile);
       aFile.Free;
     end;
@@ -760,6 +830,28 @@ end;
 procedure TFPCMsgFilePool.LeaveCriticalSection;
 begin
   System.LeaveCriticalsection(fCritSec);
+end;
+
+procedure TFPCMsgFilePool.GetMsgFileNames(CompilerFilename, TargetOS,
+  TargetCPU: string; out anEnglishFile, aTranslationFile: string);
+var
+  FPCVer: String;
+  FPCSrcDir: String;
+  aFilename: String;
+begin
+  anEnglishFile:=DefaultEnglishFile;
+  aTranslationFile:=DefaulTranslationFile;
+  if IsFPCExecutable(CompilerFilename) then
+    FPCVer:=CodeToolBoss.FPCDefinesCache.GetFPCVersion(CompilerFilename,TargetOS,TargetCPU,false)
+  else
+    FPCVer:='';
+  FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory(FPCVer);
+  if FilenameIsAbsolute(FPCSrcDir) then begin
+    aFilename:=AppendPathDelim(FPCSrcDir)+SetDirSeparators('compiler/msg/errore.msg');
+    if FileExistsCached(aFilename) then
+      anEnglishFile:=aFilename;
+    // ToDo: translation
+  end;
 end;
 
 { TFPCMsgFilePoolItem }
@@ -792,9 +884,9 @@ begin
   FreeAndNil(fFileExists);
   FreeAndNil(fLastSource);
   if TranslationFile<>nil then
-    FPCMsgFilePool.UnloadFile(TranslationFile);
+    FPCMsgFilePool.UnloadFile(TranslationFile,nil);
   if MsgFile<>nil then
-    FPCMsgFilePool.UnloadFile(MsgFile);
+    FPCMsgFilePool.UnloadFile(MsgFile,nil);
   FreeAndNil(DirectoryStack);
   FreeAndNil(fLineToMsgID);
   inherited Destroy;
@@ -807,7 +899,7 @@ procedure TIDEFPCParser.Init;
     //debugln(['TFPCParser.Init load Msg filename=',aFilename]);
     if (aFilename<>'') and (List=nil) then begin
       try
-        List:=FPCMsgFilePool.LoadFile(aFilename,true);
+        List:=FPCMsgFilePool.LoadFile(aFilename,true,nil);
       except
         on E: Exception do begin
           debugln(['TFPCParser.Init failed to load file '+aFilename+': '+E.Message]);
@@ -817,11 +909,40 @@ procedure TIDEFPCParser.Init;
   end;
 
 var
-  Item: TFPCMsgItem;
+  i: Integer;
+  Param: String;
+  p: PChar;
+  aTargetOS: String;
+  aTargetCPU: String;
 begin
   inherited Init;
+
+  if FPCMsgFilePool<>nil then begin
+    aTargetOS:='';
+    aTargetCPU:='';
+    for i:=0 to Tool.Process.Parameters.Count-1 do begin
+      Param:=Tool.Process.Parameters[i];
+      if Param='' then continue;
+      p:=PChar(Param);
+      if p^<>'-' then continue;
+      if p[1]='T' then
+        aTargetOS:=copy(Param,3,255)
+      else if p[1]='P' then
+        aTargetCPU:=copy(Param,3,255);
+    end;
+    FPCMsgFilePool.GetMsgFileNames(Tool.Process.Executable,aTargetOS,aTargetCPU,
+      MsgFilename,TranslationFilename);
+  end;
+
   LoadMsgFile(MsgFilename,MsgFile);
   LoadMsgFile(TranslationFilename,TranslationFile);
+end;
+
+procedure TIDEFPCParser.InitReading;
+var
+  Item: TFPCMsgItem;
+begin
+  inherited InitReading;
 
   fLineToMsgID.Clear;
   // FPC logo lines
@@ -1571,10 +1692,6 @@ end;
 constructor TIDEFPCParser.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  if FPCMsgFilePool<>nil then begin
-    MsgFilename:=FPCMsgFilePool.DefaultEnglishFile;
-    TranslationFilename:=FPCMsgFilePool.DefaultLocaleFile;
-  end;
   fLineToMsgID:=TPatternToMsgIDs.Create;
   fFileExists:=TFilenameToPointerTree.Create(false);
 end;
@@ -1984,14 +2101,14 @@ begin
   Result:='';
   if CompareText(SubTool,SubToolFPC)=0 then begin
     if FPCMsgFilePool=nil then exit;
-    CurMsgFile:=FPCMsgFilePool.LoadFile(FPCMsgFilePool.DefaultEnglishFile,false);
+    CurMsgFile:=FPCMsgFilePool.LoadFile(FPCMsgFilePool.DefaultEnglishFile,false,nil);
     if CurMsgFile=nil then exit;
     try
       MsgItem:=CurMsgFile.GetMsg(MsgID);
       if MsgItem=nil then exit;
       Result:=MsgItem.GetTrimmedComment(false,true);
     finally
-      FPCMsgFilePool.UnloadFile(CurMsgFile);
+      FPCMsgFilePool.UnloadFile(CurMsgFile,nil);
     end;
   end;
 end;
@@ -2005,14 +2122,14 @@ begin
   Result:='';
   if CompareText(SubTool,SubToolFPC)=0 then begin
     if FPCMsgFilePool=nil then exit;
-    CurMsgFile:=FPCMsgFilePool.LoadFile(FPCMsgFilePool.DefaultEnglishFile,false);
+    CurMsgFile:=FPCMsgFilePool.LoadFile(FPCMsgFilePool.DefaultEnglishFile,false,nil);
     if CurMsgFile=nil then exit;
     try
       MsgItem:=CurMsgFile.GetMsg(MsgID);
       if MsgItem=nil then exit;
       Result:=MsgItem.Pattern;
     finally
-      FPCMsgFilePool.UnloadFile(CurMsgFile);
+      FPCMsgFilePool.UnloadFile(CurMsgFile,nil);
     end;
   end;
 end;

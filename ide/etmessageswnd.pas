@@ -44,13 +44,6 @@ type
     procedure FormDestroy(Sender: TObject);
     function OnOpenMessage(Sender: TObject; Msg: TMessageLine): boolean;
   private
-    ImgIDNone: integer;
-    ImgIDInformation: integer;
-    ImgIDHint: integer;
-    ImgIDNote: integer;
-    ImgIDWarning: integer;
-    ImgIDError: integer;
-    ImgIDFatal: integer;
     function GetDblClickJumps: boolean;
     function GetHideMessagesIcons: boolean;
     procedure SetDblClickJumps(AValue: boolean);
@@ -83,43 +76,46 @@ type
 var
   MessagesView: TMessagesView;
 
-const
-  MessagesMenuRootName = 'Messages';
-
-procedure RegisterStandardMessagesViewMenuItems;
-
 implementation
-
-procedure RegisterStandardMessagesViewMenuItems;
-begin
-
-end;
 
 {$R *.lfm}
 
 { TMessagesView }
 
 procedure TMessagesView.FormCreate(Sender: TObject);
+var
+  ImgIDInfo: Integer;
+  ImgIDHint: Integer;
+  ImgIDNote: Integer;
+  ImgIDWarning: Integer;
+  ImgIDError: Integer;
+  ImgIDFatal: Integer;
 begin
   IDEMessagesWindow:=Self;
 
   SourceMarks:=TETMarks.Create(Self);
+  ImgIDInfo:=IDEImages.LoadImage(12, 'state12x12_information');
+  ImgIDHint:=IDEImages.LoadImage(12, 'state12x12_hint');
+  ImgIDNote:=IDEImages.LoadImage(12, 'state12x12_note');
+  ImgIDWarning:=IDEImages.LoadImage(12, 'state12x12_warning');
+  ImgIDError:=IDEImages.LoadImage(12, 'state12x12_error');
+  ImgIDFatal:=IDEImages.LoadImage(12, 'state12x12_fatal');
   with SourceMarks do begin
     ImageList:=IDEImages.Images_12;
     //OnGetSynEditOfFile:=@SourceMarksGetSynEditOfFile;
     MarkStyles[mluNone].ImageIndex:=-1;
     MarkStyles[mluProgress].ImageIndex:=-1;
-    MarkStyles[mluDebug].ImageIndex:=IDEImages.LoadImage(12, 'state12x12_information');
-    MarkStyles[mluVerbose3].ImageIndex:=IDEImages.LoadImage(12, 'state12x12_information');
-    MarkStyles[mluVerbose2].ImageIndex:=IDEImages.LoadImage(12, 'state12x12_information');
-    MarkStyles[mluVerbose].ImageIndex:=IDEImages.LoadImage(12, 'state12x12_information');
-    MarkStyles[mluHint].ImageIndex:=IDEImages.LoadImage(12, 'state12x12_hint');
-    MarkStyles[mluNote].ImageIndex:=IDEImages.LoadImage(12, 'state12x12_note');
-    MarkStyles[mluWarning].ImageIndex:=IDEImages.LoadImage(12, 'state12x12_warning');
+    MarkStyles[mluDebug].ImageIndex:= ImgIDInfo;
+    MarkStyles[mluVerbose3].ImageIndex:=ImgIDInfo;
+    MarkStyles[mluVerbose2].ImageIndex:=ImgIDInfo;
+    MarkStyles[mluVerbose].ImageIndex:=ImgIDInfo;
+    MarkStyles[mluHint].ImageIndex:=ImgIDHint;
+    MarkStyles[mluNote].ImageIndex:=ImgIDNote;
+    MarkStyles[mluWarning].ImageIndex:=ImgIDWarning;
     MarkStyles[mluImportant].ImageIndex:=-1;
-    MarkStyles[mluError].ImageIndex:=IDEImages.LoadImage(12, 'state12x12_error');
-    MarkStyles[mluFatal].ImageIndex:=IDEImages.LoadImage(12, 'state12x12_fatal');
-    MarkStyles[mluPanic].ImageIndex:=IDEImages.LoadImage(12, 'state12x12_fatal');
+    MarkStyles[mluError].ImageIndex:=ImgIDError;
+    MarkStyles[mluFatal].ImageIndex:=ImgIDFatal;
+    MarkStyles[mluPanic].ImageIndex:=ImgIDFatal;
   end;
   MessagesFrame1.MessagesCtrl.SourceMarks:=SourceMarks;
   MessagesFrame1.MessagesCtrl.OnOpenMessage:=@OnOpenMessage;
