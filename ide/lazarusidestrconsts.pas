@@ -5809,23 +5809,21 @@ resourcestring
   lisTemplateFile = 'Template file';
   lisIncorrectConfigurationDirectoryFound = 'Incorrect configuration directory found';
   lisIDEConficurationFoundMayBelongToOtherLazarus = 'Welcome to Lazarus.%0:s'
-    + 'The IDE configuration found for usage was previously used by another '
+    + 'The IDE configuration found was previously used by another '
     + 'installation of Lazarus.%0:s'
-    + 'If you have 2 or more separate installations of Lazarus, they should not '
+    + 'If you have two or more separate installations of Lazarus, they should not '
     + 'share the same configuration. This may lead to conflicts, and your '
     + 'Lazarus installations may become unusable.%0:s%0:s'
-    + 'If you have only one installation, and copied or moved the Lazarus '
-    + 'executable, then you may upgrade this configuration%0:s'
-    + 'If this is a new/different installation, you must start the IDE in this '
-    + 'installation with the command line parameter primary-config-path or pcp.%0:s'
-    + 'For example:%1:s%0:s%0:s'       // %1:s = ConfDirWarning
-    + 'Choose%0:s%0:s'
+    + 'If you have only one installation and copied or moved the Lazarus '
+    + 'executable, then you may upgrade this configuration.%0:s'
+    + '%1:s%0:s%0:s'       // %1:s = ConfDirWarning
+    + 'Choose:%0:s%0:s'
     + '* Update info: Use this configuration and update it for being used with this '
     + 'Lazarus in future. The old installation will no longer use this.%0:s'
     + '* Ignore: Use this configuration, but keep the warning. This may lead to '
     + 'conflicts with the other installation.%0:s'
     + '* Abort: Exit now. You can then fix the problem by starting this Lazarus '
-    + 'with the correct configuration%0:s%0:s'
+    + 'with the correct configuration.%0:s%0:s'
     + 'Additional information:%0:s'
     + 'This configuration is at: %2:s%0:s'                     // %2:s = PrimaryConfPath
     + 'It belongs to the Lazarus installation at: %3:s%0:s'     // %3:s = old install path
