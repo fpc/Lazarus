@@ -143,6 +143,10 @@ end;
  ---------------------------------------------------------------------------}
 procedure InternalInit;
 begin
+  // For the Unix file functions only the slash is a directory separator.
+  // The RTL defines AllowDirectorySeparators ['/','\'] for historical reasons.
+  AllowDirectorySeparators:=['/'];
+
   PrimaryConfigPath:=ExpandFileNameUTF8('~/.lazarus');
   SecondaryConfigPath:='/etc/lazarus';
 end;
