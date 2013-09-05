@@ -5403,6 +5403,7 @@ resourcestring
   lisMoveOnePositionUp = 'Move "%s" one position up';
   lisMoveOnePositionDown = 'Move "%s" one position down';
   lisShowDifferencesBetweenModes = 'Show differences between modes ...';
+  lisCreateDebugAndReleaseModes = 'Create Debug and Release modes';
   lisChangeBuildMode = 'Change build mode';
   lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas = '%sWarning: This is '
     +'the main unit. The new main unit will be %s.pas.';

@@ -537,7 +537,7 @@ begin
   MoveDownSpeedButton.Hint:=Format(lisMoveOnePositionDown, [Identifier]);
   DiffSpeedButton.Hint:=lisShowDifferencesBetweenModes;
   NoteLabel.Caption:='';
-  btnCreateDefaultModes.Caption:='Create Debug and Release modes';
+  btnCreateDefaultModes.Caption:=lisCreateDebugAndReleaseModes;
   btnCreateDefaultModes.Hint:='';
   btnCreateDefaultModes.Visible := (fBuildModes.Find(DebugModeName)=Nil)
                                and (fBuildModes.Find(ReleaseModeName)=Nil);
