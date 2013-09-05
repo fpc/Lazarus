@@ -16,6 +16,7 @@ type
   TExampleManagerForm = class(TForm)
     BuildAllSelectedButton: TBitBtn;
     cgIncludedDirs: TCheckGroup;
+    lblCenter: TLabel;
     lbProjectCount: TLabel;
     lbRootDirectory: TLabel;
     SelectPanel: TPanel;
@@ -25,7 +26,6 @@ type
     cbIncludeAllDirs: TCheckBox;
     ProjectFilter: TListFilterEdit;
     OpenSelectedButton: TBitBtn;
-    lbConstruction: TLabel;
     ProjectsListBox: TListBox;
     SelectAllButton: TBitBtn;
     ButtonPanel1: TButtonPanel;
