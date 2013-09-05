@@ -48,28 +48,25 @@ begin
 end;
 
 procedure TCustomPage.SetTabVisible(const AValue: Boolean);
-var
-  TabCntrl: TCustomTabControl;
 begin
   if AValue = FTabVisible then Exit;
   FTabVisible := AValue;
-
+ 
   if csDesigning in ComponentState then
     Exit;
 
   if Assigned(Parent) and Parent.HandleAllocated then
   begin
-    TabCntrl := Parent as TCustomTabControl;
     if FTabVisible then
-    begin     // check if there was no visible tab
-      if TabCntrl.PageIndex = -1 then
-        TabCntrl.PageIndex := PageIndex
-      else if TabCntrl.PageIndex >= PageIndex then
-        TabCntrl.PageIndex := TabCntrl.PageIndex + 1;
+    begin
+      // check if there was no visible tab
+      if TCustomTabControl(Parent).PageIndex = -1 then
+        TCustomTabControl(Parent).PageIndex:=PageIndex;
     end
-    else      // Check if the page is active and set a new pageindex
-      TabCntrl.PageRemoved(PageIndex);
-    TabCntrl.AddRemovePageHandle(Self);
+    else
+      // Check if the page is active and set a new pageindex
+      TCustomTabControl(Parent).PageRemoved(PageIndex);
+    TCustomTabControl(Parent).AddRemovePageHandle(Self);
   end;
 end;
 
