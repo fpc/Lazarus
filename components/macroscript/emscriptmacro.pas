@@ -108,7 +108,7 @@ var
   ConfFileName: String = '';
 
 const
-  DefaultConfFileName = 'editormacroscript.cfg';
+  DefaultConfFileName = 'editormacroscript.xml';
 
 function GetConfFileName: String;
 begin
