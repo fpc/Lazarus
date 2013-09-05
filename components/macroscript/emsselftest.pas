@@ -4,6 +4,10 @@ unit EMSSelfTest;
 
 interface
 
+{$IFDEF darwin}
+  {$DEFINE NeedTPointFix }
+{$ENDIF}
+
 uses
   Classes, SysUtils, SynEdit, SynEditTypes, SynEditKeyCmds, LazLoggerBase,
   IDECommands, EMScriptClasses, EMScriptMacro, Clipbrd, Dialogs, Controls,
@@ -44,6 +48,10 @@ var
   SelfTestErrorMsg: String;
 
 implementation
+
+{$IFDEF NeedTPointFix}
+type TPoint2 = record x,y,a,b,c: Longint; end;
+{$ENDIF}
 
 {%region RegisterSelfTests}
 
@@ -120,7 +128,7 @@ begin
   TestResultInt2 := AValue.Y;
 end;
 
-function test_getpoint: TPoint;
+function test_getpoint: {$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF};
 begin
   Result.X := TestInputInt1;
   Result.Y := TestInputInt2;
@@ -192,7 +200,7 @@ const
   Proctest_getbool1:  function: Boolean = @test_getbool1;
   Proctest_getbool2:  function: Boolean = @test_getbool2;
   Proctest_point:     procedure (AValue: TPoint)  = @test_point;
-  Proctest_getpoint:  function: TPoint = @test_getpoint;
+  Proctest_getpoint:  function: {$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF} = @test_getpoint;
   Proctest_varpoint:  procedure (var AValue: TPoint)  = @test_varpoint;
   Proctest_str1:      procedure (AValue: String)  = @test_str1;
   Proctest_str2:      procedure (AValue: String)  = @test_str2;
