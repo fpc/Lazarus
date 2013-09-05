@@ -42,7 +42,8 @@ uses
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
-  LazarusIDEStrConsts, ComponentReg, DesignerProcs, PackageDefs, EnvironmentOpts;
+  LazarusIDEStrConsts, ComponentReg, ExtendedTabControls, DesignerProcs, PackageDefs,
+  EnvironmentOpts;
 
 type
   TComponentSelectionMode = (
@@ -66,7 +67,11 @@ type
     procedure PopupMenuPopup(Sender: TObject);
   private
     fComponents: TAVLTree; // tree of TRegisteredComponent sorted for componentclass
+    {$IFDEF NEW_MAIN_IDE_TABS}
+    FPageControl: TExtendedTabControl;
+    {$ELSE}
     FPageControl: TPageControl;
+    {$ENDIF}
     fNoteBookNeedsUpdate: boolean;
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
@@ -76,7 +81,11 @@ type
     fUnregisteredIcon: TCustomBitmap;
     fSelectButtonIcon: TCustomBitmap;
     fUpdatingPageControl: boolean;
+    {$IFDEF NEW_MAIN_IDE_TABS}
+    procedure SetPageControl(const AValue: TExtendedTabControl);
+    {$ELSE}
     procedure SetPageControl(const AValue: TPageControl);
+    {$ENDIF}
     procedure SelectionToolClick(Sender: TObject);
     procedure ComponentBtnMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -104,7 +113,7 @@ type
     function GetSelectButtonIcon: TCustomBitmap;
     procedure ClearButtons; override;
     function SelectButton(Button: TComponent): boolean;
-    procedure ReAlignButtons(Page: TTabSheet);
+    procedure ReAlignButtons(Page: TCustomPage);
     procedure UpdateNoteBookButtons;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
                                      AComponent: TComponent; var Icon: TCustomBitmap);
@@ -114,7 +123,11 @@ type
                        const RegisterProc: RegisterUnitComponentProc); override;
     procedure UpdateVisible; override;
   public
+    {$IFDEF NEW_MAIN_IDE_TABS}
+    property PageControl: TExtendedTabControl read FPageControl write SetPageControl;
+    {$ELSE}
     property PageControl: TPageControl read FPageControl write SetPageControl;
+    {$ENDIF}
     property SelectionMode: TComponentSelectionMode read FSelectionMode write FSelectionMode;
     property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
     property OnOpenUnit: TNotifyEvent read FOnOpenUnit write FOnOpenUnit;
@@ -174,8 +187,8 @@ end;
 
 procedure TComponentPalette.OnPageResize(Sender: TObject);
 begin
-  if Sender is TTabSheet then
-    ReAlignButtons(TTabSheet(Sender));
+  if Sender is TCustomPage then
+    ReAlignButtons(TCustomPage(Sender));
 end;
 
 procedure TComponentPalette.OpenPackageClicked(Sender: TObject);
@@ -241,7 +254,11 @@ begin
   end;
 end;
 
+{$IFDEF NEW_MAIN_IDE_TABS}
+procedure TComponentPalette.SetPageControl(const AValue: TExtendedTabControl);
+{$ELSE}
 procedure TComponentPalette.SetPageControl(const AValue: TPageControl);
+{$ENDIF}
 var
   MenuItem: TMenuItem;
 begin
@@ -366,7 +383,11 @@ begin
   // select button
   if (FSelected<>nil) and (FPageControl<>nil) then begin
     TSpeedButton(FSelected.Button).Down:=true;
+    {$IFDEF NEW_MAIN_IDE_TABS}
+    FPageControl.ActivePage:=TExtendedTabSheet(FSelected.Page.PageComponent);
+    {$ELSE}
     FPageControl.ActivePage:=TTabSheet(FSelected.Page.PageComponent);
+    {$ENDIF}
   end;
 end;
 
@@ -527,7 +548,7 @@ begin
   Result := (Selected = NewComponent);
 end;
 
-procedure TComponentPalette.ReAlignButtons(Page: TTabSheet);
+procedure TComponentPalette.ReAlignButtons(Page: TCustomPage);
 var
   j: integer;
   buttonx: integer;
@@ -586,7 +607,11 @@ end;
 
 procedure TComponentPalette.UpdateNoteBookButtons;
 var
+  {$IFDEF NEW_MAIN_IDE_TABS}
+  OldActivePage: TExtendedTabSheet;
+  {$ELSE}
   OldActivePage: TTabSheet;
+  {$ENDIF}
   SortedPageList, SortedCompList: TFPList;
 
   procedure SortPage(aCompPage: TBaseComponentPage);
@@ -619,7 +644,11 @@ var
     SortedCompList.Insert(i+1, aComponent);
   end;
 
+  {$IFDEF NEW_MAIN_IDE_TABS}
+  procedure RemoveUnneededPage(aSheet: TCustomPage);
+  {$ELSE}
   procedure RemoveUnneededPage(aSheet: TTabSheet);
+  {$ENDIF}
   var
     PageIndex: Integer;
     CurPage: TBaseComponentPage;
@@ -661,11 +690,19 @@ var
           BorderWidth := 0;
           HorzScrollBar.Visible := false;
           VertScrollBar.Increment := ComponentPaletteBtnHeight;
+          {$IFDEF NEW_MAIN_IDE_TABS}
+          Parent := TCustomPage(aCompPage.PageComponent);
+          {$ELSE}
           Parent := TTabSheet(aCompPage.PageComponent);
+          {$ENDIF}
         end;
       end else begin
         // move to the right position
+        {$IFDEF NEW_MAIN_IDE_TABS}
+        CurPageIndex := TCustomPage(aCompPage.PageComponent).PageIndex;
+        {$ELSE}
         CurPageIndex := TTabSheet(aCompPage.PageComponent).PageIndex;
+        {$ENDIF}
         if CurPageIndex<>aVisPageIndex then
           TCustomTabControl(FPageControl).Pages.Move(CurPageIndex, aVisPageIndex);
       end;
@@ -742,11 +779,11 @@ var
   procedure CreateButtons(aCompPage: TBaseComponentPage; aPageIndex: integer);
   var
     i, BtnIndex: Integer;
-    CurNoteBookPage: TTabSheet;
+    CurNoteBookPage: TCustomPage;
     CurScrollBox: TScrollBox;
   begin
     if aCompPage.Visible then begin
-      CurNoteBookPage := aCompPage.PageComponent as TTabSheet;
+      CurNoteBookPage := aCompPage.PageComponent as TCustomPage;
       CurNoteBookPage.OnResize := @OnPageResize;
       CurScrollBox := CurNoteBookPage.Components[0] as TScrollBox;
       //DebugLn(['TComponentPalette.UpdateNoteBookButtons PAGE=',aCompPage.PageName,' PageIndex=',CurNoteBookPage.PageIndex]);

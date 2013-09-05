@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Menus,
   ComCtrls, ExtCtrls, Dialogs, LMessages,
   // IDEIntf
-  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf,
+  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, ExtendedTabControls,
   EnvironmentOpts, LazarusIDEStrConsts;
 
 type
@@ -368,7 +368,11 @@ type
       //itmHelpTools: TIDEMenuSection;
 
     // component palette
+    {$IFDEF NEW_MAIN_IDE_TABS}
+    ComponentPageControl: TExtendedTabControl;
+    {$ELSE}
     ComponentPageControl: TPageControl;
+    {$ENDIF}
     SelComponentPageButton: TSpeedButton;
     GlobalMouseSpeedButton: TSpeedButton;
   private

@@ -92,7 +92,7 @@ uses
   ProjectResources, Project, ProjectDefs, NewProjectDlg, 
   PublishProjectDlg, ProjectInspector, PackageDefs,
   // help manager
-  IDEContextHelpEdit, IDEHelpIntf, IDEHelpManager, CodeHelp, HelpOptions,
+  IDEContextHelpEdit, IDEHelpIntf, ExtendedTabControls, IDEHelpManager, CodeHelp, HelpOptions,
   // designer
   JITForms, ComponentPalette, ComponentList, CompPagesPopup,
   ObjInspExt, Designer, FormEditor, CustomFormEditor,
@@ -2042,6 +2042,9 @@ begin
   MainIDEBar.BuildModeSpeedButton.DropdownMenu:=MainIDEBar.SetBuildModePopupMenu;
   MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
 
+  {$IFDEF NEW_MAIN_IDE_TABS}
+    MainIDEBar.pnlRightSpeedButtons.Hide;
+  {$ELSE}
   // Copied from CodeTyphon
   MainIDEBar.SelComponentPageButton:=TSpeedButton.Create(MainIDEBar.pnlRightSpeedButtons);
   with MainIDEBar.SelComponentPageButton do
@@ -2054,6 +2057,7 @@ begin
     Hint := 'Click to Select Palette Page';
     OnClick := @SelComponentPageButtonClick;
   end;
+  {$ENDIF}
 end;
 
 procedure TMainIDE.SetupDialogs;
@@ -2068,9 +2072,34 @@ begin
 end;
 
 procedure TMainIDE.SetupComponentPalette;
+{$IFDEF NEW_MAIN_IDE_TABS}
+var
+  Btn: TExtendedTabToolButton;
+{$ENDIF}
 begin
   // Component palette
+  {$IFDEF NEW_MAIN_IDE_TABS}
+  MainIDEBar.ComponentPageControl := TExtendedTabControl.Create(OwningComponent);
+
+  MainIDEBar.SelComponentPageButton:=TSpeedButton.Create(MainIDEBar.pnlRightSpeedButtons);
+  with MainIDEBar.SelComponentPageButton do
+  begin
+    Btn := TExtendedTabToolButton.Create(OwningComponent);
+    Btn.Style := tbsButton;
+    Btn.Caption := '';
+    Btn.Hint := 'Click to Select Palette Page';
+    Btn.OnClick := @SelComponentPageButtonClick;
+    MainIDEBar.ComponentPageControl.ShowToolBar := tsRight;
+    MainIDEBar.ComponentPageControl.ToolBar.EdgeBorders := [];
+    MainIDEBar.ComponentPageControl.ToolBar.AcceptButton(Btn);
+
+    MainIDEBar.ComponentPageControl.ToolBar.Images := TImageList.Create(OwningComponent);
+    MainIDEBar.ComponentPageControl.ToolBar.Images.AddLazarusResource('SelCompPage');
+    Btn.ImageIndex := 0;
+  end;
+  {$ELSE}
   MainIDEBar.ComponentPageControl := TPageControl.Create(OwningComponent);
+  {$ENDIF}
   with MainIDEBar.ComponentPageControl do begin
     Name := 'ComponentPageControl';
     Align := alClient;
@@ -5104,9 +5133,9 @@ end;
 procedure TMainIDE.SelComponentPageButtonClick(Sender: TObject);
 var
   zPos: TPoint;
-  btn: TSpeedButton;
+  btn: TGraphicControl;
 begin
-  btn := Sender as TSpeedButton;
+  btn := Sender as TGraphicControl;
   zPos:=point(btn.Width,btn.Height);
   zPos:=btn.ClientToScreen(zPos);
   if DlgCompPagesPopup=nil then
