@@ -782,7 +782,7 @@ end;
 
 function IsUNCPath(const Path: String): Boolean;
 begin
-  Result := (Length(Path) > 2) and (Path[1] = PathDelim) and (Path[2] = PathDelim);
+  Result := (Length(Path) > 2) and (Path[1] in AllowDirectorySeparators) and (Path[2] in AllowDirectorySeparators);
 end;
 
 function ExtractUNCVolume(const Path: String): String;
@@ -793,7 +793,7 @@ var
   function NextPathDelim(const Start: Integer): Integer;// inline;
   begin
     Result := Start;
-    while (Result <= Len) and (Path[Result] <> PathDelim) do
+    while (Result <= Len) and not (Path[Result] in AllowDirectorySeparators) do
       inc(Result);
   end;
 
@@ -808,7 +808,7 @@ begin
     // \\?\UNC\ComputerName\SharedFolder\Resource or
     // \\?\C:\Directory
     inc(I);
-    if Path[I] <> PathDelim then
+    if not (Path[I] in AllowDirectorySeparators) then
       Exit('');
     if UpperCase(Copy(Path, I + 1, 3)) = 'UNC' then
     begin

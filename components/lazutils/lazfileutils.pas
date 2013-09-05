@@ -240,7 +240,7 @@ var
 begin
   StartPos:=length(AFilename)+1;
   while (StartPos>1)
-  and (AFilename[StartPos-1]<>PathDelim)
+  and not (AFilename[StartPos-1] in AllowDirectorySeparators)
   {$IFDEF Windows}and (AFilename[StartPos-1]<>':'){$ENDIF}
   do
     dec(StartPos);
@@ -414,7 +414,7 @@ begin
   DirectoryName:=AppendPathDelim(DirectoryName);
   i:=1;
   while i<=length(DirectoryName) do begin
-    if DirectoryName[i]=PathDelim then begin
+    if DirectoryName[i] in AllowDirectorySeparators then begin
       Dir:=copy(DirectoryName,1,i-1);
       if not DirPathExists(Dir) then begin
         Result:=CreateDirUTF8(Dir);
@@ -518,26 +518,26 @@ begin
   // check trailing spaces
   if StartPos[NameLen-1]=' ' then exit;
   // check ./ at start
-  if (StartPos[0]='.') and (StartPos[1]=PathDelim) then exit;
+  if (StartPos[0]='.') and (StartPos[1] in AllowDirectorySeparators) then exit;
   i:=0;
   while i<NameLen do begin
-    if StartPos[i]<>PathDelim then
+    if not (StartPos[i] in AllowDirectorySeparators) then
       inc(i)
     else begin
       inc(i);
       if i=NameLen then break;
 
       // check for double path delimiter
-      if (StartPos[i]=PathDelim) then exit;
+      if (StartPos[i] in AllowDirectorySeparators) then exit;
 
       if (StartPos[i]='.') and (i>0) then begin
         inc(i);
         // check /./ or /. at end
-        if (StartPos[i]=PathDelim) or (i=NameLen) then exit;
+        if (StartPos[i] in AllowDirectorySeparators) or (i=NameLen) then exit;
         if StartPos[i]='.' then begin
           inc(i);
           // check /../ or /.. at end
-          if (StartPos[i]=PathDelim) or (i=NameLen) then exit;
+          if (StartPos[i] in AllowDirectorySeparators) or (i=NameLen) then exit;
         end;
       end;
     end;
@@ -619,7 +619,7 @@ end;
 
 function AppendPathDelim(const Path: string): string;
 begin
-  if (Path<>'') and (Path[length(Path)]<>PathDelim) then
+  if (Path<>'') and not (Path[length(Path)] in AllowDirectorySeparators) then
     Result:=Path+PathDelim
   else
     Result:=Path;
@@ -634,10 +634,10 @@ begin
 
   Result:=Path;
   Len:=length(Result);
-  if (Result[1]=PathDelim) then begin
+  if (Result[1] in AllowDirectorySeparators) then begin
     MinLen := 1;
     {$IFDEF HasUNCPaths}
-    if (Len >= 2) and (Result[2]=PathDelim) then
+    if (Len >= 2) and (Result[2] in AllowDirectorySeparators) then
       MinLen := 2; // keep UNC '\\', chomp 'a\' to 'a'
     {$ENDIF}
   end
@@ -645,13 +645,13 @@ begin
     MinLen := 0;
     {$IFdef MSWindows}
     if (Len >= 3) and (Result[1] in ['a'..'z', 'A'..'Z'])  and
-       (Result[2] = ':') and (Result[3]=PathDelim)
+       (Result[2] = ':') and (Result[3] in AllowDirectorySeparators)
     then
       MinLen := 3;
     {$ENDIF}
   end;
 
-  while (Len > MinLen) and (Result[Len]=PathDelim) do dec(Len);
+  while (Len > MinLen) and (Result[Len] in AllowDirectorySeparators) do dec(Len);
   if Len<length(Result) then
     SetLength(Result,Len);
 end;
@@ -751,7 +751,7 @@ begin
       inc(EndPos);
     if StartPos<EndPos then begin
       // trim path and chomp PathDelim
-      if (Result[EndPos-1]=PathDelim)
+      if (Result[EndPos-1] in AllowDirectorySeparators)
       or (not FilenameIsTrimmed(@Result[StartPos],EndPos-StartPos)) then begin
         NewPath:=ChompPathDelim(
                            TrimFilename(copy(Result,StartPos,EndPos-StartPos)));
@@ -791,7 +791,7 @@ begin
   if SearchPath=nil then exit;
   if (APath=nil) or (APathLen=0) then exit;
   // ignore trailing PathDelim at end
-  while (APathLen>1) and (APath[APathLen-1]=PathDelim) do dec(APathLen);
+  while (APathLen>1) and (APath[APathLen-1] in AllowDirectorySeparators) do dec(APathLen);
 
   {$IFDEF CaseInsensitiveFilenames}
   UseQuickCompare:=false;
@@ -817,7 +817,7 @@ begin
       inc(NextStartPos);
     EndPos:=NextStartPos;
     // ignore trailing PathDelim at end
-    while (EndPos>StartPos+1) and (SearchPath[EndPos-1]=PathDelim) do
+    while (EndPos>StartPos+1) and (SearchPath[EndPos-1] in AllowDirectorySeparators) do
       dec(EndPos);
     // compare current path
     if UseQuickCompare then begin
@@ -976,7 +976,7 @@ var
 
   function IsUncDrive(const Drv: String): Boolean;
   begin
-    Result := (Length(Drv) > 2) and (Drv[1] = PathDelim) and (Drv[2] = PathDelim);
+    Result := (Length(Drv) > 2) and (Drv[1] in AllowDirectorySeparators) and (Drv[2] in AllowDirectorySeparators);
   end;
 
 begin
@@ -1220,7 +1220,7 @@ begin
       Result := ExtractUNCVolume(FileName);
       // is it like \\?\C:\Directory?  then also include the "C:\" part
       if (Result = '\\?\') and (Length(FileName) > 6) and
-         (FileName[5] in ['a'..'z','A'..'Z']) and (FileName[6] = ':') and (FileName[7] = PathDelim)
+         (FileName[5] in ['a'..'z','A'..'Z']) and (FileName[6] = ':') and (FileName[7] in AllowDirectorySeparators)
       then
         Result := Copy(FileName, 1, 7);
     end
@@ -1229,7 +1229,7 @@ begin
       {$if defined(unix) or defined(wince)}
       if (FileName[1] = PathDelim) then Result := PathDelim;
       {$else}
-      if (Len > 2) and (FileName[1] in ['a'..'z','A'..'Z']) and (FileName[2] = ':') and (FileName[3] = PathDelim) then
+      if (Len > 2) and (FileName[1] in ['a'..'z','A'..'Z']) and (FileName[2] = ':') and (FileName[3] in AllowDirectorySeparators) then
         Result := UpperCase(Copy(FileName,1,3));
       {$endif}
     end;

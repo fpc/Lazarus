@@ -211,7 +211,7 @@ Type
 
     While Start <= Len do
     begin
-      if (Dir[Start] = PathDelim) then
+      if (Dir[Start] in AllowDirectorySeparators) then
       begin
         S := Copy(Dir,Stop,Start-Stop);
         //ignore empty strings, they are caused by double PathDelims, which we just ignore
@@ -262,8 +262,8 @@ begin
     if ((Length(Dest) > 1) and (UpCase(Dest[1]) in ['A'..'Z']) and (Dest[2] = ':')) or
        ((Length(Source) > 1) and (UpCase(Source[1]) in ['A'..'Z']) and (Source[2] = ':')) then Exit;
     //we cannot handle combinations like dest=foo source=\bar or the other way around
-    if ((Dest[1] = PathDelim) and (Source[1] <> PathDelim)) or
-       ((Dest[1] <> PathDelim) and (Source[1] = PathDelim)) then Exit;
+    if ((Dest[1] in AllowDirectorySeparators) and not (Source[1] in AllowDirectorySeparators)) or
+       (not (Dest[1] in AllowDirectorySeparators) and (Source[1] in AllowDirectorySeparators)) then Exit;
   end;
   {$endif}
 
@@ -290,8 +290,8 @@ begin
   end;
 
   //Get rid of excessive trailing PathDelims now after (!) we stripped Root
-  while (Length(CmpDest) > 0) and (CmpDest[Length(CmpDest)] = PathDelim) do System.Delete(CmpDest,Length(CmpDest),1);
-  while (Length(CmpSource) > 0) and (CmpSource[Length(CmpSource)] = PathDelim) do System.Delete(CmpSource,Length(CmpSource),1);
+  while (Length(CmpDest) > 0) and (CmpDest[Length(CmpDest)] in AllowDirectorySeparators) do System.Delete(CmpDest,Length(CmpDest),1);
+  while (Length(CmpSource) > 0) and (CmpSource[Length(CmpSource)] in AllowDirectorySeparators) do System.Delete(CmpSource,Length(CmpSource),1);
 
   //debugln('TryCreaterelativePath: CmpDest   = "',cmpdest,'"');
   //debugln('TryCreaterelativePath: CmpSource = "',cmpsource,'"');
@@ -340,7 +340,7 @@ begin
 
     for i := LevelsUp downto 1 do
     begin
-      if (RelPath <> '') and (RelPath[Length(RelPath)] <> PathDelim) then RelPath := RelPath + PathDelim;
+      if (RelPath <> '') and not (RelPath[Length(RelPath)] in AllowDirectorySeparators) then RelPath := RelPath + PathDelim;
       RelPath := RelPath + DestDirs[DestCount + 1 - i];
     end;
     RelPath := ChompPathDelim(RelPath);

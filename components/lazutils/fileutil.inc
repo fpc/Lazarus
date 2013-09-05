@@ -321,6 +321,9 @@ begin
   while (p>0) do begin
     case Result[p] of
       PathDelim: exit;
+      {$ifdef windows}
+      '/': if ('/' in AllowDirectorySeparators) then exit;
+      {$endif}
       '.': exit(copy(Result,1, p-1));
     end;
     dec(p);
@@ -556,7 +559,7 @@ begin
   ExpFile:=CleanAndExpandFilename(Filename);
   ExpPath:=CleanAndExpandDirectory(Path);
   l:=length(ExpPath);
-  Result:=(l>0) and (length(ExpFile)>l) and (ExpFile[l]=PathDelim)
+  Result:=(l>0) and (length(ExpFile)>l) and (ExpFile[l] in AllowDirectorySeparators)
           and (CompareFilenames(ExpPath,LeftStr(ExpFile,l))=0);
 end;
 
@@ -573,7 +576,7 @@ begin
   LenFile:=length(ExpFile);
   LenDir:=length(ExpDir);
   p:=LenFile;
-  while (p>0) and (ExpFile[p]<>PathDelim) do dec(p);
+  while (p>0) and not (ExpFile[p] in AllowDirectorySeparators) do dec(p);
   Result:=(p=LenDir) and (p<LenFile)
           and (CompareFilenames(ExpDir,LeftStr(ExpFile,p))=0);
 end;
