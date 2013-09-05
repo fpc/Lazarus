@@ -264,7 +264,7 @@ begin
   end;
 
   // Target options
-  grbTargetOptions.Caption := 'Target-specific options';
+  grbTargetOptions.Caption := dlgTargetSpecificOptions;
   chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG)';
 end;
 

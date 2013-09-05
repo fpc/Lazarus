@@ -2079,6 +2079,7 @@ resourcestring
   dlgPassOptsLinker = 'Pass options to linker with "-k", delimiter is space';
   //lisCOTargetOSSpecificOptions = 'Target OS specific options';
   dlgWin32GUIApp = 'Win32 gui application';
+  dlgTargetSpecificOptions = 'Target-specific options';
   dlgVerbosity = 'Verbosity during compilation:';
   dlgCOShowErr = 'Show errors';
   dlgShowWarnings = 'Show warnings';
