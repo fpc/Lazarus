@@ -79,10 +79,12 @@ procedure TfrmAllCompilerOptions.FormShow(Sender: TObject);
 begin
   Caption:=lisAllOptions;
   edOptionsFilter.Enabled := False;   // Until the options are read.
-  edOptionsFilter.Hint := 'Filter the available options list';
+  edOptionsFilter.Hint := lisFilterTheAvailableOptionsList;
   btnResetOptionsFilter.LoadGlyphFromLazarusResource(ResBtnListFilter);
   btnResetOptionsFilter.Enabled := False;
-  btnResetOptionsFilter.Hint := 'Clear the filter for options';
+  btnResetOptionsFilter.Hint := lisClearTheFilterForOptions;
+  cbShowModified.Caption:=lisShowOnlyModified;
+  cbUseComments.Caption:=lisUseCommentsInCustomOptions;
   FEffectiveFilter:=#1; // Set an impossible value first, makes sure options are filtered.
   FRenderedOnce := False;
   IdleConnected := True;

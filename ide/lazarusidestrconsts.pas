@@ -2104,6 +2104,10 @@ resourcestring
   dlgUseFpcCfg = 'Use standard compiler config file (fpc.cfg)';
   dlgUseCustomConfig = 'Use additional compiler config file';
   lisAllOptions = 'All Options';
+  lisFilterTheAvailableOptionsList = 'Filter the available options list';
+  lisClearTheFilterForOptions = 'Clear the filter for options';
+  lisShowOnlyModified = 'Show only modified';
+  lisUseCommentsInCustomOptions = 'Use comments in custom options';
   lisCustomOptions2 = 'Custom options';
   lisCustomOptHint = 'These options are passed to the compiler after'
     +' comments are deleted and macros are replaced.';
