@@ -79,6 +79,7 @@ type
     procedure SetWrapable(AValue: Boolean);
   public
     constructor Create(AnAdvTabControl: TCustomExtendedTabControl);
+    procedure AcceptButton(AToolButton: TExtendedTabToolButton);
     property ButtonCount: Integer read GetButtonCount;
     property Buttons[Index: Integer]: TToolButton read GetButton;
     property ButtonList: TList read GetButtonList;
@@ -160,6 +161,7 @@ type
   protected
     property InternalTabPage: TExtendedInternalCustomPage read FInternalTabPage write SetInternalTabPage;
   public
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     //property TabControl: TCustomExtendedTabControl read GetTabControl write SetTabControl;
     //property TabIndex: Integer read GetTabIndex;
@@ -209,8 +211,11 @@ type
   TCustomExtendedTabControl = class(TTabControl)
   private
     FToolBarWrapper: TToolbarWrapper;
+    function GetActiveTabSheet: TExtendedTabSheet;
     function GetShowToolBar: TTabControlToolBarSide;
+    function GetTabSheet(Index: Integer): TExtendedTabSheet;
     procedure SetActivePageComponent(AValue: TCustomPage);
+    procedure SetActiveTabSheet(AValue: TExtendedTabSheet);
     procedure SetShowToolBar(AValue: TTabControlToolBarSide);
   protected
     function AdvTabs: TExtendedTabControlNoteBookStrings;
@@ -233,8 +238,11 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    property ActivePage: TExtendedTabSheet read GetActiveTabSheet write SetActiveTabSheet;
+    property Pages[Index: Integer]: TExtendedTabSheet read GetTabSheet;
     property ShowToolBar: TTabControlToolBarSide read GetShowToolBar write SetShowToolBar;
     property ToolBar: TToolbarWrapper read FToolBarWrapper;
+    property OnChange; // Only pages // TODO: activate for tabs
   end;
 
   { TExtendedTabControl }
@@ -266,6 +274,12 @@ begin
   FInternalTabPage := AValue;
   if FInternalTabPage <> nil then
     FInternalTabPage.RealPage := Self;
+end;
+
+constructor TCustomExtendedTabSheet.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  BorderSpacing.Around := 3;
 end;
 
 destructor TCustomExtendedTabSheet.Destroy;
@@ -523,6 +537,11 @@ begin
   ToolBar;
 end;
 
+procedure TToolbarWrapper.AcceptButton(AToolButton: TExtendedTabToolButton);
+begin
+  AToolButton.Parent := FOwner.AdvTabs.ToolBar;
+end;
+
 { TExtendedTabControlNoteBookStrings }
 
 procedure TExtendedTabControlNoteBookStrings.ToolbarResized(Sender: TObject);
@@ -714,6 +733,16 @@ begin
   Result := AdvTabs.ShowToolBar;
 end;
 
+function TCustomExtendedTabControl.GetTabSheet(Index: Integer): TExtendedTabSheet;
+begin
+  Result:=TExtendedTabSheet(inherited Page[Index]);
+end;
+
+function TCustomExtendedTabControl.GetActiveTabSheet: TExtendedTabSheet;
+begin
+  Result:=TExtendedTabSheet(inherited ActivePageComponent);
+end;
+
 procedure TCustomExtendedTabControl.SetActivePageComponent(AValue: TCustomPage);
 var
   i: Integer;
@@ -721,6 +750,11 @@ begin
   inherited ActivePageComponent := AValue;
   for i := 0 to PageCount - 1 do
     Page[i].Visible := Page[i] = AValue;
+end;
+
+procedure TCustomExtendedTabControl.SetActiveTabSheet(AValue: TExtendedTabSheet);
+begin
+  ActivePageComponent := AValue;
 end;
 
 procedure TCustomExtendedTabControl.SetShowToolBar(AValue: TTabControlToolBarSide);
