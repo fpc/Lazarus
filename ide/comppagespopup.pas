@@ -156,13 +156,12 @@ end;
 procedure TDlgCompPagesPopup.BuildList;
 var
   i: integer;
-  Node: TTreeNode;
 begin
   TreeView1.Items.Clear;
   TreeView1.BeginUpdate;
   if MainIDEBar.ComponentPageControl=nil then
   begin
-    Node:=TreeView1.Items.AddChild(nil,'Sorry, NO Pages');
+    TreeView1.Items.AddChild(nil,'Sorry, NO Pages');
     Exit;
   end;
   fGroups := TStringList.Create;

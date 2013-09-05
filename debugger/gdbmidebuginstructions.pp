@@ -167,11 +167,11 @@ type
   protected
     procedure SendCommandDataToGDB(AQueue: TGDBInstructionQueue); override;
     function ProcessInputFromGdb(const AData: String): Boolean; override;
-    procedure HandleError(AnError: TGDBInstructionErrorFlag; AMarkAsFailed: Boolean = True);
-      override;
     function DebugText: String;
   public
     constructor Create(AQueue: TGDBInstructionQueue; AFrame: Integer);
+    procedure HandleError(AnError: TGDBInstructionErrorFlag; AMarkAsFailed: Boolean = True);
+      override;
   end;
 
   { TGDBInstructionQueue }
