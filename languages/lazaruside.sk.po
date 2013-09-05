@@ -3469,6 +3469,10 @@ msgstr "Cieľová platforma:"
 msgid "Target processor"
 msgstr "Cieľový procesor"
 
+#: lazarusidestrconsts.dlgtargetspecificoptions
+msgid "Target-specific options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtestprjdir
 msgid "Directory for building test projects"
 msgstr "Adresár pre vybudovanie testovacích projektov"
@@ -4773,6 +4777,10 @@ msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "&Zmazať"
 
+#: lazarusidestrconsts.lisbtndlgadd
+msgid "&Add ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
@@ -5750,6 +5758,14 @@ msgstr "Zoznam"
 #: lazarusidestrconsts.liscmplstpalette
 msgid "Palette"
 msgstr "Paleta"
+
+#: lazarusidestrconsts.liscmppages
+msgid "Pages"
+msgstr ""
+
+#: lazarusidestrconsts.liscmprestoredefaults
+msgid "&Restore defaults"
+msgstr ""
 
 #: lazarusidestrconsts.liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
@@ -6779,16 +6795,16 @@ msgstr ""
 msgid "Failed to convert unit%s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphifindallunitfiles
-msgid "*** Find all unit files ***"
-msgstr ""
-
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifixingusedunits
 msgid "* Fixing used units for file %s *"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphifoundallunitfiles
+msgid "Found all unit files"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifunc
@@ -7105,6 +7121,10 @@ msgstr "Otvoriť jednotku  %s"
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Najprv vytvorte projekt!"
+
+#: lazarusidestrconsts.liscreatedebugandreleasemodes
+msgid "Create Debug and Release modes"
+msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -9357,6 +9377,10 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr ""
 
+#: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
+msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
+msgstr ""
+
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
 msgid "Creating Makefile for package %s"
 msgstr ""
@@ -9534,6 +9558,10 @@ msgstr "Cesty Include"
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"
+msgstr ""
+
+#: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
+msgid "Incorrect configuration directory found"
 msgstr ""
 
 #: lazarusidestrconsts.lisindentation
@@ -13117,6 +13145,10 @@ msgstr "Balíčky pre nainštalovanie do IDE"
 msgid "package unit"
 msgstr ""
 
+#: lazarusidestrconsts.lispage
+msgid "Page"
+msgstr ""
+
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ""
@@ -15349,6 +15381,10 @@ msgstr "Rovnaká pravá vzdialenosť"
 msgid "Root"
 msgstr ""
 
+#: lazarusidestrconsts.lisrootdirectory
+msgid "Root Directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisrun
 msgctxt "lazarusidestrconsts.lisrun"
 msgid "Run"
@@ -17490,6 +17526,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Up"
+
+#: lazarusidestrconsts.lisupdateinfo
+msgid "Update info"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
 msgid "Update other procedure signatures when only letter case has changed"

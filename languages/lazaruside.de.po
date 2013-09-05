@@ -3457,6 +3457,10 @@ msgstr "Zielplattform"
 msgid "Target processor"
 msgstr "Zielprozessor"
 
+#: lazarusidestrconsts.dlgtargetspecificoptions
+msgid "Target-specific options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtestprjdir
 msgid "Directory for building test projects"
 msgstr "Verzeichnis für das Anlegen von Testprojekten"
@@ -4743,6 +4747,10 @@ msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "&Löschen"
 
+#: lazarusidestrconsts.lisbtndlgadd
+msgid "&Add ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
@@ -5722,6 +5730,14 @@ msgstr "Liste"
 #: lazarusidestrconsts.liscmplstpalette
 msgid "Palette"
 msgstr "Palette"
+
+#: lazarusidestrconsts.liscmppages
+msgid "Pages"
+msgstr ""
+
+#: lazarusidestrconsts.liscmprestoredefaults
+msgid "&Restore defaults"
+msgstr ""
 
 #: lazarusidestrconsts.liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
@@ -6749,12 +6765,6 @@ msgstr "Unitkonvertierung fehlgeschlagen"
 msgid "Failed to convert unit%s%s%s"
 msgstr "Fehler beim Konvertieren der Unit%s%s%s"
 
-#: lazarusidestrconsts.lisconvdelphifindallunitfiles
-#, fuzzy
-#| msgid "*** Find all unit files ... ***"
-msgid "*** Find all unit files ***"
-msgstr "*** Alle Unitdateien finden ... ***"
-
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr "Zeichenschreibweise von Unit \"%s\" auf \"%s\" korrigiert."
@@ -6762,6 +6772,10 @@ msgstr "Zeichenschreibweise von Unit \"%s\" auf \"%s\" korrigiert."
 #: lazarusidestrconsts.lisconvdelphifixingusedunits
 msgid "* Fixing used units for file %s *"
 msgstr "* Berichtigung der verwendeten Units für Datei %s *"
+
+#: lazarusidestrconsts.lisconvdelphifoundallunitfiles
+msgid "Found all unit files"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
@@ -7081,6 +7095,10 @@ msgstr "Unit %s öffnen"
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Erzeugen Sie zuerst ein Projekt!"
+
+#: lazarusidestrconsts.liscreatedebugandreleasemodes
+msgid "Create Debug and Release modes"
+msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -9336,6 +9354,10 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "Kompilieroptionen der IDE"
 
+#: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
+msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
+msgstr ""
+
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
 msgid "Creating Makefile for package %s"
 msgstr "Erzeuge Makedatei für Package %s"
@@ -9516,6 +9538,10 @@ msgstr "Include-Pfade"
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"
 msgstr "Inklusive Unterverzeichnisse"
+
+#: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
+msgid "Incorrect configuration directory found"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -13017,6 +13043,10 @@ msgstr "Packages für die Installation in der IDE"
 msgid "package unit"
 msgstr "Package-Unit"
 
+#: lazarusidestrconsts.lispage
+msgid "Page"
+msgstr ""
+
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ", analysiert"
@@ -15240,6 +15270,10 @@ msgstr "Rechter Abstand gleich"
 msgid "Root"
 msgstr "Wurzel"
 
+#: lazarusidestrconsts.lisrootdirectory
+msgid "Root Directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisrun
 msgctxt "lazarusidestrconsts.lisrun"
 msgid "Run"
@@ -17398,6 +17432,10 @@ msgstr "Unüblicher Compiler-Dateiname. Üblicherweise startet er mit fpc, ppc o
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Hoch"
+
+#: lazarusidestrconsts.lisupdateinfo
+msgid "Update info"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
 msgid "Update other procedure signatures when only letter case has changed"

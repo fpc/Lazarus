@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-08-11 20:49+0400\n"
+"PO-Revision-Date: 2013-09-05 19:11+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3450,6 +3450,10 @@ msgstr "Целевая платформа"
 msgid "Target processor"
 msgstr "Целевой процессор"
 
+#: lazarusidestrconsts.dlgtargetspecificoptions
+msgid "Target-specific options"
+msgstr "Частные параметры цели"
+
 #: lazarusidestrconsts.dlgtestprjdir
 msgid "Directory for building test projects"
 msgstr "Каталог для сборки пробных проектов"
@@ -4725,6 +4729,10 @@ msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "&Удалить"
 
+#: lazarusidestrconsts.lisbtndlgadd
+msgid "&Add ..."
+msgstr "&Добавить ..."
+
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
@@ -5696,6 +5704,14 @@ msgstr "Список"
 #: lazarusidestrconsts.liscmplstpalette
 msgid "Palette"
 msgstr "Палитра"
+
+#: lazarusidestrconsts.liscmppages
+msgid "Pages"
+msgstr "Вкладки"
+
+#: lazarusidestrconsts.liscmprestoredefaults
+msgid "&Restore defaults"
+msgstr "&Вернуть по умолчанию"
 
 #: lazarusidestrconsts.liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
@@ -6713,11 +6729,6 @@ msgstr "Не удалось преобразовать модуль"
 msgid "Failed to convert unit%s%s%s"
 msgstr "Не удалось преобразовать модуль%s%s%s"
 
-#: lazarusidestrconsts.lisconvdelphifindallunitfiles
-#| msgid "*** Find all unit files ... ***"
-msgid "*** Find all unit files ***"
-msgstr "*** Поиск всех файлов модулей ***"
-
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr "Регистр имени модуля \"%s\" изменён. Новое имя: \"%s\"."
@@ -6725,6 +6736,10 @@ msgstr "Регистр имени модуля \"%s\" изменён. Новое
 #: lazarusidestrconsts.lisconvdelphifixingusedunits
 msgid "* Fixing used units for file %s *"
 msgstr "* Исправление списка используемых модулей в файле %s *"
+
+#: lazarusidestrconsts.lisconvdelphifoundallunitfiles
+msgid "Found all unit files"
+msgstr "Найдены все файлы модулей"
 
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
@@ -7043,6 +7058,10 @@ msgstr "Открыть модуль %s"
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Сначала необходимо создать проект!"
+
+#: lazarusidestrconsts.liscreatedebugandreleasemodes
+msgid "Create Debug and Release modes"
+msgstr "Создать режимы отладочной и конечной сборки"
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -9297,6 +9316,10 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "Параметры сборки IDE"
 
+#: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
+msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
+msgstr "Добро пожаловать в Lazarus.%0:sНайденный каталог настройки использовался другим экземпляром Lazarus.%0:sДва или более экземпляра Lazarus не должны иметь общий каталог настройки. Это может привести к конфликтам и невозможности использования IDE.%0:s%0:sЕсли вы имеете только один экземпляр и скопировали либо переместили исполнимый файл Lazarus, каталог настройки можно обновить.%0:s%1:s%0:s%0:sВыберите:%0:s%0:s* Обновить данные: Использовать этот каталог настройки и обновить его. Старый экземпляр Lazarus больше не будет его использовать.%0:s* Игнорировать: Использовать этот каталог настройки, но предупредить в дальнейшем. Это может привести к конфликтам с другими экземплярами Lazarus.%0:s* Прервать: Завершить работу. Проблему можно будет исправить, запустив Lazarus с указанием корректного каталога настройки.%0:s%0:sДополнительные сведения:%0:sПуть к каталогу настройки: %2:s%0:sЭкземпляр Lazarus, владеющий им: %3:s%0:sПуть запуска текущего экземпляра IDE: %4:s%0:s"
+
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
 msgid "Creating Makefile for package %s"
 msgstr "Создание Makefile для пакета %s"
@@ -9475,6 +9498,10 @@ msgstr "Пути к включаемым файлам"
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"
 msgstr "Искать в подкаталогах"
+
+#: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
+msgid "Incorrect configuration directory found"
+msgstr "Найден неверный каталог настройки"
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -12954,6 +12981,10 @@ msgstr "Пакеты для установки в IDE"
 msgid "package unit"
 msgstr "модуль пакета"
 
+#: lazarusidestrconsts.lispage
+msgid "Page"
+msgstr "Вкладка"
+
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ", обработано "
@@ -15151,6 +15182,10 @@ msgstr "Равномерно по правым краям"
 msgid "Root"
 msgstr "Корневой элемент"
 
+#: lazarusidestrconsts.lisrootdirectory
+msgid "Root Directory"
+msgstr "Корневой каталог"
+
 #: lazarusidestrconsts.lisrun
 msgctxt "lazarusidestrconsts.lisrun"
 msgid "Run"
@@ -17281,6 +17316,10 @@ msgstr "Необычное имя файла компилятора. Как пр
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Вверх"
+
+#: lazarusidestrconsts.lisupdateinfo
+msgid "Update info"
+msgstr "Обновить данные"
 
 #: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
 msgid "Update other procedure signatures when only letter case has changed"

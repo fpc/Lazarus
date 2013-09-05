@@ -3532,6 +3532,10 @@ msgstr "対象プラットフォーム"
 msgid "Target processor"
 msgstr "対象プロセッサ"
 
+#: lazarusidestrconsts.dlgtargetspecificoptions
+msgid "Target-specific options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtestprjdir
 msgid "Directory for building test projects"
 msgstr "テストプロジェクトを構築するディレクトリ"
@@ -4844,6 +4848,10 @@ msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "削除(&D)"
 
+#: lazarusidestrconsts.lisbtndlgadd
+msgid "&Add ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
@@ -5833,6 +5841,14 @@ msgstr "リスト"
 #: lazarusidestrconsts.liscmplstpalette
 msgid "Palette"
 msgstr "パレット"
+
+#: lazarusidestrconsts.liscmppages
+msgid "Pages"
+msgstr ""
+
+#: lazarusidestrconsts.liscmprestoredefaults
+msgid "&Restore defaults"
+msgstr ""
 
 #: lazarusidestrconsts.liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
@@ -6866,12 +6882,6 @@ msgstr "変換に失敗したユニット"
 msgid "Failed to convert unit%s%s%s"
 msgstr "変換に失敗したユニット%s%s%s"
 
-#: lazarusidestrconsts.lisconvdelphifindallunitfiles
-#, fuzzy
-#| msgid "*** Find all unit files ... ***"
-msgid "*** Find all unit files ***"
-msgstr "*** すべてのユニットファイルを検索... ***"
-
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr "ユニットの\"%s\" の大文字小文字を\"%s\" に固定"
@@ -6879,6 +6889,10 @@ msgstr "ユニットの\"%s\" の大文字小文字を\"%s\" に固定"
 #: lazarusidestrconsts.lisconvdelphifixingusedunits
 msgid "* Fixing used units for file %s *"
 msgstr "* ファイル %s に用いられているユニットを修復中 *"
+
+#: lazarusidestrconsts.lisconvdelphifoundallunitfiles
+msgid "Found all unit files"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
@@ -7208,6 +7222,10 @@ msgstr "ユニット %s を開く"
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "初めにプロジェクトを作成してください！"
+
+#: lazarusidestrconsts.liscreatedebugandreleasemodes
+msgid "Create Debug and Release modes"
+msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -9480,6 +9498,10 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "IDE 構築オプション"
 
+#: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
+msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
+msgstr ""
+
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
 msgid "Creating Makefile for package %s"
 msgstr "パッケージ%sのためのMakefileを作成中"
@@ -9657,6 +9679,10 @@ msgstr "インクルードパス"
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"
+msgstr ""
+
+#: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
+msgid "Incorrect configuration directory found"
 msgstr ""
 
 #: lazarusidestrconsts.lisindentation
@@ -13300,6 +13326,10 @@ msgstr "IDEにインストールするパッケージ"
 msgid "package unit"
 msgstr "パッケージユニット"
 
+#: lazarusidestrconsts.lispage
+msgid "Page"
+msgstr ""
+
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ", 構文解析済み"
@@ -15542,6 +15572,10 @@ msgstr "右側の間隔を均等に"
 msgid "Root"
 msgstr "Root"
 
+#: lazarusidestrconsts.lisrootdirectory
+msgid "Root Directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisrun
 msgctxt "lazarusidestrconsts.lisrun"
 msgid "Run"
@@ -17703,6 +17737,10 @@ msgstr "普通でないコンパイラ名。ふつうfpc, ppc あるいは ppcro
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "上へ"
+
+#: lazarusidestrconsts.lisupdateinfo
+msgid "Update info"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
 msgid "Update other procedure signatures when only letter case has changed"
