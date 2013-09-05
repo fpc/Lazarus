@@ -285,9 +285,11 @@ type
     function GetObject(Index: Integer): TObject; override;
     procedure Put(Index: Integer; const S: String); override;
     function IndexOfPage(const AnObject: TPersistent): Integer; override;
-    procedure InsertPage(Index: Integer; const APage: TCustomPage); override;
-    procedure DeletePage(Index: Integer); override;
-    function GetPage(Index: Integer): TCustomPage; override;
+    procedure InsertPage(Index: Integer; const APage: TCustomPage); override; // Internal Insert, no notification to TabControl
+    procedure DeletePage(Index: Integer); override;                           // Internal Delete, no notification to TabControl
+    function GetPage(Index: Integer): TCustomPage; override;                  // Wrapper to GetObj
+    property PageList: TListWithEvent read FPageList;
+    property Notebook: TCustomTabControl read FNotebook;
   public
     constructor Create(theNotebook: TCustomTabControl); override;
     destructor Destroy; override;
@@ -690,6 +692,7 @@ type
     FHandelCreated: TNotifyEvent;
     procedure CreateHandle; override;
   end;
+  TNoteBookStringsTabControlClass = class of TNoteBookStringsTabControl;
 
   { TTabControlNoteBookStrings }
 
@@ -700,6 +703,7 @@ type
     function GetStyle: TTabStyle;
     procedure SetStyle(AValue: TTabStyle);
   protected
+    function GetInternalTabControllClass: TNoteBookStringsTabControlClass; virtual;
     function Get(Index: Integer): string; override;
     function GetCount: Integer; override;
     function GetObject(Index: Integer): TObject; override;

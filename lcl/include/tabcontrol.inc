@@ -193,6 +193,11 @@ begin
   TabControlBoundsChange;
 end;
 
+function TTabControlNoteBookStrings.GetInternalTabControllClass: TNoteBookStringsTabControlClass;
+begin
+  Result := TNoteBookStringsTabControl;
+end;
+
 function TTabControlNoteBookStrings.GetStyle: TTabStyle;
 begin
   Result := FNoteBook.Style;
@@ -273,7 +278,7 @@ end;
 constructor TTabControlNoteBookStrings.Create(TheTabControl: TTabControl);
 begin
   inherited Create(TheTabControl);
-  FNoteBook := TNoteBookStringsTabControl{%H-}.Create(nil);
+  FNoteBook := GetInternalTabControllClass.Create(nil);
   FNoteBook.ControlStyle := FNoteBook.ControlStyle + [csNoDesignSelectable];
   FNoteBook.Parent := TabControl;
   FNoteBook.OnGetImageIndex := @NBGetImageIndex;

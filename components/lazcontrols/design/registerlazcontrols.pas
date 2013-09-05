@@ -28,7 +28,7 @@ implementation
 procedure Register;
 begin
   RegisterComponents('LazControls',[TExtendedTabControl]);
-  RegisterNoIcon([TExtendedTabToolbar, TExtendedTabToolButton]);
+  RegisterNoIcon([TExtendedTabToolbar, TExtendedTabToolButton, TExtendedTabSheet]);
   RegisterComponentEditor(TExtendedTabControl, TExtendedTabControlComponentEditor);
 end;
 
@@ -51,6 +51,14 @@ begin
   end;
 
   Index := Index - c;
+
+  //if Index = 0 then begin
+  //  TabControl.Pages.Add(CreateNewTabCaption);
+  //  Modified;
+  //  exit;
+  //end;
+  //
+  //Index := Index - 1;
   Hook:=nil;
   if not GetHook(Hook) then exit;
   case Index of
@@ -90,6 +98,7 @@ begin
     Result := inherited GetVerb(Index)
   else
     case Index - c of
+      //0: Result := 'New Page';
       0: Result := tbceNewButton;
       1: Result := tbceNewCheckbutton;
       2: Result := tbceNewSeparator;

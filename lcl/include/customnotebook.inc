@@ -71,7 +71,7 @@ function TNBPages.GetObject(Index: Integer): TObject;
 begin
   if (Index<0) or (Index>=FPageList.Count) then
     RaiseGDBException('TNBPages.GetObject Index out of bounds');
-  Result := TCustomPage(FPageList[Index]);
+  Result := TObject(FPageList[Index]);
 end;
 
 {------------------------------------------------------------------------------
@@ -102,9 +102,7 @@ end;
 
 function TNBPages.GetPage(Index: Integer): TCustomPage;
 begin
-  if (Index < 0) or (Index >= Count) then
-    RaiseGDBException('TCustomTabControl.GetCustomPage Index out of bounds');
-  Result := TCustomPage(FPageList.Items[Index]);
+  Result := TCustomPage(GetObject(Index));
 end;
 
 {------------------------------------------------------------------------------

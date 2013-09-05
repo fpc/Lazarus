@@ -5,7 +5,7 @@ unit ExtendedTabControls;
 interface
 
 uses
-  Classes, SysUtils, math, ComCtrls, Controls, Toolwin, ImgList, Graphics, Menus,
+  Classes, SysUtils, math, ComCtrls, Controls, Toolwin, ImgList, Graphics, Menus, Forms,
   LazLoggerBase;
 
 type
@@ -31,27 +31,7 @@ type
     procedure Loaded; override;
   end;
 
-  { TExtendedTabControlNoteBookStrings }
-
-  TExtendedTabControlNoteBookStrings = class(TTabControlNoteBookStrings)
-  private
-    FShowToolBar: TTabControlToolBarSide;
-    FToolBar: TExtendedTabToolbar;
-    procedure SetShowToolBar(AValue: TTabControlToolBarSide);
-    procedure ToolbarResized(Sender: TObject);
-  protected
-    procedure SetToolbar(AToolBar: TExtendedTabToolbar);
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-  public
-    constructor Create(TheTabControl: TTabControl); override;
-    destructor Destroy; override;
-    procedure TabControlBoundsChange; override;
-    property ShowToolBar: TTabControlToolBarSide read FShowToolBar write SetShowToolBar;
-    property ToolBar: TExtendedTabToolbar read FToolBar;
-  end;
-
   TCustomExtendedTabControl = class;
-  // Expose only selected properties
 
   { TToolbarWrapper }
 
@@ -123,19 +103,133 @@ type
     property OnDblClick: TNotifyEvent    read GetOnDblClick     write SetOnDblClick;
   end;
 
+
+  TCustomExtendedTabSheet = class;
+
+  { TExtendedInternalCustomPage }
+
+  TExtendedInternalCustomPage = class(TCustomPage)
+  protected
+  public
+    RealPage: TCustomPage; // optional TCustomExtendedTabSheet
+    destructor Destroy; override;
+  end;
+
+  { TExtendedInternalTabControl
+    Internal TabControl that displays the tabs
+  }
+
+  TExtendedInternalTabControl = class(TNoteBookStringsTabControl)
+  protected
+    function GetPageClass: TCustomPageClass; override; // TExtendedInternalCustomPage
+  end;
+
+  { TExtendedTabControlNoteBookStrings
+    List of Tabs (and pages)
+    TCustomExtendedTabControl.Tabs
+  }
+
+  TExtendedTabControlNoteBookStrings = class(TTabControlNoteBookStrings)
+  private
+    FShowToolBar: TTabControlToolBarSide;
+    FToolBar: TExtendedTabToolbar;
+    procedure SetShowToolBar(AValue: TTabControlToolBarSide);
+    procedure ToolbarResized(Sender: TObject);
+  protected
+    function GetInternalTabControllClass: TNoteBookStringsTabControlClass; override; // TExtendedInternalTabControl
+    procedure SetToolbar(AToolBar: TExtendedTabToolbar);
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+    procedure NBPageChanged(Sender: TObject); override;
+  public
+    constructor Create(TheTabControl: TTabControl); override;
+    destructor Destroy; override;
+    function IndexOfPage(const APage: TCustomExtendedTabSheet): Integer;
+    procedure Delete(Index: Integer); override;
+    procedure TabControlBoundsChange; override;
+    property ShowToolBar: TTabControlToolBarSide read FShowToolBar write SetShowToolBar;
+    property ToolBar: TExtendedTabToolbar read FToolBar;
+  end;
+
+
+  { TCustomExtendedTabSheet }
+
+  TCustomExtendedTabSheet = class(TCustomPage)
+  private
+    FInternalTabPage: TExtendedInternalCustomPage;
+    procedure SetInternalTabPage(AValue: TExtendedInternalCustomPage);
+  protected
+    property InternalTabPage: TExtendedInternalCustomPage read FInternalTabPage write SetInternalTabPage;
+  public
+    destructor Destroy; override;
+    //property TabControl: TCustomExtendedTabControl read GetTabControl write SetTabControl;
+    //property TabIndex: Integer read GetTabIndex;
+  end;
+
+  TExtendedTabSheet = class(TCustomExtendedTabSheet)
+  published
+    property BorderWidth;
+    property BiDiMode;
+    property Caption;
+    property ChildSizing;
+    property ClientHeight;
+    property ClientWidth;
+    property Enabled;
+    property Font;
+    //property Height stored False;
+    property ImageIndex;
+    //property Left stored False;
+    property OnContextPopup;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnHide;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnShow;
+    property OnStartDrag;
+    property PageIndex stored False;
+    property ParentBiDiMode;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabVisible default True;
+    //property Top stored False;
+    //property Width stored False;
+  end;
+
   { TCustomExtendedTabControl }
 
   TCustomExtendedTabControl = class(TTabControl)
   private
     FToolBarWrapper: TToolbarWrapper;
     function GetShowToolBar: TTabControlToolBarSide;
+    procedure SetActivePageComponent(AValue: TCustomPage);
     procedure SetShowToolBar(AValue: TTabControlToolBarSide);
   protected
     function AdvTabs: TExtendedTabControlNoteBookStrings;
     function CreateTabNoteBookStrings: TTabControlNoteBookStrings; override;
+
+    //procedure AddRemovePageHandle({%H-}APage: TCustomPage); override; // prevent calling widgetset
+    //procedure UpdateTabProperties; override;
+    procedure InsertPage(APage: TCustomPage; Index: Integer); override;
+    procedure RemovePage(Index: Integer); override;
+    //PageRemoved // visible = false
+    //DoSendPageIndex // prevent
+
     function  GetChildOwner: TComponent; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
+    function GetPageClass: TCustomPageClass; override;
+    function GetListClass: TNBBasePagesClass; override;
+    property ActivePageComponent: TCustomPage write SetActivePageComponent;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -152,6 +246,41 @@ type
   end;
 
 implementation
+
+{ TExtendedInternalCustomPage }
+
+destructor TExtendedInternalCustomPage.Destroy;
+begin
+  if RealPage <> nil then
+    TCustomExtendedTabSheet(RealPage).InternalTabPage := nil;
+  inherited Destroy;
+end;
+
+{ TCustomExtendedTabSheet }
+
+procedure TCustomExtendedTabSheet.SetInternalTabPage(AValue: TExtendedInternalCustomPage);
+begin
+  if FInternalTabPage = AValue then Exit;
+  if FInternalTabPage <> nil then
+    FInternalTabPage.RealPage := nil;
+  FInternalTabPage := AValue;
+  if FInternalTabPage <> nil then
+    FInternalTabPage.RealPage := Self;
+end;
+
+destructor TCustomExtendedTabSheet.Destroy;
+begin
+  SetParent(nil);
+  InternalTabPage := nil;
+  inherited Destroy;
+end;
+
+{ TExtendedInternalTabControl }
+
+function TExtendedInternalTabControl.GetPageClass: TCustomPageClass;
+begin
+  Result := TExtendedInternalCustomPage;
+end;
 
 { TExtendedTabToolButton }
 
@@ -401,6 +530,11 @@ begin
   TabControlBoundsChange;
 end;
 
+function TExtendedTabControlNoteBookStrings.GetInternalTabControllClass: TNoteBookStringsTabControlClass;
+begin
+  Result := TExtendedInternalTabControl;
+end;
+
 procedure TExtendedTabControlNoteBookStrings.SetToolbar(AToolBar: TExtendedTabToolbar);
 begin
   if FToolBar <> nil then begin
@@ -421,6 +555,14 @@ begin
     FToolBar := nil;
 end;
 
+procedure TExtendedTabControlNoteBookStrings.NBPageChanged(Sender: TObject);
+var
+  p: TCustomPage;
+begin
+  p := TExtendedInternalCustomPage(NoteBook.Page[NoteBook.PageIndex]).RealPage;
+  TExtendedTabControl(TabControl).ActivePageComponent := p;
+end;
+
 
 constructor TExtendedTabControlNoteBookStrings.Create(TheTabControl: TTabControl);
 begin
@@ -438,6 +580,25 @@ begin
   SetToolbar(nil);
 end;
 
+function TExtendedTabControlNoteBookStrings.IndexOfPage(const APage: TCustomExtendedTabSheet): Integer;
+begin
+  Result := Count - 1;
+  while (Result >= 0) and (TExtendedInternalCustomPage(Objects[Result]).RealPage <> APage) do
+    dec(Result);
+end;
+
+procedure TExtendedTabControlNoteBookStrings.Delete(Index: Integer);
+var
+  p: TCustomPage;
+begin
+  p := TExtendedInternalCustomPage(Objects[Index]).RealPage;
+  inherited Delete(Index);
+  if p <> nil then begin
+    p.Parent := nil;
+    Application.ReleaseComponent(p);
+  end;
+end;
+
 procedure TExtendedTabControlNoteBookStrings.SetShowToolBar(AValue: TTabControlToolBarSide);
 begin
   if FShowToolBar = AValue then Exit;
@@ -453,9 +614,10 @@ begin
 
   NoteBook.TabPosition:=TabControl.TabPosition;
   FToolBar.Visible := ShowToolBar <> tsNone;
-  FToolBar.AutoSize := FToolBar.Visible;
-  if not FToolBar.Visible then
-    FToolBar.SetBounds(0,0,0,0);
+  if FToolBar.Visible then
+    FToolBar.ControlStyle := FToolBar.ControlStyle-[csNoDesignVisible]
+  else
+    FToolBar.ControlStyle := FToolBar.ControlStyle+[csNoDesignVisible];
   FToolBar.FVertical := TabPosition in [tpLeft,tpRight];
 
   case TabControl.TabPosition of
@@ -552,6 +714,15 @@ begin
   Result := AdvTabs.ShowToolBar;
 end;
 
+procedure TCustomExtendedTabControl.SetActivePageComponent(AValue: TCustomPage);
+var
+  i: Integer;
+begin
+  inherited ActivePageComponent := AValue;
+  for i := 0 to PageCount - 1 do
+    Page[i].Visible := Page[i] = AValue;
+end;
+
 procedure TCustomExtendedTabControl.SetShowToolBar(AValue: TTabControlToolBarSide);
 begin
   AdvTabs.ShowToolBar := AValue;
@@ -565,6 +736,31 @@ end;
 function TCustomExtendedTabControl.CreateTabNoteBookStrings: TTabControlNoteBookStrings;
 begin
   Result := TExtendedTabControlNoteBookStrings.Create(Self);
+end;
+
+procedure TCustomExtendedTabControl.InsertPage(APage: TCustomPage; Index: Integer);
+begin
+  inherited InsertPage(APage, Index);
+  if Index >= Tabs.Count then
+    Index := Tabs.Add(APage.Caption)
+  else
+    Tabs.Insert(Index, APage.Caption);
+  TCustomExtendedTabSheet(APage).InternalTabPage := TExtendedInternalCustomPage(Tabs.Objects[Index]);
+end;
+
+procedure TCustomExtendedTabControl.RemovePage(Index: Integer);
+var
+  i: Integer;
+  ThePage: TCustomExtendedTabSheet;
+begin
+  ThePage := TCustomExtendedTabSheet(CustomPage(Index));
+  if ThePage.InternalTabPage <> nil then begin
+    i := AdvTabs.IndexOfPage(ThePage);
+    ThePage.InternalTabPage := nil;
+    if i >= 0 then
+      Tabs.Delete(i);
+  end;
+  inherited RemovePage(Index);
 end;
 
 function TCustomExtendedTabControl.GetChildOwner: TComponent;
@@ -599,6 +795,16 @@ begin
   inherited Notification(AComponent, Operation);
   if AdvTabs <> nil then
     AdvTabs.Notification(AComponent, Operation);
+end;
+
+function TCustomExtendedTabControl.GetPageClass: TCustomPageClass;
+begin
+  Result := TExtendedTabSheet;
+end;
+
+function TCustomExtendedTabControl.GetListClass: TNBBasePagesClass;
+begin
+  Result := TNBPages;
 end;
 
 constructor TCustomExtendedTabControl.Create(TheOwner: TComponent);
