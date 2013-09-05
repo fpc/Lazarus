@@ -362,8 +362,9 @@ begin
   // set LCL size
   AChild.SetBounds(AChild.Left, AChild.Top, ATabControl.ClientWidth, ATabControl.ClientHeight);
 
-  if AChild.TabVisible then
-    gtk_widget_show(PageWidget);
+  // For a PageControl the widget must be visible
+  // If not the page control will not use it. It may not even show the tab
+  gtk_widget_show(PageWidget);
 
   // Check if already created. if so just show it because it is invisible
   if gtk_notebook_get_tab_label(PGtkNoteBook(NoteBookWidget), PageWidget) <> nil
@@ -655,15 +656,14 @@ var
 begin
   if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
     exit;
-  if (csDesigning in AWinControl.ComponentState) then
-  begin
-    AShow := Assigned(AWinControl.Parent) and (AWinControl.Parent is TCustomTabControl) and
-      TCustomTabControl(AWinControl.Parent).ShowTabs;
-    TGtk2WidgetSet(WidgetSet).SetVisible(AWinControl,
-      AShow);
-  end else
-    TGtk2WidgetSet(WidgetSet).SetVisible(AWinControl,
-      TCustomPage(AWinControl).TabVisible);
+
+  // In a PageControl, the child widget must always be visible
+  // it will be controlled by gtk_notebook_set_page
+  // Making a page invisible, also hides the tab.
+  if not (AWinControl is TTabControl) then
+    exit;
+
+  TGtk2WidgetSet(WidgetSet).SetVisible(AWinControl, AWinControl.HandleObjectShouldBeVisible);
 end;
 
 class function TGtk2WSCustomPage.GetDefaultClientRect(
