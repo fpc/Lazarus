@@ -11,22 +11,22 @@ InstallChm=Install chm help files
 AssociateGroup=Associate file extensions
 
 CheckSecondClick=Create a new secondary installation
-CheckSecondInfo=A secondary installation allows two or more versions of Lazarus to be installed. Each version will have it's own configuration. Please read the FAQ on multiple installations before using this option.
+CheckSecondInfo=A secondary installation allows two or more versions of Lazarus to be installed. Each version will have its own configuration. Please read the FAQ on multiple installations before using this option.
 
 FolderHasSpaces=Selected folder contains spaces, please select a folder without spaces in it.
 FolderNotEmpty=The target folder is not empty. Continue with installation?
 FolderNotEmpty2=The target folder is not empty.
 
-FolderForSecondNoFile=The target folder is not empty and does not contains an upgradable secondary Lazarus installation.%0:sPlease choose an empty folder, or an folder with an existing secondary Lazarus installation for updating.
-FolderForSecondBadFile=The target folder is not empty. The installer could not detect if it contains an upgradable secondary Lazarus installation%0:sPlease choose an empty folder, or an folder with an existing secondary Lazarus installation for updating.
+FolderForSecondNoFile=The target folder is not empty and does not contain an upgradable secondary Lazarus installation.%0:sPlease choose an empty folder, or a folder with an existing secondary Lazarus installation for updating.
+FolderForSecondBadFile=The target folder is not empty. The installer could not detect if it contains an upgradable secondary Lazarus installation.%0:sPlease choose an empty folder, or a folder with an existing secondary Lazarus installation for updating.
 FolderForSecondUpgrading=The target folder is not empty.%0:sIt contains a secondary Lazarus installation using the following folder for configuration:%0:s%1:s%0:s%0:sContinue with installation?
-FolderForSecondUpgradingPrimary=The target folder is not empty.%0:sIt contains a default (none secondary) Lazarus installation%0:sIf you continue, it will be changed into a secondary installation%0:s%0:s%0:sContinue with installation?
+FolderForSecondUpgradingPrimary=The target folder is not empty.%0:sIt contains a default (non-secondary) Lazarus installation.%0:sIf you continue, it will be changed into a secondary installation.%0:s%0:s%0:sContinue with installation?
 
-FolderForSecondBadUninstall=The target folder is not empty. The installer could not verify if it is safe to use.%0:sPlease choose an empty folder, or an folder with an existing secondary Lazarus installation for updating.
+FolderForSecondBadUninstall=The target folder is not empty. The installer could not verify if it is safe to use.%0:sPlease choose an empty folder, or a folder with an existing secondary Lazarus installation for updating.
 
 SecondConfCapt=Select configuration folder
 SecondConfCapt2=Where do you want this Lazarus installation to store its configuration?
-SecondConfBody=Select a new empty folder for this installation of Lazarus to store its configuration, then continue with next.
+SecondConfBody=Select a new empty folder for this installation of Lazarus to store its configuration, then continue with 'Next'.
 
 FolderForConfNotEmpty=The selected folder is not empty.
 
@@ -41,13 +41,13 @@ OldInDestFolder3=
 OldInDestFolder4=
 
 OldInOtherFolder1=Another installation of %1:s was found at %2:s. Please use the button below to uninstall it now. If you wish to keep it, please tick the checkbox to continue.
-OldInOtherFolder2=Warning: There may be conflicts between the different installs and they may not function properly.
+OldInOtherFolder2=Warning: There may be conflicts between the different installations and they may not function properly.
 OldInOtherFolder3=Note: You have not chosen a dedicated configuration Folder for this installation.
-OldInOtherFolder4=If you wish to use more than one installation, pleas go back and check: "Create a new secondary installation"
+OldInOtherFolder4=If you wish to use more than one installation, please go back and check: "Create a new secondary installation"
 
-OldInBadFolder1=Warning: Another installation of %1:s was found at %2:s. But the uninstaller was found at %3:s. Please make sure the uninstaller is correct.
+OldInBadFolder1=Warning: Another installation of %1:s was found at %2:s, but the uninstaller was found at %3:s. Please make sure the uninstaller is correct.
 OldInBadFolder2=Warning: There may be conflicts between the different installs and they may not function properly.
-OldInBadFolder3=Note: If you wish to use more than one installation, pleas go back and check: "Create a new secondary installation"
+OldInBadFolder3=Note: If you wish to use more than one installation, please go back and check: "Create a new secondary installation"
 OldInBadFolder4=Please use the button below to uninstall it now. If you wish to keep it, please tick the checkbox to continue.
 
 OldSecondInDestFolder1=Another installation of %1:s exists in the destination folder. If you wish to uninstall first, please use the button below.
