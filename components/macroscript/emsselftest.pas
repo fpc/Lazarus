@@ -625,8 +625,7 @@ begin
              'begin' +
              '  test_int1(SizeOf(p));' +
              'end.');
-    AssertEQ('Failed int param (SizeOf(TPoint))',
-             SizeOf({$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF}), TestResultInt1);
+    AssertEQ('Failed int param (SizeOf(TPoint))', SizeOf(TPoint), TestResultInt1);
 
     // TPoint
     TestResultInt1 := -1;
