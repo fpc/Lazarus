@@ -137,6 +137,7 @@ begin
   fChangingSelections:=False;
 
   Caption:=lisKMExampleProjects;
+  lbRootDirectory.Caption:=lisRootDirectory;
   cbIncludeAllDirs.Caption:=lisIncludeAllSubDirectories;
   cgIncludedDirs.Caption:=lisIncludeSubDirectories;
 

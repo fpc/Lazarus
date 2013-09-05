@@ -495,6 +495,7 @@ resourcestring
   lisProjectCount = '%d projects';
   lisIncludeSubDirectories = 'Include subdirectories';
   lisIncludeAllSubDirectories = 'Include all subdirectories';
+  lisRootDirectory = 'Root Directory';
   lisMEOther = 'Other tabs';
   lisTabsFor = 'Tabs for %s';
   lisRecentTabs = 'Recent tabs';
