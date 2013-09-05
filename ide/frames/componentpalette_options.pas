@@ -190,11 +190,7 @@ procedure TCompPaletteOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TEnvironmentOptions do
   begin
-    // read colors
-    //PagesListBox.Items.Objects[Ord(dcGrid)] := TObject(PtrInt(GridColor));
-
-    //ShowComponentCaptionsCheckBox.Checked := ShowComponentCaptions;
-    //RubberbandSelectsGrandChildsCheckBox.Checked := RubberbandSelectsGrandChilds;
+    ;
   end;
   FLoaded := True;
 end;
@@ -203,11 +199,7 @@ procedure TCompPaletteOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TEnvironmentOptions do
   begin
-    // write colors
-    //GridColor := PagesListBox.Colors[Ord(dcGrid)];
-
-    //ShowComponentCaptions := ShowComponentCaptionsCheckBox.Checked;
-    //RubberbandSelectsGrandChilds := RubberbandSelectsGrandChildsCheckBox.Checked;
+    ;
   end;
 end;
 
@@ -249,7 +241,7 @@ var
 begin
   lb := Sender as TListBox;
   DestPt := Point(X, Y);
-  DestInd := lb.itemAtPos(DestPt, true);
+  DestInd := lb.ItemAtPos(DestPt, true);
   //SelfBox := Sender as TListBox;
   if Source is TListBox then
   begin
@@ -260,7 +252,7 @@ begin
       Dec(DestInd);
     if (lb.ItemIndex > 0) and (DestInd > 0) and (lb.ItemIndex <> DestInd) then
     begin
-      lb.items.Move(lb.ItemIndex, DestInd);
+      lb.Items.Move(lb.ItemIndex, DestInd);
       lb.ItemIndex := DestInd;
     end;
   end
@@ -273,10 +265,9 @@ begin
       // Move possibly many selected items
       if SrcView.Items[Ind].Selected then
       begin
-        Item := SrcView.items.Item[Ind];
-        SrcView.items.Delete(Ind);     // delete the item that is being dragged
-        // insert the item into the correct position in the listbox that it was dropped on
-        //SelfBox.items.Insert(SelfBox.itemAtPos(DestPt,true), szTemp);
+        Item := SrcView.Items[Ind];
+        SrcView.Items.Delete(Ind);     // delete the item that is being dragged
+        // ToDo: insert item into this page in a temporary data
       end;
       inc(Ind);
     end;
@@ -292,7 +283,7 @@ var
 begin
   lb := Sender as TListBox;
   DestPt := Point(X, Y);
-  DestInd := lb.itemAtPos(DestPt, true);
+  DestInd := lb.ItemAtPos(DestPt, true);
   Accept := ( (Source is TListBox) and (Source = Sender)
               and (lb.ItemIndex > 0) and (DestInd > 0)
             ) or (Source is TListView);
