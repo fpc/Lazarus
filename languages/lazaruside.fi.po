@@ -5466,6 +5466,10 @@ msgstr "Tyhjennä"
 msgid "Clear Directory?"
 msgstr "Tyhjennä hakemisto?"
 
+#: lazarusidestrconsts.lisclearthefilterforoptions
+msgid "Clear the filter for options"
+msgstr ""
+
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr "Klikkaa tästä selataksesi tiedostoa"
@@ -8669,6 +8673,10 @@ msgstr "Suodatin: %s"
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
 msgstr "Suodatinryhmät"
+
+#: lazarusidestrconsts.lisfiltertheavailableoptionslist
+msgid "Filter the available options list"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectory
 msgid "D&irectory"
@@ -15103,6 +15111,10 @@ msgstr "Näytä tunnisteet"
 msgid "Show information box"
 msgstr "Näytä lisätieto-osa"
 
+#: lazarusidestrconsts.lisshowonlymodified
+msgid "Show only modified"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr "Näytä yleiskuvan reunapalkki "
@@ -16865,6 +16877,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Käytä Ansistringia"
+
+#: lazarusidestrconsts.lisusecommentsincustomoptions
+msgid "Use comments in custom options"
+msgstr ""
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

@@ -5773,6 +5773,10 @@ msgstr "消去"
 msgid "Clear Directory?"
 msgstr "ディレクトリ内を消去しますか？"
 
+#: lazarusidestrconsts.lisclearthefilterforoptions
+msgid "Clear the filter for options"
+msgstr ""
+
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr "ファイルを閲覧するためにここをクリックしてください。"
@@ -9055,6 +9059,10 @@ msgstr "フィルタ: %s"
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
 msgstr "フィルタセット"
+
+#: lazarusidestrconsts.lisfiltertheavailableoptionslist
+msgid "Filter the available options list"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectory
 msgid "D&irectory"
@@ -15966,6 +15974,10 @@ msgstr "識別子を表示"
 msgid "Show information box"
 msgstr "情報ボックスを表示"
 
+#: lazarusidestrconsts.lisshowonlymodified
+msgid "Show only modified"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr "概観ガターを表示"
@@ -17778,6 +17790,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Ansistringsを使用"
+
+#: lazarusidestrconsts.lisusecommentsincustomoptions
+msgid "Use comments in custom options"
+msgstr ""
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

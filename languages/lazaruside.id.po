@@ -5655,6 +5655,10 @@ msgstr "Clear"
 msgid "Clear Directory?"
 msgstr ""
 
+#: lazarusidestrconsts.lisclearthefilterforoptions
+msgid "Clear the filter for options"
+msgstr ""
+
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr ""
@@ -8890,6 +8894,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
+msgstr ""
+
+#: lazarusidestrconsts.lisfiltertheavailableoptionslist
+msgid "Filter the available options list"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectory
@@ -15676,6 +15684,10 @@ msgstr "Tampilkan pengenal"
 msgid "Show information box"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowonlymodified
+msgid "Show only modified"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr ""
@@ -17466,6 +17478,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Gunakan Ansi Strings"
+
+#: lazarusidestrconsts.lisusecommentsincustomoptions
+msgid "Use comments in custom options"
+msgstr ""
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

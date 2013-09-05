@@ -5607,6 +5607,10 @@ msgstr "Очистити"
 msgid "Clear Directory?"
 msgstr "Очистити Теку?"
 
+#: lazarusidestrconsts.lisclearthefilterforoptions
+msgid "Clear the filter for options"
+msgstr ""
+
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr "Клацніть тут для вибору файлу"
@@ -8845,6 +8849,10 @@ msgstr "Фільтр: %s"
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
 msgstr "Набори Фільтрів"
+
+#: lazarusidestrconsts.lisfiltertheavailableoptionslist
+msgid "Filter the available options list"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectory
 msgid "D&irectory"
@@ -15484,6 +15492,10 @@ msgstr "Показувати змінні"
 msgid "Show information box"
 msgstr "Показувати панель інформації"
 
+#: lazarusidestrconsts.lisshowonlymodified
+msgid "Show only modified"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr "Показати Канавку огляду"
@@ -17262,6 +17274,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Викор рядки Ansi"
+
+#: lazarusidestrconsts.lisusecommentsincustomoptions
+msgid "Use comments in custom options"
+msgstr ""
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

@@ -5638,6 +5638,10 @@ msgstr "Clear"
 msgid "Clear Directory?"
 msgstr "Išvalyti aplanką?"
 
+#: lazarusidestrconsts.lisclearthefilterforoptions
+msgid "Clear the filter for options"
+msgstr ""
+
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr "Čia paspaudę, galėsite naršyti failo"
@@ -8877,6 +8881,10 @@ msgstr "Filtras: %s"
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
 msgstr "Filtrų aibės"
+
+#: lazarusidestrconsts.lisfiltertheavailableoptionslist
+msgid "Filter the available options list"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectory
 msgid "D&irectory"
@@ -15562,6 +15570,10 @@ msgstr "Rodyti identifikatorius"
 msgid "Show information box"
 msgstr "Rodyti informacijos laukelį"
 
+#: lazarusidestrconsts.lisshowonlymodified
+msgid "Show only modified"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr "Rodyti apžvalgos paraštę"
@@ -17361,6 +17373,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Naudoti ANSI tekstą"
+
+#: lazarusidestrconsts.lisusecommentsincustomoptions
+msgid "Use comments in custom options"
+msgstr ""
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

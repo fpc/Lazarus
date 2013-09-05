@@ -5740,6 +5740,10 @@ msgstr "נקה"
 msgid "Clear Directory?"
 msgstr "האם לנקות את הספרייה?"
 
+#: lazarusidestrconsts.lisclearthefilterforoptions
+msgid "Clear the filter for options"
+msgstr ""
+
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr "לחץ כאן בשביל לצפות בקובץ"
@@ -9018,6 +9022,10 @@ msgstr "מסנן: s%"
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
 msgstr "הגדרת מסנן"
+
+#: lazarusidestrconsts.lisfiltertheavailableoptionslist
+msgid "Filter the available options list"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectory
 msgid "D&irectory"
@@ -15917,6 +15925,10 @@ msgstr "הראה מזהים"
 msgid "Show information box"
 msgstr "הראה תיבת מידע"
 
+#: lazarusidestrconsts.lisshowonlymodified
+msgid "Show only modified"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr ""
@@ -17723,6 +17735,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "השתמש במחרוזת ansi"
+
+#: lazarusidestrconsts.lisusecommentsincustomoptions
+msgid "Use comments in custom options"
+msgstr ""
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

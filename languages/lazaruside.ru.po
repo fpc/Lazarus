@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-09-05 19:11+0400\n"
+"PO-Revision-Date: 2013-09-05 20:23+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5637,6 +5637,10 @@ msgstr "Очистить"
 msgid "Clear Directory?"
 msgstr "Очистить каталог?"
 
+#: lazarusidestrconsts.lisclearthefilterforoptions
+msgid "Clear the filter for options"
+msgstr "Очистить фильтр параметров"
+
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr "Щёлкните здесь для выбора файла"
@@ -8878,6 +8882,10 @@ msgstr "Фильтр: %s"
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
 msgstr "Наборы фильтров"
+
+#: lazarusidestrconsts.lisfiltertheavailableoptionslist
+msgid "Filter the available options list"
+msgstr "Фильтр списка доступных параметров"
 
 #: lazarusidestrconsts.lisfindfiledirectory
 msgid "D&irectory"
@@ -15571,6 +15579,10 @@ msgstr "Показывать идентификаторы"
 msgid "Show information box"
 msgstr "Показывать информационную панель"
 
+#: lazarusidestrconsts.lisshowonlymodified
+msgid "Show only modified"
+msgstr "Показывать только изменённые"
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr "Показывать поле обзора"
@@ -17357,6 +17369,10 @@ msgstr "Применить и закрыть"
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Использовать строки Ansistring"
+
+#: lazarusidestrconsts.lisusecommentsincustomoptions
+msgid "Use comments in custom options"
+msgstr "Комментарии в параметрах пользователя"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

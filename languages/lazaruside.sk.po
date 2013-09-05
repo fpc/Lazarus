@@ -5690,6 +5690,10 @@ msgstr "Vymazať"
 msgid "Clear Directory?"
 msgstr "Vyčistiť adresár?"
 
+#: lazarusidestrconsts.lisclearthefilterforoptions
+msgid "Clear the filter for options"
+msgstr ""
+
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr "Pre prehľadávanie súboru kliknite tu"
@@ -8938,6 +8942,10 @@ msgstr ""
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
 msgstr "Množiny filtrov"
+
+#: lazarusidestrconsts.lisfiltertheavailableoptionslist
+msgid "Filter the available options list"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectory
 msgid "D&irectory"
@@ -15771,6 +15779,10 @@ msgstr "Zobraziť identifikátory"
 msgid "Show information box"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowonlymodified
+msgid "Show only modified"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr ""
@@ -17567,6 +17579,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Použiť ANSI reťazce"
+
+#: lazarusidestrconsts.lisusecommentsincustomoptions
+msgid "Use comments in custom options"
+msgstr ""
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
