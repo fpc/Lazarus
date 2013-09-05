@@ -236,7 +236,6 @@ var
   SrcView: TListView;
   DestPt: TPoint;
   Ind, DestInd: integer;
-  szTemp: String;
   Item: TListItem;
 begin
   lb := Sender as TListBox;
@@ -268,6 +267,7 @@ begin
         Item := SrcView.Items[Ind];
         SrcView.Items.Delete(Ind);     // delete the item that is being dragged
         // ToDo: insert item into this page in a temporary data
+        if Item=nil then ;
       end;
       inc(Ind);
     end;
