@@ -451,7 +451,7 @@ var
   FrameBorders: TRect;
 begin
   FrameBorders:=GetStyleNotebookFrameBorders;
-  Result := FrameBorders.Top + 2; // +1 for getting size, +1 to see border line
+  Result := FrameBorders.Top; // +1 for getting size, +1 to see border line
   if Result<=0 then
     Result:=inherited GetNotebookMinTabHeight(AWinControl);
   //debugln('TGtkWSCustomTabControl.GetNotebookMinTabHeight A ',dbgs(Result));
