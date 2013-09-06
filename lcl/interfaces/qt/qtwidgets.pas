@@ -15700,6 +15700,9 @@ begin
   if CanReturnIndex or ATextChanging then
     Result := QTabWidget_indexOf(AParent, Widget)
   else
+  if not QObject_inherits(QWidget_parentWidget(Widget),'QStackedWidget') then
+    Result := 0
+  else
     Result := -1;
 end;
 
@@ -15709,7 +15712,8 @@ var
 begin
   // it is placed to the stack widget and stack widget into tab widget
   AParent := QWidget_parentWidget(Widget);
-  if AParent <> nil then
+  // do not localize !
+  if (AParent <> nil) and QObject_inherits(AParent,'QStackedWidget') then
     Result := QTabWidgetH(QWidget_parentWidget(AParent))
   else
     Result := nil;
