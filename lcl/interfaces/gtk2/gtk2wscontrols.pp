@@ -27,7 +27,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls,
+  Controls, ComCtrls,
 ////////////////////////////////////////////////////
   Classes, SysUtils,
   Graphics,
@@ -798,6 +798,9 @@ class procedure TGtk2WSWinControl.SetText(const AWinControl: TWinControl;
     MenuLabelWidget: PGtkWidget; // the label in the popup menu item
     NewText: PChar;
   begin
+    if (AWinControl.Parent <> nil) and (AWinControl.Parent is TTabControl) then
+      exit;
+
     // dig through the hierachy to get the labels
     NoteBookWidget:={%H-}PGtkWidget((AWinControl.Parent).Handle);
     PageWidget:={%H-}PGtkWidget(AWinControl.Handle);

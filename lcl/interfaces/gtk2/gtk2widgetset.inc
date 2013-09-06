@@ -4607,7 +4607,7 @@ begin
       // -> if this is the last page, then add a dummy page
       APage:=TCustomPage(Sender);
       if (APage.Parent<>nil) and APage.Parent.HandleAllocated
-      and (APage.Parent is TCustomTabControl) then
+      and (APage.Parent is TPageControl) then
       begin
         NoteBookWidget:={%H-}PGtkNotebook(TCustomTabControl(APage.Parent).Handle);
         if GetGtkNoteBookPageCount(NoteBookWidget)=1 then

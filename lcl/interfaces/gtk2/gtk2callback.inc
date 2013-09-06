@@ -275,7 +275,9 @@ begin
       TGtkPrivateWidgetClass(TheWinControl.WidgetSetClass.WSPrivate).UpdateCursor(WinWidgetInfo);
       ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
 
-      if TheWinControl is TCustomPage then
+      if (TheWinControl is TCustomPage)
+        and not ((TheWinControl.Parent <> nil) and (TheWinControl.Parent is TTabControl))
+      then
         UpdateNotebookPageTab(nil,TheWinControl);
 
       if TheWinControl is TCustomForm then

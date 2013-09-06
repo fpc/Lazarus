@@ -362,6 +362,13 @@ begin
   // set LCL size
   AChild.SetBounds(AChild.Left, AChild.Top, ATabControl.ClientWidth, ATabControl.ClientHeight);
 
+  if (ATabControl is TTabControl) then begin
+    if AChild.HandleObjectShouldBeVisible then
+      gtk_widget_show(PageWidget);
+    exit;
+  end;
+
+
   // For a PageControl the widget must be visible
   // If not the page control will not use it. It may not even show the tab
   gtk_widget_show(PageWidget);
@@ -425,6 +432,9 @@ class procedure TGtk2WSCustomTabControl.MovePage(const ATabControl: TCustomTabCo
 var
   NoteBookWidget: PGtkNotebook;
 begin
+  if (ATabControl is TTabControl) then
+    exit;
+
   NoteBookWidget:={%H-}PGtkNotebook(ATabControl.Handle);
   gtk_notebook_reorder_child(NoteBookWidget, {%H-}PGtkWidget(AChild.Handle), NewIndex);
   UpdateNoteBookClientWidget(ATabControl);
@@ -466,6 +476,9 @@ var
   Count: guint;
 begin
   Result:=-1;
+  if (ATabControl is TTabControl) then
+    exit;
+
   NoteBookWidget:={%H-}PGtkNotebook(ATabControl.Handle);
   if (NotebookWidget=nil) then exit;
   //DebugLn(['TGtkWSCustomTabControl.GetTabIndexAtPos ',GetWidgetDebugReport(PGtkWidget(NotebookWidget))]);
@@ -507,6 +520,9 @@ var
   Count: guint;
 begin
   Result := inherited;
+  if (ATabControl is TTabControl) then
+    exit;
+
   NoteBookWidget:={%H-}PGtkNotebook(ATabControl.Handle);
   if (NotebookWidget=nil) then exit;
 
@@ -527,6 +543,9 @@ var
   ANewIndex: Integer;
   Page: PGtkWidget;
 begin
+  if (ATabControl is TTabControl) then
+    exit;
+
   if not WSCheckHandleAllocated(ATabControl, 'SetPageIndex') then
     Exit;
   if (AIndex < 0) or (AIndex > ATabControl.PageCount - 1) then
@@ -550,6 +569,9 @@ end;
 class procedure TGtk2WSCustomTabControl.SetTabPosition(
   const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
 begin
+  if (ATabControl is TTabControl) then
+    exit;
+
   gtk_notebook_set_tab_pos({%H-}PGtkNotebook(ATabControl.Handle),
     GtkPositionTypeMap[ATabPosition]);
 end;
@@ -567,6 +589,9 @@ end;
 
 class procedure TGtk2WSCustomTabControl.UpdateProperties(const ATabControl: TCustomTabControl);
 begin
+  if (ATabControl is TTabControl) then
+    exit;
+
   if (nboHidePageListPopup in ATabControl.Options) then
     gtk_notebook_popup_disable({%H-}PGtkNotebook(ATabControl.Handle))
   else
@@ -612,6 +637,9 @@ var
   TabWidget: PGtkWidget;
   TabImageWidget: PGtkWidget;
 begin
+  if (ACustomPage.Parent <> nil) and (ACustomPage.Parent is TTabControl) then
+    exit;
+
   UpdateNotebookPageTab(nil, ACustomPage);
   {we must update our icon (if exists) otherwise it will be updated only
   when our tab reach focus}
@@ -639,20 +667,32 @@ end;
 class procedure TGtk2WSCustomPage.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
+  if (AWinControl.Parent <> nil) and (AWinControl.Parent is TTabControl) then begin
+    // call inherited; need to do it this way,
+    // because the compile time ancestor class is TWSCustomListView
+    TWSWinControlClass(ClassParent).SetBounds(AWinControl, ALeft, ATop, AWidth, AHeight);
+    inherited;
+    exit;
+  end;
+
   // ignore resizes from the LCL
 end;
 
 class procedure TGtk2WSCustomPage.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
 begin
+  if (AWinControl.Parent <> nil) and (AWinControl.Parent is TTabControl) then begin
+    // runtime inherited
+    TWSWinControlClass(ClassParent).SetFont(AWinControl, AFont);
+    exit;
+  end;
+
   if not WSCheckHandleAllocated(AWinControl, 'SetFont') then
     exit;
   UpdateNotebookTabFont(AWinControl, AFont);
 end;
 
 class procedure TGtk2WSCustomPage.ShowHide(const AWinControl: TWinControl);
-var
-  AShow: Boolean;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
     exit;
@@ -660,7 +700,7 @@ begin
   // In a PageControl, the child widget must always be visible
   // it will be controlled by gtk_notebook_set_page
   // Making a page invisible, also hides the tab.
-  if not (AWinControl is TTabControl) then
+  if (AWinControl.Parent = nil) or (AWinControl.Parent is TPageControl) then
     exit;
 
   TGtk2WidgetSet(WidgetSet).SetVisible(AWinControl, AWinControl.HandleObjectShouldBeVisible);
@@ -670,6 +710,13 @@ class function TGtk2WSCustomPage.GetDefaultClientRect(
   const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
   var aClientRect: TRect): boolean;
 begin
+  if (AWinControl.Parent <> nil) and (AWinControl.Parent is TTabControl) then begin
+    // runtime inherited
+    Result := TWSWinControlClass(ClassParent).GetDefaultClientRect(
+      AWinControl, aLeft, aTop, aWidth, aHeight, aClientRect);
+    exit;
+  end;
+
   Result:=false;
   if AWinControl.Parent=nil then exit;
   if AWinControl.HandleAllocated and AWinControl.Parent.HandleAllocated
