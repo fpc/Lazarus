@@ -134,6 +134,7 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
   { TQtWSPanel }
@@ -177,6 +178,17 @@ begin
   
   // Return the Handle
   Result := TLCLIntfHandle(QtFrame);
+end;
+
+class function TQtWSCustomPanel.GetDefaultColor(const AControl: TControl;
+  const ADefaultColorType: TDefaultColorType): TColor;
+const
+  DefColors: array[TDefaultColorType] of TColor = (
+ { dctBrush } clBackground,
+ { dctFont  } clBtnText
+  );
+begin
+  Result := DefColors[ADefaultColorType];
 end;
 
 { TQtWSCustomRadioGroup }
