@@ -5364,6 +5364,12 @@ resourcestring
   synfUnfoldCommentsInSelection = 'Unfold comments in selection';
   synfFoldCommentsInSelection   = 'Fold comments in selection';
   synfHideCommentsInSelection   = 'Hide comments in selection';
+  synfUnfoldAllIfdefInSelection = 'Unfold all Ifdef in selection';
+  synfUnfoldActiveIfdefInSelection = 'Unfold active Ifdef in selection';
+  synfUnfoldInactiveIfdefInSelection = 'Unfold inactive Ifdef in selection';
+  synfFoldInactiveIfdefInSelection = 'Fold inactive Ifdef in selection';
+  synfFoldInactiveIfdefInSelectionExcludeMixedState = 'Fold inactive Ifdef in selection ('
+    +'exclude mixed state)';
   lisCanNotCompileProject = 'Cannot compile project';
   lisTheProjectHasNoMainSourceFile = 'The project has no main source file.';
   lisInvalidMacroTheNameIsAKeyword = 'Invalid macro name "%s". The name '
