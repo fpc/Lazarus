@@ -538,6 +538,7 @@ type
     function CanBeDefaulForProject: boolean; virtual;
     function NeedsLinkerOpts: boolean;
     function HasCommands: boolean; // true if there is at least one commad to execute
+    function HasCompilerCommand: boolean; virtual;
     function GetEffectiveTargetOS: string; override;
     function GetEffectiveTargetCPU: string; override;
     function GetEffectiveLCLWidgetType: string; override;
@@ -2058,10 +2059,15 @@ function TBaseCompilerOptions.HasCommands: boolean;
 begin
   Result:=true;
   if CreateMakefileOnBuild then exit;
-  if CompilerPath<>'' then exit;
+  if HasCompilerCommand then exit;
   if ExecuteBefore.HasCommands then exit;
   if ExecuteAfter.HasCommands then exit;
   Result:=false;
+end;
+
+function TBaseCompilerOptions.HasCompilerCommand: boolean;
+begin
+  Result:=CompilerPath<>'';
 end;
 
 function TBaseCompilerOptions.GetEffectiveTargetOS: string;
