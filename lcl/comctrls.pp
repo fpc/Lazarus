@@ -687,10 +687,11 @@ type
 
   { TNoteBookStringsTabControl }
 
-  TNoteBookStringsTabControl = class(TCustomTabControl)
+  TNoteBookStringsTabControl = class(TPageControl) // TCustomTabControl, TODO TCustomTabControl, and fix all widgetsets
   protected
     FHandelCreated: TNotifyEvent;
     procedure CreateHandle; override;
+    class procedure WSRegisterClass; override;
   end;
   TNoteBookStringsTabControlClass = class of TNoteBookStringsTabControl;
 

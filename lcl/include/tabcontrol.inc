@@ -148,6 +148,13 @@ begin
     FHandelCreated(self);
 end;
 
+class procedure TNoteBookStringsTabControl.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  // TODO:
+  //RegisterWSComponent(TNoteBookStringsTabControl, TWSPageControl);
+end;
+
 { TTabControlNoteBookStrings }
 
 procedure TTabControlNoteBookStrings.NBGetImageIndex(Sender: TObject;
@@ -648,6 +655,7 @@ var
   TabAreaSize: LongInt;
 begin
   TabAreaSize := TTabControlStrings(FTabs).GetSize;
+
   case TabPosition of
     tpTop:    ARect.Top:=Min(TabAreaSize,ARect.Bottom);
     tpBottom: ARect.Bottom:=Max(ARect.Bottom-TabAreaSize,ARect.Top);
