@@ -105,6 +105,8 @@ type
 
   TWSCustomListBox = class(TWSWinControl)
   published
+    class procedure DragStart(const ACustomListBox: TCustomListBox); virtual;
+
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; virtual;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; virtual;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; virtual;
@@ -281,6 +283,10 @@ begin
 end;
 
 { TWSCustomListBox }
+
+class procedure TWSCustomListBox.DragStart(const ACustomListBox: TCustomListBox);
+begin
+end;
 
 class function TWSCustomListBox.GetIndexAtXY(
   const ACustomListBox: TCustomListBox; X, Y: integer): integer;

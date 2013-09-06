@@ -34,6 +34,12 @@ begin
   end;
 end;
 
+procedure TCustomListBox.BeforeDragStart;
+begin
+  if HandleAllocated then
+    TWSCustomListBoxClass(WidgetSetClass).DragStart(Self);
+end;
+
 procedure TCustomListBox.BeginAutoDrag;
 begin
   BeginDrag(False);
@@ -348,7 +354,7 @@ end;
 {------------------------------------------------------------------------------}
 { procedure TCustomListBox.SetMultiSelect                                      }
 {------------------------------------------------------------------------------}
-procedure TCustomListBox.SetMultiSelect(Val: Boolean);
+procedure TCustomListBox.SetMultiSelect(Val: boolean);
 begin
   if Val <> FMultiSelect then
   begin
@@ -360,7 +366,7 @@ end;
 {------------------------------------------------------------------------------}
 { procedure TCustomListBox.SetSelected                                         }
 {------------------------------------------------------------------------------}
-procedure TCustomListBox.SetSelected(Index: Integer; Val: Boolean);
+procedure TCustomListBox.SetSelected(Index: integer; Val: boolean);
 begin
   CheckIndex(Index);
 

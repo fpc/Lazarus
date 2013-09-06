@@ -1295,6 +1295,7 @@ type
     function GetDragImages: TDragImageList; virtual;
     function GetFloating: Boolean; virtual;
     function GetFloatingDockSiteClass: TWinControlClass; virtual;
+    procedure BeforeDragStart; virtual;
     procedure BeginAutoDrag; virtual;
     procedure DoFloatMsg(ADockSource: TDragDockObject);virtual;//CM_FLOAT
     procedure DockTrackNoTarget(Source: TDragDockObject; X, Y: Integer); virtual;

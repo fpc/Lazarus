@@ -869,6 +869,10 @@ begin
   Result := FFloatingDockSiteClass;
 end;
 
+procedure TControl.BeforeDragStart;
+begin
+end;
+
 {------------------------------------------------------------------------------
   function TControl.GetLRDockWidth: Integer;
 ------------------------------------------------------------------------------}
