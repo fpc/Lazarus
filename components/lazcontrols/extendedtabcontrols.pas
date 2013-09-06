@@ -279,7 +279,7 @@ end;
 constructor TCustomExtendedTabSheet.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  BorderSpacing.Around := 3;
+  BorderSpacing.Around := 1;
 end;
 
 destructor TCustomExtendedTabSheet.Destroy;
