@@ -151,9 +151,7 @@ msgstr "Projekt ist aktiv"
 
 #: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
 msgid "Project is not active in SVN settings, please activate first."
-msgstr ""
-"Projekt ist in den SVN-Einstellungen nicht aktiviert, holen Sie das zunächst "
-"nach."
+msgstr "Projekt ist in den SVN-Einstellungen nicht aktiviert, holen Sie das zunächst nach."
 
 #: svnclasses.rsprojectname
 msgid "Project name"
@@ -243,3 +241,4 @@ msgstr "Aktualisierung"
 #: svnclasses.rsupdated
 msgid "Updated"
 msgstr "Aktualisiert"
+

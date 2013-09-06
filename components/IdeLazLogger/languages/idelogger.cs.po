@@ -21,3 +21,4 @@ msgstr "Logování (IDE)"
 #: idelogger.ideloggermenucaption
 msgid "Logging ..."
 msgstr "Logování (IDE) ..."
+

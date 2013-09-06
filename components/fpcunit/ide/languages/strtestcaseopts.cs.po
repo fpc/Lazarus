@@ -37,3 +37,4 @@ msgstr "Jména"
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Výchozí jméno testu"
+

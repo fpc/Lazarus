@@ -15,5 +15,5 @@ msgstr "%s%sJednosouborový program Free Pascalu  spouštěný pomocí InstantFP
 
 #: instantfpcregisterlaz.rssinglefilepr
 msgid "%s%sSingle file program using InstantFPC to compile and execute"
-msgstr ""
-"%s%sJednosouborový program využívající InsfantFPC ke kompilaci a běhu."
+msgstr "%s%sJednosouborový program využívající InsfantFPC ke kompilaci a běhu."
+

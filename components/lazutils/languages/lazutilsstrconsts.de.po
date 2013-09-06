@@ -11,14 +11,12 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
-msgctxt ""
-"lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
 msgid "a directory component in %s does not exist or is a dangling symlink"
 msgstr ""
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
-msgctxt ""
-"lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
 msgid "a directory component in %s does not exist or is a dangling symlink"
 msgstr ""
 
@@ -166,3 +164,4 @@ msgstr "Kann Konfigurationsverzeichnis \"%s\" nicht anlegen"
 #: lazutilsstrconsts.lrsvarnoconversion
 msgid "Conversion from %s to %s not possible"
 msgstr "Konvertierung von %s nach %s ist nicht möglich"
+

@@ -41,3 +41,4 @@ msgstr "Výsledky"
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"
 msgstr "SQL Kód"
+

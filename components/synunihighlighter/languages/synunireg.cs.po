@@ -13,3 +13,4 @@ msgstr ""
 #: synunireg.sedituni
 msgid "Edit ..."
 msgstr "Upravit..."
+

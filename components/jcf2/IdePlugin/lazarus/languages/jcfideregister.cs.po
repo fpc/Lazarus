@@ -40,3 +40,4 @@ msgstr "Nastavení - &Registry"
 #: jcfideregister.format_settings_menu
 msgid "&Format Settings"
 msgstr "Nastavení &Formátu"
+

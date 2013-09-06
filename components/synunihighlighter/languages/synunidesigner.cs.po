@@ -13,3 +13,4 @@ msgstr ""
 #: synunidesigner.sunifiledescription
 msgid "UniHighlighter Syntax"
 msgstr "Syntax UniZvýrazňovače"
+

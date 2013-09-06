@@ -21,3 +21,4 @@ msgstr "Sledování zásobníku:"
 #: leakinfo.rsstacktrace
 msgid "Stack trace"
 msgstr "Sledování zásobníku"
+

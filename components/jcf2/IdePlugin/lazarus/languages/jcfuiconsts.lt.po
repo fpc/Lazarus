@@ -1,4 +1,4 @@
-# Valdas Jankunas <zmuogs@gmail.com>, 2010, 2012.
+ Valdas Jankunas <zmuogs@gmail.com>, 2010, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9,8 +9,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 1.5\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Language: lt\n"
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
@@ -22,32 +21,16 @@ msgid "Find more information on the web at: %s"
 msgstr "Daugiau informacijos rasite internete: %s"
 
 #: jcfuiconsts.lisaboutthisprogramisopensource
-msgid ""
-"This program is open source software. It is released under the Mozilla Public "
-"Licence (MPL).  http://www.mozilla.org/MPL"
-msgstr ""
-"Tai atvirojo kodo programinė įrangą. Jai taikoma Mozilla Public Licence "
-"(MPL).  http://www.mozilla.org/MPL"
+msgid "This program is open source software. It is released under the Mozilla Public Licence (MPL).  http://www.mozilla.org/MPL"
+msgstr "Tai atvirojo kodo programinė įrangą. Jai taikoma Mozilla Public Licence (MPL).  http://www.mozilla.org/MPL"
 
 #: jcfuiconsts.lisaboutthisprogramisstillunderdevelopment
-msgid ""
-"This program is still under development. In spite of thorough testing and "
-"removal of reported bugs, no guarantees are given. Please make backups, or "
-"better yet use a source control system."
-msgstr ""
-"Ši programa vis dar kuriama. Nepaisant kruopštaus testavimo ir praneštų ydų "
-"taisymo, garantijos nesuteikiamos. Todėl darykite atsargines kopijas, arba "
-"naudokite geresnę pirminio kodo valdymo sistemą."
+msgid "This program is still under development. In spite of thorough testing and removal of reported bugs, no guarantees are given. Please make backups, or better yet use a source control system."
+msgstr "Ši programa vis dar kuriama. Nepaisant kruopštaus testavimo ir praneštų ydų taisymo, garantijos nesuteikiamos. Todėl darykite atsargines kopijas, arba naudokite geresnę pirminio kodo valdymo sistemą."
 
 #: jcfuiconsts.lisaboutversion
-msgid ""
-"Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make "
-"readable the layout of any Delphi Object-Pascal source code.%s%sCopyright "
-"Anthony Steele 1999-2008"
-msgstr ""
-"Laida $VERSION$%s$DATE$%s%sŠi programa siekia standartizuoti ir daryti "
-"įskaitomesniu bet kokį Delphi ar objektinio paskalio pirminį kodą.%s%"
-"sAutorinės teisės priklauso Anthony Steele 1999-2008"
+msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgstr "Laida $VERSION$%s$DATE$%s%sŠi programa siekia standartizuoti ir daryti įskaitomesniu bet kokį Delphi ar objektinio paskalio pirminį kodą.%s%sAutorinės teisės priklauso Anthony Steele 1999-2008"
 
 #: jcfuiconsts.lisalignalign
 msgid "Align"
@@ -525,9 +508,7 @@ msgid "JCF Format Settings"
 msgstr "JCF formato nuostatos"
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
-msgid ""
-"JEDI Code Format of %sAre you sure that you want to format all %s files in "
-"the project?"
+msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
 msgstr "JEDI kodo formatas%sAr tikrai formatuoti visus %s projekto failus?"
 
 #: jcfuiconsts.lisjedicodeformatofstartformatting
@@ -633,8 +614,7 @@ msgstr "Keisti į „Grįžimas eilutės pradžion“ (UNIX)"
 
 #: jcfuiconsts.lisreturnsconverttocarriagereturnlinefeed
 msgid "Convert to Carriage Return + Linefeed (DOS/Windows)"
-msgstr ""
-"Keisti į „Grįžimas eilutės pradžion“ + „Eilutės patraukimas“ (DOS/Windows)"
+msgstr "Keisti į „Grįžimas eilutės pradžion“ + „Eilutės patraukimas“ (DOS/Windows)"
 
 #: jcfuiconsts.lisreturnsinexpressions
 msgid "In expressions"
@@ -813,12 +793,8 @@ msgid "&Var declarations"
 msgstr "&Kintamųjų apibrėžtys"
 
 #: jcfuiconsts.listhesettingsfiledoesnotexist
-msgid ""
-"The settings file \"%s\" does not exist.%sThe formatter will work better if "
-"it is configured to use a valid settings file"
-msgstr ""
-"Nustatymų failas „%s“ neegzistuoja.%sFormatuotojas dirbs geriau, jei jam bus "
-"nurodytas tinkamas nustatymų failas."
+msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
+msgstr "Nustatymų failas „%s“ neegzistuoja.%sFormatuotojas dirbs geriau, jei jam bus nurodytas tinkamas nustatymų failas."
 
 #: jcfuiconsts.listransformaddbeginandendtosinglestatements
 msgid "Add begin and end to single statements"
@@ -927,5 +903,4 @@ msgstr "Perspėjimai"
 #: jcfuiconsts.liswarningswarningson
 msgid "&Warnings On"
 msgstr "&Perspėjimai įgalinti"
-
 

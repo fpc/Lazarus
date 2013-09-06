@@ -37,3 +37,4 @@ msgstr "Vložte své SQL dotazy sem"
 #: registersqldb.ssqlstringspropertyeditordlgtitle
 msgid "Editing %s"
 msgstr "Upraviji %s"
+
