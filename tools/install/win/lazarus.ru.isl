@@ -4,7 +4,7 @@
 
 
 DelUserConf=Удалить все уже имеющиеся каталоги настройки
-CleanUp=Очистка
+CleanUp=Очистка:
 
 InstallQt=Установить библиотеку интерфейса Qt
 InstallChm=Установить файлы справки CHM
@@ -27,6 +27,8 @@ FolderForSecondBadUninstall=Целевой каталог не пуст. Программе установки не удал
 SecondConfCapt=Выберите каталог настройки
 SecondConfCapt2=Где вы хотите хранить параметры данного экземпляра Lazarus?
 SecondConfBody=Выберите пустой каталог для хранения параметров данного экземпляра Lazarus, затем нажмите "Далее".
+
+FolderForConfig=Каталог настройки
 
 FolderForConfNotEmpty=Выбранный каталог не пуст.
 
