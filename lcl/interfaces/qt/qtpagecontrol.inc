@@ -383,6 +383,9 @@ class procedure TQtWSCustomTabControl.SetPageIndex(
 var
   TabWidget: TQtTabWidget;
 begin
+  if ATabControl is TTabControl then
+    exit;
+
   if not WSCheckHandleAllocated(ATabControl, 'SetPageIndex') then
     Exit;
   TabWidget := TQtTabWidget(ATabControl.Handle);
