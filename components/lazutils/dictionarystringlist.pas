@@ -40,7 +40,6 @@ type
     FMap: TStringMap;
   protected
     procedure InsertItem(Index: Integer; const S: string); override;
-    procedure InsertItem({%H-}Index: Integer; const {%H-}S: string; {%H-}O: TObject); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -122,11 +121,6 @@ begin
       end;
   inherited InsertItem(Index, S);
   FMap.Add(S);     // Insert string to map, too.
-end;
-
-procedure TDictionaryStringList.InsertItem(Index: Integer; const S: string; O: TObject);
-begin
-  raise Exception.Create('TDictionaryStringList.InsertItem: is this needed?');
 end;
 
 function TDictionaryStringList.Contains(const S: string): Boolean;
