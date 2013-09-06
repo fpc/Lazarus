@@ -447,6 +447,9 @@ begin
   {$endif}
 end;
 
+{$IF DEFINED(WinCE) OR (FPC_FULLVERSION>=20701)}
+  {$define FindData_W}
+{$endif}
 
 
 function FindMatch(var f: TSearchRec) : Longint;
@@ -467,13 +470,15 @@ begin
   { The structures are different at this point
     in win32 it is the ansi structure with a utf-8 string
     in wince it is a wide structure }
-  {$ifdef WinCE}
-  f.Name:=UTF8Encode(F.FindData.cFileName);
+  {$ifdef FindData_W}
+  f.Name:=UTF8Encode(UnicodeString(F.FindData.cFileName));
   {$else}
   f.Name:=F.FindData.cFileName;
   {$endif}
   Result:=0;
 end;
+
+{$IFNDEF FindData_W}
 
 { This function does not really convert from wide to ansi, but from wide to
   a utf-8 encoded ansi version of the data structures in win32 and does
@@ -485,9 +490,6 @@ var
   ws: WideString;
   an: AnsiString;
 begin
-  {$ifdef WinCE}
-  ansi := wide;
-  {$else}
   SetLength(ws, length(wide.cAlternateFileName));
   Move(wide.cAlternateFileName[0], ws[1], length(ws)*2);
   an := AnsiString(ws); // no need to utf8 for cAlternateFileName (it's always ansi encoded)
@@ -509,12 +511,12 @@ begin
     dwReserved0 := wide.dwReserved0;
     dwReserved1 := wide.dwReserved1;
   end;
-  {$endif}
 end;
+{$ENDIF}
 
 function FindFirstWide(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
 var
-  find  : TWIN32FINDDATAW;
+  find: TWIN32FINDDATAW;
 begin
   Rslt.Name:=Path;
   Rslt.Attr:=attr;
@@ -528,18 +530,26 @@ begin
     Exit;
   end;
   { Find file with correct attribute }
+  {$IFNDEF FindData_W}
   FindWideToAnsi(find, Rslt.FindData);
-  Result:=FindMatch(Rslt);
+  {$ELSE}
+  Rslt.FindData := find;
+  {$IFEND}
+  Result := FindMatch(Rslt);
 end;
 
 
 function FindNextWide(var Rslt: TSearchRec): Longint;
 var
-  wide  : TWIN32FINDDATAW;
+  wide: TWIN32FINDDATAW;
 begin
   if FindNextFileW(Rslt.FindHandle, wide) then
   begin
+    {$IFNDEF FindData_W}
     FindWideToAnsi(wide, Rslt.FindData);
+    {$ELSE}
+    Rslt.FindData := wide;
+    {$ENDIF}
     Result := FindMatch(Rslt);
   end
   else
