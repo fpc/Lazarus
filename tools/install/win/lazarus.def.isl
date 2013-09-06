@@ -6,8 +6,8 @@
 DelUserConf=Delete all user configuration files from previous installs
 CleanUp=Clean up
 
-InstallQt=Install QT interface dll
-InstallChm=Install chm help files
+InstallQt=Install Qt interface DLL
+InstallChm=Install CHM help files
 AssociateGroup=Associate file extensions
 
 CheckSecondClick=Create a new secondary installation
@@ -42,12 +42,12 @@ OldInDestFolder4=
 
 OldInOtherFolder1=Another installation of %1:s was found at %2:s. Please use the button below to uninstall it now. If you wish to keep it, please tick the checkbox to continue.
 OldInOtherFolder2=Warning: There may be conflicts between the different installations and they may not function properly.
-OldInOtherFolder3=Note: You have not chosen a dedicated configuration Folder for this installation.
-OldInOtherFolder4=If you wish to use more than one installation, please go back and check: "Create a new secondary installation"
+OldInOtherFolder3=Note: You have not chosen a dedicated configuration folder for this installation.
+OldInOtherFolder4=If you wish to use more than one installation, please go back and check: "Create a new secondary installation".
 
 OldInBadFolder1=Warning: Another installation of %1:s was found at %2:s, but the uninstaller was found at %3:s. Please make sure the uninstaller is correct.
-OldInBadFolder2=Warning: There may be conflicts between the different installs and they may not function properly.
-OldInBadFolder3=Note: If you wish to use more than one installation, please go back and check: "Create a new secondary installation"
+OldInBadFolder2=Warning: There may be conflicts between the different installations and they may not function properly.
+OldInBadFolder3=Note: If you wish to use more than one installation, please go back and check: "Create a new secondary installation".
 OldInBadFolder4=Please use the button below to uninstall it now. If you wish to keep it, please tick the checkbox to continue.
 
 OldSecondInDestFolder1=Another installation of %1:s exists in the destination folder. If you wish to uninstall first, please use the button below.
@@ -68,6 +68,6 @@ OldSecondInBadFolder4=
 SecondTaskUpdate=Updating secondary installation with configuration in folder:%0:s%1:s%2:s
 SecondTaskCreate=Creating secondary installation with configuration in folder:%0:s%1:s%2:s
 
-DuringInstall=Some Info from our FAQ: http://wiki.lazarus.freepascal.org/Lazarus_Faq%0:s%0:s    What is Lazarus?%0:sLazarus is a cross-platform IDE for Pascal. Its aim is write once, compile anywhere.%0:s%0:s    How to reduce the exe file size?%0:sThe default binaries are very big because they include debug information. For release builds you can switch this off in the Project settings.%0:s%0:s    Licensing:%0:s- The LCL is licensed LGPL with linking exception. This allows you to create apps with any license you want, including commercial.%0:s- The IDE is licensed GPL. If you distribute a modified IDE you must follow the GPL.%0:s- Other packages and components have various licenses. See the readme of each package.
+DuringInstall=Some Info from our FAQ: http://wiki.lazarus.freepascal.org/Lazarus_Faq%0:s%0:s    What is Lazarus?%0:sLazarus is a cross-platform IDE for Pascal. Its aim is write once, compile anywhere.%0:s%0:s    How to reduce the exe file size?%0:sThe default binaries are very big because they include debug information. For release builds you can switch this off in the Project settings.%0:s%0:s    Licensing:%0:s- The LCL is licensed LGPL with linking exception. This allows you to create apps with any license you want, including proprietary.%0:s- The IDE is licensed GPL. If you distribute a modified IDE you must follow the GPL.%0:s- Other packages and components have various licenses. See the readme of each package.
 
 UninstVerbose=About to uninstall %1:s from folder %0:s. Continue?
