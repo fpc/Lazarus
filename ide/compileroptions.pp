@@ -350,6 +350,7 @@ type
     procedure IncreaseChangeStamp;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
     function GetParsedCommand: string; // resolved macros
+    function HasCommands: boolean; // true if there is something to execute
   public
     property Owner: TObject read FOwner;
     property Command: string read FCommand write SetCommand;
@@ -536,6 +537,7 @@ type
     function GetDefaultMainSourceFileName: string; virtual;
     function CanBeDefaulForProject: boolean; virtual;
     function NeedsLinkerOpts: boolean;
+    function HasCommands: boolean; // true if there is at least one commad to execute
     function GetEffectiveTargetOS: string; override;
     function GetEffectiveTargetCPU: string; override;
     function GetEffectiveLCLWidgetType: string; override;
@@ -2050,6 +2052,16 @@ end;
 function TBaseCompilerOptions.NeedsLinkerOpts: boolean;
 begin
   Result:=not (ccloNoLinkerOpts in fDefaultMakeOptionsFlags);
+end;
+
+function TBaseCompilerOptions.HasCommands: boolean;
+begin
+  Result:=true;
+  if CreateMakefileOnBuild then exit;
+  if CompilerPath<>'' then exit;
+  if ExecuteBefore.HasCommands then exit;
+  if ExecuteAfter.HasCommands then exit;
+  Result:=false;
 end;
 
 function TBaseCompilerOptions.GetEffectiveTargetOS: string;
@@ -4250,6 +4262,13 @@ begin
     //debugln(['TCompilationToolOptions.GetParsedCommand Parsed="',FParsedCommand,'"']);
   end;
   Result:=FParsedCommand;
+end;
+
+function TCompilationToolOptions.HasCommands: boolean;
+begin
+  Result:=true;
+  if GetParsedCommand<>'' then exit;
+  Result:=false;
 end;
 
 { TIDEBuildMacro }

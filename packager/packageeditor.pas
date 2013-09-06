@@ -31,12 +31,14 @@ interface
 
 uses
   // LCL FCL
-  Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil,
+  Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, Graphics,
+  LCLType, LCLProc, Menus, Dialogs, FileUtil,
   contnrs,
   // IDEIntf CodeTools
   IDEImagesIntf, MenuIntf, ExtCtrls, LazIDEIntf, ProjectIntf,
   CodeToolsStructs, FormEditingIntf, TreeFilterEdit, PackageIntf,
-  IDEDialogs, IDEHelpIntf, IDEOptionsIntf, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions, ComponentReg,
+  IDEDialogs, IDEHelpIntf, IDEOptionsIntf, IDEProcs, LazarusIDEStrConsts,
+  IDEDefs, CompilerOptions, ComponentReg,
   PackageDefs, AddToPackageDlg, PkgVirtualUnitEditor,
   MissingPkgFilesDlg, PackageSystem, CleanPkgDeps;
   
@@ -1703,7 +1705,7 @@ begin
 
   SaveBitBtn.Enabled:=(not LazPackage.ReadOnly)
                               and (LazPackage.IsVirtual or LazPackage.Modified);
-  CompileBitBtn.Enabled:=(not LazPackage.IsVirtual);
+  CompileBitBtn.Enabled:=(not LazPackage.IsVirtual) and LazPackage.CompilerOptions.HasCommands;
   AddBitBtn.Enabled:=not LazPackage.ReadOnly;
   RemoveBitBtn.Enabled:=(not LazPackage.ReadOnly)
      and (not Removed)

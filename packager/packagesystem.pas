@@ -3373,6 +3373,12 @@ begin
       end;
     end;
 
+    if not APackage.CompilerOptions.HasCommands then begin
+      // package provides no compilation
+      Result:=mrOk;
+      exit;
+    end;
+
     // check if compilation is needed and if a clean build is needed
     NeedBuildAllFlag:=false;
     Note:='';
