@@ -107,7 +107,7 @@ begin
     False,
     'laz_conf'
   );
-  wpAskConfDir.Add('Folder for config');
+  wpAskConfDir.Add(CustomMessage('FolderForConfig'));
 end;
 
 function IsSecondaryCheckBoxChecked: Boolean;

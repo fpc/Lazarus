@@ -4,7 +4,7 @@
 
 
 DelUserConf=Delete all user configuration files from previous installs
-CleanUp=Clean up
+CleanUp=Clean up:
 
 InstallQt=Install Qt interface DLL
 InstallChm=Install CHM help files
@@ -27,6 +27,8 @@ FolderForSecondBadUninstall=The target folder is not empty. The installer could 
 SecondConfCapt=Select configuration folder
 SecondConfCapt2=Where do you want this Lazarus installation to store its configuration?
 SecondConfBody=Select a new empty folder for this installation of Lazarus to store its configuration, then continue with 'Next'.
+
+FolderForConfig=Folder for config
 
 FolderForConfNotEmpty=The selected folder is not empty.
 
