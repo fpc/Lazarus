@@ -84,6 +84,7 @@ type
     class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; virtual;
     class procedure ConstraintWidth(const AControl: TControl; const AConstraints: TObject; var aWidth: integer); virtual;
     class procedure ConstraintHeight(const AControl: TControl; const AConstraints: TObject; var aHeight: integer); virtual;
+    class procedure DragStart(const AControl: TControl; const Immediate: Boolean); virtual;
   end;
 
   TWSControlClass = class of TWSControl;
@@ -227,6 +228,10 @@ class procedure TWSControl.ConstraintHeight(const AControl: TControl;
   const AConstraints: TObject; var aHeight: integer);
 begin
 
+end;
+
+class procedure TWSControl.DragStart(const AControl: TControl; const Immediate: Boolean);
+begin
 end;
 
 { TWSWinControl }

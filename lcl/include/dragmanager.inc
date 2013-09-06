@@ -652,6 +652,8 @@ begin
     FWaitForTreshold := not AImmediate;
     GetCursorPos(FStartPosition);
 
+    TWSControlClass(AControl.WidgetSetClass).DragStart(AControl, AImmediate);
+
     case AControl.DragKind of
       dkDrag: FPerformer := TDragPerformer.Create(Self, AControl);
       dkDock: FPerformer := TDockPerformer.Create(Self, AControl);

@@ -114,6 +114,9 @@ type
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure DragStart(const AControl: TControl;
+       const Immediate: Boolean); override;
+
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
@@ -635,6 +638,20 @@ begin
   Result := Params.Window;
 end;
 
+class procedure TWin32WSCustomListBox.DragStart(const AControl: TControl; const Immediate: Boolean);
+var
+  P: TPoint;
+begin
+  if csLButtonDown in AControl.ControlState then
+  begin
+    // if drag is called by mouse down then we need to complete it with mouse up
+    // since in other case we will not get the change event called
+    GetCursorPos(P);
+    P := AControl.ScreenToClient(P);
+    CallDefaultWindowProc(TWinControl(AControl).Handle, WM_LBUTTONUP, 0, MAKELPARAM(P.X, P.Y));
+  end;
+end;
+
 class function TWin32WSCustomListBox.GetIndexAtXY(
   const ACustomListBox: TCustomListBox; X, Y: integer): integer;
 begin
@@ -655,7 +672,9 @@ begin
     Result := SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0);
 end;
 
-class function TWin32WSCustomListBox.GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): Boolean;
+class function TWin32WSCustomListBox.GetItemRect(
+  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
+  ): boolean;
 var
   Handle: HWND;
 begin

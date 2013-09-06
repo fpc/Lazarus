@@ -2059,24 +2059,21 @@ begin
       LM_LBUTTONDOWN,
       LM_LBUTTONDBLCLK:
         begin
-          if FDragMode = dmAutomatic
-          then begin
-            BeginAutoDrag;
-            { The VCL holds up the mouse down for dmAutomatic
-              and sends it, when it decides, if it is a drag operation or
-              not.
-              This decision requires full control of focus and mouse, which
-              do not all LCL interfaces provide. Therefore the mouse down event
-              is sent immediately.
+          Include(FControlState, csLButtonDown);
+          { The VCL holds up the mouse down for dmAutomatic
+            and sends it, when it decides, if it is a drag operation or
+            not.
+            This decision requires full control of focus and mouse, which
+            do not all LCL interfaces provide. Therefore the mouse down event
+            is sent immediately.
 
-              Further Note:
-                Under winapi a LM_LBUTTONDOWN ends the drag immediate.
-              For example: If we exit here, then mouse down on TTreeView does
-                not work any longer under gtk.
-            }
-            // VCL: exit;
-          end;
-          Include(FControlState,csLButtonDown);
+            Further Note:
+              Under winapi a LM_LBUTTONDOWN ends the drag immediate.
+            For example: If we exit here, then mouse down on TTreeView does
+              not work any longer under gtk.
+          }
+          if FDragMode = dmAutomatic then
+            BeginAutoDrag;
         end;
 
       LM_LBUTTONUP:
