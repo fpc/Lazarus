@@ -373,16 +373,18 @@ end;
 { TTabControl }
 
 procedure TTabControl.AdjustDisplayRect(var ARect: TRect);
+const
+  TabControlInternalBorder = 2; // TTabControl paints a border, so limit the children, to be within that border
 begin
   AdjustDisplayRectWithBorder(ARect);
   if TabPosition<>tpTop then
-    ARect.Top:=Min(Max(ARect.Top,ARect.Top+BorderWidth),ARect.Bottom);
+    ARect.Top:=Min(Max(ARect.Top,ARect.Top+BorderWidth+TabControlInternalBorder),ARect.Bottom);
   if TabPosition<>tpBottom then
-    ARect.Bottom:=Max(Min(ARect.Bottom,ARect.Bottom-BorderWidth),ARect.Top);
+    ARect.Bottom:=Max(Min(ARect.Bottom,ARect.Bottom-BorderWidth-TabControlInternalBorder),ARect.Top);
   if TabPosition<>tpLeft then
-    ARect.Left:=Min(Max(ARect.Left,ARect.Left+BorderWidth),ARect.Right);
+    ARect.Left:=Min(Max(ARect.Left,ARect.Left+BorderWidth+TabControlInternalBorder),ARect.Right);
   if TabPosition<>tpRight then
-    ARect.Right:=Max(Min(ARect.Right,ARect.Right-BorderWidth),ARect.Left);
+    ARect.Right:=Max(Min(ARect.Right,ARect.Right-BorderWidth-TabControlInternalBorder),ARect.Left);
 end;
 
 function TTabControl.GetDisplayRect: TRect;
