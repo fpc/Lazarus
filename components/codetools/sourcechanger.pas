@@ -39,7 +39,7 @@ unit SourceChanger;
 
 interface
 
-{ $DEFINE VerboseSrcChanger}
+{off $DEFINE VerboseSrcChanger}
 
 uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeCache, BasicCodeTools,
@@ -254,6 +254,8 @@ type
     procedure RaiseException(const AMessage: string);
   public
     BeautifyCodeOptions: TBeautifyCodeOptions;
+    constructor Create;
+    destructor Destroy; override;
     procedure BeginUpdate; // use this to delay Apply, must be balanced with EndUpdate
     function EndUpdate: boolean; // calls Apply
     property MainScanner: TLinkScanner read FMainScanner write SetMainScanner;
@@ -281,8 +283,6 @@ type
     procedure ConsistencyCheck;
     procedure WriteDebugReport;
     procedure CalcMemSize(Stats: TCTMemStats);
-    constructor Create;
-    destructor Destroy; override;
   end;
   
   { ESourceChangeCacheError }
@@ -669,7 +669,6 @@ var
   IsDirectChange: boolean;
   IntersectionEntry: TSourceChangeCacheEntry;
 begin
-
   {$IFDEF VerboseSrcChanger}
   DebugLn('TSourceChangeCache.ReplaceEx FrontGap=',dbgs(FrontGap),
   ' AfterGap=',dbgs(AfterGap),' Text="',Text,'"');
@@ -707,6 +706,7 @@ begin
       {$IFDEF VerboseSrcChanger}
       DebugLn('TSourceChangeCache.ReplaceEx SUCCESS NoOperation');
       {$ENDIF}
+      exit(True);
     end;
   end;
   IntersectionEntry:=FindEntryInRange(FromPos,ToPos);

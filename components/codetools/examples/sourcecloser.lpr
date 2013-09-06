@@ -52,8 +52,10 @@ type
 
   TSourceCloser = class(TCustomApplication)
   private
+    FClosedSrcError: TStringList;
     FCompilerOptions: string;
     FDefines: TStringToStringTree;
+    FDisableCompile: boolean;
     FIncludePath: string;
     FLPKFilenames: TStrings;
     FRemovePrivateSections: boolean;
@@ -61,6 +63,9 @@ type
     FUnitFilenames: TStrings;
     FVerbosity: integer;
     fDefinesApplied: boolean;
+    procedure DeleteNode(Tool: TCodeTool; Node: TCodeTreeNode;
+      const StartPos, EndPos: Integer;
+      Changer: TSourceChangeCache; AddEmptyLine: boolean);
   protected
     procedure DoRun; override;
     procedure ApplyDefines;
@@ -78,6 +83,8 @@ type
     property UnitFilenames: TStrings read FUnitFilenames;
     property CompilerOptions: string read FCompilerOptions write FCompilerOptions;
     property RemovePrivateSections: boolean read FRemovePrivateSections write FRemovePrivateSections;
+    property ClosedSrcError: TStringList read FClosedSrcError write FClosedSrcError;
+    property DisableCompile: boolean read FDisableCompile write FDisableCompile;
   end;
 
 function IndexOfFilename(List: TStrings; Filename: string): integer;
@@ -113,10 +120,46 @@ end;
 
 { TSourceCloser }
 
+procedure TSourceCloser.DeleteNode(Tool: TCodeTool; Node: TCodeTreeNode;
+  const StartPos, EndPos: Integer; Changer: TSourceChangeCache;
+  AddEmptyLine: boolean);
+
+  procedure E(Msg: string);
+  begin
+    writeln('ERROR: '+Msg);
+    Halt(1);
+  end;
+
+var
+  EndCodePos: TCodePosition;
+  StartCodePos: TCodePosition;
+  s: String;
+begin
+  //debugln(['TSourceCloser.DeleteNode ',Node.DescAsString,' "',dbgstr(Tool.Src,StartPos,EndPos-StartPos),'"']);
+  if not Tool.CleanPosToCodePos(StartPos, StartCodePos) then
+    E('unable to delete '+Node.DescAsString+' of "'+Tool.MainFilename+'" (invalid startpos '
+      +Tool.CleanPosToStr(StartPos, true)+')');
+  if not Tool.CleanPosToCodePos(EndPos, EndCodePos) then
+    E('unable to delete '+Node.DescAsString+' of "'+Tool.MainFilename+'" (invalid endpos '+
+      Tool.CleanPosToStr(EndPos, true)+')');
+  if StartCodePos.Code<>EndCodePos.Code then
+    E('unable to delete '+Node.DescAsString+' of "'+Tool.MainFilename+'" from '+
+      Tool.CleanPosToStr(StartPos, true)+' to '+Tool.CleanPosToStr(EndPos, true)
+      );
+  s:='';
+  if AddEmptyLine then
+    s:=LineEnding;
+  if not Changer.ReplaceEx(gtNone, gtNone, 0, 0, StartCodePos.Code,
+    StartCodePos.P, EndCodePos.P, s) then
+    E('unable to delete '+Node.DescAsString+' of "'+Tool.MainFilename+'"');
+end;
+
 procedure TSourceCloser.DoRun;
 const
-  ShortOpts = 'hvqc:d:u:i:';
-  LongOpts = 'help verbose quiet compileroptions: define: undefine: includepath:';
+  ShortOpts = 'hvqc:pd:u:i:ke:';
+  LongOpts = 'help verbose quiet compileroptions: disablecompile define: undefine: includepath: keepprivate error:';
+var
+  ErrMsgIsDefault: Boolean;
 
   procedure E(Msg: string; WithHelp: boolean = false);
   begin
@@ -133,6 +176,16 @@ const
     'c':
       begin
         FCompilerOptions+=Value;
+      end;
+    'e':
+      begin
+        if ErrMsgIsDefault then begin
+          ErrMsgIsDefault:=false;
+          FClosedSrcError.Clear;
+        end;
+        Value:=UTF8Trim(Value,[]);
+        if Value='' then exit;
+        FClosedSrcError.Add(Value);
       end;
     'i':
       begin
@@ -213,6 +266,7 @@ begin
     Exit;
   end;
 
+  ErrMsgIsDefault:=true;
   i:=1;
   while i<=System.ParamCount do begin
     Param:=ParamStrUTF8(i);
@@ -222,8 +276,10 @@ begin
       dec(fVerbosity)
     else if (Param='-v') or (Param='--verbose') then
       inc(fVerbosity)
-    else if Param='keepprivate' then
+    else if (Param='-k') or (Param='--keepprivate') then
       RemovePrivateSections:=false
+    else if (Param='-p') or (Param='--disablecompile') then
+      DisableCompile:=true
     else if Param[1]<>'-' then begin
       Filename:=TrimAndExpandFilename(Param);
       if (Pos('*',ExtractFileName(Filename))>0) or (Pos('?',ExtractFileName(Filename))>0)
@@ -247,15 +303,16 @@ begin
     end else if (copy(Param,1,2)='--') then begin
       p:=Pos('=',Param);
       if p<1 then
-        E('invalid option: '+Param);
+        E('invalid long option syntax: '+Param);
       Option:=copy(Param,3,p-3);
       delete(Param,1,p);
       if Option='compileroptions' then Option:='c'
       else if Option='define' then Option:='d'
       else if Option='undefine' then Option:='u'
       else if Option='includepath' then Option:='i'
+      else if Option='error' then Option:='e'
       else
-        E('invalid option');
+        E('invalid long option');
       ParseValueParam(Option[1],Param);
     end else
       E('invalid option: '+Param);
@@ -327,7 +384,8 @@ procedure TSourceCloser.ConvertLPK(LPKFilename: string);
 // set lpk to compile only manually
 // add -Ur to compiler options
 const
-  CustomOptionsPath='Package/CompilerOptions/Other/CustomOptions/Value';
+  OtherPath='Package/CompilerOptions/Other/';
+  CustomOptionsPath=OtherPath+'CustomOptions/Value';
 var
   xml: TXMLConfig;
   CustomOptions: String;
@@ -351,6 +409,14 @@ begin
       NewOptions+=FCompilerOptions;
     end;
     xml.SetValue(CustomOptionsPath,NewOptions);
+
+    // disable compile commands
+    if DisableCompile then begin
+      xml.SetValue(OtherPath+'CompilerPath/Value','');
+      xml.SetDeleteValue(OtherPath+'ExecuteBefore/Command/Value','','');
+      xml.SetDeleteValue(OtherPath+'ExecuteAfter/Command/Value','','');
+      xml.SetDeleteValue(OtherPath+'CreateMakefileOnBuild/Value','','');
+    end;
 
     // write
     xml.Flush;
@@ -376,10 +442,10 @@ var
   EndPos: Integer;
   CodeList: TFPList;
   i: Integer;
-  StartCodePos: TCodePosition;
-  EndCodePos: TCodePosition;
   FromPos: Integer;
   ToPos: Integer;
+  AddEmptyLine: Boolean;
+  s: String;
 begin
   debugln(['Converting unit: ',UnitFilename]);
   ApplyDefines;
@@ -398,6 +464,14 @@ begin
   Changer:=CodeToolBoss.SourceChangeCache;
   Changer.MainScanner:=Tool.Scanner;
 
+  // add errors
+  s:='';
+  for i:=0 to FClosedSrcError.Count-1 do begin
+    s:=s+'{$Error '+FClosedSrcError[i]+'}'+LineEnding;
+  end;
+  if s<>'' then
+    Changer.ReplaceEx(gtNone,gtNone,0,0,Code,1,1,s);
+
   if RemovePrivateSections then begin
     // delete private sections in the interface
     Node:=Tool.FindInterfaceNode;
@@ -405,7 +479,7 @@ begin
       if Node.Desc=ctnClassPrivate then begin
         FromPos:=Tool.FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
         ToPos:=Tool.FindLineEndOrCodeInFrontOfPosition(Node.EndPos);
-        Changer.Replace(gtNone,gtNone,FromPos,ToPos,'');
+        DeleteNode(Tool,Node,FromPos,ToPos,Changer,false);
         Node:=Node.NextSkipChilds;
       end else
         Node:=Node.Next;
@@ -417,25 +491,31 @@ begin
 
   // delete implementation, initialization and finalization section
   Node:=Tool.Tree.Root;
-  while (Node<>nil)
-  and (not (Node.Desc in [ctnImplementation,ctnInitialization,ctnFinalization]))
-  do
-    Node:=Node.NextBrother;
-  if Node=nil then
-    exit;
-  StartPos:=Node.StartPos;
   while (Node<>nil) do begin
-    EndPos:=Node.StartPos;
+    if Node.Desc=ctnImplementation then begin
+      // delete implementation section including the 'implementation' keyword
+      StartPos:=Node.StartPos;
+      EndPos:=Node.NextBrother.StartPos;
+      DeleteNode(Tool, Node, StartPos, EndPos, Changer,false);
+    end else if Node.Desc in [ctnInitialization,ctnFinalization] then begin
+      // delete the content of the finalization and initialization section
+      Tool.MoveCursorToNodeStart(Node);
+      Tool.ReadNextAtom; // read 'initialization'
+      StartPos:=Tool.CurPos.EndPos;
+      EndPos:=Node.NextBrother.StartPos;
+      AddEmptyLine:=true;
+      if Trim(copy(Tool.Src,StartPos,EndPos-StartPos))='' then begin
+        // empty initialization => delete keyword as well
+        StartPos:=Node.StartPos;
+        AddEmptyLine:=false;
+      end else begin
+        // initialization section is not empty
+        // => keep the keyword, because it is needed by tools like 'Unused units'
+      end;
+      DeleteNode(Tool, Node, StartPos, EndPos, Changer, AddEmptyLine);
+    end;
     Node:=Node.NextBrother;
   end;
-  if not Tool.CleanPosToCodePos(StartPos,StartCodePos) then
-    E('unable to delete implementation of "'+UnitFilename+'" (invalid startpos '+Tool.CleanPosToStr(StartPos,true)+')');
-  if not Tool.CleanPosToCodePos(EndPos,EndCodePos) then
-    E('unable to delete implementation of "'+UnitFilename+'" (invalid endpos '+Tool.CleanPosToStr(EndPos,true)+')');
-  if StartCodePos.Code<>EndCodePos.Code then
-    E('unable to delete implementation of "'+UnitFilename+'" from '+Tool.CleanPosToStr(StartPos,true)+' to '+Tool.CleanPosToStr(EndPos,true));
-  if not Changer.ReplaceEx(gtNone,gtNone,0,0,StartCodePos.Code,StartCodePos.P,EndCodePos.P,'') then
-    E('unable to delete implementation of "'+UnitFilename+'"');
 
   // apply changes and write changes to disk
   CodeList:=TFPList.Create;
@@ -463,10 +543,14 @@ begin
   FLPKFilenames:=TStringList.Create;
   FUnitFilenames:=TStringList.Create;
   FRemovePrivateSections:=true;
+  FClosedSrcError:=TStringList.Create;
+  FClosedSrcError.Add('This is a closed source unit. You can not compile it, it was already compiled.');
+  FClosedSrcError.Add('Probably the IDE has cleaned up and you have to unpack the zip again.');
 end;
 
 destructor TSourceCloser.Destroy;
 begin
+  FreeAndNil(FClosedSrcError);
   FreeAndNil(FLPKFilenames);
   FreeAndNil(FUnitFilenames);
   FreeAndNil(FDefines);
@@ -475,6 +559,8 @@ begin
 end;
 
 procedure TSourceCloser.WriteHelp;
+var
+  i: Integer;
 begin
   writeln('Usage:');
   writeln('  ',ExeName,' -h');
@@ -497,6 +583,8 @@ begin
   writeln('Package/lpk options:');
   writeln('  --compileroptions=<compiler options>');
   writeln('          Add custom compiler options to lpk.');
+  writeln('  -p, --disablecompile');
+  writeln('          Remove all compile commands from lpk.');
   writeln('Unit options:');
   writeln('  -d <MacroName>, --define=<MacroName> :');
   writeln('          Define Free Pascal macro. Can be passed multiple times.');
@@ -504,8 +592,14 @@ begin
   writeln('          Undefine Free Pascal macro. Can be passed multiple times.');
   writeln('  -i <path>, --includepath=<path> :');
   writeln('         Append <path> to include search path. Can be passed multiple times.');
-  writeln('  --keepprivate');
+  writeln('  -k, --keepprivate');
   writeln('         Keep private sections in interface.');
+  writeln('  -e <errormessage>, --error=<error message>');
+  writeln('         Change the message of the error directive added to the units.');
+  writeln('         You can add this multiple times to add multiple directives.');
+  writeln('         The default error messages are:');
+  for i:=0 to FClosedSrcError.Count-1 do
+    writeln('   ',FClosedSrcError[i]);
   writeln;
   writeln('Environment variables:');
   writeln('  PP            path to compiler,');
