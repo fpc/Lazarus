@@ -98,6 +98,8 @@ type
     procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer); override;
     procedure DragMove(APosition: TPoint); override;
     procedure DragStop(ADropped: Boolean); override;
+
+    property StartPosition: TPoint read FStartPosition;
   end;
 
 
@@ -129,17 +131,13 @@ end;
 
 constructor TDragPerformer.Create(AManager: TDragManagerDefault; AControl: TControl);
 //Start a drag operation, if not already running
-var
-  p: TPoint;
 begin
   inherited Create(AManager, AControl);
 
   AControl.DoStartDrag(FDragObject);
   if FDragObject = nil then
     FDragObject := TDragControlObject.AutoCreate(AControl);
-
-  GetCursorPos(p);
-  FDragObject.DragPos := p;
+  FDragObject.DragPos := AManager.StartPosition;
   SetCaptureControl(AControl);
 end;
 
@@ -270,16 +268,13 @@ end;
 
 constructor TDockPerformer.Create(AManager: TDragManagerDefault; AControl: TControl);
 //Start a drag operation, if not already running
-var
-  APoint: TPoint;
 begin
   inherited Create(AManager, AControl);
   AControl.DoStartDock(TDragObject(FDockObject));
   if FDockObject = nil then
     FDockObject := TDragDockObject.AutoCreate(AControl);
 
-  GetCursorPos(APoint);
-  FDockObject.InitDock(APoint);
+  FDockObject.InitDock(AManager.StartPosition);
   // we are tracking capture change to stop drag/dock is happen
   SetCaptureControl(AControl);
 end;
