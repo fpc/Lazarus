@@ -832,11 +832,11 @@ begin
   {$ENDIF}
   repeat
     // skip PathDelim
-    while (StartPos<=length(Result)) and (Result[StartPos]=PathDelim) do
+    while (StartPos<=length(Result)) and (Result[StartPos] in AllowDirectorySeparators) do
       inc(StartPos);
     // find end of filename part
     EndPos:=StartPos;
-    while (EndPos<=length(Result)) and (Result[EndPos]<>PathDelim) do
+    while (EndPos<=length(Result)) and not (Result[EndPos] in AllowDirectorySeparators) do
       inc(EndPos);
     if EndPos>StartPos then begin
       // search file
