@@ -1224,7 +1224,7 @@ procedure TMainIDE.LoadGlobalOptions;
   end;
 var
   EnvOptsCfgExisted: boolean;
-  s, s1, s2: String;
+  s, s1, s2, LastCalled: String;
   OldVer: String;
   NowVer: String;
   IsUpgrade: boolean;
@@ -1244,19 +1244,21 @@ begin
     s := AppendPathDelim(ProgramDirectory(False)) + s;
     s1 := s; // keep case correct copy
     s2 := AppendPathDelim(AppendPathDelim(GetPrimaryConfigPath) + 'bin') + s2;
+    LastCalled := EnvironmentOptions.LastCalledByLazarusFullPath;
     {$IFDEF Windows}
     s := LowerCase(s);
     s2 := LowerCase(s2);
+    LastCalled := LowerCase(LastCalled);
     {$ENDIF}
-    if (EnvironmentOptions.LastCalledByLazarusFullPath = '') then begin
+    if (LastCalled = '') then begin
       if (s <> s2) then begin // do not set to exe in pcp
-        EnvironmentOptions.LastCalledByLazarusFullPath := s;
+        EnvironmentOptions.LastCalledByLazarusFullPath := s1;
         SaveEnvironment(False);
       end;
     end
     else 
-    if (EnvironmentOptions.LastCalledByLazarusFullPath <> s) and
-       (EnvironmentOptions.LastCalledByLazarusFullPath <> s2) and
+    if (LastCalled <> s) and
+       (LastCalled <> s2) and
        (s <> s2) // we can NOT check, if we enly have the path inside the PCP
     then begin
       MsgResult := IDEQuestionDialog(lisIncorrectConfigurationDirectoryFound,
