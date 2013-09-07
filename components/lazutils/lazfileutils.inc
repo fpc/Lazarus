@@ -144,11 +144,11 @@ end;
 function FilenameIsWinAbsolute(const TheFilename: string): boolean;
 begin
   {$ifdef wince}
-  Result := (Length(TheFilename) > 0) and (TheFilename[1] = '\');
+  Result := (Length(TheFilename) > 0) and (TheFilename[1] in AllowDirectorySeparators);
   {$else wince}
   Result:=((length(TheFilename)>=3) and
-           (TheFilename[1] in ['A'..'Z','a'..'z']) and (TheFilename[2]=':')  and (TheFilename[3]='\'))
-      or ((length(TheFilename)>=2) and (TheFilename[1]='\') and (TheFilename[2]='\'))
+           (TheFilename[1] in ['A'..'Z','a'..'z']) and (TheFilename[2]=':')  and (TheFilename[3]in AllowDirectorySeparators))
+      or ((length(TheFilename)>=2) and (TheFilename[1] in AllowDirectorySeparators) and (TheFilename[2] in AllowDirectorySeparators))
       ;
   {$endif wince}
 end;
