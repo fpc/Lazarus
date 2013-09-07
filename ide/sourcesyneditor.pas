@@ -2320,9 +2320,15 @@ var
   IfLineNode: TSynMarkupHighIfDefLinesNodeInfo;
   IsDisabled: Boolean;
 begin
-  if not TSynEdit(SynEdit).SelAvail then exit;
-  y1 := TSynEdit(SynEdit).BlockBegin.Y;
-  y2 := TSynEdit(SynEdit).BlockEnd.Y;
+  if TSynEdit(SynEdit).SelAvail then begin
+    y1 := TSynEdit(SynEdit).BlockBegin.Y;
+    y2 := TSynEdit(SynEdit).BlockEnd.Y;
+    if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+  end
+  else begin
+    y1 := 1;
+    y2 := TSynEdit(SynEdit).Lines.Count - 1;
+  end;
   Tree := TIDESynEditor(SynEdit).FMarkupIfDef.IfDefTree;
 
   if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
@@ -2359,9 +2365,15 @@ var
   Tree: TSynMarkupHighIfDefLinesTree;
   IfLineNode: TSynMarkupHighIfDefLinesNodeInfo;
 begin
-  if not TSynEdit(SynEdit).SelAvail then exit;
-  y1 := TSynEdit(SynEdit).BlockBegin.Y;
-  y2 := TSynEdit(SynEdit).BlockEnd.Y;
+  if TSynEdit(SynEdit).SelAvail then begin
+    y1 := TSynEdit(SynEdit).BlockBegin.Y;
+    y2 := TSynEdit(SynEdit).BlockEnd.Y;
+    if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+  end
+  else begin
+    y1 := 1;
+    y2 := TSynEdit(SynEdit).Lines.Count - 1;
+  end;
   Tree := TIDESynEditor(SynEdit).FMarkupIfDef.IfDefTree;
   if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
   for i := y1-1 to y2-1 do begin
@@ -2389,7 +2401,10 @@ procedure TIDESynGutterCodeFolding.PopClickedUnfoldAll(Sender: TObject);
 var
   i, y1, y2: Integer;
 begin
-  if not TSynEdit(SynEdit).SelAvail then exit;
+  if not TSynEdit(SynEdit).SelAvail then begin
+    FoldView.UnfoldAll;
+    exit;
+  end;
   y1 := TSynEdit(SynEdit).BlockBegin.Y;
   y2 := TSynEdit(SynEdit).BlockEnd.Y;
   if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
@@ -2402,10 +2417,16 @@ var
   i, j, y1, y2: Integer;
   FldInf: TSynFoldNodeInfo;
 begin
-  if not TSynEdit(SynEdit).SelAvail then exit;
-  y1 := TSynEdit(SynEdit).BlockBegin.Y;
-  y2 := TSynEdit(SynEdit).BlockEnd.Y;
-  if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+  if TSynEdit(SynEdit).SelAvail then begin
+    y1 := TSynEdit(SynEdit).BlockBegin.Y;
+    y2 := TSynEdit(SynEdit).BlockEnd.Y;
+    if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+  end
+  else begin
+    y1 := 1;
+    y2 := TSynEdit(SynEdit).Lines.Count - 1;
+  end;
+
   for i := y1-1 to y2-1 do begin
     j := FoldView.FoldProvider.FoldOpenCount(i);
     while j > 0 do begin
@@ -2428,10 +2449,16 @@ var
   i, j, y1, y2: Integer;
   FldInf: TSynFoldNodeInfo;
 begin
-  if not TSynEdit(SynEdit).SelAvail then exit;
-  y1 := TSynEdit(SynEdit).BlockBegin.Y;
-  y2 := TSynEdit(SynEdit).BlockEnd.Y;
-  if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+  if TSynEdit(SynEdit).SelAvail then begin
+    y1 := TSynEdit(SynEdit).BlockBegin.Y;
+    y2 := TSynEdit(SynEdit).BlockEnd.Y;
+    if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+  end
+  else begin
+    y1 := 1;
+    y2 := TSynEdit(SynEdit).Lines.Count - 1;
+  end;
+
   for i := y1-1 to y2-1 do begin
     j := FoldView.FoldProvider.FoldOpenCount(i);
     while j > 0 do begin
@@ -2452,10 +2479,16 @@ var
   i, j, y1, y2: Integer;
   FldInf: TSynFoldNodeInfo;
 begin
-  if not TSynEdit(SynEdit).SelAvail then exit;
-  y1 := TSynEdit(SynEdit).BlockBegin.Y;
-  y2 := TSynEdit(SynEdit).BlockEnd.Y;
-  if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+  if TSynEdit(SynEdit).SelAvail then begin
+    y1 := TSynEdit(SynEdit).BlockBegin.Y;
+    y2 := TSynEdit(SynEdit).BlockEnd.Y;
+    if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+  end
+  else begin
+    y1 := 1;
+    y2 := TSynEdit(SynEdit).Lines.Count - 1;
+  end;
+
   for i := y1-1 to y2-1 do begin
     j := FoldView.FoldProvider.FoldOpenCount(i);
     while j > 0 do begin
@@ -2484,6 +2517,7 @@ var
   IfLineNode: TSynMarkupHighIfDefLinesNodeInfo;
   FProv: TSynEditFoldProvider;
   inf: TSynFoldNodeInfo;
+  HasComments, HasIfdef: Boolean;
 
   procedure CheckFoldConf(Val: TPascalCodeFoldBlockType);
   begin
@@ -2506,8 +2540,6 @@ var
 begin
   inherited CreatePopUpMenuEntries(APopUp, ALine);
 
-  if not TSynEdit(SynEdit).SelAvail then
-    exit;
   if not (FoldView.HighLighter is TSynPasSyn) then
     exit;
 
@@ -2527,88 +2559,109 @@ begin
   HasCollapsedComments          := False;
   HasFoldableDisabledIfDef      := False;
   HasFoldableTempDisabledIfDef  := False;
-  HasCollapsedActiveIfDef             := False;
+  HasCollapsedActiveIfDef       := False;
   HasCollapsedDisabledIfDef     := False;
+
+  HasComments := (Foldable*[cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment] <> []) or
+                 (HideAble*[cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment] <> []);
+  HasIfdef := (Foldable*[cfbtIfDef] <> []);
 
   if TSynEdit(SynEdit).SelAvail then begin
     y1 := TSynEdit(SynEdit).BlockBegin.Y;
     y2 := TSynEdit(SynEdit).BlockEnd.Y;
     if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
-
-    HasFolds := FoldView.TextIndexToViewPos(y2) - FoldView.TextIndexToViewPos(y1) <> y2 - y1;
-    //debugln(['*** HasFolds=', HasFolds, ' y1=',y1, ' y2=',y2, ' VP1=',FoldView.TextIndexToViewPos(y1), ' VP2=',FoldView.TextIndexToViewPos(y2)]);
-
-    FProv := FoldView.FoldProvider;
-    Tree := TIDESynEditor(SynEdit).FMarkupIfDef.IfDefTree;
-
-    i := ToIdx(y1);
-    while i < y2 do begin // lines in selection
-      lc := FProv.LineCapabilities[i];
-      j := FProv.FoldOpenCount(i);
-
-      while j > 0 do begin // foldnodes on line
-        dec(j);
-        inf := FProv.FoldOpenInfo(i, j);
-        ft := TPascalCodeFoldBlockType({%H-}PtrUInt(inf.FoldType));
-        if not ((ft in Foldable) or (ft in HideAble)) then
-          continue;
-
-        if ft = cfbtIfDef then begin
-          IfLineNode := Tree.FindNodeAtPosition(ToPos(i), afmNil);
-          k := IfLineNode.EntryCount - 1; // -1 if no node
-          while (k >= 0) and (IfLineNode.Entry[k].StartColumn <> inf.LogXStart) do
-            dec(k);
-          if FoldView.IsFoldedAtTextIndex(i,j) then begin
-            if (k >= 0) and (IfLineNode.Entry[k].IsDisabled) then
-              HasCollapsedDisabledIfDef := True
-            else
-              HasCollapsedActiveIfDef := True;
-          end
-          else // IFDEF is only Fold-able, not hide-able
-          if (k >= 0) and (IfLineNode.Entry[k].IsDisabled) then begin
-            if IfLineNode.Entry[k].IsTemp then
-              HasFoldableTempDisabledIfDef := True
-            else
-              HasFoldableDisabledIfDef := True;
-          end;
-
-        end
-        else begin
-          // comment
-          if FoldView.IsFoldedAtTextIndex(i,j) then begin
-            HasCollapsedComments := True;
-          end
-          else begin
-            if (ft in Foldable) and (cfFoldStart in lc) then
-              HasFoldableComments := True;
-            if (ft in HideAble) and (cfHideStart in lc) then
-              HasHideableComments := True;
-          end;
-        end;
-      end;
-
-      if HasFoldableComments and HasHideableComments and
-         HasFoldableDisabledIfDef and HasFoldableTempDisabledIfDef and
-         ((HasCollapsedComments and HasCollapsedActiveIfDef and HasCollapsedDisabledIfDef) or
-          (not HasFolds))
-      then
-        break;
-      inc(i);
-    end;
-  end // TSynEdit(SynEdit).SelAvail
+  end
   else begin
-    // NO selection
-      //IfLineNode := Tree.FindNodeAtPosition(1, afmNext);
-      //IfLineNode := IfLineNode.Successor;
-      //if HasDisabledIfDef and
-      //   (HasDisabledIfDefInSel or (IfLineNode.StartLine > y2))
+    y1 := 1;
+    y2 := TSynEdit(SynEdit).Lines.Count - 1;
   end;
 
+
+  HasFolds := FoldView.TextIndexToViewPos(y2) - FoldView.TextIndexToViewPos(y1) <> y2 - y1;
+  //debugln(['*** HasFolds=', HasFolds, ' y1=',y1, ' y2=',y2, ' VP1=',FoldView.TextIndexToViewPos(y1), ' VP2=',FoldView.TextIndexToViewPos(y2)]);
+
+  FProv := FoldView.FoldProvider;
+  Tree := TIDESynEditor(SynEdit).FMarkupIfDef.IfDefTree;
+  IfLineNode.ClearInfo;
+
+  i := ToIdx(y1);
+  while i < y2 do begin // lines in selection
+    lc := FProv.LineCapabilities[i];
+    j := FProv.FoldOpenCount(i);
+
+    while j > 0 do begin // foldnodes on line
+      dec(j);
+      inf := FProv.FoldOpenInfo(i, j);
+      ft := TPascalCodeFoldBlockType({%H-}PtrUInt(inf.FoldType));
+      if not ((ft in Foldable) or (ft in HideAble)) then
+        continue;
+
+      if ft = cfbtIfDef then begin
+        if IfLineNode.StartLine <> ToPos(i) then
+          IfLineNode := Tree.FindNodeAtPosition(ToPos(i), afmNil);
+        k := IfLineNode.EntryCount - 1; // -1 if no node
+        while (k >= 0) and (IfLineNode.Entry[k].StartColumn <> inf.LogXStart) do
+          dec(k);
+        if FoldView.IsFoldedAtTextIndex(i,j) then begin
+          if (k >= 0) and (IfLineNode.Entry[k].IsDisabled) then
+            HasCollapsedDisabledIfDef := True
+          else
+            HasCollapsedActiveIfDef := True;
+        end
+        else // IFDEF is only Fold-able, not hide-able
+        if (k >= 0) and (IfLineNode.Entry[k].IsDisabled) then begin
+          if IfLineNode.Entry[k].IsTemp then
+            HasFoldableTempDisabledIfDef := True
+          else
+            HasFoldableDisabledIfDef := True;
+        end;
+
+      end
+      else begin
+        // comment
+        if FoldView.IsFoldedAtTextIndex(i,j) then begin
+          HasCollapsedComments := True;
+        end
+        else begin
+          if (ft in Foldable) and (cfFoldStart in lc) then
+            HasFoldableComments := True;
+          if (ft in HideAble) and (cfHideStart in lc) then
+            HasHideableComments := True;
+        end;
+      end;
+    end;
+
+    if (not HasComments) or
+       ( (HasFoldableComments and HasHideableComments) and
+         ((not HasFolds) or (HasCollapsedComments))
+       )
+    then begin
+      // found all comment info
+      if (not HasIfdef) or
+         ( (HasFoldableDisabledIfDef and HasFoldableTempDisabledIfDef) and
+           ((not HasFolds) or (HasCollapsedActiveIfDef and HasCollapsedDisabledIfDef))
+         )
+      then
+        break;
+      // only Ifdef needed
+      if IfLineNode.HasNode and (IfLineNode.StartLine = ToPos(i)) then
+        IfLineNode := IfLineNode.Successor
+      else
+        IfLineNode := Tree.FindNodeAtPosition(ToPos(i)+1, afmNext);
+      if not IfLineNode.HasNode then
+        break;
+      i := ToIdx(IfLineNode.StartLine);
+    end
+    else
+      inc(i);
+  end;
 
   if (HasFolds) and (APopUp.Items.Count > 0) then
     AddPopUpItem(cLineCaption);
   If HasFolds then
-    AddPopUpItem(synfUnfoldAllInSelection).OnClick := @PopClickedUnfoldAll;
+    if TSynEdit(SynEdit).SelAvail
+    then AddPopUpItem(synfUnfoldAllInSelection).OnClick := @PopClickedUnfoldAll
+    else AddPopUpItem(synfUnfoldAll).OnClick := @PopClickedUnfoldAll;
 
 
   if (HasCollapsedComments or HasFoldableComments or HasHideableComments) and
@@ -2617,11 +2670,17 @@ begin
     AddPopUpItem(cLineCaption);
 
   If HasCollapsedComments then
-    AddPopUpItem(synfUnfoldCommentsInSelection).OnClick := @PopClickedUnfoldComment;
+    if TSynEdit(SynEdit).SelAvail
+    then AddPopUpItem(synfUnfoldCommentsInSelection).OnClick := @PopClickedUnfoldComment
+    else AddPopUpItem(synfUnfoldComments).OnClick := @PopClickedUnfoldComment;
   If HasFoldableComments then
-    AddPopUpItem(synfFoldCommentsInSelection).OnClick := @PopClickedFoldComment;
+    if TSynEdit(SynEdit).SelAvail
+    then AddPopUpItem(synfFoldCommentsInSelection).OnClick := @PopClickedFoldComment
+    else AddPopUpItem(synfFoldComments).OnClick := @PopClickedFoldComment;
   If HasHideableComments then
-    AddPopUpItem(synfHideCommentsInSelection).OnClick := @PopClickedHideComment;
+    if TSynEdit(SynEdit).SelAvail
+    then AddPopUpItem(synfHideCommentsInSelection).OnClick := @PopClickedHideComment
+    else AddPopUpItem(synfHideComments).OnClick := @PopClickedHideComment;
 
 
   if (HasFoldableDisabledIfDef or HasCollapsedDisabledIfDef or
@@ -2631,17 +2690,26 @@ begin
     AddPopUpItem(cLineCaption);
 
   If HasCollapsedActiveIfDef and HasCollapsedDisabledIfDef then
-    AddPopUpItem(synfUnfoldAllIfdefInSelection).OnClick := @PopClickedUnfolDIfdefAll;
+    if TSynEdit(SynEdit).SelAvail
+    then AddPopUpItem(synfUnfoldAllIfdefInSelection).OnClick := @PopClickedUnfolDIfdefAll
+    else AddPopUpItem(synfUnfoldAllIfdef).OnClick := @PopClickedUnfolDIfdefAll;
   If HasCollapsedActiveIfDef then
-    AddPopUpItem(synfUnfoldActiveIfdefInSelection).OnClick := @PopClickedUnfoldIfdefActive;
+    if TSynEdit(SynEdit).SelAvail
+    then AddPopUpItem(synfUnfoldActiveIfdefInSelection).OnClick := @PopClickedUnfoldIfdefActive
+    else AddPopUpItem(synfUnfoldActiveIfdef).OnClick := @PopClickedUnfoldIfdefActive;
   If HasCollapsedDisabledIfDef then
-    AddPopUpItem(synfUnfoldInactiveIfdefInSelection).OnClick := @PopClickedUnfoldIfdefInactiv;
+    if TSynEdit(SynEdit).SelAvail
+    then AddPopUpItem(synfUnfoldInactiveIfdefInSelection).OnClick := @PopClickedUnfoldIfdefInactiv
+    else AddPopUpItem(synfUnfoldInactiveIfdef).OnClick := @PopClickedUnfoldIfdefInactiv;
 
   If HasFoldableDisabledIfDef or HasFoldableTempDisabledIfDef then
-    AddPopUpItem(synfFoldInactiveIfdefInSelection).OnClick := @PopClickedFoldIfdef;
+    if TSynEdit(SynEdit).SelAvail
+    then AddPopUpItem(synfFoldInactiveIfdefInSelection).OnClick := @PopClickedFoldIfdef
+    else AddPopUpItem(synfFoldInactiveIfdef).OnClick := @PopClickedFoldIfdef;
   If HasFoldableDisabledIfDef and HasFoldableTempDisabledIfDef then
-    AddPopUpItem(synfFoldInactiveIfdefInSelectionExcludeMixedState).OnClick := @PopClickedFoldIfdefNoMixed;
-
+    if TSynEdit(SynEdit).SelAvail
+    then AddPopUpItem(synfFoldInactiveIfdefInSelectionExcludeMixedState).OnClick := @PopClickedFoldIfdefNoMixed
+    else AddPopUpItem(synfFoldInactiveIfdefExcludeMixedState).OnClick := @PopClickedFoldIfdefNoMixed;
 end;
 
 end.
