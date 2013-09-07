@@ -199,8 +199,6 @@ const
     procedure JumpToNextDot(Dot: Char);
     function  HasSelection: Boolean;
     function  HasExtSelection: Boolean;
-    procedure GetSel(out _SelStart: Integer; out _SelStop: Integer);
-    procedure SetSel(const _SelStart: Integer; _SelStop: Integer);
 
     Function  CharToMask(UCh : TUtf8Char) : tMaskedType;
     Function  MaskToChar(Value : tMaskedType) : Char;
@@ -219,6 +217,8 @@ const
     function DisableMask(const NewText: String): Boolean;
     function RestoreMask(const NewText: String): Boolean;
 
+    procedure GetSel(out _SelStart: Integer; out _SelStop: Integer);
+    procedure SetSel(const _SelStart: Integer; _SelStop: Integer);
     Function  GetText : TCaption;
     Procedure SetText(Value: TCaption);
     function  GetEditText: string; virtual;
