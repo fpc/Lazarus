@@ -505,6 +505,7 @@ begin
     end;
     Inc(RealIndex);
   end;
+  SetPageIndex(ATabControl, ATabControl.PageIndex); // index may not have been updated while pages where hidden
   AdjustSizeTabControlPages(ATabControl);
 end;
 
