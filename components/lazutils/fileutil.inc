@@ -819,6 +819,8 @@ var
 begin
   Result:=Filename;
   if not FileExistsUTF8(Filename) then exit;
+  //Sanitize result first (otherwise result can contain things like foo/\bar on Windows)
+  Result := ResolveDots(Result);
   // check every directory and filename
   StartPos:=1;
   {$IFDEF WINDOWS}
@@ -886,7 +888,7 @@ var
   CurDir: String;
 begin
   Result:='';
-  CurDir:=ExtractFilePath(Filename);
+  CurDir:=ExtractFilePath(ResolveDots(Filename));
   if FindFirstUTF8(CurDir+GetAllFilesMask,faAnyFile, FileInfo)=0 then begin
     ShortFilename:=ExtractFilename(Filename);
     repeat
@@ -897,7 +899,8 @@ begin
       if CompareFilenamesIgnoreCase(FileInfo.Name,ShortFilename)=0 then begin
         if FileInfo.Name=ShortFilename then begin
           // fits exactly
-          Result:=Filename;
+          //Don't return (unaltered) Filename: otherwise possible changes by ResolveDots get lost
+          Result:=CurDir+FileInfo.Name;
           break;
         end;
         // fits case insensitive
