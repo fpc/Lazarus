@@ -460,6 +460,7 @@ type
     procedure DoVisibleChanged(AVisible: Boolean); override;
     procedure SetLines(const AValue: TSynEditStrings); override;
     procedure SetInvalidateLinesMethod(const AValue: TInvalidateLines); override;
+    property  IfDefTree: TSynMarkupHighIfDefLinesTree read FIfDefTree;
   public
     constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
