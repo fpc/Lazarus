@@ -2183,7 +2183,7 @@ type
     procedure ScaleBy(Multiplier, Divider: Integer);
     function GetDockCaption(AControl: TControl): String; virtual;
     procedure UpdateDockCaption(Exclude: TControl = nil); virtual;
-    procedure GetTabOrderList(List: TFPList);
+    procedure GetTabOrderList(List: TFPList); virtual;
     function HandleAllocated: Boolean;
     function ParentHandlesAllocated: boolean; override;
     procedure HandleNeeded;
