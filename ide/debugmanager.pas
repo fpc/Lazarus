@@ -2718,21 +2718,26 @@ end;
 function TDebugManager.DoCreateBreakPoint(const AnAddr: TDBGPtr; WarnIfNoDebugger: boolean;
   out ABrkPoint: TIDEBreakPoint): TModalResult;
 begin
-  ABrkPoint := nil;
-  if WarnIfNoDebugger
-  and ((FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass)=nil)
-    or (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename)))
-  then begin
-    if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
-      Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,
-             [LineEnding]),
-      mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway])<>mrIgnore
-    then
-      exit;
-  end;
+  LockCommandProcessing;
+  try
+    ABrkPoint := nil;
+    if WarnIfNoDebugger
+    and ((FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass)=nil)
+      or (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename)))
+    then begin
+      if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
+        Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,
+               [LineEnding]),
+        mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway])<>mrIgnore
+      then
+        exit;
+    end;
 
-  ABrkPoint := FBreakPoints.Add(AnAddr);
-  Result := mrOK;
+    ABrkPoint := FBreakPoints.Add(AnAddr);
+    Result := mrOK;
+  finally
+    UnLockCommandProcessing;
+  end;
 end;
 
 function TDebugManager.DoDeleteBreakPoint(const AFilename: string;
@@ -2740,11 +2745,16 @@ function TDebugManager.DoDeleteBreakPoint(const AFilename: string;
 var
   OldBreakPoint: TIDEBreakPoint;
 begin
-  OldBreakPoint:=FBreakPoints.Find(AFilename,ALine);
-  if OldBreakPoint=nil then exit(mrOk);
-  ReleaseRefAndNil(OldBreakPoint);
-  Project1.Modified:=true;
-  Result := mrOK;
+  LockCommandProcessing;
+  try
+    OldBreakPoint:=FBreakPoints.Find(AFilename,ALine);
+    if OldBreakPoint=nil then exit(mrOk);
+    ReleaseRefAndNil(OldBreakPoint);
+    Project1.Modified:=true;
+    Result := mrOK;
+  finally
+    UnLockCommandProcessing;
+  end;
 end;
 
 function TDebugManager.DoDeleteBreakPointAtMark(const ASourceMark: TSourceMark
@@ -2752,23 +2762,28 @@ function TDebugManager.DoDeleteBreakPointAtMark(const ASourceMark: TSourceMark
 var
   OldBreakPoint: TIDEBreakPoint;
 begin
-  // consistency check
-  if (ASourceMark=nil) or (not ASourceMark.IsBreakPoint)
-  or (ASourceMark.Data=nil) or (not (ASourceMark.Data is TIDEBreakPoint)) then
-    RaiseException('TDebugManager.DoDeleteBreakPointAtMark');
+  LockCommandProcessing;
+  try
+    // consistency check
+    if (ASourceMark=nil) or (not ASourceMark.IsBreakPoint)
+    or (ASourceMark.Data=nil) or (not (ASourceMark.Data is TIDEBreakPoint)) then
+      RaiseException('TDebugManager.DoDeleteBreakPointAtMark');
 
-{$ifdef VerboseDebugger}
-  DebugLn('TDebugManager.DoDeleteBreakPointAtMark A ',ASourceMark.GetFilename,
-    ' ',IntToStr(ASourceMark.Line));
-{$endif}
-  OldBreakPoint:=TIDEBreakPoint(ASourceMark.Data);
-{$ifdef VerboseDebugger}
-  DebugLn('TDebugManager.DoDeleteBreakPointAtMark B ',OldBreakPoint.ClassName,
-    ' ',OldBreakPoint.Source,' ',IntToStr(OldBreakPoint.Line));
-{$endif}
-  ReleaseRefAndNil(OldBreakPoint);
-  Project1.Modified:=true;
-  Result := mrOK;
+  {$ifdef VerboseDebugger}
+    DebugLn('TDebugManager.DoDeleteBreakPointAtMark A ',ASourceMark.GetFilename,
+      ' ',IntToStr(ASourceMark.Line));
+  {$endif}
+    OldBreakPoint:=TIDEBreakPoint(ASourceMark.Data);
+  {$ifdef VerboseDebugger}
+    DebugLn('TDebugManager.DoDeleteBreakPointAtMark B ',OldBreakPoint.ClassName,
+      ' ',OldBreakPoint.Source,' ',IntToStr(OldBreakPoint.Line));
+  {$endif}
+    ReleaseRefAndNil(OldBreakPoint);
+    Project1.Modified:=true;
+    Result := mrOK;
+  finally
+    UnLockCommandProcessing;
+  end;
 end;
 
 function TDebugManager.DoRunToCursor: TModalResult;
