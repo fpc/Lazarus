@@ -88,7 +88,7 @@ const
 
 procedure Register;
 begin
-  RegisterComponents('Industrial',[TArrow]);
+  RegisterComponents('Misc',[TArrow]);
 end;
 
 { TArrow }

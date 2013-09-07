@@ -139,15 +139,8 @@ type
     property Transparent;
   end;
 
-procedure Register;
-
 
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('Industrial Stuff',[TindLed]);
-end;
 
 constructor TcyCustomLed.Create(AOwner: TComponent);
 begin

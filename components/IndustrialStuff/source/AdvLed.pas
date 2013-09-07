@@ -19,7 +19,7 @@ unit AdvLed;
 interface
 
 uses
-  LCLIntf, LCLType,LResources,Classes, Types, ExtCtrls,Controls,Graphics;
+  LCLIntf, LCLType,LResources,Classes, Types, ExtCtrls, Controls, Graphics;
 
 type
 
@@ -55,7 +55,6 @@ type
     procedure BitmapNeeded;
     procedure DoTimer(Sender: TObject);
     procedure GlyphChanged(Sender: TObject);
-
 
   protected
     FlipFLop : Boolean;
@@ -123,8 +122,6 @@ type
     property OnContextPopup;  }
   end;
 
-procedure Register;
-
 implementation
 
 (*****************************************
@@ -149,11 +146,6 @@ end;
 (*****************************************
  * TAdvLed control                       *
  *****************************************)
-procedure Register;
-begin
-  RegisterComponents('Industrial',[TAdvLed]);
-end;
-
 
 // create control
 constructor TAdvLed.Create(AOwner: TComponent);
