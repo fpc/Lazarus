@@ -1224,7 +1224,7 @@ procedure TMainIDE.LoadGlobalOptions;
   end;
 var
   EnvOptsCfgExisted: boolean;
-  s, s2: String;
+  s, s1, s2: String;
   OldVer: String;
   NowVer: String;
   IsUpgrade: boolean;
@@ -1242,7 +1242,12 @@ begin
     s := ExtractFileName(ParamStrUTF8(0));
     s2 := s;
     s := AppendPathDelim(ProgramDirectory(False)) + s;
+    s1 := s; // keep case correct copy
     s2 := AppendPathDelim(AppendPathDelim(GetPrimaryConfigPath) + 'bin') + s2;
+    {$IFDEF Windows}
+    s := LowerCase(s);
+    s2 := LowerCase(s2);
+    {$ENDIF}
     if (EnvironmentOptions.LastCalledByLazarusFullPath = '') then begin
       if (s <> s2) then begin // do not set to exe in pcp
         EnvironmentOptions.LastCalledByLazarusFullPath := s;
@@ -1257,7 +1262,7 @@ begin
       MsgResult := IDEQuestionDialog(lisIncorrectConfigurationDirectoryFound,
           Format(lisIDEConficurationFoundMayBelongToOtherLazarus,
           [LineEnding, GetSecondConfDirWarning, GetPrimaryConfigPath,
-           EnvironmentOptions.LastCalledByLazarusFullPath, s]),
+           EnvironmentOptions.LastCalledByLazarusFullPath, s1]),
         mtWarning, [mrOK, lisUpdateInfo, mrIgnore, mrAbort]);
 
       case MsgResult of
