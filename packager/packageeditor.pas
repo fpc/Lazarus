@@ -1613,7 +1613,7 @@ begin
   if LazPackage=nil then exit;
   SaveBitBtn.Enabled:=(not LazPackage.ReadOnly)
                               and (LazPackage.IsVirtual or LazPackage.Modified);
-  CompileBitBtn.Enabled:=(not LazPackage.IsVirtual);
+  CompileBitBtn.Enabled:=(not LazPackage.IsVirtual) and LazPackage.CompilerOptions.HasCommands;
   AddBitBtn.Enabled:=not LazPackage.ReadOnly;
   RemoveBitBtn.Enabled:=(not LazPackage.ReadOnly)
      and (FilesTreeView.Selected<>nil)

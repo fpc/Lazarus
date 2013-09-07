@@ -381,6 +381,7 @@ type
     procedure InvalidateOptions;
     function GetDefaultMainSourceFileName: string; override;
     function CreateTargetFilename(const {%H-}MainSourceFileName: string): string; override;
+    function HasCompilerCommand: boolean; override;
 
     procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string); override;
     procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string); override;
@@ -4077,6 +4078,11 @@ function TPkgCompilerOptions.CreateTargetFilename(
   const MainSourceFileName: string): string;
 begin
   Result:='';
+end;
+
+function TPkgCompilerOptions.HasCompilerCommand: boolean;
+begin
+  Result:=(not SkipCompiler) and (CompilerPath<>'');
 end;
 
 procedure TPkgCompilerOptions.Assign(Source: TPersistent);
