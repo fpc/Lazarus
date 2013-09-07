@@ -3566,6 +3566,7 @@ begin
     if (IncFilename<>'') and (IncFilename[1]='''')
     and (IncFilename[length(IncFilename)]='''') then
       IncFilename:=copy(IncFilename,2,length(IncFilename)-2);
+    DoDirSeparators(IncFilename);
     DynamicExtension:=false;
     if IncFilename<>'' then begin
       if ExtractFileExt(IncFilename)='' then begin
