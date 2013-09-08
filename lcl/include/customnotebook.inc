@@ -174,9 +174,16 @@ procedure TNBPages.Move(CurIndex, NewIndex: Integer);
 var
   APage: TCustomPage;
   NewControlIndex, NewPageIndex: integer;
+  ActivePageIndex: Integer;
+  ActivePage: TCustomPage;
 begin
   if CurIndex = NewIndex then Exit;
-  NewPageIndex := NewIndex;
+  ActivePageIndex := FNotebook.PageIndex;
+  if (FNotebook.PageIndex >= 0) and (FNotebook.PageIndex < Count) then
+    ActivePage := GetPage(ActivePageIndex)
+  else
+    ActivePage := nil;
+  //NewPageIndex := NewIndex;
 
   APage := TCustomPage(FPageList[CurIndex]);
 
@@ -185,21 +192,6 @@ begin
     NewControlIndex := FNotebook.ControlCount-1
   else
     NewControlIndex := FNotebook.GetControlIndex(TCustomPage(FPageList[NewIndex]));
-
-  // calculate new PageIndex
-  if FNotebook.PageIndex = CurIndex then
-    NewPageIndex := NewIndex
-  else
-  if FNotebook.PageIndex > CurIndex then
-  begin
-    if FNotebook.PageIndex <= NewIndex then
-      NewPageIndex := FNotebook.PageIndex - 1;
-  end
-  else
-  begin
-    if FNotebook.PageIndex >= NewIndex then
-      NewPageIndex := FNotebook.PageIndex + 1;
-  end;
 
   FNotebook.DisableAutoSizing;
   try
@@ -213,7 +205,11 @@ begin
     FNotebook.SetControlIndex(APage, NewControlIndex);
 
     // update PageIndex
-    FNotebook.PageIndex := NewPageIndex;
+    if ActivePage <> nil then
+      FNotebook.PageIndex := IndexOfPage(ActivePage)
+    else // Can not restore an invalid page index.
+    if FNotebook.PageIndex >= 0 then // keep if -1
+      FNotebook.PageIndex := NewIndex;
   finally
     FNotebook.EnableAutoSizing;
   end;
