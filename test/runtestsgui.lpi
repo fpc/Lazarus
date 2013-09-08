@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -39,7 +39,7 @@
         <PackageName Value="CodeTools"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="13">
+    <Units Count="14">
       <Unit0>
         <Filename Value="runtestsgui.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -105,6 +105,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestLazUtils"/>
       </Unit12>
+      <Unit13>
+        <Filename Value="lcltests\testpagecontrol.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testpagecontrol"/>
+      </Unit13>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -120,7 +125,6 @@
     <Parsing>
       <SyntaxOptions>
         <CStyleOperator Value="False"/>
-        <UseAnsiStrings Value="False"/>
       </SyntaxOptions>
     </Parsing>
     <Linking>
