@@ -118,7 +118,7 @@ var
   CurDir, HomeDir, Fn: String;
 begin
   Fn := FileName;
-  DoDirSeparators(Fn);
+  DoPathDelims(Fn);
   IsAbs := FileNameIsUnixAbsolute(Fn);
   if (not IsAbs) then
   begin

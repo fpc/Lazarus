@@ -43,9 +43,10 @@ interface
 
 uses
   Classes, SysUtils, strutils, contnrs, LCLProc, Forms, Controls, Buttons,
-  Dialogs, FileUtil, Laz2_XMLCfg, lazutf8classes, Graphics, ComCtrls, ExtCtrls,
-  StdCtrls, DefineTemplates, CodeToolManager, TransferMacros, MacroDefIntf,
-  LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs, AboutFrm;
+  Dialogs, FileUtil, Laz2_XMLCfg, lazutf8classes, LazFileUtils, Graphics,
+  ComCtrls, ExtCtrls, StdCtrls, DefineTemplates, CodeToolManager,
+  TransferMacros, MacroDefIntf, LazarusIDEStrConsts, LazConf, EnvironmentOpts,
+  IDEProcs, AboutFrm;
   
 type
   TSDFilenameQuality = (
@@ -350,7 +351,7 @@ function SearchLazarusDirectoryCandidates(StopIfFits: boolean): TSDFileInfoList;
   begin
     Result:=false;
     if Dir='' then Dir:='.';
-    DoDirSeparators(Dir);
+    DoPathDelims(Dir);
     Dir:=ChompPathDelim(Dir);
     // check if already checked
     if Assigned(List) and List.CaptionExists(Dir) then exit;
@@ -540,7 +541,7 @@ var
   begin
     Result:=false;
     if AFilename='' then exit;
-    DoDirSeparators(AFilename);
+    DoPathDelims(AFilename);
     // check if already checked
     if Assigned(List) and List.CaptionExists(AFilename) then exit;
     EnvironmentOptions.CompilerFilename:=AFilename;
@@ -930,7 +931,7 @@ function SearchDebuggerCandidates(StopIfFits: boolean): TSDFileInfoList;
   begin
     Result:=false;
     if AFilename='' then exit;
-    DoDirSeparators(AFilename);
+    DoPathDelims(AFilename);
     // check if already checked
     if Assigned(List) and List.CaptionExists(AFilename) then exit;
     EnvironmentOptions.DebuggerFilename:=AFilename;
@@ -1056,7 +1057,7 @@ function SearchMakeExeCandidates(StopIfFits: boolean): TSDFileInfoList;
   begin
     Result:=false;
     if AFilename='' then exit;
-    DoDirSeparators(AFilename);
+    DoPathDelims(AFilename);
     // check if already checked
     if Assigned(List) and List.CaptionExists(AFilename) then exit;
     EnvironmentOptions.MakeFilename:=AFilename;

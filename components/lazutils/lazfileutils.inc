@@ -1,7 +1,7 @@
 {%MainUnit lazfileutils.pas}
 
 
-function ResolveDots(const AFilename: string): String;
+function ResolveDots(const AFilename: string): string;
 //trim double path delims and expand special dirs like .. and .
 //on Windows change also '/' to '\' except for filenames starting with '\\?\'
 var SrcPos, DestPos, l, DirStart: integer;

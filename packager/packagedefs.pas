@@ -39,12 +39,11 @@ interface
 uses
   Classes, SysUtils, contnrs, typinfo, LCLProc, LCLType, LResources, Graphics,
   Forms, FileProcs, FileUtil, AVL_Tree, LazConfigStorage, Laz2_XMLCfg,
-  BasicCodeTools, CodeToolsCfgScript, DefineTemplates, CodeToolManager,
-  CodeCache, CodeToolsStructs,
-  PropEdits, LazIDEIntf, MacroIntf, MacroDefIntf, PackageIntf, IDEOptionsIntf,
-  EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, 
-  LazarusIDEStrConsts, IDEProcs, ComponentReg,
-  TransferMacros, FileReferenceList, PublishModule;
+  LazFileUtils, BasicCodeTools, CodeToolsCfgScript, DefineTemplates,
+  CodeToolManager, CodeCache, CodeToolsStructs, PropEdits, LazIDEIntf,
+  MacroIntf, MacroDefIntf, PackageIntf, IDEOptionsIntf, EditDefineTree,
+  CompilerOptions, CompOptsModes, IDEOptionDefs, LazarusIDEStrConsts, IDEProcs,
+  ComponentReg, TransferMacros, FileReferenceList, PublishModule;
 
 type
   TLazPackage = class;
@@ -1466,7 +1465,7 @@ var
   OldDirectory: String;
 begin
   NewFilename:=AValue;
-  DoDirSeparators(NewFilename);
+  DoPathDelims(NewFilename);
   if Filename=NewFilename then exit;
   inherited SetFilename(NewFilename);
   fFullFilenameStamp:=CTInvalidChangeStamp;
@@ -2379,7 +2378,7 @@ var
   NewFilename: String;
 begin
   NewFilename:=AValue;
-  DoDirSeparators(NewFilename);
+  DoPathDelims(NewFilename);
   if FFilename=NewFilename then exit;
   FFilename:=NewFilename;
   if (FFilename<>'') and (FFilename[length(FFilename)]=PathDelim) then

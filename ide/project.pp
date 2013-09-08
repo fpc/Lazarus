@@ -49,10 +49,10 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
-  FileUtil, Laz2_XMLCfg, Controls, Dialogs, maps,
+  FileUtil, Laz2_XMLCfg, Controls, Dialogs, maps, LazFileUtils, LazFileCache,
   // codetools
-  CodeToolsConfig, ExprEval, FileProcs, DefineTemplates,
-  BasicCodeTools, CodeToolsCfgScript, CodeToolManager, CodeCache,
+  CodeToolsConfig, ExprEval, DefineTemplates,
+  BasicCodeTools, CodeToolsCfgScript, CodeToolManager, CodeCache, FileProcs,
   // IDEIntf
   PropEdits, CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, UnitResources,
   LazIDEIntf, PackageIntf, SrcEditorIntf, IDEOptionsIntf,
@@ -4540,7 +4540,7 @@ var
 begin
   NewProjectInfoFile:=TrimFilename(NewFilename);
   if NewProjectInfoFile='' then exit;
-  DoDirSeparators(NewProjectInfoFile);
+  DoPathDelims(NewProjectInfoFile);
   if fProjectInfoFile=NewProjectInfoFile then exit;
   BeginUpdate(true);
   TitleWasDefault:=(Title<>'') and TitleIsDefault(true);
@@ -4605,7 +4605,7 @@ begin
     // PathDelim changed from '\' to '/'
     FileWasAbsolute:=FilenameIsWinAbsolute(AFileName);
     {$ENDIF}
-    DoDirSeparators(AFilename);
+    DoPathDelims(AFilename);
   end else begin
     FileWasAbsolute:=FilenameIsAbsolute(AFileName);
   end;
@@ -4645,7 +4645,7 @@ begin
   ProjectPath:=ProjectDirectory;
   if ProjectPath='' then ProjectPath:=GetCurrentDirUTF8;
   Result:=AFilename;
-  DoDirSeparators(Result);
+  DoPathDelims(Result);
   // try making filename relative to project file
   if FilenameIsAbsolute(Result)
   and (CompareFileNames(copy(Result,1,length(ProjectPath)),ProjectPath)=0)

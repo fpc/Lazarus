@@ -46,7 +46,7 @@ uses
 {$ENDIF}
   // FPC + LCL
   Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
-  Laz2_XMLCfg, LazLogger, InterfaceBase,
+  Laz2_XMLCfg, LazLogger, LazFileUtils, InterfaceBase,
   // codetools
   AVL_Tree, DefineTemplates, CodeCache,
   BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,
@@ -2724,8 +2724,8 @@ begin
           end;
         end;
         if stats^.ViaMakefile then begin
-          DoDirSeparators(stats^.CompilerFilename);
-          DoDirSeparators(stats^.Params);
+          DoPathDelims(stats^.CompilerFilename);
+          DoPathDelims(stats^.Params);
         end;
       finally
         XMLConfig.Free;

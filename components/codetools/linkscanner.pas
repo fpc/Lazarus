@@ -46,8 +46,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, math, CodeToolsStrConsts, CodeToolMemManager, FileProcs,
-  AVL_Tree, ExprEval, SourceLog, KeywordFuncLists, BasicCodeTools;
+  Classes, SysUtils, math, CodeToolsStrConsts, CodeToolMemManager, LazFileUtils,
+  FileProcs, AVL_Tree, ExprEval, SourceLog, KeywordFuncLists, BasicCodeTools;
 
 const
   PascalCompilerDefine = ExternalMacroStart+'Compiler';
@@ -3566,7 +3566,7 @@ begin
     if (IncFilename<>'') and (IncFilename[1]='''')
     and (IncFilename[length(IncFilename)]='''') then
       IncFilename:=copy(IncFilename,2,length(IncFilename)-2);
-    DoDirSeparators(IncFilename);
+    DoPathDelims(IncFilename);
     DynamicExtension:=false;
     if IncFilename<>'' then begin
       if ExtractFileExt(IncFilename)='' then begin
@@ -3698,7 +3698,7 @@ begin
   // beware of 'dir/file.inc'
   HasPathDelims:=(System.Pos('/',AFilename)>0) or (System.Pos('\',AFilename)>0);
   if HasPathDelims then
-    DoDirSeparators(AFilename);
+    DoPathDelims(AFilename);
 
   // first search include file in the directory of the unit
   {$IFDEF VerboseIncludeSearch}

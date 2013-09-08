@@ -54,6 +54,8 @@ function FilenameIsTrimmed(const TheFilename: string): boolean;
 function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
 function TrimFilename(const AFilename: string): string;
 function ResolveDots(const AFilename: string): string;
+Procedure DoPathDelims(Var FileName: string);
+Function SetPathDelims(Const FileName: string): String;
 function CleanAndExpandFilename(const Filename: string): string; // empty string returns current directory
 function CleanAndExpandDirectory(const Filename: string): string; // empty string returns current directory
 function TrimAndExpandFilename(const Filename: string; const BaseDir: string = ''): string; // empty string returns empty string
@@ -410,7 +412,6 @@ function ForceDirectory(DirectoryName: string): boolean;
 var i: integer;
   Dir: string;
 begin
-  DoDirSeparators(DirectoryName);
   DirectoryName:=AppendPathDelim(DirectoryName);
   i:=1;
   while i<=length(DirectoryName) do begin
@@ -563,6 +564,26 @@ begin
     SetLength(Result, Len - (Start - 1));
     Result := ResolveDots(Result);
   end;
+end;
+
+procedure DoPathDelims(var FileName: string);
+var
+  i: Integer;
+begin
+  for i:=0 to length(FileName) do
+    {$IFDEF Windows}
+    if Filename[i]='/' then
+      Filename[i]:='\';
+    {$ELSE}
+    if Filename[i]='\' then
+      Filename[i]:='/';
+    {$ENDIF}
+end;
+
+function SetPathDelims(const FileName: string): String;
+begin
+  Result:=FileName;
+  DoPathDelims(Result);
 end;
 
 {------------------------------------------------------------------------------
