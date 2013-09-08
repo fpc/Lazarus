@@ -139,7 +139,6 @@
       <CompilerMessages>
         <UseMsgFile Value="True"/>
       </CompilerMessages>
-      <CustomOptions Value="-WC"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
