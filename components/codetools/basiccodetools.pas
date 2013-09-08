@@ -40,7 +40,8 @@ unit BasicCodeTools;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, SourceLog, KeywordFuncLists, FileProcs;
+  Classes, SysUtils, AVL_Tree, SourceLog, KeywordFuncLists, FileProcs,
+  LazFileUtils;
 
 //----------------------------------------------------------------------------
 { These functions are used by the codetools }
@@ -3686,7 +3687,7 @@ begin
   EndPos:=StartPos;
   while (EndPos<=MaxPos) and (ASource[EndPos]<>'}') do inc(EndPos);
   if (EndPos=StartPos) or (EndPos>MaxPos) then exit;
-  Filename:=SetDirSeparators(copy(ASource,StartPos,EndPos-StartPos));
+  Filename:=SetPathDelims(copy(ASource,StartPos,EndPos-StartPos));
   Result:=true;
 end;
 

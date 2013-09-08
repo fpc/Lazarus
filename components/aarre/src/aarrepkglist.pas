@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, Laz2_XMLCfg, laz2_DOM, LazLogger, LazUTF8, LConvEncoding,
-  FileProcs, zstream;
+  LazFileUtils, FileProcs, zstream;
 
 type
   TAPackageType = (
@@ -430,7 +430,7 @@ begin
   NewPath:='';
   p:=1;
   while p<=length(Path) do begin
-    CurPath:=TrimFilename(SetDirSeparators(GetNextDelimitedItem(Path,';',p)));
+    CurPath:=TrimFilename(SetPathDelims(GetNextDelimitedItem(Path,';',p)));
     if CurPath='' then continue;
     MacroPos:=1;
     while (MacroPos<length(CurPath)) do begin

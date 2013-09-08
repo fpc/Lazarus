@@ -34,7 +34,7 @@ interface
 uses
   // LCL+FCL
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, LConvEncoding,
-  FileUtil, contnrs, IniFiles,
+  FileUtil, LazFileUtils, contnrs, IniFiles,
   // codetools
   CodeToolManager, DefineTemplates, CodeCache, LinkScanner, FileProcs, CodeToolsStructs,
   // IDEIntf
@@ -324,7 +324,7 @@ var
 begin
   Result:=Filename;
   if Result='' then exit;
-  Result:=TrimFilename(SetDirSeparators(Result));
+  Result:=TrimFilename(SetPathDelims(Result));
   // check for $(Delphi) macro
   p:=System.Pos('$(DELPHI)',Result);
   if p>0 then begin
@@ -342,7 +342,7 @@ begin
     Result:=ConvertDelphiAbsoluteToRelativeFile(Result, AProjPack);
   end;
   // change PathDelim
-  Result:=TrimFilename(SetDirSeparators(Result));
+  Result:=TrimFilename(SetPathDelims(Result));
 end;
 
 function ExpandDelphiSearchPath(const SearchPath: string;

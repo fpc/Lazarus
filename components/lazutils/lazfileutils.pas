@@ -591,7 +591,7 @@ end;
  ------------------------------------------------------------------------------}
 function CleanAndExpandFilename(const Filename: string): string;
 begin
-  Result:=ExpandFileNameUTF8(TrimFileName(SetDirSeparators(Filename)));
+  Result:=ExpandFileNameUTF8(TrimFileName(Filename));
 end;
 
 {------------------------------------------------------------------------------
@@ -604,14 +604,14 @@ end;
 
 function TrimAndExpandFilename(const Filename: string; const BaseDir: string): string;
 begin
-  Result:=ChompPathDelim(TrimFilename(SetDirSeparators(Filename)));
+  Result:=ChompPathDelim(TrimFilename(Filename));
   if Result='' then exit;
   Result:=TrimFilename(ExpandFileNameUTF8(Result,BaseDir));
 end;
 
 function TrimAndExpandDirectory(const Filename: string; const BaseDir: string): string;
 begin
-  Result:=TrimFilename(SetDirSeparators(Filename));
+  Result:=TrimFilename(Filename);
   if Result='' then exit;
   Result:=TrimFilename(AppendPathDelim(ExpandFileNameUTF8(Result,BaseDir)));
 end;
@@ -868,21 +868,6 @@ begin
   end;
 end;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function FileSearchUTF8(const Name, DirList: String; ImplicitCurrentDir : Boolean = True): String;
 Var
   I : longint;
@@ -1011,7 +996,7 @@ begin
       E.ErrorCode:=3;
       Raise E;
     end;
-  Result := DoForceDirectories(SetDirSeparators(Dir));
+  Result := DoForceDirectories(SetPathDelims(Dir));
 end;
 
 

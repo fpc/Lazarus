@@ -35,7 +35,8 @@ unit DirectoryCacher;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8, LazFileCache, FileProcs, AVL_Tree, CodeToolsStructs;
+  Classes, SysUtils, LazUTF8, LazFileCache, LazFileUtils, FileProcs, AVL_Tree,
+  CodeToolsStructs;
 
 // verbosity
 { $DEFINE CTDEBUG}
@@ -1191,7 +1192,7 @@ begin
   {$ENDIF}
   if InFilename<>'' then begin
     // uses IN parameter
-    InFilename:=TrimFilename(SetDirSeparators(InFilename));
+    InFilename:=TrimFilename(SetPathDelims(InFilename));
     if AnyCase then
       UnitSrc:=ctdusInFilenameCaseInsensitive
     else

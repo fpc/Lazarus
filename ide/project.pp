@@ -5156,7 +5156,7 @@ end;
 procedure TProject.AddSrcPath(const SrcPathAddition: string);
 begin
   CompilerOptions.SrcPath:=MergeSearchPaths(CompilerOptions.SrcPath,
-                                            SetDirSeparators(SrcPathAddition));
+                                            SetPathDelims(SrcPathAddition));
 end;
 
 function TProject.GetSourceDirs(WithProjectDir, WithoutOutputDir: boolean): string;

@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, Math, SysUtils, Forms, Controls, Dialogs, CompilerOptions,
-  AsyncProcess, LCLProc, DynQueue, FileUtil, UTF8Process,
+  AsyncProcess, LCLProc, DynQueue, FileUtil, UTF8Process, LazFileUtils,
   CodeCache, CodeToolManager,
   IDEDialogs, IDEMsgIntf, IDEExternToolIntf, IDEProcs, LazConf;
 
@@ -1260,7 +1260,7 @@ begin
       end;
       
       // make filenames absolute if wanted
-      Filename:=TrimFilename(SetDirSeparators(copy(Msg,1,FilenameEndPos)));
+      Filename:=TrimFilename(SetPathDelims(copy(Msg,1,FilenameEndPos)));
       if FilenameIsAbsolute(Filename) then begin
         AbsFilename:=Filename;
         CurrentMessageParts.Values['Filename']:=AbsFilename;
@@ -1273,13 +1273,13 @@ begin
       if (ofoMakeFilenamesAbsolute in Options) then begin
         if (AbsFilename<>'') and (AbsFilename<>Filename) then begin
           Filename:=AbsFilename;
-          Msg:=Filename+TrimFilename(SetDirSeparators(
+          Msg:=Filename+TrimFilename(SetPathDelims(
                         copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos)));
         end;
       end else begin
         if FileIsInPath(Filename,fCurrentDirectory) then begin
           Filename:=CreateRelativePath(Filename,fCurrentDirectory);
-          Msg:=Filename+TrimFilename(SetDirSeparators(
+          Msg:=Filename+TrimFilename(SetPathDelims(
                         copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos)));
         end;
       end;
@@ -1507,7 +1507,7 @@ end;
 
 procedure TOutputFilter.InternalSetCurrentDirectory(const Dir: string);
 begin
-  fCurrentDirectory:=TrimFilename(AppendPathDelim(SetDirSeparators(Dir)));
+  fCurrentDirectory:=TrimFilename(AppendPathDelim(SetPathDelims(Dir)));
 end;
 
 procedure TOutputFilter.OnAsyncTerminate(Sender: TObject);
@@ -1654,7 +1654,7 @@ begin
       fMakeDirHistory.Add(fCurrentDirectory);
     end;
     // the make tool uses unix paths under windows
-    InternalSetCurrentDirectory(SetDirSeparators(copy(s,i,length(s)-i)));
+    InternalSetCurrentDirectory(SetPathDelims(copy(s,i,length(s)-i)));
     exit;
   end;
   // check for leaving directory
@@ -1678,7 +1678,7 @@ begin
     MsgStartPos:=BracketEnd+1;
     while (MsgStartPos<=length(s)) and (s[MsgStartPos]=' ') do inc(MsgStartPos);
     MakeMsg:=copy(s,MsgStartPos,length(s)-MsgStartPos+1);
-    DoAddFilteredLine(SetDirSeparators(s));
+    DoAddFilteredLine(SetPathDelims(s));
     if CompareText(copy(MakeMsg,1,5),'Error')=0 then
       if (ofoExceptionOnError in Options) then
         RaiseOutputFilterError(s);

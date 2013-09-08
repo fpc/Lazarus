@@ -614,7 +614,7 @@ procedure TExternHelpOptions.UpdateHelpDB;
     SrcFilter: THelpDBISourceFile;
   begin
     if (Item.Filename<>'') and (Item.URL<>'') then begin
-      ItemFilename:=SetDirSeparators(Item.Filename);
+      ItemFilename:=SetPathDelims(Item.Filename);
       // create a help node for this topic
       HelpNode:=THelpNode.CreateURL(HelpDB,Item.Name,Item.URL);
       // create a filter for the source file(s)
@@ -1040,7 +1040,7 @@ begin
       NameEdit.Enabled:=true;
       NameEdit.Text:=Item.Name;
       FilenameEdit.Enabled:=true;
-      ItemFilename:=SetDirSeparators(Item.Filename);
+      ItemFilename:=SetPathDelims(Item.Filename);
       FilenameEdit.Text:=ItemFilename;
       WithSubDirsCheckBox.Enabled:=Item.IsDirectory;
       WithSubDirsCheckBox.Checked:=Item.WithSubDirectories;

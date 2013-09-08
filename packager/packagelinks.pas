@@ -40,8 +40,8 @@ interface
 
 uses
   Classes, SysUtils, Laz2_XMLCfg, FileProcs, CodeToolManager, CodeToolsStructs,
-  LCLProc, FileUtil, AvgLvlTree, lazutf8classes, MacroIntf, PackageIntf,
-  IDEProcs, EnvironmentOpts, PackageDefs, LazConf;
+  LCLProc, FileUtil, AvgLvlTree, lazutf8classes, LazFileUtils, MacroIntf,
+  PackageIntf, IDEProcs, EnvironmentOpts, PackageDefs, LazConf;
   
 const
   PkgLinksFileVersion = 2;
@@ -491,7 +491,7 @@ begin
           DebugLn('WARNING: pkg link file is empty: ',LPLFilename);
           continue;
         end;
-        LPKFilename:=SetDirSeparators(sl[0]);
+        LPKFilename:=SetPathDelims(sl[0]);
       except
         on E: Exception do begin
           DebugLn('WARNING: unable to read pkg link file: ',LPLFilename,' : ',E.Message);

@@ -42,9 +42,9 @@ unit CompilerOptions;
 interface
 
 uses
-  typinfo, Classes, SysUtils, FileProcs, FileUtil, Laz2_XMLCfg, InterfaceBase,
-  LCLProc, Forms, Controls, ExprEval, DefineTemplates, CodeToolsCfgScript,
-  CodeToolManager, KeywordFuncLists, BasicCodeTools,
+  typinfo, Classes, SysUtils, FileProcs, FileUtil, Laz2_XMLCfg, LazFileUtils,
+  InterfaceBase, LCLProc, Forms, Controls, ExprEval, DefineTemplates,
+  CodeToolsCfgScript, CodeToolManager, KeywordFuncLists, BasicCodeTools,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
   IDEOptionsIntf,
@@ -3865,14 +3865,14 @@ begin
   case Option of
   pcosUnitPath,pcosIncludePath,pcosObjectPath,pcosLibraryPath,pcosSrcPath,
   pcosDebugPath:
-    Result:=MergeSearchPaths(Result,SetDirSeparators(Vars[VarName]));
+    Result:=MergeSearchPaths(Result,SetPathDelims(Vars[VarName]));
   pcosLinkerOptions:
     Result:=MergeLinkerOptions(Result,Vars[VarName]);
   pcosCustomOptions:
     Result:=MergeCustomOptions(Result,Vars[VarName]);
   pcosOutputDir,pcosCompilerPath:
     if Vars.IsDefined(PChar(VarName)) then
-      Result:=SetDirSeparators(Vars[VarName]);
+      Result:=SetPathDelims(Vars[VarName]);
   end
 end;
 

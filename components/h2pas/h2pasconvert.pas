@@ -24,10 +24,10 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, LazConfigStorage, XMLPropStorage,
-  Forms, Controls, Dialogs, FileUtil, FileProcs, AVL_Tree,
+  Forms, Controls, Dialogs, FileUtil, LazFileUtils, AVL_Tree,
   // CodeTools
   CodeAtom, CodeTree, KeywordFuncLists, NonPascalCodeTools, BasicCodeTools,
-  CodeCache, SourceChanger, CodeToolManager,
+  FileProcs, CodeCache, SourceChanger, CodeToolManager,
   // IDEIntf
   TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, SrcEditorIntf,
   IDEMsgIntf, IDETextConverter;
@@ -1600,7 +1600,7 @@ end;
 
 function TH2PasProject.NormalizeFilename(const AFilename: string): string;
 begin
-  Result:=LongenFilename(SetDirSeparators(AFilename));
+  Result:=LongenFilename(SetPathDelims(AFilename));
 end;
 
 function TH2PasProject.HasEnabledFiles: boolean;
@@ -1629,7 +1629,7 @@ var
   i: Integer;
   CurFile: TH2PasFile;
 begin
-  AFilename:=SetDirSeparators(SrcFilename);
+  AFilename:=SetPathDelims(SrcFilename);
   if System.Pos(PathDelim,AFilename)>0 then begin
     // with sub path -> only search relative to AFile
     Result:=TrimFilename(ExtractFilePath(aFile.Filename)+AFilename);

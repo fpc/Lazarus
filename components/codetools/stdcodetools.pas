@@ -53,7 +53,7 @@ uses
   FindDeclarationTool, IdentCompletionTool, PascalReaderTool, PascalParserTool,
   CodeBeautifier, ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
   CodeCache, AVL_Tree, LFMTrees, SourceChanger,
-  CustomCodeTool, CodeToolsStructs;
+  CustomCodeTool, CodeToolsStructs, LazFileUtils;
 
 type
   TUsesSection = (usMain, usImplementation);
@@ -6486,7 +6486,7 @@ var
     OldFilename: String;
     AFilename: String;
   begin
-    OldFilename:=SetDirSeparators(copy(ASource,StartPos,EndPos-StartPos));
+    OldFilename:=SetPathDelims(copy(ASource,StartPos,EndPos-StartPos));
     //DebugLn('FixFilename ',dbgs(StartPos),' ',dbgs(EndPos),' ',OldFilename);
     AFilename:=OldFilename;
     if ExtractFileExt(AFilename)='' then begin

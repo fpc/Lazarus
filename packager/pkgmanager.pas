@@ -48,7 +48,7 @@ uses
   contnrs, StringHashList, Translations, LResources,
   // codetools
   CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,
-  FileProcs, Laz2_XMLCfg, lazutf8classes,
+  FileProcs, Laz2_XMLCfg, lazutf8classes, LazFileUtils,
   // IDE Interface
   SrcEditorIntf, NewItemIntf, ProjectIntf, PackageIntf, CompOptsIntf,
   MenuIntf, IDEWindowIntf, PropEdits, MacroIntf, LazIDEIntf,
@@ -3747,7 +3747,7 @@ var
         end;
       end;
     end;
-    UnitPath:=Trim(SetDirSeparators(APackage.UsageOptions.UnitPath));
+    UnitPath:=Trim(SetPathDelims(APackage.UsageOptions.UnitPath));
     while (UnitPath<>'') and (UnitPath[1]=';') do
       UnitPath:=copy(UnitPath,2,Length(UnitPath));
     while (UnitPath<>'') and (RightStr(UnitPath,1)=';') do

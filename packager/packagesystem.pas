@@ -1541,7 +1541,7 @@ begin
     Translated:=SystemLanguageID1;
 
     // add unit paths
-    UsageOptions.UnitPath:=SetDirSeparators('$(PkgOutDir)');
+    UsageOptions.UnitPath:='$(PkgOutDir)';
 
     // add requirements
     AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));

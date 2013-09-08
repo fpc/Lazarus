@@ -1577,8 +1577,8 @@ begin
   OpenDialog.Filter:=lisPascalFile+'|*.pas;*.pp;*.p|'+dlgAllFiles+'|'+FileMask;
   OpenDialog.InitialDir:=ExtractFilePath(DocFile.Filename);
   if OpenDialog.Execute then begin
-    ExampleEdit.Text := SetDirSeparators(ExtractRelativepath(
-      ExtractFilePath(DocFile.Filename), OpenDialog.FileName));
+    ExampleEdit.Text := ExtractRelativepath(
+      ExtractFilePath(DocFile.Filename), SetDirSeparators(OpenDialog.FileName));
     if ExampleEdit.Text<>FOldVisualValues[fpdiExample] then
       Modified:=true;
   end;
