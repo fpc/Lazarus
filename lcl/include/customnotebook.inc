@@ -206,7 +206,7 @@ begin
 
     // update PageIndex
     if ActivePage <> nil then
-      FNotebook.PageIndex := IndexOfPage(ActivePage)
+      FNotebook.InternalSetPageIndex(IndexOfPage(ActivePage))
     else // Can not restore an invalid page index.
     if FNotebook.PageIndex >= 0 then // keep if -1
       FNotebook.PageIndex := NewIndex;
@@ -578,9 +578,7 @@ begin
   if not CanChangePageIndex then exit;
   //debugln('TCustomTabControl.SetPageIndex B ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
 
-  FPageIndex := AValue;
-  UpdateAllDesignerFlags;
-  DoSendPageIndex;
+  InternalSetPageIndex(AValue);
   if ([csDesigning, csLoading, csDestroying] * ComponentState = []) then
     DoChange;
 end;
@@ -975,6 +973,13 @@ begin
   destPage := GetActivePageComponent;
   if destPage <> nil then
     Result := destPage.DialogChar(Message);
+end;
+
+procedure TCustomTabControl.InternalSetPageIndex(AValue: Integer);
+begin
+  FPageIndex := AValue;
+  UpdateAllDesignerFlags;
+  DoSendPageIndex;
 end;
 
 {------------------------------------------------------------------------------

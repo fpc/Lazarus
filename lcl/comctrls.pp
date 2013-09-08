@@ -416,6 +416,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure ReadState(Reader: TReader); override;
     function  DialogChar(var Message: TLMKey): boolean; override;
+    procedure InternalSetPageIndex(AValue: Integer); // No OnChange
     procedure ShowControl(APage: TControl); override;
     procedure UpdateTabProperties; virtual;
     class function GetControlClassDefaultSize: TSize; override;
