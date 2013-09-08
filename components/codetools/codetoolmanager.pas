@@ -474,13 +474,15 @@ type
     function GatherOverloads(Code: TCodeBuffer; X,Y: integer;
           out Graph: TDeclarationOverloadsGraph): boolean;
 
-    // rename, remove identifier
+    // find references, rename identifier, remove identifier
     function FindReferences(IdentifierCode: TCodeBuffer;
           X, Y: integer; SearchInCode: TCodeBuffer; SkipComments: boolean;
           var ListOfPCodeXYPosition: TFPList;
           var Cache: TFindIdentifierReferenceCache  // you must free Cache
           ): boolean;
     function FindUnitReferences(UnitCode, TargetCode: TCodeBuffer;
+          SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
+    function FindUsedUnitReferences(Code: TCodeBuffer; X, Y: integer;
           SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
           const OldIdentifier, NewIdentifier: string;
@@ -2530,6 +2532,7 @@ end;
 
 function TCodeToolManager.FindUnitReferences(UnitCode, TargetCode: TCodeBuffer;
   SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
+// finds unit name of UnitCode in unit of TargetCode
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -2540,6 +2543,34 @@ begin
   try
     Result:=FCurCodeTool.FindUnitReferences(UnitCode,SkipComments,
                                             ListOfPCodeXYPosition);
+  except
+    on e: Exception do HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindUnitReferences END ');
+  {$ENDIF}
+end;
+
+function TCodeToolManager.FindUsedUnitReferences(Code: TCodeBuffer; X,
+  Y: integer; SkipComments: boolean; var ListOfPCodeXYPosition: TFPList
+  ): boolean;
+// finds in unit of Code all references of the unit at the uses clause at X,Y
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindUsedUnitReferences A ',Code.Filename,' X=',X,' Y=',Y,' SkipComments=',SkipComments);
+  {$ENDIF}
+  ListOfPCodeXYPosition:=nil;
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    FCurCodeTool.FindUsedUnitReferences(CursorPos,SkipComments,
+                                                ListOfPCodeXYPosition);
+    Result:=true;
   except
     on e: Exception do HandleException(e);
   end;

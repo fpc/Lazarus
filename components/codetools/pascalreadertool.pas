@@ -51,6 +51,16 @@ type
     );
   TPascalHintModifiers = set of TPascalHintModifier;
 
+  TEPRIRange = (
+    epriInCode,
+    epriInComment,
+    epriInDirective
+    );
+
+  TOnEachPRIdentifier = procedure(Sender: TPascalParserTool;
+    IdentifierCleanPos: integer; Range: TEPRIRange;
+    Node: TCodeTreeNode; Data: Pointer; var Abort: boolean) of object;
+
   { TPascalReaderTool }
 
   TPascalReaderTool = class(TPascalParserTool)
@@ -75,6 +85,14 @@ type
     function ReadStringConstantValue(StartPos: integer): string;
     function GetNodeIdentifier(Node: TCodeTreeNode): PChar;
     function GetHintModifiers(Node: TCodeTreeNode): TPascalHintModifiers;
+    procedure ForEachIdentifierInCleanSrc(StartPos, EndPos: integer;
+        SkipComments: boolean; Node: TCodeTreeNode;
+        const OnIdentifier: TOnEachPRIdentifier; Data: pointer;
+        var Abort: boolean); // range in clean source
+    procedure ForEachIdentifierInNode(Node: TCodeTreeNode; SkipComments: boolean;
+        const OnIdentifier: TOnEachPRIdentifier; Data: Pointer; var Abort: boolean); // node and child nodes
+    procedure ForEachIdentifier(SkipComments: boolean;
+        const OnIdentifier: TOnEachPRIdentifier; Data: Pointer); // whole unit/program
 
     // properties
     function ExtractPropType(PropNode: TCodeTreeNode;
@@ -1686,6 +1704,230 @@ begin
       end;
     end;
 
+  end;
+end;
+
+procedure TPascalReaderTool.ForEachIdentifierInCleanSrc(StartPos,
+  EndPos: integer; SkipComments: boolean; Node: TCodeTreeNode;
+  const OnIdentifier: TOnEachPRIdentifier; Data: pointer; var Abort: boolean);
+var
+  CommentLvl: Integer;
+  InStrConst: Boolean;
+  p: PChar;
+  EndP: Pointer;
+  Range: TEPRIRange;
+
+  procedure SkipIdentifier; inline;
+  begin
+    while (p<EndP) and IsIdentChar[p^] do inc(p);
+  end;
+
+begin
+  //debugln(['TPascalReaderTool.ForEachIdentifierInCleanSrc Node=',Node.DescAsString,' "',dbgstr(Src,StartPos,EndPos-StartPos),'"']);
+  if StartPos>SrcLen then exit;
+  if EndPos>SrcLen then EndPos:=SrcLen+1;
+  if StartPos>=EndPos then exit;
+  p:=@Src[StartPos];
+  EndP:=p+EndPos-StartPos;
+  while p<EndP do begin
+    case p^ of
+
+    '{':
+      begin
+        inc(p);
+        if p^=#3 then begin
+          // codetools skip comment {#3 #3}
+          inc(p);
+          repeat
+            if p>=EndP then exit;
+            if (p^=#3) and (p[1]='}')
+            then begin
+              inc(p,2);
+              break;
+            end;
+            inc(p);
+          until false;
+        end else begin
+          // pascal comment {}
+          CommentLvl:=1;
+          InStrConst:=false;
+          if p^='$' then
+            Range:=epriInDirective
+          else
+            Range:=epriInComment;
+          repeat
+            if p>=EndP then exit;
+            case p^ of
+            '{': if Scanner.NestedComments then inc(CommentLvl);
+            '}':
+              begin
+                dec(CommentLvl);
+                if CommentLvl=0 then break;
+              end;
+            'a'..'z','A'..'Z','_':
+              if not InStrConst then begin
+                if not SkipComments then begin
+                  OnIdentifier(Self,p-PChar(Src)+1,Range,Node,Data,Abort);
+                  SkipIdentifier;
+                  if Abort then exit;
+                end;
+                while (p<EndP) and IsIdentChar[p^] do inc(p);
+              end;
+            '''':
+              InStrConst:=not InStrConst;
+            #10,#13:
+              InStrConst:=false;
+            end;
+            inc(p);
+          until false;
+          inc(p);
+          //debugln(StartPos,' ',copy(Src,CommentStart,StartPos-CommentStart));
+        end;
+      end;
+
+    '/':  // Delphi comment
+      if p[1]<>'/' then begin
+        inc(p);
+      end else begin
+        inc(p,2);
+        InStrConst:=false;
+        repeat
+          if p>=EndP then exit;
+          case p^ of
+          #10,#13:
+            break;
+          'a'..'z','A'..'Z','_':
+            if not InStrConst then begin
+              if not SkipComments then begin
+                OnIdentifier(Self,p-PChar(Src)+1,Range,Node,Data,Abort);
+                SkipIdentifier;
+                if Abort then exit;
+              end;
+              while (p<EndP) and IsIdentChar[p^] do inc(p);
+            end;
+          '''':
+            InStrConst:=not InStrConst;
+          end;
+          inc(p);
+        until false;
+        inc(p);
+        if (p<EndP) and (p^ in [#10,#13])
+        and (p[-1]<>p^) then
+          inc(p);
+      end;
+
+    '(': // turbo pascal comment
+      if (p[1]<>'*') then begin
+        inc(p);
+      end else begin
+        inc(p,3);
+        InStrConst:=false;
+        repeat
+          if p>=EndP then exit;
+          case p^ of
+          ')':
+            if p[-1]='*' then break;
+          'a'..'z','A'..'Z','_':
+            if not InStrConst then begin
+              if not SkipComments then begin
+                OnIdentifier(Self,p-PChar(Src)+1,Range,Node,Data,Abort);
+                SkipIdentifier;
+                if Abort then exit;
+              end;
+              SkipIdentifier;
+            end;
+          '''':
+            InStrConst:=not InStrConst;
+          #10,#13:
+            InStrConst:=false;
+          end;
+          inc(p);
+        until false;
+        inc(p);
+      end;
+
+    'a'..'z','A'..'Z','_':
+      begin
+        OnIdentifier(Self,p-PChar(Src)+1,epriInCode,Node,Data,Abort);
+        SkipIdentifier;
+        if Abort then exit;
+      end;
+
+    '''':
+      begin
+        // skip string constant
+        inc(p);
+        while p<EndP do begin
+          if (not (p^ in ['''',#10,#13])) then
+            inc(p)
+          else begin
+            inc(p);
+            break;
+          end;
+        end;
+      end;
+
+    else
+      inc(p);
+    end;
+  end;
+end;
+
+procedure TPascalReaderTool.ForEachIdentifierInNode(Node: TCodeTreeNode;
+  SkipComments: boolean; const OnIdentifier: TOnEachPRIdentifier;
+  Data: Pointer; var Abort: boolean);
+var
+  StartPos: Integer;
+  EndPos: Integer;
+  Child: TCodeTreeNode;
+begin
+  //debugln(['TPascalReaderTool.ForEachIdentifierInNode START ',Node.DescAsString]);
+  if NodeNeedsBuildSubTree(Node) then
+    BuildSubTree(Node);
+  if Node.FirstChild<>nil then begin
+    EndPos:=Node.StartPos;
+    Child:=Node.FirstChild;
+    while Child<>nil do begin
+      // scan in front of child
+      ForEachIdentifierInCleanSrc(EndPos,Child.StartPos,SkipComments,
+        Node,OnIdentifier,Data,Abort);
+      if Abort then exit;
+      // scan child
+      ForEachIdentifierInNode(Child,SkipComments,OnIdentifier,Data,Abort);
+      if Abort then exit;
+      EndPos:=Child.EndPos;
+      Child:=Child.NextBrother;
+    end;
+    // scan behind children
+    ForEachIdentifierInCleanSrc(EndPos,Node.EndPos,SkipComments,
+      Node,OnIdentifier,Data,Abort);
+  end else begin
+    // leaf node
+    StartPos:=Node.StartPos;
+    EndPos:=Node.EndPos;
+    // nodes without children can overlap with their NextBrother
+    if (Node.NextBrother<>nil)
+    and (Node.NextBrother.StartPos<EndPos) then
+      EndPos:=Node.NextBrother.StartPos;
+    // scan node range
+    ForEachIdentifierInCleanSrc(StartPos,EndPos,SkipComments,
+      Node,OnIdentifier,Data,Abort);
+  end;
+end;
+
+procedure TPascalReaderTool.ForEachIdentifier(SkipComments: boolean;
+  const OnIdentifier: TOnEachPRIdentifier; Data: Pointer);
+var
+  Node: TCodeTreeNode;
+  Abort: boolean;
+begin
+  //debugln(['TPascalReaderTool.ForEachIdentifier START']);
+  Node:=Tree.Root;
+  Abort:=false;
+  while Node<>nil do begin
+    ForEachIdentifierInNode(Node,SkipComments,OnIdentifier,Data,Abort);
+    if Abort then exit;
+    Node:=Node.NextBrother;
   end;
 end;
 
