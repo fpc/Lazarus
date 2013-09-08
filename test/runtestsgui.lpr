@@ -22,7 +22,7 @@ program runtestsgui;
 
 uses
   Interfaces, Forms,
-  GuiTestRunner,
+  GuiTestRunner, lazmouseandkeyinput,
   testunits, TestLazUtils;
 
 begin
