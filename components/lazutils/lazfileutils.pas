@@ -570,7 +570,7 @@ procedure DoPathDelims(var FileName: string);
 var
   i: Integer;
 begin
-  for i:=0 to length(FileName) do
+  for i:=1 to length(FileName) do
     {$IFDEF Windows}
     if Filename[i]='/' then
       Filename[i]:='\';
