@@ -871,7 +871,31 @@ begin
 end;
 
 procedure TTestPageControl.TestPageDestruction;
+var
+  s0, s1, s2, s3, s4: TTestSheet;
+  Name, Name2: String;
 begin
+// http://bugs.freepascal.org/view.php?id=24972
+  RecreateForm(True);
+  s0 := CreatePage('abc', 0, []);
+  s1 := CreatePage('a', 1, []);
+  s2 := CreatePage('foo 1', 2, []);
+  s3 := CreatePage('p3', 3, []);
+  s4 := CreatePage('p4', 4, []);
+
+  PageControl.ActivePageIndex := 3;
+  ResetCounts;
+  ResetPaintCounts;
+  Application.ProcessMessages;
+
+  Name := 'Remove tab 0';
+  s0.Free;
+
+  Application.ProcessMessages;
+  AssertEquals(Name+Name2+'PageIndex 2',             2, PageControl.ActivePageIndex);
+  //AssertEquals(Name+Name2+'OnChanging',              0, FOnChangingCalled);
+  //AssertEquals(Name+Name2+'OnChange',                0, FOnChangeCalled);
+  CheckPaint(Name+Name2+'no paint', nil);
 
 end;
 
