@@ -56,6 +56,8 @@ type
 { TForm1 }
 
 procedure TForm1.Form1Create(Sender: TObject);
+var
+  i: Integer;
 begin
   debugln('TForm1.Form1Create ',DbgSName(Sender));
   SetBounds(50,50,500,400);
@@ -140,6 +142,10 @@ begin
   
   ButtonsGroupBox.ChildSizing.ControlsPerLine:=2;
   ButtonsGroupBox.ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
+
+  for i:=0 to 2 do AddNewPage(i);
+  FillPagesListBox;
+
 end;
 
 procedure TForm1.DeletePageButtonClick(Sender: TObject);
@@ -225,14 +231,10 @@ begin
 end;
 
 constructor TForm1.Create(TheOwner: TComponent);
-var
-  i: Integer;
 begin
   OnCreate:=@Form1Create;
   inherited Create(TheOwner);
   // start with 3 pages
-  for i:=0 to 2 do AddNewPage(i);
-  FillPagesListBox;
 end;
 
 procedure TForm1.AddNewPage(Index: integer);
@@ -245,7 +247,8 @@ begin
   while FindComponent(NewName)<>nil do NewName:=CreateNextIdentifier(NewName);
   NewPage.Name:=NewName;
   NewPage.Caption:=NewName;
-  PageControl1.PageList.Insert(Index,NewPage);
+  NewPage.PageControl := PageControl1;
+  NewPage.PageIndex := Index;
   PageControl1.PageIndex:=Index;
   FillPagesListBox;
   PagesListBox.ItemIndex:=PageControl1.PageIndex;
