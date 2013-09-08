@@ -870,6 +870,11 @@ begin
 
 end;
 
+procedure TTestPageControl.TestPageDestruction;
+begin
+
+end;
+
 
 initialization
   AddToLCLTestSuite(TTestPageControl);
