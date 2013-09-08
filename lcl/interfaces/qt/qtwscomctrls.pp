@@ -1667,11 +1667,7 @@ begin
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
-    HeaderOffset := QtTreeWidget.getHeaderHeight(AOrientation);
-    HeaderOffset := y - HeaderOffset;
-    if HeaderOffset < 0 then
-      exit(-1); // do not return anything if Y is inside header.
-    TWI := QtTreeWidget.itemAt(x, HeaderOffset);
+    TWI := QtTreeWidget.itemAt(x, y);
     Result := QtTreeWidget.getRow(TWI);
   end;
 end;

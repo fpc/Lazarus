@@ -12321,6 +12321,7 @@ var
   MousePos: TQtPoint;
   Item: QTreeWidgetItemH;
   ALCLEvent: QLCLMessageEventH;
+  W: QHeaderViewH;
 begin
   Result := False;
   if (ViewStyle = Ord(vsReport)) and Checkable then
@@ -12365,7 +12366,20 @@ begin
       Result := inherited itemViewViewportEventFilter(Sender, Event);
     end;
   end else
-    Result := inherited itemViewViewportEventFilter(Sender, Event);
+  begin
+    if (QEvent_type(Event) = QEventMouseMove) and (LCLObject <> nil) then
+    begin
+      W := QTreeView_header(QTreeViewH(Widget));
+      if QWidget_isVisible(W) and QWidget_isVisibleTo(W, Widget) then
+      begin
+        BeginEventProcessing;
+        Result := SlotMouseMove(Sender, Event);
+        EndEventProcessing;
+      end else
+        Result := inherited itemViewViewportEventFilter(Sender, Event);
+    end else
+      Result := inherited itemViewViewportEventFilter(Sender, Event);
+  end;
 end;
 
 procedure TQtTreeWidget.OwnerDataNeeded(ARect: TRect);
