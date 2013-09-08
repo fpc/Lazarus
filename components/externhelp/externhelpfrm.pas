@@ -36,9 +36,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, LazConfigStorage, ComCtrls, Buttons, StdCtrls, ExtCtrls, ButtonPanel,
-  LazHelpIntf, PackageIntf, MacroIntf, IDEOptionsIntf, LazIDEIntf, BaseIDEIntf,
-  IDEDialogs, HelpIntfs, IDEImagesIntf, SrcEditorIntf;
+  Dialogs, LazConfigStorage, LazFileUtils, ComCtrls, Buttons, StdCtrls,
+  ExtCtrls, ButtonPanel, LazHelpIntf, PackageIntf, MacroIntf, IDEOptionsIntf,
+  LazIDEIntf, BaseIDEIntf, IDEDialogs, HelpIntfs, IDEImagesIntf, SrcEditorIntf;
 
 const
   ExternHelpConfigVersion = 1;
@@ -661,7 +661,7 @@ begin
     if s='' then begin
       // ok, allow simple deactivate
     end else begin
-      DoDirSeparators(Filename);
+      DoPathDelims(Filename);
       IDEMacros.SubstituteMacros(Filename);
       Msg:='';
       if (Filename<>'') and (Filename[length(Filename)]=PathDelim) then begin
