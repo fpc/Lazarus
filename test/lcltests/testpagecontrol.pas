@@ -153,7 +153,9 @@ begin
   try
     Result := WMPaintCalled;
     if (TestLabel <> nil) and (Result <> TestLabel.DidPaint) then exit(-1);
+    {$IfNDef LCLQT}
     if (TestButton <> nil) and (Result <> TestButton.DidPaint) then exit(-1);
+    {$EndIf}
   finally
     ResetCounts;
   end;
