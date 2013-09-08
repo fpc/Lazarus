@@ -14,8 +14,7 @@ unit TestFileProc;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals,
-  FileProcs;
+  Classes, SysUtils, fpcunit, testglobals, LazFileUtils, FileProcs;
 
 type
 
@@ -46,8 +45,8 @@ end;
 procedure TTestFileProc.TestTrimFileName;
   procedure DoTest(AFileName, Expected: string);
   begin
-    DoDirSeparators(AFileName);
-    DoDirSeparators(Expected);
+    DoPathDelims(AFileName);
+    DoPathDelims(Expected);
     AssertEquals(AFileName, Expected, TrimFilename(AFileName));
   end;
 begin
@@ -63,9 +62,9 @@ procedure TTestFileProc.TestCreateRelativePath;
   procedure DoTest(Filename, BaseDirectory, Expected: string;
     UsePointDirectory: boolean = false);
   begin
-    DoDirSeparators(Filename);
-    DoDirSeparators(BaseDirectory);
-    DoDirSeparators(Expected);
+    DoPathDelims(Filename);
+    DoPathDelims(BaseDirectory);
+    DoPathDelims(Expected);
     AssertEquals('CreateRelativePath(File='+Filename+',Base='+BaseDirectory+')',
       Expected,
       CreateRelativePath(Filename,BaseDirectory,UsePointDirectory));

@@ -5,8 +5,7 @@ unit testfileutil;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals,
-  FileUtil;
+  Classes, SysUtils, fpcunit, testglobals, LazFileUtils, FileUtil;
 
 type
 
@@ -53,8 +52,8 @@ end;
 procedure TTestFileUtil.TestTrimFileName;
   procedure DoTest(AFileName, Expected: string);
   begin
-    DoDirSeparators(AFileName);
-    DoDirSeparators(Expected);
+    DoPathDelims(AFileName);
+    DoPathDelims(Expected);
     AssertEquals(AFileName, Expected, TrimFilename(AFileName));
   end;
 begin
