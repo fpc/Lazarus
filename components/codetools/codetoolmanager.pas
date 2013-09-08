@@ -483,7 +483,8 @@ type
     function FindUnitReferences(UnitCode, TargetCode: TCodeBuffer;
           SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
     function FindUsedUnitReferences(Code: TCodeBuffer; X, Y: integer;
-          SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
+          SkipComments: boolean; out UsedUnitFilename: string;
+          var ListOfPCodeXYPosition: TFPList): boolean;
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
           const OldIdentifier, NewIdentifier: string;
           DeclarationCode: TCodeBuffer = nil; DeclarationCaretXY: PPoint = nil): boolean;
@@ -2552,8 +2553,8 @@ begin
 end;
 
 function TCodeToolManager.FindUsedUnitReferences(Code: TCodeBuffer; X,
-  Y: integer; SkipComments: boolean; var ListOfPCodeXYPosition: TFPList
-  ): boolean;
+  Y: integer; SkipComments: boolean; out UsedUnitFilename: string;
+  var ListOfPCodeXYPosition: TFPList): boolean;
 // finds in unit of Code all references of the unit at the uses clause at X,Y
 var
   CursorPos: TCodeXYPosition;
@@ -2568,7 +2569,7 @@ begin
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   try
-    FCurCodeTool.FindUsedUnitReferences(CursorPos,SkipComments,
+    FCurCodeTool.FindUsedUnitReferences(CursorPos,SkipComments,UsedUnitFilename,
                                                 ListOfPCodeXYPosition);
     Result:=true;
   except

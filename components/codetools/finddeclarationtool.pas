@@ -828,9 +828,11 @@ type
     function FindUnitReferences(UnitCode: TCodeBuffer;
       SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean; // searches unitname of UnitCode
     procedure FindUsedUnitReferences(const CursorPos: TCodeXYPosition;
-      SkipComments: boolean; out ListOfPCodeXYPosition: TFPList); // searches all references of unit in uses clause
+      SkipComments: boolean; out UsedUnitFilename: string;
+      out ListOfPCodeXYPosition: TFPList); // searches all references of unit in uses clause
     procedure FindUsedUnitReferences(TargetTool: TFindDeclarationTool;
-      SkipComments: boolean; out ListOfPCodeXYPosition: TFPList); // searches all references of TargetTool
+      SkipComments: boolean;
+      out ListOfPCodeXYPosition: TFPList); // searches all references of TargetTool
 
     function CleanPosIsDeclarationIdentifier(CleanPos: integer;
                                              Node: TCodeTreeNode): boolean;
@@ -5124,7 +5126,7 @@ end;
 
 procedure TFindDeclarationTool.FindUsedUnitReferences(
   const CursorPos: TCodeXYPosition; SkipComments: boolean; out
-  ListOfPCodeXYPosition: TFPList);
+  UsedUnitFilename: string; out ListOfPCodeXYPosition: TFPList);
 var
   CleanPos: integer;
   Node: TCodeTreeNode;
@@ -5134,6 +5136,7 @@ var
   TargetTool: TFindDeclarationTool;
 begin
   //debugln(['TFindDeclarationTool.FindUsedUnitReferences ',dbgs(CursorPos)]);
+  UsedUnitFilename:='';
   ListOfPCodeXYPosition:=nil;
   BuildTreeAndGetCleanPos(CursorPos,CleanPos);
   Node:=FindDeepestNodeAtPos(CleanPos,true);
@@ -5145,6 +5148,7 @@ begin
   AnUnitName:=ExtractUsedUnitNameAtCursor(@UnitInFilename);
   //debugln(['TFindDeclarationTool.FindUsedUnitReferences Used Unit=',AnUnitName,' in "',UnitInFilename,'"']);
   TargetCode:=FindUnitSource(AnUnitName,UnitInFilename,true,Node.StartPos);
+  UsedUnitFilename:=TargetCode.Filename;
   //debugln(['TFindDeclarationTool.FindUsedUnitReferences TargetCode=',TargetCode.Filename]);
   TargetTool:=FOnGetCodeToolForBuffer(Self,TargetCode,false);
   FindUsedUnitReferences(TargetTool,SkipComments,ListOfPCodeXYPosition);

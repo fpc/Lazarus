@@ -557,6 +557,7 @@ begin
     ecShowCodeContext         : Result:= srkmecShowCodeContext;
     ecExtractProc             : Result:= srkmecExtractProc;
     ecFindIdentifierRefs      : Result:= srkmecFindIdentifierRefs;
+    ecFindUsedUnitRefs        : Result:= lisMenuFindReferencesOfUsedUnit;
     ecRenameIdentifier        : Result:= srkmecRenameIdentifier;
     ecInvertAssignment        : Result:= srkmecInvertAssignment;
     ecSyntaxCheck             : Result:= srkmecSyntaxCheck;
@@ -1046,6 +1047,7 @@ begin
   ecShowCodeContext:     SetSingle(VK_SPACE,[ssCtrl,ssShift]);
   ecExtractProc:         SetSingle(VK_UNKNOWN,[]);
   ecFindIdentifierRefs:  SetSingle(VK_I,[ssCtrl,ssShift]);
+  ecFindUsedUnitRefs:    SetSingle(VK_UNKNOWN,[]);
   ecRenameIdentifier:    SetSingle(VK_F2,[],        VK_E,[ssShift,ssCtrl]);
   ecInvertAssignment:    SetSingle(VK_UNKNOWN,[]);
   ecSyntaxCheck:         SetSingle(VK_UNKNOWN,[]);
@@ -1486,6 +1488,7 @@ begin
   ecShowCodeContext:     SetSingle(VK_SPACE,[ssShift,ssCtrl]);
   ecExtractProc:         SetSingle(VK_UNKNOWN,[]);
   ecFindIdentifierRefs:  SetSingle(VK_UNKNOWN,[]);
+  ecFindUsedUnitRefs:    SetSingle(VK_UNKNOWN,[]);
   ecRenameIdentifier:    SetSingle(VK_E,[ssShift,ssCtrl]);
   ecInvertAssignment:    SetSingle(VK_UNKNOWN,[]);
   ecSyntaxCheck:         SetSingle(VK_UNKNOWN,[]);
@@ -2106,6 +2109,7 @@ begin
   ecShowCodeContext:     SetSingle(VK_SPACE,[ssCtrl,ssShift]);
   ecExtractProc:         SetSingle(VK_UNKNOWN,[]);
   ecFindIdentifierRefs:  SetSingle(VK_UNKNOWN,[]);
+  ecFindUsedUnitRefs:    SetSingle(VK_UNKNOWN,[]);
   ecRenameIdentifier:    SetSingle(VK_E,[ssMeta,ssShift]);
   ecInvertAssignment:    SetSingle(VK_UNKNOWN,[]);
   ecSyntaxCheck:         SetSingle(VK_UNKNOWN,[]);
@@ -2689,6 +2693,7 @@ begin
   AddDefault(C, 'Identifier completion', dlgEdIdComlet, ecIdentCompletion);
   AddDefault(C, 'Rename identifier', srkmecRenameIdentifier, ecRenameIdentifier);
   AddDefault(C, 'Find identifier references', srkmecFindIdentifierRefs, ecFindIdentifierRefs);
+  AddDefault(C, 'Find references of used unit', lisMenuFindReferencesOfUsedUnit, ecFindUsedUnitRefs);
   AddDefault(C, 'Show code context', srkmecShowCodeContext, ecShowCodeContext);
   AddDefault(C, 'Extract proc', srkmecExtractProc, ecExtractProc);
   AddDefault(C, 'Invert assignment', srkmecInvertAssignment, ecInvertAssignment);

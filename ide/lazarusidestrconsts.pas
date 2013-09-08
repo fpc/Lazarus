@@ -2887,6 +2887,7 @@ resourcestring
   lisMenuExtractProc              = 'Extract Procedure ...';
   srkmecFindIdentifierRefs        = 'Find Identifier References';
   lisMenuFindIdentifierRefs       = 'Find Identifier References ...';
+  lisMenuFindReferencesOfUsedUnit = 'Find References Of Used Unit';
   srkmecRenameIdentifier          = 'Rename Identifier';
   lisMenuRenameIdentifier         = 'Rename Identifier ...';
   srkmecInvertAssignment          = 'Invert Assignment';

@@ -621,7 +621,6 @@ type
     procedure CompleteCodeMenuItemClick(Sender: TObject);
     procedure ExtractProcMenuItemClick(Sender: TObject);
     procedure InvertAssignmentMenuItemClick(Sender: TObject);
-    procedure FindIdentifierReferencesMenuItemClick(Sender: TObject);
     procedure RenameIdentifierMenuItemClick(Sender: TObject);
     procedure ShowAbstractMethodsMenuItemClick(Sender: TObject);
     procedure ShowEmptyMethodsMenuItemClick(Sender: TObject);
@@ -1257,6 +1256,7 @@ var
     SrcEditMenuFindPrevWordOccurrence: TIDEMenuCommand;
     SrcEditMenuFindinFiles: TIDEMenuCommand;
     SrcEditMenuFindIdentifierReferences: TIDEMenuCommand;
+    SrcEditMenuFindUsedUnitReferences: TIDEMenuCommand;
     // open file
     SrcEditMenuOpenFileAtCursor: TIDEMenuCommand;
   SrcEditMenuClosePage: TIDEMenuCommand;
@@ -1504,7 +1504,11 @@ begin
           (AParent, 'Find in files', srkmecFindInFiles, nil,
            @ExecuteIdeMenuClick, nil, 'menu_search_files');
       SrcEditMenuFindIdentifierReferences := RegisterIDEMenuCommand
-          (AParent, 'FindIdentifierReferences',lisMenuFindIdentifierRefs, nil, @ExecuteIdeMenuClick);
+          (AParent, 'FindIdentifierReferences',lisMenuFindIdentifierRefs, nil,
+          @ExecuteIdeMenuClick);
+      SrcEditMenuFindUsedUnitReferences := RegisterIDEMenuCommand
+          (AParent, 'FindUsedUnitReferences', lisMenuFindReferencesOfUsedUnit,
+          nil, @ExecuteIdeMenuClick);
     {%endregion}
   {%endregion}
 
@@ -6278,6 +6282,7 @@ begin
       CurWordAtCursor:=ASrcEdit.GetWordAtCurrentCaret;
       AtIdentifier:=IsValidIdent(CurWordAtCursor);
       SrcEditMenuFindIdentifierReferences.Enabled:=AtIdentifier;
+      SrcEditMenuFindUsedUnitReferences.Enabled:=AtIdentifier;
       SrcEditMenuRenameIdentifier.Enabled:=AtIdentifier and (not ASrcEdit.ReadOnly);
       SrcEditMenuShowAbstractMethods.Enabled:=not ASrcEdit.ReadOnly;
       SrcEditMenuShowEmptyMethods.Enabled:=not ASrcEdit.ReadOnly;
@@ -7499,11 +7504,6 @@ begin
   ASrcEdit:=GetActiveSE;
   if ASrcEdit=nil then exit;
   ASrcEdit.InvertAssignment;
-end;
-
-procedure TSourceNotebook.FindIdentifierReferencesMenuItemClick(Sender: TObject);
-begin
-  MainIDEInterface.DoCommand(ecFindIdentifierRefs);
 end;
 
 procedure TSourceNotebook.RenameIdentifierMenuItemClick(Sender: TObject);
@@ -9817,6 +9817,8 @@ begin
       SrcEditMenuFindNextWordOccurrence.Command := GetCommand(ecFindNextWordOccurrence);
       SrcEditMenuFindPrevWordOccurrence.Command := GetCommand(ecFindPrevWordOccurrence);
       SrcEditMenuFindInFiles.Command            := GetCommand(ecFindInFiles);
+      SrcEditMenuFindIdentifierReferences.Command:=GetCommand(ecFindIdentifierRefs);
+      SrcEditMenuFindUsedUnitReferences.Command:=GetCommand(ecFindUsedUnitRefs);
     {%endregion}
   {%endregion}
 
@@ -9879,7 +9881,6 @@ begin
 
   {%region *** Refactoring Section ***}
     SrcEditMenuRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
-    SrcEditMenuFindIdentifierReferences.Command:=GetCommand(ecFindIdentifierRefs);
     SrcEditMenuExtractProc.Command:=GetCommand(ecExtractProc);
     SrcEditMenuInvertAssignment.Command:=GetCommand(ecInvertAssignment);
     SrcEditMenuShowAbstractMethods.Command:=GetCommand(ecShowAbstractMethods);

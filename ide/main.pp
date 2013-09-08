@@ -932,6 +932,7 @@ type
     procedure DoFindDeclarationAtCursor;
     procedure DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
     function DoFindRenameIdentifier(Rename: boolean): TModalResult;
+    function DoFindUsedUnitReferences: boolean;
     function DoReplaceUnitUse(OldFilename, OldUnitName,
                               NewFilename, NewUnitName: string;
                               IgnoreErrors, Quiet, Confirm: boolean): TModalResult;
@@ -3343,6 +3344,9 @@ begin
 
   ecFindIdentifierRefs:
     DoFindRenameIdentifier(false);
+
+  ecFindUsedUnitRefs:
+    DoFindUsedUnitReferences;
 
   ecRenameIdentifier:
     DoFindRenameIdentifier(true);
@@ -10965,6 +10969,77 @@ begin
     OwnerList.Free;
     CodeToolBoss.FreeTreeOfPCodeXYPosition(PascalReferences);
     FreeListObjects(ListOfLazFPDocNode,true);
+  end;
+end;
+
+function TMainIDE.DoFindUsedUnitReferences: boolean;
+var
+  SrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+  LogCaretXY: Classes.TPoint;
+  ListOfPCodeXYPosition: TFPList;
+  UsedUnitFilename: string;
+  SearchPageIndex: TTabSheet;
+  OldSearchPageIndex: TTabSheet;
+  i: Integer;
+  CodePos: PCodeXYPosition;
+  CurLine: String;
+  TrimmedLine: String;
+  TrimCnt: Integer;
+  Identifier: String;
+begin
+  Result:=false;
+  if not BeginCodeTool(SrcEdit,AnUnitInfo,[]) then exit;
+
+  ListOfPCodeXYPosition:=nil;
+  try
+    LogCaretXY:=SrcEdit.EditorComponent.LogicalCaretXY;
+    if not CodeToolBoss.FindUsedUnitReferences(AnUnitInfo.Source,
+      LogCaretXY.X,LogCaretXY.Y,true,UsedUnitFilename,ListOfPCodeXYPosition) then
+    begin
+      DoJumpToCodeToolBossError;
+      exit;
+    end;
+
+    LazarusIDE.DoShowSearchResultsView(false);
+    // create a search result page
+    //debugln(['ShowIdentifierReferences ',DbgSName(SearchResultsView)]);
+    SearchPageIndex:=SearchResultsView.AddSearch(
+      'Ref: '+ExtractFileName(UsedUnitFilename),
+      UsedUnitFilename,
+      '',
+      ExtractFilePath(UsedUnitFilename),
+      '*.pas;*.pp;*.p',
+      [fifWholeWord,fifSearchDirectories]);
+    if SearchPageIndex = nil then exit;
+
+    // list results
+    SearchResultsView.BeginUpdate(SearchPageIndex.PageIndex);
+    for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
+      CodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
+      CurLine:=TrimRight(CodePos^.Code.GetLine(CodePos^.Y-1));
+      if CodePos^.X<=length(CurLine) then
+        Identifier:=GetIdentifier(@CurLine[CodePos^.X])
+      else
+        Identifier:='';
+      TrimmedLine:=Trim(CurLine);
+      TrimCnt:=length(CurLine)-length(TrimmedLine);
+      //debugln('DoFindUsedUnitReferences x=',dbgs(CodePos^.x),' y=',dbgs(CodePos^.y),' ',CurLine);
+      SearchResultsView.AddMatch(SearchPageIndex.PageIndex,
+                                 CodePos^.Code.Filename,
+                                 Point(CodePos^.X,CodePos^.Y),
+                                 Point(CodePos^.X+length(Identifier),CodePos^.Y),
+                                 TrimmedLine,
+                                 CodePos^.X-TrimCnt, length(Identifier));
+    end;
+
+    OldSearchPageIndex:=SearchPageIndex;
+    SearchPageIndex:=nil;
+    SearchResultsView.EndUpdate(OldSearchPageIndex.PageIndex);
+    IDEWindowCreators.ShowForm(SearchResultsView,true);
+
+  finally
+    FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
   end;
 end;
 

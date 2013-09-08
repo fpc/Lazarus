@@ -46,6 +46,7 @@ var
   ListOfPCodeXYPosition: TFPList;
   X: Integer;
   Y: Integer;
+  UsedUnitFilename: string;
 begin
   if (ParamCount>=1) and (Paramcount<3) then begin
     writeln('Usage:');
@@ -77,9 +78,10 @@ begin
   writeln('Filename: ',Code.Filename);
   ListOfPCodeXYPosition:=nil;
   try
-    if CodeToolBoss.FindUsedUnitReferences(Code,X,Y,false,ListOfPCodeXYPosition) then
+    if CodeToolBoss.FindUsedUnitReferences(Code,X,Y,false,UsedUnitFilename,
+      ListOfPCodeXYPosition) then
     begin
-      writeln('List:');
+      writeln('List of ',UsedUnitFilename,':');
       writeln(ListOfPCodeXYPositionToStr(ListOfPCodeXYPosition));
     end else begin
       writeln('CodeToolBoss.FindUsedUnitReferences failed: ',CodeToolBoss.ErrorMessage);
