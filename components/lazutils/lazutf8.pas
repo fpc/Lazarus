@@ -64,12 +64,15 @@ procedure UTF8FixBroken(P: PChar); overload;
 procedure UTF8FixBroken(var S: string); overload;
 function UTF8CharacterStrictLength(P: PChar): integer;
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: PtrInt) : string;
+
 function UTF8Pos(const SearchForText, SearchInText: string; StartPos: SizeInt = 1): PtrInt;
 function UTF8PosP(SearchForText: PChar; SearchForTextLen: SizeInt;
   SearchInText: PChar; SearchInTextLen: SizeInt): PChar;
 function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string;
 procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
 procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt);
+function UTF8StringReplace(const S, OldPattern, NewPattern: String;
+  Flags: TReplaceFlags; ALanguage: string=''): String;
 
 function UTF8LowerCase(const AInStr: string; ALanguage: string=''): string;
 function UTF8UpperCase(const AInStr: string; ALanguage: string=''): string;
@@ -227,7 +230,7 @@ begin
 end;
 
 
-function GetEnvironmentStringUTF8(Index: Integer): String;
+function GetEnvironmentStringUTF8(Index: Integer): string;
 begin
   // on Windows SysUtils.GetEnvironmentString returns OEM encoded string
   // so ConsoleToUTF8 function should be used!
@@ -235,7 +238,7 @@ begin
   Result:=ConsoleToUTF8(SysUtils.GetEnvironmentString(Index));
 end;
 
-function GetEnvironmentVariableUTF8(const EnvVar: String): String;
+function GetEnvironmentVariableUTF8(const EnvVar: string): String;
 begin
   // on Windows SysUtils.GetEnvironmentString returns OEM encoded string
   // so ConsoleToUTF8 function should be used!
@@ -818,6 +821,47 @@ begin
   StartBytePos:=UTF8CharStart(PChar(s),length(s),StartCharIndex-1);
   if StartBytePos <> nil then
     Insert(source, s, StartBytePos-PChar(s)+1);
+end;
+
+function UTF8StringReplace(const S, OldPattern, NewPattern: String;
+  Flags: TReplaceFlags; ALanguage: string): String;
+// same algorithm as StringReplace, but using UTF8LowerCase
+// for case insensitive search
+var
+  Srch, OldP, RemS: string;
+  P: Integer;
+begin
+  Srch := S;
+  OldP := OldPattern;
+  if rfIgnoreCase in Flags then
+  begin
+    Srch := UTF8LowerCase(Srch,ALanguage);
+    OldP := UTF8LowerCase(OldP,ALanguage);
+  end;
+  RemS := S;
+  Result := '';
+  while Length(Srch) <> 0 do
+  begin
+    P := Pos(OldP, Srch);
+    if P = 0 then
+    begin
+      Result := Result + RemS;
+      Srch := '';
+    end
+    else
+    begin
+      Result := Result + Copy(RemS,1,P-1) + NewPattern;
+      P := P + Length(OldP);
+      RemS := Copy(RemS, P, Length(RemS)-P+1);
+      if not (rfReplaceAll in Flags) then
+      begin
+        Result := Result + RemS;
+        Srch := '';
+      end
+      else
+        Srch := Copy(Srch, P, Length(Srch)-P+1);
+    end;
+  end;
 end;
 
 {
