@@ -24,7 +24,7 @@ begin
     c:=AFilename[SrcPos];
     {$ifdef windows}
     //change / to \. The WinApi accepts both, but it leads to strange effects in other places
-    if (c='/') then c := PathDelim;
+    if (c in AllowDirectorySeparators) then c := PathDelim;
     {$endif}
     // check for double path delims
     if (c=PathDelim) then begin
@@ -131,7 +131,7 @@ begin
       c:=AFilename[SrcPos];
       {$ifdef windows}
       //change / to \. The WinApi accepts both, but it leads to strange effects in other places
-      if (c='/') then c := PathDelim;
+      if (c in AllowDirectorySeparators) then c := PathDelim;
       {$endif}
       if c=PathDelim then break;
     until false;
