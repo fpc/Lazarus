@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -39,12 +39,17 @@
         <DefaultFilename Value="..\fpvectorialpkg.lpk" Prefer="True"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="1">
+    <Units Count="2">
       <Unit0>
         <Filename Value="fpvtextwritetest2.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="fpvtextwritetest2"/>
       </Unit0>
+      <Unit1>
+        <Filename Value="..\odtxmlvectorialwriter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="odtxmlvectorialwriter"/>
+      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -55,10 +60,12 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value=".."/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
       <CompilerMessages>
+        <IgnoredMessages idx5024="True"/>
         <UseMsgFile Value="True"/>
       </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>

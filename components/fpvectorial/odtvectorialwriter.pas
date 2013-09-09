@@ -99,6 +99,9 @@ type
 
 implementation
 
+uses
+  strutils, htmlelements;
+
 const
   { OpenDocument general XML constants }
   XML_HEADER           = '<?xml version="1.0" encoding="utf-8" ?>';
@@ -666,8 +669,10 @@ end;
 procedure TvODTVectorialWriter.WriteDocument(AData: TvVectorialDocument);
 var
   i: Integer;
+  CurLevel: String;
   CurPage: TvPage;
   CurTextPage: TvTextPageSequence absolute CurPage;
+  CurListStyle : TvListStyle;
 begin
   FContent :=
    XML_HEADER + LineEnding +
@@ -716,7 +721,7 @@ begin
      '    <style:font-face style:name="SimSun" svg:font-family="SimSun" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
      '  </office:font-face-decls>' + LineEnding;
   FContent := FContent +
-     '  <office:automatic-styles>' + LineEnding +
+     '  <office:automatic-styles>' + LineEnding;
 {     '    <style:style style:name="P1" style:family="paragraph" style:parent-style-name="Heading_20_2">' + LineEnding +
      '      <style:text-properties  />' + LineEnding + //officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e"
      '    </style:style>' + LineEnding +
@@ -732,15 +737,38 @@ begin
      '    <style:style style:name="P5" style:family="paragraph" style:parent-style-name="Text_20_body">' + LineEnding +
      '      <style:text-properties officeooo:rsid="00072f3e" />' + LineEnding +
      '    </style:style>' + LineEnding +}
-     //
-     '    <text:list-style style:name="L1">' + LineEnding +
-     '      <text:list-level-style-bullet text:level="1" text:style-name="Bullet_20_Symbols" text:bullet-char="•">' + LineEnding +
-     '        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
-     '          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.667cm" fo:text-indent="-0.635cm" fo:margin-left="1.667cm" />' + LineEnding +
-     '        </style:list-level-properties>' + LineEnding +
-     '      </text:list-level-style-bullet>' + LineEnding +
-     '    </text:list-style>' + LineEnding +
 
+  // MJT 2013-08-24 - This is the code to cycle over the ListStyles.
+  //                - This is verified working for Level 0
+  //                - TvBulletList needs re-architecting to be a tree
+  //                  to get deeper levels working
+  //                  (see note in WriteBulletStyle)
+  //                - As I understand tOpenDocument-v1.1.pdf the following list style
+  //                  should work once we get nesting happening
+  FContent := FContent + '    <text:list-style style:name="L1">' + LineEnding;
+  For i := 0 To AData.GetListStyleCount-1 Do
+  begin
+    CurListStyle := AData.GetListStyle(i);
+    CurLevel := IntToStr(CurListStyle.Level+1); // Note the +1...
+
+    If CurListStyle.Kind=vlskBullet Then
+      FContent := FContent + '      <text:list-level-style-bullet text:level="'+CurLevel+'" text:style-name="Bullet_20_Symbols" text:bullet-char="'+CurListStyle.Prefix+'">' + LineEnding +
+         '        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+         '          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="'+FloatToODTText(CurListStyle.MarginLeft/10)+'cm" fo:text-indent="-'+FloatToODTText(CurListStyle.HangingIndent/10)+'cm" fo:margin-left="'+FloatToODTText(CurListStyle.MarginLeft/10)+'cm" />' + LineEnding +
+         '        </style:list-level-properties>' + LineEnding +
+         '      </text:list-level-style-bullet>' + LineEnding;
+  end;
+  FContent := FContent +    '    </text:list-style>' + LineEnding;
+
+  // Pre MJT code...
+  //FContent := FContent +
+  //  '    <text:list-style style:name="L1">' + LineEnding +
+  //  '      <text:list-level-style-bullet text:level="1" text:style-name="Bullet_20_Symbols" text:bullet-char="&#183;">' + LineEnding +
+  //  '        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+  //  '          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.667cm" fo:text-indent="-0.635cm" fo:margin-left="1.667cm" />' + LineEnding +
+  //  '        </style:list-level-properties>' + LineEnding +
+  //  '      </text:list-level-style-bullet>' + LineEnding +
+  //  '    </text:list-style>' + LineEnding;
 {
       <text:list-level-style-bullet text:level="2" text:style-name="Bullet_20_Symbols" text:bullet-char="◦">
         <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
@@ -788,7 +816,8 @@ begin
         </style:list-level-properties>
       </text:list-level-style-bullet>
   }
-     '  </office:automatic-styles>' + LineEnding;
+  FContent := FContent +
+    '  </office:automatic-styles>' + LineEnding;
 
   FContent := FContent +
      '  <office:body>' + LineEnding;
@@ -939,6 +968,8 @@ procedure TvODTVectorialWriter.WriteTextSpan(AEntity: TvText; AParagraph: TvPara
 var
   AEntityStyleName: string;
   lStyle: TvStyle;
+  sText: String;
+  i : Integer;
 begin
   lStyle := AEntity.GetCombinedStyle(AParagraph);
   if lStyle = nil then
@@ -960,8 +991,23 @@ begin
   }
   // Note that here we write only text spans!
 
-  FContent := FContent +
-    '<text:span text:style-name="'+AEntityStyleName+'">'+AEntity.Value.Text+'</text:span>';
+  // MJT 2013-08-24  ODT Writer and DOCX writer were treating TvText.Value differently...
+  //                This code synchronises handling between the two writers...
+
+  sText :=  EscapeHTML(AEntity.Value.Text);
+
+  // Trim extra CRLF appended by TStringList.Text
+  If DefaultTextLineBreakStyle = tlbsCRLF Then
+    sText := Copy(sText, 1, Length(sText) - 2)
+  Else
+    sText := Copy(sText, 1, Length(sText) - 1);
+
+  sText := StringReplace(sText, #11, '<text:tab/>', [rfReplaceAll]);
+  sText := StringReplace(sText, #13, '<text:line-break/>', [rfReplaceAll]);
+  sText := StringReplace(sText, #10, '', [rfReplaceAll]);
+
+  FContent := FContent + '<text:span text:style-name="'+AEntityStyleName+'">' +
+    sText + '</text:span>';
 end;
 
 procedure TvODTVectorialWriter.WriteBulletList(AEntity: TvBulletList;
@@ -971,8 +1017,17 @@ var
   lCurEntity, lCurSubEntity: TvEntity;
   lCurParagraph: TvParagraph;
 begin
+  // MJT 2013-08-24
+  // Different levels are handled by nesting <test:list> inside parent <test:item>
+  // Only way we can handle this is by treating TvBulletLists as a Tree
+  // .Level then becomes a function returning the number of steps to root.
+  // The code below there currently adds everything at level 0
+
+  // See http://docs.oasis-open.org/office/v1.1/OS/OpenDocument-v1.1.pdf
+  // page 75 "Example: Lists and sublists"
+
   FContent := FContent +
-    '    <text:list  text:style-name="L1">' + LineEnding; // xml:id="list14840052221"
+     '    <text:list  text:style-name="L1">' + LineEnding; // xml:id="list14840052221"
 
   for i := 0 to AEntity.GetEntitiesCount()-1 do
   begin
@@ -981,18 +1036,10 @@ begin
     if (lCurEntity is TvParagraph) then
     begin
       lCurParagraph := lCurEntity as TvParagraph;
-      if lCurParagraph.Style <> nil then
-      begin
-        FContent := FContent +
+
+      FContent := FContent +
           '      <text:list-item>' + LineEnding +
-          '        <text:p text:style-name="List_'+IntToStr(lCurParagraph.Style.ListLevel)+'">';
-      end
-      else
-      begin
-        FContent := FContent +
-          '      <text:list-item>' + LineEnding +
-          '        <text:p text:style-name="List_0">';
-      end;
+          '        <text:p>';
 
       for j := 0 to lCurParagraph.GetEntitiesCount()-1 do
       begin
@@ -1002,7 +1049,8 @@ begin
           WriteTextSpan(TvText(lCurSubEntity), lCurParagraph, ACurPage, AData);
       end;
 
-      FContent := FContent + '</text:p>' + LineEnding +
+      FContent := FContent +
+        '</text:p>' + LineEnding +
         '      </text:list-item>' + LineEnding;
     end;
   end;

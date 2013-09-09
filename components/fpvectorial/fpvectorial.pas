@@ -30,6 +30,7 @@ uses
   Classes, SysUtils, Math, TypInfo,
   // FCL-Image
   fpcanvas, fpimage,
+
   // LCL
   lazutf8
   {$ifdef USE_LCL_CANVAS}
@@ -87,6 +88,8 @@ const
   STR_DOCX_EXTENSION = '.docx';
 
   STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE = 'Ćą';
+
+  NUM_MAX_LISTSTYLES = 8;
 
 type
   TvCustomVectorialWriter = class;
@@ -163,21 +166,42 @@ type
     Kind: TvStyleKind;
     Alignment: TvStyleAlignment;
     HeadingLevel: Integer;
-    ListLevel: Integer; // Only utilized if it is inside a TvBulletList. zero is the first level, 1 the second, and so on
     //
     Pen: TvPen;
     Brush: TvBrush;
     Font: TvFont;
     //
     MarginTop, MarginBottom, MarginLeft, MarginRight: Double; // in mm
+    SuppressSpacingBetweenSameParagraphs : Boolean;
     //
     SetElements: TvSetStyleElements;
     //
+    Constructor Create;
+
     function GetKind: TvStyleKind; // takes care of parenting
     procedure Clear();
     procedure CopyFrom(AFrom: TvStyle);
     procedure ApplyOver(AFrom: TvStyle);
     function CreateStyleCombinedWithParent: TvStyle;
+  end;
+
+  TvListStyleKind = (vlskBullet,
+    vlskDecimal,     // 0, 1, 2, 3...
+    vlskLowerLetter, // a, b, c, d...
+    vlsLowerRoman,   // i, ii, iii, iv....
+    vlskUpperLetter, // A, B, C, D...
+    vlsUpperRoman   // I, II, III, IV....
+    );
+
+  TvListStyle = Class
+    Kind : TvListStyleKind;
+    Level : Integer;
+     // Start : Integer; // For numbered lists ??
+    Prefix : String;  // Suspect this can be more complex than a single char
+    PrefixFontName : String; // Not used by odt...
+    MarginLeft : Double; // mm
+    HangingIndent : Double; //mm
+    Alignment : TvStyleAlignment;
   end;
 
   { Coordinates and polyline segments }
@@ -837,9 +861,14 @@ type
   { TvParagraph }
 
   TvParagraph = class(TvEntityWithSubEntities)
-  public
+    FLocalAlignment : TvStyleAlignment;  // Provides localised overwrite of style alignment
+  private
+    procedure SetLocalAlignment(AValue: TvStyleAlignment);
+  public                                 // TODO: LocalAlignment subject to approval by Felipe
+    UseLocalAlignment : Boolean;         // Provides localised overwrite of style alignment
     Width, Height: Double;
     AutoExpand: TvRichTextAutoExpand;
+    ListStyle : TvListStyle; // For Bulleted or Numbered Lists...
     constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     function AddText(AText: string): TvText;
@@ -847,6 +876,8 @@ type
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+
+    Property LocalAlignment : TvStyleAlignment Read FLocalAlignment Write SetLocalAlignment;
   end;
 
   {@@
@@ -863,7 +894,7 @@ type
 
   TvBulletList = class(TvEntityWithSubEntities)
   public
-    constructor Create(APage: TvPage);
+    constructor Create(APage: TvPage); override;  // MJT 31/08 added override;
     destructor Destroy; override;
     function AddItem(ALevel: Integer; ASimpleText: string): TvParagraph;
     {function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
@@ -879,6 +910,12 @@ type
     of elements will be all adjusted to fit the TvRichText area
   }
 
+  // Forward reference as Table Cells are TvRichText which in turn
+  // can also contain tables...
+  TvTable = Class;
+(*
+  TvImage = Class;
+*)
   { TvRichText }
 
   TvRichText = class(TvEntityWithSubEntities)
@@ -890,6 +927,8 @@ type
     // Data writing methods
     function AddParagraph: TvParagraph;
     function AddBulletList: TvBulletList;
+    function AddTable: TvTable;
+    //function AddImage: TvImage;
     //
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -897,6 +936,129 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
+  (*  Support for Adding Tables to the document
+      Each Cell is a TvRichText to allow full formatted text contents
+  *)
+
+  TvUnits = (dimMillimeter, dimPercent, dimPoint);
+
+  TvDimension = record
+    Value : Double;
+    Units : TvUnits;
+  end;
+
+  // Use tbtDefault if you don't want the Border settings to be written out
+  TvTableBorderType = (tbtSingle, tbtDashed, tbtDouble, tbtNone, tbtDefault);
+
+  TvTableBorder = record
+    LineType : TvTableBorderType;
+    Spacing : Double; // mm, default 0
+    Color : TFPColor; // Ignored if (0, 0, 0, 0)
+    Width : Double;   // mm, default 0.  Should really be in point for fine control
+  end;
+
+  // Can be applied to Tables AND Cells
+  TvTableBorders = record
+    Left : TvTableBorder;
+    Right : TvTableBorder;
+    Top : TvTableBorder;
+    Bottom : TvTableBorder;
+    InsideHoriz : TvTableBorder;  //  InsideXXX not normally applied to cells
+    InsideVert : TvTableBorder;   //    (MS Word Table Styles has an exception)
+  end;
+
+  { TvTableCell }
+
+  TvVerticalAlignment = (vaTop, vaBottom, vaCenter, cvaBoth);
+  // Horizontal alignment taken from Paragraph Style
+
+  TvTableCell = Class(TvRichText)
+  Public
+    // MJT to Felipe:  It may be that Borders can be
+    // added to TvRichText if odt supports paragraph
+    // borders, in which case we can refactor a little and
+    // rename TvTableBorders
+    Borders : TvTableBorders;                  // Defaults to be ignored (tbtDefault)
+    PreferredWidth : TvDimension;              // Optional
+    VerticalAlignment : TvVerticalAlignment;   // Defaults to vaTop
+    BackgroundColor : TFPColor;                // Optional
+    SpannedCols : Integer;                     // For merging horiz cells.  Default 1.
+                                               // See diagram above TvTable Class
+
+    constructor Create(APage: TvPage); override;
+  end;
+
+  { TvTableRow }
+
+  TvTableRow = Class(TvNamedEntity)
+  private
+    Cells : TFPList;
+  Public
+    Height : Double;                // Units mm.  Use 0 for default height
+    CellSpacing : Double;           // Units mm.  Gap between Cells.
+
+    Header : Boolean;               // Repeat row across pages
+    AllowSplitAcrossPage : Boolean; // Can this Row split across multiple pages?
+    BackgroundColor : TFPColor;     // Optional
+
+    constructor create(APage : TvPage); override;
+    destructor destroy; override;
+
+    function AddCell : TvTableCell;
+    function GetCellCount: Integer;
+    function GetCell(AIndex: Integer) : TvTableCell;
+  end;
+
+  (*
+      Note on the grid used for the table
+
+      For the table shown below, three ColWidths must be defined.
+
+      First row should only have 2 cells. First cell spans 2 columns.
+      Second row should only have 2 cells. Second cell spans 2 columns.
+      Third row should have 3 cells.  Each cell only spans 1 column (default)
+
+       +-----+------+---------+
+       |            |         |
+       +-----+----------------+
+       |     |                |
+       +-----+------+---------+
+       |     |      |         |
+       +-----+------+---------+
+  *)
+
+  // TvTable.Style should be a Table Style, not a Paragraph Style
+  // and is optional.
+  TvTable = class(TvEntityWithStyle)
+  private
+    Rows: TFPList;
+  public
+    ColWidths: array of Double;       // Can be left empty for simple tables
+                                      // MUST be fully defined for merging cells
+    ColWidthsUnits : TvUnits;         // Cannot mix ColWidth Units.
+    Borders : TvTableBorders;         // Defaults: single/black/inside and out
+    PreferredWidth : TvDimension;     // Optional. Units mm.
+    CellSpacing : Double;             // Units mm. Gap between Cells.
+    BackgroundColor : TFPColor;       // Optional. Units mm.
+
+    constructor create(APage : TvPage); override;
+    destructor destroy; override;
+
+    function AddRow : TvTableRow;
+    function GetRowCount : Integer;
+    function GetRow(AIndex: Integer) : TvTableRow;
+
+    function AddColWidth(AValue : Double) : Integer;
+  end;
+
+(*
+  TvImage = class(TvEntityWithStyle) // ClassName subject to change...
+  public
+    Filename : String;
+
+    Width, Height : Double; // mm
+  end;
+*)
   { TvVectorialDocument }
 
   TvVectorialDocument = class
@@ -904,6 +1066,7 @@ type
     FOnProgress: TvProgressEvent;
     FPages: TFPList;
     FStyles: TFPList;
+    FListStyles: TFPList;
     FCurrentPageIndex: Integer;
     function CreateVectorialWriter(AFormat: TvVectorialFormat): TvCustomVectorialWriter;
     function CreateVectorialReader(AFormat: TvVectorialFormat): TvCustomVectorialReader;
@@ -918,7 +1081,8 @@ type
     SelectedElement: TvEntity;
     // List of common styles, for conveniently finding them
     StyleTextBody, StyleHeading1, StyleHeading2, StyleHeading3: TvStyle;
-    StyleBulletList1, StyleBulletList2, StyleBulletList3: TvStyle;
+    StyleList : TvStyle;
+    ListStyles : Array[0..NUM_MAX_LISTSTYLES-1] Of TvListStyle;
     { Base methods }
     constructor Create; virtual;
     destructor Destroy; override;
@@ -948,11 +1112,15 @@ type
     function AddTextPageSequence(): TvTextPageSequence;
     { Style methods }
     function AddStyle(): TvStyle;
+    function AddListStyle: TvListStyle;
     procedure AddStandardTextDocumentStyles(AFormat: TvVectorialFormat);
-    function GetBulletListStyle(ALevel: Integer): TvStyle;
+    function GetListStyleByLevel(ALevel: Integer): TvListStyle;
     function GetStyleCount: Integer;
     function GetStyle(AIndex: Integer): TvStyle;
     function FindStyleIndex(AStyle: TvStyle): Integer;
+    function GetListStyleCount: Integer;
+    function GetListStyle(AIndex: Integer): TvListStyle;
+    function FindListStyleIndex(AListStyle: TvListStyle): Integer;
     { Data removing methods }
     procedure Clear; virtual;
     { Debug methods }
@@ -1103,6 +1271,8 @@ type
     { Data writing methods }
     function AddParagraph: TvParagraph;
     function AddBulletList: TvBulletList;
+    function AddTable: TvTable;
+    //function AddImage: TvImage;
   end;
 
   {@@ TvVectorialReader class reference type }
@@ -1157,6 +1327,7 @@ procedure RegisterVectorialWriter(
   AWriterClass: TvVectorialWriterClass;
   AFormat: TvVectorialFormat);
 function Make2DPoint(AX, AY: Double): T3DPoint;
+function Dimension(AValue : Double; AUnits : TvUnits) : TvDimension;
 
 implementation
 
@@ -1256,7 +1427,82 @@ begin
   Result.Z := 0;
 end;
 
+function Dimension(AValue: Double; AUnits: TvUnits): TvDimension;
+begin
+  Result.Value := AValue;
+  Result.Units := AUnits;
+end;
+
+{ TvTableCell }
+
+constructor TvTableCell.Create(APage: TvPage);
+begin
+  inherited Create(APage);
+
+  Borders.Left.LineType:=tbtDefault;
+  Borders.Right.LineType:=tbtDefault;
+  Borders.Top.LineType:=tbtDefault;
+  Borders.Bottom.LineType:=tbtDefault;
+  Borders.InsideHoriz.LineType:=tbtDefault;
+  Borders.InsideVert.LineType:=tbtDefault;
+
+  SpannedCols := 1;
+end;
+
+{ TvTable }
+
+constructor TvTable.Create(APage: TvPage);
+begin
+  inherited Create(APage);
+
+  Rows := TFPList.Create;
+end;
+
+destructor TvTable.destroy;
+var
+  i: Integer;
+begin
+  for i := Rows.Count-1 downto 0 do
+  begin
+    TvTableRow(Rows.Last).Free;
+    Rows.Delete(Rows.Count-1);
+  end;
+
+  Rows.Free;
+  Rows := nil;
+
+  inherited destroy;
+end;
+
+function TvTable.AddRow: TvTableRow;
+begin
+  Result := TvTableRow.create(FPage);
+  Rows.Add(result);
+end;
+
+function TvTable.GetRowCount: Integer;
+begin
+  Result := Rows.Count;
+end;
+
+function TvTable.GetRow(AIndex: Integer): TvTableRow;
+begin
+  Result := TvTableRow(Rows[AIndex]);
+end;
+
+function TvTable.AddColWidth(AValue: Double): Integer;
+begin
+  SetLength(ColWidths, Length(ColWidths) + 1);
+  ColWidths[High(ColWidths)] := AValue;
+end;
+
 { TvStyle }
+
+constructor TvStyle.Create;
+begin
+  // Defaults
+  SuppressSpacingBetweenSameParagraphs:=False;
+end;
 
 function TvStyle.GetKind: TvStyleKind;
 begin
@@ -1342,6 +1588,9 @@ begin
   If sseMarginRight in AFrom.SetElements then
     MarginRight := AFrom.MarginRight;
 
+  // Other
+  SuppressSpacingBetweenSameParagraphs:=AFrom.SuppressSpacingBetweenSameParagraphs;
+
   SetElements := AFrom.SetElements + SetElements;
 end;
 
@@ -1350,6 +1599,49 @@ begin
   Result := TvStyle.Create;
   Result.CopyFrom(Self);
   if Parent <> nil then Result.ApplyOver(Parent);
+end;
+
+{ TvTableRow }
+
+constructor TvTableRow.create(APage: TvPage);
+begin
+  inherited create(APage);
+
+  Cells := TFPList.Create;
+
+  Header := False;
+end;
+
+destructor TvTableRow.destroy;
+Var
+  i : Integer;
+begin
+  for i := Cells.Count-1 downto 0 do
+  begin
+    TvTableCell(Cells.Last).Free;
+    Cells.Delete(Cells.Count-1);
+  end;
+
+  Cells.Free;
+  Cells := Nil;
+
+  inherited destroy;
+end;
+
+function TvTableRow.AddCell : TvTableCell;
+begin
+  Result := TvTableCell.Create(FPage);
+  Cells.Add(Result);
+end;
+
+function TvTableRow.GetCellCount: Integer;
+begin
+  Result := Cells.Count;
+end;
+
+function TvTableRow.GetCell(AIndex: Integer): TvTableCell;
+begin
+  Result := TvTableCell(Cells[AIndex]);
 end;
 
 { T2DEllipticalArcSegment }
@@ -4376,9 +4668,17 @@ end;
 
 { TvParagraph }
 
+procedure TvParagraph.SetLocalAlignment(AValue: TvStyleAlignment);
+begin
+  UseLocalAlignment:=True;
+  FLocalAlignment:=AValue;
+end;
+
 constructor TvParagraph.Create(APage: TvPage);
 begin
   inherited Create(APage);
+
+  UseLocalAlignment:=False;
 end;
 
 destructor TvParagraph.Destroy;
@@ -4427,7 +4727,7 @@ function TvBulletList.AddItem(ALevel: Integer; ASimpleText: string): TvParagraph
 begin
   Result := TvParagraph.Create(FPage);
   if FPage <> nil then
-    Result.Style := FPage.FOwner.GetBulletListStyle(ALevel);
+    Result.ListStyle := FPage.FOwner.GetListStyleByLevel(ALevel);
   if ASimpleText <> '' then
     Result.AddText(ASimpleText);
   AddEntity(Result);
@@ -4457,6 +4757,19 @@ begin
   AddEntity(Result);
 end;
 
+function TvRichText.AddTable: TvTable;
+begin
+  Result := TvTable.Create(FPage);
+  AddEntity(Result);
+end;
+
+(*
+function TvRichText.AddImage: TvImage;
+begin
+  Result := TvImage.Create(FPage);
+  AddEntity(Result);
+end;
+*)
 function TvRichText.TryToSelect(APos: TPoint; var ASubpart: Cardinal
   ): TvFindEntityResult;
 begin
@@ -5251,6 +5564,17 @@ begin
   Result := MainText.AddBulletList();
 end;
 
+function TvTextPageSequence.AddTable: TvTable;
+begin
+  Result := MainText.AddTable;
+end;
+
+(*
+function TvTextPageSequence.AddImage: TvImage;
+begin
+  Result := MainText.AddImage;
+end;
+*)
 { TvVectorialDocument }
 
 {@@
@@ -5263,6 +5587,7 @@ begin
   FPages := TFPList.Create;
   FCurrentPageIndex := -1;
   FStyles := TFPList.Create;
+  FListStyles := TFPList.Create;
 end;
 
 {@@
@@ -5276,6 +5601,8 @@ begin
   FPages := nil;
   FStyles.Free;
   FStyles := nil;
+  FListStyles.Free;
+  FListStyles := nil;
 
   inherited Destroy;
 end;
@@ -5598,9 +5925,17 @@ begin
   FStyles.Add(Result);
 end;
 
+function TvVectorialDocument.AddListStyle: TvListStyle;
+begin
+  Result := TvListStyle.Create;
+  FListStyles.Add(Result);
+end;
+
 procedure TvVectorialDocument.AddStandardTextDocumentStyles(AFormat: TvVectorialFormat);
 var
   lTextBody, lBaseHeading, lCurStyle: TvStyle;
+  lCurListStyle : TvListStyle;
+  i: Integer;
 begin
   //<style:style style:name="Text_20_body" style:display-name="Text body" style:family="paragraph" style:parent-style-name="Standard" style:class="text">
   //  <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.212cm" style:contextual-spacing="false" />
@@ -5693,22 +6028,45 @@ begin
   // ---------------------------------
 
   lCurStyle := AddStyle();
-  lCurStyle.Name := 'Bullet List Item 1';
+  lCurStyle.Name := 'List Style';
   //lCurStyle.Parent := ;
-  lCurStyle.ListLevel := 1;
-  StyleBulletList1 := lCurStyle;
+  lCurStyle.MarginTop := 0.5;
+  lCurStyle.MarginBottom := 0.5;
+  lCurStyle.SetElements:=[sseMarginBottom, sseMarginTop];
+  lCurStyle.SuppressSpacingBetweenSameParagraphs:=True;
+  StyleList := lCurStyle;
 
-  //, StyleBulletList2, StyleBulletList3
+  // ---------------------------------
+  // List Style Items
+  // ---------------------------------
+
+  for i := 0 To NUM_MAX_LISTSTYLES-1 Do
+  begin
+    lCurListStyle := AddListStyle;
+    lCurListStyle.Kind := vlskDecimal;
+    lCurListStyle.Level := i;
+    lCurListStyle.Prefix := '&#183;';
+    lCurListStyle.PrefixFontName := 'Symbol';
+    lCurListStyle.MarginLeft := 6.35*(i + 1);
+    lCurListStyle.HangingIndent := 6.35;
+    lCurListStyle.Alignment := vsaLeft;
+
+    ListStyles[i] := lCurListStyle;
+  end;
 end;
 
-function TvVectorialDocument.GetBulletListStyle(ALevel: Integer): TvStyle;
+function TvVectorialDocument.GetListStyleByLevel(ALevel: Integer): TvListStyle;
+var
+  i: Integer;
+  oListStyle : TvListStyle;
 begin
-  case ALevel of
-  0: Result := StyleBulletList1;
-  1: Result := StyleBulletList2;
-  2: Result := StyleBulletList3;
-  else
-    Result := nil;
+  Result := Nil;
+  for i := 0 to GetListStyleCount-1 do
+  begin
+    oListStyle := GetListStyle(i);
+
+    if oListStyle.Level = ALevel then
+      Exit(oListStyle);
   end;
 end;
 
@@ -5729,6 +6087,25 @@ begin
   Result := -1;
   for i := 0 to GetStyleCount()-1 do
     if GetStyle(i) = AStyle then Exit(i);
+end;
+
+function TvVectorialDocument.GetListStyleCount: Integer;
+begin
+  Result := FListStyles.Count;
+end;
+
+function TvVectorialDocument.GetListStyle(AIndex: Integer): TvListStyle;
+begin
+  Result := TvListStyle(FListStyles.Items[AIndex]);
+end;
+
+function TvVectorialDocument.FindListStyleIndex(AListStyle: TvListStyle): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  for i := 0 to GetListStyleCount()-1 do
+    if GetListStyle(i) = AListStyle then Exit(i);
 end;
 
 {@@

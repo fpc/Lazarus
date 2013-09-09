@@ -2,6 +2,9 @@
 
 docxvectorialwriter.pas
 
+License: The same modified LGPL as the Free Pascal RTL
+         See the file COPYING.modifiedLGPL for more details
+
 THIS IS A UNIT CURRENTLY UNDER DEVELOPEMENT
 
       Current Functionality
@@ -10,10 +13,10 @@ THIS IS A UNIT CURRENTLY UNDER DEVELOPEMENT
           - Supports Section Breaks (via PageSequences)
           - Supports Header and Footer
           - Supports Portrait/Landscape
+          - Support Tables
 
       TODO
           - Add following to both FPVectorial AND DOCXWriter
-            - Add Table Support
             - Add Image Support (From file and from Stream, in Paragraph and in Table)
             - Add simple Work Fields (NumPage, PageCount, Filename (Full, part), DatePrinted)
             - Add TOC support
@@ -25,15 +28,20 @@ An OOXML document is a compressed ZIP file with the following files inside:
 
   [Content_Types].xml          - An index of all files, defines their content format
   _rels\.rels                  - Relationships between high level documents
-  word\document.xml            - this is the main document.  Conforms to WordprocessingML
   word\_rels\document.xml.rels - defines relationships to files required by document.xml (ie styles.xml)
+  word\document.xml            - this is the main document.  Conforms to WordprocessingML
   word\styles.xml              - The Style Library
+  word\header%d.xml            - One file per header
+  word\footer%d.xml            - One file per footer
+  word\numbering.xml           - Header and List numbering details
+  media\*.[png, jpg, etc]      - Images
 
-Specifications obtained from:
+Specifications and examples obtained from:
 
 http://openxmldeveloper.org/default.aspx
-Office Open XML Part 4 - Markup Language Reference.docx
-  - First edition, downloaded from http://www.ecma-international.org/publications/standards/Ecma-376.htm
+http://officeopenxml.com/
+http://www.ecma-international.org/publications/standards/Ecma-376.htm
+            - Office Open XML Part 4 - Markup Language Reference.docx (First edition)
 
 AUTHORS: Mike Thompson, Felipe Monteiro de Carvalho
 
@@ -65,6 +73,14 @@ Change History
      - Significant refactoring of code, and formatted code with Jedi Code Format.
        I intend to Jedi Code Format before each Patch from here on
      - Added support for Alignment to Styles
+ 0.5 - Support TvParagraph margins
+     - Added numbering.xml
+ 0.6 - Changed #11 (vert tab) to #09 (horiz tab, what it always should have been)
+     - Added Table Support
+     - Bug fix - Margin support in Styles fixed...
+ 0.7 - Added experimental LocalAlignment support to TvParagraph
+
+
 }
 
 Unit docxvectorialwriter;
@@ -77,21 +93,25 @@ Uses
   Classes, SysUtils,
   zipper, {NOTE: might require zipper from FPC 2.6.2+ }
   fpimage, fpcanvas,
-  fpvectorial, fpvutils, lazutf8;
+  fpvectorial, fpvutils, lazutf8, Math;
 
 Type
+  TIndentOption = (indInc, indDec, indNone);
 
   { TIndentedStringList }
 
   // Here to just to ensure the resulting xml files are pretty :-)
+  { TODO : Replace this with a genuine XML handler }
   TIndentedStringList = Class(TStringList)
   Private
     FIndent: String;
     FIndentSteps: String;
   Public
     Constructor Create;
+    Function Add(indBefore: TIndentOption = indNone; S: String = '';
+      indAfter: TIndentOption = indNone): Integer;
     Function Add(Const S: String): Integer; Override;
-    Function Add(bIndent: Boolean; Const S: String): Integer;
+    Function Add(Const S: String; indAfter: TIndentOption): Integer;
 
     Procedure IncIndent;
     Procedure DecIndent;
@@ -114,7 +134,7 @@ Type
     MentionedIn: TFileTypes;
 
     XML: TIndentedStringList;  // Free'd internally;
-    //Image : TFPImage;  { TODO : How are we going to handle images? }
+    //Image : TFPImage;  { TODO: How are we going to handle images? }
 
     Constructor Create;
     Destructor Destroy; Override;
@@ -127,8 +147,6 @@ Type
     Property Stream: TStream read GetStream;
     // This creates a TSream, Call .FreeStream to free
   End;
-
-  { TODO : Can this be tidied with Generics? }
 
   { TFileList }
 
@@ -161,7 +179,9 @@ Type
     Function PrepareDocRelationships: String;
 
     Procedure PrepareDocument;
-    Procedure PrepareStyles;
+    Procedure PrepareStyles;    // Only created if FData has Styles defined
+    Procedure PrepareNumbering; // Only created if Numbered Styles exist
+
     Procedure PrepareTextRunStyle(ADoc: TIndentedStringList; AStyle: TvStyle);
     Function StyleNameToStyleID(AStyle: TvStyle): String;
   Public
@@ -171,10 +191,6 @@ Type
     Procedure WriteToFile(AFileName: String; AData: TvVectorialDocument); Override;
     Procedure WriteToStream(AStream: TStream; AData: TvVectorialDocument); Override;
   End;
-
-// Generic Helper Units
-Function PointsToTwipsS(APoints: Double): String;
-Function mmToTwipsS(AMillimetres: Double): String;
 
 Implementation
 
@@ -193,18 +209,21 @@ Const
   OOXML_PATH_STYLES = 'word/styles.xml';
   OOXML_PATH_HEADER = 'word/header%d.xml'; // Use Format(OOXML_PATH_HEADER, [Index]);
   OOXML_PATH_FOOTER = 'word/footer%d.xml'; // Use Format(OOXML_PATH_HEADER, [Index]);
+  OOXML_PATH_NUMBERING = 'word/numbering.xml';
 
   OOXML_RELS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
   OOXML_TYPE_DOCUMENT = OOXML_RELS + '/officeDocument';
   OOXML_TYPE_STYLES = OOXML_RELS + '/styles';
   OOXML_TYPE_HEADER = OOXML_RELS + '/header';
   OOXML_TYPE_FOOTER = OOXML_RELS + '/footer';
+  OOXML_TYPE_NUMBERING = OOXML_RELS + '/numbering';
 
   OOXML_CONTENTTYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml';
   OOXML_CONTENTTYPE_DOCUMENT = OOXML_CONTENTTYPE + '.document.main+xml';
   OOXML_CONTENTTYPE_STYLES = OOXML_CONTENTTYPE + '.styles+xml';
   OOXML_CONTENTTYPE_HEADER = OOXML_CONTENTTYPE + '.header+xml';
   OOXML_CONTENTTYPE_FOOTER = OOXML_CONTENTTYPE + '.footer+xml';
+  OOXML_CONTENTTYPE_NUMBERING = OOXML_CONTENTTYPE + '.numbering+xml';
 
   // Shared between document.xml and each header.xml/footer.xml
   OOXML_DOCUMENT_NAMESPACE =
@@ -214,16 +233,67 @@ Const
   TAG_HEADER = 'hdr';
   TAG_FOOTER = 'ftr';
 
+  // Lookups...
+  LU_ALIGN: Array [TvStyleAlignment] Of String =
+    ('left', 'right', 'both', 'center');
+
+  LU_KIND: Array [TvListStyleKind] Of String =
+    ('bullet', 'decimal', 'lowerLetter', 'lowerRoman',
+    'upperLetter', 'upperRoman');
+
+  LU_ON_OFF: Array[Boolean] Of String = ('off', 'on');
+
+  LU_BORDERTYPE: Array[TvTableBorderType] Of String =
+    ('single', 'dashed', 'double', 'none', 'default');
+
+  LU_V_ALIGN: Array[TvVerticalAlignment] Of String = ('top', 'bottom', 'center', 'both');
+
+//ONE_POINT_IN_MM = 0.35278;
+
+// Generic Helper Units
+
 Function PointsToTwipsS(APoints: Double): String;
 Begin
   // 1 Twip = 1/20 of a point
   Result := IntToStr(Round(20 * APoints));
 End;
 
+Function mmToPointS(AMillimetres: Double): String;
+Begin
+  Result := IntToStr(Round((0.0393701 * 1440 * AMillimetres) / 20));
+End;
+
 Function mmToTwipsS(AMillimetres: Double): String;
 Begin
   // 1 Twip = 1 / 1440 of an inch - sigh...
   Result := IntToStr(Round(0.0393701 * 1440 * AMillimetres));
+End;
+
+Function DimAttribs(ADimension: TvDimension; AValueTag: String = 'w:w';
+  ATypeTag: String = 'w:type'): String;
+Var
+  iValue: Integer;
+  sType: String;
+Begin
+  Case ADimension.Units Of
+    dimMillimeter:
+    Begin
+      iValue := Round(0.0393701 * 1440 * ADimension.Value);
+      sType := 'dxa';  // most values in docx must be in twips
+    End;
+    dimPercent:
+    Begin
+      iValue := Round(50 * ADimension.Value);
+      sType := 'pct';  // 50ths of a percent
+    End;
+    dimPoint:
+    Begin
+      iValue := Round(20 * ADimension.Value);
+      sType := 'dxa';  // most values in docx must be in twips
+    End;
+  End;
+
+  Result := Format(' %s="%d" %s="%s" ', [AValueTag, iValue, ATypeTag, sType]);
 End;
 
 { TFileInformation }
@@ -345,20 +415,30 @@ Begin
   FIndentSteps := '  ';
 End;
 
+Function TIndentedStringList.Add(indBefore: TIndentOption; S: String;
+  indAfter: TIndentOption): Integer;
+Begin
+  If indBefore = indInc Then
+    IncIndent
+  Else If indAfter = indDec Then
+    DecIndent;
+
+  Result := Inherited Add(FIndent + S);
+
+  If indAfter = indInc Then
+    IncIndent
+  Else If indBefore = indDec Then
+    DecIndent;
+End;
+
 Function TIndentedStringList.Add(Const S: String): Integer;
 Begin
   Result := Inherited Add(FIndent + S);
 End;
 
-Function TIndentedStringList.Add(bIndent: Boolean; Const S: String): Integer;
+Function TIndentedStringList.Add(Const S: String; indAfter: TIndentOption): Integer;
 Begin
-  If bIndent Then
-    IncIndent;
-
-  Result := Inherited Add(FIndent + S);
-
-  If Not bIndent Then
-    DecIndent;
+  Result := Add(indNone, S, indAfter);
 End;
 
 Procedure TIndentedStringList.DecIndent;
@@ -447,19 +527,7 @@ Var
   // Generally this is document.xml, may also be header.xml or footer.xml though..
   oDocXML: TIndentedStringList;
 
-  Procedure AddParagraphProperties(AStyle: TvStyle);
-  Begin
-    oDocXML.Add(True, '<w:pPr>');
-    oDocXML.Add('  <w:pStyle w:val="' + StyleNameToStyleID(AStyle) + '"/>');
-    oDocXML.Add(False, '</w:pPr>');
-  End;
-
-  Procedure AddRunProperties(AStyle: TvStyle);
-  Begin
-    oDocXML.Add(True, '<w:rPr>');
-    oDocXML.Add('  <w:rStyle w:val="' + StyleNameToStyleID(AStyle) + '"/>');
-    oDocXML.Add(False, '</w:rPr>');
-  End;
+  Procedure ProcessRichText(ARichText: TvRichText); Forward;
 
   Procedure AddTextRun(sText: String; AStyle: TvStyle);
   Var
@@ -477,31 +545,35 @@ Var
       // and render the Tabs and CRs appropriately
       While i <= iLen Do
       Begin
-        If (sText[i] In [#10, #11, #13]) Or (i = iLen) Then
+        If (sText[i] In [#10, #09, #13]) Or (i = iLen) Then
         Begin
           // Add the text before this point into a single Text Run
           If i > iStart Then
           Begin
             // If end of line AND end of line isn't a special char, then
             // inc(i) to ensure the math in the Copy works :-)
-            If (i = iLen) And Not (sText[i] In [#10, #11, #13]) Then
+            If (i = iLen) And Not (sText[i] In [#10, #09, #13]) Then
               Inc(i);
 
             sTemp := Copy(sText, iStart, i - iStart);
 
-            oDocXML.Add(True, '<w:r>');
+            oDocXML.Add(indInc, '<w:r>');
 
             If Assigned(AStyle) Then
-              AddRunProperties(AStyle);
+            Begin
+              oDocXML.Add(indInc, '<w:rPr>');
+              oDocXML.Add('  <w:rStyle w:val="' + StyleNameToStyleID(AStyle) + '"/>');
+              oDocXML.Add(indDec, '</w:rPr>');
+            End;
 
             oDocXML.Add('  <w:t>' + EscapeHTML(sTemp) + '</w:t>');
-            oDocXML.Add(False, '</w:r>');
+            oDocXML.Add(indDec, '</w:r>');
           End;
 
           // Deal with the Tabs, LF and CRs appropriately
-          If sText[i] = #11 Then
+          If sText[i] = #09 Then
             oDocXML.Add('  <w:r><w:tab/></w:r>')
-          Else If sText[i] In [#10, #13] Then
+          Else If sText[i] In [#10, #11, #13] Then
           Begin
             oDocXML.Add('  <w:r><w:br/></w:r>');
 
@@ -525,10 +597,27 @@ Var
     oEntity: TvEntity;
     sTemp: String;
   Begin
-    oDocXML.Add(True, '<w:p>');
+    oDocXML.Add(indInc, '<w:p>');
+
+    // Add the Paragraph Properties
+    oDocXML.Add(indInc, '<w:pPr>', indInc);
 
     If Assigned(AParagraph.Style) Then
-      AddParagraphProperties(AParagraph.Style);
+      oDocXML.Add(Format('<w:pStyle w:val="%s"/>',
+        [StyleNameToStyleID(AParagraph.Style)]));
+
+    If AParagraph.UseLocalAlignment Then
+      oDocXML.Add('<w:jc w:val="' + LU_ALIGN[AParagraph.LocalAlignment] + '"/>');
+
+    If Assigned(AParagraph.ListStyle) Then
+    Begin
+      oDocXML.Add('<w:numPr>');
+      oDocXML.Add(indInc, Format('<w:ilvl w:val="%d"/>', [AParagraph.ListStyle.Level]));
+      oDocXML.Add(indDec, '<w:numId w:val="1"/>'); // wtf is numID??
+      oDocXML.Add('</w:numPr>');
+    End;
+
+    oDocXML.Add(indDec, '</w:pPr>', indDec);
 
     For i := 0 To AParagraph.GetEntitiesCount - 1 Do
     Begin
@@ -554,20 +643,25 @@ Var
         Raise Exception.Create('Unsupported Entity: ' + oEntity.ClassName);
     End;
 
-    oDocXML.Add(False, '</w:p>');
+    oDocXML.Add(indDec, '</w:p>');
   End;
 
-  Procedure ProcessRichText(ARichText: TvRichText);
+  Procedure ProcessBulletList(ABulletList: TvBulletList);
   Var
     i: Integer;
     oEntity: TvEntity;
   Begin
-    For i := 0 To ARichText.GetEntitiesCount - 1 Do
+    For i := 0 To ABulletList.GetEntitiesCount - 1 Do
     Begin
-      oEntity := ARichText.GetEntity(i);
+      oEntity := ABulletList.GetEntity(i);
 
       If oEntity Is TvParagraph Then
-        ProcessParagraph(TvParagraph(oEntity))
+      Begin
+        If Not Assigned(TvParagraph(oEntity).Style) Then
+          TvParagraph(oEntity).Style := ABulletList.Style;
+
+        ProcessParagraph(TvParagraph(oEntity));
+      End
       Else
         Raise Exception.Create('Unsupported entity ' + oEntity.ClassName);
     End;
@@ -624,12 +718,11 @@ Var
     // For the final pagesequence only w:sectPr shouldn't be wrapped inside w:p or w:pPr
     If Not ALastPage Then
     Begin
-      oDocXML.Add(True, '<w:p>');
-      oDocXML.Add(True, '<w:pPr>');
+      oDocXML.Add(indInc, '<w:p>');
+      oDocXML.Add(indInc, '<w:pPr>');
     End;
 
-    oDocXML.Add(True, '<w:sectPr>');
-    oDocXML.IncIndent;
+    oDocXML.Add(indInc, '<w:sectPr>', indInc);
 
     ProcessHeaderFooter(APageSequence.Header, TAG_HEADER);
     ProcessHeaderFooter(APageSequence.Footer, TAG_FOOTER);
@@ -660,21 +753,215 @@ Var
     //<w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="708" w:footer="708" w:gutter="0"/>
     //<w:cols w:space="708"/>
     //<w:docGrid w:linePitch="360"/>
-    oDocXML.DecIndent;
-    oDocXML.Add(False, '</w:sectPr>');
+    oDocXML.Add(indDec, '</w:sectPr>', indDec);
 
     If Not ALastPage Then
     Begin
-      oDocXML.Add(False, '</w:pPr>');
-      oDocXML.Add(False, '</w:p>');
+      oDocXML.Add(indDec, '</w:pPr>');
+      oDocXML.Add(indDec, '</w:p>');
+    End;
+  End;
+
+  Procedure AddTableBorderProperty(ATag: String; ABorder: TvTableBorder);
+  Var
+    sAttrib: String;
+  Begin
+    If ABorder.LineType <> tbtDefault Then
+    Begin
+      sAttrib := '';
+
+      If ABorder.LineType <> tbtNone Then
+        sAttrib := sAttrib + 'w:val="' + LU_BORDERTYPE[ABorder.LineType] + '" ';
+
+      sAttrib := sAttrib + 'w:space="' + mmToPointS(ABorder.Spacing) + '" ';
+
+      If ABorder.Width <> 0 Then
+        // Eights of a Point??  Really, they're just making this up...
+        sAttrib := sAttrib + 'w:sz="' + mmToPointS(Min(96, Max(2, 8 * ABorder.Width))) + '" '
+      Else
+        // 4 is the minimum
+        sAttrib := sAttrib + 'w:sz="4" ';
+
+      If ABorder.Color <> FPColor(0, 0, 0, 0) Then
+        sAttrib := sAttrib + 'w:color="' + FPColorToRGBHexString(ABorder.Color) + '" '
+      Else
+        sAttrib := sAttrib + 'w:color="auto" ';
+
+      oDocXML.Add(Format('<%s %s/>', [ATag, Trim(sAttrib)]));
+    End;
+  End;
+
+  Procedure ProcessTable(ATable: TvTable);
+  Var
+    i, j, k: Integer;
+    oRow: TvTableRow;
+    oCell: TvTableCell;
+    //sTemp : String;
+  Begin
+    oDocXML.Add(indInc, '<w:tbl>');
+
+    // Add the table properties
+    oDocXML.Add(indInc, '<w:tblPr>', indInc);
+
+    If ATable.PreferredWidth.Value <> 0 Then
+      oDocXML.Add(Format('<w:tblW %s />', [DimAttribs(ATable.PreferredWidth)]));
+
+    oDocXML.Add(indNone, '<w:tblBorders>', indInc);
+
+    AddTableBorderProperty('w:left', ATable.Borders.Left);
+    AddTableBorderProperty('w:right', ATable.Borders.Right);
+    AddTableBorderProperty('w:top', ATable.Borders.Top);
+    AddTableBorderProperty('w:bottom', ATable.Borders.Bottom);
+    AddTableBorderProperty('w:insideH', ATable.Borders.InsideHoriz);
+    AddTableBorderProperty('w:insideV', ATable.Borders.InsideVert);
+
+    oDocXML.Add(indNone, '</w:tblBorders>', indDec);
+
+    If Assigned(ATable.Style) Then
+      oDocXML.Add('<w:tblStyle w:val="' + StyleNameToStyleID(ATable.Style) + '" />');
+
+    If ATable.CellSpacing <> 0 Then
+      oDocXML.Add('<w:tblCellSpacing w:w="' + mmToTwipsS(ATable.CellSpacing) +
+        '" w:type="dxa" />');
+
+    If ATable.BackgroundColor <> FPColor(0, 0, 0, 0) Then
+      oDocXML.Add(Format('<w:shd w:val="clear" w:color="auto" w:fill="%s"/>',
+        [FPColorToRGBHexString(ATable.BackgroundColor)]));
+
+    oDocXML.Add(indDec, '</w:tblPr>', indDec);
+
+    // Define the grid.  Grid is used to determine cell widths
+    // and boundaries
+    oDocXML.Add(indInc, '<w:tblGrid>', indInc);
+
+    // Percent cannot be set here, only absolutes
+    If ATable.ColWidthsUnits = dimMillimeter Then
+      For k := Low(ATable.ColWidths) To High(ATable.ColWidths) Do
+        oDocXML.Add(Format('<w:gridCol w:w="%s" />', [mmToTwipsS(ATable.ColWidths[k])]))
+    Else If ATable.ColWidthsUnits = dimPoint Then
+      For k := Low(ATable.ColWidths) To High(ATable.ColWidths) Do
+        oDocXML.Add(Format('<w:gridCol w:w="%s" />',
+          [IntToStr(Round(20 * ATable.ColWidths[k]))]));
+
+    oDocXML.Add(indDec, '</w:tblGrid>', indDec);
+
+    For i := 0 To ATable.GetRowCount - 1 Do
+    Begin
+      oRow := ATable.GetRow(i);
+      oDocXML.Add(indInc, '<w:tr>');
+
+      // Add the Row Properties
+      oDocXML.Add(indInc, '<w:trPr>', indInc);
+
+      If oRow.Header Then
+        oDocXML.Add('<w:tblHeader />');
+
+      If Not oRow.AllowSplitAcrossPage Then
+        oDocXML.Add('<w:cantSplit />');
+
+      If oRow.CellSpacing <> 0 Then
+        oDocXML.Add('<w:tblCellSpacing w:w="' + mmToTwipsS(oRow.CellSpacing) +
+          '" w:type="dxa" />');
+
+      { TODO : w:hRule="exact", "auto" }
+      If oRow.Height <> 0 Then
+        oDocXML.Add('<w:trHeight w:val="' + mmToTwipsS(oRow.Height) +
+          '" w:hRule="atLeast"/>');
+
+      // Row Background Colour can't be applied here, have to apply to each cell in turn...
+
+      oDocXML.Add(indDec, '</w:trPr>', indDec);
+
+      For j := 0 To oRow.GetCellCount - 1 Do
+      Begin
+        oCell := oRow.GetCell(j);
+
+        oDocXML.Add(indInc, '<w:tc>');
+
+        // Add the Cell Properties
+        oDocXML.Add(indInc, '<w:tcPr>', indInc);
+
+        oDocXML.Add(indNone, '<w:tcBorders>', indInc);
+
+        AddTableBorderProperty('w:left', oCell.Borders.Left);
+        AddTableBorderProperty('w:right', oCell.Borders.Right);
+        AddTableBorderProperty('w:top', oCell.Borders.Top);
+        AddTableBorderProperty('w:bottom', oCell.Borders.Bottom);
+
+        oDocXML.Add(indNone, '</w:tcBorders>', indDec);
+
+        // Row background color can't be applied at the row level, so we'll
+        // apply it to each cell in turn (only if the cell doesn't have it's
+        // own value assigned)
+        If oCell.BackgroundColor <> FPColor(0, 0, 0, 0) Then
+          oDocXML.Add(Format('<w:shd w:val="clear" w:color="auto" w:fill="%s"/>',
+            [FPColorToRGBHexString(oCell.BackgroundColor)]))
+        Else If oRow.BackgroundColor <> FPColor(0, 0, 0, 0) Then
+          oDocXML.Add(Format('<w:shd w:val="clear" w:color="auto" w:fill="%s"/>',
+            [FPColorToRGBHexString(oRow.BackgroundColor)]));
+
+        // Either use Cell Preferred Width, or ColWidths if defined as %
+        If oCell.PreferredWidth.Value <> 0 Then
+          oDocXML.Add(Format('<w:tcW %s />', [DimAttribs(oCell.PreferredWidth)]))
+        Else If (j <= High(ATable.ColWidths)) Then
+          oDocXML.Add(Format('<w:tcW %s />',
+            [DimAttribs(Dimension(ATable.ColWidths[j],
+            ATable.ColWidthsUnits))]));
+
+        If ATable.ColWidthsUnits <> dimPercent Then
+          oDocXML.Add('<w:gridSpan w:val="' + IntToStr(oCell.SpannedCols) + '" />');
+
+        oDocXML.Add('<w:vAlign w:val="' + LU_V_ALIGN[oCell.VerticalAlignment] + '" />');
+
+        oDocXML.Add(indDec, '</w:tcPr>', indDec);
+
+        ProcessRichText(oCell);
+
+        oDocXML.Add(indDec, '</w:tc>');
+      End;
+
+      oDocXML.Add(indDec, '</w:tr>');
+    End;
+
+    oDocXML.Add(indDec, '</w:tbl>');
+  End;
+
+(*
+  Procedure ProcessImage(AImage : TvImage);
+  begin
+
+  end;
+*)
+  Procedure ProcessRichText(ARichText: TvRichText);
+  Var
+    i: Integer;
+    oEntity: TvEntity;
+  Begin
+    For i := 0 To ARichText.GetEntitiesCount - 1 Do
+    Begin
+      oEntity := ARichText.GetEntity(i);
+
+      If oEntity Is TvParagraph Then
+        ProcessParagraph(TvParagraph(oEntity))
+      Else If oEntity Is TvBulletList Then
+        ProcessBulletList(TvBulletList(oEntity))
+      Else If oEntity Is TvTable Then
+        ProcessTable(TvTable(oEntity))
+      Else If oEntity Is TvRichText Then
+        ProcessRichText(TvRichText(oEntity))
+(*
+      Else If oEntity Is TvImage Then
+        ProcessImage(TvImage(oEntity))
+*)
+      Else
+        Raise Exception.Create('Unsupported entity ' + oEntity.ClassName);
     End;
   End;
 
 Var
   oPage: TvPage;
   oPageSequence: TvTextPageSequence;
-  oPageEntity: TvEntity;
-  iPage, i: Integer;
+  iPage: Integer;
   oFile: TFileInformation;
 Begin
   oFile := FFiles.AddXMLFile(OOXML_CONTENTTYPE_DOCUMENT, OOXML_PATH_DOCUMENT,
@@ -686,7 +973,7 @@ Begin
   oDocXML.Add(Format('<w:document %s>', [OOXML_DOCUMENT_NAMESPACE +
     'xml:space="preserve"']));
 
-  oDocXML.Add(True, '<w:body>');
+  oDocXML.Add(indInc, '<w:body>');
 
   For iPage := 0 To FData.GetPageCount - 1 Do
   Begin
@@ -696,26 +983,14 @@ Begin
     Begin
       oPageSequence := TvTextPageSequence(oPage);
 
-      // Process the page contents
-      For i := 0 To oPageSequence.GetEntitiesCount - 1 Do
-      Begin
-        oPageEntity := oPageSequence.GetEntity(i);
-
-        If oPageEntity Is TvParagraph Then
-          ProcessParagraph(TvParagraph(oPageEntity))
-        Else If oPageEntity Is TvRichText Then
-          ProcessRichText(TvRichText(oPageEntity))
-        Else
-          { TODO : What other entities in TvTextPageSequence do we need to process? }
-          Raise Exception.Create('Unsupported Entity: ' + oPageEntity.ClassName);
-      End;
+      ProcessRichText(oPageSequence.MainText);
 
       // Add any dimensions, headers, footers etc
       FinalisePage(oPageSequence, iPage = FData.GetPageCount - 1);
     End;
   End;
 
-  oDocXML.Add(False, '</w:body>');
+  oDocXML.Add(indDec, '</w:body>');
   oDocXML.Add('</w:document>');
 End;
 
@@ -732,12 +1007,11 @@ End;
 
 Procedure TvDOCXVectorialWriter.PrepareTextRunStyle(ADoc: TIndentedStringList;
   AStyle: TvStyle);
-Const
-  BoolAsString: Array[Boolean] Of String = ('off', 'on');
 
+Var
+  sTemp: String;
 Begin
-  ADoc.Add(True, '<w:rPr>');
-  ADoc.IncIndent;
+  ADoc.Add(indInc, '<w:rPr>', indInc);
 
   If (spbfFontName In AStyle.SetElements) And (AStyle.Font.Name <> '') Then
     ADoc.Add('<w:rFonts w:ascii="' + AStyle.Font.Name + '" w:hAnsi="' +
@@ -748,16 +1022,16 @@ Begin
     ADoc.Add('<w:sz w:val="' + IntToStr(2 * AStyle.Font.Size) + '"/>');
 
   If spbfFontBold In AStyle.SetElements Then
-    ADoc.Add('<w:b w:val="' + BoolAsString[AStyle.Font.Bold] + '"/>');
+    ADoc.Add('<w:b w:val="' + LU_ON_OFF[AStyle.Font.Bold] + '"/>');
 
   If spbfFontItalic In AStyle.SetElements Then
-    ADoc.Add('<w:i w:val="' + BoolAsString[AStyle.Font.Italic] + '"/>');
+    ADoc.Add('<w:i w:val="' + LU_ON_OFF[AStyle.Font.Italic] + '"/>');
 
   If spbfFontUnderline In AStyle.SetElements Then
-    ADoc.Add('<w:u w:val="' + BoolAsString[AStyle.Font.Underline] + '"/>');
+    ADoc.Add('<w:u w:val="' + LU_ON_OFF[AStyle.Font.Underline] + '"/>');
 
   If spbfFontStrikeThrough In AStyle.SetElements Then
-    ADoc.Add('<w:strike w:val="' + BoolAsString[AStyle.Font.StrikeThrough] + '"/>');
+    ADoc.Add('<w:strike w:val="' + LU_ON_OFF[AStyle.Font.StrikeThrough] + '"/>');
 
   If CompareColors(AStyle.Font.Color, FPColor(0, 0, 0, 0)) <> 0 Then
     ADoc.Add('<w:color w:val="' + FPColorToRGBHexString(AStyle.Font.Color) + '"/>');
@@ -769,7 +1043,7 @@ Begin
 
   // Don't bother adding an empty tag..
   If ADoc[ADoc.Count - 1] <> '<w:rPr>' Then
-    ADoc.Add(False, '</w:rPr>')
+    ADoc.Add(indDec, '</w:rPr>')
   Else
   Begin
     ADoc.Delete(ADoc.Count - 1);
@@ -779,107 +1053,172 @@ End;
 
 Procedure TvDOCXVectorialWriter.PrepareStyles;
 Var
-  oStyleXML: TIndentedStringList;
-
-  Procedure PrepareParagraphStyle(AStyle: TvStyle; AType: String);
-  Const
-    AlignmentAsString: Array [TvStyleAlignment] Of String =
-      ('left', 'right', 'both', 'center');
-  Var
-    sTemp: String;
-  Begin
-    oStyleXML.Add(True, '<w:style w:type="' + AType + '" w:styleId="' +
-      StyleNameToStyleID(AStyle) + '">');
-
-    // Add the name and inheritance values
-    oStyleXML.Add('  <w:name w:val="' + AStyle.Name + '"/>');
-
-    If Assigned(AStyle.Parent) Then
-      oStyleXML.Add('  <w:basedOn w:val="' + StyleNameToStyleID(
-        AStyle.Parent) + '"/> ');
-
-    { TODO : <w:qFormat/> doesn't always need to be set, but I don't yet understand the rules...  }
-    oStyleXML.Add('  <w:qFormat/> ');   // Latent Style Primary Style Setting.
-
-    { TODO : Specification states you CANNOT redeclare a identical property
-             declared in a parent. At the moment code is relying on Styles
-             correctly defined up through hierarchy }
-    If AType = 'paragraph' Then
-    Begin
-      // Add the Paragraph Properties
-      oStyleXML.Add(True, '<w:pPr>');
-      oStyleXML.IncIndent;
-
-      sTemp := '';
-      If AStyle.MarginTop <> 0 Then
-        sTemp := sTemp + ' w:before="' + mmToTwipsS(AStyle.MarginTop) + '"';
-
-      If AStyle.MarginBottom <> 0 Then
-        sTemp := sTemp + ' w:after="' + mmToTwipsS(AStyle.MarginBottom) + '"';
-
-      If sTemp <> '' Then
-        oStyleXML.Add('<w:spacing' + sTemp + '/>');
-
-      sTemp := '';
-      If AStyle.MarginLeft <> 0 Then
-        sTemp := sTemp + ' w:left="' + mmToTwipsS(AStyle.MarginLeft) + '"';
-
-      If AStyle.MarginRight <> 0 Then
-        sTemp := sTemp + ' w:right="' + mmToTwipsS(AStyle.MarginRight) + '"';
-
-      If sTemp <> '' Then
-        oStyleXML.Add('<w:ind' + sTemp + '/>');
-
-      If spbfAlignment In AStyle.SetElements Then
-        oStyleXML.Add('<w:jc w:val="' + AlignmentAsString[AStyle.Alignment] + '"/>');
-
-      oStyleXML.DecIndent;
-
-      If oStyleXML[oStyleXML.Count - 1] <> '<w:pPr>' Then
-        oStyleXML.Add(False, '</w:pPr>')
-      Else
-      Begin
-        oStyleXML.Delete(oStyleXML.Count - 1);
-        oStyleXML.DecIndent;
-      End;
-    End;
-
-    // Now add the actual formatting (rPr = Run Properties).
-    PrepareTextRunStyle(oStyleXML, AStyle);
-
-    oStyleXML.Add(False, '</w:style>  ');
-  End;
-
-Var
+  sType, sTemp: String;
   i: Integer;
+  oXML: TIndentedStringList;
   oStyle: TvStyle;
   oFile: TFileInformation;
+
 Begin
   // Only add this file if there are any styles defined...
   If FData.GetStyleCount > 0 Then
   Begin
     oFile := FFiles.AddXMLFile(OOXML_CONTENTTYPE_STYLES, OOXML_PATH_STYLES,
       OOXML_TYPE_STYLES, [ftContentTypes, ftDocRelationships]);
-    oStyleXML := oFile.XML;
+    oXML := oFile.XML;
 
-    oStyleXML.Clear;
-    oStyleXML.Add(XML_HEADER);
-    oStyleXML.Add(Format('<w:styles %s>', [OOXML_DOCUMENT_NAMESPACE]));
+    oXML.Clear;
+    oXML.Add(XML_HEADER);
+    oXML.Add(Format('<w:styles %s>', [OOXML_DOCUMENT_NAMESPACE]));
 
     For i := 0 To FData.GetStyleCount - 1 Do
     Begin
       oStyle := FData.GetStyle(i);
 
       If oStyle.GetKind In [vskTextBody, vskHeading] Then
-        PrepareParagraphStyle(oStyle, 'paragraph')
+        sType := 'paragraph'
       Else If oStyle.GetKind In [vskTextSpan] Then
-        PrepareParagraphStyle(oStyle, 'character')
+        sType := 'character'
       Else
         { TODO : handle the other StyleKinds }
         Raise Exception.Create('Unsupported StyleKind in ' + oStyle.Name);
+
+      oXML.Add(indInc, '<w:style w:type="' + sType + '" w:styleId="' +
+        StyleNameToStyleID(oStyle) + '">');
+
+      // Add the name and inheritance values
+      oXML.Add('  <w:name w:val="' + oStyle.Name + '"/>');
+
+      If Assigned(oStyle.Parent) Then
+        oXML.Add('  <w:basedOn w:val="' + StyleNameToStyleID(
+          oStyle.Parent) + '"/> ');
+
+      { TODO : <w:qFormat/> doesn't always need to be set, but I don't yet understand the rules...  }
+      oXML.Add('  <w:qFormat/> ');   // Latent Style Primary Style Setting.
+
+      { TODO : Specification states you CANNOT redeclare a identical property
+               declared in a parent. At the moment code is relying on Styles
+               correctly defined up through hierarchy }
+      If sType = 'paragraph' Then
+      Begin
+        // Add the Paragraph Properties
+        oXML.Add(indInc, '<w:pPr>', indInc);
+
+        // Define Before and After spacing
+        If (sseMarginTop In oStyle.SetElements) Or
+          (sseMarginBottom In oStyle.SetElements) Then
+        Begin
+          sTemp := '';
+
+          If sseMarginTop In oStyle.SetElements Then
+            sTemp := sTemp + ' w:before="' + mmToTwipsS(oStyle.MarginTop) + '"';
+
+          If sseMarginBottom In oStyle.SetElements Then
+            sTemp := sTemp + ' w:after="' + mmToTwipsS(oStyle.MarginBottom) + '"';
+
+          oXML.Add(Format('<w:spacing %s/>', [sTemp]));
+        End;
+
+        If (sseMarginLeft In oStyle.SetElements) Or
+          (sseMarginRight In oStyle.SetElements) Then
+        Begin
+          sTemp := '';
+
+          If sseMarginLeft In oStyle.SetElements Then
+            sTemp := sTemp + ' w:left="' + mmToTwipsS(oStyle.MarginLeft) + '"';
+
+          If sseMarginRight In oStyle.SetElements Then
+            sTemp := sTemp + ' w:right="' + mmToTwipsS(oStyle.MarginRight) + '"';
+
+          oXML.Add(Format('<w:ind %s/>', [sTemp]));
+        End;
+
+
+        // Alignment
+        If spbfAlignment In oStyle.SetElements Then
+          oXML.Add('<w:jc w:val="' + LU_ALIGN[oStyle.Alignment] + '"/>');
+
+        // Suppress Spacing between identical paragraphs...
+        If oStyle.SuppressSpacingBetweenSameParagraphs Then
+          oXML.Add('<w:contextualSpacing/>');
+
+        oXML.DecIndent;
+
+        If oXML[oXML.Count - 1] <> '<w:pPr>' Then
+          oXML.Add(indDec, '</w:pPr>')
+        Else
+        Begin
+          oXML.Delete(oXML.Count - 1);
+          oXML.DecIndent;
+        End;
+      End;
+
+      // Now add the actual formatting (rPr = Run Properties).
+      PrepareTextRunStyle(oXML, oStyle);
+
+      oXML.Add(indDec, '</w:style>  ');
     End;
 
-    oStyleXML.Add('</w:styles>');
+    oXML.Add('</w:styles>');
+  End;
+End;
+
+Procedure TvDOCXVectorialWriter.PrepareNumbering;
+Var
+  oXML: TIndentedStringList;
+  oStyle: TvListStyle;
+  oFile: TFileInformation;
+  i: Integer;
+Begin
+  // Only add this file if there are any List styles defined...
+  If FData.GetListStyleCount > 0 Then
+  Begin
+    oFile := FFiles.AddXMLFile(OOXML_CONTENTTYPE_NUMBERING,
+      OOXML_PATH_NUMBERING, OOXML_TYPE_NUMBERING, [ftContentTypes, ftDocRelationships]);
+    oXML := oFile.XML;
+
+    oXML.Clear;
+    oXML.Add(XML_HEADER);
+    oXML.Add(Format('<w:numbering %s>', [OOXML_DOCUMENT_NAMESPACE]));
+
+    // wtf is abstractNumId??
+    oXML.Add(indInc, '<w:abstractNum w:abstractNumId="0">', indInc);
+
+    // Optional
+    //oXML.Add('<w:multiLevelType w:val="hybridMultilevel"/>');
+
+    For i := 0 To FData.GetListStyleCount - 1 Do
+    Begin
+      oStyle := FData.GetListStyle(i);
+
+      oXML.Add(Format('<w:lvl w:ilvl="%d">', [oStyle.Level]), indInc);
+
+      oXML.Add('<w:start w:val="1"/>');  // Numbered lists only
+      oXML.Add('<w:numFmt w:val="' + LU_KIND[oStyle.Kind] + '"/>');
+      oXML.Add('<w:lvlText w:val="' + oStyle.Prefix + '"/>');
+      oXML.Add('<w:lvlJc w:val="' + LU_ALIGN[oStyle.Alignment] + '"/>');
+
+      oXML.Add('<w:pPr>');
+      oXML.Add(Format('  <w:ind w:left="%s" w:hanging="%s"/>',
+        [mmToTwipsS(oStyle.MarginLeft), mmToTwipsS(oStyle.HangingIndent)]));
+      oXML.Add('</w:pPr>');
+
+      oXML.Add('<w:rPr>');
+      oXML.Add(Format('  <w:rFonts w:ascii="%s" w:hAnsi="%s"/>',
+        [oStyle.PrefixFontName, oStyle.PrefixFontName]));
+      oXML.Add('</w:rPr>');
+
+      oXML.Add('</w:lvl>', indDec);
+    End;
+    oXML.Add(indDec, '</w:abstractNum>', indDec);
+
+    // wtf is abstrctNumID??
+    // obviously related to w:abstractNum above...
+    oXML.Add(indInc, '<w:num w:numId="1">');
+    oXML.Add('	<w:abstractNumId w:val="0"/>');
+    oXML.Add(indDec, '</w:num>');
+
+    oXML.Add('</w:numbering>');
   End;
 End;
 
@@ -910,6 +1249,7 @@ Begin
 
   PrepareStyles;
   PrepareDocument;
+  PrepareNumbering;
 
   // These documents need building up with details of all included files,
   //   not worth the overhead of handling as StringLists
