@@ -133,7 +133,9 @@ begin
       begin
         ImgList.GetBitmap(AMenuItem.ImageIndex, AMenuItem.Bitmap);
         Result.setImage(TQtImage(AMenuItem.Bitmap.Handle));
-      end;
+      end else
+      if Assigned(AMenuItem.Bitmap) then
+        Result.setImage(TQtImage(AMenuItem.Bitmap.Handle));
     end else
       Result.setImage(nil);
   end;
