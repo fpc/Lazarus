@@ -5823,6 +5823,8 @@ begin
       It.Next;
       while (not It.EOM) and (TCallStackEntry(It.DataPtr^).Index = EndIdx+1) do begin
         inc(EndIdx);
+        if EndIdx = FCallstack.HighestUnknown then
+          Break;
         It.Next;
       end;
 
@@ -5832,11 +5834,8 @@ begin
       ExecForRange(StartIdx, EndIdx);
       if (FCallstack = nil) or (dcsCanceled in SeenStates) then break;
 
-      if FCallstack.LowestUnknown < StartIdx
-      then StartIdx := FCallstack.LowestUnknown
-      else StartIdx := EndIdx + 1;
-      if FCallstack.HighestUnknown > EndIdx
-      then EndIdx := FCallstack.HighestUnknown;
+      StartIdx := EndIdx + 1;
+      EndIdx := FCallstack.HighestUnknown;
     end;
   finally
     IT.Free;

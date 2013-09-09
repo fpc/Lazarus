@@ -5228,7 +5228,7 @@ begin
 
   FPreparing := True;
   while ACount > 0 do begin
-    Entries[AIndex];
+    Entries[AIndex]; // Request unknown entries: will set LowesUnknown / HighesUnknown
     inc(AIndex);
     dec(ACount);
   end;

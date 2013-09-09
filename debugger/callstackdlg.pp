@@ -299,6 +299,8 @@ begin
     CStack := GetSelectedCallstack;
     if CStack <> nil then CStack.Count; // trigger the update-notification, if executed immediately
     FInUpdateView := False;
+    // TODO: must make CStack ref-counted
+    if CStack <> GetSelectedCallstack then exit; // Something changed, maybe debugger stopped
 
     if (CStack = nil) or ((Snap <> nil) and (CStack.Count = 0)) then begin
       lvCallStack.Items.Clear;
@@ -345,6 +347,8 @@ begin
 
     FInUpdateView := True;
     CStack.PrepareRange(First, Count);
+    // TODO: must make CStack ref-counted
+    if CStack <> GetSelectedCallstack then exit; // Something changed, maybe debugger stopped
     FInUpdateView := False;
     for n := 0 to Count - 1 do
     begin
