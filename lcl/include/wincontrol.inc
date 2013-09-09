@@ -1370,6 +1370,9 @@ end;
 procedure TAutoSizeBox.SetControl(AControl: TControl);
 var
   Border: TRect;
+  AutoSize0x0: Boolean;
+  IsPrefWidthValid: Boolean;
+  IsPrefHeightValid: Boolean;
 begin
   Control:=AControl;
   MinimumSize[asboHorizontal]:=Control.Constraints.EffectiveMinWidth;
@@ -1381,32 +1384,39 @@ begin
                            true, // without constraints
                            true  // with theme space
                            );
+  //DebugLn(['TAutoSizeBox.SetControl ',DbgSName(Control),' ',PreferredSize[asboHorizontal]]);
+  AutoSize0x0:=csAutoSize0x0 in Control.ControlStyle;
+  IsPrefWidthValid:=(PreferredSize[asboHorizontal]>0)
+                    or (AutoSize0x0 and (PreferredSize[asboHorizontal]=0));
+  IsPrefHeightValid:=(PreferredSize[asboVertical]>0)
+                    or (AutoSize0x0 and (PreferredSize[asboVertical]=0));
+
   // apply constraints
-  if PreferredSize[asboHorizontal]>0 then
+  if IsPrefWidthValid then
     PreferredSize[asboHorizontal]:=
       Control.Constraints.MinMaxWidth(PreferredSize[asboHorizontal]);
-  if PreferredSize[asboVertical]>0 then
+  if IsPrefHeightValid then
     PreferredSize[asboVertical]:=
       Control.Constraints.MinMaxHeight(PreferredSize[asboVertical]);
 
-  if (Control.AutoSize or (Control.BorderSpacing.CellAlignHorizontal<>ccaFill))
-  and (PreferredSize[asboHorizontal]>0)
+  if IsPrefWidthValid
+  and (Control.AutoSize or (Control.BorderSpacing.CellAlignHorizontal<>ccaFill))
   then begin
     // the control.width is fixed to its preferred width
     MaximumSize[asboHorizontal]:=PreferredSize[asboHorizontal];
   end;
-  if (Control.AutoSize or (Control.BorderSpacing.CellAlignVertical<>ccaFill))
-  and (PreferredSize[asboVertical]>0)
+  if IsPrefHeightValid
+  and (Control.AutoSize or (Control.BorderSpacing.CellAlignVertical<>ccaFill))
   then begin
     // the control.height is fixed to its preferred height
     MaximumSize[asboVertical]:=PreferredSize[asboVertical];
   end;
 
   // if no preferred size is valid use the class defaults
-  if PreferredSize[asboHorizontal]<=0 then
+  if not IsPrefWidthValid then
     PreferredSize[asboHorizontal]:=
       Control.Constraints.MinMaxWidth(Control.GetControlClassDefaultSize.CX);
-  if PreferredSize[asboVertical]<=0 then
+  if not IsPrefHeightValid then
     PreferredSize[asboVertical]:=
       Control.Constraints.MinMaxHeight(Control.GetControlClassDefaultSize.CX);
 
