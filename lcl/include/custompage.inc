@@ -67,6 +67,7 @@ begin
       // Check if the page is active and set a new pageindex
       TCustomTabControl(Parent).PageRemoved(PageIndex);
     TCustomTabControl(Parent).AddRemovePageHandle(Self);
+    TCustomTabControl(Parent).DoSendPageIndex;
   end;
 end;
 
