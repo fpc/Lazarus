@@ -296,7 +296,7 @@ procedure TTestPageControl.CheckPaint(AName: String; APaintedPage: TTestSheet);
 var
   i: Integer;
 begin
-  {$IfDef LCLQT}
+  {$IfDef LCLGTK2}
   if APaintedPage <> nil then begin
     AssertTrue(AName + ' Paint was called', APaintedPage.DidPaint >= 1);
   end;
@@ -304,7 +304,7 @@ begin
   if APaintedPage <> nil then begin
     AssertEquals(AName + ' Paint was called', 1, APaintedPage.DidPaint);
   end;
-  {$IfNDef LCLGTK2}
+  {$IfNDef LCLQT}
   for i := 0 to PageControl.ControlCount - 1 do
     if (PageControl.Controls[i] <> APaintedPage) and (PageControl.Controls[i] is TTestSheet) then
       AssertEquals(AName + 'NO paint for other page', 0, (PageControl.Controls[i] as TTestSheet).DidPaint);
