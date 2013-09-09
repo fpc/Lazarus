@@ -528,6 +528,10 @@ begin
       inc(i);
       if i=NameLen then break;
 
+      {$IFDEF Windows}
+      if StartPos[i]='/' then exit;
+      {$ENDIF}
+
       // check for double path delimiter
       if (StartPos[i] in AllowDirectorySeparators) then exit;
 
