@@ -1863,7 +1863,7 @@ procedure TPkgDependency.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   var
     BaseDir: String;
   begin
-    Result:=SetPathDelims(XMLConfig.GetValue(Path+SubPath,''));
+    Result:=GetForcedPathDelims(XMLConfig.GetValue(Path+SubPath,''));
     if (Result<>'') and (Owner<>nil)
     and (not FilenameIsAbsolute(Result)) then begin
       BaseDir:=GetDependencyOwnerDirectory(Self);

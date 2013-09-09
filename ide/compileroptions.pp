@@ -3865,14 +3865,14 @@ begin
   case Option of
   pcosUnitPath,pcosIncludePath,pcosObjectPath,pcosLibraryPath,pcosSrcPath,
   pcosDebugPath:
-    Result:=MergeSearchPaths(Result,SetPathDelims(Vars[VarName]));
+    Result:=MergeSearchPaths(Result,GetForcedPathDelims(Vars[VarName]));
   pcosLinkerOptions:
     Result:=MergeLinkerOptions(Result,Vars[VarName]);
   pcosCustomOptions:
     Result:=MergeCustomOptions(Result,Vars[VarName]);
   pcosOutputDir,pcosCompilerPath:
     if Vars.IsDefined(PChar(VarName)) then
-      Result:=SetPathDelims(Vars[VarName]);
+      Result:=GetForcedPathDelims(Vars[VarName]);
   end
 end;
 

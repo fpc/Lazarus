@@ -6486,7 +6486,7 @@ var
     OldFilename: String;
     AFilename: String;
   begin
-    OldFilename:=SetPathDelims(copy(ASource,StartPos,EndPos-StartPos));
+    OldFilename:=GetForcedPathDelims(copy(ASource,StartPos,EndPos-StartPos));
     //DebugLn('FixFilename ',dbgs(StartPos),' ',dbgs(EndPos),' ',OldFilename);
     AFilename:=OldFilename;
     if ExtractFileExt(AFilename)='' then begin

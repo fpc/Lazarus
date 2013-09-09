@@ -1600,7 +1600,7 @@ end;
 
 function TH2PasProject.NormalizeFilename(const AFilename: string): string;
 begin
-  Result:=LongenFilename(SetPathDelims(AFilename));
+  Result:=LongenFilename(GetForcedPathDelims(AFilename));
 end;
 
 function TH2PasProject.HasEnabledFiles: boolean;
@@ -1629,7 +1629,7 @@ var
   i: Integer;
   CurFile: TH2PasFile;
 begin
-  AFilename:=SetPathDelims(SrcFilename);
+  AFilename:=GetForcedPathDelims(SrcFilename);
   if System.Pos(PathDelim,AFilename)>0 then begin
     // with sub path -> only search relative to AFile
     Result:=TrimFilename(ExtractFilePath(aFile.Filename)+AFilename);

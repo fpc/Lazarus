@@ -491,7 +491,7 @@ begin
           DebugLn('WARNING: pkg link file is empty: ',LPLFilename);
           continue;
         end;
-        LPKFilename:=SetPathDelims(sl[0]);
+        LPKFilename:=GetForcedPathDelims(sl[0]);
       except
         on E: Exception do begin
           DebugLn('WARNING: unable to read pkg link file: ',LPLFilename,' : ',E.Message);

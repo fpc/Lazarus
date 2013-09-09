@@ -877,7 +877,7 @@ begin
     StartPos:=EndPos;
     while (EndPos<=length(ExpFilename)) and (ExpFilename[EndPos]<>';') do
       inc(EndPos);
-    Dir:=TrimFilename(SetPathDelims(copy(ExpFilename,StartPos,EndPos-StartPos)));
+    Dir:=TrimFilename(GetForcedPathDelims(copy(ExpFilename,StartPos,EndPos-StartPos)));
     if Dir<>'' then begin
       if not FilenameIsAbsolute(Dir) then begin
         if BaseDir='' then
@@ -900,7 +900,7 @@ begin
     if (HelpDatabases<>nil) then
       HelpDatabases.SubstituteMacros(Result);
   end;
-  Result:=TrimFilename(SetPathDelims(Result));
+  Result:=TrimFilename(GetForcedPathDelims(Result));
 end;
 
 { THelpDatabase }
@@ -2456,7 +2456,7 @@ constructor THelpDBISourceFile.Create(TheNode: THelpNode;
   const TheFilename: string);
 begin
   inherited Create(TheNode);
-  FFilename:=TrimFilename(SetPathDelims(TheFilename));
+  FFilename:=TrimFilename(GetForcedPathDelims(TheFilename));
 end;
 
 function THelpDBISourceFile.FileMatches(const AFilename: string): boolean;
@@ -2477,7 +2477,7 @@ begin
   if (HelpDatabases<>nil) then
     HelpDatabases.SubstituteMacros(ExpFilename);
   //DebugLn(['THelpDBISourceFile.GetFullFilename substituted ',ExpFilename]);
-  ExpFilename:=TrimFilename(SetPathDelims(ExpFilename));
+  ExpFilename:=TrimFilename(GetForcedPathDelims(ExpFilename));
   if FilenameIsAbsolute(ExpFilename) then
     Result:=ExpFilename
   else begin
@@ -2491,7 +2491,7 @@ begin
   if BasePathObject=nil then
     Result:=''
   else
-    Result:=AppendPathDelim(TrimFilename(SetPathDelims(
+    Result:=AppendPathDelim(TrimFilename(GetForcedPathDelims(
              HelpDatabases.GetBaseDirectoryForBasePathObject(BasePathObject))));
 end;
 
@@ -2501,7 +2501,7 @@ constructor THelpDBISourceDirectory.Create(TheNode: THelpNode;
   const Directory, TheFileMask: string; Recursive: boolean);
 begin
   inherited Create(TheNode,Directory);
-  FFileMask:=SetPathDelims(TheFileMask);
+  FFileMask:=GetForcedPathDelims(TheFileMask);
   WithSubDirectories:=Recursive;
 end;
 

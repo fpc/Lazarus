@@ -3747,7 +3747,7 @@ var
         end;
       end;
     end;
-    UnitPath:=Trim(SetPathDelims(APackage.UsageOptions.UnitPath));
+    UnitPath:=Trim(GetForcedPathDelims(APackage.UsageOptions.UnitPath));
     while (UnitPath<>'') and (UnitPath[1]=';') do
       UnitPath:=copy(UnitPath,2,Length(UnitPath));
     while (UnitPath<>'') and (RightStr(UnitPath,1)=';') do

@@ -1192,7 +1192,7 @@ begin
   {$ENDIF}
   if InFilename<>'' then begin
     // uses IN parameter
-    InFilename:=TrimFilename(SetPathDelims(InFilename));
+    InFilename:=TrimFilename(GetForcedPathDelims(InFilename));
     if AnyCase then
       UnitSrc:=ctdusInFilenameCaseInsensitive
     else

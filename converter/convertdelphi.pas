@@ -324,7 +324,7 @@ var
 begin
   Result:=Filename;
   if Result='' then exit;
-  Result:=TrimFilename(SetPathDelims(Result));
+  Result:=TrimFilename(GetForcedPathDelims(Result));
   // check for $(Delphi) macro
   p:=System.Pos('$(DELPHI)',Result);
   if p>0 then begin
@@ -342,7 +342,7 @@ begin
     Result:=ConvertDelphiAbsoluteToRelativeFile(Result, AProjPack);
   end;
   // change PathDelim
-  Result:=TrimFilename(SetPathDelims(Result));
+  Result:=TrimFilename(GetForcedPathDelims(Result));
 end;
 
 function ExpandDelphiSearchPath(const SearchPath: string;

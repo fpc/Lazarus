@@ -3687,7 +3687,7 @@ begin
   EndPos:=StartPos;
   while (EndPos<=MaxPos) and (ASource[EndPos]<>'}') do inc(EndPos);
   if (EndPos=StartPos) or (EndPos>MaxPos) then exit;
-  Filename:=SetPathDelims(copy(ASource,StartPos,EndPos-StartPos));
+  Filename:=GetForcedPathDelims(copy(ASource,StartPos,EndPos-StartPos));
   Result:=true;
 end;
 

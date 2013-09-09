@@ -55,7 +55,7 @@ function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
 function TrimFilename(const AFilename: string): string;
 function ResolveDots(const AFilename: string): string;
 Procedure ForcePathDelims(Var FileName: string);
-Function SetPathDelims(Const FileName: string): String;
+Function GetForcedPathDelims(Const FileName: string): String;
 function CleanAndExpandFilename(const Filename: string): string; // empty string returns current directory
 function CleanAndExpandDirectory(const Filename: string): string; // empty string returns current directory
 function TrimAndExpandFilename(const Filename: string; const BaseDir: string = ''): string; // empty string returns empty string
@@ -580,7 +580,7 @@ begin
     {$ENDIF}
 end;
 
-function SetPathDelims(const FileName: string): String;
+function GetForcedPathDelims(const FileName: string): String;
 begin
   Result:=FileName;
   ForcePathDelims(Result);
@@ -996,7 +996,7 @@ begin
       E.ErrorCode:=3;
       Raise E;
     end;
-  Result := DoForceDirectories(SetPathDelims(Dir));
+  Result := DoForceDirectories(GetForcedPathDelims(Dir));
 end;
 
 
