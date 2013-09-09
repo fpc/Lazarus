@@ -590,12 +590,12 @@ begin
   //{$endif}
   Fn := FileName;
   //if Filename uses ExtendedLengthPath scheme then it cannot be expanded
-  //AND it should not be altered by DoPathDelims or ResolveDots
+  //AND it should not be altered by ForcePathDelims or ResolveDots
   //See: http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx
   if (Length(Fn) > 3) and (Fn[1] = PathDelim) and (Fn[2] = PathDelim) and
      (Fn[3] = '?') and (Fn[4] = PathDelim) //Do NOT use AllowDirectorySeparators here!
      then Exit;
-  DoPathDelims(Fn);
+  ForcePathDelims(Fn);
   IsAbs := FileNameIsWinAbsolute(Fn);
   if not IsAbs then
   begin

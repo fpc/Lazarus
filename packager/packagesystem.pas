@@ -2724,8 +2724,8 @@ begin
           end;
         end;
         if stats^.ViaMakefile then begin
-          DoPathDelims(stats^.CompilerFilename);
-          DoPathDelims(stats^.Params);
+          ForcePathDelims(stats^.CompilerFilename);
+          ForcePathDelims(stats^.Params);
         end;
       finally
         XMLConfig.Free;

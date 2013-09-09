@@ -52,8 +52,8 @@ end;
 procedure TTestFileUtil.TestTrimFileName;
   procedure DoTest(AFileName, Expected: string);
   begin
-    DoPathDelims(AFileName);
-    DoPathDelims(Expected);
+    ForcePathDelims(AFileName);
+    ForcePathDelims(Expected);
     AssertEquals(AFileName, Expected, TrimFilename(AFileName));
   end;
 begin

@@ -4540,7 +4540,7 @@ var
 begin
   NewProjectInfoFile:=TrimFilename(NewFilename);
   if NewProjectInfoFile='' then exit;
-  DoPathDelims(NewProjectInfoFile);
+  ForcePathDelims(NewProjectInfoFile);
   if fProjectInfoFile=NewProjectInfoFile then exit;
   BeginUpdate(true);
   TitleWasDefault:=(Title<>'') and TitleIsDefault(true);
@@ -4605,7 +4605,7 @@ begin
     // PathDelim changed from '\' to '/'
     FileWasAbsolute:=FilenameIsWinAbsolute(AFileName);
     {$ENDIF}
-    DoPathDelims(AFilename);
+    ForcePathDelims(AFilename);
   end else begin
     FileWasAbsolute:=FilenameIsAbsolute(AFileName);
   end;
@@ -4645,7 +4645,7 @@ begin
   ProjectPath:=ProjectDirectory;
   if ProjectPath='' then ProjectPath:=GetCurrentDirUTF8;
   Result:=AFilename;
-  DoPathDelims(Result);
+  ForcePathDelims(Result);
   // try making filename relative to project file
   if FilenameIsAbsolute(Result)
   and (CompareFileNames(copy(Result,1,length(ProjectPath)),ProjectPath)=0)

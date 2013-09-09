@@ -1465,7 +1465,7 @@ var
   OldDirectory: String;
 begin
   NewFilename:=AValue;
-  DoPathDelims(NewFilename);
+  ForcePathDelims(NewFilename);
   if Filename=NewFilename then exit;
   inherited SetFilename(NewFilename);
   fFullFilenameStamp:=CTInvalidChangeStamp;
@@ -2378,7 +2378,7 @@ var
   NewFilename: String;
 begin
   NewFilename:=AValue;
-  DoPathDelims(NewFilename);
+  ForcePathDelims(NewFilename);
   if FFilename=NewFilename then exit;
   FFilename:=NewFilename;
   if (FFilename<>'') and (FFilename[length(FFilename)]=PathDelim) then

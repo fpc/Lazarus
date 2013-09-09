@@ -45,8 +45,8 @@ end;
 procedure TTestFileProc.TestTrimFileName;
   procedure DoTest(AFileName, Expected: string);
   begin
-    DoPathDelims(AFileName);
-    DoPathDelims(Expected);
+    ForcePathDelims(AFileName);
+    ForcePathDelims(Expected);
     AssertEquals(AFileName, Expected, TrimFilename(AFileName));
   end;
 begin
@@ -62,9 +62,9 @@ procedure TTestFileProc.TestCreateRelativePath;
   procedure DoTest(Filename, BaseDirectory, Expected: string;
     UsePointDirectory: boolean = false);
   begin
-    DoPathDelims(Filename);
-    DoPathDelims(BaseDirectory);
-    DoPathDelims(Expected);
+    ForcePathDelims(Filename);
+    ForcePathDelims(BaseDirectory);
+    ForcePathDelims(Expected);
     AssertEquals('CreateRelativePath(File='+Filename+',Base='+BaseDirectory+')',
       Expected,
       CreateRelativePath(Filename,BaseDirectory,UsePointDirectory));

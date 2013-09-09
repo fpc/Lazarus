@@ -559,7 +559,7 @@ var
   i: integer;
   Dir: string;
 begin
-  DoPathDelims(Directory);
+  ForcePathDelims(Directory);
   Directory:=AppendPathDelim(Directory);
   if DirPathExists(Directory) then exit(mrOk);
   // skip UNC path

@@ -661,7 +661,7 @@ begin
     if s='' then begin
       // ok, allow simple deactivate
     end else begin
-      DoPathDelims(Filename);
+      ForcePathDelims(Filename);
       IDEMacros.SubstituteMacros(Filename);
       Msg:='';
       if (Filename<>'') and (Filename[length(Filename)]=PathDelim) then begin

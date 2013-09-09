@@ -351,7 +351,7 @@ function SearchLazarusDirectoryCandidates(StopIfFits: boolean): TSDFileInfoList;
   begin
     Result:=false;
     if Dir='' then Dir:='.';
-    DoPathDelims(Dir);
+    ForcePathDelims(Dir);
     Dir:=ChompPathDelim(Dir);
     // check if already checked
     if Assigned(List) and List.CaptionExists(Dir) then exit;
@@ -541,7 +541,7 @@ var
   begin
     Result:=false;
     if AFilename='' then exit;
-    DoPathDelims(AFilename);
+    ForcePathDelims(AFilename);
     // check if already checked
     if Assigned(List) and List.CaptionExists(AFilename) then exit;
     EnvironmentOptions.CompilerFilename:=AFilename;
@@ -931,7 +931,7 @@ function SearchDebuggerCandidates(StopIfFits: boolean): TSDFileInfoList;
   begin
     Result:=false;
     if AFilename='' then exit;
-    DoPathDelims(AFilename);
+    ForcePathDelims(AFilename);
     // check if already checked
     if Assigned(List) and List.CaptionExists(AFilename) then exit;
     EnvironmentOptions.DebuggerFilename:=AFilename;
@@ -1057,7 +1057,7 @@ function SearchMakeExeCandidates(StopIfFits: boolean): TSDFileInfoList;
   begin
     Result:=false;
     if AFilename='' then exit;
-    DoPathDelims(AFilename);
+    ForcePathDelims(AFilename);
     // check if already checked
     if Assigned(List) and List.CaptionExists(AFilename) then exit;
     EnvironmentOptions.MakeFilename:=AFilename;
