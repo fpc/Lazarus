@@ -7211,6 +7211,7 @@ begin
       DestWin.UpdateProjectFiles(Edit);
       DestWin.UpdateActiveEditColors(Edit.EditorComponent);
       DestWin.UpdateStatusBar;
+      DestWin.NotebookPageChanged(nil); // make sure page SynEdit willl be visible
     finally
       DestWin.EnableAutoSizing;
     end;
@@ -7259,6 +7260,7 @@ begin
     Manager.ActiveEditor := NewEdit;
     Manager.ShowActiveWindowOnTop(True);
   end;
+  DestWin.NotebookPageChanged(nil); // make sure page SynEdit willl be visible
   DoActiveEditorChanged;
 end;
 
