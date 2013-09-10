@@ -96,7 +96,7 @@ begin
   CfgFileDone := True;
   CfgFileName := AppendPathDelim(ProgramDirectory) + 'lazarus.cfg';
   if FileExistsUTF8(CfgFileName) then begin
-  DebugLn(['using config file ', CfgFileName]);
+    DebugLn(['using config file ', CfgFileName]);
     CfgFileContent := TStringListUTF8.Create;
     CfgFileContent.LoadFromFile(CfgFileName);
   end;
@@ -119,14 +119,18 @@ begin
   Cfg := GetCfgFileContent;
   if Cfg <> nil then begin
     Warn := '';
-    // insert Cfg at start. For duplicates the latest occurenc takes precedence
+    // insert Cfg at start. For duplicates the latest occurence takes precedence
     for i := 0 to Cfg.Count - 1 do begin
       s := Cfg[i];
       if (s <> '') and (s[1] = '-') then
         ParamsAndCfgFileContent.Add(Trim(Cfg[i]))
       else
-      if (s <> '') and (s[1] <> '#') then
-        Warn := Warn + s + LineEnding;
+      if (Trim(s) <> '') and (s[1] <> '#') then
+        Warn := Warn + IntToStr(i)+': ' + s + LineEnding;
+    end;
+    if Warn<>'' then begin
+      debugln('WARNING: invalid lines in lazarus.cfg:');
+      debugln(Warn);
     end;
   end;
 
