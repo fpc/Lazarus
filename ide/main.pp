@@ -1102,7 +1102,7 @@ var
   begin
     if TextRec(Output).Mode = fmClosed then
       // Note: do not use IDEMessageDialog here:
-      {}MessageDlg(lisInformation, AText, mtInformation, [mbOk],0)
+      Dialogs.MessageDlg(lisInformation, AText, mtInformation, [mbOk],0)
     else
       WriteLn(UTF8ToConsole(AText));
     Application.Terminate;
