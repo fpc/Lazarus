@@ -347,7 +347,7 @@ type
     FTermDict: TSynSearchTermDict;
     //FNextTermWIthSameWord: Array of Integer;
 
-    FFindInsertIndex: Integer;
+    FFindInsertIndex, FFindStartedAtIndex: Integer;
     FFindLineY: Integer;
     FFindLineText, FFindLineTextEnd, FFindLineTextLower, FFindLineTextLowerEnd: PChar;
     FBackward, FBackwardReplace: Boolean;
@@ -1364,7 +1364,7 @@ end;
 procedure TSynEditMarkupHighlightAllMulti.DoMatchFound(MatchEnd: PChar; MatchIdx: Integer;
   var IsMatch: Boolean; var StopSeach: Boolean);
 var
-  Len: Integer;
+  i, NextInsertIdx, Len: Integer;
   o: TSynSearchTerm;
   MatchBegin: PChar;
 begin
@@ -1405,24 +1405,53 @@ begin
     break;
   end;
 
-  IsMatch := MatchIdx >= 0;
-  if not IsMatch then
+  IsMatch := False; // Continue for longer match //MatchIdx >= 0;
+  if MatchIdx < 0 then
     exit;
 
-  if FBackwardReplace then begin
-    // Replace, only keep last match
-    FMatches.StartPoint[FFindInsertIndex] := Point(MatchBegin-FFindLineText+1, FFindLineY);
-    FMatches.EndPoint[FFindInsertIndex]   := Point(MatchBegin-FFindLineText+1+Len, FFindLineY);
+  NextInsertIdx := FFindInsertIndex;
+  if FBackwardReplace then
+    inc(NextInsertIdx); // because FFindInsertIndex was not increased;
+  i := NextInsertIdx;
+  if (NextInsertIdx > FFindStartedAtIndex) then begin
+    //only searching one line at a time. So only checking x
+    Assert(FFindLineY = FMatches.EndPoint[NextInsertIdx-1].Y);
+    While (i > FFindStartedAtIndex) and
+          (MatchBegin-FFindLineText+1 < FMatches.EndPoint[i-1].X)  // Starts within or before previous
+    do
+      dec(i);
+    if (i < NextInsertIdx) and (Len <= (FMatches.EndPoint[i].X - FMatches.StartPoint[i].X))
+    then
+      i := NextInsertIdx;
+  end;
+
+  if (i < NextInsertIdx) then begin
+    DebugLn(['Replacing match at idx=', i, ' Back:', FFindInsertIndex-i, ' y=', FFindLineY,
+             ' x1=', FMatches.StartPoint[i].X, ' x2=', MatchBegin-FFindLineText+1, ' with longer. Len=', Len]);
+    FMatches.StartPoint[i] := Point(MatchBegin-FFindLineText+1, FFindLineY);
+    FMatches.EndPoint[i]   := Point(MatchBegin-FFindLineText+1+Len, FFindLineY);
+    if i + 1 < FFindInsertIndex then
+      FMatches.Delete(i+1, FFindInsertIndex - (i + 1));
+    if not FBackward then
+      FFindInsertIndex := i + 1
+    else assert(i = FFindInsertIndex);
   end
-  else
-    FMatches.Insert(FFindInsertIndex,
-                    Point(MatchBegin-FFindLineText+1, FFindLineY),
-                    Point(MatchBegin-FFindLineText+1+Len, FFindLineY)
-                   );
-  if not FBackward then
-    inc(FFindInsertIndex)
-  else
-    FBackwardReplace := True;
+  else begin
+    if FBackwardReplace then begin
+      // Replace, only keep last match
+      FMatches.StartPoint[FFindInsertIndex] := Point(MatchBegin-FFindLineText+1, FFindLineY);
+      FMatches.EndPoint[FFindInsertIndex]   := Point(MatchBegin-FFindLineText+1+Len, FFindLineY);
+    end
+    else
+      FMatches.Insert(FFindInsertIndex,
+                      Point(MatchBegin-FFindLineText+1, FFindLineY),
+                      Point(MatchBegin-FFindLineText+1+Len, FFindLineY)
+                     );
+    if not FBackward then
+      inc(FFindInsertIndex)
+    else
+      FBackwardReplace := True;
+  end;
 end;
 
 procedure TSynEditMarkupHighlightAllMulti.SetTerms(AValue: TSynSearchTermDict);
@@ -1466,6 +1495,7 @@ var
 begin
   //debugln(['FindMatches IDX=', AIndex, ' Cnt=', Matches.Count, ' LCnt=', AEndPoint.y-AStartPoint.y , ' # ', FTerms[0].SearchTerm, ' # ',dbgs(AStartPoint),' - ',dbgs(AEndPoint), ' AStopAfterLine=',AStopAfterLine, ' Back=', dbgs(ABackward), '  ']);
   FFindInsertIndex := AIndex;
+  FFindStartedAtIndex := FFindInsertIndex;
   FBackward := ABackward; // Currently supports only finding a single match
 
   if ABackward then begin
@@ -1483,6 +1513,7 @@ begin
 
       if LineLen > 0 then begin
         FFindLineY := AEndPoint.Y;
+        FFindStartedAtIndex := FFindInsertIndex;
         FFindLineText := @LineText[1];
         FFindLineTextEnd := FFindLineText + LineLen;
         FFindLineTextLower := @LineTextLower[1];
@@ -1519,6 +1550,7 @@ begin
 
       if LineLen > 0 then begin
         FFindLineY := AStartPoint.Y;
+        FFindStartedAtIndex := FFindInsertIndex;
         FFindLineText := @LineText[1];
         FFindLineTextEnd := FFindLineText + LineLen;
         FFindLineTextLower := @LineTextLower[1];
