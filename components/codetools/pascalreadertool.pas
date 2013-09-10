@@ -1724,6 +1724,8 @@ var
 
 begin
   //debugln(['TPascalReaderTool.ForEachIdentifierInCleanSrc Node=',Node.DescAsString,' "',dbgstr(Src,StartPos,EndPos-StartPos),'"']);
+  if (StartPos<1) then
+    StartPos:=1;
   if StartPos>SrcLen then exit;
   if EndPos>SrcLen then EndPos:=SrcLen+1;
   if StartPos>=EndPos then exit;
