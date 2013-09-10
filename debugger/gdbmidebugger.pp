@@ -733,6 +733,7 @@ type
     property  PauseWaitState: TGDBMIPauseWaitState read FPauseWaitState;
     property  DebuggerFlags: TGDBMIDebuggerFlags read FDebuggerFlags;
     procedure DoRelease; override;   // Destroy self (or schedule)
+    procedure DoUnknownException(Sender: TObject; AnException: Exception);
 
     procedure DoNotifyAsync(Line: String);
     procedure DoDbgBreakpointEvent(ABreakpoint: TDBGBreakPoint; Location: TDBGLocationRec;
@@ -7246,6 +7247,41 @@ begin
   inherited DoRelease;
 end;
 
+procedure TGDBMIDebugger.DoUnknownException(Sender: TObject; AnException: Exception);
+var
+  I: Integer;
+  Frames: PPointer;
+  Report, Report2: string;
+begin
+  try
+    debugln(['ERROR: Exception occured in ',Sender.ClassName+': ',
+              AnException.ClassName, ' Msg="', AnException.Message, '" Addr=', dbgs(ExceptAddr),
+              ' Dbg.State=', dbgs(State)]);
+    Report :=  BackTraceStrFunc(ExceptAddr);
+    Report2 := Report;
+    Frames := ExceptFrames;
+    for I := 0 to ExceptFrameCount - 1 do begin
+      Report := Report + LineEnding + BackTraceStrFunc(Frames[I]);
+      if i < 5
+      then Report2 := Report;
+    end;
+  except
+  end;
+  debugln(Report);
+
+  if MessageDlg(gdbmiTheDebuggerExperiencedAnUnknownCondition,
+    Format(gdbmiPressIgnoreToContinueDebuggingThisMayNOTBeSafePres,
+    [LineEnding, AnException.ClassName, AnException.Message, Report2, Sender.ClassName, dbgs(State)]),
+    mtWarning, [mbIgnore, mbAbort], 0, mbAbort) = mrAbort
+  then begin
+    try
+      CancelAllQueued;
+    finally
+      Stop;
+    end;
+  end;
+end;
+
 procedure TGDBMIDebugger.AddThreadGroup(const S: String);
 var
   List: TGDBMINameValueList;
@@ -7429,6 +7465,7 @@ begin
   NestedCurrentCmd := FCurrentCommand;
   LockRelease;
   try
+  try
     repeat
       Cmd := FCommandQueue[0];
       if (Cmd.QueueRunLevel >= 0) and (Cmd.QueueRunLevel < FInExecuteCount)
@@ -7487,6 +7524,12 @@ begin
     UnlockRelease;
     FInExecuteCount := SavedInExecuteCount;
     FCurrentCommand := NestedCurrentCmd;
+  end;
+  except
+    On E: Exception do DoUnknownException(Self, E);
+    else
+      debugln(['ERROR: Exception occured in ',ClassName+': ',
+                '" Addr=', dbgs(ExceptAddr), ' Dbg.State=', dbgs(State)]);
   end;
 
   if (FCommandQueue.Count = 0) and assigned(OnIdle) and (FInExecuteCount=0) and (not FInIdle)
@@ -11109,10 +11152,6 @@ begin
 end;
 
 function TGDBMIDebuggerCommand.Execute: Boolean;
-var
-  I: Integer;
-  Frames: PPointer;
-  Report, Report2: string;
 begin
   // Set the state first, so DoExecute can set an error-state
   SetCommandState(dcsExecuting);
@@ -11122,35 +11161,11 @@ begin
     Result := DoExecute;
     DoOnExecuted;
   except
-    on e: Exception do begin
-      try
-        debugln(['ERROR: Exception occured in ',ClassName+'.DoExecute ',
-                  e.ClassName, ' Msg="', e.Message, '" Addr=', dbgs(ExceptAddr),
-                  ' Dbg.State=', dbgs(FTheDebugger.State)]);
-        Report :=  BackTraceStrFunc(ExceptAddr);
-        Report2 := Report;
-        Frames := ExceptFrames;
-        for I := 0 to ExceptFrameCount - 1 do begin
-          Report := Report + LineEnding + BackTraceStrFunc(Frames[I]);
-          if i < 5
-          then Report2 := Report;
-        end;
-      except
-      end;
-      debugln(Report);
 
-      if MessageDlg(gdbmiTheDebuggerExperiencedAnUnknownCondition,
-        Format(gdbmiPressIgnoreToContinueDebuggingThisMayNOTBeSafePres,
-        [LineEnding, e.ClassName, e.Message, Report2, ClassName, dbgs(FTheDebugger.State)]),
-        mtWarning, [mbIgnore, mbAbort], 0, mbAbort) = mrAbort
-      then begin
-        try
-          FTheDebugger.CancelAllQueued;
-        finally
-          FTheDebugger.Stop;
-        end;
-      end;
-    end;
+    On E: Exception do FTheDebugger.DoUnknownException(Self, E)
+    else
+      debugln(['ERROR: Exception occured in ',ClassName+'.DoExecute ',
+                '" Addr=', dbgs(ExceptAddr), ' Dbg.State=', dbgs(FTheDebugger.State)]);
   end;
   // No re-raise in the except block. So no try-finally required
   DoUnLockQueueExecute;
