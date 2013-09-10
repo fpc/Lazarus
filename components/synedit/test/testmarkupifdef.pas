@@ -1839,6 +1839,7 @@ procedure TTestMarkupIfDef.TestIfDefTreePeerConnect;
 
             // Maybe ifdef
             epMaybeIf := EpNil;
+            epMaybeIf^.NoAutoFree := True;
             if i3 >= 1 then begin
               n := n + 'Insert leading IFDEF';
               SynEdit.TextBetweenPoints[point(1, 1),point(1, 1)] := '{$IFDEF a}';
@@ -1848,9 +1849,10 @@ procedure TTestMarkupIfDef.TestIfDefTreePeerConnect;
                 CheckNodes(n+'ifdef', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
                 CheckNodes(n+'ifdef', 3, [ ExpN(21,28, idnElse,  EpIf(1,1), EpNil ) ]);
               end;
+              Dispose(epMaybeIf);
               epMaybeIf := EpIf(1,1);
+              epMaybeIf^.NoAutoFree := True;
             end;
-            epMaybeIf^.NoAutoFree := True;
 
             if (i2 and 1) = 0 then begin
               // 2nd before first
