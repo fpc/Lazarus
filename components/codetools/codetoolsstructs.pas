@@ -91,22 +91,22 @@ type
   TPointerToPointerTree = class
   private
     FTree: TAVLTree;// tree of PPointerToPointerItem
-    function GetItems(const Key: Pointer): Pointer;
-    procedure SetItems(const Key: Pointer; AValue: Pointer);
+    function GetItems(Key: Pointer): Pointer;
+    procedure SetItems(Key: Pointer; AValue: Pointer);
   protected
     procedure DisposeItem(p: PPointerToPointerItem); virtual;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear; virtual;
-    function Contains(const Key: Pointer): boolean;
-    procedure Remove(const Key: Pointer); virtual;
+    function Contains(Key: Pointer): boolean;
+    procedure Remove(Key: Pointer); virtual;
     property Tree: TAVLTree read FTree; // tree of PPointerToPointerItem
     function GetNodeData(AVLNode: TAVLTreeNode): PPointerToPointerItem; inline;
     function Count: integer;
-    function FindNode(const Key: Pointer): TAVLTreeNode;
-    procedure Add(const Key, Value: Pointer); virtual;
-    property Items[const Key: Pointer]: Pointer read GetItems write SetItems; default;
+    function FindNode(Key: Pointer): TAVLTreeNode;
+    procedure Add(Key, Value: Pointer); virtual;
+    property Items[Key: Pointer]: Pointer read GetItems write SetItems; default;
   end;
 
   TStringMap = class;
@@ -492,7 +492,7 @@ end;
 
 { TPointerToPointerTree }
 
-function TPointerToPointerTree.GetItems(const Key: Pointer): Pointer;
+function TPointerToPointerTree.GetItems(Key: Pointer): Pointer;
 var
   Node: TAVLTreeNode;
 begin
@@ -503,7 +503,7 @@ begin
     Result:=nil;
 end;
 
-procedure TPointerToPointerTree.SetItems(const Key: Pointer; AValue: Pointer);
+procedure TPointerToPointerTree.SetItems(Key: Pointer; AValue: Pointer);
 var
   Node: TAVLTreeNode;
   NewItem: PPointerToPointerItem;
@@ -521,7 +521,7 @@ end;
 
 procedure TPointerToPointerTree.DisposeItem(p: PPointerToPointerItem);
 begin
-  DisposeItem(p);
+  Dispose(p);
 end;
 
 constructor TPointerToPointerTree.Create;
@@ -548,12 +548,12 @@ begin
   FTree.Clear;
 end;
 
-function TPointerToPointerTree.Contains(const Key: Pointer): boolean;
+function TPointerToPointerTree.Contains(Key: Pointer): boolean;
 begin
   Result:=FindNode(Key)<>nil;
 end;
 
-procedure TPointerToPointerTree.Remove(const Key: Pointer);
+procedure TPointerToPointerTree.Remove(Key: Pointer);
 var
   Node: TAVLTreeNode;
   Item: PPointerToPointerItem;
@@ -577,12 +577,12 @@ begin
   Result:=FTree.Count;
 end;
 
-function TPointerToPointerTree.FindNode(const Key: Pointer): TAVLTreeNode;
+function TPointerToPointerTree.FindNode(Key: Pointer): TAVLTreeNode;
 begin
   Result:=FTree.FindKey(Key,@ComparePointerAndP2PItem);
 end;
 
-procedure TPointerToPointerTree.Add(const Key, Value: Pointer);
+procedure TPointerToPointerTree.Add(Key, Value: Pointer);
 begin
   Items[Key]:=Value;
 end;
