@@ -1652,6 +1652,7 @@ var
   TV: TTreeView;
   OldExpanded: TTreeNodeExpandedState;
   SrcEdit: TSourceEditorInterface;
+  SelPath: String;
 begin
   Exclude(FFlags,udwNeedUpdateAllUnitsTreeView);
   TV:=AllUnitsTreeView;
@@ -1661,6 +1662,10 @@ begin
     OldExpanded:=TTreeNodeExpandedState.Create(TV)
   else
     OldExpanded:=nil;
+  SelPath:='';
+  if TV.Selected<>nil then
+    SelPath:=TV.Selected.GetTextPath;
+  debugln(['TUnitDependenciesWindow.UpdateAllUnitsTreeView OLD=',SelPath]);
   // clear
   FreeAndNil(FAllUnitsRootUDNode);
   fAllUnitsTVSearchStartNode:=nil;
@@ -1675,8 +1680,13 @@ begin
   end;
   // update search
   UpdateAllUnitsTreeViewSearch;
-  // select a unit
-  if TV.Selected=nil then begin
+  // select an unit
+  if (TV.Selected=nil) and (SelPath<>'') then begin
+    TV.Selected:=TV.Items.FindNodeWithTextPath(SelPath);
+    if TV.Selected<>Nil then
+      debugln(['TUnitDependenciesWindow.UpdateAllUnitsTreeView NEW=',TV.Selected.GetTextPath]);
+  end;
+  if (TV.Selected=nil) then begin
     SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
     if SrcEdit<>nil then
       TV.Selected:=FindUnitTVNodeWithFilename(TV,SrcEdit.FileName);
