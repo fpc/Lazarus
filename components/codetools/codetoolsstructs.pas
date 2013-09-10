@@ -81,6 +81,34 @@ type
     destructor Destroy; override;
   end;
 
+  TPointerToPointerItem = record
+    Key, Value: Pointer;
+  end;
+  PPointerToPointerItem = ^TPointerToPointerItem;
+
+  { TPointerToPointerTree }
+
+  TPointerToPointerTree = class
+  private
+    FTree: TAVLTree;// tree of PPointerToPointerItem
+    function GetItems(const Key: Pointer): Pointer;
+    procedure SetItems(const Key: Pointer; AValue: Pointer);
+  protected
+    procedure DisposeItem(p: PPointerToPointerItem); virtual;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear; virtual;
+    function Contains(const Key: Pointer): boolean;
+    procedure Remove(const Key: Pointer); virtual;
+    property Tree: TAVLTree read FTree; // tree of PPointerToPointerItem
+    function GetNodeData(AVLNode: TAVLTreeNode): PPointerToPointerItem; inline;
+    function Count: integer;
+    function FindNode(const Key: Pointer): TAVLTreeNode;
+    procedure Add(const Key, Value: Pointer); virtual;
+    property Items[const Key: Pointer]: Pointer read GetItems write SetItems; default;
+  end;
+
   TStringMap = class;
 
   TStringMapItem = record
@@ -273,6 +301,10 @@ type
     property Root: TComponent read FRoot;
   end;
 
+
+function ComparePointerToPointerItems(Data1, Data2: Pointer): integer;
+function ComparePointerAndP2PItem(Key, Data: Pointer): integer;
+
 // case sensitive
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;
 function CompareStringAndStringToStringTreeItem(Key, Data: Pointer): integer;
@@ -300,6 +332,21 @@ function AVLFindPointer(Tree: TAVLTree; Data: Pointer): TAVLTreeNode; {$IFNDEF E
 procedure AVLRemovePointer(Tree: TAVLTree; Data: Pointer); {$IFNDEF EnableAVLFindPointerFix}inline;{$ENDIF}
 
 implementation
+
+function ComparePointerToPointerItems(Data1, Data2: Pointer): integer;
+var
+  P2PItem1: PPointerToPointerItem absolute Data1;
+  P2PItem2: PPointerToPointerItem absolute Data2;
+begin
+  Result:=ComparePointers(P2PItem1^.Key,P2PItem2^.Key);
+end;
+
+function ComparePointerAndP2PItem(Key, Data: Pointer): integer;
+var
+  P2PItem: PPointerToPointerItem absolute Data;
+begin
+  Result:=ComparePointers(Key,P2PItem^.Key);
+end;
 
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;
 begin
@@ -441,6 +488,103 @@ begin
   {$ELSE}
   Tree.RemovePointer(Data);
   {$ENDIF}
+end;
+
+{ TPointerToPointerTree }
+
+function TPointerToPointerTree.GetItems(const Key: Pointer): Pointer;
+var
+  Node: TAVLTreeNode;
+begin
+  Node:=FindNode(Key);
+  if Node<>nil then
+    Result:=PPointerToPointerItem(Node.Data)^.Value
+  else
+    Result:=nil;
+end;
+
+procedure TPointerToPointerTree.SetItems(const Key: Pointer; AValue: Pointer);
+var
+  Node: TAVLTreeNode;
+  NewItem: PPointerToPointerItem;
+begin
+  Node:=FindNode(Key);
+  if Node<>nil then begin
+    PPointerToPointerItem(Node.Data)^.Value:=AValue;
+  end else begin
+    New(NewItem);
+    NewItem^.Key:=Key;
+    NewItem^.Value:=AValue;
+    FTree.Add(NewItem);
+  end;
+end;
+
+procedure TPointerToPointerTree.DisposeItem(p: PPointerToPointerItem);
+begin
+  DisposeItem(p);
+end;
+
+constructor TPointerToPointerTree.Create;
+begin
+  FTree:=TMTAVLTree.Create(@ComparePointerToPointerItems);
+end;
+
+destructor TPointerToPointerTree.Destroy;
+begin
+  Clear;
+  FreeAndNil(FTree);
+  inherited Destroy;
+end;
+
+procedure TPointerToPointerTree.Clear;
+var
+  Node: TAVLTreeNode;
+begin
+  Node:=FTree.FindLowest;
+  while Node<>nil do begin
+    DisposeItem(PPointerToPointerItem(Node.Data));
+    Node:=FTree.FindSuccessor(Node);
+  end;
+  FTree.Clear;
+end;
+
+function TPointerToPointerTree.Contains(const Key: Pointer): boolean;
+begin
+  Result:=FindNode(Key)<>nil;
+end;
+
+procedure TPointerToPointerTree.Remove(const Key: Pointer);
+var
+  Node: TAVLTreeNode;
+  Item: PPointerToPointerItem;
+begin
+  Node:=FindNode(Key);
+  if Node<>nil then begin
+    Item:=PPointerToPointerItem(Node.Data);
+    FTree.Delete(Node);
+    DisposeItem(Item);
+  end;
+end;
+
+function TPointerToPointerTree.GetNodeData(AVLNode: TAVLTreeNode
+  ): PPointerToPointerItem;
+begin
+  Result:=PPointerToPointerItem(AVLNode.Data);
+end;
+
+function TPointerToPointerTree.Count: integer;
+begin
+  Result:=FTree.Count;
+end;
+
+function TPointerToPointerTree.FindNode(const Key: Pointer): TAVLTreeNode;
+begin
+  Result:=FTree.FindKey(Key,@ComparePointerAndP2PItem);
+end;
+
+procedure TPointerToPointerTree.Add(const Key, Value: Pointer);
+begin
+  Items[Key]:=Value;
 end;
 
 { TMTAVLTree }
@@ -716,7 +860,7 @@ begin
   if Node<>nil then begin
     Item:=PStringMapItem(Node.Data);
     FTree.Delete(Node);
-    Dispose(Item);
+    DisposeItem(Item);
   end;
 end;
 
@@ -846,7 +990,7 @@ begin
   if Node<>nil then
     Result:=PStringToStringTreeItem(Node.Data)^.Value
   else
-    Result:=''
+    Result:='';
 end;
 
 procedure TStringToStringTree.SetStrings(const s: string; const AValue: string);
