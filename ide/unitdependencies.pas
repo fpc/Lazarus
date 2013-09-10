@@ -189,7 +189,7 @@ type
   private
     FCurrentUnit: TUGUnit;
     FIdleConnected: boolean;
-    FPendingUnitDependencyPath: TStrings;
+    FPendingUnitDependencyRoute: TStrings;
     FUsesGraph: TUsesGraph;
     FGroups: TUGGroups; // referenced by Nodes.Data of GroupsLvlGraph
     FNewUsesGraph: TUsesGraph; // on idle the units are scanned and this graph
@@ -207,7 +207,8 @@ type
     fSelUnitsTVSearchStartNode: TTreeNode;
     function CreateAllUnitsTree: TUDNode;
     function CreateSelUnitsTree: TUDNode;
-    procedure ExpandPendingUnitDependencyPath(RootNode: TUDNode);
+    procedure ExpandPendingUnitDependencyRoute(RootNode: TUDNode);
+    procedure ConvertUnitNameRouteToPath(Route: TStrings); // inserts missing links
     procedure AddUsesSubNodes(UDNode: TUDNode);
     procedure CreateTVNodes(TV: TTreeView;
       ParentTVNode: TTreeNode; ParentUDNode: TUDNode; Expand: boolean);
@@ -226,7 +227,7 @@ type
     procedure CreateFPCSrcGroups;
     procedure GuessGroupOfUnits;
     procedure MarkCycles;
-    procedure SetPendingUnitDependencyPath(AValue: TStrings);
+    procedure SetPendingUnitDependencyRoute(AValue: TStrings);
     procedure StartParsing;
     procedure ScopeChanged;
     procedure AddStartAndTargetUnits;
@@ -264,7 +265,8 @@ type
     property UsesGraph: TUsesGraph read FUsesGraph;
     property Groups: TUGGroups read FGroups;
     property CurrentUnit: TUGUnit read FCurrentUnit write SetCurrentUnit;
-    property PendingUnitDependencyPath: TStrings read FPendingUnitDependencyPath write SetPendingUnitDependencyPath;
+    property PendingUnitDependencyRoute: TStrings read FPendingUnitDependencyRoute
+      write SetPendingUnitDependencyRoute; // list of unit names, missing links are automatically found
   end;
 
 type
@@ -374,7 +376,7 @@ begin
     Path.Add(UnitName1);
     Path.Add(UnitName2);
     Path.Add(UnitName1);
-    UnitDependenciesWindow.PendingUnitDependencyPath:=Path;
+    UnitDependenciesWindow.PendingUnitDependencyRoute:=Path;
   finally
     Path.Free;
   end;
@@ -459,7 +461,7 @@ end;
 
 procedure TUnitDependenciesWindow.FormCreate(Sender: TObject);
 begin
-  FPendingUnitDependencyPath:=TStringList.Create;
+  FPendingUnitDependencyRoute:=TStringList.Create;
   CreateUsesGraph(FUsesGraph,FGroups);
 
   fImgIndexProject   := IDEImages.LoadImage(16, 'item_project');
@@ -745,7 +747,7 @@ begin
   FreeUsesGraph;
   FreeAndNil(FNewGroups);
   FreeAndNil(FNewUsesGraph);
-  FreeAndNil(FPendingUnitDependencyPath);
+  FreeAndNil(FPendingUnitDependencyRoute);
 end;
 
 procedure TUnitDependenciesWindow.GroupsLvlGraphSelectionChanged(Sender: TObject
@@ -1143,11 +1145,11 @@ begin
 
 end;
 
-procedure TUnitDependenciesWindow.SetPendingUnitDependencyPath(AValue: TStrings
+procedure TUnitDependenciesWindow.SetPendingUnitDependencyRoute(AValue: TStrings
   );
 begin
-  if FPendingUnitDependencyPath.Equals(AValue) then Exit;
-  FPendingUnitDependencyPath.Assign(AValue);
+  if FPendingUnitDependencyRoute.Equals(AValue) then Exit;
+  FPendingUnitDependencyRoute.Assign(AValue);
   IdleConnected:=true;
 end;
 
@@ -1286,12 +1288,12 @@ begin
     SelTVNode:=SelTVNode.GetNextMultiSelected;
   end;
 
-  ExpandPendingUnitDependencyPath(RootNode);
+  ExpandPendingUnitDependencyRoute(RootNode);
 
   Result:=RootNode;
 end;
 
-procedure TUnitDependenciesWindow.ExpandPendingUnitDependencyPath(
+procedure TUnitDependenciesWindow.ExpandPendingUnitDependencyRoute(
   RootNode: TUDNode);
 var
   i: Integer;
@@ -1300,15 +1302,16 @@ var
   IntfUDNode: TUDNode;
   ParentUDNode: TUDNode;
 begin
-  if PendingUnitDependencyPath.Count=0 then exit;
+  if PendingUnitDependencyRoute.Count=0 then exit;
+  ConvertUnitNameRouteToPath(PendingUnitDependencyRoute);
   try
     ParentUDNode:=RootNode;
-    for i:=0 to PendingUnitDependencyPath.Count-1 do begin
-      CurUnitName:=PendingUnitDependencyPath[i];
+    for i:=0 to PendingUnitDependencyRoute.Count-1 do begin
+      CurUnitName:=PendingUnitDependencyRoute[i];
       UDNode:=ParentUDNode.FindUnit(CurUnitName);
       //debugln(['TUnitDependenciesWindow.ExpandPendingUnitDependencyPath CurUnitName="',CurUnitName,'" UDNode=',DbgSName(UDNode)]);
       if UDNode=nil then exit;
-      if i=PendingUnitDependencyPath.Count-1 then exit;
+      if i=PendingUnitDependencyRoute.Count-1 then exit;
       IntfUDNode:=UDNode.FindFirst(udnInterface);
       if IntfUDNode=nil then begin
         if UDNode.Count>0 then
@@ -1322,7 +1325,33 @@ begin
     end;
   finally
     // apply only once => clear pending
-    PendingUnitDependencyPath.Clear;
+    PendingUnitDependencyRoute.Clear;
+  end;
+end;
+
+procedure TUnitDependenciesWindow.ConvertUnitNameRouteToPath(Route: TStrings);
+var
+  UGUnitList: TFPList;
+  UGUnit: TUGUnit;
+  i: Integer;
+begin
+  if Route.Count<=1 then exit;
+  UGUnitList:=TFPList.Create;
+  try
+    // convert unit names to TUGUnit
+    for i:=0 to Route.Count-1 do begin
+      UGUnit:=FUsesGraph.FindUnit(Route[i]);
+      if UGUnit=nil then continue;
+      UGUnitList.Add(UGUnit);
+    end;
+    // insert missing links
+    FUsesGraph.InsertMissingLinks(UGUnitList);
+    // convert TUGUnit to unit names
+    Route.Clear;
+    for i:=0 to UGUnitList.Count-1 do
+      Route.Add(ExtractFileNameOnly(TUGUnit(UGUnitList[i]).Filename));
+  finally
+    UGUnitList.Free;
   end;
 end;
 
@@ -1856,8 +1885,8 @@ begin
   // update search
   UpdateAllUnitsTreeViewSearch;
   // select an unit
-  if PendingUnitDependencyPath.Count>0 then begin
-    TV.Selected:=FindUnitTVNodeWithUnitName(TV,PendingUnitDependencyPath[0]);
+  if PendingUnitDependencyRoute.Count>0 then begin
+    TV.Selected:=FindUnitTVNodeWithUnitName(TV,PendingUnitDependencyRoute[0]);
   end;
   if (TV.Selected=nil) and (SelPath<>'') then begin
     TV.Selected:=TV.Items.FindNodeWithTextPath(SelPath);

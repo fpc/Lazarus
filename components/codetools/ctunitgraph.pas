@@ -128,6 +128,7 @@ type
     function IsTargetDir(ExpDir: string): boolean;
 
     function FindShortestPath(StartUnit, EndUnit: TUGUnit): TFPList; // list of TUGUnit, nil if no path exists
+    function InsertMissingLinks(UGUnitList: TFPList): boolean;
 
     property FilesTree: TAVLTree read FFiles; // tree of TUGUnit sorted for Filename (all parsed)
     property QueuedFilesTree: TAVLTree read FQueuedFiles; // tree of TUGUnit sorted for Filename
@@ -629,15 +630,15 @@ begin
       CurUnit:=TUGUnit(Queue[0]);
       Queue.Delete(0);
       if CurUnit.UsedByUnits=nil then continue;
-      for i:=0 to CurUnit.UsesUnits.Count-1 do begin
+      for i:=0 to CurUnit.UsedByUnits.Count-1 do begin
         CurUses:=TUGUses(CurUnit.UsedByUnits[i]);
         if CurUses.InImplementation then continue;
-        UsesUnit:=CurUses.UsesUnit;
+        UsesUnit:=CurUses.Owner;
         if NodeToPrevNode.Contains(UsesUnit) then
           continue; // already visited
         NodeToPrevNode[UsesUnit]:=CurUnit;
         if UsesUnit=StartUnit then begin
-          // target found
+          // found StartUnit
           // => create list from StartUnit to EndUnit
           Result:=TFPList.Create;
           CurUnit:=StartUnit;
@@ -655,6 +656,30 @@ begin
   finally
     NodeToPrevNode.Free;
     Queue.Free;
+  end;
+end;
+
+function TUsesGraph.InsertMissingLinks(UGUnitList: TFPList): boolean;
+var
+  i,j: Integer;
+  StartUnit: TUGUnit;
+  EndUnit: TUGUnit;
+  CurList: TFPList;
+begin
+  Result:=true;
+  for i:=UGUnitList.Count-2 downto 0 do begin
+    StartUnit:=TUGUnit(UGUnitList[i]);
+    EndUnit:=TUGUnit(UGUnitList[i+1]);
+    CurList:=FindShortestPath(StartUnit,EndUnit);
+    if (CurList=nil) then begin
+      Result:=false;
+      continue;
+    end;
+    if CurList.Count>2 then begin
+      for j:=1 to CurList.Count-2 do
+        UGUnitList.Insert(i+j,CurList[j]);
+    end;
+    CurList.Free;
   end;
 end;
 
