@@ -1545,8 +1545,7 @@ destructor TCanvas.Destroy;
 begin
 //DebugLn('[TCanvas.Destroy] ',ClassName,'  Self=',DbgS(Self));
   Handle := 0;
-  if FClipRegion <> nil then {issue #24980 looks like TFPCustomCanvas bug}
-    FreeThenNil(FClipRegion);
+  FreeThenNil(FClipRegion); {issue #24980 looks like TFPCustomCanvas bug}
   FreeThenNil(FRegion);
   FreeThenNil(FSavedHandleStates);
   if FLock <> 0 then
