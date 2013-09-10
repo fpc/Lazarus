@@ -37,7 +37,7 @@ uses
   Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus, Clipbrd,
   LvlGraphCtrl,
   LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf,
-  IDEImagesIntf, IDECommands, IDEDialogs,
+  IDEImagesIntf, IDECommands, IDEDialogs, IDEMsgIntf, TextTools,
   CodeToolManager, DefineTemplates, CodeToolsStructs,
   CTUnitGraph, CTUnitGroupGraph, FileProcs, CodeCache,
   LazarusIDEStrConsts, UnusedUnitsDlg;
@@ -47,6 +47,14 @@ const
   GroupPrefixFPCSrc = 'FPC:';
   GroupNone = '-None-';
 type
+  TUDUnit = class(TUGUnit)
+  public
+  end;
+
+  TUDUses = class(TUGUses)
+  public
+  end;
+
   TUDNodeType = (
     udnNone,
     udnGroup,
@@ -82,6 +90,8 @@ type
     procedure Clear;
     function GetNode(aTyp: TUDNodeType; const ANodeText: string;
       CreateIfNotExists: boolean = false): TUDNode;
+    function FindFirst(aTyp: TUDNodeType): TUDNode;
+    function FindUnit(const aUnitName: string): TUDNode;
     function Count: integer;
   end;
 
@@ -179,6 +189,7 @@ type
   private
     FCurrentUnit: TUGUnit;
     FIdleConnected: boolean;
+    FPendingUnitDependencyPath: TStrings;
     FUsesGraph: TUsesGraph;
     FGroups: TUGGroups; // referenced by Nodes.Data of GroupsLvlGraph
     FNewUsesGraph: TUsesGraph; // on idle the units are scanned and this graph
@@ -196,6 +207,7 @@ type
     fSelUnitsTVSearchStartNode: TTreeNode;
     function CreateAllUnitsTree: TUDNode;
     function CreateSelUnitsTree: TUDNode;
+    procedure ExpandPendingUnitDependencyPath(RootNode: TUDNode);
     procedure AddUsesSubNodes(UDNode: TUDNode);
     procedure CreateTVNodes(TV: TTreeView;
       ParentTVNode: TTreeNode; ParentUDNode: TUDNode; Expand: boolean);
@@ -205,6 +217,7 @@ type
     function FindNextTVNode(StartNode: TTreeNode;
       LowerSearch: string; SearchNext, SkipStart: boolean): TTreeNode;
     function FindUnitTVNodeWithFilename(TV: TTreeView; aFilename: string): TTreeNode;
+    function FindUnitTVNodeWithUnitName(TV: TTreeView; aUnitName: string): TTreeNode;
     procedure SetCurrentUnit(AValue: TUGUnit);
     procedure SetIdleConnected(AValue: boolean);
     procedure CreateGroups;
@@ -212,6 +225,8 @@ type
     function CreatePackageGroup(APackage: TIDEPackage): TUGGroup;
     procedure CreateFPCSrcGroups;
     procedure GuessGroupOfUnits;
+    procedure MarkCycles;
+    procedure SetPendingUnitDependencyPath(AValue: TStrings);
     procedure StartParsing;
     procedure ScopeChanged;
     procedure AddStartAndTargetUnits;
@@ -240,13 +255,27 @@ type
     function ResStrFilter: string;
     function ResStrSearch: string;
     function NodeTextFitsFilter(const NodeText, LowerFilter: string): boolean;
+    procedure CreateUsesGraph(out TheUsesGraph: TUsesGraph; out TheGroups: TUGGroups);
   public
     GroupsLvlGraph: TLvlGraphControl; // Nodes.Data are TUGGroup of Groups
     UnitsLvlGraph: TLvlGraphControl; // Nodes.Data are Units in Groups
+  public
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     property UsesGraph: TUsesGraph read FUsesGraph;
     property Groups: TUGGroups read FGroups;
     property CurrentUnit: TUGUnit read FCurrentUnit write SetCurrentUnit;
+    property PendingUnitDependencyPath: TStrings read FPendingUnitDependencyPath write SetPendingUnitDependencyPath;
+  end;
+
+type
+
+  { TQuickFixCircularUnitReference }
+
+  TQuickFixCircularUnitReference = class(TIDEMsgQuickFixItem)
+  public
+    constructor Create;
+    function IsApplicable(Line: TIDEMessageLine): boolean; override;
+    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
 
 var
@@ -254,6 +283,7 @@ var
 
 procedure ShowUnitDependenciesClicked(Sender: TObject);
 procedure ShowUnitDependencies(Show, BringToFront: boolean);
+procedure InitUnitDependenciesQuickFixItems;
 
 function CompareUDBaseNodes(UDNode1, UDNode2: Pointer): integer;
 
@@ -272,6 +302,11 @@ begin
     IDEWindowCreators.ShowForm(UnitDependenciesWindow,BringToFront);
 end;
 
+procedure InitUnitDependenciesQuickFixItems;
+begin
+  RegisterIDEMsgQuickFix(TQuickFixCircularUnitReference.Create);
+end;
+
 function CompareUDBaseNodes(UDNode1, UDNode2: Pointer): integer;
 var
   Node1: TUDBaseNode absolute UDNode1;
@@ -282,6 +317,66 @@ begin
   case Node1.Typ of
   udnDirectory: Result:=CompareFilenames(Node1.NodeText,Node2.NodeText);
   else Result:=SysUtils.CompareText(Node1.NodeText,Node2.NodeText);
+  end;
+end;
+
+{ TQuickFixCircularUnitReference }
+
+constructor TQuickFixCircularUnitReference.Create;
+begin
+  Name:='Show unit dependencies';
+  Caption:='Show unit dependencies';
+  Steps:=[imqfoMenuItem];
+end;
+
+function TQuickFixCircularUnitReference.IsApplicable(Line: TIDEMessageLine
+  ): boolean;
+const
+  SearchStr = ') Fatal: Circular unit reference between ';
+var
+  Msg: String;
+  p: integer;
+  Code: TCodeBuffer;
+  Filename: string;
+  Caret: TPoint;
+begin
+  Result:=false;
+  if (Line.Parts=nil) then exit;
+  Msg:=Line.Msg;
+  p:=System.Pos(SearchStr,Msg);
+  if p<1 then exit;
+  inc(p,length(SearchStr));
+  Line.GetSourcePosition(Filename,Caret.Y,Caret.X);
+  if (Filename='') or (Caret.X<1) or (Caret.Y<1) then exit;
+  Code:=CodeToolBoss.LoadFile(Filename,true,false);
+  if Code=nil then exit;
+  Result:=true;
+end;
+
+procedure TQuickFixCircularUnitReference.Execute(const Msg: TIDEMessageLine;
+  Step: TIMQuickFixStep);
+var
+  UnitName1: String;
+  UnitName2: String;
+  Path: TStringList;
+begin
+  if Step<>imqfoMenuItem then exit;
+  if not REMatches(Msg.Msg,'Fatal: Circular unit reference between ([a-z_0-9.]+) and ([a-z_0-9.]+)','I')
+  then begin
+    debugln(['TQuickFixCircularUnitReference.Execute invalid message ',Msg.Msg]);
+    exit;
+  end;
+  UnitName1:=REVar(1);
+  UnitName2:=REVar(2);
+  ShowUnitDependencies(true,true);
+  Path:=TStringList.Create;
+  try
+    Path.Add(UnitName1);
+    Path.Add(UnitName2);
+    Path.Add(UnitName1);
+    UnitDependenciesWindow.PendingUnitDependencyPath:=Path;
+  finally
+    Path.Free;
   end;
 end;
 
@@ -327,6 +422,34 @@ begin
     Result:=nil;
 end;
 
+function TUDNode.FindFirst(aTyp: TUDNodeType): TUDNode;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=ChildNodes.FindLowest;
+  while AVLNode<>nil do begin
+    Result:=TUDNode(AVLNode.Data);
+    if Result.Typ=aTyp then exit;
+    AVLNode:=ChildNodes.FindSuccessor(AVLNode);
+  end;
+  Result:=nil;
+end;
+
+function TUDNode.FindUnit(const aUnitName: string): TUDNode;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=ChildNodes.FindLowest;
+  while AVLNode<>nil do begin
+    Result:=TUDNode(AVLNode.Data);
+    if (Result.Typ=udnUnit)
+    and (CompareText(ExtractFileNameOnly(Result.Identifier),aUnitName)=0) then
+      exit;
+    AVLNode:=ChildNodes.FindSuccessor(AVLNode);
+  end;
+  Result:=nil;
+end;
+
 function TUDNode.Count: integer;
 begin
   Result:=ChildNodes.Count;
@@ -336,8 +459,8 @@ end;
 
 procedure TUnitDependenciesWindow.FormCreate(Sender: TObject);
 begin
-  FUsesGraph:=CodeToolBoss.CreateUsesGraph;
-  FGroups:=TUGGroups.Create(FUsesGraph);
+  FPendingUnitDependencyPath:=TStringList.Create;
+  CreateUsesGraph(FUsesGraph,FGroups);
 
   fImgIndexProject   := IDEImages.LoadImage(16, 'item_project');
   fImgIndexUnit      := IDEImages.LoadImage(16, 'item_unit');
@@ -622,6 +745,7 @@ begin
   FreeUsesGraph;
   FreeAndNil(FNewGroups);
   FreeAndNil(FNewUsesGraph);
+  FreeAndNil(FPendingUnitDependencyPath);
 end;
 
 procedure TUnitDependenciesWindow.GroupsLvlGraphSelectionChanged(Sender: TObject
@@ -647,6 +771,8 @@ begin
       FNewGroups:=nil;
       // create Groups
       CreateGroups;
+      // mark cycles
+      MarkCycles;
       // hide progress bar and update stats
       ProgressBar1.Visible:=false;
       ProgressBar1.Style:=pbstNormal;
@@ -1012,6 +1138,19 @@ begin
   FreeAndNil(Owners);
 end;
 
+procedure TUnitDependenciesWindow.MarkCycles;
+begin
+
+end;
+
+procedure TUnitDependenciesWindow.SetPendingUnitDependencyPath(AValue: TStrings
+  );
+begin
+  if FPendingUnitDependencyPath.Equals(AValue) then Exit;
+  FPendingUnitDependencyPath.Assign(AValue);
+  IdleConnected:=true;
+end;
+
 procedure TUnitDependenciesWindow.StartParsing;
 begin
   if (FNewUsesGraph<>nil) or (udwParsing in FFlags) then
@@ -1024,8 +1163,7 @@ begin
   Timer1.Enabled:=true;
   RefreshButton.Enabled:=false;
 
-  FNewUsesGraph:=CodeToolBoss.CreateUsesGraph;
-  FNewGroups:=TUGGroups.Create(FNewUsesGraph);
+  CreateUsesGraph(FNewUsesGraph,FNewGroups);
 
   LazarusIDE.BeginCodeTools;
   AddStartAndTargetUnits;
@@ -1147,7 +1285,45 @@ begin
     end;
     SelTVNode:=SelTVNode.GetNextMultiSelected;
   end;
+
+  ExpandPendingUnitDependencyPath(RootNode);
+
   Result:=RootNode;
+end;
+
+procedure TUnitDependenciesWindow.ExpandPendingUnitDependencyPath(
+  RootNode: TUDNode);
+var
+  i: Integer;
+  CurUnitName: String;
+  UDNode: TUDNode;
+  IntfUDNode: TUDNode;
+  ParentUDNode: TUDNode;
+begin
+  if PendingUnitDependencyPath.Count=0 then exit;
+  try
+    ParentUDNode:=RootNode;
+    for i:=0 to PendingUnitDependencyPath.Count-1 do begin
+      CurUnitName:=PendingUnitDependencyPath[i];
+      UDNode:=ParentUDNode.FindUnit(CurUnitName);
+      //debugln(['TUnitDependenciesWindow.ExpandPendingUnitDependencyPath CurUnitName="',CurUnitName,'" UDNode=',DbgSName(UDNode)]);
+      if UDNode=nil then exit;
+      if i=PendingUnitDependencyPath.Count-1 then exit;
+      IntfUDNode:=UDNode.FindFirst(udnInterface);
+      if IntfUDNode=nil then begin
+        if UDNode.Count>0 then
+          exit; // already expanded -> has no interface
+        // expand
+        AddUsesSubNodes(UDNode);
+        IntfUDNode:=UDNode.FindFirst(udnInterface);
+        if IntfUDNode=nil then exit;
+      end;
+      ParentUDNode:=IntfUDNode;
+    end;
+  finally
+    // apply only once => clear pending
+    PendingUnitDependencyPath.Clear;
+  end;
 end;
 
 procedure TUnitDependenciesWindow.AddUsesSubNodes(UDNode: TUDNode);
@@ -1665,7 +1841,6 @@ begin
   SelPath:='';
   if TV.Selected<>nil then
     SelPath:=TV.Selected.GetTextPath;
-  debugln(['TUnitDependenciesWindow.UpdateAllUnitsTreeView OLD=',SelPath]);
   // clear
   FreeAndNil(FAllUnitsRootUDNode);
   fAllUnitsTVSearchStartNode:=nil;
@@ -1681,10 +1856,11 @@ begin
   // update search
   UpdateAllUnitsTreeViewSearch;
   // select an unit
+  if PendingUnitDependencyPath.Count>0 then begin
+    TV.Selected:=FindUnitTVNodeWithUnitName(TV,PendingUnitDependencyPath[0]);
+  end;
   if (TV.Selected=nil) and (SelPath<>'') then begin
     TV.Selected:=TV.Items.FindNodeWithTextPath(SelPath);
-    if TV.Selected<>Nil then
-      debugln(['TUnitDependenciesWindow.UpdateAllUnitsTreeView NEW=',TV.Selected.GetTextPath]);
   end;
   if (TV.Selected=nil) then begin
     SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
@@ -1759,6 +1935,24 @@ begin
       UDNode:=TUDNode(Result.Data);
       if (UDNode.Typ in [udnDirectory,udnUnit])
       and (CompareFilenames(UDNode.Identifier,aFilename)=0) then
+        exit;
+    end;
+  end;
+  Result:=nil;
+end;
+
+function TUnitDependenciesWindow.FindUnitTVNodeWithUnitName(TV: TTreeView;
+  aUnitName: string): TTreeNode;
+var
+  i: Integer;
+  UDNode: TUDNode;
+begin
+  for i:=0 to TV.Items.Count-1 do begin
+    Result:=TV.Items[i];
+    if TObject(Result.Data) is TUDNode then begin
+      UDNode:=TUDNode(Result.Data);
+      if (UDNode.Typ in [udnUnit])
+      and (CompareText(ExtractFileNameOnly(UDNode.Identifier),aUnitName)=0) then
         exit;
     end;
   end;
@@ -1886,6 +2080,15 @@ function TUnitDependenciesWindow.NodeTextFitsFilter(const NodeText,
   LowerFilter: string): boolean;
 begin
   Result:=Pos(LowerFilter,UTF8LowerCase(NodeText))>0;
+end;
+
+procedure TUnitDependenciesWindow.CreateUsesGraph(out TheUsesGraph: TUsesGraph;
+  out TheGroups: TUGGroups);
+begin
+  TheUsesGraph:=CodeToolBoss.CreateUsesGraph;
+  TheUsesGraph.UnitClass:=TUDUnit;
+  TheUsesGraph.UsesClass:=TUDUses;
+  TheGroups:=TUGGroups.Create(TheUsesGraph);
 end;
 
 {$R *.lfm}

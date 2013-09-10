@@ -2293,6 +2293,7 @@ begin
   InitCodeBrowserQuickFixItems;
   InitFindUnitQuickFixItems;
   InitInspectChecksumChangedQuickFixItems;
+  InitUnitDependenciesQuickFixItems;
   {$ENDIF}
 end;
 
