@@ -202,7 +202,7 @@ type
   TSynSearchDictionaryNode = record
     NextCharMin, NextCharMax: Byte; // if char > 128 then char := 128+256 - char // move utf8 continuation block
     ItemIdx: Integer;  // Node is in dictionary
-    NotFoundEntry: PSynSearchDictionaryNode;
+    NotFoundEntry, DictLink: PSynSearchDictionaryNode;
     NextEntry: Array [0..191] of PSynSearchDictionaryNode; // Max size 192, for utf8 start bytes
   end;
 
@@ -918,6 +918,21 @@ procedure TSynSearchDictionary.BuildDictionary;
         SetNotFoundNote(ANode^.NextEntry[i-m], ANodeValue + chr(i));
   end;
 
+  procedure FindDictLinks(ANode: PSynSearchDictionaryNode);
+  var
+    i, m: Integer;
+    NotFound: PSynSearchDictionaryNode;
+  begin
+    NotFound := ANode^.NotFoundEntry;
+    while (NotFound <> nil) and (NotFound^.ItemIdx < 0) do
+      NotFound := NotFound^.NotFoundEntry;
+    ANode^.DictLink := NotFound;
+
+    m := ANode^.NextCharMin;
+    for i := ANode^.NextCharMin to ANode^.NextCharMax do
+      if ANode^.NextEntry[i-m] <> nil then
+        FindDictLinks(ANode^.NextEntry[i-m]);
+  end;
 
 var
   i: Integer;
@@ -937,6 +952,7 @@ begin
 
   FRootNode := GetNodeForCharAt(0, FSortedList.Count - 1, 0);
   SetNotFoundNote(FRootNode, '');
+  FindDictLinks(FRootNode);
   FRootNode^.NotFoundEntry := nil;
 
   FSortedList.Clear;
@@ -992,7 +1008,8 @@ var
       DebugLn([AIndent, 'Node for "', APreFix, '":  ItemIdx=', ANode^.ItemIdx,
                ' Min=', FlipByte(ANode^.NextCharMin), ' Max=', FlipByte(ANode^.NextCharMax),
                ' At ', IntToHex(PtrUInt(ANode), 2*sizeof(PtrUInt)),
-               ' Not Found  ', IntToHex(PtrUInt(ANode^.NotFoundEntry), 2*sizeof(PtrUInt))
+               ' Not Found  ', IntToHex(PtrUInt(ANode^.NotFoundEntry), 2*sizeof(PtrUInt)),
+               ' Dict ', IntToHex(PtrUInt(ANode^.DictLink), 2*sizeof(PtrUInt))
                ]);
     j := ANode^.NextCharMin;
     ArrayLen := ArrayLen + ANode^.NextCharMax - ANode^.NextCharMin + 1;
@@ -1053,12 +1070,15 @@ end;
 function TSynSearchDictionary.Search(AText: PChar; ATextLen: Integer;
   AFoundEvent: TSynSearchDictFoundEvent): PChar;
 var
-  CurrentNode: PSynSearchDictionaryNode;
+  DictLink, CurrentNode: PSynSearchDictionaryNode;
   b, m: Integer;
   IsMatch, DoWork: Boolean;
   TextEnd: PChar;
+  HasNextNode: Boolean;
 begin
   Result := nil;
+  if AText = nil then
+    exit;
   if FList.Count = 0 then
     exit;
   if FRootNode = nil then
@@ -1067,12 +1087,60 @@ begin
   DoWork := True;
   CurrentNode := FRootNode;
   TextEnd := AText + ATextLen;
-  b := ord(AText^);
-  if b > 128 then b := 383 - b;
 
-  while true do begin
-    // CurrentNode is for (AText-1)^
-    // b is for AText^
+  Repeat
+    b := ord(AText^);
+    if b > 128 then b := 383 - b;
+    m := CurrentNode^.NextCharMin;
+    HasNextNode := (b >= m) and (b <= CurrentNode^.NextCharMax) and
+                   (CurrentNode^.NextEntry[b-m] <> nil);
+
+    if HasNextNode then begin
+      // DictLink, before going to next node
+      // If we do not have a next node, then we will continue with NotFoundEntry, so we do not need to test here (yet)
+      DictLink := CurrentNode^.DictLink;
+      if DictLink <> nil then begin
+        repeat
+        //while DictLink <> nil do begin
+          IsMatch := True;
+          Result := AText;
+          if Assigned(AFoundEvent) then
+            AFoundEvent(AText, DictLink^.ItemIdx, IsMatch, DoWork)
+          else
+            exit;
+          if not DoWork then
+            exit;
+          if IsMatch then
+            break;
+          DictLink := DictLink^.DictLink;
+        until DictLink = nil;
+        if IsMatch then begin
+          CurrentNode := FRootNode; // Do not do overlapping matches
+          continue;
+        end;
+      end;
+    end;
+
+    if HasNextNode then begin
+      if AText >= TextEnd then
+        break;
+      CurrentNode := CurrentNode^.NextEntry[b-m];                  // go on with next char
+      inc(AText);
+    end
+    else begin
+      CurrentNode := CurrentNode^.NotFoundEntry; // check current char again
+
+      if CurrentNode = nil then begin
+        if AText >= TextEnd then
+          break;
+        CurrentNode := FRootNode;
+        inc(AText);
+        Continue;
+      end;
+    end;
+
+
+    // Check match in CurrentNode;
     if CurrentNode^.ItemIdx >= 0 then begin
       IsMatch := True;
       Result := AText;
@@ -1086,29 +1154,7 @@ begin
         CurrentNode := FRootNode; // Do not do overlapping matches
     end;
 
-    m := CurrentNode^.NextCharMin;
-    if (b >= m) and (b <= CurrentNode^.NextCharMax) and
-       (CurrentNode^.NextEntry[b-m] <> nil)
-    then begin
-      CurrentNode := CurrentNode^.NextEntry[b-m];
-      inc(AText);
-      if AText > TextEnd then
-        exit;
-      b := ord(AText^);
-      if b > 128 then b := 383 - b;
-      continue;
-    end;
-
-    CurrentNode := CurrentNode^.NotFoundEntry;
-    if CurrentNode = nil then begin // last node was FRootNode;
-      CurrentNode := FRootNode;
-      inc(AText);
-      if AText > TextEnd then
-        break;
-      b := ord(AText^);
-      if b > 128 then b := 383 - b;
-    end;
-  end;
+  until False;
 end;
 
 function TSynSearchDictionary.GetMatchAtChar(AText: PChar; ATextLen: Integer;

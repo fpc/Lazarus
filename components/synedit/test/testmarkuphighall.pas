@@ -18,7 +18,8 @@ type
         p: PChar;
         l: Integer;
       end;
-    procedure DoDictMatch(Match: PChar; MatchLen: Integer; var IsMatch: Boolean;
+    FStopAtMatch, FNoMatchCount: Integer;
+    procedure DoDictMatch(Match: PChar; MatchIdx: Integer; var IsMatch: Boolean;
       var StopSeach: Boolean);
   protected
     //procedure SetUp; override; 
@@ -65,45 +66,106 @@ end;
 
 { TTestMarkupHighAll }
 
-procedure TTestMarkupHighAll.DoDictMatch(Match: PChar; MatchLen: Integer;
+procedure TTestMarkupHighAll.DoDictMatch(Match: PChar; MatchIdx: Integer;
   var IsMatch: Boolean; var StopSeach: Boolean);
 var
   i: Integer;
 begin
   i := length(FMatchList);
   SetLength(FMatchList, i+1);
-DebugLn([copy(Match, 1, MatchLen)]);
+DebugLn([copy(Match, 1, MatchIdx)]);
   FMatchList[i].p := Match;
-  FMatchList[i].l := MatchLen;
+  FMatchList[i].l := MatchIdx;
+  StopSeach := FStopAtMatch <> 0;
+  IsMatch   := FNoMatchCount <= 0;
+  dec(FStopAtMatch);
+  dec(FNoMatchCount);
 end;
 
 procedure TTestMarkupHighAll.TestDictionary;
 var
   Dict: TSynSearchDictionary;
-  i, j: Integer;
-  s: String;
+  Name, LineText: String;
+  Res1, Res2: PChar;
+
+  procedure InitTest(AName, ALineText: String; AStopAtMatch: Integer = -1; ANoMatchCount: Integer = 0);
+  begin
+    Name := AName + '[in: "'+ALineText+'", StopAt='+IntToStr(AStopAtMatch)+', NoMatchCnt='+IntToStr(ANoMatchCount)+']';
+    LineText := ALineText;
+    SetLength(FMatchList, 0);
+    FStopAtMatch := AStopAtMatch;
+    FNoMatchCount := ANoMatchCount;;
+    if LineText = '' then begin
+      Res1 := Dict.Search(nil, Length(LineText), nil);
+      Res2 := Dict.Search(nil, Length(LineText), @DoDictMatch);
+    end
+    else begin
+      Res1 := Dict.Search(@LineText[1], Length(LineText), nil);
+      Res2 := Dict.Search(@LineText[1], Length(LineText), @DoDictMatch);
+      //dict.GetMatchAtChar();
+    end;
+  end;
+
+  procedure CheckExp(ExpRes1, ExpRes2: Integer);
+  begin
+    if ExpRes1 = 0
+    then AssertTrue(Name+' Result (no event)', nil = Res1)
+    else if ExpRes1 > 0
+    then AssertEquals(Name+' Result (no event)', ExpRes1, Res1 - @LineText[1]);
+    if ExpRes2 = 0
+    then AssertTrue(Name+' Result (event)', nil = Res2)
+    else if ExpRes2 > 0
+    then AssertEquals(Name+' Result (event)', ExpRes2, Res2 - @LineText[1]);
+  end;
+
+  procedure CheckExp(AExpCount: Integer; AExpList: array of Integer);
+  var
+    i: Integer;
+  begin
+    AssertEquals(Name+' (len list)', AExpCount, Length(FMatchList));
+    for i := 0 to Length(AExpList) div 2 -1 do begin
+      AssertEquals(Name+' (start '+IntToStr(i)+')', AExpList[i*2], FMatchList[i].p - @LineText[1]);
+      AssertEquals(Name+' (len '+IntToStr(i)+')', AExpList[i*2+1], FMatchList[i].l);
+    end;
+  end;
+
+  procedure CheckExp(ExpRes1, ExpRes2, AExpCount: Integer; AExpList: array of Integer);
+  begin
+    CheckExp(ExpRes1, ExpRes2);
+    CheckExp(AExpCount, AExpList);
+  end;
+
+
+var
+  i: Integer;
 begin
   Dict := TSynSearchDictionary.Create;
   Dict.Add('debugln',1);
   Dict.Add('debuglnenter',2);
   Dict.Add('debuglnexit',3);
   Dict.Add('dbgout',4);
-
-  Dict.DebugPrint();
-
-
+  //Dict.DebugPrint();
   Dict.Free;
-exit;
+
 
   Dict := TSynSearchDictionary.Create;
-  Dict.Add('Hello', 0);
-  Dict.Add('hell', 0);
-  Dict.Add('hatter', 0);
-  Dict.Add('log', 0);
-  Dict.Add('lantern', 0);
-  Dict.Add('terminal', 0);
-  Dict.Add('all', 0);
-  Dict.Add('alt', 0);
+  Dict.Add('foo'       , 0);
+  Dict.Add('Hello'     , 1);
+  Dict.Add('yello12345', 2);
+  Dict.Add(   'lo123'  , 3);
+  Dict.Add(   'lo789'  , 4);
+  Dict.Add('hell'      , 5);
+  Dict.Add('hatter'    , 6);
+  Dict.Add('log'       , 7);
+  Dict.Add('lantern'   , 8);
+  Dict.Add('terminal'  , 9);
+  Dict.Add('all'       ,10);
+  Dict.Add('alt'       ,11);
+  Dict.Add('YESTERDAY' ,12);
+  Dict.Add(  'STER'    ,13);
+  Dict.Add(   'TE'     ,14);
+  Dict.Add(    'ER'    ,15);
+  Dict.Add(      'DAY' ,16);
 
 (*
 Dict.Add('Algoritmus', 0);
@@ -138,7 +200,7 @@ Dict.Add('Vyhledává', 0);
 Dict.Add('všechny', 0);
 Dict.Add('prvky', 0);
 Dict.Add('množiny', 0);
-Dict.Add('najednou', 0);
+Dict.Add('najednou', 0);2 pi *
 Dict.Add('jeho', 0);
 Dict.Add('asymptotická', 0);
 Dict.Add('složitost', 0);
@@ -303,10 +365,79 @@ Dict.Add('pak', 0);
 Dict.Add('uložit', 0);
 //*)
 
-  Dict.Search('aallhellxlog', 12, @DoDictMatch);
+  //Dict.Search('aallhellxlog', 12, nil);
+  //Dict.DebugPrint();
 
+  InitTest('Nothing to find: empty input', '', -1);
+  CheckExp(0, 0,  0, []);
+  InitTest('Nothing to find: short input', '@', -1);
+  CheckExp(0, 0,  0, []);
+  InitTest('Nothing to find: long  input', StringOfChar('#',100), -1);
+  CheckExp(0, 0,  0, []);
+
+  // result points to end of word (0 based)
+  // end, end, count, idx(from add)
+  InitTest('find hell', 'hell', 0);
+  CheckExp(4, 4,  1, [4, 5]);
+  InitTest('find hell', 'hell', -1);
+  CheckExp(4, 4,  1, [4, 5]);
+
+  InitTest('find hell', 'hell1');
+  CheckExp(4, 4,  1, [4, 5]);
+
+  InitTest('find hell', '2hell');
+  CheckExp(5, 5,  1, [5, 5]);
+
+  InitTest('find hell', '2hell1');
+  CheckExp(5, 5,  1, [5, 5]);
+
+  InitTest('find hell', 'hell hell'); // no event stops after 1st
+  CheckExp(4, 9,  2, [4, 5,   9, 5]);
+
+  InitTest('find hell', 'hellhell'); // no event stops after 1st
+  CheckExp(4, 8,  2, [4, 5,   8, 5]);
+
+  InitTest('find hell', 'hell hell', 0);
+  CheckExp(4, 4,  1, [4, 5]);
+
+  InitTest('find hell', 'hellog', -1, 0); // hell is match, log can not be found
+  CheckExp(4, 4,  1, [4, 5]);
+
+  InitTest('find log', 'hellog', -1, 1); // skip hell (still in list), find log
+  CheckExp(-1, 6,  2, [4, 5,  6, 7]);
+
+  InitTest('find hell', 'hehell', 0);
+  CheckExp(6, 6,  1, [6, 5]);
+
+  InitTest('find hell', 'thehell', 0);
+  CheckExp(7, 7,  1, [7, 5]);
+
+  InitTest('lantern', 'lantern');
+  CheckExp(7, 7,  1, [7, 8]);
+
+  InitTest('find terminal', 'lanterminal');
+  CheckExp(11, 11,  1, [11, 9]);
+
+  InitTest('find lo123', 'yello123AA');
+  CheckExp(8, 8,  1, [8, 3]);
+
+  InitTest('find lo123', 'yello1234AA');
+  CheckExp(8, 8,  1, [8, 3]);
+
+  InitTest('find yello12345 and lo123', 'yello12345AA', -1, 99);
+  CheckExp(-1, 10,  2, [8, 3,  10, 2]);
+
+  InitTest('find many', 'YESTERDAY', -1, 99);
+  CheckExp(-1, 9,  5, [{TE} 5, 14,  {STER} 6, 13,  {ER} 6, 15,  {YESTERDAY} 9, 12,  {DAY} 9, 16 ]);
+
+  InitTest('find many', 'YESTERDAY'); // restart after each match
+  CheckExp(-1, 9,  2, [{TE} 5, 14,  {DAY} 9, 16 ]);
+
+
+
+  Dict.Search('aallhellxlog', 12, @DoDictMatch);
   //Dict.BuildDictionary;
-  Dict.DebugPrint();
+  //Dict.DebugPrint();
 
   //Randomize;
   //Dict.Clear;
