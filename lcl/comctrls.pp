@@ -2895,6 +2895,7 @@ type
       Data: Pointer): TTreeNode;
     function FindNodeWithData(const NodeData: Pointer): TTreeNode;
     function FindNodeWithText(const NodeText: string): TTreeNode;
+    function FindNodeWithTextPath(TextPath: string): TTreeNode;
     function FindTopLvlNode(const NodeText: string): TTreeNode;
     function GetEnumerator: TTreeNodesEnumerator;
     function GetFirstNode: TTreeNode;

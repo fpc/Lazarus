@@ -2377,6 +2377,29 @@ begin
     Result := Result.GetNext;
 end;
 
+function TTreeNodes.FindNodeWithTextPath(TextPath: string): TTreeNode;
+var
+  p: SizeInt;
+  CurText: String;
+begin
+  Result:=nil;
+  repeat
+    p:=System.Pos('/',TextPath);
+    if p>0 then begin
+      CurText:=LeftStr(TextPath,p-1);
+      System.Delete(TextPath,1,p);
+    end else begin
+      CurText:=TextPath;
+      TextPath:='';
+    end;
+    //debugln(['TTreeNodes.FindNodeWithTextPath CurText=',CurText,' Rest=',TextPath]);
+    if Result=nil then
+      Result:=FindTopLvlNode(CurText)
+    else
+      Result:=Result.FindNode(CurText);
+  until (Result=nil) or (TextPath='');
+end;
+
 function TTreeNodes.FindNodeWithData(const NodeData: Pointer): TTreeNode;
 begin
   Result := GetFirstNode;
