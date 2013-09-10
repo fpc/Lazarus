@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, AVL_Tree, FileProcs, FindDeclarationTool, CodeBeautifier,
   CodeGraph, CodeCache, StdCodeTools, DirectoryCacher, LinkScanner,
-  CustomCodeTool, CodeTree, CodeAtom;
+  CustomCodeTool, CodeTree, CodeAtom, CodeToolsStructs;
 
 type
 
@@ -115,6 +115,7 @@ type
     procedure Clear;
     procedure ConsistencyCheck;
     function GetUnit(const ExpFilename: string; CreateIfNotExists: boolean): TUGUnit;
+    function FindUnit(const AnUnitName: string): TUGUnit; // slow
 
     procedure AddStartUnit(ExpFilename: string);
     procedure AddTargetUnit(ExpFilename: string);
@@ -125,6 +126,8 @@ type
     function GetCodeTreeUsingTargets: TAVLTree; // tree of TCodeBuffer sorted for filename
     function UnitCanFindTarget(ExpFilename: string): boolean;
     function IsTargetDir(ExpDir: string): boolean;
+
+    function FindShortestPath(StartUnit, EndUnit: TUGUnit): TFPList; // list of TUGUnit, nil if no path exists
 
     property FilesTree: TAVLTree read FFiles; // tree of TUGUnit sorted for Filename (all parsed)
     property QueuedFilesTree: TAVLTree read FQueuedFiles; // tree of TUGUnit sorted for Filename
@@ -298,6 +301,19 @@ begin
     FFiles.Add(Result);
   end else
     Result:=nil;
+end;
+
+function TUsesGraph.FindUnit(const AnUnitName: string): TUGUnit;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=FFiles.FindLowest;
+  while AVLNode<>nil do begin
+    Result:=TUGUnit(AVLNode.Data);
+    if CompareText(ExtractFileNameOnly(Result.Filename),AnUnitName)=0 then
+      exit;
+    AVLNode:=FFiles.FindSuccessor(AVLNode);
+  end;
 end;
 
 procedure TUsesGraph.AddStartUnit(ExpFilename: string);
@@ -589,6 +605,57 @@ begin
     end;
   until p>length(FTargetDirs);
   Result:=false;
+end;
+
+function TUsesGraph.FindShortestPath(StartUnit, EndUnit: TUGUnit): TFPList;
+// broad search first
+var
+  Queue: TFPList;
+  NodeToPrevNode: TPointerToPointerTree;
+  CurUnit: TUGUnit;
+  i: Integer;
+  CurUses: TUGUses;
+  UsesUnit: TUGUnit;
+  PrevUnit: TUGUnit;
+begin
+  Result:=nil;
+  if (StartUnit=nil) or (EndUnit=nil) then exit;
+  Queue:=TFPList.Create;
+  NodeToPrevNode:=TPointerToPointerTree.Create;
+  try
+    Queue.Add(EndUnit);
+    NodeToPrevNode[EndUnit]:=EndUnit; // set end marker
+    while Queue.Count>0 do begin
+      CurUnit:=TUGUnit(Queue[0]);
+      Queue.Delete(0);
+      if CurUnit.UsedByUnits=nil then continue;
+      for i:=0 to CurUnit.UsesUnits.Count-1 do begin
+        CurUses:=TUGUses(CurUnit.UsedByUnits[i]);
+        if CurUses.InImplementation then continue;
+        UsesUnit:=CurUses.UsesUnit;
+        if NodeToPrevNode.Contains(UsesUnit) then
+          continue; // already visited
+        NodeToPrevNode[UsesUnit]:=CurUnit;
+        if UsesUnit=StartUnit then begin
+          // target found
+          // => create list from StartUnit to EndUnit
+          Result:=TFPList.Create;
+          CurUnit:=StartUnit;
+          repeat
+            Result.Add(CurUnit);
+            PrevUnit:=TUGUnit(NodeToPrevNode[CurUnit]);
+            if PrevUnit=CurUnit then exit; // end marker found
+            CurUnit:=PrevUnit;
+          until false;
+          exit;
+        end;
+        Queue.Add(UsesUnit);
+      end;
+    end;
+  finally
+    NodeToPrevNode.Free;
+    Queue.Free;
+  end;
 end;
 
 end.
