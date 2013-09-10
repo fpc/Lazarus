@@ -1929,25 +1929,23 @@ begin
     Result := nil;
     repeat
       if (APersistent is TComponent) then begin
-        if TComponent(APersistent).Owner<>nil then
-          APersistent:=TComponent(APersistent).Owner
-        else
+        if TComponent(APersistent).Owner=nil then
           exit;
+        APersistent:=TComponent(APersistent).Owner
       end else if APersistent is TCollection then begin
-        if TCollection(APersistent).Owner<>nil then
-          APersistent:=TCollection(APersistent).Owner
-        else
+        if TCollection(APersistent).Owner=nil then
           exit;
+        APersistent:=TCollection(APersistent).Owner
       end else if APersistent is TCollectionItem then begin
-        if TCollectionItem(APersistent).Collection<>nil then
-          APersistent:=TCollectionItem(APersistent).Collection
-        else
+        if TCollectionItem(APersistent).Collection=nil then
           exit;
+        APersistent:=TCollectionItem(APersistent).Collection
+      end else if APersistent is TCustomForm then begin
+        Result := TCustomForm(APersistent);
+        exit;
       end else
         exit;
     until false;
-    if APersistent is TCustomForm then
-      Result := TCustomForm(APersistent);
   end;
 end;
 
