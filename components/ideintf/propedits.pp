@@ -1563,6 +1563,8 @@ function ClassTypeInfo(Value: TClass): PTypeInfo;
 function GetClassUnitName(Value: TClass): string;
 procedure CreateComponentEvent(AComponent: TComponent; const EventName: string);
 function ClassNameToComponentName(const AClassName: string): string;
+function ControlAcceptsStreamableChildComponent(aControl: TWinControl;
+  aComponentClass: TComponentClass; aLookupRoot: TPersistent): boolean;
 
 procedure LazSetMethodProp(Instance : TObject;PropInfo : PPropInfo; Value : TMethod);
 procedure WritePublishedProperties(Instance: TPersistent);
@@ -1679,7 +1681,8 @@ begin
   end;
 end;
 
-Procedure LazSetMethodProp(Instance : TObject;PropInfo : PPropInfo; Value : TMethod);
+procedure LazSetMethodProp(Instance: TObject; PropInfo: PPropInfo;
+  Value: TMethod);
 type
   PMethod = ^TMethod;
   TSetMethodProcIndex=procedure(index:longint;p:TMethod) of object;
@@ -6371,7 +6374,27 @@ begin
     System.Delete(Result,1,1);
 end;
 
-Function ClassTypeInfo(Value: TClass): PTypeInfo;
+function ControlAcceptsStreamableChildComponent(aControl: TWinControl;
+  aComponentClass: TComponentClass; aLookupRoot: TPersistent): boolean;
+begin
+  Result:=false;
+  if not (csAcceptsControls in aControl.ControlStyle) then exit;
+
+  // Because of TWriter, you can not put a control onto an
+  // csInline,csAncestor control (e.g. on a frame).
+  if ([csInline,csAncestor]*aControl.ComponentState<>[]) then exit;
+
+  if aComponentClass.InheritsFrom(TControl)
+  and not aControl.CheckChildClassAllowed(aComponentClass, False) then exit;
+
+  // TWriter only supports children of LookupRoot and LookupRoot.Components
+  if (aControl.Owner <> aLookupRoot) and (aControl <> aLookupRoot) then exit;
+
+  Result:=true;
+end;
+
+
+function ClassTypeInfo(Value: TClass): PTypeInfo;
 begin
   Result := PTypeInfo(Value.ClassInfo);
 end;

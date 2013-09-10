@@ -1881,15 +1881,11 @@ var
       else
         NewParentControl := WinControlAtPos(MouseUpPos.X, MouseUpPos.Y, true, true);
 
-      while (NewParentControl <> nil) and
-        ((not (csAcceptsControls in NewParentControl.ControlStyle)) or
-         (NewComponentClass.InheritsFrom(TControl) and not NewParentControl.CheckChildClassAllowed(NewComponentClass, False)) or
-         (csInline in NewParentControl.ComponentState) or // Because of TWriter, you can not put a control onto an csInline control (e.g. on a frame).
-         ((NewParentControl.Owner <> FLookupRoot) and
-          (NewParentControl <> FLookupRoot))) do
-      begin
+      while (NewParentControl <> nil)
+      and not ControlAcceptsStreamableChildComponent(NewParentControl,
+                                                  NewComponentClass,FLookupRoot)
+      do
         NewParentControl := NewParentControl.Parent;
-      end;
       NewParent := NewParentControl;
     end;
     if not Assigned(NewParent) then exit;

@@ -381,6 +381,7 @@ var
   AcceptControl, AcceptContainer: Boolean;
   InsertType: TTreeViewInsertMarkType;
   ParentNode: TTreeNode;
+  aLookupRoot: TPersistent;
 begin
   //debugln('TComponentTreeView.DragOver START ',dbgs(Accept));
 
@@ -389,6 +390,11 @@ begin
 
   GetComponentInsertMarkAt(X, Y, Node, InsertType);
   SetInsertMark(Node, InsertType);
+
+  if PropertyEditorHook<>nil then
+    aLookupRoot := PropertyEditorHook.LookupRoot
+  else
+    aLookupRoot := nil;
 
   // check new parent
   ParentNode := Node;
@@ -399,14 +405,9 @@ begin
     AnObject := TObject(ParentNode.Data);
     if (AnObject is TWinControl) then
     begin
-      if (csAcceptsControls in AControl.ControlStyle) and
-         // Because of TWriter, you can not put a control onto an csInline, csAncestor controls (e.g. on a frame or it child).
-         ([csInline, csAncestor] * AControl.ComponentState = []) and
-         ( // TReader/TWriter only supports this
-           (AControl.Owner = nil) or // root
-           (AControl.Owner.Owner = nil) // child of a root
-         ) then
-      begin
+      if ControlAcceptsStreamableChildComponent(TWinControl(AControl),
+         TComponentClass(AnObject.ClassType),aLookupRoot)
+      then begin
         AContainer := TPersistent(AnObject);
         //DebugLn(['TComponentTreeView.DragOver AContainer=',DbgSName(AContainer)]);
         AcceptContainer := True;
