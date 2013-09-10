@@ -612,7 +612,7 @@ end;
 procedure TUnitDependenciesWindow.AllUnitsFilterEditExit(Sender: TObject);
 begin
   if AllUnitsFilterEdit.Text='' then
-    AllUnitsFilterEdit.Text:=ResStrSearch;
+    AllUnitsFilterEdit.Text:=ResStrFilter;
 end;
 
 procedure TUnitDependenciesWindow.FormDestroy(Sender: TObject);
