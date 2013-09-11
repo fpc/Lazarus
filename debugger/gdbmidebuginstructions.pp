@@ -848,10 +848,8 @@ begin
       // If a nested readline reads all data, then the outer will have nothing to return.
 
       if (FCurrentInstruction = nil) or (FCurrentInstruction.IsCompleted) then begin
-        if s <> '' then begin
-          //Should not happen
+        if s <> '' then  // Should not happen
           DebugLn(DBG_VERBOSE, ['TGDB_IQ: Got Data, but command was finished. Cmd: ', ExeInstr.DebugText, ' Data: ', S]);
-        end;
         if not FDebugger.ReadLineWasAbortedByNested then
           DebugLn(DBG_VERBOSE, ['TGDB_IQ: Missing instruction. Not flagged as nested. Cmd: ', ExeInstr.DebugText, ' Data: ', S]);
         break;
@@ -862,6 +860,9 @@ begin
 
       Skip := False;
       HandleGdbDataBeforeInstruction(S, Skip, FCurrentInstruction);
+      // HandleGdbDataBeforeInstruction may execune other Instructions
+      if (FCurrentInstruction = nil) or (FCurrentInstruction.IsCompleted) then
+        break;
 
       if (not Skip) and
          ( (not FDebugger.ReadLineTimedOut) or (S <> '') )
