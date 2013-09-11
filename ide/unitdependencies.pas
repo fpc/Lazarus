@@ -1150,6 +1150,7 @@ procedure TUnitDependenciesWindow.SetPendingUnitDependencyRoute(AValue: TStrings
 begin
   if FPendingUnitDependencyRoute.Equals(AValue) then Exit;
   FPendingUnitDependencyRoute.Assign(AValue);
+  FFlags:=FFlags+[udwNeedUpdateAllUnitsTreeView,udwNeedUpdateSelUnitsTreeView];
   IdleConnected:=true;
 end;
 
