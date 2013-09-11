@@ -46,7 +46,7 @@ uses
   Dialogs, FileUtil, Laz2_XMLCfg, lazutf8classes, LazFileUtils, Graphics,
   ComCtrls, ExtCtrls, StdCtrls, DefineTemplates, CodeToolManager,
   TransferMacros, MacroDefIntf, LazarusIDEStrConsts, LazConf, EnvironmentOpts,
-  IDEProcs, AboutFrm;
+  IDEProcs, AboutFrm, IDETranslations;
   
 type
   TSDFilenameQuality = (
@@ -185,6 +185,7 @@ type
     FSelectingPage: boolean;
     FCandidates: array[TSDFilenameType] of TSDFileInfoList; // list of TSDFileInfo
     fSearchFpcSourceThread: TSearchFpcSourceThread;
+    procedure UpdateCaptions;
     procedure SelectPage(const NodeText: string);
     function SelectDirectory(aTitle: string): string;
     procedure StartFPCSrcThread;
@@ -209,6 +210,7 @@ type
     function QualityToImgIndex(Quality: TSDFilenameQuality): integer;
     procedure ShowHideScanControls(aShow: Boolean);
     procedure ThreadTerminated(Sender: TObject); // called in main thread by fSearchFpcSourceThread.OnTerminate
+    procedure TranslateResourceStrings;
   public
     TVNodeLazarus: TTreeNode;
     TVNodeCompiler: TTreeNode;
@@ -1343,13 +1345,7 @@ end;
 { TInitialSetupDialog }
 
 procedure TInitialSetupDialog.FormCreate(Sender: TObject);
-var
-  s: String;
 begin
-  Caption:=Format(lisWelcomeToLazarusIDE, [GetLazarusVersionString]);
-
-  StartIDEBitBtn.Caption:=lisStartIDE;
-
   LazarusTabSheet.Caption:='Lazarus';
   CompilerTabSheet.Caption:=lisCompiler;
   FPCSourcesTabSheet.Caption:=lisFPCSources;
@@ -1367,34 +1363,9 @@ begin
   ImgIDError := ImageList1.AddLazarusResource('state_error');
   ImgIDWarning := ImageList1.AddLazarusResource('state_warning');
 
-  LazDirBrowseButton.Caption:=lisPathEditBrowse;
-  LazDirLabel.Caption:=Format(
-    lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh, [PathDelim]);
-
-  CompilerBrowseButton.Caption:=lisPathEditBrowse;
-  CompilerLabel.Caption:=Format(lisTheFreePascalCompilerExecutableTypicallyHasTheName,
-    [DefineTemplates.GetDefaultCompilerFilename,
-     DefineTemplates.GetDefaultCompilerFilename(GetCompiledTargetCPU)]);
-
-  FPCSrcDirBrowseButton.Caption:=lisPathEditBrowse;
-  FPCSrcDirLabel.Caption:=Format(lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro,
-    [SetDirSeparators('rtl/linux/system.pp')]);
-  // Scanning the file system in search of FPC sources
-  ScanLabel.Caption := lisScanning;
-  StopScanButton.Caption:=lisStop;
   StopScanButton.LoadGlyphFromLazarusResource('menu_stop');
 
-  MakeExeBrowseButton.Caption:=lisPathEditBrowse;
-  MakeExeLabel.Caption:=Format(
-    lisTheMakeExecutableTypicallyHasTheName, ['make'+GetExecutableExt('')]);
-
-  DebuggerBrowseButton.Caption:=lisPathEditBrowse;
-  s:=Format(lisTheDebuggerExecutableTypicallyHasTheNamePleaseGive, [
-    'gdb'+GetExecutableExt]);
-  {$IFDEF Windows}
-  s+=' '+lisAUsefulSettingOnWindowsSystemsIsLazarusDirMingwBin;
-  {$ENDIF}
-  DebuggerLabel.Caption:=s;
+  UpdateCaptions;
 
   Application.AddOnActivateHandler(@OnAppActivate);
 end;
@@ -1636,6 +1607,54 @@ begin
     UpdateDebuggerNote;
   end else
     IdleConnected:=false;
+end;
+
+procedure TInitialSetupDialog.UpdateCaptions;
+var
+  s: String;
+begin
+  Caption:=Format(lisWelcomeToLazarusIDE, [GetLazarusVersionString]);
+
+  StartIDEBitBtn.Caption:=lisStartIDE;
+
+  LazarusTabSheet.Caption:='Lazarus';
+  CompilerTabSheet.Caption:=lisCompiler;
+  FPCSourcesTabSheet.Caption:=lisFPCSources;
+  MakeExeTabSheet.Caption:='Make';
+  DebuggerTabSheet.Caption:=lisDebugger;
+
+  TVNodeLazarus.Text:=LazarusTabSheet.Caption;
+  TVNodeCompiler.Text:=CompilerTabSheet.Caption;
+  TVNodeFPCSources.Text:=FPCSourcesTabSheet.Caption;
+  TVNodeMakeExe.Text:=MakeExeTabSheet.Caption;
+  TVNodeDebugger.Text:=DebuggerTabSheet.Caption;
+
+  LazDirBrowseButton.Caption:=lisPathEditBrowse;
+  LazDirLabel.Caption:=Format(
+    lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh, [PathDelim]);
+
+  CompilerBrowseButton.Caption:=lisPathEditBrowse;
+  CompilerLabel.Caption:=Format(lisTheFreePascalCompilerExecutableTypicallyHasTheName,
+    [DefineTemplates.GetDefaultCompilerFilename,
+     DefineTemplates.GetDefaultCompilerFilename(GetCompiledTargetCPU)]);
+
+  FPCSrcDirBrowseButton.Caption:=lisPathEditBrowse;
+  FPCSrcDirLabel.Caption:=Format(lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro,
+    [SetDirSeparators('rtl/linux/system.pp')]);
+  ScanLabel.Caption := lisScanning;
+  StopScanButton.Caption:=lisStop;
+
+  MakeExeBrowseButton.Caption:=lisPathEditBrowse;
+  MakeExeLabel.Caption:=Format(
+    lisTheMakeExecutableTypicallyHasTheName, ['make'+GetExecutableExt('')]);
+
+  DebuggerBrowseButton.Caption:=lisPathEditBrowse;
+  s:=Format(lisTheDebuggerExecutableTypicallyHasTheNamePleaseGive, [
+    'gdb'+GetExecutableExt]);
+  {$IFDEF Windows}
+  s+=' '+lisAUsefulSettingOnWindowsSystemsIsLazarusDirMingwBin;
+  {$ENDIF}
+  DebuggerLabel.Caption:=s;
 end;
 
 procedure TInitialSetupDialog.SelectPage(const NodeText: string);
@@ -2025,6 +2044,14 @@ begin
   ShowHideScanControls(false);
 end;
 
+procedure TInitialSetupDialog.TranslateResourceStrings;
+begin
+  IDETranslations.TranslateResourceStrings(
+                           EnvironmentOptions.GetParsedLazarusDirectory,
+                           EnvironmentOptions.LanguageID);
+  UpdateCaptions;
+end;
+
 procedure TInitialSetupDialog.Init;
 var
   Node: TTreeNode;
@@ -2072,6 +2099,8 @@ begin
     Candidate:=GetFirstCandidate(FCandidates[sddtLazarusSrcDir]);
     if Candidate<>nil then
       EnvironmentOptions.LazarusDirectory:=Candidate.Caption;
+    if FileExistsCached(EnvironmentOptions.GetParsedLazarusDirectory) then
+      TranslateResourceStrings;
   end;
   LazDirComboBox.Text:=EnvironmentOptions.LazarusDirectory;
   FLastParsedLazDir:='. .';

@@ -68,13 +68,13 @@ type
   PPOFile = ^TPOFile;
   
 // translate all resource strings
-procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
+procedure TranslateResourceStrings(const LazarusDir, CustomLang: string);
 
 // get language name for ID
 function GetLazarusLanguageLocalizedName(const ID: string): String;
 
 // collect all available translations
-procedure CollectTranslations(const LazarusDir: string);
+procedure CollectTranslations(const LazarusDir: string); // this updates LazarusTranslations
 
 function ConvertRSTFiles(RSTDirectory, PODirectory: string;
   POFilename: string = '' // set POFilename to gather all rst into one po file
@@ -87,7 +87,7 @@ function FindTranslatedPoFiles(const BasePOFilename: string): TStringList;
 procedure UpdateTranslatedPoFile(const BasePOFile: TPOFile; TranslatedFilename: string);
 
 var
-  LazarusTranslations: TLazarusTranslations = nil;
+  LazarusTranslations: TLazarusTranslations = nil; // see CollectTranslations
   SystemLanguageID1, SystemLanguageID2: string;
 
 implementation
@@ -432,15 +432,14 @@ end;
     - gdbmidebugger.pp
     - debuggerstrconst.pp
 -------------------------------------------------------------------------------}
-procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
+procedure TranslateResourceStrings(const LazarusDir, CustomLang: string);
 const
   Ext = '.%s.po';
 var
   Lang, FallbackLang: String;
   Dir: String;
 begin
-  //debugln('TranslateResourceStrings A CustomLang=',CustomLang);
-  if LazarusTranslations=nil then CollectTranslations(BaseDirectory);
+  if LazarusTranslations=nil then CollectTranslations(LazarusDir);
   if CustomLang='' then begin
     Lang:=SystemLanguageID1;
     FallbackLang:=SystemLanguageID2;
@@ -448,8 +447,8 @@ begin
     Lang:=CustomLang;
     FallbackLang:='';
   end;
-  //debugln('TranslateResourceStrings A Lang=',Lang,' FallbackLang=',FallbackLang);
-  Dir:=AppendPathDelim(BaseDirectory);
+  debugln('TranslateResourceStrings A Lang=',Lang,' FallbackLang=',FallbackLang);
+  Dir:=AppendPathDelim(LazarusDir);
   // IDE
   TranslateUnitResourceStrings('LazarusIDEStrConsts',
     Dir+'languages/lazaruside'+Ext,Lang,FallbackLang);
@@ -459,6 +458,9 @@ begin
   // Debugger GUI
   TranslateUnitResourceStrings('DebuggerStrConst',
     Dir+'languages/debuggerstrconst'+Ext,Lang,FallbackLang);
+  // LCL
+  TranslateUnitResourceStrings('LCLStrConsts',
+    Dir+'lcl/languages/lclstrconsts'+Ext,Lang,FallbackLang);
 end;
 
 { TLazarusTranslations }

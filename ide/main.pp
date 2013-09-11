@@ -1283,7 +1283,6 @@ begin
     end;
 
 
-
     if Application.HasOption('language') then
     begin
       debugln('TMainIDE.LoadGlobalOptions overriding language with command line: ',
