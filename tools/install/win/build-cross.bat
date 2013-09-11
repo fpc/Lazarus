@@ -222,6 +222,9 @@ if [%BUILDLAZRELEASE%]==[] SET OutputFileName=lazarus-%LAZVERSION%-%LAZREVISION%
 
 SET OutputFileName=%OutputFileName::=_%
 
+:: %LAZBUILD_HOOK_DIR% is a directory, that can contain scripts to be hooked into the build process. Further hooks can be defined the same way
+if not [%LAZBUILD_HOOK_DIR%]==[] if exist %LAZBUILD_HOOK_DIR%\lazhook_before_iscc.bat call %LAZBUILD_HOOK_DIR%\lazhook_cross_before_iscc.bat
+
 %ISCC% lazarus-cross.iss 
 
 :CLEANUP

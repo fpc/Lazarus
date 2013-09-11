@@ -184,6 +184,9 @@ if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LA
 :GO_ON
 SET OutputFileName=%OutputFileName::=_%
 
+:: %LAZBUILD_HOOK_DIR% is a directory, that can contain scripts to be hooked into the build process. Further hooks can be defined the same way
+if not [%LAZBUILD_HOOK_DIR%]==[] if exist %LAZBUILD_HOOK_DIR%\lazhook_before_iscc.bat call %LAZBUILD_HOOK_DIR%\lazhook_before_iscc.bat
+
 %ISCC% lazarus.iss >> installer.log
 
 :: do not delete build dir, if installer failed.
