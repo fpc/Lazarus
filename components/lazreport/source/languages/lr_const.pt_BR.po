@@ -8,6 +8,7 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
@@ -784,7 +785,7 @@ msgstr "Forçar nova página"
 
 #: lr_const.sfrdesignerexists
 msgid "You already have one TfrDesigner component"
-msgstr ""
+msgstr "Você já tem um componente TfrDesigner"
 
 #: lr_const.sfrdesignerformaddpg
 msgctxt "lr_const.sfrdesignerformaddpg"
@@ -1087,7 +1088,7 @@ msgstr "&Enviar para trás"
 
 #: lr_const.sfrdesignerform_beforeprintscript
 msgid "&Before print script ..."
-msgstr ""
+msgstr "A&ntes do script de impressão ..."
 
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"

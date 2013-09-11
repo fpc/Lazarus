@@ -6,8 +6,9 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: maincalleditor.ceractivereport
 msgid "Active report: %s"
@@ -184,7 +185,7 @@ msgstr "Miniaturas"
 
 #: tfrmmain.btnexportlast.caption
 msgid "Repeat Export"
-msgstr ""
+msgstr "Repetir Exportação"
 
 #: tfrmmain.btnmasterdetail.caption
 msgid "Master-Detail Test"
@@ -215,4 +216,3 @@ msgstr "Testes"
 #: tfrmmain.menuitem9.caption
 msgid "Export"
 msgstr "Exportar"
-

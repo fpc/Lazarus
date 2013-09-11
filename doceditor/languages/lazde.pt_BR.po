@@ -8,6 +8,7 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: lazdemsg.saboutformcaption
 msgid "About this application"
@@ -27,7 +28,7 @@ msgstr "Selecionae um novo arquivo descrição"
 
 #: lazdemsg.sadditionalparams
 msgid "Additional parameters for fpdoc"
-msgstr ""
+msgstr "Parâmetros adicionais para fpdoc"
 
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
@@ -164,10 +165,9 @@ msgid " in package "
 msgstr "no pacote"
 
 #: lazdemsg.sfortopic
-#, fuzzy
 #| msgid " in topic"
 msgid " in topic "
-msgstr "no tópico"
+msgstr " no tópico"
 
 #: lazdemsg.shideprotectedmethods
 msgid "&Hide protected methods"
@@ -233,7 +233,7 @@ msgstr "Variável"
 #: lazdemsg.shintinsertbulletedlist
 msgctxt "lazdemsg.shintinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr ""
+msgstr "Inserir lista com marcadores"
 
 #: lazdemsg.shintinsertelement
 msgctxt "lazdemsg.shintinsertelement"
@@ -253,7 +253,7 @@ msgstr "Novo módulo"
 #: lazdemsg.shintinsertnumberedlist
 msgctxt "lazdemsg.shintinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr ""
+msgstr "Inserir lista numerada"
 
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
@@ -275,10 +275,9 @@ msgid "New topic"
 msgstr "Novo tópico"
 
 #: lazdemsg.shintmenunewfromfile
-#, fuzzy
 #| msgid "New from file..."
 msgid "New from file ..."
-msgstr "Novo do arquivo..."
+msgstr "Novo do arquivo ..."
 
 #: lazdemsg.shinttoolbaradd
 msgid "Add"
@@ -308,11 +307,11 @@ msgstr "Importar arquivo conteúdo"
 #: lazdemsg.sinsertbulletedlist
 msgctxt "lazdemsg.sinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr ""
+msgstr "Inserir lista com marcadores"
 
 #: lazdemsg.sinsertexamplecode
 msgid "Insert example code"
-msgstr ""
+msgstr "Inserir código de exemplo"
 
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
@@ -322,7 +321,7 @@ msgstr "Inserir vínculo"
 #: lazdemsg.sinsertnumberedlist
 msgctxt "lazdemsg.sinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr ""
+msgstr "Inserir lista numerada"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
@@ -343,11 +342,11 @@ msgstr " vinculado à"
 
 #: lazdemsg.slinktarget
 msgid "Link target"
-msgstr ""
+msgstr "Vincular alvo"
 
 #: lazdemsg.slinktext
 msgid "Link text"
-msgstr ""
+msgstr "Vincular texto"
 
 #: lazdemsg.sload
 msgid "&Load"
@@ -468,10 +467,9 @@ msgid "&Help"
 msgstr "&Ajuda"
 
 #: lazdemsg.smenuhelpabout
-#, fuzzy
 #| msgid "&About..."
 msgid "&About ..."
-msgstr "&Sobre..."
+msgstr "&Sobre ..."
 
 #: lazdemsg.smenuinsert
 msgid "&Insert"
@@ -480,7 +478,7 @@ msgstr "&Inserir"
 #: lazdemsg.smenuinsertbulletedlist
 msgctxt "lazdemsg.smenuinsertbulletedlist"
 msgid "Bulleted list"
-msgstr ""
+msgstr "Lista com marcadores"
 
 #: lazdemsg.smenuinsertelement
 msgid "&Element"
@@ -492,7 +490,7 @@ msgstr "&Vínculo"
 
 #: lazdemsg.smenuinsertlist
 msgid "List"
-msgstr ""
+msgstr "Lista"
 
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
@@ -501,7 +499,7 @@ msgstr "&Módulo"
 #: lazdemsg.smenuinsertnumberedlist
 msgctxt "lazdemsg.smenuinsertnumberedlist"
 msgid "Numbered list"
-msgstr ""
+msgstr "Lista numerada"
 
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
@@ -571,7 +569,7 @@ msgstr "Novo tópico"
 
 #: lazdemsg.snodename
 msgid "Node name"
-msgstr ""
+msgstr "Nome do nó"
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -673,7 +671,7 @@ msgstr "&Salvar"
 
 #: lazdemsg.ssavebeforebuildquestion
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
-msgstr ""
+msgstr "Você tem alterações não salvas em  \"%s\".%sElas devem ser salvas de maneira a serem visíveis na documentação construída. Salvar?"
 
 #: lazdemsg.sseealso
 msgid "See Also"
@@ -717,15 +715,15 @@ msgstr "Elemento inicial \"%s\" não encontrado"
 
 #: lazdemsg.stablecols
 msgid "Columns"
-msgstr ""
+msgstr "Colunas"
 
 #: lazdemsg.stableheader
 msgid "Use header row"
-msgstr ""
+msgstr "Usar linha de cabeçalho"
 
 #: lazdemsg.stablerows
 msgid "Rows"
-msgstr ""
+msgstr "Linhas"
 
 #: lazdemsg.stargetos
 msgid "Target OS"

@@ -8,6 +8,7 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
@@ -51,7 +52,7 @@ msgstr "Definição anônima %s não é permitida"
 
 #: codetoolsstrconsts.ctsawithoutb
 msgid "%s without %s"
-msgstr "% sem %s"
+msgstr "%s sem %s"
 
 #: codetoolsstrconsts.ctsbasetypeofnotfound
 msgid "base type of \"%s\" not found"
@@ -340,7 +341,7 @@ msgstr "esperado \"%s\""
 
 #: codetoolsstrconsts.ctsexpectedamethodtypebutfound
 msgid "expected a method type, but found %s"
-msgstr ""
+msgstr "esperado um tipo método, mas encontrado %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
@@ -650,7 +651,7 @@ msgstr "Projeto %s"
 
 #: codetoolsstrconsts.ctsneededbymode
 msgid " (needed by mode \"%s\")"
-msgstr ""
+msgstr " (requerido pelo modo \"%s\")"
 
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
@@ -811,10 +812,9 @@ msgid "source is not unit"
 msgstr "fonte não é uma unidade"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#, fuzzy
 #| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
-msgstr "fonte não encontrado: unidade %s"
+msgstr "fonte não encontrado: unidade %s. Verifique o seu diretório dos fontes FPC."
 
 #: codetoolsstrconsts.ctssourceofunitnotfound
 msgid "source of unit not found: %s"

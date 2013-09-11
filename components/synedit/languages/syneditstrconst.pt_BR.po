@@ -8,10 +8,11 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
-msgstr ""
+msgstr "Anotação"
 
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
@@ -99,7 +100,7 @@ msgstr "Diretiva"
 
 #: syneditstrconst.syns_attrdoctype
 msgid "DOCTYPE"
-msgstr ""
+msgstr "DOCTYPE"
 
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
@@ -422,8 +423,10 @@ msgid "Whitespace"
 msgstr "Espaço branco"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
-msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr "A sequência de teclas \"%s\" está atribuída a outro comando do editor. (%s)"
+msgid ""
+"The keystroke \"%s\" is already assigned to another editor command. (%s)"
+msgstr ""
+"A sequência de teclas \"%s\" está atribuída a outro comando do editor. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
 msgid "Mouse-Shortcut already exists"
@@ -459,7 +462,8 @@ msgstr "Menu Popup"
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
-msgstr "\"Mover marca, quando existir seleção\", Nunca, \"Clicar fora\", Sempre"
+msgstr ""
+"\"Mover marca, quando existir seleção\", Nunca, \"Clicar fora\", Sempre"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
@@ -515,15 +519,15 @@ msgstr "Seleção"
 
 #: syneditstrconst.syns_emcstartselectlines
 msgid "Selection (lines)"
-msgstr ""
+msgstr "Seleção (linhas)"
 
 #: syneditstrconst.syns_emcstartselecttokens
 msgid "Selection (tokens) "
-msgstr ""
+msgstr "Seleção (símbolos)"
 
 #: syneditstrconst.syns_emcstartselectwords
 msgid "Selection (words)"
-msgstr ""
+msgstr "Seleção (palavras)"
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
@@ -547,7 +551,9 @@ msgstr "Roda, rolar para cima"
 
 #: syneditstrconst.syns_emcwheelscroll_opt
 msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
-msgstr "Velocidade, \"Definições de sistema\",Linhas,Páginas,\"Páginas (menos uma linha)\""
+msgstr ""
+"Velocidade, \"Definições de sistema\",Linhas,Páginas,\"Páginas (menos uma "
+"linha)\""
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"
@@ -754,8 +760,10 @@ msgid "x86 Assembly Files (*.asm)|*.ASM"
 msgstr "Arquivos Assembly x86 (*.asm)|*.ASM"
 
 #: syneditstrconst.syns_filterxml
-msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
-msgstr "Documento XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgid ""
+"XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgstr ""
+"Documento XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 
 #: syneditstrconst.syns_previewscrollinfofmt
 msgid "Page: %d"
@@ -776,4 +784,3 @@ msgstr "<nenhum>"
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
 msgstr "Sem título"
-

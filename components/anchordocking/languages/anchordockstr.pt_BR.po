@@ -4,14 +4,19 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
-msgstr "Um lado livre de um \"splitter\" não deve ser ancorado: Nó=%s%s%s Tipo=%s Âncoras[%s]=%s%s%s"
+msgid ""
+"A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors"
+"[%s]=%s%s%s"
+msgstr ""
+"Um lado livre de um \"splitter\" não deve ser ancorado: Nó=%s%s%s Tipo=%s "
+"Âncoras[%s]=%s%s%s"
 
 #: anchordockstr.adrsallfiles
 msgid "All files"
@@ -19,10 +24,11 @@ msgstr "Todos os arquivos"
 
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
-msgstr "Quantidade de \"pixels\" que o mouse deve arrastar antes que arrastar se inicie"
+msgstr ""
+"Quantidade de \"pixels\" que o mouse deve arrastar antes que arrastar se "
+"inicie"
 
 #: anchordockstr.adrsanchordockinglayout
-#, fuzzy
 msgid "Anchor Docking Layout"
 msgstr "Anchor Docking Layout"
 
@@ -39,8 +45,12 @@ msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgstr "Âncora no lado errado do \"splitter\": Nó=%s%s%s Âncora[%s]=%s%s%s"
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
-msgstr "Uma página não deve estar ancorada: Nó=%s%s%s Pai=%s Tipo Pai=%s Âncoras[%s]=%s%s%s"
+msgid ""
+"A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]="
+"%s%s%s"
+msgstr ""
+"Uma página não deve estar ancorada: Nó=%s%s%s Pai=%s Tipo Pai=%s Âncoras[%s]="
+"%s%s%s"
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
@@ -63,7 +73,6 @@ msgid "Custom dock site %s%s%s can have only one site."
 msgstr "Local de ancoragem customizado %s%s%s só pode ter um local."
 
 #: anchordockstr.adrsdockinganchordocking
-#, fuzzy
 msgid "Docking / Anchordocking"
 msgstr "Docking / Anchordocking"
 
@@ -85,8 +94,12 @@ msgid "Duplicate name: "
 msgstr "Nome duplicado:"
 
 #: anchordockstr.adrseachdockedwindowhasaheaderthatallowsdragginghasaco
-msgid "Each docked window has a header that allows dragging, has a context menu with extra layout functions and shows the caption of the docked window"
-msgstr "Cada janela ancorada tem um cabeçalho que permite arrastá-la, tem um menu de contexto com layout de funções extras e exibe o cabeçalho da janela ancorada"
+msgid ""
+"Each docked window has a header that allows dragging, has a context menu "
+"with extra layout functions and shows the caption of the docked window"
+msgstr ""
+"Cada janela ancorada tem um cabeçalho que permite arrastá-la, tem um menu de "
+"contexto com layout de funções extras e exibe o cabeçalho da janela ancorada"
 
 #: anchordockstr.adrsemptyname
 msgid "Empty name: "
@@ -114,19 +127,19 @@ msgstr "Erro ao gravar \"layout\" da janela para arquivo \"%s\"%s%s"
 
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
-msgstr ""
+msgstr "Preencher cabeçalhos"
 
 #: anchordockstr.adrsfilledheadershint
 msgid "Fill headers of docked controls"
-msgstr ""
+msgstr "Preencher cabeçalhos dos controles aportados"
 
 #: anchordockstr.adrsflattenheaders
 msgid "Flatten headers"
-msgstr ""
+msgstr "Achatar cabeçalhos"
 
 #: anchordockstr.adrsflattenheadershint
 msgid "Flatten headers of docked controls"
-msgstr ""
+msgstr "Achatar cabeçalhos dos controles aportados"
 
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
@@ -146,11 +159,15 @@ msgstr "Posição cabeçalho"
 
 #: anchordockstr.adrsheaderstyle
 msgid "Header Style:"
-msgstr ""
+msgstr "Estilo de cabeçalho:"
 
 #: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
-msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
-msgstr "Ocultar título cabeçalho para locais com somente um controle ancorado, já que é normalmente exibido no título da janela"
+msgid ""
+"Hide header captions for sites with only one docked control, as that is "
+"already shown in the normal window title"
+msgstr ""
+"Ocultar título cabeçalho para locais com somente um controle ancorado, já "
+"que é normalmente exibido no título da janela"
 
 #: anchordockstr.adrsleft
 msgid "left"
@@ -182,11 +199,14 @@ msgstr "formulários modais não podem se tornar ancorados"
 
 #: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
 msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
-msgstr "Mover cabeçalho à esquerda quando (Largura/Altura)*100>=AlinharCabeçalhoEsquerda"
+msgstr ""
+"Mover cabeçalho à esquerda quando (Largura/Altura)"
+"*100>=AlinharCabeçalhoEsquerda"
 
 #: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
 msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
-msgstr "Mover cabeçalho ao topo quando (Largura/Altura)*100<=AlinharCabeçalhoTopo"
+msgstr ""
+"Mover cabeçalho ao topo quando (Largura/Altura)*100<=AlinharCabeçalhoTopo"
 
 #: anchordockstr.adrsmovepageleft
 msgid "Move page left"
@@ -277,8 +297,13 @@ msgid "Tab position"
 msgstr "Posição Aba"
 
 #: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
-msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
-msgstr "Existe outro gerenciador de âncoras instalado. Apenas um pacote de ancoragem deve estar instalado. Favor desinstalar o gerenciador %s e reiniciar a IDE"
+msgid ""
+"There is another dock master installed. Only one docking package can be "
+"installed at a time. Please uninstall the other dock master %s and restart "
+"the IDE"
+msgstr ""
+"Existe outro gerenciador de âncoras instalado. Apenas um pacote de ancoragem "
+"deve estar instalado. Favor desinstalar o gerenciador %s e reiniciar a IDE"
 
 #: anchordockstr.adrstop
 msgid "top"
@@ -291,4 +316,3 @@ msgstr "Para usar a ancoragem, deve-se primeiro desinstalar %s"
 #: anchordockstr.adrsundock
 msgid "Undock"
 msgstr "Desancorar"
-

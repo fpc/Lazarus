@@ -8,6 +8,7 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -365,11 +366,11 @@ msgstr "Boleano"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
-msgstr ""
+msgstr "Co&mponentes"
 
 #: objinspstrconsts.oisbtnproperties
 msgid "&Properties"
-msgstr ""
+msgstr "&Propriedades"
 
 #: objinspstrconsts.oiscadd
 msgid "&Add"
@@ -711,7 +712,7 @@ msgstr "Selecionar todos campos"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
-msgstr ""
+msgstr "Propriedades &Selecionadas"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -723,19 +724,19 @@ msgstr "Definir"
 
 #: objinspstrconsts.oissetmaxconstraints
 msgid "Set MaxHeight=%d, MaxWidth=%d"
-msgstr ""
+msgstr "Definir AlturaMax=%d, LarguraMax=%d"
 
 #: objinspstrconsts.oissetmaxconstraintshint
 msgid "Use current size as Max Constraints"
-msgstr ""
+msgstr "Usar o tamanho atual como Restrição Max"
 
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
-msgstr ""
+msgstr "Definir AlturaMin=%d, LarguraMin=%d"
 
 #: objinspstrconsts.oissetminconstraintshint
 msgid "Use current size as Min Constraints"
-msgstr ""
+msgstr "Usar o tamanho atual como Restrição Min"
 
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
@@ -743,7 +744,7 @@ msgstr "Definir para padrão: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
+msgstr "Definir valor da propriedade para o padrão"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -755,11 +756,11 @@ msgstr "Exibir Dicas"
 
 #: objinspstrconsts.oisshowinfobox
 msgid "Show Information Box"
-msgstr ""
+msgstr "Exibir caixa de informação"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
-msgstr ""
+msgstr "Exibir barra de estado"
 
 #: objinspstrconsts.oissort
 msgid "Sort"
@@ -1080,16 +1081,28 @@ msgid "Test Input"
 msgstr "Testar Entrada"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "O identificador %s%s%s não é um método.%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
+msgid ""
+"The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore "
+"to force it."
+msgstr ""
+"O identificador %s%s%s não é um método.%sPressione Cancelar para desfazer,"
+"%sIgnorar para forçá-lo."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "O método %s%s%s é incompatível com este evento (%s).%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
+msgid ""
+"The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,"
+"%spress Ignore to force it."
+msgstr ""
+"O método %s%s%s é incompatível com este evento (%s).%sPressione Cancelar "
+"para desfazer,%sIgnorar para forçá-lo."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "O método %s%s%s não é publicado.%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
+msgid ""
+"The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to "
+"force it."
+msgstr ""
+"O método %s%s%s não é publicado.%sPressione Cancelar para desfazer,%sIgnorar "
+"para forçá-lo."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
@@ -1551,4 +1564,3 @@ msgstr "Mover tabulação esquerda"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Mover tabulação direita"
-

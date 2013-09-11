@@ -8,9 +8,11 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: gdbmidebugger.gdbmibreakpointerroronruncommand
-#| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
+#, fuzzy
+#| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug sessionThe debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "O depurador encontrou um erro ao tentar executar/passo a passo a aplicação:%0:s%0:s%1:s%0:s%0:sPressione \"Ok\" para remover os pontos de parada e continuar depurando (pausado), e corrigir o problema, ou escolha um comando alternativo para executar%0:sPressione \"Parar\" para encerrar a sessão de depuração."
 
@@ -31,12 +33,14 @@ msgid "The debugger was unable to initalize itself.%0:sThe application did run (
 msgstr "O depurador foi incapaz de se inicializar.%0:sA aplicação rodou (e terminou) antes que o depurador pudesse ajustar qualquer ponto-de-parada. %0:sIsto pode ter sido causado por falta de informações de depuração."
 
 #: gdbmidebugger.gdbmierroronruncommand
-#| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
+#, fuzzy
+#| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug sessionThe debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "O depurador encontrou um erro ao tentar executar/passo a passo a aplicação:%0:s%0:s%1:s%0:s%0:sPressione \"Ok\" para continuar depurando (pausado), e corrigir o problema, ou escolha um comando alternativo para executar%0:sPressione \"Parar\" para encerrar a sessão de depuração."
 
 #: gdbmidebugger.gdbmierroronruncommandwithwarning
-#| msgid "%0:s%0:sIn addition to the Error the following warning was encountered:%0:s%0:s%1:s"
+#, fuzzy
+#| msgid "%0:s%0:sIn addition to the Error the following warning was encountered:%0:s%0:s%1:s%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
 msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
 msgstr "%0:s%0:sAlém do Erro, o seguinte aviso foi encontrado:%0:s%0:s%1:s"
 
@@ -67,27 +71,27 @@ msgstr "%0:sO processo GDB não está em execução.%0:s"
 
 #: gdbmidebugger.gdbmieventlogdebugoutput
 msgid "Debug Output: %s"
-msgstr ""
+msgstr "Saída da Depuração: %s"
 
 #: gdbmidebugger.gdbmieventloggdbinternalerror
 msgid "GDB has encountered an internal error: %s"
-msgstr ""
+msgstr "GDB encontrou um erro interno: %s"
 
 #: gdbmidebugger.gdbmieventlognosymbols
 msgid "File '%s' has no debug symbols"
-msgstr ""
+msgstr "Arquivo '%s' não tem símbolos de depuração"
 
 #: gdbmidebugger.gdbmieventlogprocessexitcode
 msgid "Process Exit: %s"
-msgstr ""
+msgstr "Término do Processo: %s"
 
 #: gdbmidebugger.gdbmieventlogprocessexitnormally
 msgid "Process Exit: normally"
-msgstr ""
+msgstr "Término do Processo: normal"
 
 #: gdbmidebugger.gdbmieventlogprocessstart
 msgid "Process Start: %s"
-msgstr ""
+msgstr "Início do Processo: %s"
 
 #: gdbmidebugger.gdbmifatalerroroccured
 #| msgid "Unrecoverable Error: \"%s\""
@@ -96,11 +100,11 @@ msgstr "Erro irrecuperável: \"%s\""
 
 #: gdbmidebugger.gdbmigdbinternalerror
 msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
-msgstr ""
+msgstr "GDB encontrou um erro interno: %0:sPressione \"Ok\" para continuar depurando. Isto pode NÃO ser seguro.%0:sPressione \"Parar\" para encerrar a sessão de depuração."
 
 #: gdbmidebugger.gdbmigdbinternalerrorinfo
 msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
-msgstr ""
+msgstr "Ao executar o comando: %0:s\"%2:s\"%0:sgdb reportou:%0:s\"%1:s\"%0:s"
 
 #: gdbmidebugger.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"

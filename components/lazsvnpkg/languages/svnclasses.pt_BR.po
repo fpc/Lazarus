@@ -8,6 +8,7 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: svnclasses.rsaction
 msgid "Action"
@@ -150,7 +151,8 @@ msgstr "Projeto está ativo"
 
 #: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
 msgid "Project is not active in SVN settings, please activate first."
-msgstr "Projeto não está ativo nas configurações do SVN, favor ativar primeiro."
+msgstr ""
+"Projeto não está ativo nas configurações do SVN, favor ativar primeiro."
 
 #: svnclasses.rsprojectname
 msgid "Project name"
@@ -166,7 +168,7 @@ msgstr "Estado Propriedade"
 
 #: svnclasses.rsrefresh
 msgid "Refresh"
-msgstr ""
+msgstr "Atualizar"
 
 #: svnclasses.rsremove
 msgid "Remove from version control (keep local)"
@@ -239,4 +241,3 @@ msgstr "Atualizar"
 #: svnclasses.rsupdated
 msgid "Updated"
 msgstr "Atualizado"
-

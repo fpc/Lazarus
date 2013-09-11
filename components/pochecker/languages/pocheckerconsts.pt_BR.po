@@ -8,6 +8,7 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: pocheckerconsts.rspochecker
 msgid "PO File Checker"
@@ -19,7 +20,11 @@ msgid ""
 "%s\n"
 "for selected file\n"
 "%s\n"
-msgstr "Impossível localizar o arquivo po mestre:"
+msgstr ""
+"Impossível localizar o arquivo po mestre:\n"
+"%s\n"
+"para o arquivo selecionado\n"
+"%s\n"
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
@@ -66,13 +71,18 @@ msgid ""
 "An unrecoverable error occurred\n"
 "%s\n"
 "Please close the program\n"
-msgstr "Ocorreu um erro irrecuperável"
+msgstr ""
+"Ocorreu um erro irrecuperável\n"
+"%s\n"
+"Favor fechar o programa\n"
 
 #: pocheckerconsts.serroroncreate
 msgid ""
 "Error creating an instance of TPoFamily:\n"
 "%s\n"
-msgstr "Erro ao criar uma instância de TPoFamily:"
+msgstr ""
+"Erro ao criar uma instância de TPoFamily:\n"
+"%s\n"
 
 #: pocheckerconsts.serrorsbytest
 msgid "Errors / warnings reported by %s for:"
@@ -91,10 +101,9 @@ msgid "Identifier [%s] not found in %s"
 msgstr "Identificador [%s] não encontrado em %s"
 
 #: pocheckerconsts.sincompatibleformatargs
-#, fuzzy
 #| msgid "[Line: %d] Incompatible format() arguments for:"
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
-msgstr "[Linha: %d] formato() incompatível de argumentos para:"
+msgstr "[Linha: %d] argumentos de format() incompatíveis ou inválidos para:"
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -172,7 +181,7 @@ msgstr ""
 
 #: pocheckerconsts.sselectbasictests
 msgid "Select basic tests"
-msgstr ""
+msgstr "Selecionar testes básicos"
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -189,4 +198,3 @@ msgstr "Total de avisos encontrados: %d"
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Tradução"
-
