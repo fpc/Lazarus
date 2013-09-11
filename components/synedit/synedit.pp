@@ -542,7 +542,6 @@ type
     fScrollTimer: TTimer;
     FScrollDeltaX, FScrollDeltaY: Integer;
     FInMouseClickEvent: Boolean;
-    FMouseClickDoPopUp: Boolean;
     // event handlers
     FOnCutCopy: TSynCopyPasteEvent;
     FOnPaste: TSynCopyPasteEvent;
@@ -774,9 +773,11 @@ type
     procedure FindAndHandleMouseAction(AButton: TSynMouseButton; AShift: TShiftState;
                                 X, Y: Integer; ACCount:TSynMAClickCount;
                                 ADir: TSynMAClickDir;
+                                out AnActionResult: TSynEditMouseActionResult;
                                 AWheelDelta: Integer = 0);
     function DoHandleMouseAction(AnActionList: TSynEditMouseActions;
-                                 AnInfo: TSynEditMouseActionInfo): Boolean;
+                                 var AnInfo: TSynEditMouseActionInfo): Boolean;
+    procedure DoHandleMouseActionResult(AnActionResult: TSynEditMouseActionResult);
 
   protected
     procedure SetHighlighter(const Value: TSynCustomHighlighter); virtual;
@@ -2862,7 +2863,7 @@ begin
 end;
 
 function TCustomSynEdit.DoHandleMouseAction(AnActionList: TSynEditMouseActions;
-  AnInfo: TSynEditMouseActionInfo): Boolean;
+  var AnInfo: TSynEditMouseActionInfo): Boolean;
 var
   CaretDone, ResetMouseCapture: Boolean;
   AnAction: TSynEditMouseAction;
@@ -2927,7 +2928,6 @@ var
 
 var
   ACommand: TSynEditorMouseCommand;
-  Handled: Boolean;
   ClipHelper: TSynClipboardStream;
   i, j: integer;
   p1, p2: TPoint;
@@ -3127,14 +3127,13 @@ begin
         end;
       emcContextMenu:
         begin
-          Handled := False;
           if AnAction.MoveCaret and (not CaretDone) then begin
             MoveCaret;
           end;
-          inherited DoContextPopup(Point(AnInfo.MouseX, AnInfo.MouseY), Handled);
-          // Open PopUpMenu after DecPaintlock
-          if not Handled then
-            FMouseClickDoPopUp := True;
+          AnInfo.ActionResult.DoPopUpEvent := True;
+          AnInfo.ActionResult.PopUpEventX  := AnInfo.MouseX;
+          AnInfo.ActionResult.PopUpEventY  := AnInfo.MouseY;
+          AnInfo.ActionResult.PopUpMenu    := PopupMenu;
         end;
       emcSynEditCommand:
         begin
@@ -3210,6 +3209,21 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.DoHandleMouseActionResult(AnActionResult: TSynEditMouseActionResult);
+var
+  Handled: Boolean;
+begin
+  if AnActionResult.PopUpMenu <> nil then begin
+    Handled := False;
+    if AnActionResult.DoPopUpEvent then
+      inherited DoContextPopup(Point(AnActionResult.PopUpEventX, AnActionResult.PopUpEventY), Handled);
+    if not Handled then begin
+      AnActionResult.PopupMenu.PopupComponent:=self;
+      AnActionResult.PopupMenu.PopUp;
+    end;
+  end;
+end;
+
 procedure TCustomSynEdit.UpdateShowing;
 begin
   inherited UpdateShowing;
@@ -3224,8 +3238,8 @@ begin
 end;
 
 procedure TCustomSynEdit.FindAndHandleMouseAction(AButton: TSynMouseButton;
-  AShift: TShiftState; X, Y: Integer; ACCount:TSynMAClickCount;
-  ADir: TSynMAClickDir; AWheelDelta: Integer = 0);
+  AShift: TShiftState; X, Y: Integer; ACCount: TSynMAClickCount; ADir: TSynMAClickDir; out
+  AnActionResult: TSynEditMouseActionResult; AWheelDelta: Integer);
 var
   Info: TSynEditMouseActionInfo;
 begin
@@ -3241,6 +3255,8 @@ begin
     CCount := ACCount;
     Dir := ADir;
     IgnoreUpClick := False;
+    ActionResult.DoPopUpEvent := False;
+    ActionResult.PopUpMenu := nil;
   end;
   try
     // Check plugins/external handlers
@@ -3278,6 +3294,7 @@ begin
   finally
     if Info.IgnoreUpClick then
       include(fStateFlags, sfIgnoreUpClick);
+    AnActionResult := Info.ActionResult;
   end;
 end;
 
@@ -3285,6 +3302,7 @@ procedure TCustomSynEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   CType: TSynMAClickCount;
+  AnActionResult: TSynEditMouseActionResult;
 begin
   DebugLnEnter(LOG_SynMouseEvents, ['>> TCustomSynEdit.MouseDown Mouse=',X,',',Y, ' Shift=',dbgs(Shift), ' Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags)]);
   Exclude(FStateFlags, sfHideCursor);
@@ -3325,7 +3343,6 @@ begin
   else
     CType := ccSingle;
 
-  FMouseClickDoPopUp := False;
   IncPaintLock;
   try
     if (X < TextLeftPixelOffset(False)) then begin
@@ -3336,14 +3353,11 @@ begin
       Include(fStateFlags, sfRightGutterClick);
       FRightGutter.MouseDown(Button, Shift, X, Y);
     end;
-    FindAndHandleMouseAction(SynMouseButtonMap[Button], Shift, X, Y, CType, cdDown);
+    FindAndHandleMouseAction(SynMouseButtonMap[Button], Shift, X, Y, CType, cdDown, AnActionResult);
   finally
     DecPaintLock;
   end;
-  if FMouseClickDoPopUp and (PopupMenu <> nil) then begin
-    PopupMenu.PopupComponent:=self;
-    PopupMenu.PopUp;
-  end;
+  DoHandleMouseActionResult(AnActionResult);
 
   inherited MouseDown(Button, Shift, X, Y);
   LCLIntf.SetFocus(Handle);
@@ -3559,6 +3573,7 @@ procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
 var
   wasDragging, wasSelecting, ignoreUp : Boolean;
   CType: TSynMAClickCount;
+  AnActionResult: TSynEditMouseActionResult;
 begin
   DebugLn(LOG_SynMouseEvents, ['>> TCustomSynEdit.MouseUp Mouse=',X,',',Y, ' Shift=',dbgs(Shift), ' Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags)]);
   Exclude(FStateFlags, sfHideCursor);
@@ -3605,7 +3620,6 @@ begin
 
   if wasDragging or wasSelecting or ignoreUp then exit;
 
-  FMouseClickDoPopUp := False;
   IncPaintLock;
   try
     if (sfLeftGutterClick in fStateFlags) then begin
@@ -3616,14 +3630,12 @@ begin
       FRightGutter.MouseUp(Button, Shift, X, Y);
       Exclude(fStateFlags, sfRightGutterClick);
     end;
-    FindAndHandleMouseAction(SynMouseButtonMap[Button], Shift, X, Y, CType, cdUp);
+    FindAndHandleMouseAction(SynMouseButtonMap[Button], Shift, X, Y, CType, cdUp, AnActionResult);
   finally
     DecPaintLock;
   end;
-  if FMouseClickDoPopUp and (PopupMenu <> nil) then begin
-    PopupMenu.PopupComponent:=self;
-    PopupMenu.PopUp;
-  end;
+  DoHandleMouseActionResult(AnActionResult);
+
   SelAvailChange(nil);
   //DebugLn('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
@@ -7105,6 +7117,7 @@ procedure TCustomSynEdit.WMMouseWheel(var Message: TLMMouseEvent);
 var
   lState: TShiftState;
   MousePos: TPoint;
+  AnActionResult: TSynEditMouseActionResult;
 begin
   if ((sfHorizScrollbarVisible in fStateFlags) and (Message.Y > ClientHeight)) or
      ((sfVertScrollbarVisible in fStateFlags) and (Message.X > ClientWidth))
@@ -7123,24 +7136,20 @@ begin
 
   lState := Message.State - [ssCaps, ssNum, ssScroll]; // Remove unreliable states, see http://bugs.freepascal.org/view.php?id=20065
 
-  FMouseClickDoPopUp := False;
   IncPaintLock;
   try
     if Message.WheelDelta > 0 then begin
-      FindAndHandleMouseAction(mbXWheelUp, lState, Message.X, Message.Y, ccSingle, cdDown, Message.WheelDelta);
+      FindAndHandleMouseAction(mbXWheelUp, lState, Message.X, Message.Y, ccSingle, cdDown, AnActionResult, Message.WheelDelta);
     end
     else begin
       // send megative delta
-      FindAndHandleMouseAction(mbXWheelDown, lState, Message.X, Message.Y, ccSingle, cdDown, Message.WheelDelta);
+      FindAndHandleMouseAction(mbXWheelDown, lState, Message.X, Message.Y, ccSingle, cdDown, AnActionResult, Message.WheelDelta);
     end;
   finally
     DecPaintLock;
   end;
 
-  if FMouseClickDoPopUp and (PopupMenu <> nil) then begin
-    PopupMenu.PopupComponent:=self;
-    PopupMenu.PopUp;
-  end;
+  DoHandleMouseActionResult(AnActionResult);
 
   Message.Result := 1 // handled, skip further handling by interface
 end;

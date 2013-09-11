@@ -468,7 +468,7 @@ begin
     emcCodeFoldContextMenu:
       begin
         CreatePopUpMenuEntries(FPopUp, line);
-        FPopUp.PopUp;
+        AnInfo.ActionResult.PopUpMenu := FPopUp;
       end;
     else
       Result := False;

@@ -36,7 +36,7 @@ interface
 
 uses
   LazSynEditMouseCmdsTypes, Classes, Controls, SysUtils, SynEditStrConst, SynEditPointClasses, Dialogs,
-  LCLProc;
+  LCLProc, Menus;
 
 type
 
@@ -77,6 +77,13 @@ const
 
 type
 
+  // Mouse actions to be handled *after* paintlock
+  TSynEditMouseActionResult = record
+    DoPopUpEvent: Boolean;               // Trigger OnContextPopUp, only valid if PopUpMenu is set
+    PopUpEventX, PopUpEventY: Integer;
+    PopUpMenu: TPopupMenu;               // PopupMenu to Display (must be outside PaintLock)
+  end;
+
   TSynEditMouseActionInfo = record
     NewCaret: TSynEditCaret;
     Button: TSynMouseButton;
@@ -86,6 +93,7 @@ type
     Dir: TSynMAClickDir;
     CaretDone: Boolean; // Return Value
     IgnoreUpClick: Boolean;
+    ActionResult: TSynEditMouseActionResult;
   end;
 
   { TSynEditMouseAction }
@@ -197,7 +205,7 @@ type
 
 
   TSynEditMouseActionHandler = function(AnActionList: TSynEditMouseActions;
-    AnInfo: TSynEditMouseActionInfo): Boolean of object;
+    var AnInfo: TSynEditMouseActionInfo): Boolean of object;
 
   // Called by SynEdit
   // Should Call "HandleActionProc" for each ActionList it want's to check
