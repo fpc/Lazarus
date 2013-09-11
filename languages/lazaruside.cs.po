@@ -11134,6 +11134,10 @@ msgstr "Najít &Další"
 msgid "Find &Previous"
 msgstr "Najít &Předchozí"
 
+#: lazarusidestrconsts.lismenufindreferencesofusedunit
+msgid "Find References Of Used Unit"
+msgstr ""
+
 #: lazarusidestrconsts.lismenugeneraloptions
 msgid "Options ..."
 msgstr "Nastavení ..."
@@ -18887,6 +18891,7 @@ msgid "View watches"
 msgstr "Zobrazit sledovače"
 
 #: lazarusidestrconsts.srkmecunfoldall
+msgctxt "lazarusidestrconsts.srkmecunfoldall"
 msgid "Unfold all"
 msgstr "Rozevřít vše"
 
@@ -18985,21 +18990,78 @@ msgstr "Upravit klávesy povelů"
 msgid "Edit Keys"
 msgstr "Upravit klávesy"
 
+#: lazarusidestrconsts.synffoldcomments
+msgid "Fold comments"
+msgstr ""
+
 #: lazarusidestrconsts.synffoldcommentsinselection
 msgid "Fold comments in selection"
 msgstr "Zabalit komentáře ve výběru"
+
+#: lazarusidestrconsts.synffoldinactiveifdef
+msgid "Fold inactive Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synffoldinactiveifdefexcludemixedstate
+msgid "Fold inactive Ifdef (exclude mixed state)"
+msgstr ""
+
+#: lazarusidestrconsts.synffoldinactiveifdefinselection
+msgid "Fold inactive Ifdef in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synffoldinactiveifdefinselectionexcludemixedstate
+msgid "Fold inactive Ifdef in selection (exclude mixed state)"
+msgstr ""
+
+#: lazarusidestrconsts.synfhidecomments
+msgid "Hide comments"
+msgstr ""
 
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
 msgstr "Skrýt komentáře ve výběru"
 
+#: lazarusidestrconsts.synfunfoldactiveifdef
+msgid "Unfold active Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldactiveifdefinselection
+msgid "Unfold active Ifdef in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldall
+msgctxt "lazarusidestrconsts.synfunfoldall"
+msgid "Unfold all"
+msgstr "Rozevřít vše"
+
+#: lazarusidestrconsts.synfunfoldallifdef
+msgid "Unfold all Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldallifdefinselection
+msgid "Unfold all Ifdef in selection"
+msgstr ""
+
 #: lazarusidestrconsts.synfunfoldallinselection
 msgid "Unfold all in selection"
 msgstr "Rozbalit všechny komentáře ve výběru"
 
+#: lazarusidestrconsts.synfunfoldcomments
+msgid "Unfold comments"
+msgstr ""
+
 #: lazarusidestrconsts.synfunfoldcommentsinselection
 msgid "Unfold comments in selection"
 msgstr "Rozbalit komentáře ve výběru"
+
+#: lazarusidestrconsts.synfunfoldinactiveifdef
+msgid "Unfold inactive Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldinactiveifdefinselection
+msgid "Unfold inactive Ifdef in selection"
+msgstr ""
 
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"

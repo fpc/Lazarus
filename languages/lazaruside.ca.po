@@ -11334,6 +11334,10 @@ msgstr "Cerca el següe&nt"
 msgid "Find &Previous"
 msgstr "Cerca l'an&terior"
 
+#: lazarusidestrconsts.lismenufindreferencesofusedunit
+msgid "Find References Of Used Unit"
+msgstr ""
+
 #: lazarusidestrconsts.lismenugeneraloptions
 msgid "Options ..."
 msgstr ""
@@ -19321,6 +19325,7 @@ msgid "View watches"
 msgstr "Mostra els controls"
 
 #: lazarusidestrconsts.srkmecunfoldall
+msgctxt "lazarusidestrconsts.srkmecunfoldall"
 msgid "Unfold all"
 msgstr ""
 
@@ -19421,20 +19426,77 @@ msgstr ""
 msgid "Edit Keys"
 msgstr "Edita les tecles"
 
+#: lazarusidestrconsts.synffoldcomments
+msgid "Fold comments"
+msgstr ""
+
 #: lazarusidestrconsts.synffoldcommentsinselection
 msgid "Fold comments in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synffoldinactiveifdef
+msgid "Fold inactive Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synffoldinactiveifdefexcludemixedstate
+msgid "Fold inactive Ifdef (exclude mixed state)"
+msgstr ""
+
+#: lazarusidestrconsts.synffoldinactiveifdefinselection
+msgid "Fold inactive Ifdef in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synffoldinactiveifdefinselectionexcludemixedstate
+msgid "Fold inactive Ifdef in selection (exclude mixed state)"
+msgstr ""
+
+#: lazarusidestrconsts.synfhidecomments
+msgid "Hide comments"
 msgstr ""
 
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
 msgstr ""
 
+#: lazarusidestrconsts.synfunfoldactiveifdef
+msgid "Unfold active Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldactiveifdefinselection
+msgid "Unfold active Ifdef in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldall
+msgctxt "lazarusidestrconsts.synfunfoldall"
+msgid "Unfold all"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldallifdef
+msgid "Unfold all Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldallifdefinselection
+msgid "Unfold all Ifdef in selection"
+msgstr ""
+
 #: lazarusidestrconsts.synfunfoldallinselection
 msgid "Unfold all in selection"
 msgstr ""
 
+#: lazarusidestrconsts.synfunfoldcomments
+msgid "Unfold comments"
+msgstr ""
+
 #: lazarusidestrconsts.synfunfoldcommentsinselection
 msgid "Unfold comments in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldinactiveifdef
+msgid "Unfold inactive Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldinactiveifdefinselection
+msgid "Unfold inactive Ifdef in selection"
 msgstr ""
 
 #: lazarusidestrconsts.uefilerocap

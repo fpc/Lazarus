@@ -11381,6 +11381,10 @@ msgstr "Ieškoti &toliau"
 msgid "Find &Previous"
 msgstr "Ieškoti an&kstesnio"
 
+#: lazarusidestrconsts.lismenufindreferencesofusedunit
+msgid "Find References Of Used Unit"
+msgstr ""
+
 #: lazarusidestrconsts.lismenugeneraloptions
 msgid "Options ..."
 msgstr "Parinktys…"
@@ -19324,6 +19328,7 @@ msgid "View watches"
 msgstr "Rodyti stebimuosius"
 
 #: lazarusidestrconsts.srkmecunfoldall
+msgctxt "lazarusidestrconsts.srkmecunfoldall"
 msgid "Unfold all"
 msgstr "Visus išskleisti"
 
@@ -19423,21 +19428,78 @@ msgstr "Komandos klavišų keitimas"
 msgid "Edit Keys"
 msgstr "Keisti klavišus"
 
+#: lazarusidestrconsts.synffoldcomments
+msgid "Fold comments"
+msgstr ""
+
 #: lazarusidestrconsts.synffoldcommentsinselection
 msgid "Fold comments in selection"
 msgstr "Sulankstyti pažymėtus komentarus"
+
+#: lazarusidestrconsts.synffoldinactiveifdef
+msgid "Fold inactive Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synffoldinactiveifdefexcludemixedstate
+msgid "Fold inactive Ifdef (exclude mixed state)"
+msgstr ""
+
+#: lazarusidestrconsts.synffoldinactiveifdefinselection
+msgid "Fold inactive Ifdef in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synffoldinactiveifdefinselectionexcludemixedstate
+msgid "Fold inactive Ifdef in selection (exclude mixed state)"
+msgstr ""
+
+#: lazarusidestrconsts.synfhidecomments
+msgid "Hide comments"
+msgstr ""
 
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
 msgstr "Slėpti pažymėtus komentarus"
 
+#: lazarusidestrconsts.synfunfoldactiveifdef
+msgid "Unfold active Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldactiveifdefinselection
+msgid "Unfold active Ifdef in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldall
+msgctxt "lazarusidestrconsts.synfunfoldall"
+msgid "Unfold all"
+msgstr "Visus išskleisti"
+
+#: lazarusidestrconsts.synfunfoldallifdef
+msgid "Unfold all Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldallifdefinselection
+msgid "Unfold all Ifdef in selection"
+msgstr ""
+
 #: lazarusidestrconsts.synfunfoldallinselection
 msgid "Unfold all in selection"
 msgstr "Išlankstyti viską kas pažymėta"
 
+#: lazarusidestrconsts.synfunfoldcomments
+msgid "Unfold comments"
+msgstr ""
+
 #: lazarusidestrconsts.synfunfoldcommentsinselection
 msgid "Unfold comments in selection"
 msgstr "Išlankstyti pažymėtus komentarus"
+
+#: lazarusidestrconsts.synfunfoldinactiveifdef
+msgid "Unfold inactive Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldinactiveifdefinselection
+msgid "Unfold inactive Ifdef in selection"
+msgstr ""
 
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"

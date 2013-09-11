@@ -11644,6 +11644,10 @@ msgstr "次を検索(&N)"
 msgid "Find &Previous"
 msgstr "前を検索(&P)"
 
+#: lazarusidestrconsts.lismenufindreferencesofusedunit
+msgid "Find References Of Used Unit"
+msgstr ""
+
 #: lazarusidestrconsts.lismenugeneraloptions
 msgid "Options ..."
 msgstr "オプション ..."
@@ -19781,6 +19785,7 @@ msgid "View watches"
 msgstr "監視ウィンドウ表示"
 
 #: lazarusidestrconsts.srkmecunfoldall
+msgctxt "lazarusidestrconsts.srkmecunfoldall"
 msgid "Unfold all"
 msgstr "すべて展開"
 
@@ -19881,13 +19886,58 @@ msgstr "コマンドのキーを編集"
 msgid "Edit Keys"
 msgstr "キーを編集"
 
+#: lazarusidestrconsts.synffoldcomments
+msgid "Fold comments"
+msgstr ""
+
 #: lazarusidestrconsts.synffoldcommentsinselection
 msgid "Fold comments in selection"
 msgstr "選択範囲のコメントを折り畳み"
 
+#: lazarusidestrconsts.synffoldinactiveifdef
+msgid "Fold inactive Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synffoldinactiveifdefexcludemixedstate
+msgid "Fold inactive Ifdef (exclude mixed state)"
+msgstr ""
+
+#: lazarusidestrconsts.synffoldinactiveifdefinselection
+msgid "Fold inactive Ifdef in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synffoldinactiveifdefinselectionexcludemixedstate
+msgid "Fold inactive Ifdef in selection (exclude mixed state)"
+msgstr ""
+
+#: lazarusidestrconsts.synfhidecomments
+msgid "Hide comments"
+msgstr ""
+
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
 msgstr "選択範囲のコメントを隠す"
+
+#: lazarusidestrconsts.synfunfoldactiveifdef
+msgid "Unfold active Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldactiveifdefinselection
+msgid "Unfold active Ifdef in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldall
+msgctxt "lazarusidestrconsts.synfunfoldall"
+msgid "Unfold all"
+msgstr "すべて展開"
+
+#: lazarusidestrconsts.synfunfoldallifdef
+msgid "Unfold all Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldallifdefinselection
+msgid "Unfold all Ifdef in selection"
+msgstr ""
 
 #: lazarusidestrconsts.synfunfoldallinselection
 #, fuzzy
@@ -19895,11 +19945,23 @@ msgstr "選択範囲のコメントを隠す"
 msgid "Unfold all in selection"
 msgstr "選択範囲をすべて展開"
 
+#: lazarusidestrconsts.synfunfoldcomments
+msgid "Unfold comments"
+msgstr ""
+
 #: lazarusidestrconsts.synfunfoldcommentsinselection
 #, fuzzy
 #| msgid "Unfold comments in Selection"
 msgid "Unfold comments in selection"
 msgstr "選択範囲のコメントを展開"
+
+#: lazarusidestrconsts.synfunfoldinactiveifdef
+msgid "Unfold inactive Ifdef"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldinactiveifdefinselection
+msgid "Unfold inactive Ifdef in selection"
+msgstr ""
 
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
