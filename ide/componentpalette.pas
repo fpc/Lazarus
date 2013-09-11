@@ -644,11 +644,7 @@ var
     SortedCompList.Insert(i+1, aComponent);
   end;
 
-  {$IFDEF NEW_MAIN_IDE_TABS}
   procedure RemoveUnneededPage(aSheet: TCustomPage);
-  {$ELSE}
-  procedure RemoveUnneededPage(aSheet: TTabSheet);
-  {$ENDIF}
   var
     PageIndex: Integer;
     CurPage: TBaseComponentPage;
@@ -690,19 +686,11 @@ var
           BorderWidth := 0;
           HorzScrollBar.Visible := false;
           VertScrollBar.Increment := ComponentPaletteBtnHeight;
-          {$IFDEF NEW_MAIN_IDE_TABS}
-          Parent := TCustomPage(aCompPage.PageComponent);
-          {$ELSE}
-          Parent := TTabSheet(aCompPage.PageComponent);
-          {$ENDIF}
+          Parent := aCompPage.PageComponent;
         end;
       end else begin
         // move to the right position
-        {$IFDEF NEW_MAIN_IDE_TABS}
-        CurPageIndex := TCustomPage(aCompPage.PageComponent).PageIndex;
-        {$ELSE}
-        CurPageIndex := TTabSheet(aCompPage.PageComponent).PageIndex;
-        {$ENDIF}
+        CurPageIndex := aCompPage.PageComponent.PageIndex;
         if CurPageIndex<>aVisPageIndex then
           TCustomTabControl(FPageControl).Pages.Move(CurPageIndex, aVisPageIndex);
       end;
@@ -783,7 +771,7 @@ var
     CurScrollBox: TScrollBox;
   begin
     if aCompPage.Visible then begin
-      CurNoteBookPage := aCompPage.PageComponent as TCustomPage;
+      CurNoteBookPage := aCompPage.PageComponent;
       CurNoteBookPage.OnResize := @OnPageResize;
       CurScrollBox := CurNoteBookPage.Components[0] as TScrollBox;
       //DebugLn(['TComponentPalette.UpdateNoteBookButtons PAGE=',aCompPage.PageName,' PageIndex=',CurNoteBookPage.PageIndex]);

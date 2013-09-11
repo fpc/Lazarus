@@ -23,7 +23,7 @@ unit ComponentReg;
 interface
 
 uses
-  Classes, SysUtils, typinfo, Controls, LazarusPackageIntf, LCLProc;
+  Classes, SysUtils, typinfo, Controls, ComCtrls, LazarusPackageIntf, LCLProc;
 
 type
   TComponentPriorityCategory = (
@@ -91,7 +91,7 @@ type
   TBaseComponentPage = class
   private
     FItems: TList; // list of TRegisteredComponent
-    FPageComponent: TComponent;
+    FPageComponent: TCustomPage;
     FPageName: string;
     FPalette: TBaseComponentPalette;
     FPriority: TComponentPriority;
@@ -119,7 +119,7 @@ type
     property PageName: string read FPageName;
     property Palette: TBaseComponentPalette read FPalette;
     property Priority: TComponentPriority read FPriority write FPriority;
-    property PageComponent: TComponent read FPageComponent write FPageComponent;
+    property PageComponent: TCustomPage read FPageComponent write FPageComponent;
     property SelectButton: TComponent read FSelectButton write FSelectButton;
     property Visible: boolean read FVisible write SetVisible;
   end;
