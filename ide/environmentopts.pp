@@ -41,7 +41,7 @@ uses
   Dialogs, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
-  CompOptsIntf, IDEExternToolIntf, IDEDialogs, MacroDefIntf,
+  CompOptsIntf, ComponentReg, IDEExternToolIntf, IDEDialogs, MacroDefIntf,
   // IDE
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger;
@@ -251,6 +251,9 @@ type
     FCompletionWindowWidth: Integer;
     FCompletionWindowHeight: Integer;
 
+    // component palette
+    FComponentPaletteOptions: TCompPaletteOptions;
+
     // designer
     FCreateComponentFocusNameProperty: boolean;
     FSwitchToFavoritesOITab: boolean;
@@ -299,7 +302,7 @@ type
     FUseBuildModes: Boolean;
     FIsGlobalMode: TStrToBoolEvent;
 
-    // Primary-conyfig vurification
+    // Primary-config verification
     FLastCalledByLazarusFullPath: String;
 
    // TODO: store per debuggerclass options
@@ -464,6 +467,10 @@ type
     property CompletionWindowHeight: Integer read FCompletionWindowHeight
                                              write FCompletionWindowHeight;
 
+    // component palette
+    property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions
+                                                         write FComponentPaletteOptions;
+
     // form editor
     property ShowBorderSpacing: boolean read FShowBorderSpacing write FShowBorderSpacing;
     property ShowGrid: boolean read FShowGrid write FShowGrid;
@@ -478,8 +485,8 @@ type
                                            write FGuideLineColorLeftTop;
     property GuideLineColorRightBottom: TColor read FGuideLineColorRightBottom
                                                write FGuideLineColorRightBottom;
-    property ShowComponentCaptions: boolean
-       read FShowComponentCaptions write FShowComponentCaptions;
+    property ShowComponentCaptions: boolean  read FShowComponentCaptions
+                                            write FShowComponentCaptions;
     property ShowEditorHints: boolean read FShowEditorHints
                                       write FShowEditorHints;
     property AutoCreateFormsOnOpen: boolean read FAutoCreateFormsOnOpen
@@ -494,13 +501,12 @@ type
                                               write FRubberbandSelectionColor;
     property RubberbandCreationColor: TColor read FRubberbandCreationColor
                                              write FRubberbandCreationColor;
-    property RubberbandSelectsGrandChilds: boolean
-                                            read FRubberbandSelectsGrandChilds
-                                            write FRubberbandSelectsGrandChilds;
+    property RubberbandSelectsGrandChilds: boolean read FRubberbandSelectsGrandChilds
+                                                  write FRubberbandSelectsGrandChilds;
     property DesignerPaintLazy: boolean read FDesignerPaintLazy
                                         write FDesignerPaintLazy;
     property CreateComponentFocusNameProperty: boolean read FCreateComponentFocusNameProperty
-                                        write FCreateComponentFocusNameProperty;
+                                                      write FCreateComponentFocusNameProperty;
     property SwitchToFavoritesOITab: boolean read FSwitchToFavoritesOITab
                                              write FSwitchToFavoritesOITab;
 
@@ -557,7 +563,7 @@ type
                                               write SetCompilerMessagesFilename;
     property CompilerMessagesFileHistory: TStringList read FCompilerMessagesFileHistory
                                                      write FCompilerMessagesFileHistory;
-    // Primary-conyfig vurification
+    // Primary-config verification
     property LastCalledByLazarusFullPath: String read FLastCalledByLazarusFullPath write FLastCalledByLazarusFullPath;
 
     // global build options
@@ -856,10 +862,12 @@ begin
   FCompletionWindowWidth := 320;
   FCompletionWindowHeight := 6;
 
+  // component palette
+  FComponentPaletteOptions:=TCompPaletteOptions.Create;
 
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
-  
+
   // hints
   FCheckDiskChangesWithLoading:=false;
   FShowHintsForComponentPalette:=true;
@@ -951,6 +959,7 @@ begin
   FreeAndNil(FRecentProjectFiles);
   FreeAndNil(FRecentPackageFiles);
   FreeAndNil(FObjectInspectorOptions);
+  FreeAndNil(FComponentPaletteOptions);
   FreeAndNil(FLazarusDirHistory);
   FreeAndNil(FCompilerFileHistory);
   FreeAndNil(FFPCSourceDirHistory);
@@ -1221,7 +1230,7 @@ begin
         LoadRecentList(XMLConfig, FCompilerMessagesFileHistory,
            Path+'CompilerMessagesFilename/History/',rltFile);
 
-        // Primary-conyfig vurification
+        // Primary-config verification
         FLastCalledByLazarusFullPath:=XMLConfig.GetValue(
            Path+'LastCalledByLazarusFullPath/Value','');
 
@@ -1364,6 +1373,9 @@ begin
         Path+'AskForFilenameOnNewFile/Value',false);
       FLowercaseDefaultFilename:=XMLConfig.GetValue(
         Path+'LowercaseDefaultFilename/Value',true);
+
+      // component palette
+      FComponentPaletteOptions.Load;
 
       // fpdoc
       FPDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths','');
@@ -1694,6 +1706,9 @@ begin
                      FAskForFilenameOnNewFile,false);
       XMLConfig.SetDeleteValue(Path+'LowercaseDefaultFilename/Value',
                                FLowercaseDefaultFilename,true);
+
+      // component palette
+      FComponentPaletteOptions.Save;
 
       // fpdoc
       XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FPDocPaths,'');
@@ -2075,6 +2090,7 @@ begin
     else
       FXMLCfg:=TRttiXMLConfig.Create(Filename);
     FConfigStore:=TXMLOptionsStorage.Create(FXMLCfg);
+    ComponentPaletteOptions.ConfigStore:=FConfigStore;
     ObjectInspectorOptions.ConfigStore:=FConfigStore;
     FDbgConfigStore:=TXMLOptionsStorage.Create(FXMLCfg, 'EnvironmentOptions/Debugger/');
     FDebuggerConfig.ConfigStore := FDbgConfigStore;

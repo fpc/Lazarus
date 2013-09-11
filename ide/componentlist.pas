@@ -192,7 +192,7 @@ begin
       if APage.Visible then
         for j := 0 to APage.Count-1 do
         begin
-          AComponent := APage.Items[j];
+          AComponent := APage.Comps[j];
           if AComponent.Visible and (AComponent.PageName<>'') then
             FComponentList.Add(AComponent);
         end;
