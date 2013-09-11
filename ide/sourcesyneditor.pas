@@ -47,8 +47,8 @@ uses
   LazSynIMM,
   {$ENDIF}
   Classes, SysUtils, Controls, LCLProc, LCLType, Graphics, Menus, math, LazarusIDEStrConsts,
-  SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
-  SynEditTypes, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
+  SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks, SynEditTypes,
+  SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
   SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark, SynEditMarkupSpecialLine,
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
   SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea, SynEditHighlighter,
@@ -239,7 +239,6 @@ type
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
                           ATextDrawer: TheTextDrawer): TSynGutter; override;
     procedure SetHighlighter(const Value: TSynCustomHighlighter); override;
-    procedure SetUpdateState(NewUpdating: Boolean; Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -449,7 +448,7 @@ type
 
 implementation
 
-uses SourceMarks, BaseDebugManager;
+uses SourceMarks;
 
 { TSourceSynSearchTermDict }
 
@@ -1584,16 +1583,6 @@ begin
   else
     for i := 0 to FUserWordsList.Count - 1 do
       HighlightUserWords[i].ResetWordBreaks;
-end;
-
-procedure TIDESynEditor.SetUpdateState(NewUpdating: Boolean; Sender: TObject);
-begin
-  case NewUpdating of
-    True:  DebugBoss.LockCommandProcessing;
-    False: DebugBoss.UnLockCommandProcessing;
-  end;
-
-  inherited SetUpdateState(NewUpdating, Sender);
 end;
 
 constructor TIDESynEditor.Create(AOwner: TComponent);
