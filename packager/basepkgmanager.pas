@@ -203,8 +203,7 @@ begin
   DepOwner:=Dependency.Owner;
   if (DepOwner<>nil) then begin
     if DepOwner is TLazPackage then begin
-      Description:=Format(lisPkgMangPackage, [TLazPackage(DepOwner).IDAsString]
-        );
+      Description:=Format(lisPkgMangPackage, [TLazPackage(DepOwner).IDAsString]);
     end else if DepOwner is TProject then begin
       Description:=Format(lisPkgMangProject, [ExtractFileNameOnly(TProject(
         DepOwner).ProjectInfoFile)]);
@@ -214,8 +213,7 @@ begin
       Description:=dbgsName(DepOwner)
     end;
   end else begin
-    Description:=Format(lisPkgMangDependencyWithoutOwner, [Dependency.AsString]
-      );
+    Description:=Format(lisPkgMangDependencyWithoutOwner, [Dependency.AsString]);
   end;
 end;
 
