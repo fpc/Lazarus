@@ -2186,7 +2186,7 @@ var
       DeliverKeyMessage(TargetObj, Msg);
     end;
   end;
-{
+  
   procedure CheckDeadKey;
   begin
     if ABeforeEvent then begin
@@ -2202,7 +2202,7 @@ var
       //DebugLn(['CheckDeadKey DeadKey=',DeadKey,' str="',im_context_string,'"']);
     end;
   end;
-}
+  
 begin
   Result := CallBackDefaultReturn;
 
@@ -2265,7 +2265,11 @@ begin
   gdk_event_key_get_string(AEvent, EventString{%H-});
   //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget),' ',DbgStr(EventString),' state=',AEvent^.state,' keyval=',AEvent^.keyval]);
 
-  gtk_im_context_filter_keypress (im_context, AEvent);  // Was: CheckDeadKey;
+  {$IfDef Gtk2LatinAccents}
+  gtk_im_context_filter_keypress (im_context, AEvent);
+  {$Else}
+  CheckDeadKey;
+  {$EndIf}
 
   Flags := 0;
   SysKey := False;
