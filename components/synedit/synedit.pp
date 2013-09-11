@@ -7129,8 +7129,7 @@ begin
 
   MousePos.X := Message.X;
   MousePos.Y := Message.Y;
-  lState:=[];
-  if DoMouseWheel(lState, Message.WheelDelta, MousePos) then begin
+  if DoMouseWheel(Message.State, Message.WheelDelta, MousePos) then begin
     Message.Result := 1; // handled
     exit;
   end;
