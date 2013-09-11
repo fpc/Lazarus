@@ -45,7 +45,7 @@ uses
   DefineTemplates, CodeToolManager,
   TextTools,
   TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs,
-  AboutFrm;
+  AboutFrm, IDETranslations;
   
 type
   TSDFilenameQuality = (
@@ -121,6 +121,7 @@ type
     FHeadGraphic: TPortableNetworkGraphic;
     FSelectingPage: boolean;
     FCandidates: array[TSDFilenameType] of TObjectList; // list of TSDFileInfo
+    procedure UpdateCaptions;
     procedure SelectPage(const NodeText: string);
     function SelectDirectory(aTitle: string): string;
     procedure UpdateLazarusDirCandidates;
@@ -137,6 +138,7 @@ type
     function GetFirstCandidate(Candidates: TObjectList;
       MinQuality: TSDFilenameQuality = sddqCompatible): TSDFileInfo;
     function QualityToImgIndex(Quality: TSDFilenameQuality): integer;
+    procedure TranslateResourceStrings;
   public
     TVNodeLazarus: TTreeNode;
     TVNodeCompiler: TTreeNode;
@@ -1091,10 +1093,6 @@ end;
 
 procedure TInitialSetupDialog.FormCreate(Sender: TObject);
 begin
-  Caption:=Format(lisWelcomeToLazarusIDE, [GetLazarusVersionString]);
-
-  StartIDEBitBtn.Caption:=lisStartIDE;
-
   LazarusTabSheet.Caption:='Lazarus';
   CompilerTabSheet.Caption:=lisCompiler;
   FPCSourcesTabSheet.Caption:=lisFPCSources;
@@ -1108,20 +1106,7 @@ begin
   ImgIDError := ImageList1.AddLazarusResource('state_error');
   ImgIDWarning := ImageList1.AddLazarusResource('state_warning');
 
-  LazDirBrowseButton.Caption:=lisPathEditBrowse;
-  LazDirLabel.Caption:=Format(
-    lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh, [PathDelim]);
-
-  CompilerBrowseButton.Caption:=lisPathEditBrowse;
-  CompilerLabel.Caption:=Format(
-    lisTheFreePascalCompilerExecutableTypicallyHasTheName, [DefineTemplates.
-    GetDefaultCompilerFilename, DefineTemplates.GetDefaultCompilerFilename(
-    GetCompiledTargetCPU)]);
-
-  FPCSrcDirBrowseButton.Caption:=lisPathEditBrowse;
-  FPCSrcDirLabel.Caption:=Format(
-    lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro, [SetDirSeparators('rtl'
-    +'/linux/system.pp')]);
+  UpdateCaptions;
 
   Application.AddOnActivateHandler(@OnAppActivate);
 end;
@@ -1277,6 +1262,36 @@ begin
     UpdateFPCSrcDirNote;
   end else
     IdleConnected:=false;
+end;
+
+procedure TInitialSetupDialog.UpdateCaptions;
+begin
+  Caption:=Format(lisWelcomeToLazarusIDE, [GetLazarusVersionString]);
+
+  StartIDEBitBtn.Caption:=lisStartIDE;
+
+  LazarusTabSheet.Caption:='Lazarus';
+  CompilerTabSheet.Caption:=lisCompiler;
+  FPCSourcesTabSheet.Caption:=lisFPCSources;
+
+  TVNodeLazarus.Text:=LazarusTabSheet.Caption;
+  TVNodeCompiler.Text:=CompilerTabSheet.Caption;
+  TVNodeFPCSources.Text:=FPCSourcesTabSheet.Caption;
+
+  LazDirBrowseButton.Caption:=lisPathEditBrowse;
+  LazDirLabel.Caption:=Format(
+    lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh, [PathDelim]);
+
+  CompilerBrowseButton.Caption:=lisPathEditBrowse;
+  CompilerLabel.Caption:=Format(
+    lisTheFreePascalCompilerExecutableTypicallyHasTheName, [DefineTemplates.
+    GetDefaultCompilerFilename, DefineTemplates.GetDefaultCompilerFilename(
+    GetCompiledTargetCPU)]);
+
+  FPCSrcDirBrowseButton.Caption:=lisPathEditBrowse;
+  FPCSrcDirLabel.Caption:=Format(
+    lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro, [SetDirSeparators('rtl'
+    +'/linux/system.pp')]);
 end;
 
 procedure TInitialSetupDialog.SelectPage(const NodeText: string);
@@ -1530,6 +1545,14 @@ begin
     Result:=ImgIDError;
 end;
 
+procedure TInitialSetupDialog.TranslateResourceStrings;
+begin
+  IDETranslations.TranslateResourceStrings(
+                           EnvironmentOptions.GetParsedLazarusDirectory,
+                           EnvironmentOptions.LanguageID);
+  UpdateCaptions;
+end;
+
 procedure TInitialSetupDialog.Init;
 var
   Node: TTreeNode;
@@ -1576,6 +1599,8 @@ begin
     Candidate:=GetFirstCandidate(FCandidates[sddtLazarusSrcDir]);
     if Candidate<>nil then
       EnvironmentOptions.LazarusDirectory:=Candidate.Caption;
+    if FileExistsCached(EnvironmentOptions.GetParsedLazarusDirectory) then
+      TranslateResourceStrings;
   end;
   LazDirComboBox.Text:=EnvironmentOptions.LazarusDirectory;
   FLastParsedLazDir:='. .';

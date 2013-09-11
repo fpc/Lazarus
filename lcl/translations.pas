@@ -416,7 +416,6 @@ begin
   if (ResUnitName='') or (BaseFilename='') then
     Result:=turEmptyParam       //Result: empty Parameter
   else begin
-    //debugln('TranslateUnitResourceStrings BaseFilename="',BaseFilename,'"');
     if (FallbackLang<>'') and FileExistsUTF8(Format(BaseFilename,[FallbackLang])) then
       TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[FallbackLang]))
     else

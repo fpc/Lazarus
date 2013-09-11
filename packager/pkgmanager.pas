@@ -1793,8 +1793,9 @@ var
         if CompareFileExt(Filename,'.po',false)<>0 then continue;
         if GetPOFilenameParts(Filename,CurUnitName,CurLang)
         and (CurLang=Language)
+        and (not UnitTranslated(CurUnitName))
         and (APackage.FindUnit(CurUnitName)<>nil)
-        and not UnitTranslated(CurUnitName) then begin
+        then begin
           TranslateUnit(AppendPathDelim(Directory)+Filename,CurUnitName);
         end;
       end;
