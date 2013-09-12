@@ -27,13 +27,13 @@ unit PropEdits;
 interface
 
 uses
-  Classes, TypInfo, SysUtils, types,
+  Classes, TypInfo, SysUtils, types, Forms, Controls, LCLProc, GraphType,
   FPCAdds, // for StrToQWord in older fpc versions
-  LCLProc, Forms, Controls, GraphType, StringHashList, ButtonPanel,
-  Graphics, StdCtrls, Buttons, Menus, LCLType, ExtCtrls, LCLIntf,
-  Dialogs, Grids, EditBtn, PropertyStorage, TextTools, FrmSelectProps,
-  StringsPropEditDlg, ColumnDlg, FileUtil, FileCtrl, ObjInspStrConsts,
-  CollectionPropEditForm, PropEditUtils, ComCtrls;
+  StringHashList, ButtonPanel, Graphics, StdCtrls, Buttons, Menus, LCLType,
+  ExtCtrls, ComCtrls, LCLIntf, Dialogs, Grids, EditBtn, PropertyStorage,
+  TextTools, FileUtil, FileCtrl, ObjInspStrConsts, ColumnDlg, PropEditUtils,
+  // Forms with .lfm files
+  FrmSelectProps, StringsPropEditDlg, CollectionPropEditForm, FileFilterPropEditor;
 
 const
   MaxIdentLength: Byte = 63;
@@ -5128,123 +5128,6 @@ begin
   Result.Options:=Result.Options+[ofFileMustExist];
 end;
 
-type
-  TFileFilterPropertyEditorForm = class(TForm)
-  private
-    StringGrid1: TStringGrid;
-    function GetFilter: string;
-    procedure SetFilter(const AValue: string);
-  public
-    constructor Create(AOwner : TComponent); Override;
-    property Filter:string read GetFilter write SetFilter;
-  end;
-
-{ TFileFilterPropertyEditorForm }
-
-function TFileFilterPropertyEditorForm.GetFilter: string;
-var
-  i:integer;
-begin
-  Result:='';
-  for i:=1 to StringGrid1.RowCount-1 do
-  begin
-    if StringGrid1.Cells[1,i]<>'' then
-    begin
-      if Result<>'' then Result:=Result+'|';
-      if StringGrid1.Cells[0,i]<>'' then
-        Result:=Result+StringGrid1.Cells[0,i]+'|'+StringGrid1.Cells[1,i]
-      else
-        Result:=Result+StringGrid1.Cells[1,i]+'|'+StringGrid1.Cells[1,i];
-    end
-    else
-      break;
-  end;
-end;
-
-procedure TFileFilterPropertyEditorForm.SetFilter(const AValue: string);
-var
-  S:string;
-  C1, i:integer;
-begin
-  S:=AValue;
-  I:=1;
-  while (S<>'') do
-  begin
-    C1:=Pos('|',S);
-    if C1>0 then
-    begin
-      StringGrid1.Cells[0,i]:=Copy(S, 1, C1-1);
-      Delete(S, 1, C1);
-      C1:=Pos('|',S);
-      if (C1>0) then
-      begin
-        StringGrid1.Cells[1,i]:=Copy(S, 1, C1-1);
-        Delete(S, 1, C1);
-      end
-      else
-      begin
-        StringGrid1.Cells[1,i]:=S;
-        S:='';
-      end;
-    end
-    else
-    begin
-      StringGrid1.Cells[0,i]:=S;
-      StringGrid1.Cells[1,i]:=S;
-      S:='';
-    end;
-    inc(i);
-  end;
-end;
-
-constructor TFileFilterPropertyEditorForm.Create(AOwner: TComponent);
-var
-  BtnPanel: TPanel;
-begin
-  inherited CreateNew(AOwner, 1);
-  Caption:=peFilterEditor;
-  Height:=295;
-  Width:=417;
-  Position:=poScreenCenter;
-  BorderStyle:=bsDialog;
-  BtnPanel:=TPanel.Create(Self);
-  with BtnPanel do begin
-    Name:='BtnPanel';
-    Caption:='';
-    BevelOuter:=bvNone;
-    Align:=alBottom;
-    AutoSize:=true;
-    Parent:=Self;
-  end;
-  with TBitBtn.Create(Self) do
-  begin
-    BorderSpacing.Around:=6;
-    Kind := bkOK;
-    Align:=alRight;
-    Parent:=BtnPanel;
-  end;
-  with TBitBtn.Create(Self) do
-  begin
-    BorderSpacing.Around:=6;
-    Kind := bkCancel;
-    Align:=alRight;
-    Parent:=BtnPanel;
-  end;
-  StringGrid1:=TStringGrid.Create(Self);
-  with StringGrid1 do begin
-    BorderSpacing.Around:=6;
-    ColCount:=2;
-    DefaultColWidth:=190;
-    Options:=StringGrid1.Options + [goEditing, goAlwaysShowEditor];
-    RowCount:= 100;
-    FixedCols := 0;
-    Align:=alClient;
-    Parent:=Self;
-    Cells[0, 0]:=peFilterName;
-    Cells[1, 0]:=peFilter;
-  end;
-end;
-
 { TFileDlgFilterProperty }
 
 function TFileDlgFilterProperty.GetAttributes: TPropertyAttributes;
@@ -5254,7 +5137,7 @@ end;
 
 procedure TFileDlgFilterProperty.Edit;
 begin
-  with TFileFilterPropertyEditorForm.Create(Application) do
+  with TFileFilterPropEditForm.Create(Application) do
   try
     Filter:=GetStrProp(GetComponent(0), 'Filter');
     if ShowModal=mrOk then begin

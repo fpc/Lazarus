@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="IDEIntf"/>
@@ -22,7 +22,7 @@
     <Description Value="IDEIntf - the interface units for the Lazarus IDE"/>
     <License Value="Modified LPGL2"/>
     <Version Major="1"/>
-    <Files Count="71">
+    <Files Count="73">
       <Item1>
         <Filename Value="actionseditor.lfm"/>
         <Type Value="LFM"/>
@@ -298,7 +298,7 @@
       </Item68>
       <Item69>
         <Filename Value="oifavoriteproperties.pas"/>
-        <UnitName Value="oifavoriteproperties"/>
+        <UnitName Value="OIFavoriteProperties"/>
       </Item69>
       <Item70>
         <Filename Value="unitresources.pas"/>
@@ -306,8 +306,16 @@
       </Item70>
       <Item71>
         <Filename Value="macrodefintf.pas"/>
-        <UnitName Value="macrodefintf"/>
+        <UnitName Value="MacroDefIntf"/>
       </Item71>
+      <Item72>
+        <Filename Value="filefilterpropeditor.lfm"/>
+        <Type Value="LFM"/>
+      </Item72>
+      <Item73>
+        <Filename Value="filefilterpropeditor.pas"/>
+        <UnitName Value="FileFilterPropEditForm"/>
+      </Item73>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>
