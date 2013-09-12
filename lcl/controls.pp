@@ -1952,6 +1952,7 @@ type
     procedure CalculatePreferredSize(var PreferredWidth,
                                      PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     procedure PaintControls(DC: HDC; First: TControl);
     procedure PaintHandler(var TheMessage: TLMPaint);
@@ -2157,7 +2158,6 @@ type
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     function Focused: Boolean; virtual;
     function PerformTab(ForwardTab: boolean): boolean; virtual;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function FindChildControl(const ControlName: String): TControl;
     procedure SelectNext(CurControl: TWinControl;
                          GoForward, CheckTabStop: Boolean);
