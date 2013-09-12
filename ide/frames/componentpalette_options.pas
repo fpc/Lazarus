@@ -262,7 +262,6 @@ end;
 
 procedure TCompPaletteOptionsFrame.InitialComps(aPageName: string; aCompList: TStringList);
 var
-  Pg: TBaseComponentPage;
   OrderedComps: TStringList;
   Comp: TRegisteredComponent;
   i, PgInd: Integer;

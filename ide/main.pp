@@ -1239,72 +1239,71 @@ begin
     OnAfterWrite := @DoEnvironmentOptionsAfterWrite;
     CreateConfig;
     Load(false);
-
-    s := ExtractFileName(ParamStrUTF8(0));
-    s2 := s;
-    s := AppendPathDelim(ProgramDirectory(False)) + s;
-    s1 := s; // keep case correct copy
-    s2 := AppendPathDelim(AppendPathDelim(GetPrimaryConfigPath) + 'bin') + s2;
-    LastCalled := EnvironmentOptions.LastCalledByLazarusFullPath;
-    {$IFDEF Windows}
-    s := LowerCase(s);
-    s2 := LowerCase(s2);
-    LastCalled := LowerCase(LastCalled);
-    {$ENDIF}
-    if (LastCalled = '') then begin
-      if (s <> s2) then begin // do not set to exe in pcp
-        EnvironmentOptions.LastCalledByLazarusFullPath := s1;
-        SaveEnvironment(False);
-      end;
-    end
-    else 
-    if (LastCalled <> s) and
-       (LastCalled <> s2) and
-       (s <> s2) // we can NOT check, if we enly have the path inside the PCP
-    then begin
-      MsgResult := IDEQuestionDialog(lisIncorrectConfigurationDirectoryFound,
-          Format(lisIDEConficurationFoundMayBelongToOtherLazarus,
-          [LineEnding, GetSecondConfDirWarning, GetPrimaryConfigPath,
-           EnvironmentOptions.LastCalledByLazarusFullPath, s1]),
-        mtWarning, [mrOK, lisUpdateInfo, mrIgnore, mrAbort]);
-
-      case MsgResult of
-        mrOk: begin
-            EnvironmentOptions.LastCalledByLazarusFullPath := s;
-            SaveEnvironment(False);
-          end;
-        mrIgnore: ;
-        else
-          begin
-            Application.Terminate;
-            exit;
-          end;
-      end;
-    end;
-
-
-    if Application.HasOption('language') then
-    begin
-      debugln('TMainIDE.LoadGlobalOptions overriding language with command line: ',
-        Application.GetOptionValue('language'));
-      EnvironmentOptions.LanguageID := Application.GetOptionValue('language');
-    end;
-    if Application.HasOption('lazarusdir') then
-    begin
-      debugln('TMainIDE.LoadGlobalOptions overriding Lazarusdir with command line: ',
-        Application.GetOptionValue('lazarusdir'));
-      EnvironmentOptions.Lazarusdirectory:= Application.GetOptionValue('lazarusdir');
-    end;
-
-    Application.BidiMode := Application.Direction(EnvironmentOptions.LanguageID);
-
-    TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
-                             EnvironmentOptions.LanguageID);
-    MainBuildBoss.TranslateMacros;
-
-    Application.ShowButtonGlyphs := ShowButtonGlyphs;
-    Application.ShowMenuGlyphs := ShowMenuGlyphs;
   end;
+
+  s2 := ExtractFileName(ParamStrUTF8(0));
+  s := AppendPathDelim(ProgramDirectory(False)) + s2;
+  s1 := s; // keep case correct copy
+  s2 := AppendPathDelim(AppendPathDelim(GetPrimaryConfigPath) + 'bin') + s2;
+  LastCalled := EnvironmentOptions.LastCalledByLazarusFullPath;
+  {$IFDEF Windows}
+  s := LowerCase(s);
+  s2 := LowerCase(s2);
+  LastCalled := LowerCase(LastCalled);
+  {$ENDIF}
+  if (LastCalled = '') then begin
+    if (s <> s2) then begin // do not set to exe in pcp
+      EnvironmentOptions.LastCalledByLazarusFullPath := s1;
+      SaveEnvironment(False);
+    end;
+  end
+  else
+  if (LastCalled <> s) and
+     (LastCalled <> s2) and
+     (s <> s2) // we can NOT check, if we only have the path inside the PCP
+  then begin
+    MsgResult := IDEQuestionDialog(lisIncorrectConfigurationDirectoryFound,
+        Format(lisIDEConficurationFoundMayBelongToOtherLazarus,
+        [LineEnding, GetSecondConfDirWarning, GetPrimaryConfigPath,
+         EnvironmentOptions.LastCalledByLazarusFullPath, s1]),
+      mtWarning, [mrOK, lisUpdateInfo, mrIgnore, mrAbort]);
+
+    case MsgResult of
+      mrOk: begin
+          EnvironmentOptions.LastCalledByLazarusFullPath := s;
+          SaveEnvironment(False);
+        end;
+      mrIgnore: ;
+      else
+        begin
+          Application.Terminate;
+          exit;
+        end;
+    end;
+  end;
+
+
+  if Application.HasOption('language') then
+  begin
+    debugln('TMainIDE.LoadGlobalOptions overriding language with command line: ',
+      Application.GetOptionValue('language'));
+    EnvironmentOptions.LanguageID := Application.GetOptionValue('language');
+  end;
+  if Application.HasOption('lazarusdir') then
+  begin
+    debugln('TMainIDE.LoadGlobalOptions overriding Lazarusdir with command line: ',
+      Application.GetOptionValue('lazarusdir'));
+    EnvironmentOptions.Lazarusdirectory:= Application.GetOptionValue('lazarusdir');
+  end;
+
+  Application.BidiMode := Application.Direction(EnvironmentOptions.LanguageID);
+
+  TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
+                           EnvironmentOptions.LanguageID);
+  MainBuildBoss.TranslateMacros;
+
+  Application.ShowButtonGlyphs := EnvironmentOptions.ShowButtonGlyphs;
+  Application.ShowMenuGlyphs := EnvironmentOptions.ShowMenuGlyphs;
 
   OldVer:=EnvironmentOptions.OldLazarusVersion;
   NowVer:=GetLazarusVersionString;
