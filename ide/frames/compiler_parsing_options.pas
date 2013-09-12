@@ -5,8 +5,8 @@ unit compiler_parsing_options;
 interface
 
 uses
-  ExtCtrls, StdCtrls, SysUtils, IDEOptionsIntf, CompilerOptions, LinkScanner,
-  PackageDefs, LazarusIDEStrConsts;
+  ExtCtrls, StdCtrls, SysUtils, IDEOptionsIntf, CompilerOptions,
+  LinkScanner, PackageDefs, LazarusIDEStrConsts;
 
 type
 
@@ -88,22 +88,19 @@ begin
   with grpAsmStyle do
   begin
     Caption := dlgCOAsmStyle + ' (-R)';
-
-    with Items do
-    begin
-      BeginUpdate;
-      Add(lisDefault);
-      Add('Intel');
-      Add('AT&&T');
-      EndUpdate;
-    end;
+    Items.BeginUpdate;
+    Items.Clear;
+    Items.Add(lisDefault);
+    Items.Add('Intel');
+    Items.Add('AT&&T');
+    Items.EndUpdate;
   end;
 
   with grpSyntaxOptions do
   begin
     AutoSize := True;
     Caption := dlgSyntaxOptions;
-
+    Items.BeginUpdate;
     Items.Add(dlgCOCOps + ' (-Sc, {$COPERATORS ON})');
     Items.Add(dlgLabelGoto + ' (-Sg, {$GOTO ON})');
     Items.Add(dlgCppInline + ' (-Si, {$INLINE ON})');
@@ -111,6 +108,7 @@ begin
     Items.Add(dlgInitDoneOnly + ' (-Ss)');
     Items.Add(dlgStaticKeyword + ' (-St)');
     Items.Add(dlgCOAnsiStr + ' (-Sh, {$H+})');
+    Items.EndUpdate;
   end;
 end;
 

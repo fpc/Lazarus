@@ -28,8 +28,9 @@ unit compiler_config_target;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Controls, Dialogs, StdCtrls, LCLProc, IDEOptionsIntf,
-  IDEDialogs, CompilerOptions, LazarusIDEStrConsts, PackageDefs;
+  Classes, SysUtils, strutils, FileUtil, Controls, Dialogs, StdCtrls, LCLProc,
+  IDEOptionsIntf, IDEDialogs, CompilerOptions, LazarusIDEStrConsts,
+  TransferMacros, PackageDefs, compiler_parsing_options;
 
 type
 
@@ -45,14 +46,19 @@ type
     grpTargetPlatform: TGroupBox;
     lblTargetCPU: TLabel;
     lblTargetOS: TLabel;
-    lblTargetProcessorProc: TLabel;
+    lblTargetProc: TLabel;
     TargetCPUComboBox: TComboBox;
     TargetOSComboBox: TComboBox;
-    TargetProcessorProcComboBox: TComboBox;
+    TargetProcComboBox: TComboBox;
     procedure chkCustomConfigFileClick(Sender: TObject);
+    procedure TargetOSComboBoxSelect(Sender: TObject);
+    procedure TargetCPUComboBoxSelect(Sender: TObject);
   private
+    FDialog: TAbstractOptionsEditorDialog;
     FCompOptions: TBaseCompilerOptions;
     FIsPackage: boolean;
+    procedure UpdateByTargetOS(aTargetOS: string);
+    procedure UpdateByTargetCPU(aTargetCPU: string);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -117,11 +123,6 @@ end;
 
 { TCompilerConfigTargetFrame }
 
-procedure TCompilerConfigTargetFrame.chkCustomConfigFileClick(Sender: TObject);
-begin
-  edtConfigPath.Enabled := chkCustomConfigFile.Checked;
-end;
-
 constructor TCompilerConfigTargetFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -175,8 +176,82 @@ begin
   Result := dlgConfigAndTarget;
 end;
 
+procedure TCompilerConfigTargetFrame.UpdateByTargetOS(aTargetOS: string);
+var
+  DbgMsg: String;
+begin
+  DbgMsg := '';
+  if aTargetOS = '' then
+  begin
+    aTargetOS := '$(TargetOS)';
+    if not GlobalMacroList.SubstituteStr(aTargetOS) then
+      raise Exception.CreateFmt('Cannot substitute macro "%s".', [aTargetOS]);
+    DbgMsg := ' (got by using $(TargetOS) macro)';
+  end;
+  DebugLn(['TCompilerConfigTargetFrame.UpdateTargetSpecific: TargetOS=',aTargetOS,DbgMsg]);
+  // Now hide/show the whole GroupBox because there is only one setting.
+  grbTargetOptions.Visible := AnsiStartsStr('Win', aTargetOS);
+end;
+
+procedure TCompilerConfigTargetFrame.UpdateByTargetCPU(aTargetCPU: string);
+var
+  IsIntel: Boolean;
+
+  procedure IntelProcessor;
+  begin
+    IsIntel := True;
+    with TargetProcComboBox.Items do
+    begin
+      Add(ProcessorToCaption('80386'));
+      Add(ProcessorToCaption('Pentium'));
+      Add(ProcessorToCaption('Pentium2'));
+      Add(ProcessorToCaption('Pentium3'));
+      Add(ProcessorToCaption('Pentium4'));
+      Add(ProcessorToCaption('PentiumM'));
+    end;
+  end;
+
+var
+  DbgMsg: String;
+  ParsingFrame: TCompilerParsingOptionsFrame;
+begin
+  IsIntel := False;
+  DbgMsg := '';
+  if aTargetCPU = '' then
+  begin
+    aTargetCPU := '$(TargetCPU)';
+    if not GlobalMacroList.SubstituteStr(aTargetCPU) then
+      raise Exception.CreateFmt('Cannot substitute macro "%s".', [aTargetCPU]);
+    DbgMsg := ' (got by using $(TargetCPU) macro)';
+  end;
+  DebugLn(['TCompilerConfigTargetFrame.UpdateTargetProcessorList: TargetCPU=',aTargetCPU,DbgMsg]);
+
+  // Update selection list for target processor
+  TargetProcComboBox.Clear;
+  TargetProcComboBox.Items.Add(ProcessorToCaption(''));
+  case aTargetCPU of
+    'arm': begin end;
+    'i386': IntelProcessor;
+    'm68k': begin end;
+    'powerpc': begin end;
+    'sparc': begin end;
+    'x86_64': IntelProcessor;
+    'mipsel': begin end;
+    'mips': begin end;
+    'jvm': begin end;
+  end;
+  TargetProcComboBox.ItemIndex := 0;
+
+  // Update selection list for assembler style
+  ParsingFrame := TCompilerParsingOptionsFrame(FDialog.FindEditor(TCompilerParsingOptionsFrame));
+  Assert(Assigned(ParsingFrame));
+  ParsingFrame.grpAsmStyle.Visible := IsIntel;
+end;
+
 procedure TCompilerConfigTargetFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
+  FDialog := ADialog;
+
   // Config
   grpConfigFile.Caption := dlgConfigFiles;
   chkConfigFile.Caption := dlgUseFpcCfg + ' (If not checked: -n)';
@@ -188,80 +263,59 @@ begin
   lblTargetOS.Caption := dlgTargetOS + ' (-T)';
   with TargetOSComboBox do
   begin
-    with Items do
-    begin
-      Add('(' + lisDefault + ')');
-      Add('Darwin');
-      Add('FreeBSD');
-      Add('Linux');
-      Add('NetBSD');
-      Add('OpenBSD');
-      Add('Solaris');
-      Add('Win32');
-      Add('Win64');
-      Add('WinCE');
-      Add('aix');
-      Add('amiga');
-      Add('android');
-      Add('atari');
-      Add('beos');
-      Add('embedded');
-      Add('emx');
-      Add('gba');
-      Add('go32v2');
-      Add('haiku');
-      Add('iphonesim');
-      Add('java');
-      Add('macos');
-      Add('morphos');
-      Add('nds');
-      Add('netware');
-      Add('netwlibc');
-      Add('os2');
-      Add('palmos');
-      Add('qnx');
-      Add('symbian');
-      Add('watcom');
-      Add('wdosx');
-    end;
+    Items.Add('(' + lisDefault + ')');
+    Items.Add('Darwin');
+    Items.Add('FreeBSD');
+    Items.Add('Linux');
+    Items.Add('NetBSD');
+    Items.Add('OpenBSD');
+    Items.Add('Solaris');
+    Items.Add('Win32');
+    Items.Add('Win64');
+    Items.Add('WinCE');
+    Items.Add('aix');
+    Items.Add('amiga');
+    Items.Add('android');
+    Items.Add('atari');
+    Items.Add('beos');
+    Items.Add('embedded');
+    Items.Add('emx');
+    Items.Add('gba');
+    Items.Add('go32v2');
+    Items.Add('haiku');
+    Items.Add('iphonesim');
+    Items.Add('java');
+    Items.Add('macos');
+    Items.Add('morphos');
+    Items.Add('nds');
+    Items.Add('netware');
+    Items.Add('netwlibc');
+    Items.Add('os2');
+    Items.Add('palmos');
+    Items.Add('qnx');
+    Items.Add('symbian');
+    Items.Add('watcom');
+    Items.Add('wdosx');
     ItemIndex := 0;
   end;
 
   lblTargetCPU.Caption := dlgTargetCPUFamily + ' (-P)';
   with TargetCPUComboBox do
   begin
-    with Items do
-    begin
-      Add('(' + lisDefault + ')');
-      Add('arm');
-      Add('i386');
-      Add('m68k');
-      Add('powerpc');
-      Add('sparc');
-      Add('x86_64');
-      Add('mipsel');
-      Add('mips');
-      Add('jvm');
-    end;
+    Items.Add('(' + lisDefault + ')');
+    Items.Add('arm');
+    Items.Add('i386');
+    Items.Add('m68k');
+    Items.Add('powerpc');
+    Items.Add('sparc');
+    Items.Add('x86_64');
+    Items.Add('mipsel');
+    Items.Add('mips');
+    Items.Add('jvm');
     ItemIndex := 0;
   end;
 
-  lblTargetProcessorProc.Caption := dlgTargetProc;
-  with TargetProcessorProcComboBox do
-  begin
-    with Items do
-    begin
-      Clear;
-      Add(ProcessorToCaption(''));
-      Add(ProcessorToCaption('80386'));
-      Add(ProcessorToCaption('Pentium'));
-      Add(ProcessorToCaption('Pentium2'));
-      Add(ProcessorToCaption('Pentium3'));
-      Add(ProcessorToCaption('Pentium4'));
-      Add(ProcessorToCaption('PentiumM'));
-    end;
-    ItemIndex := 0;
-  end;
+  lblTargetProc.Caption := dlgTargetProc;
 
   // Target options
   grbTargetOptions.Caption := dlgTargetSpecificOptions;
@@ -288,7 +342,7 @@ begin
       TargetOSComboBox.Text := 'default';
       TargetCPUComboBox.ItemIndex := 0;
       TargetCPUComboBox.Text := 'default';
-      TargetProcessorProcComboBox.Text := 'default';
+      TargetProcComboBox.Text := 'default';
     end else begin
       grpTargetPlatform.Visible:=true;
       // Target OS
@@ -302,7 +356,9 @@ begin
         i := 0;  // 0 is default
       TargetCPUComboBox.ItemIndex := i;
       // Target Processor
-      TargetProcessorProcComboBox.Text := ProcessorToCaption(TargetProcessor);
+      UpdateByTargetCPU(TargetCPU);
+      UpdateByTargetOS(TargetOS);
+      TargetProcComboBox.Text := ProcessorToCaption(TargetProcessor);
     end;
     chkWin32GraphicApp.Checked := Win32GraphicApp;
     chkWin32GraphicApp.Enabled := NeedsLinkerOpts;
@@ -332,10 +388,41 @@ begin
       if TargetCPUComboBox.Items.IndexOf(NewTargetCPU) <= 0 then
         NewTargetCPU := '';
       TargetCPU := CaptionToCPU(NewTargetCPU);
-      TargetProcessor := CaptionToProcessor(TargetProcessorProcComboBox.Text);
+      TargetProcessor := CaptionToProcessor(TargetProcComboBox.Text);
     end;
     Win32GraphicApp := chkWin32GraphicApp.Checked;
   end;
+end;
+
+procedure TCompilerConfigTargetFrame.chkCustomConfigFileClick(Sender: TObject);
+begin
+  edtConfigPath.Enabled := chkCustomConfigFile.Checked;
+end;
+
+procedure TCompilerConfigTargetFrame.TargetOSComboBoxSelect(Sender: TObject);
+var
+  cb: TComboBox;
+  s: TCaption;
+begin
+  cb := Sender as TComboBox;
+  if cb.ItemIndex = 0 then
+    s :=''
+  else
+    s := cb.Text;
+  UpdateByTargetOS(s);
+end;
+
+procedure TCompilerConfigTargetFrame.TargetCPUComboBoxSelect(Sender: TObject);
+var
+  cb: TComboBox;
+  s: String;
+begin
+  cb := Sender as TComboBox;
+  if cb.ItemIndex = 0 then
+    s :=''
+  else
+    s := cb.Text;
+  UpdateByTargetCPU(s);
 end;
 
 class function TCompilerConfigTargetFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
