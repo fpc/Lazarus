@@ -1243,6 +1243,27 @@ begin
     Load(false);
   end;
 
+  // read language and lazarusdir paramters, needed for translation
+  if Application.HasOption('language') then
+  begin
+    debugln('TMainIDE.LoadGlobalOptions overriding language with command line: ',
+      Application.GetOptionValue('language'));
+    EnvironmentOptions.LanguageID := Application.GetOptionValue('language');
+  end;
+  if Application.HasOption('lazarusdir') then
+  begin
+    debugln('TMainIDE.LoadGlobalOptions overriding Lazarusdir with command line: ',
+      Application.GetOptionValue('lazarusdir'));
+    EnvironmentOptions.Lazarusdirectory:= Application.GetOptionValue('lazarusdir');
+  end;
+
+  // translate IDE resourcestrings
+  Application.BidiMode := Application.Direction(EnvironmentOptions.LanguageID);
+  TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
+                           EnvironmentOptions.LanguageID);
+  MainBuildBoss.TranslateMacros;
+
+  // check if this PCP was used by another lazarus exe
   s := ExtractFileName(ParamStrUTF8(0));
   CurPrgName := TrimFilename(AppendPathDelim(ProgramDirectory(False)) + s);
   AltPrgName := TrimFilename(AppendPathDelim(AppendPathDelim(GetPrimaryConfigPath) + 'bin') + s);
@@ -1256,7 +1277,7 @@ begin
       // original lazarus exe
       // => Probably someone updated trunk
     end else begin
-      // the lazarus exe was started => remember this exe in the PCP
+      // remember this exe in the PCP
       EnvironmentOptions.LastCalledByLazarusFullPath := CurPrgName;
       SaveEnvironment(False);
     end;
@@ -1290,25 +1311,6 @@ begin
     end;
   end;
 
-
-  if Application.HasOption('language') then
-  begin
-    debugln('TMainIDE.LoadGlobalOptions overriding language with command line: ',
-      Application.GetOptionValue('language'));
-    EnvironmentOptions.LanguageID := Application.GetOptionValue('language');
-  end;
-  if Application.HasOption('lazarusdir') then
-  begin
-    debugln('TMainIDE.LoadGlobalOptions overriding Lazarusdir with command line: ',
-      Application.GetOptionValue('lazarusdir'));
-    EnvironmentOptions.Lazarusdirectory:= Application.GetOptionValue('lazarusdir');
-  end;
-
-  Application.BidiMode := Application.Direction(EnvironmentOptions.LanguageID);
-
-  TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
-                           EnvironmentOptions.LanguageID);
-  MainBuildBoss.TranslateMacros;
 
   Application.ShowButtonGlyphs := EnvironmentOptions.ShowButtonGlyphs;
   Application.ShowMenuGlyphs := EnvironmentOptions.ShowMenuGlyphs;
