@@ -1808,6 +1808,7 @@ end;
 
 function TBeautifyCodeOptions.AddClassAndNameToProc(const AProcCode, AClassName,
   AMethodName: string): string;
+{off $DEFINE VerboseAddClassAndNameToProc}
 var
   p, StartPos, NamePos, ProcLen: integer;
   s: string;
@@ -1818,12 +1819,16 @@ begin
   ProcLen:=length(AProcCode);
   // read proc keyword 'procedure', 'function', ...
   ReadRawNextPascalAtom(AProcCode,p,KeyWordPos);
-  //debugln(['TBeautifyCodeOptions.AddClassAndNameToProc keyword="',copy(AProcCode,KeyWordPos,p-KeyWordPos),'"']);
+  {$IFDEF VerboseAddClassAndNameToProc}
+  debugln(['TBeautifyCodeOptions.AddClassAndNameToProc keyword="',copy(AProcCode,KeyWordPos,p-KeyWordPos),'"']);
+  {$ENDIF}
   if KeyWordPos>ProcLen then
     raise Exception.Create('TBeautifyCodeOptions.AddClassAndNameToProc missing keyword');
   if CompareIdentifiers('CLASS',@AProcCode[KeyWordPos])=0 then begin
     ReadRawNextPascalAtom(AProcCode,p,KeyWordPos);
-    //debugln(['TBeautifyCodeOptions.AddClassAndNameToProc after class keyword="',copy(AProcCode,KeyWordPos,p-KeyWordPos),'"']);
+    {$IFDEF VerboseAddClassAndNameToProc}
+    debugln(['TBeautifyCodeOptions.AddClassAndNameToProc after class keyword="',copy(AProcCode,KeyWordPos,p-KeyWordPos),'"']);
+    {$ENDIF}
     if KeyWordPos>ProcLen then
       raise Exception.Create('TBeautifyCodeOptions.AddClassAndNameToProc missing keyword');
   end;
@@ -1831,9 +1836,12 @@ begin
     raise Exception.Create('TBeautifyCodeOptions.AddClassAndNameToProc missing keyword');
   // read name
   ReadRawNextPascalAtom(AProcCode,p,NamePos);
-  //debugln(['TBeautifyCodeOptions.AddClassAndNameToProc name="',copy(AProcCode,NamePos,p-NamePos),'"']);
+  {$IFDEF VerboseAddClassAndNameToProc}
+  debugln(['TBeautifyCodeOptions.AddClassAndNameToProc name="',copy(AProcCode,NamePos,p-NamePos),'"']);
+  {$ENDIF}
   if (NamePos>ProcLen)
-  or (CompareIdentifiers('OF',@AProcCode[NamePos])=0) then
+  or (CompareIdentifiers('OF',@AProcCode[NamePos])=0)
+  or (not IsIdentChar[AProcCode[NamePos]]) then
   begin
     // there is no name yet
     s:=AMethodName;
@@ -1841,7 +1849,7 @@ begin
       s:=AClassName+'.'+s;
     if IsIdentChar[AProcCode[NamePos-1]] then
       s:=' '+s;
-    if IsIdentChar[AProcCode[NamePos]] then
+    if (NamePos<=ProcLen) and IsIdentChar[AProcCode[NamePos]] then
       s:=s+' ';
     Result:=copy(AProcCode,1,NamePos-1)+s
            +copy(AProcCode,NamePos,length(AProcCode)-NamePos+1);
@@ -1853,7 +1861,9 @@ begin
     end else begin
       // read atom behind name
       ReadRawNextPascalAtom(AProcCode,p,StartPos);
-      //debugln(['TBeautifyCodeOptions.AddClassAndNameToProc behind name="',copy(AProcCode,StartPos,p-StartPos),'"']);
+      {$IFDEF VerboseAddClassAndNameToProc}
+      debugln(['TBeautifyCodeOptions.AddClassAndNameToProc behind name="',copy(AProcCode,StartPos,p-StartPos),'"']);
+      {$ENDIF}
       if (p>StartPos) and (AProcCode[StartPos]='<') then begin
         // skip generic "name<>"
         Level:=1;
@@ -1872,7 +1882,9 @@ begin
             end;
           end;
         until false;
-        //debugln(['TBeautifyCodeOptions.AddClassAndNameToProc behind <>="',copy(AProcCode,StartPos,p-StartPos),'"']);
+        {$IFDEF VerboseAddClassAndNameToProc}
+        debugln(['TBeautifyCodeOptions.AddClassAndNameToProc behind <>="',copy(AProcCode,StartPos,p-StartPos),'"']);
+        {$ENDIF}
       end;
       if (StartPos>ProcLen) or (AProcCode[StartPos]<>'.') then begin
         // has no class name yet => insert
