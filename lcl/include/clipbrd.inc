@@ -311,7 +311,7 @@ var
 begin
   BeginUpdate;
   try
-    i:=IndexOfCachedFormatID(PredefinedClipboardFormat(pcfCustomData),true);
+    i:=IndexOfCachedFormatID(PredefinedClipboardFormat(pcfComponent),true);
     s:=FData[i].Stream;
     s.Clear;
     WriteComponentAsBinaryToStream(s,Component);
