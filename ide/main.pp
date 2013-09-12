@@ -1225,11 +1225,13 @@ procedure TMainIDE.LoadGlobalOptions;
   end;
 var
   EnvOptsCfgExisted: boolean;
-  s, s1, s2, LastCalled: String;
+  s, LastCalled: String;
   OldVer: String;
   NowVer: String;
   IsUpgrade: boolean;
   MsgResult: TModalResult;
+  CurPrgName: String;
+  AltPrgName: String;
 begin
   with EnvironmentOptions do
   begin
@@ -1241,36 +1243,42 @@ begin
     Load(false);
   end;
 
-  s2 := ExtractFileName(ParamStrUTF8(0));
-  s := AppendPathDelim(ProgramDirectory(False)) + s2;
-  s1 := s; // keep case correct copy
-  s2 := AppendPathDelim(AppendPathDelim(GetPrimaryConfigPath) + 'bin') + s2;
+  s := ExtractFileName(ParamStrUTF8(0));
+  CurPrgName := TrimFilename(AppendPathDelim(ProgramDirectory(False)) + s);
+  AltPrgName := TrimFilename(AppendPathDelim(AppendPathDelim(GetPrimaryConfigPath) + 'bin') + s);
   LastCalled := EnvironmentOptions.LastCalledByLazarusFullPath;
-  {$IFDEF Windows}
-  s := LowerCase(s);
-  s2 := LowerCase(s2);
-  LastCalled := LowerCase(LastCalled);
-  {$ENDIF}
-  if (LastCalled = '') then begin
-    if (s <> s2) then begin // do not set to exe in pcp
-      EnvironmentOptions.LastCalledByLazarusFullPath := s1;
+  if (LastCalled = '') then
+  begin
+    // this PCP was not yet used (at least not with a version with LastCalledByLazarusFullPath)
+    if CompareFilenames(CurPrgName,AltPrgName)=0 then
+    begin
+      // a custom built IDE is started and the PCP has no information about the
+      // original lazarus exe
+      // => Probably someone updated trunk
+    end else begin
+      // the lazarus exe was started => remember this exe in the PCP
+      EnvironmentOptions.LastCalledByLazarusFullPath := CurPrgName;
       SaveEnvironment(False);
     end;
   end
   else
-  if (LastCalled <> s) and
-     (LastCalled <> s2) and
-     (s <> s2) // we can NOT check, if we only have the path inside the PCP
+  if (CompareFilenames(LastCalled,CurPrgName)<>0) and
+     (CompareFilenames(LastCalled,AltPrgName)<>0) and
+     (CompareFilenames(CurPrgName,AltPrgName)<>0) // we can NOT check, if we only have the path inside the PCP
   then begin
+    // last time the PCP was started from another lazarus exe
+    // => either the user forgot to pass a --pcp
+    //    or the user uninstalled and installed to another directory
+    // => warn
     MsgResult := IDEQuestionDialog(lisIncorrectConfigurationDirectoryFound,
         Format(lisIDEConficurationFoundMayBelongToOtherLazarus,
         [LineEnding, GetSecondConfDirWarning, GetPrimaryConfigPath,
-         EnvironmentOptions.LastCalledByLazarusFullPath, s1]),
+         EnvironmentOptions.LastCalledByLazarusFullPath, CurPrgName]),
       mtWarning, [mrOK, lisUpdateInfo, mrIgnore, mrAbort]);
 
     case MsgResult of
       mrOk: begin
-          EnvironmentOptions.LastCalledByLazarusFullPath := s;
+          EnvironmentOptions.LastCalledByLazarusFullPath := CurPrgName;
           SaveEnvironment(False);
         end;
       mrIgnore: ;
