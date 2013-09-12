@@ -1808,30 +1808,32 @@ end;
 
 function TBeautifyCodeOptions.AddClassAndNameToProc(const AProcCode, AClassName,
   AMethodName: string): string;
-var StartPos, NamePos, ProcLen: integer;
+var
+  p, StartPos, NamePos, ProcLen: integer;
   s: string;
   KeyWordPos: LongInt;
+  Level: Integer;
 begin
-  if CompareSubStrings('CLASS ',AProcCode,1,1,6,false)<>0 then
-    StartPos:=1
-  else
-    StartPos:=6;
+  p:=1;
   ProcLen:=length(AProcCode);
   // read proc keyword 'procedure', 'function', ...
-  while (StartPos<=ProcLen) and (IsSpaceChar[AProcCode[StartPos]]) do
-    inc(StartPos);
-  KeyWordPos:=StartPos;
-  while (StartPos<=ProcLen) and (IsIdentChar[AProcCode[StartPos]]) do
-    inc(StartPos);
-  if KeyWordPos=StartPos then
+  ReadRawNextPascalAtom(AProcCode,p,KeyWordPos);
+  //debugln(['TBeautifyCodeOptions.AddClassAndNameToProc keyword="',copy(AProcCode,KeyWordPos,p-KeyWordPos),'"']);
+  if KeyWordPos>ProcLen then
     raise Exception.Create('TBeautifyCodeOptions.AddClassAndNameToProc missing keyword');
-  while (StartPos<=ProcLen) and (IsSpaceChar[AProcCode[StartPos]]) do
-    inc(StartPos);
-  NamePos:=StartPos;
-  while (StartPos<=ProcLen) and (IsIdentChar[AProcCode[StartPos]]) do
-    inc(StartPos);
-  if (NamePos=StartPos)
-  or (CompareSubStrings('OF',AProcCode,1,NamePos,2,false)=0) then
+  if CompareIdentifiers('CLASS',@AProcCode[KeyWordPos])=0 then begin
+    ReadRawNextPascalAtom(AProcCode,p,KeyWordPos);
+    //debugln(['TBeautifyCodeOptions.AddClassAndNameToProc after class keyword="',copy(AProcCode,KeyWordPos,p-KeyWordPos),'"']);
+    if KeyWordPos>ProcLen then
+      raise Exception.Create('TBeautifyCodeOptions.AddClassAndNameToProc missing keyword');
+  end;
+  if KeyWordPos>ProcLen then
+    raise Exception.Create('TBeautifyCodeOptions.AddClassAndNameToProc missing keyword');
+  // read name
+  ReadRawNextPascalAtom(AProcCode,p,NamePos);
+  //debugln(['TBeautifyCodeOptions.AddClassAndNameToProc name="',copy(AProcCode,NamePos,p-NamePos),'"']);
+  if (NamePos>ProcLen)
+  or (CompareIdentifiers('OF',@AProcCode[NamePos])=0) then
   begin
     // there is no name yet
     s:=AMethodName;
@@ -1845,24 +1847,42 @@ begin
            +copy(AProcCode,NamePos,length(AProcCode)-NamePos+1);
   end else begin
     // there is already a name
-    if AClassName<>'' then begin
-      while (StartPos<=ProcLen) do
-        if IsSpaceChar[AProcCode[StartPos]] then
-          inc(StartPos)
-        else
-        if AProcCode[StartPos] = '<' then { the case of delphi style generics }
-        begin
-          while (StartPos<=ProcLen) and (AProcCode[StartPos]<>'>') do
-            inc(StartPos);
-          inc(StartPos)
-        end else Break;
-      if (StartPos<=ProcLen) and (AProcCode[StartPos]<>'.') then
-        Result:=copy(AProcCode,1,NamePos-1)+AClassName+'.'
-               +copy(AProcCode,NamePos,length(AProcCode)-NamePos+1)
-      else
-        Result:=AProcCode;
-    end else
+    if AClassName='' then begin
+      // keep name
       Result:=AProcCode;
+    end else begin
+      // read atom behind name
+      ReadRawNextPascalAtom(AProcCode,p,StartPos);
+      //debugln(['TBeautifyCodeOptions.AddClassAndNameToProc behind name="',copy(AProcCode,StartPos,p-StartPos),'"']);
+      if (p>StartPos) and (AProcCode[StartPos]='<') then begin
+        // skip generic "name<>"
+        Level:=1;
+        repeat
+          ReadRawNextPascalAtom(AProcCode,p,StartPos);
+          if StartPos>ProcLen then break;
+          case AProcCode[StartPos] of
+          '<': inc(Level);
+          '>':
+            begin
+              dec(Level);
+              if Level=0 then begin
+                ReadRawNextPascalAtom(AProcCode,p,StartPos);
+                break;
+              end;
+            end;
+          end;
+        until false;
+        //debugln(['TBeautifyCodeOptions.AddClassAndNameToProc behind <>="',copy(AProcCode,StartPos,p-StartPos),'"']);
+      end;
+      if (StartPos>ProcLen) or (AProcCode[StartPos]<>'.') then begin
+        // has no class name yet => insert
+        Result:=copy(AProcCode,1,NamePos-1)+AClassName+'.'
+               +copy(AProcCode,NamePos,length(AProcCode)-NamePos+1);
+      end else begin
+        // keep classname and name
+        Result:=AProcCode;
+      end;
+    end;
   end;
 end;
 

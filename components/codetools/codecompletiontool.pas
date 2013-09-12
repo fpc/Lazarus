@@ -60,8 +60,6 @@
               FItems.Free;
               inherited Destroy;
             end;
-
-    -VarExists: search vars in ancestors too
 }
 unit CodeCompletionTool;
 
@@ -8217,7 +8215,9 @@ var
       ANode:=TheNodeExt.Node;
       if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
         ProcCode:=ExtractProcHead(ANode,ProcAttrDefToBody);
+        //debugln(['CreateCodeForMissingProcBody Definition="',ProcCode,'"']);
         TheNodeExt.ExtTxt3:=Beauty.BeautifyProc(ProcCode,Indent,true);
+        //debugln(['CreateCodeForMissingProcBody Beautified="',TheNodeExt.ExtTxt3,'"']);
       end;
     end;
   end;
