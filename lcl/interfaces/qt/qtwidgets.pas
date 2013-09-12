@@ -3541,7 +3541,7 @@ end;
   Qt stores the delta in 1/8 of a degree
   Most mouses scroll 15 degrees each time
  
-  Msg.WheelData: -1 for up, 1 for down
+  Msg.WheelDelta: -1 for up, 1 for down
  ------------------------------------------------------------------------------}
 function TQtWidget.SlotMouseWheel(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var

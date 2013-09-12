@@ -95,7 +95,7 @@ type
     MSg: Cardinal;
     ShiftState: TShiftState;
     Unused: Byte;
-    WheelData: SmallInt;
+    WheelDelta: SmallInt;
     case Integer of
     0: (
       XPos: SmallInt;
