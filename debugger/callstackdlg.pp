@@ -210,7 +210,7 @@ end;
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
 begin
   DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TCallStackDlg.CallStackChanged from ',  DbgSName(Sender), ' Upd:', IsUpdating]);
-  if not ToolButtonPower.Down then exit;
+  if (not ToolButtonPower.Down) or FInUpdateView then exit;
   if FViewStart = 0
   then UpdateView
   else SetViewStart(0);
@@ -348,8 +348,8 @@ begin
     FInUpdateView := True;
     CStack.PrepareRange(First, Count);
     // TODO: must make CStack ref-counted
-    if CStack <> GetSelectedCallstack then exit; // Something changed, maybe debugger stopped
     FInUpdateView := False;
+    if CStack <> GetSelectedCallstack then exit; // Something changed, maybe debugger stopped
     for n := 0 to Count - 1 do
     begin
       Item := lvCallStack.Items[n];
