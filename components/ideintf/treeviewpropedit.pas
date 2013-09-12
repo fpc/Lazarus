@@ -46,11 +46,15 @@ type
     LabelSelectedIndex: TLabel;
     LabelStateIndex: TLabel;
     OpenDialog1: TOpenDialog;
+    MoveDownBtn: TSpeedButton;
+    MoveUpBtn: TSpeedButton;
     SaveDialog1: TSaveDialog;
     TreeView1: TTreeView;
     procedure BtnNewItemClick(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure MoveUpBtnClick(Sender: TObject);
+    procedure MoveDownBtnClick(Sender: TObject);
     procedure TreeView1SelectionChanged(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
@@ -60,8 +64,9 @@ type
   private
     FTreeView: TTreeView;
     FModified: Boolean;
-    procedure LoadFromTree(ATreeView:TTreeView);
+    procedure LoadFromTree(ATreeView: TTreeView);
     procedure SaveToTree;
+    procedure UpdateEnabledStates;
   public
   end; 
 
@@ -136,6 +141,10 @@ begin
   BtnLoad.Caption := sccsTrEdtLoad;
   BtnSave.Caption := sccsTrEdtSave;
   BtnApply.Caption := sccsTrEdtApply;
+  MoveUpBtn.LoadGlyphFromLazarusResource('arrow_up');
+  MoveDownBtn.LoadGlyphFromLazarusResource('arrow_down');
+  MoveUpBtn.Hint:=rscdMoveUp;
+  MoveDownBtn.Hint:=rscdMoveDown;
 
   GroupBox2.Caption := sccsTrEdtGrpRCaption;
   LabelText.Caption := sccsTrEdtLabelText;
@@ -147,6 +156,26 @@ begin
   SaveDialog1.Title := sccsTrEdtSaveDialog;
 end;
 
+procedure TTreeViewItemsEditorForm.MoveUpBtnClick(Sender: TObject);
+var
+  CurNode, PrevNode: TTreeNode;
+begin
+  CurNode := TreeView1.Selected;      Assert(Assigned(CurNode));
+  PrevNode := CurNode.GetPrevSibling; Assert(Assigned(PrevNode));
+  CurNode.MoveTo(PrevNode, naInsert);
+  UpdateEnabledStates;
+end;
+
+procedure TTreeViewItemsEditorForm.MoveDownBtnClick(Sender: TObject);
+var
+  CurNode, NextNode: TTreeNode;
+begin
+  CurNode := TreeView1.Selected;      Assert(Assigned(CurNode));
+  NextNode := CurNode.GetNextSibling; Assert(Assigned(NextNode));
+  CurNode.MoveTo(NextNode, naInsertBehind);
+  UpdateEnabledStates;
+end;
+
 procedure TTreeViewItemsEditorForm.TreeView1SelectionChanged(Sender: TObject);
 begin
   if Assigned(TreeView1.Selected) then
@@ -156,6 +185,7 @@ begin
     edtIndexSel.Text := IntToStr(TreeView1.Selected.SelectedIndex);
     edtIndexState.Text := IntToStr(TreeView1.Selected.StateIndex);
   end;
+  UpdateEnabledStates;
 end;
 
 procedure TTreeViewItemsEditorForm.btnApplyClick(Sender: TObject);
@@ -174,13 +204,10 @@ begin
       TempNode := TreeView1.Selected.GetPrevSibling;
     if TempNode = nil then
       TempNode := TreeView1.Selected.Parent;
-      
     TreeView1.Items.Delete(TreeView1.Selected);
-    
     if TempNode <> nil then
       TreeView1.Selected := TempNode;
-      
-    GroupBox2.Enabled := TreeView1.Items.Count > 0;
+    UpdateEnabledStates;
     TreeView1.SetFocus;
   end;
 end;
@@ -190,7 +217,7 @@ begin
   if OpenDialog1.Execute then
   begin
     TreeView1.LoadFromFile(OpenDialog1.FileName);
-    GroupBox2.Enabled := TreeView1.Items.Count > 0;
+    UpdateEnabledStates;
   end;
 end;
 
@@ -223,8 +250,7 @@ begin
     TreeView1.StateImages := ATreeView.StateImages;
     TreeView1.Items.Assign(ATreeView.Items);
   end;
-  
-  GroupBox2.Enabled := TreeView1.Items.Count > 0;
+  UpdateEnabledStates;
 end;
 
 procedure TTreeViewItemsEditorForm.SaveToTree;
@@ -235,6 +261,17 @@ begin
     FModified := True;
   end;
 end;
+
+procedure TTreeViewItemsEditorForm.UpdateEnabledStates;
+var
+  CurNode: TTreeNode;
+begin
+  CurNode := TreeView1.Selected;
+  MoveUpBtn.Enabled := Assigned(CurNode) and Assigned(CurNode.GetPrevSibling);
+  MoveDownBtn.Enabled:=Assigned(CurNode) and Assigned(CurNode.GetNextSibling);
+  GroupBox2.Enabled := Assigned(CurNode);
+end;
+
 
 { TTreeViewItemsProperty }
 
