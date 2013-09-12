@@ -10351,6 +10351,7 @@ begin
     end;
     if (ifeRecoveredTimedOut in Instr.ErrorFlags) then begin
       // TODO: use feedback dialog
+      Result := True;
       DoDbgEvent(ecDebugger, etDefault, Format(gdbmiTimeOutForCmd, [ACommand]));
       DoTimeoutFeedback;
     end;
