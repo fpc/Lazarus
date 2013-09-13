@@ -238,8 +238,8 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    property ActivePage: TExtendedTabSheet read GetActiveTabSheet write SetActiveTabSheet;
-    property Pages[Index: Integer]: TExtendedTabSheet read GetTabSheet;
+    property ActivePage: TExtendedTabSheet read GetActiveTabSheet write SetActiveTabSheet; experimental; platform;
+    property Pages[Index: Integer]: TExtendedTabSheet read GetTabSheet; experimental; platform;
     property ShowToolBar: TTabControlToolBarSide read GetShowToolBar write SetShowToolBar;
     property ToolBar: TToolbarWrapper read FToolBarWrapper;
     property OnChange; // Only pages // TODO: activate for tabs
