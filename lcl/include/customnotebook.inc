@@ -636,6 +636,12 @@ begin
     Options := Options - [nboMultiLine];
 end;
 
+procedure TCustomTabControl.SetStyle(AValue: TTabStyle);
+begin
+  if FStyle = AValue then Exit;
+  FStyle := AValue;
+end;
+
 {------------------------------------------------------------------------------
   function TCustomTabControl.FindVisiblePage(Index: Integer): Integer;
 

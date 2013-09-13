@@ -280,6 +280,42 @@ begin
   end;
 end;
 
+class function TQtWSCustomTabControl.GetNotebookMinTabHeight(
+  const AWinControl: TWinControl): integer;
+var
+  dy: integer;
+  ATabWidget: TQtTabWidget;
+begin
+  if AWinControl.HandleAllocated and
+     (TQtWidget(AWinControl.Handle).ChildOfComplexWidget <> ccwTTabControl)
+  then begin
+    ATabWidget := TQtTabWidget(AWinControl.Handle);
+    Result := 0;
+    ATabWidget.TabBar.preferredSize(dy, Result, False);
+    if Result > 0 then
+      exit;
+  end;
+  Result:=inherited GetNotebookMinTabHeight(AWinControl);
+end;
+
+class function TQtWSCustomTabControl.GetNotebookMinTabWidth(
+  const AWinControl: TWinControl): integer;
+var
+  dy: integer;
+  ATabWidget: TQtTabWidget;
+begin
+  if AWinControl.HandleAllocated and
+     (TQtWidget(AWinControl.Handle).ChildOfComplexWidget <> ccwTTabControl)
+  then begin
+    ATabWidget := TQtTabWidget(AWinControl.Handle);
+    Result := 0;
+    ATabWidget.TabBar.preferredSize(Result, dy, False);
+    if Result > 0 then
+      exit;
+  end;
+  Result:=inherited GetNotebookMinTabWidth(AWinControl);
+end;
+
 class function TQtWSCustomTabControl.GetCapabilities: TCTabControlCapabilities;
 begin
   Result := [nbcShowCloseButtons];

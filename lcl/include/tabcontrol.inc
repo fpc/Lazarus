@@ -193,6 +193,17 @@ begin
   TabControlBoundsChange;
 end;
 
+procedure TTabControlNoteBookStrings.SetStyle(AValue: TTabStyle);
+begin
+  FNoteBook.Style := AValue;
+  TabControlBoundsChange;
+end;
+
+function TTabControlNoteBookStrings.GetStyle: TTabStyle;
+begin
+  Result := FNoteBook.Style;
+end;
+
 function TTabControlNoteBookStrings.Get(Index: Integer): string;
 begin
   Result:=FNoteBook.Pages[Index];
@@ -297,6 +308,7 @@ end;
 procedure TTabControlNoteBookStrings.Insert(Index: Integer; const S: string);
 begin
   FNoteBook.Pages.Insert(Index, S);
+  TabControlBoundsChange;
 end;
 
 function TTabControlNoteBookStrings.GetSize: integer;
@@ -459,11 +471,12 @@ begin
   TTabControlStrings(FTabs).ScrollOpposite:=AValue;
 end;
 
-procedure TTabControl.SetStyle(const AValue: TTabStyle);
+procedure TTabControl.SetStyle(AValue: TTabStyle);
 begin
+  inherited SetStyle(AValue);
   if FStyle=AValue then exit;
   FStyle:=AValue;
-  // ToDo
+  TTabControlNoteBookStrings(FTabs).Style := AValue;
 end;
 
 procedure TTabControl.SetTabHeight(const AValue: Smallint);
@@ -592,7 +605,7 @@ end;
 
 procedure TTabControl.Paint;
 var
-  ARect: TRect;
+  ARect, ARect2: TRect;
   TS: TTextStyle;
   Details: TThemedElementDetails;
   lCanvas: TCanvas;
@@ -606,7 +619,15 @@ begin
   AdjustDisplayRectWithBorder(ARect);
 
   Details := ThemeServices.GetElementDetails(ttPane);
-  ThemeServices.DrawElement(lCanvas.Handle, Details, ARect);
+  ARect2 := ARect;
+  // paint 1 pixel under the header, to avoid painting a closing border
+  case TabPosition of
+    tpTop:    ARect2.Top    := ARect2.Top    - 1;
+    tpBottom: ARect2.Bottom := ARect2.Bottom + 1;
+    tpLeft:   ARect2.Left   := ARect2.Left   - 1;
+    tpRight:  ARect2.Right  := ARect2.Right  + 1;
+  end;
+  ThemeServices.DrawElement(lCanvas.Handle, Details, ARect2);
 
   InflateRect(ARect,BorderWidth,BorderWidth);
   lCanvas.Frame3d(ARect, BorderWidth, bvRaised);
@@ -667,7 +688,7 @@ begin
   FTabs:=TTabControlNoteBookStrings.Create(Self);
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
-  BorderWidth:=2;
+  BorderWidth:=0;
   FTabControlCreating:=false;
 
   FCanvas := TControlCanvas.Create;

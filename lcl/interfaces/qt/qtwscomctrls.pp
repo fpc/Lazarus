@@ -67,6 +67,10 @@ type
     class procedure RemovePage(const ATabControl: TCustomTabControl;
       const AIndex: integer); override;
 
+    class function GetNotebookMinTabHeight(const AWinControl: TWinControl
+      ): integer; override;
+    class function GetNotebookMinTabWidth(const AWinControl: TWinControl
+      ): integer; override;
     class function GetCapabilities: TCTabControlCapabilities; override;
     class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
     class function GetTabIndexAtPos(const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer; override;

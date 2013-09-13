@@ -355,6 +355,7 @@ type
     procedure AddRemovePageHandle(APage: TCustomPage);
     procedure MoveTab(Sender: TObject; NewIndex: Integer);
     procedure SetMultiLine(const AValue: Boolean);
+    procedure SetStyle(AValue: TTabStyle); virtual;
     procedure WSMovePage(APage: TCustomPage; NewIndex: Integer);
     procedure PageRemoved(Index: Integer);
     procedure SetActivePage(const Value: String);
@@ -402,7 +403,7 @@ type
     property OwnerDraw: Boolean read FOwnerDraw write FOwnerDraw default False;
     property RaggedRight: Boolean read FRaggedRight write FRaggedRight default False;
     property ScrollOpposite: Boolean read FScrollOpposite write FScrollOpposite default False;
-    property Style: TTabStyle read FStyle write FStyle default tsTabs;
+    property Style: TTabStyle read FStyle write SetStyle default tsTabs;
     property Tabs: TStrings read FAccess write SetPages;
     property TabHeight: Smallint read FTabHeight write FTabHeight default 0;
     property TabIndex: Integer read FPageIndex write SetPageIndex default -1;
@@ -663,6 +664,8 @@ type
   private
     FNoteBook: TCustomTabControl{%H-};
     FInHandleCreated: Boolean;
+    function GetStyle: TTabStyle;
+    procedure SetStyle(AValue: TTabStyle);
   protected
     function Get(Index: Integer): string; override;
     function GetCount: Integer; override;
@@ -693,6 +696,7 @@ type
     procedure TabControlBoundsChange; override;
     function IndexOfTabAt(X, Y: Integer): Integer; override;
     property TabPosition: TTabPosition read GetTabPosition write SetTabPosition;
+    property Style: TTabStyle read GetStyle write SetStyle;
   public
     property NoteBook: TCustomTabControl read FNoteBook;
   end;
@@ -729,7 +733,7 @@ type
     procedure SetOwnerDraw(const AValue: Boolean);
     procedure SetRaggedRight(const AValue: Boolean);
     procedure SetScrollOpposite(const AValue: Boolean);
-    procedure SetStyle(const AValue: TTabStyle);
+    procedure SetStyle(AValue: TTabStyle); override;
     procedure SetTabHeight(const AValue: Smallint);
     procedure SetTabPosition(AValue: TTabPosition); override;
     procedure SetTabs(const AValue: TStrings);
