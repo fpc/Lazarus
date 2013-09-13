@@ -187,6 +187,9 @@ SET OutputFileName=%OutputFileName::=_%
 :: %LAZBUILD_HOOK_DIR% is a directory, that can contain scripts to be hooked into the build process. Further hooks can be defined the same way
 if not [%LAZBUILD_HOOK_DIR%]==[] if exist %LAZBUILD_HOOK_DIR%\lazhook_before_iscc.bat call %LAZBUILD_HOOK_DIR%\lazhook_before_iscc.bat
 
+if not [%LAZBUILD_MAKE282_SRC%]==[] if exist %LAZBUILD_MAKE282_SRC% copy %LAZBUILD_MAKE282_SRC% %INSTALL_BINDIR%\make.exe
+
+
 %ISCC% lazarus.iss >> installer.log
 
 :: do not delete build dir, if installer failed.
