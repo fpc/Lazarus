@@ -3259,6 +3259,7 @@ type
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
     function AlphaSort: Boolean;
+    procedure ClearSelection(KeepPrimary: Boolean = false); virtual;
     procedure ConsistencyCheck;
     function CustomSort(SortProc: TTreeNodeCompare): Boolean;
     function DefaultTreeViewSort(Node1, Node2: TTreeNode): Integer;

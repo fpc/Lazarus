@@ -5483,6 +5483,14 @@ begin
   Include(FStates,tvsCanvasChanged);
 end;
 
+procedure TCustomTreeView.ClearSelection(KeepPrimary: Boolean);
+begin
+ if tvoAllowMultiSelect in FOptions then
+   Items.ClearMultiSelection(not KeepPrimary)
+ else
+   if not KeepPrimary then Selected := nil;
+end;
+
 function TCustomTreeView.IsCustomDrawn(Target: TCustomDrawTarget;
   Stage: TCustomDrawStage): Boolean;
 begin
