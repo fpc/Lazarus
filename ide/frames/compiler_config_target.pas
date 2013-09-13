@@ -84,40 +84,46 @@ begin
   Result:=LowerCase(CPU);
 end;
 
-function ProcessorToCaption(const Processor: string): string;
+function ProcessorToCaption(const aProcessor: string): string;
+// Special treatment for i386 CPUs, others go untouched
 begin
-  if CompareText(Processor, '80386') = 0 then
+  if aProcessor = '' then
+    Result := '('+lisDefault+')'
+  else if CompareText(aProcessor, '80386') = 0 then
     Result := '386/486 (-Op80386)'
-  else if CompareText(Processor, 'pentium') = 0 then
+  else if CompareText(aProcessor, 'pentium') = 0 then
     Result := 'Pentium/Pentium MMX (-OpPENTIUM)'
-  else if CompareText(Processor, 'pentium2') = 0 then
+  else if CompareText(aProcessor, 'pentium2') = 0 then
     Result := 'Pentium Pro/Pentium II/C6x86/K6 (-OpPENTIUM2)'
-  else if CompareText(Processor, 'pentium3') = 0 then
+  else if CompareText(aProcessor, 'pentium3') = 0 then
     Result := 'Pentium III (-OpPENTIUM3)'
-  else if CompareText(Processor, 'pentium4') = 0 then
+  else if CompareText(aProcessor, 'pentium4') = 0 then
     Result := 'Pentium IV (-OpPENTIUM4)'
-  else if CompareText(Processor, 'pentiumm') = 0 then
+  else if CompareText(aProcessor, 'pentiumm') = 0 then
     Result := 'Pentium M (-OpPENTIUMM)'
   else
-    Result := '(' + lisDefault + ')';
+    Result := aProcessor;
 end;
 
-function CaptionToProcessor(const Caption: string): string;
+function CaptionToProcessor(const aCaption: string): string;
+// Special treatment for i386 CPUs, others go untouched
 begin
-  if Pos('-Op80386', Caption) > 0 then
+  if aCaption = '('+lisDefault+')' then
+    Result := ''
+  else if Pos('-Op80386', aCaption) > 0 then
     Result := '80386'
-  else if Pos('-OpPENTIUMM', Caption) > 0 then
+  else if Pos('-OpPENTIUMM', aCaption) > 0 then
     Result := 'pentiumm'
-  else if Pos('-OpPENTIUM4', Caption) > 0 then
+  else if Pos('-OpPENTIUM4', aCaption) > 0 then
     Result := 'pentium4'
-  else if Pos('-OpPENTIUM3', Caption) > 0 then
+  else if Pos('-OpPENTIUM3', aCaption) > 0 then
     Result := 'pentium3'
-  else if Pos('-OpPENTIUM2', Caption) > 0 then
+  else if Pos('-OpPENTIUM2', aCaption) > 0 then
     Result := 'pentium2'
-  else if Pos('-OpPENTIUM', Caption) > 0 then
+  else if Pos('-OpPENTIUM', aCaption) > 0 then
     Result := 'pentium'
   else
-    Result := '';
+    Result := aCaption;
 end;
 
 
@@ -197,18 +203,21 @@ procedure TCompilerConfigTargetFrame.UpdateByTargetCPU(aTargetCPU: string);
 var
   IsIntel: Boolean;
 
-  procedure IntelProcessor;
+  procedure Intel_i386(aList: TStrings);
   begin
     IsIntel := True;
-    with TargetProcComboBox.Items do
-    begin
-      Add(ProcessorToCaption('80386'));
-      Add(ProcessorToCaption('Pentium'));
-      Add(ProcessorToCaption('Pentium2'));
-      Add(ProcessorToCaption('Pentium3'));
-      Add(ProcessorToCaption('Pentium4'));
-      Add(ProcessorToCaption('PentiumM'));
-    end;
+    aList.Add(ProcessorToCaption('80386'));
+    aList.Add(ProcessorToCaption('Pentium'));
+    aList.Add(ProcessorToCaption('Pentium2'));
+    aList.Add(ProcessorToCaption('Pentium3'));
+    aList.Add(ProcessorToCaption('Pentium4'));
+    aList.Add(ProcessorToCaption('PentiumM'));
+  end;
+
+  procedure Intel_x86_64(aList: TStrings);
+  begin
+    IsIntel := True;
+    aList.Add('ATHLON64');
   end;
 
 var
@@ -228,14 +237,14 @@ begin
 
   // Update selection list for target processor
   TargetProcComboBox.Clear;
-  TargetProcComboBox.Items.Add(ProcessorToCaption(''));
+  TargetProcComboBox.Items.Add('('+lisDefault+')');
   case aTargetCPU of
     'arm': begin end;
-    'i386': IntelProcessor;
+    'i386': Intel_i386(TargetProcComboBox.Items);
     'm68k': begin end;
     'powerpc': begin end;
     'sparc': begin end;
-    'x86_64': IntelProcessor;
+    'x86_64': Intel_x86_64(TargetProcComboBox.Items);
     'mipsel': begin end;
     'mips': begin end;
     'jvm': begin end;
