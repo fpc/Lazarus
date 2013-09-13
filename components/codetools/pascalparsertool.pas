@@ -3364,14 +3364,17 @@ procedure TPascalParserTool.ReadHintModifiers;
     end;
   end;
 
+var
+  NeedUndo: boolean;
 begin
-  while CurPos.Flag=cafSemicolon do begin
+  if CurPos.Flag=cafSemicolon then begin
     ReadNextAtom;
-    if not IsModifier then begin
-      UndoReadNextAtom;
-      exit;
-    end;
+    NeedUndo:=true;
+  end else
+    NeedUndo:=false;
+  while IsModifier do begin
     //debugln(['TPascalParserTool.ReadHintModifier ',CurNode.DescAsString,' ',CleanPosToStr(CurPos.StartPos)]);
+    NeedUndo:=true;
     CreateChildNode;
     CurNode.Desc:=ctnHintModifier;
     CurNode.EndPos:=CurPos.EndPos;
@@ -3386,7 +3389,12 @@ begin
     if not (CurPos.Flag in [cafSemicolon,cafRoundBracketClose]) then
       SaveRaiseCharExpectedButAtomFound(';');
     EndChildNode;
+    if CurPos.Flag<>cafSemicolon then
+      break;
+    ReadNextAtom;
   end;
+  if NeedUndo then
+    UndoReadNextAtom;
 end;
 
 function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
