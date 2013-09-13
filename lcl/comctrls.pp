@@ -649,26 +649,39 @@ type
     property TabWidth: Smallint read FTabWidth write SetTabWidth;
   end;
 
+  { TNoteBookStringsTabControl }
+
+  TNoteBookStringsTabControl = class(TCustomTabControl)
+  protected
+    FHandelCreated: TNotifyEvent;
+    procedure CreateHandle; override;
+  end;
+
   { TTabControlNoteBookStrings }
 
   TTabControlNoteBookStrings = class(TTabControlStrings)
   private
     FNoteBook: TCustomTabControl{%H-};
+    FInHandleCreated: Boolean;
   protected
     function Get(Index: Integer): string; override;
     function GetCount: Integer; override;
     function GetObject(Index: Integer): TObject; override;
     function GetTabIndex: integer; override;
+    function GetTabPosition: TTabPosition;
     procedure NBChanging(Sender: TObject; var AllowChange: Boolean); virtual;
     procedure NBGetImageIndex(Sender: TObject; TheTabIndex: Integer;
                               var ImageIndex: Integer); virtual;
     procedure NBPageChanged(Sender: TObject); virtual;
+    procedure NBHandleCreated(Sender: TObject);
     procedure Put(Index: Integer; const S: string); override;
     procedure PutObject(Index: Integer; AObject: TObject); override;
     procedure SetImages(const AValue: TCustomImageList); override;
+    procedure SetMultiLine(const AValue: Boolean); override;
     procedure SetTabIndex(const AValue: integer); override;
     procedure SetUpdateState(Updating: Boolean); override;
     procedure SetTabHeight(const AValue: Smallint); override;
+    procedure SetTabPosition(AValue: TTabPosition);
     procedure SetTabWidth(const AValue: Smallint); override;
   public
     constructor Create(TheTabControl: TTabControl); override;
@@ -679,6 +692,7 @@ type
     function GetSize: integer; override;
     procedure TabControlBoundsChange; override;
     function IndexOfTabAt(X, Y: Integer): Integer; override;
+    property TabPosition: TTabPosition read GetTabPosition write SetTabPosition;
   public
     property NoteBook: TCustomTabControl read FNoteBook;
   end;

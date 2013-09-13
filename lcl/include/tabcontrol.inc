@@ -145,6 +145,15 @@ procedure TTabControlStrings.ImageListChange(Sender: TObject);
 begin
 end;
 
+{ TNoteBookStringsTabControl }
+
+procedure TNoteBookStringsTabControl.CreateHandle;
+begin
+  inherited CreateHandle;
+  if FHandelCreated <> nil then
+    FHandelCreated(self);
+end;
+
 { TTabControlNoteBookStrings }
 
 procedure TTabControlNoteBookStrings.NBGetImageIndex(Sender: TObject;
@@ -162,6 +171,26 @@ end;
 procedure TTabControlNoteBookStrings.NBPageChanged(Sender: TObject);
 begin
   TabControl.Change;
+end;
+
+procedure TTabControlNoteBookStrings.NBHandleCreated(Sender: TObject);
+begin
+  if FInHandleCreated then
+    exit;
+  FInHandleCreated := True;
+  TabControlBoundsChange;
+  FInHandleCreated := False;
+end;
+
+function TTabControlNoteBookStrings.GetTabPosition: TTabPosition;
+begin
+  Result := FNoteBook.TabPosition;
+end;
+
+procedure TTabControlNoteBookStrings.SetTabPosition(AValue: TTabPosition);
+begin
+  FNoteBook.TabPosition := AValue;
+  TabControlBoundsChange;
 end;
 
 function TTabControlNoteBookStrings.Get(Index: Integer): string;
@@ -195,6 +224,13 @@ begin
     FNoteBook.Images:=TImageList(AValue)
   else
     FNoteBook.Images:=nil;
+end;
+
+procedure TTabControlNoteBookStrings.SetMultiLine(const AValue: Boolean);
+begin
+  inherited SetMultiLine(AValue);
+  FNoteBook.MultiLine := AValue;
+  TabControlBoundsChange;
 end;
 
 procedure TTabControlNoteBookStrings.SetUpdateState(Updating: Boolean);
@@ -232,12 +268,13 @@ end;
 constructor TTabControlNoteBookStrings.Create(TheTabControl: TTabControl);
 begin
   inherited Create(TheTabControl);
-  FNoteBook := TCustomTabControl{%H-}.Create(nil);
+  FNoteBook := TNoteBookStringsTabControl{%H-}.Create(nil);
   FNoteBook.ControlStyle := FNoteBook.ControlStyle + [csNoDesignSelectable];
   FNoteBook.Parent := TabControl;
   FNoteBook.OnGetImageIndex := @NBGetImageIndex;
   FNoteBook.OnChanging := @NBChanging;
   FNoteBook.OnChange := @NBPageChanged;
+  TNoteBookStringsTabControl(FNoteBook).FHandelCreated := @NBHandleCreated;
   TabControlBoundsChange;
 end;
 
@@ -285,12 +322,12 @@ begin
       NewHeight:=TabHeight;
       if NewHeight<=0 then
         NewHeight:=FNoteBook.GetMinimumTabHeight;
-      NewHeight:=Min(TabControl.Height,NewHeight);
+      NewHeight:=Min(TabControl.ClientHeight,NewHeight);
       if TabControl.TabPosition=tpTop then
-        FNoteBook.SetBounds(0,0,TabControl.Width,NewHeight)
+        FNoteBook.SetBounds(0,0,TabControl.ClientWidth,NewHeight)
       else
-        FNoteBook.SetBounds(0,TabControl.Height-NewHeight,
-                            TabControl.Width,NewHeight);
+        FNoteBook.SetBounds(0,TabControl.ClientHeight-NewHeight,
+                            TabControl.ClientWidth,NewHeight);
     end;
 
   tpLeft,tpRight:
@@ -300,10 +337,10 @@ begin
         NewWidth:=FNoteBook.GetMinimumTabWidth;
       NewWidth:=Min(TabControl.Width,NewWidth);
       if TabControl.TabPosition=tpLeft then
-        FNoteBook.SetBounds(0,0,NewWidth,TabControl.Height)
+        FNoteBook.SetBounds(0,0,NewWidth,TabControl.ClientHeight)
       else
-        FNoteBook.SetBounds(TabControl.Width-NewWidth,0,
-                            NewWidth,TabControl.Height);
+        FNoteBook.SetBounds(TabControl.ClientWidth-NewWidth,0,
+                            NewWidth,TabControl.ClientHeight);
     end;
   end;
 end;
@@ -436,7 +473,7 @@ procedure TTabControl.SetTabPosition(const AValue: TTabPosition);
 begin
   if FTabPosition=AValue then exit;
   FTabPosition:=AValue;
-  TTabControlStrings(FTabs).TabControlBoundsChange;
+  TTabControlNoteBookStrings(FTabs).TabPosition := AValue;
   ReAlign;
 end;
 
