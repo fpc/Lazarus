@@ -214,7 +214,6 @@ begin
   LPKInfoCache.AddOnQueueEmpty(@OnAllLPKParsed);
   LPKInfoCache.StartLPKReaderWithAllAvailable;
 
-  UpdateAvailablePackages;
   UpdateButtonStates;
 
   ActiveControl:=AvailableFilterEdit;
