@@ -144,10 +144,10 @@ begin
 end;
 
 procedure TCompPaletteOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  cpo: TCompPaletteOptions;
+//var
+//  cpo: TCompPaletteOptions;
 begin
-  cpo:=(AOptions as TEnvironmentOptions).ComponentPaletteOptions;
+  //cpo:=(AOptions as TEnvironmentOptions).ComponentPaletteOptions;
 
   FLoaded := True;
 end;
