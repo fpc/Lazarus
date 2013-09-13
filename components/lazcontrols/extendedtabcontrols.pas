@@ -18,10 +18,10 @@ type
   protected
     FVertical: Boolean;
     function IsVertical: Boolean; override;
-    procedure GetChildren({%H-}Proc: TGetChildProc; {%H-}Root: TComponent); override;
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
+    procedure GetChildren({%H-}Proc: TGetChildProc; {%H-}Root: TComponent); override;
   end;
 
   { TExtendedTabToolButton }
@@ -229,7 +229,6 @@ type
     //DoSendPageIndex // prevent
 
     function  GetChildOwner: TComponent; override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     function GetPageClass: TCustomPageClass; override;
@@ -238,6 +237,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     property ActivePage: TExtendedTabSheet read GetActiveTabSheet write SetActiveTabSheet; experimental; platform;
     property Pages[Index: Integer]: TExtendedTabSheet read GetTabSheet; experimental; platform;
     property ShowToolBar: TTabControlToolBarSide read GetShowToolBar write SetShowToolBar;

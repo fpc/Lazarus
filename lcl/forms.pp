@@ -260,7 +260,6 @@ type
     procedure WriteDesignTop(Writer: TWriter);
   protected
     class procedure WSRegisterClass; override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure SetParent(AParent: TWinControl); override;
@@ -269,6 +268,7 @@ type
            PreferredHeight: integer; WithThemeSpace: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     class function GetControlClassDefaultSize: TSize; override;
   end;
 
@@ -522,7 +522,6 @@ type
     procedure DoHide; virtual;
     procedure DoShow; virtual;
     procedure EndFormUpdate;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function HandleCreateException: Boolean; virtual;
     function HandleDestroyException: Boolean; virtual;
     function HandleShowHideException: Boolean; virtual;
@@ -609,6 +608,7 @@ type
     function ShowModal: Integer; virtual;
     procedure ShowOnTop;
     function SmallIconHandle: HICON;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function WantChildKey(Child : TControl;
                           var Message : TLMessage): Boolean; virtual;
 

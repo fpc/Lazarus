@@ -756,7 +756,6 @@ type
     procedure DestroyWnd; override;
     procedure Loaded; override;
     function  GetChildOwner: TComponent; override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
 
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure UTF8KeyPress(var Key: TUTF8Char); override;
@@ -1013,6 +1012,7 @@ type
     function UpdateAction(TheAction: TBasicAction): boolean; override;
     procedure WndProc(var Msg: TMessage); override;
     procedure EraseBackground(DC: HDC); override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
   public
     procedure FindMatchingBracket; virtual;
     function FindMatchingBracket(PhysStartBracket: TPoint;
