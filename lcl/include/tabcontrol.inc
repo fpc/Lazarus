@@ -343,6 +343,8 @@ begin
                             NewWidth,TabControl.ClientHeight);
     end;
   end;
+
+  TabControl.Invalidate;
 end;
 
 function TTabControlNoteBookStrings.IndexOfTabAt(X, Y: Integer): Integer;
@@ -469,7 +471,7 @@ begin
   TTabControlStrings(FTabs).TabHeight:=AValue;
 end;
 
-procedure TTabControl.SetTabPosition(const AValue: TTabPosition);
+procedure TTabControl.SetTabPosition(AValue: TTabPosition);
 begin
   if FTabPosition=AValue then exit;
   FTabPosition:=AValue;

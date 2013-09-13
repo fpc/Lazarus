@@ -298,22 +298,30 @@ begin
   // customization of Params
   with Params do
   begin
-    Flags := Flags or TabPositionFlags[TCustomTabControl(AWinControl).TabPosition];
-    if nboMultiLine in TCustomTabControl(AWinControl).Options then
-      Flags := Flags or TCS_MULTILINE;
-    pClassName := WC_TABCONTROL;
+    if AWinControl is TTabControl then begin
+      // TTabControl is not really a TabControl, it is a container, and has a child that does the tabs
+      pClassName := @ClsName[0];
+    end
+    else begin
+      Flags := Flags or TabPositionFlags[TCustomTabControl(AWinControl).TabPosition];
+      if nboMultiLine in TCustomTabControl(AWinControl).Options then
+        Flags := Flags or TCS_MULTILINE;
+      pClassName := WC_TABCONTROL;
+    end;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
 
-  if TCustomTabControl(AWinControl).Images <> nil then
-    SendMessage(Result, TCM_SETIMAGELIST, 0, TCustomTabControl(AWinControl).Images.Reference._Handle);
+  if not (AWinControl is TTabControl) then begin
+    if TCustomTabControl(AWinControl).Images <> nil then
+      SendMessage(Result, TCM_SETIMAGELIST, 0, TCustomTabControl(AWinControl).Images.Reference._Handle);
 
-  // although we may be child of tabpage, cut the paint chain
-  // to improve speed and possible paint anomalities
-  Params.WindowInfo^.ParentMsgHandler := @TabControlParentMsgHandler;
-  Params.WindowInfo^.needParentPaint := false;
+    // although we may be child of tabpage, cut the paint chain
+    // to improve speed and possible paint anomalities
+    Params.WindowInfo^.ParentMsgHandler := @TabControlParentMsgHandler;
+    Params.WindowInfo^.needParentPaint := false;
+  end;
 end;
 
 class procedure TWin32WSCustomTabControl.AddPage(const ATabControl: TCustomTabControl;
@@ -321,6 +329,9 @@ class procedure TWin32WSCustomTabControl.AddPage(const ATabControl: TCustomTabCo
 var
   TCI: TC_ITEM;
 begin
+  if ATabControl is TTabControl then
+    exit;
+
   with ATabControl do
   begin
     // other widgetsets allocates handles because they really need this
@@ -369,6 +380,9 @@ end;
 class procedure TWin32WSCustomTabControl.RemovePage(const ATabControl: TCustomTabControl;
   const AIndex: integer);
 begin
+  if ATabControl is TTabControl then
+    exit;
+
   Windows.SendMessage(ATabControl.Handle, TCM_DELETEITEM, Windows.WPARAM(AIndex), 0);
   if LCLControlSizeNeedsUpdate(ATabControl, True) then
     AdjustSizeTabControlPages(ATabControl);
@@ -378,22 +392,36 @@ class function TWin32WSCustomTabControl.GetNotebookMinTabHeight(const AWinContro
 var
   R: TRect;
 begin
+  if AWinControl is TTabControl then begin
+    Result := 0;;
+    exit;
+  end;
+
   if (not GetLCLClientBoundsOffset(AWinControl, R)) then begin
     Result := inherited GetNotebookMinTabHeight(AWinControl);
     exit;
   end;
-  Result := Max(R.Top, -R.Bottom);
+  // The bigger offset is the height of the tab
+  Result := Max(R.Top, -R.Bottom)
+  // but includes spacing for the child
+          - Min(R.Top, -R.Bottom) div 2;
 end;
 
 class function TWin32WSCustomTabControl.GetNotebookMinTabWidth(const AWinControl: TWinControl): integer;
 var
   R: TRect;
 begin
+  if AWinControl is TTabControl then begin
+    Result := 0;;
+    exit;
+  end;
+
   if (not GetLCLClientBoundsOffset(AWinControl, R)) then begin
     Result := inherited GetNotebookMinTabHeight(AWinControl);
     exit;
   end;
-  Result := Max(R.Left, -R.Right);
+  Result := Max(R.Left, -R.Right)
+          - Min(R.Left, -R.Right) div 2;
 end;
 
 { -----------------------------------------------------------------------------
@@ -407,6 +435,9 @@ var
   APage: TCustomPage;
   WinHandle: HWND;
 begin
+  if ATabControl is TTabControl then
+    exit;
+
   WinHandle := ATabControl.Handle;
   RealIndex := 0;
   for I := 0 to ATabControl.PageCount - 1 do
@@ -450,6 +481,9 @@ var
   WinHandle: HWND;
   lPage: TCustomPage;
 begin
+  if ATabControl is TTabControl then
+    exit;
+
   WinHandle := ATabControl.Handle;
   // Adjust page size to fit in tabcontrol, need bounds of tab control in client of parent
   TWin32WidgetSet(WidgetSet).GetClientRect(WinHandle, R);
@@ -472,6 +506,9 @@ var
   I: Integer;
   WinHandle: HWND;
 begin
+  if ATabControl is TTabControl then
+    exit;
+
   WinHandle := ATabControl.Handle;
   for I := ATabControl.PageCount - 1 downto 0 do
     Windows.SendMessage(WinHandle, TCM_DELETEITEM, Windows.WPARAM(I), 0);
@@ -500,6 +537,11 @@ var
   hittestInfo: TC_HITTESTINFO;
   Orect: TRect;
 begin
+  if ATabControl is TTabControl then begin
+    Result := 0;;
+    exit;
+  end;
+
   GetLCLClientBoundsOffset(ATabControl, ORect);
   hittestInfo.pt.x := AClientPos.x + ORect.Left;
   hittestInfo.pt.y := AClientPos.y + ORect.Top;
@@ -511,6 +553,14 @@ class function TWin32WSCustomTabControl.GetTabRect(const ATabControl: TCustomTab
 var
   Orect: TRect;
 begin
+  if ATabControl is TTabControl then begin
+    Result.Top := 0;;
+    Result.Left := 0;;
+    Result.Bottom := 0;;
+    Result.Right := 0;;
+    exit;
+  end;
+
   GetLCLClientBoundsOffset(ATabControl, ORect);
   if Windows.SendMessage(ATabControl.Handle, TCM_GETITEMRECT, WPARAM(AIndex), LPARAM(@Result)) <> 0
   then begin
@@ -534,6 +584,11 @@ var
   hittestInfo: TC_HITTESTINFO;
   AIndex, ACurIndex: Integer;
 begin
+  if AWinControl is TTabControl then begin
+    Result := inherited GetDesignInteractive(AWinControl, AClientPos);
+    exit;
+  end;
+
   hittestInfo.pt.x := AClientPos.x;
   hittestInfo.pt.y := AClientPos.y;
   AIndex := Windows.SendMessage(AWinControl.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
@@ -544,6 +599,9 @@ end;
 class procedure TWin32WSCustomTabControl.SetImageList(
   const ATabControl: TCustomTabControl; const AImageList: TCustomImageList);
 begin
+  if ATabControl is TTabControl then
+    exit;
+
   if not WSCheckHandleAllocated(ATabControl, 'SetImageList') then
     Exit;
 
@@ -561,6 +619,9 @@ var
   TabControlHandle, OldPageHandle, NewPageHandle: HWND;
   NewRealIndex: Integer;
 begin
+  if ATabControl is TTabControl then
+    exit;
+
   TabControlHandle := ATabControl.Handle;
   // get the current top window
   OldPageHandle := GetTopWindow(TabControlHandle);
@@ -595,12 +656,18 @@ end;
 
 class procedure TWin32WSCustomTabControl.SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
 begin
+  if ATabControl is TTabControl then
+    exit;
+
   if ATabControl.HandleAllocated then
     RecreateWnd(ATabControl);
 end;
 
 class procedure TWin32WSCustomTabControl.ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean);
 begin
+  if ATabControl is TTabControl then
+    exit;
+
   if AShowTabs then
     AddAllNBPages(ATabControl)
   else
@@ -611,6 +678,9 @@ class procedure TWin32WSCustomTabControl.UpdateProperties(const ATabControl: TCu
 var
   CurrentStyle, NewStyle: cardinal;
 begin
+  if ATabControl is TTabControl then
+    exit;
+
   CurrentStyle := GetWindowLong(ATabControl.Handle, GWL_STYLE);
   if (nboMultiLine in ATabControl.Options) or (ATabControl.TabPosition in [tpLeft, tpRight]) then
     NewStyle := CurrentStyle or TCS_MULTILINE

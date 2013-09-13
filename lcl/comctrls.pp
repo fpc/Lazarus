@@ -364,7 +364,7 @@ type
     procedure SetPageIndex(AValue: Integer);
     procedure SetPages(AValue: TStrings);
     procedure SetShowTabs(AValue: Boolean);
-    procedure SetTabPosition(tabPos: TTabPosition);
+    procedure SetTabPosition(tabPos: TTabPosition); virtual;
     procedure ShowCurrentPage;
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
@@ -731,7 +731,7 @@ type
     procedure SetScrollOpposite(const AValue: Boolean);
     procedure SetStyle(const AValue: TTabStyle);
     procedure SetTabHeight(const AValue: Smallint);
-    procedure SetTabPosition(const AValue: TTabPosition);
+    procedure SetTabPosition(AValue: TTabPosition); override;
     procedure SetTabs(const AValue: TStrings);
     procedure SetTabWidth(const AValue: Smallint);
   protected
