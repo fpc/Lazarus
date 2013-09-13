@@ -31,9 +31,9 @@ procedure TCheckGroupStringList.Changed;
 begin
   inherited Changed;
   if (UpdateCount = 0) then
-    FCheckGroup.UpdateInternalObjectList
+    FCheckGroup.UpdateAll
   else
-    FCheckGroup.UpdateAll;
+    FCheckGroup.UpdateInternalObjectList;
 end;
 
 constructor TCheckGroupStringList.Create(TheCheckGroup: TCustomCheckGroup);

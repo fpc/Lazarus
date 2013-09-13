@@ -38,9 +38,9 @@ procedure TRadioGroupStringList.Changed;
 begin
   inherited Changed;
   if (UpdateCount = 0) then
-    FRadioGroup.UpdateInternalObjectList
+    FRadioGroup.UpdateAll
   else
-    FRadioGroup.UpdateAll;
+    FRadioGroup.UpdateInternalObjectList;
 end;
 
 constructor TRadioGroupStringList.Create(TheRadioGroup: TCustomRadioGroup);
