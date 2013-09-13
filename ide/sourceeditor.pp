@@ -2189,9 +2189,6 @@ begin
     TheForm.OnValidate(Sender,UTF8Key,[]);
     //debugln('TSourceNotebook.OnSynCompletionKeyPress B');
     UTF8Key:='';
-  end else begin
-    Editor.CommandProcessor(ecChar,UTF8Key,nil);
-    UTF8Key:='';
   end;
   //debugln('TSourceNotebook.OnSynCompletionKeyPress B UTF8Key=',dbgstr(UTF8Key));
 end;

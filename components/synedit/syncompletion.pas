@@ -146,6 +146,8 @@ type
     procedure SetCurrentString(const Value: string);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
+    procedure AddCharAtCursor(AUtf8Char: TUTF8Char); virtual;
+    procedure DeleteCharBeforoCursor; virtual;
     procedure Paint; override;
     procedure AppDeactivated(Sender: TObject); // Because Form.Deactivate isn't called
     procedure Deactivate; override;
@@ -236,6 +238,16 @@ type
     property OnDragResized: TNotifyEvent read FOnDragResized write FOnDragResized;
   end;
 
+  TSynBaseCompletionFormClass = class of TSynBaseCompletionForm;
+
+  { TSynCompletionForm }
+
+  TSynCompletionForm = class(TSynBaseCompletionForm)
+  protected
+    procedure AddCharAtCursor(AUtf8Char: TUTF8Char); override;
+    procedure DeleteCharBeforoCursor; override;
+  end;
+
   { TSynBaseCompletion }
 
   TSynBaseCompletion = class(TLazSynMultiEditPlugin)
@@ -292,6 +304,8 @@ type
     procedure SetOnKeyNextChar(const AValue: TNotifyEvent);
     function GetOnKeyPrevChar: TNotifyEvent;
     procedure SetOnKeyPrevChar(const AValue: TNotifyEvent);
+  protected
+    function GetCompletionFormClass: TSynBaseCompletionFormClass; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -351,10 +365,8 @@ type
     FExecCommandID: TSynEditorCommand;
     FEndOfTokenChr: string;
     FOnCodeCompletion: TCodeCompletionEvent;
-    procedure backspace(Sender: TObject);
     procedure Cancel(Sender: TObject);
     procedure Validate(Sender: TObject; KeyChar: TUTF8Char; Shift: TShiftState);
-    procedure UTF8KeyPress(Sender: TObject; var Key: TUTF8Char); // called by the form
     function GetPreviousToken(FEditor: TCustomSynEdit): string;
   protected
     procedure OnFormPaint(Sender: TObject);
@@ -369,9 +381,12 @@ type
     procedure ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
               var Handled: boolean; var Command: TSynEditorCommand;
               var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
+    function GetCompletionFormClass: TSynBaseCompletionFormClass; override;
   public
     constructor Create(AOwner: TComponent); override;
     function EditorsCount: integer; deprecated; // use EditorCount
+    procedure AddCharAtCursor(AUtf8Char: TUTF8Char);
+    procedure DeleteCharBeforoCursor;
   published
     property ShortCut: TShortCut read FShortCut write SetShortCut;
     property EndOfTokenChr: string read FEndOfTokenChr write FEndOfTokenChr;
@@ -430,6 +445,22 @@ implementation
 
 var
   KeyOffset: integer;
+
+{ TSynCompletionForm }
+
+procedure TSynCompletionForm.AddCharAtCursor(AUtf8Char: TUTF8Char);
+begin
+  inherited AddCharAtCursor(AUtf8Char);
+  if CurrentEditor <> nil then
+    (CurrentEditor as TCustomSynEdit).CommandProcessor(ecChar, AUtf8Char, nil);
+end;
+
+procedure TSynCompletionForm.DeleteCharBeforoCursor;
+begin
+  if CurrentEditor <> nil then
+    (CurrentEditor as TCustomSynEdit).CommandProcessor(ecDeleteLastChar, #0, nil);
+  inherited DeleteCharBeforoCursor;
+end;
 
 { TSynBaseCompletionFormSizeDrag }
 
@@ -504,7 +535,7 @@ end;
 
 { TSynBaseCompletionForm }
 
-constructor TSynBaseCompletionForm.Create(AOwner: TComponent);
+constructor TSynBaseCompletionForm.Create(AOwner: Tcomponent);
 begin
   ControlStyle := ControlStyle + [csNoDesignVisible];
   FResizeLock := 1; // prevent DoResize (on Handle Creation) do reset LinesInWindow
@@ -720,7 +751,7 @@ begin
     VK_BACK:
       if (Shift = []) and (Length(CurrentString) > 0) then begin
         if Assigned(OnKeyDelete) then OnKeyDelete(Self);
-        CurrentString := UTF8Copy(CurrentString, 1, UTF8Length(CurrentString) - 1);
+        DeleteCharBeforoCursor;
       end;
     VK_TAB:
       begin
@@ -759,7 +790,7 @@ begin
     #33..'z':
       begin
         if Key<>#0 then
-          CurrentString := CurrentString + key;
+          AddCharAtCursor(key);
         Key:=#0;
       end;
     #8: ;
@@ -774,6 +805,16 @@ begin
   end; // case
   Invalidate;
   //debugln('TSynBaseCompletionForm.KeyPress END Key="',DbgStr(Key),'"');
+end;
+
+procedure TSynBaseCompletionForm.AddCharAtCursor(AUtf8Char: TUTF8Char);
+begin
+  CurrentString := CurrentString + AUtf8Char;
+end;
+
+procedure TSynBaseCompletionForm.DeleteCharBeforoCursor;
+begin
+  CurrentString := UTF8Copy(CurrentString, 1, UTF8Length(CurrentString) - 1);
 end;
 
 {$IFDEF HintClickWorkaround}
@@ -990,34 +1031,36 @@ begin
   {$IFDEF VerboseKeys}
   debugln('TSynBaseCompletionForm.UTF8KeyPress A UTF8Key="',DbgStr(UTF8Key),'" ',dbgsName(TObject(TMethod(OnUTF8KeyPress).Data)));
   {$ENDIF}
+  if Assigned(OnUTF8KeyPress) then
+    OnUTF8KeyPress(Self, UTF8Key);
+  if UTF8Key='' then
+    exit;
+
   if UTF8Key=#8 then
   begin
     // backspace
-  end else
+  end
+  else
+  if (Length(UTF8Key)>=1) and (not (UTF8Key[1] in ['a'..'z','A'..'Z','0'..'9','_'])) then
   begin
-    if (Length(UTF8Key)>=1) and (not (UTF8Key[1] in ['a'..'z','A'..'Z','0'..'9','_'])) then
+    // non identifier character
+    // if it is special key then eat it
+    if (Length(UTF8Key) = 1) and (UTF8Key[1] < #32) then
     begin
-      // non identifier character
-
-      // if it is special key then eat it
-      if (Length(UTF8Key) = 1) and (UTF8Key[1] < #32) then
-      begin
-        if Assigned(OnCancel) then
-          OnCancel(Self);
-      end
-      else
-      if Assigned(OnValidate) then
-        OnValidate(Self, UTF8Key, []);
-      UTF8Key := '';
-    end else
-    if (UTF8Key<>'') then
-    begin
-      // identifier character
-      CurrentString := CurrentString + UTF8Key;
-      if Assigned(OnUTF8KeyPress) then
-        OnUTF8KeyPress(Self, UTF8Key);
-      UTF8Key := '';
-    end;
+      if Assigned(OnCancel) then
+        OnCancel(Self);
+    end
+    else
+    if Assigned(OnValidate) then
+      OnValidate(Self, UTF8Key, []);
+    UTF8Key := '';
+  end
+  else
+  if (UTF8Key<>'') then
+  begin
+    // identifier character
+    AddCharAtCursor(UTF8Key);
+    UTF8Key := '';
   end;
   {$IFDEF VerboseKeys}
   debugln('TSynBaseCompletionForm.UTF8KeyPress END UTF8Key="',DbgStr(UTF8Key),'"');
@@ -1260,7 +1303,7 @@ constructor TSynBaseCompletion.Create(AOwner: TComponent);
 begin
   FWidth := 262;
   inherited Create(AOwner);
-  Form := TSynBaseCompletionForm.Create(nil); // Do not create with owner, or the designer will make it visible
+  Form := GetCompletionFormClass.Create(nil); // Do not create with owner, or the designer will make it visible
   Form.Width := FWidth;
 end;
 
@@ -1325,6 +1368,11 @@ end;
 procedure TSynBaseCompletion.SetOnKeyPrevChar(const AValue: TNotifyEvent);
 begin
   Form.OnKeyPrevChar:=AValue;
+end;
+
+function TSynBaseCompletion.GetCompletionFormClass: TSynBaseCompletionFormClass;
+begin
+  Result := TSynBaseCompletionForm;
 end;
 
 procedure TSynBaseCompletion.Execute(s: string; x, y: integer);
@@ -1650,17 +1698,6 @@ end;
 
 { TSynCompletion }
 
-procedure TSynCompletion.Backspace(Sender: TObject);
-var
-  F: TSynBaseCompletionForm;
-begin
-  F := Sender as TSynBaseCompletionForm;
-  if F.CurrentEditor <> nil then begin
-    (F.CurrentEditor as TCustomSynEdit).CommandProcessor(ecDeleteLastChar, #0,
-      nil);
-  end;
-end;
-
 procedure TSynCompletion.OnFormPaint(Sender: TObject);
 begin
 
@@ -1739,24 +1776,9 @@ begin
     end;
 end;
 
-procedure TSynCompletion.UTF8KeyPress(Sender: TObject; var Key: TUTF8Char);
-var
-  F: TSynBaseCompletionForm;
-begin
-  //debugln('TSynCompletion.UTF8KeyPress Key="',DbgStr(Key),'"');
-  F := Sender as TSynBaseCompletionForm;
-  if F.CurrentEditor <> nil then begin
-    with F.CurrentEditor as TCustomSynEdit do begin
-      CommandProcessor(ecChar, Key, nil);
-    end;
-  end;
-end;
-
 constructor TSynCompletion.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Form.OnUTF8KeyPress := @UTF8KeyPress;
-  Form.OnKeyDelete := @Backspace;
   Form.OnValidate := @Validate;
   Form.OnCancel := @Cancel;
   Form.OnPaint:=@OnFormPaint;
@@ -1816,6 +1838,11 @@ begin
 
 end;
 
+function TSynCompletion.GetCompletionFormClass: TSynBaseCompletionFormClass;
+begin
+  Result := TSynCompletionForm;
+end;
+
 function TSynCompletion.GetPreviousToken(FEditor: TCustomSynEdit): string;
 var
   s: string;
@@ -1865,6 +1892,16 @@ end;
 function TSynCompletion.EditorsCount: integer;
 begin
   result := EditorCount;
+end;
+
+procedure TSynCompletion.AddCharAtCursor(AUtf8Char: TUTF8Char);
+begin
+  Form.AddCharAtCursor(AUtf8Char);
+end;
+
+procedure TSynCompletion.DeleteCharBeforoCursor;
+begin
+  Form.DeleteCharBeforoCursor;
 end;
 
 { TSynAutoComplete }
