@@ -12,6 +12,36 @@
  *****************************************************************************
 }
 
+type
+
+  { TCheckGroupStringList }
+
+  TCheckGroupStringList = class(TStringList)
+  private
+    FCheckGroup: TCustomCheckGroup;
+  protected
+    procedure Changed; override;
+  public
+    constructor Create(TheCheckGroup: TCustomCheckGroup);
+  end;
+
+{ TCheckGroupStringList }
+
+procedure TCheckGroupStringList.Changed;
+begin
+  inherited Changed;
+  if (UpdateCount = 0) then
+    FCheckGroup.UpdateInternalObjectList
+  else
+    FCheckGroup.UpdateAll;
+end;
+
+constructor TCheckGroupStringList.Create(TheCheckGroup: TCustomCheckGroup);
+begin
+  inherited Create;
+  FCheckGroup := TheCheckGroup;
+end;
+
 { TCustomCheckGroup }
 
 constructor TCustomCheckGroup.Create(TheOwner: TComponent);
@@ -20,9 +50,7 @@ begin
   FCreatingWnd := false;
   ControlStyle := ControlStyle + [csCaptureMouse, csClickEvents, csSetCaption,
                                   csDoubleClicks];
-  FItems      := TStringList.Create;
-  //TStringList(FItems).OnChanging := @ItemsChanged;
-  TStringList(FItems).OnChange := @ItemsChanged;
+  FItems      := TCheckGroupStringList.Create(Self);
   FButtonList := TList.Create;
   FColumnLayout := clHorizontalThenVertical;
   FColumns  := 1;
@@ -42,13 +70,6 @@ begin
   FreeAndNil(FItems);
   FreeAndNil(FButtonList);
   inherited Destroy;
-end;
-
-procedure TCustomCheckGroup.ItemsChanged(Sender: TObject);
-begin
-  UpdateItems;
-  UpdateControlsPerLine;
-  OwnerFormDesignerModified(Self);
 end;
 
 procedure TCustomCheckGroup.ItemKeyDown(Sender: TObject; var Key: Word;
@@ -175,6 +196,18 @@ class procedure TCustomCheckGroup.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterCustomCheckGroup;
+end;
+
+procedure TCustomCheckGroup.UpdateInternalObjectList;
+begin
+  UpdateItems;
+end;
+
+procedure TCustomCheckGroup.UpdateAll;
+begin
+  UpdateItems;
+  UpdateControlsPerLine;
+  OwnerFormDesignerModified(Self);
 end;
 
 function TCustomCheckGroup.GetCheckEnabled(Index: integer): boolean;

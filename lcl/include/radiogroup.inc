@@ -16,6 +16,40 @@
    - FlipChildren procedure is missing
 }
 
+
+type
+
+  { TCheckGroupStringList }
+
+  { TRadioGroupStringList }
+
+  TRadioGroupStringList = class(TStringList)
+  private
+    FRadioGroup: TCustomRadioGroup;
+  protected
+    procedure Changed; override;
+  public
+    constructor Create(TheRadioGroup: TCustomRadioGroup);
+  end;
+
+{ TCheckGroupStringList }
+
+procedure TRadioGroupStringList.Changed;
+begin
+  inherited Changed;
+  if (UpdateCount = 0) then
+    FRadioGroup.UpdateInternalObjectList
+  else
+    FRadioGroup.UpdateAll;
+end;
+
+constructor TRadioGroupStringList.Create(TheRadioGroup: TCustomRadioGroup);
+begin
+  inherited Create;
+  FRadioGroup := TheRadioGroup;
+end;
+
+
 {------------------------------------------------------------------------------
   Method: TCustomRadioGroup.Create
   Params:  TheOwner: the owner of the class
@@ -28,10 +62,8 @@ begin
   inherited Create (TheOwner);
   ControlStyle := ControlStyle + [csCaptureMouse, csClickEvents, csSetCaption,
                                   csDoubleClicks];
-  FItems := TStringList.Create;
+  FItems := TRadioGroupStringList.Create(Self);
   FAutoFill := true;
-  //TStringList(FItems).OnChanging := @ItemsChanged;
-  TStringList(FItems).OnChange := @ItemsChanged;
   FItemIndex  := -1;
   FLastClickedItemIndex := -1;
   FButtonList := TFPList.Create;
@@ -280,19 +312,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomRadioGroup.ItemsChanged
-  Params:  sender : object calling this proc. (in fact the FItems instance)
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TCustomRadioGroup.ItemsChanged (Sender : TObject);
-begin
-  UpdateItems;
-  UpdateControlsPerLine;
-  OwnerFormDesignerModified(Self);
-end;
-
-{------------------------------------------------------------------------------
   Method: TCustomRadioGroup.SetColumns
   Params:  value - no of columns of the radiogroup
   Returns: Nothing
@@ -301,7 +320,7 @@ end;
   which the radiobuttons should be arranged.
   Range: 1 .. ???
  ------------------------------------------------------------------------------}
-procedure TCustomRadioGroup.SetColumns(value : integer);
+procedure TCustomRadioGroup.SetColumns(Value: integer);
 begin
   if Value <> FColumns then begin
     if (Value < 1)
@@ -490,6 +509,18 @@ begin
   inherited WSRegisterClass;
   RegisterCustomRadioGroup;
   RegisterPropertyToSkip(TCustomRadioGroup, 'DoubleBuffered', 'VCL compatibility property', '');
+end;
+
+procedure TCustomRadioGroup.UpdateInternalObjectList;
+begin
+  UpdateItems;
+end;
+
+procedure TCustomRadioGroup.UpdateAll;
+begin
+  UpdateItems;
+  UpdateControlsPerLine;
+  OwnerFormDesignerModified(Self);
 end;
 
 procedure TCustomRadioGroup.SetAutoFill(const AValue: Boolean);

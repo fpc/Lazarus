@@ -618,7 +618,6 @@ type
     procedure ItemKeyPress(Sender: TObject; var Key: Char);
     procedure ItemUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure ItemResize(Sender: TObject);
-    procedure ItemsChanged(Sender: TObject);
     procedure SetAutoFill(const AValue: Boolean);
     procedure SetColumnLayout(const AValue: TColumnLayout);
     procedure UpdateControlsPerLine;
@@ -626,6 +625,8 @@ type
     procedure UpdateTabStops;
   protected
     class procedure WSRegisterClass; override;
+    procedure UpdateInternalObjectList;
+    procedure UpdateAll;
     procedure InitializeWnd; override;
     procedure UpdateRadioButtonStates; virtual;
     procedure ReadState(Reader: TReader); override;
@@ -724,7 +725,6 @@ type
     function GetCheckEnabled(Index: integer): boolean;
     procedure Clicked(Sender: TObject);
     procedure DoClick(Index: integer);
-    procedure ItemsChanged (Sender : TObject);
     procedure ItemKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ItemKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ItemKeyPress(Sender: TObject; var Key: Char);
@@ -738,6 +738,8 @@ type
     procedure UpdateControlsPerLine;
   protected
     class procedure WSRegisterClass; override;
+    procedure UpdateInternalObjectList;
+    procedure UpdateAll;
     procedure SetItems(Value: TStrings);
     procedure SetColumns(Value: integer);
     procedure DefineProperties(Filer: TFiler); override;
