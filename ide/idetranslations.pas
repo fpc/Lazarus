@@ -447,7 +447,7 @@ begin
     Lang:=CustomLang;
     FallbackLang:='';
   end;
-  debugln('TranslateResourceStrings A Lang=',Lang,' FallbackLang=',FallbackLang);
+  //debugln('TranslateResourceStrings A Lang=',Lang,' FallbackLang=',FallbackLang);
   Dir:=AppendPathDelim(LazarusDir);
   // IDE
   TranslateUnitResourceStrings('LazarusIDEStrConsts',
