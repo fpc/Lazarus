@@ -225,6 +225,20 @@ SET OutputFileName=%OutputFileName::=_%
 :: %LAZBUILD_HOOK_DIR% is a directory, that can contain scripts to be hooked into the build process. Further hooks can be defined the same way
 if not [%LAZBUILD_HOOK_DIR%]==[] if exist %LAZBUILD_HOOK_DIR%\lazhook_before_iscc.bat call %LAZBUILD_HOOK_DIR%\lazhook_cross_before_iscc.bat
 
+if  [%LAZBUILD_REPLACE_TEXT%]==[] GOTO NO_REPLACE
+if not exist %LAZBUILD_REPLACE_TEXT% GOTO NO_REPLACE
+
+%LAZBUILD_REPLACE_TEXT% %BUILDDIR%\image\packager\units\%TARGETCPU%-%TARGETOS%\FCL.compiled "-O1 " "-O1 -T%TARGETOS% -P%TARGETCPU% "
+%LAZBUILD_REPLACE_TEXT% %BUILDDIR%\image\lcl\units\%TARGETCPU%-%TARGETOS%\LCLBase.compiled "-O1 " "-O1 -T%TARGETOS% -P%TARGETCPU% "
+%LAZBUILD_REPLACE_TEXT% %BUILDDIR%\image\components\lazutils\lib\%TARGETCPU%-%TARGETOS%\LazUtils.compiled "-O1 " "-O1 -T%TARGETOS% -P%TARGETCPU% "
+
+%LAZBUILD_REPLACE_TEXT% %BUILDDIR%\image\lcl\units\%TARGETCPU%-%TARGETOS%\%LCL_PLATFORM%\LCL.compiled "-O1 " "-O1 -T%TARGETOS% -P%TARGETCPU% "
+%LAZBUILD_REPLACE_TEXT% %BUILDDIR%\image\components\synedit\units\%TARGETCPU%-%TARGETOS%\%LCL_PLATFORM%\SynEdit.compiled "-O1 " "-O1 -T%TARGETOS% -P%TARGETCPU% "
+%LAZBUILD_REPLACE_TEXT% %BUILDDIR%\image\components\lazcontrols\lib\%TARGETCPU%-%TARGETOS%\%LCL_PLATFORM%\LazControls.compiled "-O1 " "-O1 -T%TARGETOS% -P%TARGETCPU% "
+%LAZBUILD_REPLACE_TEXT% %BUILDDIR%\image\components\ideintf\units\%TARGETCPU%-%TARGETOS%\%LCL_PLATFORM%\IDEIntf.compiled "-O1 " "-O1 -T%TARGETOS% -P%TARGETCPU% "
+
+:GOTO NO_REPLACE
+
 %ISCC% lazarus-cross.iss 
 
 :CLEANUP
