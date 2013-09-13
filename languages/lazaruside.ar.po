@@ -4437,8 +4437,8 @@ msgstr ""
 msgid "Auto show"
 msgstr ""
 
-#: lazarusidestrconsts.lisavailablepackages
-msgid "Available packages"
+#: lazarusidestrconsts.lisavailableforinstallation
+msgid "Available for installation"
 msgstr ""
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
@@ -7729,10 +7729,6 @@ msgstr "لا تغلق المشروع"
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
 msgstr "ولا تترجم الوحدات المعتمدة"
-
-#: lazarusidestrconsts.lisdonotinstall
-msgid "Do not install"
-msgstr ""
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -12910,6 +12906,7 @@ msgid "Base, cannot be uninstalled"
 msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
+msgctxt "lazarusidestrconsts.lispckexplinstalled"
 msgid "Installed"
 msgstr ""
 
@@ -13742,6 +13739,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgsinstalled
+msgctxt "lazarusidestrconsts.lispkgsinstalled"
+msgid "Installed"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit

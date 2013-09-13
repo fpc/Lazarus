@@ -4683,9 +4683,9 @@ msgstr "自动化功能"
 msgid "Auto show"
 msgstr "自动显示"
 
-#: lazarusidestrconsts.lisavailablepackages
-msgid "Available packages"
-msgstr "可用的包"
+#: lazarusidestrconsts.lisavailableforinstallation
+msgid "Available for installation"
+msgstr ""
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
 msgid "Available project build modes:"
@@ -8052,10 +8052,6 @@ msgstr "不要关闭工程"
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
 msgstr "不编译依赖"
-
-#: lazarusidestrconsts.lisdonotinstall
-msgid "Do not install"
-msgstr ""
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -13555,6 +13551,7 @@ msgid "Base, cannot be uninstalled"
 msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
+msgctxt "lazarusidestrconsts.lispckexplinstalled"
 msgid "Installed"
 msgstr "已经安装"
 
@@ -14430,6 +14427,11 @@ msgstr "移除"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr ""
+
+#: lazarusidestrconsts.lispkgsinstalled
+msgctxt "lazarusidestrconsts.lispkgsinstalled"
+msgid "Installed"
+msgstr "已经安装"
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 #, fuzzy

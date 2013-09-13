@@ -4720,9 +4720,9 @@ msgstr "自動機能"
 msgid "Auto show"
 msgstr "オブジェクトインスペクタを自動表示"
 
-#: lazarusidestrconsts.lisavailablepackages
-msgid "Available packages"
-msgstr "利用可能パッケージ"
+#: lazarusidestrconsts.lisavailableforinstallation
+msgid "Available for installation"
+msgstr ""
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
 msgid "Available project build modes:"
@@ -8133,10 +8133,6 @@ msgstr "プロジェクトを閉じない"
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
 msgstr "依存関係をコンパイルしない"
-
-#: lazarusidestrconsts.lisdonotinstall
-msgid "Do not install"
-msgstr "インストールしない"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -13694,6 +13690,7 @@ msgid "Base, cannot be uninstalled"
 msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
+msgctxt "lazarusidestrconsts.lispckexplinstalled"
 msgid "Installed"
 msgstr "インストールされました"
 
@@ -14571,6 +14568,11 @@ msgstr "削除"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr "パッケージを選択してください"
+
+#: lazarusidestrconsts.lispkgsinstalled
+msgctxt "lazarusidestrconsts.lispkgsinstalled"
+msgid "Installed"
+msgstr "インストールされました"
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 #, fuzzy

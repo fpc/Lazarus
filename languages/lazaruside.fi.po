@@ -4447,9 +4447,9 @@ msgstr "Koodin täydennys ja vihjeet"
 msgid "Auto show"
 msgstr "Näytä automaattisesti"
 
-#: lazarusidestrconsts.lisavailablepackages
-msgid "Available packages"
-msgstr "Tarjolla olevat paketit"
+#: lazarusidestrconsts.lisavailableforinstallation
+msgid "Available for installation"
+msgstr ""
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
 msgid "Available project build modes:"
@@ -7755,10 +7755,6 @@ msgstr "Ei suljetakaan projektia"
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
 msgstr "älä käännä riippuvuuksia"
-
-#: lazarusidestrconsts.lisdonotinstall
-msgid "Do not install"
-msgstr "Älä asenna"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -12921,6 +12917,7 @@ msgid "Base, cannot be uninstalled"
 msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
+msgctxt "lazarusidestrconsts.lispckexplinstalled"
 msgid "Installed"
 msgstr "Asennettu"
 
@@ -13767,6 +13764,11 @@ msgstr "Poista"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr ""
+
+#: lazarusidestrconsts.lispkgsinstalled
+msgctxt "lazarusidestrconsts.lispkgsinstalled"
+msgid "Installed"
+msgstr "Asennettu"
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 #, fuzzy

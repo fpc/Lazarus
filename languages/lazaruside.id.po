@@ -4622,9 +4622,9 @@ msgstr "Fitur otomatis"
 msgid "Auto show"
 msgstr ""
 
-#: lazarusidestrconsts.lisavailablepackages
-msgid "Available packages"
-msgstr "Paket Tersedia"
+#: lazarusidestrconsts.lisavailableforinstallation
+msgid "Available for installation"
+msgstr ""
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
 msgid "Available project build modes:"
@@ -7972,10 +7972,6 @@ msgstr "Jangan tutup proyek"
 
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
-msgstr ""
-
-#: lazarusidestrconsts.lisdonotinstall
-msgid "Do not install"
 msgstr ""
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
@@ -13434,6 +13430,7 @@ msgid "Base, cannot be uninstalled"
 msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
+msgctxt "lazarusidestrconsts.lispckexplinstalled"
 msgid "Installed"
 msgstr "Diinstalasi"
 
@@ -14303,6 +14300,11 @@ msgstr ""
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr ""
+
+#: lazarusidestrconsts.lispkgsinstalled
+msgctxt "lazarusidestrconsts.lispkgsinstalled"
+msgid "Installed"
+msgstr "Diinstalasi"
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 #, fuzzy

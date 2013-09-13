@@ -4598,9 +4598,9 @@ msgstr "Užbaigimai ir užuominos"
 msgid "Auto show"
 msgstr "Automatiškai rodyto objektų inspektorių"
 
-#: lazarusidestrconsts.lisavailablepackages
-msgid "Available packages"
-msgstr "Galimi paketai"
+#: lazarusidestrconsts.lisavailableforinstallation
+msgid "Available for installation"
+msgstr ""
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
 msgid "Available project build modes:"
@@ -7959,10 +7959,6 @@ msgstr "Neužverti projekto"
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
 msgstr "priklausomybes nekompiliuoti"
-
-#: lazarusidestrconsts.lisdonotinstall
-msgid "Do not install"
-msgstr "Nediegti"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -13322,6 +13318,7 @@ msgid "Base, cannot be uninstalled"
 msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
+msgctxt "lazarusidestrconsts.lispckexplinstalled"
 msgid "Installed"
 msgstr "įdiegtas"
 
@@ -14189,6 +14186,11 @@ msgstr "pašalinti"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr "Parinkite paketą"
+
+#: lazarusidestrconsts.lispkgsinstalled
+msgctxt "lazarusidestrconsts.lispkgsinstalled"
+msgid "Installed"
+msgstr "įdiegtas"
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 #, fuzzy

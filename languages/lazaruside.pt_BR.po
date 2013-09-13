@@ -4601,9 +4601,9 @@ msgstr "Complementos e Dicas"
 msgid "Auto show"
 msgstr "Auto exibir"
 
-#: lazarusidestrconsts.lisavailablepackages
-msgid "Available packages"
-msgstr "Pacotes disponíveis"
+#: lazarusidestrconsts.lisavailableforinstallation
+msgid "Available for installation"
+msgstr ""
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
 msgid "Available project build modes:"
@@ -7960,10 +7960,6 @@ msgstr "Não fechar o projeto"
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
 msgstr "não compilar dependências"
-
-#: lazarusidestrconsts.lisdonotinstall
-msgid "Do not install"
-msgstr "Não instalar"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -13340,6 +13336,7 @@ msgid "Base, cannot be uninstalled"
 msgstr "Base, não pode ser desinstalada"
 
 #: lazarusidestrconsts.lispckexplinstalled
+msgctxt "lazarusidestrconsts.lispckexplinstalled"
 msgid "Installed"
 msgstr "Instalado"
 
@@ -14207,6 +14204,11 @@ msgstr "remover"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr "Selecione um pacote"
+
+#: lazarusidestrconsts.lispkgsinstalled
+msgctxt "lazarusidestrconsts.lispkgsinstalled"
+msgid "Installed"
+msgstr "Instalado"
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 #| msgid "Can not register components without unit"

@@ -4475,9 +4475,9 @@ msgstr "Doplňování a Tipy"
 msgid "Auto show"
 msgstr "Automaticky ukázat"
 
-#: lazarusidestrconsts.lisavailablepackages
-msgid "Available packages"
-msgstr "Dostupné balíčky"
+#: lazarusidestrconsts.lisavailableforinstallation
+msgid "Available for installation"
+msgstr ""
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
 msgid "Available project build modes:"
@@ -7797,10 +7797,6 @@ msgstr "Nezavírat projekt"
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
 msgstr "nepřekládat závislosti"
-
-#: lazarusidestrconsts.lisdonotinstall
-msgid "Do not install"
-msgstr "Neinstalovat"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -12986,6 +12982,7 @@ msgid "Base, cannot be uninstalled"
 msgstr "Základní, nelze odinstalovat"
 
 #: lazarusidestrconsts.lispckexplinstalled
+msgctxt "lazarusidestrconsts.lispckexplinstalled"
 msgid "Installed"
 msgstr "Instalováno"
 
@@ -13843,6 +13840,11 @@ msgstr "odstranit"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr "Vybrat balíček"
+
+#: lazarusidestrconsts.lispkgsinstalled
+msgctxt "lazarusidestrconsts.lispkgsinstalled"
+msgid "Installed"
+msgstr "Instalováno"
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 #, fuzzy

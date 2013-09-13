@@ -4701,9 +4701,9 @@ msgstr "Completado y Descripciones"
 msgid "Auto show"
 msgstr "Mostrar Automáticamente"
 
-#: lazarusidestrconsts.lisavailablepackages
-msgid "Available packages"
-msgstr "Paquetes disponibles"
+#: lazarusidestrconsts.lisavailableforinstallation
+msgid "Available for installation"
+msgstr ""
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
 msgid "Available project build modes:"
@@ -8110,10 +8110,6 @@ msgstr "No cerrar el proyecto"
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
 msgstr "no compilar dependencias"
-
-#: lazarusidestrconsts.lisdonotinstall
-msgid "Do not install"
-msgstr "No instalar"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -13646,6 +13642,7 @@ msgid "Base, cannot be uninstalled"
 msgstr "Base, no puede ser desinstalado"
 
 #: lazarusidestrconsts.lispckexplinstalled
+msgctxt "lazarusidestrconsts.lispckexplinstalled"
 msgid "Installed"
 msgstr "Instalado"
 
@@ -14528,6 +14525,11 @@ msgstr "quitar"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr "Seleccionar un paquete"
+
+#: lazarusidestrconsts.lispkgsinstalled
+msgctxt "lazarusidestrconsts.lispkgsinstalled"
+msgid "Installed"
+msgstr "Instalado"
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 #, fuzzy

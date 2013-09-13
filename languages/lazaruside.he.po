@@ -4690,9 +4690,9 @@ msgstr "תכונות אוטומטיות"
 msgid "Auto show"
 msgstr "הצגה אוטומטית"
 
-#: lazarusidestrconsts.lisavailablepackages
-msgid "Available packages"
-msgstr "חבילות זמינות"
+#: lazarusidestrconsts.lisavailableforinstallation
+msgid "Available for installation"
+msgstr ""
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
 msgid "Available project build modes:"
@@ -8096,10 +8096,6 @@ msgstr "אל תסגור את הפרוייקט"
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
 msgstr "אל תהדר תלויות"
-
-#: lazarusidestrconsts.lisdonotinstall
-msgid "Do not install"
-msgstr "אל תתקין"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -13645,6 +13641,7 @@ msgid "Base, cannot be uninstalled"
 msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
+msgctxt "lazarusidestrconsts.lispckexplinstalled"
 msgid "Installed"
 msgstr "מותקן"
 
@@ -14526,6 +14523,11 @@ msgstr "הסר"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr ""
+
+#: lazarusidestrconsts.lispkgsinstalled
+msgctxt "lazarusidestrconsts.lispkgsinstalled"
+msgid "Installed"
+msgstr "מותקן"
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 #, fuzzy
