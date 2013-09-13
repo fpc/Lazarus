@@ -51,6 +51,19 @@ begin
   {$endif}
 end;
 
+class procedure TQtWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
+var
+  B: Boolean;
+begin
+  B := Assigned(AWinControl.Parent) and (AWinControl.Parent is TPageControl) and
+    AWinControl.Parent.HandleAllocated;
+  if B then
+    TQtWidget(AWinControl.Parent.Handle).BeginUpdate;
+  TQtWidget(AWinControl.Handle).Release;
+  if B then
+    TQtWidget(AWinControl.Parent.Handle).EndUpdate;
+end;
+
 class procedure TQtWSCustomPage.UpdateTabFontColor(APage: TCustomPage; AFont: TFont);
 var
   AParent: TQtWidget;
@@ -387,6 +400,9 @@ class procedure TQtWSCustomTabControl.SetPageIndex(
 var
   TabWidget: TQtTabWidget;
 begin
+  if ATabControl is TTabControl then
+    exit;
+
   if not WSCheckHandleAllocated(ATabControl, 'SetPageIndex') then
     Exit;
   TabWidget := TQtTabWidget(ATabControl.Handle);
