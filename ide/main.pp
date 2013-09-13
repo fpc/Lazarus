@@ -2061,12 +2061,13 @@ begin
   {$IFDEF NEW_MAIN_IDE_TABS}
     MainIDEBar.pnlRightSpeedButtons.Hide;
   {$ELSE}
+    MainIDEBar.pnlRightSpeedButtons.Hide;
   // Copied from CodeTyphon
   MainIDEBar.SelComponentPageButton:=TSpeedButton.Create(MainIDEBar.pnlRightSpeedButtons);
   with MainIDEBar.SelComponentPageButton do
   begin
     Name := 'PalettePageSelectBtn';
-    Parent := MainIDEBar.pnlRightSpeedButtons;
+    Parent := MainIDEBar.tbStandard;
     LoadGlyphFromLazarusResource('SelCompPage');
     Flat := True;
     SetBounds(1,31,16,16);
