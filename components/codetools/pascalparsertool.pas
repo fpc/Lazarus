@@ -217,7 +217,7 @@ type
     function ReadWithStatement(ExceptionOnError, CreateNodes: boolean): boolean;
     function ReadOnStatement(ExceptionOnError, CreateNodes: boolean): boolean;
     procedure ReadVariableType;
-    function ReadHintModifier: boolean;
+    procedure ReadHintModifiers;
     function ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode): boolean;
     function ReadTilGetterOfProperty(PropertyNode: TCodeTreeNode): boolean;
     procedure ReadGUID;
@@ -2338,7 +2338,7 @@ function TPascalParserTool.KeyWordFuncClassProperty: boolean;
    property X: integer index 1 read GetCoords write SetCoords stored IsStored; deprecated;
    property Col8: ICol8 read FCol8 write FCol8 implements ICol8, IColor;
    property Value: Integer read FCurrent; enumerator Current;
-   property Visible: WordBool readonly dispid 401;
+   property Visible: WordBool readonly dispid 401; experimental; platform;
 
    property specifiers before semicolon:
      index <id or number>, read <id>, write <id>, stored <id>, default <constant>,
@@ -2406,12 +2406,8 @@ begin
     end else
       UndoReadNextAtom;
 
-    if CurPos.Flag=cafSemicolon then begin
-      // read hint modifiers
-      ReadNextAtom;
-      if not ReadHintModifier then
-        UndoReadNextAtom;
-    end;
+    if CurPos.Flag=cafSemicolon then
+      ReadHintModifiers;
 
   end else
     UndoReadNextAtom;
@@ -3275,7 +3271,7 @@ begin
     ReadConstExpr; // read constant
 
   // optional: hint modifier
-  ReadHintModifier;
+  ReadHintModifiers;
 
   // semicolon and postfix modifiers
   if CurPos.Flag=cafSemicolon then begin
@@ -3349,14 +3345,33 @@ begin
   EndChildNode;
 end;
 
-function TPascalParserTool.ReadHintModifier: boolean;
+procedure TPascalParserTool.ReadHintModifiers;
+// after reading cursor is at next atom
+
+  function IsModifier: boolean;
+  var
+    p: PChar;
+  begin
+    Result:=false;
+    if (CurPos.StartPos<1) or (CurPos.StartPos>SrcLen) then exit;
+    p:=@Src[CurPos.StartPos];
+    case UpChars[p^] of
+    'D': Result:=UpAtomIs('DEPRECATED');
+    'E': Result:=UpAtomIs('EXPERIMENTAL');
+    'L': Result:=UpAtomIs('LIBRARY');
+    'P': Result:=UpAtomIs('PLATFORM');
+    'U': Result:=UpAtomIs('UNIMPLEMENTED');
+    end;
+  end;
+
 begin
-  if UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM')
-  or UpAtomIs('UNIMPLEMENTED') or UpAtomIs('EXPERIMENTAL')
-  or UpAtomIs('LIBRARY')
-  then begin
+  while CurPos.Flag=cafSemicolon do begin
+    ReadNextAtom;
+    if not IsModifier then begin
+      UndoReadNextAtom;
+      exit;
+    end;
     //debugln(['TPascalParserTool.ReadHintModifier ',CurNode.DescAsString,' ',CleanPosToStr(CurPos.StartPos)]);
-    Result:=true;
     CreateChildNode;
     CurNode.Desc:=ctnHintModifier;
     CurNode.EndPos:=CurPos.EndPos;
@@ -3371,8 +3386,7 @@ begin
     if not (CurPos.Flag in [cafSemicolon,cafRoundBracketClose]) then
       SaveRaiseCharExpectedButAtomFound(';');
     EndChildNode;
-  end else
-    Result:=false;
+  end;
 end;
 
 function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
@@ -3626,11 +3640,11 @@ begin
       if (not AtomIsStringConstant) and (not AtomIsIdentifier) then
         SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
       ReadConstant(true,false,[]);
-      // read hint modifier
-      ReadHintModifier;
       // read ;
       if CurPos.Flag<>cafSemicolon then
         SaveRaiseCharExpectedButAtomFound(';');
+      // read hint modifier
+      ReadHintModifiers;
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
     end else begin
@@ -3774,7 +3788,7 @@ begin
   end;
   ReadConstExpr;
   // optional: hint modifier
-  ReadHintModifier;
+  ReadHintModifiers;
   if CurPos.Flag=cafSemicolon then begin
     if (CurNode.Parent.Desc=ctnConstSection)
     and (CurNode.Parent.Parent.Desc in AllCodeSections) then begin
@@ -3858,7 +3872,7 @@ begin
   ReadNextAtom;
   ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
   // read hint modifier
-  ReadHintModifier;
+  ReadHintModifiers;
   // read ;
   if CurPos.Flag<>cafSemicolon then
     SaveRaiseCharExpectedButAtomFound(';');
@@ -4184,10 +4198,8 @@ begin
     // read extra flags
     ReadNextAtom;
   end;
-  if CurPos.Flag=cafSemicolon then
-    ReadNextAtom;
   // read hint modifier
-  ReadHintModifier;
+  ReadHintModifiers;
   if CurPos.Flag=cafSemicolon then
     ReadNextAtom;
   // read post modifiers
@@ -4296,10 +4308,6 @@ begin
     ReadNextAtom;
     if CurPos.Flag=cafSemicolon then
       ReadNextAtom;
-    // read hint modifier
-    ReadHintModifier;
-    if CurPos.Flag=cafSemicolon then
-      ReadNextAtom;
     // read post modifiers
     if UpAtomIs('EXTERNAL') then begin
       ReadNextAtom;
@@ -4308,6 +4316,8 @@ begin
         ReadConstant(true,false,[]);
       end;
     end;
+    // read hint modifier
+    ReadHintModifiers;
     if CurPos.Flag<>cafSemicolon then
       UndoReadNextAtom;
   end;
@@ -4816,7 +4826,7 @@ begin
           debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase ParseType failed']);
           exit;
         end;
-        ReadHintModifier;
+        ReadHintModifiers;
         CurNode.EndPos:=CurPos.EndPos;
         EndChildNode; // close variable definition
       end;
