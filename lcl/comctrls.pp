@@ -2330,8 +2330,6 @@ type
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure InsertControl(AControl: TControl; Index: integer); override;
-    procedure RemoveControl(AControl: TControl); override;
     procedure Loaded; override;
     procedure Paint; override;
     procedure Resize; override;
@@ -2340,6 +2338,8 @@ type
     destructor Destroy; override;
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
+    procedure InsertControl(AControl: TControl; Index: integer); override;
+    procedure RemoveControl(AControl: TControl); override;
   public
     property Align read GetAlign write SetAlign default alTop;
     property BandBorderStyle: TBorderStyle read FBandBorderStyle write FBandBorderStyle default bsSingle;
