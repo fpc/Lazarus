@@ -194,13 +194,13 @@ begin
   Caption:=lisInstallUninstallPackages;
   NoteLabel.Caption:=lisToInstallYouMustCompileAndRestartTheIDE;
 
-  AvailablePkgGroupBox.Caption:=lisDoNotInstall;
+  AvailablePkgGroupBox.Caption:=lisAvailableForInstallation;
 
   ExportButton.Caption:=lisExportList;
   ImportButton.Caption:=lisImportList;
   UninstallButton.Caption:=lisUninstallSelection;
   UninstallButton.LoadGlyphFromLazarusResource('arrow_right');
-  InstallPkgGroupBox.Caption:=lisPckEditInstall;
+  InstallPkgGroupBox.Caption:=lisPkgsInstalled;
   AddToInstallButton.Caption:=lisInstallSelection;
   AddToInstallButton.LoadGlyphFromLazarusResource('arrow_left');
   PkgInfoGroupBox.Caption := lisPackageInfo;

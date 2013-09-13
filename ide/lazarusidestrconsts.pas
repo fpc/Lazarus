@@ -4532,9 +4532,9 @@ resourcestring
   lisErrorMovingComponent2 = 'Error moving component %s:%s';
   lisInstallUninstallPackages = 'Install/Uninstall Packages';
   lisMenuEditInstallPkgs = 'Install/Uninstall Packages ...';
-  lisAvailablePackages = 'Available packages';
   lisExportList = 'Export list';
-  lisDoNotInstall = 'Do not install';
+  lisAvailableForInstallation = 'Available for installation';
+  lisPkgsInstalled = 'Installed';
   lisImportList = 'Import list';
   lisUninstallSelection = 'Uninstall selection';
   lisPackagesToInstallInTheIDE = 'Packages to install in the IDE';
