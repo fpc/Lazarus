@@ -4610,20 +4610,23 @@ end;
 
 procedure TSourceEditor.EditorChangeUpdating(ASender: TObject; AnUpdating: Boolean);
 begin
+  // Calls may be unbalanced, because the event handler may not be assigned to the event on the first BeginUpdate
   If AnUpdating then begin
     //if FInEditorChangedUpdating then
     //  debugln(['***** TSourceEditor.EditorChangeUpdating: Updating=True, but FInEditorChangedUpdating was true already']);
-    if not FInEditorChangedUpdating then
+    if not FInEditorChangedUpdating then begin
+      FInEditorChangedUpdating := True;
       DebugBoss.LockCommandProcessing;
-    FInEditorChangedUpdating := True;
+    end;
     FMouseActionPopUpMenu := nil;
   end else
   begin
     //if not FInEditorChangedUpdating then
     //  debugln(['***** TSourceEditor.EditorChangeUpdating: Updating=False, but FInEditorChangedUpdating was false already']);
-    if FInEditorChangedUpdating then
-      DebugBoss.UnLockCommandProcessing;
-    FInEditorChangedUpdating := False;
+    if FInEditorChangedUpdating then begin
+      FInEditorChangedUpdating := False;  // set before unlocking
+      DebugBoss.UnLockCommandProcessing;  // may lead to recursion
+    end;
     //FMouseActionPopUpMenu :=
     if (FMouseActionPopUpMenu <> nil) then begin
       FMouseActionPopUpMenu.PopupComponent := FEditor;

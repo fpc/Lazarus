@@ -1485,6 +1485,7 @@ type
     FIcon: QIconH;
     FTriggeredHook: QAction_hookH;
     FHoveredHook: QAction_hookH;
+    FAboutToShowHook: QMenu_hookH;
     FAboutToHideHook: QMenu_hookH;
     FActionEventFilter: QObject_hookH;
     FActionHandle: QActionH;
@@ -1503,6 +1504,7 @@ type
     procedure DetachEvents; override;
     
     procedure SlotHovered; cdecl;
+    procedure SlotAboutToShow; cdecl;
     procedure SlotAboutToHide; cdecl;
     procedure SlotDestroy; cdecl;
     procedure SlotTriggered(checked: Boolean = False); cdecl;
@@ -13458,13 +13460,16 @@ procedure TQtMenu.AttachEvents;
 begin
   FTriggeredHook := QAction_hook_create(ActionHandle);
   FHoveredHook := QAction_hook_create(ActionHandle);
+  FAboutToShowHook := QMenu_hook_create(Widget);
   FAboutToHideHook := QMenu_hook_create(Widget);
   FEventHook := QObject_hook_create(Widget);
 
   QAction_hook_hook_triggered(FTriggeredHook, @SlotTriggered);
 
   QAction_hook_hook_hovered(FHoveredHook, @SlotHovered);
-  
+
+  QMenu_hook_hook_aboutToShow(FAboutToShowHook, @SlotAboutToShow);
+
   QMenu_hook_hook_aboutToHide(FAboutToHideHook, @SlotAboutToHide);
 
   QObject_hook_hook_events(FEventHook, @EventFilter);
@@ -13490,6 +13495,12 @@ begin
     FHoveredHook := nil;
   end;
   
+  if FAboutToShowHook <> nil then
+  begin
+    QMenu_hook_destroy(FAboutToShowHook);
+    FAboutToShowHook := nil;
+  end;
+
   if FAboutToHideHook <> nil then
   begin
     QMenu_hook_destroy(FAboutToHideHook);
@@ -13503,6 +13514,27 @@ begin
   FMenuItem.IntfDoSelect;
 end;
 
+procedure TQtMenu.SlotAboutToShow; cdecl;
+var
+  Msg: TLMessage;
+begin
+  //issues #22872 (flickering), #24979 (actions)
+  if Assigned(FMenuItem) and
+    not (FMenuItem.Menu is TPopupMenu) then
+  begin
+    // DebugLn('TQtMenu.SlotAboutToShow ',dbgsName(FMenuItem));
+    if GetTickCount64 - FLastTick > 10 then
+    begin
+      FLastTick := GetTickCount64;
+      FillChar(Msg, SizeOf(Msg), 0);
+      Msg.msg := LM_ACTIVATE;
+      if Assigned(FMenuItem) then
+        FMenuItem.Dispatch(Msg);
+      FLastTick := GetTickCount64;
+    end;
+  end;
+end;
+
 procedure TQtMenu.SlotAboutToHide; cdecl;
 var
   Event: QLCLMessageEventH;
@@ -13512,6 +13544,8 @@ begin
     Event := QLCLMessageEvent_create(LCLQt_PopupMenuClose);
     QCoreApplication_postEvent(Widget, Event);
   end;
+  // DebugLn('TQtMenu.SlotAboutToHide ',dbgsName(FMenuItem));
+  FLastTick := GetTickCount64; // issue #22872, #24979
 end;
 
 procedure TQtMenu.DoPopupClose;
@@ -13808,24 +13842,6 @@ begin
             Assigned(FMenuItem.OnClick) and
             (TempAction = nil) and not (FMenuItem.IsInMenuBar) then
             SlotTriggered();
-        end;
-      end;
-    QEventHideToParent: FLastTick := GetTickCount64; // issue #22872
-    QEventShowToParent:
-      begin
-        if Assigned(FMenuItem) and Assigned(FMenuItem.OnClick)
-           and not (FMenuItem.Menu is TPopupMenu) then
-        begin
-          // issue #22872
-          if GetTickCount64 - FLastTick > 10 then
-          begin
-            FLastTick := GetTickCount64;
-            FillChar(Msg, SizeOf(Msg), 0);
-            Msg.msg := LM_ACTIVATE;
-            if Assigned(FMenuItem) then
-              FMenuItem.Dispatch(Msg);
-            FLastTick := GetTickCount64;
-          end;
         end;
       end;
   end;

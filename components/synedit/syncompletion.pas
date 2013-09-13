@@ -1821,7 +1821,7 @@ var
 begin
   if FEditor <> nil then begin
     s := FEditor.LineText;
-    i := FEditor.CaretX - 1;
+    i := FEditor.LogicalCaretXY.X - 1;
     if i > length(s) then
       result := ''
     else begin
@@ -1829,7 +1829,7 @@ begin
         Begin
           dec(i);
         end;
-      result := copy(s, i + 1, FEditor.CaretX - i - 1);
+      result := copy(s, i + 1, FEditor.LogicalCaretXY.X - i - 1);
     end;
   end
   else
@@ -1940,13 +1940,13 @@ var
 begin
   if aEditor <> nil then begin
     s := aEditor.LineText;
-    i := aEditor.CaretX - 1;
+    i := aEditor.LogicalCaretXY.X - 1;
     if i > length(s) then
       result := ''
     else begin
       while (i > 0) and (s[i] > ' ') and (pos(s[i], FEndOfTokenChr) = 0) do
         dec(i);
-      result := copy(s, i + 1, aEditor.CaretX - i - 1);
+      result := copy(s, i + 1, aEditor.LogicalCaretXY.X - i - 1);
     end;
   end
   else
