@@ -200,6 +200,10 @@ type
 
     procedure FindInFilesPerDialog(AProject: TProject); override;
     procedure FindInFiles(AProject: TProject; const FindText: string); override;
+
+    // Copied from CodeTyphon
+    procedure SelComponentPageButtonClick(Sender: TObject); virtual; abstract;
+
   public
     property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
     property WindowMenuActiveForm: TCustomForm read FWindowMenuActiveForm write FWindowMenuActiveForm;

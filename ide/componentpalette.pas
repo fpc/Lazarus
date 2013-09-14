@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Forms, Graphics, ComCtrls, Buttons, FileUtil, Menus,
-  LResources, AVL_Tree, PropEdits, FormEditingIntf, LazIDEIntf, IDEProcs, LCLProc,
+  LResources, AVL_Tree, PropEdits, FormEditingIntf, LazIDEIntf, IDEProcs, LCLProc, ExtCtrls,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
@@ -67,11 +67,7 @@ type
     procedure PopupMenuPopup(Sender: TObject);
   private
     fComponents: TAVLTree; // tree of TRegisteredComponent sorted for componentclass
-    {$IFDEF NEW_MAIN_IDE_TABS}
-    FPageControl: TExtendedTabControl;
-    {$ELSE}
     FPageControl: TPageControl;
-    {$ENDIF}
     fNoteBookNeedsUpdate: boolean;
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
@@ -81,11 +77,7 @@ type
     fUnregisteredIcon: TCustomBitmap;
     fSelectButtonIcon: TCustomBitmap;
     fUpdatingPageControl: boolean;
-    {$IFDEF NEW_MAIN_IDE_TABS}
-    procedure SetPageControl(const AValue: TExtendedTabControl);
-    {$ELSE}
     procedure SetPageControl(const AValue: TPageControl);
-    {$ENDIF}
     procedure SelectionToolClick(Sender: TObject);
     procedure ComponentBtnMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -124,11 +116,7 @@ type
                        const RegisterProc: RegisterUnitComponentProc); override;
     procedure UpdateVisible; override;
   public
-    {$IFDEF NEW_MAIN_IDE_TABS}
-    property PageControl: TExtendedTabControl read FPageControl write SetPageControl;
-    {$ELSE}
     property PageControl: TPageControl read FPageControl write SetPageControl;
-    {$ENDIF}
     property SelectionMode: TComponentSelectionMode read FSelectionMode write FSelectionMode;
     property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
     property OnOpenUnit: TNotifyEvent read FOnOpenUnit write FOnOpenUnit;
@@ -255,11 +243,7 @@ begin
   end;
 end;
 
-{$IFDEF NEW_MAIN_IDE_TABS}
-procedure TComponentPalette.SetPageControl(const AValue: TExtendedTabControl);
-{$ELSE}
 procedure TComponentPalette.SetPageControl(const AValue: TPageControl);
-{$ENDIF}
 var
   MenuItem: TMenuItem;
 begin
@@ -384,11 +368,7 @@ begin
   // select button
   if (FSelected<>nil) and (FPageControl<>nil) then begin
     TSpeedButton(FSelected.Button).Down:=true;
-    {$IFDEF NEW_MAIN_IDE_TABS}
-    FPageControl.ActivePage:=TExtendedTabSheet(FSelected.Page.PageComponent);
-    {$ELSE}
     FPageControl.ActivePage:=TTabSheet(FSelected.Page.PageComponent);
-    {$ENDIF}
   end;
 end;
 
@@ -662,11 +642,7 @@ end;
 
 procedure TComponentPalette.UpdateNoteBookButtons;
 var
-  {$IFDEF NEW_MAIN_IDE_TABS}
-  OldActivePage: TExtendedTabSheet;
-  {$ELSE}
   OldActivePage: TTabSheet;
-  {$ENDIF}
 
   procedure RemoveUnneededPage(aSheet: TCustomPage);
   var
@@ -697,6 +673,8 @@ var
   var
     CurPageIndex: Integer;
     CurScrollBox: TScrollBox;
+    PanelRight: TPanel;
+    BtnRight: TSpeedButton;
   begin
     if not aCompPage.Visible then Exit;
     if aCompPage.PageComponent=nil then begin
@@ -711,6 +689,26 @@ var
         HorzScrollBar.Visible := false;
         VertScrollBar.Increment := ComponentPaletteBtnHeight;
         Parent := aCompPage.PageComponent;
+      end;
+      PanelRight := TPanel.Create(aCompPage.PageComponent);
+      with PanelRight do
+      begin
+        Align := alRight;
+        Caption := '';
+        BevelOuter := bvNone;
+        Width := 20;
+        Visible := True; // EnvironmentOptions.IDESpeedButtonsVisible;
+        Parent := aCompPage.PageComponent;
+      end;
+      BtnRight:=TSpeedButton.Create(aCompPage.PageComponent);
+      with BtnRight do
+      begin
+        LoadGlyphFromLazarusResource('SelCompPage');
+        Flat := True;
+        SetBounds(2,1,16,16);
+        Hint := 'Click to Select Palette Page';
+        OnClick := @MainIDE.SelComponentPageButtonClick;
+        Parent := PanelRight;
       end;
     end else begin
       // move to the right position

@@ -436,7 +436,7 @@ type
     // ComponentPalette events
     procedure ComponentPaletteClassSelected(Sender: TObject);
     // Copied from CodeTyphon
-    procedure SelComponentPageButtonClick(Sender: TObject);
+    procedure SelComponentPageButtonClick(Sender: TObject); override;
 
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender: TObject);
@@ -2012,18 +2012,6 @@ begin
     AutoSize := true;
     Visible := EnvironmentOptions.IDESpeedButtonsVisible;
   end;
-  // Panel on right side of component palette
-  MainIDEBar.pnlRightSpeedButtons := TPanel.Create(OwningComponent);
-  with MainIDEBar.pnlRightSpeedButtons do
-  begin
-    Name := 'pnlRightSpeedButtons';
-    Parent := MainIDEBar;
-    Align := alRight;
-    Caption := '';
-    BevelOuter := bvNone;
-    Width := 17;
-    Visible := EnvironmentOptions.IDESpeedButtonsVisible;
-  end;
 
   MainIDEBar.tbViewDebug := CreateToolBar('tbViewDebug');
   MainIDEBar.tbStandard := CreateToolBar('tbStandard');
@@ -2057,24 +2045,6 @@ begin
   MainIDEBar.BuildModeSpeedButton.Style:=tbsDropDown;
   MainIDEBar.BuildModeSpeedButton.DropdownMenu:=MainIDEBar.SetBuildModePopupMenu;
   MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
-
-  {$IFDEF NEW_MAIN_IDE_TABS}
-    MainIDEBar.pnlRightSpeedButtons.Hide;
-  {$ELSE}
-    MainIDEBar.pnlRightSpeedButtons.Hide;
-  // Copied from CodeTyphon
-  MainIDEBar.SelComponentPageButton:=TSpeedButton.Create(MainIDEBar.pnlRightSpeedButtons);
-  with MainIDEBar.SelComponentPageButton do
-  begin
-    Name := 'PalettePageSelectBtn';
-    Parent := MainIDEBar.tbStandard;
-    LoadGlyphFromLazarusResource('SelCompPage');
-    Flat := True;
-    SetBounds(1,31,16,16);
-    Hint := 'Click to Select Palette Page';
-    OnClick := @SelComponentPageButtonClick;
-  end;
-  {$ENDIF}
 end;
 
 procedure TMainIDE.SetupDialogs;
@@ -2089,34 +2059,9 @@ begin
 end;
 
 procedure TMainIDE.SetupComponentPalette;
-{$IFDEF NEW_MAIN_IDE_TABS}
-var
-  Btn: TExtendedTabToolButton;
-{$ENDIF}
 begin
   // Component palette
-  {$IFDEF NEW_MAIN_IDE_TABS}
-  MainIDEBar.ComponentPageControl := TExtendedTabControl.Create(OwningComponent);
-
-  MainIDEBar.SelComponentPageButton:=TSpeedButton.Create(MainIDEBar.pnlRightSpeedButtons);
-  with MainIDEBar.SelComponentPageButton do
-  begin
-    Btn := TExtendedTabToolButton.Create(OwningComponent);
-    Btn.Style := tbsButton;
-    Btn.Caption := '';
-    Btn.Hint := 'Click to Select Palette Page';
-    Btn.OnClick := @SelComponentPageButtonClick;
-    MainIDEBar.ComponentPageControl.ShowToolBar := tsRight;
-    MainIDEBar.ComponentPageControl.ToolBar.EdgeBorders := [];
-    MainIDEBar.ComponentPageControl.ToolBar.AcceptButton(Btn);
-
-    MainIDEBar.ComponentPageControl.ToolBar.Images := TImageList.Create(OwningComponent);
-    MainIDEBar.ComponentPageControl.ToolBar.Images.AddLazarusResource('SelCompPage');
-    Btn.ImageIndex := 0;
-  end;
-  {$ELSE}
   MainIDEBar.ComponentPageControl := TPageControl.Create(OwningComponent);
-  {$ENDIF}
   with MainIDEBar.ComponentPageControl do begin
     Name := 'ComponentPageControl';
     Align := alClient;
