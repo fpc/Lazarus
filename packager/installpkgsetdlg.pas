@@ -693,9 +693,17 @@ begin
 
     InfoStr:=lisCurrentState;
     if Info.Installed<>pitNope then
-      AddState(lisInstalled)
+    begin
+      if PackageInInstallList(Info.ID.Name)=false then
+        AddState(lisSelectedForUninstallation);
+      AddState(lisInstalled);
+    end
     else
+    begin
+      if PackageInInstallList(Info.ID.Name)=true then
+        AddState(lisSelectedForInstallation);
       AddState(lisNotInstalled);
+    end;
     if Info.Base then
       AddState(lisPckExplBase);
     AddState(LazPackageTypeIdents[Info.PkgType]);

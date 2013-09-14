@@ -4195,6 +4195,8 @@ resourcestring
   // open installed packages dialog
   lisOIPFilename = 'Filename:  %s';
   lisCurrentState = 'Current state: ';
+  lisSelectedForInstallation = 'selected for installation';
+  lisSelectedForUninstallation = 'selected for uninstallation';
   lisInstalled = 'installed';
   lisNotInstalled = 'not installed';
   lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound = '%sThis package is '
