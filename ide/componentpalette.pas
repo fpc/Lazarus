@@ -129,6 +129,9 @@ implementation
 
 uses MainBase;
 
+const
+  OVERVIEW_PANEL_WIDTH = 20;
+
 function CompareRegisteredComponents(Data1, Data2: Pointer): integer;
 var
   RegComp1: TRegisteredComponent;
@@ -559,7 +562,7 @@ begin
 
     ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
 
-    MaxBtnPerRow:=((Page.ClientWidth - ButtonX) div ComponentPaletteBtnWidth);
+    MaxBtnPerRow:=((Page.ClientWidth - ButtonX - OVERVIEW_PANEL_WIDTH) div ComponentPaletteBtnWidth);
     if MaxBtnPerRow<1 then MaxBtnPerRow:=1;
     Rows:=((ButtonTree.Count-1) div MaxBtnPerRow)+1;
     //DebugLn(['TComponentPalette.ReAlignButtons ',DbgSName(Page),' PageIndex=',Page.PageIndex,' ClientRect=',dbgs(Page.ClientRect)]);
@@ -696,7 +699,7 @@ var
         Align := alRight;
         Caption := '';
         BevelOuter := bvNone;
-        Width := 20;
+        Width := OVERVIEW_PANEL_WIDTH;
         Visible := True; // EnvironmentOptions.IDESpeedButtonsVisible;
         Parent := aCompPage.PageComponent;
       end;
