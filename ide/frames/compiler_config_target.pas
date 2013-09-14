@@ -203,6 +203,17 @@ procedure TCompilerConfigTargetFrame.UpdateByTargetCPU(aTargetCPU: string);
 var
   IsIntel: Boolean;
 
+  procedure Arm(aList: TStrings);
+  begin
+    aList.Add('ARMV3');
+    aList.Add('ARMV4');
+    aList.Add('ARMV5');
+    aList.Add('ARMV6');
+    aList.Add('ARMV7');
+    aList.Add('ARMV7M');
+    aList.Add('CORTEXM3');
+  end;
+
   procedure Intel_i386(aList: TStrings);
   begin
     IsIntel := True;
@@ -218,6 +229,24 @@ var
   begin
     IsIntel := True;
     aList.Add('ATHLON64');
+  end;
+
+  procedure Sparc(aList: TStrings);
+  begin
+    aList.Add('SPARC V7');
+    aList.Add('SPARC V8');
+    aList.Add('SPARC V9');
+  end;
+
+  procedure Mips(aList: TStrings);
+  begin
+    aList.Add('mips1');
+    aList.Add('mips2');
+    aList.Add('mips3');
+    aList.Add('mips4');
+    aList.Add('mips5');
+    aList.Add('mips32');
+    aList.Add('mips32r2');
   end;
 
 var
@@ -239,15 +268,15 @@ begin
   TargetProcComboBox.Clear;
   TargetProcComboBox.Items.Add('('+lisDefault+')');
   case aTargetCPU of
-    'arm': begin end;
-    'i386': Intel_i386(TargetProcComboBox.Items);
-    'm68k': begin end;
+    'arm'    : Arm(TargetProcComboBox.Items);
+    'i386'   : Intel_i386(TargetProcComboBox.Items);
+    'm68k'   : begin end;
     'powerpc': begin end;
-    'sparc': begin end;
-    'x86_64': Intel_x86_64(TargetProcComboBox.Items);
-    'mipsel': begin end;
-    'mips': begin end;
-    'jvm': begin end;
+    'sparc'  : Sparc(TargetProcComboBox.Items);
+    'x86_64' : Intel_x86_64(TargetProcComboBox.Items);
+    'mipsel' : Mips(TargetProcComboBox.Items);
+    'mips'   : Mips(TargetProcComboBox.Items);
+    'jvm'    : begin end;
   end;
   TargetProcComboBox.ItemIndex := 0;
 
