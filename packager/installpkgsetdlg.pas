@@ -69,6 +69,7 @@ type
     SaveAndExitButton: TBitBtn;
     InstallPkgGroupBox: TGroupBox;
     SaveAndRebuildButton: TBitBtn;
+    InstalledFilterEdit: TTreeFilterEdit;
     UninstallButton: TBitBtn;
     procedure AddToInstallButtonClick(Sender: TObject);
     function AvailableFilterEditGetImageIndex(Str: String; Data: TObject;
@@ -192,7 +193,7 @@ begin
   ImgIndexOverlayRunTimePackage := IDEImages.LoadImage(16, 'pkg_runtime_overlay');
 
   Caption:=lisInstallUninstallPackages;
-  NoteLabel.Caption:=lisToInstallYouMustCompileAndRestartTheIDE;
+  NoteLabel.Caption:=lisIDECompileAndRestart;
 
   AvailablePkgGroupBox.Caption:=lisAvailableForInstallation;
 

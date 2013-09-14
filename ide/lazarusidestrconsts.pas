@@ -5358,8 +5358,7 @@ resourcestring
   lisNoHints = 'no hints';
   lisAllParametersOfThisFunctionAreAlreadySetAtThisCall = 'All parameters of '
     +'this function are already set at this call. Nothing to add.';
-  lisToInstallYouMustCompileAndRestartTheIDE = 'To install you must compile '
-    +'and restart the IDE';
+  lisIDECompileAndRestart = 'The IDE will compile and restart itself when installing packages.';
 
   synfUnfoldAllInSelection                          = 'Unfold all in selection';
   synfUnfoldCommentsInSelection                     = 'Unfold comments in selection';
@@ -5372,16 +5371,15 @@ resourcestring
   synfFoldInactiveIfdefInSelectionExcludeMixedState = 'Fold inactive Ifdef in selection ('
     +'exclude mixed state)';
 
-  synfUnfoldAll                                     = 'Unfold all';
-  synfUnfoldComments                                = 'Unfold comments';
-  synfFoldComments                                  = 'Fold comments';
-  synfHideComments                                  = 'Hide comments';
-  synfUnfoldAllIfdef                                = 'Unfold all Ifdef';
-  synfUnfoldActiveIfdef                             = 'Unfold active Ifdef';
-  synfUnfoldInactiveIfdef                           = 'Unfold inactive Ifdef';
-  synfFoldInactiveIfdef                             = 'Fold inactive Ifdef';
-  synfFoldInactiveIfdefExcludeMixedState            = 'Fold inactive Ifdef ('
-    +'exclude mixed state)';
+  synfUnfoldAll                           = 'Unfold all';
+  synfUnfoldComments                      = 'Unfold comments';
+  synfFoldComments                        = 'Fold comments';
+  synfHideComments                        = 'Hide comments';
+  synfUnfoldAllIfdef                      = 'Unfold all Ifdef';
+  synfUnfoldActiveIfdef                   = 'Unfold active Ifdef';
+  synfUnfoldInactiveIfdef                 = 'Unfold inactive Ifdef';
+  synfFoldInactiveIfdef                   = 'Fold inactive Ifdef';
+  synfFoldInactiveIfdefExcludeMixedState  = 'Fold inactive Ifdef (exclude mixed state)';
 
   lisCanNotCompileProject = 'Cannot compile project';
   lisTheProjectHasNoMainSourceFile = 'The project has no main source file.';
