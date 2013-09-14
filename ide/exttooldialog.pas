@@ -74,6 +74,7 @@ type
     fOnFreeOutputFilter: TOnFreeOutputFilter;
     fOnNeedsOutputFilter: TOnNeedsOutputFilter;
     fRunningTools: TList; // list of TProcess
+    fAllKeys: TKeyCommandRelationList;
     function GetToolOpts(Index: integer): TExternalToolOptions;
     procedure SetToolOpts(Index: integer; NewTool: TExternalToolOptions);
     procedure AddRunningTool(TheProcess: TProcess; ExecuteProcess: boolean);
@@ -244,6 +245,7 @@ begin
       TProcess(fRunningTools[i]).Free;
     fRunningTools.Free;
   end;
+  fAllKeys.Free;
   inherited Destroy;
 end;
 
@@ -299,6 +301,9 @@ var
   i: integer;
   KeyCommandRelation: TKeyCommandRelation;
 begin
+  if not assigned(fAllKeys) then
+    fAllKeys:=TKeyCommandRelationList.Create;
+  fAllKeys.Assign(KeyCommandRelationList);
   for i:=0 to Count-1 do begin
     KeyCommandRelation:=KeyCommandRelationList.FindByCommand(ecExtToolFirst+i);
     if KeyCommandRelation<>nil then begin
@@ -646,7 +651,9 @@ begin
   {$ELSE}
   NewTool:=TExternalToolOptions.Create;
   {$ENDIF}
-  if ShowExtToolOptionDlg(fTransferMacros,NewTool)=mrOk then begin
+  if ShowExtToolOptionDlg(fTransferMacros, NewTool,
+          TExternalToolList(EnvironmentOptions.ExternalTools).fAllKeys)=mrOk then
+  begin
     fExtToolList.Add(NewTool);
     Listbox.Items.Add(ToolDescription(fExtToolList.Count-1));
   end else begin
@@ -739,8 +746,9 @@ var
 begin
   i:=Listbox.ItemIndex;
   if i<0 then exit;
-  if ShowExtToolOptionDlg(fTransferMacros,fExtToolList[i])=mrOk
-  then begin
+  if ShowExtToolOptionDlg(fTransferMacros,fExtToolList[i],
+          TExternalToolList(EnvironmentOptions.ExternalTools).fAllKeys)=mrOk then
+  begin
     Listbox.Items[i]:=ToolDescription(i);
     EnableButtons;
   end;

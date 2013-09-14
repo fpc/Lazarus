@@ -196,11 +196,13 @@ type
     procedure OpenButtonClick({%H-}sender : TOBject);
     procedure ScannersButtonClick(Sender: TObject);
   private
+    fAllKeys: TKeyCommandRelationList;
     fOptions: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF};
     fTransferMacros: TTransferMacroList;
     fScanners: TStrings;
     fKeyBox: TShortCutGrabBox;
     procedure FillMacroList;
+    function KeyConflicts(Key:word; Shift:TShiftState): TModalResult;
     procedure LoadFromOptions;
     procedure SaveToOptions;
     procedure UpdateButtons;
@@ -216,19 +218,23 @@ type
 
 
 function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
-  ExternalToolOptions: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF}):TModalResult;
-  
+  ExternalToolOptions: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF};
+  AllKeys: TKeyCommandRelationList):TModalResult;
+
 implementation
 
 {$R *.lfm}
 
 function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
-  ExternalToolOptions: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF}):TModalResult;
-var ExternalToolOptionDlg: TExternalToolOptionDlg;
+  ExternalToolOptions: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF};
+  AllKeys: TKeyCommandRelationList):TModalResult;
+var
+  ExternalToolOptionDlg: TExternalToolOptionDlg;
 begin
   Result:=mrCancel;
   ExternalToolOptionDlg:=TExternalToolOptionDlg.Create(nil);
   try
+    ExternalToolOptionDlg.fAllKeys:=AllKeys;
     ExternalToolOptionDlg.Options:=ExternalToolOptions;
     ExternalToolOptionDlg.MacroList:=TransferMacroList;
     Result:=ExternalToolOptionDlg.ShowModal;
@@ -873,6 +879,60 @@ begin
   MacrosListbox.Items.EndUpdate;
 end;
 
+function TExternalToolOptionDlg.KeyConflicts(Key: word; Shift: TShiftState
+  ): TModalResult;
+type
+  TConflictType = (ctNone,ctConflictKeyA,ctConflictKeyB);
+var
+  i: Integer;
+  ct:TConflictType;
+  CurName: TCaption;
+  ConflictName: String;
+begin
+  Result:=mrOK;
+  // look if we have already this key
+  if Key=VK_UNKNOWN then
+    exit;
+  i:=0;
+  for i:=0 to fAllKeys.RelationCount-1 do
+    begin
+    with fAllKeys.Relations[i] do
+      begin
+      ct:=ctnone;
+      if (ShortcutA.Key1=Key) and (ShortcutA.Shift1=Shift) then
+        ct:=ctConflictKeyA
+      else if (ShortcutB.Key1=Key) and (ShortcutB.Shift1=Shift) then
+        ct:=ctConflictKeyB;
+      if (ct<>ctNone) then begin
+        CurName:=TitleEdit.Text;
+        ConflictName:=GetCategoryAndName;
+        if ct=ctConflictKeyA then
+          ConflictName:=ConflictName
+                    +' ('+KeyAndShiftStateToEditorKeyString(ShortcutA)
+        else
+          ConflictName:=ConflictName
+                   +' ('+KeyAndShiftStateToEditorKeyString(ShortcutB);
+        case IDEMessageDialog(lisPEConflictFound,
+           Format(lisTheKeyIsAlreadyAssignedToRemoveTheOldAssignmentAnd, [
+             KeyAndShiftStateToKeyString(Key,Shift), LineEnding, ConflictName, LineEnding,
+             LineEnding, LineEnding, CurName]), mtConfirmation, [mbYes, mbNo, mbCancel])
+        of
+          mrYes:    Result:=mrOK;
+          mrCancel: Result:=mrCancel;
+          else      Result:=mrRetry;
+        end;
+        if Result=mrOK then begin
+          if (ct=ctConflictKeyA) then
+            ShortcutA:=ShortcutB;
+          ClearShortcutB;
+        end
+        else
+          break;
+      end;
+      end;
+    end;
+end;
+
 procedure TExternalToolOptionDlg.SetComboBox(
   AComboBox: TComboBox; const AValue: string);
 var i: integer;
@@ -915,6 +975,17 @@ end;
 
 procedure TExternalToolOptionDlg.OKButtonClick(Sender: TObject);
 begin
+  case KeyConflicts(fKeyBox.Key,fKeyBox.ShiftState) of
+    mrCancel:   begin
+        debugln('TExternalToolOptionDlg.OkButtonClick KeyConflicts failed for key1');
+        ModalResult:=mrCancel;
+        exit;
+      end;
+    mrRetry: begin
+        ModalResult:=mrNone;
+        exit;
+      end;
+    end;
   if (TitleEdit.Text<>'') and (FilenameEdit.Text<>'') then
     SaveToOptions
   else begin
