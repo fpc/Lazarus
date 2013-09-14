@@ -9284,6 +9284,10 @@ msgstr ""
 msgid "IDE build options"
 msgstr ""
 
+#: lazarusidestrconsts.lisidecompileandrestart
+msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
+msgstr ""
+
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgstr ""
@@ -15471,6 +15475,14 @@ msgstr ""
 msgid "Selected Command's Mapping"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectedforinstallation
+msgid "selected for installation"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectedforuninstallation
+msgid "selected for uninstallation"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr ""
@@ -16615,10 +16627,6 @@ msgstr "Trajectòria:"
 
 #: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
-msgstr ""
-
-#: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
-msgid "To install you must compile and restart the IDE"
 msgstr ""
 
 #: lazarusidestrconsts.listopanchoring

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-09-14 02:01+0400\n"
+"PO-Revision-Date: 2013-09-14 18:43+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9320,6 +9320,11 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "Параметры сборки IDE"
 
+#: lazarusidestrconsts.lisidecompileandrestart
+#| msgid "The IDE will compile and restart itself when installing packages."
+msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
+msgstr "При установке/удалении пакетов IDE будет пересобрана и перезапущена."
+
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgstr "Добро пожаловать в Lazarus.%0:sНайденный каталог настройки использовался другим экземпляром Lazarus.%0:sДва или более экземпляра Lazarus не должны иметь общий каталог настройки. Это может привести к конфликтам и невозможности использования IDE.%0:s%0:sЕсли вы имеете только один экземпляр и скопировали либо переместили исполнимый файл Lazarus, каталог настройки можно обновить.%0:s%1:s%0:s%0:sВыберите:%0:s%0:s* Обновить данные: Использовать этот каталог настройки и обновить его. Старый экземпляр Lazarus больше не будет его использовать.%0:s* Игнорировать: Использовать этот каталог настройки, но предупредить в дальнейшем. Это может привести к конфликтам с другими экземплярами Lazarus.%0:s* Прервать: Завершить работу. Проблему можно будет исправить, запустив Lazarus с указанием корректного каталога настройки.%0:s%0:sДополнительные сведения:%0:sПуть к каталогу настройки: %2:s%0:sЭкземпляр Lazarus, владеющий им: %3:s%0:sПуть запуска текущего экземпляра IDE: %4:s%0:s"
@@ -15479,6 +15484,14 @@ msgstr "(выбран сосед снизу)"
 msgid "Selected Command's Mapping"
 msgstr "Комбинация выбранной команды"
 
+#: lazarusidestrconsts.lisselectedforinstallation
+msgid "selected for installation"
+msgstr "выбран для установки"
+
+#: lazarusidestrconsts.lisselectedforuninstallation
+msgid "selected for uninstallation"
+msgstr "выбран для удаления"
+
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr "(выбран сосед слева)"
@@ -16621,10 +16634,6 @@ msgstr "Путь:"
 #: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "Переключение режимов показа имён файлов с полным или относительным путём"
-
-#: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
-msgid "To install you must compile and restart the IDE"
-msgstr "Для установки следует перекомпилировать и перезапустить IDE"
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
