@@ -5360,7 +5360,7 @@ resourcestring
   lisNoHints = 'no hints';
   lisAllParametersOfThisFunctionAreAlreadySetAtThisCall = 'All parameters of '
     +'this function are already set at this call. Nothing to add.';
-  lisIDECompileAndRestart = 'The IDE will compile and restart itself when installing packages.';
+  lisIDECompileAndRestart = 'The IDE will be recompiled and restarted during installation/uninstallation of packages.';
 
   synfUnfoldAllInSelection                          = 'Unfold all in selection';
   synfUnfoldCommentsInSelection                     = 'Unfold comments in selection';
