@@ -3648,11 +3648,11 @@ begin
       if (not AtomIsStringConstant) and (not AtomIsIdentifier) then
         SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
       ReadConstant(true,false,[]);
+      // read hint modifier
+      ReadHintModifiers;
       // read ;
       if CurPos.Flag<>cafSemicolon then
         SaveRaiseCharExpectedButAtomFound(';');
-      // read hint modifier
-      ReadHintModifiers;
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
     end else begin
