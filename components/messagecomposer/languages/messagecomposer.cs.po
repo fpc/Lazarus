@@ -111,3 +111,4 @@ msgstr "Pomocný kód"
 #: messagecomposer.svaluevar
 msgid "Value (var)"
 msgstr "Hodnota (proměnná)"
+
