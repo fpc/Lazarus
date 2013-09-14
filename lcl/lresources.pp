@@ -1495,7 +1495,7 @@ begin
     for I := P - 1 downto 0 do
     begin
       Result := TLResource(FList[I]);
-      if AnsiCompareText(Result.Name,Name)<>0 then
+      if SysUtils.CompareText(Result.Name,Name)<>0 then
         break;
       if Result.ValueType = ValueType then
         Exit;
@@ -1504,7 +1504,7 @@ begin
     for I := P to FList.Count - 1 do
     begin
       Result := TLResource(FList[I]);
-      if AnsiCompareText(Result.Name,Name)<>0 then
+      if SysUtils.CompareText(Result.Name,Name)<>0 then
         break;
       if Result.ValueType = ValueType then
         Exit;
@@ -1524,7 +1524,7 @@ begin
   while (L <= R) do
   begin
     Result := (L + R) shr 1;
-    C := AnsiCompareText(Name, TLResource(FList[Result]).Name);
+    C := SysUtils.CompareText(Name, TLResource(FList[Result]).Name);
     if C < 0 then
       R := Result - 1
     else
@@ -1563,7 +1563,7 @@ begin
   begin
     r1:=TLResource(FList[i]);
     r2:=TLResource(FList[i+1]);
-    if (AnsiCompareText(r1.Name,r2.Name)=0) and (r1.ValueType=r2.ValueType) then
+    if (SysUtils.CompareText(r1.Name,r2.Name)=0) and (r1.ValueType=r2.ValueType) then
     begin
       DebugLn(['TLResourceList.Sort ',i,' DUPLICATE RESOURCE FOUND: ',r1.Name,':',r1.ValueType]);
       //DumpStack;
@@ -1581,7 +1581,7 @@ begin
   end else
   if Pos1 + 1 = Pos2 then
   begin
-    cmp := AnsiCompareText(TLResource(List[Pos1]).Name, TLResource(List[Pos2]).Name);
+    cmp := SysUtils.CompareText(TLResource(List[Pos1]).Name, TLResource(List[Pos2]).Name);
     if cmp > 0 then
     begin
       MergeList[Pos1] := List[Pos1];
@@ -1613,7 +1613,7 @@ begin
   DestPos := Pos3;
   while (Src2Pos >= Pos2) and (Src1Pos >= Pos1) do
   begin
-    cmp:=AnsiCompareText(TLResource(List[Src1Pos]).Name, TLResource(List[Src2Pos]).Name);
+    cmp:=SysUtils.CompareText(TLResource(List[Src1Pos]).Name, TLResource(List[Src2Pos]).Name);
     if cmp > 0 then
     begin
       MergeList[DestPos] := List[Src1Pos];
