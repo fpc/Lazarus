@@ -38,7 +38,7 @@ unit IDECmdLine;
 interface
 
 uses 
-  Classes, SysUtils, FileUtil, LazFileUtils, LazUTF8Classes, BaseIDEIntf,
+  Classes, SysUtils, FileUtil, LazFileUtils, LazUTF8Classes,
   LazLogger, LazConf, LCLProc;
 
 const

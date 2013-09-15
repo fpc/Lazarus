@@ -50,7 +50,7 @@ uses
   ComCtrls, DividerBevel, DefineTemplates, CodeToolManager,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
-  PackageIntf, IDEExternToolIntf,
+  PackageIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   MainBar, ExtToolEditDlg, EnvironmentOpts,

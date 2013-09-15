@@ -41,11 +41,11 @@ uses
   PropEdits, IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
   CustomFormEditor, LazarusIDEStrConsts,
   {$IFDEF EnableNewExtTools}
+  IDEExternToolIntf,
   {$ELSE}
-  OutputFilter,
   {$ENDIF}
   IDEProcs, IDEOptionDefs, EditorOptions, ExtCtrls, JITForms, PropEditUtils,
-  IDEMsgIntf, IDEExternToolIntf;
+  IDEMsgIntf;
 
 type
 

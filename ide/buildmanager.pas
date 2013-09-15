@@ -35,7 +35,7 @@ uses
   Classes, SysUtils, AVL_Tree,
   // LCL
   LConvEncoding, InterfaceBase, LCLProc, Dialogs, FileUtil, Laz2_XMLCfg,
-  LazUTF8, LazUTF8Classes, Forms, Controls,
+  LazUTF8, Forms, Controls,
   // codetools
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   FileProcs, CodeToolsCfgScript, CodeToolsStructs,

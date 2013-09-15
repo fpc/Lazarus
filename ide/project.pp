@@ -3477,7 +3477,7 @@ var
     FFlags:=FFlags-[pfUseDefaultCompilerOptions];
   end;
 
-  procedure LoadCustomDefines(aConfig: TXMLConfig; const Path: string; Merge: boolean);
+  procedure LoadCustomDefines(aConfig: TXMLConfig; const Path: string; {%H-}Merge: boolean);
   var
     Cnt, i: Integer;
     s: String;

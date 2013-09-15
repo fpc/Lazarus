@@ -42,7 +42,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, contnrs, FileUtil, LazConfigStorage, LazUTF8, LCLType,
+  Classes, SysUtils, FileUtil, LazUTF8, LCLType,
   Controls, Forms, Buttons, StdCtrls, Dialogs, ExtCtrls, LCLProc, ButtonPanel,
   IDEMsgIntf, IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs,
   IDECommands, FileProcs, TransferMacros, LazarusIDEStrConsts, EnvironmentOpts,

@@ -46,7 +46,7 @@ uses
   {$IFDEF WinIME}
   LazSynIMM,
   {$ENDIF}
-  Classes, SysUtils, Controls, LCLProc, LCLType, Graphics, Menus, math, LazarusIDEStrConsts,
+  Classes, SysUtils, Controls, LCLProc, LCLType, Graphics, Menus, LazarusIDEStrConsts,
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks, SynEditTypes,
   SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
   SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark, SynEditMarkupSpecialLine,

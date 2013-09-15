@@ -1929,7 +1929,7 @@ type
     procedure SetMonitor(const AValue: TCallStackMonitor);
   protected
     procedure RequestCount(ACallstack: TCurrentCallStack); virtual;
-    procedure RequestAtLeastCount(ACallstack: TCurrentCallStack; ARequiredMinCount: Integer); virtual;
+    procedure RequestAtLeastCount(ACallstack: TCurrentCallStack; {%H-}ARequiredMinCount: Integer); virtual;
     procedure RequestCurrent(ACallstack: TCurrentCallStack); virtual;
     procedure RequestEntries(ACallstack: TCurrentCallStack); virtual;
     procedure CurrentChanged;

@@ -6,7 +6,7 @@ unit GenericCheckList;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel, CheckLst, LazarusIDEStrConsts, Buttons;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel, CheckLst, Buttons;
 
 type
 
@@ -15,7 +15,7 @@ type
   TGenericCheckListForm = class(TForm)
     ButtonPanel1: TButtonPanel;
     CheckListBox1: TCheckListBox;
-    procedure CheckListBox1ItemClick(Sender: TObject; Index: integer);
+    procedure CheckListBox1ItemClick(Sender: TObject; {%H-}Index: integer);
     procedure FormShow(Sender: TObject);
   private
     fActionBtn: TBitBtn;

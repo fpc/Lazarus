@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Menus,
   ComCtrls, ExtCtrls, Dialogs, LMessages,
   // IDEIntf
-  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, ExtendedTabControls,
+  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf,
   EnvironmentOpts, LazarusIDEStrConsts;
 
 type

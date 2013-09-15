@@ -41,10 +41,11 @@ uses
   Classes, SysUtils, Process, LCLProc, Forms, Controls, contnrs, strutils, FileUtil,
   LazarusIDEStrConsts, CompilerOptions, Project,
   {$IFDEF EnableNewExtTools}
+  IDEExternToolIntf,
   {$ELSE}
   OutputFilter,
   {$ENDIF}
-  UTF8Process, InfoBuild, IDEMsgIntf, CompOptsIntf, IDEExternToolIntf,
+  UTF8Process, InfoBuild, IDEMsgIntf, CompOptsIntf,
   DefineTemplates, TransferMacros, EnvironmentOpts, LazFileUtils;
 
 type
@@ -950,6 +951,7 @@ var
 begin
   Result := mrOK;
   LastGroup := fRootOptGroup;
+  GroupItems:=nil;
   for i := 0 to aLines.Count-1 do
   begin
     ThisLine := StringReplace(aLines[i],'-Agas-darwinAssemble','-Agas-darwin Assemble',[]);
