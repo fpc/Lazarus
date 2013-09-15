@@ -35,10 +35,10 @@ uses
   TestBasicCodetools, TestCTXMLFixFragments, TestCTRangeScan, TestCTH2Pas,
   TestCompleteBlock, TestStdCodetools, TestMethodJumpTool, TestCfgScript,
   // lcltests
-  testunicode, testpen, TestPreferredSize, TestTextStrings, testpagecontrol
+  testunicode, testpen, TestPreferredSize, TestTextStrings
   {$IFNDEF NoSemiAutomatedTests}
   // semi-automatic tests
-  , semiautotest, idesemiautotests, lclsemiautotests
+  , testpagecontrol, semiautotest, idesemiautotests, lclsemiautotests
   {$endif}
   ;
 

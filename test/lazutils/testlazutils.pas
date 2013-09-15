@@ -106,9 +106,16 @@ end;
 
 procedure TTestLazUtils.TestExpandFilename;
 begin
+  {$IFDEF Unix}
   AssertEquals('basedir','/opt/ide',ExpandFileNameUTF8('ide','/opt/'));
   AssertEquals('basedir','/opt/ide',ExpandFileNameUTF8('ide','/opt'));
   AssertEquals('basedir','/ide',ExpandFileNameUTF8('/ide','/opt'));
+  {$ENDIF}
+  {$IFDEF Windows}
+  AssertEquals('basedir','C:\opt\ide',ExpandFileNameUTF8('ide','C:\opt\'));
+  AssertEquals('basedir','D:\opt\ide',ExpandFileNameUTF8('ide','D:\opt'));
+  AssertEquals('basedir','E:\ide',ExpandFileNameUTF8('E:\ide','D:\opt'));
+  {$ENDIF}
 end;
 
 procedure TTestLazUtils.TestMergeCmdLineParams;

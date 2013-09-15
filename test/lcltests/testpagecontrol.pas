@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, types, math, fpcunit, Interfaces, LCLType, LCLIntf, Forms, ComCtrls,
-  Controls, StdCtrls, LMessages, LCLProc, WSComCtrls, testglobals, MouseInputIntf,
-  MouseAndKeyInput;
+  Controls, StdCtrls, LMessages, LCLProc, WSComCtrls, testglobals,
+  MouseInputIntf, MouseAndKeyInput;
 
 type
 
