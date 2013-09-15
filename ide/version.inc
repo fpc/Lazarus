@@ -1,1 +1,1 @@
-'1.1.99pre-relase'
+'1.1.99pre-release'
