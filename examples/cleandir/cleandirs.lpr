@@ -24,8 +24,8 @@ Uses
 {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
 {$ENDIF}{$ENDIF}
-  {$IF FPC_FULLVERSION<20701}
-  {$ERROR this example requires at least fpc 2.7.1}
+  {$IF FPC_FULLVERSION<20602}
+  {$ERROR this example requires at least fpc 2.6.2}
   {$ENDIF}
   daemonapp,
   sysutils
