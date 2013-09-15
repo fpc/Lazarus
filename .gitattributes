@@ -3703,6 +3703,7 @@ debugger/exceptiondlg.lfm svneol=native#text/plain
 debugger/exceptiondlg.pas svneol=native#text/pascal
 debugger/feedbackdlg.lfm svneol=native#text/plain
 debugger/feedbackdlg.pp svneol=native#text/pascal
+debugger/fpgdbmidebugger.pp svneol=native#text/pascal
 debugger/frames/debugger_eventlog_options.lfm svneol=native#text/plain
 debugger/frames/debugger_eventlog_options.pas svneol=native#text/pascal
 debugger/frames/debugger_general_options.lfm svneol=native#text/plain
