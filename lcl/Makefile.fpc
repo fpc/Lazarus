@@ -1,56 +1,170 @@
-#   File generated automatically by Lazarus Package Manager
-#
-#   Makefile.fpc for LCLBase 1.0.1
-#
-#   This file was generated on 15.09.2013
-
 [package]
-name=lclbase
-version=1.0.1
-
-[compiler]
-unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
-includedir=include
-options= -MObjFPC -Scghi -O1 -g -gl -vew -l
+name=lcl
+version=0.9b
 
 [target]
-units=alllclunits.pp
+dirs=interfaces
+units=alllclunits
+# DO NOT ADD alllclunits to implicitunits. It is just a dummy unit used for compiling.
+implicitunits= \
+  actnlist \
+  arrow \
+  avglvltree \
+  buttons \
+  calendar \
+  chart \
+  checklst \
+  clipbrd \
+  clistbox \
+  comctrls \
+  controls \
+  dbactns \
+  dbctrls \
+  dbgrids \
+  dialogs \
+  dynamicarray \
+  dynhasharray \
+  editbtn \
+  extctrls \
+  extdlgs \
+  extendedstrings \
+  extgraphics \
+  filectrl \
+  forms \
+  fpcadds \
+  graphics \
+  graphmath \
+  graphtype \
+  grids \
+  imglist \
+  inipropstorage \
+  interfacebase \
+  lazlinkedlist \
+  lclintf \
+  lclmemmanager \
+  lclproc \
+  lclrescache \
+  lclstrconsts \
+  lcltype \
+  lclunicodedata \
+  lconvencoding \
+  lmessages \
+  lresources \
+  maskedit \
+  menus \
+  pairsplitter \
+  popupnotifier \
+  postscriptprinter \
+  printers \
+  propertystorage \
+  spin \
+  stdactns \
+  stdctrls \
+  stringhashlist \
+  textstrings \
+  toolwin \
+  utrace \
+  xmlpropstorage
+
+rsts=lclstrconsts
+
+[require]
+packages=
+
+[prerules]
+STATEFILE=Makefile.compiled
+ifeq ($(findstring $(OS_TARGET),win32 win64 wince),)
+NONWIN32=nonwin32
+else
+STATEFILE=Makefile_win.compiled
+endif
+# disable checks on WinCE unless LCL_ENABLE_CHECKS
+ifeq ($(OS_TARGET),wince)
+ifndef LCL_ENABLE_CHECKS
+LCL_DISABLE_CHECKS=-dDisableChecks
+endif
+endif
+
+[compiler]
+options=-gl $(LCL_DISABLE_CHECKS)
+unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
+includedir=include
+
+[install]
+#buildunit=alllclunits
 
 [clean]
+# clear all .ppu/.o/.rst files in all source and output directories
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
+      $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) \
+      $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))\
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
-[prerules]
-# LCL Platform
-ifndef LCL_PLATFORM
-ifeq ($(OS_TARGET),win32)
-LCL_PLATFORM=win32
-else
-ifeq ($(OS_TARGET),win64)
-LCL_PLATFORM=win32
-else
-ifeq ($(OS_TARGET),darwin)
-LCL_PLATFORM=carbon
-else
-LCL_PLATFORM=gtk2
-endif
-endif
-endif
-endif
-export LCL_PLATFORM
+
+[default]
+lcldir=.
 
 [rules]
-.PHONY: cleartarget compiled all
+.PHONY: help cleartarget lclbase compiled all intf cleanintf cleanlaz cleanall
+
+help:
+	@$(ECHO)
+	@$(ECHO) " Important: the LCL requires components/lazutils and packager/registration"
+	@$(ECHO)
+	@$(ECHO) " Targets"
+	@$(ECHO) "   all          build lclbase and one interface"
+	@$(ECHO) "   clean        deletes files that 'all' creates"
+	@$(ECHO) "   lclbase      build lclbase"
+	@$(ECHO) "   intf         build one lcl interface, selectable via LCL_PLATFORM"
+	@$(ECHO) "   cleanintf    delete files that 'intf' creates"
+	@$(ECHO) "   cleanall     as 'clean' plus clean for all common interfaces."
+	@$(ECHO) "                Does not clean up cross compiled interfaces."
+	@$(ECHO)
+	@$(ECHO) " Examples:"
+	@$(ECHO)
+	@$(ECHO) " Compile the lcl with the default interface:"
+	@$(ECHO) "   make clean all"
+	@$(ECHO)
+	@$(ECHO) " Compile the interface for the qt widgetset:"
+	@$(ECHO) "   make cleanintf intf LCL_PLATFORM=qt"
+	@$(ECHO)
+	@$(ECHO) "Clean up:"
+	@$(ECHO) " There is no command to clean up all interfaces."
+	@$(ECHO) " In most cases it is enough to delete the 'units' directory."
+	@$(ECHO)
 
 cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/alllclunits$(PPUEXT)
+	-$(DEL) $(COMPILER_UNITTARGETDIR)/alllclunits$(PPUEXT)
+
+lclbase: cleartarget $(COMPILER_UNITTARGETDIR) alllclunits$(PPUEXT) compiled
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LCLBase.compiled
+	$(CPPROG) -f $(STATEFILE) $(COMPILER_UNITTARGETDIR)/LCLBase.compiled
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) alllclunits$(PPUEXT) compiled
+intf: $(TARGET_DIRS)
+
+cleanintf:
+	$(MAKE) -C interfaces clean
+
+all: lclbase compiled intf
+
+cleanlaz: cleanall
+cleanall: clean
+	$(MAKE) -C interfaces clean
+	$(MAKE) -C interfaces/carbon clean
+	$(MAKE) -C interfaces/cocoa clean
+	$(MAKE) -C interfaces/customdrawn clean
+	$(MAKE) -C interfaces/fpgui clean
+	$(MAKE) -C interfaces/gtk clean
+	$(MAKE) -C interfaces/gtk2 clean
+	$(MAKE) -C interfaces/gtk3 clean
+	$(MAKE) -C interfaces/nogui clean
+	$(MAKE) -C interfaces/qt clean
+	$(MAKE) -C interfaces/win32 clean
+	$(MAKE) -C interfaces/wince clean
+

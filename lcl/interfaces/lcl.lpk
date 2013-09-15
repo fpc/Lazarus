@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="LCL"/>
@@ -128,7 +128,7 @@ end;"/>
 "/>
     <License Value="modified LGPL-2
 "/>
-    <Version Major="1" Release="1"/>
+    <Version Major="1" Minor="1" Release="99"/>
     <Files Count="429">
       <Item1>
         <Filename Value="carbon/agl.pp"/>

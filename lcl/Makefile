@@ -318,680 +318,1332 @@ FPMAKE_SKIP_CONFIG=-n
 FPCFPMAKE=$(FPC)
 endif
 endif
-override PACKAGE_NAME=lclbase
-override PACKAGE_VERSION=1.0.1
-ifndef LCL_PLATFORM
-ifeq ($(OS_TARGET),win32)
-LCL_PLATFORM=win32
+override PACKAGE_NAME=lcl
+override PACKAGE_VERSION=0.9b
+STATEFILE=Makefile.compiled
+ifeq ($(findstring $(OS_TARGET),win32 win64 wince),)
+NONWIN32=nonwin32
 else
-ifeq ($(OS_TARGET),win64)
-LCL_PLATFORM=win32
-else
-ifeq ($(OS_TARGET),darwin)
-LCL_PLATFORM=carbon
-else
-LCL_PLATFORM=gtk2
+STATEFILE=Makefile_win.compiled
 endif
+ifeq ($(OS_TARGET),wince)
+ifndef LCL_ENABLE_CHECKS
+LCL_DISABLE_CHECKS=-dDisableChecks
 endif
-endif
-endif
-export LCL_PLATFORM
-ifeq ($(FULL_TARGET),i386-linux)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-go32v2)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-win32)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-os2)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-freebsd)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-beos)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-haiku)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-netbsd)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-solaris)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-qnx)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-netware)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-openbsd)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-wdosx)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-darwin)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-emx)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-watcom)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-netwlibc)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-wince)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-embedded)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-symbian)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-nativent)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-iphonesim)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i386-android)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),m68k-linux)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),m68k-freebsd)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),m68k-netbsd)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),m68k-amiga)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),m68k-atari)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),m68k-openbsd)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),m68k-palmos)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),m68k-embedded)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),powerpc-linux)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),powerpc-netbsd)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),powerpc-amiga)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),powerpc-macos)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),powerpc-darwin)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),powerpc-morphos)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),powerpc-embedded)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),powerpc-wii)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),powerpc-aix)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),sparc-linux)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),sparc-netbsd)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),sparc-solaris)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),sparc-embedded)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),x86_64-linux)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),x86_64-freebsd)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),x86_64-netbsd)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),x86_64-solaris)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),x86_64-openbsd)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),x86_64-darwin)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),x86_64-win64)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),x86_64-embedded)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),arm-linux)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),arm-palmos)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),arm-darwin)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),arm-wince)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),arm-gba)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),arm-nds)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),arm-embedded)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),arm-symbian)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),arm-android)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),powerpc64-linux)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),powerpc64-darwin)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),powerpc64-embedded)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),powerpc64-aix)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),avr-embedded)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),armeb-linux)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),armeb-embedded)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),mips-linux)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),mipsel-linux)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),jvm-java)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),jvm-android)
-override TARGET_UNITS+=alllclunits.pp
-endif
-ifeq ($(FULL_TARGET),i8086-msdos)
-override TARGET_UNITS+=alllclunits.pp
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-haiku)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-nativent)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-iphonesim)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-android)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-wii)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-aix)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),x86_64-netbsd)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),x86_64-solaris)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),x86_64-openbsd)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),x86_64-darwin)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-darwin)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-android)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc64-aix)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),avr-embedded)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),armeb-linux)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),armeb-embedded)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),mips-linux)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),mipsel-linux)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),jvm-java)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),jvm-android)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i8086-msdos)
-override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override TARGET_DIRS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-haiku)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-nativent)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-iphonesim)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i386-android)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),powerpc-wii)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),powerpc-aix)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),x86_64-netbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),x86_64-solaris)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),x86_64-openbsd)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),x86_64-darwin)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),arm-darwin)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),arm-android)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),powerpc64-aix)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),avr-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),armeb-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),armeb-embedded)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),mips-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),mipsel-linux)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),jvm-java)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),jvm-android)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
 endif
 ifeq ($(FULL_TARGET),i8086-msdos)
-override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -vew -l
+override TARGET_UNITS+=alllclunits
+endif
+ifeq ($(FULL_TARGET),i386-linux)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-go32v2)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-win32)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-os2)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-freebsd)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-beos)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-haiku)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-netbsd)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-solaris)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-qnx)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-netware)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-openbsd)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-wdosx)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-darwin)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-emx)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-watcom)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-netwlibc)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-wince)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-embedded)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-symbian)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-nativent)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-iphonesim)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-android)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),m68k-linux)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),m68k-freebsd)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),m68k-netbsd)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),m68k-amiga)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),m68k-atari)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),m68k-openbsd)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),m68k-palmos)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),m68k-embedded)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),powerpc-linux)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),powerpc-netbsd)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),powerpc-amiga)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),powerpc-macos)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),powerpc-darwin)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),powerpc-morphos)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),powerpc-embedded)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),powerpc-wii)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),powerpc-aix)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),sparc-linux)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),sparc-netbsd)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),sparc-solaris)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),sparc-embedded)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),x86_64-linux)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),x86_64-freebsd)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),x86_64-netbsd)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),x86_64-solaris)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),x86_64-openbsd)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),x86_64-darwin)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),x86_64-win64)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),x86_64-embedded)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),arm-linux)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),arm-palmos)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),arm-darwin)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),arm-wince)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),arm-gba)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),arm-nds)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),arm-embedded)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),arm-symbian)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),arm-android)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),powerpc64-linux)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),powerpc64-darwin)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),powerpc64-embedded)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),powerpc64-aix)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),avr-embedded)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),armeb-linux)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),armeb-embedded)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),mips-linux)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),mipsel-linux)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),jvm-java)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),jvm-android)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i8086-msdos)
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar chart checklst clipbrd clistbox comctrls controls dbactns dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings extgraphics filectrl forms fpcadds graphics graphmath graphtype grids imglist inipropstorage interfacebase lazlinkedlist lclintf lclmemmanager lclproc lclrescache lclstrconsts lcltype lclunicodedata lconvencoding lmessages lresources maskedit menus pairsplitter popupnotifier postscriptprinter printers propertystorage spin stdactns stdctrls stringhashlist textstrings toolwin utrace xmlpropstorage
+endif
+ifeq ($(FULL_TARGET),i386-linux)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-go32v2)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-win32)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-os2)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-freebsd)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-beos)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-haiku)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-netbsd)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-solaris)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-qnx)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-netware)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-openbsd)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-wdosx)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-darwin)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-emx)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-watcom)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-netwlibc)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-wince)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-embedded)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-symbian)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-nativent)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-iphonesim)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-android)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),m68k-linux)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),m68k-freebsd)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),m68k-netbsd)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),m68k-amiga)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),m68k-atari)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),m68k-openbsd)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),m68k-palmos)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),m68k-embedded)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),powerpc-linux)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),powerpc-netbsd)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),powerpc-amiga)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),powerpc-macos)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),powerpc-darwin)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),powerpc-morphos)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),powerpc-embedded)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),powerpc-wii)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),powerpc-aix)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),sparc-linux)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),sparc-netbsd)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),sparc-solaris)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),sparc-embedded)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),x86_64-linux)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),x86_64-freebsd)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),x86_64-netbsd)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),x86_64-solaris)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),x86_64-openbsd)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),x86_64-darwin)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),x86_64-win64)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),x86_64-embedded)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),arm-linux)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),arm-palmos)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),arm-darwin)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),arm-wince)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),arm-gba)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),arm-nds)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),arm-embedded)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),arm-symbian)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),arm-android)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),powerpc64-linux)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),powerpc64-darwin)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),powerpc64-embedded)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),powerpc64-aix)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),avr-embedded)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),armeb-linux)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),armeb-embedded)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),mips-linux)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),mipsel-linux)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),jvm-java)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),jvm-android)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i8086-msdos)
+override TARGET_RSTS+=lclstrconsts
+endif
+ifeq ($(FULL_TARGET),i386-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-go32v2)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-win32)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-os2)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-freebsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-beos)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-haiku)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-netbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-solaris)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-qnx)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-netware)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-openbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-wdosx)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-darwin)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-emx)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-watcom)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-netwlibc)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-wince)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-symbian)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-nativent)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-iphonesim)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-android)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-freebsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-netbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-amiga)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-atari)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-openbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-palmos)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-netbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-amiga)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-macos)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-darwin)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-morphos)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-wii)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-aix)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),sparc-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),sparc-netbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),sparc-solaris)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),sparc-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),x86_64-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),x86_64-freebsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),x86_64-netbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),x86_64-solaris)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),x86_64-openbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),x86_64-darwin)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),x86_64-win64)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),x86_64-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-palmos)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-darwin)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-wince)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-gba)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-nds)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-symbian)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-android)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc64-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc64-darwin)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc64-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc64-aix)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),avr-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),armeb-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),armeb-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),mips-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),mipsel-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),jvm-java)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),jvm-android)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i8086-msdos)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-linux)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-go32v2)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-win32)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-os2)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-freebsd)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-beos)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-haiku)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-netbsd)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-solaris)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-qnx)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-netware)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-openbsd)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-wdosx)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-darwin)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-emx)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-watcom)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-netwlibc)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-wince)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-embedded)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-symbian)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-nativent)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-iphonesim)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i386-android)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),m68k-linux)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),m68k-freebsd)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),m68k-netbsd)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),m68k-amiga)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),m68k-atari)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),m68k-openbsd)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),m68k-palmos)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),m68k-embedded)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),powerpc-linux)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),powerpc-netbsd)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),powerpc-amiga)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),powerpc-macos)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),powerpc-darwin)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),powerpc-morphos)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),powerpc-embedded)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),powerpc-wii)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),powerpc-aix)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),sparc-linux)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),sparc-netbsd)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),sparc-solaris)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),sparc-embedded)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),x86_64-linux)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),x86_64-freebsd)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),x86_64-netbsd)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),x86_64-solaris)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),x86_64-openbsd)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),x86_64-darwin)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),x86_64-win64)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),x86_64-embedded)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),arm-linux)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),arm-palmos)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),arm-darwin)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),arm-wince)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),arm-gba)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),arm-nds)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),arm-embedded)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),arm-symbian)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),arm-android)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),powerpc64-linux)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),powerpc64-darwin)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),powerpc64-embedded)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),powerpc64-aix)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),avr-embedded)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),armeb-linux)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),armeb-embedded)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),mips-linux)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),mipsel-linux)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),jvm-java)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),jvm-android)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
+endif
+ifeq ($(FULL_TARGET),i8086-msdos)
+override COMPILER_OPTIONS+=-gl $(LCL_DISABLE_CHECKS)
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 override COMPILER_INCLUDEDIR+=include
@@ -1213,223 +1865,223 @@ ifeq ($(FULL_TARGET),i8086-msdos)
 override COMPILER_INCLUDEDIR+=include
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-haiku)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-nativent)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-iphonesim)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-android)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),powerpc-wii)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),powerpc-aix)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),x86_64-netbsd)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),x86_64-solaris)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),x86_64-openbsd)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),x86_64-darwin)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),arm-darwin)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),arm-android)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),powerpc64-aix)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),avr-embedded)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),armeb-linux)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),armeb-embedded)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),mips-linux)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),mipsel-linux)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),jvm-java)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),jvm-android)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i8086-msdos)
-override COMPILER_UNITDIR+=forms widgetset nonwin32 ../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 override COMPILER_UNITTARGETDIR+=units/$(CPU_TARGET)-$(OS_TARGET)
@@ -3115,32 +3767,338 @@ endif
 fpc_makefile_sub2: $(addsuffix _makefile_dirs,$(TARGET_DIRS) $(TARGET_EXAMPLEDIRS))
 fpc_makefile_dirs: fpc_makefile_sub1 fpc_makefile_sub2
 fpc_makefiles: fpc_makefile fpc_makefile_dirs
+ifeq ($(FULL_TARGET),i386-linux)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-go32v2)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-win32)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-os2)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-freebsd)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-beos)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-haiku)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-netbsd)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-solaris)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-qnx)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-netware)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-openbsd)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-wdosx)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-darwin)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-emx)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-watcom)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-netwlibc)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-wince)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-embedded)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-symbian)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-nativent)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-iphonesim)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i386-android)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),m68k-linux)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),m68k-freebsd)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),m68k-netbsd)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),m68k-amiga)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),m68k-atari)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),m68k-openbsd)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),m68k-palmos)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),m68k-embedded)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),powerpc-linux)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),powerpc-netbsd)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),powerpc-amiga)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),powerpc-macos)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),powerpc-darwin)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),powerpc-morphos)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),powerpc-embedded)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),powerpc-wii)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),powerpc-aix)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),sparc-linux)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),sparc-netbsd)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),sparc-solaris)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),sparc-embedded)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),x86_64-linux)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),x86_64-freebsd)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),x86_64-netbsd)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),x86_64-solaris)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),x86_64-openbsd)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),x86_64-darwin)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),x86_64-win64)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),x86_64-embedded)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),arm-linux)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),arm-palmos)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),arm-darwin)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),arm-wince)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),arm-gba)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),arm-nds)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),arm-embedded)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),arm-symbian)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),arm-android)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),powerpc64-linux)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),powerpc64-darwin)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),powerpc64-embedded)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),powerpc64-aix)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),avr-embedded)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),armeb-linux)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),armeb-embedded)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),mips-linux)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),mipsel-linux)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),jvm-java)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),jvm-android)
+TARGET_DIRS_INTERFACES=1
+endif
+ifeq ($(FULL_TARGET),i8086-msdos)
+TARGET_DIRS_INTERFACES=1
+endif
+ifdef TARGET_DIRS_INTERFACES
+interfaces_all:
+	$(MAKE) -C interfaces all
+interfaces_debug:
+	$(MAKE) -C interfaces debug
+interfaces_smart:
+	$(MAKE) -C interfaces smart
+interfaces_release:
+	$(MAKE) -C interfaces release
+interfaces_units:
+	$(MAKE) -C interfaces units
+interfaces_examples:
+	$(MAKE) -C interfaces examples
+interfaces_shared:
+	$(MAKE) -C interfaces shared
+interfaces_install:
+	$(MAKE) -C interfaces install
+interfaces_sourceinstall:
+	$(MAKE) -C interfaces sourceinstall
+interfaces_exampleinstall:
+	$(MAKE) -C interfaces exampleinstall
+interfaces_distinstall:
+	$(MAKE) -C interfaces distinstall
+interfaces_zipinstall:
+	$(MAKE) -C interfaces zipinstall
+interfaces_zipsourceinstall:
+	$(MAKE) -C interfaces zipsourceinstall
+interfaces_zipexampleinstall:
+	$(MAKE) -C interfaces zipexampleinstall
+interfaces_zipdistinstall:
+	$(MAKE) -C interfaces zipdistinstall
+interfaces_clean:
+	$(MAKE) -C interfaces clean
+interfaces_distclean:
+	$(MAKE) -C interfaces distclean
+interfaces_cleanall:
+	$(MAKE) -C interfaces cleanall
+interfaces_info:
+	$(MAKE) -C interfaces info
+interfaces_makefiles:
+	$(MAKE) -C interfaces makefiles
+interfaces:
+	$(MAKE) -C interfaces all
+.PHONY: interfaces_all interfaces_debug interfaces_smart interfaces_release interfaces_units interfaces_examples interfaces_shared interfaces_install interfaces_sourceinstall interfaces_exampleinstall interfaces_distinstall interfaces_zipinstall interfaces_zipsourceinstall interfaces_zipexampleinstall interfaces_zipdistinstall interfaces_clean interfaces_distclean interfaces_cleanall interfaces_info interfaces_makefiles interfaces
+endif
 debug: fpc_debug
 smart: fpc_smart
 release: fpc_release
-units: fpc_units
-examples:
+units: fpc_units $(addsuffix _units,$(TARGET_DIRS))
+examples: $(addsuffix _examples,$(TARGET_DIRS))
 shared: fpc_shared
-install: fpc_install
+install: fpc_install $(addsuffix _install,$(TARGET_DIRS))
 sourceinstall: fpc_sourceinstall
-exampleinstall: fpc_exampleinstall
+exampleinstall: fpc_exampleinstall $(addsuffix _exampleinstall,$(TARGET_DIRS))
 distinstall: fpc_distinstall
 zipinstall: fpc_zipinstall
 zipsourceinstall: fpc_zipsourceinstall
-zipexampleinstall: fpc_zipexampleinstall
+zipexampleinstall: fpc_zipexampleinstall $(addsuffix _zipexampleinstall,$(TARGET_DIRS))
 zipdistinstall: fpc_zipdistinstall
-clean: fpc_clean
-distclean: fpc_distclean
-cleanall: fpc_cleanall
+clean: fpc_clean $(addsuffix _clean,$(TARGET_DIRS))
+distclean: fpc_distclean $(addsuffix _distclean,$(TARGET_DIRS))
 info: fpc_info
 makefiles: fpc_makefiles
-.PHONY: debug smart release units examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean cleanall info makefiles
+.PHONY: debug smart release units examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean info makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: cleartarget compiled all
+.PHONY: help cleartarget lclbase compiled all intf cleanintf cleanlaz cleanall
+help:
+	@$(ECHO)
+	@$(ECHO) " Important: the LCL requires components/lazutils and packager/registration"
+	@$(ECHO)
+	@$(ECHO) " Targets"
+	@$(ECHO) "   all          build lclbase and one interface"
+	@$(ECHO) "   clean        deletes files that 'all' creates"
+	@$(ECHO) "   lclbase      build lclbase"
+	@$(ECHO) "   intf         build one lcl interface, selectable via LCL_PLATFORM"
+	@$(ECHO) "   cleanintf    delete files that 'intf' creates"
+	@$(ECHO) "   cleanall     as 'clean' plus clean for all common interfaces."
+	@$(ECHO) "                Does not clean up cross compiled interfaces."
+	@$(ECHO)
+	@$(ECHO) " Examples:"
+	@$(ECHO)
+	@$(ECHO) " Compile the lcl with the default interface:"
+	@$(ECHO) "   make clean all"
+	@$(ECHO)
+	@$(ECHO) " Compile the interface for the qt widgetset:"
+	@$(ECHO) "   make cleanintf intf LCL_PLATFORM=qt"
+	@$(ECHO)
+	@$(ECHO) "Clean up:"
+	@$(ECHO) " There is no command to clean up all interfaces."
+	@$(ECHO) " In most cases it is enough to delete the 'units' directory."
+	@$(ECHO)
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/alllclunits$(PPUEXT)
+lclbase: cleartarget $(COMPILER_UNITTARGETDIR) alllclunits$(PPUEXT) compiled
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LCLBase.compiled
-all: cleartarget $(COMPILER_UNITTARGETDIR) alllclunits$(PPUEXT) compiled
+	$(CPPROG) -f $(STATEFILE) $(COMPILER_UNITTARGETDIR)/LCLBase.compiled
+intf: $(TARGET_DIRS)
+cleanintf:
+	$(MAKE) -C interfaces clean
+all: lclbase compiled intf
+cleanlaz: cleanall
+cleanall: clean
+	$(MAKE) -C interfaces clean
+	$(MAKE) -C interfaces/carbon clean
+	$(MAKE) -C interfaces/cocoa clean
+	$(MAKE) -C interfaces/customdrawn clean
+	$(MAKE) -C interfaces/fpgui clean
+	$(MAKE) -C interfaces/gtk clean
+	$(MAKE) -C interfaces/gtk2 clean
+	$(MAKE) -C interfaces/gtk3 clean
+	$(MAKE) -C interfaces/nogui clean
+	$(MAKE) -C interfaces/qt clean
+	$(MAKE) -C interfaces/win32 clean
+	$(MAKE) -C interfaces/wince clean

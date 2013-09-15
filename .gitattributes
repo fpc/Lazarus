@@ -6275,6 +6275,7 @@ lcl/interfaces/cocoa/cocoawsstdctrls.pp svneol=native#text/plain
 lcl/interfaces/cocoa/interfaces.pas svneol=native#text/plain
 lcl/interfaces/cocoa/mackeycodes.inc svneol=native#text/pascal
 lcl/interfaces/customdrawn/Makefile svneol=native#text/plain
+lcl/interfaces/customdrawn/Makefile.compiled svneol=native#text/plain
 lcl/interfaces/customdrawn/Makefile.fpc svneol=native#text/plain
 lcl/interfaces/customdrawn/alllclintfunits.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/android/android_native_app_glue.pas svneol=native#text/pascal
