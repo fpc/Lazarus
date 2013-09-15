@@ -10180,6 +10180,9 @@ procedure TSourceEditorManager.OnSourceCompletionTimer(Sender: TObject);
     Result := false;
     SrcEdit := ActiveEditor;
     if SrcEdit = nil then exit;
+    if not (SrcEdit.FEditor.Highlighter is TSynPasSyn) then
+      exit; // only start completion automatically for pascal sources
+
     Line := SrcEdit.FEditor.LineText;
     LogCaret := SrcEdit.FEditor.LogicalCaretXY;
     //DebugLn(['CheckStartIdentCompletion Line="',Line,'" LogCaret=',dbgs(LogCaret)]);
