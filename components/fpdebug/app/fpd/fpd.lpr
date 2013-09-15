@@ -44,7 +44,7 @@ uses
   FPDLoop,
   FPDPEImage,
   FPDType,
-  DbgClasses, DbgWinExtra, DbgPETypes, DbgDwarfConst, DbgDwarf;
+  FpDbgClasses, FpDbgWinExtra, FpDbgPETypes, FpDbgDwarfConst, FpDbgDwarf;
 
 function CtrlCHandler(CtrlType: Cardinal): BOOL; stdcall;
 begin

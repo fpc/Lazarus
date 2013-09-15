@@ -42,6 +42,12 @@ components/fpcunit/ide/units
 components/fpcunit/lib/*.bak
 components/fpcunit/lib/units
 components/fpcunit/units
+components/fpdebug/app/fpd/*.bak
+components/fpdebug/app/fpd/units
+components/fpdebug/app/fpdd/*.bak
+components/fpdebug/app/fpdd/units
+components/fpdebug/test/*.bak
+components/fpdebug/test/units
 components/h2pas/*.bak
 components/h2pas/languages/*.bak
 components/h2pas/languages/units
@@ -291,12 +297,6 @@ debian/*.bak
 debian/units
 debugger/*.bak
 debugger/fpdebug/*.bak
-debugger/fpdebug/fpd/*.bak
-debugger/fpdebug/fpd/units
-debugger/fpdebug/fpdd/*.bak
-debugger/fpdebug/fpdd/units
-debugger/fpdebug/test/*.bak
-debugger/fpdebug/test/units
 debugger/fpdebug/units
 debugger/test/*.bak
 debugger/test/examples/*.bak

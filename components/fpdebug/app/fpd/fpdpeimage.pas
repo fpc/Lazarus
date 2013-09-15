@@ -37,7 +37,7 @@ unit FPDPEImage;
 interface
 
 uses
-  Windows, SysUtils, FPDGLobal, DbgClasses, DbgPETypes;
+  Windows, SysUtils, FPDGLobal, FpDbgClasses, FpDbgPETypes;
 
 procedure DumpPEImage(const AProcessHandle: THandle; const AAddress: TDbgPtr);
 

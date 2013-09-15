@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- dbgdwarfconst.pas  -  Freepascal debugger - Dwarf constants
+ fpdbgdwarfconst.pas  -  Freepascal debugger - Dwarf constants
  ---------------------------------------------------------------------------
 
  This unit contains the constants defined for the dward debugging format.
@@ -19,7 +19,7 @@
   for details about the license.
  *****************************************************************************
 }
-unit DbgDwarfConst;
+unit FpDbgDwarfConst;
 
 {$mode objfpc}{$H+}
 

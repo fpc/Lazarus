@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- dbgwinextra.pp  -  Native Freepascal debugger - Extra windows utilities
+ fpdbgwinextra.pp  -  Native Freepascal debugger - Extra windows utilities
  ---------------------------------------------------------------------------
 
  This unit contains utility functions and missing win32/64 API
@@ -31,7 +31,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit DbgWinExtra;
+unit FpDbgWinExtra;
 
 {$mode objfpc}{$H+}
 

@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- dbgpetypes.pp  -  Freepascal debugger - PE types
+ fpdbgpetypes.pp  -  Freepascal debugger - PE types
  ---------------------------------------------------------------------------
 
  This unit contains the types needed for reading PE images.
@@ -20,7 +20,7 @@
   for details about the license.
  *****************************************************************************
 }
-unit DbgPETypes;
+unit FpDbgPETypes;
 {$mode objfpc}{$H+}{$inline on}
 interface
 

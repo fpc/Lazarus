@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- dbgdisasx86.pp  -  Native Freepascal debugger - x86 Disassembler
+ fpdbgdisasx86.pp  -  Native Freepascal debugger - x86 Disassembler
  ---------------------------------------------------------------------------
 
  This unit contains a x86 disassembler for the Native Freepascal debugger
@@ -31,7 +31,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit DbgDisasX86;
+unit FpDbgDisasX86;
 {$mode objfpc}{$H+}
 interface
 
@@ -39,7 +39,7 @@ interface
 {.$define verbose_string_instructions}
 
 uses
-  SysUtils, Windows, DbgUtil, DbgWinExtra, DbgClasses;
+  SysUtils, Windows, FpDbgUtil, FpDbgWinExtra, FpDbgClasses;
 
 {                   
   The function Disassemble decodes the instruction at the given address.

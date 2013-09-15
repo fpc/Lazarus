@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- dbgloader.pp  -  Native Freepascal debugger - Section loader
+ fpdbgloader.pp  -  Native Freepascal debugger - Section loader
  ---------------------------------------------------------------------------
 
  This unit contains helper classes for loading secions form images.
@@ -31,7 +31,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit DbgLoader;
+unit FpDbgLoader;
 
 {$mode objfpc}{$H+}
 
@@ -41,7 +41,7 @@ uses
   {$ifdef windows}
   Windows,
   {$endif}
-  Classes, SysUtils, DbgPETypes;
+  Classes, SysUtils, FpDbgPETypes;
 
 type
   TDbgImageSection = record

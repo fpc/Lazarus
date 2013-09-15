@@ -1,14 +1,14 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- dbgutil.pp  -  Native freepascal debugger - Utilities
+ fpdumpdwarf  -  DWARF debug dump
  ---------------------------------------------------------------------------
 
- This unit contains utility functions
+ Utility to test and dump DWARF dubug info.
 
  ---------------------------------------------------------------------------
 
- @created(Mon Apr 10th WET 2006)
+ @created(Sat Jul 1th WET 2006)
  @lastmod($Date$)
  @author(Marc Weustink <marc@@dommelstein.nl>)
 
@@ -31,82 +31,50 @@
  *                                                                         *
  ***************************************************************************
 }
-unit DbgUtil;
+program FPDumpDwarf;
 
 {$mode objfpc}{$H+}
 
-interface
-
 uses
-  Classes, SysUtils; 
+  Classes, Windows, SysUtils, maps,
+  FpDbgPETypes, FpDbgDwarfConst, FpDbgSymbols, FpDbgLoader, FpDbgDwarf;
 
-type
-  THexValueFormatFlag = (hvfSigned, hvfPrefixPositive, hvfIncludeHexchar);
-  THexValueFormatFlags = set of THexValueFormatFlag;
-
-  
-function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
-function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
-procedure Log(const AText: String; const AParams: array of const); overload;
-procedure Log(const AText: String); overload;
-
-
-implementation
-
-function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
-begin
-  Result := Pointer(((PtrUInt(Src) + Alignment - 1) and not PtrUInt(Alignment - 1)));
-end;
-
-function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
 var
-  i: Int64;
-  p: PByte;
+  n, idx: Integer;
+  Dwarf: TDbgDwarf;
+  AbbrevDecoder: TDwarfAbbrevDecoder;
+  StatementDecoder: TDwarfStatementDecoder;
+  FrameDecoder: TVerboseDwarfCallframeDecoder;
+  Loader: TDbgImageLoader;
+
 begin
-  if ASize > 8
+  if ParamCount < 1
   then begin
-    Result := 'HexValue: size to large';
+    WriteLN('Usage: FPDumpDwarf <filename>');
     Exit;
   end;
-  if ASize = 0
-  then begin
-    Result := '';
-    Exit;
+  
+  Loader := TDbgWinPEImageLoader.Create(ParamStr(1));
+
+  Dwarf := TDbgVerboseDwarf.Create(Loader);
+  n := Dwarf.LoadCompilationUnits;
+  for idx := 0 to n - 1 do
+  begin
+    AbbrevDecoder := TDwarfAbbrevDecoder.Create(Dwarf.CompilationUnits[idx]);
+    AbbrevDecoder.Decode;
+    AbbrevDecoder.Free;
+    StatementDecoder := TDwarfStatementDecoder.Create(Dwarf.CompilationUnits[idx]);
+    StatementDecoder.Decode;
+    StatementDecoder.Free;
+    WriteLN;
   end;
+  Dwarf.Free;
 
-  p := @AValue;
-  if p[ASize - 1] < $80
-  then Exclude(AFlags, hvfSigned);
+  WriteLn('Call info:');
+  FrameDecoder := TVerboseDwarfCallframeDecoder.Create(Loader);
+  FrameDecoder.Decode;
+  FrameDecoder.Free;
 
-  if hvfSigned in AFlags
-  then i := -1
-  else i := 0;
-
-  Move(AValue, i, ASize);
-  if hvfSigned in AFlags
-  then begin
-    i := not i + 1;
-    Result := '-';
-  end
-  else begin
-    if hvfPrefixPositive in AFlags
-    then Result := '+';
-  end;
-  if hvfIncludeHexchar in AFlags
-  then Result := Result + '$';
-
-  Result := Result + HexStr(i, ASize * 2);
-end;
-
-procedure Log(const AText: String; const AParams: array of const); overload;
-begin
-  WriteLN(Format(AText, AParams));
-end;
-
-procedure Log(const AText: String); overload;
-begin
-  WriteLN(AText);
-end;
-
+  Loader.Free;
 end.
 

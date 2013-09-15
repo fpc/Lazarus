@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- dbgdwarf.pas  -  Native Freepascal debugger - Dwarf symbol reader
+ fpdbgdwarf.pas  -  Native Freepascal debugger - Dwarf symbol reader
  ---------------------------------------------------------------------------
 
  This unit contains helper classes for loading and resolving of DWARF debug
@@ -32,15 +32,15 @@
  *                                                                         *
  ***************************************************************************
 }
-unit DbgDwarf;
+unit FpDbgDwarf;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, Types, SysUtils, DbgClasses, DbgDwarfConst, Maps, Math,
-  DbgLoader, DbgWinExtra, contnrs;
+  Classes, Types, SysUtils, FpDbgClasses, FpDbgDwarfConst, Maps, Math,
+  FpDbgLoader, FpDbgWinExtra, contnrs;
   
 type
   // compilation unit header

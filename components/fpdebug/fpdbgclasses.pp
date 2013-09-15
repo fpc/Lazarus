@@ -1,7 +1,7 @@
 { $Id$ }
 {
  ---------------------------------------------------------------------------
- dbgclasses.pp  -  Native freepascal debugger
+ fpdbgclasses.pp  -  Native freepascal debugger
  ---------------------------------------------------------------------------
 
  This unit contains debugger classes for a native freepascal debugger
@@ -31,12 +31,12 @@
  *                                                                         *
  ***************************************************************************
 }
-unit DbgClasses;
+unit FpDbgClasses;
 {$mode objfpc}{$H+}
 interface
 
 uses
-  Windows, Classes, Maps, DbgUtil, DbgWinExtra, DbgLoader;
+  Windows, Classes, Maps, FpDbgUtil, FpDbgWinExtra, FpDbgLoader;
 
 type
   TDbgPtr = QWord; // PtrUInt;
@@ -266,7 +266,7 @@ type
 implementation
 
 uses
-  SysUtils, DbgDwarf;
+  SysUtils, FpDbgDwarf;
 
 procedure LogLastError;
 begin

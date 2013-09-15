@@ -37,7 +37,7 @@ unit FPDLoop;
 interface
 
 uses
-  Windows, Classes, SysUtils, FileUtil, DbgClasses, DbgWinExtra, DbgDisasX86;
+  Windows, Classes, SysUtils, FileUtil, FpDbgClasses, FpDbgWinExtra, FpDbgDisasX86;
 
 procedure DebugLoop;
 
