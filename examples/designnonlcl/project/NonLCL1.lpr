@@ -8,8 +8,6 @@ uses
   {$ENDIF}{$ENDIF}
   Classes, NotLCLDesigner, Interfaces, Unit1;
 
-{$IFDEF WINDOWS}{$R NonLCL1.rc}{$ENDIF}
-
 begin
 end.
 
