@@ -6,8 +6,12 @@ EnableISX=true
 // A valid file version contains only digits, so drop the RC part
 #if pos('RC',AppVersion)>0
   #define FileVersion = copy(AppVersion, 1, pos('RC', AppVersion)-1)
-#else
-  #define FileVersion = AppVersion
+#else 
+  #if pos('pre',AppVersion)>0
+    #define FileVersion = copy(AppVersion, 1, pos('pre', AppVersion)-1)
+  #else
+    #define FileVersion = AppVersion
+  #endif
 #endif
 #define FPCVersion GetEnv('FPCVersion')
 #define FPCTargetOS GetEnv('FPCTargetOS')
