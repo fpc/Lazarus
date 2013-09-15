@@ -349,7 +349,7 @@ begin
     if not (Quiet and WriteCommands) then
       writeln('Missing link ',Pkg.Name+'-'+Pkg.VersionAsString,' in '+CreateRelativePath(Pkg.Filename,PkgDir));
     if WriteCommands then begin
-      LinkFilename:=CreateRelativePath(LinksDir,LazarusDir)+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl';
+      LinkFilename:=CreateRelativePath(LinksDir,LazarusDir)+PathDelim+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl';
       writeln('echo ''$(LazarusDir)/'+StringReplace(CreateRelativePath(Pkg.Filename,PkgDir),'\','/',[rfReplaceAll])+''' > '+LinkFilename);
       writeln('svn add '+LinkFilename);
     end;
