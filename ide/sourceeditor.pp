@@ -5379,7 +5379,7 @@ begin
   j := -1;
   EditorComponent.IDEGutterMarks.BeginSetDebugMarks;
   try
-    for i := 0 to EditorComponent.Lines.Count - 1 do
+    for i := 1 to EditorComponent.Lines.Count do
     begin
       Addr := DebugBoss.LineInfo.GetAddress(idx, i);
       if (Addr <> 0) and (j < 0) then
@@ -5390,7 +5390,7 @@ begin
       end;
     end;
     if (Addr <> 0) and (j >= 0) then
-      EditorComponent.IDEGutterMarks.SetDebugMarks(j, EditorComponent.Lines.Count - 1);
+      EditorComponent.IDEGutterMarks.SetDebugMarks(j, EditorComponent.Lines.Count);
   finally
     EditorComponent.IDEGutterMarks.EndSetDebugMarks;
   end;
