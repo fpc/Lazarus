@@ -238,7 +238,7 @@ end;
 
 function TFileDescPascalUnitWithMyForm.GetInterfaceUsesSection: string;
 begin
-  Result:=Result+'Classes, SysUtils, MyWidgetSet';
+  Result:='Classes, SysUtils, MyWidgetSet';
 end;
 
 function TFileDescPascalUnitWithMyForm.GetLocalizedName: string;
