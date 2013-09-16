@@ -1380,8 +1380,8 @@ begin
               ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
           end;
         until false;
-        // read parameter type
         if CurPos.Flag=cafColon then begin
+          // read parameter type
           if not Extract then
             ReadNextAtom
           else
@@ -1406,7 +1406,7 @@ begin
             EndChildNode;
           end;
         end else
-          break;
+          RaiseCharExpectedButAtomFound(':');
         if (phpCreateNodes in Attr) then begin
           CurNode.EndPos:=CurPos.StartPos;
           EndChildNode;
