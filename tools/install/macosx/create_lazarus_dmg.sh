@@ -94,7 +94,7 @@ LAZSOURCEDIR=$(pwd)
 cd -
 
 cd ..
-LazVersion=$(./get_lazarus_version.sh)
+LazVersion=$(./get_lazarus_version.sh | sed -e 's/[a-zA-Z\-]//g')
 cd -
 LazRelease='0'
 # Iceberg only supports a major and a minor version number
