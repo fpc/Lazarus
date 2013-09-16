@@ -636,8 +636,6 @@ type
   { TCoolBarControlPropertyEditor }
 
   TCoolBarControlPropertyEditor = class(TComponentPropertyEditor)
-  protected
-    function CheckNewValue(APersistent: TPersistent): boolean; override;
   public
     constructor Create(Hook: TPropertyEditorHook; APropCount: Integer); override;
   end;
@@ -4380,12 +4378,6 @@ constructor TCoolBarControlPropertyEditor.Create(Hook: TPropertyEditorHook; APro
 begin
   inherited Create(Hook, APropCount);
   fIgnoreClass := TCustomCoolBar;
-end;
-
-function TCoolBarControlPropertyEditor.CheckNewValue(APersistent: TPersistent): boolean;
-begin
-  Result:=false;
-  raise Exception.Create('TCoolBarControlPropertyEditor.CheckNewValue is called after all!');
 end;
 
 { TComponentAllPropertyEditor }
