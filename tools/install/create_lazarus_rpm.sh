@@ -51,7 +51,7 @@ echo "installed fpc version: $FPCRPMVersion"
 FPCSRCRPMVersion=$(echo $FPCRPMVersion | cut -d- -f1)
 
 Date=$Year$Month$Day
-LazVersion=$(./get_lazarus_version.sh)
+LazVersion=$(./get_lazarus_version.sh | sed -e 's/-/_/g')
 LazRelease='0' # $(echo $FPCRPM | sed -e 's/-/_/g')
 RPMSrcDir=$(./rpm/get_rpm_source_dir.sh)
 Src=lazarus-$LazVersion-$LazRelease.tar.gz
