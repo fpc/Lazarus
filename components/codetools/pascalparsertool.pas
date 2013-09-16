@@ -3366,6 +3366,7 @@ procedure TPascalParserTool.ReadHintModifiers;
 
 var
   NeedUndo: boolean;
+  CanHaveString: Boolean;
 begin
   if CurPos.Flag=cafSemicolon then begin
     ReadNextAtom;
@@ -3374,24 +3375,23 @@ begin
     NeedUndo:=false;
   while IsModifier do begin
     //debugln(['TPascalParserTool.ReadHintModifier ',CurNode.DescAsString,' ',CleanPosToStr(CurPos.StartPos)]);
-    NeedUndo:=true;
+    NeedUndo:=false;
     CreateChildNode;
     CurNode.Desc:=ctnHintModifier;
     CurNode.EndPos:=CurPos.EndPos;
-    if UpAtomIs('DEPRECATED') then begin
-      ReadNextAtom;
-      if AtomIsStringConstant then begin
-        ReadConstant(true,false,[]);
-        CurNode.EndPos:=CurPos.StartPos;
-      end;
-    end else
-      ReadNextAtom;
+    CanHaveString:=UpAtomIs('DEPRECATED');
+    ReadNextAtom;
+    if CanHaveString and AtomIsStringConstant then begin
+      ReadConstant(true,false,[]);
+      CurNode.EndPos:=CurPos.StartPos;
+    end;
     if not (CurPos.Flag in [cafSemicolon,cafRoundBracketClose]) then
       SaveRaiseCharExpectedButAtomFound(';');
     EndChildNode;
     if CurPos.Flag<>cafSemicolon then
       break;
     ReadNextAtom;
+    NeedUndo:=true;
   end;
   if NeedUndo then
     UndoReadNextAtom;
@@ -4784,7 +4784,8 @@ begin
     SaveRaiseStringExpectedButAtomFound('"of"');
   // read all variants
   repeat
-    ReadNextAtom;  // read constant (variant identifier)
+    // read constant(s) (variant identifier)
+    ReadNextAtom;
     {$IFDEF VerboseRecordCase}
     debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase variant start="',GetAtom,'"']);
     {$ENDIF}
@@ -4798,7 +4799,8 @@ begin
         SaveRaiseCharExpectedButAtomFound(':');
       ReadNextAtom;
     until false;
-    ReadNextAtom;  // read '('
+    // read '('
+    ReadNextAtom;
     if (CurPos.Flag<>cafRoundBracketOpen) then
       SaveRaiseCharExpectedButAtomFound('(');
     // read all variables
@@ -4831,9 +4833,14 @@ begin
         ReadNextAtom; // read type
         Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
         if not Result then begin
+          {$IFDEF VerboseRecordCase}
           debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase ParseType failed']);
+          {$ENDIF}
           exit;
         end;
+        {$IFDEF VerboseRecordCase}
+        debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase Hint modifier: "',GetAtom,'"']);
+        {$ENDIF}
         ReadHintModifiers;
         CurNode.EndPos:=CurPos.EndPos;
         EndChildNode; // close variable definition
