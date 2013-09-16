@@ -218,6 +218,7 @@ begin
       if OptIndex>=Options.Count then exit;
       // compare option
       Option:=Options[OptIndex];
+      //debugln(['IsEqual ',Option.AsString,' Targets="',Option.Targets,'" Target.Value="',Target.Value,'"']);
       if Option.Targets<>Target.Value then exit;
       if Option.Modes<>ValueRow.GetNormalizedModes then exit;
       if Option.Typ<>CaptionToBuildMatrixOptionType(ValueRow.Typ) then exit;
@@ -247,8 +248,10 @@ begin
   TargetGrp:=nil;
   for OptIndex:=0 to Options.Count-1 do begin
     Option:=Options[OptIndex];
-    if (TargetGrp=nil) or (TargetGrp.Value<>Option.Targets) then
+    if (TargetGrp=nil) or (TargetGrp.Value<>Option.Targets) then begin
       TargetGrp:=AddMatrixTarget(Matrix,StorageGroup);
+      TargetGrp.Value:=Option.Targets;
+    end;
     Value:=Option.Value;
     if Option.Typ=bmotIDEMacro then
       Value:=Option.MacroName+':='+Value;
@@ -278,6 +281,7 @@ begin
       exit;
     end;
     Targets:=UTF8Trim(Target.Value);
+    //debugln(['AssignBuildMatrixGroupToOptions Targets=',Targets]);
     for i:=0 to Target.Count-1 do begin
       ValueRow:=TGroupedMatrixValue(Target[i]);
       if not (ValueRow is TGroupedMatrixValue) then begin
@@ -295,6 +299,7 @@ begin
       end else begin
         Option.Value:=UTF8Trim(ValueRow.Value);
       end;
+      //debugln(['AssignBuildMatrixGroupToOptions Option=',Option.AsString]);
     end;
   end;
   if InvalidateBuildMacros then
