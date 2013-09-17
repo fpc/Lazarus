@@ -36,7 +36,7 @@ unit FpDbgClasses;
 interface
 
 uses
-  Windows, Classes, Maps, FpDbgUtil, FpDbgWinExtra, FpDbgLoader;
+  Windows, Classes, Maps, FpDbgUtil, FpDbgWinExtra, FpDbgLoader, LazLoggerBase;
 
 type
   TDbgPtr = QWord; // PtrUInt;
@@ -270,7 +270,7 @@ uses
 
 procedure LogLastError;
 begin
-  WriteLN('ERROR: ', GetLastErrorText);
+  DebugLn('FpDbg-ERROR: ', GetLastErrorText);
 end;
 
 { TDbgInstance }

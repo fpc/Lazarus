@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, Types, SysUtils, FpDbgClasses, FpDbgDwarfConst, Maps, Math,
-  FpDbgLoader, FpDbgWinExtra, contnrs;
+  FpDbgLoader, FpDbgWinExtra, LazLoggerBase, contnrs;
   
 type
   // compilation unit header
@@ -410,6 +410,9 @@ function ULEB128toOrdinal(var p: PByte): QWord;
 function SLEB128toOrdinal(var p: PByte): Int64;
 
 implementation
+
+var
+  FPDBG_DWARF_WARNINGS, FPDBG_DWARF_VERBOSE: PLazLoggerLogGroup;
 
 function ULEB128toOrdinal(var p: PByte): QWord;
 var
@@ -1330,7 +1333,7 @@ begin
         if Info.StartPC <> 0
         then begin
           if FAddressMap.HasId(Info.StartPC)
-          then WriteLN('WARNING duplicate start adress: ', IntToHex(Info.StartPC, FAddressSize * 2))
+          then DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING duplicate start adress: ', IntToHex(Info.StartPC, FAddressSize * 2)])
           else FAddressMap.Add(Info.StartPC, Info);
         end;
       end;
@@ -1450,7 +1453,7 @@ begin
     Offs := FAbbrevOffset - FOwner.FImageBase - FOwner.FSections[dsAbbrev].VirtualAdress;
     if (Offs >= 0) and (Offs < FOwner.FSections[dsAbbrev].Size)
     then begin
-      WriteLN('WARNING: Got Abbrev offset as address, adjusting..');
+      DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING: Got Abbrev offset as address, adjusting..']);
       FAbbrevOffset := Offs;
     end;
   end;
@@ -1475,7 +1478,7 @@ begin
   // retrieve some info about this unit
   if not LocateEntry(DW_TAG_compile_unit, FScope, [lefCreateAttribList, lefSearchChild], Scope, AttribList)
   then begin
-    WriteLN('WARNING compilation unit has no compile_unit tag');
+    DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING compilation unit has no compile_unit tag']);
     Exit;
   end;
   FValid := True;
@@ -1499,7 +1502,7 @@ begin
       Offs := StatementListOffs - FOwner.FImageBase - FOwner.FSections[dsLine].VirtualAdress;
       if (Offs >= 0) and (Offs < FOwner.FSections[dsLine].Size)
       then begin
-        WriteLN('WARNING: Got Lineinfo offset as address, adjusting..');
+        DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING: Got Lineinfo offset as address, adjusting..']);
         FillLineInfo(FOwner.FSections[dsLine].RawData + Offs);
       end;
     end;
@@ -1631,7 +1634,7 @@ begin
 
     if FMap.HasId(abbrev)
     then begin
-      WriteLN('Duplicate abbrev=', abbrev, ' found. Ignoring....');
+      DebugLn(FPDBG_DWARF_WARNINGS, ['Duplicate abbrev=', abbrev, ' found. Ignoring....']);
       while pword(FLastAbbrevPtr)^ <> 0 do Inc(pword(FLastAbbrevPtr));
       Inc(pword(FLastAbbrevPtr));
       abbrev := 0;
@@ -1640,9 +1643,9 @@ begin
 
     if FVerbose
     then begin
-      WriteLN('  abbrev:  ', abbrev);
-      WriteLN('  tag:     ', Def.tag, '=', DwarfTagToString(Def.tag));
-      WriteLN('  children:', pbyte(FLastAbbrevPtr)^, '=', DwarfChildrenToString(pbyte(FLastAbbrevPtr)^));
+      DebugLn(FPDBG_DWARF_VERBOSE, ['  abbrev:  ', abbrev]);
+      DebugLn(FPDBG_DWARF_VERBOSE, ['  tag:     ', Def.tag, '=', DwarfTagToString(Def.tag)]);
+      DebugLn(FPDBG_DWARF_VERBOSE, ['  children:', pbyte(FLastAbbrevPtr)^, '=', DwarfChildrenToString(pbyte(FLastAbbrevPtr)^)]);
     end;
     Def.Children := pbyte(FLastAbbrevPtr)^ = DW_CHILDREN_yes;
     Inc(pbyte(FLastAbbrevPtr));
@@ -1660,7 +1663,7 @@ begin
       Inc(FAbbrevIndex);
 
       if FVerbose
-      then WriteLN('   [', n:4, '] attrib: ', attrib, '=', DwarfAttributeToString(attrib), ', form: ', form, '=', DwarfAttributeFormToString(form));
+      then DebugLn(FPDBG_DWARF_VERBOSE, ['   [', n, '] attrib: ', attrib, '=', DwarfAttributeToString(attrib), ', form: ', form, '=', DwarfAttributeFormToString(form)]);
       Inc(n);
     end;
     Def.Count := n;
@@ -1682,7 +1685,7 @@ begin
   if not GetDefinition(Abbrev, Def)
   then begin
     //???
-    WriteLN('Error: Abbrev not found: ', Abbrev);
+    DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
     Result := False;
     Exit;
   end;
@@ -1801,7 +1804,7 @@ function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStartScope: TDwarfSc
         DW_FORM_indirect : begin
         end;
       else
-        WriteLN('Error: Unknown Form: ', Form);
+        DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Unknown Form: ', Form]);
         Break;
       end;
     end;
@@ -1879,7 +1882,7 @@ begin
     
     if not GetDefinition(Abbrev, Def)
     then begin
-      WriteLN('Error: Abbrev not found: ', Abbrev);
+      DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
       Break;
     end;
 
@@ -2206,14 +2209,14 @@ constructor TDwarfVerboseCompilationUnit.Create(AOwner: TDbgDwarf; ADataOffset: 
 begin
   FVerbose := True;
   
-  WriteLN('-- compilation unit --');
-  WriteLN(' data offset: ', ADataOffset);
-  WriteLN(' length: ', ALength);
-  WriteLN(' version: ', AVersion);
-  WriteLN(' abbrev offset: ', AAbbrevOffset);
-  WriteLN(' address size: ', AAddressSize);
-  WriteLn(' 64bit: ', AIsDwarf64);
-  WriteLN('----------------------');
+  DebugLn(FPDBG_DWARF_VERBOSE, ['-- compilation unit --']);
+  DebugLn(FPDBG_DWARF_VERBOSE, [' data offset: ', ADataOffset]);
+  DebugLn(FPDBG_DWARF_VERBOSE, [' length: ', ALength]);
+  DebugLn(FPDBG_DWARF_VERBOSE, [' version: ', AVersion]);
+  DebugLn(FPDBG_DWARF_VERBOSE, [' abbrev offset: ', AAbbrevOffset]);
+  DebugLn(FPDBG_DWARF_VERBOSE, [' address size: ', AAddressSize]);
+  DebugLn(FPDBG_DWARF_VERBOSE, [' 64bit: ', AIsDwarf64]);
+  DebugLn(FPDBG_DWARF_VERBOSE, ['----------------------']);
   inherited;
 end;
 
@@ -2235,19 +2238,19 @@ begin
   FCU.LoadAbbrevs(High(Cardinal));
   InternalDecode(FCU.FInfoData, FCU.FInfoData + FCU.FLength);
 
-  WriteLN('addresses: ');
+  DebugLn(FPDBG_DWARF_VERBOSE, ['addresses: ']);
   Iter := TMapIterator.Create(FCU.FAddressMap);
   while not Iter.EOM do
   begin
     Iter.GetData(Info);
-    Write('  ');
+    DbgOut(FPDBG_DWARF_VERBOSE, ['  ']);
     Scope := Info.Scope.Parent;
     while Scope <> nil do
     begin
-      Write('.');
+      DbgOut(FPDBG_DWARF_VERBOSE, ['.']);
       Scope := Scope.Parent;
     end;
-    WriteLN(Info.Name, ': $', IntToHex(Info.StartPC, FCU.FAddressSize * 2), '..$', IntToHex(Info.EndPC, FCU.FAddressSize * 2));
+    DebugLn(FPDBG_DWARF_VERBOSE, [Info.Name, ': $', IntToHex(Info.StartPC, FCU.FAddressSize * 2), '..$', IntToHex(Info.EndPC, FCU.FAddressSize * 2)]);
     Iter.Next;
   end;
   Iter.Free;
@@ -2262,236 +2265,236 @@ begin
   MaxData := AData + ASize - 1;
   while AData <= MaxData do
   begin
-    Write(AIndent);
+    DbgOut(FPDBG_DWARF_VERBOSE, [AIndent]);
     case AData^ of
       DW_OP_addr: begin
-        Write('DW_OP_addr ', MakeAddressString(@AData[1]));
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_addr ', MakeAddressString(@AData[1])]);
         Inc(AData, 4);
       end;
       DW_OP_deref: begin
-        Write('DW_OP_deref');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_deref']);
       end;
       DW_OP_const1u: begin
-        Write('DW_OP_const1u ', AData[1]);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_const1u ', AData[1]]);
         Inc(AData, 1);
       end;
       DW_OP_const1s: begin
-        Write('DW_OP_const1s ', PShortInt(@AData[1])^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_const1s ', PShortInt(@AData[1])^]);
         Inc(AData, 1);
       end;
       DW_OP_const2u: begin
-        Write('DW_OP_const2u ', PWord(@AData[1])^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_const2u ', PWord(@AData[1])^]);
         Inc(AData, 2);
       end;
       DW_OP_const2s: begin
-        Write('DW_OP_const2s ', PSmallInt(@AData[1])^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_const2s ', PSmallInt(@AData[1])^]);
         Inc(AData, 2);
       end;
       DW_OP_const4u: begin
-        Write('DW_OP_const4u ', PLongWord(@AData[1])^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_const4u ', PLongWord(@AData[1])^]);
         Inc(AData, 4);
       end;
       DW_OP_const4s: begin
-        Write('DW_OP_const4s ', PLongInt(@AData[1])^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_const4s ', PLongInt(@AData[1])^]);
         Inc(AData, 4);
       end;
       DW_OP_const8u: begin
-        Write('DW_OP_const8u ', PQWord(@AData[1])^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_const8u ', PQWord(@AData[1])^]);
         Inc(AData, 8);
       end;
       DW_OP_const8s: begin
-        Write('DW_OP_const8s ', PInt64(@AData[1])^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_const8s ', PInt64(@AData[1])^]);
         Inc(AData, 8);
       end;
       DW_OP_constu: begin
         Inc(AData);
-        Write('DW_OP_constu ', ULEB128toOrdinal(AData));;
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_constu ', ULEB128toOrdinal(AData)]);;
         Dec(AData);
       end;
       DW_OP_consts: begin
         Inc(AData);
-        Write('DW_OP_consts ', SLEB128toOrdinal(AData));;
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_consts ', SLEB128toOrdinal(AData)]);;
         Dec(AData);
       end;
       DW_OP_dup: begin
-        Write('DW_OP_dup');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_dup']);
       end;
       DW_OP_drop: begin
-        Write('DW_OP_drop');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_drop']);
       end;
       DW_OP_over: begin
-        Write('DW_OP_over');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_over']);
       end;
       DW_OP_pick: begin
-        Write('DW_OP_pick ', AData[1]);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_pick ', AData[1]]);
         Inc(AData, 1);
       end;
       DW_OP_swap: begin
-        Write('DW_OP_swap');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_swap']);
       end;
       DW_OP_rot: begin
-        Write('DW_OP_rot');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_rot']);
       end;
       DW_OP_xderef: begin
-        Write('DW_OP_xderef');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_xderef']);
       end;
       DW_OP_abs: begin
-        Write('DW_OP_abs');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_abs']);
       end;
       DW_OP_and: begin
-        Write('DW_OP_and');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_and']);
       end;
       DW_OP_div: begin
-        Write('DW_OP_div');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_div']);
       end;
       DW_OP_minus: begin
-        Write('DW_OP_minus');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_minus']);
       end;
       DW_OP_mod: begin
-        Write('DW_OP_mod');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_mod']);
       end;
       DW_OP_mul: begin
-        Write('DW_OP_mul');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_mul']);
       end;
       DW_OP_neg: begin
-        Write('DW_OP_neg');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_neg']);
       end;
       DW_OP_not: begin
-        Write('DW_OP_not');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_not']);
       end;
       DW_OP_or: begin
-        Write('DW_OP_or');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_or']);
       end;
       DW_OP_plus: begin
-        Write('DW_OP_plus');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_plus']);
       end;
       DW_OP_plus_uconst: begin
         Inc(AData);
-        Write('DW_OP_plus_uconst ', ULEB128toOrdinal(AData));;
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_plus_uconst ', ULEB128toOrdinal(AData)]);;
         Dec(AData);
       end;
       DW_OP_shl: begin
-        Write('DW_OP_shl');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_shl']);
       end;
       DW_OP_shr: begin
-        Write('DW_OP_shr');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_shr']);
       end;
       DW_OP_shra: begin
-        Write('DW_OP_shra');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_shra']);
       end;
       DW_OP_xor: begin
-        Write('DW_OP_xor');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_xor']);
       end;
       DW_OP_skip: begin
-        Write('DW_OP_skip ', PSmallInt(@AData[1])^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_skip ', PSmallInt(@AData[1])^]);
         Inc(AData, 2);
       end;
       DW_OP_bra: begin
-        Write('DW_OP_bra ', PSmallInt(@AData[1])^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_bra ', PSmallInt(@AData[1])^]);
         Inc(AData, 2);
       end;
       DW_OP_eq: begin
-        Write('DW_OP_eq');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_eq']);
       end;
       DW_OP_ge: begin
-        Write('DW_OP_ge');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_ge']);
       end;
       DW_OP_gt: begin
-        Write('DW_OP_gt');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_gt']);
       end;
       DW_OP_le: begin
-        Write('DW_OP_le');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_le']);
       end;
       DW_OP_lt: begin
-        Write('DW_OP_lt');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_lt']);
       end;
       DW_OP_ne: begin
-        Write('DW_OP_ne');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_ne']);
       end;
       DW_OP_lit0..DW_OP_lit31: begin
-        Write('DW_OP_lit', AData^ - DW_OP_lit0);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_lit', AData^ - DW_OP_lit0]);
       end;
       DW_OP_reg0..DW_OP_reg31: begin
-        Write('DW_OP_reg', AData^ - DW_OP_reg0);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_reg', AData^ - DW_OP_reg0]);
       end;
       DW_OP_breg0..DW_OP_breg31: begin
-        Write('DW_OP_breg', AData^ - DW_OP_breg0);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_breg', AData^ - DW_OP_breg0]);
         Inc(AData);
         v := SLEB128toOrdinal(AData);
         Dec(AData);
         if v >= 0
-        then Write('+');
-        Write(v);
+        then DbgOut(FPDBG_DWARF_VERBOSE, ['+']);
+        DbgOut(FPDBG_DWARF_VERBOSE, [v]);
       end;
       DW_OP_regx: begin
         Inc(AData);
-        Write('DW_OP_regx ', ULEB128toOrdinal(AData));
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_regx ', ULEB128toOrdinal(AData)]);
         Dec(AData);
       end;
       DW_OP_fbreg: begin
         Inc(AData);
-        Write('DW_OP_fbreg ', SLEB128toOrdinal(AData));
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_fbreg ', SLEB128toOrdinal(AData)]);
         Dec(AData);
       end;
       DW_OP_bregx: begin
         Inc(AData);
-        Write('DW_OP_bregx ', ULEB128toOrdinal(AData));
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_bregx ', ULEB128toOrdinal(AData)]);
         v := SLEB128toOrdinal(AData);
         Dec(AData);
         if v >= 0
-        then Write('+');
-        Write(v);
+        then DbgOut(FPDBG_DWARF_VERBOSE, ['+']);
+        DbgOut(FPDBG_DWARF_VERBOSE, [v]);
       end;
       DW_OP_piece: begin
         Inc(AData);
-        Write('DW_OP_piece ', ULEB128toOrdinal(AData));
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_piece ', ULEB128toOrdinal(AData)]);
         Dec(AData);
       end;
       DW_OP_deref_size: begin
-        Write('DW_OP_deref_size ', AData[1]);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_deref_size ', AData[1]]);
         Inc(AData);
       end;
       DW_OP_xderef_size: begin
-        Write('DW_OP_xderef_size', AData[1]);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_xderef_size', AData[1]]);
         Inc(AData);
       end;
       DW_OP_nop: begin
-        Write('DW_OP_nop');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_nop']);
       end;
       DW_OP_push_object_address: begin
-        Write('DW_OP_push_object_address');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_push_object_address']);
       end;
       DW_OP_call2: begin
-        Write('DW_OP_call2 ', PWord(@AData[1])^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_call2 ', PWord(@AData[1])^]);
         Inc(AData, 2);
       end;
       DW_OP_call4: begin
-        Write('DW_OP_call4 ', PLongWord(@AData[1])^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_call4 ', PLongWord(@AData[1])^]);
         Inc(AData, 4);
       end;
       DW_OP_call_ref: begin
-        Write('DW_OP_call_ref ', MakeAddressString(@AData[1]));
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_call_ref ', MakeAddressString(@AData[1])]);
         Inc(AData, 4);
       end;
       DW_OP_form_tls_address: begin
-        Write('DW_OP_form_tls_address');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_form_tls_address']);
       end;
       DW_OP_call_frame_cfa: begin
-        Write('DW_OP_call_frame_cfa');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_call_frame_cfa']);
       end;
       DW_OP_bit_piece: begin
         Inc(AData);
-        Write('DW_OP_bit_piece ', ULEB128toOrdinal(AData), ' ', ULEB128toOrdinal(AData));
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_bit_piece ', ULEB128toOrdinal(AData), ' ', ULEB128toOrdinal(AData)]);
         Dec(AData);
       end;
       DW_OP_lo_user..DW_OP_hi_user: begin
-        Write('DW_OP_user=', AData^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['DW_OP_user=', AData^]);
       end;
     else
-      Write('Unknown DW_OP_', AData^);
+      DbgOut(FPDBG_DWARF_VERBOSE, ['Unknown DW_OP_', AData^]);
     end;
     Inc(AData);
-    WriteLn;
+    DebugLn(FPDBG_DWARF_VERBOSE, ['']);
   end;
 end;
 
@@ -2507,13 +2510,13 @@ procedure TDwarfAbbrevDecoder.InternalDecode(AData: Pointer; AMaxData: Pointer; 
   begin
     for n := 1 to Min(80, count) do
     begin
-      Write(IntToHex(p^, 2), ' ');
+      DbgOut(FPDBG_DWARF_VERBOSE, [IntToHex(p^, 2), ' ']);
       Inc(p);
     end;
     if Count > 80
     then begin
       Inc(p, Count - 80);
-      Write('...');
+      DbgOut(FPDBG_DWARF_VERBOSE, ['...']);
     end;
   end;
   procedure DumpStr(var p: PChar);
@@ -2521,9 +2524,9 @@ procedure TDwarfAbbrevDecoder.InternalDecode(AData: Pointer; AMaxData: Pointer; 
     while p^ <> #0 do
     begin
       case p^ of
-        #32..#127: Write(p^);
+        #32..#127: DbgOut(FPDBG_DWARF_VERBOSE, [p^]);
       else
-        Write('<', IntToHex(Ord(p^), 2), '>');
+        DbgOut(FPDBG_DWARF_VERBOSE, ['<', IntToHex(Ord(p^), 2), '>']);
       end;
       Inc(p);
     end;
@@ -2551,148 +2554,148 @@ begin
       Dec(Level);
       SetLength(Indent, Length(Indent) - 2);
       if Level >= 0
-      then  WriteLn(Indent, ' \--');
+      then  DebugLn(FPDBG_DWARF_VERBOSE, [Indent, ' \--']);
       Continue;
     end;
-    Write(Indent, 'abbrev: ', Abbrev);
+    DbgOut(FPDBG_DWARF_VERBOSE, [Indent, 'abbrev: ', Abbrev]);
     if not FCU.GetDefinition(abbrev, Def)
     then begin
-      WriteLN;
-      WriteLN('Error: Abbrev not found: ', Abbrev);
+      DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
       Exit;
     end;
-    Write(', tag: ', Def.tag, '=', DwarfTagToString(Def.tag));
+    DbgOut(FPDBG_DWARF_VERBOSE, [', tag: ', Def.tag, '=', DwarfTagToString(Def.tag)]);
     if Def.Children
     then begin
-      WriteLN(', has children');
+      DebugLn(FPDBG_DWARF_VERBOSE, ['']);
+      DebugLn(FPDBG_DWARF_VERBOSE, [', has children']);
       Inc(Level);
     end
-    else WriteLn;
+    else DebugLn(FPDBG_DWARF_VERBOSE, ['']);
 
     for idx := Def.Index to Def.Index + Def.Count - 1 do
     begin
       Form := FCU.FDefinitions[idx].Form;
       Attribute := FCU.FDefinitions[idx].Attribute;
-      Write(Indent, ' attrib: ', Attribute, '=', DwarfAttributeToString(Attribute));
-      Write(', form: ', Form, '=', DwarfAttributeFormToString(Form));
+      DbgOut(FPDBG_DWARF_VERBOSE, [Indent, ' attrib: ', Attribute, '=', DwarfAttributeToString(Attribute)]);
+      DbgOut(FPDBG_DWARF_VERBOSE, [', form: ', Form, '=', DwarfAttributeFormToString(Form)]);
       
       ValueSize := 0;
       ValuePtr := nil;
       Value := 0;
       repeat
-        Write(', value: ');
+        DbgOut(FPDBG_DWARF_VERBOSE, [', value: ']);
         case Form of
           DW_FORM_addr     : begin
             Value := FCU.MakeAddress(AData);
             ValuePtr := Pointer(PtrUInt(Value));
             ValueSize := FCU.FAddressSize;
-            Write('$'+IntToHex(Value, FCU.FAddressSize * 2));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.FAddressSize * 2)]);
             Inc(AData, FCU.FAddressSize);
           end;
           DW_FORM_block    : begin
             ValueSize := ULEB128toOrdinal(AData);
             ValuePtr := AData;
-            Write('Size=', ValueSize, ', Data=');
+            DbgOut(FPDBG_DWARF_VERBOSE, ['Size=', ValueSize, ', Data=']);
             Dump(AData, ValueSize);
           end;
           DW_FORM_block1   : begin
             ValueSize := PByte(AData)^;
             Inc(AData, 1);
             ValuePtr := AData;
-            Write('Size=', ValueSize, ', Data=');
+            DbgOut(FPDBG_DWARF_VERBOSE, ['Size=', ValueSize, ', Data=']);
             Dump(AData, ValueSize);
           end;
           DW_FORM_block2   : begin
             ValueSize := PWord(AData)^;
             Inc(AData, 2);
             ValuePtr := AData;
-            Write('Size=', ValueSize, ', Data=');
+            DbgOut(FPDBG_DWARF_VERBOSE, ['Size=', ValueSize, ', Data=']);
             Dump(AData, ValueSize);
           end;
           DW_FORM_block4   : begin
             ValueSize := PLongWord(AData)^;
             Inc(AData, 4);
             ValuePtr := AData;
-            Write('Size=', ValueSize, ', Data=');
+            DbgOut(FPDBG_DWARF_VERBOSE, ['Size=', ValueSize, ', Data=']);
             Dump(AData, ValueSize);
           end;
           DW_FORM_data1    : begin
             Value := PByte(AData)^;
             ValueSize := 1;
-            Write('$'+IntToHex(Value, 2));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, 2)]);
             Inc(AData, 1);
           end;
           DW_FORM_data2    : begin
             Value := PWord(AData)^;
             ValueSize := 2;
-            Write('$'+IntToHex(Value, 4));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, 4)]);
             Inc(AData, 2);
           end;
           DW_FORM_data4    : begin
             Value := PLongWord(AData)^;
             ValueSize := 4;
-            Write('$'+IntToHex(Value, 8));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, 8)]);
             Inc(AData, 4);
           end;
           DW_FORM_data8    : begin
             Value := PQWord(AData)^;
             ValueSize := 8;
-            Write('$'+IntToHex(Value, 16));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, 16)]);
             Inc(AData, 8);
           end;
           DW_FORM_sdata    : begin
             p := AData;
             Value := ULEB128toOrdinal(AData);
             ValueSize := PtrUInt(AData) - PtrUInt(p);
-            Write('$'+IntToHex(Value, ValueSize * 2));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, ValueSize * 2)]);
           end;
           DW_FORM_udata    : begin
             p := AData;
             Value := ULEB128toOrdinal(AData);
             ValueSize := PtrUInt(AData) - PtrUInt(p);
-            Write('$'+IntToHex(Value, ValueSize * 2));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, ValueSize * 2)]);
           end;
           DW_FORM_flag     : begin
             Value := PByte(AData)^;
             ValueSize := 1;
-            Write('$'+IntToHex(Value, 2));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, 2)]);
             Inc(AData, 1);
           end;
           DW_FORM_ref1     : begin
             Value := PByte(AData)^;
             ValueSize := 1;
-            Write('$'+IntToHex(Value, 2));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, 2)]);
             Inc(AData, 1);
           end;
           DW_FORM_ref2     : begin
             Value := PWord(AData)^;
             ValueSize := 2;
-            Write('$'+IntToHex(Value, 4));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, 4)]);
             Inc(AData, 2);
           end;
           DW_FORM_ref4     : begin
             Value := PLongWord(AData)^;
             ValueSize := 4;
-            Write('$'+IntToHex(Value, 8));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, 8)]);
             Inc(AData, 4);
           end;
           DW_FORM_ref8     : begin
             Value := PQWord(AData)^;
             ValueSize := 8;
-            Write('$'+IntToHex(Value, 16));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, 16)]);
             Inc(AData, 8);
           end;
           DW_FORM_ref_udata: begin
             p := AData;
             Value := ULEB128toOrdinal(AData);
             ValueSize := PtrUInt(AData) - PtrUInt(p);
-            Write('$'+IntToHex(Value, ValueSize * 2));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, ValueSize * 2)]);
           end;
           DW_FORM_ref_addr : begin
             Value := FCU.MakeAddress(AData);
             ValuePtr := Pointer(PtrUInt(Value));
             ValueSize := FCU.FAddressSize;
-            Write('$'+IntToHex(Value, FCU.FAddressSize * 2));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.FAddressSize * 2)]);
             Inc(AData, FCU.FAddressSize);
           end;
           DW_FORM_string   : begin
@@ -2703,16 +2706,16 @@ begin
           DW_FORM_strp     : begin
             Value := FCU.MakeAddress(AData);
             ValueSize := FCU.FAddressSize;
-            Write('$'+IntToHex(Value, FCU.FAddressSize * 2));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.FAddressSize * 2)]);
             Inc(AData, FCU.FAddressSize);
           end;
           DW_FORM_indirect : begin
             Form := ULEB128toOrdinal(AData);
-            Write('indirect form: ', Form, '=', DwarfAttributeFormToString(Form));
+            DbgOut(FPDBG_DWARF_VERBOSE, ['indirect form: ', Form, '=', DwarfAttributeFormToString(Form)]);
             Continue;
           end;
         else
-          WriteLN('Error: Unknown Form: ', Form);
+          DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Unknown Form: ', Form]);
           Exit;
         end;
         Break;
@@ -2720,49 +2723,49 @@ begin
 
       case Attribute of
         DW_AT_accessibility: begin
-          WriteLn('=', DwarfAccessibilityToString(Value));
+          DebugLn(FPDBG_DWARF_VERBOSE, ['=', DwarfAccessibilityToString(Value)]);
         end;
         DW_AT_data_member_location: begin
-          WriteLn('-->');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['-->']);
           DecodeLocation(ValuePtr, ValueSize, Indent + '  ');
         end;
         DW_AT_encoding: begin
-          WriteLn('=', DwarfBaseTypeEncodingToString(Value));
+          DebugLn(FPDBG_DWARF_VERBOSE, ['=', DwarfBaseTypeEncodingToString(Value)]);
         end;
         DW_AT_language: begin
-          WriteLn('=', DwarfLanguageToString(Value));
+          DebugLn(FPDBG_DWARF_VERBOSE, ['=', DwarfLanguageToString(Value)]);
         end;
         DW_AT_identifier_case: begin
-          WriteLn('=', DwarfIdentifierCaseToString(Value));
+          DebugLn(FPDBG_DWARF_VERBOSE, ['=', DwarfIdentifierCaseToString(Value)]);
         end;
         DW_AT_location: begin
           if ValuePtr = nil
           then begin
-            WriteLn('-->');
+            DebugLn(FPDBG_DWARF_VERBOSE, ['-->']);
             DecodeLocationList(Value, AIndent + '  ');
           end
           else begin
-            WriteLn('-->');
+            DebugLn(FPDBG_DWARF_VERBOSE, ['-->']);
             DecodeLocation(ValuePtr, ValueSize, Indent + '  ');
           end;
         end;
         DW_AT_type: begin
-          WriteLn('-->');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['-->']);
           try
             p := FCU.FOwner.FSections[dsInfo].RawData + Value - FCU.FOwner.FImageBase - FCU.FOwner.FSections[dsInfo].VirtualAdress;
             InternalDecode(p, p, Indent + '  ');
           except
-            on E: Exception do WriteLN(AIndent, '  ', E.Message);
+            on E: Exception do DebugLn(FPDBG_DWARF_WARNINGS, [AIndent, '  ', E.Message]);
           end;
         end;
       else
-        WriteLN;
+        DebugLn(FPDBG_DWARF_VERBOSE, ['']);
       end;
     end;
 
     if Def.Children
     then begin
-      WriteLn(Indent, ' /--');
+      DebugLn(FPDBG_DWARF_VERBOSE, [Indent, ' /--']);
       Indent := Indent + ' |';
     end;
   end;
@@ -2788,7 +2791,7 @@ procedure TDwarfStatementDecoder.Decode;
 begin
   if FCU.FLineInfo.Header = nil
   then begin
-    WriteLN('No lineinfo');
+    DebugLn(FPDBG_DWARF_WARNINGS, ['No lineinfo']);
     Exit;
   end;
   InternalDecode(FCU.FLineInfo.Header, FCU.FOwner.FSections[dsInfo].RawData + FCU.FOwner.FSections[dsInfo].Size);
@@ -2810,19 +2813,19 @@ var
 
   procedure AddRow(ALast: Boolean = False);
   begin
-    Write('> ');
-    Write('Address=$', IntToHex(Address, FCU.FAddressSize * 2));
-    Write(', Line=',Line);
-    Write(', FileNr=',FileNr);
-    Write(', Column=',Column);
-    Write(', IsStmt=',IsStmt);
-    Write(', BasicBlock=',BasicBlock);
-    Write(', PrologueEnd=',PrologueEnd);
-    Write(', EpilogueBegin=',EpilogueBegin);
-    Write(', Isa=',Isa);
-    WriteLn;
+    DbgOut(FPDBG_DWARF_VERBOSE, ['> ']);
+    DbgOut(FPDBG_DWARF_VERBOSE, ['Address=$', IntToHex(Address, FCU.FAddressSize * 2)]);
+    DbgOut(FPDBG_DWARF_VERBOSE, [', Line=',Line]);
+    DbgOut(FPDBG_DWARF_VERBOSE, [', FileNr=',FileNr]);
+    DbgOut(FPDBG_DWARF_VERBOSE, [', Column=',Column]);
+    DbgOut(FPDBG_DWARF_VERBOSE, [', IsStmt=',IsStmt]);
+    DbgOut(FPDBG_DWARF_VERBOSE, [', BasicBlock=',BasicBlock]);
+    DbgOut(FPDBG_DWARF_VERBOSE, [', PrologueEnd=',PrologueEnd]);
+    DbgOut(FPDBG_DWARF_VERBOSE, [', EpilogueBegin=',EpilogueBegin]);
+    DbgOut(FPDBG_DWARF_VERBOSE, [', Isa=',Isa]);
+    DebugLn(FPDBG_DWARF_VERBOSE, ['']);
     if ALast
-    then WriteLn('> ---------');
+    then DebugLn(FPDBG_DWARF_VERBOSE, ['> ---------']);
   end;
   
   procedure DoAdjust(AOpcode: Byte);
@@ -2868,7 +2871,7 @@ var
   UValue: QWord;
   SValue: Int64;
 begin
-  WriteLn('FileName: ', FCU.FFileName);
+  DebugLn(FPDBG_DWARF_VERBOSE, ['FileName: ', FCU.FFileName]);
 
   if LNP64^.Signature = DWARF_HEADER64_SIGNATURE
   then begin
@@ -2887,65 +2890,65 @@ begin
   end;
   DataStart := PByte(Info) + HeaderLength;
 
-  WriteLN('UnitLength: ', UnitLength);
-  WriteLN('Version: ', Version);
-  WriteLN('HeaderLength: ', HeaderLength);
+  DebugLn(FPDBG_DWARF_VERBOSE, ['UnitLength: ', UnitLength]);
+  DebugLn(FPDBG_DWARF_VERBOSE, ['Version: ', Version]);
+  DebugLn(FPDBG_DWARF_VERBOSE, ['HeaderLength: ', HeaderLength]);
 
-  WriteLN('MinimumInstructionLength: ', Info^.MinimumInstructionLength);
-  WriteLN('DefaultIsStmt: ', Info^.DefaultIsStmt);
-  WriteLN('LineBase: ', Info^.LineBase);
-  WriteLN('LineRange: ', Info^.LineRange);
-  WriteLN('OpcodeBase: ', Info^.OpcodeBase);
+  DebugLn(FPDBG_DWARF_VERBOSE, ['MinimumInstructionLength: ', Info^.MinimumInstructionLength]);
+  DebugLn(FPDBG_DWARF_VERBOSE, ['DefaultIsStmt: ', Info^.DefaultIsStmt]);
+  DebugLn(FPDBG_DWARF_VERBOSE, ['LineBase: ', Info^.LineBase]);
+  DebugLn(FPDBG_DWARF_VERBOSE, ['LineRange: ', Info^.LineRange]);
+  DebugLn(FPDBG_DWARF_VERBOSE, ['OpcodeBase: ', Info^.OpcodeBase]);
   p := @Info^.StandardOpcodeLengths;
-  WriteLN('StandardOpcodeLengths:');
+  DebugLn(FPDBG_DWARF_VERBOSE, ['StandardOpcodeLengths:']);
   for n := 1 to Info^.OpcodeBase - 1 do
   begin
-    WriteLN('  [', n, '] ', pb^);
+    DebugLn(FPDBG_DWARF_VERBOSE, ['  [', n, '] ', pb^]);
     Inc(pb);
   end;
 
-  WriteLN('IncludeDirectories:');
+  DebugLn(FPDBG_DWARF_VERBOSE, ['IncludeDirectories:']);
   while pc^ <> #0 do
   begin
-    Write('  ');
+    DbgOut(FPDBG_DWARF_VERBOSE, ['  ']);
     repeat
-      Write(pc^);
+      DbgOut(FPDBG_DWARF_VERBOSE, [pc^]);
       Inc(pc);
     until pc^ = #0;
-    WriteLN;
+    DebugLn(FPDBG_DWARF_VERBOSE, ['']);
     Inc(pc);
   end;
   Inc(pc);
-  WriteLN('FileNames:');
+  DebugLn(FPDBG_DWARF_VERBOSE, ['FileNames:']);
   while pc^ <> #0 do
   begin
-    Write('  ');
+    DbgOut(FPDBG_DWARF_VERBOSE, ['  ']);
     repeat
-      Write(pc^);
+      DbgOut(FPDBG_DWARF_VERBOSE, [pc^]);
       Inc(pc);
     until pc^ = #0;
     Inc(pc);
-    Write(', diridx=', ULEB128toOrdinal(p));
-    Write(', last modified=', ULEB128toOrdinal(p));
-    Write(', length=', ULEB128toOrdinal(p));
-    WriteLN;
+    DbgOut(FPDBG_DWARF_VERBOSE, [', diridx=', ULEB128toOrdinal(p)]);
+    DbgOut(FPDBG_DWARF_VERBOSE, [', last modified=', ULEB128toOrdinal(p)]);
+    DbgOut(FPDBG_DWARF_VERBOSE, [', length=', ULEB128toOrdinal(p)]);
+    DebugLn(FPDBG_DWARF_VERBOSE, ['']);
   end;
   
-  WriteLN('Program:');
+  DebugLn(FPDBG_DWARF_VERBOSE, ['Program:']);
 
   p := DataStart;
   DoReset;
   
   while p < DataEnd do
   begin
-    Write('  ');
+    DbgOut(FPDBG_DWARF_VERBOSE, ['  ']);
     if (pb^ > 0) and (pb^ < Info^.OpcodeBase)
     then begin
       // Standard opcode
       case pb^ of
         DW_LNS_copy: begin
           Inc(p);
-          WriteLn('DW_LNS_copy');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNS_copy']);
           AddRow;
           BasicBlock := False;
           PrologueEnd := False;
@@ -2955,65 +2958,65 @@ begin
           Inc(p);
           UValue := ULEB128toOrdinal(p);
           Inc(Address, UValue);
-          WriteLn('DW_LNS_advance_pc ', UValue);
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNS_advance_pc ', UValue]);
         end;
         DW_LNS_advance_line: begin
           Inc(p);
           SValue := SLEB128toOrdinal(p);
           Inc(Line, SValue);
-          WriteLn('DW_LNS_advance_line ', SValue);
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNS_advance_line ', SValue]);
         end;
         DW_LNS_set_file: begin
           Inc(p);
           UValue := ULEB128toOrdinal(p);
-          WriteLn('DW_LNS_set_file ', UVAlue);
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNS_set_file ', UVAlue]);
           FileNr := UValue;
         end;
         DW_LNS_set_column: begin
           Inc(p);
           UValue := ULEB128toOrdinal(p);
-          WriteLn('DW_LNS_set_column ', UValue);
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNS_set_column ', UValue]);
           Column := UValue;
         end;
         DW_LNS_negate_stmt: begin
           Inc(p);
-          WriteLn('DW_LNS_negate_stmt');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNS_negate_stmt']);
           IsStmt := not IsStmt;
         end;
         DW_LNS_set_basic_block: begin
           Inc(p);
-          WriteLn('DW_LNS_set_basic_block');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNS_set_basic_block']);
           BasicBlock := True;
         end;
         DW_LNS_const_add_pc: begin
           Inc(p);
-          WriteLn('DW_LNS_const_add_pc');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNS_const_add_pc']);
           DoAdjust(255);
         end;
         DW_LNS_fixed_advance_pc: begin
           Inc(p);
           Inc(Address, PWord(p)^);
-          WriteLN('DW_LNS_fixed_advance_pc ', PWord(p)^);
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNS_fixed_advance_pc ', PWord(p)^]);
           Inc(p, 2);
         end;
         DW_LNS_set_prologue_end: begin
           Inc(p);
-          WriteLn('DW_LNS_set_prologue_end');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNS_set_prologue_end']);
           PrologueEnd := True;
         end;
         DW_LNS_set_epilogue_begin: begin
           Inc(p);
-          WriteLn('DW_LNS_set_epilogue_begin');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNS_set_epilogue_begin']);
           EpilogueBegin := True;
         end;
         DW_LNS_set_isa: begin
           Inc(p);
           UValue := ULEB128toOrdinal(p);
           Isa := UValue;
-          WriteLn('DW_LNS_set_isa ', UValue);
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNS_set_isa ', UValue]);
         end;
       else
-        Write('unknown opcode: ', pb^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['unknown opcode: ', pb^]);
         Inc(p, PByte(@Info^.StandardOpcodeLengths)[pb^-1]);
       end;
       Continue;
@@ -3027,7 +3030,7 @@ begin
       
       case pb^ of
         DW_LNE_end_sequence: begin
-          WriteLN('DW_LNE_end_sequence');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNE_end_sequence']);
           AddRow(True);
           DoReset;
           //Inc(p, UValue);
@@ -3037,29 +3040,29 @@ begin
           if LNP64^.Signature = DWARF_HEADER64_SIGNATURE
           then Address := PQWord(pb+1)^
           else Address := PLongWord(pb+1)^;
-          WriteLN('DW_LNE_set_address $', IntToHex(Address, FCU.FAddressSize * 2));
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_LNE_set_address $', IntToHex(Address, FCU.FAddressSize * 2)]);
         end;
         DW_LNE_define_file: begin
           ptr := p;
           Inc(ptr);
-          Write('DW_LNE_define_file name=');
+          DbgOut(FPDBG_DWARF_VERBOSE, ['DW_LNE_define_file name=']);
           repeat
-            Write(PChar(ptr)^);
+            DbgOut(FPDBG_DWARF_VERBOSE, [PChar(ptr)^]);
             Inc(ptr);
           until PChar(ptr)^ = #0;
           Inc(ptr);
-          Write(', diridx=', ULEB128toOrdinal(ptr));
-          Write(', last modified=', ULEB128toOrdinal(ptr));
-          Write(', length=', ULEB128toOrdinal(ptr));
-          WriteLN;
+          DbgOut(FPDBG_DWARF_VERBOSE, [', diridx=', ULEB128toOrdinal(ptr)]);
+          DbgOut(FPDBG_DWARF_VERBOSE, [', last modified=', ULEB128toOrdinal(ptr)]);
+          DbgOut(FPDBG_DWARF_VERBOSE, [', length=', ULEB128toOrdinal(ptr)]);
+          DebugLn(FPDBG_DWARF_VERBOSE, ['']);
         end;
       else
-        Write('unknown extended opcode: ', pb^);
+        DbgOut(FPDBG_DWARF_VERBOSE, ['unknown extended opcode: ', pb^]);
       end;
       Inc(p, UValue);
     end
     else begin
-      WriteLn('Special opcode: ', pb^);
+      DebugLn(FPDBG_DWARF_VERBOSE, ['Special opcode: ', pb^]);
       // Special opcode
       DoAdjust(pb^);
       AddRow;
@@ -3101,138 +3104,138 @@ var
     q: QWord;
   begin
     repeat
-      Write(' ');
+      DbgOut(FPDBG_DWARF_VERBOSE, [' ']);
       Inc(pb);
       case pb[-1] of
         DW_CFA_nop: begin
-          WriteLn('DW_CFA_nop');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_nop']);
         end;
         DW_CFA_set_loc: begin
           // address
-          Write('DW_CFA_set_loc $');
+          DbgOut(FPDBG_DWARF_VERBOSE, ['DW_CFA_set_loc $']);
           if Is64Bit
           then begin
-            WriteLn(IntToHex(pq^, 16));
+            DebugLn(FPDBG_DWARF_VERBOSE, [IntToHex(pq^, 16)]);
             Inc(pq);
           end
           else begin
-            WriteLn(IntToHex(pc^, 8));
+            DebugLn(FPDBG_DWARF_VERBOSE, [IntToHex(pc^, 8)]);
             Inc(pc);
           end;
         end;
         DW_CFA_advance_loc1: begin
           // 1-byte delta
-          WriteLn('DW_CFA_advance_loc1 ', pb^, ' * caf');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_advance_loc1 ', pb^, ' * caf']);
           Inc(pb);
         end;
         DW_CFA_advance_loc2: begin
           // 2-byte delta
-          WriteLn('DW_CFA_advance_loc2 ', pw^, ' * caf');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_advance_loc2 ', pw^, ' * caf']);
           Inc(pw);
         end;
         DW_CFA_advance_loc4: begin
           // 4-byte delta
-          WriteLn('DW_CFA_advance_loc4 ', pc^, ' * caf');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_advance_loc4 ', pc^, ' * caf']);
           Inc(pw);
         end;
         DW_CFA_offset_extended: begin
           // ULEB128 register, ULEB128 offset
-          WriteLn('DW_CFA_offset_extended R', ULEB128toOrdinal(p), ' + ', ULEB128toOrdinal(p), ' * daf');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_offset_extended R', ULEB128toOrdinal(p), ' + ', ULEB128toOrdinal(p), ' * daf']);
         end;
         DW_CFA_restore_extended: begin
           // ULEB128 register
-          WriteLn('DW_CFA_restore_extended R', ULEB128toOrdinal(p));
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_restore_extended R', ULEB128toOrdinal(p)]);
         end;
         DW_CFA_undefined: begin
           // ULEB128 register
-          WriteLn('DW_CFA_undefined R', ULEB128toOrdinal(p));
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_undefined R', ULEB128toOrdinal(p)]);
         end;
         DW_CFA_same_value: begin
           // ULEB128 register
-          WriteLn('DW_CFA_same_value R', ULEB128toOrdinal(p));
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_same_value R', ULEB128toOrdinal(p)]);
         end;
         DW_CFA_register: begin
           // ULEB128 register, ULEB128 register
-          WriteLn('DW_CFA_register R', ULEB128toOrdinal(p), ' R', ULEB128toOrdinal(p));
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_register R', ULEB128toOrdinal(p), ' R', ULEB128toOrdinal(p)]);
         end;
         DW_CFA_remember_state: begin
-          WriteLn('DW_CFA_remember_state');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_remember_state']);
         end;
         DW_CFA_restore_state: begin
-          WriteLn('DW_CFA_restore_state');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_restore_state']);
         end;
         DW_CFA_def_cfa: begin
           // ULEB128 register, ULEB128 offset
-          WriteLn('DW_CFA_def_cfa R', ULEB128toOrdinal(p), ' + ', ULEB128toOrdinal(p));
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_def_cfa R', ULEB128toOrdinal(p), ' + ', ULEB128toOrdinal(p)]);
         end;
         DW_CFA_def_cfa_register: begin
           // ULEB128 register
-          WriteLn('DW_CFA_def_cfa_register R', ULEB128toOrdinal(p));
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_def_cfa_register R', ULEB128toOrdinal(p)]);
         end;
         DW_CFA_def_cfa_offset: begin
           // ULEB128 offset
-          WriteLn('DW_CFA_def_cfa_offset ', ULEB128toOrdinal(p));
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_def_cfa_offset ', ULEB128toOrdinal(p)]);
         end;
         // --- DWARF3 ---
         DW_CFA_def_cfa_expression: begin
           // BLOCK
           q := ULEB128toOrdinal(p);
-          WriteLn('DW_CFA_def_cfa_expression, lenght=',q);
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_def_cfa_expression, lenght=',q]);
           Inc(p, q);
         end;
         DW_CFA_expression: begin
           // ULEB128 register, BLOCK
-          Write('DW_CFA_expression R', ULEB128toOrdinal(p), ' lenght=',q);
+          DbgOut(FPDBG_DWARF_VERBOSE, ['DW_CFA_expression R', ULEB128toOrdinal(p), ' lenght=',q]);
           q := ULEB128toOrdinal(p);
-          WriteLn(q);
+          DebugLn(FPDBG_DWARF_VERBOSE, [q]);
           Inc(p, q);
         end;
         DW_CFA_offset_extended_sf: begin
           // ULEB128 register, SLEB128 offset
-          WriteLn('DW_CFA_offset_extended_sf R', ULEB128toOrdinal(p), ' + ', SLEB128toOrdinal(p), ' * daf');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_offset_extended_sf R', ULEB128toOrdinal(p), ' + ', SLEB128toOrdinal(p), ' * daf']);
         end;
         DW_CFA_def_cfa_sf: begin
           // ULEB128 register, SLEB128 offset
-          WriteLn('DW_CFA_def_cfa_sf R', ULEB128toOrdinal(p), ' + ', SLEB128toOrdinal(p), ' * daf');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_def_cfa_sf R', ULEB128toOrdinal(p), ' + ', SLEB128toOrdinal(p), ' * daf']);
         end;
         DW_CFA_def_cfa_offset_sf: begin
           // SLEB128 offset
-          WriteLn('DW_CFA_def_cfa_offset_sf ', SLEB128toOrdinal(p), ' * daf' );
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_def_cfa_offset_sf ', SLEB128toOrdinal(p), ' * daf' ]);
         end;
         DW_CFA_val_offset: begin
           // ULEB128         , ULEB128
-          WriteLn('DW_CFA_val_offset R', ULEB128toOrdinal(p), ' + ', ULEB128toOrdinal(p), ' * daf');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_val_offset R', ULEB128toOrdinal(p), ' + ', ULEB128toOrdinal(p), ' * daf']);
         end;
         DW_CFA_val_offset_sf: begin
           // ULEB128         , SLEB128
-          WriteLn('DW_CFA_val_offset_sf R', ULEB128toOrdinal(p), ' + ', SLEB128toOrdinal(p), ' * daf');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_val_offset_sf R', ULEB128toOrdinal(p), ' + ', SLEB128toOrdinal(p), ' * daf']);
         end;
         DW_CFA_val_expression: begin
           // ULEB128         , BLOCK
-          Write('DW_CFA_val_expression R', ULEB128toOrdinal(p), ' lenght=',q);
+          DbgOut(FPDBG_DWARF_VERBOSE, ['DW_CFA_val_expression R', ULEB128toOrdinal(p), ' lenght=',q]);
           q := ULEB128toOrdinal(p);
-          WriteLn(q);
+          DebugLn(FPDBG_DWARF_VERBOSE, [q]);
           Inc(p, q);
         end;
         // ---  ---
         DW_CFA_lo_user..DW_CFA_hi_user: begin
-          WriteLn('DW_CFA_user=', pb^);
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_user=', pb^]);
         end;
         // ---  ---
         DW_CFA_advance_loc..DW_CFA_offset-1: begin
           // delta
-          WriteLn('DW_CFA_advance_loc ', pb[-1] and $3F, ' * caf');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_advance_loc ', pb[-1] and $3F, ' * caf']);
         end;
         DW_CFA_offset..DW_CFA_restore-1: begin
           // register  ULEB128 offset
-          WriteLn('DW_CFA_offset R', pb[-1] and $3F, ' + ', ULEB128toOrdinal(p),' * caf');
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_offset R', pb[-1] and $3F, ' + ', ULEB128toOrdinal(p),' * caf']);
         end;
         DW_CFA_restore..$FF: begin
          // register
-          WriteLn('DW_CFA_restore R', pb[-1] and $3F);
+          DebugLn(FPDBG_DWARF_VERBOSE, ['DW_CFA_restore R', pb[-1] and $3F]);
         end;
       else
-        WriteLn('Undefined $', IntToHex(pb[-1], 2));
+        DebugLn(FPDBG_DWARF_VERBOSE, ['Undefined $', IntToHex(pb[-1], 2)]);
       end;
     until p >= MaxAddr;
   end;
@@ -3254,7 +3257,7 @@ begin
   p := AData;
   while p < Adata + ASize do
   begin
-    WriteLn('[', PtrUInt(p) - PtrUInt(AData), ']');
+    DebugLn(FPDBG_DWARF_VERBOSE, ['[', PtrUInt(p) - PtrUInt(AData), ']']);
 
     Is64bit := pi^ = -1;
     if Is64bit
@@ -3272,46 +3275,50 @@ begin
     next := p + len;
 
     if IsCie
-    then WriteLn('=== CIE ===')
-    else WriteLn('--- FDE ---');
+    then DebugLn(FPDBG_DWARF_VERBOSE, ['=== CIE ==='])
+    else DebugLn(FPDBG_DWARF_VERBOSE, ['--- FDE ---']);
 
-    WriteLn('Length: ', len);
+    DebugLn(FPDBG_DWARF_VERBOSE, ['Length: ', len]);
 
     if IsCie
     then begin
       Inc(pi);
       version := pb^;
-      WriteLn('Version: ', version);
+      DebugLn(FPDBG_DWARF_VERBOSE, ['Version: ', version]);
       Inc(pb);
       S := Pchar(p);
-      WriteLn('Augmentation: ', S);
+      DebugLn(FPDBG_DWARF_VERBOSE, ['Augmentation: ', S]);
       Inc(p, Length(s) + 1);
-      WriteLn('Code alignment factor (caf): ', ULEB128toOrdinal(p));
-      WriteLn('Data alignment factor (daf): ', SLEB128toOrdinal(p));
-      Write('Return addr: R');
+      DebugLn(FPDBG_DWARF_VERBOSE, ['Code alignment factor (caf): ', ULEB128toOrdinal(p)]);
+      DebugLn(FPDBG_DWARF_VERBOSE, ['Data alignment factor (daf): ', SLEB128toOrdinal(p)]);
+      DbgOut(FPDBG_DWARF_VERBOSE, ['Return addr: R']);
       if version <= 2
       then begin
-        WriteLn(pb^);
+        DebugLn(FPDBG_DWARF_VERBOSE, [pb^]);
         Inc(pb);
       end
-      else WriteLn(ULEB128toOrdinal(p));
+      else DebugLn(FPDBG_DWARF_VERBOSE, [ULEB128toOrdinal(p)]);
     end
     else begin
       if pc^ > ASize
-      then WriteLn('CIE: $', IntToHex(pc^, 8), ' (=adress ?) -> offset: ', pc^ - AStart - FLoader.ImageBase)
-      else WriteLn('CIE: ', pc^);
+      then DebugLn(FPDBG_DWARF_VERBOSE, ['CIE: $', IntToHex(pc^, 8), ' (=adress ?) -> offset: ', pc^ - AStart - FLoader.ImageBase])
+      else DebugLn(FPDBG_DWARF_VERBOSE, ['CIE: ', pc^]);
       Inc(pc);
-      WriteLn('InitialLocation: $', IntToHex(pc^, 8));
+      DebugLn(FPDBG_DWARF_VERBOSE, ['InitialLocation: $', IntToHex(pc^, 8)]);
       Inc(pc);
-      WriteLn('Address range: ', pc^);
+      DebugLn(FPDBG_DWARF_VERBOSE, ['Address range: ', pc^]);
       Inc(pc);
     end;
-    WriteLn('Instructions:');
+    DebugLn(FPDBG_DWARF_VERBOSE, ['Instructions:']);
     DecodeInstructions(p, next);
 
     p := next;
   end;
 end;
+
+initialization
+  FPDBG_DWARF_WARNINGS := DebugLogger.RegisterLogGroup('DBGMI_QUEUE_DEBUG' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );
+  FPDBG_DWARF_VERBOSE  := DebugLogger.RegisterLogGroup('DBGMI_QUEUE_DEBUG' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );
 
 end.
 
