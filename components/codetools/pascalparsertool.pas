@@ -1657,26 +1657,31 @@ begin
     // read function result type
     if CurPos.Flag=cafColon then begin
       ReadNextAtom;
-      AtomIsIdentifierSaveE;
-      if (pphCreateNodes in ParseAttr) then begin
-        CreateChildNode;
-        CurNode.Desc:=ctnIdentifier;
-        CurNode.EndPos:=CurPos.EndPos;
-      end;
-      repeat
-        ReadNextAtom;
-        if AtomIsChar('<') then
-          ReadGenericParam;
-        if CurPos.Flag<>cafPoint then break;
-        //  unitname.classname<T>.identifier
-        ReadNextAtom;
+      if UpAtomIs('SPECIALIZE') then
+        ReadSpecialize(pphCreateNodes in ParseAttr)
+      else begin
         AtomIsIdentifierSaveE;
-        if (pphCreateNodes in ParseAttr) then
+        if (pphCreateNodes in ParseAttr) then begin
+          CreateChildNode;
+          CurNode.Desc:=ctnIdentifier;
           CurNode.EndPos:=CurPos.EndPos;
-      until false;
-      if (pphCreateNodes in ParseAttr) then
-        EndChildNode;
-    end else begin
+        end;
+        repeat
+          ReadNextAtom;
+          if AtomIsChar('<') then
+            ReadGenericParam;
+          if CurPos.Flag<>cafPoint then break;
+          //  unitname.classname<T>.identifier
+          ReadNextAtom;
+          AtomIsIdentifierSaveE;
+          if (pphCreateNodes in ParseAttr) then
+            CurNode.EndPos:=CurPos.EndPos;
+        until false;
+        if (pphCreateNodes in ParseAttr) then
+          EndChildNode;
+      end;
+    end
+    else begin
       if (Scanner.CompilerMode<>cmDelphi) then
         SaveRaiseCharExpectedButAtomFound(':')
       else begin
