@@ -3317,8 +3317,8 @@ begin
 end;
 
 initialization
-  FPDBG_DWARF_WARNINGS := DebugLogger.RegisterLogGroup('DBGMI_QUEUE_DEBUG' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );
-  FPDBG_DWARF_VERBOSE  := DebugLogger.RegisterLogGroup('DBGMI_QUEUE_DEBUG' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );
+  FPDBG_DWARF_WARNINGS := DebugLogger.RegisterLogGroup('FPDBG_DWARF_WARNINGS' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );
+  FPDBG_DWARF_VERBOSE  := DebugLogger.RegisterLogGroup('FPDBG_DWARF_VERBOSE' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );
 
 end.
 
