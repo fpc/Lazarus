@@ -108,29 +108,52 @@ type
     count: Integer;
     Children: Boolean;
   end;
-  
+
+  TDwarfScopeInfoRec = record
+    Parent: Integer;
+    Next:   Integer;
+    Entry: Pointer;
+  end;
+  //PDwarfScopeInfoRec = ^TDwarfScopeInfoRec;
+
+  TDwarfScopeArray = Array of TDwarfScopeInfoRec;
+  TDwarfScopeList = record
+    List: TDwarfScopeArray;
+    HighestKnown: Integer;
+  end;
+  PDwarfScopeList = ^TDwarfScopeList;
+
   { TDwarfScopeInfo }
 
-  TDwarfScopeInfo = class(Tobject)
+  TDwarfScopeInfo = object
   private
-    FParent: TDwarfScopeInfo;
-    FPrev: TDwarfScopeInfo;
-    FNext: TDwarfScopeInfo;
-    FChild: TDwarfScopeInfo;
-    FChildValid: Boolean; // set is the child is parsed
-    FEntry: Pointer;
-    procedure SetChild(const AValue: TDwarfScopeInfo);
-    procedure SetNext(const AValue: TDwarfScopeInfo);
-  protected
+    FScopeList: PDwarfScopeList;
+    FIndex: Integer;
+    FIsValid: Boolean;
+    //FData: PDwarfScopeInfoRec;
+    function GetChild: TDwarfScopeInfo; inline;
+    function GetChildIndex: Integer; inline;
+    function GetEntry: Pointer; inline;
+    function GetNext: TDwarfScopeInfo; inline;
+    function GetNextIndex: Integer; inline;
+    function GetParent: TDwarfScopeInfo; inline;
+    procedure SetIndex(AIndex: Integer);
+    function CreateScopeForEntry(AEntry: Pointer; AParent: Integer): Integer;
   public
-    constructor Create(AEntry: Pointer);
-    destructor Destroy; override;
-    property Parent: TDwarfScopeInfo read FParent;
-    property Prev: TDwarfScopeInfo read FPrev;
-    property Next: TDwarfScopeInfo read FNext write SetNext;
-    property Child: TDwarfScopeInfo read FChild write SetChild;
-    property ChildValid: Boolean read FChildValid;
-    property Entry: Pointer read FEntry;
+    procedure Init(AScopeList: PDwarfScopeList);
+    function HasParent: Boolean; inline;
+    function HasNext: Boolean; inline;
+    function HasChild: Boolean; inline;
+    function CreateNextForEntry(AEntry: Pointer): Integer;
+    function CreateChildForEntry(AEntry: Pointer): Integer;
+    property IsValid: Boolean read FIsValid;
+    property Index: Integer read FIndex write SetIndex;
+    property Entry: Pointer read GetEntry;
+    property Parent: TDwarfScopeInfo read GetParent;
+    property Next: TDwarfScopeInfo read GetNext;
+    property NextIndex: Integer read GetNextIndex;
+    property Child: TDwarfScopeInfo read GetChild;
+    property ChildIndex: Integer read GetChildIndex;
   end;
 
   TDwarfCompilationUnit = class;
@@ -179,7 +202,8 @@ type
 
   PDwarfAddressInfo = ^TDwarfAddressInfo;
   TDwarfAddressInfo = record
-    Scope: TDwarfScopeInfo;
+    ScopeIndex: Integer;
+    ScopeList: PDwarfScopeList;
     StartPC: QWord;
     EndPC: QWord;
     StateMachine: TDwarfLineInfoStateMachine; // set if info found
@@ -252,7 +276,8 @@ type
     FMinPC: QWord;  // the min and max PC value found in this unit.
     FMaxPC: QWord;  //
     FScope: TDwarfScopeInfo;
-    
+    FScopeList: TDwarfScopeList;
+
     procedure BuildAddressMap;
     procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
     function  MakeAddress(AData: Pointer): QWord;
@@ -754,6 +779,117 @@ begin
   end;
 end;
 
+{ TDwarfScopeInfo }
+
+function TDwarfScopeInfo.GetNext: TDwarfScopeInfo;
+begin
+  Result.Init(FScopeList);
+  if IsValid then
+    Result.Index := FScopeList^.List[FIndex].Next;
+end;
+
+function TDwarfScopeInfo.GetNextIndex: Integer;
+begin
+  if IsValid then
+    Result := FScopeList^.List[FIndex].Next
+  else
+    Result := -1;
+end;
+
+function TDwarfScopeInfo.GetEntry: Pointer;
+begin
+  Result := nil;
+  if IsValid then
+    Result := FScopeList^.List[FIndex].Entry;
+end;
+
+function TDwarfScopeInfo.GetChild: TDwarfScopeInfo;
+begin
+  Result.Init(FScopeList);
+  if HasChild then begin
+    Result.Index := FIndex + 1;
+    assert(Result.Parent.Index = FIndex, 'child has self as parent');
+  end;
+end;
+
+function TDwarfScopeInfo.GetChildIndex: Integer;
+begin
+  if HasChild then
+    Result := FIndex + 1
+  else
+    Result := -1;
+end;
+
+function TDwarfScopeInfo.GetParent: TDwarfScopeInfo;
+begin
+  Result.Init(FScopeList);
+  if IsValid then
+    Result.Index := FScopeList^.List[FIndex].Parent;
+end;
+
+procedure TDwarfScopeInfo.SetIndex(AIndex: Integer);
+begin
+  FIndex := AIndex;
+  FIsValid := (FIndex >= 0) and (FIndex <= FScopeList^.HighestKnown);
+end;
+
+function TDwarfScopeInfo.CreateScopeForEntry(AEntry: Pointer; AParent: Integer): Integer;
+begin
+  inc(FScopeList^.HighestKnown);
+  Result := FScopeList^.HighestKnown;
+  if Result >= Length(FScopeList^.List) then
+    SetLength(FScopeList^.List, Result + 4096);
+  FScopeList^.List[Result].Entry := AEntry;
+  FScopeList^.List[Result].Parent := AParent;
+  FScopeList^.List[Result].Next   := -1;
+end;
+
+procedure TDwarfScopeInfo.Init(AScopeList: PDwarfScopeList);
+begin
+  FIndex := -1;
+  FScopeList := AScopeList;
+end;
+
+function TDwarfScopeInfo.HasParent: Boolean;
+begin
+  Result := (IsValid) and
+            (FScopeList^.List[FIndex].Parent >= 0) and
+            (FScopeList^.List[FIndex].Parent <= FScopeList^.HighestKnown);
+end;
+
+function TDwarfScopeInfo.HasNext: Boolean;
+begin
+  Result := (IsValid) and
+            (FScopeList^.List[FIndex].Next >= 0) and
+            (FScopeList^.List[FIndex].Next <= FScopeList^.HighestKnown);
+end;
+
+function TDwarfScopeInfo.HasChild: Boolean;
+var
+  i: Integer;
+begin
+  Result := IsValid;
+  if not Result then exit;
+  i := FScopeList^.List[FIndex].Next;
+  Result := (i > FIndex + 1) or // Gap to Next contains children
+            ( (i < 0) and (FScopeList^.HighestKnown > FIndex) );
+end;
+
+function TDwarfScopeInfo.CreateNextForEntry(AEntry: Pointer): Integer;
+begin
+  assert(IsValid, 'Creating Child for invalid scope');
+  assert(NextIndex<0, 'Next already set');
+  Result := CreateScopeForEntry(AEntry, FScopeList^.List[FIndex].Parent);
+  FScopeList^.List[FIndex].Next := Result;
+end;
+
+function TDwarfScopeInfo.CreateChildForEntry(AEntry: Pointer): Integer;
+begin
+  assert(IsValid, 'Creating Child for invalid scope');
+  assert(FIndex=FScopeList^.HighestKnown, 'Cannot creating Child.Not at end of list');
+  Result := CreateScopeForEntry(AEntry, FIndex);
+end;
+
 
 { TDbgDwarfSymbol }
 
@@ -1038,44 +1174,6 @@ begin
   Result:= TDwarfVerboseCompilationUnit;
 end;
 
-{ TDwarfScopeInfo }
-
-constructor TDwarfScopeInfo.Create(AEntry: Pointer);
-begin
-  inherited Create;
-  FEntry := AEntry;
-end;
-
-destructor TDwarfScopeInfo.Destroy;
-begin
-  if (FParent <> nil) and (FParent.FChild = Self)
-  then FParent.FChild := FNext;
-
-  if FPrev <> nil
-  then FPrev.FNext := FNext;
-  
-  if FNext <> nil
-  then FNext.FPrev := FPrev;
-  
-  inherited Destroy;
-end;
-
-procedure TDwarfScopeInfo.SetChild(const AValue: TDwarfScopeInfo);
-begin
-  FChild := AValue;
-  FChildValid := True;
-  if FChild = nil then Exit;
-  FChild.FParent := Self;
-end;
-
-procedure TDwarfScopeInfo.SetNext(const AValue: TDwarfScopeInfo);
-begin
-  FNext := AValue;
-  if FNext = nil then Exit;
-  FNext.FPrev := Self;
-  FNext.FParent := FParent;
-end;
-
 { TDwarfLineInfoStateMachine }
 
 function TDwarfLineInfoStateMachine.Clone: TDwarfLineInfoStateMachine;
@@ -1312,11 +1410,12 @@ begin
   if FAddressMapBuild then Exit;
 
   Scope := FScope;
-  while Scope <> nil do
+  while Scope.IsValid do
   begin
     if LocateEntry(DW_TAG_subprogram, Scope, [lefCreateAttribList, lefContinuable, lefSearchChild], ResultScope, AttribList)
     then begin
-      Info.Scope := ResultScope;
+      Info.ScopeIndex := ResultScope.Index;
+      Info.ScopeList := ResultScope.FScopeList;
       if LocateAttribute(ResultScope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
       then begin
         ReadValue(Attrib, Form, Info.StartPC);
@@ -1340,11 +1439,11 @@ begin
 
       // TAG found, try continue with the found scope
       Scope := ResultScope.Child;
-      if Scope <> nil then Continue;
+      if Scope.IsValid then Continue;
       Scope := ResultScope;
     end;
 
-    while (Scope.Next = nil) and (Scope.Parent <> nil) do Scope := Scope.Parent;
+    while (not Scope.HasNext) and (Scope.HasParent) do Scope := Scope.Parent;
     Scope := Scope.Next;
   end;
 
@@ -1474,7 +1573,13 @@ begin
   FLineNumberMap.Duplicates := dupError;
   
 
-  FScope := TDwarfScopeInfo.Create(FInfoData);
+  SetLength(FScopeList.List, 4096);
+  FScopeList.List[0].Parent := -1;
+  FScopeList.List[0].Next   := -1;
+  FScopeList.List[0].Entry  := FInfoData;
+  FScopeList.HighestKnown := 0;
+  FScope.Init(@FScopeList);
+  FScope.Index := 0;
   // retrieve some info about this unit
   if not LocateEntry(DW_TAG_compile_unit, FScope, [lefCreateAttribList, lefSearchChild], Scope, AttribList)
   then begin
@@ -1519,24 +1624,6 @@ begin
 end;
 
 destructor TDwarfCompilationUnit.Destroy;
-  procedure FreeScope;
-  var
-    Scope, OldScope: TDwarfScopeInfo;
-  begin
-    // could have done recursively
-    Scope := FScope;
-    while Scope <> nil do
-    begin
-      while Scope.Child <> nil do Scope := Scope.Child;
-      OldScope := Scope;
-      if Scope.Next = nil
-      then Scope := Scope.Parent
-      else Scope := Scope.Next;
-      OldScope.Free;
-    end;
-    FScope := nil;
-  end;
-  
   procedure FreeLineNumberMap;
   var
     n: Integer;
@@ -1547,7 +1634,7 @@ destructor TDwarfCompilationUnit.Destroy;
   end;
 
 begin
-  FreeScope;
+  SetLength(FScopeList.List, 0);
   FreeAndNil(FMap);
   FreeAndNil(FAddressMap);
   FreeLineNumberMap;
@@ -1816,15 +1903,15 @@ function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStartScope: TDwarfSc
     if AResult
     then begin
       if not (lefContinuable in AFlags) then Exit; // ready, so ok.
-      if AResultScope.Child <> nil then Exit; // we have a child so we are continuable
-      if AResultScope.Next <> nil then Exit; // we have a next so we are continuable
+      if AResultScope.HasChild then Exit; // we have a child so we are continuable
+      if AResultScope.HasNext then Exit; // we have a next so we are continuable
     end
     else begin
       if AFlags * [lefSearchSibling, lefSearchChild] = []
       then begin
         if not (lefContinuable in AFlags) then Exit; // no furteher search, so ok.
-        if AStartScope.Child <> nil then Exit; // we have a child so we are continuable
-        if AStartScope.Next <> nil then Exit; // we have a next so we are continuable
+        if AStartScope.HasChild then Exit; // we have a child so we are continuable
+        if AStartScope.HasNext then Exit; // we have a next so we are continuable
       end;
     end;
     Result := False;
@@ -1836,13 +1923,13 @@ var
   Level: Integer;
   MaxData: Pointer;
   p: Pointer;
-  Scope: TDwarfScopeInfo;
+  Scope, Scope2: TDwarfScopeInfo;
   BuildList: Boolean; // set once if we need to fill the list
   Searching: Boolean; // set as long as we need searching for a tag.
                       // we cannot use result for this, since we might want a topnode search while we need to be continuable
 begin
   Result := False;
-  if AStartScope = nil then Exit;
+  if not AStartScope.IsValid then Exit;
   BuildList := False;
   Searching := True;
   Level := 0;
@@ -1857,21 +1944,22 @@ begin
     then begin
       Dec(Level);
       Scope := Scope.Parent;
-      if Scope = nil then Exit;
+      if not Scope.IsValid then Exit;
 
       if Level < 0 then
       begin
         // p is now the entry of the next of the startparent
         // let's see if we need to set it
         if not (lefContinuable in AFlags) then Exit;
-        if AStartScope.Parent = nil then Exit;
-        if AStartScope.Parent.Next <> nil then Exit;
-        AStartScope.Parent.Next := TDwarfScopeInfo.Create(p);
+        Scope2 := AStartScope.Parent;
+        if not Scope2.IsValid then Exit;
+        if Scope2.HasNext then Exit;
+        Scope2.CreateNextForEntry(p);
         Exit;
       end;
       
-      if Scope.Next = nil
-      then Scope.Next := TDwarfScopeInfo.Create(p);
+      if not Scope.HasNext
+      then Scope.CreateNextForEntry(p);
 //      if Level = 0 then Exit;
       if CanExit(Result) then Exit;
       if (Level = 0) and not (lefSearchSibling in AFlags) then Exit;
@@ -1914,15 +2002,15 @@ begin
     if not BuildList
     then begin
       // check if we can shortcut the searches
-      if (Scope.Child <> nil)
-      and ((lefSearchChild in AFlags) or (Scope.Next = nil))
+      if (Scope.HasChild)
+      and ((lefSearchChild in AFlags) or (not Scope.HasNext))
       then begin
         Inc(Level);
         Scope := Scope.Child;
         Continue;
       end;
 
-      if Scope.Next <> nil
+      if Scope.HasNext
       then begin
         // scope.Childvalid is true, otherwise we can not have a next.
         // So no need to check
@@ -1946,7 +2034,7 @@ begin
     // check for shortcuts
     if [lefContinuable, lefSearchChild] * AFlags <> []
     then begin
-      if Scope.Child <> nil
+      if Scope.HasChild
       then begin
         Inc(Level);
         Scope := Scope.Child;
@@ -1955,7 +2043,7 @@ begin
     end
     else if lefSearchSibling in AFlags
     then begin
-      if Scope.Next <> nil
+      if Scope.HasNext
       then begin
         Scope := Scope.Next;
         Continue;
@@ -1966,27 +2054,26 @@ begin
     // we cannot have a next without a defined child
     if Def.Children
     then begin
-      if not Scope.ChildValid
-      then begin
-        if Scope.Child = nil
-        then Scope.Child := TDwarfScopeInfo.Create(p);
-        if CanExit(Result) then Exit;
-      end;
+      if not Scope.HasChild
+      then Scope.CreateChildForEntry(p);
+      if CanExit(Result) then Exit;
       Inc(Level);
       Scope := Scope.Child;
       Continue;
-    end
-    else begin
-      Scope.Child := nil; // force childvalid to be set
     end;
     
-    if Scope.Next = nil
-    then Scope.Next := TDwarfScopeInfo.Create(p);
+    if not Scope.HasNext
+    then Scope.CreateNextForEntry(p);
     if CanExit(Result) then Exit;
     if (Level = 0) and not (lefSearchSibling in AFlags) then Exit;
 
     Scope := Scope.Next;
   end;
+
+  if (p > MaxData) then begin
+    SetLength(FScopeList.List, FScopeList.HighestKnown + 1);
+  end;
+
 end;
 
 function TDwarfCompilationUnit.MakeAddress(AData: Pointer): QWord;
@@ -2244,8 +2331,10 @@ begin
   begin
     Iter.GetData(Info);
     DbgOut(FPDBG_DWARF_VERBOSE, ['  ']);
-    Scope := Info.Scope.Parent;
-    while Scope <> nil do
+    Scope.Init(Info.ScopeList);
+    Scope.Index := Info.ScopeIndex;
+    Scope := Scope.Parent;
+    while Scope.IsValid do
     begin
       DbgOut(FPDBG_DWARF_VERBOSE, ['.']);
       Scope := Scope.Parent;
