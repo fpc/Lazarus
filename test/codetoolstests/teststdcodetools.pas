@@ -2,6 +2,7 @@
  Test with:
      ./runtests --format=plain --suite=TTestCTStdCodetools
      ./runtests --format=plain --suite=TestCTStdFindBlockStart
+     ./runtests --format=plain --suite=TestCTRemoveUnitFromAllUsesSections
 }
 unit TestStdCodetools;
 
@@ -22,6 +23,7 @@ type
     function GetCTMarker(Code: TCodeBuffer; Comment: string; out Position: TPoint): boolean;
   published
     procedure TestCTStdFindBlockStart;
+    procedure TestCTRemoveUnitFromAllUsesSections;
   end;
 
 implementation
@@ -96,13 +98,57 @@ var
 
 begin
   Code:=CodeToolBoss.CreateFile('TestStdCodeTools.pas');
-
-  // scan source
   Code.Source:=GetSource();
 
   Test('begin,try,finally,end|end','begin1','begin1end');
   Test('begin,try,finally,|end,end','try1finally','try1end');
   Test('begin,try,finally,|end,end','try1','try1finally');
+end;
+
+procedure TTestCTStdCodetools.TestCTRemoveUnitFromAllUsesSections;
+
+  function GetSource(UsesSrc: string): string;
+  begin
+    Result:='program TestStdCodeTools;'+LineEnding
+      +UsesSrc
+  end;
+
+  procedure Test(RemoveUnit, UsesSrc, ExpectedUsesSrc: string);
+  var
+    Header: String;
+    Footer: String;
+    Code: TCodeBuffer;
+    Src: String;
+  begin
+    Header:='program TestStdCodeTools;'+LineEnding;
+    Footer:=LineEnding
+      +'begin'+LineEnding
+      +'end.'+LineEnding;
+    Code:=CodeToolBoss.CreateFile('TestStdCodeTools.pas');
+    Code.Source:=Header+UsesSrc+Footer;
+    if not CodeToolBoss.RemoveUnitFromAllUsesSections(Code,RemoveUnit) then
+    begin
+      AssertEquals('RemoveUnitFromAllUsesSections failed: '+CodeToolBoss.ErrorMessage,true,false);
+    end else begin
+      Src:=Code.Source;
+      AssertEquals('RemoveUnitFromAllUsesSections altered header: ',Header,LeftStr(Src,length(Header)));
+      System.Delete(Src,1,length(Header));
+      AssertEquals('RemoveUnitFromAllUsesSections altered footer: ',Footer,RightStr(Src,length(Footer)));
+      System.Delete(Src,length(Src)-length(Footer)+1,length(Footer));
+      AssertEquals('RemoveUnitFromAllUsesSections: ',ExpectedUsesSrc,Src);
+    end;
+  end;
+
+begin
+  Test('shellapi',
+   'uses'+LineEnding
+  +'   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,'+LineEnding
+  +'   Dialogs, shellAPI, StdCtrls, ExtCtrls, ComCtrls, strutils, Buttons, inifiles;'+LineEnding
+  ,
+   'uses'+LineEnding
+  +'   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,'+LineEnding
+  +'   Dialogs, StdCtrls, ExtCtrls, ComCtrls, strutils, Buttons, inifiles;'+LineEnding
+  );
 end;
 
 initialization
