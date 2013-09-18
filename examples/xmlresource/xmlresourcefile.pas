@@ -21,11 +21,12 @@ type
   public
     class function FindResourceDirective(Source: TObject): boolean; override;
     class function ResourceDirectiveFilename: string; override;
-    class function GetUnitResourceFilename(AUnitFilenae: string): string; override;
+    class function GetUnitResourceFilename(AUnitFilename: string;
+      {%H-}Loading: boolean): string; override;
     class procedure TextStreamToBinStream(ATxtStream, ABinStream: TExtMemoryStream); override;
     class procedure BinStreamToTextStream(ABinStream, ATextStream: TExtMemoryStream); override;
     class function GetClassNameFromStream(s: TStream; out IsInherited: Boolean): shortstring; override;
-    class function CreateReader(s: TStream; var DestroyDriver: boolean): TReader; override;
+    class function CreateReader(s: TStream; var {%H-}DestroyDriver: boolean): TReader; override;
     class function CreateWriter(s: TStream; var DestroyDriver: boolean): TWriter; override;
     class function QuickCheckResourceBuffer(PascalBuffer, LFMBuffer: TObject;
       out LFMType, LFMComponentName, LFMClassName: string; out
@@ -624,9 +625,9 @@ begin
 end;
 
 class function TXMLUnitResourcefileFormat.GetUnitResourceFilename(
-  AUnitFilenae: string): string;
+  AUnitFilename: string; Loading: boolean): string;
 begin
-  result := ChangeFileExt(AUnitFilenae,'.xml');
+  result := ChangeFileExt(AUnitFilename,'.xml');
 end;
 
 class procedure TXMLUnitResourcefileFormat.TextStreamToBinStream(ATxtStream,
@@ -677,6 +678,7 @@ class function TXMLUnitResourcefileFormat.QuickCheckResourceBuffer(
 var
   ms: TStringStream;
 begin
+  Result:=mrOk;
   ms := TStringStream.Create((LFMBuffer as TCodeBuffer).Source);
   try
     QuickReadXML(ms, LFMComponentName, LFMClassName, LCLVersion);
