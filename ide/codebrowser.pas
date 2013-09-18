@@ -1046,11 +1046,7 @@ begin
     end;
 
     // get nice unit name
-    if not LazarusIDE.SaveSourceEditorChangesToCodeCache(nil) then begin
-      DebugLn(['TCodeBrowserView.UseUnitInSrcEditor LazarusIDE.'
-        +'SaveSourceEditorChangesToCodeCache failed']);
-      exit;
-    end;
+    LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
     SelectedCode:=CodeToolBoss.LoadFile(SelectedUnitFilename, true, false);
     if SelectedCode=nil then begin
       debugln(['TCodeBrowserView.UseUnitInSrcEditor failed to load SelectedUnitFilename=',SelectedUnitFilename]);

@@ -4397,7 +4397,7 @@ begin
   then begin
     debugln(['TSourceEditor.AutoBlockCompleteChar ']);
     // user typed 'begin'
-    if not LazarusIDE.SaveSourceEditorChangesToCodeCache(self) then exit;
+    LazarusIDE.SaveSourceEditorChangesToCodeCache(self);
     FEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.AutoBlockCompleteChar (2)'){$ENDIF};
     FEditor.BeginUpdate;
     try
