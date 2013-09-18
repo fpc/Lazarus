@@ -79,7 +79,7 @@ begin
       writeln('Found ',ListOfPCodeXYPosition.Count,' empty methods (All=',All,'):');
       for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
         P:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
-        writeln(i,' ',DbgsCXY(P^));
+        writeln(i,' ',Dbgs(P^));
       end;
       if CodeToolBoss.RemoveEmptyMethods(Code,'',X,Y,Sections,All,[],RemovedProcHeads)
       then begin
