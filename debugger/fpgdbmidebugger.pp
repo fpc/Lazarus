@@ -128,6 +128,8 @@ end;
 
 procedure TFpGDBMILineInfo.Request(const ASource: String);
 begin
+  if not FpDebugger.HasDwarf then
+    exit;
   FRequestedSources.AddObject(ASource,  FpDebugger.FDwarfInfo.GetLineAddressMap(ASource));
   DoChange(ASource);
 end;
