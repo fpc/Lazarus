@@ -6091,7 +6091,9 @@ begin
   Beauty:=SourceChangeCache.BeautifyCodeOptions;
   InitStack(Stack);
   try
-    //DebugLn(['TStandardCodeTool.CompleteBlock ',StartNode.DescAsString]);
+    {$IFDEF VerboseCompleteBlock}
+    DebugLn(['TStandardCodeTool.CompleteBlock ',StartNode.DescAsString]);
+    {$ENDIF}
 
     if StartNode.Desc in AllPascalStatements then begin
       while (StartNode.Parent<>nil)
