@@ -140,6 +140,18 @@ procedure TTestCTStdCodetools.TestCTRemoveUnitFromAllUsesSections;
   end;
 
 begin
+  // remove first unit
+  Test('windows',
+   'uses'+LineEnding
+  +'   Windows, Messages, Forms,'+LineEnding
+  +'   Dialogs, inifiles;'+LineEnding
+  ,
+   'uses'+LineEnding
+  +'   Messages, Forms,'+LineEnding
+  +'   Dialogs, inifiles;'+LineEnding
+  );
+
+  // remove middle unit
   Test('shellapi',
    'uses'+LineEnding
   +'   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,'+LineEnding
@@ -148,6 +160,39 @@ begin
    'uses'+LineEnding
   +'   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,'+LineEnding
   +'   Dialogs, StdCtrls, ExtCtrls, ComCtrls, strutils, Buttons, inifiles;'+LineEnding
+  );
+
+  // remove first unit in second line
+  Test('shellapi',
+   'uses'+LineEnding
+  +'   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,'+LineEnding
+  +'   shellAPI, StdCtrls, ExtCtrls, ComCtrls, strutils, Buttons, inifiles;'+LineEnding
+  ,
+   'uses'+LineEnding
+  +'   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,'+LineEnding
+  +'   StdCtrls, ExtCtrls, ComCtrls, strutils, Buttons, inifiles;'+LineEnding
+  );
+
+  // remove last unit in first line
+  Test('forms',
+   'uses'+LineEnding
+  +'   Windows, Messages, Forms,'+LineEnding
+  +'   Dialogs, inifiles;'+LineEnding
+  ,
+   'uses'+LineEnding
+  +'   Windows, Messages,'+LineEnding
+  +'   Dialogs, inifiles;'+LineEnding
+  );
+
+  // remove last unit
+  Test('inifiles',
+   'uses'+LineEnding
+  +'   Windows, Messages, Forms,'+LineEnding
+  +'   Dialogs, inifiles;'+LineEnding
+  ,
+   'uses'+LineEnding
+  +'   Windows, Messages, Forms,'+LineEnding
+  +'   Dialogs;'+LineEnding
   );
 end;
 
