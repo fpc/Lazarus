@@ -782,6 +782,7 @@ components/codetools/examples/scanexamples/BigLettersUnit.pas svneol=native#text
 components/codetools/examples/scanexamples/abstractclass1.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/addeventexample.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/addwith1.pas svneol=native#text/plain
+components/codetools/examples/scanexamples/arrays.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/assignexample1.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/brokenfilenames.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/brokenincfiles.inc svneol=native#text/plain
