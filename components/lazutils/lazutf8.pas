@@ -2495,20 +2495,46 @@ end;
 
 function Utf8StringOfChar(AUtf8Char: Utf8String; N: Integer): Utf8String;
 var
-  US: UniCodeString;
-  WC: System.WideChar;
+  UCharLen, i: Integer;
+  C1, C2, C3: Char;
+  PC: PChar;
 begin
   Result := '';
-  if Utf8Length(AUtf8Char) <> 1 then Exit;
-  if Length(AUtf8Char) = 1 then
-    Result := StringOfChar(AUtf8Char[1], N)
-  else
-  begin
-    //for i := 1 to N do Result := Result + AUtf8Char;  //ultimate lame version
-    WC := Utf8ToUtf16(AUtf8Char)[1];   //we know Utf8Length(AUtf8Char) = 1
-    SetLength(US, N);
-    System.FillWord(US[1], N, Word(WC));
-    Result := Utf16ToUtf8(US);
+  if (N <= 0) or (Utf8Length(AUtf8Char) <> 1) then Exit;
+  UCharLen := Length(AUtf8Char);
+  Case UCharLen of
+    1: Result := StringOfChar(AUtf8Char[1], N);
+    2:
+    begin
+      SetLength(Result, 2 * N);
+      System.FillWord(Result[1], N, PWord(Pointer(AUtf8Char))^);        ;
+     end;
+    3:
+    begin
+      SetLength(Result, 3 * N);
+      C1 := AUtf8Char[1];
+      C2 := AUtf8Char[2];
+      C3 := AUtf8Char[3];
+      PC := PChar(Result);
+      for i:=1 to N do
+      begin
+        PC^ := C1; inc(PC);
+        PC^ := C2; inc(PC);
+        PC^ := C3; inc(PC);
+      end;
+    end;
+    4:
+    begin
+      SetLength(Result, 4 * N);
+      System.FillDWord(Result[1], N, PDWord(Pointer(AUtf8Char))^);
+    end;
+    else
+    begin
+      //In November 2003 UTF-8 was restricted by RFC 3629 to four bytes to match
+      //the constraints of the UTF-16 character encoding.
+      //http://en.wikipedia.org/wiki/UTF-8
+      Result := StringOfChar('?', N);
+    end;
   end;
 end;
 
