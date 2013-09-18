@@ -5,10 +5,10 @@ unit AddEventExample;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, ComCtrls;
+  Classes, SysUtils;
   
 type
-  TForm1 = class(TForm)
+  TForm1 = class(TComponent)
     PageControl1: TPageControl;
     procedure Button1Click(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);

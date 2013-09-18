@@ -29,7 +29,7 @@ program AddEventMethod;
 
 uses
   Classes, SysUtils, CodeCache, CodeToolManager, SimpleUnit1, FileProcs,
-  CodeToolsConfig, CodeCompletionTool, ExtCtrls, Interfaces;
+  CodeToolsConfig, CodeCompletionTool;
   
 const
   ConfigFilename = 'codetools.config';
@@ -45,12 +45,9 @@ begin
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);
 
-  // Example 1: add a method compatible to TTabChangingEvent
-  // TTabChangingEvent is used in ComCtrls, but defined in ExtCtrls.
-  // The codetools will search TTabChangingEvent and will add ExtCtrls to the
-  // uses section.
+  // Example 1: add a method compatible to TNotifyEvent
   if CodeToolBoss.CreatePublishedMethod(Code,'TForm1','NewMethod',
-    typeinfo(TTabChangingEvent),false,'ComCtrls') then
+    typeinfo(TNotifyEvent),false,'Classes') then
   begin
     writeln('Method added: ');
     writeln(Code.Source);
