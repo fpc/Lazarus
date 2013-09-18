@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, sysutils, GDBMIDebugger, BaseDebugManager, Debugger,
-  GDBMIMiscClasses, FpDbgLoader, FpDbgDwarf, LazLoggerBase;
+  GDBMIMiscClasses, maps, FpDbgLoader, FpDbgDwarf, LazLoggerBase;
 
 type
 
@@ -98,17 +98,21 @@ begin
 end;
 
 function TFpGDBMILineInfo.GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr;
+var
+  Map: TMap;
 begin
-  debugln(['TFpGDBMILineInfo.GetAddress ', dbgs(FpDebugger.HasDwarf), ' ', FRequestedSources[AIndex], '(', AIndex,'), ', ALine]);
+  Result := 0;
   if not FpDebugger.HasDwarf then
-    exit(0);
-  Result := FpDebugger.FDwarfInfo.GetLineAddress(FRequestedSources[AIndex], ALine);
+    exit;
+  //Result := FpDebugger.FDwarfInfo.GetLineAddress(FRequestedSources[AIndex], ALine);
+  Map := TMap(FRequestedSources.Objects[AIndex]);
+  if Map <> nil then
+    Map.GetData(ALine, Result);
 end;
 
 function TFpGDBMILineInfo.GetInfo(AAdress: TDbgPtr; out ASource, ALine,
   AOffset: Integer): Boolean;
 begin
-  debugln(['TFpGDBMILineInfo.GetInfo ##########################']);
   Result := False;
   //ASource := '';
   //ALine := 0;
@@ -124,7 +128,7 @@ end;
 
 procedure TFpGDBMILineInfo.Request(const ASource: String);
 begin
-  FRequestedSources.Add(ASource);
+  FRequestedSources.AddObject(ASource,  FpDebugger.FDwarfInfo.GetLineAddressMap(ASource));
   DoChange(ASource);
 end;
 

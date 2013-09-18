@@ -297,6 +297,7 @@ type
     constructor Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); virtual;
     destructor Destroy; override;
     function GetDefinition(AAbbrev: Cardinal; out ADefinition: TDwarfAbbrev): Boolean;
+    function GetLineAddressMap(const AFileName: String): TMap;
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
     property FileName: String read FFileName;
     property Valid: Boolean read FValid;
@@ -411,6 +412,7 @@ type
     destructor Destroy; override;
     function FindSymbol(AAddress: TDbgPtr): TDbgSymbol; override;
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr; override;
+    function GetLineAddressMap(const AFileName: String): TMap;
     function LoadCompilationUnits: Integer;
     function PointerFromRVA(ARVA: QWord): Pointer;
     function PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
@@ -1115,6 +1117,21 @@ begin
   Result := 0;
 end;
 
+function TDbgDwarf.GetLineAddressMap(const AFileName: String): TMap;
+var
+  n: Integer;
+  CU: TDwarfCompilationUnit;
+begin
+  // TODO: Deal with line info split on 2 compilation units?
+  for n := 0 to FCompilationUnits.Count - 1 do
+  begin
+    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
+    Result := CU.GetLineAddressMap(AFileName);
+    if Result <> nil then Exit;
+  end;
+  Result := nil;
+end;
+
 function TDbgDwarf.LoadCompilationUnits: Integer;
 var
   p: Pointer;
@@ -1652,10 +1669,10 @@ begin
   Result := FMap.GetData(AAbbrev, ADefinition);
 end;
 
-function TDwarfCompilationUnit.GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
-  function FindIndex: Integer;
+function TDwarfCompilationUnit.GetLineAddressMap(const AFileName: String): TMap;
   var
     Name: String;
+  function FindIndex: Integer;
   begin
     // try fullname first
     Result := FLineNumberMap.IndexOf(AFileName);
@@ -1677,7 +1694,7 @@ var
   idx: Integer;
   Map: TMap;
 begin
-  Result := 0;
+  Result := nil;
   if not Valid then Exit;
 
   // make sure all filenames are there
@@ -1685,7 +1702,16 @@ begin
   idx := FindIndex;
   if idx = -1 then Exit;
   
-  Map := TMap(FLineNumberMap.Objects[idx]);
+  Result := TMap(FLineNumberMap.Objects[idx]);
+end;
+
+function TDwarfCompilationUnit.GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
+var
+  Map: TMap;
+begin
+  Result := 0;
+  Map := GetLineAddressMap(AFileName);
+  if Map = nil then exit;
   Map.GetData(ALine, Result);
 end;
 
