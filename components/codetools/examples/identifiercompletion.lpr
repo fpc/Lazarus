@@ -46,6 +46,7 @@ begin
     writeln('Usage:');
     writeln('  ',ParamStr(0));
     writeln('  ',ParamStr(0),' <filename> <X> <Y>');
+    exit;
   end;
 
   CodeToolBoss.SimpleInit(ConfigFilename);
