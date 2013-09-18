@@ -63,6 +63,7 @@ type
     FFileHandle: TLazLoggerFileHandle;
     FOnDbgOut: TLazLoggerWriteEvent;
     FOnDebugLn: TLazLoggerWriteEvent;
+    FBlockHandler: TList;
 
 
     FEnvironmentForLogFileName: String;
@@ -98,6 +99,9 @@ type
     procedure DecreaseIndent(LogGroup: PLazLoggerLogGroup); overload; override;
     procedure IndentChanged; override;
     procedure CreateIndent; virtual;
+    function GetBlockHandler(AIndex: Integer): TLazLoggerBlockHandler; override;
+    procedure ClearAllBlockHandler;
+
 
     procedure DoDbgOut(const s: string); override;
     procedure DoDebugLn(const s: string); override;
@@ -118,6 +122,10 @@ type
 
     property  OnDebugLn: TLazLoggerWriteEvent read FOnDebugLn write FOnDebugLn;
     property  OnDbgOut:  TLazLoggerWriteEvent read FOnDbgOut write FOnDbgOut;
+
+    procedure AddBlockHandler(AHandler: TLazLoggerBlockHandler); override;
+    procedure RemoveBlockHandler(AHandler: TLazLoggerBlockHandler); override;
+    function BlockHandlerCount: Integer; override;
 
     // forward to TLazLoggerFileHandle
     property  LogName: String read GetLogName write SetLogName;
@@ -389,17 +397,26 @@ begin
 end;
 
 procedure TLazLoggerFile.IncreaseIndent;
+var
+  i: Integer;
 begin
   inc(FDebugNestLvl);
   CreateIndent;
+  for i := 0 to BlockHandlerCount - 1 do
+    BlockHandler[i].EnterBlock(Self, FDebugNestLvl);
 end;
 
 procedure TLazLoggerFile.DecreaseIndent;
+var
+  i: Integer;
 begin
   if not FDebugNestAtBOL then DebugLn;
 
-  if FDebugNestLvl > 0 then
+  if FDebugNestLvl > 0 then begin
+    for i := 0 to BlockHandlerCount - 1 do
+      BlockHandler[i].ExitBlock(Self, FDebugNestLvl);
     dec(FDebugNestLvl);
+  end;
   CreateIndent;
 end;
 
@@ -449,6 +466,16 @@ begin
 
   if NewLen <> Length(FDebugIndent) then
     FDebugIndent := s + StringOfChar(' ', NewLen);
+end;
+
+function TLazLoggerFile.GetBlockHandler(AIndex: Integer): TLazLoggerBlockHandler;
+begin
+  Result := TLazLoggerBlockHandler(FBlockHandler[AIndex]);
+end;
+
+procedure TLazLoggerFile.ClearAllBlockHandler;
+begin
+  while BlockHandlerCount > 0 do RemoveBlockHandler(BlockHandler[0]);
 end;
 
 procedure TLazLoggerFile.DoDbgOut(const s: string);
@@ -539,6 +566,7 @@ constructor TLazLoggerFile.Create;
 begin
   inherited;
   FDebugNestLvl := 0;
+  FBlockHandler := TList.Create;
 
   {$ifdef WinCE}
   FParamForLogFileName := '';
@@ -551,8 +579,10 @@ end;
 
 destructor TLazLoggerFile.Destroy;
 begin
+  ClearAllBlockHandler;
   inherited Destroy;
   FreeAndNil(FFileHandle);
+  FreeAndNil(FBlockHandler);
 end;
 
 procedure TLazLoggerFile.Assign(Src: TLazLogger);
@@ -570,6 +600,23 @@ begin
     UseStdOut := TLazLoggerFile(Src).UseStdOut;
     CloseLogFileBetweenWrites := TLazLoggerFile(Src).CloseLogFileBetweenWrites;
   end;
+end;
+
+procedure TLazLoggerFile.AddBlockHandler(AHandler: TLazLoggerBlockHandler);
+begin
+  FBlockHandler.Add(AHandler);
+  AHandler.AddReference;
+end;
+
+procedure TLazLoggerFile.RemoveBlockHandler(AHandler: TLazLoggerBlockHandler);
+begin
+  FBlockHandler.Remove(AHandler);
+  AHandler.ReleaseReference;
+end;
+
+function TLazLoggerFile.BlockHandlerCount: Integer;
+begin
+  Result := FBlockHandler.Count;
 end;
 
 function TLazLoggerFile.GetLogFileName: string;

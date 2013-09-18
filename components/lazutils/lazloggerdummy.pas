@@ -45,6 +45,16 @@ type
 type
   (* All empty methods *)
 
+  { TLazLoggerBlockHandler
+    called for DebuglnEnter / Exit
+  }
+
+  TLazLoggerBlockHandler = class
+  public
+    procedure IncreaseIndent; virtual; abstract;
+    procedure DecreaseIndent; virtual; abstract;
+  end;
+
   { TLazLoggerLogGroupList }
 
   TLazLoggerLogGroupList = class(TRefCountedObject)

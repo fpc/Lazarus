@@ -2373,6 +2373,7 @@ components/lazutils/lazfreetypefontcollection.pas svneol=native#text/plain
 components/lazutils/lazlogger.pas svneol=native#text/pascal
 components/lazutils/lazloggerbase.pas svneol=native#text/pascal
 components/lazutils/lazloggerdummy.pas svneol=native#text/pascal
+components/lazutils/lazloggerprofiling.pas svneol=native#text/pascal
 components/lazutils/lazmethodlist.pas svneol=native#text/pascal
 components/lazutils/lazutf16.pas svneol=native#text/pascal
 components/lazutils/lazutf8.pas svneol=native#text/pascal

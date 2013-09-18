@@ -45,6 +45,18 @@ type
 
 type
 
+  TLazLogger = class;
+
+  { TLazLoggerBlockHandler
+    called for DebuglnEnter / Exit
+  }
+
+  TLazLoggerBlockHandler = class(TRefCountedObject)
+  public
+    procedure EnterBlock(Sender: TLazLogger; Level: Integer); virtual; abstract;
+    procedure ExitBlock(Sender: TLazLogger; Level: Integer); virtual; abstract;
+  end;
+
   { TLazLoggerLogGroupList }
 
   TLazLoggerLogGroupList = class(TRefCountedObject)
@@ -95,6 +107,7 @@ type
     procedure IncreaseIndent({%H-}LogGroup: PLazLoggerLogGroup); overload; virtual;
     procedure DecreaseIndent({%H-}LogGroup: PLazLoggerLogGroup); overload; virtual;
     procedure IndentChanged; virtual;
+    function  GetBlockHandler(AIndex: Integer): TLazLoggerBlockHandler; virtual;
 
     procedure DoDbgOut(const {%H-}s: string); virtual;
     procedure DoDebugLn(const {%H-}s: string); virtual;
@@ -119,6 +132,11 @@ type
     function  FindOrRegisterLogGroup(const AConfigName: String) : PLazLoggerLogGroup; virtual;
     property  LogGroupList: TLazLoggerLogGroupList read GetLogGroupList;
     property  UseGlobalLogGroupList: Boolean read FUseGlobalLogGroupList write SetUseGlobalLogGroupList;
+
+    procedure AddBlockHandler(AHandler: TLazLoggerBlockHandler); virtual;
+    procedure RemoveBlockHandler(AHandler: TLazLoggerBlockHandler); virtual;
+    function  BlockHandlerCount: Integer; virtual;
+    property  BlockHandler[AIndex: Integer]: TLazLoggerBlockHandler read GetBlockHandler;
   public
     procedure DebuglnStack(const s: string = '');
 
@@ -509,6 +527,11 @@ begin
   IndentChanged;
 end;
 
+function TLazLogger.GetBlockHandler(AIndex: Integer): TLazLoggerBlockHandler;
+begin
+  Result := nil;;
+end;
+
 procedure TLazLogger.SetNestLvlIndent(AValue: Integer);
 begin
   if FNestLvlIndent = AValue then Exit;
@@ -669,6 +692,21 @@ function TLazLogger.FindOrRegisterLogGroup(const AConfigName: String): PLazLogge
 begin
   Result := LogGroupList.FindOrAdd(AConfigName);
   Result^.Flags := Result^.Flags + [lgfNoDefaultEnabledSpecified];
+end;
+
+procedure TLazLogger.AddBlockHandler(AHandler: TLazLoggerBlockHandler);
+begin
+  //
+end;
+
+procedure TLazLogger.RemoveBlockHandler(AHandler: TLazLoggerBlockHandler);
+begin
+  //
+end;
+
+function TLazLogger.BlockHandlerCount: Integer;
+begin
+  Result := 0;
 end;
 
 procedure TLazLogger.DebuglnStack(const s: string);
@@ -992,12 +1030,18 @@ begin
 end;
 
 procedure TLazLoggerWithGroupParam.Assign(Src: TLazLogger);
+var
+  i: Integer;
 begin
   inherited Assign(Src);
   if (Src <> nil) and (Src is TLazLoggerWithGroupParam) then begin
     FLogParamParsed := False;
     FParamForEnabledLogGroups := TLazLoggerWithGroupParam(Src).FParamForEnabledLogGroups;
   end;
+
+  if (Src <> nil) then
+    for i := 0 to Src.BlockHandlerCount - 1 do
+      AddBlockHandler(BlockHandler[i]);
 end;
 
 function TLazLoggerWithGroupParam.RegisterLogGroup(const AConfigName: String): PLazLoggerLogGroup;

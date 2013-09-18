@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="LazUtils"/>
@@ -19,10 +19,10 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="72">
+    <Files Count="73">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
-        <UnitName Value="laz2_DOM"/>
+        <UnitName Value="Laz2_DOM"/>
       </Item1>
       <Item2>
         <Filename Value="laz2_names.inc"/>
@@ -102,7 +102,7 @@
       </Item20>
       <Item21>
         <Filename Value="lazutf8classes.pas"/>
-        <UnitName Value="lazutf8classes"/>
+        <UnitName Value="LazUTF8Classes"/>
       </Item21>
       <Item22>
         <Filename Value="masks.pas"/>
@@ -309,6 +309,10 @@
         <Filename Value="winlazutf8.inc"/>
         <Type Value="Include"/>
       </Item72>
+      <Item73>
+       <Filename Value="lazloggerprofiling.pas"/>
+        <UnitName Value="LazLoggerProfiling"/>
+      </Item73>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>
