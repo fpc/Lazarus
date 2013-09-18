@@ -2341,6 +2341,8 @@ var
   Position: CGFloat;
   I: Integer;
 begin
+  if not Assigned(GradientInfo) then
+    Exit;
   Position := inputValue^;
   if Position = 0 then
     System.Move(GradientInfo^.colors[0], outputValue^, SizeOf(TColorComponents))
