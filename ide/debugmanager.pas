@@ -602,7 +602,7 @@ function TDebugManager.GetFullFilename(const AUnitinfo: TDebuggerUnitInfo;
       exit;
     debugln(['TDebugManager.GetFullFilename found ',CodePos.Code.Filename,' Line=',CodePos.Y,' Col=',CodePos.X]);
     AUnitinfo.LocationFullFile := CodePos.Code.Filename;
-    DumpStack;
+    //DumpStack;
     Result:=true;
   end;
 
