@@ -33,7 +33,7 @@ unit UnitDependencies;
 interface
 
 uses
-  Classes, SysUtils, types, AVL_Tree, LazLogger, LazFileUtils, LazUTF8,
+  Classes, SysUtils, types, math, AVL_Tree, LazLogger, LazFileUtils, LazUTF8,
   Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus, Clipbrd,
   LvlGraphCtrl,
   LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf,
@@ -47,12 +47,37 @@ const
   GroupPrefixFPCSrc = 'FPC:';
   GroupNone = '-None-';
 type
-  TUDUnit = class(TUGUnit)
+
+  { TUDSCCNode }
+
+  TUDSCCNode = class
   public
+    UDItem: TObject; // a TUDUnit or TUDUses
+    InIntfCycle: boolean;
+    InImplCycle: boolean;
+    TarjanIndex: integer;
+    TarjanLowLink: integer;
+    TarjanVisiting: boolean; // currently on stack
+    function AsString: string;
+    constructor Create(Item: TObject);
   end;
+
+  { TUDUnit }
+
+  TUDUnit = class(TUGGroupUnit)
+  public
+    SCCNode: TUDSCCNode;
+    function GetSCCNode: TUDSCCNode;
+    destructor Destroy; override;
+  end;
+
+  { TUDUses }
 
   TUDUses = class(TUGUses)
   public
+    SCCNode: TUDSCCNode;
+    function GetSCCNode: TUDSCCNode;
+    destructor Destroy; override;
   end;
 
   TUDNodeType = (
@@ -226,7 +251,7 @@ type
     function CreatePackageGroup(APackage: TIDEPackage): TUGGroup;
     procedure CreateFPCSrcGroups;
     procedure GuessGroupOfUnits;
-    procedure MarkCycles;
+    procedure MarkCycles(WithImplementationUses: boolean);
     procedure SetPendingUnitDependencyRoute(AValue: TStrings);
     procedure StartParsing;
     procedure ScopeChanged;
@@ -320,6 +345,53 @@ begin
   udnDirectory: Result:=CompareFilenames(Node1.NodeText,Node2.NodeText);
   else Result:=SysUtils.CompareText(Node1.NodeText,Node2.NodeText);
   end;
+end;
+
+{ TUDSCCNode }
+
+function TUDSCCNode.AsString: string;
+begin
+  if UDItem is TUDUnit then
+    Result:='Unit="'+ExtractFileNameOnly(TUDUnit(UDItem).Filename)+'"'
+  else
+    Result:='Uses="'+ExtractFileNameOnly(TUDUses(UDItem).Owner.Filename)+'"->"'+ExtractFileNameOnly(TUDUses(UDItem).UsesUnit.Filename)+'"';
+  Result+=',Index='+dbgs(TarjanIndex)+',LowLink='+dbgs(TarjanLowLink)+',Visiting='+dbgs(TarjanVisiting);
+end;
+
+constructor TUDSCCNode.Create(Item: TObject);
+begin
+  UDItem:=Item;
+  TarjanIndex:=-1;
+end;
+
+{ TUDUses }
+
+function TUDUses.GetSCCNode: TUDSCCNode;
+begin
+  if SCCNode=nil then
+    SCCNode:=TUDSCCNode.Create(Self);
+  Result:=SCCNode;
+end;
+
+destructor TUDUses.Destroy;
+begin
+  FreeAndNil(SCCNode);
+  inherited Destroy;
+end;
+
+{ TUDUnit }
+
+function TUDUnit.GetSCCNode: TUDSCCNode;
+begin
+  if SCCNode=nil then
+    SCCNode:=TUDSCCNode.Create(Self);
+  Result:=SCCNode;
+end;
+
+destructor TUDUnit.Destroy;
+begin
+  FreeAndNil(SCCNode);
+  inherited Destroy;
 end;
 
 { TQuickFixCircularUnitReference }
@@ -774,7 +846,8 @@ begin
       // create Groups
       CreateGroups;
       // mark cycles
-      MarkCycles;
+      MarkCycles(false);
+      MarkCycles(true);
       // hide progress bar and update stats
       ProgressBar1.Visible:=false;
       ProgressBar1.Style:=pbstNormal;
@@ -1140,9 +1213,115 @@ begin
   FreeAndNil(Owners);
 end;
 
-procedure TUnitDependenciesWindow.MarkCycles;
-begin
+procedure TUnitDependenciesWindow.MarkCycles(WithImplementationUses: boolean);
+{ Using Tarjan's strongly connected components (SCC) algorithm
+}
+var
+  TarjanIndex: integer;
+  Stack: TFPList; // stack of TUDSCCNode
 
+  function GetNode(UDItem: TObject): TUDSCCNode;
+  begin
+    if UDItem is TUDUnit then
+      Result:=TUDUnit(UDItem).GetSCCNode
+    else
+      Result:=TUDUses(UDItem).GetSCCNode;
+  end;
+
+  procedure SearchNode(Node: TUDSCCNode); forward;
+
+  procedure SearchEdge(FromNode, ToNode: TUDSCCNode);
+  begin
+    if ToNode.TarjanIndex<0 then begin
+      // not yet visited
+      SearchNode(ToNode);
+      FromNode.TarjanLowLink:=Min(FromNode.TarjanLowLink,ToNode.TarjanLowLink);
+    end else if ToNode.TarjanVisiting then begin
+      // currently visiting => ToNode is in current SCC
+      FromNode.TarjanLowLink:=Min(FromNode.TarjanLowLink,ToNode.TarjanIndex);
+    end;
+  end;
+
+  procedure SearchNode(Node: TUDSCCNode);
+  var
+    UDUnit: TUDUnit;
+    UDUses: TUDUses;
+    i: Integer;
+    CycleNode: TUDSCCNode;
+    MoreThanOneNode: Boolean; // true = there is a cycle with more than one node
+  begin
+    //debugln(['SearchNode ',Node.AsString]);
+    // Set the depth index for Node to the smallest unused index
+    Node.TarjanIndex := TarjanIndex;
+    Node.TarjanLowLink := TarjanIndex;
+    inc(TarjanIndex);
+    Stack.Add(Node);
+    Node.TarjanVisiting:=true;
+
+    // search all edges
+    if Node.UDItem is TUDUnit then begin
+      UDUnit:=TUDUnit(Node.UDItem);
+      if UDUnit.UsesUnits<>nil then
+        for i:=0 to UDUnit.UsesUnits.Count-1 do begin
+          UDUses:=TUDUses(UDUnit.UsesUnits[i]);
+          if (not WithImplementationUses) and UDUses.InImplementation then
+            continue;
+          SearchEdge(Node,GetNode(UDUses));
+        end;
+    end else begin
+      UDUses:=TUDUses(Node.UDItem);
+      SearchEdge(Node,GetNode(UDUses.UsesUnit));
+    end;
+
+    if Node.TarjanIndex=Node.TarjanLowLink then begin
+      // this is a root node of a SCC
+      MoreThanOneNode:=TUDSCCNode(Stack[Stack.Count-1])<>Node;
+      repeat
+        CycleNode:=TUDSCCNode(Stack[Stack.Count-1]);
+        Stack.Delete(Stack.Count-1);
+        CycleNode.TarjanVisiting:=false;
+        if MoreThanOneNode then begin
+          if WithImplementationUses then
+            CycleNode.InImplCycle:=true
+          else
+            CycleNode.InIntfCycle:=true;
+          //debugln(['SearchNode WithImpl=',WithImplementationUses,' Cycle=',CycleNode.AsString]);
+        end;
+      until CycleNode=Node;
+    end;
+  end;
+
+var
+  AVLNode: TAVLTreeNode;
+  UDUnit: TUDUnit;
+  Node: TUDSCCNode;
+begin
+  // init
+  TarjanIndex:=0;
+  for AVLNode in FUsesGraph.FilesTree do begin
+    UDUnit:=TUDUnit(AVLNode.Data);
+    Node:=GetNode(UDUnit);
+    Node.TarjanIndex:=-1;
+    Node.TarjanLowLink:=-1;
+    Node.TarjanVisiting:=false;
+    if WithImplementationUses then
+      Node.InImplCycle:=false
+    else
+      Node.InIntfCycle:=false;
+  end;
+  Stack:=TFPList.Create;
+  try
+    // depth first search through the forest
+    for AVLNode in FUsesGraph.FilesTree do begin
+      UDUnit:=TUDUnit(AVLNode.Data);
+      //debugln(['TUnitDependenciesWindow.MarkCycles ',dbgsname(UDUnit)]);
+      Node:=GetNode(UDUnit);
+      if Node.TarjanIndex<0 then
+        SearchNode(Node);
+    end;
+  finally
+    Stack.Free;
+  end;
 end;
 
 procedure TUnitDependenciesWindow.SetPendingUnitDependencyRoute(AValue: TStrings
@@ -2116,9 +2295,13 @@ procedure TUnitDependenciesWindow.CreateUsesGraph(out TheUsesGraph: TUsesGraph;
   out TheGroups: TUGGroups);
 begin
   TheUsesGraph:=CodeToolBoss.CreateUsesGraph;
-  TheUsesGraph.UnitClass:=TUDUnit;
-  TheUsesGraph.UsesClass:=TUDUses;
   TheGroups:=TUGGroups.Create(TheUsesGraph);
+  if not TUDUnit.InheritsFrom(TheUsesGraph.UnitClass) then
+    RaiseCatchableException('');
+  TheUsesGraph.UnitClass:=TUDUnit;
+  if not TUDUses.InheritsFrom(TheUsesGraph.UsesClass) then
+    RaiseCatchableException('');
+  TheUsesGraph.UsesClass:=TUDUses;
 end;
 
 {$R *.lfm}
