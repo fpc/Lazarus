@@ -127,8 +127,6 @@ type
      TopLevel Scopes have Link=-1
   *)
   TDwarfScopeInfoRec = record
-    //Parent: Integer;
-    //Next:   Integer;
     Link: Integer;
     Entry: Pointer;
   end;
@@ -241,9 +239,9 @@ type
 
   TDWarfLineMap = object
   private
-    HighestLine: Cardinal;
+    NextAFterHighestLine: Cardinal;
     AddressList: array of QWord;
-    Count: Integer;
+    //Count: Integer;
   public
     procedure Init;
     procedure SetAddressForLine(ALine: Cardinal; AnAddress: QWord); inline;
@@ -821,8 +819,8 @@ end;
 
 procedure TDWarfLineMap.Init;
 begin
-  HighestLine := 0;
-  Count := 0;
+  NextAFterHighestLine := 0;
+  //Count := 0;
 end;
 
 procedure TDWarfLineMap.SetAddressForLine(ALine: Cardinal; AnAddress: QWord);
@@ -830,15 +828,15 @@ var
   i: Integer;
 begin
   i := Length(AddressList);
-  if i <= ALine then begin
+  if i <= ALine then
     SetLength(AddressList, ALine + 2000);
-    FillByte(AddressList[i], (ALine+2000-i) * SizeOf(AddressList[0]), 0);
-  end;
+
   if AddressList[ALine] = 0 then begin
     AddressList[ALine] := AnAddress;
-    inc(Count);
+    //inc(Count);
   end;
-  if ALine > HighestLine then HighestLine := ALine;
+  if ALine > NextAFterHighestLine then
+    NextAFterHighestLine := ALine+1;
 end;
 
 function TDWarfLineMap.GetAddressForLine(ALine: Cardinal): QWord;
@@ -850,8 +848,8 @@ end;
 
 procedure TDWarfLineMap.Compress;
 begin
-  SetLength(AddressList, HighestLine+1);
-//DebugLn(['#### ',HighestLine, ' / ',Count]);
+  SetLength(AddressList, NextAFterHighestLine);
+//DebugLn(['#### ',NextAFterHighestLine, ' / ',Count]);
 end;
 
 { TDwarfScopeInfo }
