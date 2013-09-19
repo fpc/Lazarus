@@ -795,6 +795,7 @@ type
     function GetEntitiesCount: Integer;
     function GetEntity(AIndex: Integer): TvEntity;
     function AddEntity(AEntity: TvEntity): Integer;
+    function GetEntityIndex(AEntity : TvEntity) : Integer;
     function  DeleteEntity(AIndex: Cardinal): Boolean;
     function  RemoveEntity(AEntity: TvEntity; AFreeAfterRemove: Boolean = True): Boolean;
     procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
@@ -861,11 +862,7 @@ type
   { TvParagraph }
 
   TvParagraph = class(TvEntityWithSubEntities)
-    FLocalAlignment : TvStyleAlignment;  // Provides localised overwrite of style alignment
-  private
-    procedure SetLocalAlignment(AValue: TvStyleAlignment);
-  public                                 // TODO: LocalAlignment subject to approval by Felipe
-    UseLocalAlignment : Boolean;         // Provides localised overwrite of style alignment
+  public
     Width, Height: Double;
     AutoExpand: TvRichTextAutoExpand;
     ListStyle : TvListStyle; // For Bulleted or Numbered Lists...
@@ -876,8 +873,6 @@ type
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
-
-    Property LocalAlignment : TvStyleAlignment Read FLocalAlignment Write SetLocalAlignment;
   end;
 
   {@@
@@ -1039,7 +1034,7 @@ type
     Borders : TvTableBorders;         // Defaults: single/black/inside and out
     PreferredWidth : TvDimension;     // Optional. Units mm.
     CellSpacing : Double;             // Units mm. Gap between Cells.
-    BackgroundColor : TFPColor;       // Optional. Units mm.
+    BackgroundColor : TFPColor;       // Optional.
 
     constructor create(APage : TvPage); override;
     destructor destroy; override;
@@ -1102,6 +1097,7 @@ type
     procedure GuessGoodZoomLevel(AScreenSize: Integer = 500);
     { Page methods }
     function GetPage(AIndex: Integer): TvPage;
+    function GetPageIndex(APage : TvPage): Integer;
     function GetPageAsVectorial(AIndex: Integer): TvVectorialPage;
     function GetPageAsText(AIndex: Integer): TvTextPageSequence;
     function GetPageCount: Integer;
@@ -1143,6 +1139,7 @@ type
     function  GetEntity(ANum: Cardinal): TvEntity; virtual; abstract;
     function  GetEntitiesCount: Integer; virtual; abstract;
     function  GetLastEntity(): TvEntity; virtual; abstract;
+    function  GetEntityIndex(AEntity : TvEntity) : Integer; virtual; abstract;
     function  FindAndSelectEntity(Pos: TPoint): TvFindEntityResult; virtual; abstract;
     function  FindEntityWithNameAndType(AName: string; AType: TvEntityClass {= TvEntity}; ARecursively: Boolean = False): TvEntity; virtual; abstract;
     { Data removing methods }
@@ -1185,6 +1182,7 @@ type
     function  GetEntity(ANum: Cardinal): TvEntity; override;
     function  GetEntitiesCount: Integer; override;
     function  GetLastEntity(): TvEntity; override;
+    function  GetEntityIndex(AEntity : TvEntity) : Integer; override;
     function  FindAndSelectEntity(Pos: TPoint): TvFindEntityResult; override;
     function  FindEntityWithNameAndType(AName: string; AType: TvEntityClass {= TvEntity}; ARecursively: Boolean = False): TvEntity; override;
     { Data removing methods }
@@ -1260,6 +1258,7 @@ type
     function  GetEntity(ANum: Cardinal): TvEntity; override;
     function  GetEntitiesCount: Integer; override;
     function  GetLastEntity(): TvEntity; override;
+    function  GetEntityIndex(AEntity : TvEntity) : Integer; override;
     function  FindAndSelectEntity(Pos: TPoint): TvFindEntityResult; override;
     function  FindEntityWithNameAndType(AName: string; AType: TvEntityClass {= TvEntity}; ARecursively: Boolean = False): TvEntity; override;
     { Data removing methods }
@@ -4452,6 +4451,15 @@ begin
   Result := FElements.Add(AEntity);
 end;
 
+function TvEntityWithSubEntities.GetEntityIndex(AEntity: TvEntity): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  for i := 0 to FElements.Count-1 do
+    if TvEntity(FElements.Items[i]) = AEntity then Exit(i);
+end;
+
 function TvEntityWithSubEntities.DeleteEntity(AIndex: Cardinal): Boolean;
 var
   lEntity: TvEntity;
@@ -4668,17 +4676,10 @@ end;
 
 { TvParagraph }
 
-procedure TvParagraph.SetLocalAlignment(AValue: TvStyleAlignment);
-begin
-  UseLocalAlignment:=True;
-  FLocalAlignment:=AValue;
-end;
-
 constructor TvParagraph.Create(APage: TvPage);
 begin
   inherited Create(APage);
 
-  UseLocalAlignment:=False;
 end;
 
 destructor TvParagraph.Destroy;
@@ -4891,6 +4892,15 @@ end;
 function TvVectorialPage.GetLastEntity(): TvEntity;
 begin
   Result:=TvEntity(FEntities.Last);
+end;
+
+function TvVectorialPage.GetEntityIndex(AEntity: TvEntity): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  for i := 0 to GetEntitiesCount()-1 do
+    if TvEntity(FEntities.Items[i]) = AEntity then Exit(i);
 end;
 
 function TvVectorialPage.FindAndSelectEntity(Pos: TPoint): TvFindEntityResult;
@@ -5518,7 +5528,12 @@ end;
 
 function TvTextPageSequence.GetLastEntity: TvEntity;
 begin
+  Result := MainText.GetEntity(MainText.GetEntitiesCount()-1);
+end;
 
+function TvTextPageSequence.GetEntityIndex(AEntity: TvEntity): Integer;
+begin
+  Result := MainText.GetEntityIndex(AEntity);
 end;
 
 function TvTextPageSequence.FindAndSelectEntity(Pos: TPoint
@@ -5854,6 +5869,15 @@ begin
   Result := TvPage(FPages.Items[AIndex]);
 end;
 
+function TvVectorialDocument.GetPageIndex(APage: TvPage): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  for i := 0 to FPages.Count-1 do
+    if TvPage(FPages.Items[i]) = APage then Exit(i);
+end;
+
 function TvVectorialDocument.GetPageAsVectorial(AIndex: Integer): TvVectorialPage;
 var
   lPage: TvPage;
@@ -6043,7 +6067,7 @@ begin
   for i := 0 To NUM_MAX_LISTSTYLES-1 Do
   begin
     lCurListStyle := AddListStyle;
-    lCurListStyle.Kind := vlskDecimal;
+    lCurListStyle.Kind := vlskBullet;
     lCurListStyle.Level := i;
     lCurListStyle.Prefix := '&#183;';
     lCurListStyle.PrefixFontName := 'Symbol';

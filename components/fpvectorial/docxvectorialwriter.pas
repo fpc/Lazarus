@@ -606,9 +606,6 @@ Var
       oDocXML.Add(Format('<w:pStyle w:val="%s"/>',
         [StyleNameToStyleID(AParagraph.Style)]));
 
-    If AParagraph.UseLocalAlignment Then
-      oDocXML.Add('<w:jc w:val="' + LU_ALIGN[AParagraph.LocalAlignment] + '"/>');
-
     If Assigned(AParagraph.ListStyle) Then
     Begin
       oDocXML.Add('<w:numPr>');
@@ -731,10 +728,14 @@ Var
     dWidth := APageSequence.Width;
     If dWidth = 0 Then
       dWidth := FData.Width;
+    If dWidth=0 Then
+      dWidth := 210; // Default A4
 
     dHeight := APageSequence.Height;
     If dHeight = 0 Then
       dHeight := FData.Height;
+    If dHeight=0 Then
+      dHeight := 297; // Default A4
 
     If ((dWidth <> 0) And (dHeight <> 0)) Then
     Begin

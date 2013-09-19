@@ -53,9 +53,9 @@ unit odtvectorialwriter;
 interface
 
 uses
-  Classes, SysUtils, math,
-  zipper, {NOTE: might require zipper from FPC 2.6.2+ }
-  fpimage, fpcanvas, fgl,
+  Classes, SysUtils,
+  zipper, zstream, {NOTE: might require zipper from FPC 2.6.2+ }
+  fpimage, fpcanvas,
   fpvectorial, fpvutils, lazutf8;
 
 type
@@ -67,11 +67,20 @@ type
     FPointSeparator: TFormatSettings;
     // Strings with the contents of files
     FMeta, FSettings, FStyles, FContent, FMimetype: string;
+    FAutomaticStyles, FMasterStyles: string; // built during writedocument, used during writestyle
+    FAutomaticStyleID : Integer;
+    FContentAutomaticStyles : string; // built during writedocument, used during writedocument
+    FContentAutomaticStyleID : Integer;
+
+    FNewPageSequence : Boolean;
+
     FMetaInfManifest, FManifestRDF: string;
     // helper routines
     function StyleNameToODTStyleName(AData: TvVectorialDocument; AStyleIndex: Integer; AToContentAutoStyle: Boolean = False): string; overload;
     function StyleNameToODTStyleName(AData: TvVectorialDocument; AStyle: TvStyle; AToContentAutoStyle: Boolean = False): string; overload;
     function FloatToODTText(AFloat: Double): string;
+    function BordersToString(ATableBorders, ACellBorders: TvTableBorders; ATopCell,
+      ABottomCell, ALeftCell, ARightCell: Boolean): String;
     // Routines to write those files
     procedure WriteMimetype;
     procedure WriteMetaInfManifest;
@@ -83,6 +92,8 @@ type
     procedure WritePage(ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
     //
     procedure WriteParagraph(AEntity: TvParagraph; ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
+    procedure WriteTable(ATable: TvTable; ACurPage: TvTextPageSequence;
+      AData: TvVectorialDocument);
     procedure WriteTextSpan(AEntity: TvText; AParagraph: TvParagraph;
       ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
     procedure WriteBulletList(AEntity: TvBulletList; ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
@@ -100,7 +111,7 @@ type
 implementation
 
 uses
-  strutils, htmlelements;
+  htmlelements;
 
 const
   { OpenDocument general XML constants }
@@ -387,8 +398,10 @@ procedure TvODTVectorialWriter.WriteStyles(AData: TvVectorialDocument);
 var
   i: Integer;
   CurStyle: TvStyle;
-  lTextPropsStr, lParagraphPropsStr, lCurStyleTmpStr, CurStyleParent,
-    lMarginStr: string;
+  lTextPropsStr, lParagraphPropsStr, lCurStyleTmpStr, CurStyleParent : string;
+Const
+  LU_ALIGN: Array [TvStyleAlignment] Of String =
+    ('start', 'end', 'justify', 'center');
 begin
   FStyles :=
    XML_HEADER + LineEnding +
@@ -422,12 +435,15 @@ begin
      ' xmlns:calcext="' + SCHEMAS_XMLNS_CALCEXT + '"' +
      ' xmlns:css3t="' + SCHEMAS_XMLNS_CSS3T + '"' +
      ' office:version="1.2">' + LineEnding;
+
+  // TODO:  Parse Styles for Fonts not included in the list below...
   FStyles := FStyles +
    '<office:font-face-decls>' + LineEnding +
    '  <style:font-face style:name="Mangal1" svg:font-family="Mangal" />' + LineEnding +
    '  <style:font-face style:name="OpenSymbol" svg:font-family="OpenSymbol" />' + LineEnding +
    '  <style:font-face style:name="Times New Roman" svg:font-family="Times New Roman" style:font-family-generic="roman" style:font-pitch="variable" />' + LineEnding +
    '  <style:font-face style:name="Arial" svg:font-family="Arial" />' + LineEnding +
+   '  <style:font-face style:name="Verdana" svg:font-family="Verdana" />' + LineEnding +
    '  <style:font-face style:name="Mangal" svg:font-family="Mangal" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
    '  <style:font-face style:name="Microsoft YaHei" svg:font-family="''Microsoft YaHei''" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
    '  <style:font-face style:name="SimSun" svg:font-family="SimSun" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
@@ -528,15 +544,31 @@ begin
     // Paragraph kind
     else
     begin
-      lMarginStr := '';
+      lParagraphPropsStr := '';
+
+      // If any one value in here is set, then ALL inherited values are overridden
+      // In other words, we must fully define the style paragraph properties,
+      // we can't rely on LibreOffice Style Inheritance...
+      // TODO: Confirm if this applies to Text Properties as well...
+
       if sseMarginTop in CurStyle.SetElements then
-        lMarginStr := lMarginStr + 'fo:margin-top="'+FloatToODTText(CurStyle.MarginTop)+'mm" ';
+        lParagraphPropsStr := lParagraphPropsStr + 'fo:margin-top="'+FloatToODTText(CurStyle.MarginTop)+'mm" ';
       if sseMarginBottom in CurStyle.SetElements then
-        lMarginStr := lMarginStr + 'fo:margin-bottom="'+FloatToODTText(CurStyle.MarginTop)+'mm" ';
+        lParagraphPropsStr := lParagraphPropsStr + 'fo:margin-bottom="'+FloatToODTText(CurStyle.MarginBottom)+'mm" ';
+      if sseMarginLeft in CurStyle.SetElements then
+        lParagraphPropsStr := lParagraphPropsStr + 'fo:margin-left="'+FloatToODTText(CurStyle.MarginLeft)+'mm" ';
+      if sseMarginRight in CurStyle.SetElements then
+        lParagraphPropsStr := lParagraphPropsStr + 'fo:margin-right="'+FloatToODTText(CurStyle.MarginRight)+'mm" ';
+      if (spbfAlignment in CurStyle.SetElements) then
+        lParagraphPropsStr := lParagraphPropsStr + 'fo:text-align="'+LU_ALIGN[CurStyle.Alignment]+'" ';
+      if CurStyle.SuppressSpacingBetweenSameParagraphs then
+        lParagraphPropsStr := lParagraphPropsStr + 'style:contextual-spacing="true" ';
+      //else
+      //  lParagraphPropsStr := lParagraphPropsStr + 'style:contextual-spacing="false" ';
 
       lCurStyleTmpStr := // tmp string to help see the text in the debugger
        '  <style:style style:name="'+StyleNameToODTStyleName(AData, i, False)+'" style:display-name="'+ CurStyle.Name +'" style:family="paragraph" style:parent-style-name="'+CurStyleParent+'" style:class="text">' + LineEnding +
-       '    <style:paragraph-properties '+lMarginStr+' style:contextual-spacing="false" />' + LineEnding +
+       '    <style:paragraph-properties '+lParagraphPropsStr+' />' + LineEnding +
        '    <style:text-properties '+lTextPropsStr+' />' + LineEnding +
        '  </style:style>' + LineEnding;
       FStyles := FStyles + lCurStyleTmpStr;
@@ -570,11 +602,12 @@ begin
       <style:text-properties fo:color="#000080" fo:language="zxx" fo:country="none" style:text-underline-style="solid" style:text-underline-width="auto" style:text-underline-color="font-color" style:language-asian="zxx" style:country-asian="none" style:language-complex="zxx" style:country-complex="none" />
     </style:style>
     }
-    FStyles := FStyles +
-     '  <style:style style:name="Bullet_20_Symbols" style:display-name="Bullet Symbols" style:family="text">' + LineEnding +
-     '    <style:text-properties style:font-name="OpenSymbol" style:font-name-asian="OpenSymbol" style:font-name-complex="OpenSymbol" />' + LineEnding +
-     '  </style:style>' + LineEnding;
   end;
+
+  FStyles := FStyles +
+   '  <style:style style:name="Bullet_20_Symbols" style:display-name="Bullet Symbols" style:family="text">' + LineEnding +
+   '    <style:text-properties style:font-name="OpenSymbol" style:font-name-asian="OpenSymbol" style:font-name-complex="OpenSymbol" />' + LineEnding +
+   '  </style:style>' + LineEnding;
 
   FStyles := FStyles +
    '  <text:outline-style style:name="Outline">' + LineEnding +
@@ -645,6 +678,8 @@ begin
 
   FStyles := FStyles +
    '<office:automatic-styles>' + LineEnding +
+   FAutomaticStyles + LineEnding +
+(*
    '  <style:page-layout style:name="Mpm1">' + LineEnding +
    '    <style:page-layout-properties fo:page-width="21.001cm" fo:page-height="29.7cm" style:num-format="1" style:print-orientation="portrait" fo:margin-top="2cm" fo:margin-bottom="2cm" fo:margin-left="2cm" fo:margin-right="2cm" style:writing-mode="lr-tb" style:footnote-max-height="0cm">' + LineEnding +
    '      <style:footnote-sep style:width="0.018cm" style:distance-before-sep="0.101cm" style:distance-after-sep="0.101cm" style:line-style="solid" style:adjustment="left" style:rel-width="25%" style:color="#000000" />' + LineEnding +
@@ -655,11 +690,15 @@ begin
    '  <style:style style:name="List_0" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="L1">' + LineEnding +
    // <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />
    '  </style:style>' + LineEnding +
+*)
    '</office:automatic-styles>' + LineEnding;
 
   FStyles := FStyles +
    '<office:master-styles>' + LineEnding +
+   FMasterStyles + LineEnding +
+(*
    '  <style:master-page style:name="Standard" style:page-layout-name="Mpm1" />' + LineEnding +
+*)
    '</office:master-styles>' + LineEnding;
 
   FStyles := FStyles +
@@ -669,12 +708,17 @@ end;
 procedure TvODTVectorialWriter.WriteDocument(AData: TvVectorialDocument);
 var
   i: Integer;
+  sPrefix : String;
+  sAutomaticStyles : String;
   CurLevel: String;
   CurPage: TvPage;
   CurTextPage: TvTextPageSequence absolute CurPage;
   CurListStyle : TvListStyle;
 begin
-  FContent :=
+  // content.xml will be built up by
+  //    sPrefix + sAutomaticStyles + FContent
+
+  sPrefix :=
    XML_HEADER + LineEnding +
    '<office:document-content xmlns:office="' + SCHEMAS_XMLNS_OFFICE + '"' +
      ' xmlns:style="' + SCHEMAS_XMLNS_STYLE + '"' +
@@ -708,9 +752,9 @@ begin
      ' xmlns:formx="' + SCHEMAS_XMLNS_FORMX + '"' +
      ' xmlns:css3t="' + SCHEMAS_XMLNS_CSS3T + '"' +
      ' office:version="1.2">' + LineEnding;
-  FContent := FContent +
+  sPrefix := sPrefix +
      '  <office:scripts />' + LineEnding;
-  FContent := FContent +
+  sPrefix := sPrefix +
      '  <office:font-face-decls>' + LineEnding +
      '    <style:font-face style:name="Mangal1" svg:font-family="Mangal" />' + LineEnding +
      '    <style:font-face style:name="OpenSymbol" svg:font-family="OpenSymbol" />' + LineEnding +
@@ -720,23 +764,41 @@ begin
      '    <style:font-face style:name="Microsoft YaHei" svg:font-family="''Microsoft YaHei''" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
      '    <style:font-face style:name="SimSun" svg:font-family="SimSun" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
      '  </office:font-face-decls>' + LineEnding;
+
+  // Build the main content of the document
+  FContent := '  <office:body>' + LineEnding;
+
   FContent := FContent +
+     '    <office:text>' + LineEnding;
+
+  FContent := FContent +
+     '      <text:sequence-decls>' + LineEnding +
+     '        <text:sequence-decl text:display-outline-level="0" text:name="Illustration" />' + LineEnding +
+     '        <text:sequence-decl text:display-outline-level="0" text:name="Table" />' + LineEnding +
+     '        <text:sequence-decl text:display-outline-level="0" text:name="Text" />' + LineEnding +
+     '        <text:sequence-decl text:display-outline-level="0" text:name="Drawing" />' + LineEnding +
+     '      </text:sequence-decls>' + LineEnding;
+
+  FNewPageSequence := False;
+
+  // During each WritePage (and nested calls) FContentAutomaticStyles gets built up
+  for i := 0 to AData.GetPageCount()-1 do
+  begin
+    CurPage := AData.GetPage(i);
+    if CurPage is TvTextPageSequence then
+      WritePage(CurTextPage, AData);
+  end;
+
+  FContent := FContent +
+     '    </office:text>' + LineEnding;
+  FContent := FContent +
+     '  </office:body>' + LineEnding;
+  FContent := FContent +
+     '</office:document-content>' + LineEnding;
+
+  // Build up the automatic styles detailed in the content.xml
+  sAutomaticStyles := sAutomaticStyles +
      '  <office:automatic-styles>' + LineEnding;
-{     '    <style:style style:name="P1" style:family="paragraph" style:parent-style-name="Heading_20_2">' + LineEnding +
-     '      <style:text-properties  />' + LineEnding + //officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e"
-     '    </style:style>' + LineEnding +
-     '    <style:style style:name="P2" style:family="paragraph" style:parent-style-name="Heading_20_1">' + LineEnding +
-     '      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />' + LineEnding +
-     '    </style:style>' + LineEnding +
-     '    <style:style style:name="P3" style:family="paragraph" style:parent-style-name="Standard">' + LineEnding +
-     '      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />' + LineEnding +
-     '    </style:style>' + LineEnding +
-     '    <style:style style:name="P4" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="L1">' + LineEnding +
-     '      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />' + LineEnding +
-     '    </style:style>' + LineEnding +
-     '    <style:style style:name="P5" style:family="paragraph" style:parent-style-name="Text_20_body">' + LineEnding +
-     '      <style:text-properties officeooo:rsid="00072f3e" />' + LineEnding +
-     '    </style:style>' + LineEnding +}
 
   // MJT 2013-08-24 - This is the code to cycle over the ListStyles.
   //                - This is verified working for Level 0
@@ -745,102 +807,31 @@ begin
   //                  (see note in WriteBulletStyle)
   //                - As I understand tOpenDocument-v1.1.pdf the following list style
   //                  should work once we get nesting happening
-  FContent := FContent + '    <text:list-style style:name="L1">' + LineEnding;
+
+  // TODO: Investigate if this should/could be moved into Styles.xml
+  sAutomaticStyles := sAutomaticStyles + '    <text:list-style style:name="L1">' + LineEnding;
   For i := 0 To AData.GetListStyleCount-1 Do
   begin
     CurListStyle := AData.GetListStyle(i);
     CurLevel := IntToStr(CurListStyle.Level+1); // Note the +1...
 
     If CurListStyle.Kind=vlskBullet Then
-      FContent := FContent + '      <text:list-level-style-bullet text:level="'+CurLevel+'" text:style-name="Bullet_20_Symbols" text:bullet-char="'+CurListStyle.Prefix+'">' + LineEnding +
+      sAutomaticStyles := sAutomaticStyles + '      <text:list-level-style-bullet text:level="'+CurLevel+'" text:style-name="Bullet_20_Symbols" text:bullet-char="'+CurListStyle.Prefix+'">' + LineEnding +
          '        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
          '          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="'+FloatToODTText(CurListStyle.MarginLeft/10)+'cm" fo:text-indent="-'+FloatToODTText(CurListStyle.HangingIndent/10)+'cm" fo:margin-left="'+FloatToODTText(CurListStyle.MarginLeft/10)+'cm" />' + LineEnding +
          '        </style:list-level-properties>' + LineEnding +
          '      </text:list-level-style-bullet>' + LineEnding;
   end;
-  FContent := FContent +    '    </text:list-style>' + LineEnding;
+  sAutomaticStyles := sAutomaticStyles +    '    </text:list-style>' + LineEnding;
 
-  // Pre MJT code...
-  //FContent := FContent +
-  //  '    <text:list-style style:name="L1">' + LineEnding +
-  //  '      <text:list-level-style-bullet text:level="1" text:style-name="Bullet_20_Symbols" text:bullet-char="&#183;">' + LineEnding +
-  //  '        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
-  //  '          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.667cm" fo:text-indent="-0.635cm" fo:margin-left="1.667cm" />' + LineEnding +
-  //  '        </style:list-level-properties>' + LineEnding +
-  //  '      </text:list-level-style-bullet>' + LineEnding +
-  //  '    </text:list-style>' + LineEnding;
-{
-      <text:list-level-style-bullet text:level="2" text:style-name="Bullet_20_Symbols" text:bullet-char="◦">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.302cm" fo:text-indent="-0.635cm" fo:margin-left="2.302cm" />
-        </style:list-level-properties>
-      </text:list-level-style-bullet>
-      <text:list-level-style-bullet text:level="3" text:style-name="Bullet_20_Symbols" text:bullet-char="▪">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.937cm" fo:text-indent="-0.635cm" fo:margin-left="2.937cm" />
-        </style:list-level-properties>
-      </text:list-level-style-bullet>
-      <text:list-level-style-bullet text:level="4" text:style-name="Bullet_20_Symbols" text:bullet-char="•">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="3.572cm" fo:text-indent="-0.635cm" fo:margin-left="3.572cm" />
-        </style:list-level-properties>
-      </text:list-level-style-bullet>
-      <text:list-level-style-bullet text:level="5" text:style-name="Bullet_20_Symbols" text:bullet-char="◦">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="4.207cm" fo:text-indent="-0.635cm" fo:margin-left="4.207cm" />
-        </style:list-level-properties>
-      </text:list-level-style-bullet>
-      <text:list-level-style-bullet text:level="6" text:style-name="Bullet_20_Symbols" text:bullet-char="▪">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="4.842cm" fo:text-indent="-0.635cm" fo:margin-left="4.842cm" />
-        </style:list-level-properties>
-      </text:list-level-style-bullet>
-      <text:list-level-style-bullet text:level="7" text:style-name="Bullet_20_Symbols" text:bullet-char="•">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="5.477cm" fo:text-indent="-0.635cm" fo:margin-left="5.477cm" />
-        </style:list-level-properties>
-      </text:list-level-style-bullet>
-      <text:list-level-style-bullet text:level="8" text:style-name="Bullet_20_Symbols" text:bullet-char="◦">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="6.112cm" fo:text-indent="-0.635cm" fo:margin-left="6.112cm" />
-        </style:list-level-properties>
-      </text:list-level-style-bullet>
-      <text:list-level-style-bullet text:level="9" text:style-name="Bullet_20_Symbols" text:bullet-char="▪">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="6.747cm" fo:text-indent="-0.635cm" fo:margin-left="6.747cm" />
-        </style:list-level-properties>
-      </text:list-level-style-bullet>
-      <text:list-level-style-bullet text:level="10" text:style-name="Bullet_20_Symbols" text:bullet-char="•">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="7.382cm" fo:text-indent="-0.635cm" fo:margin-left="7.382cm" />
-        </style:list-level-properties>
-      </text:list-level-style-bullet>
-  }
-  FContent := FContent +
+  // Now add any Automatic Styles built during WritePage..
+  sAutomaticStyles := sAutomaticStyles + FContentAutomaticStyles;
+
+  sAutomaticStyles := sAutomaticStyles +
     '  </office:automatic-styles>' + LineEnding;
 
-  FContent := FContent +
-     '  <office:body>' + LineEnding;
-
-  for i := 0 to AData.GetPageCount()-1 do
-  begin
-    CurPage := AData.GetPage(i);
-    if CurPage is TvTextPageSequence then
-    begin
-      FContent := FContent +
-         '    <office:text>' + LineEnding;
-
-      WritePage(CurTextPage, AData);
-
-      FContent := FContent +
-         '    </office:text>' + LineEnding;
-    end;
-  end;
-
-  FContent := FContent +
-     '  </office:body>' + LineEnding;
-  FContent := FContent +
-     '</office:document-content>' + LineEnding;
+  // Now piece it all together
+  FContent := sPrefix + sAutomaticStyles + FContent;
 end;
 
 procedure TvODTVectorialWriter.WritePage(ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
@@ -848,14 +839,7 @@ var
   i: Integer;
   lCurEntity: TvEntity;
 begin
-  FContent := FContent +
-   '    <text:sequence-decls>' + LineEnding +
-   '      <text:sequence-decl text:display-outline-level="0" text:name="Illustration" />' + LineEnding +
-   '      <text:sequence-decl text:display-outline-level="0" text:name="Table" />' + LineEnding +
-   '      <text:sequence-decl text:display-outline-level="0" text:name="Text" />' + LineEnding +
-   '      <text:sequence-decl text:display-outline-level="0" text:name="Drawing" />' + LineEnding +
-   '    </text:sequence-decls>' + LineEnding;
-
+  FNewPageSequence := True;
   for i := 0 to ACurPage.GetEntitiesCount()-1 do
   begin
     lCurEntity := ACurPage.GetEntity(i);
@@ -864,6 +848,8 @@ begin
       WriteParagraph(TvParagraph(lCurEntity), ACurPage, AData);
     if (lCurEntity is TvBulletList) then
       WriteBulletList(TvBulletList(lCurEntity), ACurPage, AData);
+    if (lCurEntity is TvTable) then
+      WriteTable(TvTable(lCurEntity), ACurPage, AData);
   end;
 end;
 
@@ -871,8 +857,11 @@ procedure TvODTVectorialWriter.WriteParagraph(AEntity: TvParagraph;
   ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
 var
   EntityKindName, AEntityStyleName, lOutlineLevel: string;
+  sAutoStyleName, sPageMasterName, sPageLayoutName : String;
+  sOrientation : String;
   i: Integer;
   lCurEntity: TvEntity;
+  dWidth, dHeight : Double;
 begin
   lOutlineLevel := '';
   if AEntity.Style = nil then
@@ -893,6 +882,75 @@ begin
     end;
 
     AEntityStyleName := StyleNameToODTStyleName(AData, AEntity.Style, False);
+  end;
+
+  If FNewPageSequence Then
+  begin
+    // Create an automatic style in both content.xml and style.xml
+    // and reference the newly created style in the text we're just
+    // about to write
+    // TODO: Find out how to deal with new Page Sequences with other
+    //       objects at the start of the page...
+
+    Inc(FAutomaticStyleID);
+    i := AData.GetPageIndex(ACurPage);
+
+    sAutoStyleName := AEntityStyleName+'_P' + IntToStr(FAutomaticStyleID);
+    sPageMasterName := 'Page_Sequence_'+IntToStr(i+1);
+    sPageLayoutName := 'MPM'+IntToStr(i+1);
+
+    // Create an automatic style descended from AEntityStyleName
+    FContentAutomaticStyles := FContentAutomaticStyles +
+      '<style:style style:name="'+sAutoStyleName+'"' +
+                  ' style:family="paragraph"' +
+                  ' style:master-page-name="'+sPageMasterName+'"' +
+                  ' style:parent-style-name="'+ AEntityStyleName +'">' +
+                  LineEnding +
+      '</style:style>'+ LineEnding;
+
+
+    // Define the MasterStyles in Styles.xml
+    // TODO: Add Header and Footer content to FMasterStyles
+    FMasterStyles := FMasterStyles +
+      '<style:master-page style:name="'+sPageMasterName+'" style:page-layout-name="'+sPageLayoutName+'"/>' + LineEnding;
+
+    dWidth := ACurPage.Width;
+    If dWidth=0 Then
+      dWidth := AData.Width;
+    If dWidth=0 Then
+      dWidth := 210; // Default A4
+
+    dHeight := ACurPage.Height;
+    If dHeight=0 Then
+      dHeight := AData.Height;
+    If dHeight=0 Then
+      dHeight := 297; // Default A4
+
+    If dWidth>dHeight Then
+      sOrientation := 'landscape'
+    else
+      sOrientation := 'portrait';
+
+    // Define the page layout in Styles.xml
+    // TODO: Add PAge Margins...
+    FAutomaticStyles := FAutomaticStyles +
+      '<style:page-layout style:name="'+sPageLayoutName+'">'+ LineEnding+
+      '  <style:page-layout-properties '+
+                ' fo:page-width="'+FloatToODTText(dWidth)+'mm"'+
+                ' fo:page-height="'+FloatToODTText(dHeight)+'mm"'+
+                ' style:print-orientation="'+sOrientation+'"'+
+                ' style:num-format="1" fo:margin-top="0.7874in" fo:margin-bottom="0.7874in" fo:margin-left="0.7874in" fo:margin-right="0.7874in" style:writing-mode="lr-tb" style:footnote-max-height="0in">'+ LineEnding;
+
+    FAutomaticStyles := FAutomaticStyles +
+      '	  <style:footnote-sep style:width="0.0071in" style:distance-before-sep="0.0398in" style:distance-after-sep="0.0398in" style:line-style="solid" style:adjustment="left" style:rel-width="25%" style:color="#000000"/>'+ LineEnding+
+      '	</style:page-layout-properties>'+ LineEnding+
+      '  <style:header-style/>'+ LineEnding+
+      '  <style:footer-style/>'+ LineEnding+
+      '</style:page-layout>' + LineEnding;
+
+    // Ensure the text is written out using the new Automatic Style
+    AEntityStyleName:=sAutoStyleName;
+    FNewPageSequence:=False;
   end;
 
   FContent := FContent +
@@ -960,7 +1018,6 @@ begin
       <text:p text:style-name="P3" />
       <text:p text:style-name="P3">Lazarus inherits three features from its use of the Free Pascal compiler: compile and execution speed, and cross-compilation. The Free Pascal compiler benefits from the Pascal language structure, which is rigid, and the steady advancements of Pascal compiler design, spanning several decades, to compile large applications quickly, often seconds.</text:p>
 }
-
 end;
 
 procedure TvODTVectorialWriter.WriteTextSpan(AEntity: TvText; AParagraph: TvParagraph;
@@ -1002,12 +1059,340 @@ begin
   Else
     sText := Copy(sText, 1, Length(sText) - 1);
 
-  sText := StringReplace(sText, #11, '<text:tab/>', [rfReplaceAll]);
+
+  sText := StringReplace(sText, '  ', ' <text:s/>', [rfReplaceAll]);
+  sText := StringReplace(sText, #09, '<text:tab/>', [rfReplaceAll]);
   sText := StringReplace(sText, #13, '<text:line-break/>', [rfReplaceAll]);
   sText := StringReplace(sText, #10, '', [rfReplaceAll]);
 
   FContent := FContent + '<text:span text:style-name="'+AEntityStyleName+'">' +
     sText + '</text:span>';
+end;
+
+function TvODTVectorialWriter.BordersToString(ATableBorders, ACellBorders : TvTableBorders;
+  ATopCell, ABottomCell, ALeftCell, ARightCell : Boolean):String;
+Const
+  LU_BORDERTYPE: Array[TvTableBorderType] Of String =
+    ('solid', 'dashed', 'solid', 'none', 'default');
+//  ('solid', 'dashed', 'double', 'none', 'default');
+(*
+  double requires a completely different configuration, so for now, we won't
+  support it...
+
+  <style:table-cell-properties style:vertical-align="middle"
+                               style:border-line-width-left="0.28mm 0.28mm 0.28mm"
+                               style:border-line-width-top="0.28mm 0.28mm 0.28mm"
+                               fo:padding="0mm"
+                               fo:border-left="2.35pt double #ff0000"
+                               fo:border-right="0.5pt solid #ff0000"
+                               fo:border-top="2.35pt double #ff0000"
+                               fo:border-bottom="0.5pt solid #ff0000"/>
+
+  From the OASIS Open Office Specification:
+    The style:border-line-width specifies the line widths of all four sides,
+    while the other attributes specify the line widths of one side only.
+
+    The value of the attributes can be a list of three space-separated lengths,
+    as follows:
+      • The first value specifies the width of the inner line
+      • The second value specified the distance between the two lines
+      • The third value specifies the width of the outer line
+
+    The result of specifying a border line width without specifying a border
+    width style of double for the same border is undefined.
+*)
+
+  Function BorderToString(AAttrib : String; ABorder: TvTableBorder) : String;
+  Begin
+    Result := '';
+    If ABorder.LineType<>tbtDefault Then
+    Begin
+      If ABorder.LineType=tbtNone Then
+        Result := 'none'
+      Else
+      Begin
+        If ABorder.Width <> 0 Then
+          Result := Format('%s %smm', [Result, FloatToODTText(ABorder.Width)])
+        Else
+          Result := Format('%s 0.05pt', [Result]);
+
+        Result := Format('%s %s', [Result, LU_BORDERTYPE[ABorder.LineType]]);
+
+        Result := Format('%s #%s', [Result, FPColorToRGBHexString(ABorder.Color)]);
+      end;
+
+      Result := Format('%s="%s"', [AAttrib, Trim(Result)]);
+    end;
+  end;
+Var
+  sLeft, sRight, sTop, sBottom : String;
+  sPadding : String;
+Begin
+(*
+   OpenDocument does not support setting borders at the Table Level,
+   only at the cell level.  For end user convenience, FPVectorial supports
+   setting borders at the table level, but allows the end user fine control,
+   if they prefer, by providing support for borders at the cell level as well.
+
+   This means we're going to need to calculate actual border
+   based on TvTable.Borders (which includes InsideHoriz and InsideVert) as
+   default values, which can be overridden if specific TvTableCell.Borders
+   are defined (ie LineType<>tbtDefault)
+
+   Matters are complicated by the need to work out if we need to draw the right
+   and top borders (if we always draw right borders then two lines will be visible
+   on internal border, the left border from the cell to the right and the right
+   border from this cell).  To deal with this, we only set the Right and Top
+   borders if either the Cell.Borders specify (they overrule all), or if we're
+   actually at the top or right cells (which the calling function will calculate
+   for us)
+*)
+
+  sLeft := BorderToString('fo:border-left',   ACellBorders.Left);
+  if sLeft='' then
+  begin
+    if ALeftCell then
+      sLeft := BorderToString('fo:border-left',   ATableBorders.Left)
+    else
+      // Really need to look at cell to the left and determine if it has overriding Cell.Borders.Right :-(
+      sLeft := BorderToString('fo:border-left',   ATableBorders.InsideVert);
+  end;
+
+  sRight := BorderToString('fo:border-right',   ACellBorders.Right);
+  if sRight='' then
+  begin
+    if ARightCell then
+      sRight := BorderToString('fo:border-right',   ATableBorders.Right)
+    else
+      sRight := 'fo:border-right="none"';
+  end;
+
+  sTop := BorderToString('fo:border-top',   ACellBorders.Top);
+  if sTop='' then
+  begin
+    if ATopCell then
+      sTop := BorderToString('fo:border-top',   ATableBorders.Top)
+    else
+      sTop := 'fo:border-top="none"';
+  end;
+
+  sBottom := BorderToString('fo:border-bottom',   ACellBorders.Bottom);
+  if sBottom='' then
+  begin
+    if ABottomCell then
+      sBottom := BorderToString('fo:border-bottom',   ATableBorders.Bottom)
+    else
+      // Really need to look at cell below, and determine if it has overriding Cell.Borders.Top :-(
+      sBottom := BorderToString('fo:border-bottom',   ATableBorders.InsideHoriz);
+  end;
+
+  Result := Format('%s %s %s %s', [sLeft, sRight, sTop, sBottom]);
+end;
+
+procedure TvODTVectorialWriter.WriteTable(ATable: TvTable;
+  ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
+  procedure AddBody(AString : String);
+  begin
+    FContent := FContent + '    ' + AString + LineEnding;
+  end;
+  procedure AddStyle(AString : String);
+  begin
+    FContentAutomaticStyles:=FContentAutomaticStyles + '    ' + AString + LineEnding;
+  end;
+Var
+  iRow, iCell, iCol, k: Integer;
+  oRow: TvTableRow;
+  oCell: TvTableCell;
+  lCurEntity: TvEntity;
+  sTableName : String;
+  iColCount : Integer;
+  sTableStyle,
+  sColStyle,
+  sRowStyle,
+  sCellStyle,
+  sTemp, sTemp2: String;
+  bInHeader: Boolean;
+Const
+  LU_V_ALIGN: Array[TvVerticalAlignment] Of String = ('top', 'bottom', 'middle', 'automatic');
+
+Begin
+  // TODO: Add support for TvTableBorder.Spacing
+  // TODO: Add support for TvTableRow.CellSpacing
+  // TODO: Add support for TvTable.CellSpacing
+
+  if ATable.GetRowCount=0 Then
+    Exit;
+
+  // Style information stored in content.xml -> office:automatic-styles
+  // Table information stored in content.xml -> office:body
+
+  sTableName := Trim(ATable.Name);
+  If sTableName='' Then
+    sTableName := Format('Table_%d.%d', [AData.GetPageIndex(ACurPage)+1, ACurPage.GetEntityIndex(ATable)+1]);
+  sTableStyle := sTableName;
+
+  // Table meta properties
+  AddStyle('<style:style style:name="'+sTableStyle+'" style:family="table">');
+  Case ATable.PreferredWidth.Units of
+    dimMillimeter: sTemp := 'style:width="'+FloatToODTText(ATable.PreferredWidth.Value)+'mm"';
+    dimPoint:      sTemp := 'style:width="'+FloatToODTText(ATable.PreferredWidth.Value)+'pt"';
+    dimPercent:    sTemp := 'style:rel-width="'+FloatToODTText(ATable.PreferredWidth.Value)+'%"';
+  End;
+  if ATable.BackgroundColor <> FPColor(0, 0, 0, 0) Then
+    sTemp := sTemp + ' fo:background-color="#'+FPColorToRGBHexString(ATable.BackgroundColor)+'"';
+
+  AddStyle('  <style:table-properties '+sTemp+' table:align="margins"/>');
+  AddStyle('</style:style>');
+
+  AddBody(Format('<table:table table:name="%s" table:style-name="%s">', [sTableName, sTableStyle]));
+
+  // Now define any column specific properties
+  If Length(ATable.ColWidths)>0 Then
+    iColCount := Length(ATable.ColWidths)
+  Else
+    // No ColWidths defined means simple tables only (no merged cells)
+    iColCount := TvTableRow(ATable.GetRow(0)).GetCellCount;
+
+  For iCol := 0 To iColCount-1 Do
+  Begin
+    sColStyle := Format('%s.Col_%d', [sTableStyle, iCol+1]);
+
+    If Length(ATable.ColWidths)>0 Then
+    begin
+      AddStyle('<style:style style:name="'+sColStyle+'" style:family="table-column">');
+      Case ATable.ColWidthsUnits Of
+        dimMillimeter: sTemp := 'style:column-width="'+FloatToODTText(ATable.ColWidths[iCol])+'mm"';
+        dimPoint:      sTemp := 'style:column-width="'+FloatToODTText(ATable.ColWidths[iCol])+'pt"';
+        dimPercent:    sTemp := 'style:rel-column-width="'+FloatToODTText(65535 * ATable.ColWidths[iCol] / 100)+'*"';
+      End;
+
+      AddStyle('  <style:table-column-properties '+sTemp+'/>');
+      AddStyle('</style:style>');
+    end;
+
+    AddBody('  <table:table-column table:style-name="'+sColStyle+'" table:number-columns-repeated="1"/>');
+  end;
+
+  // Write out the table row by row, defining row and cell styles as we go..
+  bInHeader := False;
+  For iRow := 0 To ATable.GetRowCount-1 Do
+  Begin
+    oRow := ATable.GetRow(iRow);
+
+    // Current Header functionality will only work
+    // if header rows correctly defined...
+    If (bInHeader) And not (oRow.Header) Then
+    Begin
+      bInHeader := False;
+      // Close header rows...
+      AddBody('  </table:table-header-rows>');
+    end;
+
+    If (oRow.Header) And (iRow=0) Then
+    Begin
+      bInHeader := True;
+      // Open header rows
+      AddBody('  <table:table-header-rows>');
+    end;
+
+    sTemp := '';
+    sRowStyle := Format('%s.Row_%d', [sTableStyle, iRow+1]);
+
+    if oRow.BackgroundColor <> FPColor(0, 0, 0, 0) Then
+      sTemp := sTemp + ' fo:background-color="#'+FPColorToRGBHexString(oRow.BackgroundColor)+'"';
+
+    If oRow.Height<>0 Then
+      sTemp := sTemp + ' style:row-height="'+FloatToODTText(oRow.Height)+'mm"';
+
+    if Not oRow.AllowSplitAcrossPage Then
+      sTemp := sTemp + ' fo:keep-together="always"';
+//    else
+//      sTemp := sTemp + ' fo:keep-together="auto"';
+
+    // Only define the style if it is required...
+    If sTemp<>'' Then
+    begin
+      AddStyle('<style:style style:name="'+sRowStyle+'" style:family="table-row">');
+      AddStyle('  <style:table-row-properties '+sTemp+'/>');
+      AddStyle('</style:style>');
+
+      AddBody('  <table:table-row table:style-name="'+sRowStyle+'">');
+    end
+    Else
+      AddBody('  <table:table-row>');
+
+    For iCell := 0 To oRow.GetCellCount-1 Do
+    Begin
+      oCell := oRow.GetCell(iCell);
+
+      sTemp := '';
+      sCellStyle := Format('%s.Cell_%dx%d', [sTableStyle, iRow + 1, iCell + 1]);
+
+(*    // I cannot find a mechanism for setting cell width in ODT...
+      If oCell.PreferredWidth.Value<>0 Then
+      Begin
+        Case oCell.PreferredWidth.Units Of
+          dimMillimeter: sTemp := sTemp + 'style:cell-width="'+FloatToODTText(oCell.PreferredWidth)+'mm"';
+          dimPoint:      sTemp := sTemp + 'style:cell-width="'+FloatToODTText(oCell.PreferredWidth)+'pt"';
+          dimPercent:    sTemp := sTemp + 'style:rel-cell-width="'+FloatToODTText(65535 * oCell.PreferredWidth / 100)+'*"';
+        End;
+      end;
+*)
+      // Top is default in LibreOffice Write
+      If oCell.VerticalAlignment<>vaTop Then
+        sTemp := sTemp + ' style:vertical-align="'+LU_V_ALIGN[oCell.VerticalAlignment]+'"';
+
+      if oCell.BackgroundColor <> FPColor(0, 0, 0, 0) Then
+        sTemp := sTemp + ' fo:background-color="#'+FPColorToRGBHexString(oCell.BackgroundColor)+'"';
+
+      sTemp := sTemp + ' ' + BordersToString(ATable.Borders, oCell.Borders,
+                                             iRow=0, iRow=ATable.GetRowCount-1,
+                                             iCell=0, iCell=oRow.GetCellCount-1);
+
+      sTemp2 := '';
+
+      If oCell.SpannedCols>1 Then
+        sTemp2 := 'table:number-columns-spanned="'+IntToStr(oCell.SpannedCols)+'" ';
+
+      // Only define the style if it is required...
+      sTemp := Trim(sTemp);
+      if sTemp<>'' Then
+      begin
+        AddStyle('<style:style style:name="'+sCellStyle+'" style:family="table-cell">');
+        AddStyle('  <style:table-cell-properties '+sTemp+'/>');
+        AddStyle('</style:style>');
+
+        AddBody('    <table:table-cell table:style-name="'+sCellStyle+'" '+sTemp2+'office:value-type="string">');
+      end
+      Else
+        AddBody('    <table:table-cell '+sTemp2+'office:value-type="string">');
+
+      FContent := FContent + '          ';
+
+      // oCell is a TvRichText descendant, so process it similarly...
+      for k := 0 to oCell.GetEntitiesCount()-1 do
+      begin
+        lCurEntity := oCell.GetEntity(k);
+
+        if (lCurEntity is TvParagraph) then
+          WriteParagraph(TvParagraph(lCurEntity), ACurPage, AData);
+        if (lCurEntity is TvBulletList) then
+          WriteBulletList(TvBulletList(lCurEntity), ACurPage, AData);
+        if (lCurEntity is TvTable) then
+          WriteTable(TvTable(lCurEntity), ACurPage, AData);
+      end;
+
+      AddBody('    </table:table-cell>');
+
+      // FPVectorial doesn't directly support covered (merged) cells,
+      // instead they're implied by SpannedCols count > 1
+      for k := 2 to oCell.SpannedCols Do
+        AddBody('<table:covered-table-cell />');
+    end;
+
+    AddBody('  </table:table-row>');
+  end;
+  AddBody('</table:table>');
 end;
 
 procedure TvODTVectorialWriter.WriteBulletList(AEntity: TvBulletList;
@@ -1071,6 +1456,9 @@ begin
   FPointSeparator := DefaultFormatSettings;
   FPointSeparator.DecimalSeparator := '.';
   FPointSeparator.ThousandSeparator := '#';// disable the thousand separator
+
+  FAutomaticStyles := '';
+  FMasterStyles := '';
 end;
 
 destructor TvODTVectorialWriter.Destroy;
@@ -1094,8 +1482,10 @@ begin
   WriteManifestRDF();
   WriteMeta();
   WriteSettings();
-  WriteStyles(AData);
+  // Reversed order of Document and Styles to allow embedding Automatic Styles
+  // built up during WriteDocument...
   WriteDocument(AData);
+  WriteStyles(AData);
 
   { Write the data to streams }
 
@@ -1113,11 +1503,14 @@ begin
   try
     FZip.FileName := AFileName;
 
+    // MimeType must be first file, and should be uncompressed
+    // TODO: CompressionLevel is not working.  Bug, or misuse?
+    FZip.Entries.AddFileEntry(FSMimetype, OPENDOC_PATH_MIMETYPE).CompressionLevel:=clNone;
+
     FZip.Entries.AddFileEntry(FSMeta, OPENDOC_PATH_META);
     FZip.Entries.AddFileEntry(FSSettings, OPENDOC_PATH_SETTINGS);
     FZip.Entries.AddFileEntry(FSStyles, OPENDOC_PATH_STYLES);
     FZip.Entries.AddFileEntry(FSContent, OPENDOC_PATH_CONTENT);
-    FZip.Entries.AddFileEntry(FSMimetype, OPENDOC_PATH_MIMETYPE);
     FZip.Entries.AddFileEntry(FSMetaInfManifest, OPENDOC_PATH_METAINF_MANIFEST);
     FZip.Entries.AddFileEntry(FSManifestRDF, OPENDOC_PATH_MANIFESTRDF);
 

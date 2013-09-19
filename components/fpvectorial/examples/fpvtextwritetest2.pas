@@ -50,7 +50,8 @@ Begin
     Vec.AddStandardTextDocumentStyles(vfODT);
 
     Vec.StyleTextBody.MarginRight:=10;
-    Vec.StyleTextBody.SetElements:= Vec.StyleTextBody.SetElements + [sseMarginRight];
+    Vec.StyleTextBody.MarginLeft:=10;
+    Vec.StyleTextBody.SetElements:= Vec.StyleTextBody.SetElements + [sseMarginLeft, sseMarginRight];
 
     // Until a Template is available, create the Bold Style ourselves
     BoldTextStyle := Vec.AddStyle();
@@ -338,11 +339,6 @@ Begin
       CurParagraph := CurCell.AddParagraph;
       CurParagraph.Style := Center2;
 
-      Case j of
-        0: CurParagraph.LocalAlignment := vsaLeft;
-        1: CurParagraph.LocalAlignment := vsaRight;
-      end;
-
       CurParagraph.AddText(Format('Header %d', [j])).Style := BoldTextStyle
     End;
 
@@ -366,11 +362,6 @@ Begin
 
         CurParagraph := CurCell.AddParagraph;
         CurParagraph.Style := Center2;
-
-        Case j of
-          0: CurParagraph.LocalAlignment := vsaLeft;
-          1: CurParagraph.LocalAlignment := vsaRight;
-        end;
 
         If (iMax=3) And (j=3) Then
         Begin
