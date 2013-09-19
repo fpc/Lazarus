@@ -621,6 +621,7 @@ begin
     Categ:='Other';
     AddDefaultCategory(Categ);
     AddFunc(Categ, 'Ptr','Pointer($1)' ,'','');
+    AddFunc(Categ, 'RecreateWnd','RecreateWnd(Self)' ,'LCL', 'Controls');
   end;
 end;
 
