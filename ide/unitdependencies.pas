@@ -68,6 +68,7 @@ type
   public
     SCCNode: TUDSCCNode;
     function GetSCCNode: TUDSCCNode;
+    function HasImplementationUses: boolean;
     destructor Destroy; override;
   end;
 
@@ -102,6 +103,9 @@ type
     Identifier: string; // GroupName, Directory, Filename
     Group: string;
     HasChildren: boolean;
+    IntfCycle: boolean;
+    ImplCycle: boolean;
+    HasImplementationUses: boolean;
   end;
 
   { TUDNode }
@@ -178,9 +182,6 @@ type
     procedure AllUnitsSearchPrevSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
-    procedure AllUnitsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
-      Node: TTreeNode; {%H-}State: TCustomDrawState; Stage: TCustomDrawStage;
-      var {%H-}PaintImages, {%H-}DefaultDraw: Boolean);
     procedure RefreshButtonClick(Sender: TObject);
     procedure SelUnitsTreeViewExpanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
@@ -228,6 +229,8 @@ type
     fImgIndexPackage: integer;
     fImgIndexDirectory: integer;
     fImgIndexOverlayImplUses: integer;
+    fImgIndexOverlayIntfCycle: integer;
+    fImgIndexOverlayImplCycle: integer;
     fAllUnitsTVSearchStartNode: TTreeNode;
     fSelUnitsTVSearchStartNode: TTreeNode;
     function CreateAllUnitsTree: TUDNode;
@@ -388,6 +391,17 @@ begin
   Result:=SCCNode;
 end;
 
+function TUDUnit.HasImplementationUses: boolean;
+var
+  i: Integer;
+begin
+  Result:=false;
+  if UsesUnits=nil then exit;
+  for i:=0 to UsesUnits.Count-1 do
+    if TUDUses(UsesUnits[i]).InImplementation then
+      exit(true);
+end;
+
 destructor TUDUnit.Destroy;
 begin
   FreeAndNil(SCCNode);
@@ -541,6 +555,8 @@ begin
   fImgIndexPackage   := IDEImages.LoadImage(16, 'pkg_required');
   fImgIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
   fImgIndexOverlayImplUses := IDEImages.LoadImage(16, 'pkg_core_overlay');
+  fImgIndexOverlayIntfCycle := IDEImages.LoadImage(16, 'ce_cycleinterface');
+  fImgIndexOverlayImplCycle := IDEImages.LoadImage(16, 'ce_cycleimplementation');
   AllUnitsTreeView.Images:=IDEImages.Images_16;
   SelUnitsTreeView.Images:=IDEImages.Images_16;
 
@@ -599,40 +615,6 @@ procedure TUnitDependenciesWindow.AllUnitsShowGroupNodesSpeedButtonClick(
 begin
   Include(FFlags,udwNeedUpdateAllUnitsTreeView);
   IdleConnected:=true;
-end;
-
-procedure TUnitDependenciesWindow.AllUnitsTreeViewAdvancedCustomDrawItem(
-  Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
-  Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
-var
-  TV: TTreeView;
-  NodeRect: Classes.TRect;
-  x: Integer;
-  UDNode: TUDNode;
-  UGUnit: TUGUnit;
-  UsesImplCnt: Integer;
-  i: Integer;
-  y: Integer;
-begin
-  if Stage<>cdPostPaint then exit;
-  TV:=Sender as TTreeView;
-  if not (TObject(Node.Data) is TUDNode) then exit;
-  UDNode:=TUDNode(Node.Data);
-  if UDNode.Typ<>udnUnit then exit;
-  UGUnit:=UsesGraph.GetUnit(UDNode.Identifier,false);
-  if UGUnit=nil then exit;
-  if (UGUnit.UsesUnits=nil) then exit;
-  UsesImplCnt:=0;
-  for i:=0 to UGUnit.UsesUnits.Count-1 do begin
-    if TUGUses(UGUnit.UsesUnits[i]).InImplementation then
-      inc(UsesImplCnt);
-  end;
-  if UsesImplCnt=0 then exit;
-
-  NodeRect:=Node.DisplayRect(False);
-  x:=Node.DisplayIconLeft+1;
-  y:=(NodeRect.Top+NodeRect.Bottom-TV.Images.Height) div 2;
-  TV.Images.Draw(TV.Canvas,x,y,fImgIndexOverlayImplUses);
 end;
 
 procedure TUnitDependenciesWindow.RefreshButtonClick(Sender: TObject);
@@ -709,7 +691,7 @@ procedure TUnitDependenciesWindow.UnitsTreeViewShowHint(Sender: TObject;
     ImplCnt:=0;
     if List=nil then exit;
     for i:=0 to List.Count-1 do
-      if TUGUses(List[i]).InImplementation then
+      if TUDUses(List[i]).InImplementation then
         inc(ImplCnt)
       else
         inc(IntfCnt);
@@ -1075,12 +1057,12 @@ begin
     Filename:=AProject.Files[i].Filename;
     CurUnit:=UsesGraph.GetUnit(Filename,false);
     if CurUnit=nil then continue;
-    if not (CurUnit is TUGGroupUnit) then begin
+    if not (CurUnit is TUDUnit) then begin
       debugln(['TUnitDependenciesDialog.CreateProjectGroup WARNING: ',CurUnit.Filename,' ',CurUnit.Classname,' should be TUGGroupUnit']);
       continue;
     end;
-    if TUGGroupUnit(CurUnit).Group<>nil then continue;
-    Result.AddUnit(TUGGroupUnit(CurUnit));
+    if TUDUnit(CurUnit).Group<>nil then continue;
+    Result.AddUnit(TUDUnit(CurUnit));
   end;
 end;
 
@@ -1100,9 +1082,9 @@ begin
   for i:=0 to APackage.FileCount-1 do begin
     Filename:=APackage.Files[i].GetFullFilename;
     CurUnit:=UsesGraph.GetUnit(Filename,false);
-    if CurUnit is TUGGroupUnit then begin
-      if TUGGroupUnit(CurUnit).Group<>nil then continue;
-      Result.AddUnit(TUGGroupUnit(CurUnit));
+    if CurUnit is TUDUnit then begin
+      if TUDUnit(CurUnit).Group<>nil then continue;
+      Result.AddUnit(TUDUnit(CurUnit));
     end;
   end;
 end;
@@ -1130,7 +1112,7 @@ procedure TUnitDependenciesWindow.CreateFPCSrcGroups;
 var
   FPCSrcDir: String;
   Node: TAVLTreeNode;
-  CurUnit: TUGGroupUnit;
+  CurUnit: TUDUnit;
   Directory: String;
   Grp: TUGGroup;
   BaseDir: String;
@@ -1142,9 +1124,9 @@ begin
   // if in packages/<name>, put in group GroupPrefixFPCSrc+<name>
   Node:=UsesGraph.FilesTree.FindLowest;
   while Node<>nil do begin
-    CurUnit:=TUGGroupUnit(Node.Data);
+    CurUnit:=TUDUnit(Node.Data);
     Node:=UsesGraph.FilesTree.FindSuccessor(Node);
-    if TUGGroupUnit(CurUnit).Group<>nil then continue;
+    if TUDUnit(CurUnit).Group<>nil then continue;
     if CompareFilenames(FPCSrcDir,LeftStr(CurUnit.Filename,length(FPCSrcDir)))<>0
     then
       continue;
@@ -1160,14 +1142,14 @@ begin
     if Grp.BaseDir='' then
       Grp.BaseDir:=BaseDir;
     //debugln(['TUnitDependenciesDialog.CreateFPCSrcGroups ',Grp.Name]);
-    Grp.AddUnit(TUGGroupUnit(CurUnit));
+    Grp.AddUnit(TUDUnit(CurUnit));
   end;
 end;
 
 procedure TUnitDependenciesWindow.GuessGroupOfUnits;
 var
   Node: TAVLTreeNode;
-  CurUnit: TUGGroupUnit;
+  CurUnit: TUDUnit;
   Filename: String;
   Owners: TFPList;
   i: Integer;
@@ -1179,7 +1161,7 @@ begin
   LastDirectory:='.';
   Node:=UsesGraph.FilesTree.FindLowest;
   while Node<>nil do begin
-    CurUnit:=TUGGroupUnit(Node.Data);
+    CurUnit:=TUDUnit(Node.Data);
     if CurUnit.Group=nil then begin
       Filename:=CurUnit.Filename;
       //debugln(['TUnitDependenciesDialog.GuessGroupOfUnits no group for ',Filename]);
@@ -1206,7 +1188,7 @@ begin
         Group:=Groups.GetGroup(GroupNone,true);
         //debugln(['TUnitDependenciesDialog.GuessGroupOfUnits ',Group.Name]);
       end;
-      Group.AddUnit(TUGGroupUnit(CurUnit));
+      Group.AddUnit(TUDUnit(CurUnit));
     end;
     Node:=UsesGraph.FilesTree.FindSuccessor(Node);
   end;
@@ -1377,7 +1359,7 @@ var
   NodeText: String;
   RootNode: TUDNode;
   Filter: String;
-  UGUnit: TUGGroupUnit;
+  UGUnit: TUDUnit;
   AVLNode: TAVLTreeNode;
   Group: TUGGroup;
   GroupNode: TUDNode;
@@ -1393,7 +1375,7 @@ begin
   ShowDirectories:=AllUnitsShowDirsSpeedButton.Down;
   RootNode:=TUDNode.Create;
   for AVLNode in UsesGraph.FilesTree do begin
-    UGUnit:=TUGGroupUnit(AVLNode.Data);
+    UGUnit:=TUDUnit(AVLNode.Data);
     Filename:=UGUnit.Filename;
     NodeText:=ExtractFileName(Filename);
     if (Filter<>'') and (Pos(Filter, UTF8LowerCase(NodeText))<1) then
@@ -1439,6 +1421,9 @@ begin
     Node:=ParentNode.GetNode(udnUnit, NodeText, true);
     Node.Identifier:=UGUnit.Filename;
     Node.Group:=GroupName;
+    Node.IntfCycle:=UGUnit.GetSCCNode.InIntfCycle;
+    Node.ImplCycle:=UGUnit.GetSCCNode.InImplCycle;
+    Node.HasImplementationUses:=UGUnit.HasImplementationUses;
   end;
   Result:=RootNode;
 end;
@@ -1541,16 +1526,18 @@ procedure TUnitDependenciesWindow.AddUsesSubNodes(UDNode: TUDNode);
     NodeTyp: TUDNodeType);
   var
     i: Integer;
-    UGUses: TUGUses;
+    UGUses: TUDUses;
     NodeText: String;
     SectionUDNode: TUDNode;
     InImplementation: Boolean;
     UsedBy: Boolean;
-    OtherUnit: TUGGroupUnit;
+    OtherUnit: TUDUnit;
     Filename: String;
     UDNode: TUDNode;
     GroupName: String;
     Cnt: Integer;
+    HasIntfCycle: Boolean;
+    HasImplCycle: Boolean;
   begin
     if ParentUDNode=nil then exit;
     if UsesList=nil then exit;
@@ -1561,9 +1548,13 @@ procedure TUnitDependenciesWindow.AddUsesSubNodes(UDNode: TUDNode);
 
     // count the number of uses
     Cnt:=0;
+    HasIntfCycle:=false;
+    HasImplCycle:=false;
     for i:=0 to UsesList.Count-1 do begin
-      UGUses:=TUGUses(UsesList[i]);
+      UGUses:=TUDUses(UsesList[i]);
       if UGUses.InImplementation<>InImplementation then continue;
+      HasIntfCycle:=HasIntfCycle or UGUses.GetSCCNode.InIntfCycle;
+      HasImplCycle:=HasImplCycle or UGUses.GetSCCNode.InImplCycle;
       inc(Cnt);
     end;
     if Cnt=0 then exit;
@@ -1579,15 +1570,17 @@ procedure TUnitDependenciesWindow.AddUsesSubNodes(UDNode: TUDNode);
     else exit;
     end;
     SectionUDNode:=ParentUDNode.GetNode(NodeTyp,NodeText,true);
+    SectionUDNode.IntfCycle:=HasIntfCycle;
+    SectionUDNode.ImplCycle:=HasImplCycle;
 
     // create unit nodes
     for i:=0 to UsesList.Count-1 do begin
-      UGUses:=TUGUses(UsesList[i]);
+      UGUses:=TUDUses(UsesList[i]);
       if UGUses.InImplementation<>InImplementation then continue;
       if UsedBy then
-        OtherUnit:=TUGGroupUnit(UGUses.Owner)
+        OtherUnit:=TUDUnit(UGUses.Owner)
       else
-        OtherUnit:=TUGGroupUnit(UGUses.UsesUnit);
+        OtherUnit:=TUDUnit(UGUses.UsesUnit);
       Filename:=OtherUnit.Filename;
       NodeText:=ExtractFileName(Filename);
       UDNode:=SectionUDNode.GetNode(udnUnit,NodeText,true);
@@ -1600,16 +1593,18 @@ procedure TUnitDependenciesWindow.AddUsesSubNodes(UDNode: TUDNode);
       UDNode.HasChildren:=
          ((OtherUnit.UsedByUnits<>nil) and (OtherUnit.UsedByUnits.Count>0))
          or ((OtherUnit.UsesUnits<>nil) and (OtherUnit.UsesUnits.Count>0));
+      UDNode.IntfCycle:=UGUses.GetSCCNode.InIntfCycle;
+      UDNode.ImplCycle:=UGUses.GetSCCNode.InImplCycle;
     end;
   end;
 
 var
   Filename: String;
-  UGUnit: TUGGroupUnit;
+  UGUnit: TUDUnit;
 begin
   // add connected units
   Filename:=UDNode.Identifier;
-  UGUnit:=TUGGroupUnit(UsesGraph.GetUnit(Filename,false));
+  UGUnit:=TUDUnit(UsesGraph.GetUnit(Filename,false));
   if UGUnit<>nil then begin
     AddUses(UDNode,UGUnit.UsesUnits,udnInterface);
     AddUses(UDNode,UGUnit.UsesUnits,udnImplementation);
@@ -1855,8 +1850,8 @@ var
   GroupObj: TObject;
   GraphGroup: TLvlGraphNode;
   UnitNode: TAVLTreeNode;
-  GrpUnit: TUGGroupUnit;
-  UsedUnit: TUGGroupUnit;
+  GrpUnit: TUDUnit;
+  UsedUnit: TUDUnit;
 begin
   Exclude(FFlags,udwNeedUpdateGroupsLvlGraph);
   GroupsLvlGraph.BeginUpdate;
@@ -1896,11 +1891,11 @@ begin
       // add FPC source dependencies
       UnitNode:=Group.Units.FindLowest;
       while UnitNode<>nil do begin
-        GrpUnit:=TUGGroupUnit(UnitNode.Data);
+        GrpUnit:=TUDUnit(UnitNode.Data);
         UnitNode:=Group.Units.FindSuccessor(UnitNode);
         if GrpUnit.UsesUnits=nil then continue;
         for i:=0 to GrpUnit.UsesUnits.Count-1 do begin
-          UsedUnit:=TUGGroupUnit(TUGUses(GrpUnit.UsesUnits[i]).UsesUnit);
+          UsedUnit:=TUDUnit(TUDUses(GrpUnit.UsesUnits[i]).UsesUnit);
           if (UsedUnit.Group=nil) or (UsedUnit.Group=Group) then continue;
           Graph.GetEdge(GraphGroup,Graph.GetNode(UsedUnit.Group.Name,true),true);
         end;
@@ -1922,15 +1917,15 @@ var
   NewUnits: TFilenameToPointerTree;
   UnitGroup: TUGGroup;
   AVLNode: TAVLTreeNode;
-  GroupUnit: TUGGroupUnit;
+  GroupUnit: TUDUnit;
   i: Integer;
   HasChanged: Boolean;
   Graph: TLvlGraph;
-  CurUses: TUGUses;
+  CurUses: TUDUses;
   SourceGraphNode: TLvlGraphNode;
   TargetGraphNode: TLvlGraphNode;
   NewGroups: TStringToPointerTree;
-  UsedUnit: TUGGroupUnit;
+  UsedUnit: TUDUnit;
 begin
   Exclude(FFlags,udwNeedUpdateUnitsLvlGraph);
   NewGroups:=TStringToPointerTree.Create(false);
@@ -1944,7 +1939,7 @@ begin
         NewGroups[UnitGroup.Name]:=UnitGroup;
         AVLNode:=UnitGroup.Units.FindLowest;
         while AVLNode<>nil do begin
-          GroupUnit:=TUGGroupUnit(AVLNode.Data);
+          GroupUnit:=TUDUnit(AVLNode.Data);
           NewUnits[GroupUnit.Filename]:=GroupUnit;
           AVLNode:=UnitGroup.Units.FindSuccessor(AVLNode);
         end;
@@ -1958,7 +1953,7 @@ begin
     i:=0;
     AVLNode:=NewUnits.Tree.FindLowest;
     while AVLNode<>nil do begin
-      GroupUnit:=TUGGroupUnit(NewUnits.GetNodeData(AVLNode)^.Value);
+      GroupUnit:=TUDUnit(NewUnits.GetNodeData(AVLNode)^.Value);
       if (Graph.NodeCount<=i) or (Graph.Nodes[i].Data<>Pointer(GroupUnit)) then
       begin
         HasChanged:=true;
@@ -1975,13 +1970,13 @@ begin
     Graph.Clear;
     AVLNode:=NewUnits.Tree.FindLowest;
     while AVLNode<>nil do begin
-      GroupUnit:=TUGGroupUnit(NewUnits.GetNodeData(AVLNode)^.Value);
+      GroupUnit:=TUDUnit(NewUnits.GetNodeData(AVLNode)^.Value);
       SourceGraphNode:=Graph.GetNode(UnitToCaption(GroupUnit),true);
       SourceGraphNode.Data:=GroupUnit;
       if GroupUnit.UsesUnits<>nil then begin
         for i:=0 to GroupUnit.UsesUnits.Count-1 do begin
-          CurUses:=TUGUses(GroupUnit.UsesUnits[i]);
-          UsedUnit:=TUGGroupUnit(CurUses.UsesUnit);
+          CurUses:=TUDUses(GroupUnit.UsesUnits[i]);
+          UsedUnit:=TUDUnit(CurUses.UsesUnit);
           if UsedUnit.Group=nil then continue;
           if not NewGroups.Contains(UsedUnit.Group.Name) then continue;
           TargetGraphNode:=Graph.GetNode(UnitToCaption(UsedUnit),true);
@@ -2016,6 +2011,14 @@ begin
     TVNode.ImageIndex:=GetImgIndex(UDNode);
     TVNode.SelectedIndex:=TVNode.ImageIndex;
     TVNode.HasChildren:=UDNode.HasChildren;
+    if UDNode.IntfCycle then
+      TVNode.OverlayIndex:=fImgIndexOverlayIntfCycle
+    else if UDNode.ImplCycle then
+      TVNode.OverlayIndex:=fImgIndexOverlayImplCycle
+    else if UDNode.HasImplementationUses then
+      TVNode.OverlayIndex:=fImgIndexOverlayImplUses;
+    //if TVNode.OverlayIndex>=0 then
+    //  debugln(['TUnitDependenciesWindow.CreateTVNodes ',TVNode.Text,' Overlay=',TVNode.OverlayIndex,' ',TV.Images.Count]);
     CreateTVNodes(TV,TVNode,UDNode,Expand);
     TVNode.Expanded:=Expand and (TVNode.Count>0);
     AVLNode:=ParentUDNode.ChildNodes.FindSuccessor(AVLNode);

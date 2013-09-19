@@ -9,7 +9,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object MainPageControl: TPageControl
     Left = 0
     Height = 407
@@ -218,7 +218,6 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           ShowHint = True
           ShowRoot = False
           TabOrder = 1
-          OnAdvancedCustomDrawItem = AllUnitsTreeViewAdvancedCustomDrawItem
           OnMouseDown = UnitsTreeViewMouseDown
           OnSelectionChanged = AllUnitsTreeViewSelectionChanged
           OnShowHint = UnitsTreeViewShowHint
