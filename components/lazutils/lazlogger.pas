@@ -112,6 +112,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Src: TLazLogger); override;
+    function CurrentIndentLevel: Integer; override;
     // A param on the commandline, that may contain the name (if not already set)
     // example/default: --debug-log=
     property  ParamForLogFileName: String read FParamForLogFileName write SetParamForLogFileName;
@@ -600,6 +601,11 @@ begin
     UseStdOut := TLazLoggerFile(Src).UseStdOut;
     CloseLogFileBetweenWrites := TLazLoggerFile(Src).CloseLogFileBetweenWrites;
   end;
+end;
+
+function TLazLoggerFile.CurrentIndentLevel: Integer;
+begin
+  Result := FDebugNestLvl;
 end;
 
 procedure TLazLoggerFile.AddBlockHandler(AHandler: TLazLoggerBlockHandler);

@@ -122,6 +122,7 @@ type
     procedure Init;
     procedure Finish;
 
+    function  CurrentIndentLevel: Integer; virtual;
     property  NestLvlIndent: Integer read FNestLvlIndent write SetNestLvlIndent;
     property  MaxNestPrefixLen: Integer read FMaxNestPrefixLen write SetMaxNestPrefixLen;
 
@@ -669,6 +670,11 @@ begin
   FIsInitialized := False;
 end;
 
+function TLazLogger.CurrentIndentLevel: Integer;
+begin
+  Result := 0;
+end;
+
 function TLazLogger.RegisterLogGroup(const AConfigName: String;
   ADefaulEnabled: Boolean): PLazLoggerLogGroup;
 begin
@@ -770,7 +776,8 @@ end;
 
 procedure TLazLogger.DebugLnEnter(Args: array of const);
 begin
-  DoDebugLn(ArgsToString(Args));
+  if high(Args) > low(Args) then
+    DoDebugLn(ArgsToString(Args));
   IncreaseIndent;
 end;
 
@@ -799,7 +806,8 @@ end;
 procedure TLazLogger.DebugLnExit(Args: array of const);
 begin
   DecreaseIndent;
-  DoDebugLn(ArgsToString(Args));
+  if high(Args) > low(Args) then
+    DoDebugLn(ArgsToString(Args));
 end;
 
 procedure TLazLogger.DebugLnExit(s: string; Args: array of const);

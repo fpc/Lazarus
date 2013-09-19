@@ -54,7 +54,22 @@ type
 function DbgsMemUsed(AFormat: String = '%0:d'): string;
 function DbgsTimeUsed(AFormat: String = '%0:n'): string;
 
+procedure DbgStartTimer(AName: String);
+procedure DbgStopTimer(AName: String);
+procedure DbgStartMemWatch(AName: String);
+procedure DbgStopMemWatch(AName: String);
+
+function DbgsMemUsed(AFormat: String; AName: String): string;
+function DbgsTimeUsed(AFormat: String; AName: String): string;
+
 implementation
+
+var
+  NamedMemWatches: TStringList = nil;
+  NamedTimer: TStringList = nil;
+  NamedMemWatchesData: Array of record Sum, Last: Int64; end;
+  NamedTimerData: array of record Sum, Last: QWord; end;
+
 
 function GetMemWatch: TLazLoggerBlockMemWatch;
 var
@@ -88,7 +103,7 @@ var
   i: Integer;
 begin
   Result := '';
-  i := DebugLogger.NestLvlIndent;
+  i := DebugLogger.CurrentIndentLevel;
   l := GetMemWatch;
   if l = nil then exit;
   try
@@ -104,13 +119,112 @@ var
   i: Integer;
 begin
   Result := '';
-  i := DebugLogger.NestLvlIndent;
+  i := DebugLogger.CurrentIndentLevel;
   l := GetTimer;
   if l = nil then exit;
   try
     Result := Format(AFormat, [l.TimeDiff[i]/1000, l.Nested[i]/1000, l.TimeDiff[i-1]/1000, l.Nested[i-1]/1000]);
   except
     Result := Format('%0:n %1:n', [l.TimeDiff[i]/1000, l.Nested[i]/1000, l.TimeDiff[i-1]/1000, l.Nested[i-1]/1000]);
+  end;
+end;
+
+procedure DbgStartTimer(AName: String);
+var
+  idx: Integer;
+begin
+  if NamedTimer = nil then begin
+    NamedTimer := TStringList.Create;
+    NamedTimer.Sorted := True;
+    NamedTimer.Duplicates := dupError;
+  end;
+  idx := NamedTimer.IndexOf(AName);
+  if idx < 0 then begin
+    idx := NamedTimer.AddObject(AName, TObject(length(NamedTimerData)));
+    SetLength(NamedTimerData, length(NamedTimerData) + 1);
+    NamedTimerData[length(NamedTimerData)-1].Sum := 0;
+  end;
+  idx := PtrInt(NamedTimer.Objects[idx]);
+  NamedTimerData[idx].Last := GetTickCount64;
+end;
+
+procedure DbgstopTimer(AName: String);
+var
+  idx: Integer;
+  t: QWord;
+begin
+  if NamedTimer = nil then exit;
+  idx := NamedTimer.IndexOf(AName);
+  if idx < 0 then exit;
+  idx := PtrInt(NamedTimer.Objects[idx]);
+  t := GetTickCount64;
+  if t >= NamedTimerData[idx].Last then
+    t := t - NamedTimerData[idx].Last
+  else // timer overflow
+    t := high(t) - NamedTimerData[idx].Last + t;
+  NamedTimerData[idx].Sum := NamedTimerData[idx].Last + t;
+end;
+
+procedure DbgStartMemWatch(AName: String);
+var
+  idx: Integer;
+begin
+  if NamedMemWatches = nil then begin
+    NamedMemWatches := TStringList.Create;
+    NamedMemWatches.Sorted := True;
+    NamedMemWatches.Duplicates := dupError;
+  end;
+  idx := NamedMemWatches.IndexOf(AName);
+  if idx < 0 then begin
+    idx := NamedMemWatches.AddObject(AName, TObject(length(NamedMemWatchesData)));
+    SetLength(NamedMemWatchesData, length(NamedMemWatchesData) + 1);
+    NamedMemWatchesData[length(NamedMemWatchesData)-1].Sum := 0;
+  end;
+  idx := PtrInt(NamedMemWatches.Objects[idx]);
+  NamedMemWatchesData[idx].Last := GetHeapStatus.TotalAllocated;
+end;
+
+procedure DbgStopMemWatch(AName: String);
+var
+  idx: Integer;
+begin
+  if NamedMemWatches = nil then exit;
+  idx := NamedMemWatches.IndexOf(AName);
+  if idx < 0 then exit;
+  idx := PtrInt(NamedMemWatches.Objects[idx]);
+  NamedMemWatchesData[idx].Sum := NamedMemWatchesData[idx].Sum + (GetHeapStatus.TotalAllocated - NamedMemWatchesData[idx].Last);
+  NamedMemWatchesData[idx].Last := 0;
+end;
+
+function DbgsMemUsed(AFormat: String; AName: String): string;
+var
+  idx: Integer;
+begin
+  Result := '';
+  if NamedMemWatches = nil then exit;
+  idx := NamedMemWatches.IndexOf(AName);
+  if idx < 0 then exit;
+  idx := PtrInt(NamedMemWatches.Objects[idx]);
+  try
+    Result := Format(AFormat, [NamedMemWatchesData[idx].Sum]);
+  except
+    Result := Format('%d', [NamedMemWatchesData[idx].Sum]);
+  end;
+end;
+
+function DbgsTimeUsed(AFormat: String; AName: String): string;
+var
+  idx: Integer;
+begin
+  Result := '';
+  if NamedTimer = nil then exit;
+  idx := NamedTimer.IndexOf(AName);
+  if idx < 0 then exit;
+  idx := PtrInt(NamedTimer.Objects[idx]);
+  try
+    Result := Format(AFormat, [NamedTimerData[idx].Sum/1000]);
+  except
+    Result := Format('%n', [NamedTimerData[idx].Sum /1000]);
   end;
 end;
 
@@ -228,6 +342,12 @@ end;
 initialization
   DebugLogger.AddBlockHandler(TLazLoggerBlockTimer.Create);
   DebugLogger.AddBlockHandler(TLazLoggerBlockMemWatch.Create);
+
+finalization
+  FreeAndNil(NamedTimer);
+  FreeAndNil(NamedMemWatches);
+  NamedTimerData := nil;
+  NamedMemWatchesData := nil;
 
 end.
 
