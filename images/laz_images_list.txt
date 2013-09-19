@@ -152,6 +152,8 @@ codeexplorer/ce_type.png
 codeexplorer/ce_unimplemented.png
 codeexplorer/ce_unit.png
 codeexplorer/ce_variable.png
+codeexplorer/ce_cycleinterface.png
+codeexplorer/ce_cycleimplemenation.png
 codeexplorer/show_source.png
 codeexplorer/show_category.png
 designer/anchor_bottom.png

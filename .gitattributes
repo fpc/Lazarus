@@ -5325,6 +5325,8 @@ images/bookmark_list.txt svneol=native#text/plain
 images/btn_downarrow.png -text
 images/codeexplorer/ce_class.png -text
 images/codeexplorer/ce_const.png -text
+images/codeexplorer/ce_cycleimplemenation.png -text svneol=unset#image/png
+images/codeexplorer/ce_cycleinterface.png -text svneol=unset#image/png
 images/codeexplorer/ce_default.png -text
 images/codeexplorer/ce_deprecated.png -text
 images/codeexplorer/ce_experimental.png -text
