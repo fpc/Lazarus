@@ -4882,6 +4882,7 @@ var
   CurTextRect: TRect;
   DrawState: TCustomDrawState;
   PaintImages: boolean;
+  OverlayIndex: Integer;
 begin
   NodeRect := Node.DisplayRect(False);
   if (NodeRect.Bottom < 0) or (NodeRect.Top >= (ClientHeight - ScrollBarWidth)) then
@@ -4937,13 +4938,27 @@ begin
       begin
         if PaintImages then
         begin
-      	  if (Node.OverlayIndex < 0) or (Node.OverlayIndex>=Images.Count) then
+      	  if (Node.OverlayIndex >= 0) then begin
+            OverlayIndex:=Node.OverlayIndex;
+            if Images.HasOverlays then begin
+              Images.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
+                 ImgIndex, OverlayIndex, Node.FNodeEffect);
+            end else begin
+              // draw the Overlay using the image from the list
+              // set an Overlay
+              Images.OverLay(OverlayIndex,0);
+              // draw overlay
+              Images.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
+                 ImgIndex, 0, Node.FNodeEffect);
+              // reset the Overlay
+              Images.OverLay(-1,0);
+            end;
+          end
+          else begin
             Images.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
-               ImgIndex, Node.FNodeEffect)
-      	  else
-            Images.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
-               ImgIndex, Node.OverlayIndex, Node.FNodeEffect);
-        end;
+               ImgIndex, Node.FNodeEffect);
+          end;
+       end;
         inc(x, Images.Width + 2);
       end;
     end;

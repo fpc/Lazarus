@@ -119,6 +119,7 @@ type
     FChanged: boolean;
     FUpdateCount: integer;
     FOverlays: array[TOverlay] of Integer;
+    fHasOverlays: boolean;
 
     procedure AllocData(ACount: Integer);
     function  GetReference: TWSCustomImageListReference;
@@ -174,10 +175,10 @@ type
       AEnabled: Boolean = True); overload;
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
       ADrawEffect: TGraphicsDrawEffect); overload; virtual;
-    procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; AEnabled: Boolean = True);
-    procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; ADrawEffect: TGraphicsDrawEffect);
+    procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; AEnabled: Boolean = True); overload;
+    procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; ADrawEffect: TGraphicsDrawEffect); overload;
     procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; ADrawingStyle:
-      TDrawingStyle; AImageType: TImageType; ADrawEffect: TGraphicsDrawEffect); virtual;
+      TDrawingStyle; AImageType: TImageType; ADrawEffect: TGraphicsDrawEffect); virtual; overload;
     procedure FillDescription(out ADesc: TRawImageDescription);
 
     procedure GetBitmap(Index: Integer; Image: TCustomBitmap); overload;
@@ -195,6 +196,7 @@ type
     procedure InsertMasked(Index: Integer; AImage: TCustomBitmap; MaskColor: TColor);
     procedure Move(ACurIndex, ANewIndex: Integer);
     procedure Overlay(AIndex: Integer; Overlay: TOverlay);
+    property HasOverlays: boolean read fHasOverlays;
     procedure Replace(AIndex: Integer; AImage, AMask: TCustomBitmap);
     procedure ReplaceMasked(Index: Integer; NewImage: TCustomBitmap; MaskColor: TColor);
     procedure RegisterChanges(Value: TChangeLink);

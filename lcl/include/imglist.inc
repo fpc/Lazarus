@@ -1361,8 +1361,21 @@ begin
 end;
 
 procedure TCustomImageList.Overlay(AIndex: Integer; Overlay: TOverlay);
+var
+  i: Integer;
 begin
   FOverlays[Overlay] := AIndex;
+  if AIndex>=0 then
+    fHasOverlays:=true
+  else if fHasOverlays then begin
+    fHasOverlays:=false;
+    for i:=Low(TOverlay) to high(TOverlay) do
+    begin
+      if FOverlays[i]<0 then continue;
+      fHasOverlays:=true;
+      break;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
