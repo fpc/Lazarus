@@ -45,10 +45,10 @@ uses
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
   FormEditingIntf, ComponentReg,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, IDECommands,
-  NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,
-  TabOrderDlg, AnchorEditor, DesignerProcs, CustomFormEditor,  AskCompNameDlg,
-  ControlSelection, ChangeClassDialog, EditorOptions;
+  LazarusIDEStrConsts, EnvironmentOpts, IDECommands, LazIDEIntf, ProjectIntf,
+  LazFileUtils, NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg,
+  ScaleCompsDlg, TabOrderDlg, AnchorEditor, DesignerProcs, CustomFormEditor,
+  AskCompNameDlg, ControlSelection, ChangeClassDialog, EditorOptions;
 
 type
   TDesigner = class;
@@ -400,8 +400,6 @@ procedure RegisterStandardDesignerMenuItems;
 
 
 implementation
-
-uses SourceFileManager;
 
 type
   TCustomFormAccess = class(TCustomForm);
@@ -3483,6 +3481,8 @@ var
   MultiCompsAreSelected: boolean;
   OneControlSelected: Boolean;
   SelectionVisible: Boolean;
+  SrcFile: TLazProjectFile;
+  UnitIsVirtual: Boolean;
 
   procedure UpdateChangeParentMenu;
   var
@@ -3537,6 +3537,7 @@ var
   end;
   
 begin
+  SrcFile:=LazarusIDE.GetProjectFileWithDesigner(Self);
   ControlSelIsNotEmpty:=(ControlSelection.Count>0)
                     and (ControlSelection.SelectionForm=Form);
   LookupRootIsSelected:=ControlSelection.LookupRootSelected;
@@ -3546,6 +3547,7 @@ begin
                     and not LookupRootIsSelected;
   OneControlSelected := ControlSelIsNotEmpty and ControlSelection[0].IsTControl;
   MultiCompsAreSelected := CompsAreSelected and (ControlSelection.Count>1);
+  UnitIsVirtual:=(SrcFile=nil) or not FilenameIsAbsolute(SrcFile.Filename);
 
   AddComponentEditorMenuItems(PopupMenuComponentEditor,true);
 
@@ -3571,7 +3573,7 @@ begin
 
   DesignerMenuChangeClass.Enabled := CompsAreSelected and (ControlSelection.Count = 1);
   // Disable ViewLFM menu item for virtual units. There is no form file yet.
-  DesignerMenuViewLFM.Enabled := not SourceFileMgr.DesignerUnitIsVirtual(FLookupRoot);
+  DesignerMenuViewLFM.Enabled := UnitIsVirtual;
   UpdateChangeParentMenu;
 
   DesignerMenuSnapToGridOption.Checked := EnvironmentOptions.SnapToGrid;
