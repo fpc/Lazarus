@@ -35,6 +35,7 @@
 unit FpDbgDwarf;
 
 {$mode objfpc}{$H+}
+//{$INLINE OFF}
 
 interface
 
@@ -109,9 +110,26 @@ type
     Children: Boolean;
   end;
 
+  (* Link, can either be
+     - "Next Sibling" (for the parent): Link will be greater than current index
+     - "Parent": Link will be smaller than current index
+
+     By Default link is "Parent".
+     A first child does not need a "Parent" link (Parent is always at CurrentIndex - 1),
+      it will therefore store "Parent"."Next Sibling"
+     A first Child of a parent with no Next sibling, has Link = Parent
+
+     "Next Sibling" is either CurrentIndex + 1 (no children), or can be found via
+      the first childs link.
+     A Sibling has the same Parent. (If there is no child, and CurrentIndex+1 has
+      a diff parent, then there is no Nexn)
+
+     TopLevel Scopes have Link=-1
+  *)
   TDwarfScopeInfoRec = record
-    Parent: Integer;
-    Next:   Integer;
+    //Parent: Integer;
+    //Next:   Integer;
+    Link: Integer;
     Entry: Pointer;
   end;
   //PDwarfScopeInfoRec = ^TDwarfScopeInfoRec;
@@ -138,7 +156,7 @@ type
     function GetNextIndex: Integer; inline;
     function GetParent: TDwarfScopeInfo; inline;
     procedure SetIndex(AIndex: Integer);
-    function CreateScopeForEntry(AEntry: Pointer; AParent: Integer): Integer;
+    function CreateScopeForEntry(AEntry: Pointer; ALink: Integer): Integer;
   public
     procedure Init(AScopeList: PDwarfScopeList);
     function HasParent: Boolean; inline;
@@ -839,15 +857,29 @@ function TDwarfScopeInfo.GetNext: TDwarfScopeInfo;
 begin
   Result.Init(FScopeList);
   if IsValid then
-    Result.Index := FScopeList^.List[FIndex].Next;
+    Result.Index := GetNextIndex;
 end;
 
 function TDwarfScopeInfo.GetNextIndex: Integer;
+var
+  l: Integer;
 begin
-  if IsValid then
-    Result := FScopeList^.List[FIndex].Next
-  else
-    Result := -1;
+  Result := -1;
+  if (not IsValid) or (FScopeList^.HighestKnown = FIndex) then exit;
+  Result := FScopeList^.List[FIndex + 1].Link;
+  assert(Result <= FScopeList^.HighestKnown);
+  if (Result > FIndex + 1) then       // Index+1 is First Child, with pointer to Next
+    exit;
+
+  l := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
+  assert(l <= FScopeList^.HighestKnown);
+  if l > Index then l := Index - 1;   // This is a first child, make l = parent
+  if (Result = l) then begin          // Index + 1 has same parent
+    Result := Index + 1;
+    exit;
+  end;
+
+  Result := -1;
 end;
 
 function TDwarfScopeInfo.GetEntry: Pointer;
@@ -875,10 +907,16 @@ begin
 end;
 
 function TDwarfScopeInfo.GetParent: TDwarfScopeInfo;
+var
+  l: Integer;
 begin
   Result.Init(FScopeList);
-  if IsValid then
-    Result.Index := FScopeList^.List[FIndex].Parent;
+  if not IsValid then exit;
+  l := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
+  assert(l <= FScopeList^.HighestKnown);
+  if l > Index then
+    l := Index - 1;   // This is a first child, make l = parent
+  Result.Index := l;
 end;
 
 procedure TDwarfScopeInfo.SetIndex(AIndex: Integer);
@@ -887,15 +925,14 @@ begin
   FIsValid := (FIndex >= 0) and (FIndex <= FScopeList^.HighestKnown);
 end;
 
-function TDwarfScopeInfo.CreateScopeForEntry(AEntry: Pointer; AParent: Integer): Integer;
+function TDwarfScopeInfo.CreateScopeForEntry(AEntry: Pointer; ALink: Integer): Integer;
 begin
   inc(FScopeList^.HighestKnown);
   Result := FScopeList^.HighestKnown;
   if Result >= Length(FScopeList^.List) then
     SetLength(FScopeList^.List, Result + 4096);
   FScopeList^.List[Result].Entry := AEntry;
-  FScopeList^.List[Result].Parent := AParent;
-  FScopeList^.List[Result].Next   := -1;
+  FScopeList^.List[Result].Link := ALink;
 end;
 
 procedure TDwarfScopeInfo.Init(AScopeList: PDwarfScopeList);
@@ -905,43 +942,66 @@ begin
 end;
 
 function TDwarfScopeInfo.HasParent: Boolean;
+var
+  l: Integer;
 begin
-  Result := (IsValid) and
-            (FScopeList^.List[FIndex].Parent >= 0) and
-            (FScopeList^.List[FIndex].Parent <= FScopeList^.HighestKnown);
+  Result := (IsValid);
+  if not Result then exit;
+  l := FScopeList^.List[FIndex].Link;
+  assert(l <= FScopeList^.HighestKnown);
+  Result := (l >= 0) and (l < FIndex);
 end;
 
 function TDwarfScopeInfo.HasNext: Boolean;
+var
+  l, l2: Integer;
 begin
-  Result := (IsValid) and
-            (FScopeList^.List[FIndex].Next >= 0) and
-            (FScopeList^.List[FIndex].Next <= FScopeList^.HighestKnown);
+  Result := (IsValid) and (FScopeList^.HighestKnown > FIndex);
+  if not Result then exit;
+  l2 := FScopeList^.List[FIndex + 1].Link;
+  assert(l2 <= FScopeList^.HighestKnown);
+  Result := (l2 > FIndex + 1);        // Index+1 is First Child, with pointer to Next
+  if Result then
+    exit;
+
+  l := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
+  assert(l <= FScopeList^.HighestKnown);
+  if l > Index then
+    l := Index - 1;   // This is a first child, make l = parent
+  Result := (l2 = l);                 // Index + 1 has same parent
 end;
 
 function TDwarfScopeInfo.HasChild: Boolean;
 var
-  i: Integer;
+  l2: Integer;
 begin
-  Result := IsValid;
+  Result := (IsValid) and (FScopeList^.HighestKnown > FIndex);
   if not Result then exit;
-  i := FScopeList^.List[FIndex].Next;
-  Result := (i > FIndex + 1) or // Gap to Next contains children
-            ( (i < 0) and (FScopeList^.HighestKnown > FIndex) );
+  l2 := FScopeList^.List[FIndex + 1].Link;
+  assert(l2 <= FScopeList^.HighestKnown);
+  Result := (l2 > FIndex + 1) or        // Index+1 is First Child, with pointer to Next
+            (l2 = FIndex);              // Index+1 is First Child, with pointer to parent (self)
 end;
 
 function TDwarfScopeInfo.CreateNextForEntry(AEntry: Pointer): Integer;
+var
+  l: Integer;
 begin
   assert(IsValid, 'Creating Child for invalid scope');
   assert(NextIndex<0, 'Next already set');
-  Result := CreateScopeForEntry(AEntry, FScopeList^.List[FIndex].Parent);
-  FScopeList^.List[FIndex].Next := Result;
+  l := FScopeList^.List[FIndex].Link; // GetParent (or -1 for toplevel)
+  assert(l <= FScopeList^.HighestKnown);
+  if l > Index then l := Index - 1;   // This is a first child, make l = parent
+  Result := CreateScopeForEntry(AEntry, l);
+  if Result > FIndex + 1 then  // We have children
+    FScopeList^.List[FIndex+1].Link := Result;
 end;
 
 function TDwarfScopeInfo.CreateChildForEntry(AEntry: Pointer): Integer;
 begin
   assert(IsValid, 'Creating Child for invalid scope');
   assert(FIndex=FScopeList^.HighestKnown, 'Cannot creating Child.Not at end of list');
-  Result := CreateScopeForEntry(AEntry, FIndex);
+  Result := CreateScopeForEntry(AEntry, FIndex); // First Child, but no parent.next yet
 end;
 
 
@@ -1654,8 +1714,7 @@ begin
   
 
   SetLength(FScopeList.List, 4096);
-  FScopeList.List[0].Parent := -1;
-  FScopeList.List[0].Next   := -1;
+  FScopeList.List[0].Link := -1;
   FScopeList.List[0].Entry  := FInfoData;
   FScopeList.HighestKnown := 0;
   FScope.Init(@FScopeList);
