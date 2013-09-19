@@ -219,6 +219,21 @@ type
   );
   TDwarfLocateEntryFlags = set of TDwarfLocateEntryFlag;
 
+  { TDWarfLineMap }
+
+  TDWarfLineMap = object
+  private
+    HighestLine: Cardinal;
+    AddressList: array of QWord;
+    Count: Integer;
+  public
+    procedure Init;
+    procedure SetAddressForLine(ALine: Cardinal; AnAddress: QWord); inline;
+    function  GetAddressForLine(ALine: Cardinal): QWord; inline;
+    procedure Compress;
+  end;
+  PDWarfLineMap = ^TDWarfLineMap;
+
   { TDwarfCompilationUnit }
 
   TDwarfCompilationUnitClass = class of TDwarfCompilationUnit;
@@ -297,7 +312,7 @@ type
     constructor Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); virtual;
     destructor Destroy; override;
     function GetDefinition(AAbbrev: Cardinal; out ADefinition: TDwarfAbbrev): Boolean;
-    function GetLineAddressMap(const AFileName: String): TMap;
+    function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
     property FileName: String read FFileName;
     property Valid: Boolean read FValid;
@@ -412,7 +427,7 @@ type
     destructor Destroy; override;
     function FindSymbol(AAddress: TDbgPtr): TDbgSymbol; override;
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr; override;
-    function GetLineAddressMap(const AFileName: String): TMap;
+    function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function LoadCompilationUnits: Integer;
     function PointerFromRVA(ARVA: QWord): Pointer;
     function PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
@@ -781,6 +796,43 @@ begin
   end;
 end;
 
+{ TDWarfLineMap }
+
+procedure TDWarfLineMap.Init;
+begin
+  HighestLine := 0;
+  Count := 0;
+end;
+
+procedure TDWarfLineMap.SetAddressForLine(ALine: Cardinal; AnAddress: QWord);
+var
+  i: Integer;
+begin
+  i := Length(AddressList);
+  if i <= ALine then begin
+    SetLength(AddressList, ALine + 2000);
+    FillByte(AddressList[i], (ALine+2000-i) * SizeOf(AddressList[0]), 0);
+  end;
+  if AddressList[ALine] = 0 then begin
+    AddressList[ALine] := AnAddress;
+    inc(Count);
+  end;
+  if ALine > HighestLine then HighestLine := ALine;
+end;
+
+function TDWarfLineMap.GetAddressForLine(ALine: Cardinal): QWord;
+begin
+  Result := 0;
+  if ALine < Length(AddressList) then
+    Result := AddressList[ALine];
+end;
+
+procedure TDWarfLineMap.Compress;
+begin
+  SetLength(AddressList, HighestLine+1);
+//DebugLn(['#### ',HighestLine, ' / ',Count]);
+end;
+
 { TDwarfScopeInfo }
 
 function TDwarfScopeInfo.GetNext: TDwarfScopeInfo;
@@ -1117,7 +1169,7 @@ begin
   Result := 0;
 end;
 
-function TDbgDwarf.GetLineAddressMap(const AFileName: String): TMap;
+function TDbgDwarf.GetLineAddressMap(const AFileName: String): PDWarfLineMap;
 var
   n: Integer;
   CU: TDwarfCompilationUnit;
@@ -1373,7 +1425,8 @@ var
   Iter: TMapIterator;
   Info: PDwarfAddressInfo;
   idx: Integer;
-  LineMap: TMap;
+  LineMap: PDWarfLineMap;
+  Line: Cardinal;
 begin
   if not ADoAll
   then begin
@@ -1387,17 +1440,24 @@ begin
 
   while FLineInfo.StateMachine.NextLine do
   begin
+    Line := FLineInfo.StateMachine.Line;
+    if Line < 0 then begin
+      DebugLn(['NEGATIVE LINE ', Line]);
+      Continue;
+    end;
+
     idx := FLineNumberMap.IndexOf(FLineInfo.StateMachine.FileName);
     if idx = -1
     then begin
-      LineMap := TMap.Create(itu4, SizeOf(FLineInfo.StateMachine.Address));
-      FLineNumberMap.AddObject(FLineInfo.StateMachine.FileName, LineMap);
+      LineMap := New(PDWarfLineMap);
+      LineMap^.Init;
+      FLineNumberMap.AddObject(FLineInfo.StateMachine.FileName, TObject(LineMap));
     end
     else begin
-      LineMap := TMap(FLineNumberMap.Objects[idx]);
+      LineMap := PDWarfLineMap(FLineNumberMap.Objects[idx]);
     end;
-    if not LineMap.HasId(FLineInfo.StateMachine.Line)
-    then LineMap.Add(FLineInfo.StateMachine.Line, FLineInfo.StateMachine.Address);
+
+    LineMap^.SetAddressForLine(Line, FLineInfo.StateMachine.Address);
 
     if Iter.Locate(FLineInfo.StateMachine.Address)
     then begin
@@ -1414,6 +1474,9 @@ begin
   end;
     
   Iter.Free;
+
+  for Idx := 0 to FLineNumberMap.Count - 1 do
+    PDWarfLineMap(FLineNumberMap.Objects[idx])^.Compress;
 end;
 
 procedure TDwarfCompilationUnit.BuildAddressMap;
@@ -1646,7 +1709,7 @@ destructor TDwarfCompilationUnit.Destroy;
     n: Integer;
   begin
     for n := 0 to FLineNumberMap.Count - 1 do
-      FLineNumberMap.Objects[n].Free;
+      Dispose(PDWarfLineMap(FLineNumberMap.Objects[n]));
     FreeAndNil(FLineNumberMap);
   end;
 
@@ -1669,7 +1732,7 @@ begin
   Result := FMap.GetData(AAbbrev, ADefinition);
 end;
 
-function TDwarfCompilationUnit.GetLineAddressMap(const AFileName: String): TMap;
+function TDwarfCompilationUnit.GetLineAddressMap(const AFileName: String): PDWarfLineMap;
   var
     Name: String;
   function FindIndex: Integer;
@@ -1702,17 +1765,17 @@ begin
   idx := FindIndex;
   if idx = -1 then Exit;
   
-  Result := TMap(FLineNumberMap.Objects[idx]);
+  Result := PDWarfLineMap(FLineNumberMap.Objects[idx]);
 end;
 
 function TDwarfCompilationUnit.GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
 var
-  Map: TMap;
+  Map: PDWarfLineMap;
 begin
   Result := 0;
   Map := GetLineAddressMap(AFileName);
   if Map = nil then exit;
-  Map.GetData(ALine, Result);
+  Result := Map^.GetAddressForLine(ALine);
 end;
 
 procedure TDwarfCompilationUnit.LoadAbbrevs(ANeeded: Cardinal);
