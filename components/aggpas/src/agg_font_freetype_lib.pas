@@ -41,17 +41,14 @@ type
 const
 {$IFDEF AGG_WINDOWS }
  ft_lib = 'freetype.dll';
-
 {$ENDIF }
 
 {$IFDEF AGG_LINUX }
  ft_lib = 'freetype.so';
-
 {$ENDIF }
 
 {$IFDEF AGG_MACOSX }
  ft_lib = 'libfreetype';
-
 {$ENDIF }
 
  FT_CURVE_TAG_ON    = 1;
