@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="LCL">
     <!--
@@ -13721,7 +13721,9 @@ the comparision is case sensitive.
       <element name="TTreeNode.OverlayIndex">
         <short>
           <var>OverlayIndex</var> - the index of the overlay</short>
-        <descr/>
+        <descr>This icon is drawn above the normal icon. 
+If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Overlay) for Delphi compatibility.
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
