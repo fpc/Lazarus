@@ -18,14 +18,18 @@ type
   TfrmPNGTestSuite = class(TForm)
     gbPicType: TGroupBox;
     imgCheckboard: TImage;
+    imgCheckboard1: TImage;
     imgCheckboardExpected: TImage;
     imgTestSuite: TImage;
     imgExpected: TImage;
+    imgTestSuite1: TImage;
     Label1: TLabel;
     Label2: TLabel;
+    Label3: TLabel;
     lblFileName: TLabel;
     ListBox1: TListBox;
     Panel1: TPanel;
+    Panel2: TPanel;
     PanelExpected: TPanel;
     rgTestGroups: TRadioGroup;
     rbConvGIF: TRadioButton;
@@ -33,9 +37,11 @@ type
     rbRefGIF: TRadioButton;
     procedure FormDestroy(Sender: TObject);
     procedure imgExpectedResize(Sender: TObject);
+    procedure imgTestSuite1Resize(Sender: TObject);
     procedure imgTestSuiteResize(Sender: TObject);
     procedure ListBox1SelectionChange(Sender: TObject; User: boolean);
     procedure Panel1Resize(Sender: TObject);
+    procedure Panel2Resize(Sender: TObject);
     procedure PanelExpectedResize(Sender: TObject);
     procedure rgTestGroupsClick(Sender: TObject);
     procedure rbRefGIFClick(Sender: TObject);
@@ -71,6 +77,17 @@ begin
   PanelExpected.Height:=r.Bottom-r.top+2;
 end;
 
+procedure TfrmPNGTestSuite.imgTestSuite1Resize(Sender: TObject);
+var
+  img: TImage absolute Sender;
+  r: TRect;
+begin
+  r:=img.BoundsRect;
+  inflaterect(r,2,2);
+  Panel2.Width:=r.Right-r.Left+2;
+  Panel2.Height:=r.Bottom-r.top+2;
+end;
+
 procedure TfrmPNGTestSuite.imgTestSuiteResize(Sender: TObject);
 var
   img: TImage absolute Sender;
@@ -84,6 +101,8 @@ end;
 
 procedure TfrmPNGTestSuite.ListBox1SelectionChange(Sender: TObject; User: boolean);
 var
+  Img: TFPMemoryImage;
+  Reader: TFPReaderpng;
   TestFile: ansistring;
   AsItShouldLook: ansistring;
 begin
@@ -109,6 +128,16 @@ begin
   except
     imgTestSuite.Picture.Clear;
   end;
+  Img := TFPMemoryImage.create(0, 0);
+  Reader := TFPReaderpng.Create;
+  try
+    Img.LoadFromFile(TestFile, Reader);
+    imgTestSuite1.Picture.Assign(Img);
+  except
+    imgTestSuite1.Picture.Clear;
+  end;
+  Img.Free;
+  Reader.Free;
 end;
 
 procedure TfrmPNGTestSuite.Panel1Resize(Sender: TObject);
@@ -116,6 +145,13 @@ var
   pnl: TPanel absolute Sender;
 begin
   imgCheckboard.BoundsRect:=pnl.ClientRect;
+end;
+
+procedure TfrmPNGTestSuite.Panel2Resize(Sender: TObject);
+var
+  pnl: TPanel absolute Sender;
+begin
+  imgCheckboard1.BoundsRect:=pnl.ClientRect;
 end;
 
 procedure TfrmPNGTestSuite.PanelExpectedResize(Sender: TObject);
