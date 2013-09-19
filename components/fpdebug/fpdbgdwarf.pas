@@ -932,7 +932,6 @@ function TDwarfScopeInfo.CreateScopeForEntry(AEntry: Pointer; ALink: Integer): I
 begin
   inc(FScopeList^.HighestKnown);
   Result := FScopeList^.HighestKnown;
-if (Result >= Length(FScopeList^.List)) and (Length(FScopeList^.List) < SCOPE_ALLOC_BLOCK_SIZE) then DebugLn(['xxxxxxx ', Length(FScopeList^.List)]);
   if Result >= Length(FScopeList^.List) then
     SetLength(FScopeList^.List, Result + SCOPE_ALLOC_BLOCK_SIZE);
   FScopeList^.List[Result].Entry := AEntry;
@@ -1716,7 +1715,6 @@ begin
   FLineNumberMap.Sorted := True;
   FLineNumberMap.Duplicates := dupError;
 
-if FLength div 2 + 1 < SCOPE_ALLOC_BLOCK_SIZE  then DebugLn(['+++++++', FLength]);
   SetLength(FScopeList.List, Min(SCOPE_ALLOC_BLOCK_SIZE, FLength div 2 + 1));
   FScopeList.List[0].Link := -1;
   FScopeList.List[0].Entry  := FInfoData;
