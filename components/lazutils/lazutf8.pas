@@ -2507,7 +2507,7 @@ begin
     2:
     begin
       SetLength(Result, 2 * N);
-      System.FillWord(Result[1], N, PWord(Pointer(AUtf8Char))^);        ;
+      System.FillWord(Result[1], N, PWord(Pointer(AUtf8Char))^);
      end;
     3:
     begin
@@ -2518,9 +2518,10 @@ begin
       PC := PChar(Result);
       for i:=1 to N do
       begin
-        PC^ := C1; inc(PC);
-        PC^ := C2; inc(PC);
-        PC^ := C3; inc(PC);
+        PC[0] := C1;
+        PC[1] := C2;
+        PC[2] := C3;
+        inc(PC,3);
       end;
     end;
     4:
