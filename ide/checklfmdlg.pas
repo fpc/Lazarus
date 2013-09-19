@@ -44,8 +44,8 @@ uses
   IDEExternToolIntf,
   {$ELSE}
   {$ENDIF}
-  IDEProcs, IDEOptionDefs, EditorOptions, ExtCtrls, JITForms, PropEditUtils,
-  IDEMsgIntf;
+  IDEProcs, IDEOptionDefs, EditorOptions, SourceMarks, ExtCtrls, JITForms,
+  PropEditUtils, IDEMsgIntf;
 
 type
 

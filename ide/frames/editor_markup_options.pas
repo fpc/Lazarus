@@ -25,9 +25,10 @@ unit editor_markup_options;
 interface
 
 uses
-  Classes, StdCtrls, ComCtrls, Graphics, sysutils, EditorOptions, LazarusIDEStrConsts,
-  IDEOptionsIntf, Spin, ExtCtrls, SynEditMarkupBracket, editor_color_options,
-  editor_general_options, editor_keymapping_options, SynEdit, SynCompletion, SynHighlighterPas,
+  Classes, StdCtrls, ComCtrls, Graphics, sysutils, EditorOptions,
+  LazarusIDEStrConsts, SourceMarks, IDEOptionsIntf, Spin, ExtCtrls,
+  SynEditMarkupBracket, editor_color_options, editor_general_options,
+  editor_keymapping_options, SynEdit, SynCompletion, SynHighlighterPas,
   SynEditKeyCmds, DividerBevel, LCLType;
 
 type

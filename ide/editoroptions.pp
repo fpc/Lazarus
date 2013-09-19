@@ -65,7 +65,7 @@ uses
   // IDEIntf
   IDECommands, SrcEditorIntf, IDEOptionsIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, KeyMapping, LazConf, typinfo;
+  SourceMarks, LazarusIDEStrConsts, IDEProcs, KeyMapping, LazConf, typinfo;
 
 const
   DefaultCompletionLongLineHintType = sclpExtendRightOnly;
@@ -87,27 +87,6 @@ type
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
     lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL, lshJScript,
     lshDiff, lshBat, lshIni, lshPo);
-
-  TAdditionalHilightAttribute =
-    (ahaNone,              ahaTextBlock,          ahaExecutionPoint,
-     ahaEnabledBreakpoint, ahaDisabledBreakpoint, ahaInvalidBreakpoint,
-     ahaUnknownBreakpoint, ahaErrorLine,          ahaIncrementalSearch,
-     ahaHighlightAll,      ahaBracketMatch,       ahaMouseLink,
-     ahaLineNumber,        ahaLineHighlight,      ahaModifiedLine,
-     ahaCodeFoldingTree,   ahaHighlightWord,      ahaFoldedCode,
-     ahaWordGroup,         ahaTemplateEditCur,    ahaTemplateEditSync,
-     ahaTemplateEditOther, ahaSyncroEditCur,      ahaSyncroEditSync,
-     ahaSyncroEditOther,   ahaSyncroEditArea,     ahaGutterSeparator,
-     ahaGutter,            ahaRightMargin,        ahaSpecialVisibleChars,
-     ahaTopInfoHint,
-     ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive,
-     ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
-     );
-
-  TAhaGroupName = (
-    agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode,
-    agnIfDef
-  );
 
   TColorSchemeAttributeFeature =
     ( hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior,

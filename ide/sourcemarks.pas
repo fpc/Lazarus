@@ -38,11 +38,32 @@ unit SourceMarks;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, MenuIntf, LCLProc,
-  AVL_Tree, SrcEditorIntf, SynEdit, SynEditMarks, EditorOptions,
-  SynEditMarkupGutterMark;
+  Classes, SysUtils, AVL_Tree, Graphics, Controls, LCLProc,
+  MenuIntf,
+  SynEdit, SynEditMarks, SynEditMarkupGutterMark,
+  SrcEditorIntf;
   
 type
+  TAdditionalHilightAttribute =
+    (ahaNone,              ahaTextBlock,          ahaExecutionPoint,
+     ahaEnabledBreakpoint, ahaDisabledBreakpoint, ahaInvalidBreakpoint,
+     ahaUnknownBreakpoint, ahaErrorLine,          ahaIncrementalSearch,
+     ahaHighlightAll,      ahaBracketMatch,       ahaMouseLink,
+     ahaLineNumber,        ahaLineHighlight,      ahaModifiedLine,
+     ahaCodeFoldingTree,   ahaHighlightWord,      ahaFoldedCode,
+     ahaWordGroup,         ahaTemplateEditCur,    ahaTemplateEditSync,
+     ahaTemplateEditOther, ahaSyncroEditCur,      ahaSyncroEditSync,
+     ahaSyncroEditOther,   ahaSyncroEditArea,     ahaGutterSeparator,
+     ahaGutter,            ahaRightMargin,        ahaSpecialVisibleChars,
+     ahaTopInfoHint,
+     ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive,
+     ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
+     );
+
+  TAhaGroupName = (
+    agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode,
+    agnIfDef
+  );
 
   TSourceEditorBase = class;
 

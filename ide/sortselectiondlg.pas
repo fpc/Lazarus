@@ -41,8 +41,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, SynEdit, Buttons, StdCtrls,
   ExtCtrls, IDEOptionDefs, Dialogs, BasicCodeTools, Graphics, ButtonPanel,
-  AVL_Tree, TextTools, IDEWindowIntf,
-  LazarusIDEStrConsts, EditorOptions, MiscOptions, SynEditHighlighter;
+  AVL_Tree, TextTools, IDEWindowIntf, LazarusIDEStrConsts, EditorOptions,
+  MiscOptions, SourceMarks, SynEditHighlighter;
   
 type
   TSortSelDlgState = (

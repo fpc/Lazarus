@@ -46,7 +46,7 @@ uses
   {$ELSE}
   OutputFilter,
   {$ENDIF}
-  EditorOptions, CheckLFMDlg, IDEMsgIntf, Project,
+  EditorOptions, CheckLFMDlg, IDEMsgIntf, Project, SourceMarks,
   // Converter
   ConverterTypes, ConvertSettings, ReplaceNamesUnit,
   ConvCodeTool, FormFileConv, UsedUnits;
