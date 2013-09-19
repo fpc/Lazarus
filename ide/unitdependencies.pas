@@ -1210,6 +1210,17 @@ var
       Result:=TUDUses(UDItem).GetSCCNode;
   end;
 
+  procedure ClearNode(Node: TUDSCCNode);
+  begin
+    Node.TarjanIndex:=-1;
+    Node.TarjanLowLink:=-1;
+    Node.TarjanVisiting:=false;
+    if WithImplementationUses then
+      Node.InImplCycle:=false
+    else
+      Node.InIntfCycle:=false;
+  end;
+
   procedure SearchNode(Node: TUDSCCNode); forward;
 
   procedure SearchEdge(FromNode, ToNode: TUDSCCNode);
@@ -1277,19 +1288,17 @@ var
   AVLNode: TAVLTreeNode;
   UDUnit: TUDUnit;
   Node: TUDSCCNode;
+  i: Integer;
 begin
   // init
   TarjanIndex:=0;
   for AVLNode in FUsesGraph.FilesTree do begin
     UDUnit:=TUDUnit(AVLNode.Data);
     Node:=GetNode(UDUnit);
-    Node.TarjanIndex:=-1;
-    Node.TarjanLowLink:=-1;
-    Node.TarjanVisiting:=false;
-    if WithImplementationUses then
-      Node.InImplCycle:=false
-    else
-      Node.InIntfCycle:=false;
+    ClearNode(Node);
+    if UDUnit.UsesUnits<>nil then
+      for i:=0 to UDUnit.UsesUnits.Count-1 do
+        ClearNode(GetNode(TObject(UDUnit.UsesUnits[i])));
   end;
   Stack:=TFPList.Create;
   try
