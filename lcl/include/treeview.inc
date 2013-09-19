@@ -4937,7 +4937,7 @@ begin
       begin
         if PaintImages then
         begin
-      	  if Node.OverlayIndex < 0 then
+      	  if (Node.OverlayIndex < 0) or (Node.OverlayIndex>=Images.Count) then
             Images.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
                ImgIndex, Node.FNodeEffect)
       	  else
