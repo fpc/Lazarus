@@ -46,6 +46,9 @@ type
   TUnitResourcefileFormatClass = class of TUnitResourcefileFormat;
   TUnitResourcefileFormatArr = array of TUnitResourcefileFormatClass;
 
+var
+  LFMUnitResourceFileFormat: TUnitResourcefileFormatClass = nil;// set by IDE
+
 procedure RegisterUnitResourcefileFormat(AResourceFileFormat: TUnitResourcefileFormatClass);
 function GetUnitResourcefileFormats: TUnitResourcefileFormatArr;
 

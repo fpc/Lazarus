@@ -42,9 +42,10 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, AvgLvlTree, BasicCodeTools, TypInfo, LCLProc, LResources,
-  Forms, Controls, LCLMemManager, LCLIntf, Dialogs, PropEditUtils, PropEdits,
-  IDEProcs, PackageDefs, BasePkgManager, UnitResources, lfmUnitResource;
+  Classes, SysUtils, TypInfo, AvgLvlTree, BasicCodeTools, LCLProc, LResources,
+  Forms, Controls, LCLMemManager, LCLIntf, Dialogs,
+  PropEditUtils, PropEdits,
+  IDEProcs, PackageDefs, BasePkgManager, UnitResources;
 
 type
   //----------------------------------------------------------------------------
@@ -1148,7 +1149,7 @@ begin
           SubReader:=nil;
           DestroyDriver:=false;
           try
-            CreateReader(BinStream,TLFMUnitResourcefileFormat,SubReader,DestroyDriver);
+            CreateReader(BinStream,LFMUnitResourcefileFormat,SubReader,DestroyDriver);
             // The stream contains only the diff to the Ancestor instance,
             // => give it the Ancestor instance
             SubReader.Ancestor:=Ancestor;
@@ -1310,7 +1311,7 @@ begin
   try
     DestroyDriver:=false;
     InitReading;
-    CreateReader(BinStream,TLFMUnitResourcefileFormat, Reader,DestroyDriver);
+    CreateReader(BinStream,LFMUnitResourcefileFormat, Reader,DestroyDriver);
     {$IFDEF VerboseJITForms}
     debugln('[TJITComponentList.AddJITChildComponentFromStream] B');
     {$ENDIF}
