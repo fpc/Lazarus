@@ -9377,7 +9377,7 @@ LazarusResources.Add('ce_cycleinterface','PNG',[
   +#253#27'k'#11#4'*p'#9#201#255#178'W'#160#1#133'C'#171#31'm'#151'P '#212#169
   +#164#214#0#0#0#0'IEND'#174'B`'#130
 ]);
-LazarusResources.Add('ce_cycleimplemenation','PNG',[
+LazarusResources.Add('ce_cycleimplementation','PNG',[
   #137'PNG'#13#10#26#10#0#0#0#13'IHDR'#0#0#0#12#0#0#0#12#8#6#0#0#0'Vu\'#231#0#0
   +#0#9'pHYs'#0#0#11#19#0#0#11#19#1#0#154#156#24#0#0#0#7'tIME'#7#221#9#15#15#26
   +#20#150#172#190#237#0#0#1#177'IDAT('#207#149#146'?h'#19'a'#0#197#127#247'}'
