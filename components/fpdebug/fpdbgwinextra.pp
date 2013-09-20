@@ -37,9 +37,11 @@ unit FpDbgWinExtra;
 
 interface
 
+{$ifdef windows}
 uses
   Windows;
-  
+{$endif}
+
 
 
 function GetLastErrorText(AErrorCode: Cardinal): String; {$IFNDEF FPC} overload; {$ENDIF}
@@ -63,7 +65,9 @@ uses
 
 function GetLastErrorText: String;
 begin
+{$ifdef windows}
   Result := GetLastErrorText(GetLastError);
+{$endif}
 end;
 
 function GetLastErrorText(AErrorCode: Cardinal): String;
@@ -71,6 +75,7 @@ var
   R: cardinal;
   Temp: PChar;
 begin
+{$ifdef windows}
   Temp := nil;
   R := FormatMessage(
          FORMAT_MESSAGE_ALLOCATE_BUFFER or FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ARGUMENT_ARRAY,
@@ -90,6 +95,7 @@ begin
   end;
   if Temp <> nil
   then LocalFree(HLOCAL(Temp));
+{$endif}
 end;
 
 
