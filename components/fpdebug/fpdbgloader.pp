@@ -38,8 +38,9 @@ unit FpDbgLoader;
 interface
 
 uses
+  LCLType,
   {$ifdef windows}
-  Windows,
+  Windows, // After LCLType
   {$endif}
   Classes, SysUtils, FpDbgPETypes;
 
@@ -216,11 +217,13 @@ end;
 
 constructor TDbgWinPEImageLoader.Create(const AFileName: String);
 begin
+  {$ifdef windows}
   FFileHandle := CreateFile(PChar(AFileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
   if FFileHandle = INVALID_HANDLE_VALUE
   then begin
     WriteLN('Cannot open file: ', AFileName);
   end;
+  {$endif}
   inherited Create;
 end;
 
@@ -236,12 +239,14 @@ end;
 
 procedure TDbgWinPEImageLoader.DoCleanup;
 begin
+  {$ifdef windows}
   if FModulePtr <> nil
   then UnmapViewOfFile(FModulePtr);
   if FMapHandle <> 0
   then CloseHandle(FMapHandle);
   if FFileHandle <> INVALID_HANDLE_VALUE
   then CloseHandle(FFileHandle);
+  {$endif}
 
   FFileHandle := INVALID_HANDLE_VALUE;
   FMapHandle := 0;
@@ -254,6 +259,7 @@ var
 begin
   Result := False;
 
+  {$ifdef windows}
   try
     FMapHandle := CreateFileMapping(FFileHandle, nil, PAGE_READONLY{ or SEC_IMAGE}, 0, 0, nil);
     if FMapHandle = 0
@@ -287,6 +293,7 @@ begin
       DoCleanup;
     end;
   end;
+  {$endif}
 end;
 
 procedure TDbgWinPEImageLoader.UnloadData;

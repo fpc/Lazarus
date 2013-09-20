@@ -23,13 +23,25 @@
 unit FpDbgPETypes;
 {$mode objfpc}{$H+}{$inline on}
 interface
-
+{$ifdef windows}
 uses
   Windows;
+{$endif}
 
 //
 // Image Format
 //
+
+{$IFNDEF windows}
+type
+   SHORT = smallint;
+   LONG  = longint;
+   ULONGLONG  = qword;      // used in AMD64 CONTEXT
+   GUID = system.tguid;
+   CLSID = GUID;
+{$endif}
+
+
 
 const
 {$ifdef ENDIAN_LITTLE}
