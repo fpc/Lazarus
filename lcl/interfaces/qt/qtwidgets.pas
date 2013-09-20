@@ -9790,17 +9790,23 @@ begin
         // our combo geometry
         R := getGeometry;
 
-        // our combo arrow position
-        opt := QStyleOptionComboBox_create();
-        QStyle_subControlRect(QApplication_style(), @R1, QStyleCC_ComboBox,
-          opt, QStyleSC_ComboBoxArrow, QComboBoxH(Widget));
-        QStyleOptionComboBox_destroy(opt);
-
         Pt := Point(P.X, P.Y);
 
-        R := Rect(0, 0, R.Right - R.Left, R.Bottom - R.Top);
-        ButtonRect := Rect(R.Right + R1.Left, R.Top,
-          R.Right - R1.Right, R.Bottom);
+        // our combo arrow position when we are editable combobox
+        if getEditable then
+        begin
+          opt := QStyleOptionComboBox_create();
+          QStyle_subControlRect(QApplication_style(), @R1, QStyleCC_ComboBox,
+            opt, QStyleSC_ComboBoxArrow, QComboBoxH(Widget));
+          QStyleOptionComboBox_destroy(opt);
+          R := Rect(0, 0, R.Right - R.Left, R.Bottom - R.Top);
+          ButtonRect := Rect(R.Right + R1.Left, R.Top,
+            R.Right - R1.Right, R.Bottom);
+        end else
+        begin
+          ButtonRect := R;
+          OffsetRect(ButtonRect, -R.Left, -R.Top);
+        end;
 
         if PtInRect(ButtonRect, Pt) then
           TCustomComboBox(LCLObject).IntfGetItems;
