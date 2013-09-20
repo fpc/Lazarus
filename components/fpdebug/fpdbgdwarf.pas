@@ -1484,11 +1484,12 @@ end;
 procedure TDwarfCompilationUnit.BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
 var
   Iter: TMapIterator;
-  Info: PDwarfAddressInfo;
+  Info, NextInfo: PDwarfAddressInfo;
   idx: Integer;
   LineMap: PDWarfLineMap;
   Line: Cardinal;
   CurrentFileName: String;
+  addr: QWord;
 begin
   if not ADoAll
   then begin
@@ -1500,6 +1501,7 @@ begin
   BuildAddressMap;
   Iter := TMapIterator.Create(FAddressMap);
   idx := -1;
+  Info := nil;
 
   while FLineInfo.StateMachine.NextLine do
   begin
@@ -1523,19 +1525,30 @@ begin
       CurrentFileName := FLineInfo.StateMachine.FileName;
     end;
 
-    LineMap^.SetAddressForLine(Line, FLineInfo.StateMachine.Address);
+    addr := FLineInfo.StateMachine.Address;
+    LineMap^.SetAddressForLine(Line, addr);
 
-    if Iter.Locate(FLineInfo.StateMachine.Address)
+    if (Info = nil) or
+       (addr < Info^.StartPC) or
+       ( (NextInfo <> nil) and (addr >= NextInfo^.StartPC) )
     then begin
-      // set lineinfo
-      Info := Iter.DataPtr;
-      if Info^.StateMachine = nil
+      if Iter.Locate(FLineInfo.StateMachine.Address)
       then begin
-        Info^.StateMachine := FLineInfo.StateMachine.Clone;
-        FLineInfo.StateMachines.Add(Info^.StateMachine);
+        // set lineinfo
+        Info := Iter.DataPtr;
+        Iter.Next;
+        if not Iter.EOM
+        then NextInfo := Iter.DataPtr
+        else NextInfo := nil;
+
+        if Info^.StateMachine = nil
+        then begin
+          Info^.StateMachine := FLineInfo.StateMachine.Clone;
+          FLineInfo.StateMachines.Add(Info^.StateMachine);
+        end;
+        if not ADoAll and (Info = AAddressInfo)
+        then Break;
       end;
-      if not ADoAll and (Info = AAddressInfo)
-      then Break;
     end;
   end;
     
