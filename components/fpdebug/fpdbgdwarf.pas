@@ -1488,6 +1488,7 @@ var
   idx: Integer;
   LineMap: PDWarfLineMap;
   Line: Cardinal;
+  CurrentFileName: String;
 begin
   if not ADoAll
   then begin
@@ -1498,6 +1499,7 @@ begin
 
   BuildAddressMap;
   Iter := TMapIterator.Create(FAddressMap);
+  idx := -1;
 
   while FLineInfo.StateMachine.NextLine do
   begin
@@ -1507,15 +1509,18 @@ begin
       Continue;
     end;
 
-    idx := FLineNumberMap.IndexOf(FLineInfo.StateMachine.FileName);
-    if idx = -1
-    then begin
-      LineMap := New(PDWarfLineMap);
-      LineMap^.Init;
-      FLineNumberMap.AddObject(FLineInfo.StateMachine.FileName, TObject(LineMap));
-    end
-    else begin
-      LineMap := PDWarfLineMap(FLineNumberMap.Objects[idx]);
+    if (idx < 0) or (CurrentFileName <> FLineInfo.StateMachine.FileName) then begin
+      idx := FLineNumberMap.IndexOf(FLineInfo.StateMachine.FileName);
+      if idx = -1
+      then begin
+        LineMap := New(PDWarfLineMap);
+        LineMap^.Init;
+        FLineNumberMap.AddObject(FLineInfo.StateMachine.FileName, TObject(LineMap));
+      end
+      else begin
+        LineMap := PDWarfLineMap(FLineNumberMap.Objects[idx]);
+      end;
+      CurrentFileName := FLineInfo.StateMachine.FileName;
     end;
 
     LineMap^.SetAddressForLine(Line, FLineInfo.StateMachine.Address);
