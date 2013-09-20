@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, sysutils, GDBMIDebugger, BaseDebugManager, Debugger,
-  GDBMIMiscClasses, maps, FpDbgLoader, FpDbgDwarf, LazLoggerBase;
+  GDBMIMiscClasses, maps, FpDbgLoader, FpDbgDwarf, LazLoggerBase, LazLoggerProfiling;
 
 type
 
@@ -99,15 +99,15 @@ end;
 
 function TFpGDBMILineInfo.GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr;
 var
-  Map: TMap;
+  Map: PDWarfLineMap;
 begin
   Result := 0;
   if not FpDebugger.HasDwarf then
     exit;
   //Result := FpDebugger.FDwarfInfo.GetLineAddress(FRequestedSources[AIndex], ALine);
-  Map := TMap(FRequestedSources.Objects[AIndex]);
+  Map := PDWarfLineMap(FRequestedSources.Objects[AIndex]);
   if Map <> nil then
-    Map.GetData(ALine, Result);
+    Result := Map^.GetAddressForLine(ALine);
 end;
 
 function TFpGDBMILineInfo.GetInfo(AAdress: TDbgPtr; out ASource, ALine,
@@ -130,7 +130,7 @@ procedure TFpGDBMILineInfo.Request(const ASource: String);
 begin
   if not FpDebugger.HasDwarf then
     exit;
-  FRequestedSources.AddObject(ASource,  FpDebugger.FDwarfInfo.GetLineAddressMap(ASource));
+  FRequestedSources.AddObject(ASource, TObject(FpDebugger.FDwarfInfo.GetLineAddressMap(ASource)));
   DoChange(ASource);
 end;
 
