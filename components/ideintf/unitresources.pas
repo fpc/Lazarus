@@ -40,11 +40,12 @@ type
       out LCLVersion: string;
       out MissingClasses: TStrings// e.g. MyFrame2:TMyFrame
       ): TModalResult; virtual; abstract;
-
-
   end;
   TUnitResourcefileFormatClass = class of TUnitResourcefileFormat;
   TUnitResourcefileFormatArr = array of TUnitResourcefileFormatClass;
+
+var
+  LFMUnitResourceFileFormat: TUnitResourcefileFormatClass = nil;// set by IDE
 
 procedure RegisterUnitResourcefileFormat(AResourceFileFormat: TUnitResourcefileFormatClass);
 function GetUnitResourcefileFormats: TUnitResourcefileFormatArr;

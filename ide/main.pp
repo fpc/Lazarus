@@ -95,7 +95,7 @@ uses
   IDEContextHelpEdit, IDEHelpIntf, ExtendedTabControls, IDEHelpManager, CodeHelp, HelpOptions,
   // designer
   JITForms, ComponentPalette, ComponentList, CompPagesPopup,
-  ObjInspExt, Designer, FormEditor, CustomFormEditor,
+  ObjInspExt, Designer, FormEditor, CustomFormEditor, lfmUnitResource,
   ControlSelection, AnchorEditor, TabOrderDlg, MenuEditorForm,
   // LRT stuff
   Translations,
