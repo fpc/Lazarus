@@ -31,10 +31,9 @@ interface
 
 uses
   Classes, SysUtils,
-  LCLMemManager, Forms, LResources,
-  CodeCache, CodeToolManager, LazFileCache,
-  UnitResources,
-  CheckLFMDlg;
+  LCLMemManager,
+  Forms,
+  UnitResources, LazFileCache;
 
 type
 
@@ -56,6 +55,12 @@ type
   end;
 
 implementation
+
+uses
+  LResources,
+  CodeCache,
+  CodeToolManager,
+  CheckLFMDlg;
 
 { TLFMUnitResourcefileFormat }
 
@@ -235,6 +240,5 @@ end;
 
 initialization
   RegisterUnitResourcefileFormat(TLFMUnitResourcefileFormat);
-  LFMUnitResourceFileFormat:=TLFMUnitResourcefileFormat;
 end.
 

@@ -60,7 +60,7 @@ uses
   SynEdit,
   // IDE
   CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
-  LazarusIDEStrConsts, CompilerOptions,
+  LazarusIDEStrConsts, CompilerOptions, lfmUnitResource,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
   FileReferenceList, EditDefineTree, ModeMatrixOpts, PackageDefs, PackageSystem,
   IDEDialogs;
@@ -2380,7 +2380,7 @@ begin
         end;
       end;
     end;
-    FUnitResourceFileformat := LFMUnitResourcefileFormat;
+    FUnitResourceFileformat := TLFMUnitResourcefileFormat;
   end;
   Result := FUnitResourceFileformat;
 end;
