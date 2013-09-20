@@ -2683,7 +2683,8 @@ begin
     // create main scanner
     //debugln(['TSourceEditorSharedValues.GetMainLinkScanner fetching unit codebuffer ...']);
     if CodeBuffer=nil then begin
-      debugln(['TSourceEditorSharedValues.GetMainLinkScanner CodeBuffer=nil']);
+      // file is currently creating
+      //debugln(['TSourceEditorSharedValues.GetMainLinkScanner CodeBuffer=nil']);
       exit;
     end;
     if SharedEditorCount=0 then exit;
@@ -2691,7 +2692,7 @@ begin
     if SrcEdit=nil then exit;
     if not (SrcEdit.Highlighter is TSynPasSyn) then begin
       if Filename<>FLastWarnedMainLinkFilename then
-        debugln(['TSourceEditorSharedValues.GetMainLinkScanner not a pascal source: ',Filename]);
+        debugln(['TSourceEditorSharedValues.GetMainLinkScanner not pascal highlighted: ',Filename]);
       FLastWarnedMainLinkFilename:=CodeBuffer.Filename;
       exit;
     end;
@@ -2712,7 +2713,7 @@ begin
       FMainLinkScanner.Scan(lsrEnd,false);
     except
       on E: Exception do begin
-        CodeToolBoss.HandleException(e);
+        //CodeToolBoss.HandleException(e);
       end;
     end;
   end;
