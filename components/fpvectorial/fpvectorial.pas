@@ -554,6 +554,7 @@ type
     Text: string;
     // All points of the polygon
     Points: array of T3DPoint;
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
@@ -1131,11 +1132,18 @@ type
   protected
     FOwner: TvVectorialDocument;
   public
+    // Document size for page-based documents
+    Width, Height: Double; // in millimeters, may be 0 to use TvVectorialDocument defaults
+    // Document size for other documents
+    MinX, MinY, MinZ, MaxX, MaxY, MaxZ: Double;
+    // Other basic document information
+    BackgroundColor: TFPColor;
     { Base methods }
     constructor Create(AOwner: TvVectorialDocument); virtual;
     destructor Destroy; override;
     procedure Assign(ASource: TvPage); virtual;
     { Data reading methods }
+    procedure CalculateDocumentSize; virtual;
     function  GetEntity(ANum: Cardinal): TvEntity; virtual; abstract;
     function  GetEntitiesCount: Integer; virtual; abstract;
     function  GetLastEntity(): TvEntity; virtual; abstract;
@@ -1165,12 +1173,6 @@ type
     procedure AppendSegmentToTmpPath(ASegment: TPathSegment);
     procedure CallbackDeleteEntity(data,arg:pointer);
   public
-    // Document size for page-based documents
-    Width, Height: Double; // in millimeters
-    // Document size for other documents
-    MinX, MinY, MinZ, MaxX, MaxY, MaxZ: Double;
-    //
-    BackgroundColor: TFPColor;
     RenderInfo: TvRenderInfo; // Prepared by the reader with info on how to draw the page
     //
     Owner: TvVectorialDocument;
@@ -1247,7 +1249,6 @@ type
 
   TvTextPageSequence = class(TvPage)
   public
-    Width, Height: Double; // in millimeters, may be 0 to use TvVectorialDocument defaults
     Footer, Header: TvRichText;
     MainText: TvRichText;
     { Base methods }
@@ -3288,6 +3289,21 @@ end;
 
 { TvPolygon }
 
+procedure TvPolygon.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft,
+  ATop, ARight, ABottom: Double);
+var
+  i: Integer;
+begin
+  inherited CalculateBoundingBox(ADest, ALeft, ATop, ARight, ABottom);
+  for i := 0 to Length(Points)-1 do
+  begin
+    ALeft := Min(ALeft, Points[i].X);
+    ATop := Min(ATop, Points[i].Y);
+    ARight := Max(ARight, Points[i].X);
+    ABottom := Max(ABottom, Points[i].Y);
+  end;
+end;
+
 procedure TvPolygon.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
 
@@ -4805,6 +4821,34 @@ end;
 procedure TvPage.Assign(ASource: TvPage);
 begin
 
+end;
+
+procedure TvPage.CalculateDocumentSize;
+var
+  i: Integer;
+  lCurEntity: TvEntity;
+  lLeft, lTop, lRight, lBottom: Double;
+  lBmp: TBitmap;
+begin
+  MinX := 0;
+  MinY := 0;
+  MinZ := 0;
+  MaxX := 0;
+  MaxY := 0;
+  MaxZ := 0;
+  lBmp := TBitmap.Create;
+  for i := 0 to GetEntitiesCount() -1 do
+  begin
+    lCurEntity := GetEntity(i);
+    lCurEntity.CalculateBoundingBox(lBmp.Canvas, lLeft, lTop, lRight, lBottom);
+    MinX := Min(MinX, lLeft);
+    MinY := Min(MinY, lTop);
+    MaxX := Max(MaxX, lRight);
+    MaxY := Max(MaxY, lBottom);
+  end;
+  lBmp.Free;
+  Width := MaxX - MinX;
+  Height := MaxY - MinY;
 end;
 
 { TvVectorialPage }
