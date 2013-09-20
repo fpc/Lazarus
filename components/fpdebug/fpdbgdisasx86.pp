@@ -39,7 +39,11 @@ interface
 {.$define verbose_string_instructions}
 
 uses
-  SysUtils, Windows, FpDbgUtil, FpDbgWinExtra, FpDbgClasses;
+  SysUtils,
+{$ifdef windows}
+  Windows,
+{$endif}
+  FpDbgUtil, FpDbgWinExtra, FpDbgClasses;
 
 {                   
   The function Disassemble decodes the instruction at the given address.
@@ -54,9 +58,11 @@ uses
 }  
 
 
+{$ifdef windows}
 procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
 procedure Disassemble(const AProcess: Handle; const A64Bit: Boolean; var AAddress: TDbgPtr; out ACodeBytes: String; out ACode: String);
 function Disassemble(const AProcess: Handle; const A64Bit: Boolean; var AAddress: TDbgPtr): String;
+{$endif}
 
 implementation
 
@@ -82,6 +88,7 @@ type
   TOperandFlag = (ofMemory);
   TOperandFlags = set of TOperandFlag;
 
+{$ifdef windows}
 function Disassemble(const AProcess: Handle; const A64Bit: Boolean; var AAddress: TDbgPtr): String;
 var
   S: String;
@@ -3124,6 +3131,7 @@ begin
   ACodeBytes := S;
   Inc(AAddress, CodeIdx);
 end;
+{$endif}
 
 
 end.

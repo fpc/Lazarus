@@ -38,13 +38,19 @@ unit FpDbgSymbols;
 interface
 
 uses
-  Windows, Classes, SysUtils, FpDbgClasses, FpDbgWinExtra, FpDbgPETypes, FpDbgDwarf, FpDbgUtil;
+{$ifdef windows}
+  Windows,
+{$endif}
+  Classes, SysUtils, FpDbgClasses, FpDbgWinExtra, FpDbgPETypes, FpDbgDwarf, FpDbgUtil;
   
 
+{$ifdef windows}
 procedure AddSymbols(AParent: TDbgSymbol; AModule: THandle);
+{$endif}
 
 implementation
 
+{$ifdef windows}
 procedure AddSymbols(AParent: TDbgSymbol; AModule: THandle);
 var
   ModulePtr: Pointer;
@@ -236,6 +242,7 @@ begin
     Sections.Free;
   end;
 end;
+{$endif}
 
 end.
 
