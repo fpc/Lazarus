@@ -254,8 +254,10 @@ begin
 end;
 
 function TDbgWinPEImageLoader.LoadData(out AModuleBase: Pointer; out AHeaders: PImageNtHeaders): Boolean;
+{$ifdef windows}
 var
   DosHeader: PImageDosHeader;
+{$endif}
 begin
   Result := False;
 

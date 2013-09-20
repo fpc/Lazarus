@@ -36,7 +36,7 @@ uses
 type
    SHORT = smallint;
    LONG  = longint;
-   ULONGLONG  = qword;      // used in AMD64 CONTEXT
+   ULONGLONG  = qword;
    GUID = system.tguid;
    CLSID = GUID;
 {$endif}

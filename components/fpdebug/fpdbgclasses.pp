@@ -36,13 +36,19 @@ unit FpDbgClasses;
 interface
 
 uses
-  Windows, Classes, Maps, FpDbgUtil, FpDbgWinExtra, FpDbgLoader, LazLoggerBase;
+{$ifdef windows}
+  Windows,
+{$endif}
+  Classes, Maps, FpDbgUtil, FpDbgWinExtra, FpDbgLoader, LazLoggerBase;
 
 type
   TDbgPtr = QWord; // PtrUInt;
 
+{$ifdef windows}
   TDbgProcess = class;
+{$endif}
 
+{$ifdef windows}
   TDbgThread = class(TObject)
   private
     FProcess: TDbgProcess;
@@ -60,7 +66,8 @@ type
     property Handle: THandle read FHandle;
     property SingleStepping: boolean read FSingleStepping;
   end;
-  
+{$endif}
+
   TDbgSymbolKind = (
     skNone,          // undefined type
     skUser,          // userdefined type, this sym refers to another sym defined elswhere
@@ -155,6 +162,7 @@ type
   end;
 
 
+{$ifdef windows}
   TDbgBreakpoint = class;
   TDbgBreakpointEvent = procedure(const ASender: TDbgBreakpoint; const AContext: TContext) of object;
   TDbgBreakpoint = class(TObject)
@@ -171,10 +179,12 @@ type
     function Hit(const AThreadID: Integer): Boolean;
     property Location: TDbgPtr read FLocation;
   end;
+{$endif}
 
 
   { TDbgInstance }
 
+{$ifdef windows}
   TDbgInstance = class(TObject)
   private
     FName: String;
@@ -201,16 +211,20 @@ type
     property ModuleHandle: THandle read FModuleHandle;
     property BaseAddr: TDbgPtr read FBaseAddr;
   end;
+{$endif}
 
+  {$ifdef windows}
   TDbgLibrary = class(TDbgInstance)
   private
   public
     constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AInfo: TLoadDLLDebugInfo);
     property Name: String read FName;
   end;
+  {$endif}
 
   { TDbgProcess }
 
+  {$ifdef windows}
   TDbgProcess = class(TDbgInstance)
   private
     FProcessID: Integer;
@@ -260,6 +274,7 @@ type
     property Handle: THandle read FInfo.hProcess;
     property Name: String read FName write SetName;
   end;
+  {$endif}
 
 
 
@@ -273,6 +288,7 @@ begin
   DebugLn('FpDbg-ERROR: ', GetLastErrorText);
 end;
 
+{$ifdef windows}
 { TDbgInstance }
 
 function TDbgInstance.AddBreak(const AFileName: String; ALine: Cardinal): TDbgBreakpoint;
@@ -389,14 +405,18 @@ begin
   FName := AValue;
   CheckName;
 end;
+{$endif}
 
+{$ifdef windows}
 { TDbgLibrary }
 
 constructor TDbgLibrary.Create(const AProcess: TDbgProcess; const ADefaultName: String; const AInfo: TLoadDLLDebugInfo);
 begin
   inherited Create(AProcess, ADefaultName, AInfo.hFile, TDbgPtr(AInfo.lpBaseOfDll), TDbgPtr(AInfo.lpImageName), AInfo.fUnicode <> 0);
 end;
+{$endif}
 
+{$ifdef windows}
 { TDbgProcess }
 
 function TDbgProcess.AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
@@ -753,7 +773,9 @@ begin
 
   if not Result then LogLastError;
 end;
+{$endif}
 
+{$ifdef windows}
 { TDbgThread }
 
 constructor TDbgThread.Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle; const ABase, AStart: Pointer);
@@ -800,6 +822,7 @@ begin
 
   FSingleStepping := True;
 end;
+{$endif}
 
 { TDbgInfo }
 
@@ -890,6 +913,7 @@ begin
   Result := 0;
 end;
 
+{$ifdef windows}
 { TDbgBreak }
 
 constructor TDbgBreakpoint.Create(const AProcess: TDbgProcess; const ALocation: TDbgPtr);
@@ -977,5 +1001,6 @@ begin
   end;
   FlushInstructionCache(FProcess.FInfo.hProcess, Pointer(PtrUInt(FLocation)), 1);
 end;
+{$endif}
 
 end.
