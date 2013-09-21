@@ -41,7 +41,7 @@ For Copying and Pasting.  You know what it's for!  Why am I explaining it?  :-)
   Assign:
     Add the data to the clipboard with the corresponding FormatID.
   Clear:
-    Clear cache and supported format list.
+    Clears the clipboard.
   FindPictureFormatID
     Search the first FormatID that is a registered TGraphic.
   GetComponent
@@ -103,7 +103,7 @@ For Copying and Pasting.  You know what it's for!  Why am I explaining it?  :-)
   
   
   For mime types see:
-    http://www.isi.edu/in-notes/iana/assignments/media-types/media-types
+    http://www.iana.org/assignments/media-types
 }
 
 unit Clipbrd;

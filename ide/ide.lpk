@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <PathDelim Value="\"/>
@@ -24,7 +24,7 @@
 
 This package is internally used in the development of the IDE. 
 
-It should net be used by any other package or project. This package may change in none compatible ways at any time and without notice. It may also cease to exist."/>
+It should not be used by any other package or project. This package may change in none compatible ways at any time and without notice. It may also cease to exist."/>
     <License Value="GPL"/>
     <Files Count="415">
       <Item1>
@@ -1878,26 +1878,16 @@ It should net be used by any other package or project. This package may change i
       </Item415>
     </Files>
     <Type Value="RunTimeOnly"/>
-    <RequiredPkgs Count="6">
+    <RequiredPkgs Count="3">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="SynEdit"/>
       </Item1>
       <Item2>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="codetools"/>
       </Item2>
       <Item3>
-        <PackageName Value="codetools"/>
-      </Item3>
-      <Item4>
-        <PackageName Value="LazControls"/>
-      </Item4>
-      <Item5>
         <PackageName Value="IDEIntf"/>
-      </Item5>
-      <Item6>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
-      </Item6>
+      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

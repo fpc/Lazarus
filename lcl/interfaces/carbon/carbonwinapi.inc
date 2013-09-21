@@ -2305,7 +2305,6 @@ var
   Info: PLinearGradientInfo;
   Tmp: TColorComponents;
 begin
-  Result:=nil;
   GetMem(Info, SizeOf(TLinearGradientInfo));
   SwapColors := (BR.Y < TL.Y) and (BR.X < TL.X);
   if BR.X < TL.X then
@@ -2328,6 +2327,7 @@ begin
     Info^.colors[0] := Info^.colors[1];
     Info^.colors[1] := Tmp;
   end;
+  Result:=Info;
 end;
 
 procedure LinearGradientReleaseInfo(info: UnivPtr); mwpascal;
@@ -2341,6 +2341,8 @@ var
   Position: CGFloat;
   I: Integer;
 begin
+  if not Assigned(GradientInfo) then
+    Exit;
   Position := inputValue^;
   if Position = 0 then
     System.Move(GradientInfo^.colors[0], outputValue^, SizeOf(TColorComponents))
