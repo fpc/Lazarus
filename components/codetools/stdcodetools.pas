@@ -1106,21 +1106,32 @@ begin
         if AtomIsChar(';') then begin
           // last unit in uses section -> delete whole uses section
           StartPos:=FindLineEndOrCodeInFrontOfPosition(UsesNode.StartPos,true,true);
-          if not SourceChangeCache.Replace(gtNone,gtNone,
-            StartPos,UsesNode.EndPos,'') then exit;
+          EndPos:=UsesNode.EndPos;
         end else begin
           // not last unit -> delete with comma behind
           EndPos:=FindLineEndOrCodeAfterPosition(CurPos.EndPos);
           if (EndPos>SrcLen) or (Src[EndPos] in [#10,#13]) then
             StartPos:=FindLineEndOrCodeInFrontOfPosition(StartPos);// delete space in front or even the empty line
-          if not SourceChangeCache.Replace(gtNone,gtNone,
-            StartPos,EndPos,'') then exit;
         end;
       end else begin
-        // not first unit in uses section -> delete with comma in front
-        if not SourceChangeCache.Replace(gtNone,gtNone,
-          EndPos,CurPos.StartPos,'') then exit;
+        // not first unit in uses section
+        if AtomIsChar(';') then begin
+          // last unit -> delete with comma in front
+          StartPos:=EndPos;
+          EndPos:=CurPos.StartPos;
+        end else if PositionsInSameLine(Src,EndPos,StartPos) then begin
+          // not first unit in line -> delete with comma in front
+          StartPos:=EndPos;
+          EndPos:=CurPos.StartPos;
+        end else begin
+          // first unit in line -> delete with comma behind
+          EndPos:=FindLineEndOrCodeAfterPosition(CurPos.EndPos);
+          if (EndPos>SrcLen) or (Src[EndPos] in [#10,#13]) then
+            StartPos:=FindLineEndOrCodeInFrontOfPosition(StartPos);// delete space in front or even the empty line
+        end;
       end;
+      if not SourceChangeCache.Replace(gtNone,gtNone,StartPos,EndPos,'') then
+        exit;
       if not SourceChangeCache.Apply then exit;
       Result:=true;
       exit;
@@ -6080,7 +6091,9 @@ begin
   Beauty:=SourceChangeCache.BeautifyCodeOptions;
   InitStack(Stack);
   try
-    //DebugLn(['TStandardCodeTool.CompleteBlock ',StartNode.DescAsString]);
+    {$IFDEF VerboseCompleteBlock}
+    DebugLn(['TStandardCodeTool.CompleteBlock ',StartNode.DescAsString]);
+    {$ENDIF}
 
     if StartNode.Desc in AllPascalStatements then begin
       while (StartNode.Parent<>nil)

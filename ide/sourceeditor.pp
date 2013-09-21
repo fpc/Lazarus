@@ -3321,7 +3321,7 @@ begin
     begin
       AddChar:=true;
       if AutoCompleteChar(aChar,AddChar,acoLineBreak) then ;
-      //DebugLn(['TSourceEditor.ProcessCommand ecLineBreak AddChar=',AddChar]);
+      //DebugLn(['TSourceEditor.ProcessCommand ecLineBreak AddChar=',AddChar,' EditorOpts.AutoBlockCompletion=',EditorOpts.AutoBlockCompletion]);
       if not AddChar then Command:=ecNone;
       if EditorOpts.AutoBlockCompletion then
         AutoCompleteBlock;
@@ -4397,7 +4397,7 @@ begin
   then begin
     debugln(['TSourceEditor.AutoBlockCompleteChar ']);
     // user typed 'begin'
-    if not LazarusIDE.SaveSourceEditorChangesToCodeCache(self) then exit;
+    LazarusIDE.SaveSourceEditorChangesToCodeCache(self);
     FEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.AutoBlockCompleteChar (2)'){$ENDIF};
     FEditor.BeginUpdate;
     try
@@ -4415,7 +4415,7 @@ var
   NewCode: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if not LazarusIDE.SaveSourceEditorChangesToCodeCache(self) then exit;
+  LazarusIDE.SaveSourceEditorChangesToCodeCache(Self);
   XY:=FEditor.LogicalCaretXY;
   FEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.AutoCompleteBlock'){$ENDIF};
   FEditor.BeginUpdate;

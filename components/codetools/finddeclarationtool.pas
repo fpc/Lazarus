@@ -7565,8 +7565,6 @@ var
     end;
     if (not (NextAtomType in [vatSpace,vatPoint,vatAs,vatUp,vatRoundBracketClose,
       vatRoundBracketOpen,vatEdgedBracketClose,vatEdgedBracketOpen]))
-    or ((ExprType.Context.Node=nil)
-        and (not (ExprType.Desc in EdgedBracketContexts)))
     then begin
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
@@ -7583,6 +7581,11 @@ var
       ExprType.Desc:=xtWideChar;
       ExprType.Context.Node:=nil;
       exit;
+    end;
+    if ExprType.Context.Node=nil then begin
+      MoveCursorToCleanPos(NextAtom.StartPos);
+      ReadNextAtom;
+      RaiseIllegalQualifierFound;
     end;
 
     {$IFDEF ShowExprEval}
