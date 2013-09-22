@@ -1319,7 +1319,8 @@ begin
     // "Borland" and "Ver150" are defined by Delphi7.
     // "Delphi7" and "Compiler6_Up" are defined by Jedi library based on other settings.
     //  They are needed because Jedi.inc undefines "Borland" when "FPC" is defined. Nuts.
-    s:='-dBorland -dVer150 -dDelphi7 -dCompiler6_Up';
+    // PUREPASCAL is defined by some code to not use x86 assembly code.
+    s:='-dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL';
     Options.CustomOptions:=s;
     fSettings.AddLogLine(Format(lisConvDelphiAddedCustomOptionDefines, [s]));
   end;
