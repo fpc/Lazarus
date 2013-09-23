@@ -7192,6 +7192,8 @@ begin
   if (State = dsError) and (DebugProcessRunning) then begin
     FCurrentStackFrameValid := False;
     FCurrentThreadIdValid   := False;
+    FCurrentThreadId := 0;
+    FCurrentStackFrame := 0;
     SendCmdLn('kill'); // try to kill the debugged process. bypass all queues.
     DebugProcess.Terminate(0);
   end;
@@ -7210,6 +7212,12 @@ end;
 
 procedure TGDBMIDebugger.DoBeforeState(const OldState: TDBGState);
 begin
+  if State in [dsStop] then begin
+    FCurrentStackFrameValid := False;
+    FCurrentThreadIdValid   := False;
+    FCurrentThreadId := 0;
+    FCurrentStackFrame := 0;
+  end;
   inherited DoBeforeState(OldState);
   Threads.CurrentThreads.CurrentThreadId := FCurrentThreadId; // TODO: Works only because CurrentThreadId is always valid
 end;
