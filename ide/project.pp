@@ -2490,6 +2490,9 @@ end;
 procedure TUnitInfo.SetModified(const AValue: boolean);
 begin
   if Modified=AValue then exit;
+  {$IFDEF VerboseProjectModified}
+  debugln(['TUnitInfo.SetModified ',Filename,' new Modified=',AValue]);
+  {$ENDIF}
   fModified:=AValue;
   if (not fModified) and Assigned(Source) then
     fSourceChangeStep:=Source.ChangeStep;
@@ -2530,6 +2533,9 @@ end;
 procedure TUnitInfo.SetSessionModified(const AValue: boolean);
 begin
   if FSessionModified=AValue then exit;
+  {$IFDEF VerboseProjectModified}
+  debugln(['TUnitInfo.SetSessionModified ',Filename,' new Modified=',AValue]);
+  {$ENDIF}
   FSessionModified:=AValue;
 end;
 
@@ -4112,7 +4118,7 @@ end;
 
 procedure TProject.SetModified(const AValue: boolean);
 begin
-  {$IFDEF VerboseTProjectSetModified}
+  {$IFDEF VerboseProjectModified}
   if Modified<>AValue then begin
     debugln(['TProject.SetModified ================= ',AValue]);
     DumpStack;
@@ -4133,6 +4139,9 @@ end;
 procedure TProject.SetSessionModified(const AValue: boolean);
 begin
   if AValue=SessionModified then exit;
+  {$IFDEF VerboseProjectModified}
+  debugln(['TProject.SetSessionModified new Modified=',AValue]);
+  {$ENDIF}
   inherited SetSessionModified(AValue);
 end;
 
