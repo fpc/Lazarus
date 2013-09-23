@@ -355,7 +355,7 @@ var
              ', ItemIndex=', lb.ItemIndex]);
     if lb.ItemIndex < DestInd then
       Dec(DestInd);
-    if (lb.ItemIndex > 0) and (DestInd > 0) and (lb.ItemIndex <> DestInd) then
+    if (lb.ItemIndex > 0) and (lb.ItemIndex <> DestInd) then
     begin
       lb.Items.Move(lb.ItemIndex, DestInd);
       lb.ItemIndex := DestInd;
@@ -382,7 +382,7 @@ var
         DestPage := lb.Items[DestInd];
         if SrcPage <> DestPage then
         begin
-          // Source
+          // Source component
           Ind := lb.Items.IndexOf(SrcPage);
           Assert(Ind > -1, 'TCompPaletteOptionsFrame.PagesListBoxDragDrop: '
                              +'source page index not found.');
@@ -392,7 +392,7 @@ var
                              +'source component index not found.');
           xComp := SrcComps.Objects[Ind];
           SrcComps.Delete(Ind);
-          // Destination
+          // Destination component
           Ind := lb.Items.IndexOf(DestPage);
           Assert(Ind > -1, 'TCompPaletteOptionsFrame.PagesListBoxDragDrop: '
                               +'destination page index not found.');
@@ -414,10 +414,13 @@ var
 begin
   lb := Sender as TListBox;
   DestInd := lb.ItemAtPos(Point(X, Y), true);
-  if Source is TListBox then
-    DoInsideListBox
-  else if Source is TListView then
-    DoFromListView(Source as TListView);
+  if DestInd > 0 then
+  begin
+    if Source is TListBox then
+      DoInsideListBox
+    else if Source is TListView then
+      DoFromListView(Source as TListView);
+  end;
 end;
 
 procedure TCompPaletteOptionsFrame.PagesListBoxDragOver(Sender,
@@ -430,9 +433,9 @@ begin
   lb := Sender as TListBox;
   DestPt := Point(X, Y);
   DestInd := lb.ItemAtPos(DestPt, true);
-  Accept := ( (Source is TListBox) and (Source = Sender)
-              and (lb.ItemIndex > 0) and (DestInd > 0)
-            ) or (Source is TListView);
+  Accept := (DestInd > 0)
+      and ( ( (Source is TListBox) and (Source = Sender) and (lb.ItemIndex > 0)
+            ) or (Source is TListView) );
 end;
 
 // Drag-drop ComponentsListView
@@ -454,7 +457,7 @@ begin
   if (SrcItem.Index > -1) and (DestInd > -1) and (SrcItem.Index <> DestInd) then
   begin
     lv.Selected := Nil;
-    lv.items.Move(SrcItem.Index, DestInd);
+    lv.Items.Move(SrcItem.Index, DestInd);
     lv.Selected := lv.Items[DestInd];
     UpdateCompMoveButtons(DestInd);
   end;
