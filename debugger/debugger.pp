@@ -6151,7 +6151,6 @@ begin
     TThreadEntry(Flist[0]).Free;
     FList.Delete(0);
   end;
-  FCurrentThreadId := 0;
 end;
 
 procedure TThreads.Add(AThread: TThreadEntry);
