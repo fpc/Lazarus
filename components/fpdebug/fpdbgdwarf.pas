@@ -36,6 +36,7 @@ unit FpDbgDwarf;
 
 {$mode objfpc}{$H+}
 //{$INLINE OFF}
+{off $DEFINE USE_ABBREV_TMAP}
 
 interface
 
@@ -108,6 +109,37 @@ type
     index: Integer;
     count: Integer;
     Children: Boolean;
+  end;
+
+
+  TLeb128TableEntry = record
+    LeadLow, LeadHigh: Byte; // bytes >= 128, more to follow
+    EndLow,  EndHigh: Byte;  // bytes < 128, pointer to data
+    LeadIndex: cardinal;     // first index in LeadTableData
+    EndIndex: cardinal;      // first index in EndTableData
+  end;
+  PLeb128TableEntry = ^TLeb128TableEntry;
+
+  { TLEB128PreFixTree }
+
+  TLEB128PreFixTree = class
+  private
+    FTableList: Array of TLeb128TableEntry;
+    FTableListGaps: Array of record LeadTable, EndTable: Byte; end;
+    FTableListNextFreeIndex: Cardinal;
+
+    FLeadTableData: Array of Cardinal; //  Next Table number
+    FLeadTableNextFreeIndex: Cardinal;
+    FEndTableData:  Array of TDwarfAbbrev; //Pointer;
+    FEndTableNextFreeIndex: Cardinal;
+
+    FDataGrowStep, FTableListGrowStep: Cardinal;
+  protected
+  public
+    procedure SetCapacity(ACapacity: integer);
+    procedure Finish;
+    function AddLeb128FromPointer(APointer: Pointer; AData: TDwarfAbbrev{Pointer}): Pointer;
+    function FindLe128bFromPointer(APointer: Pointer; out AData: TDwarfAbbrev{Pointer}): Pointer; // returnns pointer to first address after LEB128
   end;
 
   (* Link, can either be
@@ -271,13 +303,16 @@ type
     FFileName: String;
     FIdentifierCase: Integer;
 
-    FMap: TMap;
+    {$IFDEF USE_ABBREV_TMAP}
+    FMap: TMap;  // Abbrevs
+    {$ELSE}
+    FAbbrevTree: TLEB128PreFixTree;
+    {$Endif}
     FDefinitions: array of record
       Attribute: Cardinal;
       Form: Cardinal;
     end;
     FAbbrevIndex: Integer;
-    FLastAbbrev: Cardinal;
     FLastAbbrevPtr: Pointer;
 
     FLineInfo: record
@@ -312,7 +347,7 @@ type
     procedure BuildAddressMap;
     procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
     function  MakeAddress(AData: Pointer): QWord;
-    procedure LoadAbbrevs(ANeeded: Cardinal);
+    procedure LoadAbbrevs;
   protected
     function LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo; AFlags: TDwarfLocateEntryFlags; out AResultScope: TDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
     function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; const AList: TPointerDynArray; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
@@ -327,7 +362,11 @@ type
   public
     constructor Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); virtual;
     destructor Destroy; override;
-    function GetDefinition(AAbbrev: Cardinal; out ADefinition: TDwarfAbbrev): Boolean;
+    {$IFDEF USE_ABBREV_TMAP}
+    function GetDefinition(AAbbrev: Cardinal; out ADefinition: TDwarfAbbrev): Boolean; inline;
+    {$ELSE}
+    function GetDefinition(AAbbrevPtr: Pointer; out ADefinition: TDwarfAbbrev): Boolean; inline;
+    {$Endif}
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
     property FileName: String read FFileName;
@@ -813,6 +852,427 @@ begin
   else
     Result := Format('DW_ID_%d', [AValue]);
   end;
+end;
+
+{ TLEB128PreFixTree }
+
+procedure TLEB128PreFixTree.SetCapacity(ACapacity: integer);
+begin
+  FDataGrowStep      := Min(512, Max(64, ACapacity));
+  FTableListGrowStep := Min(32,  Max(4,  ACapacity div 128));
+//debugln(['TLEB128PreFixTree.SetCapacity ', ACapacity, '  ', FDataGrowStep, ' ', FTableListGrowStep]);
+
+  SetLength(FTableList, 1); //FTableListGrowStep div 2);
+  SetLength(FTableListGaps, 1); //FTableListGrowStep div 2);
+  SetLength(FEndTableData, FDataGrowStep div 4);
+
+  FTableList[0].LeadLow := 255;
+  FTableList[0].LeadHigh := 0;
+  FTableList[0].EndLow := 255;
+  FTableList[0].EndHigh := 0;
+
+  FTableListGaps[0].LeadTable := 0;
+  FTableListGaps[0].EndTable  := 0;
+
+  FLeadTableNextFreeIndex := 0; // first 16 are reserved
+  FEndTableNextFreeIndex  := 0;
+  FTableListNextFreeIndex := 1;
+
+end;
+
+procedure TLEB128PreFixTree.Finish;
+begin
+  //debugln(['TLEB128PreFixTree.Finish ',' t:', Length(FTableList) ,' => ', FTableListNextFreeIndex,' p:', Length(FLeadTableData) ,' => ', FLeadTableNextFreeIndex,' e:', Length(FEndTableData) ,' => ', FEndTableNextFreeIndex]);
+  dec(FLeadTableNextFreeIndex, FTableListGaps[FTableListNextFreeIndex-1].LeadTable);
+  dec(FEndTableNextFreeIndex, FTableListGaps[FTableListNextFreeIndex-1].EndTable);
+  SetLength(FTableList,     FTableListNextFreeIndex);
+  SetLength(FLeadTableData, FLeadTableNextFreeIndex);
+  SetLength(FEndTableData,  FEndTableNextFreeIndex);
+  // TODO: clear gaps
+  SetLength(FTableListGaps, 0);
+end;
+
+function TLEB128PreFixTree.AddLeb128FromPointer(APointer: Pointer;
+  AData: TDwarfAbbrev): Pointer;
+var
+  TableListLen: Integer;
+
+  procedure AllocLeadTableIndexes(AnAmount: Integer); inline;
+  begin
+    inc(FLeadTableNextFreeIndex, AnAmount);
+    if Length(FLeadTableData) < FLeadTableNextFreeIndex then begin
+      SetLength(FLeadTableData, FLeadTableNextFreeIndex + FDataGrowStep);
+      //debugln(['IncreaseLeadTableListSize ', DbgS(self), ' ', FLeadTableNextFreeIndex ]);
+    end;
+  end;
+
+  procedure AllocEndTableIndexes(AnAmount: Integer); inline;
+  begin
+    inc(FEndTableNextFreeIndex, AnAmount);
+    if Length(FEndTableData) < FEndTableNextFreeIndex then begin
+      SetLength(FEndTableData, FEndTableNextFreeIndex + FDataGrowStep);
+      //debugln(['IncreaseEndTableListSize ', DbgS(self), ' ', FEndTableNextFreeIndex ]);
+    end;
+  end;
+
+  function NewEntryInTableList: Cardinal; inline;
+  begin
+    if FTableListNextFreeIndex >= TableListLen then begin
+      //debugln(['inc(TableListLen, 512) ', DbgS(self), ' ', TableListLen]);
+      inc(TableListLen, FTableListGrowStep);
+      SetLength(FTableList, TableListLen);
+      SetLength(FTableListGaps, TableListLen);
+    end;
+
+    Result := FTableListNextFreeIndex;
+    FTableList[Result].LeadLow  := 255;
+    FTableList[Result].LeadHigh := 0;
+    FTableList[Result].EndLow  := 255;
+    FTableList[Result].EndHigh := 0;
+    FTableListGaps[Result].LeadTable := 0;
+    FTableListGaps[Result].EndTable  := 0;
+    inc(FTableListNextFreeIndex);
+  end;
+
+  procedure AppendToLeadTable(ATableListIndex: Cardinal; AEntry: PLeb128TableEntry;
+    ALeadByte: Byte; ATarget: Cardinal); //inline;
+  var
+    GapAvail, ANeeded: Integer;
+    AtEnd: Boolean;
+    i, NewIndex: Cardinal;
+  begin
+    if AEntry^.LeadLow > AEntry^.LeadHigh then
+    begin // empty table // create new
+      AEntry^.LeadLow := ALeadByte;
+      AEntry^.LeadIndex := FLeadTableNextFreeIndex;
+      AllocLeadTableIndexes(16);
+      FTableListGaps[ATableListIndex].LeadTable := 15; // 16-1
+    end
+    else
+    begin // append to existing
+      GapAvail := FTableListGaps[ATableListIndex].LeadTable;
+      assert(AEntry^.LeadIndex + AEntry^.LeadHigh - AEntry^.LeadLow + 1 + GapAvail <= FLeadTableNextFreeIndex);
+      AtEnd := AEntry^.LeadIndex + AEntry^.LeadHigh - AEntry^.LeadLow + 1 + GapAvail = FLeadTableNextFreeIndex;
+      ANeeded := ALeadByte - AEntry^.LeadHigh;
+
+      if ANeeded <= GapAvail then begin
+        dec(FTableListGaps[ATableListIndex].LeadTable, ANeeded);
+      end
+      else
+      if AtEnd then begin
+        AllocLeadTableIndexes(ANeeded + 16);
+        FTableListGaps[ATableListIndex].LeadTable := 16;
+      end
+      else
+      begin
+        // Todo deal with the GAP at the old location
+        i := AEntry^.LeadHigh - AEntry^.LeadLow + 1; // Current Size
+        NewIndex := FLeadTableNextFreeIndex;
+        //DebugLn(['MOVING LEAD', DbgS(self), ' From: ', AEntry^.LeadIndex, ' To: ', NewIndex] );
+        AllocLeadTableIndexes(i + ANeeded +16);
+        move(FLeadTableData[AEntry^.LeadIndex], FLeadTableData[NewIndex], i * SizeOf(FLeadTableData[0]));
+        AEntry^.LeadIndex := NewIndex;
+        FTableListGaps[ATableListIndex].LeadTable := 16;
+      end;
+    end; // append to existing
+
+    AEntry^.LeadHigh := ALeadByte;
+    i := AEntry^.LeadIndex + ALeadByte - AEntry^.LeadLow;
+    FLeadTableData[i] := ATarget;
+  end;
+
+  procedure PrependToLeadTable(ATableListIndex: Cardinal; AEntry: PLeb128TableEntry;
+    ALeadByte: Byte; ATarget: Cardinal); //inline;
+  var
+    GapAvail, ANeeded: Integer;
+    AtEnd: Boolean;
+    i, NewIndex: Cardinal;
+  begin
+    Assert(AEntry^.LeadLow <= AEntry^.LeadHigh, 'emty table must be handled by append');
+    GapAvail := FTableListGaps[ATableListIndex].LeadTable;
+    assert(AEntry^.LeadIndex + AEntry^.LeadHigh - AEntry^.LeadLow + 1 + GapAvail <= FLeadTableNextFreeIndex);
+    AtEnd := AEntry^.LeadIndex + AEntry^.LeadHigh - AEntry^.LeadLow + 1 + GapAvail = FLeadTableNextFreeIndex;
+    ANeeded := AEntry^.LeadLow - ALeadByte;
+
+    if (ANeeded <= GapAvail) or AtEnd then begin
+      if (ANeeded > GapAvail) then begin
+        AllocLeadTableIndexes(ANeeded + 16);
+        FTableListGaps[ATableListIndex].LeadTable := 16;
+      end
+      else
+        dec(FTableListGaps[ATableListIndex].LeadTable, ANeeded);
+      NewIndex := AEntry^.LeadIndex + ANeeded;
+      i := AEntry^.LeadHigh - AEntry^.LeadLow + 1; // Current size
+      move(FLeadTableData[AEntry^.LeadIndex], FLeadTableData[NewIndex], i * SizeOf(FLeadTableData[0]));
+      FillByte(FLeadTableData[AEntry^.LeadIndex+1], Min(i, ANeeded-1) * SizeOf(FLeadTableData[0]), 0);
+    end
+    else
+    begin
+      // Todo deal with the GAP at the old location
+      i := AEntry^.LeadHigh - AEntry^.LeadLow + 1; // Current Size
+      NewIndex := FLeadTableNextFreeIndex;
+      //DebugLn(['MOVING LEAD', DbgS(self), ' From: ', AEntry^.LeadIndex, ' To: ', NewIndex] );
+      AllocLeadTableIndexes(i + ANeeded + 16);
+      move(FLeadTableData[AEntry^.LeadIndex], FLeadTableData[NewIndex+ANeeded], i * SizeOf(FLeadTableData[0]));
+      // FillByte only neede, if gap will be reclaimed
+      //FillByte(FLeadTableData[AEntry^.LeadIndex], i * SizeOf(FLeadTableData[0]), 0);
+      AEntry^.LeadIndex := NewIndex;
+      FTableListGaps[ATableListIndex].LeadTable := 16;
+    end;
+
+
+    AEntry^.LeadLow := ALeadByte;
+    FLeadTableData[AEntry^.LeadIndex] := ATarget;
+  end;
+
+  procedure AppendToEndTable(ATableListIndex: Cardinal; AEntry: PLeb128TableEntry;
+    ALeadByte: Byte; AData: TDwarfAbbrev {Pointer}); //inline;
+  var
+    GapAvail, ANeeded: Integer;
+    AtEnd: Boolean;
+    i, NewIndex: Cardinal;
+  begin
+    if AEntry^.EndLow > AEntry^.EndHigh then
+    begin // empty table // create new
+      AEntry^.EndLow := ALeadByte;
+      AEntry^.EndIndex := FEndTableNextFreeIndex;
+      AllocEndTableIndexes(16);
+      FTableListGaps[ATableListIndex].EndTable := 15; // 16-1
+    end
+    else
+    begin // append to existing
+      GapAvail := FTableListGaps[ATableListIndex].EndTable;
+      assert(AEntry^.EndIndex + AEntry^.LeadHigh - AEntry^.LeadLow + 1 + GapAvail <= FEndTableNextFreeIndex);
+      AtEnd := AEntry^.EndIndex + AEntry^.EndHigh - AEntry^.EndLow + 1 + GapAvail = FEndTableNextFreeIndex;
+      ANeeded := ALeadByte - AEntry^.EndHigh;
+
+      if ANeeded <= GapAvail then begin
+        dec(FTableListGaps[ATableListIndex].EndTable, ANeeded);
+      end
+      else
+      if AtEnd then begin
+        AllocEndTableIndexes(ANeeded + 16);
+        FTableListGaps[ATableListIndex].EndTable := 16;
+      end
+      else
+      begin
+        // Todo deal with the GAP at the old location
+        i := AEntry^.EndHigh - AEntry^.EndLow + 1; // Current Size
+        NewIndex := FEndTableNextFreeIndex;
+        //DebugLn(['MOVING END',  DbgS(self), ' From: ', AEntry^.EndIndex, ' To: ', NewIndex ]);
+        AllocEndTableIndexes(i + ANeeded + 16);
+        move(FEndTableData[AEntry^.EndIndex], FEndTableData[NewIndex], i * SizeOf(FEndTableData[0]));
+        AEntry^.EndIndex := NewIndex;
+        FTableListGaps[ATableListIndex].EndTable := 16;
+      end;
+    end; // append to existing
+
+    AEntry^.EndHigh := ALeadByte;
+    i := AEntry^.EndIndex + ALeadByte - AEntry^.EndLow;
+    FEndTableData[i] := AData;
+  end;
+
+  procedure PrependToEndTable(ATableListIndex: Cardinal; AEntry: PLeb128TableEntry;
+    AEndByte: Byte; AData: TDwarfAbbrev); //inline;
+  var
+    GapAvail, ANeeded: Integer;
+    AtEnd: Boolean;
+    i, NewIndex: Cardinal;
+  begin
+    Assert(AEntry^.EndLow <= AEntry^.EndHigh, 'emty table must be handled by append');
+    GapAvail := FTableListGaps[ATableListIndex].EndTable;
+    assert(AEntry^.EndIndex + AEntry^.EndHigh - AEntry^.EndLow + 1 + GapAvail <= FEndTableNextFreeIndex);
+    AtEnd := AEntry^.EndIndex + AEntry^.EndHigh - AEntry^.EndLow + 1 + GapAvail = FEndTableNextFreeIndex;
+    ANeeded := AEntry^.EndLow - AEndByte;
+
+    if (ANeeded <= GapAvail) or AtEnd then begin
+      if (ANeeded > GapAvail) then begin
+        AllocEndTableIndexes(ANeeded + 16);
+        FTableListGaps[ATableListIndex].EndTable := 16;
+      end
+      else
+        dec(FTableListGaps[ATableListIndex].EndTable, ANeeded);
+      NewIndex := AEntry^.EndIndex + ANeeded;
+      i := AEntry^.EndHigh - AEntry^.EndLow + 1; // Current size
+      move(FEndTableData[AEntry^.EndIndex], FEndTableData[NewIndex], i * SizeOf(FEndTableData[0]));
+      FillByte(FEndTableData[AEntry^.EndIndex+1], Min(i, ANeeded-1) * SizeOf(FEndTableData[0]), 0);
+    end
+    else
+    begin
+      // Todo deal with the GAP at the old location
+      i := AEntry^.EndHigh - AEntry^.EndLow + 1; // Current Size
+      NewIndex := FEndTableNextFreeIndex;
+      //DebugLn(['MOVING END', DbgS(self), ' From: ', AEntry^.EndIndex, ' To: ', NewIndex] );
+      AllocEndTableIndexes(i + ANeeded + 16);
+      move(FEndTableData[AEntry^.EndIndex], FEndTableData[NewIndex+ANeeded], i * SizeOf(FEndTableData[0]));
+      // FillByte only neede, if gap will be reclaimed
+      //FillByte(FEndTableData[AEntry^.EndIndex], i * SizeOf(FEndTableData[0]), 0);
+      AEntry^.EndIndex := NewIndex;
+      FTableListGaps[ATableListIndex].EndTable := 16;
+    end;
+
+
+    AEntry^.EndLow := AEndByte;
+    FEndTableData[AEntry^.EndIndex] := AData;
+  end;
+
+var
+  LEB128: PByte;
+  b: Byte;
+  TableListIndex: Integer;
+  e: PLeb128TableEntry;
+  i, NewIdx: Cardinal;
+begin
+  LEB128 := APointer;
+  i := 16; // Just an abort condition, for malformed data.
+  while (LEB128^ >= 128) do begin
+    inc(LEB128);
+    dec(i);
+    if i = 0 then begin
+      DebugLn('ENDLESS LEB128');
+      exit;
+    end;
+  end;
+  Result := LEB128 + 1;
+
+  TableListIndex := 0;
+  TableListLen := Length(FTableList);
+
+  // LeadByte
+  while LEB128 > APointer do begin
+    b := LEB128^ and $7f;
+    if b = 0 then begin
+      dec(LEB128);
+      continue;
+    end;
+
+    Assert(TableListIndex < TableListLen);
+    e := @FTableList[TableListIndex];
+    if (b > e^.LeadHigh) or (e^.LeadHigh < e^.LeadLow) then begin
+      NewIdx := NewEntryInTableList;
+      e := @FTableList[TableListIndex];
+      AppendToLeadTable(TableListIndex, e, b, NewIdx);
+      TableListIndex := NewIdx;
+    end
+    else
+    if (b < e^.LeadLow) then begin
+      NewIdx := NewEntryInTableList;
+      e := @FTableList[TableListIndex];
+      PrependToLeadTable(TableListIndex, e, b, NewIdx);
+      TableListIndex := NewIdx;
+    end
+    else
+    begin
+      // existing entry
+      i := e^.LeadIndex + b - e^.LeadLow;
+      TableListIndex := FLeadTableData[i];
+      if TableListIndex = 0 then begin // not yet assigned (not allowed to point back to 0)
+        TableListIndex := NewEntryInTableList;
+        FLeadTableData[i] := TableListIndex;
+      end;
+    end;
+
+    dec(LEB128);
+  end;
+
+  // EndByte
+  //if AData = nil then AData := LEB128;
+  Assert(TableListIndex < TableListLen);
+  b := LEB128^ and $7f;
+  e := @FTableList[TableListIndex];
+  if (b > e^.EndHigh) or (e^.EndHigh < e^.EndLow) then begin
+    AppendToEndTable(TableListIndex, e, b, AData);
+  end
+  else
+  if (b < e^.EndLow) then begin
+    PrependToEndTable(TableListIndex, e, b, AData);
+  end
+  else
+  begin
+    // in existingc range
+    i := e^.EndIndex + b - e^.EndLow;
+    //assert(FEndTableData[i] = nil, 'Duplicate LEB128');
+    FEndTableData[i] := AData;
+  end;
+
+end;
+
+function TLEB128PreFixTree.FindLe128bFromPointer(APointer: Pointer; out
+  AData: TDwarfAbbrev): Pointer;
+var
+  LEB128: PByte;
+  b: Byte;
+  TableListIndex: Integer;
+  e: PLeb128TableEntry;
+  i: Cardinal;
+  TableListLen: Integer;
+  LEB128End: PByte;
+begin
+  AData.index := -1;
+  AData.tag := 0;
+  AData.count := 0;
+  Result := nil;
+
+  TableListLen := Length(FTableList);
+  if TableListLen = 0 then
+    exit;
+
+  LEB128 := APointer;
+  i := 16; // Just an abort condition, for malformed data.
+  while (LEB128^ >= 128) do begin
+    inc(LEB128);
+    dec(i);
+    if i = 0 then begin
+      DebugLn('ENDLESS LEB128');
+      exit;
+    end;
+  end;
+  LEB128End := LEB128;
+
+  TableListIndex := 0;
+  // LeadByte
+  while LEB128 > APointer do begin
+    b := LEB128^ and $7f;
+    if b = 0 then begin
+      dec(LEB128);
+      continue;
+    end;
+
+    Assert(TableListIndex < TableListLen);
+    e := @FTableList[TableListIndex];
+    if (b > e^.LeadHigh) or (b < e^.LeadLow) then begin
+      //debugln('1 OUT OF RANGE / NOT FOUND!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+      exit;
+    end
+    else
+    begin
+      TableListIndex := FLeadTableData[e^.LeadIndex + b - e^.LeadLow];
+      if TableListIndex = 0 then begin // not yet assigned (not allowed to point back to 0)
+        //debugln('3 OUT OF RANGE / NOT FOUND!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        exit;
+      end;
+    end;
+
+    dec(LEB128);
+  end;
+
+  // EndByte
+  Assert(TableListIndex < TableListLen);
+  b := LEB128^ and $7f;
+  e := @FTableList[TableListIndex];
+  if (b > e^.EndHigh) or (b < e^.EndLow) then begin
+    //debugln('4 OUT OF RANGE / NOT FOUND!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    exit;
+  end
+  else
+  begin
+    i := e^.EndIndex + b - e^.EndLow;
+    //assert(FEndTableData[i] = nil, 'Duplicate LEB128');
+    AData := FEndTableData[i];
+    if AData.tag > 0 then // tag 0 does not exist
+      Result := LEB128End+1;
+  end;
+
 end;
 
 { TDWarfLineMap }
@@ -1719,11 +2179,20 @@ begin
   FAddressSize := AAddressSize;
   FIsDwarf64 := AIsDwarf64;
 
+  {$IFDEF USE_ABBREV_TMAP}
   FMap := TMap.Create(itu4, SizeOf(TDwarfAbbrev));
+  {$ELSE}
+  FAbbrevTree := TLEB128PreFixTree.Create;
+  FAbbrevTree.SetCapacity(FLength div 16 + 1);
+  {$Endif}
   SetLength(FDefinitions, 256);
   // initialize last abbrev with start
 //  FLastAbbrevPtr := FOwner.PointerFromVA(dsAbbrev, FAbbrevOffset);
   FLastAbbrevPtr := FOwner.FSections[dsAbbrev].RawData + FAbbrevOffset;
+  LoadAbbrevs;
+  {$IFnDEF USE_ABBREV_TMAP}
+  FAbbrevTree.Finish;
+  {$Endif}
 
   // use internally 64 bit target pointer
   FAddressMap := TMap.Create(itu8, SizeOf(TDwarfAddressInfo));
@@ -1791,8 +2260,11 @@ destructor TDwarfCompilationUnit.Destroy;
   end;
 
 begin
-  SetLength(FScopeList.List, 0);
+  {$IFDEF USE_ABBREV_TMAP}
   FreeAndNil(FMap);
+  {$ELSE}
+  FreeAndNil(FAbbrevTree);
+  {$Endif}
   FreeAndNil(FAddressMap);
   FreeLineNumberMap;
   FreeAndNil(FLineInfo.StateMachines);
@@ -1803,11 +2275,17 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF USE_ABBREV_TMAP}
 function TDwarfCompilationUnit.GetDefinition(AAbbrev: Cardinal; out ADefinition: TDwarfAbbrev): Boolean;
 begin
-  LoadAbbrevs(AAbbrev);
   Result := FMap.GetData(AAbbrev, ADefinition);
 end;
+{$ELSE}
+function TDwarfCompilationUnit.GetDefinition(AAbbrevPtr: Pointer; out ADefinition: TDwarfAbbrev): Boolean;
+begin
+  Result := FAbbrevTree.FindLe128bFromPointer(AAbbrevPtr, ADefinition) <> nil;
+end;
+{$Endif}
 
 function TDwarfCompilationUnit.GetLineAddressMap(const AFileName: String): PDWarfLineMap;
   var
@@ -1855,7 +2333,7 @@ begin
   Result := Map^.GetAddressForLine(ALine);
 end;
 
-procedure TDwarfCompilationUnit.LoadAbbrevs(ANeeded: Cardinal);
+procedure TDwarfCompilationUnit.LoadAbbrevs;
   procedure MakeRoom(AMinSize: Integer);
   var
     len: Integer;
@@ -1868,29 +2346,32 @@ procedure TDwarfCompilationUnit.LoadAbbrevs(ANeeded: Cardinal);
     SetLength(FDefinitions, len);
   end;
 var
-  MaxData: Pointer;
-  Def: TDwarfAbbrev;
+  MaxData, p: Pointer;
+  Def, Def2: TDwarfAbbrev;
   abbrev, attrib, form: Cardinal;
   n: Integer;
 begin
-  if ANeeded <= FLastAbbrev then Exit;
-
   abbrev := 0;
   // we don't know the number of abbrevs for this unit,
   // but we cannot go beyond the section limit, so use that as safetylimit
   // in case of corrupt data
   MaxData := FOwner.FSections[dsAbbrev].RawData + FOwner.FSections[dsAbbrev].Size;
-  while (pbyte(FLastAbbrevPtr) < MaxData) and (pbyte(FLastAbbrevPtr)^ <> 0) and (abbrev < ANeeded) do
+
+  while (pbyte(FLastAbbrevPtr) < MaxData) and (pbyte(FLastAbbrevPtr)^ <> 0) do
   begin
+    p := FLastAbbrevPtr; // {$IFDEF USE_ABBREV_TMAP}
     abbrev := ULEB128toOrdinal(pbyte(FLastAbbrevPtr));
     Def.tag := ULEB128toOrdinal(pbyte(FLastAbbrevPtr));
 
+    {$IFDEF USE_ABBREV_TMAP}
     if FMap.HasId(abbrev)
+    {$ELSE}
+    if FAbbrevTree.FindLe128bFromPointer(p, Def2) <> nil
+    {$Endif}
     then begin
       DebugLn(FPDBG_DWARF_WARNINGS, ['Duplicate abbrev=', abbrev, ' found. Ignoring....']);
       while pword(FLastAbbrevPtr)^ <> 0 do Inc(pword(FLastAbbrevPtr));
       Inc(pword(FLastAbbrevPtr));
-      abbrev := 0;
       Continue;
     end;
 
@@ -1905,6 +2386,7 @@ begin
 
     n := 0;
     Def.Index := FAbbrevIndex;
+
     while pword(FLastAbbrevPtr)^ <> 0 do
     begin
       attrib := ULEB128toOrdinal(pbyte(FLastAbbrevPtr));
@@ -1920,12 +2402,14 @@ begin
       Inc(n);
     end;
     Def.Count := n;
+    {$IFDEF USE_ABBREV_TMAP}
     FMap.Add(abbrev, Def);
+    {$ELSE}
+    FAbbrevTree.AddLeb128FromPointer(p, Def {ptruint(FAbbrevIndex)});
+    {$Endif}
 
     Inc(pword(FLastAbbrevPtr));
   end;
-  if abbrev <> 0
-  then FLastAbbrev := abbrev;
 end;
 
 function TDwarfCompilationUnit.LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; const AList: TPointerDynArray; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
@@ -1934,10 +2418,17 @@ var
   Def: TDwarfAbbrev;
   n: Integer;
 begin
+  {$IFDEF USE_ABBREV_TMAP}
   Abbrev := ULEB128toOrdinal(AEntry);
   if not GetDefinition(Abbrev, Def)
+  {$ELSE}
+  if not GetDefinition(AEntry, Def)
+  {$Endif}
   then begin
     //???
+    {$IFnDEF USE_ABBREV_TMAP}
+    Abbrev := ULEB128toOrdinal(AEntry);
+    {$Endif}
     DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
     Result := False;
     Exit;
@@ -2092,6 +2583,8 @@ var
   Scope, Scope2: TDwarfScopeInfo;
   BuildList: Boolean; // set once if we need to fill the list
   Searching: Boolean; // set as long as we need searching for a tag.
+  p2: Pointer;
+  Def2: TDwarfAbbrev;
                       // we cannot use result for this, since we might want a topnode search while we need to be continuable
 begin
   Result := False;
@@ -2105,6 +2598,7 @@ begin
   while (p <= MaxData) and (Level >= 0) do
   begin
     p := Scope.Entry;
+    p2:=p;
     Abbrev := ULEB128toOrdinal(p);
     if Abbrev = 0
     then begin
@@ -2134,7 +2628,11 @@ begin
       Continue;
     end;
     
+    {$IFDEF USE_ABBREV_TMAP}
     if not GetDefinition(Abbrev, Def)
+    {$ELSE}
+    if not GetDefinition(p2, Def)
+    {$Endif}
     then begin
       DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
       Break;
@@ -2488,7 +2986,6 @@ var
   Scope: TDwarfScopeInfo;
 begin
   // force all abbrevs to be loaded
-  FCU.LoadAbbrevs(High(Cardinal));
   InternalDecode(FCU.FInfoData, FCU.FInfoData + FCU.FLength);
 
   DebugLn(FPDBG_DWARF_VERBOSE, ['addresses: ']);
@@ -2803,6 +3300,7 @@ begin
   Level := 0;
   while (AData <= AMaxData) and (Level >= 0) do
   begin
+p := AData;
     Abbrev := ULEB128toOrdinal(AData);
     if Abbrev = 0
     then begin
@@ -2813,7 +3311,11 @@ begin
       Continue;
     end;
     DbgOut(FPDBG_DWARF_VERBOSE, [Indent, 'abbrev: ', Abbrev]);
+    {$IFDEF USE_ABBREV_TMAP}
     if not FCU.GetDefinition(abbrev, Def)
+    {$ELSE}
+    if not FCU.GetDefinition(p, Def)
+    {$Endif}
     then begin
       DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
       Exit;
