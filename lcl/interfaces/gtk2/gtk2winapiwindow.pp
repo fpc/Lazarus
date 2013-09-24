@@ -442,6 +442,7 @@ begin
   
   gtk_widget_set_flags(AWidget, GTK_HAS_FOCUS);
   GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(AWidget), False);
+  gtk_widget_queue_draw(AWidget);
   Result := gtk_False;
 end;
 
@@ -454,6 +455,7 @@ begin
 
   gtk_widget_unset_flags(AWidget, GTK_HAS_FOCUS);
   GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(AWidget), False);
+  gtk_widget_queue_draw(AWidget);
   Result := gtk_False;
 end;
 
