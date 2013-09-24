@@ -1212,6 +1212,7 @@ components/fpdebug/fpdbgsymbols.pas svneol=native#text/pascal
 components/fpdebug/fpdbgutil.pp svneol=native#text/pascal
 components/fpdebug/fpdbgwinextra.pp svneol=native#text/pascal
 components/fpdebug/fpdebug.lpk svneol=native#text/pascal
+components/fpdebug/fpdebug.pas svneol=native#text/pascal
 components/fpdebug/test/asmtest.lpi svneol=native#text/plain
 components/fpdebug/test/asmtest.lpr svneol=native#text/pascal
 components/fpdebug/test/asmtestunit.lfm svneol=native#text/plain
