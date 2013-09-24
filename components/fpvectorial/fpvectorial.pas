@@ -85,11 +85,12 @@ const
   STR_RAW_EXTENSION = '.raw';
   STR_MATHML_EXTENSION = '.mathml';
   STR_ODG_EXTENSION = '.odg';
+  STR_ODT_EXTENSION = '.odt';
   STR_DOCX_EXTENSION = '.docx';
 
   STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE = 'Ćą';
 
-  NUM_MAX_LISTSTYLES = 8;
+  NUM_MAX_LISTSTYLES = 8;  // OpenDocument Limit is 10, MS Word Limit is 9
 
 type
   TvCustomVectorialWriter = class;
@@ -185,23 +186,52 @@ type
     function CreateStyleCombinedWithParent: TvStyle;
   end;
 
-  TvListStyleKind = (vlskBullet,
-    vlskDecimal,     // 0, 1, 2, 3...
-    vlskLowerLetter, // a, b, c, d...
-    vlsLowerRoman,   // i, ii, iii, iv....
-    vlskUpperLetter, // A, B, C, D...
-    vlsUpperRoman   // I, II, III, IV....
-    );
+  TvListStyleKind = (vlskBullet, vlskNumeric);
 
-  TvListStyle = Class
+  TvNumberFormat = (vnfDecimal,      // 0, 1, 2, 3...
+                    vnfLowerLetter,  // a, b, c, d...
+                    vnfLowerRoman,   // i, ii, iii, iv....
+                    vnfUpperLetter,  // A, B, C, D...
+                    vnfUpperRoman);  // I, II, III, IV....
+  { TvListLevelStyle }
+
+  TvListLevelStyle = Class
     Kind : TvListStyleKind;
     Level : Integer;
-     // Start : Integer; // For numbered lists ??
-    Prefix : String;  // Suspect this can be more complex than a single char
-    PrefixFontName : String; // Not used by odt...
+    Start : Integer; // For numbered lists only
+
+    // Define the "leader", the stuff in front of each list item
+    Prefix : String;
+    Suffix : String;
+    Bullet : String; // Only applies to Kind=vlskBullet
+    NumberFormat : TvNumberFormat; // Only applies to Kind=vlskNumeric
+    DisplayLevels : Boolean; // Only applies to numbered lists.
+                             // If true, style is 1.1.1.1.
+                             //     else style is 1.
+    LeaderFontName : String; // Not used by odt...
+
     MarginLeft : Double; // mm
     HangingIndent : Double; //mm
     Alignment : TvStyleAlignment;
+
+    Constructor Create;
+  end;
+
+ { TvListStyle }
+
+  TvListStyle = class
+  private
+    ListLevelStyles : TFPList;
+  public
+    Name : String;
+
+    constructor Create;
+    destructor Destroy; override;
+
+    procedure Clear;
+    function AddListLevelStyle : TvListLevelStyle;
+    function GetListLevelStyleCount : Integer;
+    function GetListLevelStyle(AIndex: Integer): TvListLevelStyle;
   end;
 
   { Coordinates and polyline segments }
@@ -485,6 +515,21 @@ type
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+  end;
+
+  TvFieldKind = (vfkNumPages, vfkPage, vfkAuthor, vfkDateCreated, vfkDate);
+
+  { TvField }
+
+  TvField = Class(TvEntityWithStyle)
+  public
+    Kind : TvFieldKind;
+
+    DateFormat : String;            // Only for Kind in (vfkDateCreated, vfkDate)
+                                    // Date Format is similar to MS Specification
+    NumberFormat : TvNumberFormat;  // Only for Kind in (vfkNumPages, vfkPage)
+
+    constructor Create(APage : TvPage); override;
   end;
 
   {@@
@@ -870,6 +915,7 @@ type
     constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     function AddText(AText: string): TvText;
+    function AddField(AKind : TvFieldKind): TvField;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -877,7 +923,7 @@ type
   end;
 
   {@@
-    TvBulletList represents a list of bullets texts, like:
+    TvList represents a list of bulleted texts, like:
 
     * First level
       - Second level
@@ -886,13 +932,19 @@ type
     The basic element to build the sequence is TvParagraph
   }
 
-  { TvBulletList }
+  { TvList }
 
-  TvBulletList = class(TvEntityWithSubEntities)
+  TvList = class(TvEntityWithSubEntities)
   public
+    Parent : TvList;
+    ListStyle : TvListStyle;
+
     constructor Create(APage: TvPage); override;  // MJT 31/08 added override;
     destructor Destroy; override;
-    function AddItem(ALevel: Integer; ASimpleText: string): TvParagraph;
+    function AddParagraph(ASimpleText: string): TvParagraph;
+    function AddList : TvList;
+    function Level : Integer;
+
     {function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -922,7 +974,7 @@ type
     destructor Destroy; override;
     // Data writing methods
     function AddParagraph: TvParagraph;
-    function AddBulletList: TvBulletList;
+    function AddList: TvList;
     function AddTable: TvTable;
     //function AddImage: TvImage;
     //
@@ -1077,8 +1129,7 @@ type
     SelectedElement: TvEntity;
     // List of common styles, for conveniently finding them
     StyleTextBody, StyleHeading1, StyleHeading2, StyleHeading3: TvStyle;
-    StyleList : TvStyle;
-    ListStyles : Array[0..NUM_MAX_LISTSTYLES-1] Of TvListStyle;
+    StyleBulletList, StyleNumberList : TvListStyle;
     { Base methods }
     constructor Create; virtual;
     destructor Destroy; override;
@@ -1111,7 +1162,6 @@ type
     function AddStyle(): TvStyle;
     function AddListStyle: TvListStyle;
     procedure AddStandardTextDocumentStyles(AFormat: TvVectorialFormat);
-    function GetListStyleByLevel(ALevel: Integer): TvListStyle;
     function GetStyleCount: Integer;
     function GetStyle(AIndex: Integer): TvStyle;
     function FindStyleIndex(AStyle: TvStyle): Integer;
@@ -1270,7 +1320,7 @@ type
     function AddEntity(AEntity: TvEntity): Integer; override;
     { Data writing methods }
     function AddParagraph: TvParagraph;
-    function AddBulletList: TvBulletList;
+    function AddList: TvList;
     function AddTable: TvTable;
     //function AddImage: TvImage;
   end;
@@ -1431,6 +1481,69 @@ function Dimension(AValue: Double; AUnits: TvUnits): TvDimension;
 begin
   Result.Value := AValue;
   Result.Units := AUnits;
+end;
+
+{ TvField }
+
+constructor TvField.Create(APage: TvPage);
+begin
+  inherited Create(APage);
+
+  DateFormat := 'dd/MM/yyyy hh:mm:ss';
+  NumberFormat := vnfDecimal;
+end;
+
+{ TvListLevelStyle }
+
+constructor TvListLevelStyle.Create;
+begin
+  Start := 1;
+  Bullet := '&#183;';
+  LeaderFontName := 'Symbol';
+  Alignment := vsaLeft;
+end;
+
+{ TvListStyle }
+
+constructor TvListStyle.Create;
+begin
+  ListLevelStyles:=TFPList.Create;
+end;
+
+destructor TvListStyle.Destroy;
+begin
+  Clear;
+  ListLevelStyles.Free;
+  ListLevelStyles := Nil;
+
+  inherited Destroy;
+end;
+
+procedure TvListStyle.Clear;
+var
+  i: Integer;
+begin
+  for i := ListLevelStyles.Count-1 downto 0 do
+  begin
+    TvListLevelStyle(ListLevelStyles[i]).free;
+    ListLevelStyles.Delete(i);
+  end;
+end;
+
+function TvListStyle.AddListLevelStyle: TvListLevelStyle;
+begin
+  Result := TvListLevelStyle.Create;
+  ListLevelStyles.Add(Result);
+end;
+
+function TvListStyle.GetListLevelStyleCount: Integer;
+begin
+  Result := ListLevelStyles.Count;
+end;
+
+function TvListStyle.GetListLevelStyle(AIndex : Integer): TvListLevelStyle;
+begin
+  Result := TvListLevelStyle(ListLevelStyles[Aindex]);
 end;
 
 { TvTableCell }
@@ -4710,6 +4823,13 @@ begin
   AddEntity(Result);
 end;
 
+function TvParagraph.AddField(AKind: TvFieldKind): TvField;
+begin
+  Result := TvField.Create(FPage);
+  Result.Kind := AKind;
+  AddEntity(Result);
+end;
+
 function TvParagraph.TryToSelect(APos: TPoint; var ASubpart: Cardinal
   ): TvFindEntityResult;
 begin
@@ -4728,26 +4848,56 @@ begin
   Result:=inherited GenerateDebugTree(ADestRoutine, APageItem);
 end;
 
-{ TvBulletList }
+{ TvList }
 
-constructor TvBulletList.Create(APage: TvPage);
+constructor TvList.Create(APage: TvPage);
 begin
   inherited Create(APage);
+
+  Parent := Nil;
 end;
 
-destructor TvBulletList.Destroy;
+destructor TvList.Destroy;
 begin
   inherited Destroy;
 end;
 
-function TvBulletList.AddItem(ALevel: Integer; ASimpleText: string): TvParagraph;
+function TvList.AddParagraph(ASimpleText: string): TvParagraph;
 begin
   Result := TvParagraph.Create(FPage);
-  if FPage <> nil then
-    Result.ListStyle := FPage.FOwner.GetListStyleByLevel(ALevel);
+  // TODO:
+//  if FPage <> nil then
+//    Result.ListStyle := FPage.FOwner.GetListStyleByLevel(ALevel);
   if ASimpleText <> '' then
     Result.AddText(ASimpleText);
   AddEntity(Result);
+end;
+
+function TvList.AddList: TvList;
+begin
+  Result := TvList.Create(FPage);
+
+  Result.Style := Style;
+  Result.ListStyle := ListStyle;
+  Result.Parent := Self;
+
+  AddEntity(Result);
+end;
+
+function TvList.Level: Integer;
+var
+  oListItem : TvList;
+begin
+  Result := 0;
+
+  oListItem := Parent;
+
+  while (oListItem<>Nil) do
+  begin
+    oListItem := oListItem.Parent;
+
+    inc(Result);
+  end;
 end;
 
 { TvRichText }
@@ -4768,9 +4918,9 @@ begin
   AddEntity(Result);
 end;
 
-function TvRichText.AddBulletList: TvBulletList;
+function TvRichText.AddList: TvList;
 begin
-  Result := TvBulletList.Create(FPage);
+  Result := TvList.Create(FPage);
   AddEntity(Result);
 end;
 
@@ -5618,9 +5768,9 @@ begin
   Result := MainText.AddParagraph();
 end;
 
-function TvTextPageSequence.AddBulletList: TvBulletList;
+function TvTextPageSequence.AddList: TvList;
 begin
-  Result := MainText.AddBulletList();
+  Result := MainText.AddList();
 end;
 
 function TvTextPageSequence.AddTable: TvTable;
@@ -6004,39 +6154,29 @@ var
   lTextBody, lBaseHeading, lCurStyle: TvStyle;
   lCurListStyle : TvListStyle;
   i: Integer;
+  lCurListLevelStyle: TvListLevelStyle;
 begin
-  //<style:style style:name="Text_20_body" style:display-name="Text body" style:family="paragraph" style:parent-style-name="Standard" style:class="text">
-  //  <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.212cm" style:contextual-spacing="false" />
-  //</style:style>
   lTextBody := AddStyle();
   lTextBody.Name := 'Text Body';
   lTextBody.Kind := vskTextBody;
   lTextBody.Font.Size := 12;
   lTextBody.Font.Name := 'Times New Roman';
   lTextBody.Alignment := vsaJustifed;
-  lTextBody.SetElements := [spbfFontSize, spbfFontName, spbfAlignment];
   lTextBody.MarginTop := 0;
   lTextBody.MarginBottom := 2.12;
+  lTextBody.SetElements := [spbfFontSize, spbfFontName, spbfAlignment, sseMarginTop, sseMarginBottom];
   StyleTextBody := lTextBody;
 
   // Headings
-
-  //  <style:style style:name="Heading" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="Text_20_body" style:class="text">
-  //    <style:paragraph-properties fo:margin-top="0.423cm" fo:margin-bottom="0.212cm" style:contextual-spacing="false" fo:keep-with-next="always" />
-  //    <style:text-properties style:font-name="Arial" fo:font-size="14pt" style:font-name-asian="Microsoft YaHei" style:font-size-asian="14pt" style:font-name-complex="Mangal" style:font-size-complex="14pt" />
-  //  </style:style>
   lBaseHeading := AddStyle();
   lBaseHeading.Name := 'Heading';
   lBaseHeading.Kind := vskHeading;
   lBaseHeading.Font.Size := 14;
   lBaseHeading.Font.Name := 'Arial';
-  lBaseHeading.SetElements := [spbfFontSize, spbfFontName, sseMarginTop, sseMarginBottom];
   lBaseHeading.MarginTop := 4.23;
   lBaseHeading.MarginBottom := 2.12;
+  lBaseHeading.SetElements := [spbfFontSize, spbfFontName, sseMarginTop, sseMarginBottom];
 
-  //<style:style style:name="Heading_20_1" style:display-name="Heading 1" style:family="paragraph" style:parent-style-name="Heading" style:next-style-name="Text_20_body" style:default-outline-level="1" style:class="text">
-  //  <style:text-properties fo:font-size="115%" fo:font-weight="bold" style:font-size-asian="115%" style:font-weight-asian="bold" style:font-size-complex="115%" style:font-weight-complex="bold" />
-  //</style:style>
   lCurStyle := AddStyle();
   lCurStyle.Name := 'Heading 1';
   lCurStyle.Parent := lBaseHeading;
@@ -6046,9 +6186,6 @@ begin
   lCurStyle.SetElements := [spbfFontSize, spbfFontBold];
   StyleHeading1 := lCurStyle;
 
-  //<style:style style:name="Heading_20_2" style:display-name="Heading 2" style:family="paragraph" style:parent-style-name="Heading" style:next-style-name="Text_20_body" style:default-outline-level="2" style:class="text">
-  //  <style:text-properties fo:font-size="14pt" fo:font-style="italic" fo:font-weight="bold" style:font-size-asian="14pt" style:font-style-asian="italic" style:font-weight-asian="bold" style:font-size-complex="14pt" style:font-style-complex="italic" style:font-weight-complex="bold" />
-  //</style:style>
   lCurStyle := AddStyle();
   lCurStyle.Name := 'Heading 2';
   lCurStyle.Parent := lBaseHeading;
@@ -6059,9 +6196,6 @@ begin
   lCurStyle.SetElements := [spbfFontSize, spbfFontBold, spbfFontItalic];
   StyleHeading2 := lCurStyle;
 
-  //<style:style style:name="Heading_20_3" style:display-name="Heading 3" style:family="paragraph" style:parent-style-name="Heading" style:next-style-name="Text_20_body" style:default-outline-level="3" style:class="text">
-  //  <style:text-properties fo:font-size="14pt" fo:font-weight="bold" style:font-size-asian="14pt" style:font-weight-asian="bold" style:font-size-complex="14pt" style:font-weight-complex="bold" />
-  //</style:style>
   lCurStyle := AddStyle();
   lCurStyle.Name := 'Heading 3';
   lCurStyle.Parent := lBaseHeading;
@@ -6071,70 +6205,45 @@ begin
   lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold];
   StyleHeading3 := lCurStyle;
 
-  {
-  <style:style style:name="List" style:family="paragraph" style:parent-style-name="Text_20_body" style:class="list">
-    <style:text-properties style:font-size-asian="12pt" style:font-name-complex="Mangal1" />
-  </style:style>
-  <style:style style:name="Caption" style:family="paragraph" style:parent-style-name="Standard" style:class="extra">
-    <style:paragraph-properties fo:margin-top="0.212cm" fo:margin-bottom="0.212cm" style:contextual-spacing="false" text:number-lines="false" text:line-number="0" />
-    <style:text-properties fo:font-size="12pt" fo:font-style="italic" style:font-size-asian="12pt" style:font-style-asian="italic" style:font-name-complex="Mangal1" style:font-size-complex="12pt" style:font-style-complex="italic" />
-  </style:style>
-  <style:style style:name="Index" style:family="paragraph" style:parent-style-name="Standard" style:class="index">
-    <style:paragraph-properties text:number-lines="false" text:line-number="0" />
-    <style:text-properties style:font-size-asian="12pt" style:font-name-complex="Mangal1" />
-  </style:style>
-  <style:style style:name="Internet_20_link" style:display-name="Internet link" style:family="text">
-    <style:text-properties fo:color="#000080" fo:language="zxx" fo:country="none" style:text-underline-style="solid" style:text-underline-width="auto" style:text-underline-color="font-color" style:language-asian="zxx" style:country-asian="none" style:language-complex="zxx" style:country-complex="none" />
-  </style:style>
-  <style:style style:name="Bullet_20_Symbols" style:display-name="Bullet Symbols" style:family="text">
-    <style:text-properties style:font-name="OpenSymbol" style:font-name-asian="OpenSymbol" style:font-name-complex="OpenSymbol" />
-  </style:style>
-  }
-
   // ---------------------------------
   // Bullet List Items
   // ---------------------------------
 
-  lCurStyle := AddStyle();
-  lCurStyle.Name := 'List Style';
-  //lCurStyle.Parent := ;
-  lCurStyle.MarginTop := 0.5;
-  lCurStyle.MarginBottom := 0.5;
-  lCurStyle.SetElements:=[sseMarginBottom, sseMarginTop];
-  lCurStyle.SuppressSpacingBetweenSameParagraphs:=True;
-  StyleList := lCurStyle;
-
-  // ---------------------------------
-  // List Style Items
-  // ---------------------------------
+  lCurListStyle := AddListStyle();
+  lCurListStyle.Name := 'Bullet List Style';
+  StyleBulletList := lCurListStyle;
 
   for i := 0 To NUM_MAX_LISTSTYLES-1 Do
   begin
-    lCurListStyle := AddListStyle;
-    lCurListStyle.Kind := vlskBullet;
-    lCurListStyle.Level := i;
-    lCurListStyle.Prefix := '&#183;';
-    lCurListStyle.PrefixFontName := 'Symbol';
-    lCurListStyle.MarginLeft := 6.35*(i + 1);
-    lCurListStyle.HangingIndent := 6.35;
-    lCurListStyle.Alignment := vsaLeft;
+    lCurListLevelStyle := StyleBulletList.AddListLevelStyle;
+    lCurListLevelStyle.Kind := vlskBullet;
+    lCurListLevelStyle.Level := i;
 
-    ListStyles[i] := lCurListStyle;
+    // Bullet is positioned at MarginLeft - HangingIndent
+    lCurListLevelStyle.MarginLeft := 16.35*(i + 1);
+    lCurListLevelStyle.HangingIndent := 6.35;
   end;
-end;
 
-function TvVectorialDocument.GetListStyleByLevel(ALevel: Integer): TvListStyle;
-var
-  i: Integer;
-  oListStyle : TvListStyle;
-begin
-  Result := Nil;
-  for i := 0 to GetListStyleCount-1 do
+  lCurListStyle := AddListStyle();
+  lCurListStyle.Name := 'Numbered List Style';
+  StyleNumberList := lCurListStyle;
+
+  for i := 0 To NUM_MAX_LISTSTYLES-1 Do
   begin
-    oListStyle := GetListStyle(i);
+    lCurListLevelStyle := StyleNumberList.AddListLevelStyle;
+    lCurListLevelStyle.Kind := vlskNumeric;
+    lCurListLevelStyle.NumberFormat := vnfDecimal;
+    lCurListLevelStyle.Level := i;
 
-    if oListStyle.Level = ALevel then
-      Exit(oListStyle);
+    lCurListLevelStyle.Prefix := '';
+    lCurListLevelStyle.Suffix := '.';
+    lCurListLevelStyle.DisplayLevels := True;  // 1.1.1.1.
+    lCurListLevelStyle.LeaderFontName := 'Arial';
+
+    // For MS Word
+    // Bullet is positioned at MarginLeft - HangingIndent
+    lCurListLevelStyle.MarginLeft := 16.35*(i + 1);
+    lCurListLevelStyle.HangingIndent := 6.35 + 3*i;
   end;
 end;
 
@@ -6175,6 +6284,7 @@ begin
   for i := 0 to GetListStyleCount()-1 do
     if GetListStyle(i) = AListStyle then Exit(i);
 end;
+
 
 {@@
   Clears all data in the document

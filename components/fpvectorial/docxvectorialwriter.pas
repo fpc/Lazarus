@@ -237,9 +237,11 @@ Const
   LU_ALIGN: Array [TvStyleAlignment] Of String =
     ('left', 'right', 'both', 'center');
 
-  LU_KIND: Array [TvListStyleKind] Of String =
-    ('bullet', 'decimal', 'lowerLetter', 'lowerRoman',
-    'upperLetter', 'upperRoman');
+  LU_NUMBERFORMAT: Array [TvNumberFormat] Of String =
+    ('decimal', 'lowerLetter', 'lowerRoman', 'upperLetter', 'upperRoman');
+
+  LU_NUMBERFORMATFORUMLA: Array [TvNumberFormat] Of String =
+    ('Arabic', 'alphabetic', 'roman', 'ALPHABETIC', 'Roman');
 
   LU_ON_OFF: Array[Boolean] Of String = ('off', 'on');
 
@@ -526,6 +528,7 @@ Procedure TvDOCXVectorialWriter.PrepareDocument;
 Var
   // Generally this is document.xml, may also be header.xml or footer.xml though..
   oDocXML: TIndentedStringList;
+  iPage: Integer;
 
   Procedure ProcessRichText(ARichText: TvRichText); Forward;
 
@@ -591,7 +594,71 @@ Var
     End;
   End;
 
-  Procedure ProcessParagraph(AParagraph: TvParagraph);
+  Procedure AddField(AField : TvField);
+  var
+    sInstruction: String;
+    sDefault: String;
+  Begin
+    sInstruction := '';
+    sDefault := '';
+
+    Case AField.Kind of
+      vfkNumPages:
+      Begin
+        sInstruction := ' NUMPAGES  \* '+LU_NUMBERFORMATFORUMLA[AField.NumberFormat]+'  \* MERGEFORMAT ';
+        sDefault := IntToStr(FData.GetPageCount);
+       End;
+      vfkPage:
+      Begin
+        sInstruction := ' PAGE  \* '+LU_NUMBERFORMATFORUMLA[AField.NumberFormat]+'  \* MERGEFORMAT ';
+        sDefault := IntToStr(iPage+1);
+      End;
+      vfkAuthor:
+      Begin
+        sInstruction := ' AUTHOR  \* Caps  \* MERGEFORMAT ';
+        sDefault := 'FPVECTORIAL';
+      End;
+      vfkDateCreated:
+      Begin
+        sInstruction := ' CREATEDATE  \@ "'+AField.DateFormat+'"  \* MERGEFORMAT ';
+        sDefault := DateToStr(Now);
+      End;
+      vfkDate:
+      Begin
+        sInstruction := ' DATE  \@ "'+AField.DateFormat+'"  \* MERGEFORMAT ';
+        sDefault := DateToStr(Now);
+      End;
+    end;
+
+    If sInstruction<>'' Then
+    Begin
+      If Assigned(AField.Style) Then
+      Begin
+        oDocXML.Add(indInc, '<w:rPr>');
+        oDocXML.Add('  <w:rStyle w:val="' + StyleNameToStyleID(AField.Style) + '"/>');
+        oDocXML.Add(indDec, '</w:rPr>');
+      End;
+
+      // Start the Formula
+      oDocXML.Add('<w:r><w:fldChar w:fldCharType="begin"/></w:r>');
+
+      // Add the Instruction
+      oDocXML.Add('<w:r><w:instrText xml:space="preserve">'+
+                          sInstruction+
+                          '</w:instrText></w:r>');
+
+      // SEPARATE the Field (above) from the result (below)
+      oDocXML.Add('<w:r><w:fldChar w:fldCharType="separate"/></w:r>');
+
+      // Add the default text
+      oDocXML.Add('<w:r><w:t>'+sDefault+'</w:t></w:r>');
+
+      // End the Forumla
+      oDocXML.Add('<w:r><w:fldChar w:fldCharType="end"/></w:r>');
+    end;
+  end;
+
+  Procedure ProcessParagraph(AParagraph: TvParagraph; AListLevel : integer = -1; ANumID : Integer = -1);
   Var
     i: Integer;
     oEntity: TvEntity;
@@ -606,11 +673,11 @@ Var
       oDocXML.Add(Format('<w:pStyle w:val="%s"/>',
         [StyleNameToStyleID(AParagraph.Style)]));
 
-    If Assigned(AParagraph.ListStyle) Then
+    If (AListLevel<>-1) Then
     Begin
       oDocXML.Add('<w:numPr>');
-      oDocXML.Add(indInc, Format('<w:ilvl w:val="%d"/>', [AParagraph.ListStyle.Level]));
-      oDocXML.Add(indDec, '<w:numId w:val="1"/>'); // wtf is numID??
+      oDocXML.Add(indInc, Format('<w:ilvl w:val="%d"/>', [AListLevel]));
+      oDocXML.Add(indDec, Format('<w:numId w:val="%d"/>', [ANumID]));
       oDocXML.Add('</w:numPr>');
     End;
 
@@ -635,6 +702,8 @@ Var
 
         AddTextRun(sTemp, TvText(oEntity).Style);
       End
+      Else If oEntity is TvField Then
+        AddField(TvField(oEntity))
       Else
         { TODO : What other entities in TvParagraph do I need to process }
         Raise Exception.Create('Unsupported Entity: ' + oEntity.ClassName);
@@ -643,22 +712,24 @@ Var
     oDocXML.Add(indDec, '</w:p>');
   End;
 
-  Procedure ProcessBulletList(ABulletList: TvBulletList);
+  Procedure ProcessList(AList: TvList);
   Var
     i: Integer;
     oEntity: TvEntity;
   Begin
-    For i := 0 To ABulletList.GetEntitiesCount - 1 Do
+    For i := 0 To AList.GetEntitiesCount - 1 Do
     Begin
-      oEntity := ABulletList.GetEntity(i);
+      oEntity := AList.GetEntity(i);
 
       If oEntity Is TvParagraph Then
       Begin
         If Not Assigned(TvParagraph(oEntity).Style) Then
-          TvParagraph(oEntity).Style := ABulletList.Style;
+          TvParagraph(oEntity).Style := AList.Style;
 
-        ProcessParagraph(TvParagraph(oEntity));
+        ProcessParagraph(TvParagraph(oEntity), AList.Level, FData.FindListStyleIndex(AList.ListStyle) + 1);
       End
+      Else If oEntity Is TvList Then
+        ProcessList(TvList(oEntity))
       Else
         Raise Exception.Create('Unsupported entity ' + oEntity.ClassName);
     End;
@@ -944,8 +1015,8 @@ Var
 
       If oEntity Is TvParagraph Then
         ProcessParagraph(TvParagraph(oEntity))
-      Else If oEntity Is TvBulletList Then
-        ProcessBulletList(TvBulletList(oEntity))
+      Else If oEntity Is TvList Then
+        ProcessList(TvList(oEntity))
       Else If oEntity Is TvTable Then
         ProcessTable(TvTable(oEntity))
       Else If oEntity Is TvRichText Then
@@ -962,7 +1033,6 @@ Var
 Var
   oPage: TvPage;
   oPageSequence: TvTextPageSequence;
-  iPage: Integer;
   oFile: TFileInformation;
 Begin
   oFile := FFiles.AddXMLFile(OOXML_CONTENTTYPE_DOCUMENT, OOXML_PATH_DOCUMENT,
@@ -1008,9 +1078,6 @@ End;
 
 Procedure TvDOCXVectorialWriter.PrepareTextRunStyle(ADoc: TIndentedStringList;
   AStyle: TvStyle);
-
-Var
-  sTemp: String;
 Begin
   ADoc.Add(indInc, '<w:rPr>', indInc);
 
@@ -1170,6 +1237,11 @@ Var
   oStyle: TvListStyle;
   oFile: TFileInformation;
   i: Integer;
+  j: Integer;
+  oListLevelStyle: TvListLevelStyle;
+  sTotalLeader: String;
+  sCurrentLeader: String;
+  slvlText: String;
 Begin
   // Only add this file if there are any List styles defined...
   If FData.GetListStyleCount > 0 Then
@@ -1182,42 +1254,71 @@ Begin
     oXML.Add(XML_HEADER);
     oXML.Add(Format('<w:numbering %s>', [OOXML_DOCUMENT_NAMESPACE]));
 
-    // wtf is abstractNumId??
-    oXML.Add(indInc, '<w:abstractNum w:abstractNumId="0">', indInc);
-
-    // Optional
-    //oXML.Add('<w:multiLevelType w:val="hybridMultilevel"/>');
-
     For i := 0 To FData.GetListStyleCount - 1 Do
     Begin
       oStyle := FData.GetListStyle(i);
 
-      oXML.Add(Format('<w:lvl w:ilvl="%d">', [oStyle.Level]), indInc);
+      // abstractNumID allows us to group different list styles together.
+      // The way fpvectorial uses it, there will be a one to one relationship
+      // between abstractNumID and numID.
+      //   abstractNumId is 0 based
+      //   numID is 1 based.   Go figure...
+      oXML.Add(indInc, Format('<w:abstractNum w:abstractNumId="%d">', [i]), indInc);
 
-      oXML.Add('<w:start w:val="1"/>');  // Numbered lists only
-      oXML.Add('<w:numFmt w:val="' + LU_KIND[oStyle.Kind] + '"/>');
-      oXML.Add('<w:lvlText w:val="' + oStyle.Prefix + '"/>');
-      oXML.Add('<w:lvlJc w:val="' + LU_ALIGN[oStyle.Alignment] + '"/>');
+      sTotalLeader := '';
 
-      oXML.Add('<w:pPr>');
-      oXML.Add(Format('  <w:ind w:left="%s" w:hanging="%s"/>',
-        [mmToTwipsS(oStyle.MarginLeft), mmToTwipsS(oStyle.HangingIndent)]));
-      oXML.Add('</w:pPr>');
+      For j := 0 To oStyle.GetListLevelStyleCount-1 Do
+      Begin
+        oListLevelStyle := oStyle.GetListLevelStyle(j);
 
-      oXML.Add('<w:rPr>');
-      oXML.Add(Format('  <w:rFonts w:ascii="%s" w:hAnsi="%s"/>',
-        [oStyle.PrefixFontName, oStyle.PrefixFontName]));
-      oXML.Add('</w:rPr>');
+        oXML.Add(Format('<w:lvl w:ilvl="%d">', [oListLevelStyle.Level]), indInc);
 
-      oXML.Add('</w:lvl>', indDec);
+        with oListLevelStyle do
+          sCurrentLeader := Format('%s%s%d%s', [Prefix, '%', Level + 1, Suffix]);
+
+        sTotalLeader := sTotalLeader + sCurrentLeader;
+
+        If oListLevelStyle.Kind=vlskBullet Then
+          slvlText := oListLevelStyle.Bullet
+        Else If oListLevelStyle.DisplayLevels Then
+          slvlText := sTotalLeader
+        Else
+          slvlText := sCurrentLeader;
+
+        If oListLevelStyle.Kind=vlskBullet Then
+          oXML.Add('<w:numFmt w:val="bullet"/>')
+        Else
+        Begin // Numbered Lists
+          oXML.Add(Format('<w:start w:val="%d"/>', [oListLevelStyle.Start]));
+
+          oXML.Add('<w:numFmt w:val="' + LU_NUMBERFORMAT[oListLevelStyle.NumberFormat] + '"/>');
+        End;
+
+        oXML.Add('<w:lvlText w:val="' + slvlText + '"/>');
+        oXML.Add('<w:lvlJc w:val="' + LU_ALIGN[oListLevelStyle.Alignment] + '"/>');
+
+        oXML.Add('<w:pPr>');
+        oXML.Add(Format('  <w:ind w:left="%s" w:hanging="%s"/>',
+          [mmToTwipsS(oListLevelStyle.MarginLeft), mmToTwipsS(oListLevelStyle.HangingIndent)]));
+        oXML.Add('</w:pPr>');
+
+        oXML.Add('<w:rPr>');
+        oXML.Add(Format('  <w:rFonts w:ascii="%s" w:hAnsi="%s"/>',
+          [oListLevelStyle.LeaderFontName, oListLevelStyle.LeaderFontName]));
+        oXML.Add('</w:rPr>');
+
+        oXML.Add('</w:lvl>', indDec);
+      end;
+
+      oXML.Add(indDec, '</w:abstractNum>', indDec);
     End;
-    oXML.Add(indDec, '</w:abstractNum>', indDec);
 
-    // wtf is abstrctNumID??
-    // obviously related to w:abstractNum above...
-    oXML.Add(indInc, '<w:num w:numId="1">');
-    oXML.Add('	<w:abstractNumId w:val="0"/>');
-    oXML.Add(indDec, '</w:num>');
+    For i := 0 To FData.GetListStyleCount - 1 Do
+    begin
+      oXML.Add(indInc, Format('<w:num w:numId="%d">', [i + 1]));
+      oXML.Add(Format('  <w:abstractNumId w:val="%d"/>', [i]));
+      oXML.Add(indDec, '</w:num>');
+    end;
 
     oXML.Add('</w:numbering>');
   End;
@@ -1229,7 +1330,7 @@ Var
   oStream: TFileStream;
 Begin
   If ExtractFileExt(AFilename) = '' Then
-    AFilename := AFilename + '.docx';
+    AFilename := AFilename + STR_DOCX_EXTENSION;
 
   oStream := TFileStream.Create(AFileName, fmCreate);
   Try

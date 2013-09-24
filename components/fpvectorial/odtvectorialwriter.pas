@@ -59,18 +59,43 @@ uses
   fpvectorial, fpvutils, lazutf8;
 
 type
+
+  // Forward declarations
+  TvODTVectorialWriter = class;
+
+  { TListStyle_Style }
+
+  TListStyle_Style = Class
+    Style : TvStyle;
+    ListStyle : TvListStyle;
+  End;
+
+  { TListStyle_StyleList }
+
+  TListStyle_StyleList = Class(TFPList)
+    Writer : TvODTVectorialWriter;
+    Data : TvVectorialDocument;
+
+    destructor Destroy; override;
+
+    function AddCrossReference(AStyle : TvStyle; AListStyle: TvListStyle) : Integer;
+    function AsText(AIndex : Integer) : String;
+  End;
+
   { TvODTVectorialWriter }
 
-  // Writes ODT 1.2
+  // Writes ODT 1.2 with LibreOffice extensions...
   TvODTVectorialWriter = class(TvCustomVectorialWriter)
   private
+    FDateCount : Integer; // Used to track Date Style Formats...
     FPointSeparator: TFormatSettings;
     // Strings with the contents of files
     FMeta, FSettings, FStyles, FContent, FMimetype: string;
     FAutomaticStyles, FMasterStyles: string; // built during writedocument, used during writestyle
     FAutomaticStyleID : Integer;
     FContentAutomaticStyles : string; // built during writedocument, used during writedocument
-    FContentAutomaticStyleID : Integer;
+
+    FList_StyleCrossRef : TListStyle_StyleList;
 
     FNewPageSequence : Boolean;
 
@@ -78,6 +103,7 @@ type
     // helper routines
     function StyleNameToODTStyleName(AData: TvVectorialDocument; AStyleIndex: Integer; AToContentAutoStyle: Boolean = False): string; overload;
     function StyleNameToODTStyleName(AData: TvVectorialDocument; AStyle: TvStyle; AToContentAutoStyle: Boolean = False): string; overload;
+    function ListStyleNameToODTText(AData: TvVectorialDocument; AListStyle : TvListStyle) : string;
     function FloatToODTText(AFloat: Double): string;
     function BordersToString(ATableBorders, ACellBorders: TvTableBorders; ATopCell,
       ABottomCell, ALeftCell, ARightCell: Boolean): String;
@@ -96,7 +122,9 @@ type
       AData: TvVectorialDocument);
     procedure WriteTextSpan(AEntity: TvText; AParagraph: TvParagraph;
       ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
-    procedure WriteBulletList(AEntity: TvBulletList; ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
+    procedure WriteField(AEntity: TvField; AParagraph: TvParagraph;
+      ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
+    procedure WriteList(AEntity: TvList; ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
     // Routines to write parts of those files
     function WriteStylesXMLAsString: string;
     //
@@ -179,6 +207,71 @@ const
   FLOAT_MILIMETERS_PER_PIXEL = 0.2822; // DPI 90 = 1 / 90 inches per pixel
   FLOAT_PIXELS_PER_MILIMETER = 3.5433; // DPI 90 = 1 / 90 inches per pixel
 
+  // Lookups
+  LU_ALIGN: Array [TvStyleAlignment] Of String =
+    ('start', 'end', 'justify', 'center');
+
+  LU_V_ALIGN: Array[TvVerticalAlignment] Of String =
+    ('top', 'bottom', 'middle', 'automatic');
+
+  LU_NUMBERFORMAT: Array [TvNumberFormat] Of String =
+    ('1', 'a', 'i', 'A', 'I');
+
+  LU_BORDERTYPE: Array[TvTableBorderType] Of String =
+    ('solid', 'dashed', 'solid', 'none', 'default');
+//  ('solid', 'dashed', 'double', 'none', 'default');  // NOTE: double not supported
+
+
+
+{ TListStyle_StyleList }
+
+destructor TListStyle_StyleList.Destroy;
+begin
+  while (Count>0) do
+  begin
+    TListStyle_Style(Last).Free;
+    Delete(Count-1);
+  end;
+
+  inherited destroy;
+end;
+
+function TListStyle_StyleList.AddCrossReference(AStyle: TvStyle;
+  AListStyle: TvListStyle): Integer;
+Var
+  i : Integer;
+  oCrossRef : TListStyle_Style;
+
+begin
+  // Only add unique instances of the cross references
+  Result := -1;
+
+  for i := 0 To Count-1 Do
+  begin
+    oCrossRef := TListStyle_Style(Items[i]);
+
+    if (oCrossRef.Style = AStyle) And (oCrossRef.ListStyle=AListStyle) Then
+      exit(i);
+  end;
+
+  // We will only get here if the supplied combination is not already in the list
+  oCrossRef := TListStyle_Style.Create;
+  oCrossRef.Style := AStyle;
+  oCrossRef.ListStyle := AListStyle;
+
+  Result := Add(oCrossRef);
+end;
+
+function TListStyle_StyleList.AsText(AIndex: Integer): String;
+begin
+  if (AIndex>=0) And (AIndex<Count) Then
+    with (TListStyle_Style(Items[AIndex])) Do
+      Result := Writer.StyleNameToODTStyleName(Data, Style, False) + '_' +
+                Writer.ListStyleNameToODTText(Data, ListStyle)
+  else
+    raise exception.create('index out of bounds');
+end;
+
 function TvODTVectorialWriter.StyleNameToODTStyleName(
   AData: TvVectorialDocument; AStyleIndex: Integer; AToContentAutoStyle: Boolean): string;
 var
@@ -203,6 +296,15 @@ var
 begin
   lStyleIndex := AData.FindStyleIndex(AStyle);
   Result := StyleNameToODTStyleName(AData, lStyleIndex, AToContentAutoStyle);
+end;
+
+function TvODTVectorialWriter.ListStyleNameToODTText(
+  AData: TvVectorialDocument; AListStyle: TvListStyle): string;
+begin
+  Result := StringReplace(AListStyle.Name, ' ', '', [rfReplaceAll]);
+
+  If Result='' Then
+    Result := Format('List_%d', [AData.FindListStyleIndex(AListStyle)]);
 end;
 
 function TvODTVectorialWriter.FloatToODTText(AFloat: Double): string;
@@ -399,9 +501,10 @@ var
   i: Integer;
   CurStyle: TvStyle;
   lTextPropsStr, lParagraphPropsStr, lCurStyleTmpStr, CurStyleParent : string;
-Const
-  LU_ALIGN: Array [TvStyleAlignment] Of String =
-    ('start', 'end', 'justify', 'center');
+  CurListStyle: TvListStyle;
+  j: Integer;
+  CurListLevelStyle: TvListLevelStyle;
+  CurLevel, sLevelAttr: String;
 begin
   FStyles :=
    XML_HEADER + LineEnding +
@@ -663,7 +766,66 @@ begin
    '    </text:outline-level-style>' + LineEnding +
    '  </text:outline-style>' + LineEnding;
 
-  FStyles := FStyles +
+  // Build up the List definitions - store in Styles.xml, not content.xml
+   For i := 0 To AData.GetListStyleCount-1 Do
+   begin
+     CurListStyle := AData.GetListStyle(i);
+
+     FStyles := FStyles +
+       '    <text:list-style style:name="'+ListStyleNameToODTText(AData, CurListStyle)+'">' + LineEnding;
+
+     For j := 0 To CurListStyle.GetListLevelStyleCount-1 Do
+     Begin
+       CurListLevelStyle := CurListStyle.GetListLevelStyle(j);
+       CurLevel := IntToStr(CurListLevelStyle.Level+1); // Note the +1...
+
+       // Open Bullet or Number...
+       If CurListLevelStyle.Kind=vlskBullet Then
+         FStyles := FStyles +
+           '      <text:list-level-style-bullet text:level="'+CurLevel+'" '+
+                     'text:style-name="Bullet_20_Symbols" '+
+                     'text:bullet-char="'+CurListLevelStyle.Bullet+'">' + LineEnding
+
+       Else
+       Begin
+         sLevelAttr:='text:level="'+CurLevel+'" ';
+
+         If CurListLevelStyle.Prefix<>'' Then
+           sLevelAttr := Format('%s style:num-prefix="%s"', [sLevelAttr, CurListLevelStyle.Prefix]);
+
+         If CurListLevelStyle.Suffix<>'' Then
+           sLevelAttr := Format('%s style:num-suffix="%s"', [sLevelAttr, CurListLevelStyle.Suffix]);
+
+         sLevelAttr := sLevelAttr + ' style:num-format="'+LU_NUMBERFORMAT[CurListLevelStyle.NumberFormat]+'"';
+
+         // Display previous levels in Leader?
+         If (CurListLevelStyle.DisplayLevels) And (CurLevel<>'1') Then
+           sLevelAttr := Format('%s text:display-levels="%s"', [sLevelAttr, CurLevel]);
+
+         FStyles := FStyles +
+           '      <text:list-level-style-number ' + sLevelAttr +'>' + LineEnding;
+       End;
+
+       // Common Level properties
+       FStyles:=FStyles +
+           '        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+           '          <style:list-level-label-alignment text:label-followed-by="listtab" '+
+                       // 'text:list-tab-stop-position="'+FloatToODTText(CurListLevelStyle.MarginLeft/10)+'cm" '+
+                        'fo:text-indent="-'+FloatToODTText(CurListLevelStyle.HangingIndent/10)+'cm" '+
+                        'fo:margin-left="'+FloatToODTText(CurListLevelStyle.MarginLeft/10)+'cm" />' + LineEnding +
+           '        </style:list-level-properties>' + LineEnding;
+
+       // Close Bullet or Number
+       If CurListLevelStyle.Kind=vlskBullet Then
+         FStyles:=FStyles + '      </text:list-level-style-bullet>' + LineEnding
+       Else
+         FStyles:=FStyles + '      </text:list-level-style-number>' + LineEnding
+     end;
+
+     FStyles := FStyles +    '    </text:list-style>' + LineEnding;
+   end;
+
+   FStyles := FStyles +
    '  <text:notes-configuration text:note-class="footnote" style:num-format="1" text:start-value="0" text:footnotes-position="page" text:start-numbering-at="document" />' + LineEnding;
   FStyles := FStyles +
    '  <text:notes-configuration text:note-class="endnote" style:num-format="i" text:start-value="0" />' + LineEnding;
@@ -678,27 +840,12 @@ begin
 
   FStyles := FStyles +
    '<office:automatic-styles>' + LineEnding +
-   FAutomaticStyles + LineEnding +
-(*
-   '  <style:page-layout style:name="Mpm1">' + LineEnding +
-   '    <style:page-layout-properties fo:page-width="21.001cm" fo:page-height="29.7cm" style:num-format="1" style:print-orientation="portrait" fo:margin-top="2cm" fo:margin-bottom="2cm" fo:margin-left="2cm" fo:margin-right="2cm" style:writing-mode="lr-tb" style:footnote-max-height="0cm">' + LineEnding +
-   '      <style:footnote-sep style:width="0.018cm" style:distance-before-sep="0.101cm" style:distance-after-sep="0.101cm" style:line-style="solid" style:adjustment="left" style:rel-width="25%" style:color="#000000" />' + LineEnding +
-   '    </style:page-layout-properties>' + LineEnding +
-   '    <style:header-style />' + LineEnding +
-   '    <style:footer-style />' + LineEnding +
-   '  </style:page-layout>' + LineEnding +
-   '  <style:style style:name="List_0" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="L1">' + LineEnding +
-   // <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />
-   '  </style:style>' + LineEnding +
-*)
+     FAutomaticStyles + LineEnding +
    '</office:automatic-styles>' + LineEnding;
 
   FStyles := FStyles +
    '<office:master-styles>' + LineEnding +
-   FMasterStyles + LineEnding +
-(*
-   '  <style:master-page style:name="Standard" style:page-layout-name="Mpm1" />' + LineEnding +
-*)
+     FMasterStyles + LineEnding +
    '</office:master-styles>' + LineEnding;
 
   FStyles := FStyles +
@@ -710,10 +857,10 @@ var
   i: Integer;
   sPrefix : String;
   sAutomaticStyles : String;
-  CurLevel: String;
   CurPage: TvPage;
   CurTextPage: TvTextPageSequence absolute CurPage;
-  CurListStyle : TvListStyle;
+  oCrossRef: TListStyle_Style;
+
 begin
   // content.xml will be built up by
   //    sPrefix + sAutomaticStyles + FContent
@@ -797,32 +944,21 @@ begin
      '</office:document-content>' + LineEnding;
 
   // Build up the automatic styles detailed in the content.xml
-  sAutomaticStyles := sAutomaticStyles +
-     '  <office:automatic-styles>' + LineEnding;
+  sAutomaticStyles := '  <office:automatic-styles>' + LineEnding;
 
-  // MJT 2013-08-24 - This is the code to cycle over the ListStyles.
-  //                - This is verified working for Level 0
-  //                - TvBulletList needs re-architecting to be a tree
-  //                  to get deeper levels working
-  //                  (see note in WriteBulletStyle)
-  //                - As I understand tOpenDocument-v1.1.pdf the following list style
-  //                  should work once we get nesting happening
+  // Add all the List Definition / Paragraph Style
+  // cross references
 
-  // TODO: Investigate if this should/could be moved into Styles.xml
-  sAutomaticStyles := sAutomaticStyles + '    <text:list-style style:name="L1">' + LineEnding;
-  For i := 0 To AData.GetListStyleCount-1 Do
+  for i := 0 to FList_StyleCrossRef.Count-1 Do
   begin
-    CurListStyle := AData.GetListStyle(i);
-    CurLevel := IntToStr(CurListStyle.Level+1); // Note the +1...
+    oCrossRef := TListStyle_Style(FList_StyleCrossRef[i]);
 
-    If CurListStyle.Kind=vlskBullet Then
-      sAutomaticStyles := sAutomaticStyles + '      <text:list-level-style-bullet text:level="'+CurLevel+'" text:style-name="Bullet_20_Symbols" text:bullet-char="'+CurListStyle.Prefix+'">' + LineEnding +
-         '        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
-         '          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="'+FloatToODTText(CurListStyle.MarginLeft/10)+'cm" fo:text-indent="-'+FloatToODTText(CurListStyle.HangingIndent/10)+'cm" fo:margin-left="'+FloatToODTText(CurListStyle.MarginLeft/10)+'cm" />' + LineEnding +
-         '        </style:list-level-properties>' + LineEnding +
-         '      </text:list-level-style-bullet>' + LineEnding;
+    sAutomaticStyles := sAutomaticStyles +
+      '    <style:style style:name="'+FList_StyleCrossRef.AsText(i)+'" '+
+                       'style:family="paragraph" '+
+                       'style:parent-style-name="'+StyleNameToODTStyleName(AData, oCrossRef.Style, False)+'" '+
+                       'style:list-style-name="'+ListStyleNameToODTText(AData, oCrossRef.ListStyle)+'" />' + LineEnding;
   end;
-  sAutomaticStyles := sAutomaticStyles +    '    </text:list-style>' + LineEnding;
 
   // Now add any Automatic Styles built during WritePage..
   sAutomaticStyles := sAutomaticStyles + FContentAutomaticStyles;
@@ -846,8 +982,8 @@ begin
 
     if (lCurEntity is TvParagraph) then
       WriteParagraph(TvParagraph(lCurEntity), ACurPage, AData);
-    if (lCurEntity is TvBulletList) then
-      WriteBulletList(TvBulletList(lCurEntity), ACurPage, AData);
+    if (lCurEntity is TvList) then
+      WriteList(TvList(lCurEntity), ACurPage, AData);
     if (lCurEntity is TvTable) then
       WriteTable(TvTable(lCurEntity), ACurPage, AData);
   end;
@@ -932,7 +1068,7 @@ begin
       sOrientation := 'portrait';
 
     // Define the page layout in Styles.xml
-    // TODO: Add PAge Margins...
+    // TODO: Add Page Margins...
     FAutomaticStyles := FAutomaticStyles +
       '<style:page-layout style:name="'+sPageLayoutName+'">'+ LineEnding+
       '  <style:page-layout-properties '+
@@ -961,63 +1097,15 @@ begin
     lCurEntity := AEntity.GetEntity(i);
 
     if (lCurEntity is TvText) then
-      WriteTextSpan(TvText(lCurEntity), AEntity, ACurPage, AData);
+      WriteTextSpan(TvText(lCurEntity), AEntity, ACurPage, AData)
+    else if (lCurEntity is TvField) then
+      WriteField(TvField(lCurEntity), AEntity, ACurPage, AData)
+    else
+      raise exception.create('TvParagraph subentity '+lCurEntity.ClassName+' not handled');
   end;
 
   FContent := FContent +
     '</text:'+EntityKindName+'>' + LineEnding;
-{
-      <text:h text:style-name="P2" text:outline-level="1">Laza<text:span text:style-name="T1">ru</text:span>s</text:h>
-      <text:p text:style-name="P5">Lazarus is a free and open source development tool for the Free Pascal compiler, which is also free and open source.</text:p>
-      <text:h text:style-name="P1" text:outline-level="2">Overview</text:h>
-      <text:p text:style-name="P3">Lazarus is a free cross-platform visual integrated development environment (IDE) for rapid application development (RAD) using the Free Pascal compiler supported dialects of Object Pascal. Developers use Lazarus to create native code console and graphical user interface (GUI) applications for the desktop along with mobile devices, web applications, web services, and visual components and function libraries (.so, .dll, etc) for use by other programs for any platform the Free Pascal compiler supports( Mac, Unix, Linux, Windows, etc).</text:p>
-      <text:p text:style-name="P3" />
-      <text:p text:style-name="P3">Lazarus provides a highly visual development environment for the creation of rich user interfaces, application logic, and other supporting code artifacts. Along with the customary project management features, the Lazarus IDE also provides features that includes but are not limited to:</text:p>
-      <text:p text:style-name="P3" />
-      <text:list xml:id="list5792477270030595966" text:style-name="L1">
-        <text:list-item>
-          <text:p text:style-name="P4">A What You See Is What You Get (WYSIWYG) visual windows layout designer</text:p>
-        </text:list-item>
-        <text:list-item>
-          <text:p text:style-name="P4">An extensive set of GUI widgets or visual components such as edit boxes, buttons, dialogs, menus, etc.</text:p>
-        </text:list-item>
-        <text:list-item>
-          <text:p text:style-name="P4">An extensive set of non visual components for common behaviors such as persistence of application settings</text:p>
-        </text:list-item>
-        <text:list-item>
-          <text:p text:style-name="P4">A set of data connectivity components for MySQL, PostgresSQL, FireBird, Oracle, SQL Lite, Sybase, and others</text:p>
-        </text:list-item>
-        <text:list-item>
-          <text:p text:style-name="P4">Data aware widget set that allows the developer to see data in visual components in the designer to assist with development</text:p>
-        </text:list-item>
-        <text:list-item>
-          <text:p text:style-name="P4">Interactive code debugger</text:p>
-        </text:list-item>
-        <text:list-item>
-          <text:p text:style-name="P4">Code completion</text:p>
-        </text:list-item>
-        <text:list-item>
-          <text:p text:style-name="P4">Code templates</text:p>
-        </text:list-item>
-        <text:list-item>
-          <text:p text:style-name="P4">Syntax highlighting</text:p>
-        </text:list-item>
-        <text:list-item>
-          <text:p text:style-name="P4">Context sensitive help</text:p>
-        </text:list-item>
-        <text:list-item>
-          <text:p text:style-name="P4">Text resource manager for internationalization</text:p>
-        </text:list-item>
-        <text:list-item>
-          <text:p text:style-name="P4">Automatic code formatting</text:p>
-        </text:list-item>
-        <text:list-item>
-          <text:p text:style-name="P4">The ability to create custom components</text:p>
-        </text:list-item>
-      </text:list>
-      <text:p text:style-name="P3" />
-      <text:p text:style-name="P3">Lazarus inherits three features from its use of the Free Pascal compiler: compile and execution speed, and cross-compilation. The Free Pascal compiler benefits from the Pascal language structure, which is rigid, and the steady advancements of Pascal compiler design, spanning several decades, to compile large applications quickly, often seconds.</text:p>
-}
 end;
 
 procedure TvODTVectorialWriter.WriteTextSpan(AEntity: TvText; AParagraph: TvParagraph;
@@ -1026,8 +1114,12 @@ var
   AEntityStyleName: string;
   lStyle: TvStyle;
   sText: String;
-  i : Integer;
 begin
+  lStyle := AEntity.Style;
+  If lStyle<>Nil Then
+    AEntityStyleName:=StyleNameToODTStyleName(AData, lStyle, False);
+// No need to all GetCombinedStyle as Paragraph Style already applied in text:p tag
+(*
   lStyle := AEntity.GetCombinedStyle(AParagraph);
   if lStyle = nil then
   begin
@@ -1037,6 +1129,7 @@ begin
   begin
     AEntityStyleName := StyleNameToODTStyleName(AData, lStyle, False);
   end;
+*)
   {
   <text:p text:style-name="P2">
     Lazaru
@@ -1047,10 +1140,6 @@ begin
   </text:p>
   }
   // Note that here we write only text spans!
-
-  // MJT 2013-08-24  ODT Writer and DOCX writer were treating TvText.Value differently...
-  //                This code synchronises handling between the two writers...
-
   sText :=  EscapeHTML(AEntity.Value.Text);
 
   // Trim extra CRLF appended by TStringList.Text
@@ -1059,24 +1148,169 @@ begin
   Else
     sText := Copy(sText, 1, Length(sText) - 1);
 
-
   sText := StringReplace(sText, '  ', ' <text:s/>', [rfReplaceAll]);
   sText := StringReplace(sText, #09, '<text:tab/>', [rfReplaceAll]);
   sText := StringReplace(sText, #13, '<text:line-break/>', [rfReplaceAll]);
   sText := StringReplace(sText, #10, '', [rfReplaceAll]);
 
-  FContent := FContent + '<text:span text:style-name="'+AEntityStyleName+'">' +
-    sText + '</text:span>';
+  If lStyle<>Nil Then
+    FContent := FContent + '<text:span text:style-name="'+AEntityStyleName+'">' +
+      sText + '</text:span>'
+  Else
+  FContent := FContent + '<text:span>' + sText + '</text:span>'
+end;
+
+procedure TvODTVectorialWriter.WriteField(AEntity: TvField;
+  AParagraph: TvParagraph; ACurPage: TvTextPageSequence;
+  AData: TvVectorialDocument);
+Var
+  sDateStyleName : String;
+  i: Integer;
+  cCurrChar: Char;
+  cPrevChar: Char;
+  sTag: String;
+  iLen: Integer;
+begin
+//		<number:day number:calendar="gregorian"/>
+//		<number:text>/</number:text>
+//		<number:month number:style="long" number:calendar="gregorian"/>
+//		<number:text>/</number:text>
+//		<number:year number:style="long" number:calendar="gregorian"/>
+//		<number:text> </number:text>
+//		<number:hours/>
+//		<number:text>:</number:text>
+//		<number:minutes number:style="long"/>
+//		<number:text> </number:text>
+//		<number:am-pm/>
+  if AEntity.Kind in [vfkDate, vfkDateCreated] Then
+  begin
+    inc(FDateCount);
+    sDateStyleName := Format('Date_%d', [FDateCount]);
+
+    FContentAutomaticStyles:=FContentAutomaticStyles +
+     '    <number:date-style style:name="'+sDateStyleName+'"> '+LineEnding;
+
+    cPrevChar := Chr(0);
+    i := 1;
+    while (i<=Length(AEntity.DateFormat)) do
+    begin
+      cCurrChar := AEntity.DateFormat[i];
+
+      iLen := 1;
+      if cCurrChar<>cPrevChar Then
+      begin
+        // Find out how many characters repeat in a row...
+        while (i+iLen<=Length(AEntity.DateFormat)) And (AEntity.DateFormat[i+iLen]=cCurrChar) do
+          inc(iLen);
+
+        sTag := '';
+
+        case cCurrChar Of
+          'd' :
+          begin
+            Case iLen Of
+              1 : sTag := '<number:day/>';
+              2 : sTag := '<number:day number:style="long"/>';
+              3 : sTag := '<number:day-of-week/>';
+            else
+              sTag := '<number:day-of-week number:style="long"/>';
+            end;
+          end;
+          'M' :
+          begin
+            case iLen Of
+              1 : sTag := '<number:month/>';
+              2 : sTag := '<number:month number:style="long"/>';
+              3 : sTag := '<number:month number:textual="true"/>';
+            else
+              sTag := '<number:month number:textual="true" number:style="long"/>';
+            end;
+          end;
+          'y' :
+          begin
+            if iLen=2 then
+              sTag := '<number:year/>'
+            else
+              sTag := '<number:year number:style="long"/>';
+          end;
+          'h' :
+          begin
+            if iLen=1 then
+              sTag := '<number:hours/>'
+            else
+              sTag := '<number:hours number:style="long"/>';
+          end;
+          'm' :
+          begin
+            if iLen=1 then
+              sTag := '<number:minutes/>'
+            else
+              sTag := '<number:minutes number:style="long"/>';
+          end;
+          's' :
+          begin
+            if iLen=1 then
+              sTag := '<number:seconds/>'
+            else
+              sTag := '<number:seconds number:style="long"/>';
+          end;
+          'a' :
+          begin
+            sTag := '<number:am-pm/>';
+            iLen := 5;
+          end;
+        else
+          sTag := '<number:text>'+cCurrChar+'</number:text>';
+        end;
+
+        cPrevChar := cCurrChar;
+      end;
+
+     FContentAutomaticStyles:=FContentAutomaticStyles +
+       '      '+sTag + LineEnding;
+
+     Inc(i, iLen);
+    end;
+
+    FContentAutomaticStyles:=FContentAutomaticStyles +
+     '    </number:date-style> '+LineEnding;
+  end;
+
+  case AEntity.Kind of
+    vfkNumPages:
+    begin
+      FContent:=FContent +
+        '<text:page-count style:num-format="'+LU_NUMBERFORMAT[AEntity.NumberFormat]+
+        '">'+IntToStr(AData.GetPageCount)+'</text:page-count>';
+    end;
+    vfkPage:
+    begin
+      FContent:=FContent +
+        '<text:page-number style:num-format="'+LU_NUMBERFORMAT[AEntity.NumberFormat]+
+        '" text:fixed="false">'+IntToStr(AData.GetPageIndex(ACurPage))+'</text:page-number>';
+    end;
+    vfkAuthor:
+    begin
+      FContent:=FContent +
+        '<text:initial-creator text:fixed="false">FPVECTORIAL</text:initial-creator>';
+    end;
+    vfkDateCreated:
+    begin
+      FContent:=FContent +
+        '<text:creation-date style:data-style-name="'+sDateStyleName+'">'+DateToStr(Now)+'</text:creation-date>';
+    end;
+    vfkDate:
+    begin
+      FContent:=FContent +
+        '<text:date style:data-style-name="'+sDateStyleName+'">'+DateToStr(Now)+'</text:date>';
+    end;
+  end;
 end;
 
 function TvODTVectorialWriter.BordersToString(ATableBorders, ACellBorders : TvTableBorders;
   ATopCell, ABottomCell, ALeftCell, ARightCell : Boolean):String;
-Const
-  LU_BORDERTYPE: Array[TvTableBorderType] Of String =
-    ('solid', 'dashed', 'solid', 'none', 'default');
-//  ('solid', 'dashed', 'double', 'none', 'default');
 (*
-  double requires a completely different configuration, so for now, we won't
+  double line thickness requires a completely different configuration, so for now, we won't
   support it...
 
   <style:table-cell-properties style:vertical-align="middle"
@@ -1126,7 +1360,6 @@ Const
   end;
 Var
   sLeft, sRight, sTop, sBottom : String;
-  sPadding : String;
 Begin
 (*
    OpenDocument does not support setting borders at the Table Level,
@@ -1212,8 +1445,6 @@ Var
   sCellStyle,
   sTemp, sTemp2: String;
   bInHeader: Boolean;
-Const
-  LU_V_ALIGN: Array[TvVerticalAlignment] Of String = ('top', 'bottom', 'middle', 'automatic');
 
 Begin
   // TODO: Add support for TvTableBorder.Spacing
@@ -1376,8 +1607,8 @@ Begin
 
         if (lCurEntity is TvParagraph) then
           WriteParagraph(TvParagraph(lCurEntity), ACurPage, AData);
-        if (lCurEntity is TvBulletList) then
-          WriteBulletList(TvBulletList(lCurEntity), ACurPage, AData);
+        if (lCurEntity is TvList) then
+          WriteList(TvList(lCurEntity), ACurPage, AData);
         if (lCurEntity is TvTable) then
           WriteTable(TvTable(lCurEntity), ACurPage, AData);
       end;
@@ -1395,36 +1626,37 @@ Begin
   AddBody('</table:table>');
 end;
 
-procedure TvODTVectorialWriter.WriteBulletList(AEntity: TvBulletList;
+procedure TvODTVectorialWriter.WriteList(AEntity: TvList;
   ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
 var
   i, j: Integer;
   lCurEntity, lCurSubEntity: TvEntity;
   lCurParagraph: TvParagraph;
+  iCrossRef: Integer;
 begin
-  // MJT 2013-08-24
-  // Different levels are handled by nesting <test:list> inside parent <test:item>
-  // Only way we can handle this is by treating TvBulletLists as a Tree
-  // .Level then becomes a function returning the number of steps to root.
-  // The code below there currently adds everything at level 0
-
   // See http://docs.oasis-open.org/office/v1.1/OS/OpenDocument-v1.1.pdf
   // page 75 "Example: Lists and sublists"
 
   FContent := FContent +
-     '    <text:list  text:style-name="L1">' + LineEnding; // xml:id="list14840052221"
+     '    <text:list  text:style-name="'+ListStyleNameToODTText(AData, AEntity.ListStyle)+'">' + LineEnding;
 
   for i := 0 to AEntity.GetEntitiesCount()-1 do
   begin
     lCurEntity := AEntity.GetEntity(i);
 
+    FContent := FContent +
+      '      <text:list-item>' + LineEnding;
+
     if (lCurEntity is TvParagraph) then
     begin
       lCurParagraph := lCurEntity as TvParagraph;
 
+      iCrossRef := FList_StyleCrossRef.AddCrossReference(AEntity.Style, AEntity.ListStyle);
+
+      // Special Style correlating the Paragraph Style and the List style
+      // should be added to Content.xml Automatic Styles
       FContent := FContent +
-          '      <text:list-item>' + LineEnding +
-          '        <text:p>';
+          '        <text:p text:style-name="'+FList_StyleCrossRef.AsText(iCrossRef)+'">';
 
       for j := 0 to lCurParagraph.GetEntitiesCount()-1 do
       begin
@@ -1435,9 +1667,13 @@ begin
       end;
 
       FContent := FContent +
-        '</text:p>' + LineEnding +
-        '      </text:list-item>' + LineEnding;
-    end;
+        '        </text:p>' + LineEnding;
+    end
+    else if lCurEntity Is TvList Then
+      WriteList(TvList(lCurEntity), ACurPage, AData);
+
+    FContent := FContent +
+      '      </text:list-item>' + LineEnding;
   end;
 
   FContent := FContent +
@@ -1459,15 +1695,37 @@ begin
 
   FAutomaticStyles := '';
   FMasterStyles := '';
+
+  FList_StyleCrossRef := TListStyle_StyleList.Create;
+  FList_StyleCrossRef.Writer := Self;
+
+  FDateCount := 0;
 end;
 
 destructor TvODTVectorialWriter.Destroy;
 begin
+  FList_StyleCrossRef.Free;
 
   inherited Destroy;
 end;
 
 procedure TvODTVectorialWriter.WriteToFile(AFileName: string;
+  AData: TvVectorialDocument);
+Var
+  oStream: TFileStream;
+Begin
+  If ExtractFileExt(AFilename) = '' Then
+    AFilename := AFilename + STR_ODT_EXTENSION;
+
+  oStream := TFileStream.Create(AFileName, fmCreate);
+  Try
+    WriteToStream(oStream, AData);
+  Finally
+    FreeAndNil(oStream);
+  End;
+End;
+
+procedure TvODTVectorialWriter.WriteToStream(AStream: TStream;
   AData: TvVectorialDocument);
 var
   FZip: TZipper;
@@ -1475,6 +1733,8 @@ var
   FSMeta, FSSettings, FSStyles, FSContent, FSMimetype: TStringStream;
   FSMetaInfManifest, FSManifestRDF: TStringStream;
 begin
+  FList_StyleCrossRef.Data := AData;
+
   { Fill the strings with the contents of the files }
 
   WriteMimetype();
@@ -1501,10 +1761,9 @@ begin
 
   FZip := TZipper.Create;
   try
-    FZip.FileName := AFileName;
-
     // MimeType must be first file, and should be uncompressed
     // TODO: CompressionLevel is not working.  Bug, or misuse?
+    //  See http://mantis.freepascal.org/view.php?id=24897 for patch...
     FZip.Entries.AddFileEntry(FSMimetype, OPENDOC_PATH_MIMETYPE).CompressionLevel:=clNone;
 
     FZip.Entries.AddFileEntry(FSMeta, OPENDOC_PATH_META);
@@ -1514,7 +1773,7 @@ begin
     FZip.Entries.AddFileEntry(FSMetaInfManifest, OPENDOC_PATH_METAINF_MANIFEST);
     FZip.Entries.AddFileEntry(FSManifestRDF, OPENDOC_PATH_MANIFESTRDF);
 
-    FZip.ZipAllFiles;
+    FZip.SaveToStream(AStream);
   finally
     FZip.Free;
     FSMeta.Free;
@@ -1525,13 +1784,6 @@ begin
     FSMetaInfManifest.Free;
     FSManifestRDF.Free;
   end;
-end;
-
-procedure TvODTVectorialWriter.WriteToStream(AStream: TStream;
-  AData: TvVectorialDocument);
-begin
-  // Not supported at the moment
-  raise Exception.Create('TvODTVectorialWriter.WriteToStream not supported');
 end;
 
 initialization

@@ -13,9 +13,8 @@ Program fpvtextwritetest2;
 Uses
   fpvectorial,
   odtvectorialwriter,
-  fpvutils,
-  fpvectorialpkg,
   docxvectorialwriter,
+  fpvutils,
   SysUtils, FPImage;
 
 {$R *.res}
@@ -28,8 +27,10 @@ Var
   Page: TvTextPageSequence;
   CurParagraph: TvParagraph;
   BoldTextStyle: TvStyle;
+  ListParaStyle : TvStyle;
   CenterParagraphStyle, Center2: TvStyle;
-  BulletList : TvBulletList;
+  List : TvList;
+  SubList: TvList;
   dtTime : TDateTime;
   CurText : TvText;
 
@@ -49,6 +50,8 @@ Begin
     // Until there is a need, we will stick with supporting ODT styles
     Vec.AddStandardTextDocumentStyles(vfODT);
 
+    // An example in modifying existing Styles, here putting a 1cm margin on
+    // either side of normal text body
     Vec.StyleTextBody.MarginRight:=10;
     Vec.StyleTextBody.MarginLeft:=10;
     Vec.StyleTextBody.SetElements:= Vec.StyleTextBody.SetElements + [sseMarginLeft, sseMarginRight];
@@ -67,6 +70,15 @@ Begin
     CenterParagraphStyle.Alignment := vsaCenter;
     CenterParagraphStyle.SetElements := CenterParagraphStyle.SetElements + [spbfAlignment];
 
+    ListParaStyle := Vec.AddStyle();
+    ListParaStyle.Name := 'List Text Body';
+    ListParaStyle.Font.Name := 'Arial';
+    ListParaStyle.Font.Size := 9;
+    ListParaStyle.MarginLeft:=0;
+    ListParaStyle.MarginTop:=0;
+    ListParaStyle.MarginBottom:=0;
+    ListParaStyle.SetElements := CenterParagraphStyle.SetElements + [spbfFontName, spbfFontSize, sseMarginLeft, sseMarginTop, sseMarginBottom];
+
     // First page sequence
     Page := Vec.AddTextPageSequence();
     Page.Width := 210;
@@ -80,9 +92,14 @@ Begin
     // Set the Footer
     CurParagraph := Page.Footer.AddParagraph;
     CurParagraph.Style := CenterParagraphStyle;
-    CurParagraph.AddText('Confidential' + #09 + 'Page x of y' + #09 +
-      DateTimeToStr(Now)).Style :=
-      BoldTextStyle;
+    CurParagraph.AddText('Confidential').Style := BoldTextStyle;
+    CurParagraph.AddText(#09);
+    CurParagraph.AddText('Page ').Style := BoldTextStyle;
+    CurParagraph.AddField(vfkPage).Style := BoldTextStyle;
+    CurParagraph.AddText(' of ').Style := BoldTextStyle;
+    CurParagraph.AddField(vfkNumPages).Style := BoldTextStyle;
+    CurParagraph.AddText(#09);
+    CurParagraph.AddField(vfkDateCreated).Style := BoldTextStyle;
 
     // Title
     CurParagraph := Page.AddParagraph();
@@ -131,21 +148,29 @@ Begin
       AddText('compiler supports( Mac, Unix, Linux, Windows, etc). ');
     End;
 
-    BulletList := Page.AddBulletList();
-    BulletList.Style := Vec.StyleList;
-    BulletList.AddItem(0, 'A What You See Is What You Get (WYSIWYG) visual windows layout designer');
-    BulletList.AddItem(1, 'An extensive set of GUI widgets or visual components such as edit boxes, buttons, dialogs, menus, etc.');
-    BulletList.AddItem(2, 'An extensive set of non visual components for common behaviors such as persistence of application settings');
-    BulletList.AddItem(3, 'A set of data connectivity components for MySQL, PostgresSQL, FireBird, Oracle, SQL Lite, Sybase, and others');
-    BulletList.AddItem(4, 'Data aware widget set that allows the developer to see data in visual components in the designer to assist with development');
-    BulletList.AddItem(5, 'Interactive code debugger');
-    BulletList.AddItem(5, 'Code completion');
-    BulletList.AddItem(4, 'Code templates');
-    BulletList.AddItem(3, 'Syntax highlighting');
-    BulletList.AddItem(2, 'Context sensitive help');
-    BulletList.AddItem(1, 'Text resource manager for internationalization');
-    BulletList.AddItem(0, 'Automatic code formatting');
-    BulletList.AddItem(0, 'The ability to create custom components');
+    CurParagraph := Page.AddParagraph();
+    CurParagraph.Style := Vec.StyleTextBody;
+    CurParagraph.AddText('Lazarus ').Style := BoldTextStyle;
+    CurParagraph.AddText('features:');
+
+    // Simple List
+    List := Page.AddList();
+    List.Style := ListParaStyle;
+    List.ListStyle := Vec.StyleBulletList;
+
+    List.AddParagraph('A What You See Is What You Get (WYSIWYG) visual windows layout designer');
+    List.AddParagraph('An extensive set of GUI widgets or visual components such as edit boxes, buttons, dialogs, menus, etc.');
+    List.AddParagraph('An extensive set of non visual components for common behaviors such as persistence of application settings');
+    List.AddParagraph('A set of data connectivity components for MySQL, PostgresSQL, FireBird, Oracle, SQL Lite, Sybase, and others');
+    List.AddParagraph('Data aware widget set that allows the developer to see data in visual components in the designer to assist with development');
+    List.AddParagraph('Interactive code debugger');
+    List.AddParagraph('Code completion');
+    List.AddParagraph('Code templates');
+    List.AddParagraph('Syntax highlighting');
+    List.AddParagraph('Context sensitive help');
+    List.AddParagraph('Text resource manager for internationalization');
+    List.AddParagraph('Automatic code formatting');
+    List.AddParagraph('The ability to create custom components');
 
     // Empty line
     CurParagraph := Page.AddParagraph();
@@ -179,7 +204,84 @@ Begin
     Begin
       Add(#09 + '<test>&"This shouldn''t break the resulting document."</test>' + #09);
       Add(#09 + '<test>!@#$%^&*()_+=-~`;:{}[],./|\?</test>' + #09);
+      Add('');
     End;
+
+    // Add a simple heading
+    CurParagraph := Page.AddParagraph();
+    CurParagraph.Style := Vec.StyleHeading2;
+    CurText := CurParagraph.AddText('Testing Fields');
+
+    CurParagraph := Page.AddParagraph();
+    CurParagraph.Style := Vec.StyleTextBody;
+    CurParagraph.AddText('Page Count: ');
+    CurParagraph.AddField(vfkNumPages);
+
+    CurParagraph := Page.AddParagraph();
+    CurParagraph.Style := Vec.StyleTextBody;
+    CurParagraph.AddText('Page: ');
+    CurParagraph.AddField(vfkPage);
+
+    CurParagraph := Page.AddParagraph();
+    CurParagraph.Style := Vec.StyleTextBody;
+    CurParagraph.AddText('Author: ');
+    CurParagraph.AddField(vfkAuthor);
+
+    CurParagraph := Page.AddParagraph();
+    CurParagraph.Style := Vec.StyleTextBody;
+    CurParagraph.AddText('Date Created: ');
+    CurParagraph.AddField(vfkDateCreated);
+
+    CurParagraph := Page.AddParagraph();
+    CurParagraph.Style := Vec.StyleTextBody;
+    CurParagraph.AddText('Date: ');
+    CurParagraph.AddField(vfkDate);
+
+    // Add a simple heading
+    CurParagraph := Page.AddParagraph();
+    CurParagraph.Style := Vec.StyleHeading2;
+    CurText := CurParagraph.AddText('Testing Lists');
+
+    // Indented numbered List
+    List := Page.AddList();
+    List.Style := ListParaStyle;
+    List.ListStyle := Vec.StyleNumberList;
+
+    List.AddParagraph('Level 1, Item 1');
+    List.AddParagraph('Level 1, Item 2');
+    List.AddParagraph('Level 1, Item 3');
+
+    SubList := List.AddList;
+    SubList.AddParagraph('Level 2, Item 1');
+    SubList.AddParagraph('Level 2, Item 2');
+    SubList.AddParagraph('Level 2, Item 3');
+
+    With SubList.AddList Do
+    begin
+      AddParagraph('Level 3, Item 1');
+      AddParagraph('Level 3, Item 2');
+      AddParagraph('Level 3, Item 3');
+    end;
+
+    SubList := List.AddList;
+    SubList.AddParagraph('Level 2, Item 1 (new SubList added to same upper List)');
+    SubList.AddParagraph('Level 2, Item 2 (new SubList added to same upper List)');
+    SubList.AddParagraph('Level 2, Item 3 (new SubList added to same upper List)');
+
+    SubList := SubList.AddList;
+    SubList.AddParagraph('Level 3, Item 1');
+    SubList.AddParagraph('Level 3, Item 2');
+    SubList.AddParagraph('Level 3, Item 3');
+
+    List.AddParagraph('Level 1, Item 1 (Continuing on from same upper list)');
+    List.AddParagraph('Level 1, Item 2 (Continuing on from same upper list)');
+    List.AddParagraph('Level 1, Item 3 (Continuing on from same upper list)');
+
+    SubList := List.AddList;
+    SubList.ListStyle := Vec.StyleBulletList;
+    SubList.AddParagraph('Bullet Level 2, Item 1 (new SubList added to same upper List)');
+    SubList.AddParagraph('Bullet Level 2, Item 2 (new SubList added to same upper List)');
+    SubList.AddParagraph('Bullet Level 2, Item 3 (new SubList added to same upper List)');
 
     // Third page sequence
     Page := Vec.AddTextPageSequence();
@@ -390,12 +492,12 @@ Begin
 *)
 
     dtTime := Now;
-    Vec.WriteToFile('text_output.docx', vfDOCX);
+    Vec.WriteToFile('text_output_docx', vfDOCX);
 
     WriteLn('Native docx writer: '+Format('%.1f msec', [24*60*60*1000*(Now-dtTime)]));
     dtTime := Now;
 
-    Vec.WriteToFile('text_output.odt', vfODT);
+    Vec.WriteToFile('text_output_odt', vfODT);
 
     WriteLn('Native odt writer: '+Format('%.1f msec', [24*60*60*1000*(Now-dtTime)]));
   Finally
