@@ -16,43 +16,61 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="9">
+    <Description Value="A set of helperclasses for implementing a debugger.
+
+Based on:
+1) FPDebug by Marc Weustink 
+2) Duby by Dmitry Boyarintsev"/>
+    <License Value="GPL"/>
+    <Files Count="12">
       <Item1>
         <Filename Value="fpdbgclasses.pp"/>
-        <UnitName Value="fpdbgclasses"/>
+        <UnitName Value="FpDbgClasses"/>
       </Item1>
       <Item2>
         <Filename Value="fpdbgdisasx86.pp"/>
-        <UnitName Value="fpdbgdisasx86"/>
+        <UnitName Value="FpDbgDisasX86"/>
       </Item2>
       <Item3>
         <Filename Value="fpdbgdwarf.pas"/>
-        <UnitName Value="fpdbgdwarf"/>
+        <UnitName Value="FpDbgDwarf"/>
       </Item3>
       <Item4>
         <Filename Value="fpdbgdwarfconst.pas"/>
-        <UnitName Value="fpdbgdwarfconst"/>
+        <UnitName Value="FpDbgDwarfConst"/>
       </Item4>
       <Item5>
         <Filename Value="fpdbgloader.pp"/>
-        <UnitName Value="fpdbgloader"/>
+        <UnitName Value="FpDbgLoader"/>
       </Item5>
       <Item6>
         <Filename Value="fpdbgpetypes.pp"/>
-        <UnitName Value="fpdbgpetypes"/>
+        <UnitName Value="FpDbgPETypes"/>
       </Item6>
       <Item7>
         <Filename Value="fpdbgsymbols.pas"/>
-        <UnitName Value="fpdbgsymbols"/>
+        <UnitName Value="FpDbgSymbols"/>
       </Item7>
       <Item8>
         <Filename Value="fpdbgutil.pp"/>
-        <UnitName Value="fpdbgutil"/>
+        <UnitName Value="FpDbgUtil"/>
       </Item8>
       <Item9>
         <Filename Value="fpdbgwinextra.pp"/>
-        <UnitName Value="fpdbgwinextra"/>
+        <UnitName Value="FpDbgWinExtra"/>
       </Item9>
+      <Item10>
+        <Filename Value="fpimgreaderwinpe.pas"/>
+        <UnitName Value="FpImgReaderWinPE"/>
+      </Item10>
+      <Item11>
+        <Filename Value="fpimgreaderelf.pas"/>
+        <UnitName Value="FpImgReaderElf"/>
+      </Item11>
+      <Item12>
+        <Filename Value="fpimgreaderelftypes.pas"/>
+        <UnitName Value="FpImgReaderElfTypes"/>
+      </Item12>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
@@ -69,5 +87,8 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>

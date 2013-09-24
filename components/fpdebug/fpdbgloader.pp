@@ -6,6 +6,8 @@
 
  This unit contains helper classes for loading secions form images.
 
+ This file contains some functionality ported from DUBY. See svn log for details
+
  ---------------------------------------------------------------------------
 
  @created(Mon Aug 1st WET 2006)
@@ -42,7 +44,7 @@ uses
   {$ifdef windows}
   Windows, // After LCLType
   {$endif}
-  Classes, SysUtils, FpDbgPETypes;
+  Classes, SysUtils, FpDbgPETypes, LazUTF8Classes;
 
 type
   TDbgImageSection = record
@@ -52,256 +54,298 @@ type
   end;
   PDbgImageSection = ^TDbgImageSection;
 
+  TDbgImageSectionEx = record
+    Sect: TDbgImageSection;
+    Offs: QWord;
+    Loaded: Boolean;
+  end;
+  PDbgImageSectionEx = ^TDbgImageSectionEx;
+
+  { TDbgFileLoader }
+  {$ifdef windows}
+    {$define USE_WIN_FILE_MAPPING}
+  {$endif}
+
+  TDbgFileLoader = class(TObject)
+  private
+    {$ifdef USE_WIN_FILE_MAPPING}
+    FFileHandle: THandle;
+    FMapHandle: THandle;
+    FModulePtr: Pointer;
+    {$else}
+    FStream: TStream;
+    FList: TList;
+    {$endif}
+  public
+    constructor Create(AFileName: String);
+    {$ifdef USE_WIN_FILE_MAPPING}
+    constructor Create(AFileHandle: THandle);
+    {$endif}
+    destructor Destroy; override;
+    function  Read(AOffset, ASize: QWord; AMem: Pointer): QWord;
+    function  LoadMemory(AOffset, ASize: QWord; out AMem: Pointer): QWord;
+    procedure UnloadMemory(AMem: Pointer);
+  end;
+
+  { TDbgImageReader }
+
+  TDbgImageReader = class(TObject) // executable parser
+  private
+    FImage64Bit: Boolean;
+    FImageBase: QWord;
+  protected
+    function GetSection(const AName: String): PDbgImageSection; virtual; abstract;
+    procedure SetImageBase(ABase: QWord);
+    procedure SetImage64Bit(AValue: Boolean);
+  public
+    class function isValid(ASource: TDbgFileLoader): Boolean; virtual; abstract;
+    class function UserName: AnsiString; virtual; abstract;
+    constructor Create(ASource: TDbgFileLoader; OwnSource: Boolean); virtual;
+
+    property ImageBase: QWord read FImageBase;
+    Property Image64Bit: Boolean read FImage64Bit;
+    property Section[const AName: String]: PDbgImageSection read GetSection;
+  end;
+  TDbgImageReaderClass = class of TDbgImageReader;
 
   { TDbgImageLoader }
 
   TDbgImageLoader = class(TObject)
   private
-    FImage64Bit: Boolean;
-    FImageBase: QWord;
-    FSections: TStringList;
-    function GetSection(const AName: String): PDbgImageSection;
+    FFileLoader: TDbgFileLoader;
+    FImgReader: TDbgImageReader;
+    function GetSection(const AName: String): PDbgImageSection; virtual;
   protected
-    procedure Add(const AName: String; ARawData: Pointer; ASize: QWord; AVirtualAdress: QWord);
-    procedure SetImageBase(ABase: QWord);
-    procedure SetImage64Bit(AValue: Boolean);
-    procedure LoadSections; virtual; abstract;
-    procedure UnloadSections; virtual; abstract;
+    FImage64Bit: Boolean  unimplemented;
+    FImageBase: QWord unimplemented;
+    //procedure SetImageBase(ABase: QWord);
+    //procedure SetImage64Bit(AValue: Boolean);
   public
-    constructor Create;
+    constructor Create; virtual;
+    constructor Create(AFileName: String);
+    {$ifdef USE_WIN_FILE_MAPPING}
+    constructor Create(AFileHandle: THandle);
+    {$endif}
     destructor Destroy; override;
-    property ImageBase: QWord read FImageBase;
-    Property Image64Bit: Boolean read FImage64Bit;
+    property ImageBase: QWord read FImageBase; unimplemented;
+    Property Image64Bit: Boolean read FImage64Bit; unimplemented;
     property Section[const AName: String]: PDbgImageSection read GetSection;
   end;
-  
-  { TDbgPEImageLoader }
 
-  TDbgPEImageLoader = class(TDbgImageLoader)
-  private
-  protected
-    function  LoadData(out AModuleBase: Pointer; out AHeaders: PImageNtHeaders): Boolean; virtual; abstract;
-    procedure LoadSections; override;
-    procedure UnloadData; virtual; abstract;
-    procedure UnloadSections; override;
-  public
-  end;
-  
-  { TDbgWinPEImageLoader }
 
-  TDbgWinPEImageLoader = class(TDbgPEImageLoader)
-  private
-    FFileHandle: THandle;
-    FMapHandle: THandle;
-    FModulePtr: Pointer;
-    procedure DoCleanup;
-  protected
-    function  LoadData(out AModuleBase: Pointer; out AHeaders: PImageNtHeaders): Boolean; override;
-    procedure UnloadData; override;
-  public
-    constructor Create(const AFileName: String);
-    constructor Create(AFileHandle: THandle);
-  end;
+function GetImageReader(const FileName: string): TDbgImageReader; overload;
+function GetImageReader(ASource: TDbgFileLoader; OwnSource: Boolean): TDbgImageReader; overload;
+procedure RegisterImageReaderClass(DataSource: TDbgImageReaderClass);
 
 implementation
 
+var
+  RegisteredImageReaderClasses  : TFPList;
+
+function GetImageReader(const FileName: string): TDbgImageReader;
+begin
+  try
+    Result := GetImageReader(TDbgFileLoader.Create(FileName), true);
+  except
+    Result := nil;
+  end;
+end;
+
+function GetImageReader(ASource: TDbgFileLoader; OwnSource: Boolean): TDbgImageReader;
+var
+  i   : Integer;
+  cls : TDbgImageReaderClass;
+begin
+  Result := nil;
+  if not Assigned(ASource) then Exit;
+
+  for i := 0 to RegisteredImageReaderClasses.Count - 1 do begin
+    cls :=  TDbgImageReaderClass(RegisteredImageReaderClasses[i]);
+    try
+      if cls.isValid(ASource) then begin
+        Result := cls.Create(ASource, OwnSource);
+        Exit;
+      end
+      else
+        ;
+    except
+      on e: exception do begin
+        //writeln('exception! WHY? ', e.Message);
+      end;
+    end;
+  end;
+  Result := nil;
+end;
+
+procedure RegisterImageReaderClass( DataSource: TDbgImageReaderClass);
+begin
+  if Assigned(DataSource) and (RegisteredImageReaderClasses.IndexOf(DataSource) < 0) then
+    RegisteredImageReaderClasses.Add(DataSource)
+end;
+
 { TDbgImageLoader }
 
-procedure TDbgImageLoader.Add(const AName: String; ARawData: Pointer; ASize: QWord; AVirtualAdress: QWord);
-var
-  p: PDbgImageSection;
-  idx: integer;
+function TDbgImageLoader.GetSection(const AName: String): PDbgImageSection;
 begin
-  idx := FSections.AddObject(AName, nil);
-  New(p);
-  P^.RawData := ARawData;
-  p^.Size := ASize;
-  p^.VirtualAdress := AVirtualAdress;
-  FSections.Objects[idx] := TObject(p);
+  Result := FImgReader.Section[AName];
 end;
 
 constructor TDbgImageLoader.Create;
 begin
   inherited Create;
-  FSections := TStringList.Create;
-  FSections.Sorted := True;
-  FSections.Duplicates := dupError;
-  FSections.CaseSensitive := False;
-  LoadSections;
 end;
+
+constructor TDbgImageLoader.Create(AFileName: String);
+begin
+  FFileLoader := TDbgFileLoader.Create(AFileName);
+  FImgReader := GetImageReader(FFileLoader, True);
+end;
+
+{$ifdef USE_WIN_FILE_MAPPING}
+constructor TDbgImageLoader.Create(AFileHandle: THandle);
+begin
+  FFileLoader := TDbgFileLoader.Create(AFileHandle);
+  FImgReader := GetImageReader(FFileLoader, True);
+end;
+{$endif}
 
 destructor TDbgImageLoader.Destroy;
-var
-  n: integer;
 begin
-  UnloadSections;
-  for n := 0 to FSections.Count - 1 do
-    Dispose(PDbgImageSection(FSections.Objects[n]));
-  FSections.Clear;
+  FreeAndNil(FImgReader);
   inherited Destroy;
-  FreeAndNil(FSections);
 end;
 
-function TDbgImageLoader.GetSection(const AName: String): PDbgImageSection;
-var
-  idx: integer;
+{ TDbgFileLoader }
+
+constructor TDbgFileLoader.Create(AFileName: String);
 begin
-  idx := FSections.IndexOf(AName);
-  if idx = -1
-  then Result := nil
-  else Result := PDbgImageSection(FSections.Objects[idx]);
-end;
-
-procedure TDbgImageLoader.SetImage64Bit(AValue: Boolean);
-begin
-  FImage64Bit := AValue;
-end;
-
-procedure TDbgImageLoader.SetImageBase(ABase: QWord);
-begin
-  FImageBase := ABase;
-end;
-
-{ TDbgPEImageLoader }
-
-procedure TDbgPEImageLoader.LoadSections;
-var
-  ModulePtr: Pointer;
-  NtHeaders: PImageNtHeaders;
-  NtHeaders32: PImageNtHeaders32 absolute NtHeaders;
-  NtHeaders64: PImageNtHeaders64 absolute NtHeaders;
-  SectionHeader: PImageSectionHeader;
-  n, idx: Integer;
-  p: Pointer;
-  SectionName: array[0..IMAGE_SIZEOF_SHORT_NAME] of Char;
-begin
-  if not LoadData(ModulePtr, NtHeaders) then Exit;
-  
-  if NtHeaders^.Signature <> IMAGE_NT_SIGNATURE
-  then begin
-    WriteLn('Invalid NT header: ', IntToHex(NtHeaders^.Signature, 8));
-    Exit;
-  end;
-
-  SetImage64Bit(NtHeaders^.OptionalHeader.Magic = IMAGE_NT_OPTIONAL_HDR64_MAGIC);
-
-  if Image64Bit
-  then SetImageBase(NtHeaders64^.OptionalHeader.ImageBase)
-  else SetImageBase(NtHeaders32^.OptionalHeader.ImageBase);
-
-  for n := 0 to NtHeaders^.FileHeader.NumberOfSections - 1 do
-  begin
-    SectionHeader := Pointer(@NtHeaders^.OptionalHeader) + NtHeaders^.FileHeader.SizeOfOptionalHeader + SizeOf(SectionHeader^) * n;
-    // make a null terminated name
-    Move(SectionHeader^.Name, SectionName, IMAGE_SIZEOF_SHORT_NAME);
-    SectionName[IMAGE_SIZEOF_SHORT_NAME] := #0;
-    if (SectionName[0] = '/') and (SectionName[1] in ['0'..'9'])
-    then begin
-      // long name
-      p := ModulePtr + NTHeaders^.FileHeader.PointerToSymbolTable + NTHeaders^.FileHeader.NumberOfSymbols * IMAGE_SIZEOF_SYMBOL + StrToIntDef(PChar(@SectionName[1]), 0);
-      Add(PChar(p), ModulePtr + SectionHeader^.PointerToRawData, SectionHeader^.Misc.VirtualSize,  SectionHeader^.VirtualAddress);
-    end
-    else begin
-      // short name
-      Add(SectionName, ModulePtr + SectionHeader^.PointerToRawData, SectionHeader^.Misc.VirtualSize,  SectionHeader^.VirtualAddress);
-    end
-  end;
-end;
-
-procedure TDbgPEImageLoader.UnloadSections;
-begin
-  UnloadData;
-end;
-
-{ TDbgWinPEImageLoader }
-
-constructor TDbgWinPEImageLoader.Create(const AFileName: String);
-begin
-  {$ifdef windows}
+  {$ifdef USE_WIN_FILE_MAPPING}
   FFileHandle := CreateFile(PChar(AFileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-  if FFileHandle = INVALID_HANDLE_VALUE
-  then begin
-    WriteLN('Cannot open file: ', AFileName);
-  end;
-  {$endif}
+  Create(FFileHandle);
+  {$else}
+  FList := TList.Create;
+  FStream := TFileStreamUTF8.Create(AFileName, fmOpenRead or fmShareDenyNone);
   inherited Create;
+  {$endif}
 end;
 
-constructor TDbgWinPEImageLoader.Create(AFileHandle: THandle);
+{$ifdef USE_WIN_FILE_MAPPING}
+constructor TDbgFileLoader.Create(AFileHandle: THandle);
 begin
   FFileHandle := AFileHandle;
   if FFileHandle = INVALID_HANDLE_VALUE
   then begin
     WriteLN('Invalid file handle');
   end;
+
+  FMapHandle := CreateFileMapping(FFileHandle, nil, PAGE_READONLY{ or SEC_IMAGE}, 0, 0, nil);
+  if FMapHandle = 0
+  then begin
+    WriteLn('Could not create module mapping');
+    Exit;
+  end;
+
+  FModulePtr := MapViewOfFile(FMapHandle, FILE_MAP_READ, 0, 0, 0);
+  if FModulePtr = nil
+  then begin
+    WriteLn('Could not map view');
+    Exit;
+  end;
+
   inherited Create;
 end;
+{$endif}
 
-procedure TDbgWinPEImageLoader.DoCleanup;
+destructor TDbgFileLoader.Destroy;
 begin
-  {$ifdef windows}
+  {$ifdef USE_WIN_FILE_MAPPING}
   if FModulePtr <> nil
   then UnmapViewOfFile(FModulePtr);
   if FMapHandle <> 0
   then CloseHandle(FMapHandle);
   if FFileHandle <> INVALID_HANDLE_VALUE
   then CloseHandle(FFileHandle);
-  {$endif}
-
-  FFileHandle := INVALID_HANDLE_VALUE;
-  FMapHandle := 0;
-  FModulePtr := nil;
-end;
-
-function TDbgWinPEImageLoader.LoadData(out AModuleBase: Pointer; out AHeaders: PImageNtHeaders): Boolean;
-{$ifdef windows}
-var
-  DosHeader: PImageDosHeader;
-{$endif}
-begin
-  Result := False;
-
-  {$ifdef windows}
-  try
-    FMapHandle := CreateFileMapping(FFileHandle, nil, PAGE_READONLY{ or SEC_IMAGE}, 0, 0, nil);
-    if FMapHandle = 0
-    then begin
-      WriteLn('Could not create module mapping');
-      Exit;
-    end;
-
-    FModulePtr := MapViewOfFile(FMapHandle, FILE_MAP_READ, 0, 0, 0);
-    if FModulePtr = nil
-    then begin
-      WriteLn('Could not map view');
-      Exit;
-    end;
-
-    DosHeader := FModulePtr;
-    if (DosHeader^.e_magic <> IMAGE_DOS_SIGNATURE)
-    or (DosHeader^.e_lfanew = 0)
-    then begin
-      WriteLn('Invalid DOS header');
-      Exit;
-    end;
-    
-    AModuleBase := FModulePtr;
-    AHeaders := FModulePtr + DosHeader^.e_lfanew;
-    Result := True;
-  finally
-    if not Result
-    then begin
-      // something failed, do some cleanup
-      DoCleanup;
-    end;
-  end;
+  {$else}
+  while FList.Count > 0 do
+    UnloadMemory(FList[0]);
+  FreeAndNil(FList);
+  FreeAndNil(FStream);
+  inherited Destroy;
   {$endif}
 end;
 
-procedure TDbgWinPEImageLoader.UnloadData;
+function TDbgFileLoader.Read(AOffset, ASize: QWord; AMem: Pointer): QWord;
 begin
-  DoCleanup;
+  {$ifdef USE_WIN_FILE_MAPPING}
+  move((FModulePtr + AOffset)^, AMem^, ASize);
+  Result := ASize;
+  {$else}
+  Result := 0;
+  if AMem = nil then
+    exit;
+  FStream.Position := AOffset;
+  Result := FStream.Read(AMem^, ASize);
+  {$endif}
 end;
+
+function TDbgFileLoader.LoadMemory(AOffset, ASize: QWord; out AMem: Pointer): QWord;
+begin
+  {$ifdef USE_WIN_FILE_MAPPING}
+  AMem := FModulePtr + AOffset;
+  Result := ASize;
+  {$else}
+  Result := 0;
+  AMem := AllocMem(ASize);
+  if AMem = nil then
+    exit;
+  FList.Add(AMem);
+  FStream.Position := AOffset;
+  Result := FStream.Read(AMem^, ASize);
+  {$endif}
+end;
+
+procedure TDbgFileLoader.UnloadMemory(AMem: Pointer);
+begin
+  {$ifdef USE_WIN_FILE_MAPPING}
+  {$else}
+  FList.Remove(AMem);
+  Freemem(AMem);
+  {$endif}
+end;
+
+{ TDbgImageReader }
+
+procedure TDbgImageReader.SetImageBase(ABase: QWord);
+begin
+  FImageBase := ABase;
+end;
+
+procedure TDbgImageReader.SetImage64Bit(AValue: Boolean);
+begin
+  FImage64Bit := AValue;
+end;
+
+constructor TDbgImageReader.Create(ASource: TDbgFileLoader; OwnSource: Boolean);
+begin
+  inherited Create;
+end;
+
+
+procedure InitDebugInfoLists;
+begin
+  RegisteredImageReaderClasses := TFPList.Create;
+end;
+
+procedure ReleaseDebugInfoLists;
+begin
+  FreeAndNil(RegisteredImageReaderClasses);
+end;
+
+initialization
+  InitDebugInfoLists;
+
+finalization
+  ReleaseDebugInfoLists;
 
 end.
 

@@ -37,7 +37,7 @@ interface
 
 uses
 {$ifdef windows}
-  Windows,
+  Windows, FpImgReaderWinPE,
 {$endif}
   Classes, Maps, FpDbgUtil, FpDbgWinExtra, FpDbgLoader, LazLoggerBase;
 
@@ -384,7 +384,7 @@ end;
 
 procedure TDbgInstance.LoadInfo;
 begin
-  FLoader := TDbgWinPEImageLoader.Create(FModuleHandle);
+  FLoader := TDbgImageLoader.Create(FModuleHandle);
   FDbgInfo := TDbgDwarf.Create(FLoader);
   TDbgDwarf(FDbgInfo).LoadCompilationUnits;
 end;

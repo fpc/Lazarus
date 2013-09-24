@@ -1705,15 +1705,18 @@ end;
 
 function TDbgDwarf.LoadCompilationUnits: Integer;
 var
-  p: Pointer;
+  p, pe: Pointer;
   CU32: PDwarfCUHeader32 absolute p;
   CU64: PDwarfCUHeader64 absolute p;
   CU: TDwarfCompilationUnit;
   CUClass: TDwarfCompilationUnitClass;
+  inf: TDwarfSectionInfo;
 begin
   CUClass := GetCompilationUnitClass;
+  inf := FSections[dsInfo];
   p := FSections[dsInfo].RawData;
-  while p <> nil do
+  pe := inf.RawData + inf.Size;
+  while (p <> nil) and (p < pe) do
   begin
     if CU64^.Signature = DWARF_HEADER64_SIGNATURE
     then begin

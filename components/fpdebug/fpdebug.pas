@@ -8,7 +8,8 @@ interface
 
 uses
   FpDbgClasses, FpDbgDisasX86, FpDbgDwarf, FpDbgDwarfConst, FpDbgLoader, FpDbgPETypes, 
-  FpDbgSymbols, FpDbgUtil, FpDbgWinExtra, LazarusPackageIntf;
+  FpDbgSymbols, FpDbgUtil, FpDbgWinExtra, FpImgReaderWinPE, FpImgReaderElf, 
+  FpImgReaderElfTypes, LazarusPackageIntf;
 
 implementation
 
