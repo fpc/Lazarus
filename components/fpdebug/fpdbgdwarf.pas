@@ -1138,13 +1138,12 @@ begin
   TableListIndex := 0;
   TableListLen := Length(FTableList);
 
+  while (LEB128 > APointer) and ((LEB128^ and $7f) = 0) do
+    dec(LEB128);
+
   // LeadByte
   while LEB128 > APointer do begin
     b := LEB128^ and $7f;
-    if b = 0 then begin
-      dec(LEB128);
-      continue;
-    end;
 
     Assert(TableListIndex < TableListLen);
     e := @FTableList[TableListIndex];
@@ -1229,14 +1228,13 @@ begin
   end;
   LEB128End := LEB128;
 
+  while (LEB128 > APointer) and ((LEB128^ and $7f) = 0) do
+    dec(LEB128);
+
   TableListIndex := 0;
   // LeadByte
   while LEB128 > APointer do begin
     b := LEB128^ and $7f;
-    if b = 0 then begin
-      dec(LEB128);
-      continue;
-    end;
 
     Assert(TableListIndex < TableListLen);
     e := @FTableList[TableListIndex];
