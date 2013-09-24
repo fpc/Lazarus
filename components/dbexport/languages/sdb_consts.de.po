@@ -8,6 +8,7 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: sdb_consts.scancelrecordsexported
 msgid "Exported %d before user canceled."
@@ -70,10 +71,9 @@ msgid "Could not open dataset for exporting: %s"
 msgstr "Kann Dataset nicht für Export öffnen: %s"
 
 #: sdb_consts.sexecute
-#, fuzzy
 #| msgid "Execute..."
 msgid "Execute ..."
-msgstr "Ausführen..."
+msgstr "Ausführen ..."
 
 #: sdb_consts.snrecordsexported
 msgid "Succesfully exported %d records."
@@ -82,4 +82,3 @@ msgstr "%d Datensätze erfolgreich exportiert."
 #: sdb_consts.sprogress
 msgid "Exporting %d records"
 msgstr "Exportiere %d Datensätze"
-

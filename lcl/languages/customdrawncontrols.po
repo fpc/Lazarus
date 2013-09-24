@@ -1,0 +1,7 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: customdrawncontrols.stabsheet_default_name
+msgid "CTabSheet"
+msgstr ""
+

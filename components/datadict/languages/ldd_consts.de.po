@@ -4,10 +4,11 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: ldd_consts.ldd_availablecodegenerators
 msgid "Available code generators"
@@ -170,10 +171,9 @@ msgid "Configuration"
 msgstr "Konfiguration"
 
 #: ldd_consts.smenuconfprojdatadict
-#, fuzzy
 #| msgid "Set..."
 msgid "Set ..."
-msgstr "Festlegen..."
+msgstr "Festlegen ..."
 
 #: ldd_consts.smenudatadesktop
 msgid "Database Desktop"
@@ -210,4 +210,3 @@ msgstr "Warnung: Keine Definition im Datadictionary für das Feld %s"
 #: ldd_consts.swrongselection
 msgid "Wrong selection count : %d"
 msgstr "Falscher Zähler der Auswahl: %d"
-

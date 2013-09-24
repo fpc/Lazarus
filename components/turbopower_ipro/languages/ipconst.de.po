@@ -5,12 +5,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-01-23 19:15+0100\n"
-"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"PO-Revision-Date: 2013-09-24 11:08+0100\n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
-"X-Poedit-Language: German\n"
-"X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"Language: de_DE\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: ipconst.cacheadding
 msgid "Caching item (%s = %s)"
@@ -292,10 +292,9 @@ msgid "- expected"
 msgstr "- erwartet"
 
 #: ipconst.shtmldefbrowsecaption
-#, fuzzy
 #| msgid "Browse..."
 msgid "Browse ..."
-msgstr "Durchsuchen..."
+msgstr "Durchsuchen ..."
 
 #: ipconst.shtmldefresetcaption
 msgid "Reset"
@@ -1086,7 +1085,8 @@ msgstr "Stream nicht zugewiesen"
 
 #: ipconst.snotenoughdata
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
-msgstr "Nicht genug Daten im Zwischenpuffer (%s Byte) für Leseanfrage (%s Byte) "
+msgstr ""
+"Nicht genug Daten im Zwischenpuffer (%s Byte) für Leseanfrage (%s Byte) "
 
 #: ipconst.snotimererr
 msgid "Not enough system timers available"
@@ -1404,8 +1404,12 @@ msgid "Chunk data is truncated"
 msgstr "Chunk-Daten sind abgeschnitten"
 
 #: ipconst.spngunsupportedfeature
-msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
-msgstr "In der PNG-Datei wurde ein %s-Chunk gefunden. Diese Funktion wird von dieser Version des PNG-Decoders nicht unterstützt"
+msgid ""
+"A %s chunk was found in the PNG File. This feature is not supported in this "
+"version of the PNG decoder"
+msgstr ""
+"In der PNG-Datei wurde ein %s-Chunk gefunden. Diese Funktion wird von dieser "
+"Version des PNG-Decoders nicht unterstützt"
 
 #: ipconst.spngwarningconstant
 msgid "**** WARNING ****"
@@ -1720,8 +1724,12 @@ msgid "%s: row number is out of range"
 msgstr "%s: Zeilennummer außerhalb des gültigen Bereichs"
 
 #: ipconst.srowrowoor
-msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
-msgstr "TIpTerminalArray.ScrollRows: Entweder die Startzeile %d oder die Endzeile %d ist außerhalb des Bereichs"
+msgid ""
+"TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of "
+"range"
+msgstr ""
+"TIpTerminalArray.ScrollRows: Entweder die Startzeile %d oder die Endzeile %d "
+"ist außerhalb des Bereichs"
 
 #: ipconst.sseekingdiskfileto
 msgid "Seeking disk file to "
@@ -2564,4 +2572,3 @@ msgstr "Mindestens ein Pfad ist eingetroffen"
 #: ipconst.swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"
 msgstr "Problem mit Teilen der Übertragungsspezifikation"
-
