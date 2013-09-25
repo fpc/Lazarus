@@ -932,6 +932,7 @@ type
     FDropListVisibleInternal: Boolean;
     function GetDropList: TQtListWidget;
     function GetLineEdit: TQtLineEdit;
+    procedure InternalIntfGetItems; // calls TCustomComboBox(LCLObject).IntfGetItems
     procedure SetOwnerDrawn(const AValue: Boolean);
     procedure slotPaintCombo(Sender: QObjectH; Event: QEventH); cdecl;
   protected
@@ -9409,6 +9410,13 @@ begin
   inherited DestroyNotify(AWidget);
 end;
 
+procedure TQtComboBox.InternalIntfGetItems;
+begin
+  TCustomComboBox(LCLObject).IntfGetItems;
+  // because of issue #25032 we must call it here
+  SlotDropListVisibility(True);
+end;
+
 procedure TQtComboBox.ClearItems;
 begin
   QComboBox_clear(QComboBoxH(Widget));
@@ -9500,8 +9508,10 @@ begin
   if ADroppedDown <> QWidget_isVisible(QComboBox_view(QComboBoxH(Widget))) then
   begin
     if ADroppedDown then
-      QComboBox_showPopup(QComboBoxH(Widget))
-    else
+    begin
+      InternalIntfGetItems;
+      QComboBox_showPopup(QComboBoxH(Widget));
+    end else
       QComboBox_hidePopup(QComboBoxH(Widget));
   end;
 end;
@@ -9790,20 +9800,26 @@ begin
         // our combo geometry
         R := getGeometry;
 
-        // our combo arrow position
-        opt := QStyleOptionComboBox_create();
-        QStyle_subControlRect(QApplication_style(), @R1, QStyleCC_ComboBox,
-          opt, QStyleSC_ComboBoxArrow, QComboBoxH(Widget));
-        QStyleOptionComboBox_destroy(opt);
-
         Pt := Point(P.X, P.Y);
 
-        R := Rect(0, 0, R.Right - R.Left, R.Bottom - R.Top);
-        ButtonRect := Rect(R.Right + R1.Left, R.Top,
-          R.Right - R1.Right, R.Bottom);
+        // our combo arrow position when we are editable combobox
+        if getEditable then
+        begin
+          opt := QStyleOptionComboBox_create();
+          QStyle_subControlRect(QApplication_style(), @R1, QStyleCC_ComboBox,
+            opt, QStyleSC_ComboBoxArrow, QComboBoxH(Widget));
+          QStyleOptionComboBox_destroy(opt);
+          R := Rect(0, 0, R.Right - R.Left, R.Bottom - R.Top);
+          ButtonRect := Rect(R.Right + R1.Left, R.Top,
+            R.Right - R1.Right, R.Bottom);
+        end else
+        begin
+          ButtonRect := R;
+          OffsetRect(ButtonRect, -R.Left, -R.Top);
+        end;
 
         if PtInRect(ButtonRect, Pt) then
-          TCustomComboBox(LCLObject).IntfGetItems;
+          InternalIntfGetItems;
       end;
       Result := inherited EventFilter(Sender, Event);
     end;
@@ -9828,7 +9844,7 @@ begin
           not getEditable) then
       begin
         if not FDropListVisibleInternal then
-          TCustomComboBox(LCLObject).IntfGetItems
+          InternalIntfGetItems
         else
           Result := inherited EventFilter(Sender, Event);
       end else
@@ -10765,7 +10781,6 @@ begin
   if (FChildOfComplexWidget = ccwComboBox) and (FOwner <> nil) then
   begin
     case QEvent_type(Event) of
-      QEventShow: TQtComboBox(FOwner).SlotDropListVisibility(True);
       QEventHide:
       begin
         {we must delay SlotDropDownVisiblity according to #9574

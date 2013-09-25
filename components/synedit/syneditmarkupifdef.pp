@@ -3506,11 +3506,11 @@ XXXCurTree := FIfDefTree; try
       Entry := Node.Entry[j];
       dec(FoundLvl);
       if Entry.IsTempOpening then begin
-        if Entry.IsDisabledOpening then TmpDisableOpenEntry := Entry;
-        if Entry.IsEnabled then         TmpEnableOpenEntry := Entry;
+        if Entry.IsDisabledOpening and NeedTmpDisableOpen then TmpDisableOpenEntry := Entry;
+        if Entry.IsEnabled         and NeedTmpEnableOpen  then TmpEnableOpenEntry := Entry;
       end else begin
-        if Entry.IsDisabledOpening then DisableOpenEntry := Entry;
-        if Entry.IsEnabled then         EnableOpenEntry := Entry;
+        if Entry.IsDisabledOpening and NeedDisableOpen then DisableOpenEntry := Entry;
+        if Entry.IsEnabled         and NeedEnableOpen  then EnableOpenEntry := Entry;
       end;
       if FoundLvl < NestLvlLow then
         break;
