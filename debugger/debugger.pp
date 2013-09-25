@@ -554,8 +554,8 @@ type
     FWatchData: String;
     FEnabled: Boolean;
     FExpression: String;
-    FHitCount: Integer;
-    FBreakHitCount: Integer;
+    FHitCount: Integer;      // Current counter
+    FBreakHitCount: Integer; // The user configurable value
     FKind: TDBGBreakPointKind;
     FLine: Integer;
     FWatchScope: TDBGWatchPointScope;
@@ -634,10 +634,12 @@ type
     FLoading: Boolean;
     FLogMessage: String;
     FLogCallStackLimit: Integer;
+    FUserModified: Boolean;
   protected
     procedure AssignLocationTo(Dest: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
     procedure DoChanged; override;
+    procedure DoUserChanged;  // User changed settings
     function GetHitCount: Integer; override;
     function GetValid: TValidState; override;
     procedure SetBreakHitCount(const AValue: Integer); override;
@@ -680,6 +682,7 @@ type
     procedure SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
                        const AKind: TDBGWatchPointKind); override;
     procedure ResetMaster;
+    property UserModified: Boolean read FUserModified write FUserModified; // Indicator for DoChanged
   public
     property Actions: TIDEBreakPointActions read GetActions write SetActions;
     property AutoContinueTime: Cardinal read GetAutoContinueTime write SetAutoContinueTime;
@@ -7070,6 +7073,7 @@ begin
   if FAutoContinueTime = AValue then Exit;
   FAutoContinueTime := AValue;
   Changed;
+  DoUserChanged;
 end;
 
 procedure TIDEBreakPoint.SetLogEvalExpression(AValue: String);
@@ -7078,6 +7082,7 @@ begin
   begin
     FLogEvalExpression := AValue;
     Changed;
+    DoUserChanged;
   end;
 end;
 
@@ -7087,6 +7092,7 @@ begin
   begin
     FLogMessage := AValue;
     Changed;
+    DoUserChanged;
   end;
 end;
 
@@ -7106,6 +7112,7 @@ begin
   begin
     FLogCallStackLimit := AValue;
     Changed;
+    DoUserChanged;
   end;
 end;
 
@@ -7153,6 +7160,12 @@ begin
   inherited DoChanged;
 end;
 
+procedure TIDEBreakPoint.DoUserChanged;
+begin
+  FUserModified := True;
+  DoChanged;
+end;
+
 function TIDEBreakPoint.GetHitCount: Integer;
 begin
   if FMaster = nil
@@ -7171,6 +7184,7 @@ procedure TIDEBreakPoint.SetBreakHitCount(const AValue: Integer);
 begin
   if BreakHitCount = AValue then exit;
   inherited SetBreakHitCount(AValue);
+  DoUserChanged;
   if FMaster <> nil then FMaster.BreakHitCount := AValue;
 end;
 
@@ -7186,6 +7200,7 @@ procedure TIDEBreakPoint.SetInitialEnabled(const AValue: Boolean);
 begin
   if InitialEnabled = AValue then exit;
   inherited SetInitialEnabled(AValue);
+  DoUserChanged;
   if FMaster <> nil then FMaster.InitialEnabled := AValue;
 end;
 
@@ -7193,6 +7208,7 @@ procedure TIDEBreakPoint.SetExpression(const AValue: String);
 begin
   if AValue=Expression then exit;
   inherited SetExpression(AValue);
+  DoUserChanged;
   if FMaster <> nil then FMaster.Expression := AValue;
 end;
 
@@ -7463,6 +7479,7 @@ begin
   then begin
     FActions := AValue;
     DoActionChange;
+    DoUserChanged;
   end;
 end;
 
@@ -7485,6 +7502,7 @@ begin
       FGroup.Add(Self);
     end;
     Changed;
+    DoUserChanged;
   end;
 end;
 
