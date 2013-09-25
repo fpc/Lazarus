@@ -22,7 +22,7 @@ Based on:
 1) FPDebug by Marc Weustink 
 2) Duby by Dmitry Boyarintsev"/>
     <License Value="GPL"/>
-    <Files Count="12">
+    <Files Count="13">
       <Item1>
         <Filename Value="fpdbgclasses.pp"/>
         <UnitName Value="FpDbgClasses"/>
@@ -71,6 +71,10 @@ Based on:
         <Filename Value="fpimgreaderelftypes.pas"/>
         <UnitName Value="FpImgReaderElfTypes"/>
       </Item12>
+      <Item13>
+        <Filename Value="fpimgreaderbase.pas"/>
+        <UnitName Value="fpimgreaderbase"/>
+      </Item13>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

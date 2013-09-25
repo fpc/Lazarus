@@ -39,7 +39,7 @@ unit FpImgReaderWinPE;
 interface
 
 uses
-  Classes, SysUtils, math, FpDbgLoader, FpImgReaderWinPETypes, LazLoggerBase;
+  Classes, SysUtils, math, FpImgReaderBase, FpImgReaderWinPETypes, LazLoggerBase;
   
 type
 

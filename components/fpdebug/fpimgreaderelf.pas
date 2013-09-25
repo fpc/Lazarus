@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils,
-  FpDbgLoader,
+  FpImgReaderBase,
   FpImgReaderElfTypes;  // these files are part of
 
 

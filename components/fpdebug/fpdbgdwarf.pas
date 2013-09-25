@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, Types, SysUtils, FpDbgClasses, FpDbgDwarfConst, Maps, Math,
-  FpDbgLoader, FpDbgWinExtra, LazLoggerBase, contnrs;
+  FpDbgLoader, FpDbgWinExtra, FpImgReaderBase, LazLoggerBase, contnrs;
   
 type
   // compilation unit header
