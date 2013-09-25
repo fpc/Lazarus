@@ -3020,7 +3020,7 @@ begin
   if Length(AChar)=0 then
     exit;
 
-  Result := AField.IsValidChar(AChar[1])
+  Result := (AChar[1]=#8) or AField.IsValidChar(AChar[1])
 end;
 
 procedure TCustomDBGrid.UpdateActive;
