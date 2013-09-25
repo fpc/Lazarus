@@ -7072,7 +7072,7 @@ procedure TIDEBreakPoint.SetAutoContinueTime(const AValue: Cardinal);
 begin
   if FAutoContinueTime = AValue then Exit;
   FAutoContinueTime := AValue;
-  Changed;
+  //Changed;
   DoUserChanged;
 end;
 
@@ -7081,7 +7081,7 @@ begin
   if FLogEvalExpression <> AValue then
   begin
     FLogEvalExpression := AValue;
-    Changed;
+    //Changed;
     DoUserChanged;
   end;
 end;
@@ -7091,7 +7091,7 @@ begin
   if FLogMessage <> AValue then
   begin
     FLogMessage := AValue;
-    Changed;
+    //Changed;
     DoUserChanged;
   end;
 end;
@@ -7111,7 +7111,7 @@ begin
   if FLogCallStackLimit <> AValue then
   begin
     FLogCallStackLimit := AValue;
-    Changed;
+    //Changed;
     DoUserChanged;
   end;
 end;
@@ -7280,7 +7280,8 @@ end;
 
 procedure TIDEBreakPoint.DoActionChange;
 begin
-  Changed;
+  //Changed;
+  DoUserChanged;
 end;
 
 procedure TIDEBreakPoint.DoHit(const ACount: Integer; var AContinue: Boolean);
@@ -7479,7 +7480,6 @@ begin
   then begin
     FActions := AValue;
     DoActionChange;
-    DoUserChanged;
   end;
 end;
 
@@ -7501,7 +7501,7 @@ begin
     then begin
       FGroup.Add(Self);
     end;
-    Changed;
+    //Changed;
     DoUserChanged;
   end;
 end;
