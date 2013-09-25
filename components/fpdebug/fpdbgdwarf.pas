@@ -189,14 +189,21 @@ type
     function CreateScopeForEntry(AEntry: Pointer; ALink: Integer): Integer;
   public
     procedure Init(AScopeList: PDwarfScopeList);
-    function HasParent: Boolean; inline;
-    function HasNext: Boolean; inline;
-    function HasChild: Boolean; inline;
     function CreateNextForEntry(AEntry: Pointer): Integer;
     function CreateChildForEntry(AEntry: Pointer): Integer;
+
     property IsValid: Boolean read FIsValid;
     property Index: Integer read FIndex write SetIndex;
     property Entry: Pointer read GetEntry;
+
+    function HasParent: Boolean; inline;
+    function HasNext: Boolean; inline;
+    function HasChild: Boolean; inline;
+
+    procedure GoParent; inline;
+    procedure GoNext; inline;
+    procedure GoChild; inline;
+
     property Parent: TDwarfScopeInfo read GetParent;
     property Next: TDwarfScopeInfo read GetNext;
     property NextIndex: Integer read GetNextIndex;
@@ -1442,6 +1449,32 @@ begin
             (l2 = FIndex);              // Index+1 is First Child, with pointer to parent (self)
 end;
 
+procedure TDwarfScopeInfo.GoParent;
+var
+  l: Integer;
+begin
+  if not IsValid then exit;
+  l := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
+  assert(l <= FScopeList^.HighestKnown);
+  if l > Index then
+    l := Index - 1;   // This is a first child, make l = parent
+  Index := l;
+end;
+
+procedure TDwarfScopeInfo.GoNext;
+begin
+  if IsValid then
+    Index := GetNextIndex;
+end;
+
+procedure TDwarfScopeInfo.GoChild;
+begin
+  if HasChild then
+    Index := FIndex + 1
+  else
+    Index := -1;
+end;
+
 function TDwarfScopeInfo.CreateNextForEntry(AEntry: Pointer): Integer;
 var
   l: Integer;
@@ -2586,6 +2619,7 @@ var
   Searching: Boolean; // set as long as we need searching for a tag.
   p2: Pointer;
   Def2: TDwarfAbbrev;
+  ni: Integer;
                       // we cannot use result for this, since we might want a topnode search while we need to be continuable
 begin
   Result := False;
@@ -2604,7 +2638,7 @@ begin
     if Abbrev = 0
     then begin
       Dec(Level);
-      Scope := Scope.Parent;
+      Scope.GoParent;
       if not Scope.IsValid then Exit;
 
       if Level < 0 then
@@ -2618,14 +2652,15 @@ begin
         Scope2.CreateNextForEntry(p);
         Exit;
       end;
-      
-      if not Scope.HasNext
-      then Scope.CreateNextForEntry(p);
+
+      ni := Scope.NextIndex;
+      if ni < 0 // not Scope.HasNext
+      then ni := Scope.CreateNextForEntry(p);
 //      if Level = 0 then Exit;
       if CanExit(Result) then Exit;
       if (Level = 0) and not (lefSearchSibling in AFlags) then Exit;
 
-      Scope := Scope.Next;
+      Scope.Index := ni; // GoNext
       Continue;
     end;
     
@@ -2667,21 +2702,23 @@ begin
     if not BuildList
     then begin
       // check if we can shortcut the searches
-      if (Scope.HasChild)
+      ni := Scope.ChildIndex;
+      if (ni >= 0) // (Scope.HasChild)
       and ((lefSearchChild in AFlags) or (not Scope.HasNext))
       then begin
         Inc(Level);
-        Scope := Scope.Child;
+        Scope.Index := ni; // GoChild
         Continue;
       end;
 
-      if Scope.HasNext
+      ni := Scope.NextIndex;
+      if ni >= 0 // Scope.HasNext
       then begin
         // scope.Childvalid is true, otherwise we can not have a next.
         // So no need to check
         if lefSearchSibling in AFlags
         then begin
-          Scope := Scope.Next;
+          Scope.Index := ni; // GoNext
           Continue;
         end;
         if Level = 0 then Exit;
@@ -2699,18 +2736,20 @@ begin
     // check for shortcuts
     if [lefContinuable, lefSearchChild] * AFlags <> []
     then begin
-      if Scope.HasChild
+      ni := Scope.ChildIndex;
+      if ni >= 0 // Scope.HasChild
       then begin
         Inc(Level);
-        Scope := Scope.Child;
+        Scope.Index := ni; // GoChild
         Continue;
       end;
     end
     else if lefSearchSibling in AFlags
     then begin
-      if Scope.HasNext
+      ni := Scope.NextIndex;
+      if ni >= 0 //  Scope.HasNext
       then begin
-        Scope := Scope.Next;
+        Scope.Index := ni; // GoNext
         Continue;
       end;
     end;
@@ -2719,20 +2758,22 @@ begin
     // we cannot have a next without a defined child
     if Def.Children
     then begin
-      if not Scope.HasChild
-      then Scope.CreateChildForEntry(p);
+      ni := Scope.ChildIndex;
+      if ni < 0 // not Scope.HasChild
+      then ni := Scope.CreateChildForEntry(p);
       if CanExit(Result) then Exit;
       Inc(Level);
-      Scope := Scope.Child;
+      Scope.Index := ni; // GoChild
       Continue;
     end;
-    
-    if not Scope.HasNext
-    then Scope.CreateNextForEntry(p);
+
+    ni := Scope.NextIndex;
+    if ni < 0 // not Scope.HasNext
+    then ni := Scope.CreateNextForEntry(p);
     if CanExit(Result) then Exit;
     if (Level = 0) and not (lefSearchSibling in AFlags) then Exit;
 
-    Scope := Scope.Next;
+    Scope.Index := ni; // GoNext
   end;
 
   if (p > MaxData) then begin
