@@ -14,7 +14,7 @@ type
 
   TFpGDBMIDebugger = class(TGDBMIDebugger)
   private
-    FImageLoader: TDbgWinPEImageLoader;
+    FImageLoader: TDbgImageLoader;
     FDwarfInfo: TDbgDwarf;
   protected
     function CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; override;
@@ -166,7 +166,7 @@ procedure TFpGDBMIDebugger.LoadDwarf;
 begin
   UnLoadDwarf;
   debugln(['TFpGDBMIDebugger.LoadDwarf ']);
-  FImageLoader := TDbgWinPEImageLoader.Create(FileName);
+  FImageLoader := TDbgImageLoader.Create(FileName);
   FDwarfInfo := TDbgDwarf.Create(FImageLoader);
   FDwarfInfo.LoadCompilationUnits;
 end;
