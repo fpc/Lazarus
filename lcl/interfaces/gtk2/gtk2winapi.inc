@@ -8241,7 +8241,8 @@ begin
   Widget:={%H-}PGtkWidget(hWnd);
   {$IfDef VerboseFocus}
   DebugLn('');
-  debugln('[TGtk2WidgetSet.SetFocus] A hWnd=',GetWidgetDebugReport(Widget));
+  DebuglnEnter('TGtk2WidgetSet.SetFocus INIT');
+  DebugLn('A hWnd=',GetWidgetDebugReport(Widget));
   //DebugLn(getStackTrace(true));
   //if GtkWidgetIsA(Widget,GTK_TYPE_NOTEBOOK) then DumpStack;
   {$EndIf}
@@ -8252,28 +8253,28 @@ begin
 
   TopLevel := gtk_widget_get_toplevel(Widget);
   {$IfDef VerboseFocus}
-  Debugln('[TGtk2WidgetSet.SetFocus] B');
-  DbgOut('   TopLevel=',DbgS(TopLevel));
-  DbgOut(' OldFocus=',GetWidgetDebugReport(PGtkWidget(Result)));
-  DebugLn('');
-  if not GTK_WIDGET_VISIBLE(Widget) then
+  Debugln('B  TopLevel=',DbgS(TopLevel),' OldFocus=',GetWidgetDebugReport(PGtkWidget(Result)));
+  if not GTK_WIDGET_VISIBLE(Widget) then begin
+    DebugLnExit('TGtk2WidgetSet.SetFocus EXIT: Widget is not visible');
     raise Exception.Create('TGtk2WidgetSet.SetFocus: Widget is not visible');
+  end;
   {$EndIf}
 
-  if Result=hWnd then exit;
+  if Result=hWnd then begin
+    {$IfDef VerboseFocus}
+    DebugLnExit('TGtk2WidgetSet.SetFocus EXIT: focusing same control');
+    {$EndIf}
+    exit;
+  end;
 
   if GtkWidgetIsA(TopLevel, gtk_window_get_type) then
   begin
     // TopLevel is a gtkwindow
     {$IfDef VerboseFocus}
     AWinControl:=TWinControl(GetNearestLCLObject(PGtkWindow(TopLevel)^.focus_widget));
-    write('  C  TopLevel is a gtkwindow ');
-    write(' focus_widget=',DbgS(PGtkWindow(TopLevel)^.focus_widget));
-    if AWinControl<>nil then
-      write(' LCLParent=',AWinControl.Name,':',AWinControl.ClassName)
-    else
-      write(' LCLParent=nil');
-    DebugLn('');
+    DbgOut('C  TopLevel is a gtkwindow ');
+    DbgOut(' focus_widget=',DbgS(PGtkWindow(TopLevel)^.focus_widget));
+    DebugLn(' LCLParent=',dbgsName(AWinControl));
     {$EndIf}
 
     NewTopLevelObject:=GetNearestLCLObject(TopLevel);
@@ -8293,12 +8294,12 @@ begin
     NewFocusWidget := FindFocusWidget(Widget);
 
     {$IfDef VerboseFocus}
-    write('  G NewFocusWidget=',DbgS(NewFocusWidget),' ',DbgSName(GetNearestLCLObject(NewFocusWidget)));
-    write(' WidVisible=',GTK_WIDGET_VISIBLE(PGtkWidget(NewFocusWidget)));
-    write(' WidRealized=',GTK_WIDGET_REALIZED(PGtkWidget(NewFocusWidget)));
-    write(' WidMapped=',GTK_WIDGET_MAPPED(PGtkWidget(NewFocusWidget)));
-    write(' WidCanfocus=',GTK_WIDGET_CAN_FOCUS(PGtkWidget(NewFocusWidget)));
-    write(' TopLvlVisible=',GTK_WIDGET_VISIBLE(PGtkWidget(TopLevel)));
+    DbgOut('G NewFocusWidget=',DbgS(NewFocusWidget),' ',DbgSName(GetNearestLCLObject(NewFocusWidget)));
+    DbgOut([' WidVisible=',GTK_WIDGET_VISIBLE(PGtkWidget(NewFocusWidget))]);
+    DbgOut([' WidRealized=',GTK_WIDGET_REALIZED(PGtkWidget(NewFocusWidget))]);
+    DbgOut([' WidMapped=',GTK_WIDGET_MAPPED(PGtkWidget(NewFocusWidget))]);
+    DbgOut([' WidCanfocus=',GTK_WIDGET_CAN_FOCUS(PGtkWidget(NewFocusWidget))]);
+    DbgOut([' TopLvlVisible=',GTK_WIDGET_VISIBLE(PGtkWidget(TopLevel))]);
     DebugLn('');
     {$EndIf}
     if (NewFocusWidget<>nil) and GTK_WIDGET_CAN_FOCUS(NewFocusWidget) then
@@ -8306,12 +8307,14 @@ begin
       if (PGtkWindow(TopLevel)^.Focus_Widget<>NewFocusWidget) then
       begin
         {$IfDef VerboseFocus}
-        DebugLn('  H SETTING NewFocusWidget=',dbgs(NewFocusWidget),' ',DbgSName(GetNearestLCLObject(NewFocusWidget)));
-        {$EndIf}
+        DebugLn('H SETTING NewFocusWidget=',dbgs(NewFocusWidget),' ',DbgSName(GetNearestLCLObject(NewFocusWidget)));
         //DebugLn('TGtk2WidgetSet.SetFocus TopLevel[',DebugGtkWidgets.GetInfo(TopLevel,false),'] NewFocusWidget=[',DebugGtkWidgets.GetInfo(NewFocusWidget,false),']');
+        DebugLnEnter('Recursive focus INIT');
+        {$EndIf}
         gtk_window_set_focus(PGtkWindow(TopLevel), NewFocusWidget);
         {$IfDef VerboseFocus}
-        DebugLn('  I NewTopLevel FocusWidget=',DbgS(PGtkWindow(TopLevel)^.Focus_Widget),' Success=',dbgs(PGtkWindow(TopLevel)^.Focus_Widget=NewFocusWidget));
+        DebugLnExit('Recursive focus DONE');
+        DebugLn('I NewTopLevel FocusWidget=',DbgS(PGtkWindow(TopLevel)^.Focus_Widget),' Success=',dbgs(PGtkWindow(TopLevel)^.Focus_Widget=NewFocusWidget));
         {$EndIf}
       end;
     end;
@@ -8328,13 +8331,13 @@ begin
     if (Screen<>nil) and (Screen.GetCurrentModalForm<>nil) and (NewTopLevelObject <>Screen.GetCurrentModalForm) then
     begin
       {$IFDEF VerboseFocus}
-      DebugLn('[TGtk2WidgetSet.SetFocus] there is a modal form -> not grabbing');
+      DebugLn('There is a modal form -> not grabbing');
       {$ENDIF}
     end
     else
     begin
       {$IfDef VerboseFocus}
-      DebugLn('  J Grabbing focus ',GetWidgetDebugReport(NewFocusWidget));
+      DebugLn('J Grabbing focus ',GetWidgetDebugReport(NewFocusWidget));
       {$EndIf}
       if NewTopLevelObject is TCustomForm then
       begin
@@ -8347,15 +8350,11 @@ begin
   end;
 
   {$IfDef VerboseFocus}
-  write('[TGtk2WidgetSet.SetFocus] END hWnd=',DbgS(hWnd));
-  NewFocusWidget:=PGtkWidget(GetFocus);
-  write(' NewFocus=',DbgS(NewFocusWidget));
   AWinControl:=TWinControl(GetNearestLCLObject(NewFocusWidget));
-  if AWinControl<>nil then
-    write(' NewLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
-  else
-    write(' NewLCLParent=nil');
-  DebugLn('');
+  NewFocusWidget:=PGtkWidget(GetFocus);
+  DebugLnExit('TGtk2WidgetSet.SetFocus END hWnd=',DbgS(hWnd),
+    ' NewFocus=',DbgS(NewFocusWidget),
+    ' NewLCLParent=',dbgsName(AWinControl));
   {$EndIf}
 end;
 

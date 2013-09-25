@@ -791,33 +791,14 @@ begin
 
   FillChar(Mess{%H-},SizeOf(Mess),#0);
   {$IFDEF VerboseFocus}
-  write('gtkfrmactivateAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
   LCLObject:=TObject(data);
-  if LCLObject<>nil then begin
-    if LCLObject is TComponent then begin
-      write(' LCLObject=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
-    end else begin
-      write(' LCLObject=',LCLObject.ClassName)
-    end;
-  end else
-    write(' LCLObject=nil');
-  DebugLn(''); DbgOut('    ');
+  DebugLnEnter(['gtkfrmActivateAfter INIT Widget=',DbgS(Widget),' Event^.theIn=',Event^._in,
+    ' LCLObject=',dbgsname(LCLObject)]);
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
-    write(' GetFocus=',DbgS(CurFocusWidget));
     LCLObject:=GetNearestLCLObject(CurFocusWidget);
-    if LCLObject<>nil then begin
-      if LCLObject is TComponent then begin
-        DbgOut(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
-      end else begin
-        DbgOut(' ParentLCLFocus=',LCLObject.ClassName)
-      end;
-    end else
-      DbgOut(' LCLObject=nil');
-  end else begin
-    DbgOut(' GetFocus=nil');
+    DebugLn(' GetFocus=',DbgS(CurFocusWidget),' ParentLCLObject=',dbgsName(LCLObject));
   end;
-  DebugLn('');
   {$ENDIF}
 
   Info := GetWidgetInfo(Widget, false);
@@ -842,6 +823,9 @@ begin
   end;
 
   Result := CallBackDefaultReturn;
+  {$IFDEF VerboseFocus}
+  DebugLnExit('gtkfrmActivateAfter DONE');
+  {$ENDIF}
 end;
 
 function gtkfrmdeactivateAfter( widget: PGtkWidget; Event : PgdkEventFocus;
@@ -858,13 +842,9 @@ begin
   {$ENDIF}
   if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
-  write('gtkfrmdeactivate Widget=',DbgS(Widget),' ',Event^._in,
-        ' GetFocus=',DbgS(Widget));
-  LCLObject:=TControl(GetLCLObject(Widget));
-  if LCLObject<>nil then
-    DebugLn(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
-  else
-    DebugLn(' LCLObject=nil');
+  LCLObject := TControl(GetLCLObject(Widget));
+  DebugLnEnter(['gtkfrmDeactivate INIT Widget=',DbgS(Widget),' ',Event^._in,
+        ' GetFocus=',DbgS(Widget),' LCLObject=', dbgsName(LCLObject)]);
   {$ENDIF}
   ResetDefaultIMContext;
 
@@ -888,6 +868,9 @@ begin
   end;
 
   Result := CallBackDefaultReturn;
+  {$IFDEF VerboseFocus}
+  DebugLnExit('gtkfrmDeactivate DONE');
+  {$ENDIF}
 end;
 
 function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
@@ -999,40 +982,21 @@ begin
   UpdateShiftState(TGtk2WidgetSet(WidgetSet).KeyStateList, GTKEventStateToShiftState(Word(Mask)));
 
   {$IFDEF VerboseFocus}
-  write('GTKFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
-  if LCLObject<>nil then begin
-    if LCLObject is TComponent then begin
-      write(' LCLObject=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
-    end else begin
-      write(' LCLObject=',LCLObject.ClassName)
-    end;
-  end else
-    write(' LCLObject=nil');
-  DebugLn(''); DbgOut('    ');
+  DebugLnEnter(['GTKFocusCB INIT Widget=',DbgS(Widget),' Event^.theIn=',Event^._in,
+    ' LCLObject=',dbgsName(LCLObject)]);
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
-    write(' GetFocus=',DbgS(CurFocusWidget));
-    LCLObject:=GetNearestLCLObject(CurFocusWidget);
-    if LCLObject<>nil then begin
-      if LCLObject is TComponent then begin
-        write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
-      end else begin
-        write(' ParentLCLFocus=',LCLObject.ClassName);
-        {$IFDEF VerboseSizeMsg}
-        DebugLn(['GTKWindowStateEventCB ',DbgSName(TheForm),
-          ' GTK=',GtkWidth,'x',GtkHeight,
-          ' LCL=',TheForm.Width,'x',TheForm.Height,
-          ' SizeType=',SizeMsg.SizeType-Size_SourceIsInterface,'+Size_SourceIsInterface'
-          ]);
-        {$ENDIF}
-        // DeliverMessage(TheForm, SizeMsg);
-      end;
-    end else
-      write(' LCLObject=nil');
-  end else begin
-    write(' GetFocus=nil');
+    LCLObject:=GetNearestLCLObject(CurFocusWidget); // NOTE: overrides argument data !!!
+    DebugLn('GetFocus=',DbgS(CurFocusWidget), ' ParentLCLFocus=',DbgsName(LCLObject));
+    {$IFDEF VerboseSizeMsg}
+    DebugLn(['GTKWindowStateEventCB ',DbgSName(TheForm),
+      ' GTK=',GtkWidth,'x',GtkHeight,
+      ' LCL=',TheForm.Width,'x',TheForm.Height,
+      ' SizeType=',SizeMsg.SizeType-Size_SourceIsInterface,'+Size_SourceIsInterface'
+      ]);
+    {$ENDIF}
+    LCLObject := TObject(Data); // restore original LCLObject
   end;
-  DebugLn('');
   {$ENDIF}
 
   if LCLObject is TCustomForm then begin
@@ -1079,6 +1043,9 @@ begin
   DeliverMessage(Data,  Mess);
 
   Result := CallBackDefaultReturn;
+  {$IFDEF VerboseFocus}
+  DebugLnExit('GTKFocusCB DONE');
+  {$ENDIF}
 end;
 
 function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
@@ -1095,34 +1062,15 @@ begin
   if (Widget=nil) or (Event=nil) then ;
   //DebugLn('GTKKillFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
-  write('GTKillFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
-  NeedShiftUpdateAfternFocus := True;
+  NeedShiftUpdateAfternFocus := True;   // <- JRA: this doesn't look like simply log !!!
   LCLObject:=TObject(data);
-  if LCLObject<>nil then begin
-    if LCLObject is TComponent then begin
-      write(' LCLObject=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
-    end else begin
-      write(' LCLObject=',LCLObject.ClassName)
-    end;
-  end else
-    write(' LCLObject=nil');
-  DebugLn(''); DbgOut('    ');
+  DebugLn(['GTKillFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^._in,
+    ' LCLObject=',dbgsName(LCLobject)]);
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
-    write(' GetFocus=',DbgS(CurFocusWidget));
     LCLObject:=GetNearestLCLObject(CurFocusWidget);
-    if LCLObject<>nil then begin
-      if LCLObject is TComponent then begin
-        write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
-      end else begin
-        write(' ParentLCLFocus=',LCLObject.ClassName)
-      end;
-    end else
-      write(' LCLObject=nil');
-  end else begin
-    write(' GetFocus=nil');
+    DebugLn('GTKillFocusCB GetFocus=',dbgs(CurFocusWidget),' ParentLCLObject=',dbgsName(LCLObject));
   end;
-  DebugLn('');
   {$ENDIF}
   Result:=CallBackDefaultReturn;
 end;
@@ -1166,34 +1114,15 @@ begin
   {$ENDIF}
   //DebugLn('GTKKillFocusCBAfter ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
-  write('GTKillFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
-  NeedShiftUpdateAfternFocus := True;
+  NeedShiftUpdateAfternFocus := True;   // <- JRA: this doesn't look like simply log !!!
   LCLObject:=TObject(data);
-  if LCLObject<>nil then begin
-    if LCLObject is TComponent then begin
-      write(' LCLObject=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
-    end else begin
-      write(' LCLObject=',LCLObject.ClassName)
-    end;
-  end else
-    write(' LCLObject=nil');
-  DebugLn(''); DbgOut('    ');
+  DebugLnEnter(['GTKillFocusCBAfter INIT Widget=',DbgS(Widget),' Event^.theIn=',Event^._in,
+    ' LCLObject=',dbgsName(LCLObject)]);
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
-    write(' GetFocus=',DbgS(CurFocusWidget));
     LCLObject:=GetNearestLCLObject(CurFocusWidget);
-    if LCLObject<>nil then begin
-      if LCLObject is TComponent then begin
-        write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
-      end else begin
-        write(' ParentLCLFocus=',LCLObject.ClassName)
-      end;
-    end else
-      write(' LCLObject=nil');
-  end else begin
-    write(' GetFocus=nil');
+    DebugLn('GetFocus=',DbgS(CurFocusWidget),' ParentLCLFocus=', dbgsName(LCLObject));
   end;
-  DebugLn('');
   {$ENDIF}
 
   ResetDefaultIMContext;
@@ -1230,6 +1159,9 @@ begin
   end;
 
   Result:=true;
+  {$IFDEF VerboseFocus}
+  DebugLnExit('GTKillFocusCBAfter DONE');
+  {$ENDIF}
 end;
 
 function GTKWindowStateEventCB(widget: PGtkWidget;

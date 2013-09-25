@@ -9402,7 +9402,7 @@ begin
   then begin
     // handle is a gtk combo
     {$IfDef VerboseFocus}
-    DebugLn('  D taking gtkcombo entry');
+    DebugLn('D taking gtkcombo entry');
     {$EndIf}
     Result := PgtkWidget(PGtkCombo(AWidget)^.entry);
     Exit;
@@ -9421,7 +9421,7 @@ begin
   if GtkWidgetIsA(ImplWidget, gtk_list_get_type)
   then begin
     {$IfDef VerboseFocus}
-    DebugLn('  E using list');
+    DebugLn('E using list');
     {$EndIf}
     // Try the last added selected
     if not (selection_mode(PGtkList(ImplWidget)^) in [GTK_SELECTION_SINGLE, GTK_SELECTION_BROWSE])
@@ -9432,7 +9432,7 @@ begin
       then begin
         Result := PGtkList(ImplWidget)^.last_focus_child;
         {$IfDef VerboseFocus}
-        DebugLn('  E.1 using last_focus_child');
+        DebugLn('E.1 using last_focus_child');
         {$EndIf}
         Exit;
       end;
@@ -9444,7 +9444,7 @@ begin
     then begin
       Result := GList^.data;
       {$IfDef VerboseFocus}
-      DebugLn('  E.2 using 1st selection');
+      DebugLn('E.2 using 1st selection');
       {$EndIf}
       Exit;
     end;
@@ -9464,14 +9464,14 @@ begin
     if GList^.Data = nil then Exit;
     Result := GList^.Data;
     {$IfDef VerboseFocus}
-    DebugLn('  E.4 using 1st child');
+    DebugLn('E.4 using 1st child');
     {$EndIf}
 
     Exit;
   end;
 
   {$IfDef VerboseFocus}
-  DebugLn('  E taking ImplementationWidget');
+  DebugLn('E taking ImplementationWidget');
   {$EndIf}
 end;
 
