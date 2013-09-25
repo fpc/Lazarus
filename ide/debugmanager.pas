@@ -301,6 +301,7 @@ type
   protected
     procedure SetIgnoreAll(const AValue: Boolean); override;
     procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
+    procedure Update(Item: TCollectionItem); override;
   end;
 
   TDBGEventCategories = set of TDBGEventCategory;
@@ -318,6 +319,13 @@ end;
 procedure TProjectExceptions.Notify(Item: TCollectionItem; Action: TCollectionNotification);
 begin
   inherited Notify(Item, Action);
+  if Project1 <> nil then
+    Project1.Modified := True;
+end;
+
+procedure TProjectExceptions.Update(Item: TCollectionItem);
+begin
+  inherited Update(Item);
   if Project1 <> nil then
     Project1.Modified := True;
 end;
