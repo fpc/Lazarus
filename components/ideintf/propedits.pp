@@ -620,12 +620,12 @@ type
     procedure SetValue(const NewValue: ansistring); override;
   end;
 
-{ TComponentPropertyEditor
-  The default editor for TComponents. It allows the user to set the value of this
+{ TComponentOneFormPropertyEditor
+  An editor for TComponents. It allows the user to set the value of this
   property to point to a component in the same form that is type compatible
   with the property being edited (e.g. the ActiveControl property). }
 
-  TComponentPropertyEditor = class(TPersistentPropertyEditor)
+  TComponentOneFormPropertyEditor = class(TPersistentPropertyEditor)
   private
     fIgnoreClass: TControlClass;
   public
@@ -635,19 +635,17 @@ type
 
   { TCoolBarControlPropertyEditor }
 
-  TCoolBarControlPropertyEditor = class(TComponentPropertyEditor)
-  protected
-    function CheckNewValue(APersistent: TPersistent): boolean; override;
+  TCoolBarControlPropertyEditor = class(TComponentOneFormPropertyEditor)
   public
     constructor Create(Hook: TPropertyEditorHook; APropCount: Integer); override;
   end;
 
-{ TComponentAllPropertyEditor
-  The default editor for TComponents. It allows the user to set the value of this
-  property to point to a component in any form in the project (?) that is
+{ TComponentPropertyEditor
+  The default editor for TComponents. It allows the user to set the value of
+  this property to point to a component in any form in the project that is
   type compatible with the property being edited. }
 
-  TComponentAllPropertyEditor = class(TPersistentPropertyEditor)
+  TComponentPropertyEditor = class(TPersistentPropertyEditor)
   protected
     function GetComponentReference: TComponent; virtual;
   public
@@ -660,7 +658,7 @@ type
   a component on the form (or via form linking) that is type compatible
   with the property being edited. }
 
-  TInterfacePropertyEditor = class(TComponentAllPropertyEditor)
+  TInterfacePropertyEditor = class(TComponentPropertyEditor)
   private
   protected
     function GetComponent(const AInterface: IInterface): TComponent;
@@ -674,7 +672,7 @@ type
 
   { TNoteBookActiveControlPropertyEditor }
 
-  TNoteBookActiveControlPropertyEditor = class(TComponentAllPropertyEditor)
+  TNoteBookActiveControlPropertyEditor = class(TComponentPropertyEditor)
   protected
     function CheckNewValue(APersistent: TPersistent): boolean; override;
   public
@@ -4344,9 +4342,9 @@ begin
   end;
 end;
 
-{ TComponentPropertyEditor }
+{ TComponentOneFormPropertyEditor }
 
-function TComponentPropertyEditor.AllEqual: Boolean;
+function TComponentOneFormPropertyEditor.AllEqual: Boolean;
 var
   AComponent: TComponent;
 begin
@@ -4357,7 +4355,7 @@ begin
   Result:=csDesigning in AComponent.ComponentState;
 end;
 
-procedure TComponentPropertyEditor.GetValues(Proc: TGetStrProc);
+procedure TComponentOneFormPropertyEditor.GetValues(Proc: TGetStrProc);
 
   procedure TraverseComponents(Root: TComponent);
   var
@@ -4382,20 +4380,14 @@ begin
   fIgnoreClass := TCustomCoolBar;
 end;
 
-function TCoolBarControlPropertyEditor.CheckNewValue(APersistent: TPersistent): boolean;
-begin
-  Result:=false;
-  raise Exception.Create('TCoolBarControlPropertyEditor.CheckNewValue is called after all!');
-end;
+{ TComponentPropertyEditor }
 
-{ TComponentAllPropertyEditor }
-
-function TComponentAllPropertyEditor.GetComponentReference: TComponent;
+function TComponentPropertyEditor.GetComponentReference: TComponent;
 begin
   Result := TComponent(GetObjectValue);
 end;
 
-function TComponentAllPropertyEditor.AllEqual: Boolean;
+function TComponentPropertyEditor.AllEqual: Boolean;
 var
   AComponent: TComponent;
 begin
@@ -6701,8 +6693,8 @@ begin
   //  nil,'',TTimePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCursor), nil, '', TCursorPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TComponent), nil, '', TComponentAllPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TComponent), nil, 'ActiveControl', TComponentPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TComponent), nil, '', TComponentPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TComponent), nil, 'ActiveControl', TComponentOneFormPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TControl), TCoolBand, 'Control', TCoolBarControlPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCollection), nil, '', TCollectionPropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFileDialog, 'Filter', TFileDlgFilterProperty);

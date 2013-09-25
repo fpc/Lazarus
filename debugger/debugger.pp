@@ -2272,6 +2272,7 @@ type
   protected
     procedure ChangeCurrentThread({%H-}ANewId: Integer); virtual;
     procedure RequestMasterData; virtual;
+    procedure DoStateChange(const AOldState: TDBGState); override;
     procedure DoStateEnterPause; override;
     procedure DoStateLeavePause; override;
     procedure DoStateLeavePauseClean; override;
@@ -5814,6 +5815,13 @@ end;
 procedure TThreadsSupplier.RequestMasterData;
 begin
   //
+end;
+
+procedure TThreadsSupplier.DoStateChange(const AOldState: TDBGState);
+begin
+  if (Debugger.State = dsStop) and (CurrentThreads <> nil) then
+    CurrentThreads.Clear;
+  inherited DoStateChange(AOldState);
 end;
 
 procedure TThreadsSupplier.DoStateEnterPause;

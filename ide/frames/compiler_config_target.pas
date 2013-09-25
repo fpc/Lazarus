@@ -231,6 +231,14 @@ var
     aList.Add('ATHLON64');
   end;
 
+  procedure PowerPc(aList: TStrings);
+  begin
+    aList.Add('604');
+    aList.Add('750');
+    aList.Add('7400');
+    aList.Add('970');
+  end;
+
   procedure Sparc(aList: TStrings);
   begin
     aList.Add('SPARC V7');
@@ -271,7 +279,7 @@ begin
     'arm'    : Arm(TargetProcComboBox.Items);
     'i386'   : Intel_i386(TargetProcComboBox.Items);
     'm68k'   : begin end;
-    'powerpc': begin end;
+    'powerpc': PowerPc(TargetProcComboBox.Items);
     'sparc'  : Sparc(TargetProcComboBox.Items);
     'x86_64' : Intel_x86_64(TargetProcComboBox.Items);
     'mipsel' : Mips(TargetProcComboBox.Items);

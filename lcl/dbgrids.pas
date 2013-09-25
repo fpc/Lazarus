@@ -1099,7 +1099,10 @@ begin
 
     if MultiSel and not (dgMultiSelect in FOptions) then begin
       FSelectedRows.Clear;
-      FKeyBookmark:=nil;
+      if FKeyBookmark<>nil then begin
+        FDatalink.DataSet.FreeBookmark(FKeyBookmark);
+        FKeyBookmark:=nil;
+      end;
     end;
 
     EndLayout;
@@ -1765,6 +1768,10 @@ procedure TCustomDBGrid.LinkActive(Value: Boolean);
 begin
   if not Value then begin
     FSelectedRows.Clear;
+    if FKeyBookmark<>nil then begin
+      FDatalink.DataSet.FreeBookmark(FKeyBookmark);
+      FKeyBookmark:=nil;
+    end;
     RemoveAutomaticColumns;
   end;
   LayoutChanged;
@@ -1985,6 +1992,7 @@ var
       OnKeyDown(Self, Key, Shift);
     {$ifdef dbgGrid}DebugLn('DoOnKeyDown FIN');{$endif}
   end;
+
   {$ifdef dbgGrid}
   function OperToStr(AOper: TOperation): string;
   begin
@@ -1997,6 +2005,7 @@ var
     end;
   end;
   {$endif}
+
   procedure DoOperation(AOper: TOperation; Arg: Integer = 0);
   begin
     {$IfDef dbgGrid}DebugLn('KeyDown.DoOperation(%s,%d) INIT',[OperToStr(AOper),arg]);{$Endif}
@@ -2020,6 +2029,7 @@ var
     GridFlags := GridFlags - [gfEditingDone];
     {$IfDef dbgGrid}DebugLn('KeyDown.DoOperation(%s,%d) DONE',[OperToStr(AOper),arg]);{$Endif}
   end;
+
   procedure SelectNext(const AStart,ADown:Boolean);
   var
     N: Integer;
@@ -2044,7 +2054,8 @@ var
           exit;
         end;
         FKeySign := 0;
-      end;
+      end else
+        FDatalink.DataSet.FreeBookmark(CurBookmark);
 
       n := 4*Ord(FKeySign>=0) + 2*Ord(ADown) + 1*Ord(AStart);
       case n of
@@ -2060,6 +2071,7 @@ var
     end else
       ClearSelection(true);
   end;
+
   function doVKDown: boolean;
   begin
     {$ifdef dbgGrid}DebugLn('DoVKDown INIT');{$endif}
@@ -2083,6 +2095,7 @@ var
     end;
     {$ifdef dbgGrid}DebugLn('DoVKDown FIN');{$endif}
   end;
+
   function DoVKUP: boolean;
   begin
     {$ifdef dbgGrid}DebugLn('DoVKUP INIT');{$endif}
@@ -2096,6 +2109,7 @@ var
     result := FDatalink.DataSet.BOF;
     {$ifdef dbgGrid}DebugLn('DoVKUP FIN');{$endif}
   end;
+
   procedure MoveSel(AReset: boolean);
   begin
     if (DeltaCol<>0) or (DeltaRow<>0) then begin
@@ -2115,6 +2129,7 @@ var
     if AReset then
       ResetEditor;
   end;
+
 begin
   {$IfDef dbgGrid}DebugLnEnter('DBGrid.KeyDown %s INIT Key=%d',[Name,Key]);{$Endif}
   case Key of
@@ -2369,7 +2384,10 @@ begin
     else
       begin
 
-        FKeyBookmark:=nil; // force new keyboard selection start
+        if FKeyBookmark<>nil then begin
+          FDatalink.DataSet.FreeBookmark(FKeyBookmark);
+          FKeyBookmark:=nil; // force new keyboard selection start
+        end;
         SetFocus;
 
         P:=MouseToCell(Point(X,Y));
@@ -3312,7 +3330,10 @@ begin
     if SelCurrent then
       SelectRecord(true);
   end;
-  FKeyBookmark:=nil;
+  if FKeyBookmark<>nil then begin
+    FDatalink.DataSet.FreeBookmark(FKeyBookmark);
+    FKeyBookmark:=nil;
+  end;
 end;
 
 function TCustomDBGrid.NeedAutoSizeColumns: boolean;
@@ -3976,7 +3997,8 @@ begin
       // store it here as pointer
       FList.Insert(Index, Bookmark);
       FGrid.Invalidate;
-    end;
+    end else
+      FDataset.FreeBookmark(Bookmark);
   end;
 end;
 
