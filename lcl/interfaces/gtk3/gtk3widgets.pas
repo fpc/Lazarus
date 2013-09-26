@@ -4996,6 +4996,29 @@ begin
    *)
 end;
 
+procedure Gtk3WS_ListViewColumnClicked(column: PGtkTreeViewColumn; AData: GPointer); cdecl;
+var
+  AColumn: TListColumn;
+  Msg: TLMNotify;
+  NM: TNMListView;
+begin
+  AColumn := TListColumn(g_object_get_data(PGObject(column), 'TListColumn'));
+
+  if (AColumn = nil) or (AData = nil) then
+    exit;
+
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
+  Msg.Msg := CN_NOTIFY;
+
+  FillChar(NM{%H-}, SizeOf(NM), 0);
+  NM.hdr.hwndfrom := {%H-}PtrUInt(AData);
+  NM.hdr.code := LVN_COLUMNCLICK;
+  NM.iItem := -1;
+  NM.iSubItem := AColumn.Index;
+  Msg.NMHdr := @NM.hdr;
+  DeliverMessage(TGtk3Widget(AData).LCLObject, Msg);
+end;
+
 procedure TGtk3ListView.ColumnInsert(AIndex: Integer; AColumn: TListColumn);
 var
   AGtkColumn: PGtkTreeViewColumn;
@@ -5022,10 +5045,7 @@ begin
   //store the TColumn in the column data for callbacks
   g_object_set_data(AGtkColumn, PgChar('TListColumn'), gpointer(AColumn));
 
-  // TODO
-  // set callback for OnClick
-  // SignalConnect(PGtkWidget(column), 'clicked', @Gtk2_ColumnClicked, Widgets^.WidgetInfo);
-  // AGtkColumn^.expand := False;
+  g_signal_connect_data(AGtkColumn,'clicked', TGCallback(@Gtk3WS_ListViewColumnClicked), Self, nil, 0);
   PGtkTreeView(GetContainerWidget)^.insert_column(AGtkColumn, AIndex);
   AGtkColumn^.set_clickable(True);
 
