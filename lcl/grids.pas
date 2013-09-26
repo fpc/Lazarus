@@ -2843,27 +2843,50 @@ end;
 procedure TCustomGrid.SetDefColWidth(AValue: Integer);
 var
   i: Integer;
+  OldLeft,OldRight,NewLeft,NewRight: Integer;
 begin
   if AValue=fDefColwidth then
     Exit;
   FDefColWidth:=AValue;
   if not AutoFillColumns then begin
+
+    if EditorMode then
+      ColRowToOffset(True, True, FCol, OldLeft, OldRight);
+
     for i:=0 to ColCount-1 do
       FCols[i] := Pointer(-1);
     VisualChange;
+
+    if EditorMode then begin
+      ColRowToOffset(True, True, FCol, NewLeft, NewRight);
+      if (NewLeft<>OldLeft) or (NewRight<>OldRight) then
+        EditorWidthChanged(FCol, GetColWidths(FCol));
+    end;
   end;
 end;
 
 procedure TCustomGrid.SetDefRowHeight(AValue: Integer);
 var
   i: Integer;
+  OldTop,OldBottom,NewTop,NewBottom: Integer;
 begin
   if (AValue<>fDefRowHeight) or (csLoading in ComponentState) then begin
     include(FGridFlags, gfDefRowHeightChanged);
     FDefRowheight:=AValue;
+
+    if EditorMode then
+      ColRowToOffSet(False,True, FRow, OldTop, OldBottom);
+
     for i:=0 to RowCount-1 do
       FRows[i] := Pointer(-1);
     VisualChange;
+
+    if EditorMode then begin
+      ColRowToOffSet(False,True, FRow, NewTop, NewBottom);
+      if (NewTop<>OldTOp) or (NewBottom<>OldBottom) then
+        EditorPos;
+    end;
+
   end;
 end;
 
