@@ -111,6 +111,11 @@ type
     Children: Boolean;
   end;
 
+  TDwarfAbbrevEntry = record
+    Attribute: Cardinal;
+    Form: Cardinal;
+  end;
+  PDwarfAbbrevEntry = ^TDwarfAbbrevEntry;
 
   TLeb128TableEntry = record
     LeadLow, LeadHigh: Byte; // bytes >= 128, more to follow
@@ -140,6 +145,28 @@ type
     procedure Finish;
     function AddLeb128FromPointer(APointer: Pointer; AData: TDwarfAbbrev{Pointer}): Pointer;
     function FindLe128bFromPointer(APointer: Pointer; out AData: TDwarfAbbrev{Pointer}): Pointer; // returnns pointer to first address after LEB128
+  end;
+
+  { TDwarfAbbrevList }
+
+  TDwarfAbbrevList = class{$IFnDEF USE_ABBREV_TMAP}(TLEB128PreFixTree){$Endif}
+  private
+    FAbbrDataEnd: Pointer;
+    {$IFDEF USE_ABBREV_TMAP}
+    FMap: TMap;  // Abbrevs
+    {$Endif}
+    FDefinitions: array of TDwarfAbbrevEntry;
+    function GetEntryPointer(AIndex: Integer): PDwarfAbbrevEntry; inline;
+  protected
+    FVerbose: Boolean;
+    procedure LoadAbbrevs(AnAbbrevDataPtr: Pointer);
+  public
+    constructor Create(AnAbbrData, AnAbbrDataEnd: Pointer; AnAbbrevOffset, AInfoLen: QWord);
+    destructor Destroy; override;
+    {$IFDEF USE_ABBREV_TMAP}
+    function FindLe128bFromPointer(AnAbbrevPtr: Pointer; out AData: TDwarfAbbrev{Pointer}): Pointer; reintroduce;
+    {$Endif}
+    property EntryPointer[AIndex: Integer]: PDwarfAbbrevEntry read GetEntryPointer;
   end;
 
   (* Link, can either be
@@ -310,17 +337,7 @@ type
     FFileName: String;
     FIdentifierCase: Integer;
 
-    {$IFDEF USE_ABBREV_TMAP}
-    FMap: TMap;  // Abbrevs
-    {$ELSE}
-    FAbbrevTree: TLEB128PreFixTree;
-    {$Endif}
-    FDefinitions: array of record
-      Attribute: Cardinal;
-      Form: Cardinal;
-    end;
-    FAbbrevIndex: Integer;
-    FLastAbbrevPtr: Pointer;
+    FAbbrevList: TDwarfAbbrevList;
 
     FLineInfo: record
       Header: Pointer;
@@ -354,7 +371,6 @@ type
     procedure BuildAddressMap;
     procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
     function  MakeAddress(AData: Pointer): QWord;
-    procedure LoadAbbrevs;
   protected
     function LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo; AFlags: TDwarfLocateEntryFlags; out AResultScope: TDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
     function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; const AList: TPointerDynArray; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
@@ -369,11 +385,7 @@ type
   public
     constructor Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); virtual;
     destructor Destroy; override;
-    {$IFDEF USE_ABBREV_TMAP}
-    function GetDefinition(AAbbrev: Cardinal; out ADefinition: TDwarfAbbrev): Boolean; inline;
-    {$ELSE}
     function GetDefinition(AAbbrevPtr: Pointer; out ADefinition: TDwarfAbbrev): Boolean; inline;
-    {$Endif}
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
     property FileName: String read FFileName;
@@ -860,6 +872,126 @@ begin
     Result := Format('DW_ID_%d', [AValue]);
   end;
 end;
+
+{ TDwarfAbbrevList }
+
+function TDwarfAbbrevList.GetEntryPointer(AIndex: Integer): PDwarfAbbrevEntry;
+begin
+  Result := @FDefinitions[AIndex];
+end;
+
+procedure TDwarfAbbrevList.LoadAbbrevs(AnAbbrevDataPtr: Pointer);
+  procedure MakeRoom(AMinSize: Integer);
+  var
+    len: Integer;
+  begin
+    len := Length(FDefinitions);
+    if len > AMinSize then Exit;
+    if len > $4000
+    then Inc(len, $4000)
+    else len := len * 2;
+    SetLength(FDefinitions, len);
+  end;
+var
+  p: Pointer;
+  Def, Def2: TDwarfAbbrev;
+  abbrev, attrib, form: Cardinal;
+  n: Integer;
+  CurAbbrevIndex: Integer;
+begin
+  abbrev := 0;
+  CurAbbrevIndex := 0;
+
+  while (pbyte(AnAbbrevDataPtr) < FAbbrDataEnd) and (pbyte(AnAbbrevDataPtr)^ <> 0) do
+  begin
+    p := AnAbbrevDataPtr;
+    abbrev := ULEB128toOrdinal(pbyte(AnAbbrevDataPtr));
+    Def.tag := ULEB128toOrdinal(pbyte(AnAbbrevDataPtr));
+
+    {$IFDEF USE_ABBREV_TMAP}
+    if FMap.HasId(abbrev)
+    {$ELSE}
+    if FindLe128bFromPointer(p, Def2) <> nil
+    {$Endif}
+    then begin
+      DebugLn(FPDBG_DWARF_WARNINGS, ['Duplicate abbrev=', abbrev, ' found. Ignoring....']);
+      while pword(AnAbbrevDataPtr)^ <> 0 do Inc(pword(AnAbbrevDataPtr));
+      Inc(pword(AnAbbrevDataPtr));
+      Continue;
+    end;
+
+    if FVerbose
+    then begin
+      DebugLn(FPDBG_DWARF_VERBOSE, ['  abbrev:  ', abbrev]);
+      DebugLn(FPDBG_DWARF_VERBOSE, ['  tag:     ', Def.tag, '=', DwarfTagToString(Def.tag)]);
+      DebugLn(FPDBG_DWARF_VERBOSE, ['  children:', pbyte(AnAbbrevDataPtr)^, '=', DwarfChildrenToString(pbyte(AnAbbrevDataPtr)^)]);
+    end;
+    Def.Children := pbyte(AnAbbrevDataPtr)^ = DW_CHILDREN_yes;
+    Inc(pbyte(AnAbbrevDataPtr));
+
+    n := 0;
+    Def.Index := CurAbbrevIndex;
+
+    while pword(AnAbbrevDataPtr)^ <> 0 do
+    begin
+      attrib := ULEB128toOrdinal(pbyte(AnAbbrevDataPtr));
+      form := ULEB128toOrdinal(pbyte(AnAbbrevDataPtr));
+
+      MakeRoom(CurAbbrevIndex + 1);
+      FDefinitions[CurAbbrevIndex].Attribute := attrib;
+      FDefinitions[CurAbbrevIndex].Form := form;
+      Inc(CurAbbrevIndex);
+
+      if FVerbose
+      then DebugLn(FPDBG_DWARF_VERBOSE, ['   [', n, '] attrib: ', attrib, '=', DwarfAttributeToString(attrib), ', form: ', form, '=', DwarfAttributeFormToString(form)]);
+      Inc(n);
+    end;
+    Def.Count := n;
+    {$IFDEF USE_ABBREV_TMAP}
+    FMap.Add(abbrev, Def);
+    {$ELSE}
+    AddLeb128FromPointer(p, Def {ptruint(CurAbbrevIndex)});
+    {$Endif}
+
+    Inc(pword(AnAbbrevDataPtr));
+  end;
+end;
+
+constructor TDwarfAbbrevList.Create(AnAbbrData, AnAbbrDataEnd: Pointer; AnAbbrevOffset,
+  AInfoLen: QWord);
+begin
+  inherited Create;
+  FAbbrDataEnd := AnAbbrDataEnd;
+  {$IFDEF USE_ABBREV_TMAP}
+  FMap := TMap.Create(itu4, SizeOf(TDwarfAbbrev));
+  {$ELSE}
+  SetCapacity(AInfoLen div 16 + 1);
+  {$Endif}
+  SetLength(FDefinitions, 256);
+  //LoadAbbrevs(FOwner.PointerFromVA(dsAbbrev, FAbbrevOffset));
+  LoadAbbrevs(AnAbbrData + AnAbbrevOffset);
+  {$IFnDEF USE_ABBREV_TMAP}
+  Finish;
+  {$Endif}
+end;
+
+destructor TDwarfAbbrevList.Destroy;
+begin
+  {$IFDEF USE_ABBREV_TMAP}
+  FreeAndNil(FMap);
+  {$Endif}
+  inherited Destroy;
+end;
+
+{$IFDEF USE_ABBREV_TMAP}
+function TDwarfAbbrevList.FindLe128bFromPointer(AnAbbrevPtr: Pointer; out
+  AData: TDwarfAbbrev): Pointer;
+begin
+  Result := AnAbbrevPtr;
+  if not FMap.GetData(ULEB128toOrdinal(Result), AData) then
+    Result := nil;
+end;
+{$Endif}
 
 { TLEB128PreFixTree }
 
@@ -2213,20 +2345,10 @@ begin
   FAddressSize := AAddressSize;
   FIsDwarf64 := AIsDwarf64;
 
-  {$IFDEF USE_ABBREV_TMAP}
-  FMap := TMap.Create(itu4, SizeOf(TDwarfAbbrev));
-  {$ELSE}
-  FAbbrevTree := TLEB128PreFixTree.Create;
-  FAbbrevTree.SetCapacity(FLength div 16 + 1);
-  {$Endif}
-  SetLength(FDefinitions, 256);
-  // initialize last abbrev with start
-//  FLastAbbrevPtr := FOwner.PointerFromVA(dsAbbrev, FAbbrevOffset);
-  FLastAbbrevPtr := FOwner.FSections[dsAbbrev].RawData + FAbbrevOffset;
-  LoadAbbrevs;
-  {$IFnDEF USE_ABBREV_TMAP}
-  FAbbrevTree.Finish;
-  {$Endif}
+  FAbbrevList := TDwarfAbbrevList.Create(FOwner.FSections[dsAbbrev].RawData,
+    FOwner.FSections[dsAbbrev].RawData + FOwner.FSections[dsAbbrev].Size,
+    FAbbrevOffset, FLength);
+  FAbbrevList.FVerbose := FVerbose;
 
   // use internally 64 bit target pointer
   FAddressMap := TMap.Create(itu8, SizeOf(TDwarfAddressInfo));
@@ -2294,11 +2416,7 @@ destructor TDwarfCompilationUnit.Destroy;
   end;
 
 begin
-  {$IFDEF USE_ABBREV_TMAP}
-  FreeAndNil(FMap);
-  {$ELSE}
-  FreeAndNil(FAbbrevTree);
-  {$Endif}
+  FreeAndNil(FAbbrevList);
   FreeAndNil(FAddressMap);
   FreeLineNumberMap;
   FreeAndNil(FLineInfo.StateMachines);
@@ -2309,17 +2427,10 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF USE_ABBREV_TMAP}
-function TDwarfCompilationUnit.GetDefinition(AAbbrev: Cardinal; out ADefinition: TDwarfAbbrev): Boolean;
-begin
-  Result := FMap.GetData(AAbbrev, ADefinition);
-end;
-{$ELSE}
 function TDwarfCompilationUnit.GetDefinition(AAbbrevPtr: Pointer; out ADefinition: TDwarfAbbrev): Boolean;
 begin
-  Result := FAbbrevTree.FindLe128bFromPointer(AAbbrevPtr, ADefinition) <> nil;
+  Result := FAbbrevList.FindLe128bFromPointer(AAbbrevPtr, ADefinition) <> nil;
 end;
-{$Endif}
 
 function TDwarfCompilationUnit.GetLineAddressMap(const AFileName: String): PDWarfLineMap;
   var
@@ -2367,114 +2478,30 @@ begin
   Result := Map^.GetAddressForLine(ALine);
 end;
 
-procedure TDwarfCompilationUnit.LoadAbbrevs;
-  procedure MakeRoom(AMinSize: Integer);
-  var
-    len: Integer;
-  begin
-    len := Length(FDefinitions);
-    if len > AMinSize then Exit;
-    if len > $4000
-    then Inc(len, $4000)
-    else len := len * 2;
-    SetLength(FDefinitions, len);
-  end;
-var
-  MaxData, p: Pointer;
-  Def, Def2: TDwarfAbbrev;
-  abbrev, attrib, form: Cardinal;
-  n: Integer;
-begin
-  abbrev := 0;
-  // we don't know the number of abbrevs for this unit,
-  // but we cannot go beyond the section limit, so use that as safetylimit
-  // in case of corrupt data
-  MaxData := FOwner.FSections[dsAbbrev].RawData + FOwner.FSections[dsAbbrev].Size;
-
-  while (pbyte(FLastAbbrevPtr) < MaxData) and (pbyte(FLastAbbrevPtr)^ <> 0) do
-  begin
-    p := FLastAbbrevPtr; // {$IFDEF USE_ABBREV_TMAP}
-    abbrev := ULEB128toOrdinal(pbyte(FLastAbbrevPtr));
-    Def.tag := ULEB128toOrdinal(pbyte(FLastAbbrevPtr));
-
-    {$IFDEF USE_ABBREV_TMAP}
-    if FMap.HasId(abbrev)
-    {$ELSE}
-    if FAbbrevTree.FindLe128bFromPointer(p, Def2) <> nil
-    {$Endif}
-    then begin
-      DebugLn(FPDBG_DWARF_WARNINGS, ['Duplicate abbrev=', abbrev, ' found. Ignoring....']);
-      while pword(FLastAbbrevPtr)^ <> 0 do Inc(pword(FLastAbbrevPtr));
-      Inc(pword(FLastAbbrevPtr));
-      Continue;
-    end;
-
-    if FVerbose
-    then begin
-      DebugLn(FPDBG_DWARF_VERBOSE, ['  abbrev:  ', abbrev]);
-      DebugLn(FPDBG_DWARF_VERBOSE, ['  tag:     ', Def.tag, '=', DwarfTagToString(Def.tag)]);
-      DebugLn(FPDBG_DWARF_VERBOSE, ['  children:', pbyte(FLastAbbrevPtr)^, '=', DwarfChildrenToString(pbyte(FLastAbbrevPtr)^)]);
-    end;
-    Def.Children := pbyte(FLastAbbrevPtr)^ = DW_CHILDREN_yes;
-    Inc(pbyte(FLastAbbrevPtr));
-
-    n := 0;
-    Def.Index := FAbbrevIndex;
-
-    while pword(FLastAbbrevPtr)^ <> 0 do
-    begin
-      attrib := ULEB128toOrdinal(pbyte(FLastAbbrevPtr));
-      form := ULEB128toOrdinal(pbyte(FLastAbbrevPtr));
-
-      MakeRoom(FAbbrevIndex + 1);
-      FDefinitions[FAbbrevIndex].Attribute := attrib;
-      FDefinitions[FAbbrevIndex].Form := form;
-      Inc(FAbbrevIndex);
-
-      if FVerbose
-      then DebugLn(FPDBG_DWARF_VERBOSE, ['   [', n, '] attrib: ', attrib, '=', DwarfAttributeToString(attrib), ', form: ', form, '=', DwarfAttributeFormToString(form)]);
-      Inc(n);
-    end;
-    Def.Count := n;
-    {$IFDEF USE_ABBREV_TMAP}
-    FMap.Add(abbrev, Def);
-    {$ELSE}
-    FAbbrevTree.AddLeb128FromPointer(p, Def {ptruint(FAbbrevIndex)});
-    {$Endif}
-
-    Inc(pword(FLastAbbrevPtr));
-  end;
-end;
-
 function TDwarfCompilationUnit.LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; const AList: TPointerDynArray; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
 var
   Abbrev: Cardinal;
   Def: TDwarfAbbrev;
   n: Integer;
+  ADefs: PDwarfAbbrevEntry;
 begin
-  {$IFDEF USE_ABBREV_TMAP}
-  Abbrev := ULEB128toOrdinal(AEntry);
-  if not GetDefinition(Abbrev, Def)
-  {$ELSE}
   if not GetDefinition(AEntry, Def)
-  {$Endif}
   then begin
     //???
-    {$IFnDEF USE_ABBREV_TMAP}
     Abbrev := ULEB128toOrdinal(AEntry);
-    {$Endif}
     DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
     Result := False;
     Exit;
   end;
-  
+
+  ADefs := FAbbrevList.EntryPointer[0];
   for n := Def.Index to Def.Index + Def.Count - 1 do
   begin
-    if FDefinitions[n].Attribute = AAttribute
+    if ADefs[n].Attribute = AAttribute
     then begin
       Result := True;
       AAttribPtr := AList[n - Def.Index];
-      AForm := FDefinitions[n].Form;
+      AForm := ADefs[n].Form;
       Exit;
     end;
   end;
@@ -2508,13 +2535,15 @@ function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStartScope: TDwarfSc
     idx: Integer;
     Form: Cardinal;
     UValue: QWord;
+    ADefs: PDwarfAbbrevEntry;
   begin
+    ADefs := FAbbrevList.EntryPointer[0];
     for idx := ADef.Index to ADef.Index + ADef.Count - 1 do
     begin
       if ABuildList
       then AList[idx - ADef.Index] := p;
 
-      Form := FDefinitions[idx].Form;
+      Form := ADefs[idx].Form;
       while Form = DW_FORM_indirect do Form := ULEB128toOrdinal(p);
 
       case Form of
@@ -2664,11 +2693,7 @@ begin
       Continue;
     end;
     
-    {$IFDEF USE_ABBREV_TMAP}
-    if not GetDefinition(Abbrev, Def)
-    {$ELSE}
     if not GetDefinition(p2, Def)
-    {$Endif}
     then begin
       DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
       Break;
@@ -3337,9 +3362,11 @@ var
   ValuePtr, p: Pointer;
   Indent: String;
   Level: Integer;
+  ADefs: PDwarfAbbrevEntry;
 begin
   Indent := AIndent;
   Level := 0;
+  ADefs := FCU.FAbbrevList.EntryPointer[0];
   while (AData <= AMaxData) and (Level >= 0) do
   begin
 p := AData;
@@ -3353,11 +3380,7 @@ p := AData;
       Continue;
     end;
     DbgOut(FPDBG_DWARF_VERBOSE, [Indent, 'abbrev: ', Abbrev]);
-    {$IFDEF USE_ABBREV_TMAP}
-    if not FCU.GetDefinition(abbrev, Def)
-    {$ELSE}
     if not FCU.GetDefinition(p, Def)
-    {$Endif}
     then begin
       DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
       Exit;
@@ -3373,8 +3396,8 @@ p := AData;
 
     for idx := Def.Index to Def.Index + Def.Count - 1 do
     begin
-      Form := FCU.FDefinitions[idx].Form;
-      Attribute := FCU.FDefinitions[idx].Attribute;
+      Form := ADefs[idx].Form;
+      Attribute := ADefs[idx].Attribute;
       DbgOut(FPDBG_DWARF_VERBOSE, [Indent, ' attrib: ', Attribute, '=', DwarfAttributeToString(Attribute)]);
       DbgOut(FPDBG_DWARF_VERBOSE, [', form: ', Form, '=', DwarfAttributeFormToString(Form)]);
       
