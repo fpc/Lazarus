@@ -311,9 +311,9 @@ const
 type
   PFileSelHistoryEntry = ^TFileSelHistoryEntry;
   TFileSelHistoryEntry = record
-      Filename: PChar;
-      MenuItem: PGtkWidget;
-    end;
+    Filename: PChar; // UTF-8 encoding
+    MenuItem: PGtkWidget;
+  end;
 
   { TFileSelFilterEntry }
 

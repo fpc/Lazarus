@@ -3531,6 +3531,7 @@ begin
   if DirName <> nil then begin
     SetString(Dir, DirName, strlen(DirName));
     SetLength(Dir, LastDelimiter(PathDelim,Dir));
+    Dir:=SysToUTF8(Dir);
   end else
     Dir := '';
   //DebugLn(['PopulateFileAndDirectoryLists ',Dir]);

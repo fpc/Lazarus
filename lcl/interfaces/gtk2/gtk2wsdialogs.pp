@@ -126,6 +126,7 @@ begin
   //DebugLn(['UpdateDetailView ']);
   Widget := {%H-}PGtkWidget(OpenDialog.Handle);
   FileName := gtk_file_chooser_get_filename(PGtkFileChooser(Widget));
+  Filename:=SysToUTF8(Filename);
 
   OldFilename := OpenDialog.Filename;
   if Filename = OldFilename then
@@ -149,22 +150,14 @@ end;
 
 // ---------------------- signals ----------------------------------------------
 
-procedure gtkFileChooserSelectionChangedCB(Chooser: PGtkFileChooser;
+procedure gtkFileChooserSelectionChangedCB({%H-}Chooser: PGtkFileChooser;
   Data: Pointer); cdecl;
 var
-  cFilename: Pgchar;
   theDialog: TFileDialog;
 begin
-  //DebugLn(['gtkFileChooserSelectionChangedCB ']);
-  cFilename := gtk_file_chooser_get_filename(Chooser);
   theDialog:=TFileDialog(Data);
-  try
-    if theDialog is TOpenDialog then
-      UpdateDetailView(TOpenDialog(theDialog));
-  finally
-    if Assigned(cFilename) then
-      g_free(cFilename);
-  end;
+  if theDialog is TOpenDialog then
+    UpdateDetailView(TOpenDialog(theDialog));
 end;
 
 procedure Gtk2FileChooserResponseCB(widget: PGtkFileChooser; arg1: gint;
@@ -187,7 +180,7 @@ procedure Gtk2FileChooserResponseCB(widget: PGtkFileChooser; arg1: gint;
     Result := False;
     if (gtk_major_version = 2) and (gtk_minor_version >= 20) and
       (gtk_file_chooser_get_action(Widget) =  GTK_FILE_CHOOSER_ACTION_OPEN) and
-      DirectoryExists(AName) then
+      DirPathExists(AName) then
       Result := True;
   end;
 
@@ -197,6 +190,7 @@ var
   cFilenames: PGSList;
   cFilenames1: PGSList;
   Files: TStringList;
+  aFilename: String;
 begin
   //DebugLn(['Gtk2FileChooserResponseCB ']);
   theDialog := TFileDialog(data);
@@ -223,8 +217,9 @@ begin
           cFilename := PChar(cFilenames1^.data);
           if Assigned(cFilename) then
           begin
-            if not SkipDirectory(cFileName) then
-              AddFile(Files, cFilename);
+            aFilename:=SysToUTF8(cFilename);
+            if not SkipDirectory(aFileName) then
+              AddFile(Files, aFilename);
             g_free(cFilename);
           end;
           cFilenames1 := cFilenames1^.next;
@@ -238,7 +233,8 @@ begin
 
   if Assigned(cFilename) then
   begin
-    if SkipDirectory(cFileName) then
+    aFilename:=SysToUTF8(cFilename);
+    if SkipDirectory(aFileName) then
       TheDialog.FileName := ''
     else
       TheDialog.FileName := cFilename;
@@ -483,6 +479,7 @@ begin
   if theDialog is TFileDialog then
   begin
     FileName:=gtk_file_chooser_get_filename(PGtkFileChooser(FPointer));
+    FileName:=SysToUTF8(Filename);
 
     if theDialog is TOpenDialog then
     begin
@@ -505,6 +502,7 @@ begin
         begin
           fileInfo := FileList^;
           CurFilename:=fileInfo; // convert PChar to AnsiString (not typecast)
+          CurFilename:=SysToUTF8(CurFilename);
           if (CurFilename<>'') and (Files.IndexOf(CurFilename)<0) then begin
             CurFilename:=DirName+fileInfo;
             Result:=CheckOpenedFilename(CurFilename);
@@ -757,6 +755,7 @@ var
 
 var
   AHistoryEntry: PFileSelHistoryEntry;
+  aSysFilename: String;
 begin
   Result:=false;
   if (Data=nil) then ;
@@ -768,7 +767,9 @@ begin
     if (AHistoryEntry<>nil) and (AHistoryEntry^.Filename<>nil) then begin
       // user has choosen a history file
       // -> select it in the filedialog
-      gtk_file_chooser_set_current_folder({%H-}PGtkFileChooser(theDialog.Handle),AHistoryEntry^.Filename);
+      aSysFilename:=UTF8ToSys(AHistoryEntry^.Filename);
+      gtk_file_chooser_set_current_folder({%H-}PGtkFileChooser(theDialog.Handle),
+        Pgchar(aSysFilename));
 
       UpdateDetailView(TOpenDialog(theDialog));
     end;
@@ -788,6 +789,7 @@ var
   MaskList: TStringList;
   FilterEntry: TFileSelFilterEntry;
   FilterIndex: Integer;
+  aMask: String;
 begin
   FilterIndex := OpenDialog.FilterIndex;
   ExtractFilterList(OpenDialog.Filter, ListOfFileSelFilterEntry, false);
@@ -804,8 +806,10 @@ begin
       FilterEntry := TFileSelFilterEntry(ListOfFileSelFilterEntry[i]);
       MaskList.DelimitedText := FilterEntry.Mask;
 
-      for k := 0 to MaskList.Count - 1 do
-        gtk_file_filter_add_pattern(GtkFilter, PChar(MaskList.Strings[k]));
+      for k := 0 to MaskList.Count - 1 do begin
+        aMask:=UTF8ToSys(MaskList.Strings[k]);
+        gtk_file_filter_add_pattern(GtkFilter, PChar(aMask));
+      end;
 
       gtk_file_filter_set_name(GtkFilter, FilterEntry.Description);
 
@@ -942,6 +946,7 @@ var
   OpenDialog: TOpenDialog absolute ACommonDialog;
   HelpButton: PGtkWidget;
   InitialFilename: String;
+  aSysFilename: String;
   //FrameWidget: PGtkWidget;
   //HBox: PGtkWidget;
   //FileDetailLabel: PGtkWidget;
@@ -951,8 +956,10 @@ begin
 
   if OpenDialog.InheritsFrom(TSaveDialog) then
   begin
-    if OpenDialog.InitialDir <> '' then
-      gtk_file_chooser_set_current_folder(FileSelWidget, Pgchar(OpenDialog.InitialDir));
+    if OpenDialog.InitialDir <> '' then begin
+      aSysFilename:=UTF8ToSys(OpenDialog.InitialDir);
+      gtk_file_chooser_set_current_folder(FileSelWidget, Pgchar(aSysFilename));
+    end;
   end;
   
   // Help button
@@ -1019,7 +1026,8 @@ begin
       InitialFilename := TrimFilename(OpenDialog.InitialDir + PathDelim + InitialFilename);
     if not FilenameIsAbsolute(InitialFilename) then
       InitialFilename := CleanAndExpandFilename(InitialFilename);
-    gtk_file_chooser_set_filename(FileSelWidget, PChar(InitialFilename));
+    aSysFilename:=UTF8ToSys(InitialFilename);
+    gtk_file_chooser_set_filename(FileSelWidget, PChar(aSysFilename));
   end;
 
   //if InitialFilter <> 'none' then
@@ -1048,6 +1056,7 @@ var
   Button1: String;
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
+  aSysFilename: String;
 begin
   // Defines an action for the dialog and creates it
   Action := GTK_FILE_CHOOSER_ACTION_OPEN;
@@ -1076,8 +1085,10 @@ begin
   end;
   {$endif}
 
-  if FileDialog.InitialDir <> '' then
-    gtk_file_chooser_set_current_folder(Widget, Pgchar(FileDialog.InitialDir));
+  if FileDialog.InitialDir <> '' then begin
+    aSysFilename:=UTF8ToSys(FileDialog.InitialDir);
+    gtk_file_chooser_set_current_folder(Widget, Pgchar(aSysFilename));
+  end;
 
   if gtk_file_chooser_get_action(Widget) in
     [GTK_FILE_CHOOSER_ACTION_SAVE, GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER]
