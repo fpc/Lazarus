@@ -1284,6 +1284,7 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
 
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
     procedure signalCurrentItemChanged(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl; override;
@@ -11762,6 +11763,16 @@ begin
     FItemChangedHook := nil;
   end;
   inherited DetachEvents;
+end;
+
+function TQtCheckListBox.EventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+begin
+  Result := False;
+  if (QEvent_type(Event) = QEventMouseButtonDblClick) then
+    // issue #25089
+  else
+    Result:=inherited EventFilter(Sender, Event);
 end;
 
 function TQtCheckListBox.itemViewViewportEventFilter(Sender: QObjectH;
