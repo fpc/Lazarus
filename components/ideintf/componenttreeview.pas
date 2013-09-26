@@ -19,7 +19,7 @@ unit ComponentTreeView;
 
 {$mode objfpc}{$H+}
 
-{off $DEFINE VerboseComponentTVWalker}
+{$DEFINE VerboseComponentTVWalker}
 
 interface
 
@@ -206,6 +206,9 @@ begin
   debugln(['TComponentWalker.AddOwnedPersistent APersistent=',DbgSName(APersistent),' PropName=',PropName,' FLookupRoot=',DbgSName(FLookupRoot),' GetLookupRootForComponent(APersistent)=',DbgSName(GetLookupRootForComponent(APersistent))]);
   {$ENDIF}
   if GetLookupRootForComponent(APersistent) <> FLookupRoot then Exit;
+
+  for i:=0 to FNode.Count-1 do
+    if TObject(FNode[i].Data) = APersistent then exit;
 
   TVNode := FComponentTV.Items.AddChild(FNode,
                           FComponentTV.CreateNodeCaption(APersistent,PropName));
@@ -710,6 +713,10 @@ function TComponentTreeView.CreateNodeCaption(APersistent: TPersistent;
     PropList: PPropList;
     i, PropCount: Integer;
   begin
+    Result := TCollectionAccess(ACollection).PropName;
+    if Result <> '' then
+      Exit;
+
     // if there is a DefaultName it is the property name
     if DefaultName<>'' then
       exit(DefaultName);
@@ -727,12 +734,6 @@ function TComponentTreeView.CreateNodeCaption(APersistent: TPersistent;
         FreeMem(PropList);
       end;
     end;
-
-    // Note: the TCollection.PropName does not always correspond with the
-    //       property name. Use it only as fallback.
-    Result := TCollectionAccess(ACollection).PropName;
-    if Result <> '' then
-      Exit;
 
     Result := '<unknown collection>';
   end;
