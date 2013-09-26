@@ -19,7 +19,7 @@ unit ComponentTreeView;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE VerboseComponentTVWalker}
+{off $DEFINE VerboseComponentTVWalker}
 
 interface
 

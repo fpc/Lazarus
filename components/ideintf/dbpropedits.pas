@@ -17,8 +17,9 @@ unit DBPropEdits;
 interface
 
 uses
-  Classes, ObjInspStrConsts, PropEdits, ComponentEditors, TypInfo, DB, SysUtils,
-  DbCtrls, DBGrids;
+  Classes, SysUtils, ObjInspStrConsts, PropEdits, PropEditUtils,
+  ComponentEditors,
+  TypInfo, DB, DbCtrls, DBGrids;
 
 type
   TFieldProperty = class(TStringPropertyEditor)
@@ -49,6 +50,8 @@ type
     procedure ExecuteVerb(Index: Integer); override;
   end;
 
+function GetFieldDefsLookupRoot(APersistent: TPersistent): TPersistent;
+
 implementation
 
 procedure LoadDataSourceFields(DataSource: TDataSource; List: TStrings);
@@ -70,6 +73,19 @@ begin
       end;
     end;
   end;
+end;
+
+function GetFieldDefsLookupRoot(APersistent: TPersistent): TPersistent;
+var
+  aFieldDefs: TFieldDefs;
+begin
+  Result:=nil;
+  if not (APersistent is TFieldDefs) then exit;
+  aFieldDefs:=TFieldDefs(APersistent);
+  Result:=aFieldDefs.Owner;
+  if Result=nil then
+    Result:=aFieldDefs.Dataset;
+  Result:=GetLookupRootForComponent(Result);
 end;
 
 { TFieldProperty }
@@ -156,6 +172,7 @@ initialization
   RegisterPropertyEditor(TypeInfo(string), TDBLookupComboBox, 'ListField', TLookupFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TColumn, 'FieldName', TDBGridFieldProperty);
   RegisterComponentEditor(TDBGrid,TDBGridComponentEditor);
+  RegisterGetLookupRoot(@GetFieldDefsLookupRoot);
 
 end.
 

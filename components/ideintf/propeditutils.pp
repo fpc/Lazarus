@@ -76,25 +76,52 @@ type
 
 function GetLookupRootForComponent(APersistent: TPersistent): TPersistent;
 
+type
+  TGetLookupRoot = function(APersistent: TPersistent): TPersistent;
+
+procedure RegisterGetLookupRoot(const OnGetLookupRoot: TGetLookupRoot);
+procedure UnregisterGetLookupRoot(const OnGetLookupRoot: TGetLookupRoot);
+
 implementation
 
 type
   TPersistentAccess = class(TPersistent);
+var
+  GetLookupRoots: TFPList = nil; // list of TGetLookupRoot
 
 function GetLookupRootForComponent(APersistent: TPersistent): TPersistent;
 var
   AOwner: TPersistent;
+  i: Integer;
 begin
   Result := APersistent;
   if Result = nil then
     Exit;
   repeat
     AOwner := TPersistentAccess(Result).GetOwner;
-    if AOwner <> nil then
-      Result := AOwner
-    else
-      Exit;
+    if (AOwner=nil) and (GetLookupRoots<>nil) then begin
+      for i:=GetLookupRoots.Count-1 downto 0 do begin
+        AOwner:=TGetLookupRoot(GetLookupRoots[i])(Result);
+        if AOwner<>nil then break;
+      end;
+    end;
+    if AOwner = nil then
+      exit;
+    Result := AOwner
   until False;
+end;
+
+procedure RegisterGetLookupRoot(const OnGetLookupRoot: TGetLookupRoot);
+begin
+  if GetLookupRoots=nil then
+    GetLookupRoots:=TFPList.Create;
+  GetLookupRoots.Add(OnGetLookupRoot);
+end;
+
+procedure UnregisterGetLookupRoot(const OnGetLookupRoot: TGetLookupRoot);
+begin
+  if GetLookupRoots=nil then exit;
+  GetLookupRoots.Remove(OnGetLookupRoot);
 end;
 
 { TPersistentSelectionList }
@@ -318,6 +345,11 @@ begin
   end;
   Result := True;
 end;
+
+initialization
+  GetLookupRoots:=nil;
+finalization
+  FreeAndNil(GetLookupRoots);
 
 end.
 
