@@ -36,7 +36,7 @@ program FPDumpDwarf;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, Windows, SysUtils, maps,
+  Classes, Windows, SysUtils, maps, LazLogger,
   FpDbgPETypes, FpDbgDwarfConst, FpDbgSymbols, FpDbgLoader, FpDbgDwarf;
 
 var
@@ -53,8 +53,10 @@ begin
     WriteLN('Usage: FPDumpDwarf <filename>');
     Exit;
   end;
+
+  DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE')^.Enabled := True;
   
-  Loader := TDbgWinPEImageLoader.Create(ParamStr(1));
+  Loader := TDbgImageLoader.Create(ParamStr(1));
 
   Dwarf := TDbgVerboseDwarf.Create(Loader);
   n := Dwarf.LoadCompilationUnits;
