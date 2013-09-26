@@ -58,13 +58,94 @@ begin
   end;
 end;
 
+procedure OutputLRSFile(BinFilename, ResourceName: String; ResMemStream: TMemoryStream);
 var
-  ResourceFilename,FullResourceFilename,BinFilename,BinExt,ResourceName,ResourceType:String;
-  a:integer;
-  ResFileStream,BinFileStream:TFileStream;
-  ResMemStream,BinMemStream:TMemoryStream;
+  BinExt,ResourceType: String;
+  BinFileStream: TFileStream;
+  BinMemStream: TMemoryStream;
+begin
+  dbgout(BinFilename);
+  try
+    BinFileStream:=TFileStream.Create(UTF8ToSys(BinFilename),fmOpenRead);
+    BinMemStream:=TMemoryStream.Create;
+    try
+      BinMemStream.CopyFrom(BinFileStream,BinFileStream.Size);
+      BinMemStream.Position:=0;
+      BinExt:=uppercase(ExtractFileExt(BinFilename));
+      if (BinExt='.LFM') or (BinExt='.DFM') or (BinExt='.XFM')
+      then begin
+        ResourceType:='FORMDATA';
+        ConvertFormToText(BinMemStream);
+        ResourceName:=FindLFMClassName(BinMemStream);
+        if ResourceName='' then begin
+          debugln(' ERROR: no resourcename');
+          halt(2);
+        end;
+        dbgout(' ResourceName=''', ResourceName, ''' Type=''', ResourceType, '''');
+        LFMtoLRSstream(BinMemStream,ResMemStream);
+      end
+      else begin
+        ResourceType := trim(copy(BinExt,2,length(BinExt)-1));
+        if ResourceName='' then begin
+          ResourceName := ExtractFileName(BinFilename);
+          ResourceName := trim(copy(ResourceName,1
+             ,length(ResourceName)-length(BinExt)));
+        end;
+        if ResourceName='' then begin
+          debugln(' ERROR: no resourcename');
+          halt(2);
+        end;
+        dbgout(' ResourceName=''', ResourceName, ''' Type=''', ResourceType+'''');
+        BinaryToLazarusResourceCode(BinMemStream,ResMemStream
+           ,ResourceName,ResourceType);
+      end;
+    finally
+      BinFileStream.Free;
+      BinMemStream.Free;
+    end;
+  except
+    debugln('  ERROR: unable to read file ''', BinFilename, '''');
+    halt(3);
+  end;
+  debugln('');
+end;
+
+procedure OutputRCFile(FileName, ResourceName: String; ResMemStream: TMemoryStream);
+
+  procedure WriteResource(ResourceType: String);
+  var
+    S: String;
+  begin
+    S := Format('%s %s "%s"'#$D#$A, [ResourceName, ResourceType, FileName]);
+    ResMemStream.Write(PChar(@S[1])^, Length(S));
+  end;
+
+var
+  FileExt: String;
+begin
+  FileExt := UpperCase(ExtractFileExt(FileName));
+  if ResourceName = '' then
+  begin
+    ResourceName := ExtractFileName(FileName);
+    ResourceName := Trim(Copy(ResourceName, 1, Length(ResourceName) - Length(FileExt)));
+  end;
+  case FileExt of
+    '.BMP': WriteResource('BITMAP');
+    '.CUR': WriteResource('CURSOR');
+    '.ICO': WriteResource('ICON');
+  else
+    WriteResource('RCDATA');
+  end;
+end;
+
+var
+  a: Integer;
+  ResourceFilename,FullResourceFilename:String;
+  ResFileStream:TFileStream;
+  ResMemStream:TMemoryStream;
   FileList:TStringList;
   S: String;
+  IsRCFile: Boolean;
 begin
   if ParamCount<2 then begin
     debugln('Usage: ',ExtractFileName(ParamStrUTF8(0))
@@ -125,55 +206,14 @@ begin
       debugln('ERROR: unable to create file ''', ResourceFilename, '''');
       halt(1);
     end;
+    IsRCFile := LowerCase(ExtractFileExt(ResourceFilename)) = '.rc';
     ResMemStream:=TMemoryStream.Create;
     try
       for a:=0 to FileList.Count-1 do begin
-        BinFilename:=FileList.Names[a];
-        dbgout(BinFilename);
-        try
-          BinFileStream:=TFileStream.Create(UTF8ToSys(BinFilename),fmOpenRead);
-          BinMemStream:=TMemoryStream.Create;
-          try
-            BinMemStream.CopyFrom(BinFileStream,BinFileStream.Size);
-            BinMemStream.Position:=0;
-            BinExt:=uppercase(ExtractFileExt(BinFilename));
-            if (BinExt='.LFM') or (BinExt='.DFM') or (BinExt='.XFM') 
-            then begin
-              ResourceType:='FORMDATA';
-              ConvertFormToText(BinMemStream);
-              ResourceName:=FindLFMClassName(BinMemStream);
-              if ResourceName='' then begin
-                debugln(' ERROR: no resourcename');
-                halt(2);
-              end;
-              dbgout(' ResourceName=''', ResourceName, ''' Type=''', ResourceType, '''');
-              LFMtoLRSstream(BinMemStream,ResMemStream);
-            end 
-            else begin
-              ResourceType := trim(copy(BinExt,2,length(BinExt)-1));
-              ResourceName := trim(FileList.ValueFromIndex[a]);
-              if ResourceName='' then begin
-                ResourceName := ExtractFileName(BinFilename);
-                ResourceName := trim(copy(ResourceName,1
-                   ,length(ResourceName)-length(BinExt)));
-              end;
-              if ResourceName='' then begin
-                debugln(' ERROR: no resourcename');
-                halt(2);
-              end;
-              dbgout(' ResourceName=''', ResourceName, ''' Type=''', ResourceType+'''');
-              BinaryToLazarusResourceCode(BinMemStream,ResMemStream
-                 ,ResourceName,ResourceType);
-            end;
-          finally
-            BinFileStream.Free;
-            BinMemStream.Free;
-          end;
-        except
-          debugln('  ERROR: unable to read file ''', BinFilename, '''');
-          halt(3);
-        end;
-        debugln('');
+        if IsRCFile then
+          OutputRCFile(FileList.Names[a], trim(FileList.ValueFromIndex[a]), ResMemStream)
+        else
+          OutputLRSFile(FileList.Names[a], trim(FileList.ValueFromIndex[a]), ResMemStream);
       end;
       ResMemStream.Position:=0;
       ResFileStream.CopyFrom(ResMemStream,ResMemStream.Size);
