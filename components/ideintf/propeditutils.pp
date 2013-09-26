@@ -11,7 +11,7 @@ unit PropEditUtils;
 interface
 
 uses
-  Classes, LCLProc, SysUtils, TypInfo;
+  Classes, SysUtils, TypInfo, LazLogger;
 
 type
   {
@@ -77,9 +77,6 @@ type
 function GetLookupRootForComponent(APersistent: TPersistent): TPersistent;
 
 implementation
-
-uses
-  Forms;
 
 type
   TPersistentAccess = class(TPersistent);
