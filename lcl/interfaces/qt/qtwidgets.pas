@@ -11803,6 +11803,16 @@ begin
               QWidget_releaseMouse(QWidgetH(Sender));
           end else
             Result := SlotMouse(Sender, Event);
+          if (QtVersionMajor = 4) and (QtVersionMinor >= 8) and
+            (QEvent_Type(Event) = QEventMouseButtonPress) then
+          begin
+            // change current row , this works fine with qt < 4.8
+            if Assigned(Item) and (currentItem <> Item) then
+            begin
+              // DebugLn('TQtCheckListBox forced item change');
+              Self.setCurrentItem(Item, True);
+            end;
+          end;
         end;
       else
       begin
