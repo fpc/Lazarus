@@ -1862,6 +1862,7 @@ var
     ControlSelection.Clear;
 
     NewComponentClass := SelectedCompClass.GetCreationClass;
+    //debugln(['AddComponent NewComponentClass=',DbgSName(NewComponentClass)]);
 
     // find a parent for the new component
     NewParent := FLookupRoot;
