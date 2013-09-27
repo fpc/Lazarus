@@ -3895,10 +3895,16 @@ begin
     Result := TBitmap.Create;
     Result.LoadFromResourceName(HInstance, ResName);
     Result.Transparent := True;
+  end
+  else
+  if FindResource(HInstance, PChar(ResName), PChar(RT_RCDATA)) <> 0 then
+  begin
+    Result := TPortableNetworkGraphic.Create;
+    Result.LoadFromResourceName(HInstance, ResName);
   end;
 
   if Result = nil then
-    Result := CreateBitmapFromLazarusResource('default');
+    Result := CreateBitmapFromResourceName(HInstance, 'default');
 end;
 
 function TPkgComponent.HasIcon: boolean;

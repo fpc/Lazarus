@@ -127,7 +127,10 @@ function CompareControlsWithTag(Control1, Control2: Pointer): integer;
 
 implementation
 
-uses MainBase;
+{$R ../images/components_images.res}
+
+uses 
+  MainBase;
 
 const
   OVERVIEW_PANEL_WIDTH = 20;
@@ -494,9 +497,9 @@ function TComponentPalette.GetUnregisteredIcon: TCustomBitMap;
 begin
   if fUnregisteredIcon = nil then 
   begin
-    fUnregisteredIcon := CreateBitmapFromLazarusResource('unregisteredcomponent');
+    fUnregisteredIcon := CreateBitmapFromResourceName(hInstance, 'unregisteredcomponent');
     if fUnregisteredIcon = nil then
-      fUnregisteredIcon := CreateBitmapFromLazarusResource('default');
+      fUnregisteredIcon := CreateBitmapFromResourceName(hInstance, 'default');
   end;
   Result := fUnregisteredIcon;
 end;
@@ -504,7 +507,7 @@ end;
 function TComponentPalette.GetSelectButtonIcon: TCustomBitmap;
 begin
   if fSelectButtonIcon=nil then 
-    fSelectButtonIcon := CreateBitmapFromLazarusResource('tmouse');
+    fSelectButtonIcon := CreateBitmapFromResourceName(hInstance, 'tmouse');
   Result:=fSelectButtonIcon;
 end;
 
@@ -733,7 +736,7 @@ var
     with CurBtn do begin
       Name := 'PaletteSelectBtn' + aButtonUniqueName;
       OnClick := @SelectionToolClick;
-      LoadGlyphFromLazarusResource('tmouse');
+      LoadGlyphFromResourceName(hInstance, 'tmouse');
       Flat := True;
       GroupIndex:= 1;
       Down := True;
@@ -903,9 +906,6 @@ begin
     PageControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ShowHideControls'){$ENDIF};
   end;
 end;
-
-initialization
-{$I ../images/components_images.lrs}
 
 end.
 
