@@ -35,6 +35,7 @@ type
     procedure LB1DblClick(Sender: TObject);
   private
     FTemplatePath: String;
+    function CheckLrtTemplate(const aFile:string): boolean;
   public
     DefaultTemplate: boolean;
     TemplName: String;
@@ -66,8 +67,10 @@ begin
   R := FindFirstUTF8(FTemplatePath + '*.lrt', faAnyFile, SearchRec);
   while R = 0 do
   begin
-    if (SearchRec.Attr and faDirectory) = 0 then
-      LB1.Items.Add(ChangeFileExt(SearchRec.Name, ''));
+    if (SearchRec.Attr and faDirectory) = 0 then begin
+      if CheckLrtTemplate(SearchRec.Name) then
+        LB1.Items.Add(ChangeFileExt(SearchRec.Name, ''));
+    end;
     R := FindNextUTF8(SearchRec);
   end;
   FindCloseUTF8(SearchRec);
@@ -103,6 +106,20 @@ end;
 procedure TfrTemplForm.LB1DblClick(Sender: TObject);
 begin
   if ButtonPanel1.OKButton.Enabled then ModalResult := mrOk;
+end;
+
+function TfrTemplForm.CheckLrtTemplate(const aFile: string): boolean;
+var
+  F: TextFile;
+  S:string;
+begin
+  Result := false;
+  AssignFile(F, aFile);
+  Reset(F);
+  {$I-} ReadLn(F, s); {$I+}
+  if IOResult=0 then
+    Result := (pos('<?xml', s)=1);
+  CloseFile(F);
 end;
 
 procedure TfrTemplForm.FormDeactivate(Sender: TObject);
