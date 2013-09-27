@@ -456,6 +456,8 @@ const
 
 implementation
 
+{$R btn_icons.res}
+
 uses
   WSButtons;
 
@@ -471,7 +473,8 @@ begin
     Exit;
   if BitBtnResNames[idButton] = '' then
     Exit;
-  Result := CreateBitmapFromLazarusResource(BitBtnResNames[idButton]);
+  Result := TPortableNetworkGraphic.Create;
+  Result.LoadFromResourceName(hInstance, BitBtnResNames[idButton]);
 end;
 
 procedure LoadGlyphFromLazarusResource(AGlyph: TButtonGlyph; const AName: String);
@@ -577,6 +580,4 @@ end;
 {$I buttonglyph.inc}
 {$I speedbutton.inc}
 
-initialization
-  {$I btn_icons.lrs}
 end.

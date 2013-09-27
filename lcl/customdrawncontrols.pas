@@ -2085,7 +2085,7 @@ begin
       end;
     BitBtnImage:= BitBtnImages[AKind];
     if BitBtnImage <> idButtonBase then begin
-      C := CreateBitmapFromLazarusResource(BitBtnResNames[BitBtnImage]);
+      C := GetDefaultButtonIcon(BitBtnImage);
       try
         Glyph.Assign(C);
       finally
