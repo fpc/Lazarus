@@ -159,7 +159,7 @@ begin
   cbAutoCloseOnSuccess.Checked := EnvironmentOptions.AutoCloseCompileDialog;
 
   ToAbort              := True;
-  BClose.LoadGlyphFromLazarusResource('btn_ok');
+  BClose.LoadGlyphFromResource('btn_ok');
 
   SetProjectName('');
   SetStatus('');
