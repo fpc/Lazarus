@@ -219,6 +219,8 @@ function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
 
 implementation
 
+{$R lcl_dock_images.res}
+
 const
   DockHeaderImageNames: array[TDockHeaderImageKind] of String =
   (
@@ -247,7 +249,10 @@ var
   ImageKind: TDockHeaderImageKind;
 begin
   for ImageKind := Low(TDockHeaderImageKind) to High(TDockHeaderImageKind) do
-    Images[ImageKind] := CreateBitmapFromLazarusResource(DockHeaderImageNames[ImageKind]);
+  begin
+    Images[ImageKind] := TPortableNetworkGraphic.Create;
+    Images[ImageKind].LoadFromResourceName(hInstance, DockHeaderImageNames[ImageKind]);
+  end;
 end;
 
 class procedure TDockHeader.DestroyDockHeaderImages(
@@ -2106,6 +2111,4 @@ end;
 
 initialization
   DefaultDockManagerClass := TLazDockTree;
-{$I lcl_dock_images.lrs}
-
 end.
