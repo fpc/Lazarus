@@ -5490,6 +5490,7 @@ images/components_images.res -text
 images/components_images_list.txt svneol=native#text/plain
 images/componenttreeview.bat svneol=native#text/x-msdos-program
 images/componenttreeview.lrs svneol=native#text/pascal
+images/componenttreeview.res -text
 images/componenttreeview/oi_box.png -text svneol=unset#image/png
 images/componenttreeview/oi_collection.png -text svneol=unset#image/png
 images/componenttreeview/oi_comp.png -text svneol=unset#image/png

@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, LCLProc, AvgLvlTree, Dialogs, Controls, ComCtrls,
-  ExtCtrls, LResources,
+  Graphics, ExtCtrls,
   ObjInspStrConsts, PropEdits, PropEditUtils;
   
 type
@@ -68,6 +68,8 @@ type
   end;
 
 implementation
+
+{$R ../../images/componenttreeview.res}
 
 type
   TCollectionAccess = class(TCollection);
@@ -558,18 +560,31 @@ begin
 end;
 
 constructor TComponentTreeView.Create(TheOwner: TComponent);
+var
+  Bitmap: TPortableNetworkGraphic;
 begin
   inherited Create(TheOwner);
   DragMode := dmAutomatic;
   FComponentList:=TBackupComponentList.Create;
   Options := Options + [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly];
   FImageList := TImageList.Create(nil);
-  FImageList.AddLazarusResource('oi_form');
-  FImageList.AddLazarusResource('oi_comp');
-  FImageList.AddLazarusResource('oi_control');
-  FImageList.AddLazarusResource('oi_box');
-  FImageList.AddLazarusResource('oi_collection');
-  FImageList.AddLazarusResource('oi_item');
+  Bitmap := TPortableNetworkGraphic.Create;
+  try
+    Bitmap.LoadFromResourceName(HInstance, 'oi_form');
+    FImageList.Add(Bitmap, nil);
+    Bitmap.LoadFromResourceName(HInstance, 'oi_comp');
+    FImageList.Add(Bitmap, nil);
+    Bitmap.LoadFromResourceName(HInstance, 'oi_control');
+    FImageList.Add(Bitmap, nil);
+    Bitmap.LoadFromResourceName(HInstance, 'oi_box');
+    FImageList.Add(Bitmap, nil);
+    Bitmap.LoadFromResourceName(HInstance, 'oi_collection');
+    FImageList.Add(Bitmap, nil);
+    Bitmap.LoadFromResourceName(HInstance, 'oi_item');
+    FImageList.Add(Bitmap, nil);
+  finally
+   Bitmap.Free;
+  end;
   Images := FImageList;
 end;
 
@@ -749,9 +764,6 @@ begin
   else if DefaultName<>'' then
     Result := DefaultName + ':' + Result;
 end;
-
-initialization
-  {$I ../../images/componenttreeview.lrs}
 
 end.
 
