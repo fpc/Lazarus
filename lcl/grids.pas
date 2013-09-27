@@ -815,7 +815,6 @@ type
     function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
     procedure SetCol(AValue: Integer);
     procedure SetColwidths(Acol: Integer; Avalue: Integer);
-    procedure SetRawColWidths(ACol: Integer; AValue: Integer);
     procedure SetColCount(AValue: Integer);
     procedure SetDefColWidth(AValue: Integer);
     procedure SetDefRowHeight(AValue: Integer);
@@ -1010,6 +1009,7 @@ type
     procedure PickListItemSelected(Sender: TObject);
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); virtual;
     procedure PrepareCellHints(ACol, ARow: Integer); virtual;
+    procedure ResetDefaultColWidths; virtual;
     procedure ResetEditor;
     procedure ResetOffset(chkCol, ChkRow: Boolean);
     procedure ResetSizes; virtual;
@@ -1032,6 +1032,7 @@ type
     procedure SetBorderStyle(NewStyle: TBorderStyle); override;
     procedure SetFixedcolor(const AValue: TColor); virtual;
     procedure SetFixedCols(const AValue: Integer); virtual;
+    procedure SetRawColWidths(ACol: Integer; AValue: Integer);
     procedure SetSelectedColor(const AValue: TColor); virtual;
     procedure ShowCellHintWindow(APoint: TPoint);
     procedure SizeChanged(OldColCount, OldRowCount: Integer); virtual;
@@ -2842,26 +2843,21 @@ end;
 
 procedure TCustomGrid.SetDefColWidth(AValue: Integer);
 var
-  i: Integer;
   OldLeft,OldRight,NewLeft,NewRight: Integer;
 begin
   if AValue=fDefColwidth then
     Exit;
   FDefColWidth:=AValue;
-  if not AutoFillColumns then begin
 
-    if EditorMode then
-      ColRowToOffset(True, True, FCol, OldLeft, OldRight);
+  if EditorMode then
+    ColRowToOffset(True, True, FCol, OldLeft, OldRight);
 
-    for i:=0 to ColCount-1 do
-      FCols[i] := Pointer(-1);
-    VisualChange;
+  ResetDefaultColWidths;
 
-    if EditorMode then begin
-      ColRowToOffset(True, True, FCol, NewLeft, NewRight);
-      if (NewLeft<>OldLeft) or (NewRight<>OldRight) then
-        EditorWidthChanged(FCol, GetColWidths(FCol));
-    end;
+  if EditorMode then begin
+    ColRowToOffset(True, True, FCol, NewLeft, NewRight);
+    if (NewLeft<>OldLeft) or (NewRight<>OldRight) then
+      EditorWidthChanged(FCol, GetColWidths(FCol));
   end;
 end;
 
@@ -3526,6 +3522,17 @@ end;
 
 procedure TCustomGrid.PrepareCellHints(ACol, ARow: Integer);
 begin
+end;
+
+procedure TCustomGrid.ResetDefaultColWidths;
+var
+  i: Integer;
+begin
+  if not AutoFillColumns then begin
+    for i:=0 to ColCount-1 do
+      FCols[i] := Pointer(-1);
+    VisualChange;
+  end;
 end;
 
 procedure TCustomGrid.UnprepareCellHints;
