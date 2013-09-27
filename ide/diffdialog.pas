@@ -274,7 +274,7 @@ begin
   end;
 
   // buttons
-  CancelScanningButton.LoadGlyphFromResource('btn_cancel');
+  CancelScanningButton.LoadGlyphFromResourceName(hInstance, 'btn_cancel');
   CloseButton.Caption:=lisClose;
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
   SaveDiffButton.Caption:=lisDlgSave;

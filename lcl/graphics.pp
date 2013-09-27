@@ -2016,6 +2016,7 @@ function LoadBitmapFromLazarusResource(const ResourceName: String): TBitmap; dep
 function LoadBitmapFromLazarusResourceHandle(Handle: TLResource): TBitmap; deprecated;
 
 // technically a bitmap is created and not loaded
+function CreateBitmapFromResourceName(Instance: THandle; const ResName: String): TCustomBitmap;
 function CreateBitmapFromLazarusResource(const AName: String): TCustomBitmap;
 function CreateBitmapFromLazarusResource(const AName: String; AMinimumClass: TCustomBitmapClass): TCustomBitmap;
 function CreateBitmapFromLazarusResource(AHandle: TLResource): TCustomBitmap;
@@ -2197,6 +2198,27 @@ end;
 function CreateBitmapFromLazarusResource(const AName: String): TCustomBitmap;
 begin
   Result := CreateBitmapFromLazarusResource(AName, TCustomBitmap);
+end;
+
+function CreateBitmapFromResourceName(Instance: THandle; const ResName: String): TCustomBitmap;
+var
+  ResHandle: TFPResourceHandle;
+begin
+  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_BITMAP));
+  if ResHandle <> 0 then
+  begin
+    Result := TBitmap.Create;
+    Result.LoadFromResourceName(Instance, ResName);
+    Exit;
+  end;
+  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_RCDATA));
+  if ResHandle <> 0 then
+  begin
+    Result := TPortableNetworkGraphic.Create;
+    Result.LoadFromResourceName(Instance, ResName);
+  end
+  else
+    Result := nil;
 end;
 
 function CreateBitmapFromLazarusResource(const AName: String; AMinimumClass: TCustomBitmapClass): TCustomBitmap;

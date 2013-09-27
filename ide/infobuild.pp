@@ -159,7 +159,7 @@ begin
   cbAutoCloseOnSuccess.Checked := EnvironmentOptions.AutoCloseCompileDialog;
 
   ToAbort              := True;
-  BClose.LoadGlyphFromResource('btn_ok');
+  BClose.LoadGlyphFromResourceName(hInstance, 'btn_ok');
 
   SetProjectName('');
   SetStatus('');

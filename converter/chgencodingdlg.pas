@@ -110,9 +110,9 @@ begin
   CloseButton.Caption:=lisClose;
   ApplyButton.Caption:=lisConvert;
   HelpButton.Caption:=lisHelp;
-  CloseButton.LoadGlyphFromResource('btn_close');
-  ApplyButton.LoadGlyphFromResource('btn_ok');
-  HelpButton.LoadGlyphFromResource('btn_help');
+  CloseButton.LoadGlyphFromResourceName(hInstance, 'btn_close');
+  ApplyButton.LoadGlyphFromResourceName(hInstance, 'btn_ok');
+  HelpButton.LoadGlyphFromResourceName(hInstance, 'btn_help');
 
   PreviewGroupBox.Caption:=dlgWRDPreview;
   PreviewListView.Column[0].Caption:=dlgEnvFiles;

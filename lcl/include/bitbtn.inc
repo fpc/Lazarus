@@ -64,9 +64,9 @@ begin
   inherited Click;
 end;
 
-procedure TCustomBitBtn.LoadGlyphFromResource(const AName: String);
+procedure TCustomBitBtn.LoadGlyphFromResourceName(Instance: THandle; const AName: String);
 begin
-  Buttons.LoadGlyphFromResource(FButtonGlyph, AName);
+  Buttons.LoadGlyphFromResourceName(FButtonGlyph, Instance, AName);
 end;
 
 procedure TCustomBitBtn.LoadGlyphFromLazarusResource(const AName: String);

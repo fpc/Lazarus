@@ -1367,7 +1367,7 @@ begin
   Button.ControlStyle := Button.ControlStyle + [csNoDesignSelectable];
   aGlyph := GetDefaultGlyph;
   if aGlyph = nil then
-    Button.LoadGlyphFromResource(GetDefaultGlyphName)
+    Button.LoadGlyphFromResourceName(hInstance, GetDefaultGlyphName)
   else
     Button.Glyph := aGlyph;
   Button.Parent:=self;
@@ -1404,7 +1404,7 @@ begin
   FButton.ControlStyle := FButton.ControlStyle + [csNoDesignSelectable];
   B := GetDefaultGlyph;
   if B = nil
-  then FButton.LoadGlyphFromResource(GetDefaultGlyphName)
+  then FButton.LoadGlyphFromResourceName(hInstance, GetDefaultGlyphName)
   else FButton.Glyph := B;
   ControlStyle := ControlStyle - [csSetCaption];
 end;
