@@ -40,7 +40,7 @@ end;
 
 function TGraphic.GetResourceType: TResourceType;
 begin
-  Result := nil;
+  Result := RT_RCDATA;
 end;
 
 procedure TGraphic.Assign(ASource: TPersistent);
