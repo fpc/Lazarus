@@ -69,7 +69,7 @@ begin
   begin
     if (SearchRec.Attr and faDirectory) = 0 then begin
       if CheckLrtTemplate(SearchRec.Name) then
-        LB1.Items.Add(ChangeFileExt(SearchRec.Name, ''));
+        LB1.Items.AddObject(ChangeFileExt(SearchRec.Name, ''), Lb1);
     end;
     R := FindNextUTF8(SearchRec);
   end;
@@ -95,11 +95,21 @@ begin
       Image1.Picture.Clear;
     end
     else
-      if FileExistsUTF8(FTemplatePath + LB1.Items[Index] + '.frt') then
-        CurReport.LoadTemplate(FTemplatePath + LB1.Items[Index] + '.frt', Memo1.Lines, Image1.Picture.Bitmap,False)
-      else
-      if FileExistsUTF8(FTemplatePath + LB1.Items[Index] + '.lrt') then
-        CurReport.LoadTemplateXML(FTemplatePath + LB1.Items[Index] + '.lrt', Memo1.Lines, Image1.Picture.Bitmap,False)
+    begin
+      if LB1.Items.Objects[Index]=LB1 then
+      begin
+        // lrt template
+        if FileExistsUTF8(FTemplatePath + LB1.Items[Index] + '.lrt') then
+          CurReport.LoadTemplateXML(FTemplatePath + LB1.Items[Index] + '.lrt',
+            Memo1.Lines, Image1.Picture.Bitmap,False);
+      end else
+      begin
+        // frt template
+        if FileExistsUTF8(FTemplatePath + LB1.Items[Index] + '.frt') then
+          CurReport.LoadTemplate(FTemplatePath + LB1.Items[Index] + '.frt',
+            Memo1.Lines, Image1.Picture.Bitmap,False);
+      end;
+    end;
   end;
 end;
 
@@ -123,17 +133,26 @@ begin
 end;
 
 procedure TfrTemplForm.FormDeactivate(Sender: TObject);
+var
+  Index: Integer;
+  aFileName: string;
 begin
   DefaultTemplate := false;
   if ModalResult = mrOk then
   begin
-    if LB1.Items.Objects[LB1.ItemIndex]=self then
+    Index := LB1.ItemIndex;
+    if LB1.Items.Objects[Index]=self then
       DefaultTemplate := true
     else
-      if FileExistsUTF8(FTemplatePath + LB1.Items[LB1.ItemIndex] + '.lrt') then
-        TemplName := FTemplatePath + LB1.Items[LB1.ItemIndex] + '.lrt'
+    begin
+      aFileName := FTemplatePath + LB1.Items[LB1.ItemIndex];
+      if LB1.Items.Objects[Index]=LB1 then
+        aFileName := aFileName + '.lrt'
       else
-        TemplName := FTemplatePath + LB1.Items[LB1.ItemIndex] + '.frt';
+        aFileName := aFileName + '.frt';
+      if FileExists(aFileName) then
+        TemplName := aFileName;
+    end;
   end;
 end;
 
