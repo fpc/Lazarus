@@ -5486,6 +5486,7 @@ images/components/txmlpropstorage.png -text svneol=unset#image/png
 images/components/unregisteredcomponent.png -text svneol=unset#image/png
 images/components_images.bat svneol=native#text/x-msdos-program
 images/components_images.lrs svneol=native#text/pascal
+images/components_images.res -text
 images/components_images_list.txt svneol=native#text/plain
 images/componenttreeview.bat svneol=native#text/x-msdos-program
 images/componenttreeview.lrs svneol=native#text/pascal
