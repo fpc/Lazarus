@@ -6666,7 +6666,7 @@ lcl/interfaces/wince/interfaces.pp svneol=native#text/plain
 lcl/interfaces/wince/win32compat.pas svneol=native#text/plain
 lcl/interfaces/wince/wincecallback.inc svneol=native#text/plain
 lcl/interfaces/wince/wincedef.pp svneol=native#text/plain
-lcl/interfaces/wince/wincedialogs.lrs svneol=native#text/pascal
+lcl/interfaces/wince/wincedialogs.res -text
 lcl/interfaces/wince/winceextra.pp svneol=native#text/plain
 lcl/interfaces/wince/winceint.pp svneol=native#text/plain
 lcl/interfaces/wince/wincelclintf.inc svneol=native#text/plain

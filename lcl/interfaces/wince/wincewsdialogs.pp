@@ -97,6 +97,8 @@ type
 
 implementation
 
+{$R wincedialogs.res}
+
 type
 
   { TWinCEFileDialogForm }
@@ -168,7 +170,7 @@ begin
   OkButton.Parent := Panel;
   OkButton.Height := 17;
   OkButton.Width := 17;
-  AImage.LoadFromLazarusResource('wincedialog_ok');
+  AImage.LoadFromResourceName(hInstance, 'wincedialog_ok');
   OkButton.Glyph.Assign(AImage);
   OkButton.OnClick := HandleOkClick;
   OkButton.Left := 0;
@@ -178,7 +180,7 @@ begin
   CancelButton.Parent := Panel;
   CancelButton.Height := 17;
   CancelButton.Width := 17;
-  AImage.LoadFromLazarusResource('wincedialog_cancel');
+  AImage.LoadFromResourceName(hInstance, 'wincedialog_cancel');
   CancelButton.Glyph.Assign(AImage);
   CancelButton.OnClick := HandleCancelClick;
   CancelButton.Left := 20;
@@ -380,6 +382,4 @@ begin
   OpenDialog.FileName := Handle.FileName;
 end;
 
-initialization
-  {$I wincedialogs.lrs}
 end.
