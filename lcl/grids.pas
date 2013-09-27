@@ -1566,6 +1566,7 @@ type
       procedure Clean(aRect: TRect; CleanOptions: TGridZoneSet); overload;
       procedure Clean(StartCol,StartRow,EndCol,EndRow: integer; CleanOptions: TGridZoneSet); overload;
       procedure CopyToClipboard(AUseSelection: boolean = false);
+      procedure InsertRowWithValues(Index: Integer; Values: array of String);
       procedure LoadFromCSVStream(AStream: TStream; ADelimiter: Char=','; WithHeader: boolean=true);
       procedure LoadFromCSVFile(AFilename: string; ADelimiter: Char=','; WithHeader: boolean=true);
       procedure SaveToCSVStream(AStream: TStream; ADelimiter: Char=','; WithHeader: boolean=true;
@@ -9890,7 +9891,7 @@ begin
     Result:=TStringGridStrings.Create(Self, AMap, IsCols, index);
 end;
 
-function TCustomStringGrid.Getcells(aCol, aRow: Integer): string;
+function TCustomStringGrid.GetCells(ACol, ARow: Integer): string;
 var
    C: PCellProps;
 begin
@@ -9942,7 +9943,7 @@ begin
   end;
 end;
 
-procedure TCustomStringGrid.Setcells(aCol, aRow: Integer; const Avalue: string);
+procedure TCustomStringGrid.SetCells(ACol, ARow: Integer; const AValue: string);
   procedure UpdateCell;
   begin
     if EditorMode and (aCol=FCol)and(aRow=FRow) and
@@ -10347,7 +10348,7 @@ begin
   end;
 end;
 
-procedure TCustomStringGrid.LoadContent(Cfg: TXMLConfig; Version:Integer);
+procedure TCustomStringGrid.LoadContent(cfg: TXMLConfig; Version: Integer);
 var
   ContentSaved: Boolean;
   i,j,k: Integer;
@@ -10465,6 +10466,18 @@ begin
     doCopyToClipboard
   else
     CopyCellRectToClipboard(Rect(0,0,ColCount-1,RowCount-1));
+end;
+
+procedure TCustomStringGrid.InsertRowWithValues(Index: Integer;
+  Values: array of String);
+var
+  i: Integer;
+begin
+  InsertColRow(false, Index);
+  if Length(Values) > ColCount then
+    ColCount := Length(Values);
+  for i := 0 to Length(Values)-1 do
+    Cells[i, Index] := Values[i];
 end;
 
 procedure TCustomStringGrid.LoadFromCSVStream(AStream: TStream;
