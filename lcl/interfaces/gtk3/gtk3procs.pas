@@ -230,6 +230,12 @@ const
                               // Used by TScrollbar, TScrollbox and TWinApiWidget
   odnScrollBarLastPos = 'ScrollBarLastPos';
 
+  // checklistbox states
+  gtk3CLBState = 0; // byte
+  gtk3CLBText = 1; // PGChar
+  gtk3CLBDisabled = 3; // gboolean
+
+
 
 
 function Gtk3IsObject(AWidget: PGObject): GBoolean;

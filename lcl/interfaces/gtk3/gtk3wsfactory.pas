@@ -139,7 +139,7 @@ uses
 uses
   Gtk3WSImgList, Gtk3WSControls, Gtk3WSForms, Gtk3WSButtons, Gtk3WSStdCtrls,
   Gtk3WSComCtrls, Gtk3WSExtCtrls, Gtk3WSSpin, Gtk3WSMenus, Gtk3WSCalendar,
-  Gtk3WSDialogs;
+  Gtk3WSDialogs, Gtk3WSCheckLst;
 
 // imglist
 function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
@@ -536,8 +536,8 @@ end;
 // CheckLst
 function RegisterCustomCheckListBox: Boolean; alias : 'WSRegisterCustomCheckListBox';
 begin
-  // RegisterWSComponent(TCustomCheckListBox, TGtk2WSCustomCheckListBox);
-  Result := False;
+  RegisterWSComponent(TCustomCheckListBox, TGtk3WSCustomCheckListBox);
+  Result := True;
 end;
 
 // Forms

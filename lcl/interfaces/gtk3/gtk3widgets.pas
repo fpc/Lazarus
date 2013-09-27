@@ -49,7 +49,7 @@ type
     wtContainer, wtMenuBar, wtMenu, wtMenuItem, wtEntry, wtSpinEdit,
     wtNotebook, wtComboBox,
     wtGroupBox, wtCalendar, wtTrackBar, wtScrollBar,
-    wtScrollingWin, wtListBox, wtListView, wtMemo, wtTreeModel,
+    wtScrollingWin, wtListBox, wtListView, wtCheckListBox, wtMemo, wtTreeModel,
     wtCustomControl, wtScrollingWinControl,
     wtWindow, wtDialog, wtHintWindow);
   TGtk3WidgetTypes = set of TGtk3WidgetType;
@@ -510,6 +510,13 @@ type
     property ListBoxStyle: TListBoxStyle read FListBoxStyle write SetListBoxStyle;
   end;
 
+  { TGtk3CheckListBox }
+
+  TGtk3CheckListBox = class(TGtk3ListBox)
+  protected
+    function CreateWidget(const Params: TCreateParams): PGtkWidget; override;
+  end;
+
   { TGtk3ListView }
 
   TGtk3ListView = class(TGtk3ScrollableWin)
@@ -775,7 +782,8 @@ type
 function Gtk3WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
 
 implementation
-uses Spin, gtk3int, gtk3procs, gtk3private, Gtk3CellRenderer, ExtDlgs, math;
+uses Spin, gtk3int, gtk3procs, gtk3private, Gtk3CellRenderer, ExtDlgs, math,
+  CheckLst;
 
 function Gtk3EventToStr(AEvent: TGdkEventType): String;
 begin
@@ -4848,6 +4856,147 @@ begin
   APath := AModel^.get_path(@Iter);
   PGtkTreeView(getContainerWidget)^.scroll_to_cell(APath, nil, False, 0.0, 0.0);
   APath^.free;
+end;
+
+{ TGtk3CheckListBox }
+
+procedure Gtk3WS_CheckListBoxDataFunc({%H-}tree_column: PGtkTreeViewColumn;
+  cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; {%H-}data: Pointer); cdecl;
+var
+  b: byte;
+  ADisabled: gboolean;
+  AValue: TCheckBoxState;
+begin
+  B := 0;
+  ADisabled := False;
+  gtk_tree_model_get(tree_model, iter, [gtk3CLBState, @b, -1]);
+  gtk_tree_model_get(tree_model, iter, [gtk3CLBDisabled, @ADisabled, -1]);
+  AValue := TCheckBoxState(b); // TCheckBoxState is 4 byte
+  g_object_set(cell, 'inconsistent', [gboolean(AValue = cbGrayed), nil]);
+  if AValue <> cbGrayed then
+    gtk_cell_renderer_toggle_set_active(PGtkCellRendererToggle(cell), AValue = cbChecked);
+
+  g_object_set(cell, 'activatable', [gboolean(not ADisabled), nil]);
+end;
+
+procedure Gtk3WS_CheckListBoxToggle({%H-}cellrenderertoggle : PGtkCellRendererToggle;
+  arg1 : PGChar; AData: GPointer); cdecl;
+var
+  Mess: TLMessage;
+  Param: PtrInt;
+  Iter, IterParent : TGtkTreeIter;
+  TreeView: PGtkTreeView;
+  ListStore: PGtkTreeModel;
+  Path: PGtkTreePath;
+  AState: TCheckBoxState;
+begin
+  Val(arg1, Param);
+
+  TreeView := PGtkTreeView(TGtk3CheckListBox(AData).GetContainerWidget);
+  ListStore := gtk_tree_view_get_model(TreeView);
+  if gtk_tree_model_iter_nth_child(ListStore, @Iter, nil, Param) then
+    begin
+      TCustomCheckListBox(TGtk3Widget(AData).LCLObject).Toggle(Param);
+      AState := TCustomCheckListBox(TGtk3Widget(AData).LCLObject).State[Param];
+      gtk_list_store_set(PGtkListStore(ListStore), @Iter, [gtk3CLBState,
+        Byte(AState), -1]);
+    end;
+
+
+  Path := gtk_tree_path_new_from_indices(Param, [-1]);
+  if Path <> nil then
+  begin
+    gtk_tree_view_set_cursor(TreeView, Path, nil, False);
+    gtk_tree_path_free(Path);
+  end;
+
+  FillChar(Mess{%H-}, SizeOf(Mess), #0);
+  Mess.Msg := LM_CHANGED;
+
+  Mess.Result := 0;
+  Mess.WParam := Param;
+  DeliverMessage(TGtk3Widget(AData).LCLObject, Mess);
+
+end;
+
+function TGtk3CheckListBox.CreateWidget(const Params: TCreateParams
+  ): PGtkWidget;
+var
+  ACheckListBox: TCustomCheckListBox;
+  ListStore: PGtkListStore;
+  ItemList: TGtkListStoreStringList;
+  AColumn: PGtkTreeViewColumn;
+  Toggle: PGtkCellRendererToggle;
+  Renderer : PGtkCellRendererText;
+  VAdjust, HAdjust: PGtkAdjustment;
+  AScrollStyle: TPoint;
+  TreeModel: PGtkTreeModel;
+begin
+  FScrollX := 0;
+  FScrollY := 0;
+  FWidgetType := FWidgetType + [wtTreeModel, wtListBox, wtCheckListBox, wtScrollingWin];
+  ACheckListBox := TCustomCheckListBox(LCLObject);
+  FListBoxStyle := lbStandard;
+
+  Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
+  Result^.show;
+
+  ListStore := gtk_list_store_new (4, [G_TYPE_UCHAR, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_BOOLEAN, nil]);
+  FCentralWidget := TGtkTreeView.new_with_model(PGtkTreeModel(ListStore));
+  PGtkTreeView(FCentralWidget)^.set_headers_visible(False);
+  g_object_unref (liststore);
+
+  AColumn := gtk_tree_view_column_new;
+
+  // checkable column
+  Toggle := gtk_cell_renderer_toggle_new;
+  g_object_set_data(PGObject(Toggle), 'lclwidget', Self);
+
+  AColumn^.set_title('CHECKBINS');
+  AColumn^.pack_start(Toggle, True);
+  AColumn^.set_cell_data_func(Toggle, @Gtk3WS_CheckListBoxDataFunc, Self, nil);
+  Toggle^.set_active(True);
+  PGtkTreeView(FCentralWidget)^.append_column(AColumn);
+  AColumn^.set_clickable(True);
+
+  g_signal_connect_data(Toggle, 'toggled', TGCallback(@Gtk3WS_CheckListBoxToggle), Self, nil, 0);
+
+
+  Renderer := gtk_cell_renderer_text_new;
+
+  g_object_set_data(PGObject(Renderer), 'lclwidget', Self);
+
+  AColumn := gtk_tree_view_column_new_with_attributes ('LISTITEMS', Renderer,
+             ['text', 1, nil]);
+
+  g_object_set_data(PGObject(AColumn), 'lclwidget', Self);
+
+  // AColumn^.pack_start(Renderer, True);
+
+  PGtkTreeView(FCentralWidget)^.append_column(AColumn);
+
+  ItemList := TGtkListStoreStringList.Create(PGtkListStore(PGtkTreeView(FCentralWidget)^.get_model), 1, LCLObject);
+  g_object_set_data(PGObject(FCentralWidget),GtkListItemLCLListTag, ItemList);
+
+
+  AColumn^.set_clickable(True);
+
+  // AColumn^set_cell_data_func(AColumn, renderer, @LCLIntfRenderer_ColumnCellDataFunc, Self, nil);
+
+  PGtkScrolledWindow(Result)^.add(FCentralWidget);
+
+
+  PGtkScrolledWindow(Result)^.get_vscrollbar^.set_can_focus(False);
+  PGtkScrolledWindow(Result)^.get_hscrollbar^.set_can_focus(False);
+  PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+  FListBoxStyle := ACheckListBox.Style;
+  // AListBox.Style;
+  if FListBoxStyle <> lbOwnerDrawVariable then
+  begin
+    //AColumn^.set_sizing(GTK_TREE_VIEW_COLUMN_FIXED);
+    //PGtkTreeView(FCentralWidget)^.set_fixed_height_mode(True);
+  end;
+
 end;
 
 { TGtk3ListView }
