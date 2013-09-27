@@ -5884,7 +5884,7 @@ lcl/images/btncalcmin.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalcmul.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalcok.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalcplus.xpm -text svneol=native#image/x-xpixmap
-lcl/images/btncalcpm.xpm -text svneol=native#image/x-xpixmap
+lcl/images/btncalcpmin.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalculator.png -text svneol=unset#image/png
 lcl/images/btncalendar.png -text svneol=unset#image/png
 lcl/images/btnfiltercancel.png -text

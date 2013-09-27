@@ -1,5 +1,5 @@
 /* XPM */
-static char *calcpm[] = {
+static char *calcpmin[] = {
 /* columns rows colors chars-per-pixel */
 "10 13 2 1",
 "  c black",
