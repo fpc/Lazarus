@@ -514,11 +514,13 @@ type
 
   TGtk3ListView = class(TGtk3ScrollableWin)
   private
+    FPreselectedIndices: TFPList;
     FIsTreeView: Boolean;
   protected
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const AKey: Word): Boolean; override;
   public
+    destructor Destroy; override;
     {interface implementation}
     function getHorizontalScrollbar: PGtkScrollbar; override;
     function getVerticalScrollbar: PGtkScrollbar; override;
@@ -4850,6 +4852,80 @@ end;
 
 { TGtk3ListView }
 
+function Gtk3WS_ListViewItemPreSelected({%H-}selection: PGtkTreeSelection; {%H-}model: PGtkTreeModel;
+  path: PGtkTreePath; path_is_currently_selected: GBoolean; AData: GPointer): GBoolean; cdecl;
+begin
+  // DebugLn('Gtk3WS_ListViewItemSelected ,path selected ',dbgs(path_is_currently_selected));
+  // this function is called *before* the item is selected
+  // The result should be True to allow the Item to change selection
+  Result := True;
+
+  if (AData = nil) or TGtk3Widget(AData).InUpdate then
+    exit;
+
+  if not Assigned(TGtk3ListView(AData).FPreselectedIndices) then
+    TGtk3ListView(AData).FPreselectedIndices := TFPList.Create;
+
+  if TGtk3ListView(AData).FPreselectedIndices.IndexOf(Pointer(PtrInt(gtk_tree_path_get_indices(path)^))) = -1 then
+    TGtk3ListView(AData).FPreselectedIndices.Add(Pointer(PtrInt(gtk_tree_path_get_indices(path)^)));
+end;
+
+procedure Gtk3WS_ListViewItemSelected(ASelection: PGtkTreeSelection; AData: GPointer); cdecl;
+var
+  ATreeView: PGtkTreeView;
+  AList: PGList;
+  Msg: TLMNotify;
+  NM: TNMListView;
+  Path: PGtkTreePath;
+  Indices: Integer;
+  i, j: Integer;
+  B: Boolean;
+begin
+  if (AData = nil) or TGtk3Widget(AData).InUpdate then
+    exit;
+  if not Assigned(TGtk3ListView(AData).FPreselectedIndices) then
+    exit;
+  ATreeView := gtk_tree_selection_get_tree_view(ASelection);
+  AList := gtk_tree_selection_get_selected_rows(ASelection, nil);
+  TGtk3Widget(AData).BeginUpdate; // dissalow entering Gtk3WS_ListViewItemPreSelected
+  try
+    for i := 0 to TGtk3ListView(AData).FPreselectedIndices.Count - 1 do
+    begin
+      FillChar(Msg{%H-}, SizeOf(Msg), 0);
+      Msg.Msg := CN_NOTIFY;
+      FillChar(NM{%H-}, SizeOf(NM), 0);
+      NM.hdr.hwndfrom := HWND(TGtk3Widget(AData));
+      NM.hdr.code := LVN_ITEMCHANGED;
+      NM.iItem := PtrInt(TGtk3ListView(AData).FPreselectedIndices.Items[i]);
+      NM.iSubItem := 0;
+      B := False;
+      for j := 0 to g_list_length(AList) - 1 do
+      begin
+        Path := g_list_nth_data(AList, guint(j));
+        if Path <> nil then
+        begin
+          Indices := gtk_tree_path_get_indices(Path)^;
+          B := Indices = PtrInt(TGtk3ListView(AData).FPreselectedIndices.Items[i]);
+          if B then
+            break;
+        end;
+      end;
+      if not B then
+        NM.uOldState := LVIS_SELECTED
+      else
+        NM.uNewState := LVIS_SELECTED;
+      NM.uChanged := LVIF_STATE;
+      Msg.NMHdr := @NM.hdr;
+      DeliverMessage(TGtk3Widget(AData).LCLObject, Msg);
+    end;
+  finally
+    FreeAndNil(TGtk3ListView(AData).FPreselectedIndices);
+    if AList <> nil then
+      g_list_free(AList);
+    TGtk3Widget(AData).EndUpdate;
+  end;
+end;
+
 function TGtk3ListView.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   AListView: TCustomListView;
@@ -4859,6 +4935,7 @@ var
 begin
   FScrollX := 0;
   FScrollY := 0;
+  FPreselectedIndices := nil;
   FWidgetType := FWidgetType + [wtTreeModel, wtListView, wtScrollingWin];
   AListView := TCustomListView(LCLObject);
   Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
@@ -4889,6 +4966,12 @@ begin
   g_object_unref (PGObject(TreeModel));
   PGtkScrolledWindow(Result)^.set_can_focus(False);
   PGtkTreeView(FCentralWidget)^.set_can_focus(True);
+  if FIsTreeView then
+  begin
+    gtk_tree_selection_set_select_function(PGtkTreeView(FCentralWidget)^.get_selection, TGtkTreeSelectionFunc(@Gtk3WS_ListViewItemPreSelected),
+      Self, nil);
+    g_signal_connect_data(PGtkTreeView(FCentralWidget)^.get_selection, 'changed', TGCallback(@Gtk3WS_ListViewItemSelected), Self, nil, 0);
+  end;
   // if FIsTreeView then
   //  PGtkTreeView(FCentralWidget)^.set_search_column(0);
 end;
@@ -4896,6 +4979,12 @@ end;
 function TGtk3ListView.EatArrowKeys(const AKey: Word): Boolean;
 begin
   Result := False;
+end;
+
+destructor TGtk3ListView.Destroy;
+begin
+  FreeAndNil(FPreselectedIndices);
+  inherited Destroy;
 end;
 
 function TGtk3ListView.getHorizontalScrollbar: PGtkScrollbar;
