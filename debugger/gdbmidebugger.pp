@@ -3403,13 +3403,24 @@ end;
 function TGDBMIDisassembleResultFunctionIterator.CurrentFixedAddr(AOffsLimit: Integer): TDBGPtr;
 begin
   Result := FList.Item[CurrentIndex]^.Addr - Min(FList.Item[CurrentIndex]^.Offset, AOffsLimit);
+  // Offset may increase to a point BEFORE the previous address (e.g. neseted proc, maybe inline?)
+  if CurrentIndex > 0 then
+    if Result <= FList.Item[CurrentIndex-1]^.Addr then
+      Result := FList.Item[CurrentIndex]^.Addr;
 end;
 
 function TGDBMIDisassembleResultFunctionIterator.NextStartAddr: TDBGPtr;
 begin
   if NextIndex <= FMaxIdx
-  then Result := FList.Item[NextIndex]^.Addr - FList.Item[NextIndex]^.Offset
-  else Result := FLastSubListEndAddr;
+  then begin
+    Result := FList.Item[NextIndex]^.Addr - FList.Item[NextIndex]^.Offset;
+    // Offset may increase to a point BEFORE the previous address (e.g. neseted proc, maybe inline?)
+    if NextIndex > 0 then
+      if Result <= FList.Item[NextIndex-1]^.Addr then
+        Result := FList.Item[NextIndex]^.Addr;
+  end
+  else
+    Result := FLastSubListEndAddr;
 end;
 
 function TGDBMIDisassembleResultFunctionIterator.NextStartOffs: Integer;
@@ -3782,6 +3793,8 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
   begin
     if ASrcInfoDisAssList = ADisAssList
     then ASrcInfoDisAssList := nil;
+    if ADisAssList.Count = 0 then
+      exit;
     // Clean end of range
     ItmPtr := ADisAssList.Item[AFromIndex];
     i := ADestRange.Count;
