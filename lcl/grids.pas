@@ -1708,6 +1708,9 @@ procedure Register;
 
 implementation
 
+{$R lcl_grid_images.res}
+{$R lcl_dbgrid_images.res}
+
 uses
   WSGrids;
 
@@ -2306,15 +2309,16 @@ end;
 
 function TCustomGrid.LoadResBitmapImage(const ResName: string): TBitmap;
 var
-  C: TCustomBitmap;
+  C: TPixmap;
 begin
-  C := CreateBitmapFromLazarusResource(ResName);
-  if C<>nil then begin
+  C := TPixmap.Create;
+  try
+    C.LoadFromResourceName(hInstance, ResName);
     Result := TBitmap.Create;
     Result.Assign(C);
+  finally
     C.Free;
-  end else
-    Result:=nil;
+  end;
 end;
 
 function TCustomGrid.MouseButtonAllowed(Button: TMouseButton): boolean;
@@ -3352,14 +3356,23 @@ end;
 procedure TCustomGrid.HeaderClick(IsColumn: Boolean; index: Integer);
 var
   ColOfs: Integer;
+  Bitmap: TPortableNetworkGraphic;
 begin
   if IsColumn and FColumnClickSorts then begin
     // Prepare glyph images if not done already.
     if FTitleImageList = nil then
       FTitleImageList := TImageList.Create(Self);
-    if FAscImgInd = -1 then begin
-      FAscImgInd := TitleImageList.AddLazarusResource('sortasc');
-      FDescImgInd := TitleImageList.AddLazarusResource('sortdesc');
+    if FAscImgInd = -1 then
+    begin
+      Bitmap := TPortableNetworkGraphic.Create;
+      try
+        Bitmap.LoadFromResourceName(hInstance, 'sortasc');
+        FAscImgInd := TitleImageList.Add(Bitmap, nil);
+        Bitmap.LoadFromResourceName(hInstance, 'sortdesc');
+        FDescImgInd := TitleImageList.Add(Bitmap, nil);
+      finally
+        Bitmap.Free;
+      end;
     end;
     // Determine the sort order.
     if index = FSortColumn then begin
@@ -4542,10 +4555,7 @@ end;
 class procedure TCustomGrid.WSRegisterClass;
 begin
   inherited WSRegisterClass;
-  if RegisterCustomGrid then
-  begin
-    {$I lcl_dbgrid_images.lrs}
-  end;
+  RegisterCustomGrid;
 end;
 
 procedure TCustomGrid.AdjustClientRect(var ARect: TRect);
@@ -12113,8 +12123,5 @@ begin
   inherited WSRegisterClass;
   Done := True;
 end;
-
-initialization
-  {$I lcl_grid_images.lrs}
 
 end.
