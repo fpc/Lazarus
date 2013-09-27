@@ -4990,6 +4990,10 @@ begin
   PGtkScrolledWindow(Result)^.get_hscrollbar^.set_can_focus(False);
   PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
   FListBoxStyle := ACheckListBox.Style;
+  if ACheckListBox.MultiSelect then
+    PGtkTreeView(FCentralWidget)^.get_selection^.set_mode(GTK_SELECTION_MULTIPLE)
+  else
+    PGtkTreeView(FCentralWidget)^.get_selection^.set_mode(GTK_SELECTION_SINGLE);
   // AListBox.Style;
   if FListBoxStyle <> lbOwnerDrawVariable then
   begin
