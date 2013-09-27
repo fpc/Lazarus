@@ -5838,7 +5838,7 @@ lcl/clipbrd.pp svneol=native#text/pascal
 lcl/colorbox.pas svneol=native#text/pascal
 lcl/comctrls.pp svneol=native#text/pascal
 lcl/controls.pp svneol=native#text/pascal
-lcl/cursors.lrs svneol=native#text/pascal
+lcl/cursors.res -text
 lcl/customdrawn_android.pas svneol=native#text/plain
 lcl/customdrawn_common.pas svneol=native#text/pascal
 lcl/customdrawn_winxp.pas svneol=native#text/plain

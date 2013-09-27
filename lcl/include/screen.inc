@@ -580,6 +580,8 @@ end;
   function TScreen.GetCursors(Index: Integer): HCURSOR;
  ------------------------------------------------------------------------------}
 function TScreen.GetCursors(AIndex: Integer): HCURSOR;
+var
+  CursorImage: TCursorImage;
 begin
   Result := 0;
   //if AIndex = crNone then Exit;
@@ -592,7 +594,15 @@ begin
   // not yet loaded
   Result := WidgetSet.CreateStandardCursor(AIndex);
   if (Result = 0) and (AIndex <> crDefault) then
-    Result := LoadCursorFromLazarusResource('cur_' + IntToStr(-AIndex));
+  begin
+    CursorImage := TCursorImage.Create;
+    try
+      CursorImage.LoadFromResourceName(hInstance, 'cur_' + IntToStr(-AIndex));
+      Result := CursorImage.ReleaseHandle;
+    finally
+      CursorImage.Free;
+    end;    
+  end;
   if Result = 0 then
     Exit;
   

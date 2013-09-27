@@ -1732,6 +1732,8 @@ procedure Register;
 
 implementation
 
+{$R cursors.res}
+
 {$ifdef WinCE}
   {$define extdecl := cdecl}
 {$else}
@@ -2043,7 +2045,6 @@ begin
 end;
 
 initialization
-  {$INCLUDE cursors.lrs}
   RegisterPropertyToSkip(TForm, 'OldCreateOrder', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TForm, 'TextHeight', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TForm, 'Scaled', 'VCL compatibility property', '');
