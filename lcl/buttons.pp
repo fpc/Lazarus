@@ -168,6 +168,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Click; override;
+    procedure LoadGlyphFromResource(const AName: String);
     procedure LoadGlyphFromLazarusResource(const AName: String);
     procedure LoadGlyphFromStock(idButton: Integer);
     function CanShowGlyph: Boolean;
@@ -414,6 +415,7 @@ var
   GetDefaultBitBtnGlyph: TGetDefaultBitBtnGlyph = nil;
 
 function GetLCLDefaultBtnGlyph(Kind: TBitBtnKind): TGraphic;
+procedure LoadGlyphFromResource(AGlyph: TButtonGlyph; const AName: String);
 procedure LoadGlyphFromLazarusResource(AGlyph: TButtonGlyph; const AName: String);
 procedure LoadGlyphFromStock(AGlyph: TButtonGlyph; idButton: Integer);
 
@@ -475,6 +477,25 @@ begin
     Exit;
   Result := TPortableNetworkGraphic.Create;
   Result.LoadFromResourceName(hInstance, BitBtnResNames[idButton]);
+end;
+
+procedure LoadGlyphFromResource(AGlyph: TButtonGlyph; const AName: String);
+var
+  C: TPortableNetworkGraphic;
+begin
+  if AName = '' then
+    C := nil
+  else
+  begin
+    C := TPortableNetworkGraphic.Create;
+    C.LoadFromResourceName(hInstance, AName);
+  end;
+
+  try
+    AGlyph.Glyph.Assign(C);
+  finally
+    C.Free;
+  end;
 end;
 
 procedure LoadGlyphFromLazarusResource(AGlyph: TButtonGlyph; const AName: String);
