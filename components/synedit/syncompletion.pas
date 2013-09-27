@@ -147,7 +147,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure AddCharAtCursor(AUtf8Char: TUTF8Char); virtual;
-    procedure DeleteCharBeforoCursor; virtual;
+    procedure DeleteCharBeforeCursor; virtual;
     procedure Paint; override;
     procedure AppDeactivated(Sender: TObject); // Because Form.Deactivate isn't called
     procedure Deactivate; override;
@@ -245,7 +245,7 @@ type
   TSynCompletionForm = class(TSynBaseCompletionForm)
   protected
     procedure AddCharAtCursor(AUtf8Char: TUTF8Char); override;
-    procedure DeleteCharBeforoCursor; override;
+    procedure DeleteCharBeforeCursor; override;
   end;
 
   { TSynBaseCompletion }
@@ -455,11 +455,11 @@ begin
     (CurrentEditor as TCustomSynEdit).CommandProcessor(ecChar, AUtf8Char, nil);
 end;
 
-procedure TSynCompletionForm.DeleteCharBeforoCursor;
+procedure TSynCompletionForm.DeleteCharBeforeCursor;
 begin
   if CurrentEditor <> nil then
     (CurrentEditor as TCustomSynEdit).CommandProcessor(ecDeleteLastChar, #0, nil);
-  inherited DeleteCharBeforoCursor;
+  inherited DeleteCharBeforeCursor;
 end;
 
 { TSynBaseCompletionFormSizeDrag }
@@ -751,7 +751,7 @@ begin
     VK_BACK:
       if (Shift = []) and (Length(CurrentString) > 0) then begin
         if Assigned(OnKeyDelete) then OnKeyDelete(Self);
-        DeleteCharBeforoCursor;
+        DeleteCharBeforeCursor;
       end;
     VK_TAB:
       begin
@@ -812,7 +812,7 @@ begin
   CurrentString := CurrentString + AUtf8Char;
 end;
 
-procedure TSynBaseCompletionForm.DeleteCharBeforoCursor;
+procedure TSynBaseCompletionForm.DeleteCharBeforeCursor;
 begin
   CurrentString := UTF8Copy(CurrentString, 1, UTF8Length(CurrentString) - 1);
 end;
@@ -1901,7 +1901,7 @@ end;
 
 procedure TSynCompletion.DeleteCharBeforoCursor;
 begin
-  Form.DeleteCharBeforoCursor;
+  Form.DeleteCharBeforeCursor;
 end;
 
 { TSynAutoComplete }
