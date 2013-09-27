@@ -84,7 +84,6 @@ var
   CmdCatCodeTools: TIDECommandCategory;
   CmdCatFileMenu: TIDECommandCategory;
   PPUListCommand: TIDECommand;
-  TVIconRes: TLResource;
   ShowCodeNodeInfoCommand: TIDECommand;
   CmdCatView: TIDECommandCategory;
   ViewCodyWindowCommand: TIDECommand;
@@ -180,8 +179,6 @@ begin
   {$ENDIF};
 
   // Components - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  TVIconRes:=LazarusResources.Find('TTreeView');
-  LazarusResources.Add(TCodyTreeView.ClassName,TVIconRes.ValueType,TVIconRes.Value);
   RegisterComponents('LazControls',[TCodyTreeView]);
 
   // Windows - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -199,6 +196,9 @@ begin
   // Global handlers - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   SourceEditorManagerIntf.RegisterCopyPasteEvent(@Cody.SrcEditCopyPaste);
 end;
+
+initialization
+  {$I cody.lrs}
 
 end.
 
