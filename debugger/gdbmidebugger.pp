@@ -2506,17 +2506,21 @@ begin
   Result := False;
   if not FCanKillNow then exit;
   // only here, if we are in ProcessRunning
-  FDidKillNow := True;
+  FDidKillNow := True; // interrupt current ProcessRunning
+  FCanKillNow := False; // Do not allow to re-enter
 
   FTheDebugger.GDBPause(True);
   FTheDebugger.CancelAllQueued; // before ProcessStopped
+  FDidKillNow := False; // allow  ProcessRunning
   Result := ProcessRunning(StoppedParams, R);
   if ProcessResultTimedOut then begin
     // the uter Processrunning should stop, due to process no longer running
+    FDidKillNow := True;
     FTheDebugger.DebugProcess.Terminate(0);
     Result := True;
     exit;
   end;
+  FDidKillNow := True;
   if StoppedParams <> ''
   then ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
 
