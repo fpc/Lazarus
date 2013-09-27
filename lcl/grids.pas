@@ -7711,13 +7711,6 @@ begin
   {$ifdef dbgGrid}DebugLn('Grid.EditorKeyDown Key=',dbgs(Key),' INIT');{$endif}
   FEditorKey:=True; // Just a flag to see from where the event comes
   KeyDown(Key, shift);
-  if Key = VK_RETURN then begin
-    Key := 0;
-    Include(FGridFlags, gfEditingDone);
-    if not MoveNextAuto(ssShift in Shift) then
-      ResetEditor;
-    Exclude(FGridFlags, gfEditingDone);
-  end;
   FEditorKey:=False;
   {$ifdef dbgGrid}DebugLn('Grid.EditorKeyDown Key=',dbgs(Key),' END');{$endif}
 end;
@@ -7740,7 +7733,16 @@ begin
   {$ifdef dbgGrid}DebugLn('Grid.EditorKeyPress: inter Key=',PrintKey);{$Endif}
   case Key of
     ^C,^V,^X:;
-    ^M, #27: Key:=#0; // key is already handled in KeyDown
+
+    ^M:
+    begin
+      Include(FGridFlags, gfEditingDone);
+      if not MoveNextAuto(GetKeyState(VK_SHIFT) < 0) then
+        ResetEditor;
+      Exclude(FGridFlags, gfEditingDone);
+      Key := #0;
+    end;
+
     else begin
       AChar := Key;
       if not EditorCanAcceptKey(AChar) or EditorIsReadOnly then
