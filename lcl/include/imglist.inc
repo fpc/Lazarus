@@ -162,6 +162,26 @@ begin
   Bmp.Free;
 end;
 
+function TCustomImageList.AddResourceName(Instance: THandle; const ResourceName: string; MaskColor: TColor): integer;
+var
+  Grp: TGraphic;
+  Bmp: TCustomBitmap absolute Grp;
+begin
+  Grp := CreateGraphicFromResourceName(Instance, ResourceName);
+  if Grp is TCustomBitmap then
+  begin
+    if MaskColor <> clNone then
+    begin
+      Bmp.TransparentColor := MaskColor;
+      Bmp.Transparent := True;
+    end;
+    Result := Add(Bmp, nil);
+  end
+  else
+    Result := AddIcon(Grp as TCustomIcon);
+  Grp.Free;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.AllocData
   Params:  ACount: the amount of images

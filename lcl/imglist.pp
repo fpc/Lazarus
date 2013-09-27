@@ -166,6 +166,7 @@ type
     procedure AddImages(AValue: TCustomImageList);
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
     function AddLazarusResource(const ResourceName: string; MaskColor: TColor = clNone): integer;
+    function AddResourceName(Instance: THandle; const ResourceName: string; MaskColor: TColor = clNone): integer;
     procedure Change;
     procedure Clear;
     procedure Delete(AIndex: Integer);

@@ -2016,6 +2016,7 @@ function LoadBitmapFromLazarusResource(const ResourceName: String): TBitmap; dep
 function LoadBitmapFromLazarusResourceHandle(Handle: TLResource): TBitmap; deprecated;
 
 // technically a bitmap is created and not loaded
+function CreateGraphicFromResourceName(Instance: THandle; const ResName: String): TGraphic;
 function CreateBitmapFromResourceName(Instance: THandle; const ResName: String): TCustomBitmap;
 function CreateBitmapFromLazarusResource(const AName: String): TCustomBitmap;
 function CreateBitmapFromLazarusResource(const AName: String; AMinimumClass: TCustomBitmapClass): TCustomBitmap;
@@ -2198,6 +2199,45 @@ end;
 function CreateBitmapFromLazarusResource(const AName: String): TCustomBitmap;
 begin
   Result := CreateBitmapFromLazarusResource(AName, TCustomBitmap);
+end;
+
+function CreateGraphicFromResourceName(Instance: THandle; const ResName: String): TGraphic;
+var
+  ResHandle: TFPResourceHandle;
+begin
+  // test Bitmap
+  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_BITMAP));
+  if ResHandle <> 0 then
+  begin
+    Result := TBitmap.Create;
+    Result.LoadFromResourceName(Instance, ResName);
+    Exit;
+  end;
+  // test PNG
+  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_RCDATA));
+  if ResHandle <> 0 then
+  begin
+    Result := TPortableNetworkGraphic.Create;
+    Result.LoadFromResourceName(Instance, ResName);
+    Exit;
+  end;
+  // test Icon
+  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_GROUP_ICON));
+  if ResHandle <> 0 then
+  begin
+    Result := TIcon.Create;
+    TIcon(Result).LoadFromResourceHandle(Instance, ResHandle);
+    Exit;
+  end;
+  // test Cursor
+  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_GROUP_CURSOR));
+  if ResHandle <> 0 then
+  begin
+    Result := TCursorImage.Create;
+    TCursorImage(Result).LoadFromResourceHandle(Instance, ResHandle);
+  end
+  else
+    Result := nil;
 end;
 
 function CreateBitmapFromResourceName(Instance: THandle; const ResName: String): TCustomBitmap;
