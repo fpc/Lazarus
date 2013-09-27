@@ -4927,7 +4927,7 @@ var
   ItemList: TGtkListStoreStringList;
   AColumn: PGtkTreeViewColumn;
   Toggle: PGtkCellRendererToggle;
-  Renderer : PGtkCellRendererText;
+  Renderer : PGtkCellRenderer;
   VAdjust, HAdjust: PGtkAdjustment;
   AScrollStyle: TPoint;
   TreeModel: PGtkTreeModel;
@@ -4961,8 +4961,7 @@ begin
 
   g_signal_connect_data(Toggle, 'toggled', TGCallback(@Gtk3WS_CheckListBoxToggle), Self, nil, 0);
 
-
-  Renderer := gtk_cell_renderer_text_new;
+  Renderer := LCLIntfCellRenderer_New(); // gtk_cell_renderer_text_new;
 
   g_object_set_data(PGObject(Renderer), 'lclwidget', Self);
 
@@ -4972,6 +4971,8 @@ begin
   g_object_set_data(PGObject(AColumn), 'lclwidget', Self);
 
   // AColumn^.pack_start(Renderer, True);
+
+  AColumn^.set_cell_data_func(Renderer, @LCLIntfRenderer_ColumnCellDataFunc, Self, nil);
 
   PGtkTreeView(FCentralWidget)^.append_column(AColumn);
 
