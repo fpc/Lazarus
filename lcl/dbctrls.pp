@@ -1299,6 +1299,8 @@ procedure Register;
 
 implementation
 
+{$R lcl_dbnav_images.res}
+
 uses
   InterfaceBase;
 
@@ -1690,7 +1692,6 @@ end;
 
 initialization
   RegisterPropertyToSkip(TField,'Calculated','VCL compatibility property', '');
-  {$I lcl_dbnav_images.lrs}
 
 finalization
   FieldClasses.Free;

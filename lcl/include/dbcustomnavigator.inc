@@ -281,7 +281,7 @@ begin
       if CurButtonType in [nbPrior,nbNext] then
         CurButton.NavStyle:=CurButton.NavStyle+[nsAllowTimer];
       //Load default images
-      CurButton.LoadGlyphFromLazarusResource(DBNavButtonResourceName[CurButtonType]);
+      CurButton.LoadGlyphFromResource(DBNavButtonResourceName[CurButtonType]);
       //Apply custom images if available
       if Assigned(FImages) and (Ord(CurButtontype) < FImages.Count) then
         FImages.GetBitmap(Ord(CurButtonType), CurButton.Glyph);
@@ -314,7 +314,7 @@ begin
       if CurButtonType in [nbPrior,nbNext] then
         CurFocusableButton.NavStyle:=CurFocusableButton.NavStyle+[nsAllowTimer];
       //Load default images
-      CurFocusableButton.LoadGlyphFromLazarusResource(DBNavButtonResourceName[CurButtonType]);
+      CurFocusableButton.LoadGlyphFromResource(DBNavButtonResourceName[CurButtonType]);
       //Apply custom images if available
       if Assigned(FImages) and (Ord(CurButtontype) < FImages.Count) then
         FImages.GetBitmap(Ord(CurButtonType), CurFocusableButton.Glyph);
