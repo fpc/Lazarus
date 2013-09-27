@@ -155,8 +155,7 @@ const
 
 begin
   Notebook.PageIndex:=0;
-  //Image1.Picture.LoadFromLazarusResource('splash_logo');
-  LogoImage.Picture.LoadFromLazarusResource('splash_logo');
+  LogoImage.Picture.LoadFromResourceName(HInstance, 'splash_logo', TPortableNetworkGraphic);
   Caption:=lisAboutLazarus;
   VersionLabel.Caption := lisVersion+' #: '+ GetLazarusVersionString;
   RevisionLabel.Caption := lisSVNRevision+LazarusRevisionStr;

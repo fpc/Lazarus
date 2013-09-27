@@ -383,7 +383,7 @@ begin
   EditMenuItem.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
   ClearMenuItem.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
 
-  ResetKeyFilterBtn.LoadGlyphFromLazarusResource(ResBtnListFilter);
+  ResetKeyFilterBtn.LoadGlyphFromResourceName(HInstance, ResBtnListFilter);
   ResetKeyFilterBtn.Enabled := not IDEShortCutEmpty(KeyMapKeyFilter);
 
 //  FillKeyMappingTreeView;    ... Done in ReadSettings.

@@ -80,7 +80,7 @@ procedure TfrmAllCompilerOptions.FormShow(Sender: TObject);
 begin
   Caption:=lisAllOptions;
   edOptionsFilter.Hint := lisFilterTheAvailableOptionsList;
-  btnResetOptionsFilter.LoadGlyphFromLazarusResource(ResBtnListFilter);
+  btnResetOptionsFilter.LoadGlyphFromResourceName(HInstance, ResBtnListFilter);
   btnResetOptionsFilter.Enabled := False;
   btnResetOptionsFilter.Hint := lisClearTheFilterForOptions;
   cbShowModified.Caption:=lisShowOnlyModified;
