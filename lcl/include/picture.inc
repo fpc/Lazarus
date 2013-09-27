@@ -514,6 +514,29 @@ begin
   end;
 end;
 
+procedure TPicture.LoadFromResourceName(Instance: THandle;
+  const ResName: String; AClass: TGraphicClass);
+var
+  NewGraphic: TGraphic;
+  ok: Boolean;
+begin
+  NewGraphic := AClass.Create;
+  ok:=false;
+  try
+    NewGraphic.OnProgress := @Progress;
+    NewGraphic.LoadFromResourceName(Instance, ResName);
+    ok:=true;
+  finally
+    // this try..finally construction will in case of an exception
+    // not alter the error backtrace output
+    if not ok then NewGraphic.Free;
+  end;
+  FGraphic.Free;
+  FGraphic := NewGraphic;
+  FGraphic.OnChange := @Changed;
+  Changed(Self);
+end;
+
 procedure TPicture.LoadFromLazarusResource(const AName: string);
 var
   Stream: TLazarusResourceStream;
@@ -678,7 +701,7 @@ begin
   GetPicClipboardFormats.Add(FormatID, AGraphicClass);
 end;
 
-class procedure TPicture.UnRegisterGraphicClass(AClass: TGraphicClass);
+class procedure TPicture.UnregisterGraphicClass(AClass: TGraphicClass);
 begin
   if PicFileFormats <> nil then PicFileFormats.Remove(AClass);
   if PicClipboardFormats <> nil then PicClipboardFormats.Remove(AClass);

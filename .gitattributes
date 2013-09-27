@@ -5849,7 +5849,7 @@ lcl/dbactns.pp svneol=native#text/pascal
 lcl/dbctrls.pp svneol=native#text/pascal
 lcl/dbgrids.pas svneol=native#text/pascal
 lcl/defaulttranslator.pas svneol=native#text/pascal
-lcl/dialog_icons.lrs svneol=native#text/pascal
+lcl/dialog_icons.res -text
 lcl/dialogs.pp svneol=native#text/pascal
 lcl/dynamicarray.pas svneol=native#text/pascal
 lcl/dynhasharray.pp svneol=native#text/pascal

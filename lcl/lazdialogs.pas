@@ -8,7 +8,7 @@ uses
   // RTL
   Classes, SysUtils, math,
   // LCL
-  Forms, ShellCtrls, Buttons, StdCtrls, ExtCtrls, FileCtrl, ComCtrls,
+  Graphics, Forms, ShellCtrls, Buttons, StdCtrls, ExtCtrls, FileCtrl, ComCtrls,
   Dialogs, ButtonPanel, LCLStrConsts, FileUtil, Controls;
 
 type
@@ -345,19 +345,19 @@ begin
     case DlgType of
       mtWarning: begin
         Caption:= rsMtWarning;
-        image1.Picture.LoadFromLazarusResource('dialog_warning');
+        image1.Picture.LoadFromResourceName(hInstance, 'dialog_warning', TPortableNetworkGraphic);
       end;
       mtError: begin
         Caption:= rsMtError;
-        image1.Picture.LoadFromLazarusResource('dialog_error');
+        image1.Picture.LoadFromResourceName(hInstance, 'dialog_error', TPortableNetworkGraphic);
       end;
       mtConfirmation: begin
         Caption:= rsMtConfirmation;
-        image1.Picture.LoadFromLazarusResource('dialog_confirmation');
+        image1.Picture.LoadFromResourceName(hInstance, 'dialog_confirmation', TPortableNetworkGraphic);
       end;
       mtInformation: begin
         Caption:= rsMtInformation;
-        image1.Picture.LoadFromLazarusResource('dialog_information');
+        image1.Picture.LoadFromResourceName(hInstance, 'dialog_information', TPortableNetworkGraphic);
       end;
       mtCustom: begin
         Caption:= ApplicationName;

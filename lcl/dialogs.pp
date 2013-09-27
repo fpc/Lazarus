@@ -540,6 +540,7 @@ procedure Register;
 
 implementation
 
+{$R dialog_icons.res}
 {$R forms/finddlgunit.lfm}
 {$R forms/replacedlgunit.lfm}
 
@@ -692,7 +693,10 @@ begin
   if (idDiag < Low(DialogResName)) or (idDiag > High(DialogResName)) then
     Result := nil
   else
-    Result := CreateBitmapFromLazarusResource(DialogResName[idDiag]);
+  begin
+    Result := TPortableNetworkGraphic.Create;
+    Result.LoadFromResourceName(hInstance, DialogResName[idDiag]);
+  end;
 end;
 
 {$I lclcolordialog.inc}
@@ -720,7 +724,6 @@ initialization
   InterfaceBase.InputDialogFunction := @ShowInputDialog;
   InterfaceBase.PromptDialogFunction := @ShowPromptDialog;
   InterfaceBase.QuestionDialogFunction := @ShowQuestionDialog;
-  {$I dialog_icons.lrs}
 
 finalization
   InterfaceBase.InputDialogFunction := nil;

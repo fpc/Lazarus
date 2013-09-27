@@ -977,6 +977,7 @@ type
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat);
     procedure LoadFromClipboardFormatID(ClipboardType: TClipboardType; FormatID: TClipboardFormat);
     procedure LoadFromFile(const Filename: string);
+    procedure LoadFromResourceName(Instance: THandle; const ResName: String; AClass: TGraphicClass);
     procedure LoadFromLazarusResource(const AName: string);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromStreamWithFileExt(Stream: TStream; const FileExt: string);
