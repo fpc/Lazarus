@@ -434,8 +434,5 @@ begin
   inherited Destroy;
 end;
 
-initialization
-  {$I lazarus_about_logo.lrs}
-
 end.
 
