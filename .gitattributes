@@ -5747,6 +5747,7 @@ images/sourceeditor/tsynsyncroedit.png -text
 images/splash_logo.bat svneol=native#text/x-msdos-program
 images/splash_logo.lrs svneol=native#text/pascal
 images/splash_logo.png -text svneol=unset#image/png
+images/splash_logo.res -text
 images/splash_logo.xpm -text svneol=native#image/x-xpixmap
 images/splash_source/cheetah.jpg -text svneol=unset#image/jpeg
 images/splash_source/paw.png -text svneol=unset#image/png

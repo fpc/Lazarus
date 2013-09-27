@@ -62,6 +62,7 @@ var
 implementation
 
 {$R *.lfm}
+{$R ../images/splash_logo.res}
 
 const
   VersionPos: TPoint = (X:0; Y:281);
@@ -86,7 +87,7 @@ constructor TSplashForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  Image.Picture.LoadFromLazarusResource('splash_logo');
+  Image.Picture.LoadFromResourceName(hInstance, 'splash_logo', TPortableNetworkGraphic);
 
   Application.AddOnIdleHandler(@ApplicationOnIdle);
 end;
@@ -116,8 +117,5 @@ begin
   Image.Canvas.Font.Color := VersionFontColor;
   Image.Canvas.TextRect(ATextRect, VersionPos.X, VersionPos.Y, LazarusVersionStr, VersionStyle);
 end;
-
-initialization
-  {$I ../images/splash_logo.lrs}
 
 end.
