@@ -7357,7 +7357,8 @@ end;
 function TCustomGrid.Focused: Boolean;
 begin
   Result := CanTab and (HandleAllocated and
-    (FindOwnerControl(GetFocus)=Self) or (FEditor.Visible and FEditor.Focused));
+    (FindOwnerControl(GetFocus)=Self) or
+     ((FEditor<>nil) and FEditor.Visible and FEditor.Focused));
 end;
 
 procedure TCustomGrid.InvalidateCell(aCol, aRow: Integer);
