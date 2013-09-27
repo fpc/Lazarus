@@ -970,6 +970,11 @@ begin
     SetDown(FDownLoaded);
 end;
 
+procedure TCustomSpeedButton.LoadGlyphFromResource(const AName: String);
+begin
+  Buttons.LoadGlyphFromResource(FGlyph, AName);
+end;
+
 procedure TCustomSpeedButton.LoadGlyphFromLazarusResource(const AName: String);
 begin
   Buttons.LoadGlyphFromLazarusResource(FGlyph, AName);

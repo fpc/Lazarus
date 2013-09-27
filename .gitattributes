@@ -6733,7 +6733,7 @@ lcl/lcl_dbgrid_images.lrs svneol=native#text/pascal
 lcl/lcl_dbnav_images.lrs svneol=native#text/pascal
 lcl/lcl_dock_images.lrs svneol=native#text/pascal
 lcl/lcl_dock_to_images.lrs svneol=native#text/pascal
-lcl/lcl_edbtnimg.lrs svneol=native#text/pascal
+lcl/lcl_edbtnimg.res -text
 lcl/lcl_grid_images.lrs svneol=native#text/plain
 lcl/lclbase.lpk svneol=native#text/plain
 lcl/lclclasses.pp svneol=native#text/pascal

@@ -332,6 +332,7 @@ type
     destructor Destroy; override;
     function FindDownButton: TCustomSpeedButton;
     procedure Click; override; // make Click public
+    procedure LoadGlyphFromResource(const AName: String);
     procedure LoadGlyphFromLazarusResource(const AName: String);
   public
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;

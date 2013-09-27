@@ -792,6 +792,8 @@ procedure Register;
 
 implementation
 
+{$R lcl_edbtnimg.res}
+
 {$IFDEF NewEditButton}
 
 { TEBMaskEdit }
@@ -1018,7 +1020,8 @@ function TCustomEditButton.IsCustomGlyph: Boolean;
     Result := TBitmap.Create;
     try
       try
-        C := CreateBitmapFromLazarusResource(ResName);
+        C := TPortableNetworkGraphic.Create;
+        C.LoadFromResourceName(hInstance, ResName);
         Result.Assign(C); // the "Equals" did not work with ClassType different
         // maybe it should compare the "RawImage" because it is independent of ClassType
       finally
@@ -1364,7 +1367,7 @@ begin
   Button.ControlStyle := Button.ControlStyle + [csNoDesignSelectable];
   aGlyph := GetDefaultGlyph;
   if aGlyph = nil then
-    Button.LoadGlyphFromLazarusResource(GetDefaultGlyphName)
+    Button.LoadGlyphFromResource(GetDefaultGlyphName)
   else
     Button.Glyph := aGlyph;
   Button.Parent:=self;
@@ -1401,7 +1404,7 @@ begin
   FButton.ControlStyle := FButton.ControlStyle + [csNoDesignSelectable];
   B := GetDefaultGlyph;
   if B = nil
-  then FButton.LoadGlyphFromLazarusResource(GetDefaultGlyphName)
+  then FButton.LoadGlyphFromResource(GetDefaultGlyphName)
   else FButton.Glyph := B;
   ControlStyle := ControlStyle - [csSetCaption];
 end;
@@ -1572,7 +1575,8 @@ function TCustomEditButton.IsCustomGlyph : Boolean;
     Result := TBitmap.Create;
     try
       try
-        C := CreateBitmapFromLazarusResource(ResName);
+        C := TPortableNetworkGraphic.Create;
+        C.LoadFromResourceName(hInstance, ResName);
         Result.Assign(C); // the "Equals" did not work with ClassType different
         // maybe it should compare the "RawImage" because it is independent of ClassType
       finally
@@ -2351,8 +2355,5 @@ begin
   RegisterComponents('Misc', [TEditButton,TFileNameEdit,TDirectoryEdit,
                               TDateEdit,TCalcEdit]);
 end;
-
-initialization
-{$i lcl_edbtnimg.lrs}
 
 end.
