@@ -6728,7 +6728,7 @@ lcl/lazhelphtml.pas svneol=native#text/pascal
 lcl/lazhelpintf.pas svneol=native#text/pascal
 lcl/lazlinkedlist.pas svneol=native#text/pascal
 lcl/lazregions.pas svneol=native#text/pascal
-lcl/lcl_calc_images.lrs svneol=native#text/pascal
+lcl/lcl_calc_images.res -text
 lcl/lcl_dbgrid_images.lrs svneol=native#text/pascal
 lcl/lcl_dbnav_images.lrs svneol=native#text/pascal
 lcl/lcl_dock_images.lrs svneol=native#text/pascal

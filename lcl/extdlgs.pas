@@ -236,7 +236,11 @@ Type
 procedure Register;
 
 implementation
-uses WSExtDlgs;
+
+{$R lcl_calc_images.res}
+
+uses 
+  WSExtDlgs;
 
 procedure Register;
 begin
@@ -671,9 +675,13 @@ begin
             if (BtnGlyphs[ALayout,Kind]<>'') then
             begin
               Caption:='';
-              Bitmap := CreateBitmapFromLazarusResource(BtnGlyphs[ALayout,Kind]);
-              Glyph.Assign(Bitmap);
-              Bitmap.Free;
+              Bitmap := TPixmap.Create;
+              try
+                Bitmap.LoadFromResourceName(hInstance, BtnGlyphs[ALayout,Kind]);
+                Glyph.Assign(Bitmap);
+              finally
+                Bitmap.Free;
+              end;
             end;
         end
         else
@@ -730,10 +738,7 @@ end;
 class procedure TCalculatorPanel.WSRegisterClass;
 begin
   inherited WSRegisterClass;
-  if RegisterCalculatorPanel then
-  begin
-    {$i lcl_calc_images.lrs}
-  end;
+  RegisterCalculatorPanel;
 end;
 
 procedure TCalculatorPanel.ErrorBeep;
