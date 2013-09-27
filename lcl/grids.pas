@@ -28,7 +28,7 @@ unit Grids;
 
 {$mode objfpc}{$H+}
 {$define NewCols}
-
+{$define DbgGrid}
 interface
 
 uses
@@ -5966,7 +5966,7 @@ begin
   DebugLn('Mouse was in ', dbgs(FGCache.HotGridZone));
   {$ENDIF}
 
-  WasFocused := Focused;
+  WasFocused := Focused or EditorMode;
   if not WasFocused then begin
     SetFocus;
     if not focused then begin
