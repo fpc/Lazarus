@@ -28,7 +28,7 @@ unit Grids;
 
 {$mode objfpc}{$H+}
 {$define NewCols}
-{$define DbgGrid}
+
 interface
 
 uses
@@ -1163,6 +1163,7 @@ type
     procedure EditorKeyUp(Sender: TObject; var key:Word; shift:TShiftState);
     procedure EndUpdate(aRefresh: boolean = true);
     procedure EraseBackground(DC: HDC); override;
+    function  Focused: Boolean; override;
 
     procedure InvalidateCell(aCol, aRow: Integer); overload;
     procedure InvalidateCol(ACol: Integer);
@@ -5929,8 +5930,6 @@ end;
 
 procedure TCustomGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
-var
-  WasFocused: boolean;
 
   procedure DoPushCell;
   begin
@@ -5966,10 +5965,9 @@ begin
   DebugLn('Mouse was in ', dbgs(FGCache.HotGridZone));
   {$ENDIF}
 
-  WasFocused := Focused or EditorMode;
-  if not WasFocused then begin
+  if not Focused then begin
     SetFocus;
-    if not focused then begin
+    if not Focused then begin
       {$ifDef dbgGrid} DebugLnExit('TCustomGrid.MouseDown EXIT: Focus not allowed'); {$Endif}
       exit;
     end;
@@ -7354,6 +7352,12 @@ end;
 procedure TCustomGrid.EraseBackground(DC: HDC);
 begin
   //
+end;
+
+function TCustomGrid.Focused: Boolean;
+begin
+  Result := CanTab and (HandleAllocated and
+    (FindOwnerControl(GetFocus)=Self) or (FEditor.Visible and FEditor.Focused));
 end;
 
 procedure TCustomGrid.InvalidateCell(aCol, aRow: Integer);
