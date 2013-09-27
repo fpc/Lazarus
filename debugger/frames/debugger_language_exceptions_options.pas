@@ -148,8 +148,8 @@ begin
   DbgLangExceptHint.Caption := lisTheseSettingsAreStoredWithTheProject;
   cmdExceptionRemove.Caption := lisRemove;
   cmdExceptionAdd.Caption := lisAdd;
-  cmdExceptionRemove.LoadGlyphFromLazarusResource('laz_delete');
-  cmdExceptionAdd.LoadGlyphFromLazarusResource('laz_add');
+  cmdExceptionRemove.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  cmdExceptionAdd.LoadGlyphFromResourceName(HInstance, 'laz_add');
   chkNotifyOnException.Caption := lisDebugOptionsFrmNotifyOnLazarusExceptions;
 end;
 

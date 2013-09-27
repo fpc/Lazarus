@@ -959,7 +959,7 @@ begin
     Parent:=Self;
   end;
 
-  FActiveRowBmp := CreateBitmapFromLazarusResource('pg_active_row');
+  FActiveRowBmp := CreateBitmapFromResourceName(HInstance, 'pg_active_row');
 
   if DefItemHeight<3 then
     FDefaultItemHeight:=ValueComboBox.Height-3

@@ -212,11 +212,11 @@ begin
   FillBuildModesGrid;
   UpdateBuildModeButtons;
 
-  AddSpeedButton.LoadGlyphFromLazarusResource('laz_add');
-  DeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
-  MoveUpSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
-  MoveDownSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
-  DiffSpeedButton.LoadGlyphFromLazarusResource('menu_tool_diff');
+  AddSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  DeleteSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  MoveUpSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_up');
+  MoveDownSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_down');
+  DiffSpeedButton.LoadGlyphFromResourceName(HInstance, 'menu_tool_diff');
 end;
 
 procedure TBuildModesForm.DiffSpeedButtonClick(Sender: TObject);

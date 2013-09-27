@@ -233,18 +233,18 @@ begin
   TopSiblingComboBox.Hint:=lisTopSiblingComboBoxHint;
   TopSiblingLabel.Caption:=lisSibling;
 
-  LeftRefLeftSpeedButton.LoadGlyphFromLazarusResource('anchor_left');
-  LeftRefCenterSpeedButton.LoadGlyphFromLazarusResource('anchor_center_horizontal');
-  LeftRefRightSpeedButton.LoadGlyphFromLazarusResource('anchor_left_right');
-  RightRefLeftSpeedButton.LoadGlyphFromLazarusResource('anchor_left_right');
-  RightRefCenterSpeedButton.LoadGlyphFromLazarusResource('anchor_center_horizontal');
-  RightRefRightSpeedButton.LoadGlyphFromLazarusResource('anchor_right');
-  TopRefTopSpeedButton.LoadGlyphFromLazarusResource('anchor_top');
-  TopRefCenterSpeedButton.LoadGlyphFromLazarusResource('anchor_center_vertical');
-  TopRefBottomSpeedButton.LoadGlyphFromLazarusResource('anchor_top_bottom');
-  BottomRefTopSpeedButton.LoadGlyphFromLazarusResource('anchor_top_bottom');
-  BottomRefCenterSpeedButton.LoadGlyphFromLazarusResource('anchor_center_vertical');
-  BottomRefBottomSpeedButton.LoadGlyphFromLazarusResource('anchor_bottom');
+  LeftRefLeftSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_left');
+  LeftRefCenterSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_center_horizontal');
+  LeftRefRightSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_left_right');
+  RightRefLeftSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_left_right');
+  RightRefCenterSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_center_horizontal');
+  RightRefRightSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_right');
+  TopRefTopSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_top');
+  TopRefCenterSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_center_vertical');
+  TopRefBottomSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_top_bottom');
+  BottomRefTopSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_top_bottom');
+  BottomRefCenterSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_center_vertical');
+  BottomRefBottomSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_bottom');
 
   // autosizing
   BottomSiblingLabel.AnchorToNeighbour(akLeft,10,BottomAnchoredCheckBox);

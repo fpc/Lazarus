@@ -102,15 +102,15 @@ begin
   PopupMenu1.Images:=IDEImages.Images_16;
   ActivateMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_open');
   CloseMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'menu_close');
-  CloseCheckedButton.LoadGlyphFromLazarusResource('menu_close_all');
-  SaveCheckedButton.LoadGlyphFromLazarusResource('menu_save_all');
-  MoveUpBtn.LoadGlyphFromLazarusResource('arrow_up');
-  MoveDownBtn.LoadGlyphFromLazarusResource('arrow_down');
+  CloseCheckedButton.LoadGlyphFromResourceName(HInstance, 'menu_close_all');
+  SaveCheckedButton.LoadGlyphFromResourceName(HInstance, 'menu_save_all');
+  MoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
+  MoveDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
   // Buttons on FilterPanel
-  OpenButton.LoadGlyphFromLazarusResource('laz_open');
+  OpenButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
   OpenButton.Hint:=lisActivateSelected;
   SortAlphabeticallyButton.Hint:=lisPESortFilesAlphabetically;
-  SortAlphabeticallyButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
+  SortAlphabeticallyButton.LoadGlyphFromResourceName(HInstance, 'pkg_sortalphabetically');
 end;
 
 procedure TEditorFileManagerForm.CheckListBox1Click(Sender: TObject);

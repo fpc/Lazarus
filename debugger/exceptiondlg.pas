@@ -77,8 +77,8 @@ begin
   btnContinue.Caption := lisContinue;
   cbIgnoreExceptionType.Caption := lisIgnoreExceptionType;
 
-  btnBreak.LoadGlyphFromLazarusResource('menu_pause');
-  btnContinue.LoadGlyphFromLazarusResource('menu_run');
+  btnBreak.LoadGlyphFromResourceName(HInstance, 'menu_pause');
+  btnContinue.LoadGlyphFromResourceName(HInstance, 'menu_run');
 end;
 
 function TIDEExceptionDlg.Execute(AMessage: String; out IgnoreException: Boolean): TModalResult;

@@ -170,7 +170,7 @@ begin
     Exit;
   end;
   try
-    Result := List.AddLazarusResource(ImageName);
+    Result := List.AddResourceName(HInstance, ImageName);
   except
     on E: Exception do
       DebugLn('While loading IDEImages: ' + e.Message);

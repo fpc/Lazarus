@@ -132,10 +132,10 @@ begin
     MissingUnitsGroupBox.Caption:=lisTheseUnitsWereNotFound;
     ChoicesLabel.Caption:=lisMissingUnitsChoices;
     SearchButton.Caption:=lisMissingUnitsSearch;
-    SearchButton.LoadGlyphFromLazarusResource('menu_search_find');
+    SearchButton.LoadGlyphFromResourceName(HInstance, 'menu_search_find');
     SkipButton.Caption:=lisMissingUnitsSkip;
-    SkipButton.LoadGlyphFromLazarusResource('debugger_current_line_breakpoint');
-    CommentButton.LoadGlyphFromLazarusResource('menu_comment'); // or insertremark
+    SkipButton.LoadGlyphFromResourceName(HInstance, 'debugger_current_line_breakpoint');
+    CommentButton.LoadGlyphFromResourceName(HInstance, 'menu_comment'); // or insertremark
     if ATargetDelphi then begin
       CommentButton.Caption:=lisMissingUnitsForDelphi;
       Info1Label.Caption:=lisMissingUnitsInfo1b;

@@ -181,7 +181,7 @@ begin
   ButtonPanel1.CloseButton.Kind := bkCustom;
   ButtonPanel1.CloseButton.LoadGlyphFromStock(idButtonSave);
   if ButtonPanel1.CloseButton.Glyph.Empty then
-    ButtonPanel1.CloseButton.LoadGlyphFromLazarusResource('laz_save');
+    ButtonPanel1.CloseButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
   ButtonPanel1.CloseButton.OnClick := @SaveSettingsButtonCLICK;
 
   ButtonPanel1.HelpButton.OnClick := @HelpButtonClick;

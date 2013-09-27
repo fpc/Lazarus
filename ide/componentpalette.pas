@@ -709,7 +709,7 @@ var
       BtnRight:=TSpeedButton.Create(aCompPage.PageComponent);
       with BtnRight do
       begin
-        LoadGlyphFromLazarusResource('SelCompPage');
+        LoadGlyphFromResourceName(HInstance, 'SelCompPage');
         Flat := True;
         SetBounds(2,1,16,16);
         Hint := 'Click to Select Palette Page';

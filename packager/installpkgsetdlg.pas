@@ -200,10 +200,10 @@ begin
   ExportButton.Caption:=lisExportList;
   ImportButton.Caption:=lisImportList;
   UninstallButton.Caption:=lisUninstallSelection;
-  UninstallButton.LoadGlyphFromLazarusResource('arrow_right');
+  UninstallButton.LoadGlyphFromResourceName(HInstance, 'arrow_right');
   InstallPkgGroupBox.Caption:=lisPkgsInstalled;
   AddToInstallButton.Caption:=lisInstallSelection;
-  AddToInstallButton.LoadGlyphFromLazarusResource('arrow_left');
+  AddToInstallButton.LoadGlyphFromResourceName(HInstance, 'arrow_left');
   PkgInfoGroupBox.Caption := lisPackageInfo;
   SaveAndRebuildButton.Caption:=lisSaveAndRebuildIDE;
   SaveAndExitButton.Caption:=lisSaveAndExitDialog;

@@ -234,16 +234,16 @@ begin
   NewTestGroupBox.Caption := rsCreateNewDefine;
   Caption := rsConditionalDefines;
   AddBtn.Caption := lisBtnAdd;
-  AddBtn.LoadGlyphFromLazarusResource('laz_add');
+  AddBtn.LoadGlyphFromResourceName(HInstance, 'laz_add');
   AddInverse.Caption := rsAddInverse;
-  AddInverse.LoadGlyphFromLazarusResource('pkg_issues');
+  AddInverse.LoadGlyphFromResourceName(HInstance, 'pkg_issues');
   RemoveBtn.Caption := lisBtnRemove;
-  RemoveBtn.LoadGlyphFromLazarusResource('laz_delete');
+  RemoveBtn.LoadGlyphFromResourceName(HInstance, 'laz_delete');
   btnSave.Caption := lisSave;
   btnSave.LoadGlyphFromStock(idButtonSave);
   btnOk.Caption := lisApply;
   //if btnSave.Glyph.Empty then
-  //  btnSave.LoadGlyphFromLazarusResource('laz_save');
+  //  btnSave.LoadGlyphFromResourceName(HInstance, 'laz_save');
   try
     XMLConfig:=CreateXMLConfig;
     try

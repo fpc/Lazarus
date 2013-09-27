@@ -472,29 +472,29 @@ begin
   DirRefreshSpeedButton.Hint:=dlgUnitDepRefresh;
   DirOptionsSpeedButton.Hint:=dlgFROpts;
 
-  CodeRefreshSpeedButton.LoadGlyphFromLazarusResource('laz_refresh');
-  CodeOptionsSpeedButton.LoadGlyphFromLazarusResource('menu_environment_options');
-  DirRefreshSpeedButton.LoadGlyphFromLazarusResource('laz_refresh');
-  DirOptionsSpeedButton.LoadGlyphFromLazarusResource('menu_environment_options');
+  CodeRefreshSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_refresh');
+  CodeOptionsSpeedButton.LoadGlyphFromResourceName(HInstance, 'menu_environment_options');
+  DirRefreshSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_refresh');
+  DirOptionsSpeedButton.LoadGlyphFromResourceName(HInstance, 'menu_environment_options');
 
-  ImgIDDefault := Imagelist1.AddLazarusResource('ce_default');
-  ImgIDProgram := Imagelist1.AddLazarusResource('ce_program');
-  ImgIDUnit := Imagelist1.AddLazarusResource('ce_unit');
-  ImgIDInterface := Imagelist1.AddLazarusResource('ce_interface');
-  ImgIDImplementation := Imagelist1.AddLazarusResource('ce_implementation');
-  ImgIDInitialization := Imagelist1.AddLazarusResource('ce_initialization');
-  ImgIDFinalization := Imagelist1.AddLazarusResource('ce_finalization');
-  ImgIDType := Imagelist1.AddLazarusResource('ce_type');
-  ImgIDVariable := Imagelist1.AddLazarusResource('ce_variable');
-  ImgIDConst := Imagelist1.AddLazarusResource('ce_const');
-  ImgIDClass := Imagelist1.AddLazarusResource('ce_class');
-  ImgIDProcedure := Imagelist1.AddLazarusResource('ce_procedure');
-  ImgIDFunction := Imagelist1.AddLazarusResource('ce_function');
-  ImgIDProperty := Imagelist1.AddLazarusResource('ce_property');
-  ImgIDPropertyReadOnly := Imagelist1.AddLazarusResource('ce_property_readonly');
+  ImgIDDefault := Imagelist1.AddResourceName(HInstance, 'ce_default');
+  ImgIDProgram := Imagelist1.AddResourceName(HInstance, 'ce_program');
+  ImgIDUnit := Imagelist1.AddResourceName(HInstance, 'ce_unit');
+  ImgIDInterface := Imagelist1.AddResourceName(HInstance, 'ce_interface');
+  ImgIDImplementation := Imagelist1.AddResourceName(HInstance, 'ce_implementation');
+  ImgIDInitialization := Imagelist1.AddResourceName(HInstance, 'ce_initialization');
+  ImgIDFinalization := Imagelist1.AddResourceName(HInstance, 'ce_finalization');
+  ImgIDType := Imagelist1.AddResourceName(HInstance, 'ce_type');
+  ImgIDVariable := Imagelist1.AddResourceName(HInstance, 'ce_variable');
+  ImgIDConst := Imagelist1.AddResourceName(HInstance, 'ce_const');
+  ImgIDClass := Imagelist1.AddResourceName(HInstance, 'ce_class');
+  ImgIDProcedure := Imagelist1.AddResourceName(HInstance, 'ce_procedure');
+  ImgIDFunction := Imagelist1.AddResourceName(HInstance, 'ce_function');
+  ImgIDProperty := Imagelist1.AddResourceName(HInstance, 'ce_property');
+  ImgIDPropertyReadOnly := Imagelist1.AddResourceName(HInstance, 'ce_property_readonly');
   // sections
-  ImgIDSection := Imagelist1.AddLazarusResource('ce_section');
-  ImgIDHint := Imagelist1.AddLazarusResource('state_hint');
+  ImgIDSection := Imagelist1.AddResourceName(HInstance, 'ce_section');
+  ImgIDHint := Imagelist1.AddResourceName(HInstance, 'state_hint');
 
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
@@ -1855,11 +1855,11 @@ procedure TCodeExplorerView.UpdateMode;
 begin
   if FMode=cemCategory
   then begin
-    CodeModeSpeedButton.LoadGlyphFromLazarusResource('show_category');
+    CodeModeSpeedButton.LoadGlyphFromResourceName(HInstance, 'show_category');
     CodeModeSpeedButton.Hint:=lisCEModeShowSourceNodes;
   end
   else begin
-    CodeModeSpeedButton.LoadGlyphFromLazarusResource('show_source');
+    CodeModeSpeedButton.LoadGlyphFromResourceName(HInstance, 'show_source');
     CodeModeSpeedButton.Hint:=lisCEModeShowCategories;
   end;
   Refresh(true);

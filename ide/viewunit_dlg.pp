@@ -445,7 +445,7 @@ begin
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
   SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
-  SortAlphabeticallySpeedButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
+  SortAlphabeticallySpeedButton.LoadGlyphFromResourceName(HInstance, 'pkg_sortalphabetically');
 end;
 
 procedure TViewUnitDialog.OKButtonClick(Sender: TObject);

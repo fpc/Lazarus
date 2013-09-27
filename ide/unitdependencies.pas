@@ -1806,25 +1806,25 @@ begin
 
   AllUnitsFilterEdit.Text:=ResStrFilter;
   AllUnitsShowDirsSpeedButton.Hint:=lisUDShowNodesForDirectories;
-  AllUnitsShowDirsSpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
+  AllUnitsShowDirsSpeedButton.LoadGlyphFromResourceName(HInstance, 'pkg_hierarchical');
   AllUnitsShowDirsSpeedButton.Down:=true;
   AllUnitsShowGroupNodesSpeedButton.Hint:=lisUDShowNodesForProjectAndPackages;
-  AllUnitsShowGroupNodesSpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
+  AllUnitsShowGroupNodesSpeedButton.LoadGlyphFromResourceName(HInstance, 'pkg_hierarchical');
   AllUnitsShowGroupNodesSpeedButton.Down:=true;
 
   AllUnitsSearchEdit.Text:=ResStrSearch;
   AllUnitsSearchNextSpeedButton.Hint:=lisUDSearchNextOccurrenceOfThisPhrase;
-  AllUnitsSearchNextSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
+  AllUnitsSearchNextSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_down');
   AllUnitsSearchPrevSpeedButton.Hint:=lisUDSearchPreviousOccurrenceOfThisPhrase;
-  AllUnitsSearchPrevSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
+  AllUnitsSearchPrevSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_up');
 
   // selected units
   SelectedUnitsGroupBox.Caption:=lisUDSelectedUnits;
   SelUnitsSearchEdit.Text:=ResStrSearch;
   SelUnitsSearchNextSpeedButton.Hint:=lisUDSearchNextUnitOfThisPhrase;
-  SelUnitsSearchNextSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
+  SelUnitsSearchNextSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_down');
   SelUnitsSearchPrevSpeedButton.Hint:=lisUDSearchPreviousUnitOfThisPhrase;
-  SelUnitsSearchPrevSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
+  SelUnitsSearchPrevSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_up');
 
   // popup menu
   UnitsTVCopyFilenameMenuItem.Caption:=uemCopyFilename;

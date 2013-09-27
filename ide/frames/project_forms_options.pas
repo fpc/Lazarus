@@ -184,10 +184,10 @@ begin
   FormsAutoCreatedLabel.Caption := dlgAutoCreateForms;
   FormsAvailFormsLabel.Caption := dlgAvailableForms;
   FormsAutoCreateNewFormsCheckBox.Caption := dlgAutoCreateNewForms;
-  FormsMoveAutoCreatedFormUpBtn.LoadGlyphFromLazarusResource('arrow_up');
-  FormsMoveAutoCreatedFormsDownBtn.LoadGlyphFromLazarusResource('arrow_down');
-  FormsAddToAutoCreatedFormsBtn.LoadGlyphFromLazarusResource('arrow_left');
-  FormsRemoveFromAutoCreatedFormsBtn.LoadGlyphFromLazarusResource('arrow_right');
+  FormsMoveAutoCreatedFormUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
+  FormsMoveAutoCreatedFormsDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
+  FormsAddToAutoCreatedFormsBtn.LoadGlyphFromResourceName(HInstance, 'arrow_left');
+  FormsRemoveFromAutoCreatedFormsBtn.LoadGlyphFromResourceName(HInstance, 'arrow_right');
 end;
 
 procedure TProjectFormsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

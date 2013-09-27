@@ -1023,6 +1023,8 @@ var
 
 implementation
 
+{$R ../images/laz_images.res}
+
 var
   ParamBaseDirectory: string = '';
   SkipAutoLoadingLastProject: boolean = false;
@@ -14171,8 +14173,6 @@ end;
 
 initialization
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('main.pp: initialization');{$ENDIF}
-  {$I ../images/laz_images.lrs}
-  // we have a bundle icon, don't use low quality standard icon
   ShowSplashScreen:=true;
   DebugLogger.ParamForEnabledLogGroups := '--debug-enable=';
 end.

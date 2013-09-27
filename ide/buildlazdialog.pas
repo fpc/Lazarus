@@ -937,13 +937,13 @@ begin
   ConfirmBuildCheckBox.Hint := lisLazBuildShowConfirmationDialogWhenBuilding;
 
   CompileButton.Caption := lisBuild;
-  CompileButton.LoadGlyphFromLazarusResource('menu_build');
+  CompileButton.LoadGlyphFromResourceName(HInstance, 'menu_build');
   CompileAdvancedButton.Caption := lisLazBuildBuildMany;
-  CompileAdvancedButton.LoadGlyphFromLazarusResource('menu_build_all');
+  CompileAdvancedButton.LoadGlyphFromResourceName(HInstance, 'menu_build_all');
   SaveSettingsButton.Caption := lisSaveSettings;
   SaveSettingsButton.LoadGlyphFromStock(idButtonSave);
   if SaveSettingsButton.Glyph.Empty then
-    SaveSettingsButton.LoadGlyphFromLazarusResource('laz_save');
+    SaveSettingsButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
   CancelButton.Caption := lisCancel;
   HelpButton.Caption := lisMenuHelp;
 

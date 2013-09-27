@@ -375,10 +375,10 @@ begin
   ConflictsTreeView.Images := IDEImages.Images_16;
   imgKeyCategory := IDEImages.LoadImage(16, 'item_keyboard');
   imgKeyItem := IDEImages.LoadImage(16, 'item_character');
-  ChooseSchemeButton.LoadGlyphFromLazarusResource('item_keyboard'); // keymapcategory
-  FindKeyButton.LoadGlyphFromLazarusResource('menu_search_find');
-  EditButton.LoadGlyphFromLazarusResource('laz_edit');
-  ClearButton.LoadGlyphFromLazarusResource('menu_clean');
+  ChooseSchemeButton.LoadGlyphFromResourceName(HInstance, 'item_keyboard'); // keymapcategory
+  FindKeyButton.LoadGlyphFromResourceName(HInstance, 'menu_search_find');
+  EditButton.LoadGlyphFromResourceName(HInstance, 'laz_edit');
+  ClearButton.LoadGlyphFromResourceName(HInstance, 'menu_clean');
   PopupMenu1.Images := IDEImages.Images_16;
   EditMenuItem.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
   ClearMenuItem.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');

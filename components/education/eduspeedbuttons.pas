@@ -304,43 +304,43 @@ end;
 function TEduSpeedButtonsFrame.GetImageForSpeedBtn(btnName: String) :TCustomBitmap;
 begin
    if (CompareText(btnName,'NewUnitSpeedBtn')=0) or (CompareText(btnName,'EduNewSingleFileProgramBtn')=0) then begin
-    Result := CreateBitmapFromLazarusResource('item_unit');
+    Result := CreateBitmapFromResourceName(HInstance, 'item_unit');
   end
   else if (CompareText(btnName,'OpenFileSpeedBtn')=0) then begin
-    Result := CreateBitmapFromLazarusResource('laz_open');
+    Result := CreateBitmapFromResourceName(HInstance, 'laz_open');
   end
   else if (CompareText(btnName,'SaveSpeedBtn')=0) then begin
-    Result := CreateBitmapFromLazarusResource('laz_save');
+    Result := CreateBitmapFromResourceName(HInstance, 'laz_save');
   end
   else if (CompareText(btnName,'SaveAllSpeedBtn')=0) then begin
-    Result := CreateBitmapFromLazarusResource('menu_save_all');
+    Result := CreateBitmapFromResourceName(HInstance, 'menu_save_all');
   end
   else if (CompareText(btnName,'NewFormSpeedBtn')=0) then begin
-    Result := CreateBitmapFromLazarusResource('item_form');
+    Result := CreateBitmapFromResourceName(HInstance, 'item_form');
   end
   else if (CompareText(btnName,'ToggleFormSpeedBtn')=0) then begin
-    Result := CreateBitmapFromLazarusResource('menu_view_toggle_form_unit');
+    Result := CreateBitmapFromResourceName(HInstance, 'menu_view_toggle_form_unit');
   end
   else if (CompareText(btnName,'ViewUnitsSpeedBtn')=0) then begin
-    Result := CreateBitmapFromLazarusResource('menu_view_units');
+    Result := CreateBitmapFromResourceName(HInstance, 'menu_view_units');
   end
   else if (CompareText(btnName,'ViewFormsSpeedBtn')=0) then begin
-    Result := CreateBitmapFromLazarusResource('menu_view_forms');
+    Result := CreateBitmapFromResourceName(HInstance, 'menu_view_forms');
   end
   else if (CompareText(btnName,'RunSpeedButton')=0) then begin
-    Result := CreateBitmapFromLazarusResource('menu_run');
+    Result := CreateBitmapFromResourceName(HInstance, 'menu_run');
   end
   else if (CompareText(btnName,'PauseSpeedButton')=0) then begin
-    Result := CreateBitmapFromLazarusResource('menu_pause');
+    Result := CreateBitmapFromResourceName(HInstance, 'menu_pause');
   end
   else if (CompareText(btnName,'StopSpeedButton')=0) then begin
-    Result := CreateBitmapFromLazarusResource('menu_stop');
+    Result := CreateBitmapFromResourceName(HInstance, 'menu_stop');
   end
   else if (CompareText(btnName,'StepIntoSpeedButton')=0) then begin
-    Result := CreateBitmapFromLazarusResource('menu_stepinto');
+    Result := CreateBitmapFromResourceName(HInstance, 'menu_stepinto');
   end
   else if (CompareText(btnName,'StepOverpeedButton')=0) then begin
-    Result := CreateBitmapFromLazarusResource('menu_stepover');
+    Result := CreateBitmapFromResourceName(HInstance, 'menu_stepover');
   end
   else
     result := nil;
@@ -376,7 +376,7 @@ begin
         curNode:=SpeedButtonsTreeView.Items.AddChild(CategoryNode,curButton.Name);
         Image := GetImageForSpeedBtn(curButton.Name);
         if (Image = nil) then
-           Image := CreateBitmapFromLazarusResource('default');
+           Image := CreateBitmapFromResourceName(HInstance, 'default');
         curNode.ImageIndex:=SpeedButtonsTreeView.Images.Add(Image,nil);
         Image.Free;
         curNode.SelectedIndex:=curNode.ImageIndex;
@@ -397,7 +397,7 @@ begin
         curNode:=SpeedButtonsTreeView.Items.AddChild(CategoryNode,curButton.Name);
         Image := GetImageForSpeedBtn(curButton.Name);
         if (Image = nil) then
-           Image := CreateBitmapFromLazarusResource('default');
+           Image := CreateBitmapFromResourceName(HInstance, 'default');
         curNode.ImageIndex:=SpeedButtonsTreeView.Images.Add(Image,nil);
         Image.Free;
         curNode.SelectedIndex:=curNode.ImageIndex;

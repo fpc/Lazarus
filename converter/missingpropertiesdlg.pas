@@ -704,7 +704,7 @@ begin
   PropertiesText.Caption:=lisProperties;
   TypesText.Caption:=lisTypes;
   ReplaceAllButton.Caption:=lisReplaceRemoveUnknown;
-  ReplaceAllButton.LoadGlyphFromLazarusResource('laz_refresh');
+  ReplaceAllButton.LoadGlyphFromResourceName(HInstance, 'laz_refresh');
   EditorOpts.GetHighlighterSettings(SynLFMSyn1);
   EditorOpts.GetSynEditSettings(LFMSynEdit);
 end;

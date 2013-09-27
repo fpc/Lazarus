@@ -172,11 +172,11 @@ begin
       CompNode:=ComponentsTreeView.Items.AddChild(PageNode,CompName);
       ResHandle := LazarusResources.Find(CompName);
       if ResHandle <> nil then
-        Image := CreateBitmapFromLazarusResource(ResHandle)
+        Image := CreateBitmapFromResourceName(HInstance, ResHandle)
       else
         Image := nil;
       if Image = nil then
-        Image := CreateBitmapFromLazarusResource('default');
+        Image := CreateBitmapFromResourceName(HInstance, 'default');
       CompNode.ImageIndex:=ComponentsTreeView.Images.Add(Image,nil);
       Image.Free;
       CompNode.SelectedIndex:=CompNode.ImageIndex;

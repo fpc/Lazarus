@@ -1,1 +1,1 @@
-..\tools\lazres laz_images.lrs @laz_images_list.txt
+..\tools\lazres laz_images.rc @laz_images_list.txt

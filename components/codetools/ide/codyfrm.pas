@@ -96,8 +96,8 @@ begin
   if CodyWindow=nil then CodyWindow:=Self;
   Caption:='Cody';
 
-  ImgIDRefresh := Imagelist1.AddLazarusResource('laz_refresh');
-  ImgIDOptions := Imagelist1.AddLazarusResource('menu_environment_options');
+  ImgIDRefresh := Imagelist1.AddResourceName(HInstance, 'laz_refresh');
+  ImgIDOptions := Imagelist1.AddResourceName(HInstance, 'menu_environment_options');
   ToolBar1.Images:=ImageList1;
   OptionsToolButton.Hint:=crsOptions;
   OptionsToolButton.ImageIndex:=ImgIDOptions;

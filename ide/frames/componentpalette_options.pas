@@ -126,13 +126,13 @@ begin
   ComponentsListView.Column[2].Caption  := lisPage;
   ComponentsListView.Column[3].Caption  := lisPackage;
   // Arrow buttons for pages
-  PageMoveUpBtn.LoadGlyphFromLazarusResource('arrow_up');
-  PageMoveDownBtn.LoadGlyphFromLazarusResource('arrow_down');
+  PageMoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
+  PageMoveDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
   PageMoveUpBtn.Hint:=lisMoveSelectedUp;
   PageMoveDownBtn.Hint:=lisMoveSelectedDown;
   // Arrow buttons for components
-  CompMoveUpBtn.LoadGlyphFromLazarusResource('arrow_up');
-  CompMoveDownBtn.LoadGlyphFromLazarusResource('arrow_down');
+  CompMoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
+  CompMoveDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
   CompMoveUpBtn.Hint:=lisMoveSelectedUp;
   CompMoveDownBtn.Hint:=lisMoveSelectedDown;
 

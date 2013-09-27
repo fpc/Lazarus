@@ -3501,12 +3501,12 @@ begin
   // search
   SearchPanel.Visible:=false; // by default the search is hidden
   HideSearchSpeedButton.Hint:='Hide Search';
-  HideSearchSpeedButton.LoadGlyphFromLazarusResource('debugger_power_grey');
+  HideSearchSpeedButton.LoadGlyphFromResourceName(HInstance, 'debugger_power_grey');
   SearchEdit.Text:=GetDefaultSearchText;
   SearchNextSpeedButton.Hint:='Find the next occurence of the phrase';
-  SearchNextSpeedButton.LoadGlyphFromLazarusResource('callstack_bottom');
+  SearchNextSpeedButton.LoadGlyphFromResourceName(HInstance, 'callstack_bottom');
   SearchPrevSpeedButton.Hint:='Find the previous occurence of the phrase';
-  SearchPrevSpeedButton.LoadGlyphFromLazarusResource('callstack_top');
+  SearchPrevSpeedButton.LoadGlyphFromResourceName(HInstance, 'callstack_top');
 end;
 
 destructor TMessagesFrame.Destroy;

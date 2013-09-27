@@ -135,7 +135,7 @@ begin
   TextToFindLabel.Caption:=dlgTextToFind;
   ReplaceTextComboBox.Text:='';
   ReplaceWithCheckbox.Caption:=dlgReplaceWith;
-  EnableAutoCompleteSpeedButton.LoadGlyphFromLazarusResource('menu_stepinto');
+  EnableAutoCompleteSpeedButton.LoadGlyphFromResourceName(HInstance, 'menu_stepinto');
   OptionsGroupBox.Caption:=dlgFROpts;
 
   with CaseSensitiveCheckBox do begin

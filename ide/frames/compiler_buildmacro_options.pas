@@ -490,9 +490,9 @@ begin
     lisHintADefaultValueCanBeDefinedInTheConditionals;
   BuildMacroDescriptionLabel.Caption:=lisCodeToolsDefsDescription;
 
-  BMAddMacroSpeedButton.LoadGlyphFromLazarusResource('laz_add');
-  BMAddMacroValueSpeedButton.LoadGlyphFromLazarusResource('laz_add');
-  BMDeleteMacroSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
+  BMAddMacroSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  BMAddMacroValueSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  BMDeleteMacroSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_delete');
 end;
 
 destructor TCompOptBuildMacrosFrame.Destroy;

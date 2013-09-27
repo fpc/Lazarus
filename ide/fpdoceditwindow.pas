@@ -296,14 +296,14 @@ begin
 
   Name := NonModalIDEWindowNames[nmiwFPDocEditorName];
 
-  BoldFormatButton.LoadGlyphFromLazarusResource('formatbold');
-  UnderlineFormatButton.LoadGlyphFromLazarusResource('formatunderline');
-  ItalicFormatButton.LoadGlyphFromLazarusResource('formatitalic');
-  InsertVarTagButton.LoadGlyphFromLazarusResource('insertvartag');
-  InsertCodeTagButton.LoadGlyphFromLazarusResource('insertcodetag');
-  InsertRemarkButton.LoadGlyphFromLazarusResource('insertremark');
-  InsertURLTagSpeedButton.LoadGlyphFromLazarusResource('formatunderline');
-  SaveButton.LoadGlyphFromLazarusResource('laz_save');
+  BoldFormatButton.LoadGlyphFromResourceName(HInstance, 'formatbold');
+  UnderlineFormatButton.LoadGlyphFromResourceName(HInstance, 'formatunderline');
+  ItalicFormatButton.LoadGlyphFromResourceName(HInstance, 'formatitalic');
+  InsertVarTagButton.LoadGlyphFromResourceName(HInstance, 'insertvartag');
+  InsertCodeTagButton.LoadGlyphFromResourceName(HInstance, 'insertcodetag');
+  InsertRemarkButton.LoadGlyphFromResourceName(HInstance, 'insertremark');
+  InsertURLTagSpeedButton.LoadGlyphFromResourceName(HInstance, 'formatunderline');
+  SaveButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
 
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate, @DoEditorUpdate);
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorStatus, @DoEditorUpdate);

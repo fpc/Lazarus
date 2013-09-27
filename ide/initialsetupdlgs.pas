@@ -1353,17 +1353,17 @@ begin
   DebuggerTabSheet.Caption:=lisDebugger;
 
   FHeadGraphic:=TPortableNetworkGraphic.Create;
-  FHeadGraphic.LoadFromLazarusResource('ide_icon48x48');
+  FHeadGraphic.LoadFromResourceName(HInstance, 'ide_icon48x48');
 
   TVNodeLazarus:=PropertiesTreeView.Items.Add(nil,LazarusTabSheet.Caption);
   TVNodeCompiler:=PropertiesTreeView.Items.Add(nil,CompilerTabSheet.Caption);
   TVNodeFPCSources:=PropertiesTreeView.Items.Add(nil,FPCSourcesTabSheet.Caption);
   TVNodeMakeExe:=PropertiesTreeView.Items.Add(nil,MakeExeTabSheet.Caption);
   TVNodeDebugger:=PropertiesTreeView.Items.Add(nil,DebuggerTabSheet.Caption);
-  ImgIDError := ImageList1.AddLazarusResource('state_error');
-  ImgIDWarning := ImageList1.AddLazarusResource('state_warning');
+  ImgIDError := Imagelist1.AddResourceName(HInstance, 'state_error');
+  ImgIDWarning := Imagelist1.AddResourceName(HInstance, 'state_warning');
 
-  StopScanButton.LoadGlyphFromLazarusResource('menu_stop');
+  StopScanButton.LoadGlyphFromResourceName(HInstance, 'menu_stop');
 
   UpdateCaptions;
 

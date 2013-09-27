@@ -1329,6 +1329,7 @@ function CompareFilenameWithSrcEditIntf(FilenameStr, SrcEdit: Pointer): integer;
 implementation
 
 {$R *.lfm}
+{$R ../images/bookmark.res}
 
 var
   SRCED_LOCK, SRCED_OPEN, SRCED_CLOSE, SRCED_PAGES: PLazLoggerLogGroup;
@@ -4513,7 +4514,7 @@ Begin
     Manager.NewEditorCreated(self);
     FEditor.TemplateEdit.OnActivate := @EditorActivateSyncro;
     FEditor.TemplateEdit.OnDeactivate := @EditorDeactivateSyncro;
-    bmp := CreateBitmapFromLazarusResource('tsynsyncroedit');
+    bmp := CreateBitmapFromResourceName(HInstance, 'tsynsyncroedit');
     FEditor.SyncroEdit.GutterGlyph.Assign(bmp);
     bmp.Free;
     FEditor.SyncroEdit.OnBeginEdit := @EditorActivateSyncro;
@@ -10504,7 +10505,6 @@ initialization
   SRCED_PAGES := DebugLogger.RegisterLogGroup('SRCED_PAGES' {$IFDEF SRCED_PAGES} , True {$ENDIF} );
 
   InternalInit;
-  {$I ../images/bookmark.lrs}
 
 finalization
   InternalFinal;

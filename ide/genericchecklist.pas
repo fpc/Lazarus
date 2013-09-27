@@ -45,7 +45,7 @@ begin
   fActionBtn.BorderSpacing.Left:=6;
   fActionBtn.BorderSpacing.Right:=6;
   if aResourceGlyphName <> '' then
-    fActionBtn.LoadGlyphFromLazarusResource(aResourceGlyphName);
+    fActionBtn.LoadGlyphFromResourceName(HInstance, aResourceGlyphName);
   fActionBtn.AutoSize:=True;
   fActionBtn.Parent:=ButtonPanel1;
 end;

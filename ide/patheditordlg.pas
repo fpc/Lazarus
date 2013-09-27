@@ -264,13 +264,13 @@ begin
   AddTemplateButton.Caption:=lisCodeTemplAdd;
   AddTemplateButton.Hint:=lisPathEditorTemplAddHint;
 
-  MoveUpButton.LoadGlyphFromLazarusResource('arrow_up');
-  MoveDownButton.LoadGlyphFromLazarusResource('arrow_down');
-  ReplaceButton.LoadGlyphFromLazarusResource('menu_reportingbug');
-  AddButton.LoadGlyphFromLazarusResource('laz_add');
-  DeleteButton.LoadGlyphFromLazarusResource('laz_delete');
-  DeleteInvalidPathsButton.LoadGlyphFromLazarusResource('menu_clean');
-  AddTemplateButton.LoadGlyphFromLazarusResource('laz_add');
+  MoveUpButton.LoadGlyphFromResourceName(HInstance, 'arrow_up');
+  MoveDownButton.LoadGlyphFromResourceName(HInstance, 'arrow_down');
+  ReplaceButton.LoadGlyphFromResourceName(HInstance, 'menu_reportingbug');
+  AddButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  DeleteButton.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  DeleteInvalidPathsButton.LoadGlyphFromResourceName(HInstance, 'menu_clean');
+  AddTemplateButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
 end;
 
 procedure TPathEditorDialog.FormResize(Sender: TObject);

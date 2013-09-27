@@ -189,9 +189,9 @@ procedure TAddAssignMethodDialog.FormCreate(Sender: TObject);
 begin
   FProcName:='Assign';
   FItems:=TAVLTree.Create(@CompareAAMDItemsByName);
-  ImgIDImplementation := Imagelist1.AddLazarusResource('ce_implementation');
-  ImgIDVariable := Imagelist1.AddLazarusResource('ce_variable');
-  ImgIDProperty := Imagelist1.AddLazarusResource('ce_property');
+  ImgIDImplementation := Imagelist1.AddResourceName(HInstance, 'ce_implementation');
+  ImgIDVariable := Imagelist1.AddResourceName(HInstance, 'ce_variable');
+  ImgIDProperty := Imagelist1.AddResourceName(HInstance, 'ce_property');
 
   ProcNameEdit.Text:=FProcName;
 end;

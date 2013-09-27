@@ -100,8 +100,8 @@ begin
   AddSpeedButton.Hint:=lisAdd;
   RemoveSpeedButton.Hint:=lisRemove;
 
-  AddSpeedButton.LoadGlyphFromLazarusResource('arrow_left');
-  RemoveSpeedButton.LoadGlyphFromLazarusResource('arrow_right');
+  AddSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_left');
+  RemoveSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_right');
 
   FillAvailableListbox;
 end;

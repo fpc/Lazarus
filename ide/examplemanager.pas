@@ -161,10 +161,10 @@ begin
   SelectAllButton.Caption:=lisMenuSelectAll;
   SelectNoneButton.Caption:=lisSAMSelectNone;
 
-  OpenSelectedButton.LoadGlyphFromLazarusResource('laz_open');
-  BuildAllSelectedButton.LoadGlyphFromLazarusResource('menu_build_all');
-  SelectAllButton.LoadGlyphFromLazarusResource('menu_select_all');
-  SelectNoneButton.LoadGlyphFromLazarusResource('ce_default');
+  OpenSelectedButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
+  BuildAllSelectedButton.LoadGlyphFromResourceName(HInstance, 'menu_build_all');
+  SelectAllButton.LoadGlyphFromResourceName(HInstance, 'menu_select_all');
+  SelectNoneButton.LoadGlyphFromResourceName(HInstance, 'ce_default');
 
   edRootDirectory.Text:=EnvironmentOptions.GetParsedLazarusDirectory;
   FillProjectsPending;

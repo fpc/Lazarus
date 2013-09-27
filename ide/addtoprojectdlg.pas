@@ -506,12 +506,12 @@ begin
 
   with FilesBrowseButton do begin
     Caption:=lisA2PAddFiles;
-    LoadGlyphFromLazarusResource('laz_add');
+    LoadGlyphFromResourceName(HInstance, 'laz_add');
   end;
 
   with FilesDirButton do begin
     Caption:=lisAddFilesInDirectory;
-    LoadGlyphFromLazarusResource('pkg_files');
+    LoadGlyphFromResourceName(HInstance, 'pkg_files');
   end;
 
   with FilesShortenButton do begin
@@ -524,7 +524,7 @@ begin
     Caption:=lisDelete;
     ShowHint:=true;
     Hint:=lisDeleteSelectedFiles;
-    LoadGlyphFromLazarusResource('laz_delete');
+    LoadGlyphFromResourceName(HInstance, 'laz_delete');
   end;
 
   UpdateFilesButtons;

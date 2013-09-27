@@ -141,8 +141,8 @@ begin
   BtnLoad.Caption := sccsTrEdtLoad;
   BtnSave.Caption := sccsTrEdtSave;
   BtnApply.Caption := sccsTrEdtApply;
-  MoveUpBtn.LoadGlyphFromLazarusResource('arrow_up');
-  MoveDownBtn.LoadGlyphFromLazarusResource('arrow_down');
+  MoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
+  MoveDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
   MoveUpBtn.Hint:=rscdMoveUp;
   MoveDownBtn.Hint:=rscdMoveDown;
 

@@ -58,8 +58,8 @@ begin
   SearchPathsGroupBox.Caption:=lisSearchPaths2;
   AddPathButton.Caption := lisCodeHelpAddPathButton;
   DeletePathButton.Caption := lisCodeHelpDeletePathButton;
-  DeletePathButton.LoadGlyphFromLazarusResource('laz_delete');
-  AddPathButton.LoadGlyphFromLazarusResource('laz_add');
+  DeletePathButton.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  AddPathButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
 
   PathEdit.Clear;
 end;

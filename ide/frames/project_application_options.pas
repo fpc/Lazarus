@@ -213,7 +213,7 @@ begin
   UIAccessCheckBox.Caption := dlgPOUIAccess;
 
   CreateAppBundleButton.Caption := dlgPOCreateAppBundle;
-  CreateAppBundleButton.LoadGlyphFromLazarusResource('pkg_compile');
+  CreateAppBundleButton.LoadGlyphFromResourceName(HInstance, 'pkg_compile');
 
   // icon
   IconLabel.Caption := dlgPOIcon;
@@ -222,11 +222,11 @@ begin
   ClearIconButton.Caption := dlgPOClearIcon;
   LoadIconButton.LoadGlyphFromStock(idButtonOpen);
   if LoadIconButton.Glyph.Empty then
-    LoadIconButton.LoadGlyphFromLazarusResource('laz_open');
+    LoadIconButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
   SaveIconButton.LoadGlyphFromStock(idButtonSave);
   if SaveIconButton.Glyph.Empty then
-    SaveIconButton.LoadGlyphFromLazarusResource('laz_save');
-  ClearIconButton.LoadGlyphFromLazarusResource('menu_clean');
+    SaveIconButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
+  ClearIconButton.LoadGlyphFromResourceName(HInstance, 'menu_clean');
   IconImagePictureChanged(nil);
 end;
 

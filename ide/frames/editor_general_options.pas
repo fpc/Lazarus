@@ -370,7 +370,7 @@ begin
     FDefaultBookmarkImages.Width := 11;
     FDefaultBookmarkImages.Height := 11;
     for i := 0 to 9 do
-      FDefaultBookmarkImages.AddLazarusResource('bookmark' + IntToStr(i));
+      FDefaultBookmarkImages.AddResourceName(HInstance, 'bookmark' + IntToStr(i));
   end;
   Result := FDefaultBookmarkImages;
 end;

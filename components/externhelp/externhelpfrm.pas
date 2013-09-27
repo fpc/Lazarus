@@ -1132,8 +1132,8 @@ constructor TExternHelpGeneralOptsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FOptions:=TExternHelpOptions.Create;
-  AddSpeedButton.LoadGlyphFromLazarusResource('laz_add');
-  DeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
+  AddSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  DeleteSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_delete');
 end;
 
 destructor TExternHelpGeneralOptsFrame.Destroy;

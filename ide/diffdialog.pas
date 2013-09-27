@@ -282,11 +282,11 @@ begin
 
   OpenInEditorButton.LoadGlyphFromStock(idButtonOpen);
   if OpenInEditorButton.Glyph.Empty then
-    OpenInEditorButton.LoadGlyphFromLazarusResource('laz_open');
+    OpenInEditorButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
   
   SaveDiffButton.LoadGlyphFromStock(idButtonSave);
   if SaveDiffButton.Glyph.Empty then
-    SaveDiffButton.LoadGlyphFromLazarusResource('laz_save');
+    SaveDiffButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
 
   // dialogs
   dlgOpen.Title:=lisOpenExistingFile;

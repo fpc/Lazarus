@@ -128,9 +128,9 @@ begin
   GlobalDesignHook.AddHandlerDeletePersistent(@OnDeletePersistent);
   GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
 
-  ArrowDown.LoadGlyphFromLazarusResource('arrow_down');
-  ArrowUp.LoadGlyphFromLazarusResource('arrow_up');
-  SortByPositionButton.LoadGlyphFromLazarusResource('menu_edit_sort');
+  ArrowDown.LoadGlyphFromResourceName(HInstance, 'arrow_down');
+  ArrowUp.LoadGlyphFromResourceName(HInstance, 'arrow_up');
+  SortByPositionButton.LoadGlyphFromResourceName(HInstance, 'menu_edit_sort');
 
   ArrowDown.Hint:=lisTabOrderDownHint;
   ArrowUp.Hint:=lisTabOrderUpHint;

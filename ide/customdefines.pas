@@ -80,9 +80,9 @@ begin
   Caption := lisLazBuildDefines;
   gbNewDefine.Caption := lisCodeToolsDefsDefine;
   AddBtn.Caption := lisBtnAdd;
-  AddBtn.LoadGlyphFromLazarusResource('laz_add');
+  AddBtn.LoadGlyphFromResourceName(HInstance, 'laz_add');
   RemoveBtn.Caption := lisBtnRemove;
-  RemoveBtn.LoadGlyphFromLazarusResource('laz_delete');
+  RemoveBtn.LoadGlyphFromResourceName(HInstance, 'laz_delete');
 end;
 
 procedure TCustomDefinesForm.FormShow(Sender: TObject);

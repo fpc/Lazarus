@@ -5329,6 +5329,7 @@ images/actions/laz_set_color_default.png -text svneol=unset#image/png
 images/actions/laz_set_colors_default.png -text svneol=unset#image/png
 images/actions/laz_wand.png -text svneol=unset#image/png
 images/bookmark.lrs svneol=native#text/pascal
+images/bookmark.res -text
 images/bookmark.sh svneol=native#text/plain
 images/bookmark_list.txt svneol=native#text/plain
 images/btn_downarrow.png -text
@@ -5587,6 +5588,7 @@ images/keymapcategory.png -text
 images/keymaprelation.png -text
 images/laz_images.bat svneol=native#text/x-msdos-program
 images/laz_images.lrs svneol=native#text/pascal
+images/laz_images.res -text
 images/laz_images.sh svneol=native#text/plain
 images/laz_images_list.txt svneol=native#text/plain
 images/lazarus_about_logo.xpm -text svneol=native#image/x-xpixmap

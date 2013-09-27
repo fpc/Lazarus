@@ -779,7 +779,7 @@ end;
 
 function TSourceMarks.AddImage(const ResName: string): integer;
 begin
-  Result := ImgList.AddLazarusResource(Resname);
+  Result := ImgList.AddResourceName(HInstance, Resname);
 end;
 
 function TSourceMarks.GetFilename(AMark: TSourceMark): string;

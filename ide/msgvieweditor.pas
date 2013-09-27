@@ -95,9 +95,9 @@ begin
   DeleteSetButton.Caption:=lisDelete;
   FilterSetGroupBox.Caption:=lisFilterSets;
 
-  AddNewSetButton.LoadGlyphFromLazarusResource('laz_add');
-  DeleteSetButton.LoadGlyphFromLazarusResource('laz_delete');
-  RenameSetButton.LoadGlyphFromLazarusResource('laz_edit');
+  AddNewSetButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  DeleteSetButton.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  RenameSetButton.LoadGlyphFromResourceName(HInstance, 'laz_edit');
 end;
 
 procedure TMsgViewEditorDlg.DeleteSetButtonClick(Sender: TObject);

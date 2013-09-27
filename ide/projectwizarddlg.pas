@@ -85,11 +85,11 @@ begin
     btnConvertProject.caption:=lisPWConvertProject;
     gbRecent.Caption:=lisPWOpenRecentProject;
     btnCloseIDE.caption:=lisQuitLazarus;
-    btnNewProject.LoadGlyphFromLazarusResource('item_project');
-    btnOpenProject.LoadGlyphFromLazarusResource('menu_project_open');
-    btnExamples.LoadGlyphFromLazarusResource('camera');
-    btnConvertProject.LoadGlyphFromLazarusResource('laz_wand');
-    btnCloseIDE.LoadGlyphFromLazarusResource('menu_exit');
+    btnNewProject.LoadGlyphFromResourceName(HInstance, 'item_project');
+    btnOpenProject.LoadGlyphFromResourceName(HInstance, 'menu_project_open');
+    btnExamples.LoadGlyphFromResourceName(HInstance, 'camera');
+    btnConvertProject.LoadGlyphFromResourceName(HInstance, 'laz_wand');
+    btnCloseIDE.LoadGlyphFromResourceName(HInstance, 'menu_exit');
     cbRecentProjects.Items.AddStrings(EnvironmentOptions.RecentProjectFiles);
   end;
 

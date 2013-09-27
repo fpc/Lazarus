@@ -206,10 +206,10 @@ begin
   CancelButton.Caption:=lisCancel;
   OpenButton.LoadGlyphFromStock(idButtonOpen);
   if OpenButton.Glyph.Empty then
-    OpenButton.LoadGlyphFromLazarusResource('laz_open');
+    OpenButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
   SaveButton.LoadGlyphFromStock(idButtonSave);
   if SaveButton.Glyph.Empty then
-    SaveButton.LoadGlyphFromLazarusResource('laz_save');
+    SaveButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
   LoadRecentList;
 end;
 

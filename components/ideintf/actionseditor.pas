@@ -883,10 +883,10 @@ begin
   mItemActListMoveUpAction.Caption := cActionListEditorMoveUpAction;
   mItemActListDelAction.Caption := cActionListEditorDeleteAction;
 
-  btnAdd.LoadGlyphFromLazarusResource('laz_add');
-  btnDelete.LoadGlyphFromLazarusResource('laz_delete');
-  btnUp.LoadGlyphFromLazarusResource('arrow_up');
-  btnDown.LoadGlyphFromLazarusResource('arrow_down');
+  btnAdd.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  btnDelete.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  btnUp.LoadGlyphFromResourceName(HInstance, 'arrow_up');
+  btnDown.LoadGlyphFromResourceName(HInstance, 'arrow_down');
 
   GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
   GlobalDesignHook.AddHandlerSetSelection(@OnComponentSelection);

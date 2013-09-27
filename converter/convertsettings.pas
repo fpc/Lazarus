@@ -883,7 +883,7 @@ begin
   // Unit Replacements
   UnitReplaceDivider.Caption:=lisConvUnitReplacements;
   UnitReplaceButton.Caption:=lisEdit;    // Recycled string.
-  UnitReplaceButton.LoadGlyphFromLazarusResource('laz_edit');
+  UnitReplaceButton.LoadGlyphFromResourceName(HInstance, 'laz_edit');
   UnitReplaceDivider.Hint:=lisConvUnitReplHint;
   UnitReplaceButton.Hint:=lisConvUnitReplHint;
   UnitReplaceComboBox.Items.Add(lisDisabled);    // 'Disabled'
@@ -897,7 +897,7 @@ begin
   // Type Replacements
   TypeReplaceDivider.Caption:=lisConvTypeReplacements;
   TypeReplaceButton.Caption:=lisEdit;
-  TypeReplaceButton.LoadGlyphFromLazarusResource('laz_edit');
+  TypeReplaceButton.LoadGlyphFromResourceName(HInstance, 'laz_edit');
   TypeReplaceDivider.Hint:=lisConvTypeReplHint;
   TypeReplaceButton.Hint:=lisConvTypeReplHint;
   TypeReplaceComboBox.Items.Add(lisInteractive);
@@ -905,7 +905,7 @@ begin
   // Func Replacements
   FuncReplaceDivider.Caption:=lisConvFuncReplacements;
   FuncReplaceButton.Caption:=lisEdit;
-  FuncReplaceButton.LoadGlyphFromLazarusResource('laz_edit');
+  FuncReplaceButton.LoadGlyphFromResourceName(HInstance, 'laz_edit');
   FuncReplaceDivider.Hint:=lisConvFuncReplHint;
   FuncReplaceButton.Hint:=lisConvFuncReplHint;
   FuncReplaceComboBox.Items.Add(lisDisabled);
@@ -914,7 +914,7 @@ begin
   // Coordinate Offsets
   CoordOffsDivider.Caption:=lisConvCoordOffs;
   CoordOffsButton.Caption:=lisEdit;
-  CoordOffsButton.LoadGlyphFromLazarusResource('laz_edit');
+  CoordOffsButton.LoadGlyphFromResourceName(HInstance, 'laz_edit');
   CoordOffsDivider.Hint:=lisConvCoordHint;
   CoordOffsButton.Hint:=lisConvCoordHint;
   CoordOffsComboBox.Items.Add(lisDisabled);
@@ -922,7 +922,7 @@ begin
   // File system scanning
   ScanLabel.Caption := lisScanParentDir;
   StopScanButton.Caption:=lisStop;
-  StopScanButton.LoadGlyphFromLazarusResource('menu_stop');
+  StopScanButton.LoadGlyphFromResourceName(HInstance, 'menu_stop');
 
   ButtonPanel1.OKButton.Caption:=lisStartConversion;
   ButtonPanel1.HelpButton.Caption:=lisMenuHelp;

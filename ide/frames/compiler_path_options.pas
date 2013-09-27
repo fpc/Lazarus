@@ -723,7 +723,7 @@ begin
 
   // register special buttons in the dialog itself
   btnShowOptions := CreateButton(dlgCOShowOptions);
-  btnShowOptions.LoadGlyphFromLazarusResource('menu_compiler_options');
+  btnShowOptions.LoadGlyphFromResourceName(HInstance, 'menu_compiler_options');
   btnShowOptions.OnClick  := @DoShowOptions;
   btnCheck := CreateButton(lisCompTest);
   btnCheck.ModalResult := mrNone;
@@ -734,7 +734,7 @@ begin
   btnLoadSave.Hint := dlgCOLoadSave;
   btnLoadSave.LoadGlyphFromStock(idButtonSave);
   if btnLoadSave.Glyph.Empty then
-    btnLoadSave.LoadGlyphFromLazarusResource('laz_save');
+    btnLoadSave.LoadGlyphFromResourceName(HInstance, 'laz_save');
 
   chkUseAsDefault := TCheckBox(ADialog.AddControl(TCheckBox));
   chkUseAsDefault.Caption := dlgCOSetAsDefault;

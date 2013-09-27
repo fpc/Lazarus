@@ -80,10 +80,10 @@ begin
   pnlButtons.Color := clBtnFace;
 
   // load button images
-  btnAdd.LoadGlyphFromLazarusResource('arrow_right');
-  btnRemove.LoadGlyphFromLazarusResource('arrow_left');
-  btnMoveUp.LoadGlyphFromLazarusResource('arrow_up');
-  btnMoveDown.LoadGlyphFromLazarusResource('arrow_down');
+  btnAdd.LoadGlyphFromResourceName(HInstance, 'arrow_right');
+  btnRemove.LoadGlyphFromResourceName(HInstance, 'arrow_left');
+  btnMoveUp.LoadGlyphFromResourceName(HInstance, 'arrow_up');
+  btnMoveDown.LoadGlyphFromResourceName(HInstance, 'arrow_down');
 
   btnAdd.Hint      := rsAddSelected;
   btnRemove.Hint   := rsRemoveSelected;

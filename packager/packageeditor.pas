@@ -1392,16 +1392,16 @@ begin
   MoreBitBtn.DropdownMenu := MorePopupMenu;
 
   // Buttons on FilterPanel
-  OpenButton.LoadGlyphFromLazarusResource('laz_open');
+  OpenButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
   OpenButton.Hint:=lisOpenFile2;
   SortAlphabeticallyButton.Hint:=lisPESortFilesAlphabetically;
-  SortAlphabeticallyButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
+  SortAlphabeticallyButton.LoadGlyphFromResourceName(HInstance, 'pkg_sortalphabetically');
   DirectoryHierarchyButton.Hint:=lisPEShowDirectoryHierarchy;
-  DirectoryHierarchyButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
+  DirectoryHierarchyButton.LoadGlyphFromResourceName(HInstance, 'pkg_hierarchical');
 
   // Up / Down buttons
-  MoveUpBtn.LoadGlyphFromLazarusResource('arrow_up');
-  MoveDownBtn.LoadGlyphFromLazarusResource('arrow_down');
+  MoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
+  MoveDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
   MoveUpBtn.Hint:=lisMoveSelectedUp;
   MoveDownBtn.Hint:=lisMoveSelectedDown;
 
