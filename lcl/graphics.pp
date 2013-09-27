@@ -1462,7 +1462,6 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure FreeImage; override;
-    function GetResourceType: TResourceType; override;
     function LazarusResourceTypeValid(const ResourceType: string): Boolean; override;
     function BitmapHandleAllocated: boolean; override;
     function MaskHandleAllocated: boolean; override;
@@ -1511,7 +1510,6 @@ type
   { TBitmap }
 
   TBitmap = class(TFPImageBitmap)
-  private
   protected
     procedure InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader); override;
     class function GetReaderClass: TFPCustomImageReaderClass; override;
@@ -1519,6 +1517,7 @@ type
     class function GetSharedImageClass: TSharedRasterImageClass; override;
   public
     class function GetFileExtensions: string; override;
+    function GetResourceType: TResourceType; override;
     procedure LoadFromStream(AStream: TStream; ASize: Cardinal); override;
   end;
 

@@ -505,9 +505,4 @@ begin
   Result := @TSharedCustomBitmap(FSharedImage).FImage.Description;
 end;
 
-function TCustomBitmap.GetResourceType: TResourceType;
-begin
-  Result := RT_BITMAP;
-end;
-
 

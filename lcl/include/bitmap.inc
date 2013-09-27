@@ -113,6 +113,11 @@ begin
   Result:='bmp';
 end;
 
+function TBitmap.GetResourceType: TResourceType;
+begin
+  Result := RT_BITMAP;
+end;
+
 procedure TBitmap.LoadFromStream(AStream: TStream; ASize: Cardinal);
 var
   S: THeaderStream;
