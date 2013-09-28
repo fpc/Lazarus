@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, Buttons, ButtonPanel, EditBtn,
-  Dialogs, contnrs, LCLProc, ComCtrls, Compiler, LazarusIDEStrConsts;
+  Dialogs, contnrs, LCLProc, ComCtrls, ExtCtrls, Compiler, LazarusIDEStrConsts;
 
 type
 
@@ -18,6 +18,7 @@ type
     cbShowModified: TCheckBox;
     cbUseComments: TCheckBox;
     edOptionsFilter: TEdit;
+    pnlFilter: TPanel;
     sbAllOptions: TScrollBox;
     procedure btnResetOptionsFilterClick(Sender: TObject);
     procedure cbShowModifiedClick(Sender: TObject);
@@ -78,7 +79,6 @@ end;
 procedure TfrmAllCompilerOptions.FormShow(Sender: TObject);
 begin
   Caption:=lisAllOptions;
-  edOptionsFilter.Enabled := False;   // Until the options are read.
   edOptionsFilter.Hint := lisFilterTheAvailableOptionsList;
   btnResetOptionsFilter.LoadGlyphFromLazarusResource(ResBtnListFilter);
   btnResetOptionsFilter.Enabled := False;
@@ -134,14 +134,12 @@ begin
   IdleConnected := False;
   Screen.Cursor := crHourGlass;
   try
-    edOptionsFilter.Enabled := False;
     FOptionsThread.WaitFor;            // Make sure the options are read.
     if FOptionsReader.ErrorMsg <> '' then
       DebugLn(FOptionsReader.ErrorMsg)
     else begin
       StartTime := Now;
       RenderAndFilterOptions;
-      edOptionsFilter.Enabled := True;
       DebugLn(Format('AllCompilerOptions: Time for reading options: %s, rendering GUI: %s',
                      [FormatTimeWithMs(FOptionsThread.ReadTime),
                       FormatTimeWithMs(Now-StartTime)]));
@@ -313,10 +311,7 @@ begin
     RenderOneLevel(FOptionsReader.RootOptGroup);
     FEffectiveFilter := edOptionsFilter.Text;
     FEffectiveShowModified := cbShowModified.Checked;
-    {$IFDEF AllOptsFocusFilter}
-    if FRenderedOnce then
-      FocusControl(edOptionsFilter);
-    {$ENDIF}
+    FocusControl(edOptionsFilter);
   finally
     Container.EnableAutoSizing;
     Container.Invalidate;

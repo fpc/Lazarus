@@ -1284,6 +1284,7 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
 
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
     procedure signalCurrentItemChanged(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl; override;
@@ -11764,6 +11765,16 @@ begin
   inherited DetachEvents;
 end;
 
+function TQtCheckListBox.EventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+begin
+  Result := False;
+  if (QEvent_type(Event) = QEventMouseButtonDblClick) then
+    // issue #25089
+  else
+    Result:=inherited EventFilter(Sender, Event);
+end;
+
 function TQtCheckListBox.itemViewViewportEventFilter(Sender: QObjectH;
   Event: QEventH): Boolean; cdecl;
 var
@@ -11792,6 +11803,16 @@ begin
               QWidget_releaseMouse(QWidgetH(Sender));
           end else
             Result := SlotMouse(Sender, Event);
+          if (QtVersionMajor = 4) and (QtVersionMinor >= 8) and
+            (QEvent_Type(Event) = QEventMouseButtonPress) then
+          begin
+            // change current row , this works fine with qt < 4.8
+            if Assigned(Item) and (currentItem <> Item) then
+            begin
+              // DebugLn('TQtCheckListBox forced item change');
+              Self.setCurrentItem(Item, True);
+            end;
+          end;
         end;
       else
       begin

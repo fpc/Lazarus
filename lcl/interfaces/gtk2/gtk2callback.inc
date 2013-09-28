@@ -735,6 +735,43 @@ begin
   DeliverGtkPaintMessage(Data,Widget,@Event^.Area,false,true);
 end;
 
+procedure ClearTopLevelsFocus(Win: PGtkWidget);
+var
+  List: PGList;
+  Window: PGtkWindow;
+  event: PGdkEvent;
+  TopLevelWin: PGdkWindow;
+begin
+
+  if not GTK_IS_WINDOW(win) then
+    exit;
+
+  List := gdk_window_get_toplevels;
+  while List <> nil do
+  begin
+    TopLevelWin := PGdkWindow(List^.Data);
+    if (TopLevelWin<>nil) and (TopLevelWin<>Win^.Window) then
+    begin
+      gdk_window_get_user_data(TopLevelWin, Pgpointer(@Window));
+      if GTK_IS_WINDOW(Window)
+         and GTK_WIDGET_VISIBLE(Window)
+         and gtk_window_has_TopLevel_Focus(Window) then
+      begin
+        // fake focus-out event
+        {.$IFDEF VerboseFocus}
+        DebugLn('NOTE: Window with stalled focus found!, faking focus-out event');
+        {.$ENDIF}
+        event := gdk_event_new(GDK_FOCUS_CHANGE);
+        event^.focus_change.window := TopLevelWin;
+        event^.focus_change._type := GDK_FOCUS_CHANGE;
+        event^.focus_change._in:=0;
+        gtk_main_do_event(event);
+      end;
+    end;
+    list := g_list_next(list);
+  end;
+end;
+
 function gtkfrmactivateAfter(widget: PGtkWidget; Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
@@ -945,14 +982,22 @@ begin
   EventTrace('focus', data);
   {$ENDIF}
   if (Widget=nil) or (Event=nil) then ;
-  //DebugLn('GTKFocusCBAfter ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
+  //DebugLn('GTKFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
+
+  LCLObject:=TObject(data);
+
+  if (widget<>nil) and GTK_IS_WINDOW(widget) and (LCLObject is TCustomForm) then
+  begin
+    // it's a top level window about to be focused, if we are being focused
+    // because of ALT+TABing to this form, the origin form might be left with
+    // invalid focus information (ALT+TAB doesn't trigger focus-out event on those)
+    ClearTopLevelsFocus(Widget);
+  end;
 
   NeedShiftUpdateAfternFocus := False;
   gdk_window_get_pointer(nil, nil, nil, @Mask);
   UpdateShiftState(TGtk2WidgetSet(WidgetSet).KeyStateList, GTKEventStateToShiftState(Word(Mask)));
 
-
-  LCLObject:=TObject(data);
   {$IFDEF VerboseFocus}
   write('GTKFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
   if LCLObject<>nil then begin

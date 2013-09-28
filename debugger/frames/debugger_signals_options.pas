@@ -104,6 +104,9 @@ var
 begin
   for n := 0 to DebugBoss.Signals.Count - 1 do
     AddSignalLine(DebugBoss.Signals[n]);
+
+  cmdSignalAdd.Enabled := False; // not implemented
+  cmdSignalRemove.Enabled := False; // not implemented
 end;
 
 procedure TDebuggerSignalsOptions.WriteSettings(AOptions: TAbstractIDEOptions);

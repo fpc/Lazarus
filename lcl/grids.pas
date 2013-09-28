@@ -846,7 +846,6 @@ type
     procedure WriteRowHeights(Writer: TWriter);
     procedure WMEraseBkgnd(var message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMGetDlgCode(var Msg: TLMNoParams); message LM_GETDLGCODE;
-    procedure WMChar(var message: TLMChar); message LM_CHAR;
   protected
     fGridState: TGridState;
     class procedure WSRegisterClass; override;
@@ -4510,22 +4509,6 @@ begin
   inherited WMSetFocus(Message);
 end;
 
-procedure TCustomGrid.WMChar(var message: TLMChar);
-var
-  Ch: Char;
-begin
-  Ch:=Char(message.CharCode);
-  {$Ifdef GridTraceMsg}
-  DebugLn(ClassName,'.WMchar CharCode= ', IntToStr(message.CharCode));
-  {$Endif}
-  if EditingAllowed(FCol) and (Ch in [^H, #32..#255]) then begin
-    EditorShowChar(Ch);
-    message.CharCode := 0;
-    message.Result := 1;
-  end else
-    inherited;
-end;
-
 class procedure TCustomGrid.WSRegisterClass;
 begin
   inherited WSRegisterClass;
@@ -6740,9 +6723,15 @@ end;
 procedure TCustomGrid.KeyPress(var Key: char);
 begin
   inherited KeyPress(Key);
-  if (Key=#13) and EditingAllowed(FCol) then begin
-    EditorShow(True);
-    Key := #0;
+  if not EditorMode and EditingAllowed(FCol) then begin
+    if (Key=#13) then begin
+      EditorShow(True);
+      Key := #0;
+    end else
+    if (Key in [^H, #32..#255]) then begin
+      EditorShowChar(Key);
+      Key := #0;
+    end;
   end;
 end;
 
