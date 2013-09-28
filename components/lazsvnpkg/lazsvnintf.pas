@@ -36,6 +36,8 @@ procedure Register;
 
 implementation
 
+{$R lazsvnpkg_images.res}
+
 uses
   MenuIntf, IDECommands, Controls, Forms, Dialogs,
   SVNLogForm, SVNUpdateForm, SVNDiffForm, SVNStatusForm, LazIDEIntf, SVNClasses,
@@ -202,8 +204,5 @@ procedure ProcSVNSettings(Sender: TObject);
 begin
   ShowSVNAddProjectFrm;
 end;
-
-initialization
-  {$I lazsvnpkg_images.lrs}
 
 end.
