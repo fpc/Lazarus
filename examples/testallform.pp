@@ -322,30 +322,21 @@ var
 
 implementation
 
-  function LoadResource(ResourceName:string; PixMap:TPixMap):boolean;
-  var 
-    ms:TMemoryStream;
-    res:TLResource;
+{$R ../images/laz_images.res}
+{$R ../images/components_images.res}
+
+function LoadResource(ResourceName:string; PixMap: TPixmap): Boolean;
+var 
+  Bitmap: TCustomBitmap;
+begin
+  Bitmap := CreateBitmapFromResourceName(HInstance, ResourceName);
+  Result := Assigned(Bitmap);
+  if Result then
   begin
-    Result:=false;
-    res:=LazarusResources.Find(ResourceName);
-    if (res <> nil) then
-    begin
-      if res.ValueType='XPM' then begin
-        ms:=TMemoryStream.Create;
-        try
-          ms.Write(res.Value[1],length(res.Value));
-          ms.Position:=0;
-          PixMap.LoadFromStream(ms);
-          Result:=true;
-        finally
-          ms.Free;
-        end;
-      end;
-    end
-    else
-       //debugln ('TestAll Warning: resource "', ResourceName,'" not found!');
+    PixMap.Assign(Bitmap);
+    Bitmap.Free;
   end;
+end;
 
 {$I testtools.inc}
 
@@ -2526,8 +2517,5 @@ TrackBar2 := TTrackBar.Create(Self);
 //++++++++++++++++++++++++++++++++++++ THE END ++++++++++++++++++++++++++++++++++++++
 END;
 
-initialization
-   {$I ../images/laz_images.lrs}
-   {$I ../images/components_images.lrs}
 END.
 
