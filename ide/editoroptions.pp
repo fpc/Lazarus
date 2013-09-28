@@ -4281,7 +4281,7 @@ constructor TEditorOptions.Create;
 var
   ConfFileName: String;
   fs: TFileStreamUTF8;
-  res: TLResource;
+  res: TResourceStream;
 begin
   inherited Create;
   InitLocale;
@@ -4314,20 +4314,20 @@ begin
   CopySecondaryConfigFile(DefaultCodeTemplatesFilename);
   if not FileExistsUTF8(CodeTemplateFileName) then
   begin
-    res := LazarusResources.Find('lazarus_dci_file');
-    if (res <> Nil) and (res.Value <> '') and (res.ValueType = 'DCI') then
+    res := TResourceStream.Create(HInstance, PChar('lazarus_dci_file'), PChar(RT_RCDATA));
+    try
+      InvalidateFileStateCache;
+      fs := TFileStreamUTF8.Create(CodeTemplateFileName, fmCreate);
       try
-        InvalidateFileStateCache;
-        fs := TFileStreamUTF8.Create(CodeTemplateFileName, fmCreate);
-        try
-          fs.Write(res.Value[1], length(res.Value));
-        finally
-          fs.Free;
-        end;
-      except
-        DebugLn('WARNING: unable to write code template file "',
-          CodeTemplateFileName, '"');
+        fs.CopyFrom(res, res.Size);
+      finally
+        fs.Free;
       end;
+    except
+      DebugLn('WARNING: unable to write code template file "',
+        CodeTemplateFileName, '"');
+    end;
+    res.Free;
   end;
 
   FMultiWinEditAccessOrder := TEditorOptionsEditAccessOrderList.Create;
@@ -6563,7 +6563,6 @@ end;
 
 initialization
   RegisterIDEOptionsGroup(GroupEditor, TEditorOptions);
-  {$I lazarus_dci.lrs}
 
 finalization
   ColorSchemeFactory.Free;
