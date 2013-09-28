@@ -1,7 +1,7 @@
 btn_downarrow.png
 folder.png
 template.png
-project.ico
+mainiconproject.ico
 actions/laz_add.png
 actions/arrow_down.png
 actions/arrow_left.png

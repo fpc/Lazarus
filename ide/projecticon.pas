@@ -106,7 +106,7 @@ begin
   Icon := TIcon.Create;
   ResStream := TMemoryStream.Create;
   try
-    Icon.LoadFromResourceName(HInstance, 'PROJECT');
+    Icon.LoadFromResourceName(HInstance, 'MAINICONPROJECT');
     Icon.SaveToStream(ResStream);
     ResStream.Position := 0;
     SetStream(ResStream);

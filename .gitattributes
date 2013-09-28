@@ -5602,6 +5602,7 @@ images/lazdoc/insertremark.png -text
 images/lazdoc/insertvartag.png -text
 images/lprfile.ico -text svneol=unset#image/x-icon
 images/mainicon.ico -text svneol=unset#image/ico
+images/mainiconproject.ico -text svneol=unset#image/x-icon
 images/menu/SelCompPage.png -text svneol=unset#image/png
 images/menu/menu_abort_build.png -text svneol=unset#image/png
 images/menu/menu_build.png -text svneol=unset#image/png
@@ -5729,7 +5730,6 @@ images/packages/pkg_text.png -text svneol=unset#image/png
 images/packages/pkg_unit.png -text svneol=unset#image/png
 images/powered-by.svg -text svneol=unset#image/svg%2Bxml
 images/powered_by.png -text svneol=unset#image/png
-images/project.ico -text svneol=unset#image/x-icon
 images/sourceeditor/ActiveBreakPoint.png -text
 images/sourceeditor/InactiveBreakPoint.png -text
 images/sourceeditor/InvalidBreakPoint.png -text

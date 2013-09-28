@@ -72,8 +72,8 @@ uses
   MainBase;
 
 {$I revision.inc}
-{$R ../images/laz_images.res}
 {$R lazarus.res}
+{$R ../images/laz_images.res}
 
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('lazarus.pp: begin');{$ENDIF}
