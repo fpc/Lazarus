@@ -2978,6 +2978,10 @@ msgstr "Cancella l'icona"
 msgid "Create Application Bundle"
 msgstr "Crea un bundle di applicazioni"
 
+#: lazarusidestrconsts.dlgpodefaulticon
+msgid "Load &Default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpodpiaware
 #, fuzzy
 #| msgid "Dpi aware application (for Vista+)"

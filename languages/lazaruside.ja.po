@@ -2984,6 +2984,10 @@ msgstr "アイコンをクリア"
 msgid "Create Application Bundle"
 msgstr "アプリケーションバンドルを作成"
 
+#: lazarusidestrconsts.dlgpodefaulticon
+msgid "Load &Default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpodpiaware
 #, fuzzy
 #| msgid "Dpi aware application (for Vista+)"

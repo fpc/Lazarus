@@ -2908,6 +2908,10 @@ msgstr "&Очистити Значок"
 msgid "Create Application Bundle"
 msgstr "Створити Пакет Програм"
 
+#: lazarusidestrconsts.dlgpodefaulticon
+msgid "Load &Default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpodpiaware
 #| msgid "Dpi aware application (for Vista+)"
 msgid "Enabled DPI Awareness (for Vista+)"

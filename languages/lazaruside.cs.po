@@ -2847,6 +2847,10 @@ msgstr "Vyčistit ikonu"
 msgid "Create Application Bundle"
 msgstr "Vytvořit aplikační balík"
 
+#: lazarusidestrconsts.dlgpodefaulticon
+msgid "Load &Default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpodpiaware
 msgid "Enabled DPI Awareness (for Vista+)"
 msgstr "Zapnuté zohlednění DPI (pro Vista+)"

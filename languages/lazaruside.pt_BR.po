@@ -2921,6 +2921,10 @@ msgstr "&Limpar ícone"
 msgid "Create Application Bundle"
 msgstr "Criar Aplicação Encartada"
 
+#: lazarusidestrconsts.dlgpodefaulticon
+msgid "Load &Default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpodpiaware
 #| msgid "Dpi aware application (for Vista+)"
 msgid "Enabled DPI Awareness (for Vista+)"

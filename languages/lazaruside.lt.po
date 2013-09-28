@@ -2916,6 +2916,10 @@ msgstr "Išva&lyti piktogramą"
 msgid "Create Application Bundle"
 msgstr "Sukurti programą-ryšulį"
 
+#: lazarusidestrconsts.dlgpodefaulticon
+msgid "Load &Default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpodpiaware
 msgid "Enabled DPI Awareness (for Vista+)"
 msgstr "Įgalintas „DPI Awareness“ (dėl „Vista“ ir +)"

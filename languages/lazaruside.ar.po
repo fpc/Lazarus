@@ -2815,6 +2815,10 @@ msgstr ""
 msgid "Create Application Bundle"
 msgstr ""
 
+#: lazarusidestrconsts.dlgpodefaulticon
+msgid "Load &Default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpodpiaware
 msgid "Enabled DPI Awareness (for Vista+)"
 msgstr ""
