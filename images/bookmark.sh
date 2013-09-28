@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-../tools/lazres bookmark.lrs @bookmark_list.txt
+../tools/lazres bookmark.res @bookmark_list.txt
