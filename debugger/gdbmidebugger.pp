@@ -1294,13 +1294,13 @@ type
     property List: TGDBMIDisassembleResultList read FList;
   end;
 
-  { TGDBMIDebuggerCommandDisassembe }
+  { TGDBMIDebuggerCommandDisassemble }
 
   TGDBMIDisAssAddrRange = record
      FirstAddr, LastAddr: TDBGPtr;
   end;
 
-  TGDBMIDebuggerCommandDisassembe = class(TGDBMIDebuggerCommand)
+  TGDBMIDebuggerCommandDisassemble = class(TGDBMIDebuggerCommand)
   private
     FEndAddr: TDbgPtr;
     FLinesAfter: Integer;
@@ -1327,7 +1327,7 @@ type
 
   TGDBMIDisassembler = class(TDBGDisassembler)
   private
-    FDisassembleEvalCmdObj: TGDBMIDebuggerCommandDisassembe;
+    FDisassembleEvalCmdObj: TGDBMIDebuggerCommandDisassemble;
     FLastExecAddr, FCancelledAddr: TDBGPtr;
     FIsCancelled: Boolean;
     procedure DoDisassembleExecuted(Sender: TObject);
@@ -2689,13 +2689,24 @@ end;
 function TGDBMIDisassembleResultFunctionIterator.CurrentFixedAddr(AOffsLimit: Integer): TDBGPtr;
 begin
   Result := FList.Item[CurrentIndex]^.Addr - Min(FList.Item[CurrentIndex]^.Offset, AOffsLimit);
+  // Offset may increase to a point BEFORE the previous address (e.g. neseted proc, maybe inline?)
+  if CurrentIndex > 0 then
+    if Result <= FList.Item[CurrentIndex-1]^.Addr then
+      Result := FList.Item[CurrentIndex]^.Addr;
 end;
 
 function TGDBMIDisassembleResultFunctionIterator.NextStartAddr: TDBGPtr;
 begin
   if NextIndex <= FMaxIdx
-  then Result := FList.Item[NextIndex]^.Addr - FList.Item[NextIndex]^.Offset
-  else Result := FLastSubListEndAddr;
+  then begin
+    Result := FList.Item[NextIndex]^.Addr - FList.Item[NextIndex]^.Offset;
+    // Offset may increase to a point BEFORE the previous address (e.g. neseted proc, maybe inline?)
+    if NextIndex > 0 then
+      if Result <= FList.Item[NextIndex-1]^.Addr then
+        Result := FList.Item[NextIndex]^.Addr;
+  end
+  else
+    Result := FLastSubListEndAddr;
 end;
 
 function TGDBMIDisassembleResultFunctionIterator.NextStartOffs: Integer;
@@ -2770,12 +2781,12 @@ end;
 
 procedure TGDBMIDisassembler.DoDisassembleExecuted(Sender: TObject);
 begin
-  // Results were added from inside the TGDBMIDebuggerCommandDisassembe object
-  FLastExecAddr := TGDBMIDebuggerCommandDisassembe(Sender).StartAddr;
-  if dcsCanceled in TGDBMIDebuggerCommandDisassembe(Sender).SeenStates then begin
+  // Results were added from inside the TGDBMIDebuggerCommandDisassemble object
+  FLastExecAddr := TGDBMIDebuggerCommandDisassemble(Sender).StartAddr;
+  if dcsCanceled in TGDBMIDebuggerCommandDisassemble(Sender).SeenStates then begin
     // TODO: fill a block of data with "canceled" info
     FIsCancelled := True;
-    FCancelledAddr := TGDBMIDebuggerCommandDisassembe(Sender).StartAddr;
+    FCancelledAddr := TGDBMIDebuggerCommandDisassemble(Sender).StartAddr;
   end;
   FDisassembleEvalCmdObj := nil;
   Changed;
@@ -2831,7 +2842,7 @@ begin
     exit;
   end;
 
-  FDisassembleEvalCmdObj := TGDBMIDebuggerCommandDisassembe.Create
+  FDisassembleEvalCmdObj := TGDBMIDebuggerCommandDisassemble.Create
     (TGDBMIDebugger(Debugger), EntryRanges, AnAddr, AnAddr, ALinesBefore, ALinesAfter);
   FDisassembleEvalCmdObj.OnExecuted := @DoDisassembleExecuted;
   FDisassembleEvalCmdObj.OnProgress  := @DoDisassembleProgress;
@@ -2895,13 +2906,13 @@ end;
 
 { TGDBMIDebuggerCommandDisassembe }
 
-procedure TGDBMIDebuggerCommandDisassembe.DoProgress;
+procedure TGDBMIDebuggerCommandDisassemble.DoProgress;
 begin
   if assigned(FOnProgress)
   then FOnProgress(Self);
 end;
 
-function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
+function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
   type
     TAddressValidity =
       (avFoundFunction, avFoundRange, avFoundStatement,  // known address
@@ -3076,6 +3087,8 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
   begin
     if ASrcInfoDisAssList = ADisAssList
     then ASrcInfoDisAssList := nil;
+    if ADisAssList.Count = 0 then
+      exit;
     // Clean end of range
     ItmPtr := ADisAssList.Item[AFromIndex];
     i := ADestRange.Count;
@@ -3848,7 +3861,7 @@ begin
   DoProgress;
 end;
 
-constructor TGDBMIDebuggerCommandDisassembe.Create(AOwner: TGDBMIDebugger;
+constructor TGDBMIDebuggerCommandDisassemble.Create(AOwner: TGDBMIDebugger;
   AKnownRanges: TDBGDisassemblerEntryMap; AStartAddr, AEndAddr: TDbgPtr; ALinesBefore,
   ALinesAfter: Integer);
 begin
@@ -3861,13 +3874,13 @@ begin
   FLinesAfter := ALinesAfter;
 end;
 
-destructor TGDBMIDebuggerCommandDisassembe.Destroy;
+destructor TGDBMIDebuggerCommandDisassemble.Destroy;
 begin
   FreeAndNil(FRangeIterator);
   inherited Destroy;
 end;
 
-function TGDBMIDebuggerCommandDisassembe.DebugText: String;
+function TGDBMIDebuggerCommandDisassemble.DebugText: String;
 begin
   Result := Format('%s: FromAddr=%u ToAddr=%u LinesBefore=%d LinesAfter=%d',
                    [ClassName, FStartAddr, FEndAddr, FLinesBefore, FLinesAfter]);
@@ -6830,12 +6843,12 @@ function TGDBMIDebugger.GDBDisassemble(AAddr: TDbgPtr; ABackward: Boolean;
   out ANextAddr: TDbgPtr; out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
 var
   NewEntryMap: TDBGDisassemblerEntryMap;
-  CmdObj: TGDBMIDebuggerCommandDisassembe;
+  CmdObj: TGDBMIDebuggerCommandDisassemble;
   Rng: TDBGDisassemblerEntryRange;
   i: Integer;
 begin
   NewEntryMap := TDBGDisassemblerEntryMap.Create(itu8, SizeOf(TDBGDisassemblerEntryRange));
-  CmdObj := TGDBMIDebuggerCommandDisassembe.Create(Self, NewEntryMap, AAddr, AAddr, -1, 2);
+  CmdObj := TGDBMIDebuggerCommandDisassemble.Create(Self, NewEntryMap, AAddr, AAddr, -1, 2);
   CmdObj.AddReference;
   CmdObj.Priority := GDCMD_PRIOR_IMMEDIATE;
   QueueCommand(CmdObj);
