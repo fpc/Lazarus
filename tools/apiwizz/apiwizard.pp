@@ -83,6 +83,8 @@ var
 
 implementation
 
+{$R apiwizard.lfm}
+
 const
   DECL_OFFSET: array[TProctype] of Integer = (9, 10);
 
@@ -909,8 +911,5 @@ procedure TApiWizForm.rdgApiTypeClick (Sender: TObject );
 begin
 
 end;
-
-initialization
-  {$I apiwizard.lrs}
 
 end.
