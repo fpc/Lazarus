@@ -1,1 +1,1 @@
-..\..\tools\lazres lazsvnpkg_images.lrs @lazsvnpkg_images_list.txt
+..\..\tools\lazres lazsvnpkg_images.res @lazsvnpkg_images_list.txt

@@ -109,7 +109,7 @@ procedure TSVNDiffFrm.FormCreate(Sender: TObject);
 begin
   ButtonPanel.HelpButton.Enabled := False;
   ButtonPanel.HelpButton.Caption := rsSave;
-  ButtonPanel.HelpButton.LoadGlyphFromLazarusResource('laz_save');
+  ButtonPanel.HelpButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
 end;
 
 procedure TSVNDiffFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);

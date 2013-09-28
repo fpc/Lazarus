@@ -397,8 +397,8 @@ begin
   SetColumn(SVNFileListView, 7, 75, rsAuthor, True);
   SetColumn(SVNFileListView, 8, 75, rsDate, True);
 
-  ImageList.AddLazarusResource('menu_svn_diff');
-  ImageList.AddLazarusResource('menu_svn_revert');
+  ImageList.AddResourceName(HInstance, 'menu_svn_diff');
+  ImageList.AddResourceName(HInstance, 'menu_svn_revert');
   try
     Config := GetIDEConfigStorage('lazsvnpkg.xml', true);
     count := Config.GetValue('HistoryCount', 0);

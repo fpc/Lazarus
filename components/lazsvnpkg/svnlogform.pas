@@ -353,7 +353,7 @@ begin
   SetColumn(SVNActionsListView, 2, 150, rsCopyFromPath);
   SetColumn(SVNActionsListView, 3, 75, rsRevision);
 
-  ImageList.AddLazarusResource('menu_svn_diff');
+  ImageList.AddResourceName(HInstance, 'menu_svn_diff');
 
   mnuShowDiff.Caption := rsShowDiff;
   mnuOpenCurent.Caption := rsOpenFileInEditor;

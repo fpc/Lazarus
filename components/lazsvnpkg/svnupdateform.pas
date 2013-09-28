@@ -84,7 +84,7 @@ begin
 
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.HelpButton.Caption := rsShowLog;
-  ButtonPanel.HelpButton.LoadGlyphFromLazarusResource('tsynsyncroedit');
+  ButtonPanel.HelpButton.LoadGlyphFromResourceName(HInstance, 'tsynsyncroedit');
   mnuShowDiff.Caption:=rsShowDiff;
 end;
 
