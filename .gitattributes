@@ -5209,7 +5209,7 @@ ide/lazarus.ico -text svneol=unset#image/ico
 ide/lazarus.lpi svneol=native#text/plain
 ide/lazarus.pp svneol=native#text/pascal
 ide/lazarus.res -text
-ide/lazarus_indentation.lrs svneol=native#text/plain
+ide/lazarus_indentation.res -text
 ide/lazarusidestrconsts.pas svneol=native#text/pascal
 ide/lazarusmanager.pas svneol=native#text/pascal
 ide/lazbuild.lpi svneol=native#text/plain

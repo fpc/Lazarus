@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, LazConf, FileUtil, Laz2_XMLCfg, lazutf8classes,
-  LResources, Forms, Controls, Buttons, LclProc, ExtCtrls,
+  LResources, Forms, Controls, Buttons, LclProc, LCLType, ExtCtrls,
   Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit,
   IDEOptionsIntf, MacroIntf, IDEOptionDefs, LazarusIDEStrConsts, IDEProcs;
 
@@ -243,6 +243,7 @@ function ReadIdentifier(const s, DefaultIdent: string): string;
 
 implementation
 
+{$R lazarus_indentation.res}
 
 const
   CodeToolsOptionsVersion = 1;
@@ -891,27 +892,27 @@ end;
 
 procedure TCodeToolsOptions.CreateDefaultIndentationFile;
 var
-  res: TLResource;
+  res: TResourceStream;
   fs: TFileStreamUTF8;
 begin
   // indentations (laz_indentation.pas)
   CopySecondaryConfigFile(DefaultIndentationFilename);
   if not FileExistsUTF8(IndentationFilename) then
   begin
-    res := LazarusResources.Find('indentation');
-    if (res <> Nil) and (res.Value <> '') and (res.ValueType = 'PAS') then
+    res := TResourceStream.Create(HInstance, PChar('indentation'), PChar(RT_RCDATA));
+    try
+      InvalidateFileStateCache;
+      fs := TFileStreamUTF8.Create(IndentationFilename, fmCreate);
       try
-        InvalidateFileStateCache;
-        fs := TFileStreamUTF8.Create(IndentationFilename, fmCreate);
-        try
-          fs.Write(res.Value[1], length(res.Value));
-        finally
-          fs.Free;
-        end;
-      except
-        DebugLn('WARNING: unable to write indentation file "',
-          IndentationFilename, '"');
+        fs.CopyFrom(res, res.Size);
+      finally
+        fs.Free;
       end;
+    except
+      DebugLn('WARNING: unable to write indentation file "',
+        IndentationFilename, '"');
+    end;
+    res.Free;
   end;
 end;
 
@@ -984,6 +985,5 @@ end;
 
 initialization
   RegisterIDEOptionsGroup(GroupCodetools, TCodeToolsOptions);
-  {$I lazarus_indentation.lrs}
 end.
 
