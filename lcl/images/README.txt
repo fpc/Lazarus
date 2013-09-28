@@ -1,9 +1,9 @@
 This directory contains all images needed by the LCL.
-Images are stored in lazarus resource files (.lrs). Each icon is stored
+Images are stored in FPC resource files (.res). Each icon is stored
 in xpm or png format.
 
-lcl_dbgrid_images.lrs - Icons, included by dbgrids.pas
-lcl_dbnav_images.lrs - Icons, included by dbctrls.pas
+lcl_dbgrid_images.res - Icons, included by dbgrids.pas
+lcl_dbnav_images.res - Icons, included by dbctrls.pas
 
 
 How to update the image resources:

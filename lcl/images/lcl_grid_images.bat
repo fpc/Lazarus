@@ -1,1 +1,1 @@
-..\..\tools\lazres.exe lcl_grid_images.rc @lcl_grid_images_list.txt
+..\..\tools\lazres.exe ..\lcl_grid_images.res @lcl_grid_images_list.txt
