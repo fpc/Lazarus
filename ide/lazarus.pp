@@ -72,6 +72,7 @@ uses
   MainBase;
 
 {$I revision.inc}
+{$R ../images/laz_images.res}
 {$R lazarus.res}
 
 begin

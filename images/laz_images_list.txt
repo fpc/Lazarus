@@ -1,7 +1,7 @@
 btn_downarrow.png
 folder.png
 template.png
-LazarusProject.ico
+project.ico
 actions/laz_add.png
 actions/arrow_down.png
 actions/arrow_left.png
@@ -251,4 +251,3 @@ packages/pkg_unit.png
 packages/pkg_package_autoinstall.png
 packages/pkg_add.png
 ide_icon48x48.png
-

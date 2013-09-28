@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, lazutf8classes, Process, LCLProc,
-  Controls, Forms, CodeToolManager, FileProcs, LazConf, LResources,
+  Controls, Graphics, Forms, CodeToolManager, FileProcs, LazConf, LResources,
   resource, groupiconresource, ProjectIntf, ProjectResourcesIntf;
    
 type
@@ -99,16 +99,20 @@ end;
 
 procedure TProjectIcon.LoadDefaultIcon;
 var
-  DefaultRes: TLResource;
-  ResStream: TLazarusResourceStream;
+  ResStream: TMemoryStream;
+  Icon: TIcon;
 begin
   // Load default icon
-  DefaultRes := LazarusResources.Find('LazarusProject', 'ICO');
-  if DefaultRes <> nil then
-  begin
-    ResStream := TLazarusResourceStream.CreateFromHandle(DefaultRes);
+  Icon := TIcon.Create;
+  ResStream := TMemoryStream.Create;
+  try
+    Icon.LoadFromResourceName(HInstance, 'PROJECT');
+    Icon.SaveToStream(ResStream);
+    ResStream.Position := 0;
     SetStream(ResStream);
+  finally
     ResStream.Free;
+    Icon.Free;
   end;
 end;
 

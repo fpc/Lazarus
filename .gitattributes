@@ -5310,7 +5310,6 @@ ide/w32versioninfo.pas svneol=native#text/plain
 ide/wordcompletion.pp svneol=native#text/pascal
 images/LazarusForm.bmp -text svneol=unset#image/bmp
 images/LazarusForm.ico -text svneol=unset#image/x-icon
-images/LazarusProject.ico -text svneol=unset#image/x-icon
 images/LazarusSource.bmp -text svneol=unset#image/bmp
 images/LazarusSource.ico -text svneol=unset#image/x-icon
 images/README.txt svneol=native#text/plain
@@ -5730,6 +5729,7 @@ images/packages/pkg_text.png -text svneol=unset#image/png
 images/packages/pkg_unit.png -text svneol=unset#image/png
 images/powered-by.svg -text svneol=unset#image/svg%2Bxml
 images/powered_by.png -text svneol=unset#image/png
+images/project.ico -text svneol=unset#image/x-icon
 images/sourceeditor/ActiveBreakPoint.png -text
 images/sourceeditor/InactiveBreakPoint.png -text
 images/sourceeditor/InvalidBreakPoint.png -text

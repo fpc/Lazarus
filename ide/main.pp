@@ -1023,8 +1023,6 @@ var
 
 implementation
 
-{$R ../images/laz_images.res}
-
 var
   ParamBaseDirectory: string = '';
   SkipAutoLoadingLastProject: boolean = false;
