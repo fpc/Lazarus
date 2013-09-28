@@ -152,7 +152,6 @@ type
       Selected: Boolean);
     procedure OptionsChanged(Sender: TObject);
     procedure PCConfigChange(Sender: TObject);
-    procedure RGScheduleModeClick(Sender: TObject);
     procedure SBDirPathClick(Sender: TObject);
     procedure SBLocationPathClick(Sender: TObject);
     procedure ScheduleModeChanged(Sender: TObject);
@@ -218,6 +217,8 @@ var
   MainForm: TMainForm;
 
 implementation
+
+{$R *.lfm}
 
 uses
    frmLog,
@@ -573,11 +574,6 @@ procedure TMainForm.PCConfigChange(Sender: TObject);
 begin
   If (PCConfig.ActivePage=TSFileActions) and Assigned(FLocations) then
     UpdateActionLocations(FLocations);
-end;
-
-procedure TMainForm.RGScheduleModeClick(Sender: TObject);
-begin
-
 end;
 
 procedure TMainForm.RunConfig(ACleaner : TCleanDirs; TestOnly :  Boolean);
@@ -1038,9 +1034,6 @@ Function TMainForm.HaveFileAction : Boolean;
 begin
   Result:=(FFileAction<>Nil)
 end;
-
-initialization
-  {$I frmmain.lrs}
 
 end.
 

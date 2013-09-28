@@ -67,6 +67,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 resourcestring
   SClose = '&Close';
   
@@ -110,9 +112,6 @@ begin
   LBLog.Items.Add(Msg);
   Application.ProcessMessages;
 end;
-
-initialization
-  {$I frmlog.lrs}
 
 end.
 

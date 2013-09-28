@@ -33,6 +33,8 @@ unit svcmap;
 
 interface
 
+{$R *.lfm}
+
 uses
   Classes, SysUtils, LResources, daemonapp; 
 
@@ -55,9 +57,6 @@ begin
 end; 
 
 initialization
-  {$I svcmap.lrs}
-
-
-  RegisterMapper; 
+  RegisterMapper;
 end.
 

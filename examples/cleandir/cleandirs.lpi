@@ -11,6 +11,7 @@
       <MainUnit Value="0"/>
       <AutoCreateForms Value="False"/>
       <Title Value="Directory Cleaning service"/>
+      <ResourceType Value="res"/>
     </General>
     <VersionInfo>
       <StringTable ProductVersion=""/>
@@ -50,6 +51,8 @@
         <Filename Value="svccleandirs.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CleanDirsDaemon"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="svccleandirs"/>
       </Unit1>
       <Unit2>
@@ -60,6 +63,7 @@
       <Unit3>
         <Filename Value="svcmap.pp"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="CleanDirServiceMapper"/>
         <HasResources Value="True"/>
         <UnitName Value="svcmap"/>
       </Unit3>

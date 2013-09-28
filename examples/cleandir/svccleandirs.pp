@@ -33,6 +33,8 @@ unit svccleandirs;
 
 interface
 
+{$R *.lfm}
+
 uses
   Classes, SysUtils, LResources, daemonapp, eventlog, dircleaner, FileUtil;
 
@@ -57,7 +59,6 @@ type
 
   TCleanDirsDaemon = class(TDaemon)
     procedure CleanDirsDaemonCreate(Sender: TObject);
-    procedure CleanDirsDaemonExecute(Sender: TCustomDaemon);
     procedure CleanDirsDaemonStart(Sender: TCustomDaemon; var OK: Boolean);
     procedure CleanDirsDaemonStop(Sender: TCustomDaemon; var OK: Boolean);
   private
@@ -90,7 +91,7 @@ resourcestring
 
 // Include windows messages for eventlog component.
 {$ifdef mswindows}
-{$r fclel.res}
+{ $r fclel.res}
 {$endif}
 
 procedure RegisterDaemon; 
@@ -124,11 +125,6 @@ begin
         FConfigFile:='';
       end;
     end;
-end;
-
-procedure TCleanDirsDaemon.CleanDirsDaemonExecute(Sender: TCustomDaemon);
-begin
-
 end;
 
 procedure TCleanDirsDaemon.ThreadStopped(Sender : TObject);
@@ -318,9 +314,6 @@ begin
 end;
 
 initialization
-  {$I svccleandirs.lrs}
-
-
   RegisterDaemon; 
 end.
 
