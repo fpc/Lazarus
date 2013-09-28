@@ -16,6 +16,7 @@ type
 
   TProjectApplicationOptionsFrame = class(TAbstractIDEOptionsEditor)
     AppSettingsGroupBox: TGroupBox;
+    DefaultIconButton: TButton;
     UIAccessCheckBox: TCheckBox;
     ExecutionLevelComboBox: TComboBox;
     DpiAwareCheckBox: TCheckBox;
@@ -37,6 +38,7 @@ type
     UseXPManifestCheckBox: TCheckBox;
     procedure ClearIconButtonClick(Sender: TObject);
     procedure CreateAppBundleButtonClick(Sender: TObject);
+    procedure DefaultIconButtonClick(Sender: TObject);
     procedure IconImagePictureChanged(Sender: TObject);
     procedure IconTrackChange(Sender: TObject);
     procedure LoadIconButtonClick(Sender: TObject);
@@ -141,6 +143,11 @@ begin
   CreateProjectApplicationBundle(FProject);
 end;
 
+procedure TProjectApplicationOptionsFrame.DefaultIconButtonClick(Sender: TObject);
+begin
+  IconImage.Picture.Icon.LoadFromResourceName(HInstance, 'MAINICONPROJECT');
+end;
+
 procedure TProjectApplicationOptionsFrame.LoadIconButtonClick(Sender: TObject);
 begin
   if OpenPictureDialog1.Execute then
@@ -218,6 +225,7 @@ begin
   // icon
   IconLabel.Caption := dlgPOIcon;
   LoadIconButton.Caption := dlgPOLoadIcon;
+  DefaultIconButton.Caption := dlgPODefaultIcon;
   SaveIconButton.Caption := dlgPOSaveIcon;
   ClearIconButton.Caption := dlgPOClearIcon;
   LoadIconButton.LoadGlyphFromStock(idButtonOpen);

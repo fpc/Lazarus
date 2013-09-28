@@ -2330,6 +2330,7 @@ resourcestring
   dlgPOExecutionLevel = 'Execution Level';
   dlgPOIcon = 'Icon:';
   dlgPOLoadIcon = '&Load Icon';
+  dlgPODefaultIcon = 'Load &Default';
   dlgPOSaveIcon = '&Save Icon';
   dlgPOClearIcon = '&Clear Icon';
   dlgPOIconDesc = '(size: %d:%d, bpp: %d)';
