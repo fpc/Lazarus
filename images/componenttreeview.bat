@@ -1,1 +1,1 @@
-..\tools\lazres componenttreeview.rc @componenttreeview_list.txt
+..\tools\lazres componenttreeview.res @componenttreeview_list.txt

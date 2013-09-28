@@ -1,1 +1,1 @@
-..\tools\lazres splash_logo.rc splash_logo.png
+..\tools\lazres splash_logo.res splash_logo.png

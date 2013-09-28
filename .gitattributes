@@ -5023,7 +5023,6 @@ ide/findunitdlg.lfm svneol=native#text/plain
 ide/findunitdlg.pas svneol=native#text/plain
 ide/formeditor.pp svneol=native#text/pascal
 ide/fpcsrcscan.pas svneol=native#text/pascal
-ide/fpdocediticons.lrs svneol=native#text/pascal
 ide/fpdoceditwindow.lfm svneol=native#text/plain
 ide/fpdoceditwindow.pas svneol=native#text/plain
 ide/fpdochints.pas svneol=native#text/plain
@@ -5216,6 +5215,7 @@ ide/lazarusmanager.pas svneol=native#text/pascal
 ide/lazbuild.lpi svneol=native#text/plain
 ide/lazbuild.lpr svneol=native#text/plain
 ide/lazconf.pp svneol=native#text/pascal
+ide/lazdoc.res -text
 ide/lfmunitresource.pas svneol=native#text/plain
 ide/macropromptdlg.pas svneol=native#text/pascal
 ide/main.pp svneol=native#text/pascal

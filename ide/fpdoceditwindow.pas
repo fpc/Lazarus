@@ -224,6 +224,7 @@ procedure DoShowFPDocEditor(Show, BringToFront: boolean);
 implementation
 
 {$R *.lfm}
+{$R lazdoc.res}
 
 { TFPDocEditor }
 
@@ -1626,9 +1627,5 @@ begin
   if DescrMemo.Text<>FOldVisualValues[fpdiDescription] then
     Modified:=true;
 end;
-
-initialization
-  // then the items
-  {$I fpdocediticons.lrs}
 
 end.

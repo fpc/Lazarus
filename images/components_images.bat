@@ -1,1 +1,1 @@
-..\tools\lazres components_images.rc @components_images_list.txt
+..\tools\lazres components_images.res @components_images_list.txt

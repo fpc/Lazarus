@@ -1,48 +1,48 @@
 This directory contains all images needed by the IDE.
-Images are stored in lazarus resource files (.lrs). Each icon is stored
+Images are stored in FPC resource files (.res). Each icon is stored
 in png or xpm format.
 
-bookmark.lrs - Icons for bookmarks
-codetoolsdefines.lrs - Icons for CodeTools Defines Editor
-components_images.lrs - Icons and pics for lcl components
-laz_images.lrs - The icons for the speedbuttons, the menu (Open, Save,...),
+bookmark.res - Icons for bookmarks
+codetoolsdefines.res - Icons for CodeTools Defines Editor
+components_images.res - Icons and pics for lcl components
+laz_images.res - The icons for the speedbuttons, the menu (Open, Save,...),
                  package windows, codeexplorer
-splash.lrs - the lazarus logo at IDE start
-unitdependencies.lrs - Icons for the unit dependencies.
+splash.res - the lazarus logo at IDE start
+unitdependencies.res - Icons for the unit dependencies.
 
 How to update the image resources:
 
 Creating a lazarus resource can easily be done by the lazres program.
 If you have not yet compiled lazres, go to the tools directory and type make.
 
-1. bookmark.lrs
+1. bookmark.res
 
 cd <lazarusdir>/images/
-../tools/lazres bookmark.lrs sourceeditor/*.png
+../tools/lazres bookmark.res sourceeditor/*.png
 
 
-2. components_images.lrs
-
-cd <lazarusdir>/images/
-../tools/lazres components_images.lrs @components_images_list.txt
-
-
-3. laz_images.lrs
+2. components_images.res
 
 cd <lazarusdir>/images/
-../tools/lazres laz_images.lrs @laz_images_list.txt
+../tools/lazres components_images.res @components_images_list.txt
+
+
+3. laz_images.res
+
+cd <lazarusdir>/images/
+../tools/lazres laz_images.res @laz_images_list.txt
 rm ../main.ppu
 
 
-4. splash.lrs
+4. splash.res
 
 cd <lazarusdir>/images
-./tools/lazres splash_logo.lrs splash_logo.png
+./tools/lazres splash_logo.res splash_logo.png
 
 
-5. lazdoc.lrs
+5. lazdoc.res
 
 cd <lazarusdir>/images/
-../../tools/lazres ../ide/lazdoc.lrs @lazdoc.txt
+../../tools/lazres ../ide/lazdoc.res @lazdoc.txt
 
 
