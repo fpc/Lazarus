@@ -22,3 +22,4 @@ msgstr "Optionen für Projektvorlagen"
 #: idetemplateproject.stemplatecategory
 msgid "Template projects"
 msgstr "Vorlagenprojekte"
+

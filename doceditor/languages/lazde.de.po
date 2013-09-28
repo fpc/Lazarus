@@ -671,9 +671,7 @@ msgid "&Save"
 msgstr "&Speichern"
 
 #: lazdemsg.ssavebeforebuildquestion
-msgid ""
-"You have unsaved changes in \"%s\".%sThey should be saved in order to be "
-"visible in built documentation. Save them?"
+msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
 msgstr ""
 
 #: lazdemsg.sseealso
@@ -702,9 +700,7 @@ msgstr "p&rivate Methoden anzeigen"
 
 #: lazdemsg.sskelerrorwithfile
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
-msgstr ""
-"makeskel meldete einen Fehler (%d). Trotzdem versuchen, die produzierte "
-"Datei zu laden?"
+msgstr "makeskel meldete einen Fehler (%d). Trotzdem versuchen, die produzierte Datei zu laden?"
 
 #: lazdemsg.sskelerrorwithoutfile
 msgid "makeskel reported an error (%d) and produced no file."
@@ -741,3 +737,4 @@ msgstr "Docs mit dem folgenden Befehl anlegen:"
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"
 msgstr "Warnen, falls kein Dokumentationsknoten gefunden"
+
