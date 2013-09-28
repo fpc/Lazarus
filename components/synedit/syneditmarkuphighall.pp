@@ -180,6 +180,7 @@ type
     procedure SetSearchString(AValue: String);
   protected
     procedure SearchStringChanged; virtual;
+    procedure DoOptionsChanged;virtual;
 
     function  HasSearchData: Boolean; override;
     function  SearchStringMaxLines: Integer; override;
@@ -413,6 +414,7 @@ type
     procedure DoCaretChanged(Sender: TObject); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoOptionsChanged;override;
     procedure RestartTimer;
     procedure ScrollTimerHandler(Sender: TObject);
     function  GetCurrentText: String;
@@ -1638,6 +1640,7 @@ begin
   fSearchOptions := AValue;
   FSearchStringMaxLines := -1;
   Invalidate;
+  DoOptionsChanged;
 end;
 
 procedure TSynEditMarkupHighlightAll.SetSearchString(AValue: String);
@@ -1651,6 +1654,11 @@ begin
 end;
 
 procedure TSynEditMarkupHighlightAll.SearchStringChanged;
+begin
+  //
+end;
+
+procedure TSynEditMarkupHighlightAll.DoOptionsChanged;
 begin
   //
 end;
@@ -2732,6 +2740,14 @@ begin
   end;
 end;
 
+procedure TSynEditMarkupHighlightAllCaret.DoOptionsChanged;
+begin
+  if ssoMatchCase in SearchOptions then
+    FToggledOption:=FToggledOption + [ssoMatchCase]
+    else
+    FToggledOption:=FToggledOption - [ssoMatchCase];
+end;
+
 function TSynEditMarkupHighlightAllCaret.GetCurrentOption: TSynSearchOptions;
 begin
   if FToggledWord <> '' then
@@ -2743,6 +2759,8 @@ begin
       Result := []
     else
       Result := [ssoWholeWord];
+  if ssoMatchCase in SearchOptions then
+    Result := Result + [ssoMatchCase];
 end;
 
 constructor TSynEditMarkupHighlightAllCaret.Create(ASynEdit: TSynEditBase);
