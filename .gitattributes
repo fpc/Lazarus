@@ -5327,7 +5327,6 @@ images/actions/laz_save.png -text svneol=unset#image/png
 images/actions/laz_set_color_default.png -text svneol=unset#image/png
 images/actions/laz_set_colors_default.png -text svneol=unset#image/png
 images/actions/laz_wand.png -text svneol=unset#image/png
-images/bookmark.lrs svneol=native#text/pascal
 images/bookmark.res -text
 images/bookmark.sh svneol=native#text/plain
 images/bookmark_list.txt svneol=native#text/plain
@@ -5487,11 +5486,9 @@ images/components/txmlconfig.png -text svneol=unset#image/png
 images/components/txmlpropstorage.png -text svneol=unset#image/png
 images/components/unregisteredcomponent.png -text svneol=unset#image/png
 images/components_images.bat svneol=native#text/x-msdos-program
-images/components_images.lrs svneol=native#text/pascal
 images/components_images.res -text
 images/components_images_list.txt svneol=native#text/plain
 images/componenttreeview.bat svneol=native#text/x-msdos-program
-images/componenttreeview.lrs svneol=native#text/pascal
 images/componenttreeview.res -text
 images/componenttreeview/oi_box.png -text svneol=unset#image/png
 images/componenttreeview/oi_collection.png -text svneol=unset#image/png
@@ -5586,7 +5583,6 @@ images/items/item_unit.png -text svneol=unset#image/png
 images/keymapcategory.png -text
 images/keymaprelation.png -text
 images/laz_images.bat svneol=native#text/x-msdos-program
-images/laz_images.lrs svneol=native#text/pascal
 images/laz_images.res -text
 images/laz_images.sh svneol=native#text/plain
 images/laz_images_list.txt svneol=native#text/plain
@@ -5750,7 +5746,6 @@ images/sourceeditor/bookmark8.png -text
 images/sourceeditor/bookmark9.png -text
 images/sourceeditor/tsynsyncroedit.png -text
 images/splash_logo.bat svneol=native#text/x-msdos-program
-images/splash_logo.lrs svneol=native#text/pascal
 images/splash_logo.png -text svneol=unset#image/png
 images/splash_logo.res -text
 images/splash_logo.xpm -text svneol=native#image/x-xpixmap
