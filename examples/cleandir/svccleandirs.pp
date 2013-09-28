@@ -36,7 +36,7 @@ interface
 {$R *.lfm}
 
 uses
-  Classes, SysUtils, LResources, daemonapp, eventlog, dircleaner, FileUtil;
+  Classes, SysUtils, daemonapp, eventlog, dircleaner, FileUtil;
 
 type
   { TCleanDirsThread }

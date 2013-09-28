@@ -35,7 +35,7 @@ unit frmlog;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
   FileUtil, StdCtrls, dircleaner;
 
 type

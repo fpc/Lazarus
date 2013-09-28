@@ -36,8 +36,8 @@ unit frmmain;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Menus,
-  ActnList, ComCtrls, ExtDlgs, ExtCtrls, RTTICtrls, StdCtrls, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus,
+  ActnList, ComCtrls, ExtCtrls, RTTICtrls, StdCtrls, Buttons,
   dircleaner, FileUtil, RTTIGrids;
 
 type

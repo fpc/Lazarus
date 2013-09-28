@@ -36,7 +36,7 @@ interface
 {$R *.lfm}
 
 uses
-  Classes, SysUtils, LResources, daemonapp; 
+  Classes, SysUtils, daemonapp;
 
 type
   TCleanDirServiceMapper = class(TDaemonMapper)
