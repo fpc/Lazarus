@@ -6663,6 +6663,7 @@ lcl/interfaces/wince/winext.pas svneol=native#text/plain
 lcl/intfgraphics.pas svneol=native#text/pascal
 lcl/languages/README.txt svneol=native#text/plain
 lcl/languages/customdrawncontrols.po svneol=native#text/plain
+lcl/languages/customdrawncontrols.ru.po svneol=native#text/plain
 lcl/languages/lclstrconsts.ca.po svneol=native#text/plain
 lcl/languages/lclstrconsts.cs.po svneol=native#text/plain
 lcl/languages/lclstrconsts.de.po svneol=native#text/plain
