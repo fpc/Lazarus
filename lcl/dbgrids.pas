@@ -2323,6 +2323,8 @@ var
   P: TPoint;
   procedure doMouseDown;
   begin
+    if not Focused then
+      SetFocus;
     if assigned(OnMouseDown) then
       OnMouseDown(Self, Button, Shift, X, Y);
   end;
@@ -2377,7 +2379,8 @@ begin
   Gz:=MouseToGridZone(X,Y);
   CacheMouseDown(X,Y);
   case Gz of
-    gzInvalid:;
+    gzInvalid:
+      doMouseDown;
 
     gzFixedCells, gzFixedCols:
       doInherited;
@@ -2388,7 +2391,6 @@ begin
           FDatalink.DataSet.FreeBookmark(FKeyBookmark);
           FKeyBookmark:=nil; // force new keyboard selection start
         end;
-        SetFocus;
 
         P:=MouseToCell(Point(X,Y));
         if Gz=gzFixedRows then

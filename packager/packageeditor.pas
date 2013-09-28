@@ -924,6 +924,7 @@ begin
         LazPackage.UserIgnoreChangeStamp:=LazPackage.ChangeStamp;
     end;
     if MsgResult=mrAbort then CanClose:=false;
+    LazPackage.Modified:=false; // clear modified flag, so that it will be closed
   end;
   //debugln(['TPackageEditorForm.PackageEditorFormCloseQuery CanClose=',CanClose,' ',Caption]);
   if CanClose then

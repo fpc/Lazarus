@@ -5926,6 +5926,15 @@ begin
   DebugLn('Mouse was in ', dbgs(FGCache.HotGridZone));
   {$ENDIF}
 
+  WasFocused := Focused;
+  if not WasFocused then begin
+    SetFocus;
+    if not focused then begin
+      {$ifDef dbgGrid} DebugLnExit('TCustomGrid.MouseDown EXIT: Focus not allowed'); {$Endif}
+      exit;
+    end;
+  end;
+
   CacheMouseDown(X,Y);
 
   case FGCache.HotGridZone of
@@ -5951,8 +5960,11 @@ begin
 
         else begin
           // ColMoving or Clicking
-          fGridState:=gsColMoving;
-          FMoveLast:=Point(-1,-1);
+          if fGridState<>gsColMoving then begin
+            fGridState:=gsColMoving;
+            FMoveLast:=Point(-1,-1);
+          end;
+
           if ((goHeaderPushedLook in Options) and
               (FGCache.HotGridZone in FHeaderPushZones)) then
             DoPushCell;
@@ -5977,9 +5989,6 @@ begin
       begin
         LockEditor;
         FIgnoreClick := False;
-        WasFocused := Focused;
-        if not WasFocused then
-          SetFocus;
         UnlockEditor;
         if IsCellButtonColumn(FGCache.ClickCell) then begin
           fGridState := gsButtonColumnClicking;
@@ -6129,35 +6138,25 @@ begin
     gsColMoving:
       begin
         //DebugLn('Move Col From ',Fsplitter.x,' to ', FMoveLast.x);
-        if FMoveLast.X>=0 then begin
-          if FMoveLast.X=FGCache.ClickCell.X then
-            {$ifdef AlternativeMoveIndicator}
-            InvalidateRow(0);
-            {$else}
-            Invalidate;
-            {$endif}
-          DoOPMoveColRow(True, FGCache.ClickCell.X, FMoveLast.X);
-          ChangeCursor;
-        end else
-          if Cur.X=FGCache.ClickCell.X then
-            HeaderClick(True, FGCache.ClickCell.X);
+        ChangeCursor;
+
+        if FMoveLast.X>=0 then
+          DoOPMoveColRow(True, FGCache.ClickCell.X, FMoveLast.X)
+        else
+        if Cur.X=FGCache.ClickCell.X then
+          HeaderClick(True, FGCache.ClickCell.X)
       end;
 
     gsRowMoving:
       begin
         //DebugLn('Move Row From ',Fsplitter.Y,' to ', FMoveLast.Y);
-        if FMoveLast.Y>=0 then begin
-          if FMoveLast.Y=FGCache.ClickCell.Y then
-            {$ifdef AlternativeMoveIndicator}
-            InvalidateCol(0);
-            {$else}
-            Invalidate;
-            {$endif}
-          DoOPMoveColRow(False, FGCache.ClickCell.Y, FMoveLast.Y);
-          ChangeCursor;
-        end else
-          if Cur.Y=FGCache.ClickCell.Y then
-            HeaderClick(False, FGCache.ClickCell.Y);
+        ChangeCursor;
+
+        if FMoveLast.Y>=0 then
+          DoOPMoveColRow(False, FGCache.ClickCell.Y, FMoveLast.Y)
+        else
+        if Cur.Y=FGCache.ClickCell.Y then
+          HeaderClick(False, FGCache.ClickCell.Y);
       end;
 
     gsColSizing:
@@ -6190,14 +6189,28 @@ begin
 
   end;
 
-  fGridState:=gsNormal;
   GridFlags := GridFlags - [gfNeedsSelectActive, gfSizingStarted];
 
   if IsPushCellActive() then begin
     ResetPushedCell;
   end;
+
+  if (FMoveLast.X>=0) or (FMoveLast.Y>=0) then begin
+    {$ifdef AlternativeMoveIndicator}
+    begin
+      if FMoveLast.X>=0 then InvalidateRow(0);
+      if FMoveLast.Y>=0 then InvalidateCol(0);
+    end;
+    {$else}
+    Invalidate;
+    {$endif}
+    if not (fGridState in [gsColMoving,gsRowMoving]) then
+      ChangeCursor;
+  end;
+
   FGCache.ClickCell := point(-1, -1);
 
+  fGridState:=gsNormal;
   {$IfDef dbgGrid}DebugLn('MouseUP  END  RND=', FloatToStr(Random));{$Endif}
 end;
 
