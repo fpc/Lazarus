@@ -34,6 +34,8 @@ var
 
 implementation
 
+{$R asmtestunit.lfm}
+
 { TForm1 }
 
 procedure TForm1.Timer1Timer(Sender: TObject);
@@ -75,9 +77,6 @@ begin
   end
 //  else txtOutput.Text :='';
 end;
-
-initialization
-  {$I asmtestunit.lrs}
 
 end.
 

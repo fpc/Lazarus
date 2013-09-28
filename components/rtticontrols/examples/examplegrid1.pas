@@ -42,6 +42,8 @@ var
 
 implementation
 
+{$R examplegrid1.lfm}
+
 { TForm1 }
 
 procedure TForm1.Form1Create(Sender: TObject);
@@ -72,9 +74,6 @@ begin
   // free collection
   MyCollection.Free;
 end;
-
-initialization
-  {$I examplegrid1.lrs}
 
 end.
 

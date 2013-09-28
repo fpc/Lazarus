@@ -63,6 +63,8 @@ type
   
 implementation
 
+{$R sqlitecomponenteditor.lfm}
+
 uses
   db;
 
@@ -318,8 +320,5 @@ begin
   end;
 end;
 
-initialization
-  {$i sqlitecomponenteditor.lrs}
-  
 end.
 

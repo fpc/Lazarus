@@ -17,8 +17,7 @@ type
 
 implementation
 
-initialization
-  {$I frameprinterselector.lrs}
+{$R frameprinterselector.lfm}
 
 end.
 

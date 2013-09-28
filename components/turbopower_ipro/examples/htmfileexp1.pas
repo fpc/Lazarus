@@ -67,6 +67,8 @@ function ProgramDirectory(BundleRoot: boolean): string;
 
 implementation
 
+{$R htmfileexp1.lfm}
+
 function ProgramDirectory(BundleRoot: boolean): string;
 const
   BundlePostFix='.app/Contents/MacOS';
@@ -300,7 +302,6 @@ end {OpenHTMLFile};
 {--------------------------------------}
 
 initialization
-  {$I htmfileexp1.lrs}
   {$I defaultimage.lrs}
 
 end.

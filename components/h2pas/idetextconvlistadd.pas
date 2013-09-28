@@ -45,6 +45,8 @@ function ShowIDETextConvListAddDlg(out ToolClass: TCustomTextConverterToolClass
 
 implementation
 
+{$R idetextconvlistadd.lfm}
+
 function ShowIDETextConvListAddDlg(out ToolClass: TCustomTextConverterToolClass
   ): TModalResult;
 var
@@ -105,9 +107,6 @@ begin
   end;
   ClassComboBox.Items.EndUpdate;
 end;
-
-initialization
-  {$I idetextconvlistadd.lrs}
 
 end.
 

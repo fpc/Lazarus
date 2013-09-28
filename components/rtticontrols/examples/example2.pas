@@ -62,6 +62,8 @@ procedure Log(const Msg: string);
 
 implementation
 
+{$R example2.lfm}
+
 procedure Log(const Msg: string);
 begin
   Form1.Memo1.Lines.Add(Msg);
@@ -111,9 +113,6 @@ begin
   FMyString:=AValue;
   Log('TMyClass.SetMyString '+MyString);
 end;
-
-initialization
-  {$I example2.lrs}
 
 end.
 

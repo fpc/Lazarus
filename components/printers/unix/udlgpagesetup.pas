@@ -30,15 +30,14 @@ var
 
 implementation
 
+{$R udlgpagesetup.lfm}
+
 { TdlgPageSetup }
 
 procedure TdlgPageSetup.FormCreate(Sender: TObject);
 begin
   frmPageSetup.Initialize(psmFull);
 end;
-
-initialization
-  {$I udlgpagesetup.lrs}
 
 end.
 

@@ -65,6 +65,8 @@ type
 
 implementation
 
+{$R framepagesetup.lfm}
+
 { TframePageSetup }
 
 procedure TframePageSetup.pbPreviewPaint(Sender: TObject);
@@ -313,9 +315,6 @@ begin
     PanSetup.Height:=gpMargins.Height+C_BOTHSPACES;
 
 end;
-
-initialization
-  {$I framepagesetup.lrs}
 
 end.
 

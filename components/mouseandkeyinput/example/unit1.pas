@@ -34,6 +34,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 uses
   MouseAndKeyInput, LCLType;
 
@@ -83,9 +85,6 @@ procedure TForm1.Button3Click(Sender: TObject);
 begin
   Application.QueueAsyncCall(@SendKeys, 0);
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

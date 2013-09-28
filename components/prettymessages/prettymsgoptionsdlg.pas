@@ -57,6 +57,8 @@ var
 
 implementation
 
+{$R prettymsgoptionsdlg.lfm}
+
 { TPrettyMsgOptionsDialog }
 
 procedure TPrettyMsgOptionsDialog.FormCreate(Sender: TObject);
@@ -66,9 +68,6 @@ begin
   OkButton.Caption:='Ok';
   CancelButton.Caption:='Cancel';
 end;
-
-initialization
-  {$I prettymsgoptionsdlg.lrs}
 
 end.
 

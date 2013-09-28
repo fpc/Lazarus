@@ -47,6 +47,8 @@ var
 
 implementation
 
+{$R main.lfm}
+
 uses SourcePrinter;
 
 { TForm1 }
@@ -64,9 +66,6 @@ begin
   sp.Execute(SynEdit1.Lines);
   sp.Free;
 end;
-
-initialization
-  {$I main.lrs}
 
 end.
 

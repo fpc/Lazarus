@@ -71,6 +71,8 @@ var
 
 implementation
 
+{$R example3.lfm}
+
 { TBall }
 
 procedure TBall.SetBall(const NewX, NewY: integer; const NewSize: word);
@@ -134,7 +136,6 @@ begin
 end;
 
 initialization
-  {$I example3.lrs}
   RegisterPropertyEditor(TypeInfo(integer),TBall,'X',TBallPropertyEditor);
   RegisterPropertyEditor(TypeInfo(integer),TBall,'Y',TBallPropertyEditor);
   RegisterPropertyEditor(TypeInfo(word),TBall,'Size',TBallPropertyEditor);

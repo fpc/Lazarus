@@ -44,8 +44,7 @@ var
 
 implementation
 
-initialization
-  {$I example1.lrs}
+{$R example1.lfm}
 
 end.
 

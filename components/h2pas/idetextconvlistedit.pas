@@ -76,6 +76,7 @@ var
 
 implementation
 
+{$R idetextconvlistedit.lfm}
 
 { TTextConvListEditor }
 
@@ -359,9 +360,6 @@ begin
   UpdateToolsListBox;
   SelectTool(Result);
 end;
-
-initialization
-  {$I idetextconvlistedit.lrs}
 
 end.
 

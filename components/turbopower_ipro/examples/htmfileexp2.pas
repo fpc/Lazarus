@@ -76,6 +76,8 @@ var
 
 implementation
 
+{$R htmfileexp2.lfm}
+
 uses
   IpUtils;
 
@@ -326,7 +328,6 @@ end;
 {--------------------------------------}
 
 initialization
-  {$I htmfileexp2.lrs}
   {$I defaultimage.lrs}
 
 end.

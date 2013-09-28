@@ -103,6 +103,8 @@ var
 
 implementation
 
+{$R frmmain.lfm}
+
 uses frmBaseConfigExport,gendata;
 
 Resourcestring
@@ -247,9 +249,6 @@ begin
   DBFData.Open;
   Caption:=Format('%s (%s)',[FDesignCaption,AFileName]);
 end;
-
-initialization
-  {$I frmmain.lrs}
 
 end.
 

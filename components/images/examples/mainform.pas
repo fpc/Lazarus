@@ -57,6 +57,8 @@ var
 
 implementation
 
+{$R mainform.lfm}
+
 uses
 {Units of package "Images For Lazarus"}
   LazJPG, LazTGA; //, LazPNM, LazPNG, LazXPM, LazBMP;
@@ -193,7 +195,6 @@ initialization
 //  LazPNM.Register;
   LazTGA.Register;
 //  LazJPG.Register;
-  {$I mainform.lrs}
 
 finalization
 //  LazPNG.UnRegister;

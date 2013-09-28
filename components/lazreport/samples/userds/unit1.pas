@@ -57,6 +57,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 uses lclproc, unit2;
 
 { TForm1 }
@@ -238,9 +240,6 @@ begin
   WriteLn('TForm1.MasterDSCheckEOF: FRow=',FRow,' IsEOF=',IsEOF);
   {$ENDIF}
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

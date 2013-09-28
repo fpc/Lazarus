@@ -51,6 +51,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.FormShow(Sender: TObject);
@@ -125,9 +127,6 @@ procedure TForm1.FilasNext(Sender: TObject);
 begin
   Inc(fila);
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

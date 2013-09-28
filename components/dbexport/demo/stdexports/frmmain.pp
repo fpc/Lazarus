@@ -61,6 +61,8 @@ var
 
 implementation
 
+{$R frmmain.lfm}
+
 uses gendata;
 
 { TMainForm }
@@ -121,9 +123,6 @@ begin
   DBFData.Open;
   Caption:=Format('%s (%s)',[FDesignCaption,AFileName]);
 end;
-
-initialization
-  {$I frmmain.lrs}
 
 end.
 

@@ -25,15 +25,14 @@ var
 
 implementation
 
+{$R unit2.lfm}
+
 { TForm2 }
 
 procedure TForm2.FormShow(Sender: TObject);
 begin
   memo1.lines.LoadFromFile(UTF8ToSys('notes.txt'));
 end;
-
-initialization
-  {$I unit2.lrs}
 
 end.
 

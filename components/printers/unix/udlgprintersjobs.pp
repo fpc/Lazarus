@@ -85,6 +85,8 @@ var
 
 implementation
 
+{$R udlgprintersjobs.lfm}
+
 { TdlgPrintersJobs }
 constructor TdlgPrintersJobs.Create(aOwner: TComponent);
 begin
@@ -235,6 +237,5 @@ begin
 end;
 
 initialization
-  {$I udlgprintersjobs.lrs}
   {$I jobsimglist.lrs}
 end.

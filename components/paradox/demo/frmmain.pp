@@ -32,6 +32,7 @@ var
 
 implementation
 
+{$R frmmain.lfm}
 
 { TMainForm }
 
@@ -41,10 +42,6 @@ begin
   PDX.FileName:=FEPX.FileName;
   PDX.Open;
 end;
-
-
-initialization
-  {$I frmmain.lrs}
 
 end.
 

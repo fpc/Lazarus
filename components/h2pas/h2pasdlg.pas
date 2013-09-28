@@ -187,6 +187,8 @@ procedure Register;
 
 implementation
 
+{$R h2pasdlg.lfm}
+
 procedure ExecuteH2PasTool(Sender: TObject);
 begin
   if H2PasDialog=nil then
@@ -1296,9 +1298,6 @@ begin
   
   UpdateProjectChanged(true);
 end;
-
-initialization
-  {$I h2pasdlg.lrs}
 
 end.
 

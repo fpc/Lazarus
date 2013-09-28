@@ -121,6 +121,8 @@ var
   
 implementation
 
+{$R udlgselectprinter.lfm}
+
 uses
   uDlgPropertiesPrinter;
 
@@ -489,6 +491,5 @@ end;
 
 
 initialization
-  {$I udlgselectprinter.lrs}
   {$I selectprinter.lrs}
 end.

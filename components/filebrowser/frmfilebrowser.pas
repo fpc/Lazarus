@@ -73,6 +73,8 @@ var
 
 implementation
 
+{$R frmfilebrowser.lfm}
+
 {$IFDEF MSWINDOWS}
 uses
   Windows;
@@ -397,9 +399,6 @@ begin
   if TV.Selected <> nil then
     Result := GetAbsolutePath(TV.Selected);
 end;
-
-initialization
-  {$I frmfilebrowser.lrs}
 
 end.
 

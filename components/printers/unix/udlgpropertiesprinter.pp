@@ -92,6 +92,8 @@ var
 
 implementation
 
+{$R udlgpropertiesprinter.lfm}
+
 Type
   THackCUPSPrinter=Class(TCUPSPrinter);
 
@@ -442,6 +444,5 @@ begin
 end;
 
 initialization
-  {$I udlgpropertiesprinter.lrs}
   {$I printerprop.lrs}
 end.

@@ -32,6 +32,8 @@ type
 
 implementation
 
+{$R threadoptionsdialog.lfm}
+
 resourcestring
   SThreadDialogTitle       = 'Thread Class Options';
   SOptionsGroupBoxCaption  = 'Options';
@@ -49,9 +51,6 @@ begin
   ThreadNameLabel.Caption  := SThreadNameLabelCaption;
   CreateUnitButton.Caption := SCreateUnitButtonCaption;
 end;
-
-initialization
-  {$I threadoptionsdialog.lrs}
 
 end.
 

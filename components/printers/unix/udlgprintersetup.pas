@@ -23,8 +23,7 @@ var
 
 implementation
 
-initialization
-  {$I udlgprintersetup.lrs}
+{$R udlgprintersetup.lfm}
 
 end.
 
