@@ -35,21 +35,29 @@ program LazRes;
 
 {$mode objfpc}{$H+}
 
-uses Classes, SysUtils, FileUtil, LCLProc, LResources;
+uses
+  Classes, SysUtils, FileUtil, LCLProc, LResources,
+  resource, reswriter, bitmapresource, groupresource, groupiconresource,
+  groupcursorresource;
+
+type
+  TOutputFileType = (ftLrs, ftRc, ftRes);
 
 procedure ConvertFormToText(Stream: TMemoryStream);
-var TextStream: TMemoryStream;
+var
+  TextStream: TMemoryStream;
 begin
   try
     try
-      TextStream:=TMemoryStream.Create;
-      FormDataToText(Stream,TextStream);
-      TextStream.Position:=0;
+      TextStream := TMemoryStream.Create;
+      FormDataToText(Stream, TextStream);
+      TextStream.Position := 0;
       Stream.Clear;
-      Stream.CopyFrom(TextStream,TextStream.Size);
-      Stream.Position:=0;
+      Stream.CopyFrom(TextStream, TextStream.Size);
+      Stream.Position := 0;
     except
-      on E: Exception do begin
+      on E: Exception do
+      begin
         debugln('ERROR: unable to convert Delphi form to text: '+E.Message);
       end;
     end;
@@ -57,6 +65,8 @@ begin
     TextStream.Free;
   end;
 end;
+
+// lrs generation
 
 procedure OutputLRSFile(BinFilename, ResourceName: String; ResMemStream: TMemoryStream);
 var
@@ -110,6 +120,8 @@ begin
   debugln('');
 end;
 
+// rc generation
+
 procedure OutputRCFile(FileName, ResourceName: String; ResMemStream: TMemoryStream);
 
   procedure WriteResource(ResourceType: String);
@@ -138,6 +150,145 @@ begin
   end;
 end;
 
+// Res generation
+type
+  TGroupResourceClass = class of TGroupResource;
+
+procedure AddResource(FileName, ResourceName: String; Resources: TResources);
+var
+  FileExt: String;
+
+  function GetResourceStream: TMemoryStream;
+  var
+    FS: TFileStream;
+  begin
+    FS := TFileStream.Create(UTF8ToSys(FileName), fmOpenRead);
+    Result := TMemoryStream.Create;
+    try
+      Result.CopyFrom(FS, FS.Size);
+      Result.Position:=0;
+      if (FileExt = '.LFM') or (FileExt = '.DFM') or (FileExt = '.XFM') or (FileExt = '.FMX') then
+      begin
+        ConvertFormToText(Result);
+        ResourceName := FindLFMClassName(Result);
+        if ResourceName = '' then
+        begin
+          debugln(' ERROR: no resourcename');
+          halt(2);
+        end;
+      end
+    finally
+      FS.Free;
+    end;
+  end;
+
+  procedure AddBitmapResource;
+  var
+    Desc: TResourceDesc;
+    Res: TBitmapResource;
+    ResStream: TStream;
+  begin
+    Desc := TResourceDesc.Create(ResourceName);
+    Res := TBitmapResource.Create(nil, Desc);
+    Desc.Free;
+    ResStream := GetResourceStream;
+    try
+      if Assigned(ResStream) then
+        Res.BitmapData.CopyFrom(ResStream, ResStream.Size)
+      else
+        Res.BitmapData.Size:=0;
+    finally
+      ResStream.Free;
+    end;
+    Resources.Add(Res);
+    dbgout(' ResourceName=''', ResourceName, ''' Type=RT_BITMAP');
+  end;
+
+  procedure AddGroupResource(GroupResourceClass: TGroupResourceClass);
+  var
+    Desc: TResourceDesc;
+    Res: TGroupResource;
+    ResStream: TStream;
+  begin
+    Desc := TResourceDesc.Create(ResourceName);
+    Res := GroupResourceClass.Create(nil, Desc);
+    Desc.Free;
+    ResStream := GetResourceStream;
+    try
+      if Assigned(ResStream) then
+        Res.ItemData.CopyFrom(ResStream, ResStream.Size)
+      else
+        Res.ItemData.Size:=0;
+    finally
+      ResStream.Free;
+    end;
+    Resources.Add(Res);
+    if Res._Type.ID = RT_GROUP_ICON then
+      dbgout(' ResourceName=''', ResourceName, ''' Type=RT_GROUP_ICON')
+    else
+      dbgout(' ResourceName=''', ResourceName, ''' Type=RT_GROUP_CURSOR');
+  end;
+
+  procedure AddRCDataResource;
+  var
+    TypeDesc, NameDesc: TResourceDesc;
+    Res: TGenericResource;
+    ResStream: TStream;
+  begin
+    TypeDesc := TResourceDesc.Create(RT_RCDATA);
+    NameDesc := TResourceDesc.Create(ResourceName);
+    Res := TGenericResource.Create(TypeDesc, NameDesc);
+    TypeDesc.Free;
+    NameDesc.Free;
+    ResStream := GetResourceStream;
+    try
+      if Assigned(ResStream) then
+        Res.RawData.CopyFrom(ResStream, ResStream.Size)
+      else
+        Res.RawData.Size:=0;
+    finally
+      ResStream.Free;
+    end;
+    Resources.Add(Res);
+    dbgout(' ResourceName=''', ResourceName, ''' Type=RT_RCDATA');
+  end;
+
+begin
+  dbgout(FileName);
+  FileExt := UpperCase(ExtractFileExt(FileName));
+  if ResourceName = '' then
+  begin
+    ResourceName := ExtractFileName(FileName);
+    ResourceName := Trim(Copy(ResourceName, 1, Length(ResourceName) - Length(FileExt)));
+  end;
+  case FileExt of
+    '.BMP': AddBitmapResource;
+    '.CUR': AddGroupResource(TGroupCursorResource);
+    '.ICO': AddGroupResource(TGroupIconResource);
+  else
+    AddRCDataResource;
+  end;
+  debugln('');
+end;
+
+procedure OutputResFile(FileList: TStringList; ResMemStream: TMemoryStream);
+var
+  Writer: TResResourceWriter;
+  Resources: TResources;
+  I: Integer;
+begin
+  Resources := TResources.Create;
+  Writer := TResResourceWriter.Create;
+  try
+    for I := 0 to FileList.Count - 1 do
+      AddResource(FileList.Names[I], Trim(FileList.ValueFromIndex[I]), Resources);
+    Resources.WriteToStream(ResMemStream, Writer);
+  finally
+    Writer.Free;
+    Resources.Free;;
+  end;
+end;
+
 var
   a: Integer;
   ResourceFilename,FullResourceFilename:String;
@@ -145,7 +296,7 @@ var
   ResMemStream:TMemoryStream;
   FileList:TStringList;
   S: String;
-  IsRCFile: Boolean;
+  OutputFileType: TOutputFileType;
 begin
   if ParamCount<2 then begin
     debugln('Usage: ',ExtractFileName(ParamStrUTF8(0))
@@ -206,17 +357,28 @@ begin
       debugln('ERROR: unable to create file ''', ResourceFilename, '''');
       halt(1);
     end;
-    IsRCFile := LowerCase(ExtractFileExt(ResourceFilename)) = '.rc';
-    ResMemStream:=TMemoryStream.Create;
+    case LowerCase(ExtractFileExt(ResourceFilename)) of
+      '.rc': OutputFileType := ftRc;
+      '.res': OutputFileType := ftRes;
+    else
+      OutputFileType := ftLrs;
+    end;
+    ResMemStream := TMemoryStream.Create;
     try
-      for a:=0 to FileList.Count-1 do begin
-        if IsRCFile then
-          OutputRCFile(FileList.Names[a], trim(FileList.ValueFromIndex[a]), ResMemStream)
-        else
-          OutputLRSFile(FileList.Names[a], trim(FileList.ValueFromIndex[a]), ResMemStream);
-      end;
-      ResMemStream.Position:=0;
-      ResFileStream.CopyFrom(ResMemStream,ResMemStream.Size);
+      if OutputFileType in [ftRc, ftLrs] then
+      begin
+        for a := 0 to FileList.Count - 1 do
+        begin
+          if OutputFileType = ftRc then
+            OutputRCFile(FileList.Names[a], trim(FileList.ValueFromIndex[a]), ResMemStream)
+          else
+            OutputLRSFile(FileList.Names[a], trim(FileList.ValueFromIndex[a]), ResMemStream);
+        end;
+      end
+      else
+        OutputResFile(FileList, ResMemStream);
+      ResMemStream.Position := 0;
+      ResFileStream.CopyFrom(ResMemStream, ResMemStream.Size);
     finally
       ResMemStream.Free;
       ResFileStream.Free;
