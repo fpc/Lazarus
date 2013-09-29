@@ -4338,9 +4338,10 @@ examples/dockmanager/docs/fdockbook.xml svneol=LF#text/xml eol=lf
 examples/dockmanager/docs/ffloatingsite.xml svneol=LF#text/xml eol=lf
 examples/dockmanager/docs/fminiide2.xml svneol=LF#text/xml eol=lf
 examples/dockmanager/docs/umakesite.xml svneol=LF#text/xml eol=lf
+examples/dockmanager/easyedit/easyeditor.ico -text
 examples/dockmanager/easyedit/easyeditor.lpi svneol=native#text/plain
 examples/dockmanager/easyedit/easyeditor.lpr svneol=native#text/plain
-examples/dockmanager/easyedit/easyeditor.lrs svneol=native#text/plain
+examples/dockmanager/easyedit/easyeditor.res -text
 examples/dockmanager/easyedit/editmain.lfm svneol=native#text/plain
 examples/dockmanager/easyedit/editmain.pas svneol=native#text/pascal
 examples/dockmanager/easyedit/feditbook.lfm svneol=native#text/plain
@@ -4357,12 +4358,14 @@ examples/dockmanager/easytree/fmain.lfm svneol=native#text/plain
 examples/dockmanager/easytree/fmain.pas svneol=native#text/plain
 examples/dockmanager/easytree/ftree.lfm svneol=native#text/plain
 examples/dockmanager/easytree/ftree.pas svneol=native#text/plain
+examples/dockmanager/elasticsite/MakeSite.ico -text
 examples/dockmanager/elasticsite/MakeSite.lpi svneol=native#text/plain
 examples/dockmanager/elasticsite/MakeSite.lpr svneol=native#text/plain
-examples/dockmanager/elasticsite/MakeSite.lrs svneol=native#text/plain
+examples/dockmanager/elasticsite/MakeSite.res -text
+examples/dockmanager/elasticsite/SiteTest.ico -text
 examples/dockmanager/elasticsite/SiteTest.lpi svneol=native#text/plain
 examples/dockmanager/elasticsite/SiteTest.lpr svneol=native#text/plain
-examples/dockmanager/elasticsite/SiteTest.lrs svneol=native#text/plain
+examples/dockmanager/elasticsite/SiteTest.res -text
 examples/dockmanager/elasticsite/fclientform.lfm svneol=native#text/plain
 examples/dockmanager/elasticsite/fclientform.pas svneol=native#text/pascal
 examples/dockmanager/elasticsite/fdockclient.lfm svneol=native#text/plain
