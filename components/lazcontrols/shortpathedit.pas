@@ -73,7 +73,6 @@ end;
 
 procedure Register;
 begin
-  {$I shortpathedit_icon.lrs}
   RegisterComponents('LazControls',[TShortPathEdit]);
 end;
 

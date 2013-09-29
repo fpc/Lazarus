@@ -12,6 +12,8 @@ uses
 
 implementation
 
+{$R *.res}
+
 procedure Register;
 begin
   RegisterUnit('DividerBevel', @DividerBevel.Register);

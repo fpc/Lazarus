@@ -992,7 +992,6 @@ end;
 
 procedure Register;
 begin
-  {$I lvlgraph_icon.lrs}
   RegisterComponents('LazControls',[TLvlGraphControl]);
 end;
 

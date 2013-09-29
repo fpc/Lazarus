@@ -1893,9 +1893,7 @@ components/lazcontrols/design/lazcontroldsgn.lpk svneol=native#text/pascal
 components/lazcontrols/design/lazcontroldsgn.pas svneol=native#text/pascal
 components/lazcontrols/design/registerlazcontrols.pas svneol=native#text/pascal
 components/lazcontrols/dividerbevel.pas svneol=native#text/pascal
-components/lazcontrols/dividerbevel_icon.lrs svneol=native#text/pascal
 components/lazcontrols/extendednotebook.pas svneol=native#text/pascal
-components/lazcontrols/extendednotebook_icon.lrs svneol=native#text/pascal
 components/lazcontrols/extendedtabcontrols.pas svneol=native#text/pascal
 components/lazcontrols/fpmake.pp svneol=native#text/plain
 components/lazcontrols/images/dividerbevel.png -text
@@ -1908,13 +1906,9 @@ components/lazcontrols/lazcontrols.lpk svneol=native#text/xml
 components/lazcontrols/lazcontrols.pas svneol=native#text/pascal
 components/lazcontrols/lazctrls.bat svneol=native#text/plain
 components/lazcontrols/listfilteredit.pas svneol=native#text/plain
-components/lazcontrols/listfilteredit_icon.lrs svneol=native#text/plain
-components/lazcontrols/lvlgraph_icon.lrs svneol=native#text/plain
 components/lazcontrols/lvlgraphctrl.pas svneol=native#text/plain
 components/lazcontrols/shortpathedit.pas svneol=native#text/plain
-components/lazcontrols/shortpathedit_icon.lrs svneol=native#text/plain
 components/lazcontrols/treefilteredit.pas svneol=native#text/plain
-components/lazcontrols/treefilteredit_icon.lrs svneol=native#text/plain
 components/lazreport/doc/contributors.txt svneol=native#text/plain
 components/lazreport/doc/fr_eng.odt -text
 components/lazreport/doc/fr_eng.pdf -text

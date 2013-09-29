@@ -96,7 +96,6 @@ implementation
 
 procedure Register;
 begin
-  {$I dividerbevel_icon.lrs}
   RegisterComponents('LazControls', [TDividerBevel]);
 end;
 

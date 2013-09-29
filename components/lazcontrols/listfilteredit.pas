@@ -70,7 +70,6 @@ implementation
 
 procedure Register;
 begin
-  {$I listfilteredit_icon.lrs}
   RegisterComponents('LazControls',[TListFilterEdit]);
 end;
 

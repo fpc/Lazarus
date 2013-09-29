@@ -125,7 +125,6 @@ implementation
 
 procedure Register;
 begin
-  {$I treefilteredit_icon.lrs}
   RegisterComponents('LazControls',[TTreeFilterEdit]);
 end;
 

@@ -108,7 +108,6 @@ implementation
 
 procedure Register;
 begin
-  {$I extendednotebook_icon.lrs}
   RegisterComponents('LazControls',[TExtendedNotebook]);
 end;
 
