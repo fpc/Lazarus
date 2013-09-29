@@ -4793,9 +4793,7 @@ examples/widestringstreaming/widestringstreaming.lpr svneol=native#text/plain
 examples/xmlreader/TestXMLReder.ico -text svneol=unset#image/ico
 examples/xmlreader/TestXMLReder.lpi svneol=native#text/plain
 examples/xmlreader/TestXMLReder.lpr svneol=native#text/plain
-examples/xmlreader/TestXMLReder.lrs svneol=native#text/plain
-examples/xmlreader/TestXMLReder.manifest svneol=native#text/plain
-examples/xmlreader/TestXMLReder.rc svneol=native#text/plain
+examples/xmlreader/TestXMLReder.res -text
 examples/xmlreader/test.xml svneol=native#text/plain
 examples/xmlreader/testxmlreaderunit.lfm svneol=native#text/plain
 examples/xmlreader/testxmlreaderunit.pas svneol=native#text/plain

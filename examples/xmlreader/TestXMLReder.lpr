@@ -7,13 +7,11 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, TestXMLReaderUnit, LResources
-  { you can add units after this };
+  Forms, TestXMLReaderUnit;
 
-{$IFDEF WINDOWS}{$R TestXMLReder.rc}{$ENDIF}
+{$R *.res}
 
 begin
-  {$I TestXMLReder.lrs}
   Application.Initialize;
   Application.CreateForm(TXMLRederForm, XMLRederForm);
   Application.Run;
