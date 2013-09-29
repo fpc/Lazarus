@@ -1,20 +1,26 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
+    <Version Value="9"/>
     <PathDelim Value="\"/>
-    <Version Value="6"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
-      <TargetFileExt Value=".exe"/>
-      <Icon Value="0"/>
+      <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <Icon Value="0"/>
+      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
-      <ProjectVersion Value=""/>
       <Language Value=""/>
       <CharSet Value=""/>
+      <StringTable ProductVersion=""/>
     </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -37,113 +43,118 @@
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="project1"/>
-        <CursorPos X="54" Y="4"/>
-        <TopLine Value="1"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="14"/>
         <UsageCount Value="78"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="unit1.pas"/>
-        <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="unit1.lrs"/>
         <UnitName Value="Unit1"/>
-        <CursorPos X="16" Y="61"/>
-        <TopLine Value="53"/>
         <EditorIndex Value="0"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="53"/>
+        <CursorPos X="16" Y="61"/>
         <UsageCount Value="78"/>
         <Bookmarks Count="1">
           <Item0 X="18" Y="72" ID="1"/>
         </Bookmarks>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\..\..\lazarus\lcl\ldocktree.pas"/>
+        <Filename Value="..\..\lcl\ldocktree.pas"/>
         <UnitName Value="LDockTree"/>
-        <CursorPos X="84" Y="1598"/>
         <TopLine Value="1564"/>
+        <CursorPos X="84" Y="1598"/>
         <UsageCount Value="38"/>
         <Bookmarks Count="1">
           <Item0 X="18" Y="1302" ID="2"/>
         </Bookmarks>
       </Unit2>
       <Unit3>
-        <Filename Value="..\..\..\lazarus\lcl\include\control.inc"/>
-        <CursorPos X="1" Y="1377"/>
+        <Filename Value="..\..\lcl\include\control.inc"/>
         <TopLine Value="1360"/>
+        <CursorPos X="1" Y="1377"/>
         <UsageCount Value="38"/>
       </Unit3>
       <Unit4>
-        <Filename Value="..\..\..\lazarus\lcl\include\wincontrol.inc"/>
-        <CursorPos X="13" Y="7000"/>
+        <Filename Value="..\..\lcl\include\wincontrol.inc"/>
         <TopLine Value="6978"/>
+        <CursorPos X="13" Y="7000"/>
         <UsageCount Value="38"/>
       </Unit4>
       <Unit5>
-        <Filename Value="..\..\..\lazarus\lcl\controls.pp"/>
+        <Filename Value="..\..\lcl\controls.pp"/>
         <UnitName Value="Controls"/>
-        <CursorPos X="5" Y="1890"/>
         <TopLine Value="1873"/>
+        <CursorPos X="5" Y="1890"/>
         <UsageCount Value="38"/>
       </Unit5>
       <Unit6>
-        <Filename Value="..\..\..\lazarus\lcl\include\customform.inc"/>
-        <CursorPos X="1" Y="2175"/>
+        <Filename Value="..\..\lcl\include\customform.inc"/>
         <TopLine Value="2158"/>
+        <CursorPos X="1" Y="2175"/>
         <UsageCount Value="38"/>
       </Unit6>
       <Unit7>
-        <Filename Value="..\..\..\lazarus\lcl\include\scrollingwincontrol.inc"/>
-        <CursorPos X="7" Y="58"/>
+        <Filename Value="..\..\lcl\include\scrollingwincontrol.inc"/>
         <TopLine Value="49"/>
+        <CursorPos X="7" Y="58"/>
         <UsageCount Value="38"/>
       </Unit7>
       <Unit8>
-        <Filename Value="..\..\..\lazarus\lcl\include\dockzone.inc"/>
-        <CursorPos X="41" Y="249"/>
+        <Filename Value="..\..\lcl\include\dockzone.inc"/>
         <TopLine Value="226"/>
+        <CursorPos X="41" Y="249"/>
         <UsageCount Value="35"/>
       </Unit8>
       <Unit9>
-        <Filename Value="..\..\..\lazarus\lcl\lclproc.pas"/>
+        <Filename Value="..\..\lcl\lclproc.pas"/>
         <UnitName Value="LCLProc"/>
-        <CursorPos X="1" Y="1497"/>
         <TopLine Value="1480"/>
+        <CursorPos X="1" Y="1497"/>
         <UsageCount Value="34"/>
       </Unit9>
       <Unit10>
-        <Filename Value="..\..\..\lazarus\lcl\include\docktree.inc"/>
-        <CursorPos X="3" Y="1"/>
+        <Filename Value="..\..\lcl\include\docktree.inc"/>
         <TopLine Value="1"/>
+        <CursorPos X="3" Y="1"/>
         <UsageCount Value="37"/>
       </Unit10>
       <Unit11>
-        <Filename Value="..\..\..\lazarus\lcl\extctrls.pp"/>
+        <Filename Value="..\..\lcl\extctrls.pp"/>
         <UnitName Value="ExtCtrls"/>
-        <CursorPos X="5" Y="452"/>
         <TopLine Value="441"/>
+        <CursorPos X="5" Y="452"/>
         <UsageCount Value="9"/>
       </Unit11>
       <Unit12>
-        <Filename Value="..\..\..\lazarus\lcl\include\customsplitter.inc"/>
-        <CursorPos X="3" Y="35"/>
+        <Filename Value="..\..\lcl\include\customsplitter.inc"/>
         <TopLine Value="1"/>
+        <CursorPos X="3" Y="35"/>
         <UsageCount Value="9"/>
       </Unit12>
       <Unit13>
-        <Filename Value="..\..\..\lazarus\lcl\helpintfs.pas"/>
+        <Filename Value="..\..\lcl\helpintfs.pas"/>
         <UnitName Value="HelpIntfs"/>
-        <CursorPos X="38" Y="402"/>
         <TopLine Value="386"/>
+        <CursorPos X="38" Y="402"/>
         <UsageCount Value="10"/>
       </Unit13>
       <Unit14>
-        <Filename Value="..\..\..\lazarus\lcl\lazhelphtml.pas"/>
+        <Filename Value="..\..\lcl\lazhelphtml.pas"/>
         <UnitName Value="LazHelpHTML"/>
-        <CursorPos X="3" Y="52"/>
         <TopLine Value="35"/>
+        <CursorPos X="3" Y="52"/>
         <UsageCount Value="10"/>
       </Unit14>
     </Units>
@@ -207,8 +218,13 @@
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Linking>
       <Options>
         <Win32>
@@ -233,4 +249,5 @@
       </Item3>
     </Exceptions>
   </Debugging>
+  <EditorMacros Count="0"/>
 </CONFIG>

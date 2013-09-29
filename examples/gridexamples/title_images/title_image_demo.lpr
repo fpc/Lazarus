@@ -8,12 +8,11 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { you can add units after this }, main, LResources;
+  { you can add units after this }, main;
 
-{$IFDEF WINDOWS}{$R title_image_demo.rc}{$ENDIF}
+{$R *.res}
 
 begin
-  {$I title_image_demo.lrs}
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
