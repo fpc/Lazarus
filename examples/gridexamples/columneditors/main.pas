@@ -87,6 +87,8 @@ type
 
 implementation
 
+{$R main.lfm}
+
 { TForm1 }
 
 //Additional Note:
@@ -259,8 +261,5 @@ begin
         sLineBreak + 'a list set in the Object Inspector.';
   end;
 end;
-
-initialization
-  {$I main.lrs}
 
 end.

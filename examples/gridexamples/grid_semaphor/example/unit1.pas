@@ -88,6 +88,8 @@ var
 
 implementation
 
+{$R Unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -221,9 +223,6 @@ begin
   end;
 
 end;
-
-initialization
-  {$I Unit1.lrs}
 
 end.
 

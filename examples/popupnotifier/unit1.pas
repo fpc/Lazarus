@@ -32,6 +32,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -65,12 +67,6 @@ procedure TForm1.PopupNotifier1Close(Sender: TObject;
 begin
   Button1.Caption := 'Show Popup';
 end;
-
-
-
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

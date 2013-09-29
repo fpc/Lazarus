@@ -27,6 +27,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -66,9 +68,6 @@ begin
   AControl.SetShape(ABitmap);
   ABitmap.Free;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

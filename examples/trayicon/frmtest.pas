@@ -60,11 +60,13 @@ type
 var
   frmTrayTest: TfrmTrayTest;
 
-{$ifndef fpc}
+implementation
+
+{$ifdef fpc}
+  {$R frmtest.lfm}
+{$else}
   {$R frmtest.dfm}
 {$endif}
-
-implementation
 
 {$ifdef Windows}
 uses Windows;
@@ -151,11 +153,6 @@ procedure TfrmTrayTest.HandleClick(Sender: TObject);
 begin
   Application.MessageBox('Text', 'Caption', 0);
 end;
-
-initialization
-{$ifdef fpc}
-  {$I frmtest.lrs}
-{$endif}
 
 end.
 

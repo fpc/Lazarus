@@ -43,6 +43,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.Button1StartDrag(Sender: TObject; var DragObject: TDragObject);
@@ -104,9 +106,6 @@ begin
   FDragImages.Free;
   inherited Destroy;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

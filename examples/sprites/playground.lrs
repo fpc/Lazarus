@@ -1,8 +1,0 @@
-LazarusResources.Add('TPlayGroundForm','FORMDATA',[
-  'TPF0'#15'TPlayGroundForm'#14'PlayGroundForm'#4'Left'#3'1'#1#6'Height'#3','#1
-  +#3'Top'#3#224#0#5'Width'#3#144#1#18'HorzScrollBar.Page'#3#143#1#18'VertScrol'
-  +'lBar.Page'#3'+'#1#7'Caption'#6#14'PlayGroundForm'#7'OnClose'#7#19'PlayGroun'
-  +'dFormClose'#8'OnCreate'#7#20'PlayGroundFormCreate'#9'OnDestroy'#7#21'PlayGr'
-  +'oundFormDestroy'#10'LCLVersion'#6#6'0.9.25'#0#6'TTimer'#6'Timer1'#8'Interva'
-  +'l'#2'd'#7'OnTimer'#7#11'Timer1Timer'#4'left'#3#164#0#3'top'#2'1'#0#0#0
-]);

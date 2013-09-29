@@ -38,6 +38,8 @@ var
 
 implementation
 
+{$R main.lfm}
+
 { TForm1 }
 
 procedure TForm1.gridBeforeSelection(Sender: TObject; aCol, aRow: Integer);
@@ -125,9 +127,6 @@ begin
   if i>=0 then
     result := chr(i + ord('A')) + Result;
 end;
-
-initialization
-  {$I main.lrs}
 
 end.
 

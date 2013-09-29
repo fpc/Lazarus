@@ -28,6 +28,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TVersionForm }
 
 procedure TVersionForm.FormCreate(Sender: TObject);
@@ -65,9 +67,6 @@ begin
   // you cannot use features introduced after 0.9.30.2
   {$endif}
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

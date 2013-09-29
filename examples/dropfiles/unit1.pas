@@ -29,6 +29,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.ApplicationProperties1DropFiles(Sender: TObject;
@@ -49,9 +51,6 @@ begin
   for I := 0 to High(FileNames) do
     Memo1.Lines.Add(FileNames[I]);
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

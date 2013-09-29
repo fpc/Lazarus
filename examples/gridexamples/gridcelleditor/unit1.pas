@@ -27,6 +27,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -56,9 +58,6 @@ begin
     Editor:=ComboBox1;
   end;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

@@ -69,6 +69,8 @@ procedure RegisterHelpViewer;
 
 implementation
 
+{$R htmlhelp2viewer.lfm}
+
 type
 
   { THTMLHelpViewer }
@@ -144,10 +146,6 @@ begin
   IHP.OpenURL(URL);
   BringToFront;  // needed if already open and another help is shown
 end;
-
-
-initialization
-  {$I htmlhelp2viewer.lrs}
 
 end.
 

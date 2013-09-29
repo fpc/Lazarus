@@ -38,8 +38,10 @@ procedure RegisterHelpViewer;
 
 implementation
 
+{$R htmlhelp2unit2.lfm}
+
 type
-THTMLHelpViewer = class(THelpViewer)
+  THTMLHelpViewer = class(THelpViewer)
   private
   public
     constructor Create(TheOwner: TComponent); override;
@@ -115,10 +117,6 @@ begin
   URL := expandLocalHtmlFileName (URL);
   IHP.OpenURL(URL);
 end;
-
-
-initialization
-  {$I htmlhelp2unit2.lrs}
 
 end.
 

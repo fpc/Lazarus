@@ -60,6 +60,8 @@ var
 
 implementation
 
+{$R mainform.lfm}
+
 { TJPEGExampleForm }
 
 procedure TJPEGExampleForm.LoadJPEGButtonClick(Sender: TObject);
@@ -184,9 +186,6 @@ begin
   end;
   ImageGroupBox.Caption:=Info;
 end;
-
-initialization
-  {$I mainform.lrs}
 
 end.
 

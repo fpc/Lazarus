@@ -40,6 +40,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.CheckListBoxHandler(Sender: TObject; Index: integer);
@@ -98,9 +100,6 @@ begin
    SynAnySyn.Constants.Clear;
    SynMemo.Refresh;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

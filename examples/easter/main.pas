@@ -44,6 +44,8 @@ VAR
 
 IMPLEMENTATION
 
+{$R main.lfm}
+
 PROCEDURE TForm1.Button1CLICK(Sender: TObject);
 VAR
   Easter: TDateTime;
@@ -146,9 +148,6 @@ BEGIN
   IF M = 3 THEN vMonth := 3 ELSE vMonth := 4;
   Result := EncodeDate(aYear, vMonth, vDay);
 END;
-
-INITIALIZATION
-  {$I main.lrs}
 
 END.
 

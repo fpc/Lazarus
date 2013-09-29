@@ -27,6 +27,8 @@ var
 
 implementation
 
+{$R mainunit.lfm}
+
 function SearchExecutable(const ShortFilename: string; var Filename: string
   ): boolean;
 begin
@@ -115,10 +117,6 @@ begin
   if not SearchExecutable(lowercase(BrowserName),BrowserFilename) then
     BrowserFilename:='';
 end;
-
-
-initialization
-  {$I mainunit.lrs}
 
 end.
 

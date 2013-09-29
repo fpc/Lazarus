@@ -55,6 +55,8 @@ var
 
 implementation
 
+{$R htmlhelp2unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.HelpButtonClick(Sender: TObject);
@@ -68,9 +70,6 @@ begin
   HtmlHelp2Viewer.RegisterHelpViewer;  // This registers the help viewer
                                        // using the iPro viewer
 end;
-
-initialization
-  {$I htmlhelp2unit1.lrs}
 
 end.
 

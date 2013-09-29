@@ -99,6 +99,8 @@ procedure ReadComponentFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
 
 implementation
 
+{$R mainunit.lfm}
+
 function CreateXMLWriter(ADoc: TDOMDocument; const Path: string;
   Append: Boolean; var DestroyDriver: boolean): TWriter;
 var
@@ -391,9 +393,6 @@ procedure TMyGroupBox.AnEvent(Sender: TObject);
 begin
 
 end;
-
-initialization
-  {$I mainunit.lrs}
 
 end.
 

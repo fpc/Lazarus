@@ -87,6 +87,8 @@ var
 
 implementation
 
+{$R mainunit.lfm}
+
 { TStreamDemoForm }
 
 procedure TStreamDemoForm.WriteToStreamButtonClick(Sender: TObject);
@@ -272,9 +274,6 @@ begin
   FWideStr1:='';
   FInteger1:=3;
 end;
-
-initialization
-  {$I mainunit.lrs}
 
 end.
 

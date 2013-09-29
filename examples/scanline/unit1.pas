@@ -63,6 +63,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -122,9 +124,6 @@ begin
   // set one pixel to red (this creates a red line)
   PByte(LineStart)[(Row mod ImgWidth)*4+2]:=255;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

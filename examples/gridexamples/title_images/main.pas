@@ -30,6 +30,8 @@ var
 
 implementation
 
+{$R main.lfm}
+
 uses
   Buttons;
 
@@ -83,9 +85,6 @@ begin
   end;
   Refresh;
 end;
-
-initialization
-  {$I main.lrs}
 
 end.
 

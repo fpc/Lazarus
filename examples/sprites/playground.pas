@@ -48,6 +48,8 @@ var
 
 implementation
 
+{$R playground.lfm}
+
 { TPlayGroundForm }
 
 procedure TPlayGroundForm.PlayGroundFormCreate(Sender: TObject);
@@ -156,9 +158,6 @@ begin
     Canvas.StretchDraw(Rect(0,0,Width,Height),Picture.Graphic); // stretch is slow
   inherited Paint;
 end;
-
-initialization
-  {$I playground.lrs}
 
 end.
 

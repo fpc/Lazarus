@@ -24,15 +24,14 @@ VAR
 
 IMPLEMENTATION
 
+{$R about.lfm}
+
 { TAboutBox }
 
 PROCEDURE TAboutBox.Button1CLICK(Sender: TObject);
 BEGIN
   Close;
 END;
-
-INITIALIZATION
-  {$I about.lrs}
 
 END.
 

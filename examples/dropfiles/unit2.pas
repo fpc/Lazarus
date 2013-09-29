@@ -27,6 +27,8 @@ var
 
 implementation
 
+{$R unit2.lfm}
+
 uses
   Unit1;
 
@@ -45,9 +47,6 @@ procedure TForm2.CheckBox1Change(Sender: TObject);
 begin
   AllowDropFiles := CheckBox1.Checked;
 end;
-
-initialization
-  {$I unit2.lrs}
 
 end.
 

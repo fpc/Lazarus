@@ -73,15 +73,14 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
   CanClose := MessageDlg('Do you want to exit?', mtConfirmation, [mbYes, mbNo], 0) = mrYes;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 
