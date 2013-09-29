@@ -1902,6 +1902,7 @@ components/lazcontrols/images/dividerbevel.png -text
 components/lazcontrols/images/listfilteredit.png -text
 components/lazcontrols/images/shortpathedit.png -text svneol=unset#image/png
 components/lazcontrols/images/textnotebook.png -text
+components/lazcontrols/images/treefilteredit.png -text svneol=unset#image/png
 components/lazcontrols/lazcontrols.lpk svneol=native#text/xml
 components/lazcontrols/lazcontrols.pas svneol=native#text/pascal
 components/lazcontrols/lazctrls.bat svneol=native#text/plain
