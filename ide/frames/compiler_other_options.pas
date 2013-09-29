@@ -31,9 +31,9 @@ uses
   Classes, SysUtils, math, AVL_Tree, LazLogger, Forms, Controls, Graphics,
   Dialogs, StdCtrls, LCLProc, ComCtrls, LCLType, ExtCtrls, Buttons,
   CodeToolsCfgScript, KeywordFuncLists, LazarusIDEStrConsts,
-  IDEOptionsIntf, CompOptsIntf, IDECommands, Project,
-  CompilerOptions, AllCompilerOptions, Compiler, EditorOptions, PackageDefs,
-  SynEdit, SynEditKeyCmds, SynCompletion, SourceSynEditor, CustomDefines;
+  IDEOptionsIntf, CompOptsIntf, IDECommands, Project, PackageDefs,
+  CompilerOptions, Compiler, AllCompilerOptions, CustomDefines,
+  EditorOptions, SynEdit, SynEditKeyCmds, SynCompletion, SourceSynEditor;
 
 type
 
@@ -150,6 +150,7 @@ begin
     EditForm.OptionsThread := FOptionsThread;
     EditForm.CustomOptions := memoCustomOptions.Lines;
     EditForm.DefinesCheckList.Items.Assign(Project1.CustomDefines);
+    EditForm.UseComments := FUseComments;
     if EditForm.ShowModal = mrOK then
     begin
       Project1.CustomDefines.Assign(EditForm.DefinesCheckList.Items);

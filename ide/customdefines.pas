@@ -54,6 +54,7 @@ type
     FOptionsReader: TCompilerOptReader;
     FOptionsThread: TCompilerOptThread;
     FCustomOptions: TStrings;
+    FUseComments: Boolean;
     procedure SetIdleConnected(AValue: Boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure DeleteSelected;
@@ -66,6 +67,7 @@ type
     property OptionsReader: TCompilerOptReader read FOptionsReader write FOptionsReader;
     property OptionsThread: TCompilerOptThread read FOptionsThread write FOptionsThread;
     property CustomOptions: TStrings read FCustomOptions write FCustomOptions;
+    property UseComments: Boolean read FUseComments write FUseComments;
   end;
 
 
@@ -209,7 +211,7 @@ begin
     if DefinesCheckList.Checked[i] then
       FOptionsReader.Defines.Add('-d' + DefinesCheckList.Items[i]);
   // Then add all options and defines.
-  FOptionsReader.ToCustomOptions(aStrings, False);
+  FOptionsReader.ToCustomOptions(aStrings, FUseComments);
   Result:=mrOk;
 end;
 
