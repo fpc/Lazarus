@@ -1902,6 +1902,7 @@ components/lazcontrols/images/dividerbevel.png -text
 components/lazcontrols/images/listfilteredit.png -text
 components/lazcontrols/images/shortpathedit.png -text svneol=unset#image/png
 components/lazcontrols/images/textnotebook.png -text
+components/lazcontrols/images/tlvlgraphcontrol.png -text svneol=unset#image/png
 components/lazcontrols/images/treefilteredit.png -text svneol=unset#image/png
 components/lazcontrols/lazcontrols.lpk svneol=native#text/xml
 components/lazcontrols/lazcontrols.pas svneol=native#text/pascal
@@ -5345,7 +5346,6 @@ images/components/tlabelededit.png -text svneol=unset#image/png
 images/components/tlazcomponentqueue.png -text svneol=unset#image/png
 images/components/tlistbox.png -text svneol=unset#image/png
 images/components/tlistview.png -text svneol=unset#image/png
-images/components/tlvlgraphcontrol.png -text svneol=unset#image/png
 images/components/tmainmenu.png -text svneol=unset#image/png
 images/components/tmaskedit.png -text svneol=unset#image/png
 images/components/tmemo.png -text svneol=unset#image/png
