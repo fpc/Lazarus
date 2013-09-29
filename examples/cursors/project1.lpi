@@ -1,18 +1,21 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="6"/>
+    <Version Value="9"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
-      <TargetFileExt Value=".exe"/>
       <Title Value="Test cursors"/>
-      <ActiveEditorIndexAtStart Value="3"/>
+      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
-      <ProjectVersion Value=""/>
+      <StringTable ProductVersion=""/>
     </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -35,165 +38,174 @@
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="project1"/>
-        <CursorPos X="3" Y="6"/>
         <TopLine Value="1"/>
+        <CursorPos X="3" Y="6"/>
         <UsageCount Value="106"/>
       </Unit0>
       <Unit1>
         <Filename Value="unit1.pas"/>
-        <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="unit1.lrs"/>
         <UnitName Value="Unit1"/>
-        <CursorPos X="3" Y="56"/>
-        <TopLine Value="44"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="20"/>
+        <CursorPos X="3" Y="56"/>
         <UsageCount Value="106"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="../../lcl/interfaces/carbon/carbongdiobjects.pp"/>
         <UnitName Value="CarbonGDIObjects"/>
-        <CursorPos X="30" Y="262"/>
-        <TopLine Value="249"/>
         <EditorIndex Value="5"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="249"/>
+        <CursorPos X="30" Y="262"/>
         <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="/usr/local/share/fpcsrc/packages/univint/src/MacOSAll.pas"/>
         <UnitName Value="MacOSAll"/>
-        <CursorPos X="9" Y="87987"/>
+        <WindowIndex Value="1"/>
         <TopLine Value="87974"/>
-        <EditorIndex Value="6"/>
+        <CursorPos X="9" Y="87987"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="../../lcl/graphics.pp"/>
         <UnitName Value="Graphics"/>
-        <CursorPos X="47" Y="1926"/>
-        <TopLine Value="1912"/>
         <EditorIndex Value="1"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="1912"/>
+        <CursorPos X="47" Y="1926"/>
         <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="../../lcl/include/graphic.inc"/>
-        <CursorPos X="3" Y="169"/>
         <TopLine Value="164"/>
+        <CursorPos X="3" Y="169"/>
         <UsageCount Value="10"/>
       </Unit5>
       <Unit6>
         <Filename Value="../../lcl/include/cursorimage.inc"/>
-        <CursorPos X="28" Y="101"/>
         <TopLine Value="89"/>
+        <CursorPos X="28" Y="101"/>
         <UsageCount Value="10"/>
       </Unit6>
       <Unit7>
         <Filename Value="../../lcl/interfaces/carbon/carbonwinapi.inc"/>
-        <CursorPos X="49" Y="479"/>
-        <TopLine Value="460"/>
         <EditorIndex Value="3"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="460"/>
+        <CursorPos X="49" Y="479"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
         <Filename Value="../../lcl/interfaces/carbon/carbonobject.inc"/>
-        <CursorPos X="34" Y="835"/>
+        <EditorIndex Value="6"/>
+        <WindowIndex Value="1"/>
         <TopLine Value="801"/>
-        <EditorIndex Value="7"/>
+        <CursorPos X="34" Y="835"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
         <Filename Value="../../lcl/include/lclintf.inc"/>
-        <CursorPos X="34" Y="170"/>
         <TopLine Value="159"/>
+        <CursorPos X="34" Y="170"/>
         <UsageCount Value="10"/>
       </Unit9>
       <Unit10>
         <Filename Value="../../lcl/include/lclintfh.inc"/>
-        <CursorPos X="35" Y="121"/>
         <TopLine Value="108"/>
+        <CursorPos X="35" Y="121"/>
         <UsageCount Value="10"/>
       </Unit10>
       <Unit11>
         <Filename Value="../../lcl/interfaces/carbon/carbonlclintf.inc"/>
-        <CursorPos X="38" Y="574"/>
         <TopLine Value="566"/>
+        <CursorPos X="38" Y="574"/>
         <UsageCount Value="10"/>
       </Unit11>
       <Unit12>
         <Filename Value="../../lcl/include/custombitmap.inc"/>
-        <CursorPos X="29" Y="131"/>
         <TopLine Value="133"/>
+        <CursorPos X="29" Y="131"/>
         <UsageCount Value="10"/>
       </Unit12>
       <Unit13>
         <Filename Value="../../lcl/include/icon.inc"/>
-        <CursorPos X="63" Y="743"/>
         <TopLine Value="732"/>
+        <CursorPos X="63" Y="743"/>
         <UsageCount Value="10"/>
       </Unit13>
       <Unit14>
         <Filename Value="../../lcl/graphtype.pp"/>
         <UnitName Value="GraphType"/>
-        <CursorPos X="12" Y="103"/>
         <TopLine Value="94"/>
+        <CursorPos X="12" Y="103"/>
         <UsageCount Value="11"/>
       </Unit14>
       <Unit15>
         <Filename Value="../../lcl/interfaces/carbon/carbonint.pas"/>
         <UnitName Value="CarbonInt"/>
-        <CursorPos X="8" Y="51"/>
-        <TopLine Value="42"/>
         <EditorIndex Value="2"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="42"/>
+        <CursorPos X="8" Y="51"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit15>
       <Unit16>
         <Filename Value="../../lcl/intfgraphics.pas"/>
         <UnitName Value="IntfGraphics"/>
-        <CursorPos X="14" Y="277"/>
-        <TopLine Value="264"/>
         <EditorIndex Value="4"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="264"/>
+        <CursorPos X="14" Y="277"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit16>
       <Unit17>
         <Filename Value="../../lcl/interfaces/carbon/carbonwinapih.inc"/>
-        <CursorPos X="21" Y="61"/>
         <TopLine Value="47"/>
+        <CursorPos X="21" Y="61"/>
         <UsageCount Value="10"/>
       </Unit17>
       <Unit18>
         <Filename Value="../../lcl/interfaces/carbon/carbongdiobjects.pp copy"/>
-        <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="10"/>
+        <CursorPos X="1" Y="1"/>
         <SyntaxHighlighter Value="None"/>
+        <UsageCount Value="10"/>
       </Unit18>
       <Unit19>
         <Filename Value="../../lcl/interfaces/carbon/carbondef.pp"/>
         <UnitName Value="CarbonDef"/>
-        <CursorPos X="1" Y="1"/>
         <TopLine Value="160"/>
+        <CursorPos X="1" Y="1"/>
         <UsageCount Value="10"/>
       </Unit19>
       <Unit20>
         <Filename Value="../../lcl/interfaces/carbon/carbonproc.pp"/>
         <UnitName Value="CarbonProc"/>
-        <CursorPos X="1" Y="1"/>
         <TopLine Value="137"/>
+        <CursorPos X="1" Y="1"/>
         <UsageCount Value="10"/>
       </Unit20>
       <Unit21>
         <Filename Value="../../lcl/interfaces/carbon/carbondebug.pp"/>
         <UnitName Value="CarbonDebug"/>
-        <CursorPos X="11" Y="120"/>
         <TopLine Value="146"/>
+        <CursorPos X="11" Y="120"/>
         <UsageCount Value="10"/>
       </Unit21>
     </Units>
@@ -321,13 +333,14 @@
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
+    <Version Value="11"/>
     <SearchPaths>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
+      <SrcPath Value="$(LazarusDir)/lcl;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
         <CStyleOperator Value="False"/>
+        <UseAnsiStrings Value="False"/>
       </SyntaxOptions>
     </Parsing>
     <CodeGeneration>
@@ -339,7 +352,7 @@
     </CodeGeneration>
     <Linking>
       <Debugging>
-        <GenerateDebugInfo Value="True"/>
+        <DebugInfoType Value="dsStabs"/>
         <UseLineInfoUnit Value="False"/>
       </Debugging>
       <Options>
@@ -368,4 +381,5 @@
       </Item2>
     </Exceptions>
   </Debugging>
+  <EditorMacros Count="0"/>
 </CONFIG>

@@ -39,6 +39,7 @@ var
 implementation
 
 {$R unit1.lfm}
+{$R car.res}
 
 { TForm1 }
 
@@ -54,8 +55,13 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  Cur: TCursorImage;
 begin
-  Screen.Cursors[1] := LoadCursorFromLazarusResource('car');
+  Cur := TCursorImage.Create;
+  Cur.LoadFromResourceName(HInstance, 'car');
+  Screen.Cursors[1] := Cur.ReleaseHandle;
+  Cur.Free;
   Button5.Cursor := 1;
 end;
 
@@ -76,9 +82,6 @@ begin
     Button4.Caption := 'Unset Screen.Cursor';
   end;
 end;
-
-initialization
-  {$I car.lrs}
 
 end.
 

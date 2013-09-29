@@ -1,20 +1,23 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
+    <Version Value="9"/>
     <PathDelim Value="\"/>
-    <Version Value="7"/>
     <General>
       <MainUnit Value="0"/>
-      <TargetFileExt Value=".exe"/>
-      <Icon Value="0"/>
+      <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <Icon Value="0"/>
+      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
-      <ProjectVersion Value=""/>
       <Language Value=""/>
       <CharSet Value=""/>
+      <StringTable ProductVersion=""/>
     </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -37,41 +40,48 @@
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="project1"/>
-        <CursorPos X="28" Y="6"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="1"/>
         <TopLine Value="1"/>
+        <CursorPos X="1" Y="13"/>
         <UsageCount Value="22"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="unit1.pas"/>
-        <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <CursorPos X="66" Y="29"/>
-        <TopLine Value="21"/>
         <EditorIndex Value="0"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="1"/>
+        <CursorPos X="89" Y="34"/>
         <UsageCount Value="22"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\..\lcl\lcltype.pp"/>
         <UnitName Value="LCLType"/>
-        <CursorPos X="15" Y="1604"/>
         <TopLine Value="1585"/>
+        <CursorPos X="15" Y="1604"/>
         <UsageCount Value="11"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\..\lcl\interfaces\gtk2\gtk2themes.pas"/>
         <UnitName Value="Gtk2Themes"/>
-        <CursorPos X="39" Y="166"/>
         <TopLine Value="151"/>
+        <CursorPos X="39" Y="166"/>
         <UsageCount Value="11"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\..\lcl\interfaces\win32\win32themes.pas"/>
         <UnitName Value="Win32Themes"/>
-        <CursorPos X="37" Y="176"/>
         <TopLine Value="153"/>
+        <CursorPos X="37" Y="176"/>
         <UsageCount Value="11"/>
         <Bookmarks Count="1">
           <Item0 X="15" Y="163" ID="1"/>
@@ -80,28 +90,28 @@
       <Unit5>
         <Filename Value="..\..\lcl\interfaces\win32\win32extra.pas"/>
         <UnitName Value="Win32Extra"/>
-        <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
         <UsageCount Value="11"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\..\..\fpc\rtl\win\wininc\func.inc"/>
-        <CursorPos X="10" Y="61"/>
         <TopLine Value="42"/>
+        <CursorPos X="10" Y="61"/>
         <UsageCount Value="11"/>
       </Unit6>
       <Unit7>
         <Filename Value="..\..\lcl\interfaces\qt\qtthemes.pas"/>
         <UnitName Value="QtThemes"/>
-        <CursorPos X="55" Y="359"/>
         <TopLine Value="338"/>
+        <CursorPos X="55" Y="359"/>
         <UsageCount Value="11"/>
       </Unit7>
       <Unit8>
         <Filename Value="..\..\lcl\interfaces\qt\qt45.pas"/>
         <UnitName Value="qt45"/>
-        <CursorPos X="5" Y="10499"/>
         <TopLine Value="10480"/>
+        <CursorPos X="5" Y="10499"/>
         <UsageCount Value="11"/>
         <Bookmarks Count="1">
           <Item0 X="35" Y="10466" ID="2"/>
@@ -109,19 +119,24 @@
       </Unit8>
       <Unit9>
         <Filename Value="..\..\lcl\interfaces\qt\qtwinapi.inc"/>
-        <CursorPos X="70" Y="4875"/>
         <TopLine Value="4865"/>
+        <CursorPos X="70" Y="4875"/>
         <UsageCount Value="11"/>
       </Unit9>
     </Units>
     <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir)\"/>
+      <IncludeFiles Value="$(ProjOutDir)"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Linking>
       <Options>
         <Win32>
@@ -146,4 +161,5 @@
       </Item3>
     </Exceptions>
   </Debugging>
+  <EditorMacros Count="0"/>
 </CONFIG>

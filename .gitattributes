@@ -4273,7 +4273,7 @@ examples/controlhint/Project1.res -text
 examples/controlhint/Unit1.lfm svneol=native#text/plain
 examples/controlhint/Unit1.pas svneol=native#text/plain
 examples/cursors/car.cur -text svneol=unset#image/x-cursor
-examples/cursors/car.lrs svneol=native#text/pascal
+examples/cursors/car.res -text
 examples/cursors/project1.lpi svneol=native#text/plain
 examples/cursors/project1.lpr svneol=native#text/pascal
 examples/cursors/unit1.lfm svneol=native#text/plain
@@ -4748,9 +4748,7 @@ examples/std_actions/unit1.pas svneol=native#text/pascal
 examples/stock_images/project1.ico -text svneol=unset#image/ico
 examples/stock_images/project1.lpi svneol=native#text/plain
 examples/stock_images/project1.lpr svneol=native#text/plain
-examples/stock_images/project1.lrs svneol=native#text/pascal
-examples/stock_images/project1.manifest svneol=native#text/plain
-examples/stock_images/project1.rc svneol=native#text/plain
+examples/stock_images/project1.res -text
 examples/stock_images/readme.txt svneol=native#text/plain
 examples/stock_images/unit1.lfm svneol=native#text/plain
 examples/stock_images/unit1.pas svneol=native#text/pascal
