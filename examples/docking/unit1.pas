@@ -34,6 +34,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.MenuItem1Click(Sender: TObject);
@@ -122,9 +124,6 @@ begin
   Result := IntToStr(FIndex);
   inc(FIndex);
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

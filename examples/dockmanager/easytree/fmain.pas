@@ -79,6 +79,8 @@ var
 
 implementation
 
+{$R fMain.lfm}
+
 uses
   fDockable,
 {$IFDEF easy}
@@ -290,7 +292,5 @@ begin
     buManDock.ManualDock(Docker);
 end;
 
-initialization
-  {$i fMain.lrs}
 end.
 

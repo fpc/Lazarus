@@ -46,6 +46,8 @@ var
 
 implementation
 
+{$R feditbook.lfm}
+
 uses
   uMakeSite;
 
@@ -120,9 +122,6 @@ begin
   FileName := AName;
   Lines.LoadFromFile(AName);
 end;
-
-initialization
-  {$I feditbook.lrs}
 
 end.
 

@@ -38,6 +38,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.Panel1DragOver(Sender, Source: TObject; X, Y: Integer;
@@ -76,7 +78,6 @@ begin
 end;
 
 initialization
-  {$I unit1.lrs}
   {$I car.lrs}
 
 end.

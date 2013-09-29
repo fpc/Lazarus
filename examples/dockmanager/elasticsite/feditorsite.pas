@@ -91,6 +91,8 @@ var
 
 implementation
 
+{$R feditorsite.lfm}
+
 uses
   LCLProc,
   uMiniRestore,
@@ -272,9 +274,6 @@ begin
 {}
   DebugLn('---');
 end;
-
-initialization
-  {$I feditorsite.lrs}
 
 end.
 

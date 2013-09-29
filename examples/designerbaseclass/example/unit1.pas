@@ -44,8 +44,7 @@ var
 
 implementation
 
-initialization
-  {$I unit1.lrs}
+{$R unit1.lfm}
 
 end.
 

@@ -26,6 +26,7 @@ type
 
 implementation
 
+{$R fDockable.lfm}
 
 procedure TDockable.Button1Click(Sender: TObject);
 begin
@@ -42,9 +43,6 @@ begin
   //ClientWidth, ClientHeight
   ]);
 end;
-
-initialization
-  {$i fDockable.lrs}
 
 end.
 

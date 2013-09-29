@@ -33,6 +33,8 @@ type
 
 implementation
 
+{$R fclientform.lfm}
+
 uses
   //LCLProc,  //debugging only
   fFloatingSite;
@@ -65,9 +67,6 @@ begin
     BeginDrag(False);
   end;
 end;
-
-initialization
-  {$I fclientform.lrs}
 
 end.
 

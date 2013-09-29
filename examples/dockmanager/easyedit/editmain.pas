@@ -59,6 +59,8 @@ var
 
 implementation
 
+{$R editmain.lfm}
+
 uses
   uMakeSite;
 
@@ -115,9 +117,6 @@ begin
   CurForm.Show;
   Result := CurEdit; //or what?
 end;
-
-initialization
-  {$I editmain.lrs}
 
 end.
 

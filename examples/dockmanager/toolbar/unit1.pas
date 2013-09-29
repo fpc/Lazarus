@@ -29,6 +29,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -73,9 +75,6 @@ procedure TForm1.swView1Click(Sender: TObject);
 begin
   ToolButton1.Visible := swView1.Checked;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

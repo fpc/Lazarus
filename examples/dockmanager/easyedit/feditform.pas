@@ -26,6 +26,8 @@ type
 
 implementation
 
+{$R feditform.lfm}
+
 uses
   EditMain;
 
@@ -53,9 +55,6 @@ begin
   SynEdit1.Lines.LoadFromFile(AName);
   FileName := AName;
 end;
-
-initialization
-  {$I feditform.lrs}
 
 end.
 

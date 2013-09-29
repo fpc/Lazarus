@@ -20,8 +20,7 @@ var
 
 implementation
 
-initialization
-  {$I fdockclient.lrs}
+{$R fdockclient.lfm}
 
 end.
 

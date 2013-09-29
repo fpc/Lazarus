@@ -22,9 +22,7 @@ var
 
 implementation
 
-
-initialization
-  {$i fTree.lrs}
+{$R fTree.lfm}
 
 end.
 

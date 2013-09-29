@@ -1,9 +1,0 @@
-LazarusResources.Add('TDockingClient','FORMDATA',[
-  'TPF0'#14'TDockingClient'#13'DockingClient'#4'Left'#3#169#1#6'Height'#3#159#0
-  +#3'Top'#3'q'#1#5'Width'#3#232#0#7'Caption'#6#11'Dock Client'#12'ClientHeight'
-  +#3#159#0#11'ClientWidth'#3#232#0#5'Color'#7#6'clForm'#10'LCLVersion'#6#6'0.9'
-  +'.27'#7'Visible'#9#0#6'TShape'#6'Shape1'#4'Left'#2#0#6'Height'#3#159#0#3'Top'
-  +#2#0#5'Width'#3#232#0#5'Align'#7#8'alClient'#11'Brush.Color'#7#6'clLime'#8'D'
-  +'ragKind'#7#6'dkDock'#8'DragMode'#7#11'dmAutomatic'#11'OnStartDock'#7#15'Sha'
-  +'pe1StartDock'#0#0#0
-]);
