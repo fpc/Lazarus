@@ -129,8 +129,5 @@ begin
   end;
 end;
 
-initialization
-  {$I defaultimage.lrs}
-
 end.
 
