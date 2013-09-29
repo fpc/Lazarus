@@ -34,6 +34,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -75,9 +77,6 @@ procedure TForm1.Button3Click(Sender: TObject);
 begin
   PairSplitterSide1.Width := PairSplitterSide1.Width + 25;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

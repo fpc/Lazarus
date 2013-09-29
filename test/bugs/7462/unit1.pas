@@ -27,6 +27,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -41,9 +43,6 @@ begin
     Close;
   end;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

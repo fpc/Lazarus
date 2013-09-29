@@ -31,6 +31,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 { TForm1 }
 
 procedure TForm1.ApplicationProperties1Idle(Sender: TObject; var Done: Boolean);
@@ -64,9 +66,6 @@ begin
   debugger.lines.add(
     Format('-- Memo1Change is fired: Sender = %s',[(Sender as TComponent).Name]))
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

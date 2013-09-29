@@ -29,6 +29,8 @@ var
 
 implementation
 
+{$R unit1.lfm}
+
 var
   InTestRun : boolean;
 
@@ -69,7 +71,5 @@ end;
 
 initialization
   InTestRun :=  ParamStr(1)='--runtest';
-  {$I unit1.lrs}
-
 end.
 
