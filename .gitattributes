@@ -3813,7 +3813,6 @@ doceditor/frmtable.lfm svneol=native#text/plain
 doceditor/frmtable.pp svneol=native#text/pascal
 doceditor/frpeditor.lfm svneol=native#text/plain
 doceditor/frpeditor.pas svneol=native#text/plain
-doceditor/icons.lrs svneol=native#text/pascal
 doceditor/images/Delete_16N.bmp -text
 doceditor/images/Edit_16N.bmp -text
 doceditor/images/Insert_16N.bmp -text

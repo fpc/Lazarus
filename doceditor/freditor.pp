@@ -863,9 +863,6 @@ begin
     Result:=TCustomEdit(CurrentEditable).SelText;
 end;
 
-initialization
-  {$i icons.lrs}
-
 end.
 
 
