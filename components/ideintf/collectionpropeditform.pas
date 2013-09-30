@@ -382,6 +382,7 @@ end;
 
 procedure TCollectionPropertyEditorForm.Modified;
 begin
+  //debugln(['TCollectionPropertyEditorForm.Modified FOwnerPersistent=',DbgSName(FOwnerPersistent),' FCollection=',DbgSName(FCollection),' GlobalDesignHook.LookupRoot=',DbgSName(GlobalDesignHook.LookupRoot)]);
   GlobalDesignHook.Modified(Self);
 end;
 
