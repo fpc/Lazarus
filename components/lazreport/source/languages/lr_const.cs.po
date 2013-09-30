@@ -1266,7 +1266,7 @@ msgstr "Seznam proměnných ..."
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
-msgstr "Nepodporovaný FRF formát"
+msgstr ""
 
 #: lr_const.sfrom
 msgid "from"
@@ -2199,6 +2199,10 @@ msgstr "Datum vytvoření reportu"
 #: lr_const.sreportlastmodifydate
 msgid "Report last modify date"
 msgstr "Poslední úprava reportu"
+
+#: lr_const.sreportloadingerror
+msgid "Error while loading report"
+msgstr ""
 
 #: lr_const.sreportpreparing
 msgid "Report preparing"

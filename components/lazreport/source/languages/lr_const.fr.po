@@ -1269,7 +1269,7 @@ msgstr "&Liste de variables..."
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
-msgstr "Format FRF non supporté."
+msgstr ""
 
 #: lr_const.sfrom
 msgid "from"
@@ -2209,6 +2209,10 @@ msgstr ""
 
 #: lr_const.sreportlastmodifydate
 msgid "Report last modify date"
+msgstr ""
+
+#: lr_const.sreportloadingerror
+msgid "Error while loading report"
 msgstr ""
 
 #: lr_const.sreportpreparing

@@ -1249,7 +1249,7 @@ msgstr "&Lista variáveis ..."
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
-msgstr "Formato FRF não suportado"
+msgstr ""
 
 #: lr_const.sfrom
 msgid "from"
@@ -2186,6 +2186,10 @@ msgstr "Data de criação do relatório"
 #: lr_const.sreportlastmodifydate
 msgid "Report last modify date"
 msgstr "Data da última alteração do relatório"
+
+#: lr_const.sreportloadingerror
+msgid "Error while loading report"
+msgstr ""
 
 #: lr_const.sreportpreparing
 msgid "Report preparing"

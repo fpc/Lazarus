@@ -1250,7 +1250,7 @@ msgstr "Kintamųjų &sąrašas…"
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
-msgstr "Nepalaikomas FRF formatas"
+msgstr ""
 
 #: lr_const.sfrom
 msgid "from"
@@ -2187,6 +2187,10 @@ msgstr "Pranešimo sukūrimo data"
 #: lr_const.sreportlastmodifydate
 msgid "Report last modify date"
 msgstr "Pranešimo paskutiniojo keitimo data"
+
+#: lr_const.sreportloadingerror
+msgid "Error while loading report"
+msgstr ""
 
 #: lr_const.sreportpreparing
 msgid "Report preparing"
