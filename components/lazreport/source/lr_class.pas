@@ -347,7 +347,8 @@ type
     procedure PaintDesignControl; virtual;abstract;
   public
     procedure UpdateControlPosition; virtual;
-    function OwnerForm:TWinControl;
+    procedure AttachToParent; virtual;
+    function OwnerForm:TWinControl; virtual;
     constructor Create(AOwnerPage:TfrPage); override;
     procedure Draw(ACanvas: TCanvas); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
@@ -1899,6 +1900,11 @@ end;
 { TfrControl }
 
 procedure TfrControl.UpdateControlPosition;
+begin
+
+end;
+
+procedure TfrControl.AttachToParent;
 begin
 
 end;
@@ -11914,6 +11920,7 @@ begin
     if not (P is TfrNonVisualControl) then
     begin
       fHasVisibleControls:=true;
+      P.AttachToParent;
       P.UpdateControlPosition;
     end;
   end;

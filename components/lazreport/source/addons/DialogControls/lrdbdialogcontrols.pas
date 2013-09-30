@@ -166,7 +166,7 @@ end;
 
 function TlrDBLookupComboBox.CreateControl: TControl;
 begin
-  Result:=TDBLookupComboBox.Create(OwnerForm);
+  Result:=TDBLookupComboBox.Create(nil);
   TDBLookupComboBox(Result).Style:=csDropDownList;
   TDBLookupComboBox(Result).OnCloseUp:=@DBLookupComboBox1CloseUp;
 end;

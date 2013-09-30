@@ -67,9 +67,11 @@ type
     function CreateControl:TControl;virtual;abstract;
   public
     constructor Create(AOwnerPage:TfrPage); override;
+    destructor Destroy; override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
     procedure UpdateControlPosition; override;
+    procedure AttachToParent; override;
 
     property Control: TControl read FControl write FControl;
     property AutoSize: Boolean read GetAutoSize write SetAutoSize;
@@ -426,7 +428,7 @@ end;
 
 function TlrButtonPanel.CreateControl: TControl;
 begin
-  Result:=TButtonPanel.Create(OwnerForm);
+  Result:=TButtonPanel.Create(nil);
 end;
 
 procedure TlrButtonPanel.AfterCreate;
@@ -499,7 +501,7 @@ end;
 
 function TlrDateEdit.CreateControl: TControl;
 begin
-  Result:=TDateEdit.Create(OwnerForm);
+  Result:=TDateEdit.Create(nil);
 end;
 
 constructor TlrDateEdit.Create(AOwnerPage: TfrPage);
@@ -566,7 +568,7 @@ end;
 
 function TlrListBox.CreateControl: TControl;
 begin
-  Result:=TListBox.Create(OwnerForm);
+  Result:=TListBox.Create(nil);
 end;
 
 constructor TlrListBox.Create(AOwnerPage: TfrPage);
@@ -621,7 +623,7 @@ end;
 
 function TlrMemo.CreateControl: TControl;
 begin
-  Result:=TMemo.Create(OwnerForm);
+  Result:=TMemo.Create(nil);
 end;
 
 constructor TlrMemo.Create(AOwnerPage: TfrPage);
@@ -645,7 +647,7 @@ end;
 
 function TlrRadioButton.CreateControl: TControl;
 begin
-  Result:=TRadioButton.Create(OwnerForm);
+  Result:=TRadioButton.Create(nil);
 end;
 
 function TlrRadioButton.GetCheckStyle(ACheck: boolean): TThemedButton;
@@ -727,7 +729,7 @@ end;
 
 function TlrComboBox.CreateControl: TControl;
 begin
-  Result:=TComboBox.Create(OwnerForm);
+  Result:=TComboBox.Create(nil);
 end;
 
 constructor TlrComboBox.Create(AOwnerPage: TfrPage);
@@ -793,7 +795,7 @@ end;
 
 function TlrCheckBox.CreateControl: TControl;
 begin
-  Result:=TCheckBox.Create(OwnerForm);
+  Result:=TCheckBox.Create(nil);
 end;
 
 function TlrCheckBox.GetCheckStyle(ACheck: boolean): TThemedButton;
@@ -852,7 +854,7 @@ end;
 
 function TlrButton.CreateControl: TControl;
 begin
-  Result:=TBitBtn.Create(OwnerForm);
+  Result:=TBitBtn.Create(nil);
   Result.AutoSize:=true;
 end;
 
@@ -891,7 +893,7 @@ end;
 
 function TlrEdit.CreateControl: TControl;
 begin
-  Result:=TEdit.Create(OwnerForm);
+  Result:=TEdit.Create(nil);
 end;
 
 constructor TlrEdit.Create(AOwnerPage: TfrPage);
@@ -948,7 +950,7 @@ end;
 
 function TlrLabel.CreateControl: TControl;
 begin
-  Result:=TLabel.Create(OwnerForm);
+  Result:=TLabel.Create(nil);
 end;
 
 
@@ -1094,6 +1096,11 @@ begin
   FControl.Height:=round(Height);
 end;
 
+procedure TlrVisualControl.AttachToParent;
+begin
+  FControl.Parent := OwnerForm;
+end;
+
 procedure TlrVisualControl.AfterCreate;
 begin
   inherited AfterCreate;
@@ -1107,12 +1114,18 @@ begin
   FControl:=CreateControl;
   if Assigned(FControl) then
   begin
-    FControl.Parent:=OwnerForm;
     x:=FControl.Left;
     Y:=FControl.Top;
     DX:=FControl.Width;
     DY:=FControl.Height;
   end;
+end;
+
+destructor TlrVisualControl.Destroy;
+begin
+  FControl.Free;
+  FControl := nil;
+  inherited Destroy;
 end;
 
 procedure TlrVisualControl.LoadFromXML(XML: TLrXMLConfig; const Path: String);
