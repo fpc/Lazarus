@@ -68,6 +68,8 @@ type
     // global hooks
     FAppEvenFilterHook: QObject_hookH;
     FAppFocusChangedHook: QApplication_hookH;
+    FAppSessionQuit: QApplication_hookH;
+    FAppSaveSessionRequest: QApplication_hookH;
 
     // default application font name (FamilyName for "default" font)
     FDefaultAppFontName: WideString;
@@ -114,6 +116,8 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     procedure FocusChanged(aold: QWidgetH; anew: QWidgetH); cdecl;
     procedure OnWakeMainThread(Sender: TObject);
+    procedure SlotCommitDataRequest(sessionManager: QSessionManagerH); cdecl;
+    procedure SlotSaveDataRequest(sessionManager: QSessionManagerH); cdecl;
   public
     function LCLPlatform: TLCLPlatform; override;
     function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;

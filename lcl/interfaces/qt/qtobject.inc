@@ -224,6 +224,18 @@ begin
   FAppFocusChangedHook := QApplication_hook_create(App);
   QApplication_hook_hook_focusChanged(FAppFocusChangedHook, @FocusChanged);
 
+  if not FIsLibraryInstance then
+  begin
+    FAppSessionQuit := QApplication_hook_create(App);
+    QApplication_hook_hook_commitDataRequest(FAppSessionQuit, @SlotCommitDataRequest);
+    FAppSaveSessionRequest := QApplication_hook_create(App);
+    QApplication_hook_hook_saveStateRequest(FAppSaveSessionRequest, @SlotSaveDataRequest);
+  end else
+  begin
+    FAppSessionQuit := nil;
+    FAppSaveSessionRequest := nil;
+  end;
+
 
   ScreenDC := GetDC(0);
   try
@@ -300,7 +312,19 @@ begin
   QApplication_hook_destroy(FAppFocusChangedHook);
   // do not quit application if we are library
   if not FIsLibraryInstance then
+  begin
+    if Assigned(FAppSessionQuit) then
+    begin
+      QApplication_hook_destroy(FAppSessionQuit);
+      FAppSessionQuit := nil;
+    end;
+    if Assigned(FAppSaveSessionRequest) then
+    begin
+      QApplication_hook_destroy(FAppSaveSessionRequest);
+      FAppSaveSessionRequest := nil;
+    end;
     QCoreApplication_quit;
+  end;
 end;
 
 procedure TQtWidgetSet.AppMinimize;
@@ -913,6 +937,48 @@ var
 begin
   Event := QEvent_create(LCLQt_CheckSynchronize);
   QCoreApplication_postEvent(QCoreApplication_instance(), Event, 1 {high priority});
+end;
+
+procedure TQtWidgetSet.SlotCommitDataRequest(sessionManager: QSessionManagerH);
+  cdecl;
+var
+  ACancel: Boolean;
+begin
+  ACancel := False;
+  {$IFDEF QTDEBUGSESSIONMANAGER}
+  DebugLn('TQtWidgetSet.SlotCommitDataRequest allowInteraction ? ',dbgs(QSessionManager_allowsInteraction(sessionManager)),
+    ' errorInteraction ',dbgs(QSessionManager_allowsErrorInteraction(sessionManager)),
+    ' phase2 ',dbgs(QSessionManager_isPhase2(sessionManager)));
+  {$ENDIF}
+  // if session manager does not allow interaction, then we close app without any intf calls
+  if QSessionManager_allowsInteraction(sessionManager) then
+  begin
+    Application.IntfQueryEndSession(ACancel);
+    if ACancel then
+    begin
+      {$IFDEF QTDEBUGSESSIONMANAGER}
+      DebugLn('*** App shutdown cancelled ...***');
+      {$ENDIF}
+      QSessionManager_cancel(sessionManager);
+    end else
+    begin
+      Application.IntfEndSession;
+      QApplication_hook_destroy(FAppSessionQuit);
+      FAppSessionQuit := nil;
+      {$IFDEF QTDEBUGSESSIONMANAGER}
+      DebugLn('*** App shutdown releasing sessionManager ...***');
+      {$ENDIF}
+      QSessionManager_release(sessionManager);
+    end;
+  end;
+end;
+
+procedure TQtWidgetSet.SlotSaveDataRequest(sessionManager: QSessionManagerH);
+  cdecl;
+begin
+  {$IFDEF QTDEBUGSESSIONMANAGER}
+  DebugLn('TQtWidgetSet.SlotSaveDataRequest ');
+  {$ENDIF}
 end;
 
 function TQtWidgetSet.LCLPlatform: TLCLPlatform;
