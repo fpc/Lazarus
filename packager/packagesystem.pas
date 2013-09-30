@@ -3026,6 +3026,7 @@ var
   SrcPPUFile: String;
   AFilename: String;
   CompilerFilename, CompilerParams, SrcFilename: string;
+  LFMFilename: String;
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
@@ -3253,8 +3254,21 @@ begin
       Note+='State file older than source "'+AFilename+'"'+LineEnding
         +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
         +'  State file="'+Stats^.StateFileName+'"'+LineEnding
-        +'  LPK age='+FileAgeToStr(FileAgeCached(APackage.Filename))+LineEnding;
+        +'  Src file age='+FileAgeToStr(FileAgeCached(AFilename))+LineEnding;
       exit(mrYes);
+    end;
+    if FilenameIsPascalUnit(AFilename) then begin
+      LFMFilename:=ChangeFileExt(AFilename,'.lfm');
+      if FileExistsCached(LFMFilename)
+      and (StateFileAge<FileAgeCached(LFMFilename)) then begin
+        DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  LFM has changed ',APackage.IDAsString,' ',LFMFilename);
+        DebugLn('  State file="',Stats^.StateFileName,'"');
+        Note+='State file older than resource "'+LFMFilename+'"'+LineEnding
+          +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
+          +'  State file="'+Stats^.StateFileName+'"'+LineEnding
+          +'  Resource file age='+FileAgeToStr(FileAgeCached(LFMFilename))+LineEnding;
+        exit(mrYes);
+      end;
     end;
   end;
   
