@@ -1,7 +1,7 @@
 //******************************************************************************
-//  Copyright (c) 2005-2010 by Jan Van hijfte
+//  Copyright (c) 2005-2011 by Jan Van hijfte
 //
-//  See the included file COPYING.TXT for details about the license.
+//  See the included file COPYING.TXT for details about the copyright.
 //
 //  This program is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -11,7 +11,7 @@
 
 unit qt4;
 
-{ Version : 2.1 }
+{ Version : 2.5 }
 
 {$mode objfpc}{$H+}
 
@@ -25,7 +25,7 @@ uses Types;
 const
   QT_VERSION = 4 shl 16 + 5 shl 8 + 3;
   
-  
+
 {$IFDEF MSWINDOWS}
   Qt4PasLib = 'Qt4Pas5.dll';
 {$ENDIF}
@@ -56,8 +56,6 @@ const
   {$LINKFRAMEWORK Qt4Pas}
 {$ENDIF}
 
-
-
 type
 
   PLong = ^Long;
@@ -70,8 +68,8 @@ type
   
 
   QHookH = TMethod;
-  PSizePolicy = ^TSizePolicy;
-  TSizePolicy = packed record
+  PQSizePolicy = ^TQSizePolicy;
+  TQSizePolicy = packed record
     Data: Word;
   end;
   
@@ -159,6 +157,7 @@ type
   QHBRUSH = type WINHANDLE;
   QHPEN = type WINHANDLE;
   QHRGN = type WINHANDLE;
+  QHICON = type WINHANDLE;
 {$ENDIF}
 
 {$IFDEF WIN32}
@@ -180,6 +179,7 @@ QDataStreamH = class(TObject) end;
 QDateH = class(TObject) end;
 QDateTimeH = class(TObject) end;
 QDecorationH = class(TObject) end;
+QDesktopServicesH = class(TObject) end;
 QDirH = class(TObject) end;
 QEventH = class(TObject) end;
   QLCLMessageEventH = class(QEventH) end;
@@ -320,6 +320,7 @@ QObjectH = class(TObject) end;
   QNetworkCookieJarH = class(QObjectH) end;
     QLCLNetworkCookieJarH = class(QNetworkCookieJarH) end;
   QSessionManagerH = class(QObjectH) end;
+  QShortcutH = class(QObjectH) end;
   QSocketNotifierH = class(QObjectH) end;
   QStyleH = class(QObjectH) end;
   QSystemTrayIconH = class(QObjectH) end;
@@ -489,6 +490,7 @@ QSystemLocaleH = class(TObject) end;
 QTableWidgetItemH = class(TObject) end;
 QTableWidgetSelectionRangeH = class(TObject) end;
 QTextBlockH = class(TObject) end;
+QTextBlockUserDataH = class(TObject) end;
 QTextCursorH = class(TObject) end;
 QTextDocumentFragmentH = class(TObject) end;
 QTextFormatH = class(TObject) end;
@@ -497,6 +499,7 @@ QTextFormatH = class(TObject) end;
     QTextImageFormatH = class(QTextCharFormatH) end;
   QTextFrameFormatH = class(QTextFormatH) end;
     QTextTableFormatH = class(QTextFrameFormatH) end;
+QTextFragmentH = class(TObject) end;
 QTextInlineObjectH = class(TObject) end;
 QTextLayoutH = class(TObject) end;
 QTextLineH = class(TObject) end;
@@ -545,6 +548,7 @@ QActionGroup_hookH = class(QObject_hookH) end;
 QClipboard_hookH = class(QObject_hookH) end;
 QDesktopWidget_hookH = class(QWidget_hookH) end;
 QDrag_hookH = class(QObject_hookH) end;
+QShortcut_hookH = class(QObject_hookH) end;
 QAbstractTextDocumentLayout_hookH = class(QObject_hookH) end;
 QTextObjectInterface_hookH = class(QObject_hookH) end;
 QFrame_hookH = class(QWidget_hookH) end;
@@ -628,7 +632,7 @@ QWebPage_hookH = class(QObject_hookH) end;
 QWebSettings_hookH = class(QObject_hookH) end;
 QWebView_hookH = class(QWidget_hookH) end;
 
-  QCoreApplicationEventFilter = function(Msg:PChar;Res:PLong):boolean cdecl;
+QCoreApplicationEventFilter = function(Msg:PChar;Res:PLong):boolean cdecl;
 QAbstractEventDispatcherEventFilter = function(Msg:PChar):boolean cdecl;
 QLCLItemDelegate_sizeHint_Override = procedure (option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize) of object cdecl;
 QLCLItemDelegate_paint_Override = procedure (painter : QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH) of object cdecl;
@@ -641,7 +645,6 @@ QLCLAbstractScrollArea_viewportEvent_Override = procedure (event: QEventH; retva
 QLCLWebPage_userAgentForUrl_Override = procedure(url : QUrlH;userAgent:PWideString) of object; cdecl;
 QLCLWebView_createWindow_Override = function (WebWindowType : integer):QWebViewH of object cdecl;
 QLCLThread_run_Override = procedure of object cdecl;
-QLCLTreeWidgetItem_data_Override = procedure (column: Integer; role: Integer; retval: QVariantH) of object cdecl;
 
 type
   QObjectEventFilter = function (Sender:QObjectH; Event: QEventH):boolean of object cdecl;
@@ -731,7 +734,7 @@ type
     QtToolButtonIconOnly, QtToolButtonTextOnly, QtToolButtonTextBesideIcon, QtToolButtonTextUnderIcon );
 
   QtLayoutDirection = ( // Qt::LayoutDirection (1)
-    QtLeftToRight, QtRightToLeft, QtLayoutDirectionAuto );
+    QtLeftToRight, QtRightToLeft, QtLayoutDirectionAuto);
 
   QtCheckState = ( // Qt::CheckState (1)
     QtUnchecked, QtPartiallyChecked, QtChecked );
@@ -1586,8 +1589,8 @@ const
 
 function QObject_create(parent: QObjectH = nil): QObjectH; cdecl; external Qt4PasLib name 'QObject_create';
 procedure QObject_destroy(handle: QObjectH); cdecl; external Qt4PasLib name 'QObject_destroy'; 
-function QObject_event(handle: QObjectH; p1: QEventH): Boolean; cdecl; external Qt4PasLib name 'QObject_event';
-function QObject_eventFilter(handle: QObjectH; p1: QObjectH; p2: QEventH): Boolean; cdecl; external Qt4PasLib name 'QObject_eventFilter';
+function QObject_event(handle: QObjectH; AnonParam1: QEventH): Boolean; cdecl; external Qt4PasLib name 'QObject_event';
+function QObject_eventFilter(handle: QObjectH; AnonParam1: QObjectH; AnonParam2: QEventH): Boolean; cdecl; external Qt4PasLib name 'QObject_eventFilter';
 procedure QObject_tr(retval: PWideString; sourceText: PAnsiChar; comment: PAnsiChar = nil; n: Integer = -1); cdecl; external Qt4PasLib name 'QObject_tr';
 procedure QObject_trUtf8(retval: PWideString; sourceText: PAnsiChar; comment: PAnsiChar = nil; n: Integer = -1); cdecl; external Qt4PasLib name 'QObject_trUtf8';
 function QObject_metaObject(handle: QObjectH): QMetaObjectH; cdecl; external Qt4PasLib name 'QObject_metaObject';
@@ -1601,10 +1604,10 @@ procedure QObject_moveToThread(handle: QObjectH; thread: QThreadH); cdecl; exter
 function QObject_startTimer(handle: QObjectH; interval: Integer): Integer; cdecl; external Qt4PasLib name 'QObject_startTimer';
 procedure QObject_killTimer(handle: QObjectH; id: Integer); cdecl; external Qt4PasLib name 'QObject_killTimer';
 procedure QObject_children(handle: QObjectH; retval: PPtrIntArray); cdecl; external Qt4PasLib name 'QObject_children';
-procedure QObject_setParent(handle: QObjectH; p1: QObjectH); cdecl; external Qt4PasLib name 'QObject_setParent';
-procedure QObject_installEventFilter(handle: QObjectH; p1: QObjectH); cdecl; external Qt4PasLib name 'QObject_installEventFilter';
-procedure QObject_removeEventFilter(handle: QObjectH; p1: QObjectH); cdecl; external Qt4PasLib name 'QObject_removeEventFilter';
-function QObject_connect(sender: QObjectH; signal: PAnsiChar; receiver: QObjectH; member: PAnsiChar; p5: QtConnectionType = QtAutoConnection): Boolean; cdecl; external Qt4PasLib name 'QObject_connect';
+procedure QObject_setParent(handle: QObjectH; AnonParam1: QObjectH); cdecl; external Qt4PasLib name 'QObject_setParent';
+procedure QObject_installEventFilter(handle: QObjectH; AnonParam1: QObjectH); cdecl; external Qt4PasLib name 'QObject_installEventFilter';
+procedure QObject_removeEventFilter(handle: QObjectH; AnonParam1: QObjectH); cdecl; external Qt4PasLib name 'QObject_removeEventFilter';
+function QObject_connect(sender: QObjectH; signal: PAnsiChar; receiver: QObjectH; member: PAnsiChar; AnonParam5: QtConnectionType = QtAutoConnection): Boolean; cdecl; external Qt4PasLib name 'QObject_connect';
 function QObject_connect(handle: QObjectH; sender: QObjectH; signal: PAnsiChar; member: PAnsiChar; _type: QtConnectionType = QtAutoConnection): Boolean; cdecl; external Qt4PasLib name 'QObject_connect2';
 function QObject_disconnect(sender: QObjectH; signal: PAnsiChar; receiver: QObjectH; member: PAnsiChar): Boolean; cdecl; external Qt4PasLib name 'QObject_disconnect';
 function QObject_disconnect(handle: QObjectH; receiver: QObjectH; member: PAnsiChar = nil): Boolean; cdecl; external Qt4PasLib name 'QObject_disconnect3';
@@ -1853,16 +1856,16 @@ procedure QCoreApplication_sendPostedEvents(); cdecl; external Qt4PasLib name 'Q
 procedure QCoreApplication_removePostedEvents(receiver: QObjectH); cdecl; external Qt4PasLib name 'QCoreApplication_removePostedEvents';
 procedure QCoreApplication_removePostedEvents(receiver: QObjectH; eventType: Integer); cdecl; external Qt4PasLib name 'QCoreApplication_removePostedEvents2';
 function QCoreApplication_hasPendingEvents(): Boolean; cdecl; external Qt4PasLib name 'QCoreApplication_hasPendingEvents';
-function QCoreApplication_notify(handle: QCoreApplicationH; p1: QObjectH; p2: QEventH): Boolean; cdecl; external Qt4PasLib name 'QCoreApplication_notify';
+function QCoreApplication_notify(handle: QCoreApplicationH; AnonParam1: QObjectH; AnonParam2: QEventH): Boolean; cdecl; external Qt4PasLib name 'QCoreApplication_notify';
 function QCoreApplication_startingUp(): Boolean; cdecl; external Qt4PasLib name 'QCoreApplication_startingUp';
 function QCoreApplication_closingDown(): Boolean; cdecl; external Qt4PasLib name 'QCoreApplication_closingDown';
 procedure QCoreApplication_applicationDirPath(retval: PWideString); cdecl; external Qt4PasLib name 'QCoreApplication_applicationDirPath';
 procedure QCoreApplication_applicationFilePath(retval: PWideString); cdecl; external Qt4PasLib name 'QCoreApplication_applicationFilePath';
 function QCoreApplication_applicationPid(): int64; cdecl; external Qt4PasLib name 'QCoreApplication_applicationPid';
-procedure QCoreApplication_setLibraryPaths(p1: QStringListH); cdecl; external Qt4PasLib name 'QCoreApplication_setLibraryPaths';
+procedure QCoreApplication_setLibraryPaths(AnonParam1: QStringListH); cdecl; external Qt4PasLib name 'QCoreApplication_setLibraryPaths';
 procedure QCoreApplication_libraryPaths(retval: QStringListH); cdecl; external Qt4PasLib name 'QCoreApplication_libraryPaths';
-procedure QCoreApplication_addLibraryPath(p1: PWideString); cdecl; external Qt4PasLib name 'QCoreApplication_addLibraryPath';
-procedure QCoreApplication_removeLibraryPath(p1: PWideString); cdecl; external Qt4PasLib name 'QCoreApplication_removeLibraryPath';
+procedure QCoreApplication_addLibraryPath(AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QCoreApplication_addLibraryPath';
+procedure QCoreApplication_removeLibraryPath(AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QCoreApplication_removeLibraryPath';
 procedure QCoreApplication_installTranslator(messageFile: QTranslatorH); cdecl; external Qt4PasLib name 'QCoreApplication_installTranslator';
 procedure QCoreApplication_removeTranslator(messageFile: QTranslatorH); cdecl; external Qt4PasLib name 'QCoreApplication_removeTranslator';
 procedure QCoreApplication_translate(retval: PWideString; context: PAnsiChar; key: PAnsiChar; disambiguation: PAnsiChar = nil; encoding: QCoreApplicationEncoding = QCoreApplicationCodecForTr); cdecl; external Qt4PasLib name 'QCoreApplication_translate';
@@ -1881,7 +1884,7 @@ function QCoreApplication_winEventFilter(handle: QCoreApplicationH; message: PMs
 
 type
   QCoreApplication_aboutToQuit_Event = procedure () of object cdecl;
-  QCoreApplication_unixSignal_Event = procedure (p1: Integer) of object cdecl;
+  QCoreApplication_unixSignal_Event = procedure (AnonParam1: Integer) of object cdecl;
 
 
 function QTranslator_create(parent: QObjectH = nil): QTranslatorH; cdecl; external Qt4PasLib name 'QTranslator_create';
@@ -1968,8 +1971,7 @@ const
 
 
 function QVariant_create(): QVariantH; cdecl; external Qt4PasLib name 'QVariant_create';
-procedure QVariant_destroy(handle: QVariantH); cdecl; external Qt4PasLib name 'QVariant_destroy'; 
-function QVariant_create(_type: QVariantType): QVariantH; cdecl; external Qt4PasLib name 'QVariant_create2';
+procedure QVariant_destroy(handle: QVariantH); cdecl; external Qt4PasLib name 'QVariant_destroy';
 function QVariant_create(typeOrUserType: Integer; copy: Pointer): QVariantH; cdecl; external Qt4PasLib name 'QVariant_create3';
 function QVariant_create(other: QVariantH): QVariantH; cdecl; external Qt4PasLib name 'QVariant_create4';
 function QVariant_create(s: QDataStreamH): QVariantH; cdecl; external Qt4PasLib name 'QVariant_create5';
@@ -2155,7 +2157,7 @@ procedure QAbstractItemModel_mimeTypes(handle: QAbstractItemModelH; retval: QStr
 function QAbstractItemModel_dropMimeData(handle: QAbstractItemModelH; data: QMimeDataH; action: QtDropAction; row: Integer; column: Integer; parent: QModelIndexH): Boolean; cdecl; external Qt4PasLib name 'QAbstractItemModel_dropMimeData';
 function QAbstractItemModel_supportedDropActions(handle: QAbstractItemModelH): QtDropActions; cdecl; external Qt4PasLib name 'QAbstractItemModel_supportedDropActions';
 function QAbstractItemModel_supportedDragActions(handle: QAbstractItemModelH): QtDropActions; cdecl; external Qt4PasLib name 'QAbstractItemModel_supportedDragActions';
-procedure QAbstractItemModel_setSupportedDragActions(handle: QAbstractItemModelH; p1: QtDropActions); cdecl; external Qt4PasLib name 'QAbstractItemModel_setSupportedDragActions';
+procedure QAbstractItemModel_setSupportedDragActions(handle: QAbstractItemModelH; AnonParam1: QtDropActions); cdecl; external Qt4PasLib name 'QAbstractItemModel_setSupportedDragActions';
 function QAbstractItemModel_insertRows(handle: QAbstractItemModelH; row: Integer; count: Integer; parent: QModelIndexH = nil): Boolean; cdecl; external Qt4PasLib name 'QAbstractItemModel_insertRows';
 function QAbstractItemModel_insertColumns(handle: QAbstractItemModelH; column: Integer; count: Integer; parent: QModelIndexH = nil): Boolean; cdecl; external Qt4PasLib name 'QAbstractItemModel_insertColumns';
 function QAbstractItemModel_removeRows(handle: QAbstractItemModelH; row: Integer; count: Integer; parent: QModelIndexH = nil): Boolean; cdecl; external Qt4PasLib name 'QAbstractItemModel_removeRows';
@@ -2242,12 +2244,12 @@ type
   QSocketNotifierType = ( // QSocketNotifier::Type (1)
     QSocketNotifierRead, QSocketNotifierWrite, QSocketNotifierException );
 
-function QSocketNotifier_create(socket: Integer; p2: QSocketNotifierType; parent: QObjectH = nil): QSocketNotifierH; cdecl; external Qt4PasLib name 'QSocketNotifier_create';
+function QSocketNotifier_create(socket: Integer; AnonParam2: QSocketNotifierType; parent: QObjectH = nil): QSocketNotifierH; cdecl; external Qt4PasLib name 'QSocketNotifier_create';
 procedure QSocketNotifier_destroy(handle: QSocketNotifierH); cdecl; external Qt4PasLib name 'QSocketNotifier_destroy'; 
 function QSocketNotifier_socket(handle: QSocketNotifierH): Integer; cdecl; external Qt4PasLib name 'QSocketNotifier_socket';
 function QSocketNotifier_type(handle: QSocketNotifierH): QSocketNotifierType; cdecl; external Qt4PasLib name 'QSocketNotifier_type';
 function QSocketNotifier_isEnabled(handle: QSocketNotifierH): Boolean; cdecl; external Qt4PasLib name 'QSocketNotifier_isEnabled';
-procedure QSocketNotifier_setEnabled(handle: QSocketNotifierH; p1: Boolean); cdecl; external Qt4PasLib name 'QSocketNotifier_setEnabled';
+procedure QSocketNotifier_setEnabled(handle: QSocketNotifierH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QSocketNotifier_setEnabled';
 
 
 type
@@ -2272,7 +2274,7 @@ function QThread_isRunning(handle: QThreadH): Boolean; cdecl; external Qt4PasLib
 procedure QThread_setStackSize(handle: QThreadH; stackSize: LongWord); cdecl; external Qt4PasLib name 'QThread_setStackSize';
 function QThread_stackSize(handle: QThreadH): LongWord; cdecl; external Qt4PasLib name 'QThread_stackSize';
 procedure QThread_exit(handle: QThreadH; retcode: Integer = 0); cdecl; external Qt4PasLib name 'QThread_exit';
-procedure QThread_start(handle: QThreadH; p1: QThreadPriority = QThreadInheritPriority); cdecl; external Qt4PasLib name 'QThread_start';
+procedure QThread_start(handle: QThreadH; AnonParam1: QThreadPriority = QThreadInheritPriority); cdecl; external Qt4PasLib name 'QThread_start';
 procedure QThread_terminate(handle: QThreadH); cdecl; external Qt4PasLib name 'QThread_terminate';
 procedure QThread_quit(handle: QThreadH); cdecl; external Qt4PasLib name 'QThread_quit';
 function QThread_wait(handle: QThreadH; time: Longword): Boolean; cdecl; external Qt4PasLib name 'QThread_wait';
@@ -2439,8 +2441,8 @@ procedure QSize_setHeight(handle: QSizeH; h: Integer); cdecl; external Qt4PasLib
 procedure QSize_transpose(handle: QSizeH); cdecl; external Qt4PasLib name 'QSize_transpose';
 procedure QSize_scale(handle: QSizeH; w: Integer; h: Integer; mode: QtAspectRatioMode); cdecl; external Qt4PasLib name 'QSize_scale';
 procedure QSize_scale(handle: QSizeH; s: PSize; mode: QtAspectRatioMode); cdecl; external Qt4PasLib name 'QSize_scale2';
-procedure QSize_expandedTo(handle: QSizeH; retval: PSize; p1: PSize); cdecl; external Qt4PasLib name 'QSize_expandedTo';
-procedure QSize_boundedTo(handle: QSizeH; retval: PSize; p1: PSize); cdecl; external Qt4PasLib name 'QSize_boundedTo';
+procedure QSize_expandedTo(handle: QSizeH; retval: PSize; AnonParam1: PSize); cdecl; external Qt4PasLib name 'QSize_expandedTo';
+procedure QSize_boundedTo(handle: QSizeH; retval: PSize; AnonParam1: PSize); cdecl; external Qt4PasLib name 'QSize_boundedTo';
 function QSize_rwidth(handle: QSizeH): PInteger; cdecl; external Qt4PasLib name 'QSize_rwidth';
 function QSize_rheight(handle: QSizeH): PInteger; cdecl; external Qt4PasLib name 'QSize_rheight';
 
@@ -2458,8 +2460,8 @@ procedure QSizeF_setHeight(handle: QSizeFH; h: qreal); cdecl; external Qt4PasLib
 procedure QSizeF_transpose(handle: QSizeFH); cdecl; external Qt4PasLib name 'QSizeF_transpose';
 procedure QSizeF_scale(handle: QSizeFH; w: qreal; h: qreal; mode: QtAspectRatioMode); cdecl; external Qt4PasLib name 'QSizeF_scale';
 procedure QSizeF_scale(handle: QSizeFH; s: QSizeFH; mode: QtAspectRatioMode); cdecl; external Qt4PasLib name 'QSizeF_scale2';
-procedure QSizeF_expandedTo(handle: QSizeFH; retval: QSizeFH; p1: QSizeFH); cdecl; external Qt4PasLib name 'QSizeF_expandedTo';
-procedure QSizeF_boundedTo(handle: QSizeFH; retval: QSizeFH; p1: QSizeFH); cdecl; external Qt4PasLib name 'QSizeF_boundedTo';
+procedure QSizeF_expandedTo(handle: QSizeFH; retval: QSizeFH; AnonParam1: QSizeFH); cdecl; external Qt4PasLib name 'QSizeF_expandedTo';
+procedure QSizeF_boundedTo(handle: QSizeFH; retval: QSizeFH; AnonParam1: QSizeFH); cdecl; external Qt4PasLib name 'QSizeF_boundedTo';
 function QSizeF_rwidth(handle: QSizeFH): PQReal; cdecl; external Qt4PasLib name 'QSizeF_rwidth';
 function QSizeF_rheight(handle: QSizeFH): PQReal; cdecl; external Qt4PasLib name 'QSizeF_rheight';
 procedure QSizeF_toSize(handle: QSizeFH; retval: PSize); cdecl; external Qt4PasLib name 'QSizeF_toSize';
@@ -2486,9 +2488,8 @@ function QString_create(): QStringH; cdecl; external Qt4PasLib name 'QString_cre
 procedure QString_destroy(handle: QStringH); cdecl; external Qt4PasLib name 'QString_destroy'; 
 function QString_create(unicode: PWideChar; size: Integer): QStringH; cdecl; external Qt4PasLib name 'QString_create2';
 function QString_create(c: PWideChar): QStringH; cdecl; external Qt4PasLib name 'QString_create3';
-function QString_create(size: Integer; c: PWideChar): QStringH; cdecl; external Qt4PasLib name 'QString_create4';
 function QString_create(latin1: QLatin1StringH): QStringH; cdecl; external Qt4PasLib name 'QString_create5';
-function QString_create(p1: PWideString): QStringH; cdecl; external Qt4PasLib name 'QString_create6';
+function QString_create(AnonParam1: PWideString): QStringH; cdecl; external Qt4PasLib name 'QString_create6';
 function QString_size(handle: QStringH): Integer; cdecl; external Qt4PasLib name 'QString_size';
 function QString_count(handle: QStringH): Integer; cdecl; external Qt4PasLib name 'QString_count';
 function QString_length(handle: QStringH): Integer; cdecl; external Qt4PasLib name 'QString_length';
@@ -2534,10 +2535,10 @@ function QString_contains(handle: QStringH; c: PWideChar; cs: QtCaseSensitivity 
 function QString_contains(handle: QStringH; s: PWideString; cs: QtCaseSensitivity = QtCaseSensitive): boolean; cdecl; external Qt4PasLib name 'QString_contains2';
 function QString_count(handle: QStringH; c: PWideChar; cs: QtCaseSensitivity = QtCaseSensitive): Integer; cdecl; external Qt4PasLib name 'QString_count2';
 function QString_count(handle: QStringH; s: PWideString; cs: QtCaseSensitivity = QtCaseSensitive): Integer; cdecl; external Qt4PasLib name 'QString_count3';
-function QString_indexOf(handle: QStringH; p1: QRegExpH; from: Integer = 0): Integer; cdecl; external Qt4PasLib name 'QString_indexOf4';
-function QString_lastIndexOf(handle: QStringH; p1: QRegExpH; from: Integer = -1): Integer; cdecl; external Qt4PasLib name 'QString_lastIndexOf4';
+function QString_indexOf(handle: QStringH; AnonParam1: QRegExpH; from: Integer = 0): Integer; cdecl; external Qt4PasLib name 'QString_indexOf4';
+function QString_lastIndexOf(handle: QStringH; AnonParam1: QRegExpH; from: Integer = -1): Integer; cdecl; external Qt4PasLib name 'QString_lastIndexOf4';
 function QString_contains(handle: QStringH; rx: QRegExpH): boolean; cdecl; external Qt4PasLib name 'QString_contains3';
-function QString_count(handle: QStringH; p1: QRegExpH): Integer; cdecl; external Qt4PasLib name 'QString_count4';
+function QString_count(handle: QStringH; AnonParam1: QRegExpH): Integer; cdecl; external Qt4PasLib name 'QString_count4';
 procedure QString_section(handle: QStringH; retval: PWideString; sep: PWideChar; start: Integer; _end: Integer = -1; flags: QStringSectionFlags = QStringSectionDefault); cdecl; external Qt4PasLib name 'QString_section';
 procedure QString_section(handle: QStringH; retval: PWideString; in_sep: PWideString; start: Integer; _end: Integer = -1; flags: QStringSectionFlags = QStringSectionDefault); cdecl; external Qt4PasLib name 'QString_section2';
 procedure QString_section(handle: QStringH; retval: PWideString; reg: QRegExpH; start: Integer; _end: Integer = -1; flags: QStringSectionFlags = QStringSectionDefault); cdecl; external Qt4PasLib name 'QString_section3';
@@ -2594,15 +2595,15 @@ procedure QString_toAscii(handle: QStringH; retval: QByteArrayH); cdecl; externa
 procedure QString_toLatin1(handle: QStringH; retval: QByteArrayH); cdecl; external Qt4PasLib name 'QString_toLatin1';
 procedure QString_toUtf8(handle: QStringH; retval: QByteArrayH); cdecl; external Qt4PasLib name 'QString_toUtf8';
 procedure QString_toLocal8Bit(handle: QStringH; retval: QByteArrayH); cdecl; external Qt4PasLib name 'QString_toLocal8Bit';
-procedure QString_fromAscii(retval: PWideString; p1: PAnsiChar; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromAscii';
-procedure QString_fromLatin1(retval: PWideString; p1: PAnsiChar; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromLatin1';
-procedure QString_fromUtf8(retval: PWideString; p1: PAnsiChar; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromUtf8';
-procedure QString_fromLocal8Bit(retval: PWideString; p1: PAnsiChar; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromLocal8Bit';
-procedure QString_fromUtf16(retval: PWideString; p1: PWord; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromUtf16';
-procedure QString_fromUcs4(retval: PWideString; p1: PLongWord; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromUcs4';
-procedure QString_fromRawData(retval: PWideString; p1: PWideChar; size: Integer); cdecl; external Qt4PasLib name 'QString_fromRawData';
+procedure QString_fromAscii(retval: PWideString; AnonParam1: PAnsiChar; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromAscii';
+procedure QString_fromLatin1(retval: PWideString; AnonParam1: PAnsiChar; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromLatin1';
+procedure QString_fromUtf8(retval: PWideString; AnonParam1: PAnsiChar; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromUtf8';
+procedure QString_fromLocal8Bit(retval: PWideString; AnonParam1: PAnsiChar; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromLocal8Bit';
+procedure QString_fromUtf16(retval: PWideString; AnonParam1: PWord; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromUtf16';
+procedure QString_fromUcs4(retval: PWideString; AnonParam1: PLongWord; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromUcs4';
+procedure QString_fromRawData(retval: PWideString; AnonParam1: PWideChar; size: Integer); cdecl; external Qt4PasLib name 'QString_fromRawData';
 function QString_toWCharArray(handle: QStringH; _array: PWideChar): Integer; cdecl; external Qt4PasLib name 'QString_toWCharArray';
-procedure QString_fromWCharArray(retval: PWideString; p1: PWideChar; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromWCharArray';
+procedure QString_fromWCharArray(retval: PWideString; AnonParam1: PWideChar; size: Integer = -1); cdecl; external Qt4PasLib name 'QString_fromWCharArray';
 procedure QString_setUnicode(handle: QStringH; retval: PWideString; unicode: PWideChar; size: Integer); cdecl; external Qt4PasLib name 'QString_setUnicode';
 procedure QString_setUtf16(handle: QStringH; retval: PWideString; utf16: PWord; size: Integer); cdecl; external Qt4PasLib name 'QString_setUtf16';
 function QString_compare(handle: QStringH; s: PWideString): Integer; cdecl; external Qt4PasLib name 'QString_compare';
@@ -2624,19 +2625,19 @@ function QString_toLongLong(handle: QStringH; ok: PBoolean = nil; base: Integer 
 function QString_toULongLong(handle: QStringH; ok: PBoolean = nil; base: Integer = 10): qword; cdecl; external Qt4PasLib name 'QString_toULongLong';
 function QString_toFloat(handle: QStringH; ok: PBoolean = nil): Single; cdecl; external Qt4PasLib name 'QString_toFloat';
 function QString_toDouble(handle: QStringH; ok: PBoolean = nil): Double; cdecl; external Qt4PasLib name 'QString_toDouble';
-procedure QString_setNum(handle: QStringH; retval: PWideString; p1: ShortInt; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_setNum';
-procedure QString_setNum(handle: QStringH; retval: PWideString; p1: Word; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_setNum2';
-procedure QString_setNum(handle: QStringH; retval: PWideString; p1: Integer; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_setNum3';
-procedure QString_setNum(handle: QStringH; retval: PWideString; p1: LongWord; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_setNum4';
-procedure QString_setNum(handle: QStringH; retval: PWideString; p1: int64; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_setNum7';
-procedure QString_setNum(handle: QStringH; retval: PWideString; p1: qword; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_setNum8';
-procedure QString_setNum(handle: QStringH; retval: PWideString; p1: Single; f: char; prec: Integer = 6); cdecl; external Qt4PasLib name 'QString_setNum9';
-procedure QString_setNum(handle: QStringH; retval: PWideString; p1: Double; f: char; prec: Integer = 6); cdecl; external Qt4PasLib name 'QString_setNum10';
-procedure QString_number(retval: PWideString; p1: Integer; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_number';
-procedure QString_number(retval: PWideString; p1: LongWord; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_number2';
-procedure QString_number(retval: PWideString; p1: int64; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_number5';
-procedure QString_number(retval: PWideString; p1: qword; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_number6';
-procedure QString_number(retval: PWideString; p1: Double; f: char; prec: Integer = 6); cdecl; external Qt4PasLib name 'QString_number7';
+procedure QString_setNum(handle: QStringH; retval: PWideString; AnonParam1: ShortInt; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_setNum';
+procedure QString_setNum(handle: QStringH; retval: PWideString; AnonParam1: Word; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_setNum2';
+procedure QString_setNum(handle: QStringH; retval: PWideString; AnonParam1: Integer; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_setNum3';
+procedure QString_setNum(handle: QStringH; retval: PWideString; AnonParam1: LongWord; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_setNum4';
+procedure QString_setNum(handle: QStringH; retval: PWideString; AnonParam1: int64; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_setNum7';
+procedure QString_setNum(handle: QStringH; retval: PWideString; AnonParam1: qword; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_setNum8';
+procedure QString_setNum(handle: QStringH; retval: PWideString; AnonParam1: Single; f: char; prec: Integer = 6); cdecl; external Qt4PasLib name 'QString_setNum9';
+procedure QString_setNum(handle: QStringH; retval: PWideString; AnonParam1: Double; f: char; prec: Integer = 6); cdecl; external Qt4PasLib name 'QString_setNum10';
+procedure QString_number(retval: PWideString; AnonParam1: Integer; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_number';
+procedure QString_number(retval: PWideString; AnonParam1: LongWord; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_number2';
+procedure QString_number(retval: PWideString; AnonParam1: int64; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_number5';
+procedure QString_number(retval: PWideString; AnonParam1: qword; base: Integer = 10); cdecl; external Qt4PasLib name 'QString_number6';
+procedure QString_number(retval: PWideString; AnonParam1: Double; f: char; prec: Integer = 6); cdecl; external Qt4PasLib name 'QString_number7';
 function QString_create(ch: PAnsiChar): QStringH; cdecl; external Qt4PasLib name 'QString_create7';
 function QString_create(a: QByteArrayH): QStringH; cdecl; external Qt4PasLib name 'QString_create8';
 procedure QString_prepend(handle: QStringH; retval: PWideString; s: PAnsiChar); cdecl; external Qt4PasLib name 'QString_prepend4';
@@ -2856,7 +2857,7 @@ procedure QDate_getDate(handle: QDateH; year: PInteger; month: PInteger; day: PI
 procedure QDate_addDays(handle: QDateH; retval: QDateH; days: Integer); cdecl; external Qt4PasLib name 'QDate_addDays';
 procedure QDate_addMonths(handle: QDateH; retval: QDateH; months: Integer); cdecl; external Qt4PasLib name 'QDate_addMonths';
 procedure QDate_addYears(handle: QDateH; retval: QDateH; years: Integer); cdecl; external Qt4PasLib name 'QDate_addYears';
-function QDate_daysTo(handle: QDateH; p1: QDateH): Integer; cdecl; external Qt4PasLib name 'QDate_daysTo';
+function QDate_daysTo(handle: QDateH; AnonParam1: QDateH): Integer; cdecl; external Qt4PasLib name 'QDate_daysTo';
 procedure QDate_currentDate(retval: QDateH); cdecl; external Qt4PasLib name 'QDate_currentDate';
 procedure QDate_fromString(retval: QDateH; s: PWideString; f: QtDateFormat = QtTextDate); cdecl; external Qt4PasLib name 'QDate_fromString';
 procedure QDate_fromString(retval: QDateH; s: PWideString; format: PWideString); cdecl; external Qt4PasLib name 'QDate_fromString2';
@@ -2880,9 +2881,9 @@ procedure QTime_toString(handle: QTimeH; retval: PWideString; f: QtDateFormat = 
 procedure QTime_toString(handle: QTimeH; retval: PWideString; format: PWideString); cdecl; external Qt4PasLib name 'QTime_toString2';
 function QTime_setHMS(handle: QTimeH; h: Integer; m: Integer; s: Integer; ms: Integer = 0): Boolean; cdecl; external Qt4PasLib name 'QTime_setHMS';
 procedure QTime_addSecs(handle: QTimeH; retval: QTimeH; secs: Integer); cdecl; external Qt4PasLib name 'QTime_addSecs';
-function QTime_secsTo(handle: QTimeH; p1: QTimeH): Integer; cdecl; external Qt4PasLib name 'QTime_secsTo';
+function QTime_secsTo(handle: QTimeH; AnonParam1: QTimeH): Integer; cdecl; external Qt4PasLib name 'QTime_secsTo';
 procedure QTime_addMSecs(handle: QTimeH; retval: QTimeH; ms: Integer); cdecl; external Qt4PasLib name 'QTime_addMSecs';
-function QTime_msecsTo(handle: QTimeH; p1: QTimeH): Integer; cdecl; external Qt4PasLib name 'QTime_msecsTo';
+function QTime_msecsTo(handle: QTimeH; AnonParam1: QTimeH): Integer; cdecl; external Qt4PasLib name 'QTime_msecsTo';
 procedure QTime_currentTime(retval: QTimeH); cdecl; external Qt4PasLib name 'QTime_currentTime';
 procedure QTime_fromString(retval: QTimeH; s: PWideString; f: QtDateFormat = QtTextDate); cdecl; external Qt4PasLib name 'QTime_fromString';
 procedure QTime_fromString(retval: QTimeH; s: PWideString; format: PWideString); cdecl; external Qt4PasLib name 'QTime_fromString2';
@@ -2893,8 +2894,8 @@ function QTime_elapsed(handle: QTimeH): Integer; cdecl; external Qt4PasLib name 
 
 function QDateTime_create(): QDateTimeH; cdecl; external Qt4PasLib name 'QDateTime_create';
 procedure QDateTime_destroy(handle: QDateTimeH); cdecl; external Qt4PasLib name 'QDateTime_destroy'; 
-function QDateTime_create(p1: QDateH): QDateTimeH; cdecl; external Qt4PasLib name 'QDateTime_create2';
-function QDateTime_create(p1: QDateH; p2: QTimeH; spec: QtTimeSpec = QtLocalTime): QDateTimeH; cdecl; external Qt4PasLib name 'QDateTime_create3';
+function QDateTime_create(AnonParam1: QDateH): QDateTimeH; cdecl; external Qt4PasLib name 'QDateTime_create2';
+function QDateTime_create(AnonParam1: QDateH; AnonParam2: QTimeH; spec: QtTimeSpec = QtLocalTime): QDateTimeH; cdecl; external Qt4PasLib name 'QDateTime_create3';
 function QDateTime_create(other: QDateTimeH): QDateTimeH; cdecl; external Qt4PasLib name 'QDateTime_create4';
 function QDateTime_isNull(handle: QDateTimeH): Boolean; cdecl; external Qt4PasLib name 'QDateTime_isNull';
 function QDateTime_isValid(handle: QDateTimeH): Boolean; cdecl; external Qt4PasLib name 'QDateTime_isValid';
@@ -2916,8 +2917,8 @@ procedure QDateTime_addMSecs(handle: QDateTimeH; retval: QDateTimeH; msecs: int6
 procedure QDateTime_toTimeSpec(handle: QDateTimeH; retval: QDateTimeH; spec: QtTimeSpec); cdecl; external Qt4PasLib name 'QDateTime_toTimeSpec';
 procedure QDateTime_toLocalTime(handle: QDateTimeH; retval: QDateTimeH); cdecl; external Qt4PasLib name 'QDateTime_toLocalTime';
 procedure QDateTime_toUTC(handle: QDateTimeH; retval: QDateTimeH); cdecl; external Qt4PasLib name 'QDateTime_toUTC';
-function QDateTime_daysTo(handle: QDateTimeH; p1: QDateTimeH): Integer; cdecl; external Qt4PasLib name 'QDateTime_daysTo';
-function QDateTime_secsTo(handle: QDateTimeH; p1: QDateTimeH): Integer; cdecl; external Qt4PasLib name 'QDateTime_secsTo';
+function QDateTime_daysTo(handle: QDateTimeH; AnonParam1: QDateTimeH): Integer; cdecl; external Qt4PasLib name 'QDateTime_daysTo';
+function QDateTime_secsTo(handle: QDateTimeH; AnonParam1: QDateTimeH): Integer; cdecl; external Qt4PasLib name 'QDateTime_secsTo';
 procedure QDateTime_setUtcOffset(handle: QDateTimeH; seconds: Integer); cdecl; external Qt4PasLib name 'QDateTime_setUtcOffset';
 function QDateTime_utcOffset(handle: QDateTimeH): Integer; cdecl; external Qt4PasLib name 'QDateTime_utcOffset';
 procedure QDateTime_currentDateTime(retval: QDateTimeH); cdecl; external Qt4PasLib name 'QDateTime_currentDateTime';
@@ -2927,10 +2928,10 @@ procedure QDateTime_fromTime_t(retval: QDateTimeH; secsSince1Jan1970UTC: LongWor
 
 function QByteArray_create(): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_create';
 procedure QByteArray_destroy(handle: QByteArrayH); cdecl; external Qt4PasLib name 'QByteArray_destroy'; 
-function QByteArray_create(p1: PAnsiChar): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_create2';
-function QByteArray_create(p1: PAnsiChar; size: Integer): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_create3';
+function QByteArray_create(AnonParam1: PAnsiChar): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_create2';
+function QByteArray_create(AnonParam1: PAnsiChar; size: Integer): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_create3';
 function QByteArray_create(size: Integer; c: char): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_create4';
-function QByteArray_create(p1: QByteArrayH): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_create5';
+function QByteArray_create(AnonParam1: QByteArrayH): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_create5';
 function QByteArray_size(handle: QByteArrayH): Integer; cdecl; external Qt4PasLib name 'QByteArray_size';
 function QByteArray_isEmpty(handle: QByteArrayH): Boolean; cdecl; external Qt4PasLib name 'QByteArray_isEmpty';
 procedure QByteArray_resize(handle: QByteArrayH; size: Integer); cdecl; external Qt4PasLib name 'QByteArray_resize';
@@ -3015,20 +3016,20 @@ function QByteArray_toDouble(handle: QByteArrayH; ok: PBoolean = nil): Double; c
 procedure QByteArray_toBase64(handle: QByteArrayH; retval: QByteArrayH); cdecl; external Qt4PasLib name 'QByteArray_toBase64';
 procedure QByteArray_toHex(handle: QByteArrayH; retval: QByteArrayH); cdecl; external Qt4PasLib name 'QByteArray_toHex';
 procedure QByteArray_toPercentEncoding(handle: QByteArrayH; retval: QByteArrayH; exclude: QByteArrayH; include: QByteArrayH; percent: char); cdecl; external Qt4PasLib name 'QByteArray_toPercentEncoding';
-function QByteArray_setNum(handle: QByteArrayH; p1: ShortInt; base: Integer = 10): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum';
-function QByteArray_setNum(handle: QByteArrayH; p1: Word; base: Integer = 10): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum2';
-function QByteArray_setNum(handle: QByteArrayH; p1: Integer; base: Integer = 10): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum3';
-function QByteArray_setNum(handle: QByteArrayH; p1: LongWord; base: Integer = 10): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum4';
-function QByteArray_setNum(handle: QByteArrayH; p1: int64; base: Integer = 10): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum5';
-function QByteArray_setNum(handle: QByteArrayH; p1: qword; base: Integer = 10): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum6';
-function QByteArray_setNum(handle: QByteArrayH; p1: Single; f: char; prec: Integer = 6): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum7';
-function QByteArray_setNum(handle: QByteArrayH; p1: Double; f: char; prec: Integer = 6): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum8';
-procedure QByteArray_number(retval: QByteArrayH; p1: Integer; base: Integer = 10); cdecl; external Qt4PasLib name 'QByteArray_number';
-procedure QByteArray_number(retval: QByteArrayH; p1: LongWord; base: Integer = 10); cdecl; external Qt4PasLib name 'QByteArray_number2';
-procedure QByteArray_number(retval: QByteArrayH; p1: int64; base: Integer = 10); cdecl; external Qt4PasLib name 'QByteArray_number3';
-procedure QByteArray_number(retval: QByteArrayH; p1: qword; base: Integer = 10); cdecl; external Qt4PasLib name 'QByteArray_number4';
-procedure QByteArray_number(retval: QByteArrayH; p1: Double; f: char; prec: Integer = 6); cdecl; external Qt4PasLib name 'QByteArray_number5';
-procedure QByteArray_fromRawData(retval: QByteArrayH; p1: PAnsiChar; size: Integer); cdecl; external Qt4PasLib name 'QByteArray_fromRawData';
+function QByteArray_setNum(handle: QByteArrayH; AnonParam1: ShortInt; base: Integer = 10): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum';
+function QByteArray_setNum(handle: QByteArrayH; AnonParam1: Word; base: Integer = 10): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum2';
+function QByteArray_setNum(handle: QByteArrayH; AnonParam1: Integer; base: Integer = 10): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum3';
+function QByteArray_setNum(handle: QByteArrayH; AnonParam1: LongWord; base: Integer = 10): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum4';
+function QByteArray_setNum(handle: QByteArrayH; AnonParam1: int64; base: Integer = 10): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum5';
+function QByteArray_setNum(handle: QByteArrayH; AnonParam1: qword; base: Integer = 10): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum6';
+function QByteArray_setNum(handle: QByteArrayH; AnonParam1: Single; f: char; prec: Integer = 6): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum7';
+function QByteArray_setNum(handle: QByteArrayH; AnonParam1: Double; f: char; prec: Integer = 6): QByteArrayH; cdecl; external Qt4PasLib name 'QByteArray_setNum8';
+procedure QByteArray_number(retval: QByteArrayH; AnonParam1: Integer; base: Integer = 10); cdecl; external Qt4PasLib name 'QByteArray_number';
+procedure QByteArray_number(retval: QByteArrayH; AnonParam1: LongWord; base: Integer = 10); cdecl; external Qt4PasLib name 'QByteArray_number2';
+procedure QByteArray_number(retval: QByteArrayH; AnonParam1: int64; base: Integer = 10); cdecl; external Qt4PasLib name 'QByteArray_number3';
+procedure QByteArray_number(retval: QByteArrayH; AnonParam1: qword; base: Integer = 10); cdecl; external Qt4PasLib name 'QByteArray_number4';
+procedure QByteArray_number(retval: QByteArrayH; AnonParam1: Double; f: char; prec: Integer = 6); cdecl; external Qt4PasLib name 'QByteArray_number5';
+procedure QByteArray_fromRawData(retval: QByteArrayH; AnonParam1: PAnsiChar; size: Integer); cdecl; external Qt4PasLib name 'QByteArray_fromRawData';
 procedure QByteArray_fromBase64(retval: QByteArrayH; base64: QByteArrayH); cdecl; external Qt4PasLib name 'QByteArray_fromBase64';
 procedure QByteArray_fromHex(retval: QByteArrayH; hexEncoded: QByteArrayH); cdecl; external Qt4PasLib name 'QByteArray_fromHex';
 procedure QByteArray_fromPercentEncoding(retval: QByteArrayH; pctEncoded: QByteArrayH; percent: char); cdecl; external Qt4PasLib name 'QByteArray_fromPercentEncoding';
@@ -3525,8 +3526,8 @@ procedure QLocale_toString(handle: QLocaleH; retval: PWideString; dateTime: QDat
 procedure QLocale_dateFormat(handle: QLocaleH; retval: PWideString; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_dateFormat';
 procedure QLocale_timeFormat(handle: QLocaleH; retval: PWideString; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_timeFormat';
 procedure QLocale_dateTimeFormat(handle: QLocaleH; retval: PWideString; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_dateTimeFormat';
-procedure QLocale_toDate(handle: QLocaleH; retval: QDateH; _string: PWideString; p2: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_toDate';
-procedure QLocale_toTime(handle: QLocaleH; retval: QTimeH; _string: PWideString; p2: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_toTime';
+procedure QLocale_toDate(handle: QLocaleH; retval: QDateH; _string: PWideString; AnonParam2: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_toDate';
+procedure QLocale_toTime(handle: QLocaleH; retval: QTimeH; _string: PWideString; AnonParam2: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_toTime';
 procedure QLocale_toDateTime(handle: QLocaleH; retval: QDateTimeH; _string: PWideString; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_toDateTime';
 procedure QLocale_toDate(handle: QLocaleH; retval: QDateH; _string: PWideString; format: PWideString); cdecl; external Qt4PasLib name 'QLocale_toDate2';
 procedure QLocale_toTime(handle: QLocaleH; retval: QTimeH; _string: PWideString; format: PWideString); cdecl; external Qt4PasLib name 'QLocale_toTime2';
@@ -3538,10 +3539,10 @@ procedure QLocale_zeroDigit(handle: QLocaleH; retval: PWideChar); cdecl; externa
 procedure QLocale_negativeSign(handle: QLocaleH; retval: PWideChar); cdecl; external Qt4PasLib name 'QLocale_negativeSign';
 procedure QLocale_positiveSign(handle: QLocaleH; retval: PWideChar); cdecl; external Qt4PasLib name 'QLocale_positiveSign';
 procedure QLocale_exponential(handle: QLocaleH; retval: PWideChar); cdecl; external Qt4PasLib name 'QLocale_exponential';
-procedure QLocale_monthName(handle: QLocaleH; retval: PWideString; p1: Integer; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_monthName';
-procedure QLocale_standaloneMonthName(handle: QLocaleH; retval: PWideString; p1: Integer; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_standaloneMonthName';
-procedure QLocale_dayName(handle: QLocaleH; retval: PWideString; p1: Integer; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_dayName';
-procedure QLocale_standaloneDayName(handle: QLocaleH; retval: PWideString; p1: Integer; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_standaloneDayName';
+procedure QLocale_monthName(handle: QLocaleH; retval: PWideString; AnonParam1: Integer; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_monthName';
+procedure QLocale_standaloneMonthName(handle: QLocaleH; retval: PWideString; AnonParam1: Integer; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_standaloneMonthName';
+procedure QLocale_dayName(handle: QLocaleH; retval: PWideString; AnonParam1: Integer; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_dayName';
+procedure QLocale_standaloneDayName(handle: QLocaleH; retval: PWideString; AnonParam1: Integer; format: QLocaleFormatType = QLocaleLongFormat); cdecl; external Qt4PasLib name 'QLocale_standaloneDayName';
 procedure QLocale_amText(handle: QLocaleH; retval: PWideString); cdecl; external Qt4PasLib name 'QLocale_amText';
 procedure QLocale_pmText(handle: QLocaleH; retval: PWideString); cdecl; external Qt4PasLib name 'QLocale_pmText';
 function QLocale_measurementSystem(handle: QLocaleH): QLocaleMeasurementSystem; cdecl; external Qt4PasLib name 'QLocale_measurementSystem';
@@ -3866,7 +3867,7 @@ const
     QDirNoFilter = 4294967295 { $ffffffff };
 
 
-function QDir_create(p1: QDirH): QDirH; cdecl; external Qt4PasLib name 'QDir_create';
+function QDir_create(AnonParam1: QDirH): QDirH; cdecl; external Qt4PasLib name 'QDir_create';
 procedure QDir_destroy(handle: QDirH); cdecl; external Qt4PasLib name 'QDir_destroy'; 
 function QDir_create(path: PWideString = nil): QDirH; cdecl; external Qt4PasLib name 'QDir_create2';
 function QDir_create(path: PWideString; nameFilter: PWideString; sort: QDirSortFlags; filter: QDirFilters = QDirAllEntries): QDirH; cdecl; external Qt4PasLib name 'QDir_create3';
@@ -4021,14 +4022,14 @@ procedure QUrl_fromEncoded(retval: QUrlH; url: QByteArrayH); cdecl; external Qt4
 procedure QUrl_fromEncoded(retval: QUrlH; url: QByteArrayH; mode: QUrlParsingMode); cdecl; external Qt4PasLib name 'QUrl_fromEncoded2';
 procedure QUrl_detach(handle: QUrlH); cdecl; external Qt4PasLib name 'QUrl_detach';
 function QUrl_isDetached(handle: QUrlH): Boolean; cdecl; external Qt4PasLib name 'QUrl_isDetached';
-procedure QUrl_fromPercentEncoding(retval: PWideString; p1: QByteArrayH); cdecl; external Qt4PasLib name 'QUrl_fromPercentEncoding';
-procedure QUrl_toPercentEncoding(retval: QByteArrayH; p1: PWideString; exclude: QByteArrayH = nil; include: QByteArrayH = nil); cdecl; external Qt4PasLib name 'QUrl_toPercentEncoding';
-procedure QUrl_fromPunycode(retval: PWideString; p1: QByteArrayH); cdecl; external Qt4PasLib name 'QUrl_fromPunycode';
-procedure QUrl_toPunycode(retval: QByteArrayH; p1: PWideString); cdecl; external Qt4PasLib name 'QUrl_toPunycode';
-procedure QUrl_fromAce(retval: PWideString; p1: QByteArrayH); cdecl; external Qt4PasLib name 'QUrl_fromAce';
-procedure QUrl_toAce(retval: QByteArrayH; p1: PWideString); cdecl; external Qt4PasLib name 'QUrl_toAce';
+procedure QUrl_fromPercentEncoding(retval: PWideString; AnonParam1: QByteArrayH); cdecl; external Qt4PasLib name 'QUrl_fromPercentEncoding';
+procedure QUrl_toPercentEncoding(retval: QByteArrayH; AnonParam1: PWideString; exclude: QByteArrayH = nil; include: QByteArrayH = nil); cdecl; external Qt4PasLib name 'QUrl_toPercentEncoding';
+procedure QUrl_fromPunycode(retval: PWideString; AnonParam1: QByteArrayH); cdecl; external Qt4PasLib name 'QUrl_fromPunycode';
+procedure QUrl_toPunycode(retval: QByteArrayH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QUrl_toPunycode';
+procedure QUrl_fromAce(retval: PWideString; AnonParam1: QByteArrayH); cdecl; external Qt4PasLib name 'QUrl_fromAce';
+procedure QUrl_toAce(retval: QByteArrayH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QUrl_toAce';
 procedure QUrl_idnWhitelist(retval: QStringListH); cdecl; external Qt4PasLib name 'QUrl_idnWhitelist';
-procedure QUrl_setIdnWhitelist(p1: QStringListH); cdecl; external Qt4PasLib name 'QUrl_setIdnWhitelist';
+procedure QUrl_setIdnWhitelist(AnonParam1: QStringListH); cdecl; external Qt4PasLib name 'QUrl_setIdnWhitelist';
 procedure QUrl_errorString(handle: QUrlH; retval: PWideString); cdecl; external Qt4PasLib name 'QUrl_errorString';
 
 function QFileSystemWatcher_create(parent: QObjectH = nil): QFileSystemWatcherH; cdecl; external Qt4PasLib name 'QFileSystemWatcher_create';
@@ -4057,33 +4058,33 @@ type
     QApplicationCustomColor = 1,
     QApplicationManyColor = 2 );
 
-function QApplication_create(argc: PInteger; argv: PPAnsiChar; p3: Integer = QT_VERSION): QApplicationH; cdecl; external Qt4PasLib name 'QApplication_create';
+function QApplication_create(argc: PInteger; argv: PPAnsiChar; AnonParam3: Integer = QT_VERSION): QApplicationH; cdecl; external Qt4PasLib name 'QApplication_create';
 procedure QApplication_destroy(handle: QApplicationH); cdecl; external Qt4PasLib name 'QApplication_destroy'; 
-function QApplication_create(argc: PInteger; argv: PPAnsiChar; GUIenabled: Boolean; p4: Integer = QT_VERSION): QApplicationH; cdecl; external Qt4PasLib name 'QApplication_create2';
-function QApplication_create(argc: PInteger; argv: PPAnsiChar; p3: QApplicationType; p4: Integer = QT_VERSION): QApplicationH; cdecl; external Qt4PasLib name 'QApplication_create3';
+function QApplication_create(argc: PInteger; argv: PPAnsiChar; GUIenabled: Boolean; AnonParam4: Integer = QT_VERSION): QApplicationH; cdecl; external Qt4PasLib name 'QApplication_create2';
+function QApplication_create(argc: PInteger; argv: PPAnsiChar; AnonParam3: QApplicationType; AnonParam4: Integer = QT_VERSION): QApplicationH; cdecl; external Qt4PasLib name 'QApplication_create3';
 {$ifdef BINUX }
-function QApplication_create(dpy: PDisplay; visual: QtHANDLE = 0; cmap: QtHANDLE = 0; p4: Integer = QT_VERSION): QApplicationH; cdecl; external Qt4PasLib name 'QApplication_create4';
-function QApplication_create(dpy: PDisplay; argc: PInteger; argv: PPAnsiChar; visual: QtHANDLE = 0; cmap: QtHANDLE = 0; p6: Integer = QT_VERSION): QApplicationH; cdecl; external Qt4PasLib name 'QApplication_create5';
+function QApplication_create(dpy: PDisplay; visual: QtHANDLE = 0; cmap: QtHANDLE = 0; AnonParam4: Integer = QT_VERSION): QApplicationH; cdecl; external Qt4PasLib name 'QApplication_create4';
+function QApplication_create(dpy: PDisplay; argc: PInteger; argv: PPAnsiChar; visual: QtHANDLE = 0; cmap: QtHANDLE = 0; AnonParam6: Integer = QT_VERSION): QApplicationH; cdecl; external Qt4PasLib name 'QApplication_create5';
 {$endif}
 function QApplication_type(): QApplicationType; cdecl; external Qt4PasLib name 'QApplication_type';
 function QApplication_style(): QStyleH; cdecl; external Qt4PasLib name 'QApplication_style';
-procedure QApplication_setStyle(p1: QStyleH); cdecl; external Qt4PasLib name 'QApplication_setStyle';
-function QApplication_setStyle(p1: PWideString): QStyleH; cdecl; external Qt4PasLib name 'QApplication_setStyle2';
+procedure QApplication_setStyle(AnonParam1: QStyleH); cdecl; external Qt4PasLib name 'QApplication_setStyle';
+function QApplication_setStyle(AnonParam1: PWideString): QStyleH; cdecl; external Qt4PasLib name 'QApplication_setStyle2';
 function QApplication_colorSpec(): Integer; cdecl; external Qt4PasLib name 'QApplication_colorSpec';
-procedure QApplication_setColorSpec(p1: Integer); cdecl; external Qt4PasLib name 'QApplication_setColorSpec';
-procedure QApplication_setGraphicsSystem(p1: PWideString); cdecl; external Qt4PasLib name 'QApplication_setGraphicsSystem';
+procedure QApplication_setColorSpec(AnonParam1: Integer); cdecl; external Qt4PasLib name 'QApplication_setColorSpec';
+procedure QApplication_setGraphicsSystem(AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QApplication_setGraphicsSystem';
 function QApplication_overrideCursor(): QCursorH; cdecl; external Qt4PasLib name 'QApplication_overrideCursor';
-procedure QApplication_setOverrideCursor(p1: QCursorH); cdecl; external Qt4PasLib name 'QApplication_setOverrideCursor';
-procedure QApplication_changeOverrideCursor(p1: QCursorH); cdecl; external Qt4PasLib name 'QApplication_changeOverrideCursor';
+procedure QApplication_setOverrideCursor(AnonParam1: QCursorH); cdecl; external Qt4PasLib name 'QApplication_setOverrideCursor';
+procedure QApplication_changeOverrideCursor(AnonParam1: QCursorH); cdecl; external Qt4PasLib name 'QApplication_changeOverrideCursor';
 procedure QApplication_restoreOverrideCursor(); cdecl; external Qt4PasLib name 'QApplication_restoreOverrideCursor';
 procedure QApplication_palette(retval: QPaletteH); cdecl; external Qt4PasLib name 'QApplication_palette';
-procedure QApplication_palette(retval: QPaletteH; p1: QWidgetH); cdecl; external Qt4PasLib name 'QApplication_palette2';
+procedure QApplication_palette(retval: QPaletteH; AnonParam1: QWidgetH); cdecl; external Qt4PasLib name 'QApplication_palette2';
 procedure QApplication_palette(retval: QPaletteH; className: PAnsiChar); cdecl; external Qt4PasLib name 'QApplication_palette3';
-procedure QApplication_setPalette(p1: QPaletteH; className: PAnsiChar = nil); cdecl; external Qt4PasLib name 'QApplication_setPalette';
+procedure QApplication_setPalette(AnonParam1: QPaletteH; className: PAnsiChar = nil); cdecl; external Qt4PasLib name 'QApplication_setPalette';
 procedure QApplication_font(retval: QFontH); cdecl; external Qt4PasLib name 'QApplication_font';
-procedure QApplication_font(retval: QFontH; p1: QWidgetH); cdecl; external Qt4PasLib name 'QApplication_font2';
+procedure QApplication_font(retval: QFontH; AnonParam1: QWidgetH); cdecl; external Qt4PasLib name 'QApplication_font2';
 procedure QApplication_font(retval: QFontH; className: PAnsiChar); cdecl; external Qt4PasLib name 'QApplication_font3';
-procedure QApplication_setFont(p1: QFontH; className: PAnsiChar = nil); cdecl; external Qt4PasLib name 'QApplication_setFont';
+procedure QApplication_setFont(AnonParam1: QFontH; className: PAnsiChar = nil); cdecl; external Qt4PasLib name 'QApplication_setFont';
 procedure QApplication_fontMetrics(retval: QFontMetricsH); cdecl; external Qt4PasLib name 'QApplication_fontMetrics';
 procedure QApplication_setWindowIcon(icon: QIconH); cdecl; external Qt4PasLib name 'QApplication_setWindowIcon';
 procedure QApplication_windowIcon(retval: QIconH); cdecl; external Qt4PasLib name 'QApplication_windowIcon';
@@ -4103,17 +4104,17 @@ procedure QApplication_beep(); cdecl; external Qt4PasLib name 'QApplication_beep
 procedure QApplication_alert(widget: QWidgetH; duration: Integer = 0); cdecl; external Qt4PasLib name 'QApplication_alert';
 function QApplication_keyboardModifiers(): QtKeyboardModifiers; cdecl; external Qt4PasLib name 'QApplication_keyboardModifiers';
 function QApplication_mouseButtons(): QtMouseButtons; cdecl; external Qt4PasLib name 'QApplication_mouseButtons';
-procedure QApplication_setDesktopSettingsAware(p1: Boolean); cdecl; external Qt4PasLib name 'QApplication_setDesktopSettingsAware';
+procedure QApplication_setDesktopSettingsAware(AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QApplication_setDesktopSettingsAware';
 function QApplication_desktopSettingsAware(): Boolean; cdecl; external Qt4PasLib name 'QApplication_desktopSettingsAware';
-procedure QApplication_setCursorFlashTime(p1: Integer); cdecl; external Qt4PasLib name 'QApplication_setCursorFlashTime';
+procedure QApplication_setCursorFlashTime(AnonParam1: Integer); cdecl; external Qt4PasLib name 'QApplication_setCursorFlashTime';
 function QApplication_cursorFlashTime(): Integer; cdecl; external Qt4PasLib name 'QApplication_cursorFlashTime';
-procedure QApplication_setDoubleClickInterval(p1: Integer); cdecl; external Qt4PasLib name 'QApplication_setDoubleClickInterval';
+procedure QApplication_setDoubleClickInterval(AnonParam1: Integer); cdecl; external Qt4PasLib name 'QApplication_setDoubleClickInterval';
 function QApplication_doubleClickInterval(): Integer; cdecl; external Qt4PasLib name 'QApplication_doubleClickInterval';
-procedure QApplication_setKeyboardInputInterval(p1: Integer); cdecl; external Qt4PasLib name 'QApplication_setKeyboardInputInterval';
+procedure QApplication_setKeyboardInputInterval(AnonParam1: Integer); cdecl; external Qt4PasLib name 'QApplication_setKeyboardInputInterval';
 function QApplication_keyboardInputInterval(): Integer; cdecl; external Qt4PasLib name 'QApplication_keyboardInputInterval';
-procedure QApplication_setWheelScrollLines(p1: Integer); cdecl; external Qt4PasLib name 'QApplication_setWheelScrollLines';
+procedure QApplication_setWheelScrollLines(AnonParam1: Integer); cdecl; external Qt4PasLib name 'QApplication_setWheelScrollLines';
 function QApplication_wheelScrollLines(): Integer; cdecl; external Qt4PasLib name 'QApplication_wheelScrollLines';
-procedure QApplication_setGlobalStrut(p1: PSize); cdecl; external Qt4PasLib name 'QApplication_setGlobalStrut';
+procedure QApplication_setGlobalStrut(AnonParam1: PSize); cdecl; external Qt4PasLib name 'QApplication_setGlobalStrut';
 procedure QApplication_globalStrut(retval: PSize); cdecl; external Qt4PasLib name 'QApplication_globalStrut';
 procedure QApplication_setStartDragTime(ms: Integer); cdecl; external Qt4PasLib name 'QApplication_setStartDragTime';
 function QApplication_startDragTime(): Integer; cdecl; external Qt4PasLib name 'QApplication_startDragTime';
@@ -4123,12 +4124,12 @@ procedure QApplication_setLayoutDirection(direction: QtLayoutDirection); cdecl; 
 function QApplication_layoutDirection(): QtLayoutDirection; cdecl; external Qt4PasLib name 'QApplication_layoutDirection';
 function QApplication_isRightToLeft(): Boolean; cdecl; external Qt4PasLib name 'QApplication_isRightToLeft';
 function QApplication_isLeftToRight(): Boolean; cdecl; external Qt4PasLib name 'QApplication_isLeftToRight';
-function QApplication_isEffectEnabled(p1: QtUIEffect): Boolean; cdecl; external Qt4PasLib name 'QApplication_isEffectEnabled';
-procedure QApplication_setEffectEnabled(p1: QtUIEffect; enable: Boolean = True); cdecl; external Qt4PasLib name 'QApplication_setEffectEnabled';
+function QApplication_isEffectEnabled(AnonParam1: QtUIEffect): Boolean; cdecl; external Qt4PasLib name 'QApplication_isEffectEnabled';
+procedure QApplication_setEffectEnabled(AnonParam1: QtUIEffect; enable: Boolean = True); cdecl; external Qt4PasLib name 'QApplication_setEffectEnabled';
 {$ifdef BINUX }
-function QApplication_x11EventFilter(handle: QApplicationH; p1: PEvent): Boolean; cdecl; external Qt4PasLib name 'QApplication_x11EventFilter';
-function QApplication_x11ClientMessage(handle: QApplicationH; p1: QWidgetH; p2: PEvent; passive_only: Boolean): Integer; cdecl; external Qt4PasLib name 'QApplication_x11ClientMessage';
-function QApplication_x11ProcessEvent(handle: QApplicationH; p1: PEvent): Integer; cdecl; external Qt4PasLib name 'QApplication_x11ProcessEvent';
+function QApplication_x11EventFilter(handle: QApplicationH; AnonParam1: PEvent): Boolean; cdecl; external Qt4PasLib name 'QApplication_x11EventFilter';
+function QApplication_x11ClientMessage(handle: QApplicationH; AnonParam1: QWidgetH; AnonParam2: PEvent; passive_only: Boolean): Integer; cdecl; external Qt4PasLib name 'QApplication_x11ClientMessage';
+function QApplication_x11ProcessEvent(handle: QApplicationH; AnonParam1: PEvent): Integer; cdecl; external Qt4PasLib name 'QApplication_x11ProcessEvent';
 {$endif}
 {$ifdef BINUX or MSWINDOWS or DARWIN }
 function QApplication_isSessionRestored(handle: QApplicationH): Boolean; cdecl; external Qt4PasLib name 'QApplication_isSessionRestored';
@@ -4137,12 +4138,12 @@ procedure QApplication_sessionKey(handle: QApplicationH; retval: PWideString); c
 procedure QApplication_commitData(handle: QApplicationH; sm: QSessionManagerH); cdecl; external Qt4PasLib name 'QApplication_commitData';
 procedure QApplication_saveState(handle: QApplicationH; sm: QSessionManagerH); cdecl; external Qt4PasLib name 'QApplication_saveState';
 {$endif}
-procedure QApplication_setInputContext(handle: QApplicationH; p1: QInputContextH); cdecl; external Qt4PasLib name 'QApplication_setInputContext';
+procedure QApplication_setInputContext(handle: QApplicationH; AnonParam1: QInputContextH); cdecl; external Qt4PasLib name 'QApplication_setInputContext';
 function QApplication_inputContext(handle: QApplicationH): QInputContextH; cdecl; external Qt4PasLib name 'QApplication_inputContext';
 procedure QApplication_keyboardInputLocale(retval: QLocaleH); cdecl; external Qt4PasLib name 'QApplication_keyboardInputLocale';
 function QApplication_keyboardInputDirection(): QtLayoutDirection; cdecl; external Qt4PasLib name 'QApplication_keyboardInputDirection';
 function QApplication_exec(): Integer; cdecl; external Qt4PasLib name 'QApplication_exec';
-function QApplication_notify(handle: QApplicationH; p1: QObjectH; p2: QEventH): Boolean; cdecl; external Qt4PasLib name 'QApplication_notify';
+function QApplication_notify(handle: QApplicationH; AnonParam1: QObjectH; AnonParam2: QEventH): Boolean; cdecl; external Qt4PasLib name 'QApplication_notify';
 procedure QApplication_setQuitOnLastWindowClosed(quit: Boolean); cdecl; external Qt4PasLib name 'QApplication_setQuitOnLastWindowClosed';
 function QApplication_quitOnLastWindowClosed(): Boolean; cdecl; external Qt4PasLib name 'QApplication_quitOnLastWindowClosed';
 procedure QApplication_styleSheet(handle: QApplicationH; retval: PWideString); cdecl; external Qt4PasLib name 'QApplication_styleSheet';
@@ -4150,18 +4151,18 @@ procedure QApplication_setStyleSheet(handle: QApplicationH; sheet: PWideString);
 procedure QApplication_closeAllWindows(); cdecl; external Qt4PasLib name 'QApplication_closeAllWindows';
 procedure QApplication_aboutQt(); cdecl; external Qt4PasLib name 'QApplication_aboutQt';
 {$ifdef MSWINDOWS }
-procedure QApplication_winFocus(handle: QApplicationH; p1: QWidgetH; p2: Boolean); cdecl; external Qt4PasLib name 'QApplication_winFocus';
+procedure QApplication_winFocus(handle: QApplicationH; AnonParam1: QWidgetH; AnonParam2: Boolean); cdecl; external Qt4PasLib name 'QApplication_winFocus';
 procedure QApplication_winMouseButtonUp(); cdecl; external Qt4PasLib name 'QApplication_winMouseButtonUp';
 {$endif}
 {$ifdef DARWIN }
-function QApplication_macEventFilter(handle: QApplicationH; p1: EventHandlerCallRef; p2: EventRef): Boolean; cdecl; external Qt4PasLib name 'QApplication_macEventFilter';
+function QApplication_macEventFilter(handle: QApplicationH; AnonParam1: EventHandlerCallRef; AnonParam2: EventRef): Boolean; cdecl; external Qt4PasLib name 'QApplication_macEventFilter';
 {$endif}
 {$ifdef QTOPIA }
-function QApplication_qwsEventFilter(handle: QApplicationH; p1: QWSEventH): Boolean; cdecl; external Qt4PasLib name 'QApplication_qwsEventFilter';
-function QApplication_qwsProcessEvent(handle: QApplicationH; p1: QWSEventH): Integer; cdecl; external Qt4PasLib name 'QApplication_qwsProcessEvent';
+function QApplication_qwsEventFilter(handle: QApplicationH; AnonParam1: QWSEventH): Boolean; cdecl; external Qt4PasLib name 'QApplication_qwsEventFilter';
+function QApplication_qwsProcessEvent(handle: QApplicationH; AnonParam1: QWSEventH): Integer; cdecl; external Qt4PasLib name 'QApplication_qwsProcessEvent';
 procedure QApplication_qwsSetCustomColors(handle: QApplicationH; colortable: PQRgb; start: Integer; numColors: Integer); cdecl; external Qt4PasLib name 'QApplication_qwsSetCustomColors';
 function QApplication_qwsDecoration(): QDecorationH; cdecl; external Qt4PasLib name 'QApplication_qwsDecoration';
-procedure QApplication_qwsSetDecoration(p1: QDecorationH); cdecl; external Qt4PasLib name 'QApplication_qwsSetDecoration';
+procedure QApplication_qwsSetDecoration(AnonParam1: QDecorationH); cdecl; external Qt4PasLib name 'QApplication_qwsSetDecoration';
 function QApplication_qwsSetDecoration(decoration: PWideString): QDecorationH; cdecl; external Qt4PasLib name 'QApplication_qwsSetDecoration2';
 {$endif}
 
@@ -4269,7 +4270,7 @@ function QPalette_linkVisited(handle: QPaletteH): QBrushH; cdecl; external Qt4Pa
 function QPalette_isCopyOf(handle: QPaletteH; p: QPaletteH): Boolean; cdecl; external Qt4PasLib name 'QPalette_isCopyOf';
 function QPalette_serialNumber(handle: QPaletteH): Integer; cdecl; external Qt4PasLib name 'QPalette_serialNumber';
 function QPalette_cacheKey(handle: QPaletteH): int64; cdecl; external Qt4PasLib name 'QPalette_cacheKey';
-procedure QPalette_resolve(handle: QPaletteH; retval: QPaletteH; p1: QPaletteH); cdecl; external Qt4PasLib name 'QPalette_resolve';
+procedure QPalette_resolve(handle: QPaletteH; retval: QPaletteH; AnonParam1: QPaletteH); cdecl; external Qt4PasLib name 'QPalette_resolve';
 function QPalette_resolve(handle: QPaletteH): LongWord; cdecl; external Qt4PasLib name 'QPalette_resolve2';
 procedure QPalette_resolve(handle: QPaletteH; mask: LongWord); cdecl; external Qt4PasLib name 'QPalette_resolve3';
 
@@ -4313,6 +4314,25 @@ const
     QSizePolicyExpanding = 7 { $7 };
     QSizePolicyIgnored = 13 { $d };
 
+
+function QSizePolicy_create(): QSizePolicyH; cdecl; external Qt4PasLib name 'QSizePolicy_create';
+procedure QSizePolicy_destroy(handle: QSizePolicyH); cdecl; external Qt4PasLib name 'QSizePolicy_destroy'; 
+function QSizePolicy_create(horizontal: QSizePolicyPolicy; vertical: QSizePolicyPolicy): QSizePolicyH; cdecl; external Qt4PasLib name 'QSizePolicy_create2';
+function QSizePolicy_create(horizontal: QSizePolicyPolicy; vertical: QSizePolicyPolicy; _type: QSizePolicyControlType): QSizePolicyH; cdecl; external Qt4PasLib name 'QSizePolicy_create3';
+function QSizePolicy_horizontalPolicy(handle: QSizePolicyH): QSizePolicyPolicy; cdecl; external Qt4PasLib name 'QSizePolicy_horizontalPolicy';
+function QSizePolicy_verticalPolicy(handle: QSizePolicyH): QSizePolicyPolicy; cdecl; external Qt4PasLib name 'QSizePolicy_verticalPolicy';
+function QSizePolicy_controlType(handle: QSizePolicyH): QSizePolicyControlType; cdecl; external Qt4PasLib name 'QSizePolicy_controlType';
+procedure QSizePolicy_setHorizontalPolicy(handle: QSizePolicyH; d: QSizePolicyPolicy); cdecl; external Qt4PasLib name 'QSizePolicy_setHorizontalPolicy';
+procedure QSizePolicy_setVerticalPolicy(handle: QSizePolicyH; d: QSizePolicyPolicy); cdecl; external Qt4PasLib name 'QSizePolicy_setVerticalPolicy';
+procedure QSizePolicy_setControlType(handle: QSizePolicyH; _type: QSizePolicyControlType); cdecl; external Qt4PasLib name 'QSizePolicy_setControlType';
+function QSizePolicy_expandingDirections(handle: QSizePolicyH): QtOrientations; cdecl; external Qt4PasLib name 'QSizePolicy_expandingDirections';
+procedure QSizePolicy_setHeightForWidth(handle: QSizePolicyH; b: Boolean); cdecl; external Qt4PasLib name 'QSizePolicy_setHeightForWidth';
+function QSizePolicy_hasHeightForWidth(handle: QSizePolicyH): Boolean; cdecl; external Qt4PasLib name 'QSizePolicy_hasHeightForWidth';
+function QSizePolicy_horizontalStretch(handle: QSizePolicyH): Integer; cdecl; external Qt4PasLib name 'QSizePolicy_horizontalStretch';
+function QSizePolicy_verticalStretch(handle: QSizePolicyH): Integer; cdecl; external Qt4PasLib name 'QSizePolicy_verticalStretch';
+procedure QSizePolicy_setHorizontalStretch(handle: QSizePolicyH; stretchFactor: char); cdecl; external Qt4PasLib name 'QSizePolicy_setHorizontalStretch';
+procedure QSizePolicy_setVerticalStretch(handle: QSizePolicyH; stretchFactor: char); cdecl; external Qt4PasLib name 'QSizePolicy_setVerticalStretch';
+procedure QSizePolicy_transpose(handle: QSizePolicyH); cdecl; external Qt4PasLib name 'QSizePolicy_transpose';
 
 
 type
@@ -4364,18 +4384,18 @@ procedure QWidget_createWinId(handle: QWidgetH); cdecl; external Qt4PasLib name 
 function QWidget_internalWinId(handle: QWidgetH): LongWord; cdecl; external Qt4PasLib name 'QWidget_internalWinId';
 function QWidget_effectiveWinId(handle: QWidgetH): LongWord; cdecl; external Qt4PasLib name 'QWidget_effectiveWinId';
 function QWidget_style(handle: QWidgetH): QStyleH; cdecl; external Qt4PasLib name 'QWidget_style';
-procedure QWidget_setStyle(handle: QWidgetH; p1: QStyleH); cdecl; external Qt4PasLib name 'QWidget_setStyle';
+procedure QWidget_setStyle(handle: QWidgetH; AnonParam1: QStyleH); cdecl; external Qt4PasLib name 'QWidget_setStyle';
 function QWidget_isTopLevel(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isTopLevel';
 function QWidget_isWindow(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isWindow';
 function QWidget_isModal(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isModal';
 function QWidget_windowModality(handle: QWidgetH): QtWindowModality; cdecl; external Qt4PasLib name 'QWidget_windowModality';
 procedure QWidget_setWindowModality(handle: QWidgetH; windowModality: QtWindowModality); cdecl; external Qt4PasLib name 'QWidget_setWindowModality';
 function QWidget_isEnabled(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isEnabled';
-function QWidget_isEnabledTo(handle: QWidgetH; p1: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isEnabledTo';
+function QWidget_isEnabledTo(handle: QWidgetH; AnonParam1: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isEnabledTo';
 function QWidget_isEnabledToTLW(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isEnabledToTLW';
-procedure QWidget_setEnabled(handle: QWidgetH; p1: Boolean); cdecl; external Qt4PasLib name 'QWidget_setEnabled';
-procedure QWidget_setDisabled(handle: QWidgetH; p1: Boolean); cdecl; external Qt4PasLib name 'QWidget_setDisabled';
-procedure QWidget_setWindowModified(handle: QWidgetH; p1: Boolean); cdecl; external Qt4PasLib name 'QWidget_setWindowModified';
+procedure QWidget_setEnabled(handle: QWidgetH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QWidget_setEnabled';
+procedure QWidget_setDisabled(handle: QWidgetH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QWidget_setDisabled';
+procedure QWidget_setWindowModified(handle: QWidgetH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QWidget_setWindowModified';
 procedure QWidget_frameGeometry(handle: QWidgetH; retval: PRect); cdecl; external Qt4PasLib name 'QWidget_frameGeometry';
 procedure QWidget_geometry(handle: QWidgetH; retval: PRect); cdecl; external Qt4PasLib name 'QWidget_geometry';
 procedure QWidget_normalGeometry(handle: QWidgetH; retval: PRect); cdecl; external Qt4PasLib name 'QWidget_normalGeometry';
@@ -4395,75 +4415,75 @@ function QWidget_minimumWidth(handle: QWidgetH): Integer; cdecl; external Qt4Pas
 function QWidget_minimumHeight(handle: QWidgetH): Integer; cdecl; external Qt4PasLib name 'QWidget_minimumHeight';
 function QWidget_maximumWidth(handle: QWidgetH): Integer; cdecl; external Qt4PasLib name 'QWidget_maximumWidth';
 function QWidget_maximumHeight(handle: QWidgetH): Integer; cdecl; external Qt4PasLib name 'QWidget_maximumHeight';
-procedure QWidget_setMinimumSize(handle: QWidgetH; p1: PSize); cdecl; external Qt4PasLib name 'QWidget_setMinimumSize';
+procedure QWidget_setMinimumSize(handle: QWidgetH; AnonParam1: PSize); cdecl; external Qt4PasLib name 'QWidget_setMinimumSize';
 procedure QWidget_setMinimumSize(handle: QWidgetH; minw: Integer; minh: Integer); cdecl; external Qt4PasLib name 'QWidget_setMinimumSize2';
-procedure QWidget_setMaximumSize(handle: QWidgetH; p1: PSize); cdecl; external Qt4PasLib name 'QWidget_setMaximumSize';
+procedure QWidget_setMaximumSize(handle: QWidgetH; AnonParam1: PSize); cdecl; external Qt4PasLib name 'QWidget_setMaximumSize';
 procedure QWidget_setMaximumSize(handle: QWidgetH; maxw: Integer; maxh: Integer); cdecl; external Qt4PasLib name 'QWidget_setMaximumSize2';
 procedure QWidget_setMinimumWidth(handle: QWidgetH; minw: Integer); cdecl; external Qt4PasLib name 'QWidget_setMinimumWidth';
 procedure QWidget_setMinimumHeight(handle: QWidgetH; minh: Integer); cdecl; external Qt4PasLib name 'QWidget_setMinimumHeight';
 procedure QWidget_setMaximumWidth(handle: QWidgetH; maxw: Integer); cdecl; external Qt4PasLib name 'QWidget_setMaximumWidth';
 procedure QWidget_setMaximumHeight(handle: QWidgetH; maxh: Integer); cdecl; external Qt4PasLib name 'QWidget_setMaximumHeight';
 procedure QWidget_sizeIncrement(handle: QWidgetH; retval: PSize); cdecl; external Qt4PasLib name 'QWidget_sizeIncrement';
-procedure QWidget_setSizeIncrement(handle: QWidgetH; p1: PSize); cdecl; external Qt4PasLib name 'QWidget_setSizeIncrement';
+procedure QWidget_setSizeIncrement(handle: QWidgetH; AnonParam1: PSize); cdecl; external Qt4PasLib name 'QWidget_setSizeIncrement';
 procedure QWidget_setSizeIncrement(handle: QWidgetH; w: Integer; h: Integer); cdecl; external Qt4PasLib name 'QWidget_setSizeIncrement2';
 procedure QWidget_baseSize(handle: QWidgetH; retval: PSize); cdecl; external Qt4PasLib name 'QWidget_baseSize';
-procedure QWidget_setBaseSize(handle: QWidgetH; p1: PSize); cdecl; external Qt4PasLib name 'QWidget_setBaseSize';
+procedure QWidget_setBaseSize(handle: QWidgetH; AnonParam1: PSize); cdecl; external Qt4PasLib name 'QWidget_setBaseSize';
 procedure QWidget_setBaseSize(handle: QWidgetH; basew: Integer; baseh: Integer); cdecl; external Qt4PasLib name 'QWidget_setBaseSize2';
-procedure QWidget_setFixedSize(handle: QWidgetH; p1: PSize); cdecl; external Qt4PasLib name 'QWidget_setFixedSize';
+procedure QWidget_setFixedSize(handle: QWidgetH; AnonParam1: PSize); cdecl; external Qt4PasLib name 'QWidget_setFixedSize';
 procedure QWidget_setFixedSize(handle: QWidgetH; w: Integer; h: Integer); cdecl; external Qt4PasLib name 'QWidget_setFixedSize2';
 procedure QWidget_setFixedWidth(handle: QWidgetH; w: Integer); cdecl; external Qt4PasLib name 'QWidget_setFixedWidth';
 procedure QWidget_setFixedHeight(handle: QWidgetH; h: Integer); cdecl; external Qt4PasLib name 'QWidget_setFixedHeight';
-procedure QWidget_mapToGlobal(handle: QWidgetH; retval: PQtPoint; p1: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_mapToGlobal';
-procedure QWidget_mapFromGlobal(handle: QWidgetH; retval: PQtPoint; p1: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_mapFromGlobal';
-procedure QWidget_mapToParent(handle: QWidgetH; retval: PQtPoint; p1: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_mapToParent';
-procedure QWidget_mapFromParent(handle: QWidgetH; retval: PQtPoint; p1: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_mapFromParent';
-procedure QWidget_mapTo(handle: QWidgetH; retval: PQtPoint; p1: QWidgetH; p2: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_mapTo';
-procedure QWidget_mapFrom(handle: QWidgetH; retval: PQtPoint; p1: QWidgetH; p2: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_mapFrom';
+procedure QWidget_mapToGlobal(handle: QWidgetH; retval: PQtPoint; AnonParam1: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_mapToGlobal';
+procedure QWidget_mapFromGlobal(handle: QWidgetH; retval: PQtPoint; AnonParam1: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_mapFromGlobal';
+procedure QWidget_mapToParent(handle: QWidgetH; retval: PQtPoint; AnonParam1: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_mapToParent';
+procedure QWidget_mapFromParent(handle: QWidgetH; retval: PQtPoint; AnonParam1: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_mapFromParent';
+procedure QWidget_mapTo(handle: QWidgetH; retval: PQtPoint; AnonParam1: QWidgetH; AnonParam2: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_mapTo';
+procedure QWidget_mapFrom(handle: QWidgetH; retval: PQtPoint; AnonParam1: QWidgetH; AnonParam2: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_mapFrom';
 function QWidget_window(handle: QWidgetH): QWidgetH; cdecl; external Qt4PasLib name 'QWidget_window';
 function QWidget_nativeParentWidget(handle: QWidgetH): QWidgetH; cdecl; external Qt4PasLib name 'QWidget_nativeParentWidget';
 function QWidget_topLevelWidget(handle: QWidgetH): QWidgetH; cdecl; external Qt4PasLib name 'QWidget_topLevelWidget';
 function QWidget_palette(handle: QWidgetH): QPaletteH; cdecl; external Qt4PasLib name 'QWidget_palette';
-procedure QWidget_setPalette(handle: QWidgetH; p1: QPaletteH); cdecl; external Qt4PasLib name 'QWidget_setPalette';
-procedure QWidget_setBackgroundRole(handle: QWidgetH; p1: QPaletteColorRole); cdecl; external Qt4PasLib name 'QWidget_setBackgroundRole';
+procedure QWidget_setPalette(handle: QWidgetH; AnonParam1: QPaletteH); cdecl; external Qt4PasLib name 'QWidget_setPalette';
+procedure QWidget_setBackgroundRole(handle: QWidgetH; AnonParam1: QPaletteColorRole); cdecl; external Qt4PasLib name 'QWidget_setBackgroundRole';
 function QWidget_backgroundRole(handle: QWidgetH): QPaletteColorRole; cdecl; external Qt4PasLib name 'QWidget_backgroundRole';
-procedure QWidget_setForegroundRole(handle: QWidgetH; p1: QPaletteColorRole); cdecl; external Qt4PasLib name 'QWidget_setForegroundRole';
+procedure QWidget_setForegroundRole(handle: QWidgetH; AnonParam1: QPaletteColorRole); cdecl; external Qt4PasLib name 'QWidget_setForegroundRole';
 function QWidget_foregroundRole(handle: QWidgetH): QPaletteColorRole; cdecl; external Qt4PasLib name 'QWidget_foregroundRole';
 function QWidget_font(handle: QWidgetH): QFontH; cdecl; external Qt4PasLib name 'QWidget_font';
-procedure QWidget_setFont(handle: QWidgetH; p1: QFontH); cdecl; external Qt4PasLib name 'QWidget_setFont';
+procedure QWidget_setFont(handle: QWidgetH; AnonParam1: QFontH); cdecl; external Qt4PasLib name 'QWidget_setFont';
 procedure QWidget_fontMetrics(handle: QWidgetH; retval: QFontMetricsH); cdecl; external Qt4PasLib name 'QWidget_fontMetrics';
 procedure QWidget_fontInfo(handle: QWidgetH; retval: QFontInfoH); cdecl; external Qt4PasLib name 'QWidget_fontInfo';
 procedure QWidget_cursor(handle: QWidgetH; retval: QCursorH); cdecl; external Qt4PasLib name 'QWidget_cursor';
-procedure QWidget_setCursor(handle: QWidgetH; p1: QCursorH); cdecl; external Qt4PasLib name 'QWidget_setCursor';
+procedure QWidget_setCursor(handle: QWidgetH; AnonParam1: QCursorH); cdecl; external Qt4PasLib name 'QWidget_setCursor';
 procedure QWidget_unsetCursor(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_unsetCursor';
 procedure QWidget_setMouseTracking(handle: QWidgetH; enable: Boolean); cdecl; external Qt4PasLib name 'QWidget_setMouseTracking';
 function QWidget_hasMouseTracking(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_hasMouseTracking';
 function QWidget_underMouse(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_underMouse';
-procedure QWidget_setMask(handle: QWidgetH; p1: QBitmapH); cdecl; external Qt4PasLib name 'QWidget_setMask';
-procedure QWidget_setMask(handle: QWidgetH; p1: QRegionH); cdecl; external Qt4PasLib name 'QWidget_setMask2';
+procedure QWidget_setMask(handle: QWidgetH; AnonParam1: QBitmapH); cdecl; external Qt4PasLib name 'QWidget_setMask';
+procedure QWidget_setMask(handle: QWidgetH; AnonParam1: QRegionH); cdecl; external Qt4PasLib name 'QWidget_setMask2';
 procedure QWidget_mask(handle: QWidgetH; retval: QRegionH); cdecl; external Qt4PasLib name 'QWidget_mask';
 procedure QWidget_clearMask(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_clearMask';
 procedure QWidget_render(handle: QWidgetH; target: QPaintDeviceH; targetOffset: PQtPoint; sourceRegion: QRegionH; renderFlags: QWidgetRenderFlags); cdecl; external Qt4PasLib name 'QWidget_render';
 procedure QWidget_render(handle: QWidgetH; painter: QPainterH; targetOffset: PQtPoint; sourceRegion: QRegionH; renderFlags: QWidgetRenderFlags); cdecl; external Qt4PasLib name 'QWidget_render2';
-procedure QWidget_setWindowTitle(handle: QWidgetH; p1: PWideString); cdecl; external Qt4PasLib name 'QWidget_setWindowTitle';
+procedure QWidget_setWindowTitle(handle: QWidgetH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QWidget_setWindowTitle';
 procedure QWidget_setStyleSheet(handle: QWidgetH; styleSheet: PWideString); cdecl; external Qt4PasLib name 'QWidget_setStyleSheet';
 procedure QWidget_styleSheet(handle: QWidgetH; retval: PWideString); cdecl; external Qt4PasLib name 'QWidget_styleSheet';
 procedure QWidget_windowTitle(handle: QWidgetH; retval: PWideString); cdecl; external Qt4PasLib name 'QWidget_windowTitle';
 procedure QWidget_setWindowIcon(handle: QWidgetH; icon: QIconH); cdecl; external Qt4PasLib name 'QWidget_setWindowIcon';
 procedure QWidget_windowIcon(handle: QWidgetH; retval: QIconH); cdecl; external Qt4PasLib name 'QWidget_windowIcon';
-procedure QWidget_setWindowIconText(handle: QWidgetH; p1: PWideString); cdecl; external Qt4PasLib name 'QWidget_setWindowIconText';
+procedure QWidget_setWindowIconText(handle: QWidgetH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QWidget_setWindowIconText';
 procedure QWidget_windowIconText(handle: QWidgetH; retval: PWideString); cdecl; external Qt4PasLib name 'QWidget_windowIconText';
-procedure QWidget_setWindowRole(handle: QWidgetH; p1: PWideString); cdecl; external Qt4PasLib name 'QWidget_setWindowRole';
+procedure QWidget_setWindowRole(handle: QWidgetH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QWidget_setWindowRole';
 procedure QWidget_windowRole(handle: QWidgetH; retval: PWideString); cdecl; external Qt4PasLib name 'QWidget_windowRole';
 procedure QWidget_setWindowFilePath(handle: QWidgetH; filePath: PWideString); cdecl; external Qt4PasLib name 'QWidget_setWindowFilePath';
 procedure QWidget_windowFilePath(handle: QWidgetH; retval: PWideString); cdecl; external Qt4PasLib name 'QWidget_windowFilePath';
 procedure QWidget_setWindowOpacity(handle: QWidgetH; level: qreal); cdecl; external Qt4PasLib name 'QWidget_setWindowOpacity';
 function QWidget_windowOpacity(handle: QWidgetH): qreal; cdecl; external Qt4PasLib name 'QWidget_windowOpacity';
 function QWidget_isWindowModified(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isWindowModified';
-procedure QWidget_setToolTip(handle: QWidgetH; p1: PWideString); cdecl; external Qt4PasLib name 'QWidget_setToolTip';
+procedure QWidget_setToolTip(handle: QWidgetH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QWidget_setToolTip';
 procedure QWidget_toolTip(handle: QWidgetH; retval: PWideString); cdecl; external Qt4PasLib name 'QWidget_toolTip';
-procedure QWidget_setStatusTip(handle: QWidgetH; p1: PWideString); cdecl; external Qt4PasLib name 'QWidget_setStatusTip';
+procedure QWidget_setStatusTip(handle: QWidgetH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QWidget_setStatusTip';
 procedure QWidget_statusTip(handle: QWidgetH; retval: PWideString); cdecl; external Qt4PasLib name 'QWidget_statusTip';
-procedure QWidget_setWhatsThis(handle: QWidgetH; p1: PWideString); cdecl; external Qt4PasLib name 'QWidget_setWhatsThis';
+procedure QWidget_setWhatsThis(handle: QWidgetH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QWidget_setWhatsThis';
 procedure QWidget_whatsThis(handle: QWidgetH; retval: PWideString); cdecl; external Qt4PasLib name 'QWidget_whatsThis';
 procedure QWidget_accessibleName(handle: QWidgetH; retval: PWideString); cdecl; external Qt4PasLib name 'QWidget_accessibleName';
 procedure QWidget_setAccessibleName(handle: QWidgetH; name: PWideString); cdecl; external Qt4PasLib name 'QWidget_setAccessibleName';
@@ -4485,13 +4505,13 @@ procedure QWidget_setFocus(handle: QWidgetH; reason: QtFocusReason); cdecl; exte
 function QWidget_focusPolicy(handle: QWidgetH): QtFocusPolicy; cdecl; external Qt4PasLib name 'QWidget_focusPolicy';
 procedure QWidget_setFocusPolicy(handle: QWidgetH; policy: QtFocusPolicy); cdecl; external Qt4PasLib name 'QWidget_setFocusPolicy';
 function QWidget_hasFocus(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_hasFocus';
-procedure QWidget_setTabOrder(p1: QWidgetH; p2: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_setTabOrder';
-procedure QWidget_setFocusProxy(handle: QWidgetH; p1: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_setFocusProxy';
+procedure QWidget_setTabOrder(AnonParam1: QWidgetH; AnonParam2: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_setTabOrder';
+procedure QWidget_setFocusProxy(handle: QWidgetH; AnonParam1: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_setFocusProxy';
 function QWidget_focusProxy(handle: QWidgetH): QWidgetH; cdecl; external Qt4PasLib name 'QWidget_focusProxy';
 function QWidget_contextMenuPolicy(handle: QWidgetH): QtContextMenuPolicy; cdecl; external Qt4PasLib name 'QWidget_contextMenuPolicy';
 procedure QWidget_setContextMenuPolicy(handle: QWidgetH; policy: QtContextMenuPolicy); cdecl; external Qt4PasLib name 'QWidget_setContextMenuPolicy';
 procedure QWidget_grabMouse(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_grabMouse';
-procedure QWidget_grabMouse(handle: QWidgetH; p1: QCursorH); cdecl; external Qt4PasLib name 'QWidget_grabMouse2';
+procedure QWidget_grabMouse(handle: QWidgetH; AnonParam1: QCursorH); cdecl; external Qt4PasLib name 'QWidget_grabMouse2';
 procedure QWidget_releaseMouse(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_releaseMouse';
 procedure QWidget_grabKeyboard(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_grabKeyboard';
 procedure QWidget_releaseKeyboard(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_releaseKeyboard';
@@ -4507,11 +4527,11 @@ function QWidget_graphicsProxyWidget(handle: QWidgetH): QGraphicsProxyWidgetH; c
 procedure QWidget_update(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_update';
 procedure QWidget_repaint(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_repaint';
 procedure QWidget_update(handle: QWidgetH; x: Integer; y: Integer; w: Integer; h: Integer); cdecl; external Qt4PasLib name 'QWidget_update2';
-procedure QWidget_update(handle: QWidgetH; p1: PRect); cdecl; external Qt4PasLib name 'QWidget_update3';
-procedure QWidget_update(handle: QWidgetH; p1: QRegionH); cdecl; external Qt4PasLib name 'QWidget_update4';
+procedure QWidget_update(handle: QWidgetH; AnonParam1: PRect); cdecl; external Qt4PasLib name 'QWidget_update3';
+procedure QWidget_update(handle: QWidgetH; AnonParam1: QRegionH); cdecl; external Qt4PasLib name 'QWidget_update4';
 procedure QWidget_repaint(handle: QWidgetH; x: Integer; y: Integer; w: Integer; h: Integer); cdecl; external Qt4PasLib name 'QWidget_repaint2';
-procedure QWidget_repaint(handle: QWidgetH; p1: PRect); cdecl; external Qt4PasLib name 'QWidget_repaint3';
-procedure QWidget_repaint(handle: QWidgetH; p1: QRegionH); cdecl; external Qt4PasLib name 'QWidget_repaint4';
+procedure QWidget_repaint(handle: QWidgetH; AnonParam1: PRect); cdecl; external Qt4PasLib name 'QWidget_repaint3';
+procedure QWidget_repaint(handle: QWidgetH; AnonParam1: QRegionH); cdecl; external Qt4PasLib name 'QWidget_repaint4';
 procedure QWidget_setVisible(handle: QWidgetH; visible: Boolean); cdecl; external Qt4PasLib name 'QWidget_setVisible';
 procedure QWidget_setHidden(handle: QWidgetH; hidden: Boolean); cdecl; external Qt4PasLib name 'QWidget_setHidden';
 procedure QWidget_show(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_show';
@@ -4524,18 +4544,18 @@ procedure QWidget_showNormal(handle: QWidgetH); cdecl; external Qt4PasLib name '
 function QWidget_close(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_close';
 procedure QWidget_raise(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_raise';
 procedure QWidget_lower(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_lower';
-procedure QWidget_stackUnder(handle: QWidgetH; p1: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_stackUnder';
+procedure QWidget_stackUnder(handle: QWidgetH; AnonParam1: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_stackUnder';
 procedure QWidget_move(handle: QWidgetH; x: Integer; y: Integer); cdecl; external Qt4PasLib name 'QWidget_move';
-procedure QWidget_move(handle: QWidgetH; p1: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_move2';
+procedure QWidget_move(handle: QWidgetH; AnonParam1: PQtPoint); cdecl; external Qt4PasLib name 'QWidget_move2';
 procedure QWidget_resize(handle: QWidgetH; w: Integer; h: Integer); cdecl; external Qt4PasLib name 'QWidget_resize';
-procedure QWidget_resize(handle: QWidgetH; p1: PSize); cdecl; external Qt4PasLib name 'QWidget_resize2';
+procedure QWidget_resize(handle: QWidgetH; AnonParam1: PSize); cdecl; external Qt4PasLib name 'QWidget_resize2';
 procedure QWidget_setGeometry(handle: QWidgetH; x: Integer; y: Integer; w: Integer; h: Integer); cdecl; external Qt4PasLib name 'QWidget_setGeometry';
-procedure QWidget_setGeometry(handle: QWidgetH; p1: PRect); cdecl; external Qt4PasLib name 'QWidget_setGeometry2';
+procedure QWidget_setGeometry(handle: QWidgetH; AnonParam1: PRect); cdecl; external Qt4PasLib name 'QWidget_setGeometry2';
 procedure QWidget_saveGeometry(handle: QWidgetH; retval: QByteArrayH); cdecl; external Qt4PasLib name 'QWidget_saveGeometry';
 function QWidget_restoreGeometry(handle: QWidgetH; geometry: QByteArrayH): Boolean; cdecl; external Qt4PasLib name 'QWidget_restoreGeometry';
 procedure QWidget_adjustSize(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_adjustSize';
 function QWidget_isVisible(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isVisible';
-function QWidget_isVisibleTo(handle: QWidgetH; p1: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isVisibleTo';
+function QWidget_isVisibleTo(handle: QWidgetH; AnonParam1: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isVisibleTo';
 function QWidget_isHidden(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isHidden';
 function QWidget_isMinimized(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isMinimized';
 function QWidget_isMaximized(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isMaximized';
@@ -4545,21 +4565,21 @@ procedure QWidget_setWindowState(handle: QWidgetH; state: QtWindowStates); cdecl
 procedure QWidget_overrideWindowState(handle: QWidgetH; state: QtWindowStates); cdecl; external Qt4PasLib name 'QWidget_overrideWindowState';
 procedure QWidget_sizeHint(handle: QWidgetH; retval: PSize); cdecl; external Qt4PasLib name 'QWidget_sizeHint';
 procedure QWidget_minimumSizeHint(handle: QWidgetH; retval: PSize); cdecl; external Qt4PasLib name 'QWidget_minimumSizeHint';
-procedure QWidget_sizePolicy(handle: QWidgetH; retval: PSizePolicy); cdecl; external Qt4PasLib name 'QWidget_sizePolicy';
-procedure QWidget_setSizePolicy(handle: QWidgetH; p1: PSizePolicy); cdecl; external Qt4PasLib name 'QWidget_setSizePolicy';
+procedure QWidget_sizePolicy(handle: QWidgetH; retval: PQSizePolicy); cdecl; external Qt4PasLib name 'QWidget_sizePolicy';
+procedure QWidget_setSizePolicy(handle: QWidgetH; AnonParam1: PQSizePolicy); cdecl; external Qt4PasLib name 'QWidget_setSizePolicy';
 procedure QWidget_setSizePolicy(handle: QWidgetH; horizontal: QSizePolicyPolicy; vertical: QSizePolicyPolicy); cdecl; external Qt4PasLib name 'QWidget_setSizePolicy2';
-function QWidget_heightForWidth(handle: QWidgetH; p1: Integer): Integer; cdecl; external Qt4PasLib name 'QWidget_heightForWidth';
+function QWidget_heightForWidth(handle: QWidgetH; AnonParam1: Integer): Integer; cdecl; external Qt4PasLib name 'QWidget_heightForWidth';
 procedure QWidget_visibleRegion(handle: QWidgetH; retval: QRegionH); cdecl; external Qt4PasLib name 'QWidget_visibleRegion';
 procedure QWidget_setContentsMargins(handle: QWidgetH; left: Integer; top: Integer; right: Integer; bottom: Integer); cdecl; external Qt4PasLib name 'QWidget_setContentsMargins';
 procedure QWidget_getContentsMargins(handle: QWidgetH; left: PInteger; top: PInteger; right: PInteger; bottom: PInteger); cdecl; external Qt4PasLib name 'QWidget_getContentsMargins';
 procedure QWidget_contentsRect(handle: QWidgetH; retval: PRect); cdecl; external Qt4PasLib name 'QWidget_contentsRect';
 function QWidget_layout(handle: QWidgetH): QLayoutH; cdecl; external Qt4PasLib name 'QWidget_layout';
-procedure QWidget_setLayout(handle: QWidgetH; p1: QLayoutH); cdecl; external Qt4PasLib name 'QWidget_setLayout';
+procedure QWidget_setLayout(handle: QWidgetH; AnonParam1: QLayoutH); cdecl; external Qt4PasLib name 'QWidget_setLayout';
 procedure QWidget_updateGeometry(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_updateGeometry';
 procedure QWidget_setParent(handle: QWidgetH; parent: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_setParent';
 procedure QWidget_setParent(handle: QWidgetH; parent: QWidgetH; f: QtWindowFlags); cdecl; external Qt4PasLib name 'QWidget_setParent2';
 procedure QWidget_scroll(handle: QWidgetH; dx: Integer; dy: Integer); cdecl; external Qt4PasLib name 'QWidget_scroll';
-procedure QWidget_scroll(handle: QWidgetH; dx: Integer; dy: Integer; p3: PRect); cdecl; external Qt4PasLib name 'QWidget_scroll2';
+procedure QWidget_scroll(handle: QWidgetH; dx: Integer; dy: Integer; AnonParam3: PRect); cdecl; external Qt4PasLib name 'QWidget_scroll2';
 function QWidget_focusWidget(handle: QWidgetH): QWidgetH; cdecl; external Qt4PasLib name 'QWidget_focusWidget';
 function QWidget_nextInFocusChain(handle: QWidgetH): QWidgetH; cdecl; external Qt4PasLib name 'QWidget_nextInFocusChain';
 function QWidget_acceptDrops(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_acceptDrops';
@@ -4575,7 +4595,7 @@ procedure QWidget_setWindowFlags(handle: QWidgetH; _type: QtWindowFlags); cdecl;
 function QWidget_windowFlags(handle: QWidgetH): QtWindowFlags; cdecl; external Qt4PasLib name 'QWidget_windowFlags';
 procedure QWidget_overrideWindowFlags(handle: QWidgetH; _type: QtWindowFlags); cdecl; external Qt4PasLib name 'QWidget_overrideWindowFlags';
 function QWidget_windowType(handle: QWidgetH): QtWindowType; cdecl; external Qt4PasLib name 'QWidget_windowType';
-function QWidget_find(p1: LongWord): QWidgetH; cdecl; external Qt4PasLib name 'QWidget_find';
+function QWidget_find(AnonParam1: LongWord): QWidgetH; cdecl; external Qt4PasLib name 'QWidget_find';
 function QWidget_childAt(handle: QWidgetH; x: Integer; y: Integer): QWidgetH; cdecl; external Qt4PasLib name 'QWidget_childAt';
 function QWidget_childAt(handle: QWidgetH; p: PQtPoint): QWidgetH; cdecl; external Qt4PasLib name 'QWidget_childAt2';
 {$ifdef BINUX }
@@ -4585,19 +4605,19 @@ function QWidget_x11PictureHandle(handle: QWidgetH): QtHANDLE; cdecl; external Q
 {$ifdef BINUX or DARWIN or QTOPIA }
 function QWidget_handle(handle: QWidgetH): QtHANDLE; cdecl; external Qt4PasLib name 'QWidget_handle';
 {$endif}
-procedure QWidget_setAttribute(handle: QWidgetH; p1: QtWidgetAttribute; _on: Boolean = True); cdecl; external Qt4PasLib name 'QWidget_setAttribute';
-function QWidget_testAttribute(handle: QWidgetH; p1: QtWidgetAttribute): Boolean; cdecl; external Qt4PasLib name 'QWidget_testAttribute';
+procedure QWidget_setAttribute(handle: QWidgetH; AnonParam1: QtWidgetAttribute; _on: Boolean = True); cdecl; external Qt4PasLib name 'QWidget_setAttribute';
+function QWidget_testAttribute(handle: QWidgetH; AnonParam1: QtWidgetAttribute): Boolean; cdecl; external Qt4PasLib name 'QWidget_testAttribute';
 function QWidget_paintEngine(handle: QWidgetH): QPaintEngineH; cdecl; external Qt4PasLib name 'QWidget_paintEngine';
 procedure QWidget_ensurePolished(handle: QWidgetH); cdecl; external Qt4PasLib name 'QWidget_ensurePolished';
 function QWidget_inputContext(handle: QWidgetH): QInputContextH; cdecl; external Qt4PasLib name 'QWidget_inputContext';
-procedure QWidget_setInputContext(handle: QWidgetH; p1: QInputContextH); cdecl; external Qt4PasLib name 'QWidget_setInputContext';
+procedure QWidget_setInputContext(handle: QWidgetH; AnonParam1: QInputContextH); cdecl; external Qt4PasLib name 'QWidget_setInputContext';
 function QWidget_isAncestorOf(handle: QWidgetH; child: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_isAncestorOf';
 function QWidget_autoFillBackground(handle: QWidgetH): Boolean; cdecl; external Qt4PasLib name 'QWidget_autoFillBackground';
 procedure QWidget_setAutoFillBackground(handle: QWidgetH; enabled: Boolean); cdecl; external Qt4PasLib name 'QWidget_setAutoFillBackground';
-procedure QWidget_inputMethodQuery(handle: QWidgetH; retval: QVariantH; p1: QtInputMethodQuery); cdecl; external Qt4PasLib name 'QWidget_inputMethodQuery';
+procedure QWidget_inputMethodQuery(handle: QWidgetH; retval: QVariantH; AnonParam1: QtInputMethodQuery); cdecl; external Qt4PasLib name 'QWidget_inputMethodQuery';
 {$ifdef MSWINDOWS }
 function QWidget_getDC(handle: QWidgetH): QHDC; cdecl; external Qt4PasLib name 'QWidget_getDC';
-procedure QWidget_releaseDC(handle: QWidgetH; p1: QHDC); cdecl; external Qt4PasLib name 'QWidget_releaseDC';
+procedure QWidget_releaseDC(handle: QWidgetH; AnonParam1: QHDC); cdecl; external Qt4PasLib name 'QWidget_releaseDC';
 {$endif}
 {$ifdef DARWIN }
 function QWidget_macQDHandle(handle: QWidgetH): QtHANDLE; cdecl; external Qt4PasLib name 'QWidget_macQDHandle';
@@ -4613,12 +4633,12 @@ procedure QLayoutItem_sizeHint(handle: QLayoutItemH; retval: PSize); cdecl; exte
 procedure QLayoutItem_minimumSize(handle: QLayoutItemH; retval: PSize); cdecl; external Qt4PasLib name 'QLayoutItem_minimumSize';
 procedure QLayoutItem_maximumSize(handle: QLayoutItemH; retval: PSize); cdecl; external Qt4PasLib name 'QLayoutItem_maximumSize';
 function QLayoutItem_expandingDirections(handle: QLayoutItemH): QtOrientations; cdecl; external Qt4PasLib name 'QLayoutItem_expandingDirections';
-procedure QLayoutItem_setGeometry(handle: QLayoutItemH; p1: PRect); cdecl; external Qt4PasLib name 'QLayoutItem_setGeometry';
+procedure QLayoutItem_setGeometry(handle: QLayoutItemH; AnonParam1: PRect); cdecl; external Qt4PasLib name 'QLayoutItem_setGeometry';
 procedure QLayoutItem_geometry(handle: QLayoutItemH; retval: PRect); cdecl; external Qt4PasLib name 'QLayoutItem_geometry';
 function QLayoutItem_isEmpty(handle: QLayoutItemH): Boolean; cdecl; external Qt4PasLib name 'QLayoutItem_isEmpty';
 function QLayoutItem_hasHeightForWidth(handle: QLayoutItemH): Boolean; cdecl; external Qt4PasLib name 'QLayoutItem_hasHeightForWidth';
-function QLayoutItem_heightForWidth(handle: QLayoutItemH; p1: Integer): Integer; cdecl; external Qt4PasLib name 'QLayoutItem_heightForWidth';
-function QLayoutItem_minimumHeightForWidth(handle: QLayoutItemH; p1: Integer): Integer; cdecl; external Qt4PasLib name 'QLayoutItem_minimumHeightForWidth';
+function QLayoutItem_heightForWidth(handle: QLayoutItemH; AnonParam1: Integer): Integer; cdecl; external Qt4PasLib name 'QLayoutItem_heightForWidth';
+function QLayoutItem_minimumHeightForWidth(handle: QLayoutItemH; AnonParam1: Integer): Integer; cdecl; external Qt4PasLib name 'QLayoutItem_minimumHeightForWidth';
 procedure QLayoutItem_invalidate(handle: QLayoutItemH); cdecl; external Qt4PasLib name 'QLayoutItem_invalidate';
 function QLayoutItem_widget(handle: QLayoutItemH): QWidgetH; cdecl; external Qt4PasLib name 'QLayoutItem_widget';
 function QLayoutItem_layout(handle: QLayoutItemH): QLayoutH; cdecl; external Qt4PasLib name 'QLayoutItem_layout';
@@ -4635,7 +4655,7 @@ procedure QSpacerItem_minimumSize(handle: QSpacerItemH; retval: PSize); cdecl; e
 procedure QSpacerItem_maximumSize(handle: QSpacerItemH; retval: PSize); cdecl; external Qt4PasLib name 'QSpacerItem_maximumSize';
 function QSpacerItem_expandingDirections(handle: QSpacerItemH): QtOrientations; cdecl; external Qt4PasLib name 'QSpacerItem_expandingDirections';
 function QSpacerItem_isEmpty(handle: QSpacerItemH): Boolean; cdecl; external Qt4PasLib name 'QSpacerItem_isEmpty';
-procedure QSpacerItem_setGeometry(handle: QSpacerItemH; p1: PRect); cdecl; external Qt4PasLib name 'QSpacerItem_setGeometry';
+procedure QSpacerItem_setGeometry(handle: QSpacerItemH; AnonParam1: PRect); cdecl; external Qt4PasLib name 'QSpacerItem_setGeometry';
 procedure QSpacerItem_geometry(handle: QSpacerItemH; retval: PRect); cdecl; external Qt4PasLib name 'QSpacerItem_geometry';
 function QSpacerItem_spacerItem(handle: QSpacerItemH): QSpacerItemH; cdecl; external Qt4PasLib name 'QSpacerItem_spacerItem';
 
@@ -4646,11 +4666,11 @@ procedure QWidgetItem_minimumSize(handle: QWidgetItemH; retval: PSize); cdecl; e
 procedure QWidgetItem_maximumSize(handle: QWidgetItemH; retval: PSize); cdecl; external Qt4PasLib name 'QWidgetItem_maximumSize';
 function QWidgetItem_expandingDirections(handle: QWidgetItemH): QtOrientations; cdecl; external Qt4PasLib name 'QWidgetItem_expandingDirections';
 function QWidgetItem_isEmpty(handle: QWidgetItemH): Boolean; cdecl; external Qt4PasLib name 'QWidgetItem_isEmpty';
-procedure QWidgetItem_setGeometry(handle: QWidgetItemH; p1: PRect); cdecl; external Qt4PasLib name 'QWidgetItem_setGeometry';
+procedure QWidgetItem_setGeometry(handle: QWidgetItemH; AnonParam1: PRect); cdecl; external Qt4PasLib name 'QWidgetItem_setGeometry';
 procedure QWidgetItem_geometry(handle: QWidgetItemH; retval: PRect); cdecl; external Qt4PasLib name 'QWidgetItem_geometry';
 function QWidgetItem_widget(handle: QWidgetItemH): QWidgetH; cdecl; external Qt4PasLib name 'QWidgetItem_widget';
 function QWidgetItem_hasHeightForWidth(handle: QWidgetItemH): Boolean; cdecl; external Qt4PasLib name 'QWidgetItem_hasHeightForWidth';
-function QWidgetItem_heightForWidth(handle: QWidgetItemH; p1: Integer): Integer; cdecl; external Qt4PasLib name 'QWidgetItem_heightForWidth';
+function QWidgetItem_heightForWidth(handle: QWidgetItemH; AnonParam1: Integer): Integer; cdecl; external Qt4PasLib name 'QWidgetItem_heightForWidth';
 
 
 type
@@ -4659,14 +4679,14 @@ type
 
 function QLayout_margin(handle: QLayoutH): Integer; cdecl; external Qt4PasLib name 'QLayout_margin';
 function QLayout_spacing(handle: QLayoutH): Integer; cdecl; external Qt4PasLib name 'QLayout_spacing';
-procedure QLayout_setMargin(handle: QLayoutH; p1: Integer); cdecl; external Qt4PasLib name 'QLayout_setMargin';
-procedure QLayout_setSpacing(handle: QLayoutH; p1: Integer); cdecl; external Qt4PasLib name 'QLayout_setSpacing';
+procedure QLayout_setMargin(handle: QLayoutH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QLayout_setMargin';
+procedure QLayout_setSpacing(handle: QLayoutH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QLayout_setSpacing';
 procedure QLayout_setContentsMargins(handle: QLayoutH; left: Integer; top: Integer; right: Integer; bottom: Integer); cdecl; external Qt4PasLib name 'QLayout_setContentsMargins';
 procedure QLayout_getContentsMargins(handle: QLayoutH; left: PInteger; top: PInteger; right: PInteger; bottom: PInteger); cdecl; external Qt4PasLib name 'QLayout_getContentsMargins';
 procedure QLayout_contentsRect(handle: QLayoutH; retval: PRect); cdecl; external Qt4PasLib name 'QLayout_contentsRect';
 function QLayout_setAlignment(handle: QLayoutH; w: QWidgetH; alignment: QtAlignment): Boolean; cdecl; external Qt4PasLib name 'QLayout_setAlignment';
 function QLayout_setAlignment(handle: QLayoutH; l: QLayoutH; alignment: QtAlignment): Boolean; cdecl; external Qt4PasLib name 'QLayout_setAlignment2';
-procedure QLayout_setSizeConstraint(handle: QLayoutH; p1: QLayoutSizeConstraint); cdecl; external Qt4PasLib name 'QLayout_setSizeConstraint';
+procedure QLayout_setSizeConstraint(handle: QLayoutH; AnonParam1: QLayoutSizeConstraint); cdecl; external Qt4PasLib name 'QLayout_setSizeConstraint';
 function QLayout_sizeConstraint(handle: QLayoutH): QLayoutSizeConstraint; cdecl; external Qt4PasLib name 'QLayout_sizeConstraint';
 procedure QLayout_setMenuBar(handle: QLayoutH; w: QWidgetH); cdecl; external Qt4PasLib name 'QLayout_setMenuBar';
 function QLayout_menuBar(handle: QLayoutH): QWidgetH; cdecl; external Qt4PasLib name 'QLayout_menuBar';
@@ -4676,16 +4696,16 @@ procedure QLayout_geometry(handle: QLayoutH; retval: PRect); cdecl; external Qt4
 function QLayout_activate(handle: QLayoutH): Boolean; cdecl; external Qt4PasLib name 'QLayout_activate';
 procedure QLayout_update(handle: QLayoutH); cdecl; external Qt4PasLib name 'QLayout_update';
 procedure QLayout_addWidget(handle: QLayoutH; w: QWidgetH); cdecl; external Qt4PasLib name 'QLayout_addWidget';
-procedure QLayout_addItem(handle: QLayoutH; p1: QLayoutItemH); cdecl; external Qt4PasLib name 'QLayout_addItem';
+procedure QLayout_addItem(handle: QLayoutH; AnonParam1: QLayoutItemH); cdecl; external Qt4PasLib name 'QLayout_addItem';
 procedure QLayout_removeWidget(handle: QLayoutH; w: QWidgetH); cdecl; external Qt4PasLib name 'QLayout_removeWidget';
-procedure QLayout_removeItem(handle: QLayoutH; p1: QLayoutItemH); cdecl; external Qt4PasLib name 'QLayout_removeItem';
+procedure QLayout_removeItem(handle: QLayoutH; AnonParam1: QLayoutItemH); cdecl; external Qt4PasLib name 'QLayout_removeItem';
 function QLayout_expandingDirections(handle: QLayoutH): QtOrientations; cdecl; external Qt4PasLib name 'QLayout_expandingDirections';
 procedure QLayout_minimumSize(handle: QLayoutH; retval: PSize); cdecl; external Qt4PasLib name 'QLayout_minimumSize';
 procedure QLayout_maximumSize(handle: QLayoutH; retval: PSize); cdecl; external Qt4PasLib name 'QLayout_maximumSize';
-procedure QLayout_setGeometry(handle: QLayoutH; p1: PRect); cdecl; external Qt4PasLib name 'QLayout_setGeometry';
+procedure QLayout_setGeometry(handle: QLayoutH; AnonParam1: PRect); cdecl; external Qt4PasLib name 'QLayout_setGeometry';
 function QLayout_itemAt(handle: QLayoutH; index: Integer): QLayoutItemH; cdecl; external Qt4PasLib name 'QLayout_itemAt';
 function QLayout_takeAt(handle: QLayoutH; index: Integer): QLayoutItemH; cdecl; external Qt4PasLib name 'QLayout_takeAt';
-function QLayout_indexOf(handle: QLayoutH; p1: QWidgetH): Integer; cdecl; external Qt4PasLib name 'QLayout_indexOf';
+function QLayout_indexOf(handle: QLayoutH; AnonParam1: QWidgetH): Integer; cdecl; external Qt4PasLib name 'QLayout_indexOf';
 function QLayout_count(handle: QLayoutH): Integer; cdecl; external Qt4PasLib name 'QLayout_count';
 function QLayout_isEmpty(handle: QLayoutH): Boolean; cdecl; external Qt4PasLib name 'QLayout_isEmpty';
 function QLayout_totalHeightForWidth(handle: QLayoutH; w: Integer): Integer; cdecl; external Qt4PasLib name 'QLayout_totalHeightForWidth';
@@ -4693,7 +4713,7 @@ procedure QLayout_totalMinimumSize(handle: QLayoutH; retval: PSize); cdecl; exte
 procedure QLayout_totalMaximumSize(handle: QLayoutH; retval: PSize); cdecl; external Qt4PasLib name 'QLayout_totalMaximumSize';
 procedure QLayout_totalSizeHint(handle: QLayoutH; retval: PSize); cdecl; external Qt4PasLib name 'QLayout_totalSizeHint';
 function QLayout_layout(handle: QLayoutH): QLayoutH; cdecl; external Qt4PasLib name 'QLayout_layout';
-procedure QLayout_setEnabled(handle: QLayoutH; p1: Boolean); cdecl; external Qt4PasLib name 'QLayout_setEnabled';
+procedure QLayout_setEnabled(handle: QLayoutH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QLayout_setEnabled';
 function QLayout_isEnabled(handle: QLayoutH): Boolean; cdecl; external Qt4PasLib name 'QLayout_isEnabled';
 procedure QLayout_closestAcceptableSize(retval: PSize; w: QWidgetH; s: PSize); cdecl; external Qt4PasLib name 'QLayout_closestAcceptableSize';
 function QLayout_to_QLayoutItem(handle: QLayoutH): QLayoutItemH; cdecl; external Qt4PasLib name 'QLayout_to_QLayoutItem';
@@ -4709,17 +4729,17 @@ const
     QBoxLayoutUp = 3 { $3 };
 
 
-function QBoxLayout_create(p1: QBoxLayoutDirection; parent: QWidgetH = nil): QBoxLayoutH; cdecl; external Qt4PasLib name 'QBoxLayout_create';
+function QBoxLayout_create(AnonParam1: QBoxLayoutDirection; parent: QWidgetH = nil): QBoxLayoutH; cdecl; external Qt4PasLib name 'QBoxLayout_create';
 procedure QBoxLayout_destroy(handle: QBoxLayoutH); cdecl; external Qt4PasLib name 'QBoxLayout_destroy'; 
 function QBoxLayout_direction(handle: QBoxLayoutH): QBoxLayoutDirection; cdecl; external Qt4PasLib name 'QBoxLayout_direction';
-procedure QBoxLayout_setDirection(handle: QBoxLayoutH; p1: QBoxLayoutDirection); cdecl; external Qt4PasLib name 'QBoxLayout_setDirection';
+procedure QBoxLayout_setDirection(handle: QBoxLayoutH; AnonParam1: QBoxLayoutDirection); cdecl; external Qt4PasLib name 'QBoxLayout_setDirection';
 procedure QBoxLayout_addSpacing(handle: QBoxLayoutH; size: Integer); cdecl; external Qt4PasLib name 'QBoxLayout_addSpacing';
 procedure QBoxLayout_addStretch(handle: QBoxLayoutH; stretch: Integer = 0); cdecl; external Qt4PasLib name 'QBoxLayout_addStretch';
 procedure QBoxLayout_addSpacerItem(handle: QBoxLayoutH; spacerItem: QSpacerItemH); cdecl; external Qt4PasLib name 'QBoxLayout_addSpacerItem';
-procedure QBoxLayout_addWidget(handle: QBoxLayoutH; p1: QWidgetH; stretch: Integer = 0; alignment: QtAlignment = 0); cdecl; external Qt4PasLib name 'QBoxLayout_addWidget';
+procedure QBoxLayout_addWidget(handle: QBoxLayoutH; AnonParam1: QWidgetH; stretch: Integer = 0; alignment: QtAlignment = 0); cdecl; external Qt4PasLib name 'QBoxLayout_addWidget';
 procedure QBoxLayout_addLayout(handle: QBoxLayoutH; layout: QLayoutH; stretch: Integer = 0); cdecl; external Qt4PasLib name 'QBoxLayout_addLayout';
-procedure QBoxLayout_addStrut(handle: QBoxLayoutH; p1: Integer); cdecl; external Qt4PasLib name 'QBoxLayout_addStrut';
-procedure QBoxLayout_addItem(handle: QBoxLayoutH; p1: QLayoutItemH); cdecl; external Qt4PasLib name 'QBoxLayout_addItem';
+procedure QBoxLayout_addStrut(handle: QBoxLayoutH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QBoxLayout_addStrut';
+procedure QBoxLayout_addItem(handle: QBoxLayoutH; AnonParam1: QLayoutItemH); cdecl; external Qt4PasLib name 'QBoxLayout_addItem';
 procedure QBoxLayout_insertSpacing(handle: QBoxLayoutH; index: Integer; size: Integer); cdecl; external Qt4PasLib name 'QBoxLayout_insertSpacing';
 procedure QBoxLayout_insertStretch(handle: QBoxLayoutH; index: Integer; stretch: Integer = 0); cdecl; external Qt4PasLib name 'QBoxLayout_insertStretch';
 procedure QBoxLayout_insertSpacerItem(handle: QBoxLayoutH; index: Integer; spacerItem: QSpacerItemH); cdecl; external Qt4PasLib name 'QBoxLayout_insertSpacerItem';
@@ -4735,14 +4755,14 @@ procedure QBoxLayout_sizeHint(handle: QBoxLayoutH; retval: PSize); cdecl; extern
 procedure QBoxLayout_minimumSize(handle: QBoxLayoutH; retval: PSize); cdecl; external Qt4PasLib name 'QBoxLayout_minimumSize';
 procedure QBoxLayout_maximumSize(handle: QBoxLayoutH; retval: PSize); cdecl; external Qt4PasLib name 'QBoxLayout_maximumSize';
 function QBoxLayout_hasHeightForWidth(handle: QBoxLayoutH): Boolean; cdecl; external Qt4PasLib name 'QBoxLayout_hasHeightForWidth';
-function QBoxLayout_heightForWidth(handle: QBoxLayoutH; p1: Integer): Integer; cdecl; external Qt4PasLib name 'QBoxLayout_heightForWidth';
-function QBoxLayout_minimumHeightForWidth(handle: QBoxLayoutH; p1: Integer): Integer; cdecl; external Qt4PasLib name 'QBoxLayout_minimumHeightForWidth';
+function QBoxLayout_heightForWidth(handle: QBoxLayoutH; AnonParam1: Integer): Integer; cdecl; external Qt4PasLib name 'QBoxLayout_heightForWidth';
+function QBoxLayout_minimumHeightForWidth(handle: QBoxLayoutH; AnonParam1: Integer): Integer; cdecl; external Qt4PasLib name 'QBoxLayout_minimumHeightForWidth';
 function QBoxLayout_expandingDirections(handle: QBoxLayoutH): QtOrientations; cdecl; external Qt4PasLib name 'QBoxLayout_expandingDirections';
 procedure QBoxLayout_invalidate(handle: QBoxLayoutH); cdecl; external Qt4PasLib name 'QBoxLayout_invalidate';
-function QBoxLayout_itemAt(handle: QBoxLayoutH; p1: Integer): QLayoutItemH; cdecl; external Qt4PasLib name 'QBoxLayout_itemAt';
-function QBoxLayout_takeAt(handle: QBoxLayoutH; p1: Integer): QLayoutItemH; cdecl; external Qt4PasLib name 'QBoxLayout_takeAt';
+function QBoxLayout_itemAt(handle: QBoxLayoutH; AnonParam1: Integer): QLayoutItemH; cdecl; external Qt4PasLib name 'QBoxLayout_itemAt';
+function QBoxLayout_takeAt(handle: QBoxLayoutH; AnonParam1: Integer): QLayoutItemH; cdecl; external Qt4PasLib name 'QBoxLayout_takeAt';
 function QBoxLayout_count(handle: QBoxLayoutH): Integer; cdecl; external Qt4PasLib name 'QBoxLayout_count';
-procedure QBoxLayout_setGeometry(handle: QBoxLayoutH; p1: PRect); cdecl; external Qt4PasLib name 'QBoxLayout_setGeometry';
+procedure QBoxLayout_setGeometry(handle: QBoxLayoutH; AnonParam1: PRect); cdecl; external Qt4PasLib name 'QBoxLayout_setGeometry';
 
 function QHBoxLayout_create(): QHBoxLayoutH; cdecl; external Qt4PasLib name 'QHBoxLayout_create';
 procedure QHBoxLayout_destroy(handle: QHBoxLayoutH); cdecl; external Qt4PasLib name 'QHBoxLayout_destroy'; 
@@ -4765,15 +4785,15 @@ function QStackedLayout_addWidget(handle: QStackedLayoutH; w: QWidgetH): Integer
 function QStackedLayout_insertWidget(handle: QStackedLayoutH; index: Integer; w: QWidgetH): Integer; cdecl; external Qt4PasLib name 'QStackedLayout_insertWidget';
 function QStackedLayout_currentWidget(handle: QStackedLayoutH): QWidgetH; cdecl; external Qt4PasLib name 'QStackedLayout_currentWidget';
 function QStackedLayout_currentIndex(handle: QStackedLayoutH): Integer; cdecl; external Qt4PasLib name 'QStackedLayout_currentIndex';
-function QStackedLayout_widget(handle: QStackedLayoutH; p1: Integer): QWidgetH; cdecl; external Qt4PasLib name 'QStackedLayout_widget';
+function QStackedLayout_widget(handle: QStackedLayoutH; AnonParam1: Integer): QWidgetH; cdecl; external Qt4PasLib name 'QStackedLayout_widget';
 function QStackedLayout_count(handle: QStackedLayoutH): Integer; cdecl; external Qt4PasLib name 'QStackedLayout_count';
 function QStackedLayout_stackingMode(handle: QStackedLayoutH): QStackedLayoutStackingMode; cdecl; external Qt4PasLib name 'QStackedLayout_stackingMode';
 procedure QStackedLayout_setStackingMode(handle: QStackedLayoutH; stackingMode: QStackedLayoutStackingMode); cdecl; external Qt4PasLib name 'QStackedLayout_setStackingMode';
 procedure QStackedLayout_addItem(handle: QStackedLayoutH; item: QLayoutItemH); cdecl; external Qt4PasLib name 'QStackedLayout_addItem';
 procedure QStackedLayout_sizeHint(handle: QStackedLayoutH; retval: PSize); cdecl; external Qt4PasLib name 'QStackedLayout_sizeHint';
 procedure QStackedLayout_minimumSize(handle: QStackedLayoutH; retval: PSize); cdecl; external Qt4PasLib name 'QStackedLayout_minimumSize';
-function QStackedLayout_itemAt(handle: QStackedLayoutH; p1: Integer): QLayoutItemH; cdecl; external Qt4PasLib name 'QStackedLayout_itemAt';
-function QStackedLayout_takeAt(handle: QStackedLayoutH; p1: Integer): QLayoutItemH; cdecl; external Qt4PasLib name 'QStackedLayout_takeAt';
+function QStackedLayout_itemAt(handle: QStackedLayoutH; AnonParam1: Integer): QLayoutItemH; cdecl; external Qt4PasLib name 'QStackedLayout_itemAt';
+function QStackedLayout_takeAt(handle: QStackedLayoutH; AnonParam1: Integer): QLayoutItemH; cdecl; external Qt4PasLib name 'QStackedLayout_takeAt';
 procedure QStackedLayout_setGeometry(handle: QStackedLayoutH; rect: PRect); cdecl; external Qt4PasLib name 'QStackedLayout_setGeometry';
 procedure QStackedLayout_setCurrentIndex(handle: QStackedLayoutH; index: Integer); cdecl; external Qt4PasLib name 'QStackedLayout_setCurrentIndex';
 procedure QStackedLayout_setCurrentWidget(handle: QStackedLayoutH; w: QWidgetH); cdecl; external Qt4PasLib name 'QStackedLayout_setCurrentWidget';
@@ -4816,14 +4836,14 @@ procedure QAction_setSeparator(handle: QActionH; b: Boolean); cdecl; external Qt
 function QAction_isSeparator(handle: QActionH): Boolean; cdecl; external Qt4PasLib name 'QAction_isSeparator';
 procedure QAction_setShortcut(handle: QActionH; shortcut: QKeySequenceH); cdecl; external Qt4PasLib name 'QAction_setShortcut';
 procedure QAction_shortcut(handle: QActionH; retval: QKeySequenceH); cdecl; external Qt4PasLib name 'QAction_shortcut';
-procedure QAction_setShortcuts(handle: QActionH; p1: QKeySequenceStandardKey); cdecl; external Qt4PasLib name 'QAction_setShortcuts2';
+procedure QAction_setShortcuts(handle: QActionH; AnonParam1: QKeySequenceStandardKey); cdecl; external Qt4PasLib name 'QAction_setShortcuts2';
 procedure QAction_setShortcutContext(handle: QActionH; context: QtShortcutContext); cdecl; external Qt4PasLib name 'QAction_setShortcutContext';
 function QAction_shortcutContext(handle: QActionH): QtShortcutContext; cdecl; external Qt4PasLib name 'QAction_shortcutContext';
-procedure QAction_setAutoRepeat(handle: QActionH; p1: Boolean); cdecl; external Qt4PasLib name 'QAction_setAutoRepeat';
+procedure QAction_setAutoRepeat(handle: QActionH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAction_setAutoRepeat';
 function QAction_autoRepeat(handle: QActionH): Boolean; cdecl; external Qt4PasLib name 'QAction_autoRepeat';
 procedure QAction_setFont(handle: QActionH; font: QFontH); cdecl; external Qt4PasLib name 'QAction_setFont';
 procedure QAction_font(handle: QActionH; retval: QFontH); cdecl; external Qt4PasLib name 'QAction_font';
-procedure QAction_setCheckable(handle: QActionH; p1: Boolean); cdecl; external Qt4PasLib name 'QAction_setCheckable';
+procedure QAction_setCheckable(handle: QActionH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAction_setCheckable';
 function QAction_isCheckable(handle: QActionH): Boolean; cdecl; external Qt4PasLib name 'QAction_isCheckable';
 procedure QAction_data(handle: QActionH; retval: QVariantH); cdecl; external Qt4PasLib name 'QAction_data';
 procedure QAction_setData(handle: QActionH; _var: QVariantH); cdecl; external Qt4PasLib name 'QAction_setData';
@@ -4841,11 +4861,11 @@ procedure QAction_associatedWidgets(handle: QActionH; retval: PPtrIntArray); cde
 procedure QAction_associatedGraphicsWidgets(handle: QActionH; retval: PPtrIntArray); cdecl; external Qt4PasLib name 'QAction_associatedGraphicsWidgets';
 procedure QAction_trigger(handle: QActionH); cdecl; external Qt4PasLib name 'QAction_trigger';
 procedure QAction_hover(handle: QActionH); cdecl; external Qt4PasLib name 'QAction_hover';
-procedure QAction_setChecked(handle: QActionH; p1: Boolean); cdecl; external Qt4PasLib name 'QAction_setChecked';
+procedure QAction_setChecked(handle: QActionH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAction_setChecked';
 procedure QAction_toggle(handle: QActionH); cdecl; external Qt4PasLib name 'QAction_toggle';
-procedure QAction_setEnabled(handle: QActionH; p1: Boolean); cdecl; external Qt4PasLib name 'QAction_setEnabled';
+procedure QAction_setEnabled(handle: QActionH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAction_setEnabled';
 procedure QAction_setDisabled(handle: QActionH; b: Boolean); cdecl; external Qt4PasLib name 'QAction_setDisabled';
-procedure QAction_setVisible(handle: QActionH; p1: Boolean); cdecl; external Qt4PasLib name 'QAction_setVisible';
+procedure QAction_setVisible(handle: QActionH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAction_setVisible';
 
 
 type
@@ -4853,7 +4873,7 @@ type
   QAction_triggered_Event = procedure (checked: Boolean = False) of object cdecl;
   QAction_triggered2_Event = procedure () of object cdecl;
   QAction_hovered_Event = procedure () of object cdecl;
-  QAction_toggled_Event = procedure (p1: Boolean) of object cdecl;
+  QAction_toggled_Event = procedure (AnonParam1: Boolean) of object cdecl;
 
 
 function QActionGroup_create(parent: QObjectH): QActionGroupH; cdecl; external Qt4PasLib name 'QActionGroup_create';
@@ -4867,16 +4887,16 @@ function QActionGroup_checkedAction(handle: QActionGroupH): QActionH; cdecl; ext
 function QActionGroup_isExclusive(handle: QActionGroupH): Boolean; cdecl; external Qt4PasLib name 'QActionGroup_isExclusive';
 function QActionGroup_isEnabled(handle: QActionGroupH): Boolean; cdecl; external Qt4PasLib name 'QActionGroup_isEnabled';
 function QActionGroup_isVisible(handle: QActionGroupH): Boolean; cdecl; external Qt4PasLib name 'QActionGroup_isVisible';
-procedure QActionGroup_setEnabled(handle: QActionGroupH; p1: Boolean); cdecl; external Qt4PasLib name 'QActionGroup_setEnabled';
+procedure QActionGroup_setEnabled(handle: QActionGroupH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QActionGroup_setEnabled';
 procedure QActionGroup_setDisabled(handle: QActionGroupH; b: Boolean); cdecl; external Qt4PasLib name 'QActionGroup_setDisabled';
-procedure QActionGroup_setVisible(handle: QActionGroupH; p1: Boolean); cdecl; external Qt4PasLib name 'QActionGroup_setVisible';
-procedure QActionGroup_setExclusive(handle: QActionGroupH; p1: Boolean); cdecl; external Qt4PasLib name 'QActionGroup_setExclusive';
+procedure QActionGroup_setVisible(handle: QActionGroupH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QActionGroup_setVisible';
+procedure QActionGroup_setExclusive(handle: QActionGroupH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QActionGroup_setExclusive';
 
 
 type
-  QActionGroup_triggered_Event = procedure (p1: QActionH) of object cdecl;
-  QActionGroup_selected_Event = procedure (p1: QActionH) of object cdecl;
-  QActionGroup_hovered_Event = procedure (p1: QActionH) of object cdecl;
+  QActionGroup_triggered_Event = procedure (AnonParam1: QActionH) of object cdecl;
+  QActionGroup_selected_Event = procedure (AnonParam1: QActionH) of object cdecl;
+  QActionGroup_hovered_Event = procedure (AnonParam1: QActionH) of object cdecl;
 
 
 
@@ -5037,8 +5057,8 @@ procedure QDropEvent_setDropAction(handle: QDropEventH; action: QtDropAction); c
 function QDropEvent_source(handle: QDropEventH): QWidgetH; cdecl; external Qt4PasLib name 'QDropEvent_source';
 function QDropEvent_mimeData(handle: QDropEventH): QMimeDataH; cdecl; external Qt4PasLib name 'QDropEvent_mimeData';
 function QDropEvent_format(handle: QDropEventH; n: Integer = 0): PAnsiChar; cdecl; external Qt4PasLib name 'QDropEvent_format';
-procedure QDropEvent_encodedData(handle: QDropEventH; retval: QByteArrayH; p1: PAnsiChar); cdecl; external Qt4PasLib name 'QDropEvent_encodedData';
-function QDropEvent_provides(handle: QDropEventH; p1: PAnsiChar): Boolean; cdecl; external Qt4PasLib name 'QDropEvent_provides';
+procedure QDropEvent_encodedData(handle: QDropEventH; retval: QByteArrayH; AnonParam1: PAnsiChar); cdecl; external Qt4PasLib name 'QDropEvent_encodedData';
+function QDropEvent_provides(handle: QDropEventH; AnonParam1: PAnsiChar): Boolean; cdecl; external Qt4PasLib name 'QDropEvent_provides';
 
 function QDragMoveEvent_create(pos: PQtPoint; actions: QtDropActions; data: QMimeDataH; buttons: QtMouseButtons; modifiers: QtKeyboardModifiers; _type: QEventType): QDragMoveEventH; cdecl; external Qt4PasLib name 'QDragMoveEvent_create';
 procedure QDragMoveEvent_destroy(handle: QDragMoveEventH); cdecl; external Qt4PasLib name 'QDragMoveEvent_destroy'; 
@@ -5158,23 +5178,23 @@ function QGridLayout_columnCount(handle: QGridLayoutH): Integer; cdecl; external
 function QGridLayout_rowCount(handle: QGridLayoutH): Integer; cdecl; external Qt4PasLib name 'QGridLayout_rowCount';
 procedure QGridLayout_cellRect(handle: QGridLayoutH; retval: PRect; row: Integer; column: Integer); cdecl; external Qt4PasLib name 'QGridLayout_cellRect';
 function QGridLayout_hasHeightForWidth(handle: QGridLayoutH): Boolean; cdecl; external Qt4PasLib name 'QGridLayout_hasHeightForWidth';
-function QGridLayout_heightForWidth(handle: QGridLayoutH; p1: Integer): Integer; cdecl; external Qt4PasLib name 'QGridLayout_heightForWidth';
-function QGridLayout_minimumHeightForWidth(handle: QGridLayoutH; p1: Integer): Integer; cdecl; external Qt4PasLib name 'QGridLayout_minimumHeightForWidth';
+function QGridLayout_heightForWidth(handle: QGridLayoutH; AnonParam1: Integer): Integer; cdecl; external Qt4PasLib name 'QGridLayout_heightForWidth';
+function QGridLayout_minimumHeightForWidth(handle: QGridLayoutH; AnonParam1: Integer): Integer; cdecl; external Qt4PasLib name 'QGridLayout_minimumHeightForWidth';
 function QGridLayout_expandingDirections(handle: QGridLayoutH): QtOrientations; cdecl; external Qt4PasLib name 'QGridLayout_expandingDirections';
 procedure QGridLayout_invalidate(handle: QGridLayoutH); cdecl; external Qt4PasLib name 'QGridLayout_invalidate';
 procedure QGridLayout_addWidget(handle: QGridLayoutH; w: QWidgetH); cdecl; external Qt4PasLib name 'QGridLayout_addWidget';
-procedure QGridLayout_addWidget(handle: QGridLayoutH; p1: QWidgetH; row: Integer; column: Integer; p4: QtAlignment = 0); cdecl; external Qt4PasLib name 'QGridLayout_addWidget2';
-procedure QGridLayout_addWidget(handle: QGridLayoutH; p1: QWidgetH; row: Integer; column: Integer; rowSpan: Integer; columnSpan: Integer; p6: QtAlignment = 0); cdecl; external Qt4PasLib name 'QGridLayout_addWidget3';
-procedure QGridLayout_addLayout(handle: QGridLayoutH; p1: QLayoutH; row: Integer; column: Integer; p4: QtAlignment = 0); cdecl; external Qt4PasLib name 'QGridLayout_addLayout';
-procedure QGridLayout_addLayout(handle: QGridLayoutH; p1: QLayoutH; row: Integer; column: Integer; rowSpan: Integer; columnSpan: Integer; p6: QtAlignment = 0); cdecl; external Qt4PasLib name 'QGridLayout_addLayout2';
-procedure QGridLayout_setOriginCorner(handle: QGridLayoutH; p1: QtCorner); cdecl; external Qt4PasLib name 'QGridLayout_setOriginCorner';
+procedure QGridLayout_addWidget(handle: QGridLayoutH; AnonParam1: QWidgetH; row: Integer; column: Integer; AnonParam4: QtAlignment = 0); cdecl; external Qt4PasLib name 'QGridLayout_addWidget2';
+procedure QGridLayout_addWidget(handle: QGridLayoutH; AnonParam1: QWidgetH; row: Integer; column: Integer; rowSpan: Integer; columnSpan: Integer; AnonParam6: QtAlignment = 0); cdecl; external Qt4PasLib name 'QGridLayout_addWidget3';
+procedure QGridLayout_addLayout(handle: QGridLayoutH; AnonParam1: QLayoutH; row: Integer; column: Integer; AnonParam4: QtAlignment = 0); cdecl; external Qt4PasLib name 'QGridLayout_addLayout';
+procedure QGridLayout_addLayout(handle: QGridLayoutH; AnonParam1: QLayoutH; row: Integer; column: Integer; rowSpan: Integer; columnSpan: Integer; AnonParam6: QtAlignment = 0); cdecl; external Qt4PasLib name 'QGridLayout_addLayout2';
+procedure QGridLayout_setOriginCorner(handle: QGridLayoutH; AnonParam1: QtCorner); cdecl; external Qt4PasLib name 'QGridLayout_setOriginCorner';
 function QGridLayout_originCorner(handle: QGridLayoutH): QtCorner; cdecl; external Qt4PasLib name 'QGridLayout_originCorner';
 function QGridLayout_itemAt(handle: QGridLayoutH; index: Integer): QLayoutItemH; cdecl; external Qt4PasLib name 'QGridLayout_itemAt';
 function QGridLayout_itemAtPosition(handle: QGridLayoutH; row: Integer; column: Integer): QLayoutItemH; cdecl; external Qt4PasLib name 'QGridLayout_itemAtPosition';
 function QGridLayout_takeAt(handle: QGridLayoutH; index: Integer): QLayoutItemH; cdecl; external Qt4PasLib name 'QGridLayout_takeAt';
 function QGridLayout_count(handle: QGridLayoutH): Integer; cdecl; external Qt4PasLib name 'QGridLayout_count';
-procedure QGridLayout_setGeometry(handle: QGridLayoutH; p1: PRect); cdecl; external Qt4PasLib name 'QGridLayout_setGeometry';
-procedure QGridLayout_addItem(handle: QGridLayoutH; item: QLayoutItemH; row: Integer; column: Integer; rowSpan: Integer = 1; columnSpan: Integer = 1; p6: QtAlignment = 0); cdecl; external Qt4PasLib name 'QGridLayout_addItem';
+procedure QGridLayout_setGeometry(handle: QGridLayoutH; AnonParam1: PRect); cdecl; external Qt4PasLib name 'QGridLayout_setGeometry';
+procedure QGridLayout_addItem(handle: QGridLayoutH; item: QLayoutItemH; row: Integer; column: Integer; rowSpan: Integer = 1; columnSpan: Integer = 1; AnonParam6: QtAlignment = 0); cdecl; external Qt4PasLib name 'QGridLayout_addItem';
 procedure QGridLayout_setDefaultPositioning(handle: QGridLayoutH; n: Integer; orient: QtOrientation); cdecl; external Qt4PasLib name 'QGridLayout_setDefaultPositioning';
 procedure QGridLayout_getItemPosition(handle: QGridLayoutH; idx: Integer; row: PInteger; column: PInteger; rowSpan: PInteger; columnSpan: PInteger); cdecl; external Qt4PasLib name 'QGridLayout_getItemPosition';
 
@@ -5196,13 +5216,13 @@ function QClipboard_ownsClipboard(handle: QClipboardH): Boolean; cdecl; external
 function QClipboard_ownsFindBuffer(handle: QClipboardH): Boolean; cdecl; external Qt4PasLib name 'QClipboard_ownsFindBuffer';
 procedure QClipboard_text(handle: QClipboardH; retval: PWideString; mode: QClipboardMode = QClipboardClipboard); cdecl; external Qt4PasLib name 'QClipboard_text';
 procedure QClipboard_text(handle: QClipboardH; retval: PWideString; subtype: PWideString; mode: QClipboardMode = QClipboardClipboard); cdecl; external Qt4PasLib name 'QClipboard_text2';
-procedure QClipboard_setText(handle: QClipboardH; p1: PWideString; mode: QClipboardMode = QClipboardClipboard); cdecl; external Qt4PasLib name 'QClipboard_setText';
+procedure QClipboard_setText(handle: QClipboardH; AnonParam1: PWideString; mode: QClipboardMode = QClipboardClipboard); cdecl; external Qt4PasLib name 'QClipboard_setText';
 function QClipboard_mimeData(handle: QClipboardH; mode: QClipboardMode = QClipboardClipboard): QMimeDataH; cdecl; external Qt4PasLib name 'QClipboard_mimeData';
 procedure QClipboard_setMimeData(handle: QClipboardH; data: QMimeDataH; mode: QClipboardMode = QClipboardClipboard); cdecl; external Qt4PasLib name 'QClipboard_setMimeData';
 procedure QClipboard_image(handle: QClipboardH; retval: QImageH; mode: QClipboardMode = QClipboardClipboard); cdecl; external Qt4PasLib name 'QClipboard_image';
 procedure QClipboard_pixmap(handle: QClipboardH; retval: QPixmapH; mode: QClipboardMode = QClipboardClipboard); cdecl; external Qt4PasLib name 'QClipboard_pixmap';
-procedure QClipboard_setImage(handle: QClipboardH; p1: QImageH; mode: QClipboardMode = QClipboardClipboard); cdecl; external Qt4PasLib name 'QClipboard_setImage';
-procedure QClipboard_setPixmap(handle: QClipboardH; p1: QPixmapH; mode: QClipboardMode = QClipboardClipboard); cdecl; external Qt4PasLib name 'QClipboard_setPixmap';
+procedure QClipboard_setImage(handle: QClipboardH; AnonParam1: QImageH; mode: QClipboardMode = QClipboardClipboard); cdecl; external Qt4PasLib name 'QClipboard_setImage';
+procedure QClipboard_setPixmap(handle: QClipboardH; AnonParam1: QPixmapH; mode: QClipboardMode = QClipboardClipboard); cdecl; external Qt4PasLib name 'QClipboard_setPixmap';
 
 
 type
@@ -5218,7 +5238,7 @@ function QDesktopWidget_isVirtualDesktop(handle: QDesktopWidgetH): Boolean; cdec
 function QDesktopWidget_numScreens(handle: QDesktopWidgetH): Integer; cdecl; external Qt4PasLib name 'QDesktopWidget_numScreens';
 function QDesktopWidget_primaryScreen(handle: QDesktopWidgetH): Integer; cdecl; external Qt4PasLib name 'QDesktopWidget_primaryScreen';
 function QDesktopWidget_screenNumber(handle: QDesktopWidgetH; widget: QWidgetH = nil): Integer; cdecl; external Qt4PasLib name 'QDesktopWidget_screenNumber';
-function QDesktopWidget_screenNumber(handle: QDesktopWidgetH; p1: PQtPoint): Integer; cdecl; external Qt4PasLib name 'QDesktopWidget_screenNumber2';
+function QDesktopWidget_screenNumber(handle: QDesktopWidgetH; AnonParam1: PQtPoint): Integer; cdecl; external Qt4PasLib name 'QDesktopWidget_screenNumber2';
 function QDesktopWidget_screen(handle: QDesktopWidgetH; screen: Integer = -1): QWidgetH; cdecl; external Qt4PasLib name 'QDesktopWidget_screen';
 procedure QDesktopWidget_screenGeometry(handle: QDesktopWidgetH; retval: PRect; screen: Integer = -1); cdecl; external Qt4PasLib name 'QDesktopWidget_screenGeometry';
 procedure QDesktopWidget_screenGeometry(handle: QDesktopWidgetH; retval: PRect; widget: QWidgetH); cdecl; external Qt4PasLib name 'QDesktopWidget_screenGeometry2';
@@ -5229,8 +5249,8 @@ procedure QDesktopWidget_availableGeometry(handle: QDesktopWidgetH; retval: PRec
 
 
 type
-  QDesktopWidget_resized_Event = procedure (p1: Integer) of object cdecl;
-  QDesktopWidget_workAreaResized_Event = procedure (p1: Integer) of object cdecl;
+  QDesktopWidget_resized_Event = procedure (AnonParam1: Integer) of object cdecl;
+  QDesktopWidget_workAreaResized_Event = procedure (AnonParam1: Integer) of object cdecl;
 
 
 procedure QToolTip_showText(pos: PQtPoint; text: PWideString; w: QWidgetH = nil); cdecl; external Qt4PasLib name 'QToolTip_showText';
@@ -5239,9 +5259,9 @@ procedure QToolTip_hideText(); cdecl; external Qt4PasLib name 'QToolTip_hideText
 function QToolTip_isVisible(): Boolean; cdecl; external Qt4PasLib name 'QToolTip_isVisible';
 procedure QToolTip_text(retval: PWideString); cdecl; external Qt4PasLib name 'QToolTip_text';
 procedure QToolTip_palette(retval: QPaletteH); cdecl; external Qt4PasLib name 'QToolTip_palette';
-procedure QToolTip_setPalette(p1: QPaletteH); cdecl; external Qt4PasLib name 'QToolTip_setPalette';
+procedure QToolTip_setPalette(AnonParam1: QPaletteH); cdecl; external Qt4PasLib name 'QToolTip_setPalette';
 procedure QToolTip_font(retval: QFontH); cdecl; external Qt4PasLib name 'QToolTip_font';
-procedure QToolTip_setFont(p1: QFontH); cdecl; external Qt4PasLib name 'QToolTip_setFont';
+procedure QToolTip_setFont(AnonParam1: QFontH); cdecl; external Qt4PasLib name 'QToolTip_setFont';
 
 {$ifdef BINUX }
 function QX11Info_create(): QX11InfoH; cdecl; external Qt4PasLib name 'QX11Info_create';
@@ -5279,7 +5299,7 @@ function QDrag_create(dragSource: QWidgetH): QDragH; cdecl; external Qt4PasLib n
 procedure QDrag_destroy(handle: QDragH); cdecl; external Qt4PasLib name 'QDrag_destroy'; 
 procedure QDrag_setMimeData(handle: QDragH; data: QMimeDataH); cdecl; external Qt4PasLib name 'QDrag_setMimeData';
 function QDrag_mimeData(handle: QDragH): QMimeDataH; cdecl; external Qt4PasLib name 'QDrag_mimeData';
-procedure QDrag_setPixmap(handle: QDragH; p1: QPixmapH); cdecl; external Qt4PasLib name 'QDrag_setPixmap';
+procedure QDrag_setPixmap(handle: QDragH; AnonParam1: QPixmapH); cdecl; external Qt4PasLib name 'QDrag_setPixmap';
 procedure QDrag_pixmap(handle: QDragH; retval: QPixmapH); cdecl; external Qt4PasLib name 'QDrag_pixmap';
 procedure QDrag_setHotSpot(handle: QDragH; hotspot: PQtPoint); cdecl; external Qt4PasLib name 'QDrag_setHotSpot';
 procedure QDrag_hotSpot(handle: QDragH; retval: PQtPoint); cdecl; external Qt4PasLib name 'QDrag_hotSpot';
@@ -5295,6 +5315,59 @@ type
   QDrag_actionChanged_Event = procedure (action: QtDropAction) of object cdecl;
   QDrag_targetChanged_Event = procedure (newTarget: QWidgetH) of object cdecl;
 
+
+function QShortcut_create(parent: QWidgetH): QShortcutH; cdecl; external Qt4PasLib name 'QShortcut_create';
+procedure QShortcut_destroy(handle: QShortcutH); cdecl; external Qt4PasLib name 'QShortcut_destroy'; 
+function QShortcut_create(key: QKeySequenceH; parent: QWidgetH; member: PAnsiChar = nil; ambiguousMember: PAnsiChar = nil; context: QtShortcutContext = QtWindowShortcut): QShortcutH; cdecl; external Qt4PasLib name 'QShortcut_create2';
+procedure QShortcut_setKey(handle: QShortcutH; key: QKeySequenceH); cdecl; external Qt4PasLib name 'QShortcut_setKey';
+procedure QShortcut_key(handle: QShortcutH; retval: QKeySequenceH); cdecl; external Qt4PasLib name 'QShortcut_key';
+procedure QShortcut_setEnabled(handle: QShortcutH; enable: Boolean); cdecl; external Qt4PasLib name 'QShortcut_setEnabled';
+function QShortcut_isEnabled(handle: QShortcutH): Boolean; cdecl; external Qt4PasLib name 'QShortcut_isEnabled';
+procedure QShortcut_setContext(handle: QShortcutH; context: QtShortcutContext); cdecl; external Qt4PasLib name 'QShortcut_setContext';
+function QShortcut_context(handle: QShortcutH): QtShortcutContext; cdecl; external Qt4PasLib name 'QShortcut_context';
+procedure QShortcut_setWhatsThis(handle: QShortcutH; text: PWideString); cdecl; external Qt4PasLib name 'QShortcut_setWhatsThis';
+procedure QShortcut_whatsThis(handle: QShortcutH; retval: PWideString); cdecl; external Qt4PasLib name 'QShortcut_whatsThis';
+procedure QShortcut_setAutoRepeat(handle: QShortcutH; _on: Boolean); cdecl; external Qt4PasLib name 'QShortcut_setAutoRepeat';
+function QShortcut_autoRepeat(handle: QShortcutH): Boolean; cdecl; external Qt4PasLib name 'QShortcut_autoRepeat';
+function QShortcut_id(handle: QShortcutH): Integer; cdecl; external Qt4PasLib name 'QShortcut_id';
+function QShortcut_parentWidget(handle: QShortcutH): QWidgetH; cdecl; external Qt4PasLib name 'QShortcut_parentWidget';
+
+
+type
+  QShortcut_activated_Event = procedure () of object cdecl;
+  QShortcut_activatedAmbiguously_Event = procedure () of object cdecl;
+
+
+{$ifdef BINUX or MSWINDOWS or DARWIN }
+
+type
+  QSessionManagerRestartHint = ( // QSessionManager::RestartHint (1)
+    QSessionManagerRestartIfRunning, QSessionManagerRestartAnyway, QSessionManagerRestartImmediately, QSessionManagerRestartNever );
+
+{$endif}
+{$ifdef BINUX or MSWINDOWS or DARWIN }
+procedure QSessionManager_sessionId(handle: QSessionManagerH; retval: PWideString); cdecl; external Qt4PasLib name 'QSessionManager_sessionId';
+procedure QSessionManager_sessionKey(handle: QSessionManagerH; retval: PWideString); cdecl; external Qt4PasLib name 'QSessionManager_sessionKey';
+{$endif}
+{$ifdef BINUX or DARWIN }
+function QSessionManager_handle(handle: QSessionManagerH): Pointer; cdecl; external Qt4PasLib name 'QSessionManager_handle';
+{$endif}
+{$ifdef BINUX or MSWINDOWS or DARWIN }
+function QSessionManager_allowsInteraction(handle: QSessionManagerH): Boolean; cdecl; external Qt4PasLib name 'QSessionManager_allowsInteraction';
+function QSessionManager_allowsErrorInteraction(handle: QSessionManagerH): Boolean; cdecl; external Qt4PasLib name 'QSessionManager_allowsErrorInteraction';
+procedure QSessionManager_release(handle: QSessionManagerH); cdecl; external Qt4PasLib name 'QSessionManager_release';
+procedure QSessionManager_cancel(handle: QSessionManagerH); cdecl; external Qt4PasLib name 'QSessionManager_cancel';
+procedure QSessionManager_setRestartHint(handle: QSessionManagerH; AnonParam1: QSessionManagerRestartHint); cdecl; external Qt4PasLib name 'QSessionManager_setRestartHint';
+function QSessionManager_restartHint(handle: QSessionManagerH): QSessionManagerRestartHint; cdecl; external Qt4PasLib name 'QSessionManager_restartHint';
+procedure QSessionManager_setRestartCommand(handle: QSessionManagerH; AnonParam1: QStringListH); cdecl; external Qt4PasLib name 'QSessionManager_setRestartCommand';
+procedure QSessionManager_restartCommand(handle: QSessionManagerH; retval: QStringListH); cdecl; external Qt4PasLib name 'QSessionManager_restartCommand';
+procedure QSessionManager_setDiscardCommand(handle: QSessionManagerH; AnonParam1: QStringListH); cdecl; external Qt4PasLib name 'QSessionManager_setDiscardCommand';
+procedure QSessionManager_discardCommand(handle: QSessionManagerH; retval: QStringListH); cdecl; external Qt4PasLib name 'QSessionManager_discardCommand';
+procedure QSessionManager_setManagerProperty(handle: QSessionManagerH; name: PWideString; value: PWideString); cdecl; external Qt4PasLib name 'QSessionManager_setManagerProperty';
+procedure QSessionManager_setManagerProperty(handle: QSessionManagerH; name: PWideString; value: QStringListH); cdecl; external Qt4PasLib name 'QSessionManager_setManagerProperty2';
+function QSessionManager_isPhase2(handle: QSessionManagerH): Boolean; cdecl; external Qt4PasLib name 'QSessionManager_isPhase2';
+procedure QSessionManager_requestPhase2(handle: QSessionManagerH); cdecl; external Qt4PasLib name 'QSessionManager_requestPhase2';
+{$endif}
 
 
 type
@@ -5395,8 +5468,8 @@ function QMatrix_dx(handle: QMatrixH): qreal; cdecl; external Qt4PasLib name 'QM
 function QMatrix_dy(handle: QMatrixH): qreal; cdecl; external Qt4PasLib name 'QMatrix_dy';
 procedure QMatrix_map(handle: QMatrixH; x: Integer; y: Integer; tx: PInteger; ty: PInteger); cdecl; external Qt4PasLib name 'QMatrix_map';
 procedure QMatrix_map(handle: QMatrixH; x: qreal; y: qreal; tx: PQReal; ty: PQReal); cdecl; external Qt4PasLib name 'QMatrix_map2';
-procedure QMatrix_mapRect(handle: QMatrixH; retval: PRect; p1: PRect); cdecl; external Qt4PasLib name 'QMatrix_mapRect';
-procedure QMatrix_mapRect(handle: QMatrixH; retval: QRectFH; p1: QRectFH); cdecl; external Qt4PasLib name 'QMatrix_mapRect2';
+procedure QMatrix_mapRect(handle: QMatrixH; retval: PRect; AnonParam1: PRect); cdecl; external Qt4PasLib name 'QMatrix_mapRect';
+procedure QMatrix_mapRect(handle: QMatrixH; retval: QRectFH; AnonParam1: QRectFH); cdecl; external Qt4PasLib name 'QMatrix_mapRect2';
 procedure QMatrix_map(handle: QMatrixH; retval: PQtPoint; p: PQtPoint); cdecl; external Qt4PasLib name 'QMatrix_map3';
 procedure QMatrix_map(handle: QMatrixH; retval: PQtPointF; p: PQtPointF); cdecl; external Qt4PasLib name 'QMatrix_map4';
 procedure QMatrix_map(handle: QMatrixH; retval: QLineH; l: QLineH); cdecl; external Qt4PasLib name 'QMatrix_map5';
@@ -5442,11 +5515,11 @@ function QBrush_create(image: QImageH): QBrushH; cdecl; external Qt4PasLib name 
 function QBrush_create(brush: QBrushH): QBrushH; cdecl; external Qt4PasLib name 'QBrush_create9';
 function QBrush_create(gradient: QGradientH): QBrushH; cdecl; external Qt4PasLib name 'QBrush_create10';
 function QBrush_style(handle: QBrushH): QtBrushStyle; cdecl; external Qt4PasLib name 'QBrush_style';
-procedure QBrush_setStyle(handle: QBrushH; p1: QtBrushStyle); cdecl; external Qt4PasLib name 'QBrush_setStyle';
+procedure QBrush_setStyle(handle: QBrushH; AnonParam1: QtBrushStyle); cdecl; external Qt4PasLib name 'QBrush_setStyle';
 function QBrush_matrix(handle: QBrushH): QMatrixH; cdecl; external Qt4PasLib name 'QBrush_matrix';
 procedure QBrush_setMatrix(handle: QBrushH; mat: QMatrixH); cdecl; external Qt4PasLib name 'QBrush_setMatrix';
 procedure QBrush_transform(handle: QBrushH; retval: QTransformH); cdecl; external Qt4PasLib name 'QBrush_transform';
-procedure QBrush_setTransform(handle: QBrushH; p1: QTransformH); cdecl; external Qt4PasLib name 'QBrush_setTransform';
+procedure QBrush_setTransform(handle: QBrushH; AnonParam1: QTransformH); cdecl; external Qt4PasLib name 'QBrush_setTransform';
 procedure QBrush_texture(handle: QBrushH; retval: QPixmapH); cdecl; external Qt4PasLib name 'QBrush_texture';
 procedure QBrush_setTexture(handle: QBrushH; pixmap: QPixmapH); cdecl; external Qt4PasLib name 'QBrush_setTexture';
 procedure QBrush_textureImage(handle: QBrushH; retval: QImageH); cdecl; external Qt4PasLib name 'QBrush_textureImage';
@@ -5507,12 +5580,12 @@ procedure QConicalGradient_setAngle(handle: QConicalGradientH; angle: qreal); cd
 
 function QPen_create(): QPenH; cdecl; external Qt4PasLib name 'QPen_create';
 procedure QPen_destroy(handle: QPenH); cdecl; external Qt4PasLib name 'QPen_destroy'; 
-function QPen_create(p1: QtPenStyle): QPenH; cdecl; external Qt4PasLib name 'QPen_create2';
+function QPen_create(AnonParam1: QtPenStyle): QPenH; cdecl; external Qt4PasLib name 'QPen_create2';
 function QPen_create(color: PQColor): QPenH; cdecl; external Qt4PasLib name 'QPen_create3';
 function QPen_create(brush: QBrushH; width: qreal; s: QtPenStyle = QtSolidLine; c: QtPenCapStyle = QtSquareCap; j: QtPenJoinStyle = QtBevelJoin): QPenH; cdecl; external Qt4PasLib name 'QPen_create4';
 function QPen_create(pen: QPenH): QPenH; cdecl; external Qt4PasLib name 'QPen_create5';
 function QPen_style(handle: QPenH): QtPenStyle; cdecl; external Qt4PasLib name 'QPen_style';
-procedure QPen_setStyle(handle: QPenH; p1: QtPenStyle); cdecl; external Qt4PasLib name 'QPen_setStyle';
+procedure QPen_setStyle(handle: QPenH; AnonParam1: QtPenStyle); cdecl; external Qt4PasLib name 'QPen_setStyle';
 procedure QPen_dashPattern(handle: QPenH; retval: PQRealArray); cdecl; external Qt4PasLib name 'QPen_dashPattern';
 procedure QPen_setDashPattern(handle: QPenH; pattern: PQRealArray); cdecl; external Qt4PasLib name 'QPen_setDashPattern';
 function QPen_dashOffset(handle: QPenH): qreal; cdecl; external Qt4PasLib name 'QPen_dashOffset';
@@ -5595,9 +5668,9 @@ const
 
 function QPainter_create(): QPainterH; cdecl; external Qt4PasLib name 'QPainter_create';
 procedure QPainter_destroy(handle: QPainterH); cdecl; external Qt4PasLib name 'QPainter_destroy'; 
-function QPainter_create(p1: QPaintDeviceH): QPainterH; cdecl; external Qt4PasLib name 'QPainter_create2';
+function QPainter_create(AnonParam1: QPaintDeviceH): QPainterH; cdecl; external Qt4PasLib name 'QPainter_create2';
 function QPainter_device(handle: QPainterH): QPaintDeviceH; cdecl; external Qt4PasLib name 'QPainter_device';
-function QPainter_begin(handle: QPainterH; p1: QPaintDeviceH): Boolean; cdecl; external Qt4PasLib name 'QPainter_begin';
+function QPainter_begin(handle: QPainterH; AnonParam1: QPaintDeviceH): Boolean; cdecl; external Qt4PasLib name 'QPainter_begin';
 function QPainter_end(handle: QPainterH): Boolean; cdecl; external Qt4PasLib name 'QPainter_end';
 function QPainter_isActive(handle: QPainterH): Boolean; cdecl; external Qt4PasLib name 'QPainter_isActive';
 procedure QPainter_initFrom(handle: QPainterH; widget: QWidgetH); cdecl; external Qt4PasLib name 'QPainter_initFrom';
@@ -5618,18 +5691,18 @@ procedure QPainter_setBackgroundMode(handle: QPainterH; mode: QtBGMode); cdecl; 
 function QPainter_backgroundMode(handle: QPainterH): QtBGMode; cdecl; external Qt4PasLib name 'QPainter_backgroundMode';
 procedure QPainter_brushOrigin(handle: QPainterH; retval: PQtPoint); cdecl; external Qt4PasLib name 'QPainter_brushOrigin';
 procedure QPainter_setBrushOrigin(handle: QPainterH; x: Integer; y: Integer); cdecl; external Qt4PasLib name 'QPainter_setBrushOrigin';
-procedure QPainter_setBrushOrigin(handle: QPainterH; p1: PQtPoint); cdecl; external Qt4PasLib name 'QPainter_setBrushOrigin2';
-procedure QPainter_setBrushOrigin(handle: QPainterH; p1: PQtPointF); cdecl; external Qt4PasLib name 'QPainter_setBrushOrigin3';
+procedure QPainter_setBrushOrigin(handle: QPainterH; AnonParam1: PQtPoint); cdecl; external Qt4PasLib name 'QPainter_setBrushOrigin2';
+procedure QPainter_setBrushOrigin(handle: QPainterH; AnonParam1: PQtPointF); cdecl; external Qt4PasLib name 'QPainter_setBrushOrigin3';
 procedure QPainter_setBackground(handle: QPainterH; bg: QBrushH); cdecl; external Qt4PasLib name 'QPainter_setBackground';
 function QPainter_background(handle: QPainterH): QBrushH; cdecl; external Qt4PasLib name 'QPainter_background';
 function QPainter_opacity(handle: QPainterH): qreal; cdecl; external Qt4PasLib name 'QPainter_opacity';
 procedure QPainter_setOpacity(handle: QPainterH; opacity: qreal); cdecl; external Qt4PasLib name 'QPainter_setOpacity';
 procedure QPainter_clipRegion(handle: QPainterH; retval: QRegionH); cdecl; external Qt4PasLib name 'QPainter_clipRegion';
 procedure QPainter_clipPath(handle: QPainterH; retval: QPainterPathH); cdecl; external Qt4PasLib name 'QPainter_clipPath';
-procedure QPainter_setClipRect(handle: QPainterH; p1: QRectFH; op: QtClipOperation = QtReplaceClip); cdecl; external Qt4PasLib name 'QPainter_setClipRect';
-procedure QPainter_setClipRect(handle: QPainterH; p1: PRect; op: QtClipOperation = QtReplaceClip); cdecl; external Qt4PasLib name 'QPainter_setClipRect2';
+procedure QPainter_setClipRect(handle: QPainterH; AnonParam1: QRectFH; op: QtClipOperation = QtReplaceClip); cdecl; external Qt4PasLib name 'QPainter_setClipRect';
+procedure QPainter_setClipRect(handle: QPainterH; AnonParam1: PRect; op: QtClipOperation = QtReplaceClip); cdecl; external Qt4PasLib name 'QPainter_setClipRect2';
 procedure QPainter_setClipRect(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; op: QtClipOperation = QtReplaceClip); cdecl; external Qt4PasLib name 'QPainter_setClipRect3';
-procedure QPainter_setClipRegion(handle: QPainterH; p1: QRegionH; op: QtClipOperation = QtReplaceClip); cdecl; external Qt4PasLib name 'QPainter_setClipRegion';
+procedure QPainter_setClipRegion(handle: QPainterH; AnonParam1: QRegionH; op: QtClipOperation = QtReplaceClip); cdecl; external Qt4PasLib name 'QPainter_setClipRegion';
 procedure QPainter_setClipPath(handle: QPainterH; path: QPainterPathH; op: QtClipOperation = QtReplaceClip); cdecl; external Qt4PasLib name 'QPainter_setClipPath';
 procedure QPainter_setClipping(handle: QPainterH; enable: Boolean); cdecl; external Qt4PasLib name 'QPainter_setClipping';
 function QPainter_hasClipping(handle: QPainterH): Boolean; cdecl; external Qt4PasLib name 'QPainter_hasClipping';
@@ -5709,23 +5782,23 @@ procedure QPainter_drawConvexPolygon(handle: QPainterH; polygon: QPolygonFH); cd
 procedure QPainter_drawConvexPolygon(handle: QPainterH; points: PQtPoint; pointCount: Integer); cdecl; external Qt4PasLib name 'QPainter_drawConvexPolygon3';
 procedure QPainter_drawConvexPolygon(handle: QPainterH; polygon: QPolygonH); cdecl; external Qt4PasLib name 'QPainter_drawConvexPolygon4';
 procedure QPainter_drawArc(handle: QPainterH; rect: QRectFH; a: Integer; alen: Integer); cdecl; external Qt4PasLib name 'QPainter_drawArc';
-procedure QPainter_drawArc(handle: QPainterH; p1: PRect; a: Integer; alen: Integer); cdecl; external Qt4PasLib name 'QPainter_drawArc2';
+procedure QPainter_drawArc(handle: QPainterH; AnonParam1: PRect; a: Integer; alen: Integer); cdecl; external Qt4PasLib name 'QPainter_drawArc2';
 procedure QPainter_drawArc(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; a: Integer; alen: Integer); cdecl; external Qt4PasLib name 'QPainter_drawArc3';
 procedure QPainter_drawPie(handle: QPainterH; rect: QRectFH; a: Integer; alen: Integer); cdecl; external Qt4PasLib name 'QPainter_drawPie';
 procedure QPainter_drawPie(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; a: Integer; alen: Integer); cdecl; external Qt4PasLib name 'QPainter_drawPie2';
-procedure QPainter_drawPie(handle: QPainterH; p1: PRect; a: Integer; alen: Integer); cdecl; external Qt4PasLib name 'QPainter_drawPie3';
+procedure QPainter_drawPie(handle: QPainterH; AnonParam1: PRect; a: Integer; alen: Integer); cdecl; external Qt4PasLib name 'QPainter_drawPie3';
 procedure QPainter_drawChord(handle: QPainterH; rect: QRectFH; a: Integer; alen: Integer); cdecl; external Qt4PasLib name 'QPainter_drawChord';
 procedure QPainter_drawChord(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; a: Integer; alen: Integer); cdecl; external Qt4PasLib name 'QPainter_drawChord2';
-procedure QPainter_drawChord(handle: QPainterH; p1: PRect; a: Integer; alen: Integer); cdecl; external Qt4PasLib name 'QPainter_drawChord3';
+procedure QPainter_drawChord(handle: QPainterH; AnonParam1: PRect; a: Integer; alen: Integer); cdecl; external Qt4PasLib name 'QPainter_drawChord3';
 procedure QPainter_drawRoundedRect(handle: QPainterH; rect: QRectFH; xRadius: qreal; yRadius: qreal; mode: QtSizeMode = QtAbsoluteSize); cdecl; external Qt4PasLib name 'QPainter_drawRoundedRect';
 procedure QPainter_drawRoundedRect(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; xRadius: qreal; yRadius: qreal; mode: QtSizeMode = QtAbsoluteSize); cdecl; external Qt4PasLib name 'QPainter_drawRoundedRect2';
 procedure QPainter_drawRoundedRect(handle: QPainterH; rect: PRect; xRadius: qreal; yRadius: qreal; mode: QtSizeMode = QtAbsoluteSize); cdecl; external Qt4PasLib name 'QPainter_drawRoundedRect3';
 procedure QPainter_drawRoundRect(handle: QPainterH; r: QRectFH; xround: Integer = 25; yround: Integer = 25); cdecl; external Qt4PasLib name 'QPainter_drawRoundRect';
-procedure QPainter_drawRoundRect(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; p5: Integer = 25; p6: Integer = 25); cdecl; external Qt4PasLib name 'QPainter_drawRoundRect2';
+procedure QPainter_drawRoundRect(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; AnonParam5: Integer = 25; AnonParam6: Integer = 25); cdecl; external Qt4PasLib name 'QPainter_drawRoundRect2';
 procedure QPainter_drawRoundRect(handle: QPainterH; r: PRect; xround: Integer = 25; yround: Integer = 25); cdecl; external Qt4PasLib name 'QPainter_drawRoundRect3';
 procedure QPainter_drawTiledPixmap(handle: QPainterH; rect: QRectFH; pm: QPixmapH; offset: PQtPointF = nil); cdecl; external Qt4PasLib name 'QPainter_drawTiledPixmap';
-procedure QPainter_drawTiledPixmap(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; p5: QPixmapH; sx: Integer = 0; sy: Integer = 0); cdecl; external Qt4PasLib name 'QPainter_drawTiledPixmap2';
-procedure QPainter_drawTiledPixmap(handle: QPainterH; p1: PRect; p2: QPixmapH; p3: PQtPoint = nil); cdecl; external Qt4PasLib name 'QPainter_drawTiledPixmap3';
+procedure QPainter_drawTiledPixmap(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; AnonParam5: QPixmapH; sx: Integer = 0; sy: Integer = 0); cdecl; external Qt4PasLib name 'QPainter_drawTiledPixmap2';
+procedure QPainter_drawTiledPixmap(handle: QPainterH; AnonParam1: PRect; AnonParam2: QPixmapH; AnonParam3: PQtPoint = nil); cdecl; external Qt4PasLib name 'QPainter_drawTiledPixmap3';
 procedure QPainter_drawPicture(handle: QPainterH; p: PQtPointF; picture: QPictureH); cdecl; external Qt4PasLib name 'QPainter_drawPicture';
 procedure QPainter_drawPicture(handle: QPainterH; x: Integer; y: Integer; picture: QPictureH); cdecl; external Qt4PasLib name 'QPainter_drawPicture2';
 procedure QPainter_drawPicture(handle: QPainterH; p: PQtPoint; picture: QPictureH); cdecl; external Qt4PasLib name 'QPainter_drawPicture3';
@@ -5763,21 +5836,21 @@ procedure QPainter_boundingRect(handle: QPainterH; retval: QRectFH; rect: QRectF
 procedure QPainter_boundingRect(handle: QPainterH; retval: PRect; rect: PRect; flags: Integer; text: PWideString); cdecl; external Qt4PasLib name 'QPainter_boundingRect2';
 procedure QPainter_boundingRect(handle: QPainterH; retval: PRect; x: Integer; y: Integer; w: Integer; h: Integer; flags: Integer; text: PWideString); cdecl; external Qt4PasLib name 'QPainter_boundingRect3';
 procedure QPainter_boundingRect(handle: QPainterH; retval: QRectFH; rect: QRectFH; text: PWideString; o: QTextOptionH = nil); cdecl; external Qt4PasLib name 'QPainter_boundingRect4';
-procedure QPainter_fillRect(handle: QPainterH; p1: QRectFH; p2: QBrushH); cdecl; external Qt4PasLib name 'QPainter_fillRect';
-procedure QPainter_fillRect(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; p5: QBrushH); cdecl; external Qt4PasLib name 'QPainter_fillRect2';
-procedure QPainter_fillRect(handle: QPainterH; p1: PRect; p2: QBrushH); cdecl; external Qt4PasLib name 'QPainter_fillRect3';
-procedure QPainter_fillRect(handle: QPainterH; p1: QRectFH; color: PQColor); cdecl; external Qt4PasLib name 'QPainter_fillRect4';
+procedure QPainter_fillRect(handle: QPainterH; AnonParam1: QRectFH; AnonParam2: QBrushH); cdecl; external Qt4PasLib name 'QPainter_fillRect';
+procedure QPainter_fillRect(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; AnonParam5: QBrushH); cdecl; external Qt4PasLib name 'QPainter_fillRect2';
+procedure QPainter_fillRect(handle: QPainterH; AnonParam1: PRect; AnonParam2: QBrushH); cdecl; external Qt4PasLib name 'QPainter_fillRect3';
+procedure QPainter_fillRect(handle: QPainterH; AnonParam1: QRectFH; color: PQColor); cdecl; external Qt4PasLib name 'QPainter_fillRect4';
 procedure QPainter_fillRect(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; color: PQColor); cdecl; external Qt4PasLib name 'QPainter_fillRect5';
-procedure QPainter_fillRect(handle: QPainterH; p1: PRect; color: PQColor); cdecl; external Qt4PasLib name 'QPainter_fillRect6';
+procedure QPainter_fillRect(handle: QPainterH; AnonParam1: PRect; color: PQColor); cdecl; external Qt4PasLib name 'QPainter_fillRect6';
 procedure QPainter_fillRect(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; c: QtGlobalColor); cdecl; external Qt4PasLib name 'QPainter_fillRect7';
 procedure QPainter_fillRect(handle: QPainterH; r: PRect; c: QtGlobalColor); cdecl; external Qt4PasLib name 'QPainter_fillRect8';
 procedure QPainter_fillRect(handle: QPainterH; r: QRectFH; c: QtGlobalColor); cdecl; external Qt4PasLib name 'QPainter_fillRect9';
 procedure QPainter_fillRect(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; style: QtBrushStyle); cdecl; external Qt4PasLib name 'QPainter_fillRect10';
 procedure QPainter_fillRect(handle: QPainterH; r: PRect; style: QtBrushStyle); cdecl; external Qt4PasLib name 'QPainter_fillRect11';
 procedure QPainter_fillRect(handle: QPainterH; r: QRectFH; style: QtBrushStyle); cdecl; external Qt4PasLib name 'QPainter_fillRect12';
-procedure QPainter_eraseRect(handle: QPainterH; p1: QRectFH); cdecl; external Qt4PasLib name 'QPainter_eraseRect';
+procedure QPainter_eraseRect(handle: QPainterH; AnonParam1: QRectFH); cdecl; external Qt4PasLib name 'QPainter_eraseRect';
 procedure QPainter_eraseRect(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer); cdecl; external Qt4PasLib name 'QPainter_eraseRect2';
-procedure QPainter_eraseRect(handle: QPainterH; p1: PRect); cdecl; external Qt4PasLib name 'QPainter_eraseRect3';
+procedure QPainter_eraseRect(handle: QPainterH; AnonParam1: PRect); cdecl; external Qt4PasLib name 'QPainter_eraseRect3';
 procedure QPainter_setRenderHint(handle: QPainterH; hint: QPainterRenderHint; _on: Boolean = True); cdecl; external Qt4PasLib name 'QPainter_setRenderHint';
 procedure QPainter_setRenderHints(handle: QPainterH; hints: QPainterRenderHints; _on: Boolean = True); cdecl; external Qt4PasLib name 'QPainter_setRenderHints';
 function QPainter_renderHints(handle: QPainterH): QPainterRenderHints; cdecl; external Qt4PasLib name 'QPainter_renderHints';
@@ -5971,7 +6044,7 @@ function QRegion_handle(handle: QRegionH): QHRGN; cdecl; external Qt4PasLib name
 {$endif}
 {$ifdef DARWIN }
 function QRegion_handle(handle: QRegionH): RgnHandle; cdecl; external Qt4PasLib name 'QRegion_handle3';
-function QRegion_handle(handle: QRegionH; p1: Boolean): RgnHandle; cdecl; external Qt4PasLib name 'QRegion_handle4';
+function QRegion_handle(handle: QRegionH; AnonParam1: Boolean): RgnHandle; cdecl; external Qt4PasLib name 'QRegion_handle4';
 function QRegion_toHIMutableShape(handle: QRegionH): Pointer; cdecl; external Qt4PasLib name 'QRegion_toHIMutableShape';
 procedure QRegion_fromHIShapeRef(retval: QRegionH; shape: Pointer); cdecl; external Qt4PasLib name 'QRegion_fromHIShapeRef';
 {$endif}
@@ -6060,38 +6133,38 @@ function QPrinter_create(printer: QPrinterInfoH; mode: QPrinterPrinterMode = QPr
 function QPrinter_devType(handle: QPrinterH): Integer; cdecl; external Qt4PasLib name 'QPrinter_devType';
 procedure QPrinter_setOutputFormat(handle: QPrinterH; format: QPrinterOutputFormat); cdecl; external Qt4PasLib name 'QPrinter_setOutputFormat';
 function QPrinter_outputFormat(handle: QPrinterH): QPrinterOutputFormat; cdecl; external Qt4PasLib name 'QPrinter_outputFormat';
-procedure QPrinter_setPrinterName(handle: QPrinterH; p1: PWideString); cdecl; external Qt4PasLib name 'QPrinter_setPrinterName';
+procedure QPrinter_setPrinterName(handle: QPrinterH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QPrinter_setPrinterName';
 procedure QPrinter_printerName(handle: QPrinterH; retval: PWideString); cdecl; external Qt4PasLib name 'QPrinter_printerName';
 function QPrinter_isValid(handle: QPrinterH): Boolean; cdecl; external Qt4PasLib name 'QPrinter_isValid';
-procedure QPrinter_setOutputFileName(handle: QPrinterH; p1: PWideString); cdecl; external Qt4PasLib name 'QPrinter_setOutputFileName';
+procedure QPrinter_setOutputFileName(handle: QPrinterH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QPrinter_setOutputFileName';
 procedure QPrinter_outputFileName(handle: QPrinterH; retval: PWideString); cdecl; external Qt4PasLib name 'QPrinter_outputFileName';
-procedure QPrinter_setPrintProgram(handle: QPrinterH; p1: PWideString); cdecl; external Qt4PasLib name 'QPrinter_setPrintProgram';
+procedure QPrinter_setPrintProgram(handle: QPrinterH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QPrinter_setPrintProgram';
 procedure QPrinter_printProgram(handle: QPrinterH; retval: PWideString); cdecl; external Qt4PasLib name 'QPrinter_printProgram';
-procedure QPrinter_setDocName(handle: QPrinterH; p1: PWideString); cdecl; external Qt4PasLib name 'QPrinter_setDocName';
+procedure QPrinter_setDocName(handle: QPrinterH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QPrinter_setDocName';
 procedure QPrinter_docName(handle: QPrinterH; retval: PWideString); cdecl; external Qt4PasLib name 'QPrinter_docName';
-procedure QPrinter_setCreator(handle: QPrinterH; p1: PWideString); cdecl; external Qt4PasLib name 'QPrinter_setCreator';
+procedure QPrinter_setCreator(handle: QPrinterH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QPrinter_setCreator';
 procedure QPrinter_creator(handle: QPrinterH; retval: PWideString); cdecl; external Qt4PasLib name 'QPrinter_creator';
-procedure QPrinter_setOrientation(handle: QPrinterH; p1: QPrinterOrientation); cdecl; external Qt4PasLib name 'QPrinter_setOrientation';
+procedure QPrinter_setOrientation(handle: QPrinterH; AnonParam1: QPrinterOrientation); cdecl; external Qt4PasLib name 'QPrinter_setOrientation';
 function QPrinter_orientation(handle: QPrinterH): QPrinterOrientation; cdecl; external Qt4PasLib name 'QPrinter_orientation';
-procedure QPrinter_setPageSize(handle: QPrinterH; p1: QPrinterPageSize); cdecl; external Qt4PasLib name 'QPrinter_setPageSize';
+procedure QPrinter_setPageSize(handle: QPrinterH; AnonParam1: QPrinterPageSize); cdecl; external Qt4PasLib name 'QPrinter_setPageSize';
 function QPrinter_pageSize(handle: QPrinterH): QPrinterPageSize; cdecl; external Qt4PasLib name 'QPrinter_pageSize';
-procedure QPrinter_setPaperSize(handle: QPrinterH; p1: QPrinterPageSize); cdecl; external Qt4PasLib name 'QPrinter_setPaperSize';
+procedure QPrinter_setPaperSize(handle: QPrinterH; AnonParam1: QPrinterPageSize); cdecl; external Qt4PasLib name 'QPrinter_setPaperSize';
 function QPrinter_paperSize(handle: QPrinterH): QPrinterPageSize; cdecl; external Qt4PasLib name 'QPrinter_paperSize';
 procedure QPrinter_setPaperSize(handle: QPrinterH; paperSize: QSizeFH; _unit: QPrinterUnit); cdecl; external Qt4PasLib name 'QPrinter_setPaperSize2';
 procedure QPrinter_paperSize(handle: QPrinterH; retval: QSizeFH; _unit: QPrinterUnit); cdecl; external Qt4PasLib name 'QPrinter_paperSize2';
-procedure QPrinter_setPageOrder(handle: QPrinterH; p1: QPrinterPageOrder); cdecl; external Qt4PasLib name 'QPrinter_setPageOrder';
+procedure QPrinter_setPageOrder(handle: QPrinterH; AnonParam1: QPrinterPageOrder); cdecl; external Qt4PasLib name 'QPrinter_setPageOrder';
 function QPrinter_pageOrder(handle: QPrinterH): QPrinterPageOrder; cdecl; external Qt4PasLib name 'QPrinter_pageOrder';
-procedure QPrinter_setResolution(handle: QPrinterH; p1: Integer); cdecl; external Qt4PasLib name 'QPrinter_setResolution';
+procedure QPrinter_setResolution(handle: QPrinterH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QPrinter_setResolution';
 function QPrinter_resolution(handle: QPrinterH): Integer; cdecl; external Qt4PasLib name 'QPrinter_resolution';
-procedure QPrinter_setColorMode(handle: QPrinterH; p1: QPrinterColorMode); cdecl; external Qt4PasLib name 'QPrinter_setColorMode';
+procedure QPrinter_setColorMode(handle: QPrinterH; AnonParam1: QPrinterColorMode); cdecl; external Qt4PasLib name 'QPrinter_setColorMode';
 function QPrinter_colorMode(handle: QPrinterH): QPrinterColorMode; cdecl; external Qt4PasLib name 'QPrinter_colorMode';
 procedure QPrinter_setCollateCopies(handle: QPrinterH; collate: Boolean); cdecl; external Qt4PasLib name 'QPrinter_setCollateCopies';
 function QPrinter_collateCopies(handle: QPrinterH): Boolean; cdecl; external Qt4PasLib name 'QPrinter_collateCopies';
-procedure QPrinter_setFullPage(handle: QPrinterH; p1: Boolean); cdecl; external Qt4PasLib name 'QPrinter_setFullPage';
+procedure QPrinter_setFullPage(handle: QPrinterH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QPrinter_setFullPage';
 function QPrinter_fullPage(handle: QPrinterH): Boolean; cdecl; external Qt4PasLib name 'QPrinter_fullPage';
-procedure QPrinter_setNumCopies(handle: QPrinterH; p1: Integer); cdecl; external Qt4PasLib name 'QPrinter_setNumCopies';
+procedure QPrinter_setNumCopies(handle: QPrinterH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QPrinter_setNumCopies';
 function QPrinter_numCopies(handle: QPrinterH): Integer; cdecl; external Qt4PasLib name 'QPrinter_numCopies';
-procedure QPrinter_setPaperSource(handle: QPrinterH; p1: QPrinterPaperSource); cdecl; external Qt4PasLib name 'QPrinter_setPaperSource';
+procedure QPrinter_setPaperSource(handle: QPrinterH; AnonParam1: QPrinterPaperSource); cdecl; external Qt4PasLib name 'QPrinter_setPaperSource';
 function QPrinter_paperSource(handle: QPrinterH): QPrinterPaperSource; cdecl; external Qt4PasLib name 'QPrinter_paperSource';
 procedure QPrinter_setDuplex(handle: QPrinterH; duplex: QPrinterDuplexMode); cdecl; external Qt4PasLib name 'QPrinter_setDuplex';
 function QPrinter_duplex(handle: QPrinterH): QPrinterDuplexMode; cdecl; external Qt4PasLib name 'QPrinter_duplex';
@@ -6102,11 +6175,11 @@ procedure QPrinter_setDoubleSidedPrinting(handle: QPrinterH; enable: Boolean); c
 function QPrinter_doubleSidedPrinting(handle: QPrinterH): Boolean; cdecl; external Qt4PasLib name 'QPrinter_doubleSidedPrinting';
 procedure QPrinter_paperRect(handle: QPrinterH; retval: PRect); cdecl; external Qt4PasLib name 'QPrinter_paperRect';
 procedure QPrinter_pageRect(handle: QPrinterH; retval: PRect); cdecl; external Qt4PasLib name 'QPrinter_pageRect';
-procedure QPrinter_paperRect(handle: QPrinterH; retval: QRectFH; p1: QPrinterUnit); cdecl; external Qt4PasLib name 'QPrinter_paperRect2';
-procedure QPrinter_pageRect(handle: QPrinterH; retval: QRectFH; p1: QPrinterUnit); cdecl; external Qt4PasLib name 'QPrinter_pageRect2';
+procedure QPrinter_paperRect(handle: QPrinterH; retval: QRectFH; AnonParam1: QPrinterUnit); cdecl; external Qt4PasLib name 'QPrinter_paperRect2';
+procedure QPrinter_pageRect(handle: QPrinterH; retval: QRectFH; AnonParam1: QPrinterUnit); cdecl; external Qt4PasLib name 'QPrinter_pageRect2';
 {$ifdef BINUX or DARWIN or QTOPIA }
 procedure QPrinter_printerSelectionOption(handle: QPrinterH; retval: PWideString); cdecl; external Qt4PasLib name 'QPrinter_printerSelectionOption';
-procedure QPrinter_setPrinterSelectionOption(handle: QPrinterH; p1: PWideString); cdecl; external Qt4PasLib name 'QPrinter_setPrinterSelectionOption';
+procedure QPrinter_setPrinterSelectionOption(handle: QPrinterH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QPrinter_setPrinterSelectionOption';
 {$endif}
 function QPrinter_newPage(handle: QPrinterH): Boolean; cdecl; external Qt4PasLib name 'QPrinter_newPage';
 function QPrinter_abort(handle: QPrinterH): Boolean; cdecl; external Qt4PasLib name 'QPrinter_abort';
@@ -6207,7 +6280,7 @@ procedure QPainterPathStroker_setMiterLimit(handle: QPainterPathStrokerH; length
 function QPainterPathStroker_miterLimit(handle: QPainterPathStrokerH): qreal; cdecl; external Qt4PasLib name 'QPainterPathStroker_miterLimit';
 procedure QPainterPathStroker_setCurveThreshold(handle: QPainterPathStrokerH; threshold: qreal); cdecl; external Qt4PasLib name 'QPainterPathStroker_setCurveThreshold';
 function QPainterPathStroker_curveThreshold(handle: QPainterPathStrokerH): qreal; cdecl; external Qt4PasLib name 'QPainterPathStroker_curveThreshold';
-procedure QPainterPathStroker_setDashPattern(handle: QPainterPathStrokerH; p1: QtPenStyle); cdecl; external Qt4PasLib name 'QPainterPathStroker_setDashPattern';
+procedure QPainterPathStroker_setDashPattern(handle: QPainterPathStrokerH; AnonParam1: QtPenStyle); cdecl; external Qt4PasLib name 'QPainterPathStroker_setDashPattern';
 procedure QPainterPathStroker_setDashPattern(handle: QPainterPathStrokerH; dashPattern: PQRealArray); cdecl; external Qt4PasLib name 'QPainterPathStroker_setDashPattern2';
 procedure QPainterPathStroker_dashPattern(handle: QPainterPathStrokerH; retval: PQRealArray); cdecl; external Qt4PasLib name 'QPainterPathStroker_dashPattern';
 procedure QPainterPathStroker_setDashOffset(handle: QPainterPathStrokerH; offset: qreal); cdecl; external Qt4PasLib name 'QPainterPathStroker_setDashOffset';
@@ -6271,8 +6344,8 @@ procedure QTransform_map(handle: QTransformH; retval: QPolygonH; a: QPolygonH); 
 procedure QTransform_map(handle: QTransformH; retval: QRegionH; r: QRegionH); cdecl; external Qt4PasLib name 'QTransform_map7';
 procedure QTransform_map(handle: QTransformH; retval: QPainterPathH; p: QPainterPathH); cdecl; external Qt4PasLib name 'QTransform_map8';
 procedure QTransform_mapToPolygon(handle: QTransformH; retval: QPolygonH; r: PRect); cdecl; external Qt4PasLib name 'QTransform_mapToPolygon';
-procedure QTransform_mapRect(handle: QTransformH; retval: PRect; p1: PRect); cdecl; external Qt4PasLib name 'QTransform_mapRect';
-procedure QTransform_mapRect(handle: QTransformH; retval: QRectFH; p1: QRectFH); cdecl; external Qt4PasLib name 'QTransform_mapRect2';
+procedure QTransform_mapRect(handle: QTransformH; retval: PRect; AnonParam1: PRect); cdecl; external Qt4PasLib name 'QTransform_mapRect';
+procedure QTransform_mapRect(handle: QTransformH; retval: QRectFH; AnonParam1: QRectFH); cdecl; external Qt4PasLib name 'QTransform_mapRect2';
 procedure QTransform_map(handle: QTransformH; x: Integer; y: Integer; tx: PInteger; ty: PInteger); cdecl; external Qt4PasLib name 'QTransform_map9';
 procedure QTransform_map(handle: QTransformH; x: qreal; y: qreal; tx: PQReal; ty: PQReal); cdecl; external Qt4PasLib name 'QTransform_map10';
 function QTransform_toAffine(handle: QTransformH): QMatrixH; cdecl; external Qt4PasLib name 'QTransform_toAffine';
@@ -6369,65 +6442,65 @@ const
 function QFont_create(): QFontH; cdecl; external Qt4PasLib name 'QFont_create';
 procedure QFont_destroy(handle: QFontH); cdecl; external Qt4PasLib name 'QFont_destroy'; 
 function QFont_create(family: PWideString; pointSize: Integer = -1; weight: Integer = -1; italic: Boolean = False): QFontH; cdecl; external Qt4PasLib name 'QFont_create2';
-function QFont_create(p1: QFontH; pd: QPaintDeviceH): QFontH; cdecl; external Qt4PasLib name 'QFont_create3';
-function QFont_create(p1: QFontH): QFontH; cdecl; external Qt4PasLib name 'QFont_create4';
+function QFont_create(AnonParam1: QFontH; pd: QPaintDeviceH): QFontH; cdecl; external Qt4PasLib name 'QFont_create3';
+function QFont_create(AnonParam1: QFontH): QFontH; cdecl; external Qt4PasLib name 'QFont_create4';
 procedure QFont_family(handle: QFontH; retval: PWideString); cdecl; external Qt4PasLib name 'QFont_family';
-procedure QFont_setFamily(handle: QFontH; p1: PWideString); cdecl; external Qt4PasLib name 'QFont_setFamily';
+procedure QFont_setFamily(handle: QFontH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QFont_setFamily';
 function QFont_pointSize(handle: QFontH): Integer; cdecl; external Qt4PasLib name 'QFont_pointSize';
-procedure QFont_setPointSize(handle: QFontH; p1: Integer); cdecl; external Qt4PasLib name 'QFont_setPointSize';
+procedure QFont_setPointSize(handle: QFontH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QFont_setPointSize';
 function QFont_pointSizeF(handle: QFontH): qreal; cdecl; external Qt4PasLib name 'QFont_pointSizeF';
-procedure QFont_setPointSizeF(handle: QFontH; p1: qreal); cdecl; external Qt4PasLib name 'QFont_setPointSizeF';
+procedure QFont_setPointSizeF(handle: QFontH; AnonParam1: qreal); cdecl; external Qt4PasLib name 'QFont_setPointSizeF';
 function QFont_pixelSize(handle: QFontH): Integer; cdecl; external Qt4PasLib name 'QFont_pixelSize';
-procedure QFont_setPixelSize(handle: QFontH; p1: Integer); cdecl; external Qt4PasLib name 'QFont_setPixelSize';
+procedure QFont_setPixelSize(handle: QFontH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QFont_setPixelSize';
 function QFont_weight(handle: QFontH): Integer; cdecl; external Qt4PasLib name 'QFont_weight';
-procedure QFont_setWeight(handle: QFontH; p1: Integer); cdecl; external Qt4PasLib name 'QFont_setWeight';
+procedure QFont_setWeight(handle: QFontH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QFont_setWeight';
 function QFont_bold(handle: QFontH): Boolean; cdecl; external Qt4PasLib name 'QFont_bold';
-procedure QFont_setBold(handle: QFontH; p1: Boolean); cdecl; external Qt4PasLib name 'QFont_setBold';
+procedure QFont_setBold(handle: QFontH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QFont_setBold';
 procedure QFont_setStyle(handle: QFontH; style: QFontStyle); cdecl; external Qt4PasLib name 'QFont_setStyle';
 function QFont_style(handle: QFontH): QFontStyle; cdecl; external Qt4PasLib name 'QFont_style';
 function QFont_italic(handle: QFontH): Boolean; cdecl; external Qt4PasLib name 'QFont_italic';
 procedure QFont_setItalic(handle: QFontH; b: Boolean); cdecl; external Qt4PasLib name 'QFont_setItalic';
 function QFont_underline(handle: QFontH): Boolean; cdecl; external Qt4PasLib name 'QFont_underline';
-procedure QFont_setUnderline(handle: QFontH; p1: Boolean); cdecl; external Qt4PasLib name 'QFont_setUnderline';
+procedure QFont_setUnderline(handle: QFontH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QFont_setUnderline';
 function QFont_overline(handle: QFontH): Boolean; cdecl; external Qt4PasLib name 'QFont_overline';
-procedure QFont_setOverline(handle: QFontH; p1: Boolean); cdecl; external Qt4PasLib name 'QFont_setOverline';
+procedure QFont_setOverline(handle: QFontH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QFont_setOverline';
 function QFont_strikeOut(handle: QFontH): Boolean; cdecl; external Qt4PasLib name 'QFont_strikeOut';
-procedure QFont_setStrikeOut(handle: QFontH; p1: Boolean); cdecl; external Qt4PasLib name 'QFont_setStrikeOut';
+procedure QFont_setStrikeOut(handle: QFontH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QFont_setStrikeOut';
 function QFont_fixedPitch(handle: QFontH): Boolean; cdecl; external Qt4PasLib name 'QFont_fixedPitch';
-procedure QFont_setFixedPitch(handle: QFontH; p1: Boolean); cdecl; external Qt4PasLib name 'QFont_setFixedPitch';
+procedure QFont_setFixedPitch(handle: QFontH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QFont_setFixedPitch';
 function QFont_kerning(handle: QFontH): Boolean; cdecl; external Qt4PasLib name 'QFont_kerning';
-procedure QFont_setKerning(handle: QFontH; p1: Boolean); cdecl; external Qt4PasLib name 'QFont_setKerning';
+procedure QFont_setKerning(handle: QFontH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QFont_setKerning';
 function QFont_styleHint(handle: QFontH): QFontStyleHint; cdecl; external Qt4PasLib name 'QFont_styleHint';
 function QFont_styleStrategy(handle: QFontH): QFontStyleStrategy; cdecl; external Qt4PasLib name 'QFont_styleStrategy';
-procedure QFont_setStyleHint(handle: QFontH; p1: QFontStyleHint; p2: QFontStyleStrategy = QFontPreferDefault); cdecl; external Qt4PasLib name 'QFont_setStyleHint';
+procedure QFont_setStyleHint(handle: QFontH; AnonParam1: QFontStyleHint; AnonParam2: QFontStyleStrategy = QFontPreferDefault); cdecl; external Qt4PasLib name 'QFont_setStyleHint';
 procedure QFont_setStyleStrategy(handle: QFontH; s: QFontStyleStrategy); cdecl; external Qt4PasLib name 'QFont_setStyleStrategy';
 function QFont_stretch(handle: QFontH): Integer; cdecl; external Qt4PasLib name 'QFont_stretch';
-procedure QFont_setStretch(handle: QFontH; p1: Integer); cdecl; external Qt4PasLib name 'QFont_setStretch';
+procedure QFont_setStretch(handle: QFontH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QFont_setStretch';
 function QFont_letterSpacing(handle: QFontH): qreal; cdecl; external Qt4PasLib name 'QFont_letterSpacing';
 function QFont_letterSpacingType(handle: QFontH): QFontSpacingType; cdecl; external Qt4PasLib name 'QFont_letterSpacingType';
 procedure QFont_setLetterSpacing(handle: QFontH; _type: QFontSpacingType; spacing: qreal); cdecl; external Qt4PasLib name 'QFont_setLetterSpacing';
 function QFont_wordSpacing(handle: QFontH): qreal; cdecl; external Qt4PasLib name 'QFont_wordSpacing';
 procedure QFont_setWordSpacing(handle: QFontH; spacing: qreal); cdecl; external Qt4PasLib name 'QFont_setWordSpacing';
-procedure QFont_setCapitalization(handle: QFontH; p1: QFontCapitalization); cdecl; external Qt4PasLib name 'QFont_setCapitalization';
+procedure QFont_setCapitalization(handle: QFontH; AnonParam1: QFontCapitalization); cdecl; external Qt4PasLib name 'QFont_setCapitalization';
 function QFont_capitalization(handle: QFontH): QFontCapitalization; cdecl; external Qt4PasLib name 'QFont_capitalization';
 function QFont_rawMode(handle: QFontH): Boolean; cdecl; external Qt4PasLib name 'QFont_rawMode';
-procedure QFont_setRawMode(handle: QFontH; p1: Boolean); cdecl; external Qt4PasLib name 'QFont_setRawMode';
+procedure QFont_setRawMode(handle: QFontH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QFont_setRawMode';
 function QFont_exactMatch(handle: QFontH): Boolean; cdecl; external Qt4PasLib name 'QFont_exactMatch';
-function QFont_isCopyOf(handle: QFontH; p1: QFontH): Boolean; cdecl; external Qt4PasLib name 'QFont_isCopyOf';
+function QFont_isCopyOf(handle: QFontH; AnonParam1: QFontH): Boolean; cdecl; external Qt4PasLib name 'QFont_isCopyOf';
 {$ifdef BINUX or DARWIN or QTOPIA }
 function QFont_handle(handle: QFontH): QtHANDLE; cdecl; external Qt4PasLib name 'QFont_handle';
 {$endif}
-procedure QFont_setRawName(handle: QFontH; p1: PWideString); cdecl; external Qt4PasLib name 'QFont_setRawName';
+procedure QFont_setRawName(handle: QFontH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QFont_setRawName';
 procedure QFont_rawName(handle: QFontH; retval: PWideString); cdecl; external Qt4PasLib name 'QFont_rawName';
 procedure QFont_key(handle: QFontH; retval: PWideString); cdecl; external Qt4PasLib name 'QFont_key';
 procedure QFont_toString(handle: QFontH; retval: PWideString); cdecl; external Qt4PasLib name 'QFont_toString';
-function QFont_fromString(handle: QFontH; p1: PWideString): Boolean; cdecl; external Qt4PasLib name 'QFont_fromString';
-procedure QFont_substitute(retval: PWideString; p1: PWideString); cdecl; external Qt4PasLib name 'QFont_substitute';
-procedure QFont_substitutes(retval: QStringListH; p1: PWideString); cdecl; external Qt4PasLib name 'QFont_substitutes';
+function QFont_fromString(handle: QFontH; AnonParam1: PWideString): Boolean; cdecl; external Qt4PasLib name 'QFont_fromString';
+procedure QFont_substitute(retval: PWideString; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QFont_substitute';
+procedure QFont_substitutes(retval: QStringListH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QFont_substitutes';
 procedure QFont_substitutions(retval: QStringListH); cdecl; external Qt4PasLib name 'QFont_substitutions';
-procedure QFont_insertSubstitution(p1: PWideString; p2: PWideString); cdecl; external Qt4PasLib name 'QFont_insertSubstitution';
-procedure QFont_insertSubstitutions(p1: PWideString; p2: QStringListH); cdecl; external Qt4PasLib name 'QFont_insertSubstitutions';
-procedure QFont_removeSubstitution(p1: PWideString); cdecl; external Qt4PasLib name 'QFont_removeSubstitution';
+procedure QFont_insertSubstitution(AnonParam1: PWideString; AnonParam2: PWideString); cdecl; external Qt4PasLib name 'QFont_insertSubstitution';
+procedure QFont_insertSubstitutions(AnonParam1: PWideString; AnonParam2: QStringListH); cdecl; external Qt4PasLib name 'QFont_insertSubstitutions';
+procedure QFont_removeSubstitution(AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QFont_removeSubstitution';
 procedure QFont_initialize(); cdecl; external Qt4PasLib name 'QFont_initialize';
 procedure QFont_cleanup(); cdecl; external Qt4PasLib name 'QFont_cleanup';
 {$ifdef BINUX or MSWINDOWS or DARWIN }
@@ -6436,7 +6509,7 @@ procedure QFont_cacheStatistics(); cdecl; external Qt4PasLib name 'QFont_cacheSt
 procedure QFont_defaultFamily(handle: QFontH; retval: PWideString); cdecl; external Qt4PasLib name 'QFont_defaultFamily';
 procedure QFont_lastResortFamily(handle: QFontH; retval: PWideString); cdecl; external Qt4PasLib name 'QFont_lastResortFamily';
 procedure QFont_lastResortFont(handle: QFontH; retval: PWideString); cdecl; external Qt4PasLib name 'QFont_lastResortFont';
-procedure QFont_resolve(handle: QFontH; retval: QFontH; p1: QFontH); cdecl; external Qt4PasLib name 'QFont_resolve';
+procedure QFont_resolve(handle: QFontH; retval: QFontH; AnonParam1: QFontH); cdecl; external Qt4PasLib name 'QFont_resolve';
 function QFont_resolve(handle: QFontH): LongWord; cdecl; external Qt4PasLib name 'QFont_resolve2';
 procedure QFont_resolve(handle: QFontH; mask: LongWord); cdecl; external Qt4PasLib name 'QFont_resolve3';
 {$ifdef MSWINDOWS }
@@ -6540,7 +6613,7 @@ function QTextCursor_position(handle: QTextCursorH): Integer; cdecl; external Qt
 function QTextCursor_anchor(handle: QTextCursorH): Integer; cdecl; external Qt4PasLib name 'QTextCursor_anchor';
 procedure QTextCursor_insertText(handle: QTextCursorH; text: PWideString); cdecl; external Qt4PasLib name 'QTextCursor_insertText';
 procedure QTextCursor_insertText(handle: QTextCursorH; text: PWideString; format: QTextCharFormatH); cdecl; external Qt4PasLib name 'QTextCursor_insertText2';
-function QTextCursor_movePosition(handle: QTextCursorH; op: QTextCursorMoveOperation; p2: QTextCursorMoveMode = QTextCursorMoveAnchor; n: Integer = 1): Boolean; cdecl; external Qt4PasLib name 'QTextCursor_movePosition';
+function QTextCursor_movePosition(handle: QTextCursorH; op: QTextCursorMoveOperation; AnonParam2: QTextCursorMoveMode = QTextCursorMoveAnchor; n: Integer = 1): Boolean; cdecl; external Qt4PasLib name 'QTextCursor_movePosition';
 function QTextCursor_visualNavigation(handle: QTextCursorH): Boolean; cdecl; external Qt4PasLib name 'QTextCursor_visualNavigation';
 procedure QTextCursor_setVisualNavigation(handle: QTextCursorH; b: Boolean); cdecl; external Qt4PasLib name 'QTextCursor_setVisualNavigation';
 procedure QTextCursor_deleteChar(handle: QTextCursorH); cdecl; external Qt4PasLib name 'QTextCursor_deleteChar';
@@ -6628,10 +6701,10 @@ procedure QTextOption_tabArray(handle: QTextOptionH; retval: PPtrIntArray); cdec
 procedure QTextOption_setUseDesignMetrics(handle: QTextOptionH; b: Boolean); cdecl; external Qt4PasLib name 'QTextOption_setUseDesignMetrics';
 function QTextOption_useDesignMetrics(handle: QTextOptionH): Boolean; cdecl; external Qt4PasLib name 'QTextOption_useDesignMetrics';
 
-function QFontMetrics_create(p1: QFontH): QFontMetricsH; cdecl; external Qt4PasLib name 'QFontMetrics_create';
+function QFontMetrics_create(AnonParam1: QFontH): QFontMetricsH; cdecl; external Qt4PasLib name 'QFontMetrics_create';
 procedure QFontMetrics_destroy(handle: QFontMetricsH); cdecl; external Qt4PasLib name 'QFontMetrics_destroy'; 
-function QFontMetrics_create(p1: QFontH; pd: QPaintDeviceH): QFontMetricsH; cdecl; external Qt4PasLib name 'QFontMetrics_create2';
-function QFontMetrics_create(p1: QFontMetricsH): QFontMetricsH; cdecl; external Qt4PasLib name 'QFontMetrics_create3';
+function QFontMetrics_create(AnonParam1: QFontH; pd: QPaintDeviceH): QFontMetricsH; cdecl; external Qt4PasLib name 'QFontMetrics_create2';
+function QFontMetrics_create(AnonParam1: QFontMetricsH): QFontMetricsH; cdecl; external Qt4PasLib name 'QFontMetrics_create3';
 function QFontMetrics_ascent(handle: QFontMetricsH): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_ascent';
 function QFontMetrics_descent(handle: QFontMetricsH): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_descent';
 function QFontMetrics_height(handle: QFontMetricsH): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_height';
@@ -6642,13 +6715,13 @@ function QFontMetrics_minRightBearing(handle: QFontMetricsH): Integer; cdecl; ex
 function QFontMetrics_maxWidth(handle: QFontMetricsH): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_maxWidth';
 function QFontMetrics_xHeight(handle: QFontMetricsH): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_xHeight';
 function QFontMetrics_averageCharWidth(handle: QFontMetricsH): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_averageCharWidth';
-function QFontMetrics_inFont(handle: QFontMetricsH; p1: PWideChar): Boolean; cdecl; external Qt4PasLib name 'QFontMetrics_inFont';
-function QFontMetrics_leftBearing(handle: QFontMetricsH; p1: PWideChar): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_leftBearing';
-function QFontMetrics_rightBearing(handle: QFontMetricsH; p1: PWideChar): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_rightBearing';
-function QFontMetrics_width(handle: QFontMetricsH; p1: PWideString; len: Integer = -1): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_width';
-function QFontMetrics_width(handle: QFontMetricsH; p1: PWideChar): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_width2';
+function QFontMetrics_inFont(handle: QFontMetricsH; AnonParam1: PWideChar): Boolean; cdecl; external Qt4PasLib name 'QFontMetrics_inFont';
+function QFontMetrics_leftBearing(handle: QFontMetricsH; AnonParam1: PWideChar): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_leftBearing';
+function QFontMetrics_rightBearing(handle: QFontMetricsH; AnonParam1: PWideChar): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_rightBearing';
+function QFontMetrics_width(handle: QFontMetricsH; AnonParam1: PWideString; len: Integer = -1): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_width';
+function QFontMetrics_width(handle: QFontMetricsH; AnonParam1: PWideChar): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_width2';
 function QFontMetrics_charWidth(handle: QFontMetricsH; str: PWideString; pos: Integer): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_charWidth';
-procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; p1: PWideChar); cdecl; external Qt4PasLib name 'QFontMetrics_boundingRect';
+procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; AnonParam1: PWideChar); cdecl; external Qt4PasLib name 'QFontMetrics_boundingRect';
 procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; text: PWideString); cdecl; external Qt4PasLib name 'QFontMetrics_boundingRect2';
 procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; r: PRect; flags: Integer; text: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil); cdecl; external Qt4PasLib name 'QFontMetrics_boundingRect3';
 procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; x: Integer; y: Integer; w: Integer; h: Integer; flags: Integer; text: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil); cdecl; external Qt4PasLib name 'QFontMetrics_boundingRect4';
@@ -6660,10 +6733,10 @@ function QFontMetrics_overlinePos(handle: QFontMetricsH): Integer; cdecl; extern
 function QFontMetrics_strikeOutPos(handle: QFontMetricsH): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_strikeOutPos';
 function QFontMetrics_lineWidth(handle: QFontMetricsH): Integer; cdecl; external Qt4PasLib name 'QFontMetrics_lineWidth';
 
-function QFontMetricsF_create(p1: QFontH): QFontMetricsFH; cdecl; external Qt4PasLib name 'QFontMetricsF_create';
+function QFontMetricsF_create(AnonParam1: QFontH): QFontMetricsFH; cdecl; external Qt4PasLib name 'QFontMetricsF_create';
 procedure QFontMetricsF_destroy(handle: QFontMetricsFH); cdecl; external Qt4PasLib name 'QFontMetricsF_destroy'; 
-function QFontMetricsF_create(p1: QFontH; pd: QPaintDeviceH): QFontMetricsFH; cdecl; external Qt4PasLib name 'QFontMetricsF_create2';
-function QFontMetricsF_create(p1: QFontMetricsFH): QFontMetricsFH; cdecl; external Qt4PasLib name 'QFontMetricsF_create4';
+function QFontMetricsF_create(AnonParam1: QFontH; pd: QPaintDeviceH): QFontMetricsFH; cdecl; external Qt4PasLib name 'QFontMetricsF_create2';
+function QFontMetricsF_create(AnonParam1: QFontMetricsFH): QFontMetricsFH; cdecl; external Qt4PasLib name 'QFontMetricsF_create4';
 function QFontMetricsF_ascent(handle: QFontMetricsFH): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_ascent';
 function QFontMetricsF_descent(handle: QFontMetricsFH): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_descent';
 function QFontMetricsF_height(handle: QFontMetricsFH): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_height';
@@ -6674,13 +6747,13 @@ function QFontMetricsF_minRightBearing(handle: QFontMetricsFH): qreal; cdecl; ex
 function QFontMetricsF_maxWidth(handle: QFontMetricsFH): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_maxWidth';
 function QFontMetricsF_xHeight(handle: QFontMetricsFH): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_xHeight';
 function QFontMetricsF_averageCharWidth(handle: QFontMetricsFH): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_averageCharWidth';
-function QFontMetricsF_inFont(handle: QFontMetricsFH; p1: PWideChar): Boolean; cdecl; external Qt4PasLib name 'QFontMetricsF_inFont';
-function QFontMetricsF_leftBearing(handle: QFontMetricsFH; p1: PWideChar): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_leftBearing';
-function QFontMetricsF_rightBearing(handle: QFontMetricsFH; p1: PWideChar): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_rightBearing';
+function QFontMetricsF_inFont(handle: QFontMetricsFH; AnonParam1: PWideChar): Boolean; cdecl; external Qt4PasLib name 'QFontMetricsF_inFont';
+function QFontMetricsF_leftBearing(handle: QFontMetricsFH; AnonParam1: PWideChar): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_leftBearing';
+function QFontMetricsF_rightBearing(handle: QFontMetricsFH; AnonParam1: PWideChar): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_rightBearing';
 function QFontMetricsF_width(handle: QFontMetricsFH; _string: PWideString): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_width';
-function QFontMetricsF_width(handle: QFontMetricsFH; p1: PWideChar): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_width2';
+function QFontMetricsF_width(handle: QFontMetricsFH; AnonParam1: PWideChar): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_width2';
 procedure QFontMetricsF_boundingRect(handle: QFontMetricsFH; retval: QRectFH; _string: PWideString); cdecl; external Qt4PasLib name 'QFontMetricsF_boundingRect';
-procedure QFontMetricsF_boundingRect(handle: QFontMetricsFH; retval: QRectFH; p1: PWideChar); cdecl; external Qt4PasLib name 'QFontMetricsF_boundingRect2';
+procedure QFontMetricsF_boundingRect(handle: QFontMetricsFH; retval: QRectFH; AnonParam1: PWideChar); cdecl; external Qt4PasLib name 'QFontMetricsF_boundingRect2';
 procedure QFontMetricsF_boundingRect(handle: QFontMetricsFH; retval: QRectFH; r: QRectFH; flags: Integer; _string: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil); cdecl; external Qt4PasLib name 'QFontMetricsF_boundingRect3';
 procedure QFontMetricsF_size(handle: QFontMetricsFH; retval: QSizeFH; flags: Integer; str: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil); cdecl; external Qt4PasLib name 'QFontMetricsF_size';
 procedure QFontMetricsF_tightBoundingRect(handle: QFontMetricsFH; retval: QRectFH; text: PWideString); cdecl; external Qt4PasLib name 'QFontMetricsF_tightBoundingRect';
@@ -6690,9 +6763,9 @@ function QFontMetricsF_overlinePos(handle: QFontMetricsFH): qreal; cdecl; extern
 function QFontMetricsF_strikeOutPos(handle: QFontMetricsFH): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_strikeOutPos';
 function QFontMetricsF_lineWidth(handle: QFontMetricsFH): qreal; cdecl; external Qt4PasLib name 'QFontMetricsF_lineWidth';
 
-function QFontInfo_create(p1: QFontH): QFontInfoH; cdecl; external Qt4PasLib name 'QFontInfo_create';
+function QFontInfo_create(AnonParam1: QFontH): QFontInfoH; cdecl; external Qt4PasLib name 'QFontInfo_create';
 procedure QFontInfo_destroy(handle: QFontInfoH); cdecl; external Qt4PasLib name 'QFontInfo_destroy'; 
-function QFontInfo_create(p1: QFontInfoH): QFontInfoH; cdecl; external Qt4PasLib name 'QFontInfo_create2';
+function QFontInfo_create(AnonParam1: QFontInfoH): QFontInfoH; cdecl; external Qt4PasLib name 'QFontInfo_create2';
 procedure QFontInfo_family(handle: QFontInfoH; retval: PWideString); cdecl; external Qt4PasLib name 'QFontInfo_family';
 function QFontInfo_pixelSize(handle: QFontInfoH): Integer; cdecl; external Qt4PasLib name 'QFontInfo_pixelSize';
 function QFontInfo_pointSize(handle: QFontInfoH): Integer; cdecl; external Qt4PasLib name 'QFontInfo_pointSize';
@@ -6743,7 +6816,7 @@ function QTextDocument_isRedoAvailable(handle: QTextDocumentH): Boolean; cdecl; 
 function QTextDocument_revision(handle: QTextDocumentH): Integer; cdecl; external Qt4PasLib name 'QTextDocument_revision';
 procedure QTextDocument_setDocumentLayout(handle: QTextDocumentH; layout: QAbstractTextDocumentLayoutH); cdecl; external Qt4PasLib name 'QTextDocument_setDocumentLayout';
 function QTextDocument_documentLayout(handle: QTextDocumentH): QAbstractTextDocumentLayoutH; cdecl; external Qt4PasLib name 'QTextDocument_documentLayout';
-procedure QTextDocument_setMetaInformation(handle: QTextDocumentH; info: QTextDocumentMetaInformation; p2: PWideString); cdecl; external Qt4PasLib name 'QTextDocument_setMetaInformation';
+procedure QTextDocument_setMetaInformation(handle: QTextDocumentH; info: QTextDocumentMetaInformation; AnonParam2: PWideString); cdecl; external Qt4PasLib name 'QTextDocument_setMetaInformation';
 procedure QTextDocument_metaInformation(handle: QTextDocumentH; retval: PWideString; info: QTextDocumentMetaInformation); cdecl; external Qt4PasLib name 'QTextDocument_metaInformation';
 procedure QTextDocument_toHtml(handle: QTextDocumentH; retval: PWideString; encoding: QByteArrayH = nil); cdecl; external Qt4PasLib name 'QTextDocument_toHtml';
 procedure QTextDocument_setHtml(handle: QTextDocumentH; html: PWideString); cdecl; external Qt4PasLib name 'QTextDocument_setHtml';
@@ -6757,7 +6830,7 @@ procedure QTextDocument_find(handle: QTextDocumentH; retval: QTextCursorH; expr:
 function QTextDocument_frameAt(handle: QTextDocumentH; pos: Integer): QTextFrameH; cdecl; external Qt4PasLib name 'QTextDocument_frameAt';
 function QTextDocument_rootFrame(handle: QTextDocumentH): QTextFrameH; cdecl; external Qt4PasLib name 'QTextDocument_rootFrame';
 function QTextDocument_object(handle: QTextDocumentH; objectIndex: Integer): QTextObjectH; cdecl; external Qt4PasLib name 'QTextDocument_object';
-function QTextDocument_objectForFormat(handle: QTextDocumentH; p1: QTextFormatH): QTextObjectH; cdecl; external Qt4PasLib name 'QTextDocument_objectForFormat';
+function QTextDocument_objectForFormat(handle: QTextDocumentH; AnonParam1: QTextFormatH): QTextObjectH; cdecl; external Qt4PasLib name 'QTextDocument_objectForFormat';
 procedure QTextDocument_findBlock(handle: QTextDocumentH; retval: QTextBlockH; pos: Integer); cdecl; external Qt4PasLib name 'QTextDocument_findBlock';
 procedure QTextDocument_findBlockByNumber(handle: QTextDocumentH; retval: QTextBlockH; blockNumber: Integer); cdecl; external Qt4PasLib name 'QTextDocument_findBlockByNumber';
 procedure QTextDocument_findBlockByLineNumber(handle: QTextDocumentH; retval: QTextBlockH; blockNumber: Integer); cdecl; external Qt4PasLib name 'QTextDocument_findBlockByLineNumber';
@@ -6819,7 +6892,7 @@ procedure QTextObjectInterface_drawObject(handle: QTextObjectInterfaceH; painter
 
 
 type
-  QAbstractTextDocumentLayout_update_Event = procedure (p1: QRectFH) of object cdecl;
+  QAbstractTextDocumentLayout_update_Event = procedure (AnonParam1: QRectFH) of object cdecl;
   QAbstractTextDocumentLayout_update2_Event = procedure () of object cdecl;
   QAbstractTextDocumentLayout_updateBlock_Event = procedure (block: QTextBlockH) of object cdecl;
   QAbstractTextDocumentLayout_documentSizeChanged_Event = procedure (newSize: QSizeFH) of object cdecl;
@@ -6905,7 +6978,7 @@ function QTextLine_naturalTextWidth(handle: QTextLineH): qreal; cdecl; external 
 procedure QTextLine_naturalTextRect(handle: QTextLineH; retval: QRectFH); cdecl; external Qt4PasLib name 'QTextLine_naturalTextRect';
 function QTextLine_cursorToX(handle: QTextLineH; cursorPos: PInteger; edge: QTextLineEdge = QTextLineLeading): qreal; cdecl; external Qt4PasLib name 'QTextLine_cursorToX';
 function QTextLine_cursorToX(handle: QTextLineH; cursorPos: Integer; edge: QTextLineEdge = QTextLineLeading): qreal; cdecl; external Qt4PasLib name 'QTextLine_cursorToX2';
-function QTextLine_xToCursor(handle: QTextLineH; x: qreal; p2: QTextLineCursorPosition = QTextLineCursorBetweenCharacters): Integer; cdecl; external Qt4PasLib name 'QTextLine_xToCursor';
+function QTextLine_xToCursor(handle: QTextLineH; x: qreal; AnonParam2: QTextLineCursorPosition = QTextLineCursorBetweenCharacters): Integer; cdecl; external Qt4PasLib name 'QTextLine_xToCursor';
 procedure QTextLine_setLineWidth(handle: QTextLineH; width: qreal); cdecl; external Qt4PasLib name 'QTextLine_setLineWidth';
 procedure QTextLine_setNumColumns(handle: QTextLineH; columns: Integer); cdecl; external Qt4PasLib name 'QTextLine_setNumColumns';
 procedure QTextLine_setNumColumns(handle: QTextLineH; columns: Integer; alignmentWidth: qreal); cdecl; external Qt4PasLib name 'QTextLine_setNumColumns2';
@@ -6914,6 +6987,67 @@ procedure QTextLine_position(handle: QTextLineH; retval: PQtPointF); cdecl; exte
 function QTextLine_textStart(handle: QTextLineH): Integer; cdecl; external Qt4PasLib name 'QTextLine_textStart';
 function QTextLine_textLength(handle: QTextLineH): Integer; cdecl; external Qt4PasLib name 'QTextLine_textLength';
 function QTextLine_lineNumber(handle: QTextLineH): Integer; cdecl; external Qt4PasLib name 'QTextLine_lineNumber';
+
+procedure QTextObject_format(handle: QTextObjectH; retval: QTextFormatH); cdecl; external Qt4PasLib name 'QTextObject_format';
+function QTextObject_formatIndex(handle: QTextObjectH): Integer; cdecl; external Qt4PasLib name 'QTextObject_formatIndex';
+function QTextObject_document(handle: QTextObjectH): QTextDocumentH; cdecl; external Qt4PasLib name 'QTextObject_document';
+function QTextObject_objectIndex(handle: QTextObjectH): Integer; cdecl; external Qt4PasLib name 'QTextObject_objectIndex';
+
+
+function QTextFrame_create(doc: QTextDocumentH): QTextFrameH; cdecl; external Qt4PasLib name 'QTextFrame_create';
+procedure QTextFrame_destroy(handle: QTextFrameH); cdecl; external Qt4PasLib name 'QTextFrame_destroy'; 
+procedure QTextFrame_setFrameFormat(handle: QTextFrameH; format: QTextFrameFormatH); cdecl; external Qt4PasLib name 'QTextFrame_setFrameFormat';
+procedure QTextFrame_frameFormat(handle: QTextFrameH; retval: QTextFrameFormatH); cdecl; external Qt4PasLib name 'QTextFrame_frameFormat';
+procedure QTextFrame_firstCursorPosition(handle: QTextFrameH; retval: QTextCursorH); cdecl; external Qt4PasLib name 'QTextFrame_firstCursorPosition';
+procedure QTextFrame_lastCursorPosition(handle: QTextFrameH; retval: QTextCursorH); cdecl; external Qt4PasLib name 'QTextFrame_lastCursorPosition';
+function QTextFrame_firstPosition(handle: QTextFrameH): Integer; cdecl; external Qt4PasLib name 'QTextFrame_firstPosition';
+function QTextFrame_lastPosition(handle: QTextFrameH): Integer; cdecl; external Qt4PasLib name 'QTextFrame_lastPosition';
+procedure QTextFrame_childFrames(handle: QTextFrameH; retval: PPtrIntArray); cdecl; external Qt4PasLib name 'QTextFrame_childFrames';
+function QTextFrame_parentFrame(handle: QTextFrameH): QTextFrameH; cdecl; external Qt4PasLib name 'QTextFrame_parentFrame';
+
+
+function QTextBlock_create(): QTextBlockH; cdecl; external Qt4PasLib name 'QTextBlock_create';
+procedure QTextBlock_destroy(handle: QTextBlockH); cdecl; external Qt4PasLib name 'QTextBlock_destroy'; 
+function QTextBlock_create(o: QTextBlockH): QTextBlockH; cdecl; external Qt4PasLib name 'QTextBlock_create2';
+function QTextBlock_isValid(handle: QTextBlockH): Boolean; cdecl; external Qt4PasLib name 'QTextBlock_isValid';
+function QTextBlock_position(handle: QTextBlockH): Integer; cdecl; external Qt4PasLib name 'QTextBlock_position';
+function QTextBlock_length(handle: QTextBlockH): Integer; cdecl; external Qt4PasLib name 'QTextBlock_length';
+function QTextBlock_contains(handle: QTextBlockH; position: Integer): Boolean; cdecl; external Qt4PasLib name 'QTextBlock_contains';
+function QTextBlock_layout(handle: QTextBlockH): QTextLayoutH; cdecl; external Qt4PasLib name 'QTextBlock_layout';
+procedure QTextBlock_clearLayout(handle: QTextBlockH); cdecl; external Qt4PasLib name 'QTextBlock_clearLayout';
+procedure QTextBlock_blockFormat(handle: QTextBlockH; retval: QTextBlockFormatH); cdecl; external Qt4PasLib name 'QTextBlock_blockFormat';
+function QTextBlock_blockFormatIndex(handle: QTextBlockH): Integer; cdecl; external Qt4PasLib name 'QTextBlock_blockFormatIndex';
+procedure QTextBlock_charFormat(handle: QTextBlockH; retval: QTextCharFormatH); cdecl; external Qt4PasLib name 'QTextBlock_charFormat';
+function QTextBlock_charFormatIndex(handle: QTextBlockH): Integer; cdecl; external Qt4PasLib name 'QTextBlock_charFormatIndex';
+procedure QTextBlock_text(handle: QTextBlockH; retval: PWideString); cdecl; external Qt4PasLib name 'QTextBlock_text';
+function QTextBlock_document(handle: QTextBlockH): QTextDocumentH; cdecl; external Qt4PasLib name 'QTextBlock_document';
+function QTextBlock_textList(handle: QTextBlockH): QTextListH; cdecl; external Qt4PasLib name 'QTextBlock_textList';
+function QTextBlock_userData(handle: QTextBlockH): QTextBlockUserDataH; cdecl; external Qt4PasLib name 'QTextBlock_userData';
+procedure QTextBlock_setUserData(handle: QTextBlockH; data: QTextBlockUserDataH); cdecl; external Qt4PasLib name 'QTextBlock_setUserData';
+function QTextBlock_userState(handle: QTextBlockH): Integer; cdecl; external Qt4PasLib name 'QTextBlock_userState';
+procedure QTextBlock_setUserState(handle: QTextBlockH; state: Integer); cdecl; external Qt4PasLib name 'QTextBlock_setUserState';
+function QTextBlock_revision(handle: QTextBlockH): Integer; cdecl; external Qt4PasLib name 'QTextBlock_revision';
+procedure QTextBlock_setRevision(handle: QTextBlockH; rev: Integer); cdecl; external Qt4PasLib name 'QTextBlock_setRevision';
+function QTextBlock_isVisible(handle: QTextBlockH): Boolean; cdecl; external Qt4PasLib name 'QTextBlock_isVisible';
+procedure QTextBlock_setVisible(handle: QTextBlockH; visible: Boolean); cdecl; external Qt4PasLib name 'QTextBlock_setVisible';
+function QTextBlock_blockNumber(handle: QTextBlockH): Integer; cdecl; external Qt4PasLib name 'QTextBlock_blockNumber';
+function QTextBlock_firstLineNumber(handle: QTextBlockH): Integer; cdecl; external Qt4PasLib name 'QTextBlock_firstLineNumber';
+procedure QTextBlock_setLineCount(handle: QTextBlockH; count: Integer); cdecl; external Qt4PasLib name 'QTextBlock_setLineCount';
+function QTextBlock_lineCount(handle: QTextBlockH): Integer; cdecl; external Qt4PasLib name 'QTextBlock_lineCount';
+procedure QTextBlock_next(handle: QTextBlockH; retval: QTextBlockH); cdecl; external Qt4PasLib name 'QTextBlock_next';
+procedure QTextBlock_previous(handle: QTextBlockH; retval: QTextBlockH); cdecl; external Qt4PasLib name 'QTextBlock_previous';
+function QTextBlock_fragmentIndex(handle: QTextBlockH): Integer; cdecl; external Qt4PasLib name 'QTextBlock_fragmentIndex';
+
+function QTextFragment_create(): QTextFragmentH; cdecl; external Qt4PasLib name 'QTextFragment_create';
+procedure QTextFragment_destroy(handle: QTextFragmentH); cdecl; external Qt4PasLib name 'QTextFragment_destroy'; 
+function QTextFragment_create(o: QTextFragmentH): QTextFragmentH; cdecl; external Qt4PasLib name 'QTextFragment_create2';
+function QTextFragment_isValid(handle: QTextFragmentH): Boolean; cdecl; external Qt4PasLib name 'QTextFragment_isValid';
+function QTextFragment_position(handle: QTextFragmentH): Integer; cdecl; external Qt4PasLib name 'QTextFragment_position';
+function QTextFragment_length(handle: QTextFragmentH): Integer; cdecl; external Qt4PasLib name 'QTextFragment_length';
+function QTextFragment_contains(handle: QTextFragmentH; position: Integer): Boolean; cdecl; external Qt4PasLib name 'QTextFragment_contains';
+procedure QTextFragment_charFormat(handle: QTextFragmentH; retval: QTextCharFormatH); cdecl; external Qt4PasLib name 'QTextFragment_charFormat';
+function QTextFragment_charFormatIndex(handle: QTextFragmentH): Integer; cdecl; external Qt4PasLib name 'QTextFragment_charFormatIndex';
+procedure QTextFragment_text(handle: QTextFragmentH; retval: PWideString); cdecl; external Qt4PasLib name 'QTextFragment_text';
 
 
 type
@@ -6961,10 +7095,10 @@ type
 function QPixmap_create(): QPixmapH; cdecl; external Qt4PasLib name 'QPixmap_create';
 procedure QPixmap_destroy(handle: QPixmapH); cdecl; external Qt4PasLib name 'QPixmap_destroy'; 
 function QPixmap_create(w: Integer; h: Integer): QPixmapH; cdecl; external Qt4PasLib name 'QPixmap_create2';
-function QPixmap_create(p1: PSize): QPixmapH; cdecl; external Qt4PasLib name 'QPixmap_create3';
+function QPixmap_create(AnonParam1: PSize): QPixmapH; cdecl; external Qt4PasLib name 'QPixmap_create3';
 function QPixmap_create(fileName: PWideString; format: PAnsiChar = nil; flags: QtImageConversionFlags = QtAutoColor): QPixmapH; cdecl; external Qt4PasLib name 'QPixmap_create4';
 function QPixmap_create(xpm: PAnsiChar): QPixmapH; cdecl; external Qt4PasLib name 'QPixmap_create5';
-function QPixmap_create(p1: QPixmapH): QPixmapH; cdecl; external Qt4PasLib name 'QPixmap_create6';
+function QPixmap_create(AnonParam1: QPixmapH): QPixmapH; cdecl; external Qt4PasLib name 'QPixmap_create6';
 function QPixmap_isNull(handle: QPixmapH): Boolean; cdecl; external Qt4PasLib name 'QPixmap_isNull';
 function QPixmap_devType(handle: QPixmapH): Integer; cdecl; external Qt4PasLib name 'QPixmap_devType';
 function QPixmap_width(handle: QPixmapH): Integer; cdecl; external Qt4PasLib name 'QPixmap_width';
@@ -6977,24 +7111,24 @@ procedure QPixmap_fill(handle: QPixmapH; fillColor: PQColor); cdecl; external Qt
 procedure QPixmap_fill(handle: QPixmapH; widget: QWidgetH; ofs: PQtPoint); cdecl; external Qt4PasLib name 'QPixmap_fill2';
 procedure QPixmap_fill(handle: QPixmapH; widget: QWidgetH; xofs: Integer; yofs: Integer); cdecl; external Qt4PasLib name 'QPixmap_fill3';
 procedure QPixmap_mask(handle: QPixmapH; retval: QBitmapH); cdecl; external Qt4PasLib name 'QPixmap_mask';
-procedure QPixmap_setMask(handle: QPixmapH; p1: QBitmapH); cdecl; external Qt4PasLib name 'QPixmap_setMask';
+procedure QPixmap_setMask(handle: QPixmapH; AnonParam1: QBitmapH); cdecl; external Qt4PasLib name 'QPixmap_setMask';
 procedure QPixmap_alphaChannel(handle: QPixmapH; retval: QPixmapH); cdecl; external Qt4PasLib name 'QPixmap_alphaChannel';
-procedure QPixmap_setAlphaChannel(handle: QPixmapH; p1: QPixmapH); cdecl; external Qt4PasLib name 'QPixmap_setAlphaChannel';
+procedure QPixmap_setAlphaChannel(handle: QPixmapH; AnonParam1: QPixmapH); cdecl; external Qt4PasLib name 'QPixmap_setAlphaChannel';
 function QPixmap_hasAlpha(handle: QPixmapH): Boolean; cdecl; external Qt4PasLib name 'QPixmap_hasAlpha';
 function QPixmap_hasAlphaChannel(handle: QPixmapH): Boolean; cdecl; external Qt4PasLib name 'QPixmap_hasAlphaChannel';
 procedure QPixmap_createHeuristicMask(handle: QPixmapH; retval: QBitmapH; clipTight: Boolean = True); cdecl; external Qt4PasLib name 'QPixmap_createHeuristicMask';
 procedure QPixmap_createMaskFromColor(handle: QPixmapH; retval: QBitmapH; maskColor: PQColor); cdecl; external Qt4PasLib name 'QPixmap_createMaskFromColor';
 procedure QPixmap_createMaskFromColor(handle: QPixmapH; retval: QBitmapH; maskColor: PQColor; mode: QtMaskMode); cdecl; external Qt4PasLib name 'QPixmap_createMaskFromColor2';
-procedure QPixmap_grabWindow(retval: QPixmapH; p1: LongWord; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1); cdecl; external Qt4PasLib name 'QPixmap_grabWindow';
+procedure QPixmap_grabWindow(retval: QPixmapH; AnonParam1: LongWord; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1); cdecl; external Qt4PasLib name 'QPixmap_grabWindow';
 procedure QPixmap_grabWidget(retval: QPixmapH; widget: QWidgetH; rect: PRect); cdecl; external Qt4PasLib name 'QPixmap_grabWidget';
 procedure QPixmap_grabWidget(retval: QPixmapH; widget: QWidgetH; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1); cdecl; external Qt4PasLib name 'QPixmap_grabWidget2';
 procedure QPixmap_scaled(handle: QPixmapH; retval: QPixmapH; w: Integer; h: Integer; aspectMode: QtAspectRatioMode = QtIgnoreAspectRatio; mode: QtTransformationMode = QtFastTransformation); cdecl; external Qt4PasLib name 'QPixmap_scaled';
 procedure QPixmap_scaled(handle: QPixmapH; retval: QPixmapH; s: PSize; aspectMode: QtAspectRatioMode = QtIgnoreAspectRatio; mode: QtTransformationMode = QtFastTransformation); cdecl; external Qt4PasLib name 'QPixmap_scaled2';
 procedure QPixmap_scaledToWidth(handle: QPixmapH; retval: QPixmapH; w: Integer; mode: QtTransformationMode = QtFastTransformation); cdecl; external Qt4PasLib name 'QPixmap_scaledToWidth';
 procedure QPixmap_scaledToHeight(handle: QPixmapH; retval: QPixmapH; h: Integer; mode: QtTransformationMode = QtFastTransformation); cdecl; external Qt4PasLib name 'QPixmap_scaledToHeight';
-procedure QPixmap_transformed(handle: QPixmapH; retval: QPixmapH; p1: QMatrixH; mode: QtTransformationMode = QtFastTransformation); cdecl; external Qt4PasLib name 'QPixmap_transformed';
+procedure QPixmap_transformed(handle: QPixmapH; retval: QPixmapH; AnonParam1: QMatrixH; mode: QtTransformationMode = QtFastTransformation); cdecl; external Qt4PasLib name 'QPixmap_transformed';
 procedure QPixmap_trueMatrix(retval: QMatrixH; m: QMatrixH; w: Integer; h: Integer); cdecl; external Qt4PasLib name 'QPixmap_trueMatrix';
-procedure QPixmap_transformed(handle: QPixmapH; retval: QPixmapH; p1: QTransformH; mode: QtTransformationMode = QtFastTransformation); cdecl; external Qt4PasLib name 'QPixmap_transformed2';
+procedure QPixmap_transformed(handle: QPixmapH; retval: QPixmapH; AnonParam1: QTransformH; mode: QtTransformationMode = QtFastTransformation); cdecl; external Qt4PasLib name 'QPixmap_transformed2';
 procedure QPixmap_trueMatrix(retval: QTransformH; m: QTransformH; w: Integer; h: Integer); cdecl; external Qt4PasLib name 'QPixmap_trueMatrix2';
 procedure QPixmap_toImage(handle: QPixmapH; retval: QImageH); cdecl; external Qt4PasLib name 'QPixmap_toImage';
 procedure QPixmap_fromImage(retval: QPixmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor); cdecl; external Qt4PasLib name 'QPixmap_fromImage';
@@ -7058,7 +7192,7 @@ function QImage_create(data: PByte; width: Integer; height: Integer; bytesPerLin
 function QImage_create(xpm: PAnsiChar): QImageH; cdecl; external Qt4PasLib name 'QImage_create8';
 function QImage_create(fileName: PWideString; format: PAnsiChar = nil): QImageH; cdecl; external Qt4PasLib name 'QImage_create9';
 function QImage_create(fileName: PAnsiChar; format: PAnsiChar = nil): QImageH; cdecl; external Qt4PasLib name 'QImage_create10';
-function QImage_create(p1: QImageH): QImageH; cdecl; external Qt4PasLib name 'QImage_create11';
+function QImage_create(AnonParam1: QImageH): QImageH; cdecl; external Qt4PasLib name 'QImage_create11';
 function QImage_isNull(handle: QImageH): Boolean; cdecl; external Qt4PasLib name 'QImage_isNull';
 function QImage_devType(handle: QImageH): Integer; cdecl; external Qt4PasLib name 'QImage_devType';
 procedure QImage_detach(handle: QImageH); cdecl; external Qt4PasLib name 'QImage_detach';
@@ -7075,12 +7209,12 @@ function QImage_depth(handle: QImageH): Integer; cdecl; external Qt4PasLib name 
 function QImage_numColors(handle: QImageH): Integer; cdecl; external Qt4PasLib name 'QImage_numColors';
 function QImage_color(handle: QImageH; i: Integer): QRgb; cdecl; external Qt4PasLib name 'QImage_color';
 procedure QImage_setColor(handle: QImageH; i: Integer; c: QRgb); cdecl; external Qt4PasLib name 'QImage_setColor';
-procedure QImage_setNumColors(handle: QImageH; p1: Integer); cdecl; external Qt4PasLib name 'QImage_setNumColors';
+procedure QImage_setNumColors(handle: QImageH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QImage_setNumColors';
 function QImage_allGray(handle: QImageH): Boolean; cdecl; external Qt4PasLib name 'QImage_allGray';
 function QImage_isGrayscale(handle: QImageH): Boolean; cdecl; external Qt4PasLib name 'QImage_isGrayscale';
 function QImage_bits(handle: QImageH): PByte; cdecl; external Qt4PasLib name 'QImage_bits';
 function QImage_numBytes(handle: QImageH): Integer; cdecl; external Qt4PasLib name 'QImage_numBytes';
-function QImage_scanLine(handle: QImageH; p1: Integer): PByte; cdecl; external Qt4PasLib name 'QImage_scanLine';
+function QImage_scanLine(handle: QImageH; AnonParam1: Integer): PByte; cdecl; external Qt4PasLib name 'QImage_scanLine';
 function QImage_bytesPerLine(handle: QImageH): Integer; cdecl; external Qt4PasLib name 'QImage_bytesPerLine';
 function QImage_valid(handle: QImageH; x: Integer; y: Integer): Boolean; cdecl; external Qt4PasLib name 'QImage_valid';
 function QImage_valid(handle: QImageH; pt: PQtPoint): Boolean; cdecl; external Qt4PasLib name 'QImage_valid2';
@@ -7102,12 +7236,12 @@ procedure QImage_scaled(handle: QImageH; retval: QImageH; s: PSize; aspectMode: 
 procedure QImage_scaledToWidth(handle: QImageH; retval: QImageH; w: Integer; mode: QtTransformationMode = QtFastTransformation); cdecl; external Qt4PasLib name 'QImage_scaledToWidth';
 procedure QImage_scaledToHeight(handle: QImageH; retval: QImageH; h: Integer; mode: QtTransformationMode = QtFastTransformation); cdecl; external Qt4PasLib name 'QImage_scaledToHeight';
 procedure QImage_transformed(handle: QImageH; retval: QImageH; matrix: QMatrixH; mode: QtTransformationMode = QtFastTransformation); cdecl; external Qt4PasLib name 'QImage_transformed';
-procedure QImage_trueMatrix(retval: QMatrixH; p1: QMatrixH; w: Integer; h: Integer); cdecl; external Qt4PasLib name 'QImage_trueMatrix';
+procedure QImage_trueMatrix(retval: QMatrixH; AnonParam1: QMatrixH; w: Integer; h: Integer); cdecl; external Qt4PasLib name 'QImage_trueMatrix';
 procedure QImage_transformed(handle: QImageH; retval: QImageH; matrix: QTransformH; mode: QtTransformationMode = QtFastTransformation); cdecl; external Qt4PasLib name 'QImage_transformed2';
-procedure QImage_trueMatrix(retval: QTransformH; p1: QTransformH; w: Integer; h: Integer); cdecl; external Qt4PasLib name 'QImage_trueMatrix2';
+procedure QImage_trueMatrix(retval: QTransformH; AnonParam1: QTransformH; w: Integer; h: Integer); cdecl; external Qt4PasLib name 'QImage_trueMatrix2';
 procedure QImage_mirrored(handle: QImageH; retval: QImageH; horizontally: Boolean = False; vertically: Boolean = True); cdecl; external Qt4PasLib name 'QImage_mirrored';
 procedure QImage_rgbSwapped(handle: QImageH; retval: QImageH); cdecl; external Qt4PasLib name 'QImage_rgbSwapped';
-procedure QImage_invertPixels(handle: QImageH; p1: QImageInvertMode = QImageInvertRgb); cdecl; external Qt4PasLib name 'QImage_invertPixels';
+procedure QImage_invertPixels(handle: QImageH; AnonParam1: QImageInvertMode = QImageInvertRgb); cdecl; external Qt4PasLib name 'QImage_invertPixels';
 function QImage_load(handle: QImageH; device: QIODeviceH; format: PAnsiChar): Boolean; cdecl; external Qt4PasLib name 'QImage_load';
 function QImage_load(handle: QImageH; fileName: PWideString; format: PAnsiChar = nil): Boolean; cdecl; external Qt4PasLib name 'QImage_load2';
 function QImage_loadFromData(handle: QImageH; buf: PByte; len: Integer; format: PAnsiChar = nil): Boolean; cdecl; external Qt4PasLib name 'QImage_loadFromData';
@@ -7121,32 +7255,32 @@ function QImage_cacheKey(handle: QImageH): int64; cdecl; external Qt4PasLib name
 function QImage_paintEngine(handle: QImageH): QPaintEngineH; cdecl; external Qt4PasLib name 'QImage_paintEngine';
 function QImage_dotsPerMeterX(handle: QImageH): Integer; cdecl; external Qt4PasLib name 'QImage_dotsPerMeterX';
 function QImage_dotsPerMeterY(handle: QImageH): Integer; cdecl; external Qt4PasLib name 'QImage_dotsPerMeterY';
-procedure QImage_setDotsPerMeterX(handle: QImageH; p1: Integer); cdecl; external Qt4PasLib name 'QImage_setDotsPerMeterX';
-procedure QImage_setDotsPerMeterY(handle: QImageH; p1: Integer); cdecl; external Qt4PasLib name 'QImage_setDotsPerMeterY';
+procedure QImage_setDotsPerMeterX(handle: QImageH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QImage_setDotsPerMeterX';
+procedure QImage_setDotsPerMeterY(handle: QImageH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QImage_setDotsPerMeterY';
 procedure QImage_offset(handle: QImageH; retval: PQtPoint); cdecl; external Qt4PasLib name 'QImage_offset';
-procedure QImage_setOffset(handle: QImageH; p1: PQtPoint); cdecl; external Qt4PasLib name 'QImage_setOffset';
+procedure QImage_setOffset(handle: QImageH; AnonParam1: PQtPoint); cdecl; external Qt4PasLib name 'QImage_setOffset';
 procedure QImage_textKeys(handle: QImageH; retval: QStringListH); cdecl; external Qt4PasLib name 'QImage_textKeys';
 procedure QImage_text(handle: QImageH; retval: PWideString; key: PWideString = nil); cdecl; external Qt4PasLib name 'QImage_text';
 procedure QImage_setText(handle: QImageH; key: PWideString; value: PWideString); cdecl; external Qt4PasLib name 'QImage_setText';
 procedure QImage_text(handle: QImageH; retval: PWideString; key: PAnsiChar; lang: PAnsiChar = nil); cdecl; external Qt4PasLib name 'QImage_text2';
 procedure QImage_textLanguages(handle: QImageH; retval: QStringListH); cdecl; external Qt4PasLib name 'QImage_textLanguages';
-procedure QImage_setText(handle: QImageH; key: PAnsiChar; lang: PAnsiChar; p3: PWideString); cdecl; external Qt4PasLib name 'QImage_setText2';
+procedure QImage_setText(handle: QImageH; key: PAnsiChar; lang: PAnsiChar; AnonParam3: PWideString); cdecl; external Qt4PasLib name 'QImage_setText2';
 
 function QBitmap_create(): QBitmapH; cdecl; external Qt4PasLib name 'QBitmap_create';
 procedure QBitmap_destroy(handle: QBitmapH); cdecl; external Qt4PasLib name 'QBitmap_destroy'; 
-function QBitmap_create(p1: QPixmapH): QBitmapH; cdecl; external Qt4PasLib name 'QBitmap_create2';
+function QBitmap_create(AnonParam1: QPixmapH): QBitmapH; cdecl; external Qt4PasLib name 'QBitmap_create2';
 function QBitmap_create(w: Integer; h: Integer): QBitmapH; cdecl; external Qt4PasLib name 'QBitmap_create3';
-function QBitmap_create(p1: PSize): QBitmapH; cdecl; external Qt4PasLib name 'QBitmap_create4';
+function QBitmap_create(AnonParam1: PSize): QBitmapH; cdecl; external Qt4PasLib name 'QBitmap_create4';
 function QBitmap_create(fileName: PWideString; format: PAnsiChar = nil): QBitmapH; cdecl; external Qt4PasLib name 'QBitmap_create5';
 procedure QBitmap_clear(handle: QBitmapH); cdecl; external Qt4PasLib name 'QBitmap_clear';
 procedure QBitmap_fromImage(retval: QBitmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor); cdecl; external Qt4PasLib name 'QBitmap_fromImage';
 procedure QBitmap_fromData(retval: QBitmapH; size: PSize; bits: PByte; monoFormat: QImageFormat = QImageFormat_MonoLSB); cdecl; external Qt4PasLib name 'QBitmap_fromData';
-procedure QBitmap_transformed(handle: QBitmapH; retval: QBitmapH; p1: QMatrixH); cdecl; external Qt4PasLib name 'QBitmap_transformed';
+procedure QBitmap_transformed(handle: QBitmapH; retval: QBitmapH; AnonParam1: QMatrixH); cdecl; external Qt4PasLib name 'QBitmap_transformed';
 procedure QBitmap_transformed(handle: QBitmapH; retval: QBitmapH; matrix: QTransformH); cdecl; external Qt4PasLib name 'QBitmap_transformed2';
 
 function QPicture_create(formatVersion: Integer = -1): QPictureH; cdecl; external Qt4PasLib name 'QPicture_create';
 procedure QPicture_destroy(handle: QPictureH); cdecl; external Qt4PasLib name 'QPicture_destroy'; 
-function QPicture_create(p1: QPictureH): QPictureH; cdecl; external Qt4PasLib name 'QPicture_create2';
+function QPicture_create(AnonParam1: QPictureH): QPictureH; cdecl; external Qt4PasLib name 'QPicture_create2';
 function QPicture_isNull(handle: QPictureH): Boolean; cdecl; external Qt4PasLib name 'QPicture_isNull';
 function QPicture_devType(handle: QPictureH): Integer; cdecl; external Qt4PasLib name 'QPicture_devType';
 function QPicture_size(handle: QPictureH): LongWord; cdecl; external Qt4PasLib name 'QPicture_size';
@@ -7281,15 +7415,15 @@ type
 
 procedure QValidator_setLocale(handle: QValidatorH; locale: QLocaleH); cdecl; external Qt4PasLib name 'QValidator_setLocale';
 procedure QValidator_locale(handle: QValidatorH; retval: QLocaleH); cdecl; external Qt4PasLib name 'QValidator_locale';
-function QValidator_validate(handle: QValidatorH; p1: PWideString; p2: PInteger): QValidatorState; cdecl; external Qt4PasLib name 'QValidator_validate';
-procedure QValidator_fixup(handle: QValidatorH; p1: PWideString); cdecl; external Qt4PasLib name 'QValidator_fixup';
+function QValidator_validate(handle: QValidatorH; AnonParam1: PWideString; AnonParam2: PInteger): QValidatorState; cdecl; external Qt4PasLib name 'QValidator_validate';
+procedure QValidator_fixup(handle: QValidatorH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QValidator_fixup';
 
 function QIntValidator_create(parent: QObjectH): QIntValidatorH; cdecl; external Qt4PasLib name 'QIntValidator_create';
 procedure QIntValidator_destroy(handle: QIntValidatorH); cdecl; external Qt4PasLib name 'QIntValidator_destroy'; 
 function QIntValidator_create(bottom: Integer; top: Integer; parent: QObjectH): QIntValidatorH; cdecl; external Qt4PasLib name 'QIntValidator_create2';
-function QIntValidator_validate(handle: QIntValidatorH; p1: PWideString; p2: PInteger): QValidatorState; cdecl; external Qt4PasLib name 'QIntValidator_validate';
-procedure QIntValidator_setBottom(handle: QIntValidatorH; p1: Integer); cdecl; external Qt4PasLib name 'QIntValidator_setBottom';
-procedure QIntValidator_setTop(handle: QIntValidatorH; p1: Integer); cdecl; external Qt4PasLib name 'QIntValidator_setTop';
+function QIntValidator_validate(handle: QIntValidatorH; AnonParam1: PWideString; AnonParam2: PInteger): QValidatorState; cdecl; external Qt4PasLib name 'QIntValidator_validate';
+procedure QIntValidator_setBottom(handle: QIntValidatorH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QIntValidator_setBottom';
+procedure QIntValidator_setTop(handle: QIntValidatorH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QIntValidator_setTop';
 procedure QIntValidator_setRange(handle: QIntValidatorH; bottom: Integer; top: Integer); cdecl; external Qt4PasLib name 'QIntValidator_setRange';
 function QIntValidator_bottom(handle: QIntValidatorH): Integer; cdecl; external Qt4PasLib name 'QIntValidator_bottom';
 function QIntValidator_top(handle: QIntValidatorH): Integer; cdecl; external Qt4PasLib name 'QIntValidator_top';
@@ -7297,12 +7431,12 @@ function QIntValidator_top(handle: QIntValidatorH): Integer; cdecl; external Qt4
 function QDoubleValidator_create(parent: QObjectH): QDoubleValidatorH; cdecl; external Qt4PasLib name 'QDoubleValidator_create';
 procedure QDoubleValidator_destroy(handle: QDoubleValidatorH); cdecl; external Qt4PasLib name 'QDoubleValidator_destroy'; 
 function QDoubleValidator_create(bottom: Double; top: Double; decimals: Integer; parent: QObjectH): QDoubleValidatorH; cdecl; external Qt4PasLib name 'QDoubleValidator_create2';
-function QDoubleValidator_validate(handle: QDoubleValidatorH; p1: PWideString; p2: PInteger): QValidatorState; cdecl; external Qt4PasLib name 'QDoubleValidator_validate';
+function QDoubleValidator_validate(handle: QDoubleValidatorH; AnonParam1: PWideString; AnonParam2: PInteger): QValidatorState; cdecl; external Qt4PasLib name 'QDoubleValidator_validate';
 procedure QDoubleValidator_setRange(handle: QDoubleValidatorH; bottom: Double; top: Double; decimals: Integer = 0); cdecl; external Qt4PasLib name 'QDoubleValidator_setRange';
-procedure QDoubleValidator_setBottom(handle: QDoubleValidatorH; p1: Double); cdecl; external Qt4PasLib name 'QDoubleValidator_setBottom';
-procedure QDoubleValidator_setTop(handle: QDoubleValidatorH; p1: Double); cdecl; external Qt4PasLib name 'QDoubleValidator_setTop';
-procedure QDoubleValidator_setDecimals(handle: QDoubleValidatorH; p1: Integer); cdecl; external Qt4PasLib name 'QDoubleValidator_setDecimals';
-procedure QDoubleValidator_setNotation(handle: QDoubleValidatorH; p1: QDoubleValidatorNotation); cdecl; external Qt4PasLib name 'QDoubleValidator_setNotation';
+procedure QDoubleValidator_setBottom(handle: QDoubleValidatorH; AnonParam1: Double); cdecl; external Qt4PasLib name 'QDoubleValidator_setBottom';
+procedure QDoubleValidator_setTop(handle: QDoubleValidatorH; AnonParam1: Double); cdecl; external Qt4PasLib name 'QDoubleValidator_setTop';
+procedure QDoubleValidator_setDecimals(handle: QDoubleValidatorH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QDoubleValidator_setDecimals';
+procedure QDoubleValidator_setNotation(handle: QDoubleValidatorH; AnonParam1: QDoubleValidatorNotation); cdecl; external Qt4PasLib name 'QDoubleValidator_setNotation';
 function QDoubleValidator_bottom(handle: QDoubleValidatorH): Double; cdecl; external Qt4PasLib name 'QDoubleValidator_bottom';
 function QDoubleValidator_top(handle: QDoubleValidatorH): Double; cdecl; external Qt4PasLib name 'QDoubleValidator_top';
 function QDoubleValidator_decimals(handle: QDoubleValidatorH): Integer; cdecl; external Qt4PasLib name 'QDoubleValidator_decimals';
@@ -7338,19 +7472,19 @@ type
 function QFrame_create(parent: QWidgetH = nil; f: QtWindowFlags = 0): QFrameH; cdecl; external Qt4PasLib name 'QFrame_create';
 procedure QFrame_destroy(handle: QFrameH); cdecl; external Qt4PasLib name 'QFrame_destroy'; 
 function QFrame_frameStyle(handle: QFrameH): Integer; cdecl; external Qt4PasLib name 'QFrame_frameStyle';
-procedure QFrame_setFrameStyle(handle: QFrameH; p1: Integer); cdecl; external Qt4PasLib name 'QFrame_setFrameStyle';
+procedure QFrame_setFrameStyle(handle: QFrameH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QFrame_setFrameStyle';
 function QFrame_frameWidth(handle: QFrameH): Integer; cdecl; external Qt4PasLib name 'QFrame_frameWidth';
 procedure QFrame_sizeHint(handle: QFrameH; retval: PSize); cdecl; external Qt4PasLib name 'QFrame_sizeHint';
 function QFrame_frameShape(handle: QFrameH): QFrameShape; cdecl; external Qt4PasLib name 'QFrame_frameShape';
-procedure QFrame_setFrameShape(handle: QFrameH; p1: QFrameShape); cdecl; external Qt4PasLib name 'QFrame_setFrameShape';
+procedure QFrame_setFrameShape(handle: QFrameH; AnonParam1: QFrameShape); cdecl; external Qt4PasLib name 'QFrame_setFrameShape';
 function QFrame_frameShadow(handle: QFrameH): QFrameShadow; cdecl; external Qt4PasLib name 'QFrame_frameShadow';
-procedure QFrame_setFrameShadow(handle: QFrameH; p1: QFrameShadow); cdecl; external Qt4PasLib name 'QFrame_setFrameShadow';
+procedure QFrame_setFrameShadow(handle: QFrameH; AnonParam1: QFrameShadow); cdecl; external Qt4PasLib name 'QFrame_setFrameShadow';
 function QFrame_lineWidth(handle: QFrameH): Integer; cdecl; external Qt4PasLib name 'QFrame_lineWidth';
-procedure QFrame_setLineWidth(handle: QFrameH; p1: Integer); cdecl; external Qt4PasLib name 'QFrame_setLineWidth';
+procedure QFrame_setLineWidth(handle: QFrameH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QFrame_setLineWidth';
 function QFrame_midLineWidth(handle: QFrameH): Integer; cdecl; external Qt4PasLib name 'QFrame_midLineWidth';
-procedure QFrame_setMidLineWidth(handle: QFrameH; p1: Integer); cdecl; external Qt4PasLib name 'QFrame_setMidLineWidth';
+procedure QFrame_setMidLineWidth(handle: QFrameH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QFrame_setMidLineWidth';
 procedure QFrame_frameRect(handle: QFrameH; retval: PRect); cdecl; external Qt4PasLib name 'QFrame_frameRect';
-procedure QFrame_setFrameRect(handle: QFrameH; p1: PRect); cdecl; external Qt4PasLib name 'QFrame_setFrameRect';
+procedure QFrame_setFrameRect(handle: QFrameH; AnonParam1: PRect); cdecl; external Qt4PasLib name 'QFrame_setFrameRect';
 
 function QStackedWidget_create(parent: QWidgetH = nil): QStackedWidgetH; cdecl; external Qt4PasLib name 'QStackedWidget_create';
 procedure QStackedWidget_destroy(handle: QStackedWidgetH); cdecl; external Qt4PasLib name 'QStackedWidget_destroy'; 
@@ -7359,26 +7493,26 @@ function QStackedWidget_insertWidget(handle: QStackedWidgetH; index: Integer; w:
 procedure QStackedWidget_removeWidget(handle: QStackedWidgetH; w: QWidgetH); cdecl; external Qt4PasLib name 'QStackedWidget_removeWidget';
 function QStackedWidget_currentWidget(handle: QStackedWidgetH): QWidgetH; cdecl; external Qt4PasLib name 'QStackedWidget_currentWidget';
 function QStackedWidget_currentIndex(handle: QStackedWidgetH): Integer; cdecl; external Qt4PasLib name 'QStackedWidget_currentIndex';
-function QStackedWidget_indexOf(handle: QStackedWidgetH; p1: QWidgetH): Integer; cdecl; external Qt4PasLib name 'QStackedWidget_indexOf';
-function QStackedWidget_widget(handle: QStackedWidgetH; p1: Integer): QWidgetH; cdecl; external Qt4PasLib name 'QStackedWidget_widget';
+function QStackedWidget_indexOf(handle: QStackedWidgetH; AnonParam1: QWidgetH): Integer; cdecl; external Qt4PasLib name 'QStackedWidget_indexOf';
+function QStackedWidget_widget(handle: QStackedWidgetH; AnonParam1: Integer): QWidgetH; cdecl; external Qt4PasLib name 'QStackedWidget_widget';
 function QStackedWidget_count(handle: QStackedWidgetH): Integer; cdecl; external Qt4PasLib name 'QStackedWidget_count';
 procedure QStackedWidget_setCurrentIndex(handle: QStackedWidgetH; index: Integer); cdecl; external Qt4PasLib name 'QStackedWidget_setCurrentIndex';
 procedure QStackedWidget_setCurrentWidget(handle: QStackedWidgetH; w: QWidgetH); cdecl; external Qt4PasLib name 'QStackedWidget_setCurrentWidget';
 
 
 type
-  QStackedWidget_currentChanged_Event = procedure (p1: Integer) of object cdecl;
+  QStackedWidget_currentChanged_Event = procedure (AnonParam1: Integer) of object cdecl;
   QStackedWidget_widgetRemoved_Event = procedure (index: Integer) of object cdecl;
 
 
 function QAbstractScrollArea_create(parent: QWidgetH = nil): QAbstractScrollAreaH; cdecl; external Qt4PasLib name 'QAbstractScrollArea_create';
 procedure QAbstractScrollArea_destroy(handle: QAbstractScrollAreaH); cdecl; external Qt4PasLib name 'QAbstractScrollArea_destroy'; 
 function QAbstractScrollArea_verticalScrollBarPolicy(handle: QAbstractScrollAreaH): QtScrollBarPolicy; cdecl; external Qt4PasLib name 'QAbstractScrollArea_verticalScrollBarPolicy';
-procedure QAbstractScrollArea_setVerticalScrollBarPolicy(handle: QAbstractScrollAreaH; p1: QtScrollBarPolicy); cdecl; external Qt4PasLib name 'QAbstractScrollArea_setVerticalScrollBarPolicy';
+procedure QAbstractScrollArea_setVerticalScrollBarPolicy(handle: QAbstractScrollAreaH; AnonParam1: QtScrollBarPolicy); cdecl; external Qt4PasLib name 'QAbstractScrollArea_setVerticalScrollBarPolicy';
 function QAbstractScrollArea_verticalScrollBar(handle: QAbstractScrollAreaH): QScrollBarH; cdecl; external Qt4PasLib name 'QAbstractScrollArea_verticalScrollBar';
 procedure QAbstractScrollArea_setVerticalScrollBar(handle: QAbstractScrollAreaH; scrollbar: QScrollBarH); cdecl; external Qt4PasLib name 'QAbstractScrollArea_setVerticalScrollBar';
 function QAbstractScrollArea_horizontalScrollBarPolicy(handle: QAbstractScrollAreaH): QtScrollBarPolicy; cdecl; external Qt4PasLib name 'QAbstractScrollArea_horizontalScrollBarPolicy';
-procedure QAbstractScrollArea_setHorizontalScrollBarPolicy(handle: QAbstractScrollAreaH; p1: QtScrollBarPolicy); cdecl; external Qt4PasLib name 'QAbstractScrollArea_setHorizontalScrollBarPolicy';
+procedure QAbstractScrollArea_setHorizontalScrollBarPolicy(handle: QAbstractScrollAreaH; AnonParam1: QtScrollBarPolicy); cdecl; external Qt4PasLib name 'QAbstractScrollArea_setHorizontalScrollBarPolicy';
 function QAbstractScrollArea_horizontalScrollBar(handle: QAbstractScrollAreaH): QScrollBarH; cdecl; external Qt4PasLib name 'QAbstractScrollArea_horizontalScrollBar';
 procedure QAbstractScrollArea_setHorizontalScrollBar(handle: QAbstractScrollAreaH; scrollbar: QScrollBarH); cdecl; external Qt4PasLib name 'QAbstractScrollArea_setHorizontalScrollBar';
 function QAbstractScrollArea_cornerWidget(handle: QAbstractScrollAreaH): QWidgetH; cdecl; external Qt4PasLib name 'QAbstractScrollArea_cornerWidget';
@@ -7405,29 +7539,29 @@ type
 function QAbstractSlider_create(parent: QWidgetH = nil): QAbstractSliderH; cdecl; external Qt4PasLib name 'QAbstractSlider_create';
 procedure QAbstractSlider_destroy(handle: QAbstractSliderH); cdecl; external Qt4PasLib name 'QAbstractSlider_destroy'; 
 function QAbstractSlider_orientation(handle: QAbstractSliderH): QtOrientation; cdecl; external Qt4PasLib name 'QAbstractSlider_orientation';
-procedure QAbstractSlider_setMinimum(handle: QAbstractSliderH; p1: Integer); cdecl; external Qt4PasLib name 'QAbstractSlider_setMinimum';
+procedure QAbstractSlider_setMinimum(handle: QAbstractSliderH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QAbstractSlider_setMinimum';
 function QAbstractSlider_minimum(handle: QAbstractSliderH): Integer; cdecl; external Qt4PasLib name 'QAbstractSlider_minimum';
-procedure QAbstractSlider_setMaximum(handle: QAbstractSliderH; p1: Integer); cdecl; external Qt4PasLib name 'QAbstractSlider_setMaximum';
+procedure QAbstractSlider_setMaximum(handle: QAbstractSliderH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QAbstractSlider_setMaximum';
 function QAbstractSlider_maximum(handle: QAbstractSliderH): Integer; cdecl; external Qt4PasLib name 'QAbstractSlider_maximum';
 procedure QAbstractSlider_setRange(handle: QAbstractSliderH; min: Integer; max: Integer); cdecl; external Qt4PasLib name 'QAbstractSlider_setRange';
-procedure QAbstractSlider_setSingleStep(handle: QAbstractSliderH; p1: Integer); cdecl; external Qt4PasLib name 'QAbstractSlider_setSingleStep';
+procedure QAbstractSlider_setSingleStep(handle: QAbstractSliderH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QAbstractSlider_setSingleStep';
 function QAbstractSlider_singleStep(handle: QAbstractSliderH): Integer; cdecl; external Qt4PasLib name 'QAbstractSlider_singleStep';
-procedure QAbstractSlider_setPageStep(handle: QAbstractSliderH; p1: Integer); cdecl; external Qt4PasLib name 'QAbstractSlider_setPageStep';
+procedure QAbstractSlider_setPageStep(handle: QAbstractSliderH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QAbstractSlider_setPageStep';
 function QAbstractSlider_pageStep(handle: QAbstractSliderH): Integer; cdecl; external Qt4PasLib name 'QAbstractSlider_pageStep';
 procedure QAbstractSlider_setTracking(handle: QAbstractSliderH; enable: Boolean); cdecl; external Qt4PasLib name 'QAbstractSlider_setTracking';
 function QAbstractSlider_hasTracking(handle: QAbstractSliderH): Boolean; cdecl; external Qt4PasLib name 'QAbstractSlider_hasTracking';
-procedure QAbstractSlider_setSliderDown(handle: QAbstractSliderH; p1: Boolean); cdecl; external Qt4PasLib name 'QAbstractSlider_setSliderDown';
+procedure QAbstractSlider_setSliderDown(handle: QAbstractSliderH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAbstractSlider_setSliderDown';
 function QAbstractSlider_isSliderDown(handle: QAbstractSliderH): Boolean; cdecl; external Qt4PasLib name 'QAbstractSlider_isSliderDown';
-procedure QAbstractSlider_setSliderPosition(handle: QAbstractSliderH; p1: Integer); cdecl; external Qt4PasLib name 'QAbstractSlider_setSliderPosition';
+procedure QAbstractSlider_setSliderPosition(handle: QAbstractSliderH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QAbstractSlider_setSliderPosition';
 function QAbstractSlider_sliderPosition(handle: QAbstractSliderH): Integer; cdecl; external Qt4PasLib name 'QAbstractSlider_sliderPosition';
-procedure QAbstractSlider_setInvertedAppearance(handle: QAbstractSliderH; p1: Boolean); cdecl; external Qt4PasLib name 'QAbstractSlider_setInvertedAppearance';
+procedure QAbstractSlider_setInvertedAppearance(handle: QAbstractSliderH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAbstractSlider_setInvertedAppearance';
 function QAbstractSlider_invertedAppearance(handle: QAbstractSliderH): Boolean; cdecl; external Qt4PasLib name 'QAbstractSlider_invertedAppearance';
-procedure QAbstractSlider_setInvertedControls(handle: QAbstractSliderH; p1: Boolean); cdecl; external Qt4PasLib name 'QAbstractSlider_setInvertedControls';
+procedure QAbstractSlider_setInvertedControls(handle: QAbstractSliderH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAbstractSlider_setInvertedControls';
 function QAbstractSlider_invertedControls(handle: QAbstractSliderH): Boolean; cdecl; external Qt4PasLib name 'QAbstractSlider_invertedControls';
 function QAbstractSlider_value(handle: QAbstractSliderH): Integer; cdecl; external Qt4PasLib name 'QAbstractSlider_value';
 procedure QAbstractSlider_triggerAction(handle: QAbstractSliderH; action: QAbstractSliderSliderAction); cdecl; external Qt4PasLib name 'QAbstractSlider_triggerAction';
-procedure QAbstractSlider_setValue(handle: QAbstractSliderH; p1: Integer); cdecl; external Qt4PasLib name 'QAbstractSlider_setValue';
-procedure QAbstractSlider_setOrientation(handle: QAbstractSliderH; p1: QtOrientation); cdecl; external Qt4PasLib name 'QAbstractSlider_setOrientation';
+procedure QAbstractSlider_setValue(handle: QAbstractSliderH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QAbstractSlider_setValue';
+procedure QAbstractSlider_setOrientation(handle: QAbstractSliderH; AnonParam1: QtOrientation); cdecl; external Qt4PasLib name 'QAbstractSlider_setOrientation';
 
 
 type
@@ -7441,7 +7575,7 @@ type
 
 function QScrollBar_create(parent: QWidgetH = nil): QScrollBarH; cdecl; external Qt4PasLib name 'QScrollBar_create';
 procedure QScrollBar_destroy(handle: QScrollBarH); cdecl; external Qt4PasLib name 'QScrollBar_destroy'; 
-function QScrollBar_create(p1: QtOrientation; parent: QWidgetH = nil): QScrollBarH; cdecl; external Qt4PasLib name 'QScrollBar_create2';
+function QScrollBar_create(AnonParam1: QtOrientation; parent: QWidgetH = nil): QScrollBarH; cdecl; external Qt4PasLib name 'QScrollBar_create2';
 procedure QScrollBar_sizeHint(handle: QScrollBarH; retval: PSize); cdecl; external Qt4PasLib name 'QScrollBar_sizeHint';
 function QScrollBar_event(handle: QScrollBarH; event: QEventH): Boolean; cdecl; external Qt4PasLib name 'QScrollBar_event';
 
@@ -7460,11 +7594,11 @@ function QMenu_insertMenu(handle: QMenuH; before: QActionH; menu: QMenuH): QActi
 function QMenu_insertSeparator(handle: QMenuH; before: QActionH): QActionH; cdecl; external Qt4PasLib name 'QMenu_insertSeparator';
 function QMenu_isEmpty(handle: QMenuH): Boolean; cdecl; external Qt4PasLib name 'QMenu_isEmpty';
 procedure QMenu_clear(handle: QMenuH); cdecl; external Qt4PasLib name 'QMenu_clear';
-procedure QMenu_setTearOffEnabled(handle: QMenuH; p1: Boolean); cdecl; external Qt4PasLib name 'QMenu_setTearOffEnabled';
+procedure QMenu_setTearOffEnabled(handle: QMenuH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QMenu_setTearOffEnabled';
 function QMenu_isTearOffEnabled(handle: QMenuH): Boolean; cdecl; external Qt4PasLib name 'QMenu_isTearOffEnabled';
 function QMenu_isTearOffMenuVisible(handle: QMenuH): Boolean; cdecl; external Qt4PasLib name 'QMenu_isTearOffMenuVisible';
 procedure QMenu_hideTearOffMenu(handle: QMenuH); cdecl; external Qt4PasLib name 'QMenu_hideTearOffMenu';
-procedure QMenu_setDefaultAction(handle: QMenuH; p1: QActionH); cdecl; external Qt4PasLib name 'QMenu_setDefaultAction';
+procedure QMenu_setDefaultAction(handle: QMenuH; AnonParam1: QActionH); cdecl; external Qt4PasLib name 'QMenu_setDefaultAction';
 function QMenu_defaultAction(handle: QMenuH): QActionH; cdecl; external Qt4PasLib name 'QMenu_defaultAction';
 procedure QMenu_setActiveAction(handle: QMenuH; act: QActionH); cdecl; external Qt4PasLib name 'QMenu_setActiveAction';
 function QMenu_activeAction(handle: QMenuH): QActionH; cdecl; external Qt4PasLib name 'QMenu_activeAction';
@@ -7474,8 +7608,8 @@ function QMenu_exec(handle: QMenuH; pos: PQtPoint; at: QActionH = nil): QActionH
 function QMenu_exec(actions: PPtrIntArray; pos: PQtPoint; at: QActionH = nil): QActionH; cdecl; external Qt4PasLib name 'QMenu_exec3';
 function QMenu_exec(actions: PPtrIntArray; pos: PQtPoint; at: QActionH; parent: QWidgetH): QActionH; cdecl; external Qt4PasLib name 'QMenu_exec4';
 procedure QMenu_sizeHint(handle: QMenuH; retval: PSize); cdecl; external Qt4PasLib name 'QMenu_sizeHint';
-procedure QMenu_actionGeometry(handle: QMenuH; retval: PRect; p1: QActionH); cdecl; external Qt4PasLib name 'QMenu_actionGeometry';
-function QMenu_actionAt(handle: QMenuH; p1: PQtPoint): QActionH; cdecl; external Qt4PasLib name 'QMenu_actionAt';
+procedure QMenu_actionGeometry(handle: QMenuH; retval: PRect; AnonParam1: QActionH); cdecl; external Qt4PasLib name 'QMenu_actionGeometry';
+function QMenu_actionAt(handle: QMenuH; AnonParam1: PQtPoint): QActionH; cdecl; external Qt4PasLib name 'QMenu_actionAt';
 function QMenu_menuAction(handle: QMenuH): QActionH; cdecl; external Qt4PasLib name 'QMenu_menuAction';
 procedure QMenu_title(handle: QMenuH; retval: PWideString); cdecl; external Qt4PasLib name 'QMenu_title';
 procedure QMenu_setTitle(handle: QMenuH; title: PWideString); cdecl; external Qt4PasLib name 'QMenu_setTitle';
@@ -7484,9 +7618,6 @@ procedure QMenu_setIcon(handle: QMenuH; icon: QIconH); cdecl; external Qt4PasLib
 procedure QMenu_setNoReplayFor(handle: QMenuH; widget: QWidgetH); cdecl; external Qt4PasLib name 'QMenu_setNoReplayFor';
 function QMenu_separatorsCollapsible(handle: QMenuH): Boolean; cdecl; external Qt4PasLib name 'QMenu_separatorsCollapsible';
 procedure QMenu_setSeparatorsCollapsible(handle: QMenuH; collapse: Boolean); cdecl; external Qt4PasLib name 'QMenu_setSeparatorsCollapsible';
-{$ifdef DARWIN }
-function QMenu_macMenu(handle: QMenuH; merge: Pointer = nil): Pointer; cdecl; external Qt4PasLib name 'QMenu_macMenu';
-{$endif}
 
 
 type
@@ -7509,13 +7640,13 @@ function QMenuBar_insertMenu(handle: QMenuBarH; before: QActionH; menu: QMenuH):
 procedure QMenuBar_clear(handle: QMenuBarH); cdecl; external Qt4PasLib name 'QMenuBar_clear';
 function QMenuBar_activeAction(handle: QMenuBarH): QActionH; cdecl; external Qt4PasLib name 'QMenuBar_activeAction';
 procedure QMenuBar_setActiveAction(handle: QMenuBarH; action: QActionH); cdecl; external Qt4PasLib name 'QMenuBar_setActiveAction';
-procedure QMenuBar_setDefaultUp(handle: QMenuBarH; p1: Boolean); cdecl; external Qt4PasLib name 'QMenuBar_setDefaultUp';
+procedure QMenuBar_setDefaultUp(handle: QMenuBarH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QMenuBar_setDefaultUp';
 function QMenuBar_isDefaultUp(handle: QMenuBarH): Boolean; cdecl; external Qt4PasLib name 'QMenuBar_isDefaultUp';
 procedure QMenuBar_sizeHint(handle: QMenuBarH; retval: PSize); cdecl; external Qt4PasLib name 'QMenuBar_sizeHint';
 procedure QMenuBar_minimumSizeHint(handle: QMenuBarH; retval: PSize); cdecl; external Qt4PasLib name 'QMenuBar_minimumSizeHint';
-function QMenuBar_heightForWidth(handle: QMenuBarH; p1: Integer): Integer; cdecl; external Qt4PasLib name 'QMenuBar_heightForWidth';
-procedure QMenuBar_actionGeometry(handle: QMenuBarH; retval: PRect; p1: QActionH); cdecl; external Qt4PasLib name 'QMenuBar_actionGeometry';
-function QMenuBar_actionAt(handle: QMenuBarH; p1: PQtPoint): QActionH; cdecl; external Qt4PasLib name 'QMenuBar_actionAt';
+function QMenuBar_heightForWidth(handle: QMenuBarH; AnonParam1: Integer): Integer; cdecl; external Qt4PasLib name 'QMenuBar_heightForWidth';
+procedure QMenuBar_actionGeometry(handle: QMenuBarH; retval: PRect; AnonParam1: QActionH); cdecl; external Qt4PasLib name 'QMenuBar_actionGeometry';
+function QMenuBar_actionAt(handle: QMenuBarH; AnonParam1: PQtPoint): QActionH; cdecl; external Qt4PasLib name 'QMenuBar_actionAt';
 procedure QMenuBar_setCornerWidget(handle: QMenuBarH; w: QWidgetH; corner: QtCorner = QtTopRightCorner); cdecl; external Qt4PasLib name 'QMenuBar_setCornerWidget';
 function QMenuBar_cornerWidget(handle: QMenuBarH; corner: QtCorner = QtTopRightCorner): QWidgetH; cdecl; external Qt4PasLib name 'QMenuBar_cornerWidget';
 procedure QMenuBar_setVisible(handle: QMenuBarH; visible: Boolean); cdecl; external Qt4PasLib name 'QMenuBar_setVisible';
@@ -7532,11 +7663,11 @@ type
 
 function QButtonGroup_create(parent: QObjectH = nil): QButtonGroupH; cdecl; external Qt4PasLib name 'QButtonGroup_create';
 procedure QButtonGroup_destroy(handle: QButtonGroupH); cdecl; external Qt4PasLib name 'QButtonGroup_destroy'; 
-procedure QButtonGroup_setExclusive(handle: QButtonGroupH; p1: Boolean); cdecl; external Qt4PasLib name 'QButtonGroup_setExclusive';
+procedure QButtonGroup_setExclusive(handle: QButtonGroupH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QButtonGroup_setExclusive';
 function QButtonGroup_exclusive(handle: QButtonGroupH): Boolean; cdecl; external Qt4PasLib name 'QButtonGroup_exclusive';
-procedure QButtonGroup_addButton(handle: QButtonGroupH; p1: QAbstractButtonH); cdecl; external Qt4PasLib name 'QButtonGroup_addButton';
-procedure QButtonGroup_addButton(handle: QButtonGroupH; p1: QAbstractButtonH; id: Integer); cdecl; external Qt4PasLib name 'QButtonGroup_addButton2';
-procedure QButtonGroup_removeButton(handle: QButtonGroupH; p1: QAbstractButtonH); cdecl; external Qt4PasLib name 'QButtonGroup_removeButton';
+procedure QButtonGroup_addButton(handle: QButtonGroupH; AnonParam1: QAbstractButtonH); cdecl; external Qt4PasLib name 'QButtonGroup_addButton';
+procedure QButtonGroup_addButton(handle: QButtonGroupH; AnonParam1: QAbstractButtonH; id: Integer); cdecl; external Qt4PasLib name 'QButtonGroup_addButton2';
+procedure QButtonGroup_removeButton(handle: QButtonGroupH; AnonParam1: QAbstractButtonH); cdecl; external Qt4PasLib name 'QButtonGroup_removeButton';
 procedure QButtonGroup_buttons(handle: QButtonGroupH; retval: PPtrIntArray); cdecl; external Qt4PasLib name 'QButtonGroup_buttons';
 function QButtonGroup_checkedButton(handle: QButtonGroupH): QAbstractButtonH; cdecl; external Qt4PasLib name 'QButtonGroup_checkedButton';
 function QButtonGroup_button(handle: QButtonGroupH; id: Integer): QAbstractButtonH; cdecl; external Qt4PasLib name 'QButtonGroup_button';
@@ -7546,12 +7677,12 @@ function QButtonGroup_checkedId(handle: QButtonGroupH): Integer; cdecl; external
 
 
 type
-  QButtonGroup_buttonClicked_Event = procedure (p1: QAbstractButtonH) of object cdecl;
-  QButtonGroup_buttonClicked2_Event = procedure (p1: Integer) of object cdecl;
-  QButtonGroup_buttonPressed_Event = procedure (p1: QAbstractButtonH) of object cdecl;
-  QButtonGroup_buttonPressed2_Event = procedure (p1: Integer) of object cdecl;
-  QButtonGroup_buttonReleased_Event = procedure (p1: QAbstractButtonH) of object cdecl;
-  QButtonGroup_buttonReleased2_Event = procedure (p1: Integer) of object cdecl;
+  QButtonGroup_buttonClicked_Event = procedure (AnonParam1: QAbstractButtonH) of object cdecl;
+  QButtonGroup_buttonClicked2_Event = procedure (AnonParam1: Integer) of object cdecl;
+  QButtonGroup_buttonPressed_Event = procedure (AnonParam1: QAbstractButtonH) of object cdecl;
+  QButtonGroup_buttonPressed2_Event = procedure (AnonParam1: Integer) of object cdecl;
+  QButtonGroup_buttonReleased_Event = procedure (AnonParam1: QAbstractButtonH) of object cdecl;
+  QButtonGroup_buttonReleased2_Event = procedure (AnonParam1: Integer) of object cdecl;
 
 
 procedure QAbstractButton_setText(handle: QAbstractButtonH; text: PWideString); cdecl; external Qt4PasLib name 'QAbstractButton_setText';
@@ -7561,25 +7692,25 @@ procedure QAbstractButton_icon(handle: QAbstractButtonH; retval: QIconH); cdecl;
 procedure QAbstractButton_iconSize(handle: QAbstractButtonH; retval: PSize); cdecl; external Qt4PasLib name 'QAbstractButton_iconSize';
 procedure QAbstractButton_setShortcut(handle: QAbstractButtonH; key: QKeySequenceH); cdecl; external Qt4PasLib name 'QAbstractButton_setShortcut';
 procedure QAbstractButton_shortcut(handle: QAbstractButtonH; retval: QKeySequenceH); cdecl; external Qt4PasLib name 'QAbstractButton_shortcut';
-procedure QAbstractButton_setCheckable(handle: QAbstractButtonH; p1: Boolean); cdecl; external Qt4PasLib name 'QAbstractButton_setCheckable';
+procedure QAbstractButton_setCheckable(handle: QAbstractButtonH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAbstractButton_setCheckable';
 function QAbstractButton_isCheckable(handle: QAbstractButtonH): Boolean; cdecl; external Qt4PasLib name 'QAbstractButton_isCheckable';
 function QAbstractButton_isChecked(handle: QAbstractButtonH): Boolean; cdecl; external Qt4PasLib name 'QAbstractButton_isChecked';
-procedure QAbstractButton_setDown(handle: QAbstractButtonH; p1: Boolean); cdecl; external Qt4PasLib name 'QAbstractButton_setDown';
+procedure QAbstractButton_setDown(handle: QAbstractButtonH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAbstractButton_setDown';
 function QAbstractButton_isDown(handle: QAbstractButtonH): Boolean; cdecl; external Qt4PasLib name 'QAbstractButton_isDown';
-procedure QAbstractButton_setAutoRepeat(handle: QAbstractButtonH; p1: Boolean); cdecl; external Qt4PasLib name 'QAbstractButton_setAutoRepeat';
+procedure QAbstractButton_setAutoRepeat(handle: QAbstractButtonH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAbstractButton_setAutoRepeat';
 function QAbstractButton_autoRepeat(handle: QAbstractButtonH): Boolean; cdecl; external Qt4PasLib name 'QAbstractButton_autoRepeat';
-procedure QAbstractButton_setAutoRepeatDelay(handle: QAbstractButtonH; p1: Integer); cdecl; external Qt4PasLib name 'QAbstractButton_setAutoRepeatDelay';
+procedure QAbstractButton_setAutoRepeatDelay(handle: QAbstractButtonH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QAbstractButton_setAutoRepeatDelay';
 function QAbstractButton_autoRepeatDelay(handle: QAbstractButtonH): Integer; cdecl; external Qt4PasLib name 'QAbstractButton_autoRepeatDelay';
-procedure QAbstractButton_setAutoRepeatInterval(handle: QAbstractButtonH; p1: Integer); cdecl; external Qt4PasLib name 'QAbstractButton_setAutoRepeatInterval';
+procedure QAbstractButton_setAutoRepeatInterval(handle: QAbstractButtonH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QAbstractButton_setAutoRepeatInterval';
 function QAbstractButton_autoRepeatInterval(handle: QAbstractButtonH): Integer; cdecl; external Qt4PasLib name 'QAbstractButton_autoRepeatInterval';
-procedure QAbstractButton_setAutoExclusive(handle: QAbstractButtonH; p1: Boolean); cdecl; external Qt4PasLib name 'QAbstractButton_setAutoExclusive';
+procedure QAbstractButton_setAutoExclusive(handle: QAbstractButtonH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAbstractButton_setAutoExclusive';
 function QAbstractButton_autoExclusive(handle: QAbstractButtonH): Boolean; cdecl; external Qt4PasLib name 'QAbstractButton_autoExclusive';
 function QAbstractButton_group(handle: QAbstractButtonH): QButtonGroupH; cdecl; external Qt4PasLib name 'QAbstractButton_group';
 procedure QAbstractButton_setIconSize(handle: QAbstractButtonH; size: PSize); cdecl; external Qt4PasLib name 'QAbstractButton_setIconSize';
 procedure QAbstractButton_animateClick(handle: QAbstractButtonH; msec: Integer = 100); cdecl; external Qt4PasLib name 'QAbstractButton_animateClick';
 procedure QAbstractButton_click(handle: QAbstractButtonH); cdecl; external Qt4PasLib name 'QAbstractButton_click';
 procedure QAbstractButton_toggle(handle: QAbstractButtonH); cdecl; external Qt4PasLib name 'QAbstractButton_toggle';
-procedure QAbstractButton_setChecked(handle: QAbstractButtonH; p1: Boolean); cdecl; external Qt4PasLib name 'QAbstractButton_setChecked';
+procedure QAbstractButton_setChecked(handle: QAbstractButtonH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAbstractButton_setChecked';
 
 
 type
@@ -7597,12 +7728,12 @@ function QPushButton_create(icon: QIconH; text: PWideString; parent: QWidgetH = 
 procedure QPushButton_sizeHint(handle: QPushButtonH; retval: PSize); cdecl; external Qt4PasLib name 'QPushButton_sizeHint';
 procedure QPushButton_minimumSizeHint(handle: QPushButtonH; retval: PSize); cdecl; external Qt4PasLib name 'QPushButton_minimumSizeHint';
 function QPushButton_autoDefault(handle: QPushButtonH): Boolean; cdecl; external Qt4PasLib name 'QPushButton_autoDefault';
-procedure QPushButton_setAutoDefault(handle: QPushButtonH; p1: Boolean); cdecl; external Qt4PasLib name 'QPushButton_setAutoDefault';
+procedure QPushButton_setAutoDefault(handle: QPushButtonH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QPushButton_setAutoDefault';
 function QPushButton_isDefault(handle: QPushButtonH): Boolean; cdecl; external Qt4PasLib name 'QPushButton_isDefault';
-procedure QPushButton_setDefault(handle: QPushButtonH; p1: Boolean); cdecl; external Qt4PasLib name 'QPushButton_setDefault';
+procedure QPushButton_setDefault(handle: QPushButtonH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QPushButton_setDefault';
 procedure QPushButton_setMenu(handle: QPushButtonH; menu: QMenuH); cdecl; external Qt4PasLib name 'QPushButton_setMenu';
 function QPushButton_menu(handle: QPushButtonH): QMenuH; cdecl; external Qt4PasLib name 'QPushButton_menu';
-procedure QPushButton_setFlat(handle: QPushButtonH; p1: Boolean); cdecl; external Qt4PasLib name 'QPushButton_setFlat';
+procedure QPushButton_setFlat(handle: QPushButtonH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QPushButton_setFlat';
 function QPushButton_isFlat(handle: QPushButtonH): Boolean; cdecl; external Qt4PasLib name 'QPushButton_isFlat';
 procedure QPushButton_showMenu(handle: QPushButtonH); cdecl; external Qt4PasLib name 'QPushButton_showMenu';
 
@@ -7618,25 +7749,25 @@ type
 
 function QLineEdit_create(parent: QWidgetH = nil): QLineEditH; cdecl; external Qt4PasLib name 'QLineEdit_create';
 procedure QLineEdit_destroy(handle: QLineEditH); cdecl; external Qt4PasLib name 'QLineEdit_destroy'; 
-function QLineEdit_create(p1: PWideString; parent: QWidgetH = nil): QLineEditH; cdecl; external Qt4PasLib name 'QLineEdit_create2';
+function QLineEdit_create(AnonParam1: PWideString; parent: QWidgetH = nil): QLineEditH; cdecl; external Qt4PasLib name 'QLineEdit_create2';
 procedure QLineEdit_text(handle: QLineEditH; retval: PWideString); cdecl; external Qt4PasLib name 'QLineEdit_text';
 procedure QLineEdit_displayText(handle: QLineEditH; retval: PWideString); cdecl; external Qt4PasLib name 'QLineEdit_displayText';
 function QLineEdit_maxLength(handle: QLineEditH): Integer; cdecl; external Qt4PasLib name 'QLineEdit_maxLength';
-procedure QLineEdit_setMaxLength(handle: QLineEditH; p1: Integer); cdecl; external Qt4PasLib name 'QLineEdit_setMaxLength';
-procedure QLineEdit_setFrame(handle: QLineEditH; p1: Boolean); cdecl; external Qt4PasLib name 'QLineEdit_setFrame';
+procedure QLineEdit_setMaxLength(handle: QLineEditH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QLineEdit_setMaxLength';
+procedure QLineEdit_setFrame(handle: QLineEditH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QLineEdit_setFrame';
 function QLineEdit_hasFrame(handle: QLineEditH): Boolean; cdecl; external Qt4PasLib name 'QLineEdit_hasFrame';
 function QLineEdit_echoMode(handle: QLineEditH): QLineEditEchoMode; cdecl; external Qt4PasLib name 'QLineEdit_echoMode';
-procedure QLineEdit_setEchoMode(handle: QLineEditH; p1: QLineEditEchoMode); cdecl; external Qt4PasLib name 'QLineEdit_setEchoMode';
+procedure QLineEdit_setEchoMode(handle: QLineEditH; AnonParam1: QLineEditEchoMode); cdecl; external Qt4PasLib name 'QLineEdit_setEchoMode';
 function QLineEdit_isReadOnly(handle: QLineEditH): Boolean; cdecl; external Qt4PasLib name 'QLineEdit_isReadOnly';
-procedure QLineEdit_setReadOnly(handle: QLineEditH; p1: Boolean); cdecl; external Qt4PasLib name 'QLineEdit_setReadOnly';
-procedure QLineEdit_setValidator(handle: QLineEditH; p1: QValidatorH); cdecl; external Qt4PasLib name 'QLineEdit_setValidator';
+procedure QLineEdit_setReadOnly(handle: QLineEditH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QLineEdit_setReadOnly';
+procedure QLineEdit_setValidator(handle: QLineEditH; AnonParam1: QValidatorH); cdecl; external Qt4PasLib name 'QLineEdit_setValidator';
 function QLineEdit_validator(handle: QLineEditH): QValidatorH; cdecl; external Qt4PasLib name 'QLineEdit_validator';
 procedure QLineEdit_setCompleter(handle: QLineEditH; completer: QCompleterH); cdecl; external Qt4PasLib name 'QLineEdit_setCompleter';
 function QLineEdit_completer(handle: QLineEditH): QCompleterH; cdecl; external Qt4PasLib name 'QLineEdit_completer';
 procedure QLineEdit_sizeHint(handle: QLineEditH; retval: PSize); cdecl; external Qt4PasLib name 'QLineEdit_sizeHint';
 procedure QLineEdit_minimumSizeHint(handle: QLineEditH; retval: PSize); cdecl; external Qt4PasLib name 'QLineEdit_minimumSizeHint';
 function QLineEdit_cursorPosition(handle: QLineEditH): Integer; cdecl; external Qt4PasLib name 'QLineEdit_cursorPosition';
-procedure QLineEdit_setCursorPosition(handle: QLineEditH; p1: Integer); cdecl; external Qt4PasLib name 'QLineEdit_setCursorPosition';
+procedure QLineEdit_setCursorPosition(handle: QLineEditH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QLineEdit_setCursorPosition';
 function QLineEdit_cursorPositionAt(handle: QLineEditH; pos: PQtPoint): Integer; cdecl; external Qt4PasLib name 'QLineEdit_cursorPositionAt';
 procedure QLineEdit_setAlignment(handle: QLineEditH; flag: QtAlignment); cdecl; external Qt4PasLib name 'QLineEdit_setAlignment';
 function QLineEdit_alignment(handle: QLineEditH): QtAlignment; cdecl; external Qt4PasLib name 'QLineEdit_alignment';
@@ -7649,8 +7780,8 @@ procedure QLineEdit_del(handle: QLineEditH); cdecl; external Qt4PasLib name 'QLi
 procedure QLineEdit_home(handle: QLineEditH; mark: Boolean); cdecl; external Qt4PasLib name 'QLineEdit_home';
 procedure QLineEdit_end(handle: QLineEditH; mark: Boolean); cdecl; external Qt4PasLib name 'QLineEdit_end';
 function QLineEdit_isModified(handle: QLineEditH): Boolean; cdecl; external Qt4PasLib name 'QLineEdit_isModified';
-procedure QLineEdit_setModified(handle: QLineEditH; p1: Boolean); cdecl; external Qt4PasLib name 'QLineEdit_setModified';
-procedure QLineEdit_setSelection(handle: QLineEditH; p1: Integer; p2: Integer); cdecl; external Qt4PasLib name 'QLineEdit_setSelection';
+procedure QLineEdit_setModified(handle: QLineEditH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QLineEdit_setModified';
+procedure QLineEdit_setSelection(handle: QLineEditH; AnonParam1: Integer; AnonParam2: Integer); cdecl; external Qt4PasLib name 'QLineEdit_setSelection';
 function QLineEdit_hasSelectedText(handle: QLineEditH): Boolean; cdecl; external Qt4PasLib name 'QLineEdit_hasSelectedText';
 procedure QLineEdit_selectedText(handle: QLineEditH; retval: PWideString); cdecl; external Qt4PasLib name 'QLineEdit_selectedText';
 function QLineEdit_selectionStart(handle: QLineEditH): Integer; cdecl; external Qt4PasLib name 'QLineEdit_selectionStart';
@@ -7663,7 +7794,7 @@ procedure QLineEdit_setInputMask(handle: QLineEditH; inputMask: PWideString); cd
 function QLineEdit_hasAcceptableInput(handle: QLineEditH): Boolean; cdecl; external Qt4PasLib name 'QLineEdit_hasAcceptableInput';
 procedure QLineEdit_setTextMargins(handle: QLineEditH; left: Integer; top: Integer; right: Integer; bottom: Integer); cdecl; external Qt4PasLib name 'QLineEdit_setTextMargins';
 procedure QLineEdit_getTextMargins(handle: QLineEditH; left: PInteger; top: PInteger; right: PInteger; bottom: PInteger); cdecl; external Qt4PasLib name 'QLineEdit_getTextMargins';
-procedure QLineEdit_setText(handle: QLineEditH; p1: PWideString); cdecl; external Qt4PasLib name 'QLineEdit_setText';
+procedure QLineEdit_setText(handle: QLineEditH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QLineEdit_setText';
 procedure QLineEdit_clear(handle: QLineEditH); cdecl; external Qt4PasLib name 'QLineEdit_clear';
 procedure QLineEdit_selectAll(handle: QLineEditH); cdecl; external Qt4PasLib name 'QLineEdit_selectAll';
 procedure QLineEdit_undo(handle: QLineEditH); cdecl; external Qt4PasLib name 'QLineEdit_undo';
@@ -7672,16 +7803,16 @@ procedure QLineEdit_cut(handle: QLineEditH); cdecl; external Qt4PasLib name 'QLi
 procedure QLineEdit_copy(handle: QLineEditH); cdecl; external Qt4PasLib name 'QLineEdit_copy';
 procedure QLineEdit_paste(handle: QLineEditH); cdecl; external Qt4PasLib name 'QLineEdit_paste';
 procedure QLineEdit_deselect(handle: QLineEditH); cdecl; external Qt4PasLib name 'QLineEdit_deselect';
-procedure QLineEdit_insert(handle: QLineEditH; p1: PWideString); cdecl; external Qt4PasLib name 'QLineEdit_insert';
+procedure QLineEdit_insert(handle: QLineEditH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QLineEdit_insert';
 function QLineEdit_createStandardContextMenu(handle: QLineEditH): QMenuH; cdecl; external Qt4PasLib name 'QLineEdit_createStandardContextMenu';
-procedure QLineEdit_inputMethodQuery(handle: QLineEditH; retval: QVariantH; p1: QtInputMethodQuery); cdecl; external Qt4PasLib name 'QLineEdit_inputMethodQuery';
-function QLineEdit_event(handle: QLineEditH; p1: QEventH): Boolean; cdecl; external Qt4PasLib name 'QLineEdit_event';
+procedure QLineEdit_inputMethodQuery(handle: QLineEditH; retval: QVariantH; AnonParam1: QtInputMethodQuery); cdecl; external Qt4PasLib name 'QLineEdit_inputMethodQuery';
+function QLineEdit_event(handle: QLineEditH; AnonParam1: QEventH): Boolean; cdecl; external Qt4PasLib name 'QLineEdit_event';
 
 
 type
-  QLineEdit_textChanged_Event = procedure (p1: PWideString) of object cdecl;
-  QLineEdit_textEdited_Event = procedure (p1: PWideString) of object cdecl;
-  QLineEdit_cursorPositionChanged_Event = procedure (p1: Integer; p2: Integer) of object cdecl;
+  QLineEdit_textChanged_Event = procedure (AnonParam1: PWideString) of object cdecl;
+  QLineEdit_textEdited_Event = procedure (AnonParam1: PWideString) of object cdecl;
+  QLineEdit_cursorPositionChanged_Event = procedure (AnonParam1: Integer; AnonParam2: Integer) of object cdecl;
   QLineEdit_returnPressed_Event = procedure () of object cdecl;
   QLineEdit_editingFinished_Event = procedure () of object cdecl;
   QLineEdit_selectionChanged_Event = procedure () of object cdecl;
@@ -7755,10 +7886,10 @@ procedure QPlainTextEdit_centerCursor(handle: QPlainTextEditH); cdecl; external 
 
 function QPlainTextDocumentLayout_create(document: QTextDocumentH): QPlainTextDocumentLayoutH; cdecl; external Qt4PasLib name 'QPlainTextDocumentLayout_create';
 procedure QPlainTextDocumentLayout_destroy(handle: QPlainTextDocumentLayoutH); cdecl; external Qt4PasLib name 'QPlainTextDocumentLayout_destroy'; 
-function QPlainTextDocumentLayout_hitTest(handle: QPlainTextDocumentLayoutH; p1: PQtPointF; p2: QtHitTestAccuracy): Integer; cdecl; external Qt4PasLib name 'QPlainTextDocumentLayout_hitTest';
+function QPlainTextDocumentLayout_hitTest(handle: QPlainTextDocumentLayoutH; AnonParam1: PQtPointF; AnonParam2: QtHitTestAccuracy): Integer; cdecl; external Qt4PasLib name 'QPlainTextDocumentLayout_hitTest';
 function QPlainTextDocumentLayout_pageCount(handle: QPlainTextDocumentLayoutH): Integer; cdecl; external Qt4PasLib name 'QPlainTextDocumentLayout_pageCount';
 procedure QPlainTextDocumentLayout_documentSize(handle: QPlainTextDocumentLayoutH; retval: QSizeFH); cdecl; external Qt4PasLib name 'QPlainTextDocumentLayout_documentSize';
-procedure QPlainTextDocumentLayout_frameBoundingRect(handle: QPlainTextDocumentLayoutH; retval: QRectFH; p1: QTextFrameH); cdecl; external Qt4PasLib name 'QPlainTextDocumentLayout_frameBoundingRect';
+procedure QPlainTextDocumentLayout_frameBoundingRect(handle: QPlainTextDocumentLayoutH; retval: QRectFH; AnonParam1: QTextFrameH); cdecl; external Qt4PasLib name 'QPlainTextDocumentLayout_frameBoundingRect';
 procedure QPlainTextDocumentLayout_blockBoundingRect(handle: QPlainTextDocumentLayoutH; retval: QRectFH; block: QTextBlockH); cdecl; external Qt4PasLib name 'QPlainTextDocumentLayout_blockBoundingRect';
 procedure QPlainTextDocumentLayout_ensureBlockLayout(handle: QPlainTextDocumentLayoutH; block: QTextBlockH); cdecl; external Qt4PasLib name 'QPlainTextDocumentLayout_ensureBlockLayout';
 procedure QPlainTextDocumentLayout_setCursorWidth(handle: QPlainTextDocumentLayoutH; width: Integer); cdecl; external Qt4PasLib name 'QPlainTextDocumentLayout_setCursorWidth';
@@ -7775,7 +7906,7 @@ type
   QPlainTextEdit_cursorPositionChanged_Event = procedure () of object cdecl;
   QPlainTextEdit_updateRequest_Event = procedure (rect: PRect; dy: Integer) of object cdecl;
   QPlainTextEdit_blockCountChanged_Event = procedure (newBlockCount: Integer) of object cdecl;
-  QPlainTextEdit_modificationChanged_Event = procedure (p1: Boolean) of object cdecl;
+  QPlainTextEdit_modificationChanged_Event = procedure (AnonParam1: Boolean) of object cdecl;
 
 
 
@@ -7897,15 +8028,15 @@ type
 
 function QTabWidget_create(parent: QWidgetH = nil): QTabWidgetH; cdecl; external Qt4PasLib name 'QTabWidget_create';
 procedure QTabWidget_destroy(handle: QTabWidgetH); cdecl; external Qt4PasLib name 'QTabWidget_destroy'; 
-function QTabWidget_addTab(handle: QTabWidgetH; widget: QWidgetH; p2: PWideString): Integer; cdecl; external Qt4PasLib name 'QTabWidget_addTab';
+function QTabWidget_addTab(handle: QTabWidgetH; widget: QWidgetH; AnonParam2: PWideString): Integer; cdecl; external Qt4PasLib name 'QTabWidget_addTab';
 function QTabWidget_addTab(handle: QTabWidgetH; widget: QWidgetH; icon: QIconH; _label: PWideString): Integer; cdecl; external Qt4PasLib name 'QTabWidget_addTab2';
-function QTabWidget_insertTab(handle: QTabWidgetH; index: Integer; widget: QWidgetH; p3: PWideString): Integer; cdecl; external Qt4PasLib name 'QTabWidget_insertTab';
+function QTabWidget_insertTab(handle: QTabWidgetH; index: Integer; widget: QWidgetH; AnonParam3: PWideString): Integer; cdecl; external Qt4PasLib name 'QTabWidget_insertTab';
 function QTabWidget_insertTab(handle: QTabWidgetH; index: Integer; widget: QWidgetH; icon: QIconH; _label: PWideString): Integer; cdecl; external Qt4PasLib name 'QTabWidget_insertTab2';
 procedure QTabWidget_removeTab(handle: QTabWidgetH; index: Integer); cdecl; external Qt4PasLib name 'QTabWidget_removeTab';
 function QTabWidget_isTabEnabled(handle: QTabWidgetH; index: Integer): Boolean; cdecl; external Qt4PasLib name 'QTabWidget_isTabEnabled';
-procedure QTabWidget_setTabEnabled(handle: QTabWidgetH; index: Integer; p2: Boolean); cdecl; external Qt4PasLib name 'QTabWidget_setTabEnabled';
+procedure QTabWidget_setTabEnabled(handle: QTabWidgetH; index: Integer; AnonParam2: Boolean); cdecl; external Qt4PasLib name 'QTabWidget_setTabEnabled';
 procedure QTabWidget_tabText(handle: QTabWidgetH; retval: PWideString; index: Integer); cdecl; external Qt4PasLib name 'QTabWidget_tabText';
-procedure QTabWidget_setTabText(handle: QTabWidgetH; index: Integer; p2: PWideString); cdecl; external Qt4PasLib name 'QTabWidget_setTabText';
+procedure QTabWidget_setTabText(handle: QTabWidgetH; index: Integer; AnonParam2: PWideString); cdecl; external Qt4PasLib name 'QTabWidget_setTabText';
 procedure QTabWidget_tabIcon(handle: QTabWidgetH; retval: QIconH; index: Integer); cdecl; external Qt4PasLib name 'QTabWidget_tabIcon';
 procedure QTabWidget_setTabIcon(handle: QTabWidgetH; index: Integer; icon: QIconH); cdecl; external Qt4PasLib name 'QTabWidget_setTabIcon';
 procedure QTabWidget_setTabToolTip(handle: QTabWidgetH; index: Integer; tip: PWideString); cdecl; external Qt4PasLib name 'QTabWidget_setTabToolTip';
@@ -7918,7 +8049,7 @@ function QTabWidget_widget(handle: QTabWidgetH; index: Integer): QWidgetH; cdecl
 function QTabWidget_indexOf(handle: QTabWidgetH; widget: QWidgetH): Integer; cdecl; external Qt4PasLib name 'QTabWidget_indexOf';
 function QTabWidget_count(handle: QTabWidgetH): Integer; cdecl; external Qt4PasLib name 'QTabWidget_count';
 function QTabWidget_tabPosition(handle: QTabWidgetH): QTabWidgetTabPosition; cdecl; external Qt4PasLib name 'QTabWidget_tabPosition';
-procedure QTabWidget_setTabPosition(handle: QTabWidgetH; p1: QTabWidgetTabPosition); cdecl; external Qt4PasLib name 'QTabWidget_setTabPosition';
+procedure QTabWidget_setTabPosition(handle: QTabWidgetH; AnonParam1: QTabWidgetTabPosition); cdecl; external Qt4PasLib name 'QTabWidget_setTabPosition';
 function QTabWidget_tabsClosable(handle: QTabWidgetH): Boolean; cdecl; external Qt4PasLib name 'QTabWidget_tabsClosable';
 procedure QTabWidget_setTabsClosable(handle: QTabWidgetH; closeable: Boolean); cdecl; external Qt4PasLib name 'QTabWidget_setTabsClosable';
 function QTabWidget_isMovable(handle: QTabWidgetH): Boolean; cdecl; external Qt4PasLib name 'QTabWidget_isMovable';
@@ -7930,7 +8061,7 @@ procedure QTabWidget_minimumSizeHint(handle: QTabWidgetH; retval: PSize); cdecl;
 procedure QTabWidget_setCornerWidget(handle: QTabWidgetH; w: QWidgetH; corner: QtCorner = QtTopRightCorner); cdecl; external Qt4PasLib name 'QTabWidget_setCornerWidget';
 function QTabWidget_cornerWidget(handle: QTabWidgetH; corner: QtCorner = QtTopRightCorner): QWidgetH; cdecl; external Qt4PasLib name 'QTabWidget_cornerWidget';
 function QTabWidget_elideMode(handle: QTabWidgetH): QtTextElideMode; cdecl; external Qt4PasLib name 'QTabWidget_elideMode';
-procedure QTabWidget_setElideMode(handle: QTabWidgetH; p1: QtTextElideMode); cdecl; external Qt4PasLib name 'QTabWidget_setElideMode';
+procedure QTabWidget_setElideMode(handle: QTabWidgetH; AnonParam1: QtTextElideMode); cdecl; external Qt4PasLib name 'QTabWidget_setElideMode';
 procedure QTabWidget_iconSize(handle: QTabWidgetH; retval: PSize); cdecl; external Qt4PasLib name 'QTabWidget_iconSize';
 procedure QTabWidget_setIconSize(handle: QTabWidgetH; size: PSize); cdecl; external Qt4PasLib name 'QTabWidget_setIconSize';
 function QTabWidget_usesScrollButtons(handle: QTabWidgetH): Boolean; cdecl; external Qt4PasLib name 'QTabWidget_usesScrollButtons';
@@ -8063,7 +8194,7 @@ type
 function QSizeGrip_create(parent: QWidgetH): QSizeGripH; cdecl; external Qt4PasLib name 'QSizeGrip_create';
 procedure QSizeGrip_destroy(handle: QSizeGripH); cdecl; external Qt4PasLib name 'QSizeGrip_destroy'; 
 procedure QSizeGrip_sizeHint(handle: QSizeGripH; retval: PSize); cdecl; external Qt4PasLib name 'QSizeGrip_sizeHint';
-procedure QSizeGrip_setVisible(handle: QSizeGripH; p1: Boolean); cdecl; external Qt4PasLib name 'QSizeGrip_setVisible';
+procedure QSizeGrip_setVisible(handle: QSizeGripH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QSizeGrip_setVisible';
 
 
 type
@@ -8082,9 +8213,9 @@ procedure QLCDNumber_setNumDigits(handle: QLCDNumberH; nDigits: Integer); cdecl;
 function QLCDNumber_checkOverflow(handle: QLCDNumberH; num: Double): Boolean; cdecl; external Qt4PasLib name 'QLCDNumber_checkOverflow';
 function QLCDNumber_checkOverflow(handle: QLCDNumberH; num: Integer): Boolean; cdecl; external Qt4PasLib name 'QLCDNumber_checkOverflow2';
 function QLCDNumber_mode(handle: QLCDNumberH): QLCDNumberMode; cdecl; external Qt4PasLib name 'QLCDNumber_mode';
-procedure QLCDNumber_setMode(handle: QLCDNumberH; p1: QLCDNumberMode); cdecl; external Qt4PasLib name 'QLCDNumber_setMode';
+procedure QLCDNumber_setMode(handle: QLCDNumberH; AnonParam1: QLCDNumberMode); cdecl; external Qt4PasLib name 'QLCDNumber_setMode';
 function QLCDNumber_segmentStyle(handle: QLCDNumberH): QLCDNumberSegmentStyle; cdecl; external Qt4PasLib name 'QLCDNumber_segmentStyle';
-procedure QLCDNumber_setSegmentStyle(handle: QLCDNumberH; p1: QLCDNumberSegmentStyle); cdecl; external Qt4PasLib name 'QLCDNumber_setSegmentStyle';
+procedure QLCDNumber_setSegmentStyle(handle: QLCDNumberH; AnonParam1: QLCDNumberSegmentStyle); cdecl; external Qt4PasLib name 'QLCDNumber_setSegmentStyle';
 function QLCDNumber_value(handle: QLCDNumberH): Double; cdecl; external Qt4PasLib name 'QLCDNumber_value';
 function QLCDNumber_intValue(handle: QLCDNumberH): Integer; cdecl; external Qt4PasLib name 'QLCDNumber_intValue';
 procedure QLCDNumber_sizeHint(handle: QLCDNumberH; retval: PSize); cdecl; external Qt4PasLib name 'QLCDNumber_sizeHint';
@@ -8095,7 +8226,7 @@ procedure QLCDNumber_setHexMode(handle: QLCDNumberH); cdecl; external Qt4PasLib 
 procedure QLCDNumber_setDecMode(handle: QLCDNumberH); cdecl; external Qt4PasLib name 'QLCDNumber_setDecMode';
 procedure QLCDNumber_setOctMode(handle: QLCDNumberH); cdecl; external Qt4PasLib name 'QLCDNumber_setOctMode';
 procedure QLCDNumber_setBinMode(handle: QLCDNumberH); cdecl; external Qt4PasLib name 'QLCDNumber_setBinMode';
-procedure QLCDNumber_setSmallDecimalPoint(handle: QLCDNumberH; p1: Boolean); cdecl; external Qt4PasLib name 'QLCDNumber_setSmallDecimalPoint';
+procedure QLCDNumber_setSmallDecimalPoint(handle: QLCDNumberH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QLCDNumber_setSmallDecimalPoint';
 
 
 type
@@ -8136,7 +8267,7 @@ procedure QAbstractSpinBox_setKeyboardTracking(handle: QAbstractSpinBoxH; kt: Bo
 function QAbstractSpinBox_keyboardTracking(handle: QAbstractSpinBoxH): Boolean; cdecl; external Qt4PasLib name 'QAbstractSpinBox_keyboardTracking';
 procedure QAbstractSpinBox_setAlignment(handle: QAbstractSpinBoxH; flag: QtAlignment); cdecl; external Qt4PasLib name 'QAbstractSpinBox_setAlignment';
 function QAbstractSpinBox_alignment(handle: QAbstractSpinBoxH): QtAlignment; cdecl; external Qt4PasLib name 'QAbstractSpinBox_alignment';
-procedure QAbstractSpinBox_setFrame(handle: QAbstractSpinBoxH; p1: Boolean); cdecl; external Qt4PasLib name 'QAbstractSpinBox_setFrame';
+procedure QAbstractSpinBox_setFrame(handle: QAbstractSpinBoxH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QAbstractSpinBox_setFrame';
 function QAbstractSpinBox_hasFrame(handle: QAbstractSpinBoxH): Boolean; cdecl; external Qt4PasLib name 'QAbstractSpinBox_hasFrame';
 procedure QAbstractSpinBox_setAccelerated(handle: QAbstractSpinBoxH; _on: Boolean); cdecl; external Qt4PasLib name 'QAbstractSpinBox_setAccelerated';
 function QAbstractSpinBox_isAccelerated(handle: QAbstractSpinBoxH): Boolean; cdecl; external Qt4PasLib name 'QAbstractSpinBox_isAccelerated';
@@ -8201,26 +8332,26 @@ procedure QDoubleSpinBox_setValue(handle: QDoubleSpinBoxH; val: Double); cdecl; 
 
 
 type
-  QSpinBox_valueChanged_Event = procedure (p1: Integer) of object cdecl;
-  QSpinBox_valueChanged2_Event = procedure (p1: PWideString) of object cdecl;
+  QSpinBox_valueChanged_Event = procedure (AnonParam1: Integer) of object cdecl;
+  QSpinBox_valueChanged2_Event = procedure (AnonParam1: PWideString) of object cdecl;
 
 
 
 type
-  QDoubleSpinBox_valueChanged_Event = procedure (p1: Double) of object cdecl;
-  QDoubleSpinBox_valueChanged2_Event = procedure (p1: PWideString) of object cdecl;
+  QDoubleSpinBox_valueChanged_Event = procedure (AnonParam1: Double) of object cdecl;
+  QDoubleSpinBox_valueChanged2_Event = procedure (AnonParam1: PWideString) of object cdecl;
 
 
 function QSplitter_create(parent: QWidgetH = nil): QSplitterH; cdecl; external Qt4PasLib name 'QSplitter_create';
 procedure QSplitter_destroy(handle: QSplitterH); cdecl; external Qt4PasLib name 'QSplitter_destroy'; 
-function QSplitter_create(p1: QtOrientation; parent: QWidgetH = nil): QSplitterH; cdecl; external Qt4PasLib name 'QSplitter_create2';
+function QSplitter_create(AnonParam1: QtOrientation; parent: QWidgetH = nil): QSplitterH; cdecl; external Qt4PasLib name 'QSplitter_create2';
 procedure QSplitter_addWidget(handle: QSplitterH; widget: QWidgetH); cdecl; external Qt4PasLib name 'QSplitter_addWidget';
 procedure QSplitter_insertWidget(handle: QSplitterH; index: Integer; widget: QWidgetH); cdecl; external Qt4PasLib name 'QSplitter_insertWidget';
-procedure QSplitter_setOrientation(handle: QSplitterH; p1: QtOrientation); cdecl; external Qt4PasLib name 'QSplitter_setOrientation';
+procedure QSplitter_setOrientation(handle: QSplitterH; AnonParam1: QtOrientation); cdecl; external Qt4PasLib name 'QSplitter_setOrientation';
 function QSplitter_orientation(handle: QSplitterH): QtOrientation; cdecl; external Qt4PasLib name 'QSplitter_orientation';
-procedure QSplitter_setChildrenCollapsible(handle: QSplitterH; p1: Boolean); cdecl; external Qt4PasLib name 'QSplitter_setChildrenCollapsible';
+procedure QSplitter_setChildrenCollapsible(handle: QSplitterH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QSplitter_setChildrenCollapsible';
 function QSplitter_childrenCollapsible(handle: QSplitterH): Boolean; cdecl; external Qt4PasLib name 'QSplitter_childrenCollapsible';
-procedure QSplitter_setCollapsible(handle: QSplitterH; index: Integer; p2: Boolean); cdecl; external Qt4PasLib name 'QSplitter_setCollapsible';
+procedure QSplitter_setCollapsible(handle: QSplitterH; index: Integer; AnonParam2: Boolean); cdecl; external Qt4PasLib name 'QSplitter_setCollapsible';
 function QSplitter_isCollapsible(handle: QSplitterH; index: Integer): Boolean; cdecl; external Qt4PasLib name 'QSplitter_isCollapsible';
 procedure QSplitter_setOpaqueResize(handle: QSplitterH; opaque: Boolean = True); cdecl; external Qt4PasLib name 'QSplitter_setOpaqueResize';
 function QSplitter_opaqueResize(handle: QSplitterH): Boolean; cdecl; external Qt4PasLib name 'QSplitter_opaqueResize';
@@ -8232,11 +8363,11 @@ procedure QSplitter_setSizes(handle: QSplitterH; list: PPtrIntArray); cdecl; ext
 procedure QSplitter_saveState(handle: QSplitterH; retval: QByteArrayH); cdecl; external Qt4PasLib name 'QSplitter_saveState';
 function QSplitter_restoreState(handle: QSplitterH; state: QByteArrayH): Boolean; cdecl; external Qt4PasLib name 'QSplitter_restoreState';
 function QSplitter_handleWidth(handle: QSplitterH): Integer; cdecl; external Qt4PasLib name 'QSplitter_handleWidth';
-procedure QSplitter_setHandleWidth(handle: QSplitterH; p1: Integer); cdecl; external Qt4PasLib name 'QSplitter_setHandleWidth';
+procedure QSplitter_setHandleWidth(handle: QSplitterH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QSplitter_setHandleWidth';
 function QSplitter_indexOf(handle: QSplitterH; w: QWidgetH): Integer; cdecl; external Qt4PasLib name 'QSplitter_indexOf';
 function QSplitter_widget(handle: QSplitterH; index: Integer): QWidgetH; cdecl; external Qt4PasLib name 'QSplitter_widget';
 function QSplitter_count(handle: QSplitterH): Integer; cdecl; external Qt4PasLib name 'QSplitter_count';
-procedure QSplitter_getRange(handle: QSplitterH; index: Integer; p2: PInteger; p3: PInteger); cdecl; external Qt4PasLib name 'QSplitter_getRange';
+procedure QSplitter_getRange(handle: QSplitterH; index: Integer; AnonParam2: PInteger; AnonParam3: PInteger); cdecl; external Qt4PasLib name 'QSplitter_getRange';
 function QSplitter_handle(handle: QSplitterH; index: Integer): QSplitterHandleH; cdecl; external Qt4PasLib name 'QSplitter_handle';
 procedure QSplitter_setStretchFactor(handle: QSplitterH; index: Integer; stretch: Integer); cdecl; external Qt4PasLib name 'QSplitter_setStretchFactor';
 
@@ -8274,7 +8405,7 @@ function QComboBox_autoCompletionCaseSensitivity(handle: QComboBoxH): QtCaseSens
 procedure QComboBox_setAutoCompletionCaseSensitivity(handle: QComboBoxH; sensitivity: QtCaseSensitivity); cdecl; external Qt4PasLib name 'QComboBox_setAutoCompletionCaseSensitivity';
 function QComboBox_duplicatesEnabled(handle: QComboBoxH): Boolean; cdecl; external Qt4PasLib name 'QComboBox_duplicatesEnabled';
 procedure QComboBox_setDuplicatesEnabled(handle: QComboBoxH; enable: Boolean); cdecl; external Qt4PasLib name 'QComboBox_setDuplicatesEnabled';
-procedure QComboBox_setFrame(handle: QComboBoxH; p1: Boolean); cdecl; external Qt4PasLib name 'QComboBox_setFrame';
+procedure QComboBox_setFrame(handle: QComboBoxH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QComboBox_setFrame';
 function QComboBox_hasFrame(handle: QComboBoxH): Boolean; cdecl; external Qt4PasLib name 'QComboBox_hasFrame';
 function QComboBox_findText(handle: QComboBoxH; text: PWideString; flags: QtMatchFlags = QtMatchExactly or QtMatchCaseSensitive): Integer; cdecl; external Qt4PasLib name 'QComboBox_findText';
 function QComboBox_findData(handle: QComboBoxH; data: QVariantH; role: QtItemDataRole = QtUserRole; flags: QtMatchFlags = QtMatchExactly or QtMatchCaseSensitive): Integer; cdecl; external Qt4PasLib name 'QComboBox_findData';
@@ -8332,13 +8463,13 @@ procedure QComboBox_setCurrentIndex(handle: QComboBoxH; index: Integer); cdecl; 
 
 
 type
-  QComboBox_editTextChanged_Event = procedure (p1: PWideString) of object cdecl;
+  QComboBox_editTextChanged_Event = procedure (AnonParam1: PWideString) of object cdecl;
   QComboBox_activated_Event = procedure (index: Integer) of object cdecl;
-  QComboBox_activated2_Event = procedure (p1: PWideString) of object cdecl;
+  QComboBox_activated2_Event = procedure (AnonParam1: PWideString) of object cdecl;
   QComboBox_highlighted_Event = procedure (index: Integer) of object cdecl;
-  QComboBox_highlighted2_Event = procedure (p1: PWideString) of object cdecl;
+  QComboBox_highlighted2_Event = procedure (AnonParam1: PWideString) of object cdecl;
   QComboBox_currentIndexChanged_Event = procedure (index: Integer) of object cdecl;
-  QComboBox_currentIndexChanged2_Event = procedure (p1: PWideString) of object cdecl;
+  QComboBox_currentIndexChanged2_Event = procedure (AnonParam1: PWideString) of object cdecl;
 
 
 function QCheckBox_create(parent: QWidgetH = nil): QCheckBoxH; cdecl; external Qt4PasLib name 'QCheckBox_create';
@@ -8352,7 +8483,7 @@ procedure QCheckBox_setCheckState(handle: QCheckBoxH; state: QtCheckState); cdec
 
 
 type
-  QCheckBox_stateChanged_Event = procedure (p1: Integer) of object cdecl;
+  QCheckBox_stateChanged_Event = procedure (AnonParam1: Integer) of object cdecl;
 
 
 type
@@ -8387,8 +8518,8 @@ procedure QTextBrowser_loadResource(handle: QTextBrowserH; retval: QVariantH; _t
 function QTextBrowser_isBackwardAvailable(handle: QTextBrowserH): Boolean; cdecl; external Qt4PasLib name 'QTextBrowser_isBackwardAvailable';
 function QTextBrowser_isForwardAvailable(handle: QTextBrowserH): Boolean; cdecl; external Qt4PasLib name 'QTextBrowser_isForwardAvailable';
 procedure QTextBrowser_clearHistory(handle: QTextBrowserH); cdecl; external Qt4PasLib name 'QTextBrowser_clearHistory';
-procedure QTextBrowser_historyTitle(handle: QTextBrowserH; retval: PWideString; p1: Integer); cdecl; external Qt4PasLib name 'QTextBrowser_historyTitle';
-procedure QTextBrowser_historyUrl(handle: QTextBrowserH; retval: QUrlH; p1: Integer); cdecl; external Qt4PasLib name 'QTextBrowser_historyUrl';
+procedure QTextBrowser_historyTitle(handle: QTextBrowserH; retval: PWideString; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QTextBrowser_historyTitle';
+procedure QTextBrowser_historyUrl(handle: QTextBrowserH; retval: QUrlH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QTextBrowser_historyUrl';
 function QTextBrowser_backwardHistoryCount(handle: QTextBrowserH): Integer; cdecl; external Qt4PasLib name 'QTextBrowser_backwardHistoryCount';
 function QTextBrowser_forwardHistoryCount(handle: QTextBrowserH): Integer; cdecl; external Qt4PasLib name 'QTextBrowser_forwardHistoryCount';
 function QTextBrowser_openExternalLinks(handle: QTextBrowserH): Boolean; cdecl; external Qt4PasLib name 'QTextBrowser_openExternalLinks';
@@ -8403,13 +8534,13 @@ procedure QTextBrowser_reload(handle: QTextBrowserH); cdecl; external Qt4PasLib 
 
 
 type
-  QTextBrowser_backwardAvailable_Event = procedure (p1: Boolean) of object cdecl;
-  QTextBrowser_forwardAvailable_Event = procedure (p1: Boolean) of object cdecl;
+  QTextBrowser_backwardAvailable_Event = procedure (AnonParam1: Boolean) of object cdecl;
+  QTextBrowser_forwardAvailable_Event = procedure (AnonParam1: Boolean) of object cdecl;
   QTextBrowser_historyChanged_Event = procedure () of object cdecl;
-  QTextBrowser_sourceChanged_Event = procedure (p1: QUrlH) of object cdecl;
-  QTextBrowser_highlighted_Event = procedure (p1: QUrlH) of object cdecl;
-  QTextBrowser_highlighted2_Event = procedure (p1: PWideString) of object cdecl;
-  QTextBrowser_anchorClicked_Event = procedure (p1: QUrlH) of object cdecl;
+  QTextBrowser_sourceChanged_Event = procedure (AnonParam1: QUrlH) of object cdecl;
+  QTextBrowser_highlighted_Event = procedure (AnonParam1: QUrlH) of object cdecl;
+  QTextBrowser_highlighted2_Event = procedure (AnonParam1: PWideString) of object cdecl;
+  QTextBrowser_anchorClicked_Event = procedure (AnonParam1: QUrlH) of object cdecl;
 
 
 function QLabel_create(parent: QWidgetH = nil; f: QtWindowFlags = 0): QLabelH; cdecl; external Qt4PasLib name 'QLabel_create';
@@ -8420,32 +8551,32 @@ function QLabel_pixmap(handle: QLabelH): QPixmapH; cdecl; external Qt4PasLib nam
 function QLabel_picture(handle: QLabelH): QPictureH; cdecl; external Qt4PasLib name 'QLabel_picture';
 function QLabel_movie(handle: QLabelH): QMovieH; cdecl; external Qt4PasLib name 'QLabel_movie';
 function QLabel_textFormat(handle: QLabelH): QtTextFormat; cdecl; external Qt4PasLib name 'QLabel_textFormat';
-procedure QLabel_setTextFormat(handle: QLabelH; p1: QtTextFormat); cdecl; external Qt4PasLib name 'QLabel_setTextFormat';
+procedure QLabel_setTextFormat(handle: QLabelH; AnonParam1: QtTextFormat); cdecl; external Qt4PasLib name 'QLabel_setTextFormat';
 function QLabel_alignment(handle: QLabelH): QtAlignment; cdecl; external Qt4PasLib name 'QLabel_alignment';
-procedure QLabel_setAlignment(handle: QLabelH; p1: QtAlignment); cdecl; external Qt4PasLib name 'QLabel_setAlignment';
+procedure QLabel_setAlignment(handle: QLabelH; AnonParam1: QtAlignment); cdecl; external Qt4PasLib name 'QLabel_setAlignment';
 procedure QLabel_setWordWrap(handle: QLabelH; _on: Boolean); cdecl; external Qt4PasLib name 'QLabel_setWordWrap';
 function QLabel_wordWrap(handle: QLabelH): Boolean; cdecl; external Qt4PasLib name 'QLabel_wordWrap';
 function QLabel_indent(handle: QLabelH): Integer; cdecl; external Qt4PasLib name 'QLabel_indent';
-procedure QLabel_setIndent(handle: QLabelH; p1: Integer); cdecl; external Qt4PasLib name 'QLabel_setIndent';
+procedure QLabel_setIndent(handle: QLabelH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QLabel_setIndent';
 function QLabel_margin(handle: QLabelH): Integer; cdecl; external Qt4PasLib name 'QLabel_margin';
-procedure QLabel_setMargin(handle: QLabelH; p1: Integer); cdecl; external Qt4PasLib name 'QLabel_setMargin';
+procedure QLabel_setMargin(handle: QLabelH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QLabel_setMargin';
 function QLabel_hasScaledContents(handle: QLabelH): Boolean; cdecl; external Qt4PasLib name 'QLabel_hasScaledContents';
-procedure QLabel_setScaledContents(handle: QLabelH; p1: Boolean); cdecl; external Qt4PasLib name 'QLabel_setScaledContents';
+procedure QLabel_setScaledContents(handle: QLabelH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QLabel_setScaledContents';
 procedure QLabel_sizeHint(handle: QLabelH; retval: PSize); cdecl; external Qt4PasLib name 'QLabel_sizeHint';
 procedure QLabel_minimumSizeHint(handle: QLabelH; retval: PSize); cdecl; external Qt4PasLib name 'QLabel_minimumSizeHint';
-procedure QLabel_setBuddy(handle: QLabelH; p1: QWidgetH); cdecl; external Qt4PasLib name 'QLabel_setBuddy';
+procedure QLabel_setBuddy(handle: QLabelH; AnonParam1: QWidgetH); cdecl; external Qt4PasLib name 'QLabel_setBuddy';
 function QLabel_buddy(handle: QLabelH): QWidgetH; cdecl; external Qt4PasLib name 'QLabel_buddy';
-function QLabel_heightForWidth(handle: QLabelH; p1: Integer): Integer; cdecl; external Qt4PasLib name 'QLabel_heightForWidth';
+function QLabel_heightForWidth(handle: QLabelH; AnonParam1: Integer): Integer; cdecl; external Qt4PasLib name 'QLabel_heightForWidth';
 function QLabel_openExternalLinks(handle: QLabelH): Boolean; cdecl; external Qt4PasLib name 'QLabel_openExternalLinks';
 procedure QLabel_setOpenExternalLinks(handle: QLabelH; open: Boolean); cdecl; external Qt4PasLib name 'QLabel_setOpenExternalLinks';
 procedure QLabel_setTextInteractionFlags(handle: QLabelH; flags: QtTextInteractionFlags); cdecl; external Qt4PasLib name 'QLabel_setTextInteractionFlags';
 function QLabel_textInteractionFlags(handle: QLabelH): QtTextInteractionFlags; cdecl; external Qt4PasLib name 'QLabel_textInteractionFlags';
-procedure QLabel_setText(handle: QLabelH; p1: PWideString); cdecl; external Qt4PasLib name 'QLabel_setText';
-procedure QLabel_setPixmap(handle: QLabelH; p1: QPixmapH); cdecl; external Qt4PasLib name 'QLabel_setPixmap';
-procedure QLabel_setPicture(handle: QLabelH; p1: QPictureH); cdecl; external Qt4PasLib name 'QLabel_setPicture';
+procedure QLabel_setText(handle: QLabelH; AnonParam1: PWideString); cdecl; external Qt4PasLib name 'QLabel_setText';
+procedure QLabel_setPixmap(handle: QLabelH; AnonParam1: QPixmapH); cdecl; external Qt4PasLib name 'QLabel_setPixmap';
+procedure QLabel_setPicture(handle: QLabelH; AnonParam1: QPictureH); cdecl; external Qt4PasLib name 'QLabel_setPicture';
 procedure QLabel_setMovie(handle: QLabelH; movie: QMovieH); cdecl; external Qt4PasLib name 'QLabel_setMovie';
-procedure QLabel_setNum(handle: QLabelH; p1: Integer); cdecl; external Qt4PasLib name 'QLabel_setNum';
-procedure QLabel_setNum(handle: QLabelH; p1: Double); cdecl; external Qt4PasLib name 'QLabel_setNum2';
+procedure QLabel_setNum(handle: QLabelH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QLabel_setNum';
+procedure QLabel_setNum(handle: QLabelH; AnonParam1: Double); cdecl; external Qt4PasLib name 'QLabel_setNum2';
 procedure QLabel_clear(handle: QLabelH); cdecl; external Qt4PasLib name 'QLabel_clear';
 
 
@@ -8473,7 +8604,7 @@ procedure QGroupBox_setChecked(handle: QGroupBoxH; checked: Boolean); cdecl; ext
 type
   QGroupBox_clicked_Event = procedure (checked: Boolean = False) of object cdecl;
   QGroupBox_clicked2_Event = procedure () of object cdecl;
-  QGroupBox_toggled_Event = procedure (p1: Boolean) of object cdecl;
+  QGroupBox_toggled_Event = procedure (AnonParam1: Boolean) of object cdecl;
 
 
 type
@@ -8538,7 +8669,7 @@ function QTabBar_insertTab(handle: QTabBarH; index: Integer; icon: QIconH; text:
 procedure QTabBar_removeTab(handle: QTabBarH; index: Integer); cdecl; external Qt4PasLib name 'QTabBar_removeTab';
 procedure QTabBar_moveTab(handle: QTabBarH; from: Integer; _to: Integer); cdecl; external Qt4PasLib name 'QTabBar_moveTab';
 function QTabBar_isTabEnabled(handle: QTabBarH; index: Integer): Boolean; cdecl; external Qt4PasLib name 'QTabBar_isTabEnabled';
-procedure QTabBar_setTabEnabled(handle: QTabBarH; index: Integer; p2: Boolean); cdecl; external Qt4PasLib name 'QTabBar_setTabEnabled';
+procedure QTabBar_setTabEnabled(handle: QTabBarH; index: Integer; AnonParam2: Boolean); cdecl; external Qt4PasLib name 'QTabBar_setTabEnabled';
 procedure QTabBar_tabText(handle: QTabBarH; retval: PWideString; index: Integer); cdecl; external Qt4PasLib name 'QTabBar_tabText';
 procedure QTabBar_setTabText(handle: QTabBarH; index: Integer; text: PWideString); cdecl; external Qt4PasLib name 'QTabBar_setTabText';
 procedure QTabBar_tabTextColor(handle: QTabBarH; retval: PQColor; index: Integer); cdecl; external Qt4PasLib name 'QTabBar_tabTextColor';
@@ -8546,7 +8677,7 @@ procedure QTabBar_setTabTextColor(handle: QTabBarH; index: Integer; color: PQCol
 procedure QTabBar_tabIcon(handle: QTabBarH; retval: QIconH; index: Integer); cdecl; external Qt4PasLib name 'QTabBar_tabIcon';
 procedure QTabBar_setTabIcon(handle: QTabBarH; index: Integer; icon: QIconH); cdecl; external Qt4PasLib name 'QTabBar_setTabIcon';
 function QTabBar_elideMode(handle: QTabBarH): QtTextElideMode; cdecl; external Qt4PasLib name 'QTabBar_elideMode';
-procedure QTabBar_setElideMode(handle: QTabBarH; p1: QtTextElideMode); cdecl; external Qt4PasLib name 'QTabBar_setElideMode';
+procedure QTabBar_setElideMode(handle: QTabBarH; AnonParam1: QtTextElideMode); cdecl; external Qt4PasLib name 'QTabBar_setElideMode';
 procedure QTabBar_setTabToolTip(handle: QTabBarH; index: Integer; tip: PWideString); cdecl; external Qt4PasLib name 'QTabBar_setTabToolTip';
 procedure QTabBar_tabToolTip(handle: QTabBarH; retval: PWideString; index: Integer); cdecl; external Qt4PasLib name 'QTabBar_tabToolTip';
 procedure QTabBar_setTabWhatsThis(handle: QTabBarH; index: Integer; text: PWideString); cdecl; external Qt4PasLib name 'QTabBar_setTabWhatsThis';
@@ -8615,7 +8746,7 @@ procedure QProgressBar_setRange(handle: QProgressBarH; minimum: Integer; maximum
 procedure QProgressBar_setMinimum(handle: QProgressBarH; minimum: Integer); cdecl; external Qt4PasLib name 'QProgressBar_setMinimum';
 procedure QProgressBar_setMaximum(handle: QProgressBarH; maximum: Integer); cdecl; external Qt4PasLib name 'QProgressBar_setMaximum';
 procedure QProgressBar_setValue(handle: QProgressBarH; value: Integer); cdecl; external Qt4PasLib name 'QProgressBar_setValue';
-procedure QProgressBar_setOrientation(handle: QProgressBarH; p1: QtOrientation); cdecl; external Qt4PasLib name 'QProgressBar_setOrientation';
+procedure QProgressBar_setOrientation(handle: QProgressBarH; AnonParam1: QtOrientation); cdecl; external Qt4PasLib name 'QProgressBar_setOrientation';
 
 
 type
@@ -8629,7 +8760,7 @@ function QStatusBar_insertWidget(handle: QStatusBarH; index: Integer; widget: QW
 procedure QStatusBar_addPermanentWidget(handle: QStatusBarH; widget: QWidgetH; stretch: Integer = 0); cdecl; external Qt4PasLib name 'QStatusBar_addPermanentWidget';
 function QStatusBar_insertPermanentWidget(handle: QStatusBarH; index: Integer; widget: QWidgetH; stretch: Integer = 0): Integer; cdecl; external Qt4PasLib name 'QStatusBar_insertPermanentWidget';
 procedure QStatusBar_removeWidget(handle: QStatusBarH; widget: QWidgetH); cdecl; external Qt4PasLib name 'QStatusBar_removeWidget';
-procedure QStatusBar_setSizeGripEnabled(handle: QStatusBarH; p1: Boolean); cdecl; external Qt4PasLib name 'QStatusBar_setSizeGripEnabled';
+procedure QStatusBar_setSizeGripEnabled(handle: QStatusBarH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QStatusBar_setSizeGripEnabled';
 function QStatusBar_isSizeGripEnabled(handle: QStatusBarH): Boolean; cdecl; external Qt4PasLib name 'QStatusBar_isSizeGripEnabled';
 procedure QStatusBar_currentMessage(handle: QStatusBarH; retval: PWideString); cdecl; external Qt4PasLib name 'QStatusBar_currentMessage';
 procedure QStatusBar_showMessage(handle: QStatusBarH; text: PWideString; timeout: Integer = 0); cdecl; external Qt4PasLib name 'QStatusBar_showMessage';
@@ -8689,11 +8820,11 @@ procedure QToolButton_setAutoRaise(handle: QToolButtonH; enable: Boolean); cdecl
 function QToolButton_autoRaise(handle: QToolButtonH): Boolean; cdecl; external Qt4PasLib name 'QToolButton_autoRaise';
 procedure QToolButton_showMenu(handle: QToolButtonH); cdecl; external Qt4PasLib name 'QToolButton_showMenu';
 procedure QToolButton_setToolButtonStyle(handle: QToolButtonH; style: QtToolButtonStyle); cdecl; external Qt4PasLib name 'QToolButton_setToolButtonStyle';
-procedure QToolButton_setDefaultAction(handle: QToolButtonH; p1: QActionH); cdecl; external Qt4PasLib name 'QToolButton_setDefaultAction';
+procedure QToolButton_setDefaultAction(handle: QToolButtonH; AnonParam1: QActionH); cdecl; external Qt4PasLib name 'QToolButton_setDefaultAction';
 
 
 type
-  QToolButton_triggered_Event = procedure (p1: QActionH) of object cdecl;
+  QToolButton_triggered_Event = procedure (AnonParam1: QActionH) of object cdecl;
 
 
 function QScrollArea_create(parent: QWidgetH = nil): QScrollAreaH; cdecl; external Qt4PasLib name 'QScrollArea_create';
@@ -8706,7 +8837,7 @@ procedure QScrollArea_setWidgetResizable(handle: QScrollAreaH; resizable: Boolea
 procedure QScrollArea_sizeHint(handle: QScrollAreaH; retval: PSize); cdecl; external Qt4PasLib name 'QScrollArea_sizeHint';
 function QScrollArea_focusNextPrevChild(handle: QScrollAreaH; next: Boolean): Boolean; cdecl; external Qt4PasLib name 'QScrollArea_focusNextPrevChild';
 function QScrollArea_alignment(handle: QScrollAreaH): QtAlignment; cdecl; external Qt4PasLib name 'QScrollArea_alignment';
-procedure QScrollArea_setAlignment(handle: QScrollAreaH; p1: QtAlignment); cdecl; external Qt4PasLib name 'QScrollArea_setAlignment';
+procedure QScrollArea_setAlignment(handle: QScrollAreaH; AnonParam1: QtAlignment); cdecl; external Qt4PasLib name 'QScrollArea_setAlignment';
 procedure QScrollArea_ensureVisible(handle: QScrollAreaH; x: Integer; y: Integer; xmargin: Integer = 50; ymargin: Integer = 50); cdecl; external Qt4PasLib name 'QScrollArea_ensureVisible';
 procedure QScrollArea_ensureWidgetVisible(handle: QScrollAreaH; childWidget: QWidgetH; xmargin: Integer = 50; ymargin: Integer = 50); cdecl; external Qt4PasLib name 'QScrollArea_ensureWidgetVisible';
 
@@ -8757,7 +8888,7 @@ procedure QMdiArea_activatePreviousSubWindow(handle: QMdiAreaH); cdecl; external
 
 
 type
-  QMdiArea_subWindowActivated_Event = procedure (p1: QMdiSubWindowH) of object cdecl;
+  QMdiArea_subWindowActivated_Event = procedure (AnonParam1: QMdiSubWindowH) of object cdecl;
 
 
 type
@@ -8779,7 +8910,7 @@ function QMdiSubWindow_maximizedButtonsWidget(handle: QMdiSubWindowH): QWidgetH;
 function QMdiSubWindow_maximizedSystemMenuIconWidget(handle: QMdiSubWindowH): QWidgetH; cdecl; external Qt4PasLib name 'QMdiSubWindow_maximizedSystemMenuIconWidget';
 function QMdiSubWindow_isShaded(handle: QMdiSubWindowH): Boolean; cdecl; external Qt4PasLib name 'QMdiSubWindow_isShaded';
 procedure QMdiSubWindow_setOption(handle: QMdiSubWindowH; option: QMdiSubWindowSubWindowOption; _on: Boolean = True); cdecl; external Qt4PasLib name 'QMdiSubWindow_setOption';
-function QMdiSubWindow_testOption(handle: QMdiSubWindowH; p1: QMdiSubWindowSubWindowOption): Boolean; cdecl; external Qt4PasLib name 'QMdiSubWindow_testOption';
+function QMdiSubWindow_testOption(handle: QMdiSubWindowH; AnonParam1: QMdiSubWindowSubWindowOption): Boolean; cdecl; external Qt4PasLib name 'QMdiSubWindow_testOption';
 procedure QMdiSubWindow_setKeyboardSingleStep(handle: QMdiSubWindowH; step: Integer); cdecl; external Qt4PasLib name 'QMdiSubWindow_setKeyboardSingleStep';
 function QMdiSubWindow_keyboardSingleStep(handle: QMdiSubWindowH): Integer; cdecl; external Qt4PasLib name 'QMdiSubWindow_keyboardSingleStep';
 procedure QMdiSubWindow_setKeyboardPageStep(handle: QMdiSubWindowH; step: Integer); cdecl; external Qt4PasLib name 'QMdiSubWindow_setKeyboardPageStep';
@@ -8865,7 +8996,7 @@ type
   QRubberBandShape = ( // QRubberBand::Shape (1)
     QRubberBandLine, QRubberBandRectangle );
 
-function QRubberBand_create(p1: QRubberBandShape; p2: QWidgetH = nil): QRubberBandH; cdecl; external Qt4PasLib name 'QRubberBand_create';
+function QRubberBand_create(AnonParam1: QRubberBandShape; AnonParam2: QWidgetH = nil): QRubberBandH; cdecl; external Qt4PasLib name 'QRubberBand_create';
 procedure QRubberBand_destroy(handle: QRubberBandH); cdecl; external Qt4PasLib name 'QRubberBand_destroy'; 
 function QRubberBand_shape(handle: QRubberBandH): QRubberBandShape; cdecl; external Qt4PasLib name 'QRubberBand_shape';
 procedure QRubberBand_setGeometry(handle: QRubberBandH; r: PRect); cdecl; external Qt4PasLib name 'QRubberBand_setGeometry';
@@ -8894,8 +9025,8 @@ function QPrintPreviewWidget_currentPage(handle: QPrintPreviewWidgetH): Integer;
 function QPrintPreviewWidget_numPages(handle: QPrintPreviewWidgetH): Integer; cdecl; external Qt4PasLib name 'QPrintPreviewWidget_numPages';
 procedure QPrintPreviewWidget_setVisible(handle: QPrintPreviewWidgetH; visible: Boolean); cdecl; external Qt4PasLib name 'QPrintPreviewWidget_setVisible';
 procedure QPrintPreviewWidget_print(handle: QPrintPreviewWidgetH); cdecl; external Qt4PasLib name 'QPrintPreviewWidget_print';
-procedure QPrintPreviewWidget_zoomIn(handle: QPrintPreviewWidgetH; zoom: qreal = 1.1000000000000001); cdecl; external Qt4PasLib name 'QPrintPreviewWidget_zoomIn';
-procedure QPrintPreviewWidget_zoomOut(handle: QPrintPreviewWidgetH; zoom: qreal = 1.1000000000000001); cdecl; external Qt4PasLib name 'QPrintPreviewWidget_zoomOut';
+procedure QPrintPreviewWidget_zoomIn(handle: QPrintPreviewWidgetH; zoom: qreal = 1.1); cdecl; external Qt4PasLib name 'QPrintPreviewWidget_zoomIn';
+procedure QPrintPreviewWidget_zoomOut(handle: QPrintPreviewWidgetH; zoom: qreal = 1.1); cdecl; external Qt4PasLib name 'QPrintPreviewWidget_zoomOut';
 procedure QPrintPreviewWidget_setZoomFactor(handle: QPrintPreviewWidgetH; zoomFactor: qreal); cdecl; external Qt4PasLib name 'QPrintPreviewWidget_setZoomFactor';
 procedure QPrintPreviewWidget_setOrientation(handle: QPrintPreviewWidgetH; orientation: QPrinterOrientation); cdecl; external Qt4PasLib name 'QPrintPreviewWidget_setOrientation';
 procedure QPrintPreviewWidget_setViewMode(handle: QPrintPreviewWidgetH; viewMode: QPrintPreviewWidgetViewMode); cdecl; external Qt4PasLib name 'QPrintPreviewWidget_setViewMode';
@@ -9724,7 +9855,7 @@ type
   QAbstractItemDelegate_commitData_Event = procedure (editor: QWidgetH) of object cdecl;
   QAbstractItemDelegate_closeEditor_Event = procedure (editor: QWidgetH; hint: QAbstractItemDelegateEndEditHint = QAbstractItemDelegateNoHint) of object cdecl;
   QAbstractItemDelegate_closeEditor2_Event = procedure (editor: QWidgetH) of object cdecl;
-  QAbstractItemDelegate_sizeHintChanged_Event = procedure (p1: QModelIndexH) of object cdecl;
+  QAbstractItemDelegate_sizeHintChanged_Event = procedure (AnonParam1: QModelIndexH) of object cdecl;
 
 
 function QItemDelegate_create(parent: QObjectH = nil): QItemDelegateH; cdecl; external Qt4PasLib name 'QItemDelegate_create';
@@ -9977,16 +10108,16 @@ procedure QDialog_setExtension(handle: QDialogH; extension: QWidgetH); cdecl; ex
 function QDialog_extension(handle: QDialogH): QWidgetH; cdecl; external Qt4PasLib name 'QDialog_extension';
 procedure QDialog_sizeHint(handle: QDialogH; retval: PSize); cdecl; external Qt4PasLib name 'QDialog_sizeHint';
 procedure QDialog_minimumSizeHint(handle: QDialogH; retval: PSize); cdecl; external Qt4PasLib name 'QDialog_minimumSizeHint';
-procedure QDialog_setSizeGripEnabled(handle: QDialogH; p1: Boolean); cdecl; external Qt4PasLib name 'QDialog_setSizeGripEnabled';
+procedure QDialog_setSizeGripEnabled(handle: QDialogH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QDialog_setSizeGripEnabled';
 function QDialog_isSizeGripEnabled(handle: QDialogH): Boolean; cdecl; external Qt4PasLib name 'QDialog_isSizeGripEnabled';
 procedure QDialog_setModal(handle: QDialogH; modal: Boolean); cdecl; external Qt4PasLib name 'QDialog_setModal';
 procedure QDialog_setResult(handle: QDialogH; r: Integer); cdecl; external Qt4PasLib name 'QDialog_setResult';
 procedure QDialog_open(handle: QDialogH); cdecl; external Qt4PasLib name 'QDialog_open';
 function QDialog_exec(handle: QDialogH): Integer; cdecl; external Qt4PasLib name 'QDialog_exec';
-procedure QDialog_done(handle: QDialogH; p1: Integer); cdecl; external Qt4PasLib name 'QDialog_done';
+procedure QDialog_done(handle: QDialogH; AnonParam1: Integer); cdecl; external Qt4PasLib name 'QDialog_done';
 procedure QDialog_accept(handle: QDialogH); cdecl; external Qt4PasLib name 'QDialog_accept';
 procedure QDialog_reject(handle: QDialogH); cdecl; external Qt4PasLib name 'QDialog_reject';
-procedure QDialog_showExtension(handle: QDialogH; p1: Boolean); cdecl; external Qt4PasLib name 'QDialog_showExtension';
+procedure QDialog_showExtension(handle: QDialogH; AnonParam1: Boolean); cdecl; external Qt4PasLib name 'QDialog_showExtension';
 
 
 type
@@ -10099,7 +10230,7 @@ function QMessageBox_clickedButton(handle: QMessageBoxH): QAbstractButtonH; cdec
 procedure QMessageBox_text(handle: QMessageBoxH; retval: PWideString); cdecl; external Qt4PasLib name 'QMessageBox_text';
 procedure QMessageBox_setText(handle: QMessageBoxH; text: PWideString); cdecl; external Qt4PasLib name 'QMessageBox_setText';
 function QMessageBox_icon(handle: QMessageBoxH): QMessageBoxIcon; cdecl; external Qt4PasLib name 'QMessageBox_icon';
-procedure QMessageBox_setIcon(handle: QMessageBoxH; p1: QMessageBoxIcon); cdecl; external Qt4PasLib name 'QMessageBox_setIcon';
+procedure QMessageBox_setIcon(handle: QMessageBoxH; AnonParam1: QMessageBoxIcon); cdecl; external Qt4PasLib name 'QMessageBox_setIcon';
 procedure QMessageBox_iconPixmap(handle: QMessageBoxH; retval: QPixmapH); cdecl; external Qt4PasLib name 'QMessageBox_iconPixmap';
 procedure QMessageBox_setIconPixmap(handle: QMessageBoxH; pixmap: QPixmapH); cdecl; external Qt4PasLib name 'QMessageBox_setIconPixmap';
 function QMessageBox_textFormat(handle: QMessageBoxH): QtTextFormat; cdecl; external Qt4PasLib name 'QMessageBox_textFormat';
@@ -10462,6 +10593,18 @@ type
   QSystemTrayIcon_activated_Event = procedure (reason: QSystemTrayIconActivationReason) of object cdecl;
   QSystemTrayIcon_messageClicked_Event = procedure () of object cdecl;
 
+
+
+type
+  QDesktopServicesStandardLocation = ( // QDesktopServices::StandardLocation (1)
+    QDesktopServicesDesktopLocation, QDesktopServicesDocumentsLocation, QDesktopServicesFontsLocation, QDesktopServicesApplicationsLocation, QDesktopServicesMusicLocation, QDesktopServicesMoviesLocation, 
+    QDesktopServicesPicturesLocation, QDesktopServicesTempLocation, QDesktopServicesHomeLocation, QDesktopServicesDataLocation, QDesktopServicesCacheLocation );
+
+function QDesktopServices_openUrl(url: QUrlH): Boolean; cdecl; external Qt4PasLib name 'QDesktopServices_openUrl';
+procedure QDesktopServices_setUrlHandler(scheme: PWideString; receiver: QObjectH; method: PAnsiChar); cdecl; external Qt4PasLib name 'QDesktopServices_setUrlHandler';
+procedure QDesktopServices_unsetUrlHandler(scheme: PWideString); cdecl; external Qt4PasLib name 'QDesktopServices_unsetUrlHandler';
+procedure QDesktopServices_storageLocation(retval: PWideString; _type: QDesktopServicesStandardLocation); cdecl; external Qt4PasLib name 'QDesktopServices_storageLocation';
+procedure QDesktopServices_displayName(retval: PWideString; _type: QDesktopServicesStandardLocation); cdecl; external Qt4PasLib name 'QDesktopServices_displayName';
 
 type
   QStyleStateFlag = cardinal; // QStyle::StateFlag
@@ -11050,11 +11193,11 @@ const
     QStyleSH_CustomBase = 4026531840 { $f0000000 };
 
 
-procedure QStyle_polish(handle: QStyleH; p1: QWidgetH); cdecl; external Qt4PasLib name 'QStyle_polish';
-procedure QStyle_unpolish(handle: QStyleH; p1: QWidgetH); cdecl; external Qt4PasLib name 'QStyle_unpolish';
-procedure QStyle_polish(handle: QStyleH; p1: QApplicationH); cdecl; external Qt4PasLib name 'QStyle_polish2';
-procedure QStyle_unpolish(handle: QStyleH; p1: QApplicationH); cdecl; external Qt4PasLib name 'QStyle_unpolish2';
-procedure QStyle_polish(handle: QStyleH; p1: QPaletteH); cdecl; external Qt4PasLib name 'QStyle_polish3';
+procedure QStyle_polish(handle: QStyleH; AnonParam1: QWidgetH); cdecl; external Qt4PasLib name 'QStyle_polish';
+procedure QStyle_unpolish(handle: QStyleH; AnonParam1: QWidgetH); cdecl; external Qt4PasLib name 'QStyle_unpolish';
+procedure QStyle_polish(handle: QStyleH; AnonParam1: QApplicationH); cdecl; external Qt4PasLib name 'QStyle_polish2';
+procedure QStyle_unpolish(handle: QStyleH; AnonParam1: QApplicationH); cdecl; external Qt4PasLib name 'QStyle_unpolish2';
+procedure QStyle_polish(handle: QStyleH; AnonParam1: QPaletteH); cdecl; external Qt4PasLib name 'QStyle_polish3';
 procedure QStyle_itemTextRect(handle: QStyleH; retval: PRect; fm: QFontMetricsH; r: PRect; flags: Integer; enabled: Boolean; text: PWideString); cdecl; external Qt4PasLib name 'QStyle_itemTextRect';
 procedure QStyle_itemPixmapRect(handle: QStyleH; retval: PRect; r: PRect; flags: Integer; pixmap: QPixmapH); cdecl; external Qt4PasLib name 'QStyle_itemPixmapRect';
 procedure QStyle_drawItemText(handle: QStyleH; painter: QPainterH; rect: PRect; flags: Integer; pal: QPaletteH; enabled: Boolean; text: PWideString; textRole: QPaletteColorRole = QPaletteNoRole); cdecl; external Qt4PasLib name 'QStyle_drawItemText';
@@ -12047,7 +12190,7 @@ function QStyleHintReturn_version(handle : QStyleHintReturnH) : Integer; cdecl; 
 procedure QStyleHintReturn_setVersion(handle : QStyleHintReturnH; version : Integer); cdecl; external Qt4PasLib name 'QStyleHintReturn_setVersion';
 function QStyleHintReturn__type(handle : QStyleHintReturnH) : Integer; cdecl; external Qt4PasLib name 'QStyleHintReturn__type';
 procedure QStyleHintReturn_setType(handle : QStyleHintReturnH; _type : Integer); cdecl; external Qt4PasLib name 'QStyleHintReturn_setType';
-function QStyleHintReturn_create(version: QStyleOptionStyleOptionVersion = QStyleOptionVersion; _type: QStyleHintReturnHintReturnType = QStyleHintReturnSH_Default): QStyleHintReturnH; cdecl; external Qt4PasLib name 'QStyleHintReturn_create';
+function QStyleHintReturn_create(version: QStyleOptionStyleOptionVersion = QStyleOptionVersion; _type: QStyleOptionOptionType = QStyleHintReturnSH_Default): QStyleHintReturnH; cdecl; external Qt4PasLib name 'QStyleHintReturn_create';
 procedure QStyleHintReturn_destroy(handle: QStyleHintReturnH); cdecl; external Qt4PasLib name 'QStyleHintReturn_destroy'; 
 
 procedure QStyleHintReturnMask_region(handle : QStyleHintReturnMaskH; retval : QRegionH ); cdecl; external Qt4PasLib name 'QStyleHintReturnMask_region';
@@ -12061,7 +12204,7 @@ function QStyleHintReturnVariant_create(): QStyleHintReturnVariantH; cdecl; exte
 procedure QStyleHintReturnVariant_destroy(handle: QStyleHintReturnVariantH); cdecl; external Qt4PasLib name 'QStyleHintReturnVariant_destroy'; 
 
 procedure QStyleFactory_keys(retval: QStringListH); cdecl; external Qt4PasLib name 'QStyleFactory_keys';
-function QStyleFactory_create(p1: PWideString): QStyleH; cdecl; external Qt4PasLib name 'QStyleFactory_create';
+function QStyleFactory_create(AnonParam1: PWideString): QStyleH; cdecl; external Qt4PasLib name 'QStyleFactory_create';
 
 
 type
@@ -12107,7 +12250,7 @@ function QGraphicsScene_itemAt(handle: QGraphicsSceneH; x: qreal; y: qreal): QGr
 procedure QGraphicsScene_selectedItems(handle: QGraphicsSceneH; retval: PPtrIntArray); cdecl; external Qt4PasLib name 'QGraphicsScene_selectedItems';
 procedure QGraphicsScene_selectionArea(handle: QGraphicsSceneH; retval: QPainterPathH); cdecl; external Qt4PasLib name 'QGraphicsScene_selectionArea';
 procedure QGraphicsScene_setSelectionArea(handle: QGraphicsSceneH; path: QPainterPathH); cdecl; external Qt4PasLib name 'QGraphicsScene_setSelectionArea';
-procedure QGraphicsScene_setSelectionArea(handle: QGraphicsSceneH; path: QPainterPathH; p2: QtItemSelectionMode); cdecl; external Qt4PasLib name 'QGraphicsScene_setSelectionArea2';
+procedure QGraphicsScene_setSelectionArea(handle: QGraphicsSceneH; path: QPainterPathH; AnonParam2: QtItemSelectionMode); cdecl; external Qt4PasLib name 'QGraphicsScene_setSelectionArea2';
 function QGraphicsScene_createItemGroup(handle: QGraphicsSceneH; items: PPtrIntArray): QGraphicsItemGroupH; cdecl; external Qt4PasLib name 'QGraphicsScene_createItemGroup';
 procedure QGraphicsScene_destroyItemGroup(handle: QGraphicsSceneH; group: QGraphicsItemGroupH); cdecl; external Qt4PasLib name 'QGraphicsScene_destroyItemGroup';
 procedure QGraphicsScene_addItem(handle: QGraphicsSceneH; item: QGraphicsItemH); cdecl; external Qt4PasLib name 'QGraphicsScene_addItem';
@@ -12427,8 +12570,8 @@ type
   QAbstractSocket_hostFound_Event = procedure () of object cdecl;
   QAbstractSocket_connected_Event = procedure () of object cdecl;
   QAbstractSocket_disconnected_Event = procedure () of object cdecl;
-  QAbstractSocket_stateChanged_Event = procedure (p1: QAbstractSocketSocketState) of object cdecl;
-  QAbstractSocket_error_Event = procedure (p1: QAbstractSocketSocketError) of object cdecl;
+  QAbstractSocket_stateChanged_Event = procedure (AnonParam1: QAbstractSocketSocketState) of object cdecl;
+  QAbstractSocket_error_Event = procedure (AnonParam1: QAbstractSocketSocketError) of object cdecl;
   QAbstractSocket_proxyAuthenticationRequired_Event = procedure (proxy: QNetworkProxyH; authenticator: QAuthenticatorH) of object cdecl;
 
 
@@ -12666,7 +12809,7 @@ procedure QNetworkReply_ignoreSslErrors(handle: QNetworkReplyH); cdecl; external
 type
   QNetworkReply_metaDataChanged_Event = procedure () of object cdecl;
   QNetworkReply_finished_Event = procedure () of object cdecl;
-  QNetworkReply_error_Event = procedure (p1: QNetworkReplyNetworkError) of object cdecl;
+  QNetworkReply_error_Event = procedure (AnonParam1: QNetworkReplyNetworkError) of object cdecl;
   QNetworkReply_uploadProgress_Event = procedure (bytesSent: int64; bytesTotal: int64) of object cdecl;
   QNetworkReply_downloadProgress_Event = procedure (bytesReceived: int64; bytesTotal: int64) of object cdecl;
 
@@ -12820,7 +12963,7 @@ procedure QWebFrame_setScrollBarValue(handle: QWebFrameH; orientation: QtOrienta
 function QWebFrame_scrollBarValue(handle: QWebFrameH; orientation: QtOrientation): Integer; cdecl; external Qt4PasLib name 'QWebFrame_scrollBarValue';
 function QWebFrame_scrollBarMinimum(handle: QWebFrameH; orientation: QtOrientation): Integer; cdecl; external Qt4PasLib name 'QWebFrame_scrollBarMinimum';
 function QWebFrame_scrollBarMaximum(handle: QWebFrameH; orientation: QtOrientation): Integer; cdecl; external Qt4PasLib name 'QWebFrame_scrollBarMaximum';
-procedure QWebFrame_scroll(handle: QWebFrameH; p1: Integer; p2: Integer); cdecl; external Qt4PasLib name 'QWebFrame_scroll';
+procedure QWebFrame_scroll(handle: QWebFrameH; AnonParam1: Integer; AnonParam2: Integer); cdecl; external Qt4PasLib name 'QWebFrame_scroll';
 procedure QWebFrame_scrollPosition(handle: QWebFrameH; retval: PQtPoint); cdecl; external Qt4PasLib name 'QWebFrame_scrollPosition';
 procedure QWebFrame_setScrollPosition(handle: QWebFrameH; pos: PQtPoint); cdecl; external Qt4PasLib name 'QWebFrame_setScrollPosition';
 procedure QWebFrame_render(handle: QWebFrameH; painter: QPainterH; clip: QRegionH); cdecl; external Qt4PasLib name 'QWebFrame_render';
@@ -12833,7 +12976,7 @@ procedure QWebFrame_pos(handle: QWebFrameH; retval: PQtPoint); cdecl; external Q
 procedure QWebFrame_geometry(handle: QWebFrameH; retval: PRect); cdecl; external Qt4PasLib name 'QWebFrame_geometry';
 procedure QWebFrame_contentsSize(handle: QWebFrameH; retval: PSize); cdecl; external Qt4PasLib name 'QWebFrame_contentsSize';
 procedure QWebFrame_hitTestContent(handle: QWebFrameH; retval: QWebHitTestResultH; pos: PQtPoint); cdecl; external Qt4PasLib name 'QWebFrame_hitTestContent';
-function QWebFrame_event(handle: QWebFrameH; p1: QEventH): Boolean; cdecl; external Qt4PasLib name 'QWebFrame_event';
+function QWebFrame_event(handle: QWebFrameH; AnonParam1: QEventH): Boolean; cdecl; external Qt4PasLib name 'QWebFrame_event';
 procedure QWebFrame_evaluateJavaScript(handle: QWebFrameH; retval: QVariantH; scriptSource: PWideString); cdecl; external Qt4PasLib name 'QWebFrame_evaluateJavaScript';
 procedure QWebFrame_print(handle: QWebFrameH; printer: QPrinterH); cdecl; external Qt4PasLib name 'QWebFrame_print';
 
@@ -13002,7 +13145,7 @@ function QWebPage_action(handle: QWebPageH; action: QWebPageWebAction): QActionH
 procedure QWebPage_triggerAction(handle: QWebPageH; action: QWebPageWebAction; checked: Boolean = False); cdecl; external Qt4PasLib name 'QWebPage_triggerAction';
 procedure QWebPage_viewportSize(handle: QWebPageH; retval: PSize); cdecl; external Qt4PasLib name 'QWebPage_viewportSize';
 procedure QWebPage_setViewportSize(handle: QWebPageH; size: PSize); cdecl; external Qt4PasLib name 'QWebPage_setViewportSize';
-function QWebPage_event(handle: QWebPageH; p1: QEventH): Boolean; cdecl; external Qt4PasLib name 'QWebPage_event';
+function QWebPage_event(handle: QWebPageH; AnonParam1: QEventH): Boolean; cdecl; external Qt4PasLib name 'QWebPage_event';
 function QWebPage_focusNextPrevChild(handle: QWebPageH; next: Boolean): Boolean; cdecl; external Qt4PasLib name 'QWebPage_focusNextPrevChild';
 procedure QWebPage_inputMethodQuery(handle: QWebPageH; retval: QVariantH; _property: QtInputMethodQuery); cdecl; external Qt4PasLib name 'QWebPage_inputMethodQuery';
 function QWebPage_findText(handle: QWebPageH; subString: PWideString; options: QWebPageFindFlags = 0): Boolean; cdecl; external Qt4PasLib name 'QWebPage_findText';
@@ -13118,7 +13261,7 @@ procedure QWebView_setZoomFactor(handle: QWebViewH; factor: qreal); cdecl; exter
 procedure QWebView_setTextSizeMultiplier(handle: QWebViewH; factor: qreal); cdecl; external Qt4PasLib name 'QWebView_setTextSizeMultiplier';
 function QWebView_textSizeMultiplier(handle: QWebViewH): qreal; cdecl; external Qt4PasLib name 'QWebView_textSizeMultiplier';
 function QWebView_findText(handle: QWebViewH; subString: PWideString; options: QWebPageFindFlags = 0): Boolean; cdecl; external Qt4PasLib name 'QWebView_findText';
-function QWebView_event(handle: QWebViewH; p1: QEventH): Boolean; cdecl; external Qt4PasLib name 'QWebView_event';
+function QWebView_event(handle: QWebViewH; AnonParam1: QEventH): Boolean; cdecl; external Qt4PasLib name 'QWebView_event';
 procedure QWebView_stop(handle: QWebViewH); cdecl; external Qt4PasLib name 'QWebView_stop';
 procedure QWebView_back(handle: QWebViewH); cdecl; external Qt4PasLib name 'QWebView_back';
 procedure QWebView_forward(handle: QWebViewH); cdecl; external Qt4PasLib name 'QWebView_forward';
@@ -13129,7 +13272,7 @@ procedure QWebView_print(handle: QWebViewH; printer: QPrinterH); cdecl; external
 type
   QWebView_loadStarted_Event = procedure () of object cdecl;
   QWebView_loadProgress_Event = procedure (progress: Integer) of object cdecl;
-  QWebView_loadFinished_Event = procedure (p1: Boolean) of object cdecl;
+  QWebView_loadFinished_Event = procedure (AnonParam1: Boolean) of object cdecl;
   QWebView_titleChanged_Event = procedure (title: PWideString) of object cdecl;
   QWebView_statusBarMessage_Event = procedure (text: PWideString) of object cdecl;
   QWebView_linkClicked_Event = procedure (url: QUrlH) of object cdecl;
@@ -13217,6 +13360,10 @@ procedure QApplication_hook_destroy(handle: QApplication_hookH); cdecl; external
 procedure QApplication_hook_hook_lastWindowClosed(handle: QApplication_hookH; hook: QApplication_lastWindowClosed_Event); cdecl; external Qt4PasLib name 'QApplication_hook_hook_lastWindowClosed';
 procedure QApplication_hook_hook_focusChanged(handle: QApplication_hookH; hook: QApplication_focusChanged_Event); cdecl; external Qt4PasLib name 'QApplication_hook_hook_focusChanged';
 procedure QApplication_hook_hook_fontDatabaseChanged(handle: QApplication_hookH; hook: QApplication_fontDatabaseChanged_Event); cdecl; external Qt4PasLib name 'QApplication_hook_hook_fontDatabaseChanged';
+{$ifdef BINUX or MSWINDOWS or DARWIN }
+procedure QApplication_hook_hook_commitDataRequest(handle: QApplication_hookH; hook: QApplication_commitDataRequest_Event); cdecl; external Qt4PasLib name 'QApplication_hook_hook_commitDataRequest';
+procedure QApplication_hook_hook_saveStateRequest(handle: QApplication_hookH; hook: QApplication_saveStateRequest_Event); cdecl; external Qt4PasLib name 'QApplication_hook_hook_saveStateRequest';
+{$endif}
 
 function QWidget_hook_create(handle: QObjectH): QWidget_hookH; cdecl; external Qt4PasLib name 'QWidget_hook_create';
 procedure QWidget_hook_destroy(handle: QWidget_hookH); cdecl; external Qt4PasLib name 'QWidget_hook_destroy'; 
@@ -13260,6 +13407,11 @@ function QDrag_hook_create(handle: QObjectH): QDrag_hookH; cdecl; external Qt4Pa
 procedure QDrag_hook_destroy(handle: QDrag_hookH); cdecl; external Qt4PasLib name 'QDrag_hook_destroy'; 
 procedure QDrag_hook_hook_actionChanged(handle: QDrag_hookH; hook: QDrag_actionChanged_Event); cdecl; external Qt4PasLib name 'QDrag_hook_hook_actionChanged';
 procedure QDrag_hook_hook_targetChanged(handle: QDrag_hookH; hook: QDrag_targetChanged_Event); cdecl; external Qt4PasLib name 'QDrag_hook_hook_targetChanged';
+
+function QShortcut_hook_create(handle: QObjectH): QShortcut_hookH; cdecl; external Qt4PasLib name 'QShortcut_hook_create';
+procedure QShortcut_hook_destroy(handle: QShortcut_hookH); cdecl; external Qt4PasLib name 'QShortcut_hook_destroy'; 
+procedure QShortcut_hook_hook_activated(handle: QShortcut_hookH; hook: QShortcut_activated_Event); cdecl; external Qt4PasLib name 'QShortcut_hook_hook_activated';
+procedure QShortcut_hook_hook_activatedAmbiguously(handle: QShortcut_hookH; hook: QShortcut_activatedAmbiguously_Event); cdecl; external Qt4PasLib name 'QShortcut_hook_hook_activatedAmbiguously';
 
 function QAbstractTextDocumentLayout_hook_create(handle: QObjectH): QAbstractTextDocumentLayout_hookH; cdecl; external Qt4PasLib name 'QAbstractTextDocumentLayout_hook_create';
 procedure QAbstractTextDocumentLayout_hook_destroy(handle: QAbstractTextDocumentLayout_hookH); cdecl; external Qt4PasLib name 'QAbstractTextDocumentLayout_hook_destroy'; 
@@ -13868,17 +14020,14 @@ end;
 
 
 // PtrInt Array Access from c-code
-function GetPtrIntArrayAddr(PArr : PPtrIntArray): PPtrInt; cdecl; export;
+function GetPtrIntArrayAddr(var PArr : TPtrIntArray): PPtrInt; cdecl; export;
 begin
-  if PArr^ = nil then
-    Result := nil
-  else
-    Result := @PArr^[0];
+  Result:=@PArr[0];
 end;
 
-function GetPtrIntArrayLength(PArr: PPtrIntArray): Integer; cdecl; export;
+function GetPtrIntArrayLength(var PArr: TPtrIntArray): Integer; cdecl; export;
 begin
-  Result := Length(PArr^);
+  Result := Length(PArr);
 end;
 
 procedure SetPtrIntArrayLength(var PArr: TPtrIntArray; Len: Integer); cdecl; export;
@@ -13887,17 +14036,14 @@ begin
 end;
 
 // QReal Array Access from c-code
-function GetQRealArrayAddr(PArr : PQRealArray): PPtrInt; cdecl; export;
+function GetQRealArrayAddr(var PArr : TQRealArray): PPtrInt; cdecl; export;
 begin
-  if PArr^ = nil then
-    Result := nil
-  else
-    Result := @PArr^[0];
+  Result := @PArr[0];
 end;
 
-function GetQRealArrayLength(PArr: PQRealArray): Integer; cdecl; export;
+function GetQRealArrayLength(var PArr: TQRealArray): Integer; cdecl; export;
 begin
-  Result := Length(PArr^);
+  Result := Length(PArr);
 end;
 
 procedure SetQRealArrayLength(var PArr: TQRealArray; Len: Integer); cdecl; export;
