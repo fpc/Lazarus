@@ -169,6 +169,7 @@ components/PascalScript/Source/license.txt svneol=native#text/pascal
 components/PascalScript/Source/pascalscript.lpk svneol=native#text/pascal
 components/PascalScript/Source/pascalscript.lrs svneol=native#text/pascal
 components/PascalScript/Source/pascalscript.pas svneol=native#text/pascal
+components/PascalScript/Source/pascalscriptfcl.lpk svneol=native#text/pascal
 components/PascalScript/Source/powerpc.inc svneol=native#text/pascal
 components/PascalScript/Source/readme.txt svneol=native#text/pascal
 components/PascalScript/Source/uPSC_DB.pas svneol=native#text/pascal
