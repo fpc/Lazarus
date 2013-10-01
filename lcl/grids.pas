@@ -989,6 +989,7 @@ type
     procedure InvalidateFocused;
     function  GetIsCellTitle(aCol,aRow: Integer): boolean; virtual;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; virtual;
+    function  IsMouseOverCellButton(X,Y: Integer): boolean;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
     procedure KeyPress(var Key: char); override;
@@ -1990,17 +1991,12 @@ var
   P: TPoint;
   Gz: TGridZone;
   ButtonColumn: boolean;
-  OldAOE: boolean;
 begin
 
   with FGCache do begin
 
     Gz := MouseToGridZone(X,Y);
-    oldAOE := AllowOutboundEvents;
-    AllowOutboundEvents := false;
-    P := MouseToCell(Point(X,Y));
-    AllowOutBoundEvents := OldAOE;
-    ButtonColumn := IsCellButtonColumn(P);
+    ButtonColumn := IsMouseOverCellButton(X, Y);
 
     if (gz<>HotGridZone) or (P.x<>HotCell.x) or (P.y<>HotCell.y) then begin
       ResetHotCell;
@@ -6029,7 +6025,7 @@ begin
         LockEditor;
         FIgnoreClick := False;
         UnlockEditor;
-        if IsCellButtonColumn(FGCache.ClickCell) then begin
+        if IsMouseOverCellButton(X, Y) then begin
           fGridState := gsButtonColumnClicking;
           DoPushCell;
           Exit;
@@ -6531,6 +6527,18 @@ end;
 function TCustomGrid.FlipX(X: Integer): Integer;
 begin
   Result := BidiFlipX(X, GCache.ClientRect, UseRightToLeftAlignment);
+end;
+
+function TCustomGrid.IsMouseOverCellButton(X, Y: Integer): boolean;
+var
+  oldAOE: Boolean;
+  P: TPoint;
+begin
+  oldAOE := AllowOutboundEvents;
+  AllowOutboundEvents := false;
+  P := MouseToCell(Point(X,Y));
+  AllowOutBoundEvents := OldAOE;
+  result := IsCellButtonColumn(P);
 end;
 
 procedure TCustomGrid.doExit;
