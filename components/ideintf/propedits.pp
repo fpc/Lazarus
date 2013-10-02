@@ -6251,19 +6251,45 @@ end;
 
 function ControlAcceptsStreamableChildComponent(aControl: TWinControl;
   aComponentClass: TComponentClass; aLookupRoot: TPersistent): boolean;
+{off $DEFINE VerboseAddDesigner}
 begin
   Result:=false;
-  if not (csAcceptsControls in aControl.ControlStyle) then exit;
+  if not (csAcceptsControls in aControl.ControlStyle) then
+  begin
+    {$IFDEF VerboseAddDesigner}
+    debugln(['ControlAcceptsStreamableChildComponent missing csAcceptsControls in ',DbgSName(aControl)]);
+    {$ENDIF}
+    exit;
+  end;
 
   // Because of TWriter, you can not put a control onto an
   // csInline,csAncestor control (e.g. on a frame).
-  if ([csInline,csAncestor]*aControl.ComponentState<>[]) then exit;
+  if (aControl<>aLookupRoot)
+  and ([csInline,csAncestor]*aControl.ComponentState<>[]) then
+  begin
+    {$IFDEF VerboseAddDesigner}
+    debugln(['ControlAcceptsStreamableChildComponent aControl=',DbgSName(aControl),' csInline=',csInline in aControl.ComponentState,' csAncestor=',csAncestor in aControl.ComponentState]);
+    {$ENDIF}
+    exit;
+  end;
 
   if aComponentClass.InheritsFrom(TControl)
-  and not aControl.CheckChildClassAllowed(aComponentClass, False) then exit;
+  and not aControl.CheckChildClassAllowed(aComponentClass, False) then
+  begin
+    {$IFDEF VerboseAddDesigner}
+    debugln(['ControlAcceptsStreamableChildComponent aControl=',DbgSName(aControl),' CheckChildClassAllowed forbids ',DbgSName(aComponentClass)]);
+    {$ENDIF}
+    exit;
+  end;
 
   // TWriter only supports children of LookupRoot and LookupRoot.Components
-  if (aControl.Owner <> aLookupRoot) and (aControl <> aLookupRoot) then exit;
+  if (aControl.Owner <> aLookupRoot) and (aControl <> aLookupRoot) then
+  begin
+    {$IFDEF VerboseAddDesigner}
+    debugln(['ControlAcceptsStreamableChildComponent wrong lookuproot aControl=',DbgSName(aControl),' aLookupRoot=',DbgSName(aLookupRoot),' aControl.Owner=',DbgSName(aControl.Owner)]);
+    {$ENDIF}
+    exit;
+  end;
 
   Result:=true;
 end;

@@ -9355,6 +9355,7 @@ begin
     if b <> 0 then
       fb.LoadFromStream(Stream);
     Stream.Position := pos;
+    Stream.Read(frVersion, 1);
     Pages.LoadFromStream(Stream);
   end
   else
@@ -9428,6 +9429,8 @@ begin
   Stream.Position := pos;
   Stream.Write(lpos, 4);
   Stream.Position := lpos;
+  frVersion := frCurrentVersion;
+  Stream.Write(frVersion, 1);
   Pages.SaveToStream(Stream);
   Stream.Free;
 end;
