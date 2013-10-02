@@ -3492,7 +3492,7 @@ var
   SameCmdKey: TSynEditKeyStroke;
 begin
   (* ACommandOffsetOffset
-     The IDE defines int's own fixed value command-id for plugins.
+     The IDE defines its own fixed value command-id for plugins.
      Map them to the plugin ID
      - ecIdePTmplEdOutNextCell and ecIdePTmplEdNextCell both map to ecSynPTmplEdNextCell
      - which maps to "ecPluginFirst + n", as many others.
