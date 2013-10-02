@@ -815,7 +815,6 @@ type
     function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
     procedure SetCol(AValue: Integer);
     procedure SetColwidths(Acol: Integer; Avalue: Integer);
-    procedure SetRawColWidths(ACol: Integer; AValue: Integer);
     procedure SetColCount(AValue: Integer);
     procedure SetDefColWidth(AValue: Integer);
     procedure SetDefRowHeight(AValue: Integer);
@@ -1010,6 +1009,7 @@ type
     procedure PickListItemSelected(Sender: TObject);
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); virtual;
     procedure PrepareCellHints(ACol, ARow: Integer); virtual;
+    procedure ResetDefaultColWidths; virtual;
     procedure ResetEditor;
     procedure ResetOffset(chkCol, ChkRow: Boolean);
     procedure ResetSizes; virtual;
@@ -1032,6 +1032,7 @@ type
     procedure SetBorderStyle(NewStyle: TBorderStyle); override;
     procedure SetFixedcolor(const AValue: TColor); virtual;
     procedure SetFixedCols(const AValue: Integer); virtual;
+    procedure SetRawColWidths(ACol: Integer; AValue: Integer);
     procedure SetSelectedColor(const AValue: TColor); virtual;
     procedure ShowCellHintWindow(APoint: TPoint);
     procedure SizeChanged(OldColCount, OldRowCount: Integer); virtual;
@@ -1162,6 +1163,7 @@ type
     procedure EditorKeyUp(Sender: TObject; var key:Word; shift:TShiftState);
     procedure EndUpdate(aRefresh: boolean = true);
     procedure EraseBackground(DC: HDC); override;
+    function  Focused: Boolean; override;
 
     procedure InvalidateCell(aCol, aRow: Integer); overload;
     procedure InvalidateCol(ACol: Integer);
@@ -1564,6 +1566,7 @@ type
       procedure Clean(aRect: TRect; CleanOptions: TGridZoneSet); overload;
       procedure Clean(StartCol,StartRow,EndCol,EndRow: integer; CleanOptions: TGridZoneSet); overload;
       procedure CopyToClipboard(AUseSelection: boolean = false);
+      procedure InsertRowWithValues(Index: Integer; Values: array of String);
       procedure LoadFromCSVStream(AStream: TStream; ADelimiter: Char=','; WithHeader: boolean=true);
       procedure LoadFromCSVFile(AFilename: string; ADelimiter: Char=','; WithHeader: boolean=true);
       procedure SaveToCSVStream(AStream: TStream; ADelimiter: Char=','; WithHeader: boolean=true;
@@ -2842,28 +2845,46 @@ end;
 
 procedure TCustomGrid.SetDefColWidth(AValue: Integer);
 var
-  i: Integer;
+  OldLeft,OldRight,NewLeft,NewRight: Integer;
 begin
   if AValue=fDefColwidth then
     Exit;
   FDefColWidth:=AValue;
-  if not AutoFillColumns then begin
-    for i:=0 to ColCount-1 do
-      FCols[i] := Pointer(-1);
-    VisualChange;
+
+  if EditorMode then
+    ColRowToOffset(True, True, FCol, OldLeft, OldRight);
+
+  ResetDefaultColWidths;
+
+  if EditorMode then begin
+    ColRowToOffset(True, True, FCol, NewLeft, NewRight);
+    if (NewLeft<>OldLeft) or (NewRight<>OldRight) then
+      EditorWidthChanged(FCol, GetColWidths(FCol));
   end;
 end;
 
 procedure TCustomGrid.SetDefRowHeight(AValue: Integer);
 var
   i: Integer;
+  OldTop,OldBottom,NewTop,NewBottom: Integer;
 begin
   if (AValue<>fDefRowHeight) or (csLoading in ComponentState) then begin
     include(FGridFlags, gfDefRowHeightChanged);
     FDefRowheight:=AValue;
+
+    if EditorMode then
+      ColRowToOffSet(False,True, FRow, OldTop, OldBottom);
+
     for i:=0 to RowCount-1 do
       FRows[i] := Pointer(-1);
     VisualChange;
+
+    if EditorMode then begin
+      ColRowToOffSet(False,True, FRow, NewTop, NewBottom);
+      if (NewTop<>OldTOp) or (NewBottom<>OldBottom) then
+        EditorPos;
+    end;
+
   end;
 end;
 
@@ -3503,6 +3524,17 @@ end;
 
 procedure TCustomGrid.PrepareCellHints(ACol, ARow: Integer);
 begin
+end;
+
+procedure TCustomGrid.ResetDefaultColWidths;
+var
+  i: Integer;
+begin
+  if not AutoFillColumns then begin
+    for i:=0 to ColCount-1 do
+      FCols[i] := Pointer(-1);
+    VisualChange;
+  end;
 end;
 
 procedure TCustomGrid.UnprepareCellHints;
@@ -5889,8 +5921,6 @@ end;
 
 procedure TCustomGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
-var
-  WasFocused: boolean;
 
   procedure DoPushCell;
   begin
@@ -5926,10 +5956,9 @@ begin
   DebugLn('Mouse was in ', dbgs(FGCache.HotGridZone));
   {$ENDIF}
 
-  WasFocused := Focused;
-  if not WasFocused then begin
+  if not Focused then begin
     SetFocus;
-    if not focused then begin
+    if not Focused then begin
       {$ifDef dbgGrid} DebugLnExit('TCustomGrid.MouseDown EXIT: Focus not allowed'); {$Endif}
       exit;
     end;
@@ -7316,6 +7345,13 @@ begin
   //
 end;
 
+function TCustomGrid.Focused: Boolean;
+begin
+  Result := CanTab and (HandleAllocated and
+    (FindOwnerControl(GetFocus)=Self) or
+     ((FEditor<>nil) and FEditor.Visible and FEditor.Focused));
+end;
+
 procedure TCustomGrid.InvalidateCell(aCol, aRow: Integer);
 begin
   InvalidateCell(ACol,ARow, False);
@@ -7666,13 +7702,6 @@ begin
   {$ifdef dbgGrid}DebugLn('Grid.EditorKeyDown Key=',dbgs(Key),' INIT');{$endif}
   FEditorKey:=True; // Just a flag to see from where the event comes
   KeyDown(Key, shift);
-  if Key = VK_RETURN then begin
-    Key := 0;
-    Include(FGridFlags, gfEditingDone);
-    if not MoveNextAuto(ssShift in Shift) then
-      ResetEditor;
-    Exclude(FGridFlags, gfEditingDone);
-  end;
   FEditorKey:=False;
   {$ifdef dbgGrid}DebugLn('Grid.EditorKeyDown Key=',dbgs(Key),' END');{$endif}
 end;
@@ -7695,7 +7724,16 @@ begin
   {$ifdef dbgGrid}DebugLn('Grid.EditorKeyPress: inter Key=',PrintKey);{$Endif}
   case Key of
     ^C,^V,^X:;
-    ^M, #27: Key:=#0; // key is already handled in KeyDown
+
+    ^M:
+    begin
+      Include(FGridFlags, gfEditingDone);
+      if not MoveNextAuto(GetKeyState(VK_SHIFT) < 0) then
+        ResetEditor;
+      Exclude(FGridFlags, gfEditingDone);
+      Key := #0;
+    end;
+
     else begin
       AChar := Key;
       if not EditorCanAcceptKey(AChar) or EditorIsReadOnly then
@@ -9843,7 +9881,7 @@ begin
     Result:=TStringGridStrings.Create(Self, AMap, IsCols, index);
 end;
 
-function TCustomStringGrid.Getcells(aCol, aRow: Integer): string;
+function TCustomStringGrid.GetCells(ACol, ARow: Integer): string;
 var
    C: PCellProps;
 begin
@@ -9895,7 +9933,7 @@ begin
   end;
 end;
 
-procedure TCustomStringGrid.Setcells(aCol, aRow: Integer; const Avalue: string);
+procedure TCustomStringGrid.SetCells(ACol, ARow: Integer; const AValue: string);
   procedure UpdateCell;
   begin
     if EditorMode and (aCol=FCol)and(aRow=FRow) and
@@ -10300,7 +10338,7 @@ begin
   end;
 end;
 
-procedure TCustomStringGrid.LoadContent(Cfg: TXMLConfig; Version:Integer);
+procedure TCustomStringGrid.LoadContent(cfg: TXMLConfig; Version: Integer);
 var
   ContentSaved: Boolean;
   i,j,k: Integer;
@@ -10418,6 +10456,18 @@ begin
     doCopyToClipboard
   else
     CopyCellRectToClipboard(Rect(0,0,ColCount-1,RowCount-1));
+end;
+
+procedure TCustomStringGrid.InsertRowWithValues(Index: Integer;
+  Values: array of String);
+var
+  i: Integer;
+begin
+  InsertColRow(false, Index);
+  if Length(Values) > ColCount then
+    ColCount := Length(Values);
+  for i := 0 to Length(Values)-1 do
+    Cells[i, Index] := Values[i];
 end;
 
 procedure TCustomStringGrid.LoadFromCSVStream(AStream: TStream;

@@ -146,19 +146,18 @@ type
     procedure SetTitleCaptions(const AValue: TStrings);
   protected
     class procedure WSRegisterClass; override;
-    procedure DoOnResize; override;
     procedure SetFixedCols(const AValue: Integer); override;
     procedure ShowColumnTitles;
-    procedure AdjustColumnWidths; virtual;
     procedure AdjustRowCount; virtual;
-    procedure ColWidthsChanged; override;
     procedure DefineCellsProperty(Filer: TFiler); override;
     procedure InvalidateCachedRow;
+    procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); override;
     function GetEditText(ACol, ARow: Integer): string; override;
     function GetCells(ACol, ARow: Integer): string; override;
     function GetDefaultEditor(Column: Integer): TWinControl; override;
     function GetRowCount: Integer;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
+    procedure ResetDefaultColWidths; override;
     procedure SetCells(ACol, ARow: Integer; const AValue: string); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SetRowCount(AValue: Integer);
@@ -193,7 +192,6 @@ type
     property Anchors;
     property AutoAdvance;
     property AutoEdit;
-    property AutoFillColumns;
     property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
@@ -754,6 +752,7 @@ begin
   FLastEditedRow := -1;
   FDropDownRows := 8;
   ShowColumnTitles;
+  AutoFillColumns := true;
 end;
 
 destructor TValueListEditor.Destroy;
@@ -925,8 +924,6 @@ begin
     OnStringsChanging(Self);
 end;
 
-
-
 function TValueListEditor.GetFixedRows: Integer;
 begin
   Result := inherited FixedRows;
@@ -967,6 +964,7 @@ procedure TValueListEditor.SetDisplayOptions(const AValue: TDisplayOptions);
 // Set number of fixed rows to 1 if titles are shown (based on DisplayOptions).
 // Set the local options value, then Adjust Column Widths and Refresh the display.
 begin
+  BeginUpdate;
   if (doColumnTitles in DisplayOptions) <> (doColumnTitles in AValue) then
     if doColumnTitles in AValue then begin
       if RowCount < 2 then
@@ -974,11 +972,14 @@ begin
       inherited FixedRows := 1;
     end else
       inherited FixedRows := 0;
+
+  if (doAutoColResize in DisplayOptions) <> (doAutoColResize in AValue) then
+    AutoFillColumns := (doAutoColResize in AValue);
+
   FDisplayOptions := AValue;
   ShowColumnTitles;
-  AdjustColumnWidths;
   AdjustRowCount;
-  Invalidate;
+  EndUpdate;
 end;
 
 procedure TValueListEditor.SetDropDownRows(const AValue: Integer);
@@ -1072,32 +1073,6 @@ begin
   end;
 end;
 
-procedure TValueListEditor.AdjustColumnWidths;
-// If key column is fixed in width then adjust only the second column,
-//  otherwise adjust both columns propertionally.
-var
-  CW, AWidth, BWidth: Integer;
-begin
-  CW := ClientWidth;
-  if  (doKeyColFixed in DisplayOptions) then
-  begin
-    //AutoSizeColumn(0);
-    If ColWidths[0] > CW Then Begin
-      BWidth := CW - 1;
-      If BWidth > 0 Then
-        ColWidths[0] := BWidth;
-    end;
-    AWidth := CW - ColWidths[0];
-    If AWidth > 0 Then
-      ColWidths[1] := AWidth;
-  end
-  else
-  begin
-    ColWidths[0] := CW div 2;
-    ColWidths[1] := CW div 2;
-  end;
-end;
-
 procedure TValueListEditor.AdjustRowCount;
 // Change the number of rows based on the number of items in Strings collection.
 // Sets Row and RowCount of parent TCustomDrawGrid class.
@@ -1118,12 +1093,6 @@ begin
   end;
 end;
 
-procedure TValueListEditor.ColWidthsChanged;
-begin
-  AdjustColumnWidths;
-  inherited;
-end;
-
 procedure TValueListEditor.DefineCellsProperty(Filer: TFiler);
 begin
 end;
@@ -1138,6 +1107,20 @@ begin
   end
   else
     FLastEditedRow := -1;
+end;
+
+procedure TValueListEditor.GetAutoFillColumnInfo(const Index: Integer;
+  var aMin, aMax, aPriority: Integer);
+begin
+  if Index=1 then
+    aPriority := 1
+  else
+  begin
+    if doKeyColFixed in FDisplayOptions then
+      aPriority := 0
+    else
+      aPriority := 1;
+  end;
 end;
 
 
@@ -1258,6 +1241,17 @@ begin
 
 end;
 
+procedure TValueListEditor.ResetDefaultColWidths;
+begin
+  if not AutoFillColumns then
+    inherited ResetDefaultColWidths
+  else if doKeyColFixed in DisplayOptions then
+  begin
+    SetRawColWidths(0, -1);
+    VisualChange;
+  end;
+end;
+
 procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
 var
   I: Integer;
@@ -1367,13 +1361,6 @@ begin
 //  RegisterPropertyToSkip(Self, 'SomeProperty', 'VCL compatibility property', '');
   inherited WSRegisterClass;
 end;
-
-procedure TValueListEditor.DoOnResize;
-begin
-  inherited DoOnResize;
-  if (doAutoColResize in DisplayOptions) then AdjustColumnWidths;
-end;
-
 
 procedure Register;
 begin
