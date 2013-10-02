@@ -12190,7 +12190,7 @@ function QStyleHintReturn_version(handle : QStyleHintReturnH) : Integer; cdecl; 
 procedure QStyleHintReturn_setVersion(handle : QStyleHintReturnH; version : Integer); cdecl; external Qt4PasLib name 'QStyleHintReturn_setVersion';
 function QStyleHintReturn__type(handle : QStyleHintReturnH) : Integer; cdecl; external Qt4PasLib name 'QStyleHintReturn__type';
 procedure QStyleHintReturn_setType(handle : QStyleHintReturnH; _type : Integer); cdecl; external Qt4PasLib name 'QStyleHintReturn_setType';
-function QStyleHintReturn_create(version: QStyleOptionStyleOptionVersion = QStyleOptionVersion; _type: QStyleOptionOptionType = QStyleHintReturnSH_Default): QStyleHintReturnH; cdecl; external Qt4PasLib name 'QStyleHintReturn_create';
+function QStyleHintReturn_create(version: QStyleOptionStyleOptionVersion = QStyleOptionVersion; _type: QStyleHintReturnHintReturnType = QStyleHintReturnSH_Default): QStyleHintReturnH; cdecl; external Qt4PasLib name 'QStyleHintReturn_create';
 procedure QStyleHintReturn_destroy(handle: QStyleHintReturnH); cdecl; external Qt4PasLib name 'QStyleHintReturn_destroy'; 
 
 procedure QStyleHintReturnMask_region(handle : QStyleHintReturnMaskH; retval : QRegionH ); cdecl; external Qt4PasLib name 'QStyleHintReturnMask_region';
