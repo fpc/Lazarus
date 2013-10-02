@@ -1133,8 +1133,8 @@ var
   p: Pgchar;
   AStart,AEnd: gint;
 begin
-  Result := AGtkWidget <> nil;
-  if AGtkWidget <> nil then
+  Result := (AGtkWidget <> nil) and (GTK_IS_WIDGET(AGtkWidget));
+  if Result then
   begin
     g_idle_remove_by_data(AGtkWidget);
     Info := GetWidgetInfo(AGtkWidget);

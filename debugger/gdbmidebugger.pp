@@ -5109,7 +5109,7 @@ begin
 
   // Tnit (StartDebugging)
   TargetInfo^.TargetFlags := [tfHasSymbols]; // Set until proven otherwise
-  ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
+  ExecuteCommand('-gdb-set language pascal', [cfCheckError]); // TODO: Maybe remove, must be done after attach
 
   //{$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
   //InitConsole;
@@ -5187,11 +5187,14 @@ begin
 
   TargetInfo^.TargetPID := NewPID;
 
+  ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
+
   if (FTheDebugger.FileName <> '') and (pos('READING SYMBOLS FROM', UpperCase(CmdResp)) < 1) then begin
     ExecuteCommand('ptype TObject', [], R);
     if pos('NO SYMBOL TABLE IS LOADED', UpperCase(FFullCmdReply)) > 0 then begin
       ExecuteCommand('-file-exec-and-symbols %s',
                      [FTheDebugger.ConvertToGDBPath(UTF8ToSys(FTheDebugger.FileName), cgptExeName)], R);
+      ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
     end;
   end;
 
