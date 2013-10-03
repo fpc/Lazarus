@@ -115,6 +115,7 @@ type
     procedure SetStateByUser(AValue: Boolean);
   protected
     procedure SetNodeType(ANodeType: TSynMarkupIfdefNodeType);
+    function  DebugText(Short: Boolean = False): String;
   public
     constructor Create;
     destructor Destroy; override;
@@ -194,6 +195,7 @@ type
   protected
     procedure AdjustPositionOffset(AnAdjustment: integer); // Caller is responsible for staying between neighbours
     property NextDispose: TSynSizedDifferentialAVLNode read FParent write FParent;
+    function DebugText: String;
   public
     constructor Create;
     destructor Destroy; override;
@@ -238,6 +240,7 @@ type
     procedure SetScanEndLine(AValue: Integer);
     procedure SetScanEndOffs(AValue: Integer);
     procedure SetStartLine(AValue: Integer);  // Caller is responsible for staying between neighbours
+    function DebugText: String;
   public
     procedure ClearInfo;
     procedure InitForNode(ANode: TSynMarkupHighIfDefLinesNode; ALine: Integer);
@@ -504,6 +507,7 @@ function dbgs(AFlag: TSynMarkupIfDefNodeFlag): String; overload;
 function dbgs(AFlags: SynMarkupIfDefNodeFlags): String; overload;
 function dbgs(AFlag: TSynMarkupIfdefNodeType): String; overload;
 function dbgs(AFlag: TSynMarkupIfdefNodeStateEx): String; overload;
+function dbgs(APeerType: TSynMarkupIfdefPeerType): String; overload;
 
 implementation
 
@@ -586,6 +590,12 @@ function dbgs(AFlag: TSynMarkupIfdefNodeStateEx): String;
 begin
   Result := '';
   WriteStr(Result, AFlag);
+end;
+
+function dbgs(APeerType: TSynMarkupIfdefPeerType): String;
+begin
+  Result := '';
+  WriteStr(Result, APeerType);
 end;
 
 { TSynEditMarkupIfDefNodes }
@@ -787,7 +797,7 @@ end;
 
 function TSynMarkupHighIfDefLinesNodeInfoList.GetNode(AIndex: Integer): TSynMarkupHighIfDefLinesNodeInfo;
 begin
-  Assert((AIndex < Count) and (AIndex >= 0), 'TSynMarkupHighIfDefLinesNodeInfoList.GetNode Index');
+  Assert((AIndex < Count) and (AIndex >= 0), 'TSynMarkupHighIfDefLinesNodeInfoList.GetNode Index='+IntToStr(AIndex)+' Cnt='+IntToStr(Count));
   Result := FNestOpenNodes[AIndex];
 end;
 
@@ -811,7 +821,7 @@ end;
 procedure TSynMarkupHighIfDefLinesNodeInfoList.SetNode(  AIndex: Integer;
   AValue: TSynMarkupHighIfDefLinesNodeInfo);
 begin
-  Assert((  AIndex < Count) and (  AIndex >= 0), 'TSynMarkupHighIfDefLinesNodeInfoList.SetNode Index');
+  Assert((  AIndex < Count) and (  AIndex >= 0), 'TSynMarkupHighIfDefLinesNodeInfoList.SetNode Index='+IntToStr(AIndex)+' Cnt='+IntToStr(Count));
   FNestOpenNodes[  AIndex] := AValue;
 end;
 
@@ -1029,7 +1039,7 @@ begin
         if (ClosingPeer <> nil) then
           ClosingPeer.SetOpeningPeerNodeState(NodeState, NodeStateForPeer(ClosingPeer.NodeType))
       end;
-    idnCommentedNode: Assert(AValue = idnUnknown, 'SetOpeningPeerNodeState for idnCommentedIfdef not possible');
+    idnCommentedNode: Assert(AValue = idnUnknown, 'SetOpeningPeerNodeState for idnCommentedIfdef not possible. '+DebugText);
   end;
 end;
 
@@ -1041,13 +1051,13 @@ end;
 procedure TSynMarkupHighIfDefEntry.SetPeer(APeerType: TSynMarkupIfdefPeerType;
   ANewPeer: TSynMarkupHighIfDefEntry);
 begin
-  assert( ((APeerType=idpOpeningPeer) and (NodeType <> idnIfdef)) OR ((APeerType=idpClosingPeer) and (NodeType <> idnEndIf)), 'Invalid peertype for this node');
+  assert( ((APeerType=idpOpeningPeer) and (NodeType <> idnIfdef)) OR ((APeerType=idpClosingPeer) and (NodeType <> idnEndIf)), 'Invalid peertype ('+dbgs(APeerType)+') for this node'+DebugText+' NEWNODE='+ANewPeer.DebugText(True));
   assert((ANewPeer=nil) OR
          ((APeerType=idpOpeningPeer) and (ANewPeer.NodeType <> idnEndIf)) OR ((APeerType=idpClosingPeer) and (ANewPeer.NodeType <> idnIfdef))
-         , 'New peer not allowed for peertype');
+         , 'New peer not allowed for peertype ('+dbgs(APeerType)+')  Node:'+DebugText+' NEWNODE='+ANewPeer.DebugText(True));
   if FPeers[APeerType] = ANewPeer then begin
-    assert((ANewPeer = nil) or (ANewPeer.GetPeer(ReversePeerType[APeerType]) = self), 'Peer does not point back to self');
-    assert((NodeType in [idnElse, idnElseIf]) or (FPeers[idpOpeningPeer] = nil) or (FPeers[idpClosingPeer] = nil), 'Only ELSE has 2 peers');
+    assert((ANewPeer = nil) or (ANewPeer.GetPeer(ReversePeerType[APeerType]) = self), 'Peer does not point back to self. Node:'+DebugText+' NEWNODE='+ANewPeer.DebugText(True));
+    assert((NodeType in [idnElse, idnElseIf]) or (FPeers[idpOpeningPeer] = nil) or (FPeers[idpClosingPeer] = nil), 'Only ELSE has 2 peers. Node:'+DebugText+' NEWNODE='+ANewPeer.DebugText(True));
     exit;
   end;
 
@@ -1061,7 +1071,7 @@ begin
   end
   else begin
     // If new peer is part of another pair, disolve that pair. This may set FPeers[APeerType] = nil, if new pair points to this node
-    assert(ANewPeer.GetPeer(ReversePeerType[APeerType]) <> self, 'New peer points to this, but was not known by this / link is not bidirectional');
+    assert(ANewPeer.GetPeer(ReversePeerType[APeerType]) <> self, 'New peer points to this, but was not known by this / link is not bidirectional. Node:'+DebugText+' NEWNODE='+ANewPeer.DebugText(True));
     ANewPeer.ClearPeerField(ReversePeerType[APeerType]);
 
     ANewPeer.FPeers[ReversePeerType[APeerType]] := Self;
@@ -1072,7 +1082,7 @@ begin
     else
       SetOpeningPeerNodeState(FPeers[APeerType].NodeState, FPeers[APeerType].NodeStateForPeer(NodeType));
   end;
-  assert((NodeType in [idnElse, idnElseIf]) or (FPeers[idpOpeningPeer] = nil) or (FPeers[idpClosingPeer] = nil), 'Only ELSE has 2 peers');
+  assert((NodeType in [idnElse, idnElseIf]) or (FPeers[idpOpeningPeer] = nil) or (FPeers[idpClosingPeer] = nil), 'Only ELSE has 2 peers. Node:'+DebugText+' NEWNODE='+ANewPeer.DebugText(True));
 end;
 
 procedure TSynMarkupHighIfDefEntry.MakeDisabled;
@@ -1133,7 +1143,7 @@ end;
 procedure TSynMarkupHighIfDefEntry.ClearPeerField(APeerType: TSynMarkupIfdefPeerType);
 begin
   if FPeers[APeerType] = nil then exit;
-  assert(FPeers[APeerType].GetPeer(ReversePeerType[APeerType]) = self, 'ClearPeerField: Peer does not point back to self');
+  assert(FPeers[APeerType].GetPeer(ReversePeerType[APeerType]) = self, 'ClearPeerField('+dbgs(APeerType)+'): Peer does not point back to self. '+DebugText);
 
   if APeerType = idpClosingPeer then
     FPeers[APeerType].SetOpeningPeerNodeState(idnUnknown, idnUnknown)
@@ -1187,7 +1197,7 @@ procedure TSynMarkupHighIfDefEntry.SetStartColumn(AValue: Integer);
 begin
   if FStartColumn = AValue then Exit;
   FStartColumn := AValue;
-  Assert(AValue>0, 'Startcol negative');
+  Assert(AValue>0, 'Startcol negative'+DebugText);
 end;
 
 procedure TSynMarkupHighIfDefEntry.SetStateByUser(AValue: Boolean);
@@ -1206,6 +1216,26 @@ begin
   ApplyNodeStateToLine;
 end;
 
+function TSynMarkupHighIfDefEntry.DebugText(Short: Boolean): String;
+begin
+  If Self = nil then
+    exit('NODE IS NIL');
+  Result := Format('Line=%d NType=%s State=%s OpenState=%s Flags=%s ' +
+                   ' StartCol=%d EndCol=%d',
+                   [FLine, dbgs(FNodeType), dbgs(FNodeState), dbgs(FOpeningPeerNodeState) ,
+                    dbgs(FNodeFlags), FStartColumn, FEndColumn]
+                  );
+  if Short or (FPeers[idpOpeningPeer] = nil) then
+    Result := Result + ' OpenPeer='+dbgs(FPeers[idpOpeningPeer])
+  else
+    Result := Result + ' OpenPeer='+FPeers[idpOpeningPeer].DebugText(True);
+
+  if Short or (FPeers[idpClosingPeer] = nil) then
+    Result := Result + ' ClosePeer='+dbgs(FPeers[idpClosingPeer])
+  else
+    Result := Result + ' OpenPeer='+FPeers[idpClosingPeer].DebugText(True);
+end;
+
 function TSynMarkupHighIfDefEntry.NodeStateForPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupIfdefNodeStateEx;
 const
   NodeStateMap: array [Boolean] of TSynMarkupIfdefNodeStateEx =
@@ -1214,7 +1244,7 @@ const
     (idnTempDisabled, idnTempEnabled); // False, True
 begin
   Result := idnUnknown;
-  Assert((NodeType <> APeerType) or (NodeType = idnElseIf), 'NodeStateForPeer: NodeType <> APeerType');
+  Assert((NodeType <> APeerType) or (NodeType = idnElseIf), 'NodeStateForPeer: NodeType <> APeerType'+dbgs(APeerType)+' Node:'+DebugText);
   case NodeState of
     idnEnabled: begin
         case NodeType of
@@ -1328,8 +1358,8 @@ end;
 
 procedure TSynMarkupHighIfDefLinesNode.AdjustPositionOffset(AnAdjustment: integer);
 begin
-  Assert((Successor = nil) or (GetPosition + AnAdjustment < Successor.GetPosition), 'GetPosition + AnAdjustment < Successor.GetPosition');
-  Assert((Precessor = nil) or (GetPosition + AnAdjustment > Precessor.GetPosition), 'GetPosition + AnAdjustment > Precessor.GetPosition');
+  Assert((Successor = nil) or (GetPosition + AnAdjustment < Successor.GetPosition), 'GetPosition + AnAdjustment < Successor.GetPosition '+DebugText);
+  Assert((Precessor = nil) or (GetPosition + AnAdjustment > Precessor.GetPosition), 'GetPosition + AnAdjustment > Precessor.GetPosition '+DebugText);
   FPositionOffset := FPositionOffset + AnAdjustment;
   if FLeft <> nil then
     TSynMarkupHighIfDefLinesNode(FLeft).FPositionOffset :=
@@ -1337,6 +1367,17 @@ begin
   if FRight <> nil then
     TSynMarkupHighIfDefLinesNode(FRight).FPositionOffset :=
       TSynMarkupHighIfDefLinesNode(FRight).FPositionOffset - AnAdjustment;
+end;
+
+function TSynMarkupHighIfDefLinesNode.DebugText: String;
+begin
+  if self = nil then
+    exit('NODE IN NIL');
+  Result := Format('Pos=%d Flags=%s ECnt=%d LastEOffs=%d ScanEndOffs=%d ' +
+                   ' DisEOpen=%d DisEClose=%d',
+                   [GetPosition, dbgs(FLineFlags), FEntryCount, FLastEntryEndLineOffs,
+                    FScanEndOffs, FDisabledEntryOpenCount, FDisabledEntryCloseCount
+                   ]);
 end;
 
 constructor TSynMarkupHighIfDefLinesNode.Create;
@@ -1356,7 +1397,7 @@ begin
   FLineFlags := [idlDisposed] + FLineFlags * [idlInGlobalClear];
   while EntryCount > 0 do
     DeletEntry(EntryCount-1, True);
-  assert((idlInGlobalClear in LineFlags) or ((FDisabledEntryOpenCount =0) and (FDisabledEntryCloseCount = 0)), 'no close count left over');
+  assert((idlInGlobalClear in LineFlags) or ((FDisabledEntryOpenCount =0) and (FDisabledEntryCloseCount = 0)), 'no close count left over'+DebugText);
   FDisabledEntryOpenCount := 0;
   FDisabledEntryCloseCount := 0;
 end;
@@ -1367,11 +1408,11 @@ var
 begin
   c := EntryCount;
   EntryCount := c + 1;
-  assert(FEntries[c]=nil, 'FEntries[c]=nil');
+  assert(FEntries[c]=nil, 'FEntries[c]=nil  Aindex='+IntToStr(AIndex)+' '+DebugText);
   Result := TSynMarkupHighIfDefEntry.Create;
   Result.Line := Self;
   if (AIndex >= 0) then begin
-    Assert(AIndex <= c, 'Add node index <= count');
+    Assert(AIndex <= c, 'Add node index ('+IntToStr(AIndex)+') <= count c='+IntToStr(c)+' '+DebugText);
     while c > AIndex do begin
       FEntries[c] := FEntries[c - 1];
       dec(c);
@@ -1382,7 +1423,7 @@ end;
 
 procedure TSynMarkupHighIfDefLinesNode.DeletEntry(AIndex: Integer; AFree: Boolean);
 begin
-  Assert((AIndex >= 0) and (AIndex < FEntryCount), 'DeletEntry');
+  Assert((AIndex >= 0) and (AIndex < FEntryCount), 'DeletEntry Aindex='+IntToStr(AIndex)+' '+DebugText);
   if AFree then
     FEntries[AIndex].Free
   else
@@ -1411,10 +1452,19 @@ end;
 
 procedure TSynMarkupHighIfDefLinesNodeInfo.SetStartLine(AValue: Integer);
 begin
-  Assert(FNode <> nil, 'TSynMarkupHighIfDefLinesNodeInfo.SetStartLine has node');
+  Assert(FNode <> nil, 'TSynMarkupHighIfDefLinesNodeInfo.SetStartLine has node '+DebugText);
   if FStartLine = AValue then Exit;
   FNode.AdjustPositionOffset(AValue - FStartLine);
   FStartLine := AValue;
+end;
+
+function TSynMarkupHighIfDefLinesNodeInfo.DebugText: String;
+begin
+  Result := ' Startline='+IntToStr(FStartLine);
+  if FNode <> nil then
+    Result := Result + ' '+FNode.DebugText
+  else
+    Result := Result + ' Node is nil';
 end;
 
 function TSynMarkupHighIfDefLinesNodeInfo.GetLineFlags: SynMarkupIfDefLineFlags;
@@ -1440,7 +1490,7 @@ end;
 
 function TSynMarkupHighIfDefLinesNodeInfo.GetEntry(AIndex: Integer): TSynMarkupHighIfDefEntry;
 begin
-  Assert(HasNode, 'HasNode for TSynMarkupHighIfDefLinesNodeInfo.GetEntry');
+  Assert(HasNode, 'HasNode for TSynMarkupHighIfDefLinesNodeInfo.GetEntry'+DebugText);
   Result := FNode.Entry[AIndex];
 end;
 
@@ -1471,31 +1521,31 @@ end;
 procedure TSynMarkupHighIfDefLinesNodeInfo.SetEntry(AIndex: Integer;
   AValue: TSynMarkupHighIfDefEntry);
 begin
-  Assert(HasNode, 'HasNode for TSynMarkupHighIfDefLinesNodeInfo.SetEntry');
+  Assert(HasNode, 'HasNode for TSynMarkupHighIfDefLinesNodeInfo.SetEntry'+DebugText);
   FNode.Entry[AIndex] := AValue;
 end;
 
 procedure TSynMarkupHighIfDefLinesNodeInfo.SetEntryCount(AValue: Integer);
 begin
-  Assert(HasNode, 'HasNode for TSynMarkupHighIfDefLinesNodeInfo.SetEntryCount');
+  Assert(HasNode, 'HasNode for TSynMarkupHighIfDefLinesNodeInfo.SetEntryCount'+DebugText);
   FNode.EntryCount := AValue;
 end;
 
 procedure TSynMarkupHighIfDefLinesNodeInfo.SetLastEntryEndLineOffs(AValue: Integer);
 begin
-  Assert(HasNode, 'HasNode for TSynMarkupHighIfDefLinesNodeInfo.SetEndLineOffs');
+  Assert(HasNode, 'HasNode for TSynMarkupHighIfDefLinesNodeInfo.SetEndLineOffs'+DebugText);
   FNode.LastEntryEndLineOffs := AValue;
 end;
 
 procedure TSynMarkupHighIfDefLinesNodeInfo.SetScanEndLine(AValue: Integer);
 begin
-  Assert(HasNode, 'HasNode for TSynMarkupHighIfDefLinesNodeInfo.SetScanEndLine');
+  Assert(HasNode, 'HasNode for TSynMarkupHighIfDefLinesNodeInfo.SetScanEndLine'+DebugText);
   ScanEndOffs := AValue - StartLine;
 end;
 
 procedure TSynMarkupHighIfDefLinesNodeInfo.SetScanEndOffs(AValue: Integer);
 begin
-  Assert(HasNode, 'HasNode for TSynMarkupHighIfDefLinesNodeInfo.SetScanEndOffs');
+  Assert(HasNode, 'HasNode for TSynMarkupHighIfDefLinesNodeInfo.SetScanEndOffs'+DebugText);
   FNode.ScanEndOffs := AValue;
 end;
 
@@ -1570,7 +1620,7 @@ end;
 
 function TSynMarkupHighIfDefLinesNodeInfo.NestMinimumDepthAtNode: Integer;
 begin
-  assert(FTree <> nil, 'NestWinimumDepthAtNode has tree');
+  assert(FTree <> nil, 'NestWinimumDepthAtNode has tree'+DebugText);
   if FCacheNestMinimum < 0 then
     FCacheNestMinimum :=
       FTree.GetHighLighterWithLines.FoldBlockMinLevel(ToIdx(StartLine), FOLDGROUP_IFDEF,
@@ -1580,7 +1630,7 @@ end;
 
 function TSynMarkupHighIfDefLinesNodeInfo.NestDepthAtNodeStart: Integer;
 begin
-  assert(FTree <> nil, 'NestDepthAtNodeStart has tree');
+  assert(FTree <> nil, 'NestDepthAtNodeStart has tree'+DebugText);
   if FCacheNestStart < 0 then
     FCacheNestStart :=
       FTree.GetHighLighterWithLines.FoldBlockEndLevel(ToIdx(StartLine)-1, FOLDGROUP_IFDEF,
@@ -1590,7 +1640,7 @@ end;
 
 function TSynMarkupHighIfDefLinesNodeInfo.NestDepthAtNodeEnd: Integer;
 begin
-  assert(FTree <> nil, 'NestDepthAtNodeEnd has tree');
+  assert(FTree <> nil, 'NestDepthAtNodeEnd has tree'+DebugText);
   if FCacheNestEnd < 0 then
     FCacheNestEnd :=
       FTree.GetHighLighterWithLines.FoldBlockEndLevel(ToIdx(StartLine), FOLDGROUP_IFDEF,
@@ -1607,7 +1657,7 @@ begin
 
   if ScanEndOffs >= 0 then begin
     Result := StartLine + ScanEndOffs;
-    assert((not ANextNode.HasNode) or (Result<ANextNode.StartLine), '(ANextNode=nil) or (Result<ANextNode.StartLine)');
+    assert((not ANextNode.HasNode) or (Result<ANextNode.StartLine), '(ANextNode=nil) or (Result<ANextNode.StartLine)'+DebugText);
   end
   else
   if ANextNode.HasNode then
@@ -1714,7 +1764,7 @@ procedure TSynMarkupHighIfDefLinesTree.MaybeExtendNodeBackward(var ANode: TSynMa
 var
   Line: Integer;
 begin
-  Assert(ANode.HasNode, 'ANode.HasNode in MaybeExtendNodeDownwards');
+  Assert(ANode.HasNode, 'ANode.HasNode in MaybeExtendNodeDownwards'+ANode.DebugText+ ' Stopline='+IntToStr(AStopAtLine));
   MaybeValidateNode(ANode);
   if (ANode.EntryCount = 0) then begin
     // ANode is a Scan-Start-Marker and may be extended downto StartLine
@@ -2588,7 +2638,7 @@ begin
 
     LogStartX := ToPos(fn.LogXStart)-1;  // LogXStart is at "$", we need "{"
     if (LogStartX < 1) or (LogStartX > LineLen) then begin
-      assert(false, '(LogStartX < 1) or (LogStartX > LineLen) ');
+      assert(false, '(LogStartX < 1) or (LogStartX > LineLen)  LogX='+IntToStr(LogStartX)+ ' Line='+IntToStr(ALine)+' Txt='+LineTextLower);
       continue;
     end;
 //    assert(LogStartX >= LogEndX, 'ifdef xpos found before end of previous ifdef');
@@ -2598,39 +2648,39 @@ begin
     case TheDict.GetMatchAtChar(@LineTextLower[LogStartX], LineLen + 1 - LogStartX) of
       1: // ifdef
         begin
-          assert(sfaOpen in fn.FoldAction, 'sfaOpen in fn.FoldAction');
+          assert(sfaOpen in fn.FoldAction, 'sfaOpen in fn.FoldAction  LogX='+IntToStr(LogStartX)+ ' FldAct='+dbgs(fn.FoldAction)+ ' Line='+IntToStr(ALine)+' Txt='+LineTextLower);
           NType := idnIfdef;
           //inc(RelNestDepthNext);
         end;
       2: // else
         begin
-          assert(i < c, '$ELSE i < c');
+          assert(i < c, '$ELSE i < c  LogX='+IntToStr(LogStartX)+ ' FldAct='+dbgs(fn.FoldAction)+ ' Line='+IntToStr(ALine)+' Txt='+LineTextLower);
           inc(i);
           fn2 := FoldNodeInfoList[i];
-          assert(sfaClose in fn.FoldAction, 'sfaClose in fn.FoldAction');
-          assert(sfaOpen in fn2.FoldAction, 'sfaOpen in fn2.FoldAction');
-          assert(fn.LogXStart = fn2.LogXStart, 'sfaOpen in fn2.FoldAction');
+          assert(sfaClose in fn.FoldAction, 'sfaClose in fn.FoldAction  LogX='+IntToStr(LogStartX)+ ' FldAct='+dbgs(fn.FoldAction)+ ' Line='+IntToStr(ALine)+' Txt='+LineTextLower);
+          assert(sfaOpen in fn2.FoldAction, 'sfaOpen in fn2.FoldAction  LogX='+IntToStr(LogStartX)+ ' FldAct='+dbgs(fn.FoldAction)+ ' Line='+IntToStr(ALine)+' Txt='+LineTextLower);
+          assert(fn.LogXStart = fn2.LogXStart, 'sfaOpen in fn2.FoldAction  LogX='+IntToStr(LogStartX)+ ' FldAct='+dbgs(fn.FoldAction)+ ' Line='+IntToStr(ALine)+' Txt='+LineTextLower);
           NType := idnElse;
         end;
       3: // endif
         begin
-          assert(sfaClose in fn.FoldAction, 'sfaOpen in fn.FoldAction');
+          assert(sfaClose in fn.FoldAction, 'sfaOpen in fn.FoldAction  LogX='+IntToStr(LogStartX)+ ' FldAct='+dbgs(fn.FoldAction)+ ' Line='+IntToStr(ALine)+' Txt='+LineTextLower);
           NType := idnEndIf;
           //dec(RelNestDepthNext);
         end;
       4: // ElseIf
         begin
-          assert(i < c, '$ELSE i < c');
+          assert(i < c, '$ELSE i < c  LogX='+IntToStr(LogStartX)+ ' FldAct='+dbgs(fn.FoldAction)+ ' Line='+IntToStr(ALine)+' Txt='+LineTextLower);
           inc(i);
           fn2 := FoldNodeInfoList[i];
-          assert(sfaClose in fn.FoldAction, 'sfaClose in fn.FoldAction');
-          assert(sfaOpen in fn2.FoldAction, 'sfaOpen in fn2.FoldAction');
-          assert(fn.LogXStart = fn2.LogXStart, 'sfaOpen in fn2.FoldAction');
+          assert(sfaClose in fn.FoldAction, 'sfaClose in fn.FoldAction  LogX='+IntToStr(LogStartX)+ ' FldAct='+dbgs(fn.FoldAction)+ ' Line='+IntToStr(ALine)+' Txt='+LineTextLower);
+          assert(sfaOpen in fn2.FoldAction, 'sfaOpen in fn2.FoldAction  LogX='+IntToStr(LogStartX)+ ' FldAct='+dbgs(fn.FoldAction)+ ' Line='+IntToStr(ALine)+' Txt='+LineTextLower);
+          assert(fn.LogXStart = fn2.LogXStart, 'sfaOpen in fn2.FoldAction  LogX='+IntToStr(LogStartX)+ ' FldAct='+dbgs(fn.FoldAction)+ ' Line='+IntToStr(ALine)+' Txt='+LineTextLower);
           NType := idnElseIf;
         end;
       else
         begin
-          assert(false, 'not found ifdef');
+          assert(false, 'not found ifdef  LogX='+IntToStr(LogStartX)+ ' FldAct='+dbgs(fn.FoldAction)+ ' Line='+IntToStr(ALine)+' Txt='+LineTextLower);
           continue;
         end;
     end;
