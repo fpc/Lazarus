@@ -6849,6 +6849,7 @@ packager/globallinks/messagecomposerpkg-0.lpl svneol=native#text/plain
 packager/globallinks/multithreadprocslaz-1.2.1.lpl svneol=native#text/plain
 packager/globallinks/notlcldesigner-0.lpl svneol=native#text/plain
 packager/globallinks/pascalscript-0.0.0.1.lpl svneol=native#text/plain
+packager/globallinks/pascalscriptfcl-0.0.0.1.lpl svneol=native#text/plain
 packager/globallinks/pochecker-1.lpl svneol=native#text/plain
 packager/globallinks/prettymessages-0.lpl svneol=native#text/plain
 packager/globallinks/printer4lazarus-0.5.lpl svneol=native#text/plain
