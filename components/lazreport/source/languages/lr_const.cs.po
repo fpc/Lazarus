@@ -1266,7 +1266,7 @@ msgstr "Seznam proměnných ..."
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
-msgstr ""
+msgstr "Nepodporovaný FRF formát"
 
 #: lr_const.sfrom
 msgid "from"

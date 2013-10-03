@@ -1258,7 +1258,7 @@ msgstr "Variablen-&Liste..."
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
-msgstr ""
+msgstr "Nicht unterstütztes FRF-Format"
 
 #: lr_const.sfrom
 msgid "from"

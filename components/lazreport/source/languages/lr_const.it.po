@@ -1261,7 +1261,7 @@ msgstr "&Lista variabili"
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
-msgstr ""
+msgstr "Formato FRF non supportato"
 
 #: lr_const.sfrom
 msgid "from"

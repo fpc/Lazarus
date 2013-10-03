@@ -1248,7 +1248,7 @@ msgstr "Сп&исок переменных ..."
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
-msgstr ""
+msgstr "Неподдерживаемый формат FRF"
 
 #: lr_const.sfrom
 msgid "from"

@@ -1263,7 +1263,7 @@ msgstr "List zmi&ennych..."
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
-msgstr ""
+msgstr "Nieobsługiwany format  pliku FRF"
 
 #: lr_const.sfrom
 msgid "from"

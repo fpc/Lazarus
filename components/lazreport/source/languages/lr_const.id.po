@@ -1260,7 +1260,7 @@ msgstr "Da&ftar variabel..."
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
-msgstr ""
+msgstr "Format FRF tidak didukung"
 
 #: lr_const.sfrom
 msgid "from"

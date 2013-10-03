@@ -1250,7 +1250,7 @@ msgstr "Kintamųjų &sąrašas…"
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
-msgstr ""
+msgstr "Nepalaikomas FRF formatas"
 
 #: lr_const.sfrom
 msgid "from"

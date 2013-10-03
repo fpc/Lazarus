@@ -1251,7 +1251,7 @@ msgstr "Список &змінних ..."
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
-msgstr ""
+msgstr "Непідтримуваний формат FRF"
 
 #: lr_const.sfrom
 msgid "from"
