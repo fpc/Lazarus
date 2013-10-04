@@ -42,16 +42,17 @@ type
 constructor TPicFileFormatsList.Create;
 begin
   inherited Create;
-  Add(TBitmap.GetFileExtensions, rsBitmaps, TBitmap);
-  Add(TPixmap.GetFileExtensions, rsPixmap, TPixmap);
+  // add by priority of use in LCL/IDE
   Add(TPortableNetworkGraphic.GetFileExtensions, rsPortableNetworkGraphic, TPortableNetworkGraphic);
-  Add(TPortableAnyMapGraphic.GetFileExtensions, rsPortablePixmap, TPortableAnyMapGraphic);
+  Add(TPixmap.GetFileExtensions, rsPixmap, TPixmap);
+  Add(TBitmap.GetFileExtensions, rsBitmaps, TBitmap);
+  Add(TCursorImage.GetFileExtensions, rsCursor, TCursorImage);
   Add(TIcon.GetFileExtensions, rsIcon, TIcon);
   Add(TIcnsIcon.GetFileExtensions, rsIcns, TIcnsIcon);
-  Add(TCursorImage.GetFileExtensions, rsCursor, TCursorImage);
   Add(TJpegImage.GetFileExtensions, rsJpeg, TJpegImage);
   Add(TTiffImage.GetFileExtensions, rsTiff, TTiffImage);
   Add(TGIFImage.GetFileExtensions, rsGIF, TGIFImage);
+  Add(TPortableAnyMapGraphic.GetFileExtensions, rsPortablePixmap, TPortableAnyMapGraphic);
 end;
 
 procedure TPicFileFormatsList.Clear;
@@ -154,7 +155,7 @@ function TPicFileFormatsList.FindByStreamFormat(Stream: TStream): TGraphicClass;
 var
   I: Integer;
 begin
-  for I := Count - 1 downto 0 do
+  for I := 0 to Count - 1 do
   begin
     Result := GetFormats(I)^.GraphicClass;
     if Result.IsStreamFormatSupported(Stream) then
