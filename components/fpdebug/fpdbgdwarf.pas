@@ -181,7 +181,7 @@ type
      "Next Sibling" is either CurrentIndex + 1 (no children), or can be found via
       the first childs link.
      A Sibling has the same Parent. (If there is no child, and CurrentIndex+1 has
-      a diff parent, then there is no Nexn)
+      a diff parent, then there is no Next)
 
      TopLevel Scopes have Link=-1
   *)
@@ -204,14 +204,13 @@ type
   private
     FScopeList: PDwarfScopeList;
     FIndex: Integer;
-    FIsValid: Boolean;
-    //FData: PDwarfScopeInfoRec;
     function GetChild: TDwarfScopeInfo; inline;
     function GetChildIndex: Integer; inline;
     function GetEntry: Pointer; inline;
     function GetNext: TDwarfScopeInfo; inline;
     function GetNextIndex: Integer; inline;
     function GetParent: TDwarfScopeInfo; inline;
+    function GetParentIndex: Integer;
     procedure SetIndex(AIndex: Integer);
     function CreateScopeForEntry(AEntry: Pointer; ALink: Integer): Integer;
   public
@@ -219,7 +218,7 @@ type
     function CreateNextForEntry(AEntry: Pointer): Integer;
     function CreateChildForEntry(AEntry: Pointer): Integer;
 
-    property IsValid: Boolean read FIsValid;
+    function IsValid: Boolean; inline;
     property Index: Integer read FIndex write SetIndex;
     property Entry: Pointer read GetEntry;
 
@@ -232,6 +231,7 @@ type
     procedure GoChild; inline;
 
     property Parent: TDwarfScopeInfo read GetParent;
+    property ParentIndex: Integer read GetParentIndex;
     property Next: TDwarfScopeInfo read GetNext;
     property NextIndex: Integer read GetNextIndex;
     property Child: TDwarfScopeInfo read GetChild;
@@ -293,7 +293,8 @@ type
   end;
 
   TDwarfLocateEntryFlag = (
-    lefCreateAttribList,
+    lefCreateAttribList, // Build a list of pointers into the debug_info for the found entry.
+                         // For each Abbreviation-attribute, point to the data in the Entry
     lefContinuable,  // forces the located scope or the startscope to be contuniable
                      // meaning that tree traversion can continue from a scope
     lefSearchChild,
@@ -372,7 +373,9 @@ type
     procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
     function  MakeAddress(AData: Pointer): QWord;
   protected
-    function LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo; AFlags: TDwarfLocateEntryFlags; out AResultScope: TDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
+    function LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo;
+                         AFlags: TDwarfLocateEntryFlags;
+                         out AResultScope: TDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
     function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; const AList: TPointerDynArray; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
 
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Integer): Boolean;
@@ -567,6 +570,58 @@ begin
   then Result := Result or (Int64(-1) shl n);
 end;
 
+function SkipEntryDataForForm(var AEntryData: Pointer; AForm: Cardinal; AddrSize: Byte): Boolean; inline;
+var
+  UValue: QWord;
+begin
+  Result := True;
+  case AForm of
+    DW_FORM_addr     : Inc(AEntryData, AddrSize);
+    DW_FORM_block    : begin
+        UValue := ULEB128toOrdinal(AEntryData);
+        Inc(AEntryData, UValue);
+      end;
+    DW_FORM_block1   : Inc(AEntryData, PByte(AEntryData)^ + 1);
+    DW_FORM_block2   : Inc(AEntryData, PWord(AEntryData)^ + 2);
+    DW_FORM_block4   : Inc(AEntryData, PLongWord(AEntryData)^ + 4);
+    DW_FORM_data1    : Inc(AEntryData, 1);
+    DW_FORM_data2    : Inc(AEntryData, 2);
+    DW_FORM_data4    : Inc(AEntryData, 4);
+    DW_FORM_data8    : Inc(AEntryData, 8);
+    DW_FORM_sdata    : begin
+        while (PByte(AEntryData)^ and $80) <> 0 do Inc(AEntryData);
+        Inc(AEntryData);
+      end;
+    DW_FORM_udata    : begin
+        while (PByte(AEntryData)^ and $80) <> 0 do Inc(AEntryData);
+        Inc(AEntryData);
+      end;
+    DW_FORM_flag     : Inc(AEntryData, 1);
+    DW_FORM_ref1     : Inc(AEntryData, 1);
+    DW_FORM_ref2     : Inc(AEntryData, 2);
+    DW_FORM_ref4     : Inc(AEntryData, 4);
+    DW_FORM_ref8     : Inc(AEntryData, 8);
+    DW_FORM_ref_udata: begin
+        while (PByte(AEntryData)^ and $80) <> 0 do Inc(AEntryData);
+        Inc(AEntryData);
+      end;
+    DW_FORM_ref_addr : Inc(AEntryData, AddrSize);
+    DW_FORM_string   : begin
+        while PByte(AEntryData)^ <> 0 do Inc(AEntryData);
+        Inc(AEntryData);
+      end;
+    DW_FORM_strp     : Inc(AEntryData, AddrSize);
+    DW_FORM_indirect : begin
+        while AForm = DW_FORM_indirect do AForm := ULEB128toOrdinal(AEntryData);
+        Result := SkipEntryDataForForm(AEntryData, AForm, AddrSize);
+      end;
+  else begin
+      DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Unknown Form: ', AForm]);
+      Result := False;
+    end;
+  end;
+
+end;
 
 function DwarfTagToString(AValue: Integer): String;
 begin
@@ -1451,6 +1506,11 @@ end;
 
 { TDwarfScopeInfo }
 
+function TDwarfScopeInfo.IsValid: Boolean;
+begin
+  Result := FIndex >= 0;
+end;
+
 function TDwarfScopeInfo.GetNext: TDwarfScopeInfo;
 begin
   Result.Init(FScopeList);
@@ -1517,10 +1577,22 @@ begin
   Result.Index := l;
 end;
 
+function TDwarfScopeInfo.GetParentIndex: Integer;
+begin
+  Result := -1;
+  if not IsValid then exit;
+  Result := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
+  assert(Result <= FScopeList^.HighestKnown);
+  if Result > Index then
+    Result := Index - 1;   // This is a first child, make l = parent
+end;
+
 procedure TDwarfScopeInfo.SetIndex(AIndex: Integer);
 begin
-  FIndex := AIndex;
-  FIsValid := (FIndex >= 0) and (FIndex <= FScopeList^.HighestKnown);
+  if (AIndex >= 0) and (AIndex <= FScopeList^.HighestKnown) then
+    FIndex := AIndex
+  else
+    FIndex := -1;
 end;
 
 function TDwarfScopeInfo.CreateScopeForEntry(AEntry: Pointer; ALink: Integer): Integer;
@@ -2228,8 +2300,8 @@ begin
       Scope := ResultScope;
     end;
 
-    while (not Scope.HasNext) and (Scope.HasParent) do Scope := Scope.Parent;
-    Scope := Scope.Next;
+    while (not Scope.HasNext) and (Scope.HasParent) do Scope.GoParent;
+    Scope.GoNext;
   end;
 
   FAddressMapBuild := True;
@@ -2478,7 +2550,8 @@ begin
   Result := Map^.GetAddressForLine(ALine);
 end;
 
-function TDwarfCompilationUnit.LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; const AList: TPointerDynArray; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
+function TDwarfCompilationUnit.LocateAttribute(AEntry: Pointer; AAttribute: Cardinal;
+  const AList: TPointerDynArray; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
 var
   Abbrev: Cardinal;
   Def: TDwarfAbbrev;
@@ -2517,103 +2590,26 @@ end;
 //   AResultScope: the located scope info
 //   AList: an array where pointers to all attribs are stored
 //----------------------------------------
-function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo; AFlags: TDwarfLocateEntryFlags; out AResultScope: TDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
-  procedure SkipLEB(var p: Pointer);
-  begin
-    while (PByte(p)^ and $80) <> 0 do Inc(p);
-    Inc(p);
-  end;
-
-  procedure SkipStr(var p: Pointer);
-  begin
-    while PByte(p)^ <> 0 do Inc(p);
-    Inc(p);
-  end;
+function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo;
+  AFlags: TDwarfLocateEntryFlags; out AResultScope: TDwarfScopeInfo; out
+  AList: TPointerDynArray): Boolean;
   
   procedure ParseAttribs(const ADef: TDwarfAbbrev; ABuildList: Boolean; var p: Pointer);
   var
     idx: Integer;
-    Form: Cardinal;
-    UValue: QWord;
     ADefs: PDwarfAbbrevEntry;
+    AdrSize: Byte;
   begin
-    ADefs := FAbbrevList.EntryPointer[0];
-    for idx := ADef.Index to ADef.Index + ADef.Count - 1 do
+    ADefs := FAbbrevList.EntryPointer[ADef.Index];
+    AdrSize := FAddressSize;
+    for idx := 0 to ADef.Count - 1 do
     begin
       if ABuildList
-      then AList[idx - ADef.Index] := p;
+      then AList[idx] := p;
 
-      Form := ADefs[idx].Form;
-      while Form = DW_FORM_indirect do Form := ULEB128toOrdinal(p);
-
-      case Form of
-        DW_FORM_addr     : begin
-          Inc(p, FAddressSize);
-        end;
-        DW_FORM_block    : begin
-          UValue := ULEB128toOrdinal(p);
-          Inc(p, UValue);
-        end;
-        DW_FORM_block1   : begin
-          Inc(p, PByte(p)^ + 1);
-        end;
-        DW_FORM_block2   : begin
-          Inc(p, PWord(p)^ + 2);
-        end;
-        DW_FORM_block4   : begin
-          Inc(p, PLongWord(p)^ + 4);
-        end;
-        DW_FORM_data1    : begin
-          Inc(p, 1);
-        end;
-        DW_FORM_data2    : begin
-          Inc(p, 2);
-        end;
-        DW_FORM_data4    : begin
-          Inc(p, 4);
-        end;
-        DW_FORM_data8    : begin
-          Inc(p, 8);
-        end;
-        DW_FORM_sdata    : begin
-          SkipLEB(p);
-        end;
-        DW_FORM_udata    : begin
-          SkipLEB(p);
-        end;
-        DW_FORM_flag     : begin
-          Inc(p, 1);
-        end;
-        DW_FORM_ref1     : begin
-          Inc(p, 1);
-        end;
-        DW_FORM_ref2     : begin
-          Inc(p, 2);
-        end;
-        DW_FORM_ref4     : begin
-          Inc(p, 4);
-        end;
-        DW_FORM_ref8     : begin
-          Inc(p, 8);
-        end;
-        DW_FORM_ref_udata: begin
-          SkipLEB(p);
-        end;
-        DW_FORM_ref_addr : begin
-          Inc(p, FAddressSize);
-        end;
-        DW_FORM_string   : begin
-          SkipStr(p);
-        end;
-        DW_FORM_strp     : begin
-          Inc(p, FAddressSize);
-        end;
-        DW_FORM_indirect : begin
-        end;
-      else
-        DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Unknown Form: ', Form]);
+      if not SkipEntryDataForForm(p, ADefs^.Form, AdrSize) then
         Break;
-      end;
+      inc(ADefs);
     end;
   end;
   
@@ -2643,7 +2639,7 @@ var
   Level: Integer;
   MaxData: Pointer;
   p: Pointer;
-  Scope, Scope2: TDwarfScopeInfo;
+  Scope: TDwarfScopeInfo;
   BuildList: Boolean; // set once if we need to fill the list
   Searching: Boolean; // set as long as we need searching for a tag.
   p2: Pointer;
@@ -2675,10 +2671,10 @@ begin
         // p is now the entry of the next of the startparent
         // let's see if we need to set it
         if not (lefContinuable in AFlags) then Exit;
-        Scope2 := AStartScope.Parent;
-        if not Scope2.IsValid then Exit;
-        if Scope2.HasNext then Exit;
-        Scope2.CreateNextForEntry(p);
+        Scope.Index := AStartScope.ParentIndex;
+        //if not Scope2.IsValid then Exit;
+        if Scope.HasNext then Exit;
+        Scope.CreateNextForEntry(p);
         Exit;
       end;
 
@@ -3018,7 +3014,8 @@ begin
     Size := 0;
   end;
   SetLength(AValue, Size);
-  Move(AAttribute^, AValue[0], Size);
+  if Size > 0 then
+    Move(AAttribute^, AValue[0], Size);
 end;
 
 { TDwarfVerboseCompilationUnit }
