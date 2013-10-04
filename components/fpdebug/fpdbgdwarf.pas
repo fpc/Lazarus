@@ -103,6 +103,9 @@ type
   TPointerDynArray = array of Pointer;
 
   TDbgDwarf = class;
+  TDwarfCompilationUnit = class;
+
+  { TDwarfAbbrev }
 
   TDwarfAbbrev = record
     tag: Cardinal;
@@ -238,7 +241,47 @@ type
     property ChildIndex: Integer read GetChildIndex;
   end;
 
-  TDwarfCompilationUnit = class;
+  { TDwarfInformationEntry }
+
+  TDwarfInformationEntry = class
+  private
+    FCompUnit: TDwarfCompilationUnit;
+    FInformationEntry: Pointer; // pointer to the LEB128 Abbrev at the start of an Information entry in debug_info
+    FInformationData: Pointer;  // poinetr after the LEB128
+    FScope: TDwarfScopeInfo;
+    FAbbrev: TDwarfAbbrev;
+    FAbbrevData: PDwarfAbbrevEntry;
+    FFlags: set of (dieAbbrevValid);
+
+    procedure ScopeChanged; inline;
+    function SearchScope: Boolean;
+    function PrepareAbbrev: Boolean; inline;
+
+    function GetScopeIndex: Integer;
+    procedure SetAbbrev(AValue: TDwarfAbbrev);
+    procedure SetScopeIndex(AValue: Integer);
+  public
+    constructor Create(ACompUnit: TDwarfCompilationUnit; AnInformationEntry: Pointer);
+    constructor Create(ACompUnit: TDwarfCompilationUnit; AScope: TDwarfScopeInfo);
+
+    property Abbrev: TDwarfAbbrev read FAbbrev write SetAbbrev;
+    property AbbrevData: PDwarfAbbrevEntry read FAbbrevData;
+    function HasAttrib(AnAttrib: Cardinal): boolean;
+    function AttribIdx(AnAttrib: Cardinal; out AInfoPointer: pointer): Integer;
+
+    function ReadValue(AnAttrib: Cardinal; out AValue: Integer): Boolean;
+    function ReadValue(AnAttrib: Cardinal; out AValue: Int64): Boolean;
+    function ReadValue(AnAttrib: Cardinal; out AValue: Cardinal): Boolean;
+    function ReadValue(AnAttrib: Cardinal; out AValue: QWord): Boolean;
+    function ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
+  public
+    // Scope
+    procedure GoParent; inline;
+    procedure GoNext; inline;
+    procedure GoChild; inline;
+    function HasValidScope: Boolean;
+    property ScopeIndex: Integer read GetScopeIndex write SetScopeIndex;
+  end;
 
   { TDwarfLineInfoStateMachine }
 
@@ -377,6 +420,7 @@ type
                          AFlags: TDwarfLocateEntryFlags;
                          out AResultScope: TDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
     function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; const AList: TPointerDynArray; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
+    function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
 
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Integer): Boolean;
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Int64): Boolean;
@@ -385,6 +429,9 @@ type
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: String): Boolean;
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: PChar): Boolean;
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: TByteDynArray): Boolean;
+
+    property FirstScope: TDwarfScopeInfo read FScope;
+    property AbbrevList: TDwarfAbbrevList read FAbbrevList;
   public
     constructor Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); virtual;
     destructor Destroy; override;
@@ -444,6 +491,29 @@ type
   end;
   
   
+  { TDbgDwarfIdentifier }
+
+  TDbgDwarfIdentifier = class(TDbgSymbol)
+  private
+    FCU: TDwarfCompilationUnit;
+    FScope: TDwarfScopeInfo;
+  protected
+    //function GetChild(AIndex: Integer): TDbgSymbol; override;
+    //function GetColumn: Cardinal; override;
+    //function GetCount: Integer; override;
+    //function GetFile: String; override;
+//    function GetFlags: TDbgSymbolFlags; override;
+    //function GetLine: Cardinal; override;
+    //function GetParent: TDbgSymbol; override;
+//    function GetReference: TDbgSymbol; override;
+    //function GetSize: Integer; override;
+  public
+    constructor Create(ACompilationUnit: TDwarfCompilationUnit; AScope: TDwarfScopeInfo);
+    //constructor Create(AName: String; AAddress: TDbgPtr; ACompilationUnit: TDwarfCompilationUnit;
+    //  AScope: TDwarfScopeInfo);
+    //destructor Destroy; override;
+  end;
+
   { TDbgDwarfProcSymbol }
 
   TDbgDwarfProcSymbol = class(TDbgSymbol)
@@ -469,7 +539,6 @@ type
   end;
 
 
-  
 type
   TDwarfSection = (dsAbbrev, dsARanges, dsFrame,  dsInfo, dsLine, dsLoc, dsMacinfo, dsPubNames, dsPubTypes, dsRanges, dsStr);
 
@@ -503,6 +572,7 @@ type
     constructor Create(ALoader: TDbgImageLoader); override;
     destructor Destroy; override;
     function FindSymbol(AAddress: TDbgPtr): TDbgSymbol; override;
+    function FindIdentifier(AAddress: TDbgPtr; AName: String): TDbgSymbol;
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr; override;
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function LoadCompilationUnits: Integer;
@@ -528,6 +598,9 @@ function DwarfAttributeFormToString(AValue: Integer): String;
 function ULEB128toOrdinal(var p: PByte): QWord;
 function SLEB128toOrdinal(var p: PByte): Int64;
 
+function Dbgs(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): String; overload;
+function DbgsDump(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): String; overload;
+
 implementation
 
 var
@@ -535,6 +608,47 @@ var
 
 const
   SCOPE_ALLOC_BLOCK_SIZE = 4096; // Increase scopelist in steps of
+
+function dbgs(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): String;
+var
+  Attrib: Pointer;
+  Form: Cardinal;
+  Name: String;
+  Def: TDwarfAbbrev;
+begin
+  Result := '';
+  if not AScope.IsValid then
+    exit('Invalid-Scope');
+
+  if ACompUnit.LocateAttribute(AScope.Entry, DW_AT_name, Attrib, Form) then
+    if (Form = DW_FORM_string) or (Form = DW_FORM_strp) then
+      ACompUnit.ReadValue(Attrib, Form, Name);
+
+  if ACompUnit.GetDefinition(AScope.Entry, Def) then
+    Result := Format('AScope(Idx=%d Tag=%s Name=%s)', [AScope.Index, DwarfTagToString(Def.tag), Name])
+  else
+    Result := Format('AScope(Idx=%d Name=%s)', [AScope.Index, Name]);
+end;
+
+function DbgsDump(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): String;
+var
+  Def: TDwarfAbbrev;
+  i: Integer;
+begin
+  Result := '';
+  if not AScope.IsValid then
+    exit('Invalid-Scope');
+
+  if ACompUnit.GetDefinition(AScope.Entry, Def) then begin
+  Result := LineEnding;
+    for i := Def.index to Def.index + Def.count - 1 do begin
+      Result := Result +
+        DwarfAttributeToString(ACompUnit.FAbbrevList.EntryPointer[i]^.Attribute) + ' ' +
+        DwarfAttributeFormToString(ACompUnit.FAbbrevList.EntryPointer[i]^.Form) +
+        LineEnding;
+    end;
+  end;
+end;
 
 function ULEB128toOrdinal(var p: PByte): QWord;
 var
@@ -926,6 +1040,210 @@ begin
   else
     Result := Format('DW_ID_%d', [AValue]);
   end;
+end;
+
+{ TDwarfInformationEntry }
+
+procedure TDwarfInformationEntry.SetAbbrev(AValue: TDwarfAbbrev);
+begin
+  FAbbrev := AValue;
+  // assert correct for entry
+  Include(FFlags, dieAbbrevValid);
+end;
+
+procedure TDwarfInformationEntry.ScopeChanged;
+begin
+  FInformationEntry := FScope.Entry;
+  FFlags := [];
+  FInformationData := nil;
+end;
+
+function TDwarfInformationEntry.SearchScope: Boolean;
+var
+  l, h, m: Integer;
+  lst: TDwarfScopeArray;
+begin
+  Result := False;
+  l := 0;
+  h := FCompUnit.FScopeList.HighestKnown;
+  lst := FCompUnit.FScopeList.List;
+  while h > l do begin
+    m := (h + l) div 2;
+    if lst[m].Entry >= FInformationEntry
+    then h := m
+    else l := m + 1;
+  end;
+
+  Result := lst[h].Entry = FInformationEntry;
+  if Result then
+    ScopeIndex := h;
+end;
+
+function TDwarfInformationEntry.PrepareAbbrev: Boolean;
+var
+  AbbrList: TDwarfAbbrevList;
+begin
+  Result := FAbbrevData <> nil;
+  if dieAbbrevValid in FFlags then
+    exit;
+  AbbrList := FCompUnit.FAbbrevList;
+  FInformationData := AbbrList.FindLe128bFromPointer(FInformationEntry, FAbbrev);
+  Result := FInformationData <> nil;
+  if Result
+  then FAbbrevData := AbbrList.EntryPointer[FAbbrev.index]
+  else FAbbrevData := nil;
+  Include(FFlags, dieAbbrevValid);
+end;
+
+function TDwarfInformationEntry.AttribIdx(AnAttrib: Cardinal; out
+  AInfoPointer: pointer): Integer;
+var
+  i: Integer;
+  AddrSize: Byte;
+begin
+  if not PrepareAbbrev then exit(-1);
+  AInfoPointer := FInformationData;
+  AddrSize := FCompUnit.FAddressSize;
+  for i := 0 to FAbbrev.count - 1 do begin
+    if FAbbrevData[i].Attribute = AnAttrib then
+      exit(i);
+    SkipEntryDataForForm(AInfoPointer, FAbbrevData[i].Form, AddrSize);
+  end;
+  Result := -1;
+end;
+
+function TDwarfInformationEntry.GetScopeIndex: Integer;
+begin
+  Result := FScope.Index;
+end;
+
+procedure TDwarfInformationEntry.SetScopeIndex(AValue: Integer);
+begin
+  if FScope.Index = AValue then
+    exit;
+  FScope.Index := AValue;
+  ScopeChanged;
+end;
+
+constructor TDwarfInformationEntry.Create(ACompUnit: TDwarfCompilationUnit;
+  AnInformationEntry: Pointer);
+begin
+  FCompUnit := ACompUnit;
+  FInformationEntry := AnInformationEntry;
+  FScope.Init(@FCompUnit.FScopeList);
+end;
+
+constructor TDwarfInformationEntry.Create(ACompUnit: TDwarfCompilationUnit;
+  AScope: TDwarfScopeInfo);
+begin
+  FCompUnit := ACompUnit;
+  FScope := AScope;
+  ScopeChanged;
+end;
+
+function TDwarfInformationEntry.HasAttrib(AnAttrib: Cardinal): boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  if not PrepareAbbrev then exit;
+  Result := True;
+  for i := 0 to FAbbrev.count - 1 do
+    if FAbbrevData[i].Attribute = AnAttrib then
+      exit;
+  Result := False;
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Integer): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  i := AttribIdx(AnAttrib, AData);
+  if i < 0 then exit(False);
+  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Int64): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  i := AttribIdx(AnAttrib, AData);
+  if i < 0 then exit(False);
+  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Cardinal): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  i := AttribIdx(AnAttrib, AData);
+  if i < 0 then exit(False);
+  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: QWord): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  i := AttribIdx(AnAttrib, AData);
+  if i < 0 then exit(False);
+  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  i := AttribIdx(AnAttrib, AData);
+  if i < 0 then exit(False);
+  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+end;
+
+procedure TDwarfInformationEntry.GoParent;
+begin
+  if (not FScope.IsValid) and (FInformationEntry <> nil) then
+    if not SearchScope then
+      exit;
+  FScope.GoParent;
+  ScopeChanged;
+end;
+
+procedure TDwarfInformationEntry.GoNext;
+begin
+  if (not FScope.IsValid) and (FInformationEntry <> nil) then
+    if not SearchScope then
+      exit;
+  FScope.GoNext;
+  ScopeChanged;
+end;
+
+procedure TDwarfInformationEntry.GoChild;
+begin
+  if (not FScope.IsValid) and (FInformationEntry <> nil) then
+    if not SearchScope then
+      exit;
+  FScope.GoChild;
+  ScopeChanged;
+end;
+
+function TDwarfInformationEntry.HasValidScope: Boolean;
+begin
+  Result := FScope.IsValid;
+end;
+
+{ TDbgDwarfIdentifier }
+
+constructor TDbgDwarfIdentifier.Create(ACompilationUnit: TDwarfCompilationUnit;
+  AScope: TDwarfScopeInfo);
+begin
+  FCU := ACompilationUnit;
+  FScope := AScope;
+  inherited Create('', skNone, 0);
 end;
 
 { TDwarfAbbrevList }
@@ -1700,7 +2018,6 @@ begin
   Result := CreateScopeForEntry(AEntry, FIndex); // First Child, but no parent.next yet
 end;
 
-
 { TDbgDwarfSymbol }
 
 constructor TDbgDwarfProcSymbol.Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr);
@@ -1898,6 +2215,102 @@ begin
     finally
       Iter.Free;
     end;
+  end;
+end;
+
+function TDbgDwarf.FindIdentifier(AAddress: TDbgPtr; AName: String): TDbgSymbol;
+var
+  SubRoutine: TDbgDwarfProcSymbol; // TDbgSymbol;
+  CU: TDwarfCompilationUnit;
+  //Scope,
+  Scope2: TDwarfScopeInfo;
+  Def: TDwarfAbbrev;
+  Form: Cardinal;
+  Attrib: Pointer;
+  SubName, EntryName: String;
+  StartScopeIdx, i: Integer;
+  AtTypeOffs: PtrInt;
+  AtTypeAddr: Pointer;
+  InfoEntry, InfoEntry2: TDwarfInformationEntry;
+begin
+  Result := nil;
+  SubRoutine := TDbgDwarfProcSymbol(FindSymbol(AAddress));
+  if SubRoutine = nil then
+    exit;
+
+  try
+    CU := SubRoutine.FCU;
+    InfoEntry := TDwarfInformationEntry.Create(CU, nil);
+    InfoEntry.ScopeIndex := SubRoutine.FAddressInfo^.ScopeIndex;
+
+    //Scope.Init(SubRoutine.FAddressInfo^.ScopeList);
+    //Scope.Index := SubRoutine.FAddressInfo^.ScopeIndex;
+//    debugln(['TDbgDwarf.FindIdentifier Found Subroutine ', dbgs(Scope)]);
+
+
+    while InfoEntry.HasValidScope do begin
+      debugln(['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
+      StartScopeIdx := InfoEntry.ScopeIndex;
+      InfoEntry.GoChild;
+
+      while InfoEntry.HasValidScope do begin
+        if not InfoEntry.ReadValue(DW_AT_name, EntryName) then begin
+          InfoEntry.GoNext;
+          Continue;
+        end;
+
+        if UpperCase(EntryName) = UpperCase(AName) then begin
+          // TODO: check DW_AT_start_scope;
+          Result := TDbgDwarfIdentifier.Create(CU, InfoEntry.FScope); // XXXXXXX
+          DebugLn(['!!!! FOUND !!! ', dbgs(InfoEntry.FScope, CU), DbgsDump(InfoEntry.FScope, CU) ]);
+          break;
+        end;
+
+        InfoEntry.GoNext;
+      end;
+      if Result <> nil then
+        break;
+
+      // Search parent(s)
+      InfoEntry.ScopeIndex := StartScopeIdx;
+      InfoEntry.GoParent;
+    end;
+
+
+    if Result <> nil then begin
+      Def := InfoEntry.Abbrev;
+      if (Def.tag = DW_TAG_variable) or (Def.tag = DW_TAG_formal_parameter) or
+         (Def.tag = DW_TAG_constant) or (Def.tag = DW_TAG_member)
+      then begin
+        i := InfoEntry.AttribIdx(DW_AT_type, Attrib);
+        if (i < 0) then begin
+          DebugLn(['NO DW_AT_type ']);
+          exit;
+        end;
+        Form := InfoEntry.AbbrevData[i].Form;
+        if (Form <> DW_FORM_ref1) and (Form <> DW_FORM_ref2) and (Form <> DW_FORM_ref4) and
+           (Form <> DW_FORM_ref8) and (Form <> DW_FORM_sdata) and (Form <> DW_FORM_udata)
+        then begin
+          DebugLn(['FORM for DW_AT_type not expected ', DwarfAttributeFormToString(Form)]);
+          exit;
+        end;
+        CU.ReadValue(Attrib, Form, PtrInt(AtTypeOffs));
+        // TODO 64bit
+        AtTypeAddr := CU.FScope.Entry + AtTypeOffs - SizeOf(TDwarfCUHeader32); // 11;
+        //TODO: bin search
+        InfoEntry2 := TDwarfInformationEntry.Create(CU, AtTypeAddr);
+        InfoEntry2.SearchScope;
+        DebugLn(['!!!! TYPE !!! ', dbgs(InfoEntry2.FScope, CU), DbgsDump(InfoEntry2.FScope, CU) ]);
+        //DebugLn(['!!!! TYPE !!! ', DwarfTagToString(InfoEntry2.Abbrev.tag)  ]);
+      end;
+    end;
+
+  // unitname?
+
+  finally
+    FreeAndNil(SubRoutine);
+    FreeAndNil(InfoEntry);
+    FreeAndNil(InfoEntry2);
   end;
 end;
 
@@ -2263,6 +2676,7 @@ var
   Form: Cardinal;
   Info: TDwarfAddressInfo;
   Scope, ResultScope: TDwarfScopeInfo;
+  i: Integer;
 begin
   if FAddressMapBuild then Exit;
 
@@ -2295,9 +2709,17 @@ begin
       end;
 
       // TAG found, try continue with the found scope
-      Scope := ResultScope.Child;
-      if Scope.IsValid then Continue;
-      Scope := ResultScope;
+      //Scope.Index := ResultScope.ChildIndex;
+      //if Scope.IsValid then Continue;
+      //Scope.Index := ResultScope.Index;
+
+      i := ResultScope.ChildIndex;
+      if i >= 0 then begin
+        Scope.Index := i; // must be valid
+        continue;
+      end
+      else
+        Scope.Index := ResultScope.Index;
     end;
 
     while (not Scope.HasNext) and (Scope.HasParent) do Scope.GoParent;
@@ -2581,6 +3003,42 @@ begin
   Result := False;
 end;
 
+function TDwarfCompilationUnit.LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; out
+  AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
+var
+  Abbrev: Cardinal;
+  Def: TDwarfAbbrev;
+  n: Integer;
+  ADefs: PDwarfAbbrevEntry;
+begin
+  AEntry := FAbbrevList.FindLe128bFromPointer(AEntry, Def);
+  if AEntry = nil
+  then begin
+    //???
+    //Abbrev := ULEB128toOrdinal(AEntry);
+    DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: '{, Abbrev}]);
+    Result := False;
+    Exit;
+  end;
+
+  ADefs := FAbbrevList.EntryPointer[0];
+  for n := Def.Index to Def.Index + Def.Count - 1 do
+  begin
+    if ADefs[n].Attribute = AAttribute
+    then begin
+      Result := True;
+      AAttribPtr := AEntry;
+      AForm := ADefs[n].Form;
+      Exit;
+    end
+    else begin
+      if not SkipEntryDataForForm(AEntry, ADefs[n].Form, FAddressSize) then
+        break;
+    end;
+  end;
+  Result := False;
+end;
+
 //----------------------------------------
 // Params
 //   ATag: a tag to search for
@@ -2593,7 +3051,7 @@ end;
 function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo;
   AFlags: TDwarfLocateEntryFlags; out AResultScope: TDwarfScopeInfo; out
   AList: TPointerDynArray): Boolean;
-  
+
   procedure ParseAttribs(const ADef: TDwarfAbbrev; ABuildList: Boolean; var p: Pointer);
   var
     idx: Integer;
@@ -2608,7 +3066,7 @@ function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStartScope: TDwarfSc
       then AList[idx] := p;
 
       if not SkipEntryDataForForm(p, ADefs^.Form, AdrSize) then
-        Break;
+        break;
       inc(ADefs);
     end;
   end;
@@ -3361,6 +3819,10 @@ var
   Level: Integer;
   ADefs: PDwarfAbbrevEntry;
 begin
+  // Tag - should not exist. Load all scopes
+  //FCU.LocateEntry(0, Scope, [lefContinuable, lefSearchChild, lefSearchSibling],
+  //  ResultScope, AttribList);
+
   Indent := AIndent;
   Level := 0;
   ADefs := FCU.FAbbrevList.EntryPointer[0];
