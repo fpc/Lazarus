@@ -2651,8 +2651,8 @@ components/printers/lib/README.txt svneol=native#text/plain
 components/printers/osprinters.pas svneol=native#text/pascal
 components/printers/printer4lazarus.lpk svneol=native#text/pascal
 components/printers/printer4lazarus.pas svneol=native#text/pascal
-components/printers/printersdlgs.lrs svneol=native#text/pascal
 components/printers/printersdlgs.pp svneol=native#text/pascal
+components/printers/printersdlgs.res -text
 components/printers/qt/qtprinters.inc svneol=native#text/pascal
 components/printers/qt/qtprinters_h.inc svneol=native#text/pascal
 components/printers/qt/qtprndialogs.inc svneol=native#text/pascal

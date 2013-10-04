@@ -67,6 +67,8 @@ procedure Register;
 
 implementation
 
+{$R printersdlgs.res}
+
 {$IFDEF UNIX}
   {$IFDEF LCLCarbon}
     {$IFNDEF NativePrint}
@@ -122,6 +124,4 @@ begin
   RegisterComponents('Dialogs',[TPrinterSetupDialog,TPrintDialog,TPageSetupDialog]);
 end;
 
-initialization
-  {$I printersdlgs.lrs}
 end.
