@@ -2205,22 +2205,6 @@ function CreateGraphicFromResourceName(Instance: THandle; const ResName: String)
 var
   ResHandle: TFPResourceHandle;
 begin
-  // test Bitmap
-  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_BITMAP));
-  if ResHandle <> 0 then
-  begin
-    Result := TBitmap.Create;
-    Result.LoadFromResourceName(Instance, ResName);
-    Exit;
-  end;
-  // test PNG
-  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_RCDATA));
-  if ResHandle <> 0 then
-  begin
-    Result := TPortableNetworkGraphic.Create;
-    Result.LoadFromResourceName(Instance, ResName);
-    Exit;
-  end;
   // test Icon
   ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_GROUP_ICON));
   if ResHandle <> 0 then
@@ -2237,7 +2221,7 @@ begin
     TCursorImage(Result).LoadFromResourceHandle(Instance, ResHandle);
   end
   else
-    Result := nil;
+    Result := CreateBitmapFromResourceName(Instance, ResName)
 end;
 
 function CreateBitmapFromResourceName(Instance: THandle; const ResName: String): TCustomBitmap;
