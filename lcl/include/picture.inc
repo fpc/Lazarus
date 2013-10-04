@@ -55,18 +55,21 @@ begin
 end;
 
 procedure TPicFileFormatsList.Clear;
-var i: integer;
+var
+  i: integer;
   P: PPicFileFormat;
 begin
-  for i:=0 to Count-1 do begin
-    P:=GetFormats(i);
+  for i:=0 to Count - 1 do
+  begin
+    P := GetFormats(i);
     Dispose(P);
   end;
   inherited Clear;
 end;
 
 procedure TPicFileFormatsList.Delete(Index: Integer);
-var P: PPicFileFormat;
+var
+  P: PPicFileFormat;
 begin
   P:=GetFormats(Index);
   Dispose(P);
@@ -79,7 +82,8 @@ var
   NewFormat: PPicFileFormat;
 begin
   New(NewFormat);
-  with NewFormat^ do begin
+  with NewFormat^ do
+  begin
     Extension := AnsiLowerCase(Ext);
     GraphicClass := AClass;
     Description := Desc;
@@ -165,7 +169,8 @@ var
   I: Integer;
   P: PPicFileFormat;
 begin
-  for I := Count-1 downto 0 do begin
+  for I := Count - 1 downto 0 do
+  begin
     P := GetFormats(I);
     if P^.GraphicClass.InheritsFrom(AClass) then
       Delete(I);
@@ -246,20 +251,23 @@ begin
 end;
 
 procedure TPicClipboardFormats.Clear;
-var i: integer;
+var
+  i: integer;
   P: PPicClipboardFormat;
 begin
-  for i:=0 to Count-1 do begin
-    P:=GetFormats(i);
+  for i := 0 to Count - 1 do
+  begin
+    P := GetFormats(i);
     Dispose(P);
   end;
   inherited Clear;
 end;
 
 procedure TPicClipboardFormats.Delete(Index: Integer);
-var P: PPicClipboardFormat;
+var
+  P: PPicClipboardFormat;
 begin
-  P:=GetFormats(Index);
+  P := GetFormats(Index);
   Dispose(P);
   inherited Delete(Index);
 end;
