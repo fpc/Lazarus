@@ -1448,6 +1448,8 @@ procedure Register;
 
 implementation
 
+{$R rttictrls.res}
+
 uses
   ComponentEditors, MaskPropEdit;
 
@@ -4086,7 +4088,6 @@ begin
 end;
 
 initialization
-  {$I rttictrls.lrs}
   // TPropertyLink
   RegisterPropertyEditor(ClassTypeInfo(TPropertyLink),
     nil, '', TPropertyLinkPropertyEditor);

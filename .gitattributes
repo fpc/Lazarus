@@ -2772,8 +2772,8 @@ components/rtticontrols/examples/exampleprojectgrid1.lpr svneol=native#text/pasc
 components/rtticontrols/fpdoc/rttictrls.xml svneol=native#text/plain
 components/rtticontrols/lib/README.txt svneol=native#text/plain
 components/rtticontrols/rttictrls.bat svneol=native#text/x-msdos-program
-components/rtticontrols/rttictrls.lrs svneol=native#text/pascal
 components/rtticontrols/rttictrls.pas svneol=native#text/pascal
+components/rtticontrols/rttictrls.res -text
 components/rtticontrols/rttictrls.txt svneol=native#text/plain
 components/rtticontrols/rttigrids.pas svneol=native#text/pascal
 components/rtticontrols/runtimetypeinfocontrols.lpk svneol=native#text/pascal

@@ -1,1 +1,1 @@
-..\..\tools\lazres rttictrls.lrs @rttictrls.txt
+..\..\tools\lazres rttictrls.res @rttictrls.txt
