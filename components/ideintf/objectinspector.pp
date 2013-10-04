@@ -794,6 +794,7 @@ const
 implementation
 
 {$R *.lfm}
+{$R images\ideintf_images.res}
 
 uses
   math;
@@ -5459,11 +5460,6 @@ begin
     FPropertyEditorHook.Free;
   inherited Destroy;
 end;
-
-initialization
-  {$I images/ideintf_images.lrs}
   
-finalization
-
 end.
 

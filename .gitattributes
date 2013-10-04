@@ -1536,8 +1536,10 @@ components/ideintf/idetextconverter.pas svneol=native#text/plain
 components/ideintf/idewindowintf.pas svneol=native#text/plain
 components/ideintf/imagelisteditor.lfm svneol=native#text/plain
 components/ideintf/imagelisteditor.pp svneol=native#text/pascal
+components/ideintf/images/build.bat svneol=native#text/pascal
 components/ideintf/images/delete_selection.png -text
-components/ideintf/images/ideintf_images.lrs svneol=native#text/plain
+components/ideintf/images/ideintf_images.res -text
+components/ideintf/images/ideintf_images_list.txt svneol=native#text/pascal
 components/ideintf/images/laz_copy.png -text svneol=unset#image/png
 components/ideintf/images/laz_cut.png -text svneol=unset#image/png
 components/ideintf/images/laz_paste.png -text svneol=unset#image/png
