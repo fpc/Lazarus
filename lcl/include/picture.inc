@@ -310,7 +310,7 @@ var
 
 function GetPicFileFormats: TPicFileFormatsList;
 begin
-  if (PicFileFormats = nil) and (not GraphicsFinalized) then
+  if not Assigned(PicFileFormats) and not GraphicsFinalized then
     PicFileFormats := TPicFileFormatsList.Create;
   Result := PicFileFormats;
 end;

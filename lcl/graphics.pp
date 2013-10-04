@@ -2201,50 +2201,6 @@ begin
   Result := CreateBitmapFromLazarusResource(AName, TCustomBitmap);
 end;
 
-function CreateGraphicFromResourceName(Instance: THandle; const ResName: String): TGraphic;
-var
-  ResHandle: TFPResourceHandle;
-begin
-  // test Icon
-  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_GROUP_ICON));
-  if ResHandle <> 0 then
-  begin
-    Result := TIcon.Create;
-    TIcon(Result).LoadFromResourceHandle(Instance, ResHandle);
-    Exit;
-  end;
-  // test Cursor
-  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_GROUP_CURSOR));
-  if ResHandle <> 0 then
-  begin
-    Result := TCursorImage.Create;
-    TCursorImage(Result).LoadFromResourceHandle(Instance, ResHandle);
-  end
-  else
-    Result := CreateBitmapFromResourceName(Instance, ResName)
-end;
-
-function CreateBitmapFromResourceName(Instance: THandle; const ResName: String): TCustomBitmap;
-var
-  ResHandle: TFPResourceHandle;
-begin
-  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_BITMAP));
-  if ResHandle <> 0 then
-  begin
-    Result := TBitmap.Create;
-    Result.LoadFromResourceName(Instance, ResName);
-    Exit;
-  end;
-  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_RCDATA));
-  if ResHandle <> 0 then
-  begin
-    Result := TPortableNetworkGraphic.Create;
-    Result.LoadFromResourceName(Instance, ResName);
-  end
-  else
-    Result := nil;
-end;
-
 function CreateBitmapFromLazarusResource(const AName: String; AMinimumClass: TCustomBitmapClass): TCustomBitmap;
 var
   Stream: TLazarusResourceStream;
@@ -2805,6 +2761,63 @@ end;
 {$I bitmap.inc}
 {$I tiffimage.inc}
 {$I gifimage.inc}
+
+function CreateGraphicFromResourceName(Instance: THandle; const ResName: String): TGraphic;
+var
+  ResHandle: TFPResourceHandle;
+begin
+  // test Icon
+  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_GROUP_ICON));
+  if ResHandle <> 0 then
+  begin
+    Result := TIcon.Create;
+    TIcon(Result).LoadFromResourceHandle(Instance, ResHandle);
+    Exit;
+  end;
+  // test Cursor
+  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_GROUP_CURSOR));
+  if ResHandle <> 0 then
+  begin
+    Result := TCursorImage.Create;
+    TCursorImage(Result).LoadFromResourceHandle(Instance, ResHandle);
+  end
+  else
+    Result := CreateBitmapFromResourceName(Instance, ResName)
+end;
+
+function CreateBitmapFromResourceName(Instance: THandle; const ResName: String): TCustomBitmap;
+var
+  ResHandle: TFPResourceHandle;
+  Stream: TResourceStream;
+  GraphicClass: TGraphicClass;
+begin
+  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_BITMAP));
+  if ResHandle <> 0 then
+  begin
+    Result := TBitmap.Create;
+    Result.LoadFromResourceName(Instance, ResName);
+    Exit;
+  end;
+  ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_RCDATA));
+  if ResHandle <> 0 then
+  begin
+    Stream := TResourceStream.Create(Instance, PChar(ResName), PChar(RT_RCDATA));
+    try
+      GraphicClass := GetPicFileFormats.FindByStreamFormat(Stream);
+      if Assigned(GraphicClass) and GraphicClass.InheritsFrom(TCustomBitmap) then
+      begin
+        Result := TCustomBitmap(GraphicClass.Create);
+        Result.LoadFromStream(Stream);
+      end
+      else
+        Result := nil;
+    finally
+      Stream.Free;
+    end;
+  end
+  else
+    Result := nil;
+end;
 
 function LocalGetSystemFont: HFont;
 begin
