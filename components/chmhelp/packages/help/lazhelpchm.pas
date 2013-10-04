@@ -109,6 +109,8 @@ procedure Register;
 
 implementation
 
+{$R lazhelpchm.res}
+
 procedure Register;
 begin
   RegisterComponents('System',[TCHMHelpDatabase,TLHelpConnector]);
@@ -357,7 +359,5 @@ begin
   Storage.SetDeleteValue('Filename',Filename, '');
 end;
 
-initialization
-  {$I lazhelpchm.lrs}
 end.
 

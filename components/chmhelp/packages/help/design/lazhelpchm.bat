@@ -1,1 +1,1 @@
-..\..\..\..\..\tools\lazres ..\lazhelpchm.lrs @lazhelpchm.txt
+..\..\..\..\..\tools\lazres ..\lazhelpchm.res @lazhelpchm.txt
