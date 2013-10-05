@@ -67,6 +67,8 @@ procedure Register;
 
 implementation
 
+{$R SemaphorDBGridIcon.res}
+
 procedure TSemaphorDBGrid.SetSemaphorShape(Value : TSemaphorShape);
 begin
   FSemaphorShape:=Value;
@@ -164,9 +166,6 @@ procedure Register;
 begin
   RegisterComponents('Data Controls',[TSemaphorDBGrid]);
 end;
-
-initialization
-  {$I SemaphorDBGridIcon.lrs}
 
 end.
 

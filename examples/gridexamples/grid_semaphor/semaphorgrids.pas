@@ -148,6 +148,8 @@ procedure Register;
 
 implementation
 
+{$R SemaphorGridsicon.res}
+
 procedure TSemaphorGrid.DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState);
 const dr=4;
 var Rect:TRect;
@@ -771,9 +773,6 @@ procedure Register;
 begin
   RegisterComponents('Additional',[TSemaphorGrid]);
 end;
-
-initialization
-  {$I SemaphorGridsicon.lrs}
 
 end.
 

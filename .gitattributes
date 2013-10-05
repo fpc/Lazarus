@@ -4490,12 +4490,12 @@ examples/gridexamples/grid_semaphor/example/table04hidden.stb -text svneol=unset
 examples/gridexamples/grid_semaphor/example/unit1.lfm svneol=native#text/plain
 examples/gridexamples/grid_semaphor/example/unit1.pas svneol=native#text/pascal
 examples/gridexamples/grid_semaphor/readme.txt svneol=native#text/plain
-examples/gridexamples/grid_semaphor/semaphordbgridicon.lrs svneol=native#text/pascal
+examples/gridexamples/grid_semaphor/semaphordbgridicon.res -text
 examples/gridexamples/grid_semaphor/semaphordbgrids.pas svneol=native#text/pascal
 examples/gridexamples/grid_semaphor/semaphorgridlpk.lpk svneol=native#text/pascal
 examples/gridexamples/grid_semaphor/semaphorgridlpk.pas svneol=native#text/pascal
 examples/gridexamples/grid_semaphor/semaphorgrids.pas svneol=native#text/pascal
-examples/gridexamples/grid_semaphor/semaphorgridsicon.lrs svneol=native#text/pascal
+examples/gridexamples/grid_semaphor/semaphorgridsicon.res -text
 examples/gridexamples/grid_semaphor/tsemaphorgrid.xpm -text svneol=native#image/x-xpixmap
 examples/gridexamples/gridcelleditor/gridcelleditor.lpi svneol=native#text/plain
 examples/gridexamples/gridcelleditor/gridcelleditor.lpr svneol=native#text/plain
