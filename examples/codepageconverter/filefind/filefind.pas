@@ -135,6 +135,8 @@ procedure Register;
 
 implementation
 
+{$R filefind.res}
+
 procedure Register;
 begin
      RegisterComponents('Samples', [TFileSearch]);
@@ -295,7 +297,4 @@ begin    // ScanDir
      FindCloseUTF8(fInfo); // barko
 end; // ScanDir
 
-
-initialization
-  {$I filefind.lrs}
 end.

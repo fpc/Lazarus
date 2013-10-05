@@ -4237,8 +4237,8 @@ examples/cleandir/svccleandirs.pp svneol=native#text/plain
 examples/cleandir/svcmap.lfm svneol=native#text/plain
 examples/cleandir/svcmap.pp svneol=native#text/plain
 examples/codepageconverter/codepages.ini svneol=native#text/plain
-examples/codepageconverter/filefind/filefind.lrs svneol=native#text/pascal
 examples/codepageconverter/filefind/filefind.pas svneol=native#text/pascal
+examples/codepageconverter/filefind/filefind.res -text
 examples/codepageconverter/filefind/filefindlaz.lpk svneol=native#text/pascal
 examples/codepageconverter/filefind/filefindlaz.pas svneol=native#text/pascal
 examples/codepageconverter/filefind/tfilesearch.xpm -text svneol=native#image/x-xpixmap
