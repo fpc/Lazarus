@@ -1135,6 +1135,8 @@ type
     SelectedElement: TvEntity;
     // List of common styles, for conveniently finding them
     StyleTextBody, StyleHeading1, StyleHeading2, StyleHeading3: TvStyle;
+    StyleTextBodyCentralized, StyleHeading1Centralized,
+      StyleHeading2Centralized, StyleHeading3Centralized: TvStyle;
     StyleBulletList, StyleNumberList : TvListStyle;
     StyleTextSpanBold, StyleTextSpanItalic, StyleTextSpanUnderline: TvStyle;
     { Base methods }
@@ -6243,6 +6245,34 @@ begin
   lCurStyle.Font.Bold := True;
   lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold];
   StyleHeading3 := lCurStyle;
+
+  // ---------------------------------
+  // Centralized paragraph styles
+  // ---------------------------------
+
+  StyleTextBodyCentralized := AddStyle();
+  StyleTextBodyCentralized.ApplyOver(StyleTextBody);
+  StyleTextBodyCentralized.Name := 'Text Body Centered';
+  StyleTextBodyCentralized.Alignment := vsaCenter;
+  StyleTextBodyCentralized.SetElements := StyleTextBodyCentralized.SetElements + [spbfAlignment];
+
+  StyleHeading1Centralized := AddStyle();
+  StyleHeading1Centralized.ApplyOver(StyleHeading1);
+  StyleHeading1Centralized.Name := 'Heading 1 Centered';
+  StyleHeading1Centralized.Alignment := vsaCenter;
+  StyleHeading1Centralized.SetElements := StyleHeading1Centralized.SetElements + [spbfAlignment];
+
+  StyleHeading2Centralized := AddStyle();
+  StyleHeading2Centralized.ApplyOver(StyleHeading2);
+  StyleHeading2Centralized.Name := 'Heading 2 Centered';
+  StyleHeading2Centralized.Alignment := vsaCenter;
+  StyleHeading2Centralized.SetElements := StyleHeading2Centralized.SetElements + [spbfAlignment];
+
+  StyleHeading3Centralized := AddStyle();
+  StyleHeading3Centralized.ApplyOver(StyleHeading3);
+  StyleHeading3Centralized.Name := 'Heading 3 Centered';
+  StyleHeading3Centralized.Alignment := vsaCenter;
+  StyleHeading3Centralized.SetElements := StyleHeading3Centralized.SetElements + [spbfAlignment];
 
   // ---------------------------------
   // Bullet List Items
