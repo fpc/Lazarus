@@ -2820,8 +2820,8 @@ components/sdf/images/registersdf.bat svneol=native#text/x-msdos-program
 components/sdf/images/registersdf.txt svneol=native#text/plain
 components/sdf/images/tfixedformatdataset.png -text svneol=unset#image/png
 components/sdf/images/tsdfdataset.png -text svneol=unset#image/png
-components/sdf/registersdf.lrs svneol=native#text/pascal
 components/sdf/registersdf.pas svneol=native#text/pascal
+components/sdf/registersdf.res -text
 components/sdf/sdflaz.lpk svneol=native#text/pascal
 components/sdf/sdflaz.pas svneol=native#text/pascal
 components/simpleideintf/README.txt svneol=native#text/plain

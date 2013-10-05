@@ -1,1 +1,1 @@
-..\..\..\tools\lazres ..\registersdf.lrs @registersdf.txt
+..\..\..\tools\lazres ..\registersdf.res @registersdf.txt

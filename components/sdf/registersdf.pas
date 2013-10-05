@@ -22,6 +22,8 @@ procedure Register;
 
 implementation
 
+{$R registersdf.res}
+
 procedure RegisterUnitSDF;
 begin
   RegisterComponents('Data Access',[TSDFDataset,TFixedFormatDataSet]);
@@ -31,8 +33,5 @@ procedure Register;
 begin
   RegisterUnit('sdfdata',@RegisterUnitSDF);
 end;
-
-initialization
-  {$i registersdf.lrs}
 
 end.
