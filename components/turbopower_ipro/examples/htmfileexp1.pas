@@ -68,6 +68,7 @@ function ProgramDirectory(BundleRoot: boolean): string;
 implementation
 
 {$R htmfileexp1.lfm}
+{$R defaultimage.res}
 
 function ProgramDirectory(BundleRoot: boolean): string;
 const
@@ -298,11 +299,6 @@ begin
     end;
   end;
 end {OpenHTMLFile};
-
-{--------------------------------------}
-
-initialization
-  {$I defaultimage.lrs}
 
 end.
 

@@ -77,6 +77,7 @@ var
 implementation
 
 {$R htmfileexp2.lfm}
+{$R defaultimage.res}
 
 uses
   IpUtils;
@@ -324,11 +325,6 @@ procedure TFHtmFileExp2.SB_GoForwardClick(Sender: TObject);
 begin
   IpHtmlPanel1.GoForward;
 end;
-
-{--------------------------------------}
-
-initialization
-  {$I defaultimage.lrs}
 
 end.
 

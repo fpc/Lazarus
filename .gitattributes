@@ -3471,7 +3471,7 @@ components/turbopower_ipro/design/Makefile.fpc svneol=native#text/plain
 components/turbopower_ipro/design/ipidehtmlcontrol.pas svneol=native#text/plain
 components/turbopower_ipro/design/turbopoweriprodsgn.lpk svneol=native#text/plain
 components/turbopower_ipro/design/turbopoweriprodsgn.pas svneol=native#text/plain
-components/turbopower_ipro/examples/defaultimage.lrs svneol=native#text/pascal
+components/turbopower_ipro/examples/defaultimage.res -text
 components/turbopower_ipro/examples/defaultimage.xpm -text svneol=unset#image/pixmap
 components/turbopower_ipro/examples/fpdoc.css svneol=native#text/plain
 components/turbopower_ipro/examples/htmfileexp1.lfm svneol=native#text/plain
@@ -3496,8 +3496,8 @@ components/turbopower_ipro/ipcss.inc svneol=native#text/pascal
 components/turbopower_ipro/ipdefct.inc svneol=native#text/pascal
 components/turbopower_ipro/ipdefine.inc svneol=native#text/pascal
 components/turbopower_ipro/ipfilebroker.pas svneol=native#text/plain
-components/turbopower_ipro/iphtml.lrs svneol=native#text/pascal
 components/turbopower_ipro/iphtml.pas svneol=native#text/pascal
+components/turbopower_ipro/iphtml.res -text
 components/turbopower_ipro/iphtmlpv.lfm svneol=native#text/plain
 components/turbopower_ipro/iphtmlpv.pas svneol=native#text/pascal
 components/turbopower_ipro/iphtmltablist.pas svneol=native#text/plain

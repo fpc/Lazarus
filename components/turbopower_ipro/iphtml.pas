@@ -3668,9 +3668,7 @@ uses
   IpHtmlPv,  {!!.10}
   PrintersDlgs;
 
-{$IFNDEF IP_LAZARUS}
 {$R *.res}
-{$ENDIF}
 
 {$IFDEF IP_LAZARUS}
 {$I ipcss.inc}
@@ -8545,7 +8543,9 @@ begin
     **)
     {$ELSE}
     if LazarusResources.Find('DEFAULTIMAGE')<>nil then
-      TmpBitmap := CreateBitmapFromLazarusResource('DEFAULTIMAGE');
+      TmpBitmap := CreateBitmapFromLazarusResource('DEFAULTIMAGE')
+    else
+      TmpBitmap := CreateBitmapFromResourceName(HInstance, 'DEFAULTIMAGE');
     {$ENDIF}
     DefaultImage.Graphic := TmpBitmap;
   finally
@@ -20322,9 +20322,6 @@ begin
 end;
 
 initialization
-{$IFDEF IP_LAZARUS}
-{$I iphtml.lrs}
-{$ENDIF}
   InitScrollProcs;
 end.
 
