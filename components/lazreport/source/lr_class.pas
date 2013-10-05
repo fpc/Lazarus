@@ -1368,6 +1368,7 @@ var
 {$IFDEF FREEREP2217READ}
   FRE_COMPATIBLE_READ: Boolean = False;
 {$ENDIF}
+  LRE_OLDV25_FRF_READ: Boolean = False;  // read broken frf v25 reports, bug 25037
 
 implementation
 
@@ -3821,7 +3822,12 @@ begin
     end;
     if frVersion>23 then
     begin
-      Read(tmpAngle, SizeOf(tmpAngle));
+      if LRE_OLDV25_FRF_READ then
+      begin
+        Read(i, 4);
+        tmpAngle := byte(i);
+      end else
+        Read(tmpAngle, SizeOf(tmpAngle));
       Adjust := (Adjust and not 3) or (tmpAngle and %11);
       Read(TmpLayout{%H-},SizeOf(TmpLayout));
       tmpAngle := 0;
