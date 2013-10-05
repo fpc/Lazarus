@@ -2804,13 +2804,13 @@ components/rtticontrols/ttispinedit.png -text svneol=unset#image/png
 components/rtticontrols/ttitrackbar.png -text svneol=unset#image/png
 components/rx/apputils.pp svneol=native#text/pascal
 components/rx/lib/README.txt svneol=native#text/plain
-components/rx/mrulist.lrs svneol=native#text/pascal
 components/rx/mrulist.pp svneol=native#text/pascal
+components/rx/mrulist.res -text
 components/rx/placement.pp svneol=native#text/pascal
 components/rx/rx.lpk svneol=native#text/pascal
 components/rx/rx.pas svneol=native#text/pascal
-components/rx/strholder.lrs svneol=native#text/pascal
 components/rx/strholder.pp svneol=native#text/pascal
+components/rx/strholder.res -text
 components/rx/tmrumanager.xpm -text svneol=native#image/x-xpixmap
 components/rx/tstrholder.xpm -text svneol=native#image/x-xpixmap
 components/sdf/Makefile svneol=native#text/plain

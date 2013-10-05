@@ -132,6 +132,8 @@ Procedure Register;
 
 implementation
 
+{$R mrulist.res}
+
 uses Controls, AppUtils;
 
 const
@@ -608,8 +610,5 @@ begin
     EndUpdate;
   end;
 end;
-
-initialization
-  {$I mrulist.lrs}
 
 end.

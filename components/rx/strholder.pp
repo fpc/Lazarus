@@ -144,6 +144,8 @@ Procedure Register;
 
 implementation
 
+{$R strholder.res}
+
 uses
   RTLConsts;
 
@@ -766,8 +768,5 @@ begin
     Writer.WriteString(XorEncode(KeyString, FStrings[I]));
   Writer.WriteListEnd;
 end;
-
-initialization
-{$I strholder.lrs}
 
 end.
