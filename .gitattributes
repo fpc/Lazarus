@@ -1002,8 +1002,8 @@ components/datadict/languages/ldd_consts.uk.po svneol=native#text/plain
 components/datadict/lazdatadict.lpk svneol=native#text/plain
 components/datadict/lazdatadict.pas svneol=native#text/plain
 components/datadict/ldd_consts.pas svneol=native#text/plain
-components/datadict/reglazdatadict.lrs svneol=native#text/pascal
 components/datadict/reglazdatadict.pp svneol=native#text/plain
+components/datadict/reglazdatadict.res -text
 components/datadict/testdatadict.lpi svneol=native#text/plain
 components/datadict/testdatadict.lpr svneol=native#text/plain
 components/datadict/tfpcodegenerator.xpm svneol=native#text/plain

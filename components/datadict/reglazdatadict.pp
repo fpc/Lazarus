@@ -71,6 +71,8 @@ Const
 
 implementation
 
+{$R reglazdatadict.res}
+
 uses forms, dialogs, controls, idemsgintf, ldd_consts;
 
 
@@ -374,7 +376,7 @@ begin
 end;
 
 Initialization
-  {$i reglazdatadict.lrs}
+
 Finalization
   FreeAndNil(IDEDDC)
 end.
