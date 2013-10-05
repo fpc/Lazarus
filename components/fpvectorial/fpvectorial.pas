@@ -1136,6 +1136,7 @@ type
     // List of common styles, for conveniently finding them
     StyleTextBody, StyleHeading1, StyleHeading2, StyleHeading3: TvStyle;
     StyleBulletList, StyleNumberList : TvListStyle;
+    StyleTextSpanBold, StyleTextSpanItalic, StyleTextSpanUnderline: TvStyle;
     { Base methods }
     constructor Create; virtual;
     destructor Destroy; override;
@@ -6169,6 +6170,8 @@ end;
 function TvVectorialDocument.AddTextPageSequence: TvTextPageSequence;
 begin
   Result := TvTextPageSequence.Create(Self);
+  Result.Width := Width;
+  Result.Height := Height;
   FPages.Add(Result);
   if FCurrentPageIndex < 0 then FCurrentPageIndex := FPages.Count-1;
 end;
@@ -6281,6 +6284,27 @@ begin
     lCurListLevelStyle.MarginLeft := 16.35*(i + 1);
     lCurListLevelStyle.HangingIndent := 6.35 + 3*i;
   end;
+
+  // ---------------------------------
+  // Text Span Items
+  // ---------------------------------
+  StyleTextSpanBold := AddStyle();
+  StyleTextSpanBold.Kind := vskTextSpan; // This implies this style should not be applied to Paragraphs
+  StyleTextSpanBold.Name := 'Bold';
+  StyleTextSpanBold.Font.Bold := True;
+  StyleTextSpanBold.SetElements := StyleTextSpanBold.SetElements + [spbfFontBold];
+
+  StyleTextSpanItalic := AddStyle();
+  StyleTextSpanItalic.Kind := vskTextSpan; // This implies this style should not be applied to Paragraphs
+  StyleTextSpanItalic.Name := 'Italic';
+  StyleTextSpanItalic.Font.Italic := True;
+  StyleTextSpanItalic.SetElements := StyleTextSpanItalic.SetElements + [spbfFontItalic];
+
+  StyleTextSpanUnderline := AddStyle();
+  StyleTextSpanUnderline.Kind := vskTextSpan; // This implies this style should not be applied to Paragraphs
+  StyleTextSpanUnderline.Name := 'Underline';
+  StyleTextSpanUnderline.Font.Underline := True;
+  StyleTextSpanUnderline.SetElements := StyleTextSpanUnderline.SetElements + [spbfFontUnderline];
 end;
 
 function TvVectorialDocument.GetStyleCount: Integer;
