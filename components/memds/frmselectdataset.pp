@@ -67,6 +67,7 @@ procedure Register;
 implementation
 
 {$R *.lfm}
+{$R memdsicons.res}
 
 procedure RegisterUnitMemDS;
 begin
@@ -182,9 +183,6 @@ begin
   BOK.Caption := SOkBtn;
   BCancel.Caption := SCancelBtn;
 end;
-
-initialization
-  {$i memdsicons.lrs}
 
 end.
 

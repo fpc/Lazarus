@@ -2473,7 +2473,7 @@ components/memds/languages/frmselectdataset.ru.po svneol=native#text/plain
 components/memds/languages/frmselectdataset.uk.po svneol=native#text/plain
 components/memds/languages/frmselectdataset.zh_CN.po svneol=native#text/plain
 components/memds/lib/README.txt svneol=native#text/plain
-components/memds/memdsicons.lrs svneol=native#text/pascal
+components/memds/memdsicons.res -text
 components/memds/memdslaz.lpk svneol=native#text/pascal
 components/memds/memdslaz.pas svneol=native#text/pascal
 components/memds/tmemdataset.png -text svneol=unset#image/png
