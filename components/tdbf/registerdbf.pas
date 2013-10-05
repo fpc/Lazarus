@@ -25,6 +25,8 @@ procedure Register;
 
 implementation
 
+{$R registerdbf.res}
+
 type
 
   { TDbfFileNamePropertyEditor }
@@ -63,6 +65,4 @@ begin
   RegisterUnit('DBF',@RegisterUnitDBF);
 end;
 
-initialization
-  {$i registerdbf.lrs}
 end.

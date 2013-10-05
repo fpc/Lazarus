@@ -3437,8 +3437,8 @@ components/tdbf/languages/registerdbf.pt_BR.po svneol=native#text/plain
 components/tdbf/languages/registerdbf.ru.po svneol=native#text/plain
 components/tdbf/languages/registerdbf.uk.po svneol=native#text/plain
 components/tdbf/languages/registerdbf.zh_CN.po svneol=native#text/plain
-components/tdbf/registerdbf.lrs svneol=native#text/pascal
 components/tdbf/registerdbf.pas svneol=native#text/pascal
+components/tdbf/registerdbf.res -text
 components/tdbf/tdbf.png -text svneol=unset#image/png
 components/todolist/Makefile svneol=native#text/plain
 components/todolist/Makefile.compiled svneol=native#text/plain
