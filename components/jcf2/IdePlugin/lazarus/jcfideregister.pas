@@ -36,11 +36,13 @@ uses
   { rtl }
   SysUtils, Classes,
   { lcl }
-  LCLType, FileUtil, LResources;
+  LCLType, FileUtil;
 
 procedure Register;
 
 implementation
+
+{$R jcfsettings.res}
 
 uses
   { lazarus }
@@ -85,23 +87,21 @@ end;
 
 procedure SetLazarusDefaultFileName;
 var
-  R: TLResource;
   S: TFileStream;
+  R: TResourceStream;
 begin
   JCFOptsFile := AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + DefaultJCFOptsFile;
   LazarusIDE.CopySecondaryConfigFile(DefaultJCFOptsFile);
   if not FileExistsUTF8(JCFOptsFile) then
   begin
     // create default
-    R := LazarusResources.Find('JCFSettings', 'CFG');
-    if (R <> nil) and (R.Value <> '') then
-    begin
-      S := TFileStream.Create(UTF8ToSys(JCFOptsFile), fmCreate);
-      try
-        S.Write(R.Value[1], Length(R.Value));
-      finally
-        S.Free;
-      end;
+    R := TResourceStream.Create(HInstance, PChar('JCFSettings'), PChar(RT_RCDATA));
+    S := TFileStream.Create(UTF8ToSys(JCFOptsFile), fmCreate);
+    try
+      S.CopyFrom(R, R.Size);
+    finally
+      S.Free;
+      R.Free;
     end;
   end;
 end;
@@ -149,7 +149,6 @@ end;
 
 
 initialization
-  {$I jcfsettings.lpi}
   lcJCFIDE := TJcfIdeMain.Create;
 
 finalization
