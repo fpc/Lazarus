@@ -2518,7 +2518,7 @@ components/mrumenu/lazmrumenu.lpk svneol=native#text/plain
 components/mrumenu/lazmrumenu.pas svneol=native#text/plain
 components/mrumenu/mrumanager.pp svneol=native#text/plain
 components/mrumenu/reglazmru.pp svneol=native#text/plain
-components/mrumenu/regmru.lrs svneol=native#text/plain
+components/mrumenu/regmru.res -text
 components/mrumenu/tmrumenumanager.png -text svneol=unset#image/png
 components/multithreadprocs/examples/parallelloop1.lpi svneol=native#text/plain
 components/multithreadprocs/examples/parallelloop1.lpr svneol=native#text/plain

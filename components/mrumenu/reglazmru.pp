@@ -41,13 +41,13 @@ procedure Register;
 
 implementation
 
+{$R regmru.res}
+
 procedure Register;
 
 begin
   RegisterComponents('Misc',[TMRUMenuManager]);
 end;
 
-initialization
-  {$i regmru.lrs}
 end.
 
