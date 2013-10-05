@@ -48,6 +48,8 @@ Procedure Register;
 
 implementation
 
+{$R dbexportimg.res}
+
 uses
   fpdbexport,
   fpstdExports,
@@ -153,7 +155,5 @@ begin
   RegisterComponentEditor(TFPDataExporter,TDataExporterComponentEditor) ;
 end;
 
-initialization
-{$i dbexportimg.lrs}
 end.
 

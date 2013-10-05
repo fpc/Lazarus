@@ -1008,7 +1008,8 @@ components/datadict/testdatadict.lpi svneol=native#text/plain
 components/datadict/testdatadict.lpr svneol=native#text/plain
 components/datadict/tfpcodegenerator.xpm svneol=native#text/plain
 components/dbexport/README.txt svneol=native#text/plain
-components/dbexport/dbexportimg.lrs svneol=native#text/pascal
+components/dbexport/dbexportimg.res -text
+components/dbexport/dbexportimg.txt svneol=native#text/plain
 components/dbexport/demo/README.txt svneol=native#text/plain
 components/dbexport/demo/gendata.pp svneol=native#text/plain
 components/dbexport/demo/simple/firstnames.txt svneol=native#text/plain
