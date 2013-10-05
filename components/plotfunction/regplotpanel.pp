@@ -14,13 +14,13 @@ Procedure Register;
 
 implementation
 
+{$R regplotpanel.res}
+
 Procedure Register;
 
 begin
   Classes.RegisterComponents('Misc',[TPlotFunctionPanel, TPlotExpressionPanel]);
 end;
 
-initialization
-  {$i regplotpanel.lrs}
 end.
 

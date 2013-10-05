@@ -2579,8 +2579,8 @@ components/plotfunction/lazplotfunction.lpk svneol=native#text/plain
 components/plotfunction/lazplotfunction.pas svneol=native#text/plain
 components/plotfunction/plotpanel.pp svneol=native#text/plain
 components/plotfunction/readme.txt svneol=native#text/plain
-components/plotfunction/regplotpanel.lrs svneol=native#text/pascal
 components/plotfunction/regplotpanel.pp svneol=native#text/plain
+components/plotfunction/regplotpanel.res -text
 components/plotfunction/tplotexpressionpanel.png -text svneol=unset#image/png
 components/plotfunction/tplotfunctionpanel.png -text svneol=unset#image/png
 components/pochecker/Proj/README.txt svneol=native#text/plain
