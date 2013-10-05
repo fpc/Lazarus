@@ -256,6 +256,8 @@ procedure Register;
 
 implementation
 
+{$R openglcontext.res}
+
 var
   OpenGLControlStack: TList = nil;
 
@@ -639,7 +641,6 @@ end;
 
 initialization
   RegisterWSComponent(TCustomOpenGLControl,TWSOpenGLControl);
-  {$I openglcontext.lrs}
 
 end.
 

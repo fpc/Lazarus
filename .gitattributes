@@ -2549,8 +2549,8 @@ components/opengl/glqtcontext.pas svneol=native#text/plain
 components/opengl/glwin32wglcontext.pas svneol=native#text/plain
 components/opengl/lazopenglcontext.lpk svneol=native#text/plain
 components/opengl/lazopenglcontext.pas svneol=native#text/plain
-components/opengl/openglcontext.lrs svneol=native#text/pascal
 components/opengl/openglcontext.pas svneol=native#text/plain
+components/opengl/openglcontext.res -text
 components/opengl/topenglcontrol.xpm svneol=native#text/plain
 components/paradox/README.txt svneol=native#text/plain
 components/paradox/demo/frmmain.lfm svneol=native#text/plain
