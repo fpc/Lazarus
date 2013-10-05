@@ -52,6 +52,8 @@ function CreateSourceCommand(CmdCatCodeTools: TIDECommandCategory;
 
 implementation
 
+{$R cody.res}
+
 function CreateRefactorCommand(CmdCatCodeTools: TIDECommandCategory;
   Name, Description: string;
   const OnExecuteMethod: TNotifyEvent; const OnExecuteProc: TNotifyProcedure;
@@ -196,9 +198,6 @@ begin
   // Global handlers - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   SourceEditorManagerIntf.RegisterCopyPasteEvent(@Cody.SrcEditCopyPaste);
 end;
-
-initialization
-  {$I cody.lrs}
 
 end.
 
