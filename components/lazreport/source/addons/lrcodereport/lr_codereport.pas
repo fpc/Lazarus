@@ -190,6 +190,8 @@ type
 
 implementation
 
+{$R lr_codereport.res}
+
 const
   DPIX = 93 / 1.022;      // 91 DPI default (used by lazreport)
   DPIY = 93 / 1.015;
@@ -785,8 +787,5 @@ begin
     TextOutLn('');
   end;
 end;
-
-initialization
-{$i lr_codereport.lrs}
 
 end.

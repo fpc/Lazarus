@@ -38,6 +38,8 @@ type
   
 procedure Register;
 
+{$R addfunction.res}
+
 var
   cFFormatDate :String;
   
@@ -351,6 +353,4 @@ end; { DoFunction }
 
 initialization
   frRegisterFunctionLibrary(TAddFunctionLibrary);
-
-  {$i addfunction.lrs}
 end.

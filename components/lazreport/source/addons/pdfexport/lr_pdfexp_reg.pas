@@ -11,13 +11,12 @@ uses
 
 implementation
 
+{$R lr_pdfexp_reg.res}
+
 procedure register;
 begin
   RegisterComponents('LazReport', [TfrTNPDFExport]);
 end;
-
-initialization
-  {$I lr_pdfexp_reg.lrs}
 
 end.
 

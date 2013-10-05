@@ -2110,7 +2110,7 @@ components/lazreport/source/addons/ZeosDB/lr_zeos_img.inc svneol=native#text/pla
 components/lazreport/source/addons/ZeosDB/lr_zeosdb.lpk svneol=native#text/plain
 components/lazreport/source/addons/ZeosDB/lr_zeosdb.pas svneol=native#text/plain
 components/lazreport/source/addons/ZeosDB/lrdbzeosconst.pas svneol=native#text/plain
-components/lazreport/source/addons/addfunction/addfunction.lrs svneol=native#text/pascal
+components/lazreport/source/addons/addfunction/addfunction.res -text
 components/lazreport/source/addons/addfunction/doc/HISTORY.RUS svneol=native#text/plain
 components/lazreport/source/addons/addfunction/doc/README.RUS svneol=native#text/plain
 components/lazreport/source/addons/addfunction/doc/README.TXT svneol=native#text/plain
@@ -2129,7 +2129,7 @@ components/lazreport/source/addons/cairoexport/lr_e_cairo.pas svneol=native#text
 components/lazreport/source/addons/cairoexport/lr_e_cairo_icon.lrs svneol=native#text/plain
 components/lazreport/source/addons/cairoexport/lrcairoexport.lpk svneol=native#text/plain
 components/lazreport/source/addons/cairoexport/lrcairoexport.pas svneol=native#text/plain
-components/lazreport/source/addons/imgexport/lr_e_extexp.lrs svneol=native#text/plain
+components/lazreport/source/addons/imgexport/lr_e_extexp.res -text
 components/lazreport/source/addons/imgexport/lr_e_extreg.pas svneol=native#text/pascal
 components/lazreport/source/addons/imgexport/lr_e_htmldiv.pas svneol=native#text/pascal
 components/lazreport/source/addons/imgexport/lr_e_img.pas svneol=native#text/pascal
@@ -2143,8 +2143,8 @@ components/lazreport/source/addons/imgexport/test/testunit1.lfm svneol=native#te
 components/lazreport/source/addons/imgexport/test/testunit1.pas svneol=native#text/pascal
 components/lazreport/source/addons/imgexport/tfrhtmldivexport.png -text
 components/lazreport/source/addons/imgexport/tfrimageexport.png -text
-components/lazreport/source/addons/lrcodereport/lr_codereport.lrs svneol=native#text/plain
 components/lazreport/source/addons/lrcodereport/lr_codereport.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrcodereport/lr_codereport.res -text
 components/lazreport/source/addons/lrcodereport/lr_codereport_pkg.lpk svneol=native#text/plain
 components/lazreport/source/addons/lrcodereport/lr_codereport_pkg.pas svneol=native#text/pascal
 components/lazreport/source/addons/lrcodereport/sample/main.lfm svneol=native#text/plain
@@ -2157,8 +2157,8 @@ components/lazreport/source/addons/lrcodereport/tlrcodereport.png -text
 components/lazreport/source/addons/pdfexport/lazreportpdfexport.lpk svneol=native#text/plain
 components/lazreport/source/addons/pdfexport/lazreportpdfexport.pas svneol=native#text/plain
 components/lazreport/source/addons/pdfexport/lr_e_pdf.pas svneol=native#text/plain
-components/lazreport/source/addons/pdfexport/lr_pdfexp_reg.lrs svneol=native#text/pascal
 components/lazreport/source/addons/pdfexport/lr_pdfexp_reg.pas svneol=native#text/plain
+components/lazreport/source/addons/pdfexport/lr_pdfexp_reg.res -text
 components/lazreport/source/addons/pdfexport/readme.txt svneol=native#text/plain
 components/lazreport/source/addons/pdfexport/tfrtnpdfexport.png -text svneol=unset#image/png
 components/lazreport/source/barcode.pas svneol=native#text/pascal
@@ -2187,7 +2187,7 @@ components/lazreport/source/lr_bnded.pas svneol=native#text/pascal
 components/lazreport/source/lr_btyp.lfm svneol=native#text/plain
 components/lazreport/source/lr_btyp.pas svneol=native#text/pascal
 components/lazreport/source/lr_chbox.pas svneol=native#text/pascal
-components/lazreport/source/lr_checkbox.lrs svneol=native#text/pascal
+components/lazreport/source/lr_checkbox.res -text
 components/lazreport/source/lr_class.pas svneol=native#text/pascal
 components/lazreport/source/lr_color.pas svneol=native#text/pascal
 components/lazreport/source/lr_const.pas svneol=native#text/pascal

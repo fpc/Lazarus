@@ -62,6 +62,8 @@ type
 
 implementation
 
+{$R lr_checkbox.res}
+
 uses LR_Utils, LR_Const;
 
 var
@@ -187,16 +189,14 @@ begin
   
   if not assigned(lrBMPCheckBox) {and not (csDesigning in ComponentState)} then
   begin
-    lrBMPCheckBox := TbitMap.Create;
-    lrBMPCheckBox.LoadFromLazarusResource('fr_checkbox');
+    lrBMPCheckBox := TBitMap.Create;
+    lrBMPCheckBox.LoadFromResourceName(HInstance, 'fr_checkbox');
 
     frRegisterObject(TfrCheckBoxView, lrBMPCheckBox, sInsCheckBox, nil);
   end;
 end;
 
-initialization
-  {$I lr_checkbox.lrs}
-  
+initialization 
   lrBMPCheckBox:=nil;
 finalization
   if Assigned(lrBMPCheckBox) then

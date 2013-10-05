@@ -11,13 +11,12 @@ procedure Register;
 
 implementation
 
+{$R lr_e_extexp.res}
+
 procedure Register;
 begin
   RegisterComponents('LazReport', [TfrImageExport, TfrHtmlDivExport]);
 end;
-
-initialization
-  {$I lr_e_extexp.lrs}
 
 end.
 
