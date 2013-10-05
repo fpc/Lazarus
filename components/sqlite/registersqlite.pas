@@ -19,6 +19,8 @@ procedure Register;
 
 implementation
 
+{$R sqliteicon.res}
+
 procedure RegisterUnitSqliteds;
 begin
   RegisterComponents('Data Access',[TSqliteDataset]);
@@ -33,7 +35,4 @@ begin
                          TFileNamePropertyEditor);
 end; 
 
-initialization
-{$i sqliteicon.lrs}
- 
 end.

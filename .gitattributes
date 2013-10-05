@@ -2889,13 +2889,12 @@ components/sqldb/sqlstringspropertyeditordlg.pas svneol=native#text/plain
 components/sqlite/lib/README.txt svneol=native#text/plain
 components/sqlite/registersqlite.pas svneol=native#text/plain
 components/sqlite/registersqlite3.pas svneol=native#text/plain
-components/sqlite/sqlite3icon.lrs svneol=native#text/pascal
+components/sqlite/sqlite3icon.res -text
 components/sqlite/sqlite3laz.lpk svneol=native#text/plain
 components/sqlite/sqlite3laz.pas svneol=native#text/plain
 components/sqlite/sqlitecomponenteditor.lfm svneol=native#text/plain
 components/sqlite/sqlitecomponenteditor.pas svneol=native#text/plain
-components/sqlite/sqliteds.lrs svneol=native#text/pascal
-components/sqlite/sqliteicon.lrs svneol=native#text/pascal
+components/sqlite/sqliteicon.res -text
 components/sqlite/sqlitelaz.lpk svneol=native#text/plain
 components/sqlite/sqlitelaz.pas svneol=native#text/plain
 components/sqlite/tsqlite3dataset.png -text

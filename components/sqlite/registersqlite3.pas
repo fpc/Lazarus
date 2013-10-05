@@ -19,6 +19,8 @@ procedure Register;
 
 implementation
 
+{$R sqlite3icon.res}
+
 procedure RegisterUnitSqlite3ds;
 begin
   RegisterComponents('Data Access',[TSqlite3Dataset]);
@@ -33,7 +35,4 @@ begin
                          TFileNamePropertyEditor);
 end; 
 
-initialization
-{$i sqlite3icon.lrs}
- 
 end.
