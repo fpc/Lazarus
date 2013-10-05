@@ -59,6 +59,8 @@ type
     vfRAW
     );
 
+  TvPageFormat = (vpA4, vpA3, vpA2, vpA1, vpA0);
+
   TvProgressEvent = procedure (APercentage: Byte) of object;
 
   {@@ This routine is called to add an item of caption AStr to an item
@@ -91,6 +93,10 @@ const
   STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE = 'Ćą';
 
   NUM_MAX_LISTSTYLES = 8;  // OpenDocument Limit is 10, MS Word Limit is 9
+
+  // Convenience constant to convert text size points to mm
+  FPV_ONE_POINT_IN_MM = 0.35278;
+
 
 type
   TvCustomVectorialWriter = class;
@@ -1156,6 +1162,7 @@ type
     function GetCurrentPage: TvPage;
     function GetCurrentPageAsVectorial: TvVectorialPage;
     procedure SetCurrentPage(AIndex: Integer);
+    procedure SetDefaultPageFormat(AFormat: TvPageFormat);
     function AddPage(): TvVectorialPage;
     function AddTextPageSequence(): TvTextPageSequence;
     { Style methods }
@@ -1192,6 +1199,7 @@ type
     constructor Create(AOwner: TvVectorialDocument); virtual;
     destructor Destroy; override;
     procedure Assign(ASource: TvPage); virtual;
+    procedure SetPageFormat(AFormat: TvPageFormat);
     { Data reading methods }
     procedure CalculateDocumentSize; virtual;
     function  GetEntity(ANum: Cardinal): TvEntity; virtual; abstract;
@@ -4973,6 +4981,20 @@ begin
 
 end;
 
+procedure TvPage.SetPageFormat(AFormat: TvPageFormat);
+begin
+  case AFormat of
+  vpA4:
+  begin
+    Width := 210;
+    Height := 297;
+  end;
+  else
+    Width := 210;
+    Height := 297;
+  end;
+end;
+
 procedure TvPage.CalculateDocumentSize;
 var
   i: Integer;
@@ -6121,6 +6143,20 @@ end;
 procedure TvVectorialDocument.SetCurrentPage(AIndex: Integer);
 begin
   FCurrentPageIndex := AIndex;
+end;
+
+procedure TvVectorialDocument.SetDefaultPageFormat(AFormat: TvPageFormat);
+begin
+  case AFormat of
+  vpA4:
+  begin
+    Width := 210;
+    Height := 297;
+  end;
+  else
+    Width := 210;
+    Height := 297;
+  end;
 end;
 
 function TvVectorialDocument.AddPage: TvVectorialPage;
