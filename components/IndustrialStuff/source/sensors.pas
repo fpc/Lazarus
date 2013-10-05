@@ -106,6 +106,8 @@ type
 
 implementation
 
+{$R sensors.res}
+
 uses SysUtils;
 
 { TSensorPanel }
@@ -471,14 +473,12 @@ begin
     FState := AValue;
 
     case AValue of
-      slUNKNOWN: Picture.LoadFromLazarusResource('STOP_UNKNOWN');
-      slRED: Picture.LoadFromLazarusResource('STOP_RED');
-      slYELLOW: Picture.LoadFromLazarusResource('STOP_YELLOW');
-      slGREEN: Picture.LoadFromLazarusResource('STOP_GREEN');
+      slUNKNOWN: Picture.LoadFromResourceName(HInstance, 'STOP_UNKNOWN', TPortableNetworkGraphic);
+      slRED: Picture.LoadFromResourceName(HInstance, 'STOP_RED', TPortableNetworkGraphic);
+      slYELLOW: Picture.LoadFromResourceName(HInstance, 'STOP_YELLOW', TPortableNetworkGraphic);
+      slGREEN: Picture.LoadFromResourceName(HInstance, 'STOP_GREEN', TPortableNetworkGraphic);
     end;
   end;
 end;
 
-initialization
-{$i sensors.lrs}
 end.

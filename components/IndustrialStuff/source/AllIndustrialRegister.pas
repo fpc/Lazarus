@@ -17,6 +17,7 @@ procedure Register;
 
 implementation
 
+{$R industrial_icons.res}
 
 //==========================================================
 procedure Register;
@@ -25,8 +26,5 @@ begin
     TAdvLed, TIndLed, TLedNumber, TStopLightSensor, TAnalogSensor, TindGnouMeter]);
 
 end;
-
-initialization
-  {$i industrial_icons.lrs}
 
 end.

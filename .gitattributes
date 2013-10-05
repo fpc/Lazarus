@@ -31,7 +31,9 @@ components/IndustrialStuff/Example/u_industrial.lfm svneol=native#text/plain
 components/IndustrialStuff/Example/u_industrial.pas svneol=native#text/pascal
 components/IndustrialStuff/industrial.lpk svneol=native#text/plain
 components/IndustrialStuff/industrial.pas svneol=native#text/pascal
-components/IndustrialStuff/resources/industrial_icons.lrs svneol=native#text/pascal
+components/IndustrialStuff/resources/build.bat svneol=native#text/plain
+components/IndustrialStuff/resources/industrial_icons.txt svneol=native#text/plain
+components/IndustrialStuff/resources/sensors.txt svneol=native#text/plain
 components/IndustrialStuff/resources/stop_green.png -text svneol=unset#image/png
 components/IndustrialStuff/resources/stop_red.png -text svneol=unset#image/png
 components/IndustrialStuff/resources/stop_unknown.png -text svneol=unset#image/png
@@ -51,11 +53,11 @@ components/IndustrialStuff/source/indcyGraphics.pas svneol=native#text/pascal
 components/IndustrialStuff/source/indcyTypes.pas svneol=native#text/pascal
 components/IndustrialStuff/source/indgnoumeter.pas svneol=native#text/pascal
 components/IndustrialStuff/source/indled.pas svneol=native#text/pascal
-components/IndustrialStuff/source/industrial_icons.lrs svneol=native#text/pascal
+components/IndustrialStuff/source/industrial_icons.res -text
 components/IndustrialStuff/source/ledbuttons.lrs svneol=native#text/pascal
 components/IndustrialStuff/source/lednumber.pas svneol=native#text/pascal
-components/IndustrialStuff/source/sensors.lrs svneol=native#text/pascal
 components/IndustrialStuff/source/sensors.pas svneol=native#text/pascal
+components/IndustrialStuff/source/sensors.res -text
 components/PascalScript/README.lazarus.txt svneol=native#text/pascal
 components/PascalScript/Samples/Console/sample1.dpr svneol=native#text/pascal
 components/PascalScript/Samples/Console/sample2.dpr svneol=native#text/pascal
