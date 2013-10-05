@@ -819,7 +819,12 @@ begin
     Strings.BeginUpdate;
     try
       if Append then
-        NewInd := Row - FixedRows + 1 //append after current row
+      begin
+        if (Strings.Count = 0) then   //empty grid
+          NewInd := 0
+        else
+          NewInd := Row - FixedRows + 1 //append after current row
+      end
       else
         NewInd := Row - FixedRows; //insert it at current row
       Strings.InsertItem(NewInd, Line, Nil);
