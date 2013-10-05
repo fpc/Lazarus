@@ -3898,10 +3898,7 @@ begin
   end
   else
   if FindResource(HInstance, PChar(ResName), PChar(RT_RCDATA)) <> 0 then
-  begin
-    Result := TPortableNetworkGraphic.Create;
-    Result.LoadFromResourceName(HInstance, ResName);
-  end;
+    Result := CreateBitmapFromResourceName(HInstance, ResName);
 
   if Result = nil then
     Result := CreateBitmapFromResourceName(HInstance, 'default');
