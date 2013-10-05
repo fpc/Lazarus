@@ -2248,8 +2248,8 @@ components/lazreport/source/lr_prntr.pas svneol=native#text/pascal
 components/lazreport/source/lr_progr.lfm svneol=native#text/plain
 components/lazreport/source/lr_progr.pas svneol=native#text/pascal
 components/lazreport/source/lr_propedit.pas svneol=native#text/plain
-components/lazreport/source/lr_register.lrs svneol=native#text/pascal
 components/lazreport/source/lr_register.pas svneol=native#text/pascal
+components/lazreport/source/lr_register.res -text
 components/lazreport/source/lr_rrect.lfm svneol=native#text/plain
 components/lazreport/source/lr_rrect.pas svneol=native#text/pascal
 components/lazreport/source/lr_shape.lfm svneol=native#text/plain

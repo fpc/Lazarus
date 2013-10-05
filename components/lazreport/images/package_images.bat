@@ -1,2 +1,2 @@
-..\..\..\tools\lazres ..\source\lr_register.lrs @Package_images.txt
+..\..\..\tools\lazres ..\source\lr_register.res @Package_images.txt
 pause

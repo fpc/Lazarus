@@ -42,6 +42,7 @@ type
 
 implementation
 
+{$R lr_register.res}
 
 procedure Register;
 begin
@@ -78,7 +79,5 @@ begin
       Designer.Modified;
 end;
 
-initialization
-  {$I lr_register.lrs}
 end.
 
