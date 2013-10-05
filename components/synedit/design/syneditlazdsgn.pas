@@ -51,6 +51,8 @@ procedure Register;
 
 implementation
 
+{$R syneditlazdsgn.res}
+
 procedure RegisterSynCompletion;
 begin
   RegisterComponents('SynEdit',[TSynCompletion]);
@@ -277,9 +279,6 @@ begin
   RegisterGutterPartClass(TSynGutterLineOverview, syndsLineOverview);
   {$ENDIF}
 end;
-
-initialization
-  {$I syneditlazdsgn.lrs}
 
 end.
 

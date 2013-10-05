@@ -2909,8 +2909,8 @@ components/synedit/design/allsyneditdsgn.pas svneol=native#text/pascal
 components/synedit/design/syndesignstringconstants.pas svneol=native#text/plain
 components/synedit/design/syneditdsgn.lpk svneol=native#text/xml
 components/synedit/design/syneditlazdsgn.bat svneol=native#text/x-msdos-program
-components/synedit/design/syneditlazdsgn.lrs svneol=native#text/pascal
 components/synedit/design/syneditlazdsgn.pas svneol=native#text/pascal
+components/synedit/design/syneditlazdsgn.res -text
 components/synedit/design/syneditlazdsgn.txt svneol=native#text/plain
 components/synedit/design/synpropertyeditobjectlist.lfm svneol=native#text/plain
 components/synedit/design/synpropertyeditobjectlist.pas svneol=native#text/plain

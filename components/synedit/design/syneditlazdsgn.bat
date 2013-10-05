@@ -1,1 +1,1 @@
-..\..\..\tools\lazres ..\syneditlazdsgn.lrs @syneditlazdsgn.txt
+..\..\..\tools\lazres syneditlazdsgn.res @syneditlazdsgn.txt
