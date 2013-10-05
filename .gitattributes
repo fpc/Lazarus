@@ -2880,8 +2880,8 @@ components/sqldb/languages/sqlstringspropertyeditordlg.uk.po svneol=native#text/
 components/sqldb/languages/sqlstringspropertyeditordlg.zh_CN.po svneol=native#text/plain
 components/sqldb/lib/README.txt svneol=native#text/plain
 components/sqldb/pqteventmonitor.pas svneol=native#text/plain
-components/sqldb/registersqldb.lrs svneol=native#text/pascal
 components/sqldb/registersqldb.pas svneol=native#text/pascal
+components/sqldb/registersqldb.res -text
 components/sqldb/sqldblaz.lpk svneol=native#text/pascal
 components/sqldb/sqldblaz.pas svneol=native#text/pascal
 components/sqldb/sqlstringspropertyeditordlg.lfm svneol=native#text/plain

@@ -177,6 +177,8 @@ procedure Register;
 
 implementation
 
+{$R registersqldb.res}
+
 uses dynlibs;
 
 procedure RegisterUnitSQLdb;
@@ -549,7 +551,6 @@ begin
 end;
 
 initialization
-  {$i registersqldb.lrs}
 
 finalization
   FreeAndNil(AChecker);

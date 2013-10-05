@@ -1,1 +1,1 @@
-..\..\..\tools\lazres ..\registersqldb.lrs @registersqldb.txt
+..\..\..\tools\lazres ..\registersqldb.res @registersqldb.txt
