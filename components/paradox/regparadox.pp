@@ -35,6 +35,8 @@ procedure register;
 
 implementation
 
+{$R regparadox.res}
+
 Resourcestring
   SParadoxFiles     = 'Paradox files';
   SParadoxBlobFiles = 'Paradox blob files';
@@ -83,7 +85,5 @@ begin
   RegisterUnit('paradox',@RegisterUnitParadox);
 end;
 
-initialization
-  {$i regparadox.lrs}
 end.
 

@@ -2559,8 +2559,8 @@ components/paradox/demo/testparadox.lpi svneol=native#text/plain
 components/paradox/demo/testparadox.lpr svneol=native#text/plain
 components/paradox/lazparadox.lpk svneol=native#text/plain
 components/paradox/lazparadox.pas svneol=native#text/plain
-components/paradox/regparadox.lrs svneol=native#text/pascal
 components/paradox/regparadox.pp svneol=native#text/plain
+components/paradox/regparadox.res -text
 components/paradox/tparadox.png -text svneol=unset#image/png
 components/plotfunction/demo/event/frmmain.lfm svneol=native#text/plain
 components/plotfunction/demo/event/frmmain.pp svneol=native#text/plain
