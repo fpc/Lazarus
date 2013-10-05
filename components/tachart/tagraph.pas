@@ -436,6 +436,8 @@ var
 
 implementation
 
+{$R tagraph.res}
+
 uses
   Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, TADrawerCanvas,
   TAGeometry, TAMath, Types;
@@ -1777,7 +1779,6 @@ begin
 end;
 
 initialization
-  {$I tagraph.lrs}
   SkipObsoleteChartProperties;
   SeriesClassRegistry := TStringList.Create;
   ShowMessageProc := @ShowMessage;
