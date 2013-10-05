@@ -14,5 +14,5 @@ If you have not yet compiled lazres, go to the tools directory and type make.
 [ toolbar.lrs ]
 
 cd <packagedir>/images/
-<lazarusdir>/tools/lazres ../toolbar.lrs *.xpm
+<lazarusdir>/tools/lazres ../toolbar.res @toolbar.txt
 

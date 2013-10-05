@@ -1,0 +1,7 @@
+arrowdown_blue16.xpm
+arrowleft_blue16.xpm
+arrowright_blue16.xpm
+arrowup_blue16.xpm
+execute16.xpm
+jumpto16.xpm
+preferences16.xpm

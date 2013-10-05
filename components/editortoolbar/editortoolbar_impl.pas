@@ -92,6 +92,8 @@ procedure Register;
 
 implementation
 
+{$R toolbar.res}    // all required images
+
 uses
   LazIDEIntf
   ,CustomCodeTool
@@ -371,7 +373,6 @@ end;
 
 initialization
   uEditorToolbarList := nil;
-  {$I toolbar.lrs}    // all required images
 
 finalization
   uEditorToolbarList.Free;
