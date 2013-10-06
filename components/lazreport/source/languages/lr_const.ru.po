@@ -2186,6 +2186,10 @@ msgstr "Дата создания отчёта"
 msgid "Report last modify date"
 msgstr "Дата последнего изменения отчёта"
 
+#: lr_const.sreportloadingerror
+msgid "Error while loading report"
+msgstr ""
+
 #: lr_const.sreportpreparing
 msgid "Report preparing"
 msgstr "Подготовка отчёта"

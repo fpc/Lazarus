@@ -2188,6 +2188,10 @@ msgstr "Pranešimo sukūrimo data"
 msgid "Report last modify date"
 msgstr "Pranešimo paskutiniojo keitimo data"
 
+#: lr_const.sreportloadingerror
+msgid "Error while loading report"
+msgstr ""
+
 #: lr_const.sreportpreparing
 msgid "Report preparing"
 msgstr "Pranešimas ruošiamas"

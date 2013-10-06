@@ -226,7 +226,7 @@ msgstr "0"
 
 #: lr_const.sclassobjectnotfound
 msgid "Class Object \"%s\" not found"
-msgstr "Objeto de clase \"%s\" not found"
+msgstr "No se encontró la clase de objeto \"%s\""
 
 #: lr_const.sconfirm
 msgid "Confirm"
@@ -2195,6 +2195,10 @@ msgstr "Fecha de creación del informe"
 #: lr_const.sreportlastmodifydate
 msgid "Report last modify date"
 msgstr "Fecha última modificación del informe"
+
+#: lr_const.sreportloadingerror
+msgid "Error while loading report"
+msgstr "Error al cargar el reporte"
 
 #: lr_const.sreportpreparing
 msgid "Report preparing"

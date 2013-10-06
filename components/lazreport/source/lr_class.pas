@@ -347,7 +347,8 @@ type
     procedure PaintDesignControl; virtual;abstract;
   public
     procedure UpdateControlPosition; virtual;
-    function OwnerForm:TWinControl;
+    procedure AttachToParent; virtual;
+    function OwnerForm:TWinControl; virtual;
     constructor Create(AOwnerPage:TfrPage); override;
     procedure Draw(ACanvas: TCanvas); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
@@ -1899,6 +1900,11 @@ end;
 { TfrControl }
 
 procedure TfrControl.UpdateControlPosition;
+begin
+
+end;
+
+procedure TfrControl.AttachToParent;
 begin
 
 end;
@@ -9121,20 +9127,24 @@ begin
 
   if frVersion < 21 then
     frVersion := 21;
+
   if frVersion <= frCurrentVersion then
-  try
-{$IFDEF FREEREP2217READ}
-    if FRE_COMPATIBLE_READ and (frVersion >= 23) then
-      frVersion := 22;
-{$ENDIF}
-    pages.LoadFromXML(XML, Path+'Pages/');
-  except
-    Pages.Clear;
-    Pages.Add;
-    MessageDlg(sFRFError,mtError,[mbOk],0)
-  end
+    try
+      {$IFDEF FREEREP2217READ}
+      if FRE_COMPATIBLE_READ and (frVersion >= 23) then
+        frVersion := 22;
+      {$ENDIF}
+      pages.LoadFromXML(XML, Path+'Pages/');
+    except
+      on E:Exception do
+      begin
+        Pages.Clear;
+        Pages.Add;
+        MessageDlg(sReportLoadingError+^M+E.Message,mtError,[mbOk],0)
+      end;
+    end
   else
-    MessageDlg(sFRFError,mtError,[mbOk],0);
+    MessageDlg(sReportLoadingError,mtError,[mbOk],0);
 end;
 
 procedure TfrReport.SaveToStream(Stream: TStream);
@@ -11910,6 +11920,7 @@ begin
     if not (P is TfrNonVisualControl) then
     begin
       fHasVisibleControls:=true;
+      P.AttachToParent;
       P.UpdateControlPosition;
     end;
   end;

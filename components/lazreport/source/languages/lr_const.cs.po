@@ -2200,6 +2200,10 @@ msgstr "Datum vytvoření reportu"
 msgid "Report last modify date"
 msgstr "Poslední úprava reportu"
 
+#: lr_const.sreportloadingerror
+msgid "Error while loading report"
+msgstr ""
+
 #: lr_const.sreportpreparing
 msgid "Report preparing"
 msgstr "Příprava reportu"
