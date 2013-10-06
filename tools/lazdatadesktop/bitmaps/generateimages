@@ -1,8 +1,4 @@
 #!/bin/sh
-../../lazres ../dicteditor.lrs ddtables.png ddtable.png ddfields.png ddfield.png\
-  ddindexes.png ddindex.png ddforeignkeys.png ddforeignkey.png ddtabledata.png\
-  dddatadict.png ddconnection.png ddsequences.png ddsequence.png dddomains.png dddomain.png\
-  dddeleteobject.png
-  
+../../lazres ../dicteditor.res @dicteditor.txt
   
   

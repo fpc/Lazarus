@@ -96,6 +96,8 @@ Type
 
 implementation
 
+{$R querypanel.res}
+
 uses strutils, fpdataexporter, fpcodegenerator;
 
 { TQueryPanel }
@@ -188,14 +190,14 @@ procedure TQueryPanel.CreateImageList;
 
 begin
   FIL:=TImageList.Create(Self);
-  FIL.AddLazarusResource('qrybtn_execute');
-  FIL.AddLazarusResource('qrybtn_close');
-  FIL.AddLazarusResource('qrybtn_previous');
-  FIL.AddLazarusResource('qrybtn_next');
-  FIL.AddLazarusResource('qrybtn_open');
-  FIL.AddLazarusResource('qrybtn_save');
-  FIL.AddLazarusResource('qrybtn_export');
-  FIL.AddLazarusResource('qrybtn_code');
+  FIL.AddResourceName(HInstance, 'qrybtn_execute');
+  FIL.AddResourceName(HInstance, 'qrybtn_close');
+  FIL.AddResourceName(HInstance, 'qrybtn_previous');
+  FIL.AddResourceName(HInstance, 'qrybtn_next');
+  FIL.AddResourceName(HInstance, 'qrybtn_open');
+  FIL.AddResourceName(HInstance, 'qrybtn_save');
+  FIL.AddResourceName(HInstance, 'qrybtn_export');
+  FIL.AddResourceName(HInstance, 'qrybtn_code');
 end;
 
 procedure TQueryPanel.CreateActions;
@@ -504,9 +506,5 @@ begin
     end;
 end;
 
-
-
-initialization
-{$i querypanel.lrs}
 end.
 

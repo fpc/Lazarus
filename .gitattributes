@@ -7908,7 +7908,9 @@ tools/lazdatadesktop/bitmaps/ddtabledata.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/ddtables.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/deletefield.bmp -text
 tools/lazdatadesktop/bitmaps/deletetable.bmp -text
+tools/lazdatadesktop/bitmaps/dicteditor.txt svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/generateimages svneol=native#text/plain
+tools/lazdatadesktop/bitmaps/generateimages.bat svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/generatesql.bmp -text
 tools/lazdatadesktop/bitmaps/newfield.bmp -text
 tools/lazdatadesktop/bitmaps/newtable.bmp -text
@@ -7920,11 +7922,12 @@ tools/lazdatadesktop/bitmaps/qrybtn_next.xpm svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/qrybtn_open.xpm svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/qrybtn_previous.xpm svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/qrybtn_save.xpm svneol=native#text/plain
+tools/lazdatadesktop/bitmaps/querypanel.txt svneol=native#text/plain
 tools/lazdatadesktop/conneditor.pp svneol=native#text/plain
 tools/lazdatadesktop/datapanel.pp svneol=native#text/plain
 tools/lazdatadesktop/ddfiles.pp svneol=native#text/plain
-tools/lazdatadesktop/dicteditor.lrs svneol=native#text/pascal
 tools/lazdatadesktop/dicteditor.pp svneol=native#text/plain
+tools/lazdatadesktop/dicteditor.res -text
 tools/lazdatadesktop/frmgeneratesql.lfm svneol=native#text/plain
 tools/lazdatadesktop/frmgeneratesql.pp svneol=native#text/plain
 tools/lazdatadesktop/frmimportdd.lfm svneol=native#text/plain
@@ -7948,8 +7951,8 @@ tools/lazdatadesktop/lazdatadeskstr.pas svneol=native#text/plain
 tools/lazdatadesktop/lazdatadesktop.lpi svneol=native#text/plain
 tools/lazdatadesktop/lazdatadesktop.lpr svneol=native#text/plain
 tools/lazdatadesktop/lazdatadesktop.res -text
-tools/lazdatadesktop/querypanel.lrs svneol=native#text/pascal
 tools/lazdatadesktop/querypanel.pp svneol=native#text/plain
+tools/lazdatadesktop/querypanel.res -text
 tools/lazres.lpi svneol=native#text/plain
 tools/lazres.pp svneol=native#text/pascal
 tools/lfm_to_lrs.sh svneol=native#text/plain

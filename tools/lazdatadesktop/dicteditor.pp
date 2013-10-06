@@ -171,6 +171,8 @@ Const
 
 implementation
 
+{$R dicteditor.res}
+
 uses DB, MemDS, fpcodegenerator, TypInfo, lazdatadeskstr;
 
 Function ObjectTypeName(ObjectType : TEditObjectType) : String;
@@ -401,7 +403,7 @@ begin
     begin
     P:=TPortableNetworkGraphic.Create;
     try
-      P.LoadFromLazarusResource(ImageNames[i]);
+      P.LoadFromResourceName(HInstance, ImageNames[i]);
       FImgList.Add(P,Nil);
     finally
       P.Free;
@@ -1036,7 +1038,5 @@ begin
   end;
 end;
 
-initialization
-{$i dicteditor.lrs}
 end.
 
