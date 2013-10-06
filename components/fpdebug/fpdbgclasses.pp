@@ -39,7 +39,7 @@ uses
 {$ifdef windows}
   Windows, FpImgReaderWinPE,
 {$endif}
-  Classes, Maps, FpDbgUtil, FpDbgWinExtra, FpDbgLoader, LazLoggerBase;
+  Classes, Maps, FpDbgUtil, FpDbgWinExtra, FpDbgLoader, LazLoggerBase, LazClasses;
 
 type
   TDbgPtr = QWord; // PtrUInt;
@@ -113,7 +113,7 @@ type
 
   { TDbgSymbol }
 
-  TDbgSymbol = class(TObject)
+  TDbgSymbol = class(TRefCountedObject)
   private
     FName: String;
     FKind: TDbgSymbolKind;
@@ -856,11 +856,12 @@ end;
 
 constructor TDbgSymbol.Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TDbgPtr);
 begin
+  inherited Create;
+  AddReference;
+
   FName := AName;
   FKind := AKind;
   FAddress := AAddress;
-
-  inherited Create;
 end;
 
 destructor TDbgSymbol.Destroy;

@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, Types, SysUtils, FpDbgClasses, FpDbgDwarfConst, Maps, Math,
-  FpDbgLoader, FpDbgWinExtra, FpImgReaderBase, LazLoggerBase, contnrs;
+  FpDbgLoader, FpDbgWinExtra, FpImgReaderBase, LazLoggerBase, LazClasses, contnrs;
   
 type
   // compilation unit header
@@ -263,6 +263,7 @@ type
   public
     constructor Create(ACompUnit: TDwarfCompilationUnit; AnInformationEntry: Pointer);
     constructor Create(ACompUnit: TDwarfCompilationUnit; AScope: TDwarfScopeInfo);
+    property CompUnit: TDwarfCompilationUnit read FCompUnit;
 
     property Abbrev: TDwarfAbbrev read FAbbrev write SetAbbrev;
     property AbbrevData: PDwarfAbbrevEntry read FAbbrevData;
@@ -274,6 +275,7 @@ type
     function ReadValue(AnAttrib: Cardinal; out AValue: Cardinal): Boolean;
     function ReadValue(AnAttrib: Cardinal; out AValue: QWord): Boolean;
     function ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
+    function ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out ACompUnit: TDwarfCompilationUnit): Boolean;
   public
     // Scope
     procedure GoParent; inline;
@@ -489,14 +491,20 @@ type
     constructor Create(ALoader: TDbgImageLoader);
     procedure Decode;
   end;
-  
-  
+
+  TDbgDwarfTypeIdentifier = class;
+
   { TDbgDwarfIdentifier }
 
   TDbgDwarfIdentifier = class(TDbgSymbol)
   private
     FCU: TDwarfCompilationUnit;
-    FScope: TDwarfScopeInfo;
+    FIdentifierName: String;
+    FInformationEntry: TDwarfInformationEntry;
+    FTypeInfo: TDbgDwarfTypeIdentifier;
+    FFlags: set of (didtNameRead, didtTypeRead);
+    function GetIdentifierName: String;
+    function GetTypeInfo: TDbgDwarfTypeIdentifier;
   protected
     //function GetChild(AIndex: Integer): TDbgSymbol; override;
     //function GetColumn: Cardinal; override;
@@ -507,11 +515,45 @@ type
     //function GetParent: TDbgSymbol; override;
 //    function GetReference: TDbgSymbol; override;
     //function GetSize: Integer; override;
+    property TypeInfo: TDbgDwarfTypeIdentifier read GetTypeInfo;
   public
-    constructor Create(ACompilationUnit: TDwarfCompilationUnit; AScope: TDwarfScopeInfo);
+    constructor Create(AName: String; AnInformationEntry: TDwarfInformationEntry); virtual;
+    destructor Destroy; override;
     //constructor Create(AName: String; AAddress: TDbgPtr; ACompilationUnit: TDwarfCompilationUnit;
     //  AScope: TDwarfScopeInfo);
     //destructor Destroy; override;
+    property IdentifierName: String read GetIdentifierName;
+  end;
+  TDbgDwarfIdentifierClass = class of TDbgDwarfIdentifier;
+
+  TDbgDwarfValueIdentifier = class(TDbgDwarfIdentifier) // var, const, member, ...
+  end;
+
+  { TDbgDwarfTypeIdentifier }
+
+  (* Types and allowed tags in dwarf 2
+                          DW_TAG_typedef
+                          |  DW_TAG_base_type
+  DECL                    Y
+  DW_AT_abstract_origin   Y
+  DW_AT_accessibility     Y
+  DW_AT_bit_offset           Y
+  DW_AT_bit_size             Y
+  DW_AT_byte_size            Y
+  DW_AT_declaration       Y
+  DW_AT_encoding             Y
+  DW_AT_name              Y  Y
+  DW_AT_sibling           Y  Y
+  DW_AT_start_scope       Y
+  DW_AT_type              Y
+  DW_AT_visibility        Y
+
+DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
+  *)
+
+  TDbgDwarfTypeIdentifier = class(TDbgDwarfIdentifier)
+  private
+  public
   end;
 
   { TDbgDwarfProcSymbol }
@@ -568,10 +610,12 @@ type
     function GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
   protected
     function GetCompilationUnitClass: TDwarfCompilationUnitClass; virtual;
+    function FindCompilationUnitByOffs(AOffs: QWord): TDwarfCompilationUnit;
   public
     constructor Create(ALoader: TDbgImageLoader); override;
     destructor Destroy; override;
     function FindSymbol(AAddress: TDbgPtr): TDbgSymbol; override;
+    //function FindSymbol(const AName: String): TDbgSymbol; override;
     function FindIdentifier(AAddress: TDbgPtr; AName: String): TDbgSymbol;
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr; override;
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
@@ -719,7 +763,7 @@ begin
         while (PByte(AEntryData)^ and $80) <> 0 do Inc(AEntryData);
         Inc(AEntryData);
       end;
-    DW_FORM_ref_addr : Inc(AEntryData, AddrSize);
+    DW_FORM_ref_addr : Inc(AEntryData, AddrSize); // TODO: Dwarf3 depends on FIsDwarf64
     DW_FORM_string   : begin
         while PByte(AEntryData)^ <> 0 do Inc(AEntryData);
         Inc(AEntryData);
@@ -1042,6 +1086,8 @@ begin
   end;
 end;
 
+{ TDbgDwarfTypeIdentifier }
+
 { TDwarfInformationEntry }
 
 procedure TDwarfInformationEntry.SetAbbrev(AValue: TDwarfAbbrev);
@@ -1204,6 +1250,51 @@ begin
   Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
 end;
 
+function TDwarfInformationEntry.ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out
+  ACompUnit: TDwarfCompilationUnit): Boolean;
+var
+  InfoData: pointer;
+  i: Integer;
+  Form: Cardinal;
+  Offs: QWord;
+begin
+  // reference to other debug info
+  {Note: Dwarf2 defines DW_FORM_ref_addr as relocated address in the exe,
+         Dwarf 3 defines it as offset.
+         Since we load the debug_info section without applying any relocation (if indeed present at all),
+         this field will always be an offset from start of the debug_info section
+  }
+  Result := False;
+  i := AttribIdx(AnAttrib, InfoData);
+  if (i < 0) then
+    exit;
+  Form := AbbrevData[i].Form;
+  if (Form = DW_FORM_ref1) or (Form = DW_FORM_ref2) or (Form = DW_FORM_ref4) or
+     (Form = DW_FORM_ref8) or (Form = DW_FORM_sdata) or (Form = DW_FORM_udata)
+  then begin
+    Result := FCompUnit.ReadValue(InfoData, Form, Offs);
+    if not Result then
+      exit;
+    ACompUnit := FCompUnit;
+    if ACompUnit.FIsDwarf64
+    then AValue := ACompUnit.FScope.Entry + Offs - SizeOf(TDwarfCUHeader64)
+    else AValue := ACompUnit.FScope.Entry + Offs - SizeOf(TDwarfCUHeader32);
+  end
+  else
+  if (Form = DW_FORM_ref_addr) then begin
+    Result := FCompUnit.ReadValue(InfoData, Form, Offs);
+    if not Result then
+      exit;
+    ACompUnit := FCompUnit.FOwner.FindCompilationUnitByOffs(Offs);
+    Result := ACompUnit <> nil;
+    if not Result then DebugLn('Comp unit not found DW_FORM_ref_addr');
+    AValue := FCompUnit.FOwner.FSections[dsInfo].RawData + Offs;
+  end
+  else begin
+    DebugLn(['FORM for DW_AT_type not expected ', DwarfAttributeFormToString(Form)]);
+  end;
+end;
+
 procedure TDwarfInformationEntry.GoParent;
 begin
   if (not FScope.IsValid) and (FInformationEntry <> nil) then
@@ -1238,12 +1329,53 @@ end;
 
 { TDbgDwarfIdentifier }
 
-constructor TDbgDwarfIdentifier.Create(ACompilationUnit: TDwarfCompilationUnit;
-  AScope: TDwarfScopeInfo);
+function TDbgDwarfIdentifier.GetIdentifierName: String;
 begin
-  FCU := ACompilationUnit;
-  FScope := AScope;
+  Result := FIdentifierName;
+  if (Result <> '') or (didtNameRead in FFlags) then
+    exit;
+  include(FFlags, didtNameRead);
+  FInformationEntry.ReadValue(DW_AT_name, FIdentifierName);
+  Result := FIdentifierName;
+end;
+
+function TDbgDwarfIdentifier.GetTypeInfo: TDbgDwarfTypeIdentifier;
+var
+  FwdInfoPtr: Pointer;
+  FwdCompUint: TDwarfCompilationUnit;
+  InfoEntry: TDwarfInformationEntry;
+begin
+// TODO DW_AT_start_scope;
+  Result := FTypeInfo;
+  if (Result <> nil) or (didtTypeRead in FFlags) then
+    exit;
+  include(FFlags, didtTypeRead);
+  if FInformationEntry.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint) then begin
+    InfoEntry := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+        InfoEntry.SearchScope;
+        DebugLn(['!!!! TYPE !!! ', dbgs(InfoEntry.FScope, FwdCompUint), DbgsDump(InfoEntry.FScope, FwdCompUint) ]);
+    FTypeInfo := TDbgDwarfTypeIdentifier.Create('', InfoEntry);
+  Result := FTypeInfo;
+  end;
+end;
+
+constructor TDbgDwarfIdentifier.Create(AName: String;
+  AnInformationEntry: TDwarfInformationEntry);
+begin
+  if AName = '' then
+    AnInformationEntry.ReadValue(DW_AT_name, AName);
+
+  FIdentifierName := AName;
+  FCU := AnInformationEntry.CompUnit;
+  FInformationEntry := AnInformationEntry;
   inherited Create('', skNone, 0);
+end;
+
+destructor TDbgDwarfIdentifier.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FInformationEntry);
+  ReleaseRefAndNil(FTypeInfo);
 end;
 
 { TDwarfAbbrevList }
@@ -2219,19 +2351,31 @@ begin
 end;
 
 function TDbgDwarf.FindIdentifier(AAddress: TDbgPtr; AName: String): TDbgSymbol;
+
+  function DbgSymbolClassForTag(ATag: Cardinal): TDbgDwarfIdentifierClass;
+  begin
+    case ATag of
+      DW_TAG_variable, DW_TAG_formal_parameter, DW_TAG_constant, DW_TAG_member:
+        Result := TDbgDwarfValueIdentifier;
+      DW_TAG_typedef:
+        Result := TDbgDwarfTypeIdentifier;
+      else
+        Result := TDbgDwarfIdentifier;
+    end;
+  end;
+
 var
   SubRoutine: TDbgDwarfProcSymbol; // TDbgSymbol;
   CU: TDwarfCompilationUnit;
   //Scope,
   Scope2: TDwarfScopeInfo;
-  Def: TDwarfAbbrev;
   Form: Cardinal;
   Attrib: Pointer;
   SubName, EntryName: String;
-  StartScopeIdx, i: Integer;
-  AtTypeOffs: PtrInt;
+  StartScopeIdx: Integer;
   AtTypeAddr: Pointer;
   InfoEntry, InfoEntry2: TDwarfInformationEntry;
+  AtTypeCU: TDwarfCompilationUnit;
 begin
   Result := nil;
   SubRoutine := TDbgDwarfProcSymbol(FindSymbol(AAddress));
@@ -2242,11 +2386,7 @@ begin
     CU := SubRoutine.FCU;
     InfoEntry := TDwarfInformationEntry.Create(CU, nil);
     InfoEntry.ScopeIndex := SubRoutine.FAddressInfo^.ScopeIndex;
-
-    //Scope.Init(SubRoutine.FAddressInfo^.ScopeList);
-    //Scope.Index := SubRoutine.FAddressInfo^.ScopeIndex;
 //    debugln(['TDbgDwarf.FindIdentifier Found Subroutine ', dbgs(Scope)]);
-
 
     while InfoEntry.HasValidScope do begin
       debugln(['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
@@ -2261,7 +2401,7 @@ begin
 
         if UpperCase(EntryName) = UpperCase(AName) then begin
           // TODO: check DW_AT_start_scope;
-          Result := TDbgDwarfIdentifier.Create(CU, InfoEntry.FScope); // XXXXXXX
+          Result := DbgSymbolClassForTag(InfoEntry.Abbrev.tag).Create(AName, InfoEntry);
           DebugLn(['!!!! FOUND !!! ', dbgs(InfoEntry.FScope, CU), DbgsDump(InfoEntry.FScope, CU) ]);
           break;
         end;
@@ -2276,41 +2416,19 @@ begin
       InfoEntry.GoParent;
     end;
 
-
-    if Result <> nil then begin
-      Def := InfoEntry.Abbrev;
-      if (Def.tag = DW_TAG_variable) or (Def.tag = DW_TAG_formal_parameter) or
-         (Def.tag = DW_TAG_constant) or (Def.tag = DW_TAG_member)
-      then begin
-        i := InfoEntry.AttribIdx(DW_AT_type, Attrib);
-        if (i < 0) then begin
-          DebugLn(['NO DW_AT_type ']);
-          exit;
-        end;
-        Form := InfoEntry.AbbrevData[i].Form;
-        if (Form <> DW_FORM_ref1) and (Form <> DW_FORM_ref2) and (Form <> DW_FORM_ref4) and
-           (Form <> DW_FORM_ref8) and (Form <> DW_FORM_sdata) and (Form <> DW_FORM_udata)
-        then begin
-          DebugLn(['FORM for DW_AT_type not expected ', DwarfAttributeFormToString(Form)]);
-          exit;
-        end;
-        CU.ReadValue(Attrib, Form, PtrInt(AtTypeOffs));
-        // TODO 64bit
-        AtTypeAddr := CU.FScope.Entry + AtTypeOffs - SizeOf(TDwarfCUHeader32); // 11;
-        //TODO: bin search
-        InfoEntry2 := TDwarfInformationEntry.Create(CU, AtTypeAddr);
-        InfoEntry2.SearchScope;
-        DebugLn(['!!!! TYPE !!! ', dbgs(InfoEntry2.FScope, CU), DbgsDump(InfoEntry2.FScope, CU) ]);
-        //DebugLn(['!!!! TYPE !!! ', DwarfTagToString(InfoEntry2.Abbrev.tag)  ]);
-      end;
-    end;
-
   // unitname?
 
+// debugln:
+    if Result <> nil then begin
+      TDbgDwarfIdentifier(Result).TypeInfo; // debugln...
+      if TDbgDwarfIdentifier(Result).TypeInfo <> nil then TDbgDwarfIdentifier(Result).TypeInfo.TypeInfo;
+    end;
+// end debugln
+
+
   finally
-    FreeAndNil(SubRoutine);
-    FreeAndNil(InfoEntry);
-    FreeAndNil(InfoEntry2);
+    ReleaseRefAndNil(SubRoutine);
+    ReleaseRefAndNil(InfoEntry2);
   end;
 end;
 
@@ -2322,6 +2440,27 @@ end;
 function TDbgDwarf.GetCompilationUnitClass: TDwarfCompilationUnitClass;
 begin
   Result := TDwarfCompilationUnit;
+end;
+
+function TDbgDwarf.FindCompilationUnitByOffs(AOffs: QWord): TDwarfCompilationUnit;
+var
+  l, h, m: Integer;
+  p: Pointer;
+begin
+  Result := nil;
+  p := FSections[dsInfo].RawData + AOffs;
+  l := 0;
+  h := FCompilationUnits.Count - 1;
+  while h > l do begin
+    m := (h + l + 1) div 2;
+    if TDwarfCompilationUnit(FCompilationUnits[m]).FInfoData <= p
+    then l := m
+    else h := m - 1;
+  end;
+
+  Result := TDwarfCompilationUnit(FCompilationUnits[m]);
+  if (p < Result.FInfoData) or (p > Result.FInfoData + Result.FLength) then
+    Result := nil;
 end;
 
 function TDbgDwarf.GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
@@ -3263,7 +3402,7 @@ end;
 
 function TDwarfCompilationUnit.MakeAddress(AData: Pointer): QWord;
 begin
-  if FAddressSize = 4
+  if FAddressSize = 4 // TODO Dwarf3 depends on FIsDwarf64
   then Result := PLongWord(AData)^
   else Result := PQWord(AData)^;
 end;
