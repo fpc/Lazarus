@@ -11,12 +11,12 @@ procedure register;
 
 implementation
 
+{$R lr_e_cairo_icon.res}
+
 procedure register;
 begin
   RegisterComponents('LazReport',[TlrCairoExport]);
 end;
 
-initialization
-  {$I lr_e_cairo_icon.lrs}
 end.
 

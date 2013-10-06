@@ -2147,9 +2147,10 @@ components/lazreport/source/addons/addfunction/lrAddFunctionLibrary.pas svneol=n
 components/lazreport/source/addons/addfunction/lr_add_function.lpk svneol=native#text/plain
 components/lazreport/source/addons/addfunction/lr_add_function.pas svneol=native#text/pascal
 components/lazreport/source/addons/addfunction/lr_add_function_const.pas svneol=native#text/pascal
+components/lazreport/source/addons/cairoexport/TlrCairoExport.png -text
 components/lazreport/source/addons/cairoexport/lr_cairoexp_reg.pas svneol=native#text/plain
 components/lazreport/source/addons/cairoexport/lr_e_cairo.pas svneol=native#text/plain
-components/lazreport/source/addons/cairoexport/lr_e_cairo_icon.lrs svneol=native#text/plain
+components/lazreport/source/addons/cairoexport/lr_e_cairo_icon.res -text
 components/lazreport/source/addons/cairoexport/lrcairoexport.lpk svneol=native#text/plain
 components/lazreport/source/addons/cairoexport/lrcairoexport.pas svneol=native#text/plain
 components/lazreport/source/addons/imgexport/lr_e_extexp.res -text
