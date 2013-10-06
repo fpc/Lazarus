@@ -523,6 +523,17 @@ begin
   end;
 end;
 
+procedure TPicture.LoadFromResourceName(Instance: THandle; const ResName: String);
+var
+  NewGraphic: TGraphic;
+begin
+  NewGraphic := CreateGraphicFromResourceName(Instance, ResName);
+  FGraphic.Free;
+  FGraphic := NewGraphic;
+  FGraphic.OnChange := @Changed;
+  Changed(Self);
+end;
+
 procedure TPicture.LoadFromResourceName(Instance: THandle;
   const ResName: String; AClass: TGraphicClass);
 var
