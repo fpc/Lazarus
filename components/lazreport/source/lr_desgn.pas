@@ -655,6 +655,8 @@ var
 implementation
 
 {$R *.lfm}
+{$R bullets.res}
+{$R fr_pencil.res}
 
 uses
   LR_Pgopt, LR_GEdit, LR_Templ, LR_Newrp, LR_DsOpt, LR_Const,
@@ -723,8 +725,8 @@ begin
   fOwner := AOwner;
   fGreenBullet := TPortableNetworkGraphic.Create;
   fGrayBullet := TPortableNetworkGraphic.Create;
-  fGreenBullet.LoadFromLazarusResource('bulletgreen');
-  fGrayBullet.LoadFromLazarusResource('bulletgray');
+  fGreenBullet.LoadFromResourceName(HInstance, 'bulletgreen');
+  fGrayBullet.LoadFromResourceName(HInstance, 'bulletgray');
 end;
 
 destructor TPaintSel.Destroy;
@@ -3344,8 +3346,16 @@ begin
 end;
 
 procedure TfrDesignerForm.FormShow(Sender: TObject);
+var
+  CursorImage: TCursorImage;
 begin
-  Screen.Cursors[crPencil] := LoadCursorFromLazarusREsource('FR_PENCIL');
+  CursorImage := TCursorImage.Create;
+  try
+    CursorImage.LoadFromResourceName(hInstance, 'FR_PENCIL');
+    Screen.Cursors[crPencil] := CursorImage.ReleaseHandle;
+  finally
+    CursorImage.Free;
+  end;    
   {$ifndef sbod}
   Panel7.Hide;
   {$endif}
@@ -7554,10 +7564,6 @@ begin
 end;
 
 initialization
-
-  {$I fr_pencil.lrs}
-  {$I bullets.lrs}
-
   frDesigner:=nil;
   ProcedureInitDesigner:=@InitGlobalDesigner;
   

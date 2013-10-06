@@ -1948,11 +1948,14 @@ components/lazreport/doc/tutorials/stringgrid/en/Tutorial_en.odt -text
 components/lazreport/doc/tutorials/stringgrid/es/Tutorial[!!-~]LazReport[!!-~]y[!!-~]StringGrid.pdf -text svneol=unset#application/pdf
 components/lazreport/doc/tutorials/stringgrid/es/Tutorial_es.odt -text
 components/lazreport/images/Package_images.txt svneol=native#text/plain
+components/lazreport/images/bitmaps/bulletgray.png -text
+components/lazreport/images/bitmaps/bulletgreen.png -text
 components/lazreport/images/bitmaps/fr_bold.bmp -text
 components/lazreport/images/bitmaps/fr_check.bmp -text
 components/lazreport/images/bitmaps/fr_checkbox.bmp -text
 components/lazreport/images/bitmaps/fr_hightlight.bmp -text
 components/lazreport/images/bitmaps/fr_italic.bmp -text
+components/lazreport/images/bitmaps/fr_pencil.cur -text
 components/lazreport/images/bitmaps/fr_radio.bmp -text
 components/lazreport/images/bitmaps/fr_script.bmp -text
 components/lazreport/images/bitmaps/fr_undrline.bmp -text
@@ -2213,8 +2216,9 @@ components/lazreport/source/addons/pdfexport/lr_pdfexp_reg.res -text
 components/lazreport/source/addons/pdfexport/readme.txt svneol=native#text/plain
 components/lazreport/source/addons/pdfexport/tfrtnpdfexport.png -text svneol=unset#image/png
 components/lazreport/source/barcode.pas svneol=native#text/pascal
-components/lazreport/source/bullets.lrs svneol=native#text/plain
+components/lazreport/source/bullets.res -text
 components/lazreport/source/fr_pencil.lrs svneol=native#text/pascal
+components/lazreport/source/fr_pencil.res -text
 components/lazreport/source/languages/lr_const.cs.po svneol=native#text/plain
 components/lazreport/source/languages/lr_const.de.po svneol=native#text/plain
 components/lazreport/source/languages/lr_const.es.po svneol=native#text/plain
