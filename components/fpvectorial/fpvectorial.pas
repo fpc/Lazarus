@@ -95,7 +95,7 @@ const
   NUM_MAX_LISTSTYLES = 8;  // OpenDocument Limit is 10, MS Word Limit is 9
 
   // Convenience constant to convert text size points to mm
-  FPV_ONE_POINT_IN_MM = 0.35278;
+  FPV_TEXT_POINT_TO_MM = 0.35278;
 
 
 type
