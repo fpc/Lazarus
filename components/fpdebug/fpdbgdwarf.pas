@@ -516,6 +516,7 @@ type
 //    function GetReference: TDbgSymbol; override;
     //function GetSize: Integer; override;
     property TypeInfo: TDbgDwarfTypeIdentifier read GetTypeInfo;
+    property InformationEntry: TDwarfInformationEntry read FInformationEntry;
   public
     constructor Create(AName: String; AnInformationEntry: TDwarfInformationEntry); virtual;
     destructor Destroy; override;
@@ -527,6 +528,8 @@ type
   TDbgDwarfIdentifierClass = class of TDbgDwarfIdentifier;
 
   TDbgDwarfValueIdentifier = class(TDbgDwarfIdentifier) // var, const, member, ...
+  public
+    property TypeInfo;
   end;
 
   { TDbgDwarfTypeIdentifier }
@@ -554,6 +557,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TDbgDwarfTypeIdentifier = class(TDbgDwarfIdentifier)
   private
   public
+    property TypeInfo;
   end;
 
   { TDbgDwarfProcSymbol }

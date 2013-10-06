@@ -778,6 +778,8 @@ type
     property CurrentThreadId: Integer read FCurrentThreadId;
     property CurrentStackFrameValid: Boolean read FCurrentStackFrameValid;
     property CurrentThreadIdValid: Boolean read FCurrentThreadIdValid;
+
+    property TypeRequestCache: TGDBPTypeRequestCache read FTypeRequestCache;
   public
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
