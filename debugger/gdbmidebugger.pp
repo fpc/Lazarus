@@ -592,6 +592,35 @@ type
     property  LineOffsFunction: string read FLineOffsFunction;
   end;
 
+  { TGDBMIWatches }
+
+  TGDBMIDebuggerParentFrameCache = record
+      ThreadId: Integer;
+      ParentFPList: Array of
+        record
+          fp, parentfp: string; // empty=unknown / '-'=evaluated-no-data
+        end;
+    end;
+    PGDBMIDebuggerParentFrameCache = ^TGDBMIDebuggerParentFrameCache;
+
+  TGDBMIWatches = class(TWatchesSupplier)
+  private
+    FCommandList: TList;
+    FParentFPList: Array of TGDBMIDebuggerParentFrameCache;
+    FParentFPListChangeStamp: Integer;
+    procedure DoEvaluationDestroyed(Sender: TObject);
+  protected
+    function  GetParentFPList(AThreadId: Integer): PGDBMIDebuggerParentFrameCache;
+    procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure Changed;
+    procedure Clear;
+    procedure InternalRequestData(AWatchValue: TCurrentWatchValue); override;
+    property  ParentFPListChangeStamp: Integer read FParentFPListChangeStamp;
+  public
+    constructor Create(const ADebugger: TDebugger);
+    destructor Destroy; override;
+  end;
+
   { TGDBMIDebugger }
 
   TGDBMIDebugger = class(TGDBMICmdLineDebugger) // TODO: inherit from TDebugger direct
@@ -744,6 +773,11 @@ type
     function ParseLibraryLoaded(const S: String): String;
     function ParseLibraryUnLoaded(const S: String): String;
     function ParseThread(const S, EventText: String): String;
+
+    property CurrentStackFrame: Integer read FCurrentStackFrame;
+    property CurrentThreadId: Integer read FCurrentThreadId;
+    property CurrentStackFrameValid: Boolean read FCurrentStackFrameValid;
+    property CurrentThreadIdValid: Boolean read FCurrentThreadIdValid;
   public
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
@@ -1220,15 +1254,6 @@ type
 
   {%region      *****  Watches  *****   }
 
-  TGDBMIDebuggerParentFrameCache = record
-      ThreadId: Integer;
-      ParentFPList: Array of
-        record
-          fp, parentfp: string; // empty=unknown / '-'=evaluated-no-data
-        end;
-    end;
-    PGDBMIDebuggerParentFrameCache = ^TGDBMIDebuggerParentFrameCache;
-
   { TGDBMIDebuggerCommandEvaluate }
 
   TGDBMIDebuggerCommandEvaluate = class(TGDBMIDebuggerCommand)
@@ -1263,26 +1288,6 @@ type
     property TextValue: String read FTextValue;
     property TypeInfo: TGDBType read GetTypeInfo;
     property TypeInfoAutoDestroy: Boolean read FTypeInfoAutoDestroy write FTypeInfoAutoDestroy;
-  end;
-
-  { TGDBMIWatches }
-
-  TGDBMIWatches = class(TWatchesSupplier)
-  private
-    FCommandList: TList;
-    FParentFPList: Array of TGDBMIDebuggerParentFrameCache;
-    FParentFPListChangeStamp: Integer;
-    procedure DoEvaluationDestroyed(Sender: TObject);
-  protected
-    function  GetParentFPList(AThreadId: Integer): PGDBMIDebuggerParentFrameCache;
-    procedure DoStateChange(const AOldState: TDBGState); override;
-    procedure Changed;
-    procedure Clear;
-    procedure InternalRequestData(AWatchValue: TCurrentWatchValue); override;
-    property  ParentFPListChangeStamp: Integer read FParentFPListChangeStamp;
-  public
-    constructor Create(const ADebugger: TDebugger);
-    destructor Destroy; override;
   end;
 
   {%endregion   ^^^^^  Watches  ^^^^^   }

@@ -5,8 +5,8 @@ unit FpGdbmiDebugger;
 interface
 
 uses
-  Classes, sysutils, GDBMIDebugger, BaseDebugManager, Debugger,
-  GDBMIMiscClasses, maps, FpDbgLoader, FpDbgDwarf, LazLoggerBase, LazLoggerProfiling;
+  Classes, sysutils, FpDbgClasses, GDBMIDebugger, BaseDebugManager, Debugger, GDBMIMiscClasses, maps,
+  FpDbgLoader, FpDbgDwarf, LazLoggerBase, LazLoggerProfiling;
 
 type
 
@@ -19,10 +19,13 @@ type
   protected
     function CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; override;
     function CreateLineInfo: TDBGLineInfo; override;
+    function  CreateWatches: TWatchesSupplier; override;
     procedure DoState(const OldState: TDBGState); override;
     function  HasDwarf: Boolean;
     procedure LoadDwarf;
     procedure UnLoadDwarf;
+    function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
+    function  GetLocationForContext(AThreadId, AStackFrame: Integer): TDBGPtr;
   public
     class function Caption: String; override;
   public
@@ -39,6 +42,18 @@ type
   TFpGDBMIDebuggerCommandStartDebugging = class(TGDBMIDebuggerCommandStartDebugging)
   protected
     function DoExecute: Boolean; override;
+  end;
+
+  { TFPGDBMIWatches }
+
+  TFPGDBMIWatches = class(TGDBMIWatches)
+  private
+  protected
+    //procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure InternalRequestData(AWatchValue: TCurrentWatchValue); override;
+  public
+    //constructor Create(const ADebugger: TDebugger);
+    //destructor Destroy; override;
   end;
 
   { TFpGDBMILineInfo }
@@ -60,6 +75,18 @@ type
     procedure Request(const ASource: String); override;
     procedure Cancel(const ASource: String); override;
   end;
+
+{ TFPGDBMIWatches }
+
+procedure TFPGDBMIWatches.InternalRequestData(AWatchValue: TCurrentWatchValue);
+var
+  Loc: TDBGPtr;
+begin
+  Loc := TFpGDBMIDebugger(Debugger).GetLocationForContext(AWatchValue.ThreadId, AWatchValue.StackFrame);
+
+
+  inherited InternalRequestData(AWatchValue);
+end;
 
 { TFpGDBMILineInfo }
 
@@ -178,6 +205,85 @@ begin
   FreeAndNil(FImageLoader);
 end;
 
+function TFpGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand;
+  const AParams: array of const): Boolean;
+var
+  Ident: TDbgSymbol;
+  Loc: TDBGPtr;
+begin
+  if ACommand = dcEvaluate then begin
+     DebugLn(['## ', GetLocation.Address]);
+     Loc := GetLocationForContext(-1, -1);
+
+     if HasDwarf and (Loc <> 0) then begin
+       Ident := FDwarfInfo.FindIdentifier(Loc, String(AParams[0].VAnsiString));
+       Ident.ReleaseReference;
+     end;
+
+    //EvalFlags := [];
+    //if high(AParams) >= 3 then
+    //  EvalFlags := TDBGEvaluateFlags(AParams[3].VInteger);
+    //Result := GDBEvaluate(String(AParams[0].VAnsiString),
+    //  String(AParams[1].VPointer^), TGDBType(AParams[2].VPointer^),
+    //  EvalFlags);
+    Result := inherited RequestCommand(ACommand, AParams);
+  end
+  else
+    Result := inherited RequestCommand(ACommand, AParams);
+end;
+
+function TFpGDBMIDebugger.GetLocationForContext(AThreadId, AStackFrame: Integer): TDBGPtr;
+var
+  t: TThreadEntry;
+  s: TCallStack;
+  f: TCallStackEntry;
+begin
+  Result := 0;
+  if (AThreadId <= 0) and CurrentThreadIdValid then begin
+    AThreadId := CurrentThreadId;
+    AStackFrame := 0;
+  end
+  else
+  if (AThreadId <= 0) and (not CurrentThreadIdValid) then begin
+    AThreadId := 1;
+    AStackFrame := 0;
+  end
+  else
+  if (AStackFrame < 0) and (CurrentStackFrameValid) then begin
+    AStackFrame := CurrentStackFrame;
+  end
+  else
+  if (AStackFrame < 0) and (not CurrentStackFrameValid) then begin
+    AStackFrame := 0;
+  end;
+
+  t := Threads.CurrentThreads.EntryById[AThreadId];
+  if t = nil then begin
+    DebugLn(['NO Threads']);
+    exit;
+  end;
+  if AStackFrame = 0 then begin
+    Result := t.Address;
+    DebugLn(['Returning addr from Threads', dbgs(Result)]);
+    exit;
+  end;
+
+  s := CallStack.CurrentCallStackList.EntriesForThreads[AThreadId];
+  if s = nil then begin
+    DebugLn(['NO Stackframe list for thread']);
+    exit;
+  end;
+  f := s.Entries[AStackFrame];
+  if f = nil then begin
+    DebugLn(['NO Stackframe']);
+    exit;
+  end;
+
+  Result := f.Address;
+  DebugLn(['Returning addr from frame', dbgs(Result)]);
+
+end;
+
 function TFpGDBMIDebugger.CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging;
 begin
   Result := TFpGDBMIDebuggerCommandStartDebugging.Create(Self, AContinueCommand);
@@ -186,6 +292,11 @@ end;
 function TFpGDBMIDebugger.CreateLineInfo: TDBGLineInfo;
 begin
   Result := TFpGDBMILineInfo.Create(Self);
+end;
+
+function TFpGDBMIDebugger.CreateWatches: TWatchesSupplier;
+begin
+  Result := TFPGDBMIWatches.Create(Self);
 end;
 
 class function TFpGDBMIDebugger.Caption: String;
