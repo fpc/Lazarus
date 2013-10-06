@@ -1849,6 +1849,7 @@ type
     TheTime: TDateTime;
     ClickCount: Integer;
   end;
+  TCustomListViewAccess = class(TCustomListView);
 
 var
 {$IFDEF DARWIN}
@@ -10901,6 +10902,8 @@ var
   Modifiers: QtKeyboardModifiers;
   ItemRow, CurrItemRow: Integer;
   ALCLEvent: QLCLMessageEventH;
+  R: TRect;
+  DC: TQtDeviceContext;
 
   procedure SendEventToParent;
   begin
@@ -10923,6 +10926,19 @@ begin
   begin
     if ViewStyle >= 0 then
     begin
+      if (QEvent_type(Event) = QEventPaint) and (Sender = viewportWidget) then
+      begin
+        HasPaint := True;
+        QPaintEvent_rect(QPaintEventH(Event), @R);
+        DC := TQtDeviceContext.Create(QWidgetH(Sender), True);
+        try
+          TCustomListViewAccess(LCLObject).Canvas.handle := HDC(DC);
+          TCustomListViewAccess(LCLObject).IntfCustomDraw(dtControl, cdPrePaint, 0, 0, [], @R);
+        finally
+          TCustomListViewAccess(LCLObject).Canvas.handle := 0;
+          DC.Free;
+        end;
+      end else
       if QEvent_type(Event) = LCLQt_ItemViewAfterMouseRelease then
       begin
         ALCLEvent := QLCLMessageEventH(Event);
@@ -11321,42 +11337,112 @@ var
   Msg: TLMDrawListItem;
   DrawStruct: TDrawListItemStruct;
   State: QStyleState;
+  R: TRect;
+  ItemIndex, SubItemIndex: Integer;
+  ACustomState: TCustomDrawState;
+  ATarget: TCustomDrawTarget;
+  TmpDC1, TmpDC2: HDC;
+  SkipDefault: Boolean;
 begin
-  QPainter_save(painter);
-  State := QStyleOption_state(option);
-  DrawStruct.ItemID := UINT(QModelIndex_row(index));
+  if ViewStyle >= 0 then
+  begin
+    State := QStyleOption_state(option);
+    ACustomState := [cdsDefault];
+    (*
+    cdsSelected,
+    cdsGrayed,
+    cdsDisabled,
+    cdsChecked,
+    cdsFocused,
+    cdsDefault,
+    cdsHot,
+    cdsMarked,
+    cdsIndeterminate
+    *)
 
-  DrawStruct.Area := visualRect(index);
-  DrawStruct.DC := HDC(TQtDeviceContext.CreateFromPainter(painter));
+    if (State and QStyleState_Selected) <> 0 then
+      Include(ACustomState, cdsSelected);
+    // disabled
+    if (State and QStyleState_Enabled) = 0 then
+      Include(ACustomState, cdsDisabled);
+    // focused (QStyleState_FocusAtBorder?)
+    if (State and QStyleState_HasFocus) <> 0 then
+      Include(ACustomState, cdsFocused);
+    // hotlight
+    if (State and QStyleState_MouseOver) <> 0 then
+      Include(ACustomState, cdsHot);
+    // checked
+    if Checkable and (State and QStyleState_On <> 0) then
+      Include(ACustomState, cdsChecked);
 
-  DrawStruct.ItemState := [];
-  // selected
-  if (State and QStyleState_Selected) <> 0 then
-    Include(DrawStruct.ItemState, odSelected);
-  // disabled
-  if (State and QStyleState_Enabled) = 0 then
-    Include(DrawStruct.ItemState, odDisabled);
-  // focused (QStyleState_FocusAtBorder?)
-  if (State and QStyleState_HasFocus) <> 0 then
-    Include(DrawStruct.ItemState, odFocused);
-  // hotlight
-  if (State and QStyleState_MouseOver) <> 0 then
-    Include(DrawStruct.ItemState, odHotLight);
+    ItemIndex := QModelIndex_row(index);
+    SubItemIndex := QModelIndex_column(index);
 
-  { todo: over states:
-  
-    odGrayed, odChecked,
-    odDefault, odInactive, odNoAccel,
-    odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit,
-    odPainted
-  }
-  Msg.Msg := LM_DRAWLISTITEM;
-  Msg.DrawListItemStruct := @DrawStruct;
-  DeliverMessage(Msg);
+    // NOW WE ARE DRAWING ITEMS ...
+    QPainter_save(painter);
+    if TCustomListView(LCLObject).Canvas.HandleAllocated then
+      TmpDC2 := TCustomListView(LCLObject).Canvas.GetUpdatedHandle([csHandleValid])
+    else
+      TmpDC2 := 0;
+    TmpDC1 := HDC(TQtDeviceContext.CreateFromPainter(painter));
+    TCustomListView(LCLObject).Canvas.Handle := TmpDC1;
+    try
+      R := visualRect(index);
 
-  QPainter_restore(painter);
-  
-  TQtDeviceContext(DrawStruct.DC).Free;
+      if SubItemIndex <= 0 then
+        ATarget := dtItem
+      else
+        ATarget := dtSubItem;
+
+      // here we do only OnCustomDrawItem and OnCustomDrawSubItem
+      // OnCustomDraw is done inside itemViewportEventFilter.
+      SkipDefault := cdrSkipDefault in TCustomListViewAccess(LCLObject).IntfCustomDraw(ATarget, cdPrePaint, ItemIndex, SubItemIndex, ACustomState, @R);
+
+      if not SkipDefault then // do default paint by unknown magic
+        QAbstractItemDelegate_paint(FOldDelegate, painter, Option, index);
+    finally
+      TCustomListView(LCLObject).Canvas.Handle := TmpDC2;
+      TQtDeviceContext(TmpDC1).Free;
+      QPainter_restore(painter);
+    end;
+  end else
+  begin
+    QPainter_save(painter);
+    State := QStyleOption_state(option);
+    DrawStruct.ItemID := UINT(QModelIndex_row(index));
+
+    DrawStruct.Area := visualRect(index);
+    DrawStruct.DC := HDC(TQtDeviceContext.CreateFromPainter(painter));
+
+    DrawStruct.ItemState := [];
+    // selected
+    if (State and QStyleState_Selected) <> 0 then
+      Include(DrawStruct.ItemState, odSelected);
+    // disabled
+    if (State and QStyleState_Enabled) = 0 then
+      Include(DrawStruct.ItemState, odDisabled);
+    // focused (QStyleState_FocusAtBorder?)
+    if (State and QStyleState_HasFocus) <> 0 then
+      Include(DrawStruct.ItemState, odFocused);
+    // hotlight
+    if (State and QStyleState_MouseOver) <> 0 then
+      Include(DrawStruct.ItemState, odHotLight);
+
+    { todo: over states:
+
+      odGrayed, odChecked,
+      odDefault, odInactive, odNoAccel,
+      odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit,
+      odPainted
+    }
+    Msg.Msg := LM_DRAWLISTITEM;
+    Msg.DrawListItemStruct := @DrawStruct;
+    DeliverMessage(Msg);
+
+    QPainter_restore(painter);
+
+    TQtDeviceContext(DrawStruct.DC).Free;
+  end;
 end;
 
 procedure TQtListWidget.clearSelection;
@@ -12361,63 +12447,87 @@ var
   Item: QTreeWidgetItemH;
   ALCLEvent: QLCLMessageEventH;
   W: QHeaderViewH;
+  R: TRect;
+  DC: TQtDeviceContext;
 begin
   Result := False;
-  if (ViewStyle = Ord(vsReport)) and Checkable then
-  begin
-    if QEvent_type(Event) = LCLQt_ItemViewAfterMouseRelease then
+  QEvent_accept(Event);
+  if LCLObject = nil then
+    exit;
+  BeginEventProcessing;
+  try
+    if (QEvent_type(Event) = QEventPaint) and
+      not Self.FOwnerData and (Sender = viewportWidget) then
     begin
-      ALCLEvent := QLCLMessageEventH(Event);
-      Item := QTreeWidgetItemH(QLCLMessageEvent_getLParam(ALCLEvent));
-      // sync lcl with qt state. This is needed only when mouse is pressed
-      // and moved out of item, or pressed on item and released over checkbox
-      if (Item <> nil) and (GetItemLastCheckStateInternal(Item) <>
-        QTreeWidgetItem_checkState(Item, 0)) then
-      begin
-        MousePos := QtPoint(0, 0); // shutup compiler
-        HandleCheckChangedEvent(MousePos, Item, Event);
+      HasPaint := True;
+      QPaintEvent_rect(QPaintEventH(Event), @R);
+      DC := TQtDeviceContext.Create(QWidgetH(Sender), True);
+      try
+        TCustomListViewAccess(LCLObject).Canvas.handle := HDC(DC);
+        TCustomListViewAccess(LCLObject).IntfCustomDraw(dtControl, cdPrePaint, 0, 0, [], @R);
+      finally
+        TCustomListViewAccess(LCLObject).Canvas.handle := 0;
+        DC.Free;
       end;
     end else
-    if ((QEvent_type(Event) = QEventMouseButtonPress) or
-    (QEvent_type(Event) = QEventMouseButtonDblClick)) then
+    if (ViewStyle = Ord(vsReport)) and Checkable then
     begin
-      MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
-      Item := itemAt(MousePos.x, MousePos.y);
-      Result := inherited itemViewViewportEventFilter(Sender, Event);
-
-      if Item <> nil then
-        HandleCheckChangedEvent(MousePos, Item, Event);
-    end else
-    if (QEvent_type(Event) = QEventMouseButtonRelease) then
-    begin
-      if Checkable then
+      if QEvent_type(Event) = LCLQt_ItemViewAfterMouseRelease then
+      begin
+        ALCLEvent := QLCLMessageEventH(Event);
+        Item := QTreeWidgetItemH(QLCLMessageEvent_getLParam(ALCLEvent));
+        // sync lcl with qt state. This is needed only when mouse is pressed
+        // and moved out of item, or pressed on item and released over checkbox
+        if (Item <> nil) and (GetItemLastCheckStateInternal(Item) <>
+          QTreeWidgetItem_checkState(Item, 0)) then
+        begin
+          MousePos := QtPoint(0, 0); // shutup compiler
+          HandleCheckChangedEvent(MousePos, Item, Event);
+        end;
+      end else
+      if ((QEvent_type(Event) = QEventMouseButtonPress) or
+      (QEvent_type(Event) = QEventMouseButtonDblClick)) then
       begin
         MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
         Item := itemAt(MousePos.x, MousePos.y);
+        Result := inherited itemViewViewportEventFilter(Sender, Event);
+
         if Item <> nil then
-        begin
-          Item := topLevelItem(GetRow(Item));
-          ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, 0,
-            PtrUInt(Item), PtrUInt(Item), 0);
-          QCoreApplication_postEvent(Sender, ALCLEvent);
-        end;
-      end;
-      Result := inherited itemViewViewportEventFilter(Sender, Event);
-    end;
-  end else
-  begin
-    if (QEvent_type(Event) = QEventMouseMove) and (LCLObject <> nil) then
-    begin
-      W := QTreeView_header(QTreeViewH(Widget));
-      if QWidget_isVisible(W) and QWidget_isVisibleTo(W, Widget) then
+          HandleCheckChangedEvent(MousePos, Item, Event);
+      end else
+      if (QEvent_type(Event) = QEventMouseButtonRelease) then
       begin
-        BeginEventProcessing;
-        Result := SlotMouseMove(Sender, Event);
-        EndEventProcessing;
+        if Checkable then
+        begin
+          MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+          Item := itemAt(MousePos.x, MousePos.y);
+          if Item <> nil then
+          begin
+            Item := topLevelItem(GetRow(Item));
+            ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, 0,
+              PtrUInt(Item), PtrUInt(Item), 0);
+            QCoreApplication_postEvent(Sender, ALCLEvent);
+          end;
+        end;
+        Result := inherited itemViewViewportEventFilter(Sender, Event);
+      end;
+    end else
+    begin
+      if (QEvent_type(Event) = QEventMouseMove) and (LCLObject <> nil) then
+      begin
+        W := QTreeView_header(QTreeViewH(Widget));
+        if QWidget_isVisible(W) and QWidget_isVisibleTo(W, Widget) then
+        begin
+          BeginEventProcessing;
+          Result := SlotMouseMove(Sender, Event);
+          EndEventProcessing;
+        end else
+          Result := inherited itemViewViewportEventFilter(Sender, Event);
       end else
         Result := inherited itemViewViewportEventFilter(Sender, Event);
-    end else
-      Result := inherited itemViewViewportEventFilter(Sender, Event);
+    end;
+  finally
+    EndEventProcessing;
   end;
 end;
 
@@ -12520,42 +12630,101 @@ var
   Msg: TLMDrawListItem;
   DrawStruct: TDrawListItemStruct;
   State: QStyleState;
+  R: TRect;
+  ItemIndex, SubItemIndex: Integer;
+  ACustomState: TCustomDrawState;
+  ATarget: TCustomDrawTarget;
+  TmpDC1, TmpDC2: HDC;
+  SkipDefault: Boolean;
 begin
-  QPainter_save(painter);
-  State := QStyleOption_state(option);
-  DrawStruct.ItemID := UINT(QModelIndex_row(index));
+  if TCustomListViewAccess(LCLObject).OwnerDraw and (ViewStyle = Ord(vsReport)) then
+  begin
+    QPainter_save(painter);
+    State := QStyleOption_state(option);
+    DrawStruct.ItemID := UINT(QModelIndex_row(index));
 
-  DrawStruct.Area := visualRect(index);
-  DrawStruct.DC := HDC(TQtDeviceContext.CreateFromPainter(painter));
+    DrawStruct.Area := visualRect(index);
+    DrawStruct.DC := HDC(TQtDeviceContext.CreateFromPainter(painter));
 
-  DrawStruct.ItemState := [];
-  // selected
-  if (State and QStyleState_Selected) <> 0 then
-    Include(DrawStruct.ItemState, odSelected);
-  // disabled
-  if (State and QStyleState_Enabled) = 0 then
-    Include(DrawStruct.ItemState, odDisabled);
-  // focused (QStyleState_FocusAtBorder?)
-  if (State and QStyleState_HasFocus) <> 0 then
-    Include(DrawStruct.ItemState, odFocused);
-  // hotlight
-  if (State and QStyleState_MouseOver) <> 0 then
-    Include(DrawStruct.ItemState, odHotLight);
+    DrawStruct.ItemState := [];
+    // selected
+    if (State and QStyleState_Selected) <> 0 then
+      Include(DrawStruct.ItemState, odSelected);
+    // disabled
+    if (State and QStyleState_Enabled) = 0 then
+      Include(DrawStruct.ItemState, odDisabled);
+    // focused (QStyleState_FocusAtBorder?)
+    if (State and QStyleState_HasFocus) <> 0 then
+      Include(DrawStruct.ItemState, odFocused);
+    // hotlight
+    if (State and QStyleState_MouseOver) <> 0 then
+      Include(DrawStruct.ItemState, odHotLight);
 
-  { todo: over states:
+    { todo: over states:
 
-    odGrayed, odChecked,
-    odDefault, odInactive, odNoAccel,
-    odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit,
-    odPainted
-  }
-  Msg.Msg := CN_DRAWITEM;
-  Msg.DrawListItemStruct := @DrawStruct;
-  DeliverMessage(Msg);
+      odGrayed, odChecked,
+      odDefault, odInactive, odNoAccel,
+      odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit,
+      odPainted
+    }
+    Msg.Msg := CN_DRAWITEM;
+    Msg.DrawListItemStruct := @DrawStruct;
+    DeliverMessage(Msg);
 
-  QPainter_restore(painter);
+    QPainter_restore(painter);
 
-  TQtDeviceContext(DrawStruct.DC).Free;
+    TQtDeviceContext(DrawStruct.DC).Free;
+  end else
+  begin
+    State := QStyleOption_state(option);
+    ACustomState := [cdsDefault];
+
+    if (State and QStyleState_Selected) <> 0 then
+      Include(ACustomState, cdsSelected);
+    // disabled
+    if (State and QStyleState_Enabled) = 0 then
+      Include(ACustomState, cdsDisabled);
+    // focused (QStyleState_FocusAtBorder?)
+    if (State and QStyleState_HasFocus) <> 0 then
+      Include(ACustomState, cdsFocused);
+    // hotlight
+    if (State and QStyleState_MouseOver) <> 0 then
+      Include(ACustomState, cdsHot);
+    // checked
+    if Checkable and (State and QStyleState_On <> 0) then
+      Include(ACustomState, cdsChecked);
+
+    ItemIndex := QModelIndex_row(index);
+    SubItemIndex := QModelIndex_column(index);
+
+    // NOW WE ARE DRAWING ITEMS ...
+    QPainter_save(painter);
+    if TCustomListView(LCLObject).Canvas.HandleAllocated then
+      TmpDC2 := TCustomListView(LCLObject).Canvas.GetUpdatedHandle([csHandleValid])
+    else
+      TmpDC2 := 0;
+    TmpDC1 := HDC(TQtDeviceContext.CreateFromPainter(painter));
+    TCustomListView(LCLObject).Canvas.Handle := TmpDC1;
+    try
+      R := visualRect(index);
+
+      if SubItemIndex <= 0 then
+        ATarget := dtItem
+      else
+        ATarget := dtSubItem;
+
+      // here we do only OnCustomDrawItem and OnCustomDrawSubItem
+      // OnCustomDraw is done inside itemViewportEventFilter.
+      SkipDefault := cdrSkipDefault in TCustomListViewAccess(LCLObject).IntfCustomDraw(ATarget, cdPrePaint, ItemIndex, SubItemIndex, ACustomState, @R);
+
+      if not SkipDefault then // do default paint by unknown magic
+        QAbstractItemDelegate_paint(FOldDelegate, painter, Option, index);
+    finally
+      TCustomListView(LCLObject).Canvas.Handle := TmpDC2;
+      TQtDeviceContext(TmpDC1).Free;
+      QPainter_restore(painter);
+    end;
+  end;
 end;
 
 procedure TQtTreeWidget.ClearItems;
