@@ -11517,6 +11517,7 @@ procedure DoExit;
 var
   i: Integer;
 begin
+  FHyp.Free;
   SBmp.Free;
   TempBmp.Free;
   SMemo.Free;
