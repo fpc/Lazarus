@@ -732,6 +732,8 @@ begin
   begin
     QtTreeWidget := TQtTreeWidget.Create(AWinControl, AParams);
     QtTreeWidget.ViewStyle := Ord(TListView(AWinControl).ViewStyle);
+    QtTreeWidget.OwnerDrawn := TListView(AWinControl).OwnerDraw and
+      (TListView(AWinControl).ViewStyle = vsReport);
     QtTreeWidget.setStretchLastSection(False);
     QtTreeWidget.setRootIsDecorated(False);
     QtTreeWidget.AttachEvents;
@@ -1556,15 +1558,19 @@ begin
     Result := QtListWidget.getVisualItemRect(LWI);
   end else
   begin
-    //  TDisplayCode = (drBounds, drIcon, drLabel, drSelectBounds);
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
     TWI := QtTreeWidget.topLevelItem(AIndex);
-    if (QTreeWidgetItem_childCount(TWI) > 0) and (ASubItem > 0) then
-      Result := QtTreeWidget.visualItemRect(QTreeWidgetItem_child(TWI, ASubItem))
-    else
+    if (QTreeWidgetItem_columnCount(TWI) > 1) and (ASubItem >= 0) then
+    begin
       Result := QtTreeWidget.visualItemRect(TWI);
+      Result.Left := QTreeView_columnViewportPosition(QTreeWidgeth(QtTreeWidget.Widget), ASubItem);
+      Result.Right := QtTreeWidget.ColWidth[ASubItem] + Result.Left;
+    end else
+    begin
+      Result := QtTreeWidget.visualItemRect(TWI);
+    end;
     if ACode in [drLabel, drSelectBounds] then
-      Result.Right := Result.Left + QtTreeWidget.ColWidth[0]
+      Result.Right := Result.Left + QtTreeWidget.ColWidth[ASubItem]
     else
     if ACode in [drIcon] then
     begin
@@ -2024,6 +2030,7 @@ begin
             setHeaderVisible(AIsSet and (TListView(ALV).ViewStyle = vsReport)
               and (TListView(ALV).Columns.Count > 0) );
       end;
+    lvpOwnerDraw: QtItemView.OwnerDrawn := TListView(ALV).OwnerDraw and AIsSet;
     lvpReadOnly: QtItemView.setEditTriggers(BoolToEditTriggers[AIsSet]);
     lvpRowSelect:
       begin
@@ -2088,6 +2095,7 @@ begin
   begin
     QtListWidget := TQtListWidget(ALV.Handle);
     ItemViewWidget := QListWidgetH(QtListWidget.Widget);
+    QtListWidget.OwnerDrawn := False;
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
@@ -2124,6 +2132,7 @@ begin
         x := GetPixelMetric(QStylePM_ListViewIconSize, nil, ItemViewWidget);
         Size.cx := x;
         Size.cy := x;
+        QtTreeWidget.OwnerDrawn := (AValue = vsReport) and TListView(ALV).OwnerDraw;
       end;
   end;
 
