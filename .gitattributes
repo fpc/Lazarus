@@ -7889,9 +7889,7 @@ tools/jsonviewer/mainform.ico -text
 tools/jsonviewer/msgjsonviewer.pp svneol=native#text/plain
 tools/lazdatadesktop/README.txt svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/btndown.bmp -text
-tools/lazdatadesktop/bitmaps/btndown.xpm -text
 tools/lazdatadesktop/bitmaps/btnup.bmp -text
-tools/lazdatadesktop/bitmaps/btnup.xpm -text
 tools/lazdatadesktop/bitmaps/ddconnection.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/dddatadict.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/dddeleteobject.png -text svneol=unset#image/png
