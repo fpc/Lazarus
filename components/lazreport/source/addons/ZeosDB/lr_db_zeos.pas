@@ -5,7 +5,7 @@ unit LR_DB_Zeos;
 interface
 
 uses
-  Classes, SysUtils, LResources, Graphics, DB, LR_Class, ZDataset, LR_DBComponent,
+  Classes, SysUtils, Graphics, DB, LR_Class, ZDataset, LR_DBComponent,
   LR_Intrp, ZConnection, contnrs;
 
 type
@@ -99,6 +99,9 @@ type
 
 procedure Register;
 implementation
+
+{$R lr_zeos_img.res}
+
 uses LR_Utils, DBPropEdits, PropEdits, LazarusPackageIntf, ZDbcIntfs, types,
   lr_EditParams, Forms, Controls, variants, Dialogs;
 
@@ -111,13 +114,13 @@ begin
   if not assigned(lrBMP_ZQuery) then
   begin
     lrBMP_ZQuery := TbitMap.Create;
-    lrBMP_ZQuery.LoadFromLazarusResource('TLRZQuery');
+    lrBMP_ZQuery.LoadFromResourceName(HInstance, 'TLRZQuery');
     frRegisterObject(TLRZQuery, lrBMP_ZQuery, 'TLRZQuery', nil, otlUIControl, nil);
   end;
   if not assigned(lrBMP_ZConnection) then
   begin
     lrBMP_ZConnection := TbitMap.Create;
-    lrBMP_ZConnection.LoadFromLazarusResource('TLRZConnection');
+    lrBMP_ZConnection.LoadFromResourceName(HInstance, 'TLRZConnection');
     frRegisterObject(TLRZConnection, lrBMP_ZConnection, 'TLRZConnection', nil, otlUIControl, nil);
   end;
 end;
@@ -624,7 +627,6 @@ end;
 
 
 initialization
-  {$I lr_zeos_img.inc}
   InitLRComp;
 
   RegisterPropertyEditor(TypeInfo(string), TLRZQuery, 'Database', TLRZQueryDataBaseProperty);

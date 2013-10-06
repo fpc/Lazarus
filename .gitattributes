@@ -2143,6 +2143,8 @@ components/lazreport/source/addons/TDbfDB/lr_tdbf.lpk svneol=native#text/plain
 components/lazreport/source/addons/TDbfDB/lr_tdbf.pas svneol=native#text/plain
 components/lazreport/source/addons/TDbfDB/lrtdbfdata.pas svneol=native#text/plain
 components/lazreport/source/addons/TDbfDB/lrtdbfdata_img.res -text
+components/lazreport/source/addons/ZeosDB/TLRZConnection.bmp -text
+components/lazreport/source/addons/ZeosDB/TLRZQuery.bmp -text
 components/lazreport/source/addons/ZeosDB/languages/lrdbzeosconst.cs.po svneol=native#text/plain
 components/lazreport/source/addons/ZeosDB/languages/lrdbzeosconst.de.po svneol=native#text/plain
 components/lazreport/source/addons/ZeosDB/languages/lrdbzeosconst.lt.po svneol=native#text/plain
@@ -2154,7 +2156,7 @@ components/lazreport/source/addons/ZeosDB/lr_editparams.lfm svneol=native#text/p
 components/lazreport/source/addons/ZeosDB/lr_editparams.pas svneol=native#text/plain
 components/lazreport/source/addons/ZeosDB/lr_editvariables.lfm svneol=native#text/plain
 components/lazreport/source/addons/ZeosDB/lr_editvariables.pas svneol=native#text/plain
-components/lazreport/source/addons/ZeosDB/lr_zeos_img.inc svneol=native#text/plain
+components/lazreport/source/addons/ZeosDB/lr_zeos_img.res -text
 components/lazreport/source/addons/ZeosDB/lr_zeosdb.lpk svneol=native#text/plain
 components/lazreport/source/addons/ZeosDB/lr_zeosdb.pas svneol=native#text/plain
 components/lazreport/source/addons/ZeosDB/lrdbzeosconst.pas svneol=native#text/plain
