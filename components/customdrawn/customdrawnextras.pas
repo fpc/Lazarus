@@ -168,6 +168,7 @@ type
 procedure Register;
 
 implementation
+{$R paletteimg.res}
 
 uses
   ObjInspStrConsts;
@@ -182,7 +183,6 @@ resourcestring
 
 procedure Register;
 begin
-  {$i paletteimg.lrs}
   RegisterComponents('Custom Drawn', [
     // Standard tab
     TCDButton, TCDEdit, TCDCheckBox, TCDRadioButton, TCDComboBox, TCDScrollBar, TCDGroupBox,

@@ -1,0 +1,14 @@
+tcdbutton.png
+tcdcheckbox.png
+tcdcombobox.png
+tcdedit.png
+tcdgroupbox.png
+tcdlistview.png
+tcdpagecontrol.png
+tcdprogressbar.png
+tcdradiobutton.png
+tcdscrollbar.png
+tcdspinedit.png
+tcdstatictext.png
+tcdtabcontrol.png
+tcdtrackbar.png
