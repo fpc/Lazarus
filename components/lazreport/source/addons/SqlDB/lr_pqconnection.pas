@@ -5,7 +5,7 @@ unit LR_PQConnection;
 interface
 
 uses
-  Classes, SysUtils, LResources, Graphics, LR_Class, LR_DBComponent, sqldb,
+  Classes, SysUtils, Graphics, LR_Class, LR_DBComponent, sqldb,
   pqconnection, lr_SQLQuery;
 
 type
@@ -36,7 +36,7 @@ begin
   if not assigned(lrBMP_PQConnection) then
   begin
     lrBMP_PQConnection := TbitMap.Create;
-    lrBMP_PQConnection.LoadFromLazarusResource('TLRPQConnection');
+    lrBMP_PQConnection.LoadFromResourceName(HInstance, 'TLRPQConnection');
     frRegisterObject(TLRPQConnection, lrBMP_PQConnection, 'TLRPQConnection', nil, otlUIControl, nil);
   end;
 end;

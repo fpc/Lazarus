@@ -2128,7 +2128,16 @@ components/lazreport/source/addons/SqlDB/lr_pqconnection.pas svneol=native#text/
 components/lazreport/source/addons/SqlDB/lr_sqldb.lpk svneol=native#text/plain
 components/lazreport/source/addons/SqlDB/lr_sqldb.pas svneol=native#text/plain
 components/lazreport/source/addons/SqlDB/lr_sqlquery.pas svneol=native#text/plain
-components/lazreport/source/addons/SqlDB/lrsqldb_img.inc svneol=native#text/plain
+components/lazreport/source/addons/SqlDB/lrsqldb_img.res -text
+components/lazreport/source/addons/SqlDB/resources/lrsqldb_img.txt svneol=native#text/plain
+components/lazreport/source/addons/SqlDB/resources/mk_res.bat svneol=native#text/plain
+components/lazreport/source/addons/SqlDB/resources/tlribconnection.bmp -text
+components/lazreport/source/addons/SqlDB/resources/tlrmssqlconnection.bmp -text
+components/lazreport/source/addons/SqlDB/resources/tlrmysqlconnection.bmp -text
+components/lazreport/source/addons/SqlDB/resources/tlrodbcconnection.bmp -text
+components/lazreport/source/addons/SqlDB/resources/tlroracleconnection.bmp -text
+components/lazreport/source/addons/SqlDB/resources/tlrpqconnection.bmp -text
+components/lazreport/source/addons/SqlDB/resources/tlrsqlquery.bmp -text
 components/lazreport/source/addons/TDbfDB/lr_tdbf.lpk svneol=native#text/plain
 components/lazreport/source/addons/TDbfDB/lr_tdbf.pas svneol=native#text/plain
 components/lazreport/source/addons/TDbfDB/lrtdbfdata.pas svneol=native#text/plain

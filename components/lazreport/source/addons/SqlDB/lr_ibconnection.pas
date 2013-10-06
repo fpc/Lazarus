@@ -5,7 +5,7 @@ unit LR_IBConnection;
 interface
 
 uses
-  Classes, SysUtils, LResources, Graphics, LR_Class, LR_DBComponent, sqldb,
+  Classes, SysUtils, Graphics, LR_Class, LR_DBComponent, sqldb,
   IBConnection, lr_SQLQuery;
 
 type
@@ -37,7 +37,7 @@ begin
   if not assigned(lrBMP_IBConnection) then
   begin
     lrBMP_IBConnection := TbitMap.Create;
-    lrBMP_IBConnection.LoadFromLazarusResource('TLRIBConnection');
+    lrBMP_IBConnection.LoadFromResourceName(HInstance, 'TLRIBConnection');
     frRegisterObject(TLRIBConnection, lrBMP_IBConnection, 'TLRIBConnection', nil, otlUIControl, nil);
   end;
 end;

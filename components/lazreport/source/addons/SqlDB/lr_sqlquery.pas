@@ -5,7 +5,7 @@ unit lr_SQLQuery;
 interface
 
 uses
-  Classes, SysUtils, LResources, Graphics, LR_Class, LR_DBComponent, sqldb, DB;
+  Classes, SysUtils, Graphics, LR_Class, LR_DBComponent, sqldb, DB;
 
 type
 
@@ -74,6 +74,9 @@ type
 
 
 implementation
+
+{$R lrsqldb_img.res}
+
 uses LR_Utils, DBPropEdits, PropEdits, Controls;
 
 var
@@ -84,7 +87,7 @@ begin
   if not assigned(lrBMP_SQLQuery) then
   begin
     lrBMP_SQLQuery := TbitMap.Create;
-    lrBMP_SQLQuery.LoadFromLazarusResource('TLRSQLQuery');
+    lrBMP_SQLQuery.LoadFromResourceName(HInstance, 'TLRSQLQuery');
     frRegisterObject(TLRSQLQuery, lrBMP_SQLQuery, 'TLRSQLQuery', nil, otlUIControl, nil);
   end;
 end;
@@ -366,7 +369,6 @@ begin
 end;
 
 initialization
-  {$I lrsqldb_img.inc}
   InitLRComp;
 
   RegisterPropertyEditor(TypeInfo(string), TLRSQLQuery, 'Database', TLRSQLConnectionProtocolProperty);
