@@ -5,7 +5,7 @@ unit lrTDbfData;
 interface
 
 uses
-  Classes, SysUtils, LResources, Graphics, LR_Class, LR_DBComponent, DB, dbf;
+  Classes, SysUtils, Graphics, LR_Class, LR_DBComponent, DB, dbf;
 
 type
   TlrTDbfData = class(TComponent)
@@ -43,6 +43,7 @@ type
 procedure Register;
 
 implementation
+{$R lrtdbfdata_img.res}
 uses LR_Utils;
 
 var
@@ -53,7 +54,7 @@ begin
   if not assigned(lrBMP_TDbf) then
   begin
     lrBMP_TDbf := TbitMap.Create;
-    lrBMP_TDbf.LoadFromLazarusResource('TLRDbf');
+    lrBMP_TDbf.LoadFromResourceName(HInstance, 'TLRDbf');
     frRegisterObject(TLRDbf, lrBMP_TDbf, 'TLRDbf', nil, otlUIControl, nil);
   end;
 end;
@@ -145,7 +146,6 @@ begin
 end;
 
 initialization
-  {$I lrtdbfdata_img.inc}
   InitLRComp;
 
 {  RegisterPropertyEditor(TypeInfo(string), TLRZQuery, 'Database', TLRZQueryDataBaseProperty);
