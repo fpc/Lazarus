@@ -35,7 +35,7 @@ unit lrDBDialogControls;
 interface
 
 uses
-  Classes, SysUtils, LResources, LRDialogControls, Graphics, LR_Class,
+  Classes, SysUtils, LRDialogControls, Graphics, LR_Class,
   Controls, DbCtrls, StdCtrls, DB;
 
 type
@@ -75,6 +75,8 @@ type
   end;
 
 implementation
+{$R lrdbdialogcontrols_img.res}
+
 uses lclintf, Themes, LCLType, DBPropEdits, PropEdits, LR_Utils, LR_DBRel;
 
 var
@@ -253,7 +255,6 @@ begin
 end;
 
 initialization
-  {$I lrdbdialogcontrols_img.inc}
   InitLRComp;
 
   RegisterPropertyEditor(TypeInfo(string), TlrDBLookupComboBox, 'ListSource', TlrDBLookupComboBoxListSourceProperty);

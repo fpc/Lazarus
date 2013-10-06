@@ -35,7 +35,7 @@ unit LRDialogControls;
 interface
 
 uses
-  Classes, SysUtils, LResources, Graphics, DB, LR_Class, Controls, StdCtrls,
+  Classes, SysUtils, Graphics, DB, LR_Class, Controls, StdCtrls,
   LMessages, LCLType, LCLIntf, Buttons, EditBtn, Themes, ButtonPanel;
 
 type
@@ -306,6 +306,8 @@ procedure Register;
 
 procedure DoRegsiterControl(var cmpBMP:TBitmap; lrClass:TlrVisualControlClass);
 implementation
+{$R lrdialogcontrols_img.res}
+
 uses typinfo, types,
    lrDBDialogControls;
 
@@ -331,7 +333,7 @@ begin
   if not assigned(cmpBMP) then
   begin
     cmpBMP := TBitmap.Create;
-    cmpBMP.LoadFromLazarusResource(lrClass.ClassName);
+    cmpBMP.LoadFromResourceName(HInstance, lrClass.ClassName);
     frRegisterObject(lrClass, cmpBMP, lrClass.ClassName, nil, otlUIControl, nil);
   end;
 end;
@@ -1168,7 +1170,6 @@ end;
 
 
 initialization
-  {$I lrdialogcontrols_img.inc}
   InitLRComp;
 
 finalization
