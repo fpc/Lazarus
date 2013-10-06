@@ -2432,6 +2432,8 @@ begin
 
   finally
     ReleaseRefAndNil(SubRoutine);
+    if Result = nil then
+      ReleaseRefAndNil(InfoEntry);
     ReleaseRefAndNil(InfoEntry2);
   end;
 end;
