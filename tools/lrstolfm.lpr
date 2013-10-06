@@ -37,32 +37,35 @@ program lrstolfm;
 uses
   Classes, SysUtils, LResources, FileUtil;
   
-function FindResourceInLRS(const ResourceName: string; List: TStrings): integer;
+procedure FindResourceInLRS(List: TStrings; var ResourceName: string; var Index: Integer; out ResType: String);
 const
   Pattern = 'LazarusResources.Add(''';
 var
-  Line: string;
-  s: String;
+  Line,
+  ResName: String;
 begin
-  Result:=0;
-  while (Result<List.Count) do begin
-    Line:=List[Result];
-    if (length(Line)>length(Pattern))
-    and ((strlcomp(PChar(Line),Pattern,length(Pattern)))=0) then begin
-      if (ResourceName='') then
-        exit;
-      s:=Pattern+ResourceName+''',';
-      if (strlcomp(PChar(Line),PChar(s),length(s))=0) then
-        exit;
+  while (Index < List.Count) do
+  begin
+    Line := List[Index];
+    if (Length(Line) > Length(Pattern)) and
+       (Pos(Pattern, Line) = 1) then
+    begin
+      Delete(Line, 1, Length(Pattern));
+      ResName := Copy(Line, 1, Pos(''',''', Line) - 1);
+      if (ResourceName <> '') and (ResName <> ResourceName) then
+        Continue;
+      ResourceName := ResName;
+      Delete(Line, 1, Length(ResName) + 3);
+      ResType := Copy(Line, 1, Pos(''',[', Line) - 1);
+      Exit;
     end;
-    inc(Result);
+    Inc(Index);
   end;
-  Result:=-1;
+  Index := -1;
 end;
 
-function ExtractResource(HeaderIndex: integer; LRS: TStrings): TMemoryStream;
+function ExtractResource(LRS: TStrings; var Index: integer): TMemoryStream;
 var
-  i: LongInt;
   p: Integer;
   Line: string;
   StartPos: LongInt;
@@ -70,19 +73,23 @@ var
   c: Char;
 begin
   Result:=TMemoryStream.Create;
-  i:=HeaderIndex+1;
-  while (i<LRS.Count) do begin
-    Line:=LRS[i];
+  inc(Index);
+  while (Index < LRS.Count) do
+  begin
+    Line := LRS[Index];
     if (Line<>'') and (Line[1]=']') then exit;// found the end of this resource
-    p:=1;
-    while (p<=length(Line)) do begin
+    p := 1;
+    while (p <= length(Line)) do
+    begin
       case Line[p] of
       '''':
         // string constant
         begin
           inc(p);
-          while p<=length(Line) do begin
-            if Line[p]<>'''' then begin
+          while p<=length(Line) do
+          begin
+            if Line[p]<>'''' then
+            begin
               // read normal characters
               StartPos:=p;
               while (p<=length(Line)) and (Line[p]<>'''') do inc(p);
@@ -114,52 +121,75 @@ begin
         inc(p);
       end;
     end;
-    inc(i);
+    inc(Index);
   end;
 end;
 
 var
-  LRSFilename: String;
-  ResourceName: String;
-  LRS: TStringList;
+  LRSFilename, ResText,
+  ResourceName, ResourceType: String;
   ResourceHeader: LongInt;
-  ObjResource: TMemoryStream;
-  TextResource: TMemoryStream;
-  LFMText: string;
+  LRS: TStringList;
+  ObjResource, TextResource: TMemoryStream;
+  FileStream: TFileStream;
 begin
-  if (ParamCount<1) or (ParamCount>2) then begin
-    writeln('Usage: ',ExtractFileName(ParamStr(0))
-       ,' resourcefilename [resourcename]');
-    exit;
+  if (ParamCount < 1) or (ParamCount > 2) then
+  begin
+    WriteLn('Usage: ', ExtractFileName(ParamStr(0)), ' resourcefilename [resourcename]');
+    Exit;
   end;
-  LRSFilename:=ParamStr(1);
-  ResourceName:='';
-  if ParamCount>=2 then
-    ResourceName:=ParamStr(2);
-  LRS:=TStringList.Create;
+  LRSFilename := ParamStr(1);
+  ResourceName := '';
+  if ParamCount >= 2 then
+    ResourceName := ParamStr(2);
+  LRS := TStringList.Create;
   LRS.LoadFromFile(LRSFilename);
-  
-  // find resource
-  ResourceHeader:=FindResourceInLRS(ResourceName,LRS);
-  if ResourceHeader<0 then
-    raise Exception.Create('resource not found: '+ResourceName);
+  ResourceHeader := 0;
 
-  // convert lrs format to binary format
-  ObjResource:=ExtractResource(ResourceHeader,LRS);
+  if ResourceName = '@' then
+  begin
+    while True do
+    begin
+      // find resource
+      ResourceName := '';
+      FindResourceInLRS(LRS, ResourceName, ResourceHeader, ResourceType);
+      if ResourceHeader < 0 then
+        break;
+      ObjResource := ExtractResource(LRS, ResourceHeader);
+      ObjResource.Position := 0;
+      FileStream := TFileStream.Create(ResourceName + '.' + ResourceType, fmCreate);
+      try
+        FileStream.CopyFrom(ObjResource, ObjResource.Size);
+      finally
+        FileStream.Free;
+      end;
+      ObjResource.Free;
+    end;
+  end
+  else
+  begin
+    // find resource
+    FindResourceInLRS(LRS, ResourceName, ResourceHeader, ResourceType);
+    if ResourceHeader < 0 then
+      raise Exception.Create('Resource not found: ' + ResourceName);
 
-  // convert binary format to lfm format
-  TextResource:=TMemoryStream.Create;
-  ObjResource.Position:=0;
-  LRSObjectBinaryToText(ObjResource,TextResource);
+    // convert lrs format to binary format
+    ObjResource := ExtractResource(LRS, ResourceHeader);
+    ObjResource.Position := 0;
 
-  // write to stdout
-  TextResource.Position:=0;
-  SetLength(LFMText,TextResource.Size);
-  TextResource.Read(LFMText[1],length(LFMText));
-  write(LFMText);
+    // convert binary format to lfm format
+    TextResource := TMemoryStream.Create;
+    LRSObjectBinaryToText(ObjResource, TextResource);
 
-  TextResource.Free;
-  ObjResource.Free;
+    // write to stdout
+    TextResource.Position := 0;
+    SetLength(ResText, TextResource.Size);
+    TextResource.Read(ResText[1], Length(ResText));
+    Write(ResText);
+
+    TextResource.Free;
+    ObjResource.Free;
+  end;
   LRS.Free;
 end.
 
