@@ -37,6 +37,7 @@ components/IndustrialStuff/resources/bulboff.xpm svneol=native#text/plain
 components/IndustrialStuff/resources/bulbon.xpm svneol=native#text/plain
 components/IndustrialStuff/resources/green.png -text
 components/IndustrialStuff/resources/industrial_icons.txt svneol=native#text/plain
+components/IndustrialStuff/resources/ledbuttons.txt svneol=native#text/plain
 components/IndustrialStuff/resources/red.png -text
 components/IndustrialStuff/resources/sensors.txt svneol=native#text/plain
 components/IndustrialStuff/resources/stop_green.png -text svneol=unset#image/png
