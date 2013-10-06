@@ -716,6 +716,7 @@ constructor TValueListEditor.Create(AOwner: TComponent);
 begin
   //need FStrings before inherited Create, because they are needed in overridden SelectEditor
   FStrings := TValueListStrings.Create(Self);
+  FStrings.NameValueSeparator := '=';
   FTitleCaptions := TStringList.Create;
   inherited Create(AOwner);
   FStrings.OnChange := @StringsChange;
