@@ -124,6 +124,8 @@ type
 
 implementation
 
+{$R ledbuttons.res}
+
 (*****************************************
  * auxilary functions                    *
  *****************************************)
@@ -231,9 +233,9 @@ const
 begin
   if LedKind <> lkCustom then
   begin
-    FGlyphs[lsOn].LoadFromLazarusResource(OnBitmaps[LedKind]);
-    FGlyphs[lsOff].LoadFromLazarusResource(OffBitmaps[LedKind]);
-    FGlyphs[lsDisabled].LoadFromLazarusResource(DisabledBitmaps[LedKind]);
+    FGlyphs[lsOn].LoadFromResourceName(HInstance, OnBitmaps[LedKind]);
+    FGlyphs[lsOff].LoadFromResourceName(HInstance, OffBitmaps[LedKind]);
+    FGlyphs[lsDisabled].LoadFromResourceName(HInstance, DisabledBitmaps[LedKind]);
   end;
 end;
 // set led state internal
@@ -335,6 +337,4 @@ begin
    FBlinkTimer.Enabled :=  FBlink;
 end;
 
-initialization
-{$I ledbuttons.lrs}
 end.

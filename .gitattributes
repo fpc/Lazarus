@@ -31,8 +31,13 @@ components/IndustrialStuff/Example/u_industrial.lfm svneol=native#text/plain
 components/IndustrialStuff/Example/u_industrial.pas svneol=native#text/pascal
 components/IndustrialStuff/industrial.lpk svneol=native#text/plain
 components/IndustrialStuff/industrial.pas svneol=native#text/pascal
+components/IndustrialStuff/resources/black.png -text
 components/IndustrialStuff/resources/build.bat svneol=native#text/plain
+components/IndustrialStuff/resources/bulboff.xpm svneol=native#text/plain
+components/IndustrialStuff/resources/bulbon.xpm svneol=native#text/plain
+components/IndustrialStuff/resources/green.png -text
 components/IndustrialStuff/resources/industrial_icons.txt svneol=native#text/plain
+components/IndustrialStuff/resources/red.png -text
 components/IndustrialStuff/resources/sensors.txt svneol=native#text/plain
 components/IndustrialStuff/resources/stop_green.png -text svneol=unset#image/png
 components/IndustrialStuff/resources/stop_red.png -text svneol=unset#image/png
@@ -45,6 +50,7 @@ components/IndustrialStuff/resources/tindgnoumeter.png -text svneol=unset#image/
 components/IndustrialStuff/resources/tindled.png -text svneol=unset#image/png
 components/IndustrialStuff/resources/tlednumber.png -text svneol=unset#image/png
 components/IndustrialStuff/resources/tstoplightsensor.png -text svneol=unset#image/png
+components/IndustrialStuff/resources/yellow.png -text
 components/IndustrialStuff/source/AdvLed.pas svneol=native#text/pascal
 components/IndustrialStuff/source/AllIndustrialRegister.pas svneol=native#text/pascal
 components/IndustrialStuff/source/indcyBaseLed.pas svneol=native#text/pascal
@@ -54,7 +60,7 @@ components/IndustrialStuff/source/indcyTypes.pas svneol=native#text/pascal
 components/IndustrialStuff/source/indgnoumeter.pas svneol=native#text/pascal
 components/IndustrialStuff/source/indled.pas svneol=native#text/pascal
 components/IndustrialStuff/source/industrial_icons.res -text
-components/IndustrialStuff/source/ledbuttons.lrs svneol=native#text/pascal
+components/IndustrialStuff/source/ledbuttons.res -text
 components/IndustrialStuff/source/lednumber.pas svneol=native#text/pascal
 components/IndustrialStuff/source/sensors.pas svneol=native#text/pascal
 components/IndustrialStuff/source/sensors.res -text
