@@ -368,6 +368,47 @@ begin
   end;
 end;
 
+procedure TCustomListView.DrawItem(AItem: TListItem; ARect: TRect;
+  AState: TOwnerDrawState);
+begin
+  if Assigned(FOnDrawItem) then FOnDrawItem(Self, AItem, ARect, AState)
+  else
+  begin
+    FCanvas.FillRect(ARect);
+    FCanvas.TextOut(ARect.Left + 2, ARect.Top, AItem.Caption);
+  end;
+end;
+
+procedure TCustomListView.CNDrawItem(var Message: TLMDrawListItem);
+var
+  State: TOwnerDrawState;
+  SaveIndex: Integer;
+begin
+  if Assigned(FCanvas) then
+  begin
+    with Message.DrawListItemStruct^ do
+    begin
+      State := ItemState;
+      SaveIndex := SaveDC(DC);
+      FCanvas.Lock;
+      try
+        FCanvas.Handle := DC;
+        FCanvas.Font := Font;
+        FCanvas.Brush := Brush;
+        if itemID = DWORD(-1) then
+          FCanvas.FillRect(Area)
+        else
+          DrawItem(Items[itemID], Area, State);
+      finally
+        FCanvas.Handle := 0;
+        FCanvas.Unlock;
+        RestoreDC(DC, SaveIndex);
+      end;
+    end;
+    Message.Result := 1;
+  end;
+end;
+
 procedure TCustomListView.InvalidateSelected;
 begin
   FSelected:=nil;
@@ -787,7 +828,7 @@ end;
 {------------------------------------------------------------------------------}
 {   TCustomListView SetViewStyle                                               }
 {------------------------------------------------------------------------------}
-procedure TCustomListView.SetViewStyle(const AValue: TViewStyle);
+procedure TCustomListView.SetViewStyle(const Avalue: TViewStyle);
 begin
   if FViewStyle = AValue then Exit;
   FViewStyle := AValue;
@@ -1123,7 +1164,7 @@ begin
     Result := TWSCustomListViewClass(WidgetSetClass).GetHitTestInfoAt( Self, X, Y );
 end;
 
-function TCustomListView.GetItemAt(x,y: Integer): TListItem;
+function TCustomListView.GetItemAt(x, y: integer): TListItem;
 var 
   Item: Integer;
 begin      

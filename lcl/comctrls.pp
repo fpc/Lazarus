@@ -1253,6 +1253,8 @@ type
   TLVCustomDrawSubItemEvent=procedure(Sender: TCustomListView; Item: TListItem; 
                                  SubItem: Integer; State: TCustomDrawState;
                                  var DefaultDraw: Boolean) of object;
+  TLVDrawItemEvent = procedure(Sender: TCustomListView; AItem: TListItem; ARect: TRect;
+                      AState: TOwnerDrawState) of object;
   TLVAdvancedCustomDrawEvent = procedure(Sender: TCustomListView; const ARect: TRect;
                                 Stage: TCustomDrawStage; var DefaultDraw: Boolean) of object;
   TLVAdvancedCustomDrawItemEvent = procedure(Sender: TCustomListView; Item: TListItem; 
@@ -1407,9 +1409,11 @@ type
     procedure SetViewStyle(const Avalue: TViewStyle);
     procedure UpdateScrollbars;
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
+    procedure CNDrawItem(var Message: TLMDrawListItem); message CN_DRAWITEM;
     procedure InvalidateSelected;
   private
     FOnCreateItemClass: TLVCreateItemClassEvent;
+    FOnDrawItem: TLVDrawItemEvent;
     procedure HideEditor;
     procedure ShowEditor;
     procedure WMHScroll(var message : TLMHScroll); message LM_HSCROLL;
@@ -1454,6 +1458,7 @@ type
     function CustomDrawSubItem(AItem: TListItem; ASubItem: Integer; AState: TCustomDrawState; AStage: TCustomDrawStage): Boolean; virtual; //
     function IntfCustomDraw(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage; AItem, ASubItem: Integer; AState: TCustomDrawState; const ARect: PRect): TCustomDrawResult;
     function GetUpdateCount: Integer;
+    procedure DrawItem(AItem: TListItem; ARect: TRect; AState: TOwnerDrawState);
 
     procedure DoGetOwnerData(Item: TListItem); virtual;
     function DoOwnerDataHint(AStartIndex, AEndIndex: Integer): Boolean; virtual;
@@ -1500,6 +1505,7 @@ type
     property OnCustomDraw: TLVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
     property OnCustomDrawItem: TLVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
     property OnCustomDrawSubItem: TLVCustomDrawSubItemEvent read FOnCustomDrawSubItem write FOnCustomDrawSubItem;
+    property OnDrawItem: TLVDrawItemEvent read FOnDrawItem write FOnDrawItem; // Owner drawn item.Event triggers only when OwnerDraw=True and ListStyle=vsReport
     property OnAdvancedCustomDraw: TLVAdvancedCustomDrawEvent read FOnAdvancedCustomDraw write FOnAdvancedCustomDraw;
     property OnAdvancedCustomDrawItem: TLVAdvancedCustomDrawItemEvent read FOnAdvancedCustomDrawItem write FOnAdvancedCustomDrawItem;
     property OnAdvancedCustomDrawSubItem: TLVAdvancedCustomDrawSubItemEvent read FOnAdvancedCustomDrawSubItem write FOnAdvancedCustomDrawSubItem;
@@ -1600,7 +1606,7 @@ type
     property LargeImages;
     property MultiSelect;
     property OwnerData;
-//    property OwnerDraw;
+    property OwnerDraw; // should pass OnDrawItem only when ListStyle=vsReport and OwnerDraw=True
     property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
@@ -1641,6 +1647,7 @@ type
     property OnDeletion;
     property OnDragDrop;
     property OnDragOver;
+    property OnDrawItem;
     property OnEdited;
     property OnEditing;
     property OnEndDock;
