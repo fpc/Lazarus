@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 367
+  Left = 330
   Height = 683
-  Top = 31
+  Top = 176
   Width = 489
   ActiveControl = Button7
   Caption = 'Form1'
@@ -9,12 +9,12 @@ object Form1: TForm1
   ClientWidth = 489
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object Label1: TLabel
     Left = 12
-    Height = 13
+    Height = 16
     Top = 4
-    Width = 229
+    Width = 307
     Caption = 'This sample show how to use the printer dialogs'
     ParentColor = False
   end
@@ -59,7 +59,7 @@ object Form1: TForm1
         MaxSize = 350
         ReadOnly = True
         Title.Caption = 'Value'
-        Width = 345
+        Width = 349
       end>
     DefaultColWidth = 120
     FixedCols = 0
@@ -71,7 +71,7 @@ object Form1: TForm1
     OnSelectCell = SGridSelectCell
     ColWidths = (
       120
-      345
+      349
     )
   end
   object Button3: TButton
@@ -84,14 +84,14 @@ object Form1: TForm1
     OnClick = Button3Click
     TabOrder = 2
   end
-  object Button4: TButton
+  object btnDirectPrint: TButton
     Left = 200
     Height = 27
-    Top = 155
-    Width = 88
+    Top = 152
+    Width = 128
     BorderSpacing.InnerBorder = 4
-    Caption = 'Print test'
-    OnClick = Button4Click
+    Caption = 'Direct Print'
+    OnClick = btnDirectPrintClick
     TabOrder = 3
   end
   object Button5: TButton
@@ -126,25 +126,25 @@ object Form1: TForm1
   end
   object chkTestImgs: TCheckBox
     Left = 200
-    Height = 17
+    Height = 18
     Top = 133
-    Width = 65
+    Width = 82
     Caption = 'Test Imgs'
     TabOrder = 8
   end
   object chkOutputFile: TCheckBox
     Left = 195
-    Height = 17
+    Height = 18
     Top = 27
-    Width = 71
+    Width = 90
     Caption = 'Output File'
     TabOrder = 9
   end
   object txtOutputFile: TFileNameEdit
     Left = 195
-    Height = 21
+    Height = 22
     Top = 48
-    Width = 264
+    Width = 261
     DialogKind = dkSave
     DialogOptions = []
     FilterIndex = 0
@@ -157,25 +157,25 @@ object Form1: TForm1
   end
   object Label2: TLabel
     Left = 20
-    Height = 13
+    Height = 16
     Top = 188
-    Width = 94
+    Width = 123
     Alignment = taRightJustify
     Caption = 'PageSetupDlg Title:'
     ParentColor = False
   end
   object Label3: TLabel
     Left = 5
-    Height = 13
+    Height = 16
     Top = 212
-    Width = 102
+    Width = 135
     Alignment = taRightJustify
     Caption = 'PrinterSetupDlg Title:'
     ParentColor = False
   end
   object txtPageSetupDlgTitle: TEdit
     Left = 184
-    Height = 21
+    Height = 22
     Top = 188
     Width = 293
     Anchors = [akTop, akLeft, akRight]
@@ -184,7 +184,7 @@ object Form1: TForm1
   end
   object txtPrinterSetupDlgTitle: TEdit
     Left = 184
-    Height = 21
+    Height = 22
     Top = 212
     Width = 293
     Anchors = [akTop, akLeft, akRight]
@@ -193,16 +193,16 @@ object Form1: TForm1
   end
   object Label4: TLabel
     Left = 38
-    Height = 13
+    Height = 16
     Top = 236
-    Width = 78
+    Width = 106
     Alignment = taRightJustify
     Caption = 'PrintDialog Title:'
     ParentColor = False
   end
   object txtPrintDialogTitle: TEdit
     Left = 184
-    Height = 21
+    Height = 22
     Top = 236
     Width = 293
     Anchors = [akTop, akLeft, akRight]
@@ -210,24 +210,33 @@ object Form1: TForm1
     Text = 'Printer Dialogs Tests: PrinterDialog'
   end
   object btnRotateBin: TButton
-    Left = 319
+    Left = 334
     Height = 25
     Top = 120
-    Width = 164
+    Width = 143
     Anchors = [akTop, akRight]
     Caption = 'Rotate Bin'
     OnClick = btnRotateBinClick
     TabOrder = 14
   end
   object btnRestoreDefaultBin: TButton
-    Left = 319
+    Left = 334
     Height = 25
     Top = 91
-    Width = 164
+    Width = 143
     Anchors = [akTop, akRight]
     Caption = 'Restore Default Bin'
     OnClick = btnRestoreDefaultBinClick
     TabOrder = 15
+  end
+  object btnPrintWithDlg: TButton
+    Left = 334
+    Height = 27
+    Top = 152
+    Width = 142
+    Caption = 'Print with Dialog'
+    OnClick = btnPrintWithDlgClick
+    TabOrder = 16
   end
   object PSD: TPrinterSetupDialog
     Title = 'Testing dialog title'

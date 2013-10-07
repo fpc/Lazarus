@@ -29,12 +29,13 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
-    Button4: TButton;
+    btnDirectPrint: TButton;
     Button5: TButton;
     Button6: TButton;
     Button7: TButton;
     btnRotateBin: TButton;
     btnRestoreDefaultBin: TButton;
+    btnPrintWithDlg: TButton;
     chkOutputFile: TCheckBox;
     chkTestImgs: TCheckBox;
     txtPageSetupDlgTitle: TEdit;
@@ -50,10 +51,11 @@ type
     PopupMenu1: TPopupMenu;
     PSD: TPrinterSetupDialog;
     SGrid: TStringGrid;
+    procedure btnPrintWithDlgClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
+    procedure btnDirectPrintClick(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
@@ -74,6 +76,7 @@ type
     procedure CenterText(const X,Y: Integer; const AText: string);
     function FormatDots(Dots: Integer):string;
     procedure PrintSamplePage;
+    procedure doPrintDialog(withSample: boolean);
   public
   
     { public declarations }
@@ -157,7 +160,7 @@ end;
 
 function TForm1.FormatDots(Dots: Integer): string;
 begin
-  result := format('%d dots (%f mm)',[Dots, Dots*25.4/Printer.YDPI]);
+  result := format('%d dots (%f mm, %f in)',[Dots, Dots*25.4/Printer.YDPI, Dots/Printer.YDPI]);
 end;
 
 procedure TForm1.PrintSamplePage;
@@ -179,6 +182,7 @@ begin
     pgw := Printer.PageWidth-1;
     pgh := Printer.PageHeight-1;
     Hin := Inch(0.5);
+    DebugLn('Page width=%d height=%d',[pgw, pgh]);
 
     // center title text on page width
     Printer.Canvas.Font.Size := 12;
@@ -235,6 +239,7 @@ procedure TForm1.UpdatePrinterInfo;
 var
   i: Integer;
   s: string;
+  hRes,vRes: Integer;
 begin
   try
     ck := SGrid.FixedRows;
@@ -263,12 +268,14 @@ begin
         psPrinting:AddInfo('PrinterState','Printing');
         psStopped:AddInfo('PrinterState','Stopped');
       end;
-      AddInfo('Resolution X,Y',IntToStr(XDPI)+','+IntToStr(YDPI)+' dpi');
+      hRes := XDPI;
+      vRes := YDPI;
+      AddInfo('Resolution X,Y', format('%d,%d dpi',[hRes,vRes]));
       AddInfo('PaperSize',PaperSize.PaperName);
       with Printer.PaperSize.PaperRect.PhysicalRect do
       begin
-        AddInfo('Page Width', FormatDots(Right-Left));
-        AddInfo('Page Height', FormatDots(Bottom-Top));
+        AddInfo('Paper Width', FormatDots(Right-Left));
+        AddInfo('Paper Height', FormatDots(Bottom-Top));
       end;
       AddInfo('Printable Width',FormatDots(PageWidth));
       AddInfo('Printable Height',FormatDots(PageHeight));
@@ -306,9 +313,10 @@ begin
   UpdatePrinterInfo;
 end;
 
-procedure TForm1.Button4Click(Sender: TObject);
+procedure TForm1.btnDirectPrintClick(Sender: TObject);
 begin
   PrintSamplePage;
+  UpdatePrinterInfo;
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -387,7 +395,10 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  rowCount: Integer;
 begin
+  rowCount := SGrid.RowCount;
   if SGrid.FixedRows=1 then
     SGrid.RowHeights[0] := Button1.Height;
   UpdatePrinterInfo;
@@ -399,23 +410,36 @@ begin
   CanSelect := ACol>0;
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.doPrintDialog(withSample: boolean);
 var
  s,x : String;
 begin
   PD.Title := txtPrintDialogTitle.Text;
   if PD.Execute then
   begin
-   UpdatePrinterInfo;
-   if PD.Collate then AddInfo('Collate','true')
-   else
-   AddInfo('Collate','false');
-   if PD.PrintRange=prPageNums then x :='Pages range,';
-   if PD.PrintRange=prSelection then x :='Selection,';
-   if PD.PrintToFile then x := x + ' ,PrintToFile,';
-   s := Format(x + ' From : %d to %d,Copies:%d',[PD.FromPage,PD.ToPage,PD.Copies]);
-   Application.MessageBox(pChar(s),'Info',mb_iconinformation);
+    UpdatePrinterInfo;
+    if PD.Collate then AddInfo('Collate','true')
+    else               AddInfo('Collate','false');
+    if PD.PrintRange=prPageNums then x :='Pages range,';
+    if PD.PrintRange=prSelection then x :='Selection,';
+    if PD.PrintToFile then x := x + ' ,PrintToFile,';
+    if withSample then
+      PrintSamplePage
+    else begin
+      s := Format(x + ' From : %d to %d,Copies:%d',[PD.FromPage,PD.ToPage,PD.Copies]);
+      Application.MessageBox(pChar(s),'Info',mb_iconinformation);
+    end;
   end;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  doPrintDialog(false);
+end;
+
+procedure TForm1.btnPrintWithDlgClick(Sender: TObject);
+begin
+  doPrintDialog(true);
 end;
 
 end.
