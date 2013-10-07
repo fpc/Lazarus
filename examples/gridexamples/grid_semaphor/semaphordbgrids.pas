@@ -67,7 +67,7 @@ procedure Register;
 
 implementation
 
-{$R SemaphorDBGridIcon.res}
+{$R semaphordbgridicon.res}
 
 procedure TSemaphorDBGrid.SetSemaphorShape(Value : TSemaphorShape);
 begin

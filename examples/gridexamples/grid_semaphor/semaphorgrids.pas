@@ -148,7 +148,7 @@ procedure Register;
 
 implementation
 
-{$R SemaphorGridsicon.res}
+{$R semaphorgridsicon.res}
 
 procedure TSemaphorGrid.DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState);
 const dr=4;
