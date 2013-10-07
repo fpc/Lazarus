@@ -69,6 +69,8 @@ var
 
 implementation
 
+{$R customdrawnimages/windows7.res}
+
 { TSliceScaling }
 
 procedure TSliceScaling.SetFUseNativeStretch(AValue: boolean);
@@ -115,7 +117,7 @@ var
   s: TSize;
 begin
   temp := TBitmap.Create;
-  if ALoadFromResource then temp.LoadFromLazarusResource(Filename)
+  if ALoadFromResource then temp.LoadFromResourceName(HInstance, Filename)
   else temp.LoadFromFile(Filename);
   s.cx := temp.Width;
   s.cy := temp.Height div Number;
@@ -525,7 +527,6 @@ begin
 end;
 
 initialization
-  {$I customdrawnimages/windows7.lrs}
   RegisterDrawer(TCDWin7.Create, dsWindows7);
   win7button := TSliceScaling.CreateWithResource('windows7_button', 6, 6, 6);
   win7button.UseNativeStretch := False;
