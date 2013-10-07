@@ -1483,6 +1483,23 @@ begin
             WinProcess := false;
           end;
         end else
+        if (lWinControl <> nil) and (lWinControl is TListView) and
+          (TListView(lWinControl).ViewStyle = vsReport) then
+        begin
+          if PDrawItemStruct(LParam)^.itemID <> dword(-1) then
+          begin
+            LMessage.Msg := CN_DRAWITEM;
+            TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
+            with DrawListItemStruct do
+            begin
+              ItemID := PDrawItemStruct(LParam)^.itemID;
+              Area := PDrawItemStruct(LParam)^.rcItem;
+              ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
+              DC := PDrawItemStruct(LParam)^._hDC;
+            end;
+            WinProcess := false;
+          end;
+        end else
         begin
           with TLMDrawItems(LMessage) do
           begin
