@@ -177,6 +177,13 @@ begin
             QStyleCE_ProgressBarGroove]) then
           begin
             opt := QStyleOptionProgressBarV2_create;
+
+            if Element.ControlElement <> QStyleCE_ProgressBarContents then
+            begin
+              QStyleOptionProgressBar_setMinimum(QStyleOptionProgressBarH(opt), 0);
+              QStyleOptionProgressBar_setMaximum(QStyleOptionProgressBarH(opt), 100);
+            end;
+
             if Element.Features = QtVertical then
             begin
               QStyleOptionProgressBarV2_setOrientation(QStyleOptionProgressBarV2H(opt), QtVertical);
@@ -273,6 +280,10 @@ begin
               opt := QStyleOptionComboBox_create();
               if Element.Features = Ord(QtRightToLeft) then
                 QStyleOption_setDirection(opt, QtRightToLeft);
+            end;
+            QStyleCC_SpinBox:
+            begin
+              opt := QStyleOptionSpinBox_create;
             end;
             QStyleCC_TitleBar, QStyleCC_MdiControls:
             begin
@@ -869,6 +880,21 @@ begin
             end;
         end;
       end;
+    teSpin:
+      begin
+        Result.DrawVariant := qdvComplexControl;
+        Result.ComplexControl := QStyleCC_SpinBox;
+        if Details.Part = 0 then
+          Result.SubControls := QStyleSC_SpinBoxFrame
+        else
+        if Byte(Details.Part) in [SPNP_UP, SPNP_UPHORZ] then
+          Result.SubControls := QStyleSC_SpinBoxUp
+        else
+        if Byte(Details.Part) in [SPNP_DOWN, SPNP_DOWNHORZ] then
+          Result.SubControls := QStyleSC_SpinBoxDown;
+        if Byte(Details.Part) in [SPNP_UPHORZ, SPNP_DOWNHORZ] then
+          Result.Features := QtVertical;
+      end;
     teWindow:
       begin
         case Details.Part of
@@ -1020,6 +1046,11 @@ begin
             begin
               Result.DrawVariant := qdvControl;
               Result.ControlElement := QStyleCE_SizeGrip;
+            end;
+          SP_GRIPPERPANE:
+            begin
+              Result.DrawVariant := qdvPrimitive;
+              Result.PrimitiveElement := QStylePE_FrameStatusBarItem;
             end;
         end;
       end;
