@@ -112,7 +112,7 @@ procedure TQtThemeServices.DrawEdge(DC: HDC;
   Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal;
   AContentRect: PRect);
 begin
-
+  DebugLn('WARNING: TQtThemeServices.DrawEdge is not implemented.');
 end;
 
 procedure TQtThemeServices.DrawElement(DC: HDC;
@@ -136,7 +136,7 @@ var
   dx, dy: integer;
   APalette: QPaletteH;
 begin
-  if (Context <> nil) then
+  if (Context <> nil) and not IsRectEmpty(R) then
   begin
     AViewportPaint := False;
     Context.save;
@@ -172,6 +172,11 @@ begin
           inherited DrawElement(DC, Details, R, ClipRect);
         qdvControl:
         begin
+          if (Element.ControlElement = QStyleCE_TabBarTabShape) then
+          begin
+            opt := QStyleOptionTab_create();
+            QStyleOptionTab_setShape(QStyleOptionTabH(opt), QTabBarShape(Element.Features));
+          end else
           if (Element.ControlElement in [QStyleCE_PushButton, QStyleCE_RadioButton, QStyleCE_CheckBox]) then
           begin
             opt := QStyleOptionButton_create();
@@ -193,9 +198,7 @@ begin
                 QPalette_destroy(APalette);
               end;
             end;
-
-          end
-          else
+          end else
           if (Element.ControlElement = QStyleCE_HeaderSection) then
           begin
             opt := QStyleOptionHeader_create();
@@ -255,6 +258,8 @@ begin
             QStyleCC_ComboBox:
             begin
               opt := QStyleOptionComboBox_create();
+              if Element.Features = Ord(QtRightToLeft) then
+                QStyleOption_setDirection(opt, QtRightToLeft);
             end;
             QStyleCC_TitleBar, QStyleCC_MdiControls:
             begin
@@ -377,7 +382,7 @@ procedure TQtThemeServices.DrawIcon(DC: HDC;
   Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST;
   Index: Integer);
 begin
-
+  DebugLn('WARNING: TQtThemeServices.DrawIcon is not implemented.');
 end;
 
 procedure TQtThemeServices.DrawText(ACanvas: TPersistent;
@@ -739,11 +744,25 @@ begin
       end;
     teComboBox:
       begin
-        if Details.Part = CP_DROPDOWNBUTTON then
+        if Byte(Details.Part) in [CP_DROPDOWNBUTTON, CP_DROPDOWNBUTTONRIGHT, CP_DROPDOWNBUTTONLEFT] then
         begin
           Result.DrawVariant := qdvComplexControl;
           Result.ComplexControl := QStyleCC_ComboBox;
           Result.SubControls := QStyleSC_ComboBoxArrow;
+          if Details.Part = CP_DROPDOWNBUTTONLEFT then
+            Result.Features := Ord(QtRightToLeft);
+        end else
+        if not (Details.Part = CP_READONLY) then
+        begin
+          Result.DrawVariant := qdvComplexControl;
+          Result.ComplexControl := QStyleCC_ComboBox;
+          Result.SubControls := QStyleSC_ComboBoxEditField;
+        end else
+        if Byte(Details.Part) in [0, CP_BORDER] then
+        begin
+          Result.DrawVariant := qdvComplexControl;
+          Result.ComplexControl := QStyleCC_ComboBox;
+          Result.SubControls := QStyleSC_ComboBoxFrame;
         end;
       end;
     teHeader:
@@ -860,10 +879,30 @@ begin
       end;
     teTab:
       begin
+        if Byte(Details.Part) in [TABP_TABITEM, TABP_TABITEMLEFTEDGE, TABP_TABITEMRIGHTEDGE, TABP_TOPTABITEM] then
+        begin
+          Result.DrawVariant := qdvControl;
+          Result.ControlElement := QStyleCE_TabBarTabShape;
+          if Details.Part = TABP_TABITEM then
+            Result.Features := Ord(QTabBarRoundedNorth)
+          else
+          if Details.Part = TABP_TABITEMLEFTEDGE then
+            Result.Features := Ord(QTabBarRoundedWest)
+          else
+          if Details.Part = TABP_TABITEMRIGHTEDGE then
+            Result.Features := Ord(QTabBarRoundedEast)
+          else
+            Result.Features := Ord(QTabBarRoundedNorth);
+        end else
         if Details.Part = TABP_PANE then
         begin
           Result.DrawVariant := qdvPrimitive;
           Result.PrimitiveElement := QStylePE_FrameTabWidget;
+        end else
+        if Details.Part = TABP_BODY then
+        begin
+          Result.DrawVariant := qdvPrimitive;
+          Result.PrimitiveElement := QStylePE_FrameTabBarBase;
         end;
       end;
     teScrollBar:
