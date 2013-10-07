@@ -1948,7 +1948,7 @@ end;
 constructor TfrNonVisualControl.Create(AOwnerPage: TfrPage);
 begin
   inherited Create(AOwnerPage);
-  ControlImage := CreateBitmapFromLazarusResource(HInstance, ClassName);
+  ControlImage := CreateBitmapFromResourceName(HInstance, ClassName);
   dx := 28;
   dy := 28;
 end;
