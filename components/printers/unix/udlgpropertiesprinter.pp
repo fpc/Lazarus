@@ -93,6 +93,7 @@ var
 implementation
 
 {$R udlgpropertiesprinter.lfm}
+{$R printerprop.res}
 
 Type
   THackCUPSPrinter=Class(TCUPSPrinter);
@@ -364,7 +365,7 @@ begin
   if rbrev_Landscape.Checked then St:='rev_landscape';
   if rbrev_portrait.Checked then St:='rev_portrait';
   imgOrientation.Picture.PixMap.TransparentColor:=clNone;
-  imgOrientation.Picture.PixMap.LoadFromLazarusResource(St);
+  imgOrientation.Picture.PixMap.LoadFromResourceName(HInstance, St);
   imgOrientation.Picture.PixMap.Transparent:=True;
 
   //image "Pages per sheet"
@@ -372,7 +373,7 @@ begin
   if rbSheet2.Checked then St:='pagesheet_2';
   if rbSheet4.Checked then St:='pagesheet_4';
   imgPageSheet.Picture.PixMap.TransparentColor:=clNone;
-  imgPageSheet.Picture.PixMap.LoadFromLazarusResource(St);
+  imgPageSheet.Picture.PixMap.LoadFromResourceName(HInstance, St);
   imgPageSheet.Picture.PixMap.Transparent:=True;
 end;
 
@@ -443,6 +444,4 @@ begin
   {$ENDIF}
 end;
 
-initialization
-  {$I printerprop.lrs}
 end.

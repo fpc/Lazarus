@@ -86,6 +86,7 @@ var
 implementation
 
 {$R udlgprintersjobs.lfm}
+{$R jobsimglist.res}
 
 { TdlgPrintersJobs }
 constructor TdlgPrintersJobs.Create(aOwner: TComponent);
@@ -96,9 +97,9 @@ begin
   cbPrinters.ItemIndex:=0;
   cbPrinters.OnChange:=@btnRefeshClick;
   
-  lstImg.AddLazarusResource('pending');
-  lstImg.AddLazarusResource('helded');
-  lstImg.AddLazarusResource('process');
+  lstImg.AddResourceName(HInstance, 'pending');
+  lstImg.AddResourceName(HInstance, 'helded');
+  lstImg.AddResourceName(HInstance, 'process');
 end;
 
 
@@ -236,6 +237,4 @@ begin
   end;
 end;
 
-initialization
-  {$I jobsimglist.lrs}
 end.

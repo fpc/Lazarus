@@ -1,0 +1,8 @@
+collate.xpm
+collate_rev.xpm
+printer.xpm
+printer_remote.xpm
+printer_remote_stopped.xpm
+printer_stopped.xpm
+uncollate.xpm
+uncollate_rev.xpm

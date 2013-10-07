@@ -122,6 +122,7 @@ var
 implementation
 
 {$R udlgselectprinter.lfm}
+{$R selectprinter.res}
 
 uses
   uDlgPropertiesPrinter;
@@ -223,7 +224,7 @@ begin
 
     //DRw image printer
     imgPrn.Picture.PixMap.TransparentColor:=clNone;
-    imgPrn.Picture.PixMap.LoadFromLazarusResource(Stp);
+    imgPrn.Picture.PixMap.LoadFromResourceName(HInstance, Stp);
     imgPrn.Picture.PixMap.Transparent:=True;
 
     //cups server
@@ -408,7 +409,7 @@ begin
     St:=St+'_rev';
 
   imgCollate.Picture.PixMap.TransparentColor:=clNone;
-  imgCollate.Picture.PixMap.LoadFromLazarusResource(St);
+  imgCollate.Picture.PixMap.LoadFromResourceName(HInstance, St);
   imgCollate.Picture.BitMap.Transparent:=True;
 end;
 
@@ -489,7 +490,4 @@ begin
   RefreshInfos;
 end;
 
-
-initialization
-  {$I selectprinter.lrs}
 end.

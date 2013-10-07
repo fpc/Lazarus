@@ -1,0 +1,10 @@
+dupl_long.xpm
+dupl_none.xpm
+dupl_short.xpm
+landscape.xpm
+pagesheet_1.xpm
+pagesheet_2.xpm
+pagesheet_4.xpm
+portrait.xpm
+rev_landscape.xpm
+rev_portrait.xpm
