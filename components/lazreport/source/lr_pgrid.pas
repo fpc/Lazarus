@@ -58,6 +58,8 @@ type
     procedure OnEnterRect(Memo: TStringList; View: TfrView);
     procedure OnPrintColumn(ColNo: Integer; var Width: Integer);
     procedure SetDBGrid(const AValue: TCustomDBGrid);
+    procedure SetFont(AValue: TFont);
+    procedure SetTitleFont(AValue: TFont);
   protected
     { Protected declarations }
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -73,8 +75,8 @@ type
   published
     property DBGrid: TCustomDBGrid read FDBGrid write SetDBGrid;
     property Orientation: TPrinterOrientation read FOrientation write FOrientation default poPortrait;
-    property Font: TFont read FFont write FFont;
-    property TitleFont : TFont read FTitleFont write FTitleFont;
+    property Font: TFont read FFont write SetFont;
+    property TitleFont : TFont read FTitleFont write SetTitleFont;
     property Caption: String read FCaption write FCaption;
     property Template: string read FTemplate write FTemplate;
     property ShowCaption: Boolean read FShowCaption write FShowCaption;
@@ -221,6 +223,18 @@ begin
     fFont.Assign(fDBGrid.Font);
     FTitleFont.Assign(TDBGrid(fDBGrid).TitleFont);
   end;
+end;
+
+procedure TfrPrintGrid.SetFont(AValue: TFont);
+begin
+  if FFont.IsEqual(AValue) then exit;
+  FFont.Assign(AValue);
+end;
+
+procedure TfrPrintGrid.SetTitleFont(AValue: TFont);
+begin
+  if FTitleFont.IsEqual(AValue) then exit;
+  FTitleFont.Assign(AValue);
 end;
 
 procedure TfrPrintGrid.PreviewReport;

@@ -676,12 +676,27 @@ procedure DoFuncId; forward;
   end;
 
   procedure DoConst;
+  label
+    lblLine;
   begin
     SkipSpace;
     if buf^[cur] = #$27 then
     begin
+
+      lblLine:
+
       Inc(cur);
-      while (buf^[cur] <> #$27) and (cur < len) do Inc(cur);
+      while (buf^[cur] <> #$27) and (cur < len) do
+      begin
+        Inc(cur);
+      end;
+
+      if (cur < len) and (buf^[cur + 1] = #$27) then
+      begin
+        Inc(cur);
+        goto lblLine;
+      end;
+
       if cur = len then Error := True
       else Inc(cur);
     end
@@ -793,10 +808,10 @@ begin
   for i := 0 to MemoFrom.Count - 1 do
   begin
     s := ' ' + MemoFrom[i] + #13;
+
     while Pos(#9, s) <> 0 do
       s[Pos(#9, s)] := ' ';
-    while Pos('  ', s) <> 0 do
-      Delete(s, Pos('  ', s), 1);
+
     Move(S[1], Buf^[len], Length(S));
     Inc(len, Length(s));
   end;

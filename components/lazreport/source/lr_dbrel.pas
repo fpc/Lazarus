@@ -65,9 +65,11 @@ begin
     DataSet.GetFieldNames(List)
   else
   begin
-    DataSet.Open;
+{    DataSet.Open;
     DataSet.GetFieldNames(List);
-    DataSet.Close;
+    DataSet.Close;}
+    DataSet.FieldDefs.Update;
+    DataSet.FieldDefs.GetItemNames(List);
   end;
 end;
 
