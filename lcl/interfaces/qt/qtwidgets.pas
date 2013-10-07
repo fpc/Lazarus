@@ -11378,6 +11378,8 @@ begin
     ItemIndex := QModelIndex_row(index);
     SubItemIndex := QModelIndex_column(index);
 
+    QStyle_drawControl(QApplication_style, QStyleCE_ItemViewItem, Option, painter, viewportWidget);
+
     // NOW WE ARE DRAWING ITEMS ...
     QPainter_save(painter);
     if TCustomListView(LCLObject).Canvas.HandleAllocated then
@@ -12696,6 +12698,8 @@ begin
 
     ItemIndex := QModelIndex_row(index);
     SubItemIndex := QModelIndex_column(index);
+
+    QStyle_drawControl(QApplication_style, QStyleCE_ItemViewItem, Option, painter, viewportWidget);
 
     // NOW WE ARE DRAWING ITEMS ...
     QPainter_save(painter);
