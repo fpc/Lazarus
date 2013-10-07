@@ -173,6 +173,18 @@ begin
           inherited DrawElement(DC, Details, R, ClipRect);
         qdvControl:
         begin
+          if (Element.ControlElement in [QStyleCE_ProgressBar, QStyleCE_ProgressBarContents,
+            QStyleCE_ProgressBarGroove]) then
+          begin
+            opt := QStyleOptionProgressBarV2_create;
+            if Element.Features = QtVertical then
+            begin
+              QStyleOptionProgressBarV2_setOrientation(QStyleOptionProgressBarV2H(opt), QtVertical);
+              QStyleOptionProgressBarV2_setInvertedAppearance(QStyleOptionProgressBarV2H(opt), True);
+              QStyleOptionProgressBarV2_setBottomToTop(QStyleOptionProgressBarV2H(opt), True);
+            end else
+              QStyleOptionProgressBarV2_setOrientation(QStyleOptionProgressBarV2H(opt), QtHorizontal);
+          end else
           if (Element.ControlElement = QStyleCE_TabBarTabShape) then
           begin
             opt := QStyleOptionTab_create();
@@ -943,6 +955,18 @@ begin
           Result.DrawVariant := qdvPrimitive;
           Result.PrimitiveElement := QStylePE_FrameTabBarBase;
         end;
+      end;
+    teProgress:
+      begin
+        Result.DrawVariant := qdvControl;
+        case Details.Part of
+          PP_CHUNK,PP_CHUNKVERT: Result.ControlElement := QStyleCE_ProgressBarContents;
+          PP_FILL,PP_FILLVERT: Result.ControlElement := QStyleCE_ProgressBarGroove;
+          else
+            Result.ControlElement := QStyleCE_ProgressBar;
+        end;
+        if Byte(Details.Part) in [PP_BARVERT, PP_FILLVERT, PP_CHUNKVERT] then
+          Result.Features := QtVertical;
       end;
     teScrollBar:
       begin
