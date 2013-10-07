@@ -174,6 +174,7 @@ type
     function FindRow(const KeyName: string; out aRow: Integer): Boolean;
     procedure InsertColRow(IsColumn: boolean; index: integer);
     function InsertRow(const KeyName, Value: string; Append: Boolean): Integer;
+    procedure InsertRowWithValues(Index: Integer; Values: array of String);
     procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
     function IsEmptyRow: Boolean; {Delphi compatible function}
     function IsEmptyRow(aRow: Integer): Boolean; {This for makes more sense to me}
@@ -819,7 +820,12 @@ begin
     Strings.BeginUpdate;
     try
       if Append then
-        NewInd := Row - FixedRows + 1 //append after current row
+      begin
+        if (Strings.Count = 0) then   //empty grid
+          NewInd := 0
+        else
+          NewInd := Row - FixedRows + 1 //append after current row
+      end
       else
         NewInd := Row - FixedRows; //insert it at current row
       Strings.InsertItem(NewInd, Line, Nil);
@@ -835,6 +841,23 @@ begin
   Result := NewInd;
   NewCol := NewInd + FixedRows;
   if (NewCol <> Col) then Col := NewCol;
+end;
+
+procedure TValueListEditor.InsertRowWithValues(Index: Integer;
+  Values: array of String);
+var
+  AKey, AValue: String;
+begin
+  AKey := '';
+  AValue := '';
+  if (Length(Values) > 1) then
+  begin
+    AKey := Values[0];
+    AValue := Values[1];
+  end
+  else if (Length(Values) = 1) then
+    AKey := Values[0];
+  Strings.InsertItem(Index, AKey + Strings.NameValueSeparator + AValue);
 end;
 
 procedure TValueListEditor.ExchangeColRow(IsColumn: Boolean; index,

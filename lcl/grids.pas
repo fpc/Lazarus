@@ -814,7 +814,7 @@ type
     function  ScrollToCell(const aCol,aRow: Integer; wResetOffs: boolean): Boolean;
     function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
     procedure SetCol(AValue: Integer);
-    procedure SetColwidths(Acol: Integer; Avalue: Integer);
+    procedure SetColWidths(Acol: Integer; Avalue: Integer);
     procedure SetColCount(AValue: Integer);
     procedure SetDefColWidth(AValue: Integer);
     procedure SetDefRowHeight(AValue: Integer);
@@ -829,14 +829,14 @@ type
     procedure SetOptions(const AValue: TGridOptions);
     procedure SetRow(AValue: Integer);
     procedure SetRowCount(AValue: Integer);
-    procedure SetRowheights(Arow: Integer; Avalue: Integer);
+    procedure SetRowHeights(Arow: Integer; Avalue: Integer);
     procedure SetScrollBars(const AValue: TScrollStyle);
     procedure SetSelectActive(const AValue: Boolean);
     procedure SetSelection(const AValue: TGridRect);
     procedure SetTopRow(const AValue: Integer);
     function  StartColSizing(const X, Y: Integer): boolean;
     procedure ChangeCursor(ACursor: Integer = MAXINT);
-    procedure TryScrollTo(aCol,aRow: integer);
+    procedure TryScrollTo(aCol,aRow: Integer);
     procedure UpdateCachedSizes;
     procedure UpdateSBVisibility;
     procedure UpdateSizes;
@@ -989,6 +989,7 @@ type
     procedure InvalidateFocused;
     function  GetIsCellTitle(aCol,aRow: Integer): boolean; virtual;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; virtual;
+    function  IsMouseOverCellButton(X,Y: Integer): boolean;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
     procedure KeyPress(var Key: char); override;
@@ -1169,7 +1170,7 @@ type
     procedure InvalidateCol(ACol: Integer);
     procedure InvalidateRange(const aRange: TRect);
     procedure InvalidateRow(ARow: Integer);
-    function  IscellVisible(aCol, aRow: Integer): Boolean;
+    function  IsCellVisible(aCol, aRow: Integer): Boolean;
     function  IsFixedCellVisible(aCol, aRow: Integer): boolean;
     procedure LoadFromFile(FileName: string);
     procedure LoadFromStream(AStream: TStream);
@@ -1987,17 +1988,14 @@ var
   P: TPoint;
   Gz: TGridZone;
   ButtonColumn: boolean;
-  OldAOE: boolean;
 begin
 
   with FGCache do begin
 
     Gz := MouseToGridZone(X,Y);
-    oldAOE := AllowOutboundEvents;
-    AllowOutboundEvents := false;
-    P := MouseToCell(Point(X,Y));
-    AllowOutBoundEvents := OldAOE;
-    ButtonColumn := IsCellButtonColumn(P);
+    ButtonColumn := IsMouseOverCellButton(X, Y);
+    P.X:=X;
+    P.Y:=Y;
 
     if (gz<>HotGridZone) or (P.x<>HotCell.x) or (P.y<>HotCell.y) then begin
       ResetHotCell;
@@ -2334,12 +2332,12 @@ begin
   result:=fTopLeft.x;
 end;
 
-function TCustomGrid.Getcolcount: Integer;
+function TCustomGrid.GetColCount: Integer;
 begin
   Result:=FCols.Count;
 end;
 
-function TCustomGrid.Getrowcount: Integer;
+function TCustomGrid.GetRowCount: Integer;
 begin
   Result:=FRows.Count;
 end;
@@ -2591,7 +2589,7 @@ begin
   end;
 end;
 
-procedure TCustomGrid.Setrowheights(Arow: Integer; Avalue: Integer);
+procedure TCustomGrid.SetRowHeights(Arow: Integer; Avalue: Integer);
 var
   OldSize,NewSize: Integer;
   R: TRect;
@@ -2643,7 +2641,7 @@ begin
   end;
 end;
 
-procedure TCustomGrid.Setcolwidths(Acol: Integer; Avalue: Integer);
+procedure TCustomGrid.SetColWidths(Acol: Integer; Avalue: Integer);
 var
   c: TGridColumn;
   OldWidth: Integer;
@@ -2667,7 +2665,8 @@ begin
   FCols[ACol]:=Pointer(PtrInt(Avalue));
 end;
 
-procedure TCustomGrid.AdjustCount(IsColumn: Boolean; OldValue, newValue: Integer);
+procedure TCustomGrid.AdjustCount(IsColumn: Boolean; OldValue, NewValue: Integer
+  );
   procedure AddDel(Lst: TList; aCount: Integer);
   begin
     while lst.Count<aCount do Lst.Add(Pointer(-1)); // default width/height
@@ -2960,7 +2959,7 @@ begin
   end;
 end;
 
-procedure TCustomGrid.doTopleftChange(dimChg: Boolean);
+procedure TCustomGrid.doTopleftChange(DimChg: Boolean);
 begin
   TopLeftChanged;
   VisualChange;
@@ -3405,7 +3404,8 @@ procedure TCustomGrid.ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer)
 begin
 end;
 
-procedure TCustomGrid.ColRowExchanged(isColumn: Boolean; index, WithIndex: Integer);
+procedure TCustomGrid.ColRowExchanged(IsColumn: Boolean; index,
+  WithIndex: Integer);
 begin
 end;
 
@@ -4715,7 +4715,7 @@ begin
 end;
 
 procedure TCustomGrid.GetSBRanges(const HsbVisible, VsbVisible: boolean; out
-  HsbRange,VsbRange,HsbPage,VSbPage,HsbPos,VsbPos: Integer);
+  HsbRange, VsbRange, HsbPage, VsbPage, HsbPos, VsbPos: Integer);
 begin
   with FGCache do begin
 
@@ -5781,7 +5781,8 @@ begin
     Inc(FSortColumn);
 end;
 
-procedure TCustomGrid.doOPMoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
+procedure TCustomGrid.DoOPMoveColRow(IsColumn: Boolean; FromIndex,
+  ToIndex: Integer);
 var
   ColRow: Integer;
 begin
@@ -6019,7 +6020,7 @@ begin
         LockEditor;
         FIgnoreClick := False;
         UnlockEditor;
-        if IsCellButtonColumn(FGCache.ClickCell) then begin
+        if IsMouseOverCellButton(X, Y) then begin
           fGridState := gsButtonColumnClicking;
           DoPushCell;
           Exit;
@@ -6523,7 +6524,19 @@ begin
   Result := BidiFlipX(X, GCache.ClientRect, UseRightToLeftAlignment);
 end;
 
-procedure TCustomGrid.doExit;
+function TCustomGrid.IsMouseOverCellButton(X, Y: Integer): boolean;
+var
+  oldAOE: Boolean;
+  P: TPoint;
+begin
+  oldAOE := AllowOutboundEvents;
+  AllowOutboundEvents := false;
+  P := MouseToCell(Point(X,Y));
+  AllowOutBoundEvents := OldAOE;
+  result := IsCellButtonColumn(P);
+end;
+
+procedure TCustomGrid.DoExit;
 begin
   if not (csDestroying in ComponentState) then begin
     {$IfDef dbgGrid}DebugLnEnter('DoExit - INIT');{$Endif}
@@ -6822,7 +6835,7 @@ begin
   Result := MouseToCell(Point(X,Y));
 end;
 
-function TCustomGrid.ISCellVisible(aCol, aRow: Integer): Boolean;
+function TCustomGrid.IsCellVisible(aCol, aRow: Integer): Boolean;
 begin
   with FGCache.VisibleGrid do
     Result:= (Left<=ACol)and(aCol<=Right)and(Top<=aRow)and(aRow<=Bottom);
@@ -7687,7 +7700,7 @@ begin
     FOnGetCellHint(self, ACol, ARow, result);
 end;
 
-function TCustomGrid.GetTruncCellHintText(ACol, ARow: Integer): String;
+function TCustomGrid.GetTruncCellHintText(ACol, ARow: Integer): string;
 begin
   Result := GetCells(ACol, ARow);
 end;
@@ -8308,7 +8321,7 @@ begin
     dec(result); // extreme case may return -1
 end;
 
-function TCustomGrid.GetLastVisibleRow: integer;
+function TCustomGrid.GetLastVisibleRow: Integer;
 begin
   result := RowCount-1;
   while (result>=0) and (RowHeights[result]=0) do
