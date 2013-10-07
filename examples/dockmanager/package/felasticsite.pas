@@ -78,6 +78,8 @@ procedure Register;
 
 implementation
 
+{$R felasticsite.lfm}
+
 uses
   LCLIntf, LCLProc;
 
@@ -334,9 +336,5 @@ begin
   end;
 end;
 
-
-initialization
-  {$I felasticsite.lrs}
-  //DefaultDockManagerClass := TEasyTree;
 end.
 

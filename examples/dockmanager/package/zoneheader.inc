@@ -23,7 +23,7 @@ var
   ImageKind: TDockHeaderImageKind;
 begin
   for ImageKind := Low(TDockHeaderImageKind) to High(TDockHeaderImageKind) do
-    DockBtnImages[ImageKind] := CreateBitmapFromLazarusResource(DockHeaderImageNames[ImageKind]);
+    DockBtnImages[ImageKind] := CreateBitmapFromResourceName(HInstance, DockHeaderImageNames[ImageKind]);
 end;
 
 procedure DestroyDockHeaderImages;

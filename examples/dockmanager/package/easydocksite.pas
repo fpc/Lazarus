@@ -366,6 +366,8 @@ var //debug only, these are valid only until drop
 
 implementation
 
+{$R easy_dock_images.res}
+
 uses
   SysUtils, Types,
   math,
@@ -2406,7 +2408,6 @@ begin
 end;
 
 initialization
-{$I easy_dock_images.lrs}
   //DefaultDockManagerClass := TEasyTree;
   CreateDockHeaderImages;
   if DockLoader = nil then

@@ -4469,7 +4469,9 @@ examples/dockmanager/ide_demo2/feditbook2.lfm svneol=native#text/plain
 examples/dockmanager/ide_demo2/feditbook2.pas svneol=native#text/pascal
 examples/dockmanager/ide_demo2/fminiide2.lfm svneol=native#text/plain
 examples/dockmanager/ide_demo2/fminiide2.pas svneol=native#text/pascal
-examples/dockmanager/package/easy_dock_images.lrs svneol=native#text/pascal
+examples/dockmanager/package/easy_dock_close.png -text
+examples/dockmanager/package/easy_dock_images.res -text
+examples/dockmanager/package/easy_dock_restore.png -text
 examples/dockmanager/package/easydocking.pas svneol=native#text/pascal
 examples/dockmanager/package/easydockmgr.lpk svneol=native#text/plain
 examples/dockmanager/package/easydockmgr.pas svneol=native#text/pascal

@@ -48,6 +48,8 @@ type
 
 implementation
 
+{$R *.lfm}
+
 uses
   LCLproc,  //debugging only
   EasyDockSite, //EasyTree DockManager
@@ -187,11 +189,6 @@ begin
   end;
 end;
 {$ENDIF}
-
-{$R *.lfm}
-
-initialization
-  {.$I ffloatingsite.lrs}
 
 end.
 
