@@ -61,7 +61,8 @@ type
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
-    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); override;
+    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); overload; override;
+    procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); overload; override;
     function GetDetailSize(Details: TThemedElementDetails): TSize; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
 
@@ -388,19 +389,29 @@ end;
 procedure TQtThemeServices.DrawText(ACanvas: TPersistent;
   Details: TThemedElementDetails; const S: String; R: TRect; Flags,
   Flags2: Cardinal);
+begin
+  DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2);
+end;
+
+procedure TQtThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails;
+  const S: String; R: TRect; Flags, Flags2: Cardinal);
 var
   Palette: QPaletteH;
   Context: TQtDeviceContext;
   Widget: QWidgetH;
   W: WideString;
   TextRect: TRect;
+  AOldMode: Integer;
+  ATextPalette: Cardinal;
 begin
+  // DebugLn('TQtThemeServices.DrawText ');
+  Context := TQtDeviceContext(DC);
   case Details.Element of
     teToolTip:
       begin
-        Context := TQtDeviceContext(TCanvas(ACanvas).Handle);
         W := GetUTF8String(S);
         Context.save;
+        AOldMode := Context.SetBkMode(TRANSPARENT);
         try
           if Context.Parent <> nil then
             Palette := QPalette_create(QWidget_palette(Context.Parent))
@@ -412,18 +423,18 @@ begin
             inherited;
             exit;
           end;
-
           QStyle_drawItemText(Style, Context.Widget, @R,
             DTFlagsToQtFlags(Flags), Palette,
             not IsDisabled(Details), @W, QPaletteToolTipText);
+          QPalette_destroy(Palette);
         finally
+          Context.SetBkMode(AOldMode);
           Context.restore;
         end;
 
       end;
     teTreeView:
       begin
-        Context := TQtDeviceContext(TCanvas(ACanvas).Handle);
         if Details.Part = TVP_TREEITEM then
         begin
           Palette := nil;
@@ -489,7 +500,35 @@ begin
       end;
 
     else
-      inherited;
+    begin // default text drawing for all !
+      W := GetUTF8String(S);
+      Context.save;
+      AOldMode := Context.SetBkMode(TRANSPARENT);
+      if Context.Parent <> nil then
+        Palette := QPalette_create(QWidget_palette(Context.Parent))
+      else
+      begin
+        Palette := QPalette_create;
+        QApplication_palette(Palette);
+      end;
+      try
+        if Details.Element in [teEdit, teListView, teTreeView, teWindow] then
+          ATextPalette := QPaletteWindowText
+        else
+        if Details.Element in [teButton, teComboBox] then
+          ATextPalette := QPaletteButtonText
+        else
+          ATextPalette := QPaletteText;
+
+        QStyle_drawItemText(Style, Context.Widget, @R,
+          DTFlagsToQtFlags(Flags), Palette,
+          not IsDisabled(Details), @W, ATextPalette);
+        Context.SetBkMode(AOldMode);
+      finally
+        QPalette_destroy(Palette);
+        Context.restore;
+      end;
+    end;
   end;
 end;
 
