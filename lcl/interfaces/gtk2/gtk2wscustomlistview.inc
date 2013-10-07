@@ -532,9 +532,13 @@ begin
         if GTK_IS_ICON_VIEW(MainView) then
           gtk_icon_view_set_selection_mode(PGtkIconView(MainView), BoolToSelectionMode[AIsSet]);
       end;
-      lvpOwnerDraw: begin
-        // TODO: implement
-        // use custom images/widgets ?
+      lvpOwnerDraw:
+      begin
+        // It must send CN_DRAWITEM with ItemID and proper rect of item
+        // then LCL does all other stuff. Note that OwnerDraw should work only
+        // in case of vsReport, according to embarcadero docs.
+        // http://docwiki.embarcadero.com/Libraries/XE4/en/Vcl.ComCtrls.TCustomListView.OnDrawItem
+        // NOTE: this is automatically handled by cell renderer (Gtk2CellRenderer).
       end;
       lvpReadOnly: begin
         // TODO: implement inline editor ?
@@ -1071,7 +1075,7 @@ begin
       if GTK_IS_TREE_VIEW(MainView) then
       begin
         Column := gtk_tree_view_get_column(PGtkTreeView(MainView), ASubItem);
-         gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, Column, @ItemRect);
+        gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, Column, @ItemRect);
         if gtk_tree_view_get_headers_visible(PGtkTreeView(MainView)) then
         begin
           gtk_tree_view_column_cell_get_size(gtk_tree_view_get_column(PGtkTreeView(MainView), 0),

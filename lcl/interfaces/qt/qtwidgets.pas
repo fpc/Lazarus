@@ -1385,6 +1385,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     procedure OwnerDataNeeded(ARect: TRect); override;
+    procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
   public
     destructor Destroy; override;
     procedure DestroyNotify(AWidget: TQtWidget); override;
@@ -12511,6 +12512,50 @@ begin
       inc(i, RowHeight);
     end;
   end;
+end;
+
+procedure TQtTreeWidget.ItemDelegatePaint(painter: QPainterH;
+  option: QStyleOptionViewItemH; index: QModelIndexH); cdecl;
+var
+  Msg: TLMDrawListItem;
+  DrawStruct: TDrawListItemStruct;
+  State: QStyleState;
+begin
+  QPainter_save(painter);
+  State := QStyleOption_state(option);
+  DrawStruct.ItemID := UINT(QModelIndex_row(index));
+
+  DrawStruct.Area := visualRect(index);
+  DrawStruct.DC := HDC(TQtDeviceContext.CreateFromPainter(painter));
+
+  DrawStruct.ItemState := [];
+  // selected
+  if (State and QStyleState_Selected) <> 0 then
+    Include(DrawStruct.ItemState, odSelected);
+  // disabled
+  if (State and QStyleState_Enabled) = 0 then
+    Include(DrawStruct.ItemState, odDisabled);
+  // focused (QStyleState_FocusAtBorder?)
+  if (State and QStyleState_HasFocus) <> 0 then
+    Include(DrawStruct.ItemState, odFocused);
+  // hotlight
+  if (State and QStyleState_MouseOver) <> 0 then
+    Include(DrawStruct.ItemState, odHotLight);
+
+  { todo: over states:
+
+    odGrayed, odChecked,
+    odDefault, odInactive, odNoAccel,
+    odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit,
+    odPainted
+  }
+  Msg.Msg := CN_DRAWITEM;
+  Msg.DrawListItemStruct := @DrawStruct;
+  DeliverMessage(Msg);
+
+  QPainter_restore(painter);
+
+  TQtDeviceContext(DrawStruct.DC).Free;
 end;
 
 procedure TQtTreeWidget.ClearItems;

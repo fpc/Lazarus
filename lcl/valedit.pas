@@ -82,6 +82,7 @@ type
     FItemProps: TItemPropList;
     function GetItemProp(const AKeyOrIndex: Variant): TItemProp;
     procedure QuickSortStringsAndItemProps(L, R: Integer; CompareFn: TStringListSortCompare);
+    function CanHideShowingEditorAtIndex(Index: Integer): Boolean;
   protected
     procedure InsertItem(Index: Integer; const S: string; AObject: TObject); override;
     procedure InsertItem(Index: Integer; const S: string); override;
@@ -493,31 +494,12 @@ end;
 
 procedure TValueListStrings.InsertItem(Index: Integer; const S: string; AObject: TObject);
 var
-  i: Integer;
-  MustHideShowingEditor, EditorHasFocus: Boolean;
-  WC: TWinControl;
-  IndexToRow: Integer;
+  MustHideShowingEditor: Boolean;
 begin
   // ToDo: Check validity of key
-  //debugln('TValueListStrings.InsertItem: Index=',dbgs(index),' S=',S,' AObject=',dbgs(aobject));
+  //debugln('TValueListStrings.InsertItem: Index = ',dbgs(index),' S = "',S,'" AObject = ',dbgs(aobject));
   FGrid.InvalidateCachedRow;
-  IndexToRow := Index + FGrid.FixedRows;
-  if (FGrid.Editor is TCompositeCellEditor) then
-  begin
-    WC := TCompositeCellEditorAccess(FGrid.Editor).GetActiveControl;
-    if (WC is TCustomEdit) then
-      EditorHasFocus := TCustomEdit(WC).Focused
-    else
-      EditorHasFocus := False;
-  end
-  else
-    EditorHasFocus := Assigned(FGrid.Editor) and FGrid.Editor.Focused;
-  MustHideShowingEditor := Assigned(FGrid.Editor) and
-                           (goAlwaysShowEditor in FGrid.Options) and
-                           FGrid.Editor.Visible and
-                           (IndexToRow = FGrid.Row) and
-                           //if editor is Focussed, we are editing a cell, so we cannot hide!
-                           (not EditorHasFocus);
+  MustHideShowingEditor := CanHideShowingEditorAtIndex(Index);
   if MustHideShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited InsertItem(Index, S, AObject);
   FItemProps.Insert(Index, TItemProp.Create(FGrid));
@@ -532,29 +514,10 @@ end;
 
 procedure TValueListStrings.Put(Index: Integer; const S: String);
 var
-  IndexToRow: Integer;
-  MustHideShowingEditor, EditorHasFocus: Boolean;
-  WC: TwinControl;
+  MustHideShowingEditor: Boolean;
 begin
   // ToDo: Check validity of key
-  IndexToRow := Index + FGrid.FixedRows;
-  if (FGrid.Editor is TCompositeCellEditor) then
-  begin
-    WC := TCompositeCellEditorAccess(FGrid.Editor).GetActiveControl;
-    if (WC is TCustomEdit) then
-      EditorHasFocus := TCustomEdit(WC).Focused
-    else
-      EditorHasFocus := False;
-  end
-  else
-    EditorHasFocus := Assigned(FGrid.Editor) and FGrid.Editor.Focused;
-  MustHideShowingEditor := Assigned(FGrid.Editor) and
-                           (goAlwaysShowEditor in FGrid.Options) and
-                           FGrid.Editor.Visible and
-                           (IndexToRow = FGrid.Row) and
-                           //if editor is Focussed, we are editing a cell, so we cannot hide!
-                           (not EditorHasFocus);
-
+  MustHideShowingEditor := CanHideShowingEditorAtIndex(Index);
   //debugln('TValueListStrings.Put: MustHideShowingEditor=',DbgS(MustHideShowingEditor));
   if MustHideShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited Put(Index, S);
@@ -640,6 +603,42 @@ begin
     QuickSortStringsAndItemProps(Pivot + 1, R, CompareFn);
 end;
 
+function TValueListStrings.CanHideShowingEditorAtIndex(Index: Integer): Boolean;
+var
+  IndexToRow: Integer;
+  WC: TWinControl;
+  EditorHasFocus: Boolean;
+begin
+  IndexToRow := Index + FGrid.FixedRows;
+  if (FGrid.Editor is TCompositeCellEditor) then
+  begin
+    WC := TCompositeCellEditorAccess(FGrid.Editor).GetActiveControl;
+    if (WC is TCustomEdit) then
+      EditorHasFocus := TCustomEdit(WC).Focused
+    else
+      EditorHasFocus := False;
+  end
+  else
+    EditorHasFocus := Assigned(FGrid.Editor) and FGrid.Editor.Focused;
+
+  //debugln('CanHideShowingEditor:');
+  //debugln(' Assigned(FGrid.Editor) = ',DbgS(Assigned(FGrid.Editor)));
+  //debugln(' (goAlwaysShowEditor in FGrid.Options) = ',DbgS(goAlwaysShowEditor in FGrid.Options));
+  //if Assigned(FGrid.Editor) then
+  //  debugln(' FGrid.Editor.Visible = ',DbgS(FGrid.Editor.Visible));
+  //debugln(' IndexToRow = ',DbgS(IndextoRow));
+  //debugln(' Count = ',DbgS(Count));
+  //debugln(' EditorHasFocus = ',DbgS(EditorHasFocus));
+
+  Result := Assigned(FGrid.Editor) and
+            (goAlwaysShowEditor in FGrid.Options) and
+            FGrid.Editor.Visible and
+            ((IndexToRow = FGrid.Row) or (Count = 0)) and  //if Count = 0 we still have an editable row
+            //if editor is Focussed, we are editing a cell, so we cannot hide!
+            (not EditorHasFocus);
+  //debugln('CanHideShowingEditor: Result = ',DbgS(Result));
+end;
+
 procedure TValueListStrings.CustomSort(Compare: TStringListSortCompare);
 {
  Re-implement it, because we need it to call our own QuickSortStringsAndItemProps
@@ -665,7 +664,7 @@ var
   IsShowingEditor: Boolean;
 begin
   FGrid.InvalidateCachedRow;
-  IsShowingEditor := goAlwaysShowEditor in FGrid.Options;
+  IsShowingEditor := CanHideShowingEditorAtIndex(Index);
   if IsShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited Delete(Index);
   // Delete also ItemProps
@@ -676,16 +675,10 @@ end;
 
 procedure TValueListStrings.Exchange(Index1, Index2: Integer);
 var
-  IndexToRow1, IndexToRow2: Integer;
   MustHideShowingEditor: Boolean;
 begin
   FGrid.InvalidateCachedRow;
-  IndexToRow1 := Index1 + FGrid.FixedRows;
-  IndexToRow2 := Index2 + FGrid.FixedRows;
-  MustHideShowingEditor := Assigned(FGrid.Editor) and
-                           (goAlwaysShowEditor in FGrid.Options) and
-                           FGrid.Editor.Visible and
-                           ((IndexToRow1 = FGrid.Row) or (IndexToRow2 = FGrid.Row));
+  MustHideShowingEditor := CanHideShowingEditorAtIndex(Index1) or CanHideShowingEditorAtIndex(Index2);
   if MustHideShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited Exchange(Index1, Index2);
   FItemProps.Exchange(Index1, Index2);
@@ -723,6 +716,7 @@ constructor TValueListEditor.Create(AOwner: TComponent);
 begin
   //need FStrings before inherited Create, because they are needed in overridden SelectEditor
   FStrings := TValueListStrings.Create(Self);
+  FStrings.NameValueSeparator := '=';
   FTitleCaptions := TStringList.Create;
   inherited Create(AOwner);
   FStrings.OnChange := @StringsChange;

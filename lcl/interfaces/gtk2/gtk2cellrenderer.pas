@@ -160,6 +160,7 @@ var
   TmpDC1,
   TmpDC2: HDC;
   SkipDefaultPaint: Boolean;
+  OwnerDrawnListView: Boolean;
 begin
   {DebugLn(['LCLIntfCellRenderer_Render cell=',dbgs(cell),
     ' ',GetWidgetDebugReport(Widget),' ',
@@ -174,9 +175,12 @@ begin
     (AWinControl.FCompStyle = csListView) then
       ColumnIndex := 0;
 
-
+  OwnerDrawnListView := False;
   if ColumnIndex > -1 then // listview
   begin
+    OwnerDrawnListView := TCustomListViewAccess(AWinControl).OwnerDraw and
+      (TCustomListViewAccess(AWinControl).ViewStyle = vsReport);
+
     AreaRect := Bounds(background_area^.x, background_area^.y,
                      background_area^.Width, background_area^.Height);
 
@@ -207,7 +211,8 @@ begin
     begin
       GTK2WidgetSet.ReleaseDC(HWnd({%H-}PtrUInt(Widget)),TmpDC1);
       TCustomListViewAccess(AWinControl).Canvas.Handle := TmpDC2;
-      Exit;
+      if not OwnerDrawnListView then
+        Exit;
     end;
   end;
 
@@ -227,8 +232,11 @@ begin
   end;
   // do default draw only if we are not customdrawn.
   if (ColumnIndex > -1) or ((ColumnIndex < 0) and (AWinControl = nil)) then
-    CellClass^.DefaultGtkRender(cell, Window, Widget, background_area, cell_area,
-      expose_area, flags);
+  begin
+    if not OwnerDrawnListView then
+      CellClass^.DefaultGtkRender(cell, Window, Widget, background_area, cell_area,
+        expose_area, flags);
+  end;
   
   if ColumnIndex < 0 then  // is a listbox or combobox
   begin
@@ -279,28 +287,55 @@ begin
 
     TCustomListViewAccess(AWinControl).Canvas.Handle := TmpDC2;
     GTK2WidgetSet.ReleaseDC(HWnd({%H-}PtrUInt(Widget)),TmpDC1);
-    Exit;
+    if not OwnerDrawnListView then
+      Exit;
   end;
 
   // ListBox and ComboBox
   // create message and deliverFillChar(Msg,SizeOf(Msg),0);
-  Msg.Msg:=LM_DrawListItem;
+  if OwnerDrawnListView then
+  begin
+    // we are TListView (GtkTreeView) with OwnerDraw + vsReport
+    Msg.Msg := CN_DRAWITEM;
+
+    // collect state flags
+    State := [];
+    if (flags and GTK_CELL_RENDERER_SELECTED)>0 then
+      Include(State, odSelected);
+    if not GTK_WIDGET_SENSITIVE(Widget) then
+      Include(State, odInactive);
+    if GTK_WIDGET_HAS_DEFAULT(Widget) then
+      Include(State, odDefault);
+    if (flags and GTK_CELL_RENDERER_FOCUSED) <> 0 then
+      Include(State, odFocused);
+
+    AreaRect := Bounds(expose_area^.x, expose_area^.y,
+                     expose_area^.Width, expose_area^.Height);
+    if gtk_tree_view_get_headers_visible(PGtkTreeView(Widget)) then
+    begin
+      inc(AreaRect.Top, background_area^.height);
+      inc(AreaRect.Bottom, background_area^.height);
+    end;
+  end else
+    Msg.Msg:=LM_DrawListItem;
   New(Msg.DrawListItemStruct);
   try
     FillChar(Msg.DrawListItemStruct^,SizeOf(TDrawListItemStruct),0);
-    with Msg.DrawListItemStruct^ do begin
+    with Msg.DrawListItemStruct^ do
+    begin
       ItemID:=UINT(ItemIndex);
       Area:=AreaRect;
-      //DebugLn(['LCLIntfCellRenderer_Render Widget=',GetWidgetDebugReport(Widget^.parent),' Area=',dbgs(Area)]);
+      // DebugLn(['LCLIntfCellRenderer_Render Widget=',GetWidgetDebugReport(Widget^.parent),' Area=',dbgs(Area)]);
       DCWidget:=Widget;
-      if (DCWidget^.parent<>nil)
-      and (GtkWidgetIsA(DCWidget^.parent,gtk_menu_item_get_type)) then begin
+      if (DCWidget^.parent<>nil) and
+        (GtkWidgetIsA(DCWidget^.parent,gtk_menu_item_get_type)) then
+      begin
         // the Widget is a sub widget of a menu item
         // -> allow the LCL to paint over the whole menu item
-        DCWidget:=DCWidget^.parent;
+        DCWidget := DCWidget^.parent;
         Area:=Rect(0,0,DCWidget^.allocation.width,DCWidget^.allocation.height);
       end;
-      DC:=GTK2WidgetSet.CreateDCForWidget(DCWidget,Window,false);
+      DC := GTK2WidgetSet.CreateDCForWidget(DCWidget,Window,false);
       ItemState:=State;
     end;
     DeliverMessage(AWinControl, Msg);
