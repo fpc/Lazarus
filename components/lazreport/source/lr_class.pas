@@ -360,7 +360,7 @@ type
 
   TfrNonVisualControl = class(TfrControl)
   protected
-    ControlImage: TBitmap;
+    ControlImage: TCustomBitmap;
     procedure PaintDesignControl; override;
   public
     constructor Create(AOwnerPage:TfrPage); override;
