@@ -445,7 +445,7 @@ begin
         end;
 
       end;
-    teTreeView:
+    teTreeView, teListView:
       begin
         if Details.Part = TVP_TREEITEM then
         begin
@@ -627,9 +627,10 @@ begin
        [TKP_TRACKVERT, TKP_THUMBVERT])) then
     Result := Result or QStyleState_Horizontal;
 
-  if (Details.Element = teTreeview) then
+  if (Details.Element in [teTreeview, teListView]) then
   begin
-    if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
+    if (Details.Element = teTreeView) and
+      (Details.Part in [TVP_GLYPH, TVP_HOTGLYPH]) then
     begin
       Result := Result or QStyleState_Children;
       if Details.State = GLPS_OPENED then
@@ -1022,9 +1023,10 @@ begin
             end;
         end;
       end;
-    teTreeView:
+    teTreeView, teListView:
       begin
-        if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
+        if (Details.Element = teTreeView) and
+          (Details.Part in [TVP_GLYPH, TVP_HOTGLYPH]) then
         begin
           Result.DrawVariant := qdvPrimitive;
           Result.PrimitiveElement := QStylePE_IndicatorBranch;
