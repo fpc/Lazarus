@@ -7055,7 +7055,7 @@ var
 begin
   if Widget=nil then exit;
   if not (Lgs in [lgsButton, lgsWindow, lgsMenuBar, lgsMenuitem,
-    lgsVerticalScrollbar, lgsHorizontalScrollbar, lgsTooltip]) then exit;
+    lgsVerticalScrollbar, lgsHorizontalScrollbar, lgsTooltip, lgsComboBox]) then exit;
 
   {$IFDEF NoStyle}
   exit;
@@ -7144,7 +7144,7 @@ begin
     // this map is taken from this research:
     // http://www.endolith.com/wordpress/2008/08/03/wine-colors/
     case Lgs of
-      lgsButton:
+      lgsButton, lgsComboBox:
         begin
           SysColorMap[COLOR_ACTIVEBORDER] := TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE]);
           SysColorMap[COLOR_INACTIVEBORDER] := TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE]);
@@ -7756,6 +7756,11 @@ begin
       If CompareText(WName,LazGtkStyleNames[lgsCheckbox])=0 then begin
         lgs:=lgsCheckbox;
         StyleObject^.Widget := GTK_CHECK_BUTTON_NEW;
+      end
+    else
+      If CompareText(WName,LazGtkStyleNames[lgsComboBox])=0 then begin
+        lgs:=lgsComboBox;
+        StyleObject^.Widget := gtk_combo_box_new;
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsRadiobutton])=0 then begin
