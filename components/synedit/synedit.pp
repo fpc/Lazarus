@@ -2233,6 +2233,12 @@ begin
       FUndoBlockAtPaintLock := 0;
       EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCustomSynEdit.DoDecPaintLock'){$ENDIF};
     end;
+
+    FCaret.Unlock;            // Maybe after FFoldedLinesView
+    FBlockSelection.Unlock;
+    // FTrimmedLinesView sets the highlighter to modified. Until fixed, must be done before ScanRanges
+    FTrimmedLinesView.UnLock; // Must be unlocked after caret // May Change lines
+
     if (FPaintLock=1) and HandleAllocated then begin
       ScanRanges(FLastTextChangeStamp <> TSynEditStringList(FLines).TextChangeStamp);
       if sfAfterLoadFromFileNeeded in fStateFlags then
@@ -2245,10 +2251,10 @@ begin
       FChangedLinesEnd:=0;
       FChangedLinesDiff:=0;
     end;
-    FCaret.Unlock;            // Maybe after FFoldedLinesView
-    FBlockSelection.Unlock;
-    FTrimmedLinesView.UnLock; // Must be unlocked after caret // May Change lines
+
+    // When fixed FCaret, FBlockSelection, FTrimmedLinesView can move here
     FFoldedLinesView.UnLock;  // after ScanFrom, but before UpdateCaret
+
     Dec(FPaintLock);
     if (FPaintLock = 0) and HandleAllocated then begin
       ScrollAfterTopLineChanged;
