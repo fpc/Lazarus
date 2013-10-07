@@ -243,7 +243,7 @@ type
 
   { TDwarfInformationEntry }
 
-  TDwarfInformationEntry = class
+  TDwarfInformationEntry = class(TRefCountedObject)
   private
     FCompUnit: TDwarfCompilationUnit;
     FInformationEntry: Pointer; // pointer to the LEB128 Abbrev at the start of an Information entry in debug_info
@@ -1178,6 +1178,7 @@ end;
 constructor TDwarfInformationEntry.Create(ACompUnit: TDwarfCompilationUnit;
   AnInformationEntry: Pointer);
 begin
+  AddReference;
   FCompUnit := ACompUnit;
   FInformationEntry := AnInformationEntry;
   FScope.Init(@FCompUnit.FScopeList);
@@ -1186,6 +1187,7 @@ end;
 constructor TDwarfInformationEntry.Create(ACompUnit: TDwarfCompilationUnit;
   AScope: TDwarfScopeInfo);
 begin
+  AddReference;
   FCompUnit := ACompUnit;
   FScope := AScope;
   ScopeChanged;
@@ -1357,8 +1359,10 @@ begin
   if FInformationEntry.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint) then begin
     InfoEntry := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
         InfoEntry.SearchScope;
-        DebugLn(['!!!! TYPE !!! ', dbgs(InfoEntry.FScope, FwdCompUint), DbgsDump(InfoEntry.FScope, FwdCompUint) ]);
+        //DebugLn(['!!!! TYPE !!! ', dbgs(InfoEntry.FScope, FwdCompUint), DbgsDump(InfoEntry.FScope, FwdCompUint) ]);
+        DebugLn(['!!!! TYPE !!! ', dbgs(InfoEntry.FScope, FwdCompUint) ]);
     FTypeInfo := TDbgDwarfTypeIdentifier.Create('', InfoEntry);
+    InfoEntry.ReleaseReference;
   Result := FTypeInfo;
   end;
 end;
@@ -1372,13 +1376,14 @@ begin
   FIdentifierName := AName;
   FCU := AnInformationEntry.CompUnit;
   FInformationEntry := AnInformationEntry;
+  FInformationEntry.AddReference;
   inherited Create('', skNone, 0);
 end;
 
 destructor TDbgDwarfIdentifier.Destroy;
 begin
   inherited Destroy;
-  FreeAndNil(FInformationEntry);
+  ReleaseRefAndNil(FInformationEntry);
   ReleaseRefAndNil(FTypeInfo);
 end;
 
@@ -2406,7 +2411,8 @@ begin
         if UpperCase(EntryName) = UpperCase(AName) then begin
           // TODO: check DW_AT_start_scope;
           Result := DbgSymbolClassForTag(InfoEntry.Abbrev.tag).Create(AName, InfoEntry);
-          DebugLn(['!!!! FOUND !!! ', dbgs(InfoEntry.FScope, CU), DbgsDump(InfoEntry.FScope, CU) ]);
+          //DebugLn(['!!!! FOUND !!! ', dbgs(InfoEntry.FScope, CU), DbgsDump(InfoEntry.FScope, CU) ]);
+          DebugLn(['!!!! FOUND !!! ', dbgs(InfoEntry.FScope, CU)]);
           break;
         end;
 
@@ -2422,18 +2428,17 @@ begin
 
   // unitname?
 
-// debugln:
-    if Result <> nil then begin
-      TDbgDwarfIdentifier(Result).TypeInfo; // debugln...
-      if TDbgDwarfIdentifier(Result).TypeInfo <> nil then TDbgDwarfIdentifier(Result).TypeInfo.TypeInfo;
-    end;
-// end debugln
+//// debugln:
+//    if Result <> nil then begin
+//      TDbgDwarfIdentifier(Result).TypeInfo; // debugln...
+//      if TDbgDwarfIdentifier(Result).TypeInfo <> nil then TDbgDwarfIdentifier(Result).TypeInfo.TypeInfo;
+//    end;
+//// end debugln
 
 
   finally
     ReleaseRefAndNil(SubRoutine);
-    if Result = nil then
-      ReleaseRefAndNil(InfoEntry);
+    ReleaseRefAndNil(InfoEntry);
     ReleaseRefAndNil(InfoEntry2);
   end;
 end;
