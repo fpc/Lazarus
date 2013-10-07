@@ -136,6 +136,8 @@ begin
 end;
 
 procedure TCarbonPrinter.BeginPage;
+var
+  PaperRect: PMRect;
 begin
   if FBeginDocumentStatus = noErr then
   begin
@@ -149,7 +151,13 @@ begin
       else
         FPrinterContext.Reset;
 
-    if Assigned(Canvas) then Canvas.Handle := HDC(FPrinterContext);
+    // translate the context from his paper (0,0) origin
+    // to our working imageable area
+    if PMGetAdjustedPaperRect(PageFormat, PaperRect)=noErr then
+      CGContextTranslateCTM(FPrinterContext.CGContext, -PaperRect.left, -PaperRect.top);
+
+    if Assigned(Canvas) then
+      Canvas.Handle := HDC(FPrinterContext);
   end;
 end;
 
