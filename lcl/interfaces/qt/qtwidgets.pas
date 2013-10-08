@@ -10808,7 +10808,16 @@ begin
         (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Space) then
       begin
         if CurrentItem <> nil then
+        begin
           HandleCheckChangedEvent(QtPoint(0, 0), currentItem, Event);
+          if OwnerDrawn and not (Self is TQtCheckListBox) then
+          begin
+            if QListWidgetItem_checkState(currentItem) = QtUnChecked then
+              QListWidgetItem_setCheckState(currentItem, QtChecked)
+            else
+              QListWidgetItem_setCheckState(currentItem, QtUnchecked);
+          end;
+        end;
       end;
     end;
   end;
@@ -12368,6 +12377,13 @@ begin
             ((QTreeWidget_currentColumn(QTreeWidgetH(Widget)) = 0) or
             TCustomListView(LCLObject).RowSelect) then
           HandleCheckChangedEvent(QtPoint(0, 0), Item, Event);
+          if OwnerDrawn then
+          begin
+            if QTreeWidgetItem_checkState(Item, 0) = QtUnChecked then
+              QTreeWidgetItem_setCheckState(Item, 0, QtChecked)
+            else
+              QTreeWidgetItem_setCheckState(Item, 0, QtUnchecked);
+          end;
         end;
       end else
         QEvent_ignore(Event);
