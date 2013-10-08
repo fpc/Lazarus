@@ -11399,8 +11399,8 @@ begin
     // checked does not work under qt for some reason ?!?
     if Checkable then
     begin
-      if (State and QStyleState_On <> 0) then
-        Include(ACustomState, cdsChecked);
+      // if (State and QStyleState_On <> 0) then
+      //  Include(ACustomState, cdsChecked);
       Item := getItem(ItemIndex);
       if Assigned(Item) and (QListWidgetItem_checkState(Item) = QtChecked) then
         Include(ACustomState, cdsChecked);
@@ -11458,8 +11458,14 @@ begin
     if (State and QStyleState_MouseOver) <> 0 then
       Include(DrawStruct.ItemState, odHotLight);
     // checked
-    if Checkable and (State and QStyleState_On <> 0) then
-      Include(ACustomState, cdsChecked);
+    if Checkable then
+    begin
+      // if (State and QStyleState_On <> 0) then
+      //  Include(ACustomState, cdsChecked);
+      Item := getItem(QModelIndex_row(index));
+      if Assigned(Item) and (QListWidgetItem_checkState(Item) = QtChecked) then
+        Include(DrawStruct.ItemState, odChecked);
+    end;
 
     { todo: over states:
 
