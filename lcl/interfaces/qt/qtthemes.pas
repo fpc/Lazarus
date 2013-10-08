@@ -686,6 +686,20 @@ end;
 function TQtThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
 begin
   case Details.Element of
+    teButton:
+      begin
+        if Details.Part = BP_CHECKBOX then
+        begin
+          Result.cy := QStyle_pixelMetric(Style, QStylePM_IndicatorHeight, nil, nil);
+          Result.cx := QStyle_pixelMetric(Style, QStylePM_IndicatorWidth, nil, nil);
+        end else
+        if Details.Part = BP_RADIOBUTTON then
+        begin
+          Result.cy := QStyle_pixelMetric(Style, QStylePM_ExclusiveIndicatorHeight, nil, nil);
+          Result.cx := QStyle_pixelMetric(Style, QStylePM_ExclusiveIndicatorWidth, nil, nil);
+        end else
+          Result := inherited;
+      end;
     teRebar :
       if Details.Part in [RP_GRIPPER, RP_GRIPPERVERT] then
         Result := Size(-1, -1);
