@@ -10954,19 +10954,39 @@ begin
       end else
       if QEvent_type(Event) = QEventMouseButtonRelease then
       begin
-        PostponedMouseRelease(Event);
-        if Checkable then
+        if OwnerDrawn and Checkable then
         begin
           MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
           Item := itemAt(MousePos.x, MousePos.y);
-          if Item <> nil then
+
+          if (Item <> nil) and
+            ((QListWidgetItem_flags(Item) and QtItemIsUserCheckable) <> 0) then
           begin
-            ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, 0,
-              PtrUInt(Item), PtrUInt(Item), 0);
-            QCoreApplication_postEvent(Sender, ALCLEvent);
+            x := GetPixelMetric(QStylePM_IndicatorWidth, nil, Widget);
+            if ((MousePos.X > 2) and (MousePos.X < (X + 2))) then
+            begin
+              if QListWidgetItem_checkState(Item) = QtUnchecked then
+                QListWidgetItem_setCheckState(Item, QtChecked)
+              else
+                QListWidgetItem_setCheckState(Item, QtUnChecked);
+            end;
+          end;
+          SlotMouse(Sender, Event);
+        end else
+        begin
+          PostponedMouseRelease(Event);
+          if Checkable then
+          begin
+            MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+            Item := itemAt(MousePos.x, MousePos.y);
+            if (Item <> nil) then
+            begin
+              ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, 0,
+                PtrUInt(Item), PtrUInt(Item), 0);
+              QCoreApplication_postEvent(Sender, ALCLEvent);
+            end;
           end;
         end;
-
       end else
       begin
         if (QEvent_type(Event) = QEventMouseButtonPress) then
@@ -11343,6 +11363,7 @@ var
   ATarget: TCustomDrawTarget;
   TmpDC1, TmpDC2: HDC;
   SkipDefault: Boolean;
+  Item: QListWidgetItemH;
 begin
   if ViewStyle >= 0 then
   begin
@@ -11371,12 +11392,19 @@ begin
     // hotlight
     if (State and QStyleState_MouseOver) <> 0 then
       Include(ACustomState, cdsHot);
-    // checked
-    if Checkable and (State and QStyleState_On <> 0) then
-      Include(ACustomState, cdsChecked);
 
     ItemIndex := QModelIndex_row(index);
     SubItemIndex := QModelIndex_column(index);
+
+    // checked does not work under qt for some reason ?!?
+    if Checkable then
+    begin
+      if (State and QStyleState_On <> 0) then
+        Include(ACustomState, cdsChecked);
+      Item := getItem(ItemIndex);
+      if Assigned(Item) and (QListWidgetItem_checkState(Item) = QtChecked) then
+        Include(ACustomState, cdsChecked);
+    end;
 
     QStyle_drawControl(QApplication_style, QStyleCE_ItemViewItem, Option, painter, viewportWidget);
 
