@@ -11429,6 +11429,9 @@ begin
     // hotlight
     if (State and QStyleState_MouseOver) <> 0 then
       Include(DrawStruct.ItemState, odHotLight);
+    // checked
+    if Checkable and (State and QStyleState_On <> 0) then
+      Include(ACustomState, cdsChecked);
 
     { todo: over states:
 
@@ -11869,6 +11872,7 @@ function TQtCheckListBox.itemViewViewportEventFilter(Sender: QObjectH;
 var
   MousePos: TQtPoint;
   Item: QListWidgetItemH;
+  x: Integer;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -11891,7 +11895,22 @@ begin
             if (Item = nil) and (Sender = QWidget_mouseGrabber) then
               QWidget_releaseMouse(QWidgetH(Sender));
           end else
+          begin
             Result := SlotMouse(Sender, Event);
+            if (Item <> nil) and (OwnerDrawn) and
+              (QEvent_type(Event) = QEventMouseButtonRelease) and
+              ((QListWidgetItem_flags(Item) and QtItemIsUserCheckable) <> 0) then
+            begin
+              x := GetPixelMetric(QStylePM_IndicatorWidth, nil, Widget);
+              if ((MousePos.X > 2) and (MousePos.X < (X + 2))) then
+              begin
+                if QListWidgetItem_checkState(Item) = QtUnchecked then
+                  QListWidgetItem_setCheckState(Item, QtChecked)
+                else
+                  QListWidgetItem_setCheckState(Item, QtUnChecked);
+              end;
+            end;
+          end;
           if (QtVersionMajor = 4) and (QtVersionMinor >= 8) and
             (QEvent_Type(Event) = QEventMouseButtonPress) then
           begin
