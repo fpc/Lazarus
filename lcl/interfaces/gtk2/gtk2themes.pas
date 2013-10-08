@@ -781,39 +781,45 @@ begin
           gptComboBox:
             begin
               {this is hack to paint combobox under gtk2}
-
               if Details.State = CBXS_PRESSED then
                 gtk_paint_focus(Style, Window, GTK_STATE_ACTIVE, @ClipArea, Widget, 'button', Area.X + 2, Area.y + 2, Area.Width - 4, Area.Height - 4);
 
-              gtk_paint_box(
-                Style, Window,
-                State, Shadow,
-                @ClipArea, Widget, PChar(Detail),
-                Area.x, Area.y,
-                Area.Width, Area.Height);
-
-              // now we draw box with arrows
-              RDest := RectFromGdkRect(Area);
-              if Area.width > 17 then
-                RDest.Left := RDest.Right - 16
-              else
-                RDest.Left := RDest.Right - (Area.Width div 2);
-              ComboBoxHeight := Area.Height;
-              ComboBoxWidth := Area.Width;
-              if RDest.Left < 0 then
-                RDest.Left := 0;
-
-              gtk_paint_vline(Style, Window, State, @ClipArea, Widget,'', Area.y + (ComboBoxHeight div 10), Area.Y + Area.Height - (ComboBoxHeight div 10), (RDest.Right - Min(23, (ComboBoxWidth div 2) + 1)) + 1);
-
-              ComboBoxHeight := (RDest.Right - Min(23, (ComboBoxWidth div 2) + 1)) + 2;
-              if RDest.Right - ComboBoxHeight < 8 then
-                ComboBoxHeight := Area.X + (Area.Width div 4);
-              with RDest do
+              if not (Byte(Details.Part) in [CP_DROPDOWNBUTTON, CP_DROPDOWNBUTTONRIGHT, CP_DROPDOWNBUTTONLEFT]) then
               begin
-                gtk_paint_arrow(Style, Window, State, Shadow, @ClipArea, Widget,
-                  PChar(Detail), GTK_ARROW_UP, True, ComboBoxHeight + 4, Top + ((Bottom - Top) div 2) - 7, Min(8, Right - Left), Min(8, Bottom - Top));
-                gtk_paint_arrow(Style, Window, State, Shadow, @ClipArea, Widget,
-                  PChar(Detail), GTK_ARROW_DOWN, True, ComboBoxHeight + 4, Top + ((Bottom - Top) div 2), Min(8, Right - Left), Min(8,Bottom - Top));
+                gtk_paint_box(
+                  Style, Window,
+                  State, Shadow,
+                  @ClipArea, Widget, PChar(Detail),
+                  Area.x, Area.y,
+                  Area.Width, Area.Height);
+
+                  // now we draw box with arrows
+                  RDest := RectFromGdkRect(Area);
+                  if Area.width > 17 then
+                    RDest.Left := RDest.Right - 16
+                  else
+                    RDest.Left := RDest.Right - (Area.Width div 2);
+                  ComboBoxHeight := Area.Height;
+                  ComboBoxWidth := Area.Width;
+                  if RDest.Left < 0 then
+                    RDest.Left := 0;
+
+                gtk_paint_vline(Style, Window, State, @ClipArea, Widget,'', Area.y + (ComboBoxHeight div 10), Area.Y + Area.Height - (ComboBoxHeight div 10), (RDest.Right - Min(23, (ComboBoxWidth div 2) + 1)) + 1);
+              end;
+
+              if Byte(Details.Part) in [CP_DROPDOWNBUTTON, CP_DROPDOWNBUTTONRIGHT, CP_DROPDOWNBUTTONLEFT] then
+              begin
+                RDest := RectFromGdkRect(Area);
+                ComboBoxHeight := (RDest.Right - Min(23, (ComboBoxWidth div 2) + 1)) + 2;
+                if RDest.Right - ComboBoxHeight < 8 then
+                  ComboBoxHeight := Area.X + (Area.Width div 4);
+                with RDest do
+                begin
+                  gtk_paint_arrow(Style, Window, State, Shadow, @ClipArea, Widget,
+                    PChar(Detail), GTK_ARROW_UP, True, Left + ((Right - Left) div 4), Top + ((Bottom - Top) div 2) - 5, Min(8, Right - Left), Min(8, Bottom - Top));
+                  gtk_paint_arrow(Style, Window, State, Shadow, @ClipArea, Widget,
+                    PChar(Detail), GTK_ARROW_DOWN, True, Left + ((Right - Left) div 4), Top + ((Bottom - Top) div 2) + 1, Min(8, Right - Left), Min(8, Bottom - Top));
+                end;
               end;
             end;
           gptBox:
