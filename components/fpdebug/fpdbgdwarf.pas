@@ -253,6 +253,7 @@ type
     FAbbrevData: PDwarfAbbrevEntry;
     FFlags: set of (dieAbbrevValid);
 
+    function GetAbbrev: TDwarfAbbrev;
     procedure ScopeChanged; inline;
     function SearchScope: Boolean;
     function PrepareAbbrev: Boolean; inline;
@@ -265,8 +266,8 @@ type
     constructor Create(ACompUnit: TDwarfCompilationUnit; AScope: TDwarfScopeInfo);
     property CompUnit: TDwarfCompilationUnit read FCompUnit;
 
-    property Abbrev: TDwarfAbbrev read FAbbrev write SetAbbrev;
-    property AbbrevData: PDwarfAbbrevEntry read FAbbrevData;
+    property Abbrev: TDwarfAbbrev read GetAbbrev write SetAbbrev;
+    property AbbrevData: PDwarfAbbrevEntry read FAbbrevData; // only valid if Abbrev is available
     function HasAttrib(AnAttrib: Cardinal): boolean;
     function AttribIdx(AnAttrib: Cardinal; out AInfoPointer: pointer): Integer;
 
@@ -492,8 +493,10 @@ type
     procedure Decode;
   end;
 
+  TDbgDwarfIdentifier = class;
   TDbgDwarfTypeIdentifier = class;
-
+  TDbgDwarfIdentifierClass = class of TDbgDwarfIdentifier;
+  TDbgDwarfTypeIdentifierClass = class of TDbgDwarfTypeIdentifier;
   { TDbgDwarfIdentifier }
 
   TDbgDwarfIdentifier = class(TDbgSymbol)
@@ -517,15 +520,20 @@ type
     //function GetSize: Integer; override;
     property TypeInfo: TDbgDwarfTypeIdentifier read GetTypeInfo;
     property InformationEntry: TDwarfInformationEntry read FInformationEntry;
+    class function GetSubClass(ATag: Cardinal): TDbgDwarfIdentifierClass;
   public
+    class function CreateSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfIdentifier;
     constructor Create(AName: String; AnInformationEntry: TDwarfInformationEntry); virtual;
+    constructor Create(AName: String; AnInformationEntry: TDwarfInformationEntry;
+                       AKind: TDbgSymbolKind; AAddress: TDbgPtr);
     destructor Destroy; override;
     //constructor Create(AName: String; AAddress: TDbgPtr; ACompilationUnit: TDwarfCompilationUnit;
     //  AScope: TDwarfScopeInfo);
     //destructor Destroy; override;
     property IdentifierName: String read GetIdentifierName;
   end;
-  TDbgDwarfIdentifierClass = class of TDbgDwarfIdentifier;
+
+  { TDbgDwarfValueIdentifier }
 
   TDbgDwarfValueIdentifier = class(TDbgDwarfIdentifier) // var, const, member, ...
   public
@@ -535,36 +543,95 @@ type
   { TDbgDwarfTypeIdentifier }
 
   (* Types and allowed tags in dwarf 2
-                          DW_TAG_typedef
-                          |  DW_TAG_base_type
-  DECL                    Y
-  DW_AT_abstract_origin   Y
-  DW_AT_accessibility     Y
-  DW_AT_bit_offset           Y
-  DW_AT_bit_size             Y
-  DW_AT_byte_size            Y
-  DW_AT_declaration       Y
-  DW_AT_encoding             Y
-  DW_AT_name              Y  Y
-  DW_AT_sibling           Y  Y
-  DW_AT_start_scope       Y
-  DW_AT_type              Y
-  DW_AT_visibility        Y
+
+  DW_TAG_enumeration_type, DW_TAG_subroutine_type, DW_TAG_union_type,
+  DW_TAG_ptr_to_member_type, DW_TAG_set_type, DW_TAG_subrange_type, DW_TAG_file_type,
+  DW_TAG_thrown_type
+
+                          DW_TAG_base_type
+                          |  DW_TAG_typedef
+                          |  |  DW_TAG_string_type
+                          |  |  |  DW_TAG_array_type
+                          |  |  |  |  DW_TAG_class_type
+                          |  |  |  |  |  DW_TAG_structure_type
+  DW_AT_encoding          Y     :     :
+  DW_AT_bit_offset        Y     :     :
+  DW_AT_bit_size          Y     :     :
+  DW_AT_byte_size         Y     Y  Y  Y  Y
+  DW_AT_name              Y  Y  Y  Y  Y  Y
+  DW_AT_sibling           Y  Y  Y  Y  Y  Y
+  DECL                       Y  Y  Y  Y  Y
+  DW_AT_abstract_origin      Y  Y  Y  Y  Y
+  DW_AT_accessibility        Y  Y  Y  Y  Y
+  DW_AT_declaration          Y  Y  Y  Y  Y
+  DW_AT_start_scope          Y  Y  Y  Y  Y
+  DW_AT_visibility           Y  Y  Y  Y  Y
+  DW_AT_type                 Y     Y
+  DW_AT_ordering                   Y
+  DW_AT_segment                 Y
+  DW_AT_stride_size                Y
+  DW_AT_string_length           Y
+
+                           DW_TAG_pointer_type
+                           |  DW_TAG_reference_type
+                           |  |  DW_TAG_packed_type
+                           |  |  |  DW_TAG_const_type
+                           |  |  |  |  DW_TAG_volatile_type
+  DW_AT_address_class      Y  Y
+  DW_AT_sibling            Y  Y  Y  Y Y
+  DW_AT_type               Y  Y  Y  Y Y
 
 DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   *)
 
   TDbgDwarfTypeIdentifier = class(TDbgDwarfIdentifier)
-  private
+  protected
+    function GetIsBaseType: Boolean; virtual;
+    function GetIsPointerType: Boolean; virtual;
+    function GetPointedToType: TDbgDwarfTypeIdentifier; virtual;
   public
+    class function CreateTybeSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfTypeIdentifier;
     property TypeInfo;
+    property IsBaseType: Boolean read GetIsBaseType;
+    property IsPointerType: Boolean read GetIsPointerType;
+    property PointedToType: TDbgDwarfTypeIdentifier read GetPointedToType;
+  end;
+
+  { TDbgDwarfBaseTypeIdentifier }
+
+  TDbgDwarfBaseIdentifierBase = class(TDbgDwarfTypeIdentifier)
+  protected
+    function GetIsBaseType: Boolean; override;
+  end;
+
+  { TDbgDwarfTypeIdentifierModifier }
+
+  TDbgDwarfTypeIdentifierModifier = class(TDbgDwarfTypeIdentifier)
+  protected
+    function GetIsBaseType: Boolean; override;
+    function GetIsPointerType: Boolean; override;
+    function GetPointedToType: TDbgDwarfTypeIdentifier; override;
+  end;
+
+  { TDbgDwarfTypeIdentifierDeclaration }
+
+  TDbgDwarfTypeIdentifierDeclaration = class(TDbgDwarfTypeIdentifierModifier)
+  protected
+  end;
+
+  { TDbgDwarfTypeIdentifierPointer }
+
+  TDbgDwarfTypeIdentifierPointer = class(TDbgDwarfTypeIdentifier)
+  protected
+    function GetIsPointerType: Boolean; override;
+    function GetPointedToType: TDbgDwarfTypeIdentifier; override;
   end;
 
   { TDbgDwarfProcSymbol }
 
-  TDbgDwarfProcSymbol = class(TDbgSymbol)
+  TDbgDwarfProcSymbol = class(TDbgDwarfIdentifier)
   private
-    FCU: TDwarfCompilationUnit;
+    //FCU: TDwarfCompilationUnit;
     FAddress: TDbgPtr;
     FAddressInfo: PDwarfAddressInfo;
     FStateMachine: TDwarfLineInfoStateMachine;
@@ -580,7 +647,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 //    function GetReference: TDbgSymbol; override;
     function GetSize: Integer; override;
   public
-    constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr);
+    constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr); overload;
     destructor Destroy; override;
   end;
 
@@ -1090,6 +1157,86 @@ begin
   end;
 end;
 
+{ TDbgDwarfTypeIdentifierModifier }
+
+function TDbgDwarfTypeIdentifierModifier.GetIsBaseType: Boolean;
+var
+  ti: TDbgDwarfTypeIdentifier;
+begin
+  ti := TypeInfo;
+  if ti <> nil
+  then Result := ti.IsBaseType
+  else Result := False;
+end;
+
+function TDbgDwarfTypeIdentifierModifier.GetIsPointerType: Boolean;
+var
+  ti: TDbgDwarfTypeIdentifier;
+begin
+  ti := TypeInfo;
+  if ti <> nil
+  then Result := ti.IsPointerType
+  else Result := False;
+end;
+
+function TDbgDwarfTypeIdentifierModifier.GetPointedToType: TDbgDwarfTypeIdentifier;
+begin
+  Result := TypeInfo;
+  if Result <> nil then
+    Result := Result.PointedToType;
+end;
+
+{ TDbgDwarfTypeIdentifierPointer }
+
+function TDbgDwarfTypeIdentifierPointer.GetIsPointerType: Boolean;
+begin
+  Result := True;
+end;
+
+function TDbgDwarfTypeIdentifierPointer.GetPointedToType: TDbgDwarfTypeIdentifier;
+begin
+  Result := TypeInfo;
+end;
+
+{ TDbgDwarfBaseTypeIdentifier }
+
+function TDbgDwarfBaseIdentifierBase.GetIsBaseType: Boolean;
+begin
+  Result := True;
+end;
+
+{ TDbgDwarfTypeIdentifier }
+
+function TDbgDwarfTypeIdentifier.GetPointedToType: TDbgDwarfTypeIdentifier;
+begin
+  Result := nil;
+end;
+
+function TDbgDwarfTypeIdentifier.GetIsBaseType: Boolean;
+begin
+  Result := False;
+end;
+
+function TDbgDwarfTypeIdentifier.GetIsPointerType: Boolean;
+begin
+  Result := False;
+end;
+
+class function TDbgDwarfTypeIdentifier.CreateTybeSubClass(AName: String;
+  AnInformationEntry: TDwarfInformationEntry): TDbgDwarfTypeIdentifier;
+var
+  c: TDbgDwarfIdentifierClass;
+begin
+  c := GetSubClass(AnInformationEntry.Abbrev.tag);
+
+  if c.InheritsFrom(TDbgDwarfTypeIdentifier) then
+    Result := TDbgDwarfTypeIdentifierClass(c).Create(AName, AnInformationEntry, skNone, 0)
+  else
+    Result := nil;
+end;
+
+{ TDbgDwarfValueIdentifier }
+
 { TDbgDwarfTypeIdentifier }
 
 { TDwarfInformationEntry }
@@ -1106,6 +1253,12 @@ begin
   FInformationEntry := FScope.Entry;
   FFlags := [];
   FInformationData := nil;
+end;
+
+function TDwarfInformationEntry.GetAbbrev: TDwarfAbbrev;
+begin
+  PrepareAbbrev;
+  Result := FAbbrev;
 end;
 
 function TDwarfInformationEntry.SearchScope: Boolean;
@@ -1361,14 +1514,51 @@ begin
         InfoEntry.SearchScope;
         //DebugLn(['!!!! TYPE !!! ', dbgs(InfoEntry.FScope, FwdCompUint), DbgsDump(InfoEntry.FScope, FwdCompUint) ]);
         DebugLn(['!!!! TYPE !!! ', dbgs(InfoEntry.FScope, FwdCompUint) ]);
-    FTypeInfo := TDbgDwarfTypeIdentifier.Create('', InfoEntry);
-    InfoEntry.ReleaseReference;
-  Result := FTypeInfo;
+    FTypeInfo := TDbgDwarfTypeIdentifier.CreateTybeSubClass('', InfoEntry);
+    ReleaseRefAndNil(InfoEntry);
+    Result := FTypeInfo;
   end;
+end;
+
+class function TDbgDwarfIdentifier.GetSubClass(ATag: Cardinal): TDbgDwarfIdentifierClass;
+begin
+  case ATag of
+    DW_TAG_variable, DW_TAG_formal_parameter, DW_TAG_constant, DW_TAG_member:
+      Result := TDbgDwarfValueIdentifier;
+
+    DW_TAG_base_type:        Result := TDbgDwarfBaseIdentifierBase;
+    DW_TAG_typedef:          Result := TDbgDwarfTypeIdentifierDeclaration;
+    DW_TAG_pointer_type:     Result := TDbgDwarfTypeIdentifierPointer;
+    DW_TAG_packed_type,
+    DW_TAG_const_type,
+    DW_TAG_volatile_type:    Result := TDbgDwarfTypeIdentifierModifier;
+    DW_TAG_reference_type,
+    DW_TAG_string_type, DW_TAG_array_type, DW_TAG_class_type,
+    DW_TAG_structure_type,
+    DW_TAG_enumeration_type, DW_TAG_subroutine_type, DW_TAG_union_type,
+    DW_TAG_ptr_to_member_type, DW_TAG_set_type, DW_TAG_subrange_type, DW_TAG_file_type,
+    DW_TAG_thrown_type:
+      Result := TDbgDwarfTypeIdentifier;
+
+    else
+      Result := TDbgDwarfIdentifier;
+  end;
+end;
+
+class function TDbgDwarfIdentifier.CreateSubClass(AName: String;
+  AnInformationEntry: TDwarfInformationEntry): TDbgDwarfIdentifier;
+begin
+  Result := GetSubClass(AnInformationEntry.Abbrev.tag).Create(AName, AnInformationEntry, skNone, 0);
 end;
 
 constructor TDbgDwarfIdentifier.Create(AName: String;
   AnInformationEntry: TDwarfInformationEntry);
+begin
+  Create(AName, AnInformationEntry, skNone, 0);
+end;
+
+constructor TDbgDwarfIdentifier.Create(AName: String;
+  AnInformationEntry: TDwarfInformationEntry; AKind: TDbgSymbolKind; AAddress: TDbgPtr);
 begin
   if AName = '' then
     AnInformationEntry.ReadValue(DW_AT_name, AName);
@@ -1377,7 +1567,8 @@ begin
   FCU := AnInformationEntry.CompUnit;
   FInformationEntry := AnInformationEntry;
   FInformationEntry.AddReference;
-  inherited Create('', skNone, 0);
+
+  inherited Create(AName, AKind, AAddress);
 end;
 
 destructor TDbgDwarfIdentifier.Destroy;
@@ -2162,18 +2353,25 @@ end;
 { TDbgDwarfSymbol }
 
 constructor TDbgDwarfProcSymbol.Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr);
+var
+  InfoEntry: TDwarfInformationEntry;
 begin
   FAddress := AAddress;
   FAddressInfo := AInfo;
   
   FCU := ACompilationUnit;
 
+  InfoEntry := TDwarfInformationEntry.Create(FCU, nil);
+  InfoEntry.ScopeIndex := AInfo^.ScopeIndex;
+
   inherited Create(
     String(FAddressInfo^.Name),
+    InfoEntry,
     skProcedure, //todo: skFunction
     FAddressInfo^.StartPC
   );
 
+  InfoEntry.ReleaseReference;
 //BuildLineInfo(
     
 //   AFile: String = ''; ALine: Integer = -1; AFlags: TDbgSymbolFlags = []; const AReference: TDbgSymbol = nil);
@@ -2360,19 +2558,6 @@ begin
 end;
 
 function TDbgDwarf.FindIdentifier(AAddress: TDbgPtr; AName: String): TDbgSymbol;
-
-  function DbgSymbolClassForTag(ATag: Cardinal): TDbgDwarfIdentifierClass;
-  begin
-    case ATag of
-      DW_TAG_variable, DW_TAG_formal_parameter, DW_TAG_constant, DW_TAG_member:
-        Result := TDbgDwarfValueIdentifier;
-      DW_TAG_typedef:
-        Result := TDbgDwarfTypeIdentifier;
-      else
-        Result := TDbgDwarfIdentifier;
-    end;
-  end;
-
 var
   SubRoutine: TDbgDwarfProcSymbol; // TDbgSymbol;
   CU: TDwarfCompilationUnit;
@@ -2410,9 +2595,9 @@ begin
 
         if UpperCase(EntryName) = UpperCase(AName) then begin
           // TODO: check DW_AT_start_scope;
-          Result := DbgSymbolClassForTag(InfoEntry.Abbrev.tag).Create(AName, InfoEntry);
+          Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
           //DebugLn(['!!!! FOUND !!! ', dbgs(InfoEntry.FScope, CU), DbgsDump(InfoEntry.FScope, CU) ]);
-          DebugLn(['!!!! FOUND !!! ', dbgs(InfoEntry.FScope, CU)]);
+          DebugLn(['!!!! FOUND !!! ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
           break;
         end;
 

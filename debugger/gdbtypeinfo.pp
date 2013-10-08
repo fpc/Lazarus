@@ -298,7 +298,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    function IndexOf(AThreadId, AStackFrame: Integer; ARequest: TGDBPTypeRequest): Integer;
+    function IndexOf(AThreadId, AStackFrame: Integer; ARequest: TGDBPTypeRequest): Integer; virtual;
     procedure Add(AThreadId, AStackFrame: Integer; ARequest: TGDBPTypeRequest);
     property Request[Index: Integer]: TGDBPTypeRequest read GetRequest;
   end;
@@ -417,6 +417,7 @@ type
 
 function CreatePTypeValueList(AResultValues: String): TStringList;
 function ParseTypeFromGdb(const ATypeText: string): TGDBPTypeResult;
+function GDBMIMaybeApplyBracketsToExpr(e: string): string;
 
 function dbgs(AFlag: TGDBPTypeResultFlag): string; overload;
 function dbgs(AFlags: TGDBPTypeResultFlags): string; overload;
@@ -438,7 +439,7 @@ const
 var
   DBGMI_TYPE_INFO, DBG_WARNINGS: PLazLoggerLogGroup;
 
-function ApplyBrackets(e: string): string;
+function GDBMIMaybeApplyBracketsToExpr(e: string): string;
 var
   i: Integer;
   f: Boolean;
@@ -1331,7 +1332,7 @@ begin
       (* ptype ArrayBaseWithoutIndex^ *)
       // FPC 2.2.4 encoded "var param" in a special way, and we need an extra deref)
       IdxPart.VarParam := True;
-      IdxPart.InitReq(AReqPtr, GdbCmdPType + ApplyBrackets(GetTextToIdx(i-1, [toSkipArrayIdx])) + '^');
+      IdxPart.InitReq(AReqPtr, GdbCmdPType + GDBMIMaybeApplyBracketsToExpr(GetTextToIdx(i-1, [toSkipArrayIdx])) + '^');
       Result := True;
       exit;
     end;
@@ -1346,8 +1347,8 @@ begin
     then begin
       (* ptype ArrayBaseWithoutIndex^ or ptype ArrayBaseWithoutIndex^^ *)
       if IdxPart.VarParam
-      then IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + ApplyBrackets(GetTextToIdx(i-1, [toSkipArrayIdx])) + '^^')
-      else IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + ApplyBrackets(GetTextToIdx(i-1, [toSkipArrayIdx])) + '^');
+      then IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + GDBMIMaybeApplyBracketsToExpr(GetTextToIdx(i-1, [toSkipArrayIdx])) + '^^')
+      else IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + GDBMIMaybeApplyBracketsToExpr(GetTextToIdx(i-1, [toSkipArrayIdx])) + '^');
       Result := True;
       exit;
     end;
@@ -2059,8 +2060,8 @@ function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests; ACustomDat
       gptrPTypeExpr:        Result := GdbCmdPType + FPTypeExpression;
       gptrWhatisExpr:       Result := GdbCmdWhatIs + FPTypeExpression;
       gptrPTypeOfWhatis:    Result := GdbCmdPType + PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName);
-      gptrPTypeExprDeRef:   Result := GdbCmdPType + ApplyBrackets(FPTypeExpression) + '^';
-      gptrPTypeExprDeDeRef: Result := GdbCmdPType + ApplyBrackets(FPTypeExpression) + '^^';
+      gptrPTypeExprDeRef:   Result := GdbCmdPType + GDBMIMaybeApplyBracketsToExpr(FPTypeExpression) + '^';
+      gptrPTypeExprDeDeRef: Result := GdbCmdPType + GDBMIMaybeApplyBracketsToExpr(FPTypeExpression) + '^^';
       gptrEvalExpr:       Result := GdbCmdEvaluate+Quote(FExpression);
       gptrEvalExprDeRef:  Result := GdbCmdEvaluate+Quote(FExpression+'^');
       gptrEvalExprCast:   Result := GdbCmdEvaluate+Quote(InternalTypeName+'('+FExpression+')');

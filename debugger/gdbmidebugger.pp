@@ -40,8 +40,8 @@ interface
 
 uses
   Classes, SysUtils, strutils, Controls, Math, Variants, LCLProc, LazClasses, LazLoggerBase,
-  Dialogs, DebugUtils, Debugger, FileUtil, BaseIDEIntf, CmdLineDebugger, GDBTypeInfo, Maps,
-  GDBMIDebugInstructions, LCLIntf, Forms,
+  Dialogs, DebugUtils, Debugger, FileUtil, LazLoggerProfiling, BaseIDEIntf, CmdLineDebugger,
+  GDBTypeInfo, Maps, GDBMIDebugInstructions, LCLIntf, Forms,
 {$IFdef MSWindows}
   Windows,
 {$ENDIF}
@@ -779,6 +779,7 @@ type
     property CurrentStackFrameValid: Boolean read FCurrentStackFrameValid;
     property CurrentThreadIdValid: Boolean read FCurrentThreadIdValid;
 
+    function CreateTypeRequestCache: TGDBPTypeRequestCache; virtual;
     property TypeRequestCache: TGDBPTypeRequestCache read FTypeRequestCache;
   public
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
@@ -5524,7 +5525,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       finally
         FTheDebugger.QueueExecuteUnlock;
       end;
-      // Before anything else goes => correct the thred
+      // Before anything else goes => correct the thread
       if fixed
       then F := '';
       {$ENDIF}
@@ -7048,7 +7049,7 @@ begin
   FCommandQueueExecLock := 0;
   FRunQueueOnUnlock := False;
   FThreadGroups := TStringList.Create;
-  FTypeRequestCache := TGDBPTypeRequestCache.Create;
+  FTypeRequestCache := CreateTypeRequestCache;
   FMaxLineForUnitCache := TStringList.Create;
   FInProcessStopped := False;
   FNeedStateToIdle := False;
@@ -7370,6 +7371,11 @@ begin
   ThreadGroup := List.Values['group-id'];
   Result := Result + Format('Thread ID: %s. Thread Group: %s (%s)', [List.Values['id'], ThreadGroup, FThreadGroups.Values[ThreadGroup]]);
   List.Free;
+end;
+
+function TGDBMIDebugger.CreateTypeRequestCache: TGDBPTypeRequestCache;
+begin
+  Result :=  TGDBPTypeRequestCache.Create;
 end;
 
 procedure TGDBMIDebugger.DoNotifyAsync(Line: String);

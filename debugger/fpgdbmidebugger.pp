@@ -11,6 +11,20 @@ uses
 
 type
 
+  TFpGDBMIDebugger = class;
+
+  { TFpGDBPTypeRequestCache }
+
+  TFpGDBPTypeRequestCache = class(TGDBPTypeRequestCache)
+  private
+    FDebugger: TFpGDBMIDebugger;
+    FInIndexOf: Boolean;
+  public
+    constructor Create(ADebugger: TFpGDBMIDebugger);
+    function IndexOf(AThreadId, AStackFrame: Integer; ARequest: TGDBPTypeRequest): Integer; override;
+    property Debugger: TFpGDBMIDebugger read FDebugger;
+  end;
+
   { TFpGDBMIDebugger }
 
   TFpGDBMIDebugger = class(TGDBMIDebugger)
@@ -30,6 +44,7 @@ type
     procedure GetCurrentContext(out AThreadId, AStackFrame: Integer);
     function  GetLocationForContext(AThreadId, AStackFrame: Integer): TDBGPtr;
     procedure AddToGDBMICache(AThreadId, AStackFrame: Integer; AnIdent: TDbgSymbol);
+    function CreateTypeRequestCache: TGDBPTypeRequestCache; override;
   public
     class function Caption: String; override;
   public
@@ -53,6 +68,7 @@ type
   TFPGDBMIWatches = class(TGDBMIWatches)
   private
   protected
+    function  FpDebugger: TFpGDBMIDebugger;
     //procedure DoStateChange(const AOldState: TDBGState); override;
     procedure InternalRequestData(AWatchValue: TCurrentWatchValue); override;
   public
@@ -80,14 +96,77 @@ type
     procedure Cancel(const ASource: String); override;
   end;
 
+{ TFpGDBPTypeRequestCache }
+
+constructor TFpGDBPTypeRequestCache.Create(ADebugger: TFpGDBMIDebugger);
+begin
+  FDebugger := ADebugger;
+  FInIndexOf := False;
+  inherited Create;
+end;
+
+function TFpGDBPTypeRequestCache.IndexOf(AThreadId, AStackFrame: Integer;
+  ARequest: TGDBPTypeRequest): Integer;
+var
+  IdentName: String;
+  Loc: TDBGPtr;
+  Ident: TDbgSymbol;
+begin
+  Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
+
+  if (Result > 0) or FInIndexOf then
+    exit;
+
+  FInIndexOf := True;
+  try
+  if FDebugger.HasDwarf and (ARequest.ReqType = gcrtPType) then begin
+    if copy(ARequest.Request, 1, 6) = 'ptype ' then
+	     IdentName := trim(copy(ARequest.Request, 7, length(ARequest.Request)))
+    else
+    if copy(ARequest.Request, 1, 7) = 'whatis ' then
+      IdentName := trim(copy(ARequest.Request, 8, length(ARequest.Request)));
+
+    if IdentName <> '' then begin
+      Loc := FDebugger.GetLocationForContext(AThreadId, AStackFrame);
+      if (Loc <> 0) then begin
+        Ident := FDebugger.FDwarfInfo.FindIdentifier(Loc, IdentName);
+        if Ident <> nil then begin
+          FDebugger.AddToGDBMICache(AThreadId, AStackFrame, Ident);
+          Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
+        end;
+       ReleaseRefAndNil(Ident);
+      end;
+    end;
+  end;
+  finally
+    FInIndexOf := False;
+  end;
+end;
+
 { TFPGDBMIWatches }
+
+function TFPGDBMIWatches.FpDebugger: TFpGDBMIDebugger;
+begin
+  Result := TFpGDBMIDebugger(Debugger);
+end;
 
 procedure TFPGDBMIWatches.InternalRequestData(AWatchValue: TCurrentWatchValue);
 var
   Loc: TDBGPtr;
+  Ident: TDbgSymbol;
 begin
-  Loc := TFpGDBMIDebugger(Debugger).GetLocationForContext(AWatchValue.ThreadId, AWatchValue.StackFrame);
-
+  //if FpDebugger.HasDwarf then begin
+  //   Loc := FpDebugger.GetLocationForContext(AWatchValue.ThreadId, AWatchValue.StackFrame);
+  //
+  //   if (Loc <> 0) then begin
+  //     Ident := FpDebugger.FDwarfInfo.FindIdentifier(Loc, AWatchValue.Watch.Expression);
+  //
+  //     if Ident <> nil then
+  //       FpDebugger.AddToGDBMICache(AWatchValue.ThreadId, AWatchValue.StackFrame, Ident);
+  //
+  //     ReleaseRefAndNil(Ident);
+  //   end;
+  //end;
 
   inherited InternalRequestData(AWatchValue);
 end;
@@ -217,24 +296,24 @@ var
   CurThread, CurStack: Integer;
 begin
   if HasDwarf and (ACommand = dcEvaluate) then begin
-     GetCurrentContext(CurThread, CurStack);
-     Loc := GetLocationForContext(-1, -1);
+     //GetCurrentContext(CurThread, CurStack);
+     //Loc := GetLocationForContext(CurThread, CurStack);
+     //
+     //if (Loc <> 0) then begin
+     //  Ident := FDwarfInfo.FindIdentifier(Loc, String(AParams[0].VAnsiString));
+     //
+     //  if Ident <> nil then
+     //    AddToGDBMICache(CurThread, CurStack, Ident);
+     //
+     //  ReleaseRefAndNil(Ident);
+     //end;
 
-     if (Loc <> 0) then begin
-       Ident := FDwarfInfo.FindIdentifier(Loc, String(AParams[0].VAnsiString));
-
-       if Ident <> nil then
-         AddToGDBMICache(CurThread, CurStack, Ident);
-
-       ReleaseRefAndNil(Ident);
-     end;
-
-    //EvalFlags := [];
-    //if high(AParams) >= 3 then
-    //  EvalFlags := TDBGEvaluateFlags(AParams[3].VInteger);
-    //Result := GDBEvaluate(String(AParams[0].VAnsiString),
-    //  String(AParams[1].VPointer^), TGDBType(AParams[2].VPointer^),
-    //  EvalFlags);
+//    //EvalFlags := [];
+//    //if high(AParams) >= 3 then
+//    //  EvalFlags := TDBGEvaluateFlags(AParams[3].VInteger);
+//    //Result := GDBEvaluate(String(AParams[0].VAnsiString),
+//    //  String(AParams[1].VPointer^), TGDBType(AParams[2].VPointer^),
+//    //  EvalFlags);
     Result := inherited RequestCommand(ACommand, AParams);
   end
   else
@@ -315,10 +394,25 @@ procedure TFpGDBMIDebugger.AddToGDBMICache(AThreadId, AStackFrame: Integer;
 const
   GdbCmdPType = 'ptype ';
   GdbCmdWhatIs = 'whatis ';
+
+  procedure MaybeAdd(AType: TGDBCommandRequestType; AQuery, AAnswer: String);
+  var
+    AReq: TGDBPTypeRequest;
+  begin
+    AReq.ReqType := AType;
+    AReq.Request := AQuery;
+    if TypeRequestCache.IndexOf(AThreadId, AStackFrame, AReq) < 0 then begin
+      AReq.Result := ParseTypeFromGdb(AAnswer);
+      TypeRequestCache.Add(AThreadId, AStackFrame, AReq);
+      debugln(['TFpGDBMIDebugger.AddToGDBMICache ', AReq.Request, ' T:', AThreadId, ' S:',AStackFrame, ' >> ', AAnswer]);
+    end;
+  end;
+
 var
   TypeIdent: TDbgDwarfTypeIdentifier;
   VarName, TypeName: String;
   AReq: TGDBPTypeRequest;
+  IsPointer: Boolean;
 begin
   (* Simulate gdb answers *)
   //TypeRequestCache
@@ -328,48 +422,49 @@ begin
     TypeIdent := TDbgDwarfValueIdentifier(AnIdent).TypeInfo;
     if TypeIdent = nil then exit;
     TypeName := TypeIdent.IdentifierName;
+    IsPointer := TypeIdent.IsPointerType;
+    while (TypeIdent <> nil) and TypeIdent.IsPointerType do
+      TypeIdent := TypeIdent.PointedToType;
+    if TypeIdent = nil then exit;
 
-    if TGDBMIDwarfTypeIdentifier(TypeIdent).InformationEntry.Abbrev.tag = DW_TAG_typedef
-    then
-      TypeIdent := TDbgDwarfValueIdentifier(TypeIdent).TypeInfo;
 
-    if TGDBMIDwarfTypeIdentifier(TypeIdent).InformationEntry.Abbrev.tag = DW_TAG_base_type
-    then begin
-      AReq.ReqType := gcrtPType;
-      AReq.Request := GdbCmdPType + VarName;
-      if TypeRequestCache.IndexOf(AThreadId, AStackFrame, AReq) < 0 then begin
-        AReq.Result := ParseTypeFromGdb(Format('type = %s', [TypeName]));
-        TypeRequestCache.Add(AThreadId, AStackFrame, AReq)
-      end;
-
-      AReq.ReqType := gcrtPType;
-      AReq.Request := GdbCmdWhatIs + VarName;
-      if TypeRequestCache.IndexOf(AThreadId, AStackFrame, AReq) < 0 then begin
-        AReq.Result := ParseTypeFromGdb(Format('type = %s', [TypeName]));
-        TypeRequestCache.Add(AThreadId, AStackFrame, AReq)
+    if TGDBMIDwarfTypeIdentifier(TypeIdent).IsBaseType then begin
+      if IsPointer then begin
+        MaybeAdd(gcrtPType, GdbCmdPType + VarName, Format('type = ^%s', [TypeName]));
+        MaybeAdd(gcrtPType, GdbCmdWhatIs + VarName, Format('type = ^%s', [TypeName]));
+        MaybeAdd(gcrtPType, GdbCmdPType + GDBMIMaybeApplyBracketsToExpr(VarName) + '^',
+                 Format('type = %s', [TypeName]));
+        MaybeAdd(gcrtPType, GdbCmdWhatIs + GDBMIMaybeApplyBracketsToExpr(VarName) + '^',
+                 Format('type = %s', [TypeName]));
+      end
+      else begin
+        MaybeAdd(gcrtPType, GdbCmdPType + VarName, Format('type = %s', [TypeName]));
+        MaybeAdd(gcrtPType, GdbCmdWhatIs + VarName, Format('type = %s', [TypeName]));
       end;
     end;
 
+
   end;
-
-
   (*
+    ptype i
+    ~"type = LONGINT\n"
+    whatis i
+    ~"type = LONGINT\n"
 
-      >> TCmdLineDebugger.SendCmdLn "ptype i"
-      << TCmdLineDebugger.ReadLn "&"ptype i\n""
-      << TCmdLineDebugger.ReadLn "~"type = LONGINT\n""
-      << TCmdLineDebugger.ReadLn "^done"
-      << TCmdLineDebugger.ReadLn "(gdb) "
-      >> TCmdLineDebugger.SendCmdLn "whatis i"
-      << TCmdLineDebugger.ReadLn "&"whatis i\n""
-      << TCmdLineDebugger.ReadLn "~"type = LONGINT\n""
-      << TCmdLineDebugger.ReadLn "^done"
-      << TCmdLineDebugger.ReadLn "(gdb) "
-      >> TCmdLineDebugger.SendCmdLn "-data-evaluate-expression i"
-      << TCmdLineDebugger.ReadLn "^done,value="0""
-      << TCmdLineDebugger.ReadLn "(gdb) "
 
+    ptype @i
+    ~"type = ^LONGINT\n"
+    ptype (@i)^
+    ~"type = LONGINT\n"
+    whatis @i
+    ~"type = ^LONGINT\n"
   *)
+
+end;
+
+function TFpGDBMIDebugger.CreateTypeRequestCache: TGDBPTypeRequestCache;
+begin
+  Result := TFpGDBPTypeRequestCache.Create(Self);
 end;
 
 function TFpGDBMIDebugger.CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging;
