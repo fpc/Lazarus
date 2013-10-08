@@ -427,15 +427,12 @@ begin
 
   if FileMenuOpenRecentItem.Count > MaxHistory then
     FileMenuOpenRecentItem.Items[MaxHistory-1].Free;
-
-
 end;
 
 procedure THelpForm.ContentTitleChange(sender: TObject);
 begin
   if ActivePage = nil then
     Exit;
-
   Caption := 'LHelp - ' + ActivePage.fContentProvider.Title;
 end;
 

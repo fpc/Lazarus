@@ -37,11 +37,11 @@ implementation
 function ResponseToString(Ares: TLHelpResponse): String;
 begin
   case Ares of
-    srNoAnswer:  Result := 'NoAnswer';
+    srNoAnswer: Result := 'NoAnswer';
     srSuccess: Result := 'Success';
-    srInvalidFile:Result := 'InvalidFileName';
-    srInvalidURL:Result := 'InvalidURL';
-    srInvalidContext:Result := 'InvalidContext';
+    srInvalidFile: Result := 'InvalidFileName';
+    srInvalidURL: Result := 'InvalidURL';
+    srInvalidContext: Result := 'InvalidContext';
   end;
 end;
 
@@ -80,6 +80,9 @@ end;
 function TForm1.GetLHelpFilename: string;
 begin
   Result:='../lhelp/lhelp';
+  {$IFDEF Windows}
+  Result:='..\lhelp\lhelp.exe';
+  {$ENDIF}
   {$IFDEF darwin}
   Result:=Result+'.app/Contents/MacOS/'+ExtractFilename(Result);
   {$ENDIF}
