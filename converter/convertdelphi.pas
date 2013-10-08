@@ -1007,7 +1007,7 @@ begin
   // Start scanning unit files one level above project path. The GUI will appear
   // without delay but then we must wait for the thread before continuing.
   CacheUnitsThread:=TCacheUnitsThread.Create(Self,
-                       TrimFilename(fSettings.MainPath+'..'+DirectorySeparator));
+                        ResolveDots(fSettings.MainPath+'..'+DirectorySeparator));
   try
   try
     Result:=fSettings.RunForm(CacheUnitsThread); // Get settings from user.
