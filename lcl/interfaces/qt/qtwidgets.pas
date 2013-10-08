@@ -12730,6 +12730,15 @@ begin
     if (State and QStyleState_MouseOver) <> 0 then
       Include(DrawStruct.ItemState, odHotLight);
 
+    // checked does not work as we expected.
+    if Checkable and (QModelIndex_column(index) <= 0) then
+    begin
+      // if (State and QStyleState_On <> 0) and (ATarget = dtItem) then
+      //  Include(ACustomState, cdsChecked);
+      if  QTreeWidgetItem_checkState(topLevelItem(QModelIndex_row(index)), 0) <> QtUnchecked then
+        Include(DrawStruct.ItemState, odChecked);
+    end;
+
     { todo: over states:
 
       odGrayed, odChecked,
