@@ -269,6 +269,12 @@ begin
         qdvComplexControl:
         begin
           case Element.ComplexControl of
+            QStyleCC_GroupBox:
+            begin
+              opt := QStyleOptionGroupBox_create();
+              Context.translate(ARect.Left, ARect.Top);
+              OffsetRect(ARect, -ARect.Left, -ARect.Top);
+            end;
             QStyleCC_ToolButton:
             begin
               opt := QStyleOptionToolButton_create();
