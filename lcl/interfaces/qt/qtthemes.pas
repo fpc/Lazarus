@@ -657,6 +657,8 @@ begin
           Result := Result or QStyleState_Selected;
         TREIS_HOTSELECTED:
           Result := Result or QStyleState_Selected or QStyleState_MouseOver;
+        TREIS_HOT:
+          Result := Result or QStyleState_MouseOver;
       end;
     end;
   end;

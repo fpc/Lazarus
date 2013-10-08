@@ -580,7 +580,10 @@ begin
     QEventStyleChange:
       begin
         if (Sender = QCoreApplication_instance()) then
+        begin
           FCachedMenuBarHeight := -1;
+          ThemeServices.IntfDoOnThemeChange;
+        end;
       end;
     QEventApplicationActivate:
     begin
