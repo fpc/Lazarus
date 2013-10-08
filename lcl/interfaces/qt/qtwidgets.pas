@@ -11374,7 +11374,7 @@ var
   SkipDefault: Boolean;
   Item: QListWidgetItemH;
 begin
-  if ViewStyle >= 0 then
+  if (ViewStyle >= 0) and not (FChildOfComplexWidget = ccwComboBox) then
   begin
     State := QStyleOption_state(option);
     ACustomState := [cdsDefault];
