@@ -389,7 +389,14 @@ begin
   while i < length(AValue) do begin
     inc(i);
     If AValue[i] = '''' then begin
-      InQuote := not InQuote;
+      if InQuote and (i < length(AValue)) and (AValue[i+1] = '''') then begin
+        inc(i);
+        inc(j);
+        Result[j] := '''';
+      end
+      else begin
+        InQuote := not InQuote;
+      end;
       continue;
     end;
     if InQuote or not(AValue[i] = '#' ) then begin
