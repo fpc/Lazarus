@@ -247,6 +247,7 @@ end;
 constructor TLRZConnection.Create(AOwnerPage: TfrPage);
 begin
   inherited Create(AOwnerPage);
+  FDesignOptions:=FDesignOptions + [doUndoDisable];
   BaseName := 'LRZConnection';
   FZConnection:=TZConnection.Create(OwnerForm);
 end;

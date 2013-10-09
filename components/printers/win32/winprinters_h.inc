@@ -33,7 +33,7 @@ Type
     fLastHandleType : THandleType;
     fDC             : HDC;
     fPrinterHandle  : THandle;
-    
+    fDestroying     : boolean;
     procedure SetIC;
     procedure SetDC;
     procedure ClearDC;

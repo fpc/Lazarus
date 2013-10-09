@@ -46,6 +46,8 @@ type
     procedure EndEnumPrinters;
     procedure BeginEnumPapers(Lst: TStrings);
     procedure EndEnumPapers;
+    function  GetOutputResolution: PMResolution;
+
   protected
     procedure DoBeginDoc; override;
     procedure DoNewPage; override;

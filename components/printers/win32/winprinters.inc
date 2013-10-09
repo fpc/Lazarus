@@ -38,6 +38,8 @@ end;
 
 destructor TWinPrinter.Destroy;
 begin
+  fDestroying := true;
+
   ClearDC;
 
   DoResetPrintersList;
@@ -84,7 +86,7 @@ end;
 
 procedure TWinPrinter.PrinterSelected;
 begin
-  if (PrinterIndex >= 0) and not RawMode then
+  if not fDestroying and (PrinterIndex >= 0) and not RawMode then
     SetDC;
 end;
 
@@ -805,22 +807,26 @@ begin
     if FPrinterHandle <> 0 then
       ClosePrinter(FPrinterHandle);
 
-    PDev := TPrinterDevice(Printers.Objects[i]);
-    {$IFDEF USEUNICODE}
-    if not OpenPrinterW(PWideChar(UTF8Decode(PDev.Name)), @fPrinterHandle, nil) then
-    {$ELSE}
-    if not OpenPrinter(PChar(PDev.Name), @fPrinterHandle, nil) then
-    {$ENDIF}
-    begin
-      FprinterHandle := 0;
-      raise EPrinter.CreateFmt('OpenPrinter exception : %s',
-                                   [SysErrorMessage(GetlastError)]);
-    end;
+    if fDestroying then
+       result := i
+    else begin
+      PDev := TPrinterDevice(Printers.Objects[i]);
+      {$IFDEF USEUNICODE}
+      if not OpenPrinterW(PWideChar(UTF8Decode(PDev.Name)), @fPrinterHandle, nil) then
+      {$ELSE}
+      if not OpenPrinter(PChar(PDev.Name), @fPrinterHandle, nil) then
+      {$ENDIF}
+      begin
+        FprinterHandle := 0;
+        raise EPrinter.CreateFmt('OpenPrinter exception : %s',
+                                     [SysErrorMessage(GetlastError)]);
+      end;
 
-    if UpdateDevMode(i) then
-      Result := i
-    else
-      Result := -1;
+      if UpdateDevMode(i) then
+        Result := i
+      else
+        Result := -1;
+    end;
   end;
 end;
 

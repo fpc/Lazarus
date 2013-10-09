@@ -152,18 +152,16 @@ end;
 constructor TLRDataSetControl.Create(AOwnerPage: TfrPage);
 begin
   inherited Create(AOwnerPage);
+  FDesignOptions:=FDesignOptions + [doUndoDisable];
   FlrDBDataSet:=TfrDBDataSet.Create(OwnerForm);
   FlrDataSource:=TDataSource.Create(OwnerForm);
 end;
 
 destructor TLRDataSetControl.Destroy;
 begin
-  if not (Assigned(OwnerPage) and (OwnerPage is TfrPageDialog)) then
-  begin
-    FreeAndNil(FDS);
-    FreeAndNil(FlrDBDataSet);
-    FreeAndNil(FlrDataSource);
-  end;
+  FreeAndNil(FDS);
+  FreeAndNil(FlrDBDataSet);
+  FreeAndNil(FlrDataSource);
   inherited Destroy;
 end;
 

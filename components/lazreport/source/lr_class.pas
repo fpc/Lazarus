@@ -84,6 +84,9 @@ type
   TfrReportOptions = set of TfrReportOption;
   TfrObjectType = (otlReportView, otlUIControl);
 
+  TlrDesignOption = (doUndoDisable);
+  TlrDesignOptions = set of TlrDesignOption;
+
   TfrView = class;
   TfrBand = class;
   TfrPage = class;
@@ -168,6 +171,7 @@ type
     procedure SetMemo(const AValue: TfrMemoStrings);
     procedure SetScript(const AValue: TfrScriptStrings);
   protected
+    FDesignOptions:TlrDesignOptions;
     BaseName  : String;
     OwnerPage:TfrPage;
     
@@ -184,6 +188,7 @@ type
     procedure SetTop(AValue: Integer);virtual;
     procedure SetWidth(AValue: Integer);virtual;
     procedure SetHeight(AValue: Integer);virtual;
+    procedure SetVisible(AValue: Boolean);virtual;
   public
     x, y, dx, dy: Integer;
 
@@ -206,9 +211,10 @@ type
     property Top    : Integer read GetTop write SetTop;
     property Width  : Integer read GetWidth write SetWidth;
     property Height : Integer read GetHeight write SetHeight;
+    property DesignOptions:TlrDesignOptions read FDesignOptions;
   published
     property Name   : string read fName write SetName;
-    property Visible: Boolean read fVisible write fVisible;
+    property Visible: Boolean read fVisible write SetVisible;
   end;
   
   { TfrView }
@@ -1981,7 +1987,7 @@ begin
   fFillColor := clNone;
   fFormat := 2*256 + Ord(DecimalSeparator);
   BaseName := 'View';
-  Visible := True;
+  FVisible := True;
   StreamMode := smDesigning;
   ScaleX := 1;
   ScaleY := 1;
@@ -11617,6 +11623,12 @@ begin
   fScript.Assign(AValue);
 end;
 
+procedure TfrObject.SetVisible(AValue: Boolean);
+begin
+  if fVisible=AValue then Exit;
+  fVisible:=AValue;
+end;
+
 procedure TfrObject.SetWidth(AValue: Integer);
 begin
   DX:=AValue;
@@ -11725,6 +11737,7 @@ begin
   fVisible:=True;
   fMemo:=TfrMemoStrings.Create;
   fScript:=TfrScriptStrings.Create;
+  FDesignOptions:=[];
 end;
 
 destructor TfrObject.Destroy;
@@ -11999,12 +12012,12 @@ end;
 
 destructor TfrPageDialog.Destroy;
 begin
+  inherited Destroy;
   if Assigned(fForm) then
   begin
     fForm.OnDestroy:=nil;
     FreeAndNil(fForm);
   end;
-  inherited Destroy;
 end;
 
 procedure TfrPageDialog.LoadFromXML(XML: TLrXMLConfig; const Path: String);

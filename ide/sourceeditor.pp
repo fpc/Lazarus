@@ -8057,14 +8057,15 @@ Begin
         TopLine := SrcEdit.EditorComponent.TopLine;
         TSynEditMarkupManager(SrcEdit.EditorComponent.MarkupMgr).IncPaintLock;
         SrcEdit.BeginUpdate;
-        SrcEdit.UpdateIfDefNodeStates;
         SrcEdit.Visible := True;
+        SrcEdit.FEditor.Handle; // make sure we have a handle
         SrcEdit.EndUpdate;
         // Restore the intial Positions, must be after lock
         SrcEdit.EditorComponent.LeftChar := 1;
         SrcEdit.EditorComponent.CaretXY := CaretXY;
         SrcEdit.EditorComponent.TopLine := TopLine;
         TSynEditMarkupManager(SrcEdit.EditorComponent.MarkupMgr).DecPaintLock;
+        SrcEdit.UpdateIfDefNodeStates; // after editor is initialized
       end;
       if (fAutoFocusLock=0) and (Screen.ActiveCustomForm=GetParentForm(Self)) and
          not(Manager.HasAutoFocusLock)

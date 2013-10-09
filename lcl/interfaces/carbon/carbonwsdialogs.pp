@@ -95,7 +95,76 @@ uses
 
 var
   Filters: TStringList; // filter text + TMaskList in object
-  FilterIndex: Integer;
+
+procedure DescListToFiles(DescList: AEDescListPtr; FileDialog: TFileDialog);
+var
+  FileCount, FileIdx: Integer;
+  Keyword: AEKeyword;
+  FileDesc: AEDesc;
+  FileRef: FSRef;
+  FileURL: CFURLRef;
+  FileCFStr: CFStringRef;
+  FileName: string;
+begin
+  //DebugLnEnter('DescListToFiles INIT');
+  //if OSError(NavDialogGetReply(DialogRef, DialogReply{%H-}), Self, SShowModal,
+  //  'NavDialogGetReply') then Exit;  // Get user's selection
+  //
+  FileDialog.Files.Clear;
+
+  if DescList=nil then begin
+    DebugLnExit('DescList is nil, EXIT');
+    exit;
+  end;
+
+  if (DescList=nil) or OSError(AECountItems(DescList^, FileCount{%H-}), FileDialog,
+    SShowModal, 'AECountItems') then Exit;
+
+  for FileIdx := 1 to FileCount do
+  begin
+    if OSError(AEGetNthDesc(DescList^, FileIdx, typeFSRef,
+      @Keyword, FileDesc{%H-}), FileDialog, SShowModal, 'AEGetNthDesc') then Exit;
+
+    // Get file reference
+    if OSError(AEGetDescData(FileDesc, @FileRef, SizeOf(FSRef)), FileDialog,
+      SShowModal, 'AEGetDescData') then Exit;
+
+    if OSError(AEDisposeDesc(FileDesc), FileDialog, SShowModal,
+      'AEDisposeDesc') then Exit;
+
+    FileURL := CFURLCreateFromFSRef(kCFAllocatorDefault, FileRef); // Get URL
+    FileCFStr := CFURLCopyFileSystemPath(FileURL, kCFURLPOSIXPathStyle); // Get path
+    FileName := CFStringToStr(FileCFStr);
+    //DebugLn('%d/%d FileName=%s',[FileIdx, FileCount, FileName]);
+    FileDialog.Files.Add(FileName);
+
+    FreeCFString(FileURL);
+    FreeCFString(FileCFStr);
+    // Note: Previous 5 lines replace next 2 lines and eliminate need
+    //   to decide what size to make FileBuf array.
+    //   See http://developer.apple.com/technotes/tn2002/tn2078.html
+    //  FSRefMakePath(FileRef, @FileBuf, SizeOf(FileBuf));  {Get file path}
+    //  FileDialog.Files.Add(string(FileBuf));  //FileBuf contains UTF8 C string
+  end;
+
+  FileDialog.FileName := FileDialog.Files.Strings[0];
+
+  //if FileDialog.FCompStyle=csSaveFileDialog then
+  //  FileDialog.FileName := FileDialog.FileName + PathDelim +
+  //    CFStringToStr(NavDialogGetSaveFileName(DialogRef));
+  //    {Note: Not at all clear from Apple docs that NavReplyRecord.Selection
+  //      returns only path to file's folder with Save dialog. Also, what they
+  //      mean by the "full file name" returned by NavDialogGetSaveFileName
+  //      must mean extension and not path to file's folder.}
+
+
+  // Dispose of data that record points to (?)
+  //if OSError(NavDisposeReply(DialogReply), FileDialog, SShowModal,
+  //  'NavDisposeReply') then Exit;
+
+  //FileDialog.FilterIndex := FilterIndex + 1;
+  //DebugLnExit('DescListToFiles END Files.Count=%d',[FileDialog.Files.Count]);
+end;
 
 function FilterCallback(var theItem: AEDesc; info: NavFileOrFolderInfoPtr;
  callbackUD: UnivPtr; {%H-}filterMode: NavFilterModes): Boolean; mwpascal;
@@ -111,14 +180,15 @@ var
   FileCFStr: CFStringRef;
   FilePath: string;
   FilterMask: TMaskList;
+  FileDialog: TFileDialog;
+  AIndex: Integer;
 begin
   Result := True;
-  
-  if callbackUD = nil then  // No user data passed?
+  FileDialog := TFileDialog(CallbackUD);
+  if (FileDialog = nil) or (FileDialog.Filter='') then  // No user data passed?
     Exit;
-  if TFileDialog(callbackUD).Filter = '' then  // No filter passed?
-    Exit;
-  if TFileDialog(callbackUD) is TOpenDialog then
+
+  if FileDialog is TOpenDialog then
   begin
     if info^.isFolder then  // Don't dim folder?
       Exit;
@@ -144,8 +214,9 @@ begin
   FreeCFString(FileCFStr);
 
   FilterMask := nil;
-  if (FilterIndex >= 0) and (FilterIndex < Filters.Count) then
-    FilterMask := TMaskList(Filters.Objects[FilterIndex]);
+  AIndex := FileDialog.FilterIndex - 1;
+  if (AIndex >= 0) and (AIndex < Filters.Count) then
+    FilterMask := TMaskList(Filters.Objects[AIndex]);
 
   Result := (FilterMask = nil) or FilterMask.Matches(ExtractFilename(FilePath));
   //DebugLn('FilterCallback ' + DbgS(FilterMask) + ' ' + ExtractFilename(FilePath) + ' ' + DbgS(Result));
@@ -160,29 +231,25 @@ var
   DirCFStr: CFStringRef;
   PMenuSpec: NavMenuItemSpecPtr;
   MenuSpec: NavMenuItemSpec;
+  AEDescList: AEDescListPtr;
+  FileDialog: TFileDialog;
 const
   SName = 'NavDialogCallback';
 begin
-  //DebugLn('NavDialogCallback ' + DbgS(CallbackUD));
+  //DebugLnEnter(['NavDialogCallback INIT selector=',CallbackSelector]);
   if CallbackUD = nil then  // No user data passed?
     Exit;
+  FileDialog := TFileDialog(CallbackUD);
     
   case CallBackSelector of
   kNavCBStart:
     begin
-      // set initial filter index
-      MenuSpec.version := kNavMenuItemSpecVersion;
-      MenuSpec.menuCreator := kExtensionFolderType;
-      MenuSpec.menuType := OSType(FilterIndex);
-      MenuSpec.menuItemName := '';
-      OSError(NavCustomControl(CallBackParms^.context, kNavCtlSelectCustomType, @MenuSpec),
-                SName, 'NavCustomControl', 'FilterIndex');
-    
+
       // Set InitialDir
-      if DirectoryExistsUTF8(TFileDialog(CallbackUD).InitialDir) then
+      if DirectoryExistsUTF8(FileDialog.InitialDir) then
       begin
         //DebugLn('Set InitialDir ' + TFileDialog(CallbackUD).InitialDir);
-        CreateCFString(TFileDialog(CallbackUD).InitialDir, DirCFStr);
+        CreateCFString(FileDialog.InitialDir, DirCFStr);
         try
           DirURL := CFURLCreateWithFileSystemPath(nil, DirCFStr,
             kCFURLPOSIXPathStyle, True);
@@ -197,17 +264,39 @@ begin
               OSError(NavCustomControl(CallBackParms^.context, kNavCtlSetLocation, @Dir),
                 SName, 'NavCustomControl', 'InitialDir');
       end;
+
+      // set initial filter index
+      MenuSpec.version := kNavMenuItemSpecVersion;
+      MenuSpec.menuCreator := kExtensionFolderType;
+      MenuSpec.menuType := OSType(FileDialog.FilterIndex-1);
+      MenuSpec.menuItemName := '';
+      OSError(NavCustomControl(CallBackParms^.context, kNavCtlSelectCustomType, @MenuSpec),
+                SName, 'NavCustomControl', 'FilterIndex');
+    
     end;
   kNavCBPopupMenuSelect: // user has changed filter
     begin
       if CallBackParms = nil then Exit;
       PMenuSpec := NavMenuItemSpecPtr(CallBackParms^.eventData.eventDataParms.param);
       if PMenuSpec = nil then Exit;
-      //DebugLn(DbgS(PMenuSpec^.menuType));
-      
-      FilterIndex := PMenuSpec^.menuType;
+      FileDialog.FilterIndex:= PMenuSpec^.menuType + 1;
+      FileDialog.DoTypeChange;
     end;
+  kNavCBSelectEntry:   // user has selected something
+    begin
+      if CallbackParms = nil then exit;
+      AEDescList := AEDescListPtr(CallBackParms^.eventData.eventDataParms.param);
+      DescListToFiles(AEDescList, FileDialog);
+      //DebugLn(['kNavCBSelectEntry IsOpenDialog=',FileDialog is TOpenDialog]);
+      if FileDialog is TOpenDialog then
+        TOpenDialog(FileDialog).DoSelectionChange;
+    end;
+  kNavCBNewLocation:  // user has changed folder
+    if FileDialog is TOpenDialog then
+      TOpenDialog(FileDialog).DoFolderChange;
   end;
+
+  //DebugLnExit('NavDialogCallback DONE');
 end;
 
 
@@ -230,14 +319,7 @@ var
   FilterUPP: NavObjectFilterUPP;
   NavDialogUPP: NavEventUPP;
   DialogRef: NavDialogRef;
-  DialogReply: NavReplyRecord;
-  FileCount: Integer;
-  FileIdx, I: Integer;
-  Keyword: AEKeyword;
-  FileDesc: AEDesc;
-  FileRef: FSRef;
-  FileURL: CFURLRef;
-  FileCFStr: CFStringRef;
+  I: Integer;
   ParsedFilter: TParseStringList;
   M: TMaskList;
   filterext: String;
@@ -262,8 +344,6 @@ begin
   NavDialogUPP := NewNavEventUPP(NavEventProcPtr(@NavDialogCallback));
 
   Filters := TStringList.Create;
-  FilterIndex := FileDialog.FilterIndex - 1; // file dialog filter index is ine based
-
   // parse filters to popup menu - filter text + TMaskList
   ParsedFilter := TParseStringList.Create(FileDialog.Filter, '|');
   try
@@ -338,40 +418,6 @@ begin
       
       if NavDialogGetUserAction(DialogRef) <> kNavUserActionCancel then // User OK?
       begin
-        if OSError(NavDialogGetReply(DialogRef, DialogReply{%H-}), Self, SShowModal,
-          'NavDialogGetReply') then Exit;  // Get user's selection
-          
-        if OSError(AECountItems(DialogReply.Selection, FileCount{%H-}), Self,
-          SShowModal, 'AECountItems') then Exit;
-          
-        FileDialog.Files.Clear;
-        for FileIdx := 1 to FileCount do
-        begin
-          if OSError(AEGetNthDesc(DialogReply.Selection, FileIdx, typeFSRef,
-            @Keyword, FileDesc{%H-}), Self, SShowModal, 'AEGetNthDesc') then Exit;
-          // Get file reference
-          if OSError(AEGetDescData(FileDesc, @FileRef, SizeOf(FSRef)), Self,
-            SShowModal, 'AEGetDescData') then Exit;
-            
-          if OSError(AEDisposeDesc(FileDesc), Self, SShowModal,
-            'AEDisposeDesc') then Exit;
-          
-          FileURL := CFURLCreateFromFSRef(kCFAllocatorDefault, FileRef); // Get URL
-          FileCFStr := CFURLCopyFileSystemPath(FileURL, kCFURLPOSIXPathStyle); // Get path
-          
-          FileDialog.Files.Add(CFStringToStr(FileCFStr));
-
-          FreeCFString(FileURL);
-          FreeCFString(FileCFStr);
-          // Note: Previous 5 lines replace next 2 lines and eliminate need
-          //   to decide what size to make FileBuf array.
-          //   See http://developer.apple.com/technotes/tn2002/tn2078.html
-          //  FSRefMakePath(FileRef, @FileBuf, SizeOf(FileBuf));  {Get file path}
-          //  FileDialog.Files.Add(string(FileBuf));  //FileBuf contains UTF8 C string
-        end;
-          
-        FileDialog.FileName := FileDialog.Files.Strings[0];
-
         if FileDialog.FCompStyle=csSaveFileDialog then
           FileDialog.FileName := FileDialog.FileName + PathDelim +
             CFStringToStr(NavDialogGetSaveFileName(DialogRef));
@@ -379,12 +425,7 @@ begin
               returns only path to file's folder with Save dialog. Also, what they
               mean by the "full file name" returned by NavDialogGetSaveFileName
               must mean extension and not path to file's folder.}
-              
-        // Dispose of data that record points to (?)
-        if OSError(NavDisposeReply(DialogReply), Self, SShowModal,
-          'NavDisposeReply') then Exit;
-          
-        FileDialog.FilterIndex := FilterIndex + 1;
+
         FileDialog.UserChoice := mrOK;
       end;
     finally

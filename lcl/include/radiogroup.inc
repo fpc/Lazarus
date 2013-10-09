@@ -199,7 +199,7 @@ begin
       end;
     end;
 
-    if (FItemIndex>=FItems.Count) then FItemIndex:=FItems.Count-1;
+    if (FItemIndex>=FItems.Count) and not (csLoading in ComponentState) then FItemIndex:=FItems.Count-1;
 
     if FItems.Count>0 then
     begin

@@ -136,6 +136,8 @@ begin
 end;
 
 procedure TCarbonPrinter.BeginPage;
+var
+  PaperRect: PMRect;
 begin
   if FBeginDocumentStatus = noErr then
   begin
@@ -149,7 +151,13 @@ begin
       else
         FPrinterContext.Reset;
 
-    if Assigned(Canvas) then Canvas.Handle := HDC(FPrinterContext);
+    // translate the context from his paper (0,0) origin
+    // to our working imageable area
+    if PMGetAdjustedPaperRect(PageFormat, PaperRect{%H-})=noErr then
+      CGContextTranslateCTM(FPrinterContext.CGContext, -PaperRect.left, -PaperRect.top);
+
+    if Assigned(Canvas) then
+      Canvas.Handle := HDC(FPrinterContext);
   end;
 end;
 
@@ -311,22 +319,43 @@ end;
 procedure TCarbonPrinter.UpdatePrinter;
 var
   s: string;
+  Res: PMResolution;
 begin
   s := GetCurrentPrinterName;
   if trim(s) = '' then // Observed if Default printer set to "Use last printer", and no printing done
     s := '*';     // so select lcl default
   SetPrinter(s);
+  // set the page format resolution
+  Res := GetOutputResolution;
+  PMSetResolution(PageFormat, Res);
   Validate;
 end;
 
-function TCarbonPrinter.GetXDPI: Integer;
+function TCarbonPrinter.GetOutputResolution: PMResolution;
+var
+  res: OSStatus;
 begin
-  Result := 72;
+  res := PMPrinterGetOutputResolution(GetCurrentPrinter, PrintSettings, Result{%H-});
+  if res<>noErr then begin
+    Result.vRes:=72;
+    Result.hRes:=72;
+  end;
+end;
+
+function TCarbonPrinter.GetXDPI: Integer;
+var
+  dpi: PMResolution;
+begin
+  dpi := GetOutputResolution;
+  result := round(dpi.hRes);
 end;
 
 function TCarbonPrinter.GetYDPI: Integer;
+var
+  dpi: PMResolution;
 begin
-  Result := 72;
+  dpi := GetOutputResolution;
+  result := round(dpi.hRes);
 end;
 
 procedure TCarbonPrinter.DoBeginDoc;
@@ -439,6 +468,7 @@ var
   PaperRect, PageRect: PMRect;
   S: Double;
   O: PMOrientation;
+  Res: PMResolution;
 const
   SName = 'DoGetPaperRect';
 begin
@@ -455,6 +485,10 @@ begin
     O:=CleanPMOrientation;
     OSError(PMGetOrientation(PageFormat, O), Self, SName, 'PMGetOrientation');
     OSError(PMSetOrientation(T, O, False), Self, SName, 'PMSetOrientation');
+
+    // copy resolution
+    Res := GetOutputResolution;
+    OSError(PMSetResolution(T, Res), self, SName, 'PMSetResolution');
     
     // update
     OSError(PMSessionValidatePageFormat(PrintSession, T, nil),

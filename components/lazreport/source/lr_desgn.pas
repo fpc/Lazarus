@@ -577,7 +577,7 @@ type
     procedure Undo(Buffer: PfrUndoBuffer);
     procedure ReleaseAction(ActionRec: TfrUndoRec);
     procedure AddAction(Buffer: PfrUndoBuffer; a: TfrUndoAction; List: TFpList);
-    procedure AddUndoAction(a: TfrUndoAction);
+    procedure AddUndoAction(AUndoAction: TfrUndoAction);
     procedure DoDrawText(aCanvas: TCanvas; aCaption: string;
       Rect: TRect; Selected, aEnabled: Boolean; Flags: Longint);
     procedure MeasureItem(AMenuItem: TMenuItem; ACanvas: TCanvas;
@@ -1963,7 +1963,8 @@ begin
     AddObject(gtLine);
     t.CreateUniqueName;
     t.x := OldRect.Left; t.y := OldRect.Top;
-    t.dx := OldRect.Right - OldRect.Left; t.dy := OldRect.Bottom - OldRect.Top;
+    t.dx := OldRect.Right - OldRect.Left;
+    t.dy := OldRect.Bottom - OldRect.Top;
     if t.dx < 0 then
     begin
       t.dx := -t.dx; if Abs(t.dx) > Abs(t.dy) then t.x := OldRect.Right;
@@ -3619,8 +3620,6 @@ begin
     if WasOk then
     begin
       Modified := True;
-      //FileModified := True;
-      Modified := True;
       CurPage := CurReport.Pages.Count - 1
     end
     else
@@ -3661,8 +3660,6 @@ procedure TfrDesignerForm.RemovePage(n: Integer);
 begin
   fInBuildPage:=True;
   try
-    Modified := True;
-    //FileModified := True;
     Modified := True;
     with CurReport do
     begin
@@ -4048,6 +4045,7 @@ begin
       Page.Delete(i);
   end;
   SetPageTitles;
+  ObjInsp.Select(nil);
   ResetSelection;
   FirstSelected := nil;
   PageView.Invalidate;
@@ -4093,7 +4091,7 @@ end;
 {$HINTS OFF}
 procedure TfrDesignerForm.InsertDbFields;
 var
-  i, x, y, dx, dy, pdx, adx: Integer;
+  i, x, y, dx, dy, pdx, adx, tdx, tdy: Integer;
   HeaderL, DataL: TFpList;
   t, t1: TfrView;
   b: TfrBandView;
@@ -4245,6 +4243,9 @@ begin
           if HorzRB.Checked then
             Inc(x, t.dx + GridSize) else
             Inc(y, t.dy + GridSize);
+
+          if t is TfrControl then
+            TfrControl(T).UpdateControlPosition;
         end;
 
       if HorzRB.Checked then
@@ -5588,14 +5589,15 @@ begin
   //FileModified := True;
 end;
 
-procedure TfrDesignerForm.AddUndoAction(a: TfrUndoAction);
+procedure TfrDesignerForm.AddUndoAction(AUndoAction: TfrUndoAction);
 var
   i,j: Integer;
   t: TfrView;
   List: TFpList;
-  p: PfrUndoRec1;
 
   procedure AddCurrent;
+  var
+    p: PfrUndoRec1;
   begin
     GetMem(p, SizeOf(TfrUndoRec1));
     p^.ObjPtr := t;
@@ -5609,7 +5611,7 @@ begin
   List := TFpList.Create;
 
   // last FDuplicateList.Count objectes were duplicated
-  if a=acDuplication then
+  if AUndoAction = acDuplication then
     j := Objects.Count - FDuplicateList.Count
   else
     j := 0;
@@ -5617,19 +5619,16 @@ begin
   for i := j to Objects.Count - 1 do
   begin
     t := TfrView(Objects[i]);
-    case a of
-      acDuplication, acZOrder:
-        AddCurrent;
-      else
-        if t.Selected then
-          AddCurrent;
-    end;
+    if (not (doUndoDisable in T.DesignOptions)) and ((AUndoAction in [acDuplication, acZOrder]) or t.Selected) then
+      AddCurrent;
   end;
 
-  if a=acDuplication then
-    a := acInsert;
-
-  AddAction(@FUndoBuffer, a, List);
+  if List.Count>0 then
+  begin
+    if AUndoAction = acDuplication then
+       AUndoAction := acInsert;
+    AddAction(@FUndoBuffer, AUndoAction, List);
+  end;
   List.Free;
 end;
 
@@ -7453,6 +7452,7 @@ begin
     ShowHint := false; //cause problems in windows
     Onchange := @cboxObjListOnChanged;
   end;
+  fcboxObjList.Sorted:=true;
 
   // create the ObjectInspector
   fPropertyGrid:=TCustomPropertiesGrid.Create(aOwner);
@@ -7486,13 +7486,15 @@ var
   i      : Integer;
   NewSel : TPersistentSelectionList;
 begin
-  if Objects.Count <> fcboxObjList.Items.Count then
+  if (Objects.Count <> fcboxObjList.Items.Count) or (Assigned(Obj) and (fcboxObjList.Items.IndexOfObject(Obj) < 0)) then
   begin
+
     fcboxObjList.Clear;
     fcboxObjList.AddItem(TfrObject(frDesigner.Page).Name, TObject(frDesigner.Page));
 
     for i:=0 to Objects.Count-1 do
        fcboxObjList.AddItem(TfrView(Objects[i]).Name, TObject(Objects[i]));
+
   end;
 
   FSelectedObject:=nil;

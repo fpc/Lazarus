@@ -61,6 +61,7 @@ type
     procedure SetOnClick(AValue: TfrScriptStrings);
   protected
     FControl: TControl;
+    procedure SetVisible(AValue: Boolean);override;
     procedure PaintDesignControl; override;
     procedure SetName(const AValue: string); override;
     procedure AfterCreate;override;
@@ -1044,7 +1045,7 @@ var
   FSavePage:TfrPage;
   CmdList, ErrorList:TStringList;
 begin
-  if (DocMode = dmPrinting) and (Script.Count>0) and (Trim(Script.Text)<>'') then
+  if (DocMode = dmPrinting) and (Script.Count>0) and (Trim(Script.Text)<>'') and (Assigned(CurReport))then
   begin
     FSaveView:=CurView;
     FSavePage:=CurPage;
@@ -1067,6 +1068,12 @@ end;
 procedure TlrVisualControl.SetOnClick(AValue: TfrScriptStrings);
 begin
   Script:=AValue;
+end;
+
+procedure TlrVisualControl.SetVisible(AValue: Boolean);
+begin
+  inherited SetVisible(AValue);
+  FControl.Visible:=AValue;
 end;
 
 procedure TlrVisualControl.PaintDesignControl;
