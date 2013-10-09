@@ -2845,10 +2845,12 @@ function EnumFontsProc(
   {%H-}Data: LParam):LongInt; stdcall;
 var
   S: String;
+  Lst: TStrings;
 begin
   s := StrPas(LogFont.elfLogFont.lfFaceName);
-  if TfrDesignerForm(frDesigner).C2.Items.IndexOf(S)<0 then
-    TfrDesignerForm(frDesigner).C2.Items.AddObject(S, TObject(PtrInt(FontType)));
+  Lst := TStrings(PtrInt(Data));
+  if Lst.IndexOf(S)<0 then
+    Lst.AddObject(S, TObject(PtrInt(FontType)));
   Result := 1;
 end;
 
@@ -2890,6 +2892,11 @@ procedure TfrDesignerForm.GetFontList;
 var
   DC: HDC;
   Lf: TLogFont;
+  {$IFDEF USE_PRINTER_FONTS}
+  Lst: TStrings;
+  i: Integer;
+  j: PtrInt;
+  {$ENDIF}
 begin
   C2.Items.Clear;
   DC := GetDC(0);
@@ -2897,10 +2904,31 @@ begin
     Lf.lfFaceName := '';
     Lf.lfCharSet := DEFAULT_CHARSET;
     Lf.lfPitchAndFamily := 0;
-    EnumFontFamiliesEx(DC, @Lf, @EnumFontsProc, 0, 0);
+    EnumFontFamiliesEx(DC, @Lf, @EnumFontsProc, PtrInt(C2.Items), 0);
   finally
     ReleaseDC(0, DC);
   end;
+  {$IFDEF USE_PRINTER_FONTS}
+  if not CurReport.PrintToDefault then
+  begin
+    // we could use prn.Printer.Fonts but we would be tied to
+    // implementation detail of list.objects[] encoded with fonttype
+    // that's why we collect the fonts ourselves here
+    //
+    Lst := TStringList.Create;
+    try
+      EnumFontFamiliesEx(Prn.Printer.Canvas.Handle, @Lf, @EnumFontsProc, PtrInt(Lst), 0);
+      for i:=0 to Lst.Count-1 do
+        if C2.Items.IndexOf(Lst[i])<0 then begin
+          j := PtrInt(Lst.Objects[i]) or $100;
+          C2.Items.AddObject(Lst[i], TObject(j));
+        end;
+    finally
+      Lst.free;
+    end;
+  end;
+  {$ENDIF}
+
   if C2.Items.Count>0 then
     LastFontName := C2.Items[0]
   else
@@ -5311,12 +5339,20 @@ end;
 
 procedure TfrDesignerForm.C2DrawItem(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
+var
+  j: PtrInt;
 begin
   with C2.Canvas do
   begin
     Font.Name := 'default';
     FillRect(Rect);
-    if (PtrInt(C2.Items.Objects[Index]) and TRUETYPE_FONTTYPE) <> 0 then
+    j := PtrInt(C2.Items.Objects[Index]);
+    {$IFDEF USE_PRINTER_FONTS}
+    if (j and $100 <> 0) then
+      ImageList2.Draw(C2.Canvas, Rect.Left, Rect.Top +1, 2)
+    else
+    {$ENDIF}
+    if ( j and TRUETYPE_FONTTYPE) <> 0 then
       ImageList2.Draw(C2.Canvas, Rect.Left, Rect.Top + 1, 0);
     TextOut(Rect.Left + 20, Rect.Top + 1, C2.Items[Index]);
   end;
@@ -5967,6 +6003,10 @@ begin
       CurReport.PrintToDefault := not CB1.Checked;
       CurReport.DoublePass := CB2.Checked;
       CurReport.ChangePrinter(Prn.PrinterIndex, ListBox1.ItemIndex);
+      {$IFDEF USE_PRINTER_FONTS}
+      // printer may have been changed, invalidate current list of fonts
+      C2.Items.Clear;
+      {$ENDIF}
       CurReport.Title:=edTitle.Text;
       CurReport.Subject:=edSubject.Text;
       CurReport.KeyWords:=edKeyWords.Text;

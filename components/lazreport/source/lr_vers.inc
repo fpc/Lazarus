@@ -61,3 +61,7 @@
   {$DEFINE noautomatedbookmark}
 {$endif}
 
+{$IFDEF MSWINDOWS}
+  {$DEFINE USE_PRINTER_FONTS}
+{$ENDIF}
+
