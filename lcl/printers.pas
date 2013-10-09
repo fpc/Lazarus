@@ -1301,7 +1301,15 @@ begin
     Result := fRightMargin;
 end;
 
-finalization
-  If Assigned(Printer) then
+
+procedure doFreePrinter;
+begin
+  if Assigned(Printer) then
     Printer.Free;
+  Printer := nil;
+end;
+
+initialization
+  RegisterInterfaceFinalizationHandler(@doFreePrinter);
+
 end.
