@@ -2892,6 +2892,7 @@ procedure TfrDesignerForm.GetFontList;
 var
   DC: HDC;
   Lf: TLogFont;
+  S: String;
   {$IFDEF USE_PRINTER_FONTS}
   Lst: TStrings;
   i: Integer;
@@ -2929,18 +2930,28 @@ begin
   end;
   {$ENDIF}
 
-  if C2.Items.Count>0 then
-    LastFontName := C2.Items[0]
-  else
-    LastFontName := '';
-    
-  if C2.Items.IndexOf('Arial') <> -1 then
-    LastFontName := 'Arial'
-  else if C2.Items.IndexOf('helvetica [urw]')<>-1 then
-    LastFontName := 'helvetica [urw]'
-  else if C2.Items.IndexOf('Arial Cyr') <> -1 then
-    LastFontName := 'Arial Cyr';
-  LastFontSize := 10;
+  if (SelNum>0) and (FirstSelected is TfrMemoView) then
+  begin
+    // font of selected memo has preference, select it
+    LastFontname := TfrMemoView(FirstSelected).Font.Name;
+    LastFontSize := TfrMemoView(FirstSelected).Font.Size;
+  end else
+  if C2.Items.IndexOf(LastFontName)>=0 then
+    // last font name remains valid, keep it together with lastFontSize
+  else begin
+    // setup an initial font name and size
+    if C2.Items.Count>0 then
+      LastFontName := C2.Items[0]
+    else
+      LastFontName := '';
+    if C2.Items.IndexOf('Arial') <> -1 then
+      LastFontName := 'Arial'
+    else if C2.Items.IndexOf('helvetica [urw]')<>-1 then
+      LastFontName := 'helvetica [urw]'
+    else if C2.Items.IndexOf('Arial Cyr') <> -1 then
+      LastFontName := 'Arial Cyr';
+    LastFontSize := 10;
+  end;
 end;
 
 procedure TfrDesignerForm.FormCreate(Sender: TObject);
@@ -4841,9 +4852,9 @@ begin
       if t is TfrMemoView then
       with t as TfrMemoView do
         case b of
-          7: if C2.ItemIndex <> 0 then
+          7: if C2.ItemIndex >= 0 then
              begin
-               Font.Name := C2.Text;
+               Font.Name := C2.Items[C2.ItemIndex];
                LastFontName := Font.Name;
              end;
           8: begin
