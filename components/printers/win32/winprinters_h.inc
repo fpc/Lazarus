@@ -60,6 +60,7 @@ Type
     function DoGetDefaultBinName: string; override;
     function DoGetBinName: string; override;
     procedure DoSetBinName(aName: string); override;
+    procedure DoEnumFonts(Lst: TStrings); override;
 
     function DoSetPrinter(aName : string): Integer; override;
     

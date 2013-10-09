@@ -1169,6 +1169,37 @@ begin
   end;
 end;
 
+function PrinterEnumFontsProc(
+  var ELogFont: LCLType.TEnumLogFontEx;
+  var Metric: LCLType.TNewTextMetricEx;
+  FontType: Longint;
+  Data:LParam):Longint;  stdcall;
+var
+  S: string;
+  Lst: TStrings;
+begin
+  s := StrPas(ELogFont.elfLogFont.lfFaceName);
+  Lst := TStrings(PtrInt(Data));
+  if Lst.IndexOf(S)<0 then
+    Lst.AddObject(S, TObject(PtrInt(FontType)));
+  result := 1;
+end;
+
+procedure TWinPrinter.DoEnumFonts(Lst: TStrings);
+var
+  Lf: TLogFont;
+begin
+  if (Lst=nil) then
+    exit;
+  Lst.Clear;
+  if Printers.Count>0 then begin
+    Lf.lfFaceName := '';
+    Lf.lfCharSet := DEFAULT_CHARSET;
+    Lf.lfPitchAndFamily := 0;
+    LCLIntf.EnumFontFamiliesEx(Canvas.Handle, @Lf, @PrinterEnumFontsProc, PtrInt(Lst), 0);
+  end;
+end;
+
 initialization
   Printer:=TWinPrinter.Create;
 

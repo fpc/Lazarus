@@ -717,6 +717,7 @@ begin
       else
         raise EPrinter.Create('Printer index out of range!');
     SetPrinter(aName);
+    DoResetFontsList;
   end
   else
     raise EPrinter.Create('No printers defined!');
@@ -772,7 +773,8 @@ end;
 
 procedure TPrinter.DoResetFontsList;
 begin
- //Override this method
+  if fFonts<>nil then
+    fFonts.Clear;
 end;
 
 //Initialize the Lst with all definied printers
