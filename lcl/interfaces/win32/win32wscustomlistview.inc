@@ -770,6 +770,8 @@ begin
       Arrangement[TListView(AWinControl).IconOptions.Arrangement];
     if TCustomListView(AWinControl).OwnerData then 
       Flags := Flags or LVS_OWNERDATA;
+    if TListView(AWinControl).OwnerDraw then
+      Flags := Flags or LVS_OWNERDRAWFIXED;
     if TCustomListView(AWinControl).BorderStyle = bsSingle then
       FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
   end;

@@ -61,7 +61,8 @@ type
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
-    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); override;
+    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); overload; override;
+    procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); overload; override;
     function GetDetailSize(Details: TThemedElementDetails): TSize; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
 
@@ -172,6 +173,25 @@ begin
           inherited DrawElement(DC, Details, R, ClipRect);
         qdvControl:
         begin
+          if (Element.ControlElement in [QStyleCE_ProgressBar, QStyleCE_ProgressBarContents,
+            QStyleCE_ProgressBarGroove]) then
+          begin
+            opt := QStyleOptionProgressBarV2_create;
+
+            if Element.ControlElement <> QStyleCE_ProgressBarContents then
+            begin
+              QStyleOptionProgressBar_setMinimum(QStyleOptionProgressBarH(opt), 0);
+              QStyleOptionProgressBar_setMaximum(QStyleOptionProgressBarH(opt), 100);
+            end;
+
+            if Element.Features = QtVertical then
+            begin
+              QStyleOptionProgressBarV2_setOrientation(QStyleOptionProgressBarV2H(opt), QtVertical);
+              QStyleOptionProgressBarV2_setInvertedAppearance(QStyleOptionProgressBarV2H(opt), True);
+              QStyleOptionProgressBarV2_setBottomToTop(QStyleOptionProgressBarV2H(opt), True);
+            end else
+              QStyleOptionProgressBarV2_setOrientation(QStyleOptionProgressBarV2H(opt), QtHorizontal);
+          end else
           if (Element.ControlElement = QStyleCE_TabBarTabShape) then
           begin
             opt := QStyleOptionTab_create();
@@ -260,6 +280,10 @@ begin
               opt := QStyleOptionComboBox_create();
               if Element.Features = Ord(QtRightToLeft) then
                 QStyleOption_setDirection(opt, QtRightToLeft);
+            end;
+            QStyleCC_SpinBox:
+            begin
+              opt := QStyleOptionSpinBox_create;
             end;
             QStyleCC_TitleBar, QStyleCC_MdiControls:
             begin
@@ -388,19 +412,29 @@ end;
 procedure TQtThemeServices.DrawText(ACanvas: TPersistent;
   Details: TThemedElementDetails; const S: String; R: TRect; Flags,
   Flags2: Cardinal);
+begin
+  DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2);
+end;
+
+procedure TQtThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails;
+  const S: String; R: TRect; Flags, Flags2: Cardinal);
 var
   Palette: QPaletteH;
   Context: TQtDeviceContext;
   Widget: QWidgetH;
   W: WideString;
   TextRect: TRect;
+  AOldMode: Integer;
+  ATextPalette: Cardinal;
 begin
+  // DebugLn('TQtThemeServices.DrawText ');
+  Context := TQtDeviceContext(DC);
   case Details.Element of
     teToolTip:
       begin
-        Context := TQtDeviceContext(TCanvas(ACanvas).Handle);
         W := GetUTF8String(S);
         Context.save;
+        AOldMode := Context.SetBkMode(TRANSPARENT);
         try
           if Context.Parent <> nil then
             Palette := QPalette_create(QWidget_palette(Context.Parent))
@@ -412,18 +446,18 @@ begin
             inherited;
             exit;
           end;
-
           QStyle_drawItemText(Style, Context.Widget, @R,
             DTFlagsToQtFlags(Flags), Palette,
             not IsDisabled(Details), @W, QPaletteToolTipText);
+          QPalette_destroy(Palette);
         finally
+          Context.SetBkMode(AOldMode);
           Context.restore;
         end;
 
       end;
-    teTreeView:
+    teTreeView, teListView:
       begin
-        Context := TQtDeviceContext(TCanvas(ACanvas).Handle);
         if Details.Part = TVP_TREEITEM then
         begin
           Palette := nil;
@@ -489,7 +523,35 @@ begin
       end;
 
     else
-      inherited;
+    begin // default text drawing for all !
+      W := GetUTF8String(S);
+      Context.save;
+      AOldMode := Context.SetBkMode(TRANSPARENT);
+      if Context.Parent <> nil then
+        Palette := QPalette_create(QWidget_palette(Context.Parent))
+      else
+      begin
+        Palette := QPalette_create;
+        QApplication_palette(Palette);
+      end;
+      try
+        if Details.Element in [teEdit, teListView, teTreeView, teWindow] then
+          ATextPalette := QPaletteWindowText
+        else
+        if Details.Element in [teButton, teComboBox] then
+          ATextPalette := QPaletteButtonText
+        else
+          ATextPalette := QPaletteText;
+
+        QStyle_drawItemText(Style, Context.Widget, @R,
+          DTFlagsToQtFlags(Flags), Palette,
+          not IsDisabled(Details), @W, ATextPalette);
+        Context.SetBkMode(AOldMode);
+      finally
+        QPalette_destroy(Palette);
+        Context.restore;
+      end;
+    end;
   end;
 end;
 
@@ -576,9 +638,10 @@ begin
        [TKP_TRACKVERT, TKP_THUMBVERT])) then
     Result := Result or QStyleState_Horizontal;
 
-  if (Details.Element = teTreeview) then
+  if (Details.Element in [teTreeview, teListView]) then
   begin
-    if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
+    if (Details.Element = teTreeView) and
+      (Details.Part in [TVP_GLYPH, TVP_HOTGLYPH]) then
     begin
       Result := Result or QStyleState_Children;
       if Details.State = GLPS_OPENED then
@@ -817,6 +880,21 @@ begin
             end;
         end;
       end;
+    teSpin:
+      begin
+        Result.DrawVariant := qdvComplexControl;
+        Result.ComplexControl := QStyleCC_SpinBox;
+        if Details.Part = 0 then
+          Result.SubControls := QStyleSC_SpinBoxFrame
+        else
+        if Byte(Details.Part) in [SPNP_UP, SPNP_UPHORZ] then
+          Result.SubControls := QStyleSC_SpinBoxUp
+        else
+        if Byte(Details.Part) in [SPNP_DOWN, SPNP_DOWNHORZ] then
+          Result.SubControls := QStyleSC_SpinBoxDown;
+        if Byte(Details.Part) in [SPNP_UPHORZ, SPNP_DOWNHORZ] then
+          Result.Features := QtVertical;
+      end;
     teWindow:
       begin
         case Details.Part of
@@ -905,6 +983,18 @@ begin
           Result.PrimitiveElement := QStylePE_FrameTabBarBase;
         end;
       end;
+    teProgress:
+      begin
+        Result.DrawVariant := qdvControl;
+        case Details.Part of
+          PP_CHUNK,PP_CHUNKVERT: Result.ControlElement := QStyleCE_ProgressBarContents;
+          PP_FILL,PP_FILLVERT: Result.ControlElement := QStyleCE_ProgressBarGroove;
+          else
+            Result.ControlElement := QStyleCE_ProgressBar;
+        end;
+        if Byte(Details.Part) in [PP_BARVERT, PP_FILLVERT, PP_CHUNKVERT] then
+          Result.Features := QtVertical;
+      end;
     teScrollBar:
       begin
         Result.DrawVariant := qdvComplexControl;
@@ -957,11 +1047,17 @@ begin
               Result.DrawVariant := qdvControl;
               Result.ControlElement := QStyleCE_SizeGrip;
             end;
+          SP_GRIPPERPANE:
+            begin
+              Result.DrawVariant := qdvPrimitive;
+              Result.PrimitiveElement := QStylePE_FrameStatusBarItem;
+            end;
         end;
       end;
-    teTreeView:
+    teTreeView, teListView:
       begin
-        if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
+        if (Details.Element = teTreeView) and
+          (Details.Part in [TVP_GLYPH, TVP_HOTGLYPH]) then
         begin
           Result.DrawVariant := qdvPrimitive;
           Result.PrimitiveElement := QStylePE_IndicatorBranch;
