@@ -87,7 +87,6 @@ type
     sf: Pcairo_surface_t;
     FControl: TCairoGraphicControl;
     FDeviceContext: HDC;
-    procedure CreateCairoHandle(BaseHandle: HDC); override;
     procedure DestroyCairoHandle; override;
   public
     procedure CreateHandle; override;
@@ -192,15 +191,6 @@ begin
   end;
 end;
 
-procedure TCairoControlCanvas.CreateCairoHandle(BaseHandle: HDC);
-begin
-  inherited CreateCairoHandle(BaseHandle);
-  SurfaceXDPI := GetDeviceCaps(BaseHandle, LOGPIXELSX);
-  SurfaceYDPI := GetDeviceCaps(BaseHandle, LOGPIXELSY);
-  XDPI := SurfaceXDPI;
-  YDPI := SurfaceXDPI;
-end;
-
 procedure TCairoControlCanvas.DestroyCairoHandle;
 begin
   cairo_surface_destroy(sf);
@@ -213,13 +203,19 @@ begin
   inherited CreateHandle;
   if FDeviceContext = 0 then //Store it locally, what was Geted must be Released
     FDeviceContext := FControl.GetDCHandle;
-  Handle := FDeviceContext;
+  SetHandle(FDeviceContext);
+  SurfaceXDPI := GetDeviceCaps(FDeviceContext, LOGPIXELSX);
+  SurfaceYDPI := GetDeviceCaps(FDeviceContext, LOGPIXELSY);
+  XDPI := SurfaceXDPI;
+  YDPI := SurfaceXDPI;
 end;
 
 procedure TCairoControlCanvas.FreeHandle;
 begin
-  if FDeviceContext <> 0 then
+  if FDeviceContext <> 0 then begin
     FControl.ReleaseDCHandle(FDeviceContext);
+    FDeviceContext := 0;
+  end;
   inherited FreeHandle;
 end;
 

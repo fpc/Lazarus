@@ -77,6 +77,7 @@ type
     procedure CreateFont; override;
     procedure CreateHandle; override;
     procedure CreatePen; override;
+    procedure CreateRegion; override;
     procedure RealizeAntialiasing; override;
     procedure DestroyHandle;
   public
@@ -221,9 +222,10 @@ procedure TCairoPrinterCanvas.SetPenProperties;
   end;
 var
   cap: cairo_line_cap_t;
+   w: double;
 begin
   SetSourceColor(Pen.Color);
-(*  case Pen.Mode of
+  case Pen.Mode of
     pmBlack: begin
       SetSourceColor(clBlack);
       cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
@@ -249,8 +251,12 @@ begin
     pmNotMask,}
   else
     cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
-  end;*)
-  cairo_set_line_width(cr, Pen.Width*ScaleX); //line_width is diameter of the pen circle
+  end;
+  w := Pen.Width;
+  if w = 0 then
+    w := 0.5;
+  w := w * ScaleY;
+  cairo_set_line_width(cr, w); //line_width is diameter of the pen circle
 
   case Pen.Style of
     psSolid:      cairo_set_dash(cr, nil, 0, 0);
@@ -341,6 +347,7 @@ procedure TCairoPrinterCanvas.EndDoc;
 begin
   inherited EndDoc;
   cairo_show_page(cr);
+  FLazClipRect := Rect(0, 0, 0, 0);
   //if caller is printer, then at the end destroy cairo handles (flush output)
   //and establishes CreateCairoHandle call on the next print
   Handle := 0;
@@ -368,6 +375,10 @@ begin
 end;
 
 procedure TCairoPrinterCanvas.CreatePen;
+begin
+end;
+
+procedure TCairoPrinterCanvas.CreateRegion;
 begin
 end;
 
@@ -979,24 +990,24 @@ var
     te: cairo_text_extents_t;
   begin
     if en>=0 then begin
-      if en>1 then begin
+      //if en>1 then begin
         if en <= len then
           CurLine.EndL := en
         else
           CurLine.EndL := len;
-      end else
-        CurLine.EndL := 1;
+      //end else
+        //CurLine.EndL := 1;
       s1 := Copy(s, CurLine.Start, CurLine.EndL-CurLine.Start+1);
       cairo_text_extents(cr, PChar(s1), @te);
-      CurLine.Width := te.width + te.x_bearing;
+      CurLine.Width := te.width;
     end;
     if st > 0 then begin
       CurLine := TLine.Create;
       Lines.Add(CurLine);
-      if st <= len then
-        CurLine.Start := st
-      else
-        CurLine.Start := len;
+      //if st <= len then
+        CurLine.Start := st;
+      //else
+      //  CurLine.Start := len;
       CurLine.EndL := 0;
     end;
     LastBreakEndL := 0;
@@ -1250,6 +1261,7 @@ var
   theRect: TPangoRectangle;
   {$endif}
 begin
+  RequiredState([csHandleValid, csFontValid]);
   SelectFont;
   {$ifdef pangocairo}
   Layout := Pango_Cairo_Create_Layout(cr);
@@ -1271,6 +1283,7 @@ function TCairoPrinterCanvas.GetTextMetrics(out M: TLCLTextMetric): boolean;
 var
   e: cairo_font_extents_t;
 begin
+  RequiredState([csHandleValid, csFontValid]);
   SelectFont;
   cairo_font_extents(cr, @e); //transformation matrix is here ignored
   FillChar(M{%H-}, SizeOf(M), 0);
@@ -1412,8 +1425,7 @@ var
   W, H: Double;
   acr: Pcairo_t;
 begin
-
-  if Orientation = poLandscape then begin
+  if Orientation in [poLandscape, poReverseLandscape] then begin
     s := '%%PageOrientation: Landscape';
     W := PaperHeight*ScaleY; //switch H, W
     H := PaperWidth*ScaleX;
@@ -1433,11 +1445,21 @@ begin
   cairo_ps_surface_dsc_begin_setup(sf);
   cairo_ps_surface_dsc_comment(sf, PChar(s));
 
-  if Orientation = poLandscape then begin //rotate and move
-    cairo_translate(acr, 0, H);
-    cairo_rotate(acr, -PI/2);
+  //rotate and move
+  case Orientation of
+    poLandscape: begin
+      cairo_translate(acr, 0, H);
+      cairo_rotate(acr, -PI/2);
+    end;
+    poReverseLandscape: begin
+      cairo_translate(acr, W, 0);
+      cairo_rotate(acr, PI/2);
+    end;
+    poReversePortrait: begin
+      cairo_translate(acr, W, H);
+      cairo_rotate(acr, PI);
+    end;
   end;
-
   result := {%H-}HDC(acr);
 end;
 
