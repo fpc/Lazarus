@@ -695,12 +695,17 @@ begin
   Result := TListView(AList).ViewStyle <> vsReport;
 end;
 
+type
+  TCustomListViewHack = class(TCustomListView);
+
 class function TQtWSCustomListView.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtTreeWidget: TQtTreeWidget;
   QtListWidget: TQtListWidget;
+  ALV: TCustomListViewHack;
 begin
+  ALV := TCustomListViewHack(AWinControl);
   if IsIconView(TCustomListView(AWinControl)) then
   begin
     QtListWidget := TQtListWidget.Create(AWinControl, AParams);
@@ -726,14 +731,15 @@ begin
       QtListWidget.setViewMode(QListViewListMode);
 
     QtListWidget.Checkable := TCustomListView(AWinControl).Checkboxes;
+    QtListWidget.OwnerDrawn := ALV.IsCustomDrawn(dtControl, cdPrePaint);
     QtListWidget.AttachEvents;
     Result := TLCLIntfHandle(QtListWidget);
   end else
   begin
     QtTreeWidget := TQtTreeWidget.Create(AWinControl, AParams);
     QtTreeWidget.ViewStyle := Ord(TListView(AWinControl).ViewStyle);
-    QtTreeWidget.OwnerDrawn := TListView(AWinControl).OwnerDraw and
-      (TListView(AWinControl).ViewStyle = vsReport);
+    QtTreeWidget.OwnerDrawn := ALV.IsCustomDrawn(dtControl, cdPrePaint) or (ALV.OwnerDraw and
+      (ALV.ViewStyle = vsReport));
     QtTreeWidget.setStretchLastSection(False);
     QtTreeWidget.setRootIsDecorated(False);
     QtTreeWidget.AttachEvents;
@@ -2030,7 +2036,7 @@ begin
             setHeaderVisible(AIsSet and (TListView(ALV).ViewStyle = vsReport)
               and (TListView(ALV).Columns.Count > 0) );
       end;
-    lvpOwnerDraw: QtItemView.OwnerDrawn := TListView(ALV).OwnerDraw and AIsSet;
+    lvpOwnerDraw: ; // utilized automatically.
     lvpReadOnly: QtItemView.setEditTriggers(BoolToEditTriggers[AIsSet]);
     lvpRowSelect:
       begin
@@ -2132,7 +2138,10 @@ begin
         x := GetPixelMetric(QStylePM_ListViewIconSize, nil, ItemViewWidget);
         Size.cx := x;
         Size.cy := x;
-        QtTreeWidget.OwnerDrawn := (AValue = vsReport) and TListView(ALV).OwnerDraw;
+        TQtAbstractItemView(ALV.Handle).OwnerDrawn :=
+          TCustomListViewHack(ALV).IsCustomDrawn(dtControl, cdPrePaint) or
+          (TCustomListViewHack(ALV).OwnerDraw and
+          (TCustomListViewHack(ALV).ViewStyle = vsReport));
       end;
   end;
 
