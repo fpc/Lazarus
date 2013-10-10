@@ -506,7 +506,7 @@ begin
       if (FuncInfo.Params.Count>0) or (ReplacementParams.Count=0) then begin
         NewFunc:=InsertParams2Replacement(FuncInfo);
         // Separate function body
-        NewFunc:=NewFunc+FuncInfo.InclSemiColon;
+        NewFunc:=NewFunc+FuncInfo.InclEmptyBrackets+FuncInfo.InclSemiColon;
         if fCTLink.fSettings.FuncReplaceComment then
           NewFunc:=NewFunc+' { *Converted from '+FuncInfo.FuncName+'* }';
         Comment:=GetComment(FuncInfo.ReplFunc, PossibleCommentPos);
@@ -569,20 +569,23 @@ var
   var
     ExprStartPos, ExprEndPos: integer;
     RoundBrLvl, SquareBrLvl: integer;
-    ShouldReadNextAtom: Boolean;
+    HasParams, ShouldReadNextAtom: Boolean;
   begin
+    FuncInfo.InclEmptyBrackets:='';
     FuncInfo.InclSemiColon:='';
     FuncInfo.StartPos:=xStart;
     with fCTLink.CodeTool do begin
       MoveCursorToCleanPos(xStart);
       ReadNextAtom;                     // Read proc name.
       ReadNextAtom;                     // Read first atom after proc name.
-      if AtomIsChar('(') then begin
+      HasParams:=AtomIsChar('(');
+      if HasParams then begin
         // read parameter list
         ReadNextAtom;
         // Don't read twice inside a loop. Atom can be for example '['
         ShouldReadNextAtom:=False;
-        if not AtomIsChar(')') then begin
+        HasParams:=not AtomIsChar(')');
+        if HasParams then begin
           // read all expressions
           RoundBrLvl:=0;
           SquareBrLvl:=0;
@@ -624,9 +627,13 @@ var
               raise EDelphiConverterError.Create('Bracket not found');
             ReadNextAtom;
           end;
+        end
+        else begin
+          FuncInfo.InclEmptyBrackets:='()';
+          ReadNextAtom;
         end;
-      end
-      else begin
+      end;
+      if not HasParams then begin
         FuncInfo.EndPos:=CurPos.StartPos;
         CheckSemiColon(FuncInfo);
       end;
