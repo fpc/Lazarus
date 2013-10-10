@@ -644,39 +644,40 @@ var
   procedure ReadFuncCall(MaxPos: Integer);
   var
     FuncDefInfo, FuncCallInfo: TFuncReplacement;
-    FuncName: string;
-    i, x, IdentEndPos: Integer;
+    IdentName: string;
+    i, x, IdentEndPos, IdentLen: Integer;
   begin
     IdentEndPos:=xStart;
-    with fCTLink.CodeTool, fCTLink.Settings do begin
+    with fCTLink.CodeTool, fCTLink.Settings do
+    try
       while (IdentEndPos<=MaxPos) and (IsIdentChar[Src[IdentEndPos]]) do
         inc(IdentEndPos);
-      for i:=0 to ReplaceFuncs.Funcs.Count-1 do begin
-        FuncName:=ReplaceFuncs.Funcs[i];
-        if (IdentEndPos-xStart=length(FuncName))
-        and (CompareIdentifiers(PChar(FuncName),@Src[xStart])=0)
-        and not fDefinedProcNames.Find(FuncName, x)
-        then begin
-          FuncDefInfo:=ReplaceFuncs.FuncAtInd(i);
-          if ReplaceFuncs.Categories.Find(FuncDefInfo.Category, x)
-          // Categories.Objects[x] is used as a boolean flag.
-          and Assigned(ReplaceFuncs.Categories.Objects[x])
-          // UTF8 funcs are in LCL which console apps don't have -> don't change.
-          and not (aIsConsoleApp and (FuncDefInfo.Category='UTF8Names'))
-          // Keep Windows funcs in a Windows application.
-          and (fCTLink.Settings.CrossPlatform or (FuncDefInfo.Category<>'WindowsAPI'))
-          then begin
-            // Create a new replacement object for params, position and other info.
-            FuncCallInfo:=TFuncReplacement.Create(FuncDefInfo);
-            ReadParams(FuncCallInfo);
-            IdentEndPos:=FuncCallInfo.EndPos; // Skip the params, too, for next search.
-            fFuncsToReplace.Add(FuncCallInfo);
-            Break;
-          end;
-        end;
+      IdentLen:=IdentEndPos-xStart;
+      SetLength(IdentName, IdentLen);
+      StrMove(PChar(IdentName), @Src[xStart], IdentLen);
+      // Don't try to uselessly find short identifiers
+      if (IdentLen<ReplaceFuncs.MinFuncLen) and (IdentName<>'Ptr') then Exit;
+      if fDefinedProcNames.Find(IdentName, x) then Exit;
+      if not ReplaceFuncs.Funcs.Find(IdentName, i) then Exit;
+      // Now function name is found in replacement list, get function info.
+      FuncDefInfo:=ReplaceFuncs.FuncAtInd(i);
+      if ReplaceFuncs.Categories.Find(FuncDefInfo.Category, i)
+      // Categories.Objects[i] is used as a boolean flag.
+      and Assigned(ReplaceFuncs.Categories.Objects[i])
+      // UTF8 funcs are in LCL which console apps don't have -> don't change.
+      and not (aIsConsoleApp and (FuncDefInfo.Category='UTF8Names'))
+      // Keep Windows funcs in a Windows application.
+      and (fCTLink.Settings.CrossPlatform or (FuncDefInfo.Category<>'WindowsAPI'))
+      then begin
+        // Create a new replacement object for params, position and other info.
+        FuncCallInfo:=TFuncReplacement.Create(FuncDefInfo);
+        ReadParams(FuncCallInfo);
+        IdentEndPos:=FuncCallInfo.EndPos; // Skip the params, too, for next search.
+        fFuncsToReplace.Add(FuncCallInfo);
       end;
+    finally
+      xStart:=IdentEndPos;
     end;
-    xStart:=IdentEndPos;
   end;
 
   function SearchFuncCalls(aNode: TCodeTreeNode): TCodeTreeNode;

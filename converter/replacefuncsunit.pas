@@ -69,6 +69,7 @@ type
   private
     // Delphi func names, objects property has TFuncReplacement items.
     fFuncs: TStringList;
+    fMinFuncLen: Integer;
     // Category names, objects property has boolean info Used/Not used.
     fCategories: TStringList;
   public
@@ -77,6 +78,7 @@ type
     procedure Clear;
     function AddFunc(aCategory, aDelphiFunc, aReplaceFunc, aPackage, aUnitName: string): integer;
     function FuncAtInd(Ind: integer): TFuncReplacement;
+    function MinFuncLen: Integer;
     function AddCategory(aCategory: string; aUsed: Boolean): integer;
     function CategoryIsUsed(Ind: integer): Boolean;
   public
@@ -381,6 +383,22 @@ begin
   if fCategories[Ind]<>'' then
     CategUsed:=PtrInt(fCategories.Objects[Ind]);
   Result:=CategUsed=1;
+end;
+
+function TFuncsAndCategories.MinFuncLen: Integer;
+var
+  i, Len: Integer;
+begin
+  if (fMinFuncLen=0) and (fFuncs.Count>0) then begin
+    fMinFuncLen:=10000;                 // First a big enough length
+    for i:=0 to fFuncs.Count-1 do begin
+      if fFuncs[i]='Ptr' then Continue; // 'Ptr' is short and is a special case.
+      Len:=Length(fFuncs[i]);
+      if Len<fMinFuncLen then
+        fMinFuncLen:=Len;
+    end;
+  end;
+  Result:=fMinFuncLen;
 end;
 
 
