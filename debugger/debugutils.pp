@@ -399,6 +399,12 @@ begin
       end;
       continue;
     end;
+    if (AValue[i] = '\' ) and (i < length(AValue)) then begin // gdb escapes some chars, even it not pascalish
+      inc(j);
+      inc(i); // copy next char
+      Result[j] := AValue[i];
+      continue;
+    end;
     if InQuote or not(AValue[i] = '#' ) then begin
       inc(j);
       Result[j] := AValue[i];
