@@ -9,7 +9,7 @@ interface
 uses
   FpDbgClasses, FpDbgDisasX86, FpDbgDwarf, FpDbgDwarfConst, FpDbgLoader, FpDbgPETypes, 
   FpDbgSymbols, FpDbgUtil, FpDbgWinExtra, FpImgReaderWinPE, FpImgReaderElf, 
-  FpImgReaderElfTypes, FpImgReaderBase, LazarusPackageIntf;
+  FpImgReaderElfTypes, FpImgReaderBase, FpPascalParser, LazarusPackageIntf;
 
 implementation
 

@@ -1238,6 +1238,7 @@ components/fpdebug/fpimgreaderelf.pas svneol=native#text/pascal
 components/fpdebug/fpimgreaderelftypes.pas svneol=native#text/pascal
 components/fpdebug/fpimgreaderwinpe.pas svneol=native#text/pascal
 components/fpdebug/fpimgreaderwinpetypes.pas svneol=native#text/pascal
+components/fpdebug/fppascalparser.pas svneol=native#text/pascal
 components/fpdebug/test/asmtest.lpi svneol=native#text/plain
 components/fpdebug/test/asmtest.lpr svneol=native#text/pascal
 components/fpdebug/test/asmtestunit.lfm svneol=native#text/plain

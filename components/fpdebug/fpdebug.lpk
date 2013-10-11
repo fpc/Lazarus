@@ -3,6 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="fpdebug"/>
+    <Author Value="Lazarus Team"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -20,9 +21,11 @@
 
 Based on:
 1) FPDebug by Marc Weustink 
-2) Duby by Dmitry Boyarintsev"/>
+2) Duby by Dmitry Boyarintsev
+
+Extended by Martin Friebe"/>
     <License Value="GPL"/>
-    <Files Count="13">
+    <Files Count="14">
       <Item1>
         <Filename Value="fpdbgclasses.pp"/>
         <UnitName Value="FpDbgClasses"/>
@@ -73,8 +76,12 @@ Based on:
       </Item12>
       <Item13>
         <Filename Value="fpimgreaderbase.pas"/>
-        <UnitName Value="fpimgreaderbase"/>
+        <UnitName Value="FpImgReaderBase"/>
       </Item13>
+      <Item14>
+        <Filename Value="fppascalparser.pas"/>
+        <UnitName Value="fppascalparser"/>
+      </Item14>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
