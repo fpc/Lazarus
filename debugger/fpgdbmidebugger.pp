@@ -12,7 +12,12 @@ uses
 type
 
   TFpGDBMIExpressionPart = class;
+  TFpGDBMIExpressionPartContainer = class;
+  TFpGDBMIExpressionPartBracket = class;
+  TFpGDBMIExpressionPartOperator = class;
+
   TFpGDBMIExpressionPartClass = class of TFpGDBMIExpressionPart;
+  TFpGDBMIExpressionPartBracketClass = class of TFpGDBMIExpressionPartBracket;
 
   { TFpGDBMIExpression }
 
@@ -35,8 +40,7 @@ type
     property Valid: Boolean read FValid;
   end;
 
-  TFpGDBMIExpressionPartContainer = class;
-  TFpGDBMIExpressionPartBracket = class;
+
   { TFpGDBMIExpressionPart }
 
   TFpGDBMIExpressionPart = class
@@ -65,6 +69,7 @@ type
     function IsValidAfterPart(APrevPart: TFpGDBMIExpressionPart): Boolean; virtual;
     function MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
                                  var AResult: TFpGDBMIExpressionPart): Boolean; virtual;
+    function FindLeftSideOperandByPrecedence(AnOperator: TFpGDBMIExpressionPartOperator): TFpGDBMIExpressionPart; virtual;
     function CanHaveOperatorAsNext: Boolean; virtual; // True
   public
     constructor Create(AExpression: TFpGDBMIExpression; AStartChar: PChar; AnEndChar: PChar = nil);
@@ -104,7 +109,6 @@ type
   { TFpGDBMIExpressionPartIdentifer }
 
   TFpGDBMIExpressionPartIdentifer = class(TFpGDBMIExpressionPartContainer)
-  // may >contain< "()" or "[]"
   public
   end;
 
@@ -138,7 +142,10 @@ type
   protected
     function DebugText(AIndent: String): String; override;
     function CanHaveOperatorAsNext: Boolean; override;
+    function FindLeftSideOperandByPrecedence(AnOperator: TFpGDBMIExpressionPartOperator): TFpGDBMIExpressionPart; override;
     function HasAllOperands: Boolean; virtual; abstract;
+    function MaybeAddLeftOperand(APrevPart: TFpGDBMIExpressionPart;
+      var AResult: TFpGDBMIExpressionPart): Boolean;
     procedure DoHandleEndOfExpression; override;
   public
     function HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart; override;
@@ -183,6 +190,12 @@ type
   TFpGDBMIExpressionPartOperatorDeRef = class(TFpGDBMIExpressionPartUnaryOperator)  // ptrval^
   protected
     procedure Init; override;
+    function MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
+      var AResult: TFpGDBMIExpressionPart): Boolean; override;
+    function FindLeftSideOperandByPrecedence(AnOperator: TFpGDBMIExpressionPartOperator): TFpGDBMIExpressionPart;
+      override;
+    // IsValidAfterPart: same as binary op
+    function IsValidAfterPart(APrevPart: TFpGDBMIExpressionPart): Boolean; override;
   end;
 
   { TFpGDBMIExpressionPartOperatorUnaryPlusMinus }
@@ -204,6 +217,13 @@ type
   { TFpGDBMIExpressionPartOperatorMulDiv }
 
   TFpGDBMIExpressionPartOperatorMulDiv = class(TFpGDBMIExpressionPartBinaryOperator)    // * /
+  protected
+    procedure Init; override;
+  end;
+
+  { TFpGDBMIExpressionPartOperatorMemberOf }
+
+  TFpGDBMIExpressionPartOperatorMemberOf = class(TFpGDBMIExpressionPartBinaryOperator)    // struct.member
   protected
     procedure Init; override;
   end;
@@ -293,6 +313,14 @@ type
     procedure Cancel(const ASource: String); override;
   end;
 
+{ TFpGDBMIExpressionPartOperatorMemberOf }
+
+procedure TFpGDBMIExpressionPartOperatorMemberOf.Init;
+begin
+  FPrecedence := 0;
+  inherited Init;
+end;
+
 { TFpGDBMIExpressionPartOperatorMakeRef }
 
 procedure TFpGDBMIExpressionPartOperatorMakeRef.Init;
@@ -307,6 +335,35 @@ procedure TFpGDBMIExpressionPartOperatorDeRef.Init;
 begin
   FPrecedence := 1;
   inherited Init;
+end;
+
+function TFpGDBMIExpressionPartOperatorDeRef.MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
+  var AResult: TFpGDBMIExpressionPart): Boolean;
+begin
+  Result := MaybeAddLeftOperand(APrevPart, AResult);
+end;
+
+function TFpGDBMIExpressionPartOperatorDeRef.FindLeftSideOperandByPrecedence(AnOperator: TFpGDBMIExpressionPartOperator): TFpGDBMIExpressionPart;
+begin
+  Result := Self;
+end;
+
+function TFpGDBMIExpressionPartOperatorDeRef.IsValidAfterPart(APrevPart: TFpGDBMIExpressionPart): Boolean;
+begin
+  Result := inherited IsValidAfterPart(APrevPart);
+  if not Result then
+    exit;
+
+  Result := APrevPart.CanHaveOperatorAsNext;
+
+  // BinaryOperator...
+  //   foo
+  //   Identifer
+  // "Identifer" can hane a binary-op next. But it must be applied to the parent.
+  // So it is not valid here.
+  // If new operator has a higher precedence, it go down to the child again and replace it
+  if (APrevPart.Parent <> nil) and (APrevPart.Parent is TFpGDBMIExpressionPartOperator) then
+    Result := False;
 end;
 
 { TFpGDBMIExpressionPartRoundBracket }
@@ -407,6 +464,17 @@ var
     NewPart := TFpGDBMIExpressionPartIdentifer.Create(Self, CurPtr, TokenEndPtr-1);
   end;
 
+  procedure HandleDot;
+  begin
+    while TokenEndPtr^ = '.' do
+      inc(TokenEndPtr);
+    case TokenEndPtr - CurPtr of
+      1: AddPart(TFpGDBMIExpressionPartOperatorMemberOf);
+      //2: ; // ".."
+      else SetError('Failed parsing ...');
+    end;
+  end;
+
   procedure AddRefOperator;
   begin
     if (CurPart = nil) or (not CurPart.CanHaveOperatorAsNext)
@@ -414,14 +482,14 @@ var
     else AddPart(TFpGDBMIExpressionPartOperatorDeRef);
   end;
 
-  procedure CloseRounBracket; //(BracketClass)
+  procedure CloseBracket(ABracketClass: TFpGDBMIExpressionPartBracketClass);
   begin
     NewPart := CurPart.SurroundingBracket;
     if NewPart = nil then begin
       SetError('Closing bracket found without opening')
     end
     else
-    if not (NewPart is TFpGDBMIExpressionPartRoundBracket) then begin
+    if not (NewPart is ABracketClass) then begin
       SetError('Mismatch bracket')
     end
     else begin
@@ -449,10 +517,11 @@ begin
     case CurPtr^ of
       '@' :      AddPart(TFpGDBMIExpressionPartOperatorAddressOf);
       '^':       AddRefOperator;
+      '.':       HandleDot;
       '+', '-' : AddPlusMinus;
       '*', '/' : AddPart(TFpGDBMIExpressionPartOperatorMulDiv);
       '(':       AddPart(TFpGDBMIExpressionPartRoundBracket);
-      ')':       CloseRounBracket;
+      ')':       CloseBracket(TFpGDBMIExpressionPartRoundBracket);
       //'[': ;
       //'''':     AddConstChar;
       //'0'..'9',
@@ -702,6 +771,11 @@ begin
   Result := False;
 end;
 
+function TFpGDBMIExpressionPart.FindLeftSideOperandByPrecedence(AnOperator: TFpGDBMIExpressionPartOperator): TFpGDBMIExpressionPart;
+begin
+  Result := Self;
+end;
+
 function TFpGDBMIExpressionPart.CanHaveOperatorAsNext: Boolean;
 begin
   Result := True;
@@ -766,6 +840,49 @@ begin
   Result := HasAllOperands and LastItem.CanHaveOperatorAsNext;
 end;
 
+function TFpGDBMIExpressionPartOperator.FindLeftSideOperandByPrecedence(AnOperator: TFpGDBMIExpressionPartOperator): TFpGDBMIExpressionPart;
+begin
+  Result := Self;
+
+  if (not HasAllOperands) or (LastItem = nil) then begin
+    Result := nil;
+    exit
+  end;
+
+  // precedence: 1 = highest
+  if Precedence > AnOperator.Precedence then
+    Result := LastItem.FindLeftSideOperandByPrecedence(AnOperator);
+end;
+
+function TFpGDBMIExpressionPartOperator.MaybeAddLeftOperand(APrevPart: TFpGDBMIExpressionPart;
+  var AResult: TFpGDBMIExpressionPart): Boolean;
+var
+  ALeftSide: TFpGDBMIExpressionPart;
+begin
+  Result := APrevPart.IsValidNextPart(Self);
+  if not Result then
+    exit;
+
+  AResult := Self;
+  if (Count > 0) or // Previous already set
+     (not APrevPart.CanHaveOperatorAsNext) // can not have 2 operators follow each other
+  then begin
+    SetError(APrevPart, 'Can not apply operator '+GetText+': ');
+    APrevPart.Free;
+    exit;
+  end;
+
+  ALeftSide := APrevPart.FindLeftSideOperandByPrecedence(Self);
+  if ALeftSide = nil then begin
+    SetError(Self, 'Internal parser error for operator '+GetText+': ');
+    APrevPart.Free;
+    exit;
+  end;
+
+  ALeftSide.ReplaceInParent(Self);
+  Add(ALeftSide);
+end;
+
 procedure TFpGDBMIExpressionPartOperator.DoHandleEndOfExpression;
 begin
   if not HasAllOperands then
@@ -825,56 +942,8 @@ end;
 
 function TFpGDBMIExpressionPartBinaryOperator.MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
   var AResult: TFpGDBMIExpressionPart): Boolean;
-var
-  OpPart: TFpGDBMIExpressionPartOperator;
 begin
-  Result := APrevPart.IsValidNextPart(Self);
-  if not Result then
-    exit;
-
-  AResult := Self;
-  if (Count > 0) or // Previous already set
-     (not APrevPart.CanHaveOperatorAsNext) // can not have 2 operators follow each other
-  then begin
-    SetError(APrevPart, 'Can not apply operator '+GetText+': ');
-    APrevPart.Free;
-    AResult := Self;
-    exit
-  end;
-
-  // precedence: 1 = highest
-  // TODO: does not apply to Deref "ptr^" // currently saved by precedence
-  if APrevPart is TFpGDBMIExpressionPartOperator then begin
-    OpPart := TFpGDBMIExpressionPartOperator(APrevPart);
-
-    while true do begin
-      if OpPart.LastItem = nil then begin
-        SetError(APrevPart, 'Internal parser error for operator '+GetText+': ');
-        APrevPart.Free;
-        AResult := Self;
-        exit
-      end;
-
-      if OpPart.Precedence > Self.Precedence then begin
-        if (OpPart.LastItem is TFpGDBMIExpressionPartOperator) and
-           (TFpGDBMIExpressionPartOperator(OpPart.LastItem).Precedence > Self.Precedence)
-        then begin
-          OpPart := TFpGDBMIExpressionPartOperator(OpPart.LastItem);
-          continue;
-        end;
-
-        // APrevPart := OpPart.LastItem; break;
-        Add(OpPart.LastItem);
-        OpPart.LastItem := Self;
-        exit;
-      end;
-
-      break;
-    end;
-  end;
-
-  APrevPart.ReplaceInParent(Self);
-  Add(APrevPart);
+  Result := MaybeAddLeftOperand(APrevPart, AResult);
 end;
 
 { TFpGDBMIExpressionPartOperatorAddressOf }
