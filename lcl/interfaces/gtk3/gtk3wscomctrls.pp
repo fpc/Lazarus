@@ -600,7 +600,10 @@ type
 class procedure TGtk3WSCustomListView.ItemDelete(const ALV: TCustomListView;
   const AIndex: Integer);
 begin
-  DebugLn('TGtk3WSCustomListView.ItemDelete ');
+  if not WSCheckHandleAllocated(ALV, 'ItemDelete') then
+    Exit;
+  TGtk3ListView(ALV.Handle).ItemDelete(AIndex);
+  // DebugLn('TGtk3WSCustomListView.ItemDelete ');
   // inherited ItemDelete(ALV, AIndex);
 end;
 
@@ -669,7 +672,7 @@ class procedure TGtk3WSCustomListView.ItemSetImage(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const ASubIndex,
   AImageIndex: Integer);
 begin
-  DebugLn('TGtk3WSCustomListView.ItemSetImage ');
+  // DebugLn('TGtk3WSCustomListView.ItemSetImage ');
   // inherited ItemSetImage(ALV, AIndex, AItem, ASubIndex, AImageIndex);
 end;
 

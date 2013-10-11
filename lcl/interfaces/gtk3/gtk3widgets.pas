@@ -543,6 +543,7 @@ type
     procedure SetColumnWidth(AIndex: Integer; AColumn: TListColumn; AWidth: Integer);
     procedure SetColumnVisible(AIndex: Integer; AColumn: TListColumn; AVisible: Boolean);
 
+    procedure ItemDelete(AIndex: Integer);
     procedure ItemInsert(AIndex: Integer; AItem: TListItem);
     procedure ItemSetText(AIndex, ASubIndex: Integer; AItem: TListItem; const AText: String);
     procedure ItemSetState(const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
@@ -5419,6 +5420,19 @@ begin
   begin
     AGtkColumn^.set_visible(AVisible and (TListView(LCLObject).ViewStyle in [vsList, vsReport]));
   end;
+end;
+
+procedure TGtk3ListView.ItemDelete(AIndex: Integer);
+var
+  AModel: PGtkTreeModel;
+  Iter: TGtkTreeIter;
+begin
+  if IsTreeView then
+    AModel := PGtkTreeView(getContainerWidget)^.get_model
+  else
+    AModel := PGtkIconView(getContainerWidget)^.get_model;
+  if gtk_tree_model_iter_nth_child(AModel, @Iter, nil, AIndex) then
+    gtk_list_store_remove(PGtkListStore(AModel), @Iter);
 end;
 
 procedure TGtk3ListView.ItemInsert(AIndex: Integer; AItem: TListItem);

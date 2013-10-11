@@ -662,7 +662,8 @@ procedure LCLIntfCellRenderer_CellDataFunc(cell_layout:PGtkCellLayout;
 var
   LCLCellRenderer: PLCLIntfCellRenderer absolute cell;
   APath: PGtkTreePath;
-  Str: PgChar;
+  S: String;
+  // Str: PgChar;
   ListColumn: TListColumn;
   ListItem: TListItem;
   Value: TGValue;
@@ -711,15 +712,14 @@ begin
     else
       LCLCellRenderer^.ColumnIndex := ListColumn.Index;
 
+    S := '';
     if LCLCellRenderer^.ColumnIndex <= 0 then
-      Str := PgChar(ListItem.Caption)
+      S := ListItem.Caption
     else
       if ListColumn.Index-1 <= ListItem.SubItems.Count-1 then
-        Str := PgChar(ListItem.SubItems.Strings[LCLCellRenderer^.ColumnIndex-1]);
+        S := ListItem.SubItems.Strings[LCLCellRenderer^.ColumnIndex-1];
 
-    //Value.data[0].v_pointer := PChar(Str);
-    //g_object_set_property(PGObject(cell), 'text', @Value);
-    Value.set_string(Str);
+    Value.data[0].v_pointer := PgChar(S);
     cell^.set_property('text', @Value);
   end else
   if (wtListBox in TGtk3Widget(Data).WidgetType) then
@@ -731,10 +731,10 @@ begin
       cell^.get_property('text', @Value);
       // DebugLn('PropertyType=',dbgs(Value.g_type),' IsString=',dbgs(Value.g_type = G_TYPE_STRING),' getString=',Value.get_string);
 
-      Str := PgChar(TCustomListBox(TGtk3Widget(Data).LCLObject).Items.Strings[LCLCellRenderer^.Index]);
+      S := TCustomListBox(TGtk3Widget(Data).LCLObject).Items.Strings[LCLCellRenderer^.Index];
       // DebugLn('LCLCellRenderer^.Index=',dbgs(LCLCellRenderer^.Index),' text=',Str);
-      // Value.data[0].v_pointer := PChar(Str);
-      Value.set_string(Str);
+      Value.data[0].v_pointer := PgChar(S);
+      // Value.set_string(Str);
       // set text only if we are not ownerdrawn !
       cell^.set_property('text', @Value);
       // DebugLn('IsFixedCellSize ',dbgs(PGtkTreeView(TGtk3Widget(Data).GetContainerWidget)^.get_fixed_height_mode));
