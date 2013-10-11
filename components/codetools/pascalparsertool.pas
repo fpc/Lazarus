@@ -3265,10 +3265,12 @@ begin
   // type
   ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
 
-  // optional: absolute
-  if UpAtomIs('ABSOLUTE') then begin
-    ReadNextAtom;
-    ReadConstant(true,false,[]);
+  if CurNode.Parent.Desc in [ctnProcedure] then begin
+    // optional: absolute
+    if UpAtomIs('ABSOLUTE') then begin
+      ReadNextAtom;
+      ReadConstant(true,false,[]);
+    end;
   end;
 
   // optional: initial value
