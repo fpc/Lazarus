@@ -3574,7 +3574,7 @@ begin
 
   DesignerMenuChangeClass.Enabled := CompsAreSelected and (ControlSelection.Count = 1);
   // Disable ViewLFM menu item for virtual units. There is no form file yet.
-  DesignerMenuViewLFM.Enabled := UnitIsVirtual;
+  DesignerMenuViewLFM.Enabled := not UnitIsVirtual;
   UpdateChangeParentMenu;
 
   DesignerMenuSnapToGridOption.Checked := EnvironmentOptions.SnapToGrid;
