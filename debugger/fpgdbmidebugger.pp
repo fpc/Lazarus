@@ -62,11 +62,15 @@ type
     procedure DoHandleEndOfExpression; virtual;
 
     function IsValidNextPart(APart: TFpGDBMIExpressionPart): Boolean; virtual;
-    function CanHaveBinaryOperatorAsNext: Boolean; virtual; // True
+    function IsValidAfterPart(APrevPart: TFpGDBMIExpressionPart): Boolean; virtual;
+    function MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
+                                 var AResult: TFpGDBMIExpressionPart): Boolean; virtual;
+    function CanHaveOperatorAsNext: Boolean; virtual; // True
   public
     constructor Create(AExpression: TFpGDBMIExpression; AStartChar: PChar; AnEndChar: PChar = nil);
     function  HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart; virtual;
     procedure HandleEndOfExpression; virtual;
+
     property StartChar: PChar read FStartChar write SetStartChar;
     property EndChar: PChar read FEndChar write SetEndChar;
     property Parent: TFpGDBMIExpressionPartContainer read FParent write SetParent;
@@ -104,19 +108,17 @@ type
   public
   end;
 
+
+  { TFpGDBMIExpressionPartBracket }
+
   TFpGDBMIExpressionPartBracket = class(TFpGDBMIExpressionPartContainer)
-  end;
-
-  { TFpGDBMIExpressionPartRoundBracket }
-
-  TFpGDBMIExpressionPartRoundBracket = class(TFpGDBMIExpressionPartBracket)
   private
     FIsClosed: boolean;
     FIsClosing: boolean;
   protected
     procedure Init; override;
     procedure DoHandleEndOfExpression; override;
-    function CanHaveBinaryOperatorAsNext: Boolean; override;
+    function CanHaveOperatorAsNext: Boolean; override;
   public
     procedure CloseBracket;
     function HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart; override;
@@ -124,20 +126,22 @@ type
     property IsClosed: boolean read FIsClosed;
   end;
 
+  { TFpGDBMIExpressionPartRoundBracket }
+  TFpGDBMIExpressionPartRoundBracket = class(TFpGDBMIExpressionPartBracket)
+  end;
+
   { TFpGDBMIExpressionPartOperator }
 
   TFpGDBMIExpressionPartOperator = class(TFpGDBMIExpressionPartContainer)
   private
-    FIsUnary: Boolean;
     FPrecedence: Integer;
   protected
     function DebugText(AIndent: String): String; override;
-    function CanHaveBinaryOperatorAsNext: Boolean; override;
+    function CanHaveOperatorAsNext: Boolean; override;
+    function HasAllOperands: Boolean; virtual; abstract;
     procedure DoHandleEndOfExpression; override;
   public
     function HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart; override;
-    function HandlePrevPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart; virtual;
-    property IsUnary: Boolean read FIsUnary;
     property Precedence: Integer read FPrecedence;
   end;
 
@@ -145,7 +149,7 @@ type
 
   TFpGDBMIExpressionPartUnaryOperator = class(TFpGDBMIExpressionPartOperator)
   protected
-    procedure Init; override;
+    function HasAllOperands: Boolean; override;
   public
   end;
 
@@ -153,13 +157,30 @@ type
 
   TFpGDBMIExpressionPartBinaryOperator = class(TFpGDBMIExpressionPartOperator)
   protected
-    procedure Init; override;
+    function HasAllOperands: Boolean; override;
+    function IsValidAfterPart(APrevPart: TFpGDBMIExpressionPart): Boolean; override;
   public
+    function MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
+      var AResult: TFpGDBMIExpressionPart): Boolean; override;
   end;
 
   { TFpGDBMIExpressionPartOperatorAddressOf }
 
   TFpGDBMIExpressionPartOperatorAddressOf = class(TFpGDBMIExpressionPartUnaryOperator)  // @
+  protected
+    procedure Init; override;
+  end;
+
+  { TFpGDBMIExpressionPartOperatorMakeRef }
+
+  TFpGDBMIExpressionPartOperatorMakeRef = class(TFpGDBMIExpressionPartUnaryOperator)  // ^TTYpe
+  protected
+    procedure Init; override;
+  end;
+
+  { TFpGDBMIExpressionPartOperatorDeRef }
+
+  TFpGDBMIExpressionPartOperatorDeRef = class(TFpGDBMIExpressionPartUnaryOperator)  // ptrval^
   protected
     procedure Init; override;
   end;
@@ -272,16 +293,32 @@ type
     procedure Cancel(const ASource: String); override;
   end;
 
+{ TFpGDBMIExpressionPartOperatorMakeRef }
+
+procedure TFpGDBMIExpressionPartOperatorMakeRef.Init;
+begin
+  FPrecedence := 1;
+  inherited Init;
+end;
+
+{ TFpGDBMIExpressionPartOperatorDeRef }
+
+procedure TFpGDBMIExpressionPartOperatorDeRef.Init;
+begin
+  FPrecedence := 1;
+  inherited Init;
+end;
+
 { TFpGDBMIExpressionPartRoundBracket }
 
-procedure TFpGDBMIExpressionPartRoundBracket.Init;
+procedure TFpGDBMIExpressionPartBracket.Init;
 begin
   inherited Init;
   FIsClosed := False;
   FIsClosing := False;
 end;
 
-procedure TFpGDBMIExpressionPartRoundBracket.DoHandleEndOfExpression;
+procedure TFpGDBMIExpressionPartBracket.DoHandleEndOfExpression;
 begin
   if not IsClosed then begin
     SetError('Bracket not closed');
@@ -290,12 +327,12 @@ begin
   inherited DoHandleEndOfExpression;
 end;
 
-function TFpGDBMIExpressionPartRoundBracket.CanHaveBinaryOperatorAsNext: Boolean;
+function TFpGDBMIExpressionPartBracket.CanHaveOperatorAsNext: Boolean;
 begin
   Result := IsClosed;
 end;
 
-procedure TFpGDBMIExpressionPartRoundBracket.CloseBracket;
+procedure TFpGDBMIExpressionPartBracket.CloseBracket;
 begin
   FIsClosing := True;
   if LastItem <> nil then
@@ -304,7 +341,7 @@ begin
   FIsClosed := True;
 end;
 
-function TFpGDBMIExpressionPartRoundBracket.HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart;
+function TFpGDBMIExpressionPartBracket.HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart;
 begin
   if IsClosed then begin
     Result := inherited HandleNextPart(APart);
@@ -321,7 +358,7 @@ begin
   Add(APart);
 end;
 
-procedure TFpGDBMIExpressionPartRoundBracket.HandleEndOfExpression;
+procedure TFpGDBMIExpressionPartBracket.HandleEndOfExpression;
 begin
   if not FIsClosing then
     inherited HandleEndOfExpression;
@@ -349,11 +386,9 @@ var
 
   procedure AddPlusMinus;
   begin
-    if (CurPart = nil) or (not CurPart.CanHaveBinaryOperatorAsNext)
-    then
-      AddPart(TFpGDBMIExpressionPartOperatorUnaryPlusMinus)
-    else
-      AddPart(TFpGDBMIExpressionPartOperatorPlusMinus);
+    if (CurPart = nil) or (not CurPart.CanHaveOperatorAsNext)
+    then AddPart(TFpGDBMIExpressionPartOperatorUnaryPlusMinus)
+    else AddPart(TFpGDBMIExpressionPartOperatorPlusMinus);
   end;
 
   procedure AddConstChar;
@@ -372,18 +407,25 @@ var
     NewPart := TFpGDBMIExpressionPartIdentifer.Create(Self, CurPtr, TokenEndPtr-1);
   end;
 
-  procedure CloseRounBracket;
+  procedure AddRefOperator;
+  begin
+    if (CurPart = nil) or (not CurPart.CanHaveOperatorAsNext)
+    then AddPart(TFpGDBMIExpressionPartOperatorMakeRef)
+    else AddPart(TFpGDBMIExpressionPartOperatorDeRef);
+  end;
+
+  procedure CloseRounBracket; //(BracketClass)
   begin
     NewPart := CurPart.SurroundingBracket;
     if NewPart = nil then begin
-      SetError('Closing bracket "(" found without opening')
+      SetError('Closing bracket found without opening')
     end
     else
     if not (NewPart is TFpGDBMIExpressionPartRoundBracket) then begin
       SetError('Mismatch bracket')
     end
     else begin
-      TFpGDBMIExpressionPartRoundBracket(NewPart).CloseBracket;
+      TFpGDBMIExpressionPartBracket(NewPart).CloseBracket;
       CurPart := nil;
     end;
   end;
@@ -406,6 +448,7 @@ begin
     TokenEndPtr := CurPtr + 1;
     case CurPtr^ of
       '@' :      AddPart(TFpGDBMIExpressionPartOperatorAddressOf);
+      '^':       AddRefOperator;
       '+', '-' : AddPlusMinus;
       '*', '/' : AddPart(TFpGDBMIExpressionPartOperatorMulDiv);
       '(':       AddPart(TFpGDBMIExpressionPartRoundBracket);
@@ -425,12 +468,9 @@ begin
       break;
     assert(NewPart <> nil);
 
-debugln('=================================');
-DebugLn('NEWPART:  '+NewPart.DebugText(''));
     if CurPart = nil
     then CurPart := NewPart
     else CurPart := CurPart.HandleNextPart(NewPart);
-DebugLn('CURPART:  '+CurPart.DebugText(''));
 
     CurPtr :=  TokenEndPtr;
   end; // While CurPtr < EndPtr do begin
@@ -648,20 +688,21 @@ end;
 
 function TFpGDBMIExpressionPart.IsValidNextPart(APart: TFpGDBMIExpressionPart): Boolean;
 begin
-  Result := True;
-  if (APart is TFpGDBMIExpressionPartOperator) and
-     (not TFpGDBMIExpressionPartOperator(APart).IsUnary)
-  then
-    Result := Result and CanHaveBinaryOperatorAsNext;
-//TODO move
-  if (Parent <> nil) and (Parent is TFpGDBMIExpressionPartOperator) and
-     (not TFpGDBMIExpressionPartOperator(APart).IsUnary) and
-     (APart is TFpGDBMIExpressionPartOperator)
-  then
-    Result := False; //Result and CanHaveBinaryOperatorAsNext;
+  Result := APart.IsValidAfterPart(Self);
 end;
 
-function TFpGDBMIExpressionPart.CanHaveBinaryOperatorAsNext: Boolean;
+function TFpGDBMIExpressionPart.IsValidAfterPart(APrevPart: TFpGDBMIExpressionPart): Boolean;
+begin
+  Result := True;
+end;
+
+function TFpGDBMIExpressionPart.MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
+  var AResult: TFpGDBMIExpressionPart): Boolean;
+begin
+  Result := False;
+end;
+
+function TFpGDBMIExpressionPart.CanHaveOperatorAsNext: Boolean;
 begin
   Result := True;
 end;
@@ -689,10 +730,9 @@ end;
 
 function TFpGDBMIExpressionPart.HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart;
 begin
-  if (APart is TFpGDBMIExpressionPartOperator) and IsValidNextPart(APart) then begin
-    Result := TFpGDBMIExpressionPartOperator(APart).HandlePrevPart(Self);
+  Result := APart;
+  if APart.MaybeHandlePrevPart(Self, Result) then
     exit;
-  end;
 
   if Parent <> nil then begin
     Result := Parent.HandleNextPart(APart);
@@ -717,25 +757,18 @@ function TFpGDBMIExpressionPartOperator.DebugText(AIndent: String): String;
 begin
   Result := inherited DebugText(AIndent);
   while Result[Length(Result)] in [#10, #13] do SetLength(Result, Length(Result)-1);
-  Result := Result +
-    ' IsUnary:' + dbgs(FIsUnary) +
-    ' Precedence:' + dbgs(FPrecedence) +
+  Result := Result + ' Precedence:' + dbgs(FPrecedence) +
     LineEnding;
 end;
 
-function TFpGDBMIExpressionPartOperator.CanHaveBinaryOperatorAsNext: Boolean;
+function TFpGDBMIExpressionPartOperator.CanHaveOperatorAsNext: Boolean;
 begin
-  if IsUnary then
-    Result := (Count = 1) and Items[0].CanHaveBinaryOperatorAsNext
-  else
-    Result := (Count = 2) and Items[1].CanHaveBinaryOperatorAsNext;
+  Result := HasAllOperands and LastItem.CanHaveOperatorAsNext;
 end;
 
 procedure TFpGDBMIExpressionPartOperator.DoHandleEndOfExpression;
 begin
-  if (IsUnary and (Count < 1)) or
-     (not IsUnary and (Count < 2))
-  then
+  if not HasAllOperands then
     SetError(Self, 'Not enough operands')
   else
     inherited DoHandleEndOfExpression;
@@ -744,7 +777,7 @@ end;
 function TFpGDBMIExpressionPartOperator.HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart;
 begin
   Result := Self;
-  if (IsUnary and (Count > 0)) or (Count > 1) then begin
+  if HasAllOperands then begin
     Result := inherited HandleNextPart(APart);
     exit;
   end;
@@ -758,30 +791,67 @@ begin
   Result := APart;
 end;
 
-function TFpGDBMIExpressionPartOperator.HandlePrevPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart;
+{ TFpGDBMIExpressionPartUnaryOperator }
+
+function TFpGDBMIExpressionPartUnaryOperator.HasAllOperands: Boolean;
+begin
+  Result := Count = 1;
+end;
+
+{ TFpGDBMIExpressionPartBinaryOperator }
+
+function TFpGDBMIExpressionPartBinaryOperator.HasAllOperands: Boolean;
+begin
+  Result := Count = 2;
+end;
+
+function TFpGDBMIExpressionPartBinaryOperator.IsValidAfterPart(APrevPart: TFpGDBMIExpressionPart): Boolean;
+begin
+  Result := inherited IsValidAfterPart(APrevPart);
+  if not Result then
+    exit;
+
+  Result := APrevPart.CanHaveOperatorAsNext;
+
+  // BinaryOperator...
+  //   foo
+  //   Identifer
+  // "Identifer" can hane a binary-op next. But it must be applied to the parent.
+  // So it is not valid here.
+  // If new operator has a higher precedence, it go down to the child again and replace it
+  if (APrevPart.Parent <> nil) and (APrevPart.Parent is TFpGDBMIExpressionPartOperator) then
+    Result := False;
+end;
+
+function TFpGDBMIExpressionPartBinaryOperator.MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
+  var AResult: TFpGDBMIExpressionPart): Boolean;
 var
   OpPart: TFpGDBMIExpressionPartOperator;
 begin
-  Result := Self;
-  if IsUnary or     // Unary has no previous // TODO deref ^
-     (Count > 0) or // Previous already set
-     (not APart.CanHaveBinaryOperatorAsNext) // can not have 2 operators follow each other
+  Result := APrevPart.IsValidNextPart(Self);
+  if not Result then
+    exit;
+
+  AResult := Self;
+  if (Count > 0) or // Previous already set
+     (not APrevPart.CanHaveOperatorAsNext) // can not have 2 operators follow each other
   then begin
-    SetError(APart, 'Can not apply operator '+GetText+': ');
-    APart.Free;
-    Result := Self;
+    SetError(APrevPart, 'Can not apply operator '+GetText+': ');
+    APrevPart.Free;
+    AResult := Self;
     exit
   end;
 
   // precedence: 1 = highest
-  if APart is TFpGDBMIExpressionPartOperator then begin
-    OpPart := TFpGDBMIExpressionPartOperator(APart);
+  // TODO: does not apply to Deref "ptr^" // currently saved by precedence
+  if APrevPart is TFpGDBMIExpressionPartOperator then begin
+    OpPart := TFpGDBMIExpressionPartOperator(APrevPart);
 
     while true do begin
       if OpPart.LastItem = nil then begin
-        SetError(APart, 'Internal parser error for operator '+GetText+': ');
-        APart.Free;
-        Result := Self;
+        SetError(APrevPart, 'Internal parser error for operator '+GetText+': ');
+        APrevPart.Free;
+        AResult := Self;
         exit
       end;
 
@@ -793,7 +863,7 @@ begin
           continue;
         end;
 
-        // APart := OpPart.LastItem; break;
+        // APrevPart := OpPart.LastItem; break;
         Add(OpPart.LastItem);
         OpPart.LastItem := Self;
         exit;
@@ -803,24 +873,8 @@ begin
     end;
   end;
 
-  APart.ReplaceInParent(Self);
-  Add(APart);
-end;
-
-{ TFpGDBMIExpressionPartUnaryOperator }
-
-procedure TFpGDBMIExpressionPartUnaryOperator.Init;
-begin
-  FIsUnary := True;
-  inherited Init;
-end;
-
-{ TFpGDBMIExpressionPartBinaryOperator }
-
-procedure TFpGDBMIExpressionPartBinaryOperator.Init;
-begin
-  FIsUnary := False;
-  inherited Init;
+  APrevPart.ReplaceInParent(Self);
+  Add(APrevPart);
 end;
 
 { TFpGDBMIExpressionPartOperatorAddressOf }
