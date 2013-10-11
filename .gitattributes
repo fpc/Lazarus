@@ -1239,10 +1239,13 @@ components/fpdebug/fpimgreaderelftypes.pas svneol=native#text/pascal
 components/fpdebug/fpimgreaderwinpe.pas svneol=native#text/pascal
 components/fpdebug/fpimgreaderwinpetypes.pas svneol=native#text/pascal
 components/fpdebug/fppascalparser.pas svneol=native#text/pascal
+components/fpdebug/test/FpTest.lpi svneol=native#text/pascal
+components/fpdebug/test/FpTest.lpr svneol=native#text/pascal
 components/fpdebug/test/asmtest.lpi svneol=native#text/plain
 components/fpdebug/test/asmtest.lpr svneol=native#text/pascal
 components/fpdebug/test/asmtestunit.lfm svneol=native#text/plain
 components/fpdebug/test/asmtestunit.pas svneol=native#text/pascal
+components/fpdebug/test/testpascalparser.pas svneol=native#text/pascal
 components/fppkg/images/archive.png -text
 components/fppkg/images/broken.png -text
 components/fppkg/images/build.png -text

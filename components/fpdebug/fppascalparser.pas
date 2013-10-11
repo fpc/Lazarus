@@ -29,31 +29,31 @@ unit FpPascalParser;
 interface
 
 uses
-  Classes, sysutils, math, LCLProc, FpDbgDwarf, LazLoggerBase;
+  Classes, sysutils, math, FpDbgDwarf, LazLoggerBase;
 
 type
 
-  TFpGDBMIExpressionPart = class;
-  TFpGDBMIExpressionPartContainer = class;
-  TFpGDBMIExpressionPartBracket = class;
-  TFpGDBMIExpressionPartOperator = class;
+  TFpPascalExpressionPart = class;
+  TFpPascalExpressionPartContainer = class;
+  TFpPascalExpressionPartBracket = class;
+  TFpPascalExpressionPartOperator = class;
 
-  TFpGDBMIExpressionPartClass = class of TFpGDBMIExpressionPart;
-  TFpGDBMIExpressionPartBracketClass = class of TFpGDBMIExpressionPartBracket;
+  TFpPascalExpressionPartClass = class of TFpPascalExpressionPart;
+  TFpPascalExpressionPartBracketClass = class of TFpPascalExpressionPartBracket;
 
-  { TFpGDBMIExpression }
+  { TFpPascalExpression }
 
-  TFpGDBMIExpression = class
+  TFpPascalExpression = class
   private
     FError: String;
     FTextExpression: String;
-    FExpressionPart: TFpGDBMIExpressionPart;
+    FExpressionPart: TFpPascalExpressionPart;
     FValid: Boolean;
     procedure Parse;
     procedure SetError(AMsg: String);
     function PosFromPChar(APChar: PChar): Integer;
   protected
-    property ExpressionPart: TFpGDBMIExpressionPart read FExpressionPart;
+    property ExpressionPart: TFpPascalExpressionPart read FExpressionPart;
   public
     constructor Create(ATextExpression: String);
     destructor Destroy; override;
@@ -63,81 +63,81 @@ type
   end;
 
 
-  { TFpGDBMIExpressionPart }
+  { TFpPascalExpressionPart }
 
-  TFpGDBMIExpressionPart = class
+  TFpPascalExpressionPart = class
   private
     FEndChar: PChar;
-    FParent: TFpGDBMIExpressionPartContainer;
+    FParent: TFpPascalExpressionPartContainer;
     FStartChar: PChar;
-    FExpression: TFpGDBMIExpression;
-    function GetSurroundingBracket: TFpGDBMIExpressionPartBracket;
-    function GetTopParent: TFpGDBMIExpressionPart;
+    FExpression: TFpPascalExpression;
+    function GetSurroundingBracket: TFpPascalExpressionPartBracket;
+    function GetTopParent: TFpPascalExpressionPart;
     procedure SetEndChar(AValue: PChar);
-    procedure SetParent(AValue: TFpGDBMIExpressionPartContainer);
+    procedure SetParent(AValue: TFpPascalExpressionPartContainer);
     procedure SetStartChar(AValue: PChar);
-    function  GetText(AMaxLen: Integer=0): String;
     procedure SetError(AMsg: String = '');
-    procedure SetError(APart: TFpGDBMIExpressionPart; AMsg: String = '');
+    procedure SetError(APart: TFpPascalExpressionPart; AMsg: String = '');
   protected
     function DebugText(AIndent: String): String; virtual; // Self desc only
     function DebugDump(AIndent: String): String; virtual;
   protected
     procedure Init; virtual;
-    Procedure ReplaceInParent(AReplacement: TFpGDBMIExpressionPart);
+    Procedure ReplaceInParent(AReplacement: TFpPascalExpressionPart);
     procedure DoHandleEndOfExpression; virtual;
 
-    function IsValidNextPart(APart: TFpGDBMIExpressionPart): Boolean; virtual;
-    function IsValidAfterPart(APrevPart: TFpGDBMIExpressionPart): Boolean; virtual;
-    function MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
-                                 var AResult: TFpGDBMIExpressionPart): Boolean; virtual;
-    function FindLeftSideOperandByPrecedence(AnOperator: TFpGDBMIExpressionPartOperator): TFpGDBMIExpressionPart; virtual;
+    function IsValidNextPart(APart: TFpPascalExpressionPart): Boolean; virtual;
+    function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; virtual;
+    function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
+                                 var AResult: TFpPascalExpressionPart): Boolean; virtual;
+    function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartOperator): TFpPascalExpressionPart; virtual;
     function CanHaveOperatorAsNext: Boolean; virtual; // True
   public
-    constructor Create(AExpression: TFpGDBMIExpression; AStartChar: PChar; AnEndChar: PChar = nil);
-    function  HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart; virtual;
+    constructor Create(AExpression: TFpPascalExpression; AStartChar: PChar; AnEndChar: PChar = nil);
+    function  HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; virtual;
     procedure HandleEndOfExpression; virtual;
 
+    function GetText(AMaxLen: Integer=0): String;
     property StartChar: PChar read FStartChar write SetStartChar;
     property EndChar: PChar read FEndChar write SetEndChar;
-    property Parent: TFpGDBMIExpressionPartContainer read FParent write SetParent;
-    property TopParent: TFpGDBMIExpressionPart read GetTopParent; // or self
-    property SurroundingBracket: TFpGDBMIExpressionPartBracket read GetSurroundingBracket; // incl self
+    property Parent: TFpPascalExpressionPartContainer read FParent write SetParent;
+    property TopParent: TFpPascalExpressionPart read GetTopParent; // or self
+    property SurroundingBracket: TFpPascalExpressionPartBracket read GetSurroundingBracket; // incl self
   end;
 
-  { TFpGDBMIExpressionPartContainer }
+  { TFpPascalExpressionPartContainer }
 
-  TFpGDBMIExpressionPartContainer = class(TFpGDBMIExpressionPart)
+  TFpPascalExpressionPartContainer = class(TFpPascalExpressionPart)
   private
     FList: TList;
     function GetCount: Integer;
-    function GetItems(AIndex: Integer): TFpGDBMIExpressionPart;
-    function GetLastItem: TFpGDBMIExpressionPart;
-    procedure SetItems(AIndex: Integer; AValue: TFpGDBMIExpressionPart);
-    procedure SetLastItem(AValue: TFpGDBMIExpressionPart);
+    function GetItems(AIndex: Integer): TFpPascalExpressionPart;
+    function GetLastItem: TFpPascalExpressionPart;
+    procedure SetItems(AIndex: Integer; AValue: TFpPascalExpressionPart);
+    procedure SetLastItem(AValue: TFpPascalExpressionPart);
   protected
     procedure Init; override;
     function DebugDump(AIndent: String): String; override;
   public
     destructor Destroy; override;
-    function Add(APart: TFpGDBMIExpressionPart): Integer;
-    function IndexOf(APart: TFpGDBMIExpressionPart): Integer;
+    function Add(APart: TFpPascalExpressionPart): Integer;
+    function IndexOf(APart: TFpPascalExpressionPart): Integer;
     procedure Clear;
     property Count: Integer read GetCount;
-    property Items[AIndex: Integer]: TFpGDBMIExpressionPart read GetItems write SetItems;
-    property LastItem: TFpGDBMIExpressionPart read GetLastItem write SetLastItem;
+    property Items[AIndex: Integer]: TFpPascalExpressionPart read GetItems write SetItems;
+    property LastItem: TFpPascalExpressionPart read GetLastItem write SetLastItem;
   end;
 
-  { TFpGDBMIExpressionPartIdentifer }
+  { TFpPascalExpressionPartIdentifer }
 
-  TFpGDBMIExpressionPartIdentifer = class(TFpGDBMIExpressionPartContainer)
+  TFpPascalExpressionPartIdentifer = class(TFpPascalExpressionPartContainer)
   public
   end;
 
 
-  { TFpGDBMIExpressionPartBracket }
+  { TFpPascalExpressionPartBracket }
 
-  TFpGDBMIExpressionPartBracket = class(TFpGDBMIExpressionPartContainer)
+  TFpPascalExpressionPartBracket = class(TFpPascalExpressionPartContainer)
   private
     FIsClosed: boolean;
     FIsClosing: boolean;
@@ -147,147 +147,147 @@ type
     function CanHaveOperatorAsNext: Boolean; override;
   public
     procedure CloseBracket;
-    function HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart; override;
+    function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     procedure HandleEndOfExpression; override;
     property IsClosed: boolean read FIsClosed;
   end;
 
-  { TFpGDBMIExpressionPartRoundBracket }
-  TFpGDBMIExpressionPartRoundBracket = class(TFpGDBMIExpressionPartBracket)
+  { TFpPascalExpressionPartRoundBracket }
+  TFpPascalExpressionPartRoundBracket = class(TFpPascalExpressionPartBracket)
   end;
 
-  { TFpGDBMIExpressionPartOperator }
+  { TFpPascalExpressionPartOperator }
 
-  TFpGDBMIExpressionPartOperator = class(TFpGDBMIExpressionPartContainer)
+  TFpPascalExpressionPartOperator = class(TFpPascalExpressionPartContainer)
   private
     FPrecedence: Integer;
   protected
     function DebugText(AIndent: String): String; override;
     function CanHaveOperatorAsNext: Boolean; override;
-    function FindLeftSideOperandByPrecedence(AnOperator: TFpGDBMIExpressionPartOperator): TFpGDBMIExpressionPart; override;
+    function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartOperator): TFpPascalExpressionPart; override;
     function HasAllOperands: Boolean; virtual; abstract;
-    function MaybeAddLeftOperand(APrevPart: TFpGDBMIExpressionPart;
-      var AResult: TFpGDBMIExpressionPart): Boolean;
+    function MaybeAddLeftOperand(APrevPart: TFpPascalExpressionPart;
+      var AResult: TFpPascalExpressionPart): Boolean;
     procedure DoHandleEndOfExpression; override;
   public
-    function HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart; override;
+    function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     property Precedence: Integer read FPrecedence;
   end;
 
-  { TFpGDBMIExpressionPartUnaryOperator }
+  { TFpPascalExpressionPartUnaryOperator }
 
-  TFpGDBMIExpressionPartUnaryOperator = class(TFpGDBMIExpressionPartOperator)
+  TFpPascalExpressionPartUnaryOperator = class(TFpPascalExpressionPartOperator)
   protected
     function HasAllOperands: Boolean; override;
   public
   end;
 
-  { TFpGDBMIExpressionPartBinaryOperator }
+  { TFpPascalExpressionPartBinaryOperator }
 
-  TFpGDBMIExpressionPartBinaryOperator = class(TFpGDBMIExpressionPartOperator)
+  TFpPascalExpressionPartBinaryOperator = class(TFpPascalExpressionPartOperator)
   protected
     function HasAllOperands: Boolean; override;
-    function IsValidAfterPart(APrevPart: TFpGDBMIExpressionPart): Boolean; override;
+    function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; override;
   public
-    function MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
-      var AResult: TFpGDBMIExpressionPart): Boolean; override;
+    function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
+      var AResult: TFpPascalExpressionPart): Boolean; override;
   end;
 
-  { TFpGDBMIExpressionPartOperatorAddressOf }
+  { TFpPascalExpressionPartOperatorAddressOf }
 
-  TFpGDBMIExpressionPartOperatorAddressOf = class(TFpGDBMIExpressionPartUnaryOperator)  // @
+  TFpPascalExpressionPartOperatorAddressOf = class(TFpPascalExpressionPartUnaryOperator)  // @
   protected
     procedure Init; override;
   end;
 
-  { TFpGDBMIExpressionPartOperatorMakeRef }
+  { TFpPascalExpressionPartOperatorMakeRef }
 
-  TFpGDBMIExpressionPartOperatorMakeRef = class(TFpGDBMIExpressionPartUnaryOperator)  // ^TTYpe
+  TFpPascalExpressionPartOperatorMakeRef = class(TFpPascalExpressionPartUnaryOperator)  // ^TTYpe
   protected
     procedure Init; override;
   end;
 
-  { TFpGDBMIExpressionPartOperatorDeRef }
+  { TFpPascalExpressionPartOperatorDeRef }
 
-  TFpGDBMIExpressionPartOperatorDeRef = class(TFpGDBMIExpressionPartUnaryOperator)  // ptrval^
+  TFpPascalExpressionPartOperatorDeRef = class(TFpPascalExpressionPartUnaryOperator)  // ptrval^
   protected
     procedure Init; override;
-    function MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
-      var AResult: TFpGDBMIExpressionPart): Boolean; override;
-    function FindLeftSideOperandByPrecedence(AnOperator: TFpGDBMIExpressionPartOperator): TFpGDBMIExpressionPart;
+    function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
+      var AResult: TFpPascalExpressionPart): Boolean; override;
+    function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartOperator): TFpPascalExpressionPart;
       override;
     // IsValidAfterPart: same as binary op
-    function IsValidAfterPart(APrevPart: TFpGDBMIExpressionPart): Boolean; override;
+    function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; override;
   end;
 
-  { TFpGDBMIExpressionPartOperatorUnaryPlusMinus }
+  { TFpPascalExpressionPartOperatorUnaryPlusMinus }
 
-  TFpGDBMIExpressionPartOperatorUnaryPlusMinus = class(TFpGDBMIExpressionPartUnaryOperator)  // + -
+  TFpPascalExpressionPartOperatorUnaryPlusMinus = class(TFpPascalExpressionPartUnaryOperator)  // + -
   // Unary + -
   protected
     procedure Init; override;
   end;
 
-  { TFpGDBMIExpressionPartOperatorPlusMinus }
+  { TFpPascalExpressionPartOperatorPlusMinus }
 
-  TFpGDBMIExpressionPartOperatorPlusMinus = class(TFpGDBMIExpressionPartBinaryOperator)  // + -
+  TFpPascalExpressionPartOperatorPlusMinus = class(TFpPascalExpressionPartBinaryOperator)  // + -
   // Binary + -
   protected
     procedure Init; override;
   end;
 
-  { TFpGDBMIExpressionPartOperatorMulDiv }
+  { TFpPascalExpressionPartOperatorMulDiv }
 
-  TFpGDBMIExpressionPartOperatorMulDiv = class(TFpGDBMIExpressionPartBinaryOperator)    // * /
+  TFpPascalExpressionPartOperatorMulDiv = class(TFpPascalExpressionPartBinaryOperator)    // * /
   protected
     procedure Init; override;
   end;
 
-  { TFpGDBMIExpressionPartOperatorMemberOf }
+  { TFpPascalExpressionPartOperatorMemberOf }
 
-  TFpGDBMIExpressionPartOperatorMemberOf = class(TFpGDBMIExpressionPartBinaryOperator)    // struct.member
+  TFpPascalExpressionPartOperatorMemberOf = class(TFpPascalExpressionPartBinaryOperator)    // struct.member
   protected
     procedure Init; override;
   end;
 
 implementation
 
-{ TFpGDBMIExpressionPartOperatorMemberOf }
+{ TFpPascalExpressionPartOperatorMemberOf }
 
-procedure TFpGDBMIExpressionPartOperatorMemberOf.Init;
+procedure TFpPascalExpressionPartOperatorMemberOf.Init;
 begin
   FPrecedence := 0;
   inherited Init;
 end;
 
-{ TFpGDBMIExpressionPartOperatorMakeRef }
+{ TFpPascalExpressionPartOperatorMakeRef }
 
-procedure TFpGDBMIExpressionPartOperatorMakeRef.Init;
+procedure TFpPascalExpressionPartOperatorMakeRef.Init;
 begin
   FPrecedence := 1;
   inherited Init;
 end;
 
-{ TFpGDBMIExpressionPartOperatorDeRef }
+{ TFpPascalExpressionPartOperatorDeRef }
 
-procedure TFpGDBMIExpressionPartOperatorDeRef.Init;
+procedure TFpPascalExpressionPartOperatorDeRef.Init;
 begin
   FPrecedence := 1;
   inherited Init;
 end;
 
-function TFpGDBMIExpressionPartOperatorDeRef.MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
-  var AResult: TFpGDBMIExpressionPart): Boolean;
+function TFpPascalExpressionPartOperatorDeRef.MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
+  var AResult: TFpPascalExpressionPart): Boolean;
 begin
   Result := MaybeAddLeftOperand(APrevPart, AResult);
 end;
 
-function TFpGDBMIExpressionPartOperatorDeRef.FindLeftSideOperandByPrecedence(AnOperator: TFpGDBMIExpressionPartOperator): TFpGDBMIExpressionPart;
+function TFpPascalExpressionPartOperatorDeRef.FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartOperator): TFpPascalExpressionPart;
 begin
   Result := Self;
 end;
 
-function TFpGDBMIExpressionPartOperatorDeRef.IsValidAfterPart(APrevPart: TFpGDBMIExpressionPart): Boolean;
+function TFpPascalExpressionPartOperatorDeRef.IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean;
 begin
   Result := inherited IsValidAfterPart(APrevPart);
   if not Result then
@@ -301,20 +301,20 @@ begin
   // "Identifer" can hane a binary-op next. But it must be applied to the parent.
   // So it is not valid here.
   // If new operator has a higher precedence, it go down to the child again and replace it
-  if (APrevPart.Parent <> nil) and (APrevPart.Parent is TFpGDBMIExpressionPartOperator) then
+  if (APrevPart.Parent <> nil) and (APrevPart.Parent is TFpPascalExpressionPartOperator) then
     Result := False;
 end;
 
-{ TFpGDBMIExpressionPartRoundBracket }
+{ TFpPascalExpressionPartRoundBracket }
 
-procedure TFpGDBMIExpressionPartBracket.Init;
+procedure TFpPascalExpressionPartBracket.Init;
 begin
   inherited Init;
   FIsClosed := False;
   FIsClosing := False;
 end;
 
-procedure TFpGDBMIExpressionPartBracket.DoHandleEndOfExpression;
+procedure TFpPascalExpressionPartBracket.DoHandleEndOfExpression;
 begin
   if not IsClosed then begin
     SetError('Bracket not closed');
@@ -323,12 +323,12 @@ begin
   inherited DoHandleEndOfExpression;
 end;
 
-function TFpGDBMIExpressionPartBracket.CanHaveOperatorAsNext: Boolean;
+function TFpPascalExpressionPartBracket.CanHaveOperatorAsNext: Boolean;
 begin
   Result := IsClosed;
 end;
 
-procedure TFpGDBMIExpressionPartBracket.CloseBracket;
+procedure TFpPascalExpressionPartBracket.CloseBracket;
 begin
   FIsClosing := True;
   if LastItem <> nil then
@@ -337,7 +337,7 @@ begin
   FIsClosed := True;
 end;
 
-function TFpGDBMIExpressionPartBracket.HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart;
+function TFpPascalExpressionPartBracket.HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;
 begin
   if IsClosed then begin
     Result := inherited HandleNextPart(APart);
@@ -354,28 +354,28 @@ begin
   Add(APart);
 end;
 
-procedure TFpGDBMIExpressionPartBracket.HandleEndOfExpression;
+procedure TFpPascalExpressionPartBracket.HandleEndOfExpression;
 begin
   if not FIsClosing then
     inherited HandleEndOfExpression;
 end;
 
-{ TFpGDBMIExpressionPartOperatorUnaryPlusMinus }
+{ TFpPascalExpressionPartOperatorUnaryPlusMinus }
 
-procedure TFpGDBMIExpressionPartOperatorUnaryPlusMinus.Init;
+procedure TFpPascalExpressionPartOperatorUnaryPlusMinus.Init;
 begin
   FPrecedence := 1;
   inherited Init;
 end;
 
-{ TFpGDBMIExpression }
+{ TFpPascalExpression }
 
-procedure TFpGDBMIExpression.Parse;
+procedure TFpPascalExpression.Parse;
 var
   CurPtr, EndPtr, TokenEndPtr: PChar;
-  CurPart, NewPart: TFpGDBMIExpressionPart;
+  CurPart, NewPart: TFpPascalExpressionPart;
 
-  procedure AddPart(AClass: TFpGDBMIExpressionPartClass);
+  procedure AddPart(AClass: TFpPascalExpressionPartClass);
   begin
     NewPart := AClass.Create(Self, CurPtr, TokenEndPtr-1);
   end;
@@ -383,8 +383,8 @@ var
   procedure AddPlusMinus;
   begin
     if (CurPart = nil) or (not CurPart.CanHaveOperatorAsNext)
-    then AddPart(TFpGDBMIExpressionPartOperatorUnaryPlusMinus)
-    else AddPart(TFpGDBMIExpressionPartOperatorPlusMinus);
+    then AddPart(TFpPascalExpressionPartOperatorUnaryPlusMinus)
+    else AddPart(TFpPascalExpressionPartOperatorPlusMinus);
   end;
 
   procedure AddConstChar;
@@ -400,7 +400,7 @@ var
     while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '_', '0'..'9'] do
       inc(TokenEndPtr);
     // TODO: Check functions not, and, in, as, is ...
-    NewPart := TFpGDBMIExpressionPartIdentifer.Create(Self, CurPtr, TokenEndPtr-1);
+    NewPart := TFpPascalExpressionPartIdentifer.Create(Self, CurPtr, TokenEndPtr-1);
   end;
 
   procedure HandleDot;
@@ -408,7 +408,7 @@ var
     while TokenEndPtr^ = '.' do
       inc(TokenEndPtr);
     case TokenEndPtr - CurPtr of
-      1: AddPart(TFpGDBMIExpressionPartOperatorMemberOf);
+      1: AddPart(TFpPascalExpressionPartOperatorMemberOf);
       //2: ; // ".."
       else SetError('Failed parsing ...');
     end;
@@ -417,11 +417,11 @@ var
   procedure AddRefOperator;
   begin
     if (CurPart = nil) or (not CurPart.CanHaveOperatorAsNext)
-    then AddPart(TFpGDBMIExpressionPartOperatorMakeRef)
-    else AddPart(TFpGDBMIExpressionPartOperatorDeRef);
+    then AddPart(TFpPascalExpressionPartOperatorMakeRef)
+    else AddPart(TFpPascalExpressionPartOperatorDeRef);
   end;
 
-  procedure CloseBracket(ABracketClass: TFpGDBMIExpressionPartBracketClass);
+  procedure CloseBracket(ABracketClass: TFpPascalExpressionPartBracketClass);
   begin
     NewPart := CurPart.SurroundingBracket;
     if NewPart = nil then begin
@@ -432,7 +432,7 @@ var
       SetError('Mismatch bracket')
     end
     else begin
-      TFpGDBMIExpressionPartBracket(NewPart).CloseBracket;
+      TFpPascalExpressionPartBracket(NewPart).CloseBracket;
       CurPart := nil;
     end;
   end;
@@ -454,13 +454,13 @@ begin
     NewPart := nil;
     TokenEndPtr := CurPtr + 1;
     case CurPtr^ of
-      '@' :      AddPart(TFpGDBMIExpressionPartOperatorAddressOf);
+      '@' :      AddPart(TFpPascalExpressionPartOperatorAddressOf);
       '^':       AddRefOperator;
       '.':       HandleDot;
       '+', '-' : AddPlusMinus;
-      '*', '/' : AddPart(TFpGDBMIExpressionPartOperatorMulDiv);
-      '(':       AddPart(TFpGDBMIExpressionPartRoundBracket);
-      ')':       CloseBracket(TFpGDBMIExpressionPartRoundBracket);
+      '*', '/' : AddPart(TFpPascalExpressionPartOperatorMulDiv);
+      '(':       AddPart(TFpPascalExpressionPartRoundBracket);
+      ')':       CloseBracket(TFpPascalExpressionPartRoundBracket);
       //'[': ;
       //'''':     AddConstChar;
       //'0'..'9',
@@ -496,47 +496,47 @@ begin
   FExpressionPart := CurPart;
 end;
 
-procedure TFpGDBMIExpression.SetError(AMsg: String);
+procedure TFpPascalExpression.SetError(AMsg: String);
 begin
   FValid := False;
   FError := AMsg;
 end;
 
-function TFpGDBMIExpression.PosFromPChar(APChar: PChar): Integer;
+function TFpPascalExpression.PosFromPChar(APChar: PChar): Integer;
 begin
   Result := APChar - @FTextExpression[1] + 1;
 end;
 
-constructor TFpGDBMIExpression.Create(ATextExpression: String);
+constructor TFpPascalExpression.Create(ATextExpression: String);
 begin
   FTextExpression := ATextExpression;
   FValid := True;
   Parse;
 end;
 
-destructor TFpGDBMIExpression.Destroy;
+destructor TFpPascalExpression.Destroy;
 begin
   FreeAndNil(FExpressionPart);
   inherited Destroy;
 end;
 
-function TFpGDBMIExpression.DebugDump: String;
+function TFpPascalExpression.DebugDump: String;
 begin
-  Result := 'TFpGDBMIExpression: ' + FTextExpression + LineEnding +
+  Result := 'TFpPascalExpression: ' + FTextExpression + LineEnding +
             'Valid: ' + dbgs(FValid) + '   Error: "' + FError + '"'+ LineEnding
             ;
   if FExpressionPart <> nil then
     Result := Result + FExpressionPart.DebugDump('  ');
 end;
 
-{ TFpGDBMIExpressionPartContainer }
+{ TFpPascalExpressionPartContainer }
 
-function TFpGDBMIExpressionPartContainer.GetItems(AIndex: Integer): TFpGDBMIExpressionPart;
+function TFpPascalExpressionPartContainer.GetItems(AIndex: Integer): TFpPascalExpressionPart;
 begin
-  Result := TFpGDBMIExpressionPart(FList[AIndex]);
+  Result := TFpPascalExpressionPart(FList[AIndex]);
 end;
 
-function TFpGDBMIExpressionPartContainer.GetLastItem: TFpGDBMIExpressionPart;
+function TFpPascalExpressionPartContainer.GetLastItem: TFpPascalExpressionPart;
 begin
   if Count > 0 then
     Result := Items[Count - 1]
@@ -544,26 +544,26 @@ begin
     Result := nil;
 end;
 
-procedure TFpGDBMIExpressionPartContainer.SetItems(AIndex: Integer;
-  AValue: TFpGDBMIExpressionPart);
+procedure TFpPascalExpressionPartContainer.SetItems(AIndex: Integer;
+  AValue: TFpPascalExpressionPart);
 begin
   AValue.Parent := Self;
   FList[AIndex] := AValue;
 end;
 
-procedure TFpGDBMIExpressionPartContainer.SetLastItem(AValue: TFpGDBMIExpressionPart);
+procedure TFpPascalExpressionPartContainer.SetLastItem(AValue: TFpPascalExpressionPart);
 begin
   assert(Count >0);
   Items[Count-1] := AValue;
 end;
 
-procedure TFpGDBMIExpressionPartContainer.Init;
+procedure TFpPascalExpressionPartContainer.Init;
 begin
   FList := TList.Create;
   inherited Init;
 end;
 
-function TFpGDBMIExpressionPartContainer.DebugDump(AIndent: String): String;
+function TFpPascalExpressionPartContainer.DebugDump(AIndent: String): String;
 var
   i: Integer;
 begin
@@ -572,32 +572,32 @@ begin
     Result := Result + Items[i].DebugDump(AIndent+'  ');
 end;
 
-function TFpGDBMIExpressionPartContainer.GetCount: Integer;
+function TFpPascalExpressionPartContainer.GetCount: Integer;
 begin
   Result := FList.Count;
 end;
 
-destructor TFpGDBMIExpressionPartContainer.Destroy;
+destructor TFpPascalExpressionPartContainer.Destroy;
 begin
   Clear;
   FreeAndNil(FList);
   inherited Destroy;
 end;
 
-function TFpGDBMIExpressionPartContainer.Add(APart: TFpGDBMIExpressionPart): Integer;
+function TFpPascalExpressionPartContainer.Add(APart: TFpPascalExpressionPart): Integer;
 begin
   APart.Parent := Self;
   Result := FList.Add(APart);
 end;
 
-function TFpGDBMIExpressionPartContainer.IndexOf(APart: TFpGDBMIExpressionPart): Integer;
+function TFpPascalExpressionPartContainer.IndexOf(APart: TFpPascalExpressionPart): Integer;
 begin
   Result := Count - 1;
   while (Result >= 0) and (Items[Result] <> APart) do
     dec(Result);
 end;
 
-procedure TFpGDBMIExpressionPartContainer.Clear;
+procedure TFpPascalExpressionPartContainer.Clear;
 begin
   while Count > 0 do begin
     Items[0].Free;
@@ -605,49 +605,49 @@ begin
   end;
 end;
 
-{ TFpGDBMIExpressionPart }
+{ TFpPascalExpressionPart }
 
-procedure TFpGDBMIExpressionPart.SetEndChar(AValue: PChar);
+procedure TFpPascalExpressionPart.SetEndChar(AValue: PChar);
 begin
   if FEndChar = AValue then Exit;
   FEndChar := AValue;
 end;
 
-function TFpGDBMIExpressionPart.GetTopParent: TFpGDBMIExpressionPart;
+function TFpPascalExpressionPart.GetTopParent: TFpPascalExpressionPart;
 begin
   Result := Self;
   while Result.Parent <> nil do
     Result := Result.Parent;
 end;
 
-function TFpGDBMIExpressionPart.GetSurroundingBracket: TFpGDBMIExpressionPartBracket;
+function TFpPascalExpressionPart.GetSurroundingBracket: TFpPascalExpressionPartBracket;
 var
-  tmp: TFpGDBMIExpressionPart;
+  tmp: TFpPascalExpressionPart;
 begin
   Result := nil;
   tmp := Self;
-  while (tmp <> nil) and not(tmp is TFpGDBMIExpressionPartBracket) do
+  while (tmp <> nil) and not(tmp is TFpPascalExpressionPartBracket) do
     tmp := tmp.Parent;
   if tmp <> nil then
-    Result := TFpGDBMIExpressionPartBracket(tmp);
+    Result := TFpPascalExpressionPartBracket(tmp);
 end;
 
-procedure TFpGDBMIExpressionPart.SetParent(AValue: TFpGDBMIExpressionPartContainer);
+procedure TFpPascalExpressionPart.SetParent(AValue: TFpPascalExpressionPartContainer);
 var
-  Old: TFpGDBMIExpressionPart;
+  Old: TFpPascalExpressionPart;
 begin
   if FParent = AValue then Exit;
   Old := FParent;
   FParent := AValue;
 end;
 
-procedure TFpGDBMIExpressionPart.SetStartChar(AValue: PChar);
+procedure TFpPascalExpressionPart.SetStartChar(AValue: PChar);
 begin
   if FStartChar = AValue then Exit;
   FStartChar := AValue;
 end;
 
-function TFpGDBMIExpressionPart.GetText(AMaxLen: Integer): String;
+function TFpPascalExpressionPart.GetText(AMaxLen: Integer): String;
 var
   Len: Integer;
 begin
@@ -659,26 +659,26 @@ begin
   Result := Copy(FStartChar, 1, Len);
 end;
 
-procedure TFpGDBMIExpressionPart.SetError(AMsg: String);
+procedure TFpPascalExpressionPart.SetError(AMsg: String);
 begin
   if AMsg = '' then
     AMsg := 'Invalid Expression';
   FExpression.SetError(Format('%0:s at %1:d: "%2:s"', [AMsg, FExpression.PosFromPChar(FStartChar), GetText(20)]));
 end;
 
-procedure TFpGDBMIExpressionPart.SetError(APart: TFpGDBMIExpressionPart; AMsg: String);
+procedure TFpPascalExpressionPart.SetError(APart: TFpPascalExpressionPart; AMsg: String);
 begin
   if APart <> nil
   then APart.SetError(AMsg)
   else Self.SetError(AMsg);
 end;
 
-procedure TFpGDBMIExpressionPart.Init;
+procedure TFpPascalExpressionPart.Init;
 begin
   //
 end;
 
-procedure TFpGDBMIExpressionPart.ReplaceInParent(AReplacement: TFpGDBMIExpressionPart);
+procedure TFpPascalExpressionPart.ReplaceInParent(AReplacement: TFpPascalExpressionPart);
 var
   i: Integer;
 begin
@@ -689,50 +689,50 @@ begin
   Parent := nil;
 end;
 
-procedure TFpGDBMIExpressionPart.DoHandleEndOfExpression;
+procedure TFpPascalExpressionPart.DoHandleEndOfExpression;
 begin
   //
 end;
 
-function TFpGDBMIExpressionPart.IsValidNextPart(APart: TFpGDBMIExpressionPart): Boolean;
+function TFpPascalExpressionPart.IsValidNextPart(APart: TFpPascalExpressionPart): Boolean;
 begin
   Result := APart.IsValidAfterPart(Self);
 end;
 
-function TFpGDBMIExpressionPart.IsValidAfterPart(APrevPart: TFpGDBMIExpressionPart): Boolean;
+function TFpPascalExpressionPart.IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean;
 begin
   Result := True;
 end;
 
-function TFpGDBMIExpressionPart.MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
-  var AResult: TFpGDBMIExpressionPart): Boolean;
+function TFpPascalExpressionPart.MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
+  var AResult: TFpPascalExpressionPart): Boolean;
 begin
   Result := False;
 end;
 
-function TFpGDBMIExpressionPart.FindLeftSideOperandByPrecedence(AnOperator: TFpGDBMIExpressionPartOperator): TFpGDBMIExpressionPart;
+function TFpPascalExpressionPart.FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartOperator): TFpPascalExpressionPart;
 begin
   Result := Self;
 end;
 
-function TFpGDBMIExpressionPart.CanHaveOperatorAsNext: Boolean;
+function TFpPascalExpressionPart.CanHaveOperatorAsNext: Boolean;
 begin
   Result := True;
 end;
 
-function TFpGDBMIExpressionPart.DebugText(AIndent: String): String;
+function TFpPascalExpressionPart.DebugText(AIndent: String): String;
 begin
   Result := Format('%s%s at %d: "%s"',
                    [AIndent, ClassName, FExpression.PosFromPChar(FStartChar), GetText])
                    + LineEnding;
 end;
 
-function TFpGDBMIExpressionPart.DebugDump(AIndent: String): String;
+function TFpPascalExpressionPart.DebugDump(AIndent: String): String;
 begin
   Result := DebugText(AIndent);
 end;
 
-constructor TFpGDBMIExpressionPart.Create(AExpression: TFpGDBMIExpression; AStartChar: PChar;
+constructor TFpPascalExpressionPart.Create(AExpression: TFpPascalExpression; AStartChar: PChar;
   AnEndChar: PChar);
 begin
   FExpression := AExpression;
@@ -741,7 +741,7 @@ begin
   Init;
 end;
 
-function TFpGDBMIExpressionPart.HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart;
+function TFpPascalExpressionPart.HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;
 begin
   Result := APart;
   if APart.MaybeHandlePrevPart(Self, Result) then
@@ -757,16 +757,16 @@ begin
   Result := Self;
 end;
 
-procedure TFpGDBMIExpressionPart.HandleEndOfExpression;
+procedure TFpPascalExpressionPart.HandleEndOfExpression;
 begin
   DoHandleEndOfExpression;
   if Parent <> nil then
     Parent.HandleEndOfExpression;
 end;
 
-{ TFpGDBMIExpressionPartOperator }
+{ TFpPascalExpressionPartOperator }
 
-function TFpGDBMIExpressionPartOperator.DebugText(AIndent: String): String;
+function TFpPascalExpressionPartOperator.DebugText(AIndent: String): String;
 begin
   Result := inherited DebugText(AIndent);
   while Result[Length(Result)] in [#10, #13] do SetLength(Result, Length(Result)-1);
@@ -774,12 +774,12 @@ begin
     LineEnding;
 end;
 
-function TFpGDBMIExpressionPartOperator.CanHaveOperatorAsNext: Boolean;
+function TFpPascalExpressionPartOperator.CanHaveOperatorAsNext: Boolean;
 begin
   Result := HasAllOperands and LastItem.CanHaveOperatorAsNext;
 end;
 
-function TFpGDBMIExpressionPartOperator.FindLeftSideOperandByPrecedence(AnOperator: TFpGDBMIExpressionPartOperator): TFpGDBMIExpressionPart;
+function TFpPascalExpressionPartOperator.FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartOperator): TFpPascalExpressionPart;
 begin
   Result := Self;
 
@@ -793,10 +793,10 @@ begin
     Result := LastItem.FindLeftSideOperandByPrecedence(AnOperator);
 end;
 
-function TFpGDBMIExpressionPartOperator.MaybeAddLeftOperand(APrevPart: TFpGDBMIExpressionPart;
-  var AResult: TFpGDBMIExpressionPart): Boolean;
+function TFpPascalExpressionPartOperator.MaybeAddLeftOperand(APrevPart: TFpPascalExpressionPart;
+  var AResult: TFpPascalExpressionPart): Boolean;
 var
-  ALeftSide: TFpGDBMIExpressionPart;
+  ALeftSide: TFpPascalExpressionPart;
 begin
   Result := APrevPart.IsValidNextPart(Self);
   if not Result then
@@ -822,7 +822,7 @@ begin
   Add(ALeftSide);
 end;
 
-procedure TFpGDBMIExpressionPartOperator.DoHandleEndOfExpression;
+procedure TFpPascalExpressionPartOperator.DoHandleEndOfExpression;
 begin
   if not HasAllOperands then
     SetError(Self, 'Not enough operands')
@@ -830,7 +830,7 @@ begin
     inherited DoHandleEndOfExpression;
 end;
 
-function TFpGDBMIExpressionPartOperator.HandleNextPart(APart: TFpGDBMIExpressionPart): TFpGDBMIExpressionPart;
+function TFpPascalExpressionPartOperator.HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;
 begin
   Result := Self;
   if HasAllOperands then begin
@@ -847,21 +847,21 @@ begin
   Result := APart;
 end;
 
-{ TFpGDBMIExpressionPartUnaryOperator }
+{ TFpPascalExpressionPartUnaryOperator }
 
-function TFpGDBMIExpressionPartUnaryOperator.HasAllOperands: Boolean;
+function TFpPascalExpressionPartUnaryOperator.HasAllOperands: Boolean;
 begin
   Result := Count = 1;
 end;
 
-{ TFpGDBMIExpressionPartBinaryOperator }
+{ TFpPascalExpressionPartBinaryOperator }
 
-function TFpGDBMIExpressionPartBinaryOperator.HasAllOperands: Boolean;
+function TFpPascalExpressionPartBinaryOperator.HasAllOperands: Boolean;
 begin
   Result := Count = 2;
 end;
 
-function TFpGDBMIExpressionPartBinaryOperator.IsValidAfterPart(APrevPart: TFpGDBMIExpressionPart): Boolean;
+function TFpPascalExpressionPartBinaryOperator.IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean;
 begin
   Result := inherited IsValidAfterPart(APrevPart);
   if not Result then
@@ -875,35 +875,35 @@ begin
   // "Identifer" can hane a binary-op next. But it must be applied to the parent.
   // So it is not valid here.
   // If new operator has a higher precedence, it go down to the child again and replace it
-  if (APrevPart.Parent <> nil) and (APrevPart.Parent is TFpGDBMIExpressionPartOperator) then
+  if (APrevPart.Parent <> nil) and (APrevPart.Parent is TFpPascalExpressionPartOperator) then
     Result := False;
 end;
 
-function TFpGDBMIExpressionPartBinaryOperator.MaybeHandlePrevPart(APrevPart: TFpGDBMIExpressionPart;
-  var AResult: TFpGDBMIExpressionPart): Boolean;
+function TFpPascalExpressionPartBinaryOperator.MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
+  var AResult: TFpPascalExpressionPart): Boolean;
 begin
   Result := MaybeAddLeftOperand(APrevPart, AResult);
 end;
 
-{ TFpGDBMIExpressionPartOperatorAddressOf }
+{ TFpPascalExpressionPartOperatorAddressOf }
 
-procedure TFpGDBMIExpressionPartOperatorAddressOf.Init;
+procedure TFpPascalExpressionPartOperatorAddressOf.Init;
 begin
   FPrecedence := 1; // highest
   inherited Init;
 end;
 
-{ TFpGDBMIExpressionPartOperatorPlusMinus }
+{ TFpPascalExpressionPartOperatorPlusMinus }
 
-procedure TFpGDBMIExpressionPartOperatorPlusMinus.Init;
+procedure TFpPascalExpressionPartOperatorPlusMinus.Init;
 begin
   FPrecedence := 3;
   inherited Init;
 end;
 
-{ TFpGDBMIExpressionPartOperatorMulDiv }
+{ TFpPascalExpressionPartOperatorMulDiv }
 
-procedure TFpGDBMIExpressionPartOperatorMulDiv.Init;
+procedure TFpPascalExpressionPartOperatorMulDiv.Init;
 begin
   FPrecedence := 2;
   inherited Init;
