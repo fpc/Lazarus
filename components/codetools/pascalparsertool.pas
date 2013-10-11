@@ -3277,10 +3277,9 @@ begin
   if CurNode.Parent.Desc in AllCodeSections then begin
     if CurPos.Flag=cafEqual then
       ReadConstExpr; // read constant
+    // optional: hint modifier
+    ReadHintModifiers;
   end;
-
-  // optional: hint modifier
-  ReadHintModifiers;
 
   // semicolon and postfix modifiers
   if CurPos.Flag=cafSemicolon then begin
