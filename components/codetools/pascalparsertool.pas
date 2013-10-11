@@ -3278,8 +3278,8 @@ begin
     end;
 
     // optional: initial value
-    if ParentNode.Parent.Desc in AllCodeSections then begin
-      if CurPos.Flag=cafEqual then
+    if CurPos.Flag=cafEqual then
+      if ParentNode.Parent.Desc in AllCodeSections+[ctnProcedure] then begin
         ReadConstExpr; // read constant
     end;
   end;
