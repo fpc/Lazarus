@@ -1404,7 +1404,7 @@ begin
     // find unit file
     if AnUnitInFilename<>'' then begin
       // An 'in' unit => Delphi project file
-      NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
+      NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false,Node.StartPos);
       if (NewCode=nil) then begin
         // no source found
         MissingInUnits.Add(AnUnitName+' in '+AnUnitInFilename);
@@ -1414,7 +1414,7 @@ begin
       end;
     end else if AnUnitName<>'' then begin
       // the units without 'in' are 'Forms' or units added by the user
-      NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
+      NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false,Node.StartPos);
       NormalUnits.AddObject(AnUnitName,NewCode);
     end;
     Node:=Node.NextBrother;
@@ -1447,7 +1447,7 @@ begin
     AnUnitName:=ExtractUsedUnitName(Node,@AnUnitInFilename);
     if AnUnitName<>'' then begin
       // find unit file
-      NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
+      NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false,Node.StartPos);
       if (NewCode=nil) then begin
         // no source found
         UnitFilename:=AnUnitName;
