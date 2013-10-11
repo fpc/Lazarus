@@ -3260,26 +3260,32 @@ procedure TPascalParserTool.ReadVariableType;
     var d:e;
       f:g=h;
 }
+var
+  ParentNode: TCodeTreeNode;
 begin
   ReadNextAtom;
   // type
   ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
 
+  ParentNode:=CurNode.Parent;
   // optional: absolute
-  if CurNode.Parent.Desc in [ctnProcedure] then begin
+  if (ParentNode.Desc=ctnVarSection) then begin
     if UpAtomIs('ABSOLUTE') then begin
-      ReadNextAtom;
-      ReadConstant(true,false,[]);
+      if ParentNode.Parent.Desc in AllCodeSections+[ctnProcedure] then begin
+        ReadNextAtom;
+        ReadConstant(true,false,[]);
+      end;
+    end;
+
+    // optional: initial value
+    if ParentNode.Parent.Desc in AllCodeSections then begin
+      if CurPos.Flag=cafEqual then
+        ReadConstExpr; // read constant
     end;
   end;
 
-  // optional: initial value
-  if CurNode.Parent.Desc in AllCodeSections then begin
-    if CurPos.Flag=cafEqual then
-      ReadConstExpr; // read constant
-    // optional: hint modifier
-    ReadHintModifiers;
-  end;
+  // optional: hint modifier
+  ReadHintModifiers;
 
   // semicolon and postfix modifiers
   if CurPos.Flag=cafSemicolon then begin
