@@ -3382,6 +3382,7 @@ var
   NeedUndo: boolean;
   CanHaveString: Boolean;
 begin
+  if not (Scanner.CompilerMode in [cmOBJFPC,cmDELPHI,cmDELPHIUNICODE]) then exit;
   if CurPos.Flag=cafSemicolon then begin
     ReadNextAtom;
     NeedUndo:=true;
