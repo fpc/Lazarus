@@ -3265,8 +3265,8 @@ begin
   // type
   ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
 
+  // optional: absolute
   if CurNode.Parent.Desc in [ctnProcedure] then begin
-    // optional: absolute
     if UpAtomIs('ABSOLUTE') then begin
       ReadNextAtom;
       ReadConstant(true,false,[]);
@@ -3274,8 +3274,10 @@ begin
   end;
 
   // optional: initial value
-  if CurPos.Flag=cafEqual then
-    ReadConstExpr; // read constant
+  if CurNode.Parent.Desc in AllCodeSections then begin
+    if CurPos.Flag=cafEqual then
+      ReadConstExpr; // read constant
+  end;
 
   // optional: hint modifier
   ReadHintModifiers;
