@@ -1,0 +1,9 @@
+object ResourcesOptionsFrame: TResourcesOptionsFrame
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  TabOrder = 0
+  DesignLeft = 260
+  DesignTop = 149
+end

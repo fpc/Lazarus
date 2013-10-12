@@ -2277,6 +2277,7 @@ resourcestring
   dlgProjectOptionsFor = 'Options for Project: %s';
   dlgPOApplication = 'Application';
   dlgPOFroms = 'Forms';
+  dlgPOResources = 'Resources';
   dlgPOMisc = 'Miscellaneous';
   dlgPOI18n = 'i18n';
   rsEnableI18n = 'Enable i18n';

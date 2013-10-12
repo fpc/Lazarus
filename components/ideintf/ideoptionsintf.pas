@@ -280,6 +280,7 @@ const
     ProjectOptionsLazDoc      = 300;
     ProjectOptionsSave        = 400;
     ProjectOptionsVersionInfo = 500;
+    ProjectOptionsResources   = 550;
     ProjectOptionsI18N        = 600;
     ProjectOptionsMisc        = 700;
 
