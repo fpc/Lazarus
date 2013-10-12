@@ -187,7 +187,7 @@ type
     function KeyWordFuncClassIdentifier: boolean;
     // keyword lists
     procedure BuildDefaultKeyWordFunctions; override;
-    function ParseType(StartPos, WordLen: integer): boolean;
+    function ParseType(StartPos: integer): boolean;
     function ParseInnerClass(StartPos, WordLen: integer): boolean;
     function UnexpectedKeyWord: boolean;
     function EndOfSourceExpected: boolean;
@@ -372,7 +372,7 @@ begin
   end;
 end;
 
-function TPascalParserTool.ParseType(StartPos, WordLen: integer): boolean;
+function TPascalParserTool.ParseType(StartPos: integer): boolean;
 // KeyWordFunctions for parsing types
 // after parsing CurPos is on atom behind type
 var
@@ -422,7 +422,7 @@ begin
     end;
   'T':
     if CompareSrcIdentifiers('TYPE',p) then exit(KeyWordFuncTypeType);
-  '^': if WordLen=1 then exit(KeyWordFuncTypePointer);
+  '^': if CurPos.EndPos-CurPos.StartPos=1 then exit(KeyWordFuncTypePointer);
   end;
   Result:=KeyWordFuncTypeDefault;
 end;
@@ -3265,7 +3265,7 @@ var
 begin
   ReadNextAtom;
   // type
-  ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+  ParseType(CurPos.StartPos);
 
   ParentNode:=CurNode.Parent;
   // optional: absolute
@@ -3807,7 +3807,7 @@ begin
   if (CurPos.Flag=cafColon) then begin
     // read type
     ReadNextAtom;
-    ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+    ParseType(CurPos.StartPos);
   end;
   ReadConstExpr;
   // optional: hint modifier
@@ -3893,7 +3893,7 @@ begin
     SaveRaiseCharExpectedButAtomFound('=');
   // read type
   ReadNextAtom;
-  ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+  ParseType(CurPos.StartPos);
   // read hint modifier
   ReadHintModifiers;
   // read ;
@@ -4028,7 +4028,7 @@ begin
   if (CurPos.StartPos>SrcLen)
   or (not PackedTypesKeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos])) then
     SaveRaiseStringExpectedButAtomFound('"record"');
-  Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+  Result:=ParseType(CurPos.StartPos);
 end;
 
 function TPascalParserTool.KeyWordFuncTypeBitPacked: boolean;
@@ -4037,7 +4037,7 @@ begin
   if (CurPos.StartPos>SrcLen)
   or (not BitPackedTypesKeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos])) then
     SaveRaiseStringExpectedButAtomFound('"array"');
-  Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+  Result:=ParseType(CurPos.StartPos);
 end;
 
 function TPascalParserTool.KeyWordFuncSpecialize: boolean;
@@ -4389,7 +4389,7 @@ begin
   if not UpAtomIs('OF') then
     SaveRaiseStringExpectedButAtomFound('"of"');
   ReadNextAtom;
-  Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+  Result:=ParseType(CurPos.StartPos);
   CurNode.EndPos:=CurPos.StartPos;
   EndChildNode; // close array
   //debugln(['TPascalParserTool.KeyWordFuncTypeArray END Atom=',GetAtom,' CurNode=',CurNode.DescAsString]);
@@ -4526,7 +4526,7 @@ begin
   CreateChildNode;
   CurNode.Desc:=ctnTypeType;
   ReadNextAtom;
-  Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+  Result:=ParseType(CurPos.StartPos);
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
 end;
@@ -4538,7 +4538,7 @@ begin
   CurNode.Desc:=ctnFileType;
   if ReadNextUpAtomIs('OF') then begin
     ReadNextAtom;
-    Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+    Result:=ParseType(CurPos.StartPos);
     if not Result then exit;
   end;
   CurNode.EndPos:=CurPos.EndPos;
@@ -4552,7 +4552,7 @@ begin
   CreateChildNode;
   CurNode.Desc:=ctnPointerType;
   ReadNextAtom;
-  Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+  Result:=ParseType(CurPos.StartPos);
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
 end;
@@ -4846,7 +4846,7 @@ begin
           ReadNextAtom; // read next variable name
         until false;
         ReadNextAtom; // read type
-        Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+        Result:=ParseType(CurPos.StartPos);
         if not Result then begin
           {$IFDEF VerboseRecordCase}
           debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase ParseType failed']);
