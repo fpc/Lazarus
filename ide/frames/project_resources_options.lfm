@@ -1,9 +1,57 @@
 object ResourcesOptionsFrame: TResourcesOptionsFrame
   Left = 0
-  Height = 240
+  Height = 330
   Top = 0
-  Width = 320
+  Width = 742
+  ClientHeight = 330
+  ClientWidth = 742
   TabOrder = 0
-  DesignLeft = 260
-  DesignTop = 149
+  DesignLeft = 334
+  DesignTop = 289
+  object lbResources: TListView
+    Left = 0
+    Height = 304
+    Top = 26
+    Width = 742
+    Align = alClient
+    AutoWidthLastColumn = True
+    Columns = <    
+      item
+        Caption = 'Type'
+        Width = 80
+      end    
+      item
+        Caption = 'Resource'
+        Width = 658
+      end>
+    TabOrder = 0
+    ViewStyle = vsReport
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 742
+    Caption = 'ToolBar1'
+    EdgeBorders = []
+    List = True
+    ShowCaptions = True
+    TabOrder = 1
+    object btnAdd: TToolButton
+      Left = 1
+      Top = 0
+      Caption = 'btnAdd'
+      OnClick = btnAddClick
+    end
+    object btnDelete: TToolButton
+      Left = 49
+      Top = 0
+      Caption = 'btnDelete'
+      OnClick = btnDeleteClick
+    end
+  end
+  object dlgOpen: TOpenDialog
+    left = 146
+    top = 93
+  end
 end

@@ -2278,6 +2278,8 @@ resourcestring
   dlgPOApplication = 'Application';
   dlgPOFroms = 'Forms';
   dlgPOResources = 'Resources';
+  rsResourceType = 'Type';
+  rsResource = 'Resource';
   dlgPOMisc = 'Miscellaneous';
   dlgPOI18n = 'i18n';
   rsEnableI18n = 'Enable i18n';
