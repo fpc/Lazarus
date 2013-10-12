@@ -30,6 +30,7 @@ type
     procedure Changed; override;
   public
     constructor Create(TheRadioGroup: TCustomRadioGroup);
+    procedure Assign(Source: TPersistent); override;
   end;
 
 { TCheckGroupStringList }
@@ -47,6 +48,15 @@ constructor TRadioGroupStringList.Create(TheRadioGroup: TCustomRadioGroup);
 begin
   inherited Create;
   FRadioGroup := TheRadioGroup;
+end;
+
+procedure TRadioGroupStringList.Assign(Source: TPersistent);
+var
+  SavedIndex: Integer;
+begin
+  SavedIndex := FRadioGroup.ItemIndex;
+  inherited Assign(Source);
+  if SavedIndex < Count then FRadioGroup.ItemIndex := SavedIndex;
 end;
 
 
