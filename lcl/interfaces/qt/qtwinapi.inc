@@ -3440,6 +3440,10 @@ begin
   w := TQtWidget(Handle);
 
   {TODO: find out what to do with TCustomForm descendants }
+  {$IFDEF QTSCROLLABLEFORMS}
+  if (w is TQtMainWindow) and Assigned(TQtMainWindow(w).ScrollArea) then
+    w := TQtMainWindow(w).ScrollArea;
+  {$ENDIF}
   if w is TQtAbstractScrollArea then
   begin
     if BarKind in [SM_CXVSCROLL, SM_CYVSCROLL] then
@@ -3474,6 +3478,11 @@ begin
   w := TQtWidget(Handle);
 
   {TODO: find out what to do with TCustomForm descendants }
+  {$IFDEF QTSCROLLABLEFORMS}
+  if (w is TQtMainWindow) and Assigned(TQtMainWindow(w).ScrollArea) then
+    w := TQtMainWindow(w).ScrollArea;
+  {$ENDIF}
+
   if w is TQtAbstractScrollArea then
   begin
     if SBStyle = SB_VERT then
@@ -3522,6 +3531,15 @@ begin
 
   if not TQtWidget(Handle).LCLObject.InheritsFrom(TCustomScrollBar) then
   begin
+    {$IFDEF QTSCROLLABLEFORMS}
+    if (TQtWidget(Handle) is TQtMainWindow) and Assigned(TQtMainWindow(Handle).ScrollArea) then
+    begin
+      case BarFlag of
+        SB_HORZ: QtScrollBar := TQtMainWindow(Handle).ScrollArea.horizontalScrollBar;
+        SB_VERT: QtScrollBar := TQtMainWindow(Handle).ScrollArea.verticalScrollBar;
+      end;
+    end else
+    {$ENDIF}
     if (TQtWidget(Handle) is TQtAbstractScrollArea) then
     begin
       case BarFlag of
@@ -4810,6 +4828,13 @@ begin
     with TQtWidget(aHandle).getClientOffset do
       OffsetRect(Rect^, x, y);
 
+    {$IFDEF QTSCROLLABLEFORMS}
+    if (TQtWidget(AHandle) is TQtMainWindow) and Assigned(TQtMainWindow(AHandle).ScrollArea) then
+    begin
+      Pt := TQtMainWindow(AHandle).ScrollArea.ScrolledOffset;
+      OffsetRect(Rect^, -Pt.X, -Pt.Y);
+    end else
+    {$ENDIF}
     if TQtWidget(AHandle).ChildOfComplexWidget = ccwScrollingWinControl then
     begin
       Pt := TQtCustomControl(AHandle).viewport.ScrolledOffset;
@@ -6187,6 +6212,15 @@ begin
          (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
         exit;
 
+      {$IFDEF QTSCROLLABLEFORMS}
+      if (TQtWidget(Handle) is TQtMainWindow) then
+      begin
+        if Assigned(TQtMainWindow(Handle).ScrollArea) then
+          Scrollbar := TQtMainWindow(Handle).ScrollArea.horizontalScrollBar
+        else
+          Scrollbar := nil;
+      end else
+      {$ENDIF}
       if TQtWidget(Handle) is TQtAbstractScrollArea then
       begin
         ScrollBar := TQtAbstractScrollArea(Handle).horizontalScrollBar;
@@ -6205,6 +6239,15 @@ begin
         (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
         exit;
 
+      {$IFDEF QTSCROLLABLEFORMS}
+      if (TQtWidget(Handle) is TQtMainWindow) then
+      begin
+        if Assigned(TQtMainWindow(Handle).ScrollArea) then
+          Scrollbar := TQtMainWindow(Handle).ScrollArea.verticalScrollBar
+        else
+          Scrollbar := nil;
+      end else
+      {$ENDIF}
       if TQtWidget(Handle) is TQtAbstractScrollArea then
       begin
         ScrollBar := TQtAbstractScrollArea(Handle).verticalScrollBar;
@@ -6264,6 +6307,10 @@ begin
 
   w := TQtWidget(Handle);
 
+  {$IFDEF QTSCROLLABLEFORMS}
+  if (w is TQtMainWindow) and Assigned(TQtMainWindow(w).ScrollArea) then
+    w := TQtMainWindow(Handle).ScrollArea;
+  {$ENDIF}
   if w is TQtAbstractScrollArea then
   begin
     ScrollArea := TQtAbstractScrollArea(w);
