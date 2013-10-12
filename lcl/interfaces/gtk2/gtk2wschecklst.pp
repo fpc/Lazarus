@@ -58,7 +58,7 @@ type
 implementation
 
 uses
-  Gtk2WSControls, Gtk2Proc;
+  Gtk2WSControls, Gtk2Proc, Gtk2CellRenderer;
 
 const
   gtk2CLBState = 0; // byte
@@ -189,9 +189,11 @@ begin
   SignalConnect(PGtkWidget(renderer), 'toggled', @Gtk2WS_CheckListBoxToggle, WidgetInfo);
 
   // Text Column
-  renderer := gtk_cell_renderer_text_new();
+  renderer := LCLIntfCellRenderer_New; // gtk_cell_renderer_text_new();
   column := gtk_tree_view_column_new_with_attributes(
                              'LISTITEMS', renderer, ['text', gtk2CLBText, nil]);
+
+  gtk_tree_view_column_set_cell_data_func(Column, renderer, TGtkTreeCellDataFunc(@LCLIntfCellRenderer_CellDataFunc), WidgetInfo, nil);
   gtk_tree_view_append_column(GTK_TREE_VIEW(TreeViewWidget), column);
   gtk_tree_view_column_set_clickable(GTK_TREE_VIEW_COLUMN(column), True);
 

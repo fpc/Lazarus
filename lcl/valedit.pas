@@ -1153,7 +1153,10 @@ begin
   else
   begin
     I:=ARow-FixedRows;
-    if (I=0) and (Strings.Count=0) then exit; //empty grid
+    if (I >= Strings.Count) then
+      //Either empty grid, or a row has been added and Strings hasn't been update yet
+      //the latter happens when rows are auto-added (issue #0025166)
+      Exit;
     if ACol=0 then
       Result:=Strings.Names[I]
     else if ACol=1 then

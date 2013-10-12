@@ -10808,7 +10808,16 @@ begin
         (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Space) then
       begin
         if CurrentItem <> nil then
+        begin
           HandleCheckChangedEvent(QtPoint(0, 0), currentItem, Event);
+          if OwnerDrawn and not (Self is TQtCheckListBox) then
+          begin
+            if QListWidgetItem_checkState(currentItem) = QtUnChecked then
+              QListWidgetItem_setCheckState(currentItem, QtChecked)
+            else
+              QListWidgetItem_setCheckState(currentItem, QtUnchecked);
+          end;
+        end;
       end;
     end;
   end;
@@ -10954,19 +10963,39 @@ begin
       end else
       if QEvent_type(Event) = QEventMouseButtonRelease then
       begin
-        PostponedMouseRelease(Event);
-        if Checkable then
+        if OwnerDrawn and Checkable then
         begin
           MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
           Item := itemAt(MousePos.x, MousePos.y);
-          if Item <> nil then
+
+          if (Item <> nil) and
+            ((QListWidgetItem_flags(Item) and QtItemIsUserCheckable) <> 0) then
           begin
-            ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, 0,
-              PtrUInt(Item), PtrUInt(Item), 0);
-            QCoreApplication_postEvent(Sender, ALCLEvent);
+            x := GetPixelMetric(QStylePM_IndicatorWidth, nil, Widget);
+            if ((MousePos.X > 2) and (MousePos.X < (X + 2))) then
+            begin
+              if QListWidgetItem_checkState(Item) = QtUnchecked then
+                QListWidgetItem_setCheckState(Item, QtChecked)
+              else
+                QListWidgetItem_setCheckState(Item, QtUnChecked);
+            end;
+          end;
+          Result := SlotMouse(Sender, Event);
+        end else
+        begin
+          PostponedMouseRelease(Event);
+          if Checkable then
+          begin
+            MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+            Item := itemAt(MousePos.x, MousePos.y);
+            if (Item <> nil) then
+            begin
+              ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, 0,
+                PtrUInt(Item), PtrUInt(Item), 0);
+              QCoreApplication_postEvent(Sender, ALCLEvent);
+            end;
           end;
         end;
-
       end else
       begin
         if (QEvent_type(Event) = QEventMouseButtonPress) then
@@ -11343,6 +11372,7 @@ var
   ATarget: TCustomDrawTarget;
   TmpDC1, TmpDC2: HDC;
   SkipDefault: Boolean;
+  Item: QListWidgetItemH;
 begin
   if ViewStyle >= 0 then
   begin
@@ -11371,12 +11401,19 @@ begin
     // hotlight
     if (State and QStyleState_MouseOver) <> 0 then
       Include(ACustomState, cdsHot);
-    // checked
-    if Checkable and (State and QStyleState_On <> 0) then
-      Include(ACustomState, cdsChecked);
 
     ItemIndex := QModelIndex_row(index);
     SubItemIndex := QModelIndex_column(index);
+
+    // checked does not work under qt for some reason ?!?
+    if Checkable then
+    begin
+      // if (State and QStyleState_On <> 0) then
+      //  Include(ACustomState, cdsChecked);
+      Item := getItem(ItemIndex);
+      if Assigned(Item) and (QListWidgetItem_checkState(Item) = QtChecked) then
+        Include(ACustomState, cdsChecked);
+    end;
 
     QStyle_drawControl(QApplication_style, QStyleCE_ItemViewItem, Option, painter, viewportWidget);
 
@@ -11429,6 +11466,15 @@ begin
     // hotlight
     if (State and QStyleState_MouseOver) <> 0 then
       Include(DrawStruct.ItemState, odHotLight);
+    // checked
+    if Checkable then
+    begin
+      // if (State and QStyleState_On <> 0) then
+      //  Include(ACustomState, cdsChecked);
+      Item := getItem(QModelIndex_row(index));
+      if Assigned(Item) and (QListWidgetItem_checkState(Item) = QtChecked) then
+        Include(DrawStruct.ItemState, odChecked);
+    end;
 
     { todo: over states:
 
@@ -11869,6 +11915,7 @@ function TQtCheckListBox.itemViewViewportEventFilter(Sender: QObjectH;
 var
   MousePos: TQtPoint;
   Item: QListWidgetItemH;
+  x: Integer;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -11891,7 +11938,22 @@ begin
             if (Item = nil) and (Sender = QWidget_mouseGrabber) then
               QWidget_releaseMouse(QWidgetH(Sender));
           end else
+          begin
             Result := SlotMouse(Sender, Event);
+            if (Item <> nil) and (OwnerDrawn) and
+              (QEvent_type(Event) = QEventMouseButtonRelease) and
+              ((QListWidgetItem_flags(Item) and QtItemIsUserCheckable) <> 0) then
+            begin
+              x := GetPixelMetric(QStylePM_IndicatorWidth, nil, Widget);
+              if ((MousePos.X > 2) and (MousePos.X < (X + 2))) then
+              begin
+                if QListWidgetItem_checkState(Item) = QtUnchecked then
+                  QListWidgetItem_setCheckState(Item, QtChecked)
+                else
+                  QListWidgetItem_setCheckState(Item, QtUnChecked);
+              end;
+            end;
+          end;
           if (QtVersionMajor = 4) and (QtVersionMinor >= 8) and
             (QEvent_Type(Event) = QEventMouseButtonPress) then
           begin
@@ -12315,6 +12377,13 @@ begin
             ((QTreeWidget_currentColumn(QTreeWidgetH(Widget)) = 0) or
             TCustomListView(LCLObject).RowSelect) then
           HandleCheckChangedEvent(QtPoint(0, 0), Item, Event);
+          if OwnerDrawn then
+          begin
+            if QTreeWidgetItem_checkState(Item, 0) = QtUnChecked then
+              QTreeWidgetItem_setCheckState(Item, 0, QtChecked)
+            else
+              QTreeWidgetItem_setCheckState(Item, 0, QtUnchecked);
+          end;
         end;
       end else
         QEvent_ignore(Event);
@@ -12451,6 +12520,7 @@ var
   W: QHeaderViewH;
   R: TRect;
   DC: TQtDeviceContext;
+  x: Integer;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -12499,19 +12569,39 @@ begin
       end else
       if (QEvent_type(Event) = QEventMouseButtonRelease) then
       begin
-        if Checkable then
+        if OwnerDrawn and Checkable then
         begin
           MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
           Item := itemAt(MousePos.x, MousePos.y);
-          if Item <> nil then
+          if (Item <> nil) and
+            ((QTreeWidgetItem_flags(Item) and QtItemIsUserCheckable) <> 0) then
           begin
-            Item := topLevelItem(GetRow(Item));
-            ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, 0,
-              PtrUInt(Item), PtrUInt(Item), 0);
-            QCoreApplication_postEvent(Sender, ALCLEvent);
+            x := GetPixelMetric(QStylePM_IndicatorWidth, nil, Widget);
+            if ((MousePos.X > 2) and (MousePos.X < (X + 2))) then
+            begin
+              if QTreeWidgetItem_checkState(Item, 0) = QtUnchecked then
+                QTreeWidgetItem_setCheckState(Item, 0, QtChecked)
+              else
+                QTreeWidgetItem_setCheckState(Item, 0, QtUnChecked);
+            end;
           end;
+          Result := SlotMouse(Sender, Event);
+        end else
+        begin
+          if Checkable then
+          begin
+            MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+            Item := itemAt(MousePos.x, MousePos.y);
+            if Item <> nil then
+            begin
+              Item := topLevelItem(GetRow(Item));
+              ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, 0,
+                PtrUInt(Item), PtrUInt(Item), 0);
+              QCoreApplication_postEvent(Sender, ALCLEvent);
+            end;
+          end;
+          Result := inherited itemViewViewportEventFilter(Sender, Event);
         end;
-        Result := inherited itemViewViewportEventFilter(Sender, Event);
       end;
     end else
     begin
@@ -12662,6 +12752,15 @@ begin
     if (State and QStyleState_MouseOver) <> 0 then
       Include(DrawStruct.ItemState, odHotLight);
 
+    // checked does not work as we expected.
+    if Checkable and (QModelIndex_column(index) <= 0) then
+    begin
+      // if (State and QStyleState_On <> 0) and (ATarget = dtItem) then
+      //  Include(ACustomState, cdsChecked);
+      if  QTreeWidgetItem_checkState(topLevelItem(QModelIndex_row(index)), 0) <> QtUnchecked then
+        Include(DrawStruct.ItemState, odChecked);
+    end;
+
     { todo: over states:
 
       odGrayed, odChecked,
@@ -12692,12 +12791,23 @@ begin
     // hotlight
     if (State and QStyleState_MouseOver) <> 0 then
       Include(ACustomState, cdsHot);
-    // checked
-    if Checkable and (State and QStyleState_On <> 0) then
-      Include(ACustomState, cdsChecked);
 
     ItemIndex := QModelIndex_row(index);
     SubItemIndex := QModelIndex_column(index);
+
+    if SubItemIndex <= 0 then
+      ATarget := dtItem
+    else
+      ATarget := dtSubItem;
+
+    // checked does not work as we expected.
+    if Checkable and (ATarget = dtItem) then
+    begin
+      // if (State and QStyleState_On <> 0) and (ATarget = dtItem) then
+      //  Include(ACustomState, cdsChecked);
+      if  QTreeWidgetItem_checkState(topLevelItem(ItemIndex), 0) <> QtUnchecked then
+        Include(ACustomState, cdsChecked);
+    end;
 
     QStyle_drawControl(QApplication_style, QStyleCE_ItemViewItem, Option, painter, viewportWidget);
 
@@ -12711,12 +12821,6 @@ begin
     TCustomListView(LCLObject).Canvas.Handle := TmpDC1;
     try
       R := visualRect(index);
-
-      if SubItemIndex <= 0 then
-        ATarget := dtItem
-      else
-        ATarget := dtSubItem;
-
       // here we do only OnCustomDrawItem and OnCustomDrawSubItem
       // OnCustomDraw is done inside itemViewportEventFilter.
       SkipDefault := cdrSkipDefault in TCustomListViewAccess(LCLObject).IntfCustomDraw(ATarget, cdPrePaint, ItemIndex, SubItemIndex, ACustomState, @R);

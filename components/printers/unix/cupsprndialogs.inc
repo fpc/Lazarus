@@ -63,6 +63,7 @@ begin
   Dlg.Options := Self.Options;
   Dlg.PrintRange := Self.PrintRange;
   Dlg.cbCollate.Checked := Self.Collate;
+  Dlg.edCopies.Value := Self.Copies;
   if Title<>'' then
     Dlg.Caption := Title
   else
@@ -85,6 +86,8 @@ begin
       // modifying fields accordingly.
 
       self.PrintRange:=dlg.PrintRange;
+      self.Collate := dlg.cbCollate.Checked;
+      self.Copies := dlg.edCopies.Value;
 
       // Page range. This migth get really complex because it's free enty
       //             textbox. To fill FromPage and ToPage we will use some

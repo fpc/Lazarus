@@ -1218,6 +1218,8 @@ begin
   FActiveSelectionMode := smNormal;
   FStartLinePos := 1;
   FStartBytePos := 1;
+  FAltStartLinePos := -1;
+  FAltStartBytePos := -1;
   FEndLinePos := 1;
   FEndBytePos := 1;
   FEnabled := True;
