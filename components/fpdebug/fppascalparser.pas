@@ -105,6 +105,7 @@ type
   protected
     procedure Init; virtual;
     procedure DoGetResultType(var AResultType: TFpPasExprType); virtual;
+    procedure InitResultTypeFromDbgInfo(var AResultType: TFpPasExprType; ADbgInfo: TDbgSymbol);
 
     Procedure ReplaceInParent(AReplacement: TFpPascalExpressionPart);
     procedure DoHandleEndOfExpression; virtual;
@@ -238,6 +239,7 @@ type
   TFpPascalExpressionPartOperatorMakeRef = class(TFpPascalExpressionPartUnaryOperator)  // ^TTYpe
   protected
     procedure Init; override;
+    function IsValidNextPart(APart: TFpPascalExpressionPart): Boolean; override;
     procedure DoGetResultType(var AResultType: TFpPasExprType); override;
   end;
 
@@ -283,6 +285,8 @@ type
   TFpPascalExpressionPartOperatorMemberOf = class(TFpPascalExpressionPartBinaryOperator)    // struct.member
   protected
     procedure Init; override;
+    function IsValidNextPart(APart: TFpPascalExpressionPart): Boolean; override;
+    procedure DoGetResultType(var AResultType: TFpPasExprType); override;
   end;
 
 implementation
@@ -303,28 +307,8 @@ end;
 
 procedure TFpPascalExpressionPartIdentifer.DoGetResultType(var AResultType: TFpPasExprType);
 begin
-  FResultType.Kind := ptkInvalid;
-
   FDbgType := FExpression.GetDbgTyeForIdentifier(GetText);
-  if (FDbgType = nil) then
-    exit;
-
-  if (FDbgType is TDbgDwarfTypeIdentifier) then begin
-    AResultType.DbgType := TDbgDwarfTypeIdentifier(FDbgType);
-    AResultType.DbgType.AddReference;
-    FResultType.Kind := ptkTypeDbgType;
-    exit;
-  end;
-
-  if FDbgType is TDbgDwarfValueIdentifier then begin
-    AResultType.DbgType := TDbgDwarfValueIdentifier(FDbgType).TypeInfo;
-    AResultType.DbgType.AddReference;
-    if AResultType.DbgType <> nil then
-      FResultType.Kind := ptkValueDbgType;
-    exit;
-  end;
-
-  debugln(['TFpPascalExpressionPartIdentifer.DoGetResultType UNKNOWN: ', DbgSName(FDbgType)]);
+  InitResultTypeFromDbgInfo(AResultType, FDbgType);
 end;
 
 destructor TFpPascalExpressionPartIdentifer.Destroy;
@@ -600,6 +584,32 @@ end;
 procedure TFpPascalExpressionPart.DoGetResultType(var AResultType: TFpPasExprType);
 begin
   FResultType.Kind := ptkInvalid;
+end;
+
+procedure TFpPascalExpressionPart.InitResultTypeFromDbgInfo(var AResultType: TFpPasExprType;
+  ADbgInfo: TDbgSymbol);
+begin
+  AResultType.Kind := ptkInvalid;
+  if (ADbgInfo = nil) then
+    exit;
+
+  if (ADbgInfo is TDbgDwarfTypeIdentifier) then begin
+    AResultType.DbgType := TDbgDwarfTypeIdentifier(ADbgInfo);
+    AResultType.DbgType.AddReference;
+    AResultType.Kind := ptkTypeDbgType;
+    exit;
+  end;
+
+  if ADbgInfo is TDbgDwarfValueIdentifier then begin
+    AResultType.DbgType := TDbgDwarfValueIdentifier(ADbgInfo).TypeInfo;
+    AResultType.DbgType.AddReference;
+    if AResultType.DbgType <> nil then
+      AResultType.Kind := ptkValueDbgType;
+    exit;
+  end;
+
+  debugln(['TFpPascalExpressionPartIdentifer.DoGetResultType UNKNOWN: ', DbgSName(ADbgInfo)]);
+
 end;
 
 procedure TFpPascalExpressionPart.ReplaceInParent(AReplacement: TFpPascalExpressionPart);
@@ -977,6 +987,12 @@ begin
   inherited Init;
 end;
 
+function TFpPascalExpressionPartOperatorMakeRef.IsValidNextPart(APart: TFpPascalExpressionPart): Boolean;
+begin
+  Result := (inherited IsValidNextPart(APart)) and
+            (APart is TFpPascalExpressionPartIdentifer);
+end;
+
 procedure TFpPascalExpressionPartOperatorMakeRef.DoGetResultType(var AResultType: TFpPasExprType);
 begin
   AResultType.Kind := ptkInvalid;
@@ -1074,6 +1090,31 @@ procedure TFpPascalExpressionPartOperatorMemberOf.Init;
 begin
   FPrecedence := 0;
   inherited Init;
+end;
+
+function TFpPascalExpressionPartOperatorMemberOf.IsValidNextPart(APart: TFpPascalExpressionPart): Boolean;
+begin
+  Result := (inherited IsValidNextPart(APart)) and
+            (APart is TFpPascalExpressionPartIdentifer);
+end;
+
+procedure TFpPascalExpressionPartOperatorMemberOf.DoGetResultType(var AResultType: TFpPasExprType);
+var
+  tmp: TFpPasExprType;
+  struct: TDbgDwarfIdentifierStructure;
+  member: TDbgDwarfIdentifierMember;
+begin
+  AResultType.Kind := ptkInvalid;
+  if Count <> 2 then exit;
+
+  tmp := Items[0].ResultType;
+  // Todo unit
+  if (tmp.Kind = ptkValueDbgType) and (tmp.DbgType.IsStructType) then begin
+    struct := tmp.DbgType.StructTypeInfo;
+    member := struct.MemberByName[Items[1].GetText];
+    InitResultTypeFromDbgInfo(AResultType, member);
+    ReleaseRefAndNil(member);
+  end;
 end;
 
 end.
