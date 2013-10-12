@@ -3382,7 +3382,7 @@ var
   NeedUndo: boolean;
   CanHaveString: Boolean;
 begin
-  if not (Scanner.CompilerMode in [cmOBJFPC,cmDELPHI,cmDELPHIUNICODE]) then exit;
+  if not (Scanner.CompilerMode in [cmFPC,cmOBJFPC,cmDELPHI,cmDELPHIUNICODE]) then exit;
   if CurPos.Flag=cafSemicolon then begin
     ReadNextAtom;
     NeedUndo:=true;
@@ -4679,6 +4679,7 @@ begin
         SaveRaiseException(ctsInvalidType);
     end;
   end;
+  ReadHintModifiers;
   EndChildNode;
   Result:=true;
 end;
