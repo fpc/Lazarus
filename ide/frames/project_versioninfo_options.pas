@@ -5,9 +5,9 @@ unit project_versioninfo_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Spin, Buttons, Grids, Project, IDEOptionsIntf, LazarusIDEStrConsts,
-  W32VersionInfo;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Spin, Buttons, Grids, CheckLst, LCLProc,
+  Project, IDEOptionsIntf, LazarusIDEStrConsts, W32VersionInfo;
 
 type
 
@@ -19,6 +19,8 @@ type
     BuildSpinEdit: TSpinEdit;
     CharacterSetComboBox: TComboBox;
     CharacterSetLabel: TLabel;
+    clbAttributes: TCheckListBox;
+    AttributesGroupBox: TGroupBox;
     LanguageSelectionComboBox: TComboBox;
     LanguageSelectionLabel: TLabel;
     LanguageSettingsGroupBox: TGroupBox;
@@ -32,10 +34,13 @@ type
     VersionInfoGroupBox: TGroupBox;
     MajorVersionLabel: TLabel;
     MajorVersionSpinEdit: TSpinEdit;
+    procedure clbAttributesClickCheck(Sender: TObject);
     procedure UseVersionInfoCheckBoxChange(Sender: TObject);
   private
     FVersionInfo: TProjectVersionInfo;
     procedure EnableVersionInfo(UseVersionInfo: boolean);
+    procedure AddKey(AKey: String);
+    procedure DeleteKey(AKey: String);
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -79,11 +84,44 @@ begin
   EnableVersionInfo(UseVersionInfoCheckBox.Checked);
 end;
 
+procedure TProjectVersionInfoOptionsFrame.clbAttributesClickCheck(Sender: TObject);
+begin
+  if clbAttributes.Checked[Ord(pvaPrivateBuild)] then
+    DeleteKey('PrivateBuild')
+  else
+    AddKey('PrivateBuild');
+  if clbAttributes.Checked[Ord(pvaSpecialBuild)] then
+    DeleteKey('SpecialBuild')
+  else
+    AddKey('SpecialBuild');
+end;
+
 procedure TProjectVersionInfoOptionsFrame.EnableVersionInfo(UseVersionInfo: boolean);
 begin
   VersionInfoGroupBox.Enabled := UseVersionInfo;
   LanguageSettingsGroupBox.Enabled := UseVersionInfo;
   OtherInfoGroupBox.Enabled := UseVersionInfo;
+  AttributesGroupBox.Enabled := UseVersionInfo;
+end;
+
+procedure TProjectVersionInfoOptionsFrame.AddKey(AKey: String);
+var
+  I: Integer;
+begin
+  for I := StringInfo.RowCount - 1 downto 1 do
+    if UTF8LowerCase(StringInfo.Cells[0, I]) = UTF8LowerCase(AKey) then
+      StringInfo.DeleteRow(I);
+end;
+
+procedure TProjectVersionInfoOptionsFrame.DeleteKey(AKey: String);
+var
+  I: Integer;
+begin
+  for I := 0 to StringInfo.RowCount - 1 do
+    if UTF8LowerCase(StringInfo.Cells[0, I]) = UTF8LowerCase(AKey) then
+      Exit;
+  StringInfo.RowCount := StringInfo.RowCount + 1;
+  StringInfo.Cells[0, StringInfo.RowCount - 1] := AKey;
 end;
 
 function TProjectVersionInfoOptionsFrame.GetTitle: string;
@@ -94,6 +132,7 @@ end;
 procedure TProjectVersionInfoOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   Items: TStringList;
+  Attr: TProjectVersionAttribute;
 begin
   UseVersionInfoCheckBox.Caption := rsIncludeVersionInfoInExecutable;
   VersionInfoGroupBox.Caption := rsVersionNumbering;
@@ -108,6 +147,9 @@ begin
   OtherInfoGroupBox.Caption := rsOtherInfo;
   StringInfo.Cells[0, 0] := lisKey;
   StringInfo.Cells[0, 1] := lisValue;
+  AttributesGroupBox.Caption := rsAttributes;
+  for Attr := Low(TProjectVersionAttribute) to High(TProjectVersionAttribute) do
+    clbAttributes.AddItem(ProjectVersionAttributeToStr[Attr], nil);
   // fill comboboxes
   Items := TStringList.Create;
   try
@@ -126,8 +168,9 @@ end;
 procedure TProjectVersionInfoOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   i: integer;
+  Attr: TProjectVersionAttribute;
 begin
-  FVersionInfo := TProjectVersionInfo((AOptions as TProject).ProjResources[TProjectVersionInfo]);
+  FVersionInfo := (AOptions as TProject).ProjResources.VersionInfo;
 
   UseVersionInfoCheckBox.Checked := FVersionInfo.UseVersionInfo;
   MajorVersionSpinEdit.Value := FVersionInfo.MajorVersionNr;
@@ -149,6 +192,10 @@ begin
     i := CharacterSetComboBox.Items.IndexOf(MSCharacterSets[i]);
   CharacterSetComboBox.ItemIndex := i;
 
+  // read attributes
+  for Attr in FVersionInfo.Attributes do
+    clbAttributes.Checked[Ord(Attr)] := True;
+
   // read string info
   StringInfo.RowCount := FVersionInfo.StringTable.Count + 1;
   for i := 0 to FVersionInfo.StringTable.Count - 1 do
@@ -163,8 +210,9 @@ var
   VersionInfo: TProjectVersionInfo;
   i: integer;
   t: TProjectVersionStringTable;
+  attrs: TProjectVersionAttributes;
 begin
-  VersionInfo := TProjectVersionInfo((AOptions as TProject).ProjResources[TProjectVersionInfo]);
+  VersionInfo := (AOptions as TProject).ProjResources.VersionInfo;
   VersionInfo.UseVersionInfo := UseVersionInfoCheckBox.Checked;
   VersionInfo.AutoIncrementBuild := AutomaticallyIncreaseBuildCheckBox.Checked;
   VersionInfo.MajorVersionNr := MajorVersionSpinEdit.Value;
@@ -173,8 +221,14 @@ begin
   VersionInfo.BuildNr := BuildSpinEdit.Value;
   VersionInfo.HexLang := MSLanguageToHex(LanguageSelectionComboBox.Text);
   VersionInfo.HexCharSet := MSCharacterSetToHex(CharacterSetComboBox.Text);
+  // write attributes
+  attrs := [];
+  for i := 0 to clbAttributes.Count - 1 do
+    if clbAttributes.Checked[i] then
+      include(attrs, TProjectVersionAttribute(i));
+  VersionInfo.Attributes := attrs;
   // write string info
-  t:=TProjectVersionStringTable.Create('01234567');
+  t := TProjectVersionStringTable.Create('01234567');
   try
     for i := 1 to StringInfo.RowCount - 1 do
       t[StringInfo.Cells[0, i]] := StringInfo.Cells[1, i];

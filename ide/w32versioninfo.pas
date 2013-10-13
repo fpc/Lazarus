@@ -37,9 +37,10 @@ unit W32VersionInfo;
 interface
 
 uses
-  Classes, SysUtils, Process, LCLProc, Controls, Forms, FileUtil, laz2_DOM,
+  Classes, SysUtils, Process, LCLProc, Controls, Forms, FileUtil, TypInfo, laz2_DOM,
   Laz2_XMLCfg, CodeToolManager, LazConf, IDEProcs, ProjectIntf, CompOptsIntf,
-  ProjectResourcesIntf, resource, versionresource, versiontypes, TransferMacros;
+  ProjectResourcesIntf, resource, versionresource, versiontypes, versionconsts,
+  TransferMacros;
 
 type
 
@@ -68,10 +69,20 @@ type
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
   end;
 
+  TProjectVersionAttribute = (
+    pvaDebug,
+    pvaPreRelease,
+    pvaPatched,
+    pvaPrivateBuild,
+    pvaSpecialBuild
+  );
+  TProjectVersionAttributes = set of TProjectVersionAttribute;
+
   { TProjectVersionInfo }
 
   TProjectVersionInfo = class(TAbstractProjectResource)
   private
+    FAttributes: TProjectVersionAttributes;
     FAutoIncrementBuild: boolean;
     FHexCharSet: string;
     FHexLang: string;
@@ -83,6 +94,7 @@ type
     function GetHexLanguages: TStringList;
     function GetLanguages: TStringList;
     function GetVersion(AIndex: integer): integer;
+    procedure SetAttributes(AValue: TProjectVersionAttributes);
     procedure SetAutoIncrementBuild(const AValue: boolean);
     procedure SetFileVersionFromVersion;
     procedure SetHexCharSet(const AValue: string);
@@ -90,6 +102,7 @@ type
     procedure SetUseVersionInfo(const AValue: boolean);
     procedure SetVersion(AIndex: integer; const AValue: integer);
     function ExtractProductVersion: TFileProductVersion;
+    function GetFileFlags: LongWord;
     function BuildFileVersionString: String;
     procedure DoModified(Sender: TObject);
   public
@@ -111,6 +124,7 @@ type
     property RevisionNr: integer index 2 read GetVersion write SetVersion;
     property BuildNr: integer index 3 read GetVersion write SetVersion;
 
+    property Attributes: TProjectVersionAttributes read FAttributes write SetAttributes;
     property HexLang: string read FHexLang write SetHexLang;
     property HexCharSet: string read FHexCharSet write SetHexCharSet;
 
@@ -131,6 +145,14 @@ function MSHexCharacterSets: TStringList;
 const
   DefaultLanguage = '0409'; // U.S. English
   DefaultCharSet = '04E4'; // Multilingual
+
+  ProjectVersionAttributeToStr: array[TProjectVersionAttribute] of String = (
+ { pvaDebug        } 'Debug',
+ { pvaPreRelease   } 'Pre-release',
+ { pvaPatched      } 'Patched',
+ { pvaPrivateBuild } 'Private build',
+ { pvaSpecialBuild } 'Special build'
+  );
 
 implementation
 
@@ -371,6 +393,7 @@ begin
     //it's always RT_VERSION and 1 respectively
     ARes.FixedInfo.FileVersion := FVersion;
     ARes.FixedInfo.ProductVersion := ExtractProductVersion;
+    ARes.FixedInfo.FileFlags := GetFileFlags;
 
     lang := HexLang;
     if lang = '' then
@@ -382,7 +405,8 @@ begin
     SetFileVersionFromVersion;
 
     st := TVersionStringTable.Create(lang + charset);
-    for i := 0 to FStringTable.Count - 1 do Begin
+    for i := 0 to FStringTable.Count - 1 do
+    begin
       VersionValue := FStringTable.ValuesByIndex[i];
       GlobalMacroList.SubstituteStr(VersionValue);
       st.Add(Utf8ToAnsi(FStringTable.Keys[i]), Utf8ToAnsi(VersionValue));
@@ -401,6 +425,7 @@ var
   i: integer;
   Key: string;
   DefaultValue: String;
+  attr: TProjectVersionAttribute;
 begin
   with TXMLConfig(AConfig) do
   begin
@@ -413,6 +438,11 @@ begin
     SetDeleteValue(Path + 'VersionInfo/BuildNr/Value', BuildNr, 0);
     SetDeleteValue(Path + 'VersionInfo/Language/Value', HexLang, DefaultLanguage);
     SetDeleteValue(Path + 'VersionInfo/CharSet/Value', HexCharSet, DefaultCharset);
+
+    // write attributes
+    DeletePath(Path + 'VersionInfo/Attributes');
+    for attr in Attributes do
+      SetDeleteValue(Path + 'VersionInfo/Attributes/' + GetEnumName(TypeInfo(attr), Ord(attr)), True, False);
 
     // write string info
     DeletePath(Path + 'VersionInfo/StringTable');
@@ -432,6 +462,7 @@ procedure TProjectVersionInfo.ReadFromProjectFile(AConfig: TObject; Path: string
 var
   i: integer;
   Node: TDomNode;
+  attrs: TProjectVersionAttributes;
 begin
   with TXMLConfig(AConfig) do
   begin
@@ -449,6 +480,18 @@ begin
 
     HexLang := GetValue(Path + 'VersionInfo/Language/Value', DefaultLanguage);
     HexCharSet := GetValue(Path + 'VersionInfo/CharSet/Value', DefaultCharset);
+
+    // read attributes
+    attrs := [];
+    Node := FindNode(Path + 'VersionInfo/Attributes', False);
+    if Assigned(Node) then
+    begin
+      for i := 0 to Node.Attributes.Length - 1 do
+        if StrToBoolDef(Node.Attributes[i].NodeValue, False) then
+          include(attrs, TProjectVersionAttribute(GetEnumValue(TypeInfo(TProjectVersionAttribute), Node.Attributes[i].NodeName)));
+    end;
+    Attributes := attrs;
+
 
     // read string info
     Node := FindNode(Path + 'VersionInfo/StringTable', False);
@@ -505,6 +548,14 @@ end;
 function TProjectVersionInfo.GetVersion(AIndex: integer): integer;
 begin
   Result := FVersion[AIndex];
+end;
+
+procedure TProjectVersionInfo.SetAttributes(AValue: TProjectVersionAttributes);
+begin
+  if FAttributes = AValue then
+    Exit;
+  FAttributes := AValue;
+  Modified := True;
 end;
 
 procedure TProjectVersionInfo.SetAutoIncrementBuild(const AValue: boolean);
@@ -575,6 +626,24 @@ begin
   end;
 end;
 
+function TProjectVersionInfo.GetFileFlags: LongWord;
+const
+  AttributeToFileFlags: array[TProjectVersionAttribute] of LongWord = (
+ { pvaDebug        } VS_FF_DEBUG,
+ { pvaPreRelease   } VS_FF_PRERELEASE,
+ { pvaPatched      } VS_FF_PATCHED,
+ { pvaPrivateBuild } VS_FF_PRIVATEBUILD,
+ { pvaSpecialBuild } VS_FF_SPECIALBUILD
+  );
+
+var
+  Attribute: TProjectVersionAttribute;
+begin
+  Result := 0;
+  for Attribute in Attributes do
+    Result := Result or AttributeToFileFlags[Attribute];
+end;
+
 function TProjectVersionInfo.BuildFileVersionString: String;
 begin
   Result := Format('%d.%d.%d.%d', [MajorVersionNr, MinorVersionNr, RevisionNr, BuildNr]);
@@ -588,6 +657,7 @@ end;
 constructor TProjectVersionInfo.Create;
 begin
   inherited Create;
+  FAttributes := [];
   FStringTable := TProjectVersionStringTable.Create('00000000');
   FStringTable.OnModified := @DoModified;
   HexLang:=DefaultLanguage;

@@ -1,23 +1,28 @@
 object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
   Left = 0
-  Height = 364
+  Height = 428
   Top = 0
   Width = 594
-  ClientHeight = 364
+  ClientHeight = 428
   ClientWidth = 594
   TabOrder = 0
   DesignLeft = 273
   DesignTop = 145
   object VersionInfoGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = UseVersionInfoCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 101
-    Top = 27
+    Height = 102
+    Top = 25
     Width = 594
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Version Numbering'
-    ClientHeight = 85
+    ClientHeight = 84
     ClientWidth = 590
     TabOrder = 1
     object MajorVersionLabel: TLabel
@@ -26,7 +31,7 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       Left = 6
       Height = 15
       Top = 6
-      Width = 70
+      Width = 75
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 3
@@ -41,7 +46,7 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       Left = 131
       Height = 15
       Top = 6
-      Width = 70
+      Width = 76
       BorderSpacing.Left = 55
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 3
@@ -56,7 +61,7 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       Left = 256
       Height = 15
       Top = 6
-      Width = 45
+      Width = 47
       BorderSpacing.Left = 55
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 3
@@ -71,7 +76,7 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       Left = 381
       Height = 15
       Top = 6
-      Width = 29
+      Width = 30
       BorderSpacing.Left = 55
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 3
@@ -84,7 +89,7 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideTop.Control = MajorVersionLabel
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
+      Height = 23
       Top = 24
       Width = 70
       MaxValue = 65535
@@ -95,7 +100,7 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideTop.Control = MinorVersionLabel
       AnchorSideTop.Side = asrBottom
       Left = 131
-      Height = 22
+      Height = 23
       Top = 24
       Width = 70
       MaxValue = 65535
@@ -106,7 +111,7 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideTop.Control = RevisionLabel
       AnchorSideTop.Side = asrBottom
       Left = 256
-      Height = 22
+      Height = 23
       Top = 24
       Width = 70
       MaxValue = 65535
@@ -117,9 +122,9 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideTop.Control = MajorVersionSpinEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
-      Top = 58
-      Width = 164
+      Height = 19
+      Top = 59
+      Width = 170
       BorderSpacing.Top = 6
       BorderSpacing.Around = 6
       Caption = 'Automatically increase Build'
@@ -130,7 +135,7 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideTop.Control = BuildLabel
       AnchorSideTop.Side = asrBottom
       Left = 381
-      Height = 22
+      Height = 23
       Top = 24
       Width = 70
       MaxValue = 65535
@@ -138,26 +143,38 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
     end
   end
   object UseVersionInfoCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
+    Height = 19
     Top = 0
     Width = 594
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     Caption = 'Include Version Info in executable'
     OnChange = UseVersionInfoCheckBoxChange
     TabOrder = 0
   end
   object LanguageSettingsGroupBox: TGroupBox
-    Left = 0
-    Height = 75
-    Top = 134
-    Width = 594
-    Align = alTop
-    AutoSize = True
+    AnchorSideLeft.Control = AttributesGroupBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = VersionInfoGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = AttributesGroupBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 239
+    Height = 131
+    Top = 133
+    Width = 355
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'Language Options'
-    ClientHeight = 59
-    ClientWidth = 590
+    ClientHeight = 113
+    ClientWidth = 351
     TabOrder = 2
     object LanguageSelectionLabel: TLabel
       AnchorSideLeft.Control = LanguageSettingsGroupBox
@@ -165,18 +182,18 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       Left = 6
       Height = 15
       Top = 6
-      Width = 101
+      Width = 106
       BorderSpacing.Around = 6
       Caption = 'Language Selection:'
       ParentColor = False
     end
     object CharacterSetLabel: TLabel
-      AnchorSideLeft.Control = LanguageSelectionComboBox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = LanguageSettingsGroupBox
-      Left = 260
+      AnchorSideLeft.Control = LanguageSettingsGroupBox
+      AnchorSideTop.Control = LanguageSelectionComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
       Height = 15
-      Top = 6
+      Top = 56
       Width = 73
       BorderSpacing.Around = 6
       Caption = 'Character Set:'
@@ -186,48 +203,61 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideLeft.Control = LanguageSelectionLabel
       AnchorSideTop.Control = LanguageSelectionLabel
       AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = LanguageSettingsGroupBox
+      AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 26
+      Height = 23
       Top = 27
-      Width = 248
+      Width = 339
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 2
+      BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
-      ItemHeight = 0
+      ItemHeight = 15
       Style = csDropDownList
       TabOrder = 0
     end
     object CharacterSetComboBox: TComboBox
       AnchorSideLeft.Control = CharacterSetLabel
-      AnchorSideTop.Control = LanguageSelectionComboBox
+      AnchorSideTop.Control = CharacterSetLabel
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = LanguageSettingsGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 260
-      Height = 26
-      Top = 27
-      Width = 324
+      Left = 6
+      Height = 23
+      Top = 77
+      Width = 339
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 2
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
-      ItemHeight = 0
+      ItemHeight = 15
       Style = csDropDownList
       TabOrder = 1
     end
   end
   object OtherInfoGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LanguageSettingsGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 149
-    Top = 215
+    Height = 158
+    Top = 270
     Width = 594
-    Align = alClient
+    Anchors = [akTop, akLeft, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Other Info'
-    ClientHeight = 133
+    ClientHeight = 140
     ClientWidth = 590
     TabOrder = 3
     object StringInfo: TStringGrid
       Left = 6
-      Height = 121
+      Height = 128
       Top = 6
       Width = 578
       Align = alClient
@@ -254,6 +284,31 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
         150
         300
       )
+    end
+  end
+  object AttributesGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = VersionInfoGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = LanguageSettingsGroupBox
+    Left = 0
+    Height = 131
+    Top = 133
+    Width = 233
+    BorderSpacing.Top = 6
+    Caption = 'AttributesGroupBox'
+    ClientHeight = 113
+    ClientWidth = 229
+    TabOrder = 4
+    object clbAttributes: TCheckListBox
+      Left = 0
+      Height = 113
+      Top = 0
+      Width = 229
+      Align = alClient
+      ItemHeight = 0
+      OnClickCheck = clbAttributesClickCheck
+      TabOrder = 0
     end
   end
 end
