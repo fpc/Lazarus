@@ -1654,6 +1654,7 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnInsert;
     property OnItemChecked;
     property OnKeyDown;
     property OnKeyPress;
