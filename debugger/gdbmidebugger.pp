@@ -2596,6 +2596,7 @@ function TGDBMIDebuggerCommandChangeFilename.DoExecute: Boolean;
 var
   R: TGDBMIExecResult;
   List: TGDBMINameValueList;
+  S: String;
 begin
   Result := True;
   FSuccess := False;
@@ -2608,8 +2609,18 @@ begin
   FTheDebugger.FRunErrorBreak.Clear(Self);
   if DebuggerState = dsError then Exit;
 
-  FSuccess := ExecuteCommand('-file-exec-and-symbols %s', [FFileName], R);
+  S := FTheDebugger.ConvertToGDBPath(UTF8ToSys(FFileName), cgptExeName);
+  FSuccess := ExecuteCommand('-file-exec-and-symbols %s', [S], R);
   if not FSuccess then exit;
+  {$IFDEF darwin}
+  if  (R.State = dsError) and (FFileName <> '')
+  then begin
+    FFileName := FFileName + '/Contents/MacOS/' + ExtractFileNameOnly(FFileName);
+    S := FTheDebugger.ConvertToGDBPath(UTF8ToSys(FFileName), cgptExeName);
+    FSuccess := ExecuteCommand('-file-exec-and-symbols %s', [S], R);
+    if not FSuccess then exit;
+  end;
+  {$ENDIF}
 
   if  (R.State = dsError) and (FFileName <> '')
   then begin
@@ -7002,15 +7013,13 @@ end;
 
 function TGDBMIDebugger.ChangeFileName: Boolean;
 var
-  S: String;
   Cmd: TGDBMIDebuggerCommandChangeFilename;
 begin
   Result := False;
   FCurrentStackFrameValid := False; // not running => not valid
   FCurrentThreadIdValid   := False;
-  S := ConvertToGDBPath(UTF8ToSys(FileName), cgptExeName);
 
-  Cmd := TGDBMIDebuggerCommandChangeFilename.Create(Self, S);
+  Cmd := TGDBMIDebuggerCommandChangeFilename.Create(Self, FileName);
   Cmd.AddReference;
   QueueCommand(Cmd);
   // if filename = '', then command may be queued
