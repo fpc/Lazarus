@@ -101,6 +101,7 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
     Anchors = [akTop, akRight]
     BorderSpacing.Top = 6
     CharCase = ecUppercase
+    Enabled = False
     OnEditingDone = edResourceNameEditingDone
     OnKeyDown = edResourceNameKeyDown
     TabOrder = 2
@@ -129,6 +130,7 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
     Width = 126
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
+    Enabled = False
     ItemHeight = 15
     OnChange = cbResourceTypeChange
     Style = csDropDownList
