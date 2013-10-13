@@ -6025,9 +6025,9 @@ begin
   Result := False;
   if (LCLObject = nil) then
     exit;
-  if (QEvent_Type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease, QEventMouseButtonDblClick,
-    QEventMouseMove, QEventWheel, QEventPaint, QEventHoverEnter, QEventHoverMove,
-      QEventHoverLeave, QEventResize]) then
+  if (QEvent_Type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease,
+    QEventMouseButtonDblClick, QEventMouseMove, QEventWheel, QEventPaint,
+    QEventHoverEnter, QEventHoverMove, QEventHoverLeave, QEventResize]) then
     exit;
   Result := inherited EventFilter(Sender, Event);
 end;
@@ -6042,9 +6042,8 @@ begin
   if LCLObject = nil then
     exit;
   BeginEventProcessing;
-  if (QEvent_Type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease, QEventMouseButtonDblClick,
-    QEventMouseMove, QEventWheel, QEventPaint, QEventHoverEnter, QEventHoverMove,
-      QEventHoverLeave]) then
+  if (QEvent_Type(Event) in [QEventContextMenu, QEventPaint, QEventHoverEnter,
+                             QEventHoverMove, QEventHoverLeave]) then
   begin
     Result := inherited EventFilter(Sender, Event);
   end else
@@ -6531,8 +6530,7 @@ begin
   {$IFDEF QTSCROLLABLEFORMS}
   if Assigned(ScrollArea) and not IsMDIChild then
   begin
-    if QEvent_type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease,
-                              QEventMouseButtonDblClick, QEventPaint,
+    if QEvent_type(Event) in [QEventPaint,
                               QEventContextMenu] then
       exit;
   end;
