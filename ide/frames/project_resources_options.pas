@@ -21,6 +21,8 @@ type
     btnDelete: TToolButton;
     procedure btnAddClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
+    procedure lbResourcesSelectItem(Sender: TObject; Item: TListItem;
+      Selected: Boolean);
   private
     procedure AddResource(AFileName: String);
     procedure AddResourceItem(ResFile: String; ResType: TUserResourceType; ResName: String);
@@ -51,6 +53,11 @@ begin
   Index := lbResources.ItemIndex;
   if (Index <> -1) then
     lbResources.Items.Delete(Index);
+end;
+
+procedure TResourcesOptionsFrame.lbResourcesSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+begin
+  btnDelete.Enabled := lbResources.ItemIndex <> -1;
 end;
 
 procedure TResourcesOptionsFrame.AddResourceItem(ResFile: String; ResType: TUserResourceType; ResName: String);

@@ -33,8 +33,10 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
         Caption = 'Resource'
         Width = 658
       end>
+    RowSelect = True
     TabOrder = 0
     ViewStyle = vsReport
+    OnSelectItem = lbResourcesSelectItem
   end
   object ToolBar1: TToolBar
     Left = 0
@@ -56,6 +58,7 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
       Left = 49
       Top = 0
       Caption = 'btnDelete'
+      Enabled = False
       OnClick = btnDeleteClick
     end
   end
