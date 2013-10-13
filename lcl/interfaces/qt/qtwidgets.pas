@@ -637,7 +637,6 @@ type
     function GetContainerWidget: QWidgetH; override;
     procedure grabMouse; override;
     function getClientOffset: TPoint; override;
-    function getClientBounds: TRect; override;
 
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
@@ -6430,18 +6429,6 @@ begin
       inc(Result.Y, MenuBar.getHeight);
   {$ELSE}
   Result:=inherited getClientOffset;
-  {$ENDIF}
-end;
-
-function TQtMainWindow.getClientBounds: TRect;
-begin
-  {$IFDEF QTSCROLLABLEFORMS}
-  if Assigned(ScrollArea) then
-    Result := ScrollArea.getClientBounds
-  else
-    Result := inherited getClientBounds;
-  {$ELSE}
-  Result:=inherited getClientBounds;
   {$ENDIF}
 end;
 
