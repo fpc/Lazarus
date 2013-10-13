@@ -45,6 +45,7 @@ type
     rtIcon,    // maps to RT_GROUP_ICON
     rtCursor,  // maps to RT_GROUP_CURSOR
     rtBitmap,  // maps to RT_BITMAP
+    rtHTML,    // maps to RT_HTML
     rtRCData   // maps to RT_RCDATA
   );
   PResourceItem = ^TResourceItem;
@@ -95,6 +96,7 @@ const
  { rtIcon   } 'ICON',
  { rtCursor } 'CURSOR',
  { rtBitmap } 'BITMAP',
+ { rtHTML   } 'HTML',
  { rtRCData } 'RCDATA'
   );
 
@@ -108,6 +110,7 @@ begin
     'ICON': Result := rtIcon;
     'CURSOR': Result := rtCursor;
     'BITMAP': Result := rtBitmap;
+    'HTML': Result := rtHTML;
   else
     Result := rtRCData;
   end;
@@ -155,6 +158,13 @@ begin
           begin
             Result := TBitmapResource.Create(nil, NameDesc);
             TBitmapResource(Result).BitmapData.CopyFrom(Stream, Stream.Size);
+          end;
+        rtHTML:
+          begin
+            TypeDesc := TResourceDesc.Create(RT_HTML);
+            Result := TGenericResource.Create(TypeDesc, NameDesc);
+            TypeDesc.Free;
+            TGenericResource(Result).RawData.CopyFrom(Stream, Stream.Size)
           end;
         rtRCData:
           begin
