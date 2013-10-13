@@ -36,7 +36,7 @@ uses
   MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf,
   // IDE
-  IDEProcs, InitialSetupDlgs, CompilerOptions, ApplicationBundle,
+  IDEProcs, InitialSetupDlgs, {$ifndef EnableNewExtTools}OutputFilter, {$endif}CompilerOptions, ApplicationBundle,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
   IDECmdLine, ExtToolDialog, MiscOptions, Project, LazConf, PackageDefs,
   PackageLinks, PackageSystem, BuildLazDialog, BuildProfileManager,
