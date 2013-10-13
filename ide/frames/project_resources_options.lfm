@@ -6,8 +6,8 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
   ClientHeight = 330
   ClientWidth = 742
   TabOrder = 0
-  DesignLeft = 334
-  DesignTop = 289
+  DesignLeft = 561
+  DesignTop = 308
   object lbResources: TListView
     Left = 0
     Height = 304
@@ -16,6 +16,15 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
     Align = alClient
     AutoWidthLastColumn = True
     Columns = <    
+      item
+        Caption = 'FullFileName'
+        Visible = False
+        Width = 0
+      end    
+      item
+        Caption = 'FileName'
+        Width = 150
+      end    
       item
         Caption = 'Type'
         Width = 80

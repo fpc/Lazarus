@@ -43,7 +43,7 @@ uses
   ProjectIntf, ProjectResourcesIntf, CompOptsIntf,
   LazarusIDEStrConsts,
   IDEProcs, DialogProcs,
-  W32Manifest, W32VersionInfo, ProjectIcon;
+  W32Manifest, W32VersionInfo, ProjectIcon, ProjectUserResources;
 
 type
   { TProjectResources }
@@ -65,6 +65,7 @@ type
     LastLrsFileName: String;
 
     function GetProjectIcon: TProjectIcon;
+    function GetProjectUserResources: TProjectUserResources;
     function GetVersionInfo: TProjectVersionInfo;
     function GetXPManifest: TProjectXPManifest;
     procedure SetFileNames(const MainFileName, TestDir: String);
@@ -108,6 +109,7 @@ type
     property XPManifest: TProjectXPManifest read GetXPManifest;
     property VersionInfo: TProjectVersionInfo read GetVersionInfo;
     property ProjectIcon: TProjectIcon read GetProjectIcon;
+    property UserResources: TProjectUserResources read GetProjectUserResources;
   end;
 
 function GuessResourceType(Code: TCodeBuffer; out Typ: TResourceType): boolean;
@@ -337,6 +339,11 @@ end;
 function TProjectResources.GetProjectIcon: TProjectIcon;
 begin
   Result := TProjectIcon(GetProjectResource(TProjectIcon));
+end;
+
+function TProjectResources.GetProjectUserResources: TProjectUserResources;
+begin
+  Result := TProjectUserResources(GetProjectResource(TProjectUserResources));
 end;
 
 function TProjectResources.GetVersionInfo: TProjectVersionInfo;

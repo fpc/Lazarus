@@ -2278,6 +2278,7 @@ resourcestring
   dlgPOApplication = 'Application';
   dlgPOFroms = 'Forms';
   dlgPOResources = 'Resources';
+  rsResourceFileName = 'File name';
   rsResourceType = 'Type';
   rsResource = 'Resource';
   dlgPOMisc = 'Miscellaneous';

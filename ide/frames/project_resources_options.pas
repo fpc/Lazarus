@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Graphics, Forms, Controls, ComCtrls, Dialogs, LCLProc,
   IDEOptionsIntf, IDEImagesIntf,
-  Project, LCLStrConsts, LazarusIDEStrConsts;
+  Project, ProjectUserResources, LCLStrConsts, LazarusIDEStrConsts;
 
 type
 
@@ -23,6 +23,7 @@ type
     procedure btnDeleteClick(Sender: TObject);
   private
     procedure AddResource(AFileName: String);
+    procedure AddResourceItem(ResFile: String; ResType: TUserResourceType; ResName: String);
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -52,48 +53,30 @@ begin
     lbResources.Items.Delete(Index);
 end;
 
-procedure TResourcesOptionsFrame.AddResource(AFileName: String);
-
-  procedure AddItem(ResType, ResName: String);
-  var
-    Item: TListItem;
-  begin
-    Item := lbResources.Items.Add;
-    Item.Caption := ResType;
-    Item.SubItems.Add(UTF8UpperCase(ResName));
-  end;
-
-  procedure AddBitmap(AFileName: String);
-  begin
-    AddItem('BITMAP', ExtractFileNameOnly(AFileName));
-  end;
-
-  procedure AddCursor(AFileName: String);
-  begin
-    AddItem('CURSOR', ExtractFileNameOnly(AFileName));
-  end;
-
-  procedure AddIcon(AFileName: String);
-  begin
-    AddItem('ICON', ExtractFileNameOnly(AFileName));
-  end;
-
-  procedure AddRCData(AFileName: String);
-  begin
-    AddItem('RCDATA', ExtractFileNameOnly(AFileName));
-  end;
-
+procedure TResourcesOptionsFrame.AddResourceItem(ResFile: String; ResType: TUserResourceType; ResName: String);
 var
-  Ext: String;
+  Item: TListItem;
+begin
+  Item := lbResources.Items.Add;
+  Item.Caption := ResFile;
+  Item.SubItems.Add(ExtractFileName(ResFile));
+  Item.SubItems.Add(ResourceTypeToStr[ResType]);
+  Item.SubItems.Add(ResName);
+end;
+
+procedure TResourcesOptionsFrame.AddResource(AFileName: String);
+var
+  ResName, Ext: String;
 begin
   Ext := UTF8UpperCase(ExtractFileExt(AFileName));
+  ResName := UTF8UpperCase(ExtractFileNameOnly(AFileName));
   case Ext of
-    '.BMP': AddBitmap(AFileName);
-    '.CUR': AddCursor(AFileName);
-    '.ICO': AddIcon(AFileName);
-    //'.FNT', '.FON', '.TTF': AddFont(AFileName);
+    '.BMP': AddResourceItem(AFileName, rtBitmap, ResName);
+    '.CUR': AddResourceItem(AFileName, rtCursor, ResName);
+    '.ICO': AddResourceItem(AFileName, rtIcon, ResName);
+    //'.FNT', '.FON', '.TTF': AddResourceItem(AFileName, rtFont, ResName);
   else
-    AddRCData(AFileName);
+    AddResourceItem(AFileName, rtRCData, ResName);
   end;
 end;
 
@@ -105,8 +88,9 @@ end;
 procedure TResourcesOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   ToolBar1.Images := IDEImages.Images_16;
-  lbResources.Column[0].Caption := rsResourceType;
-  lbResources.Column[1].Caption := rsResource;
+  lbResources.Column[1].Caption := rsResourceFileName;
+  lbResources.Column[2].Caption := rsResourceType;
+  lbResources.Column[3].Caption := rsResource;
   btnAdd.Caption := lisBtnAdd;
   btnDelete.Caption := lisBtnDelete;
   btnAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
@@ -119,13 +103,26 @@ begin
 end;
 
 procedure TResourcesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  Project: TProject absolute AOptions;
+  List: TResourceList;
+  I: Integer;
 begin
-
+  lbResources.Items.Clear;
+  List := Project.ProjResources.UserResources.List;
+  for I := 0 to List.Count - 1 do
+    AddResourceItem(List[I]^.FileName, List[I]^.ResType, List[I]^.ResName);
 end;
 
 procedure TResourcesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  Project: TProject absolute AOptions;
+  I: Integer;
 begin
-
+  Project.ProjResources.UserResources.List.Clear;
+  for I := 0 to lbResources.Items.Count - 1 do
+    Project.ProjResources.UserResources.List.AddResource(lbResources.Items[I].Caption,
+      StrToResourceType(lbResources.Items[I].SubItems[1]), lbResources.Items[I].SubItems[2]);
 end;
 
 class function TResourcesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

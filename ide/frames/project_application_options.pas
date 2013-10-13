@@ -273,15 +273,18 @@ begin
     Title := TitleEdit.Text;
     AStream := GetIconAsStream;
     try
-      TProjectIcon(ProjResources[TProjectIcon]).SetStream(AStream);
+      ProjResources.ProjectIcon.SetStream(AStream);
     finally
       AStream.Free;
     end;
     UseAppBundle := UseAppBundleCheckBox.Checked;
-    TProjectXPManifest(ProjResources[TProjectXPManifest]).UseManifest := UseXPManifestCheckBox.Checked;
-    TProjectXPManifest(ProjResources[TProjectXPManifest]).DpiAware := DpiAwareCheckBox.Checked;
-    TProjectXPManifest(ProjResources[TProjectXPManifest]).ExecutionLevel := TXPManifestExecutionLevel(ExecutionLevelComboBox.ItemIndex);
-    TProjectXPManifest(ProjResources[TProjectXPManifest]).UIAccess := UIAccessCheckBox.Checked;
+    with ProjResources.XPManifest do
+    begin
+      UseManifest := UseXPManifestCheckBox.Checked;
+      DpiAware := DpiAwareCheckBox.Checked;
+      ExecutionLevel := TXPManifestExecutionLevel(ExecutionLevelComboBox.ItemIndex);
+      UIAccess := UIAccessCheckBox.Checked;
+    end;
   end;
 end;
 

@@ -5252,6 +5252,7 @@ ide/projecticon.pas svneol=native#text/pascal
 ide/projectinspector.lfm svneol=native#text/plain
 ide/projectinspector.pas svneol=native#text/pascal
 ide/projectresources.pas svneol=native#text/pascal
+ide/projectuserresources.pas svneol=native#text/pascal
 ide/projectwizarddlg.lfm svneol=native#text/plain
 ide/projectwizarddlg.pas svneol=native#text/plain
 ide/publishmodule.pas svneol=native#text/pascal
