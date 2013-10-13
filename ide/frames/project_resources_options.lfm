@@ -9,12 +9,19 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
   DesignLeft = 561
   DesignTop = 308
   object lbResources: TListView
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ToolBar1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = lblResourceName
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 304
     Top = 26
-    Width = 742
-    Align = alClient
+    Width = 610
+    Anchors = [akTop, akLeft, akRight, akBottom]
     AutoWidthLastColumn = True
+    BorderSpacing.Right = 6
     Columns = <    
       item
         Caption = 'FullFileName'
@@ -31,7 +38,7 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
       end    
       item
         Caption = 'Resource'
-        Width = 508
+        Width = 376
       end>
     RowSelect = True
     TabOrder = 0
@@ -69,6 +76,63 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
       Enabled = False
       OnClick = btnClearClick
     end
+  end
+  object lblResourceName: TLabel
+    AnchorSideLeft.Control = edResourceName
+    AnchorSideTop.Control = lbResources
+    Left = 616
+    Height = 15
+    Top = 26
+    Width = 93
+    Caption = 'lblResourceName'
+    FocusControl = edResourceName
+    ParentColor = False
+  end
+  object edResourceName: TEdit
+    AnchorSideLeft.Control = lblResourceName
+    AnchorSideTop.Control = lblResourceName
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 616
+    Height = 23
+    Top = 47
+    Width = 126
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 6
+    CharCase = ecUppercase
+    OnEditingDone = edResourceNameEditingDone
+    OnKeyDown = edResourceNameKeyDown
+    TabOrder = 2
+  end
+  object lblResourceType: TLabel
+    AnchorSideLeft.Control = cbResourceType
+    AnchorSideTop.Control = edResourceName
+    AnchorSideTop.Side = asrBottom
+    Left = 616
+    Height = 15
+    Top = 76
+    Width = 87
+    BorderSpacing.Top = 6
+    Caption = 'lblResourceType'
+    ParentColor = False
+  end
+  object cbResourceType: TComboBox
+    AnchorSideLeft.Control = edResourceName
+    AnchorSideTop.Control = lblResourceType
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 616
+    Height = 23
+    Top = 97
+    Width = 126
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    ItemHeight = 15
+    OnChange = cbResourceTypeChange
+    Style = csDropDownList
+    TabOrder = 3
   end
   object dlgOpen: TOpenDialog
     left = 146

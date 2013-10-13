@@ -5,15 +5,20 @@ unit project_resources_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Graphics, Forms, Controls, ComCtrls, Dialogs, LCLProc,
-  IDEOptionsIntf, IDEImagesIntf, IDEDialogs,
-  Project, ProjectUserResources, LCLStrConsts, LazarusIDEStrConsts;
+  Classes, SysUtils, FileUtil, Graphics, Forms, Controls, ComCtrls, Dialogs,
+  LCLProc, LCLType,
+  IDEOptionsIntf, IDEImagesIntf, IDEDialogs, Project,
+  ProjectUserResources, LCLStrConsts, ExtCtrls, StdCtrls, LazarusIDEStrConsts;
 
 type
 
   { TResourcesOptionsFrame }
 
   TResourcesOptionsFrame = class(TAbstractIDEOptionsEditor)
+    cbResourceType: TComboBox;
+    edResourceName: TEdit;
+    lblResourceType: TLabel;
+    lblResourceName: TLabel;
     lbResources: TListView;
     dlgOpen: TOpenDialog;
     ToolBar1: TToolBar;
@@ -23,6 +28,10 @@ type
     procedure btnAddClick(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
+    procedure cbResourceTypeChange(Sender: TObject);
+    procedure edResourceNameEditingDone(Sender: TObject);
+    procedure edResourceNameKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure lbResourcesInsert(Sender: TObject; Item: TListItem);
     procedure lbResourcesSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
@@ -57,13 +66,30 @@ begin
 end;
 
 procedure TResourcesOptionsFrame.btnDeleteClick(Sender: TObject);
-var
-  Index: Integer;
 begin
-  Index := lbResources.ItemIndex;
-  if (Index <> -1) then
-    lbResources.Items.Delete(Index);
+  if Assigned(lbResources.Selected) then
+    lbResources.Items.Delete(lbResources.Selected.Index);
   btnClear.Enabled := lbResources.Items.Count > 0;
+end;
+
+procedure TResourcesOptionsFrame.cbResourceTypeChange(Sender: TObject);
+begin
+  lbResources.Selected.SubItems[1] := ResourceTypeToStr[TUserResourceType(cbResourceType.ItemIndex)];
+end;
+
+procedure TResourcesOptionsFrame.edResourceNameEditingDone(Sender: TObject);
+begin
+  lbResources.Selected.SubItems[2] := edResourceName.Text;
+end;
+
+procedure TResourcesOptionsFrame.edResourceNameKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+  begin
+    edResourceName.EditingDone;
+    Key := 0;
+  end;
 end;
 
 procedure TResourcesOptionsFrame.lbResourcesInsert(Sender: TObject;
@@ -74,7 +100,17 @@ end;
 
 procedure TResourcesOptionsFrame.lbResourcesSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
 begin
-  btnDelete.Enabled := lbResources.ItemIndex <> -1;
+  btnDelete.Enabled := Assigned(lbResources.Selected);
+  edResourceName.Enabled := Assigned(lbResources.Selected);
+  if edResourceName.Enabled then
+    edResourceName.Text := lbResources.Selected.SubItems[2]
+  else
+    edResourceName.Text := '';
+  cbResourceType.Enabled := Assigned(lbResources.Selected);
+  if cbResourceType.Enabled then
+    cbResourceType.ItemIndex := Ord(StrToResourceType(lbResources.Selected.SubItems[1]))
+  else
+    cbResourceType.ItemIndex := -1;
 end;
 
 procedure TResourcesOptionsFrame.AddResourceItem(ResFile: String; ResType: TUserResourceType; ResName: String);
@@ -110,6 +146,8 @@ begin
 end;
 
 procedure TResourcesOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+var
+  rt: TUserResourceType;
 begin
   ToolBar1.Images := IDEImages.Images_16;
   lbResources.Column[1].Caption := rsResourceFileName;
@@ -121,6 +159,10 @@ begin
   btnDelete.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
   btnClear.Caption := lisDeleteAll;
   btnClear.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
+  lblResourceName.Caption := rsResource + ':';
+  lblResourceType.Caption := rsResourceType + ':';
+  for rt := Low(TUserResourceType) to High(TUserResourceType) do
+    cbResourceType.Items.Add(ResourceTypeToStr[rt]);
   // system resources can be:
   // 1. Graphic files
   // 2. Font files
