@@ -8,6 +8,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
+        <OtherUnitFiles Value="."/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
@@ -24,8 +25,16 @@ Based on:
 2) Duby by Dmitry Boyarintsev
 
 Extended by Martin Friebe"/>
-    <License Value="GPL"/>
-    <Files Count="14">
+    <License Value="All Files except those listed below: GPL
+
+File(s) with other licenses (see also header in file(s): 
+
+* macho.pas 
+  This file contains Original Code and/or Modifications of Original Code  as defined in and that are subject to the Apple Public Source License Version 2.0 (the 'License'). You may not use this file except in compliance with the License. Please obtain a copy of the License at   http://www.opensource.apple.com/apsl/ and read it before using this  file.
+
+  (Any modifications/translations of this file are from duby)
+"/>
+    <Files Count="17">
       <Item1>
         <Filename Value="fpdbgclasses.pp"/>
         <UnitName Value="FpDbgClasses"/>
@@ -80,8 +89,20 @@ Extended by Martin Friebe"/>
       </Item13>
       <Item14>
         <Filename Value="fppascalparser.pas"/>
-        <UnitName Value="fppascalparser"/>
+        <UnitName Value="FpPascalParser"/>
       </Item14>
+      <Item15>
+        <Filename Value="macho.pas"/>
+        <UnitName Value="macho"/>
+      </Item15>
+      <Item16>
+        <Filename Value="fpimgreadermachofile.pas"/>
+        <UnitName Value="FpImgReaderMachoFile"/>
+      </Item16>
+      <Item17>
+        <Filename Value="fpimgreadermacho.pas"/>
+        <UnitName Value="FpImgReaderMacho"/>
+      </Item17>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
