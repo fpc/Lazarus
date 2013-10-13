@@ -1,9 +1,9 @@
 {
  /***************************************************************************
-                        projecticon.pas  -  Lazarus IDE unit
-                        ---------------------------------------
-               TProjectIcon is responsible for the inclusion of the 
-             icon in windows executables as rc file and others as .lrs.
+                projectuserresources.pas  -  Lazarus IDE unit
+                  ---------------------------------------
+          TProjectUserResources is responsible for the inclusion of the 
+           custom resources in executables as res file
 
 
  ***************************************************************************/
@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, lazutf8classes, Process, LCLProc,
   Controls, Graphics, Forms, CodeToolManager, FileProcs, LazConf, LResources,
-  ProjectIntf, ProjectResourcesIntf, IDEMsgIntf, LazarusIDEStrConsts,
+  ProjectIntf, ProjectResourcesIntf, IDEMsgIntf, IDEExternToolIntf, LazarusIDEStrConsts,
   resource, bitmapresource, groupresource, groupiconresource, groupcursorresource;
    
 type
@@ -170,7 +170,11 @@ begin
     end;
   end
   else
+  {$IFDEF EnableNewExtTools}
+    IDEMessagesWindow.AddCustomMessage(mluError,Format(lisFileNotFound2, ['"', Filename, '"', '']));
+  {$ELSE}
     IDEMessagesWindow.AddMsg(Format(lisFileNotFound2, ['"', Filename, '"', '']), '', -1);
+  {$ENDIF}
 end;
 
 { TResourceList }
