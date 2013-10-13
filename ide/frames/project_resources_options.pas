@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Graphics, Forms, Controls, ComCtrls, Dialogs, LCLProc,
-  IDEOptionsIntf, IDEImagesIntf,
+  IDEOptionsIntf, IDEImagesIntf, IDEDialogs,
   Project, ProjectUserResources, LCLStrConsts, LazarusIDEStrConsts;
 
 type
@@ -19,8 +19,11 @@ type
     ToolBar1: TToolBar;
     btnAdd: TToolButton;
     btnDelete: TToolButton;
+    btnClear: TToolButton;
     procedure btnAddClick(Sender: TObject);
+    procedure btnClearClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
+    procedure lbResourcesInsert(Sender: TObject; Item: TListItem);
     procedure lbResourcesSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
   private
@@ -46,6 +49,13 @@ begin
     AddResource(dlgOpen.FileName);
 end;
 
+procedure TResourcesOptionsFrame.btnClearClick(Sender: TObject);
+begin
+  if IDEMessageDialog(lisConfirmDelete, rsResourceClear, mtConfirmation, [mbYes, mbNo]) = mrYes then
+    lbResources.Items.Clear;
+  btnClear.Enabled := lbResources.Items.Count > 0;
+end;
+
 procedure TResourcesOptionsFrame.btnDeleteClick(Sender: TObject);
 var
   Index: Integer;
@@ -53,6 +63,13 @@ begin
   Index := lbResources.ItemIndex;
   if (Index <> -1) then
     lbResources.Items.Delete(Index);
+  btnClear.Enabled := lbResources.Items.Count > 0;
+end;
+
+procedure TResourcesOptionsFrame.lbResourcesInsert(Sender: TObject;
+  Item: TListItem);
+begin
+  btnClear.Enabled := lbResources.Items.Count > 0;
 end;
 
 procedure TResourcesOptionsFrame.lbResourcesSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
@@ -102,6 +119,8 @@ begin
   btnDelete.Caption := lisBtnDelete;
   btnAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
   btnDelete.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+  btnClear.Caption := lisDeleteAll;
+  btnClear.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
   // system resources can be:
   // 1. Graphic files
   // 2. Font files
@@ -117,8 +136,14 @@ var
 begin
   lbResources.Items.Clear;
   List := Project.ProjResources.UserResources.List;
-  for I := 0 to List.Count - 1 do
-    AddResourceItem(List[I]^.FileName, List[I]^.ResType, List[I]^.ResName);
+  lbResources.Items.BeginUpdate;
+  try
+    for I := 0 to List.Count - 1 do
+      AddResourceItem(List[I]^.FileName, List[I]^.ResType, List[I]^.ResName);
+  finally
+    lbResources.Items.EndUpdate;
+  end;
+  btnClear.Enabled := lbResources.Items.Count > 0;
 end;
 
 procedure TResourcesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);

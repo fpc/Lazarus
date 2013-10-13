@@ -31,11 +31,12 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
       end    
       item
         Caption = 'Resource'
-        Width = 658
+        Width = 508
       end>
     RowSelect = True
     TabOrder = 0
     ViewStyle = vsReport
+    OnInsert = lbResourcesInsert
     OnSelectItem = lbResourcesSelectItem
   end
   object ToolBar1: TToolBar
@@ -60,6 +61,13 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
       Caption = 'btnDelete'
       Enabled = False
       OnClick = btnDeleteClick
+    end
+    object btnClear: TToolButton
+      Left = 108
+      Top = 0
+      Caption = 'btnClear'
+      Enabled = False
+      OnClick = btnClearClick
     end
   end
   object dlgOpen: TOpenDialog

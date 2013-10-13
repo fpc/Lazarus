@@ -2281,6 +2281,7 @@ resourcestring
   rsResourceFileName = 'File name';
   rsResourceType = 'Type';
   rsResource = 'Resource';
+  rsResourceClear = 'Delete all resources?';
   dlgPOMisc = 'Miscellaneous';
   dlgPOI18n = 'i18n';
   rsEnableI18n = 'Enable i18n';
