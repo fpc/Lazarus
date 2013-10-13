@@ -37,7 +37,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, lazutf8classes, Process, LCLProc,
   Controls, Graphics, Forms, CodeToolManager, FileProcs, LazConf, LResources,
-  resource, groupiconresource, ProjectIntf, ProjectResourcesIntf;
+  ProjectIntf, ProjectResourcesIntf, IDEMsgIntf, LazarusIDEStrConsts,
+  resource, bitmapresource, groupresource, groupiconresource, groupcursorresource;
    
 type
   TUserResourceType = (
@@ -57,6 +58,7 @@ type
     ResName: String;
     procedure ReadFromProjectFile(AConfig: TXMLConfig; Path: String);
     procedure WriteToProjectFile(AConfig: TXMLConfig; Path: String);
+    function CreateResource: TAbstractResource;
   end;
 
   { TResourceList }
@@ -127,6 +129,50 @@ begin
   AConfig.SetValue(Path + 'ResourceName', ResName);
 end;
 
+function TResourceItem.CreateResource: TAbstractResource;
+var
+  Stream: TFileStream;
+  TypeDesc, NameDesc: TResourceDesc;
+begin
+  Result := nil;
+  if FileExistsUTF8(FileName) then
+  begin
+    Stream := TFileStream.Create(UTF8ToSys(FileName), fmOpenRead or fmShareDenyWrite);
+    try
+      NameDesc := TResourceDesc.Create(ResName);
+      case ResType of
+        rtIcon:
+          begin
+            Result := TGroupIconResource.Create(nil, NameDesc);
+            TGroupResource(Result).ItemData.CopyFrom(Stream, Stream.Size)
+          end;
+        rtCursor:
+          begin
+            Result := TGroupCursorResource.Create(nil, NameDesc);
+            TGroupResource(Result).ItemData.CopyFrom(Stream, Stream.Size)
+          end;
+        rtBitmap:
+          begin
+            Result := TBitmapResource.Create(nil, NameDesc);
+            TBitmapResource(Result).BitmapData.CopyFrom(Stream, Stream.Size);
+          end;
+        rtRCData:
+          begin
+            TypeDesc := TResourceDesc.Create(RT_RCDATA);
+            Result := TGenericResource.Create(TypeDesc, NameDesc);
+            TypeDesc.Free;
+            TGenericResource(Result).RawData.CopyFrom(Stream, Stream.Size)
+          end;
+      end;
+      NameDesc.Free;
+    finally
+      Stream.Free;
+    end;
+  end
+  else
+    IDEMessagesWindow.AddMsg(Format(lisFileNotFound2, ['"', Filename, '"', '']), '', -1);
+end;
+
 { TResourceList }
 
 function TResourceList.GetItem(AIndex: Integer): PResourceItem;
@@ -160,8 +206,17 @@ begin
 end;
 
 function TProjectUserResources.UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean;
+var
+  I: Integer;
+  ARes: TAbstractResource;
 begin
   Result := True;
+  for I := 0 to List.Count - 1 do
+  begin
+    ARes := List[I]^.CreateResource;
+    if Assigned(ARes) then
+      AResources.AddSystemResource(ARes);
+  end;
 end;
 
 procedure TProjectUserResources.WriteToProjectFile(AConfig: TObject; Path: String);
