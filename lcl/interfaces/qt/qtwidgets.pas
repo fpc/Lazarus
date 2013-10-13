@@ -6025,7 +6025,7 @@ begin
   if (LCLObject = nil) then
     exit;
   if (QEvent_Type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease,
-    QEventMouseButtonDblClick, QEventMouseMove, QEventWheel, QEventPaint,
+    QEventMouseButtonDblClick, QEventMouseMove, QEventWheel,
     QEventHoverEnter, QEventHoverMove, QEventHoverLeave, QEventResize]) then
     exit;
   Result := inherited EventFilter(Sender, Event);
@@ -6041,7 +6041,7 @@ begin
   if LCLObject = nil then
     exit;
   BeginEventProcessing;
-  if (QEvent_Type(Event) in [QEventContextMenu, QEventPaint, QEventHoverEnter,
+  if (QEvent_Type(Event) in [QEventContextMenu, QEventHoverEnter,
                              QEventHoverMove, QEventHoverLeave]) then
   begin
     Result := inherited EventFilter(Sender, Event);
