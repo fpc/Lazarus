@@ -1514,6 +1514,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure AddItem(Item: string; AObject: TObject);
     function AlphaSort: Boolean; // always sorts column 0 in sdAscending order
     procedure BeginUpdate;
     procedure Clear;

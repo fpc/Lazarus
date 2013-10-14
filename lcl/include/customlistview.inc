@@ -984,6 +984,15 @@ begin
   FreeAndNil(FIconOptions);
 end;
 
+procedure TCustomListView.AddItem(Item: string; AObject: TObject);
+var
+  AItem: TListItem;
+begin
+  AItem := Items.Add;
+  AItem.Caption := Item;
+  AItem.Data := AObject;
+end;
+
 function TCustomListView.AlphaSort: Boolean;
 begin
   Result := False;
