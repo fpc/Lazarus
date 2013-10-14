@@ -65,7 +65,7 @@ begin
 
   SetLength(cmdbuf, header.sizeofcmds);
   //Stream.Read(cmdbuf[0], header.sizeofcmds);
-  ALoader.Read(0, header.sizeofcmds, @cmdbuf[0]);
+  ALoader.Read(sizeof(header), header.sizeofcmds, @cmdbuf[0]);
 
   SetLength(commands, header.ncmds);
   ofs := 0;
