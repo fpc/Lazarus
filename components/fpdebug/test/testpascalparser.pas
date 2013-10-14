@@ -5,7 +5,7 @@ unit TestPascalParser;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry, FpPascalParser;
+  Classes, SysUtils, fpcunit, testutils, testregistry, FpPascalParser, LazLogger;
 
 type
 
@@ -35,6 +35,20 @@ var
   CurrentTestExprText: String;
   CurrentTestExprObj: TTestFpPascalExpression;
 
+  function GetChild(p: TFpPascalExpressionPart; i: array of integer): TFpPascalExpressionPart;
+  var
+    j: Integer;
+  begin
+    Result := p;
+    for j := low(i) to high(i) do
+      Result := (Result as TFpPascalExpressionPartContainer).Items[i[j]];
+  end;
+
+  function GetChild(i: array of integer): TFpPascalExpressionPart;
+  begin
+    Result := GetChild(CurrentTestExprObj.ExpressionPart, i);
+  end;
+
   Procedure TestExpr(APart: TFpPascalExpressionPart; AClass: TFpPascalExpressionPartClass;
     AText: String; AChildCount: Integer = -1);
   begin
@@ -48,50 +62,52 @@ var
     end;
   end;
 
+  Procedure TestExpr(i: array of integer; AClass: TFpPascalExpressionPartClass;
+    AText: String; AChildCount: Integer = -1);
+  begin
+    TestExpr(GetChild(i), AClass, AText, AChildCount);
+  end;
+
   procedure CreateExpr(t: string; ExpValid: Boolean);
   begin
     FreeAndNil(CurrentTestExprObj);
     CurrentTestExprText := t;
     CurrentTestExprObj := TTestFpPascalExpression.Create(CurrentTestExprText);
+DebugLn(CurrentTestExprObj.DebugDump);
     AssertEquals('Valid '+CurrentTestExprObj.Error+ ' # '+CurrentTestExprText, ExpValid, CurrentTestExprObj.Valid);
-  end;
-
-  function GetChild(p: TFpPascalExpressionPart; i: array of integer): TFpPascalExpressionPart;
-  var
-    j: Integer;
-  begin
-    Result := p;
-    for j := low(i) to high(i) do
-      Result := (Result as TFpPascalExpressionPartContainer).Items[i[j]];
   end;
 
 begin
   CurrentTestExprObj := nil;
   try
     CreateExpr('a', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([], TFpPascalExpressionPartIdentifer, 'a', 0);
 
     CreateExpr('a b', False);
+    CreateExpr('a |', False);
+    CreateExpr('| b', False);
+    CreateExpr('|', False);
 
     CreateExpr('@a', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartOperatorAddressOf, '@', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0]), TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([], TFpPascalExpressionPartOperatorAddressOf, '@', 1);
+    TestExpr([0], TFpPascalExpressionPartIdentifer, 'a', 0);
 
     CreateExpr('a@', False);
+    CreateExpr('@', False);
 
     CreateExpr('-a', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0]), TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([], TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+    TestExpr([0], TFpPascalExpressionPartIdentifer, 'a', 0);
 
     CreateExpr('+-a', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartOperatorUnaryPlusMinus, '+', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0]), TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,0]), TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([], TFpPascalExpressionPartOperatorUnaryPlusMinus, '+', 1);
+    TestExpr([0], TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+    TestExpr([0,0], TFpPascalExpressionPartIdentifer, 'a', 0);
 
     CreateExpr('a+b', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0]), TFpPascalExpressionPartIdentifer, 'a', 0);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [1]), TFpPascalExpressionPartIdentifer, 'b', 0);
+    TestExpr([], TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
+    TestExpr([0], TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([1], TFpPascalExpressionPartIdentifer, 'b', 0);
 
     CreateExpr('a+', False);
     CreateExpr('a*', False);
@@ -99,73 +115,78 @@ begin
     CreateExpr('a@+b', False);
 
     CreateExpr('a+-b', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0]), TFpPascalExpressionPartIdentifer, 'a', 0);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [1]), TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [1,0]), TFpPascalExpressionPartIdentifer, 'b', 0);
+    TestExpr([], TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
+    TestExpr([0], TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([1], TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+    TestExpr([1,0], TFpPascalExpressionPartIdentifer, 'b', 0);
 
     CreateExpr('+a + -@b  -  @+c', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartOperatorPlusMinus, '-', 2);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,       [0]),       TFpPascalExpressionPartOperatorPlusMinus,    '+', 2);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,     [0,0]),     TFpPascalExpressionPartOperatorUnaryPlusMinus,'+', 1);
-        TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [0,0,0]),   TFpPascalExpressionPartIdentifer,              'a', 0);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,     [0,1]),     TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
-        TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [0,1,0]),   TFpPascalExpressionPartOperatorAddressOf,       '@', 1);
-          TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,1,0,0]), TFpPascalExpressionPartIdentifer,                'b', 0);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,       [1]),       TFpPascalExpressionPartOperatorAddressOf,     '@', 1);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,     [1,0]),     TFpPascalExpressionPartOperatorUnaryPlusMinus, '+', 1);
-        TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [1,0,0]),   TFpPascalExpressionPartIdentifer,               'c', 0);
+    TestExpr([], TFpPascalExpressionPartOperatorPlusMinus, '-', 2);
+    TestExpr(       [0],       TFpPascalExpressionPartOperatorPlusMinus,    '+', 2);
+      TestExpr(     [0,0],     TFpPascalExpressionPartOperatorUnaryPlusMinus,'+', 1);
+        TestExpr(   [0,0,0],   TFpPascalExpressionPartIdentifer,              'a', 0);
+      TestExpr(     [0,1],     TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+        TestExpr(   [0,1,0],   TFpPascalExpressionPartOperatorAddressOf,       '@', 1);
+          TestExpr([0,1,0,0], TFpPascalExpressionPartIdentifer,                'b', 0);
+    TestExpr(       [1],       TFpPascalExpressionPartOperatorAddressOf,     '@', 1);
+      TestExpr(     [1,0],     TFpPascalExpressionPartOperatorUnaryPlusMinus, '+', 1);
+        TestExpr(   [1,0,0],   TFpPascalExpressionPartIdentifer,               'c', 0);
 
     CreateExpr('a+b*c', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0]), TFpPascalExpressionPartIdentifer, 'a', 0);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [1]), TFpPascalExpressionPartOperatorMulDiv, '*', 2);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [1,0]), TFpPascalExpressionPartIdentifer, 'b', 0);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [1,1]), TFpPascalExpressionPartIdentifer, 'c', 0);
+    TestExpr([], TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
+    TestExpr([0], TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([1], TFpPascalExpressionPartOperatorMulDiv, '*', 2);
+    TestExpr([1,0], TFpPascalExpressionPartIdentifer, 'b', 0);
+    TestExpr([1,1], TFpPascalExpressionPartIdentifer, 'c', 0);
 
     CreateExpr('a*b+c', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [0]), TFpPascalExpressionPartOperatorMulDiv, '*', 2);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,0]), TFpPascalExpressionPartIdentifer, 'a', 0);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,1]), TFpPascalExpressionPartIdentifer, 'b', 0);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [1]), TFpPascalExpressionPartIdentifer, 'c', 0);
+    TestExpr([], TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
+    TestExpr(   [0], TFpPascalExpressionPartOperatorMulDiv, '*', 2);
+      TestExpr([0,0], TFpPascalExpressionPartIdentifer, 'a', 0);
+      TestExpr([0,1], TFpPascalExpressionPartIdentifer, 'b', 0);
+    TestExpr(   [1], TFpPascalExpressionPartIdentifer, 'c', 0);
 
     CreateExpr('a*b+c*d', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [0]), TFpPascalExpressionPartOperatorMulDiv, '*', 2);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,0]), TFpPascalExpressionPartIdentifer, 'a', 0);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,1]), TFpPascalExpressionPartIdentifer, 'b', 0);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [1]), TFpPascalExpressionPartOperatorMulDiv, '*', 2);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [1,0]), TFpPascalExpressionPartIdentifer, 'c', 0);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [1,1]), TFpPascalExpressionPartIdentifer, 'd', 0);
+    TestExpr([], TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
+    TestExpr(   [0], TFpPascalExpressionPartOperatorMulDiv, '*', 2);
+      TestExpr([0,0], TFpPascalExpressionPartIdentifer, 'a', 0);
+      TestExpr([0,1], TFpPascalExpressionPartIdentifer, 'b', 0);
+    TestExpr(   [1], TFpPascalExpressionPartOperatorMulDiv, '*', 2);
+      TestExpr([1,0], TFpPascalExpressionPartIdentifer, 'c', 0);
+      TestExpr([1,1], TFpPascalExpressionPartIdentifer, 'd', 0);
 
     CreateExpr('@a*@b+@c', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartOperatorPlusMinus,                       '+', 2);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,     [0]),     TFpPascalExpressionPartOperatorMulDiv,    '*', 2);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [0,0]),   TFpPascalExpressionPartOperatorAddressOf,  '@', 1);
-        TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,0,0]), TFpPascalExpressionPartIdentifer,           'a', 0);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [0,1]),   TFpPascalExpressionPartOperatorAddressOf,  '@', 1);
-        TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,1,0]), TFpPascalExpressionPartIdentifer,           'b', 0);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,     [1]),     TFpPascalExpressionPartOperatorAddressOf, '@', 1);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [1,0]),   TFpPascalExpressionPartIdentifer,          'c', 0);
+    TestExpr([], TFpPascalExpressionPartOperatorPlusMinus,                       '+', 2);
+    TestExpr(     [0],     TFpPascalExpressionPartOperatorMulDiv,    '*', 2);
+      TestExpr(   [0,0],   TFpPascalExpressionPartOperatorAddressOf,  '@', 1);
+        TestExpr([0,0,0], TFpPascalExpressionPartIdentifer,           'a', 0);
+      TestExpr(   [0,1],   TFpPascalExpressionPartOperatorAddressOf,  '@', 1);
+        TestExpr([0,1,0], TFpPascalExpressionPartIdentifer,           'b', 0);
+    TestExpr(     [1],     TFpPascalExpressionPartOperatorAddressOf, '@', 1);
+      TestExpr(   [1,0],   TFpPascalExpressionPartIdentifer,          'c', 0);
 
     CreateExpr('@a*@b+@c*@d', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartOperatorPlusMinus,                       '+', 2);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,     [0]),     TFpPascalExpressionPartOperatorMulDiv,    '*', 2);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [0,0]),   TFpPascalExpressionPartOperatorAddressOf,  '@', 1);
-        TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,0,0]), TFpPascalExpressionPartIdentifer,           'a', 0);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [0,1]),   TFpPascalExpressionPartOperatorAddressOf,  '@', 1);
-        TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,1,0]), TFpPascalExpressionPartIdentifer,           'b', 0);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,     [1]),     TFpPascalExpressionPartOperatorMulDiv,    '*', 2);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [1,0]),     TFpPascalExpressionPartOperatorAddressOf, '@', 1);
-        TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [1,0,0]),   TFpPascalExpressionPartIdentifer,          'c', 0);
-      TestExpr(GetChild(CurrentTestExprObj.ExpressionPart,   [1,1]),     TFpPascalExpressionPartOperatorAddressOf, '@', 1);
-        TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [1,1,0]),   TFpPascalExpressionPartIdentifer,          'd', 0);
+    TestExpr([], TFpPascalExpressionPartOperatorPlusMinus,                       '+', 2);
+    TestExpr(     [0],     TFpPascalExpressionPartOperatorMulDiv,    '*', 2);
+      TestExpr(   [0,0],   TFpPascalExpressionPartOperatorAddressOf,  '@', 1);
+        TestExpr([0,0,0], TFpPascalExpressionPartIdentifer,           'a', 0);
+      TestExpr(   [0,1],   TFpPascalExpressionPartOperatorAddressOf,  '@', 1);
+        TestExpr([0,1,0], TFpPascalExpressionPartIdentifer,           'b', 0);
+    TestExpr(     [1],     TFpPascalExpressionPartOperatorMulDiv,    '*', 2);
+      TestExpr(   [1,0],     TFpPascalExpressionPartOperatorAddressOf, '@', 1);
+        TestExpr([1,0,0],   TFpPascalExpressionPartIdentifer,          'c', 0);
+      TestExpr(   [1,1],     TFpPascalExpressionPartOperatorAddressOf, '@', 1);
+        TestExpr([1,1,0],   TFpPascalExpressionPartIdentifer,          'd', 0);
 
+
+    CreateExpr('a.b', True);
+    TestExpr([], TFpPascalExpressionPartOperatorMemberOf,    '.', 2);
+      TestExpr([0], TFpPascalExpressionPartIdentifer,        'a', 0);
+      TestExpr([1], TFpPascalExpressionPartIdentifer,        'b', 0);
 
     CreateExpr('(a)', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartRoundBracket, '(', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0]), TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([], TFpPascalExpressionPartBracketSubExpression, '(', 1);
+    TestExpr([0], TFpPascalExpressionPartIdentifer, 'a', 0);
 
     CreateExpr('a)', False);
     CreateExpr('(a', False);
@@ -173,39 +194,118 @@ begin
     CreateExpr('(', False);
 
     CreateExpr('(-a)', True);
-    TestExpr(CurrentTestExprObj.ExpressionPart, TFpPascalExpressionPartRoundBracket, '(', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0]), TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,0]), TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([], TFpPascalExpressionPartBracketSubExpression, '(', 1);
+    TestExpr([0], TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+    TestExpr([0,0], TFpPascalExpressionPartIdentifer, 'a', 0);
 
     CreateExpr('-(-a)', True);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, []), TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0]), TFpPascalExpressionPartRoundBracket, '(', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,0]), TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,0,0]), TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([], TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+    TestExpr([0], TFpPascalExpressionPartBracketSubExpression, '(', 1);
+    TestExpr([0,0], TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+    TestExpr([0,0,0], TFpPascalExpressionPartIdentifer, 'a', 0);
 
     CreateExpr('(a*b)', True);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, []), TFpPascalExpressionPartRoundBracket, '(', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0]), TFpPascalExpressionPartOperatorMulDiv, '*', 2);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,0]), TFpPascalExpressionPartIdentifer, 'a', 0);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,1]), TFpPascalExpressionPartIdentifer, 'b', 0);
+    TestExpr([], TFpPascalExpressionPartBracketSubExpression, '(', 1);
+    TestExpr([0], TFpPascalExpressionPartOperatorMulDiv, '*', 2);
+    TestExpr([0,0], TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([0,1], TFpPascalExpressionPartIdentifer, 'b', 0);
 
     CreateExpr('(-a*b)', True);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, []), TFpPascalExpressionPartRoundBracket, '(', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0]), TFpPascalExpressionPartOperatorMulDiv, '*', 2);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,0]), TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,0,0]), TFpPascalExpressionPartIdentifer, 'a', 0);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,1]), TFpPascalExpressionPartIdentifer, 'b', 0);
+    TestExpr([], TFpPascalExpressionPartBracketSubExpression, '(', 1);
+    TestExpr([0], TFpPascalExpressionPartOperatorMulDiv, '*', 2);
+    TestExpr([0,0], TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+    TestExpr([0,0,0], TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([0,1], TFpPascalExpressionPartIdentifer, 'b', 0);
 
     CreateExpr('(a)*b', True);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, []), TFpPascalExpressionPartOperatorMulDiv, '*', 2);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0]), TFpPascalExpressionPartRoundBracket, '(', 1);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [0,0]), TFpPascalExpressionPartIdentifer, 'a', 0);
-    TestExpr(GetChild(CurrentTestExprObj.ExpressionPart, [1]), TFpPascalExpressionPartIdentifer, 'b', 0);
+    TestExpr([], TFpPascalExpressionPartOperatorMulDiv, '*', 2);
+    TestExpr([0], TFpPascalExpressionPartBracketSubExpression, '(', 1);
+    TestExpr([0,0], TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([1], TFpPascalExpressionPartIdentifer, 'b', 0);
 
     CreateExpr('(a+b)*c', True);
     CreateExpr('(@a)*@c', True);
     CreateExpr('(@a+@b)*@c', True);
 
+    CreateExpr('f(a+b)*c', True);
+    TestExpr(     [],      TFpPascalExpressionPartOperatorMulDiv, '*', 2);
+    TestExpr(     [0],     TFpPascalExpressionPartBracketArgumentList, '(', 2);
+      TestExpr(   [0,0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+      TestExpr(   [0,1],   TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
+        TestExpr([0,1,0], TFpPascalExpressionPartIdentifer, 'a', 0);
+        TestExpr([0,1,1], TFpPascalExpressionPartIdentifer, 'b', 0);
+    TestExpr(     [1],     TFpPascalExpressionPartIdentifer, 'c', 0);
+
+    CreateExpr('f(a)', True);
+    TestExpr([],    TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('f(a)(b)', True);
+    TestExpr([],    TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0],     TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0,0],     TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([0,1],     TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([1],     TFpPascalExpressionPartIdentifer, 'b', 0);
+
+    CreateExpr('f()', True);
+    TestExpr([],    TFpPascalExpressionPartBracketArgumentList, '(', 1);
+    TestExpr([0],     TFpPascalExpressionPartIdentifer, 'f', 0);
+
+    CreateExpr('f(a)+b', True);
+    TestExpr([],  TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
+    TestExpr([0],   TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0,0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([0,1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([1],   TFpPascalExpressionPartIdentifer, 'b', 0);
+
+    CreateExpr('c+f(a)', True);
+    TestExpr([],  TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
+    TestExpr([0],   TFpPascalExpressionPartIdentifer, 'c', 0);
+    TestExpr([1],   TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([1,0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([1,1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('c.f(a)', True);  // (c.f) (a)
+    TestExpr([],   TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0],   TFpPascalExpressionPartOperatorMemberOf, '.', 2);
+    TestExpr([0,0],   TFpPascalExpressionPartIdentifer, 'c', 0);
+    TestExpr([0,1],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('@f(a)', True);   // @( f(a) )
+    TestExpr([],  TFpPascalExpressionPartOperatorAddressOf, '@', 1);
+    TestExpr([0],   TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0,0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([0,1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('-f(a)', True);   // -( f(a) )
+    TestExpr([],  TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+    TestExpr([0],   TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0,0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([0,1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('f^(a)', True);   // (f^) (a)
+    TestExpr([],   TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0],  TFpPascalExpressionPartOperatorDeRef, '^', 1);
+    TestExpr([0,0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('f(a)^', True);   // ( f(a) )^
+    TestExpr([],  TFpPascalExpressionPartOperatorDeRef, '^', 1);
+    TestExpr([0],   TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0,0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([0,1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('f(a)(b)^', True);   // ( f(a)(b) )^
+    TestExpr([],  TFpPascalExpressionPartOperatorDeRef, '^', 1);
+    TestExpr([0],   TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0,0],   TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0,0,0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([0,0,1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([0,1],   TFpPascalExpressionPartIdentifer, 'b', 0);
+
+    CreateExpr('f.()', False);
 
   finally
     CurrentTestExprObj.Free;

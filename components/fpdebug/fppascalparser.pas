@@ -35,6 +35,7 @@ type
 
   TFpPascalExpressionPart = class;
   TFpPascalExpressionPartContainer = class;
+  TFpPascalExpressionPartWithPrecedence = class;
   TFpPascalExpressionPartBracket = class;
   TFpPascalExpressionPartOperator = class;
 
@@ -114,7 +115,10 @@ type
     function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; virtual;
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
                                  var AResult: TFpPascalExpressionPart): Boolean; virtual;
-    function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartOperator): TFpPascalExpressionPart; virtual;
+    // HasPrecedence: an operator with follows precedence rules: the last operand can be taken by the next operator
+    function HasPrecedence: Boolean; virtual;
+    function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartWithPrecedence):
+                                             TFpPascalExpressionPart; virtual;
     function CanHaveOperatorAsNext: Boolean; virtual; // True
   public
     constructor Create(AExpression: TFpPascalExpression; AStartChar: PChar; AnEndChar: PChar = nil);
@@ -165,14 +169,26 @@ type
     destructor Destroy; override;
   end;
 
+  { TFpPascalExpressionPartWithPrecedence }
+
+  TFpPascalExpressionPartWithPrecedence = class(TFpPascalExpressionPartContainer)
+  protected
+    FPrecedence: Integer;
+    function HasPrecedence: Boolean; override;
+  public
+    property Precedence: Integer read FPrecedence;
+  end;
+
   { TFpPascalExpressionPartBracket }
 
-  TFpPascalExpressionPartBracket = class(TFpPascalExpressionPartContainer)
+  TFpPascalExpressionPartBracket = class(TFpPascalExpressionPartWithPrecedence)
+  // ome, but not all bracket expr have precedence
   private
     FIsClosed: boolean;
     FIsClosing: boolean;
   protected
     procedure Init; override;
+    function HasPrecedence: Boolean; override;
     procedure DoHandleEndOfExpression; override;
     function CanHaveOperatorAsNext: Boolean; override;
   public
@@ -186,25 +202,43 @@ type
 
   TFpPascalExpressionPartRoundBracket = class(TFpPascalExpressionPartBracket)
   protected
+  end;
+
+  { TFpPascalExpressionPartBracketSubExpression }
+
+  TFpPascalExpressionPartBracketSubExpression = class(TFpPascalExpressionPartRoundBracket)
+  protected
+    function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     procedure DoGetResultType(var AResultType: TFpPasExprType); override;
   end;
 
+  { TFpPascalExpressionPartBracketArgumentList }
+
+  TFpPascalExpressionPartBracketArgumentList = class(TFpPascalExpressionPartRoundBracket)
+  // function arguments or type cast // this acts a operator: first element is the function/type
+  protected
+    procedure Init; override;
+    function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; override;
+    function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
+    function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
+      var AResult: TFpPascalExpressionPart): Boolean; override;
+  end;
+
+
   { TFpPascalExpressionPartOperator }
 
-  TFpPascalExpressionPartOperator = class(TFpPascalExpressionPartContainer)
-  private
-    FPrecedence: Integer;
+  TFpPascalExpressionPartOperator = class(TFpPascalExpressionPartWithPrecedence)
   protected
     function DebugText(AIndent: String): String; override;
     function CanHaveOperatorAsNext: Boolean; override;
-    function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartOperator): TFpPascalExpressionPart; override;
+    function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartWithPrecedence):
+                                             TFpPascalExpressionPart; override;
     function HasAllOperands: Boolean; virtual; abstract;
     function MaybeAddLeftOperand(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean;
     procedure DoHandleEndOfExpression; override;
   public
     function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
-    property Precedence: Integer read FPrecedence;
   end;
 
   { TFpPascalExpressionPartUnaryOperator }
@@ -251,7 +285,8 @@ type
     procedure DoGetResultType(var AResultType: TFpPasExprType); override;
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean; override;
-    function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartOperator): TFpPascalExpressionPart;
+    function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartWithPrecedence):
+                                             TFpPascalExpressionPart;
       override;
     // IsValidAfterPart: same as binary op
     function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; override;
@@ -291,9 +326,114 @@ type
 
 implementation
 
-{ TFpPascalExpressionPartRoundBracket }
+const
+  // 1 highest
+  PRECEDENCE_MEMBER_OF  =  1;        // foo.bar
+  PRECEDENCE_ARG_LIST   =  2;        // foo() / TFoo()
+  PRECEDENCE_UNARY_SIGN =  5;        // -a
+  PRECEDENCE_ADRESS_OF  =  5;        // @a
+  PRECEDENCE_MAKE_REF   =  5;        // ^TFoo
+  PRECEDENCE_DEREF      =  5;        // a^
+  PRECEDENCE_MUL_DIV    = 10;        // a * b
+  PRECEDENCE_PLUS_MINUS = 11;        // a + b
 
-procedure TFpPascalExpressionPartRoundBracket.DoGetResultType(var AResultType: TFpPasExprType);
+{ TFpPascalExpressionPartWithPrecedence }
+
+function TFpPascalExpressionPartWithPrecedence.HasPrecedence: Boolean;
+begin
+  Result := True;
+end;
+
+
+{ TFpPascalExpressionPartBracketArgumentList }
+
+procedure TFpPascalExpressionPartBracketArgumentList.Init;
+begin
+  FPrecedence := PRECEDENCE_ARG_LIST;
+  inherited Init;
+end;
+
+function TFpPascalExpressionPartBracketArgumentList.IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean;
+begin
+  Result := inherited IsValidAfterPart(APrevPart);
+  Result := Result and APrevPart.CanHaveOperatorAsNext;
+  if (APrevPart.Parent <> nil) and (APrevPart.Parent.HasPrecedence) then
+    Result := False;
+end;
+
+function TFpPascalExpressionPartBracketArgumentList.HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;
+begin
+  if IsClosed then begin
+    Result := inherited HandleNextPart(APart);
+    exit;
+  end;
+
+  Result := Self;
+  if Count <> 1 then begin // Todo a,b,c
+    SetError(APart, 'Too many operands in () '+GetText+': ');
+    APart.Free;
+    exit;
+  end;
+  if not IsValidNextPart(APart) then begin
+    SetError(APart, 'Invalid operand in () '+GetText+': ');
+    APart.Free;
+    exit;
+  end;
+
+  Add(APart);
+  Result := APart;
+end;
+
+function TFpPascalExpressionPartBracketArgumentList.MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
+  var AResult: TFpPascalExpressionPart): Boolean;
+var
+  ALeftSide: TFpPascalExpressionPart;
+begin
+  //Result := MaybeAddLeftOperand(APrevPart, AResult);
+
+  Result := APrevPart.IsValidNextPart(Self);
+  if not Result then
+    exit;
+
+  AResult := Self;
+  if (Count > 0)  // function/type already set
+  then begin
+    SetError(APrevPart, 'Parse error in () '+GetText+': ');
+    APrevPart.Free;
+    exit;
+  end;
+
+  ALeftSide := APrevPart.FindLeftSideOperandByPrecedence(Self);
+  if ALeftSide = nil then begin
+    SetError(Self, 'Internal parser error for operator '+GetText+': ');
+    APrevPart.Free;
+    exit;
+  end;
+
+  ALeftSide.ReplaceInParent(Self);
+  Add(ALeftSide);
+end;
+
+{ TFpPascalExpressionPartBracketSubExpression }
+
+function TFpPascalExpressionPartBracketSubExpression.HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;
+begin
+  if IsClosed then begin
+    Result := inherited HandleNextPart(APart);
+    exit;
+  end;
+
+  Result := Self;
+  if Count > 0 then begin
+    SetError('To many expressions');
+    exit;
+  end;
+
+  Result := APart;
+  Add(APart);
+end;
+
+procedure TFpPascalExpressionPartBracketSubExpression.DoGetResultType(var AResultType: TFpPasExprType);
 begin
   if Count <> 1 then
     AResultType.Kind := ptkInvalid
@@ -321,7 +461,7 @@ end;
 
 procedure TFpPascalExpressionPartOperatorUnaryPlusMinus.Init;
 begin
-  FPrecedence := 1;
+  FPrecedence := PRECEDENCE_UNARY_SIGN;
   inherited Init;
 end;
 
@@ -378,6 +518,13 @@ var
     else AddPart(TFpPascalExpressionPartOperatorDeRef);
   end;
 
+  procedure AddRoundBracket;
+  begin
+    if (CurPart = nil) or (not CurPart.CanHaveOperatorAsNext)
+    then AddPart(TFpPascalExpressionPartBracketSubExpression)
+    else AddPart(TFpPascalExpressionPartBracketArgumentList);
+  end;
+
   procedure CloseBracket(ABracketClass: TFpPascalExpressionPartBracketClass);
   begin
     NewPart := CurPart.SurroundingBracket;
@@ -416,7 +563,7 @@ begin
       '.':       HandleDot;
       '+', '-' : AddPlusMinus;
       '*', '/' : AddPart(TFpPascalExpressionPartOperatorMulDiv);
-      '(':       AddPart(TFpPascalExpressionPartRoundBracket);
+      '(':       AddRoundBracket;
       ')':       CloseBracket(TFpPascalExpressionPartRoundBracket);
       //'[': ;
       //'''':     AddConstChar;
@@ -644,7 +791,12 @@ begin
   Result := False;
 end;
 
-function TFpPascalExpressionPart.FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartOperator): TFpPascalExpressionPart;
+function TFpPascalExpressionPart.HasPrecedence: Boolean;
+begin
+  Result := False;
+end;
+
+function TFpPascalExpressionPart.FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartWithPrecedence): TFpPascalExpressionPart;
 begin
   Result := Self;
 end;
@@ -790,6 +942,11 @@ begin
   FIsClosing := False;
 end;
 
+function TFpPascalExpressionPartBracket.HasPrecedence: Boolean;
+begin
+  Result := False;
+end;
+
 procedure TFpPascalExpressionPartBracket.DoHandleEndOfExpression;
 begin
   if not IsClosed then begin
@@ -821,13 +978,8 @@ begin
   end;
 
   Result := Self;
-  if Count > 0 then begin
-    SetError('To many expressions');
-    exit;
-  end;
-
-  Result := APart;
-  Add(APart);
+  APart.Free;
+  SetError('Error in ()');
 end;
 
 procedure TFpPascalExpressionPartBracket.HandleEndOfExpression;
@@ -851,7 +1003,7 @@ begin
   Result := HasAllOperands and LastItem.CanHaveOperatorAsNext;
 end;
 
-function TFpPascalExpressionPartOperator.FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartOperator): TFpPascalExpressionPart;
+function TFpPascalExpressionPartOperator.FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartWithPrecedence): TFpPascalExpressionPart;
 begin
   Result := Self;
 
@@ -947,7 +1099,7 @@ begin
   // "Identifer" can hane a binary-op next. But it must be applied to the parent.
   // So it is not valid here.
   // If new operator has a higher precedence, it go down to the child again and replace it
-  if (APrevPart.Parent <> nil) and (APrevPart.Parent is TFpPascalExpressionPartOperator) then
+  if (APrevPart.Parent <> nil) and (APrevPart.Parent.HasPrecedence) then
     Result := False;
 end;
 
@@ -961,7 +1113,7 @@ end;
 
 procedure TFpPascalExpressionPartOperatorAddressOf.Init;
 begin
-  FPrecedence := 1; // highest
+  FPrecedence := PRECEDENCE_ADRESS_OF;
   inherited Init;
 end;
 
@@ -983,7 +1135,7 @@ end;
 
 procedure TFpPascalExpressionPartOperatorMakeRef.Init;
 begin
-  FPrecedence := 1;
+  FPrecedence := PRECEDENCE_MAKE_REF;
   inherited Init;
 end;
 
@@ -1011,7 +1163,7 @@ end;
 
 procedure TFpPascalExpressionPartOperatorDeRef.Init;
 begin
-  FPrecedence := 1;
+  FPrecedence := PRECEDENCE_DEREF;
   inherited Init;
 end;
 
@@ -1045,7 +1197,7 @@ begin
   Result := MaybeAddLeftOperand(APrevPart, AResult);
 end;
 
-function TFpPascalExpressionPartOperatorDeRef.FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartOperator): TFpPascalExpressionPart;
+function TFpPascalExpressionPartOperatorDeRef.FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartWithPrecedence): TFpPascalExpressionPart;
 begin
   Result := Self;
 end;
@@ -1072,7 +1224,7 @@ end;
 
 procedure TFpPascalExpressionPartOperatorPlusMinus.Init;
 begin
-  FPrecedence := 3;
+  FPrecedence := PRECEDENCE_PLUS_MINUS;
   inherited Init;
 end;
 
@@ -1080,7 +1232,7 @@ end;
 
 procedure TFpPascalExpressionPartOperatorMulDiv.Init;
 begin
-  FPrecedence := 2;
+  FPrecedence := PRECEDENCE_MUL_DIV;
   inherited Init;
 end;
 
@@ -1088,14 +1240,15 @@ end;
 
 procedure TFpPascalExpressionPartOperatorMemberOf.Init;
 begin
-  FPrecedence := 0;
+  FPrecedence := PRECEDENCE_MEMBER_OF;
   inherited Init;
 end;
 
 function TFpPascalExpressionPartOperatorMemberOf.IsValidNextPart(APart: TFpPascalExpressionPart): Boolean;
 begin
-  Result := (inherited IsValidNextPart(APart)) and
-            (APart is TFpPascalExpressionPartIdentifer);
+  Result := inherited IsValidNextPart(APart);
+  if not HasAllOperands then
+    Result := Result and (APart is TFpPascalExpressionPartIdentifer);
 end;
 
 procedure TFpPascalExpressionPartOperatorMemberOf.DoGetResultType(var AResultType: TFpPasExprType);
