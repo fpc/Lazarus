@@ -161,7 +161,6 @@ type
     FDefinitions: array of TDwarfAbbrevEntry;
     function GetEntryPointer(AIndex: Integer): PDwarfAbbrevEntry; inline;
   protected
-    FVerbose: Boolean;
     procedure LoadAbbrevs(AnAbbrevDataPtr: Pointer);
   public
     constructor Create(AnAbbrData, AnAbbrDataEnd: Pointer; AnAbbrevOffset, AInfoLen: QWord);
@@ -1802,9 +1801,11 @@ var
   abbrev, attrib, form: Cardinal;
   n: Integer;
   CurAbbrevIndex: Integer;
+  DbgVerbose: Boolean;
 begin
   abbrev := 0;
   CurAbbrevIndex := 0;
+  DbgVerbose := (FPDBG_DWARF_VERBOSE <> nil) and (FPDBG_DWARF_VERBOSE^.Enabled);
 
   while (pbyte(AnAbbrevDataPtr) < FAbbrDataEnd) and (pbyte(AnAbbrevDataPtr)^ <> 0) do
   begin
@@ -1824,7 +1825,7 @@ begin
       Continue;
     end;
 
-    if FVerbose
+    if DbgVerbose
     then begin
       DebugLn(FPDBG_DWARF_VERBOSE, ['  abbrev:  ', abbrev]);
       DebugLn(FPDBG_DWARF_VERBOSE, ['  tag:     ', Def.tag, '=', DwarfTagToString(Def.tag)]);
@@ -1846,7 +1847,7 @@ begin
       FDefinitions[CurAbbrevIndex].Form := form;
       Inc(CurAbbrevIndex);
 
-      if FVerbose
+      if DbgVerbose
       then DebugLn(FPDBG_DWARF_VERBOSE, ['   [', n, '] attrib: ', attrib, '=', DwarfAttributeToString(attrib), ', form: ', form, '=', DwarfAttributeFormToString(form)]);
       Inc(n);
     end;
@@ -3363,7 +3364,6 @@ begin
   FAbbrevList := TDwarfAbbrevList.Create(FOwner.FSections[dsAbbrev].RawData,
     FOwner.FSections[dsAbbrev].RawData + FOwner.FSections[dsAbbrev].Size,
     FAbbrevOffset, FLength);
-  FAbbrevList.FVerbose := FVerbose;
 
   // use internally 64 bit target pointer
   FAddressMap := TMap.Create(itu8, SizeOf(TDwarfAddressInfo));
