@@ -6066,7 +6066,9 @@ begin
             ':',LCLObject.Name)
           {$ENDIF}
           {$IFDEF QTSCROLLABLEFORMS}
-          LCLObject.InvalidateClientRectCache(True);
+          // do not invalidate clientRectCache if we are embedded (eg. docked)
+          if not Assigned(LCLObject.Parent) then
+            LCLObject.InvalidateClientRectCache(True);
           {$ENDIF}
         end else
           LCLObject.DoAdjustClientRectChange(HaveVertBar or HaveHorzBar);
