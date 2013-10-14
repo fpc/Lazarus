@@ -2023,6 +2023,40 @@ begin
    end;
 end;
 
+class procedure TGtk2WSCustomListView.SelectAll(const ALV: TCustomListView;
+  const AIsSet: Boolean);
+var
+  Widgets: PTVWidgets;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SelectAll') then
+    exit;
+  GetCommonTreeViewWidgets({%H-}PGtkWidget(ALV.Handle), Widgets);
+  Include(Widgets^.WidgetInfo^.Flags, wwiInvalidEvent);
+  try
+    with Widgets^ do
+    begin
+      if GTK_IS_TREE_VIEW(MainView) then
+      begin
+        if AIsSet then
+          gtk_tree_selection_select_all(gtk_tree_view_get_selection(PGtkTreeView(MainView)))
+        else
+          gtk_tree_selection_unselect_all(gtk_tree_view_get_selection(PGtkTreeView(MainView)));
+      end else
+      begin
+        if GTK_IS_ICON_VIEW(MainView) then
+        begin
+          if AIsSet then
+            gtk_icon_view_select_all(PGtkIconView(MainView))
+          else
+            gtk_icon_view_unselect_all(PGtkIconView(MainView));
+        end;
+      end;
+    end;
+  finally
+    Exclude(Widgets^.WidgetInfo^.Flags, wwiInvalidEvent);
+  end;
+end;
+
 class procedure TGtk2WSCustomListView.SetAllocBy(const ALV: TCustomListView;
   const AValue: Integer);
 begin
@@ -2071,13 +2105,6 @@ class procedure TGtk2WSCustomListView.SetHotTrackStyles(const ALV: TCustomListVi
   const AValue: TListHotTrackStyles);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetHotTrackStyles')
-  then Exit;
-end;
-
-class procedure TGtk2WSCustomListView.SetHoverTime(const ALV: TCustomListView;
-  const AValue: Integer);
-begin
-  if not WSCheckHandleAllocated(ALV, 'SetHoverTime')
   then Exit;
 end;
 

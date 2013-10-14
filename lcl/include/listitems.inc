@@ -336,6 +336,36 @@ begin
   InsertItem(Result, AIndex);
 end;
 
+procedure TListItems.SelectAll;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+  begin
+    if not (lisSelected in Item[i].FStates) then
+    begin
+      Self.Item[i].FStates := Self.Item[i].FStates + [lisSelected];
+      if Assigned(Owner.OnSelectItem) then
+        Owner.OnSelectItem(Owner, Item[i], True);
+    end;
+  end;
+end;
+
+procedure TListItems.ClearSelection;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+  begin
+    if (lisSelected in Item[i].FStates) then
+    begin
+      Self.Item[i].FStates := Self.Item[i].FStates - [lisSelected];
+      if Assigned(Owner.OnSelectItem) then
+        Owner.OnSelectItem(Owner, Item[i], False);
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
    TListItems InsertItem
 ------------------------------------------------------------------------------}

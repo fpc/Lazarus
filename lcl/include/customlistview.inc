@@ -1252,6 +1252,31 @@ begin
   end
 end;
 
+procedure TCustomListView.ClearSelection;
+begin
+  Self.BeginUpdate;
+  if MultiSelect then
+  begin
+    if HandleAllocated then
+      TWSCustomListViewClass(WidgetSetClass).SelectAll(Self, False);
+    Items.ClearSelection;
+  end else
+  if (ItemIndex >= 0) and (ItemIndex < Items.Count) then
+    Items.Item[ItemIndex].Selected := False;
+  Self.EndUpdate;
+end;
+
+procedure TCustomListView.SelectAll;
+begin
+  if not MultiSelect then
+    exit;
+  Self.BeginUpdate;
+  if HandleAllocated then
+    TWSCustomListViewClass(WidgetSetClass).SelectAll(Self, True);
+  Items.SelectAll;
+  Self.EndUpdate;
+end;
+
 function TCustomListView.IsEditing: Boolean;
 begin
   Result := Assigned(Self.FEditor) and FEditor.Visible;

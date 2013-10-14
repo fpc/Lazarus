@@ -151,7 +151,8 @@ type
     class function GetTopItem(const ALV: TCustomListView): Integer; virtual;
     class function GetViewOrigin(const ALV: TCustomListView): TPoint; virtual;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; virtual;
-    
+
+    class procedure SelectAll(const ALV: TCustomListView; const AIsSet: Boolean); virtual;
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); virtual;
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); virtual;
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); virtual;
@@ -650,7 +651,8 @@ class procedure TWSCustomListView.SetImageList(const ALV: TCustomListView; const
 begin
 end;
 
-class procedure TWSCustomListView.SetOwnerData(const ALV: TCustomListView; const Avalue: Boolean); 
+class procedure TWSCustomListView.SetOwnerData(const ALV: TCustomListView;
+  const AValue: Boolean);
 begin
 end;
 
@@ -682,6 +684,12 @@ end;
 
 class procedure TWSCustomListView.SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); 
 begin
+end;
+
+class procedure TWSCustomListView.SelectAll(const ALV: TCustomListView;
+  const AIsSet: Boolean);
+begin
+
 end;
 
 { TWSProgressBar }

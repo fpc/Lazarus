@@ -975,6 +975,18 @@ begin
   end;
 end;
 
+class procedure TWin32WSCustomListView.SelectAll(const ALV: TCustomListView;
+  const AIsSet: Boolean);
+begin
+  if not WSCheckHandleAllocated(ALV, 'SelectAll') then
+    exit;
+  // Index param -1 means select all.
+  if AIsSet then
+    ListView_SetItemState(ALV.Handle, -1, LVIS_SELECTED, LVIS_SELECTED)
+  else
+    ListView_SetItemState(ALV.Handle, -1, 0, LVIS_SELECTED);
+end;
+
 class function TWin32WSCustomListView.GetHeader(const AHandle: THandle): THandle;
 begin
   Result := THandle(SendMessage(AHandle, LVM_GETHEADER, 0, 0));

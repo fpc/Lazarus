@@ -170,6 +170,7 @@ type
     class function GetViewOrigin(const ALV: TCustomListView): TPoint; override;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
+    class procedure SelectAll(const ALV: TCustomListView; const AIsSet: Boolean); override;
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
