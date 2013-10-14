@@ -376,6 +376,10 @@ begin
   UnLoadDwarf;
   debugln(['TFpGDBMIDebugger.LoadDwarf ']);
   FImageLoader := TDbgImageLoader.Create(FileName);
+  if not FImageLoader.IsValid then begin
+    FreeAndNil(FImageLoader);
+    exit;
+  end;;
   FDwarfInfo := TDbgDwarf.Create(FImageLoader);
   FDwarfInfo.LoadCompilationUnits;
 end;

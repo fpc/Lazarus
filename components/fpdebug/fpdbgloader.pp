@@ -68,6 +68,7 @@ type
     constructor Create(AFileHandle: THandle);
     {$endif}
     destructor Destroy; override;
+    function IsValid: Boolean;
     property ImageBase: QWord read FImageBase; unimplemented;
     Property Image64Bit: Boolean read FImage64Bit; unimplemented;
     property Section[const AName: String]: PDbgImageSection read GetSection;
@@ -81,7 +82,10 @@ implementation
 
 function TDbgImageLoader.GetSection(const AName: String): PDbgImageSection;
 begin
-  Result := FImgReader.Section[AName];
+  if FImgReader <> nil then
+    Result := FImgReader.Section[AName]
+  else
+    Result := nil;
 end;
 
 constructor TDbgImageLoader.Create;
@@ -107,6 +111,11 @@ destructor TDbgImageLoader.Destroy;
 begin
   FreeAndNil(FImgReader);
   inherited Destroy;
+end;
+
+function TDbgImageLoader.IsValid: Boolean;
+begin
+  Result := FImgReader <> nil;
 end;
 
 end.
