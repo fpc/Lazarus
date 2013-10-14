@@ -425,7 +425,7 @@ begin
       'a'..'z',
       'A'..'Z', '_': AddIdentifier;
       else begin
-          SetError(Format('Unexpected char ''%0:s'' at pos %1:s', [CurPtr^, PosFromPChar(CurPtr)])); // error
+          SetError(Format('Unexpected char ''%0:s'' at pos %1:d', [CurPtr^, PosFromPChar(CurPtr)])); // error
           break;
         end;
     end;
