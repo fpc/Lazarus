@@ -3869,6 +3869,11 @@ begin
     if not (ClassType = TQtMainWindow) and InUpdate then
       exit;
 
+  {keep LCL value while designing pageControl}
+  if (csDesigning in LCLObject.ComponentState) and InUpdate and
+    ((Self is TQtPage) or (Self is TQtTabWidget)) then
+      exit;
+
   if CanAdjustClientRectOnResize and
     ((NewSize.cx <> LCLObject.Width) or (NewSize.cy <> LCLObject.Height) or
      LCLObject.ClientRectNeedsInterfaceUpdate) then
