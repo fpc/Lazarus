@@ -6055,11 +6055,15 @@ begin
         HaveVertBar := Assigned(FVScrollbar);
         HaveHorzBar := Assigned(FHScrollbar);
         if (caspComputingBounds in LCLObject.AutoSizePhases) then
+        begin
           {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtCustomControlResizeDeadlock)}
           writeln('*** INTERCEPTED RESIZE DEADLOCK *** ',LCLObject.ClassName,
             ':',LCLObject.Name)
           {$ENDIF}
-        else
+          {$IFDEF QTSCROLLABLEFORMS}
+          LCLObject.InvalidateClientRectCache(True);
+          {$ENDIF}
+        end else
           LCLObject.DoAdjustClientRectChange(HaveVertBar or HaveHorzBar);
       end else
         LCLObject.DoAdjustClientRectChange;
