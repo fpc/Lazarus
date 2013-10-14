@@ -2978,6 +2978,10 @@ msgstr "Configurações de saída"
 msgid "require administrator (requireAdministrator)"
 msgstr "requer administrador (requireAdministrator)"
 
+#: lazarusidestrconsts.dlgporesources
+msgid "Resources"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 #| msgid "Save Icon"
 msgid "&Save Icon"
@@ -17855,6 +17859,10 @@ msgstr "Adicionar Reverso"
 msgid "Attach to"
 msgstr "Anexar à"
 
+#: lazarusidestrconsts.rsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Auto incrementar número construção"
@@ -18109,6 +18117,23 @@ msgstr "Outras informações"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "Diretório de saída PO"
+
+#: lazarusidestrconsts.rsresource
+msgid "Resource"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourceclear
+msgid "Delete all resources?"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcefilename
+msgid "File name"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcetype
+msgctxt "lazarusidestrconsts.rsresourcetype"
+msgid "Type"
+msgstr "Tipo"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"

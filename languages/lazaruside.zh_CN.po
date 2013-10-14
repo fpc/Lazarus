@@ -3009,6 +3009,10 @@ msgstr "输出设置"
 msgid "require administrator (requireAdministrator)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgporesources
+msgid "Resources"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 #, fuzzy
 #| msgid "Save Icon"
@@ -18088,6 +18092,10 @@ msgstr "反向添加"
 msgid "Attach to"
 msgstr ""
 
+#: lazarusidestrconsts.rsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "构建编号自动递增"
@@ -18345,6 +18353,23 @@ msgstr "其它信息"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "PO 输出目录:"
+
+#: lazarusidestrconsts.rsresource
+msgid "Resource"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourceclear
+msgid "Delete all resources?"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcefilename
+msgid "File name"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcetype
+msgctxt "lazarusidestrconsts.rsresourcetype"
+msgid "Type"
+msgstr "类型"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"

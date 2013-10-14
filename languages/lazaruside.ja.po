@@ -3044,6 +3044,10 @@ msgstr "出力設定"
 msgid "require administrator (requireAdministrator)"
 msgstr "管理者を必要とします(requireAdministrator)"
 
+#: lazarusidestrconsts.dlgporesources
+msgid "Resources"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 #, fuzzy
 #| msgid "Save Icon"
@@ -18265,6 +18269,10 @@ msgstr "逆を追加"
 msgid "Attach to"
 msgstr ""
 
+#: lazarusidestrconsts.rsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "ビルド番号を自動的に増やす"
@@ -18522,6 +18530,23 @@ msgstr "その他の情報"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "PO出力ディレクトリ"
+
+#: lazarusidestrconsts.rsresource
+msgid "Resource"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourceclear
+msgid "Delete all resources?"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcefilename
+msgid "File name"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcetype
+msgctxt "lazarusidestrconsts.rsresourcetype"
+msgid "Type"
+msgstr "タイプ"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"

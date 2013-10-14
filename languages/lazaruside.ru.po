@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-09-28 22:05+0400\n"
+"PO-Revision-Date: 2013-10-15 01:14+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2985,6 +2985,10 @@ msgstr "Параметры вывода"
 #: lazarusidestrconsts.dlgporequireadministrator
 msgid "require administrator (requireAdministrator)"
 msgstr "с правами администратора (requireAdministrator)"
+
+#: lazarusidestrconsts.dlgporesources
+msgid "Resources"
+msgstr "Ресурсы"
 
 #: lazarusidestrconsts.dlgposaveicon
 #| msgid "Save Icon"
@@ -17839,6 +17843,10 @@ msgstr "Добавить инверсию"
 msgid "Attach to"
 msgstr "Присоединение"
 
+#: lazarusidestrconsts.rsattributes
+msgid "Attributes"
+msgstr "Атрибуты"
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Автоматически наращивать номер сборки"
@@ -18093,6 +18101,23 @@ msgstr "Прочие сведения"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "Каталог вывода файлов PO:"
+
+#: lazarusidestrconsts.rsresource
+msgid "Resource"
+msgstr "Ресурс"
+
+#: lazarusidestrconsts.rsresourceclear
+msgid "Delete all resources?"
+msgstr "Удалить все ресурсы?"
+
+#: lazarusidestrconsts.rsresourcefilename
+msgid "File name"
+msgstr "Имя файла"
+
+#: lazarusidestrconsts.rsresourcetype
+msgctxt "lazarusidestrconsts.rsresourcetype"
+msgid "Type"
+msgstr "Тип"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"

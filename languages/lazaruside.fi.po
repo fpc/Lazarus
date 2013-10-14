@@ -2887,6 +2887,10 @@ msgstr "Tulosteasetukset"
 msgid "require administrator (requireAdministrator)"
 msgstr "tarvitsee admin-oikeudet (requireAdministrator)"
 
+#: lazarusidestrconsts.dlgporesources
+msgid "Resources"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "&Save Icon"
 msgstr "Tallenna kuvake"
@@ -17337,6 +17341,10 @@ msgstr "Lisää käänteinen"
 msgid "Attach to"
 msgstr ""
 
+#: lazarusidestrconsts.rsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Lisää koonnan numeroa automaattisesti"
@@ -17590,6 +17598,23 @@ msgstr "Muuta tietoa"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr ""
+
+#: lazarusidestrconsts.rsresource
+msgid "Resource"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourceclear
+msgid "Delete all resources?"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcefilename
+msgid "File name"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcetype
+msgctxt "lazarusidestrconsts.rsresourcetype"
+msgid "Type"
+msgstr "Tyyppi"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"

@@ -2901,6 +2901,10 @@ msgstr "Nastavení výstupu"
 msgid "require administrator (requireAdministrator)"
 msgstr "vyžaduje administrátora (requireAdministrator)"
 
+#: lazarusidestrconsts.dlgporesources
+msgid "Resources"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "&Save Icon"
 msgstr "Uložit ikonu"
@@ -17437,6 +17441,10 @@ msgstr "Přidat inverzi"
 msgid "Attach to"
 msgstr "Připojit k"
 
+#: lazarusidestrconsts.rsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Automaticky zvyšovat číslo sestavení"
@@ -17690,6 +17698,23 @@ msgstr "Jiné informace"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "Výstupní adresář pro PO:"
+
+#: lazarusidestrconsts.rsresource
+msgid "Resource"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourceclear
+msgid "Delete all resources?"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcefilename
+msgid "File name"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcetype
+msgctxt "lazarusidestrconsts.rsresourcetype"
+msgid "Type"
+msgstr "Typ"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"

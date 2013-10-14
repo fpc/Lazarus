@@ -2972,6 +2972,10 @@ msgstr "Išvesties nuostatos"
 msgid "require administrator (requireAdministrator)"
 msgstr "reikia administratoriaus (requireAdministrator)"
 
+#: lazarusidestrconsts.dlgporesources
+msgid "Resources"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 #| msgid "Save Icon"
 msgid "&Save Icon"
@@ -17840,6 +17844,10 @@ msgstr "Pridėti atvirkščiai"
 msgid "Attach to"
 msgstr ""
 
+#: lazarusidestrconsts.rsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Automatiškai didinti darymo numerį"
@@ -18095,6 +18103,23 @@ msgstr "Kita informacija"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "PO išvesties aplankas:"
+
+#: lazarusidestrconsts.rsresource
+msgid "Resource"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourceclear
+msgid "Delete all resources?"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcefilename
+msgid "File name"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcetype
+msgctxt "lazarusidestrconsts.rsresourcetype"
+msgid "Type"
+msgstr "Tipas"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"

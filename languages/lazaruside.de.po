@@ -2977,6 +2977,10 @@ msgstr "Ausgabeeinstellungen"
 msgid "require administrator (requireAdministrator)"
 msgstr "benötigt Administrator (requireAdministrator)"
 
+#: lazarusidestrconsts.dlgporesources
+msgid "Resources"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 #| msgid "Save Icon"
 msgid "&Save Icon"
@@ -17898,6 +17902,10 @@ msgstr "Umgekehrt zufügen"
 msgid "Attach to"
 msgstr ""
 
+#: lazarusidestrconsts.rsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Kompiliernummer automatisch erhöhen"
@@ -18153,6 +18161,23 @@ msgstr "Andere Info"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "PO-Ausgabeverzeichnis:"
+
+#: lazarusidestrconsts.rsresource
+msgid "Resource"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourceclear
+msgid "Delete all resources?"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcefilename
+msgid "File name"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcetype
+msgctxt "lazarusidestrconsts.rsresourcetype"
+msgid "Type"
+msgstr "Typ"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"

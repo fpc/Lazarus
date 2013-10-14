@@ -2965,6 +2965,10 @@ msgstr "Вихідні налаштування"
 msgid "require administrator (requireAdministrator)"
 msgstr "потрібен адміністратор (requireAdministrator)"
 
+#: lazarusidestrconsts.dlgporesources
+msgid "Resources"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 #| msgid "Save Icon"
 msgid "&Save Icon"
@@ -17740,6 +17744,10 @@ msgstr "Додати Зворотнє"
 msgid "Attach to"
 msgstr ""
 
+#: lazarusidestrconsts.rsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Автоматично збільшувати номер білду"
@@ -17993,6 +18001,23 @@ msgstr "Інша Інформація"
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "Результуюча Тека PO:"
+
+#: lazarusidestrconsts.rsresource
+msgid "Resource"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourceclear
+msgid "Delete all resources?"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcefilename
+msgid "File name"
+msgstr ""
+
+#: lazarusidestrconsts.rsresourcetype
+msgctxt "lazarusidestrconsts.rsresourcetype"
+msgid "Type"
+msgstr "Тип"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
