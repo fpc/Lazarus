@@ -2242,7 +2242,9 @@ begin
     ErrMsg:='';
     if ErrorPos>0 then
       MoveCursorToCleanPos(ErrorPos)
-    else begin
+    else if ErrorPos=0 then begin
+      CurPos.StartPos:=-1;
+    end else begin
       CurPos.StartPos:=-1;
       ErrMsg:=Format(ctsNeededByMode, [CompilerModeNames[Scanner.CompilerMode]]
         );

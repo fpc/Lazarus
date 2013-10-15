@@ -37,11 +37,12 @@ type
     fPackageName: string;
     fUnitName: string;
     // Calculated for each actual replacement:
-    fReplFunc: string;        // May be extracted from a conditional expression.
-    fStartPos: Integer;       // Start and end positions of original func+params.
+    fReplFunc: string;          // May be extracted from a conditional expression.
+    fStartPos: Integer;         // Start and end positions of original func+params.
     fEndPos: Integer;
-    fInclSemiColon: string;   // Ending semiColon is included in the replacement.
-    fParams: TStringList;     // Parameters of the original function call.
+    fInclEmptyBrackets: string; // '()' is included in the replacement.
+    fInclSemiColon: string;     // Ending semiColon is included in the replacement.
+    fParams: TStringList;       // Parameters of the original function call.
     function ParseIf(var aStart: integer): boolean;
   public
     constructor Create(const aCategory, aFuncName, aReplacement, aPackageName, aUnitName: string);
@@ -57,6 +58,7 @@ type
     property UnitName: string read fUnitName;
     property StartPos: Integer read fStartPos write fStartPos;
     property EndPos: Integer read fEndPos write fEndPos;
+    property InclEmptyBrackets: string read fInclEmptyBrackets write fInclEmptyBrackets;
     property InclSemiColon: string read fInclSemiColon write fInclSemiColon;
     property Params: TStringList read fParams;
   end;
