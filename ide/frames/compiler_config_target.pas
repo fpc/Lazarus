@@ -196,7 +196,7 @@ begin
   end;
   DebugLn(['TCompilerConfigTargetFrame.UpdateTargetSpecific: TargetOS=',aTargetOS,DbgMsg]);
   // Now hide/show the whole GroupBox because there is only one setting.
-  grbTargetOptions.Visible := AnsiStartsStr('Win', aTargetOS);
+  grbTargetOptions.Visible := AnsiStartsText('Win', aTargetOS);
 end;
 
 procedure TCompilerConfigTargetFrame.UpdateByTargetCPU(aTargetCPU: string);
