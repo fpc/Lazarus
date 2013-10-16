@@ -468,6 +468,7 @@ type
     procedure DestroyDividerDrawConfig;
   protected
     function KeyComp(const aKey: string): Boolean;
+    function KeyCompEx(AText1, AText2: pchar; ALen: Integer): Boolean;
     function GetIdentChars: TSynIdentChars; override;
     function IsFilterStored: boolean; override;                                 //mh 2000-10-08
   protected
@@ -818,6 +819,19 @@ begin
     end;
   end else Result := False;
 end; { KeyComp }
+
+function TSynPasSyn.KeyCompEx(AText1, AText2: pchar; ALen: Integer): Boolean;
+begin
+  Result := False;
+  while ALen > 0 do begin
+    if mHashTable[AText1^] <> mHashTable[AText2^] then
+      exit;
+    dec(ALen);
+    inc(AText1);
+    inc(AText2);
+  end;
+  Result := True;
+end;
 
 function TSynPasSyn.TextComp(aText: PChar): Boolean;
 var
@@ -1621,10 +1635,10 @@ function TSynPasSyn.Func89: TtkTokenKind;
           'p', 'P' : If (NestBrace1 = 0) and (NestBrace2 = 0) then begin
                        if ( (i+6 <= l) and
                             ((i+6 = l) or (Txt[i+7] in [#1..#32])) and
-                            (AnsiStrComp(PChar(copy(Txt, i+1, 6)), PChar('rivate')) = 0) )
+                            (KeyCompEx(@Txt[i+1], PChar('rivate'), 6)) )
                        or ( (i+8 <= l) and
                             ((i+8 = l) or (Txt[i+9] in [#1..#32])) and
-                            (AnsiStrComp(PChar(copy(Txt, i+1, 8)), PChar('rotected')) = 0) )
+                            (KeyCompEx(@Txt[i+1], PChar('rotected'), 8)) )
                         then
                           exit(True)
                         else
@@ -2484,7 +2498,7 @@ procedure TSynPasSyn.BraceOpenProc;
                  else InString := not InString;
           '-', '/' : If (not InString) and (i+4 <= l) and
                         ((i=1) or (Txt[i-1] in [' ', #9, #10, #13])) and
-                        (AnsiStrComp(PChar(copy(Txt, i+1, 4)), PChar('fold')) = 0)
+                        (KeyCompEx(@Txt[i+1], PChar('fold'), 4))
                         and ((i+4 = l) or (Txt[i+5] in [' ', #9, #10, #13, '}']))
                      then
                        exit(True);
