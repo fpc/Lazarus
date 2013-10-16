@@ -3300,6 +3300,9 @@ type
     procedure UnlockSelectionChangeEvent;
     function GetFirstMultiSelected: TTreeNode;
     function GetLastMultiSelected: TTreeNode;
+    procedure Select(Node: TTreeNode; ShiftState: TShiftState = []);
+    procedure Select(const Nodes: array of TTreeNode); virtual;
+    procedure Select(Nodes: TList); virtual;
     function SelectionVisible: boolean;
     procedure MakeSelectionVisible;
     procedure ClearInvisibleSelection;

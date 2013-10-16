@@ -5650,6 +5650,44 @@ begin
   Result := Items.FLastMultiSelected;
 end;
 
+procedure TCustomTreeView.Select(Node: TTreeNode; ShiftState: TShiftState = []);
+begin
+  if (tvoAllowMultiSelect in FOptions) and (ssCtrl in ShiftState) then
+    Node.Selected := True
+  else begin
+    ClearSelection;
+    Selected := Node;
+    if (tvoAllowMultiSelect in FOptions) then
+      Node.Selected := True;
+  end;
+end;
+
+procedure TCustomTreeView.Select(const Nodes: array of TTreeNode);
+var
+  I: Integer;
+begin
+  ClearSelection;
+  if Length(Nodes)>0 then begin
+    Selected := Nodes[0];
+    if tvoAllowMultiSelect in FOptions then
+      for I := Low(Nodes) to High(Nodes) do
+        Nodes[I].Selected := True;
+  end;
+end;
+
+procedure TCustomTreeView.Select(Nodes: TList);
+var
+  I: Integer;
+begin
+  ClearSelection;
+  if Nodes.Count>0 then begin
+    Selected := TTreeNode(Nodes[0]);
+    if tvoAllowMultiSelect in FOptions then
+      for I := 0 to Nodes.Count - 1 do
+        TTreeNode(Nodes[I]).Selected := True;
+  end;
+end;
+
 function TCustomTreeView.SelectionVisible: boolean;
 var
   ANode: TTreeNode;
