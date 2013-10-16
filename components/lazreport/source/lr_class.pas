@@ -1108,7 +1108,7 @@ type
     procedure LoadPreparedReport(const FName: String);
     procedure SavePreparedReport(const FName: String);
     // report manipulation methods
-    procedure DesignReport;
+    function DesignReport: Integer;
     function PrepareReport: Boolean;
     procedure ExportTo(FilterClass: TfrExportFilterClass; aFileName: String);
     procedure ShowReport;
@@ -9491,7 +9491,7 @@ begin
 end;
 
 // report manipulation methods
-procedure TfrReport.DesignReport;
+function TfrReport.DesignReport: Integer;
 var
   HF: String;
 begin
@@ -9503,11 +9503,14 @@ begin
   if not Assigned(frDesigner)  and Assigned(ProcedureInitDesigner)  then
     ProcedureInitDesigner();
   if frDesigner <> nil then
+  begin
     {$IFDEF MODALDESIGNER}
-    frDesigner.ShowModal;
+    Result:=frDesigner.ShowModal;
     {$ELSE}
     frDesigner.Show;
+    Result:=mrOk;
     {$ENDIF}
+  end;
   Application.HelpFile := HF;
 end;
 
