@@ -186,12 +186,13 @@ type
     class function GetViewOrigin(const ALV: TCustomListView): TPoint; override;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
+    class procedure SelectAll(const ALV: TCustomListView; const AIsSet: Boolean); override;
     class procedure SetAllocBy(const ALV: TCustomListView; const {%H-}AValue: Integer); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const {%H-}AValue: Integer); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const {%H-}AValue: TListHotTrackStyles); override;
-    class procedure SetHoverTime(const ALV: TCustomListView; const {%H-}AValue: Integer); override;
+//    class procedure SetHoverTime(const ALV: TCustomListView; const {%H-}AValue: Integer); override;
 //    class procedure SetIconOptions(const ALV: TCustomListView; const AValue: TIconOptions); override;
     class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); override;
     class procedure SetItemsCount(const ALV: TCustomListView; const {%H-}Avalue: Integer); override;

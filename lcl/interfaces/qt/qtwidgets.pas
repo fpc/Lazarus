@@ -637,7 +637,6 @@ type
     function GetContainerWidget: QWidgetH; override;
     procedure grabMouse; override;
     function getClientOffset: TPoint; override;
-    function getClientBounds: TRect; override;
 
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
@@ -3870,6 +3869,11 @@ begin
     if not (ClassType = TQtMainWindow) and InUpdate then
       exit;
 
+  {keep LCL value while designing pageControl}
+  if (csDesigning in LCLObject.ComponentState) and InUpdate and
+    ((Self is TQtPage) or (Self is TQtTabWidget)) then
+      exit;
+
   if CanAdjustClientRectOnResize and
     ((NewSize.cx <> LCLObject.Width) or (NewSize.cy <> LCLObject.Height) or
      LCLObject.ClientRectNeedsInterfaceUpdate) then
@@ -6025,9 +6029,9 @@ begin
   Result := False;
   if (LCLObject = nil) then
     exit;
-  if (QEvent_Type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease, QEventMouseButtonDblClick,
-    QEventMouseMove, QEventWheel, QEventPaint, QEventHoverEnter, QEventHoverMove,
-      QEventHoverLeave, QEventResize]) then
+  if (QEvent_Type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease,
+    QEventMouseButtonDblClick, QEventMouseMove, QEventWheel,
+    QEventHoverEnter, QEventHoverMove, QEventHoverLeave, QEventResize]) then
     exit;
   Result := inherited EventFilter(Sender, Event);
 end;
@@ -6042,9 +6046,8 @@ begin
   if LCLObject = nil then
     exit;
   BeginEventProcessing;
-  if (QEvent_Type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease, QEventMouseButtonDblClick,
-    QEventMouseMove, QEventWheel, QEventPaint, QEventHoverEnter, QEventHoverMove,
-      QEventHoverLeave]) then
+  if (QEvent_Type(Event) in [QEventContextMenu, QEventHoverEnter,
+                             QEventHoverMove, QEventHoverLeave]) then
   begin
     Result := inherited EventFilter(Sender, Event);
   end else
@@ -6057,11 +6060,17 @@ begin
         HaveVertBar := Assigned(FVScrollbar);
         HaveHorzBar := Assigned(FHScrollbar);
         if (caspComputingBounds in LCLObject.AutoSizePhases) then
+        begin
           {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtCustomControlResizeDeadlock)}
           writeln('*** INTERCEPTED RESIZE DEADLOCK *** ',LCLObject.ClassName,
             ':',LCLObject.Name)
           {$ENDIF}
-        else
+          {$IFDEF QTSCROLLABLEFORMS}
+          // do not invalidate clientRectCache if we are embedded (eg. docked)
+          if not Assigned(LCLObject.Parent) then
+            LCLObject.InvalidateClientRectCache(True);
+          {$ENDIF}
+        end else
           LCLObject.DoAdjustClientRectChange(HaveVertBar or HaveHorzBar);
       end else
         LCLObject.DoAdjustClientRectChange;
@@ -6434,18 +6443,6 @@ begin
   {$ENDIF}
 end;
 
-function TQtMainWindow.getClientBounds: TRect;
-begin
-  {$IFDEF QTSCROLLABLEFORMS}
-  if Assigned(ScrollArea) then
-    Result := ScrollArea.getClientBounds
-  else
-    Result := inherited getClientBounds;
-  {$ELSE}
-  Result:=inherited getClientBounds;
-  {$ENDIF}
-end;
-
 function TQtMainWindow.getText: WideString;
 begin
   WindowTitle(@Result);
@@ -6531,8 +6528,7 @@ begin
   {$IFDEF QTSCROLLABLEFORMS}
   if Assigned(ScrollArea) and not IsMDIChild then
   begin
-    if QEvent_type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease,
-                              QEventMouseButtonDblClick, QEventPaint,
+    if QEvent_type(Event) in [QEventPaint,
                               QEventContextMenu] then
       exit;
   end;

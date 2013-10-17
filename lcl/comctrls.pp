@@ -1094,6 +1094,8 @@ type
     procedure DoFinalizeWnd;
     procedure SetCount(const ACount: Integer); virtual;
     procedure SetItem(const AIndex: Integer; const AValue: TListItem);
+    procedure ClearSelection;
+    procedure SelectAll;
   public
     function Add: TListItem;
     procedure AddItem(AItem: TListItem);
@@ -1512,6 +1514,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure AddItem(Item: string; AObject: TObject);
     function AlphaSort: Boolean; // always sorts column 0 in sdAscending order
     procedure BeginUpdate;
     procedure Clear;
@@ -1535,6 +1538,9 @@ type
      Only items in the state indicated by the States parameter are considered.
      If no item is found Nil is returned.}
     function GetNextItem(StartItem: TListItem; Direction: TSearchDirection; States: TListItemStates): TListItem;
+
+    procedure ClearSelection;
+    procedure SelectAll;
 
     function IsEditing: Boolean; // Delphi compatibile function which returns if our listview editor is active
     property BoundingRect: TRect read GetBoundingRect;

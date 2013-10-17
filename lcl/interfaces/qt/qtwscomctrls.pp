@@ -158,6 +158,8 @@ type
     class function GetViewOrigin(const ALV: TCustomListView): TPoint; override;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
+    class procedure SelectAll(const ALV: TCustomListView; const AIsSet: Boolean); override;
+
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetIconArrangement(const ALV: TCustomListView; const AValue: TIconArrangement); override;
     class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); override;
@@ -1912,6 +1914,17 @@ begin
   Result := TQtAbstractItemView(ALV.Handle).getVisibleRowCount;
 end;
 
+class procedure TQtWSCustomListView.SelectAll(const ALV: TCustomListView;
+  const AIsSet: Boolean);
+begin
+  if not WSCheckHandleAllocated(ALV, 'SelectAll') then
+    Exit;
+  if AIsSet then
+    QAbstractItemView_selectAll(QAbstractItemViewH(TQtWidget(ALV.Handle).Widget))
+  else
+    QAbstractItemView_clearSelection(QAbstractItemViewH(TQtWidget(ALV.Handle).Widget));
+end;
+
 class procedure TQtWSCustomListView.SetAllocBy(const ALV: TCustomListView;
   const AValue: Integer);
 var
@@ -2075,7 +2088,7 @@ begin
 end;
 
 class procedure TQtWSCustomListView.SetViewStyle(const ALV: TCustomListView;
-  const AValue: TViewStyle);
+  const Avalue: TViewStyle);
 var
   QtItemView: TQtAbstractItemView;
   QtListWidget: TQtListWidget;
