@@ -74,12 +74,12 @@ end;
 
 procedure TResourcesOptionsFrame.cbResourceTypeChange(Sender: TObject);
 begin
-  lbResources.Selected.SubItems[1] := ResourceTypeToStr[TUserResourceType(cbResourceType.ItemIndex)];
+  lbResources.Selected.SubItems[0] := ResourceTypeToStr[TUserResourceType(cbResourceType.ItemIndex)];
 end;
 
 procedure TResourcesOptionsFrame.edResourceNameEditingDone(Sender: TObject);
 begin
-  lbResources.Selected.SubItems[2] := edResourceName.Text;
+  lbResources.Selected.SubItems[1] := edResourceName.Text;
 end;
 
 procedure TResourcesOptionsFrame.edResourceNameKeyDown(Sender: TObject;
@@ -103,12 +103,12 @@ begin
   btnDelete.Enabled := Assigned(lbResources.Selected);
   edResourceName.Enabled := Assigned(lbResources.Selected);
   if edResourceName.Enabled then
-    edResourceName.Text := lbResources.Selected.SubItems[2]
+    edResourceName.Text := lbResources.Selected.SubItems[1]
   else
     edResourceName.Text := '';
   cbResourceType.Enabled := Assigned(lbResources.Selected);
   if cbResourceType.Enabled then
-    cbResourceType.ItemIndex := Ord(StrToResourceType(lbResources.Selected.SubItems[1]))
+    cbResourceType.ItemIndex := Ord(StrToResourceType(lbResources.Selected.SubItems[0]))
   else
     cbResourceType.ItemIndex := -1;
 end;
@@ -119,7 +119,6 @@ var
 begin
   Item := lbResources.Items.Add;
   Item.Caption := ResFile;
-  Item.SubItems.Add(ExtractFileName(ResFile));
   Item.SubItems.Add(ResourceTypeToStr[ResType]);
   Item.SubItems.Add(ResName);
 end;
@@ -150,9 +149,9 @@ var
   rt: TUserResourceType;
 begin
   ToolBar1.Images := IDEImages.Images_16;
-  lbResources.Column[1].Caption := rsResourceFileName;
-  lbResources.Column[2].Caption := rsResourceType;
-  lbResources.Column[3].Caption := rsResource;
+  lbResources.Column[0].Caption := rsResourceFileName;
+  lbResources.Column[1].Caption := rsResourceType;
+  lbResources.Column[2].Caption := rsResource;
   btnAdd.Caption := lisBtnAdd;
   btnDelete.Caption := lisBtnDelete;
   btnAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
@@ -196,7 +195,7 @@ begin
   Project.ProjResources.UserResources.List.Clear;
   for I := 0 to lbResources.Items.Count - 1 do
     Project.ProjResources.UserResources.List.AddResource(lbResources.Items[I].Caption,
-      StrToResourceType(lbResources.Items[I].SubItems[1]), lbResources.Items[I].SubItems[2]);
+      StrToResourceType(lbResources.Items[I].SubItems[0]), lbResources.Items[I].SubItems[1]);
 end;
 
 class function TResourcesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

@@ -24,13 +24,8 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
     BorderSpacing.Right = 6
     Columns = <    
       item
-        Caption = 'FullFileName'
-        Visible = False
-        Width = 0
-      end    
-      item
         Caption = 'FileName'
-        Width = 150
+        Width = 300
       end    
       item
         Caption = 'Type'
