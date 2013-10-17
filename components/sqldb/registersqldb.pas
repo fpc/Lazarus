@@ -41,7 +41,8 @@ unit registersqldb;
 {$ENDIF}
 {$ENDIF}
 
-{$IF FPC_FULLVERSION >= 20603}
+{$IF FPC_FULLVERSION >= 20602} 
+// These were backported to FPC 2.6.2
  {$DEFINE HASFBADMIN}
  {$DEFINE HASPQEVENT}
  {$DEFINE HASFBEVENT}
