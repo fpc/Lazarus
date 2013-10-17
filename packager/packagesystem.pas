@@ -4564,10 +4564,12 @@ begin
     DebugLn('TLazPackageGraph.SavePackageMainSource LoadCodeBuffer ',SrcFilename,' failed');
     exit;
   end;
+  // ignore comments
   OldShortenSrc:=CodeToolBoss.ExtractCodeWithoutComments(CodeBuffer);
   NewShortenSrc:=CleanCodeFromComments(Src,
                 CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuffer.Filename));
-  if CompareTextIgnoringSpace(OldShortenSrc,NewShortenSrc,true)=0 then begin
+  // ignore case and spaces
+  if CompareTextIgnoringSpace(OldShortenSrc,NewShortenSrc,false)=0 then begin
     Result:=mrOk;
     exit;
   end;

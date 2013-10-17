@@ -28,6 +28,7 @@ uses
   qtobjects, qtwidgets, qtproc,
   // LCL
   SysUtils, Classes, Controls, LCLType, Forms,
+  {$IFDEF QTSCROLLABLEFORMS}StdCtrls,{$ENDIF}
   // Widgetset
   InterfaceBase, WSForms, WSProc, WSLCLClasses;
 
@@ -76,6 +77,10 @@ type
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    {$IFDEF QTSCROLLABLEFORMS}
+    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
+      const DeltaX, DeltaY: integer); override;
+    {$ENDIF}
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); override;
@@ -202,6 +207,10 @@ begin
 
   // Sets Various Events
   QtMainWindow.AttachEvents;
+  {$IFDEF QTSCROLLABLEFORMS}
+  if Assigned(QtMainWindow.ScrollArea) then
+    QtMainWindow.ScrollArea.AttachEvents;
+  {$ENDIF}
   QtMainWindow.MenuBar.AttachEvents;
   
   if (AForm.FormStyle in [fsMDIChild]) and
@@ -242,6 +251,20 @@ begin
     w.Hide;
   w.Release;
 end;
+
+{$IFDEF QTSCROLLABLEFORMS}
+class procedure TQtWSCustomForm.ScrollBy(
+  const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
+var
+  Widget: TQtMainWindow;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
+    Exit;
+  Widget := TQtMainWindow(AWinControl.Handle);
+  if Assigned(Widget.ScrollArea) then
+    Widget.ScrollArea.scroll(DeltaX, DeltaY);
+end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomForm.SetAllowDropFiles

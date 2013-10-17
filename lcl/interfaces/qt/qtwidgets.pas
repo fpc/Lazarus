@@ -49,6 +49,7 @@ type
                           ccwAbstractScrollArea,
                           ccwCustomControl,
                           ccwScrollingWinControl,
+                          ccwScrollingWindow,
                           ccwTabWidget,
                           ccwTTabControl);
 
@@ -585,6 +586,26 @@ type
     procedure ActivateSubWindow(AMdiWindow: QMdiSubWindowH);
   end;
 
+  {$IFDEF QTSCROLLABLEFORMS}
+  { TQtWindowArea }
+
+  {Scrollbars on qt forms}
+  TQtWindowArea = class(TQtAbstractScrollArea)
+  private
+    FViewPortEventHook: QObject_hookH;
+  public
+    procedure AttachEvents; override;
+    function CanAdjustClientRectOnResize: Boolean; override;
+    procedure DetachEvents; override;
+    function MapToGlobal(APt: TPoint; const AWithScrollOffset: Boolean = False): TPoint; override;
+    procedure scroll(dx, dy: integer; ARect: PRect = nil); override;
+    {abstractscrollarea events}
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    {viewport events}
+    function ScrollViewEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+  end;
+  {$ENDIF}
+
   TQtMainWindow = class(TQtWidget)
   private
     FBlocked: Boolean;
@@ -606,11 +627,23 @@ type
     MDIChildArea: TQtMDIArea; // valid only if we are fsMDIChild
     MenuBar: TQtMenuBar;
     ToolBar: TQtToolBar;
+    {$IFDEF QTSCROLLABLEFORMS}
+    ScrollArea: TQtWindowArea;
+    {$ENDIF}
     destructor Destroy; override;
     procedure Activate; override;
+    function CanAdjustClientRectOnResize: Boolean; override;
     function getAcceptDropFiles: Boolean; override;
+    function GetContainerWidget: QWidgetH; override;
+    procedure grabMouse; override;
+    function getClientOffset: TPoint; override;
+    function getClientBounds: TRect; override;
+
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
+
+    function MapToGlobal(APt: TPoint; const AWithScrollOffset: Boolean = False): TPoint; override;
+
     procedure Resize(ANewWidth, ANewHeight: Integer); override;
     procedure setText(const W: WideString); override;
     procedure setMenuBar(AMenuBar: QMenuBarH);
@@ -621,6 +654,7 @@ type
     function MdiChildCount: integer;
     procedure OffsetMousePos(APoint: PQtPoint); override;
     procedure setAcceptDropFiles(AValue: Boolean);
+    procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure SlotActivateWindow(vActivate: Boolean); cdecl;
     procedure slotWindowStateChange; cdecl;
     procedure setShowInTaskBar(AValue: Boolean);
@@ -5938,10 +5972,172 @@ begin
     QMdiArea_setActiveSubWindow(QMdiAreaH(Widget), AMdiWindow);
 end;
 
+{$IFDEF QTSCROLLABLEFORMS}
+
+{ TQtWindowArea }
+
+procedure TQtWindowArea.AttachEvents;
+begin
+  inherited AttachEvents;
+  FViewPortEventHook := QObject_hook_create(viewportWidget);
+  QObject_hook_hook_events(FViewPortEventHook, @ScrollViewEventFilter);
+end;
+
+function TQtWindowArea.CanAdjustClientRectOnResize: Boolean;
+begin
+  Result := False;
+end;
+
+procedure TQtWindowArea.DetachEvents;
+begin
+  if Assigned(FViewPortEventHook) then
+  begin
+    QObject_hook_destroy(FViewPortEventHook);
+    FViewPortEventHook := nil;
+  end;
+  inherited DetachEvents;
+end;
+
+function TQtWindowArea.MapToGlobal(APt: TPoint; const AWithScrollOffset: Boolean
+  ): TPoint;
+var
+  Pt: TPoint;
+begin
+  Result := inherited MapToGlobal(APt);
+  if AWithScrollOffset then
+  begin
+    Pt := ScrolledOffset;
+    dec(Result.X, Pt.X);
+    dec(Result.Y, Pt.Y);
+  end;
+end;
+
+procedure TQtWindowArea.scroll(dx, dy: integer; ARect: PRect);
+begin
+  inherited scroll(dx, dy, ARect);
+  FScrollX := FScrollX + dx;
+  FScrollY := FScrollY + dy;
+end;
+
+function TQtWindowArea.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  Result := False;
+  if (LCLObject = nil) then
+    exit;
+  if (QEvent_Type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease, QEventMouseButtonDblClick,
+    QEventMouseMove, QEventWheel, QEventPaint, QEventHoverEnter, QEventHoverMove,
+      QEventHoverLeave, QEventResize]) then
+    exit;
+  Result := inherited EventFilter(Sender, Event);
+end;
+
+function TQtWindowArea.ScrollViewEventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+var
+  HaveVertBar, HaveHorzBar: Boolean;
+  ScrollBar: QScrollBarH;
+begin
+  Result := False;
+  if LCLObject = nil then
+    exit;
+  BeginEventProcessing;
+  if (QEvent_Type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease, QEventMouseButtonDblClick,
+    QEventMouseMove, QEventWheel, QEventPaint, QEventHoverEnter, QEventHoverMove,
+      QEventHoverLeave]) then
+  begin
+    Result := inherited EventFilter(Sender, Event);
+  end else
+  case QEvent_type(Event) of
+    QEventResize:
+    begin
+      // immediate update clientRect !
+      if FOwner <> nil then
+      begin
+        HaveVertBar := Assigned(FVScrollbar);
+        HaveHorzBar := Assigned(FHScrollbar);
+        if (caspComputingBounds in LCLObject.AutoSizePhases) then
+          {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtCustomControlResizeDeadlock)}
+          writeln('*** INTERCEPTED RESIZE DEADLOCK *** ',LCLObject.ClassName,
+            ':',LCLObject.Name)
+          {$ENDIF}
+        else
+          LCLObject.DoAdjustClientRectChange(HaveVertBar or HaveHorzBar);
+      end else
+        LCLObject.DoAdjustClientRectChange;
+    end;
+    QEventWheel:
+      if not getEnabled then
+        inherited EventFilter(Sender, Event)
+      else
+      if (QtVersionMajor = 4) and (QtVersionMinor < 7) then
+      begin
+        Result := SlotMouseWheel(Sender, Event);
+        if not Result then
+        case QWheelEvent_orientation(QWheelEventH(Event)) of
+          QtVertical:
+            begin
+              if verticalScrollBar.getVisible then
+              begin
+                ScrollBar := QScrollBarH(verticalScrollBar.Widget);
+                QScrollBar_event(ScrollBar, Event);
+              end else
+                Result := inherited EventFilter(Sender, Event);
+            end;
+          QtHorizontal:
+          begin
+            if horizontalScrollBar.getVisible then
+            begin
+              ScrollBar := QScrollBarH(horizontalScrollBar.Widget);
+              QScrollBar_event(ScrollBar, Event);
+            end else
+              Result := inherited EventFilter(Sender, Event);
+          end;
+        end;
+        Result := True;
+        QEvent_ignore(Event);
+      end;
+
+    QEventLayoutRequest:
+    begin
+      with TQtMainWindow(FOwner) do
+      begin
+        if Self.LCLObject.ClientRectNeedsInterfaceUpdate then
+            Self.LCLObject.DoAdjustClientRectChange(True);
+      end;
+    end;
+  end;
+  EndEventProcessing;
+end;
+
+{$ENDIF}
+
 
 { TQtMainWindow }
 
 function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
+  {$IFDEF QTSCROLLABLEFORMS}
+  procedure SetScrollAreaRules;
+  begin
+    FCentralWidget := ScrollArea.Widget;
+    ScrollArea.ChildOfComplexWidget := ccwAbstractScrollArea;
+    ScrollArea.LCLObject := LCLObject;
+
+    QFrame_setFrameShape(QAbstractScrollAreaH(ScrollArea.Widget), QFrameNoFrame);
+    QWidget_setBackgroundRole(ScrollArea.viewportWidget, QPaletteNoRole);
+    QWidget_setAutoFillBackground(ScrollArea.viewportWidget, False);
+
+    // we must set minimum heigth / width to 1 otherwise we'll have strange
+    // effect eg. with main ide bar window (small size and cannot resize).
+    QWidget_setMinimumHeight(FCentralWidget, 1);
+    QWidget_setMinimumWidth(FCentralWidget, 1);
+
+    ScrollArea.setScrollBarPolicy(True, QtScrollBarAlwaysOff);
+    ScrollArea.setScrollBarPolicy(False, QtScrollBarAlwaysOff);
+    ScrollArea.HasPaint := True;
+    ScrollArea.FOwner := Self;
+  end;
+  {$ENDIF}
 var
   p: QPaletteH;
 begin
@@ -5959,6 +6155,9 @@ begin
   MDIAreaHandle := nil;
   MDIChildArea := nil;
   FMDIStateHook := nil;
+  {$IFDEF QTSCROLLABLEFORMS}
+  ScrollArea := nil;
+  {$ENDIF}
 
   IsMainForm := (LCLObject <> nil) and (LCLObject = Application.MainForm);
 
@@ -5993,7 +6192,12 @@ begin
     end
     else
     begin
+      {$IFDEF QTSCROLLABLEFORMS}
+      ScrollArea := TQtWindowArea.CreateFrom(LCLObject, QAbstractScrollArea_create(Result));
+      SetScrollAreaRules;
+      {$ELSE}
       FCentralWidget := QWidget_create(Result);
+      {$ENDIF}
       MDIAreaHandle := nil;
     end;
     
@@ -6043,7 +6247,17 @@ begin
       MenuBar.setProperty(MenuBar.Widget,'lcldesignmenubar',1);
     {$ENDIF}
 
+    {$IFDEF QTSCROLLABLEFORMS}
+    if QWidget_windowType(Result) = QtSplashScreen then
+      FCentralWidget := QWidget_create(Result)
+    else
+    begin
+      ScrollArea := TQtWindowArea.CreateFrom(LCLObject, QAbstractScrollArea_create(Result));
+      SetScrollAreaRules;
+    end;
+    {$ELSE}
     FCentralWidget := QWidget_create(Result);
+    {$ENDIF}
     QWidget_setMouseTracking(FCentralWidget, True);
 
     LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
@@ -6127,6 +6341,16 @@ begin
     MDIAreaHandle.Widget := nil;
     FreeThenNil(MDIAreaHandle);
   end;
+  {$IFDEF QTSCROLLABLEFORMS}
+  if QtWidgetSet.IsValidHandle(HWND(ScrollArea)) then
+  begin
+    ScrollArea.DetachEvents;
+    if FOwnWidget and (ScrollArea.Widget <> nil) then
+      QWidget_destroy(ScrollArea.Widget);
+    ScrollArea.Widget := nil;
+    FreeAndNil(ScrollArea);
+  end;
+  {$ENDIF}
 
   inherited Destroy;
 end;
@@ -6155,9 +6379,71 @@ begin
   {$ENDIF}
 end;
 
+function TQtMainWindow.CanAdjustClientRectOnResize: Boolean;
+begin
+  {$IFDEF QTSCROLLABLEFORMS}
+  Result := not Assigned(ScrollArea);
+  {$ELSE}
+  Result:=inherited CanAdjustClientRectOnResize;
+  {$ENDIF}
+end;
+
 function TQtMainWindow.getAcceptDropFiles: Boolean;
 begin
   Result := QWidget_acceptDrops(Widget);
+end;
+
+function TQtMainWindow.GetContainerWidget: QWidgetH;
+begin
+  {$IFDEF QTSCROLLABLEFORMS}
+  if not Assigned(ScrollArea) or (QWidget_windowType(Widget) = QtToolTip) or
+    (QWidget_windowType(Widget) = QtSplashScreen) or
+    (TCustomForm(LCLObject).FormStyle = fsMdiForm) then
+    Result := inherited GetContainerWidget
+  else
+    Result := ScrollArea.GetContainerWidget;
+  {$ELSE}
+  Result := inherited GetContainerWidget;
+  {$ENDIF}
+end;
+
+procedure TQtMainWindow.grabMouse;
+begin
+  {$IFDEF QTSCROLLABLEFORMS}
+  if not Assigned(ScrollArea) then
+    inherited grabMouse
+  else
+    ScrollArea.grabMouse;
+  {$ELSE}
+  inherited grabMouse;
+  {$ENDIF}
+end;
+
+function TQtMainWindow.getClientOffset: TPoint;
+begin
+  {$IFDEF QTSCROLLABLEFORMS}
+  if Assigned(ScrollArea) then
+    Result := ScrollArea.getClientOffset
+  else
+    Result := inherited getClientOffset;
+  if Assigned(ScrollArea) and Assigned(MenuBar) and
+    (MenuBar.getVisible) then
+      inc(Result.Y, MenuBar.getHeight);
+  {$ELSE}
+  Result:=inherited getClientOffset;
+  {$ENDIF}
+end;
+
+function TQtMainWindow.getClientBounds: TRect;
+begin
+  {$IFDEF QTSCROLLABLEFORMS}
+  if Assigned(ScrollArea) then
+    Result := ScrollArea.getClientBounds
+  else
+    Result := inherited getClientBounds;
+  {$ELSE}
+  Result:=inherited getClientBounds;
+  {$ENDIF}
 end;
 
 function TQtMainWindow.getText: WideString;
@@ -6168,6 +6454,19 @@ end;
 function TQtMainWindow.getTextStatic: Boolean;
 begin
   Result := False;
+end;
+
+function TQtMainWindow.MapToGlobal(APt: TPoint; const AWithScrollOffset: Boolean
+  ): TPoint;
+begin
+  {$IFDEF QTSCROLLABLEFORMS}
+  if Assigned(ScrollArea) then
+    Result := ScrollArea.MapToGlobal(APt, AWithScrollOffset)
+  else
+    Result := inherited MapToGlobal(APt, AWithScrollOffset);
+  {$ELSE}
+  Result := inherited MapToGlobal(APt, AWithScrollOffset);
+  {$ENDIF}
 end;
 
 procedure TQtMainWindow.Resize(ANewWidth, ANewHeight: Integer);
@@ -6228,6 +6527,16 @@ begin
       ' LCLObject=', dbgsName(LCLObject),
       ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
   {$endif}
+
+  {$IFDEF QTSCROLLABLEFORMS}
+  if Assigned(ScrollArea) and not IsMDIChild then
+  begin
+    if QEvent_type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease,
+                              QEventMouseButtonDblClick, QEventPaint,
+                              QEventContextMenu] then
+      exit;
+  end;
+  {$ENDIF}
 
   BeginEventProcessing;
   case QEvent_type(Event) of
@@ -6474,6 +6783,18 @@ begin
   QWidget_setAcceptDrops(Widget, AValue);
 end;
 
+procedure TQtMainWindow.setFocusPolicy(const APolicy: QtFocusPolicy);
+begin
+  {$IFDEF QTSCROLLABLEFORMS}
+  if Assigned(ScrollArea) then
+    ScrollArea.setFocusPolicy(APolicy)
+  else
+    inherited setFocusPolicy(APolicy);
+  {$ELSE}
+  inherited setFocusPolicy(APolicy);
+  {$ENDIF}
+end;
+
 procedure TQtMainWindow.SlotActivateWindow(vActivate: Boolean); cdecl;
 var
   Msg: TLMActivate;
@@ -6507,7 +6828,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtMainWindow.SlotWindowStateChange; cdecl;
+procedure TQtMainWindow.slotWindowStateChange; cdecl;
 var
   Msg: TLMSize;
 begin
@@ -6556,8 +6877,11 @@ end;
 procedure TQtMainWindow.AttachEvents;
 begin
   inherited AttachEvents;
-
-  if FCentralWidget <> nil then
+  {$IFDEF QTSCROLLABLEFORMS}
+  FCWEventHook := nil;
+  {$ENDIF}
+  if (FCentralWidget <> nil)
+    {$IFDEF QTSCROLLABLEFORMS} and not Assigned(ScrollArea){$ENDIF} then
   begin
     FCWEventHook := QObject_hook_create(FCentralWidget);
     QObject_hook_hook_events(FCWEventHook, @CWEventFilter);
@@ -7277,6 +7601,13 @@ begin
   {$ifdef VerboseQt}
   writeln('TQtAbstractSlider.rangeChanged() to min=',minimum,' max=',maximum);
   {$endif}
+  {$IFDEF QTSCROLLABLEFORMS}
+  if (FOwner <> nil) and Assigned(FOwner.LCLObject) and
+    (FOwner is TQtWindowArea) and
+    not (caspComputingBounds in FOwner.LCLObject.AutoSizePhases) then
+      LCLObject.InvalidateClientRectCache(True)
+  else
+  {$ENDIF}
   if (FOwner <> nil) and Assigned(FOwner.LCLObject) and
     (FOwner.FChildOfComplexWidget = ccwScrollingWinControl) and
     not (caspComputingBounds in FOwner.LCLObject.AutoSizePhases) then
@@ -7474,7 +7805,15 @@ begin
 
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS;
-
+  {$IFDEF QTSCROLLABLEFORMS}
+  if Assigned(FOwner) and (FOwner is TQtWindowArea) then
+  begin
+    if LMScroll.Msg = LM_VSCROLL then
+      TQtWindowArea(FOwner).FScrollY := -p1
+    else
+      TQtWindowArea(FOwner).FScrollX := -p1;
+  end else
+  {$ENDIF}
   if (FChildOfComplexWidget = ccwAbstractScrollArea) and Assigned(FOwner) and
     (FOwner.ChildOfComplexWidget = ccwScrollingWinControl) then
   begin
@@ -7655,8 +7994,13 @@ var
   LMScroll: TLMScroll;
 begin
   inherited SlotSliderReleased;
-  if (ChildOfComplexWidget = ccwAbstractScrollArea) and (FOwner <> nil) and
-    (FOwner.ChildOfComplexWidget in [ccwCustomControl]) then
+  if
+  {$IFDEF QTSCROLLABLEFORMS}
+   ((ChildOfComplexWidget = ccwAbstractScrollArea) and (FOwner <> nil) and
+    (FOwner is TQtWindowArea)) or
+  {$ENDIF}
+   ((ChildOfComplexWidget = ccwAbstractScrollArea) and (FOwner <> nil) and
+    (FOwner.ChildOfComplexWidget in [ccwCustomControl])) then
   begin
     AValue := getValue;
     if AValue <= getMin then
@@ -7708,7 +8052,12 @@ begin
         Result := inherited EventFilter(Sender, Event)
       else
       if (QEvent_type(Event) = QEventWheel) and Assigned(FOwner) and
-        (FOwner is TQtCustomControl) then
+        (
+        {$IFDEF QTSCROLLABLEFORMS}
+        (FOwner is TQtWindowArea) or
+        {$ENDIF}
+        (FOwner is TQtCustomControl)
+        ) then
       begin
         Result := inherited EventFilter(Sender, Event);
         // do not scroll when disabled
@@ -7729,6 +8078,16 @@ begin
     end;
     QEventHide:
     begin
+      {$IFDEF QTSCROLLABLEFORMS}
+      if Assigned(FOwner) and (FOwner is TQtWindowArea) then
+      begin
+        if Assigned(TQtWindowArea(FOwner).viewportWidget) then
+          case getOrientation of
+            QtVertical: TQtWindowArea(FOwner).FScrollY := 0;
+            QtHorizontal: TQtWindowArea(FOwner).FScrollX := 0;
+          end;
+      end else
+      {$ENDIF}
       if Assigned(FOwner) and (FOwner is TQtCustomControl) then
       begin
         if Assigned(TQtCustomControl(FOwner).FViewPortWidget) then
@@ -15938,6 +16297,9 @@ begin
   Result := QWidget_create(Parent, QtToolTip);
   FDeleteLater := True;
   MenuBar := nil;
+  {$IFDEF QTSCROLLABLEFORMS}
+  ScrollArea := nil;
+  {$ENDIF}
 end;
 
 procedure TQtHintWindow.InitializeWidget;

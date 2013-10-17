@@ -116,7 +116,8 @@ const
   // To my knowledge there is no way to tell the size of the
   // VMT of a given class.
   // Assume we have no more than 100 virtual entries
-  VIRTUAL_VMT_COUNT = 100;
+  // 12.10.2013 - changed to 128, since we cannot add more methods in ws classes.zeljko.
+  VIRTUAL_VMT_COUNT = 128;
   VIRTUAL_VMT_SIZE = vmtMethodStart + VIRTUAL_VMT_COUNT * SizeOf(Pointer);
 
 const
