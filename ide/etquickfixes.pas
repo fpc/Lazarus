@@ -49,7 +49,7 @@ interface
 
 uses
   Classes, SysUtils, IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs,
-  Menus, Dialogs, Controls, etFPCMsgParser, AbstractsMethodsDlg,
+  MenuIntf, Menus, Dialogs, Controls, etFPCMsgParser, AbstractsMethodsDlg,
   CodeToolManager, CodeCache, CodeTree, CodeAtom, BasicCodeTools, LazLogger,
   AvgLvlTree, LazFileUtils;
 
@@ -106,20 +106,20 @@ type
 
   TIDEQuickFixes = class(TMsgQuickFixes)
   private
-    FParentMenuItem: TMenuItem;
-    fMenuItemToInfo: TPointerToPointerTree; // TMenuItem to TMenuItemInfo
+    FParentMenuItem: TIDEMenuSection;
+    fMenuItemToInfo: TPointerToPointerTree; // TIDEMenuCommand to TMenuItemInfo
     procedure MenuItemClick(Sender: TObject);
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
-    procedure OnPopupMenu(aParentMenuItem: TMenuItem);
+    procedure OnPopupMenu(aParentMenuItem: TIDEMenuSection);
     procedure SetMsgLines(aMsg: TMessageLine);
     procedure AddMsgLine(aMsg: TMessageLine);
     procedure ClearLines;
     function AddMenuItem(Fix: TMsgQuickFix; Msg: TMessageLine; aCaption: string;
-      aTag: PtrInt=0): TMenuItem; override;
+      aTag: PtrInt=0): TIDEMenuCommand; override;
     function OpenMsg(Msg: TMessageLine): boolean;
-    property ParentMenuItem: TMenuItem read FParentMenuItem write FParentMenuItem;
+    property ParentMenuItem: TIDEMenuSection read FParentMenuItem write FParentMenuItem;
   end;
 
 var
@@ -130,7 +130,7 @@ implementation
 type
   TMenuItemInfo = class
   public
-    MenuItem: TMenuItem;
+    MenuItem: TIDEMenuCommand;
     Fix: TMsgQuickFix;
     Msg: TMessageLine;
   end;
@@ -642,8 +642,10 @@ var
   Info: TMenuItemInfo;
   ListsMsgLines: TFPList;
   MsgLines: TMessageLines;
+  Cmd: TIDEMenuCommand;
 begin
-  Info:=TMenuItemInfo(fMenuItemToInfo[Sender]);
+  Cmd:=Sender as TIDEMenuCommand;
+  Info:=TMenuItemInfo(fMenuItemToInfo[Cmd]);
   if Info=nil then exit;
   try
     Info.Fix.QuickFix(Self,Info.Msg);
@@ -682,7 +684,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TIDEQuickFixes.OnPopupMenu(aParentMenuItem: TMenuItem);
+procedure TIDEQuickFixes.OnPopupMenu(aParentMenuItem: TIDEMenuSection);
 var
   i: Integer;
 begin
@@ -721,7 +723,7 @@ begin
 end;
 
 function TIDEQuickFixes.AddMenuItem(Fix: TMsgQuickFix; Msg: TMessageLine;
-  aCaption: string; aTag: PtrInt): TMenuItem;
+  aCaption: string; aTag: PtrInt): TIDEMenuCommand;
 var
   Info: TMenuItemInfo;
 begin
@@ -730,16 +732,14 @@ begin
   if (aCaption='') then
     raise Exception.Create('missing Caption');
   if (ParentMenuItem.Count>50) then exit(nil);
-  Result:=TMenuItem.Create(Self);
+  Result:=RegisterIDEMenuCommand(ParentMenuItem,
+    'MsgQuickFix'+IntToStr(ParentMenuItem.Count),aCaption,@MenuItemClick);
+  Result.Tag:=aTag;
   Info:=TMenuItemInfo.Create;
-  Info.MenuItem:=Result;
   Info.Fix:=Fix;
   Info.Msg:=Msg;
+  Info.MenuItem:=Result;
   fMenuItemToInfo[Result]:=Info;
-  Result.Caption:=aCaption;
-  Result.Tag:=aTag;
-  Result.OnClick:=@MenuItemClick;
-  ParentMenuItem.Add(Result);
 end;
 
 function TIDEQuickFixes.OpenMsg(Msg: TMessageLine): boolean;

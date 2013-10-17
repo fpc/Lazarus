@@ -51,7 +51,7 @@ uses
   {$ELSE}
   OutputFilter,
   {$ENDIF}
-  LazarusIDEStrConsts, IDEOptionDefs;
+  LazarusIDEStrConsts, IDEOptionDefs, EditorOptions;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
@@ -634,6 +634,7 @@ end;
 
 procedure TExternalToolDialog.AddButtonClick(Sender: TObject);
 var
+  MsgResult: TModalResult;
   {$IFDEF EnableNewExtTools}
   NewTool: TExternalToolMenuItem;
   {$ELSE}
@@ -648,11 +649,13 @@ begin
   end;
   {$IFDEF EnableNewExtTools}
   NewTool:=TExternalToolMenuItem.Create(nil);
+  MsgResult:=ShowExtToolOptionDlg(fTransferMacros, NewTool, EditorOpts.KeyMap);
   {$ELSE}
   NewTool:=TExternalToolOptions.Create;
+  MsgResult:=ShowExtToolOptionDlg(fTransferMacros, NewTool,
+          TExternalToolList(EnvironmentOptions.ExternalTools).fAllKeys);
   {$ENDIF}
-  if ShowExtToolOptionDlg(fTransferMacros, NewTool,
-          TExternalToolList(EnvironmentOptions.ExternalTools).fAllKeys)=mrOk then
+  if MsgResult=mrOk then
   begin
     fExtToolList.Add(NewTool);
     Listbox.Items.Add(ToolDescription(fExtToolList.Count-1));
@@ -747,7 +750,12 @@ begin
   i:=Listbox.ItemIndex;
   if i<0 then exit;
   if ShowExtToolOptionDlg(fTransferMacros,fExtToolList[i],
-          TExternalToolList(EnvironmentOptions.ExternalTools).fAllKeys)=mrOk then
+      {$IFDEF EnableNewExtTools}
+      EditorOpts.KeyMap
+      {$ELSE}
+      TExternalToolList(EnvironmentOptions.ExternalTools).fAllKeys
+      {$ENDIF}
+      )=mrOk then
   begin
     Listbox.Items[i]:=ToolDescription(i);
     EnableButtons;

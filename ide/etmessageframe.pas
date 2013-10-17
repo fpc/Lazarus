@@ -36,7 +36,8 @@ uses
   LazUTF8Classes, LazFileUtils, LazUTF8, AvgLvlTree, SynEdit,
   LResources, Forms, Buttons, ExtCtrls, Controls, LMessages, LCLType, Graphics,
   LCLIntf, Themes, ImgList, GraphType, Menus, Clipbrd, Dialogs, StdCtrls,
-  IDEExternToolIntf, IDEImagesIntf, MenuIntf, etSrcEditMarks, etQuickFixes;
+  IDEExternToolIntf, IDEImagesIntf, MenuIntf, etSrcEditMarks, etQuickFixes,
+  LazarusIDEStrConsts;
 
 const
   CustomViewCaption = '------------------------------';
@@ -390,10 +391,10 @@ type
     SearchPanel: TPanel;
     SearchPrevSpeedButton: TSpeedButton;
     ShowIDMenuItem: TMenuItem;
-    UnhideMsgTypeSeparatorMenuItem: TMenuItem;
     procedure AboutToolMenuItemClick(Sender: TObject);
     procedure AddFilterMenuItemClick(Sender: TObject);
     procedure ClearHideMsgTypesMenuItemClick(Sender: TObject);
+    procedure ClearMenuItemClick(Sender: TObject);
     procedure CopyAllMenuItemClick(Sender: TObject);
     procedure CopyFilenameMenuItemClick(Sender: TObject);
     procedure CopyMsgMenuItemClick(Sender: TObject);
@@ -468,6 +469,7 @@ var
   MsgClearMenuItem: TIDEMenuCommand;
   MsgHideMsgOfTypeMenuItem: TIDEMenuCommand;
   MsgUnhideMsgTypeMenuSection: TIDEMenuSection;
+    MsgUnhideMsgOfTypeMenuSection: TIDEMenuSection;
     MsgClearHideMsgTypesMenuItem: TIDEMenuCommand;
   MsgHideBelowMenuSection: TIDEMenuSection;
     MsgHideWarningsMenuItem: TIDEMenuCommand;
@@ -505,22 +507,22 @@ implementation
 
 procedure RegisterStandardMessagesViewMenuItems;
 var
-  Path: String;
   Parent: TIDEMenuSection;
+  Root: TIDEMenuSection;
 begin
   MessagesMenuRoot := RegisterIDEMenuRoot(MessagesMenuRootName);
-  Path := MessagesMenuRoot.Name;
-  MsgFindMenuItem := RegisterIDEMenuCommand(Path, 'Find', 'Find ...');
-  MsgQuickFixMenuSection := RegisterIDEMenuSection(Path, 'Quick Fix');
-  MsgClearMenuItem := RegisterIDEMenuCommand(Path, 'Clear', lisClear);
-  MsgHideMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Path,'HideMsgOfType','');
-  MsgUnhideMsgTypeMenuSection:=RegisterIDEMenuCommand(Parent,'UnhideMsgType');
+  Root:=MessagesMenuRoot;
+  MsgFindMenuItem := RegisterIDEMenuCommand(Root, 'Find', 'Find ...');
+  MsgQuickFixMenuSection := RegisterIDEMenuSection(Root, 'Quick Fix');
+  MsgClearMenuItem := RegisterIDEMenuCommand(Root, 'Clear', 'Clear');
+  MsgHideMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Root,'HideMsgOfType','');
+  MsgUnhideMsgTypeMenuSection:=RegisterIDEMenuSection(Root,'UnhideMsgType');
     Parent:=MsgUnhideMsgTypeMenuSection;
     Parent.ChildsAsSubMenu:=true;
     Parent.Caption:='Unhide message type';
     MsgUnhideMsgOfTypeMenuSection:=RegisterIDEMenuSection(Parent,'UnhideMsgOfTypeSection');
     MsgClearHideMsgTypesMenuItem:=RegisterIDEMenuCommand(Parent,'Unhide all','Unhide all');
-  MsgHideBelowMenuSection:=RegisterIDEMenuSection(Path,'Hide Below Section');
+  MsgHideBelowMenuSection:=RegisterIDEMenuSection(Root,'Hide Below Section');
     Parent:=MsgHideBelowMenuSection;
     Parent.ChildsAsSubMenu:=true;
     Parent.Caption:='Hide non urgent messages ...';
@@ -530,37 +532,37 @@ begin
     MsgHideVerboseMenuItem:=RegisterIDEMenuCommand(Parent,'Hide verbose messages','Hide verbose messages');
     MsgHideDebugMenuItem:=RegisterIDEMenuCommand(Parent,'Hide debug messages','Hide debug messages');
     MsgHideNoneMenuItem:=RegisterIDEMenuCommand(Parent,'Hide none, do not hide by urgency','Hide none, do not hide by urgency');
-  MsgHideHintsWithoutPosMenuItem:=RegisterIDEMenuCommand(Path, 'Hide hints without source position', 'Hide hints without source position');
-  MsgSwitchFilterMenuSection:=RegisterIDEMenuSection(Path,'Switch Filter Section');
+  MsgHideHintsWithoutPosMenuItem:=RegisterIDEMenuCommand(Root, 'Hide hints without source position', 'Hide hints without source position');
+  MsgSwitchFilterMenuSection:=RegisterIDEMenuSection(Root,'Switch Filter Section');
     Parent:=MsgSwitchFilterMenuSection;
     Parent.ChildsAsSubMenu:=true;
     Parent.Caption:='Switch Filter Settings ...';
     MsgFiltersMenuSection:=RegisterIDEMenuSection(Parent,'Filters');
     MsgAddFilterMenuItem:=RegisterIDEMenuCommand(Parent,'Add Filter','Add filter ...');
-  MsgCopyMenuSection:=RegisterIDEMenuSection(Path,'Copy');
+  MsgCopyMenuSection:=RegisterIDEMenuSection(Root,'Copy');
     Parent:=MsgCopyMenuSection;
     Parent.ChildsAsSubMenu:=true;
     Parent.Caption:='Copy ...';
     MsgCopyFilenameMenuItem:=RegisterIDEMenuCommand(Parent,'Filename','Copy file name to clipboard');
     MsgCopyMsgMenuItem := RegisterIDEMenuCommand(Parent, 'Selected',lisCopySelectedMessagesToClipboard);
-    MsgCopyShownMenuItem: := RegisterIDEMenuCommand(Parent, 'Shown', 'Copy shown messages to clipboard');
-    MsgCopyAllMenuItem:=RegisterIDEMenuCommand(Parent,'All'.'Copy all/original messages to clipboard');
-  MsgSaveToFileMenuSection:=RegisterIDEMenuSection(Path,'Save');
+    MsgCopyShownMenuItem := RegisterIDEMenuCommand(Parent, 'Shown', 'Copy shown messages to clipboard');
+    MsgCopyAllMenuItem:=RegisterIDEMenuCommand(Parent,'All','Copy all/original messages to clipboard');
+  MsgSaveToFileMenuSection:=RegisterIDEMenuSection(Root,'Save');
     Parent:=MsgSaveToFileMenuSection;
     Parent.ChildsAsSubMenu:=true;
     Parent.Caption:='Save ...';
     MsgSaveShownToFileMenuItem:=RegisterIDEMenuCommand(Parent,'Save shown messages to file ...','Shown');
     MsgSaveAllToFileMenuItem:=RegisterIDEMenuCommand(Parent,'Save all/original messages to file ...','All');
-  MsgFilenameStyleMenuSection:=RegisterIDEMenuSection(Path,'Filename Styles');
+  MsgFilenameStyleMenuSection:=RegisterIDEMenuSection(Root,'Filename Styles');
     Parent:=MsgFilenameStyleMenuSection;
     Parent.ChildsAsSubMenu:=true;
     Parent.Caption:='Filename Style ...';
     MsgFileStyleShortMenuItem:=RegisterIDEMenuCommand(Parent,'Short','Short, no path');
     MsgFileStyleRelativeMenuItem:=RegisterIDEMenuCommand(Parent,'Relative','Relative');
     MsgFileStyleFullMenuItem:=RegisterIDEMenuCommand(Parent,'Full','Full');
-  MsgTranslateMenuItem:=RegisterIDEMenuCommand(Path, 'Translate', 'Translate');
-  MsgShowIDMenuItem:=RegisterIDEMenuCommand(Path, 'ShowID', 'Show message type ID');
-  MsgAboutToolMenuItem:=RegisterIDEMenuCommand(Path, 'About', 'About Tool');
+  MsgTranslateMenuItem:=RegisterIDEMenuCommand(Root, 'Translate', 'Translate');
+  MsgShowIDMenuItem:=RegisterIDEMenuCommand(Root, 'ShowID', 'Show message type ID');
+  MsgAboutToolMenuItem:=RegisterIDEMenuCommand(Root, 'About', 'About Tool');
 end;
 
 function CompareHideMsgType(HideMsgType1, HideMsgType2: Pointer): integer;
@@ -2923,19 +2925,18 @@ procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
     ExampleMsg: String;
     s: String;
     HideItem: TLMVFilterHideMsgType;
-    Item: TMenuItem;
     i: Integer;
+    Item: TIDEMenuCommand;
   begin
     // create one menuitem per filter item
-    UnhideMsgTypeMenuItem.Visible:=MessagesCtrl.ActiveFilter.HideMsgTypeCount>0;
+    MsgUnhideMsgTypeMenuSection.Visible:=MessagesCtrl.ActiveFilter.HideMsgTypeCount>0;
     for i:=0 to MessagesCtrl.ActiveFilter.HideMsgTypeCount-1 do begin
-      Item:=UnhideMsgTypeMenuItem.Items[i];
-      if Item=UnhideMsgTypeSeparatorMenuItem then begin
-        Item:=TMenuItem.Create(UnhideMsgTypeMenuItem);
+      if i>=MsgUnhideMsgOfTypeMenuSection.Count then begin
+        Item:=RegisterIDEMenuCommand(MsgUnhideMsgOfTypeMenuSection,'MsgUnhideOfType'+IntToStr(i),'');
         Item.Tag:=i;
         Item.OnClick:=@UnhideMsgTypeClick;
-        UnhideMsgTypeMenuItem.Insert(i,Item);
-      end;
+      end else
+        Item:=MsgUnhideMsgTypeMenuSection.Items[i] as TIDEMenuCommand;
       HideItem:=MessagesCtrl.ActiveFilter.HideMsgTypes[i];
       s:=HideItem.SubTool;
       if HideItem.MsgID<>0 then
@@ -2947,43 +2948,46 @@ procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
     end;
     // delete old menu items
     i:=MessagesCtrl.ActiveFilter.HideMsgTypeCount;
-    while UnhideMsgTypeSeparatorMenuItem.MenuIndex>i do
-      UnhideMsgTypeMenuItem.Delete(i);
+    while MsgUnhideMsgTypeMenuSection.Count>i do
+      MsgUnhideMsgTypeMenuSection[i].Free;
+    MsgClearHideMsgTypesMenuItem.OnClick:=@ClearHideMsgTypesMenuItemClick;
   end;
 
   procedure UpdateFilterItems;
   var
     i: Integer;
     Filter: TLMsgViewFilter;
-    Item: TMenuItem;
+    Item: TIDEMenuCommand;
   begin
     for i:=0 to MessagesCtrl.FilterCount-1 do begin
       Filter:=MessagesCtrl.Filters[i];
-      if SwitchFilterMenuItem.Items[i]=FilterSeparatorMenuItem then begin
-        Item:=TMenuItem.Create(SwitchFilterMenuItem);
+      if i>=MsgSwitchFilterMenuSection.Count then begin
+        Item:=RegisterIDEMenuCommand(MsgSwitchFilterMenuSection,'MsgSwitchFilter'+IntToStr(i),'');
+        Item.Tag:=i;
         Item.OnClick:=@OnSwitchFilterClick;
-        SwitchFilterMenuItem.Insert(i,Item);
       end else
-        Item:=SwitchFilterMenuItem.Items[i];
+        Item:=MsgSwitchFilterMenuSection[i] as TIDEMenuCommand;
       Item.Caption:=Filter.Caption;
       Item.Checked:=Filter=MessagesCtrl.ActiveFilter;
     end;
     // delete old menu items
     i:=MessagesCtrl.FilterCount;
-    while FilterSeparatorMenuItem.MenuIndex>i do
-      SwitchFilterMenuItem.Delete(i);
+    while MsgSwitchFilterMenuSection.Count>i do
+      MsgSwitchFilterMenuSection[i].Free;
+
+    MsgAddFilterMenuItem.OnClick:=@AddFilterMenuItemClick;
   end;
 
   procedure UpdateQuickFixes(CurLine: TMessageLine);
   begin
     // delete old
-    QuickFixesMenuItem.Clear;
+    MsgQuickFixMenuSection.Clear;
     // create items
     if CurLine<>nil then begin
       IDEQuickFixes.SetMsgLines(CurLine);
-      IDEQuickFixes.OnPopupMenu(QuickFixesMenuItem);
+      IDEQuickFixes.OnPopupMenu(MsgQuickFixMenuSection);
     end;
-    QuickFixesMenuItem.Visible:=QuickFixesMenuItem.Count>0;
+    MsgQuickFixMenuSection.Visible:=MsgQuickFixMenuSection.Count>0;
   end;
 
 var
@@ -2999,84 +3003,113 @@ var
   CanHideMsgType: Boolean;
   MinUrgency: TMessageLineUrgency;
 begin
-  HasText:=false;
-  HasFilename:=false;
-  MsgType:='';
-  CanHideMsgType:=false;
-  Line:=nil;
-  HasViewContent:=false;
-  Running:=false;
+  MessagesMenuRoot.MenuItem:=MsgCtrlPopupMenu.Items;
+  MessagesMenuRoot.BeginUpdate;
+  try
+    HasText:=false;
+    HasFilename:=false;
+    MsgType:='';
+    CanHideMsgType:=false;
+    Line:=nil;
+    HasViewContent:=false;
+    Running:=false;
 
-  // check all
-  for i:=0 to MessagesCtrl.ViewCount-1 do begin
-    View:=MessagesCtrl.Views[i];
-    if View.HasContent then
-      HasViewContent:=true;
-    if View.Running then
-      Running:=true;
-  end;
-
-  // check selection
-  View:=MessagesCtrl.SelectedView;
-  if View<>nil then begin
-    LineNumber:=MessagesCtrl.SelectedLine;
-    if LineNumber>=0 then begin
-      Line:=View.Lines[LineNumber];
-      HasFilename:=Line.Filename<>'';
-      HasText:=Line.Msg<>'';
-      if (Line.SubTool<>'') and (Line.MsgID<>0) then begin
-        MsgType:=Line.SubTool+' '+IntToStr(Line.MsgID);
-        CanHideMsgType:=ord(Line.Urgency)<ord(mluError);
-      end;
+    // check all
+    for i:=0 to MessagesCtrl.ViewCount-1 do begin
+      View:=MessagesCtrl.Views[i];
+      if View.HasContent then
+        HasViewContent:=true;
+      if View.Running then
+        Running:=true;
     end;
 
-    InfoSeparatorMenuItem.Visible:=true;
-    MsgAboutToolMenuItem.Caption:='About '+View.Caption;
-    MsgAboutToolMenuItem.Visible:=true;
-  end else begin
-    InfoSeparatorMenuItem.Visible:=false;
-    MsgAboutToolMenuItem.Visible:=false;
+    MsgFindMenuItem.OnClick:=@FindMenuItemClick;
+    MsgClearMenuItem.OnClick:=@ClearMenuItemClick;
+
+    // check selection
+    View:=MessagesCtrl.SelectedView;
+    if View<>nil then begin
+      LineNumber:=MessagesCtrl.SelectedLine;
+      if LineNumber>=0 then begin
+        Line:=View.Lines[LineNumber];
+        HasFilename:=Line.Filename<>'';
+        HasText:=Line.Msg<>'';
+        if (Line.SubTool<>'') and (Line.MsgID<>0) then begin
+          MsgType:=Line.SubTool+' '+IntToStr(Line.MsgID);
+          CanHideMsgType:=ord(Line.Urgency)<ord(mluError);
+        end;
+      end;
+
+      MsgAboutToolMenuItem.Caption:='About '+View.Caption;
+      MsgAboutToolMenuItem.Visible:=true;
+    end else begin
+      MsgAboutToolMenuItem.Visible:=false;
+    end;
+    MsgAboutToolMenuItem.OnClick:=@AboutToolMenuItemClick;
+
+    if CanHideMsgType then begin
+      MsgHideMsgOfTypeMenuItem.Caption:='Hide all messages of type '+MsgType;
+      MsgHideMsgOfTypeMenuItem.Visible:=true;
+    end else begin
+      MsgHideMsgOfTypeMenuItem.Visible:=false;
+    end;
+    MsgHideMsgOfTypeMenuItem.OnClick:=@HideMsgOfTypeMenuItemClick;
+    MsgHideHintsWithoutPosMenuItem.Checked:=MessagesCtrl.ActiveFilter.HideNotesWithoutPos;
+    MsgHideHintsWithoutPosMenuItem.OnClick:=@HideHintsWithoutPosMenuItemClick;
+
+    MsgCopyMsgMenuItem.Enabled:=HasText;
+    MsgCopyMsgMenuItem.OnClick:=@CopyMsgMenuItemClick;
+    MsgCopyFilenameMenuItem.Enabled:=HasFilename;
+    MsgCopyFilenameMenuItem.OnClick:=@CopyFilenameMenuItemClick;
+    MsgCopyAllMenuItem.Enabled:=not Running;
+    MsgCopyAllMenuItem.OnClick:=@CopyAllMenuItemClick;
+    MsgCopyShownMenuItem.Enabled:=HasViewContent;
+    MsgCopyShownMenuItem.OnClick:=@CopyShownMenuItemClick;
+    MsgSaveAllToFileMenuItem.Enabled:=not Running;
+    MsgSaveAllToFileMenuItem.OnClick:=@SaveAllToFileMenuItemClick;
+    MsgSaveShownToFileMenuItem.Enabled:=HasViewContent;
+    MsgSaveShownToFileMenuItem.OnClick:=@SaveShownToFileMenuItemClick;
+
+    MinUrgency:=MessagesCtrl.ActiveFilter.MinUrgency;
+    MsgHideWarningsMenuItem.Checked:=MinUrgency in [mluError..mluPanic];
+    MsgHideWarningsMenuItem.OnClick:=@HideUrgencyMenuItemClick;
+    MsgHideNotesMenuItem.Checked:=MinUrgency in [mluWarning,mluImportant];
+    MsgHideNotesMenuItem.OnClick:=@HideUrgencyMenuItemClick;
+    MsgHideHintsMenuItem.Checked:=MinUrgency=mluNote;
+    MsgHideHintsMenuItem.OnClick:=@HideUrgencyMenuItemClick;
+    MsgHideVerboseMenuItem.Checked:=MinUrgency=mluHint;
+    MsgHideVerboseMenuItem.OnClick:=@HideUrgencyMenuItemClick;
+    MsgHideDebugMenuItem.Checked:=MinUrgency in [mluProgress..mluVerbose];
+    MsgHideDebugMenuItem.OnClick:=@HideUrgencyMenuItemClick;
+    MsgHideNoneMenuItem.Checked:=MinUrgency=mluNone;
+    MsgHideNoneMenuItem.OnClick:=@HideUrgencyMenuItemClick;
+
+    MsgFileStyleShortMenuItem.Checked:=MessagesCtrl.FilenameStyle=mcfsShort;
+    MsgFileStyleShortMenuItem.OnClick:=@FileStyleMenuItemClick;
+    MsgFileStyleRelativeMenuItem.Checked:=MessagesCtrl.FilenameStyle=mcfsRelative;
+    MsgFileStyleRelativeMenuItem.OnClick:=@FileStyleMenuItemClick;
+    MsgFileStyleFullMenuItem.Checked:=MessagesCtrl.FilenameStyle=mcfsFull;
+    MsgFileStyleFullMenuItem.OnClick:=@FileStyleMenuItemClick;
+
+    MsgTranslateMenuItem.OnClick:=@TranslateMenuItemClick;
+    MsgShowIDMenuItem.OnClick:=@ShowIDMenuItemClick;
+
+
+    UpdateUnhideItems;
+    UpdateFilterItems;
+
+    UpdateQuickFixes(Line);
+  finally
+    MessagesMenuRoot.EndUpdate;
   end;
-
-  if CanHideMsgType then begin
-    HideMsgOfTypeMenuItem.Caption:='Hide all messages of type '+MsgType;
-    HideMsgOfTypeMenuItem.Visible:=true;
-  end else begin
-    HideMsgOfTypeMenuItem.Visible:=false;
-  end;
-  MsgHideHintsWithoutPosMenuItem.Checked:=MessagesCtrl.ActiveFilter.HideNotesWithoutPos;
-
-  MsgCopyMsgMenuItem.Enabled:=HasText;
-  MsgCopyFilenameMenuItem.Enabled:=HasFilename;
-  MsgCopyAllMenuItem.Enabled:=not Running;
-  MsgCopyShownMenuItem.Enabled:=HasViewContent;
-  MsgSaveAllToFileMenuItem.Enabled:=not Running;
-  MsgSaveShownToFileMenuItem.Enabled:=HasViewContent;
-
-  MinUrgency:=MessagesCtrl.ActiveFilter.MinUrgency;
-  MsgHideWarningsMenuItem.Checked:=MinUrgency in [mluError..mluPanic];
-  MsgHideNotesMenuItem.Checked:=MinUrgency in [mluWarning,mluImportant];
-  MsgHideHintsMenuItem.Checked:=MinUrgency=mluNote;
-  MsgHideVerboseMenuItem.Checked:=MinUrgency=mluHint;
-  MsgHideDebugMenuItem.Checked:=MinUrgency in [mluProgress..mluVerbose];
-  MsgHideNoneMenuItem.Checked:=MinUrgency=mluNone;
-
-  MsgFileStyleShortMenuItem.Checked:=MessagesCtrl.FilenameStyle=mcfsShort;
-  MsgFileStyleRelativeMenuItem.Checked:=MessagesCtrl.FilenameStyle=mcfsRelative;
-  MsgFileStyleFullMenuItem.Checked:=MessagesCtrl.FilenameStyle=mcfsFull;
-
-  UpdateUnhideItems;
-  UpdateFilterItems;
-
-  UpdateQuickFixes(Line);
 end;
 
 procedure TMessagesFrame.OnSwitchFilterClick(Sender: TObject);
 var
-  Item: TMenuItem;
   Filter: TLMsgViewFilter;
+  Item: TIDEMenuCommand;
 begin
-  Item:=Sender as TMenuItem;
+  Item:=Sender as TIDEMenuCommand;
   Filter:=MessagesCtrl.GetFilter(Item.Caption,false);
   if Filter=nil then exit;
   MessagesCtrl.ActiveFilter:=Filter;
@@ -3144,7 +3177,7 @@ procedure TMessagesFrame.UnhideMsgTypeClick(Sender: TObject);
 var
   i: PtrInt;
 begin
-  i:=TMenuItem(Sender).Tag;
+  i:=TIDEMenuCommand(Sender).Tag;
   if i<MessagesCtrl.ActiveFilter.HideMsgTypeCount then
     MessagesCtrl.ActiveFilter.DeleteHideMsgType(i);
 end;
@@ -3349,6 +3382,11 @@ end;
 procedure TMessagesFrame.ClearHideMsgTypesMenuItemClick(Sender: TObject);
 begin
   MessagesCtrl.ActiveFilter.ClearHideMsgTypes;
+end;
+
+procedure TMessagesFrame.ClearMenuItemClick(Sender: TObject);
+begin
+  MessagesCtrl.ClearViews;
 end;
 
 function TMessagesFrame.GetViews(Index: integer): TLMsgWndView;

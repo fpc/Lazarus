@@ -48,6 +48,7 @@ uses
   IDECommands, FileProcs, TransferMacros, LazarusIDEStrConsts, EnvironmentOpts,
   KeyMapping, IDEProcs
   {$IFDEF EnableNewExtTools}
+  ,LazConfigStorage, contnrs
   {$ELSE}
   ,EditMsgScannersDlg
   {$ENDIF}
@@ -218,7 +219,7 @@ type
 
 
 function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
-  ExternalToolOptions: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF};
+  ExternalToolMenuItem: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF};
   AllKeys: TKeyCommandRelationList):TModalResult;
 
 implementation
@@ -226,7 +227,7 @@ implementation
 {$R *.lfm}
 
 function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
-  ExternalToolOptions: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF};
+  ExternalToolMenuItem: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF};
   AllKeys: TKeyCommandRelationList):TModalResult;
 var
   ExternalToolOptionDlg: TExternalToolOptionDlg;
@@ -235,11 +236,11 @@ begin
   ExternalToolOptionDlg:=TExternalToolOptionDlg.Create(nil);
   try
     ExternalToolOptionDlg.fAllKeys:=AllKeys;
-    ExternalToolOptionDlg.Options:=ExternalToolOptions;
+    ExternalToolOptionDlg.Options:=ExternalToolMenuItem;
     ExternalToolOptionDlg.MacroList:=TransferMacroList;
     Result:=ExternalToolOptionDlg.ShowModal;
     if Result=mrOk then
-      ExternalToolOptions.Assign(ExternalToolOptionDlg.Options);
+      ExternalToolMenuItem.Assign(ExternalToolOptionDlg.Options);
   finally
     ExternalToolOptionDlg.Free;
   end;

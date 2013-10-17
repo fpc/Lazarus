@@ -34,13 +34,15 @@ interface
 
 uses
   Classes, SysUtils, types, math, AVL_Tree, LazLogger, LazFileUtils, LazUTF8,
-  Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus, Clipbrd,
-  LvlGraphCtrl,
-  LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf,
-  IDEImagesIntf, IDECommands, IDEDialogs, IDEMsgIntf, TextTools,
+  Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus,
+  Clipbrd, LvlGraphCtrl, LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf,
+  SrcEditorIntf, IDEImagesIntf, IDECommands, IDEDialogs, IDEMsgIntf, TextTools,
+  {$IFDEF EnableNewExtTools}
+  IDEExternToolIntf,
+  {$ENDIF}
   CodeToolManager, DefineTemplates, CodeToolsStructs,
-  CTUnitGraph, CTUnitGroupGraph, FileProcs, CodeCache,
-  LazarusIDEStrConsts, UnusedUnitsDlg;
+  CTUnitGraph, CTUnitGroupGraph, FileProcs, CodeCache, LazarusIDEStrConsts,
+  UnusedUnitsDlg;
 
 const
   GroupPrefixProject = '-Project-';
@@ -297,6 +299,17 @@ type
       write SetPendingUnitDependencyRoute; // list of unit names, missing links are automatically found
   end;
 
+{$IFDEF EnableNewExtTools}
+type
+
+  { TQuickFixCircularUnitReference }
+
+  TQuickFixCircularUnitReference = class(TMsgQuickFix)
+  public
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+{$ELSE}
 type
 
   { TQuickFixCircularUnitReference }
@@ -307,6 +320,7 @@ type
     function IsApplicable(Line: TIDEMessageLine): boolean; override;
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
+{$ENDIF}
 
 var
   UnitDependenciesWindow: TUnitDependenciesWindow;
@@ -408,6 +422,48 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF EnableNewExtTools}
+{ TQuickFixCircularUnitReference }
+
+procedure TQuickFixCircularUnitReference.CreateMenuItems(
+  Fixes: TMsgQuickFixes);
+var
+  Msg: TMessageLine;
+  Code: TCodeBuffer;
+begin
+  if Fixes.LineCount<>1 then exit;
+  Msg:=Fixes.Lines[0];
+  if not Msg.HasSourcePosition then exit;
+  if Msg.SubTool<>SubToolFPC then exit;
+  if Msg.MsgID<>10020 then exit;
+  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  if Code=nil then exit;
+  Fixes.AddMenuItem(Self,Msg,'Show unit dependencies');
+end;
+
+procedure TQuickFixCircularUnitReference.QuickFix(Fixes: TMsgQuickFixes;
+  Msg: TMessageLine);
+var
+  UnitName1: String;
+  UnitName2: String;
+  Path: TStringList;
+begin
+  if not TFPCParser.GetFPCMsgValues(Msg,UnitName1,UnitName2) then begin
+    debugln(['TQuickFixCircularUnitReference.QuickFix invalid message ',Msg.Msg]);
+    exit;
+  end;
+  ShowUnitDependencies(true,true);
+  Path:=TStringList.Create;
+  try
+    Path.Add(UnitName1);
+    Path.Add(UnitName2);
+    Path.Add(UnitName1);
+    UnitDependenciesWindow.PendingUnitDependencyRoute:=Path;
+  finally
+    Path.Free;
+  end;
+end;
+{$ELSE}
 { TQuickFixCircularUnitReference }
 
 constructor TQuickFixCircularUnitReference.Create;
@@ -467,6 +523,7 @@ begin
     Path.Free;
   end;
 end;
+{$ENDIF}
 
 { TUDNode }
 

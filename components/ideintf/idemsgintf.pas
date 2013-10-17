@@ -19,7 +19,7 @@ interface
 
 uses
   Classes, SysUtils, contnrs, Forms, Menus,
-  TextTools, IDECommands, IDEExternToolIntf;
+  TextTools, IDECommands, IDEExternToolIntf, MenuIntf;
 
 type
   TMsgQuickFixes = class;
@@ -53,7 +53,7 @@ type
     function LineCount: integer; inline;
     property Lines[Index: integer]: TMessageLine read GetLines;
     function AddMenuItem(Fix: TMsgQuickFix; Msg: TMessageLine; aCaption: string;
-      aTag: PtrInt = 0): TMenuItem; virtual; abstract;
+      aTag: PtrInt = 0): TIDEMenuCommand; virtual; abstract;
   end;
 
 var
