@@ -395,6 +395,7 @@ type
 
     // GDB info (move to ?)
     FGDBVersion: String;
+    FGDBVersionMajor, FGDBVersionMinor, FGDBVersionRev: Integer;
     FGDBCPU: String;
     FGDBPtrSize: integer; // PointerSize of the GDB-cpu
     FGDBOS: String;
@@ -1789,20 +1790,26 @@ begin
         esc := TGDBMIDebuggerProperties(GetProperties).FEncodeCurrentDirPath;
         //TODO: check FGDBOS
         //Unix/Windows can use gdfeEscSpace, but work without too;
-        if esc = gdfeDefault
-        then esc :=
-        {$IFDEF darwin} gdfeQuote;
-        {$ELSE}         gdfeNone;
+        {$IFDEF darwin}
+        if esc = gdfeDefault then
+        if (FGDBVersionMajor >= 7) and (FGDBVersionMinor >= 0)
+        then esc := gdfeNone
+        else esc := gdfeQuote;
+        {$ELSE}
+        if esc = gdfeDefault then esc := gdfeNone;
         {$ENDIF}
       end;
     cgptExeName:
       begin
         esc := TGDBMIDebuggerProperties(GetProperties).FEncodeExeFileName;
-        if esc = gdfeDefault
-        then esc :=
         //Unix/Windows can use gdfeEscSpace, but work without too;
-        {$IFDEF darwin} gdfeEscSpace;
-        {$ELSE}         gdfeNone;
+        {$IFDEF darwin}
+        if esc = gdfeDefault then
+        if (FGDBVersionMajor >= 7) and (FGDBVersionMinor >= 0)
+        then esc := gdfeNone
+        else esc := gdfeEscSpace;
+        {$ELSE}
+        if esc = gdfeDefault then esc := gdfeNone;
         {$ENDIF}
       end;
   end;
@@ -1824,6 +1831,7 @@ function TGDBMIDebuggerCommandChangeFilename.DoExecute: Boolean;
 var
   R: TGDBMIExecResult;
   List: TGDBMINameValueList;
+  S: String;
 begin
   Result := True;
   FSuccess := False;
@@ -1833,8 +1841,18 @@ begin
   FTheDebugger.FRunErrorBreak.Clear(Self);
   if DebuggerState = dsError then Exit;
 
-  FSuccess := ExecuteCommand('-file-exec-and-symbols %s', [FFileName], R);
+  S := FTheDebugger.ConvertToGDBPath(UTF8ToSys(FFileName), cgptExeName);
+  FSuccess := ExecuteCommand('-file-exec-and-symbols %s', [S], R);
   if not FSuccess then exit;
+  {$IFDEF darwin}
+  if  (R.State = dsError) and (FFileName <> '')
+  then begin
+    FFileName := FFileName + '/Contents/MacOS/' + ExtractFileNameOnly(FFileName);
+    S := FTheDebugger.ConvertToGDBPath(UTF8ToSys(FFileName), cgptExeName);
+    FSuccess := ExecuteCommand('-file-exec-and-symbols %s', [S], R);
+    if not FSuccess then exit;
+  end;
+  {$ENDIF}
 
   if  (R.State = dsError) and (FFileName <> '')
   then begin
@@ -1876,6 +1894,44 @@ end;
 { TGDBMIDebuggerCommandInitDebugger }
 
 function TGDBMIDebuggerCommandInitDebugger.DoExecute: Boolean;
+  function StoreGdbVersionAsNumber: Boolean;
+  var
+    i: Integer;
+    s: String;
+  begin
+    FTheDebugger.FGDBVersionMajor := -1;
+    FTheDebugger.FGDBVersionMinor := -1;
+    FTheDebugger.FGDBVersionRev := -1;
+    s := FTheDebugger.FGDBVersion;
+    Result := False;
+    // remove none leading digits
+    i := 1;
+    while (i <= Length(s)) and not (s[i] in ['0'..'9']) do inc(i);
+    Delete(s,1,i-1);
+    if s = '' then exit;
+    FTheDebugger.FGDBVersion := s;
+    // Major
+    i := 1;
+    while (i <= Length(s)) and (s[i] in ['0'..'9']) do inc(i);
+    if (i = 1) or (i > Length(s)) or (s[i] <> '.') then exit;
+    FTheDebugger.FGDBVersionMajor := StrToIntDef(copy(s,1,i-1), -1);
+    if i < 0 then exit;
+    Delete(s,1,i);
+    // Minor
+    i := 1;
+    while (i <= Length(s)) and (s[i] in ['0'..'9']) do inc(i);
+    if (i = 1) then exit;
+    FTheDebugger.FGDBVersionMinor := StrToIntDef(copy(s,1,i-1), -1);
+    Result := True;
+    if (i > Length(s)) or (s[i] <> '.') then exit;
+    Delete(s,1,i);
+    // Rev
+    i := 1;
+    while (i <= Length(s)) and (s[i] in ['0'..'9']) do inc(i);
+    if (i = 1) then exit;
+    FTheDebugger.FGDBVersionRev := StrToIntDef(copy(s,1,i-1), -1);
+  end;
+
   function ParseGDBVersionMI: Boolean;
   var
     R: TGDBMIExecResult;
@@ -1897,7 +1953,7 @@ function TGDBMIDebuggerCommandInitDebugger.DoExecute: Boolean;
 
     List.Free;
 
-    if FTheDebugger.FGDBVersion <> ''
+    if StoreGdbVersionAsNumber
     then exit;
 
     // maybe a none MI result
@@ -1909,10 +1965,18 @@ function TGDBMIDebuggerCommandInitDebugger.DoExecute: Boolean;
     FTheDebugger.FGDBOS := GetPart('-', '-', S);
 
     FTheDebugger.FGDBVersion := GetPart(['('], [')'], R.Values, False, False);
+    if StoreGdbVersionAsNumber then Exit;
+
+    FTheDebugger.FGDBVersion := GetPart(['gdb '], [#10, #13], R.Values, True, False);
+    if StoreGdbVersionAsNumber then Exit;
+
+    // Retry, but do not check for format (old behaviour)
+    FTheDebugger.FGDBVersion := GetPart(['('], [')'], R.Values, False, False);
+    StoreGdbVersionAsNumber;
     if FTheDebugger.FGDBVersion <> '' then Exit;
 
     FTheDebugger.FGDBVersion := GetPart(['gdb '], [#10, #13], R.Values, True, False);
-    if FTheDebugger.FGDBVersion <> '' then Exit;
+    StoreGdbVersionAsNumber;
 
     Result := False;
   end;
@@ -6117,13 +6181,11 @@ end;
 
 function TGDBMIDebugger.ChangeFileName: Boolean;
 var
-  S: String;
   Cmd: TGDBMIDebuggerCommandChangeFilename;
 begin
   Result := False;
-  S := ConvertToGDBPath(UTF8ToSys(FileName), cgptExeName);
 
-  Cmd := TGDBMIDebuggerCommandChangeFilename.Create(Self, S);
+  Cmd := TGDBMIDebuggerCommandChangeFilename.Create(Self, FileName);
   Cmd.AddReference;
   QueueCommand(Cmd);
   // if filename = '', then command may be queued
