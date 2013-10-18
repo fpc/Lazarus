@@ -542,6 +542,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  CreateEllipticRgn
+  Params:  X1, Y1, X2, Y2 - Region bounding rectangle
+  Returns: The new elliptic region
+
+  Creates a new elliptic region. This region correspond to the extent drawn
+  by the Ellipse funcion using default context's stroke properties, aliasing=off
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.CreateEllipticRgn(X1, Y1, X2, Y2: Integer): HRGN;
+begin
+  Result:=HRGN(TCarbonRegion.CreateEllipse(X1, Y1, X2, Y2));
+end;
+
+{------------------------------------------------------------------------------
   Method:  DeleteCriticalSection
   Params:  CritSection - Critical section to be deleted
 

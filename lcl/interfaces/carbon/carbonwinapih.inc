@@ -56,6 +56,7 @@ function CreatePalette(const LogPalette: TLogPalette): HPALETTE; override;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; Override;
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN; override;
+function CreateEllipticRgn(X1,Y1,X2,Y2 : Integer): HRGN; override;
 
 procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 function DeleteDC(hDC: HDC): Boolean; override;
