@@ -1,6 +1,6 @@
 object frPrintForm: TfrPrintForm
   Left = 322
-  Height = 270
+  Height = 286
   Top = 202
   Width = 368
   HorzScrollBar.Page = 367
@@ -8,12 +8,12 @@ object frPrintForm: TfrPrintForm
   ActiveControl = OkButton
   BorderStyle = bsDialog
   Caption = 'Print'
-  ClientHeight = 270
+  ClientHeight = 286
   ClientWidth = 368
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.3'
   object Image1: TImage
     Left = 192
     Height = 16
@@ -37,16 +37,16 @@ object frPrintForm: TfrPrintForm
   end
   object Label1: TLabel
     Left = 16
-    Height = 14
+    Height = 16
     Top = 76
-    Width = 33
+    Width = 43
     Caption = 'Copies'
     FocusControl = E1
     ParentColor = False
   end
   object E1: TEdit
     Left = 64
-    Height = 23
+    Height = 22
     Top = 72
     Width = 61
     HelpContext = 99
@@ -55,16 +55,16 @@ object frPrintForm: TfrPrintForm
   end
   object GroupBox2: TGroupBox
     Left = 8
-    Height = 160
+    Height = 176
     Top = 104
     Width = 253
     Caption = 'Page range'
-    ClientHeight = 145
-    ClientWidth = 249
+    ClientHeight = 154
+    ClientWidth = 245
     TabOrder = 1
     object Label2: TLabel
       Left = 14
-      Height = 38
+      Height = 59
       Top = 91
       Width = 228
       AutoSize = False
@@ -74,7 +74,7 @@ object frPrintForm: TfrPrintForm
     end
     object RB1: TRadioButton
       Left = 8
-      Height = 22
+      Height = 18
       Top = 20
       Width = 37
       HelpContext = 108
@@ -85,18 +85,18 @@ object frPrintForm: TfrPrintForm
     end
     object RB2: TRadioButton
       Left = 8
-      Height = 22
+      Height = 18
       Top = 40
-      Width = 85
+      Width = 103
       HelpContext = 118
       Caption = 'Current &page'
       TabOrder = 1
     end
     object RB3: TRadioButton
       Left = 8
-      Height = 22
+      Height = 18
       Top = 60
-      Width = 68
+      Width = 82
       HelpContext = 124
       Caption = '&Numbers:'
       OnClick = RB3Click
@@ -104,7 +104,7 @@ object frPrintForm: TfrPrintForm
     end
     object E2: TEdit
       Left = 88
-      Height = 23
+      Height = 22
       Top = 58
       Width = 155
       HelpContext = 133
@@ -134,7 +134,6 @@ object frPrintForm: TfrPrintForm
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFF0F000
         00F0FF000FF0FFF0FFF0
       }
-      NumGlyphs = 0
       Spacing = 0
       OnClick = frSpeedButton1Click
     end
@@ -150,7 +149,6 @@ object frPrintForm: TfrPrintForm
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFF0FFF0FF00
         0FF0F00000F0FFFFFFF0
       }
-      NumGlyphs = 0
       OnClick = frSpeedButton2Click
     end
   end
@@ -182,8 +180,8 @@ object frPrintForm: TfrPrintForm
     Top = 8
     Width = 349
     Caption = 'Printer'
-    ClientHeight = 34
-    ClientWidth = 345
+    ClientHeight = 27
+    ClientWidth = 341
     TabOrder = 5
     object PropButton: TButton
       Left = 264
@@ -197,7 +195,7 @@ object frPrintForm: TfrPrintForm
     end
     object CB1: TComboBox
       Left = 8
-      Height = 27
+      Height = 20
       Top = 1
       Width = 245
       HelpContext = 142
@@ -210,7 +208,7 @@ object frPrintForm: TfrPrintForm
     end
   end
   object PrinterSetupDialog1: TPrinterSetupDialog
-    left = 64
-    top = 240
+    left = 296
+    top = 192
   end
 end
