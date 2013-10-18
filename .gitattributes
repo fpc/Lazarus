@@ -1249,7 +1249,10 @@ components/fpdebug/test/asmtest.lpi svneol=native#text/plain
 components/fpdebug/test/asmtest.lpr svneol=native#text/pascal
 components/fpdebug/test/asmtestunit.lfm svneol=native#text/plain
 components/fpdebug/test/asmtestunit.pas svneol=native#text/pascal
+components/fpdebug/test/testapps/CompileAll.bat svneol=native#text/pascal
+components/fpdebug/test/testapps/testprog1.pas svneol=native#text/pascal
 components/fpdebug/test/testpascalparser.pas svneol=native#text/pascal
+components/fpdebug/test/testtypeinfo.pas svneol=native#text/pascal
 components/fppkg/images/archive.png -text
 components/fppkg/images/broken.png -text
 components/fppkg/images/build.png -text

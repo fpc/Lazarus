@@ -42,7 +42,7 @@
         <PackageName Value="FCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="FpTest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -53,6 +53,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestPascalParser"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="testtypeinfo.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestTypeInfo"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -60,6 +65,7 @@
     <PathDelim Value="\"/>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
       <CompilerMessages>
