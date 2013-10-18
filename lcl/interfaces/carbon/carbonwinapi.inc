@@ -212,15 +212,33 @@ end;
 
 function TCarbonWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;
   fnCombineMode: Longint): Longint;
+var
+  RealDest: TCarbonRegion;
 begin
   Result := LCLType.Error;
   if (Dest = 0) or (Src1 = 0) or (fnCombineMode<RGN_AND) or (fnCombineMode>RGN_COPY) then Exit;
   if (fnCombineMode <> RGN_COPY) and (Src2 = 0) then Exit;
 
-  TCarbonRegion(Dest).CombineWith(TCarbonRegion(Src1), RGN_COPY);
-
-  if fnCombineMode <> RGN_COPY then
-    Result := TCarbonRegion(Dest).CombineWith(TCarbonRegion(Src2), fnCombineMode);
+  if Dest=Src2 then
+  begin
+    RealDest := TCarbonRegion.Create;
+    try
+      result := RealDest.CombineWith(TCarbonRegion(Src1), RGN_COPY);
+      if fnCombineMode<>RGN_COPY then
+        result := RealDest.CombineWith(TCarbonRegion(Src2), fnCombineMode);
+      TCarbonRegion(Dest).CombineWith(RealDest, RGN_COPY);
+    finally
+      RealDest.free;
+    end;
+  end else
+  begin
+    if Src1<>Dest then
+      TCarbonRegion(Dest).CombineWith(TCarbonRegion(Src1), RGN_COPY);
+    if fnCombineMode <> RGN_COPY then
+      Result := TCarbonRegion(Dest).CombineWith(TCarbonRegion(Src2), fnCombineMode)
+    else
+      Result := TCarbonRegion(Dest).GetType;
+  end;
 end;
 
 {------------------------------------------------------------------------------
