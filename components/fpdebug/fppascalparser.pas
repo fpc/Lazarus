@@ -65,8 +65,7 @@ type
     FTextExpression: String;
     FExpressionPart: TFpPascalExpressionPart;
     FValid: Boolean;
-    FResultType: TFpPasExprType;
-    function GetResultType: TFpPasExprType;
+    function GetResultType: TDbgSymbol;
     procedure Parse;
     procedure SetError(AMsg: String);
     function PosFromPChar(APChar: PChar): Integer;
@@ -79,7 +78,7 @@ type
     function DebugDump: String;
     property Error: String read FError;
     property Valid: Boolean read FValid;
-    property ResultType: TFpPasExprType read GetResultType;
+    property ResultType: TDbgSymbol read GetResultType;
   end;
 
 
@@ -91,9 +90,9 @@ type
     FParent: TFpPascalExpressionPartContainer;
     FStartChar: PChar;
     FExpression: TFpPascalExpression;
-    FResultType: TFpPasExprType;
+    FResultType: TDbgSymbol;
+    function GetResultType: TDbgSymbol;
     function GetSurroundingBracket: TFpPascalExpressionPartBracket;
-    function GetResultType: TFpPasExprType;
     function GetTopParent: TFpPascalExpressionPart;
     procedure SetEndChar(AValue: PChar);
     procedure SetParent(AValue: TFpPascalExpressionPartContainer);
@@ -105,8 +104,7 @@ type
     function DebugDump(AIndent: String): String; virtual;
   protected
     procedure Init; virtual;
-    procedure DoGetResultType(var AResultType: TFpPasExprType); virtual;
-    procedure InitResultTypeFromDbgInfo(var AResultType: TFpPasExprType; ADbgInfo: TDbgSymbol);
+    function  DoGetResultType: TDbgSymbol; virtual;
 
     Procedure ReplaceInParent(AReplacement: TFpPascalExpressionPart);
     procedure DoHandleEndOfExpression; virtual;
@@ -132,7 +130,7 @@ type
     property Parent: TFpPascalExpressionPartContainer read FParent write SetParent;
     property TopParent: TFpPascalExpressionPart read GetTopParent; // or self
     property SurroundingBracket: TFpPascalExpressionPartBracket read GetSurroundingBracket; // incl self
-    property ResultType: TFpPasExprType read GetResultType;
+    property ResultType: TDbgSymbol read GetResultType;
   end;
 
   { TFpPascalExpressionPartContainer }
@@ -164,7 +162,7 @@ type
   private
     FDbgType: TDbgSymbol; // may be a variable or function or a type ...
   protected
-    procedure DoGetResultType(var AResultType: TFpPasExprType); override;
+    function DoGetResultType: TDbgSymbol; override;
   public
     destructor Destroy; override;
   end;
@@ -210,7 +208,7 @@ type
   TFpPascalExpressionPartBracketSubExpression = class(TFpPascalExpressionPartRoundBracket)
   protected
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
-    procedure DoGetResultType(var AResultType: TFpPasExprType); override;
+    function DoGetResultType: TDbgSymbol; override;
   end;
 
   { TFpPascalExpressionPartBracketArgumentList }
@@ -290,7 +288,7 @@ type
   TFpPascalExpressionPartOperatorAddressOf = class(TFpPascalExpressionPartUnaryOperator)  // @
   protected
     procedure Init; override;
-    procedure DoGetResultType(var AResultType: TFpPasExprType); override;
+    function DoGetResultType: TDbgSymbol; override;
   end;
 
   { TFpPascalExpressionPartOperatorMakeRef }
@@ -299,7 +297,7 @@ type
   protected
     procedure Init; override;
     function IsValidNextPart(APart: TFpPascalExpressionPart): Boolean; override;
-    procedure DoGetResultType(var AResultType: TFpPasExprType); override;
+    //function DoGetResultType: TDbgSymbol; override;
   end;
 
   { TFpPascalExpressionPartOperatorDeRef }
@@ -307,7 +305,7 @@ type
   TFpPascalExpressionPartOperatorDeRef = class(TFpPascalExpressionPartUnaryOperator)  // ptrval^
   protected
     procedure Init; override;
-    procedure DoGetResultType(var AResultType: TFpPasExprType); override;
+    function DoGetResultType: TDbgSymbol; override;
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean; override;
     function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartWithPrecedence):
@@ -346,7 +344,7 @@ type
   protected
     procedure Init; override;
     function IsValidNextPart(APart: TFpPascalExpressionPart): Boolean; override;
-    procedure DoGetResultType(var AResultType: TFpPasExprType); override;
+    function DoGetResultType: TDbgSymbol; override;
   end;
 
 implementation
@@ -362,6 +360,35 @@ const
   PRECEDENCE_DEREF      =  5;        // a^    // Precedence acts only to the left side
   PRECEDENCE_MUL_DIV    = 10;        // a * b
   PRECEDENCE_PLUS_MINUS = 11;        // a + b
+
+type
+
+  { TPasParserSymbolPointer }
+
+  TPasParserSymbolPointer = class(TDbgSymbol)
+  private
+    FPointedTo: TDbgSymbol;
+  protected
+    // NameNeeded //  "^TPointedTo"
+    function GetPointedToType: TDbgSymbol; override;
+  public
+    constructor Create(const APointedTo: TDbgSymbol);
+  end;
+
+{ TPasParserSymbolPointer }
+
+function TPasParserSymbolPointer.GetPointedToType: TDbgSymbol;
+begin
+  Result := FPointedTo;
+end;
+
+constructor TPasParserSymbolPointer.Create(const APointedTo: TDbgSymbol);
+begin
+  FPointedTo := APointedTo;
+  inherited Create('');
+  SetKind(skPointer);
+end;
+
 
 { TFpPascalExpressionPartBracketIndex }
 
@@ -529,22 +556,32 @@ begin
   Add(APart);
 end;
 
-procedure TFpPascalExpressionPartBracketSubExpression.DoGetResultType(var AResultType: TFpPasExprType);
+function TFpPascalExpressionPartBracketSubExpression.DoGetResultType: TDbgSymbol;
 begin
   if Count <> 1 then
-    AResultType.Kind := ptkInvalid
+    Result := nil
   else
-    AResultType := Items[0].ResultType;
-  if AResultType.DbgType <> nil then
-    AResultType.DbgType.AddReference;
+    Result := Items[0].ResultType;
+  if Result <> nil then
+    Result.AddReference;
 end;
 
 { TFpPascalExpressionPartIdentifer }
 
-procedure TFpPascalExpressionPartIdentifer.DoGetResultType(var AResultType: TFpPasExprType);
+function TFpPascalExpressionPartIdentifer.DoGetResultType: TDbgSymbol;
 begin
-  FDbgType := FExpression.GetDbgTyeForIdentifier(GetText);
-  InitResultTypeFromDbgInfo(AResultType, FDbgType);
+  if FDbgType = nil then
+    FDbgType := FExpression.GetDbgTyeForIdentifier(GetText);
+  if FDbgType = nil then
+    exit;
+
+  if FDbgType is TDbgDwarfValueIdentifier then
+    Result := TDbgDwarfValueIdentifier(FDbgType).TypeInfo
+  else
+    Result := nil; // Todo handled by typecast operator // maybe wrap in TTypeOf class?
+
+  if Result <> nil then
+    Result.AddReference;
 end;
 
 destructor TFpPascalExpressionPartIdentifer.Destroy;
@@ -708,13 +745,12 @@ begin
   FExpressionPart := CurPart;
 end;
 
-function TFpPascalExpression.GetResultType: TFpPasExprType;
+function TFpPascalExpression.GetResultType: TDbgSymbol;
 begin
   if (FExpressionPart = nil) or (not Valid) then
-    FResultType.Kind := ptkInvalid;
-  if FResultType.Kind = ptkUnknown then
-    FResultType := FExpressionPart.GetResultType;
-  Result := FResultType;
+    Result := nil
+  else
+    Result := FExpressionPart.ResultType;
 end;
 
 procedure TFpPascalExpression.SetError(AMsg: String);
@@ -737,7 +773,6 @@ constructor TFpPascalExpression.Create(ATextExpression: String);
 begin
   FTextExpression := ATextExpression;
   FValid := True;
-  FResultType.Kind := ptkUnknown;
   Parse;
 end;
 
@@ -783,10 +818,11 @@ begin
     Result := TFpPascalExpressionPartBracket(tmp);
 end;
 
-function TFpPascalExpressionPart.GetResultType: TFpPasExprType;
+function TFpPascalExpressionPart.GetResultType: TDbgSymbol;
 begin
-  if FResultType.Kind = ptkUnknown then
-    DoGetResultType(FResultType);
+  // TODO: flag, so nil=invalid will be cached
+  if FResultType = nil then
+    FResultType := DoGetResultType;
   Result := FResultType;
 end;
 
@@ -836,35 +872,9 @@ begin
   //
 end;
 
-procedure TFpPascalExpressionPart.DoGetResultType(var AResultType: TFpPasExprType);
+function TFpPascalExpressionPart.DoGetResultType: TDbgSymbol;
 begin
-  FResultType.Kind := ptkInvalid;
-end;
-
-procedure TFpPascalExpressionPart.InitResultTypeFromDbgInfo(var AResultType: TFpPasExprType;
-  ADbgInfo: TDbgSymbol);
-begin
-  AResultType.Kind := ptkInvalid;
-  if (ADbgInfo = nil) then
-    exit;
-
-  if (ADbgInfo is TDbgDwarfTypeIdentifier) then begin
-    AResultType.DbgType := TDbgDwarfTypeIdentifier(ADbgInfo);
-    AResultType.DbgType.AddReference;
-    AResultType.Kind := ptkTypeDbgType;
-    exit;
-  end;
-
-  if ADbgInfo is TDbgDwarfValueIdentifier then begin
-    AResultType.DbgType := TDbgDwarfValueIdentifier(ADbgInfo).TypeInfo;
-    AResultType.DbgType.AddReference;
-    if AResultType.DbgType <> nil then
-      AResultType.Kind := ptkValueDbgType;
-    exit;
-  end;
-
-  debugln(['TFpPascalExpressionPartIdentifer.DoGetResultType UNKNOWN: ', DbgSName(ADbgInfo)]);
-
+  Result := nil;
 end;
 
 procedure TFpPascalExpressionPart.ReplaceInParent(AReplacement: TFpPascalExpressionPart);
@@ -932,14 +942,13 @@ begin
   FExpression := AExpression;
   FStartChar := AStartChar;
   FEndChar := AnEndChar;
-  FResultType.Kind := ptkUnknown;
   Init;
 end;
 
 destructor TFpPascalExpressionPart.Destroy;
 begin
   inherited Destroy;
-  ReleaseRefAndNil(FResultType.DbgType);
+  ReleaseRefAndNil(FResultType);
 end;
 
 function TFpPascalExpressionPart.HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;
@@ -1237,18 +1246,15 @@ begin
   inherited Init;
 end;
 
-procedure TFpPascalExpressionPartOperatorAddressOf.DoGetResultType(var AResultType: TFpPasExprType);
+function TFpPascalExpressionPartOperatorAddressOf.DoGetResultType: TDbgSymbol;
 begin
-  AResultType.Kind := ptkInvalid;
+  Result := nil;
   if Count <> 1 then exit;
-  AResultType := Items[0].ResultType;
-  if AResultType.Kind = ptkValueDbgType then
-    AResultType.Kind := ptkPointerToValueDbgType
-  else
-    AResultType.Kind := ptkInvalid; // can not take address of...
 
-  if FResultType.DbgType <> nil then
-    FResultType.DbgType.AddReference;
+  Result := Items[0].ResultType;
+  if Result = nil then
+    exit;
+  Result := TPasParserSymbolPointer.Create(Result);
 end;
 
 { TFpPascalExpressionPartOperatorMakeRef }
@@ -1265,20 +1271,6 @@ begin
             (APart is TFpPascalExpressionPartIdentifer);
 end;
 
-procedure TFpPascalExpressionPartOperatorMakeRef.DoGetResultType(var AResultType: TFpPasExprType);
-begin
-  AResultType.Kind := ptkInvalid;
-  if Count <> 1 then exit;
-  AResultType := Items[0].ResultType;
-  if AResultType.Kind = ptkTypeDbgType then
-    AResultType.Kind := ptkPointerOfTypeDbgType
-  else
-    AResultType.Kind := ptkInvalid; // can not take address of...
-
-  if FResultType.DbgType <> nil then
-    FResultType.DbgType.AddReference;
-end;
-
 { TFpPascalExpressionPartOperatorDeRef }
 
 procedure TFpPascalExpressionPartOperatorDeRef.Init;
@@ -1287,28 +1279,23 @@ begin
   inherited Init;
 end;
 
-procedure TFpPascalExpressionPartOperatorDeRef.DoGetResultType(var AResultType: TFpPasExprType);
+function TFpPascalExpressionPartOperatorDeRef.DoGetResultType: TDbgSymbol;
 begin
-  AResultType.Kind := ptkInvalid;
+  Result := nil;
   if Count <> 1 then exit;
 
-  AResultType := Items[0].ResultType;
-  case AResultType.Kind of
-    ptkValueDbgType: begin
-      AResultType.Kind := ptkInvalid;
-      if AResultType.DbgType.IsPointerType then begin
-        AResultType.DbgType := AResultType.DbgType.PointedToType;
-        if AResultType.DbgType <> nil then
-          AResultType.Kind := ptkPointerToValueDbgType;
-      end;
-    end;
-    ptkPointerToValueDbgType: AResultType.Kind := ptkValueDbgType;
-    else
-      AResultType.Kind := ptkInvalid;
-  end;
+  Result := Items[0].ResultType;
+  if Result = nil then
+    exit;;
 
-  if FResultType.DbgType <> nil then
-    FResultType.DbgType.AddReference;
+  if Result.Kind = skPointer then
+    Result := Result.PointedToType
+  //if Result.Kind = skArray then // dynarray
+  else
+    Result := nil;
+
+  if Result <> nil then
+    Result.AddReference;
 end;
 
 function TFpPascalExpressionPartOperatorDeRef.MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
@@ -1371,22 +1358,27 @@ begin
     Result := Result and (APart is TFpPascalExpressionPartIdentifer);
 end;
 
-procedure TFpPascalExpressionPartOperatorMemberOf.DoGetResultType(var AResultType: TFpPasExprType);
+function TFpPascalExpressionPartOperatorMemberOf.DoGetResultType: TDbgSymbol;
 var
-  tmp: TFpPasExprType;
   struct: TDbgDwarfIdentifierStructure;
-  member: TDbgDwarfIdentifierMember;
+  tmp: TDbgSymbol;
 begin
-  AResultType.Kind := ptkInvalid;
+  Result := nil;
   if Count <> 2 then exit;
 
   tmp := Items[0].ResultType;
   // Todo unit
-  if (tmp.Kind = ptkValueDbgType) and (tmp.DbgType.IsStructType) then begin
-    struct := tmp.DbgType.StructTypeInfo;
-    member := struct.MemberByName[Items[1].GetText];
-    InitResultTypeFromDbgInfo(AResultType, member);
-    ReleaseRefAndNil(member);
+  if (tmp <> nil) and (tmp is TDbgDwarfTypeIdentifier) and
+     (TDbgDwarfTypeIdentifier(tmp).IsStructType)
+  then begin
+    struct := TDbgDwarfTypeIdentifier(tmp).StructTypeInfo;
+    tmp := struct.MemberByName[Items[1].GetText];
+
+    if (tmp <> nil) and (tmp is TDbgDwarfValueIdentifier) then begin
+      Result := TDbgDwarfValueIdentifier(tmp).TypeInfo;
+      Result.AddReference;
+    end;
+    ReleaseRefAndNil(tmp);
   end;
 end;
 

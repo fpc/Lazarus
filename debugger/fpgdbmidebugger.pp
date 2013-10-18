@@ -161,7 +161,7 @@ const
     end;
   end;
 
-  procedure AddType(ASourceExpr: string; ATypeIdent: TDbgDwarfTypeIdentifier; AnIsPointer: Boolean);
+  procedure AddType(ASourceExpr: string; ATypeIdent: TDbgSymbol);
   var
     TypeName: String;
     IsPointerPointer: Boolean;
@@ -169,20 +169,20 @@ const
   begin
     if (ASourceExpr = '') or (ATypeIdent = nil) then exit;
 
-    IsPointerType := ATypeIdent.IsPointerType;
-    if IsPointerType then begin
+    IsPointerType := ATypeIdent.Kind = FpDbgClasses.skPointer;
+    if IsPointerType and (ATypeIdent.PointedToType <> nil) then begin
       ATypeIdent := ATypeIdent.PointedToType;
       if ATypeIdent = nil then exit;
 
-      IsPointerPointer := AnIsPointer or ATypeIdent.IsPointerType;
-
-      while (ATypeIdent <> nil) and ATypeIdent.IsPointerType do
+      IsPointerPointer := ATypeIdent.Kind = FpDbgClasses.skPointer;
+      while (ATypeIdent.Kind = FpDbgClasses.skPointer) and (ATypeIdent.PointedToType <> nil) do
         ATypeIdent := ATypeIdent.PointedToType;
       if ATypeIdent = nil then exit;
     end;
-    TypeName := ATypeIdent.IdentifierName;
+    TypeName := ATypeIdent.Name;
 
-    if ATypeIdent.IsBaseType then begin
+    if ATypeIdent.Kind in [skInteger, skCardinal, skBoolean, skChar, skFloat]
+    then begin
       if IsPointerType then begin
         MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, Format('type = ^%s', [TypeName]));
         MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, Format('type = ^%s', [TypeName]));
@@ -208,7 +208,6 @@ var
   Loc: TDBGPtr;
   Ident: TDbgSymbol;
   PasExpr: TFpGDBMIPascalExpression;
-  PasType: TFpPasExprType;
   TypeIdent: TDbgDwarfTypeIdentifier;
 begin
   Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
@@ -227,18 +226,9 @@ DebugLn('############### '+ARequest.Request);
       IdentName := trim(copy(ARequest.Request, 8, length(ARequest.Request)));
 
     PasExpr := TFpGDBMIPascalExpression.Create(IdentName, FDebugger, AThreadId, AStackFrame);
-    PasType := PasExpr.ResultType;
 
-    case PasType.Kind of
-      ptkValueDbgType: begin
-          AddType(IdentName, PasType.DbgType, False);
-          Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
-        end;
-      ptkPointerToValueDbgType: begin
-          AddType(IdentName, PasType.DbgType, True);
-          Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
-        end;
-    end;
+    AddType(IdentName, PasExpr.ResultType);
+    Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
 
   finally
     PasExpr.Free;

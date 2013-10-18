@@ -144,20 +144,20 @@ begin
   FFileHandle := AFileHandle;
   if FFileHandle = INVALID_HANDLE_VALUE
   then begin
-    WriteLN('Invalid file handle');
+    raise Exception.Create('Invalid file handle');
   end;
 
   FMapHandle := CreateFileMapping(FFileHandle, nil, PAGE_READONLY{ or SEC_IMAGE}, 0, 0, nil);
   if FMapHandle = 0
   then begin
-    WriteLn('Could not create module mapping');
+    raise Exception.Create('Could not create module mapping');
     Exit;
   end;
 
   FModulePtr := MapViewOfFile(FMapHandle, FILE_MAP_READ, 0, 0, 0);
   if FModulePtr = nil
   then begin
-    WriteLn('Could not map view');
+    raise Exception.Create('Could not map view');
     Exit;
   end;
 

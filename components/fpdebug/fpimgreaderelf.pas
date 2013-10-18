@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils,
   FpImgReaderBase,
-  FpImgReaderElfTypes;  // these files are part of
+  FpImgReaderElfTypes, LCLProc;  // these files are part of
 
 
 type
@@ -231,7 +231,7 @@ begin
     New(p);
     P^.Offs := fs.FileOfs;
     p^.Sect.Size := fs.Size;
-    p^.Sect.VirtualAdress := 0; // Todo?
+    p^.Sect.VirtualAdress := 0; // Todo? fs.Address - ImageBase
     p^.Loaded := False;
     FSections.Objects[idx] := TObject(p);
   end;

@@ -70,7 +70,7 @@ type
 
   TDbgSymbolKind = (
     skNone,          // undefined type
-    skUser,          // userdefined type, this sym refers to another sym defined elswhere
+//    skUser,          // userdefined type, this sym refers to another sym defined elswhere
     skInstance,      // the main exe/dll, containing all other syms
     skUnit,          // contains syms defined in this unit
     //--------------------------------------------------------------------------
@@ -83,6 +83,7 @@ type
     //--------------------------------------------------------------------------
     skArray,
     //--------------------------------------------------------------------------
+    skPointer,
     skInteger,       // Basic types, these cannot have references or children
     skCardinal,      // only size matters ( char(1) = Char, char(2) = WideChar
     skBoolean,       // cardinal(1) = Byte etc.
@@ -101,8 +102,8 @@ type
   );
 
   TDbgSymbolFlag =(
-    sfPointer,       // The sym is a pointer to the reference
-    sfConst,         // The sym is a constan and cannot be modified
+    //sfPointer,       // The sym is a pointer to the reference
+    sfConst,         // The sym is a constant and cannot be modified
     sfVar,
     sfOut,
     sfpropGet,
@@ -111,6 +112,11 @@ type
   );
   TDbgSymbolFlags = set of TDbgSymbolFlag;
 
+  TDbgSymbolField = (
+    sfName, sfKind
+  );
+  TDbgSymbolFields = set of TDbgSymbolField;
+
   { TDbgSymbol }
 
   TDbgSymbol = class(TRefCountedObject)
@@ -118,7 +124,13 @@ type
     FName: String;
     FKind: TDbgSymbolKind;
     FAddress: TDbgPtr;
+
+    FEvaluatedFields: TDbgSymbolFields;
+    function GetKind: TDbgSymbolKind;
+    function GetName: String;
   protected
+    function GetPointedToType: TDbgSymbol; virtual;
+
     function GetChild(AIndex: Integer): TDbgSymbol; virtual;
     function GetColumn: Cardinal; virtual;
     function GetCount: Integer; virtual;
@@ -128,23 +140,36 @@ type
     function GetParent: TDbgSymbol; virtual;
     function GetReference: TDbgSymbol; virtual;
     function GetSize: Integer; virtual;
+
+    procedure SetName(AValue: String);
+    procedure SetKind(AValue: TDbgSymbolKind);
+
+    procedure KindNeeded; virtual;
+    procedure NameNeeded; virtual;
   public
+    constructor Create(const AName: String);
     constructor Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TDbgPtr);
     destructor Destroy; override;
-    property Count: Integer read GetCount;
-    property Name: String read FName;
-    property Kind: TDbgSymbolKind read FKind;
+    // Basic info
+    property Name: String read GetName;
+    property Kind: TDbgSymbolKind read GetKind;
+    // Memory; Size is also part of type (byte vs word vs ...)
     property Address: TDbgPtr read FAddress;
     property Size: Integer read GetSize;
+    // Location
     property FileName: String read GetFile;
     property Line: Cardinal read GetLine;
     property Column: Cardinal read GetColumn;
-    property Flags: TDbgSymbolFlags read GetFlags;
-    property Reference: TDbgSymbol read GetReference;
-    property Parent: TDbgSymbol read GetParent;
-    property Children[AIndex: Integer]: TDbgSymbol read GetChild;
-  end;
+    //
+    property Flags: TDbgSymbolFlags read GetFlags; deprecated;
+    property Count: Integer read GetCount; deprecated;
+    property Reference: TDbgSymbol read GetReference; deprecated;
+    property Parent: TDbgSymbol read GetParent; deprecated;
+    //property Children[AIndex: Integer]: TDbgSymbol read GetChild;
 
+    // For pointers only
+    property PointedToType: TDbgSymbol read GetPointedToType;
+  end;
 
   { TDbgInfo }
 
@@ -276,7 +301,7 @@ type
   end;
   {$endif}
 
-
+function dbgs(ADbgSymbolKind: TDbgSymbolKind): String; overload;
 
 implementation
 
@@ -286,6 +311,12 @@ uses
 procedure LogLastError;
 begin
   DebugLn('FpDbg-ERROR: ', GetLastErrorText);
+end;
+
+function dbgs(ADbgSymbolKind: TDbgSymbolKind): String;
+begin
+  Result := '';
+  WriteStr(Result, ADbgSymbolKind);
 end;
 
 {$ifdef windows}
@@ -854,19 +885,55 @@ end;
 
 { TDbgSymbol }
 
-constructor TDbgSymbol.Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TDbgPtr);
+constructor TDbgSymbol.Create(const AName: String);
 begin
   inherited Create;
   AddReference;
+  if AName <> '' then
+    SetName(AName);
+end;
 
-  FName := AName;
-  FKind := AKind;
+constructor TDbgSymbol.Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TDbgPtr);
+begin
+  Create(AName);
+  SetKind(AKind);
   FAddress := AAddress;
 end;
 
 destructor TDbgSymbol.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TDbgSymbol.GetKind: TDbgSymbolKind;
+begin
+  if not(sfKind in FEvaluatedFields) then
+    KindNeeded;
+  Result := FKind;
+end;
+
+function TDbgSymbol.GetName: String;
+begin
+  if not(sfName in FEvaluatedFields) then
+    NameNeeded;
+  Result := FName;
+end;
+
+function TDbgSymbol.GetPointedToType: TDbgSymbol;
+begin
+  Result := nil;
+end;
+
+procedure TDbgSymbol.SetKind(AValue: TDbgSymbolKind);
+begin
+  FKind := AValue;
+  Include(FEvaluatedFields, sfKind);
+end;
+
+procedure TDbgSymbol.SetName(AValue: String);
+begin
+  FName := AValue;
+  Include(FEvaluatedFields, sfName);
 end;
 
 function TDbgSymbol.GetChild(AIndex: Integer): TDbgSymbol;
@@ -912,6 +979,16 @@ end;
 function TDbgSymbol.GetSize: Integer;
 begin
   Result := 0;
+end;
+
+procedure TDbgSymbol.KindNeeded;
+begin
+  SetKind(skNone);
+end;
+
+procedure TDbgSymbol.NameNeeded;
+begin
+  SetName('');
 end;
 
 {$ifdef windows}
