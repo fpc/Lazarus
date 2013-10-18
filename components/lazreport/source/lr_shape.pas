@@ -19,7 +19,7 @@ uses
   Graphics,GraphType, Controls, Forms, Dialogs,Buttons,
   StdCtrls,
 
-  LCLType,LR_Class, ExtCtrls, ButtonPanel;
+  LCLType,LCLIntf,LR_Class, ExtCtrls, ButtonPanel;
 
 
 type
@@ -49,6 +49,7 @@ type
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
+    function  GetClipRgn(rt: TfrRgnType): HRGN; override;
 
   published
     property FillColor;
@@ -83,6 +84,40 @@ implementation
 {$R *.lfm}
 
 uses LR_Const;
+
+procedure DumpRgn(Msg:string;Rgn: HRGN);
+var
+  res: LongInt;
+  R: TRect;
+  y: LongInt;
+  x: LongInt;
+  ch: char;
+  //Line: string;
+begin
+  res := GetRgnBox(Rgn, @R);
+  //SetLength(Line, R.Right-R.Left+1;
+  WriteLn(msg);
+  Write('    ');
+  for x := R.Left to R.Right do begin
+    ch := chr(ord('0')+(x div 10));
+    if ch='0' then
+      ch := ' ';
+    Write(ch);
+  end; WriteLn;
+  Write('    ');
+  for x := R.Left to R.Right do
+    Write(Chr(ord('0')+(x mod 10))); WriteLn;
+
+  for y := R.Top to R.Bottom do begin
+    Write(y:3,' ');
+    for x :=R.Left to R.Right do begin
+      if PtInRegion(Rgn, X, Y) then
+        Write('1') //Line[x-R.Left+1] := '1'
+      else
+        Write('0'); //Line[x-R.Left+1] := '0';
+    end; WriteLn;
+  end;
+end;
 
 constructor TfrShapeView.Create(AOwnerPage: TfrPage);
 begin
@@ -142,8 +177,15 @@ end;
 procedure TfrShapeView.Draw(aCanvas: TCanvas);
 var
   FillC: Integer;
+  OldPen: TPen;
+  OldBrush: TBrush;
 begin
+  OldPen := TPen.Create;
+  OldPen.Assign(aCanvas.Pen);
+  OldBrush := TBrush.Create;
+  OldBrush.Assign(aCanvas.Brush);
   BeginDraw(aCanvas);
+  aCanvas.AntialiasingMode:=amOn;
   Memo1.Assign(Memo);
   BeginUpdate;
   try
@@ -157,6 +199,10 @@ begin
     RestoreCoord;
   finally
     EndUpdate;
+    aCanvas.Brush.Assign(OldBrush);
+    aCanvas.Pen.Assign(OldPen);
+    OldBrush.Free;
+    OldPen.Free;
   end;
 end;
 
@@ -184,6 +230,127 @@ begin
   inherited SaveToXML(XML, Path);
 
   XML.SetValue(Path+'ShapeType/Value', GetSaveProperty('ShapeType'));
+end;
+
+function TfrShapeView.GetClipRgn(rt: TfrRgnType): HRGN;
+const
+  Delta = 10;
+var
+  x1, y1, xp, yp : Integer;
+  Pts         : Array[0..6] of TPoint;
+  min, bx, by, bx1, by1, w1, w2: Integer;
+begin
+  w1 := Round(FrameWidth / 2);
+  w2 := Round((FrameWidth - 1) / 2);
+
+  bx:=x;
+  by:=y;
+  bx1:=x+dx+1;
+  by1:=y+dy+1;
+
+  case ShapeType of
+
+    frstRoundRect:
+      begin
+        Inc(bx1, w2);
+        Inc(by1, w2);
+        Dec(bx, w1);
+        Dec(by, w1);
+
+        min := dx;
+        if dy < dx then
+          min := dy;
+
+        if rt=rtExtended then begin
+          min := min + 2 * delta;
+          result := CreateRoundRectRgn(bx-delta, by-delta, bx1+delta, by1+delta, min div 4, min div 4)
+        end
+        else
+          result := CreateRoundRectRgn(bx, by, bx1, by1, min div 4, min div 4);
+      end;
+
+    frstEllipse, frstRectangle:
+      begin
+        Inc(bx1, w2);
+        Inc(by1, w2);
+        Dec(bx, w1);
+        Dec(by, w1);
+        if rt=rtExtended then begin
+          if ShapeType=frstRectangle then
+            result := CreateRectRgn(bx-Delta, by-Delta, bx1 + Delta, by1 + Delta)
+          else
+            result := CreateEllipticRgn(bx-Delta, by-Delta, bx1 + Delta, by1 + Delta)
+        end else begin
+          if ShapeType=frstRectangle then
+            result := CreateRectRgn(bx, by, bx1, by1)
+          else
+            result := CreateEllipticRgn(bx, by, bx1, by1);
+        end;
+      end;
+
+    frstTriangle:
+      begin
+        Inc(bx1, w2);
+        Inc(by1, w2);
+        Dec(bx, w1);
+        Dec(by, w1);
+        xp := bx + (bx1 - bx) div 2;
+        if rt=rtExtended then
+        begin
+          Pts[0]:=Point(bx1+Delta, by1+Delta);
+          Pts[1]:=Point(bx-Delta, by1+Delta);
+          Pts[2]:=Point(xp, by-Delta);
+          Pts[3]:=Point(bx1+Delta, by1+Delta);
+        end else begin
+          Pts[0]:=Point(bx1, by1);
+          Pts[1]:=Point(bx, by1);
+          Pts[2]:=Point(xp, by);
+          Pts[3]:=Point(bx1, by1);
+        end;
+        result := CreatePolygonRgn(@Pts, 4, 1);
+      end;
+
+    frstDiagonal1: //Line(x,y,x1,y1);
+      begin
+        if w1=0 then
+          w1 := 1; // avoid disappearing  line
+        if rt=rtExtended then
+        begin
+          Pts[0]:=Point(bx-w1-Delta, by);
+          Pts[1]:=Point(bx+w2+Delta, by);
+          Pts[2]:=Point(bx1+w2+Delta, by1);
+          Pts[3]:=Point(bx1-w1-Delta, by1);
+          Pts[4]:=Point(bx-w1-Delta, by);
+        end else begin
+          Pts[0]:=Point(bx-w1, by);
+          Pts[1]:=Point(bx+w2, by);
+          Pts[2]:=Point(bx1+w2, by1);
+          Pts[3]:=Point(bx1-w1, by1);
+          Pts[4]:=Point(bx-w1, by);
+        end;
+        result := CreatePolygonRgn(@Pts, 5, 1);
+      end;
+
+    frstDiagonal2: //Line(x,y1,x1,y);
+      begin
+        if w1=0 then
+          w1 := 1; // avoid disappearing  line
+        if rt=rtExtended then begin
+          Pts[0]:=Point(bx-w1-Delta, by1);
+          Pts[1]:=Point(bx+w2+Delta, by1);
+          Pts[2]:=Point(bx1+w2+Delta, by);
+          Pts[3]:=Point(bx1-w1-Delta, by);
+          Pts[4]:=Point(bx-w1-Delta,by);
+        end else begin
+          Pts[0]:=Point(bx-w1, by1);
+          Pts[1]:=Point(bx+w2, by1);
+          Pts[2]:=Point(bx1+w2, by);
+          Pts[3]:=Point(bx1-w1, by);
+          Pts[4]:=Point(bx-w1,by1);
+        end;
+        result := CreatePolygonRgn(@Pts, 5, 1);
+      end
+  end;
 end;
 
 
