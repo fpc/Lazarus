@@ -6063,7 +6063,7 @@ begin
         begin
           {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtCustomControlResizeDeadlock)}
           writeln('*** INTERCEPTED RESIZE DEADLOCK *** ',LCLObject.ClassName,
-            ':',LCLObject.Name)
+            ':',LCLObject.Name);
           {$ENDIF}
           {$IFDEF QTSCROLLABLEFORMS}
           // do not invalidate clientRectCache if we are embedded (eg. docked)
@@ -6138,8 +6138,9 @@ function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 
     // we must set minimum heigth / width to 1 otherwise we'll have strange
     // effect eg. with main ide bar window (small size and cannot resize).
-    QWidget_setMinimumHeight(FCentralWidget, 1);
-    QWidget_setMinimumWidth(FCentralWidget, 1);
+    //QWidget_setMinimumHeight(FCentralWidget, 1);
+    //QWidget_setMinimumWidth(FCentralWidget, 1);
+    QWidget_setSizePolicy(FCentralWidget, QSizePolicyIgnored, QSizePolicyIgnored);
 
     ScrollArea.setScrollBarPolicy(True, QtScrollBarAlwaysOff);
     ScrollArea.setScrollBarPolicy(False, QtScrollBarAlwaysOff);
