@@ -698,6 +698,7 @@ begin
       slen := length(fLockList[i]);
       if (slen > 0) and (index >= 0) and (index < fSynStrings.Count) then begin
         ltext := fSynStrings[index];
+// TODO: Avoid triggering the highlighter
         fSynStrings[index] := ltext;                                            // trigger OnPutted, so the line gets repainted
         MaybeAddUndoForget(Index+1, fLockList[i]);
       end;
