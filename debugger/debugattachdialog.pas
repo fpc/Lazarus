@@ -89,10 +89,58 @@ begin
   end;
 end;
 {$else}
+{$ifdef linux}
+uses
+  LazUTF8Classes;
+
+function EnumerateProcesses(AList: TRunningProcessInfoList): boolean;
+
+  function GetProcName(Pid: THandle): String;
+  var
+    S: TStream;
+    Sz: Integer;
+  begin
+    S := TFileStreamUTF8.Create('/proc/' + IntToStr(Pid) + '/cmdline', fmOpenRead or fmShareDenyNone);
+    try
+      SetLength(Result, 255);
+      Sz := S.Read(Result[1], 255);
+      SetLength(Result, Sz);
+    finally
+      S.Free;
+    end;
+  end;
+
+var
+  Rec: TSearchRec;
+  ProcName: String;
+  Pid: THandle;
+  Code: Integer;
+  item: TRunningProcessInfo;
+begin
+  Result := True;
+
+  if not Assigned(AList) then
+    Exit;
+
+  if FindFirstUTF8('/proc/*', faDirectory, Rec) = 0 then
+  begin
+    repeat
+      Val(Rec.Name, Pid, Code);
+      if (Code = 0) then
+      begin
+        ProcName := GetProcName(Pid);
+        item := TRunningProcessInfo.Create(Pid, ProcName);
+        AList.Add(item);
+      end;
+    until FindNextUTF8(Rec) <> 0;
+  end;
+end;
+{$else}
 function EnumerateProcesses(AList: TRunningProcessInfoList): boolean;
 begin
   Result := False;
 end;
+{$endif}
 {$endif}
 
 { TRunningProcessInfo }
