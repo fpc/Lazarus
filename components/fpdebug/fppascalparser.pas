@@ -42,21 +42,6 @@ type
   TFpPascalExpressionPartClass = class of TFpPascalExpressionPart;
   TFpPascalExpressionPartBracketClass = class of TFpPascalExpressionPartBracket;
 
-  TFpPasExprTypeKind = (
-    ptkUnknown, ptkInvalid,
-    ptkValueDbgType,               // a Value (variable, function) of the type in DbgType
-    ptkTypeDbgType,                // the type (for type-cast) specified by DbgType
-    ptkPointerToValueDbgType,      // an address pointing to a value of DbgType
-    ptkPointerOfTypeDbgType,       // ^ TType: pointertype of the type  (for type-cast) specified by DbgType
-    ptkNumber                      // a number (constant or expression result)
-    // ...
-  );
-
-  TFpPasExprType = record
-    DbgType: TDbgDwarfTypeIdentifier; //TDbgSymbol
-    Kind: TFpPasExprTypeKind;
-  end;
-
   { TFpPascalExpression }
 
   TFpPascalExpression = class
@@ -91,7 +76,9 @@ type
     FStartChar: PChar;
     FExpression: TFpPascalExpression;
     FResultType: TDbgSymbol;
+    FResultTypeFlag: (rtUnknown, rtType, rtTypeCast);
     function GetResultType: TDbgSymbol;
+    function GetResultTypeCast: TDbgSymbol;
     function GetSurroundingBracket: TFpPascalExpressionPartBracket;
     function GetTopParent: TFpPascalExpressionPart;
     procedure SetEndChar(AValue: PChar);
@@ -105,6 +92,7 @@ type
   protected
     procedure Init; virtual;
     function  DoGetResultType: TDbgSymbol; virtual;
+    function  DoGetIsTypeCast: Boolean; virtual;
 
     Procedure ReplaceInParent(AReplacement: TFpPascalExpressionPart);
     procedure DoHandleEndOfExpression; virtual;
@@ -131,6 +119,7 @@ type
     property TopParent: TFpPascalExpressionPart read GetTopParent; // or self
     property SurroundingBracket: TFpPascalExpressionPartBracket read GetSurroundingBracket; // incl self
     property ResultType: TDbgSymbol read GetResultType;
+    property ResultTypeCast: TDbgSymbol read GetResultTypeCast;
   end;
 
   { TFpPascalExpressionPartContainer }
@@ -163,6 +152,7 @@ type
     FDbgType: TDbgSymbol; // may be a variable or function or a type ...
   protected
     function DoGetResultType: TDbgSymbol; override;
+    function DoGetIsTypeCast: Boolean; override;
   public
     destructor Destroy; override;
   end;
@@ -217,6 +207,8 @@ type
   // function arguments or type cast // this acts a operator: first element is the function/type
   protected
     procedure Init; override;
+    function DoGetResultType: TDbgSymbol; override;
+    function DoGetIsTypeCast: Boolean; override;
     function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; override;
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
@@ -297,7 +289,8 @@ type
   protected
     procedure Init; override;
     function IsValidNextPart(APart: TFpPascalExpressionPart): Boolean; override;
-    //function DoGetResultType: TDbgSymbol; override;
+    function DoGetResultType: TDbgSymbol; override;
+    function DoGetIsTypeCast: Boolean; override;
   end;
 
   { TFpPascalExpressionPartOperatorDeRef }
@@ -352,12 +345,12 @@ implementation
 const
   // 1 highest
   PRECEDENCE_MEMBER_OF  =  1;        // foo.bar
+  PRECEDENCE_MAKE_REF   =  1;        // ^TFoo
   PRECEDENCE_ARG_LIST   =  2;        // foo() / TFoo()
   PRECEDENCE_ARRAY_IDX  =  2;        // foo[1]
-  PRECEDENCE_UNARY_SIGN =  5;        // -a
-  PRECEDENCE_ADRESS_OF  =  5;        // @a
-  PRECEDENCE_MAKE_REF   =  5;        // ^TFoo
   PRECEDENCE_DEREF      =  5;        // a^    // Precedence acts only to the left side
+  PRECEDENCE_ADRESS_OF  =  5;        // @a
+  PRECEDENCE_UNARY_SIGN =  6;        // -a
   PRECEDENCE_MUL_DIV    = 10;        // a * b
   PRECEDENCE_PLUS_MINUS = 11;        // a + b
 
@@ -373,6 +366,7 @@ type
     function GetPointedToType: TDbgSymbol; override;
   public
     constructor Create(const APointedTo: TDbgSymbol);
+    destructor Destroy; override;
   end;
 
 { TPasParserSymbolPointer }
@@ -385,8 +379,15 @@ end;
 constructor TPasParserSymbolPointer.Create(const APointedTo: TDbgSymbol);
 begin
   FPointedTo := APointedTo;
+  FPointedTo.AddReference;
   inherited Create('');
   SetKind(skPointer);
+end;
+
+destructor TPasParserSymbolPointer.Destroy;
+begin
+  ReleaseRefAndNil(FPointedTo);
+  inherited Destroy;
 end;
 
 
@@ -485,6 +486,28 @@ begin
   inherited Init;
 end;
 
+function TFpPascalExpressionPartBracketArgumentList.DoGetResultType: TDbgSymbol;
+begin
+  Result := nil;
+
+  if (Count = 2) then begin
+    Result := Items[0].ResultTypeCast;
+    if Result <> nil then begin
+      // This is a typecast
+      // TODO: verify cast compatibilty
+      Result.AddReference;
+      exit;
+    end;
+  end;
+
+  Result := inherited DoGetResultType;
+end;
+
+function TFpPascalExpressionPartBracketArgumentList.DoGetIsTypeCast: Boolean;
+begin
+  Result := False;
+end;
+
 function TFpPascalExpressionPartBracketArgumentList.IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean;
 begin
   Result := inherited IsValidAfterPart(APrevPart);
@@ -578,10 +601,20 @@ begin
   if FDbgType is TDbgDwarfValueIdentifier then
     Result := TDbgDwarfValueIdentifier(FDbgType).TypeInfo
   else
+  if FDbgType is TDbgDwarfTypeIdentifier then
+    Result := FDbgType
+  else
     Result := nil; // Todo handled by typecast operator // maybe wrap in TTypeOf class?
 
   if Result <> nil then
     Result.AddReference;
+end;
+
+function TFpPascalExpressionPartIdentifer.DoGetIsTypeCast: Boolean;
+begin
+  if FDbgType = nil then
+    FDbgType := FExpression.GetDbgTyeForIdentifier(GetText);
+  Result := (FDbgType  <> nil) and (FDbgType is TDbgDwarfTypeIdentifier);
 end;
 
 destructor TFpPascalExpressionPartIdentifer.Destroy;
@@ -820,10 +853,30 @@ end;
 
 function TFpPascalExpressionPart.GetResultType: TDbgSymbol;
 begin
-  // TODO: flag, so nil=invalid will be cached
-  if FResultType = nil then
+  if FResultTypeFlag = rtUnknown then begin
     FResultType := DoGetResultType;
-  Result := FResultType;
+    if DoGetIsTypeCast
+    then FResultTypeFlag := rtTypeCast
+    else FResultTypeFlag := rtType;
+  end;
+  if FResultTypeFlag = rtType then
+    Result := FResultType
+  else
+    Result := nil;
+end;
+
+function TFpPascalExpressionPart.GetResultTypeCast: TDbgSymbol;
+begin
+  if FResultTypeFlag = rtUnknown then begin
+    FResultType := DoGetResultType;
+    if DoGetIsTypeCast
+    then FResultTypeFlag := rtTypeCast
+    else FResultTypeFlag := rtType;
+  end;
+  if FResultTypeFlag = rtTypeCast then
+    Result := FResultType
+  else
+    Result := nil;
 end;
 
 procedure TFpPascalExpressionPart.SetParent(AValue: TFpPascalExpressionPartContainer);
@@ -875,6 +928,11 @@ end;
 function TFpPascalExpressionPart.DoGetResultType: TDbgSymbol;
 begin
   Result := nil;
+end;
+
+function TFpPascalExpressionPart.DoGetIsTypeCast: Boolean;
+begin
+  Result := False;
 end;
 
 procedure TFpPascalExpressionPart.ReplaceInParent(AReplacement: TFpPascalExpressionPart);
@@ -942,6 +1000,7 @@ begin
   FExpression := AExpression;
   FStartChar := AStartChar;
   FEndChar := AnEndChar;
+  FResultTypeFlag := rtUnknown;
   Init;
 end;
 
@@ -1267,8 +1326,27 @@ end;
 
 function TFpPascalExpressionPartOperatorMakeRef.IsValidNextPart(APart: TFpPascalExpressionPart): Boolean;
 begin
-  Result := (inherited IsValidNextPart(APart)) and
-            (APart is TFpPascalExpressionPartIdentifer);
+  if HasAllOperands then
+    Result := (inherited IsValidNextPart(APart))
+  else
+    Result := (inherited IsValidNextPart(APart)) and
+              (APart is TFpPascalExpressionPartIdentifer);
+end;
+
+function TFpPascalExpressionPartOperatorMakeRef.DoGetResultType: TDbgSymbol;
+begin
+  Result := nil;
+  if Count <> 1 then exit;
+
+  Result := Items[0].ResultTypeCast;
+  if Result = nil then
+    exit;
+  Result := TPasParserSymbolPointer.Create(Result);
+end;
+
+function TFpPascalExpressionPartOperatorMakeRef.DoGetIsTypeCast: Boolean;
+begin
+  Result := True;
 end;
 
 { TFpPascalExpressionPartOperatorDeRef }

@@ -102,13 +102,24 @@ var
     FreeAndNil(Expr);
     TestText := AExprText;
     Expr := TTestPascalExpression.Create(AExprText);
+DebugLn(Expr.DebugDump);
 
     AssertTrue(TestText+' is valid', Expr.Valid);
-    AssertTrue(TestText+' has ddbginfo', Expr.ResultType <> nil);
+    AssertTrue(TestText+' has dbginfo', Expr.ResultType <> nil);
 
+debugln(['### ', TestText, ' ## ', dbgs(Expr.ResultType.Kind), ' # ',Expr.ResultType.Name]);
     if ATypeName <> '' then
       AssertEquals(TestText+' type-name', LowerCase(ATypeName), LowerCase(Expr.ResultType.Name));
     AssertEquals(TestText+' kind', dbgs(AKind), dbgs(Expr.ResultType.Kind));
+  end;
+
+  procedure DoTestInvalid(AExprText: String);
+  begin
+    FreeAndNil(Expr);
+    TestText := AExprText;
+    Expr := TTestPascalExpression.Create(AExprText);
+
+    AssertFalse(TestText+' has NO dbginfo', Expr.ResultType <> nil);
   end;
 
 var
@@ -132,12 +143,24 @@ begin
   DoTest('pint1^', skInteger);
   DoTest('@int1^', skInteger);
 
+  DoTestInvalid('int1^');
+  DoTestInvalid('pint1^^');
+  DoTestInvalid('@int1^^');
+
   DoTest('bool1', skBoolean);
 
   DoTest('test.FWord', skCardinal);
   DoTest('test.FBool', skBoolean);
   DoTest('test.FTest.FWord', skCardinal);
   DoTest('test.FTest.FBool', skBoolean);
+
+
+  DoTest('longint(bool1)', skInteger);
+  DoTest('^longint(bool1)', skPointer);
+  DoTest('^longint(bool1)^', skInteger);
+
+  DoTestInvalid('^int1');
+  DoTestInvalid('^int1(int2)');
 
   FreeAndNil(expr);
 

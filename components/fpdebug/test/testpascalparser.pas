@@ -338,6 +338,44 @@ begin
     CreateExpr('f[a]', True);
     CreateExpr('f * [a]', True);
 
+    CreateExpr('a^', True);
+    TestExpr([],  TFpPascalExpressionPartOperatorDeRef, '^', 1);
+    TestExpr([0],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('-a^', True);
+    TestExpr([],  TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+    TestExpr([0],  TFpPascalExpressionPartOperatorDeRef, '^', 1);
+    TestExpr([0,0],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('@a^', True);
+    TestExpr([],  TFpPascalExpressionPartOperatorDeRef, '^', 1);
+    TestExpr([0],  TFpPascalExpressionPartOperatorAddressOf, '@', 1);
+    TestExpr([0,0],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('-@a', True);
+    TestExpr([],  TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+    TestExpr([0],  TFpPascalExpressionPartOperatorAddressOf, '@', 1);
+    TestExpr([0,0],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('-@a^', True);
+    TestExpr([],  TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+    TestExpr([0],  TFpPascalExpressionPartOperatorDeRef, '^', 1);
+    TestExpr([0,0],  TFpPascalExpressionPartOperatorAddressOf, '@', 1);
+    TestExpr([0,0,0],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('^f(a)', True);
+    TestExpr([], TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0],  TFpPascalExpressionPartOperatorMakeRef, '^', 1);
+    TestExpr([0,0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('^f(a)^', True);
+    TestExpr([],  TFpPascalExpressionPartOperatorDeRef, '^', 1);
+    TestExpr([0], TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0,0],  TFpPascalExpressionPartOperatorMakeRef, '^', 1);
+    TestExpr([0,0,0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([0,1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
   finally
     CurrentTestExprObj.Free;
   end;
