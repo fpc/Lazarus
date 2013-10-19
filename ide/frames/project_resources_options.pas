@@ -36,6 +36,7 @@ type
     procedure lbResourcesSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
   private
+    FProject: TProject;
     procedure AddResource(AFileName: String);
     procedure AddResourceItem(ResFile: String; ResType: TUserResourceType; ResName: String);
   public
@@ -53,9 +54,18 @@ implementation
 { TResourcesOptionsFrame }
 
 procedure TResourcesOptionsFrame.btnAddClick(Sender: TObject);
+var
+  FileName: String;
 begin
   if dlgOpen.Execute then
-    AddResource(dlgOpen.FileName);
+  begin
+    for FileName in dlgOpen.Files do
+    begin
+      if not FProject.IsVirtual then
+        FileName := CreateRelativePath(FileName, FProject.ProjectDirectory);
+      AddResource(FileName);
+    end;
+  end;
 end;
 
 procedure TResourcesOptionsFrame.btnClearClick(Sender: TObject);
@@ -175,6 +185,7 @@ var
   List: TResourceList;
   I: Integer;
 begin
+  FProject := Project;
   lbResources.Items.Clear;
   List := Project.ProjResources.UserResources.List;
   lbResources.Items.BeginUpdate;

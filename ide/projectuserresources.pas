@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, lazutf8classes, Process, LCLProc,
   Controls, Graphics, Forms, CodeToolManager, FileProcs, LazConf, LResources,
-  ProjectIntf, ProjectResourcesIntf, IDEMsgIntf, IDEExternToolIntf, LazarusIDEStrConsts,
+  ProjectIntf, ProjectResourcesIntf, IDEMsgIntf, IDEExternToolIntf, MacroIntf, LazarusIDEStrConsts,
   resource, bitmapresource, groupresource, groupiconresource, groupcursorresource;
    
 type
@@ -59,7 +59,8 @@ type
     ResName: String;
     procedure ReadFromProjectFile(AConfig: TXMLConfig; Path: String);
     procedure WriteToProjectFile(AConfig: TXMLConfig; Path: String);
-    function CreateResource: TAbstractResource;
+    function CreateResource(ProjectDirectory: String): TAbstractResource;
+    function GetRealFileName(ProjectDirectory: String): String;
   end;
 
   { TResourceList }
@@ -132,15 +133,19 @@ begin
   AConfig.SetValue(Path + 'ResourceName', ResName);
 end;
 
-function TResourceItem.CreateResource: TAbstractResource;
+function TResourceItem.CreateResource(ProjectDirectory: String): TAbstractResource;
 var
   Stream: TFileStream;
   TypeDesc, NameDesc: TResourceDesc;
+  RealFileName: String;
 begin
   Result := nil;
-  if FileExistsUTF8(FileName) then
+
+  RealFileName := GetRealFileName(ProjectDirectory);
+
+  if FileExistsUTF8(RealFileName) then
   begin
-    Stream := TFileStream.Create(UTF8ToSys(FileName), fmOpenRead or fmShareDenyWrite);
+    Stream := TFileStream.Create(UTF8ToSys(RealFileName), fmOpenRead or fmShareDenyWrite);
     try
       NameDesc := TResourceDesc.Create(ResName);
       case ResType of
@@ -187,6 +192,16 @@ begin
   {$ENDIF}
 end;
 
+function TResourceItem.GetRealFileName(ProjectDirectory: String): String;
+begin
+  Result := FileName;
+  if not IDEMacros.SubstituteMacros(Result) then
+    debugln(['TResourceItem.GetRealFileName failed FileName="', FileName, '"']);
+  Result := TrimFilename(Result);
+  if not FilenameIsAbsolute(Result) then
+    Result := TrimFilename(AppendPathDelim(ProjectDirectory) + Result);
+end;
+
 { TResourceList }
 
 function TResourceList.GetItem(AIndex: Integer): PResourceItem;
@@ -223,11 +238,13 @@ function TProjectUserResources.UpdateResources(AResources: TAbstractProjectResou
 var
   I: Integer;
   ARes: TAbstractResource;
+  ProjectDirectory: String;
 begin
   Result := True;
+  ProjectDirectory := ExtractFilePath(MainFileName);
   for I := 0 to List.Count - 1 do
   begin
-    ARes := List[I]^.CreateResource;
+    ARes := List[I]^.CreateResource(ProjectDirectory);
     if Assigned(ARes) then
       AResources.AddSystemResource(ARes);
   end;

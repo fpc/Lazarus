@@ -25,7 +25,7 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
     Columns = <    
       item
         Caption = 'FileName'
-        Width = 300
+        Width = 200
       end    
       item
         Caption = 'Type'
@@ -33,7 +33,7 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
       end    
       item
         Caption = 'Resource'
-        Width = 376
+        Width = 326
       end>
     RowSelect = True
     TabOrder = 0
@@ -132,6 +132,7 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
     TabOrder = 3
   end
   object dlgOpen: TOpenDialog
+    Options = [ofAllowMultiSelect, ofEnableSizing, ofViewDetail]
     left = 146
     top = 93
   end
