@@ -89,7 +89,7 @@ begin
   end;
 end;
 {$else}
-function TWinDbgApi.EnumerateProcesses(AList: TDBGRunningProcessInfoList): boolean;
+function EnumerateProcesses(AList: TDBGRunningProcessInfoList): boolean;
 begin
   Result := False;
 end;
