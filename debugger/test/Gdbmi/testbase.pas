@@ -235,6 +235,8 @@ type
     procedure TearDown; override;
     procedure DoDbgOutPut(Sender: TObject; const AText: String); virtual;
     procedure InternalDbgOutPut(Sender: TObject; const AText: String);
+    function InternalFeedBack(Sender: TObject; const AText, AInfo: String;
+      AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
     function GdbClass: TGDBMIDebuggerClass; virtual;
     function StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
     procedure CleanGdb;
@@ -412,6 +414,12 @@ begin
   end;
 end;
 
+function TGDBTestCase.InternalFeedBack(Sender: TObject; const AText, AInfo: String;
+  AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
+begin
+  Result := frOk;
+end;
+
 function TGDBTestCase.GetCompilerInfo: TCompilerInfo;
 begin
   Result := Parent.CompilerInfo;
@@ -528,6 +536,7 @@ begin
 
   Result := GdbClass.Create(DebuggerInfo.ExeName);
   Result.OnDbgOutput  := @InternalDbgOutPut;
+  Result.OnFeedback := @InternalFeedBack;
 
   //TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
   FWatches.Supplier := Result.Watches;
