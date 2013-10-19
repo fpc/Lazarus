@@ -101,6 +101,7 @@ uses
   Translations,
   // debugger
   RunParamsOpts, BaseDebugManager, DebugManager, debugger, DebuggerDlg,
+  DebugAttachDialog,
   // packager
   PackageSystem, PkgManager, BasePkgManager, LPKCache,
   // source editing
@@ -3260,8 +3261,9 @@ begin
   ecAttach:
     if ToolStatus = itNone then begin
       if DebugBoss.InitDebugger([difInitForAttach]) then begin
-        s := '';
-        if InputQuery(rsAttachTo, rsEnterPID, s) then begin
+        s := GetPidForAttach;
+
+        if s <> '' then begin
           ToolStatus := itDebugger;
           DebugBoss.Attach(s);
         end

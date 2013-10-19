@@ -66,7 +66,7 @@
         <PackageName Value="SynEdit"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="110">
+    <Units Count="111">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -830,6 +830,12 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="project_resources_options"/>
       </Unit109>
+      <Unit110>
+        <Filename Value="../debugger/debugattachdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <UnitName Value="DebugAttachDialog"/>
+      </Unit110>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
