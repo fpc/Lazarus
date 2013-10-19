@@ -431,11 +431,19 @@ type
     property Success: Boolean read FSuccess;
   end;
 
+  { TGDBMIDebuggerChangeFilenameBase }
+
+  TGDBMIDebuggerChangeFilenameBase = class(TGDBMIDebuggerCommand)
+  protected
+    FErrorMsg: String;
+    function DoChangeFilename: Boolean;
+    function DoSetPascal: Boolean;
+  end;
+
   { TGDBMIDebuggerCommandChangeFilename }
 
-  TGDBMIDebuggerCommandChangeFilename = class(TGDBMIDebuggerCommand)
+  TGDBMIDebuggerCommandChangeFilename = class(TGDBMIDebuggerChangeFilenameBase)
   private
-    FErrorMsg: String;
     FSuccess: Boolean;
     FFileName: String;
   protected
@@ -448,7 +456,7 @@ type
 
   { TGDBMIDebuggerCommandExecuteBase }
 
-  TGDBMIDebuggerCommandExecuteBase = class(TGDBMIDebuggerCommand)
+  TGDBMIDebuggerCommandExecuteBase = class(TGDBMIDebuggerChangeFilenameBase)
   private
     FCanKillNow, FDidKillNow: Boolean;
   protected
@@ -1613,6 +1621,68 @@ begin
   then Result := 8;
 end;
 
+{ TGDBMIDebuggerChangeFilenameBase }
+
+function TGDBMIDebuggerChangeFilenameBase.DoChangeFilename: Boolean;
+var
+  R: TGDBMIExecResult;
+  List: TGDBMINameValueList;
+  S: String;
+begin
+  Result := False;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
+
+  //Cleanup our own breakpoints
+  FTheDebugger.FExceptionBreak.Clear(Self);
+  FTheDebugger.FBreakErrorBreak.Clear(Self);
+  FTheDebugger.FRunErrorBreak.Clear(Self);
+  if DebuggerState = dsError then Exit;
+
+  S := FTheDebugger.ConvertToGDBPath(UTF8ToSys(FTheDebugger.FileName), cgptExeName);
+  Result := ExecuteCommand('-file-exec-and-symbols %s', [S], R);
+  if not Result then exit;
+  {$IFDEF darwin}
+  if  (R.State = dsError) and (FFileName <> '')
+  then begin
+    FFileName := FFileName + '/Contents/MacOS/' + ExtractFileNameOnly(FTheDebugger.FileName);
+    S := FTheDebugger.ConvertToGDBPath(UTF8ToSys(FFileName), cgptExeName);
+    Result := ExecuteCommand('-file-exec-and-symbols %s', [S], R);
+    if not Result then exit;
+  end;
+  {$ENDIF}
+
+  if  (R.State = dsError) and (FTheDebugger.FileName <> '')
+  then begin
+    List := TGDBMINameValueList.Create(R);
+    FErrorMsg := DeleteEscapeChars((List.Values['msg']));
+    List.Free;
+    Result := False;
+    Exit;
+  end;
+end;
+
+function TGDBMIDebuggerChangeFilenameBase.DoSetPascal: Boolean;
+begin
+  Result := True;
+
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
+  // Force setting language
+  // Setting extensions dumps GDB (bug #508)
+  Result := ExecuteCommand('-gdb-set language pascal', [], [cfCheckError]);
+  Result := Result and (DebuggerState <> dsError);
+(*
+    ExecuteCommand('-gdb-set extension-language .lpr pascal', False);
+    if not FHasSymbols then Exit; // file-exec-and-symbols not allways result in no symbols
+    ExecuteCommand('-gdb-set extension-language .lrs pascal', False);
+    ExecuteCommand('-gdb-set extension-language .dpr pascal', False);
+    ExecuteCommand('-gdb-set extension-language .pas pascal', False);
+    ExecuteCommand('-gdb-set extension-language .pp pascal', False);
+    ExecuteCommand('-gdb-set extension-language .inc pascal', False);
+*)
+end;
+
 { TGDBMIDbgInstructionQueue }
 
 procedure TGDBMIDbgInstructionQueue.HandleGdbDataBeforeInstruction(var AData: String;
@@ -2606,57 +2676,11 @@ var
   S: String;
 begin
   Result := True;
-  FSuccess := False;
-  FContext.ThreadContext := ccNotRequired;
-  FContext.StackContext := ccNotRequired;
-
-  //Cleanup our own breakpoints
-  FTheDebugger.FExceptionBreak.Clear(Self);
-  FTheDebugger.FBreakErrorBreak.Clear(Self);
-  FTheDebugger.FRunErrorBreak.Clear(Self);
-  if DebuggerState = dsError then Exit;
-
-  S := FTheDebugger.ConvertToGDBPath(UTF8ToSys(FFileName), cgptExeName);
-  FSuccess := ExecuteCommand('-file-exec-and-symbols %s', [S], R);
+  FSuccess := DoChangeFilename;
   if not FSuccess then exit;
-  {$IFDEF darwin}
-  if  (R.State = dsError) and (FFileName <> '')
-  then begin
-    FFileName := FFileName + '/Contents/MacOS/' + ExtractFileNameOnly(FFileName);
-    S := FTheDebugger.ConvertToGDBPath(UTF8ToSys(FFileName), cgptExeName);
-    FSuccess := ExecuteCommand('-file-exec-and-symbols %s', [S], R);
-    if not FSuccess then exit;
-  end;
-  {$ENDIF}
 
-  if  (R.State = dsError) and (FFileName <> '')
-  then begin
-    List := TGDBMINameValueList.Create(R);
-    FErrorMsg := DeleteEscapeChars((List.Values['msg']));
-    List.Free;
-    FSuccess := False;
-    Exit;
-  end;
-
-  if FFileName = ''
-  then exit;
-
-  if tfHasSymbols in TargetInfo^.TargetFlags
-  then begin
-    // Force setting language
-    // Setting extensions dumps GDB (bug #508)
-    FSuccess := ExecuteCommand('-gdb-set language pascal', [], [cfCheckError]);
-    FSuccess := FSuccess and (DebuggerState <> dsError);
-(*
-    ExecuteCommand('-gdb-set extension-language .lpr pascal', False);
-    if not FHasSymbols then Exit; // file-exec-and-symbols not allways result in no symbols
-    ExecuteCommand('-gdb-set extension-language .lrs pascal', False);
-    ExecuteCommand('-gdb-set extension-language .dpr pascal', False);
-    ExecuteCommand('-gdb-set extension-language .pas pascal', False);
-    ExecuteCommand('-gdb-set extension-language .pp pascal', False);
-    ExecuteCommand('-gdb-set extension-language .inc pascal', False);
-*)
-  end;
+  if FFileName = '' then exit;
+  FSuccess := DoSetPascal;
 end;
 
 constructor TGDBMIDebuggerCommandChangeFilename.Create(AOwner: TGDBMIDebugger;
@@ -5009,6 +5033,9 @@ begin
       Exit;
     end;
 
+    if not DoChangeFilename then exit;
+    if not DoSetPascal then exit;
+
     DebugLn(['TGDBMIDebugger.StartDebugging WorkingDir="', FTheDebugger.WorkingDir,'"']);
     if FTheDebugger.WorkingDir <> ''
     then begin
@@ -5259,14 +5286,14 @@ begin
 
   TargetInfo^.TargetPID := NewPID;
 
-  ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
+  DoSetPascal;
 
   if (FTheDebugger.FileName <> '') and (pos('READING SYMBOLS FROM', UpperCase(CmdResp)) < 1) then begin
     ExecuteCommand('ptype TObject', [], R);
     if pos('NO SYMBOL TABLE IS LOADED', UpperCase(FFullCmdReply)) > 0 then begin
       ExecuteCommand('-file-exec-and-symbols %s',
                      [FTheDebugger.ConvertToGDBPath(UTF8ToSys(FTheDebugger.FileName), cgptExeName)], R);
-      ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
+      DoSetPascal;
     end;
   end;
 
@@ -7071,6 +7098,13 @@ begin
   Result := False;
   FCurrentStackFrameValid := False; // not running => not valid
   FCurrentThreadIdValid   := False;
+
+  if State = dsIdle then begin
+    // will do in start debugging
+    if not (inherited ChangeFileName) then Exit;
+    Result:=true;
+    exit;
+  end;
 
   Cmd := TGDBMIDebuggerCommandChangeFilename.Create(Self, FileName);
   Cmd.AddReference;
