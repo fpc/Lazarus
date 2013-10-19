@@ -89,7 +89,7 @@ begin
   end;
 end;
 {$else}
-function EnumerateProcesses(AList: TDBGRunningProcessInfoList): boolean;
+function EnumerateProcesses(AList: TRunningProcessInfoList): boolean;
 begin
   Result := False;
 end;
