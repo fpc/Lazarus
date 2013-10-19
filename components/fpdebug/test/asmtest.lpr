@@ -9,7 +9,7 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms,
   AsmTestUnit,
-  dbgdisasx86;
+  FpDbgDisasX86;
 
 begin
   Application.Initialize;

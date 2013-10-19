@@ -8,8 +8,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, LCLProc, Math,
-
-  DbgDisasX86;
+  FpDbgDisasX86;
 
 type
 
