@@ -1,6 +1,9 @@
 unit DebugAttachDialog;
 
 {$mode objfpc}{$H+}
+{$ifdef darwin}
+  {$modeswitch ObjectiveC1}
+{$endif}
 
 interface
 
@@ -137,10 +140,68 @@ begin
   FindCloseUTF8(Rec);
 end;
 {$else}
+{$ifdef darwin}
+uses
+  MacOSAll, CocoaAll;
+
+function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = kCFStringEncodingUTF8): String;
+var
+  Str: Pointer;
+  StrSize: CFIndex;
+  StrRange: CFRange;
+begin
+  if AString = nil then
+  begin
+    Result := '';
+    Exit;
+  end;
+
+  // Try the quick way first
+  Str := CFStringGetCStringPtr(AString, Encoding);
+  if Str <> nil then
+    Result := PChar(Str)
+  else
+  begin
+    // if that doesn't work this will
+    StrRange.location := 0;
+    StrRange.length := CFStringGetLength(AString);
+
+    CFStringGetBytes(AString, StrRange, Encoding,
+      Ord('?'), False, nil, 0, StrSize);
+    SetLength(Result, StrSize);
+
+    if StrSize > 0 then
+      CFStringGetBytes(AString, StrRange, Encoding,
+        Ord('?'), False, @Result[1], StrSize, StrSize);
+  end;
+end;
+
+function EnumerateProcesses(AList: TRunningProcessInfoList): boolean;
+var
+  Arr: NSArray;
+  App: NSRunningApplication;
+  I: Integer;
+  item: TRunningProcessInfo;
+begin
+  Result := True; // we can enumerate processes
+
+  if not Assigned(AList) then
+    Exit;
+
+  Arr := NSWorkspace.sharedWorkspace.runningApplications;
+  for I := 0 to Arr.count - 1 do
+  begin
+    App := NSRunningApplication(Arr.objectAtIndex(I));
+    item := TRunningProcessInfo.Create(App.processIdentifier, CFStringToStr(CFStringRef(App.localizedName)));
+    AList.Add(item);
+  end;
+end;
+{$else}
 function EnumerateProcesses(AList: TRunningProcessInfoList): boolean;
 begin
   Result := False;
 end;
+{$endif}
 {$endif}
 {$endif}
 
