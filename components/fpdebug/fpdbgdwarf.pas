@@ -767,7 +767,7 @@ function DbgsDump(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): St
 implementation
 
 var
-  FPDBG_DWARF_WARNINGS, FPDBG_DWARF_VERBOSE: PLazLoggerLogGroup;
+  FPDBG_DWARF_WARNINGS, FPDBG_DWARF_SEARCH, FPDBG_DWARF_VERBOSE: PLazLoggerLogGroup;
 
 const
   SCOPE_ALLOC_BLOCK_SIZE = 4096; // Increase scopelist in steps of
@@ -1292,7 +1292,7 @@ begin
       if NewInfo.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint) then begin
         Info := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
             Info.SearchScope;
-            DebugLn(['!!!! PARENT !!! ', dbgs(Info.FScope, FwdCompUint) ]);
+            DebugLn(FPDBG_DWARF_SEARCH, ['MemberByName searching parent', dbgs(Info.FScope, FwdCompUint) ]);
       end;
       ReleaseRefAndNil(NewInfo);
     end;
@@ -1440,7 +1440,7 @@ var
   Encoding, ByteSize: Integer;
 begin
   if not FInformationEntry.ReadValue(DW_AT_encoding, Encoding) then begin
-    DebugLn(['Failed reading Encoding']);
+    DebugLn(FPDBG_DWARF_WARNINGS, ['TDbgDwarfBaseIdentifierBase.KindNeeded: Failed reading encoding for ', DwarfTagToString(FInformationEntry.Abbrev.tag)]);
     inherited KindNeeded;
     exit;
   end;
@@ -1460,7 +1460,7 @@ begin
     DW_ATE_unsigned_char: SetKind(skChar);
     else
       begin
-        DebugLn(['Unknown Encoding']);
+        DebugLn(FPDBG_DWARF_WARNINGS, ['TDbgDwarfBaseIdentifierBase.KindNeeded: Unknown encoding ', DwarfBaseTypeEncodingToString(Encoding), ' for ', DwarfTagToString(FInformationEntry.Abbrev.tag)]);
         inherited KindNeeded;
       end;
   end;
@@ -1608,7 +1608,7 @@ begin
 
     if UpperCase(EntryName) = UpperCase(AName) then begin
       // TODO: check DW_AT_start_scope;
-      DebugLn(['!!!! FOUND !!! ', dbgs(FScope, FCompUnit), DbgSName(Self)]);
+      DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChild found ', dbgs(FScope, FCompUnit), DbgSName(Self)]);
       Result := True;
       exit;
     end;
@@ -1798,11 +1798,11 @@ begin
       exit;
     ACompUnit := FCompUnit.FOwner.FindCompilationUnitByOffs(Offs);
     Result := ACompUnit <> nil;
-    if not Result then DebugLn('Comp unit not found DW_FORM_ref_addr');
+    if not Result then DebugLn(FPDBG_DWARF_WARNINGS, ['Comp unit not found DW_FORM_ref_addr']);
     AValue := FCompUnit.FOwner.FSections[dsInfo].RawData + Offs;
   end
   else begin
-    DebugLn(['FORM for DW_AT_type not expected ', DwarfAttributeFormToString(Form)]);
+    DebugLn(FPDBG_DWARF_WARNINGS, ['FORM for DW_AT_type not expected ', DwarfAttributeFormToString(Form)]);
   end;
 end;
 
@@ -1854,8 +1854,7 @@ begin
   if FInformationEntry.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint) then begin
     InfoEntry := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
         InfoEntry.SearchScope;
-        //DebugLn(['!!!! TYPE !!! ', dbgs(InfoEntry.FScope, FwdCompUint), DbgsDump(InfoEntry.FScope, FwdCompUint) ]);
-        DebugLn(['!!!! TYPE !!! ', dbgs(InfoEntry.FScope, FwdCompUint) ]);
+        DebugLn(FPDBG_DWARF_SEARCH, ['GetTypeInfo found', dbgs(InfoEntry.FScope, FwdCompUint) ]);
     FTypeInfo := TDbgDwarfTypeIdentifier.CreateTybeSubClass('', InfoEntry);
     ReleaseRefAndNil(InfoEntry);
     Result := FTypeInfo;
@@ -2327,7 +2326,7 @@ begin
     inc(LEB128);
     dec(i);
     if i = 0 then begin
-      DebugLn('ENDLESS LEB128');
+      DebugLn(FPDBG_DWARF_WARNINGS, ['ENDLESS LEB128']);
       exit;
     end;
   end;
@@ -2420,7 +2419,7 @@ begin
     inc(LEB128);
     dec(i);
     if i = 0 then begin
-      DebugLn('ENDLESS LEB128');
+      DebugLn(FPDBG_DWARF_WARNINGS, ['ENDLESS LEB128']);
       exit;
     end;
   end;
@@ -2942,16 +2941,14 @@ begin
     CU := SubRoutine.FCU;
     InfoEntry := TDwarfInformationEntry.Create(CU, nil);
     InfoEntry.ScopeIndex := SubRoutine.FAddressInfo^.ScopeIndex;
-//    debugln(['TDbgDwarf.FindIdentifier Found Subroutine ', dbgs(Scope)]);
 
     while InfoEntry.HasValidScope do begin
-      debugln(['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
+      debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
       StartScopeIdx := InfoEntry.ScopeIndex;
 
       if InfoEntry.GoNamedChild(AName) then begin
         Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
-        //DebugLn(['!!!! FOUND !!! ', dbgs(InfoEntry.FScope, CU), DbgsDump(InfoEntry.FScope, CU) ]);
-        DebugLn(['!!!! FOUND !!! ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
+        DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier faund ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
         break;
       end;
 
@@ -3302,7 +3299,7 @@ begin
   begin
     Line := FLineInfo.StateMachine.Line;
     if Line < 0 then begin
-      DebugLn(['NEGATIVE LINE ', Line]);
+      DebugLn(FPDBG_DWARF_WARNINGS, ['NEGATIVE LINE ', Line]);
       Continue;
     end;
 
@@ -5286,6 +5283,7 @@ end;
 initialization
   FPDBG_DWARF_WARNINGS := DebugLogger.RegisterLogGroup('FPDBG_DWARF_WARNINGS' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );
   FPDBG_DWARF_VERBOSE  := DebugLogger.RegisterLogGroup('FPDBG_DWARF_VERBOSE' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );
+  FPDBG_DWARF_SEARCH   := DebugLogger.RegisterLogGroup('FPDBG_DWARF_SEARCH' {$IFDEF FPDBG_DWARF_SEARCH} , True {$ENDIF} );
 
 end.
 
