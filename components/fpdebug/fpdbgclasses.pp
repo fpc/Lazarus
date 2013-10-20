@@ -33,6 +33,7 @@
 }
 unit FpDbgClasses;
 {$mode objfpc}{$H+}
+
 interface
 
 uses
@@ -136,8 +137,8 @@ type
     FAddress: TDbgPtr;
     FSize: Integer;
 
-    function GetSymbolType: TDbgSymbolType; inline;
-    function GetKind: TDbgSymbolKind; inline;
+    function GetSymbolType: TDbgSymbolType; //inline;
+    function GetKind: TDbgSymbolKind; //inline;
     function GetName: String;
     function GetSize: Integer;
     function GetAddress: TDbgPtr;
@@ -327,8 +328,8 @@ function dbgs(ADbgSymbolKind: TDbgSymbolKind): String; overload;
 
 implementation
 
-//uses
-//  FpDbgDwarf;
+uses
+  FpDbgDwarf;
 
 procedure LogLastError;
 begin
@@ -439,8 +440,8 @@ procedure TDbgInstance.LoadInfo;
 begin
   FLoader := TDbgImageLoader.Create(FModuleHandle);
   assert(false, 'fpc will not compile this');
-  //FDbgInfo := TDbgDwarf.Create(FLoader);
-  //TDbgDwarf(FDbgInfo).LoadCompilationUnits;
+  FDbgInfo := TDbgDwarf.Create(FLoader);
+  TDbgDwarf(FDbgInfo).LoadCompilationUnits;
 end;
 
 function TDbgInstance.RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;
