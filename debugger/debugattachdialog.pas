@@ -134,6 +134,7 @@ begin
       end;
     until FindNextUTF8(Rec) <> 0;
   end;
+  FindCloseUTF8(Rec);
 end;
 {$else}
 function EnumerateProcesses(AList: TRunningProcessInfoList): boolean;
