@@ -5388,8 +5388,8 @@ end;
 function TCurrentCallStack.HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool;
 begin
   if FCountValidity = ddsValid then begin
-   Result := inherited HasAtLeastCount(ARequiredMinCount);
-   exit;
+    Result := inherited HasAtLeastCount(ARequiredMinCount);
+    exit;
   end;
 
   if FAtLeastCountOld >= ARequiredMinCount then begin
@@ -5410,6 +5410,9 @@ begin
 
         FAtLeastCountValidity := ddsRequested;
         FMonitor.RequestAtLeastCount(self, ARequiredMinCount);
+        if FCountValidity = ddsValid then
+          Result := inherited HasAtLeastCount(ARequiredMinCount)
+        else
         if FAtLeastCountValidity = ddsValid then begin
           if ARequiredMinCount <= FAtLeastCount then
             Result := nbTrue
