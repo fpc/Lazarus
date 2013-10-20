@@ -1643,10 +1643,10 @@ begin
   Result := ExecuteCommand('-file-exec-and-symbols %s', [S], R);
   if not Result then exit;
   {$IFDEF darwin}
-  if  (R.State = dsError) and (FFileName <> '')
+  if  (R.State = dsError) and (FTheDebugger.FileName <> '')
   then begin
-    FFileName := FFileName + '/Contents/MacOS/' + ExtractFileNameOnly(FTheDebugger.FileName);
-    S := FTheDebugger.ConvertToGDBPath(UTF8ToSys(FFileName), cgptExeName);
+    S := FTheDebugger.FileName + '/Contents/MacOS/' + ExtractFileNameOnly(FTheDebugger.FileName);
+    S := FTheDebugger.ConvertToGDBPath(UTF8ToSys(S), cgptExeName);
     Result := ExecuteCommand('-file-exec-and-symbols %s', [S], R);
     if not Result then exit;
   end;
