@@ -598,13 +598,11 @@ begin
   if FDbgType = nil then
     exit;
 
-  if FDbgType is TDbgDwarfValueIdentifier then
-    Result := TDbgDwarfValueIdentifier(FDbgType).TypeInfo
-  else
-  if FDbgType is TDbgDwarfTypeIdentifier then
-    Result := FDbgType
-  else
-    Result := nil; // Todo handled by typecast operator // maybe wrap in TTypeOf class?
+  case FDbgType.SymbolType of
+    stValue: Result := TDbgDwarfValueIdentifier(FDbgType).TypeInfo;
+    stType:  Result := FDbgType;
+    else     Result := nil;
+  end;
 
   if Result <> nil then
     Result.AddReference;
@@ -614,7 +612,7 @@ function TFpPascalExpressionPartIdentifer.DoGetIsTypeCast: Boolean;
 begin
   if FDbgType = nil then
     FDbgType := FExpression.GetDbgTyeForIdentifier(GetText);
-  Result := (FDbgType  <> nil) and (FDbgType is TDbgDwarfTypeIdentifier);
+  Result := (FDbgType  <> nil) and (FDbgType.SymbolType = stType);
 end;
 
 destructor TFpPascalExpressionPartIdentifer.Destroy;
@@ -1446,13 +1444,13 @@ begin
 
   tmp := Items[0].ResultType;
   // Todo unit
-  if (tmp <> nil) and (tmp is TDbgDwarfTypeIdentifier) and
+  if (tmp <> nil) and (tmp.SymbolType = stType) and
      (TDbgDwarfTypeIdentifier(tmp).IsStructType)
   then begin
     struct := TDbgDwarfTypeIdentifier(tmp).StructTypeInfo;
     tmp := struct.MemberByName[Items[1].GetText];
 
-    if (tmp <> nil) and (tmp is TDbgDwarfValueIdentifier) then begin
+    if (tmp <> nil) and (tmp.SymbolType = stValue) then begin
       Result := TDbgDwarfValueIdentifier(tmp).TypeInfo;
       Result.AddReference;
     end;

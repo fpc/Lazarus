@@ -37,9 +37,9 @@ interface
 
 uses
 {$ifdef windows}
-  Windows, FpImgReaderWinPE,
+  Windows,
 {$endif}
-  Classes, Maps, FpDbgUtil, FpDbgWinExtra, FpDbgLoader, LazLoggerBase, LazClasses;
+  Classes, SysUtils, Maps, FpDbgUtil, FpDbgWinExtra, FpDbgLoader, LazLoggerBase, LazClasses;
 
 type
   TDbgPtr = QWord; // PtrUInt;
@@ -67,6 +67,12 @@ type
     property SingleStepping: boolean read FSingleStepping;
   end;
 {$endif}
+
+  TDbgSymbolType = (
+    stNone,
+    stValue,  // The symbol has a value (var, field, function, procedure (value is address of func/proc, so it can be called)
+    stType    // The Symbol is a type (including proc/func declaration / without DW_AT_low_pc)
+  );
 
   TDbgSymbolKind = (
     skNone,          // undefined type
@@ -113,7 +119,7 @@ type
   TDbgSymbolFlags = set of TDbgSymbolFlag;
 
   TDbgSymbolField = (
-    sfName, sfKind
+    sfiName, sfiKind, sfiSymType, sfiAddress, sfiSize
   );
   TDbgSymbolFields = set of TDbgSymbolField;
 
@@ -121,14 +127,22 @@ type
 
   TDbgSymbol = class(TRefCountedObject)
   private
+    FEvaluatedFields: TDbgSymbolFields;
+
+    // Cached fields
     FName: String;
     FKind: TDbgSymbolKind;
+    FSymbolType: TDbgSymbolType;
     FAddress: TDbgPtr;
+    FSize: Integer;
 
-    FEvaluatedFields: TDbgSymbolFields;
-    function GetKind: TDbgSymbolKind;
+    function GetSymbolType: TDbgSymbolType; inline;
+    function GetKind: TDbgSymbolKind; inline;
     function GetName: String;
+    function GetSize: Integer;
+    function GetAddress: TDbgPtr;
   protected
+    // NOT cached fields
     function GetPointedToType: TDbgSymbol; virtual;
 
     function GetChild(AIndex: Integer): TDbgSymbol; virtual;
@@ -139,23 +153,31 @@ type
     function GetLine: Cardinal; virtual;
     function GetParent: TDbgSymbol; virtual;
     function GetReference: TDbgSymbol; virtual;
-    function GetSize: Integer; virtual;
-
+  protected
+    // Cached fields
     procedure SetName(AValue: String);
     procedure SetKind(AValue: TDbgSymbolKind);
+    procedure SetSymbolType(AValue: TDbgSymbolType);
+    procedure SetAddress(AValue: TDbgPtr);
+    procedure SetSize(AValue: Integer);
 
     procedure KindNeeded; virtual;
     procedure NameNeeded; virtual;
+    procedure SymbolTypeNeeded; virtual;
+    procedure AddressNeeded; virtual;
+    procedure SizeNeeded; virtual;
+    //procedure Needed; virtual;
   public
     constructor Create(const AName: String);
     constructor Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TDbgPtr);
     destructor Destroy; override;
     // Basic info
-    property Name: String read GetName;
-    property Kind: TDbgSymbolKind read GetKind;
+    property Name:       String read GetName;
+    property SymbolType: TDbgSymbolType read GetSymbolType;
+    property Kind:       TDbgSymbolKind read GetKind;
     // Memory; Size is also part of type (byte vs word vs ...)
-    property Address: TDbgPtr read FAddress;
-    property Size: Integer read GetSize;
+    property Address:    TDbgPtr read GetAddress;
+    property Size:       Integer read GetSize; // In Bytes
     // Location
     property FileName: String read GetFile;
     property Line: Cardinal read GetLine;
@@ -305,8 +327,8 @@ function dbgs(ADbgSymbolKind: TDbgSymbolKind): String; overload;
 
 implementation
 
-uses
-  SysUtils, FpDbgDwarf;
+//uses
+//  FpDbgDwarf;
 
 procedure LogLastError;
 begin
@@ -416,8 +438,9 @@ end;
 procedure TDbgInstance.LoadInfo;
 begin
   FLoader := TDbgImageLoader.Create(FModuleHandle);
-  FDbgInfo := TDbgDwarf.Create(FLoader);
-  TDbgDwarf(FDbgInfo).LoadCompilationUnits;
+  assert(false, 'fpc will not compile this');
+  //FDbgInfo := TDbgDwarf.Create(FLoader);
+  //TDbgDwarf(FDbgInfo).LoadCompilationUnits;
 end;
 
 function TDbgInstance.RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;
@@ -905,18 +928,39 @@ begin
   inherited Destroy;
 end;
 
+function TDbgSymbol.GetAddress: TDbgPtr;
+begin
+  if not(sfiAddress in FEvaluatedFields) then
+    AddressNeeded;
+  Result := FAddress;
+end;
+
 function TDbgSymbol.GetKind: TDbgSymbolKind;
 begin
-  if not(sfKind in FEvaluatedFields) then
+  if not(sfiKind in FEvaluatedFields) then
     KindNeeded;
   Result := FKind;
 end;
 
 function TDbgSymbol.GetName: String;
 begin
-  if not(sfName in FEvaluatedFields) then
+  if not(sfiName in FEvaluatedFields) then
     NameNeeded;
   Result := FName;
+end;
+
+function TDbgSymbol.GetSize: Integer;
+begin
+  if not(sfiSize in FEvaluatedFields) then
+    SizeNeeded;
+  Result := FSize;
+end;
+
+function TDbgSymbol.GetSymbolType: TDbgSymbolType;
+begin
+  if not(sfiSymType in FEvaluatedFields) then
+    SymbolTypeNeeded;
+  Result := FSymbolType;
 end;
 
 function TDbgSymbol.GetPointedToType: TDbgSymbol;
@@ -924,16 +968,34 @@ begin
   Result := nil;
 end;
 
+procedure TDbgSymbol.SetAddress(AValue: TDbgPtr);
+begin
+  FAddress := AValue;
+  Include(FEvaluatedFields, sfiAddress);
+end;
+
 procedure TDbgSymbol.SetKind(AValue: TDbgSymbolKind);
 begin
   FKind := AValue;
-  Include(FEvaluatedFields, sfKind);
+  Include(FEvaluatedFields, sfiKind);
+end;
+
+procedure TDbgSymbol.SetSymbolType(AValue: TDbgSymbolType);
+begin
+  FSymbolType := AValue;
+  Include(FEvaluatedFields, sfiSymType);
+end;
+
+procedure TDbgSymbol.SetSize(AValue: Integer);
+begin
+  FSize := AValue;
+  Include(FEvaluatedFields, sfiSize);
 end;
 
 procedure TDbgSymbol.SetName(AValue: String);
 begin
   FName := AValue;
-  Include(FEvaluatedFields, sfName);
+  Include(FEvaluatedFields, sfiName);
 end;
 
 function TDbgSymbol.GetChild(AIndex: Integer): TDbgSymbol;
@@ -976,11 +1038,6 @@ begin
   Result := nil;
 end;
 
-function TDbgSymbol.GetSize: Integer;
-begin
-  Result := 0;
-end;
-
 procedure TDbgSymbol.KindNeeded;
 begin
   SetKind(skNone);
@@ -989,6 +1046,21 @@ end;
 procedure TDbgSymbol.NameNeeded;
 begin
   SetName('');
+end;
+
+procedure TDbgSymbol.SymbolTypeNeeded;
+begin
+  SetSymbolType(stNone);
+end;
+
+procedure TDbgSymbol.AddressNeeded;
+begin
+  SetAddress(0);
+end;
+
+procedure TDbgSymbol.SizeNeeded;
+begin
+  SetSize(0);
 end;
 
 {$ifdef windows}

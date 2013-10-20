@@ -205,10 +205,7 @@ const
 
 var
   IdentName: String;
-  Loc: TDBGPtr;
-  Ident: TDbgSymbol;
   PasExpr: TFpGDBMIPascalExpression;
-  TypeIdent: TDbgDwarfTypeIdentifier;
 begin
   Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
 
@@ -383,10 +380,6 @@ end;
 
 function TFpGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand;
   const AParams: array of const): Boolean;
-var
-  Ident: TDbgSymbol;
-  Loc: TDBGPtr;
-  CurThread, CurStack: Integer;
 begin
   if HasDwarf and (ACommand = dcEvaluate) then begin
      //  String(AParams[0].VAnsiString)

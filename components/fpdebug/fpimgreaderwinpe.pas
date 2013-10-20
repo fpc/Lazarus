@@ -139,7 +139,6 @@ procedure TPEFileSource.LoadSections;
 
 var
   DosHeader: TImageDosHeader;
-  ModulePtr: Pointer;
   NtHeaders: record
     case integer of
       1: (Sys: TImageNtHeaders;);
@@ -148,7 +147,6 @@ var
     end;
   SectionHeader: PImageSectionHeader;
   n, i: Integer;
-  p: Pointer;
   SectionName: array[0..IMAGE_SIZEOF_SHORT_NAME] of Char;
   SectionMax: QWord;
   s: string[255];

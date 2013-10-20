@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, Types, SysUtils, FpDbgClasses, FpDbgDwarfConst, Maps, Math,
-  FpDbgLoader, FpDbgWinExtra, FpImgReaderBase, LazLoggerBase, LazClasses, contnrs;
+  FpDbgLoader, FpImgReaderBase, LazLoggerBase, LazClasses, contnrs;
   
 type
   // compilation unit header
@@ -526,6 +526,8 @@ type
     //function GetSize: Integer; override;
     property TypeInfo: TDbgDwarfTypeIdentifier read GetTypeInfo;
     property InformationEntry: TDwarfInformationEntry read FInformationEntry;
+
+    procedure Init; virtual;
     class function GetSubClass(ATag: Cardinal): TDbgDwarfIdentifierClass;
   public
     class function CreateSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfIdentifier;
@@ -540,6 +542,7 @@ type
   TDbgDwarfValueIdentifier = class(TDbgDwarfIdentifier) // var, const, member, ...
   protected
     procedure KindNeeded; override;
+    procedure Init; override;
   public
     property TypeInfo;
   end;
@@ -595,6 +598,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetIsPointerType: Boolean; virtual;
     function GetIsStructType: Boolean; virtual;
     function GetStructTypeInfo: TDbgDwarfIdentifierStructure; virtual;
+    procedure Init; override;
   public
     class function CreateTybeSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfTypeIdentifier;
     property TypeInfo;
@@ -685,6 +689,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function StateMachineValid: Boolean;
   protected
     procedure KindNeeded; override;
+    procedure SizeNeeded; override;
+
     function GetChild(AIndex: Integer): TDbgSymbol; override;
     function GetColumn: Cardinal; override;
     function GetCount: Integer; override;
@@ -693,7 +699,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetLine: Cardinal; override;
     function GetParent: TDbgSymbol; override;
 //    function GetReference: TDbgSymbol; override;
-    function GetSize: Integer; override;
   public
     constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr); overload;
     destructor Destroy; override;
@@ -1218,6 +1223,12 @@ begin
     SetKind(t.Kind);
 end;
 
+procedure TDbgDwarfValueIdentifier.Init;
+begin
+  inherited Init;
+  SetSymbolType(stValue);
+end;
+
 { TDbgDwarfIdentifierArray }
 
 procedure TDbgDwarfIdentifierArray.KindNeeded;
@@ -1473,6 +1484,12 @@ begin
   Result := nil;
 end;
 
+procedure TDbgDwarfTypeIdentifier.Init;
+begin
+  inherited Init;
+  SetSymbolType(stType);
+end;
+
 function TDbgDwarfTypeIdentifier.GetIsBaseType: Boolean;
 begin
   Result := False;
@@ -1636,8 +1653,6 @@ begin
 end;
 
 function TDwarfInformationEntry.FindNamedChild(AName: String): TDwarfInformationEntry;
-var
-  ScopeEntryName: String;
 begin
   Result := nil;
   if (not FScope.IsValid) and (FInformationEntry <> nil) then
@@ -1654,7 +1669,6 @@ end;
 function TDwarfInformationEntry.FindChildByTag(ATag: Cardinal): TDwarfInformationEntry;
 var
   Scope: TDwarfScopeInfo;
-  EntryName: String;
   AbbrList: TDwarfAbbrevList;
   Abbr: TDwarfAbbrev;
 begin
@@ -1869,6 +1883,11 @@ begin
   SetName(AName);
 end;
 
+procedure TDbgDwarfIdentifier.Init;
+begin
+  //
+end;
+
 class function TDbgDwarfIdentifier.GetSubClass(ATag: Cardinal): TDbgDwarfIdentifierClass;
 begin
   case ATag of
@@ -1910,6 +1929,7 @@ begin
   FInformationEntry.AddReference;
 
   inherited Create(AName);
+  Init;
 end;
 
 constructor TDbgDwarfIdentifier.Create(AName: String;
@@ -1920,6 +1940,7 @@ begin
   FInformationEntry.AddReference;
 
   inherited Create(AName, AKind, AAddress);
+  Init;
 end;
 
 destructor TDbgDwarfIdentifier.Destroy;
@@ -2774,11 +2795,6 @@ begin
   Result:=inherited GetParent;
 end;
 
-function TDbgDwarfProcSymbol.GetSize: Integer;
-begin
-  Result := FAddressInfo^.EndPC - FAddressInfo^.StartPC;
-end;
-
 function TDbgDwarfProcSymbol.StateMachineValid: Boolean;
 var
   SM1, SM2: TDwarfLineInfoStateMachine;
@@ -2828,6 +2844,11 @@ begin
     SetKind(skFunction)
   else
     SetKind(skProcedure);
+end;
+
+procedure TDbgDwarfProcSymbol.SizeNeeded;
+begin
+  SetSize(FAddressInfo^.EndPC - FAddressInfo^.StartPC);
 end;
 
 { TDbgDwarf }
@@ -2923,14 +2944,8 @@ var
   SubRoutine: TDbgDwarfProcSymbol; // TDbgSymbol;
   CU: TDwarfCompilationUnit;
   //Scope,
-  Scope2: TDwarfScopeInfo;
-  Form: Cardinal;
-  Attrib: Pointer;
-  SubName, EntryName: String;
   StartScopeIdx: Integer;
-  AtTypeAddr: Pointer;
-  InfoEntry, InfoEntry2: TDwarfInformationEntry;
-  AtTypeCU: TDwarfCompilationUnit;
+  InfoEntry: TDwarfInformationEntry;
 begin
   Result := nil;
   SubRoutine := TDbgDwarfProcSymbol(FindSymbol(AAddress));
@@ -2970,7 +2985,6 @@ begin
   finally
     ReleaseRefAndNil(SubRoutine);
     ReleaseRefAndNil(InfoEntry);
-    ReleaseRefAndNil(InfoEntry2);
   end;
 end;
 
@@ -3632,7 +3646,6 @@ function TDwarfCompilationUnit.GetLineAddressMap(const AFileName: String): PDWar
   end;
 var
   idx: Integer;
-  Map: TMap;
 begin
   Result := nil;
   if not Valid then Exit;
@@ -3689,7 +3702,6 @@ end;
 function TDwarfCompilationUnit.LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; out
   AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
 var
-  Abbrev: Cardinal;
   Def: TDwarfAbbrev;
   n: Integer;
   ADefs: PDwarfAbbrevEntry;
@@ -3784,7 +3796,6 @@ var
   BuildList: Boolean; // set once if we need to fill the list
   Searching: Boolean; // set as long as we need searching for a tag.
   p2: Pointer;
-  Def2: TDwarfAbbrev;
   ni: Integer;
                       // we cannot use result for this, since we might want a topnode search while we need to be continuable
 begin

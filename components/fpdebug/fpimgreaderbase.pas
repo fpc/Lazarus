@@ -8,7 +8,7 @@ uses
   {$ifdef windows}
   Windows, // After LCLType
   {$endif}
-  Classes, SysUtils, LazUTF8Classes;
+  Classes, SysUtils;
 
 type
   TDbgImageSection = record

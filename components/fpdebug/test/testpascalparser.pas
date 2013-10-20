@@ -376,6 +376,22 @@ begin
     TestExpr([0,0,0],   TFpPascalExpressionPartIdentifer, 'f', 0);
     TestExpr([0,1],   TFpPascalExpressionPartIdentifer, 'a', 0);
 
+    CreateExpr('@f(a)(b)', True);
+    TestExpr([],  TFpPascalExpressionPartOperatorAddressOf, '@', 1);
+    TestExpr([0], TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0,0], TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0,0,0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([0,0,1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([0,1],   TFpPascalExpressionPartIdentifer, 'b', 0);
+
+    CreateExpr('f(a)(b)^', True);
+    TestExpr([],  TFpPascalExpressionPartOperatorDeRef, '^', 1);
+    TestExpr([0], TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0,0], TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0,0,0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([0,0,1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+    TestExpr([0,1],   TFpPascalExpressionPartIdentifer, 'b', 0);
+
   finally
     CurrentTestExprObj.Free;
   end;

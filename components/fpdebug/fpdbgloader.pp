@@ -42,7 +42,7 @@ interface
 uses
   LCLType,
   FpImgReaderBase, FpImgReaderWinPE, FpImgReaderElf, FpImgReaderMacho,
-  Classes, SysUtils, FpDbgPETypes, LazUTF8Classes;
+  Classes, SysUtils;
 
 type
 
