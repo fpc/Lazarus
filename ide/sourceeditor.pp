@@ -6410,12 +6410,12 @@ end;
 
 procedure TSourceNotebook.SetPageIndex(AValue: Integer);
 begin
-  DebugLnEnter(SRCED_PAGES, ['>> TSourceNotebook.SetPageIndex Cur-PgIdx=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
   if (fPageIndex = AValue) and (FNotebook.PageIndex = AValue) then begin
     //debugln(['>> TSourceNotebook.SetPageIndex PageIndex=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
     //DumpStack;
     exit;
   end;
+  DebugLnEnter(SRCED_PAGES, ['>> TSourceNotebook.SetPageIndex Cur-PgIdx=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
   //debugln(['>> TSourceNotebook.SetPageIndex CHANGE PageIndex=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
   FPageIndex := AValue;
   if FUpdateLock = 0 then
