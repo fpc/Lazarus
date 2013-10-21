@@ -7674,8 +7674,10 @@ begin
     // make sure the statusbar is updated
     Include(States, snNotebookPageChangedNeeded);
     FNotebook.PageIndex := FPageIndex;
-    if snNotebookPageChangedNeeded in States then
+    if snNotebookPageChangedNeeded in States then begin
+      DebugLn(SRCED_PAGES, ['TSourceNotebook.ApplyPageIndex calling NotebookPageChanged']);
       NotebookPageChanged(nil);
+    end;
     HistorySetMostRecent(FNotebook.Pages[FPageIndex]);
   finally
     DebugBoss.UnLockCommandProcessing;
@@ -8041,7 +8043,7 @@ Begin
     Include(States, snNotebookPageChangedNeeded);
     exit;
   end;
-  DebugLnEnter(SRCED_PAGES, ['>> TSourceNotebook.NotebookPageChanged PageIndex=', PageIndex, ' AutoFocusLock=', fAutoFocusLock]);
+  DebugLnEnter(SRCED_PAGES, ['>> TSourceNotebook.NotebookPageChanged PageIndex=', PageIndex, ' AutoFocusLock=', fAutoFocusLock, ' Sender=',DbgSName(Sender)]);
 
   DebugBoss.LockCommandProcessing;
   try
@@ -8050,7 +8052,7 @@ Begin
     if (FHintWindow <> nil) and FHintWindow.Visible then
       HideHint;
 
-    DebugLn(SRCED_PAGES, ['TSourceNotebook.NotebookPageChanged TempEdit=', DbgSName(SrcEdit)]);
+    DebugLn(SRCED_PAGES, ['TSourceNotebook.NotebookPageChanged TempEdit=', DbgSName(SrcEdit), ' Vis=', dbgs(IsVisible), ' Hnd=', dbgs(HandleAllocated)]);
     if SrcEdit <> nil then
     begin
       if not SrcEdit.Visible then begin
