@@ -509,11 +509,13 @@ type
   private
     FCU: TDwarfCompilationUnit;
     FInformationEntry: TDwarfInformationEntry;
-    FTypeInfo: TDbgDwarfTypeIdentifier;
+    FNestedTypeInfo: TDbgDwarfTypeIdentifier;
     FFlags: set of (didtNameRead, didtTypeRead);
-    function GetTypeInfo: TDbgDwarfTypeIdentifier;
+    function GetNestedTypeInfo: TDbgDwarfTypeIdentifier;
   protected
+    function  ReadName(out AName:String): Boolean;
     procedure NameNeeded; override;
+    procedure TypeInfoNeeded; override;
 
     //function GetChild(AIndex: Integer): TDbgSymbol; override;
     //function GetColumn: Cardinal; override;
@@ -523,8 +525,7 @@ type
     //function GetLine: Cardinal; override;
     //function GetParent: TDbgSymbol; override;
 //    function GetReference: TDbgSymbol; override;
-    //function GetSize: Integer; override;
-    property TypeInfo: TDbgDwarfTypeIdentifier read GetTypeInfo;
+    property NestedTypeInfo: TDbgDwarfTypeIdentifier read GetNestedTypeInfo;
     property InformationEntry: TDwarfInformationEntry read FInformationEntry;
 
     procedure Init; virtual;
@@ -543,8 +544,6 @@ type
   protected
     procedure KindNeeded; override;
     procedure Init; override;
-  public
-    property TypeInfo;
   end;
 
   { TDbgDwarfTypeIdentifier }
@@ -595,28 +594,25 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TDbgDwarfTypeIdentifier = class(TDbgDwarfIdentifier)
   protected
     function GetIsBaseType: Boolean; virtual;
-    function GetIsPointerType: Boolean; virtual;
     function GetIsStructType: Boolean; virtual;
     function GetStructTypeInfo: TDbgDwarfIdentifierStructure; virtual;
     procedure Init; override;
   public
     class function CreateTybeSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfTypeIdentifier;
-    property TypeInfo;
     property IsBaseType: Boolean read GetIsBaseType;
-    property IsPointerType: Boolean read GetIsPointerType;
     property IsStructType: Boolean read GetIsStructType;
 
     property StructTypeInfo: TDbgDwarfIdentifierStructure read GetStructTypeInfo;
   end;
 
-  { TDbgDwarfBaseTypeIdentifier }
-
   { TDbgDwarfBaseIdentifierBase }
 
   TDbgDwarfBaseIdentifierBase = class(TDbgDwarfTypeIdentifier)
+  //function GetNestedTypeInfo: TDbgDwarfTypeIdentifier; // return nil
   protected
     function GetIsBaseType: Boolean; override;
     procedure KindNeeded; override;
+    procedure TypeInfoNeeded; override;
   end;
 
   { TDbgDwarfTypeIdentifierModifier }
@@ -624,9 +620,10 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TDbgDwarfTypeIdentifierModifier = class(TDbgDwarfTypeIdentifier)
   protected
     procedure KindNeeded; override;
+    procedure NameNeeded; override;
+    procedure TypeInfoNeeded; override;        // forward
+
     function GetIsBaseType: Boolean; override;
-    function GetIsPointerType: Boolean; override;
-    function GetPointedToType: TDbgSymbol; override;
     function GetIsStructType: Boolean; override;
     function GetStructTypeInfo: TDbgDwarfIdentifierStructure; override;
   end;
@@ -642,8 +639,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TDbgDwarfTypeIdentifierPointer = class(TDbgDwarfTypeIdentifier)
   protected
     procedure KindNeeded; override;
-    function GetIsPointerType: Boolean; override;
-    function GetPointedToType: TDbgSymbol; override;
     // fpc encodes classes as pointer, not ref (so Obj1 = obj2 compares the pointers)
     function GetIsStructType: Boolean; override;
     function GetStructTypeInfo: TDbgDwarfIdentifierStructure; override;
@@ -660,6 +655,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetMemberByName(AName: String): TDbgDwarfIdentifierMember;
   protected
     procedure KindNeeded; override;
+    procedure TypeInfoNeeded; override;                       // nil
     function GetIsStructType: Boolean; override;
     function GetStructTypeInfo: TDbgDwarfIdentifierStructure; override;
   public
@@ -1214,7 +1210,7 @@ end;
 
 procedure TDbgDwarfValueIdentifier.KindNeeded;
 var
-  t: TDbgDwarfTypeIdentifier;
+  t: TDbgSymbol;
 begin
   t := TypeInfo;
   if t = nil then
@@ -1318,6 +1314,11 @@ begin
     SetKind(skRecord);
 end;
 
+procedure TDbgDwarfIdentifierStructure.TypeInfoNeeded;
+begin
+  SetTypeInfo(nil);
+end;
+
 function TDbgDwarfIdentifierStructure.GetIsStructType: Boolean;
 begin
   Result := True;
@@ -1332,93 +1333,90 @@ end;
 
 procedure TDbgDwarfTypeIdentifierModifier.KindNeeded;
 var
-  t: TDbgDwarfTypeIdentifier;
+  t: TDbgSymbol;
 begin
-  t := TypeInfo;
-  if t = nil then
-    inherited KindNeeded
+  t := NestedTypeInfo;
+  if t = nil
+  then inherited KindNeeded
+  else SetKind(t.Kind);
+end;
+
+procedure TDbgDwarfTypeIdentifierModifier.NameNeeded;
+var
+  ti: TDbgDwarfTypeIdentifier;
+  AName: String;
+begin
+  if ReadName(AName) then
+    SetName(AName)
   else
-    SetKind(t.Kind);
+  begin
+    ti := NestedTypeInfo;
+    if ti <> nil then
+      SetName(ti.Name);
+  end;
+end;
+
+procedure TDbgDwarfTypeIdentifierModifier.TypeInfoNeeded;
+var
+  ti: TDbgDwarfTypeIdentifier;
+begin
+  ti := NestedTypeInfo;
+  if ti <> nil
+  then SetTypeInfo(ti.TypeInfo)
+  else SetTypeInfo(nil);
 end;
 
 function TDbgDwarfTypeIdentifierModifier.GetIsBaseType: Boolean;
 var
-  ti: TDbgDwarfTypeIdentifier;
+  ti: TDbgSymbol;
 begin
-  ti := TypeInfo;
+  ti := NestedTypeInfo;
   if ti <> nil
-  then Result := ti.IsBaseType
+  then Result := (ti is TDbgDwarfTypeIdentifierModifier) and TDbgDwarfTypeIdentifierModifier(ti).IsBaseType
   else Result := False;
-end;
-
-function TDbgDwarfTypeIdentifierModifier.GetIsPointerType: Boolean;
-var
-  ti: TDbgDwarfTypeIdentifier;
-begin
-  ti := TypeInfo;
-  if ti <> nil
-  then Result := ti.IsPointerType
-  else Result := False;
-end;
-
-function TDbgDwarfTypeIdentifierModifier.GetPointedToType: TDbgSymbol;
-begin
-  Result := TypeInfo;
-  if Result <> nil then
-    Result := Result.PointedToType;
 end;
 
 function TDbgDwarfTypeIdentifierModifier.GetIsStructType: Boolean;
 var
-  ti: TDbgDwarfTypeIdentifier;
+  ti: TDbgSymbol;
 begin
-  ti := TypeInfo;
+  ti := NestedTypeInfo;
   if ti <> nil
-  then Result := ti.IsStructType
+  then Result := (ti is TDbgDwarfTypeIdentifier) and TDbgDwarfTypeIdentifier(ti).IsStructType
   else Result := False;
 end;
 
 function TDbgDwarfTypeIdentifierModifier.GetStructTypeInfo: TDbgDwarfIdentifierStructure;
 var
-  ti: TDbgDwarfTypeIdentifier;
+  ti: TDbgSymbol;
 begin
-  ti := TypeInfo;
-  if ti <> nil then
-    Result := ti.StructTypeInfo;
+  ti := NestedTypeInfo;
+  if (ti <> nil) and (ti is TDbgDwarfTypeIdentifier) then
+    Result := TDbgDwarfTypeIdentifier(ti).StructTypeInfo;
 end;
 
 { TDbgDwarfTypeIdentifierPointer }
 
 procedure TDbgDwarfTypeIdentifierPointer.KindNeeded;
 var
-  ti: TDbgDwarfTypeIdentifier;
+  ti: TDbgSymbol;
 begin
-  ti := TypeInfo;
+  ti := NestedTypeInfo;
   // fpc encodes classes as pointer, not ref (so Obj1 = obj2 compares the pointers)
   if (ti <> nil) and (ti is TDbgDwarfIdentifierStructure) and
-     (ti.InformationEntry.Abbrev.tag = DW_TAG_class_type)
+     (TDbgDwarfTypeIdentifier(ti).InformationEntry.Abbrev.tag = DW_TAG_class_type)
   then
     SetKind(skClass)
   else
     SetKind(skPointer);
 end;
 
-function TDbgDwarfTypeIdentifierPointer.GetIsPointerType: Boolean;
-begin
-  Result := True;
-end;
-
-function TDbgDwarfTypeIdentifierPointer.GetPointedToType: TDbgSymbol;
-begin
-  Result := TypeInfo;
-end;
-
 function TDbgDwarfTypeIdentifierPointer.GetIsStructType: Boolean;
 var
-  ti: TDbgDwarfTypeIdentifier;
+  ti: TDbgSymbol;
 begin
   Result := False;
-  ti := TypeInfo;
+  ti := NestedTypeInfo;
   // fpc encodes classes as pointer, not ref (so Obj1 = obj2 compares the pointers)
   if (ti <> nil) and (ti is TDbgDwarfIdentifierStructure)
      //and (ti.InformationEntry.Abbrev.tag = DW_TAG_class_type)
@@ -1428,10 +1426,10 @@ end;
 
 function TDbgDwarfTypeIdentifierPointer.GetStructTypeInfo: TDbgDwarfIdentifierStructure;
 var
-  ti: TDbgDwarfTypeIdentifier;
+  ti: TDbgSymbol;
 begin
   Result := nil;
-  ti := TypeInfo;
+  ti := NestedTypeInfo;
   // fpc encodes classes as pointer, not ref (so Obj1 = obj2 compares the pointers)
   if (ti <> nil) and (ti is TDbgDwarfIdentifierStructure)
      //and (ti.InformationEntry.Abbrev.tag = DW_TAG_class_type)
@@ -1477,6 +1475,11 @@ begin
   end;
 end;
 
+procedure TDbgDwarfBaseIdentifierBase.TypeInfoNeeded;
+begin
+  SetTypeInfo(nil);
+end;
+
 { TDbgDwarfTypeIdentifier }
 
 function TDbgDwarfTypeIdentifier.GetStructTypeInfo: TDbgDwarfIdentifierStructure;
@@ -1491,11 +1494,6 @@ begin
 end;
 
 function TDbgDwarfTypeIdentifier.GetIsBaseType: Boolean;
-begin
-  Result := False;
-end;
-
-function TDbgDwarfTypeIdentifier.GetIsPointerType: Boolean;
 begin
   Result := False;
 end;
@@ -1854,14 +1852,14 @@ end;
 
 { TDbgDwarfIdentifier }
 
-function TDbgDwarfIdentifier.GetTypeInfo: TDbgDwarfTypeIdentifier;
+function TDbgDwarfIdentifier.GetNestedTypeInfo: TDbgDwarfTypeIdentifier;
 var
   FwdInfoPtr: Pointer;
   FwdCompUint: TDwarfCompilationUnit;
   InfoEntry: TDwarfInformationEntry;
 begin
 // TODO DW_AT_start_scope;
-  Result := FTypeInfo;
+  Result := FNestedTypeInfo;
   if (Result <> nil) or (didtTypeRead in FFlags) then
     exit;
   include(FFlags, didtTypeRead);
@@ -1869,18 +1867,28 @@ begin
     InfoEntry := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
         InfoEntry.SearchScope;
         DebugLn(FPDBG_DWARF_SEARCH, ['GetTypeInfo found', dbgs(InfoEntry.FScope, FwdCompUint) ]);
-    FTypeInfo := TDbgDwarfTypeIdentifier.CreateTybeSubClass('', InfoEntry);
+    FNestedTypeInfo := TDbgDwarfTypeIdentifier.CreateTybeSubClass('', InfoEntry);
     ReleaseRefAndNil(InfoEntry);
-    Result := FTypeInfo;
+    Result := FNestedTypeInfo;
   end;
+end;
+
+function TDbgDwarfIdentifier.ReadName(out AName: String): Boolean;
+begin
+  Result := FInformationEntry.ReadValue(DW_AT_name, AName);
 end;
 
 procedure TDbgDwarfIdentifier.NameNeeded;
 var
   AName: String;
 begin
-  FInformationEntry.ReadValue(DW_AT_name, AName);
+  ReadName(AName);
   SetName(AName);
+end;
+
+procedure TDbgDwarfIdentifier.TypeInfoNeeded;
+begin
+  SetTypeInfo(NestedTypeInfo);
 end;
 
 procedure TDbgDwarfIdentifier.Init;
@@ -1947,7 +1955,7 @@ destructor TDbgDwarfIdentifier.Destroy;
 begin
   inherited Destroy;
   ReleaseRefAndNil(FInformationEntry);
-  ReleaseRefAndNil(FTypeInfo);
+  ReleaseRefAndNil(FNestedTypeInfo);
 end;
 
 { TDwarfAbbrevList }
@@ -2840,7 +2848,7 @@ end;
 
 procedure TDbgDwarfProcSymbol.KindNeeded;
 begin
-  if TypeInfo <> nil then
+  if NestedTypeInfo <> nil then
     SetKind(skFunction)
   else
     SetKind(skProcedure);

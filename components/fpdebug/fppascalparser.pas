@@ -363,7 +363,7 @@ type
     FPointedTo: TDbgSymbol;
   protected
     // NameNeeded //  "^TPointedTo"
-    function GetPointedToType: TDbgSymbol; override;
+    procedure TypeInfoNeeded; override;
   public
     constructor Create(const APointedTo: TDbgSymbol);
     destructor Destroy; override;
@@ -371,9 +371,9 @@ type
 
 { TPasParserSymbolPointer }
 
-function TPasParserSymbolPointer.GetPointedToType: TDbgSymbol;
+procedure TPasParserSymbolPointer.TypeInfoNeeded;
 begin
-  Result := FPointedTo;
+  SetTypeInfo(FPointedTo);
 end;
 
 constructor TPasParserSymbolPointer.Create(const APointedTo: TDbgSymbol);
@@ -1365,7 +1365,7 @@ begin
     exit;;
 
   if Result.Kind = skPointer then
-    Result := Result.PointedToType
+    Result := Result.TypeInfo
   //if Result.Kind = skArray then // dynarray
   else
     Result := nil;

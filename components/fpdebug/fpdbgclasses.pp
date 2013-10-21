@@ -120,7 +120,7 @@ type
   TDbgSymbolFlags = set of TDbgSymbolFlag;
 
   TDbgSymbolField = (
-    sfiName, sfiKind, sfiSymType, sfiAddress, sfiSize
+    sfiName, sfiKind, sfiSymType, sfiAddress, sfiSize, sfiTypeInfo
   );
   TDbgSymbolFields = set of TDbgSymbolField;
 
@@ -136,16 +136,16 @@ type
     FSymbolType: TDbgSymbolType;
     FAddress: TDbgPtr;
     FSize: Integer;
+    FTypeInfo: TDbgSymbol;
 
     function GetSymbolType: TDbgSymbolType; //inline;
     function GetKind: TDbgSymbolKind; //inline;
     function GetName: String;
     function GetSize: Integer;
     function GetAddress: TDbgPtr;
+    function GetTypeInfo: TDbgSymbol;
   protected
     // NOT cached fields
-    function GetPointedToType: TDbgSymbol; virtual;
-
     function GetChild(AIndex: Integer): TDbgSymbol; virtual;
     function GetColumn: Cardinal; virtual;
     function GetCount: Integer; virtual;
@@ -155,18 +155,21 @@ type
     function GetParent: TDbgSymbol; virtual;
     function GetReference: TDbgSymbol; virtual;
   protected
+    property EvaluatedFields: TDbgSymbolFields read FEvaluatedFields;
     // Cached fields
     procedure SetName(AValue: String);
     procedure SetKind(AValue: TDbgSymbolKind);
     procedure SetSymbolType(AValue: TDbgSymbolType);
     procedure SetAddress(AValue: TDbgPtr);
     procedure SetSize(AValue: Integer);
+    procedure SetTypeInfo(AValue: TDbgSymbol);
 
     procedure KindNeeded; virtual;
     procedure NameNeeded; virtual;
     procedure SymbolTypeNeeded; virtual;
     procedure AddressNeeded; virtual;
     procedure SizeNeeded; virtual;
+    procedure TypeInfoNeeded; virtual;
     //procedure Needed; virtual;
   public
     constructor Create(const AName: String);
@@ -176,6 +179,9 @@ type
     property Name:       String read GetName;
     property SymbolType: TDbgSymbolType read GetSymbolType;
     property Kind:       TDbgSymbolKind read GetKind;
+    // Variable: Type
+    // Pointer: type pointed to / Array: Element Type / Func: Result
+    property TypeInfo:   TDbgSymbol read GetTypeInfo;
     // Memory; Size is also part of type (byte vs word vs ...)
     property Address:    TDbgPtr read GetAddress;
     property Size:       Integer read GetSize; // In Bytes
@@ -189,9 +195,6 @@ type
     property Reference: TDbgSymbol read GetReference; deprecated;
     property Parent: TDbgSymbol read GetParent; deprecated;
     //property Children[AIndex: Integer]: TDbgSymbol read GetChild;
-
-    // For pointers only
-    property PointedToType: TDbgSymbol read GetPointedToType;
   end;
 
   { TDbgInfo }
@@ -936,6 +939,13 @@ begin
   Result := FAddress;
 end;
 
+function TDbgSymbol.GetTypeInfo: TDbgSymbol;
+begin
+  if not(sfiTypeInfo in FEvaluatedFields) then
+    TypeInfoNeeded;
+  Result := FTypeInfo;
+end;
+
 function TDbgSymbol.GetKind: TDbgSymbolKind;
 begin
   if not(sfiKind in FEvaluatedFields) then
@@ -964,11 +974,6 @@ begin
   Result := FSymbolType;
 end;
 
-function TDbgSymbol.GetPointedToType: TDbgSymbol;
-begin
-  Result := nil;
-end;
-
 procedure TDbgSymbol.SetAddress(AValue: TDbgPtr);
 begin
   FAddress := AValue;
@@ -991,6 +996,12 @@ procedure TDbgSymbol.SetSize(AValue: Integer);
 begin
   FSize := AValue;
   Include(FEvaluatedFields, sfiSize);
+end;
+
+procedure TDbgSymbol.SetTypeInfo(AValue: TDbgSymbol);
+begin
+  FTypeInfo := AValue;
+  Include(FEvaluatedFields, sfiTypeInfo);
 end;
 
 procedure TDbgSymbol.SetName(AValue: String);
@@ -1062,6 +1073,11 @@ end;
 procedure TDbgSymbol.SizeNeeded;
 begin
   SetSize(0);
+end;
+
+procedure TDbgSymbol.TypeInfoNeeded;
+begin
+  SetTypeInfo(nil);
 end;
 
 {$ifdef windows}

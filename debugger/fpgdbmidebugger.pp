@@ -163,20 +163,29 @@ const
 
   procedure AddType(ASourceExpr: string; ATypeIdent: TDbgSymbol);
   var
-    TypeName: String;
+    TypeName, PointedName, PointedName2: String;
     IsPointerPointer: Boolean;
     IsPointerType: Boolean;
   begin
     if (ASourceExpr = '') or (ATypeIdent = nil) then exit;
 
     IsPointerType := ATypeIdent.Kind = FpDbgClasses.skPointer;
-    if IsPointerType and (ATypeIdent.PointedToType <> nil) then begin
-      ATypeIdent := ATypeIdent.PointedToType;
+    PointedName := ATypeIdent.Name;
+    if IsPointerType and (ATypeIdent.TypeInfo <> nil) then begin
+      ATypeIdent := ATypeIdent.TypeInfo;
       if ATypeIdent = nil then exit;
 
+      // resolved 1st pointer
+      if PointedName = '' then
+        PointedName := '^'+ATypeIdent.Name;
       IsPointerPointer := ATypeIdent.Kind = FpDbgClasses.skPointer;
-      while (ATypeIdent.Kind = FpDbgClasses.skPointer) and (ATypeIdent.PointedToType <> nil) do
-        ATypeIdent := ATypeIdent.PointedToType;
+      PointedName2 := ATypeIdent.Name;
+
+      while (ATypeIdent.Kind = FpDbgClasses.skPointer) and (ATypeIdent.TypeInfo <> nil) do begin
+        ATypeIdent := ATypeIdent.TypeInfo;
+        if PointedName = ''  then PointedName := '^'+ATypeIdent.Name;
+        if PointedName2 = '' then PointedName2 := '^'+ATypeIdent.Name;
+      end;
       if ATypeIdent = nil then exit;
     end;
     TypeName := ATypeIdent.Name;
@@ -185,11 +194,11 @@ const
     then begin
       if IsPointerType then begin
         MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, Format('type = ^%s', [TypeName]));
-        MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, Format('type = ^%s', [TypeName]));
+        MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, Format('type = %s', [PointedName]));
         ASourceExpr := GDBMIMaybeApplyBracketsToExpr(ASourceExpr);
         if IsPointerPointer then begin
           MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr + '^', Format('type = ^%s', [TypeName]));
-          MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr + '^', Format('type = ^%s', [TypeName]));
+          MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr + '^', Format('type = %s', [PointedName2]));
         end
         else begin
           MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr + '^', Format('type = %s', [TypeName]));

@@ -9,7 +9,7 @@ uses
   LazLoggerBase, fpcunit, testutils, testregistry;
 
 const
-  TESTPROG1_FUNC_BAR_LINE = 25;
+  TESTPROG1_FUNC_BAR_LINE = 35;
 
 type
 
@@ -88,6 +88,7 @@ procedure TTestTypInfo.Test1;
 var
   Expr: TTestPascalExpression;
   TestText: String;
+  LineInfo: PDWarfLineMap;
 
   procedure DoTest(ADbgSym: TDbgSymbol; AKind: TDbgSymbolKind; ATypeName: String = '');
   begin
@@ -122,48 +123,54 @@ debugln(['### ', TestText, ' ## ', dbgs(Expr.ResultType.Kind), ' # ',Expr.Result
     AssertFalse(TestText+' has NO dbginfo', Expr.ResultType <> nil);
   end;
 
-var
-  LineInfo: PDWarfLineMap;
+  procedure DoRun;
+  begin
+    LineInfo := FDwarfInfo.GetLineAddressMap('testprog1.pas');
+    Location := LineInfo^.GetAddressForLine(TESTPROG1_FUNC_BAR_LINE);
+
+    DoTest('int1', skInteger);
+    DoTest('b1', skCardinal);
+
+    DoTest('pint1', skPointer);
+    DoTest(Expr.ResultType.TypeInfo, skInteger);
+
+    DoTest('@int1', skPointer);
+    DoTest(Expr.ResultType.TypeInfo, skInteger);
+
+    DoTest('pint1^', skInteger);
+    DoTest('@int1^', skInteger);
+
+    DoTestInvalid('int1^');
+    DoTestInvalid('pint1^^');
+    DoTestInvalid('@int1^^');
+
+    DoTest('bool1', skBoolean);
+
+    DoTest('test.FWord', skCardinal);
+    DoTest('test.FBool', skBoolean);
+    DoTest('test.FTest.FWord', skCardinal);
+    DoTest('test.FTest.FBool', skBoolean);
+
+
+    DoTest('longint(bool1)', skInteger);
+    DoTest('^longint(bool1)', skPointer);
+    DoTest('^longint(bool1)^', skInteger);
+
+    DoTestInvalid('^int1');
+    DoTestInvalid('^int1(int2)');
+
+    FreeAndNil(expr);
+  end;
+
 begin
-  LoadDwarf(AppendPathDelim(GetTestAppDir) + 'testprog1.exe');
+  LoadDwarf(AppendPathDelim(GetTestAppDir) + 'testprog1_262.exe');
   AssertTrue('Loaded dwarf', FDwarfInfo <> nil);
+  DoRun;
+  UnLoadDwarf;
 
-  LineInfo := FDwarfInfo.GetLineAddressMap('testprog1.pas');
-  Location := LineInfo^.GetAddressForLine(TESTPROG1_FUNC_BAR_LINE);
-
-  DoTest('int1', skInteger);
-  DoTest('b1', skCardinal);
-
-  DoTest('pint1', skPointer);
-  DoTest(Expr.ResultType.PointedToType, skInteger);
-
-  DoTest('@int1', skPointer);
-  DoTest(Expr.ResultType.PointedToType, skInteger);
-
-  DoTest('pint1^', skInteger);
-  DoTest('@int1^', skInteger);
-
-  DoTestInvalid('int1^');
-  DoTestInvalid('pint1^^');
-  DoTestInvalid('@int1^^');
-
-  DoTest('bool1', skBoolean);
-
-  DoTest('test.FWord', skCardinal);
-  DoTest('test.FBool', skBoolean);
-  DoTest('test.FTest.FWord', skCardinal);
-  DoTest('test.FTest.FBool', skBoolean);
-
-
-  DoTest('longint(bool1)', skInteger);
-  DoTest('^longint(bool1)', skPointer);
-  DoTest('^longint(bool1)^', skInteger);
-
-  DoTestInvalid('^int1');
-  DoTestInvalid('^int1(int2)');
-
-  FreeAndNil(expr);
-
+  LoadDwarf(AppendPathDelim(GetTestAppDir) + 'testprog1_271.exe');
+  AssertTrue('Loaded dwarf', FDwarfInfo <> nil);
+  DoRun;
   UnLoadDwarf;
 end;
 
