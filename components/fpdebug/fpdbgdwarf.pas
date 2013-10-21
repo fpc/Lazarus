@@ -3807,7 +3807,7 @@ begin
   MaxData := FInfoData + FLength;
   Scope := AStartScope;
   p := Scope.Entry;
-  while (p <= MaxData) and (Level >= 0) do
+  while (p < MaxData) and (Level >= 0) do
   begin
     p := Scope.Entry;
     p2:=p;
@@ -3949,7 +3949,9 @@ begin
     Scope.Index := ni; // GoNext
   end;
 
-  if (p > MaxData) then begin
+  if (p >= MaxData) then begin
+    if (p > MaxData) then
+      debugln(FPDBG_DWARF_WARNINGS, ['LocateEntry went past end of memory: ', p-MaxData]);
     SetLength(FScopeList.List, FScopeList.HighestKnown + 1);
   end;
 
