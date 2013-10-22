@@ -315,8 +315,13 @@ type
     property Value: DOMString read FValue;
   end;
 
-
-  TXPathNSResolver = TDOMNode {!!! experimental};
+  TXPathNSResolver = class
+  protected
+    FNode: TDOMNode;
+  public
+    constructor Create(aNode: TDOMNode);
+    function LookupNamespaceURI(const aPrefix: DOMString): DOMString; virtual;
+  end;
 
   { XPath lexical scanner }
 
@@ -2884,6 +2889,21 @@ begin
   Result := TXPathNumberVariable.Create(num);
 end;
 
+{ TXPathNSResolver }
+
+constructor TXPathNSResolver.Create(aNode: TDOMNode);
+begin
+  inherited Create;
+  FNode := aNode;
+end;
+
+function TXPathNSResolver.LookupNamespaceURI(const aPrefix: DOMString): DOMString;
+begin
+  if assigned(FNode) then
+    result := FNode.LookupNamespaceURI(aPrefix)
+  else
+    result := '';
+end;
 
 
 { TXPathExpression }
