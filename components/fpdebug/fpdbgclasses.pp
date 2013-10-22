@@ -154,6 +154,10 @@ type
     function GetLine: Cardinal; virtual;
     function GetParent: TDbgSymbol; virtual;
     function GetReference: TDbgSymbol; virtual;
+
+    function GetMember(AIndex: Integer): TDbgSymbol; virtual;
+    function GetMemberByName(AIndex: String): TDbgSymbol; virtual;
+    function GetMemberCount: Integer; virtual;
   protected
     property EvaluatedFields: TDbgSymbolFields read FEvaluatedFields;
     // Cached fields
@@ -179,9 +183,6 @@ type
     property Name:       String read GetName;
     property SymbolType: TDbgSymbolType read GetSymbolType;
     property Kind:       TDbgSymbolKind read GetKind;
-    // Variable: Type
-    // Pointer: type pointed to / Array: Element Type / Func: Result
-    property TypeInfo:   TDbgSymbol read GetTypeInfo;
     // Memory; Size is also part of type (byte vs word vs ...)
     property Address:    TDbgPtr read GetAddress;
     property Size:       Integer read GetSize; // In Bytes
@@ -189,6 +190,14 @@ type
     property FileName: String read GetFile;
     property Line: Cardinal read GetLine;
     property Column: Cardinal read GetColumn;
+    // TypeInfo used by
+    // stValue (Variable): Type
+    // stType: Pointer: type pointed to / Array: Element Type / Func: Result / Class: itheritance
+    property TypeInfo: TDbgSymbol read GetTypeInfo;
+    // Methods for structures (record / class)
+    property MemberCount: Integer read GetMemberCount; // inherited NOT included
+    property Member[AIndex: Integer]: TDbgSymbol read GetMember;
+    property MemberByName[AIndex: String]: TDbgSymbol read GetMemberByName; // Includes inheritance
     //
     property Flags: TDbgSymbolFlags read GetFlags; deprecated;
     property Count: Integer read GetCount; deprecated;
@@ -930,6 +939,7 @@ end;
 destructor TDbgSymbol.Destroy;
 begin
   inherited Destroy;
+  ReleaseRefAndNil(FTypeInfo);
 end;
 
 function TDbgSymbol.GetAddress: TDbgPtr;
@@ -974,6 +984,21 @@ begin
   Result := FSymbolType;
 end;
 
+function TDbgSymbol.GetMember(AIndex: Integer): TDbgSymbol;
+begin
+  Result := nil;
+end;
+
+function TDbgSymbol.GetMemberByName(AIndex: String): TDbgSymbol;
+begin
+  Result := nil;
+end;
+
+function TDbgSymbol.GetMemberCount: Integer;
+begin
+  Result := 0;
+end;
+
 procedure TDbgSymbol.SetAddress(AValue: TDbgPtr);
 begin
   FAddress := AValue;
@@ -1000,8 +1025,11 @@ end;
 
 procedure TDbgSymbol.SetTypeInfo(AValue: TDbgSymbol);
 begin
+  ReleaseRefAndNil(FTypeInfo);
   FTypeInfo := AValue;
   Include(FEvaluatedFields, sfiTypeInfo);
+  if FTypeInfo <> nil then
+    FTypeInfo.AddReference;
 end;
 
 procedure TDbgSymbol.SetName(AValue: String);

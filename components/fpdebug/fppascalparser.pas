@@ -29,7 +29,7 @@ unit FpPascalParser;
 interface
 
 uses
-  Classes, sysutils, math, FpDbgDwarf, FpDbgClasses, LazLoggerBase, LazClasses;
+  Classes, sysutils, math, FpDbgClasses, LazLoggerBase, LazClasses;
 
 type
 
@@ -599,7 +599,7 @@ begin
     exit;
 
   case FDbgType.SymbolType of
-    stValue: Result := TDbgDwarfValueIdentifier(FDbgType).TypeInfo;
+    stValue: Result := FDbgType.TypeInfo;
     stType:  Result := FDbgType;
     else     Result := nil;
   end;
@@ -1436,7 +1436,6 @@ end;
 
 function TFpPascalExpressionPartOperatorMemberOf.DoGetResultType: TDbgSymbol;
 var
-  struct: TDbgDwarfIdentifierStructure;
   tmp: TDbgSymbol;
 begin
   Result := nil;
@@ -1444,17 +1443,12 @@ begin
 
   tmp := Items[0].ResultType;
   // Todo unit
-  if (tmp <> nil) and (tmp.SymbolType = stType) and
-     (TDbgDwarfTypeIdentifier(tmp).IsStructType)
-  then begin
-    struct := TDbgDwarfTypeIdentifier(tmp).StructTypeInfo;
-    tmp := struct.MemberByName[Items[1].GetText];
-
+  if (tmp.Kind = skClass) or (tmp.Kind = skRecord) then begin
+    tmp := tmp.MemberByName[Items[1].GetText];
     if (tmp <> nil) and (tmp.SymbolType = stValue) then begin
-      Result := TDbgDwarfValueIdentifier(tmp).TypeInfo;
+      Result := tmp.TypeInfo;
       Result.AddReference;
     end;
-    ReleaseRefAndNil(tmp);
   end;
 end;
 
