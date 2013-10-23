@@ -255,6 +255,7 @@ type
     function GetAbbrev: TDwarfAbbrev;
     procedure ScopeChanged; inline;
     function SearchScope: Boolean;
+    function MaybeSearchScope: Boolean; inline;
     function PrepareAbbrev: Boolean; inline;
 
     function GetScopeIndex: Integer;
@@ -773,7 +774,9 @@ function DwarfAttributeFormToString(AValue: Integer): String;
 function ULEB128toOrdinal(var p: PByte): QWord;
 function SLEB128toOrdinal(var p: PByte): Int64;
 
+function Dbgs(AInfoData: Pointer; ACompUnit: TDwarfCompilationUnit): String; overload;
 function Dbgs(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): String; overload;
+function Dbgs(AInfoEntry: TDwarfInformationEntry; ACompUnit: TDwarfCompilationUnit): String; overload;
 function DbgsDump(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): String; overload;
 
 implementation
@@ -784,7 +787,7 @@ var
 const
   SCOPE_ALLOC_BLOCK_SIZE = 4096; // Increase scopelist in steps of
 
-function dbgs(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): String;
+function Dbgs(AInfoData: Pointer; ACompUnit: TDwarfCompilationUnit): String;
 var
   Attrib: Pointer;
   Form: Cardinal;
@@ -792,17 +795,29 @@ var
   Def: TDwarfAbbrev;
 begin
   Result := '';
-  if not AScope.IsValid then
-    exit('Invalid-Scope');
 
-  if ACompUnit.LocateAttribute(AScope.Entry, DW_AT_name, Attrib, Form) then
+  if ACompUnit.LocateAttribute(AInfoData, DW_AT_name, Attrib, Form) then
     if (Form = DW_FORM_string) or (Form = DW_FORM_strp) then
       ACompUnit.ReadValue(Attrib, Form, Name);
 
-  if ACompUnit.GetDefinition(AScope.Entry, Def) then
-    Result := Format('AScope(Idx=%d Tag=%s Name=%s)', [AScope.Index, DwarfTagToString(Def.tag), Name])
+  if ACompUnit.GetDefinition(AInfoData, Def) then
+    Result := Format('Tag=%s Name=%s', [DwarfTagToString(Def.tag), Name])
   else
-    Result := Format('AScope(Idx=%d Name=%s)', [AScope.Index, Name]);
+    Result := Format('Name=%s', [Name]);
+end;
+
+function dbgs(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): String;
+begin
+  if not AScope.IsValid then
+    exit('Invalid-Scope');
+  Result := Format('AScope(Idx=%d %s)', [AScope.Index, dbgs(AScope.Entry, ACompUnit)]);
+end;
+
+function Dbgs(AInfoEntry: TDwarfInformationEntry; ACompUnit: TDwarfCompilationUnit): String;
+begin
+  if AInfoEntry.HasValidScope
+  then Result := Dbgs(AInfoEntry.FScope, ACompUnit)
+  else Result := Dbgs(AInfoEntry.FInformationEntry, ACompUnit);
 end;
 
 function DbgsDump(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): String;
@@ -1469,8 +1484,7 @@ begin
      NewInfo.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint)
   then begin
     ti := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
-        ti.SearchScope;
-        DebugLn(FPDBG_DWARF_SEARCH, ['Inherited from ', dbgs(ti.FScope, FwdCompUint) ]);
+    DebugLn(FPDBG_DWARF_SEARCH, ['Inherited from ', dbgs(ti.FInformationEntry, FwdCompUint) ]);
   end;
   if ti = nil
   then SetTypeInfo(nil)
@@ -1637,10 +1651,6 @@ begin
     Result := nil;
 end;
 
-{ TDbgDwarfValueIdentifier }
-
-{ TDbgDwarfTypeIdentifier }
-
 { TDwarfInformationEntry }
 
 procedure TDwarfInformationEntry.SetAbbrev(AValue: TDwarfAbbrev);
@@ -1668,7 +1678,8 @@ var
   l, h, m: Integer;
   lst: TDwarfScopeArray;
 begin
-  Result := False;
+  Result := FInformationEntry <> nil;
+  if not Result then exit;
   l := 0;
   h := FCompUnit.FScopeList.HighestKnown;
   lst := FCompUnit.FScopeList.List;
@@ -1682,6 +1693,14 @@ begin
   Result := lst[h].Entry = FInformationEntry;
   if Result then
     ScopeIndex := h;
+debugln(['TDwarfInformationEntry.SearchScope ', h]);
+end;
+
+function TDwarfInformationEntry.MaybeSearchScope: Boolean;
+begin
+  Result := FScope.IsValid;
+  if Result then exit;
+  Result := SearchScope;
 end;
 
 function TDwarfInformationEntry.PrepareAbbrev: Boolean;
@@ -1774,9 +1793,8 @@ end;
 function TDwarfInformationEntry.FindNamedChild(AName: String): TDwarfInformationEntry;
 begin
   Result := nil;
-  if (not FScope.IsValid) and (FInformationEntry <> nil) then
-    if not SearchScope then
-      exit;
+  if not MaybeSearchScope then
+    exit;
 
   Result := TDwarfInformationEntry.Create(FCompUnit, FScope);
 // TODO: parent
@@ -1792,9 +1810,8 @@ var
   Abbr: TDwarfAbbrev;
 begin
   Result := nil;
-  if (not FScope.IsValid) and (FInformationEntry <> nil) then
-    if not SearchScope then
-      exit;
+  if not MaybeSearchScope then
+    exit;
 
   Scope := FScope.Child;
   while Scope.IsValid do begin
@@ -1814,9 +1831,8 @@ var
   Scope: TDwarfScopeInfo;
 begin
   Result := nil;
-  if (not FScope.IsValid) and (FInformationEntry <> nil) then
-    if not SearchScope then
-      exit;
+  if not MaybeSearchScope then
+    exit;
 
   Scope := FScope.Child;
   if Scope.IsValid then
@@ -1941,27 +1957,24 @@ end;
 
 procedure TDwarfInformationEntry.GoParent;
 begin
-  if (not FScope.IsValid) and (FInformationEntry <> nil) then
-    if not SearchScope then
-      exit;
+  if not MaybeSearchScope then
+    exit;
   FScope.GoParent;
   ScopeChanged;
 end;
 
 procedure TDwarfInformationEntry.GoNext;
 begin
-  if (not FScope.IsValid) and (FInformationEntry <> nil) then
-    if not SearchScope then
-      exit;
+  if not MaybeSearchScope then
+    exit;
   FScope.GoNext;
   ScopeChanged;
 end;
 
 procedure TDwarfInformationEntry.GoChild;
 begin
-  if (not FScope.IsValid) and (FInformationEntry <> nil) then
-    if not SearchScope then
-      exit;
+  if not MaybeSearchScope then
+    exit;
   FScope.GoChild;
   ScopeChanged;
 end;
@@ -1986,8 +1999,7 @@ begin
   include(FFlags, didtTypeRead);
   if FInformationEntry.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint) then begin
     InfoEntry := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
-        InfoEntry.SearchScope;
-        DebugLn(FPDBG_DWARF_SEARCH, ['GetTypeInfo found', dbgs(InfoEntry.FScope, FwdCompUint) ]);
+    DebugLn(FPDBG_DWARF_SEARCH, ['GetTypeInfo found', dbgs(InfoEntry, FwdCompUint) ]);
     FNestedTypeInfo := TDbgDwarfTypeIdentifier.CreateTybeSubClass('', InfoEntry);
     ReleaseRefAndNil(InfoEntry);
     Result := FNestedTypeInfo;
