@@ -332,6 +332,7 @@ begin
     Items.Add('iphonesim');
     Items.Add('java');
     Items.Add('macos');
+    Items.Add('msdos');
     Items.Add('morphos');
     Items.Add('nds');
     Items.Add('netware');
@@ -358,6 +359,7 @@ begin
     Items.Add('mipsel');
     Items.Add('mips');
     Items.Add('jvm');
+    Items.Add('i8086');
     ItemIndex := 0;
   end;
 

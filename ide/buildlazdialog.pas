@@ -985,6 +985,7 @@ begin
       Add('morphos');
       Add('embedded');
       Add('symbian');
+      Add('msdos');
     end;
     ItemIndex:=0;
   end;
@@ -998,6 +999,7 @@ begin
       Add('powerpc');
       Add('sparc');
       Add('x86_64');
+      Add('i8086');
     end;
     ItemIndex:=0;
   end;
