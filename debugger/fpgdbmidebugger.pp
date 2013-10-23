@@ -191,7 +191,7 @@ const
       end
       else
       begin
-        AText := AText + '    ' + AMember.Name + ' : ' + s + LineEnding;
+        AText := AText + '    ' + AMember.Name + ' : ' + s + ';' + LineEnding;
       end;
     end;
 
@@ -270,7 +270,38 @@ const
   procedure AddRecordType(ASourceExpr: string; AIsPointerType, AisPointerPointer: Boolean;
     ABaseTypeName, ASrcTypeName, ADeRefTypeName: String;
     ASrcType, ABaseType: TDbgSymbol);
+  var
+    s, RefToken: String;
+    s2: String;
   begin
+    if not AIsPointerType then begin
+      ABaseType := ASrcType;
+      ABaseTypeName := ASrcTypeName;
+      ADeRefTypeName := ASrcTypeName;
+    end;
+    if (ABaseType = nil) then
+      exit;
+    if not MembersAsGdbText(ABaseType, False, s2) then
+      exit;
+
+    if AIsPointerType
+    then RefToken := '^'
+    else RefToken := '';
+    s := Format('type = %s%s = record %s%send%s', [RefToken, ABaseTypeName, LineEnding, s2, LineEnding]);
+    MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
+
+    if AIsPointerType then begin
+      s := Format('type = %s%s', [ASrcTypeName, LineEnding]);
+      MaybeAdd(gcrtPType, GdbCmdWhatIs  + ASourceExpr, s);
+
+      //ASourceExpr := GDBMIMaybeApplyBracketsToExpr(ASourceExpr)+'^';
+      //if AisPointerPointer
+      //then RefToken := '^'
+      //else RefToken := '';
+      //s := Format('type = %s%s = record %s%send%s', [RefToken, ABaseTypeName, LineEnding, s2, LineEnding]);
+      //MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
+
+    end;
   end;
 
   procedure AddBaseType(ASourceExpr: string; AIsPointerType, AisPointerPointer: Boolean;

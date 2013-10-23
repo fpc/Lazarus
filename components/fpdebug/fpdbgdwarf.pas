@@ -635,6 +635,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   { TDbgDwarfTypeIdentifierDeclaration }
 
   TDbgDwarfTypeIdentifierDeclaration = class(TDbgDwarfTypeIdentifierModifier)
+  private
+    function IsClass: Boolean;
   protected
     procedure KindNeeded; override;
     // fpc encodes classes as pointer, not ref (so Obj1 = obj2 compares the pointers)
@@ -1248,60 +1250,48 @@ end;
 
 { TDbgDwarfTypeIdentifierDeclaration }
 
-procedure TDbgDwarfTypeIdentifierDeclaration.KindNeeded;
-var
-  ti: TDbgDwarfTypeIdentifier;
-  ti2: TDbgSymbol;
-begin
-  ti := NestedTypeInfo;
-  if (ti <> nil) and (ti.Kind = skPointer) then begin
-    // maybe a class
-    ti2 := TypeInfo;
-    // only if ti2 is NOT a declaration
-    if (ti2 <> nil) and (ti2 is TDbgDwarfIdentifierStructure) then begin
-      SetKind(skClass);
-      exit;
-    end;
-  end;
-
-  inherited KindNeeded;
-end;
-
-function TDbgDwarfTypeIdentifierDeclaration.GetMember(AIndex: Integer): TDbgSymbol;
+function TDbgDwarfTypeIdentifierDeclaration.IsClass: Boolean;
 var
   ti: TDbgSymbol;
 begin
-  ti := nil;
-  if (Kind = skClass) then  // this has a nested pointer, to a class
+  Result := False;
+  ti := NestedTypeInfo;
+  if (ti <> nil) and (ti.Kind = skPointer) then begin
     ti := TypeInfo;
-  if ti <> nil then
-    Result := ti.Member[AIndex]
+    // only if it is NOT a declaration
+    if (ti <> nil) and (ti is TDbgDwarfIdentifierStructure) then
+      Result := True;
+  end;
+end;
+
+procedure TDbgDwarfTypeIdentifierDeclaration.KindNeeded;
+begin
+  if IsClass then
+    SetKind(skClass)
+  else
+    inherited KindNeeded;
+end;
+
+function TDbgDwarfTypeIdentifierDeclaration.GetMember(AIndex: Integer): TDbgSymbol;
+begin
+  if IsClass then
+    Result := TypeInfo.Member[AIndex]
   else
     Result := inherited GetMember(AIndex);
 end;
 
 function TDbgDwarfTypeIdentifierDeclaration.GetMemberByName(AIndex: String): TDbgSymbol;
-var
-  ti: TDbgSymbol;
 begin
-  ti := nil;
-  if (Kind = skClass) then  // this has a nested pointer, to a class
-    ti := TypeInfo;
-  if ti <> nil then
-    Result := ti.MemberByName[AIndex]
+  if IsClass then
+    Result := TypeInfo.MemberByName[AIndex]
   else
     Result := inherited GetMemberByName(AIndex);
 end;
 
 function TDbgDwarfTypeIdentifierDeclaration.GetMemberCount: Integer;
-var
-  ti: TDbgSymbol;
 begin
-  ti := nil;
-  if (Kind = skClass) then  // this has a nested pointer, to a class
-    ti := TypeInfo;
-  if ti <> nil then
-    Result := ti.MemberCount
+  if IsClass then
+    Result := TypeInfo.MemberCount
   else
     Result := inherited GetMemberCount;
 end;
@@ -1548,7 +1538,7 @@ var
   ti: TDbgSymbol;
 begin
   ti := nil;
-  if (Kind = skClass) then
+  if (Kind = skClass) or (Kind = skRecord) then
     ti := NestedTypeInfo;
   if ti <> nil then
     Result := ti.Member[AIndex]
@@ -1561,7 +1551,7 @@ var
   ti: TDbgSymbol;
 begin
   ti := nil;
-  if (Kind = skClass) then
+  if (Kind = skClass) or (Kind = skRecord) then
     ti := NestedTypeInfo;
   if ti <> nil then
     Result := ti.MemberByName[AIndex]
@@ -1574,7 +1564,7 @@ var
   ti: TDbgSymbol;
 begin
   ti := nil;
-  if (Kind = skClass) then
+  if (Kind = skClass) or (Kind = skRecord) then
     ti := NestedTypeInfo;
   if ti <> nil then
     Result := ti.MemberCount
