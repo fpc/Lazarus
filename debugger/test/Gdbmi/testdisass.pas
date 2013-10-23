@@ -459,7 +459,7 @@ begin
     Init;
     SetLength(Gdb.TestDisAssRegions, 2);
     with Gdb.TestDisAssRegions[0] do begin
-      FirstAddr := $30100-180; LastAddr := $30100-20; InstrLen := 8;
+      FirstAddr := $30100-188; LastAddr := $30100-20; InstrLen := 16;
       FuncName := 'abc';
     end;
     with Gdb.TestDisAssRegions[1] do begin
