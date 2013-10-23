@@ -2940,6 +2940,7 @@ begin
     FDebugger.OnConsoleOutput := nil;
     FDebugger.OnFeedback      := nil;
     FDebugger.OnIdle          := nil;
+    FDebugger.Exceptions := nil;
   end;
 
   FDebugger := ADebugger;
@@ -2952,7 +2953,6 @@ begin
     FLineInfo.Master := nil;
     FCallStack.Supplier := nil;
     FDisassembler.Master := nil;
-    FExceptions.Master := nil;
     FSignals.Master := nil;
     FRegisters.Master := nil;
     FSnapshots.Debugger := nil;
@@ -2966,10 +2966,11 @@ begin
     FLineInfo.Master := FDebugger.LineInfo;
     FCallStack.Supplier := FDebugger.CallStack;
     FDisassembler.Master := FDebugger.Disassembler;
-    FExceptions.Master := FDebugger.Exceptions;
     FSignals.Master := FDebugger.Signals;
     FRegisters.Master := FDebugger.Registers;
     FSnapshots.Debugger := FDebugger;
+
+    FDebugger.Exceptions := FExceptions;
   end;
 end;
 

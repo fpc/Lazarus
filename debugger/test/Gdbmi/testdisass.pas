@@ -350,7 +350,7 @@ var
     FLocals.Supplier := Gdb.Locals;
     FLineInfo.Master := Gdb.LineInfo;
     FCallStack.Supplier := Gdb.CallStack;
-    FExceptions.Master := Gdb.Exceptions;
+    Gdb.Exceptions := FExceptions;
     FSignals.Master := Gdb.Signals;
     FRegisters.Master := Gdb.Registers;
 
@@ -503,7 +503,6 @@ begin
   TestSrc('part-src, 1 block', $30100-8, $30100+400);
   CleanGdb;
   {%endregion}
-
 
 
 

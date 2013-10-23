@@ -2548,7 +2548,9 @@ type
   { TBaseException }
   TBaseException = class(TDelayedUdateItem)
   private
+    FEnabled: Boolean;
     FName: String;
+    procedure SetEnabled(AValue: Boolean);
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure SetName(const AValue: String); virtual;
@@ -2560,6 +2562,7 @@ type
                               const APath: string); virtual;
   public
     property Name: String read FName write SetName;
+    property Enabled: Boolean read FEnabled write SetEnabled; // ignored if enabled
   end;
   TBaseExceptionClass = class of TBaseException;
 
@@ -2575,12 +2578,7 @@ type
   { TIDEException }
   TIDEException = class(TBaseException)
   private
-    FEnabled: Boolean;
     FMaster: TDBGException;
-  protected
-    procedure DoChanged; override;
-    procedure SetEnabled(const AValue: Boolean);
-  protected
   public
     constructor Create(ACollection: TCollection); override;
     procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
@@ -2588,7 +2586,6 @@ type
     procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
                               const APath: string); override;
     procedure ResetMaster;
-    property Enabled: Boolean read FEnabled write SetEnabled;
   end;
 
   { TBaseExceptions }
@@ -2596,7 +2593,8 @@ type
   private
     FIgnoreAll: Boolean;
     function Add(const AName: String): TBaseException;
-    function Find(const AName: String): TBaseException;
+    function GetItem(const AIndex: Integer): TBaseException;
+    procedure SetItem(const AIndex: Integer; AValue: TBaseException);
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure ClearExceptions; virtual;
@@ -2605,24 +2603,9 @@ type
     constructor Create(const AItemClass: TBaseExceptionClass);
     destructor Destroy; override;
     procedure Reset; virtual;
+    function Find(const AName: String): TBaseException;
     property IgnoreAll: Boolean read FIgnoreAll write SetIgnoreAll;
-  end;
-
-  { TDBGExceptions }
-
-  TDBGExceptions = class(TBaseExceptions)
-  private
-    FDebugger: TDebugger;  // reference to our debugger
-    function GetItem(const AIndex: Integer): TDBGException;
-    procedure SetItem(const AIndex: Integer; const AValue: TDBGException);
-  protected
-  public
-    constructor Create(const ADebugger: TDebugger;
-                       const AExceptionClass: TDBGExceptionClass);
-    function Add(const AName: String): TDBGException;
-    function Find(const AName: String): TDBGException;
-  public
-    property Items[const AIndex: Integer]: TDBGException read GetItem
+    property Items[const AIndex: Integer]: TBaseException read GetItem
                                                         write SetItem; default;
   end;
 
@@ -2630,8 +2613,6 @@ type
 
   TIDEExceptions = class(TBaseExceptions)
   private
-    FMaster: TDBGExceptions;
-    procedure SetMaster(const AValue: TDBGExceptions);
     function GetItem(const AIndex: Integer): TIDEException;
     procedure SetItem(const AIndex: Integer; const AValue: TIDEException);
   protected
@@ -2647,7 +2628,6 @@ type
                               const APath: string);
     procedure AddIfNeeded(AName: string);
     procedure Reset; override;
-    property Master: TDBGExceptions read FMaster write SetMaster;
     property Items[const AIndex: Integer]: TIDEException read GetItem
                                                         write SetItem; default;
   end;
@@ -2755,10 +2735,9 @@ type
     FEnvironment: TStrings;
     FErrorStateInfo: String;
     FErrorStateMessage: String;
-    FExceptions: TDBGExceptions;
+    FExceptions: TBaseExceptions;
     FExitCode: Integer;
     FExternalDebugger: String;
-    //FExceptions: TDBGExceptions;
     FFileName: String;
     FLocals: TLocalsSupplier;
     FLineInfo: TDBGLineInfo;
@@ -2803,7 +2782,6 @@ type
     function  CreateWatches: TWatchesSupplier; virtual;
     function  CreateThreads: TThreadsSupplier; virtual;
     function  CreateSignals: TDBGSignals; virtual;
-    function  CreateExceptions: TDBGExceptions; virtual;
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
@@ -2888,7 +2866,7 @@ type
     property DebuggerEnvironment: TStrings read FDebuggerEnvironment
                                            write SetDebuggerEnvironment;         // The environment passed to the debugger process
     property Environment: TStrings read FEnvironment write SetEnvironment;       // The environment passed to the debuggee
-    property Exceptions: TDBGExceptions read FExceptions;                        // A list of exceptions we should ignore
+    property Exceptions: TBaseExceptions read FExceptions write FExceptions;      // A list of exceptions we should ignore
     property ExitCode: Integer read FExitCode;
     property ExternalDebugger: String read FExternalDebugger;                    // The name of the debugger executable
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
@@ -6280,7 +6258,6 @@ begin
   FDisassembler := CreateDisassembler;
   FWatches := CreateWatches;
   FThreads := CreateThreads;
-  FExceptions := CreateExceptions;
   FSignals := CreateSignals;
   FExitCode := 0;
 end;
@@ -6298,11 +6275,6 @@ end;
 function TDebugger.CreateDisassembler: TDBGDisassembler;
 begin
   Result := TDBGDisassembler.Create(Self);
-end;
-
-function TDebugger.CreateExceptions: TDBGExceptions;
-begin
-  Result := TDBGExceptions.Create(Self, TDBGException);
 end;
 
 function TDebugger.CreateLocals: TLocalsSupplier;
@@ -6370,7 +6342,6 @@ begin
   FThreads.Debugger := nil;
 
   FreeAndNil(FInternalUnitInfoProvider);
-  FreeAndNil(FExceptions);
   FreeAndNil(FBreakPoints);
   FreeAndNil(FLocals);
   FreeAndNil(FLineInfo);
@@ -10136,6 +10107,13 @@ end;
 { TBaseException }
 { =========================================================================== }
 
+procedure TBaseException.SetEnabled(AValue: Boolean);
+begin
+  if FEnabled = AValue then Exit;
+  FEnabled := AValue;
+  Changed;
+end;
+
 procedure TBaseException.AssignTo(Dest: TPersistent);
 begin
   if Dest is TBaseException
@@ -10202,32 +10180,6 @@ begin
   FMaster := nil;
 end;
 
-procedure TIDEException.DoChanged;
-var
-  E: TDBGExceptions;
-begin
-  E := TIDEExceptions(Collection).FMaster;
-  if ((FMaster = nil) = Enabled) and (E <> nil)
-  then begin
-    if Enabled then
-    begin
-      FMaster := E.Find(Name);
-      if FMaster = nil then
-        FMaster := E.Add(Name);
-    end
-    else FreeAndNil(FMaster);
-  end;
-
-  inherited DoChanged;
-end;
-
-procedure TIDEException.SetEnabled(const AValue: Boolean);
-begin
-  if FEnabled = AValue then Exit;
-  FEnabled := AValue;
-  Changed;
-end;
-
 { =========================================================================== }
 { TBaseExceptions }
 { =========================================================================== }
@@ -10271,6 +10223,16 @@ begin
   Result := nil;
 end;
 
+function TBaseExceptions.GetItem(const AIndex: Integer): TBaseException;
+begin
+  Result := TBaseException(inherited GetItem(AIndex));
+end;
+
+procedure TBaseExceptions.SetItem(const AIndex: Integer; AValue: TBaseException);
+begin
+  inherited SetItem(AIndex, AValue);
+end;
+
 procedure TBaseExceptions.ClearExceptions;
 begin
   while Count>0 do
@@ -10294,36 +10256,6 @@ begin
 end;
 
 { =========================================================================== }
-{ TDBGExceptions }
-{ =========================================================================== }
-
-function TDBGExceptions.Add(const AName: String): TDBGException;
-begin
-  Result := TDBGException(inherited Add(AName));
-end;
-
-constructor TDBGExceptions.Create(const ADebugger: TDebugger; const AExceptionClass: TDBGExceptionClass);
-begin
-  FDebugger := ADebugger;
-  inherited Create(AExceptionClass);
-end;
-
-function TDBGExceptions.Find(const AName: String): TDBGException;
-begin
-  Result := TDBGException(inherited Find(AName));
-end;
-
-function TDBGExceptions.GetItem(const AIndex: Integer): TDBGException;
-begin
-  Result := TDBGException(inherited GetItem(AIndex));
-end;
-
-procedure TDBGExceptions.SetItem(const AIndex: Integer; const AValue: TDBGException);
-begin
-  inherited SetItem(AIndex, AValue);
-end;
-
-{ =========================================================================== }
 { TIDEExceptions }
 { =========================================================================== }
 
@@ -10339,34 +10271,8 @@ end;
 
 constructor TIDEExceptions.Create;
 begin
-  FMaster := nil;
   inherited Create(TIDEException);
   AddDefault;
-end;
-
-procedure TIDEExceptions.SetMaster(const AValue: TDBGExceptions);
-var
-  n: Integer;
-  Item: TIDEException;
-begin
-  if FMaster = AValue then Exit;
-  Assert((FMaster=nil) or (AValue=nil), 'TManagedExceptions already has a Master');
-  FMaster := AValue;
-  if FMaster = nil
-  then begin
-    for n := 0 to Count - 1 do
-      Items[n].ResetMaster;
-  end
-  else begin
-    // Do not assign, add only enabled exceptions
-    for n := 0 to Count - 1 do
-    begin
-      Item := Items[n];
-      if Item.Enabled and (FMaster.Find(Item.Name) = nil)
-      then FMaster.Add(Item.Name);
-    end;
-    FMaster.IgnoreAll := IgnoreAll;
-  end;
 end;
 
 function TIDEExceptions.GetItem(const AIndex: Integer): TIDEException;
