@@ -157,6 +157,7 @@ const
       CurVis := AVis;
       if not WithVisibilty then
         exit;
+      if AText <> '' then AText := AText + LineEnding;
       case AVis of
         svPrivate:   AText := AText + '  private' + LineEnding;
         svProtected: AText := AText + '  protected' + LineEnding;
@@ -188,6 +189,10 @@ const
 
       if AMember.Kind = FpDbgClasses.skFunction then begin
         AText := AText + '    function  ' + AMember.Name + ' () : '+s+';' + LineEnding;
+      end
+      else
+      if AMember.Kind = FpDbgClasses.skRecord then begin
+        AText := AText + '    ' + AMember.Name + ' : '+s+' = record ;' + LineEnding;
       end
       else
       begin
