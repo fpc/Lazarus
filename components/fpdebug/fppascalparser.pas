@@ -1442,6 +1442,7 @@ begin
   if Count <> 2 then exit;
 
   tmp := Items[0].ResultType;
+  if tmp = nil then exit;
   // Todo unit
   if (tmp.Kind = skClass) or (tmp.Kind = skRecord) then begin
     tmp := tmp.MemberByName[Items[1].GetText];

@@ -108,7 +108,14 @@ type
     //--------------------------------------------------------------------------
   );
 
+  TDbgSymbolMemberVisibility =(
+    svPrivate,
+    svProtected,
+    svPublic
+  );
+
   TDbgSymbolFlag =(
+    sfInternalRef,  // Internal ref/pointer e.g. var/constref parameters
     //sfPointer,       // The sym is a pointer to the reference
     sfConst,         // The sym is a constant and cannot be modified
     sfVar,
@@ -120,7 +127,8 @@ type
   TDbgSymbolFlags = set of TDbgSymbolFlag;
 
   TDbgSymbolField = (
-    sfiName, sfiKind, sfiSymType, sfiAddress, sfiSize, sfiTypeInfo
+    sfiName, sfiKind, sfiSymType, sfiAddress, sfiSize,
+    sfiTypeInfo, sfiMemberVisibility
   );
   TDbgSymbolFields = set of TDbgSymbolField;
 
@@ -137,6 +145,7 @@ type
     FAddress: TDbgPtr;
     FSize: Integer;
     FTypeInfo: TDbgSymbol;
+    FMemberVisibility: TDbgSymbolMemberVisibility;
 
     function GetSymbolType: TDbgSymbolType; //inline;
     function GetKind: TDbgSymbolKind; //inline;
@@ -144,6 +153,7 @@ type
     function GetSize: Integer;
     function GetAddress: TDbgPtr;
     function GetTypeInfo: TDbgSymbol;
+    function GetMemberVisibility: TDbgSymbolMemberVisibility;
   protected
     // NOT cached fields
     function GetChild(AIndex: Integer): TDbgSymbol; virtual;
@@ -167,6 +177,7 @@ type
     procedure SetAddress(AValue: TDbgPtr);
     procedure SetSize(AValue: Integer);
     procedure SetTypeInfo(AValue: TDbgSymbol);
+    procedure SetMemberVisibility(AValue: TDbgSymbolMemberVisibility);
 
     procedure KindNeeded; virtual;
     procedure NameNeeded; virtual;
@@ -174,6 +185,7 @@ type
     procedure AddressNeeded; virtual;
     procedure SizeNeeded; virtual;
     procedure TypeInfoNeeded; virtual;
+    procedure MemberVisibilityNeeded; virtual;
     //procedure Needed; virtual;
   public
     constructor Create(const AName: String);
@@ -186,14 +198,15 @@ type
     // Memory; Size is also part of type (byte vs word vs ...)
     property Address:    TDbgPtr read GetAddress;
     property Size:       Integer read GetSize; // In Bytes
-    // Location
-    property FileName: String read GetFile;
-    property Line: Cardinal read GetLine;
-    property Column: Cardinal read GetColumn;
     // TypeInfo used by
     // stValue (Variable): Type
     // stType: Pointer: type pointed to / Array: Element Type / Func: Result / Class: itheritance
     property TypeInfo: TDbgSymbol read GetTypeInfo;
+    property MemberVisibility: TDbgSymbolMemberVisibility read GetMemberVisibility;
+    // Location
+    property FileName: String read GetFile;
+    property Line: Cardinal read GetLine;
+    property Column: Cardinal read GetColumn;
     // Methods for structures (record / class)
     property MemberCount: Integer read GetMemberCount; // inherited NOT included
     property Member[AIndex: Integer]: TDbgSymbol read GetMember;
@@ -956,6 +969,13 @@ begin
   Result := FTypeInfo;
 end;
 
+function TDbgSymbol.GetMemberVisibility: TDbgSymbolMemberVisibility;
+begin
+  if not(sfiMemberVisibility in FEvaluatedFields) then
+    MemberVisibilityNeeded;
+  Result := FMemberVisibility;
+end;
+
 function TDbgSymbol.GetKind: TDbgSymbolKind;
 begin
   if not(sfiKind in FEvaluatedFields) then
@@ -1032,6 +1052,12 @@ begin
     FTypeInfo.AddReference;
 end;
 
+procedure TDbgSymbol.SetMemberVisibility(AValue: TDbgSymbolMemberVisibility);
+begin
+  FMemberVisibility := AValue;
+  Include(FEvaluatedFields, sfiMemberVisibility);
+end;
+
 procedure TDbgSymbol.SetName(AValue: String);
 begin
   FName := AValue;
@@ -1106,6 +1132,11 @@ end;
 procedure TDbgSymbol.TypeInfoNeeded;
 begin
   SetTypeInfo(nil);
+end;
+
+procedure TDbgSymbol.MemberVisibilityNeeded;
+begin
+  SetMemberVisibility(svPrivate);
 end;
 
 {$ifdef windows}
