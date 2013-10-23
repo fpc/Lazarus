@@ -730,6 +730,8 @@ end;
 function TTreeNode.GetSelected: Boolean;
 begin
   Result := GetState(nsSelected);
+  if (not Result) and (tvoAllowMultiSelect in TreeView.Options) then
+    Result := GetState(nsMultiSelected);
 end;
 
 procedure TTreeNode.SetSelected(AValue: Boolean);
