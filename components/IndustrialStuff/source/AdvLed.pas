@@ -25,10 +25,9 @@ type
 
   // property types
   TLedBitmap = Graphics.TPicture;
-//  TLedKind = (lkRedLight, lkGreenLight, lkBlueLight, lkYellowLight,
-//    lkPurpleLight, lkBulb, lkCustom);
-    TLedKind = (lkRedLight, lkGreenLight,lkYellowLight, lkBulb, lkCustom);
-  TLedState = (lsDisabled,lsOff, lsOn);
+//  TLedKind = (lkRedLight, lkGreenLight, lkBlueLight, lkYellowLight, lkPurpleLight, lkBulb, lkCustom);
+  TLedKind = (lkRedLight, lkGreenLight, lkYellowLight, lkBulb, lkCustom);
+  TLedState = (lsDisabled, lsOff, lsOn);
   TAdvLedGlyphs = array[TLedState] of TLedBitmap;
   TLedStateEvent = procedure(Sender: TObject; AState: TLedState) of object;
 
@@ -50,7 +49,6 @@ type
     procedure SetBlink(const Value: Boolean);
     function StoredGlyph(const Index: Integer): Boolean;
     procedure SelectLedBitmap(const LedKind: TLedKind);
-    procedure SetStateInternal(const Value: TLedState);
     function BitmapToDraw: TLedBitmap;
     procedure BitmapNeeded;
     procedure DoTimer(Sender: TObject);
@@ -58,7 +56,6 @@ type
 
   protected
     FlipFLop : Boolean;
-{    procedure Paint; override;     }
     procedure DoChange(AState: TLedState); dynamic;
     procedure Loaded; override;
   public
@@ -168,7 +165,6 @@ begin
   if (csDesigning in ComponentState) then BitmapNeeded;
 end;
 
-
 // destroy control
 destructor TAdvLed.Destroy;
 begin
@@ -178,12 +174,12 @@ begin
   FGlyphs[lsDisabled].Free;
   inherited Destroy;
 end;
+
 // loaded
 procedure TAdvLed.Loaded;
   begin
    Try
       If (csDesigning in ComponentState) Then Exit ;
-
       // Load Bitmap if necessary
      BitmapNeeded;
    Finally
@@ -194,10 +190,13 @@ end;
 // timer
 procedure TAdvLed.DoTimer(Sender: TObject);
 begin
- if FlipFlop then   SetState(lsOn )
- else   SetState(lsoff);
- FlipFlop := Not FlipFlop;
+  if FlipFlop then
+    SetState(lsOn )
+  else
+    SetState(lsoff);
+  FlipFlop := Not FlipFlop;
 end;
+
 // trigger OnChangeEvent
 procedure TAdvLed.DoChange(AState: TLedState);
 begin
@@ -205,15 +204,16 @@ begin
     FOnChange(Self, AState);
   invalidate;
 end;
+
 // if bitmap is empty, load it
 procedure TAdvLed.BitmapNeeded;
 begin
   if (FGlyphs[lsOn].Bitmap.Empty) or (FGlyphs[lsOff].Bitmap.Empty) or
     (FGlyphs[lsDisabled].Bitmap.Empty) then
-    begin
+  begin
     SelectLedBitmap(FKind);
     Picture.Assign(BitmapToDraw);
-    end;
+  end;
 end;
 
 procedure TAdvLed.SelectLedBitmap(const LedKind: TLedKind);
@@ -224,12 +224,9 @@ const
     'LEDBLUEOFF', 'LEDYELLOWOFF', 'LEDPURPLEOFF', 'LEDBULBOFF' ,'');
   DisabledBitmaps: array[TLedKind] of string = ('LEDREDOFF', 'LEDGREENOFF',
     'LEDBLUEOFF', 'LEDYELLOWOFF', 'LEDPURPLEOFF', 'LEDBULBOFF' ,'');   }
-  OnBitmaps: array[TLedKind] of string = ('RED', 'GREEN', 'YELLOW',
-     'BULBON', '');
-  OffBitmaps: array[TLedKind] of string = ('BLACK', 'BLACK',
-    'BLACK','BULBOFF' ,'');
-  DisabledBitmaps: array[TLedKind] of string = ('BLACK', 'BLACK',
-    'BLACK','BULBOFF' ,'');
+  OnBitmaps: array[TLedKind] of string = ('RED', 'GREEN', 'YELLOW', 'BULBON', '');
+  OffBitmaps: array[TLedKind] of string = ('BLACK', 'BLACK', 'BLACK','BULBOFF', '');
+  DisabledBitmaps: array[TLedKind] of string = ('BLACK', 'BLACK', 'BLACK','BULBOFF' ,'');
 begin
   if LedKind <> lkCustom then
   begin
@@ -238,14 +235,6 @@ begin
     FGlyphs[lsDisabled].LoadFromResourceName(HInstance, DisabledBitmaps[LedKind]);
   end;
 end;
-// set led state internal
-procedure TAdvLed.SetStateInternal(const Value: TLedState);
-begin
-  FState := Value;
-  if not (csLoading in ComponentState) then
-    DoChange(FState);
-  Picture.Assign(BitmapToDraw);
-end;
 
 // set led kind
 procedure TAdvLed.SetKind(const Value: TLedKind);
@@ -253,18 +242,19 @@ begin
   if FKind <> Value then
   begin
     FKind := Value;
-      SelectLedBitmap(FKind);
-      Picture.Assign(BitmapToDraw);
+    SelectLedBitmap(FKind);
+    Picture.Assign(BitmapToDraw);
   end;
 end;
 
 // set led state
 procedure TAdvLed.SetState(const Value: TLedState);
 begin
-  SetStateInternal(Value);
+  FState := Value;
+  if not (csLoading in ComponentState) then
+    DoChange(FState);
+  Picture.Assign(BitmapToDraw);
 end;
-
-
 
 function TAdvLed.GetGlyph(const Index: Integer): TLedBitmap;
 begin
@@ -276,15 +266,16 @@ begin
     Result := nil;
   end;
 end;
- procedure TAdvLed.GlyphChanged(Sender: TObject );
+
+procedure TAdvLed.GlyphChanged(Sender: TObject );
 begin
 //  if (csDesigning in ComponentState) then   Picture.Assign(Sender as TPicture);
    if (csDesigning in ComponentState) then
    begin
-     if Sender =  FGlyphs[lsDisabled] then FState := lsDisabled;
-     if Sender =  FGlyphs[lsOff] then FState := lsOff;
-     if Sender =  FGlyphs[lsOn] then FState := lsOn;
-   Picture.Assign(Sender as TPicture);
+     if Sender = FGlyphs[lsDisabled] then FState := lsDisabled;
+     if Sender = FGlyphs[lsOff] then FState := lsOff;
+     if Sender = FGlyphs[lsOn] then FState := lsOn;
+     Picture.Assign(Sender as TPicture);
    end;
 end;
 
@@ -297,7 +288,7 @@ begin
       0: FGlyphs[lsDisabled].Assign(Value);
       1: FGlyphs[lsOff].Assign(Value);
       2: FGlyphs[lsOn].Assign(Value);
-      end;
+    end;
   end;
   Picture.Assign(BitmapToDraw);
 end;
