@@ -22,7 +22,7 @@ object frPreviewForm: TfrPreviewForm
   OnMouseDown = FormMouseDown
   OnResize = FormResize
   ShowHint = True
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   WindowState = wsMaximized
   object PanTop: TPanel
     Left = 0
@@ -52,7 +52,7 @@ object frPreviewForm: TfrPreviewForm
         Left = 171
         Height = 28
         Top = 1
-        Width = 71
+        Width = 70
         Align = alLeft
         AutoSize = True
         BorderSpacing.InnerBorder = 2
@@ -313,7 +313,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 8
       end
       object frTBSeparator3: TPanel
-        Left = 270
+        Left = 269
         Height = 28
         Top = 1
         Width = 25
@@ -323,7 +323,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 9
       end
       object PgUp: TSpeedButton
-        Left = 315
+        Left = 314
         Height = 28
         Top = 1
         Width = 20
@@ -369,7 +369,7 @@ object frPreviewForm: TfrPreviewForm
         OnClick = PgUpClick
       end
       object PgDown: TSpeedButton
-        Left = 438
+        Left = 437
         Height = 28
         Top = 1
         Width = 20
@@ -415,7 +415,7 @@ object frPreviewForm: TfrPreviewForm
         OnClick = PgDownClick
       end
       object LbPanel: TPanel
-        Left = 335
+        Left = 334
         Height = 28
         Top = 1
         Width = 103
@@ -429,7 +429,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 10
       end
       object BtPgFirst: TSpeedButton
-        Left = 295
+        Left = 294
         Height = 28
         Top = 1
         Width = 20
@@ -475,7 +475,7 @@ object frPreviewForm: TfrPreviewForm
         OnClick = BtPgFirstClick
       end
       object BtPgLast: TSpeedButton
-        Left = 458
+        Left = 457
         Height = 28
         Top = 1
         Width = 20
@@ -567,7 +567,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 3
       end
       object BtZoomIn: TBitBtn
-        Left = 242
+        Left = 241
         Height = 28
         Top = 1
         Width = 28
@@ -613,7 +613,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 5
       end
       object frTBSeparator4: TPanel
-        Left = 478
+        Left = 477
         Height = 28
         Top = 1
         Width = 25
@@ -623,7 +623,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 11
       end
       object FindBtn: TBitBtn
-        Left = 503
+        Left = 502
         Height = 28
         Top = 1
         Width = 28
@@ -854,5 +854,9 @@ object frPreviewForm: TfrPreviewForm
     Options = [ofHideReadOnly]
     left = 164
     top = 99
+  end
+  object prnDialog: TPrintDialog
+    left = 86
+    top = 48
   end
 end

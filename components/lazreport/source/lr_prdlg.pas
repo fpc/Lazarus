@@ -86,6 +86,9 @@ begin
   Label2.Caption := sPrintFormInfo;
   OkButton.Caption := sOk;
   CancelButton.Caption := sCancel;
+  {$IFDEF PRINTDIALOG_DISABLE_PRINTER_PROPERTIES}
+  propButton.Enabled := false;
+  {$ENDIF}
 end;
 
 procedure TfrPrintForm.FormDeactivate(Sender: TObject);

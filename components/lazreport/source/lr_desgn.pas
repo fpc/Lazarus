@@ -1324,6 +1324,9 @@ var
   begin
     Rn := t.GetClipRgn(rtNormal);
     Result := CombineRgn(Rn, Rn, AClipRgn, RGN_AND) <> NULLREGION;
+    if Result then
+      // will this view be really visible?
+      Result := CombineRgn(Rn, AClipRgn, R, RGN_AND) <> NULLREGION;
     DeleteObject(Rn);
   end;
 
@@ -2611,7 +2614,7 @@ begin
     DrawPage(dmAll);
 //    Invalidate;
 //    DrawDialog(0,0);
-  end
+  end;
 
   {$IFDEF DebugLR}
   DebugLnExit('TfrDesignerPage.MMove END');

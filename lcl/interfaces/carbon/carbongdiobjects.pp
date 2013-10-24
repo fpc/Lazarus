@@ -12,7 +12,7 @@
 unit CarbonGDIObjects;
 
 {$mode objfpc}{$H+}
-
+{.$define DumpRegion}
 interface
 
 // defines
@@ -59,6 +59,7 @@ type
     constructor Create;
     constructor Create(const X1, Y1, X2, Y2: Integer);
     constructor Create(Points: PPoint; NumPts: Integer; FillMode: Integer);
+    constructor CreateEllipse(X1, Y1, X2, Y2: Integer);
     destructor Destroy; override;
     
     procedure Apply(ADC: TCarbonContext);
@@ -413,6 +414,166 @@ const
     {cbtBGRA} kCGImageAlphaFirst or kCGBitmapByteOrder32Little
   );
 
+type
+
+  { TScanObject }
+
+  TScanObject = class
+    Shape: HIShapeRef;
+    fX, fY, fW, fH: Integer;
+    Data: Pointer;
+    Context: CGContextRef;
+    constructor create(aShape: HIShapeRef; aX, aY, aW, aH: Integer);
+    destructor destroy; override;
+    procedure AddPart(X1, X2, Y: Integer);
+    function Setup: boolean;
+    procedure Scan;
+    procedure ScanConvex;
+  end;
+
+
+constructor TScanObject.create(aShape: HIShapeRef; aX, aY, aW, aH: Integer);
+begin
+  inherited Create;
+  Shape := aShape;
+  fX := aX;
+  fY := aY;
+  fW := aW;
+  fH := aH;
+end;
+
+
+destructor TScanObject.destroy;
+begin
+  if Context<>nil then
+    CGContextRelease(Context);
+  if Data<>nil then
+    System.Freemem(Data);
+  inherited Destroy;
+end;
+
+function TScanObject.Setup: boolean;
+begin
+  System.GetMem(Data, fW * fH);
+  System.FillChar(Data^, fW * fH, 0);
+  try
+    Context := CGBitmapContextCreate(Data, fW, fH, 8, fW, GrayColorSpace, kCGImageAlphaNone);
+    CGContextSetShouldAntialias(Context, 0); // disable anti-aliasing
+    CGContextSetGrayFillColor(Context, 1.0, 1.0); // draw white polygon
+    CGContextTranslateCTM(Context, -fx, -fy); // Translate origin so we draw at 0,0
+    result := true;
+  except
+    result := false;
+  end;
+end;
+
+procedure TScanObject.AddPart(X1, X2, Y: Integer);
+var
+  R: HIShapeRef;
+begin
+  //DebugLn('AddPart:' + DbgS(X1) + ' - ' + DbgS(X2) + ', ' + DbgS(Y));
+  R := HIShapeCreateWithRect(GetCGRect(X1, Y, X2, Y + 1));
+  OSError(HIShapeUnion(Shape, R, Shape), Self, 'AddPart', 'HIShapeUnion');
+  CFRelease(R);
+end;
+
+procedure TScanObject.Scan;
+var
+  PData: PByte;
+  X, Y, SX: Integer;
+  LC, C: Byte;
+  {$ifdef DumpRegion}
+  Line: string;
+  {$endif}
+begin
+  // scan shape
+  {$ifdef DumpRegion}
+  DebugLn;
+  DebugLn('SCAN: X=%d Y=%d W=%d H=%d',[fX,fY,fW,fH]);
+  SetLength(Line, fW);
+  {$endif}
+
+  PData := Data;
+  for Y := 0 to Pred(fH) do
+  begin
+    LC := 0; // edge is black
+    Sx := -1;
+    for X := 0 to Pred(fW) do
+    begin
+      C := PData^;
+      {$ifdef DumpRegion}
+      Line[X + 1] := Chr(Ord('0') + C div 255);
+      {$endif}
+
+      if (C = $FF) and (LC = 0) then
+        SX := X; // start of painted row part
+      if (SX>=0) and (LC = $FF) and ((C = 0) or (x=Pred(fw))) then
+        // end of painted row part (SX, X)
+        AddPart(fx + SX, fx + X,  fy + Pred(fH) - Y);
+
+      LC := C;
+      Inc(PData);
+    end;
+    {$ifdef DumpRegion}
+    DebugLn('%.3d: %s',[Pred(fH) - Y,Line]);
+    {$endif}
+  end;
+end;
+
+procedure TScanObject.ScanConvex;
+var
+  PData, P: PByte;
+  X, Xe, Y, SX,EX: Integer;
+  LC, C: Byte;
+  {$ifdef DumpRegion}
+  Line: string;
+  {$endif}
+  found, noted: boolean;
+begin
+  // scan shape
+  {$ifdef DumpRegion}
+  DebugLn;
+  DebugLn('SCANCONVEX: X=%d Y=%d W=%d H=%d',[fX,fY,fW,fH]);
+  SetLength(Line, fW);
+  {$endif}
+
+  noted := false;
+  PData := Data;
+  for Y := 0 to Pred(fH) do
+  begin
+    P := PData;
+    {$ifdef DumpRegion}
+    for X:=0 to Pred(fW) do Line[X+1] := Chr(Ord('0') + P[X] div 255);
+    {$endif}
+    SX := -1; EX := -1;
+    for X := 0 to Pred(fW) do
+    begin
+      Xe := Pred(fW)-X;
+      if (SX=-1) and (P[X]=$FF) then SX := X;
+      if (EX=-1) and (P[Xe]=$FF) then EX := Xe;
+      found := (EX>=0) and (SX>=0);
+      if found or (Xe<=X) then
+        break;
+    end;
+    // just in case ....
+    if not found then
+    begin
+      if (Sx>=0) then begin Ex := Pred(fW); found := true; end;
+      if (Ex>=0) then begin Sx := 0; found := true; end;
+      if not noted and found then begin
+        noted := true;
+        DebugLn('NOTE: ScanObj: broken convex!');
+      end;
+    end;
+
+    inc(PData, fW);
+    if found then
+      AddPart(fX + SX, fX + Ex + 1,  fY + Pred(fH) - Y);
+    {$ifdef DumpRegion}
+    DebugLn('%.3d: %s did=%s',[Pred(fH) - Y,Line,dbgs(found)]);
+    {$endif}
+  end;
+end;
 
 
 {------------------------------------------------------------------------------
@@ -608,16 +769,10 @@ constructor TCarbonRegion.Create(Points: PPoint; NumPts: Integer;
   FillMode: Integer);
 var
   Bounds: TRect;
-  Context: CGContextRef;
-  W, H: Integer;
-  Data: Pointer;
-  PData: PByte;
+  ScanObj: TScanObject;
   P: PPoint;
-  I: Integer;
-  X, Y, SX: Integer;
-  LC, C: Byte;
-  //Line: String;
-  
+  I, W, H: Integer;
+
   function GetPolygonBounds: TRect;
   var
     I: Integer;
@@ -633,19 +788,7 @@ var
       if P^.Y > Result.Bottom then Result.Bottom := P^.Y;
     end;
   end;
-  
-  procedure AddPart(X1, X2, Y: Integer);
-  var
-    R: HIShapeRef;
-  begin
-    //DebugLn('AddPart:' + DbgS(X1) + ' - ' + DbgS(X2) + ', ' + DbgS(Y));
-        
-    R := HIShapeCreateWithRect(GetCGRect(X1, Y, X2, Y + 1));
-    OSError(HIShapeUnion(FShape, R, FShape),
-      Self, 'Create polygonal', 'HIShapeUnion');
-    CFRelease(R);
-  end;
-  
+
 begin
   inherited Create(False);
   
@@ -658,67 +801,72 @@ begin
   
   if (NumPts <= 2) or (Points = nil) then Exit;
   Bounds := GetPolygonBounds;
-  DebugLn('TCarbonRegion.Create Bounds:' + DbgS(Bounds));
+  // DebugLn('TCarbonRegion.Create Bounds:' + DbgS(Bounds));
   W := Bounds.Right - Bounds.Left + 2;
   H := Bounds.Bottom - Bounds.Top + 2;
   
   if (W <= 0) or (H <= 0) then Exit;
-  
-  System.GetMem(Data, W * H);
-  System.FillChar(Data^, W * H, 0); // clear bitmap context data to black
-  try
-    Context := CGBitmapContextCreate(Data, W, H, 8, W, GrayColorSpace,
-      kCGImageAlphaNone);
-    try
-      CGContextSetShouldAntialias(Context, 0); // disable anti-aliasing
-      CGContextSetGrayFillColor(Context, 1.0, 1.0); // draw white polygon
-      
-      P := Points;
-      CGContextBeginPath(Context);
-      CGContextMoveToPoint(Context, P^.X, P^.Y);
 
+  ScanObj := TScanObject.create(FShape, Bounds.Left, Bounds.Top, W, H);
+  try
+    if ScanObj.Setup then begin
+      // draw object to scan
+      P := Points;
+      CGContextBeginPath(ScanObj.Context);
+      CGContextMoveToPoint(ScanObj.Context, P^.X, P^.Y);
       for I := 1 to NumPts - 1 do
       begin
         Inc(P);
-        CGContextAddLineToPoint(Context, P^.X, P^.Y);
+        CGContextAddLineToPoint(ScanObj.Context, P^.X, P^.Y);
       end;
-      
-      CGContextClosePath(Context);
-      
+      CGContextClosePath(ScanObj.Context);
       if FillMode = ALTERNATE then
-        CGContextEOFillPath(Context)
+        CGContextEOFillPath(ScanObj.Context)
       else
-        CGContextFillPath(Context);
+        CGContextFillPath(ScanObj.Context);
 
-      //SetLength(Line, W);
-
-      PData := Data;
-      for Y := 0 to Pred(H) do
-      begin
-        LC := 0; // edge is black
-        for X := 0 to Pred(W) do
-        begin
-          C := PData^;
-          //Line[X + 1] := Chr(Ord('0') + C div 255);
-          
-          if (C = $FF) and (LC = 0) then
-            SX := X; // start of painted row part
-          if (C = 0) and (LC = $FF) then
-            // end of painted row part (SX, X)
-            AddPart(SX, X,  Pred(H) - Y);
-          
-          LC := C;
-          Inc(PData);
-        end;
-        //DebugLn(DbgS(Pred(H) - Y) + ':' + Line);
-      end;
-
-    finally
-      CGContextRelease(Context);
+      // scan object in current path
+      ScanObj.Scan;
     end;
   finally
-    System.FreeMem(Data);
+    ScanObj.free;
   end;
+end;
+
+constructor TCarbonRegion.CreateEllipse(X1, Y1, X2, Y2: Integer);
+var
+  R: CGRect;
+  ScanObj: TScanObject;
+  i: Integer;
+begin
+  FShape := HIShapeCreateMutable;
+
+  if X2<X1 then begin i:=X1; X1:=X2; X2:=i; end;
+  if Y2<Y1 then begin i:=Y1; Y1:=Y2; Y2:=i; end;
+
+  R := getCGRect(X1, Y1, X2, Y2);
+  R.origin.x := R.origin.x + 0.5;
+  R.origin.y := R.origin.y + 0.5;
+  R.size.width := R.size.width - 1;
+  R.size.height := R.size.height - 1;
+
+  with R do
+  ScanObj := TScanObject.create(FShape, X1, Y1, X2-X1+1, Y2-Y1+1);
+  try
+    with ScanObj do
+    if Setup then begin
+      CGContextSetGrayStrokeColor(Context, 1.0, 1.0); // draw white stroke
+      CGContextSetGrayFillColor(Context, 0.0, 0.0); // draw black fill
+      CGContextBeginPath(Context);
+      CGContextAddEllipseInRect(Context, R);
+      CGContextDrawPath(Context, kCGPathFillStroke);
+      // scan object in current path
+      ScanConvex;
+    end;
+  finally
+    ScanObj.free;
+  end;
+
 end;
 
 {------------------------------------------------------------------------------

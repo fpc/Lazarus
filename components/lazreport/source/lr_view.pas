@@ -30,7 +30,7 @@ uses
   
   GraphType,LCLType,LCLIntf,LCLProc,
   
-  LR_Const;
+  LR_Const, PrintersDlgs;
 
 type
   TfrPreviewForm = class;
@@ -112,6 +112,7 @@ type
     PanTop: TPanel;
     PgDown: TSpeedButton;
     PgUp: TSpeedButton;
+    prnDialog: TPrintDialog;
     ProcMenu: TPopupMenu;
     N2001: TMenuItem;
     N1501: TMenuItem;
@@ -693,10 +694,52 @@ function TfrPreviewForm.Print: boolean;
 var
   Pages: String;
   ind: Integer;
+
+  function RebuildReport: boolean;
+  begin
+    result := true;
+    if TfrReport(Doc).CanRebuild then
+    begin
+      if TfrReport(Doc).ChangePrinter(ind, Printer.PrinterIndex) then
+      begin
+        TfrEMFPages(EMFPages).Free;
+        EMFPages := nil;
+        TfrReport(Doc).PrepareReport;
+        Connect(Doc);
+      end
+      else
+        result := false;
+    end;
+  end;
+
+  procedure PrintReport(NumCopies: Integer);
+  begin
+    ConnectBack;
+    TfrReport(Doc).PrintPreparedReport(Pages, NumCopies);
+    Connect(Doc);
+    RedrawAll;
+  end;
+
 begin
   result := false;
   if (EMFPages = nil) or (Printer.Printers.Count = 0) then Exit;
   ind := Printer.PrinterIndex;
+  {$IFDEF PRINTDIALOG_NATIVE_PRINTDIALOG}
+  if TfrReport(Doc).DefaultCopies<1 then
+    prnDialog.Copies := 1
+  else
+    prnDialog.Copies:= TfrReport(Doc).DefaultCopies;
+  prnDialog.MaxPage := TfrEMFPages(EMFPages).Count;
+  prnDialog.MinPage:=1;
+  prnDialog.FromPage := 1;
+  prnDialog.ToPage := prnDialog.MaxPage;
+  if prnDialog.Execute then begin
+    if not RebuildReport then
+      exit;
+    Pages := format('%d-%d',[prnDialog.FromPage,prnDialog.ToPage]);
+    PrintReport(prnDialog.Copies);
+  end;
+  {$ELSE}
   frPrintForm := TfrPrintForm.Create(nil);
   frPrintForm.E1.Text:=IntToStr(TfrReport(Doc).DefaultCopies);
   with frPrintForm do
@@ -705,17 +748,8 @@ begin
     begin
       if Printer.PrinterIndex <> ind then
       begin
-        if TfrReport(Doc).CanRebuild then
-        begin
-          if TfrReport(Doc).ChangePrinter(ind, Printer.PrinterIndex) then
-          begin
-            TfrEMFPages(EMFPages).Free;
-            EMFPages := nil;
-            TfrReport(Doc).PrepareReport;
-            Connect(Doc);
-          end
-          else Exit;
-        end;
+        if not RebuildReport then
+          exit;
       end;
 
       if RB1.Checked then
@@ -726,14 +760,12 @@ begin
         else
            Pages := E2.Text;
 
-      ConnectBack;
-      TfrReport(Doc).PrintPreparedReport(Pages, StrToInt(E1.Text));
-      Connect(Doc);
-      RedrawAll;
-      result := true;
+      PrintReport(StrToInt(E1.Text));
     end;
     Free;
   end;
+  {$ENDIF}
+  result := true;
 end;
 
 function TfrPreviewForm.ExportToWithFilterIndex(AFilterIndex: Integer;
