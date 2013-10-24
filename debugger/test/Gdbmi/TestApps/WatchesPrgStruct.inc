@@ -423,8 +423,26 @@
 
   {%region  TYPE}
     {$IFDEF Global_Type}
+      TFooStatArray = Array[3..7] of boolean;
+      TFooDynArray = Array of boolean;
+      TString25 = string[25];
+      TFooTestRecord = record x1:boolean; x2:integer; xr: record x1:boolean; x2:integer; end; end;
+
       TFoo = class
       private
+        a1: TFooStatArray;
+        a2: TFooDynArray;
+        a3: Array[3..7, 2..4] of boolean;
+        a4: Array of Array of boolean;
+        a5: array [1..2] of record x1:boolean; x2:integer; xr: record x1:boolean; x2:integer; end; end;
+        a6: array [1..2,3..4] of record x1:boolean; x2:integer; xr: record x1:boolean; x2:integer; end; end;
+        a7: array of record x1:boolean; x2:integer; xr: record x1:boolean; x2:integer; end; end;
+        a8: array of array of record x1:boolean; x2:integer; xr: record x1:boolean; x2:integer; end; end;
+        r1: record x1:boolean; x2:integer; xr: record x1:boolean; x2:integer; end; end;
+        r2: TFooTestRecord;
+        s1: string[25];
+        s2: TString25;
+
         function GetValueInt: Integer;
         procedure SetValueInt(AValue: Integer);
       public
