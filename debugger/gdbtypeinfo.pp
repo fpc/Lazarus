@@ -2391,8 +2391,8 @@ var
           j := 1;
           while true do begin
             while (j <= l) and (S2[j] in ['^','(', ' ']) do inc(j);
-            if (lowercase(copy(S2, j, 7)) = 'array [') then begin
-              inc(j, 8+3);
+            if (lowercase(copy(S2, j, 6)) = 'array ') then begin
+              inc(j, 5+3);
               while (j <= l) and
                     not ( (S2[j-3] = ' ') and (S2[j-2] in ['o','O']) and (S2[j-1] in ['f','F']) and (S2[j] = ' ') )
               do
