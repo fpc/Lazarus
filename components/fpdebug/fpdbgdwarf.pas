@@ -1466,21 +1466,21 @@ var
   NewInfo: TDwarfInformationEntry;
   FwdInfoPtr: Pointer;
   FwdCompUint: TDwarfCompilationUnit;
-  ti: TDwarfInformationEntry;
+  ti: TDbgDwarfIdentifier;
 begin
-  ti := nil;
+  ti:= nil;
   NewInfo := FInformationEntry.FindChildByTag(DW_TAG_inheritance);
   if (NewInfo <> nil) and
      NewInfo.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint)
   then begin
-    ti := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
-    DebugLn(FPDBG_DWARF_SEARCH, ['Inherited from ', dbgs(ti.FInformationEntry, FwdCompUint) ]);
+    NewInfo.ReleaseReference;
+    NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+    DebugLn(FPDBG_DWARF_SEARCH, ['Inherited from ', dbgs(NewInfo.FInformationEntry, FwdCompUint) ]);
+    ti := TDbgDwarfIdentifier.CreateSubClass('', NewInfo)
   end;
-  if ti = nil
-  then SetTypeInfo(nil)
-  else SetTypeInfo(TDbgDwarfIdentifier.CreateSubClass('', ti));
-  ReleaseRefAndNil(NewInfo);
-  ReleaseRefAndNil(ti);
+  SetTypeInfo(ti);
+  ti.ReleaseReference;
+  NewInfo.ReleaseReference;
 end;
 
 { TDbgDwarfTypeIdentifierModifier }
@@ -3978,13 +3978,17 @@ begin
         Scope.Index := AStartScope.ParentIndex;
         //if not Scope2.IsValid then Exit;
         if Scope.HasNext then Exit;
+        if p >= MaxData then break;
         Scope.CreateNextForEntry(p);
         Exit;
       end;
 
       ni := Scope.NextIndex;
       if ni < 0 // not Scope.HasNext
-      then ni := Scope.CreateNextForEntry(p);
+      then begin
+        if p >= MaxData then break;
+        ni := Scope.CreateNextForEntry(p);
+      end;
 //      if Level = 0 then Exit;
       if CanExit(Result) then Exit;
       if (Level = 0) and not (lefSearchSibling in AFlags) then Exit;
@@ -4083,6 +4087,7 @@ begin
     // we cannot have a next without a defined child
     if Def.Children
     then begin
+      assert(p < MaxData, 'Got data for children');
       ni := Scope.ChildIndex;
       if ni < 0 // not Scope.HasChild
       then ni := Scope.CreateChildForEntry(p);
@@ -4094,7 +4099,10 @@ begin
 
     ni := Scope.NextIndex;
     if ni < 0 // not Scope.HasNext
-    then ni := Scope.CreateNextForEntry(p);
+    then begin
+      if p >= MaxData then break;
+      ni := Scope.CreateNextForEntry(p);
+    end;
     if CanExit(Result) then Exit;
     if (Level = 0) and not (lefSearchSibling in AFlags) then Exit;
 
