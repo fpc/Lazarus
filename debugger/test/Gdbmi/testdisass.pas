@@ -350,7 +350,7 @@ var
     FLocals.Supplier := Gdb.Locals;
     FLineInfo.Master := Gdb.LineInfo;
     FCallStack.Supplier := Gdb.CallStack;
-    FExceptions.Master := Gdb.Exceptions;
+    Gdb.Exceptions := FExceptions;
     FSignals.Master := Gdb.Signals;
     FRegisters.Master := Gdb.Registers;
 
@@ -459,7 +459,7 @@ begin
     Init;
     SetLength(Gdb.TestDisAssRegions, 2);
     with Gdb.TestDisAssRegions[0] do begin
-      FirstAddr := $30100-180; LastAddr := $30100-20; InstrLen := 8;
+      FirstAddr := $30100-188; LastAddr := $30100-20; InstrLen := 16;
       FuncName := 'abc';
     end;
     with Gdb.TestDisAssRegions[1] do begin
@@ -503,7 +503,6 @@ begin
   TestSrc('part-src, 1 block', $30100-8, $30100+400);
   CleanGdb;
   {%endregion}
-
 
 
 

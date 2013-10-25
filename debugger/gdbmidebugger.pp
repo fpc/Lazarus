@@ -5431,8 +5431,9 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     CanContinue: Boolean;
     Location: TDBGLocationRec;
     ExceptInfo: TGDBMIExceptionInfo;
+    ExceptItem: TBaseException;
   begin
-    if FTheDebugger.Exceptions.IgnoreAll
+    if (FTheDebugger.Exceptions = nil) or FTheDebugger.Exceptions.IgnoreAll
     then begin
       Result := True; //ExecuteCommand('-exec-continue')
       exit;
@@ -5440,7 +5441,8 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
 
     ExceptInfo := GetExceptionInfo;
     // check if we should ignore this exception
-    if (FTheDebugger.Exceptions.Find(ExceptInfo.Name) <> nil)
+    ExceptItem := FTheDebugger.Exceptions.Find(ExceptInfo.Name);
+    if (ExceptItem <> nil) and (ExceptItem.Enabled)
     then begin
       Result := True; //ExecuteCommand('-exec-continue')
       exit;

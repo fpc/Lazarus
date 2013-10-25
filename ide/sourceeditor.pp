@@ -8057,8 +8057,8 @@ Begin
         TopLine := SrcEdit.EditorComponent.TopLine;
         TSynEditMarkupManager(SrcEdit.EditorComponent.MarkupMgr).IncPaintLock;
         SrcEdit.BeginUpdate;
+        SrcEdit.FEditor.HandleNeeded; // make sure we have a handle
         SrcEdit.Visible := True;
-        SrcEdit.FEditor.Handle; // make sure we have a handle
         SrcEdit.EndUpdate;
         // Restore the intial Positions, must be after lock
         SrcEdit.EditorComponent.LeftChar := 1;

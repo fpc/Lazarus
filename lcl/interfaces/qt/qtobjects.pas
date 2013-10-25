@@ -2776,6 +2776,15 @@ begin
   {$ifdef VerboseQt}
   writeln('TQtDeviceContext.drawRect() x1: ',x1,' y1: ',y1,' w: ',w,' h: ',h);
   {$endif}
+  {Important note: sometimes QPainter_drawRect() fails (diagonal line over rect)
+   with raster graphicssystem (spotted with qt-4.8.5 under Fedora 19 32bit).
+   With native (X11) graphicssystem it looks ok.
+   Solution until it's fixed in Qt:
+   APath := QPainterPath_create;
+   QPainterPath_addRect(APath, x1, y1, w, h);
+   QPainter_drawPath(Widget, APath);
+   QPainterPath_destroy(APath);
+  }
   QPainter_drawRect(Widget, x1, y1, w, h);
 end;
 

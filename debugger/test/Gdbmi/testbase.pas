@@ -536,7 +536,7 @@ begin
   FLineInfo.Master := Result.LineInfo;
   FCallStack.Supplier := Result.CallStack;
   FDisassembler.Master := Result.Disassembler;
-  FExceptions.Master := Result.Exceptions;
+  Result.Exceptions := FExceptions;
   FSignals.Master := Result.Signals;
   FRegisters.Master := Result.Registers;
 
@@ -559,7 +559,7 @@ begin
   FLineInfo.Master := nil;
   FCallStack.Supplier := nil;
   FDisassembler.Master := nil;
-  FExceptions.Master := nil;
+  //FExceptions.Master := nil;
   FSignals.Master := nil;
 //  FRegisters.Master := nil;
 

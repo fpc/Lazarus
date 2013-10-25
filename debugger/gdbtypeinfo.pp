@@ -1999,13 +1999,15 @@ function TGDBPTypeRequestCache.IndexOf(AThreadId, AStackFrame: Integer;
   ARequest: TGDBPTypeRequest): Integer;
 var
   e: TGDBPTypeRequestCacheEntry;
+  s: String;
 begin
   Result := FList.Count - 1;
+  s := UpperCase(ARequest.Request);
   while Result >= 0 do begin
     e := TGDBPTypeRequestCacheEntry(FList[Result]);
     if (e.ThreadId = AThreadId) and (e.StackFrame = AStackFrame) and
-       (e.Request.Request =ARequest.Request) and
-       (e.Request.ReqType =ARequest.ReqType)
+       (e.Request.Request = s) and
+       (e.Request.ReqType = ARequest.ReqType)
     then
       exit;
     dec(Result);
@@ -2021,6 +2023,7 @@ begin
   e.FThreadId := AThreadId;
   e.FStackFrame := AStackFrame;
   e.FRequest := ARequest;
+  e.FRequest.Request := UpperCase(e.FRequest.Request);
   e.FRequest.Next := nil;
   FList.Add(e);
 end;
