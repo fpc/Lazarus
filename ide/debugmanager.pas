@@ -873,7 +873,8 @@ begin
   end;
 
   // watch was not added automatically => show a dialog
-  ShowWatchProperties(nil, '');
+  if ShowWatchProperties(nil, '') = mrOK then
+    ViewDebugDialog(ddtWatches, False);
 end;
 
 //-----------------------------------------------------------------------------
