@@ -15,7 +15,7 @@ interface
 {$I LR_Vers.inc}
 
 const
-  IdentifySeparator = [' ', '+', '-', '*', '/', '>', '<', '=', '(', ')', #13];
+  IdentifySeparator = [' ', '+', '-', '*', '/', '>', '<', '=', '(', ')', #13, '[',']'];
 
 type
   TGetPValueEvent = procedure(const s: String; var v: Variant) of object;
@@ -42,7 +42,7 @@ function GetBrackedVariable(s: String; var i: integer; out j: Integer): String;
 
 implementation
 
-uses SysUtils, Variants
+uses SysUtils, Variants, LazUTF8
   {$IFDEF DebugLRCalcs}
   , LCLProc
   {$ENDIF}
@@ -230,13 +230,13 @@ begin
             end
             else if s[k] = '(' then
             begin
-              s1 := AnsiUpperCase(s1);
+              s1 := UpperCase(s1);
               Get3Parameters(s, k, s2, s3, s4);
               if s1 = 'COPY' then
               begin
                 ci := StrToInt(Calc(s3));
                 cn := StrToInt(Calc(s4));
-                nm[st] := Copy(Calc(s2), ci, cn);
+                nm[st] := UTF8Copy(Calc(s2), ci, cn);
               end
               else if s1 = 'IF' then
               begin
@@ -490,7 +490,7 @@ begin
           res := res + s2 + ' '
         else
         begin
-          s1 := AnsiUpperCase(s2);
+          s1 := UpperCase(s2);
           if s1 = 'INT' then
           begin
             s[i - 1] := ttInt;

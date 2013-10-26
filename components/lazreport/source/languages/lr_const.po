@@ -235,6 +235,22 @@ msgstr ""
 msgid "Memo:"
 msgstr ""
 
+#: lr_const.sdateformat1
+msgid "mm.dd.yy"
+msgstr ""
+
+#: lr_const.sdateformat2
+msgid "mm.dd.yyyy"
+msgstr ""
+
+#: lr_const.sdateformat3
+msgid "d mmm yyyy"
+msgstr ""
+
+#: lr_const.sdateformat4
+msgid "d mmmm yyyy"
+msgstr ""
+
 #: lr_const.sdatetimecategory
 msgid "Date and time"
 msgstr ""
@@ -259,6 +275,10 @@ msgstr ""
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
 msgstr ""
 
+#: lr_const.sdescriptiondec
+msgid "DEC(<Value>)/Decrement <Value>."
+msgstr ""
+
 #: lr_const.sdescriptionformatdatetime
 msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
 msgstr ""
@@ -273,6 +293,10 @@ msgstr ""
 
 #: lr_const.sdescriptionfrac
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
+msgstr ""
+
+#: lr_const.sdescriptioninc
+msgid "INC(<Value>)/Increment <Value>."
 msgstr ""
 
 #: lr_const.sdescriptioninput
@@ -319,12 +343,28 @@ msgstr ""
 msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
 msgstr ""
 
+#: lr_const.sdescriptionnewcolumn
+msgid "NEWCOLUMN/Create new collumn on page for current report"
+msgstr ""
+
+#: lr_const.sdescriptionnewpage
+msgid "NEWPAGE/Create new page for current report"
+msgstr ""
+
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
 msgstr ""
 
 #: lr_const.sdescriptionround
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
+msgstr ""
+
+#: lr_const.sdescriptionshowband
+msgid "SHOWBAND(<BandName>)/Show <BandName> in report"
+msgstr ""
+
+#: lr_const.sdescriptionstopreport
+msgid "STOPREPORT/Terminate create report"
 msgstr ""
 
 #: lr_const.sdescriptionstr
@@ -1386,6 +1426,10 @@ msgstr ""
 msgid "Insert Shape object"
 msgstr ""
 
+#: lr_const.sinterpretator
+msgid "Interpretator"
+msgstr ""
+
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
 msgstr ""
@@ -2314,6 +2358,22 @@ msgstr ""
 
 #: lr_const.stextfile
 msgid "ASCII Text file"
+msgstr ""
+
+#: lr_const.stimeformat1
+msgid "hh:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat2
+msgid "h:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat3
+msgid "hh:nn"
+msgstr ""
+
+#: lr_const.stimeformat4
+msgid "h:nn"
 msgstr ""
 
 #: lr_const.sto

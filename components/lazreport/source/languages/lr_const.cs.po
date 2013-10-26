@@ -241,6 +241,22 @@ msgstr "CSV Soubor"
 msgid "Memo:"
 msgstr "Memo: (text)"
 
+#: lr_const.sdateformat1
+msgid "mm.dd.yy"
+msgstr ""
+
+#: lr_const.sdateformat2
+msgid "mm.dd.yyyy"
+msgstr ""
+
+#: lr_const.sdateformat3
+msgid "d mmm yyyy"
+msgstr ""
+
+#: lr_const.sdateformat4
+msgid "d mmmm yyyy"
+msgstr ""
+
 #: lr_const.sdatetimecategory
 msgid "Date and time"
 msgstr "Datum a čas:"
@@ -269,6 +285,10 @@ msgstr "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
 msgstr "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
 
+#: lr_const.sdescriptiondec
+msgid "DEC(<Value>)/Decrement <Value>."
+msgstr ""
+
 #: lr_const.sdescriptionformatdatetime
 #, fuzzy
 msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
@@ -288,6 +308,10 @@ msgstr "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and return
 #, fuzzy
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
 msgstr "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
+
+#: lr_const.sdescriptioninc
+msgid "INC(<Value>)/Increment <Value>."
+msgstr ""
 
 #: lr_const.sdescriptioninput
 #, fuzzy
@@ -344,6 +368,14 @@ msgstr "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
 msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
 msgstr "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
 
+#: lr_const.sdescriptionnewcolumn
+msgid "NEWCOLUMN/Create new collumn on page for current report"
+msgstr ""
+
+#: lr_const.sdescriptionnewpage
+msgid "NEWPAGE/Create new page for current report"
+msgstr ""
+
 #: lr_const.sdescriptionpos
 #, fuzzy
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
@@ -353,6 +385,14 @@ msgstr "POS(<SubString>, <String>)/Returns position of substring in given string
 #, fuzzy
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
 msgstr "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
+
+#: lr_const.sdescriptionshowband
+msgid "SHOWBAND(<BandName>)/Show <BandName> in report"
+msgstr ""
+
+#: lr_const.sdescriptionstopreport
+msgid "STOPREPORT/Terminate create report"
+msgstr ""
 
 #: lr_const.sdescriptionstr
 #, fuzzy
@@ -1421,6 +1461,10 @@ msgstr "Vložit zakulacený obdélník se stínovanou oblastí"
 msgid "Insert Shape object"
 msgstr "Vložit tvarovaný objekt"
 
+#: lr_const.sinterpretator
+msgid "Interpretator"
+msgstr ""
+
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
 msgstr "Dodržet poměr stran"
@@ -2350,6 +2394,22 @@ msgstr "Nový report"
 #: lr_const.stextfile
 msgid "ASCII Text file"
 msgstr "ASCII Textový soubor"
+
+#: lr_const.stimeformat1
+msgid "hh:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat2
+msgid "h:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat3
+msgid "hh:nn"
+msgstr ""
+
+#: lr_const.stimeformat4
+msgid "h:nn"
+msgstr ""
 
 #: lr_const.sto
 msgid "to"

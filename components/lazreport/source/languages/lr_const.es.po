@@ -240,6 +240,22 @@ msgstr "Archivo CSV"
 msgid "Memo:"
 msgstr "Texto:"
 
+#: lr_const.sdateformat1
+msgid "mm.dd.yy"
+msgstr ""
+
+#: lr_const.sdateformat2
+msgid "mm.dd.yyyy"
+msgstr ""
+
+#: lr_const.sdateformat3
+msgid "d mmm yyyy"
+msgstr ""
+
+#: lr_const.sdateformat4
+msgid "d mmmm yyyy"
+msgstr ""
+
 #: lr_const.sdatetimecategory
 msgid "Date and time"
 msgstr "Fecha y hora"
@@ -264,6 +280,10 @@ msgstr "COUNT(<NombreDeBanda>)/Regresa la cuenta de registros en <NombreDeBanda>
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
 msgstr "DAYOF(<Fecha>)/Regresa el día (1..31) de una <Fecha> dada."
 
+#: lr_const.sdescriptiondec
+msgid "DEC(<Value>)/Decrement <Value>."
+msgstr ""
+
 #: lr_const.sdescriptionformatdatetime
 msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
 msgstr "FORMATDATETIME(<Fmt>, <FechaHora>)/Convierte un valor de <FechaHora> a cadena usando la máscara en <Fmt>."
@@ -279,6 +299,10 @@ msgstr "FORMATTEXT(<Máscara>, <Cadena>)/Aplica la <Máscara> a la <Cadena> dada
 #: lr_const.sdescriptionfrac
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
 msgstr "FRAC(<Value>)/Devuelve la parte fraccionaria de punto flotante <Value>."
+
+#: lr_const.sdescriptioninc
+msgid "INC(<Value>)/Increment <Value>."
+msgstr ""
 
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
@@ -324,6 +348,14 @@ msgstr "MONTHOF(<Fecha>)/Regresa el número del mes (1..12) de la <Fecha> dada."
 msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
 msgstr "NAMECASE(<Cadena>)/Convierte la <Cadena> a minúsculas poniendo la primera letra en mayúsculas."
 
+#: lr_const.sdescriptionnewcolumn
+msgid "NEWCOLUMN/Create new collumn on page for current report"
+msgstr ""
+
+#: lr_const.sdescriptionnewpage
+msgid "NEWPAGE/Create new page for current report"
+msgstr ""
+
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
 msgstr "POS(<Subcadena>, <Cadena>)/Regresa la posición de <Subcadena> en <Cadena>."
@@ -331,6 +363,14 @@ msgstr "POS(<Subcadena>, <Cadena>)/Regresa la posición de <Subcadena> en <Caden
 #: lr_const.sdescriptionround
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
 msgstr "ROUND(<Value>)/Redondea el punto flotante <Value> al número entero más cercano."
+
+#: lr_const.sdescriptionshowband
+msgid "SHOWBAND(<BandName>)/Show <BandName> in report"
+msgstr ""
+
+#: lr_const.sdescriptionstopreport
+msgid "STOPREPORT/Terminate create report"
+msgstr ""
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
@@ -1415,6 +1455,10 @@ msgstr "Insertar un rectángulo redondeado con sombra"
 msgid "Insert Shape object"
 msgstr "Insertar objeto de Forma"
 
+#: lr_const.sinterpretator
+msgid "Interpretator"
+msgstr ""
+
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
 msgstr "Mantener proporciones"
@@ -2346,6 +2390,22 @@ msgstr "Nuevo reporte"
 #: lr_const.stextfile
 msgid "ASCII Text file"
 msgstr "Archivo de texto ASCII"
+
+#: lr_const.stimeformat1
+msgid "hh:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat2
+msgid "h:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat3
+msgid "hh:nn"
+msgstr ""
+
+#: lr_const.stimeformat4
+msgid "h:nn"
+msgstr ""
 
 #: lr_const.sto
 msgid "to"

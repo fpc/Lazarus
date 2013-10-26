@@ -662,7 +662,9 @@ procedure DoFuncId; forward;
     begin
       Inc(cur);
       while buf^[cur] in ['0'..'9', '_', '.', 'A'..'Z', 'a'..'z'] do Inc(cur);
-      if buf^[cur] = '(' then Error := True;
+      if buf^[cur] = '(' then
+        Error := True
+      else
       if buf^[cur] = '[' then
       begin
         Inc(cur);
@@ -738,11 +740,78 @@ procedure DoFuncId; forward;
     end;
   end;
 
+  procedure DoFor;
+  var
+    nsm, nl: Integer;
+    loopvar: String;
+    S:string;
+  begin
+    nsm := cur;
+    DoEqual;
+    if Error then Exit;
+    bs := Trim(CopyArr(nsm, cur - nsm));
+    loopvar := Copy(bs, 1, Pos(':=', bs) - 1);
+    lastp := cur;
+
+    S:=GetToken;
+
+    if S = 'TO' then
+    begin
+      nsm := cur;
+      DoExpression;
+      if Error then Exit;
+      nl := last;
+      MemoTo.Add(ttIf + '  ' + loopvar + '<=' + CopyArr(nsm, cur - nsm));
+
+      lastp := cur;
+      if GetToken = 'DO' then
+      begin
+        DoCommand;
+        if Error then Exit;
+        MemoTo.Add(loopvar + ' ' + loopvar + '+1');
+        MemoTo.Add(ttGoto + Chr(nl) + Chr(nl div 256));
+        bs := MemoTo[nl];
+        bs[2] := Chr(last);
+        bs[3] := Chr(last div 256);
+        MemoTo[nl] := bs;
+      end
+      else
+        AddError('Need "do" here');
+    end
+    else
+    if S = 'DOWNTO' then
+    begin
+      nsm := cur;
+      DoExpression;
+      if Error then Exit;
+      nl := last;
+      MemoTo.Add(ttIf + '  ' + loopvar + '>=' + CopyArr(nsm, cur - nsm));
+
+      lastp := cur;
+      if GetToken = 'DO' then
+      begin
+        DoCommand;
+        if Error then Exit;
+        MemoTo.Add(loopvar + ' ' + loopvar + '-1');
+        MemoTo.Add(ttGoto + Chr(nl) + Chr(nl div 256));
+        bs := MemoTo[nl];
+        bs[2] := Chr(last);
+        bs[3] := Chr(last div 256);
+        MemoTo[nl] := bs;
+      end
+      else
+        AddError('Need "do" here');
+    end
+    else
+      AddError('Need "to" here');
+  end;
+
+
   procedure DoFuncId;
   begin
     SkipSpace;
     if buf^[cur] in ['A'..'Z', 'a'..'z'] then
-      while buf^[cur] in ['0'..'9', '_', 'A'..'Z', 'a'..'z'] do Inc(cur)
+      while buf^[cur] in ['0'..'9', '_', '.', 'A'..'Z', 'a'..'z'] do Inc(cur)
     else Error := True;
   end;
 
@@ -764,6 +833,9 @@ procedure DoFuncId; forward;
     if bs = 'WHILE' then DoWhile
     else
     if bs = 'GOTO' then DoGoto
+    else
+    if bs = 'FOR' then
+      DoFor
     else
     if Pos('END', bs) = 1 then
     begin

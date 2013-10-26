@@ -242,6 +242,22 @@ msgstr "CSV failas"
 msgid "Memo:"
 msgstr "Pastabos:"
 
+#: lr_const.sdateformat1
+msgid "mm.dd.yy"
+msgstr ""
+
+#: lr_const.sdateformat2
+msgid "mm.dd.yyyy"
+msgstr ""
+
+#: lr_const.sdateformat3
+msgid "d mmm yyyy"
+msgstr ""
+
+#: lr_const.sdateformat4
+msgid "d mmmm yyyy"
+msgstr ""
+
 #: lr_const.sdatetimecategory
 msgid "Date and time"
 msgstr "Data ir laikas"
@@ -266,6 +282,10 @@ msgstr "COUNT(<JuostosPavadinimas>)/Grąžina duotame <JuostosPavadinimas> esan�
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
 msgstr "DAYOF(<Data>)/Grąžina duotos <Data> dienos numerį (1..31)."
 
+#: lr_const.sdescriptiondec
+msgid "DEC(<Value>)/Decrement <Value>."
+msgstr ""
+
 #: lr_const.sdescriptionformatdatetime
 msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
 msgstr "FORMATDATETIME(<Formatas>, <DataLaikas>)/Pagal <Formatas> nurodytą kaukę, verčia <DataLaikas> reikšmę į tekstą."
@@ -281,6 +301,10 @@ msgstr "FORMATTEXT(<Kaukė>, <Tekstas>)/Grąžina pagal duotą <Kaukė> kaukę f
 #: lr_const.sdescriptionfrac
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
 msgstr "FRAC(<Verė>)/Grąžiną slankaus kablelio skaičiaus <Vertė> trupmeninę dalį."
+
+#: lr_const.sdescriptioninc
+msgid "INC(<Value>)/Increment <Value>."
+msgstr ""
 
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
@@ -326,6 +350,14 @@ msgstr "MONTHOF(<Data>)/Grąžina duotos <Data> mėnesio numerį (1..12)."
 msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
 msgstr "NAMECASE(<Tekstas>)/Pirmąją <Tekstas> raidę padaro didžiąją, o likusias mažosiomis."
 
+#: lr_const.sdescriptionnewcolumn
+msgid "NEWCOLUMN/Create new collumn on page for current report"
+msgstr ""
+
+#: lr_const.sdescriptionnewpage
+msgid "NEWPAGE/Create new page for current report"
+msgstr ""
+
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
 msgstr "POS(<Potekstis>, <Tekstas>)/Grąžina <Potekstis> poziciją duotame <Tekstas>."
@@ -333,6 +365,14 @@ msgstr "POS(<Potekstis>, <Tekstas>)/Grąžina <Potekstis> poziciją duotame <Tek
 #: lr_const.sdescriptionround
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
 msgstr "ROUND(<Vertė>)/Slankiojo kablelio skaičių <Vertė> apvalina link didžiausio sveikojo skaičiaus."
+
+#: lr_const.sdescriptionshowband
+msgid "SHOWBAND(<BandName>)/Show <BandName> in report"
+msgstr ""
+
+#: lr_const.sdescriptionstopreport
+msgid "STOPREPORT/Terminate create report"
+msgstr ""
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
@@ -1408,6 +1448,10 @@ msgstr "Įterpti apvalių kampų stačiakampį su šešėlio sritimi"
 msgid "Insert Shape object"
 msgstr "Įterpti figūros objektą"
 
+#: lr_const.sinterpretator
+msgid "Interpretator"
+msgstr ""
+
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
 msgstr "Išlaikyti kraštinių santykį"
@@ -2338,6 +2382,22 @@ msgstr "Naujas pranešimas"
 #: lr_const.stextfile
 msgid "ASCII Text file"
 msgstr "ASCII teksto failas"
+
+#: lr_const.stimeformat1
+msgid "hh:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat2
+msgid "h:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat3
+msgid "hh:nn"
+msgstr ""
+
+#: lr_const.stimeformat4
+msgid "h:nn"
+msgstr ""
 
 #: lr_const.sto
 msgid "to"

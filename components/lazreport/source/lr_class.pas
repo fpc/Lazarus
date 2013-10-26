@@ -1025,6 +1025,8 @@ type
 
     procedure OnGetParsFunction(const aName: String; p1, p2, p3: Variant;
                                 var val: Variant);
+    function DoInterpFunction(const aName: String; p1, p2, p3: Variant;
+                         var val: Variant):boolean;
     procedure PrepareDataSets;
     procedure BuildBeforeModal(Sender: TObject);
     procedure ExportBeforeModal(Sender: TObject);
@@ -1393,7 +1395,10 @@ type
     procedure DoFunction(FNo: Integer; p1, p2, p3: Variant; var val: Variant); override;
   end;
 
+  { TInterpretator }
+
   TInterpretator = class(TfrInterpretator)
+  protected
   public
     procedure GetValue(const Name: String; var Value: Variant); override;
     procedure SetValue(const Name: String; Value: Variant); override;
@@ -1466,6 +1471,17 @@ begin
 end;
 
 {$ENDIF}
+
+function DoFindObjMetod(S: string; out AObjProp: string
+  ): TfrObject;
+begin
+  Result:=nil;
+  if Assigned(CurReport) and (Pos('.', S)>0) then
+  begin
+    AObjProp:=S;
+    Result:=CurReport.FindObject(Copy2SymbDel(AObjProp, '.'));
+  end;
+end;
 
 procedure UpdateLibraryDescriptions;
 var
@@ -7702,7 +7718,7 @@ begin
       if b = gtAddIn then
       begin
         s := ReadString(Stream);
-        if AnsiUpperCase(s) = 'TFRFRAMEDMEMOVIEW' then
+        if UpperCase(s) = 'TFRFRAMEDMEMOVIEW' then
           AddObject(gtMemo, '')
         else
           AddObject(gtAddIn, s);
@@ -7710,7 +7726,7 @@ begin
       else
         AddObject(b, '');
       t.LoadFromStream(Stream);
-      if AnsiUpperCase(s) = 'TFRFRAMEDMEMOVIEW' then
+      if UpperCase(s) = 'TFRFRAMEDMEMOVIEW' then
         Stream.Read({%H-}buf[1], 8);
     end;
   end;
@@ -7759,7 +7775,7 @@ begin
       clname := XML.GetValue(aSubPath+'ClassName/Value', 'TFRVIEW'); // TODO: Check default
       if aTyp=gtAddin then
       begin
-        if ansiuppercase(clname)='TFRFRAMEDMEMOVIEW' then
+        if UpperCase(clname)='TFRFRAMEDMEMOVIEW' then
           addObject(Pages[i], gtMemo, '')
         else
           addObject(Pages[i], gtAddin, clName)
@@ -8941,7 +8957,7 @@ begin
           aValue := Null
         else
         begin
-          s1 := AnsiUpperCase(s);
+          s1 := UpperCase(s);
           if s1 = 'VALUE' then
             aValue:= CurValue
           else if s1 = frSpecFuncs[0] then
@@ -9015,38 +9031,17 @@ begin
   Obj:=nil;
   PgName:='';
   ObjName:=Copy2SymbDel(Method, '.');
-  i:=Pos('.', Method);
-  if i > 0 then
-  begin
-    PgName:=ObjName;
-    ObjName:=Copy2SymbDel(Method, '.');
-  end;
 
-  if PgName <> '' then
+  for i:=0 to CurReport.Pages.Count - 1 do
   begin
-    for i:=0 to CurReport.Pages.Count - 1 do
+    if UpperCase(CurReport.Pages[i].Name) = ObjName then
     begin
-     if UpperCase(CurReport.Pages[i].Name) = PgName then
-     begin
-       for j:=0 to CurReport.Pages[i].Objects.Count - 1  do
-       begin
-         if UpperCase(TfrObject(CurReport.Pages[i].Objects[j]).Name) = ObjName then
-         begin
-           Obj:=TfrObject(CurReport.Pages[i].Objects[j]);
-           break;
-         end;
-       end;
-     end;
-    end;
-  end
-  else
-  begin
-    for i:=0 to CurReport.Pages.Count - 1 do
-    begin
-      if UpperCase(CurReport.Pages[i].Name) = ObjName then
-        Obj:=CurReport.Pages[i];
+      // PageName.ObjName.Method
+      Obj:=CurReport.Pages[i];
 
-      if not Assigned(Obj) then
+      if Method<>'' then
+      begin
+        ObjName:=Copy2SymbDel(Method, '.');
         for j:=0 to CurReport.Pages[i].Objects.Count - 1  do
         begin
           if UpperCase(TfrObject(CurReport.Pages[i].Objects[j]).Name) = ObjName then
@@ -9055,6 +9050,20 @@ begin
             break;
           end;
         end;
+      end;
+
+      Break;
+    end
+    else
+    begin
+      for j:=0 to CurReport.Pages[i].Objects.Count - 1  do
+      begin
+        if UpperCase(TfrObject(CurReport.Pages[i].Objects[j]).Name) = ObjName then
+        begin
+            Obj:=TfrObject(CurReport.Pages[i].Objects[j]);
+            break;
+        end;
+      end;
       if Assigned(Obj) then
         break;
     end;
@@ -9067,7 +9076,6 @@ end;
 var
   i: Integer;
 begin
-//  val := '0';
   val := varempty;
   {$ifdef DebugLR}
   DebugLn('OnGetParsFunction aName=%s p1=%s p2=%s p3=%s',[aName,p1,p2,p3]);
@@ -9079,9 +9087,74 @@ begin
   if (Pos('.', aName)>0) and ProcessObjMethods(aName) then
     exit;
 
+  if not DoInterpFunction(aName, p1, p2, p3, val) then
+  begin
+    if Assigned(AggrBand) and AggrBand.Visible then
+      DoUserFunction(aName, p1, p2, p3, val);
+  end;
+end;
 
-  if Assigned(AggrBand) and AggrBand.Visible then
-    DoUserFunction(aName, p1, p2, p3, val);
+function TfrReport.DoInterpFunction(const aName: String; p1, p2, p3: Variant;
+  var val: Variant): boolean;
+var
+  Obj:TfrObject;
+  ObjProp:string;
+  ArrInd:Variant;
+begin
+  Result:=true;
+  if aName = 'NEWPAGE' then
+  begin
+    CurBand.ForceNewPage := True;
+    Val := '0';
+  end
+  else
+  if aName = 'NEWCOLUMN' then
+  begin
+    CurBand.ForceNewColumn := True;
+    Val := '0';
+  end
+  else
+  if aName = 'STOPREPORT' then
+    CurReport.Terminated:=true
+  else
+  if aName = 'SHOWBAND' then
+    CurPage.ShowBandByName(p1)
+  else
+  if aName = 'INC' then
+  begin
+    frParser.OnGetValue(p1, ArrInd);
+    frInterpretator.SetValue(p1, ArrInd + 1);
+  end
+  else
+  if aName = 'DEC' then
+  begin
+    frParser.OnGetValue(p1, ArrInd);
+    frInterpretator.SetValue(p1, ArrInd - 1);
+  end
+  else
+  if aName = 'SETARRAY' then
+  begin
+    ObjProp:='';
+    Obj:=DoFindObjMetod(p1, ObjProp);
+
+    if Assigned(Obj) then
+      Obj.ExecMetod('SETINDEXPROPERTY', UpperCase(ObjProp), frParser.Calc(p2), frParser.Calc(p3), Val)
+    else
+      frVariables['frA_' + p1 + '_' + VarToStr(frParser.Calc(p2))] := frParser.Calc(p3);
+  end
+  else
+  if aName = 'GETARRAY' then
+  begin
+    ObjProp:='';
+    Obj:=DoFindObjMetod(p1, ObjProp);
+
+    if Assigned(Obj) then
+      Obj.ExecMetod('GETINDEXPROPERTY', UpperCase(ObjProp), frParser.Calc(p2), frParser.Calc(p3), Val)
+    else
+      Val:=frVariables['frA_' + p1 + '_' + VarToStr(frParser.Calc(p2))];
+  end
+  else
+    Result:=false;
 end;
 
 // load/save methods
@@ -10978,6 +11051,13 @@ begin
   Add('ROUND', true);
   Add('FRAC', true);
   Add('MOD', true);
+
+  Add('NEWPAGE', true);
+  Add('NEWCOLUMN', true);
+  Add('STOPREPORT', true);
+  Add('SHOWBAND', true);
+  Add('INC', true);
+  Add('DEC', true);
 end;
 
 procedure TfrStdFunctionLibrary.UpdateDescriptions;
@@ -11014,6 +11094,13 @@ begin
   AddFunctionDesc('INT', SMathCategory, SDescriptionINT);
   AddFunctionDesc('ROUND', SMathCategory, SDescriptionROUND);
   AddFunctionDesc('FRAC', SMathCategory, SDescriptionFRAC);
+
+  AddFunctionDesc('NEWPAGE', SInterpretator, SDescriptionNEWPAGE);
+  AddFunctionDesc('NEWCOLUMN', SInterpretator, SDescriptionNEWCOLUMN);
+  AddFunctionDesc('STOPREPORT', SInterpretator, SDescriptionSTOPREPORT);
+  AddFunctionDesc('SHOWBAND', SInterpretator, SDescriptionSHOWBAND);
+  AddFunctionDesc('INC', SInterpretator, SDescriptionINC);
+  AddFunctionDesc('DEC', SInterpretator, SDescriptionDEC);
 end;
 
 procedure TfrStdFunctionLibrary.DoFunction(FNo: Integer; p1, p2, p3: Variant;
@@ -11084,7 +11171,7 @@ begin
    16:begin                                                   // Add('POS');               {16}
         S1:=frParser.Calc(p1);
         S2:=frParser.Calc(p2);
-        val := Pos(S1, S2);
+        val := UTF8Pos(S1, S2);
       end;
    17: val := StrToDate(frParser.Calc(p1));                   //Add('STRTODATE');         {17}
    18: val := StrToTime(frParser.Calc(p1));                   //Add('STRTOTIME');         {18}
@@ -11256,6 +11343,7 @@ const
      'clYellow', 'clBlue', 'clFuchsia', 'clAqua', 'clTransparent');
 
 {$WARNINGS OFF}
+
 procedure TInterpretator.GetValue(const Name: String; var Value: Variant);
 var
   t         : TfrObject;
@@ -11490,21 +11578,10 @@ begin
   end;
 end;
 
-procedure TInterpretator.DoFunction(const Name: String; p1, p2, p3: Variant;
+procedure TInterpretator.DoFunction(const name: String; p1, p2, p3: Variant;
   var val: Variant);
 begin
-  if Name = 'NEWPAGE' then
-  begin
-    CurBand.ForceNewPage := True;
-    Val := '0';
-  end
-  else if Name = 'NEWCOLUMN' then
-  begin
-    CurBand.ForceNewColumn := True;
-    Val := '0';
-  end
-  else
-    frParser.OnFunction(Name, p1, p2, p3, val);
+  frParser.OnFunction(Name, p1, p2, p3, val);
 end;
 
 

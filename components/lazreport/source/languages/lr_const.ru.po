@@ -240,6 +240,22 @@ msgstr "Файл CSV"
 msgid "Memo:"
 msgstr "Блок текста:"
 
+#: lr_const.sdateformat1
+msgid "mm.dd.yy"
+msgstr "dd.mm.yy"
+
+#: lr_const.sdateformat2
+msgid "mm.dd.yyyy"
+msgstr "dd.mm.yyyy"
+
+#: lr_const.sdateformat3
+msgid "d mmm yyyy"
+msgstr ""
+
+#: lr_const.sdateformat4
+msgid "d mmmm yyyy"
+msgstr ""
+
 #: lr_const.sdatetimecategory
 msgid "Date and time"
 msgstr "Дата и время"
@@ -264,6 +280,10 @@ msgstr "COUNT(<BandName>)/Возвращает число строк данны�
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
 msgstr "DAYOF(<Date>)/Возвращает номер дня (1..31) для заданной <Date>."
 
+#: lr_const.sdescriptiondec
+msgid "DEC(<Value>)/Decrement <Value>."
+msgstr ""
+
 #: lr_const.sdescriptionformatdatetime
 msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
 msgstr "FORMATDATETIME(<Fmt>, <DateTime>)/Преобразует значение <DateTime> в строку, используя маску <Fmt>."
@@ -279,6 +299,10 @@ msgstr "FORMATTEXT(<Mask>, <String>)/Применяет маску <Mask> к з�
 #: lr_const.sdescriptionfrac
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
 msgstr "FRAC(<Value>)/Возвращает дробную часть вещественного значения <Value>."
+
+#: lr_const.sdescriptioninc
+msgid "INC(<Value>)/Increment <Value>."
+msgstr ""
 
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
@@ -324,6 +348,14 @@ msgstr "MONTHOF(<Date>)/Возвращает номер месяца (1..12) д�
 msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
 msgstr "NAMECASE(<String>)/Преобразует символы строки <String> в нижний регистр, и первый символ - в верхний регистр."
 
+#: lr_const.sdescriptionnewcolumn
+msgid "NEWCOLUMN/Create new collumn on page for current report"
+msgstr ""
+
+#: lr_const.sdescriptionnewpage
+msgid "NEWPAGE/Create new page for current report"
+msgstr ""
+
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
 msgstr "POS(<SubString>, <String>)/Возвращает позицию подстроки <SubString> в строке <String> ."
@@ -331,6 +363,14 @@ msgstr "POS(<SubString>, <String>)/Возвращает позицию подс�
 #: lr_const.sdescriptionround
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
 msgstr "ROUND(<Value>)/Округляет вещественное значение <Value> до ближайшего целого числа."
+
+#: lr_const.sdescriptionshowband
+msgid "SHOWBAND(<BandName>)/Show <BandName> in report"
+msgstr ""
+
+#: lr_const.sdescriptionstopreport
+msgid "STOPREPORT/Terminate create report"
+msgstr ""
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
@@ -1406,6 +1446,10 @@ msgstr "Вставить прямоугольник с округлёнными 
 msgid "Insert Shape object"
 msgstr "Вставить объект-фигуру"
 
+#: lr_const.sinterpretator
+msgid "Interpretator"
+msgstr ""
+
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
 msgstr "Сохранять соотношение сторон"
@@ -2336,6 +2380,22 @@ msgstr "Новый отчёт"
 #: lr_const.stextfile
 msgid "ASCII Text file"
 msgstr "Текстовый файл ASCII"
+
+#: lr_const.stimeformat1
+msgid "hh:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat2
+msgid "h:nn:ss"
+msgstr ""
+
+#: lr_const.stimeformat3
+msgid "hh:nn"
+msgstr ""
+
+#: lr_const.stimeformat4
+msgid "h:nn"
+msgstr ""
 
 #: lr_const.sto
 msgid "to"

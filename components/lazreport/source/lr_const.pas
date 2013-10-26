@@ -666,6 +666,7 @@ resourcestring
   SStringCategory    = 'String';
   SOtherCategory     = 'Other';
   SMathCategory      = 'Math';
+  SInterpretator     = 'Interpretator';
 
   SDescriptionAVG = 'AVG(<Expression> [,BandName [,1]])/' +
     'Calculates the average of <Expression> for [BandName] row given. '+
@@ -759,6 +760,34 @@ resourcestring
   SDescriptionFRAC = 'FRAC(<Value>)/'+
     'Returns the fractional part of floating point <Value>.';
 
+  SDescriptionNEWPAGE = 'NEWPAGE/'+
+    'Create new page for current report';
+  SDescriptionNEWCOLUMN =  'NEWCOLUMN/'+
+    'Create new collumn on page for current report';
+
+  SDescriptionSTOPREPORT = 'STOPREPORT/'+
+    'Terminate create report';
+
+  SDescriptionSHOWBAND = 'SHOWBAND(<BandName>)/'+
+    'Show <BandName> in report';
+
+  SDescriptionINC = 'INC(<Value>)/'+
+    'Increment <Value>.';
+
+  SDescriptionDEC = 'DEC(<Value>)/'+
+    'Decrement <Value>.';
+
+  //Date and time display format
+  sDateFormat1 = 'mm.dd.yy';
+  sDateFormat2 = 'mm.dd.yyyy';
+  sDateFormat3 = 'd mmm yyyy';
+  sDateFormat4 = 'd mmmm yyyy';
+
+  sTimeFormat1 = 'hh:nn:ss';
+  sTimeFormat2 = 'h:nn:ss';
+  sTimeFormat3 = 'hh:nn';
+  sTimeFormat4 = 'h:nn';
+
 const
   frRes = 53000;
 
@@ -800,17 +829,6 @@ const
   SInsRich2Object = frRes + 2343;
   SFieldSizeError = frRes + 2346;
 
-const
-  //Don't localize this consts!
-  sDateFormat1 = 'mm.dd.yy';
-  sDateFormat2 = 'mm.dd.yyyy';
-  sDateFormat3 = 'd mmm yyyy';
-  sDateFormat4 = 'd mmmm yyyy';
-
-  sTimeFormat1 = 'hh:nn:ss';
-  sTimeFormat2 = 'h:nn:ss';
-  sTimeFormat3 = 'hh:nn';
-  sTimeFormat4 = 'h:nn';
 
 implementation
 

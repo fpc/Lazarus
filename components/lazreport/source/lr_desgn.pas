@@ -1218,7 +1218,7 @@ begin
 
   Objects := FDesigner.Page.Objects;
 
-  for i:=Objects.Count-1 downto 0 do
+  for i:=0 to Objects.Count-1 do
   begin
     t := TfrView(Objects[i]);
     t.draw(Canvas);
