@@ -35,7 +35,7 @@ unit LRDialogControls;
 interface
 
 uses
-  Classes, SysUtils, Graphics, DB, LR_Class, Controls, StdCtrls,
+  Classes, SysUtils, Graphics, DB, LR_Class, Controls, StdCtrls, CheckLst,
   LMessages, LCLType, LCLIntf, Buttons, EditBtn, Themes, ButtonPanel;
 
 type
@@ -303,14 +303,42 @@ type
     property OnClick;
   end;
 
+  { TlrCheckListBox }
+
+  TlrCheckListBox = class(TlrVisualControl)
+  private
+    function GetItemIndex: integer;
+    function GetItems: TStrings;
+    function GetItemsCount: integer;
+    procedure SetItemIndex(AValue: integer);
+    procedure SetItems(AValue: TStrings);
+  protected
+    procedure PaintDesignControl; override;
+    function CreateControl:TControl;override;
+    //procedure AfterCreate;override;
+    function ExecMetod(const AName: String; p1, p2, p3: Variant; var Val: Variant):boolean;override;
+  public
+    constructor Create(AOwnerPage:TfrPage); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
+
+  published
+    property Color;
+    property Enabled;
+    property Items:TStrings read GetItems write SetItems;
+    property ItemIndex:integer read GetItemIndex write SetItemIndex;
+    property ItemsCount:integer read GetItemsCount;
+    property OnClick;
+  end;
+
 procedure Register;
 
 procedure DoRegsiterControl(var cmpBMP:TBitmap; lrClass:TlrVisualControlClass);
 implementation
-{$R lrdialogcontrols_img.res}
 
-uses typinfo, types,
-   lrDBDialogControls;
+uses typinfo, types, lrDBDialogControls, math;
+
+{$R lrdialogcontrols_img.res}
 
 procedure Register;
 begin
@@ -328,6 +356,7 @@ var
   lrBMP_LRListBox:TBitmap = nil;
   lrBMP_LRDateEdit:TBitmap = nil;
   lrBMP_LRButtonPanel:TBitmap = nil;
+  lrBMP_LRCheckListBox:TBitmap = nil;
 
 procedure DoRegsiterControl(var cmpBMP:TBitmap; lrClass:TlrVisualControlClass);
 begin
@@ -351,7 +380,134 @@ begin
   DoRegsiterControl(lrBMP_LRListBox, TlrListBox);
   DoRegsiterControl(lrBMP_LRDateEdit, TlrDateEdit);
   DoRegsiterControl(lrBMP_LRButtonPanel, TlrButtonPanel);
+  DoRegsiterControl(lrBMP_LRCheckListBox, TlrCheckListBox);
+end;
 
+{ TlrCheckListBox }
+
+function TlrCheckListBox.GetItemIndex: integer;
+begin
+  Result:=TCheckListBox(FControl).ItemIndex;
+end;
+
+function TlrCheckListBox.GetItems: TStrings;
+begin
+  Result:=TCheckListBox(FControl).Items;
+end;
+
+function TlrCheckListBox.GetItemsCount: integer;
+begin
+  Result:=TCheckListBox(FControl).Items.Count;
+end;
+
+procedure TlrCheckListBox.SetItemIndex(AValue: integer);
+begin
+  TCheckListBox(FControl).ItemIndex:=AValue;
+end;
+
+procedure TlrCheckListBox.SetItems(AValue: TStrings);
+begin
+  TCheckListBox(FControl).Items:=AValue;
+  if Assigned(frDesigner) then
+    frDesigner.Modified:=true;
+end;
+
+procedure TlrCheckListBox.PaintDesignControl;
+var
+  AY, aH, i:integer;
+  S:string;
+
+var
+//  ChkBitmap: TBitmap;
+//  XPos,YPos: Integer;
+  details: TThemedElementDetails;
+  PaintRect: TRect;
+  CSize: TSize;
+//  bmpAlign: TAlignment;
+begin
+  Canvas.Frame3d(DRect, 1, bvLowered);
+  Canvas.Brush.Color := FControl.Color;
+  Canvas.FillRect(DRect);
+  Canvas.Font:=FControl.Font;
+  AY:=DRect.Top + 1;
+  i:=0;
+
+  Details := ThemeServices.GetElementDetails(tbCheckBoxUncheckedNormal);
+  CSize := ThemeServices.GetDetailSize(Details);
+
+  aH:=Max(Canvas.TextHeight(Text) div 2, CSize.cy);
+
+  while (AY < DRect.Bottom) and (i<TListBox(FControl).Items.Count) do
+  begin
+    PaintRect := Bounds(DRect.Left, AY, CSize.cx, CSize.cy);
+    ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect, nil);
+
+
+    S:=TCheckListBox(FControl).Items[i];
+    Canvas.TextRect(DRect, DRect.Left + 3 + CSize.cx, AY, S);
+    inc(AY, aH + 3);
+    inc(i);
+  end;
+end;
+
+function TlrCheckListBox.CreateControl: TControl;
+begin
+  Result:=TCheckListBox.Create(nil);
+end;
+
+function TlrCheckListBox.ExecMetod(const AName: String; p1, p2, p3: Variant;
+  var Val: Variant): boolean;
+begin
+  if AName = 'SETINDEXPROPERTY' then
+  begin
+    if p1 = 'CHECKED' then
+      TCheckListBox(FControl).Checked[p2]:=p3
+    else
+    if p1 = 'ITEMS' then
+      TCheckListBox(FControl).Items[p2]:=p3
+  end
+  else
+  if AName = 'GETINDEXPROPERTY' then
+  begin
+    if p1 = 'CHECKED' then
+      Val:=TCheckListBox(FControl).Checked[p2]
+    else
+    if p1 = 'ITEMS' then
+      Val:=TCheckListBox(FControl).Items[p2]
+  end
+  else
+  if AName = 'ITEMS.ADD' then
+    Val:=TCheckListBox(FControl).Items.Add(frParser.Calc(P1))
+  else
+  if AName = 'ITEMS.DELETE' then
+    TCheckListBox(FControl).Items.Delete(frParser.Calc(P1))
+  else
+  if AName = 'ITEMS.CLEAR' then
+    TCheckListBox(FControl).Items.Clear
+  else
+  if AName = 'ITEMS.INDEXOF' then
+    Val:=TCheckListBox(FControl).Items.IndexOf(frParser.Calc(P1))
+end;
+
+constructor TlrCheckListBox.Create(AOwnerPage: TfrPage);
+begin
+  inherited Create(AOwnerPage);
+  BaseName := 'lrCheckListBox';
+  AutoSize:=true;
+end;
+
+procedure TlrCheckListBox.LoadFromXML(XML: TLrXMLConfig; const Path: String);
+begin
+  inherited LoadFromXML(XML, Path);
+  Items.Text:=XML.GetValue(Path+'Items/Text/Value'{%H-}, '');
+  ItemIndex:=XML.GetValue(Path+'ItemIndex/Value'{%H-}, -1);
+end;
+
+procedure TlrCheckListBox.SaveToXML(XML: TLrXMLConfig; const Path: String);
+begin
+  inherited SaveToXML(XML, Path);
+  XML.SetValue(Path+'Items/Text/Value'{%H-}, Items.Text);
+  XML.SetValue(Path+'ItemIndex/Value'{%H-}, ItemIndex);
 end;
 
 { TlrButtonPanel }

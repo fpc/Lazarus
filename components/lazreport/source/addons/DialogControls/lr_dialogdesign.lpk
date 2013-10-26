@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="lr_DialogDesign"/>
@@ -19,24 +19,16 @@
     <License Value="modified LGPL-2
 "/>
     <Version Minor="3" Release="1"/>
-    <Files Count="4">
+    <Files Count="2">
       <Item1>
         <Filename Value="lrdialogcontrols.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="LRDialogControls"/>
       </Item1>
       <Item2>
-        <Filename Value="lrdialogcontrols_img.inc"/>
-        <Type Value="Include"/>
-      </Item2>
-      <Item3>
         <Filename Value="lrdbdialogcontrols.pas"/>
         <UnitName Value="lrDBDialogControls"/>
-      </Item3>
-      <Item4>
-        <Filename Value="lrdbdialogcontrols_img.inc"/>
-        <Type Value="Include"/>
-      </Item4>
+      </Item2>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

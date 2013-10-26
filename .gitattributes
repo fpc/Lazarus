@@ -2124,9 +2124,11 @@ components/lazreport/source/addons/DialogControls/lrdialogcontrols.pas svneol=na
 components/lazreport/source/addons/DialogControls/lrdialogcontrols_img.res -text
 components/lazreport/source/addons/DialogControls/resources/lrdialogcontrols_img.txt svneol=native#text/plain
 components/lazreport/source/addons/DialogControls/resources/mk_res.bat svneol=native#text/plain
+components/lazreport/source/addons/DialogControls/resources/mk_res.sh svneol=native#text/plain
 components/lazreport/source/addons/DialogControls/resources/tlrbutton.bmp -text
 components/lazreport/source/addons/DialogControls/resources/tlrbuttonpanel.bmp -text
 components/lazreport/source/addons/DialogControls/resources/tlrcheckbox.bmp -text
+components/lazreport/source/addons/DialogControls/resources/tlrchecklistbox.bmp -text svneol=unset#image/bmp
 components/lazreport/source/addons/DialogControls/resources/tlrcombobox.bmp -text
 components/lazreport/source/addons/DialogControls/resources/tlrdateedit.bmp -text
 components/lazreport/source/addons/DialogControls/resources/tlrdblookupcombobox.bmp -text
