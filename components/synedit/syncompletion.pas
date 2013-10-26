@@ -46,7 +46,8 @@ interface
 uses
   LCLProc, LCLIntf, LCLType, LMessages, Classes, Graphics, Forms,
   Controls, StdCtrls, ExtCtrls, Menus, SysUtils, types,
-  SynEditMiscProcs, SynEditKeyCmds, SynEdit, SynEditTypes, SynEditPlugins;
+  SynEditMiscProcs, SynEditKeyCmds, SynEdit, SynEditTypes, SynEditPlugins
+  {$IF FPC_FULLVERSION >= 20701}, character, LazUTF8{$ENDIF};
 
 type
   TSynBaseCompletionPaintItem =
@@ -445,6 +446,29 @@ implementation
 
 var
   KeyOffset: integer;
+
+function IsIdentifierChar(p: PChar): boolean; inline;
+var
+  u: UnicodeString;
+  i: Integer;
+  L: Cardinal;
+begin
+  Result := p^ in ['a'..'z','A'..'Z','0'..'9','_'];
+  if Result then exit;
+
+  {$IF FPC_FULLVERSION >= 20701}
+  if p^ <= #127 then exit;
+  i := UTF8CharacterLength(p);
+  SetLength(u, i);
+  // wide chars of UTF-16 <= bytes of UTF-8 string
+  if ConvertUTF8ToUTF16(PWideChar(u), i + 1, p, i, [toInvalidCharToSymbol], L) = trNoError
+  then begin
+    SetLength(u, L - 1);
+    if L > 1 then
+      Result := TCharacter.IsLetterOrDigit(u, 1);
+  end;
+  {$ENDIF}
+end;
 
 { TSynCompletionForm }
 
@@ -1041,7 +1065,7 @@ begin
     // backspace
   end
   else
-  if (Length(UTF8Key)>=1) and (not (UTF8Key[1] in ['a'..'z','A'..'Z','0'..'9','_'])) then
+  if (Length(UTF8Key)>=1) and (not IsIdentifierChar(@UTF8Key[1])) then
   begin
     // non identifier character
     // if it is special key then eat it
@@ -1735,7 +1759,7 @@ begin
         NewBlockBegin:=LogCaret;
         CurLine:=Lines[NewBlockBegin.Y - 1];
         while (NewBlockBegin.X>1) and (NewBlockBegin.X-1<=length(CurLine))
-        and (CurLine[NewBlockBegin.X-1] in ['a'..'z','A'..'Z','0'..'9','_']) do
+        and (IsIdentifierChar(@CurLine[NewBlockBegin.X-1])) do
           dec(NewBlockBegin.X);
         //BlockBegin:=NewBlockBegin;
         if ssShift in Shift then begin
@@ -1746,7 +1770,7 @@ begin
           NewBlockEnd := LogCaret;
           CurLine:=Lines[NewBlockEnd.Y - 1];
           while (NewBlockEnd.X<=length(CurLine))
-          and (CurLine[NewBlockEnd.X] in ['a'..'z','A'..'Z','0'..'9','_']) do
+          and (IsIdentifierChar(@CurLine[NewBlockEnd.X])) do
             inc(NewBlockEnd.X);
         end;
         //debugln('TSynCompletion.Validate B Position=',dbgs(Position));
