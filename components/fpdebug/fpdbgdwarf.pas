@@ -559,28 +559,40 @@ type
   DW_TAG_thrown_type
 
                           DW_TAG_base_type
+  DW_AT_encoding          Y
+  DW_AT_bit_offset        Y
+  DW_AT_bit_size          Y
+
+                          DW_TAG_base_type
                           |  DW_TAG_typedef
-                          |  |  DW_TAG_string_type
-                          |  |  |  DW_TAG_array_type
-                          |  |  |  |  DW_TAG_class_type
-                          |  |  |  |  |  DW_TAG_structure_type
-  DW_AT_encoding          Y     :     :
-  DW_AT_bit_offset        Y     :     :
-  DW_AT_bit_size          Y     :     :
-  DW_AT_byte_size         Y     Y  Y  Y  Y
-  DW_AT_name              Y  Y  Y  Y  Y  Y
-  DW_AT_sibling           Y  Y  Y  Y  Y  Y
-  DECL                       Y  Y  Y  Y  Y
-  DW_AT_abstract_origin      Y  Y  Y  Y  Y
-  DW_AT_accessibility        Y  Y  Y  Y  Y
-  DW_AT_declaration          Y  Y  Y  Y  Y
-  DW_AT_start_scope          Y  Y  Y  Y  Y
-  DW_AT_visibility           Y  Y  Y  Y  Y
-  DW_AT_type                 Y     Y
-  DW_AT_ordering                   Y
-  DW_AT_segment                 Y
-  DW_AT_stride_size                Y
-  DW_AT_string_length           Y
+                          |  |   DW_TAG_string_type
+                          |  |   |  DW_TAG_array_type
+                          |  |   |  |
+                          |  |   |  |    DW_TAG_class_type
+                          |  |   |  |    |  DW_TAG_structure_type
+                          |  |   |  |    |  |
+                          |  |   |  |    |  |    DW_TAG_enumeration_type
+                          |  |   |  |    |  |    |  DW_TAG_set_type
+                          |  |   |  |    |  |    |  |  DW_TAG_enumerator
+                          |  |   |  |    |  |    |  |  |  DW_TAG_subrange_type
+  DW_AT_name              Y  Y   Y  Y    Y  Y    Y  Y  Y  Y
+  DW_AT_sibling           Y  Y   Y  Y    Y  Y    Y  Y  Y  Y
+  DECL                       Y   Y  Y    Y  Y    Y  Y  Y  Y
+  DW_AT_byte_size         Y      Y  Y    Y  Y    Y  Y     Y
+  DW_AT_abstract_origin      Y   Y  Y    Y  Y    Y  Y     Y
+  DW_AT_accessibility        Y   Y  Y    Y  Y    Y  Y     Y
+  DW_AT_declaration          Y   Y  Y    Y  Y    Y  Y     Y
+  DW_AT_start_scope          Y   Y  Y    Y  Y    Y  Y
+  DW_AT_visibility           Y   Y  Y    Y  Y    Y  Y     Y
+  DW_AT_type                 Y      Y               Y     Y
+  DW_AT_ordering                    Y
+  DW_AT_segment                  Y
+  DW_AT_stride_size                 Y
+  DW_AT_string_length            Y
+  DW_AT_const_value                                    Y
+  DW_AT_count                                             Y
+  DW_AT_lower_bound                                       Y
+  DW_AT_upper_bound                                       Y
 
                            DW_TAG_pointer_type
                            |  DW_TAG_reference_type
@@ -654,7 +666,39 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure KindNeeded; override;
   end;
 
+  TDbgDwarfIdentifierEnumElement  = class(TDbgDwarfTypeIdentifier)
+  protected
+    //procedure KindNeeded; override;
+  end;
+
+
+  { TDbgDwarfIdentifierEnum }
+
+  TDbgDwarfIdentifierEnum = class(TDbgDwarfTypeIdentifier)
+  private
+    FMembers: TRefCntObjList;
+    procedure CreateMembers;
+  protected
+    procedure KindNeeded; override;
+    function GetMember(AIndex: Integer): TDbgSymbol; override;
+    function GetMemberByName(AIndex: String): TDbgSymbol; override;
+    function GetMemberCount: Integer; override;
+  public
+    destructor Destroy; override;
+  end;
+
+
+  { TDbgDwarfIdentifierSet }
+
+  TDbgDwarfIdentifierSet = class(TDbgDwarfTypeIdentifier)
+  protected
+    procedure KindNeeded; override;
+  end;
+
+  { TDbgDwarfIdentifierMember }
+
   TDbgDwarfIdentifierMember = class(TDbgDwarfValueIdentifier)
+  protected
   end;
 
   { TDbgDwarfIdentifierStructure }
@@ -697,9 +741,11 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FAddressInfo: PDwarfAddressInfo;
     FStateMachine: TDwarfLineInfoStateMachine;
     function StateMachineValid: Boolean;
+    function  ReadVirtuality(out AFlags: TDbgSymbolFlags): Boolean;
   protected
     procedure KindNeeded; override;
     procedure SizeNeeded; override;
+    function GetFlags: TDbgSymbolFlags; override;
 
     function GetChild(AIndex: Integer): TDbgSymbol; override;
     function GetColumn: Cardinal; override;
@@ -1232,6 +1278,79 @@ begin
   else
     Result := Format('DW_ID_%d', [AValue]);
   end;
+end;
+
+{ TDbgDwarfIdentifierSet }
+
+procedure TDbgDwarfIdentifierSet.KindNeeded;
+begin
+  SetKind(skSet);
+end;
+
+{ TDbgDwarfIdentifierEnum }
+
+procedure TDbgDwarfIdentifierEnum.CreateMembers;
+var
+  Info: TDwarfInformationEntry;
+  Info2: TDwarfInformationEntry;
+  sym: TDbgDwarfIdentifier;
+begin
+  if FMembers <> nil then
+    exit;
+  FMembers := TRefCntObjList.Create;
+  Info := FInformationEntry.Clone;
+  Info.GoChild;
+
+  while Info.HasValidScope do begin
+    if (Info.Abbrev.tag = DW_TAG_enumerator) then begin
+      Info2 := Info.Clone;
+      sym := TDbgDwarfIdentifier.CreateSubClass('', Info2);
+      FMembers.Add(sym);
+      sym.ReleaseReference;
+      Info2.ReleaseReference;
+    end;
+    Info.GoNext;
+  end;
+
+  Info.ReleaseReference;
+end;
+
+procedure TDbgDwarfIdentifierEnum.KindNeeded;
+begin
+  SetKind(skEnum);
+end;
+
+function TDbgDwarfIdentifierEnum.GetMember(AIndex: Integer): TDbgSymbol;
+begin
+  CreateMembers;
+  Result := TDbgSymbol(FMembers[AIndex]);
+end;
+
+function TDbgDwarfIdentifierEnum.GetMemberByName(AIndex: String): TDbgSymbol;
+var
+  i: Integer;
+begin
+  CreateMembers;
+  i := FMembers.Count - 1;
+  while i >= 0 do begin
+    Result := TDbgSymbol(FMembers[i]);
+    if UpperCase(AIndex) = UpperCase(Result.Name) then
+      exit;
+    dec(i);
+  end;
+  Result := nil;
+end;
+
+function TDbgDwarfIdentifierEnum.GetMemberCount: Integer;
+begin
+  CreateMembers;
+  Result := FMembers.Count;
+end;
+
+destructor TDbgDwarfIdentifierEnum.Destroy;
+begin
+  FreeAndNil(FMembers);
+  inherited Destroy;
 end;
 
 { TDbgDwarfTypeIdentifierRef }
@@ -2043,26 +2162,35 @@ end;
 class function TDbgDwarfIdentifier.GetSubClass(ATag: Cardinal): TDbgDwarfIdentifierClass;
 begin
   case ATag of
-    DW_TAG_variable, DW_TAG_formal_parameter, DW_TAG_constant:
+    // TODO:
+    DW_TAG_variable,
+    DW_TAG_formal_parameter,
+    DW_TAG_constant:
       Result := TDbgDwarfValueIdentifier;
-    DW_TAG_member:           Result := TDbgDwarfIdentifierMember;
-    DW_TAG_base_type:        Result := TDbgDwarfBaseIdentifierBase;
-    DW_TAG_typedef:          Result := TDbgDwarfTypeIdentifierDeclaration;
-    DW_TAG_pointer_type:     Result := TDbgDwarfTypeIdentifierPointer;
-    DW_TAG_reference_type:   Result := TDbgDwarfTypeIdentifierRef;
+    DW_TAG_string_type,
+    DW_TAG_union_type, DW_TAG_ptr_to_member_type,
+    DW_TAG_subrange_type, DW_TAG_file_type,
+    DW_TAG_thrown_type, DW_TAG_subroutine_type:
+      Result := TDbgDwarfTypeIdentifier;
+
+    // Type types
     DW_TAG_packed_type,
     DW_TAG_const_type,
     DW_TAG_volatile_type:    Result := TDbgDwarfTypeIdentifierModifier;
-    DW_TAG_string_type,
-    DW_TAG_enumeration_type,
-    DW_TAG_union_type, DW_TAG_ptr_to_member_type,
-    DW_TAG_set_type, DW_TAG_subrange_type, DW_TAG_file_type,
-    DW_TAG_thrown_type:      Result := TDbgDwarfTypeIdentifier;
+    DW_TAG_reference_type:   Result := TDbgDwarfTypeIdentifierRef;
+    DW_TAG_typedef:          Result := TDbgDwarfTypeIdentifierDeclaration;
+    DW_TAG_pointer_type:     Result := TDbgDwarfTypeIdentifierPointer;
+
+    DW_TAG_base_type:        Result := TDbgDwarfBaseIdentifierBase;
+    DW_TAG_enumeration_type: Result := TDbgDwarfIdentifierEnum;
+    DW_TAG_enumerator:       Result := TDbgDwarfIdentifierEnumElement;
+    DW_TAG_set_type:         Result := TDbgDwarfIdentifierSet;
     DW_TAG_structure_type,
     DW_TAG_class_type:       Result := TDbgDwarfIdentifierStructure;
     DW_TAG_array_type:       Result := TDbgDwarfIdentifierArray;
-    DW_TAG_subroutine_type:  Result := TDbgDwarfTypeIdentifier;
-    DW_TAG_subprogram:  Result := TDbgDwarfProcSymbol;
+    // Value types
+    DW_TAG_member:           Result := TDbgDwarfIdentifierMember;
+    DW_TAG_subprogram:       Result := TDbgDwarfProcSymbol;
 
     else
       Result := TDbgDwarfIdentifier;
@@ -2990,6 +3118,20 @@ begin
   SM2.Free;
 end;
 
+function TDbgDwarfProcSymbol.ReadVirtuality(out AFlags: TDbgSymbolFlags): Boolean;
+var
+  Val: Integer;
+begin
+  AFlags := [];
+  Result := FInformationEntry.ReadValue(DW_AT_virtuality, Val);
+  if not Result then exit;
+  case Val of
+    DW_VIRTUALITY_none:   ;
+    DW_VIRTUALITY_virtual:      AFlags := [sfVirtual];
+    DW_VIRTUALITY_pure_virtual: AFlags := [sfVirtual];
+  end;
+end;
+
 procedure TDbgDwarfProcSymbol.KindNeeded;
 begin
   if TypeInfo <> nil then
@@ -3001,6 +3143,15 @@ end;
 procedure TDbgDwarfProcSymbol.SizeNeeded;
 begin
   SetSize(FAddressInfo^.EndPC - FAddressInfo^.StartPC);
+end;
+
+function TDbgDwarfProcSymbol.GetFlags: TDbgSymbolFlags;
+var
+  flg: TDbgSymbolFlags;
+begin
+  Result := inherited GetFlags;
+  if ReadVirtuality(flg) then
+    Result := Result + flg;
 end;
 
 { TDbgDwarf }

@@ -101,7 +101,8 @@ type
     skCurrency,
     skVariant,
     skWideString,
-    skEnum,
+    skEnum,       // Variable holding an enum / enum type
+    skEnumValue,  // a single element from an enum
     skSet,
     //--------------------------------------------------------------------------
     skRegister       // the Address member is the register number
@@ -122,7 +123,8 @@ type
     sfOut,
     sfpropGet,
     sfPropSet,
-    sfPropStored
+    sfPropStored,
+    sfVirtual  // virtual function (or overriden)
   );
   TDbgSymbolFlags = set of TDbgSymbolFlag;
 
@@ -207,7 +209,7 @@ type
     property FileName: String read GetFile;
     property Line: Cardinal read GetLine;
     property Column: Cardinal read GetColumn;
-    // Methods for structures (record / class)
+    // Methods for structures (record / class / enum)
     property MemberCount: Integer read GetMemberCount; // inherited NOT included
     property Member[AIndex: Integer]: TDbgSymbol read GetMember;
     property MemberByName[AIndex: String]: TDbgSymbol read GetMemberByName; // Includes inheritance

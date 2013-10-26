@@ -168,11 +168,13 @@ const
     procedure AddMember(AMember: TDbgSymbol);
     var
       ti: TDbgSymbol;
-      s: String;
+      s, s2: String;
     begin
 //todo: functions / virtual / array ...
+      s2 := '';
       if AMember.Kind = FpDbgClasses.skProcedure then begin
-        AText := AText + '    procedure ' + AMember.Name + ' ();' + LineEnding;
+        if sfVirtual in AMember.Flags then s2 := ' virtual;';
+        AText := AText + '    procedure ' + AMember.Name + ' ();' + s2 + LineEnding;
         exit
       end;
 
@@ -188,7 +190,8 @@ const
       end;
 
       if AMember.Kind = FpDbgClasses.skFunction then begin
-        AText := AText + '    function  ' + AMember.Name + ' () : '+s+';' + LineEnding;
+        if sfVirtual in AMember.Flags then s2 := ' virtual;';
+        AText := AText + '    function  ' + AMember.Name + ' () : '+s+';' + s2 + LineEnding;
       end
       else
       if AMember.Kind = FpDbgClasses.skRecord then begin
