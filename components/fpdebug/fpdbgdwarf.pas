@@ -666,9 +666,11 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure KindNeeded; override;
   end;
 
-  TDbgDwarfIdentifierEnumElement  = class(TDbgDwarfTypeIdentifier)
+  { TDbgDwarfIdentifierEnumElement }
+
+  TDbgDwarfIdentifierEnumElement  = class(TDbgDwarfValueIdentifier)
   protected
-    //procedure KindNeeded; override;
+    procedure KindNeeded; override;
   end;
 
 
@@ -1278,6 +1280,13 @@ begin
   else
     Result := Format('DW_ID_%d', [AValue]);
   end;
+end;
+
+{ TDbgDwarfIdentifierEnumElement }
+
+procedure TDbgDwarfIdentifierEnumElement.KindNeeded;
+begin
+  SetKind(skEnumValue);
 end;
 
 { TDbgDwarfIdentifierSet }
