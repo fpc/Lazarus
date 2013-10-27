@@ -263,6 +263,7 @@ type
     procedure SetScopeIndex(AValue: Integer);
   protected
     function GoNamedChild(AName: String): Boolean;
+    function GoNamedChildEx(AName: String): Boolean; // find in enum too // TODO: control search with a flags param, if needed
   public
     constructor Create(ACompUnit: TDwarfCompilationUnit; AnInformationEntry: Pointer);
     constructor Create(ACompUnit: TDwarfCompilationUnit; AScope: TDwarfScopeInfo);
@@ -626,6 +627,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   { TDbgDwarfTypeIdentifierModifier }
 
   TDbgDwarfTypeIdentifierModifier = class(TDbgDwarfTypeIdentifier)
+  private
+    function NestedHasMembers: Boolean; inline;
   protected
     procedure KindNeeded; override;
     procedure NameNeeded; override;
@@ -1613,6 +1616,11 @@ end;
 
 { TDbgDwarfTypeIdentifierModifier }
 
+function TDbgDwarfTypeIdentifierModifier.NestedHasMembers: Boolean;
+begin
+  Result := (Kind = skClass) or (Kind = skRecord) or (Kind = skEnum);
+end;
+
 procedure TDbgDwarfTypeIdentifierModifier.KindNeeded;
 var
   t: TDbgSymbol;
@@ -1666,12 +1674,14 @@ var
   ti: TDbgSymbol;
 begin
   ti := nil;
-  if (Kind = skClass) or (Kind = skRecord) then
+  if NestedHasMembers then begin
     ti := NestedTypeInfo;
-  if ti <> nil then
-    Result := ti.Member[AIndex]
-  else
-    Result := inherited GetMember(AIndex);
+    if ti <> nil then begin
+      Result := ti.Member[AIndex];
+      exit;
+    end;
+  end;
+  Result := inherited GetMember(AIndex);
 end;
 
 function TDbgDwarfTypeIdentifierModifier.GetMemberByName(AIndex: String): TDbgSymbol;
@@ -1679,12 +1689,14 @@ var
   ti: TDbgSymbol;
 begin
   ti := nil;
-  if (Kind = skClass) or (Kind = skRecord) then
+  if NestedHasMembers then begin
     ti := NestedTypeInfo;
-  if ti <> nil then
-    Result := ti.MemberByName[AIndex]
-  else
-    Result := inherited GetMemberByName(AIndex);
+    if ti <> nil then begin
+      Result := ti.MemberByName[AIndex];
+      exit;
+    end;
+  end;
+  Result := inherited GetMemberByName(AIndex);
 end;
 
 function TDbgDwarfTypeIdentifierModifier.GetMemberCount: Integer;
@@ -1692,12 +1704,14 @@ var
   ti: TDbgSymbol;
 begin
   ti := nil;
-  if (Kind = skClass) or (Kind = skRecord) then
+  if NestedHasMembers then begin
     ti := NestedTypeInfo;
-  if ti <> nil then
-    Result := ti.MemberCount
-  else
-    Result := inherited GetMemberCount;
+    if ti <> nil then begin
+      Result := ti.MemberCount;
+      exit;
+    end;
+  end;
+  Result := inherited GetMemberCount;
 end;
 
 { TDbgDwarfBaseTypeIdentifier }
@@ -1870,8 +1884,10 @@ end;
 function TDwarfInformationEntry.GoNamedChild(AName: String): Boolean;
 var
   EntryName: String;
+  s: String;
 begin
   Result := False;
+  s := UpperCase(AName);
   GoChild;
   while HasValidScope do begin
     if not ReadValue(DW_AT_name, EntryName) then begin
@@ -1879,7 +1895,7 @@ begin
       Continue;
     end;
 
-    if UpperCase(EntryName) = UpperCase(AName) then begin
+    if UpperCase(EntryName) = s then begin
       // TODO: check DW_AT_start_scope;
       DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChild found ', dbgs(FScope, FCompUnit), DbgSName(Self)]);
       Result := True;
@@ -1887,6 +1903,52 @@ begin
     end;
 
     GoNext;
+  end;
+end;
+
+function TDwarfInformationEntry.GoNamedChildEx(AName: String): Boolean;
+var
+  EntryName: String;
+  s: String;
+  InEnum: Boolean;
+begin
+  Result := False;
+  InEnum := False;
+  s := UpperCase(AName);
+  GoChild;
+  while true do begin
+    while HasValidScope do begin
+      if not ReadValue(DW_AT_name, EntryName) then begin
+        GoNext;
+        Continue;
+      end;
+
+      if UpperCase(EntryName) = s then begin
+        // TODO: check DW_AT_start_scope;
+        DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChildEx found ', dbgs(FScope, FCompUnit), DbgSName(Self)]);
+        Result := True;
+        exit;
+      end;
+
+      // Abbrev was prelaped by ReadName
+      if Abbrev.tag = DW_TAG_enumeration_type then begin
+        assert(not InEnum, 'nested enum');
+        InEnum := True;
+        GoChild;
+        Continue;
+      end;
+
+
+      GoNext;
+    end;
+
+    if InEnum then begin
+      InEnum := False;
+      GoParent;
+      GoNext;
+      continue;
+    end;
+    break;
   end;
 end;
 
@@ -3273,7 +3335,7 @@ begin
       debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
       StartScopeIdx := InfoEntry.ScopeIndex;
 
-      if InfoEntry.GoNamedChild(AName) then begin
+      if InfoEntry.GoNamedChildEx(AName) then begin
         Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
         DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
         break;

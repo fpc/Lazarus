@@ -34,7 +34,7 @@ File(s) with other licenses (see also header in file(s):
 
   (Any modifications/translations of this file are from duby)
 "/>
-    <Files Count="17">
+    <Files Count="18">
       <Item1>
         <Filename Value="fpdbgclasses.pp"/>
         <UnitName Value="FpDbgClasses"/>
@@ -103,6 +103,10 @@ File(s) with other licenses (see also header in file(s):
         <Filename Value="fpimgreadermacho.pas"/>
         <UnitName Value="FpImgReaderMacho"/>
       </Item17>
+      <Item18>
+        <Filename Value="fppascalbuilder.pas"/>
+        <UnitName Value="fppascalbuilder"/>
+      </Item18>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

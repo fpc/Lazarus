@@ -214,7 +214,7 @@ type
     property Member[AIndex: Integer]: TDbgSymbol read GetMember;
     property MemberByName[AIndex: String]: TDbgSymbol read GetMemberByName; // Includes inheritance
     //
-    property Flags: TDbgSymbolFlags read GetFlags; deprecated;
+    property Flags: TDbgSymbolFlags read GetFlags;
     property Count: Integer read GetCount; deprecated;
     property Reference: TDbgSymbol read GetReference; deprecated;
     property Parent: TDbgSymbol read GetParent; deprecated;
