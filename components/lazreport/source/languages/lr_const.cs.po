@@ -369,11 +369,11 @@ msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first sym
 msgstr "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
 
 #: lr_const.sdescriptionnewcolumn
-msgid "NEWCOLUMN/Create new collumn on page for current report"
+msgid "NEWCOLUMN/Create new column on page for current report."
 msgstr ""
 
 #: lr_const.sdescriptionnewpage
-msgid "NEWPAGE/Create new page for current report"
+msgid "NEWPAGE/Create new page for current report."
 msgstr ""
 
 #: lr_const.sdescriptionpos
@@ -387,11 +387,11 @@ msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer numbe
 msgstr "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
 
 #: lr_const.sdescriptionshowband
-msgid "SHOWBAND(<BandName>)/Show <BandName> in report"
+msgid "SHOWBAND(<BandName>)/Show <BandName> in report."
 msgstr ""
 
 #: lr_const.sdescriptionstopreport
-msgid "STOPREPORT/Terminate create report"
+msgid "STOPREPORT/Terminate report creation."
 msgstr ""
 
 #: lr_const.sdescriptionstr
