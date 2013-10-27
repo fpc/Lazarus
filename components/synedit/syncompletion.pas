@@ -448,10 +448,12 @@ var
   KeyOffset: integer;
 
 function IsIdentifierChar(p: PChar): boolean; inline;
+{$IF FPC_FULLVERSION >= 20701}
 var
   u: UnicodeString;
   i: Integer;
   L: Cardinal;
+{$ENDIF}
 begin
   Result := p^ in ['a'..'z','A'..'Z','0'..'9','_'];
   if Result then exit;
