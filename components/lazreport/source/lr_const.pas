@@ -761,15 +761,15 @@ resourcestring
     'Returns the fractional part of floating point <Value>.';
 
   SDescriptionNEWPAGE = 'NEWPAGE/'+
-    'Create new page for current report';
+    'Create new page for current report.';
   SDescriptionNEWCOLUMN =  'NEWCOLUMN/'+
-    'Create new collumn on page for current report';
+    'Create new column on page for current report.';
 
   SDescriptionSTOPREPORT = 'STOPREPORT/'+
-    'Terminate create report';
+    'Terminate report creation.';
 
   SDescriptionSHOWBAND = 'SHOWBAND(<BandName>)/'+
-    'Show <BandName> in report';
+    'Show <BandName> in report.';
 
   SDescriptionINC = 'INC(<Value>)/'+
     'Increment <Value>.';
