@@ -2101,7 +2101,7 @@ type
     constructor Create(AIdType: TMapIdType; ADataSize: Cardinal);
     destructor Destroy; override;
     // AddRange, may destroy the object
-    procedure AddRange(const ARange: TDBGDisassemblerEntryRange);
+    procedure AddRange(const ARange: TDBGDisassemblerEntryRange); // Arange may be freed
     function GetRangeForAddr(AnAddr: TDbgPtr; IncludeNextAddr: Boolean = False): TDBGDisassemblerEntryRange;
     property OnDelete: TNotifyEvent read FOnDelete write FOnDelete;
     property OnMerge: TDBGDisassemblerEntryMapMergeEvent
@@ -11008,7 +11008,10 @@ var
   OldId: TDBGPtr;
 begin
   debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassemblerEntryMap.AddRange ', dbgs(ARange), ' to map with count=', Count ]);
-  if ARange.Count = 0 then exit;
+  if ARange.Count = 0 then begin
+    ARange.Free;
+    exit;
+  end;
 
   MergeRng := GetRangeForAddr(ARange.RangeStartAddr, True);
   if MergeRng <> nil then begin
