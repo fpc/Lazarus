@@ -452,7 +452,7 @@ function IsIdentifierChar(p: PChar): boolean; inline;
 var
   u: UnicodeString;
   i: Integer;
-  L: Cardinal;
+  L: SizeUInt;
 {$ENDIF}
 begin
   Result := p^ in ['a'..'z','A'..'Z','0'..'9','_'];
