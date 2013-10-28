@@ -19,6 +19,10 @@ unit Interfaces;
  
 {$mode objfpc}{$H+} 
 
+{$IF defined(Linux) and (FPC_FULLVERSION>=20701)}
+  {$LinkLib cairo-gobject}
+{$ENDIF}
+
 interface
 
 uses 
