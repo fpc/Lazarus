@@ -662,6 +662,19 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetMemberCount: Integer; override;
   end;
 
+  { TDbgDwarfIdentifierSubRange }
+
+  TDbgDwarfIdentifierSubRange = class(TDbgDwarfTypeIdentifierModifier)
+  protected
+    //function GetHasBounds: Boolean; override;
+    //function GetOrdHighBound: Int64; override;
+    //function GetOrdLowBound: Int64; override;
+
+    procedure KindNeeded; override;
+    //procedure SizeNeeded; override;
+    function GetFlags: TDbgSymbolFlags; override;
+  end;
+
   { TDbgDwarfTypeIdentifierPointer }
 
   TDbgDwarfTypeIdentifierPointer = class(TDbgDwarfTypeIdentifier)
@@ -672,8 +685,14 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   { TDbgDwarfIdentifierEnumElement }
 
   TDbgDwarfIdentifierEnumElement  = class(TDbgDwarfValueIdentifier)
+    FOrdinalValue: Int64;
+    FOrdinalValueRead, FHasOrdinalValue: Boolean;
+    procedure ReadOrdinalValue;
   protected
     procedure KindNeeded; override;
+    function GetHasOrdinalValue: Boolean; override;
+    function GetOrdinalValue: Int64; override;
+    procedure Init; override;
   end;
 
 
@@ -1285,11 +1304,58 @@ begin
   end;
 end;
 
+{ TDbgDwarfIdentifierSubRange }
+
+procedure TDbgDwarfIdentifierSubRange.KindNeeded;
+var
+  t: TDbgSymbol;
+begin
+  t := NestedTypeInfo;
+  if t = nil then begin
+    // lowerbound type
+    // upperbound type
+    SetKind(skInteger);
+    SetSize(4); // TODO 8 if 64 bit target
+  end
+  else
+    SetKind(t.Kind);
+end;
+
+function TDbgDwarfIdentifierSubRange.GetFlags: TDbgSymbolFlags;
+begin
+  Result := (inherited GetFlags) + [sfSubRange];
+end;
+
 { TDbgDwarfIdentifierEnumElement }
+
+procedure TDbgDwarfIdentifierEnumElement.ReadOrdinalValue;
+begin
+  if FOrdinalValueRead then exit;
+  FOrdinalValueRead := True;
+  FHasOrdinalValue := FInformationEntry.ReadValue(DW_AT_const_value, FOrdinalValue);
+end;
 
 procedure TDbgDwarfIdentifierEnumElement.KindNeeded;
 begin
   SetKind(skEnumValue);
+end;
+
+function TDbgDwarfIdentifierEnumElement.GetHasOrdinalValue: Boolean;
+begin
+  ReadOrdinalValue;
+  Result := FHasOrdinalValue;
+end;
+
+function TDbgDwarfIdentifierEnumElement.GetOrdinalValue: Int64;
+begin
+  ReadOrdinalValue;
+  Result := FOrdinalValue;
+end;
+
+procedure TDbgDwarfIdentifierEnumElement.Init;
+begin
+  FOrdinalValueRead := False;
+  inherited Init;
 end;
 
 { TDbgDwarfIdentifierSet }
@@ -2240,7 +2306,7 @@ begin
       Result := TDbgDwarfValueIdentifier;
     DW_TAG_string_type,
     DW_TAG_union_type, DW_TAG_ptr_to_member_type,
-    DW_TAG_subrange_type, DW_TAG_file_type,
+    DW_TAG_file_type,
     DW_TAG_thrown_type, DW_TAG_subroutine_type:
       Result := TDbgDwarfTypeIdentifier;
 
@@ -2253,6 +2319,7 @@ begin
     DW_TAG_pointer_type:     Result := TDbgDwarfTypeIdentifierPointer;
 
     DW_TAG_base_type:        Result := TDbgDwarfBaseIdentifierBase;
+    DW_TAG_subrange_type:    Result := TDbgDwarfIdentifierSubRange;
     DW_TAG_enumeration_type: Result := TDbgDwarfIdentifierEnum;
     DW_TAG_enumerator:       Result := TDbgDwarfIdentifierEnumElement;
     DW_TAG_set_type:         Result := TDbgDwarfIdentifierSet;

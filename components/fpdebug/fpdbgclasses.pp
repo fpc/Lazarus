@@ -116,6 +116,7 @@ type
   );
 
   TDbgSymbolFlag =(
+    sfSubRange,
     sfInternalRef,  // Internal ref/pointer e.g. var/constref parameters
     //sfPointer,       // The sym is a pointer to the reference
     sfConst,         // The sym is a constant and cannot be modified
@@ -166,6 +167,13 @@ type
     function GetLine: Cardinal; virtual;
     function GetParent: TDbgSymbol; virtual;
     function GetReference: TDbgSymbol; virtual;
+
+    function GetHasOrdinalValue: Boolean; virtual;
+    function GetOrdinalValue: Int64; virtual;
+
+    function GetHasBounds: Boolean; virtual;
+    function GetOrdHighBound: Int64; virtual;
+    function GetOrdLowBound: Int64; virtual;
 
     function GetMember(AIndex: Integer): TDbgSymbol; virtual;
     function GetMemberByName(AIndex: String): TDbgSymbol; virtual;
@@ -219,6 +227,13 @@ type
     property Reference: TDbgSymbol read GetReference; deprecated;
     property Parent: TDbgSymbol read GetParent; deprecated;
     //property Children[AIndex: Integer]: TDbgSymbol read GetChild;
+    // VALUE
+    property HasOrdinalValue: Boolean read GetHasOrdinalValue;
+    property OrdinalValue: Int64 read GetOrdinalValue; // need typecast for QuadWord
+    // for Subranges
+    property HasBounds: Boolean read GetHasBounds;
+    property OrdLowBound: Int64 read GetOrdLowBound; // need typecast for QuadWord
+    property OrdHighBound: Int64 read GetOrdHighBound; // need typecast for QuadWord
   end;
 
   { TDbgInfo }
@@ -1004,6 +1019,31 @@ begin
   if not(sfiSymType in FEvaluatedFields) then
     SymbolTypeNeeded;
   Result := FSymbolType;
+end;
+
+function TDbgSymbol.GetHasBounds: Boolean;
+begin
+  Result := False;
+end;
+
+function TDbgSymbol.GetOrdHighBound: Int64;
+begin
+  Result := 0;
+end;
+
+function TDbgSymbol.GetOrdLowBound: Int64;
+begin
+  Result := 0;
+end;
+
+function TDbgSymbol.GetHasOrdinalValue: Boolean;
+begin
+  Result := False;
+end;
+
+function TDbgSymbol.GetOrdinalValue: Int64;
+begin
+  Result := 0;
 end;
 
 function TDbgSymbol.GetMember(AIndex: Integer): TDbgSymbol;

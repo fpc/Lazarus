@@ -7,7 +7,7 @@ interface
 uses
   Classes, sysutils, math, FpDbgClasses, GDBMIDebugger, BaseDebugManager, Debugger,
   GDBMIMiscClasses, GDBTypeInfo, maps, LCLProc, FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst,
-  LazLoggerBase, LazLoggerProfiling, FpPascalParser;
+  LazLoggerBase, LazLoggerProfiling, FpPascalParser, FpPascalBuilder;
 
 type
 
@@ -148,6 +148,38 @@ const
   GdbCmdPType = 'ptype ';
   GdbCmdWhatIs = 'whatis ';
 
+  procedure FindPointerAndBaseType(ASrcType: TDbgSymbol;
+    out APointerLevel: Integer; out ADeRefType, ABaseType: TDbgSymbol;
+    out ASrcTypeName, ADeRefTypeName, ABaseTypeName: String);
+  begin
+    APointerLevel := 0;
+
+    ADeRefType := nil;
+    ABaseType  := ASrcType;
+    ASrcTypeName   := ASrcType.Name;
+    ADeRefTypeName := '';
+    ABaseTypeName  := ABaseType.Name;
+
+    while (ABaseType.Kind = FpDbgClasses.skPointer) and (ABaseType.TypeInfo <> nil) do begin
+      ABaseType := ABaseType.TypeInfo;
+      inc(APointerLevel);
+
+      if ABaseType.Name <> '' then
+      begin
+        if ASrcTypeName = '' then
+          ASrcTypeName := '^' + ABaseType.Name;
+        if ADeRefTypeName = '' then begin
+          if APointerLevel = 1
+          then ADeRefTypeName := ABaseType.Name
+          else ADeRefTypeName := '^'+ ABaseType.Name;
+        end
+      end;
+
+    end;
+
+    ABaseTypeName  := ABaseType.Name;
+  end;
+
   Function MembersAsGdbText(AStructType: TDbgSymbol; WithVisibilty: Boolean; out AText: String): Boolean;
   var
     CurVis: TDbgSymbolMemberVisibility;
@@ -232,96 +264,22 @@ const
   begin
     AReq.ReqType := AType;
     AReq.Request := AQuery;
-    if IndexOf(AThreadId, AStackFrame, AReq) < 0 then begin
+    if inherited IndexOf(AThreadId, AStackFrame, AReq) < 0 then begin
       AReq.Result := ParseTypeFromGdb(AAnswer);
       Add(AThreadId, AStackFrame, AReq);
       debugln(['TFpGDBMIDebugger.AddToGDBMICache ', AReq.Request, ' T:', AThreadId, ' S:',AStackFrame, ' >> ', AAnswer]);
     end;
   end;
 
-  procedure AddClassType(ASourceExpr: string; AIsPointerType, AisPointerPointer: Boolean;
-    ABaseTypeName, ASrcTypeName, ADeRefTypeName: String;
+  procedure AddBaseType(ASourceExpr: string; APointerLevel: Integer;
+    ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
     ASrcType, ABaseType: TDbgSymbol);
-  var
-    s, ParentName, RefToken: String;
-    s2: String;
   begin
-    if not AIsPointerType then begin
-      ABaseType := ASrcType;
-      ABaseTypeName := ASrcTypeName;
-      ADeRefTypeName := ASrcTypeName;
-    end;
-    if (ABaseType = nil) or (ABaseType.TypeInfo = nil) then
-      exit;
-    ParentName :=  ABaseType.TypeInfo.Name;
-    if not MembersAsGdbText(ABaseType, True, s2) then
-      exit;
-
-    s := Format('type = ^%s = class : public %s %s%send%s', [ABaseTypeName, ParentName, LineEnding, s2, LineEnding]);
-    MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
-
-    s := Format('type = %s%s', [ASrcTypeName, LineEnding]);
-    MaybeAdd(gcrtPType, GdbCmdWhatIs  + ASourceExpr, s);
-
-
-    ASourceExpr := GDBMIMaybeApplyBracketsToExpr(ASourceExpr)+'^';
-    if AIsPointerType
-    then RefToken := '^'
-    else RefToken := '';
-    s := Format('type = %s%s = class : public %s %s%send%s', [RefToken, ABaseTypeName, ParentName, LineEnding, s2, LineEnding]);
-    MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
-
-    s := Format('type = %s%s', [ADeRefTypeName, LineEnding]);
-    MaybeAdd(gcrtPType, GdbCmdWhatIs  + ASourceExpr, s);
-  end;
-
-  procedure AddRecordType(ASourceExpr: string; AIsPointerType, AisPointerPointer: Boolean;
-    ABaseTypeName, ASrcTypeName, ADeRefTypeName: String;
-    ASrcType, ABaseType: TDbgSymbol);
-  var
-    s, RefToken: String;
-    s2: String;
-  begin
-    if not AIsPointerType then begin
-      ABaseType := ASrcType;
-      ABaseTypeName := ASrcTypeName;
-      ADeRefTypeName := ASrcTypeName;
-    end;
-    if (ABaseType = nil) then
-      exit;
-    if not MembersAsGdbText(ABaseType, False, s2) then
-      exit;
-
-    if AIsPointerType
-    then RefToken := '^'
-    else RefToken := '';
-    s := Format('type = %s%s = record %s%send%s', [RefToken, ABaseTypeName, LineEnding, s2, LineEnding]);
-    MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
-
-    if AIsPointerType then begin
-      s := Format('type = %s%s', [ASrcTypeName, LineEnding]);
-      MaybeAdd(gcrtPType, GdbCmdWhatIs  + ASourceExpr, s);
-
-      //ASourceExpr := GDBMIMaybeApplyBracketsToExpr(ASourceExpr)+'^';
-      //if AisPointerPointer
-      //then RefToken := '^'
-      //else RefToken := '';
-      //s := Format('type = %s%s = record %s%send%s', [RefToken, ABaseTypeName, LineEnding, s2, LineEnding]);
-      //MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
-
-    end;
-  end;
-
-  procedure AddBaseType(ASourceExpr: string; AIsPointerType, AisPointerPointer: Boolean;
-    ABaseTypeName, ASrcTypeName, ADeRefTypeName: String;
-        ASrcType, ABaseType: TDbgSymbol
-);
-  begin
-    if AIsPointerType then begin
+    if APointerLevel > 0 then begin
       MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, Format('type = ^%s', [ABaseTypeName]));
       MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, Format('type = %s', [ASrcTypeName]));
       ASourceExpr := GDBMIMaybeApplyBracketsToExpr(ASourceExpr);
-      if AIsPointerPointer then begin
+      if APointerLevel > 1 then begin
         MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr + '^', Format('type = ^%s', [ABaseTypeName]));
         MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr + '^', Format('type = %s', [ADeRefTypeName]));
       end
@@ -336,17 +294,112 @@ const
     end;
   end;
 
+  procedure AddClassType(ASourceExpr: string; APointerLevel: Integer;
+    ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
+    ASrcType, ABaseType: TDbgSymbol);
+  var
+    s, ParentName, RefToken: String;
+    s2: String;
+  begin
+    if (ABaseType.TypeInfo = nil) then
+      exit;
+    if APointerLevel > 0 then
+      ADeRefTypeName := ASrcTypeName;
+    ParentName :=  ABaseType.TypeInfo.Name;
+    if not MembersAsGdbText(ABaseType, True, s2) then
+      exit;
+
+    s := Format('type = ^%s = class : public %s %s%send%s', [ABaseTypeName, ParentName, LineEnding, s2, LineEnding]);
+    MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
+
+    s := Format('type = %s%s', [ASrcTypeName, LineEnding]);
+    MaybeAdd(gcrtPType, GdbCmdWhatIs  + ASourceExpr, s);
+
+
+    ASourceExpr := GDBMIMaybeApplyBracketsToExpr(ASourceExpr)+'^';
+    if APointerLevel > 0
+    then RefToken := '^'
+    else RefToken := '';
+    s := Format('type = %s%s = class : public %s %s%send%s', [RefToken, ABaseTypeName, ParentName, LineEnding, s2, LineEnding]);
+    MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
+
+    s := Format('type = %s%s', [ADeRefTypeName, LineEnding]);
+    MaybeAdd(gcrtPType, GdbCmdWhatIs  + ASourceExpr, s);
+  end;
+
+  procedure AddRecordType(ASourceExpr: string; APointerLevel: Integer;
+    ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
+    ASrcType, ABaseType: TDbgSymbol);
+  var
+    s, RefToken: String;
+    s2: String;
+  begin
+    if not MembersAsGdbText(ABaseType, False, s2) then
+      exit;
+
+    if APointerLevel > 0
+    then RefToken := '^'
+    else RefToken := '';
+    s := Format('type = %s%s = record %s%send%s', [RefToken, ABaseTypeName, LineEnding, s2, LineEnding]);
+    MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
+
+    if APointerLevel > 0 then begin
+      s := Format('type = %s%s', [ASrcTypeName, LineEnding]);
+      MaybeAdd(gcrtPType, GdbCmdWhatIs  + ASourceExpr, s);
+    end;
+  end;
+
+  procedure AddEnumType(ASourceExpr: string; APointerLevel: Integer;
+    ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
+    ASrcType, ABaseType: TDbgSymbol);
+  var
+    s, s2, RefToken: String;
+  begin
+    if APointerLevel > 0
+    then RefToken := '^'
+    else RefToken := '';
+    if GetTypeAsDeclaration(s2, ABaseType) then begin
+      s := Format('type = %s%s = %s%s', [RefToken, ABaseTypeName, s2, LineEnding]);
+      MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
+      if APointerLevel > 0 then
+        MaybeAdd(gcrtPType, GdbCmdWhatIs  + ASourceExpr, 'type = ' + ASrcTypeName);
+    end;
+  end;
+
   procedure AddType(ASourceExpr: string; ATypeIdent: TDbgSymbol);
   var
     SrcTypeName,     // The expressions own type name
     DeRefTypeName,   // one levvel of pointer followed
     BaseTypeName: String; // all poiters followed
-    IsPointerPointer: Boolean;
-    IsPointerType: Boolean;
-    SrcType: TDbgSymbol;
+    DeRefType, BaseType: TDbgSymbol;
+    PointerLevel: Integer;
   begin
     if (ASourceExpr = '') or (ATypeIdent = nil) then exit;
 
+    FindPointerAndBaseType(ATypeIdent, PointerLevel,
+                           DeRefType, BaseType,
+                           SrcTypeName, DeRefTypeName, BaseTypeName);
+
+    case BaseType.Kind of
+      skInteger, skCardinal, skBoolean, skChar, skFloat:
+        AddBaseType(ASourceExpr, PointerLevel,
+                    SrcTypeName, DeRefTypeName, BaseTypeName,
+                    ATypeIdent, BaseType);
+      FpDbgClasses.skClass:
+        AddClassType(ASourceExpr, PointerLevel,
+                    SrcTypeName, DeRefTypeName, BaseTypeName,
+                    ATypeIdent, BaseType);
+      FpDbgClasses.skRecord:
+        AddRecordType(ASourceExpr, PointerLevel,
+                    SrcTypeName, DeRefTypeName, BaseTypeName,
+                    ATypeIdent, BaseType);
+      FpDbgClasses.skEnum:
+        AddEnumType(ASourceExpr, PointerLevel,
+                    SrcTypeName, DeRefTypeName, BaseTypeName,
+                    ATypeIdent, BaseType);
+    end;
+
+(*
     IsPointerType := ATypeIdent.Kind = FpDbgClasses.skPointer;
     IsPointerPointer := False;
     SrcTypeName := ATypeIdent.Name;
@@ -387,7 +440,15 @@ DebugLn(['--------------'+dbgs(ATypeIdent.Kind), ' ', dbgs(IsPointerType)]);
     then begin
       AddRecordType(ASourceExpr, IsPointerType, IsPointerPointer, BaseTypeName,
                   SrcTypeName, DeRefTypeName, SrcType, ATypeIdent);
+    end
+    else
+    if ATypeIdent.Kind in [FpDbgClasses.skEnum]
+    then begin
+      AddEnumType(ASourceExpr, IsPointerType, IsPointerPointer, BaseTypeName,
+                  SrcTypeName, DeRefTypeName, SrcType, ATypeIdent);
     end;
+*)
+
   end;
 
 var
@@ -402,17 +463,19 @@ begin
   FInIndexOf := True;
   PasExpr := nil;
   try
+    if ARequest.ReqType = gcrtPType then begin
 DebugLn('############### '+ARequest.Request);
-    if copy(ARequest.Request, 1, 6) = 'ptype ' then
-	     IdentName := trim(copy(ARequest.Request, 7, length(ARequest.Request)))
-    else
-    if copy(ARequest.Request, 1, 7) = 'whatis ' then
-      IdentName := trim(copy(ARequest.Request, 8, length(ARequest.Request)));
+      if copy(ARequest.Request, 1, 6) = 'ptype ' then
+	       IdentName := trim(copy(ARequest.Request, 7, length(ARequest.Request)))
+      else
+      if copy(ARequest.Request, 1, 7) = 'whatis ' then
+        IdentName := trim(copy(ARequest.Request, 8, length(ARequest.Request)));
 
-    PasExpr := TFpGDBMIPascalExpression.Create(IdentName, FDebugger, AThreadId, AStackFrame);
+      PasExpr := TFpGDBMIPascalExpression.Create(IdentName, FDebugger, AThreadId, AStackFrame);
 
-    AddType(IdentName, PasExpr.ResultType);
-    Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
+      AddType(IdentName, PasExpr.ResultType);
+      Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
+    end;
 
   finally
     PasExpr.Free;

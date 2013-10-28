@@ -878,11 +878,8 @@ begin
 end;
 
 procedure TFpPascalExpressionPart.SetParent(AValue: TFpPascalExpressionPartContainer);
-var
-  Old: TFpPascalExpressionPart;
 begin
   if FParent = AValue then Exit;
-  Old := FParent;
   FParent := AValue;
 end;
 

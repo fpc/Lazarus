@@ -93,7 +93,6 @@ var
     SH: PImageSectionHeader;
     n: integer;
     p: Pointer;
-    pc: PChar absolute p;
     pb: PByte absolute p;
     pw: PWord absolute p;
     Name, Value: Cardinal;

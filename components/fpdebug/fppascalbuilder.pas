@@ -81,6 +81,25 @@ var
     Result := IndentString;
   end;
 
+  function NeedBracket(S: String): Boolean;
+  var
+    i, l: Integer;
+  begin
+    l := 0;
+    i := length(s);
+    while (i > 0) do begin
+      case s[i] of
+        'a'..'z', 'A'..'Z', '0'..'9', '_', '$', '^': ;
+         '(': dec(l);
+         ')': inc(l);
+        else
+          if l = 0 then break;
+      end;
+      dec(i);
+    end;
+    Result := i > 0;
+  end;
+
   Function MembersAsGdbText(out AText: String; WithVisibilty: Boolean; AFlags: TTypeDeclarationFlags = []): Boolean;
   var
     CurVis: TDbgSymbolMemberVisibility;
@@ -126,8 +145,9 @@ var
       s := s + '^';
     end;
     Result := GetTypeName(ADeclaration, ADbgSymbol, []);
-// TODO brackets
-    ADeclaration := s + ADeclaration;
+    if NeedBracket(ADeclaration)
+    then ADeclaration := s + '(' + ADeclaration + ')'
+    else ADeclaration := s + ADeclaration;
   end;
 
   function GetBaseType(out ADeclaration: String): Boolean;
@@ -182,16 +202,26 @@ var
 
   function GetEnumType(out ADeclaration: String): Boolean;
   var
-    i: Integer;
+    i, j, val: Integer;
     m: TDbgSymbol;
   begin
     // TODO assigned value (a,b:=3,...)
     Result := True;
     ADeclaration := '(';
+    j := 0;
     for i := 0 to ADbgSymbol.MemberCount - 1 do begin
       m := ADbgSymbol.Member[i];
       if i > 0 then ADeclaration := ADeclaration + ', ';
       ADeclaration := ADeclaration + m.Name;
+      if m.HasOrdinalValue then begin
+        val := m.OrdinalValue;
+        if j <> val then begin
+          ADeclaration := ADeclaration + ' := ' + IntToStr(val);
+          j := val;
+          continue;
+        end;
+      end;
+      inc(j);
     end;
     ADeclaration := ADeclaration + ')'
   end;
