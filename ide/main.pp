@@ -1088,9 +1088,9 @@ var
         vtAnsiString: s+=AnsiString(Args[i].VAnsiString);
         vtChar: s+=Args[i].VChar;
         vtPChar: s+=Args[i].VPChar;
-        vtPWideChar: s+=Args[i].VPWideChar;
-        vtWideChar: s+=Args[i].VWideChar{%H-};
-        vtWidestring: s+=WideString(Args[i].VWideString){%H-};
+        vtPWideChar: {%H-}s+=Args[i].VPWideChar{%H-};
+        vtWideChar: {%H-}s+=Args[i].VWideChar{%H-};
+        vtWidestring: {%H-}s+=WideString(Args[i].VWideString){%H-};
         vtObject: s+=DbgSName(Args[i].VObject);
         vtClass: s+=DbgSName(Args[i].VClass);
         vtPointer: s+=Dbgs(Args[i].VPointer);
