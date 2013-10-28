@@ -5999,6 +5999,12 @@ begin
     if (SWP_NOSIZE and uFlags) = 0 then
       TQtWidget(Hwnd).resize(CX, CY);
 
+    if (SWP_SHOWWINDOW and uFlags) <> 0 then
+      TQtWidget(Hwnd).Show;
+
+    if (SWP_HIDEWINDOW and uFlags) <> 0 then
+      TQtWidget(Hwnd).Hide;
+
     if (SWP_NOZORDER and uFlags) = 0 then
     begin
       case hWndInsertAfter of
