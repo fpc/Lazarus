@@ -25,7 +25,7 @@ interface
 uses
   SysUtils, Classes, SynEditMiscClasses, SynHighlighterPas, SynEditMarkupHighAll,
   SynEditHighlighterFoldBase, SynEditFoldedView, LazSynEditText, SynEditMiscProcs,
-  SynEditMarkup, SynEditPointClasses, LazClasses, LazLoggerBase, Graphics,
+  SynEditMarkup, SynEditPointClasses, SynEditHighlighter, LazClasses, LazLoggerBase, Graphics,
   LCLProc;
 
 type
@@ -319,6 +319,13 @@ type
     procedure SetLines(AValue: TSynEditStrings);
     function GetHighLighterWithLines: TSynCustomFoldHighlighter;
   private
+    //copied from SynEdit
+    //TODO, move to highlighter
+    function GetHighlighterAttriAtRowColEx(XY: TPoint; out Token: string;
+      out TokenType, Start: Integer;
+      out Attri: TSynHighlighterAttributes): boolean;                           //L505
+
+
     procedure MaybeRequestNodeStates(var ANode: TSynMarkupHighIfDefLinesNodeInfo);
     procedure MaybeValidateNode(var ANode: TSynMarkupHighIfDefLinesNodeInfo);
     procedure MaybeExtendNodeBackward(var ANode: TSynMarkupHighIfDefLinesNodeInfo;
@@ -1828,7 +1835,8 @@ begin
     if Result.LastEntryEndLine > ALinePos then begin
       Result.LastEntryEndLineOffs := 0;
       Assert(Result.EntryCount > 0, 'Result.EntryCount > 0 : in Outer Nesting');
-      Result.Entry[Result.EntryCount].MakeUnknown;
+      Result.Entry[Result.EntryCount-1].MakeUnknown;
+      //Result.Entry[Result.EntryCount].MakeUnknown;
       //Result.; xxxxxxxxxxxxxxxxxxxxxxxx TODO invalidate
     end;
     Result := FindNodeAtPosition(ALinePos, afmCreate);
@@ -2334,6 +2342,39 @@ begin
   Result.CurrentLines := FLines;
 end;
 
+function TSynMarkupHighIfDefLinesTree.GetHighlighterAttriAtRowColEx(XY: TPoint; out
+  Token: string; out TokenType, Start: Integer; out Attri: TSynHighlighterAttributes): boolean;
+var
+  PosX, PosY: integer;
+  Line: string;
+begin
+  PosY := XY.Y -1;
+  if Assigned(Highlighter) and (PosY >= 0) and (PosY < FLines.Count) then
+  begin
+    Line := FLines[PosY];
+    fHighlighter.CurrentLines := FLines;
+    Highlighter.StartAtLineIndex(PosY);
+    PosX := XY.X;
+    if (PosX > 0) and (PosX <= Length(Line)) then begin
+      while not Highlighter.GetEol do begin
+        Start := Highlighter.GetTokenPos + 1;
+        Token := Highlighter.GetToken;
+        if (PosX >= Start) and (PosX < Start + Length(Token)) then begin
+          Attri := Highlighter.GetTokenAttribute;
+          TokenType := Highlighter.GetTokenKind;
+          Result := TRUE;
+          exit;
+        end;
+        Highlighter.Next;
+      end;
+    end;
+  end;
+  Token := '';
+  Attri := nil;
+  TokenType := -1;
+  Result := FALSE;
+end;
+
 function TSynMarkupHighIfDefLinesTree.CreateNode(APosition: Integer): TSynSizedDifferentialAVLNode;
 begin
   IncChangeStep;
@@ -2433,54 +2474,53 @@ var
   FoldNodeInfoList: TLazSynFoldNodeInfoList;
   LineTextLower: String;
   LineLen, NodesAddedCnt: Integer;
-  LineNeedsReq, LineChanged, HasUncommentedNodes, NestComments: Boolean;
+  LineNeedsReq, LineChanged, HasUncommentedNodes: Boolean;
 
-  function FindCloseCurlyBracket(StartX: Integer; out ALineOffs: Integer): Integer;
+  function FindCloseCurlyBracket(StartX: Integer; out ALineOffs: Integer;
+    ASearchComment: Boolean = False; AMaxLine: Integer = -1): Integer;
   var
-    CurlyLvl: Integer;
-    i, l, c: Integer;
-    s: String;
+    len, i, c, tk, x: Integer;
+    dummy: String;
+    attr: TSynHighlighterAttributes;
+    r: TSynCustomHighlighterRange;
+    f: TRangeStates;
   begin
     Result := StartX;
     ALineOffs := 0;
-    CurlyLvl := 1;
-
-    l := Length(LineTextLower);
-    while Result <= l do begin
-      case LineTextLower[Result] of
-        '{': if NestComments then inc(CurlyLvl);
-        '}': if CurlyLvl = 1 then exit
-             else dec(CurlyLvl);
-      end;
-      inc(Result);
-    end;
 
     c := Lines.Count;
-    i := ToIdx(ALine) + 1;
-    inc(ALineOffs);
-    while (i < c) do begin
-      // TODO: get range flag fron pas highlighter
-      s := Lines[i];
-      l := Length(s);
-      Result := 1;
-      while Result <= l do begin
-        case s[Result] of
-          '{': if NestComments then inc(CurlyLvl);
-          '}': if CurlyLvl = 1 then exit
-               else dec(CurlyLvl);
-        end;
-        inc(Result);
+    i := ALine;
+
+    while (i <= c) do begin
+      len := Length(Lines[ToIdx(i)]);
+      if len > 0 then begin
+        GetHighlighterAttriAtRowColEx(Point(StartX, i), dummy, tk, x, attr);
+        Result := x + Length(dummy) - 1;
+        if Result < len - 1 then
+          exit;
+        r := TSynCustomHighlighterRange(Highlighter.GetRange);
+        f := TRangeStates(Integer(PtrUInt(r.RangeType)));
+        if ASearchComment then begin
+          if (f * [rsAnsi, rsBor] = []) or ( (AMaxLine > 0) and (i > AMaxLine) ) then
+            exit;
+        end
+        else
+        if not (rsDirective in f) then
+          exit;
       end;
+
       inc(i);
       inc(ALineOffs);
+      StartX := 1;
     end;
 
     Result := -1;
+    exit;
   end;
 
   function IsCommentedIfDef(AEntry: TSynMarkupHighIfDefEntry): Boolean;
   var
-    i, j, o: Integer;
+    i, j, k, FoundOffs, LastLineOffs: Integer;
     s: String;
   begin
     i := AEntry.StartColumn;
@@ -2495,19 +2535,27 @@ var
       exit;
 
     j := AEntry.EndColumn;
+    LastLineOffs := AEntry.Line.LastEntryEndLineOffs;
     if (idnMultiLineTag in AEntry.NodeFlags) then
-      s := Lines[ToIdx(ALine+AEntry.Line.LastEntryEndLineOffs)]
+      s := Lines[ToIdx(ALine + LastLineOffs)]
     else
       s := LineTextLower;
     Result :=
        (j-1 <= length(s)) and (j > 1) and (s[j-1] = '}') and
-       (TheDict.GetMatchAtChar(@LineTextLower[i], LineLen + 1 - i) in [1, 4]) and
-       (j = FindCloseCurlyBracket(i+1, o)+1);
+       (TheDict.GetMatchAtChar(@LineTextLower[i], LineLen + 1 - i) in [1, 4]);
+    // Old closing is inside the comment?
 
-    if Result then // o is evaluated
-      Result :=
-       ((not (idnMultiLineTag in AEntry.NodeFlags)) and (o = 0)) or
-       ((idnMultiLineTag in AEntry.NodeFlags) and (o = AEntry.Line.LastEntryEndLineOffs));
+    if Result then begin
+      k := FindCloseCurlyBracket(i+1, FoundOffs, True, ALine+LastLineOffs)+1;
+      Result := (LastLineOffs < FoundOffs) or
+                ( (LastLineOffs = FoundOffs) and (j < k) );
+
+      //if Result then // FoundOffs is evaluated
+      //  Result :=
+      //   ((not (idnMultiLineTag in AEntry.NodeFlags)) and (FoundOffs = 0)) or
+      //   ((idnMultiLineTag in AEntry.NodeFlags) and (o = AEntry.Line.LastEntryEndLineOffs));
+    end;
+
   end;
 
   function GetEntry(ALogStart, ALogEnd, ALineOffs: Integer;
@@ -2608,7 +2656,7 @@ var
   //RelNestDepth, RelNestDepthNext: Integer;
   NType: TSynMarkupIfdefNodeType;
 begin
-  NestComments := Highlighter.NestedComments;
+  //NestComments := Highlighter.NestedComments;
   LineNeedsReq := False;
   LineChanged := False;
   HasUncommentedNodes := False;
