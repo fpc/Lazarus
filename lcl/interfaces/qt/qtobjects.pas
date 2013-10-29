@@ -421,7 +421,8 @@ type
       lineWidth: Integer = 1; FillBrush: QBrushH = nil);
     
     procedure drawPoint(x1: Integer; y1: Integer);
-    procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
+    procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer;
+      const AQtBugWorkaroundNeeded: Boolean = False);
     procedure drawRoundRect(x, y, w, h, rx, ry: Integer);
     procedure drawText(x: Integer; y: Integer; s: PWideString); overload;
     procedure drawText(x,y,w,h,flags: Integer; s:PWideString); overload;
@@ -2771,21 +2772,26 @@ end;
 
   Draws a rectangle. Helper function of winapi.Rectangle
  ------------------------------------------------------------------------------}
-procedure TQtDeviceContext.drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
+procedure TQtDeviceContext.drawRect(x1: Integer; y1: Integer; w: Integer;
+  h: Integer; const AQtBugWorkaroundNeeded: Boolean);
+var
+  PW: Double;
 begin
   {$ifdef VerboseQt}
   writeln('TQtDeviceContext.drawRect() x1: ',x1,' y1: ',y1,' w: ',w,' h: ',h);
   {$endif}
-  {Important note: sometimes QPainter_drawRect() fails (diagonal line over rect)
-   with raster graphicssystem (spotted with qt-4.8.5 under Fedora 19 32bit).
-   With native (X11) graphicssystem it looks ok.
-   Solution until it's fixed in Qt:
-   APath := QPainterPath_create;
-   QPainterPath_addRect(APath, x1, y1, w, h);
-   QPainter_drawPath(Widget, APath);
-   QPainterPath_destroy(APath);
+  {Workaround for Qt bug
+  https://bugreports.qt-project.org/browse/QTBUG-34303
+  related lazarus issue http://bugs.freepascal.org/view.php?id=25227
   }
+  if AQtBugWorkaroundNeeded then
+  begin
+    PW := QPen_widthF(QPainter_pen(Widget));
+    QPen_setWidthF(QPainter_pen(Widget), 1.00001);
+  end;
   QPainter_drawRect(Widget, x1, y1, w, h);
+  if AQtBugWorkaroundNeeded then
+    QPen_setWidthF(QPainter_pen(Widget), PW);
 end;
 
 procedure TQtDeviceContext.drawRoundRect(x, y, w, h, rx, ry: Integer);
@@ -2863,7 +2869,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtDeviceContext.DrawText(x, y, w, h, flags: Integer; s: PWideString);
+procedure TQtDeviceContext.drawText(x, y, w, h, flags: Integer; s: PWideString);
 {$IFDEF DARWIN}
 var
   OldBkMode: Integer;

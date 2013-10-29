@@ -5111,6 +5111,7 @@ end;
 function TQtWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   R: TRect;
+  B: Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Rectangle] DC: ', dbghex(DC));
@@ -5120,8 +5121,12 @@ begin
 
   R := NormalizeRect(Rect(X1, Y1, X2, Y2));
   if IsRectEmpty(R) then Exit(True);
+  // issue http://bugs.freepascal.org/view.php?id=25227
+  B := (QtVersionMajor = 4) and (QtVersionMinor = 8) and
+    (QPaintEngine_type(TQtDeviceContext(DC).PaintEngine) = QPaintEngineRaster) and
+    QPen_isCosmetic(QPainter_pen(TQtDeviceContext(DC).Widget));
 
-  TQtDeviceContext(DC).drawRect(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1);
+  TQtDeviceContext(DC).drawRect(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1, B);
   Result := True;
 end;
 
@@ -5993,6 +5998,12 @@ begin
 
     if (SWP_NOSIZE and uFlags) = 0 then
       TQtWidget(Hwnd).resize(CX, CY);
+
+    if (SWP_SHOWWINDOW and uFlags) <> 0 then
+      TQtWidget(Hwnd).Show;
+
+    if (SWP_HIDEWINDOW and uFlags) <> 0 then
+      TQtWidget(Hwnd).Hide;
 
     if (SWP_NOZORDER and uFlags) = 0 then
     begin

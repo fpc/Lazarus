@@ -34,6 +34,7 @@ const
 
   stDwarf2All = [stDwarf, stDwarfSet];
   stDwarfAll  = [stDwarf, stDwarfSet, stDwarf3];
+  stSymAll = [stStabs, stDwarf, stDwarfSet, stDwarf3];
 
 type
 

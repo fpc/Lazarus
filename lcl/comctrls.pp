@@ -350,7 +350,7 @@ type
   TNoteBookCapabilities = TCTabControlCapabilities deprecated;
 
   TDrawTabEvent = procedure(Control: TCustomTabControl; TabIndex: Integer;
-    const Rect: TRect; Active: Boolean) of object;
+    const Rect: TRect; AActive: Boolean) of object;
 
   TCustomTabControl = class(TWinControl)
   private

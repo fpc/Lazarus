@@ -62,7 +62,8 @@ type
 
      fTstSkip,       // Do not run test
      fTstSkipDwarf3,
-     fTpMtch
+     fTpMtch,
+     fTExpectNotFound
     );
   TWatchExpectationFlags = set of TWatchExpectationFlag;
 
@@ -103,6 +104,14 @@ const
 
 type
 
+  TFullTypeMemberExpectationResult = record
+    Name: string;
+    ExpTypeName: string;
+    ExpKind: TDBGSymbolKind;
+    Flgs: TWatchExpectationFlags;
+  end;
+  TFullTypeMemberExpectationResultArray = array of TFullTypeMemberExpectationResult;
+
   PWatchExpectation= ^TWatchExpectation;
   TWatchExpectationResult = record
     ExpMatch: string;
@@ -110,6 +119,7 @@ type
     ExpTypeName: string;
     Flgs: TWatchExpectationFlags;
     MinGdb, MinFpc: Integer;
+    FullTypesExpect: TFullTypeMemberExpectationResultArray;
   end;
 
   TWatchExpectation = record
@@ -128,6 +138,8 @@ type
   TTestWatches = class(TGDBTestCase)
   private
     FWatches: TcurrentWatches;
+    Frx: TRegExpr;
+
 
     ExpectBreakFooGdb: TWatchExpectationArray;    // direct commands to gdb, to check assumptions  // only Exp and Mtch
     ExpectBreakSubFoo: TWatchExpectationArray;    // Watches, evaluated in SubFoo (nested)
@@ -211,6 +223,11 @@ type
     );
     procedure UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes; AMinGdb: Integer);
     procedure UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes; AMinFpc: Integer);
+
+    procedure AddMemberExpect(AWatchExp: PWatchExpectation;
+      AName, ATpNm: string; AFlgs: TWatchExpectationFlags; AnExpKind: TDBGSymbolKind;
+      ASymbolTypes: TSymbolTypes = stSymAll
+    );
 
     procedure AddExpectBreakFooGdb;
     procedure AddExpectBreakFooAll;
@@ -496,6 +513,23 @@ begin
   for i := low(TSymbolType) to high(TSymbolType) do
     if i in ASymbolTypes then
       UpdResMinFpc(AWatchExp, i, AMinFpc);
+end;
+
+procedure TTestWatches.AddMemberExpect(AWatchExp: PWatchExpectation; AName, ATpNm: string;
+  AFlgs: TWatchExpectationFlags; AnExpKind: TDBGSymbolKind; ASymbolTypes: TSymbolTypes);
+var
+  i: TSymbolType;
+  l: Integer;
+begin
+  for i := low(TSymbolType) to high(TSymbolType) do
+    if i in ASymbolTypes then begin
+      l := length(AWatchExp^.Result[i].FullTypesExpect);
+      SetLength(AWatchExp^.Result[i].FullTypesExpect, l + 1);
+      AWatchExp^.Result[i].FullTypesExpect[l].Name := AName;
+      AWatchExp^.Result[i].FullTypesExpect[l].ExpTypeName := ATpNm;
+      AWatchExp^.Result[i].FullTypesExpect[l].ExpKind := AnExpKind;
+      AWatchExp^.Result[i].FullTypesExpect[l].Flgs := AFlgs;
+    end;
 end;
 
 procedure TTestWatches.UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
@@ -892,6 +926,14 @@ begin
   r := AddFmtDef('TClassTCastObject(VarOTestTCastObj).l[1]', [], '1144', skSimple, 'Integer|LongInt', [fTpMtch]);
 //  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
+
+  // Full type info
+  r := AddFmtDef('ArgTFoo', [defFullTypeInfo],   Match_ArgTFoo,     skClass,   'TFoo',  []);
+  AddMemberExpect(r, 'ValueInt', 'Integer|LongInt', [fTpMtch], skSimple);
+  AddMemberExpect(r, 'a1', 'TFooStatArray', [], skSimple);
+  AddMemberExpect(r, 'a2', 'TFooDynArray', [], skSimple);
+  AddMemberExpect(r, 'a3', 'array', [fTpMtch], skSimple);
+  AddMemberExpect(r, 'x1', '', [fTExpectNotFOund], skSimple);
 
   {%endregion    * Classes * }
 
@@ -1954,6 +1996,7 @@ var
   dbg: TGDBMIDebugger;
   Only: Integer;
   OnlyName, OnlyNamePart: String;
+  MemberTests: TFullTypeMemberExpectationResultArray;
 
   function SkipTest(const Data: TWatchExpectation): Boolean;
   begin
@@ -1985,6 +2028,20 @@ var
     IgnoreFlags: TWatchExpectationFlags;
     IgnoreAll, IgnoreData, IgnoreKind, IgnoreKindPtr, IgnoreTpName: boolean;
     IgnoreText: String;
+    i, j: Integer;
+    fld: TDBGField;
+
+    function CmpNames(TestName, Exp, Got: String; Match: Boolean): Boolean;
+    begin
+      if Match then begin
+        if Frx = nil then Frx := TRegExpr.Create;
+        Frx.ModifierI := true;
+        Frx.Expression := Exp;
+        TestTrue(TestName + ' matches '+Exp+' but was '+Got,  Frx.Exec(Got), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+       end
+       else TestEquals(TestName + ' equals ',  LowerCase(Exp), LowerCase(Got), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+    end;
+
   begin
     if not TestTrue('Dbg did NOT enter dsError', dbg.State <> dsError) then exit;
     rx := nil;
@@ -2055,17 +2112,45 @@ var
     if IsValid and HasTpInfo then begin
       s:='';
       if HasTpInfo then s := WV.TypeInfo.TypeName;
-      if fTpMtch  in DataRes.Flgs
-      then begin
-        rx := TRegExpr.Create;
-        rx.ModifierI := true;
-        rx.Expression := DataRes.ExpTypeName;
-        TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but was '+s,  rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-        FreeAndNil(rx);
-       end
-       else TestEquals(Name + ' TypeName',  LowerCase(DataRes.ExpTypeName), LowerCase(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+      CmpNames('TypeName', DataRes.ExpTypeName, s, fTpMtch  in DataRes.Flgs);
+      //if fTpMtch  in DataRes.Flgs
+      //then begin
+      //  rx := TRegExpr.Create;
+      //  rx.ModifierI := true;
+      //  rx.Expression := DataRes.ExpTypeName;
+      //  TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but was '+s,  rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+      //  FreeAndNil(rx);
+      // end
+      // else TestEquals(Name + ' TypeName',  LowerCase(DataRes.ExpTypeName), LowerCase(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
     end else begin
         TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but STATE was <'+dbgs(WV.Validity)+'> HasTypeInfo='+dbgs(HasTpInfo)+' Val="'+s+'"',  False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+    end;
+
+
+    MemberTests := DataRes.FullTypesExpect;
+    if Length(MemberTests) > 0 then begin
+      if HasTpInfo then begin
+        for i := 0 to Length(MemberTests) - 1 do begin
+          j := WV.TypeInfo.Fields.Count - 1;
+          while (j >= 0) and (uppercase(WV.TypeInfo.Fields[j].Name) <> UpperCase(MemberTests[i].Name)) do dec(j);
+          TestTrue(Name + ' no members with name ' +  MemberTests[i].Name,
+                   (fTExpectNotFOund  in MemberTests[i].Flgs) <> (j >= 0),
+                   DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
+          if j >= 0 then begin
+            fld := WV.TypeInfo.Fields[j];
+            if fld.DBGType <> nil then begin
+              TestTrue(Name + ' members with name ' +  MemberTests[i].Name + ' type=' + KindName[MemberTests[i].ExpKind] + ' but was ' + KindName[fld.DBGType.Kind],
+                  MemberTests[i].ExpKind = fld.DBGType.Kind, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
+              CmpNames(Name + ' members with name ' +  MemberTests[i].Name + 'TypeName',
+                       MemberTests[i].ExpTypeName, fld.DBGType.TypeName, fTpMtch  in MemberTests[i].Flgs);
+            end
+            else
+              TestTrue(Name + ' no dbgtype for members with name' +  MemberTests[i].Name, False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
+          end;
+        end;
+      end
+      else
+        TestTrue(Name + ' no typeinfo for members' , False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
     end;
 
   end;
@@ -2312,6 +2397,7 @@ begin
 
   end;
 
+  FreeAndNil(Frx);
   AssertTestErrors;
 end;
 

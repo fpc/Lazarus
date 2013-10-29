@@ -2309,7 +2309,7 @@ var
   {%region    * Class * }
   procedure DoClass;
   var
-    n, i: Integer;
+    n, i, j, l: Integer;
     S, S2: String;
 
     Name: String;
@@ -2386,16 +2386,36 @@ var
         else begin
           Name := GetPart(['    '], [' '], S);
           S2 := GetPart([' : '], [';'], S);
-          if (lowercase(copy(S2, 1, 7)) = 'record ') then begin
+          l := Length(S2);
+          j := 1;
+          while true do begin
+            while (j <= l) and (S2[j] in ['^','(', ' ']) do inc(j);
+            if (lowercase(copy(S2, j, 6)) = 'array ') then begin
+              inc(j, 5+3);
+              while (j <= l) and
+                    not ( (S2[j-3] = ' ') and (S2[j-2] in ['o','O']) and (S2[j-1] in ['f','F']) and (S2[j] = ' ') )
+              do
+                inc(j);
+              continue;
+            end;
+            break;
+          end;
+          if (lowercase(copy(S2, j, 7)) = 'record ') and
+             not( (copy(S2, j+7, 1) = ';') or (copy(S2, j+7, 6) = '{...};') )
+          then begin
             i := 1;
             while (n <  Lines.Count - 2) and (i > 0) do
             begin
               inc(n);
               S := Lines[n];
               if S = '' then Continue;
-              if pos(': record ', S) > 0 then inc(i);
-              if pos(' end;', S) > 0 then dec(i);
-              S2 := S2 + ' ' + Trim(S);
+              j := pos(': record ', S);
+              if (j > 0) and not( (copy(S, j+9, 1) = ';') or (copy(S, j+9, 6) = '{...};') )
+              then
+                inc(i);
+              S := Trim(S);
+              if (pos('end;', S) = 1) or (pos('end)', S) = 1) then dec(i);
+              S2 := S2 + ' ' + S;
             end;
           end;
           DBGType := TGDBType.Create(skSimple, S2);
