@@ -151,8 +151,36 @@ var
   end;
 
   function GetBaseType(out ADeclaration: String): Boolean;
+  var
+    s1, s2: String;
   begin
-    Result := GetTypeName(ADeclaration, ADbgSymbol, []);
+    if sfSubRange in ADbgSymbol.Flags then begin
+      case ADbgSymbol.Kind of
+        // TODO: check bound are in size
+        skInteger: begin
+            Result := ADbgSymbol.HasBounds;
+            if Result then ADeclaration := Format('%d..%d', [ADbgSymbol.OrdLowBound, ADbgSymbol.OrdHighBound]);
+          end;
+        skCardinal: begin
+            Result := ADbgSymbol.HasBounds;
+            if Result then ADeclaration := Format('%u..%u', [QWord(ADbgSymbol.OrdLowBound), QWord(ADbgSymbol.OrdHighBound)]);
+          end;
+        skChar: begin
+            Result := ADbgSymbol.HasBounds;
+            if (ADbgSymbol.OrdLowBound >= 32) and (ADbgSymbol.OrdLowBound <= 126)
+            then s1 := '''' + chr(ADbgSymbol.OrdLowBound) + ''''
+            else s1 := '#'+IntToStr(ADbgSymbol.OrdLowBound);
+            if (ADbgSymbol.OrdHighBound >= 32) and (ADbgSymbol.OrdHighBound <= 126)
+            then s1 := '''' + chr(ADbgSymbol.OrdHighBound) + ''''
+            else s1 := '#'+IntToStr(ADbgSymbol.OrdHighBound);
+            if Result then ADeclaration := Format('%s..%s', [s1, s2]);
+          end;
+        else
+          Result := False; // not sure how to show a subrange of skFloat, skBoolean, :
+      end;
+    end
+    else
+      Result := GetTypeName(ADeclaration, ADbgSymbol, []);
   end;
 
   function GetFunctionType(out ADeclaration: String): Boolean;

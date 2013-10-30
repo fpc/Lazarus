@@ -504,6 +504,7 @@ type
   TDbgDwarfIdentifier = class;
   TDbgDwarfTypeIdentifier = class;
   TDbgDwarfIdentifierClass = class of TDbgDwarfIdentifier;
+  TDbgDwarfValueIdentifierClass = class of TDbgDwarfValueIdentifier;
   TDbgDwarfTypeIdentifierClass = class of TDbgDwarfTypeIdentifier;
   { TDbgDwarfIdentifier }
 
@@ -515,6 +516,7 @@ type
     FFlags: set of (didtNameRead, didtTypeRead);
     function GetNestedTypeInfo: TDbgDwarfTypeIdentifier;
   protected
+    function  DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier; virtual;
     function  ReadName(out AName:String): Boolean;
     function  ReadMemberVisibility(out AMemberVisibility: TDbgSymbolMemberVisibility): Boolean;
     procedure NameNeeded; override;
@@ -548,6 +550,8 @@ type
     procedure KindNeeded; override;
     procedure MemberVisibilityNeeded; override;
     procedure Init; override;
+  public
+    class function CreateValueSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfValueIdentifier;
   end;
 
   { TDbgDwarfTypeIdentifier }
@@ -612,13 +616,13 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure Init; override;
     procedure MemberVisibilityNeeded; override;
   public
-    class function CreateTybeSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfTypeIdentifier;
+    class function CreateTypeSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfTypeIdentifier;
   end;
 
   { TDbgDwarfBaseIdentifierBase }
 
   TDbgDwarfBaseIdentifierBase = class(TDbgDwarfTypeIdentifier)
-  //function GetNestedTypeInfo: TDbgDwarfTypeIdentifier; // return nil
+  //function DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier; // return nil
   protected
     procedure KindNeeded; override;
     procedure TypeInfoNeeded; override;
@@ -631,6 +635,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function NestedHasMembers: Boolean; inline;
   protected
     procedure KindNeeded; override;
+    procedure SizeNeeded; override;
     procedure NameNeeded; override;
     procedure TypeInfoNeeded; override;        // forward
     procedure MemberVisibilityNeeded; override;
@@ -663,16 +668,30 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   end;
 
   { TDbgDwarfIdentifierSubRange }
+  TDbgDwarfSubRangeBoundReadState = (rfNotRead, rfNotFound, rfConst, rfValue);
 
   TDbgDwarfIdentifierSubRange = class(TDbgDwarfTypeIdentifierModifier)
+  private
+    FLowBoundConst: Int64;
+    FLowBoundValue: TDbgDwarfValueIdentifier;
+    FLowBoundState: TDbgDwarfSubRangeBoundReadState;
+    FHighBoundConst: Int64;
+    FHighBoundValue: TDbgDwarfValueIdentifier;
+    FHighBoundState: TDbgDwarfSubRangeBoundReadState;
+    FCountConst: Int64;
+    FCountValue: TDbgDwarfValueIdentifier;
+    FCountState: TDbgDwarfSubRangeBoundReadState;
+    procedure ReadBounds;
   protected
-    //function GetHasBounds: Boolean; override;
-    //function GetOrdHighBound: Int64; override;
-    //function GetOrdLowBound: Int64; override;
+    function DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier;override;
+    function GetHasBounds: Boolean; override;
+    function GetOrdHighBound: Int64; override;
+    function GetOrdLowBound: Int64; override;
 
     procedure KindNeeded; override;
-    //procedure SizeNeeded; override;
+    procedure SizeNeeded; override;
     function GetFlags: TDbgSymbolFlags; override;
+    procedure Init; override;
   end;
 
   { TDbgDwarfTypeIdentifierPointer }
@@ -1306,14 +1325,142 @@ end;
 
 { TDbgDwarfIdentifierSubRange }
 
+procedure TDbgDwarfIdentifierSubRange.ReadBounds;
+var
+  FwdInfoPtr: Pointer;
+  FwdCompUint: TDwarfCompilationUnit;
+  NewInfo: TDwarfInformationEntry;
+begin
+  if FLowBoundState <> rfNotRead then exit;
+
+  // Todo: search attrib-IDX only once
+  if FInformationEntry.ReadReference(DW_AT_lower_bound, FwdInfoPtr, FwdCompUint) then begin
+    NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+    FLowBoundValue := TDbgDwarfValueIdentifier.CreateValueSubClass('', NewInfo);
+    NewInfo.ReleaseReference;
+    if FLowBoundValue = nil then begin
+      FLowBoundState := rfNotFound;
+      exit;
+    end
+    else
+      FLowBoundState := rfValue;
+  end
+  else
+  if FInformationEntry.ReadValue(DW_AT_lower_bound, FLowBoundConst) then begin
+    FLowBoundState := rfConst;
+  end
+  else
+  begin
+    //FLowBoundConst := 0; // the default
+    //FLowBoundState := rfConst;
+    FLowBoundState := rfNotFound;
+    exit; // incomplete type
+  end;
+
+
+  if FInformationEntry.ReadReference(DW_AT_upper_bound, FwdInfoPtr, FwdCompUint) then begin
+    NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+    FHighBoundValue := TDbgDwarfValueIdentifier.CreateValueSubClass('', NewInfo);
+    NewInfo.ReleaseReference;
+    if FHighBoundValue = nil then begin
+      FHighBoundState := rfNotFound;
+      exit;
+    end
+    else
+      FHighBoundState := rfValue;
+  end
+  else
+  if FInformationEntry.ReadValue(DW_AT_upper_bound, FHighBoundConst) then begin
+    FHighBoundState := rfConst;
+  end
+  else
+  begin
+    FHighBoundState := rfNotFound;
+
+    if FInformationEntry.ReadReference(DW_AT_count, FwdInfoPtr, FwdCompUint) then begin
+      NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+      FCountValue := TDbgDwarfValueIdentifier.CreateValueSubClass('', NewInfo);
+      NewInfo.ReleaseReference;
+      if FCountValue = nil then begin
+        FCountState := rfNotFound;
+        exit;
+      end
+      else
+        FCountState := rfValue;
+    end
+    else
+    if FInformationEntry.ReadValue(DW_AT_count, FCountConst) then begin
+      FCountState := rfConst;
+    end
+    else
+      FCountState := rfNotFound;
+  end;
+end;
+
+function TDbgDwarfIdentifierSubRange.DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier;
+begin
+  Result := inherited DoGetNestedTypeInfo;
+  if Result <> nil then
+    exit;
+
+  if FLowBoundState = rfValue then
+    Result := FLowBoundValue.TypeInfo as TDbgDwarfTypeIdentifier
+  else
+  if FHighBoundState = rfValue then
+    Result := FHighBoundValue.TypeInfo as TDbgDwarfTypeIdentifier
+  else
+  if FCountState = rfValue then
+    Result := FCountValue.TypeInfo as TDbgDwarfTypeIdentifier;
+end;
+
+function TDbgDwarfIdentifierSubRange.GetHasBounds: Boolean;
+begin
+  ReadBounds;
+  Result := (FLowBoundState in [rfValue, rfConst]) and
+            ( (FHighBoundState in [rfValue, rfConst]) or
+              (FCountState in [rfValue, rfConst]) );
+
+// TODO: currently limited to const.
+  Result := (FLowBoundState in [rfConst]) and
+            ( (FHighBoundState in [rfConst]) or
+              (FCountState in [rfConst]) );
+end;
+
+function TDbgDwarfIdentifierSubRange.GetOrdHighBound: Int64;
+begin
+// Todo range check off.
+  //if FHighBoundState = rfValue then
+  //  Result := FHighBoundValue.VALUE // TODO
+  //else
+  if FHighBoundState = rfConst then
+    Result := FHighBoundConst
+  else
+  //if FCountState = rfValue then
+  //  Result := GetOrdLowBound + FCountValue.VALUE - 1 // TODO
+  //else
+  //  //if FHighBoundState = rfConst then
+    Result := GetOrdLowBound + FCountConst - 1;
+end;
+
+function TDbgDwarfIdentifierSubRange.GetOrdLowBound: Int64;
+begin
+  //if FLowBoundState = rfValue then
+  //  Result := FLowBoundValue.VALUE // TODO
+  //else
+    Result := FLowBoundConst;
+end;
+
 procedure TDbgDwarfIdentifierSubRange.KindNeeded;
 var
   t: TDbgSymbol;
 begin
+// TODO: limit to ordinal types
+  if not HasBounds then begin // does ReadBounds;
+    SetKind(skNone); // incomplete type
+  end;
+
   t := NestedTypeInfo;
   if t = nil then begin
-    // lowerbound type
-    // upperbound type
     SetKind(skInteger);
     SetSize(4); // TODO 8 if 64 bit target
   end
@@ -1321,9 +1468,30 @@ begin
     SetKind(t.Kind);
 end;
 
+procedure TDbgDwarfIdentifierSubRange.SizeNeeded;
+var
+  t: TDbgSymbol;
+begin
+  t := NestedTypeInfo;
+  if t = nil then begin
+    SetKind(skInteger);
+    SetSize(4); // TODO 8 if 64 bit target
+  end
+  else
+    SetSize(t.Size);
+end;
+
 function TDbgDwarfIdentifierSubRange.GetFlags: TDbgSymbolFlags;
 begin
   Result := (inherited GetFlags) + [sfSubRange];
+end;
+
+procedure TDbgDwarfIdentifierSubRange.Init;
+begin
+  FLowBoundState := rfNotRead;
+  FHighBoundState := rfNotRead;
+  FCountState := rfNotRead;
+  inherited Init;
 end;
 
 { TDbgDwarfIdentifierEnumElement }
@@ -1525,6 +1693,19 @@ begin
   SetSymbolType(stValue);
 end;
 
+class function TDbgDwarfValueIdentifier.CreateValueSubClass(AName: String;
+  AnInformationEntry: TDwarfInformationEntry): TDbgDwarfValueIdentifier;
+var
+  c: TDbgDwarfIdentifierClass;
+begin
+  c := GetSubClass(AnInformationEntry.Abbrev.tag);
+
+  if c.InheritsFrom(TDbgDwarfValueIdentifier) then
+    Result := TDbgDwarfValueIdentifierClass(c).Create(AName, AnInformationEntry)
+  else
+    Result := nil;
+end;
+
 { TDbgDwarfIdentifierArray }
 
 procedure TDbgDwarfIdentifierArray.KindNeeded;
@@ -1697,6 +1878,16 @@ begin
   else SetKind(t.Kind);
 end;
 
+procedure TDbgDwarfTypeIdentifierModifier.SizeNeeded;
+var
+  t: TDbgSymbol;
+begin
+  t := NestedTypeInfo;
+  if t = nil
+  then inherited SizeNeeded
+  else SetSize(t.Size);
+end;
+
 procedure TDbgDwarfTypeIdentifierModifier.NameNeeded;
 var
   ti: TDbgDwarfTypeIdentifier;
@@ -1836,7 +2027,7 @@ begin
     inherited MemberVisibilityNeeded;
 end;
 
-class function TDbgDwarfTypeIdentifier.CreateTybeSubClass(AName: String;
+class function TDbgDwarfTypeIdentifier.CreateTypeSubClass(AName: String;
   AnInformationEntry: TDwarfInformationEntry): TDbgDwarfTypeIdentifier;
 var
   c: TDbgDwarfIdentifierClass;
@@ -2176,7 +2367,7 @@ begin
     exit;
   Form := AbbrevData[i].Form;
   if (Form = DW_FORM_ref1) or (Form = DW_FORM_ref2) or (Form = DW_FORM_ref4) or
-     (Form = DW_FORM_ref8) or (Form = DW_FORM_sdata) or (Form = DW_FORM_udata)
+     (Form = DW_FORM_ref8) or (Form = DW_FORM_ref_udata)
   then begin
     Result := FCompUnit.ReadValue(InfoData, Form, Offs);
     if not Result then
@@ -2233,23 +2424,30 @@ end;
 { TDbgDwarfIdentifier }
 
 function TDbgDwarfIdentifier.GetNestedTypeInfo: TDbgDwarfTypeIdentifier;
-var
-  FwdInfoPtr: Pointer;
-  FwdCompUint: TDwarfCompilationUnit;
-  InfoEntry: TDwarfInformationEntry;
 begin
 // TODO DW_AT_start_scope;
   Result := FNestedTypeInfo;
   if (Result <> nil) or (didtTypeRead in FFlags) then
     exit;
   include(FFlags, didtTypeRead);
+  FNestedTypeInfo := DoGetNestedTypeInfo;
+  Result := FNestedTypeInfo;
+end;
+
+function TDbgDwarfIdentifier.DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier;
+var
+  FwdInfoPtr: Pointer;
+  FwdCompUint: TDwarfCompilationUnit;
+  InfoEntry: TDwarfInformationEntry;
+begin
   if FInformationEntry.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint) then begin
     InfoEntry := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
     DebugLn(FPDBG_DWARF_SEARCH, ['GetTypeInfo found', dbgs(InfoEntry, FwdCompUint) ]);
-    FNestedTypeInfo := TDbgDwarfTypeIdentifier.CreateTybeSubClass('', InfoEntry);
+    Result := TDbgDwarfTypeIdentifier.CreateTypeSubClass('', InfoEntry);
     ReleaseRefAndNil(InfoEntry);
-    Result := FNestedTypeInfo;
-  end;
+  end
+  else
+    Result := nil;
 end;
 
 function TDbgDwarfIdentifier.ReadName(out AName: String): Boolean;
@@ -4480,7 +4678,7 @@ begin
     end;
     DW_FORM_ref_udata,
     DW_FORM_udata    : begin
-      AValue := ULEB128toOrdinal(AAttribute);
+      AValue := Int64(ULEB128toOrdinal(AAttribute));
     end;
   else
     Result := False;
@@ -4565,7 +4763,7 @@ begin
       AValue := PQWord(AAttribute)^;
     end;
     DW_FORM_sdata    : begin
-      AValue := SLEB128toOrdinal(AAttribute);
+      AValue := QWord(SLEB128toOrdinal(AAttribute));
     end;
     DW_FORM_ref_udata,
     DW_FORM_udata    : begin

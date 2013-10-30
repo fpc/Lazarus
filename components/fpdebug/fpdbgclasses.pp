@@ -159,7 +159,7 @@ type
     function GetMemberVisibility: TDbgSymbolMemberVisibility;
   protected
     // NOT cached fields
-    function GetChild(AIndex: Integer): TDbgSymbol; virtual;
+    function GetChild({%H-}AIndex: Integer): TDbgSymbol; virtual;
     function GetColumn: Cardinal; virtual;
     function GetCount: Integer; virtual;
     function GetFile: String; virtual;
@@ -175,8 +175,8 @@ type
     function GetOrdHighBound: Int64; virtual;
     function GetOrdLowBound: Int64; virtual;
 
-    function GetMember(AIndex: Integer): TDbgSymbol; virtual;
-    function GetMemberByName(AIndex: String): TDbgSymbol; virtual;
+    function GetMember({%H-}AIndex: Integer): TDbgSymbol; virtual;
+    function GetMemberByName({%H-}AIndex: String): TDbgSymbol; virtual;
     function GetMemberCount: Integer; virtual;
   protected
     property EvaluatedFields: TDbgSymbolFields read FEvaluatedFields;
@@ -244,11 +244,11 @@ type
   protected
     procedure SetHasInfo;
   public
-    constructor Create(ALoader: TDbgImageLoader); virtual;
-    function FindSymbol(const AName: String): TDbgSymbol; virtual;
-    function FindSymbol(AAddress: TDbgPtr): TDbgSymbol; virtual;
+    constructor Create({%H-}ALoader: TDbgImageLoader); virtual;
+    function FindSymbol(const {%H-}AName: String): TDbgSymbol; virtual;
+    function FindSymbol({%H-}AAddress: TDbgPtr): TDbgSymbol; virtual;
     property HasInfo: Boolean read FHasInfo;
-    function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr; virtual;
+    function GetLineAddress(const {%H-}AFileName: String; {%H-}ALine: Cardinal): TDbgPtr; virtual;
   end;
 
 
