@@ -347,17 +347,21 @@ Begin
 end;
 
 procedure TTreeFilterBranch.RemoveChildrenData(ARootNode : TTreeNode);
-Var
-  ANode : TTreeNode;
-Begin
-  ANode := NIL;
-  FreeNodeData(ARootNode);
-  If Assigned(ARootNode) Then
-    ANode := ARootNode.GetFirstChild;
-  While Assigned(ANode) Do Begin
+
+  procedure ProcessSubNodes(ANode : TTreeNode);
+  Var
+    BNode : TTreeNode;
+  begin
     FreeNodeData(ANode);
-    ANode := ANode.GetNextSibling;
+    BNode := ANode.GetFirstChild;
+    While Assigned(BNode) Do Begin
+      ProcessSubNodes(BNode);
+      BNode := BNode.GetNextSibling;
+    end;
   end;
+
+Begin
+  ProcessSubNodes(ARootNode);
 end;
 
 procedure TTreeFilterBranch.Clear;
