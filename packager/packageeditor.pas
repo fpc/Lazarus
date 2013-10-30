@@ -1083,6 +1083,9 @@ begin
   PackageEditors.ViewPkgToDos(LazPackage);
 end;
 
+Type
+  TTreeFilterBranchAccess = class(TTreeFilterBranch);
+
 procedure TPackageEditorForm.FreeNodeData(Typ: TPENodeType);
 var
   NodeData: TPENodeData;
@@ -1092,6 +1095,8 @@ begin
   while NodeData<>nil do begin
     n:=NodeData;
     NodeData:=NodeData.Next;
+    if Assigned(n.Branch) Then
+      TTreeFilterBranchAccess(n.Branch).FreeNodeData(TTreeNode(n.Node));
     n.Free;
   end;
   FFirstNodeData[Typ]:=nil;
@@ -1773,8 +1778,8 @@ begin
 
   // files belonging to package
   FilesBranch:=FilterEdit.GetBranch(FFilesNode);
-  FilesBranch.Clear;
   FreeNodeData(penFile);
+  FilesBranch.Clear;
   FilterEdit.SelectedPart:=FNextSelectedPart;
   FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
   FilterEdit.SortData:=SortAlphabetically;
@@ -1798,6 +1803,7 @@ begin
       FRemovedFilesNode.SelectedIndex:=FRemovedFilesNode.ImageIndex;
     end;
     RemovedBranch:=FilterEdit.GetBranch(FRemovedFilesNode);
+    RemovedBranch.Clear;
     for i:=0 to LazPackage.RemovedFilesCount-1 do begin
       CurFile:=LazPackage.RemovedFiles[i];
       NodeData:=CreateNodeData(penFile,CurFile.Filename,true);
@@ -1824,8 +1830,8 @@ begin
 
   // required packages
   RequiredBranch:=FilterEdit.GetBranch(FRequiredPackagesNode);
-  RequiredBranch.Clear;
   FreeNodeData(penDependency);
+  RequiredBranch.Clear;
   FilterEdit.SelectedPart:=FNextSelectedPart;
   CurDependency:=LazPackage.FirstRequiredDependency;
   while CurDependency<>nil do begin
@@ -1851,6 +1857,7 @@ begin
       FRemovedRequiredNode.SelectedIndex:=FRemovedRequiredNode.ImageIndex;
     end;
     RemovedBranch:=FilterEdit.GetBranch(FRemovedRequiredNode);
+    RemovedBranch.Clear;
     while CurDependency<>nil do begin
       NodeData:=CreateNodeData(penDependency,CurDependency.PackageName,true);
       RemovedBranch.AddNodeData(CurDependency.AsString, NodeData);
@@ -2045,9 +2052,9 @@ begin
   Result:=nil;
   if (TVNode=nil) then exit;
   o:=TObject(TVNode.Data);
-  if o is TFileNameItem then
+  if Assigned(o) and (o is TFileNameItem) then
     o:=TObject(TFileNameItem(o).Data);
-  if o is TPENodeData then
+  if Assigned(o) and (o is TPENodeData) then
     Result:=TPENodeData(o);
 end;
 
@@ -2399,14 +2406,14 @@ destructor TPackageEditorForm.Destroy;
 var
   nt: TPENodeType;
 begin
+  for nt:=Low(TPENodeType) to High(TPENodeType) do
+    FreeNodeData(nt);
   if PackageEditorMenuRoot.MenuItem=FilesPopupMenu.Items then
     PackageEditorMenuRoot.MenuItem:=nil;
   PackageEditors.DoFreeEditor(LazPackage);
   FLazPackage:=nil;
   FreeAndNil(FPlugins);
   inherited Destroy;
-  for nt:=Low(TPENodeType) to High(TPENodeType) do
-    FreeNodeData(nt);
 end;
 
 { TPackageEditors }

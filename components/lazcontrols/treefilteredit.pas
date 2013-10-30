@@ -45,7 +45,9 @@ type
     procedure ApplyFilter;
     procedure TVDeleteUnneededNodes(p: integer);
     procedure TVClearUnneededAndCreateHierachy(Filename: string);
+  protected
     procedure FreeNodeData(ANode : TTreeNode);
+  private
     procedure RemoveChildrenData(ARootNode : TTreeNode);
   public
     constructor Create(AOwner: TTreeFilterEdit; ARootNode: TTreeNode);
@@ -104,7 +106,8 @@ type
 
   TTFENodeData = class
   public
-    Node : TObject;
+    Node,
+    Branch : TObject;
   end;
 
   { TFileNameItem }
@@ -224,14 +227,17 @@ begin
       TVNode:=fOwner.fFilteredTreeview.Items.AddChild(fRootNode,FileN);
     // Save the long filename to Node.Data
     AObject := TObject(fNodeTextToDataMap[FileN]);
-    If Assigned(AObject) And AObject.InheritsFrom(TTFENodeData) then
+    If Assigned(AObject) And AObject.InheritsFrom(TTFENodeData) then Begin
       TTFENodeData(AObject).Node := TVNode;
+      TTFENodeData(AObject).Branch := Self;
+    end;
     if fNodeTextToFullFilenameMap.Count > 0 then begin
       s:=FileN;
       if fNodeTextToFullFilenameMap.Contains(FileN) then
         s:=fNodeTextToFullFilenameMap[FileN];           // Full file name.
       AObject := TFileNameItem.Create(s, AObject);
       TTFENodeData(AObject).Node := TVNode;
+      TTFENodeData(AObject).Branch := Self;
     end;
     TVNode.Data:=AObject;
     // Get ImageIndex for Node
@@ -330,8 +336,10 @@ Begin
   AObject := NIL;
   If Assigned(ANode) And Assigned(ANode.Data) Then Begin
     AObject := TObject(ANode.Data);
-    If Assigned(AObject) And AObject.InheritsFrom(TTFENodeData) Then
+    If Assigned(AObject) And AObject.InheritsFrom(TTFENodeData) Then Begin
       TTFENodeData(AObject).Node := NIL;
+      TTFENodeData(AObject).Branch := NIL;
+    end;
     If Assigned(AObject) And (AObject is TFileNameItem) Then
       AObject.Free;
     ANode.Data := NIL;
