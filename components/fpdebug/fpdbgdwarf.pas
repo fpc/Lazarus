@@ -626,6 +626,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure KindNeeded; override;
     procedure TypeInfoNeeded; override;
+    function GetHasBounds: Boolean; override;
+    function GetOrdHighBound: Int64; override;
+    function GetOrdLowBound: Int64; override;
   end;
 
   { TDbgDwarfTypeIdentifierModifier }
@@ -671,6 +674,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TDbgDwarfSubRangeBoundReadState = (rfNotRead, rfNotFound, rfConst, rfValue);
 
   TDbgDwarfIdentifierSubRange = class(TDbgDwarfTypeIdentifierModifier)
+  // TODO not a modifier, maybe have a forwarder base class
   private
     FLowBoundConst: Int64;
     FLowBoundValue: TDbgDwarfValueIdentifier;
@@ -688,6 +692,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetOrdHighBound: Int64; override;
     function GetOrdLowBound: Int64; override;
 
+    procedure NameNeeded; override;
     procedure KindNeeded; override;
     procedure SizeNeeded; override;
     function GetFlags: TDbgSymbolFlags; override;
@@ -1450,6 +1455,14 @@ begin
     Result := FLowBoundConst;
 end;
 
+procedure TDbgDwarfIdentifierSubRange.NameNeeded;
+var
+  AName: String;
+begin
+  ReadName(AName);
+  SetName(AName);
+end;
+
 procedure TDbgDwarfIdentifierSubRange.KindNeeded;
 var
   t: TDbgSymbol;
@@ -1755,7 +1768,6 @@ end;
 function TDbgDwarfIdentifierStructure.GetMemberByName(AIndex: String): TDbgSymbol;
 var
   Ident: TDwarfInformationEntry;
-  r: TDbgDwarfIdentifier;
   ti: TDbgSymbol;
 begin
   // Todo, maybe create all children?
@@ -2007,6 +2019,31 @@ end;
 procedure TDbgDwarfBaseIdentifierBase.TypeInfoNeeded;
 begin
   SetTypeInfo(nil);
+end;
+
+function TDbgDwarfBaseIdentifierBase.GetHasBounds: Boolean;
+begin
+  Result := (kind = skInteger) or (kind = skCardinal);
+end;
+
+function TDbgDwarfBaseIdentifierBase.GetOrdHighBound: Int64;
+begin
+  case Kind of
+    skInteger:  Result := int64( high(int64) shr (64 - Min(Size, 8) * 8));
+    skCardinal: Result := int64( high(qword) shr (64 - Min(Size, 8) * 8));
+    else
+      Result := inherited GetOrdHighBound;
+  end;
+end;
+
+function TDbgDwarfBaseIdentifierBase.GetOrdLowBound: Int64;
+begin
+  case Kind of
+    skInteger:  Result := -(int64( high(int64) shr (64 - Min(Size, 8) * 8)))-1;
+    skCardinal: Result := 0;
+    else
+      Result := inherited GetOrdHighBound;
+  end;
 end;
 
 { TDbgDwarfTypeIdentifier }

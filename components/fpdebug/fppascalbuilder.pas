@@ -171,8 +171,8 @@ var
             then s1 := '''' + chr(ADbgSymbol.OrdLowBound) + ''''
             else s1 := '#'+IntToStr(ADbgSymbol.OrdLowBound);
             if (ADbgSymbol.OrdHighBound >= 32) and (ADbgSymbol.OrdHighBound <= 126)
-            then s1 := '''' + chr(ADbgSymbol.OrdHighBound) + ''''
-            else s1 := '#'+IntToStr(ADbgSymbol.OrdHighBound);
+            then s2 := '''' + chr(ADbgSymbol.OrdHighBound) + ''''
+            else s2 := '#'+IntToStr(ADbgSymbol.OrdHighBound);
             if Result then ADeclaration := Format('%s..%s', [s1, s2]);
           end;
         else
@@ -254,6 +254,39 @@ var
     ADeclaration := ADeclaration + ')'
   end;
 
+  function GetSetType(out ADeclaration: String): Boolean;
+  var
+    t: TDbgSymbol;
+    s: String;
+  begin
+    // TODO assigned value (a,b:=3,...)
+    t := ADbgSymbol.TypeInfo;
+    Result := t <> nil;
+    if not Result then exit;
+
+    case t.Kind of
+      skInteger: begin
+          Result := t.HasBounds;
+          ADeclaration := format('set of %d..%d', [t.OrdLowBound, t.OrdHighBound]);
+        end;
+      skCardinal: begin
+          Result := t.HasBounds;
+          ADeclaration := format('set of %u..%u', [QWord(t.OrdLowBound), QWord(t.OrdHighBound)]);
+        end;
+      skEnum: begin
+          if t.Name <> '' then begin
+            Result := True;
+            s := t.Name;
+          end
+          else
+            Result := GetTypeAsDeclaration(s, t);
+          ADeclaration := 'set of ' + s;
+        end;
+      else
+        Result := False;
+    end;
+  end;
+
 var
   VarName: String;
 begin
@@ -281,6 +314,7 @@ begin
     skClass:     Result := GetClassType(ATypeDeclaration);
     skRecord:    Result := GetRecordType(ATypeDeclaration);
     skEnum:      Result := GetEnumType(ATypeDeclaration);
+    skset:       Result := GetSetType(ATypeDeclaration);
   end;
 
   if VarName <> '' then

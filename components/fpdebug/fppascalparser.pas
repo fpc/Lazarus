@@ -593,6 +593,7 @@ end;
 
 function TFpPascalExpressionPartIdentifer.DoGetResultType: TDbgSymbol;
 begin
+  Result := nil;
   if FDbgType = nil then
     FDbgType := FExpression.GetDbgTyeForIdentifier(GetText);
   if FDbgType = nil then

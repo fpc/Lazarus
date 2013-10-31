@@ -274,7 +274,35 @@ const
   procedure AddBaseType(ASourceExpr: string; APointerLevel: Integer;
     ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
     ASrcType, ABaseType: TDbgSymbol);
+  var
+    s, s2, RefToken: String;
   begin
+    if sfSubRange in ABaseType.Flags then begin
+      GetTypeAsDeclaration(s, ABaseType);
+      if APointerLevel > 0
+      then RefToken := '^'
+      else RefToken := '';
+      s2 := ASrcType.Name;
+      if s2 = '' then s2 := s;
+
+      MaybeAdd(gcrtPType, GdbCmdPType + ASourceExpr, Format('type = %s%s', [RefToken, s]));
+      MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, Format('type = %s%s', [RefToken, s2]));
+
+      if APointerLevel > 0 then begin
+        if APointerLevel > 1
+        then RefToken := '^'
+        else RefToken := '';
+        if (ADeRefTypeName = '') or (ADeRefTypeName[1] = '^') then
+          ADeRefTypeName := RefToken + s;
+
+        ASourceExpr := GDBMIMaybeApplyBracketsToExpr(ASourceExpr)+'^';
+        MaybeAdd(gcrtPType, GdbCmdPType + ASourceExpr, Format('type = %s%s', [RefToken, s]));
+        MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, Format('type = %s%s', [ADeRefTypeName]));
+      end;
+
+      exit; // subrange
+    end;
+
     if APointerLevel > 0 then begin
       MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, Format('type = ^%s', [ABaseTypeName]));
       MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, Format('type = %s', [ASrcTypeName]));
@@ -366,6 +394,27 @@ const
     end;
   end;
 
+  procedure AddSetType(ASourceExpr: string; APointerLevel: Integer;
+    ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
+    ASrcType, ABaseType: TDbgSymbol);
+  var
+    s, s2, RefToken: String;
+  begin
+    case APointerLevel of
+      0:  RefToken := '';
+      1:  RefToken := '^';
+      else  RefToken := '^^';
+    end;
+
+    if GetTypeAsDeclaration(s2, ABaseType) then begin
+      s := Format('type = %s%s%s', [RefToken, s2, LineEnding]);
+      MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
+      if ASrcTypeName <> ''
+      then MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, 'type = ' + ASrcTypeName)
+      else MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, s);
+    end;
+  end;
+
   procedure AddType(ASourceExpr: string; ATypeIdent: TDbgSymbol);
   var
     SrcTypeName,     // The expressions own type name
@@ -395,6 +444,10 @@ const
                     ATypeIdent, BaseType);
       FpDbgClasses.skEnum:
         AddEnumType(ASourceExpr, PointerLevel,
+                    SrcTypeName, DeRefTypeName, BaseTypeName,
+                    ATypeIdent, BaseType);
+      FpDbgClasses.skSet:
+        AddSetType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
     end;
