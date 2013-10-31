@@ -1083,9 +1083,6 @@ begin
   PackageEditors.ViewPkgToDos(LazPackage);
 end;
 
-Type
-  TTreeFilterBranchAccess = class(TTreeFilterBranch);
-
 procedure TPackageEditorForm.FreeNodeData(Typ: TPENodeType);
 var
   NodeData: TPENodeData;
@@ -1096,7 +1093,7 @@ begin
     n:=NodeData;
     NodeData:=NodeData.Next;
     if Assigned(n.Branch) Then
-      TTreeFilterBranchAccess(n.Branch).FreeNodeData(TTreeNode(n.Node));
+      n.Branch.FreeNodeData(n.Node);
     n.Free;
   end;
   FFirstNodeData[Typ]:=nil;
@@ -2052,9 +2049,9 @@ begin
   Result:=nil;
   if (TVNode=nil) then exit;
   o:=TObject(TVNode.Data);
-  if Assigned(o) and (o is TFileNameItem) then
+  if o is TFileNameItem then
     o:=TObject(TFileNameItem(o).Data);
-  if Assigned(o) and (o is TPENodeData) then
+  if o is TPENodeData then
     Result:=TPENodeData(o);
 end;
 

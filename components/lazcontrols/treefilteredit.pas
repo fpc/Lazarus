@@ -45,14 +45,12 @@ type
     procedure ApplyFilter;
     procedure TVDeleteUnneededNodes(p: integer);
     procedure TVClearUnneededAndCreateHierachy(Filename: string);
-  protected
-    procedure FreeNodeData(ANode : TTreeNode);
-  private
     procedure RemoveChildrenData(ARootNode : TTreeNode);
   public
     constructor Create(AOwner: TTreeFilterEdit; ARootNode: TTreeNode);
     destructor Destroy; override;
     procedure AddNodeData(ANodeText: string; AData: TObject; AFullFilename: string = '');
+    procedure FreeNodeData(ANode: TTreeNode);
     function GetData(AIndex: integer): TObject;
     procedure Clear;
   end;
@@ -106,8 +104,8 @@ type
 
   TTFENodeData = class
   public
-    Node,
-    Branch : TObject;
+    Node: TTreeNode;
+    Branch: TTreeFilterBranch;
   end;
 
   { TFileNameItem }
