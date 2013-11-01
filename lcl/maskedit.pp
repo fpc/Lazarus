@@ -180,6 +180,7 @@ const
     FChangeAllowed   : Boolean;           // We do not allow text changes by the OS (cut/clear via context menu)
     FInitialText     : String;            // Text set in the formdesigner (must be handled in Loaded)
     FInitialMask     : String;            // EditMask set in the formdesigner (must be handled in Loaded)
+    FSettingInitialText: Boolean;
     FValidationFailed: Boolean;           // Flag used in DoEnter
     FMaskIsPushed    : Boolean;
     FSavedMask       : TInternalMask;
@@ -224,6 +225,7 @@ const
     function  GetEditText: string; virtual;
     procedure SetEditText(const AValue: string);
     procedure TextChanged; override;
+    procedure Change; override;
     procedure SetCharCase(Value: TEditCharCase);
     function GetCharCase: TEditCharCase;
     procedure SetMaxLength(Value: Integer);
@@ -441,6 +443,7 @@ end;
 constructor TCustomMaskEdit.Create(TheOwner: TComponent);
 begin
   Inherited Create(TheOwner);
+  FSettingInitialText := False;
   FRealMask      := '';
   ClearInternalMask(FMask, FMaskLength);
   ClearInternalMask(FSavedMask, FSavedMaskLength);
@@ -826,7 +829,7 @@ end;
 
 
 // Transform a single char in a MaskType
-Function TCustomMaskEdit.CharToMask(UCh : TUtf8Char) : tMaskedType;
+function TCustomMaskEdit.CharToMask(UCh: TUtf8Char): tMaskedType;
 var
   Ch: Char;
 Begin
@@ -841,14 +844,14 @@ End;
 
 
 // Trasform a single MaskType into a char
-Function TCustomMaskEdit.MaskToChar(Value : tMaskedType) : Char;
+function TCustomMaskEdit.MaskToChar(Value: tMaskedType): Char;
 Begin
   Result := Char(Ord(Value));
 End;
 
 
 // Return if the char passed is a valid MaskType char
-Function TCustomMaskEdit.IsMaskChar(Ch : TUtf8Char) : Boolean;
+function TCustomMaskEdit.IsMaskChar(Ch: TUtf8Char): Boolean;
 Begin
   Result := (CharToMask(Ch) <> Char_Start);
 End;
@@ -1052,7 +1055,8 @@ end;
 
 
 //Check if a Utf8 char can be inserted at position Position, also do case conversion if necessary
-Function TCustomMaskEdit.CanInsertChar(Position : Integer; Var Ch : TUtf8Char) : Boolean;
+function TCustomMaskEdit.CanInsertChar(Position: Integer; var Ch: TUtf8Char
+  ): Boolean;
 Var
   Current : tMaskedType;
 Begin
@@ -1163,7 +1167,7 @@ end;
 
 
 // Get the actual Text
-Function TCustomMaskEdit.GetText : TCaption;
+function TCustomMaskEdit.GetText: TCaption;
 {
   Replace al FSPaceChars with #32
   If FMaskSave = False then do trimming of spaces and remove all maskliterals
@@ -1206,7 +1210,7 @@ End;
 
 
 // Set the actual Text
-Procedure TCustomMaskEdit.SetText(Value: TCaption);
+procedure TCustomMaskEdit.SetText(Value: TCaption);
 { This tries to mimic Delphi behaviour (D3):
   - if mask contains no literals text is set, if necessary padded with blanks,
     LTR or RTL depending on FTrimType
@@ -1265,7 +1269,7 @@ Var
   Sub                 : String;
 Begin
   //Setting Text while loading has unwanted side-effects
-  if (csLoading in ComponentState) then
+  if (csLoading in ComponentState) {and (not FSettingInitialText)} then
   begin
     FInitialText := Value;
     Exit;
@@ -1476,6 +1480,12 @@ begin
   end;
 end;
 
+procedure TCustomMaskEdit.Change;
+begin
+  //suppress OnChange when setting initiall values.
+  if not FSettingInitialText then inherited Change;
+end;
+
 procedure TCustomMaskEdit.SetCharCase(Value: TEditCharCase);
 begin
   if IsMasked then
@@ -1513,8 +1523,10 @@ end;
 procedure TCustomMaskEdit.Loaded;
 begin
   inherited Loaded;
+  FSettingInitialText := True;
   if (FInitialMask <> '') then SetMask(FInitialMask);
   if (FInitialText <> '') then SetText(FInitialText);
+  FSettingInitialText := False;
 end;
 
 
