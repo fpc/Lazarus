@@ -513,7 +513,7 @@ type
     FCU: TDwarfCompilationUnit;
     FInformationEntry: TDwarfInformationEntry;
     FNestedTypeInfo: TDbgDwarfTypeIdentifier;
-    FFlags: set of (didtNameRead, didtTypeRead);
+    FDwarfReadFlags: set of (didtNameRead, didtTypeRead);
     function GetNestedTypeInfo: TDbgDwarfTypeIdentifier;
   protected
     function  DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier; virtual;
@@ -590,12 +590,12 @@ type
   DW_AT_start_scope          Y   Y  Y    Y  Y    Y  Y
   DW_AT_visibility           Y   Y  Y    Y  Y    Y  Y     Y
   DW_AT_type                 Y      Y               Y     Y
-  DW_AT_ordering                    Y
-  DW_AT_segment                  Y
-  DW_AT_stride_size                 Y
+  DW_AT_segment                  Y                              DW_TAG_string_type
   DW_AT_string_length            Y
-  DW_AT_const_value                                    Y
-  DW_AT_count                                             Y
+  DW_AT_ordering                    Y                           DW_TAG_array_type
+  DW_AT_stride_size                 Y
+  DW_AT_const_value                                    Y        DW_TAG_enumerator
+  DW_AT_count                                             Y     DW_TAG_subrange_type
   DW_AT_lower_bound                                       Y
   DW_AT_upper_bound                                       Y
 
@@ -631,11 +631,27 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetOrdLowBound: Int64; override;
   end;
 
+  { TDbgDwarfTypeForwarder }
+
+  TDbgDwarfTypeForwarder = class(TDbgDwarfTypeIdentifier)
+  private
+    FDwarfMemberProvider: TDbgSymbol;
+    FGetDwarfMemberProviderDone: Boolean;
+  protected
+    function  GetDwarfMemberProvider: TDbgSymbol; inline;
+    procedure SetDwarfMemberProvider(AProvider: TDbgSymbol); inline;
+    procedure DwarfMemberProviderNeeded; virtual;
+    //procedure SizeNeeded; override;
+    //function GetFlags: TDbgSymbolFlags; override;
+
+    function GetMember(AIndex: Integer): TDbgSymbol; override;
+    function GetMemberByName(AIndex: String): TDbgSymbol; override;
+    function GetMemberCount: Integer; override;
+  end;
+
   { TDbgDwarfTypeIdentifierModifier }
 
-  TDbgDwarfTypeIdentifierModifier = class(TDbgDwarfTypeIdentifier)
-  private
-    function NestedHasMembers: Boolean; inline;
+  TDbgDwarfTypeIdentifierModifier = class(TDbgDwarfTypeForwarder)
   protected
     procedure KindNeeded; override;
     procedure SizeNeeded; override;
@@ -643,9 +659,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure TypeInfoNeeded; override;        // forward
     procedure MemberVisibilityNeeded; override;
 
-    function GetMember(AIndex: Integer): TDbgSymbol; override;
-    function GetMemberByName(AIndex: String): TDbgSymbol; override;
-    function GetMemberCount: Integer; override;
+    procedure DwarfMemberProviderNeeded; override;
   end;
 
   { TDbgDwarfTypeIdentifierRef }
@@ -659,15 +673,13 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   TDbgDwarfTypeIdentifierDeclaration = class(TDbgDwarfTypeIdentifierModifier)
   private
-    function IsClass: Boolean;
+    function IsInternalClassPointer: Boolean;
   protected
     procedure KindNeeded; override;
     // fpc encodes classes as pointer, not ref (so Obj1 = obj2 compares the pointers)
     // typedef > pointer > srtuct
     // while a pointer to class/object: pointer > typedef > ....
-    function GetMember(AIndex: Integer): TDbgSymbol; override;
-    function GetMemberByName(AIndex: String): TDbgSymbol; override;
-    function GetMemberCount: Integer; override;
+    procedure DwarfMemberProviderNeeded; override;
   end;
 
   { TDbgDwarfIdentifierSubRange }
@@ -701,9 +713,14 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   { TDbgDwarfTypeIdentifierPointer }
 
-  TDbgDwarfTypeIdentifierPointer = class(TDbgDwarfTypeIdentifier)
+  TDbgDwarfTypeIdentifierPointer = class(TDbgDwarfTypeForwarder)
+  private
+    function IsInternalDynArrayPointer: Boolean;
   protected
     procedure KindNeeded; override;
+    //procedure SizeNeeded; override;
+    function GetFlags: TDbgSymbolFlags; override;
+    procedure DwarfMemberProviderNeeded; override;
   end;
 
   { TDbgDwarfIdentifierEnumElement }
@@ -731,6 +748,10 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetMember(AIndex: Integer): TDbgSymbol; override;
     function GetMemberByName(AIndex: String): TDbgSymbol; override;
     function GetMemberCount: Integer; override;
+
+    function GetHasBounds: Boolean; override;
+    function GetOrdHighBound: Int64; override;
+    function GetOrdLowBound: Int64; override;
   public
     destructor Destroy; override;
   end;
@@ -772,12 +793,17 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   TDbgDwarfIdentifierArray = class(TDbgDwarfTypeIdentifier)
   private
-    FDimensionInfo: array of TDwarfInformationEntry;
+    FMembers: TRefCntObjList;
+    procedure CreateMembers;
   protected
     procedure KindNeeded; override;
+
+    function GetFlags: TDbgSymbolFlags; override;
+    function GetMember(AIndex: Integer): TDbgSymbol; override;
+    function GetMemberByName(AIndex: String): TDbgSymbol; override;
+    function GetMemberCount: Integer; override;
   public
     destructor Destroy; override;
-    function DimensionCount: Integer;
   end;
 
   { TDbgDwarfProcSymbol }
@@ -1328,6 +1354,59 @@ begin
   end;
 end;
 
+{ TDbgDwarfTypeForwarder }
+
+function TDbgDwarfTypeForwarder.GetDwarfMemberProvider: TDbgSymbol;
+begin
+  if not FGetDwarfMemberProviderDone then
+    DwarfMemberProviderNeeded;
+  Result := FDwarfMemberProvider;
+end;
+
+procedure TDbgDwarfTypeForwarder.SetDwarfMemberProvider(AProvider: TDbgSymbol);
+begin
+  FDwarfMemberProvider := AProvider;
+  FGetDwarfMemberProviderDone := True;
+end;
+
+procedure TDbgDwarfTypeForwarder.DwarfMemberProviderNeeded;
+begin
+  SetDwarfMemberProvider(nil);
+end;
+
+function TDbgDwarfTypeForwarder.GetMember(AIndex: Integer): TDbgSymbol;
+var
+  p: TDbgSymbol;
+begin
+  p := GetDwarfMemberProvider;
+  if p <> nil then
+    Result := p.Member[AIndex]
+  else
+    Result := inherited GetMember(AIndex);
+end;
+
+function TDbgDwarfTypeForwarder.GetMemberByName(AIndex: String): TDbgSymbol;
+var
+  p: TDbgSymbol;
+begin
+  p := GetDwarfMemberProvider;
+  if p <> nil then
+    Result := p.MemberByName[AIndex]
+  else
+    Result := inherited GetMemberByName(AIndex);
+end;
+
+function TDbgDwarfTypeForwarder.GetMemberCount: Integer;
+var
+  p: TDbgSymbol;
+begin
+  p := GetDwarfMemberProvider;
+  if p <> nil then
+    Result := p.MemberCount
+  else
+    Result := inherited GetMemberCount;
+end;
+
 { TDbgDwarfIdentifierSubRange }
 
 procedure TDbgDwarfIdentifierSubRange.ReadBounds;
@@ -1421,14 +1500,17 @@ end;
 function TDbgDwarfIdentifierSubRange.GetHasBounds: Boolean;
 begin
   ReadBounds;
-  Result := (FLowBoundState in [rfValue, rfConst]) and
-            ( (FHighBoundState in [rfValue, rfConst]) or
-              (FCountState in [rfValue, rfConst]) );
-
 // TODO: currently limited to const.
+// not standard, but upper may be missing?
   Result := (FLowBoundState in [rfConst]) and
             ( (FHighBoundState in [rfConst]) or
               (FCountState in [rfConst]) );
+
+  (*
+  Result := (FLowBoundState in [rfValue, rfConst]) and
+            ( (FHighBoundState in [rfValue, rfConst]) or
+              (FCountState in [rfValue, rfConst]) );
+  *)
 end;
 
 function TDbgDwarfIdentifierSubRange.GetOrdHighBound: Int64;
@@ -1443,7 +1525,7 @@ begin
   //if FCountState = rfValue then
   //  Result := GetOrdLowBound + FCountValue.VALUE - 1 // TODO
   //else
-  //  //if FHighBoundState = rfConst then
+  if FHighBoundState = rfConst then
     Result := GetOrdLowBound + FCountConst - 1;
 end;
 
@@ -1475,7 +1557,7 @@ begin
   t := NestedTypeInfo;
   if t = nil then begin
     SetKind(skInteger);
-    SetSize(4); // TODO 8 if 64 bit target
+    SetSize(FCU.FAddressSize);
   end
   else
     SetKind(t.Kind);
@@ -1488,7 +1570,7 @@ begin
   t := NestedTypeInfo;
   if t = nil then begin
     SetKind(skInteger);
-    SetSize(4); // TODO 8 if 64 bit target
+    SetSize(FCU.FAddressSize);
   end
   else
     SetSize(t.Size);
@@ -1550,15 +1632,14 @@ end;
 
 procedure TDbgDwarfIdentifierEnum.CreateMembers;
 var
-  Info: TDwarfInformationEntry;
-  Info2: TDwarfInformationEntry;
+  Info, Info2: TDwarfInformationEntry;
   sym: TDbgDwarfIdentifier;
 begin
   if FMembers <> nil then
     exit;
   FMembers := TRefCntObjList.Create;
-  Info := FInformationEntry.Clone;
-  Info.GoChild;
+  Info := FInformationEntry.FirstChild;
+  if Info = nil then exit;
 
   while Info.HasValidScope do begin
     if (Info.Abbrev.tag = DW_TAG_enumerator) then begin
@@ -1606,6 +1687,33 @@ begin
   Result := FMembers.Count;
 end;
 
+function TDbgDwarfIdentifierEnum.GetHasBounds: Boolean;
+begin
+  Result := True;
+end;
+
+function TDbgDwarfIdentifierEnum.GetOrdHighBound: Int64;
+var
+  c: Integer;
+begin
+  c := MemberCount;
+  if c > 0 then
+    Result := Member[c-1].OrdinalValue
+  else
+    Result := -1;
+end;
+
+function TDbgDwarfIdentifierEnum.GetOrdLowBound: Int64;
+var
+  c: Integer;
+begin
+  c := MemberCount;
+  if c > 0 then
+    Result := Member[0].OrdinalValue
+  else
+    Result := 0;
+end;
+
 destructor TDbgDwarfIdentifierEnum.Destroy;
 begin
   FreeAndNil(FMembers);
@@ -1621,14 +1729,42 @@ end;
 
 { TDbgDwarfTypeIdentifierPointer }
 
+function TDbgDwarfTypeIdentifierPointer.IsInternalDynArrayPointer: Boolean;
+var
+  ti: TDbgSymbol;
+begin
+  Result := False;
+  ti := TypeInfo;
+  Result := (ti <> nil) and (ti.Kind = skArray) and (sfDynArray in ti.Flags);
+end;
+
 procedure TDbgDwarfTypeIdentifierPointer.KindNeeded;
 begin
-  SetKind(skPointer);
+  if IsInternalDynArrayPointer then
+    SetKind(skArray)
+  else
+    SetKind(skPointer);
+end;
+
+function TDbgDwarfTypeIdentifierPointer.GetFlags: TDbgSymbolFlags;
+begin
+  if IsInternalDynArrayPointer then
+    Result := TypeInfo.Flags
+  else
+    Result := inherited GetFlags;
+end;
+
+procedure TDbgDwarfTypeIdentifierPointer.DwarfMemberProviderNeeded;
+begin
+  if IsInternalDynArrayPointer then
+    SetDwarfMemberProvider(TypeInfo)
+  else
+    inherited DwarfMemberProviderNeeded;
 end;
 
 { TDbgDwarfTypeIdentifierDeclaration }
 
-function TDbgDwarfTypeIdentifierDeclaration.IsClass: Boolean;
+function TDbgDwarfTypeIdentifierDeclaration.IsInternalClassPointer: Boolean;
 var
   ti: TDbgSymbol;
 begin
@@ -1644,34 +1780,18 @@ end;
 
 procedure TDbgDwarfTypeIdentifierDeclaration.KindNeeded;
 begin
-  if IsClass then
+  if IsInternalClassPointer then
     SetKind(skClass)
   else
     inherited KindNeeded;
 end;
 
-function TDbgDwarfTypeIdentifierDeclaration.GetMember(AIndex: Integer): TDbgSymbol;
+procedure TDbgDwarfTypeIdentifierDeclaration.DwarfMemberProviderNeeded;
 begin
-  if IsClass then
-    Result := TypeInfo.Member[AIndex]
+  if IsInternalClassPointer then
+    SetDwarfMemberProvider(TypeInfo)
   else
-    Result := inherited GetMember(AIndex);
-end;
-
-function TDbgDwarfTypeIdentifierDeclaration.GetMemberByName(AIndex: String): TDbgSymbol;
-begin
-  if IsClass then
-    Result := TypeInfo.MemberByName[AIndex]
-  else
-    Result := inherited GetMemberByName(AIndex);
-end;
-
-function TDbgDwarfTypeIdentifierDeclaration.GetMemberCount: Integer;
-begin
-  if IsClass then
-    Result := TypeInfo.MemberCount
-  else
-    Result := inherited GetMemberCount;
+    inherited DwarfMemberProviderNeeded;
 end;
 
 { TDbgDwarfValueIdentifier }
@@ -1721,46 +1841,91 @@ end;
 
 { TDbgDwarfIdentifierArray }
 
+procedure TDbgDwarfIdentifierArray.CreateMembers;
+var
+  Info, Info2: TDwarfInformationEntry;
+  t: Cardinal;
+  sym: TDbgDwarfIdentifier;
+begin
+  if FMembers <> nil then
+    exit;
+  FMembers := TRefCntObjList.Create;
+
+  Info := FInformationEntry.FirstChild;
+  if Info = nil then exit;
+
+  while Info.HasValidScope do begin
+    t := Info.Abbrev.tag;
+    if (t = DW_TAG_enumeration_type) or (t = DW_TAG_subrange_type) then begin
+      Info2 := Info.Clone;
+      sym := TDbgDwarfIdentifier.CreateSubClass('', Info2);
+      FMembers.Add(sym);
+      sym.ReleaseReference;
+      Info2.ReleaseReference;
+    end;
+    Info.GoNext;
+  end;
+
+  Info.ReleaseReference;
+end;
+
 procedure TDbgDwarfIdentifierArray.KindNeeded;
 begin
   SetKind(skArray); // Todo: static/dynamic?
+end;
+
+function TDbgDwarfIdentifierArray.GetFlags: TDbgSymbolFlags;
+  function IsDynSubRange(m: TDbgDwarfIdentifier): Boolean;
+  begin
+    Result := sfSubRange in m.Flags;
+    if not Result then exit;
+    while (m <> nil) and not(m is TDbgDwarfIdentifierSubRange) do
+      m := m.NestedTypeInfo;
+    Result := m <> nil;
+    if not Result then exit; // TODO: should not happen, handle error
+    Result := TDbgDwarfIdentifierSubRange(m).FHighBoundState = rfValue; // dynamic high bound
+  end;
+var
+  m: TDbgSymbol;
+begin
+  Result := inherited GetFlags;
+  if (MemberCount = 1) then begin
+    m := Member[0];
+    if (not m.HasBounds) or                // e.g. Subrange with missing upper bound
+       (m.OrdHighBound < m.OrdLowBound) or
+       (IsDynSubRange(TDbgDwarfIdentifier(m)))
+    then
+      Result := Result + [sfDynArray]
+    else
+      Result := Result + [sfStatArray];
+  end
+  else
+    Result := Result + [sfStatArray];
+end;
+
+function TDbgDwarfIdentifierArray.GetMember(AIndex: Integer): TDbgSymbol;
+begin
+  CreateMembers;
+  Result := TDbgSymbol(FMembers[AIndex]);
+end;
+
+function TDbgDwarfIdentifierArray.GetMemberByName(AIndex: String): TDbgSymbol;
+begin
+  Result := nil; // no named members
+end;
+
+function TDbgDwarfIdentifierArray.GetMemberCount: Integer;
+begin
+  CreateMembers;
+  Result := FMembers.Count;
 end;
 
 destructor TDbgDwarfIdentifierArray.Destroy;
 var
   i: Integer;
 begin
+  FreeAndNil(FMembers);
   inherited Destroy;
-  for i := 0 to Length(FDimensionInfo) - 1 do
-    FDimensionInfo[i].ReleaseReference;
-end;
-
-function TDbgDwarfIdentifierArray.DimensionCount: Integer;
-var
-  Info: TDwarfInformationEntry;
-  t: Cardinal;
-begin
-  Result := length(FDimensionInfo);
-  if Result > 0 then
-    exit;
-
-  Info := FInformationEntry.FirstChild;
-  Result := 0;
-  if Info = nil then exit;
-
-  while Info.HasValidScope do begin
-    t := Info.Abbrev.tag;
-    if (t = DW_TAG_enumeration_type) or (t = DW_TAG_subrange_type) then begin
-      inc(Result);
-      SetLength(FDimensionInfo, Result);
-      FDimensionInfo[Result-1] := Info;
-      Info := Info.Clone;
-    end;
-
-    Info.GoNext;
-  end;
-
-  ReleaseRefAndNil(Info)
 end;
 
 { TDbgDwarfIdentifierStructure }
@@ -1875,11 +2040,6 @@ end;
 
 { TDbgDwarfTypeIdentifierModifier }
 
-function TDbgDwarfTypeIdentifierModifier.NestedHasMembers: Boolean;
-begin
-  Result := (Kind = skClass) or (Kind = skRecord) or (Kind = skEnum);
-end;
-
 procedure TDbgDwarfTypeIdentifierModifier.KindNeeded;
 var
   t: TDbgSymbol;
@@ -1938,49 +2098,12 @@ begin
     inherited MemberVisibilityNeeded;
 end;
 
-function TDbgDwarfTypeIdentifierModifier.GetMember(AIndex: Integer): TDbgSymbol;
-var
-  ti: TDbgSymbol;
+procedure TDbgDwarfTypeIdentifierModifier.DwarfMemberProviderNeeded;
 begin
-  ti := nil;
-  if NestedHasMembers then begin
-    ti := NestedTypeInfo;
-    if ti <> nil then begin
-      Result := ti.Member[AIndex];
-      exit;
-    end;
-  end;
-  Result := inherited GetMember(AIndex);
-end;
-
-function TDbgDwarfTypeIdentifierModifier.GetMemberByName(AIndex: String): TDbgSymbol;
-var
-  ti: TDbgSymbol;
-begin
-  ti := nil;
-  if NestedHasMembers then begin
-    ti := NestedTypeInfo;
-    if ti <> nil then begin
-      Result := ti.MemberByName[AIndex];
-      exit;
-    end;
-  end;
-  Result := inherited GetMemberByName(AIndex);
-end;
-
-function TDbgDwarfTypeIdentifierModifier.GetMemberCount: Integer;
-var
-  ti: TDbgSymbol;
-begin
-  ti := nil;
-  if NestedHasMembers then begin
-    ti := NestedTypeInfo;
-    if ti <> nil then begin
-      Result := ti.MemberCount;
-      exit;
-    end;
-  end;
-  Result := inherited GetMemberCount;
+  //if (Kind = skClass) or (Kind = skRecord) or (Kind = skEnum) then
+    SetDwarfMemberProvider(NestedTypeInfo)
+  //else
+  //  SetDwarfMemberProvider(nil);
 end;
 
 { TDbgDwarfBaseTypeIdentifier }
@@ -2464,9 +2587,9 @@ function TDbgDwarfIdentifier.GetNestedTypeInfo: TDbgDwarfTypeIdentifier;
 begin
 // TODO DW_AT_start_scope;
   Result := FNestedTypeInfo;
-  if (Result <> nil) or (didtTypeRead in FFlags) then
+  if (Result <> nil) or (didtTypeRead in FDwarfReadFlags) then
     exit;
-  include(FFlags, didtTypeRead);
+  include(FDwarfReadFlags, didtTypeRead);
   FNestedTypeInfo := DoGetNestedTypeInfo;
   Result := FNestedTypeInfo;
 end;

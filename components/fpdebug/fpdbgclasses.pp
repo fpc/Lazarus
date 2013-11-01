@@ -116,16 +116,18 @@ type
   );
 
   TDbgSymbolFlag =(
-    sfSubRange,
-    sfInternalRef,  // Internal ref/pointer e.g. var/constref parameters
-    //sfPointer,       // The sym is a pointer to the reference
+    sfSubRange,     // This is a subrange, e.g 3..99
+    sfDynArray,     // skArray is known to be a dynamic array
+    sfStatArray,    // skArray is known to be a static array
+    sfVirtual,      // skProcedure,skFunction:  virtual function (or overriden)
+    // unimplemented:
+    sfInternalRef,  // TODO: (May not always be present) Internal ref/pointer e.g. var/constref parameters
     sfConst,         // The sym is a constant and cannot be modified
     sfVar,
     sfOut,
     sfpropGet,
     sfPropSet,
-    sfPropStored,
-    sfVirtual  // virtual function (or overriden)
+    sfPropStored
   );
   TDbgSymbolFlags = set of TDbgSymbolFlag;
 
@@ -218,6 +220,7 @@ type
     property Line: Cardinal read GetLine;
     property Column: Cardinal read GetColumn;
     // Methods for structures (record / class / enum)
+    //         array: each member represents an index (enum or subrange) and has low/high bounds
     property MemberCount: Integer read GetMemberCount; // inherited NOT included
     property Member[AIndex: Integer]: TDbgSymbol read GetMember;
     property MemberByName[AIndex: String]: TDbgSymbol read GetMemberByName; // Includes inheritance
