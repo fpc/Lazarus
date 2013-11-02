@@ -309,17 +309,18 @@ end;
 procedure TEditorKeymappingOptionsFrame.PopupMenu1Popup(Sender: TObject);
 var
   ANode: TTreeNode;
+  pop: TPopupMenu;
 begin
-  if Sender=TreeView then begin
+  pop := Sender as TPopupMenu;
+  if pop.PopupComponent = TreeView then begin
     ANode := TreeView.Selected;
     EditMenuItem.Enabled:=
       (ANode<>nil) and (ANode.Data<>nil) and (TObject(ANode.Data) is TKeyCommandRelation);
-  end else if Sender=ConflictsTreeView then begin
+  end else if pop.PopupComponent=ConflictsTreeView then begin
     ANode:=ConflictsTreeView.Selected;
     EditMenuItem.Enabled := (ANode<>nil) and (CaptionToKeyMappingRelation(ANode.Text)<>nil);
-  end else begin
-    EditMenuItem.Enabled := false;
-  end;
+  end else
+    EditMenuItem.Enabled := False;
   ClearMenuItem.Enabled := EditMenuItem.Enabled;
 end;
 

@@ -85,7 +85,9 @@ function Utf8AddCharR(AUtf8Char: Utf8String; const S: Utf8String; N: Integer): U
 function UTF8PadLeft(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
 function UTF8PadRight(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
 function UTF8PadCenter(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
-
+function Utf8LeftStr(const AText: String; const ACount: Integer): String;
+function Utf8RightStr(const AText: String; const ACount: Integer): String;
+//Utf8 version of MidStr is just Utf8Copy with same parameters, so it is not implemented here
 
 type
   TUTF8TrimFlag = (
@@ -2560,6 +2562,22 @@ begin
   else
     Result := S;
 end;
+
+function Utf8LeftStr(const AText: String; const ACount: Integer): String;
+begin
+  Result := Utf8Copy(AText,1,ACount);
+end;
+
+function Utf8RightStr(const AText: String; const ACount: Integer): String;
+var
+  j,l:integer;
+begin
+  l := Utf8Length(AText);
+  j := ACount;
+  if (j > l) then j := l;
+  Result := Utf8Copy(AText,l-j+1,j);
+end;
+
 
 
 
