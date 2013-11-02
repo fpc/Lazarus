@@ -3418,30 +3418,32 @@ end;
 
 procedure TKeyCommandRelationList.AssignTo(ASynEditKeyStrokes: TSynEditKeyStrokes;
   IDEWindowClass: TCustomFormClass; ACommandOffsetOffset: Integer = 0);
-
 var
   Node: TAvgLvlTreeNode;
   ccid: Word;
   CategoryMatches: Boolean;
   ToBeFreedKeys: TObjectList;
+  SequentialWithCtrl: TFPList;
+  SequentialWithoutCtrl: TFPList;
 
   function ShiftConflict(aKey: TSynEditKeyStroke): Boolean;
   // This is called when first part of combo has Ctrl and 2nd part has Ctrl or nothing.
   //  Check if ignoring Ctrl in second part would create a conflict.
   var
-    ConflictShift: TShiftState;
-    x: integer;
+    ConflictList: TFPList;
+    psc: PIDEShortCut;
+    i: integer;
   begin
-    Result := False;
     if aKey.Shift2 = [ssCtrl] then
-      ConflictShift := []
+      ConflictList := SequentialWithoutCtrl
     else
-      ConflictShift := [ssCtrl];
-    for x := 0 to ASynEditKeyStrokes.Count-1 do
-      with ASynEditKeyStrokes.Items[x] do
-        if (Key2 = aKey.Key2) and (Key = aKey.Key)
-        and (Shift2 = ConflictShift) and (Shift = aKey.Shift) then
-          Exit(True);        // Found
+      ConflictList := SequentialWithCtrl;
+    for i:=0 to ConflictList.Count-1 do begin
+      psc:=ConflictList[i];
+      if (psc^.Key1=aKey.Key) and (psc^.Key2=aKey.Key2) then
+        Exit(True);        // Found
+    end;
+    Result := False;
   end;
 
   procedure SetKeyCombo(aKey: TSynEditKeyStroke; aShortcut: PIDEShortCut);
@@ -3451,7 +3453,7 @@ var
     aKey.Shift :=aShortcut^.Shift1;
     aKey.Key2  :=aShortcut^.Key2;
     aKey.Shift2:=aShortcut^.Shift2;
-    // Ignore the second Ctrl key in sequential combos.
+    // Ignore the second Ctrl key in sequential combos unless both variations are defined.
     // For example "Ctrl-X, Y" and "Ctrl-X, Ctrl-Y" are then treated the same.
     if (aKey.Key2<>VK_UNKNOWN) and (aKey.Shift=[ssCtrl]) and (aKey.Shift2-[ssCtrl]=[])
     and not ShiftConflict(aKey) then
@@ -3482,6 +3484,18 @@ var
     end;
   end;
 
+  procedure SaveSequentialCtrl(aShortcut: PIDEShortCut);
+  // Save the shortcut when it is a sequential combo and first modifier is Ctrl
+  //  and second modifier is either Ctrl or nothing.
+  begin
+    if (aShortcut^.Shift1=[ssCtrl]) then begin
+      if (aShortcut^.Shift2=[ssCtrl]) then   // Second modifier is Ctrl
+        SequentialWithCtrl.Add(aShortcut)
+      else if (aShortcut^.Shift2=[]) then    // No second modifier
+        SequentialWithoutCtrl.Add(aShortcut);
+    end;
+  end;
+
 var
   i, j: integer;
   Key: TSynEditKeyStroke;
@@ -3502,6 +3516,8 @@ begin
   KeyStrokesByCmds:=TAvgLvlTree.Create(@CompareCmd);
   ToBeFreedKeys:=TObjectList.Create;
   POUsed:=ASynEditKeyStrokes.UsePluginOffset;
+  SequentialWithCtrl:=TFPList.Create;
+  SequentialWithoutCtrl:=TFPList.Create;
   try
     ASynEditKeyStrokes.UsePluginOffset := False;
     // Save all SynEditKeyStrokes into a tree map for fast lookup, sorted by command.
@@ -3528,6 +3544,12 @@ begin
         KeyStrokesByCmds.Add(KeyList);
       end;
     end;
+    // Cache sequential combos with and without Ctrl key.
+    for i:=0 to FRelations.Count-1 do begin
+      CurRelation:=Relations[i];
+      SaveSequentialCtrl(@CurRelation.ShortcutA);
+      SaveSequentialCtrl(@CurRelation.ShortcutB);
+    end;
     // Iterate all KeyCommandRelations and copy / update them to SynEditKeyStrokes.
     for i:=0 to FRelations.Count-1 do begin
       CurRelation:=Relations[i];
@@ -3544,6 +3566,8 @@ begin
       UpdateOrAddKeyStroke(1, @CurRelation.ShortcutB);
     end;
   finally
+    SequentialWithoutCtrl.Free;
+    SequentialWithCtrl.Free;
     ToBeFreedKeys.Free;              // Free also Key objects.
     KeyStrokesByCmds.FreeAndClear;   // Free also KeyLists.
     KeyStrokesByCmds.Free;
