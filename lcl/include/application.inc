@@ -844,21 +844,6 @@ begin
       HintWinRect := FHintWindow.CalcHintRect(HintMaxWidth, HintStr, HintData);
     OffsetRect(HintWinRect, HintInfo.HintPos.X, HintInfo.HintPos.Y);
     //DebugLn(['TApplication.ShowHintWindow HintStr="',HintInfo.HintStr,'" HintWinRect=',dbgs(HintWinRect)]);
-    {if FHintWindow.UseRightToLeftAlignment then
-      with HintWinRect do
-      begin
-        Dec(Left, FHintWindow.Canvas.TextWidth(HintInfo.HintStr) + 5);
-        Dec(Right, FHintWindow.Canvas.TextWidth(HintInfo.HintStr) + 5);
-      end;}
-
-    // Convert the client's rect to screen coordinates
-    {with HintInfo do
-    begin
-      FHintCursorRect.TopLeft :=
-        FHintControl.ClientToScreen(CursorRect.TopLeft);
-      FHintCursorRect.BottomRight :=
-        FHintControl.ClientToScreen(CursorRect.BottomRight);
-    end;}
 
     FHintWindow.Color := HintInfo.HintColor;
     //DebugLn(['TApplication.ShowHintWindow FHintWindow.Color=',dbgs(FHintWindow.Color),' HintInfo.HintColor=',dbgs(HintInfo.HintColor)]);
