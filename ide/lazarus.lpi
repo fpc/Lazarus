@@ -23,10 +23,10 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="1"/>
-      <RevisionNr Value="99"/>
+      <MinorVersionNr Value="2"/>
+      <BuildNr Value="1"/>
       <CharSet Value="04B0"/>
-      <StringTable ProductName="Lazarus IDE" ProductVersion="Alpha Prerelease"/>
+      <StringTable ProductName="Lazarus IDE" ProductVersion="Beta Release"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
