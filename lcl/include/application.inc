@@ -842,7 +842,11 @@ begin
     // calculate the width of the hint based on HintStr and MaxWidth
     with HintInfo do
       HintWinRect := FHintWindow.CalcHintRect(HintMaxWidth, HintStr, HintData);
-    OffsetRect(HintWinRect, HintInfo.HintPos.X, HintInfo.HintPos.Y);
+    //Position HintWindow depending on LTR/RTL
+    if FHintWindow.UseRightToLeftAlignment then
+      OffsetRect(HintWinRect, HintInfo.HintPos.X - (HintWinRect.Right - HintWinRect.Left), HintInfo.HintPos.Y)
+    else
+      OffsetRect(HintWinRect, HintInfo.HintPos.X, HintInfo.HintPos.Y);
     //DebugLn(['TApplication.ShowHintWindow HintStr="',HintInfo.HintStr,'" HintWinRect=',dbgs(HintWinRect)]);
 
     FHintWindow.Color := HintInfo.HintColor;
