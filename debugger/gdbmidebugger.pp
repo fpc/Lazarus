@@ -574,6 +574,7 @@ type
     FLineOffsAddr: TDBGPtr;
     FMainAddrFound: TDBGPtr;
     FName: string;
+    FUseForceFlag: Boolean;
     procedure ClearName(ACmd: TGDBMIDebuggerCommand);
     procedure ClearAddr(ACmd: TGDBMIDebuggerCommand); // Main-Addr
     procedure ClearCustom(ACmd: TGDBMIDebuggerCommand);
@@ -598,6 +599,7 @@ type
     function  Enabled: boolean;
     property  MainAddrFound: TDBGPtr read FMainAddrFound;
     property  LineOffsFunction: string read FLineOffsFunction;
+    property  UseForceFlag: Boolean read FUseForceFlag write FUseForceFlag;
   end;
 
   { TGDBMIWatches }
@@ -5121,9 +5123,15 @@ begin
 
     // they may still exist from prev run, addr will be checked
     // TODO: defered setting of below beakpoint / e.g. if debugging a library
+{$IFdef WITH_GDB_FORCE_EXCEPTBREAK}
+    FTheDebugger.FExceptionBreak.SetByAddr(Self, True);
+    FTheDebugger.FBreakErrorBreak.SetByAddr(Self, True);
+    FTheDebugger.FRunErrorBreak.SetByAddr(Self, True);
+{$Else}
     FTheDebugger.FExceptionBreak.SetByAddr(Self);
     FTheDebugger.FBreakErrorBreak.SetByAddr(Self);
     FTheDebugger.FRunErrorBreak.SetByAddr(Self);
+{$ENDIF}
 
     SetDebuggerState(dsInit); // triggers all breakpoints to be set.
     Application.ProcessMessages; // workaround, allow source-editor to queue line info request (Async call)
@@ -7133,6 +7141,11 @@ begin
   FBreakErrorBreak := TGDBMIInternalBreakPoint.Create('FPC_BREAK_ERROR');
   FRunErrorBreak   := TGDBMIInternalBreakPoint.Create('FPC_RUNERROR');
   FExceptionBreak  := TGDBMIInternalBreakPoint.Create('FPC_RAISEEXCEPTION');
+{$IFdef WITH_GDB_FORCE_EXCEPTBREAK}
+  FBreakErrorBreak.UseForceFlag := True;
+  FRunErrorBreak.UseForceFlag := True;
+  FExceptionBreak.UseForceFlag := True;
+{$ENDIF}
 
   FInstructionQueue := TGDBMIDbgInstructionQueue.Create(Self);
   FCommandQueue := TGDBMIDebuggerCommandList.Create;
@@ -11378,8 +11391,8 @@ begin
   FLineOffsFunction := '';
 end;
 
-function TGDBMIInternalBreakPoint.BreakSet(ACmd: TGDBMIDebuggerCommand;
-  ALoc: String; out AId: integer; out AnAddr: TDBGPtr): boolean;
+function TGDBMIInternalBreakPoint.BreakSet(ACmd: TGDBMIDebuggerCommand; ALoc: String; out
+  AId: integer; out AnAddr: TDBGPtr): Boolean;
 var
   FuncName: string;
 begin
@@ -11395,7 +11408,16 @@ begin
   AId := -1;
   AnAddr := 0;
   AFuncName := '';
-  ACmd.ExecuteCommand('-break-insert %s', [ALoc], R);
+
+  if UseForceFlag and (dfForceBreakDetected in ACmd.FTheDebugger.FDebuggerFlags) then
+  begin
+    if (not ACmd.ExecuteCommand('-break-insert -f %s', [ALoc], R)) or
+       (R.State = dsError)
+    then
+      ACmd.ExecuteCommand('-break-insert %s', [ALoc], R);
+  end
+  else
+    ACmd.ExecuteCommand('-break-insert %s', [ALoc], R);
   Result := R.State <> dsError;
   if not Result then exit;
 
@@ -11451,6 +11473,7 @@ begin
   FCustomAddr := 0;
   FLineOffsID := -1;
   FLineOffsAddr := 0;
+  FUseForceFlag := False;
   FName := AName;
 end;
 
