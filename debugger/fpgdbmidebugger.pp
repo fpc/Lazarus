@@ -148,6 +148,8 @@ const
   GdbCmdPType = 'ptype ';
   GdbCmdWhatIs = 'whatis ';
 
+  procedure AddType(ASourceExpr: string; ATypeIdent: TDbgSymbol); forward;
+
   procedure FindPointerAndBaseType(ASrcType: TDbgSymbol;
     out APointerLevel: Integer; out ADeRefType, ABaseType: TDbgSymbol;
     out ASrcTypeName, ADeRefTypeName, ABaseTypeName: String);
@@ -217,6 +219,13 @@ const
       end;
       s := ti.Name;
       if s = '' then begin
+        if (AMember.Kind = FpDbgClasses.skSet) or (AMember.Kind = FpDbgClasses.skEnum) or
+           (AMember.Kind = FpDbgClasses.skArray)
+        then
+        if not GetTypeAsDeclaration(s, ti, [tdfSkipClassBody, tdfSkipRecordBody]) then
+          s := '';
+      end;
+      if (s = '') and not (AMember.Kind = FpDbgClasses.skRecord)  then begin
         Result := False;
         exit;
       end;
@@ -267,7 +276,7 @@ const
     if inherited IndexOf(AThreadId, AStackFrame, AReq) < 0 then begin
       AReq.Result := ParseTypeFromGdb(AAnswer);
       Add(AThreadId, AStackFrame, AReq);
-      debugln(['TFpGDBMIDebugger.AddToGDBMICache ', AReq.Request, ' T:', AThreadId, ' S:',AStackFrame, ' >> ', AAnswer]);
+      debugln(['**** AddToGDBMICache ', AReq.Request, ' T:', AThreadId, ' S:',AStackFrame, ' >>>> ', AAnswer, ' <<<<']);
     end;
   end;
 
@@ -331,7 +340,7 @@ const
   begin
     if (ABaseType.TypeInfo = nil) then
       exit;
-    if APointerLevel > 0 then
+    if APointerLevel = 0 then
       ADeRefTypeName := ASrcTypeName;
     ParentName :=  ABaseType.TypeInfo.Name;
     if not MembersAsGdbText(ABaseType, True, s2) then
@@ -415,6 +424,95 @@ const
     end;
   end;
 
+  procedure AddArrayType(ASourceExpr: string; APointerLevel: Integer;
+    ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
+    ASrcType, ABaseType: TDbgSymbol);
+  var
+    s, s2: String;
+    ElemPointerLevel: Integer;
+    ElemDeRefType, ElemBaseType: TDbgSymbol;
+    ElemSrcTypeName, ElemDeRefTypeName, ElemBaseTypeName: String;
+  begin
+    if sfDynArray in ABaseType.Flags then begin
+      // dyn
+      if ABaseType.TypeInfo = nil then exit;
+      FindPointerAndBaseType(ABaseType.TypeInfo, ElemPointerLevel,
+                             ElemDeRefType, ElemBaseType,
+                             ElemSrcTypeName, ElemDeRefTypeName, ElemBaseTypeName);
+
+      s := ElemSrcTypeName;
+      if (s = '') then begin
+        if not GetTypeAsDeclaration(s, ABaseType.TypeInfo, [tdfDynArrayWithPointer]) then
+          exit;
+        s := Format('type = %s%s', [StringOfChar('^', APointerLevel), s]);
+      end
+      else
+        s := Format('type = %s%s', ['^', s]); // ElemSrcTypeName already has ^, if it is pointer
+      MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s + LineEnding);
+
+      s := ASrcTypeName;
+      if (s = '') then begin
+        if not GetTypeAsDeclaration(s, ASrcType, [tdfDynArrayWithPointer]) then
+          exit;
+        s := Format('type = %s%s', [StringOfChar('^', APointerLevel), s]);
+      end
+      else
+        s := Format('type = %s', [s]);
+      MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, s + LineEnding);
+
+      // deref
+      ASourceExpr := GDBMIMaybeApplyBracketsToExpr(ASourceExpr)+'^';
+      if APointerLevel = 0 then begin
+        if not GetTypeAsDeclaration(s, ASrcType, [tdfDynArrayWithPointer]) then
+          exit;
+        if s[1] = '^' then begin
+          Delete(s,1,1);
+          if (s <> '') and (s[1] = '(') and (s[Length(s)] = ')') then begin
+            Delete(s,Length(s),1);
+            Delete(s,1,1);
+          end;
+        end;
+        s := Format('type = %s%s', [s, LineEnding]);
+        MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
+
+        AddType(ASourceExpr+'[0]', ABaseType.TypeInfo);
+      end
+      else begin
+        s := ElemSrcTypeName;
+        if (s = '') then begin
+          if not GetTypeAsDeclaration(s, ABaseType.TypeInfo, [tdfDynArrayWithPointer]) then
+            exit;
+          s := Format('type = %s%s', [StringOfChar('^', APointerLevel-1), s]);
+        end
+        else
+          s := Format('type = ^%s', [s]);
+        MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s + LineEnding);
+      end;
+
+    end
+    else begin
+      // stat
+      if GetTypeAsDeclaration(s, ASrcType, [tdfDynArrayWithPointer]) then begin
+        s := Format('type = %s%s', [s, LineEnding]);
+        MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
+        if ASrcTypeName <> ''
+        then MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, 'type = ' + ASrcTypeName)
+        else MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, s);
+      end;
+
+      if APointerLevel = 0 then exit;
+      ASrcType := ASrcType.TypeInfo;
+      if GetTypeAsDeclaration(s, ASrcType, [tdfDynArrayWithPointer]) then begin
+        ASourceExpr := GDBMIMaybeApplyBracketsToExpr(ASourceExpr)+'^';
+        s := Format('type = %s%s', [s, LineEnding]);
+        MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
+        if ASrcTypeName <> ''
+        then MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, 'type = ' + ADeRefTypeName)
+        else MaybeAdd(gcrtPType, GdbCmdWhatIs + ASourceExpr, s);
+      end;
+    end;
+  end;
+
   procedure AddType(ASourceExpr: string; ATypeIdent: TDbgSymbol);
   var
     SrcTypeName,     // The expressions own type name
@@ -450,57 +548,11 @@ const
         AddSetType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
+      FpDbgClasses.skArray:
+        AddArrayType(ASourceExpr, PointerLevel,
+                    SrcTypeName, DeRefTypeName, BaseTypeName,
+                    ATypeIdent, BaseType);
     end;
-
-(*
-    IsPointerType := ATypeIdent.Kind = FpDbgClasses.skPointer;
-    IsPointerPointer := False;
-    SrcTypeName := ATypeIdent.Name;
-    SrcType := ATypeIdent;
-    if IsPointerType and (ATypeIdent.TypeInfo <> nil) then begin
-      ATypeIdent := ATypeIdent.TypeInfo;
-      if ATypeIdent = nil then exit;
-
-      // resolved 1st pointer
-      if SrcTypeName = '' then
-        SrcTypeName := '^'+ATypeIdent.Name;
-      IsPointerPointer := ATypeIdent.Kind = FpDbgClasses.skPointer;
-      DeRefTypeName := ATypeIdent.Name;
-
-      while (ATypeIdent.Kind = FpDbgClasses.skPointer) and (ATypeIdent.TypeInfo <> nil) do begin
-        ATypeIdent := ATypeIdent.TypeInfo;
-        if SrcTypeName = ''  then SrcTypeName := '^'+ATypeIdent.Name;
-        if DeRefTypeName = '' then DeRefTypeName := '^'+ATypeIdent.Name;
-      end;
-      if ATypeIdent = nil then exit;
-    end;
-    BaseTypeName := ATypeIdent.Name;
-
-DebugLn(['--------------'+dbgs(ATypeIdent.Kind), ' ', dbgs(IsPointerType)]);
-    if ATypeIdent.Kind in [skInteger, skCardinal, skBoolean, skChar, skFloat]
-    then begin
-      AddBaseType(ASourceExpr, IsPointerType, IsPointerPointer, BaseTypeName,
-                  SrcTypeName, DeRefTypeName, SrcType, ATypeIdent);
-    end
-    else
-    if ATypeIdent.Kind in [FpDbgClasses.skClass]
-    then begin
-      AddClassType(ASourceExpr, IsPointerType, IsPointerPointer, BaseTypeName,
-                  SrcTypeName, DeRefTypeName, SrcType, ATypeIdent);
-    end
-    else
-    if ATypeIdent.Kind in [FpDbgClasses.skRecord]
-    then begin
-      AddRecordType(ASourceExpr, IsPointerType, IsPointerPointer, BaseTypeName,
-                  SrcTypeName, DeRefTypeName, SrcType, ATypeIdent);
-    end
-    else
-    if ATypeIdent.Kind in [FpDbgClasses.skEnum]
-    then begin
-      AddEnumType(ASourceExpr, IsPointerType, IsPointerPointer, BaseTypeName,
-                  SrcTypeName, DeRefTypeName, SrcType, ATypeIdent);
-    end;
-*)
 
   end;
 
@@ -509,6 +561,7 @@ var
   PasExpr: TFpGDBMIPascalExpression;
 begin
   Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
+DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
 
   if (Result >= 0) or FInIndexOf then
     exit;
@@ -517,7 +570,7 @@ begin
   PasExpr := nil;
   try
     if ARequest.ReqType = gcrtPType then begin
-DebugLn('############### '+ARequest.Request);
+//DebugLn('######## '+ARequest.Request);
       if copy(ARequest.Request, 1, 6) = 'ptype ' then
 	       IdentName := trim(copy(ARequest.Request, 7, length(ARequest.Request)))
       else

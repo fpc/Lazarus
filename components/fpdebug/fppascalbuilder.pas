@@ -17,8 +17,13 @@ type
   TTypeNameFlags = set of TTypeNameFlag;
 
   TTypeDeclarationFlag = (
-    tdfIncludeVarName,   // like i: Integer
-    tdfSkipClassBody     // shorten class
+    tdfNoFirstLineIndent,
+    tdfIncludeVarName,     // like i: Integer
+    tdfSkipClassBody,      // shorten class
+    tdfSkipRecordBody,      // shorten class
+
+    tdfDynArrayWithPointer, // TODO, temp, act like gdb
+    tdfStopAfterPointer
   );
   TTypeDeclarationFlags = set of TTypeDeclarationFlag;
 
@@ -128,7 +133,7 @@ var
     while (i < c) and Result do begin
       m := ADbgSymbol.Member[i];
       AddVisibility(m.MemberVisibility, i= 0);
-      Result := GetTypeAsDeclaration(s, m, [tdfIncludeVarName] + AFlags, AnIndent + 4);
+      Result := GetTypeAsDeclaration(s, m, [tdfNoFirstLineIndent, tdfIncludeVarName] + AFlags, AnIndent + 4);
       if Result then
         AText := AText + GetIndent + s + ';' + LineEnding;
       inc(i);
@@ -144,7 +149,16 @@ var
       ADbgSymbol := ADbgSymbol.TypeInfo;
       s := s + '^';
     end;
-    Result := GetTypeName(ADeclaration, ADbgSymbol, []);
+    if not(tdfStopAfterPointer in AFlags) then begin
+      Result := GetTypeAsDeclaration(ADeclaration, ADbgSymbol, AFlags);
+      if not Result then
+        Result := GetTypeName(ADeclaration, ADbgSymbol, []);
+    end
+    else begin
+      Result := GetTypeName(ADeclaration, ADbgSymbol, []);
+      if not Result then
+        Result := GetTypeAsDeclaration(ADeclaration, ADbgSymbol, AFlags);
+    end;
     if NeedBracket(ADeclaration)
     then ADeclaration := s + '(' + ADeclaration + ')'
     else ADeclaration := s + ADeclaration;
@@ -188,7 +202,7 @@ var
     s: String;
   begin
     // Todo param
-    GetTypeAsDeclaration(s, ADbgSymbol.TypeInfo);
+    GetTypeAsDeclaration(s, ADbgSymbol.TypeInfo, AFlags);
     ADeclaration := 'function ' + ADbgSymbol.Name + ' () : ' + s + '';
     if sfVirtual in ADbgSymbol.Flags then ADeclaration := ADeclaration + '; virtual';
     Result := true;
@@ -215,17 +229,22 @@ var
     Result := MembersAsGdbText(s, True, [tdfSkipClassBody]);
     GetTypeName(s2, ADbgSymbol.TypeInfo);
     if Result then
-      ADeclaration := Format('class(%s)%s%s%send%s',
-                             [s2, LineEnding, s, LineEnding, GetIndent]);
+      ADeclaration := Format('class(%s)%s%s%send',
+                             [s2, LineEnding, s, GetIndent]);
   end;
 
   function GetRecordType(out ADeclaration: String): Boolean;
   var
     s: String;
   begin
-    Result := MembersAsGdbText(s, True);
+    if tdfSkipRecordBody in AFlags then begin
+      GetTypeName(s, ADbgSymbol);
+      ADeclaration := s + ' {=record}';
+      exit;
+    end;
+    Result := MembersAsGdbText(s, False);
     if Result then
-      ADeclaration := Format('record%s%s%send%s', [LineEnding, s, LineEnding, GetIndent]);
+      ADeclaration := Format('record%s%s%send', [LineEnding, s, GetIndent]);
   end;
 
   function GetEnumType(out ADeclaration: String): Boolean;
@@ -279,11 +298,48 @@ var
             s := t.Name;
           end
           else
-            Result := GetTypeAsDeclaration(s, t);
+            Result := GetTypeAsDeclaration(s, t, AFlags);
           ADeclaration := 'set of ' + s;
         end;
       else
         Result := False;
+    end;
+  end;
+
+  function GetArrayType(out ADeclaration: String): Boolean;
+  var
+    t: TDbgSymbol;
+    s: String;
+    i: Integer;
+  begin
+    // TODO assigned value (a,b:=3,...)
+    t := ADbgSymbol.TypeInfo;
+    Result := (t <> nil);
+    if not Result then exit;
+
+    s := t.Name;
+    if s = '' then begin
+      Result := GetTypeAsDeclaration(s, t, [tdfNoFirstLineIndent, tdfStopAfterPointer] + AFlags, AnIndent + 4); // no class ?
+      if not Result then exit;
+    end;
+
+
+    if sfDynArray in ADbgSymbol.Flags then begin //supprts only one level
+      ADeclaration := 'array of ' + s;
+      if tdfDynArrayWithPointer in AFlags then
+        ADeclaration := '^(' + ADeclaration + ')';
+    end
+    else begin
+      ADeclaration := 'array [';
+      for i := 0 to ADbgSymbol.MemberCount - 1 do begin
+        if i > 0 then
+          ADeclaration := ADeclaration + ', ';
+        t := ADbgSymbol.Member[i];
+        if t.Kind = skCardinal
+        then ADeclaration := ADeclaration + Format('%u..%u', [QWord(t.OrdLowBound), QWord(t.OrdHighBound)])
+        else ADeclaration := ADeclaration + Format('%d..%d', [t.OrdLowBound, t.OrdHighBound]);
+      end;
+      ADeclaration := ADeclaration + '] of ' + s;
     end;
   end;
 
@@ -315,11 +371,12 @@ begin
     skRecord:    Result := GetRecordType(ATypeDeclaration);
     skEnum:      Result := GetEnumType(ATypeDeclaration);
     skset:       Result := GetSetType(ATypeDeclaration);
+    skArray:     Result := GetArrayType(ATypeDeclaration);
   end;
 
   if VarName <> '' then
     ATypeDeclaration := VarName + ': ' + ATypeDeclaration;
-  if AnIndent <> 0 then
+  if (AnIndent <> 0) and not(tdfNoFirstLineIndent in AFlags) then
     ATypeDeclaration := GetIndent + ATypeDeclaration;
 end;
 

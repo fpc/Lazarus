@@ -1862,7 +1862,9 @@ var
 begin
   Result := False;
   ti := NestedTypeInfo;  // Same as TypeInfo, but does not try to be forwarded
-  Result := (ti <> nil) and (ti.Kind = skArray) and (sfDynArray in ti.Flags);
+  Result := (ti <> nil) and (ti is TDbgDwarfIdentifierArray);
+  if Result then
+    Result := (sfDynArray in ti.Flags);
 end;
 
 function TDbgDwarfTypeIdentifierPointer.GetIsInternalPointer: Boolean;
@@ -2330,7 +2332,7 @@ begin
   Result := lst[h].Entry = FInformationEntry;
   if Result then
     ScopeIndex := h;
-debugln(['TDwarfInformationEntry.SearchScope ', h]);
+//debugln(['TDwarfInformationEntry.SearchScope ', h]);
 end;
 
 function TDwarfInformationEntry.MaybeSearchScope: Boolean;
