@@ -5086,6 +5086,8 @@ begin
     end;
     SetTargetInfo(FileType);
 
+    DefaultTimeOut := DebuggerProperties.TimeoutForEval;   // Getting address for breakpoints may need timeout
+
     DetectForceableBreaks;
 
     (* We need a breakpoint at entry-point or main, to continue initialization
@@ -5118,6 +5120,7 @@ begin
     DebugLn(DBG_VERBOSE, '[Debugger] Target PID: %u', [TargetInfo^.TargetPID]);
 
     // they may still exist from prev run, addr will be checked
+    // TODO: defered setting of below beakpoint / e.g. if debugging a library
     FTheDebugger.FExceptionBreak.SetByAddr(Self);
     FTheDebugger.FBreakErrorBreak.SetByAddr(Self);
     FTheDebugger.FRunErrorBreak.SetByAddr(Self);
