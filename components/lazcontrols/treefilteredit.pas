@@ -362,6 +362,7 @@ procedure TTreeFilterBranch.RemoveChildrenData(ARootNode : TTreeNode);
   end;
 
 Begin
+  if ARootNode=nil then exit;
   ProcessSubNodes(ARootNode);
 end;
 
