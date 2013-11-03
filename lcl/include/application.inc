@@ -838,7 +838,7 @@ begin
     end;
 
     // make the hint have the same BiDiMode as the activating control
-    //FHintWindow.BiDiMode := FHintControl.BiDiMode;
+    FHintWindow.BiDiMode := FHintControl.BiDiMode;
     // calculate the width of the hint based on HintStr and MaxWidth
     with HintInfo do
       HintWinRect := FHintWindow.CalcHintRect(HintMaxWidth, HintStr, HintData);
