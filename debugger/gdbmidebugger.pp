@@ -5251,7 +5251,7 @@ begin
   // Get PID
   NewPID := 0;
 
-  s := GetPart(['Attaching to process '], [LineEnding], CmdResp, True, False);
+  s := GetPart(['Attaching to process '], [LineEnding, '.'], CmdResp, True, False);
   if s <> '' then
     NewPID := StrToIntDef(s, 0);
 
