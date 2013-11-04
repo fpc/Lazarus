@@ -1227,6 +1227,7 @@ components/fpdebug/fpdbgclasses.pp svneol=native#text/pascal
 components/fpdebug/fpdbgdisasx86.pp svneol=native#text/plain
 components/fpdebug/fpdbgdwarf.pas svneol=native#text/pascal
 components/fpdebug/fpdbgdwarfconst.pas svneol=native#text/pascal
+components/fpdebug/fpdbginfo.pas svneol=native#text/pascal
 components/fpdebug/fpdbgloader.pp svneol=native#text/pascal
 components/fpdebug/fpdbgpetypes.pp svneol=native#text/pascal
 components/fpdebug/fpdbgsymbols.pas svneol=native#text/pascal

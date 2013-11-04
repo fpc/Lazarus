@@ -41,7 +41,7 @@ uses
 {$ifdef windows}
   Windows,
 {$endif}
-  Classes, SysUtils, FpDbgClasses, FpDbgWinExtra, FpDbgPETypes, FpDbgDwarf, FpDbgUtil;
+  Classes, SysUtils, FpDbgInfo, FpDbgWinExtra, FpDbgPETypes, FpDbgDwarf, FpDbgUtil;
   
 
 {$ifdef windows}

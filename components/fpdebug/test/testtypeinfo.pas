@@ -5,11 +5,11 @@ unit TestTypeInfo;
 interface
 
 uses
-  Classes, SysUtils, FpPascalParser, FpDbgDwarf, FpDbgClasses, FpDbgLoader, FileUtil,
-  LazLoggerBase, fpcunit, testutils, testregistry;
+  Classes, SysUtils, FpPascalParser, FpDbgDwarf, FpDbgInfo, FpDbgLoader, FpPascalBuilder,
+  FileUtil, LazLoggerBase, fpcunit, testutils, testregistry;
 
 const
-  TESTPROG1_FUNC_BAR_LINE = 35;
+  TESTPROG1_FUNC_BAR_LINE = 155;
 
 type
 
@@ -114,6 +114,15 @@ debugln(['### ', TestText, ' ## ', dbgs(Expr.ResultType.Kind), ' # ',Expr.Result
     AssertEquals(TestText+' kind', dbgs(AKind), dbgs(Expr.ResultType.Kind));
   end;
 
+  procedure TestTypeName(AExpName: String; AFlags: TTypeNameFlags = []);
+  var
+    s: String;
+  begin
+    AssertEquals(TestText + ' GetTypeName bool ', AExpName <> '', GetTypeName(s, Expr.ResultType, AFlags));
+    if AExpName <> '' then
+      AssertEquals(TestText + ' GetTypeName result ', LowerCase(AExpName), LowerCase(s));
+  end;
+
   procedure DoTestInvalid(AExprText: String);
   begin
     FreeAndNil(Expr);
@@ -124,18 +133,22 @@ debugln(['### ', TestText, ' ## ', dbgs(Expr.ResultType.Kind), ' # ',Expr.Result
   end;
 
   procedure DoRun;
+  var
+    s: String;
   begin
     LineInfo := FDwarfInfo.GetLineAddressMap('testprog1.pas');
     Location := LineInfo^.GetAddressForLine(TESTPROG1_FUNC_BAR_LINE);
 
     DoTest('int1', skInteger);
     DoTest('b1', skCardinal);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
 
     DoTest('pint1', skPointer);
     DoTest(Expr.ResultType.TypeInfo, skInteger);
 
     DoTest('@int1', skPointer);
     DoTest(Expr.ResultType.TypeInfo, skInteger);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
 
     DoTest('pint1^', skInteger);
     DoTest('@int1^', skInteger);
@@ -146,10 +159,10 @@ debugln(['### ', TestText, ' ## ', dbgs(Expr.ResultType.Kind), ' # ',Expr.Result
 
     DoTest('bool1', skBoolean);
 
-    DoTest('test.FWord', skCardinal);
-    DoTest('test.FBool', skBoolean);
-    DoTest('test.FTest.FWord', skCardinal);
-    DoTest('test.FTest.FBool', skBoolean);
+    DoTest('testC.FWord', skCardinal);
+    DoTest('testC.FBool', skBoolean);
+    DoTest('testC.FTest.FWord', skCardinal);
+    DoTest('testC.FTest.FBool', skBoolean);
 
 
     DoTest('longint(bool1)', skInteger);
@@ -158,6 +171,106 @@ debugln(['### ', TestText, ' ## ', dbgs(Expr.ResultType.Kind), ' # ',Expr.Result
 
     DoTestInvalid('^int1');
     DoTestInvalid('^int1(int2)');
+
+    DoTest('ppi', skPointer, 'ppint');
+    TestTypeName('^pint', [tnfIncludeOneRef]);
+
+    DoTest('@int1', skPointer, '');
+    TestTypeName('^longint', []);
+    TestTypeName('^longint', [tnfIncludeOneRef]);
+    TestTypeName('', [tnfOnlyDeclared]);
+
+    DoTest('testC', skClass);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+    DoTest('testC2', skClass);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('enum1', skEnum);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('subr', skCardinal);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+    DoTest('subr2', skInteger);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+    DoTest('subr3', skChar);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('set1', skSet);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+    DoTest('set2', skSet);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+    DoTest('set3', skSet);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+
+    DoTest('a1', skArray);
+    AssertTrue(TestText + ' Flag: ', sfStatArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('a2', skArray);
+    AssertTrue(TestText + ' Flag: ', sfDynArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('a1b', skArray);
+    AssertTrue(TestText + ' Flag: ', sfStatArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('a2b', skArray);
+    AssertTrue(TestText + ' Flag: ', sfDynArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('a1p', skPointer);
+    //AssertTrue(TestText + ' Flag: ', sfStatArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('a2p', skPointer);
+    //AssertTrue(TestText + ' Flag: ', sfDynArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('pdarg', skPointer);
+    //AssertTrue(TestText + ' Flag: ', sfDynArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('a3', skArray);
+    AssertTrue(TestText + ' Flag: ', sfStatArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('a4', skArray);
+    AssertTrue(TestText + ' Flag: ', sfDynArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+
+
+
+    DoTest('testc2.a1', skArray);
+    AssertTrue(TestText + ' Flag: ', sfStatArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('testc2.a2', skArray);
+    AssertTrue(TestText + ' Flag: ', sfDynArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('testc2.a3', skArray);
+    AssertTrue(TestText + ' Flag: ', sfStatArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('testc2.a4', skArray);
+    AssertTrue(TestText + ' Flag: ', sfDynArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('testc2.a5', skArray);
+    AssertTrue(TestText + ' Flag: ', sfStatArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('testc2.a6', skArray);
+    AssertTrue(TestText + ' Flag: ', sfDynArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('testc2.a7', skArray);
+    AssertTrue(TestText + ' Flag: ', sfStatArray in Expr.ResultType.Flags);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+
 
     FreeAndNil(expr);
   end;

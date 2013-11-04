@@ -43,7 +43,7 @@ uses
 {$ifdef windows}
   Windows,
 {$endif}
-  FpDbgUtil, FpDbgClasses;
+  FpDbgUtil, FpDbgInfo;
 
 {                   
   The function Disassemble decodes the instruction at the given address.

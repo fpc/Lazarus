@@ -5,7 +5,7 @@ unit FpPascalBuilder;
 interface
 
 uses
-  Classes, SysUtils, FpDbgClasses;
+  Classes, SysUtils, FpDbgInfo;
 
 type
   TTypeNameFlag = (

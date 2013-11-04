@@ -41,7 +41,7 @@ unit FpDbgDwarf;
 interface
 
 uses
-  Classes, Types, SysUtils, FpDbgClasses, FpDbgDwarfConst, Maps, Math,
+  Classes, Types, SysUtils, FpDbgInfo, FpDbgDwarfConst, Maps, Math,
   FpDbgLoader, FpImgReaderBase, LazLoggerBase, LazClasses, contnrs;
   
 type

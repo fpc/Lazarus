@@ -5,7 +5,7 @@ unit FpGdbmiDebugger;
 interface
 
 uses
-  Classes, sysutils, math, FpDbgClasses, GDBMIDebugger, BaseDebugManager, Debugger,
+  Classes, sysutils, math, FpDbgInfo, FpDbgClasses, GDBMIDebugger, BaseDebugManager, Debugger,
   GDBMIMiscClasses, GDBTypeInfo, maps, LCLProc, FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst,
   LazLoggerBase, LazLoggerProfiling, FpPascalParser, FpPascalBuilder;
 
@@ -162,7 +162,7 @@ const
     ADeRefTypeName := '';
     ABaseTypeName  := ABaseType.Name;
 
-    while (ABaseType.Kind = FpDbgClasses.skPointer) and (ABaseType.TypeInfo <> nil) do begin
+    while (ABaseType.Kind = FpDbgInfo.skPointer) and (ABaseType.TypeInfo <> nil) do begin
       ABaseType := ABaseType.TypeInfo;
       inc(APointerLevel);
 
@@ -206,7 +206,7 @@ const
     begin
 //todo: functions / virtual / array ...
       s2 := '';
-      if AMember.Kind = FpDbgClasses.skProcedure then begin
+      if AMember.Kind = FpDbgInfo.skProcedure then begin
         if sfVirtual in AMember.Flags then s2 := ' virtual;';
         AText := AText + '    procedure ' + AMember.Name + ' ();' + s2 + LineEnding;
         exit
@@ -219,23 +219,23 @@ const
       end;
       s := ti.Name;
       if s = '' then begin
-        if (AMember.Kind = FpDbgClasses.skSet) or (AMember.Kind = FpDbgClasses.skEnum) or
-           (AMember.Kind = FpDbgClasses.skArray)
+        if (AMember.Kind = FpDbgInfo.skSet) or (AMember.Kind = FpDbgInfo.skEnum) or
+           (AMember.Kind = FpDbgInfo.skArray)
         then
         if not GetTypeAsDeclaration(s, ti, [tdfSkipClassBody, tdfSkipRecordBody]) then
           s := '';
       end;
-      if (s = '') and not (AMember.Kind = FpDbgClasses.skRecord)  then begin
+      if (s = '') and not (AMember.Kind = FpDbgInfo.skRecord)  then begin
         Result := False;
         exit;
       end;
 
-      if AMember.Kind = FpDbgClasses.skFunction then begin
+      if AMember.Kind = FpDbgInfo.skFunction then begin
         if sfVirtual in AMember.Flags then s2 := ' virtual;';
         AText := AText + '    function  ' + AMember.Name + ' () : '+s+';' + s2 + LineEnding;
       end
       else
-      if AMember.Kind = FpDbgClasses.skRecord then begin
+      if AMember.Kind = FpDbgInfo.skRecord then begin
         AText := AText + '    ' + AMember.Name + ' : '+s+' = record ;' + LineEnding;
       end
       else
@@ -532,23 +532,23 @@ const
         AddBaseType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
-      FpDbgClasses.skClass:
+      FpDbgInfo.skClass:
         AddClassType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
-      FpDbgClasses.skRecord:
+      FpDbgInfo.skRecord:
         AddRecordType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
-      FpDbgClasses.skEnum:
+      FpDbgInfo.skEnum:
         AddEnumType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
-      FpDbgClasses.skSet:
+      FpDbgInfo.skSet:
         AddSetType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
-      FpDbgClasses.skArray:
+      FpDbgInfo.skArray:
         AddArrayType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
