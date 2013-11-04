@@ -369,6 +369,9 @@ type
     destructor Destroy; override;
   end;
 
+  TPasParserSymbolArrayDeIndex = class(TDbgSymbol) // 1 index level off
+  end;
+
 { TPasParserSymbolPointer }
 
 procedure TPasParserSymbolPointer.TypeInfoNeeded;

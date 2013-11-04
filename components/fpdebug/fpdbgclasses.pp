@@ -133,7 +133,8 @@ type
 
   TDbgSymbolField = (
     sfiName, sfiKind, sfiSymType, sfiAddress, sfiSize,
-    sfiTypeInfo, sfiMemberVisibility
+    sfiTypeInfo, sfiMemberVisibility,
+    sfiForwardToSymbol
   );
   TDbgSymbolFields = set of TDbgSymbolField;
 
@@ -181,7 +182,7 @@ type
     function GetMemberByName({%H-}AIndex: String): TDbgSymbol; virtual;
     function GetMemberCount: Integer; virtual;
   protected
-    property EvaluatedFields: TDbgSymbolFields read FEvaluatedFields;
+    property EvaluatedFields: TDbgSymbolFields read FEvaluatedFields write FEvaluatedFields;
     // Cached fields
     procedure SetName(AValue: String);
     procedure SetKind(AValue: TDbgSymbolKind);
@@ -221,7 +222,7 @@ type
     property Column: Cardinal read GetColumn;
     // Methods for structures (record / class / enum)
     //         array: each member represents an index (enum or subrange) and has low/high bounds
-    property MemberCount: Integer read GetMemberCount; // inherited NOT included
+    property MemberCount: Integer read GetMemberCount;
     property Member[AIndex: Integer]: TDbgSymbol read GetMember;
     property MemberByName[AIndex: String]: TDbgSymbol read GetMemberByName; // Includes inheritance
     //
@@ -237,6 +238,34 @@ type
     property HasBounds: Boolean read GetHasBounds;
     property OrdLowBound: Int64 read GetOrdLowBound; // need typecast for QuadWord
     property OrdHighBound: Int64 read GetOrdHighBound; // need typecast for QuadWord
+  end;
+
+  { TDbgSymbolForwarder }
+
+  TDbgSymbolForwarder = class(TDbgSymbol)
+  private
+    FForwardToSymbol: TDbgSymbol; // sfiForwardToSymbol
+  protected
+    procedure SetForwardToSymbol(AValue: TDbgSymbol); // inline
+    procedure ForwardToSymbolNeeded; virtual;
+    function  GetForwardToSymbol: TDbgSymbol; //inline;
+  protected
+    procedure KindNeeded; override;
+    procedure NameNeeded; override;
+    procedure SymbolTypeNeeded; override;
+    procedure SizeNeeded; override;
+    procedure TypeInfoNeeded; override;
+    procedure MemberVisibilityNeeded; override;
+
+    function GetFlags: TDbgSymbolFlags; override;
+    function GetHasOrdinalValue: Boolean; override;
+    function GetOrdinalValue: Int64; override;
+    function GetHasBounds: Boolean; override;
+    function GetOrdLowBound: Int64; override;
+    function GetOrdHighBound: Int64; override;
+    function GetMember(AIndex: Integer): TDbgSymbol; override;
+    function GetMemberByName(AIndex: String): TDbgSymbol; override;
+    function GetMemberCount: Integer; override;
   end;
 
   { TDbgInfo }
@@ -748,7 +777,6 @@ var
     D: array[1..16] of Byte;
   end;
   Context: PContext;
-  r: DWORD;
 begin
   // Interrupting is implemented by suspending the thread and set DB0 to the
   // (to be) executed EIP. When the thread is resumed, it will generate a break
@@ -757,7 +785,7 @@ begin
   // A context needs to be aligned to 16 bytes. Unfortunately, the compiler has
   // no directive for this, so align it somewhere in our "reserved" memory
   Context := AlignPtr(@_UC, $10);
-  r := SuspendThread(FInfo.hThread);
+  SuspendThread(FInfo.hThread);
   try
     Context^.ContextFlags := CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
     if not GetThreadContext(FInfo.hThread, Context^)
@@ -780,7 +808,7 @@ begin
       Exit;
     end;
   finally
-    r := ResumeTHread(FInfo.hThread);
+    ResumeTHread(FInfo.hThread);
   end;
 end;
 
@@ -1182,6 +1210,194 @@ end;
 procedure TDbgSymbol.MemberVisibilityNeeded;
 begin
   SetMemberVisibility(svPrivate);
+end;
+
+{ TDbgSymbolForwarder }
+
+procedure TDbgSymbolForwarder.SetForwardToSymbol(AValue: TDbgSymbol);
+begin
+  FForwardToSymbol := AValue;
+  EvaluatedFields :=  EvaluatedFields + [sfiForwardToSymbol];
+end;
+
+procedure TDbgSymbolForwarder.ForwardToSymbolNeeded;
+begin
+  SetForwardToSymbol(nil);
+end;
+
+function TDbgSymbolForwarder.GetForwardToSymbol: TDbgSymbol;
+begin
+  if TMethod(@ForwardToSymbolNeeded).Code = Pointer(@TDbgSymbolForwarder.ForwardToSymbolNeeded) then
+    exit(nil);
+
+  if not(sfiForwardToSymbol in EvaluatedFields) then
+    ForwardToSymbolNeeded;
+  Result := FForwardToSymbol;
+end;
+
+procedure TDbgSymbolForwarder.KindNeeded;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    SetKind(p.Kind)
+  else
+    SetKind(skNone);  //  inherited KindNeeded;
+end;
+
+procedure TDbgSymbolForwarder.NameNeeded;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    SetName(p.Name)
+  else
+    SetName('');  //  inherited NameNeeded;
+end;
+
+procedure TDbgSymbolForwarder.SymbolTypeNeeded;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    SetSymbolType(p.SymbolType)
+  else
+    SetSymbolType(stNone);  //  inherited SymbolTypeNeeded;
+end;
+
+procedure TDbgSymbolForwarder.SizeNeeded;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    SetSize(p.Size)
+  else
+    SetSize(0);  //  inherited SizeNeeded;
+end;
+
+procedure TDbgSymbolForwarder.TypeInfoNeeded;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    SetTypeInfo(p.TypeInfo)
+  else
+    SetTypeInfo(nil);  //  inherited TypeInfoNeeded;
+end;
+
+procedure TDbgSymbolForwarder.MemberVisibilityNeeded;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    SetMemberVisibility(p.MemberVisibility)
+  else
+    SetMemberVisibility(svPrivate);  //  inherited MemberVisibilityNeeded;
+end;
+
+function TDbgSymbolForwarder.GetFlags: TDbgSymbolFlags;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.Flags
+  else
+    Result := [];  //  Result := inherited GetFlags;
+end;
+
+function TDbgSymbolForwarder.GetHasOrdinalValue: Boolean;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.HasOrdinalValue
+  else
+    Result := False;  //  Result := inherited GetHasOrdinalValue;
+end;
+
+function TDbgSymbolForwarder.GetOrdinalValue: Int64;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.OrdinalValue
+  else
+    Result := 0;  //  Result := inherited GetOrdinalValue;
+end;
+
+function TDbgSymbolForwarder.GetHasBounds: Boolean;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.HasBounds
+  else
+    Result := False;  //  Result := inherited GetHasBounds;
+end;
+
+function TDbgSymbolForwarder.GetOrdLowBound: Int64;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.OrdLowBound
+  else
+    Result := 0;  //  Result := inherited GetOrdLowBound;
+end;
+
+function TDbgSymbolForwarder.GetOrdHighBound: Int64;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.OrdHighBound
+  else
+    Result := 0;  //  Result := inherited GetOrdHighBound;
+end;
+
+function TDbgSymbolForwarder.GetMember(AIndex: Integer): TDbgSymbol;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.Member[AIndex]
+  else
+    Result := nil;  //  Result := inherited GetMember(AIndex);
+end;
+
+function TDbgSymbolForwarder.GetMemberByName(AIndex: String): TDbgSymbol;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.MemberByName[AIndex]
+  else
+    Result := nil;  //  Result := inherited GetMemberByName(AIndex);
+end;
+
+function TDbgSymbolForwarder.GetMemberCount: Integer;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.MemberCount
+  else
+    Result := 0;  //  Result := inherited GetMemberCount;
 end;
 
 {$ifdef windows}
