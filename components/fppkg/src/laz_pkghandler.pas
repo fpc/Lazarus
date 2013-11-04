@@ -19,9 +19,15 @@ begin
   pkghandlerclass:=GetPkgHandler(AAction);
   With pkghandlerclass.Create(nil,APackageName) do
     try
+      {$IF FPC_FULLVERSION > 20602}
+      Log(llDebug,SLogRunAction+' start',[AAction]);
+      Execute;
+      Log(llDebug,SLogRunAction+' end',[AAction]);
+      {$ELSE}
       Log(vlDebug,SLogRunAction+' start',[AAction]);
       Execute;
       Log(vlDebug,SLogRunAction+' end',[AAction]);
+      {$ENDIF}
     finally
       Free;
     end;

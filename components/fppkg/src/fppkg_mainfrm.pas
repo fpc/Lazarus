@@ -158,10 +158,17 @@ begin
     exit;
   Prefix:='';
   case Level of
+    {$IF FPC_FULLVERSION > 20602}
+    llWarning :
+      Prefix:=SWarning;
+    llError :
+      Prefix:=SError;
+    {$ELSE}
     vlWarning :
       Prefix:=SWarning;
     vlError :
       Prefix:=SError;
+    {$ENDIF}
 {    vlInfo :
       Prefix:='I: ';
     vlCommands :
@@ -574,7 +581,7 @@ begin
   CompilerOptions.UpdateLocalRepositoryOption;
   if FileExists(S) then
   begin
-    pkgglobals.Log(vlDebug, SLogLoadingCompilerConfig, [S]);
+    pkgglobals.Log({$IF FPC_FULLVERSION > 20602}llDebug{$ELSE}vlDebug{$ENDIF}, SLogLoadingCompilerConfig, [S]);
     CompilerOptions.LoadCompilerFromFile(S);
   end
   else
@@ -582,7 +589,7 @@ begin
     // Generate a default configuration if it doesn't exists
     if GlobalOptions.CompilerConfig = 'default' then
     begin
-      pkgglobals.Log(vlDebug, SLogGeneratingCompilerConfig, [S]);
+      pkgglobals.Log({$IF FPC_FULLVERSION > 20602}llDebug{$ELSE}vlDebug{$ENDIF}, SLogGeneratingCompilerConfig, [S]);
       CompilerOptions.InitCompilerDefaults;
       CompilerOptions.SaveCompilerToFile(S);
       if CompilerOptions.SaveInifileChanges then
@@ -592,13 +599,13 @@ begin
       Error(SErrMissingCompilerConfig, [S]);
   end;
   // Log compiler configuration
-  CompilerOptions.LogValues(vlDebug, '');
+  CompilerOptions.LogValues({$IF FPC_FULLVERSION > 20602}llDebug{$ELSE}vlDebug{$ENDIF}, '');
   // Load FPMake compiler config, this is normally the same config as above
   S := GlobalOptions.CompilerConfigDir + GlobalOptions.FPMakeCompilerConfig;
   FPMakeCompilerOptions.UpdateLocalRepositoryOption;
   if FileExists(S) then
   begin
-    pkgglobals.Log(vlDebug, SLogLoadingFPMakeCompilerConfig, [S]);
+    pkgglobals.Log({$IF FPC_FULLVERSION > 20602}llDebug{$ELSE}vlDebug{$ENDIF}, SLogLoadingFPMakeCompilerConfig, [S]);
     FPMakeCompilerOptions.LoadCompilerFromFile(S);
     if FPMakeCompilerOptions.SaveInifileChanges then
       FPMakeCompilerOptions.SaveCompilerToFile(S);
@@ -606,7 +613,7 @@ begin
   else
     Error(SErrMissingCompilerConfig, [S]);
   // Log compiler configuration
-  FPMakeCompilerOptions.LogValues(vlDebug, 'fpmake-building ');
+  FPMakeCompilerOptions.LogValues({$IF FPC_FULLVERSION > 20602}llDebug{$ELSE}vlDebug{$ENDIF}, 'fpmake-building ');
 end;
 
 procedure TFppkgForm.DoRun(cfg: TFppkgConfigOptions; ParaAction: string;
@@ -660,7 +667,7 @@ begin
         laz_pkghandler.Laz_ExecuteAction('', 'laz_update');
       except
         on E: Exception do
-          pkgglobals.Log(vlWarning, E.Message);
+          pkgglobals.Log({$IF FPC_FULLVERSION > 20602}llWarning{$ELSE}vlWarning{$ENDIF}, E.Message);
       end;
     end;
     LoadLocalAvailableRepository;
@@ -677,7 +684,7 @@ begin
       (ParaAction = 'laz_compile') or (ParaAction = 'laz_build') or
       (ParaAction = 'laz_install') or (ParaAction = 'laz_archive')) then
     begin
-      pkgglobals.Log(vlDebug, SLogCheckBrokenDependenvies);
+      pkgglobals.Log({$IF FPC_FULLVERSION > 20602}llDebug{$ELSE}vlDebug{$ENDIF}, SLogCheckBrokenDependenvies);
       SL := TStringList.Create;
       if FindBrokenPackages(SL) then
         Error(SErrBrokenPackagesFound);
@@ -703,7 +710,7 @@ begin
         end
         else
         begin
-          pkgglobals.Log(vlDebug, SLogCommandLineAction,['[' + ParaPackages[i] + ']', ParaAction]);
+          pkgglobals.Log({$IF FPC_FULLVERSION > 20602}llDebug{$ELSE}vlDebug{$ENDIF}, SLogCommandLineAction,['[' + ParaPackages[i] + ']', ParaAction]);
           laz_pkghandler.Laz_ExecuteAction(ParaPackages[i], ParaAction);
         end;
       end;

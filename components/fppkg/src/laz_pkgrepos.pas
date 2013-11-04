@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Classes, ComCtrls,
-  fprepos;
+  fprepos{$IF FPC_FULLVERSION > 20602}, fpmkunit{$ENDIF};
 
 type
 

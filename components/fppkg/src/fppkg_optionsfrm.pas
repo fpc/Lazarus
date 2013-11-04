@@ -279,12 +279,21 @@ begin
   //setup verbosity
   with VerbosityCheckGroup do
   begin
+    {$IF FPC_FULLVERSION > 20602}
+    Checked[Items.IndexOf('Error')] := llError in LazPkgOptions.Verbosity;
+    Checked[Items.IndexOf('Warning')] := llWarning in LazPkgOptions.Verbosity;
+    Checked[Items.IndexOf('Info')] := llInfo in LazPkgOptions.Verbosity;
+    Checked[Items.IndexOf('Commands')] := llCommands in LazPkgOptions.Verbosity;
+    Checked[Items.IndexOf('Debug')] := llDebug in LazPkgOptions.Verbosity;
+    Checked[Items.IndexOf('Progress')] := llProgres in LazPkgOptions.Verbosity;
+    {$ELSE}
     Checked[Items.IndexOf('Error')] := vlError in LazPkgOptions.Verbosity;
     Checked[Items.IndexOf('Warning')] := vlWarning in LazPkgOptions.Verbosity;
     Checked[Items.IndexOf('Info')] := vlInfo in LazPkgOptions.Verbosity;
     Checked[Items.IndexOf('Commands')] := vlCommands in LazPkgOptions.Verbosity;
     Checked[Items.IndexOf('Debug')] := vlDebug in LazPkgOptions.Verbosity;
     Checked[Items.IndexOf('Progress')] := vlProgres in LazPkgOptions.Verbosity;
+    {$ENDIF}
   end;
 end;
 
@@ -296,6 +305,20 @@ begin
   LazPkgOptions.Verbosity := [];
   with VerbosityCheckGroup do
   begin
+    {$IF FPC_FULLVERSION > 20602}
+    if Checked[Items.IndexOf('Error')] then
+      LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [llError];
+    if Checked[Items.IndexOf('Warning')] then
+      LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [llWarning];
+    if Checked[Items.IndexOf('Info')] then
+      LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [llInfo];
+    if Checked[Items.IndexOf('Commands')] then
+      LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [llCommands];
+    if Checked[Items.IndexOf('Debug')] then
+      LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [llDebug];
+    if Checked[Items.IndexOf('Progress')] then
+      LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [llProgres];
+    {$ELSE}
     if Checked[Items.IndexOf('Error')] then
       LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [vlError];
     if Checked[Items.IndexOf('Warning')] then
@@ -308,6 +331,7 @@ begin
       LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [vlDebug];
     if Checked[Items.IndexOf('Progress')] then
       LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [vlProgres];
+    {$ENDIF}
   end;
 
   Close;
