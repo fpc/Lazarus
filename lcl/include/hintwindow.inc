@@ -256,7 +256,7 @@ begin
     MaxWidth := Screen.Width - 4 * HintBorderWidth;
   Result := Rect(0, 0, MaxWidth, Screen.Height - 4 * HintBorderWidth);
   Flags := DT_CALCRECT or DT_NOPREFIX or DT_WORDBREAK;
-  if (BidiMode <> bdLeftToRight) then Flags := Flags or DT_RTLREADING;
+  if UseRightToLeftAlignment then Flags := Flags or DT_RTLREADING;
   if UseThemes then
     Result := ThemeServices.GetTextExtent(Canvas.GetUpdatedHandle([csFontValid]),
       ThemeServices.GetElementDetails(tttStandardNormal), AHint, Flags, @Result)
