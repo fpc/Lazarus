@@ -217,26 +217,26 @@ const
         Result := False;
         exit;
       end;
+
       s := ti.Name;
       if s = '' then begin
-        if (AMember.Kind = FpDbgInfo.skSet) or (AMember.Kind = FpDbgInfo.skEnum) or
-           (AMember.Kind = FpDbgInfo.skArray)
-        then
-        if not GetTypeAsDeclaration(s, ti, [tdfSkipClassBody, tdfSkipRecordBody]) then
-          s := '';
-      end;
-      if (s = '') and not (AMember.Kind = FpDbgInfo.skRecord)  then begin
-        Result := False;
-        exit;
+        if not( (AMember.Kind = FpDbgInfo.skSet) or (AMember.Kind = FpDbgInfo.skEnum) or
+                (AMember.Kind = FpDbgInfo.skArray) or (AMember.Kind = FpDbgInfo.skPointer) or
+                (AMember.Kind = FpDbgInfo.skRecord)
+              )
+        then begin
+          Result := False;
+          exit;
+        end;
+        if not GetTypeAsDeclaration(s, ti, [tdfSkipClassBody, tdfSkipRecordBody]) then begin
+          Result := False;
+          exit;
+        end
       end;
 
       if AMember.Kind = FpDbgInfo.skFunction then begin
         if sfVirtual in AMember.Flags then s2 := ' virtual;';
         AText := AText + '    function  ' + AMember.Name + ' () : '+s+';' + s2 + LineEnding;
-      end
-      else
-      if AMember.Kind = FpDbgInfo.skRecord then begin
-        AText := AText + '    ' + AMember.Name + ' : '+s+' = record ;' + LineEnding;
       end
       else
       begin

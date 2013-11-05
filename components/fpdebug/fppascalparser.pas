@@ -157,6 +157,15 @@ type
     destructor Destroy; override;
   end;
 
+  TFpPascalExpressionPartConstant = class(TFpPascalExpressionPartContainer)
+  end;
+
+  TFpPascalExpressionPartConstantNumber = class(TFpPascalExpressionPartConstant)
+  end;
+
+  TFpPascalExpressionPartConstantText = class(TFpPascalExpressionPartConstant)
+  end;
+
   { TFpPascalExpressionPartWithPrecedence }
 
   TFpPascalExpressionPartWithPrecedence = class(TFpPascalExpressionPartContainer)
@@ -714,14 +723,6 @@ var
     else AddPart(TFpPascalExpressionPartOperatorPlusMinus);
   end;
 
-  procedure AddConstChar;
-  begin
-  end;
-
-  procedure AddConstNumber;
-  begin
-  end;
-
   procedure AddIdentifier;
   begin
     while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '_', '0'..'9'] do
@@ -780,6 +781,30 @@ var
     end;
   end;
 
+  procedure AddConstNumber;
+  begin
+    case CurPtr^ of
+      '$': while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '0'..'9'] do inc(TokenEndPtr);
+      '&': while TokenEndPtr^ in ['0'..'7'] do inc(TokenEndPtr);
+      '%': while TokenEndPtr^ in ['0'..'1'] do inc(TokenEndPtr);
+      '0'..'9':
+        if (TokenEndPtr^ = '0') and ((TokenEndPtr + 1)^ = 'x') and
+           ((TokenEndPtr + 2)^ in ['a'..'z', 'A'..'Z', '0'..'9'])
+        then begin
+          inc(TokenEndPtr, 3);
+          while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '0'..'9'] do inc(TokenEndPtr);
+        end
+        else
+          while TokenEndPtr^ in ['0'..'0'] do inc(TokenEndPtr);
+    end;
+    AddPart(TFpPascalExpressionPartConstantNumber);
+  end;
+
+  procedure AddConstChar;
+  begin
+    SetError(Format('Unexpected char ''%0:s'' at pos %1:d', [CurPtr^, PosFromPChar(CurPtr)])); // error
+  end;
+
 begin
   if FTextExpression = '' then
     exit;
@@ -798,7 +823,7 @@ begin
     TokenEndPtr := CurPtr + 1;
     case CurPtr^ of
       '@' :      AddPart(TFpPascalExpressionPartOperatorAddressOf);
-      '^':       AddRefOperator;
+      '^':       AddRefOperator; // ^A may be #$01
       '.':       HandleDot;
       '+', '-' : AddPlusMinus;
       '*', '/' : AddPart(TFpPascalExpressionPartOperatorMulDiv);
@@ -807,9 +832,9 @@ begin
       '[':       HandleSqareBracket;
       ']':       CloseBracket(TFpPascalExpressionPartSquareBracket);
       //',': ;
-      //'''':     AddConstChar;
-      //'0'..'9',
-      //'$', '%': AddConstNumber;
+      '''', '#': AddConstChar;
+      '0'..'9',
+      '$', '%', '&':  AddConstNumber;
       'a'..'z',
       'A'..'Z', '_': AddIdentifier;
       else begin

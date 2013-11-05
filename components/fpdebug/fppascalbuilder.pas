@@ -69,6 +69,7 @@ begin
       ATypeName := ATypeName + '^';
     end;
 
+    ATypeName := '';
     Result := False;
   end;
 
@@ -133,7 +134,7 @@ var
     while (i < c) and Result do begin
       m := ADbgSymbol.Member[i];
       AddVisibility(m.MemberVisibility, i= 0);
-      Result := GetTypeAsDeclaration(s, m, [tdfNoFirstLineIndent, tdfIncludeVarName] + AFlags, AnIndent + 4);
+      Result := GetTypeAsDeclaration(s, m, [tdfIncludeVarName] + AFlags, AnIndent + 4);
       if Result then
         AText := AText + GetIndent + s + ';' + LineEnding;
       inc(i);
@@ -238,8 +239,11 @@ var
     s: String;
   begin
     if tdfSkipRecordBody in AFlags then begin
-      GetTypeName(s, ADbgSymbol);
-      ADeclaration := s + ' {=record}';
+      Result := True;
+      if GetTypeName(s, ADbgSymbol) then
+        ADeclaration := s + ' {=record}'
+      else
+        ADeclaration := Format('record {...};%s%send', [LineEnding, GetIndent]);
       exit;
     end;
     Result := MembersAsGdbText(s, False);

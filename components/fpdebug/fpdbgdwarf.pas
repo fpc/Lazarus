@@ -1884,9 +1884,11 @@ begin
 
 
   ti := TypeInfo; // Parent
-  if ti <> nil then
+  if ti <> nil then begin
     Result := ti.MemberByName[AIndex];
-  FLastChildByName := Result;
+    FLastChildByName := Result;
+    FLastChildByName.AddReference;
+  end;
 end;
 
 function TDbgDwarfIdentifierStructure.GetMemberCount: Integer;
@@ -2212,6 +2214,7 @@ var
   EntryName: String;
   s: String;
   InEnum: Boolean;
+  ParentScopIdx: Integer;
 begin
   Result := False;
   InEnum := False;
@@ -2235,6 +2238,7 @@ begin
       if Abbrev.tag = DW_TAG_enumeration_type then begin
         assert(not InEnum, 'nested enum');
         InEnum := True;
+        ParentScopIdx := ScopeIndex;
         GoChild;
         Continue;
       end;
@@ -2245,7 +2249,7 @@ begin
 
     if InEnum then begin
       InEnum := False;
-      GoParent;
+      ScopeIndex := ParentScopIdx;
       GoNext;
       continue;
     end;
