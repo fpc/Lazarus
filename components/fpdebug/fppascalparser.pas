@@ -55,7 +55,7 @@ type
     procedure SetError(AMsg: String);
     function PosFromPChar(APChar: PChar): Integer;
   protected
-    function GetDbgTyeForIdentifier(AnIdent: String): TDbgSymbol; virtual;
+    function GetDbgTyeForIdentifier({%H-}AnIdent: String): TDbgSymbol; virtual;
     property ExpressionPart: TFpPascalExpressionPart read FExpressionPart;
   public
     constructor Create(ATextExpression: String);
@@ -98,12 +98,12 @@ type
     procedure DoHandleEndOfExpression; virtual;
 
     function IsValidNextPart(APart: TFpPascalExpressionPart): Boolean; virtual;
-    function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; virtual;
-    function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
-                                 var AResult: TFpPascalExpressionPart): Boolean; virtual;
+    function IsValidAfterPart({%H-}APrevPart: TFpPascalExpressionPart): Boolean; virtual;
+    function MaybeHandlePrevPart({%H-}APrevPart: TFpPascalExpressionPart;
+                                 var {%H-}AResult: TFpPascalExpressionPart): Boolean; virtual;
     // HasPrecedence: an operator with follows precedence rules: the last operand can be taken by the next operator
     function HasPrecedence: Boolean; virtual;
-    function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartWithPrecedence):
+    function FindLeftSideOperandByPrecedence({%H-}AnOperator: TFpPascalExpressionPartWithPrecedence):
                                              TFpPascalExpressionPart; virtual;
     function CanHaveOperatorAsNext: Boolean; virtual; // True
   public
@@ -234,6 +234,7 @@ type
   // array[1]
   protected
     procedure Init; override;
+    function DoGetResultType: TDbgSymbol; override;
     function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; override;
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
@@ -301,7 +302,7 @@ type
     function DoGetResultType: TDbgSymbol; override;
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean; override;
-    function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartWithPrecedence):
+    function FindLeftSideOperandByPrecedence({%H-}AnOperator: TFpPascalExpressionPartWithPrecedence):
                                              TFpPascalExpressionPart;
       override;
     // IsValidAfterPart: same as binary op
@@ -369,8 +370,46 @@ type
     destructor Destroy; override;
   end;
 
-  TPasParserSymbolArrayDeIndex = class(TDbgSymbol) // 1 index level off
+  { TPasParserSymbolArrayDeIndex }
+
+  TPasParserSymbolArrayDeIndex = class(TDbgSymbolForwarder) // 1 index level off
+  private
+    FArray: TDbgSymbol;
+  protected
+    //procedure ForwardToSymbolNeeded; override;
+    function GetMemberCount: Integer; override;
+    function GetMember(AIndex: Integer): TDbgSymbol; override;
+  public
+    constructor Create(const AnArray: TDbgSymbol);
+    destructor Destroy; override;
   end;
+
+{ TPasParserSymbolArrayDeIndex }
+
+function TPasParserSymbolArrayDeIndex.GetMemberCount: Integer;
+begin
+  Result := (inherited GetMemberCount) - 1;
+end;
+
+function TPasParserSymbolArrayDeIndex.GetMember(AIndex: Integer): TDbgSymbol;
+begin
+  Result := inherited GetMember(AIndex + 1);
+end;
+
+constructor TPasParserSymbolArrayDeIndex.Create(const AnArray: TDbgSymbol);
+begin
+  FArray := AnArray;
+  FArray.AddReference;
+  inherited Create('');
+  SetKind(skArray);
+  SetForwardToSymbol(FArray);
+end;
+
+destructor TPasParserSymbolArrayDeIndex.Destroy;
+begin
+  ReleaseRefAndNil(FArray);
+  inherited Destroy;
+end;
 
 { TPasParserSymbolPointer }
 
@@ -400,6 +439,29 @@ procedure TFpPascalExpressionPartBracketIndex.Init;
 begin
   FPrecedence := PRECEDENCE_ARRAY_IDX;
   inherited Init;
+end;
+
+function TFpPascalExpressionPartBracketIndex.DoGetResultType: TDbgSymbol;
+var
+  tmp: TDbgSymbol;
+begin
+  Result := nil;
+  if Count <> 2 then exit;
+
+  tmp := Items[0].ResultType;
+  if tmp = nil then exit;
+
+  if (tmp.Kind = skArray) then begin
+    // TODO: check type of index
+    if tmp.MemberCount < 1 then exit; // TODO error
+    if tmp.MemberCount = 1 then begin
+      Result := tmp.TypeInfo;
+      Result.AddReference;
+      exit;
+    end;
+
+    Result := TPasParserSymbolArrayDeIndex.Create(tmp);
+  end;
 end;
 
 function TFpPascalExpressionPartBracketIndex.IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean;
