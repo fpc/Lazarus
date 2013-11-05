@@ -1954,25 +1954,25 @@ begin
     exit;
   end;
   Start:=CurPos;
-  repeat
+  while CurPos.StartPos>1 do begin
     ReadPriorAtom;
-    if (CurPos.Flag=OpenBracket) then break;
+    if (CurPos.Flag=OpenBracket) then exit(true);
     if (CurPos.StartPos<1)
     or (CurPos.Flag in [AntiOpenBracket,cafEND])
     or ((CurPos.Flag=cafWord)
         and UnexpectedKeyWordInBrackets.DoItCaseInsensitive(Src,
              CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
     then begin
-      CurPos:=Start;
-      if ExceptionOnNotFound then
-        RaiseBracketNotFound;
-      exit;
+      break;
     end;
     if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
       if not ReadBackTilBracketOpen(ExceptionOnNotFound) then exit;
     end;
-  until false;
-  Result:=true;
+  end;
+  CurPos:=Start;
+  if ExceptionOnNotFound then
+    RaiseBracketNotFound;
+  Result:=false;
 end;
 
 procedure TCustomCodeTool.ReadTillCommentEnd;
