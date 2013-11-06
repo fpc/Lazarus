@@ -7325,7 +7325,9 @@ begin
     env := EnvironmentAsStringList;
     DebuggerEnvironment := env;
     env.Free;
+{$ifNdef MSWindows}
     DebuggerEnvironment.Values['LANG'] := 'C'; // try to prevent GDB from using localized messages
+{$ENDIF}
 
     if CreateDebugProcess(Options)
     then begin

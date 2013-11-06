@@ -2779,6 +2779,11 @@ begin
     while FLine[Run] in ['0'..'7'] do inc(Run);
   end
   else
+  if FLine[Run] in ['A'..'Z', 'a'..'z', '_'] then begin
+    fTokenID := tkIdentifier;
+    while Identifiers[fLine[Run]] do inc(Run);
+  end
+  else
     fTokenID := tkSymbol;
 end;
 
