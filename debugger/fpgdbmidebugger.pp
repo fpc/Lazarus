@@ -142,6 +142,12 @@ begin
   inherited Create;
 end;
 
+type
+  TFpPascalExpressionHack = class(TFpPascalExpression)
+  public
+    property ExpressionPart;
+  end;
+
 function TFpGDBPTypeRequestCache.IndexOf(AThreadId, AStackFrame: Integer;
   ARequest: TGDBPTypeRequest): Integer;
 const
@@ -338,15 +344,20 @@ const
     s, ParentName, RefToken: String;
     s2: String;
   begin
-    if (ABaseType.TypeInfo = nil) then
-      exit;
     if APointerLevel = 0 then
       ADeRefTypeName := ASrcTypeName;
-    ParentName :=  ABaseType.TypeInfo.Name;
     if not MembersAsGdbText(ABaseType, True, s2) then
       exit;
 
-    s := Format('type = ^%s = class : public %s %s%send%s', [ABaseTypeName, ParentName, LineEnding, s2, LineEnding]);
+    if (ABaseType.TypeInfo <> nil) then begin
+      ParentName :=  ABaseType.TypeInfo.Name;
+      if ParentName <> '' then
+        ParentName := ' public ' + ParentName;
+    end
+    else
+      ParentName := '';
+
+    s := Format('type = ^%s = class :%s %s%send%s', [ABaseTypeName, ParentName, LineEnding, s2, LineEnding]);
     MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
 
     s := Format('type = %s%s', [ASrcTypeName, LineEnding]);
@@ -357,7 +368,7 @@ const
     if APointerLevel > 0
     then RefToken := '^'
     else RefToken := '';
-    s := Format('type = %s%s = class : public %s %s%send%s', [RefToken, ABaseTypeName, ParentName, LineEnding, s2, LineEnding]);
+    s := Format('type = %s%s = class :%s %s%send%s', [RefToken, ABaseTypeName, ParentName, LineEnding, s2, LineEnding]);
     MaybeAdd(gcrtPType, GdbCmdPType  + ASourceExpr, s);
 
     s := Format('type = %s%s', [ADeRefTypeName, LineEnding]);
@@ -559,6 +570,7 @@ const
 var
   IdentName: String;
   PasExpr: TFpGDBMIPascalExpression;
+  rt: TDbgSymbol;
 begin
   Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
 DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
@@ -569,18 +581,27 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
   FInIndexOf := True;
   PasExpr := nil;
   try
-    if ARequest.ReqType = gcrtPType then begin
+    if (ARequest.ReqType = gcrtPType) and (length(ARequest.Request) > 0) then begin
 //DebugLn('######## '+ARequest.Request);
-      if copy(ARequest.Request, 1, 6) = 'ptype ' then
-	       IdentName := trim(copy(ARequest.Request, 7, length(ARequest.Request)))
-      else
-      if copy(ARequest.Request, 1, 7) = 'whatis ' then
-        IdentName := trim(copy(ARequest.Request, 8, length(ARequest.Request)));
+      case ARequest.Request[1] of
+        'p': if copy(ARequest.Request, 1, 6) = 'ptype ' then
+               IdentName := trim(copy(ARequest.Request, 7, length(ARequest.Request)));
+        'w': if copy(ARequest.Request, 1, 7) = 'whatis ' then
+               IdentName := trim(copy(ARequest.Request, 8, length(ARequest.Request)));
+      end;
 
-      PasExpr := TFpGDBMIPascalExpression.Create(IdentName, FDebugger, AThreadId, AStackFrame);
-
-      AddType(IdentName, PasExpr.ResultType);
-      Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
+      if IdentName <> '' then begin
+        PasExpr := TFpGDBMIPascalExpression.Create(IdentName, FDebugger, AThreadId, AStackFrame);
+        if PasExpr.Valid then begin
+          rt := PasExpr.ResultType;
+          if (rt = nil) and (TFpPascalExpressionHack(PasExpr).ExpressionPart <> nil) then
+            rt := TFpPascalExpressionHack(PasExpr).ExpressionPart.ResultTypeCast;
+          if rt <> nil then begin
+            AddType(IdentName, rt);
+            Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
+          end;
+        end;
+      end;
     end;
 
   finally

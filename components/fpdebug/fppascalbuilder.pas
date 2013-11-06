@@ -38,6 +38,7 @@ function GetTypeName(out ATypeName: String; ADbgSymbol: TDbgSymbol;
 var
   s: String;
 begin
+  ATypeName := '';
   Result := ADbgSymbol <> nil;
   if not Result then
     exit;
@@ -228,7 +229,8 @@ var
       exit;
     end;
     Result := MembersAsGdbText(s, True, [tdfSkipClassBody]);
-    GetTypeName(s2, ADbgSymbol.TypeInfo);
+    if not GetTypeName(s2, ADbgSymbol.TypeInfo) then
+      s2 := '';
     if Result then
       ADeclaration := Format('class(%s)%s%s%send',
                              [s2, LineEnding, s, GetIndent]);

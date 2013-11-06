@@ -79,7 +79,7 @@ type
     FResultTypeFlag: (rtUnknown, rtType, rtTypeCast);
     function GetResultType: TDbgSymbol;
     function GetResultTypeCast: TDbgSymbol;
-    function GetSurroundingBracket: TFpPascalExpressionPartBracket;
+    function GetSurroundingOpenBracket: TFpPascalExpressionPartBracket;
     function GetTopParent: TFpPascalExpressionPart;
     procedure SetEndChar(AValue: PChar);
     procedure SetParent(AValue: TFpPascalExpressionPartContainer);
@@ -117,7 +117,7 @@ type
     property EndChar: PChar read FEndChar write SetEndChar;
     property Parent: TFpPascalExpressionPartContainer read FParent write SetParent;
     property TopParent: TFpPascalExpressionPart read GetTopParent; // or self
-    property SurroundingBracket: TFpPascalExpressionPartBracket read GetSurroundingBracket; // incl self
+    property SurroundingBracket: TFpPascalExpressionPartBracket read GetSurroundingOpenBracket; // incl self
     property ResultType: TDbgSymbol read GetResultType;
     property ResultTypeCast: TDbgSymbol read GetResultTypeCast;
   end;
@@ -470,6 +470,17 @@ begin
     end;
 
     Result := TPasParserSymbolArrayDeIndex.Create(tmp);
+  end
+  else
+  if (tmp.Kind = skPointer) then begin
+    Result := tmp.TypeInfo;
+    Result.AddReference;
+    exit;
+  end
+  else
+  if (tmp.Kind = skString) then begin
+    //TODO
+    exit;
   end;
 end;
 
@@ -879,6 +890,7 @@ procedure TFpPascalExpression.SetError(AMsg: String);
 begin
   FValid := False;
   FError := AMsg;
+DebugLn(['PARSER ERROR ', AMsg]);
 end;
 
 function TFpPascalExpression.PosFromPChar(APChar: PChar): Integer;
@@ -928,13 +940,15 @@ begin
     Result := Result.Parent;
 end;
 
-function TFpPascalExpressionPart.GetSurroundingBracket: TFpPascalExpressionPartBracket;
+function TFpPascalExpressionPart.GetSurroundingOpenBracket: TFpPascalExpressionPartBracket;
 var
   tmp: TFpPascalExpressionPart;
 begin
   Result := nil;
   tmp := Self;
-  while (tmp <> nil) and not(tmp is TFpPascalExpressionPartBracket) do
+  while (tmp <> nil) and
+        ( not(tmp is TFpPascalExpressionPartBracket) or ((tmp as TFpPascalExpressionPartBracket).IsClosed) )
+  do
     tmp := tmp.Parent;
   if tmp <> nil then
     Result := TFpPascalExpressionPartBracket(tmp);
@@ -1416,7 +1430,9 @@ begin
     Result := (inherited IsValidNextPart(APart))
   else
     Result := (inherited IsValidNextPart(APart)) and
-              (APart is TFpPascalExpressionPartIdentifer);
+              ( (APart is TFpPascalExpressionPartIdentifer) or
+                (APart is TFpPascalExpressionPartOperatorMakeRef)
+              );
 end;
 
 function TFpPascalExpressionPartOperatorMakeRef.DoGetResultType: TDbgSymbol;
