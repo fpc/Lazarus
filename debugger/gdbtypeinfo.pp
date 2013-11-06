@@ -340,7 +340,7 @@ type
      gptrEvalExpr2, gptrEvalExprDeRef2, gptrEvalExprCast2, // used by MaybeString
      gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2,
      gptrInstanceClassName,
-     gptrPtypeCustomEval
+     gptrEvalCustomEval
     );
   TGDBTypeProcessRequests = set of TGDBTypeProcessRequest;
 
@@ -2073,7 +2073,7 @@ function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests; ACustomDat
       gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2:
                          Result := GdbCmdPType + ACustomData;
       gptrInstanceClassName: Result := GdbCmdEvaluate+Quote('(^^^char('+FExpression+')^+3)^');
-      gptrPtypeCustomEval:   Result := GdbCmdEvaluate+Quote(ACustomData);
+      gptrEvalCustomEval:   Result := GdbCmdEvaluate+Quote(ACustomData);
     end;
   end;
 
@@ -2096,7 +2096,7 @@ begin
   for i := low(TGDBTypeProcessRequest) to high(TGDBTypeProcessRequest) do
     if i in NeededReq then begin
       AddTypeReq(FReqResults[i], GetReqText(i));
-      if i in [gptrEvalExpr, gptrEvalExprDeRef, gptrEvalExprCast, gptrInstanceClassName]
+      if i in [gptrEvalExpr, gptrEvalExprDeRef, gptrEvalExprCast, gptrInstanceClassName, gptrEvalCustomEval]
       then FReqResults[i].ReqType := gcrtEvalExpr
       else FReqResults[i].ReqType := gcrtPType;
     end;
@@ -2762,10 +2762,10 @@ var
       exit;
     end;
 
-    if not RequireRequests([gptrPtypeCustomEval], '^^longint('+FExpression+')[-1]') then exit;
-    if not IsReqError(gptrPtypeCustomEval, False) then begin
+    if not RequireRequests([gptrEvalCustomEval], '^^longint('+FExpression+')[-1]') then exit;
+    if not IsReqError(gptrEvalCustomEval, False) then begin
       FBoundLow :=  0;
-      FBoundHigh  := StrToIntDef(GetParsedFromResult(FReqResults[gptrPtypeCustomEval].Result.GdbDescription, 'value'), -1);
+      FBoundHigh  := StrToIntDef(GetParsedFromResult(FReqResults[gptrEvalCustomEval].Result.GdbDescription, 'value'), -1);
       FLen := FBoundHigh + 1;
     end;
 

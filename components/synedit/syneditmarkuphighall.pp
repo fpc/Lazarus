@@ -2264,7 +2264,7 @@ begin
   if (OldEndPoint.y >= 0) and not IsPosValid(OldEndPoint) then
     OldEndPoint := Point(1, FFirstInvalidLine - AdjustedSearchStrMaxLines);
   if (OldEndPoint.y < 0) and (FMatches.Count > 0) then
-    OldEndPoint := FMatches.EndPoint[FMatches.Count];
+    OldEndPoint := FMatches.EndPoint[FMatches.Count-1];
 
   if (OldEndPoint.y <= OldStartPoint.y) or
      (OldEndPoint.y < 0) or (OldStartPoint.y < 0) or

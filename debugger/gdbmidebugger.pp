@@ -5055,6 +5055,8 @@ begin
     end;
     SetTargetInfo(FileType);
 
+    DefaultTimeOut := DebuggerProperties.TimeoutForEval;   // Getting address for breakpoints may need timeout
+
     DetectForceableBreaks;
 
     (* We need a breakpoint at entry-point or main, to continue initialization
@@ -5087,6 +5089,7 @@ begin
     DebugLn(DBG_VERBOSE, '[Debugger] Target PID: %u', [TargetInfo^.TargetPID]);
 
     // they may still exist from prev run, addr will be checked
+    // TODO: defered setting of below beakpoint / e.g. if debugging a library
     FTheDebugger.FExceptionBreak.SetByAddr(Self);
     FTheDebugger.FBreakErrorBreak.SetByAddr(Self);
     FTheDebugger.FRunErrorBreak.SetByAddr(Self);
@@ -5209,7 +5212,7 @@ begin
   // Get PID
   NewPID := 0;
 
-  s := GetPart(['Attaching to process '], [LineEnding], CmdResp, True, False);
+  s := GetPart(['Attaching to process '], [LineEnding, '.'], CmdResp, True, False);
   if s <> '' then
     NewPID := StrToIntDef(s, 0);
 
@@ -8303,7 +8306,9 @@ begin
     env := EnvironmentAsStringList;
     DebuggerEnvironment := env;
     env.Free;
+{$ifNdef MSWindows}
     DebuggerEnvironment.Values['LANG'] := 'C'; // try to prevent GDB from using localized messages
+{$ENDIF}
 
     if CreateDebugProcess(Options)
     then begin

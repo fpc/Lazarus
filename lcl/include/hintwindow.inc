@@ -244,6 +244,8 @@ end;
 
 function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
   AData: Pointer): TRect;
+var
+  Flags: Cardinal;
 begin
   if AHint = '' then
   begin
@@ -253,12 +255,14 @@ begin
   if MaxWidth <= 0 then
     MaxWidth := Screen.Width - 4 * HintBorderWidth;
   Result := Rect(0, 0, MaxWidth, Screen.Height - 4 * HintBorderWidth);
+  Flags := DT_CALCRECT or DT_NOPREFIX or DT_WORDBREAK;
+  if UseRightToLeftAlignment then Flags := Flags or DT_RTLREADING;
   if UseThemes then
     Result := ThemeServices.GetTextExtent(Canvas.GetUpdatedHandle([csFontValid]),
-      ThemeServices.GetElementDetails(tttStandardNormal), AHint, DT_NOPREFIX or DT_WORDBREAK, @Result)
+      ThemeServices.GetElementDetails(tttStandardNormal), AHint, Flags, @Result)
   else
     DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(AHint), Length(AHint),
-           Result, DT_CALCRECT or DT_NOPREFIX or DT_WORDBREAK);
+           Result, Flags);
   inc(Result.Right, 4 * HintBorderWidth);
   inc(Result.Bottom, 4 * HintBorderWidth);
   //debugln('THintWindow.CalcHintRect Result=',dbgs(Result));
