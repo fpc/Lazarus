@@ -392,6 +392,15 @@ begin
     TestExpr([0,0,1],   TFpPascalExpressionPartIdentifer, 'a', 0);
     TestExpr([0,1],   TFpPascalExpressionPartIdentifer, 'b', 0);
 
+    CreateExpr('f[a]', True);
+    TestExpr([], TFpPascalExpressionPartBracketIndex, '[', 2);
+    TestExpr([0],   TFpPascalExpressionPartIdentifer, 'f', 0);
+    TestExpr([1],   TFpPascalExpressionPartIdentifer, 'a', 0);
+
+    CreateExpr('TFoo(f^[0]).a', True);
+
+    CreateExpr('^^int(1)', True);
+
   finally
     CurrentTestExprObj.Free;
   end;

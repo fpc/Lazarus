@@ -811,6 +811,17 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     destructor Destroy; override;
   end;
 
+  { TDbgDwarfUnit }
+
+  TDbgDwarfUnit = class(TDbgDwarfIdentifier)
+  private
+    FLastChildByName: TDbgSymbol;
+  protected
+    procedure Init; override;
+    function GetMemberByName(AIndex: String): TDbgSymbol; override;
+  public
+    destructor Destroy; override;
+  end;
 
 type
   TDwarfSection = (dsAbbrev, dsARanges, dsFrame,  dsInfo, dsLine, dsLoc, dsMacinfo, dsPubNames, dsPubTypes, dsRanges, dsStr);
@@ -833,6 +844,7 @@ const
   { TDbgDwarf }
 
 type
+
   TDbgDwarf = class(TDbgInfo)
   private
     FCompilationUnits: TList;
@@ -842,12 +854,13 @@ type
   protected
     function GetCompilationUnitClass: TDwarfCompilationUnitClass; virtual;
     function FindCompilationUnitByOffs(AOffs: QWord): TDwarfCompilationUnit;
+    function FindProcSymbol(AAddress: TDbgPtr): TDbgSymbol;
   public
     constructor Create(ALoader: TDbgImageLoader); override;
     destructor Destroy; override;
+    function FindContext(AAddress: TDbgPtr): TDbgInfoAddressContext; override;
     function FindSymbol(AAddress: TDbgPtr): TDbgSymbol; override;
     //function FindSymbol(const AName: String): TDbgSymbol; override;
-    function FindIdentifier(AAddress: TDbgPtr; AName: String): TDbgSymbol;
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr; override;
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function LoadCompilationUnits: Integer;
@@ -865,6 +878,22 @@ type
   public
   end;
   
+  { TDbgDwarfInfoAddressContext }
+
+  TDbgDwarfInfoAddressContext = class(TDbgInfoAddressContext)
+  private
+    FSymbol: TDbgSymbol;
+    FAddress: TDbgPtr;
+    FDwarf: TDbgDwarf;
+  protected
+    function GetSymbolAtAddress: TDbgSymbol; override;
+    function GetAddress: TDbgPtr; override;
+  public
+    constructor Create(AnAddress: TDbgPtr; ASymbol: TDbgSymbol; ADwarf: TDbgDwarf);
+    destructor Destroy; override;
+    function FindSymbol(const AName: String): TDbgSymbol; override;
+  end;
+
 
 function DwarfTagToString(AValue: Integer): String;
 function DwarfAttributeToString(AValue: Integer): String;
@@ -1329,6 +1358,119 @@ begin
   else
     Result := Format('DW_ID_%d', [AValue]);
   end;
+end;
+
+{ TDbgDwarfInfoAddressContext }
+
+function TDbgDwarfInfoAddressContext.GetSymbolAtAddress: TDbgSymbol;
+begin
+  Result := FSymbol;
+end;
+
+function TDbgDwarfInfoAddressContext.GetAddress: TDbgPtr;
+begin
+  Result := FAddress;
+end;
+
+constructor TDbgDwarfInfoAddressContext.Create(AnAddress: TDbgPtr; ASymbol: TDbgSymbol;
+  ADwarf: TDbgDwarf);
+begin
+  inherited Create;
+  AddReference;
+  FAddress := AnAddress;
+  FDwarf   := ADwarf;
+  FSymbol  := ASymbol;
+  FSymbol.AddReference;
+end;
+
+destructor TDbgDwarfInfoAddressContext.Destroy;
+begin
+  FSymbol.ReleaseReference;
+  inherited Destroy;
+end;
+
+function TDbgDwarfInfoAddressContext.FindSymbol(const AName: String): TDbgSymbol;
+var
+  SubRoutine: TDbgDwarfProcSymbol; // TDbgSymbol;
+  CU: TDwarfCompilationUnit;
+  //Scope,
+  StartScopeIdx: Integer;
+  InfoEntry: TDwarfInformationEntry;
+  s, InfoName: String;
+begin
+  Result := nil;
+  if (FSymbol = nil) or not(FSymbol is TDbgDwarfProcSymbol) then
+    exit;
+
+  SubRoutine := TDbgDwarfProcSymbol(FSymbol);
+  s := UpperCase(AName);
+
+  try
+    CU := SubRoutine.FCU;
+    InfoEntry := SubRoutine.InformationEntry.Clone;
+    //InfoEntry := TDwarfInformationEntry.Create(CU, nil);
+    //InfoEntry.ScopeIndex := SubRoutine.FAddressInfo^.ScopeIndex;
+
+    while InfoEntry.HasValidScope do begin
+      debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
+      StartScopeIdx := InfoEntry.ScopeIndex;
+
+      if InfoEntry.ReadValue(DW_AT_name, InfoName) then begin
+        if UpperCase(InfoName) = s then begin
+          Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
+          DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
+          break;
+        end;
+      end;
+
+      if InfoEntry.GoNamedChildEx(AName) then begin
+        Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
+        DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
+        break;
+      end;
+
+      // Search parent(s)
+      InfoEntry.ScopeIndex := StartScopeIdx;
+      InfoEntry.GoParent;
+    end;
+
+  // other units
+
+  finally
+    ReleaseRefAndNil(InfoEntry);
+  end;
+end;
+
+{ TDbgDwarfUnit }
+
+procedure TDbgDwarfUnit.Init;
+begin
+  inherited Init;
+  SetSymbolType(stNone);
+  SetKind(skUnit);
+end;
+
+function TDbgDwarfUnit.GetMemberByName(AIndex: String): TDbgSymbol;
+var
+  Ident: TDwarfInformationEntry;
+  ti: TDbgSymbol;
+begin
+  // Todo, param to only search external.
+  ReleaseRefAndNil(FLastChildByName);
+  Result := nil;
+
+  Ident := FInformationEntry.Clone;
+  Ident.GoNamedChildEx(AIndex);
+  if Ident <> nil then
+    Result := TDbgDwarfIdentifier.CreateSubClass('', Ident);
+  ReleaseRefAndNil(Ident);
+  FLastChildByName := Result;
+end;
+
+destructor TDbgDwarfUnit.Destroy;
+begin
+  ReleaseRefAndNil(FLastChildByName);
+  inherited Destroy;
 end;
 
 { TDbgDwarfIdentifierSubRange }
@@ -2577,6 +2719,8 @@ begin
     // Value types
     DW_TAG_member:           Result := TDbgDwarfIdentifierMember;
     DW_TAG_subprogram:       Result := TDbgDwarfProcSymbol;
+    //
+    DW_TAG_compile_unit:     Result := TDbgDwarfUnit;
 
     else
       Result := TDbgDwarfIdentifier;
@@ -3571,110 +3715,22 @@ begin
   inherited Destroy;
 end;
 
-function TDbgDwarf.FindSymbol(AAddress: TDbgPtr): TDbgSymbol;
+function TDbgDwarf.FindContext(AAddress: TDbgPtr): TDbgInfoAddressContext;
 var
-  n: Integer;
-  CU: TDwarfCompilationUnit;
-  Iter: TMapIterator;
-  Info: PDwarfAddressInfo;
-  MinMaxSet: boolean;
+  Proc: TDbgSymbol;
 begin
   Result := nil;
-  for n := 0 to FCompilationUnits.Count - 1 do
-  begin
-    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
-    if not CU.Valid then Continue;
-    MinMaxSet := CU.FMinPC <> CU.FMaxPC;
-    if MinMaxSet and ((AAddress < CU.FMinPC) or (AAddress > CU.FMaxPC))
-    then Continue;
-    
-    CU.BuildAddressMap;
-
-    Iter := TMapIterator.Create(CU.FAddressMap);
-    try
-      if Iter.EOM
-      then begin
-        if MinMaxSet
-        then Exit //  minmaxset and no procs defined ???
-        else Continue;
-      end;
-
-      if not Iter.Locate(AAddress)
-      then begin
-        if not Iter.BOM
-        then Iter.Previous;
-
-        if Iter.BOM
-        then begin
-          if MinMaxSet
-          then Exit //  minmaxset and no proc @ minpc ???
-          else Continue;
-        end;
-      end;
-      
-      // iter is at the closest defined adress before AAddress
-      Info := Iter.DataPtr;
-      if AAddress > Info^.EndPC
-      then begin
-        if MinMaxSet
-        then Exit //  minmaxset and no proc @ maxpc ???
-        else Continue;
-      end;
-      
-      Result := TDbgDwarfProcSymbol.Create(CU, Iter.DataPtr, AAddress);
-    finally
-      Iter.Free;
-    end;
-  end;
-end;
-
-function TDbgDwarf.FindIdentifier(AAddress: TDbgPtr; AName: String): TDbgSymbol;
-var
-  SubRoutine: TDbgDwarfProcSymbol; // TDbgSymbol;
-  CU: TDwarfCompilationUnit;
-  //Scope,
-  StartScopeIdx: Integer;
-  InfoEntry: TDwarfInformationEntry;
-begin
-  Result := nil;
-  SubRoutine := TDbgDwarfProcSymbol(FindSymbol(AAddress));
-  if SubRoutine = nil then
+  Proc := FindProcSymbol(AAddress);
+  if Proc = nil then
     exit;
 
-  try
-    CU := SubRoutine.FCU;
-    InfoEntry := TDwarfInformationEntry.Create(CU, nil);
-    InfoEntry.ScopeIndex := SubRoutine.FAddressInfo^.ScopeIndex;
+  Result := TDbgDwarfInfoAddressContext.Create(AAddress, Proc, Self);
+  Proc.ReleaseReference;
+end;
 
-    while InfoEntry.HasValidScope do begin
-      debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
-      StartScopeIdx := InfoEntry.ScopeIndex;
-
-      if InfoEntry.GoNamedChildEx(AName) then begin
-        Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
-        DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
-        break;
-      end;
-
-      // Search parent(s)
-      InfoEntry.ScopeIndex := StartScopeIdx;
-      InfoEntry.GoParent;
-    end;
-
-  // unitname?
-
-//// debugln:
-//    if Result <> nil then begin
-//      TDbgDwarfIdentifier(Result).TypeInfo; // debugln...
-//      if TDbgDwarfIdentifier(Result).TypeInfo <> nil then TDbgDwarfIdentifier(Result).TypeInfo.TypeInfo;
-//    end;
-//// end debugln
-
-
-  finally
-    ReleaseRefAndNil(SubRoutine);
-    ReleaseRefAndNil(InfoEntry);
-  end;
+function TDbgDwarf.FindSymbol(AAddress: TDbgPtr): TDbgSymbol;
+begin
+  Result := FindProcSymbol(AAddress);
 end;
 
 function TDbgDwarf.GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
@@ -3706,6 +3762,63 @@ begin
   Result := TDwarfCompilationUnit(FCompilationUnits[m]);
   if (p < Result.FInfoData) or (p > Result.FInfoData + Result.FLength) then
     Result := nil;
+end;
+
+function TDbgDwarf.FindProcSymbol(AAddress: TDbgPtr): TDbgSymbol;
+var
+  n: Integer;
+  CU: TDwarfCompilationUnit;
+  Iter: TMapIterator;
+  Info: PDwarfAddressInfo;
+  MinMaxSet: boolean;
+begin
+  Result := nil;
+  for n := 0 to FCompilationUnits.Count - 1 do
+  begin
+    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
+    if not CU.Valid then Continue;
+    MinMaxSet := CU.FMinPC <> CU.FMaxPC;
+    if MinMaxSet and ((AAddress < CU.FMinPC) or (AAddress > CU.FMaxPC))
+    then Continue;
+
+    CU.BuildAddressMap;
+
+    Iter := TMapIterator.Create(CU.FAddressMap);
+    try
+      if Iter.EOM
+      then begin
+        if MinMaxSet
+        then Exit //  minmaxset and no procs defined ???
+        else Continue;
+      end;
+
+      if not Iter.Locate(AAddress)
+      then begin
+        if not Iter.BOM
+        then Iter.Previous;
+
+        if Iter.BOM
+        then begin
+          if MinMaxSet
+          then Exit //  minmaxset and no proc @ minpc ???
+          else Continue;
+        end;
+      end;
+
+      // iter is at the closest defined adress before AAddress
+      Info := Iter.DataPtr;
+      if AAddress > Info^.EndPC
+      then begin
+        if MinMaxSet
+        then Exit //  minmaxset and no proc @ maxpc ???
+        else Continue;
+      end;
+
+      Result := TDbgDwarfProcSymbol.Create(CU, Iter.DataPtr, AAddress);
+    finally
+      Iter.Free;
+    end;
+  end;
 end;
 
 function TDbgDwarf.GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;

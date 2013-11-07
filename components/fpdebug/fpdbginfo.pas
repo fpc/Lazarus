@@ -209,6 +209,19 @@ type
     function GetMemberCount: Integer; override;
   end;
 
+  { TDbgInfoAddressContext }
+
+  TDbgInfoAddressContext = class(TRefCountedObject)
+  protected
+    function GetAddress: TDbgPtr; virtual; abstract;
+    function GetSymbolAtAddress: TDbgSymbol; virtual;
+  public
+    property Address: TDbgPtr read GetAddress;
+    property SymbolAtAddress: TDbgSymbol read GetSymbolAtAddress;
+    // search this, and all parent context
+    function FindSymbol(const AName: String): TDbgSymbol; virtual;
+  end;
+
   { TDbgInfo }
 
   TDbgInfo = class(TObject)
@@ -218,8 +231,9 @@ type
     procedure SetHasInfo;
   public
     constructor Create({%H-}ALoader: TDbgImageLoader); virtual;
-    function FindSymbol(const {%H-}AName: String): TDbgSymbol; virtual;
-    function FindSymbol({%H-}AAddress: TDbgPtr): TDbgSymbol; virtual;
+    function FindContext({%H-}AAddress: TDbgPtr): TDbgInfoAddressContext; virtual;
+    function FindSymbol(const {%H-}AName: String): TDbgSymbol; virtual; deprecated;
+    function FindSymbol({%H-}AAddress: TDbgPtr): TDbgSymbol; virtual; deprecated;
     property HasInfo: Boolean read FHasInfo;
     function GetLineAddress(const {%H-}AFileName: String; {%H-}ALine: Cardinal): TDbgPtr; virtual;
   end;
@@ -232,6 +246,18 @@ function dbgs(ADbgSymbolKind: TDbgSymbolKind): String;
 begin
   Result := '';
   WriteStr(Result, ADbgSymbolKind);
+end;
+
+{ TDbgInfoAddressContext }
+
+function TDbgInfoAddressContext.GetSymbolAtAddress: TDbgSymbol;
+begin
+  Result := nil;
+end;
+
+function TDbgInfoAddressContext.FindSymbol(const AName: String): TDbgSymbol;
+begin
+  Result := nil;
 end;
 
 { TDbgSymbol }
@@ -659,6 +685,11 @@ end;
 constructor TDbgInfo.Create(ALoader: TDbgImageLoader);
 begin
   inherited Create;
+end;
+
+function TDbgInfo.FindContext(AAddress: TDbgPtr): TDbgInfoAddressContext;
+begin
+  Result := nil;
 end;
 
 function TDbgInfo.FindSymbol(const AName: String): TDbgSymbol;

@@ -38,12 +38,19 @@ type
     property Debugger: TFpGDBMIDebugger read FDebugger;
   end;
 
+const
+  MAX_CTX_CACHE = 10;
+
+type
   { TFpGDBMIDebugger }
 
   TFpGDBMIDebugger = class(TGDBMIDebugger)
   private
     FImageLoader: TDbgImageLoader;
     FDwarfInfo: TDbgDwarf;
+    // cache last context
+    FlastStackFrame, FLastThread: Integer;
+    FLastContext: array [0..MAX_CTX_CACHE-1] of TDbgInfoAddressContext;
   protected
     function CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; override;
     function CreateLineInfo: TDBGLineInfo; override;
@@ -56,6 +63,7 @@ type
 
     procedure GetCurrentContext(out AThreadId, AStackFrame: Integer);
     function  GetLocationForContext(AThreadId, AStackFrame: Integer): TDBGPtr;
+    function  GetInfoContextForContext(AThreadId, AStackFrame: Integer): TDbgInfoAddressContext;
     function CreateTypeRequestCache: TGDBPTypeRequestCache; override;
   public
     class function Caption: String; override;
@@ -113,13 +121,19 @@ type
 function TFpGDBMIPascalExpression.GetDbgTyeForIdentifier(AnIdent: String): TDbgSymbol;
 var
   Loc: TDBGPtr;
+  Ctx: TDbgInfoAddressContext;
 begin
   Result := nil;
   if FDebugger.HasDwarf then begin
     if AnIdent <> '' then begin
-      Loc := FDebugger.GetLocationForContext(FThreadId, FStackFrame);
-      if (Loc <> 0) then
-        Result := FDebugger.FDwarfInfo.FindIdentifier(Loc, AnIdent);
+      //Loc := FDebugger.GetLocationForContext(FThreadId, FStackFrame);
+      //if (Loc <> 0) then begin
+        Ctx := FDebugger.GetInfoContextForContext(FThreadId, FStackFrame);
+        //Ctx := FDebugger.FDwarfInfo.FindContext(Loc);
+      if Ctx <> nil then
+        Result := Ctx.FindSymbol(AnIdent);
+        //Ctx.ReleaseReference;
+      //end;
     end;
   end;
 end;
@@ -439,7 +453,7 @@ const
     ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
     ASrcType, ABaseType: TDbgSymbol);
   var
-    s, s2: String;
+    s: String;
     ElemPointerLevel: Integer;
     ElemDeRefType, ElemBaseType: TDbgSymbol;
     ElemSrcTypeName, ElemDeRefTypeName, ElemBaseTypeName: String;
@@ -724,10 +738,16 @@ end;
 { TFpGDBMIDebugger }
 
 procedure TFpGDBMIDebugger.DoState(const OldState: TDBGState);
+var
+  i: Integer;
 begin
   inherited DoState(OldState);
   if State in [dsStop, dsError, dsNone] then
     UnLoadDwarf;
+
+  if OldState in [dsPause, dsInternalPause] then
+    for i := 0 to MAX_CTX_CACHE-1 do
+      ReleaseRefAndNil(FLastContext[i]);
 end;
 
 function TFpGDBMIDebugger.HasDwarf: Boolean;
@@ -828,6 +848,40 @@ begin
   Result := f.Address;
   DebugLn(['Returning addr from frame', dbgs(Result)]);
 
+end;
+
+function TFpGDBMIDebugger.GetInfoContextForContext(AThreadId,
+  AStackFrame: Integer): TDbgInfoAddressContext;
+var
+  Addr: TDBGPtr;
+begin
+  if (AThreadId <= 0) then begin
+    GetCurrentContext(AThreadId, AStackFrame);
+  end;
+
+  Addr := GetLocationForContext(AThreadId, AStackFrame);
+
+  if Addr = 0 then begin
+    Result := nil;
+    exit;
+  end;
+
+  if (AStackFrame >= FlastStackFrame) and
+     (AStackFrame - FlastStackFrame < MAX_CTX_CACHE) and
+     (FLastContext[AStackFrame - FlastStackFrame] <> nil) and
+     (FLastContext[AStackFrame - FlastStackFrame].Address = Addr)
+  then begin
+DebugLn('cached contex');
+    Result := FLastContext[AStackFrame - FlastStackFrame];
+    exit;
+  end;
+
+  Result := FDwarfInfo.FindContext(Addr);
+
+  FLastThread := AThreadId;
+  FlastStackFrame := AStackFrame;
+  FLastContext[0].ReleaseReference;
+  FLastContext[0] := Result;
 end;
 
 type

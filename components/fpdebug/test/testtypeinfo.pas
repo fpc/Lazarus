@@ -44,10 +44,14 @@ var
 function TTestPascalExpression.GetDbgTyeForIdentifier(AnIdent: String): TDbgSymbol;
 var
   Loc: TDBGPtr;
+  Ctx: TDbgInfoAddressContext;
 begin
   Result := nil;
-  if (FDwarfInfo <> nil) and (AnIdent <> '') then
-    Result := FDwarfInfo.FindIdentifier(Location, AnIdent);
+  if (FDwarfInfo <> nil) and (AnIdent <> '') then begin
+    Ctx := FDwarfInfo.FindContext(Location);
+    Result := Ctx.FindSymbol(AnIdent);
+    Ctx.ReleaseReference;
+  end;
 end;
 
 procedure TTestTypInfo.LoadDwarf(AFileName: String);
@@ -261,6 +265,8 @@ GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
     DoTest('testc2.a5', skArray);
     AssertTrue(TestText + ' Flag: ', sfStatArray in Expr.ResultType.Flags);
 GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+GetTypeAsDeclaration(s, Expr.ResultType, [tdfSkipClassBody, tdfSkipRecordBody]); DebugLn(s);
+
 
     DoTest('testc2.a6', skArray);
     AssertTrue(TestText + ' Flag: ', sfDynArray in Expr.ResultType.Flags);
@@ -271,6 +277,37 @@ GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
 GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
 
 
+
+    DoTest('a1[1]', skBoolean);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('a1[3]', skBoolean);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+
+    DoTest('a1b[1]', skArray);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('a1b[3]', skArray);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+
+    DoTest('a1b[1][3]', skBoolean);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('a1b[3][4]', skBoolean);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+
+    DoTest('TTestClass(0)', skClass);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+    DoTest('TTestClass(0).FWord', skCardinal);
+GetTypeAsDeclaration(s, Expr.ResultType); DebugLn(s);
+
+
+    DoTest('TTestClass2(0).enum4', skPointer);
+    DoTest('TTestClass2(0).enum4^', skEnum);
 
     FreeAndNil(expr);
   end;
@@ -292,5 +329,6 @@ end;
 initialization
 
   RegisterTest(TTestTypInfo);
+  DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_SEARCH' {$IFDEF FPDBG_DWARF_SEARCH} , True {$ENDIF} )^.Enabled := True;
 end.
 
