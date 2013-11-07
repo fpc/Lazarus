@@ -418,7 +418,15 @@ end;
 procedure TQtThemeServices.DrawText(ACanvas: TPersistent;
   Details: TThemedElementDetails; const S: String; R: TRect; Flags,
   Flags2: Cardinal);
+var
+  AQColor: TQColor;
 begin
+  if (TCanvas(ACanvas).Font.Color <> clDefault) then
+  begin
+    // issue #25253
+    ColorRefToTQColor(ColorToRGB(TCanvas(ACanvas).Font.Color), AQColor);
+    TQtDeviceContext(TCanvas(ACanvas).Handle).pen.setColor(AQColor);
+  end;
   DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2);
 end;
 
@@ -432,6 +440,7 @@ var
   TextRect: TRect;
   AOldMode: Integer;
   ATextPalette: Cardinal;
+  AQColor: TQColor;
 begin
   // DebugLn('TQtThemeServices.DrawText ');
   Context := TQtDeviceContext(DC);
@@ -541,6 +550,7 @@ begin
         QApplication_palette(Palette);
       end;
       try
+        AQColor := TQtDeviceContext(DC).pen.getColor; // issue #25253
         if Details.Element in [teEdit, teListView, teTreeView, teWindow] then
           ATextPalette := QPaletteWindowText
         else
@@ -548,6 +558,8 @@ begin
           ATextPalette := QPaletteButtonText
         else
           ATextPalette := QPaletteText;
+
+        QPalette_setColor(Palette, ATextPalette, @AQColor); // issue #25253
 
         QStyle_drawItemText(Style, Context.Widget, @R,
           DTFlagsToQtFlags(Flags), Palette,
