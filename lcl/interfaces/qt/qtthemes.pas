@@ -419,15 +419,21 @@ procedure TQtThemeServices.DrawText(ACanvas: TPersistent;
   Details: TThemedElementDetails; const S: String; R: TRect; Flags,
   Flags2: Cardinal);
 var
-  AQColor: TQColor;
+  AQColor, AOldColor: TQColor;
+  B: Boolean;
 begin
+  B := False;
   if (TCanvas(ACanvas).Font.Color <> clDefault) then
   begin
     // issue #25253
+    B := True;
+    AOldColor := TQtDeviceContext(TCanvas(ACanvas).Handle).pen.getColor;
     ColorRefToTQColor(ColorToRGB(TCanvas(ACanvas).Font.Color), AQColor);
     TQtDeviceContext(TCanvas(ACanvas).Handle).pen.setColor(AQColor);
   end;
   DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2);
+  if B then
+    TQtDeviceContext(TCanvas(ACanvas).Handle).pen.setColor(AOldColor);
 end;
 
 procedure TQtThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails;
