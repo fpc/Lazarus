@@ -210,6 +210,7 @@ begin
     DebugLn(['TLHelpConnection.StartHelpServer ',cmd]);
     {$ENDIF}
     with TProcessUTF8.Create(nil) do begin
+      InheritHandles := false;
       ShowWindow:=swoShowNormal;
       CommandLine := Cmd;
       Execute;

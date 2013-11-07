@@ -283,6 +283,7 @@ begin
   //  Exit;
 
   Proc := TProcessUTF8.Create(nil);
+  Proc.InheritHandles := false;
   {$if (fpc_version=2) and (fpc_release<5)}
   Proc.CommandLine := Lazbuild+' '+WS+' '+PCP+' '+LHelpProject;
   {$else}
@@ -539,6 +540,7 @@ begin
     end;
     Proc := TProcessUTF8.Create(nil);
     try
+      Proc.InheritHandles := false;
       {$if (fpc_version=2) and (fpc_release<5)}
       Proc.CommandLine := GetHelpExe + ' ' + Format(fHelpExeParams, [FileName, Url]);
       {$else}
