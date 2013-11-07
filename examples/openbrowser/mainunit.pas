@@ -83,6 +83,7 @@ begin
   
   TheProcess:=TProcessUTF8.Create(nil);
   try
+    TheProcess.InheritHandles := false;
     TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutput];
     TheProcess.ShowWindow := swoNone;
     TheProcess.CommandLine:=StartScriptFilename+' '+URL;
