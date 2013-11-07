@@ -404,6 +404,7 @@ constructor TLazarusProcess.Create(const LazarusPath: string;
   const CommandLine: string; EnvOverrides: TStringList);
 begin
   FProcess := TProcessUTF8.Create(nil);
+  FProcess.InheritHandles := false;
   FProcess.Options := [];
   FProcess.ShowWindow := swoShow;
   FProcess.CommandLine := LazarusPath + CommandLine;

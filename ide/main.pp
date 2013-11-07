@@ -7376,6 +7376,7 @@ const
   begin
     StartLazProcess := TProcessUTF8.Create(nil);
     try
+      StartLazProcess.InheritHandles:=false;
       // use the same working directory as the IDE, so that all relative file
       // names in parameters still work
       StartLazProcess.CurrentDirectory := ParamBaseDirectory;

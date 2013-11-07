@@ -367,6 +367,7 @@ begin
   try
     BrowserProcess:=TProcessUTF8.Create(nil);
     try
+      BrowserProcess.InheritHandles:=false;
       BrowserProcess.CommandLine:=CommandLine;
       BrowserProcess.Execute;
     finally
