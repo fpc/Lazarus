@@ -78,6 +78,7 @@ type
   TEMSConfig = class(TAbstractIDEEnvironmentOptions)
   private
     FSelfTestActive: Boolean;
+    FSelfTestError: String;
     FSelfTestFailed: Integer; // stores EMSVersion that failed
   protected
     function GetXmlConf: TRttiXMLConfig;
@@ -92,6 +93,7 @@ type
   published
     property SelfTestActive: Boolean read FSelfTestActive write FSelfTestActive;
     property SelfTestFailed: Integer read FSelfTestFailed write FSelfTestFailed;
+    property SelfTestError: String read FSelfTestError write FSelfTestError;
   end;
 
 function GetEMSConf: TEMSConfig;
