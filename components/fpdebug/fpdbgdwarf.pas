@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, Types, SysUtils, FpDbgInfo, FpDbgDwarfConst, Maps, Math,
-  FpDbgLoader, FpImgReaderBase, LazLoggerBase, LazClasses, contnrs;
+  FpDbgLoader, FpImgReaderBase, LazLoggerBase, LazClasses, LazFileUtils, contnrs;
   
 type
   // compilation unit header
@@ -390,6 +390,7 @@ type
     
     FInfoData: Pointer;
     FFileName: String;
+    FUnitName: String;
     FIdentifierCase: Integer;
 
     FAbbrevList: TDwarfAbbrevList;
@@ -422,11 +423,14 @@ type
     FMaxPC: QWord;  //
     FScope: TDwarfScopeInfo;
     FScopeList: TDwarfScopeList;
+    FScannedToEnd: Boolean;
 
     procedure BuildAddressMap;
     procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
+    function GetUnitName: String;
     function  MakeAddress(AData: Pointer): QWord;
   protected
+    procedure ScanAllEntries;
     function LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo;
                          AFlags: TDwarfLocateEntryFlags;
                          out AResultScope: TDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
@@ -450,6 +454,7 @@ type
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
     property FileName: String read FFileName;
+    property UnitName: String read GetUnitName;
     property Valid: Boolean read FValid;
   end;
   
@@ -866,6 +871,7 @@ type
     function LoadCompilationUnits: Integer;
     function PointerFromRVA(ARVA: QWord): Pointer;
     function PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
+    function CompilationUnitsCount: Integer;
     property CompilationUnits[AIndex: Integer]: TDwarfCompilationUnit read GetCompilationUnit;
   end;
 
@@ -1392,9 +1398,9 @@ end;
 function TDbgDwarfInfoAddressContext.FindSymbol(const AName: String): TDbgSymbol;
 var
   SubRoutine: TDbgDwarfProcSymbol; // TDbgSymbol;
-  CU: TDwarfCompilationUnit;
+  CU, CU2: TDwarfCompilationUnit;
   //Scope,
-  StartScopeIdx: Integer;
+  StartScopeIdx, ExtVal, i: Integer;
   InfoEntry: TDwarfInformationEntry;
   s, InfoName: String;
 begin
@@ -1419,14 +1425,14 @@ begin
         if UpperCase(InfoName) = s then begin
           Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
           DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
-          break;
+          exit;
         end;
       end;
 
       if InfoEntry.GoNamedChildEx(AName) then begin
         Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
         DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
-        break;
+        exit;
       end;
 
       // Search parent(s)
@@ -1434,7 +1440,40 @@ begin
       InfoEntry.GoParent;
     end;
 
-  // other units
+    // other units
+    i := FDwarf.CompilationUnitsCount;
+    while i > 0 do begin
+      dec(i);
+      CU2 := FDwarf.CompilationUnits[i];
+      if CU2 = CU then
+        continue;
+
+      InfoEntry.ReleaseReference;
+      InfoEntry := TDwarfInformationEntry.Create(CU2, nil);
+      InfoEntry.ScopeIndex := CU2.FirstScope.Index;
+
+      if not InfoEntry.Abbrev.tag = DW_TAG_compile_unit then
+        continue;
+
+      if UpperCase(CU2.UnitName) = s then begin
+        Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
+        DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found unit ', dbgs(InfoEntry.FScope, CU2), DbgSName(Result)]);
+        break;
+      end;
+
+      CU2.ScanAllEntries;
+      if InfoEntry.GoNamedChildEx(AName) then begin
+        // only variables are marked, but types not / so we may need all top level
+        Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
+        DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found (other unit) ', dbgs(InfoEntry.FScope, CU2), DbgSName(Result)]);
+        // DW_AT_visibility ?
+        if InfoEntry.ReadValue(DW_AT_external, ExtVal) then
+          if ExtVal <> 0 then
+            break;
+          // Search for better result
+      end;
+
+    end;
 
   finally
     ReleaseRefAndNil(InfoEntry);
@@ -3905,6 +3944,11 @@ begin
   Result := FSections[ASection].RawData + AVA - FImageBase - FSections[ASection].VirtualAdress;
 end;
 
+function TDbgDwarf.CompilationUnitsCount: Integer;
+begin
+  Result := FCompilationUnits.Count;
+end;
+
 { TDbgVerboseDwarf }
 
 function TDbgVerboseDwarf.GetCompilationUnitClass: TDwarfCompilationUnitClass;
@@ -4167,6 +4211,15 @@ begin
     PDWarfLineMap(FLineNumberMap.Objects[idx])^.Compress;
 end;
 
+function TDwarfCompilationUnit.GetUnitName: String;
+begin
+  Result := FUnitName;
+  if Result <> '' then exit;
+
+  FUnitName := LazFileUtils.ExtractFileNameOnly(FileName);
+  Result := FUnitName;
+end;
+
 procedure TDwarfCompilationUnit.BuildAddressMap;
 var
   AttribList: TPointerDynArray;
@@ -4178,8 +4231,7 @@ var
 begin
   if FAddressMapBuild then Exit;
 
-  // scan to end
-  LocateEntry(0, FScope, [lefContinuable, lefSearchChild], ResultScope, AttribList);
+  ScanAllEntries;
 
   Scope := FScope;
   while Scope.IsValid do
@@ -4773,6 +4825,17 @@ begin
   if FAddressSize = 4 // TODO Dwarf3 depends on FIsDwarf64
   then Result := PLongWord(AData)^
   else Result := PQWord(AData)^;
+end;
+
+procedure TDwarfCompilationUnit.ScanAllEntries;
+var
+  ResultScope: TDwarfScopeInfo;
+  AttribList: TPointerDynArray;
+begin
+  if FScannedToEnd then exit;
+  FScannedToEnd := True;
+  // scan to end
+  LocateEntry(0, FScope, [lefContinuable, lefSearchChild], ResultScope, AttribList);
 end;
 
 function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Cardinal): Boolean;

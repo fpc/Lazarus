@@ -150,6 +150,7 @@ type
   TFpPascalExpressionPartIdentifer = class(TFpPascalExpressionPartContainer)
   private
     FDbgType: TDbgSymbol; // may be a variable or function or a type ...
+    FDbgTypeDone: Boolean;
   protected
     function DoGetResultType: TDbgSymbol; override;
     function DoGetIsTypeCast: Boolean; override;
@@ -679,8 +680,9 @@ end;
 function TFpPascalExpressionPartIdentifer.DoGetResultType: TDbgSymbol;
 begin
   Result := nil;
-  if FDbgType = nil then
+  if (FDbgType = nil) and not FDbgTypeDone then
     FDbgType := FExpression.GetDbgTyeForIdentifier(GetText);
+  FDbgTypeDone := True;
   if FDbgType = nil then
     exit;
 
@@ -696,8 +698,9 @@ end;
 
 function TFpPascalExpressionPartIdentifer.DoGetIsTypeCast: Boolean;
 begin
-  if FDbgType = nil then
+  if (FDbgType = nil) and not FDbgTypeDone then
     FDbgType := FExpression.GetDbgTyeForIdentifier(GetText);
+  FDbgTypeDone := True;
   Result := (FDbgType  <> nil) and (FDbgType.SymbolType = stType);
 end;
 
