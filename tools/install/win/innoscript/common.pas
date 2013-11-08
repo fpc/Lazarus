@@ -23,7 +23,7 @@ function GetPCPForDelete(param:string): String;
 // Name: {code:GetPCPForDelete}*.xml; Type: files; Tasks: delusersettings
 // ... delete primary conf
 begin
-  if (IsSecondaryCheckBoxChecked) then // or IsSecondaryUpdate
+  if (IsSecondaryCheckBoxChecked) or IsSecondaryUpdate then 
   begin
     if SecondPCP = '' then
       Result := AddBackslash(WizardDirValue) // some fallback
