@@ -105,12 +105,19 @@ type
   TDwarfCompilationUnit = class;
 
   { TDwarfAbbrev }
+  TDwarfAbbrevFlag = (
+    dafHasChildren,
+    dafHasName
+    // address
+  );
+  TDwarfAbbrevFlags = set of TDwarfAbbrevFlag;
 
   TDwarfAbbrev = record
     tag: Cardinal;
     index: Integer;
-    count: Integer;
-    Children: Boolean;
+    count: SmallInt; // Integer;
+    flags: TDwarfAbbrevFlags;
+    //Children: Boolean;
   end;
 
   TDwarfAbbrevEntry = record
@@ -1700,6 +1707,11 @@ begin
   s1 := UTF8UpperCase(AName);
   s2 := UTF8LowerCase(AName);
   while HasValidScope do begin
+    PrepareAbbrev;
+    if not (dafHasName in FAbbrev.flags) then begin
+      GoNext;
+      Continue;
+    end;
     if not ReadValue(DW_AT_name, EntryName) then begin
       GoNext;
       Continue;
@@ -1734,6 +1746,11 @@ begin
   s2 := UTF8LowerCase(AName);
   while true do begin
     while HasValidScope do begin
+      PrepareAbbrev;
+      if not (dafHasName in FAbbrev.flags) then begin
+        GoNext;
+        Continue;
+      end;
       if not ReadValue(DW_AT_name, EntryName) then begin
         GoNext;
         Continue;
@@ -2021,6 +2038,7 @@ begin
       debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
       StartScopeIdx := InfoEntry.ScopeIndex;
 
+      // Todo (dafHasName in InfoEntry.Abbrev.flags) and
       if InfoEntry.ReadValue(DW_AT_name, InfoName) then begin
         if (AName <> '') and (CompareUtf8BothCase(@s1[1], @s2[1], InfoName)) then begin
           Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
@@ -2926,7 +2944,8 @@ end;
 
 function TDbgDwarfIdentifier.ReadName(out AName: String): Boolean;
 begin
-  Result := FInformationEntry.ReadValue(DW_AT_name, AName);
+  Result := (dafHasName in FInformationEntry.Abbrev.flags) and
+            FInformationEntry.ReadValue(DW_AT_name, AName);
 end;
 
 function TDbgDwarfIdentifier.ReadMemberVisibility(out
@@ -3072,6 +3091,7 @@ var
   n: Integer;
   CurAbbrevIndex: Integer;
   DbgVerbose: Boolean;
+  f: TDwarfAbbrevFlags;
 begin
   abbrev := 0;
   CurAbbrevIndex := 0;
@@ -3101,7 +3121,10 @@ begin
       DebugLn(FPDBG_DWARF_VERBOSE, ['  tag:     ', Def.tag, '=', DwarfTagToString(Def.tag)]);
       DebugLn(FPDBG_DWARF_VERBOSE, ['  children:', pbyte(AnAbbrevDataPtr)^, '=', DwarfChildrenToString(pbyte(AnAbbrevDataPtr)^)]);
     end;
-    Def.Children := pbyte(AnAbbrevDataPtr)^ = DW_CHILDREN_yes;
+    if pbyte(AnAbbrevDataPtr)^ = DW_CHILDREN_yes then
+      f := [dafHasChildren]
+    else
+      f := [];
     Inc(pbyte(AnAbbrevDataPtr));
 
     n := 0;
@@ -3110,6 +3133,9 @@ begin
     while pword(AnAbbrevDataPtr)^ <> 0 do
     begin
       attrib := ULEB128toOrdinal(pbyte(AnAbbrevDataPtr));
+      if attrib = DW_AT_name then
+        Include(f, dafHasName);
+
       form := ULEB128toOrdinal(pbyte(AnAbbrevDataPtr));
 
       MakeRoom(CurAbbrevIndex + 1);
@@ -3122,6 +3148,7 @@ begin
       Inc(n);
     end;
     Def.Count := n;
+    Def.flags := f;
     {$IFDEF USE_ABBREV_TMAP}
     FMap.Add(abbrev, Def);
     {$ELSE}
@@ -4311,6 +4338,7 @@ begin
         then ReadValue(Attrib, Form, Info.EndPC)
         else Info.EndPC := Info.StartPC;
 
+        // TODO (dafHasName in Abbrev.flags)
         if LocateAttribute(Scope.Entry, DW_AT_name, AttribList, Attrib, Form)
         then ReadValue(Attrib, Form, Info.Name)
         else Info.Name := 'undefined';
@@ -4467,6 +4495,7 @@ begin
   FValid := True;
 
   AttribList.EvalCount := 0;
+  /// TODO: (dafHasName in Abbrev.flags)
   if LocateAttribute(Scope.Entry, DW_AT_name, AttribList, Attrib, Form)
   then ReadValue(Attrib, Form, FFileName);
   
@@ -4747,7 +4776,7 @@ begin
     Abbrev := ULEB128toOrdinal(p);
     if Abbrev = 0 then begin      // no more sibling
       AppendAsChild := False;     // children already done
-      if Def.Children then begin  // current has 0 children
+      if (dafHasChildren in Def.flags) then begin  // current has 0 children
         NextEntryDataPtr := p;
         if NextEntryDataPtr >= MaxData then
           break;
@@ -4769,7 +4798,7 @@ begin
         break;
     end
     else
-      AppendAsChild := Def.Children;
+      AppendAsChild := (dafHasChildren in Def.flags);
 
     if AppendAsChild then
       ni := Scope.CreateChildForEntry(NextEntryDataPtr)
@@ -5380,7 +5409,7 @@ p := AData;
       Exit;
     end;
     DbgOut(FPDBG_DWARF_VERBOSE, [', tag: ', Def.tag, '=', DwarfTagToString(Def.tag)]);
-    if Def.Children
+    if (dafHasChildren in Def.flags)
     then begin
       DebugLn(FPDBG_DWARF_VERBOSE, ['']);
       DebugLn(FPDBG_DWARF_VERBOSE, [', has children']);
@@ -5579,7 +5608,7 @@ p := AData;
       end;
     end;
 
-    if Def.Children
+    if (dafHasChildren in Def.flags)
     then begin
       DebugLn(FPDBG_DWARF_VERBOSE, [Indent, ' /--']);
       Indent := Indent + ' |';
