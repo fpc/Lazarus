@@ -4259,6 +4259,7 @@ var
   Info: TDwarfAddressInfo;
   Scope, ResultScope: TDwarfScopeInfo;
   i: Integer;
+  Abbrev: TDwarfAbbrev;
 begin
   if FAddressMapBuild then Exit;
 
@@ -4267,21 +4268,31 @@ begin
   Scope := FScope;
   while Scope.IsValid do
   begin
-    if LocateEntry(DW_TAG_subprogram, Scope, [lefContinuable, lefSearchChild],
-                   ResultScope)
-    then begin
+    if not GetDefinition(Scope.Entry, Abbrev) then begin
+// 0 entry
+      i := Scope.Index;
+      if i < Scope.FScopeList^.HighestKnown
+      then Scope.Index := i + 1 // Child or Next, or parent.next
+      else break;
+      continue;
+
+      //DebugLn(FPDBG_DWARF_WARNINGS, ['No abbrev found']);
+      //break;
+    end;
+
+    if Abbrev.tag = DW_TAG_subprogram then begin
       AttribList.EvalCount := 0;
-      Info.ScopeIndex := ResultScope.Index;
-      Info.ScopeList := ResultScope.FScopeList;
-      if LocateAttribute(ResultScope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
+      Info.ScopeIndex := Scope.Index;
+      Info.ScopeList := Scope.FScopeList;
+      if LocateAttribute(Scope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
       then begin
         ReadValue(Attrib, Form, Info.StartPC);
 
-        if LocateAttribute(ResultScope.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
+        if LocateAttribute(Scope.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
         then ReadValue(Attrib, Form, Info.EndPC)
         else Info.EndPC := Info.StartPC;
 
-        if LocateAttribute(ResultScope.Entry, DW_AT_name, AttribList, Attrib, Form)
+        if LocateAttribute(Scope.Entry, DW_AT_name, AttribList, Attrib, Form)
         then ReadValue(Attrib, Form, Info.Name)
         else Info.Name := 'undefined';
 
@@ -4293,23 +4304,13 @@ begin
           else FAddressMap.Add(Info.StartPC, Info);
         end;
       end;
-
-      // TAG found, try continue with the found scope
-      //Scope.Index := ResultScope.ChildIndex;
-      //if Scope.IsValid then Continue;
-      //Scope.Index := ResultScope.Index;
-
-      i := ResultScope.ChildIndex;
-      if i >= 0 then begin
-        Scope.Index := i; // must be valid
-        continue;
-      end
-      else
-        Scope.Index := ResultScope.Index;
     end;
 
-    while (not Scope.HasNext) and (Scope.HasParent) do Scope.GoParent;
-    Scope.GoNext;
+    i := Scope.Index;
+    if i < Scope.FScopeList^.HighestKnown
+    then Scope.Index := i + 1 // Child or Next, or parent.next
+    else break;
+
   end;
 
   FAddressMapBuild := True;
