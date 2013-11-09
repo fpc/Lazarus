@@ -352,14 +352,6 @@ type
     Name: PChar;
   end;
 
-  TDwarfLocateEntryFlag = (
-    lefContinuable,  // forces the located scope or the startscope to be contuniable
-                     // meaning that tree traversion can continue from a scope
-    lefSearchChild,
-    lefSearchSibling // search toplevel siblings
-  );
-  TDwarfLocateEntryFlags = set of TDwarfLocateEntryFlag;
-
   { TDWarfLineMap }
 
   TDWarfLineMap = object
@@ -435,9 +427,7 @@ type
     function  MakeAddress(AData: Pointer): QWord;
   protected
     procedure ScanAllEntries;
-    function LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo;
-                         AFlags: TDwarfLocateEntryFlags;
-                         out AResultScope: TDwarfScopeInfo): Boolean;
+    function LocateEntry(ATag: Cardinal; out AResultScope: TDwarfScopeInfo): Boolean;
     function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; var AList: TAttribPointerList;
                              out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
     function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal;
@@ -4258,7 +4248,7 @@ var
   Form: Cardinal;
   Info: TDwarfAddressInfo;
   Scope, ResultScope: TDwarfScopeInfo;
-  i: Integer;
+  ScopeIdx: Integer;
   Abbrev: TDwarfAbbrev;
 begin
   if FAddressMapBuild then Exit;
@@ -4266,14 +4256,14 @@ begin
   ScanAllEntries;
 
   Scope := FScope;
+  ScopeIdx := Scope.Index;
+
   while Scope.IsValid do
   begin
     if not GetDefinition(Scope.Entry, Abbrev) then begin
 // 0 entry
-      i := Scope.Index;
-      if i < Scope.FScopeList^.HighestKnown
-      then Scope.Index := i + 1 // Child or Next, or parent.next
-      else break;
+      inc(ScopeIdx);
+      Scope.Index := ScopeIdx; // Child or Next, or parent.next
       continue;
 
       //DebugLn(FPDBG_DWARF_WARNINGS, ['No abbrev found']);
@@ -4306,11 +4296,8 @@ begin
       end;
     end;
 
-    i := Scope.Index;
-    if i < Scope.FScopeList^.HighestKnown
-    then Scope.Index := i + 1 // Child or Next, or parent.next
-    else break;
-
+    inc(ScopeIdx);
+    Scope.Index := ScopeIdx; // Child or Next, or parent.next
   end;
 
   FAddressMapBuild := True;
@@ -4443,7 +4430,7 @@ begin
   FScope.Init(@FScopeList);
   FScope.Index := 0;
   // retrieve some info about this unit
-  if not LocateEntry(DW_TAG_compile_unit, FScope, [lefSearchChild], Scope)
+  if not LocateEntry(DW_TAG_compile_unit, Scope)
   then begin
     DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING compilation unit has no compile_unit tag']);
     Exit;
@@ -4667,8 +4654,8 @@ end;
 //   ACurrentOnly: if set, process only current entry
 //   AResultScope: the located scope info
 //----------------------------------------
-function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo;
-  AFlags: TDwarfLocateEntryFlags; out AResultScope: TDwarfScopeInfo): Boolean;
+function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; out
+  AResultScope: TDwarfScopeInfo): Boolean;
 
   procedure ParseAttribs(const ADef: TDwarfAbbrev; var p: Pointer);
   var
@@ -4685,186 +4672,87 @@ function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStartScope: TDwarfSc
       inc(ADefs);
     end;
   end;
-  
-  function CanExit(AResult: Boolean): Boolean;
-  begin
-    Result := True;
-    if AResult
-    then begin
-      if not (lefContinuable in AFlags) then Exit; // ready, so ok.
-      if AResultScope.HasChild then Exit; // we have a child so we are continuable
-      if AResultScope.HasNext then Exit; // we have a next so we are continuable
-    end
-    else begin
-      if AFlags * [lefSearchSibling, lefSearchChild] = []
-      then begin
-        if not (lefContinuable in AFlags) then Exit; // no furteher search, so ok.
-        if AStartScope.HasChild then Exit; // we have a child so we are continuable
-        if AStartScope.HasNext then Exit; // we have a next so we are continuable
-      end;
-    end;
-    Result := False;
-  end;
 
 var
   Abbrev: Cardinal;
   Def: TDwarfAbbrev;
-  Level: Integer;
   MaxData: Pointer;
-  p: Pointer;
+  p, EntryDataPtr, NextEntryDataPtr: Pointer;
   Scope: TDwarfScopeInfo;
-  Searching: Boolean; // set as long as we need searching for a tag.
-  p2: Pointer;
   ni: Integer;
-                      // we cannot use result for this, since we might want a topnode search while we need to be continuable
+  AppendAsChild: Boolean;
 begin
   Result := False;
-  if not AStartScope.IsValid then Exit;
-  Searching := True;
-  Level := 0;
+  if not FScope.IsValid then Exit;
   MaxData := FInfoData + FLength;
-  Scope := AStartScope;
-  p := Scope.Entry;
-  while (p < MaxData) and (Level >= 0) do
+  Scope := FScope;
+  Scope.Index := FScopeList.HighestKnown; // last known scope
+
+  // "last rounds" NextEntryDataPtr
+  NextEntryDataPtr := Scope.Entry;
+  while (NextEntryDataPtr < MaxData) do
   begin
-    p := Scope.Entry;
-    p2:=p;
-    Abbrev := ULEB128toOrdinal(p);
-    if Abbrev = 0
-    then begin
-      Dec(Level);
-      Scope.GoParent;
-      if not Scope.IsValid then Exit;
+    EntryDataPtr := NextEntryDataPtr;
 
-      if Level < 0 then
-      begin
-        // p is now the entry of the next of the startparent
-        // let's see if we need to set it
-        if not (lefContinuable in AFlags) then Exit;
-        Scope.Index := AStartScope.ParentIndex;
-        //if not Scope2.IsValid then Exit;
-        if Scope.HasNext then Exit;
-        if p >= MaxData then break;
-        Scope.CreateNextForEntry(p);
-        Exit;
-      end;
-
-      ni := Scope.NextIndex;
-      if ni < 0 // not Scope.HasNext
-      then begin
-        if p >= MaxData then break;
-        ni := Scope.CreateNextForEntry(p);
-      end;
-//      if Level = 0 then Exit;
-      if CanExit(Result) then Exit;
-      if (Level = 0) and not (lefSearchSibling in AFlags) then Exit;
-
-      Scope.Index := ni; // GoNext
-      Continue;
-    end;
-    
-    if not GetDefinition(p2, Def)
-    then begin
+    NextEntryDataPtr := FAbbrevList.FindLe128bFromPointer(EntryDataPtr, Def);
+    if NextEntryDataPtr = nil then begin
+      Abbrev := ULEB128toOrdinal(EntryDataPtr);
       DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
+          // TODO shorten array
+      exit;
+    end;
+
+    if (ATag <> 0) and (Def.tag = ATag) then begin
+      Result := True;
+      AResultScope := Scope;
       Break;
     end;
 
-    if Searching
-    then begin
-      Result := Def.Tag = ATag;
-      if Result
-      then begin
-        Searching := False;
-        AResultScope := Scope;
-        if not (lefContinuable in AFlags)
-        then Exit
-      end
-      else begin
-        if CanExit(False) then Exit;
-        Searching := (lefSearchChild in AFlags)
-                  or ((level = 0) and (lefSearchSibling in AFlags));
+    ParseAttribs(Def, NextEntryDataPtr);
+    // NextEntryDataPtr is now at next scope
+
+    if NextEntryDataPtr >= MaxData then
+      break;
+
+    p := NextEntryDataPtr;
+    Abbrev := ULEB128toOrdinal(p);
+    if Abbrev = 0 then begin      // no more sibling
+      AppendAsChild := False;     // children already done
+      if Def.Children then begin  // current has 0 children
+        NextEntryDataPtr := p;
+        if NextEntryDataPtr >= MaxData then
+          break;
+        Abbrev := ULEB128toOrdinal(p);
       end;
-    end;
-
-    // check if we can shortcut the searches
-    ni := Scope.ChildIndex;
-    if (ni >= 0) // (Scope.HasChild)
-    and ((lefSearchChild in AFlags) or (not Scope.HasNext))
-    then begin
-      Inc(Level);
-      Scope.Index := ni; // GoChild
-      Continue;
-    end;
-
-    ni := Scope.NextIndex;
-    if ni >= 0 // Scope.HasNext
-    then begin
-      // scope.Childvalid is true, otherwise we can not have a next.
-      // So no need to check
-      if lefSearchSibling in AFlags
-      then begin
-        Scope.Index := ni; // GoNext
-        Continue;
+      while (Abbrev = 0) do begin
+        NextEntryDataPtr := p;
+        if NextEntryDataPtr >= MaxData then
+          break;
+        Scope.GoParent;
+        if not Scope.IsValid then begin
+          DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
+          // TODO shorten array
+          exit;
+        end;
+        Abbrev := ULEB128toOrdinal(p);
       end;
-      if Level = 0 then Exit;
-    end;
-      
-    //  bummer, we need to parse our attribs, if we want them or not
-    ParseAttribs(Def, p);
-
-    // if we have a result or don't want to search we're done here
-    if CanExit(Result) then Exit;
-
-    // check for shortcuts
-    if [lefContinuable, lefSearchChild] * AFlags <> []
-    then begin
-      ni := Scope.ChildIndex;
-      if ni >= 0 // Scope.HasChild
-      then begin
-        Inc(Level);
-        Scope.Index := ni; // GoChild
-        Continue;
-      end;
+      if NextEntryDataPtr >= MaxData then
+        break;
     end
-    else if lefSearchSibling in AFlags
-    then begin
-      ni := Scope.NextIndex;
-      if ni >= 0 //  Scope.HasNext
-      then begin
-        Scope.Index := ni; // GoNext
-        Continue;
-      end;
-    end;
+    else
+      AppendAsChild := Def.Children;
 
-    // Def.children can be set while no children are found
-    // we cannot have a next without a defined child
-    if Def.Children
-    then begin
-      assert(p < MaxData, 'Got data for children');
-      ni := Scope.ChildIndex;
-      if ni < 0 // not Scope.HasChild
-      then ni := Scope.CreateChildForEntry(p);
-      if CanExit(Result) then Exit;
-      Inc(Level);
-      Scope.Index := ni; // GoChild
-      Continue;
-    end;
+    if AppendAsChild then
+      ni := Scope.CreateChildForEntry(NextEntryDataPtr)
+    else
+      ni := Scope.CreateNextForEntry(NextEntryDataPtr);
 
-    ni := Scope.NextIndex;
-    if ni < 0 // not Scope.HasNext
-    then begin
-      if p >= MaxData then break;
-      ni := Scope.CreateNextForEntry(p);
-    end;
-    if CanExit(Result) then Exit;
-    if (Level = 0) and not (lefSearchSibling in AFlags) then Exit;
-
-    Scope.Index := ni; // GoNext
+    Scope.FIndex := ni; // skip check, index was just created / must exist
   end;
 
-  if (p >= MaxData) then begin
-    if (p > MaxData) then
-      debugln(FPDBG_DWARF_WARNINGS, ['LocateEntry went past end of memory: ', p-MaxData]);
+  if (NextEntryDataPtr >= MaxData) then begin
+    if (EntryDataPtr > MaxData) then
+      debugln(FPDBG_DWARF_WARNINGS, ['LocateEntry went past end of memory: ', EntryDataPtr-MaxData]);
     SetLength(FScopeList.List, FScopeList.HighestKnown + 1);
   end;
 
@@ -4884,7 +4772,7 @@ begin
   if FScannedToEnd then exit;
   FScannedToEnd := True;
   // scan to end
-  LocateEntry(0, FScope, [lefContinuable, lefSearchChild], ResultScope);
+  LocateEntry(0, ResultScope);
 end;
 
 function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Cardinal): Boolean;
@@ -5439,8 +5327,7 @@ var
   ADefs: PDwarfAbbrevEntry;
 begin
   // Tag - should not exist. Load all scopes
-  //FCU.LocateEntry(0, Scope, [lefContinuable, lefSearchChild, lefSearchSibling],
-  //  ResultScope);
+  FCU.ScanAllEntries;
 
   Indent := AIndent;
   Level := 0;
