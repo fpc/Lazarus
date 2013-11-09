@@ -508,6 +508,7 @@ end;
 function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
 var
   i: Integer;
+  c: Char;
 begin
   Result:=false;
   if NameLen<=0 then begin
@@ -522,15 +523,13 @@ begin
   if (StartPos[0]='.') and (StartPos[1] in AllowDirectorySeparators) then exit;
   i:=0;
   while i<NameLen do begin
-    if not (StartPos[i] in AllowDirectorySeparators) then
+    c:=StartPos[i];
+    if not (c in AllowDirectorySeparators) then
       inc(i)
     else begin
+      if c<>PathDelim then exit;
       inc(i);
       if i=NameLen then break;
-
-      {$IFDEF Windows}
-      if StartPos[i]='/' then exit;
-      {$ENDIF}
 
       // check for double path delimiter
       if (StartPos[i] in AllowDirectorySeparators) then exit;
@@ -559,15 +558,17 @@ var
 begin
   Result := AFileName;
   Len := Length(AFileName);
-  if (Len > 0) and not FilenameIsTrimmed(Result) then
+  if (Len = 0) or FilenameIsTrimmed(Result) then exit;
+  if AFilename[1] = #32 then
   begin
     Start := 1;
-    while (Len > 0) and (AFileName[Len] = #32) do Dec(Len);
     while (Start <= Len) and (AFilename[Start] = #32) do Inc(Start);
-    if Start > 1 then System.Delete(Result,1,Start-1);
-    SetLength(Result, Len - (Start - 1));
-    Result := ResolveDots(Result);
+    System.Delete(Result,1,Start-1);
+    Len := Length(AFileName);
   end;
+  while (Len > 0) and (AFileName[Len] = #32) do Dec(Len);
+  SetLength(Result, Len);
+  Result := ResolveDots(Result);
 end;
 
 procedure ForcePathDelims(var FileName: string);
