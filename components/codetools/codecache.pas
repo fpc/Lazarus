@@ -178,7 +178,7 @@ type
     function CreateFile(const AFilename: string): TCodeBuffer;
     function FindFile(AFilename: string): TCodeBuffer;
     function LastIncludedByFile(const IncludeFilename: string): string;
-    function LoadFile(const AFilename: string): TCodeBuffer;
+    function LoadFile(AFilename: string): TCodeBuffer;
     procedure RemoveCodeBuffer(Buffer: TCodeBuffer);
     procedure LoadIncludeLinksDataFromList(List: TStrings);
     function LoadIncludeLinksFromFile(const AFilename: string): boolean;
@@ -570,7 +570,7 @@ begin
   Result:=nil;
 end;
 
-function TCodeCache.LoadFile(const AFilename: string): TCodeBuffer;
+function TCodeCache.LoadFile(AFilename: string): TCodeBuffer;
 var
   DiskFilename: String;
 
@@ -584,6 +584,7 @@ var
   end;
 
 begin
+  AFilename:=TrimFilename(AFilename);
   Result:=FindFile(AFilename);
   if FilenameIsAbsolute(AFilename) then begin
     if Result=nil then begin
