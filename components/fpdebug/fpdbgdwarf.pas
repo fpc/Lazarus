@@ -1398,11 +1398,13 @@ end;
 function TDbgDwarfInfoAddressContext.FindSymbol(const AName: String): TDbgSymbol;
 var
   SubRoutine: TDbgDwarfProcSymbol; // TDbgSymbol;
-  CU, CU2: TDwarfCompilationUnit;
+  CU, CU2, FwdCompUint: TDwarfCompilationUnit;
   //Scope,
   StartScopeIdx, ExtVal, i: Integer;
-  InfoEntry: TDwarfInformationEntry;
+  InfoEntry, InfoEntryTmp, InfoEntryParent: TDwarfInformationEntry;
   s, InfoName: String;
+  FwdInfoPtr: Pointer;
+  tg: Cardinal;
 begin
   Result := nil;
   if (FSymbol = nil) or not(FSymbol is TDbgDwarfProcSymbol) then
@@ -1429,10 +1431,33 @@ begin
         end;
       end;
 
+      tg := InfoEntry.Abbrev.tag;
+
       if InfoEntry.GoNamedChildEx(AName) then begin
         Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
         DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
         exit;
+      end;
+
+      if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
+        // search parent class
+        InfoEntry.ScopeIndex := StartScopeIdx;
+        InfoEntryParent := InfoEntry.FindChildByTag(DW_TAG_inheritance);
+        while (InfoEntryParent <> nil) and (InfoEntryParent.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint)) do begin
+          InfoEntryParent.ReleaseReference;
+          InfoEntryParent := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+          DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier  PARENT ', dbgs(InfoEntryParent, FwdCompUint) ]);
+          if InfoEntryParent.GoNamedChildEx(AName) then begin
+            Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntryParent);
+            InfoEntryParent.ReleaseReference;
+            DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntryParent.FScope, CU), DbgSName(Result)]);
+            exit;
+          end;
+          InfoEntryTmp := InfoEntryParent.FindChildByTag(DW_TAG_inheritance);
+          InfoEntryParent.ReleaseReference;
+          InfoEntryParent := InfoEntryTmp;
+        end;
+        InfoEntryParent.ReleaseReference;
       end;
 
       // Search parent(s)
