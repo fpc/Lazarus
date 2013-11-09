@@ -559,15 +559,17 @@ var
 begin
   Result := AFileName;
   Len := Length(AFileName);
-  if (Len > 0) and not FilenameIsTrimmed(Result) then
+  if (Len = 0) or FilenameIsTrimmed(Result) then exit;
+  if AFilename[1] = #32 then
   begin
     Start := 1;
-    while (Len > 0) and (AFileName[Len] = #32) do Dec(Len);
     while (Start <= Len) and (AFilename[Start] = #32) do Inc(Start);
-    if Start > 1 then System.Delete(Result,1,Start-1);
-    SetLength(Result, Len - (Start - 1));
-    Result := ResolveDots(Result);
+    System.Delete(Result,1,Start-1);
+    Len := Length(AFileName);
   end;
+  while (Len > 0) and (AFileName[Len] = #32) do Dec(Len);
+  SetLength(Result, Len);
+  Result := ResolveDots(Result);
 end;
 
 procedure ForcePathDelims(var FileName: string);
