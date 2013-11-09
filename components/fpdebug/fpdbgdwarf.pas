@@ -42,7 +42,8 @@ interface
 
 uses
   Classes, Types, SysUtils, FpDbgInfo, FpDbgDwarfConst, Maps, Math,
-  FpDbgLoader, FpImgReaderBase, LazLoggerBase, LazClasses, LazFileUtils, contnrs;
+  FpDbgLoader, FpImgReaderBase, LazLoggerBase, // LazLoggerDummy,
+  LazClasses, LazFileUtils, contnrs;
   
 type
   // compilation unit header
@@ -100,8 +101,6 @@ const
   DWARF_HEADER64_SIGNATURE = $FFFFFFFF;
 
 type
-  TPointerDynArray = array of Pointer;
-
   TDbgDwarf = class;
   TDwarfCompilationUnit = class;
 
@@ -127,6 +126,13 @@ type
     EndIndex: cardinal;      // first index in EndTableData
   end;
   PLeb128TableEntry = ^TLeb128TableEntry;
+
+  TPointerDynArray = array of Pointer;
+  TAttribPointerList = record
+    List: TPointerDynArray;
+    Abbrev: TDwarfAbbrev;
+    EvalCount: Integer;
+  end;
 
   { TLEB128PreFixTree }
 
@@ -347,8 +353,6 @@ type
   end;
 
   TDwarfLocateEntryFlag = (
-    lefCreateAttribList, // Build a list of pointers into the debug_info for the found entry.
-                         // For each Abbreviation-attribute, point to the data in the Entry
     lefContinuable,  // forces the located scope or the startscope to be contuniable
                      // meaning that tree traversion can continue from a scope
     lefSearchChild,
@@ -433,9 +437,11 @@ type
     procedure ScanAllEntries;
     function LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo;
                          AFlags: TDwarfLocateEntryFlags;
-                         out AResultScope: TDwarfScopeInfo; out AList: TPointerDynArray): Boolean;
-    function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; const AList: TPointerDynArray; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
-    function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
+                         out AResultScope: TDwarfScopeInfo): Boolean;
+    function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; var AList: TAttribPointerList;
+                             out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
+    function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal;
+                             out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
 
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Integer): Boolean;
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Int64): Boolean;
@@ -4173,6 +4179,7 @@ begin
     if AAddressInfo = nil then Exit;
     if AAddressInfo^.StateMachine <> nil then Exit;
   end;
+  if FLineInfo.StateMachine = nil then Exit;
   if FLineInfo.StateMachine.Ended then Exit;
 
   BuildAddressMap;
@@ -4247,12 +4254,13 @@ end;
 
 procedure TDwarfCompilationUnit.BuildAddressMap;
 var
-  AttribList: TPointerDynArray;
+  AttribList: TAttribPointerList;
   Attrib: Pointer;
   Form: Cardinal;
   Info: TDwarfAddressInfo;
   Scope, ResultScope: TDwarfScopeInfo;
   i: Integer;
+  xxAttribList: TPointerDynArray; // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 begin
   if FAddressMapBuild then Exit;
 
@@ -4261,8 +4269,10 @@ begin
   Scope := FScope;
   while Scope.IsValid do
   begin
-    if LocateEntry(DW_TAG_subprogram, Scope, [lefCreateAttribList, lefContinuable, lefSearchChild], ResultScope, AttribList)
+    if LocateEntry(DW_TAG_subprogram, Scope, [lefContinuable, lefSearchChild],
+                   ResultScope)
     then begin
+      AttribList.EvalCount := 0;
       Info.ScopeIndex := ResultScope.Index;
       Info.ScopeList := ResultScope.FScopeList;
       if LocateAttribute(ResultScope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
@@ -4391,11 +4401,12 @@ constructor TDwarfCompilationUnit.Create(AOwner: TDbgDwarf; ADataOffset: QWord; 
   end;
 
 var
-  AttribList: TPointerDynArray;
+  AttribList: TAttribPointerList;
   Attrib: Pointer;
   Form: Cardinal;
   StatementListOffs, Offs: QWord;
   Scope: TDwarfScopeInfo;
+  xxAttribList: TPointerDynArray; // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 begin
   inherited Create;
   FOwner := AOwner;
@@ -4434,13 +4445,14 @@ begin
   FScope.Init(@FScopeList);
   FScope.Index := 0;
   // retrieve some info about this unit
-  if not LocateEntry(DW_TAG_compile_unit, FScope, [lefCreateAttribList, lefSearchChild], Scope, AttribList)
+  if not LocateEntry(DW_TAG_compile_unit, FScope, [lefSearchChild], Scope)
   then begin
     DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING compilation unit has no compile_unit tag']);
     Exit;
   end;
   FValid := True;
 
+  AttribList.EvalCount := 0;
   if LocateAttribute(Scope.Entry, DW_AT_name, AttribList, Attrib, Form)
   then ReadValue(Attrib, Form, FFileName);
   
@@ -4549,34 +4561,70 @@ begin
 end;
 
 function TDwarfCompilationUnit.LocateAttribute(AEntry: Pointer; AAttribute: Cardinal;
-  const AList: TPointerDynArray; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
+  var AList: TAttribPointerList; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
 var
   Abbrev: Cardinal;
-  Def: TDwarfAbbrev;
-  n: Integer;
+  i, EvalCnt, AbrIdx, AbrCnt: Integer;
   ADefs: PDwarfAbbrevEntry;
 begin
-  if not GetDefinition(AEntry, Def)
-  then begin
-    //???
-    Abbrev := ULEB128toOrdinal(AEntry);
-    DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
-    Result := False;
-    Exit;
+  Result := False;
+  if AList.EvalCount < 0 then
+    exit;
+
+  if AList.EvalCount = 0 then begin
+    if not GetDefinition(AEntry, AList.Abbrev)
+    then begin      //???
+      Abbrev := ULEB128toOrdinal(AEntry);
+      DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
+      AList.EvalCount := -1;
+      Exit;
+    end;
+
+    AbrIdx := AList.Abbrev.count;
+    if AbrIdx = 0 then begin
+      AList.EvalCount := -1;
+      exit;
+    end;
+    SetLength(AList.List, AbrIdx);
+    ULEB128toOrdinal(AEntry);
+    AList.List[0] := AEntry;
+    AList.EvalCount := 1;
   end;
 
   ADefs := FAbbrevList.EntryPointer[0];
-  for n := Def.Index to Def.Index + Def.Count - 1 do
-  begin
-    if ADefs[n].Attribute = AAttribute
+  AbrIdx := AList.Abbrev.Index;
+  AbrCnt := AList.Abbrev.Count - 1;
+  EvalCnt := AList.EvalCount - 1;
+  i := 0;
+
+  while true do begin
+    if ADefs[AbrIdx].Attribute = AAttribute
     then begin
       Result := True;
-      AAttribPtr := AList[n - Def.Index];
-      AForm := ADefs[n].Form;
-      Exit;
+      AAttribPtr := AList.List[i];
+      AForm := ADefs[AbrIdx].Form;
+      break;
     end;
+
+    if i = AbrCnt then
+      break;
+
+    if (i < EvalCnt) then begin
+      inc(i);
+      inc(AbrIdx);
+      Continue;
+    end;
+
+    AEntry := AList.List[i];
+    if not SkipEntryDataForForm(AEntry, ADefs[AbrIdx].Form, FAddressSize) then
+      break;
+    AList.List[i+1] := AEntry;
+    inc(i);
+    inc(AbrIdx);
   end;
-  Result := False;
+
+  if i {+ 1} > EvalCnt {+ 1} then
+    AList.EvalCount := i + 1
 end;
 
 function TDwarfCompilationUnit.LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; out
@@ -4618,16 +4666,13 @@ end;
 // Params
 //   ATag: a tag to search for
 //   AStartScope: a startpoint in the data
-//   ABuildList: if set, build the attrib list
 //   ACurrentOnly: if set, process only current entry
 //   AResultScope: the located scope info
-//   AList: an array where pointers to all attribs are stored
 //----------------------------------------
 function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStartScope: TDwarfScopeInfo;
-  AFlags: TDwarfLocateEntryFlags; out AResultScope: TDwarfScopeInfo; out
-  AList: TPointerDynArray): Boolean;
+  AFlags: TDwarfLocateEntryFlags; out AResultScope: TDwarfScopeInfo): Boolean;
 
-  procedure ParseAttribs(const ADef: TDwarfAbbrev; ABuildList: Boolean; var p: Pointer);
+  procedure ParseAttribs(const ADef: TDwarfAbbrev; var p: Pointer);
   var
     idx: Integer;
     ADefs: PDwarfAbbrevEntry;
@@ -4637,9 +4682,6 @@ function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; AStartScope: TDwarfSc
     AdrSize := FAddressSize;
     for idx := 0 to ADef.Count - 1 do
     begin
-      if ABuildList
-      then AList[idx] := p;
-
       if not SkipEntryDataForForm(p, ADefs^.Form, AdrSize) then
         break;
       inc(ADefs);
@@ -4673,7 +4715,6 @@ var
   MaxData: Pointer;
   p: Pointer;
   Scope: TDwarfScopeInfo;
-  BuildList: Boolean; // set once if we need to fill the list
   Searching: Boolean; // set as long as we need searching for a tag.
   p2: Pointer;
   ni: Integer;
@@ -4681,7 +4722,6 @@ var
 begin
   Result := False;
   if not AStartScope.IsValid then Exit;
-  BuildList := False;
   Searching := True;
   Level := 0;
   MaxData := FInfoData + FLength;
@@ -4738,16 +4778,8 @@ begin
       then begin
         Searching := False;
         AResultScope := Scope;
-        if lefCreateAttribList in AFlags
-        then begin
-          SetLength(AList, Def.Count);
-          BuildList := True;
-        end
-        else begin
-          AList := nil;
-          if not (lefContinuable in AFlags)
-          then Exit
-        end;
+        if not (lefContinuable in AFlags)
+        then Exit
       end
       else begin
         if CanExit(False) then Exit;
@@ -4756,36 +4788,31 @@ begin
       end;
     end;
 
-    if not BuildList
+    // check if we can shortcut the searches
+    ni := Scope.ChildIndex;
+    if (ni >= 0) // (Scope.HasChild)
+    and ((lefSearchChild in AFlags) or (not Scope.HasNext))
     then begin
-      // check if we can shortcut the searches
-      ni := Scope.ChildIndex;
-      if (ni >= 0) // (Scope.HasChild)
-      and ((lefSearchChild in AFlags) or (not Scope.HasNext))
+      Inc(Level);
+      Scope.Index := ni; // GoChild
+      Continue;
+    end;
+
+    ni := Scope.NextIndex;
+    if ni >= 0 // Scope.HasNext
+    then begin
+      // scope.Childvalid is true, otherwise we can not have a next.
+      // So no need to check
+      if lefSearchSibling in AFlags
       then begin
-        Inc(Level);
-        Scope.Index := ni; // GoChild
+        Scope.Index := ni; // GoNext
         Continue;
       end;
-
-      ni := Scope.NextIndex;
-      if ni >= 0 // Scope.HasNext
-      then begin
-        // scope.Childvalid is true, otherwise we can not have a next.
-        // So no need to check
-        if lefSearchSibling in AFlags
-        then begin
-          Scope.Index := ni; // GoNext
-          Continue;
-        end;
-        if Level = 0 then Exit;
-      end;
-      
-      // bummer, we need to parse our attribs, if we want them or not
+      if Level = 0 then Exit;
     end;
-    
-    ParseAttribs(Def, BuildList, p);
-    BuildList := False;
+      
+    //  bummer, we need to parse our attribs, if we want them or not
+    ParseAttribs(Def, p);
 
     // if we have a result or don't want to search we're done here
     if CanExit(Result) then Exit;
@@ -4860,7 +4887,7 @@ begin
   if FScannedToEnd then exit;
   FScannedToEnd := True;
   // scan to end
-  LocateEntry(0, FScope, [lefContinuable, lefSearchChild], ResultScope, AttribList);
+  LocateEntry(0, FScope, [lefContinuable, lefSearchChild], ResultScope);
 end;
 
 function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Cardinal): Boolean;
@@ -5416,7 +5443,7 @@ var
 begin
   // Tag - should not exist. Load all scopes
   //FCU.LocateEntry(0, Scope, [lefContinuable, lefSearchChild, lefSearchSibling],
-  //  ResultScope, AttribList);
+  //  ResultScope);
 
   Indent := AIndent;
   Level := 0;
