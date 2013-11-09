@@ -5,7 +5,7 @@ unit FpDbgInfo;
 interface
 
 uses
-  Classes, SysUtils, Maps, FpDbgUtil, FpDbgWinExtra, FpDbgLoader, LazLoggerBase, LazClasses;
+  Classes, SysUtils, FpDbgLoader, LazLoggerBase, LazClasses;
 
 type
   TDbgPtr = QWord; // PtrUInt;
@@ -219,7 +219,7 @@ type
     property Address: TDbgPtr read GetAddress;
     property SymbolAtAddress: TDbgSymbol read GetSymbolAtAddress;
     // search this, and all parent context
-    function FindSymbol(const AName: String): TDbgSymbol; virtual;
+    function FindSymbol(const {%H-}AName: String): TDbgSymbol; virtual;
   end;
 
   { TDbgInfo }

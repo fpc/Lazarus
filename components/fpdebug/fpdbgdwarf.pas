@@ -1372,6 +1372,585 @@ begin
   end;
 end;
 
+{ TDwarfScopeInfo }
+
+procedure TDwarfScopeInfo.Init(AScopeList: PDwarfScopeList);
+begin
+  FIndex := -1;
+  FScopeList := AScopeList;
+end;
+
+function TDwarfScopeInfo.IsValid: Boolean;
+begin
+  Result := FIndex >= 0;
+end;
+
+function TDwarfScopeInfo.GetNext: TDwarfScopeInfo;
+begin
+  Result.Init(FScopeList);
+  if IsValid then
+    Result.Index := GetNextIndex;
+end;
+
+function TDwarfScopeInfo.GetNextIndex: Integer;
+var
+  l: Integer;
+begin
+  Result := -1;
+  if (not IsValid) or (FScopeList^.HighestKnown = FIndex) then exit;
+  Result := FScopeList^.List[FIndex + 1].Link;
+  assert(Result <= FScopeList^.HighestKnown);
+  if (Result > FIndex + 1) then       // Index+1 is First Child, with pointer to Next
+    exit;
+
+  l := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
+  assert(l <= FScopeList^.HighestKnown);
+  if l > Index then l := Index - 1;   // This is a first child, make l = parent
+  if (Result = l) then begin          // Index + 1 has same parent
+    Result := Index + 1;
+    exit;
+  end;
+
+  Result := -1;
+end;
+
+function TDwarfScopeInfo.GetEntry: Pointer;
+begin
+  Result := nil;
+  if IsValid then
+    Result := FScopeList^.List[FIndex].Entry;
+end;
+
+function TDwarfScopeInfo.HasChild: Boolean;
+var
+  l2: Integer;
+begin
+  Result := (IsValid) and (FScopeList^.HighestKnown > FIndex);
+  if not Result then exit;
+  l2 := FScopeList^.List[FIndex + 1].Link;
+  assert(l2 <= FScopeList^.HighestKnown);
+  Result := (l2 > FIndex + 1) or        // Index+1 is First Child, with pointer to Next
+            (l2 = FIndex);              // Index+1 is First Child, with pointer to parent (self)
+end;
+
+function TDwarfScopeInfo.GetChild: TDwarfScopeInfo;
+begin
+  Result.Init(FScopeList);
+  if HasChild then begin
+    Result.Index := FIndex + 1;
+    assert(Result.Parent.Index = FIndex, 'child has self as parent');
+  end;
+end;
+
+function TDwarfScopeInfo.GetChildIndex: Integer;
+begin
+  if HasChild then
+    Result := FIndex + 1
+  else
+    Result := -1;
+end;
+
+function TDwarfScopeInfo.GetParent: TDwarfScopeInfo;
+var
+  l: Integer;
+begin
+  Result.Init(FScopeList);
+  if not IsValid then exit;
+  l := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
+  assert(l <= FScopeList^.HighestKnown);
+  if l > Index then
+    l := Index - 1;   // This is a first child, make l = parent
+  Result.Index := l;
+end;
+
+function TDwarfScopeInfo.GetParentIndex: Integer;
+begin
+  Result := -1;
+  if not IsValid then exit;
+  Result := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
+  assert(Result <= FScopeList^.HighestKnown);
+  if Result > Index then
+    Result := Index - 1;   // This is a first child, make l = parent
+end;
+
+procedure TDwarfScopeInfo.SetIndex(AIndex: Integer);
+begin
+  if (AIndex >= 0) and (AIndex <= FScopeList^.HighestKnown) then
+    FIndex := AIndex
+  else
+    FIndex := -1;
+end;
+
+function TDwarfScopeInfo.CreateScopeForEntry(AEntry: Pointer; ALink: Integer): Integer;
+begin
+  inc(FScopeList^.HighestKnown);
+  Result := FScopeList^.HighestKnown;
+  if Result >= Length(FScopeList^.List) then
+    SetLength(FScopeList^.List, Result + SCOPE_ALLOC_BLOCK_SIZE);
+  FScopeList^.List[Result].Entry := AEntry;
+  FScopeList^.List[Result].Link := ALink;
+end;
+
+function TDwarfScopeInfo.HasParent: Boolean;
+var
+  l: Integer;
+begin
+  Result := (IsValid);
+  if not Result then exit;
+  l := FScopeList^.List[FIndex].Link;
+  assert(l <= FScopeList^.HighestKnown);
+  Result := (l >= 0);
+end;
+
+function TDwarfScopeInfo.HasNext: Boolean;
+var
+  l, l2: Integer;
+begin
+  Result := (IsValid) and (FScopeList^.HighestKnown > FIndex);
+  if not Result then exit;
+  l2 := FScopeList^.List[FIndex + 1].Link;
+  assert(l2 <= FScopeList^.HighestKnown);
+  Result := (l2 > FIndex + 1);        // Index+1 is First Child, with pointer to Next
+  if Result then
+    exit;
+
+  l := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
+  assert(l <= FScopeList^.HighestKnown);
+  if l > Index then
+    l := Index - 1;   // This is a first child, make l = parent
+  Result := (l2 = l);                 // Index + 1 has same parent
+end;
+
+procedure TDwarfScopeInfo.GoParent;
+var
+  l: Integer;
+begin
+  if not IsValid then exit;
+  l := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
+  assert(l <= FScopeList^.HighestKnown);
+  if l > Index then
+    l := Index - 1;   // This is a first child, make l = parent
+  Index := l;
+end;
+
+procedure TDwarfScopeInfo.GoNext;
+begin
+  if IsValid then
+    Index := GetNextIndex;
+end;
+
+procedure TDwarfScopeInfo.GoChild;
+begin
+  if HasChild then
+    Index := FIndex + 1
+  else
+    Index := -1;
+end;
+
+function TDwarfScopeInfo.CreateNextForEntry(AEntry: Pointer): Integer;
+var
+  l: Integer;
+begin
+  assert(IsValid, 'Creating Child for invalid scope');
+  assert(NextIndex<0, 'Next already set');
+  l := FScopeList^.List[FIndex].Link; // GetParent (or -1 for toplevel)
+  assert(l <= FScopeList^.HighestKnown);
+  if l > Index then l := Index - 1;   // This is a first child, make l = parent
+  Result := CreateScopeForEntry(AEntry, l);
+  if Result > FIndex + 1 then  // We have children
+    FScopeList^.List[FIndex+1].Link := Result;
+end;
+
+function TDwarfScopeInfo.CreateChildForEntry(AEntry: Pointer): Integer;
+begin
+  assert(IsValid, 'Creating Child for invalid scope');
+  assert(FIndex=FScopeList^.HighestKnown, 'Cannot creating Child.Not at end of list');
+  Result := CreateScopeForEntry(AEntry, FIndex); // First Child, but no parent.next yet
+end;
+
+{ TDwarfInformationEntry }
+
+procedure TDwarfInformationEntry.SetAbbrev(AValue: TDwarfAbbrev);
+begin
+  FAbbrev := AValue;
+  // assert correct for entry
+  Include(FFlags, dieAbbrevValid);
+end;
+
+procedure TDwarfInformationEntry.ScopeChanged;
+begin
+  FInformationEntry := FScope.Entry;
+  FFlags := [];
+  FInformationData := nil;
+end;
+
+function TDwarfInformationEntry.PrepareAbbrev: Boolean;
+var
+  AbbrList: TDwarfAbbrevList;
+begin
+  Result := FAbbrevData <> nil;
+  if dieAbbrevValid in FFlags then
+    exit;
+  AbbrList := FCompUnit.FAbbrevList;
+  FInformationData := AbbrList.FindLe128bFromPointer(FInformationEntry, FAbbrev);
+  Result := FInformationData <> nil;
+  if Result
+  then FAbbrevData := AbbrList.EntryPointer[FAbbrev.index]
+  else FAbbrevData := nil;
+  Include(FFlags, dieAbbrevValid);
+end;
+
+function TDwarfInformationEntry.GetAbbrev: TDwarfAbbrev;
+begin
+  PrepareAbbrev;
+  Result := FAbbrev;
+end;
+
+procedure TDwarfInformationEntry.GoParent;
+begin
+  if not MaybeSearchScope then
+    exit;
+  FScope.GoParent;
+  ScopeChanged;
+end;
+
+procedure TDwarfInformationEntry.GoNext;
+begin
+  if not MaybeSearchScope then
+    exit;
+  FScope.GoNext;
+  ScopeChanged;
+end;
+
+procedure TDwarfInformationEntry.GoChild;
+begin
+  if not MaybeSearchScope then
+    exit;
+  FScope.GoChild;
+  ScopeChanged;
+end;
+
+function TDwarfInformationEntry.HasValidScope: Boolean;
+begin
+  Result := FScope.IsValid;
+end;
+
+function TDwarfInformationEntry.SearchScope: Boolean;
+var
+  l, h, m: Integer;
+  lst: TDwarfScopeArray;
+begin
+  Result := FInformationEntry <> nil;
+  if not Result then exit;
+  l := 0;
+  h := FCompUnit.FScopeList.HighestKnown;
+  lst := FCompUnit.FScopeList.List;
+  while h > l do begin
+    m := (h + l) div 2;
+    if lst[m].Entry >= FInformationEntry
+    then h := m
+    else l := m + 1;
+  end;
+
+  Result := lst[h].Entry = FInformationEntry;
+  if Result then
+    ScopeIndex := h;
+//debugln(['TDwarfInformationEntry.SearchScope ', h]);
+end;
+
+function TDwarfInformationEntry.MaybeSearchScope: Boolean;
+begin
+  Result := FScope.IsValid;
+  if Result then exit;
+  Result := SearchScope;
+end;
+
+function TDwarfInformationEntry.AttribIdx(AnAttrib: Cardinal; out
+  AInfoPointer: pointer): Integer;
+var
+  i: Integer;
+  AddrSize: Byte;
+begin
+  if not PrepareAbbrev then exit(-1);
+  AInfoPointer := FInformationData;
+  AddrSize := FCompUnit.FAddressSize;
+  for i := 0 to FAbbrev.count - 1 do begin
+    if FAbbrevData[i].Attribute = AnAttrib then
+      exit(i);
+    SkipEntryDataForForm(AInfoPointer, FAbbrevData[i].Form, AddrSize);
+  end;
+  Result := -1;
+end;
+
+function TDwarfInformationEntry.GetScopeIndex: Integer;
+begin
+  Result := FScope.Index;
+end;
+
+procedure TDwarfInformationEntry.SetScopeIndex(AValue: Integer);
+begin
+  if FScope.Index = AValue then
+    exit;
+  FScope.Index := AValue;
+  ScopeChanged;
+end;
+
+function TDwarfInformationEntry.GoNamedChild(AName: String): Boolean;
+var
+  EntryName: String;
+  s: String;
+begin
+  Result := False;
+  s := UpperCase(AName);
+  GoChild;
+  while HasValidScope do begin
+    if not ReadValue(DW_AT_name, EntryName) then begin
+      GoNext;
+      Continue;
+    end;
+
+    if UpperCase(EntryName) = s then begin
+      // TODO: check DW_AT_start_scope;
+      DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChild found ', dbgs(FScope, FCompUnit), DbgSName(Self)]);
+      Result := True;
+      exit;
+    end;
+
+    GoNext;
+  end;
+end;
+
+function TDwarfInformationEntry.GoNamedChildEx(AName: String): Boolean;
+var
+  EntryName: String;
+  s: String;
+  InEnum: Boolean;
+  ParentScopIdx: Integer;
+begin
+  Result := False;
+  InEnum := False;
+  s := UpperCase(AName);
+  GoChild;
+  while true do begin
+    while HasValidScope do begin
+      if not ReadValue(DW_AT_name, EntryName) then begin
+        GoNext;
+        Continue;
+      end;
+
+      if UpperCase(EntryName) = s then begin
+        // TODO: check DW_AT_start_scope;
+        DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChildEx found ', dbgs(FScope, FCompUnit), DbgSName(Self)]);
+        Result := True;
+        exit;
+      end;
+
+      // Abbrev was prelaped by ReadName
+      if Abbrev.tag = DW_TAG_enumeration_type then begin
+        assert(not InEnum, 'nested enum');
+        InEnum := True;
+        ParentScopIdx := ScopeIndex;
+        GoChild;
+        Continue;
+      end;
+
+
+      GoNext;
+    end;
+
+    if InEnum then begin
+      InEnum := False;
+      ScopeIndex := ParentScopIdx;
+      GoNext;
+      continue;
+    end;
+    break;
+  end;
+end;
+
+constructor TDwarfInformationEntry.Create(ACompUnit: TDwarfCompilationUnit;
+  AnInformationEntry: Pointer);
+begin
+  AddReference;
+  FCompUnit := ACompUnit;
+  FInformationEntry := AnInformationEntry;
+  FScope.Init(@FCompUnit.FScopeList);
+end;
+
+constructor TDwarfInformationEntry.Create(ACompUnit: TDwarfCompilationUnit;
+  AScope: TDwarfScopeInfo);
+begin
+  AddReference;
+  FCompUnit := ACompUnit;
+  FScope := AScope;
+  ScopeChanged;
+end;
+
+function TDwarfInformationEntry.FindNamedChild(AName: String): TDwarfInformationEntry;
+begin
+  Result := nil;
+  if not MaybeSearchScope then
+    exit;
+
+  Result := TDwarfInformationEntry.Create(FCompUnit, FScope);
+// TODO: parent
+  if Result.GoNamedChild(AName) then
+    exit;
+  ReleaseRefAndNil(Result);
+end;
+
+function TDwarfInformationEntry.FindChildByTag(ATag: Cardinal): TDwarfInformationEntry;
+var
+  Scope: TDwarfScopeInfo;
+  AbbrList: TDwarfAbbrevList;
+  Abbr: TDwarfAbbrev;
+begin
+  Result := nil;
+  if not MaybeSearchScope then
+    exit;
+
+  Scope := FScope.Child;
+  while Scope.IsValid do begin
+    AbbrList := FCompUnit.FAbbrevList;
+    if AbbrList.FindLe128bFromPointer(Scope.Entry, Abbr) <> nil then begin
+      if Abbr.tag = ATag then begin
+        Result := TDwarfInformationEntry.Create(FCompUnit, Scope);
+        exit;
+      end;
+    end;
+    Scope.GoNext;
+  end;
+end;
+
+function TDwarfInformationEntry.FirstChild: TDwarfInformationEntry;
+var
+  Scope: TDwarfScopeInfo;
+begin
+  Result := nil;
+  if not MaybeSearchScope then
+    exit;
+
+  Scope := FScope.Child;
+  if Scope.IsValid then
+    Result := TDwarfInformationEntry.Create(FCompUnit, Scope);
+end;
+
+function TDwarfInformationEntry.Clone: TDwarfInformationEntry;
+begin
+  if FScope.IsValid then
+    Result := TDwarfInformationEntry.Create(FCompUnit, FScope)
+  else
+    Result := TDwarfInformationEntry.Create(FCompUnit, FInformationEntry);
+end;
+
+function TDwarfInformationEntry.HasAttrib(AnAttrib: Cardinal): boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  if not PrepareAbbrev then exit;
+  Result := True;
+  for i := 0 to FAbbrev.count - 1 do
+    if FAbbrevData[i].Attribute = AnAttrib then
+      exit;
+  Result := False;
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Integer): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  i := AttribIdx(AnAttrib, AData);
+  if i < 0 then exit(False);
+  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Int64): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  i := AttribIdx(AnAttrib, AData);
+  if i < 0 then exit(False);
+  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Cardinal): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  i := AttribIdx(AnAttrib, AData);
+  if i < 0 then exit(False);
+  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: QWord): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  i := AttribIdx(AnAttrib, AData);
+  if i < 0 then exit(False);
+  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  i := AttribIdx(AnAttrib, AData);
+  if i < 0 then exit(False);
+  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+end;
+
+function TDwarfInformationEntry.ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out
+  ACompUnit: TDwarfCompilationUnit): Boolean;
+var
+  InfoData: pointer;
+  i: Integer;
+  Form: Cardinal;
+  Offs: QWord;
+begin
+  // reference to other debug info
+  {Note: Dwarf2 defines DW_FORM_ref_addr as relocated address in the exe,
+         Dwarf 3 defines it as offset.
+         Since we load the debug_info section without applying any relocation (if indeed present at all),
+         this field will always be an offset from start of the debug_info section
+  }
+  Result := False;
+  i := AttribIdx(AnAttrib, InfoData);
+  if (i < 0) then
+    exit;
+  Form := AbbrevData[i].Form;
+  if (Form = DW_FORM_ref1) or (Form = DW_FORM_ref2) or (Form = DW_FORM_ref4) or
+     (Form = DW_FORM_ref8) or (Form = DW_FORM_ref_udata)
+  then begin
+    Result := FCompUnit.ReadValue(InfoData, Form, Offs);
+    if not Result then
+      exit;
+    ACompUnit := FCompUnit;
+    if ACompUnit.FIsDwarf64
+    then AValue := ACompUnit.FScope.Entry + Offs - SizeOf(TDwarfCUHeader64)
+    else AValue := ACompUnit.FScope.Entry + Offs - SizeOf(TDwarfCUHeader32);
+  end
+  else
+  if (Form = DW_FORM_ref_addr) then begin
+    Result := FCompUnit.ReadValue(InfoData, Form, Offs);
+    if not Result then
+      exit;
+    ACompUnit := FCompUnit.FOwner.FindCompilationUnitByOffs(Offs);
+    Result := ACompUnit <> nil;
+    if not Result then DebugLn(FPDBG_DWARF_WARNINGS, ['Comp unit not found DW_FORM_ref_addr']);
+    AValue := FCompUnit.FOwner.FSections[dsInfo].RawData + Offs;
+  end
+  else begin
+    DebugLn(FPDBG_DWARF_WARNINGS, ['FORM for DW_AT_type not expected ', DwarfAttributeFormToString(Form)]);
+  end;
+end;
+
 { TDbgDwarfInfoAddressContext }
 
 function TDbgDwarfInfoAddressContext.GetSymbolAtAddress: TDbgSymbol;
@@ -1523,7 +2102,6 @@ end;
 function TDbgDwarfUnit.GetMemberByName(AIndex: String): TDbgSymbol;
 var
   Ident: TDwarfInformationEntry;
-  ti: TDbgSymbol;
 begin
   // Todo, param to only search external.
   ReleaseRefAndNil(FLastChildByName);
@@ -2298,389 +2876,6 @@ begin
     Result := nil;
 end;
 
-{ TDwarfInformationEntry }
-
-procedure TDwarfInformationEntry.SetAbbrev(AValue: TDwarfAbbrev);
-begin
-  FAbbrev := AValue;
-  // assert correct for entry
-  Include(FFlags, dieAbbrevValid);
-end;
-
-procedure TDwarfInformationEntry.ScopeChanged;
-begin
-  FInformationEntry := FScope.Entry;
-  FFlags := [];
-  FInformationData := nil;
-end;
-
-function TDwarfInformationEntry.GetAbbrev: TDwarfAbbrev;
-begin
-  PrepareAbbrev;
-  Result := FAbbrev;
-end;
-
-function TDwarfInformationEntry.SearchScope: Boolean;
-var
-  l, h, m: Integer;
-  lst: TDwarfScopeArray;
-begin
-  Result := FInformationEntry <> nil;
-  if not Result then exit;
-  l := 0;
-  h := FCompUnit.FScopeList.HighestKnown;
-  lst := FCompUnit.FScopeList.List;
-  while h > l do begin
-    m := (h + l) div 2;
-    if lst[m].Entry >= FInformationEntry
-    then h := m
-    else l := m + 1;
-  end;
-
-  Result := lst[h].Entry = FInformationEntry;
-  if Result then
-    ScopeIndex := h;
-//debugln(['TDwarfInformationEntry.SearchScope ', h]);
-end;
-
-function TDwarfInformationEntry.MaybeSearchScope: Boolean;
-begin
-  Result := FScope.IsValid;
-  if Result then exit;
-  Result := SearchScope;
-end;
-
-function TDwarfInformationEntry.PrepareAbbrev: Boolean;
-var
-  AbbrList: TDwarfAbbrevList;
-begin
-  Result := FAbbrevData <> nil;
-  if dieAbbrevValid in FFlags then
-    exit;
-  AbbrList := FCompUnit.FAbbrevList;
-  FInformationData := AbbrList.FindLe128bFromPointer(FInformationEntry, FAbbrev);
-  Result := FInformationData <> nil;
-  if Result
-  then FAbbrevData := AbbrList.EntryPointer[FAbbrev.index]
-  else FAbbrevData := nil;
-  Include(FFlags, dieAbbrevValid);
-end;
-
-function TDwarfInformationEntry.AttribIdx(AnAttrib: Cardinal; out
-  AInfoPointer: pointer): Integer;
-var
-  i: Integer;
-  AddrSize: Byte;
-begin
-  if not PrepareAbbrev then exit(-1);
-  AInfoPointer := FInformationData;
-  AddrSize := FCompUnit.FAddressSize;
-  for i := 0 to FAbbrev.count - 1 do begin
-    if FAbbrevData[i].Attribute = AnAttrib then
-      exit(i);
-    SkipEntryDataForForm(AInfoPointer, FAbbrevData[i].Form, AddrSize);
-  end;
-  Result := -1;
-end;
-
-function TDwarfInformationEntry.GetScopeIndex: Integer;
-begin
-  Result := FScope.Index;
-end;
-
-procedure TDwarfInformationEntry.SetScopeIndex(AValue: Integer);
-begin
-  if FScope.Index = AValue then
-    exit;
-  FScope.Index := AValue;
-  ScopeChanged;
-end;
-
-function TDwarfInformationEntry.GoNamedChild(AName: String): Boolean;
-var
-  EntryName: String;
-  s: String;
-begin
-  Result := False;
-  s := UpperCase(AName);
-  GoChild;
-  while HasValidScope do begin
-    if not ReadValue(DW_AT_name, EntryName) then begin
-      GoNext;
-      Continue;
-    end;
-
-    if UpperCase(EntryName) = s then begin
-      // TODO: check DW_AT_start_scope;
-      DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChild found ', dbgs(FScope, FCompUnit), DbgSName(Self)]);
-      Result := True;
-      exit;
-    end;
-
-    GoNext;
-  end;
-end;
-
-function TDwarfInformationEntry.GoNamedChildEx(AName: String): Boolean;
-var
-  EntryName: String;
-  s: String;
-  InEnum: Boolean;
-  ParentScopIdx: Integer;
-begin
-  Result := False;
-  InEnum := False;
-  s := UpperCase(AName);
-  GoChild;
-  while true do begin
-    while HasValidScope do begin
-      if not ReadValue(DW_AT_name, EntryName) then begin
-        GoNext;
-        Continue;
-      end;
-
-      if UpperCase(EntryName) = s then begin
-        // TODO: check DW_AT_start_scope;
-        DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChildEx found ', dbgs(FScope, FCompUnit), DbgSName(Self)]);
-        Result := True;
-        exit;
-      end;
-
-      // Abbrev was prelaped by ReadName
-      if Abbrev.tag = DW_TAG_enumeration_type then begin
-        assert(not InEnum, 'nested enum');
-        InEnum := True;
-        ParentScopIdx := ScopeIndex;
-        GoChild;
-        Continue;
-      end;
-
-
-      GoNext;
-    end;
-
-    if InEnum then begin
-      InEnum := False;
-      ScopeIndex := ParentScopIdx;
-      GoNext;
-      continue;
-    end;
-    break;
-  end;
-end;
-
-constructor TDwarfInformationEntry.Create(ACompUnit: TDwarfCompilationUnit;
-  AnInformationEntry: Pointer);
-begin
-  AddReference;
-  FCompUnit := ACompUnit;
-  FInformationEntry := AnInformationEntry;
-  FScope.Init(@FCompUnit.FScopeList);
-end;
-
-constructor TDwarfInformationEntry.Create(ACompUnit: TDwarfCompilationUnit;
-  AScope: TDwarfScopeInfo);
-begin
-  AddReference;
-  FCompUnit := ACompUnit;
-  FScope := AScope;
-  ScopeChanged;
-end;
-
-function TDwarfInformationEntry.FindNamedChild(AName: String): TDwarfInformationEntry;
-begin
-  Result := nil;
-  if not MaybeSearchScope then
-    exit;
-
-  Result := TDwarfInformationEntry.Create(FCompUnit, FScope);
-// TODO: parent
-  if Result.GoNamedChild(AName) then
-    exit;
-  ReleaseRefAndNil(Result);
-end;
-
-function TDwarfInformationEntry.FindChildByTag(ATag: Cardinal): TDwarfInformationEntry;
-var
-  Scope: TDwarfScopeInfo;
-  AbbrList: TDwarfAbbrevList;
-  Abbr: TDwarfAbbrev;
-begin
-  Result := nil;
-  if not MaybeSearchScope then
-    exit;
-
-  Scope := FScope.Child;
-  while Scope.IsValid do begin
-    AbbrList := FCompUnit.FAbbrevList;
-    if AbbrList.FindLe128bFromPointer(Scope.Entry, Abbr) <> nil then begin
-      if Abbr.tag = ATag then begin
-        Result := TDwarfInformationEntry.Create(FCompUnit, Scope);
-        exit;
-      end;
-    end;
-    Scope.GoNext;
-  end;
-end;
-
-function TDwarfInformationEntry.FirstChild: TDwarfInformationEntry;
-var
-  Scope: TDwarfScopeInfo;
-begin
-  Result := nil;
-  if not MaybeSearchScope then
-    exit;
-
-  Scope := FScope.Child;
-  if Scope.IsValid then
-    Result := TDwarfInformationEntry.Create(FCompUnit, Scope);
-end;
-
-function TDwarfInformationEntry.Clone: TDwarfInformationEntry;
-begin
-  if FScope.IsValid then
-    Result := TDwarfInformationEntry.Create(FCompUnit, FScope)
-  else
-    Result := TDwarfInformationEntry.Create(FCompUnit, FInformationEntry);
-end;
-
-function TDwarfInformationEntry.HasAttrib(AnAttrib: Cardinal): boolean;
-var
-  i: Integer;
-begin
-  Result := False;
-  if not PrepareAbbrev then exit;
-  Result := True;
-  for i := 0 to FAbbrev.count - 1 do
-    if FAbbrevData[i].Attribute = AnAttrib then
-      exit;
-  Result := False;
-end;
-
-function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Integer): Boolean;
-var
-  AData: pointer;
-  i: Integer;
-begin
-  i := AttribIdx(AnAttrib, AData);
-  if i < 0 then exit(False);
-  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
-end;
-
-function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Int64): Boolean;
-var
-  AData: pointer;
-  i: Integer;
-begin
-  i := AttribIdx(AnAttrib, AData);
-  if i < 0 then exit(False);
-  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
-end;
-
-function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Cardinal): Boolean;
-var
-  AData: pointer;
-  i: Integer;
-begin
-  i := AttribIdx(AnAttrib, AData);
-  if i < 0 then exit(False);
-  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
-end;
-
-function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: QWord): Boolean;
-var
-  AData: pointer;
-  i: Integer;
-begin
-  i := AttribIdx(AnAttrib, AData);
-  if i < 0 then exit(False);
-  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
-end;
-
-function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
-var
-  AData: pointer;
-  i: Integer;
-begin
-  i := AttribIdx(AnAttrib, AData);
-  if i < 0 then exit(False);
-  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
-end;
-
-function TDwarfInformationEntry.ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out
-  ACompUnit: TDwarfCompilationUnit): Boolean;
-var
-  InfoData: pointer;
-  i: Integer;
-  Form: Cardinal;
-  Offs: QWord;
-begin
-  // reference to other debug info
-  {Note: Dwarf2 defines DW_FORM_ref_addr as relocated address in the exe,
-         Dwarf 3 defines it as offset.
-         Since we load the debug_info section without applying any relocation (if indeed present at all),
-         this field will always be an offset from start of the debug_info section
-  }
-  Result := False;
-  i := AttribIdx(AnAttrib, InfoData);
-  if (i < 0) then
-    exit;
-  Form := AbbrevData[i].Form;
-  if (Form = DW_FORM_ref1) or (Form = DW_FORM_ref2) or (Form = DW_FORM_ref4) or
-     (Form = DW_FORM_ref8) or (Form = DW_FORM_ref_udata)
-  then begin
-    Result := FCompUnit.ReadValue(InfoData, Form, Offs);
-    if not Result then
-      exit;
-    ACompUnit := FCompUnit;
-    if ACompUnit.FIsDwarf64
-    then AValue := ACompUnit.FScope.Entry + Offs - SizeOf(TDwarfCUHeader64)
-    else AValue := ACompUnit.FScope.Entry + Offs - SizeOf(TDwarfCUHeader32);
-  end
-  else
-  if (Form = DW_FORM_ref_addr) then begin
-    Result := FCompUnit.ReadValue(InfoData, Form, Offs);
-    if not Result then
-      exit;
-    ACompUnit := FCompUnit.FOwner.FindCompilationUnitByOffs(Offs);
-    Result := ACompUnit <> nil;
-    if not Result then DebugLn(FPDBG_DWARF_WARNINGS, ['Comp unit not found DW_FORM_ref_addr']);
-    AValue := FCompUnit.FOwner.FSections[dsInfo].RawData + Offs;
-  end
-  else begin
-    DebugLn(FPDBG_DWARF_WARNINGS, ['FORM for DW_AT_type not expected ', DwarfAttributeFormToString(Form)]);
-  end;
-end;
-
-procedure TDwarfInformationEntry.GoParent;
-begin
-  if not MaybeSearchScope then
-    exit;
-  FScope.GoParent;
-  ScopeChanged;
-end;
-
-procedure TDwarfInformationEntry.GoNext;
-begin
-  if not MaybeSearchScope then
-    exit;
-  FScope.GoNext;
-  ScopeChanged;
-end;
-
-procedure TDwarfInformationEntry.GoChild;
-begin
-  if not MaybeSearchScope then
-    exit;
-  FScope.GoChild;
-  ScopeChanged;
-end;
-
-function TDwarfInformationEntry.HasValidScope: Boolean;
-begin
-  Result := FScope.IsValid;
-end;
-
 { TDbgDwarfIdentifier }
 
 function TDbgDwarfIdentifier.GetNestedTypeInfo: TDbgDwarfTypeIdentifier;
@@ -3410,202 +3605,6 @@ begin
 //DebugLn(['#### ',NextAFterHighestLine, ' / ',Count]);
 end;
 
-{ TDwarfScopeInfo }
-
-function TDwarfScopeInfo.IsValid: Boolean;
-begin
-  Result := FIndex >= 0;
-end;
-
-function TDwarfScopeInfo.GetNext: TDwarfScopeInfo;
-begin
-  Result.Init(FScopeList);
-  if IsValid then
-    Result.Index := GetNextIndex;
-end;
-
-function TDwarfScopeInfo.GetNextIndex: Integer;
-var
-  l: Integer;
-begin
-  Result := -1;
-  if (not IsValid) or (FScopeList^.HighestKnown = FIndex) then exit;
-  Result := FScopeList^.List[FIndex + 1].Link;
-  assert(Result <= FScopeList^.HighestKnown);
-  if (Result > FIndex + 1) then       // Index+1 is First Child, with pointer to Next
-    exit;
-
-  l := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
-  assert(l <= FScopeList^.HighestKnown);
-  if l > Index then l := Index - 1;   // This is a first child, make l = parent
-  if (Result = l) then begin          // Index + 1 has same parent
-    Result := Index + 1;
-    exit;
-  end;
-
-  Result := -1;
-end;
-
-function TDwarfScopeInfo.GetEntry: Pointer;
-begin
-  Result := nil;
-  if IsValid then
-    Result := FScopeList^.List[FIndex].Entry;
-end;
-
-function TDwarfScopeInfo.GetChild: TDwarfScopeInfo;
-begin
-  Result.Init(FScopeList);
-  if HasChild then begin
-    Result.Index := FIndex + 1;
-    assert(Result.Parent.Index = FIndex, 'child has self as parent');
-  end;
-end;
-
-function TDwarfScopeInfo.GetChildIndex: Integer;
-begin
-  if HasChild then
-    Result := FIndex + 1
-  else
-    Result := -1;
-end;
-
-function TDwarfScopeInfo.GetParent: TDwarfScopeInfo;
-var
-  l: Integer;
-begin
-  Result.Init(FScopeList);
-  if not IsValid then exit;
-  l := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
-  assert(l <= FScopeList^.HighestKnown);
-  if l > Index then
-    l := Index - 1;   // This is a first child, make l = parent
-  Result.Index := l;
-end;
-
-function TDwarfScopeInfo.GetParentIndex: Integer;
-begin
-  Result := -1;
-  if not IsValid then exit;
-  Result := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
-  assert(Result <= FScopeList^.HighestKnown);
-  if Result > Index then
-    Result := Index - 1;   // This is a first child, make l = parent
-end;
-
-procedure TDwarfScopeInfo.SetIndex(AIndex: Integer);
-begin
-  if (AIndex >= 0) and (AIndex <= FScopeList^.HighestKnown) then
-    FIndex := AIndex
-  else
-    FIndex := -1;
-end;
-
-function TDwarfScopeInfo.CreateScopeForEntry(AEntry: Pointer; ALink: Integer): Integer;
-begin
-  inc(FScopeList^.HighestKnown);
-  Result := FScopeList^.HighestKnown;
-  if Result >= Length(FScopeList^.List) then
-    SetLength(FScopeList^.List, Result + SCOPE_ALLOC_BLOCK_SIZE);
-  FScopeList^.List[Result].Entry := AEntry;
-  FScopeList^.List[Result].Link := ALink;
-end;
-
-procedure TDwarfScopeInfo.Init(AScopeList: PDwarfScopeList);
-begin
-  FIndex := -1;
-  FScopeList := AScopeList;
-end;
-
-function TDwarfScopeInfo.HasParent: Boolean;
-var
-  l: Integer;
-begin
-  Result := (IsValid);
-  if not Result then exit;
-  l := FScopeList^.List[FIndex].Link;
-  assert(l <= FScopeList^.HighestKnown);
-  Result := (l >= 0);
-end;
-
-function TDwarfScopeInfo.HasNext: Boolean;
-var
-  l, l2: Integer;
-begin
-  Result := (IsValid) and (FScopeList^.HighestKnown > FIndex);
-  if not Result then exit;
-  l2 := FScopeList^.List[FIndex + 1].Link;
-  assert(l2 <= FScopeList^.HighestKnown);
-  Result := (l2 > FIndex + 1);        // Index+1 is First Child, with pointer to Next
-  if Result then
-    exit;
-
-  l := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
-  assert(l <= FScopeList^.HighestKnown);
-  if l > Index then
-    l := Index - 1;   // This is a first child, make l = parent
-  Result := (l2 = l);                 // Index + 1 has same parent
-end;
-
-function TDwarfScopeInfo.HasChild: Boolean;
-var
-  l2: Integer;
-begin
-  Result := (IsValid) and (FScopeList^.HighestKnown > FIndex);
-  if not Result then exit;
-  l2 := FScopeList^.List[FIndex + 1].Link;
-  assert(l2 <= FScopeList^.HighestKnown);
-  Result := (l2 > FIndex + 1) or        // Index+1 is First Child, with pointer to Next
-            (l2 = FIndex);              // Index+1 is First Child, with pointer to parent (self)
-end;
-
-procedure TDwarfScopeInfo.GoParent;
-var
-  l: Integer;
-begin
-  if not IsValid then exit;
-  l := FScopeList^.List[FIndex].Link; // GetParent  (or -1 for toplevel)
-  assert(l <= FScopeList^.HighestKnown);
-  if l > Index then
-    l := Index - 1;   // This is a first child, make l = parent
-  Index := l;
-end;
-
-procedure TDwarfScopeInfo.GoNext;
-begin
-  if IsValid then
-    Index := GetNextIndex;
-end;
-
-procedure TDwarfScopeInfo.GoChild;
-begin
-  if HasChild then
-    Index := FIndex + 1
-  else
-    Index := -1;
-end;
-
-function TDwarfScopeInfo.CreateNextForEntry(AEntry: Pointer): Integer;
-var
-  l: Integer;
-begin
-  assert(IsValid, 'Creating Child for invalid scope');
-  assert(NextIndex<0, 'Next already set');
-  l := FScopeList^.List[FIndex].Link; // GetParent (or -1 for toplevel)
-  assert(l <= FScopeList^.HighestKnown);
-  if l > Index then l := Index - 1;   // This is a first child, make l = parent
-  Result := CreateScopeForEntry(AEntry, l);
-  if Result > FIndex + 1 then  // We have children
-    FScopeList^.List[FIndex+1].Link := Result;
-end;
-
-function TDwarfScopeInfo.CreateChildForEntry(AEntry: Pointer): Integer;
-begin
-  assert(IsValid, 'Creating Child for invalid scope');
-  assert(FIndex=FScopeList^.HighestKnown, 'Cannot creating Child.Not at end of list');
-  Result := CreateScopeForEntry(AEntry, FIndex); // First Child, but no parent.next yet
-end;
-
 { TDbgDwarfSymbol }
 
 constructor TDbgDwarfProcSymbol.Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr);
@@ -4260,7 +4259,6 @@ var
   Info: TDwarfAddressInfo;
   Scope, ResultScope: TDwarfScopeInfo;
   i: Integer;
-  xxAttribList: TPointerDynArray; // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 begin
   if FAddressMapBuild then Exit;
 
@@ -4406,7 +4404,6 @@ var
   Form: Cardinal;
   StatementListOffs, Offs: QWord;
   Scope: TDwarfScopeInfo;
-  xxAttribList: TPointerDynArray; // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 begin
   inherited Create;
   FOwner := AOwner;
@@ -4882,7 +4879,6 @@ end;
 procedure TDwarfCompilationUnit.ScanAllEntries;
 var
   ResultScope: TDwarfScopeInfo;
-  AttribList: TPointerDynArray;
 begin
   if FScannedToEnd then exit;
   FScannedToEnd := True;

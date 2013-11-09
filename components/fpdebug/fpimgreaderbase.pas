@@ -48,7 +48,7 @@ type
     destructor Destroy; override;
     function  Read(AOffset, ASize: QWord; AMem: Pointer): QWord;
     function  LoadMemory(AOffset, ASize: QWord; out AMem: Pointer): QWord;
-    procedure UnloadMemory(AMem: Pointer);
+    procedure UnloadMemory({%H-}AMem: Pointer);
   end;
 
   { TDbgImageReader }
@@ -64,7 +64,7 @@ type
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; virtual; abstract;
     class function UserName: AnsiString; virtual; abstract;
-    constructor Create(ASource: TDbgFileLoader; OwnSource: Boolean); virtual;
+    constructor Create({%H-}ASource: TDbgFileLoader; {%H-}OwnSource: Boolean); virtual;
 
     property ImageBase: QWord read FImageBase;
     Property Image64Bit: Boolean read FImage64Bit;

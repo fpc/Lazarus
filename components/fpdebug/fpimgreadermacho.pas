@@ -21,10 +21,10 @@ type
     StabsCmd    : symtab_command;
     fileRead    : Boolean;
     function GetSectionInfo(const SectionName: AnsiString; var Size: int64): Boolean;
-    function GetSectionData(const SectionName: AnsiString; Offset, Size: Int64; var Buf: array of byte): Int64;
+    function GetSectionData(const SectionName: AnsiString; Offset, {%H-}Size: Int64; var Buf: array of byte): Int64;
   protected
     procedure ReadFile;
-    function GetStabSectionInfo(StabStr: Boolean; var SectionOffset, SectionSize: Int64): Boolean;
+    function GetStabSectionInfo({%H-}StabStr: Boolean; var {%H-}SectionOffset, {%H-}SectionSize: Int64): Boolean;
     function GetSectionIndex(const SectionName: AnsiString): Integer;
 
     function GetSection(const AName: String): PDbgImageSection; override;
