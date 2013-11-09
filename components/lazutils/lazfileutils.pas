@@ -508,6 +508,7 @@ end;
 function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
 var
   i: Integer;
+  c: Char;
 begin
   Result:=false;
   if NameLen<=0 then begin
@@ -522,15 +523,13 @@ begin
   if (StartPos[0]='.') and (StartPos[1] in AllowDirectorySeparators) then exit;
   i:=0;
   while i<NameLen do begin
-    if not (StartPos[i] in AllowDirectorySeparators) then
+    c:=StartPos[i];
+    if not (c in AllowDirectorySeparators) then
       inc(i)
     else begin
+      if c<>PathDelim then exit;
       inc(i);
       if i=NameLen then break;
-
-      {$IFDEF Windows}
-      if StartPos[i]='/' then exit;
-      {$ENDIF}
 
       // check for double path delimiter
       if (StartPos[i] in AllowDirectorySeparators) then exit;
