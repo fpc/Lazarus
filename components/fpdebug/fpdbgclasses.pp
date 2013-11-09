@@ -42,12 +42,10 @@ uses
 {$endif}
   Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgWinExtra, FpDbgLoader, FpDbgInfo, LazLoggerBase, LazClasses;
 
+{$ifdef windows}
 type
-{$ifdef windows}
   TDbgProcess = class;
-{$endif}
 
-{$ifdef windows}
   TDbgThread = class(TObject)
   private
     FProcess: TDbgProcess;
@@ -65,10 +63,7 @@ type
     property Handle: THandle read FHandle;
     property SingleStepping: boolean read FSingleStepping;
   end;
-{$endif}
 
-
-{$ifdef windows}
   TDbgBreakpoint = class;
   TDbgBreakpointEvent = procedure(const ASender: TDbgBreakpoint; const AContext: TContext) of object;
   TDbgBreakpoint = class(TObject)
@@ -85,12 +80,9 @@ type
     function Hit(const AThreadID: Integer): Boolean;
     property Location: TDbgPtr read FLocation;
   end;
-{$endif}
-
 
   { TDbgInstance }
 
-{$ifdef windows}
   TDbgInstance = class(TObject)
   private
     FName: String;
@@ -117,20 +109,16 @@ type
     property ModuleHandle: THandle read FModuleHandle;
     property BaseAddr: TDbgPtr read FBaseAddr;
   end;
-{$endif}
 
-  {$ifdef windows}
   TDbgLibrary = class(TDbgInstance)
   private
   public
     constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AInfo: TLoadDLLDebugInfo);
     property Name: String read FName;
   end;
-  {$endif}
 
   { TDbgProcess }
 
-  {$ifdef windows}
   TDbgProcess = class(TDbgInstance)
   private
     FProcessID: Integer;
