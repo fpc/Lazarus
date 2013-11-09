@@ -45,6 +45,7 @@ type
   THexValueFormatFlags = set of THexValueFormatFlag;
 
   
+function CompareUtf8BothCase(AnUpper, AnLower, AnUnknown: PChar): Boolean;
 function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
 function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
 procedure Log(const AText: String; const AParams: array of const); overload;
@@ -52,6 +53,62 @@ procedure Log(const AText: String); overload;
 
 
 implementation
+
+function CompareUtf8BothCase(AnUpper, AnLower, AnUnknown: PChar): Boolean;
+var
+  p: PChar;
+begin
+  Result := False;
+  while (AnUpper^ <> #0) and (AnUnknown^ <> #0) do begin
+    p := AnUnknown;
+
+    if (AnUpper^ = AnUnknown^) then begin
+      // maybe uppercase
+      inc(AnUpper);
+      inc(AnUnknown);
+      while ((byte(AnUpper^) and $C0) = $C0) and (AnUpper^ = AnUnknown^) do begin
+        inc(AnUpper);
+        inc(AnUnknown);
+      end;
+
+      if ((byte(AnUpper^) and $C0) <> $C0) then begin // equal to upper
+        inc(AnLower);
+        while ((byte(AnLower^) and $C0) = $C0) do
+          inc(AnLower);
+        Continue;
+      end;
+    end
+    else begin
+      // skip the first byte / continuation bytes are skipped if lower matches
+      inc(AnUpper);
+      inc(AnUnknown);
+    end;
+
+    // Not upper, try lower
+    if (AnLower^ = p^) then begin
+      inc(AnLower);
+      inc(p);
+      while ((byte(AnLower^) and $C0) = $C0) and (AnLower^ = p^) do begin
+        inc(AnLower);
+        inc(p);
+      end;
+
+      if ((byte(AnLower^) and $C0) <> $C0) then begin // equal to lower
+        // adjust upper and unknown to codepoint
+        while ((byte(AnUpper^) and $C0) = $C0) do
+          inc(AnUnknown);
+        while ((byte(AnUnknown^) and $C0) = $C0) do
+          inc(AnUnknown);
+        Continue;
+      end;
+    end;
+
+    Result := False;
+    exit;
+  end;
+
+  Result := AnUpper^ = AnUnknown^;  // both #0
+end;
 
 function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
 begin

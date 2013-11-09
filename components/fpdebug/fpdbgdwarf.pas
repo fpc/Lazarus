@@ -41,9 +41,9 @@ unit FpDbgDwarf;
 interface
 
 uses
-  Classes, Types, SysUtils, FpDbgInfo, FpDbgDwarfConst, Maps, Math,
+  Classes, Types, SysUtils, FpDbgUtil, FpDbgInfo, FpDbgDwarfConst, Maps, Math,
   FpDbgLoader, FpImgReaderBase, LazLoggerBase, // LazLoggerDummy,
-  LazClasses, LazFileUtils, contnrs;
+  LazClasses, LazFileUtils, LazUTF8, contnrs;
   
 type
   // compilation unit header
@@ -289,6 +289,7 @@ type
     function ReadValue(AnAttrib: Cardinal; out AValue: Int64): Boolean;
     function ReadValue(AnAttrib: Cardinal; out AValue: Cardinal): Boolean;
     function ReadValue(AnAttrib: Cardinal; out AValue: QWord): Boolean;
+    function ReadValue(AnAttrib: Cardinal; out AValue: PChar): Boolean;
     function ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
     function ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out ACompUnit: TDwarfCompilationUnit): Boolean;
   public
@@ -1687,19 +1688,24 @@ end;
 
 function TDwarfInformationEntry.GoNamedChild(AName: String): Boolean;
 var
-  EntryName: String;
-  s: String;
+  EntryName: PChar;
+  s1, s2: String;
 begin
   Result := False;
-  s := UpperCase(AName);
+  if AName = '' then
+    exit;
   GoChild;
+  if not HasValidScope then
+    exit;
+  s1 := UTF8UpperCase(AName);
+  s2 := UTF8LowerCase(AName);
   while HasValidScope do begin
     if not ReadValue(DW_AT_name, EntryName) then begin
       GoNext;
       Continue;
     end;
 
-    if UpperCase(EntryName) = s then begin
+      if CompareUtf8BothCase(@s1[1], @s2[1], EntryName) then begin
       // TODO: check DW_AT_start_scope;
       DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChild found ', dbgs(FScope, FCompUnit), DbgSName(Self)]);
       Result := True;
@@ -1712,15 +1718,20 @@ end;
 
 function TDwarfInformationEntry.GoNamedChildEx(AName: String): Boolean;
 var
-  EntryName: String;
-  s: String;
+  EntryName: PChar;
+  s1, s2: String;
   InEnum: Boolean;
   ParentScopIdx: Integer;
 begin
   Result := False;
   InEnum := False;
-  s := UpperCase(AName);
+  if AName = '' then
+    exit;
   GoChild;
+  if not HasValidScope then
+    exit;
+  s1 := UTF8UpperCase(AName);
+  s2 := UTF8LowerCase(AName);
   while true do begin
     while HasValidScope do begin
       if not ReadValue(DW_AT_name, EntryName) then begin
@@ -1728,7 +1739,7 @@ begin
         Continue;
       end;
 
-      if UpperCase(EntryName) = s then begin
+      if CompareUtf8BothCase(@s1[1], @s2[1], EntryName) then begin
         // TODO: check DW_AT_start_scope;
         DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChildEx found ', dbgs(FScope, FCompUnit), DbgSName(Self)]);
         Result := True;
@@ -1886,6 +1897,16 @@ begin
   Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
 end;
 
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: PChar): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  i := AttribIdx(AnAttrib, AData);
+  if i < 0 then exit(False);
+  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+end;
+
 function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
 var
   AData: pointer;
@@ -1977,7 +1998,8 @@ var
   //Scope,
   StartScopeIdx, ExtVal, i: Integer;
   InfoEntry, InfoEntryTmp, InfoEntryParent: TDwarfInformationEntry;
-  s, InfoName: String;
+  s, s1, s2: String;
+  InfoName: PChar;
   FwdInfoPtr: Pointer;
   tg: Cardinal;
 begin
@@ -1986,7 +2008,8 @@ begin
     exit;
 
   SubRoutine := TDbgDwarfProcSymbol(FSymbol);
-  s := UpperCase(AName);
+  s1 := UTF8UpperCase(AName);
+  s2 := UTF8LowerCase(AName);
 
   try
     CU := SubRoutine.FCU;
@@ -1999,7 +2022,7 @@ begin
       StartScopeIdx := InfoEntry.ScopeIndex;
 
       if InfoEntry.ReadValue(DW_AT_name, InfoName) then begin
-        if UpperCase(InfoName) = s then begin
+        if (AName <> '') and (CompareUtf8BothCase(@s1[1], @s2[1], InfoName)) then begin
           Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
           DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
           exit;
@@ -2055,7 +2078,8 @@ begin
       if not InfoEntry.Abbrev.tag = DW_TAG_compile_unit then
         continue;
 
-      if UpperCase(CU2.UnitName) = s then begin
+      s := CU2.UnitName;
+      if (AName <> '') and (s <> '') and (CompareUtf8BothCase(@s1[1], @s2[1], @s[1])) then begin
         Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
         DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found unit ', dbgs(InfoEntry.FScope, CU2), DbgSName(Result)]);
         break;
@@ -2373,12 +2397,17 @@ end;
 function TDbgDwarfIdentifierEnum.GetMemberByName(AIndex: String): TDbgSymbol;
 var
   i: Integer;
+  s, s1, s2: String;
 begin
+  if AIndex = '' then
+  s1 := UTF8UpperCase(AIndex);
+  s2 := UTF8LowerCase(AIndex);
   CreateMembers;
   i := FMembers.Count - 1;
   while i >= 0 do begin
     Result := TDbgSymbol(FMembers[i]);
-    if UpperCase(AIndex) = UpperCase(Result.Name) then
+    s := Result.Name;
+    if (s <> '') and CompareUtf8BothCase(@s1[1], @s2[1], @s[1]) then
       exit;
     dec(i);
   end;
