@@ -172,6 +172,7 @@ type
 
     procedure Attach(AProcessID: String); virtual; abstract;
     procedure Detach; virtual; abstract;
+    function FillProcessList(AList: TRunningProcessInfoList): boolean; virtual; abstract;
 
     function Evaluate(const AExpression: String; var AResult: String;
                       var ATypeInfo: TDBGType;

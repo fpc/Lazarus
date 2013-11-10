@@ -9,19 +9,9 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, LCLType, Contnrs, LazarusIDEStrConsts;
+  ComCtrls, LCLType, Contnrs, LazarusIDEStrConsts, BaseDebugManager, Debugger;
 
 type
-
-  // Used to enumerate running processes.
-  TRunningProcessInfo = class
-  public
-    PID: Cardinal;
-    ImageName: string;
-    constructor Create(APID: Cardinal; const AImageName: string);
-  end;
-
-  TRunningProcessInfoList = TObjectList;
 
   { TDebugAttachDialogForm }
 
@@ -188,6 +178,9 @@ begin
   if not Assigned(AList) then
     Exit;
 
+  // If it is not possible to get the process-list from the debugger,
+  // use NSRunningApplication as fallback method. This list is not complete,
+  // though. But better then nothing.
   Arr := NSWorkspace.sharedWorkspace.runningApplications;
   for I := 0 to Arr.count - 1 do
   begin
@@ -205,41 +198,34 @@ end;
 {$endif}
 {$endif}
 
-{ TRunningProcessInfo }
-
-constructor TRunningProcessInfo.Create(APID: Cardinal; const AImageName: string);
-begin
-  self.PID := APID;
-  self.ImageName := AImageName;
-end;
-
 function GetPidForAttach: string;
 var
   ProcessList: TRunningProcessInfoList;
 begin
   Result := '';
 
-  // Check if we can enumerate processes.
-  if not EnumerateProcesses(nil) then
-  begin
-    // If we can't just ask PID as string.
-    InputQuery(rsAttachTo, rsEnterPID, Result);
-    Exit;
-  end;
-
-  // Enumerate.
-  DebugAttachDialogForm := TDebugAttachDialogForm.Create(nil);
+  ProcessList := TRunningProcessInfoList.Create(True);
   try
-    ProcessList := TRunningProcessInfoList.Create(True);
+    // Check if we can enumerate processes.
+    if not DebugBoss.FillProcessList(ProcessList) then
+      if not EnumerateProcesses(ProcessList) then
+      begin
+        // If we can't just ask PID as string.
+        InputQuery(rsAttachTo, rsEnterPID, Result);
+        Exit;
+      end;
+
+    // Enumerate.
+    DebugAttachDialogForm := TDebugAttachDialogForm.Create(nil);
     try
-      EnumerateProcesses(ProcessList);
       if DebugAttachDialogForm.ChooseProcess(ProcessList, Result) <> mrOK then
         Result := '';
     finally
-      FreeAndNil(ProcessList);
+      FreeAndNil(DebugAttachDialogForm);
     end;
+
   finally
-    FreeAndNil(DebugAttachDialogForm);
+    FreeAndNil(ProcessList);
   end;
 end;
 
@@ -294,7 +280,9 @@ procedure TDebugAttachDialogForm.btnRefreshClick(Sender: TObject);
 begin
   lvProcesses.Items.Clear;
   FList.Clear;
-  EnumerateProcesses(FList);
+  if not DebugBoss.FillProcessList(FList)
+  then
+    EnumerateProcesses(FList);
   lvProcesses.Items.Count := FList.Count;
 end;
 

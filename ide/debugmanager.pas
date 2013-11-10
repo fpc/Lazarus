@@ -208,6 +208,7 @@ type
     procedure EndDebugging; override;
 
     procedure Attach(AProcessID: String); override;
+    function FillProcessList(AList: TRunningProcessInfoList): boolean; override;
     procedure Detach; override;
 
     function Evaluate(const AExpression: String; var AResult: String;
@@ -2640,10 +2641,17 @@ begin
   end;
 end;
 
+function TDebugManager.FillProcessList(AList: TRunningProcessInfoList): boolean;
+begin
+  Result := (not Destroying)
+        and (MainIDE.ToolStatus in [itDebugger, itNone])
+        and (FDebugger <> nil)
+        and FDebugger.GetProcessList(AList);
+end;
+
 procedure TDebugManager.Detach;
 begin
-  FRunTimer.Enabled:=false;
-  Exclude(FManagerStates,dmsWaitForRun);
+  FRunTimer.Enabled:=false;  Exclude(FManagerStates,dmsWaitForRun);
   Exclude(FManagerStates,dmsWaitForAttach);
 
   SourceEditorManager.ClearExecutionLines;

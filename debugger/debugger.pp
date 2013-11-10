@@ -39,7 +39,7 @@ interface
 
 uses
   TypInfo, Classes, SysUtils, Laz2_XMLCfg, math, FileUtil, LazLoggerBase, LazClasses,
-  LCLProc, LazConfigStorage, DebugUtils, maps;
+  LCLProc, LazConfigStorage, DebugUtils, maps, contnrs;
 
 type
   // datatype pointing to data on the target
@@ -161,6 +161,20 @@ const
 type
   EDebuggerException = class(Exception);
   EDBGExceptions = class(EDebuggerException);
+
+type
+  // Used to enumerate running processes.
+
+  { TRunningProcessInfo }
+
+  TRunningProcessInfo = class
+  public
+    PID: Cardinal;
+    ImageName: string;
+    constructor Create(APID: Cardinal; const AImageName: string);
+  end;
+
+  TRunningProcessInfoList = TObjectList;
 
 type
   { TDebuggerConfigStore }
@@ -2848,6 +2862,7 @@ type
     function  Evaluate(const AExpression: String; var AResult: String;
                        var ATypeInfo: TDBGType;
                        EvalFlags: TDBGEvaluateFlags = []): Boolean;                     // Evaluates the given expression, returns true if valid
+    function GetProcessList(AList: TRunningProcessInfoList): boolean; virtual;
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
     function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
                           out ADump, AStatement, AFile: String; out ALine: Integer): Boolean; deprecated;
@@ -3153,6 +3168,14 @@ end;
 function DPtrMax(const a, b: TDBGPtr): TDBGPtr;
 begin
   if a > b then Result := a else Result := b;
+end;
+
+{ TRunningProcessInfo }
+
+constructor TRunningProcessInfo.Create(APID: Cardinal; const AImageName: string);
+begin
+  self.PID := APID;
+  self.ImageName := AImageName;
 end;
 
 { TRegistersFormatList }
@@ -6526,6 +6549,11 @@ function TDebugger.Evaluate(const AExpression: String; var AResult: String;
 begin
   FreeAndNIL(ATypeInfo);
   Result := ReqCmd(dcEvaluate, [AExpression, @AResult, @ATypeInfo, Integer(EvalFlags)]);
+end;
+
+function TDebugger.GetProcessList(AList: TRunningProcessInfoList): boolean;
+begin
+  result := false;
 end;
 
 class function TDebugger.ExePaths: String;

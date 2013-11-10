@@ -803,6 +803,7 @@ type
     procedure Init; override;         // Initializes external debugger
     procedure Done; override;         // Kills external debugger
     function GetLocation: TDBGLocationRec; override;
+    function GetProcessList(AList: TRunningProcessInfoList): boolean; override;
 
     //LockCommandProcessing is more than just QueueExecuteLock
     //LockCommandProcessing also takes care to run the queue, if unlocked and not already running
@@ -7286,6 +7287,45 @@ end;
 function TGDBMIDebugger.GetLocation: TDBGLocationRec;
 begin
   Result := FCurrentLocation;
+end;
+
+function TGDBMIDebugger.GetProcessList(AList: TRunningProcessInfoList): boolean;
+{$ifdef darwin}
+var
+  AResult: TGDBMIExecResult;
+  ARunningProcessInfo: TRunningProcessInfo;
+  pname,pid,aLine: string;
+  s: string;
+  i: integer;
+{$endif}
+begin
+{$ifdef darwin}
+  result := State in [dsIdle, dsStop, dsInit];
+  if not Result then
+    exit;
+
+  ExecuteCommand('info mach-tasks',[],[], AResult);
+  s := AResult.Values;
+  i := pos(sLineBreak,s);
+  while i>0 do
+  begin
+    aLine := trim(copy(s,1,i-1));
+    delete(s,1,i+1);
+    i := pos(' is ', aLine);
+    pid := copy(aLine,1,i-1);
+    pname := copy(aLine,i+4,PosEx(' ',aLine,i+4)-(i+4));
+
+    if pid <> '' then
+      begin
+      ARunningProcessInfo := TRunningProcessInfo.Create(StrToIntDef(pname,-1), pid);
+      AList.Add(ARunningProcessInfo);
+      end;
+    i := pos(sLineBreak,s);
+  end;
+
+{$else}
+  result := false;
+{$endif}
 end;
 
 procedure TGDBMIDebugger.LockCommandProcessing;
