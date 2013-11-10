@@ -62,6 +62,7 @@ type
     function Left: TSynTextFoldAVLNodeData;
     function Parent: TSynTextFoldAVLNodeData;
     function Right: TSynTextFoldAVLNodeData;
+    procedure FreeAllChildrenAndNested;
   public    (* Position / Size *)
     (* FullCount:  Amount of lines in source for this fold only
                    (excluding overlaps) *)
@@ -1783,6 +1784,24 @@ begin
   Result := TSynTextFoldAVLNodeData(FRight);
 end;
 
+procedure TSynTextFoldAVLNodeData.FreeAllChildrenAndNested;
+begin
+  if FLeft <> nil then begin
+    Left.FreeAllChildrenAndNested;
+    FreeAndNil(FLeft);
+  end;
+
+  if FRight <> nil then begin
+    Right.FreeAllChildrenAndNested;
+    FreeAndNil(FRight);
+  end;
+
+  if Nested <> nil then begin
+    Nested.FreeAllChildrenAndNested;
+    FreeAndNil(Nested);
+  end;
+end;
+
 function TSynTextFoldAVLNodeData.RecursiveFoldCount : Integer;
 var
   ANode: TSynTextFoldAVLNodeData;
@@ -2655,7 +2674,12 @@ begin
         end;
         MergeNode.LeftCount := 0;
         MergeNode.FBalance   := 0;
-        InsertNode(MergeNode);
+        if MergeNode.FullCount <= 0 then begin
+          MergeNode.FreeAllChildrenAndNested;
+          MergeNode.Free;
+        end
+        else
+          InsertNode(MergeNode);
       end;
     end;
 
