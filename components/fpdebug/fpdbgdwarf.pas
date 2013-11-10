@@ -263,18 +263,20 @@ type
     FInformationEntry: Pointer; // pointer to the LEB128 Abbrev at the start of an Information entry in debug_info
     FInformationData: Pointer;  // poinetr after the LEB128
     FScope: TDwarfScopeInfo;
-    FAbbrev: TDwarfAbbrev;
+    FAbbrev: PDwarfAbbrev;
     FAbbrevData: PDwarfAbbrevEntry;
-    FFlags: set of (dieAbbrevValid);
+    FFlags: set of (dieAbbrevValid, dieAbbrevDataValid);
 
-    function GetAbbrev: TDwarfAbbrev;
+    function GetAbbrev: PDwarfAbbrev; inline;
+    function GetAbbrevData: PDwarfAbbrevEntry;
+    function GetAbbrevTag: Cardinal; inline;
     procedure ScopeChanged; inline;
     function SearchScope: Boolean;
     function MaybeSearchScope: Boolean; inline;
-    function PrepareAbbrev: Boolean; inline;
+    procedure PrepareAbbrev; inline;
+    function PrepareAbbrevData: Boolean; inline;
 
     function GetScopeIndex: Integer;
-    procedure SetAbbrev(AValue: TDwarfAbbrev);
     procedure SetScopeIndex(AValue: Integer);
   protected
     function GoNamedChild(AName: String): Boolean;
@@ -291,8 +293,9 @@ type
     function FirstChild: TDwarfInformationEntry;
     function Clone: TDwarfInformationEntry;
 
-    property Abbrev: TDwarfAbbrev read GetAbbrev write SetAbbrev;
-    property AbbrevData: PDwarfAbbrevEntry read FAbbrevData; // only valid if Abbrev is available
+    property Abbrev: PDwarfAbbrev read GetAbbrev;
+    property AbbrevData: PDwarfAbbrevEntry read GetAbbrevData;
+    property AbbrevTag: Cardinal read GetAbbrevTag;
     function HasAttrib(AnAttrib: Cardinal): boolean;
     function AttribIdx(AnAttrib: Cardinal; out AInfoPointer: pointer): Integer;
 
@@ -1801,6 +1804,7 @@ begin
     AData.index := -1;
     AData.tag := 0;
     AData.count := 0;
+    AData.flags := [];
   end
   else
     AData := p^;
@@ -2135,13 +2139,6 @@ end;
 
 { TDwarfInformationEntry }
 
-procedure TDwarfInformationEntry.SetAbbrev(AValue: TDwarfAbbrev);
-begin
-  FAbbrev := AValue;
-  // assert correct for entry
-  Include(FFlags, dieAbbrevValid);
-end;
-
 procedure TDwarfInformationEntry.ScopeChanged;
 begin
   FInformationEntry := FScope.Entry;
@@ -2149,26 +2146,54 @@ begin
   FInformationData := nil;
 end;
 
-function TDwarfInformationEntry.PrepareAbbrev: Boolean;
+procedure TDwarfInformationEntry.PrepareAbbrev;
+begin
+  if dieAbbrevValid in FFlags then
+    exit;
+  FInformationData := FCompUnit.FAbbrevList.FindLe128bFromPointer(FInformationEntry, FAbbrev);
+  Include(FFlags, dieAbbrevValid);
+end;
+
+function TDwarfInformationEntry.PrepareAbbrevData: Boolean;
 var
   AbbrList: TDwarfAbbrevList;
 begin
   Result := FAbbrevData <> nil;
-  if dieAbbrevValid in FFlags then
+  if dieAbbrevDataValid in FFlags then
     exit;
   AbbrList := FCompUnit.FAbbrevList;
-  FInformationData := AbbrList.FindLe128bFromPointer(FInformationEntry, FAbbrev);
+
+  // PrepareAbbrev;
+  if not(dieAbbrevValid in FFlags) then
+    FInformationData := AbbrList.FindLe128bFromPointer(FInformationEntry, FAbbrev);
   Result := FInformationData <> nil;
+
   if Result
-  then FAbbrevData := AbbrList.EntryPointer[FAbbrev.index]
+  then FAbbrevData := AbbrList.EntryPointer[FAbbrev^.index]
   else FAbbrevData := nil;
-  Include(FFlags, dieAbbrevValid);
+  FFlags := FFlags + [dieAbbrevValid, dieAbbrevDataValid];
 end;
 
-function TDwarfInformationEntry.GetAbbrev: TDwarfAbbrev;
+function TDwarfInformationEntry.GetAbbrev: PDwarfAbbrev;
 begin
   PrepareAbbrev;
   Result := FAbbrev;
+end;
+
+function TDwarfInformationEntry.GetAbbrevData: PDwarfAbbrevEntry;
+begin
+  if PrepareAbbrevData then
+    Result := FAbbrevData
+  else
+    Result := nil;
+end;
+
+function TDwarfInformationEntry.GetAbbrevTag: Cardinal;
+begin
+  PrepareAbbrev;
+  if FAbbrev <> nil
+  then Result := FAbbrev^.tag
+  else Result := 0;
 end;
 
 procedure TDwarfInformationEntry.GoParent;
@@ -2236,10 +2261,10 @@ var
   i: Integer;
   AddrSize: Byte;
 begin
-  if not PrepareAbbrev then exit(-1);
+  if not PrepareAbbrevData then exit(-1);
   AInfoPointer := FInformationData;
   AddrSize := FCompUnit.FAddressSize;
-  for i := 0 to FAbbrev.count - 1 do begin
+  for i := 0 to FAbbrev^.count - 1 do begin
     if FAbbrevData[i].Attribute = AnAttrib then
       exit(i);
     SkipEntryDataForForm(AInfoPointer, FAbbrevData[i].Form, AddrSize);
@@ -2275,7 +2300,7 @@ begin
   s2 := UTF8LowerCase(AName);
   while HasValidScope do begin
     PrepareAbbrev;
-    if not (dafHasName in FAbbrev.flags) then begin
+    if not (dafHasName in FAbbrev^.flags) then begin
       GoNext;
       Continue;
     end;
@@ -2311,7 +2336,7 @@ begin
   while true do begin
     while HasValidScope do begin
       PrepareAbbrev;
-      if not (dafHasName in FAbbrev.flags) then begin
+      if not (dafHasName in FAbbrev^.flags) then begin
         GoNext;
         Continue;
       end;
@@ -2328,7 +2353,7 @@ begin
       end;
 
       // Abbrev was prelaped by
-      if FAbbrev.tag = DW_TAG_enumeration_type then begin
+      if FAbbrev^.tag = DW_TAG_enumeration_type then begin
         assert(not InEnum, 'nested enum');
         InEnum := True;
         ParentScopIdx := ScopeIndex;
@@ -2442,9 +2467,9 @@ var
   i: Integer;
 begin
   Result := False;
-  if not PrepareAbbrev then exit;
+  if not PrepareAbbrevData then exit;
   Result := True;
-  for i := 0 to FAbbrev.count - 1 do
+  for i := 0 to FAbbrev^.count - 1 do
     if FAbbrevData[i].Attribute = AnAttrib then
       exit;
   Result := False;
@@ -2528,7 +2553,7 @@ begin
   i := AttribIdx(AnAttrib, InfoData);
   if (i < 0) then
     exit;
-  Form := AbbrevData[i].Form;
+  Form := FAbbrevData[i].Form;
   if (Form = DW_FORM_ref1) or (Form = DW_FORM_ref2) or (Form = DW_FORM_ref4) or
      (Form = DW_FORM_ref8) or (Form = DW_FORM_ref_udata)
   then begin
@@ -2821,7 +2846,7 @@ begin
   if Info = nil then exit;
 
   while Info.HasValidScope do begin
-    if (Info.Abbrev.tag = DW_TAG_enumerator) then begin
+    if (Info.AbbrevTag = DW_TAG_enumerator) then begin
       Info2 := Info.Clone;
       sym := TDbgDwarfIdentifier.CreateSubClass('', Info2);
       FMembers.Add(sym);
@@ -3027,7 +3052,7 @@ class function TDbgDwarfValueIdentifier.CreateValueSubClass(AName: String;
 var
   c: TDbgDwarfIdentifierClass;
 begin
-  c := GetSubClass(AnInformationEntry.Abbrev.tag);
+  c := GetSubClass(AnInformationEntry.AbbrevTag);
 
   if c.InheritsFrom(TDbgDwarfValueIdentifier) then
     Result := TDbgDwarfValueIdentifierClass(c).Create(AName, AnInformationEntry)
@@ -3051,7 +3076,7 @@ begin
   if Info = nil then exit;
 
   while Info.HasValidScope do begin
-    t := Info.Abbrev.tag;
+    t := Info.AbbrevTag;
     if (t = DW_TAG_enumeration_type) or (t = DW_TAG_subrange_type) then begin
       Info2 := Info.Clone;
       sym := TDbgDwarfIdentifier.CreateSubClass('', Info2);
@@ -3183,7 +3208,7 @@ begin
   Info.GoChild;
 
   while Info.HasValidScope do begin
-    if (Info.Abbrev.tag = DW_TAG_member) or (Info.Abbrev.tag = DW_TAG_subprogram) then begin
+    if (Info.AbbrevTag = DW_TAG_member) or (Info.AbbrevTag = DW_TAG_subprogram) then begin
       Info2 := Info.Clone;
       sym := TDbgDwarfIdentifier.CreateSubClass('', Info2);
       FMembers.Add(sym);
@@ -3198,7 +3223,7 @@ end;
 
 procedure TDbgDwarfIdentifierStructure.KindNeeded;
 begin
-  if (FInformationEntry.Abbrev.tag = DW_TAG_class_type) then
+  if (FInformationEntry.AbbrevTag = DW_TAG_class_type) then
     SetKind(skClass)
   else
   begin
@@ -3259,7 +3284,7 @@ var
   Encoding, ByteSize: Integer;
 begin
   if not FInformationEntry.ReadValue(DW_AT_encoding, Encoding) then begin
-    DebugLn(FPDBG_DWARF_WARNINGS, ['TDbgDwarfBaseIdentifierBase.KindNeeded: Failed reading encoding for ', DwarfTagToString(FInformationEntry.Abbrev.tag)]);
+    DebugLn(FPDBG_DWARF_WARNINGS, ['TDbgDwarfBaseIdentifierBase.KindNeeded: Failed reading encoding for ', DwarfTagToString(FInformationEntry.AbbrevTag)]);
     inherited KindNeeded;
     exit;
   end;
@@ -3279,7 +3304,7 @@ begin
     DW_ATE_unsigned_char: SetKind(skChar);
     else
       begin
-        DebugLn(FPDBG_DWARF_WARNINGS, ['TDbgDwarfBaseIdentifierBase.KindNeeded: Unknown encoding ', DwarfBaseTypeEncodingToString(Encoding), ' for ', DwarfTagToString(FInformationEntry.Abbrev.tag)]);
+        DebugLn(FPDBG_DWARF_WARNINGS, ['TDbgDwarfBaseIdentifierBase.KindNeeded: Unknown encoding ', DwarfBaseTypeEncodingToString(Encoding), ' for ', DwarfTagToString(FInformationEntry.AbbrevTag)]);
         inherited KindNeeded;
       end;
   end;
@@ -3338,7 +3363,7 @@ class function TDbgDwarfTypeIdentifier.CreateTypeSubClass(AName: String;
 var
   c: TDbgDwarfIdentifierClass;
 begin
-  c := GetSubClass(AnInformationEntry.Abbrev.tag);
+  c := GetSubClass(AnInformationEntry.AbbrevTag);
 
   if c.InheritsFrom(TDbgDwarfTypeIdentifier) then
     Result := TDbgDwarfTypeIdentifierClass(c).Create(AName, AnInformationEntry)
@@ -3376,8 +3401,11 @@ begin
 end;
 
 function TDbgDwarfIdentifier.ReadName(out AName: String): Boolean;
+var
+  a: PDwarfAbbrev;
 begin
-  Result := (dafHasName in FInformationEntry.Abbrev.flags) and
+  a := FInformationEntry.Abbrev;
+  Result := (a <> nil) and (dafHasName in a^.flags) and
             FInformationEntry.ReadValue(DW_AT_name, AName);
 end;
 
@@ -3466,7 +3494,7 @@ end;
 class function TDbgDwarfIdentifier.CreateSubClass(AName: String;
   AnInformationEntry: TDwarfInformationEntry): TDbgDwarfIdentifier;
 begin
-  Result := GetSubClass(AnInformationEntry.Abbrev.tag).Create(AName, AnInformationEntry);
+  Result := GetSubClass(AnInformationEntry.AbbrevTag).Create(AName, AnInformationEntry);
 end;
 
 constructor TDbgDwarfIdentifier.Create(AName: String;
@@ -5013,7 +5041,7 @@ begin
         end;
       end;
 
-      tg := InfoEntry.Abbrev.tag;
+      tg := InfoEntry.AbbrevTag;
 
       if InfoEntry.GoNamedChildEx(p1, p2) then begin
         Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
@@ -5059,7 +5087,7 @@ begin
       InfoEntry := TDwarfInformationEntry.Create(CU2, nil);
       InfoEntry.ScopeIndex := CU2.FirstScope.Index;
 
-      if not InfoEntry.Abbrev.tag = DW_TAG_compile_unit then
+      if not InfoEntry.AbbrevTag = DW_TAG_compile_unit then
         continue;
 
       s := CU2.UnitName;
