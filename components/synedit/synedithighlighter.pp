@@ -372,7 +372,7 @@ type
     function GetRange: Pointer; virtual;
     function GetToken: String; virtual; abstract;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); virtual; abstract;
-    function GetEndOfLineAttribute: TSynHighlighterAttributes; virtual;
+    function GetEndOfLineAttribute: TSynHighlighterAttributes; virtual; // valid after line was scanned to EOL
     function GetTokenAttribute: TSynHighlighterAttributes; virtual; abstract;
     function GetTokenKind: integer; virtual; abstract;
     function GetTokenPos: Integer; virtual; abstract; // 0-based

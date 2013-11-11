@@ -372,7 +372,13 @@ begin
     FAtLineStart := False;
 
     Result := not CurrentTokenHighlighter.GetEol;
-    if not Result then exit;
+    if not Result then begin
+      ATokenInfo.TokenStart := nil;
+      ATokenInfo.TokenLength := 0;
+      ATokenInfo.TokenAttr := CurrentTokenHighlighter.GetEndOfLineAttribute;
+      Result := ATokenInfo.TokenAttr <> nil;
+      exit;
+    end;
 
     CurrentTokenHighlighter.GetTokenEx(ATokenInfo.TokenStart, ATokenInfo.TokenLength);
     ATokenInfo.TokenAttr := CurrentTokenHighlighter.GetTokenAttribute;

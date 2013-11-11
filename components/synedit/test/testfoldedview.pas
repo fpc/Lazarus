@@ -1499,6 +1499,26 @@ begin
   {%endregion}
 
 
+    TstSetText('Simple: fold Prc', TestTextBug21473);
+    FoldedView.FoldAtTextIndex(7);
+    FoldedView.FoldAtTextIndex(11);
+    FoldedView.FoldAtTextIndex(6);
+    FoldedView.FoldAtTextIndex(10);
+    FoldedView.FoldAtTextIndex(4);
+
+    FoldedView.FoldAtTextIndex(22);
+    FoldedView.FoldAtTextIndex(26);
+    FoldedView.FoldAtTextIndex(21);
+    FoldedView.FoldAtTextIndex(25);
+    FoldedView.FoldAtTextIndex(19);
+
+//FoldedView.debug;
+
+    SynEdit.TextBetweenPoints[point(1,3), point(1,31)] := '';
+
+    DebugLn('#############################');
+//FoldedView.debug;
+
 
 end;
 

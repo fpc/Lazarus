@@ -533,6 +533,7 @@ type
     procedure SetLine(const NewValue: string; LineNumber: Integer); override;
     procedure SetRange(Value: Pointer); override;
     procedure StartAtLineIndex(LineNumber:Integer); override; // 0 based
+    function GetEndOfLineAttribute: TSynHighlighterAttributes; override;
 
     function UseUserSettings(settingIndex: integer): boolean; override;
     procedure EnumUserSettings(settings: TStrings); override;
@@ -3131,6 +3132,14 @@ end;
 procedure TSynPasSyn.StartAtLineIndex(LineNumber: Integer);
 begin
   inherited StartAtLineIndex(LineNumber);
+end;
+
+function TSynPasSyn.GetEndOfLineAttribute: TSynHighlighterAttributes;
+begin
+  if fRange * [rsAnsi, rsBor] <> [] then
+    Result := fCommentAttri
+  else
+    Result := inherited GetEndOfLineAttribute;
 end;
 
 procedure TSynPasSyn.ResetRange;

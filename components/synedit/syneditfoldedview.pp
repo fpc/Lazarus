@@ -810,7 +810,7 @@ begin
   case FLineState of
     0: begin
         Result := inherited GetNextHighlighterToken(ATokenInfo);
-        if (not Result) and
+        if ( (not Result) or (ATokenInfo.TokenStart = nil)) and
            (FFoldView.FoldType[CurrentTokenLine + 1 - FFoldView.TopLine] * [cfCollapsedFold, cfCollapsedHide] <> [])
         then begin
           inc(FLineState);
@@ -838,7 +838,7 @@ begin
         Result := True;
       end;
     else
-      Result := False;
+      Result := inherited GetNextHighlighterToken(ATokenInfo);
   end;
 end;
 
