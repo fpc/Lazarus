@@ -383,8 +383,13 @@ begin
     ATokenInfo.PhysicalClipEnd    := ATokenInfo.EndPos.Physical;
     ATokenInfo.RtlInfo.IsRtl      := False;
     FMarkupTokenAttr.Clear;
-    FMarkupTokenAttr.Foreground := FForegroundColor;
-    FMarkupTokenAttr.Background := FBackgroundColor;
+    if ATokenInfo.Attr <> nil then begin
+      FMarkupTokenAttr.Assign(ATokenInfo.Attr);
+    end
+    else begin
+      FMarkupTokenAttr.Foreground := FForegroundColor;
+      FMarkupTokenAttr.Background := FBackgroundColor;
+    end;
 
     ATokenInfo.ExpandedExtraBytes := 0;
     ATokenInfo.HasTabs            := False;
@@ -456,6 +461,9 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
     FCurViewCurTokenStartPos := FCurViewScannerPos;
     while FCurViewToken.TokenLength = 0 do begin // Todo: is SyncroEd-test a zero size token is returned
       Result := FDisplayView.GetNextHighlighterToken(FCurViewToken);
+      if not Result then
+        FCurViewToken.TokenAttr := nil;
+      Result := Result and (FCurViewToken.TokenStart <> nil); // False for end of line token
       if not Result then begin
         FCurViewToken.TokenLength := -1;
         exit;
@@ -665,6 +673,12 @@ begin
     Result := MaybeFetchToken;    // Get token from View/Highlighter
     if not Result then begin
       ATokenInfo.StartPos           := FCurViewScannerPos;
+      if FCurViewToken.TokenAttr <> nil then begin
+        InitSynAttr(FCurViewAttr, FCurViewToken.TokenAttr, FCurViewCurTokenStartPos);
+        ATokenInfo.Attr := FCurViewAttr;
+      end
+      else
+        ATokenInfo.Attr := nil;
       exit;
     end;
 
