@@ -669,6 +669,7 @@ var
   TabExtra: Integer;
   HasTabs, HasDouble: Boolean;
 begin
+  ATokenInfo.Attr := nil;
   while True do begin
     Result := MaybeFetchToken;    // Get token from View/Highlighter
     if not Result then begin
