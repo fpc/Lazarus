@@ -40,6 +40,7 @@ object DebugAttachDialogForm: TDebugAttachDialogForm
     TabOrder = 0
     ViewStyle = vsReport
     OnChange = lvProcessesChange
+    OnColumnClick = lvProcessesColumnClick
     OnData = lvProcessesData
     OnDblClick = lvProcessesDblClick
     OnKeyDown = lvProcessesKeyDown

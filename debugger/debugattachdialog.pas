@@ -24,6 +24,7 @@ type
     procedure btnRefreshClick(Sender: TObject);
     procedure lvProcessesChange(Sender: TObject; Item: TListItem;
       Change: TItemChange);
+    procedure lvProcessesColumnClick(Sender: TObject; Column: TListColumn);
     procedure lvProcessesData(Sender: TObject; Item: TListItem);
     procedure lvProcessesDblClick(Sender: TObject);
     procedure lvProcessesKeyDown(Sender: TObject; var Key: Word;
@@ -36,6 +37,8 @@ type
     // on success.
     function ChooseProcess(AList: TRunningProcessInfoList; out PidString: string): TModalResult;
   public
+    FSortColumn: Integer;
+    FSortBackward: Boolean;
   end;
 
 var
@@ -276,9 +279,39 @@ begin
   end;
 end;
 
+function CompareListItems(Item1, Item2: Pointer): Integer;
+begin
+  case DebugAttachDialogForm.FSortColumn of
+    0: Result := AnsiStrComp(pchar(TRunningProcessInfo(Item1).ImageName),
+                             pchar(TRunningProcessInfo(Item2).ImageName));
+    1: Result := integer(int64(TRunningProcessInfo(Item1).PID) -
+                         int64(TRunningProcessInfo(Item2).PID));
+    else Result := 0;
+  end;
+  if DebugAttachDialogForm.FSortBackward then
+    Result := -Result;
+end;
+
+procedure TDebugAttachDialogForm.lvProcessesColumnClick(Sender: TObject;
+  Column: TListColumn);
+begin
+  if FSortColumn = Column.Index then
+    FSortBackward := not FSortBackward
+  else
+    FSortBackward := False;
+  FSortColumn := Column.Index;
+
+  if FSortColumn >= 0 then
+    FList.Sort(@CompareListItems);
+
+  lvProcesses.Items.Clear;
+  lvProcesses.Items.Count := FList.Count;
+end;
+
 procedure TDebugAttachDialogForm.btnRefreshClick(Sender: TObject);
 begin
   lvProcesses.Items.Clear;
+  FSortColumn := -1;
   FList.Clear;
   if not DebugBoss.FillProcessList(FList)
   then
@@ -291,6 +324,7 @@ function TDebugAttachDialogForm.ChooseProcess(AList: TRunningProcessInfoList;
 begin
   FPidString := '';
   FList := AList;
+  FSortColumn := -1;
   lvProcesses.Items.Count := AList.Count;
   Result := ShowModal;
   if Result = mrOK then
