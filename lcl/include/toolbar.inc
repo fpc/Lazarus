@@ -32,7 +32,11 @@ begin
   Row2 := (Control2.Top + HalfBtnHeight) div BtnHeight;
   Result := CompareValue(Row1, Row2);
   if Result = 0 then
+  begin
     Result := CompareValue(Control1.Left, Control2.Left);
+    if ToolBar.UseRightToLeftAlignment then
+      Result:=-Result;
+  end;
   if Result = 0 then
   begin
     Row1 := ToolBar.GetControlIndex(Control1);
@@ -539,7 +543,8 @@ var
   ObstacleControls: TFPList;
   FullSizeObstacleControls: TFPList;
   StartX, StartY: Integer;
-  Vertical: Boolean;
+  Vertical: Boolean; // true = ToolBar is vertical, controls are put in rows
+  RowsLeftToRight: Boolean; // rows are left to right
 
   procedure CalculatePosition;
   var
@@ -560,45 +565,58 @@ var
       CurControl.GetPreferredSize(PreferredBtnWidth, PreferredBtnHeight);
       if Vertical then
       begin
+        // column layout
         NewControlHeight := PreferredBtnHeight;
         NewControlWidth := ButtonWidth;
       end
       else
       begin
+        // row layout
         NewControlHeight := ButtonHeight;
         NewControlWidth := PreferredBtnWidth;
       end;
       if (TToolButton(CurControl).Style in [tbsButton, tbsDropDown, tbsCheck]) then
       begin
         if Vertical then
+        begin
+          // column layout
           if (NewControlHeight < ButtonHeight) then
-            NewControlHeight := ButtonHeight
-          else
-        else
-        if (NewControlWidth < ButtonWidth) then
-          NewControlWidth := ButtonWidth;
+            NewControlHeight := ButtonHeight;
+        end
+        else begin
+          // row layout
+          if (NewControlWidth < ButtonWidth) then
+            NewControlWidth := ButtonWidth;
+        end;
       end;
+      //debugln(['CalculatePosition preferred toolbutton size ',DbgSName(CurControl),' ',NewControlWidth,' ',NewControlHeight]);
     end
     else
     if Vertical then
     begin
+      // column layout
       NewControlWidth := ButtonWidth;
       NewControlHeight := CurControl.Height;
     end
     else
     begin
+      // row layout
       NewControlWidth := CurControl.Width;
       NewControlHeight := ButtonHeight;
     end;
-    NewBounds := Bounds(x, y, NewControlWidth, NewControlHeight);
 
-    //DebugLn(['CalculatePosition ',DbgSName(CurControl)]);
+    if Vertical or RowsLeftToRight then
+      NewBounds := Bounds(x, y, NewControlWidth, NewControlHeight)
+    else
+      NewBounds := Bounds(x-NewControlWidth, y, NewControlWidth, NewControlHeight);
+
+    //DebugLn(['CalculatePosition ',DbgSName(CurControl),' NewBounds=',dbgs(NewBounds),' x=',x,' y=',y]);
     if Vertical then
       StartedAtRowStart := y = StartY
     else
       StartedAtRowStart := x = StartX;
     repeat
-      // move control to the right, until it does not overlap
+      // move control until it does not overlap
       IntersectsWithLimitedHeightControl := False;
       j := 0;
       while j < ObstacleControls.Count do
@@ -614,13 +632,21 @@ var
           //DebugLn(['CalculatePosition Move ',NewBounds.Left,'->',SiblingBounds.Right]);
           if Vertical then
           begin
+            // column layout
             NewBounds.Top := SiblingBounds.Bottom;
             NewBounds.Bottom := NewBounds.Top + NewControlHeight;
           end
           else
           begin
-            NewBounds.Left := SiblingBounds.Right;
-            NewBounds.Right := NewBounds.Left + NewControlWidth;
+            // row layout
+            if RowsLeftToRight then
+            begin
+              NewBounds.Left := SiblingBounds.Right;
+              NewBounds.Right := NewBounds.Left + NewControlWidth;
+            end else begin
+              NewBounds.Right := SiblingBounds.Left;
+              NewBounds.Left := NewBounds.Right - NewControlWidth;
+            end;
           end;
           j := 0; // check again, needed, because ObstacleControls are not sorted
                 // (and can not be sorted, because they can overlap)
@@ -632,6 +658,7 @@ var
       end;
       if Vertical then
       begin
+        // column layout
         if (not Wrapable) or
            (NewBounds.Bottom <= ARect.Bottom) or (NewBounds.Top = StartY) or
            (StartedAtRowStart and not IntersectsWithLimitedHeightControl) then
@@ -651,10 +678,12 @@ var
       end
       else
       begin
-        if (not Wrapable) or
-           (NewBounds.Right <= ARect.Right) or (NewBounds.Left = StartX) or
-           (StartedAtRowStart and not IntersectsWithLimitedHeightControl) then
-        begin
+        // row layout
+        if (not Wrapable)
+        or (StartedAtRowStart and not IntersectsWithLimitedHeightControl)
+        or (RowsLeftToRight and ((NewBounds.Left = StartX) or (NewBounds.Right <= ARect.Right)))
+        or ((not RowsLeftToRight) and ((NewBounds.Right = StartX) or (NewBounds.Left >= ARect.Left)))
+        then begin
           // control fits into the row
           //DebugLn(['CalculatePosition fits: ',DbgSName(CurControl),' ',dbgs(NewBounds)]);
           x := NewBounds.Left;
@@ -662,11 +691,19 @@ var
           break;
         end;
 
+        //debugln(['CalculatePosition overlaps: ',DbgSName(CurControl),' ',dbgs(NewBounds),' ARect=',DbgS(ARect),' StartX=',StartX]);
+
         // try next row
-        NewBounds.Left := StartX;
-        NewBounds.Right := NewBounds.Left + NewControlWidth;
         inc(NewBounds.Top, ButtonHeight);
         inc(NewBounds.Bottom, ButtonHeight);
+        if RowsLeftToRight then
+        begin
+          NewBounds.Left := StartX;
+          NewBounds.Right := NewBounds.Left + NewControlWidth;
+        end else begin
+          NewBounds.Right := StartX;
+          NewBounds.Left := NewBounds.Right - NewControlWidth;
+        end;
       end;
       StartedAtRowStart := True;
       //DebugLn('CalculatePosition Next Row ',DbgSName(CurControl),' ',dbgs(NewBounds));
@@ -692,9 +729,9 @@ var
   CurClientRect: TRect;
   AdjustClientFrame: TRect;
   i: Integer;
-  GrowSide: TAnchorKind;
+  GrowSide: TAnchorKind; // when a line is full, grow the TToolBar in this direction
 begin
-  //DebugLn(['WrapButtons ',DbgSName(Self),' Wrapable=',Wrapable,' ',dbgs(BoundsRect)]);
+  //DebugLn(['WrapButtons ',DbgSName(Self),' Wrapable=',Wrapable,' ',dbgs(BoundsRect),' Vertical=',IsVertical,' RTL=',UseRightToLeftAlignment,' Simulate=',Simulate]);
   Result := True;
   Vertical := IsVertical;
   NewWidth := 0;
@@ -708,9 +745,14 @@ begin
   BeginUpdate;
   try
     if Vertical then
-      GrowSide := akRight
-    else
+    begin
+      GrowSide := akRight;
+      RowsLeftToRight := true;
+    end
+    else begin
       GrowSide := akBottom;
+      RowsLeftToRight:=not UseRightToLeftAlignment;
+    end;
     for i:=0 to ControlCount-1 do
     begin
       CurControl := Controls[i];
@@ -756,19 +798,23 @@ begin
     AdjustClientFrame.Right := CurClientRect.Right - ARect.Right;
     AdjustClientFrame.Bottom := CurClientRect.Bottom - ARect.Bottom;
     //DebugLn(['TToolBar.WrapButtons ',DbgSName(Self),' ARect=',dbgs(ARect)]);
-    // important: top, left button must start in the AdjustClientRect top, left
+    // important: top, left button must start in the corner of AdjustClientRect
     // otherwise Toolbar.AutoSize=true will create an endless loop
-    StartX := ARect.Left;
+    if Vertical or RowsLeftToRight then
+      StartX := ARect.Left
+    else
+      StartX := ARect.Right;
     StartY := ARect.Top;
     x := StartX;
     y := StartY;
+    //debugln(['TToolBar.WrapButtons Start=',StartX,' ',StartY]);
     for i := 0 to OrderedControls.Count - 1 do
     begin
       CurControl := TControl(OrderedControls[i]);
       if not CurControl.IsControlVisible then
         Continue;
       CalculatePosition;
-      //DebugLn(['WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,'x',CurControl.Height]);
+      //DebugLn(['WrapButtons ',DbgSName(CurControl),' ',x,',',y,',',CurControl.Width,'x',CurControl.Height]);
       if CurControl.AutoSize then
       begin
         w := CurControl.Width;
@@ -815,7 +861,8 @@ begin
       end
       else
       begin
-        inc(x, w);
+        if RowsLeftToRight then
+          inc(x, w);
         if not Wrapable and
           (CurControl is TToolButton) and
           (TToolButton(CurControl).Wrap) then
