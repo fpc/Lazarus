@@ -2362,6 +2362,7 @@ begin
     rSizesBeforeSum := rSizesBeforeSum + current.FLeftSizeSum;
 
     if ALine = rStartPosition then begin
+      // Should not happen // did happen when nodes with 0 lines where re-inserrted, after editor-delete-lines
       debugln(['Droping Foldnode / Already exists. Startline=', rStartPosition,' LineCount=',ACount]);
       FreeAndNil(ANode);
       break;
