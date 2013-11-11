@@ -2356,7 +2356,6 @@ begin
         exit;
       end;
 
-      // Abbrev was prelaped by
       if FAbbrev^.tag = DW_TAG_enumeration_type then begin
         assert(not InEnum, 'nested enum');
         InEnum := True;
@@ -3175,7 +3174,8 @@ begin
   if ti <> nil then begin
     Result := ti.MemberByName[AIndex];
     FLastChildByName := Result;
-    FLastChildByName.AddReference;
+    if FLastChildByName <> nil
+      FLastChildByName.AddReference;
   end;
 end;
 
