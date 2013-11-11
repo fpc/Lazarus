@@ -427,6 +427,8 @@ type
     FFoldView: TSynEditFoldedView;
     FLineState: integer;
     FTokenAttr: TSynHighlighterAttributesModifier;
+    FMarkupLine: TSynSelectedColorMergeResult;
+    FLineFlags, FLineFlags2: TSynEditFoldLineCapabilities;
   public
     constructor Create(AFoldView: TSynEditFoldedView);
     destructor Destroy; override;
@@ -457,6 +459,8 @@ type
     fLines : TSynEditStrings;
     fFoldTree : TSynTextFoldAVLTree;   // Folds are stored 1-based (the 1st line is 1)
     FMarkupInfoFoldedCode: TSynSelectedColor;
+    FMarkupInfoFoldedCodeLine: TSynSelectedColor;
+    FMarkupInfoHiddenCodeLine: TSynSelectedColor;
     FOnLineInvalidate: TInvalidateLineProc;
     fTopLine : Integer;
     fLinesInWindow : Integer;          // there may be an additional part visible line
@@ -543,6 +547,8 @@ type
     property Count : integer read GetCount;             (* refers to visible (unfolded) lines *)
 
     property MarkupInfoFoldedCode: TSynSelectedColor read FMarkupInfoFoldedCode;
+    property MarkupInfoFoldedCodeLine: TSynSelectedColor read FMarkupInfoFoldedCodeLine;
+    property MarkupInfoHiddenCodeLine: TSynSelectedColor read FMarkupInfoHiddenCodeLine;
   public
     procedure Lock;
     procedure UnLock;
@@ -785,11 +791,13 @@ begin
   inherited Create;
   FFoldView := AFoldView;
   FTokenAttr := TSynHighlighterAttributesModifier.Create(nil);
+  FMarkupLine := TSynSelectedColorMergeResult.Create(nil);
 end;
 
 destructor TLazSynDisplayFold.Destroy;
 begin
   FreeAndNil(FTokenAttr);
+  FreeAndNil(FMarkupLine);
   inherited Destroy;
 end;
 
@@ -797,6 +805,19 @@ procedure TLazSynDisplayFold.SetHighlighterTokensLine(ALine: TLineIdx; out AReal
 begin
   FLineState := 0;
   CurrentTokenLine := ALine;
+  FLineFlags := FFoldView.FoldType[CurrentTokenLine + 1 - FFoldView.TopLine] * [cfCollapsedFold, cfCollapsedHide];
+  FLineFlags2 := FLineFlags;
+
+  if not FFoldView.MarkupInfoFoldedCodeLine.IsEnabled then
+    Exclude(FLineFlags2, cfCollapsedFold);
+  if not FFoldView.MarkupInfoHiddenCodeLine.IsEnabled then
+    Exclude(FLineFlags2, cfCollapsedHide);
+
+  if (FLineFlags2 <> []) then begin
+    FFoldView.MarkupInfoFoldedCodeLine.SetFrameBoundsLog(1, MaxInt, 0);
+    FFoldView.MarkupInfoHiddenCodeLine.SetFrameBoundsLog(1, MaxInt, 0);
+  end;
+
   inherited SetHighlighterTokensLine(FFoldView.ViewPosToTextIndex(ALine + 1), ARealLine);
 end;
 
@@ -804,16 +825,22 @@ function TLazSynDisplayFold.GetNextHighlighterToken(out ATokenInfo: TLazSynDispl
 const
   MarkSpaces: string = '   ';
   MarkDots: string = '...';
+  LSTATE_BOL       = 0; // at BOL
+  LSTATE_TEXT      = 1; // in text
+  LSTATE_BOL_GAP   = 2; // BOL and in Gap (empty line)         // must be LSTATE_BOL + 2
+  LSTATE_GAP       = 3; // In Gap betwen txt and dots          // must be LSTATE_TEXT + 2
+  LSTATE_DOTS      = 4; // In Dots
+  LSTATE_EOL       = 5; // at start of EOL
 var
   EolAttr: TSynHighlighterAttributes;
+  MergeStartX, MergeEndX: TLazSynDisplayTokenBound;
 begin
   case FLineState of
-    0: begin
+    LSTATE_BOL, LSTATE_TEXT: begin
         Result := inherited GetNextHighlighterToken(ATokenInfo);
-        if ( (not Result) or (ATokenInfo.TokenStart = nil)) and
-           (FFoldView.FoldType[CurrentTokenLine + 1 - FFoldView.TopLine] * [cfCollapsedFold, cfCollapsedHide] <> [])
+        if ( (not Result) or (ATokenInfo.TokenStart = nil)) and (FLineFlags <> [])
         then begin
-          inc(FLineState);
+          inc(FLineState, 2); // LSTATE_BOL_GAP(2), if was at bol // LSTATE_GAP(3) otherwise
           ATokenInfo.TokenStart := PChar(MarkSpaces);
           ATokenInfo.TokenLength := 3;
           if Assigned(CurrentTokenHighlighter)
@@ -823,13 +850,14 @@ begin
             FTokenAttr.Assign(EolAttr);
             ATokenInfo.TokenAttr := FTokenAttr;
           end
-          else
+          else begin
             ATokenInfo.TokenAttr := nil;
+          end;
           Result := True;
         end;
       end;
-    1: begin
-        inc(FLineState);
+    LSTATE_GAP: begin
+        FLineState := LSTATE_DOTS;
         FTokenAttr.Assign(FFoldView.MarkupInfoFoldedCode);
         FTokenAttr.SetAllPriorities(MaxInt);
         ATokenInfo.TokenStart := PChar(MarkDots);
@@ -837,9 +865,49 @@ begin
         ATokenInfo.TokenAttr := FTokenAttr;
         Result := True;
       end;
-    else
+    else begin
       Result := inherited GetNextHighlighterToken(ATokenInfo);
+    end;
   end;
+
+  if (FLineFlags2 <> []) then begin
+    FMarkupLine.Clear;
+    if ATokenInfo.TokenAttr = nil then begin
+      // Text Area does not expect StartX/Endx
+      // So we must merge, to eliminate unwanted borders
+      //  if (cfCollapsedFold in FLineFlags2)
+      //  then ATokenInfo.TokenAttr := FFoldView.MarkupInfoFoldedCodeLine
+      //  else ATokenInfo.TokenAttr := FFoldView.MarkupInfoHiddenCodeLine;
+      //  exit;
+      FMarkupLine.Clear;
+    end //;
+    else
+      FMarkupLine.Assign(ATokenInfo.TokenAttr);
+
+    MergeStartX.Physical := -1;
+    MergeStartX.Logical := -1;
+    MergeEndX.Physical := -1;
+    MergeEndX.Logical := -1;
+    if FLineState in [LSTATE_BOL, LSTATE_BOL_GAP] then
+      MergeStartX := FFoldView.MarkupInfoFoldedCodeLine.StartX;
+    if FLineState = LSTATE_EOL then // LSTATE_GAP; // or result := true
+      MergeEndX := FFoldView.MarkupInfoFoldedCodeLine.EndX;
+
+    // fully expand all frames
+    //FMarkupLine.SetFrameBoundsLog(0,0,0);
+    //FMarkupLine.CurrentStartX := FMarkupLine.StartX;
+    //FMarkupLine.CurrentEndX := FMarkupLine.EndX;
+
+    if (cfCollapsedFold in FLineFlags2) then
+      FMarkupLine.Merge(FFoldView.MarkupInfoFoldedCodeLine, MergeStartX, MergeEndX)
+    else
+      FMarkupLine.Merge(FFoldView.MarkupInfoHiddenCodeLine, MergeStartX, MergeEndX);
+
+    ATokenInfo.TokenAttr := FMarkupLine;
+  end;
+
+  if FLineState in [LSTATE_BOL, LSTATE_BOL_GAP, LSTATE_DOTS, LSTATE_EOL] then
+    inc(FLineState);
 end;
 
 function TLazSynDisplayFold.GetLinesCount: Integer;
@@ -3642,6 +3710,16 @@ begin
   FMarkupInfoFoldedCode.Foreground := clDkGray;
   FMarkupInfoFoldedCode.FrameColor := clDkGray;
 
+  FMarkupInfoFoldedCodeLine := TSynSelectedColor.Create;
+  FMarkupInfoFoldedCodeLine.Background := clNone;
+  FMarkupInfoFoldedCodeLine.Foreground := clNone;
+  FMarkupInfoFoldedCodeLine.FrameColor := clNone;
+
+  FMarkupInfoHiddenCodeLine := TSynSelectedColor.Create;
+  FMarkupInfoHiddenCodeLine.Background := clNone;
+  FMarkupInfoHiddenCodeLine.Foreground := clNone;
+  FMarkupInfoHiddenCodeLine.FrameColor := clNone;
+
   fLines.AddChangeHandler(senrLineCount, @LineCountChanged);
   fLines.AddNotifyHandler(senrCleared, @LinesCleared);
   fLines.AddEditHandler(@LineEdited);
@@ -3659,6 +3737,8 @@ begin
   fTextIndexList := nil;
   fFoldTypeList := nil;
   FMarkupInfoFoldedCode.Free;
+  FMarkupInfoFoldedCodeLine.Free;
+  FMarkupInfoHiddenCodeLine.Free;
   FreeAndNil(FFoldProvider);
   inherited Destroy;
 end;
