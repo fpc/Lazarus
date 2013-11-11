@@ -3174,7 +3174,7 @@ begin
   if ti <> nil then begin
     Result := ti.MemberByName[AIndex];
     FLastChildByName := Result;
-    if FLastChildByName <> nil
+    if FLastChildByName <> nil then
       FLastChildByName.AddReference;
   end;
 end;
