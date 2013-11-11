@@ -332,6 +332,7 @@ begin
       FNextMarkupLogPos := MaxInt;
   end;
 
+  ATokenInfo.Attr := nil;
   if FCurMarkupState = cmPastEOL
   then Result := False
   else Result := GetNextHighlighterTokenFromView(ATokenInfo, FNextMarkupPhysPos, FNextMarkupLogPos);
