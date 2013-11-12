@@ -3,7 +3,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2012-3-16 20:52+0900\n"
+"PO-Revision-Date: 2013-11-12 21:91+0900\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -371,11 +371,11 @@ msgstr "Boolean"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
-msgstr ""
+msgstr "コンポーネント(&m)"
 
 #: objinspstrconsts.oisbtnproperties
 msgid "&Properties"
-msgstr ""
+msgstr "プロパティ(&P)"
 
 #: objinspstrconsts.oiscadd
 msgid "&Add"
@@ -724,7 +724,7 @@ msgstr "すべてのフィールドを選択"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
-msgstr ""
+msgstr "選択されたプロパティ(&S)"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -736,15 +736,15 @@ msgstr "設定"
 
 #: objinspstrconsts.oissetmaxconstraints
 msgid "Set MaxHeight=%d, MaxWidth=%d"
-msgstr ""
+msgstr "MaxHeight=%d, MaxWidth=%dにセット"
 
 #: objinspstrconsts.oissetmaxconstraintshint
 msgid "Use current size as Max Constraints"
-msgstr ""
+msgstr "現在のサイズをMax Constraintsとして使用"
 
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
-msgstr ""
+msgstr "MinHeight=%d, MinWidth=%d にセット"
 
 #: objinspstrconsts.oissetminconstraintshint
 msgid "Use current size as Min Constraints"
@@ -756,7 +756,7 @@ msgstr "デフォルトに設定: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
+msgstr "プロパティ値を既定値に設定"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -768,11 +768,11 @@ msgstr "ヒントを表示"
 
 #: objinspstrconsts.oisshowinfobox
 msgid "Show Information Box"
-msgstr ""
+msgstr "情報箱を表示"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
-msgstr ""
+msgstr "ステータスバーを表示"
 
 #: objinspstrconsts.oissort
 msgid "Sort"
