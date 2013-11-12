@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: AlbercikCD\n"
-"PO-Revision-Date: 2007-01-14 00:01+0100\n"
+"Last-Translator: Janusz Tomczak\n"
+"PO-Revision-Date: 2013-11-11 11:01+0100\n"
 "Project-Id-Version: lclstrconsts\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -107,7 +107,7 @@ msgstr ""
 
 #: lclstrconsts.ifsvk_execute
 msgid "Execute"
-msgstr ""
+msgstr "Wykonaj"
 
 #: lclstrconsts.ifsvk_final
 msgid "Final"
@@ -291,15 +291,15 @@ msgstr ""
 
 #: lclstrconsts.rsaquacolorcaption
 msgid "Aqua"
-msgstr ""
+msgstr "Błękitny"
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
-msgstr ""
+msgstr "Pulpit"
 
 #: lclstrconsts.rsbackward
 msgid "Backward"
-msgstr ""
+msgstr "W górę"
 
 #: lclstrconsts.rsbitmaps
 msgid "Bitmaps"
@@ -307,7 +307,7 @@ msgstr ""
 
 #: lclstrconsts.rsblackcolorcaption
 msgid "Black"
-msgstr ""
+msgstr "Czarny"
 
 #: lclstrconsts.rsblank
 msgid "Blank"
@@ -315,7 +315,7 @@ msgstr "Pusty"
 
 #: lclstrconsts.rsbluecolorcaption
 msgid "Blue"
-msgstr ""
+msgstr "Niebieski"
 
 #: lclstrconsts.rsbtnfacecolorcaption
 msgid "Button Face"
@@ -344,7 +344,7 @@ msgstr "Anuluj"
 
 #: lclstrconsts.rscannotfocus
 msgid "Can not focus"
-msgstr "Nie można ustawić ogniska."
+msgstr "Nie można ustawić ogniska"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
 msgid "Canvas does not allow drawing"
@@ -356,7 +356,7 @@ msgstr ""
 
 #: lclstrconsts.rscasesensitive
 msgid "Case sensitive"
-msgstr ""
+msgstr "Uwzględnij wielkość liter"
 
 #: lclstrconsts.rscontrolclasscantcontainchildclass
 msgid "Control of class '%s' can't have control of class '%s' as a child"
@@ -372,7 +372,7 @@ msgstr ""
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
-msgstr ""
+msgstr "Kremowy"
 
 #: lclstrconsts.rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
@@ -380,15 +380,15 @@ msgstr "Błąd przy tworzeniu \"gdb catchable\":"
 
 #: lclstrconsts.rscursor
 msgid "Cursor"
-msgstr ""
+msgstr "Kursor"
 
 #: lclstrconsts.rscustomcolorcaption
 msgid "Custom ..."
-msgstr ""
+msgstr "Inny..."
 
 #: lclstrconsts.rsdefaultcolorcaption
 msgid "Default"
-msgstr ""
+msgstr "Domyślny"
 
 #: lclstrconsts.rsdefaultfileinfovalue
 msgid "permissions user group size date time"
@@ -396,20 +396,20 @@ msgstr "uprawnienia użytkownik grupa rozmiar data czas"
 
 #: lclstrconsts.rsdeleterecord
 msgid "Delete record?"
-msgstr ""
+msgstr "Usunąć rekord?"
 
 #: lclstrconsts.rsdeleterecordhint
 msgctxt "lclstrconsts.rsdeleterecordhint"
 msgid "Delete"
-msgstr ""
+msgstr "Usuń"
 
 #: lclstrconsts.rsdirection
 msgid "Direction"
-msgstr ""
+msgstr "Kierunek"
 
 #: lclstrconsts.rsdirectory
 msgid "&Directory"
-msgstr ""
+msgstr "&Folder"
 
 #: lclstrconsts.rsdocking
 msgid "Docking"
@@ -450,7 +450,7 @@ msgstr "Błąd odczytu %s%s%s: %s"
 
 #: lclstrconsts.rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
-msgstr ""
+msgstr "Błąd podczas zapisu bitmapy."
 
 #: lclstrconsts.rsexception
 msgid "Exception"
@@ -519,19 +519,19 @@ msgstr "Informacja o pliku"
 #: lclstrconsts.rsfilter
 msgctxt "lclstrconsts.rsfilter"
 msgid "(filter)"
-msgstr ""
+msgstr "(filtr)"
 
 #: lclstrconsts.rsfind
 msgid "Find"
-msgstr ""
+msgstr "Znajdź"
 
 #: lclstrconsts.rsfindmore
 msgid "Find more"
-msgstr ""
+msgstr "Znajdź następny"
 
 #: lclstrconsts.rsfirstrecordhint
 msgid "First"
-msgstr ""
+msgstr "Pierwszy"
 
 #: lclstrconsts.rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -555,11 +555,11 @@ msgstr "Błąd przy zapisie formularza do strumienia  \"%s\": %s"
 
 #: lclstrconsts.rsforward
 msgid "Forward"
-msgstr ""
+msgstr "W dół"
 
 #: lclstrconsts.rsfuchsiacolorcaption
 msgid "Fuchsia"
-msgstr ""
+msgstr "Różowy"
 
 #: lclstrconsts.rsgdkoptiondebug
 msgid "--gdk-debug flags     Turn on specific GDK trace/debug messages."
@@ -591,7 +591,7 @@ msgstr ""
 
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"
-msgstr ""
+msgstr "Szary"
 
 #: lclstrconsts.rsgraytextcolorcaption
 msgid "Gray Text"
@@ -599,7 +599,7 @@ msgstr ""
 
 #: lclstrconsts.rsgreencolorcaption
 msgid "Green"
-msgstr ""
+msgstr "Zielony"
 
 #: lclstrconsts.rsgridfiledoesnotexists
 msgid "Grid file doesn't exists"
@@ -763,7 +763,7 @@ msgstr ""
 
 #: lclstrconsts.rsicon
 msgid "Icon"
-msgstr ""
+msgstr "Ikona"
 
 #: lclstrconsts.rsiconimageempty
 msgid "Icon image cannot be empty"
@@ -826,11 +826,11 @@ msgstr ""
 
 #: lclstrconsts.rsinvaliddate
 msgid "Invalid Date : %s"
-msgstr ""
+msgstr "Niepoprawna data: %s"
 
 #: lclstrconsts.rsinvaliddaterangehint
 msgid "Invalid Date: %s. Must be between %s and %s"
-msgstr ""
+msgstr "Niepoprawna data: %s. Musi być z zakresu od %s do %s"
 
 #: lclstrconsts.rsinvalidformobjectstream
 msgid "invalid Form object stream"
@@ -854,11 +854,11 @@ msgstr ""
 
 #: lclstrconsts.rslastrecordhint
 msgid "Last"
-msgstr ""
+msgstr "Ostatni"
 
 #: lclstrconsts.rslimecolorcaption
 msgid "Lime"
-msgstr ""
+msgstr "Jasnozielony"
 
 #: lclstrconsts.rslistindexexceedsbounds
 msgid "List index exceeds bounds (%d)"
@@ -870,7 +870,7 @@ msgstr "Lista musi być pusta"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
-msgstr ""
+msgstr "Bordowy"
 
 #: lclstrconsts.rsmbabort
 msgid "Abort"
@@ -911,7 +911,7 @@ msgstr "&OK"
 
 #: lclstrconsts.rsmbopen
 msgid "&Open"
-msgstr ""
+msgstr "&Otwórz"
 
 #: lclstrconsts.rsmbretry
 msgid "&Retry"
@@ -956,7 +956,7 @@ msgstr ""
 
 #: lclstrconsts.rsmodified
 msgid "  modified "
-msgstr " zmodyfikowany"
+msgstr " zmodyfikowany "
 
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
@@ -989,16 +989,16 @@ msgstr "Ostrzeżenie"
 
 #: lclstrconsts.rsnavycolorcaption
 msgid "Navy"
-msgstr ""
+msgstr "Granatowy"
 
 #: lclstrconsts.rsnextrecordhint
 msgctxt "lclstrconsts.rsnextrecordhint"
 msgid "Next"
-msgstr ""
+msgstr "Następny"
 
 #: lclstrconsts.rsnonecolorcaption
 msgid "None"
-msgstr ""
+msgstr "Brak"
 
 #: lclstrconsts.rsnotavalidgridfile
 msgid "Not a valid grid file"
@@ -1010,7 +1010,7 @@ msgstr ""
 
 #: lclstrconsts.rsolivecolorcaption
 msgid "Olive"
-msgstr ""
+msgstr "Oliwkowy"
 
 #: lclstrconsts.rspickdate
 msgid "Select a date"
@@ -1051,7 +1051,7 @@ msgstr ""
 
 #: lclstrconsts.rspromptonreplace
 msgid "Prompt on replace"
-msgstr ""
+msgstr "Zapytaj przed zastąpieniem"
 
 #: lclstrconsts.rspropertydoesnotexist
 msgid "Property %s does not exist"
@@ -1059,7 +1059,7 @@ msgstr "Właściwość %s nie istnieje"
 
 #: lclstrconsts.rspurplecolorcaption
 msgid "Purple"
-msgstr ""
+msgstr "Fioletowy"
 
 #: lclstrconsts.rsqtoptiondograb
 msgid "-dograb (only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override. Need QT_DEBUG."
@@ -1163,7 +1163,7 @@ msgstr ""
 
 #: lclstrconsts.rsredcolorcaption
 msgid "Red"
-msgstr ""
+msgstr "Czerwony"
 
 #: lclstrconsts.rsrefreshrecordshint
 msgid "Refresh"
@@ -1200,7 +1200,7 @@ msgstr "Wybierz czcionkę"
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"
-msgstr ""
+msgstr "Srebrny"
 
 #: lclstrconsts.rssize
 msgid "  size "
@@ -1216,7 +1216,7 @@ msgstr ""
 
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
-msgstr ""
+msgstr "Morski"
 
 #: lclstrconsts.rstext
 msgid "Text"
@@ -1247,7 +1247,7 @@ msgstr "Nie można załadować domyślnej czcionki"
 
 #: lclstrconsts.rsunknownerrorpleasereportthisbug
 msgid "Unknown Error, please report this bug"
-msgstr ""
+msgstr "Nieznany błąd, proszę go zgłosić"
 
 #: lclstrconsts.rsunknownpictureextension
 msgid "Unknown picture extension"
@@ -1255,7 +1255,7 @@ msgstr "Nieznane rozszerzenie pliku obrazka"
 
 #: lclstrconsts.rsunknownpictureformat
 msgid "Unknown picture format"
-msgstr ""
+msgstr "Nieznany format pliku obrazka"
 
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
@@ -1287,11 +1287,11 @@ msgstr " UWAGA: Pozostały %s nieusunięte dowiązania do LM_PAINT/LM_GtkPAINT."
 
 #: lclstrconsts.rswhitecolorcaption
 msgid "White"
-msgstr ""
+msgstr "Biały"
 
 #: lclstrconsts.rswholewordsonly
 msgid "Whole words only"
-msgstr ""
+msgstr "Tylko całe słowa"
 
 #: lclstrconsts.rswin32error
 msgid "Error:"
@@ -1315,7 +1315,7 @@ msgstr ""
 
 #: lclstrconsts.rsyellowcolorcaption
 msgid "Yellow"
-msgstr ""
+msgstr "Żółty"
 
 #: lclstrconsts.scannotfocus
 msgid "Cannot focus a disabled or invisible window"
