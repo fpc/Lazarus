@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Tomasz Wieckowski <tomek@ump.edu.pl>\n"
-"PO-Revision-Date: 2012-03-12 10:51+0100\n"
+"PO-Revision-Date: 2013-11-11 19:56+0100\n"
 "Project-Id-Version: objinspstrconsts\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "X-Poedit-Language: Polish\n"
@@ -374,7 +374,7 @@ msgstr "Boolean"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
-msgstr ""
+msgstr "Ko&mponenty"
 
 #: objinspstrconsts.oisbtnproperties
 msgid "&Properties"
@@ -638,19 +638,19 @@ msgstr "Opcje"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
-msgstr ""
+msgstr "O jeden na spód"
 
 #: objinspstrconsts.oisorderforwardone
 msgid "Forward One"
-msgstr ""
+msgstr "O jeden na wierzch"
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
-msgstr ""
+msgstr "Przenieś na spód"
 
 #: objinspstrconsts.oisordermovetofront
 msgid "Move to Front"
-msgstr ""
+msgstr "Przenieś na wierzch"
 
 #: objinspstrconsts.oispastecomponents
 #, fuzzy
@@ -765,11 +765,11 @@ msgstr "Pokaż podpowiedzi"
 
 #: objinspstrconsts.oisshowinfobox
 msgid "Show Information Box"
-msgstr ""
+msgstr "Pokaż pole z informacją"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
-msgstr ""
+msgstr "Pokaż pasek stanu"
 
 #: objinspstrconsts.oissort
 msgid "Sort"
@@ -1150,7 +1150,7 @@ msgstr "Word"
 
 #: objinspstrconsts.oiszorder
 msgid "Z-order"
-msgstr ""
+msgstr "Kolejność nakładania komponentów"
 
 #: objinspstrconsts.pefilter
 msgid "Filter"
