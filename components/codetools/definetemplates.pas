@@ -952,6 +952,7 @@ function RunFPCInfo(const CompilerFilename: string;
 function SplitFPCVersion(const FPCVersionString: string;
                         out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
 function ParseFPCVerbose(List: TStrings; // fpc -va output
+                         const WorkDir: string;
                          out ConfigFiles: TStrings; // prefix '-' for file not found, '+' for found and read
                          out RealCompilerFilename: string; // what compiler is used by fpc
                          out UnitPaths: TStrings; // unit search paths
@@ -1394,9 +1395,9 @@ begin
   Result:=true;
 end;
 
-function ParseFPCVerbose(List: TStrings; out ConfigFiles: TSTrings;
-  out RealCompilerFilename: string; out UnitPaths: TStrings;
-  out Defines, Undefines: TStringToStringTree): boolean;
+function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
+  ConfigFiles: TStrings; out RealCompilerFilename: string; out
+  UnitPaths: TStrings; out Defines, Undefines: TStringToStringTree): boolean;
 
   procedure UndefineSymbol(const MacroName: string);
   begin
@@ -1410,6 +1411,13 @@ function ParseFPCVerbose(List: TStrings; out ConfigFiles: TSTrings;
     //DebugLn(['DefineSymbol ',MacroName]);
     Undefines.Remove(MacroName);
     Defines[MacroName]:=Value;
+  end;
+
+  function ExpFile(const aFilename: string): string;
+  begin
+    Result:=aFilename;
+    if FilenameIsAbsolute(Result) then exit;
+    Result:=AppendPathDelim(WorkDir)+Result;
   end;
 
   procedure ProcessOutputLine(Line: string);
@@ -1485,23 +1493,23 @@ function ParseFPCVerbose(List: TStrings; out ConfigFiles: TSTrings;
       begin
         // skip keywords
         Inc(CurPos, 19);
-        Filename:=SetDirSeparators(copy(Line,CurPos,length(Line)));
+        Filename:=ExpFile(SetDirSeparators(copy(Line,CurPos,length(Line))));
         ConfigFiles.Add('-'+Filename);
       end else if StrLComp(@UpLine[CurPos], 'COMPILER: ', 10) = 0 then begin
         // skip keywords
         Inc(CurPos, 10);
-        RealCompilerFilename:=copy(Line,CurPos,length(Line));
+        RealCompilerFilename:=ExpFile(copy(Line,CurPos,length(Line)));
       end;
     'R':
       if StrLComp(@UpLine[CurPos], 'READING OPTIONS FROM FILE ', 26) = 0 then
       begin
         // skip keywords
         Inc(CurPos, 26);
-        Filename:=SetDirSeparators(copy(Line,CurPos,length(Line)));
+        Filename:=ExpFile(SetDirSeparators(copy(Line,CurPos,length(Line))));
         if (ConfigFiles.Count>0)
         and (ConfigFiles[ConfigFiles.Count-1]='-'+Filename) then
           ConfigFiles.Delete(ConfigFiles.Count-1);
-        ConfigFiles.Add('+'+copy(Line,CurPos,length(Line)));
+        ConfigFiles.Add('+'+Filename);
       end;
     end;
   end;
@@ -1570,7 +1578,7 @@ begin
       debugln(['RunFPCVerbose failed: ',CompilerFilename,' ',Params]);
       exit;
     end;
-    Result:=ParseFPCVerbose(List,ConfigFiles,RealCompilerFilename,
+    Result:=ParseFPCVerbose(List,WorkDir,ConfigFiles,RealCompilerFilename,
                             UnitPaths,Defines,Undefines);
   finally
     List.Free;
@@ -7401,7 +7409,7 @@ begin
   end;
   for i:=0 to ConfigFiles.Count-1 do begin
     Cfg:=ConfigFiles[i];
-    if Cfg.Filename='' then continue;
+    if (Cfg.Filename='') or (not FilenameIsAbsolute(Cfg.Filename)) then continue;
     if FileExistsCached(Cfg.Filename)<>Cfg.FileExists then begin
       debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" config fileexists changed "',Cfg.Filename,'"']);
       exit;
