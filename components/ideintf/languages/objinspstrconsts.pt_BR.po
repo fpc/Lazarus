@@ -1081,28 +1081,16 @@ msgid "Test Input"
 msgstr "Testar Entrada"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-msgid ""
-"The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore "
-"to force it."
-msgstr ""
-"O identificador %s%s%s não é um método.%sPressione Cancelar para desfazer,"
-"%sIgnorar para forçá-lo."
+msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "O identificador %s%s%s não é um método.%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-msgid ""
-"The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,"
-"%spress Ignore to force it."
-msgstr ""
-"O método %s%s%s é incompatível com este evento (%s).%sPressione Cancelar "
-"para desfazer,%sIgnorar para forçá-lo."
+msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "O método %s%s%s é incompatível com este evento (%s).%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-msgid ""
-"The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to "
-"force it."
-msgstr ""
-"O método %s%s%s não é publicado.%sPressione Cancelar para desfazer,%sIgnorar "
-"para forçá-lo."
+msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "O método %s%s%s não é publicado.%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
@@ -1564,3 +1552,4 @@ msgstr "Mover tabulação esquerda"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Mover tabulação direita"
+

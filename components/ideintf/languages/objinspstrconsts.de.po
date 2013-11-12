@@ -1096,35 +1096,21 @@ msgid "Test Input"
 msgstr "Testeingabe"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-msgid ""
-"The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore "
-"to force it."
-msgstr ""
-"Der Bezeichner %s%s%s ist keine Methode.%Zurücknehmen mit Cancel,%sÜbergehen "
-"um ihn zu erzwingen"
+msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "Der Bezeichner %s%s%s ist keine Methode.%Zurücknehmen mit Cancel,%sÜbergehen um ihn zu erzwingen"
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-msgid ""
-"The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,"
-"%spress Ignore to force it."
-msgstr ""
-"Die Methode %s%s%s ist zu diesem Event (%s) inkompatibel.%sAbbrechen um "
-"zurückzunehmen,%sÜbergehen um sie zu erzwingen."
+msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "Die Methode %s%s%s ist zu diesem Event (%s) inkompatibel.%sAbbrechen um zurückzunehmen,%sÜbergehen um sie zu erzwingen."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-msgid ""
-"The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to "
-"force it."
-msgstr ""
-"Die Methode %s%s%s ist nicht Published.%sAbbrechen um zurückzunehmen,"
-"%sÜbergehen um sie zu erzwingen."
+msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "Die Methode %s%s%s ist nicht Published.%sAbbrechen um zurückzunehmen,%sÜbergehen um sie zu erzwingen."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 #, fuzzy
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
-msgstr ""
-"Parent des Steuerelements %s%s%s kann nicht auf das Elternelement%s%s%s "
-"gesetzt werden.%s%s"
+msgstr "Parent des Steuerelements %s%s%s kann nicht auf das Elternelement%s%s%s gesetzt werden.%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1589,3 +1575,4 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
+
