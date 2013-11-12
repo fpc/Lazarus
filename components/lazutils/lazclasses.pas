@@ -99,6 +99,7 @@ end;
 
 procedure TRefCountedObject.ReleaseReference;
 begin
+  if Self = nil then exit;
   Assert(FRefCount > 0, 'TRefCountedObject.ReleaseReference  RefCount > 0');
   Dec(FRefCount);
   if FRefCount = 0 then DoFree;

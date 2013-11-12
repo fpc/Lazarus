@@ -272,6 +272,8 @@ type
     function GetFrameSideOrigin(Side: TLazSynBorderSide): TSynFrameEdges;
     function GetFrameSidePriority(Side: TLazSynBorderSide): integer;
     function GetFrameSideStyles(Side: TLazSynBorderSide): TSynLineStyle;
+    procedure SetCurrentEndX(AValue: TLazSynDisplayTokenBound);
+    procedure SetCurrentStartX(AValue: TLazSynDisplayTokenBound);
   protected
     procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
     procedure DoClear; override;
@@ -290,8 +292,8 @@ type
     property FrameSideColors[Side: TLazSynBorderSide]: TColor read GetFrameSideColors;
     property FrameSideStyles[Side: TLazSynBorderSide]: TSynLineStyle read GetFrameSideStyles;
     // boundaries for current paint
-    property CurrentStartX: TLazSynDisplayTokenBound read FCurrentStartX write FCurrentStartX;
-    property CurrentEndX: TLazSynDisplayTokenBound read FCurrentEndX write FCurrentEndX;
+    property CurrentStartX: TLazSynDisplayTokenBound read FCurrentStartX write SetCurrentStartX;
+    property CurrentEndX: TLazSynDisplayTokenBound read FCurrentEndX write SetCurrentEndX;
   public
     procedure InitMergeInfo;    // (called automatically) Set all MergeInfo to the start values. After this was called, ay Changes to the color properties are ignored
     procedure ProcessMergeInfo; // copy the merge result, to the actual color properties
@@ -664,10 +666,11 @@ begin
     exit
   end;
 
-  case Side of
-    bsLeft:  if not IsMatching(FCurrentStartX, FStartX) then exit(clNone);
-    bsRight: if not IsMatching(FCurrentEndX,   FEndX)   then exit(clNone);
-  end;
+  if (FCurrentStartX.Logical >= 0) or (FCurrentStartX.Physical >= 0) then
+    case Side of
+      bsLeft:  if not IsMatching(FCurrentStartX, FStartX) then exit(clNone);
+      bsRight: if not IsMatching(FCurrentEndX,   FEndX)   then exit(clNone);
+    end;
 
   if (Side in SynFrameEdgeToSides[FrameEdges])
   then Result := FrameColor
@@ -690,10 +693,11 @@ begin
     exit
   end;
 
-  case Side of
-    bsLeft:  if not IsMatching(FCurrentStartX, FStartX) then exit(0);
-    bsRight: if not IsMatching(FCurrentEndX,   FEndX)   then exit(0);
-  end;
+  if (FCurrentStartX.Logical >= 0) or (FCurrentStartX.Physical >= 0) then
+    case Side of
+      bsLeft:  if not IsMatching(FCurrentStartX, FStartX) then exit(0);
+      bsRight: if not IsMatching(FCurrentEndX,   FEndX)   then exit(0);
+    end;
 
   if (Side in SynFrameEdgeToSides[FrameEdges])
   then Result := FramePriority
@@ -708,6 +712,28 @@ begin
   if Side in SynFrameEdgeToSides[FrameEdges]
   then Result := FrameStyle
   else Result := slsSolid;
+end;
+
+procedure TSynSelectedColorMergeResult.SetCurrentEndX(AValue: TLazSynDisplayTokenBound);
+begin
+  //if FCurrentEndX = AValue then Exit;
+  FCurrentEndX := AValue;
+  if not IsMatching(FCurrentEndX, FEndX) then begin
+    FFrameSideColors[bsRight] := clNone;
+    FMergeInfos[sscFrameRight].BaseColor := clNone;
+    FMergeInfos[sscFrameRight].AlphaCount := 0;
+  end;
+end;
+
+procedure TSynSelectedColorMergeResult.SetCurrentStartX(AValue: TLazSynDisplayTokenBound);
+begin
+  //if FCurrentStartX = AValue then Exit;
+  FCurrentStartX := AValue;
+  if not IsMatching(FCurrentStartX, FStartX) then begin
+    FFrameSideColors[bsLeft] := clNone;
+    FMergeInfos[sscFrameLeft].BaseColor := clNone;
+    FMergeInfos[sscFrameLeft].AlphaCount := 0;
+  end;
 end;
 
 procedure TSynSelectedColorMergeResult.AssignFrom(Src: TLazSynCustomTextAttributes);

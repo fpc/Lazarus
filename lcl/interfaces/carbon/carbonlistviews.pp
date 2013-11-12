@@ -134,6 +134,7 @@ type
       Data: DataBrowserItemDataRef; ASetValue: Boolean): OSStatus; virtual;
     procedure NotificationCallBack(ID: DataBrowserItemId; 
       AMessage: DataBrowserItemNotification); virtual;
+    function IsIndexOutOfRange(ID: DataBrowserItemId): boolean; virtual;
 
   public
     procedure BoundsChanged; override;
@@ -235,6 +236,7 @@ type
     function GetReadOnly: Boolean; override;
     function MultiSelect: Boolean; override;
     function IsOwnerDrawn: Boolean; override;
+    function IsIndexOutOfRange(ID: DataBrowserItemId): boolean; override;
   public
     constructor Create(const AObject: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
@@ -819,7 +821,8 @@ begin
   FItemIndex := -1;
   
   FItemsCheck := TList.Create;
-  
+  NotifySelectionChange := True;
+
   inherited;
 end;
 
@@ -1165,7 +1168,7 @@ end;
 procedure TCarbonDataBrowser.NotificationCallBack(ID: DataBrowserItemId; 
   AMessage: DataBrowserItemNotification); 
 begin
-  if (ID < 1) or (ID > DataBrowserItemId(GetItemsCount)) then Exit;
+  if IsIndexOutOfRange(ID) then  Exit;
 
   if NotifySelectionChange then
     case AMessage of
@@ -1178,6 +1181,11 @@ begin
       // kDataBrowserItemDoubleClicked:;
     end;
 
+end;
+
+function TCarbonDataBrowser.IsIndexOutOfRange(ID: DataBrowserItemId): boolean;
+begin
+  result := (ID < 1) or (ID > DataBrowserItemId(GetItemsCount));
 end;
 
 function TCarbonDataBrowser.GetTopItem: Integer;
@@ -1273,7 +1281,7 @@ begin
 end;
 
 procedure TCarbonDataBrowser.SetItemState(AIndex: Integer;
-  AState: TListItemState; AIsSet: BooleaN);
+  AState: TListItemState; AIsSet: Boolean);
 begin
   case AState of
     lisFocused:
@@ -1618,6 +1626,14 @@ end;
 function TCarbonListView.IsOwnerDrawn: Boolean;
 begin
   Result := False; // TODO
+end;
+
+function TCarbonListView.IsIndexOutOfRange(ID: DataBrowserItemId): boolean;
+begin
+  if not FOwnerData then
+    Result:=inherited IsIndexOutOfRange(ID)
+  else
+    result := (ID < 1 ) or (ID > TListView(LCLObject).Items.Count);
 end;
 
 constructor TCarbonListView.Create(const AObject: TWinControl;

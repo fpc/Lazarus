@@ -418,8 +418,32 @@ end;
 procedure TQtThemeServices.DrawText(ACanvas: TPersistent;
   Details: TThemedElementDetails; const S: String; R: TRect; Flags,
   Flags2: Cardinal);
+var
+  AQColor, AOldColor: TQColor;
+  B: Boolean;
+  OldCanvasFontColor: TColor;
 begin
+  B := False;
+
+  // issue #25253
+  if (Details.Element in [teButton, teComboBox]) then
+  begin
+    B := True;
+    AOldColor := TQtDeviceContext(TCanvas(ACanvas).Handle).pen.getColor;
+    OldCanvasFontColor := TCanvas(ACanvas).Font.Color;
+    if TCanvas(ACanvas).Font.Color = clDefault then
+      TCanvas(ACanvas).Font.Color := clBtnText;
+    ColorRefToTQColor(ColorToRGB(TCanvas(ACanvas).Font.Color), AQColor);
+    TQtDeviceContext(TCanvas(ACanvas).Handle).pen.setColor(AQColor);
+  end;
+
   DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2);
+
+  if B then
+  begin
+    TQtDeviceContext(TCanvas(ACanvas).Handle).pen.setColor(AOldColor);
+    TCanvas(ACanvas).Font.Color := OldCanvasFontColor;
+  end;
 end;
 
 procedure TQtThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails;
@@ -432,6 +456,7 @@ var
   TextRect: TRect;
   AOldMode: Integer;
   ATextPalette: Cardinal;
+  AQColor: TQColor;
 begin
   // DebugLn('TQtThemeServices.DrawText ');
   Context := TQtDeviceContext(DC);
@@ -541,6 +566,9 @@ begin
         QApplication_palette(Palette);
       end;
       try
+        if Details.Element in [teButton, teComboBox] then
+          AQColor := TQtDeviceContext(DC).pen.getColor; // issue #25253
+
         if Details.Element in [teEdit, teListView, teTreeView, teWindow] then
           ATextPalette := QPaletteWindowText
         else
@@ -548,6 +576,9 @@ begin
           ATextPalette := QPaletteButtonText
         else
           ATextPalette := QPaletteText;
+
+        if Details.Element in [teButton, teComboBox] then
+          QPalette_setColor(Palette, ATextPalette, @AQColor); // issue #25253
 
         QStyle_drawItemText(Style, Context.Widget, @R,
           DTFlagsToQtFlags(Flags), Palette,
