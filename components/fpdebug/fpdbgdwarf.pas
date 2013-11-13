@@ -107,7 +107,9 @@ type
   { TDwarfAbbrev }
   TDwarfAbbrevFlag = (
     dafHasChildren,
-    dafHasName
+    dafHasName,
+    dafHasLowAddr,
+    dafHasStartScope
     // address
   );
   TDwarfAbbrevFlags = set of TDwarfAbbrevFlag;
@@ -443,6 +445,7 @@ type
   protected
     procedure ScanAllEntries; inline;
     function LocateEntry(ATag: Cardinal; out AResultScope: TDwarfScopeInfo): Boolean;
+    function InitLocateAttributeList(AEntry: Pointer; var AList: TAttribPointerList): Boolean;
     function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal; var AList: TAttribPointerList;
                              out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
     function LocateAttribute(AEntry: Pointer; AAttribute: Cardinal;
@@ -1880,7 +1883,13 @@ begin
     begin
       attrib := ULEB128toOrdinal(pbyte(AnAbbrevDataPtr));
       if attrib = DW_AT_name then
-        Include(f, dafHasName);
+        Include(f, dafHasName)
+      else
+      if attrib = DW_AT_low_pc then
+        Include(f, dafHasLowAddr)
+      else
+      if attrib = DW_AT_start_scope then
+        Include(f, dafHasStartScope);
 
       form := ULEB128toOrdinal(pbyte(AnAbbrevDataPtr));
 
@@ -4260,25 +4269,29 @@ begin
       AttribList.EvalCount := 0;
       Info.ScopeIndex := Scope.Index;
       Info.ScopeList := Scope.FScopeList;
-      if LocateAttribute(Scope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
-      then begin
-        ReadValue(Attrib, Form, Info.StartPC);
-
-        if LocateAttribute(Scope.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
-        then ReadValue(Attrib, Form, Info.EndPC)
-        else Info.EndPC := Info.StartPC;
-
-        // TODO (dafHasName in Abbrev.flags)
-        if LocateAttribute(Scope.Entry, DW_AT_name, AttribList, Attrib, Form)
-        then ReadValue(Attrib, Form, Info.Name)
-        else Info.Name := 'undefined';
-
-        Info.StateMachine := nil;
-        if Info.StartPC <> 0
+      if InitLocateAttributeList(Scope.Entry, AttribList) then begin // TODO: error if not
+        if (dafHasLowAddr in AttribList.Abbrev.flags) and
+           LocateAttribute(Scope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
         then begin
-          if FAddressMap.HasId(Info.StartPC)
-          then DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING duplicate start adress: ', IntToHex(Info.StartPC, FAddressSize * 2)])
-          else FAddressMap.Add(Info.StartPC, Info);
+          ReadValue(Attrib, Form, Info.StartPC);
+
+          if LocateAttribute(Scope.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
+          then ReadValue(Attrib, Form, Info.EndPC)
+          else Info.EndPC := Info.StartPC;
+
+          // TODO (dafHasName in Abbrev.flags)
+          if (dafHasName in AttribList.Abbrev.flags) and
+             LocateAttribute(Scope.Entry, DW_AT_name, AttribList, Attrib, Form)
+          then ReadValue(Attrib, Form, Info.Name)
+          else Info.Name := 'undefined';
+
+          Info.StateMachine := nil;
+          if Info.StartPC <> 0
+          then begin
+            if FAddressMap.HasId(Info.StartPC)
+            then DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING duplicate start adress: ', IntToHex(Info.StartPC, FAddressSize * 2)])
+            else FAddressMap.Add(Info.StartPC, Info);
+          end;
         end;
       end;
     end;
@@ -4528,6 +4541,32 @@ begin
   Result := Map^.GetAddressForLine(ALine);
 end;
 
+function TDwarfCompilationUnit.InitLocateAttributeList(AEntry: Pointer;
+  var AList: TAttribPointerList): Boolean;
+var
+  AbrCnt: Integer;
+begin
+  if not GetDefinition(AEntry, AList.Abbrev)
+  then begin      //???
+    DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', ULEB128toOrdinal(AEntry)]);
+    AList.EvalCount := -1;
+    Result := False;
+    Exit;
+  end;
+
+  AbrCnt := AList.Abbrev.count;
+  if AbrCnt = 0 then begin
+    AList.EvalCount := -1;
+    exit;
+  end;
+  SetLength(AList.List, AbrCnt);
+  ULEB128toOrdinal(AEntry);
+  AList.List[0] := AEntry;
+  AList.EvalCount := 1;
+
+  Result := True;
+end;
+
 function TDwarfCompilationUnit.LocateAttribute(AEntry: Pointer; AAttribute: Cardinal;
   var AList: TAttribPointerList; out AAttribPtr: Pointer; out AForm: Cardinal): Boolean;
 var
@@ -4640,7 +4679,7 @@ end;
 function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; out
   AResultScope: TDwarfScopeInfo): Boolean;
 
-  procedure ParseAttribs(const ADef: PDwarfAbbrev; var p: Pointer);
+  function ParseAttribs(const ADef: PDwarfAbbrev; var p: Pointer): Boolean;
   var
     idx: Integer;
     ADefs: PDwarfAbbrevEntry;
@@ -4651,9 +4690,10 @@ function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; out
     for idx := 0 to ADef^.Count - 1 do
     begin
       if not SkipEntryDataForForm(p, ADefs^.Form, AdrSize) then
-        break;
+        exit(False);
       inc(ADefs);
     end;
+    Result := True;
   end;
 
 var
@@ -4691,7 +4731,10 @@ begin
       Break;
     end;
 
-    ParseAttribs(Def, NextEntryDataPtr);
+    if not ParseAttribs(Def, NextEntryDataPtr) then begin
+      DebugLn(FPDBG_DWARF_WARNINGS, ['Error: data not parsed:']);
+      exit;
+    end;
     // NextEntryDataPtr is now at next scope
 
     if NextEntryDataPtr >= MaxData then
