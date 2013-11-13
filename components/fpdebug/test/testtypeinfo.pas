@@ -6,10 +6,10 @@ interface
 
 uses
   Classes, SysUtils, FpPascalParser, FpDbgDwarf, FpDbgInfo, FpDbgLoader, FpPascalBuilder,
-  FileUtil, LazLoggerBase, fpcunit, testutils, testregistry;
+  FpDbgUtil, FileUtil, LazLoggerBase, LazUTF8, fpcunit, testutils, testregistry;
 
 const
-  TESTPROG1_FUNC_BAR_LINE = 155;
+  TESTPROG1_FUNC_BAR_LINE = 185;
 
 type
 
@@ -31,6 +31,7 @@ type
     function GetTestAppDir: String;
   published
     procedure Test1;
+    procedure X;
   end;
 
 implementation
@@ -49,7 +50,8 @@ begin
   Result := nil;
   if (FDwarfInfo <> nil) and (AnIdent <> '') then begin
     Ctx := FDwarfInfo.FindContext(Location);
-    Result := Ctx.FindSymbol(AnIdent);
+    if Ctx <> nil then
+      Result := Ctx.FindSymbol(AnIdent);
     Ctx.ReleaseReference;
   end;
 end;
@@ -140,6 +142,7 @@ debugln(['### ', TestText, ' ## ', dbgs(Expr.ResultType.Kind), ' # ',Expr.Result
   var
     s: String;
   begin
+    Expr := nil;
     LineInfo := FDwarfInfo.GetLineAddressMap('testprog1.pas');
     Location := LineInfo^.GetAddressForLine(TESTPROG1_FUNC_BAR_LINE);
 
@@ -322,6 +325,16 @@ begin
   AssertTrue('Loaded dwarf', FDwarfInfo <> nil);
   DoRun;
   UnLoadDwarf;
+end;
+
+procedure TTestTypInfo.X;
+var
+  s1, s2,s3: String;
+begin
+  s1 := '_vptr$TOBJECT';
+  s2 := UTF8UpperCase( '_vptr$TOBJECT');
+  s3 := UTF8LowerCase( '_vptr$TOBJECT');
+  DebugLn (dbgs(  CompareUtf8BothCase(@s2[1],@s3[1],@s1[1]) ));
 end;
 
 

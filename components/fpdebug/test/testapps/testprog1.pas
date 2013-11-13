@@ -30,10 +30,24 @@ type
   { TTestClass }
 
   TTestClass = class
+  private
+    type
+      TTestClassEnum = (tte1,tte2,tte3);
+
+      { TInnerClass }
+
+      TInnerClass = class
+      public
+        InnerFoo: Integer;
+        procedure InnerCall;
+        class var InnerStat: Char;
+      end;
   public
+    FTCEnum: TTestClassEnum;
     FWord: Word;
     FBool: Boolean;
     FTest: TTestClass;
+    xxxinner: TInnerClass;
     procedure f0(a:integer); virtual;
   end;
 
@@ -178,6 +192,7 @@ begin
   subr := 1;
   subr2 := -11;
   subr3 := 'm';
+  testC2.f0(1);
   writeln(int1,uint1,b1,bool1,
           testC.FWord, testC2.FWord, PtestC2^.FWord, PtestC2a^.FWord,
           testO.FWord, testO2.FWord, PtestO2^.FWord, PtestO2a^.FWord,
@@ -189,9 +204,17 @@ end;
 var
   GlobClass: TTestClass;
 
+{ TTestClass.TInnerClass }
+
+procedure TTestClass.TInnerClass.InnerCall;
+begin
+  writeln(InnerFoo);
+end;
+
 procedure TTestClass.f0(a: integer);
 begin
   //
+  writeln;
 end;
 
 { TTestClass2 }
