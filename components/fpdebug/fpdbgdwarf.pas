@@ -109,8 +109,8 @@ type
     dafHasChildren,
     dafHasName,
     dafHasLowAddr,
-    dafHasStartScope
-    // address
+    dafHasStartScope,
+    dafHasAbstractOrigin
   );
   TDwarfAbbrevFlags = set of TDwarfAbbrevFlag;
 
@@ -140,7 +140,7 @@ type
   TPointerDynArray = array of Pointer;
   TAttribPointerList = record
     List: TPointerDynArray;
-    Abbrev: TDwarfAbbrev;
+    Abbrev: PDwarfAbbrev;
     EvalCount: Integer;
   end;
 
@@ -1889,7 +1889,10 @@ begin
         Include(f, dafHasLowAddr)
       else
       if attrib = DW_AT_start_scope then
-        Include(f, dafHasStartScope);
+        Include(f, dafHasStartScope)
+      else
+      if attrib = DW_AT_abstract_origin then
+        Include(f, dafHasAbstractOrigin);
 
       form := ULEB128toOrdinal(pbyte(AnAbbrevDataPtr));
 
@@ -4001,7 +4004,7 @@ begin
     FEpilogueBegin := False;
   end;
   
-  while pbyte(FLineInfoPtr) <= FMaxPtr do
+  while pbyte(FLineInfoPtr) < FMaxPtr do
   begin
     Opcode := pbyte(FLineInfoPtr)^;
     Inc(pbyte(FLineInfoPtr));
@@ -4270,7 +4273,7 @@ begin
       Info.ScopeIndex := Scope.Index;
       Info.ScopeList := Scope.FScopeList;
       if InitLocateAttributeList(Scope.Entry, AttribList) then begin // TODO: error if not
-        if (dafHasLowAddr in AttribList.Abbrev.flags) and
+        if (dafHasLowAddr in AttribList.Abbrev^.flags) and
            LocateAttribute(Scope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
         then begin
           ReadValue(Attrib, Form, Info.StartPC);
@@ -4280,7 +4283,7 @@ begin
           else Info.EndPC := Info.StartPC;
 
           // TODO (dafHasName in Abbrev.flags)
-          if (dafHasName in AttribList.Abbrev.flags) and
+          if (dafHasName in AttribList.Abbrev^.flags) and
              LocateAttribute(Scope.Entry, DW_AT_name, AttribList, Attrib, Form)
           then ReadValue(Attrib, Form, Info.Name)
           else Info.Name := 'undefined';
@@ -4546,15 +4549,16 @@ function TDwarfCompilationUnit.InitLocateAttributeList(AEntry: Pointer;
 var
   AbrCnt: Integer;
 begin
-  if not GetDefinition(AEntry, AList.Abbrev)
-  then begin      //???
+  if FAbbrevList.FindLe128bFromPointer(AEntry, AList.Abbrev) = nil then begin
+  //if not GetDefinition(AEntry, AList.Abbrev)
+  //then begin      //???
     DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', ULEB128toOrdinal(AEntry)]);
     AList.EvalCount := -1;
     Result := False;
     Exit;
   end;
 
-  AbrCnt := AList.Abbrev.count;
+  AbrCnt := AList.Abbrev^.count;
   if AbrCnt = 0 then begin
     AList.EvalCount := -1;
     exit;
@@ -4579,15 +4583,16 @@ begin
     exit;
 
   if AList.EvalCount = 0 then begin
-    if not GetDefinition(AEntry, AList.Abbrev)
-    then begin      //???
+    if FAbbrevList.FindLe128bFromPointer(AEntry, AList.Abbrev) = nil then begin
+    //if not GetDefinition(AEntry, AList.Abbrev)
+    //then begin      //???
       Abbrev := ULEB128toOrdinal(AEntry);
       DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Abbrev not found: ', Abbrev]);
       AList.EvalCount := -1;
       Exit;
     end;
 
-    AbrIdx := AList.Abbrev.count;
+    AbrIdx := AList.Abbrev^.count;
     if AbrIdx = 0 then begin
       AList.EvalCount := -1;
       exit;
@@ -4599,8 +4604,8 @@ begin
   end;
 
   ADefs := FAbbrevList.EntryPointer[0];
-  AbrIdx := AList.Abbrev.Index;
-  AbrCnt := AList.Abbrev.Count - 1;
+  AbrIdx := AList.Abbrev^.Index;
+  AbrCnt := AList.Abbrev^.Count - 1;
   EvalCnt := AList.EvalCount - 1;
   i := 0;
 
