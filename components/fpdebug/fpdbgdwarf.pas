@@ -3909,6 +3909,8 @@ begin
   begin
     if CU64^.Signature = DWARF_HEADER64_SIGNATURE
     then begin
+      if CU64^.Version < 3 then
+        DebugLn(FPDBG_DWARF_WARNINGS, ['Unexpected 64 bit signature found for DWARF version 2']); // or version 1...
       CU := CUClass.Create(
               Self,
               PtrUInt(CU64 + 1) - PtrUInt(FSections[dsInfo].RawData),
@@ -4324,6 +4326,8 @@ constructor TDwarfCompilationUnit.Create(AOwner: TDbgDwarf; ADataOffset: QWord; 
     FLineInfo.Header := AData;
     if LNP64^.Signature = DWARF_HEADER64_SIGNATURE
     then begin
+      if FVersion < 3 then
+        DebugLn(FPDBG_DWARF_WARNINGS, ['Unexpected 64 bit signature found for DWARF version 2']); // or version 1...
       FLineInfo.Addr64 := True;
       UnitLength := LNP64^.UnitLength;
       FLineInfo.DataEnd := Pointer(@LNP64^.Version) + UnitLength;
@@ -4332,7 +4336,10 @@ constructor TDwarfCompilationUnit.Create(AOwner: TDbgDwarf; ADataOffset: QWord; 
       Info := @LNP64^.Info;
     end
     else begin
-      FLineInfo.Addr64 := False;
+      if (FVersion < 3) and (FAddressSize = 8) then
+        FLineInfo.Addr64 := True
+      else
+        FLineInfo.Addr64 := False;
       UnitLength := LNP32^.UnitLength;
       FLineInfo.DataEnd := Pointer(@LNP32^.Version) + UnitLength;
       Version := LNP32^.Version;
