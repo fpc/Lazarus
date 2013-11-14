@@ -1031,9 +1031,9 @@ type
   
   TQtAbstractSpinBox = class(TQtWidget, IQtEdit)
   private
-    {$ifdef CPU64 and not WIN64}
+    {$IF DEFINED(CPU64) AND NOT DEFINED(WIN64)}
     FParentShowPassed: PtrInt;
-    {$endif}
+    {$ENDIF}
     FEditingFinishedHook: QAbstractSpinBox_hookH;
     FLineEditHook: QObject_hookH;
     // parts
@@ -10538,7 +10538,7 @@ begin
   {we must pass delete key to qt, qabstractspinbox doesn't like what we do}
   if IsDeleteKey then
     Result := False;
-  {$ifdef CPU64 and not WIN64}
+  {$IF DEFINED(CPU64) AND NOT DEFINED(WIN64)}
   if (FParentShowPassed = 1) then
   begin
     if QEvent_type(Event) <> QEventPaint then
@@ -10553,7 +10553,7 @@ begin
   if (QEvent_type(Event) = QEventShowToParent) and
     (FParentShowPassed = 0) then
     inc(FParentShowPassed);
-  {$endif}
+  {$ENDIF}
 
 end;
 
@@ -10585,9 +10585,9 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtFloatSpinBox.Create');
   {$endif}
-  {$ifdef CPU64 and not WIN64}
+  {$IF DEFINED(CPU64) AND NOT DEFINED(WIN64)}
   FParentShowPassed := 0;
-  {$endif}
+  {$ENDIF}
   FValue := 0;
   FLineEditHook := nil;
   if AParams.WndParent <> 0 then
@@ -10666,9 +10666,9 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtSpinBox.Create');
   {$endif}
-  {$ifdef CPU64 and not WIN64}
+  {$IF DEFINED(CPU64) AND NOT DEFINED(WIN64)}
   FParentShowPassed := 0;
-  {$endif}
+  {$ENDIF}
   FLineEditHook := nil;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
