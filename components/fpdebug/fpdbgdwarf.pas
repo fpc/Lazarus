@@ -44,7 +44,7 @@ uses
   Classes, Types, SysUtils, FpDbgUtil, FpDbgInfo, FpDbgDwarfConst, Maps, Math,
   FpDbgLoader, FpImgReaderBase, LazLoggerBase, // LazLoggerDummy,
   LazClasses, LazFileUtils, LazUTF8, contnrs;
-  
+
 type
   // compilation unit header
   {$PACKRECORDS 1}
@@ -560,6 +560,7 @@ type
     constructor Create(AName: String; AnInformationEntry: TDwarfInformationEntry;
                        AKind: TDbgSymbolKind; AAddress: TDbgPtr);
     destructor Destroy; override;
+    function StartScope: TDbgPtr; // return 0, if none. 0 includes all anyway
   end;
 
   { TDbgDwarfValueIdentifier }
@@ -3541,6 +3542,19 @@ begin
   ReleaseRefAndNil(FNestedTypeInfo);
 end;
 
+function TDbgDwarfIdentifier.StartScope: TDbgPtr;
+var
+  a: PDwarfAbbrev;
+begin
+  a := FInformationEntry.Abbrev;
+  if (a <> nil) and (dafHasStartScope in a^.flags) then begin
+    if not FInformationEntry.ReadValue(DW_AT_start_scope, Result) then
+      Result := 0;
+  end
+  else
+    Result := 0;
+end;
+
 { TDWarfLineMap }
 
 procedure TDWarfLineMap.Init;
@@ -5069,6 +5083,8 @@ var
   FwdInfoPtr: Pointer;
   tg: Cardinal;
   p1, p2: PChar;
+  StartScope: TDbgPtr;
+  abbr: PDwarfAbbrev;
 begin
   Result := nil;
   if (FSymbol = nil) or not(FSymbol is TDbgDwarfProcSymbol) or (AName = '') then
@@ -5090,8 +5106,24 @@ begin
       debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
       StartScopeIdx := InfoEntry.ScopeIndex;
 
-      // Todo (dafHasName in InfoEntry.Abbrev.flags) and
-      if InfoEntry.ReadValue(DW_AT_name, InfoName) then begin
+      abbr := InfoEntry.Abbrev;
+      if abbr = nil then
+        exit;
+
+      if (dafHasStartScope in abbr^.flags) and
+         InfoEntry.ReadValue(DW_AT_start_scope, StartScope)
+      then begin
+        if StartScope > FAddress then begin
+          // CONTINUE: Search parent(s)
+          InfoEntry.ScopeIndex := StartScopeIdx;
+          InfoEntry.GoParent;
+          Continue;
+        end;
+      end;
+
+      if (dafHasName in abbr^.flags) and
+         InfoEntry.ReadValue(DW_AT_name, InfoName)
+      then begin
         if (CompareUtf8BothCase(p1, p2, InfoName)) then begin
           Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
           DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
@@ -5099,14 +5131,20 @@ begin
         end;
       end;
 
-      tg := InfoEntry.AbbrevTag;
 
       if InfoEntry.GoNamedChildEx(p1, p2) then begin
-        Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
-        DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
-        exit;
+        if not( (dafHasStartScope in InfoEntry.Abbrev^.flags) and
+                InfoEntry.ReadValue(DW_AT_start_scope, StartScope) )
+        then
+          StartScope := 0;
+        if StartScope <= FAddress then begin
+          Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
+          DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
+          exit;
+        end;
       end;
 
+      tg := abbr^.tag;
       if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
         // search parent class
         InfoEntry.ScopeIndex := StartScopeIdx;
@@ -5115,13 +5153,27 @@ begin
           InfoEntryParent.ReleaseReference;
           InfoEntryParent := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
           DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier  PARENT ', dbgs(InfoEntryParent, FwdCompUint) ]);
-          if InfoEntryParent.GoNamedChildEx(p1, p2) then begin
-            Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntryParent);
-            InfoEntryParent.ReleaseReference;
-            DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntryParent.FScope, CU), DbgSName(Result)]);
-            exit;
-          end;
+
+          if (dafHasStartScope in InfoEntryParent.Abbrev^.flags) and
+             InfoEntryParent.ReadValue(DW_AT_start_scope, StartScope)
+          then
+            if StartScope > FAddress then
+              break;
+
           InfoEntryTmp := InfoEntryParent.FindChildByTag(DW_TAG_inheritance);
+          if InfoEntryParent.GoNamedChildEx(p1, p2) then begin
+            if not( (dafHasStartScope in InfoEntryParent.Abbrev^.flags) and
+                    InfoEntryParent.ReadValue(DW_AT_start_scope, StartScope) )
+            then
+              StartScope := 0;
+            if StartScope <= FAddress then begin
+              Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntryParent);
+              InfoEntryParent.ReleaseReference;
+              InfoEntryTmp.ReleaseReference;
+              DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntryParent.FScope, CU), DbgSName(Result)]);
+              exit;
+            end;
+          end;
           InfoEntryParent.ReleaseReference;
           InfoEntryParent := InfoEntryTmp;
         end;
@@ -5147,6 +5199,7 @@ begin
 
       if not InfoEntry.AbbrevTag = DW_TAG_compile_unit then
         continue;
+      // compile_unit can not have startscope
 
       s := CU2.UnitName;
       if (s <> '') and (CompareUtf8BothCase(p1, p2, @s[1])) then begin
@@ -5157,14 +5210,20 @@ begin
 
       CU2.ScanAllEntries;
       if InfoEntry.GoNamedChildEx(p1, p2) then begin
-        // only variables are marked, but types not / so we may need all top level
-        Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
-        DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found (other unit) ', dbgs(InfoEntry.FScope, CU2), DbgSName(Result)]);
-        // DW_AT_visibility ?
-        if InfoEntry.ReadValue(DW_AT_external, ExtVal) then
-          if ExtVal <> 0 then
-            break;
-          // Search for better result
+        if not( (dafHasStartScope in InfoEntryParent.Abbrev^.flags) and
+                InfoEntryParent.ReadValue(DW_AT_start_scope, StartScope) )
+        then
+          StartScope := 0;
+        if StartScope <= FAddress then begin
+          // only variables are marked "external", but types not / so we may need all top level
+          Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
+          DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found (other unit) ', dbgs(InfoEntry.FScope, CU2), DbgSName(Result)]);
+          // DW_AT_visibility ?
+          if InfoEntry.ReadValue(DW_AT_external, ExtVal) then
+            if ExtVal <> 0 then
+              break;
+            // Search for better result
+        end;
       end;
 
     end;
