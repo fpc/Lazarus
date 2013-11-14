@@ -79,7 +79,8 @@ begin
     inherited CreateHandle
   else
   begin
-    if ControlIsPainting then
+    if ControlIsPainting and
+      (WidgetSet.GetLCLCapability(lcCanDrawOutsideOnPaint) = LCL_CAPABILITY_NO) then
       debugln(['TControlCanvas.CreateHandle WARNING: accessing the canvas of '+DbgSName(FControl)+' is not supported outside of paint message']);
     if (FDeviceContext = 0) then
     begin
