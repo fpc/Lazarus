@@ -1668,8 +1668,6 @@ var
   LWI: QListWidgetItemH;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
-  AOrientation: QtOrientation;
-  HeaderOffset: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetItemAt') then
     Exit;
