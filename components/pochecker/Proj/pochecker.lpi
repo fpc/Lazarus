@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -61,7 +61,7 @@
       <Unit3>
         <Filename Value="..\simplepofiles.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="simplepofiles"/>
+        <UnitName Value="SimplePoFiles"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\pocheckerconsts.pas"/>

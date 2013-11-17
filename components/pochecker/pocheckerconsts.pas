@@ -34,6 +34,7 @@ resourcestring
   sOriginal = 'Original';
   sTranslation = 'Translation';
   sErrorsByTest = 'Errors / warnings reported by %s for:';
+  sTranslationStatistics = 'Translation statistics for:';
   sCheckNumberOfItems = 'Check number of items';
   sCheckForIncompatibleFormatArguments = 'Check for incompatible format '
     +'arguments';
@@ -42,6 +43,7 @@ resourcestring
     +'untranslated strings';
   sCheckForDuplicateUntranslatedValues = 'Check for duplicate untranslated '
     +'values';
+  sCheckStatistics = 'Check percentage of (un)translated and fuzzy strings';
   sFindAllTranslatedPoFiles = 'Find all translated po-files';
   sIncompatibleFormatArgs = '[Line: %d] Incompatible and/or invalid format() arguments for:' ;
 
@@ -56,7 +58,11 @@ resourcestring
   sNrOfItemsMismatchD = '%s: %d items';
 
   sDuplicateOriginals = 'The (untranslated) value "%s" is used for more than 1 entry:';
+
   sDuplicateLineNrWithValue = '[Line %d] %s';
+  sPercTranslated = 'Translated strings: %2.0f%%.';
+  sPercUntranslated = 'Untranslated strings: %2.0f%%.';
+  sPercFuzzy = 'Fuzzy strings: %2.0f%%.';
 implementation
 
 end.
