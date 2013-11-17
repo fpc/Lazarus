@@ -117,14 +117,14 @@ type
     e_version     : Elf64_Word;   { Object file version } 
     e_entry       : Elf64_Addr;   { Entry point address } 
     e_phoff       : Elf64_Off;    { Program header offset } 
-    p_shoff       : Elf64_Off;    { Section header offset }
+    e_shoff       : Elf64_Off;    { Section header offset }
     e_flags       : Elf64_Word;   { Processor-specific flags } 
     e_ehsize      : Elf64_Half;   { ELF header size }  
     e_phentsize   : Elf64_Half;   { Size of program header entry } 
     e_phun        : Elf64_Half;   { Number of program header entries } 
     e_shentsize   : Elf64_Half;   { Size of section header entry } 
     e_shnum       : Elf64_Half;   { Number of section header entries } 
-    e_shstrnds    : Elf64_Half;   { Section name string table index } 
+    e_shstrndx    : Elf64_Half;   { Section name string table index }
   end;
   PElf64_EHdr = ^Elf64_EHdr;
   

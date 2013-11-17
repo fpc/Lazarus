@@ -49,6 +49,7 @@ type
   TElfFile = class(TObject)
   protected
     function Load32BitFile(ALoader: TDbgFileLoader): Boolean;
+    function Load64BitFile(ALoader: TDbgFileLoader): Boolean;
     procedure AddSection(const name: AnsiString; FileOffset, Address, Size: Qword);
   public
     sections  : array of TElfSection;
@@ -97,8 +98,10 @@ begin
   //ALoader.Position := hdr.e_shoff;
 
   sz := hdr.e_shetsize * hdr.e_shnum;
-  if sz > LongWord(length(sect)*sizeof(Elf32_shdr)) then
+  if sz > LongWord(length(sect)*sizeof(Elf32_shdr)) then begin
+    debugln(['TElfFile.Load64BitFile Size of SectHdrs is ', sz, ' expected ', LongWord(length(sect)*sizeof(Elf32_shdr))]);
     sz := LongWord(length(sect)*sizeof(Elf32_shdr));
+  end;
   //ALoader.Read(sect[0], sz);
   ALoader.Read(hdr.e_shoff, sz, @sect[0]);
 
@@ -115,6 +118,45 @@ begin
       AddSection(nm, sh_offset, sh_addr, sh_size );
     end;
 
+end;
+
+function TElfFile.Load64BitFile(ALoader: TDbgFileLoader): Boolean;
+var
+  hdr   : Elf64_Ehdr;
+  sect  : array of Elf64_shdr;
+  i, j  : integer;
+  nm    : string;
+  sz    : LongWord;
+  strs  : array of byte;
+begin
+  Result := ALoader.Read(0, sizeof(hdr), @hdr) = sizeof(hdr);
+  if not Result then Exit;
+
+  SetLength(sect, hdr.e_shnum);
+  //ALoader.Position := hdr.e_shoff;
+
+  sz := hdr.e_shentsize * hdr.e_shnum;
+  if sz > LongWord(length(sect)*sizeof(Elf64_shdr)) then begin
+    debugln(['TElfFile.Load64BitFile Size of SectHdrs is ', sz, ' expected ', LongWord(length(sect)*sizeof(Elf64_shdr))]);
+    sz := LongWord(length(sect)*sizeof(Elf64_shdr));
+  end;
+  //ALoader.Read(sect[0], sz);
+  ALoader.Read(hdr.e_shoff, sz, @sect[0]);
+
+  i := sect[hdr.e_shstrndx].sh_offset;
+  j := sect[hdr.e_shstrndx].sh_size;
+  SetLength(strs, j);
+  //ALoader.Position:=i;
+  //ALoader.Read(strs[0], j);
+  ALoader.Read(i, j, @strs[0]);
+
+  for i := 0 to hdr.e_shnum - 1 do
+    with sect[i] do begin
+      nm := PChar( @strs[sh_name] );
+      AddSection(nm, sh_offset, sh_address, sh_size );
+    end;
+
+  Result := False;
 end;
 
 procedure TElfFile.AddSection(const name: AnsiString; FileOffset, Address,
@@ -145,10 +187,17 @@ begin
               (ident[EI_MAG3] = byte('F'));
     if not Result then Exit;
 
-    Result := ident[EI_CLASS] = ELFCLASS32;
-    if not Result then Exit; //todo: 64-bit
+    Result := False;
 
-    Result := Load32BitFile(ALoader);
+    if ident[EI_CLASS] = ELFCLASS32 then begin
+      Result := Load32BitFile(ALoader);
+      exit;
+    end;
+
+    if ident[EI_CLASS] = ELFCLASS64 then begin
+      Result := Load64BitFile(ALoader);
+      exit;
+    end;
 
   except
     Result := false;
