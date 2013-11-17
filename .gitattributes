@@ -4019,6 +4019,7 @@ docs/xml/lazutils/lazfreetypefontcollection.xml svneol=native#text/plain
 docs/xml/lazutils/lazlogger.xml svneol=native#text/xml
 docs/xml/lazutils/lazloggerbase.xml svneol=native#text/plain
 docs/xml/lazutils/lazloggerdummy.xml svneol=native#text/plain
+docs/xml/lazutils/lazloggerprofiling.xml svneol=native#text/plain
 docs/xml/lazutils/lazmethodlist.xml svneol=native#text/plain
 docs/xml/lazutils/lazutf16.xml svneol=native#text/plain
 docs/xml/lazutils/lazutf8.xml svneol=native#text/plain
