@@ -267,17 +267,20 @@ type
     FScope: TDwarfScopeInfo;
     FAbbrev: PDwarfAbbrev;
     FAbbrevData: PDwarfAbbrevEntry;
-    FFlags: set of (dieAbbrevValid, dieAbbrevDataValid);
+    FAbstractOrigin: TDwarfInformationEntry;
+    FFlags: set of (dieAbbrevValid, dieAbbrevDataValid, dieAbstractOriginValid);
 
-    function GetAbbrev: PDwarfAbbrev; inline;
-    function GetAbbrevData: PDwarfAbbrevEntry;
-    function GetAbbrevTag: Cardinal; inline;
-    procedure ScopeChanged; inline;
+    procedure PrepareAbbrev; inline;
+    function  PrepareAbbrevData: Boolean; inline;
+    function  PrepareAbstractOrigin: Boolean; inline; // Onli call, if abbrev is valid AND dafHasAbstractOrigin set
+
     function SearchScope: Boolean;
     function MaybeSearchScope: Boolean; inline;
-    procedure PrepareAbbrev; inline;
-    function PrepareAbbrevData: Boolean; inline;
+    procedure ScopeChanged; inline;
 
+    function AttribIdx(AnAttrib: Cardinal; out AInfoPointer: pointer): Integer; inline;
+
+    function GetAbbrevTag: Cardinal; inline;
     function GetScopeIndex: Integer;
     procedure SetScopeIndex(AValue: Integer);
   protected
@@ -288,6 +291,7 @@ type
   public
     constructor Create(ACompUnit: TDwarfCompilationUnit; AnInformationEntry: Pointer);
     constructor Create(ACompUnit: TDwarfCompilationUnit; AScope: TDwarfScopeInfo);
+    destructor Destroy; override;
     property CompUnit: TDwarfCompilationUnit read FCompUnit;
 
     function FindNamedChild(AName: String): TDwarfInformationEntry;
@@ -295,11 +299,7 @@ type
     function FirstChild: TDwarfInformationEntry;
     function Clone: TDwarfInformationEntry;
 
-    property Abbrev: PDwarfAbbrev read GetAbbrev;
-    property AbbrevData: PDwarfAbbrevEntry read GetAbbrevData;
     property AbbrevTag: Cardinal read GetAbbrevTag;
-    function HasAttrib(AnAttrib: Cardinal): boolean;
-    function AttribIdx(AnAttrib: Cardinal; out AInfoPointer: pointer): Integer;
 
     function ReadValue(AnAttrib: Cardinal; out AValue: Integer): Boolean;
     function ReadValue(AnAttrib: Cardinal; out AValue: Int64): Boolean;
@@ -308,6 +308,10 @@ type
     function ReadValue(AnAttrib: Cardinal; out AValue: PChar): Boolean;
     function ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
     function ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out ACompUnit: TDwarfCompilationUnit): Boolean;
+
+    function  ReadName(out AName: String): Boolean; inline;
+    function  ReadName(out AName: PChar): Boolean; inline;
+    function  ReadStartScope(out AStartScope: TDbgPtr): Boolean; inline;
   public
     // Scope
     procedure GoParent; inline;
@@ -536,7 +540,6 @@ type
     function GetNestedTypeInfo: TDbgDwarfTypeIdentifier;
   protected
     function  DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier; virtual;
-    function  ReadName(out AName:String): Boolean;
     function  ReadMemberVisibility(out AMemberVisibility: TDbgSymbolMemberVisibility): Boolean;
     procedure NameNeeded; override;
     procedure TypeInfoNeeded; override;
@@ -2161,6 +2164,8 @@ begin
   FInformationEntry := FScope.Entry;
   FFlags := [];
   FInformationData := nil;
+  if FAbstractOrigin <> nil then
+    ReleaseRefAndNil(FAbstractOrigin);
 end;
 
 procedure TDwarfInformationEntry.PrepareAbbrev;
@@ -2191,18 +2196,25 @@ begin
   FFlags := FFlags + [dieAbbrevValid, dieAbbrevDataValid];
 end;
 
-function TDwarfInformationEntry.GetAbbrev: PDwarfAbbrev;
+function TDwarfInformationEntry.PrepareAbstractOrigin: Boolean;
+var
+  FwdInfoPtr: Pointer;
+  FwdCompUint: TDwarfCompilationUnit;
 begin
-  PrepareAbbrev;
-  Result := FAbbrev;
-end;
-
-function TDwarfInformationEntry.GetAbbrevData: PDwarfAbbrevEntry;
-begin
-  if PrepareAbbrevData then
-    Result := FAbbrevData
+  if (dieAbstractOriginValid in FFlags) then begin
+    Result := FAbstractOrigin <> nil;
+    exit;
+  end;
+  Assert(dieAbbrevValid in FFlags);
+  Assert(dafHasAbstractOrigin in FAbbrev^.flags);
+  Include(FFlags, dieAbstractOriginValid);
+  if ReadReference(DW_AT_abstract_origin, FwdInfoPtr, FwdCompUint) then begin
+    FAbstractOrigin := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+    // TODO, check correct tag
+    Result := FAbstractOrigin <> nil;
+  end
   else
-    Result := nil;
+    Result := False;
 end;
 
 function TDwarfInformationEntry.GetAbbrevTag: Cardinal;
@@ -2420,6 +2432,12 @@ begin
   ScopeChanged;
 end;
 
+destructor TDwarfInformationEntry.Destroy;
+begin
+  FAbstractOrigin.ReleaseReference;
+  inherited Destroy;
+end;
+
 function TDwarfInformationEntry.FindNamedChild(AName: String): TDwarfInformationEntry;
 begin
   Result := nil;
@@ -2477,27 +2495,19 @@ begin
     Result := TDwarfInformationEntry.Create(FCompUnit, FInformationEntry);
 end;
 
-function TDwarfInformationEntry.HasAttrib(AnAttrib: Cardinal): boolean;
-var
-  i: Integer;
-begin
-  Result := False;
-  if not PrepareAbbrevData then exit;
-  Result := True;
-  for i := 0 to FAbbrev^.count - 1 do
-    if FAbbrevData[i].Attribute = AnAttrib then
-      exit;
-  Result := False;
-end;
-
 function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Integer): Boolean;
 var
   AData: pointer;
   i: Integer;
 begin
   i := AttribIdx(AnAttrib, AData);
-  if i < 0 then exit(False);
-  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+  if i < 0 then begin
+    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
+    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
+    else Result := False;
+  end
+  else
+    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
 end;
 
 function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Int64): Boolean;
@@ -2506,8 +2516,13 @@ var
   i: Integer;
 begin
   i := AttribIdx(AnAttrib, AData);
-  if i < 0 then exit(False);
-  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+  if i < 0 then begin
+    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
+    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
+    else Result := False;
+  end
+  else
+    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
 end;
 
 function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: Cardinal): Boolean;
@@ -2516,8 +2531,13 @@ var
   i: Integer;
 begin
   i := AttribIdx(AnAttrib, AData);
-  if i < 0 then exit(False);
-  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+  if i < 0 then begin
+    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
+    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
+    else Result := False;
+  end
+  else
+    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
 end;
 
 function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: QWord): Boolean;
@@ -2526,8 +2546,13 @@ var
   i: Integer;
 begin
   i := AttribIdx(AnAttrib, AData);
-  if i < 0 then exit(False);
-  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+  if i < 0 then begin
+    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
+    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
+    else Result := False;
+  end
+  else
+    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
 end;
 
 function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: PChar): Boolean;
@@ -2536,8 +2561,13 @@ var
   i: Integer;
 begin
   i := AttribIdx(AnAttrib, AData);
-  if i < 0 then exit(False);
-  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+  if i < 0 then begin
+    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
+    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
+    else Result := False;
+  end
+  else
+    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
 end;
 
 function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
@@ -2546,8 +2576,13 @@ var
   i: Integer;
 begin
   i := AttribIdx(AnAttrib, AData);
-  if i < 0 then exit(False);
-  Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+  if i < 0 then begin
+    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
+    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
+    else Result := False;
+  end
+  else
+    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
 end;
 
 function TDwarfInformationEntry.ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out
@@ -2566,8 +2601,11 @@ begin
   }
   Result := False;
   i := AttribIdx(AnAttrib, InfoData);
-  if (i < 0) then
+  if i < 0 then begin
+    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
+    then Result := FAbstractOrigin.ReadReference(AnAttrib, AValue, ACompUnit);
     exit;
+  end;
   Form := FAbbrevData[i].Form;
   if (Form = DW_FORM_ref1) or (Form = DW_FORM_ref2) or (Form = DW_FORM_ref4) or
      (Form = DW_FORM_ref8) or (Form = DW_FORM_ref_udata)
@@ -2593,6 +2631,63 @@ begin
   else begin
     DebugLn(FPDBG_DWARF_WARNINGS, ['FORM for DW_AT_type not expected ', DwarfAttributeFormToString(Form)]);
   end;
+end;
+
+function TDwarfInformationEntry.ReadName(out AName: String): Boolean;
+var
+  i: Integer;
+  AData: pointer;
+begin
+  PrepareAbbrev;
+  if dafHasName in FAbbrev^.flags then begin
+    //Result := ReadValue(DW_AT_name, AName);
+    i := AttribIdx(DW_AT_name, AData);
+    assert(i >= 0, 'TDwarfInformationEntry.ReadName');
+    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AName);
+  end
+  else
+  if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin then
+    Result := FAbstractOrigin.ReadName(AName)
+  else
+    Result := False;
+end;
+
+function TDwarfInformationEntry.ReadName(out AName: PChar): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  PrepareAbbrev;
+  if dafHasName in FAbbrev^.flags then begin
+    //Result := ReadValue(DW_AT_name, AName);
+    i := AttribIdx(DW_AT_name, AData);
+    assert(i >= 0, 'TDwarfInformationEntry.ReadName');
+    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AName);
+  end
+  else
+  if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin then
+    Result := FAbstractOrigin.ReadName(AName)
+  else
+    Result := False;
+end;
+
+function TDwarfInformationEntry.ReadStartScope(out AStartScope: TDbgPtr): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  PrepareAbbrev;
+  if dafHasStartScope in FAbbrev^.flags then begin
+    //Result := ReadValue(DW_AT_start_scope, AStartScope)
+    i := AttribIdx(DW_AT_start_scope, AData);
+    assert(i >= 0, 'TDwarfInformationEntry.ReadStartScope');
+    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AStartScope);
+  end
+  else
+  if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin then
+    Result := FAbstractOrigin.ReadStartScope(AStartScope)
+  else
+    Result := False;
 end;
 
 { TDbgDwarfUnit }
@@ -2760,8 +2855,10 @@ procedure TDbgDwarfIdentifierSubRange.NameNeeded;
 var
   AName: String;
 begin
-  ReadName(AName);
-  SetName(AName);
+  if FInformationEntry.ReadName(AName) then
+    SetName(AName)
+  else
+    SetName('');
 end;
 
 procedure TDbgDwarfIdentifierSubRange.KindNeeded;
@@ -3416,15 +3513,6 @@ begin
     Result := nil;
 end;
 
-function TDbgDwarfIdentifier.ReadName(out AName: String): Boolean;
-var
-  a: PDwarfAbbrev;
-begin
-  a := FInformationEntry.Abbrev;
-  Result := (a <> nil) and (dafHasName in a^.flags) and
-            FInformationEntry.ReadValue(DW_AT_name, AName);
-end;
-
 function TDbgDwarfIdentifier.ReadMemberVisibility(out
   AMemberVisibility: TDbgSymbolMemberVisibility): Boolean;
 var
@@ -3450,7 +3538,7 @@ procedure TDbgDwarfIdentifier.NameNeeded;
 var
   AName: String;
 begin
-  if ReadName(AName) then
+  if FInformationEntry.ReadName(AName) then
     SetName(AName)
   else
     inherited NameNeeded;
@@ -3546,12 +3634,7 @@ function TDbgDwarfIdentifier.StartScope: TDbgPtr;
 var
   a: PDwarfAbbrev;
 begin
-  a := FInformationEntry.Abbrev;
-  if (a <> nil) and (dafHasStartScope in a^.flags) then begin
-    if not FInformationEntry.ReadValue(DW_AT_start_scope, Result) then
-      Result := 0;
-  end
-  else
+  if not FInformationEntry.ReadStartScope(Result) then
     Result := 0;
 end;
 
@@ -4275,7 +4358,6 @@ begin
   while Scope.IsValid do
   begin
     if not GetDefinition(Scope.Entry, Abbrev) then begin
-// 0 entry
       inc(ScopeIdx);
       Scope.Index := ScopeIdx; // Child or Next, or parent.next
       continue;
@@ -4288,6 +4370,7 @@ begin
       AttribList.EvalCount := 0;
       Info.ScopeIndex := Scope.Index;
       Info.ScopeList := Scope.FScopeList;
+      // TODO: abstract origin
       if InitLocateAttributeList(Scope.Entry, AttribList) then begin // TODO: error if not
         if (dafHasLowAddr in AttribList.Abbrev^.flags) and
            LocateAttribute(Scope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
@@ -5084,7 +5167,6 @@ var
   tg: Cardinal;
   p1, p2: PChar;
   StartScope: TDbgPtr;
-  abbr: PDwarfAbbrev;
 begin
   Result := nil;
   if (FSymbol = nil) or not(FSymbol is TDbgDwarfProcSymbol) or (AName = '') then
@@ -5106,12 +5188,10 @@ begin
       debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
       StartScopeIdx := InfoEntry.ScopeIndex;
 
-      abbr := InfoEntry.Abbrev;
-      if abbr = nil then
-        exit;
+      //if InfoEntry.Abbrev = nil then
+      //  exit;
 
-      if (dafHasStartScope in abbr^.flags) and
-         InfoEntry.ReadValue(DW_AT_start_scope, StartScope)
+      if InfoEntry.ReadStartScope(StartScope)
       then begin
         if StartScope > FAddress then begin
           // CONTINUE: Search parent(s)
@@ -5121,8 +5201,7 @@ begin
         end;
       end;
 
-      if (dafHasName in abbr^.flags) and
-         InfoEntry.ReadValue(DW_AT_name, InfoName)
+      if InfoEntry.ReadName(InfoName)
       then begin
         if (CompareUtf8BothCase(p1, p2, InfoName)) then begin
           Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
@@ -5131,11 +5210,10 @@ begin
         end;
       end;
 
+      tg := InfoEntry.AbbrevTag;
 
       if InfoEntry.GoNamedChildEx(p1, p2) then begin
-        if not( (dafHasStartScope in InfoEntry.Abbrev^.flags) and
-                InfoEntry.ReadValue(DW_AT_start_scope, StartScope) )
-        then
+        if not InfoEntry.ReadStartScope(StartScope) then
           StartScope := 0;
         if StartScope <= FAddress then begin
           Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
@@ -5144,7 +5222,6 @@ begin
         end;
       end;
 
-      tg := abbr^.tag;
       if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
         // search parent class
         InfoEntry.ScopeIndex := StartScopeIdx;
@@ -5154,17 +5231,13 @@ begin
           InfoEntryParent := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
           DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier  PARENT ', dbgs(InfoEntryParent, FwdCompUint) ]);
 
-          if (dafHasStartScope in InfoEntryParent.Abbrev^.flags) and
-             InfoEntryParent.ReadValue(DW_AT_start_scope, StartScope)
-          then
+          if InfoEntryParent.ReadStartScope(StartScope) then
             if StartScope > FAddress then
               break;
 
           InfoEntryTmp := InfoEntryParent.FindChildByTag(DW_TAG_inheritance);
           if InfoEntryParent.GoNamedChildEx(p1, p2) then begin
-            if not( (dafHasStartScope in InfoEntryParent.Abbrev^.flags) and
-                    InfoEntryParent.ReadValue(DW_AT_start_scope, StartScope) )
-            then
+            if not InfoEntryParent.ReadStartScope(StartScope) then
               StartScope := 0;
             if StartScope <= FAddress then begin
               Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntryParent);
@@ -5210,9 +5283,7 @@ begin
 
       CU2.ScanAllEntries;
       if InfoEntry.GoNamedChildEx(p1, p2) then begin
-        if not( (dafHasStartScope in InfoEntryParent.Abbrev^.flags) and
-                InfoEntryParent.ReadValue(DW_AT_start_scope, StartScope) )
-        then
+        if not InfoEntry.ReadStartScope(StartScope) then
           StartScope := 0;
         if StartScope <= FAddress then begin
           // only variables are marked "external", but types not / so we may need all top level
