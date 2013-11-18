@@ -1132,6 +1132,7 @@ begin
   begin
     FBitmap := AValue;
     ctx := NSGraphicsContext.graphicsContextWithBitmapImageRep(Bitmap.ImageRep);
+    ctx.retain; // extend live beyond NSAutoreleasePool
     InitDraw(Bitmap.Width, Bitmap.Height);
   end;
 end;
@@ -2624,22 +2625,9 @@ begin
 end;
 
 initialization
-  DefaultBrush := TCocoaBrush.CreateDefault;
-  DefaultPen := TCocoaPen.CreateDefault;
-  DefaultFont := TCocoaFont.CreateDefault;
-  DefaultBitmap := TCocoaBitmap.CreateDefault;
-  DefaultContext := TCocoaBitmapContext.Create;
-  DefaultContext.Bitmap := DefaultBitmap;
 
-  ScreenContext := TCocoaContext.Create(DefaultContext.ctx);
 
 finalization
-  ScreenContext.Free;
-  DefaultContext.Free;
 
-  DefaultBrush.Free;
-  DefaultPen.Free;
-  DefaultFont.Free;
-  DefaultBitmap.Free;
 
 end.
