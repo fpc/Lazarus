@@ -46,6 +46,10 @@ msgstr "Kontrola chybějících identifikátorů"
 msgid "Check number of items"
 msgstr "Zkontrolovat počet položek"
 
+#: pocheckerconsts.scheckstatistics
+msgid "Check percentage of (un)translated and fuzzy strings"
+msgstr ""
+
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
 msgstr "Kopírovat do schránky"
@@ -159,6 +163,18 @@ msgstr "&Otevřít PO  soubor"
 msgid "Original"
 msgstr "Originál"
 
+#: pocheckerconsts.spercfuzzy
+msgid "Fuzzy strings: %2.0f%%."
+msgstr ""
+
+#: pocheckerconsts.sperctranslated
+msgid "Translated strings: %2.0f%%."
+msgstr ""
+
+#: pocheckerconsts.spercuntranslated
+msgid "Untranslated strings: %2.0f%%."
+msgstr ""
+
 #: pocheckerconsts.sresults
 msgid "Results"
 msgstr "Výsledky"
@@ -198,3 +214,8 @@ msgstr "Celkem nalezeno varování: %d"
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Překlad"
+
+#: pocheckerconsts.stranslationstatistics
+msgid "Translation statistics for:"
+msgstr ""
+
