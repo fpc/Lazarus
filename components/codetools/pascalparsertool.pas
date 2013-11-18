@@ -1694,6 +1694,8 @@ begin
         end;
       end;
     end;
+  end else if CurPos.Flag=cafColon then begin
+    SaveRaiseCharExpectedButAtomFound(';');
   end;
   if UpAtomIs('OF') then begin
     // read 'of object'
