@@ -95,6 +95,8 @@ function UTF8ToCP852(const s: string): string;  // DOS central europe
 function UTF8ToCP866(const s: string): string;  // DOS and Windows console's cyrillic
 function UTF8ToCP874(const s: string): string;  // thai
 function UTF8ToKOI8(const s: string): string;  // russian cyrillic
+function UTF8ToKOI8U(const s: string): string;  // ukrainian cyrillic
+function UTF8ToKOI8RU(const s: string): string;  // belarussian cyrillic
 function UTF8ToSingleByte(const s: string;
                           const UTF8CharConvFunc: TUnicodeToCharID): string;
 function UTF8ToUCS2LE(const s: string): string; // UCS2-LE 2byte little endian without BOM
@@ -6133,6 +6135,32 @@ begin
   end;
 end;
 
+function UnicodeToKOI8U(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  1025: Result:=179;
+  1028: Result:=180;
+  1030..1031: Result:=Unicode-848;
+  1105: Result:=163;
+  1108: Result:=164;
+  1110..1111: Result:=Unicode-944;
+  1168: Result:=189;
+  1169: Result:=173;
+  else
+    Result:=UnicodeToKOI8(Unicode);
+  end;
+end;
+
+function UnicodeToKOI8RU(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  1038: Result:=190;
+  1118: Result:=174;
+  else
+    Result:=UnicodeToKOI8U(Unicode);
+  end;
+end;
+
 function UnicodeToISO_8859_1(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -6343,6 +6371,16 @@ end;
 function UTF8ToKOI8(const s: string): string;
 begin
   Result:=UTF8ToSingleByte(s,@UnicodeToKOI8);
+end;
+
+function UTF8ToKOI8U(const s: string): string;
+begin
+  Result:=UTF8ToSingleByte(s,@UnicodeToKOI8U);
+end;
+
+function UTF8ToKOI8RU(const s: string): string;
+begin
+  Result:=UTF8ToSingleByte(s,@UnicodeToKOI8RU);
 end;
 
 function UTF8ToSingleByte(const s: string;

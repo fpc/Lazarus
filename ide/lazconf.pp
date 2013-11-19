@@ -201,7 +201,7 @@ function CreateCompilerTestPascalFilename: string;
 begin
   Result:=AppendPathDelim(GetPrimaryConfigPath)+'compilertest.pas';
   if CreateFile(Result) then exit;
-  Result:=AppendPathDelim(GetTempDir)+'compilertest.pas';
+  Result:=AppendPathDelim(ExpandFileNameUTF8(GetTempDir))+'compilertest.pas';
   if CreateFile(Result) then exit;
   Debugln('unable to create temporay file ',Result);
   Result:='';

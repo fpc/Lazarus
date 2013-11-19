@@ -156,7 +156,7 @@ var
 begin
   cb := Sender as TCheckBox;
   // Set / reset "basic" CheckListBox items.
-  for i := 0 to TestListBox.Count - 2 do
+  for i := 0 to TestListBox.Count - 3 do
     TestListBox.Checked[i] := cb.Checked;
 end;
 
@@ -187,6 +187,7 @@ begin
       ptoCheckMissingIdentifiers: TestListBox.Items.Add(sCheckMissingIdentifiers);
       ptoCheckMismatchedOriginals: TestListBox.Items.Add(sCheckForMismatchesInUntranslatedStrings);
       ptoCheckDuplicateOriginals: TestListBox.Items.Add(sCheckForDuplicateUntranslatedValues);
+      ptoCheckStatistics: TestListBox.Items.Add(sCheckStatistics);
       else
         TestListBox.Items.Add(PoTestOptionNames[Opt]);
     end;

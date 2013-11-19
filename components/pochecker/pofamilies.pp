@@ -14,7 +14,7 @@ uses
 Type
 
   TPoTestOption = (ptoCheckNrOfItems, ptoCheckFormatArgs, ptoCheckMissingIdentifiers,
-                   ptoCheckMismatchedOriginals, ptoCheckDuplicateOriginals,
+                   ptoCheckMismatchedOriginals, ptoCheckDuplicateOriginals, ptoCheckStatistics,
                    ptoFindAllChilds);
   TPoTestOptions = Set of TPoTestOption;
 
@@ -28,6 +28,7 @@ const
       'Check missing identifiers',
       'Check for mismatches in untranslated strings',
       'Check for duplicate untranslated values',
+      'Check percentage of (un)translated and fuzzy strings',
       'Find all translated po-files'
     );
 
@@ -64,6 +65,7 @@ Type
     procedure CheckMissingIdentifiers(out ErrorCount: Integer; ErrorLog: TStrings);
     procedure CheckMismatchedOriginals(out ErrorCount: Integer; ErrorLog: TStrings);
     procedure CheckDuplicateOriginals(out WarningCount: Integer; ErrorLog: TStrings);
+    procedure CheckStatistics(out WarningCount: Integer; ErrorLog: TStrings);
 
   public
     procedure RunTests(const Options: TPoTestOptions; out ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
@@ -563,6 +565,56 @@ begin
   //debugln('TPoFamily.CheckDuplicateOriginals: ',Dbgs(WarningCount),' Errors');
 end;
 
+procedure TPoFamily.CheckStatistics(out WarningCount: Integer; ErrorLog: TStrings);
+var
+  i: Integer;
+  CPoItem: TPOFileItem;
+  NrTranslated, NrUntranslated, NrFuzzy, NrTotal: Integer;
+begin
+  //debugln('TPoFamily.CheckFormatArgs');
+  DoTestStart(sCheckStatistics, ShortChildName);
+  NrTranslated := 0;
+  NrUntranslated := 0;
+  NrFuzzy := 0;
+  //for i := 0 to FMaster.Count - 1 do
+  for i := 0 to FChild.Count - 1 do
+  begin
+    //debugln('  i = ',DbgS(i));
+    //MPoItem := FMaster.PoItems[i];
+    CPoItem := FChild.PoItems[i];
+    //CPoItem := FChild.FindPoItem(MPoItem.Identifier);
+    if Assigned(CPoItem) then
+    begin
+      if (Length(CPoItem.Translation) > 0) then
+      begin
+        if (Pos('fuzzy', CPoItem.Flags) <> 0) then
+          Inc(NrFuzzy)
+        else
+          Inc(NrTranslated);
+      end
+      else
+      begin
+        Inc(NrUntranslated)
+      end;
+    end;
+  end;
+  NrTotal := NrTranslated + NrUntranslated + NrFuzzy;
+  if (NrTotal > 0) then
+  begin
+    WarningCount := 1; //else it will not show up...
+    ErrorLog.Add(Divider);
+    ErrorLog.Add(sTranslationStatistics);
+    ErrorLog.Add(ShortChildName);
+    ErrorLog.Add(Format(sPercTranslated,[100.0*(NrTranslated/NrTotal)]));
+    ErrorLog.Add(Format(sPercUntranslated,[100.0*(NrUntranslated/NrTotal)]));
+    ErrorLog.Add(Format(sPercFuzzy,[100.0*(NrFuzzy/NrTotal)]));
+    ErrorLog.Add('');
+    ErrorLog.Add('');
+  end;
+  DoTestEnd(PoTestOptionNames[ptoCheckFormatArgs], WarningCount);
+  //debugln('TPoFamily.CheckIncompatibleFormatArgs: ',Dbgs(ErrorCount),' Errors');
+end;
+
 {
 procedure TPoFamily.RunTests(const Options: TPoTestOptions; out
 Pre conditions:
@@ -691,6 +743,11 @@ begin
         ErrorCount := CurrErrCnt + ErrorCount;
       end;
 
+      if (ptoCheckStatistics in Options) then
+      begin
+        CheckStatistics(CurrErrCnt, ErrorLog);
+        ErrorCount := CurrErrCnt + ErrorCount;
+      end;
        {
         if (pto in Options) then
         begin
