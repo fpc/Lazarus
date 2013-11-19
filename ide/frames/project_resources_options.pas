@@ -56,14 +56,16 @@ implementation
 procedure TResourcesOptionsFrame.btnAddClick(Sender: TObject);
 var
   FileName: String;
+  aFilename: String;
 begin
   if dlgOpen.Execute then
   begin
     for FileName in dlgOpen.Files do
     begin
+      aFilename := Filename;
       if not FProject.IsVirtual then
-        FileName := CreateRelativePath(FileName, FProject.ProjectDirectory);
-      AddResource(FileName);
+        aFileName := CreateRelativePath(aFileName, FProject.ProjectDirectory);
+      AddResource(aFileName);
     end;
   end;
 end;
