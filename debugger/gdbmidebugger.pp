@@ -6426,7 +6426,7 @@ var
   n, idx: Integer;
 begin
   Result := True;
-  FContext.StackContext := ccNotRequired;
+  //FContext.StackContext := ccNotRequired;
 
   if length(FRegistersToUpdate) = 0
   then exit;
@@ -10212,6 +10212,7 @@ begin
   if TGDBMIDebugger(Debugger).FCurrentStackFrame = idx then Exit;
 
   TGDBMIDebugger(Debugger).FCurrentStackFrame := idx;
+  TGDBMIRegisters(Debugger.Registers).Changed;
   if cs <> nil then
     cs.CurrentIndex := idx;
 end;
