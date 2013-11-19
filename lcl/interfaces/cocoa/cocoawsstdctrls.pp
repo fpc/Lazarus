@@ -132,9 +132,8 @@ type
     class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
-    {class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
-    class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;}
+    class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
 
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -210,6 +209,37 @@ function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCo
 function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
 
 implementation
+
+const
+  VerticalScrollerVisible: array[TScrollStyle] of boolean = (
+ {ssNone          } false,
+ {ssHorizontal    } false,
+ {ssVertical      } true,
+ {ssBoth          } true,
+ {ssAutoHorizontal} false,
+ {ssAutoVertical  } true,
+ {ssAutoBoth      } true
+  );
+
+  HorizontalScrollerVisible: array[TScrollStyle] of boolean = (
+ {ssNone          } false,
+ {ssHorizontal    } true,
+ {ssVertical      } false,
+ {ssBoth          } true,
+ {ssAutoHorizontal} true,
+ {ssAutoVertical  } false,
+ {ssAutoBoth      } true
+  );
+
+  ScrollerAutoHide: array[TScrollStyle] of boolean = (
+ {ssNone          } false,
+ {ssHorizontal    } false,
+ {ssVertical      } false,
+ {ssBoth          } false,
+ {ssAutoHorizontal} true,
+ {ssAutoVertical  } true,
+ {ssAutoBoth      } true
+  );
 
 function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): NSButton;
 var
@@ -613,13 +643,31 @@ var
   txt: TCocoaTextView;
   ns: NSString;
   scr: TCocoaScrollView;
+  nr:NSRect;
+  r:TRect;
 begin
-  txt := TCocoaTextView(NSView(TCocoaTextView.alloc).lclInitWithCreateParams(AParams));
+  scr := TCocoaScrollView(NSView(TCocoaScrollView.alloc).lclInitWithCreateParams(AParams));
+
+  nr.origin.x:=0;
+  nr.origin.x:=0;
+  nr.size.height:=0;
+  nr.size.width:=AParams.Width;
+
+  txt := TCocoaTextView.alloc.initwithframe(nr);
+  scr.setDocumentView(txt);
+
+  scr.setHasVerticalScroller(VerticalScrollerVisible[TMemo(AWinControl).ScrollBars]);
+  scr.setHasHorizontalScroller(HorizontalScrollerVisible[TMemo(AWinControl).ScrollBars]);
+  scr.setAutohidesScrollers(ScrollerAutoHide[TMemo(AWinControl).ScrollBars]);
+
+  nr:=scr.documentVisibleRect;
+  txt.setFrame(nr);
+
   txt.callback := TLCLCommonCallback.Create(txt, AWinControl);
   ns := NSStringUtf8(AParams.Caption);
   txt.setString(ns);
   ns.release;
-  scr := EmbedInScrollView(txt);
+
   scr.callback := txt.callback;
   Result := TLCLIntfHandle(scr);
 end;
@@ -649,6 +697,19 @@ begin
   txt := MemoTextView(ACustomEdit);
   if Assigned(txt) then
     txt.setEditable(not NewReadOnly);
+end;
+
+class procedure TCocoaWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
+begin
+  TCocoaScrollView(ACustomMemo.Handle).setHasVerticalScroller(VerticalScrollerVisible[NewScrollbars]);
+  TCocoaScrollView(ACustomMemo.Handle).setHasHorizontalScroller(HorizontalScrollerVisible[NewScrollbars]);
+  TCocoaScrollView(ACustomMemo.Handle).setAutohidesScrollers(ScrollerAutoHide[NewScrollbars]);
+
+end;
+
+class procedure  TCocoaWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
+begin
+  //todo:
 end;
 
 class procedure TCocoaWSCustomMemo.SetText(const AWinControl:TWinControl;const AText:String);
