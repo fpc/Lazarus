@@ -8831,13 +8831,17 @@ begin
         end;
       fmtNumber:
         begin
-          DecimalSeparator := Chr(AFormat and $FF);
-          case f2 of
-            0: Result := FormatFloat('###.##', v);
-            1: Result := FloatToStrF(Extended(v), ffFixed, 15, (AFormat div $0100) and $FF);
-            2: Result := FormatFloat('#,###.##', v);
-            3: Result := FloatToStrF(Extended(v), ffNumber, 15, (AFormat div $0100) and $FF);
-            4: Result := FormatFloat(AFormatStr, v);
+          if not VarIsNumeric(v) then
+            result := v
+          else begin
+            DecimalSeparator := Chr(AFormat and $FF);
+            case f2 of
+              0: Result := FormatFloat('###.##', v);
+              1: Result := FloatToStrF(Extended(v), ffFixed, 15, (AFormat div $0100) and $FF);
+              2: Result := FormatFloat('#,###.##', v);
+              3: Result := FloatToStrF(Extended(v), ffNumber, 15, (AFormat div $0100) and $FF);
+              4: Result := FormatFloat(AFormatStr, v);
+            end;
           end;
         end;
       fmtDate:
