@@ -1255,7 +1255,12 @@ begin
   ctx := CheckDC(DC);
   Result := Assigned(ctx);
   if Result then
+  begin
+    // rectangle must be filled using current brush
+    ctx.Rectangle(X1, Y1, X2, Y2, True, ctx.Brush);
+    // and outlined by current pen
     ctx.Rectangle(X1, Y1, X2, Y2, False, nil);
+  end;
 end;
 
 {------------------------------- SYNC OBJECTS ---------------------------------}
