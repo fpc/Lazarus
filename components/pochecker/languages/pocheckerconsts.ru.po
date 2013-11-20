@@ -45,6 +45,10 @@ msgstr "Поиск отсутствующих идентификаторов"
 msgid "Check number of items"
 msgstr "Проверка числа строк"
 
+#: pocheckerconsts.scheckstatistics
+msgid "Check percentage of (un)translated and fuzzy strings"
+msgstr "Вывод статистики по (не)переведённым и неточным строкам"
+
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
 msgstr "Копировать в буфер обмена"
@@ -158,6 +162,18 @@ msgstr "&Открыть файл PO"
 msgid "Original"
 msgstr "Исходная строка"
 
+#: pocheckerconsts.spercfuzzy
+msgid "Fuzzy strings: %2.0f%%."
+msgstr "Неточные строки: %2.0f%%."
+
+#: pocheckerconsts.sperctranslated
+msgid "Translated strings: %2.0f%%."
+msgstr "Переведённые строки: %2.0f%%."
+
+#: pocheckerconsts.spercuntranslated
+msgid "Untranslated strings: %2.0f%%."
+msgstr "Непереведённые строки: %2.0f%%."
+
 #: pocheckerconsts.sresults
 msgid "Results"
 msgstr "Результаты"
@@ -197,4 +213,8 @@ msgstr "Всего найдено предупреждений: %d"
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Перевод"
+
+#: pocheckerconsts.stranslationstatistics
+msgid "Translation statistics for:"
+msgstr "Статистика перевода для:"
 

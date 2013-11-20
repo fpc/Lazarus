@@ -44,6 +44,10 @@ msgstr "Перевірити відсутні ідентифікатори"
 msgid "Check number of items"
 msgstr "Перевірити кількість елементів"
 
+#: pocheckerconsts.scheckstatistics
+msgid "Check percentage of (un)translated and fuzzy strings"
+msgstr ""
+
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
 msgstr "Копіювати в буфер"
@@ -158,6 +162,18 @@ msgstr "&Відкрити po-файл"
 msgid "Original"
 msgstr "Оригінал"
 
+#: pocheckerconsts.spercfuzzy
+msgid "Fuzzy strings: %2.0f%%."
+msgstr ""
+
+#: pocheckerconsts.sperctranslated
+msgid "Translated strings: %2.0f%%."
+msgstr ""
+
+#: pocheckerconsts.spercuntranslated
+msgid "Untranslated strings: %2.0f%%."
+msgstr ""
+
 #: pocheckerconsts.sresults
 msgid "Results"
 msgstr "Результати"
@@ -197,4 +213,8 @@ msgstr "Знайдено всього попереджень: %d"
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Переклад"
+
+#: pocheckerconsts.stranslationstatistics
+msgid "Translation statistics for:"
+msgstr ""
 

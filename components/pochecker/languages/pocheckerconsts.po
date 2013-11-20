@@ -33,6 +33,10 @@ msgstr ""
 msgid "Check number of items"
 msgstr ""
 
+#: pocheckerconsts.scheckstatistics
+msgid "Check percentage of (un)translated and fuzzy strings"
+msgstr ""
+
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
 msgstr ""
@@ -137,6 +141,18 @@ msgstr ""
 msgid "Original"
 msgstr ""
 
+#: pocheckerconsts.spercfuzzy
+msgid "Fuzzy strings: %2.0f%%."
+msgstr ""
+
+#: pocheckerconsts.sperctranslated
+msgid "Translated strings: %2.0f%%."
+msgstr ""
+
+#: pocheckerconsts.spercuntranslated
+msgid "Untranslated strings: %2.0f%%."
+msgstr ""
+
 #: pocheckerconsts.sresults
 msgid "Results"
 msgstr ""
@@ -173,5 +189,9 @@ msgstr ""
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
+msgstr ""
+
+#: pocheckerconsts.stranslationstatistics
+msgid "Translation statistics for:"
 msgstr ""
 

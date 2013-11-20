@@ -47,6 +47,10 @@ msgstr "Tikrinti ar netrūksta identifikatorių"
 msgid "Check number of items"
 msgstr "Tikrinti ar tinkamas elementų kiekis"
 
+#: pocheckerconsts.scheckstatistics
+msgid "Check percentage of (un)translated and fuzzy strings"
+msgstr ""
+
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
 msgstr "Kopijuoti į iškarpinę"
@@ -161,6 +165,18 @@ msgstr "At&verti PO failą"
 msgid "Original"
 msgstr "Originalas"
 
+#: pocheckerconsts.spercfuzzy
+msgid "Fuzzy strings: %2.0f%%."
+msgstr ""
+
+#: pocheckerconsts.sperctranslated
+msgid "Translated strings: %2.0f%%."
+msgstr ""
+
+#: pocheckerconsts.spercuntranslated
+msgid "Untranslated strings: %2.0f%%."
+msgstr ""
+
 #: pocheckerconsts.sresults
 msgid "Results"
 msgstr "Rezultatai"
@@ -200,4 +216,8 @@ msgstr "Viso rasta perspėjimų: %d"
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Vertimas"
+
+#: pocheckerconsts.stranslationstatistics
+msgid "Translation statistics for:"
+msgstr ""
 

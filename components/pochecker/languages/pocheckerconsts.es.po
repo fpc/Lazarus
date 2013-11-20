@@ -45,6 +45,10 @@ msgstr "Compruebe identificadores faltantes"
 msgid "Check number of items"
 msgstr "Compruebe el número de elementos"
 
+#: pocheckerconsts.scheckstatistics
+msgid "Check percentage of (un)translated and fuzzy strings"
+msgstr ""
+
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
 msgstr "Copiar en el portapapeles"
@@ -159,6 +163,18 @@ msgstr "Abrir un fichero p&o"
 msgid "Original"
 msgstr "Original"
 
+#: pocheckerconsts.spercfuzzy
+msgid "Fuzzy strings: %2.0f%%."
+msgstr ""
+
+#: pocheckerconsts.sperctranslated
+msgid "Translated strings: %2.0f%%."
+msgstr ""
+
+#: pocheckerconsts.spercuntranslated
+msgid "Untranslated strings: %2.0f%%."
+msgstr ""
+
 #: pocheckerconsts.sresults
 msgid "Results"
 msgstr "Resultados"
@@ -198,4 +214,8 @@ msgstr "Total de avisos encontrados: %d"
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Traducción"
+
+#: pocheckerconsts.stranslationstatistics
+msgid "Translation statistics for:"
+msgstr ""
 
