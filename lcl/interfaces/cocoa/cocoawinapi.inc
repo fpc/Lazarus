@@ -60,9 +60,37 @@ end;
 
 function TCocoaWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
+var
+  SrcCtx, DestCtx: TCocoaContext;
+  Bmp: TCocoaBitmap;
 begin
-  Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc,
-    Width, Height, 0, 0, 0, Rop);
+  SrcCtx := CheckDC(SrcDC);
+  DestCtx := CheckDC(DestDC);
+
+  Result := Assigned(SrcCtx) and Assigned(DestCtx);
+
+  if not Result then
+    Exit;
+
+  if not (SrcCtx is TCocoaBitmapContext) then
+  begin
+    DebugLn('StretchMaskBlt Error - invalid source device context ', SrcCtx.ClassName,
+      ', expected TCocoaBitmapContext!');
+    Exit(False);
+  end;
+
+  Bmp := TCocoaBitmapContext(SrcCtx).Bitmap;
+
+  if not Assigned(Bmp) then
+    Exit(False);
+
+  // Width and Height should not be greater than bitmap width
+  Width := Min(Width, Bmp.Width);
+  Height := Min(Height, Bmp.Height);
+
+  Result := DestCtx.StretchDraw(X, Y, Width, Height,
+    TCocoaBitmapContext(SrcCtx), XSrc, YSrc, Width, Height,
+    nil, 0, 0, Rop);
 end;
 
 function TCocoaWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;

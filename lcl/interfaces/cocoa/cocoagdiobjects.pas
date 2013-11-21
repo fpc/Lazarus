@@ -1773,11 +1773,9 @@ function TCocoaContext.StretchDraw(X, Y, Width, Height: Integer;
 var
   Bmp: TCocoaBitmap;
 begin
-  Result := False;
-
   Bmp := SrcDC.Bitmap;
   if not Assigned(Bmp) then
-    Exit;
+    Exit(False);
 
 // TODO: mask clipping
 //  if Assigned(MskImage) then
@@ -1785,7 +1783,7 @@ begin
 
   Result := DrawImageRep(
     GetNSRect(X, Y, Width, Height),
-    GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), Bmp.ImageRep);
+    GetNSRect(XSrc, -YSrc, SrcWidth, SrcHeight), Bmp.ImageRep);
 end;
 
 {------------------------------------------------------------------------------
