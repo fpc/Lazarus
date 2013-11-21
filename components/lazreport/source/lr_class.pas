@@ -2727,7 +2727,7 @@ end;
 
 procedure TfrView.SetFillColor(const AValue: TColor);
 begin
-  if (aValue<>fFillColor) and (fUpdate=0) then
+  if aValue<>fFillColor then
   begin
     BeforeChange;
     fFillColor:=aValue;
