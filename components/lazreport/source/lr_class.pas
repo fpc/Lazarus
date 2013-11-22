@@ -10051,7 +10051,10 @@ begin
     DebugLn('2 TfrPreviewForm.visible=%s',[BooLToStr(p.Visible)]);
     {$ENDIF}
     if ExportFilename<>'' then
+    begin
+      p.SaveDialog.InitialDir := ExtractFilePath(ExportFileName);
       p.SaveDialog.FileName := ExportFilename;
+    end;
     p.Show_Modal(Self);
   end;
   {$IFDEF DebugLR}
