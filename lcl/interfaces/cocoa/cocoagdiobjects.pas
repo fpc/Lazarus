@@ -1781,9 +1781,12 @@ begin
 //  if Assigned(MskImage) then
 //    CGContextClipToMask(LayerContext, ImgRect, MskImage);
 
+  // convert Y coodrinate of the source bitmap
+  YSrc := Bmp.Height - (SrcHeight + YSrc);
+
   Result := DrawImageRep(
     GetNSRect(X, Y, Width, Height),
-    GetNSRect(XSrc, -YSrc, SrcWidth, SrcHeight), Bmp.ImageRep);
+    GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), Bmp.ImageRep);
 end;
 
 {------------------------------------------------------------------------------
