@@ -13,7 +13,8 @@ uses
   CocoaWSExtCtrls,
   CocoaWSForms,
   CocoaWSMenus,
-  CocoaWSStdCtrls;
+  CocoaWSStdCtrls,
+  CocoaWSComCtrls;
 
 // imglist
 function RegisterCustomImageList: Boolean;
@@ -172,7 +173,8 @@ end;
 
 function RegisterCustomProgressBar: Boolean; alias : 'WSRegisterCustomProgressBar';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomProgressBar, TCocoaWSProgressBar);
+  Result := True;
 end;
 
 function RegisterCustomUpDown: Boolean; alias : 'WSRegisterCustomUpDown';

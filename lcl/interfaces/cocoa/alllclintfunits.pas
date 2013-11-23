@@ -12,6 +12,7 @@ uses
   cocoagdiobjects,
   cocoawsforms,
   cocoaint,
-  cocoawscommon;
+  cocoawscommon,
+  cocoawscomctrls;
 implementation
 end.
