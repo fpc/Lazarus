@@ -1283,10 +1283,6 @@ type
     property VisibleButtons;
     property Images;
   end;
-  
-
-// ToDo: Move this to db.pp
-function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
 
 procedure ChangeDataSource(AControl: TControl; Link: TDataLink;
   NewDataSource: TDataSource);
@@ -1319,17 +1315,6 @@ var I: Integer;
 begin
   for I := Low(AFieldClasses) to High(AFieldClasses) do
     RegField(AFieldClasses[I]);
-end;
-
-function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
-var
-  i: Integer;
-begin
-  i:=StartPos;
-  while (i<=Length(Fields)) and (Fields[i]<>';') do Inc(i);
-  Result:=Trim(Copy(Fields,StartPos,i-StartPos));
-  if (i<=Length(Fields)) and (Fields[i]=';') then Inc(i);
-  StartPos:=i;
 end;
 
 procedure ChangeDataSource(AControl: TControl; Link: TDataLink;
