@@ -108,7 +108,6 @@ Type
 
   TDBLookup = class(TComponent)
   private
-    FLinkBookMark: TBookMark;
     FControlLink: TFieldDataLink;
     FControlItems: TStrings;
     FListLink: TFieldDataLink;
@@ -124,7 +123,6 @@ Type
     FListKeys: array of Variant;
     FNullValueKey: TShortcut;
     FHasLookUpField: Boolean;
-    FListLinkTmpSetActive: Boolean;
     FLookUpFieldIsCached: Boolean;
     FLookupCache: boolean;
     procedure ActiveChange(Sender: TObject);
@@ -133,8 +131,6 @@ Type
     procedure FetchLookupData;
     function GetKeyFieldName: string;
     function GetListSource: TDataSource;
-    procedure LinkGetBookMark;
-    procedure LinkGotoBookMark;
     procedure SetKeyFieldName(const Value: string);
     procedure SetListFieldName(const Value: string);
     procedure SetListSource(Value: TDataSource);
