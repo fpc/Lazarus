@@ -1508,7 +1508,7 @@ begin
   if FField <> nil then
   begin
     EditingChanged;
-    Reset;
+    RecordChanged(nil);
   end;
 end;
 
