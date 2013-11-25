@@ -149,6 +149,7 @@ type
     wvVista,
     //wvServer2008,    // has the same major/minor as wvVista
     wv7,
+    wv8,
     wvLater
   );
 
@@ -1634,6 +1635,7 @@ begin
      case Win32MinorVersion of
        0: WindowsVersion := wvVista;
        1: WindowsVersion := wv7;
+       2: WindowsVersion := wv8;
      else
        WindowsVersion := wvLater;
      end;
