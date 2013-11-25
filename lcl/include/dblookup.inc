@@ -96,7 +96,10 @@ end;
 procedure TDBLookup.EditingChange(Sender: TObject);
 begin
   if FListLink.Active and not (FListLink.Editing) then
+  begin
     FetchLookupData;
+    FControlLink.Reset;
+  end;
 end;
 
 // do not show in property inspector if FHasLookUpField
