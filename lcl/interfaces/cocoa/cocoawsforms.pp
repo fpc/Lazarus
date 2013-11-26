@@ -313,12 +313,15 @@ class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   Form: TCustomForm absolute AWinControl;
-  win: TCocoaPanel;
-  cnt: TCocoaCustomControl;
+  win: TCocoaWindow;
+  cnt: TCocoaWindowContent;
   ns: NSString;
   R: NSRect;
 begin
-  win := TCocoaPanel(TCocoaPanel.alloc);
+  //todo: create TCocoaWindow or TCocoaPanel depending on the border style
+  //      if parent is specified neither Window nor Panel needs to be created
+  //      the only thing that needs to be created is Content
+  win := TCocoaWindow(TCocoaWindow.alloc);
 
   if not Assigned(win) then
   begin
@@ -327,12 +330,11 @@ begin
   end;
 
   R := CreateParamsToNSRect(AParams);
-  win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(R, GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
-  win.setHidesOnDeactivate(False);
+  win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(R, GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
   UpdateWindowIcons(win, GetDesigningBorderStyle(Form), Form.BorderIcons);
   win.setLevel(FormStyleToWindowLevel[Form.FormStyle]);
   win.enableCursorRects;
-  TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
+  TCocoaWindow(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
   ns := NSStringUtf8(AWinControl.Caption);
   win.setTitle(ns);
@@ -342,7 +344,7 @@ begin
   R.origin.x := 0;
   R.origin.y := 0;
 
-  cnt := TCocoaCustomControl.alloc.initWithFrame(R);
+  cnt := TCocoaWindowContent.alloc.initWithFrame(R);
   cnt.callback := TCocoaPanel(win).callback;
   win.setContentView(cnt);
 
@@ -356,31 +358,47 @@ begin
     // TODO: docked forms
   end;
 
-  Result := TLCLIntfHandle(win);
+  Result := TLCLIntfHandle(cnt);
 end;
 
 class function TCocoaWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  win : NSWindow;
 begin
   Result := AWinControl.HandleAllocated;
-  if Result then
-    AText := NSStringToString(NSWindow(AWinControl.Handle).title);
+  if Result then begin
+    win := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
+    if not Assigned(win) then AText:=''
+    else AText := NSStringToString(win.title);
+  end;
 end;
 
 class function TCocoaWSCustomForm.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;
+var
+  win : NSWindow;
 begin
   Result := AWinControl.HandleAllocated;
-  if Result then
-    ALength := NSWindow(AWinControl.Handle).title.length;
+  if Result then begin
+    win := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
+    if Assigned(win) then
+      ALength := NSWindow(AWinControl.Handle).title.length
+    else
+      ALength := 0;
+  end;
 end;
 
 class procedure TCocoaWSCustomForm.SetText(const AWinControl: TWinControl; const AText: String);
 var
   ns: NSString;
+  win : NSWindow;
 begin
   if not AWinControl.HandleAllocated then Exit;
-  ns := NSStringUtf8(AText);
-  NSwindow(AWinControl.Handle).setTitle(ns);
-  ns.release;
+  win:=TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
+  if Assigned(win) then begin
+    ns := NSStringUtf8(AText);
+    NSwindow(win).setTitle(ns);
+    ns.release;
+  end;
 end;
 
 class procedure TCocoaWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
@@ -396,33 +414,53 @@ begin
 end;
 
 class procedure TCocoaWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte);
+var
+  win : NSWindow;
 begin
-  if ACustomForm.HandleAllocated then
+  if ACustomForm.HandleAllocated then begin
+    win:=TCocoaWindowContent(ACustomForm.Handle).lclOwnWindow;
+    if not Assigned(win) then Exit;
     if AlphaBlend then
-      NSWindow(ACustomForm.Handle).setAlphaValue(Alpha / 255)
+      win.setAlphaValue(Alpha / 255)
     else
-      NSWindow(ACustomForm.Handle).setAlphaValue(1);
+      win.setAlphaValue(1);
+  end;
 end;
 
 class procedure TCocoaWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
   const ABorderIcons: TBorderIcons);
+var
+  win : NSWindow;
 begin
-  if AForm.HandleAllocated then
-    UpdateWindowMask(NSWindow(AForm.Handle), GetDesigningBorderStyle(AForm), ABorderIcons);
+  if AForm.HandleAllocated then begin
+    win:=TCocoaWindowContent(AForm.Handle).lclOwnWindow;
+    if Assigned(win) then
+      UpdateWindowMask(win, GetDesigningBorderStyle(AForm), ABorderIcons);
+  end;
 end;
 
 class procedure TCocoaWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
+var
+  win : NSWindow;
 begin
-  if AForm.HandleAllocated then
-    UpdateWindowMask(NSWindow(AForm.Handle), AFormBorderStyle, AForm.BorderIcons);
+  if AForm.HandleAllocated then begin
+    win:=TCocoaWindowContent(AForm.Handle).lclOwnWindow;
+    if Assigned(win) then
+      UpdateWindowMask(win, AFormBorderStyle, AForm.BorderIcons);
+  end;
 end;
 
 class procedure TCocoaWSCustomForm.SetFormStyle(const AForm: TCustomform;
   const AFormStyle, AOldFormStyle: TFormStyle);
+var
+  win : NSWindow;
 begin
-  if AForm.HandleAllocated then
-    NSWindow(AForm.Handle).setLevel(FormStyleToWindowLevel[AFormStyle]);
+  if AForm.HandleAllocated then begin
+    win:=TCocoaWindowContent(AForm.Handle).lclOwnWindow;
+    if Assigned(win) then
+      win.setLevel(FormStyleToWindowLevel[AFormStyle]);
+  end;
 end;
 
 class procedure TCocoaWSCustomForm.SetPopupParent(
@@ -470,8 +508,9 @@ end;
 class procedure TCocoaWSCustomForm.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  if AWinControl.HandleAllocated then
+  if AWinControl.HandleAllocated then begin
     NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
+  end;
 end;
 
 end.

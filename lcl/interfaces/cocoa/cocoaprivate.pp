@@ -25,7 +25,7 @@ uses
   Types, Classes, SysUtils,
   CGGeometry,
   // Libs
-  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
+  CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
   LCLType, Controls;
 
@@ -272,6 +272,37 @@ type
     procedure sendEvent(event: NSEvent); override;
   end;
 
+
+  TCocoaWindow = objcclass(NSWindow, NSWindowDelegateProtocol)
+  protected
+    function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
+    procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
+    procedure windowDidBecomeKey(notification: NSNotification); message 'windowDidBecomeKey:';
+    procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
+    procedure windowDidResize(notification: NSNotification); message 'windowDidResize:';
+    procedure windowDidMove(notification: NSNotification); message 'windowDidMove:';
+  public
+    callback: IWindowCallback;
+    function acceptsFirstResponder: Boolean; override;
+    function canBecomeKeyWindow: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
+    // mouse
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseEntered(event: NSEvent); override;
+    procedure mouseExited(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+    procedure sendEvent(event: NSEvent); override;
+  end;
+
   { TCocoaCustomControl }
 
   TCocoaCustomControl = objcclass(NSControl)
@@ -300,6 +331,20 @@ type
     procedure flagsChanged(event: NSEvent); override;
     // other
     procedure resetCursorRects; override;
+  end;
+
+  { TCocoaWindowContent }
+
+  TCocoaWindowContent = objcclass(TCocoaCustomControl)
+  public
+    isembedded: Boolean; // true - if the content is inside of another control, false - if the content is in its own window;
+    ownwin: NSWindow;
+    function lclOwnWindow: NSWindow; message 'lclOwnWindow';
+    procedure lclSetFrame(const r: TRect); override;
+    procedure viewDidMoveToSuperview; override;
+    procedure viewDidMoveToWindow; override;
+    procedure viewWillMoveToWindow(newWindow: NSWindow); override;
+    procedure dealloc; override;
   end;
 
   { TCocoaScrollView }
@@ -431,6 +476,53 @@ end;
 function CheckMainThread: Boolean;
 begin
   Result := NSThread.currentThread.isMainThread;
+end;
+
+{ TCocoaWindowContent }
+
+function TCocoaWindowContent.lclOwnWindow: NSWindow;
+begin
+  if not isembedded then Result:=window
+  else Result:=nil;
+end;
+
+procedure TCocoaWindowContent.lclSetFrame(const r: TRect);
+begin
+  if isembedded then inherited lclSetFrame(r)
+  else window.lclSetFrame(r);
+end;
+
+procedure TCocoaWindowContent.viewDidMoveToSuperview;
+begin
+
+  inherited viewDidMoveToSuperview;
+end;
+
+procedure TCocoaWindowContent.viewDidMoveToWindow;
+begin
+  isembedded:=window.contentView<>self;
+  if isembedded then begin
+    if Assigned(ownwin) then ownwin.close;
+    ownwin:=nil;
+  end else begin
+    ownwin:=window;
+  end;
+  inherited viewDidMoveToWindow;
+end;
+
+procedure TCocoaWindowContent.viewWillMoveToWindow(newWindow: NSWindow);
+begin
+  if not isembedded then begin
+    window.close;
+    ownwin:=nil;
+    isembedded:=false;
+  end;
+  inherited viewWillMoveToWindow(newWindow);
+end;
+
+procedure TCocoaWindowContent.dealloc;
+begin
+  inherited dealloc;
 end;
 
 { TCocoaPanel }
@@ -569,6 +661,174 @@ begin
 end;
 
 procedure TCocoaPanel.sendEvent(event: NSEvent);
+var
+  Message: NSMutableDictionary;
+  Handle: HWND;
+  Msg: Cardinal;
+  WP: WParam;
+  LP: LParam;
+  Result: NSNumber;
+  Obj: NSObject;
+begin
+  if event.type_ = NSApplicationDefined then
+  begin
+    // event which we get through PostMessage or SendMessage
+    if event.subtype = LCLEventSubTypeMessage then
+    begin
+      // extract message data
+      Message := NSMutableDictionary(event.data1);
+      Handle := NSNumber(Message.objectForKey(NSMessageWnd)).unsignedIntegerValue;
+      Msg := NSNumber(Message.objectForKey(NSMessageMsg)).unsignedLongValue;
+      WP := NSNumber(Message.objectForKey(NSMessageWParam)).integerValue;
+      LP := NSNumber(Message.objectForKey(NSMessageLParam)).integerValue;
+      // deliver message and set result
+      Obj := NSObject(Handle);
+      // todo: check that Obj is still a valid NSView/NSWindow
+      Result := NSNumber.numberWithInteger(Obj.lclDeliverMessage(Msg, WP, LP));
+      Message.setObject_forKey(Result, NSMessageResult);
+      Result.release;
+    end;
+  end
+  else
+    inherited sendEvent(event);
+end;
+
+{ TCocoaWindow }
+
+function TCocoaWindow.windowShouldClose(sender: id): LongBool;
+var
+  canClose: Boolean;
+begin
+  canClose := True;
+  if Assigned(callback) then
+    callback.CloseQuery(canClose);
+  Result := canClose;
+end;
+
+procedure TCocoaWindow.windowWillClose(notification: NSNotification);
+begin
+  if Assigned(callback) then
+    callback.Close;
+end;
+
+procedure TCocoaWindow.windowDidBecomeKey(notification: NSNotification);
+begin
+  if Assigned(callback) then
+    callback.Activate;
+end;
+
+procedure TCocoaWindow.windowDidResignKey(notification: NSNotification);
+begin
+  if Assigned(callback) then
+    callback.Deactivate;
+end;
+
+procedure TCocoaWindow.windowDidResize(notification: NSNotification);
+begin
+  if Assigned(callback) then
+    callback.Resize;
+end;
+
+procedure TCocoaWindow.windowDidMove(notification: NSNotification);
+begin
+  if Assigned(callback) then
+    callback.Move;
+end;
+
+function TCocoaWindow.acceptsFirstResponder: Boolean;
+begin
+  Result := True;
+end;
+
+function TCocoaWindow.canBecomeKeyWindow: Boolean;
+begin
+  Result := Assigned(callback) and callback.CanActivate;
+end;
+
+function TCocoaWindow.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  if Assigned(callback) then
+    callback.BecomeFirstResponder;
+end;
+
+function TCocoaWindow.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  if Assigned(callback) then
+    callback.ResignFirstResponder;
+end;
+
+function TCocoaWindow.lclGetCallback: ICommonCallback;
+begin
+  Result := callback;
+end;
+
+procedure TCocoaWindow.lclClearCallback;
+begin
+  callback := nil;
+  contentView.lclClearCallback;
+end;
+
+procedure TCocoaWindow.mouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseDown(event);
+end;
+
+procedure TCocoaWindow.mouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaWindow.rightMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaWindow.rightMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaWindow.otherMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaWindow.otherMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaWindow.mouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaWindow.mouseEntered(event: NSEvent);
+begin
+  inherited mouseEntered(event);
+end;
+
+procedure TCocoaWindow.mouseExited(event: NSEvent);
+begin
+  inherited mouseExited(event);
+end;
+
+procedure TCocoaWindow.mouseMoved(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseMoved(event);
+end;
+
+procedure TCocoaWindow.sendEvent(event: NSEvent);
 var
   Message: NSMutableDictionary;
   Handle: HWND;
