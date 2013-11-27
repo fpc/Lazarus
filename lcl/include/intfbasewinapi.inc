@@ -366,7 +366,7 @@ var
   AStr : String;
   pIndex,
   pX1, pX2, pY : Longint;
-  B, P : Longint;
+  B, P : HGDIOBJ;
   LogP : TLogPen;
   MaxLength : Integer;
   Pt : TPoint;

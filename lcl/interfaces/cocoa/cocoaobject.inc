@@ -96,6 +96,15 @@ begin
   NSMessageLParam := NSStringUTF8('LPARAM');
   NSMessageResult := NSStringUTF8('RESULT');
 
+  DefaultBrush := TCocoaBrush.CreateDefault;
+  DefaultPen := TCocoaPen.CreateDefault;
+  DefaultFont := TCocoaFont.CreateDefault;
+  DefaultBitmap := TCocoaBitmap.CreateDefault;
+  DefaultContext := TCocoaBitmapContext.Create;
+  DefaultContext.Bitmap := DefaultBitmap;
+
+  ScreenContext := TCocoaContext.Create(DefaultContext.ctx);
+
   InitStockItems;
 end;
 
@@ -107,6 +116,14 @@ end;
 destructor TCocoaWidgetSet.Destroy;
 begin
   inherited Destroy;
+
+  ScreenContext.Free;
+  DefaultContext.Free;
+
+  DefaultBrush.Free;
+  DefaultPen.Free;
+  DefaultFont.Free;
+  DefaultBitmap.Free;
 
   FreeSysColorBrushes;
   FreeStockItems;
