@@ -48,6 +48,14 @@ unit registersqldb;
 {$ENDIF}
 {$ENDIF}
 
+{$IF FPC_FULLVERSION >= 20602} 
+// These were backported to FPC 2.6.2
+ {$DEFINE HASFBADMIN}
+ {$DEFINE HASPQEVENT}
+ {$DEFINE HASFBEVENT}
+ {$DEFINE HASLIBLOADER}
+{$ENDIF}
+
 interface
 
 uses
@@ -60,6 +68,9 @@ uses
   odbcconn,
 {$IFDEF HASPQCONNECTION}
   pqconnection,
+  {$IFDEF HASPQEVENT}
+  pqteventmonitor,
+  {$ENDIF} 
 {$ENDIF}
 {$IFDEF HASORACLECONNECTION}
   oracleconnection,
@@ -78,10 +89,19 @@ uses
 {$IFDEF HASSQLITE3CONNECTION}
   sqlite3conn,
 {$ENDIF}
+{$IFDEF HASFBADMIN}
+  fbadmin,
+{$ENDIF}
+{$IFDEF HASFBEVENT}
+  fbeventmonitor,
+{$ENDIF}
   propedits,
   sqlstringspropertyeditordlg,
   controls,
   forms,
+{$IFDEF HASLIBLOADER}
+  sqldblib,
+{$ENDIF}
 {$IFDEF HASSQLPARSER}
   sqlscript, fpsqltree, fpsqlparser,
 {$ENDIF HASSQLPARSER}
@@ -157,6 +177,9 @@ begin
 {$ENDIF}                              
 {$IFDEF HASPQCONNECTION}
                               TPQConnection,
+  {$IFDEF HASPQEVENT}
+                              TPQTEventMonitor,
+  {$ENDIF}                              
 {$ENDIF}
 {$IFDEF HASORACLECONNECTION}
                               TOracleConnection,
@@ -176,7 +199,17 @@ begin
 {$IFDEF HASSQLITE3CONNECTION}
                               TSQLite3Connection,
 {$ENDIF}
-                              TIBConnection]);
+                              TIBConnection
+{$IFDEF HASFBADMIN}
+                              ,TFBAdmin
+{$ENDIF}
+{$IFDEF HASFBEVENT}
+                              ,TFBEventMonitor
+{$ENDIF}
+{$IFDEF HASLIBLOADER}
+                              ,TSQLDBLibraryLoader
+{$ENDIF}                             
+                              ]);
 end;
 
 

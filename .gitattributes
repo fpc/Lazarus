@@ -2283,6 +2283,8 @@ components/sqldb/Makefile.compiled svneol=native#text/plain
 components/sqldb/Makefile.fpc svneol=native#text/plain
 components/sqldb/design/registersqldb.bat svneol=native#text/x-msdos-program
 components/sqldb/design/registersqldb.txt svneol=native#text/plain
+components/sqldb/design/tfbadmin.png -text
+components/sqldb/design/tfbeventmonitor.png -text
 components/sqldb/design/tibconnection.png -text svneol=unset#image/png
 components/sqldb/design/tmssqlconnection.png -text svneol=unset#image/png
 components/sqldb/design/tmysql40connection.png -text svneol=unset#image/png
@@ -2294,7 +2296,9 @@ components/sqldb/design/tmysqlconnection.png -text svneol=unset#image/png
 components/sqldb/design/todbcconnection.png -text svneol=unset#image/png
 components/sqldb/design/toracleconnection.png -text svneol=unset#image/png
 components/sqldb/design/tpqconnection.png -text svneol=unset#image/png
+components/sqldb/design/tpqteventmonitor.png -text
 components/sqldb/design/tsqlconnector.png -text svneol=unset#image/png
+components/sqldb/design/tsqldblibraryloader.png -text
 components/sqldb/design/tsqlite3connection.png -text svneol=unset#image/png
 components/sqldb/design/tsqlquery.png -text svneol=unset#image/png
 components/sqldb/design/tsqlscript.png -text svneol=unset#image/png
@@ -2317,6 +2321,7 @@ components/sqldb/languages/sqlstringspropertyeditordlg.ru.po svneol=native#text/
 components/sqldb/languages/sqlstringspropertyeditordlg.uk.po svneol=native#text/plain
 components/sqldb/languages/sqlstringspropertyeditordlg.zh_CN.po svneol=native#text/plain
 components/sqldb/lib/README.txt svneol=native#text/plain
+components/sqldb/pqteventmonitor.pas svneol=native#text/pascal
 components/sqldb/registersqldb.lrs svneol=native#text/pascal
 components/sqldb/registersqldb.pas svneol=native#text/pascal
 components/sqldb/sqldblaz.lpk svneol=native#text/pascal
