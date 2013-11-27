@@ -482,40 +482,48 @@ end;
 
 function TCocoaWindowContent.lclOwnWindow: NSWindow;
 begin
-  if not isembedded then Result:=window
-  else Result:=nil;
+  if not isembedded then
+    Result := window
+  else
+    Result := nil;
 end;
 
 procedure TCocoaWindowContent.lclSetFrame(const r: TRect);
 begin
-  if isembedded then inherited lclSetFrame(r)
-  else window.lclSetFrame(r);
+  if isembedded then
+    inherited lclSetFrame(r)
+  else
+    window.lclSetFrame(r);
 end;
 
 procedure TCocoaWindowContent.viewDidMoveToSuperview;
 begin
-
   inherited viewDidMoveToSuperview;
 end;
 
 procedure TCocoaWindowContent.viewDidMoveToWindow;
 begin
-  isembedded:=window.contentView<>self;
-  if isembedded then begin
-    if Assigned(ownwin) then ownwin.close;
-    ownwin:=nil;
-  end else begin
-    ownwin:=window;
+  isembedded := window.contentView<>self;
+  if isembedded then
+  begin
+    if Assigned(ownwin) then
+      ownwin.close;
+    ownwin := nil;
+  end
+  else
+  begin
+    ownwin := window;
   end;
   inherited viewDidMoveToWindow;
 end;
 
 procedure TCocoaWindowContent.viewWillMoveToWindow(newWindow: NSWindow);
 begin
-  if not isembedded then begin
+  if not isembedded then
+  begin
     window.close;
-    ownwin:=nil;
-    isembedded:=false;
+    ownwin := nil;
+    isembedded := false;
   end;
   inherited viewWillMoveToWindow(newWindow);
 end;

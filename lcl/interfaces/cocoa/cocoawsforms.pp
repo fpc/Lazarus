@@ -366,10 +366,13 @@ var
   win : NSWindow;
 begin
   Result := AWinControl.HandleAllocated;
-  if Result then begin
+  if Result then
+  begin
     win := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
-    if not Assigned(win) then AText:=''
-    else AText := NSStringToString(win.title);
+    if not Assigned(win) then
+      AText := ''
+    else
+      AText := NSStringToString(win.title);
   end;
 end;
 
@@ -378,7 +381,8 @@ var
   win : NSWindow;
 begin
   Result := AWinControl.HandleAllocated;
-  if Result then begin
+  if Result then
+  begin
     win := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
     if Assigned(win) then
       ALength := NSWindow(AWinControl.Handle).title.length
@@ -392,9 +396,11 @@ var
   ns: NSString;
   win : NSWindow;
 begin
-  if not AWinControl.HandleAllocated then Exit;
-  win:=TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
-  if Assigned(win) then begin
+  if not AWinControl.HandleAllocated then
+    Exit;
+  win := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
+  if Assigned(win) then
+  begin
     ns := NSStringUtf8(AText);
     NSwindow(win).setTitle(ns);
     ns.release;
@@ -417,9 +423,11 @@ class procedure TCocoaWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm;
 var
   win : NSWindow;
 begin
-  if ACustomForm.HandleAllocated then begin
-    win:=TCocoaWindowContent(ACustomForm.Handle).lclOwnWindow;
-    if not Assigned(win) then Exit;
+  if ACustomForm.HandleAllocated then
+  begin
+    win := TCocoaWindowContent(ACustomForm.Handle).lclOwnWindow;
+    if not Assigned(win) then
+      Exit;
     if AlphaBlend then
       win.setAlphaValue(Alpha / 255)
     else
@@ -432,8 +440,9 @@ class procedure TCocoaWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
 var
   win : NSWindow;
 begin
-  if AForm.HandleAllocated then begin
-    win:=TCocoaWindowContent(AForm.Handle).lclOwnWindow;
+  if AForm.HandleAllocated then
+  begin
+    win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;
     if Assigned(win) then
       UpdateWindowMask(win, GetDesigningBorderStyle(AForm), ABorderIcons);
   end;
@@ -444,8 +453,9 @@ class procedure TCocoaWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
 var
   win : NSWindow;
 begin
-  if AForm.HandleAllocated then begin
-    win:=TCocoaWindowContent(AForm.Handle).lclOwnWindow;
+  if AForm.HandleAllocated then
+  begin
+    win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;
     if Assigned(win) then
       UpdateWindowMask(win, AFormBorderStyle, AForm.BorderIcons);
   end;
@@ -456,8 +466,9 @@ class procedure TCocoaWSCustomForm.SetFormStyle(const AForm: TCustomform;
 var
   win : NSWindow;
 begin
-  if AForm.HandleAllocated then begin
-    win:=TCocoaWindowContent(AForm.Handle).lclOwnWindow;
+  if AForm.HandleAllocated then
+  begin
+    win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;
     if Assigned(win) then
       win.setLevel(FormStyleToWindowLevel[AFormStyle]);
   end;
@@ -508,9 +519,8 @@ end;
 class procedure TCocoaWSCustomForm.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  if AWinControl.HandleAllocated then begin
+  if AWinControl.HandleAllocated then
     NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
-  end;
 end;
 
 end.
