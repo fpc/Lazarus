@@ -503,7 +503,7 @@ end;
 
 procedure TCocoaWindowContent.viewDidMoveToWindow;
 begin
-  isembedded := window.contentView<>self;
+  isembedded := window.contentView <> self;
   if isembedded then
   begin
     if Assigned(ownwin) then
@@ -519,7 +519,7 @@ end;
 
 procedure TCocoaWindowContent.viewWillMoveToWindow(newWindow: NSWindow);
 begin
-  if not isembedded then
+  if not isembedded and (newWindow <> window) then
   begin
     window.close;
     ownwin := nil;

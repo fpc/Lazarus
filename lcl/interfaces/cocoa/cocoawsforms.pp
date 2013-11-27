@@ -329,33 +329,35 @@ begin
     Exit;
   end;
 
-  R := CreateParamsToNSRect(AParams);
-  win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(R, GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
-  UpdateWindowIcons(win, GetDesigningBorderStyle(Form), Form.BorderIcons);
-  win.setLevel(FormStyleToWindowLevel[Form.FormStyle]);
-  win.enableCursorRects;
-  TCocoaWindow(win).callback := TLCLWindowCallback.Create(win, AWinControl);
-  win.setDelegate(win);
-  ns := NSStringUtf8(AWinControl.Caption);
-  win.setTitle(ns);
-  ns.release;
-  win.setAcceptsMouseMovedEvents(True);
-
-  R.origin.x := 0;
-  R.origin.y := 0;
-
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
   cnt.callback := TCocoaPanel(win).callback;
-  win.setContentView(cnt);
 
   if (AParams.Style and WS_CHILD) = 0 then
   begin
+    R := CreateParamsToNSRect(AParams);
+    win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(R, GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
+    UpdateWindowIcons(win, GetDesigningBorderStyle(Form), Form.BorderIcons);
+    win.setLevel(FormStyleToWindowLevel[Form.FormStyle]);
+    win.enableCursorRects;
+    TCocoaWindow(win).callback := TLCLWindowCallback.Create(win, AWinControl);
+    win.setDelegate(win);
+    ns := NSStringUtf8(AWinControl.Caption);
+    win.setTitle(ns);
+    ns.release;
+    win.setAcceptsMouseMovedEvents(True);
+
+    R.origin.x := 0;
+    R.origin.y := 0;
+
+    win.setContentView(cnt);
+
     if AParams.WndParent <> 0 then
       NSWindow(AParams.WndParent).addChildWindow_ordered(win, NSWindowAbove);
   end
   else
   begin
-    // TODO: docked forms
+    if AParams.WndParent <> 0 then
+      NSView(APArams.WndParent).addSubView(cnt);
   end;
 
   Result := TLCLIntfHandle(cnt);
