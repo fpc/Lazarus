@@ -1,0 +1,125 @@
+object DBConfigForm: TDBConfigForm
+  Left = 342
+  Height = 400
+  Top = 218
+  Width = 499
+  Caption = 'Database credentials'
+  ClientHeight = 400
+  ClientWidth = 499
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  LCLVersion = '1.0.2.0'
+  object ConnectorType: TComboBox
+    Left = 112
+    Height = 23
+    Top = 42
+    Width = 364
+    ItemHeight = 15
+    OnEditingDone = ConnectorTypeEditingDone
+    TabOrder = 0
+    Text = 'ConnectorType'
+  end
+  object Host: TEdit
+    Left = 112
+    Height = 23
+    Top = 87
+    Width = 192
+    OnEditingDone = HostEditingDone
+    TabOrder = 1
+  end
+  object Database: TEdit
+    Left = 112
+    Height = 23
+    Top = 128
+    Width = 192
+    OnEditingDone = DatabaseEditingDone
+    TabOrder = 2
+  end
+  object Password: TEdit
+    Left = 112
+    Height = 23
+    Top = 217
+    Width = 192
+    EchoMode = emPassword
+    OnEditingDone = PasswordEditingDone
+    PasswordChar = '*'
+    TabOrder = 4
+  end
+  object User: TEdit
+    Left = 112
+    Height = 23
+    Top = 176
+    Width = 192
+    OnEditingDone = UserEditingDone
+    TabOrder = 3
+  end
+  object Label1: TLabel
+    Left = 16
+    Height = 16
+    Top = 42
+    Width = 75
+    Caption = 'Database type'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 16
+    Height = 16
+    Top = 87
+    Width = 26
+    Caption = 'Host'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 16
+    Height = 16
+    Top = 128
+    Width = 49
+    Caption = 'Database'
+    ParentColor = False
+  end
+  object Label4: TLabel
+    Left = 16
+    Height = 16
+    Top = 176
+    Width = 24
+    Caption = 'User'
+    ParentColor = False
+  end
+  object Label5: TLabel
+    Left = 16
+    Height = 16
+    Top = 217
+    Width = 51
+    Caption = 'Password'
+    ParentColor = False
+  end
+  object OKButton: TButton
+    Left = 407
+    Height = 25
+    Top = 356
+    Width = 75
+    Caption = 'OK'
+    ModalResult = 1
+    TabOrder = 5
+  end
+  object CancelButton: TButton
+    Left = 312
+    Height = 25
+    Top = 356
+    Width = 75
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 6
+  end
+  object TestButton: TButton
+    Left = 229
+    Height = 25
+    Top = 264
+    Width = 75
+    Caption = 'Test'
+    OnClick = TestButtonClick
+    TabOrder = 7
+  end
+end

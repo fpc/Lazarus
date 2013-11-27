@@ -1173,6 +1173,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.OnWakeMainThread(Sender: TObject);
 begin
+  // the code below would start waiting on the first app event to arrive.
+  // however, if fAppLoop has not been initialized and we're in the main thread
+  // we shouldn't wait for it, since signal is given from the main thread.
+  if (GetThreadID=MainThreadID) and (not Assigned(fAppLoop)) then Exit;
+
   // wait infinite for the first (dummy) event sent to the main event queue
   WaitFirstAppEvent;
   SendCheckSynchronizeMessage;

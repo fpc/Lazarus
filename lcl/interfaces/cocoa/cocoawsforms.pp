@@ -155,6 +155,16 @@ implementation
 uses
   CocoaInt;
 
+const
+  FormStyleToWindowLevel: array[TFormStyle] of NSInteger = (
+ { fsNormal          } 0, // NSNormalWindowLevel,
+ { fsMDIChild        } 0, // NSNormalWindowLevel,
+ { fsMDIForm         } 0, // NSNormalWindowLevel,
+ { fsStayOnTop       } 3, // NSFloatingWindowLevel,
+ { fsSplash          } 3, // NSFloatingWindowLevel,
+ { fsSystemStayOnTop } 8  // NSModalPanelWindowLevel or maybe NSStatusWindowLevel?
+  );
+
 function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
 begin
   if csDesigning in AForm.ComponentState then
@@ -318,7 +328,9 @@ begin
 
   R := CreateParamsToNSRect(AParams);
   win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(R, GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
+  win.setHidesOnDeactivate(False);
   UpdateWindowIcons(win, GetDesigningBorderStyle(Form), Form.BorderIcons);
+  win.setLevel(FormStyleToWindowLevel[Form.FormStyle]);
   win.enableCursorRects;
   TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
@@ -408,15 +420,6 @@ end;
 
 class procedure TCocoaWSCustomForm.SetFormStyle(const AForm: TCustomform;
   const AFormStyle, AOldFormStyle: TFormStyle);
-const
-  FormStyleToWindowLevel: array[TFormStyle] of NSInteger = (
- { fsNormal          } 0, // NSNormalWindowLevel,
- { fsMDIChild        } 0, // NSNormalWindowLevel,
- { fsMDIForm         } 0, // NSNormalWindowLevel,
- { fsStayOnTop       } 3, // NSFloatingWindowLevel,
- { fsSplash          } 3, // NSFloatingWindowLevel,
- { fsSystemStayOnTop } 8  // NSModalPanelWindowLevel or maybe NSStatusWindowLevel?
-  );
 begin
   if AForm.HandleAllocated then
     NSWindow(AForm.Handle).setLevel(FormStyleToWindowLevel[AFormStyle]);

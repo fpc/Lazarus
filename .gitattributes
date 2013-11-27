@@ -4330,6 +4330,16 @@ examples/database/sqldbtutorial3/readme.txt svneol=native#text/plain
 examples/database/sqldbtutorial3/sqldbtutorial3.ini svneol=native#text/plain
 examples/database/sqldbtutorial3/sqldbtutorial3.lpi svneol=native#text/plain
 examples/database/sqldbtutorial3/sqldbtutorial3.lpr svneol=native#text/pascal
+examples/database/tsqlscript/dbconfig.pas svneol=native#text/pascal
+examples/database/tsqlscript/dbconfiggui.lfm svneol=native#text/plain
+examples/database/tsqlscript/dbconfiggui.pas svneol=native#text/pascal
+examples/database/tsqlscript/mainform.lfm svneol=native#text/plain
+examples/database/tsqlscript/mainform.pas svneol=native#text/pascal
+examples/database/tsqlscript/readme.txt svneol=native#text/plain
+examples/database/tsqlscript/sqldbtutorial0.ini svneol=native#text/plain
+examples/database/tsqlscript/tsqlscriptsample.lpi svneol=native#text/plain
+examples/database/tsqlscript/tsqlscriptsample.lpr svneol=native#text/pascal
+examples/database/tsqlscript/tsqlscriptsample.res -text
 examples/dbeditmask/Unit1.lfm svneol=native#text/plain
 examples/dbeditmask/Unit1.pas svneol=native#text/plain
 examples/dbeditmask/project1.lpi svneol=native#text/plain

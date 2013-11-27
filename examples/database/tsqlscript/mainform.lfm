@@ -1,0 +1,47 @@
+object Form1: TForm1
+  Left = 361
+  Height = 387
+  Top = 162
+  Width = 515
+  Caption = 'TSQLScriptSample'
+  ClientHeight = 387
+  ClientWidth = 515
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.0.12.0'
+  object ScriptMemo: TMemo
+    Left = 8
+    Height = 272
+    Top = 48
+    Width = 496
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+  end
+  object CmdCopyDDL: TButton
+    Left = 40
+    Height = 25
+    Top = 16
+    Width = 147
+    Caption = 'Copy table creation script'
+    OnClick = CmdCopyDDLClick
+    TabOrder = 1
+  end
+  object CmdCopyDML: TButton
+    Left = 232
+    Height = 25
+    Top = 16
+    Width = 147
+    Caption = 'Copy sample data script'
+    OnClick = CmdCopyDMLClick
+    TabOrder = 2
+  end
+  object CmdRunScript: TButton
+    Left = 184
+    Height = 25
+    Top = 336
+    Width = 75
+    Caption = 'Run script'
+    OnClick = CmdRunScriptClick
+    TabOrder = 3
+  end
+end
