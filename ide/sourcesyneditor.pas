@@ -1361,7 +1361,7 @@ var
   NodeFoldType: TPascalCodeFoldBlockType;
   List: TLazSynEditNestedFoldsList;
 begin
-  if (not FShowTopInfo) or (not HandleAllocated) then exit;
+  if (not FShowTopInfo) or (not HandleAllocated) or (TextView.HighLighter = nil) then exit;
   if FSrcSynCaretChangedLock or not(TextView.HighLighter is TSynPasSyn) then exit;
 
   FSrcSynCaretChangedLock := True;
