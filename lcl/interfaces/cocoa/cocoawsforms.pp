@@ -330,7 +330,6 @@ begin
   end;
 
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
-  cnt.callback := TCocoaPanel(win).callback;
 
   if (AParams.Style and WS_CHILD) = 0 then
   begin
@@ -349,6 +348,7 @@ begin
     R.origin.x := 0;
     R.origin.y := 0;
 
+    cnt.callback := TCocoaPanel(win).callback;
     win.setContentView(cnt);
 
     if AParams.WndParent <> 0 then
@@ -356,6 +356,7 @@ begin
   end
   else
   begin
+    cnt.callback := TLCLCustomControlCallback.Create(cnt, AWinControl);
     if AParams.WndParent <> 0 then
       NSView(APArams.WndParent).addSubView(cnt);
   end;

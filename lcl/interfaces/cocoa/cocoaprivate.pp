@@ -345,6 +345,7 @@ type
     procedure viewDidMoveToWindow; override;
     procedure viewWillMoveToWindow(newWindow: NSWindow); override;
     procedure dealloc; override;
+    procedure setHidden(aisHidden: Boolean); override;
   end;
 
   { TCocoaScrollView }
@@ -531,6 +532,22 @@ end;
 procedure TCocoaWindowContent.dealloc;
 begin
   inherited dealloc;
+end;
+
+procedure TCocoaWindowContent.setHidden(aisHidden: Boolean);
+begin
+  if isembedded then
+  begin
+    inherited setHidden(aisHidden);
+  end
+  else
+  begin
+    if aisHidden and window.isVisible then
+      window.orderOut(nil)
+    else
+    if not aisHidden and not window.isVisible then
+      window.orderBack(nil);
+  end;
 end;
 
 { TCocoaPanel }
