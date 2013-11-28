@@ -881,22 +881,29 @@ var
   list    : TCocoaListView;
   scroll  : TCocoaScrollView;
 begin
-  list:=NSView(TCocoaListView.alloc).lclInitWithCreateParams(AParams);
-  list.callback:=TLCLCommonCallback.Create(list, AWinControl);
-  list.list:=TCocoaStringList.Create(list);
+  list := NSView(TCocoaListView.alloc).lclInitWithCreateParams(AParams);
+  if not Assigned(list) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+  list.callback := TLCLCommonCallback.Create(list, AWinControl);
+  list.list := TCocoaStringList.Create(list);
   list.addTableColumn(NSTableColumn.alloc.init);
   list.setHeaderView(nil);
   list.setDataSource(list);
 
-  if not Assigned(list) then begin
-    Result:=0;
+  scroll := EmbedInScrollView(list);
+  if not Assigned(scroll) then
+  begin
+    list.dealloc;
+    Result := 0;
     Exit;
   end;
-  scroll:=EmbedInScrollView(list);
-  scroll.callback:=list.callback;
+  scroll.callback := list.callback;
   scroll.setHasVerticalScroller(true);
   scroll.setAutohidesScrollers(true);
-  Result:=TLCLIntfHandle(scroll);
+  Result := TLCLIntfHandle(scroll);
 end;
 
 class function TCocoaWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox):TStrings;

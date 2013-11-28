@@ -123,7 +123,9 @@ begin
   Result := TCocoaScrollView.alloc.initWithFrame(NSNullRect);
   if Assigned(p) then p.addSubView(Result);
   Result.lclSetFrame(r);
+  Result.setHidden(p.isHidden);
   Result.setDocumentView(AView);
+  AView.setHidden(false);
   SetViewDefaults(Result);
 end;
 
