@@ -348,7 +348,7 @@ begin
     R.origin.x := 0;
     R.origin.y := 0;
 
-    cnt.callback := TCocoaPanel(win).callback;
+    cnt.callback := TCocoaWindow(win).callback;
     win.setContentView(cnt);
 
     if AParams.WndParent <> 0 then
