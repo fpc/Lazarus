@@ -584,21 +584,30 @@ end;
     SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
 ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+var
+  win : NSWindow;
 begin
   {$ifdef VerboseCocoaWinAPI}
     DebugLn('TCocoaWidgetSet.ShowWindow');
   {$endif}
 
-  case nCmdShow of
-    SW_SHOW, SW_SHOWNORMAL:
-      NSWindow(hwnd).orderFront(nil);
-    SW_HIDE:
-      NSWindow(hwnd).orderOut(nil);
-    SW_MINIMIZE:
-      NSWindow(hwnd).miniaturize(nil);
-    SW_MAXIMIZE:
-      NSWindow(hwnd).zoom(nil);
-  end;
+  //todo: should a call to lclShowWindow (to be added) be made instead?
+  if (NSObject(hWnd).isKindOfClass(TCocoaWindowContent)) and (not TCocoaWindowContent(hWnd).isembedded) then
+  begin
+    win := TCocoaWindowContent(hWnd).window;
+    case nCmdShow of
+      SW_SHOW, SW_SHOWNORMAL:
+        win.orderFront(nil);
+      SW_HIDE:
+        win.orderOut(nil);
+      SW_MINIMIZE:
+        win.miniaturize(nil);
+      SW_MAXIMIZE:
+        win.zoom(nil);
+    end;
+  end
+  else
+    NSObject(hWnd).lclSetVisible(nCmdSHow <> SW_HIDE);
   Result:=true;
 end;
 
