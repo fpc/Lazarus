@@ -5188,7 +5188,7 @@ procedure TLazReaderDIB.ReadScanLine(Row: Integer);
   var
     Head: array[0..1] of Byte;
     Value, NibbleCount, ByteCount: Byte;
-    WriteNibble, AdjustStream: Boolean;       // Set when only lower nibble needs to be written
+    WriteNibble: Boolean;       // Set when only lower nibble needs to be written
     BufPtr, DstPtr: PByte;
     Buf: array[0..127] of Byte; // temp buffer to read nibbles
   begin
@@ -5208,6 +5208,7 @@ procedure TLazReaderDIB.ReadScanLine(Row: Integer);
           Value := (Head[1] shl 4) or (Head[1] shr 4);
           DstPtr^ := (DstPtr^ and $F0) or (Value and $0F);
           Inc(DstPtr);
+          // we have written one
           Dec(NibbleCount);
         end
         else begin
@@ -5215,7 +5216,11 @@ procedure TLazReaderDIB.ReadScanLine(Row: Integer);
         end;
         ByteCount := (NibbleCount + 1) div 2;
         FillChar(DstPtr^, ByteCount , Value);
+        // if we have written an odd number of nibbles we still have to write one
+        WriteNibble := NibbleCount and 1 = 1;
         Inc(DstPtr, ByteCount);
+        // correct DstPtr if we still need to write a nibble
+        if WriteNibble then Dec(DstPtr);
       end
       else begin
         NibbleCount := Head[1];
@@ -5224,7 +5229,6 @@ procedure TLazReaderDIB.ReadScanLine(Row: Integer);
           2: raise FPImageException.Create('RLE code #2 is not supported');
         else
           ByteCount := (NibbleCount + 1) div 2;
-          AdjustStream := ByteCount and 1 = 1; // keep stream at word boundary
 
           if WriteNibble
           then begin
@@ -5234,28 +5238,33 @@ procedure TLazReaderDIB.ReadScanLine(Row: Integer);
             repeat
               DstPtr^ := (DstPtr^ and $F0) or (BufPtr^ shr 4);
               Inc(DstPtr);
+              Dec(NibbleCount);
+              if NibbleCount = 0
+              then begin
+                // if we have written both nibbles
+                WriteNibble := False;
+                Break;
+              end;
               DstPtr^ := (BufPtr^ shl 4);
               Inc(BufPtr);
-              Dec(ByteCount);
-            until ByteCount = 0;
-            
-            // adjust count since we have written the previous one
-            Dec(NibbleCount);
+              Dec(NibbleCount);
+            until NibbleCount = 0;
           end
           else begin
             TheStream.Read(DstPtr^, ByteCount);
+            // if we have written an odd number of nibbles we still have to write one
+            WriteNibble := NibbleCount and 1 = 1;
             Inc(DstPtr, ByteCount);
+            // correct DstPtr if we still need to write a nibble
+            if WriteNibble then Dec(DstPtr);
           end;
-          
-          if AdjustStream
+
+          // keep stream at word boundary
+          if ByteCount and 1 = 1
           then TheStream.Seek(1, soCurrent);
         end;
       end;
 
-      WriteNibble := NibbleCount and 1 = 1;
-      // correct DstPtr if we still need to write a nibble
-      if WriteNibble
-      then Dec(DstPtr);
     end
   end;
 
