@@ -5213,6 +5213,7 @@ begin
     exit;
   end;
 
+  DefaultTimeOut := DebuggerProperties.TimeoutForEval;
 
   // Tnit (StartDebugging)
   TargetInfo^.TargetFlags := [tfHasSymbols]; // Set until proven otherwise
