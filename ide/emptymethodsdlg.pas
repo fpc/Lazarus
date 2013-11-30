@@ -313,7 +313,7 @@ end;
 
 procedure TEmptyMethodsDialog.FormCreate(Sender: TObject);
 begin
-  Caption:=lisEMDEmtpyMethods;
+  Caption:=lisEMDEmptyMethods;
   SectionsGroupBox.Caption:=lisEMDSearchInTheseClassSections;
   PrivateCheckBox.Caption:=lisPrivate;
   ProtectedCheckBox.Caption:=lisProtected;
