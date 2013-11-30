@@ -126,7 +126,7 @@ msgstr "Ylös"
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
-msgstr "Laskettu"
+msgstr "&Laskettu"
 
 #: objinspstrconsts.fescancelbtn
 msgctxt "objinspstrconsts.fescancelbtn"
@@ -135,21 +135,19 @@ msgstr "Peru"
 
 #: objinspstrconsts.fescheckdset
 msgid "Check dataset settings"
-msgstr ""
+msgstr "Tarkista tietotaulu asetukset"
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
-msgstr "Tieto"
+msgstr "&Tieto"
 
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
-msgstr ""
+msgstr "&Tietotaulu:"
 
 #: objinspstrconsts.fesfetitle
-#, fuzzy
-#| msgid "Edit Fields..."
 msgid "Edit Fields ..."
-msgstr "Muokkaa kenttiä..."
+msgstr "Muokkaa kenttiä ..."
 
 #: objinspstrconsts.fesfieldcantbec
 msgid "Field %s cannot be created!"
@@ -174,7 +172,7 @@ msgstr "Uusi kenttä"
 
 #: objinspstrconsts.feskeyfield
 msgid "&Key fields:"
-msgstr "Avainkentät:"
+msgstr "&Avainkentät:"
 
 #: objinspstrconsts.feslookup
 msgid "&Lookup"
@@ -182,23 +180,23 @@ msgstr ""
 
 #: objinspstrconsts.feslookupdef
 msgid "Lookup definition"
-msgstr ""
+msgstr "Lookup määritys"
 
 #: objinspstrconsts.feslookupkeys
 msgid "L&ookup keys:"
-msgstr ""
+msgstr "L&ookup avaimet"
 
 #: objinspstrconsts.fesname
 msgid "&Name:"
-msgstr "Nimi"
+msgstr "&Nimi"
 
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset field's list"
-msgstr ""
+msgstr "Tietotaulun kenttien haku ei onnistu"
 
 #: objinspstrconsts.fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
-msgstr ""
+msgstr "Kenttäluettelo ei ole saatavilla, ei voi tarkistaa duplikaatteja"
 
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
@@ -207,19 +205,19 @@ msgstr ""
 
 #: objinspstrconsts.fespersistentcompname
 msgid "Co&mponent Name:"
-msgstr "Komponentin nimi"
+msgstr "Ko&mponentin nimi:"
 
 #: objinspstrconsts.fesresultfield
 msgid "&Result Fields:"
-msgstr "Tuloskentät"
+msgstr "&Tuloskentät:"
 
 #: objinspstrconsts.fessize
 msgid "&Size:"
-msgstr "Koko"
+msgstr "&Koko:"
 
 #: objinspstrconsts.festype
 msgid "&Type:"
-msgstr "Tyyppi"
+msgstr "&Tyyppi"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -255,40 +253,28 @@ msgid "Set value"
 msgstr "Aseta arvo"
 
 #: objinspstrconsts.nbcesaddpage
-#, fuzzy
-#| msgid "Add page"
 msgid "Add Page"
-msgstr "Lisää Page-välilehti"
+msgstr "Lisää välilehti"
 
 #: objinspstrconsts.nbcesdeletepage
-#, fuzzy
-#| msgid "Delete page"
 msgid "Delete Page"
-msgstr "Poista Page-välilehti"
+msgstr "Poista välilehti"
 
 #: objinspstrconsts.nbcesinsertpage
-#, fuzzy
-#| msgid "Insert page"
 msgid "Insert Page"
-msgstr "Lisää Page-välilehti eteen"
+msgstr "Lisää välilehti eteen"
 
 #: objinspstrconsts.nbcesmovepageleft
-#, fuzzy
-#| msgid "Move page left"
 msgid "Move Page Left"
-msgstr "Siirrä Page-välilehteä vasemmalle"
+msgstr "Siirrä välilehteä vasemmalle"
 
 #: objinspstrconsts.nbcesmovepageright
-#, fuzzy
-#| msgid "Move page right"
 msgid "Move Page Right"
-msgstr "Siirrä Page-välilehteä oikealle"
+msgstr "Siirrä välilehteä oikealle"
 
 #: objinspstrconsts.nbcesshowpage
-#, fuzzy
-#| msgid "Show page ..."
 msgid "Show Page"
-msgstr "Näytä välilehti ..."
+msgstr "Näytä välilehti"
 
 #: objinspstrconsts.oicoleditadd
 msgctxt "objinspstrconsts.oicoleditadd"
@@ -327,24 +313,20 @@ msgid "Action"
 msgstr "Toiminto"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-#, fuzzy
-#| msgid "Action&List Editor..."
 msgid "Action&List Editor ..."
-msgstr "Toimintolistan (ActionList) muokkain..."
+msgstr "Toiminto&luettelon muokkain ..."
 
 #: objinspstrconsts.oisactionlisteditor
-#, fuzzy
-#| msgid "Action List Editor"
 msgid "ActionList Editor"
 msgstr "Toimintolistan muokkain"
 
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
-msgstr "Lisää kohta"
+msgstr "&Lisää kohta"
 
 #: objinspstrconsts.oisaddfields
 msgid "&Add fields"
-msgstr "Lisää kenttä"
+msgstr "&Lisää kenttä"
 
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
@@ -368,11 +350,11 @@ msgstr ""
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
-msgstr ""
+msgstr "Ko&mponentit"
 
 #: objinspstrconsts.oisbtnproperties
 msgid "&Properties"
-msgstr ""
+msgstr "&Ominaisuudet"
 
 #: objinspstrconsts.oiscadd
 msgid "&Add"
@@ -405,7 +387,7 @@ msgstr "Luokka"
 
 #: objinspstrconsts.oisclear
 msgid "C&lear"
-msgstr "Tyhjennä"
+msgstr "&Tyhjennä"
 
 #: objinspstrconsts.oisclearpicture
 msgid "Clear picture"
@@ -424,19 +406,17 @@ msgid "Confirm delete"
 msgstr "Vahvista poisto"
 
 #: objinspstrconsts.oiscopycomponents
-#, fuzzy
-#| msgid "Copy components"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
-msgstr "Kopio"
+msgstr "&Kopioi"
 
 #: objinspstrconsts.oiscreateanewpascalunit
 msgid "Create a new pascal unit."
-msgstr "Luo uusi käännösyksikkö (unit)."
+msgstr "Luo uusi käännösyksikkö."
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
-msgstr "Tee komponentin oletustapahtuma"
+msgstr "Luo oletustapahtuma"
 
 #: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
 msgid "Create new field and add it at current position"
@@ -445,7 +425,7 @@ msgstr "Luo uusi kenttä ja lisää se nykyiseen kohtaan"
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
-msgstr "Leikkaa"
+msgstr "&Leikkaa"
 
 #: objinspstrconsts.oisdelete
 msgctxt "objinspstrconsts.oisdelete"
@@ -455,7 +435,7 @@ msgstr "Poista"
 #: objinspstrconsts.oisdeletecomponents
 msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
-msgstr "Poista"
+msgstr "&Poista"
 
 #: objinspstrconsts.oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -511,17 +491,15 @@ msgstr ""
 
 #: objinspstrconsts.oishelp
 msgid "&Help"
-msgstr "Ohje"
+msgstr "&Ohje"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-#, fuzzy
-#| msgid "I&mageList Editor..."
 msgid "I&mageList Editor ..."
-msgstr "Kuvaluettelon muokkain..."
+msgstr "&Kuvaluettelon muokkain ..."
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
-msgstr "Sopimaton tunnus"
+msgstr "Sopimaton tunniste"
 
 #: objinspstrconsts.oisincompatiblemethod
 msgid "Incompatible Method"
@@ -561,7 +539,7 @@ msgstr "Hyppää %s:n määritykseen"
 
 #: objinspstrconsts.oisload
 msgid "&Load"
-msgstr "Tuo"
+msgstr "&Tuo"
 
 #: objinspstrconsts.oisloadimagedialog
 msgid "Load Image Dialog"
@@ -572,10 +550,8 @@ msgid "Load picture"
 msgstr "Tuo kuva"
 
 #: objinspstrconsts.oismasks
-#, fuzzy
-#| msgid "Masks..."
 msgid "Masks ..."
-msgstr "Maskit..."
+msgstr "Maskit ..."
 
 #: objinspstrconsts.oismethod
 msgid "Method"
@@ -583,7 +559,7 @@ msgstr "Metodi"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
-msgstr "Siirrä alas"
+msgstr "&Siirrä alas"
 
 #: objinspstrconsts.oismovedownhint
 msgid "Move field down"
@@ -592,7 +568,7 @@ msgstr "Siirrä kenttä alas"
 #: objinspstrconsts.oismoveup
 msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
-msgstr "Siirrä ylös"
+msgstr "Siirrä &ylös"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
@@ -600,7 +576,7 @@ msgstr "Siirrä kenttä ylös"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
-msgstr "Uusi"
+msgstr "&Uusi"
 
 #: objinspstrconsts.oisnone
 msgid "(none)"
@@ -649,7 +625,7 @@ msgstr "Siirrä eteen"
 #: objinspstrconsts.oispastecomponents
 msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
-msgstr "Liitä"
+msgstr "&Liitä"
 
 #: objinspstrconsts.oispeopenimagefile
 msgid "Open image file"
@@ -705,7 +681,7 @@ msgstr "Valitse tiedosto"
 
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
-msgstr "Valitse kaikki"
+msgstr "&Valitse kaikki"
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
@@ -713,7 +689,7 @@ msgstr "Valitse kaikki kentät"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
-msgstr ""
+msgstr "&Valitut ominaisuudet"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -725,19 +701,19 @@ msgstr "Aseta"
 
 #: objinspstrconsts.oissetmaxconstraints
 msgid "Set MaxHeight=%d, MaxWidth=%d"
-msgstr ""
+msgstr "Aseta MaxHeight=%d, MaxWidth=%d"
 
 #: objinspstrconsts.oissetmaxconstraintshint
 msgid "Use current size as Max Constraints"
-msgstr ""
+msgstr "Käytä nykyistä kokoa Max rajoitteena"
 
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
-msgstr ""
+msgstr "Aseta MinHeight=%d, MinWidth=%d"
 
 #: objinspstrconsts.oissetminconstraintshint
 msgid "Use current size as Min Constraints"
-msgstr ""
+msgstr "Käytä nykyistä kokoa Min rajoitteena"
 
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
@@ -745,7 +721,7 @@ msgstr "Aseta oletusarvo: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
+msgstr "Aseta ominaisuuden arvoksi oletus"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -757,15 +733,15 @@ msgstr "Näytä vihjeet"
 
 #: objinspstrconsts.oisshowinfobox
 msgid "Show Information Box"
-msgstr ""
+msgstr "Näytä tietolaatikko"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
-msgstr ""
+msgstr "Näytä tilapalkki"
 
 #: objinspstrconsts.oissort
 msgid "Sort"
-msgstr "Lajittele"
+msgstr "Järjestä"
 
 #: objinspstrconsts.oisstdactionlisteditor
 msgid "Standard Action Classes"
@@ -784,10 +760,8 @@ msgid "Strings Editor Dialog"
 msgstr "Merkkijonojen muokkain"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-#, fuzzy
-#| msgid "Select &Color..."
 msgid "Select &Color ..."
-msgstr "Valitse väri"
+msgstr "Valitse &väri ..."
 
 #: objinspstrconsts.oistdactcolorselecthint
 msgid "Color Select"
@@ -801,7 +775,7 @@ msgstr "Peru"
 #: objinspstrconsts.oistdactdatasetcancelheadline
 msgctxt "objinspstrconsts.oistdactdatasetcancelheadline"
 msgid "&Cancel"
-msgstr "Peru"
+msgstr "&Peru"
 
 #: objinspstrconsts.oistdactdatasetdeleteheadline
 msgctxt "objinspstrconsts.oistdactdatasetdeleteheadline"
@@ -815,7 +789,7 @@ msgstr "Poista"
 
 #: objinspstrconsts.oistdactdataseteditheadline
 msgid "&Edit"
-msgstr "Muokkaa"
+msgstr "&Muokkaa"
 
 #: objinspstrconsts.oistdactdatasetedithint
 msgctxt "objinspstrconsts.oistdactdatasetedithint"
@@ -824,7 +798,7 @@ msgstr "Muokkaa"
 
 #: objinspstrconsts.oistdactdatasetfirstheadline
 msgid "&First"
-msgstr "Ensimmäinen"
+msgstr "&Ensimmäinen"
 
 #: objinspstrconsts.oistdactdatasetfirsthint
 msgid "First"
@@ -832,7 +806,7 @@ msgstr "Ensimmäinen"
 
 #: objinspstrconsts.oistdactdatasetinsertheadline
 msgid "&Insert"
-msgstr "Sijoita"
+msgstr "&Sijoita"
 
 #: objinspstrconsts.oistdactdatasetinserthint
 msgctxt "objinspstrconsts.oistdactdatasetinserthint"
@@ -841,7 +815,7 @@ msgstr "Sijoita"
 
 #: objinspstrconsts.oistdactdatasetlastheadline
 msgid "&Last"
-msgstr "Viimeinen"
+msgstr "&Viimeinen"
 
 #: objinspstrconsts.oistdactdatasetlasthint
 msgid "Last"
@@ -849,7 +823,7 @@ msgstr "Viimeinen"
 
 #: objinspstrconsts.oistdactdatasetnextheadline
 msgid "&Next"
-msgstr "Seuraava"
+msgstr "&Seuraava"
 
 #: objinspstrconsts.oistdactdatasetnexthint
 msgctxt "objinspstrconsts.oistdactdatasetnexthint"
@@ -858,7 +832,7 @@ msgstr "Seuraava"
 
 #: objinspstrconsts.oistdactdatasetpostheadline
 msgid "P&ost"
-msgstr "Takana"
+msgstr "&Takana"
 
 #: objinspstrconsts.oistdactdatasetposthint
 msgid "Post"
@@ -866,7 +840,7 @@ msgstr "Takana"
 
 #: objinspstrconsts.oistdactdatasetpriorheadline
 msgid "&Prior"
-msgstr "Edessä"
+msgstr "&Edessä"
 
 #: objinspstrconsts.oistdactdatasetpriorhint
 msgctxt "objinspstrconsts.oistdactdatasetpriorhint"
@@ -875,7 +849,7 @@ msgstr "Edessä"
 
 #: objinspstrconsts.oistdactdatasetrefreshheadline
 msgid "&Refresh"
-msgstr "Päivitä"
+msgstr "&Päivitä"
 
 #: objinspstrconsts.oistdactdatasetrefreshhint
 msgid "Refresh"
@@ -884,7 +858,7 @@ msgstr "Päivitä"
 #: objinspstrconsts.oistdacteditcopyheadline
 msgctxt "objinspstrconsts.oistdacteditcopyheadline"
 msgid "&Copy"
-msgstr "Kopio"
+msgstr "&Kopioi"
 
 #: objinspstrconsts.oistdacteditcopyshortcut
 msgid "Ctrl+C"
@@ -897,7 +871,7 @@ msgstr "Kopioi"
 #: objinspstrconsts.oistdacteditcutheadline
 msgctxt "objinspstrconsts.oistdacteditcutheadline"
 msgid "Cu&t"
-msgstr "Siirrä komponentti leikepöydälle"
+msgstr "&Leikkaa"
 
 #: objinspstrconsts.oistdacteditcutshortcut
 msgid "Ctrl+X"
@@ -924,7 +898,7 @@ msgstr "Poista"
 #: objinspstrconsts.oistdacteditpasteheadline
 msgctxt "objinspstrconsts.oistdacteditpasteheadline"
 msgid "&Paste"
-msgstr "Liitä"
+msgstr "&Liitä"
 
 #: objinspstrconsts.oistdacteditpasteshortcut
 msgid "Ctrl+V"
@@ -936,7 +910,7 @@ msgstr "Liitä"
 
 #: objinspstrconsts.oistdacteditselectallheadline
 msgid "Select &All"
-msgstr "Valitse kaikki"
+msgstr "Valitse &kaikki"
 
 #: objinspstrconsts.oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -948,7 +922,7 @@ msgstr "Valitse kaikki"
 
 #: objinspstrconsts.oistdacteditundoheadline
 msgid "&Undo"
-msgstr "Kumoa"
+msgstr "&Kumoa"
 
 #: objinspstrconsts.oistdacteditundoshortcut
 msgid "Ctrl+Z"
@@ -961,17 +935,15 @@ msgstr "Kumoa"
 
 #: objinspstrconsts.oistdactfileexitheadline
 msgid "E&xit"
-msgstr "Poistu"
+msgstr "&Poistu"
 
 #: objinspstrconsts.oistdactfileexithint
 msgid "Exit"
 msgstr "Lopeta"
 
 #: objinspstrconsts.oistdactfileopenheadline
-#, fuzzy
-#| msgid "&Open..."
 msgid "&Open ..."
-msgstr "Avaa"
+msgstr "&Avaa ..."
 
 #: objinspstrconsts.oistdactfileopenhint
 msgctxt "objinspstrconsts.oistdactfileopenhint"
@@ -983,38 +955,32 @@ msgid "Ctrl+O"
 msgstr ""
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-#, fuzzy
-#| msgid "Open with..."
 msgid "Open with ..."
-msgstr "Avaa jollain..."
+msgstr "Avaa jollain ..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
 msgid "Open with"
 msgstr "Avaa jollain"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-#, fuzzy
-#| msgid "Save &As..."
 msgid "Save &As ..."
-msgstr "Tallenna nimellä..."
+msgstr "Tallenna &nimellä ..."
 
 #: objinspstrconsts.oistdactfilesaveashint
 msgid "Save As"
 msgstr "Tallenna nimellä"
 
 #: objinspstrconsts.oistdactfonteditheadline
-#, fuzzy
-#| msgid "Select &Font..."
 msgid "Select &Font ..."
-msgstr "Valitse Fontti"
+msgstr "Valitse &kirjasin ..."
 
 #: objinspstrconsts.oistdactfontedithint
 msgid "Font Select"
-msgstr "Fontin valinta"
+msgstr "Kirjasimen valinta"
 
 #: objinspstrconsts.oistdacthelpcontentsheadline
 msgid "&Contents"
-msgstr "Sisältö"
+msgstr "&Sisältö"
 
 #: objinspstrconsts.oistdacthelpcontentshint
 msgid "Help Contents"
@@ -1022,7 +988,7 @@ msgstr "Ohjeen sisältö"
 
 #: objinspstrconsts.oistdacthelphelphelpheadline
 msgid "&Help on Help"
-msgstr "Ohjeen ohje"
+msgstr "&Ohjeen ohje"
 
 #: objinspstrconsts.oistdacthelphelphelphint
 msgid "Help on help"
@@ -1030,7 +996,7 @@ msgstr "Ohjeen ohje"
 
 #: objinspstrconsts.oistdacthelptopicsearchheadline
 msgid "&Topic Search"
-msgstr "Aiheiden haku"
+msgstr "&Aiheiden haku"
 
 #: objinspstrconsts.oistdacthelptopicsearchhint
 msgid "Topic Search"
@@ -1038,17 +1004,15 @@ msgstr "Aiheiden haku"
 
 #: objinspstrconsts.oistdactsearchfindfirstheadline
 msgid "F&ind First"
-msgstr "Etsi ensimmäinen"
+msgstr "E&tsi ensimmäinen"
 
 #: objinspstrconsts.oistdactsearchfindfirsthint
 msgid "Find first"
 msgstr "Etsi ensimmäinen"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-#, fuzzy
-#| msgid "&Find..."
 msgid "&Find ..."
-msgstr "Etsi..."
+msgstr "&Etsi ..."
 
 #: objinspstrconsts.oistdactsearchfindhint
 msgid "Find"
@@ -1056,7 +1020,7 @@ msgstr "Etsi"
 
 #: objinspstrconsts.oistdactsearchfindnextheadline
 msgid "Find &Next"
-msgstr "Etsi seuraava"
+msgstr "Etsi &seuraava"
 
 #: objinspstrconsts.oistdactsearchfindnexthint
 msgid "Find next"
@@ -1072,15 +1036,13 @@ msgstr ""
 
 #: objinspstrconsts.oistdactsearchreplaceheadline
 msgid "&Replace"
-msgstr "Korvaa"
+msgstr "&Korvaa"
 
 #: objinspstrconsts.oistdactsearchreplacehint
 msgid "Replace"
 msgstr "Korvaa"
 
 #: objinspstrconsts.oistestdialog
-#, fuzzy
-#| msgid "Test dialog..."
 msgid "Test dialog ..."
 msgstr "Testaa dialogia ..."
 
@@ -1090,15 +1052,15 @@ msgstr "Maskin testauspaikka"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
 msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "Tunniste %s%s%s ei ole metodi.%sPeru peruuttaa komennon,%sOhita pakottaa sen."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
 msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "Metodi %s%s%s ei sovi tähän tapahtumaan (%s).%sPeru peruuttaa komennon,%sOhita pakottaa sen."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Metodi %s%s%s ei ole julkaistu.%sPeru kumoaa,%sIgnore pakottaa."
+msgstr "Metodi %s%s%s ei ole julkaistu.%sPeru peruuttaa komennon,%sOhita pakottaa sen."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
@@ -1116,7 +1078,7 @@ msgstr "Tuntematon"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
-msgstr "Poista valinta kaikista"
+msgstr "&Poista valinta kaikista"
 
 #: objinspstrconsts.oisunselectallhint
 msgid "Unselect All"
@@ -1160,7 +1122,7 @@ msgstr "Suodattimen nimi"
 
 #: objinspstrconsts.pirsunit
 msgid "Pascal unit"
-msgstr ""
+msgstr "Pascal käännösyksikkö"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"
@@ -1218,47 +1180,39 @@ msgid "Sections Editor ..."
 msgstr "Lohkojen muokkain ..."
 
 #: objinspstrconsts.sccsiledtadd
-#, fuzzy
-#| msgid "Add ..."
 msgid "&Add ..."
-msgstr "Lisää ..."
+msgstr "&Lisää ..."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtapply
-#, fuzzy
-#| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
-msgstr "Käytä"
+msgstr "&Käytä"
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
-msgstr "ImageList:n editori"
+msgstr "ImageList muokkain"
 
 #: objinspstrconsts.sccsiledtcenter
 msgid "Center"
 msgstr "Keskitä"
 
 #: objinspstrconsts.sccsiledtclear
-#, fuzzy
-#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear"
-msgstr "Tyhjennä"
+msgstr "&Tyhjennä"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
-msgstr ""
+msgstr "Typistä"
 
 #: objinspstrconsts.sccsiledtdelete
-#, fuzzy
-#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
-msgstr "Poista"
+msgstr "&Poista"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1269,18 +1223,14 @@ msgid "Selected Image"
 msgstr "Valittu kuva"
 
 #: objinspstrconsts.sccsiledtmovedown
-#, fuzzy
-#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move D&own"
-msgstr "Siirrä alaspäin"
+msgstr "Siirrä &alaspäin"
 
 #: objinspstrconsts.sccsiledtmoveup
-#, fuzzy
-#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move &Up"
-msgstr "Siirrä ylöspäin"
+msgstr "Siirrä &ylöspäin"
 
 #: objinspstrconsts.sccsiledtnone
 msgid "None"
@@ -1295,17 +1245,13 @@ msgid "Transparent Color:"
 msgstr "Läpinäkyvä väri:"
 
 #: objinspstrconsts.sccsiledtsave
-#, fuzzy
-#| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save ..."
-msgstr "Tallenna..."
+msgstr "&Tallenna ..."
 
 #: objinspstrconsts.sccsiledtsaveall
-#, fuzzy
-#| msgid "Save All..."
 msgid "Save All ..."
-msgstr "Tallenna kaikki..."
+msgstr "Tallenna kaikki ..."
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"
@@ -1317,12 +1263,12 @@ msgstr "Sovita kokoon"
 
 #: objinspstrconsts.sccslvcoledt
 msgid "Edit Columns ..."
-msgstr ""
+msgstr "Muokkaa sarakkeita ..."
 
 #: objinspstrconsts.sccslvedt
 msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items ..."
-msgstr ""
+msgstr "Muokkaa kohtia ..."
 
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
@@ -1331,7 +1277,7 @@ msgstr "Käytä"
 
 #: objinspstrconsts.sccslvedtcaption
 msgid "ListView Items Editor"
-msgstr ""
+msgstr "ListView kohtien muokkain"
 
 #: objinspstrconsts.sccslvedtdelete
 msgctxt "objinspstrconsts.sccslvedtdelete"
@@ -1341,17 +1287,17 @@ msgstr "Poista"
 #: objinspstrconsts.sccslvedtgrplcaption
 msgctxt "objinspstrconsts.sccslvedtgrplcaption"
 msgid "Items"
-msgstr ""
+msgstr "Kohdat"
 
 #: objinspstrconsts.sccslvedtgrprcaption
 msgctxt "objinspstrconsts.sccslvedtgrprcaption"
 msgid "Item Properties"
-msgstr ""
+msgstr "Kohdan ominaisuudet"
 
 #: objinspstrconsts.sccslvedtitem
 msgctxt "objinspstrconsts.sccslvedtitem"
 msgid "Item"
-msgstr ""
+msgstr "Kohta"
 
 #: objinspstrconsts.sccslvedtlabelcaption
 msgid "Caption:"
@@ -1360,22 +1306,22 @@ msgstr ""
 #: objinspstrconsts.sccslvedtlabelimageindex
 msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
 msgid "Image Index:"
-msgstr ""
+msgstr "Kuva osoitin:"
 
 #: objinspstrconsts.sccslvedtlabelstateindex
 msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
-msgstr ""
+msgstr "Tila osoitin:"
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
 msgid "New Item"
-msgstr ""
+msgstr "Uusi kohta"
 
 #: objinspstrconsts.sccslvedtnewsubitem
 msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
-msgstr ""
+msgstr "Uusi alakohta"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor ..."
@@ -1383,13 +1329,11 @@ msgstr ""
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
-msgstr ""
+msgstr "Paneelien muokkain ..."
 
 #: objinspstrconsts.sccssgedt
-#, fuzzy
-#| msgid "Edit StringGrid..."
 msgid "Edit StringGrid ..."
-msgstr "Muokkaa StringGrid:ä..."
+msgstr "Muokkaa StringGrid:ä ..."
 
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
@@ -1402,7 +1346,7 @@ msgstr "StringGrid muokkain"
 
 #: objinspstrconsts.sccssgedtclean
 msgid "Clean"
-msgstr ""
+msgstr "Siivoa"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
@@ -1410,11 +1354,11 @@ msgstr ""
 
 #: objinspstrconsts.sccssgedtload
 msgid "Load ..."
-msgstr ""
+msgstr "Lataa ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
 msgid "Move Rows/Cols"
-msgstr ""
+msgstr "Siirrä rivi/sarake"
 
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
@@ -1422,11 +1366,9 @@ msgid "Open"
 msgstr "Avaa"
 
 #: objinspstrconsts.sccssgedtsave
-#, fuzzy
-#| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save ..."
-msgstr "Tallenna..."
+msgstr "Tallenna ..."
 
 #: objinspstrconsts.sccssgedtsavedialog
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
@@ -1434,11 +1376,9 @@ msgid "Save"
 msgstr "Tallenna"
 
 #: objinspstrconsts.sccstredt
-#, fuzzy
-#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items ..."
-msgstr "Muokkaa kohtia"
+msgstr "Muokkaa kohtia ..."
 
 #: objinspstrconsts.sccstredtapply
 msgctxt "objinspstrconsts.sccstredtapply"
@@ -1530,7 +1470,7 @@ msgstr "Jaa kuva"
 
 #: objinspstrconsts.s_suggestsplitimage
 msgid "Do you want to split the image?"
-msgstr "Tahdotko jakaa kuvan"
+msgstr "Tahdotko jakaa kuvan osiin?"
 
 #: objinspstrconsts.tbcenewbutton
 msgid "New Button"

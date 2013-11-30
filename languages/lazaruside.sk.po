@@ -7746,8 +7746,11 @@ msgctxt "lazarusidestrconsts.lisemdall"
 msgid "All"
 msgstr "Všetko"
 
-#: lazarusidestrconsts.lisemdemtpymethods
-msgid "Emtpy Methods"
+#: lazarusidestrconsts.lisemdemptymethods
+#, fuzzy
+#| msgid "Emtpy Methods"
+msgctxt "lazarusidestrconsts.lisemdemptymethods"
+msgid "Empty Methods"
 msgstr "Prázdne metódy"
 
 #: lazarusidestrconsts.lisemdfoundemptymethods
