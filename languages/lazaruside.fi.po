@@ -788,6 +788,7 @@ msgid "C style macros (global)"
 msgstr "C-tyyliset makrot (kaikkialla)"
 
 #: lazarusidestrconsts.dlgcoansistr
+msgctxt "lazarusidestrconsts.dlgcoansistr"
 msgid "Use Ansistrings"
 msgstr "Käytä Ansi-merkkijonoja"
 
@@ -1511,7 +1512,7 @@ msgstr "Objekti (periytynyt, inline)"
 #: lazarusidestrconsts.dlgfoldlocalpasvartype
 msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
-msgstr ""
+msgstr "Var/Type (paikallinen)"
 
 #: lazarusidestrconsts.dlgfoldpasansicomment
 msgid "Comment (* *)"
@@ -7440,8 +7441,11 @@ msgctxt "lazarusidestrconsts.lisemdall"
 msgid "All"
 msgstr "Kaikki"
 
-#: lazarusidestrconsts.lisemdemtpymethods
-msgid "Emtpy Methods"
+#: lazarusidestrconsts.lisemdemptymethods
+#, fuzzy
+#| msgid "Emtpy Methods"
+msgctxt "lazarusidestrconsts.lisemdemptymethods"
+msgid "Empty Methods"
 msgstr "Tyhjät metodit"
 
 #: lazarusidestrconsts.lisemdfoundemptymethods
@@ -13219,17 +13223,17 @@ msgstr "Riippuvuutta %s%s%s ei löytynyt.%sValitse jokin toinen paketti."
 #: lazarusidestrconsts.lisprojaddthemaximumversionisinvalid
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
 msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
-msgstr ""
+msgstr "Maximiversio %s%s%s on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.käännös%sEsim.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion"
 msgid "The Maximum Version is lower than the Minimim Version."
-msgstr ""
+msgstr "Maximiversio on pienempi kuin Minimiversio."
 
 #: lazarusidestrconsts.lisprojaddtheminimumversionisinvalid
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
-msgstr ""
+msgstr "Minimiversio %s%s%s on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.käännös%sEsim.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
 msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
