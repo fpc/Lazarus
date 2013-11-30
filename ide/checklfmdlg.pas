@@ -340,7 +340,7 @@ end;
 
 procedure ClearDanglingEvents(ListOfPInstancePropInfo: TFPList);
 const
-  EmtpyMethod: TMethod = (code:nil; data:nil);
+  EmptyMethod: TMethod = (code:nil; data:nil);
 var
   i: Integer;
   p: PInstancePropInfo;
@@ -349,7 +349,7 @@ begin
   for i:=0 to ListOfPInstancePropInfo.Count-1 do begin
     p:=PInstancePropInfo(ListOfPInstancePropInfo[i]);
     debugln('ClearDanglingEvents ',DbgSName(p^.Instance),' ',p^.PropInfo^.Name);
-    SetMethodProp(p^.Instance,p^.PropInfo,EmtpyMethod);
+    SetMethodProp(p^.Instance,p^.PropInfo,EmptyMethod);
   end;
 end;
 

@@ -2106,7 +2106,7 @@ resourcestring
   lisErrorLoadingFile2 = 'Error loading file "%s":%s%s';
   lisNoneClickToChooseOne = 'none, click to choose one';
   lisTreeNeedsRefresh = 'Tree needs refresh';
-  lisEMDEmtpyMethods = 'Emtpy Methods';
+  lisEMDEmptyMethods = 'Empty Methods';
   lisEMDSearchInTheseClassSections = 'Search in these class sections:';
   lisUnableToLoadPackage = 'Unable to load package %s%s%s';
   lisSAMThisMethodCanNotBeOverriddenBecauseItIsDefinedInTh = 'This method can '

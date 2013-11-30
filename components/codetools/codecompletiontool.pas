@@ -778,7 +778,7 @@ begin
           NearestAVLNodeBehind:=NearestAVLNode;
         end;
         
-        // choose the nearest of both (distance measured in emtpy lines,
+        // choose the nearest of both (distance measured in empty lines,
         // this way blocks of procs are kept)
         if (NearestAVLNodeInFront<>nil) and (NearestAVLNodeBehind<>nil) then
         begin
@@ -5521,7 +5521,7 @@ begin
     ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
                         [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
                          ExtractClassName(CodeCompleteClassNode,true));
-    // collect all emtpy bodies
+    // collect all empty bodies
     AVLNode:=ProcBodyNodes.FindLowest;
     while AVLNode<>nil do begin
       NextAVLNode:=ProcBodyNodes.FindSuccessor(AVLNode);
