@@ -1502,9 +1502,9 @@ var
 const
   lAlignment: array[TPopupAlignment, Boolean] of DWORD = (
               { left-to-rght } { right-to-left }
- { paLeft   } (TPM_LEFTALIGN,   TPM_RIGHTALIGN),
- { paRight  } (TPM_RIGHTALIGN,  TPM_LEFTALIGN),
- { paCenter } (TPM_CENTERALIGN, TPM_CENTERALIGN)
+ { paLeft   } (TPM_LEFTALIGN,   TPM_RIGHTALIGN  or TPM_LAYOUTRTL),
+ { paRight  } (TPM_RIGHTALIGN,  TPM_LEFTALIGN   or TPM_LAYOUTRTL),
+ { paCenter } (TPM_CENTERALIGN, TPM_CENTERALIGN or TPM_LAYOUTRTL)
   );
   lTrackButtons: array[TTrackButton] of DWORD = (
  { tbRightButton } TPM_RIGHTBUTTON,
