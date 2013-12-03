@@ -449,6 +449,62 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Name:  CarbonApp_DragReceive
+  Handles dropping files on application
+ ------------------------------------------------------------------------------}
+function CarbonApp_DragReceive(theWindow: WindowRef; handlerRefCon: UnivPtr; theDrag: DragRef): OSErr;  {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  theItemRef: DragItemRef;
+  theFlavorData: HFSFlavor;
+  theDataSize: Size;
+  theFilename: pchar;
+  theFileRef: FSRef;
+  numItems: UInt16;
+  Files: array of string;
+  itemNum: UInt16;
+begin
+  SetLength(Files, 0);
+
+  numItems := 0;
+
+  if CountDragItems(theDrag, numItems) <> noErr then exit;
+
+  if numItems > 0 then
+    for itemNum := 1 to numItems do
+    begin
+     if GetDragItemReferenceNumber(theDrag, itemNum, theItemRef) <> noErr then continue;
+     theDataSize := sizeof(theFlavorData);
+     if GetFlavorData(theDrag, theItemRef, kDragFlavorTypeHFS, @theFlavorData, theDataSize, 0) <> noErr then continue;
+
+     FSpMakeFSRef(theFlavorData.fileSpec, theFileRef);
+
+     theFilename := stralloc(1024); //PATH_MAX = 1024
+
+     FSRefMakePath(theFileRef, theFilename, StrBufSize(theFilename));
+
+     try
+       SetLength(Files, Length(Files) + 1);
+       Files[High(Files)] := theFilename;
+     finally
+       StrDispose(theFilename);
+     end;
+  end;
+
+  if Length(Files) > 0 then
+  begin
+    if Application <> nil then
+    begin
+      if Application.MainForm <> nil then
+        Application.MainForm.IntfDropFiles(Files);
+
+      Application.IntfDropFiles(Files);
+    end;
+  end;
+
+  Result := noErr;
+end;
+
+{------------------------------------------------------------------------------
   Name:  CarbonApp_Quit
   Handles application quit
  ------------------------------------------------------------------------------}
@@ -1217,6 +1273,8 @@ begin
   TmpSpec := MakeEventSpec(LCLCarbonEventClass, LCLCarbonEventKindWake);
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_LazWake),
     1, @TmpSpec, nil, @FAEventHandlerRef[5]);
+
+  InstallReceiveHandler(@CarbonApp_DragReceive, nil, nil);
 
   FOpenEventHandlerUPP := NewAEEventHandlerUPP(AEEventHandlerProcPtr(@CarbonApp_Open));
   FQuitEventHandlerUPP := NewAEEventHandlerUPP(AEEventHandlerProcPtr(@CarbonApp_Quit));
