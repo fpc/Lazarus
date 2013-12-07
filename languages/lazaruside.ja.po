@@ -15873,6 +15873,10 @@ msgstr "ディスクに同じ名前で類似した拡張子をもつファイル
 msgid "There is already a build mode with this name."
 msgstr "この名前の構築モードが既に存在します。"
 
+#: lazarusidestrconsts.listhereisalreadyacomponentclasswiththename
+msgid "There is already a component class with the name %s."
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr "既にこの名前のコンポーネントがあります"
@@ -15992,6 +15996,10 @@ msgstr "%s%s%sのユニット検索パスはパッケージ %sのソースディ
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "作業ディレクトリ %s%s%s が存在しません。%sメニュー>実行>実行パラメータで作業ディレクトリをチェックしてください。"
+
+#: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
+msgid "This component already contains a class with the name %s."
+msgstr ""
 
 #: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
 msgid "This function needs an open .lfm file in the source editor."

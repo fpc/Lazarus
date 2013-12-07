@@ -15483,6 +15483,10 @@ msgstr "Rastas kitas failas tokiu pat pavadinimu bei panašiu plėtiniu.%sFailas
 msgid "There is already a build mode with this name."
 msgstr ""
 
+#: lazarusidestrconsts.listhereisalreadyacomponentclasswiththename
+msgid "There is already a component class with the name %s."
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr "Komponentė tokiu pavadinimu jau yra."
@@ -15601,6 +15605,10 @@ msgstr "%s%s%s modulių paieškos kelyje yra įrašytas pirminio kodo aplankas %
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Darbinis aplankas %s%s%s neegzistuoja.%sŽviktelėkite į „Startuoti -> Startavimo parametrai…“."
+
+#: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
+msgid "This component already contains a class with the name %s."
+msgstr ""
 
 #: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
 msgid "This function needs an open .lfm file in the source editor."

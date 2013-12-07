@@ -15832,6 +15832,10 @@ msgstr "יש קובץ בעל אותו שם וסיומת דומה בדיסק קו
 msgid "There is already a build mode with this name."
 msgstr ""
 
+#: lazarusidestrconsts.listhereisalreadyacomponentclasswiththename
+msgid "There is already a component class with the name %s."
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr "יש כבר רכיב עם שם זה. "
@@ -15951,6 +15955,10 @@ msgstr "נתיב חיפוש היחידות של %s%s%s מכיל את תיקיי�
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "תיקיית העבודה %s%s%s לא קיימת. בדוק את תיקיית העבודה ב Menu > Run > Run parameters."
+
+#: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
+msgid "This component already contains a class with the name %s."
+msgstr ""
 
 #: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
 msgid "This function needs an open .lfm file in the source editor."

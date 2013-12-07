@@ -15115,6 +15115,10 @@ msgstr "Na disku už je soubor se stejným jménem a podobnou koncovkou%sSoubor:
 msgid "There is already a build mode with this name."
 msgstr ""
 
+#: lazarusidestrconsts.listhereisalreadyacomponentclasswiththename
+msgid "There is already a component class with the name %s."
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr "Již existuje komponenta se tímto jménem"
@@ -15232,6 +15236,10 @@ msgstr "Cesta hledání jednotek %s%s%s obsahuje zdrojový adresář %s%s%s bal�
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Pracovní adresář %s%s%s neexistuje.%sProsím, zkontrolujte pracovní adresář v Spustit -> Parametry spuštění."
+
+#: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
+msgid "This component already contains a class with the name %s."
+msgstr ""
 
 #: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
 msgid "This function needs an open .lfm file in the source editor."

@@ -11987,7 +11987,8 @@ var
     ConflictingClass:=AComponent.ClassType.ClassParent;
     while ConflictingClass<>nil do begin
       if SysUtils.CompareText(AName,ConflictingClass.ClassName)=0 then begin
-        s:='This component has already the class '+ConflictingClass.ClassName;
+        s:=Format(lisThisComponentAlreadyContainsAClassWithTheName, [
+          ConflictingClass.ClassName]);
         raise EComponentError.Create(s);
       end;
       ConflictingClass:=ConflictingClass.ClassParent;
@@ -12000,7 +12001,8 @@ var
     // check if registered component class
     RegComp:=IDEComponentPalette.FindComponent(AName);
     if RegComp<>nil then begin
-      s:='There is already a component class with the name '+RegComp.ComponentClass.ClassName;
+      s:=Format(lisThereIsAlreadyAComponentClassWithTheName, [RegComp.
+        ComponentClass.ClassName]);
       raise EComponentError.Create(s);
     end;
   end;

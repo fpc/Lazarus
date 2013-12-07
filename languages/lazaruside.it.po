@@ -15835,6 +15835,10 @@ msgstr "C'è un file con lo stesso nome ed estensione simile su disco%sFile: %s%
 msgid "There is already a build mode with this name."
 msgstr ""
 
+#: lazarusidestrconsts.listhereisalreadyacomponentclasswiththename
+msgid "There is already a component class with the name %s."
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr "C'è già un componente con questo nome"
@@ -15954,6 +15958,10 @@ msgstr "Il cammino di ricerca unit di %s%s%s contiene la cartella dei sorgenti %
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "La cartella di lavoro %s%s%s non esiste.%sControllate la cartella di lavoro in Menu -> Esegui -> Comandi di esecuzione."
+
+#: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
+msgid "This component already contains a class with the name %s."
+msgstr ""
 
 #: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
 msgid "This function needs an open .lfm file in the source editor."

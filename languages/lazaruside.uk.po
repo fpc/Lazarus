@@ -15402,6 +15402,10 @@ msgstr "На диску є файл з такою самою назвою і с�
 msgid "There is already a build mode with this name."
 msgstr ""
 
+#: lazarusidestrconsts.listhereisalreadyacomponentclasswiththename
+msgid "There is already a component class with the name %s."
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr "Вже існує компонент з таким іменем"
@@ -15520,6 +15524,10 @@ msgstr "Шлях пошуку модулів %s%s%s містить теку по
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Робоча тека %s%s% не існує.s%Перевірте робочу теку в Меню > Запуск > Параметри запуску."
+
+#: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
+msgid "This component already contains a class with the name %s."
+msgstr ""
 
 #: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
 msgid "This function needs an open .lfm file in the source editor."

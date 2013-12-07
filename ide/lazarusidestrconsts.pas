@@ -797,6 +797,8 @@ resourcestring
   lisDuplicateNameAComponentNamedAlreadyExistsInTheInhe = 'Duplicate name: A '
     +'component named %s%s%s already exists in the inherited component %s';
   lisComponentNameIsKeyword = 'Component name %s%s%s is keyword';
+  lisThereIsAlreadyAComponentClassWithTheName = 'There is already a component '
+    +'class with the name %s.';
   lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus = 'The unit itself '
     +'has already the name %s%s%s. Pascal identifiers must be unique.';
   lisUnableToRenameVariableInSource = 'Unable to rename variable in source.';
@@ -805,6 +807,8 @@ resourcestring
   lisThereIsAlreadyAFormWithTheName = 'There is already a form with the name %s%s%s';
   lisThereIsAlreadyAUnitWithTheNamePascalIdentifiersMus = 'There is already a '
     +'unit with the name %s%s%s. Pascal identifiers must be unique.';
+  lisThisComponentAlreadyContainsAClassWithTheName = 'This component already '
+    +'contains a class with the name %s.';
   lisSeeMessages = 'See messages.';
   lisError = 'Error: ';
   lisWarning = 'Warning: ';

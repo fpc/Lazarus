@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-11-30 19:23+0400\n"
+"PO-Revision-Date: 2013-12-07 18:58+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -15488,6 +15488,11 @@ msgstr "На диске есть файл с таким же именем и п�
 msgid "There is already a build mode with this name."
 msgstr "Режим сборки с таким именем уже имеется."
 
+#: lazarusidestrconsts.listhereisalreadyacomponentclasswiththename
+#| msgid "There is already a component class with the name %s"
+msgid "There is already a component class with the name %s."
+msgstr "Класс компонента с именем %s уже имеется."
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr "Компонент с таким именем уже имеется"
@@ -15606,6 +15611,11 @@ msgstr "Путь поиска модулей %s%s%s содержит катал�
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Рабочий каталог %s%s%s не существует.%sПроверьте его в меню Запуск -> Параметры запуска."
+
+#: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
+#| msgid "This component already contains a class with the name %s"
+msgid "This component already contains a class with the name %s."
+msgstr "Этот компонент уже содержит класс с именем %s."
 
 #: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
 msgid "This function needs an open .lfm file in the source editor."

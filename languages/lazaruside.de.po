@@ -15543,6 +15543,10 @@ msgstr "Es gibt eine Datei mit dem gleichen Namen und einer ähnlichen Endung au
 msgid "There is already a build mode with this name."
 msgstr "Es gibt bereits einen Erstellmodus mit diesem Namen."
 
+#: lazarusidestrconsts.listhereisalreadyacomponentclasswiththename
+msgid "There is already a component class with the name %s."
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr "Es gibt bereits eine Komponente mit diesem Namen."
@@ -15662,6 +15666,10 @@ msgstr "Der Unitsuchpfad von %s%s%s entält das Quellverzeichnis %s%s%s des Pack
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Das Arbeitsverzeichnis %s%s%s fehlt.%sBitte prüfen Sie das Arbeitsverzeichnis im Menü Start > Startparameter"
+
+#: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
+msgid "This component already contains a class with the name %s."
+msgstr ""
 
 #: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
 msgid "This function needs an open .lfm file in the source editor."
