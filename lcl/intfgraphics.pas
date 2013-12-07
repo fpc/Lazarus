@@ -5186,103 +5186,118 @@ end;
 procedure TLazReaderDIB.ReadScanLine(Row: Integer);
   procedure DoRLE4;
   var
-    d: array[0..1] of Byte;
-    idx: Integer; // buffer index
-    pix: Integer; // pixel index
-    b: Byte;
-    NeedShift: Boolean;
+    Head: array[0..1] of Byte;
+    Value, NibbleCount, ByteCount: Byte;
+    WriteNibble: Boolean;       // Set when only lower nibble needs to be written
+    BufPtr, DstPtr: PByte;
+    Buf: array[0..127] of Byte; // temp buffer to read nibbles
   begin
-    pix := 0;
-    idx := 0;
+    DstPtr := @LineBuf[0];
+    WriteNibble := False;
     while True do
     begin
-      TheStream.Read(d[0], 2);
-      if d[0] > 0 then
+      TheStream.Read(Head[0], 2);
+      NibbleCount := Head[0];
+
+      if NibbleCount > 0 then
       begin
-        if pix and 1 = 1
+        if WriteNibble
         then begin
           // low nibble needs to be written
           // swap pixels so that they are in order after this nibble
-          b := d[1];
-          d[1] := (d[1] shl 4) or (b shr 4);
-          LineBuf[idx] := (LineBuf[idx] and $F0) or (d[1] and $0F);
-          Inc(pix);
-          Inc(idx);
-          Dec(d[0]);
+          Value := (Head[1] shl 4) or (Head[1] shr 4);
+          DstPtr^ := (DstPtr^ and $F0) or (Value and $0F);
+          Inc(DstPtr);
+          // we have written one
+          Dec(NibbleCount);
+        end
+        else begin
+          Value := Head[1];
         end;
-        Inc(pix, d[0]);
-        // d[0] contains the count in pixels (=nibbles) so devide it and write pixel pairs
-        d[0] := (d[0] + 1) shr 1;
-        while d[0] > 0 do
-        begin
-          LineBuf[idx] := d[1];
-          Inc(idx);
-          Dec(d[0]);
-        end;
+        ByteCount := (NibbleCount + 1) div 2;
+        FillChar(DstPtr^, ByteCount , Value);
+        // if we have written an odd number of nibbles we still have to write one
+        WriteNibble := NibbleCount and 1 = 1;
+        Inc(DstPtr, ByteCount);
+        // correct DstPtr if we still need to write a nibble
+        if WriteNibble then Dec(DstPtr);
       end
       else begin
-        case d[1] of
+        NibbleCount := Head[1];
+        case NibbleCount of
           0, 1: break;       // End of scanline or end of bitmap
           2: raise FPImageException.Create('RLE code #2 is not supported');
         else
-          NeedShift := pix and 1 = 1;
-          Inc(pix, d[1]);
-          // d[1] contains the count in pixels (=nibbles) so devide it and write pixel pairs
-          d[1] := (d[1] + 1) shr 1;
+          ByteCount := (NibbleCount + 1) div 2;
 
-          if NeedShift
+          if WriteNibble
           then begin
-            TheStream.Read(LineBuf[idx+1], d[1]);
-            while d[1] > 0 do
-            begin
-              LineBuf[idx] := (LineBuf[idx] and $F0) or (LineBuf[idx+1] shr 4);
-              LineBuf[idx+1] := LineBuf[idx+1] shl 4;
-              Inc(idx);
-            end;
+            // we cannot read directly into destination, so use temp buf
+            TheStream.Read(Buf[0], ByteCount);
+            BufPtr := @Buf[0];
+            repeat
+              DstPtr^ := (DstPtr^ and $F0) or (BufPtr^ shr 4);
+              Inc(DstPtr);
+              Dec(NibbleCount);
+              if NibbleCount = 0
+              then begin
+                // if we have written both nibbles
+                WriteNibble := False;
+                Break;
+              end;
+              DstPtr^ := (BufPtr^ shl 4);
+              Inc(BufPtr);
+              Dec(NibbleCount);
+            until NibbleCount = 0;
           end
           else begin
-            TheStream.Read(LineBuf[idx], d[1]);
-            Inc(idx, d[1]);
+            TheStream.Read(DstPtr^, ByteCount);
+            // if we have written an odd number of nibbles we still have to write one
+            WriteNibble := NibbleCount and 1 = 1;
+            Inc(DstPtr, ByteCount);
+            // correct DstPtr if we still need to write a nibble
+            if WriteNibble then Dec(DstPtr);
           end;
-          if pix and 1 = 1
-          then dec(idx); // we still need to write the low nibble
 
-          if d[1] and 1 = 1
-          then TheStream.Read(d[1], 1);      // Jump to even file position
+          // keep stream at word boundary
+          if ByteCount and 1 = 1
+          then TheStream.Seek(1, soCurrent);
         end;
       end;
+
     end
   end;
 
   procedure DoRLE8;
   var
-    d: array[0..1] of Byte;
-    Offset: Integer;
+    Head: array[0..1] of Byte;
+    Value, Count: Byte;
+    DstPtr: PByte;
   begin
-    Offset := 0;
+    DstPtr := @LineBuf[0];
     while True do
     begin
-      TheStream.Read(d[0], 2);
-      if d[0] > 0 then
-      begin
-        while d[0] > 0 do
-        begin
-          LineBuf[Offset] := d[1];
-          Inc(Offset);
-          Dec(d[0]);
-        end;
+      TheStream.Read(Head[0], 2);
+      Count := Head[0];
+      if Count > 0
+      then begin
+        Value := Head[1];
+        FillChar(DstPtr^, Count, Value);
       end
       else begin
-        case d[1] of
+        Count := Head[1];
+        case Count of
           0, 1: break;       // End of scanline or end of bitmap
           2: raise FPImageException.Create('RLE code #2 is not supported');
         else
-          TheStream.Read(LineBuf[Offset], d[1]);
-          Inc(Offset, d[1]);
-          if d[1] and 1 = 1
-          then TheStream.Read(d[1], 1);      // Jump to even file position
+          TheStream.Read(DstPtr^, Count);
+          // keep stream at word boundary
+          if Count and 1 = 1
+          then TheStream.Seek(1, soCurrent);
         end;
       end;
+
+      Inc(DstPtr, Count);
     end
   end;
 begin
