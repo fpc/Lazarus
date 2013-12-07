@@ -1773,8 +1773,10 @@ var
   FilesBranch, RemovedBranch: TTreeFilterBranch;
   Filename: String;
   NodeData: TPENodeData;
+  OldFilter : String;
 begin
   if LazPackage=nil then exit;
+  OldFilter := FilterEdit.ForceFilter;
 
   // files belonging to package
   FilesBranch:=FilterEdit.GetBranch(FFilesNode);
@@ -1816,17 +1818,18 @@ begin
       FreeAndNil(FRemovedFilesNode);
     end;
   end;
-  FilterEdit.InvalidateFilter;               // Data is shown by FilterEdit.
+  FilterEdit.Filter := OldFilter;            // This triggers ApplyFilter
 end;
 
 procedure TPackageEditorForm.UpdateRequiredPkgs;
 var
   CurDependency: TPkgDependency;
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
-  CurNodeText, aFilename: String;
+  CurNodeText, aFilename, OldFilter: String;
   NodeData: TPENodeData;
 begin
   if LazPackage=nil then exit;
+  OldFilter := FilterEdit.ForceFilter;
 
   // required packages
   RequiredBranch:=FilterEdit.GetBranch(FRequiredPackagesNode);
@@ -1870,6 +1873,7 @@ begin
     end;
   end;
   FNextSelectedPart:=nil;
+  FilterEdit.ForceFilter(OldFilter);
 end;
 
 procedure TPackageEditorForm.UpdateSelectedFile;
@@ -2406,6 +2410,7 @@ destructor TPackageEditorForm.Destroy;
 var
   nt: TPENodeType;
 begin
+  FilterEdit.ForceFilter;
   for nt:=Low(TPENodeType) to High(TPENodeType) do
     FreeNodeData(nt);
   if PackageEditorMenuRoot.MenuItem=FilesPopupMenu.Items then

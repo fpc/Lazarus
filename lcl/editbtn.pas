@@ -365,6 +365,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure InvalidateFilter;
+    function ForceFilter(AFilter : String = '') : String;
     procedure StoreSelection; virtual; abstract;
     procedure RestoreSelection; virtual; abstract;
   public
@@ -1828,6 +1829,13 @@ procedure TCustomControlFilterEdit.InvalidateFilter;
 begin
   fNeedUpdate:=true;
   IdleConnected:=true;
+end;
+
+function TCustomControlFilterEdit.ForceFilter(AFilter: String): String;
+begin
+  Result := FFilter;
+  FFilter := AFilter;
+  ApplyFilter(True);
 end;
 
 function TCustomControlFilterEdit.GetDefaultGlyphName: String;
