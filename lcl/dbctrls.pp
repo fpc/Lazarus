@@ -32,7 +32,7 @@ interface
 uses
   Types, Classes, SysUtils, DB,
   LCLStrConsts, LCLProc, LMessages, LCLType, LResources, GraphType,
-  Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls,
+  Controls, Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls,
   Calendar, Variants, ImgList;
 
 Type
@@ -110,7 +110,7 @@ Type
   private
     FControlLink: TFieldDataLink;
     FControlItems: TStrings;
-    FListLink: TFieldDataLink;
+    FListLink: TDataLink;
     FListSource: TDataSource;
     FLookupSource: TDataSource;
     FDataFieldNames: string;
@@ -127,10 +127,11 @@ Type
     FLookupCache: boolean;
     procedure ActiveChange(Sender: TObject);
     procedure ChangeListLinkDataSource(NewDataSource: TDataSource);
-    procedure EditingChange(Sender: TObject);
+    procedure DatasetChange(Sender: TObject);
     procedure FetchLookupData;
     function GetKeyFieldName: string;
     function GetListSource: TDataSource;
+    procedure ScrollListDataset(const Key: Variant);
     procedure SetKeyFieldName(const Value: string);
     procedure SetListFieldName(const Value: string);
     procedure SetListSource(Value: TDataSource);

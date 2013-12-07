@@ -52,17 +52,47 @@ fields:
 
 }
 
+type
+
+  { TDBLookupDataLink }
+
+  TDBLookupDataLink = class(TDataLink)
+  private
+    FOnActiveChange: TNotifyEvent;
+    FOnDatasetChange: TNotifyEvent;
+  protected
+    procedure ActiveChanged; override;
+    procedure DataEvent(Event: TDataEvent; Info: Ptrint); override;
+  public
+    property OnActiveChange: TNotifyEvent read FOnActiveChange write FOnActiveChange;
+    property OnDatasetChange: TNotifyEvent read FOnDatasetChange write FOnDatasetChange;
+  end;
+
+{ TDBLookupDataLink }
+
+procedure TDBLookupDataLink.ActiveChanged;
+begin
+  inherited ActiveChanged;
+  if Assigned(FOnActiveChange) then
+    FOnActiveChange(Self);
+end;
+
+procedure TDBLookupDataLink.DataEvent(Event: TDataEvent; Info: Ptrint);
+begin
+  inherited DataEvent(Event, Info);
+  if (Event = deDataSetChange) and Assigned(FOnDatasetChange) then
+    FOnDatasetChange(Self);
+end;
+
 constructor TDBLookup.Create(AOwner: TComponent);
 begin
   inherited;
   FDataFields := TList.Create;
   FKeyFields := TList.Create;
-  FListLink:= TFieldDataLink.Create;
-  FListLink.Control := Self;
-  FListLink.OnActiveChange := @ActiveChange;
-  FListLink.OnEditingChange:=@EditingChange;
-  //FHasLookUpField:= False;
-  //FListLinkTmpSetActive := False;
+  FListLink := TDBLookupDataLink.Create;
+  TDBLookupDataLink(FListLink).OnActiveChange := @ActiveChange;
+  TDBLookupDataLink(FListLink).OnDatasetChange := @DatasetChange;
+  //FHasLookUpField := False;
   //FLookupCache := False;
 end;
 
@@ -87,15 +117,15 @@ procedure TDBLookup.ChangeListLinkDataSource(NewDataSource: TDataSource);
 begin
   if NewDataSource <> FListLink.DataSource then
   begin
-    FListLink.OnActiveChange := nil;
+    TDBLookupDataLink(FListLink).OnActiveChange := nil;
     FListLink.DataSource := NewDataSource;
-    FListLink.OnActiveChange := @ActiveChange;
+    TDBLookupDataLink(FListLink).OnActiveChange := @ActiveChange;
   end;
 end;
 
-procedure TDBLookup.EditingChange(Sender: TObject);
+procedure TDBLookup.DatasetChange(Sender: TObject);
 begin
-  if FListLink.Active and not (FListLink.Editing) then
+  if FListLink.Active and not FListLink.Editing then
   begin
     FetchLookupData;
     FControlLink.Reset;
@@ -119,6 +149,17 @@ begin
     Result:= FListSource;
 end;
 
+procedure TDBLookup.ScrollListDataset(const Key: Variant);
+begin
+  //prevents lookup list be reloaded
+  TDBLookupDataLink(FListLink).OnDatasetChange := nil;
+  try
+    FListLink.DataSet.Locate(FKeyFieldNames, Key, []);
+  finally
+    TDBLookupDataLink(FListLink).OnDatasetChange := @DatasetChange;
+  end;
+end;
+
 procedure TDBLookup.SetKeyFieldName(const Value: string);
 begin
   FKeyFieldNames := Value;
@@ -127,7 +168,6 @@ end;
 procedure TDBLookup.SetListFieldName(const Value: string);
 begin
   FListFieldName := Value;
-  FListLink.FieldName := Value;
 end;
 
 procedure TDBLookup.SetListSource(Value: TDataSource);
@@ -200,7 +240,7 @@ begin
   if ListLinkDataSet.IsEmpty then
     Exit;
   Bookmark := ListLinkDataSet.GetBookmark;
-  ListLinkDataSet.DisableControls;
+  ListLinkDataSet.BlockReadSize := 1;
   try
     //needed to handle sqldb.TSQLQuery that does not has a reliable recordcount after Open
     ListLinkDataSet.Last;
@@ -224,7 +264,7 @@ begin
   finally
     ListLinkDataSet.GotoBookmark(Bookmark);
     ListLinkDataSet.FreeBookmark(Bookmark);
-    ListLinkDataSet.EnableControls;
+    ListLinkDataSet.BlockReadSize := 0;
   end;
 end;
 
@@ -287,8 +327,6 @@ begin
         else
           FListField := TField(ListFields[0]);
       end;
-      if Assigned(FListField) then
-        FListLink.FieldName:= FListField.FieldName;
     finally
       ListFields.Free;
     end;
@@ -314,7 +352,7 @@ begin
     Exit;
   Key := FListKeys[ValueIndex];
   if ScrollDataset then
-    FListLink.DataSet.Locate(FKeyFieldNames, Key, []);
+    ScrollListDataset(Key);
   if FControlLink.Active then
   begin
     if VarSameValue(Key, FControlLink.DataSet.FieldValues[FDataFieldNames]) then
