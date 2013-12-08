@@ -6302,6 +6302,7 @@ lcl/interfaces/cocoa/cocoawinapih.inc svneol=native#text/pascal
 lcl/interfaces/cocoa/cocoawsbuttons.pp svneol=native#text/pascal
 lcl/interfaces/cocoa/cocoawscomctrls.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoawscommon.pas svneol=native#text/plain
+lcl/interfaces/cocoa/cocoawsdialogs.pp svneol=native#text/pascal
 lcl/interfaces/cocoa/cocoawsextctrls.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoawsfactory.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoawsforms.pp svneol=native#text/plain
