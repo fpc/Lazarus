@@ -14,7 +14,8 @@ uses
   CocoaWSForms,
   CocoaWSMenus,
   CocoaWSStdCtrls,
-  CocoaWSComCtrls;
+  CocoaWSComCtrls,
+  CocoaWSDialogs;
 
 // imglist
 function RegisterCustomImageList: Boolean;

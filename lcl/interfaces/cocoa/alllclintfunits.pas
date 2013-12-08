@@ -13,6 +13,7 @@ uses
   cocoawsforms,
   cocoaint,
   cocoawscommon,
-  cocoawscomctrls;
+  cocoawscomctrls,
+  cocoawsdialogs;
 implementation
 end.
