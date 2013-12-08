@@ -1370,6 +1370,7 @@ begin
           Result := False;
           ShowMessage(Format(rsVLEDuplicateKey,[NewValue, i + FixedRows]));
           if Editor is TStringCellEditor then TStringCelleditor(Editor).SelectAll;
+          Break;
         end;
       end;
     end;
