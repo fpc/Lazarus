@@ -1694,6 +1694,7 @@ var
 begin
   if Handle <> 0 then
   begin
+    Result := GetFocus;
     if Result = Handle then
       Exit;
     Obj := NSObject(Handle);
@@ -1708,7 +1709,9 @@ begin
       NSView(Obj).window.makeKeyWindow;
       NSView(Obj).window.makeFirstResponder(NSView(Obj));
     end;
-  end;
+  end
+  else
+    Result := 0;
 end;
 
 function TCocoaWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
