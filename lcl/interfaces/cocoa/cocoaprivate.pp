@@ -219,7 +219,7 @@ type
 
   TCocoaSecureTextField = objcclass(NSSecureTextField)
   public
-    callback  : ICommonCallback;
+    callback: ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -605,15 +605,15 @@ end;
 function TCocoaPanel.becomeFirstResponder: Boolean;
 begin
   Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
+//  if Assigned(callback) then
+//    callback.BecomeFirstResponder;
 end;
 
 function TCocoaPanel.resignFirstResponder: Boolean;
 begin
   Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
+//  if Assigned(callback) then
+//    callback.ResignFirstResponder;
 end;
 
 function TCocoaPanel.lclGetCallback: ICommonCallback;
@@ -773,15 +773,17 @@ end;
 function TCocoaWindow.becomeFirstResponder: Boolean;
 begin
   Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
+  // uncommenting the following lines starts an endless focus loop
+
+//  if Assigned(callback) then
+//    callback.BecomeFirstResponder;
 end;
 
 function TCocoaWindow.resignFirstResponder: Boolean;
 begin
   Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
+//  if Assigned(callback) then
+//    callback.ResignFirstResponder;
 end;
 
 function TCocoaWindow.lclGetCallback: ICommonCallback;
