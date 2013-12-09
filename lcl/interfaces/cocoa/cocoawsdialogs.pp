@@ -149,7 +149,7 @@ begin
 
       Filters.Add(lowercase(extension));
       Filters.Add(uppercase(extension));
-      debugln('Filters: ' + extension);
+      //debugln('Filters: ' + extension);
       Extensions.Free;
     end;
 
