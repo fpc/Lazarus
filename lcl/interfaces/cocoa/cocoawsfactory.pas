@@ -217,7 +217,8 @@ end;
 
 function RegisterFileDialog: Boolean; alias : 'WSRegisterFileDialog';
 begin
-  Result := False;
+   RegisterWSComponent(TFileDialog, TCocoaWSFileDialog);
+   Result := True;
 end;
 
 function RegisterOpenDialog: Boolean; alias : 'WSRegisterOpenDialog';
@@ -472,7 +473,8 @@ end;
 
 function RegisterHintWindow: Boolean; alias : 'WSRegisterHintWindow';
 begin
-  Result := False;
+   RegisterWSComponent(THintWindow, TCocoaWSHintWindow);
+   Result := True;
 end;
 
 // Grids

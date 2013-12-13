@@ -179,8 +179,9 @@ class function TCocoaWSHintWindow.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   win: TCocoaPanel;
-  cnt: TCocoaCustomControl;
+  cnt: TCocoaWindowContent;
   R: NSRect;
+  Form: TCustomForm absolute AWinControl;
 const
   WinMask = NSBorderlessWindowMask or NSUtilityWindowMask;
 begin
@@ -195,18 +196,22 @@ begin
   R := CreateParamsToNSRect(AParams);
   win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(R, WinMask, NSBackingStoreBuffered, False));
   win.enableCursorRects;
+  win.setLevel(8);
   TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
   win.setAcceptsMouseMovedEvents(True);
 
   R.origin.x := 0;
   R.origin.y := 0;
-  cnt := TCocoaCustomControl.alloc.initWithFrame(R);
+  cnt := TCocoaWindowContent.alloc.initWithFrame(R);
   cnt.callback := TCocoaPanel(win).callback;
   win.setContentView(cnt);
 
-  Result := TLCLIntfHandle(win);
+  Result := TLCLIntfHandle(cnt);
 end;
+
+
+
 
 { TLCLWindowCallback }
 

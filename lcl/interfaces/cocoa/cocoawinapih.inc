@@ -128,6 +128,7 @@ function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolea
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
 function IsWindowEnabled(Handle: HWND): boolean; override;
 function IsWindowVisible(Handle: HWND): boolean; override;
+function IsWindow(handle: HWND): boolean; override;
 
 procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
@@ -186,7 +187,7 @@ function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer;
 
 function TextOut(DC: HDC; X,Y: Integer; Str: Pchar; Count: Integer) : Boolean; override;
 function UpdateWindow(Handle: HWND): Boolean; override;
-{function WindowFromPoint(Point: TPoint): HWND; override;}
+function WindowFromPoint(Point: TPoint): HWND; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 

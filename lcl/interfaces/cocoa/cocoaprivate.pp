@@ -27,9 +27,10 @@ uses
   // Libs
   CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
-  LCLType, Controls;
+  LCLType, LMessages, LCLMessageGlue, Controls;
 
 type
+
   { ICommonCallback }
 
   ICommonCallback = interface
@@ -170,6 +171,7 @@ type
 
   TCocoaMenuItem = objcclass(NSMenuItem)
   public
+    lcltarget:TObject;
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
   end;
 
@@ -1927,8 +1929,12 @@ end;
 { TCocoaMenuITem }
 
 procedure TCocoaMenuItem.lclItemSelected(sender:id);
+var Msg:TLMessage;
 begin
-
+FillChar(Msg{%H-}, SizeOf(Msg), 0);
+Msg.msg := LM_ACTIVATE;
+// debugln('send LM_Activate');
+DeliverMessage(lclTarget,Msg);
 end;
 
 end.

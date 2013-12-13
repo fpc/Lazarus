@@ -14,7 +14,11 @@ uses
   CocoaPrivate, CocoaGDIObjects, CocoaCaret, CocoaUtils, LCLMessageGlue;
 
 type
+
+
+
   { TLCLCommonCallback }
+
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
   private
@@ -86,6 +90,7 @@ type
 
   TLCLCustomControlCallback = class(TLCLCommonCallback)
   public
+    function MouseMove(Event: NSEvent): Boolean; override;
     function MouseUpDownEvent(Event: NSEvent): Boolean; override;
   end;
 
@@ -96,6 +101,8 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
+
+
 
 const
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick
@@ -130,6 +137,12 @@ begin
 end;
 
 { TLCLCustomControlCallback }
+
+function TLCLCustomControlCallback.MouseMove(Event: NSEvent): Boolean;
+begin
+  inherited MouseMove(Event);
+  Result:=True;
+end;
 
 function TLCLCustomControlCallback.MouseUpDownEvent(Event: NSEvent): Boolean;
 begin
@@ -296,6 +309,14 @@ begin
 
       NotifyApplicationUserInput(Target, Msg.Msg);
       Result := DeliverMessage(Msg) <> 0;
+
+      if (Event.type_ = NSRightMouseDown) and (GetTarget is TControl) then
+         if assigned(TControl(GetTarget).PopupMenu) then
+         begin
+         Msg.Msg := LM_CONTEXTMENU;
+         Result := DeliverMessage(Msg) <> 0;
+         end;
+
     end;
     NSLeftMouseUp,
     NSRightMouseUp,
@@ -307,6 +328,8 @@ begin
       Result := DeliverMessage(Msg) <> 0;
     end;
   end;
+
+//debugln('MouseUpDownEvent:'+DbgS(Msg.Msg)+' Target='+Target.name);
 end;
 
 function TLCLCommonCallback.KeyEvent(Event: NSEvent): Boolean;
@@ -684,6 +707,8 @@ begin
   LCLSendClickedMsg(Target);
 end;
 
+
+
 function TLCLCommonCallback.MouseMove(Event: NSEvent): Boolean;
 var
   Msg: TLMMouseMove;
@@ -702,6 +727,8 @@ begin
   Msg.Keys := CocoaModifiersToKeyState(Event.modifierFlags) or CocoaPressedMouseButtonsToKeyState(Event.pressedMouseButtons);
   Msg.XPos := Round(MousePos.X);
   Msg.YPos := Round(MousePos.Y);
+
+  //debugln('MouseMove x='+dbgs(MousePos.X)+' y='+dbgs(MousePos.Y)+' Target='+Target.Name);
 
   NotifyApplicationUserInput(Target, Msg.Msg);
   Result := DeliverMessage(Msg) <> 0;

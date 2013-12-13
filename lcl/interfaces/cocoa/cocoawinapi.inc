@@ -94,18 +94,30 @@ begin
 end;
 
 function TCocoaWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
+var nr,nw:NSRect;
+    h:integer;
 begin
   Result := Handle <> 0;
 
   if Result then
   begin
-    // 1. convert client to window
+    // convert client to window
     with NSObject(Handle).lclClientFrame do
     begin
       inc(P.X, Left);
       inc(P.Y, Top);
     end;
-    // 2. convert window to screen
+
+    // get topbar height and add
+    nr:=NSView(Handle).window.frame;
+    nw:=NSView(Handle).window.contentRectForFrameRect(nr);
+    h:=round(nr.size.height-nw.size.height);
+
+    //debugln(NSStringToString(NSView(Handle).window.title) +' '+ dbgs(h));
+
+    inc(P.Y, h);
+
+    // convert window to screen
     NSObject(Handle).lclLocalToScreen(P.X, P.Y);
   end;
 end;
@@ -753,6 +765,7 @@ begin
     // cocoa returns cursor with inverted y coordinate
     lpPoint.y := Round(NSScreen.mainScreen.frame.size.height-y);
   end;
+  //debugln('GetCursorPos='+DbgS(lpPoint));
   Result := True;
 end;
 
@@ -984,6 +997,61 @@ begin
     else
       Result := nil;
   end;
+end;
+
+function TCocoaWidgetSet.IsWindow(handle: HWND): boolean;
+var Obj: NSObject;
+begin
+if handle<>0 then
+   begin
+   Obj := NSObject(handle);
+   result:= Obj.isKindOfClass(NSWindow);
+   end
+else
+   result:=false;
+end;
+
+function TCocoaWidgetSet.WindowFromPoint(Point: TPoint): HWND;
+var r:TRect;
+    windows:NSArray;
+    subviews:NSArray;
+    contentView:NSView;
+    i,n:integer;
+    obj:NSObject;
+begin
+
+
+if not assigned(NSApp) then
+   begin
+   result:=0;
+   exit;
+   end;
+
+windows:=NSApp.windows;
+
+for i:=0 to windows.count-1 do
+   begin
+   obj:=windows.objectAtIndex(i);
+   if obj.isKindOfClass(NSWindow) then
+      begin
+      r:=NSWindow(obj).lclFrame;
+      if PtInRect(r,Point) then
+         begin
+         //debugln('Point:'+DbgS(point)+'  Rect:'+DbgS(r));
+		 //todo: Find NSViews
+        { contentView:=NSWindow(obj).contentView;
+         if assigned(contentView) then
+            begin
+		
+            end;         }
+
+         result:=HWND(obj);
+         exit;
+         end;
+      end;
+   end;
+
+result:=0;
 end;
 
 function TCocoaWidgetSet.GetRgnBox(RGN: HRGN; lpRect: PRect): Longint;
