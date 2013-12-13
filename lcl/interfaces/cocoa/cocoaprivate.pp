@@ -1271,6 +1271,7 @@ end;
 
 procedure TCocoaCustomControl.mouseDragged(event: NSEvent);
 begin
+if not Assigned(callback) or not callback.MouseMove(event) then
   inherited mouseDragged(event);
 end;
 
