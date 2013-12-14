@@ -238,12 +238,22 @@ type
   TSynHighlighterCapabilities = set of TSynHighlighterCapability;
 
 const
+  { EXPERIMENTAL: A list of some typical attributes.
+    This may be returned by a Highlighter via GetDefaultAttribute. Implementation
+    is optional for each HL. So a HL may return nil even if it has an attribute
+    of the requested type.
+    This list does *not* aim to be complete. It may be replaced in future.
+  }
   SYN_ATTR_COMMENT           =   0;
   SYN_ATTR_IDENTIFIER        =   1;
   SYN_ATTR_KEYWORD           =   2;
   SYN_ATTR_STRING            =   3;
   SYN_ATTR_WHITESPACE        =   4;
-  SYN_ATTR_SYMBOL            =   5;                                             //mh 2001-09-13
+  SYN_ATTR_SYMBOL            =   5;
+  SYN_ATTR_NUMBER            =   6;
+  SYN_ATTR_DIRECTIVE         =   7;
+  SYN_ATTR_ASM               =   8;
+  SYN_ATTR_VARIABLE          =   9;
 
 type
 
@@ -418,6 +428,7 @@ type
     property Capabilities: TSynHighlighterCapabilities
        read FCapabilities;
     property SampleSource: string read GetSampleSource write SetSampleSource;
+    // The below should be depricated and moved to those HL that actually implement them.
     property CommentAttribute: TSynHighlighterAttributes
       index SYN_ATTR_COMMENT read GetDefaultAttribute;
     property IdentifierAttribute: TSynHighlighterAttributes

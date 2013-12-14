@@ -534,6 +534,8 @@ begin
     SYN_ATTR_IDENTIFIER: Result := fIdentifierAttri;
     SYN_ATTR_KEYWORD: Result := fKeyAttri;
     SYN_ATTR_WHITESPACE: Result := fSpaceAttri;
+    SYN_ATTR_NUMBER: Result := fNumberAttri;
+    SYN_ATTR_VARIABLE: Result := fVariableAttri;
   else
     Result := nil;
   end;

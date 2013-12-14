@@ -1132,6 +1132,7 @@ begin
     SYN_ATTR_KEYWORD: Result := fKeyAttri;
     SYN_ATTR_WHITESPACE: Result := fSpaceAttri;
     SYN_ATTR_SYMBOL: Result := fSymbolAttri;
+    SYN_ATTR_NUMBER: Result := fNumberAttri;
   else
     Result := nil;
   end;

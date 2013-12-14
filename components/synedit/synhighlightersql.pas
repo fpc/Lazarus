@@ -1562,6 +1562,8 @@ begin
     SYN_ATTR_STRING: Result := fStringAttri;
     SYN_ATTR_WHITESPACE: Result := fSpaceAttri;
     SYN_ATTR_SYMBOL: Result := fSymbolAttri;
+    SYN_ATTR_NUMBER: Result := fNumberAttri;
+    SYN_ATTR_VARIABLE: Result := fVariableAttri;
   else
     Result := nil;
   end;

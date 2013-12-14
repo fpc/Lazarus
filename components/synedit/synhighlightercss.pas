@@ -1882,6 +1882,7 @@ begin
     SYN_ATTR_STRING    : Result := FStringAttri;
     SYN_ATTR_WHITESPACE: Result := FSpaceAttri;
     SYN_ATTR_SYMBOL    : Result := FSymbolAttri;
+    SYN_ATTR_NUMBER    : Result := fNumberAttri;
   else
     Result := nil;
   end;
