@@ -196,6 +196,7 @@ begin
   R := CreateParamsToNSRect(AParams);
   win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(R, WinMask, NSBackingStoreBuffered, False));
   win.enableCursorRects;
+  // TODO: replace numeric constant with Cocoa constant
   win.setLevel(8);
   TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
@@ -209,9 +210,6 @@ begin
 
   Result := TLCLIntfHandle(cnt);
 end;
-
-
-
 
 { TLCLWindowCallback }
 

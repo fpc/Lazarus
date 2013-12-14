@@ -303,12 +303,12 @@ begin
   // todo: there's no way to control X,Y coordinates of the Popup menu in the OSX
   // prior to 10.6. Check the if there's the method and use it, if available
   if Assigned(APopupMenu) and (APopupMenu.Handle<>0) then 
-   begin
+  begin
     w:=NSApp.keyWindow;
     if Assigned(w) then
       NSMenu.popUpContextMenu_withEvent_forView( TCocoaMenu(APopupMenu.Handle),
         NSApp.currentEvent, NSView(w.contentView));
-   APopupMenu.Close; // notify LCL popup menu
+    APopupMenu.Close; // notify LCL popup menu
   end;
 end;
 

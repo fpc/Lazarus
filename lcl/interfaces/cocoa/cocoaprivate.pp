@@ -1929,12 +1929,14 @@ end;
 { TCocoaMenuITem }
 
 procedure TCocoaMenuItem.lclItemSelected(sender:id);
-var Msg:TLMessage;
+var 
+  Msg:TLMessage;
 begin
-FillChar(Msg{%H-}, SizeOf(Msg), 0);
-Msg.msg := LM_ACTIVATE;
-// debugln('send LM_Activate');
-DeliverMessage(lclTarget,Msg);
+  // TODO: move this to callback and call it using callback.ItemSelected
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
+  Msg.msg := LM_ACTIVATE;
+  // debugln('send LM_Activate');
+  DeliverMessage(lclTarget,Msg);
 end;
 
 end.

@@ -1000,58 +1000,54 @@ begin
 end;
 
 function TCocoaWidgetSet.IsWindow(handle: HWND): boolean;
-var Obj: NSObject;
+var 
+  Obj: NSObject;
 begin
-if handle<>0 then
-   begin
-   Obj := NSObject(handle);
-   result:= Obj.isKindOfClass(NSWindow);
-   end
-else
-   result:=false;
+  if handle <> 0 then
+  begin
+    Obj := NSObject(handle);
+    Result := Obj.isKindOfClass(NSWindow);
+  end
+  else
+    Result := False;
 end;
 
 function TCocoaWidgetSet.WindowFromPoint(Point: TPoint): HWND;
-var r:TRect;
-    windows:NSArray;
-    subviews:NSArray;
-    contentView:NSView;
-    i,n:integer;
-    obj:NSObject;
+var 
+  r: TRect;
+  windows: NSArray;
+  subviews: NSArray;
+  contentView: NSView;
+  i, n: integer;
+  obj: NSObject;
 begin
+  Result := 0;
+  if not assigned(NSApp) then
+    Exit;
 
+  windows := NSApp.windows;
 
-if not assigned(NSApp) then
-   begin
-   result:=0;
-   exit;
-   end;
-
-windows:=NSApp.windows;
-
-for i:=0 to windows.count-1 do
-   begin
-   obj:=windows.objectAtIndex(i);
-   if obj.isKindOfClass(NSWindow) then
+  for i := 0 to windows.count - 1 do
+  begin
+    obj:=windows.objectAtIndex(i);
+    if obj.isKindOfClass(NSWindow) then
+    begin
+      r := NSWindow(obj).lclFrame;
+      if PtInRect(r, Point) then
       begin
-      r:=NSWindow(obj).lclFrame;
-      if PtInRect(r,Point) then
-         begin
-         //debugln('Point:'+DbgS(point)+'  Rect:'+DbgS(r));
-		 //todo: Find NSViews
+        //debugln('Point:'+DbgS(point)+'  Rect:'+DbgS(r));
+        //todo: Find NSViews
         { contentView:=NSWindow(obj).contentView;
          if assigned(contentView) then
             begin
 		
             end;         }
 
-         result:=HWND(obj);
-         exit;
-         end;
+        Result := HWND(obj);
+        Exit;
       end;
-   end;
-
-result:=0;
+    end;
+  end;
 end;
 
 function TCocoaWidgetSet.GetRgnBox(RGN: HRGN; lpRect: PRect): Longint;

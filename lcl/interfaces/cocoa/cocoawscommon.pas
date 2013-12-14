@@ -14,11 +14,7 @@ uses
   CocoaPrivate, CocoaGDIObjects, CocoaCaret, CocoaUtils, LCLMessageGlue;
 
 type
-
-
-
   { TLCLCommonCallback }
-
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
   private
@@ -101,8 +97,6 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
-
-
 
 const
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick
@@ -310,13 +304,13 @@ begin
       NotifyApplicationUserInput(Target, Msg.Msg);
       Result := DeliverMessage(Msg) <> 0;
 
-      if (Event.type_ = NSRightMouseDown) and (GetTarget is TControl) then
-         if assigned(TControl(GetTarget).PopupMenu) then
-         begin
-         Msg.Msg := LM_CONTEXTMENU;
-         Result := DeliverMessage(Msg) <> 0;
-         end;
-
+      // TODO: 1. LM_CONTEXTMENU should be called even if PopupMenu is not assigned
+      // TODO: 2. Check if Cocoa has special context menu check event
+      if (Event.type_ = NSRightMouseDown) and (GetTarget is TControl) and Assigned(TControl(GetTarget).PopupMenu) then
+      begin
+        Msg.Msg := LM_CONTEXTMENU;
+        Result := DeliverMessage(Msg) <> 0;
+     end;
     end;
     NSLeftMouseUp,
     NSRightMouseUp,
