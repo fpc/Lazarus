@@ -2659,6 +2659,7 @@ components/pochecker/README.txt svneol=native#text/plain
 components/pochecker/languages/pocheckerconsts.cs.po svneol=native#text/plain
 components/pochecker/languages/pocheckerconsts.de.po svneol=native#text/plain
 components/pochecker/languages/pocheckerconsts.es.po svneol=native#text/plain
+components/pochecker/languages/pocheckerconsts.ja.po svneol=native#text/plain
 components/pochecker/languages/pocheckerconsts.lt.po svneol=native#text/plain
 components/pochecker/languages/pocheckerconsts.po svneol=native#text/plain
 components/pochecker/languages/pocheckerconsts.pt_BR.po svneol=native#text/plain
