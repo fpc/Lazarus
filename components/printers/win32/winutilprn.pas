@@ -88,12 +88,6 @@ type
   end;
   PtagPD = ^tagPD;
 
-  {$IFDEF USEUNICODE}
-  LPTSTR = PWidechar;
-  {$ELSE}
-  LPTSTR = PChar;
-  {$ENDIF}
-
   _PRINTER_DEFAULTSA = record
        pDatatype : LPSTR;
        pDevMode : LPDEVMODE;
@@ -118,11 +112,7 @@ type
        pDriverName : LPTSTR;
        pComment : LPTSTR;
        pLocation : LPTSTR;
-       {$IFDEF USEUNICODE}
-       pDevMode : LPDEVMODEW;
-       {$ELSE}
        pDevMode : LPDEVMODE;
-       {$ENDIF}
        pSepFile : LPTSTR;
        pPrintProcessor : LPTSTR;
        pDatatype : LPTSTR;
@@ -145,6 +135,41 @@ type
   PPRINTER_INFO_2 = ^PRINTER_INFO_2;
   LPPRINTER_INFO_2 = ^PRINTER_INFO_2;
 
+  _PRINTER_INFO_2W = record
+       pServerName : LPWSTR;
+       pPrinterName : LPWSTR;
+       pShareName : LPWSTR;
+       pPortName : LPWSTR;
+       pDriverName : LPWSTR;
+       pComment : LPWSTR;
+       pLocation : LPWSTR;
+       pDevMode : LPDEVMODEW;
+       pSepFile : LPWSTR;
+       pPrintProcessor : LPWSTR;
+       pDatatype : LPWSTR;
+       pParameters : LPWSTR;
+       pSecurityDescriptor : PSECURITY_DESCRIPTOR;
+       Attributes : DWORD;
+       Priority : DWORD;
+       DefaultPriority : DWORD;
+       StartTime : DWORD;
+       UntilTime : DWORD;
+       Status : DWORD;
+       cJobs : DWORD;
+       AveragePPM : DWORD;
+    end;
+
+  PRINTER_INFO_2W = _PRINTER_INFO_2W;
+  PPRINTER_INFO_2W = ^_PRINTER_INFO_2W;
+  LPPRINTER_INFO_2W = ^_PRINTER_INFO_2W;
+
+  //PRINTER_INFO_2 = PRINTER_INFO_2W;
+  //PPRINTER_INFO_2 = ^PRINTER_INFO_2;
+  //LPPRINTER_INFO_2 = ^PRINTER_INFO_2;
+
+
+
+
   _PRINTER_INFO_4A = record
        pPrinterName : LPSTR;
        pServerName : LPSTR;
@@ -158,6 +183,19 @@ type
   PPRINTER_INFO_4 = ^PRINTER_INFO_4;
   LPPRINTER_INFO_4 = ^PRINTER_INFO_4;
 
+  _PRINTER_INFO_4W = record
+       pPrinterName : LPWSTR;
+       pServerName : LPWSTR;
+       Attributes : DWORD;
+    end;
+  PRINTER_INFO_4W = _PRINTER_INFO_4W;
+  PPRINTER_INFO_4W = ^_PRINTER_INFO_4W;
+  LPPRINTER_INFO_4W = ^_PRINTER_INFO_4W;
+
+  //PRINTER_INFO_4 = PRINTER_INFO_4W;
+  //PPRINTER_INFO_4 = ^PRINTER_INFO_4;
+  //LPPRINTER_INFO_4 = ^PRINTER_INFO_4;
+
 type
   { TPrinterDevice }
 
@@ -170,11 +208,8 @@ type
 
     DefaultPaper: Short;
     DefaultBin: short;
-    {$IFDEF USEUNICODE}
-    DevMode: PDeviceModeW;
-    {$ELSE}
-    DevMode: PDeviceMode;
-    {$ENDIF}
+    DevModeW: PDeviceModeW;
+    DevModeA: PDeviceModeA;
     DevModeSize: integer;
     destructor Destroy; override;
   end;
@@ -228,7 +263,8 @@ implementation
 
 destructor TPrinterDevice.Destroy;
 begin
-  ReallocMem(DevMode, 0);
+  ReallocMem(DevModeA, 0);
+  ReallocMem(DevModeW, 0);
   inherited Destroy;
 end;
 
