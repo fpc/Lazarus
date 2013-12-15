@@ -1,0 +1,221 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: pocheckerconsts.ja\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Yuichiro Takahashi <yuichiro@pop07.odn.ne.jp>\n"
+"Language-Team: Japanese Lazarus ML\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"Language: ja\n"
+
+#: pocheckerconsts.rspochecker
+msgid "PO File Checker"
+msgstr "PO ファイルチェッカー"
+
+#: pocheckerconsts.scannotfindmaster
+msgid ""
+"Cannot find master po file:\n"
+"%s\n"
+"for selected file\n"
+"%s\n"
+msgstr ""
+"選択されたファイル\n"
+"%s\n"
+"に対する po ファイルの原本が見つかりません\n"
+"%s\n"
+
+#: pocheckerconsts.scheckforduplicateuntranslatedvalues
+msgid "Check for duplicate untranslated values"
+msgstr "原文のままで翻訳されていない項目の検査"
+
+#: pocheckerconsts.scheckforincompatibleformatarguments
+msgid "Check for incompatible format arguments"
+msgstr "互換性のない書式引数の検査"
+
+#: pocheckerconsts.scheckformismatchesinuntranslatedstrings
+msgid "Check for mismatches in untranslated strings"
+msgstr "原文の不一致検査"
+
+#: pocheckerconsts.scheckmissingidentifiers
+msgid "Check missing identifiers"
+msgstr "欠けている識別子を検査"
+
+#: pocheckerconsts.schecknumberofitems
+msgid "Check number of items"
+msgstr "項目数の検査"
+
+#: pocheckerconsts.scheckstatistics
+msgid "Check percentage of (un)translated and fuzzy strings"
+msgstr ""
+
+#: pocheckerconsts.scopycaption
+msgid "Copy to clipboard"
+msgstr "クリップボードへコピー"
+
+#: pocheckerconsts.scurrentpofile
+msgid "Current po-file:"
+msgstr "現在の po ファイル："
+
+#: pocheckerconsts.scurrenttest
+msgid "Current Test:"
+msgstr "現在のテスト項目："
+
+#: pocheckerconsts.sduplicatelinenrwithvalue
+msgid "[Line %d] %s"
+msgstr "[行 %d] %s"
+
+#: pocheckerconsts.sduplicateoriginals
+msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgstr "原文のままで翻訳されていない項目 \"%s\" が1ヶ所以上存在します："
+
+#: pocheckerconsts.serroroncleanup
+msgid ""
+"An unrecoverable error occurred\n"
+"%s\n"
+"Please close the program\n"
+msgstr ""
+"修復不可能なエラーが発生しました\n"
+"%s\n"
+"プログラムを終了してください\n"
+
+#: pocheckerconsts.serroroncreate
+msgid ""
+"Error creating an instance of TPoFamily:\n"
+"%s\n"
+msgstr ""
+"TPoFamily インスタンス生成中のエラー：\n"
+"%s\n"
+
+#: pocheckerconsts.serrorsbytest
+msgid "Errors / warnings reported by %s for:"
+msgstr "以下のファイルに対する %s によるエラー／警告の結果："
+
+#: pocheckerconsts.sfindalltranslatedpofiles
+msgid "Find all translated po-files"
+msgstr "翻訳されたすべての po ファイルを検査する"
+
+#: pocheckerconsts.sguipofilecheckingtool
+msgid "GUI Po-file checking tool"
+msgstr "GUI po ファイル検査ツール"
+
+#: pocheckerconsts.sidentifiernotfoundin
+msgid "Identifier [%s] not found in %s"
+msgstr "識別子 [%s] が %s 内にありません"
+
+#: pocheckerconsts.sincompatibleformatargs
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
+msgstr "[行：%d] 互換性のないもしくは無効な format() の引数："
+
+#: pocheckerconsts.slineinfilename
+msgid "[Line %d] in %s:"
+msgstr "[行 %d] (%s 内)："
+
+#: pocheckerconsts.slinenr
+msgid "[Line: %d]"
+msgstr "[行：%d]"
+
+#: pocheckerconsts.smissingmasteridentifier
+msgid "Identifier [%s] found in %s, but it does not exist in %s"
+msgstr "識別子 [%s] が %s 内で見つかりましたが、%s 内には存在しません"
+
+#: pocheckerconsts.snoerrorsfound
+msgid "No errors found"
+msgstr "エラーはありません"
+
+#: pocheckerconsts.snotaproperfilename
+msgid ""
+"Selected filename\n"
+"%s\n"
+"does not seem to be a proper name for a po-file\n"
+msgstr ""
+"選択されたファイル\n"
+"%s\n"
+"は、適切な po ファイル名ではないようです\n"
+
+#: pocheckerconsts.snotestselected
+msgid "There are no tests selected."
+msgstr "テスト項目が選択されていません。"
+
+#: pocheckerconsts.snrerrorsfound
+msgid "Found %d errors."
+msgstr "%d 個のエラーが見つかりました。"
+
+#: pocheckerconsts.snrofitemsmismatch
+msgid "Mismatch in number of items for master and child"
+msgstr "原本ファイルと翻訳ファイルの項目数が一致しません"
+
+#: pocheckerconsts.snrofitemsmismatchd
+msgid "%s: %d items"
+msgstr "%s: %d 項目"
+
+#: pocheckerconsts.snrwarningsfound
+msgid "Found %d warnings."
+msgstr "%d 個の警告が見つかりました。"
+
+#: pocheckerconsts.sopenapofile
+msgid "&Open a po-file"
+msgstr "po ファイルを開く(&O)"
+
+#: pocheckerconsts.soriginal
+msgid "Original"
+msgstr "原文"
+
+#: pocheckerconsts.spercfuzzy
+msgid "Fuzzy strings: %2.0f%%."
+msgstr ""
+
+#: pocheckerconsts.sperctranslated
+msgid "Translated strings: %2.0f%%."
+msgstr ""
+
+#: pocheckerconsts.spercuntranslated
+msgid "Untranslated strings: %2.0f%%."
+msgstr ""
+
+#: pocheckerconsts.sresults
+msgid "Results"
+msgstr "結果"
+
+#: pocheckerconsts.srunselectedtests
+msgid "&Run Selected Tests"
+msgstr "選択したテストを実行(&R)"
+
+#: pocheckerconsts.ssavecaption
+msgid "Save to file"
+msgstr "ファイルへ保存"
+
+#: pocheckerconsts.ssaveerror
+msgid ""
+"Error saving file:\n"
+"%s\n"
+msgstr ""
+"ファイル保存中のエラー：\n"
+"%s\n"
+
+#: pocheckerconsts.sselectbasictests
+msgid "Select basic tests"
+msgstr "基本テストを選択"
+
+#: pocheckerconsts.sselecttesttypes
+msgid "Select test types"
+msgstr "テスト項目を選択してください"
+
+#: pocheckerconsts.stotalerrors
+msgid "Total errors / warnings found: %d"
+msgstr "エラー／警告の総数：%d"
+
+#: pocheckerconsts.stotalwarnings
+msgid "Total warnings found: %d"
+msgstr "警告の総数：%d"
+
+#: pocheckerconsts.stranslation
+msgid "Translation"
+msgstr "訳文"
+
+#: pocheckerconsts.stranslationstatistics
+msgid "Translation statistics for:"
+msgstr ""
+
