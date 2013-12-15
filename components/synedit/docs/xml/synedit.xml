@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="SynEdit">
     <descr>
@@ -71,6 +71,9 @@ It also allows to insert code like the begin and end of a multiline comment "(*"
           <link id="#SynEdit.SynEdit.TSynEdit.Options">Options</link>
         </seealso>
         <short>More general options to change the SynEdits behaviour</short>
+      </element>
+    <element name="TCustomSynEdit.RowColumnToPixels"><short>Converts row, column to pixel on client area</short><descr>The pixel is the leftmost, upmost pixel of the character rectangular area.
+For example row, colum 1,1 translates to 0,0 on client area if there is no gutter, no borderwidth, no scrolling etc.</descr>
       </element>
     </module>
   </package>
