@@ -335,8 +335,15 @@ function TCarbonPrinter.GetOutputResolution: PMResolution;
 var
   res: OSStatus;
 begin
+  // PMPrinterGetOutputResolution is supported on OS X 10.5 and later
+  // TODO: check version instead, because 10.5 may still support PowerPC
+  {$if defined(PowerPC) or defined(__ppc__) or defined(ppc)}
+  res := noErr+1;
+  {$else}
   res := PMPrinterGetOutputResolution(GetCurrentPrinter, PrintSettings, Result{%H-});
-  if res<>noErr then begin
+  {$endif}
+  if res<>noErr then
+  begin
     Result.vRes:=72;
     Result.hRes:=72;
   end;
