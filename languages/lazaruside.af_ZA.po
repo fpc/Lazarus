@@ -3747,6 +3747,14 @@ msgstr ""
 msgid "Useful when the code has checks for supported compiler versions"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddedmissingobjectstopascalsource
+msgid "Added missing object \"%s\" to pascal source."
+msgstr ""
+
+#: lazarusidestrconsts.lisaddedpropertysfors
+msgid "Added property \"%s\" for %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilesindirectory
 msgid "Add Files in Directory"
 msgstr ""
@@ -4866,6 +4874,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
+msgstr ""
+
+#: lazarusidestrconsts.lischangedscoordofsfromdtodinsides
+msgid "Changed %s coord of %s from \"%d\" to \"%d\" inside %s."
 msgstr ""
 
 #: lazarusidestrconsts.lischangeencoding
@@ -8069,12 +8081,20 @@ msgstr "Lêer is nie teks nie"
 msgid "File Settings"
 msgstr ""
 
+#: lazarusidestrconsts.lisfileshasincorrectsyntax
+msgid "File %s has incorrect syntax."
+msgstr ""
+
 #: lazarusidestrconsts.lisfileshaverightencoding
 msgid "*** All found files already have the right encoding ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilesisconvertedtotextformat
+msgid "File %s is converted to text format."
 msgstr ""
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding
@@ -13761,6 +13781,10 @@ msgstr ""
 msgid "Remove all units"
 msgstr "Verwyder alle eenhede"
 
+#: lazarusidestrconsts.lisremovedpropertys
+msgid "Removed property \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisremovefrominstalllist
 msgid "Remove from install list"
 msgstr ""
@@ -13861,6 +13885,14 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisreplace"
 msgid "Replace"
 msgstr "Vervang"
+
+#: lazarusidestrconsts.lisreplacedpropertyswiths
+msgid "Replaced property \"%s\" with \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lisreplacedtypeswiths
+msgid "Replaced type \"%s\" with \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacement
 msgid "Replacement"

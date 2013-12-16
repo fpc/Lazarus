@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-12-07 18:58+0400\n"
+"PO-Revision-Date: 2013-12-17 02:14+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3902,6 +3902,14 @@ msgstr "Добавить определения для эмуляции Delphi 7
 msgid "Useful when the code has checks for supported compiler versions"
 msgstr "Полезно при наличии в коде проверок поддерживаемых версий компилятора"
 
+#: lazarusidestrconsts.lisaddedmissingobjectstopascalsource
+msgid "Added missing object \"%s\" to pascal source."
+msgstr "В исходный код на Паскале добавлен отсутствующий объект \"%s\"."
+
+#: lazarusidestrconsts.lisaddedpropertysfors
+msgid "Added property \"%s\" for %s."
+msgstr "Добавлено свойство \"%s\" для %s."
+
 #: lazarusidestrconsts.lisaddfilesindirectory
 msgid "Add Files in Directory"
 msgstr "Добавить файлы из каталога"
@@ -5050,6 +5058,10 @@ msgstr "Сменить режим сборки"
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
 msgstr "Изменить класс"
+
+#: lazarusidestrconsts.lischangedscoordofsfromdtodinsides
+msgid "Changed %s coord of %s from \"%d\" to \"%d\" inside %s."
+msgstr "Изменена координата %s компонента %s с \"%d\" на \"%d\" внутри %s."
 
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
@@ -8296,6 +8308,10 @@ msgstr "Файл не текстовый"
 msgid "File Settings"
 msgstr "Параметры файла"
 
+#: lazarusidestrconsts.lisfileshasincorrectsyntax
+msgid "File %s has incorrect syntax."
+msgstr "Файл %s имеет некорректный синтаксис."
+
 #: lazarusidestrconsts.lisfileshaverightencoding
 msgid "*** All found files already have the right encoding ***"
 msgstr "*** Все найденные файлы уже имеют верную кодировку ***"
@@ -8303,6 +8319,10 @@ msgstr "*** Все найденные файлы уже имеют верную 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Файлы в кодировке ASCII либо UTF-8"
+
+#: lazarusidestrconsts.lisfilesisconvertedtotextformat
+msgid "File %s is converted to text format."
+msgstr "Файл %s преобразован в текстовый."
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding
 msgid "Files not in ASCII nor UTF-8 encoding"
@@ -14154,6 +14174,10 @@ msgstr "Удалить все некорректные свойства"
 msgid "Remove all units"
 msgstr "Удалить все модули"
 
+#: lazarusidestrconsts.lisremovedpropertys
+msgid "Removed property \"%s\"."
+msgstr "Удалено свойство \"%s\"."
+
 #: lazarusidestrconsts.lisremovefrominstalllist
 msgid "Remove from install list"
 msgstr "Удалить из списка на установку"
@@ -14254,6 +14278,14 @@ msgstr "Число повторов:"
 msgctxt "lazarusidestrconsts.lisreplace"
 msgid "Replace"
 msgstr "Заменить"
+
+#: lazarusidestrconsts.lisreplacedpropertyswiths
+msgid "Replaced property \"%s\" with \"%s\"."
+msgstr "Свойство \"%s\" заменено на \"%s\"."
+
+#: lazarusidestrconsts.lisreplacedtypeswiths
+msgid "Replaced type \"%s\" with \"%s\"."
+msgstr "Тип \"%s\" заменён на \"%s\"."
 
 #: lazarusidestrconsts.lisreplacement
 msgid "Replacement"

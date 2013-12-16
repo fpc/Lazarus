@@ -3730,6 +3730,14 @@ msgstr "Lisää määritteitä, mitkä simuloivat Delphi7"
 msgid "Useful when the code has checks for supported compiler versions"
 msgstr "Hyödyllinen kun koodissa on tarkistuksia tuetulle kääntäjälle"
 
+#: lazarusidestrconsts.lisaddedmissingobjectstopascalsource
+msgid "Added missing object \"%s\" to pascal source."
+msgstr ""
+
+#: lazarusidestrconsts.lisaddedpropertysfors
+msgid "Added property \"%s\" for %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilesindirectory
 msgid "Add Files in Directory"
 msgstr "Lisää hakemiston tiedostot"
@@ -4845,6 +4853,10 @@ msgstr "Vaihda koontamoodi"
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
 msgstr "Vaihda luokka"
+
+#: lazarusidestrconsts.lischangedscoordofsfromdtodinsides
+msgid "Changed %s coord of %s from \"%d\" to \"%d\" inside %s."
+msgstr ""
 
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
@@ -8036,6 +8048,10 @@ msgstr "Tiedosto ei ole tekstiä"
 msgid "File Settings"
 msgstr "Tiedoston asetukset"
 
+#: lazarusidestrconsts.lisfileshasincorrectsyntax
+msgid "File %s has incorrect syntax."
+msgstr ""
+
 #: lazarusidestrconsts.lisfileshaverightencoding
 msgid "*** All found files already have the right encoding ***"
 msgstr "*** Kaikilla löydetyillä tiedostoilla on oikea merkkikoodaus ***"
@@ -8043,6 +8059,10 @@ msgstr "*** Kaikilla löydetyillä tiedostoilla on oikea merkkikoodaus ***"
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr "ASCII- tai UTF-8-koodatut tiedostot"
+
+#: lazarusidestrconsts.lisfilesisconvertedtotextformat
+msgid "File %s is converted to text format."
+msgstr ""
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding
 msgid "Files not in ASCII nor UTF-8 encoding"
@@ -13618,6 +13638,10 @@ msgstr "Poista kaikki vikaantuneet tai toimimattomat ominaisuudet"
 msgid "Remove all units"
 msgstr "Poista kaikki käännösyksiköt"
 
+#: lazarusidestrconsts.lisremovedpropertys
+msgid "Removed property \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisremovefrominstalllist
 msgid "Remove from install list"
 msgstr "Poistetaan asennuksesta"
@@ -13716,6 +13740,14 @@ msgstr "Toistojen määrä:"
 msgctxt "lazarusidestrconsts.lisreplace"
 msgid "Replace"
 msgstr "Korvaa"
+
+#: lazarusidestrconsts.lisreplacedpropertyswiths
+msgid "Replaced property \"%s\" with \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lisreplacedtypeswiths
+msgid "Replaced type \"%s\" with \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacement
 msgid "Replacement"

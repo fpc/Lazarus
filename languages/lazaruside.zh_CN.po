@@ -3960,6 +3960,14 @@ msgstr ""
 msgid "Useful when the code has checks for supported compiler versions"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddedmissingobjectstopascalsource
+msgid "Added missing object \"%s\" to pascal source."
+msgstr ""
+
+#: lazarusidestrconsts.lisaddedpropertysfors
+msgid "Added property \"%s\" for %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilesindirectory
 msgid "Add Files in Directory"
 msgstr ""
@@ -5126,6 +5134,10 @@ msgstr ""
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
 msgstr "更改类"
+
+#: lazarusidestrconsts.lischangedscoordofsfromdtodinsides
+msgid "Changed %s coord of %s from \"%d\" to \"%d\" inside %s."
+msgstr ""
 
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
@@ -8376,6 +8388,10 @@ msgstr "文件不是文本文件"
 msgid "File Settings"
 msgstr "文件设置 ..."
 
+#: lazarusidestrconsts.lisfileshasincorrectsyntax
+msgid "File %s has incorrect syntax."
+msgstr ""
+
 #: lazarusidestrconsts.lisfileshaverightencoding
 msgid "*** All found files already have the right encoding ***"
 msgstr ""
@@ -8383,6 +8399,10 @@ msgstr ""
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr "文件为ASCII或UTF-8编码"
+
+#: lazarusidestrconsts.lisfilesisconvertedtotextformat
+msgid "File %s is converted to text format."
+msgstr ""
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding
 msgid "Files not in ASCII nor UTF-8 encoding"
@@ -14372,6 +14392,10 @@ msgstr "移除所有错误的属性"
 msgid "Remove all units"
 msgstr "移除所有单元"
 
+#: lazarusidestrconsts.lisremovedpropertys
+msgid "Removed property \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisremovefrominstalllist
 msgid "Remove from install list"
 msgstr ""
@@ -14472,6 +14496,14 @@ msgstr "重复计数:"
 msgctxt "lazarusidestrconsts.lisreplace"
 msgid "Replace"
 msgstr "替换"
+
+#: lazarusidestrconsts.lisreplacedpropertyswiths
+msgid "Replaced property \"%s\" with \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lisreplacedtypeswiths
+msgid "Replaced type \"%s\" with \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacement
 msgid "Replacement"

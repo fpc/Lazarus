@@ -3871,6 +3871,14 @@ msgstr ""
 msgid "Useful when the code has checks for supported compiler versions"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddedmissingobjectstopascalsource
+msgid "Added missing object \"%s\" to pascal source."
+msgstr ""
+
+#: lazarusidestrconsts.lisaddedpropertysfors
+msgid "Added property \"%s\" for %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilesindirectory
 msgid "Add Files in Directory"
 msgstr "Додати Файли в Теку"
@@ -5018,6 +5026,10 @@ msgstr "Змінити режим побудови"
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
 msgstr "Змінити клас"
+
+#: lazarusidestrconsts.lischangedscoordofsfromdtodinsides
+msgid "Changed %s coord of %s from \"%d\" to \"%d\" inside %s."
+msgstr ""
 
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
@@ -8262,6 +8274,10 @@ msgstr "Не текстовий файл"
 msgid "File Settings"
 msgstr "Параметри Файлу"
 
+#: lazarusidestrconsts.lisfileshasincorrectsyntax
+msgid "File %s has incorrect syntax."
+msgstr ""
+
 #: lazarusidestrconsts.lisfileshaverightencoding
 msgid "*** All found files already have the right encoding ***"
 msgstr "*** Всі знайдені файли вже мають вірне кодування ***"
@@ -8269,6 +8285,10 @@ msgstr "*** Всі знайдені файли вже мають вірне ко
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Файли в кодуванні ASCII або UTF-8"
+
+#: lazarusidestrconsts.lisfilesisconvertedtotextformat
+msgid "File %s is converted to text format."
+msgstr ""
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding
 msgid "Files not in ASCII nor UTF-8 encoding"
@@ -14071,6 +14091,10 @@ msgstr "Видалити всі некоректні властивості"
 msgid "Remove all units"
 msgstr "Видалити всі модулі"
 
+#: lazarusidestrconsts.lisremovedpropertys
+msgid "Removed property \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisremovefrominstalllist
 msgid "Remove from install list"
 msgstr "Видалити з списку встановлення"
@@ -14172,6 +14196,14 @@ msgstr "Повторень:"
 msgctxt "lazarusidestrconsts.lisreplace"
 msgid "Replace"
 msgstr "Заміна"
+
+#: lazarusidestrconsts.lisreplacedpropertyswiths
+msgid "Replaced property \"%s\" with \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lisreplacedtypeswiths
+msgid "Replaced type \"%s\" with \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacement
 msgid "Replacement"
