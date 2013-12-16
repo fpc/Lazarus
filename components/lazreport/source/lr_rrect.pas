@@ -733,7 +733,7 @@ begin
   LblSample.Caption := sRoundRectFormSample;
   Button5.Caption   := sRoundRectFormVar;
   Button6.Caption   := sRoundRectFormData;
-  cbGradian.Caption := sRoundRectFormGradian;
+  cbGradian.Caption := sRoundRectFormGradient;
   lblSWidth.Caption := sRoundRectFormShadow;
   LblSColor.Caption := sRoundRectFormColor;
   cmShadow.Caption  := sRoundRectFormCurve;
