@@ -6531,7 +6531,7 @@ begin
   //debugln(['TFindDeclarationTool.BuildInterfaceIdentifierCache BEFORE ',MainFilename]);
   BuildTree(lsrImplementationStart);
   //debugln(['TFindDeclarationTool.BuildInterfaceIdentifierCache AFTER ',MainFilename]);
-  if Tree.Root=nil then exit;
+  if Tree.Root=nil then exit(false);
 
   // search interface section
   InterfaceNode:=FindInterfaceNode;
