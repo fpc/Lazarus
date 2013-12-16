@@ -169,9 +169,9 @@ begin
   Result:=ConvertDfmToLfm(DfmFilename);
   if Result=mrOK then begin
     if fOrigFormat=sofBinary then
-      s:=Format('File %s is converted to text format.', [DfmFilename])
+      s:=Format(lisFileSIsConvertedToTextFormat, [DfmFilename])
     else
-      s:=Format('File %s syntax is correct.', [DfmFilename]);
+      s:=Format(lisFileSHasIncorrectSyntax, [DfmFilename]);
     if Assigned(fSettings) then
       fSettings.AddLogLine(s)
     else
@@ -397,7 +397,7 @@ begin
           NewIdent:=ObjNode.Name+':'+ObjNode.TypeName;
           fCTLink.CodeTool.AddClassInsertion(UpperCase(ObjNode.Name),
                                    NewIdent+';', ObjNode.Name, ncpPublishedVars);
-          fSettings.AddLogLine(Format('Added missing object "%s" to pascal source.',
+          fSettings.AddLogLine(Format(lisAddedMissingObjectSToPascalSource,
                                       [NewIdent]));
         end
         else if IsMissingType(CurError) then
@@ -410,7 +410,7 @@ begin
           if NewIdent<>'' then begin
             StartPos:=ObjNode.TypeNamePosition;
             EndPos:=StartPos+Length(OldIdent);
-            fSettings.AddLogLine(Format('Replaced type "%s" with "%s".',
+            fSettings.AddLogLine(Format(lisReplacedTypeSWithS,
                                         [OldIdent, NewIdent]));
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
             Result:=mrRetry;
@@ -425,10 +425,10 @@ begin
             // Delete the whole property line if no replacement.
             if NewIdent='' then begin
               FindNiceNodeBounds(TheNode,StartPos,EndPos);
-              fSettings.AddLogLine(Format('Removed property "%s".',[OldIdent]));
+              fSettings.AddLogLine(Format(lisRemovedPropertyS, [OldIdent]));
             end
             else
-              fSettings.AddLogLine(Format('Replaced property "%s" with "%s".',
+              fSettings.AddLogLine(Format(lisReplacedPropertySWithS,
                                           [OldIdent, NewIdent]));
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
             Result:=mrRetry;
@@ -482,7 +482,7 @@ begin
       if NewNum<0 then
         NewNum:=0;
       fLFMBuffer.Replace(TopOffs.StartPos, Len, IntToStr(NewNum));
-      fSettings.AddLogLine(Format('Changed %s coord of %s from "%d" to "%d" inside %s.',
+      fSettings.AddLogLine(Format(lisChangedSCoordOfSFromDToDInsideS,
         [TopOffs.PropName, TopOffs.ChildType, OldNum, NewNum, TopOffs.ParentType]));
     end;
   end;
@@ -499,7 +499,7 @@ begin
     Entry:=TAddPropEntry(aNewProps[i]);
     fLFMBuffer.Replace(Entry.StartPos, Entry.EndPos-Entry.StartPos,
                        Entry.NewPrefix+Entry.NewText);
-    fSettings.AddLogLine(Format('Added property "%s" for %s.',
+    fSettings.AddLogLine(Format(lisAddedPropertySForS,
                                 [Entry.NewText, Entry.ParentType]));
   end;
 end;
