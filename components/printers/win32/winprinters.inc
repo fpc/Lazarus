@@ -570,7 +570,11 @@ begin
               end
               else
               begin
+                {$IFDEF FPC_FULLVERSION>20602}
+                PDev.Device := PChar(TmpDevModeA^.dmDeviceName);
+                {$ELSE}
                 PDev.Device := PChar(PByte(TmpDevModeA^.dmDeviceName));
+                {$ENDIF}
                 PDev.DefaultPaper := TmpDevModeA^.dmPaperSize;
                 PDev.DefaultBin   := TmpDevModeA^.dmDefaultSource;
               end;
