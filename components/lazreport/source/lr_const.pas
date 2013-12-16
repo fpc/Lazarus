@@ -121,16 +121,16 @@ resourcestring
   sDocOptForm2Pass      = '&Two-pass report';
   sDocOptFormTitle      = 'Title';
   sDocOptFormSubject    = 'Subject';
-  sDocOptFormKeyWords   = 'Keys words';
+  sDocOptFormKeyWords   = 'Keywords';
   sDocOptFormComments   = 'Comments';
   sDocVersion           = 'Version';
   sDocMajor             = 'Major';
   sDocMinor             = 'Minor';
   sDocRelease           = 'Release';
   sDocBuild             = 'Build';
-  sDocAutor             = 'Autor';
-  sReportCreateDate     = 'Report create date';
-  sReportLastModifyDate = 'Report last modify date';
+  sDocAutor             = 'Author';
+  sReportCreateDate     = 'Report creation date';
+  sReportLastModifyDate = 'Report last modification date';
   
   
 //--- EvForm resources --------------------------------------------------------
@@ -236,7 +236,7 @@ resourcestring
   sInsChart = 'Insert Chart object';
   sInsShape = 'Insert Shape object';
   sInsBarcode = 'Insert Barcode object';
-  sInsRoundRect = 'Insert an RoundRect with shadow area';
+  sInsRoundRect = 'Insert a RoundRect with shadow area';
   sSubReportOnPage = 'SubReport on page';
   sPicture = '[Picture]';
   sTransparent = 'Transparent';
@@ -259,7 +259,7 @@ resourcestring
   sInches = 'Inches';
   sVirtualDataset = 'Virtual Dataset';
   sFRVariables = 'FR variables';
-  sErrorOccured = 'An error occured during calculating';
+  sErrorOccured = 'An error occurred during calculation';
   sSpecVal = 'Other';
   sFRFError = 'Unsupported FRF format';
   sReportLoadingError = 'Error while loading report';
@@ -271,14 +271,14 @@ resourcestring
   SDoc       = 'Report:';
   SBand      = 'Band:';
   sCurMemo   = 'Memo:';
-  SReportPreparing = 'Report preparing';
+  SReportPreparing = 'Preparing report';
   SFirstPass = 'Performing 1st pass:';
   SPagePreparing = 'Processing page:';
   SError = 'Error';
   SPreview = 'Preview';
   SPagePrinting = 'Printing page:';
   SUntitled = 'Untitled';
-  SPrinterError = 'Printer selected is not valid';
+  SPrinterError = 'Selected printer is not valid';
   STextFile = 'ASCII Text file';
   SRTFFile = 'Rich Text file';
   SCSVFile = 'CSV File';
@@ -672,7 +672,7 @@ resourcestring
     'If [1] parameter is used, calculates average for non-visible rows too.';
 
   SDescriptionCOUNT = 'COUNT(<BandName>)/'+
-    'Returns count of data-rows given in the <BandName>. ';
+    'Returns count of data rows given in the <BandName>. ';
 
   SDescriptionDAYOF =  'DAYOF(<Date>)/'+
     'Returns day number (1..31) of given <Date>.';
@@ -687,7 +687,7 @@ resourcestring
     'Applies <Mask> to given <String> and returns formatted string.';
 
   SDescriptionINPUT = 'INPUT(<Caption> [,Default])/'+
-    'Shows dialog window with headstring <Caption> and edit box. '+
+    'Shows dialog window with title <Caption> and edit box. '+
     'If [Default] parameter is set, puts this string in edit box. '+
     'After user clicks OK, returns input string.';
 

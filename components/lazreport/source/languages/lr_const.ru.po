@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-10-02 00:38+0400\n"
+"PO-Revision-Date: 2013-12-17 03:20+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -257,7 +257,8 @@ msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <St
 msgstr "COPY(<String>, <Position>, <Length>)/Возвращает <Length> символов из строки <String>, начиная с <Position>."
 
 #: lr_const.sdescriptioncount
-msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgstr "COUNT(<BandName>)/Возвращает число строк данных в <BandName>. "
 
 #: lr_const.sdescriptiondayof
@@ -281,7 +282,8 @@ msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
 msgstr "FRAC(<Value>)/Возвращает дробную часть вещественного значения <Value>."
 
 #: lr_const.sdescriptioninput
-msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+#| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Caption> [,Default])/Выводит диалоговое окно с заголовком <Caption> и полем ввода. Если задан параметр [Default], помещает эту строку в поле ввода. После нажатия пользователем кнопки OK возвращает введённую строку."
 
 #: lr_const.sdescriptionint
@@ -453,7 +455,8 @@ msgid "Report:"
 msgstr "Отчёт:"
 
 #: lr_const.sdocautor
-msgid "Autor"
+#| msgid "Autor"
+msgid "Author"
 msgstr "Автор"
 
 #: lr_const.sdocbuild
@@ -477,7 +480,8 @@ msgid "Comments"
 msgstr "Комментарии"
 
 #: lr_const.sdocoptformkeywords
-msgid "Keys words"
+#| msgid "Keys words"
+msgid "Keywords"
 msgstr "Ключевые слова"
 
 #: lr_const.sdocoptformopt
@@ -566,7 +570,8 @@ msgid "Error"
 msgstr "Ошибка"
 
 #: lr_const.serroroccured
-msgid "An error occured during calculating"
+#| msgid "An error occured during calculating"
+msgid "An error occurred during calculation"
 msgstr "Во время подсчёта произошла ошибка"
 
 #: lr_const.sevformcapt
@@ -1399,8 +1404,9 @@ msgid "&Vertical"
 msgstr "&Вертикальное"
 
 #: lr_const.sinsroundrect
-msgid "Insert an RoundRect with shadow area"
-msgstr "Вставить прямоугольник с округлёнными углами (RoundRect) с областью тени"
+#| msgid "Insert an RoundRect with shadow area"
+msgid "Insert a RoundRect with shadow area"
+msgstr "Вставить прямоугольник со скруглёнными углами (RoundRect) и областью тени"
 
 #: lr_const.sinsshape
 msgid "Insert Shape object"
@@ -2121,8 +2127,9 @@ msgid "&Whole page"
 msgstr "&Вся страница"
 
 #: lr_const.sprintererror
-msgid "Printer selected is not valid"
-msgstr "Выбран неверный принтер"
+#| msgid "Printer selected is not valid"
+msgid "Selected printer is not valid"
+msgstr "Выбран некорректный принтер"
 
 #: lr_const.sprintformall
 msgid "&All"
@@ -2179,11 +2186,13 @@ msgid "Report file"
 msgstr "Файл очёта"
 
 #: lr_const.sreportcreatedate
-msgid "Report create date"
+#| msgid "Report create date"
+msgid "Report creation date"
 msgstr "Дата создания отчёта"
 
 #: lr_const.sreportlastmodifydate
-msgid "Report last modify date"
+#| msgid "Report last modify date"
+msgid "Report last modification date"
 msgstr "Дата последнего изменения отчёта"
 
 #: lr_const.sreportloadingerror
@@ -2191,7 +2200,8 @@ msgid "Error while loading report"
 msgstr "Ошибка при загрузке отчёта"
 
 #: lr_const.sreportpreparing
-msgid "Report preparing"
+#| msgid "Report preparing"
+msgid "Preparing report"
 msgstr "Подготовка отчёта"
 
 #: lr_const.sroundrectformbegincolor

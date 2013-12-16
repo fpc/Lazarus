@@ -267,7 +267,9 @@ msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <St
 msgstr "COPY(<String>, <Position>, <Length>)/gibt <Length> Zeichen von <String> ab <Position>."
 
 #: lr_const.sdescriptioncount
-msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+#, fuzzy
+#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgstr "COUNT(<BandName>)/Liefert die Zahl der Datenreihen des angegebenen <BandName>. "
 
 #: lr_const.sdescriptiondayof
@@ -291,7 +293,9 @@ msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
 msgstr "FRAC(<Value>)/Ergibt den Bruchanteil der Gleitkommazahl <Value>."
 
 #: lr_const.sdescriptioninput
-msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+#, fuzzy
+#| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Caption> [,Default])/Zeigt ein Dialogfenster mit der Überschrift <Caption> und einem Eingabefeld. Ist der Parameter [Default] gesetzt, wird dieser String im Eingabefeld eingesetzt. Drückt der Anwender OK, wird der Text im Eingabefeld zurückgeliefert."
 
 #: lr_const.sdescriptionint
@@ -463,7 +467,9 @@ msgid "Report:"
 msgstr "Report:"
 
 #: lr_const.sdocautor
-msgid "Autor"
+#, fuzzy
+#| msgid "Autor"
+msgid "Author"
 msgstr "Autor"
 
 #: lr_const.sdocbuild
@@ -487,7 +493,9 @@ msgid "Comments"
 msgstr "Kommentare"
 
 #: lr_const.sdocoptformkeywords
-msgid "Keys words"
+#, fuzzy
+#| msgid "Keys words"
+msgid "Keywords"
 msgstr "Schlüsselworte"
 
 #: lr_const.sdocoptformopt
@@ -576,7 +584,9 @@ msgid "Error"
 msgstr "Fehler"
 
 #: lr_const.serroroccured
-msgid "An error occured during calculating"
+#, fuzzy
+#| msgid "An error occured during calculating"
+msgid "An error occurred during calculation"
 msgstr "Bei der Berechnung trat ein Fehler auf"
 
 #: lr_const.sevformcapt
@@ -1409,7 +1419,9 @@ msgid "&Vertical"
 msgstr "&Vertikal"
 
 #: lr_const.sinsroundrect
-msgid "Insert an RoundRect with shadow area"
+#, fuzzy
+#| msgid "Insert an RoundRect with shadow area"
+msgid "Insert a RoundRect with shadow area"
 msgstr "Schattierten RoundRect einfügen"
 
 #: lr_const.sinsshape
@@ -2131,7 +2143,9 @@ msgid "&Whole page"
 msgstr "&Ganze &Seite"
 
 #: lr_const.sprintererror
-msgid "Printer selected is not valid"
+#, fuzzy
+#| msgid "Printer selected is not valid"
+msgid "Selected printer is not valid"
 msgstr "Gewählter Drucker ist ungültig"
 
 #: lr_const.sprintformall
@@ -2189,11 +2203,15 @@ msgid "Report file"
 msgstr "Reportdatei"
 
 #: lr_const.sreportcreatedate
-msgid "Report create date"
+#, fuzzy
+#| msgid "Report create date"
+msgid "Report creation date"
 msgstr "Erstelldatum"
 
 #: lr_const.sreportlastmodifydate
-msgid "Report last modify date"
+#, fuzzy
+#| msgid "Report last modify date"
+msgid "Report last modification date"
 msgstr "Datum der letzten Änderung"
 
 #: lr_const.sreportloadingerror
@@ -2201,7 +2219,9 @@ msgid "Error while loading report"
 msgstr ""
 
 #: lr_const.sreportpreparing
-msgid "Report preparing"
+#, fuzzy
+#| msgid "Report preparing"
+msgid "Preparing report"
 msgstr "Report-Vorbereitung"
 
 #: lr_const.sroundrectformbegincolor

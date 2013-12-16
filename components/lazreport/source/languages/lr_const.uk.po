@@ -260,7 +260,9 @@ msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <St
 msgstr "COPY(<String>, <Position>, <Length>)/Повертає <Length> символів з рядка <String>, починаючи з <Position>."
 
 #: lr_const.sdescriptioncount
-msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+#, fuzzy
+#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgstr "COUNT(<BandName>)/Повертає кількість рядків даних у <BandName>."
 
 #: lr_const.sdescriptiondayof
@@ -284,7 +286,9 @@ msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
 msgstr "FRAC(<Value>)/Повертає дробову частину дійсного значення <Value>."
 
 #: lr_const.sdescriptioninput
-msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+#, fuzzy
+#| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Caption> [,Default])/Виводить діалогове вікно з заголовком <Caption> і полем введення. Якщо задано параметр [Default], поміщає цей рядок у полі введення. Після натискання користувачем кнопки OK повертає введений рядок."
 
 #: lr_const.sdescriptionint
@@ -456,7 +460,9 @@ msgid "Report:"
 msgstr "Звіт:"
 
 #: lr_const.sdocautor
-msgid "Autor"
+#, fuzzy
+#| msgid "Autor"
+msgid "Author"
 msgstr "Автор"
 
 #: lr_const.sdocbuild
@@ -480,7 +486,9 @@ msgid "Comments"
 msgstr "Коментарі"
 
 #: lr_const.sdocoptformkeywords
-msgid "Keys words"
+#, fuzzy
+#| msgid "Keys words"
+msgid "Keywords"
 msgstr "Ключові слова"
 
 #: lr_const.sdocoptformopt
@@ -569,7 +577,9 @@ msgid "Error"
 msgstr "Помилка"
 
 #: lr_const.serroroccured
-msgid "An error occured during calculating"
+#, fuzzy
+#| msgid "An error occured during calculating"
+msgid "An error occurred during calculation"
 msgstr "Під час обчислення сталася помилка"
 
 #: lr_const.sevformcapt
@@ -1402,7 +1412,9 @@ msgid "&Vertical"
 msgstr "&Вертикально"
 
 #: lr_const.sinsroundrect
-msgid "Insert an RoundRect with shadow area"
+#, fuzzy
+#| msgid "Insert an RoundRect with shadow area"
+msgid "Insert a RoundRect with shadow area"
 msgstr "Вставити заокруглений прямокутних з областю тіні"
 
 #: lr_const.sinsshape
@@ -2124,7 +2136,9 @@ msgid "&Whole page"
 msgstr "Сторінка &повністю"
 
 #: lr_const.sprintererror
-msgid "Printer selected is not valid"
+#, fuzzy
+#| msgid "Printer selected is not valid"
+msgid "Selected printer is not valid"
 msgstr "Вибраний невірний принтер"
 
 #: lr_const.sprintformall
@@ -2182,11 +2196,11 @@ msgid "Report file"
 msgstr "Файл звіту"
 
 #: lr_const.sreportcreatedate
-msgid "Report create date"
+msgid "Report creation date"
 msgstr ""
 
 #: lr_const.sreportlastmodifydate
-msgid "Report last modify date"
+msgid "Report last modification date"
 msgstr ""
 
 #: lr_const.sreportloadingerror
@@ -2194,7 +2208,9 @@ msgid "Error while loading report"
 msgstr ""
 
 #: lr_const.sreportpreparing
-msgid "Report preparing"
+#, fuzzy
+#| msgid "Report preparing"
+msgid "Preparing report"
 msgstr "Підготовка звіту"
 
 #: lr_const.sroundrectformbegincolor
