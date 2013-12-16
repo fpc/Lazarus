@@ -4256,6 +4256,17 @@ resourcestring
   lisLFMFileContainsInvalidProperties = 'The LFM file contains unknown'
     +' properties/classes which do not exist in the LCL. They can be replaced or removed.';
 
+  lisFileSIsConvertedToTextFormat = 'File %s is converted to text format.';
+  lisFileSHasIncorrectSyntax = 'File %s has incorrect syntax.';
+  lisAddedMissingObjectSToPascalSource = 'Added missing object "%s" to pascal '
+    +'source.';
+  lisReplacedTypeSWithS = 'Replaced type "%s" with "%s".';
+  lisRemovedPropertyS = 'Removed property "%s".';
+  lisReplacedPropertySWithS = 'Replaced property "%s" with "%s".';
+  lisChangedSCoordOfSFromDToDInsideS = 'Changed %s coord of %s from "%d" to "%'
+    +'d" inside %s.';
+  lisAddedPropertySForS = 'Added property "%s" for %s.';
+
   // extract proc dialog
   lisNoCodeSelected = 'No code selected';
   lisPleaseSelectSomeCodeToExtractANewProcedureMethod = 'Please select some '
