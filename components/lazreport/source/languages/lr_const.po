@@ -268,7 +268,7 @@ msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <St
 msgstr ""
 
 #: lr_const.sdescriptioncount
-msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgstr ""
 
 #: lr_const.sdescriptiondayof
@@ -300,7 +300,7 @@ msgid "INC(<Value>)/Increment <Value>."
 msgstr ""
 
 #: lr_const.sdescriptioninput
-msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr ""
 
 #: lr_const.sdescriptionint
@@ -488,7 +488,7 @@ msgid "Report:"
 msgstr ""
 
 #: lr_const.sdocautor
-msgid "Autor"
+msgid "Author"
 msgstr ""
 
 #: lr_const.sdocbuild
@@ -512,7 +512,7 @@ msgid "Comments"
 msgstr ""
 
 #: lr_const.sdocoptformkeywords
-msgid "Keys words"
+msgid "Keywords"
 msgstr ""
 
 #: lr_const.sdocoptformopt
@@ -601,7 +601,7 @@ msgid "Error"
 msgstr ""
 
 #: lr_const.serroroccured
-msgid "An error occured during calculating"
+msgid "An error occurred during calculation"
 msgstr ""
 
 #: lr_const.sevformcapt
@@ -1419,7 +1419,7 @@ msgid "&Vertical"
 msgstr ""
 
 #: lr_const.sinsroundrect
-msgid "Insert an RoundRect with shadow area"
+msgid "Insert a RoundRect with shadow area"
 msgstr ""
 
 #: lr_const.sinsshape
@@ -2144,7 +2144,7 @@ msgid "&Whole page"
 msgstr ""
 
 #: lr_const.sprintererror
-msgid "Printer selected is not valid"
+msgid "Selected printer is not valid"
 msgstr ""
 
 #: lr_const.sprintformall
@@ -2202,11 +2202,11 @@ msgid "Report file"
 msgstr ""
 
 #: lr_const.sreportcreatedate
-msgid "Report create date"
+msgid "Report creation date"
 msgstr ""
 
 #: lr_const.sreportlastmodifydate
-msgid "Report last modify date"
+msgid "Report last modification date"
 msgstr ""
 
 #: lr_const.sreportloadingerror
@@ -2214,7 +2214,7 @@ msgid "Error while loading report"
 msgstr ""
 
 #: lr_const.sreportpreparing
-msgid "Report preparing"
+msgid "Preparing report"
 msgstr ""
 
 #: lr_const.sroundrectformbegincolor
