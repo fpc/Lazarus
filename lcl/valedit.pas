@@ -409,7 +409,6 @@ begin
   begin
     TItemProp(Dest).EditMask := Self.EditMask;
     TItemProp(Dest).EditStyle := Self.EditStyle;
-    TItemProp(Dest).EditStyle := Self.EditStyle;
     TItemProp(Dest).KeyDesc := Self.KeyDesc;
     TItemProp(Dest).PickList.Assign(Self.PickList);
     TItemProp(Dest).MaxLength := Self.MaxLength;
