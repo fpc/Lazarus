@@ -481,7 +481,7 @@ begin
       CurError:=CurError.NextError;
     end;
 
-    // keep only the missing object types with a registered component class
+    // keep missing object types only with a registered component class
     for i:=MissingObjectTypes.Count-1 downto 0 do begin
       RegComp:=IDEComponentPalette.FindComponent(MissingObjectTypes[i]);
       if (RegComp=nil) or (RegComp.GetUnitName='') then
