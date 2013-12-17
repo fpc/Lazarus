@@ -2255,12 +2255,14 @@ msgstr "Końcowy kolor"
 msgid "Framed zone"
 msgstr "Strefa obramowania"
 
-#: lr_const.sroundrectformgradian
-msgid "Gradian"
-msgstr "Gradient"
+#: lr_const.sroundrectformgradient
+msgid "Gradient"
+msgstr ""
 
 #: lr_const.sroundrectformhint
-msgid "Click here to define the shadow color or gradian colors"
+#, fuzzy
+#| msgid "Click here to define the shadow color or gradian colors"
+msgid "Click here to define the shadow color or gradient colors"
 msgstr "Kliknij tutaj aby zdefiniować kolor cienia lub gradient kolorów"
 
 #: lr_const.sroundrectformsample

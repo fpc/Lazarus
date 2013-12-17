@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-12-17 03:20+0400\n"
+"PO-Revision-Date: 2013-12-17 03:54+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -2232,12 +2232,13 @@ msgstr "Конечный цвет"
 msgid "Framed zone"
 msgstr "Зона фрейма"
 
-#: lr_const.sroundrectformgradian
-msgid "Gradian"
-msgstr "Градиан"
+#: lr_const.sroundrectformgradient
+msgid "Gradient"
+msgstr "Градиент"
 
 #: lr_const.sroundrectformhint
-msgid "Click here to define the shadow color or gradian colors"
+#| msgid "Click here to define the shadow color or gradian colors"
+msgid "Click here to define the shadow color or gradient colors"
 msgstr "Щёлкните здесь для задания цвета тени либо цветов градиента"
 
 #: lr_const.sroundrectformsample

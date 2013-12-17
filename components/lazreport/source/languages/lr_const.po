@@ -2201,12 +2201,12 @@ msgstr ""
 msgid "Framed zone"
 msgstr ""
 
-#: lr_const.sroundrectformgradian
-msgid "Gradian"
+#: lr_const.sroundrectformgradient
+msgid "Gradient"
 msgstr ""
 
 #: lr_const.sroundrectformhint
-msgid "Click here to define the shadow color or gradian colors"
+msgid "Click here to define the shadow color or gradient colors"
 msgstr ""
 
 #: lr_const.sroundrectformsample

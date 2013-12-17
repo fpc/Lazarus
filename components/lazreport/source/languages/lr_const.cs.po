@@ -2254,12 +2254,14 @@ msgstr "Barva konce"
 msgid "Framed zone"
 msgstr "Rámovaná oblast"
 
-#: lr_const.sroundrectformgradian
-msgid "Gradian"
-msgstr "Gradian"
+#: lr_const.sroundrectformgradient
+msgid "Gradient"
+msgstr ""
 
 #: lr_const.sroundrectformhint
-msgid "Click here to define the shadow color or gradian colors"
+#, fuzzy
+#| msgid "Click here to define the shadow color or gradian colors"
+msgid "Click here to define the shadow color or gradient colors"
 msgstr "Klikni zde pro definování barvy stínu nebo barev gradiánu"
 
 #: lr_const.sroundrectformsample

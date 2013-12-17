@@ -2241,12 +2241,14 @@ msgstr "Кінцевий колір"
 msgid "Framed zone"
 msgstr "Зона фрейма"
 
-#: lr_const.sroundrectformgradian
-msgid "Gradian"
-msgstr "Градіан"
+#: lr_const.sroundrectformgradient
+msgid "Gradient"
+msgstr ""
 
 #: lr_const.sroundrectformhint
-msgid "Click here to define the shadow color or gradian colors"
+#, fuzzy
+#| msgid "Click here to define the shadow color or gradian colors"
+msgid "Click here to define the shadow color or gradient colors"
 msgstr "Клацніть тут щоб задати колір тіні або кольори градієнта"
 
 #: lr_const.sroundrectformsample

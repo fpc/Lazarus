@@ -25,7 +25,7 @@ resourcestring
   sRoundRectFormSample='Sample :';
   sRoundRectFormVar='Variables ...';
   sRoundRectFormData='Data ..';
-  sRoundRectFormGradian='Gradian';
+  sRoundRectFormGradient='Gradient';
   sRoundRectFormShadow='Shadow width';
   sRoundRectFormColor='Color';
   sRoundRectFormCurve='Curve';
@@ -34,7 +34,7 @@ resourcestring
   sRoundRectFormBeginColor='Begin color';
   sRoundRectFormStyle='Style';
   sRoundRectFormStyleDif='Vertical,Horizontal,Elliptic,Rectangle,Horiz._Center,Vert._Center';
-  sRoundRectFormHint='Click here to define the shadow color or gradian colors';
+  sRoundRectFormHint='Click here to define the shadow color or gradient colors';
   sRoundRectSqrCorners='Squared corners';
 
 //--- PgoptForm resources -----------------------------------------------------

@@ -2244,12 +2244,14 @@ msgstr "Galo spalva"
 msgid "Framed zone"
 msgstr "Įrėminta zona"
 
-#: lr_const.sroundrectformgradian
-msgid "Gradian"
-msgstr "Gradientas"
+#: lr_const.sroundrectformgradient
+msgid "Gradient"
+msgstr ""
 
 #: lr_const.sroundrectformhint
-msgid "Click here to define the shadow color or gradian colors"
+#, fuzzy
+#| msgid "Click here to define the shadow color or gradian colors"
+msgid "Click here to define the shadow color or gradient colors"
 msgstr "Spustelėkite čia, galėsite nurodyti šešėlio spalvą arba gradiento spalvas"
 
 #: lr_const.sroundrectformsample

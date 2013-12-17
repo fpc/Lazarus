@@ -2252,12 +2252,14 @@ msgstr "Warna Akhir"
 msgid "Framed zone"
 msgstr "Zona bingkai"
 
-#: lr_const.sroundrectformgradian
-msgid "Gradian"
-msgstr "Gradien"
+#: lr_const.sroundrectformgradient
+msgid "Gradient"
+msgstr ""
 
 #: lr_const.sroundrectformhint
-msgid "Click here to define the shadow color or gradian colors"
+#, fuzzy
+#| msgid "Click here to define the shadow color or gradian colors"
+msgid "Click here to define the shadow color or gradient colors"
 msgstr "Klik di sini untuk mendefinisikan warna bayangan atau warna gradien"
 
 #: lr_const.sroundrectformsample
