@@ -203,7 +203,7 @@ begin
   if CreateFile(Result) then exit;
   Result:=AppendPathDelim(ExpandFileNameUTF8(GetTempDir))+'compilertest.pas';
   if CreateFile(Result) then exit;
-  Debugln('unable to create temporay file ',Result);
+  Debugln('unable to create temporary file ',Result);
   Result:='';
 end;
 
