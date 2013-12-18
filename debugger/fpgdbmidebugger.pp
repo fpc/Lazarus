@@ -26,6 +26,21 @@ type
     constructor Create(ATextExpression: String; ADebugger: TFpGDBMIDebugger; AThreadId, AStackFrame: Integer);
   end;
 
+  { TFpGDBMIDbgMemReader }
+
+  TFpGDBMIDbgMemReader = class(TFpDbgMemReaderBase)
+  private
+// TODO
+    //FThreadId: Integer;
+    //FStackFrame: Integer;
+    FDebugger: TFpGDBMIDebugger;
+  public
+    constructor Create(ADebugger: TFpGDBMIDebugger);
+    function ReadMemory(AnAddress: FpDbgInfo.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemoryEx(AnAddress, AnAddressSpace: FpDbgInfo.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadRegister(ARegNum: Integer; out AValue: FpDbgInfo.TDbgPtr): Boolean; override;
+  end;
+
   { TFpGDBPTypeRequestCache }
 
   TFpGDBPTypeRequestCache = class(TGDBPTypeRequestCache)
@@ -48,6 +63,7 @@ type
   private
     FImageLoader: TDbgImageLoader;
     FDwarfInfo: TDbgDwarf;
+    FMemReader: TFpGDBMIDbgMemReader;
     // cache last context
     FlastStackFrame, FLastThread: Integer;
     FLastContext: array [0..MAX_CTX_CACHE-1] of TDbgInfoAddressContext;
@@ -65,6 +81,7 @@ type
     function  GetLocationForContext(AThreadId, AStackFrame: Integer): TDBGPtr;
     function  GetInfoContextForContext(AThreadId, AStackFrame: Integer): TDbgInfoAddressContext;
     function CreateTypeRequestCache: TGDBPTypeRequestCache; override;
+    property CurrentCommand;
   public
     class function Caption: String; override;
   public
@@ -115,6 +132,85 @@ type
     procedure Request(const ASource: String); override;
     procedure Cancel(const ASource: String); override;
   end;
+
+{ TFpGDBMIDbgMemReader }
+
+constructor TFpGDBMIDbgMemReader.Create(ADebugger: TFpGDBMIDebugger);
+begin
+  FDebugger := ADebugger;
+end;
+
+type TGDBMIDebuggerCommandHack = class(TGDBMIDebuggerCommand) end;
+
+function TFpGDBMIDbgMemReader.ReadMemory(AnAddress: FpDbgInfo.TDbgPtr; ASize: Cardinal;
+  ADest: Pointer): Boolean;
+var
+  cmd: TGDBMIDebuggerCommandHack;
+  R: TGDBMIExecResult;
+  MemDump: TGDBMIMemoryDumpResultList;
+  i: Integer;
+begin
+  Result := False;
+
+  cmd := TGDBMIDebuggerCommandHack(TFpGDBMIDebugger(FDebugger).CurrentCommand);
+  if cmd = nil then exit;
+
+  if not cmd.ExecuteCommand('-data-read-memory %u x 1 1 %u', [AnAddress, ASize], R, [cfNoThreadContext, cfNoStackContext])
+  then
+    exit;
+  if R.State = dsError then exit;
+
+  MemDump := TGDBMIMemoryDumpResultList.Create(R);
+
+  for i := 0 to MemDump.Count - 1 do begin
+    PByte(ADest + i)^ := Byte(MemDump.ItemNum[i]);
+  end;
+
+debugln(['TFpGDBMIDbgMemReader.ReadMemory ', dbgs(AnAddress), '  ', dbgMemRange(ADest, ASize)]);
+end;
+
+function TFpGDBMIDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: FpDbgInfo.TDbgPtr;
+  ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  Result := False;
+end;
+
+function TFpGDBMIDbgMemReader.ReadRegister(ARegNum: Integer; out
+  AValue: FpDbgInfo.TDbgPtr): Boolean;
+var
+  rname: String;
+  v: String;
+  i: Integer;
+begin
+  Result := False;
+  // 32 bit gdb dwarf names
+  case ARegNum of
+    0:  rname := 'EAX'; // RAX
+    1:  rname := 'ECX'; // RDX
+    2:  rname := 'EDX'; // RCX
+    3:  rname := 'EBX'; // RBX
+    4:  rname := 'ESP';
+    5:  rname := 'EBP';
+    6:  rname := 'ESI';
+    7:  rname := 'EDI';
+    8:  rname := 'EIP';
+    else
+      exit;
+  end;
+  for i := 0 to FDebugger.Registers.Count - 1 do
+    if UpperCase(FDebugger.Registers.Names[i]) = rname then
+      begin
+        v := FDebugger.Registers.Values[i];
+debugln(['TFpGDBMIDbgMemReader.ReadRegister ',rname, '  ', v]);
+        Result := true;
+        try
+          AValue := StrToQWord(v);
+        except
+          Result := False;
+        end;
+        exit;
+      end;
+end;
 
 { TFpGDBMIPascalExpression }
 
@@ -607,8 +703,21 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
       if IdentName <> '' then begin
         PasExpr := TFpGDBMIPascalExpression.Create(IdentName, FDebugger, AThreadId, AStackFrame);
         if PasExpr.Valid then begin
+(*
+if (TFpPascalExpressionHack(PasExpr).ExpressionPart <> nil) and
+   (TFpPascalExpressionHack(PasExpr).ExpressionPart is TFpPascalExpressionPartIdentifer)
+then begin
+  PasExpr.ResultType;
+  rt := TFpPascalExpressionPartIdentifer(TFpPascalExpressionHack(PasExpr).ExpressionPart).FDbgType;
+  if (rt <> nil) then begin
+  debugln(['@@@@@ ',rt.ClassName]);
+  if (rt <> nil) and (rt is TDbgDwarfIdentifierVariable) then begin
+    DebugLn(['########### ', rt.Address ]);
+  end;end;
+end;
+*)
           rt := PasExpr.ResultType;
-          if (rt = nil) and (TFpPascalExpressionHack(PasExpr).ExpressionPart <> nil) then
+            if (rt = nil) and (TFpPascalExpressionHack(PasExpr).ExpressionPart <> nil) then
             rt := TFpPascalExpressionHack(PasExpr).ExpressionPart.ResultTypeCast;
           if rt <> nil then begin
             AddType(IdentName, rt);
@@ -763,8 +872,11 @@ begin
   if not FImageLoader.IsValid then begin
     FreeAndNil(FImageLoader);
     exit;
-  end;;
+  end;
+  FMemReader := TFpGDBMIDbgMemReader.Create(Self);
+
   FDwarfInfo := TDbgDwarf.Create(FImageLoader);
+  FDwarfInfo.MemReader := FMemReader;
   FDwarfInfo.LoadCompilationUnits;
 end;
 
@@ -773,6 +885,7 @@ begin
   debugln(['TFpGDBMIDebugger.UnLoadDwarf ']);
   FreeAndNil(FDwarfInfo);
   FreeAndNil(FImageLoader);
+  FreeAndNil(FMemReader);
 end;
 
 function TFpGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand;

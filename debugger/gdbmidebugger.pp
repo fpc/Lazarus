@@ -817,6 +817,45 @@ type
     function NeedReset: Boolean; override;
   end;
 
+  {%region       *****  TGDBMINameValueList and Parsers  *****   }
+
+  { TGDBMINameValueBasedList }
+
+  TGDBMINameValueBasedList = class
+  protected
+    FNameValueList: TGDBMINameValueList;
+    procedure PreParse; virtual; abstract;
+  public
+    constructor Create;
+    constructor Create(const AResultValues: String);
+    constructor Create(AResult: TGDBMIExecResult);
+    destructor  Destroy; override;
+    procedure Init(AResultValues: string);
+    procedure Init(AResult: TGDBMIExecResult);
+  end;
+
+  { TGDBMIMemoryDumpResultList }
+
+  TGDBMIMemoryDumpResultList = class(TGDBMINameValueBasedList)
+  private
+    FAddr: TDBGPtr;
+    function GetItem(Index: Integer): TPCharWithLen;
+    function GetItemNum(Index: Integer): Integer;
+    function GetItemTxt(Index: Integer): string;
+  protected
+    procedure PreParse; override;
+  public
+    // Expected input format: 1 row with hex values
+    function Count: Integer;
+    property Item[Index: Integer]: TPCharWithLen read GetItem;
+    property ItemTxt[Index: Integer]: string  read GetItemTxt;
+    property ItemNum[Index: Integer]: Integer read GetItemNum;
+    property Addr: TDBGPtr read FAddr;
+    function AsText(AStartOffs, ACount: Integer; AAddrWidth: Integer): string;
+  end;
+
+  {%endregion    *^^^*  TGDBMINameValueList and Parsers  *^^^*   }
+
 
 resourcestring
   gdbmiErrorOnRunCommand = 'The debugger encountered an error when trying to '
@@ -902,45 +941,6 @@ type
 
 type
   TGDBMIEvaluationState = (esInvalid, esRequested, esValid);
-
-  {%region       *****  TGDBMINameValueList and Parsers  *****   }
-
-  { TGDBMINameValueBasedList }
-
-  TGDBMINameValueBasedList = class
-  protected
-    FNameValueList: TGDBMINameValueList;
-    procedure PreParse; virtual; abstract;
-  public
-    constructor Create;
-    constructor Create(const AResultValues: String);
-    constructor Create(AResult: TGDBMIExecResult);
-    destructor  Destroy; override;
-    procedure Init(AResultValues: string);
-    procedure Init(AResult: TGDBMIExecResult);
-  end;
-
-  { TGDBMIMemoryDumpResultList }
-
-  TGDBMIMemoryDumpResultList = class(TGDBMINameValueBasedList)
-  private
-    FAddr: TDBGPtr;
-    function GetItem(Index: Integer): TPCharWithLen;
-    function GetItemNum(Index: Integer): Integer;
-    function GetItemTxt(Index: Integer): string;
-  protected
-    procedure PreParse; override;
-  public
-    // Expected input format: 1 row with hex values
-    function Count: Integer;
-    property Item[Index: Integer]: TPCharWithLen read GetItem;
-    property ItemTxt[Index: Integer]: string  read GetItemTxt;
-    property ItemNum[Index: Integer]: Integer read GetItemNum;
-    property Addr: TDBGPtr read FAddr;
-    function AsText(AStartOffs, ACount: Integer; AAddrWidth: Integer): string;
-  end;
-
-  {%endregion    *^^^*  TGDBMINameValueList and Parsers  *^^^*   }
 
 const
   // priorities for commands
