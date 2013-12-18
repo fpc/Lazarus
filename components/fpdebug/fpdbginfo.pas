@@ -10,6 +10,13 @@ uses
 type
   TDbgPtr = QWord; // PtrUInt;
 
+  TFpDbgMemReaderBase = class
+  public
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual; abstract;
+    function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual; abstract;
+    function ReadRegister(ARegNum: Integer; out AValue: TDbgPtr): Boolean; virtual; abstract;
+  end;
+
   TDbgSymbolType = (
     stNone,
     stValue,  // The symbol has a value (var, field, function, procedure (value is address of func/proc, so it can be called)
@@ -79,6 +86,13 @@ type
   );
   TDbgSymbolFields = set of TDbgSymbolField;
 
+  TDbgSymbolValue = class(TRefCountedObject)
+  public
+  // AsInt
+  // AsBool
+  // ...
+  end;
+
   { TDbgSymbol }
 
   TDbgSymbol = class(TRefCountedObject)
@@ -112,6 +126,7 @@ type
     function GetParent: TDbgSymbol; virtual;
     function GetReference: TDbgSymbol; virtual;
 
+    function GetValueObject: TDbgSymbolValue; virtual;
     function GetHasOrdinalValue: Boolean; virtual;
     function GetOrdinalValue: Int64; virtual;
 
@@ -150,6 +165,7 @@ type
     property SymbolType: TDbgSymbolType read GetSymbolType;
     property Kind:       TDbgSymbolKind read GetKind;
     // Memory; Size is also part of type (byte vs word vs ...)
+    // HasAddress // (register does not have)
     property Address:    TDbgPtr read GetAddress;
     property Size:       Integer read GetSize; // In Bytes
     // TypeInfo used by
@@ -173,6 +189,7 @@ type
     property Parent: TDbgSymbol read GetParent; deprecated;
     //property Children[AIndex: Integer]: TDbgSymbol read GetChild;
     // VALUE
+    property Value: TDbgSymbolValue read GetValueObject;
     property HasOrdinalValue: Boolean read GetHasOrdinalValue;
     property OrdinalValue: Int64 read GetOrdinalValue; // need typecast for QuadWord
     // for Subranges
@@ -302,6 +319,11 @@ begin
   if not(sfiMemberVisibility in FEvaluatedFields) then
     MemberVisibilityNeeded;
   Result := FMemberVisibility;
+end;
+
+function TDbgSymbol.GetValueObject: TDbgSymbolValue;
+begin
+  Result := nil;
 end;
 
 function TDbgSymbol.GetKind: TDbgSymbolKind;

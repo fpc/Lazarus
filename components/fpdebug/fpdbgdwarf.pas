@@ -119,7 +119,6 @@ type
     index: Integer;
     count: SmallInt; // Integer;
     flags: TDwarfAbbrevFlags;
-    //Children: Boolean;
   end;
   PDwarfAbbrev = ^TDwarfAbbrev;
 
@@ -257,6 +256,48 @@ type
     property ChildIndex: Integer read GetChildIndex;
   end;
 
+  { TDwarfLocationStack }
+
+  TDwarfLocationStackEntryKind = (lseError, lseRegister, lseValue, lseValueSigned, lsePart);
+
+  TDwarfLocationStackEntry = record
+    Value: TDbgPtr;
+    Kind:  TDwarfLocationStackEntryKind;
+  end;
+
+  TDwarfLocationStack = object
+  private
+    FList: array of TDwarfLocationStackEntry;
+    FCount: Integer;
+    procedure IncCapacity;
+  public
+    procedure Clear;
+    function  Count: Integer;
+    function  Pop: TDwarfLocationStackEntry;
+    function  Peek: TDwarfLocationStackEntry;
+    function  PeekKind: TDwarfLocationStackEntryKind;
+    function  Peek(AIndex: Integer): TDwarfLocationStackEntry;
+    procedure Push(const AEntry: TDwarfLocationStackEntry);
+    procedure Push(AValue: TDbgPtr; AKind: TDwarfLocationStackEntryKind);
+    procedure Modify(AIndex: Integer; const AEntry: TDwarfLocationStackEntry);
+    procedure Modify(AIndex: Integer; AValue: TDbgPtr; AKind: TDwarfLocationStackEntryKind);
+  end;
+
+  { TDwarfLocationExpression }
+
+  TDwarfLocationExpression = class
+  private
+    FStack: TDwarfLocationStack;
+    FCU: TDwarfCompilationUnit;
+    FData: PByte;
+    FMaxData: PByte;
+  public
+    constructor Create(AExpressionData: Pointer; AMaxCount: Integer; ACU: TDwarfCompilationUnit);
+    procedure Evaluate;
+    function  ResultKind: TDwarfLocationStackEntryKind;
+    function  ResultData: TDbgPtr;
+  end;
+
   { TDwarfInformationEntry }
 
   TDwarfInformationEntry = class(TRefCountedObject)
@@ -307,6 +348,7 @@ type
     function ReadValue(AnAttrib: Cardinal; out AValue: QWord): Boolean;
     function ReadValue(AnAttrib: Cardinal; out AValue: PChar): Boolean;
     function ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
+    function ReadValue(AnAttrib: Cardinal; out AValue: TByteDynArray): Boolean;
     function ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out ACompUnit: TDwarfCompilationUnit): Boolean;
 
     function  ReadName(out AName: String): Boolean; inline;
@@ -445,7 +487,7 @@ type
     procedure BuildAddressMap;
     procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
     function GetUnitName: String;
-    function  MakeAddress(AData: Pointer): QWord;
+    function  ReadAddressAtPointer(AData: Pointer; AIncPointer: Boolean = False): QWord;
   protected
     procedure ScanAllEntries; inline;
     function LocateEntry(ATag: Cardinal; out AResultScope: TDwarfScopeInfo): Boolean;
@@ -543,15 +585,6 @@ type
     function  ReadMemberVisibility(out AMemberVisibility: TDbgSymbolMemberVisibility): Boolean;
     procedure NameNeeded; override;
     procedure TypeInfoNeeded; override;
-
-    //function GetChild(AIndex: Integer): TDbgSymbol; override;
-    //function GetColumn: Cardinal; override;
-    //function GetCount: Integer; override;
-    //function GetFile: String; override;
-//    function GetFlags: TDbgSymbolFlags; override;
-    //function GetLine: Cardinal; override;
-    //function GetParent: TDbgSymbol; override;
-//    function GetReference: TDbgSymbol; override;
     property NestedTypeInfo: TDbgDwarfTypeIdentifier read GetNestedTypeInfo;
     property InformationEntry: TDwarfInformationEntry read FInformationEntry;
 
@@ -834,6 +867,17 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     destructor Destroy; override;
   end;
 
+  { TDbgDwarfIdentifierVariable }
+
+  TDbgDwarfIdentifierVariable = class(TDbgDwarfValueIdentifier)
+  private
+    FLocationParser: TDwarfLocationExpression;
+  protected
+    procedure AddressNeeded; override;
+  public
+    destructor Destroy; override;
+  end;
+
   { TDbgDwarfUnit }
 
   TDbgDwarfUnit = class(TDbgDwarfIdentifier)
@@ -872,6 +916,7 @@ type
   private
     FCompilationUnits: TList;
     FImageBase: QWord;
+    FMemReader: TFpDbgMemReaderBase;
     FSections: array[TDwarfSection] of TDwarfSectionInfo;
     function GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
   protected
@@ -891,6 +936,7 @@ type
     function PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
     function CompilationUnitsCount: Integer;
     property CompilationUnits[AIndex: Integer]: TDwarfCompilationUnit read GetCompilationUnit;
+    property MemReader: TFpDbgMemReaderBase read FMemReader write FMemReader;
   end;
 
   { TDbgVerboseDwarf }
@@ -1382,6 +1428,45 @@ begin
   else
     Result := Format('DW_ID_%d', [AValue]);
   end;
+end;
+
+{ TDbgDwarfIdentifierVariable }
+
+procedure TDbgDwarfIdentifierVariable.AddressNeeded;
+var
+  Val: TByteDynArray;
+begin
+  //inherited AddressNeeded;
+  if FLocationParser = nil then begin
+
+    //TODO: avoid copying data
+    if not  FInformationEntry.ReadValue(DW_AT_location, Val) then begin
+      // error
+      DebugLn('failed to read DW_AT_location');
+      SetAddress(0);
+      exit;
+    end;
+    if Length(Val) = 0 then begin
+      // error
+      DebugLn('failed to read DW_AT_location');
+      SetAddress(0);
+      exit;
+    end;
+
+    FLocationParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), FCU);
+    FLocationParser.Evaluate;
+  end;
+
+  if FLocationParser.ResultKind in [lseValue, lseValueSigned] then
+    SetAddress(FLocationParser.ResultData)
+  else
+    SetAddress(0);
+end;
+
+destructor TDbgDwarfIdentifierVariable.Destroy;
+begin
+  FreeAndNil(FLocationParser);
+  inherited Destroy;
 end;
 
 { TLEB128PreFixTree }
@@ -2157,6 +2242,402 @@ begin
   Result := CreateScopeForEntry(AEntry, FIndex); // First Child, but no parent.next yet
 end;
 
+{ TDwarfLocationStack }
+
+procedure TDwarfLocationStack.IncCapacity;
+begin
+  SetLength(FList, Max(Length(FList), FCount) + 64);
+end;
+
+procedure TDwarfLocationStack.Clear;
+begin
+  FCount := 0;
+end;
+
+function TDwarfLocationStack.Count: Integer;
+begin
+  Result := FCount;
+end;
+
+function TDwarfLocationStack.Pop: TDwarfLocationStackEntry;
+begin
+  if FCount = 0 then begin
+    Result.Kind := lseError;
+    exit;
+  end;
+  dec(FCount);
+  Result := FList[FCount];
+end;
+
+function TDwarfLocationStack.Peek: TDwarfLocationStackEntry;
+begin
+  if FCount = 0 then begin
+    Result.Kind := lseError;
+    exit;
+  end;
+  Result := FList[FCount-1];
+end;
+
+function TDwarfLocationStack.PeekKind: TDwarfLocationStackEntryKind;
+begin
+  if FCount = 0 then begin
+    Result := lseError;
+    exit;
+  end;
+  Result := FList[FCount-1].Kind;
+end;
+
+function TDwarfLocationStack.Peek(AIndex: Integer): TDwarfLocationStackEntry;
+begin
+  if AIndex >= FCount then begin
+    Result.Kind := lseError;
+    exit;
+  end;
+  Result := FList[FCount-1-AIndex];
+end;
+
+procedure TDwarfLocationStack.Push(const AEntry: TDwarfLocationStackEntry);
+begin
+  if Length(FList) <= FCount then
+    IncCapacity;
+  FList[FCount] := AEntry;
+  inc(FCount);
+end;
+
+procedure TDwarfLocationStack.Push(AValue: TDbgPtr; AKind: TDwarfLocationStackEntryKind);
+begin
+  if Length(FList) <= FCount then
+    IncCapacity;
+  FList[FCount].Value := AValue;
+  FList[FCount].Kind  := AKind;
+  inc(FCount);
+end;
+
+procedure TDwarfLocationStack.Modify(AIndex: Integer; const AEntry: TDwarfLocationStackEntry);
+begin
+  Assert(AIndex < FCount);
+  if AIndex >= FCount then
+    exit;
+  FList[FCount-1-AIndex] := AEntry;
+end;
+
+procedure TDwarfLocationStack.Modify(AIndex: Integer; AValue: TDbgPtr;
+  AKind: TDwarfLocationStackEntryKind);
+begin
+  Assert(AIndex < FCount);
+  if AIndex >= FCount then
+    exit;
+  FList[FCount-1-AIndex].Value := AValue;
+  FList[FCount-1-AIndex].Kind  := AKind;
+end;
+
+{ TDwarfLocationExpression }
+
+constructor TDwarfLocationExpression.Create(AExpressionData: Pointer; AMaxCount: Integer;
+  ACU: TDwarfCompilationUnit);
+begin
+  FStack.Clear;
+  FCU := ACU;
+  FData := AExpressionData;
+  FMaxData := FData + AMaxCount;
+end;
+
+procedure TDwarfLocationExpression.Evaluate;
+
+  procedure SetError;
+  begin
+    FStack.Push(0, lseError); // Mark as failed
+  end;
+
+  function AssertAddressOnStack: Boolean;
+  begin
+    Result := FStack.PeekKind in [lseValue, lseValueSigned, lseRegister];
+    if not Result then
+      SetError;
+  end;
+
+  function AssertMinCount(ACnt: Integer): Boolean;
+  begin
+    Result := FStack.Count >= ACnt;
+    if not Result then
+      SetError;
+  end;
+
+var
+  MemReader: TFpDbgMemReaderBase;
+
+  function ReadValueFromMemory(AnAddress: TDbgPtr; ASize: Cardinal; out AValue: TDbgPtr): Boolean;
+  begin
+    if ASize > SizeOf(AValue) then exit(False);
+    Result := MemReader.ReadMemory(AnAddress, ASize, @AValue);
+    if not Result then
+      SetError;
+  end;
+
+  function ReadValueFromMemoryEx(AnAddress, AnAddrSpace: TDbgPtr; ASize: Cardinal; out AValue: TDbgPtr): Boolean;
+  begin
+    if ASize > SizeOf(AValue) then exit(False);
+    Result := MemReader.ReadMemoryEx(AnAddress, AnAddrSpace, ASize, @AValue);
+    if not Result then
+      SetError;
+  end;
+
+  function ReadUnsignedFromExpression(var p: Pointer; ASize: Integer): TDbgPtr;
+  begin
+    case ASize of
+      1: Result := PByte(p)^;
+      2: Result := PWord(p)^;
+      4: Result := PLongWord(p)^;
+      8: Result := PQWord(p)^;
+      0: Result := ULEB128toOrdinal(p);
+    end;
+    inc(p, ASize);
+  end;
+
+  function ReadSignedFromExpression(var p: Pointer; ASize: Integer): TDbgPtr;
+  begin
+    case ASize of
+      1: Int64(Result) := PShortInt(p)^;
+      2: Int64(Result) := PSmallInt(p)^;
+      4: Int64(Result) := PLongint(p)^;
+      8: Int64(Result) := PInt64(p)^;
+      0: Int64(Result) := SLEB128toOrdinal(p);
+    end;
+    inc(p, ASize);
+  end;
+
+var
+  p: PByte;
+  AdrSize: Byte;
+  NewValue: TDbgPtr;
+  i: TDbgPtr;
+  Entry: TDwarfLocationStackEntry;
+begin
+  AdrSize := FCU.FAddressSize;
+  MemReader := FCU.FOwner.MemReader;
+  while FData < FMaxData do begin
+    p := FData;
+    inc(FData);
+    case p^ of
+      DW_OP_addr:  FStack.Push(FCU.ReadAddressAtPointer(FData, True), lseValue);
+      DW_OP_deref: begin
+          if not AssertAddressOnStack then exit;
+          if not ReadValueFromMemory(FStack.Pop.Value, AdrSize, NewValue) then exit;
+          FStack.Push(NewValue, lseValue);
+        end;
+      DW_OP_xderef: begin
+          if not AssertAddressOnStack  then exit;
+          i := FStack.Pop.Value;
+          if not AssertAddressOnStack then exit;
+          if not ReadValueFromMemoryEx(i, FStack.Pop.Value, AdrSize, NewValue) then exit;
+          FStack.Push(NewValue, lseValue);
+        end;
+      DW_OP_deref_size: begin
+          if not AssertAddressOnStack then exit;
+          if not ReadValueFromMemory(FStack.Pop.Value, ReadUnsignedFromExpression(FData, 1), NewValue) then exit;
+          FStack.Push(NewValue, lseValue);
+        end;
+      DW_OP_xderef_size: begin
+          if not AssertAddressOnStack  then exit;
+          i := FStack.Pop.Value;
+          if not AssertAddressOnStack then exit;
+          if not ReadValueFromMemoryEx(i, FStack.Pop.Value, ReadUnsignedFromExpression(FData, 1), NewValue) then exit;
+          FStack.Push(NewValue, lseValue);
+        end;
+      DW_OP_const1u: FStack.Push(ReadUnsignedFromExpression(FData, 1), lseValue);
+      DW_OP_const2u: FStack.Push(ReadUnsignedFromExpression(FData, 3), lseValue);
+      DW_OP_const4u: FStack.Push(ReadUnsignedFromExpression(FData, 4), lseValue);
+      DW_OP_const8u: FStack.Push(ReadUnsignedFromExpression(FData, 8), lseValue);
+      DW_OP_constu:  FStack.Push(ReadUnsignedFromExpression(FData, 0), lseValue);
+      DW_OP_const1s: FStack.Push(ReadSignedFromExpression(FData, 1), lseValueSigned);
+      DW_OP_const2s: FStack.Push(ReadSignedFromExpression(FData, 3), lseValueSigned);
+      DW_OP_const4s: FStack.Push(ReadSignedFromExpression(FData, 4), lseValueSigned);
+      DW_OP_const8s: FStack.Push(ReadSignedFromExpression(FData, 8), lseValueSigned);
+      DW_OP_consts:  FStack.Push(ReadSignedFromExpression(FData, 0), lseValueSigned);
+      DW_OP_dup: begin
+          if not AssertMinCount(1) then exit;
+          FStack.Push(FStack.Peek);
+        end;
+      DW_OP_drop: begin
+          if not AssertMinCount(1) then exit;
+          FStack.Pop;
+        end;
+      DW_OP_over: begin
+          if not AssertMinCount(2) then exit;
+          FStack.Push(FStack.Peek(1));
+        end;
+      DW_OP_pick: begin
+          i := ReadUnsignedFromExpression(FData, 1);
+          if not AssertMinCount(i) then exit;
+          FStack.Push(FStack.Peek(i));
+        end;
+      DW_OP_swap: begin
+          if not AssertMinCount(2) then exit;
+          Entry := FStack.Peek(0);
+          FStack.Modify(0, FStack.Peek(1));
+          FStack.Modify(1, Entry);
+        end;
+      DW_OP_rot: begin
+          if not AssertMinCount(3) then exit;
+          Entry := FStack.Peek(0);
+          FStack.Modify(0, FStack.Peek(1));
+          FStack.Modify(1, FStack.Peek(2));
+          FStack.Modify(2, Entry);
+        end;
+(*
+  DW_OP_abs                   = $19;    // 0
+  DW_OP_and                   = $1a;    // 0
+  DW_OP_div                   = $1b;    // 0
+  DW_OP_minus                 = $1c;    // 0
+  DW_OP_mod                   = $1d;    // 0
+  DW_OP_mul                   = $1e;    // 0
+  DW_OP_neg                   = $1f;    // 0
+  DW_OP_not                   = $20;    // 0
+  DW_OP_or                    = $21;    // 0
+  DW_OP_plus                  = $22;    // 0
+  DW_OP_plus_uconst           = $23;    // 1 ULEB128 addend
+  DW_OP_shl                   = $24;    // 0
+  DW_OP_shr                   = $25;    // 0
+  DW_OP_shra                  = $26;    // 0
+  DW_OP_xor                   = $27;    // 0
+  DW_OP_skip                  = $2f;    // 1 signed 2-byte constant
+  DW_OP_bra                   = $28;    // 1 signed 2-byte constant
+  DW_OP_eq                    = $29;    // 0
+  DW_OP_ge                    = $2a;    // 0
+  DW_OP_gt                    = $2b;    // 0
+  DW_OP_le                    = $2c;    // 0
+  DW_OP_lt                    = $2d;    // 0
+  DW_OP_ne                    = $2e;    // 0
+  DW_OP_lit0                  = $30;    // 0 literals 0..31 =    (DW_OP_lit0 + literal)
+  DW_OP_lit1                  = $31;    // 0
+  DW_OP_lit2                  = $32;    // 0
+  DW_OP_lit3                  = $33;    // 0
+  DW_OP_lit4                  = $34;    // 0
+  DW_OP_lit5                  = $35;    // 0
+  DW_OP_lit6                  = $36;    // 0
+  DW_OP_lit7                  = $37;    // 0
+  DW_OP_lit8                  = $38;    // 0
+  DW_OP_lit9                  = $39;    // 0
+  DW_OP_lit10                 = $3a;    // 0
+  DW_OP_lit11                 = $3b;    // 0
+  DW_OP_lit12                 = $3c;    // 0
+  DW_OP_lit13                 = $3d;    // 0
+  DW_OP_lit14                 = $3e;    // 0
+  DW_OP_lit15                 = $3f;    // 0
+  DW_OP_lit16                 = $40;    // 0
+  DW_OP_lit17                 = $41;    // 0
+  DW_OP_lit18                 = $42;    // 0
+  DW_OP_lit19                 = $43;    // 0
+  DW_OP_lit20                 = $44;    // 0
+  DW_OP_lit21                 = $45;    // 0
+  DW_OP_lit22                 = $46;    // 0
+  DW_OP_lit23                 = $47;    // 0
+  DW_OP_lit24                 = $48;    // 0
+  DW_OP_lit25                 = $49;    // 0
+  DW_OP_lit26                 = $4a;    // 0
+  DW_OP_lit27                 = $4b;    // 0
+  DW_OP_lit28                 = $4c;    // 0
+  DW_OP_lit29                 = $4d;    // 0
+  DW_OP_lit30                 = $4e;    // 0
+  DW_OP_lit31                 = $4f;    // 0
+  DW_OP_reg0                  = $50;    // 0 reg 0..31 =    (DW_OP_reg0 + regnum)
+  DW_OP_reg1                  = $51;    // 0
+  DW_OP_reg2                  = $52;    // 0
+  DW_OP_reg3                  = $53;    // 0
+  DW_OP_reg4                  = $54;    // 0
+  DW_OP_reg5                  = $55;    // 0
+  DW_OP_reg6                  = $56;    // 0
+  DW_OP_reg7                  = $57;    // 0
+  DW_OP_reg8                  = $58;    // 0
+  DW_OP_reg9                  = $59;    // 0
+  DW_OP_reg10                 = $5a;    // 0
+  DW_OP_reg11                 = $5b;    // 0
+  DW_OP_reg12                 = $5c;    // 0
+  DW_OP_reg13                 = $5d;    // 0
+  DW_OP_reg14                 = $5e;    // 0
+  DW_OP_reg15                 = $5f;    // 0
+  DW_OP_reg16                 = $60;    // 0
+  DW_OP_reg17                 = $61;    // 0
+  DW_OP_reg18                 = $62;    // 0
+  DW_OP_reg19                 = $63;    // 0
+  DW_OP_reg20                 = $64;    // 0
+  DW_OP_reg21                 = $65;    // 0
+  DW_OP_reg22                 = $66;    // 0
+  DW_OP_reg23                 = $67;    // 0
+  DW_OP_reg24                 = $68;    // 0
+  DW_OP_reg25                 = $69;    // 0
+  DW_OP_reg26                 = $6a;    // 0
+  DW_OP_reg27                 = $6b;    // 0
+  DW_OP_reg28                 = $6c;    // 0
+  DW_OP_reg29                 = $6d;    // 0
+  DW_OP_reg30                 = $6e;    // 0
+  DW_OP_reg31                 = $6f;    // 0
+  DW_OP_breg0                 = $70;    // 1 SLEB128 offsetbase register 0..31 =     (DW_OP_breg0 + regnum)
+  DW_OP_breg1                 = $71;    // 1
+  DW_OP_breg2                 = $72;    // 1
+  DW_OP_breg3                 = $73;    // 1
+  DW_OP_breg4                 = $74;    // 1
+  DW_OP_breg5                 = $75;    // 1
+  DW_OP_breg6                 = $76;    // 1
+  DW_OP_breg7                 = $77;    // 1
+  DW_OP_breg8                 = $78;    // 1
+  DW_OP_breg9                 = $79;    // 1
+  DW_OP_breg10                = $7a;    // 1
+  DW_OP_breg11                = $7b;    // 1
+  DW_OP_breg12                = $7c;    // 1
+  DW_OP_breg13                = $7d;    // 1
+  DW_OP_breg14                = $7e;    // 1
+  DW_OP_breg15                = $7f;    // 1
+  DW_OP_breg16                = $80;    // 1
+  DW_OP_breg17                = $81;    // 1
+  DW_OP_breg18                = $82;    // 1
+  DW_OP_breg19                = $83;    // 1
+  DW_OP_breg20                = $84;    // 1
+  DW_OP_breg21                = $85;    // 1
+  DW_OP_breg22                = $86;    // 1
+  DW_OP_breg23                = $87;    // 1
+  DW_OP_breg24                = $88;    // 1
+  DW_OP_breg25                = $89;    // 1
+  DW_OP_breg26                = $8a;    // 1
+  DW_OP_breg27                = $8b;    // 1
+  DW_OP_breg28                = $8c;    // 1
+  DW_OP_breg29                = $8d;    // 1
+  DW_OP_breg30                = $8e;    // 1
+  DW_OP_breg31                = $8f;    // 1
+  DW_OP_regx                  = $90;    // 1 ULEB128 register
+  DW_OP_fbreg                 = $91;    // 1 SLEB128 offset
+  DW_OP_bregx                 = $92;    // 2 ULEB128 register followed bySLEB128 offset
+  DW_OP_piece                 = $93;    // 1 ULEB128 size of piece addressed
+  DW_OP_nop                   = $96;    // 0
+  // --- DWARF3 ---
+  DW_OP_push_object_address   = $97;    // 0
+  DW_OP_call2                 = $98;    // 1 2-byte offset of DIE
+  DW_OP_call4                 = $99;    // 1 4-byte offset of DIE
+  DW_OP_call_ref              = $9a;    // 1 4- or 8-byte offset of DIE
+  DW_OP_form_tls_address      = $9b;    // 0
+  DW_OP_call_frame_cfa        = $9c;    // 0
+  DW_OP_bit_piece             = $9d;    // 2
+*)
+    end;
+  end;
+end;
+
+function TDwarfLocationExpression.ResultKind: TDwarfLocationStackEntryKind;
+begin
+  if FStack.Count > 0 then
+    Result := FStack.PeekKind
+  else
+    Result := lseError;
+end;
+
+function TDwarfLocationExpression.ResultData: TDbgPtr;
+begin
+  if FStack.Count > 0 then
+    Result := FStack.Peek.Value
+  else
+    Result := 0;
+end;
+
 { TDwarfInformationEntry }
 
 procedure TDwarfInformationEntry.ScopeChanged;
@@ -2571,6 +3052,22 @@ begin
 end;
 
 function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
+var
+  AData: pointer;
+  i: Integer;
+begin
+  i := AttribIdx(AnAttrib, AData);
+  if i < 0 then begin
+    if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
+    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
+    else Result := False;
+  end
+  else
+    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+end;
+
+function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out
+  AValue: TByteDynArray): Boolean;
 var
   AData: pointer;
   i: Integer;
@@ -3558,7 +4055,6 @@ class function TDbgDwarfIdentifier.GetSubClass(ATag: Cardinal): TDbgDwarfIdentif
 begin
   case ATag of
     // TODO:
-    DW_TAG_variable,
     DW_TAG_formal_parameter,
     DW_TAG_constant:
       Result := TDbgDwarfValueIdentifier;
@@ -3585,6 +4081,7 @@ begin
     DW_TAG_class_type:       Result := TDbgDwarfIdentifierStructure;
     DW_TAG_array_type:       Result := TDbgDwarfIdentifierArray;
     // Value types
+    DW_TAG_variable:         Result := TDbgDwarfIdentifierVariable;
     DW_TAG_member:           Result := TDbgDwarfIdentifierMember;
     DW_TAG_subprogram:       Result := TDbgDwarfProcSymbol;
     //
@@ -4893,11 +5390,13 @@ begin
 
 end;
 
-function TDwarfCompilationUnit.MakeAddress(AData: Pointer): QWord;
+function TDwarfCompilationUnit.ReadAddressAtPointer(AData: Pointer;
+  AIncPointer: Boolean): QWord;
 begin
   if FAddressSize = 4 // TODO Dwarf3 depends on FIsDwarf64
   then Result := PLongWord(AData)^
   else Result := PQWord(AData)^;
+  if AIncPointer then inc(AData, FAddressSize);
 end;
 
 function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Cardinal): Boolean;
@@ -4906,7 +5405,7 @@ begin
   case AForm of
     DW_FORM_addr,
     DW_FORM_ref_addr : begin
-      AValue := MakeAddress(AAttribute);
+      AValue := ReadAddressAtPointer(AAttribute);
     end;
     DW_FORM_flag,
     DW_FORM_ref1,
@@ -4943,7 +5442,7 @@ begin
   case AForm of
     DW_FORM_addr,
     DW_FORM_ref_addr : begin
-      AValue := MakeAddress(AAttribute);
+      AValue := ReadAddressAtPointer(AAttribute);
     end;
     DW_FORM_flag,
     DW_FORM_ref1,
@@ -4980,7 +5479,7 @@ begin
   case AForm of
     DW_FORM_addr,
     DW_FORM_ref_addr : begin
-      AValue := MakeAddress(AAttribute);
+      AValue := ReadAddressAtPointer(AAttribute);
     end;
     DW_FORM_flag,
     DW_FORM_ref1,
@@ -5032,7 +5531,7 @@ begin
   case AForm of
     DW_FORM_addr,
     DW_FORM_ref_addr : begin
-      AValue := MakeAddress(AAttribute);
+      AValue := ReadAddressAtPointer(AAttribute);
     end;
     DW_FORM_flag,
     DW_FORM_ref1,
@@ -5677,7 +6176,7 @@ p := AData;
         DbgOut(FPDBG_DWARF_VERBOSE, [', value: ']);
         case Form of
           DW_FORM_addr     : begin
-            Value := FCU.MakeAddress(AData);
+            Value := FCU.ReadAddressAtPointer(AData);
             ValuePtr := Pointer(PtrUInt(Value));
             ValueSize := FCU.FAddressSize;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.FAddressSize * 2)]);
@@ -5783,7 +6282,7 @@ p := AData;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, ValueSize * 2)]);
           end;
           DW_FORM_ref_addr : begin
-            Value := FCU.MakeAddress(AData);
+            Value := FCU.ReadAddressAtPointer(AData);
             ValuePtr := Pointer(PtrUInt(Value));
             ValueSize := FCU.FAddressSize;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.FAddressSize * 2)]);
@@ -5795,7 +6294,7 @@ p := AData;
             ValueSize := PtrUInt(AData) - PtrUInt(ValuePtr);
           end;
           DW_FORM_strp     : begin
-            Value := FCU.MakeAddress(AData);
+            Value := FCU.ReadAddressAtPointer(AData);
             ValueSize := FCU.FAddressSize;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.FAddressSize * 2)]);
             Inc(AData, FCU.FAddressSize);
