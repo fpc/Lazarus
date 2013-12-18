@@ -2232,6 +2232,7 @@ components/lazreport/source/addons/pdfexport/readme.txt svneol=native#text/plain
 components/lazreport/source/addons/pdfexport/tfrtnpdfexport.png -text svneol=unset#image/png
 components/lazreport/source/barcode.pas svneol=native#text/pascal
 components/lazreport/source/bullets.res -text
+components/lazreport/source/fr3tolrf.pas svneol=native#text/pascal
 components/lazreport/source/fr_pencil.res -text
 components/lazreport/source/languages/lr_const.cs.po svneol=native#text/plain
 components/lazreport/source/languages/lr_const.de.po svneol=native#text/plain

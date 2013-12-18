@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <PathDelim Value="\"/>
@@ -217,76 +217,76 @@ See license.txt and license-lazreport.txt for details.
         <UnitName Value="LR_Register"/>
       </Item46>
       <Item47>
-        <Filename Value="lr_register.lrs"/>
-        <Type Value="LRS"/>
-      </Item47>
-      <Item48>
         <Filename Value="lr_rrect.pas"/>
         <UnitName Value="LR_RRect"/>
-      </Item48>
-      <Item49>
+      </Item47>
+      <Item48>
         <Filename Value="lr_rrect.lfm"/>
         <Type Value="LFM"/>
-      </Item49>
-      <Item50>
+      </Item48>
+      <Item49>
         <Filename Value="lr_shape.pas"/>
         <UnitName Value="LR_Shape"/>
-      </Item50>
-      <Item51>
+      </Item49>
+      <Item50>
         <Filename Value="lr_shape.lfm"/>
         <Type Value="LFM"/>
-      </Item51>
-      <Item52>
+      </Item50>
+      <Item51>
         <Filename Value="lr_utils.pas"/>
         <UnitName Value="LR_Utils"/>
-      </Item52>
-      <Item53>
+      </Item51>
+      <Item52>
         <Filename Value="lr_var.pas"/>
         <UnitName Value="LR_Var"/>
-      </Item53>
-      <Item54>
+      </Item52>
+      <Item53>
         <Filename Value="lr_var.lfm"/>
         <Type Value="LFM"/>
-      </Item54>
-      <Item55>
+      </Item53>
+      <Item54>
         <Filename Value="lr_vared.pas"/>
         <UnitName Value="LR_Vared"/>
-      </Item55>
-      <Item56>
+      </Item54>
+      <Item55>
         <Filename Value="lr_vared.lfm"/>
         <Type Value="LFM"/>
-      </Item56>
-      <Item57>
+      </Item55>
+      <Item56>
         <Filename Value="lr_view.pas"/>
         <UnitName Value="LR_View"/>
-      </Item57>
-      <Item58>
+      </Item56>
+      <Item57>
         <Filename Value="lr_view.lfm"/>
         <Type Value="LFM"/>
-      </Item58>
-      <Item59>
+      </Item57>
+      <Item58>
         <Filename Value="lr_newrp.pas"/>
         <UnitName Value="LR_Newrp"/>
-      </Item59>
-      <Item60>
+      </Item58>
+      <Item59>
         <Filename Value="barcode.pas"/>
         <UnitName Value="Barcode"/>
-      </Item60>
-      <Item61>
+      </Item59>
+      <Item60>
         <Filename Value="lr_dbrel.pas"/>
         <UnitName Value="LR_DBRel"/>
-      </Item61>
-      <Item62>
+      </Item60>
+      <Item61>
         <Filename Value="lr_dbcomponent.pas"/>
         <UnitName Value="LR_DBComponent"/>
-      </Item62>
-      <Item63>
+      </Item61>
+      <Item62>
         <Filename Value="lr_hyphen.pas"/>
         <UnitName Value="lr_hyphen"/>
-      </Item63>
-      <Item64>
+      </Item62>
+      <Item63>
         <Filename Value="lr_intrp.pas"/>
         <UnitName Value="LR_Intrp"/>
+      </Item63>
+      <Item64>
+        <Filename Value="fr3tolrf.pas"/>
+        <UnitName Value="fr3tolrf"/>
       </Item64>
     </Files>
     <i18n>
