@@ -170,7 +170,7 @@ begin
       objcselector('lclItemSelected:'), NSString.alloc.init);
     ns.release;
     item.setTarget(item);
-    TCocoaMenuItem(item).lcltarget:=AMenuItem;
+    TCocoaMenuItem(item).callback:=TLCLMenuItemCallback.Create(item, AMenuItem);
     item.setEnabled(AMenuItem.Enabled);
   end;
 

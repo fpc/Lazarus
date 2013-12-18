@@ -14,6 +14,8 @@ uses
   CocoaPrivate, CocoaGDIObjects, CocoaCaret, CocoaUtils, LCLMessageGlue;
 
 type
+
+
   { TLCLCommonCallback }
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
@@ -96,6 +98,16 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
+  end;
+
+  { TLCLMenuItemCallback }
+
+  TLCLMenuItemCallback = class(TLCLCommonCallback, IMenuItemCallback)
+  private
+  FMenuItemTarget: TComponent;
+  public
+  constructor Create(AOwner: NSObject; AMenuItemTarget: TComponent);
+  procedure ItemSelected;
   end;
 
 const
@@ -1073,6 +1085,24 @@ begin
   ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
   ctrl.callback := TLCLCustomControlCallback.Create(ctrl, AWinControl);
   Result := TLCLIntfHandle(ctrl);
+end;
+
+{ TLCLMenuItemCallback }
+
+constructor TLCLMenuItemCallback.Create(AOwner: NSObject; AMenuItemTarget: TComponent);
+begin
+Owner := AOwner;
+FMenuItemTarget:=AMenuItemTarget;
+end;
+
+procedure TLCLMenuItemCallback.ItemSelected;
+var
+   Msg:TLMessage;
+begin
+FillChar(Msg{%H-}, SizeOf(Msg), 0);
+Msg.msg := LM_ACTIVATE;
+// debugln('send LM_Activate');
+LCLMessageGlue.DeliverMessage(FMenuItemTarget,Msg);
 end;
 
 end.

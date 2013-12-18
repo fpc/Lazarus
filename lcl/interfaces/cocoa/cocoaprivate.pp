@@ -27,7 +27,7 @@ uses
   // Libs
   CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
-  LCLType, LMessages, LCLMessageGlue, Controls;
+  LCLType, Controls;
 
 type
 
@@ -160,6 +160,10 @@ type
     property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
 
+  IMenuItemCallback = interface(ICommonCallBack)
+   procedure ItemSelected;
+  end;
+
   { TCocoaMenu }
 
   TCocoaMenu = objcclass(NSMenu)
@@ -171,7 +175,7 @@ type
 
   TCocoaMenuItem = objcclass(NSMenuItem)
   public
-    lcltarget:TObject;
+    callback:IMenuItemCallback;
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
   end;
 
@@ -1929,14 +1933,8 @@ end;
 { TCocoaMenuITem }
 
 procedure TCocoaMenuItem.lclItemSelected(sender:id);
-var 
-  Msg:TLMessage;
 begin
-  // TODO: move this to callback and call it using callback.ItemSelected
-  FillChar(Msg{%H-}, SizeOf(Msg), 0);
-  Msg.msg := LM_ACTIVATE;
-  // debugln('send LM_Activate');
-  DeliverMessage(lclTarget,Msg);
+callback.ItemSelected;
 end;
 
 end.
