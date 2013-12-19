@@ -161,7 +161,7 @@ type
   end;
 
   IMenuItemCallback = interface(ICommonCallBack)
-   procedure ItemSelected;
+    procedure ItemSelected;
   end;
 
   { TCocoaMenu }
@@ -175,7 +175,7 @@ type
 
   TCocoaMenuItem = objcclass(NSMenuItem)
   public
-    callback:IMenuItemCallback;
+    callback: IMenuItemCallback;
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
   end;
 
@@ -1934,7 +1934,7 @@ end;
 
 procedure TCocoaMenuItem.lclItemSelected(sender:id);
 begin
-callback.ItemSelected;
+  callback.ItemSelected;
 end;
 
 end.

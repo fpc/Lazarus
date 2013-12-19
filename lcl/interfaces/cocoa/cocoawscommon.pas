@@ -14,8 +14,6 @@ uses
   CocoaPrivate, CocoaGDIObjects, CocoaCaret, CocoaUtils, LCLMessageGlue;
 
 type
-
-
   { TLCLCommonCallback }
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
@@ -104,10 +102,10 @@ type
 
   TLCLMenuItemCallback = class(TLCLCommonCallback, IMenuItemCallback)
   private
-  FMenuItemTarget: TComponent;
+    FMenuItemTarget: TComponent;
   public
-  constructor Create(AOwner: NSObject; AMenuItemTarget: TComponent);
-  procedure ItemSelected;
+    constructor Create(AOwner: NSObject; AMenuItemTarget: TComponent);
+    procedure ItemSelected;
   end;
 
 const
@@ -1091,18 +1089,18 @@ end;
 
 constructor TLCLMenuItemCallback.Create(AOwner: NSObject; AMenuItemTarget: TComponent);
 begin
-Owner := AOwner;
-FMenuItemTarget:=AMenuItemTarget;
+  Owner := AOwner;
+  FMenuItemTarget := AMenuItemTarget;
 end;
 
 procedure TLCLMenuItemCallback.ItemSelected;
 var
-   Msg:TLMessage;
+  Msg:TLMessage;
 begin
-FillChar(Msg{%H-}, SizeOf(Msg), 0);
-Msg.msg := LM_ACTIVATE;
-// debugln('send LM_Activate');
-LCLMessageGlue.DeliverMessage(FMenuItemTarget,Msg);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
+  Msg.msg := LM_ACTIVATE;
+  // debugln('send LM_Activate');
+  LCLMessageGlue.DeliverMessage(FMenuItemTarget,Msg);
 end;
 
 end.
