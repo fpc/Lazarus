@@ -1,0 +1,145 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: stringsunit.rsbeer
+msgctxt "stringsunit.rsbeer"
+msgid "Beer"
+msgstr "Пиво"
+
+#: stringsunit.rseight
+msgid "Eight"
+msgstr "восемь"
+
+#: stringsunit.rsfive
+msgid "Five"
+msgstr "пять"
+
+#: stringsunit.rsfour
+msgid "Four"
+msgstr "четыре"
+
+#: stringsunit.rsnine
+msgid "Nine"
+msgstr "девять"
+
+#: stringsunit.rsone
+msgid "One"
+msgstr "один"
+
+#: stringsunit.rsseven
+msgid "Seven"
+msgstr "семь"
+
+#: stringsunit.rssix
+msgid "Six"
+msgstr "шесть"
+
+#: stringsunit.rssumofselectednumbers
+msgid "Sum of selected numbers: %s"
+msgstr "Сумма выбранных чисел: %s"
+
+#: stringsunit.rsthree
+msgid "Three"
+msgstr "три"
+
+#: stringsunit.rstodayis
+msgctxt "stringsunit.rstodayis"
+msgid "Today is %s"
+msgstr "Сегодня: %s"
+
+#: stringsunit.rstwo
+msgid "Two"
+msgstr "два"
+
+#: stringsunit.rswater
+msgctxt "stringsunit.rswater"
+msgid "Water"
+msgstr "Вода"
+
+#: stringsunit.rswine
+msgctxt "stringsunit.rswine"
+msgid "Wine"
+msgstr "Вино"
+
+#: stringsunit.rsyouselected
+msgctxt "stringsunit.rsyouselected"
+msgid "You selected %s."
+msgstr "Ваш выбор: %s."
+
+#: stringsunit.rsyouselectedat
+msgctxt "stringsunit.rsyouselectedat"
+msgid "You selected %0:s at %1:s."
+msgstr "Ваш выбор: %0:s в %1:s."
+
+#: tform2.caption
+msgid "Second Form"
+msgstr "Вторая форма"
+
+#: tform2.checkgroup.caption
+msgctxt "TFORM2.CHECKGROUP.CAPTION"
+msgid "Several items"
+msgstr "Несколько чисел"
+
+#: tform2.groupbox1.caption
+msgid "Please select"
+msgstr "Выберите"
+
+#: tform2.lblmoney.caption
+msgid "LblMoney"
+msgstr ""
+
+#: tform2.lblsum.caption
+msgid "LblSum"
+msgstr ""
+
+#: tform2.lbltodayis.caption
+msgid "LblTodayIs"
+msgstr ""
+
+#: tform2.radiogroup.caption
+msgctxt "TFORM2.RADIOGROUP.CAPTION"
+msgid "Single item"
+msgstr "Одно число"
+
+#: tlocalizedform.caption
+msgid "LocalizedForm"
+msgstr ""
+
+#: tmainform.button1.caption
+msgctxt "TMAINFORM.BUTTON1.CAPTION"
+msgid "Open second form"
+msgstr "Открыть вторую форму"
+
+#: tmainform.button2.caption
+msgctxt "TMAINFORM.BUTTON2.CAPTION"
+msgid "What did you select?"
+msgstr "Что выбрано?"
+
+#: tmainform.caption
+msgctxt "TMAINFORM.CAPTION"
+msgid "Translation demo"
+msgstr "Демонстрация перевода"
+
+#: tmainform.label1.caption
+msgctxt "TMAINFORM.LABEL1.CAPTION"
+msgid "Select language"
+msgstr "Выберите язык"
+
+#: tmainform.lblcurrentselection.caption
+msgctxt "TMAINFORM.LBLCURRENTSELECTION.CAPTION"
+msgid "No drink selected."
+msgstr "Напиток не выбран."
+
+#: tmainform.rgdrinks.caption
+msgctxt "TMAINFORM.RGDRINKS.CAPTION"
+msgid "Please select a drink"
+msgstr "Выберите напиток"
+
