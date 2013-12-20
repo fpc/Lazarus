@@ -196,8 +196,7 @@ begin
   R := CreateParamsToNSRect(AParams);
   win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(R, WinMask, NSBackingStoreBuffered, False));
   win.enableCursorRects;
-  // TODO: replace numeric constant with Cocoa constant
-  win.setLevel(8);
+  win.setLevel(FormStyleToWindowLevel[fsSystemStayOnTop]);
   TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
   win.setAcceptsMouseMovedEvents(True);
@@ -332,6 +331,9 @@ begin
     Exit;
   end;
 
+  R := CreateParamsToNSRect(AParams);
+  R.origin.x := 0;
+  R.origin.y := 0;
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
 
   if (AParams.Style and WS_CHILD) = 0 then
@@ -348,8 +350,6 @@ begin
     ns.release;
     win.setAcceptsMouseMovedEvents(True);
 
-    R.origin.x := 0;
-    R.origin.y := 0;
 
     cnt.callback := TCocoaWindow(win).callback;
     win.setContentView(cnt);
