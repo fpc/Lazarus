@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: x <y>\n"
+"Last-Translator: Juha Manninen <juha.manninen@phnet.fi>\n"
 "Language-Team: \n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -13930,7 +13930,7 @@ msgstr "Tallenna kaikki"
 
 #: lazarusidestrconsts.lissaveallchecked
 msgid "Save All Checked"
-msgstr "Tallenna kaikki valitut"
+msgstr "Tallenna kaikki ruksatut"
 
 #: lazarusidestrconsts.lissaveallmessagestofile
 msgid "Save All Messages to File"
