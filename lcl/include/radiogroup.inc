@@ -13,7 +13,6 @@
   Delphi compatibility:
 
    - the interface is almost like in delphi 5
-   - FlipChildren procedure is missing
 }
 
 
@@ -560,6 +559,11 @@ begin
   else
     ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
   UpdateControlsPerLine;
+end;
+
+procedure TCustomRadioGroup.FlipChildren(AllLevels: Boolean);
+begin
+  // no flipping
 end;
 
 {------------------------------------------------------------------------------

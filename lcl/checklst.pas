@@ -1,5 +1,4 @@
-{ $Id$
- /***************************************************************************
+{ /***************************************************************************
                                checklst.pas
                                ------------
 
@@ -185,8 +184,12 @@ end;
 
 procedure TCustomCheckListBox.DrawItem(AIndex: Integer; ARect: TRect; State: TOwnerDrawState);
 begin
-  if not Header[AIndex] then
-    Inc(ARect.Left, GetCheckWidth);
+  if not Header[AIndex] then begin
+    if UseRightToLeftAlignment then
+      Dec(ARect.Right, GetCheckWidth)
+    else
+      Inc(ARect.Left, GetCheckWidth);
+  end;
   inherited;
 end;
 
