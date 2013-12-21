@@ -6423,8 +6423,6 @@ begin
       AVLNode:=FInterfaceIdentifierCache.Items.FindSuccessor(AVLNode);
     end;
   end else begin
-    Assert(Assigned(FInterfaceIdentifierCache),
-      'TFindDeclarationTool.FindIdentifierInInterface: FInterfaceIdentifierCache is not assigned');
     CacheEntry:=FInterfaceIdentifierCache.FindIdentifier(Params.Identifier);
     if CacheEntry=nil then
       exit(false);
