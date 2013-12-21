@@ -3,6 +3,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Juha Manninen <juha.manninen@phnet.fi>\n"
+"Language-Team: \n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
@@ -1026,10 +1031,9 @@ msgid "Post"
 msgstr ""
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
-#, fuzzy
 #| msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr "%s%sPaina 'Ok'-näppäintä jos haluat ohittaa varoituksen ja ottaa riskin tietojen (datan) sekoamisesta.%sPaina 'Peru'-näppäintä poistuaksesi ohjelmasta."
+msgstr "%s%sPaina 'Ok', jos haluat ohittaa varoituksen ja ottaa riskin tietojen sekoamisesta.%sPaina 'Peru' poistuaksesi ohjelmasta."
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
