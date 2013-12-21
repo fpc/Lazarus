@@ -189,6 +189,7 @@ Vladimir Serotyukov
 Vladimir Zhirov
 Vojtech Cihak
 Wanderlan Santos dos Anjos
+Werner Pamler
 Wojciech Malinowski
 Yauheni Nazimau
 Yuichiro Takahashi
