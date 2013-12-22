@@ -2975,6 +2975,7 @@ resourcestring
   rsLanguageSlovak       = 'Slovak';
   rsLanguageTurkish      = 'Turkish';
   rsLanguageCzech        = 'Czech';
+  rsLanguageHungarian    = 'Hungarian';
 
   // Unit dependencies
   dlgUnitDepCaption      = 'Unit Dependencies';
