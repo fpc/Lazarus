@@ -6,31 +6,29 @@ msgstr ""
 
 #: ideprinting.sdescrformatting
 msgid "Formatting"
-msgstr ""
+msgstr "Muotoilu"
 
 #: ideprinting.sdescrpfselection
-#, fuzzy
-#| msgid "Print..."
 msgid "Print ..."
-msgstr "Tulosta..."
+msgstr "Tulosta ..."
 
 #: ideprinting.spfselectioncmd
 msgid "Print"
-msgstr ""
+msgstr "Tulosta"
 
 #: ideprinting.sprintfile
 msgid "Complete file"
-msgstr ""
+msgstr "Täydennä tiedosto"
 
 #: ideprinting.sprintselection
 msgid "Selected text"
-msgstr ""
+msgstr "Valittu teksti"
 
 #: ideprinting.sprintsources
 msgid "Print sources"
-msgstr ""
+msgstr "Tulosta lähteet"
 
 #: ideprinting.sprintwhat
 msgid "What would you like to print ?"
-msgstr ""
+msgstr "Mitä haluaisit tulostaa?"
 
