@@ -9,9 +9,19 @@ msgstr ""
 "Last-Translator: Fehér Dávid <dfeher@gmx.com>\n"
 "Language-Team: \n"
 
+#: ideprinting.sdescrformatting
+msgid "Formatting"
+msgstr ""
+
 #: ideprinting.sdescrpfselection
-msgid "Print..."
+#, fuzzy
+#| msgid "Print..."
+msgid "Print ..."
 msgstr "Nyomtatás ..."
+
+#: ideprinting.spfselectioncmd
+msgid "Print"
+msgstr ""
 
 #: ideprinting.sprintfile
 msgid "Complete file"

@@ -16553,6 +16553,10 @@ msgstr ""
 msgid "Hebrew"
 msgstr ""
 
+#: lazarusidestrconsts.rslanguagehungarian
+msgid "Hungarian"
+msgstr ""
+
 #: lazarusidestrconsts.rslanguageindonesian
 msgid "Indonesian"
 msgstr ""

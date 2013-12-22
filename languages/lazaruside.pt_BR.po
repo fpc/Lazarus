@@ -17129,6 +17129,10 @@ msgstr "Alemão"
 msgid "Hebrew"
 msgstr "Hebraíco"
 
+#: lazarusidestrconsts.rslanguagehungarian
+msgid "Hungarian"
+msgstr ""
+
 #: lazarusidestrconsts.rslanguageindonesian
 msgid "Indonesian"
 msgstr "Indonésio"
