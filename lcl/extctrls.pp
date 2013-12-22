@@ -1,4 +1,3 @@
-{  $Id$  }
 {
  /***************************************************************************
                                extctrls.pp
@@ -639,6 +638,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function CanModify: boolean; virtual;
+    procedure FlipChildren(AllLevels: Boolean); override;
     function Rows: integer;
   public
     property AutoFill: Boolean read FAutoFill write SetAutoFill;
@@ -750,6 +750,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure FlipChildren(AllLevels: Boolean); override;
     function Rows: integer;
   public
     property AutoFill: boolean read FAutoFill write SetAutoFill;

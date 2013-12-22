@@ -7123,6 +7123,10 @@ test/lcltests/testpen.pas svneol=native#text/plain
 test/lcltests/testpreferredsize.pas svneol=native#text/plain
 test/lcltests/testtextstrings.pas svneol=native#text/plain
 test/lcltests/testunicode.pas svneol=native#text/plain
+test/manual/bidimode_flipchildren/project1.lpi svneol=native#text/plain
+test/manual/bidimode_flipchildren/project1.lpr svneol=native#text/pascal
+test/manual/bidimode_flipchildren/unit1.lfm svneol=native#text/plain
+test/manual/bidimode_flipchildren/unit1.pas svneol=native#text/pascal
 test/manual/lcl/textextent/mainform.lfm svneol=native#text/plain
 test/manual/lcl/textextent/mainform.pas svneol=native#text/plain
 test/manual/lcl/textextent/textextent.ico -text

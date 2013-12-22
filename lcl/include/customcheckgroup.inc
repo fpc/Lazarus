@@ -341,5 +341,10 @@ begin
     Result:=0;
 end;
 
+procedure TCustomCheckGroup.FlipChildren(AllLevels: Boolean);
+begin
+  // no flipping
+end;
+
 // included by extctrls.pp
 

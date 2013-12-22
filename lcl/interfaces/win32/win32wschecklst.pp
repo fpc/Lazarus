@@ -1,4 +1,3 @@
-{ $Id$}
 {
  *****************************************************************************
  *                            Win32WSCheckLst.pp                             * 
@@ -74,7 +73,10 @@ var
     for I := 0 to Windows.SendMessage(Window, LB_GETCOUNT, 0, 0) - 1 do
     begin
       Windows.SendMessage(Window, LB_GETITEMRECT, I, PtrInt(@ItemRect));
-      ItemRect.Right := ItemRect.Left + ItemRect.Bottom - ItemRect.Top;
+      if TCheckListbox(WindowInfo^.WinControl).UseRightToLeftAlignment then
+        ItemRect.Left := ItemRect.Right - ItemRect.Bottom + ItemRect.Top
+      else
+        ItemRect.Right := ItemRect.Left + ItemRect.Bottom - ItemRect.Top;
       if Windows.PtInRect(ItemRect, MousePos) then
       begin
         // item clicked: toggle
@@ -178,6 +180,7 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
     Enabled, Selected: Boolean;
     ARect, TextRect: Windows.Rect;
     Details: TThemedElementDetails;
+    TextFlags: DWord;
     OldColor: COLORREF;
     OldBkMode: Integer;
   {$ifdef WindowsUnicodeSupport}
@@ -190,7 +193,10 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
 
     ARect := Data^.rcItem;
     TextRect := ARect;
-    TextRect.Left := TextRect.Left + TextRect.Bottom - TextRect.Top + 4;
+    if CheckListBox.UseRightToLeftAlignment then
+      TextRect.Right := TextRect.Right - TextRect.Bottom + TextRect.Top - 4
+    else
+      TextRect.Left := TextRect.Left + TextRect.Bottom - TextRect.Top + 4;
 
     // fill the background
     if Selected then
@@ -202,13 +208,23 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
       Windows.FillRect(Data^._HDC, ARect, CheckListBox.Brush.Reference.Handle);
 
     // draw checkbox
-    ARect.Right := ARect.Left + ARect.Bottom - ARect.Top;
+    if CheckListBox.UseRightToLeftAlignment then
+      ARect.Left := ARect.Right - ARect.Bottom + ARect.Top
+    else
+      ARect.Right := ARect.Left + ARect.Bottom - ARect.Top;
 
     Details := ThemeServices.GetElementDetails(ThemeStateMap[CheckListBox.State[Data^.ItemID], Enabled]);
     ThemeServices.DrawElement(Data^._HDC, Details, ARect);
 
     // draw text
-    TextRect.Left := TextRect.Left + 2;
+    if CheckListBox.UseRightToLeftAlignment then begin
+      TextRect.Right := TextRect.Right - 2;
+      TextFlags := DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or DT_RIGHT;
+    end
+    else begin
+      TextRect.Left := TextRect.Left + 2;
+      TextFlags := DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX;
+    end;
     OldBkMode := Windows.SetBkMode(Data^._HDC, TRANSPARENT);
     if not Enabled then
       OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_GRAYTEXT))
@@ -227,24 +243,27 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
     begin
       WideBuffer := UTF8ToUTF16(CheckListBox.Items[Data^.ItemID]);
       Windows.DrawTextW(Data^._HDC, PWideChar(WideBuffer), -1,
-       TextRect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+       TextRect, TextFlags);
     end
     else
     begin
       AnsiBuffer := Utf8ToAnsi(CheckListBox.Items[Data^.ItemID]);
       Windows.DrawText(Data^._HDC, PChar(AnsiBuffer), -1,
-       TextRect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+       TextRect, TextFlags);
     end;
   {$else}
     Windows.DrawText(Data^._HDC, PChar(CheckListBox.Items[Data^.ItemID]), -1,
-      TextRect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+      TextRect, TextFlags);
   {$endif}
     // restore old colors
     Windows.SetTextColor(Data^._HDC, OldColor);
     Windows.SetBkMode(Data^._HDC, OldBkMode);
     if Enabled and ((Data^.itemState and ODS_FOCUS) > 0) and CheckListBox.Focused then
     begin
-      TextRect.Left := TextRect.Left - 2;
+      if CheckListBox.UseRightToLeftAlignment then
+        TextRect.Right := TextRect.Right + 2
+      else
+        TextRect.Left := TextRect.Left - 2;
       Windows.DrawFocusRect(Data^._HDC, TextRect);
     end;
   end;
