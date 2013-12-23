@@ -229,6 +229,7 @@ type
       AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType);
 
     function CreateSubImage(const ARect: TRect): CGImageRef;
+    function CreateMaskImage(const ARect: TRect): CGImageRef;
   public
     property BitmapType: TCocoaBitmapType read FType;
     property BitsPerPixel: Byte read FBitsPerPixel;
@@ -835,6 +836,23 @@ begin
     Result := nil
   else
     Result := CGImageCreateWithImageInRect(MacOSAll.CGImageRef(ImageRep.CGImage), RectToCGRect(ARect));
+end;
+
+
+function TCocoaBitmap.CreateMaskImage(const ARect: TRect): CGImageRef;
+var
+  CGDataProvider: CGDataProviderRef;
+  Mask: CGImageRef;
+begin
+  CGDataProvider := CGDataProviderCreateWithData(nil, FData, FDataSize, nil);
+  try
+    Mask := CGImageMaskCreate(FWidth, FHeight, FBitsPerPixel,
+      FBitsPerPixel, FBytesPerRow, CGDataProvider, nil, 0);
+    Result := CGImageCreateWithImageInRect(Mask, RectToCGRect(ARect));
+  finally
+    CGDataProviderRelease(CGDataProvider);
+    CGImageRelease(Mask);
+  end;
 end;
 
 function TCocoaBitmap.GetColorSpace: NSString;
@@ -1772,21 +1790,38 @@ function TCocoaContext.StretchDraw(X, Y, Width, Height: Integer;
   Msk: TCocoaBitmap; XMsk, YMsk: Integer; Rop: DWORD): Boolean;
 var
   Bmp: TCocoaBitmap;
+  MskImage: CGImageRef;
+  ImgRect: CGRect;
+
 begin
   Bmp := SrcDC.Bitmap;
   if not Assigned(Bmp) then
     Exit(False);
 
-// TODO: mask clipping
-//  if Assigned(MskImage) then
-//    CGContextClipToMask(LayerContext, ImgRect, MskImage);
+  if (Msk <> nil) and (Msk.Image <> nil) then
+    begin
+    MskImage := Msk.CreateMaskImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight));
+    ImgRect := CGRectMake(0, 0, SrcWidth, SrcHeight);
+    CGContextSaveGState(CGContext);
+    CGContextScaleCTM(CGContext, 1, -1);
+    CGContextTranslateCTM(CGContext, 0, -SrcHeight);
+    CGContextClipToMask(CGContext, ImgRect, MskImage );
+    CGImageRelease(MskImage);
 
-  // convert Y coodrinate of the source bitmap
-  YSrc := Bmp.Height - (SrcHeight + YSrc);
+    Result := bmp.ImageRep.drawInRect_fromRect_operation_fraction_respectFlipped_hints(
+      GetNSRect(X, -Y, Width, Height), GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), NSCompositeSourceOver, 1.0, True, nil );
 
-  Result := DrawImageRep(
-    GetNSRect(X, Y, Width, Height),
-    GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), Bmp.ImageRep);
+    CGContextRestoreGState(CGContext);
+    end
+    else
+    begin
+    // convert Y coodrinate of the source bitmap
+    YSrc := Bmp.Height - (SrcHeight + YSrc);
+    Result := DrawImageRep(GetNSRect(X, Y, Width, Height),GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), bmp.ImageRep);
+    end;
+
+
+
 end;
 
 {------------------------------------------------------------------------------
