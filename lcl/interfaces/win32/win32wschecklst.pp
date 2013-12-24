@@ -219,7 +219,7 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
     // draw text
     if CheckListBox.UseRightToLeftAlignment then begin
       TextRect.Right := TextRect.Right - 2;
-      TextFlags := DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or DT_RIGHT;
+      TextFlags := DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or DT_RIGHT or DT_RTLREADING;
     end
     else begin
       TextRect.Left := TextRect.Left + 2;
