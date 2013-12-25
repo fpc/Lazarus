@@ -1806,11 +1806,12 @@ begin
     CGContextScaleCTM(CGContext, 1, -1);
     CGContextTranslateCTM(CGContext, 0, -SrcHeight);
     CGContextClipToMask(CGContext, ImgRect, MskImage );
-    CGImageRelease(MskImage);
 
+    ctx.setCurrentContext(ctx);
     Result := bmp.ImageRep.drawInRect_fromRect_operation_fraction_respectFlipped_hints(
       GetNSRect(X, -Y, Width, Height), GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), NSCompositeSourceOver, 1.0, True, nil );
 
+    CGImageRelease(MskImage);
     CGContextRestoreGState(CGContext);
     end
     else
