@@ -140,6 +140,7 @@ type
   public
     constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
+    procedure Clear;
     function FindOption(aOptStr: string): TCompilerOpt;
     function FindOptionById(aId: integer): TCompilerOpt;
     function SelectOption(aOptAndValue: string): Boolean;
@@ -177,6 +178,7 @@ type
     fRootOptGroup: TCompilerOptGroup;
     fCompilerExecutable: string;         // Copiler path must be set by caller.
     fCompilerVersion: string;            // Parsed from "fpc -h".
+    fParsedTarget: String;
     fErrorMsg: String;
     procedure ReadVersion(s: string);
     procedure AddGroupItems(aGroup: TCompilerOptGroup; aItems: TStrings);
@@ -185,6 +187,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Clear;
+    function UpdateTargetParam: Boolean;
     function ReadAndParseOptions: TModalResult;
     function FilterOptions(aFilter: string; aOnlySelected: Boolean): Boolean;
     function FindOptionById(aId: integer): TCompilerOpt;
@@ -195,6 +199,7 @@ type
     property SupportedCategories: TStringList read fSupportedCategories;
     property RootOptGroup: TCompilerOptGroup read fRootOptGroup;
     property CompilerExecutable: string read fCompilerExecutable write fCompilerExecutable;
+    property ParsedTarget: String read fParsedTarget write fParsedTarget;
     property ErrorMsg: String read fErrorMsg write fErrorMsg;
   end;
 
@@ -555,6 +560,11 @@ begin
   inherited Destroy;
 end;
 
+procedure TCompilerOptGroup.Clear;
+begin
+  fCompilerOpts.Clear;
+end;
+
 function TCompilerOptGroup.FindOption(aOptStr: string): TCompilerOpt;
 
   function FindOptionSub(aRoot: TCompilerOpt): TCompilerOpt;
@@ -853,15 +863,22 @@ begin
 end;
 
 destructor TCompilerOptReader.Destroy;
-var
-  i: Integer;
 begin
+  Clear;
   fRootOptGroup.Free;
-  for i := 0 to fSupportedCategories.Count-1 do
-    fSupportedCategories.Objects[i].Free;
   fSupportedCategories.Free;
   fDefines.Free;
   inherited Destroy;
+end;
+
+procedure TCompilerOptReader.Clear;
+var
+  i: Integer;
+begin
+  fRootOptGroup.Clear;
+  for i := 0 to fSupportedCategories.Count-1 do
+    fSupportedCategories.Objects[i].Free;
+  fSupportedCategories.Clear;
 end;
 
 function TCompilerOptReader.ParseI(aLines: TStringList): TModalResult;
@@ -1011,23 +1028,33 @@ begin
   end;
 end;
 
+function TCompilerOptReader.UpdateTargetParam: Boolean;
+// Updates target OS and CPU parameter using global macros.
+// Returns true if the value has changed since last time.
+var
+  NewTarget: string;
+begin
+  NewTarget := '-T$(TargetOS) -P$(TargetCPU)';
+  if not GlobalMacroList.SubstituteStr(NewTarget) then
+    raise Exception.CreateFmt('ReadAndParseOptions: Cannot substitute macros "%s".',
+                              [NewTarget]);
+  Result := fParsedTarget <> NewTarget;
+  if Result then
+    fParsedTarget := NewTarget;      // fParsedTarget is used as a param for FPC.
+end;
+
 function TCompilerOptReader.ReadAndParseOptions: TModalResult;
 // fpc -Fr$(FPCMsgFile) -h
 // fpc -Fr$(FPCMsgFile) -i
 var
   Lines: TStringList;
-  ParsedTarget: String;
 begin
   OptionIdCounter := 0;
   fErrorMsg := '';
   if fCompilerExecutable = '' then
     fCompilerExecutable := 'fpc';        // Let's hope "fpc" is found in PATH.
-  ParsedTarget := '-T$(TargetOS) -P$(TargetCPU)';
-  if not GlobalMacroList.SubstituteStr(ParsedTarget) then
-    raise Exception.CreateFmt('ReadAndParseOptions: Cannot substitute macros "%s".',
-                              [ParsedTarget]);
   // FPC with option -i
-  Lines:=RunTool(fCompilerExecutable, ParsedTarget + ' -i');
+  Lines:=RunTool(fCompilerExecutable, fParsedTarget + ' -i');
   try
     if Lines = Nil then Exit(mrCancel);
     Result := ParseI(Lines);
@@ -1036,7 +1063,7 @@ begin
     Lines.Free;
   end;
   // FPC with option -h
-  Lines:=RunTool(fCompilerExecutable, ParsedTarget + ' -h');
+  Lines:=RunTool(fCompilerExecutable, fParsedTarget + ' -h');
   try
     if Lines = Nil then Exit(mrCancel);
     Result := ParseH(Lines);
@@ -1180,6 +1207,7 @@ begin
   inherited Create(True);
   //FreeOnTerminate:=True;
   fReader:=aReader;
+  fReader.UpdateTargetParam;
 end;
 
 destructor TCompilerOptThread.Destroy;

@@ -358,11 +358,22 @@ procedure TCompilerOtherOptionsFrame.SetVisible(Value: Boolean);
 begin
   inherited SetVisible(Value);
   // Read all compiler options when the page is shown for the first time.
-  if Value and (FOptionsReader.RootOptGroup.CompilerOpts.Count = 0)
-  and not Assigned(fOptionsThread) then
-  begin
-    fOptionsThread := TCompilerOptThread.Create(FOptionsReader);
-    fOptionsThread.Start;
+  if Value then begin
+    if Assigned(fOptionsThread) then
+    begin
+      fOptionsThread.WaitFor;       // Make sure the thread has finished running.
+      if FOptionsReader.UpdateTargetParam then begin
+        // Does not happen because UpdateTargetParam uses global macros
+        //  which change only after closing the options window.
+        // This code is here for future refactoring, to react to changed target in GUI.
+        FOptionsReader.Clear;
+        fOptionsThread.Start;       // Read new options.
+      end;
+    end
+    else begin
+      fOptionsThread := TCompilerOptThread.Create(FOptionsReader);
+      fOptionsThread.Start;
+    end;
   end;
 end;
 
