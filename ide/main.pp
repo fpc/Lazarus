@@ -6639,7 +6639,7 @@ var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   s, ShortUnitName: string;
-  DependencyAdded: boolean;
+  OkToAdd: boolean;
   Owners: TFPList;
   i: Integer;
   APackage: TLazPackage;
@@ -6712,12 +6712,12 @@ begin
   if IDEMessageDialog(lisConfirmation, Format(lisAddToProject, [s]),
     mtConfirmation, [mbYes, mbCancel]) in [mrOk, mrYes]
   then begin
-    DependencyAdded:=false;
+    OkToAdd:=True;
     if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
-      DependencyAdded:=SourceFileMgr.CheckDirIsInSearchPath(ActiveUnitInfo,False,False)
+      OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(ActiveUnitInfo,False,False)
     else if CompareFileExt(ActiveUnitInfo.Filename,'inc',false)=0 then
-      DependencyAdded:=SourceFileMgr.CheckDirIsInSearchPath(ActiveUnitInfo,False,True);
-    if not DependencyAdded then begin
+      OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(ActiveUnitInfo,False,True);
+    if OkToAdd then begin
       ActiveUnitInfo.IsPartOfProject:=true;
       Project1.Modified:=true;
       if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
@@ -12950,15 +12950,15 @@ var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   ShortUnitName: String;
-  DependencyAdded: boolean;
+  OkToAdd: boolean;
 begin
   Result:=mrOk;
   //debugln(['TMainIDE.ProjInspectorAddUnitToProject ',AnUnitInfo.Filename]);
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   AnUnitInfo.IsPartOfProject:=true;
-  DependencyAdded:=false;
+  OkToAdd:=True;
   if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
-    DependencyAdded:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,False);
+    OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,False);
     if (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then begin
       AnUnitInfo.ReadUnitNameFromSource(false);
       ShortUnitName:=AnUnitInfo.Unit_Name;
@@ -12975,12 +12975,11 @@ begin
     end;
   end
   else if CompareFileExt(AnUnitInfo.Filename,'inc',false)=0 then
-    DependencyAdded:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,True);
+    OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,True);
   Project1.Modified:=true;
 end;
 
-function TMainIDE.ProjInspectorRemoveFile(Sender: TObject; AnUnitInfo: TUnitInfo
-  ): TModalresult;
+function TMainIDE.ProjInspectorRemoveFile(Sender: TObject; AnUnitInfo: TUnitInfo): TModalresult;
 var
   UnitInfos: TFPList;
 begin
