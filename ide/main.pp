@@ -6714,9 +6714,9 @@ begin
   then begin
     DependencyAdded:=false;
     if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
-      SourceFileMgr.CheckDirIsInUnitSearchPath(ActiveUnitInfo,false,DependencyAdded)
+      DependencyAdded:=SourceFileMgr.CheckDirIsInSearchPath(ActiveUnitInfo,False,False)
     else if CompareFileExt(ActiveUnitInfo.Filename,'inc',false)=0 then
-      SourceFileMgr.CheckDirIsInIncludeSearchPath(ActiveUnitInfo,false,DependencyAdded);
+      DependencyAdded:=SourceFileMgr.CheckDirIsInSearchPath(ActiveUnitInfo,False,True);
     if not DependencyAdded then begin
       ActiveUnitInfo.IsPartOfProject:=true;
       Project1.Modified:=true;
@@ -12958,7 +12958,7 @@ begin
   AnUnitInfo.IsPartOfProject:=true;
   DependencyAdded:=false;
   if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
-    SourceFileMgr.CheckDirIsInUnitSearchPath(AnUnitInfo,false,DependencyAdded);
+    DependencyAdded:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,False);
     if (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then begin
       AnUnitInfo.ReadUnitNameFromSource(false);
       ShortUnitName:=AnUnitInfo.Unit_Name;
@@ -12975,7 +12975,7 @@ begin
     end;
   end
   else if CompareFileExt(AnUnitInfo.Filename,'inc',false)=0 then
-    SourceFileMgr.CheckDirIsInIncludeSearchPath(AnUnitInfo,false,DependencyAdded);
+    DependencyAdded:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,True);
   Project1.Modified:=true;
 end;
 

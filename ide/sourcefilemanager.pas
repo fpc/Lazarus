@@ -107,10 +107,7 @@ type
     // project inspector
     // Checks if the UnitDirectory is part of the Unit Search Paths, if not,
     // ask the user if he wants to extend dependencies or the Unit Search Paths.
-    procedure CheckDirIsInUnitSearchPath(UnitInfo: TUnitInfo;
-        AllowAddingDependencies: boolean; out DependencyAdded: boolean);
-    procedure CheckDirIsInIncludeSearchPath(UnitInfo: TUnitInfo;
-        AllowAddingDependencies: boolean; out DependencyAdded: boolean);
+    function CheckDirIsInSearchPath(UnitInfo: TUnitInfo; AllowAddingDependencies, IsIncludeFile: Boolean): Boolean;
 
     // methods for 'new unit'
     function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
@@ -2500,21 +2497,30 @@ begin
   PkgBoss.DoCloseAllPackageEditors;
 end;
 
-procedure TLazSourceFileManager.CheckDirIsInUnitSearchPath(UnitInfo: TUnitInfo;
-  AllowAddingDependencies: boolean; out DependencyAdded: boolean);
+function TLazSourceFileManager.CheckDirIsInSearchPath(UnitInfo: TUnitInfo;
+  AllowAddingDependencies, IsIncludeFile: Boolean): Boolean;
+// Returns true if a dependency was added.
 var
-  CurDirectory: String;
-  CurUnitPath: String;
+  CurDirectory, CurPath, ShortDir: String;
+  DlgCapt, DlgMsg: String;
   Owners: TFPList;
-  i: Integer;
   APackage: TLazPackage;
-  ShortDir: String;
+  i: Integer;
 begin
-  DependencyAdded:=false;
+  Result:=False;
   if UnitInfo.IsVirtual then exit;
-  CurUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
+  if IsIncludeFile then begin
+    CurPath:=Project1.CompilerOptions.GetIncludePath(false);
+    DlgCapt:=lisAddToIncludeSearchPath;
+    DlgMsg:=lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd;
+  end
+  else begin
+    CurPath:=Project1.CompilerOptions.GetUnitPath(false);
+    DlgCapt:=lisAddToUnitSearchPath;
+    DlgMsg:=lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory;
+  end;
   CurDirectory:=AppendPathDelim(UnitInfo.GetDirectory);
-  if SearchDirectoryInSearchPath(CurUnitPath,CurDirectory)<1 then
+  if SearchDirectoryInSearchPath(CurPath,CurDirectory)<1 then
   begin
     if AllowAddingDependencies then begin
       Owners:=PkgBoss.GetPossibleOwnersOfUnit(UnitInfo.Filename,[]);
@@ -2527,10 +2533,9 @@ begin
                 Format(lisAddPackageToProject, [APackage.IDAsString]),
                 mtConfirmation,[mbYes,mbCancel],'')<>mrYes
               then
-                exit;
+                Exit(False);
               PkgBoss.AddProjectDependency(Project1,APackage);
-              DependencyAdded:=true;
-              exit;
+              Exit(True);
             end;
           end;
         end;
@@ -2542,67 +2547,12 @@ begin
     ShortDir:=CurDirectory;
     if (not Project1.IsVirtual) then
       ShortDir:=CreateRelativePath(ShortDir,Project1.ProjectDirectory);
-    if IDEMessageDialog(lisAddToUnitSearchPath,
-      Format(lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory,
-             [LineEnding, CurDirectory]),
-      mtConfirmation,[mbYes,mbNo])=mrYes
-    then begin
-      Project1.CompilerOptions.OtherUnitFiles:=
-            MergeSearchPaths(Project1.CompilerOptions.OtherUnitFiles,ShortDir);
-    end;
-  end;
-end;
-
-procedure TLazSourceFileManager.CheckDirIsInIncludeSearchPath(UnitInfo: TUnitInfo;
-  AllowAddingDependencies: boolean; out DependencyAdded: boolean);
-var
-  CurDirectory: String;
-  CurIncPath: String;
-  Owners: TFPList;
-  i: Integer;
-  APackage: TLazPackage;
-  ShortDir: String;
-begin
-  DependencyAdded:=false;
-  if UnitInfo.IsVirtual then exit;
-  CurIncPath:=Project1.CompilerOptions.GetIncludePath(false);
-  CurDirectory:=AppendPathDelim(UnitInfo.GetDirectory);
-  if SearchDirectoryInSearchPath(CurIncPath,CurDirectory)<1 then
-  begin
-    if AllowAddingDependencies then begin
-      Owners:=PkgBoss.GetPossibleOwnersOfUnit(UnitInfo.Filename,[]);
-      try
-        if (Owners<>nil) then begin
-          for i:=0 to Owners.Count-1 do begin
-            if TObject(Owners[i]) is TLazPackage then begin
-              APackage:=TLazPackage(Owners[i]);
-              if IDEMessageDialog(lisAddPackageRequirement,
-                Format(lisAddPackageToProject, [APackage.IDAsString]),
-                mtConfirmation,[mbYes,mbCancel],'')<>mrYes
-              then
-                exit;
-              PkgBoss.AddProjectDependency(Project1,APackage);
-              DependencyAdded:=true;
-              exit;
-            end;
-          end;
-        end;
-      finally
-        Owners.Free;
-      end;
-    end;
-    // include file is not in a package => extend include path
-    ShortDir:=CurDirectory;
-    if (not Project1.IsVirtual) then
-      ShortDir:=CreateRelativePath(ShortDir,Project1.ProjectDirectory);
-    if IDEMessageDialog(lisAddToIncludeSearchPath,
-      Format(lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd,
-             [LineEnding, CurDirectory]),
-      mtConfirmation,[mbYes,mbNo])=mrYes
-    then begin
-      Project1.CompilerOptions.IncludePath:=
-            MergeSearchPaths(Project1.CompilerOptions.IncludePath,ShortDir);
-    end;
+    if IDEMessageDialog(DlgCapt,Format(DlgMsg,[LineEnding,CurDirectory]),mtConfirmation,[mbYes,mbNo])=mrYes
+    then with Project1.CompilerOptions do
+      if IsIncludeFile then
+        IncludePath:=MergeSearchPaths(IncludePath,ShortDir)
+      else
+        OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,ShortDir);
   end;
 end;
 
