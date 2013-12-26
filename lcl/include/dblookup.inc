@@ -128,7 +128,8 @@ begin
   if FListLink.Active and not FListLink.Editing then
   begin
     FetchLookupData;
-    FControlLink.Reset;
+    if FControlLink.Active then
+      FControlLink.Reset;
   end;
 end;
 
