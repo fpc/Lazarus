@@ -140,6 +140,7 @@ type
     procedure CalculatePreferredSize(
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
+    procedure SetBiDiMode(AValue: TBiDiMode); override;
 
     //added.
     function CreatePanel: TStatusPanel; virtual;

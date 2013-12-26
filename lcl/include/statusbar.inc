@@ -203,6 +203,22 @@ begin
     PreferredHeight := 25;
 end;
 
+procedure TStatusBar.SetBiDiMode(AValue: TBiDiMode);
+var
+  OldUseRTL: Boolean;
+  i: Integer;
+begin
+  if (BiDiMode = AValue) then Exit;
+  OldUseRTL := UseRightToLeftAlignment;
+  inherited SetBiDiMode(AValue);
+  if (OldUseRTL <> UseRightToLeftAlignment) and (Panels.Count > 0) then
+  begin
+    for i := 0 to Panels.Count - 1 do
+      Panels[i].Alignment := BiDiFlipAlignment(Panels[i].Alignment, True);
+  end;
+  UpdateHandleObject(-1, AllPanelsParts);
+end;
+
 procedure TStatusBar.BeginUpdate;
 begin
   inc(FUpdateLock);

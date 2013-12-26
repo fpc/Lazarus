@@ -333,6 +333,7 @@ var
   WParam: windows.WPARAM;
 begin
   Text := StatusPanel.Text;
+  //debugln('UpdateStatusBarPanel: Text=',Text);
   case StatusPanel.Alignment of
     taCenter: Text := #9 + Text;
     taRightJustify: Text := #9#9 + Text;
@@ -340,7 +341,14 @@ begin
   WParam := StatusBevelMap[StatusPanel.Bevel];
   if StatusPanel.Style = psOwnerDraw then
     WParam := WParam or SBT_OWNERDRAW;
-  WParam := WParam or StatusPanel.Index;
+  //if UseRightToLeftAlignment then set Text on the ((Count - 1) - Index) panel ("mirrored"),
+  //because Panels are always counted Left to Right
+  //See: http://msdn.microsoft.com/en-us/library/windows/desktop/bb760757%28v=vs.85%29.aspx
+  if StatusPanel.StatusBar.UseRightToLeftAlignment then
+    WParam := WParam or ((StatusPanel.StatusBar.Panels.Count - 1) - StatusPanel.Index)
+  else
+    WParam := WParam or StatusPanel.Index;
+  if StatusPanel.StatusBar.UseRightToLeftReading then WParam := WParam or SBT_RTLREADING;
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
       Windows.SendMessageW(StatusPanel.StatusBar.Handle, SB_SETTEXTW, WParam, LPARAM(PWideChar(UTF8ToUTF16(Text))))
@@ -357,6 +365,7 @@ var
   PanelIndex: integer;
   CurrentRight: integer;
 begin
+  //debugln('UpdateStatusBarPanelWidths');
   if StatusBar.Panels.Count = 0 then
   begin
     // SETPARTS 0,0 does not work :S
@@ -366,13 +375,33 @@ begin
   end;
   Getmem(Rights, StatusBar.Panels.Count * SizeOf(integer));
   try
-    CurrentRight := 0;
-    for PanelIndex := 0 to StatusBar.Panels.Count - 2 do
+    if not StatusBar.UseRightToLeftAlignment then
     begin
-      CurrentRight := CurrentRight + StatusBar.Panels[PanelIndex].Width;
-      Rights[PanelIndex] := CurrentRight;
+      CurrentRight := 0;
+      for PanelIndex := 0 to StatusBar.Panels.Count - 2 do
+      begin
+        CurrentRight := CurrentRight + StatusBar.Panels[PanelIndex].Width;
+        Rights[PanelIndex] := CurrentRight;
+        //debugln(Format('CurrentRight for Panel[%d] = %d',[PanelIndex,CurrentRight]));
+      end;
+      Rights[StatusBar.Panels.Count-1] := -1; //Last extends to end;
+    end
+    else
+    begin
+      //"Mirror" the width of the panels and align the lot to the right
+      //It seems that panels (parts in MS speak) are always counted Left to Right
+      //See: http://msdn.microsoft.com/en-us/library/windows/desktop/bb760757%28v=vs.85%29.aspx
+      CurrentRight := 0;
+      for PanelIndex := 0 to StatusBar.Panels.Count - 1 do
+      begin
+        CurrentRight := CurrentRight + StatusBar.Panels[(StatusBar.Panels.Count-1) - PanelIndex].Width;
+        Rights[PanelIndex] := CurrentRight;
+        //debugln(Format('CurrentRight for Panel[%d] = %d',[PanelIndex,CurrentRight]));
+      end;
+      for PanelIndex := 0 to StatusBar.Panels.Count - 1 do
+        Rights[PanelIndex] := Rights[PanelIndex] + (StatusBar.ClientWidth - CurrentRight);
+      //Rights[StatusBar.Panels.Count-1] := -1; //Last extends to end;
     end;
-    Rights[StatusBar.Panels.Count-1] := -1; //Last extends to end;
     Windows.SendMessage(StatusBar.Handle, SB_SETPARTS, StatusBar.Panels.Count, LPARAM(Rights));
   finally
     Freemem(Rights);
@@ -436,6 +465,7 @@ var
 begin
   // if we catch WM_PAINT and no update is needed then skip processing or we will
   // do endless repaint
+  //debugln('TWin32WSStatusBar.DoUpdate');
 
   if GetUpdated(AStatusBar) then
     Exit;
@@ -516,16 +546,26 @@ begin
 end;
 
 class procedure TWin32WSStatusBar.DoSetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
+const
+  SB_SIMPLEID = $FF;
+var
+  WParam: windows.WPARAM;
 begin
   if AStatusBar.SimplePanel then
+  begin
+    if AStatusBar.UseRightToLeftReading then
+      WParam := SB_SIMPLEID or SBT_RTLREADING
+    else
+      WParam := SB_SIMPLEID;
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
-      Windows.SendMessageW(AStatusBar.Handle, SB_SETTEXTW, 255, LPARAM(PWideChar(UTF8ToUTF16(AStatusBar.SimpleText))))
+      Windows.SendMessageW(AStatusBar.Handle, SB_SETTEXTW, WParam, LPARAM(PWideChar(UTF8ToUTF16(AStatusBar.SimpleText))))
     else
-      Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PChar(Utf8ToAnsi(AStatusBar.SimpleText))))
+      Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, WParam, LPARAM(PChar(Utf8ToAnsi(AStatusBar.SimpleText))))
   {$else}
-    Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PChar(AStatusBar.SimpleText)))
+    Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, WParam, LPARAM(PChar(AStatusBar.SimpleText)))
   {$endif}
+  end
   else
     UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
 end;
@@ -574,6 +614,7 @@ class procedure TWin32WSStatusBar.Update(const AStatusBar: TStatusBar);
 var
   i: integer;
 begin
+  //debugln('TWin32WSStatusBar.Update');
   Windows.SendMessage(AStatusBar.Handle, SB_SIMPLE, WPARAM(AStatusBar.SimplePanel), 0);
   if not AStatusBar.SimplePanel then
   begin
