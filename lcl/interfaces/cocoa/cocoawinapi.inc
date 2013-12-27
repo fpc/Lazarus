@@ -1718,7 +1718,7 @@ begin
   ctx := CheckDC(DC);
   if not Assigned(ctx) then
     Exit;
-  if (ctx <> DefaultContext) and (ctx.ctx <> DefaultContext.ctx) then
+  if (ctx <> DefaultContext) and (ctx<>ScreenContext) then
     ctx.Free;
   Result := 1;
 end;
