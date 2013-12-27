@@ -154,6 +154,7 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TLCLCheckBoxCallback }
@@ -243,13 +244,17 @@ const
 
 function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): NSButton;
 var
+  titel:string;
   cap: NSString;
 begin
   Result := TCocoaButton.alloc.lclInitWithCreateParams(AParams);
   if Assigned(Result) then
   begin
     TCocoaButton(Result).callback := ACallBackClass.Create(Result, ATarget);
-    cap := NSStringUTF8(AParams.Caption);
+    titel:=aParams.Caption;
+    DeleteAmpersands(titel);
+    cap := NSStringUTF8(titel);
+
     Result.setTitle(cap);
     cap.release;
     if btnBezel <> 0 then
@@ -380,6 +385,19 @@ begin
   cf := NSStringUtf8(DefEq[ADefault]);
   NSButton(AButton.Handle).setKeyEquivalent(cf);
   cf.release;
+end;
+
+
+class procedure TCocoaWSButton.SetText(const AWinControl: TWinControl; const AText: String);
+var
+  titel:string;
+  cap: NSString;
+begin
+  titel:=AText;
+  DeleteAmpersands(titel);
+  cap := NSStringUTF8(titel);
+  NSButton(AWinControl.Handle).setTitle(cap);
+  cap.release;
 end;
 
 { TCocoaWSCustomCheckBox }
