@@ -139,12 +139,11 @@ end;
 
   Tells Carbon to halt the application
  ------------------------------------------------------------------------------}
-
-
+procedure TCocoaWidgetSet.AppTerminate;
 begin
   if FTerminating then Exit;
- // TODO: Check if there is more cleanup to do here
- // NSApp.terminate(nil);   // causes app to quit directly
+  // TODO: Check if there is more cleanup to do here
+  // NSApp.terminate(nil);   // causes app to quit directly
 end;
 
 {------------------------------------------------------------------------------
