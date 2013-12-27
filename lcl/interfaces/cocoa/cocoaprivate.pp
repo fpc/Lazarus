@@ -175,8 +175,9 @@ type
 
   TCocoaMenuItem = objcclass(NSMenuItem)
   public
-    callback: IMenuItemCallback;
+    menuItemCallback: IMenuItemCallback;
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+    function lclGetCallback: IMenuItemCallback; override;
   end;
 
   { TCocoaButton }
@@ -1934,7 +1935,12 @@ end;
 
 procedure TCocoaMenuItem.lclItemSelected(sender:id);
 begin
-  callback.ItemSelected;
+  menuItemCallback.ItemSelected;
+end;
+
+function TCocoaMenuItem.lclGetCallback: IMenuItemCallback;
+begin
+  result:=menuItemCallback;
 end;
 
 end.

@@ -170,7 +170,7 @@ begin
       objcselector('lclItemSelected:'), NSString.alloc.init);
     ns.release;
     item.setTarget(item);
-    TCocoaMenuItem(item).callback:=TLCLMenuItemCallback.Create(item, AMenuItem);
+    TCocoaMenuItem(item).menuItemCallback:=TLCLMenuItemCallback.Create(item, AMenuItem);
     item.setEnabled(AMenuItem.Enabled);
   end;
 
@@ -184,8 +184,23 @@ end;
   Destroys menu item in Cocoa interface
  ------------------------------------------------------------------------------}
 class procedure TCocoaWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
+var
+   callback: IMenuItemCallback;
+   callbackObject: TObject;
+   item    : TCocoaMenuItem;
 begin
-
+ if AMenuItem.Caption <> '-' then
+   begin
+   item:=TCocoaMenuItem(AMenuItem.Handle);
+   callback := item.lclGetCallback;
+   if Assigned(callback) then
+     begin
+     callbackObject := callback.GetCallbackObject;
+     callback := nil;
+     item.lclClearCallback;
+     callbackObject.Free;
+     end;
+   end;
 end;
 
 {------------------------------------------------------------------------------

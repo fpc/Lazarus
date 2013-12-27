@@ -131,6 +131,7 @@ type
   public
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TCocoaWSScreen }
@@ -208,6 +209,33 @@ begin
   win.setContentView(cnt);
 
   Result := TLCLIntfHandle(cnt);
+end;
+
+
+class procedure TCocoaWSHintWindow.DestroyHandle(const AWinControl: TWinControl);
+var
+  cnt: TCocoaWindowContent;
+  Callback: ICommonCallback;
+  CallbackObject: TObject;
+begin
+  if not AWinControl.HandleAllocated then
+    Exit;
+
+  cnt:= TCocoaWindowContent(AWinControl.Handle);
+  cnt.removeFromSuperview;
+
+  cnt.ownwin.close;
+
+  Callback := cnt.lclGetCallback;
+  if Assigned(Callback) then
+  begin
+    CallbackObject := Callback.GetCallbackObject;
+    Callback := nil;
+    cnt.lclClearCallback;
+    CallbackObject.Free;
+  end;
+
+  cnt.release;
 end;
 
 { TLCLWindowCallback }
