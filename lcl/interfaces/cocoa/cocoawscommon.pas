@@ -751,7 +751,7 @@ var
   SizeType: Integer;
 begin
   NewBounds := Owner.lclFrame;
-
+  //debugln('Newbounds:'+ dbgs(newbounds));
   // send window pos changed
   PosMsg.Msg := LM_WINDOWPOSCHANGED;
   PosMsg.Result := 0;
@@ -772,6 +772,7 @@ begin
   end;
 
   OldBounds := Target.BoundsRect;
+  //debugln(Target.Name+':'+ dbgs(OldBounds));
 
   Resized :=
     (OldBounds.Right - OldBounds.Left <> NewBounds.Right - NewBounds.Left) or

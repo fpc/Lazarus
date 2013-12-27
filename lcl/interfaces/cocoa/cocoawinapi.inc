@@ -925,7 +925,14 @@ function TCocoaWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left, Top: 
 begin
   Result := Handle <> 0;
   if Result then
-    NSObject(handle).lclRelativePos(Left, Top);
+    begin
+    if TCocoaWindowContent(handle).isembedded then
+       TCocoaWindowContent(handle).lclRelativePos(Left, Top)
+       else
+       begin
+         TCocoaWindowContent(handle).window.lclRelativePos(Left, Top);
+       end;
+    end
 end;
 
 function TCocoaWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;

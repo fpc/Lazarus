@@ -27,7 +27,7 @@ uses
   // Libs
   CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
-  LCLType, Controls;
+  LCLType, LCLProc, Controls;
 
 type
 
@@ -1685,11 +1685,15 @@ begin
 end;
 
 procedure LCLWindowExtension.lclRelativePos(var Left, Top: Integer);
+var
+   f: NSRect;
 begin
-  with frame.origin do
+  if Assigned(screen) then
   begin
-    Left := Round(x);
-    Top := Round(y);
+    f:=frame;
+    Left := Round(f.origin.x);
+    Top := Round(screen.frame.size.height - f.size.height - f.origin.y);
+    //debugln('Top:'+dbgs(Top));
   end;
 end;
 
