@@ -49,6 +49,10 @@ unit registersqldb;
  {$DEFINE HASLIBLOADER}
 {$ENDIF}
 
+{$IF FPC_FULLVERSION>= 20701}
+{$DEFINE HASMYSQL56CONNECTION}
+{$ENDIF}
+
 {$IFNDEF Solaris}
 {$DEFINE HASIBCONNECTION}
 {$ENDIF}
@@ -56,7 +60,7 @@ unit registersqldb;
 interface
 
 uses
-  Classes, SysUtils, LResources, db, sqldb,
+  Classes, SysUtils, db, sqldb,
   {$IFDEF HASIBCONNECTION}
     ibconnection,
   {$ENDIF}
@@ -82,6 +86,9 @@ uses
   mysql51conn,
   {$IFDEF HASMYSQL55CONNECTION}
     mysql55conn,
+  {$ENDIF}
+  {$IFDEF HASMYSQL56CONNECTION}
+    mysql56conn,
   {$ENDIF}
   {$IFDEF HASSQLITE3CONNECTION}
     sqlite3conn,
@@ -212,6 +219,9 @@ begin
     ,TMySQL51Connection
 {$IFDEF HASMYSQL55CONNECTION}
     ,TMySQL55Connection
+{$ENDIF}
+{$IFDEF HASMYSQL56CONNECTION}
+    ,TMySQL56Connection
 {$ENDIF}
 {$IFDEF HASSQLITE3CONNECTION}
     ,TSQLite3Connection
