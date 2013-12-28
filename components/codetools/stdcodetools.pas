@@ -2194,7 +2194,7 @@ var
     out IdentContext: TFindContext): boolean;
   var
     Params: TFindDeclarationParams;
-    IsPublished: Boolean;
+    IsPublished, IsMissingInCode: Boolean;
     CurContext: TFindContext;
   begin
     Result:=false;
@@ -2265,20 +2265,20 @@ var
       Params.Free;
     end;
 
+    IsMissingInCode := False;
     if (IdentContext.Node<>nil) and IsPublished then begin
       Result:=true;
     end else begin
-      // no proper node found
-      // -> search in DefineProperties
+      // no proper node found -> search in DefineProperties
       if SearchInDefinePropertiesToo then begin
-        //debugln('FindLFMIdentifier A SearchAlsoInDefineProperties=',dbgs(SearchInDefinePropertiesToo),' Identifier=',IdentName);
-        if FindNonPublishedDefineProperty(LFMNode,DefaultErrorPosition,
-          IdentName,ClassContext)
+        if FindNonPublishedDefineProperty(LFMNode,DefaultErrorPosition,IdentName,ClassContext)
         then begin
           //debugln(['FindLFMIdentifier "',IdentName,'" is defined via DefineProperties']);
           Result:=true;
         end;
-      end;
+      end
+      else
+        IsMissingInCode := True;
     end;
     if (not Result) and ErrorOnNotFound then begin
       if (IdentContext.Node<>nil) and (not IsPublished) then begin
@@ -2286,7 +2286,14 @@ var
                          'identifier '+IdentName+' is not published in class '
                          +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false,true)+'"',
                          DefaultErrorPosition);
-      end else begin
+      end
+      else if IsMissingInCode then begin
+        LFMTree.AddError(lfmeIdentifierMissingInCode,LFMNode,
+                         'identifier '+IdentName+' not found in pascal code '
+                         +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false,true)+'"',
+                         DefaultErrorPosition);
+      end
+      else begin
         LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
                          'identifier '+IdentName+' not found in class '
                          +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false,true)+'"',
@@ -2409,8 +2416,7 @@ var
   end;
 
   procedure CheckLFMChildObject(LFMObject: TLFMObjectNode;
-    const ParentContext: TFindContext;
-    SearchAlsoInDefineProperties, ContextIsDefault: boolean);
+    const ParentContext: TFindContext; ContextIsDefault: boolean);
   var
     LFMObjectName: String;
     ChildContext: TFindContext;
@@ -2433,7 +2439,7 @@ var
     ChildContext:=CleanFindContext;
     IdentifierFound:=(not ContextIsDefault) and
       FindLFMIdentifier(LFMObject,LFMObject.NamePosition,LFMObjectName,RootContext,
-          SearchAlsoInDefineProperties,ObjectsMustExist,ChildContext);
+          false,ObjectsMustExist,ChildContext);
 
     //debugln(['CheckLFMChildObject LFMObjectName="',LFMObjectName,'" IdentifierFound=',IdentifierFound,' ObjectsMustExist=',ObjectsMustExist,' ',FindContextToString(ChildContext)]);
     if IdentifierFound and (ObjectsMustExist or (ChildContext.Node<>nil)) then
@@ -2595,8 +2601,7 @@ var
       //DebugLn('TStandardCodeTool.CheckLFM.CheckLFMObjectValues B ',CurLFMNode.ClassName);
       case CurLFMNode.TheType of
         lfmnObject:
-          CheckLFMChildObject(TLFMObjectNode(CurLFMNode),ClassContext,false,
-                              ContextIsDefault);
+          CheckLFMChildObject(TLFMObjectNode(CurLFMNode),ClassContext,ContextIsDefault);
         lfmnProperty:
           if not ContextIsDefault then
             CheckLFMProperty(TLFMPropertyNode(CurLFMNode),ClassContext);

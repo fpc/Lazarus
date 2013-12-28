@@ -394,8 +394,11 @@ begin
           // Missing component variable, must be added to pascal sources
           ObjNode:=CurError.Node as TLFMObjectNode;
           InitClassCompletion;
+          NewIdent:=ObjNode.Name+':'+ObjNode.TypeName;
           fCTLink.CodeTool.AddClassInsertion(UpperCase(ObjNode.Name),
-              ObjNode.Name+':'+ObjNode.TypeName+';',ObjNode.Name, ncpPublishedVars);
+                                   NewIdent+';', ObjNode.Name, ncpPublishedVars);
+          fSettings.AddLogLine(Format('Added missing object "%s" to pascal source.',
+                                      [NewIdent]));
         end
         else if IsMissingType(CurError) then
         begin
