@@ -649,6 +649,7 @@ msgstr "Metódusok után"
 #: lazarusidestrconsts.dlgblockgroupoptions
 #, fuzzy
 #| msgid "Selection:"
+msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
 msgstr "Kijelölés:"
 
@@ -825,6 +826,7 @@ msgstr "C stílusú makrók (global)"
 #: lazarusidestrconsts.dlgcoansistr
 #, fuzzy
 #| msgid "Use Ansi Strings"
+msgctxt "lazarusidestrconsts.dlgcoansistr"
 msgid "Use Ansistrings"
 msgstr "ANSI stringek használata"
 
@@ -3106,6 +3108,7 @@ msgstr "Hasábköz buboréktippek megjelenítése"
 #: lazarusidestrconsts.dlgshowhint
 #, fuzzy
 #| msgid "Show Hints"
+msgctxt "lazarusidestrconsts.dlgshowhint"
 msgid "Show hints"
 msgstr "Buboréktippek megjelenítése"
 
@@ -3329,6 +3332,7 @@ msgstr "Visszavonás korlátja"
 #: lazarusidestrconsts.dlgunitdepcaption
 #, fuzzy
 #| msgid "Unit dependencies"
+msgctxt "lazarusidestrconsts.dlgunitdepcaption"
 msgid "Unit Dependencies"
 msgstr "Unit függőségek"
 
@@ -3743,6 +3747,7 @@ msgid "Shorten or expand filename"
 msgstr "Fájlnév rövidítése vagy hosszabbítása"
 
 #: lazarusidestrconsts.lisa2pshowall
+msgctxt "lazarusidestrconsts.lisa2pshowall"
 msgid "Show all"
 msgstr "Mindent mutat"
 
@@ -4006,17 +4011,9 @@ msgstr ""
 msgid "&Address Breakpoint ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisaddtoincludesearchpath
-msgid "Add to include search path?"
-msgstr ""
-
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "Hozzáadja %s-t a projekthez?"
-
-#: lazarusidestrconsts.lisaddtounitsearchpath
-msgid "Add to unit search path?"
-msgstr "Hozzáadja a unit keresési útvonalhoz?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
@@ -4071,6 +4068,7 @@ msgstr "A(z) %s%s%s csomag nem található."
 #: lazarusidestrconsts.lisaf2pshowall
 #, fuzzy
 #| msgid "Show All"
+msgctxt "lazarusidestrconsts.lisaf2pshowall"
 msgid "Show all"
 msgstr "Minden megjelenítése"
 
@@ -5495,6 +5493,7 @@ msgstr "Kód"
 #: lazarusidestrconsts.liscodebrowser
 #, fuzzy
 #| msgid "Code browser"
+msgctxt "lazarusidestrconsts.liscodebrowser"
 msgid "Code Browser"
 msgstr "Kód tallózó"
 
@@ -5586,6 +5585,7 @@ msgstr "Bekezdés formázó tag beszúrása"
 #: lazarusidestrconsts.liscodehelpmainformcaption
 #, fuzzy
 #| msgid "FPDoc editor"
+msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
 msgid "FPDoc Editor"
 msgstr "FPDoc szerkesztő"
 
@@ -6900,6 +6900,7 @@ msgid "Copy to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgbreakpointpropertieshint
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr ""
 
@@ -9339,6 +9340,7 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
+msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr ""
 
@@ -9705,36 +9707,42 @@ msgstr "Projekt mentése másként"
 #: lazarusidestrconsts.liskmselectlineend
 #, fuzzy
 #| msgid "Select line end"
+msgctxt "lazarusidestrconsts.liskmselectlineend"
 msgid "Select Line End"
 msgstr "Kijelölés a sor végéig"
 
 #: lazarusidestrconsts.liskmselectlinestart
 #, fuzzy
 #| msgid "Select line start"
+msgctxt "lazarusidestrconsts.liskmselectlinestart"
 msgid "Select Line Start"
 msgstr "Kijelölés a sor elejéig"
 
 #: lazarusidestrconsts.liskmselectpagebottom
 #, fuzzy
 #| msgid "Select page bottom"
+msgctxt "lazarusidestrconsts.liskmselectpagebottom"
 msgid "Select Page Bottom"
 msgstr "Kijelölés az oldal aljáig"
 
 #: lazarusidestrconsts.liskmselectpagetop
 #, fuzzy
 #| msgid "Select page top"
+msgctxt "lazarusidestrconsts.liskmselectpagetop"
 msgid "Select Page Top"
 msgstr "Kijelölés az oldal tetejéig"
 
 #: lazarusidestrconsts.liskmselectwordleft
 #, fuzzy
 #| msgid "Select word left"
+msgctxt "lazarusidestrconsts.liskmselectwordleft"
 msgid "Select Word Left"
 msgstr "Kifejezés bal oldali részének kijelölése"
 
 #: lazarusidestrconsts.liskmselectwordright
 #, fuzzy
 #| msgid "Select word right"
+msgctxt "lazarusidestrconsts.liskmselectwordright"
 msgid "Select Word Right"
 msgstr "Kifejezés jobb oldali részének kijelölése"
 
@@ -9846,6 +9854,7 @@ msgstr "Megszakítási pontok megjelenítése"
 #: lazarusidestrconsts.liskmtoggleviewcallstack
 #, fuzzy
 #| msgid "Toggle view Call Stack"
+msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
 msgid "View Call Stack"
 msgstr "Hívási stack megjelenítése"
 
@@ -10957,6 +10966,7 @@ msgstr "Jelenlegi felhasználónév"
 #: lazarusidestrconsts.lismenuinspect
 #, fuzzy
 #| msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
 msgid "&Inspect ..."
 msgstr "Vizsgálat ..."
 
@@ -11207,6 +11217,7 @@ msgid "Revert"
 msgstr "Visszaállítás"
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "Futtatás"
 
@@ -11254,6 +11265,7 @@ msgstr "Kijelölés"
 #: lazarusidestrconsts.lismenuselectall
 #, fuzzy
 #| msgid "Select all"
+msgctxt "lazarusidestrconsts.lismenuselectall"
 msgid "Select All"
 msgstr "Minden kijelölése"
 
@@ -11290,6 +11302,7 @@ msgstr "Kifejezés kijelölése"
 #: lazarusidestrconsts.lismenusetfreebookmark
 #, fuzzy
 #| msgid "Set a free bookmark"
+msgctxt "lazarusidestrconsts.lismenusetfreebookmark"
 msgid "Set a Free Bookmark"
 msgstr "Egy szabad könyvjelző hozzáadása"
 
@@ -11387,6 +11400,7 @@ msgid "Find"
 msgstr "Keresés"
 
 #: lazarusidestrconsts.lismenutemplatefindnext
+msgctxt "lazarusidestrconsts.lismenutemplatefindnext"
 msgid "Find Next"
 msgstr "Következő keresése"
 
@@ -11453,6 +11467,7 @@ msgid "Call Stack"
 msgstr "Hívás stack"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
+msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
 msgid "Code Browser"
 msgstr "Kód tallózó"
 
@@ -11501,6 +11516,7 @@ msgstr "IDE gyorsgombok"
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
 #| msgid "Jump-History ..."
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
 msgid "Jump History"
 msgstr "Ugrás előzmények ..."
 
@@ -11560,6 +11576,7 @@ msgid "Toggle Form/Unit View"
 msgstr "Form/unit nézet átváltása"
 
 #: lazarusidestrconsts.lismenuviewunitdependencies
+msgctxt "lazarusidestrconsts.lismenuviewunitdependencies"
 msgid "Unit Dependencies"
 msgstr "Unit függőségek"
 
@@ -14926,6 +14943,7 @@ msgid "Show help"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
+msgctxt "lazarusidestrconsts.lisshowhintsinobjectinspector"
 msgid "Show hints"
 msgstr "Buboréktippek megjelenítése"
 
@@ -15559,11 +15577,13 @@ msgid "The \"make\" executable typically has the name \"%s\". It is needed for b
 msgstr ""
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
-msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+msgid "The new include file is not yet in the include search path.%sAdd directory %s to build modes?"
 msgstr ""
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
-msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+#, fuzzy
+#| msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s to build modes?"
 msgstr "Az új unit még nincs benne a unit keresési útvonalban. %sHozzáadja a(z) %s könyvtárat?"
 
 #: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
@@ -16686,8 +16706,9 @@ msgid "Use and close"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings
+msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
-msgstr ""
+msgstr "ANSI stringek használata"
 
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
@@ -16780,6 +16801,7 @@ msgstr "UTF-8 BOM-mal"
 #: lazarusidestrconsts.lisvalue
 #, fuzzy
 #| msgid "Value:"
+msgctxt "lazarusidestrconsts.lisvalue"
 msgid "Value"
 msgstr "Érték:"
 
@@ -16823,6 +16845,7 @@ msgstr "Verzió információ másolása a vágólapra"
 #: lazarusidestrconsts.lisviewbreakpointproperties
 #, fuzzy
 #| msgid "View Breakpoint Properties"
+msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
 msgid "Breakpoint Properties ..."
 msgstr "Megszakítási pont tulajdonságainak megjelenítése"
 
@@ -17706,6 +17729,7 @@ msgstr ""
 #: lazarusidestrconsts.srkmeccompletecode
 #, fuzzy
 #| msgid "Complete code"
+msgctxt "lazarusidestrconsts.srkmeccompletecode"
 msgid "Complete Code"
 msgstr "Kód kiegészítése"
 
@@ -17797,6 +17821,7 @@ msgstr "kirétékelés/módosítás"
 #: lazarusidestrconsts.srkmecextractproc
 #, fuzzy
 #| msgid "Extract procedure"
+msgctxt "lazarusidestrconsts.srkmecextractproc"
 msgid "Extract Procedure"
 msgstr "Áthelyezés új függvénybe"
 
@@ -17843,6 +17868,7 @@ msgstr "Keresés fájlokban"
 #: lazarusidestrconsts.srkmecfindnext
 #, fuzzy
 #| msgid "Find next"
+msgctxt "lazarusidestrconsts.srkmecfindnext"
 msgid "Find Next"
 msgstr "Következő keresése"
 
@@ -18023,6 +18049,7 @@ msgstr "megvizsgálás"
 #: lazarusidestrconsts.srkmecinvertassignment
 #, fuzzy
 #| msgid "Invert assignment"
+msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Hozzárendelés megfordítása"
 
@@ -18282,10 +18309,12 @@ msgid "Select Left"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsellineend
+msgctxt "lazarusidestrconsts.srkmecsellineend"
 msgid "Select Line End"
 msgstr "Kijelölés a sor végéig"
 
 #: lazarusidestrconsts.srkmecsellinestart
+msgctxt "lazarusidestrconsts.srkmecsellinestart"
 msgid "Select Line Start"
 msgstr "Kijelölés a sor elejéig"
 
@@ -18294,6 +18323,7 @@ msgid "Select to text start in line"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselpagebottom
+msgctxt "lazarusidestrconsts.srkmecselpagebottom"
 msgid "Select Page Bottom"
 msgstr "Kijelölés a lap aljáig"
 
@@ -18310,6 +18340,7 @@ msgid "Select Page Right"
 msgstr "Kijelölés egy oldalhosszot jobbra"
 
 #: lazarusidestrconsts.srkmecselpagetop
+msgctxt "lazarusidestrconsts.srkmecselpagetop"
 msgid "Select Page Top"
 msgstr "Kijelölés a lap tetejéig"
 
@@ -18350,10 +18381,12 @@ msgid "Select word-end right"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselwordleft
+msgctxt "lazarusidestrconsts.srkmecselwordleft"
 msgid "Select Word Left"
 msgstr "Kifejezés bal oldalán álló szó kijelölése"
 
 #: lazarusidestrconsts.srkmecselwordright
+msgctxt "lazarusidestrconsts.srkmecselwordright"
 msgid "Select Word Right"
 msgstr "Kifejezés jobb oldalán álló szó kijelölése"
 
@@ -18894,10 +18927,12 @@ msgid "Highlighter"
 msgstr "Kiemelő"
 
 #: lazarusidestrconsts.ueminspect
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
-msgstr ""
+msgstr "Vizsgálat ..."
 
 #: lazarusidestrconsts.ueminvertassignment
+msgctxt "lazarusidestrconsts.ueminvertassignment"
 msgid "Invert Assignment"
 msgstr "Hozzárendelés megfordítása"
 
@@ -19012,6 +19047,7 @@ msgid "Toggle &Breakpoint"
 msgstr "Megszakítási pont bekapcsolása"
 
 #: lazarusidestrconsts.uemviewcallstack
+msgctxt "lazarusidestrconsts.uemviewcallstack"
 msgid "View Call Stack"
 msgstr "Hívási stack megjelenítése"
 
