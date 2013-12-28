@@ -94,6 +94,11 @@ begin
 
 end;
 
+class function TCDWSLazDeviceAPIs.GetScreenRotation(AScreenIndex: Integer): TScreenRotation;
+begin
+
+end;
+
 {$endif}
 
 {$ifdef CD_Android}

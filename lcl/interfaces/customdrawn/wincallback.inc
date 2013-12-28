@@ -1,4 +1,4 @@
-{%MainUnit winceint.pp}
+{%MainUnit CustomDrawnInt.pas}
 {
  *****************************************************************************
   This file is part of the Lazarus Component Library (LCL)
