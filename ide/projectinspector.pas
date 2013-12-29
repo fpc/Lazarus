@@ -57,10 +57,10 @@ unit ProjectInspector;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Buttons,
-  ComCtrls, Menus, Dialogs, FileUtil, ExtCtrls, IDEHelpIntf, IDECommands, IDEDialogs, ProjectIntf,
-  LazarusIDEStrConsts, IDEProcs, IDEOptionDefs,
-  Project, AddToProjectDlg, PackageDefs, TreeFilterEdit;
+  Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Buttons, ComCtrls, Menus,
+  Dialogs, FileUtil, ExtCtrls, IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf,
+  LazIDEIntf, ProjectIntf, Project, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs,
+  AddToProjectDlg, PackageDefs, TreeFilterEdit, EnvironmentOpts;
   
 type
   TOnAddUnitToProject =
@@ -172,6 +172,7 @@ type
     procedure UpdateRequiredPackages;
     procedure OnProjectBeginUpdate(Sender: TObject);
     procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
+    procedure OnCloseIDE(Sender: TObject);
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure IdleHandler(Sender: TObject; var Done: Boolean);
@@ -214,10 +215,6 @@ var
 implementation
 
 {$R *.lfm}
-
-uses
-  IDEImagesIntf;
-
 
 { TProjectInspectorForm }
 
@@ -537,8 +534,8 @@ procedure TProjectInspectorForm.SetSortAlphabetically(const AValue: boolean);
 begin
   if FSortAlphabetically=AValue then exit;
   FSortAlphabetically:=AValue;
-  SortAlphabeticallyButton.Down:=SortAlphabetically;
-  FilterEdit.SortData:=SortAlphabetically;
+  SortAlphabeticallyButton.Down:=FSortAlphabetically;
+  FilterEdit.SortData:=FSortAlphabetically;
   FilterEdit.InvalidateFilter;
 end;
 
@@ -774,6 +771,12 @@ begin
   EndUpdate;
 end;
 
+procedure TProjectInspectorForm.OnCloseIDE(Sender: TObject);
+begin
+  EnvironmentOptions.ProjInspSortAlphabetically := SortAlphabetically;
+  EnvironmentOptions.ProjInspShowDirHierarchy := ShowDirectoryHierarchy;
+end;
+
 procedure TProjectInspectorForm.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
@@ -841,11 +844,12 @@ begin
   inherited Create(TheOwner);
   Name:=NonModalIDEWindowNames[nmiwProjectInspector];
   Caption:=lisMenuProjectInspector;
-  FSortAlphabetically := True;
-  SortAlphabeticallyButton.Down := FSortAlphabetically;
   KeyPreview:=true;
   SetupComponents;
   KeyPreview:=true;
+  SortAlphabetically := EnvironmentOptions.ProjInspSortAlphabetically;
+  ShowDirectoryHierarchy := EnvironmentOptions.ProjInspShowDirHierarchy;
+  LazarusIDE.AddHandlerOnIDEClose(@OnCloseIDE);
 end;
 
 destructor TProjectInspectorForm.Destroy;

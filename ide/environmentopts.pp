@@ -281,7 +281,11 @@ type
 
     // object inspector
     FObjectInspectorOptions: TOIOptions;
-    
+
+    // project inspector
+    FProjInspSortAlphabetically: boolean;
+    FProjInspShowDirHierarchy: boolean;
+
     // hints
     FCheckDiskChangesWithLoading: boolean;
     FShowHintsForComponentPalette: boolean;
@@ -513,6 +517,12 @@ type
     // object inspector
     property ObjectInspectorOptions: TOIOptions read FObjectInspectorOptions
                                                 write FObjectInspectorOptions;
+
+    // project inspector
+    property ProjInspSortAlphabetically: boolean read FProjInspSortAlphabetically
+                                             write FProjInspSortAlphabetically;
+    property ProjInspShowDirHierarchy: boolean read FProjInspShowDirHierarchy
+                                             write FProjInspShowDirHierarchy;
 
     // hints
     property CheckDiskChangesWithLoading: boolean read FCheckDiskChangesWithLoading
@@ -867,6 +877,10 @@ begin
 
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
+
+  // project inspector
+  FProjInspSortAlphabetically:=false;
+  FProjInspShowDirHierarchy:=false;
 
   // hints
   FCheckDiskChangesWithLoading:=false;
@@ -1294,6 +1308,12 @@ begin
         end;
       end;
 
+      // project inspector
+      FProjInspSortAlphabetically:=XMLConfig.GetValue(
+        Path+'ProjInspSortAlphabetically/Value',false);
+      FProjInspShowDirHierarchy:=XMLConfig.GetValue(
+        Path+'ProjInspShowDirHierarchy/Value',false);
+
       // hints
       FCheckDiskChangesWithLoading:=XMLConfig.GetValue(
         Path+'CheckDiskChangesWithLoading/Value',false);
@@ -1649,6 +1669,12 @@ begin
               DebuggerDefaultColors[EventType].Foreground);
         end;
       end;
+
+      // project inspector
+      XMLConfig.SetDeleteValue(Path+'ProjInspSortAlphabetically/Value',
+        FProjInspSortAlphabetically,false);
+      XMLConfig.SetDeleteValue(Path+'ProjInspShowDirHierarchy/Value',
+        FProjInspShowDirHierarchy,false);
 
       // hints
       XMLConfig.SetDeleteValue(Path+'CheckDiskChangesWithLoading/Value',
