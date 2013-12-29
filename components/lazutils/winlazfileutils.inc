@@ -685,7 +685,7 @@ begin
   else
     Result := AppendPathDelim(DGetAppConfigDir(Global));
   if Result = '' then exit;
-  if Create and not ForceDirectoriesUTF8(Result) then
+  if Create and not ForceDirectories(Result) then
     raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Result]));
 end;
 
@@ -694,7 +694,7 @@ function GetAppConfigFileWide(Global: Boolean; SubDir: boolean;
 var
   Dir: string;
 begin
-  Result := GetAppConfigDirWide(Global);
+  Result := SysToUTF8(GetAppConfigDirWide(Global));
   if SubDir then
     Result := AppendPathDelim(Result+'Config');
   Result := Result + ApplicationName + ConfigExtension;
