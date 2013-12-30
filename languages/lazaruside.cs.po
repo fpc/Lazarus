@@ -3827,17 +3827,9 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "Adresa bodu přerušení ..."
 
-#: lazarusidestrconsts.lisaddtoincludesearchpath
-msgid "Add to include search path?"
-msgstr "Přidat do cesty zahrnutí?"
-
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "Přidat %s do projektu?"
-
-#: lazarusidestrconsts.lisaddtounitsearchpath
-msgid "Add to unit search path?"
-msgstr "Přidat do vyhledávací cesty jednotek"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
@@ -14978,11 +14970,15 @@ msgid "The \"make\" executable typically has the name \"%s\". It is needed for b
 msgstr "Spouštěcí soubor \"make\" má obvykle jméno \"%s\". Je potřeba pro sestavení IDE. Prosím, zadejte celou cestu souboru."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
-msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+#, fuzzy
+#| msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+msgid "The new include file is not yet in the include search path.%sAdd directory %s to build modes?"
 msgstr "Nový zahrnovaný soubor ještě není ve vyhledávací cestě zahrnutí.%sPřidat adresář %s?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
-msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+#, fuzzy
+#| msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s to build modes?"
 msgstr "Nová jednotka zatím není v cestě hledání jednotek.%sPřidat adresář %s?"
 
 #: lazarusidestrconsts.listheoldconfigurationwillbeupgraded

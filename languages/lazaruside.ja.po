@@ -3819,17 +3819,9 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "アドレスブレークポイント(&A) ..."
 
-#: lazarusidestrconsts.lisaddtoincludesearchpath
-msgid "Add to include search path?"
-msgstr "インクルード検索パスに追加しますか？"
-
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "%s をプロジェクトに追加しますか？"
-
-#: lazarusidestrconsts.lisaddtounitsearchpath
-msgid "Add to unit search path?"
-msgstr "ユニット検索パスに追加しますか？"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
@@ -14897,11 +14889,15 @@ msgid "The \"make\" executable typically has the name \"%s\". It is needed for b
 msgstr "\"make\"実行ファイルは通常\"%s\"という名前を持っています。それはIDEの構築に必要です。その完全なパスを与えてください"
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
-msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+#, fuzzy
+#| msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+msgid "The new include file is not yet in the include search path.%sAdd directory %s to build modes?"
 msgstr "新しいインクルードファイルはインクルード検索パスにまだありません。%sディレクトリ %s を加えますか？"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
-msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+#, fuzzy
+#| msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s to build modes?"
 msgstr "その新しいユニットはまだユニット検索パスにありません。%sディレクトリ%sを追加しますか？"
 
 #: lazarusidestrconsts.listheoldconfigurationwillbeupgraded

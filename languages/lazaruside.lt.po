@@ -3931,17 +3931,9 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "&Adreso stabdos taškas…"
 
-#: lazarusidestrconsts.lisaddtoincludesearchpath
-msgid "Add to include search path?"
-msgstr "Įtraukti į įterptinių paieškos kelią?"
-
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "Įdėti %s į projektą?"
-
-#: lazarusidestrconsts.lisaddtounitsearchpath
-msgid "Add to unit search path?"
-msgstr "Įtraukti į modulių paieškos kelią?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
@@ -15344,11 +15336,15 @@ msgid "The \"make\" executable typically has the name \"%s\". It is needed for b
 msgstr "Įprastai „make“ vykdomojo failo pavadinimas būna „%s“. Jis būtinas IKA darymui. Būtina nurodyti pilną adresą."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
-msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+#, fuzzy
+#| msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+msgid "The new include file is not yet in the include search path.%sAdd directory %s to build modes?"
 msgstr "Naujojo įterpiamo failo dar nėra įterpiamųjų paieškos kelyje.%sĮtraukti aplanką į įterpiamųjų paieškos kelią?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
-msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+#, fuzzy
+#| msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s to build modes?"
 msgstr "Naujojo modulio dar nėra modulių paieškos kelyje.%sĮtraukti modulio aplanką į modulių paieškos kelią?"
 
 #: lazarusidestrconsts.listheoldconfigurationwillbeupgraded

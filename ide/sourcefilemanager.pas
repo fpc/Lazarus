@@ -41,7 +41,7 @@ uses
   SourceEditor, EditorOptions, CustomFormEditor, FormEditor, EmptyMethodsDlg,
   BaseDebugManager, ControlSelection, TransferMacros, EnvironmentOpts,
   BuildManager, Designer, EditorMacroListViewer, KeywordFuncLists,
-  FindRenameIdentifier,
+  FindRenameIdentifier, GenericCheckList,
   {$IFDEF EnableNewExtTools}
   etMessagesWnd,
   {$ELSE}
@@ -104,6 +104,10 @@ type
     function CloseProject: TModalResult;
     procedure OpenProject(aMenuItem: TIDEMenuItem);
     procedure CloseAll;
+    // project inspector
+    // Checks if the UnitDirectory is part of the Unit Search Paths, if not,
+    // ask the user if he wants to extend dependencies or the Unit Search Paths.
+    function CheckDirIsInSearchPath(UnitInfo: TUnitInfo; AllowAddingDependencies, IsIncludeFile: Boolean): Boolean;
 
     // methods for 'new unit'
     function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
@@ -2491,6 +2495,79 @@ begin
 
   // Close packages
   PkgBoss.DoCloseAllPackageEditors;
+end;
+
+function TLazSourceFileManager.CheckDirIsInSearchPath(UnitInfo: TUnitInfo;
+  AllowAddingDependencies, IsIncludeFile: Boolean): Boolean;
+// Check if the given unit's path is on Unit- or Include-search path.
+// Returns true if it is OK to add the unit to current project.
+var
+  CurDirectory, CurPath, ShortDir: String;
+  DlgMsg: String;
+  Owners: TFPList;
+  APackage: TLazPackage;
+  ListForm: TGenericCheckListForm;
+  i: Integer;
+begin
+  Result:=True;
+  if UnitInfo.IsVirtual then exit;
+  if IsIncludeFile then begin
+    CurPath:=Project1.CompilerOptions.GetIncludePath(false);
+    DlgMsg:=lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd;
+  end
+  else begin
+    CurPath:=Project1.CompilerOptions.GetUnitPath(false);
+    DlgMsg:=lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory;
+  end;
+  CurDirectory:=AppendPathDelim(UnitInfo.GetDirectory);
+  if SearchDirectoryInSearchPath(CurPath,CurDirectory)<1 then
+  begin
+    if AllowAddingDependencies then begin
+      Owners:=PkgBoss.GetPossibleOwnersOfUnit(UnitInfo.Filename,[]);
+      try
+        if (Owners<>nil) then begin
+          for i:=0 to Owners.Count-1 do begin
+            if TObject(Owners[i]) is TLazPackage then begin
+              APackage:=TLazPackage(Owners[i]);
+              if IDEMessageDialog(lisAddPackageRequirement,
+                Format(lisAddPackageToProject, [APackage.IDAsString]),
+                mtConfirmation,[mbYes,mbCancel],'')<>mrYes
+              then
+                Exit(True);
+              PkgBoss.AddProjectDependency(Project1,APackage);
+              Exit(False);
+            end;
+          end;
+        end;
+      finally
+        Owners.Free;
+      end;
+    end;
+    // unit is not in a package => extend unit path
+    ShortDir:=CurDirectory;
+    if (not Project1.IsVirtual) then
+      ShortDir:=CreateRelativePath(ShortDir,Project1.ProjectDirectory);
+    ListForm:=TGenericCheckListForm.Create(Nil);
+    try
+      //lisApplyForBuildModes = 'Apply for build modes:';
+      ListForm.Caption:=lisAvailableProjectBuildModes;
+      ListForm.InfoLabel.Caption:=Format(DlgMsg,[LineEnding,CurDirectory]);
+      for i:=0 to Project1.BuildModes.Count-1 do begin
+        ListForm.CheckListBox1.Items.Add(Project1.BuildModes[i].Identifier);
+        ListForm.CheckListBox1.Checked[i]:=True;
+      end;
+      if ListForm.ShowModal<>mrOK then Exit(False);
+      for i:=0 to Project1.BuildModes.Count-1 do
+        if ListForm.CheckListBox1.Checked[i] then
+          with Project1.BuildModes[i].CompilerOptions do
+            if IsIncludeFile then
+              IncludePath:=MergeSearchPaths(IncludePath,ShortDir)
+            else
+              OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,ShortDir);
+    finally
+      ListForm.Free;
+    end;
+  end;
 end;
 
 function TLazSourceFileManager.CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;

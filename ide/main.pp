@@ -575,14 +575,6 @@ type
     function ProjInspectorRemoveFile(Sender: TObject;
                                      AnUnitInfo: TUnitInfo): TModalresult;
 
-    // Checks if the UnitDirectory is part of the Unit Search Paths,
-    // if not, then ask the user if he wants to extend dependencies
-    // or the Unit Search Paths.
-    procedure CheckDirIsInUnitSearchPath(UnitInfo: TUnitInfo;
-        AllowAddingDependencies: boolean; out DependencyAdded: boolean);
-    procedure CheckDirIsInIncludeSearchPath(UnitInfo: TUnitInfo;
-        AllowAddingDependencies: boolean; out DependencyAdded: boolean);
-
     // code explorer events
     procedure OnCodeExplorerGetDirectivesTree(Sender: TObject;
                                           var ADirectivesTool: TDirectivesTool);
@@ -6645,7 +6637,7 @@ var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   s, ShortUnitName: string;
-  DependencyAdded: boolean;
+  OkToAdd: boolean;
   Owners: TFPList;
   i: Integer;
   APackage: TLazPackage;
@@ -6718,12 +6710,12 @@ begin
   if IDEMessageDialog(lisConfirmation, Format(lisAddToProject, [s]),
     mtConfirmation, [mbYes, mbCancel]) in [mrOk, mrYes]
   then begin
-    DependencyAdded:=false;
+    OkToAdd:=True;
     if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
-      CheckDirIsInUnitSearchPath(ActiveUnitInfo,false,DependencyAdded)
+      OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(ActiveUnitInfo,False,False)
     else if CompareFileExt(ActiveUnitInfo.Filename,'inc',false)=0 then
-      CheckDirIsInIncludeSearchPath(ActiveUnitInfo,false,DependencyAdded);
-    if not DependencyAdded then begin
+      OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(ActiveUnitInfo,False,True);
+    if OkToAdd then begin
       ActiveUnitInfo.IsPartOfProject:=true;
       Project1.Modified:=true;
       if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
@@ -12949,127 +12941,21 @@ begin
   end;
 end;
 
-procedure TMainIDE.CheckDirIsInUnitSearchPath(UnitInfo: TUnitInfo;
-  AllowAddingDependencies: boolean; out DependencyAdded: boolean);
-var
-  CurDirectory: String;
-  CurUnitPath: String;
-  Owners: TFPList;
-  i: Integer;
-  APackage: TLazPackage;
-  ShortDir: String;
-begin
-  DependencyAdded:=false;
-  if UnitInfo.IsVirtual then exit;
-  CurUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
-  CurDirectory:=AppendPathDelim(UnitInfo.GetDirectory);
-  if SearchDirectoryInSearchPath(CurUnitPath,CurDirectory)<1 then
-  begin
-    if AllowAddingDependencies then begin
-      Owners:=PkgBoss.GetPossibleOwnersOfUnit(UnitInfo.Filename,[]);
-      try
-        if (Owners<>nil) then begin
-          for i:=0 to Owners.Count-1 do begin
-            if TObject(Owners[i]) is TLazPackage then begin
-              APackage:=TLazPackage(Owners[i]);
-              if IDEMessageDialog(lisAddPackageRequirement,
-                Format(lisAddPackageToProject, [APackage.IDAsString]),
-                mtConfirmation,[mbYes,mbCancel],'')<>mrYes
-              then
-                exit;
-              PkgBoss.AddProjectDependency(Project1,APackage);
-              DependencyAdded:=true;
-              exit;
-            end;
-          end;
-        end;
-      finally
-        Owners.Free;
-      end;
-    end;
-    // unit is not in a package => extend unit path
-    ShortDir:=CurDirectory;
-    if (not Project1.IsVirtual) then
-      ShortDir:=CreateRelativePath(ShortDir,Project1.ProjectDirectory);
-    if IDEMessageDialog(lisAddToUnitSearchPath,
-      Format(lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory,
-             [LineEnding, CurDirectory]),
-      mtConfirmation,[mbYes,mbNo])=mrYes
-    then begin
-      Project1.CompilerOptions.OtherUnitFiles:=
-            MergeSearchPaths(Project1.CompilerOptions.OtherUnitFiles,ShortDir);
-    end;
-  end;
-end;
-
-procedure TMainIDE.CheckDirIsInIncludeSearchPath(UnitInfo: TUnitInfo;
-  AllowAddingDependencies: boolean; out DependencyAdded: boolean);
-var
-  CurDirectory: String;
-  CurIncPath: String;
-  Owners: TFPList;
-  i: Integer;
-  APackage: TLazPackage;
-  ShortDir: String;
-begin
-  DependencyAdded:=false;
-  if UnitInfo.IsVirtual then exit;
-  CurIncPath:=Project1.CompilerOptions.GetIncludePath(false);
-  CurDirectory:=AppendPathDelim(UnitInfo.GetDirectory);
-  if SearchDirectoryInSearchPath(CurIncPath,CurDirectory)<1 then
-  begin
-    if AllowAddingDependencies then begin
-      Owners:=PkgBoss.GetPossibleOwnersOfUnit(UnitInfo.Filename,[]);
-      try
-        if (Owners<>nil) then begin
-          for i:=0 to Owners.Count-1 do begin
-            if TObject(Owners[i]) is TLazPackage then begin
-              APackage:=TLazPackage(Owners[i]);
-              if IDEMessageDialog(lisAddPackageRequirement,
-                Format(lisAddPackageToProject, [APackage.IDAsString]),
-                mtConfirmation,[mbYes,mbCancel],'')<>mrYes
-              then
-                exit;
-              PkgBoss.AddProjectDependency(Project1,APackage);
-              DependencyAdded:=true;
-              exit;
-            end;
-          end;
-        end;
-      finally
-        Owners.Free;
-      end;
-    end;
-    // include file is not in a package => extend include path
-    ShortDir:=CurDirectory;
-    if (not Project1.IsVirtual) then
-      ShortDir:=CreateRelativePath(ShortDir,Project1.ProjectDirectory);
-    if IDEMessageDialog(lisAddToIncludeSearchPath,
-      Format(lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd,
-             [LineEnding, CurDirectory]),
-      mtConfirmation,[mbYes,mbNo])=mrYes
-    then begin
-      Project1.CompilerOptions.IncludePath:=
-            MergeSearchPaths(Project1.CompilerOptions.IncludePath,ShortDir);
-    end;
-  end;
-end;
-
 function TMainIDE.ProjInspectorAddUnitToProject(Sender: TObject;
   AnUnitInfo: TUnitInfo): TModalresult;
 var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   ShortUnitName: String;
-  DependencyAdded: boolean;
+  OkToAdd: boolean;
 begin
   Result:=mrOk;
   //debugln(['TMainIDE.ProjInspectorAddUnitToProject ',AnUnitInfo.Filename]);
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   AnUnitInfo.IsPartOfProject:=true;
-  DependencyAdded:=false;
+  OkToAdd:=True;
   if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
-    CheckDirIsInUnitSearchPath(AnUnitInfo,false,DependencyAdded);
+    OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,False);
     if (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then begin
       AnUnitInfo.ReadUnitNameFromSource(false);
       ShortUnitName:=AnUnitInfo.Unit_Name;
@@ -13086,12 +12972,11 @@ begin
     end;
   end
   else if CompareFileExt(AnUnitInfo.Filename,'inc',false)=0 then
-    CheckDirIsInIncludeSearchPath(AnUnitInfo,false,DependencyAdded);
+    OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,True);
   Project1.Modified:=true;
 end;
 
-function TMainIDE.ProjInspectorRemoveFile(Sender: TObject; AnUnitInfo: TUnitInfo
-  ): TModalresult;
+function TMainIDE.ProjInspectorRemoveFile(Sender: TObject; AnUnitInfo: TUnitInfo): TModalresult;
 var
   UnitInfos: TFPList;
 begin

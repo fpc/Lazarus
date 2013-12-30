@@ -702,9 +702,10 @@ resourcestring
     +'to project, because there is already a unit with the same name in the Project.';
   lisAddToProject = 'Add %s to project?';
   lisTheFile = 'The file %s%s%s';
-  lisAddToUnitSearchPath = 'Add to unit search path?';
-  lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory = 'The new unit is not '
-    +'yet in the unit search path.%sAdd directory %s?';
+  lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd =
+    'The new include file is not yet in the include search path.%sAdd directory %s to build modes?';
+  lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory =
+    'The new unit is not yet in the unit search path.%sAdd directory %s to build modes?';
   lisisAlreadyPartOfTheProject = '%s is already part of the Project.';
   lisRemoveFromProject = 'Remove from Project';
   lisCreateAProjectFirst = 'Create a project first!';
@@ -3836,8 +3837,7 @@ resourcestring
     +'dependency from the installation list of packages?';
   lisERRORInvalidBuildMode = 'ERROR: invalid build mode "%s"';
   lisAvailableProjectBuildModes = 'Available project build modes:';
-  lisThisProjectHasOnlyTheDefaultBuildMode = 'This project has only the '
-    +'default build mode.';
+  lisThisProjectHasOnlyTheDefaultBuildMode = 'This project has only the default build mode.';
   lisPkgMangstaticPackagesConfigFile = 'static packages config file';
   lisPkgMangUnableToCreateTargetDirectoryForLazarus = 'Unable to create '
     +'target directory for Lazarus:%s%s%s%s.%sThis directory is needed for '
@@ -5047,9 +5047,6 @@ resourcestring
   lisAddPackageToProject2 = 'Add package to project';
   lisAddUnitNotRecommended = 'Add unit (not recommended)';
   lisAddPackageToProject = 'Add package %s to project?';
-  lisAddToIncludeSearchPath = 'Add to include search path?';
-  lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd = 'The new include '
-    +'file is not yet in the include search path.%sAdd directory %s?';
   lisOnBreakLineIEReturnOrEnterKey = 'On break line (i.e. return or enter key)';
   lisSetupDefaultIndentation = '(Set up default indentation)';
   lisIndentationForPascalSources = 'Indentation for Pascal sources';

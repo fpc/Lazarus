@@ -3977,17 +3977,9 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisaddtoincludesearchpath
-msgid "Add to include search path?"
-msgstr ""
-
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "Pridať %s do projektu?"
-
-#: lazarusidestrconsts.lisaddtounitsearchpath
-msgid "Add to unit search path?"
-msgstr "Pridať do cesty hľadania jednotiek?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
@@ -15545,11 +15537,13 @@ msgid "The \"make\" executable typically has the name \"%s\". It is needed for b
 msgstr ""
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
-msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+msgid "The new include file is not yet in the include search path.%sAdd directory %s to build modes?"
 msgstr ""
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
-msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+#, fuzzy
+#| msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s to build modes?"
 msgstr "Nová jednotka zatiaľ nie je v ceste hľadaní jednotiek.%sPridať adresár %s?"
 
 #: lazarusidestrconsts.listheoldconfigurationwillbeupgraded

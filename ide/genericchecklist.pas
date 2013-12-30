@@ -6,7 +6,8 @@ unit GenericCheckList;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel, CheckLst, Buttons;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
+  CheckLst, Buttons, StdCtrls;
 
 type
 
@@ -15,12 +16,14 @@ type
   TGenericCheckListForm = class(TForm)
     ButtonPanel1: TButtonPanel;
     CheckListBox1: TCheckListBox;
+    InfoLabel: TLabel;
     procedure CheckListBox1ItemClick(Sender: TObject; {%H-}Index: integer);
     procedure FormShow(Sender: TObject);
   private
     fActionBtn: TBitBtn;
     procedure UpdateButtons;
   public
+    constructor Create(TheOwner: TComponent); override;
     constructor CreateWithActionButton(aCaption: TCaption; aResourceGlyphName: string = '');
     destructor Destroy; override;
   end;
@@ -34,20 +37,26 @@ implementation
 
 { TGenericCheckListForm }
 
+constructor TGenericCheckListForm.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  InfoLabel.Caption := '';
+end;
+
 constructor TGenericCheckListForm.CreateWithActionButton(aCaption: TCaption;
   aResourceGlyphName: string);
 begin
-  inherited Create(Nil);
+  Create(Nil);
   fActionBtn := TBitBtn.Create(ButtonPanel1);
-  fActionBtn.Caption:=aCaption;
-  fActionBtn.ModalResult:=mrYes;             // ActionButton will return mrYes.
-  fActionBtn.Align:=alRight;
-  fActionBtn.BorderSpacing.Left:=6;
-  fActionBtn.BorderSpacing.Right:=6;
+  fActionBtn.Caption := aCaption;
+  fActionBtn.ModalResult := mrYes;             // ActionButton will return mrYes.
+  fActionBtn.Align := alRight;
+  fActionBtn.BorderSpacing.Left := 6;
+  fActionBtn.BorderSpacing.Right := 6;
   if aResourceGlyphName <> '' then
     fActionBtn.LoadGlyphFromLazarusResource(aResourceGlyphName);
-  fActionBtn.AutoSize:=True;
-  fActionBtn.Parent:=ButtonPanel1;
+  fActionBtn.AutoSize := True;
+  fActionBtn.Parent := ButtonPanel1;
 end;
 
 destructor TGenericCheckListForm.Destroy;

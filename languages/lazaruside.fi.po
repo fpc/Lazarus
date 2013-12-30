@@ -3770,17 +3770,9 @@ msgstr "Osoite:"
 msgid "&Address Breakpoint ..."
 msgstr "&Osoite-keskeytyskohta ..."
 
-#: lazarusidestrconsts.lisaddtoincludesearchpath
-msgid "Add to include search path?"
-msgstr "Lisätäänkö include-hakupolkuun?"
-
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "Lisätäänkö tiedosto %s projektiin?"
-
-#: lazarusidestrconsts.lisaddtounitsearchpath
-msgid "Add to unit search path?"
-msgstr "Lisätäänkö käännösyksikköjen hakupolkuun?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
@@ -14786,11 +14778,15 @@ msgid "The \"make\" executable typically has the name \"%s\". It is needed for b
 msgstr ""
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
-msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+#, fuzzy
+#| msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+msgid "The new include file is not yet in the include search path.%sAdd directory %s to build modes?"
 msgstr "Uusi include tiedosto ei ole vielä hakupolussa.%sLisätäänkö hakemisto %s?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
-msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+#, fuzzy
+#| msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s to build modes?"
 msgstr "Uusi käännösyksikkö ei ole vielä hakupolussa.%sLisätäänkö hakemisto %s?"
 
 #: lazarusidestrconsts.listheoldconfigurationwillbeupgraded

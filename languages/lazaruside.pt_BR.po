@@ -3941,17 +3941,9 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "&Endereço do Ponto de Parada ..."
 
-#: lazarusidestrconsts.lisaddtoincludesearchpath
-msgid "Add to include search path?"
-msgstr "Adicionar ao caminho busca arquivos inclusão"
-
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "Adicionar %s ao projeto?"
-
-#: lazarusidestrconsts.lisaddtounitsearchpath
-msgid "Add to unit search path?"
-msgstr "Adicionar ao caminho de busca das unidades?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
@@ -15358,11 +15350,15 @@ msgid "The \"make\" executable typically has the name \"%s\". It is needed for b
 msgstr "O executável do \"make\" geralmente tem o nome \"%s\". Ele é necessário para construir a IDE. Favor informar o caminho completo para o arquivo."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
-msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+#, fuzzy
+#| msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+msgid "The new include file is not yet in the include search path.%sAdd directory %s to build modes?"
 msgstr "O novo arquivo de inclusão não está no caminho de busca.%sAdicionar diretório %s?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
-msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+#, fuzzy
+#| msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s to build modes?"
 msgstr "A nova unidade ainda não está no caminho de unidades.%sAdicionar diretório %s?"
 
 #: lazarusidestrconsts.listheoldconfigurationwillbeupgraded

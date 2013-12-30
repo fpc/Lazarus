@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-12-07 18:58+0400\n"
+"PO-Revision-Date: 2013-12-28 22:00+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3943,17 +3943,9 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "Точка останова по &адресу ..."
 
-#: lazarusidestrconsts.lisaddtoincludesearchpath
-msgid "Add to include search path?"
-msgstr "Добавить к путям поиска включаемых файлов?"
-
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "Добавить %s к проекту?"
-
-#: lazarusidestrconsts.lisaddtounitsearchpath
-msgid "Add to unit search path?"
-msgstr "Добавить к путям поиска модулей?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
@@ -15352,12 +15344,14 @@ msgid "The \"make\" executable typically has the name \"%s\". It is needed for b
 msgstr "Исполнимый файл \"make\" обычно называется \"%s\". Он необходим для сборки IDE. Укажите полный путь к нему."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
-msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
-msgstr "Путь к новому включаемому файлу отсутствует в списке путей поиска включаемых файлов.%sДобавить каталог %s?"
+#| msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+msgid "The new include file is not yet in the include search path.%sAdd directory %s to build modes?"
+msgstr "Путь к новому включаемому файлу отсутствует в списке путей их поиска.%sДобавить каталог %s в режимы сборки?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
-msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
-msgstr "Новый модуль ещё не находится в путях поиска.%sДобавить каталог %s?"
+#| msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s to build modes?"
+msgstr "Путь к новому модулю отсутствует в списке путей их поиска.%sДобавить каталог %s в режимы сборки?"
 
 #: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
 msgid "The old configuration will be upgraded."
