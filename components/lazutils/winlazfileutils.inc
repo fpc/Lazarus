@@ -644,13 +644,13 @@ Var
   WS: WideString;
   Len: SizeInt;
 begin
-  Result:='';
-  if (CFGDLLHandle=0) then
+  Result := '';
+  if (CFGDLLHandle = 0) then
     InitDLL;
-  If (SHGetFolderPathW<>Nil) then
+  If (SHGetFolderPathW <> Nil) then
   begin
     FillChar(APath, SizeOf(APath), #0);
-    if SHGetFolderPathW(0,ID or CSIDL_FLAG_CREATE,0,0,@APATH[0])=S_OK then
+    if SHGetFolderPathW(0,ID or CSIDL_FLAG_CREATE,0,0,@APATH[0]) = S_OK then
     begin
       Len := StrLen(APath);
       SetLength(WS, Len);
@@ -673,19 +673,19 @@ end;
 function GetAppConfigDirWide(Global: Boolean; Create: boolean = false): string;
 begin
   If Global then
-    Result:=GetWindowsSpecialDir(CSIDL_COMMON_APPDATA)
+    Result := GetWindowsSpecialDirW(CSIDL_COMMON_APPDATA)
   else
-    Result:=GetWindowsSpecialDir(CSIDL_LOCAL_APPDATA);
-  If (Result<>'') then
+    Result := GetWindowsSpecialDirW(CSIDL_LOCAL_APPDATA);
+  If (Result <> '') then
     begin
-      if VendorName<>'' then
-        Result := AppendPathDelim(Result+VendorName);
-      Result := AppendPathDelim(Result+ApplicationName);
+      if VendorName <> '' then
+        Result := AppendPathDelim(Result + VendorName);
+      Result := AppendPathDelim(Result + ApplicationName);
     end
   else
     Result := AppendPathDelim(DGetAppConfigDir(Global));
   if Result = '' then exit;
-  if Create and not ForceDirectoriesUTF8(Result) then
+  if Create and not ForceDirectoriesUtf8(Result) then
     raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Result]));
 end;
 
@@ -696,7 +696,7 @@ var
 begin
   Result := GetAppConfigDirWide(Global);
   if SubDir then
-    Result := AppendPathDelim(Result+'Config');
+    Result := AppendPathDelim(Result + 'Config');
   Result := Result + ApplicationName + ConfigExtension;
   if not CreateDir then exit;
   Dir := ExtractFilePath(Result);
