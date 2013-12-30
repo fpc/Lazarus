@@ -8,7 +8,7 @@ object ProjectInspectorForm: TProjectInspectorForm
   ClientHeight = 474
   ClientWidth = 425
   OnShow = ProjectInspectorFormShow
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object ItemsTreeView: TTreeView
     Left = 0
     Height = 396

@@ -38,7 +38,7 @@ uses
   IDEImagesIntf, MenuIntf, ExtCtrls, LazIDEIntf, ProjectIntf,
   CodeToolsStructs, FormEditingIntf, TreeFilterEdit, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEOptionsIntf, IDEProcs, LazarusIDEStrConsts,
-  IDEDefs, CompilerOptions, ComponentReg,
+  IDEDefs, CompilerOptions, ComponentReg, EnvironmentOpts,
   PackageDefs, AddToPackageDlg, PkgVirtualUnitEditor,
   MissingPkgFilesDlg, PackageSystem, CleanPkgDeps;
   
@@ -2404,12 +2404,16 @@ begin
   inherited Create(TheOwner);
   FPlugins:=TStringList.Create;
   SetupComponents;
+  SortAlphabetically := EnvironmentOptions.PackageEditorSortAlphabetically;
+  ShowDirectoryHierarchy := EnvironmentOptions.PackageEditorShowDirHierarchy;
 end;
 
 destructor TPackageEditorForm.Destroy;
 var
   nt: TPENodeType;
 begin
+  EnvironmentOptions.PackageEditorSortAlphabetically := SortAlphabetically;
+  EnvironmentOptions.PackageEditorShowDirHierarchy := ShowDirectoryHierarchy;
   FilterEdit.ForceFilter;
   for nt:=Low(TPENodeType) to High(TPENodeType) do
     FreeNodeData(nt);

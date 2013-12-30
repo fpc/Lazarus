@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, Math, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
-  ExtCtrls, Dialogs, Graphics,
+  ExtCtrls, Dialogs, Graphics, ButtonPanel,
   SynEditTypes, SynRegExpr, SynEdit,
   IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
   LazarusIdeStrConsts, InputHistory;
@@ -47,9 +47,7 @@ type
 
   TLazFindReplaceDialog = class(TForm)
     BackwardRadioButton: TRadioButton;
-    HelpButton: TBitBtn;
-    BtnPanel: TPanel;
-    CancelButton: TBitBtn;
+    BtnPanel: TButtonPanel;
     CaseSensitiveCheckBox: TCheckBox;
     DirectionGroupBox: TGroupBox;
     EntireScopeRadioButton: TRadioButton;
@@ -57,12 +55,10 @@ type
     FromCursorRadioButton: TRadioButton;
     GlobalRadioButton: TRadioButton;
     MultiLineCheckBox: TCheckBox;
-    OKButton: TBitBtn;
     OptionsGroupBox: TGroupBox;
     OriginGroupBox: TGroupBox;
     PromptOnReplaceCheckBox: TCheckBox;
     RegularExpressionsCheckBox: TCheckBox;
-    ReplaceAllButton: TBitBtn;
     ReplaceTextComboBox: TComboBox;
     ReplaceWithCheckbox: TCheckBox;
     ScopeGroupBox: TGroupBox;
@@ -163,22 +159,21 @@ begin
     Hint:=lisAskBeforeReplacingEachFoundText;
   end;
 
-  OriginGroupBox.Caption:=dlgSROrigin;
+  OriginGroupBox.Caption := dlgSROrigin;
   FromCursorRadioButton.Caption := dlgFromCursor;
   EntireScopeRadioButton.Caption := dlgFromBeginning;
 
-  ScopeGroupBox.Caption:=dlgScope;
+  ScopeGroupBox.Caption := dlgScope;
   GlobalRadioButton.Caption := dlgGlobal;
   SelectedRadioButton.Caption := dlgSelectedText;
 
-  DirectionGroupBox.Caption:=dlgDirection;
+  DirectionGroupBox.Caption := dlgDirection;
   ForwardRadioButton.Caption := lisFRForwardSearch;
   BackwardRadioButton.Caption := lisFRBackwardSearch;
 
-  HelpButton.Caption:=lisMenuHelp;
-  ReplaceAllButton.Caption:=dlgReplaceAll;
-  OKButton.Caption:=lisMenuOk;
-  CancelButton.Caption:=lisCancel;
+  // CloseButton works now as ReplaceAllButton
+  BtnPanel.CloseButton.Caption := dlgReplaceAll;
+  BtnPanel.CloseButton.LoadGlyphFromLazarusResource('btn_all');
 
   fReplaceAllClickedLast:=false;
   UpdateHints;
@@ -306,17 +301,20 @@ end;
 
 procedure TLazFindReplaceDialog.ReplaceWithCheckboxChange(Sender: TObject);
 begin
-  ReplaceAllButton.Visible:=ReplaceWithCheckbox.Checked;
-  ReplaceTextComboBox.Enabled:=ReplaceAllButton.Visible;
-  PromptOnReplaceCheckBox.Enabled:=ReplaceAllButton.Visible;
-  if ReplaceAllButton.Visible then
+  if ReplaceWithCheckbox.Checked then
+    BtnPanel.ShowButtons := BtnPanel.ShowButtons + [pbClose]
+  else
+    BtnPanel.ShowButtons := BtnPanel.ShowButtons - [pbClose];
+  ReplaceTextComboBox.Enabled:=ReplaceWithCheckbox.Checked;
+  PromptOnReplaceCheckBox.Enabled:=ReplaceWithCheckbox.Checked;
+  if ReplaceWithCheckbox.Checked then
   begin
     Caption := lisReplace;
-    OkButton.Caption := lisBtnReplace;
+    BtnPanel.OKButton.Caption := lisBtnReplace;
   end else
   begin
     Caption := lisMenuFind;
-    OkButton.Caption := lisBtnFind;
+    BtnPanel.OKButton.Caption := lisBtnFind;
   end;
 end;
 
@@ -447,19 +445,22 @@ begin
     then BackwardRadioButton.Checked:=True
     else ForwardRadioButton.Checked:=True;
 
-  ReplaceAllButton.Visible:=ssoReplace in NewOptions;
-  ReplaceWithCheckbox.Checked:=ssoReplace in NewOptions;
-  ReplaceTextComboBox.Enabled:=ReplaceAllButton.Visible;
-  PromptOnReplaceCheckBox.Enabled:=ReplaceAllButton.Visible;
+  if ssoReplace in NewOptions then
+    BtnPanel.ShowButtons := BtnPanel.ShowButtons + [pbClose]
+  else
+    BtnPanel.ShowButtons := BtnPanel.ShowButtons - [pbClose];
+  ReplaceWithCheckbox.Checked := ssoReplace in NewOptions;
+  ReplaceTextComboBox.Enabled := ssoReplace in NewOptions;
+  PromptOnReplaceCheckBox.Enabled := ssoReplace in NewOptions;
 
   if ssoReplace in NewOptions then
   begin
     Caption := lisReplace;
-    OkButton.Caption := lisBtnReplace;
+    BtnPanel.OKButton.Caption := lisBtnReplace;
   end else
   begin
     Caption := lisMenuFind;
-    OkButton.Caption := lisBtnFind;
+    BtnPanel.OKButton.Caption := lisBtnFind;
   end;
   //DebugLn(['TLazFindReplaceDialog.SetOptions END ssoSelectedOnly=',ssoSelectedOnly in NewOptions,' SelectedRadioButton.Checked=',SelectedRadioButton.Checked]);
 end;
@@ -476,7 +477,7 @@ begin
   if EntireScopeRadioButton.Checked then Include(Result,ssoEntireScope);
   if SelectedRadioButton.Checked then include(Result,ssoSelectedOnly);
   if BackwardRadioButton.Checked then include(Result,ssoBackwards);
-  if ReplaceAllButton.Visible then include(Result,ssoReplace);
+  if pbClose in BtnPanel.ShowButtons then include(Result,ssoReplace);
   if fReplaceAllClickedLast then include(Result,ssoReplaceAll);
 end;
 
