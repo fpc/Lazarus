@@ -278,9 +278,8 @@ end;
 class procedure TQtWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  if AWinControl.HandleAllocated then
-    TQtWidget(AWinControl.Handle).PreferredSize(PreferredWidth,
-      PreferredHeight, WithThemeSpace);
+  Assert(AWinControl.HandleAllocated, 'GetPreferredSize: Handle not allocated');
+  TQtWidget(AWinControl.Handle).PreferredSize(PreferredWidth, PreferredHeight, WithThemeSpace);
 end;
 
 class function TQtWSWinControl.GetText(const AWinControl: TWinControl;
