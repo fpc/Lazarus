@@ -159,7 +159,7 @@ begin
       end;
     else
       begin
-        FBitmap := GetDialogIcon(idDialogInfo);
+        //FBitmap := GetDialogIcon(idDialogInfo); //Delphi does not display an Icon in this case
         if ACaption <> '' then
           Caption := ACaption
         else
@@ -303,7 +303,7 @@ begin
   if FBitmap <> nil then
     cMinLeft := cBitmapX + max(32, FBitmap.Width) + cLabelSpacing
   else
-    cMinLeft := 0;
+    cMinLeft := cLabelSpacing;
 
   // calculate required width for the text
   reqWidth := cMinLeft + TextBox.Right;
