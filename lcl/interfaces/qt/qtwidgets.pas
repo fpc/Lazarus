@@ -5819,9 +5819,8 @@ var
     end;
   end;
 begin
-  QPushButton_sizeHint(QPushButtonH(Widget), @TheSize);
-  if Assigned(LCLObject) and LCLObject.AutoSize then
-    TheSize := AutoSizeButtonFromStyle(TheSize);
+  //QPushButton_sizeHint(QPushButtonH(Widget), @TheSize);
+  TheSize := AutoSizeButtonFromStyle(TheSize);
   PreferredWidth := TheSize.cx;
   PreferredHeight := TheSize.cy;
 end;
