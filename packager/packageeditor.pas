@@ -206,7 +206,6 @@ type
     procedure FilesTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MorePopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewDblClick(Sender: TObject);
-    procedure FilesTreeViewKeyPress(Sender: TObject; var Key: Char);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
     procedure FixFilesCaseMenuItemClick(Sender: TObject);
     procedure HelpBitBtnClick(Sender: TObject);
@@ -775,20 +774,30 @@ end;
 
 procedure TPackageEditorForm.FilesTreeViewKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
+var
+  Handled: Boolean;
 begin
-  if (ssCtrl in shift ) and ((Key = VK_UP) or (Key = VK_DOWN)) then begin
+  Handled := True;
+  if (ssCtrl in Shift) then
+  begin
     if Key = VK_UP then
       MoveUpBtnClick(Nil)
+    else if Key = VK_DOWN then
+      MoveDownBtnClick(Nil)
     else
-      MoveDownBtnClick(Nil);
-    Key:=VK_UNKNOWN;
-  end;
-end;
+      Handled := False;
+  end
+  else if Key = VK_RETURN then
+    OpenFileMenuItemClick(Nil)
+  else if Key = VK_DELETE then
+    RemoveBitBtnClick(Nil)
+  else if Key = VK_INSERT then
+    AddBitBtnClick(Nil)
+  else
+    Handled := False;
 
-procedure TPackageEditorForm.FilesTreeViewKeyPress(Sender: TObject; var Key: Char);
-begin
-  if Key = char(VK_RETURN) then
-    OpenFileMenuItemClick(Self);
+  if Handled then
+    Key := VK_UNKNOWN;
 end;
 
 procedure TPackageEditorForm.FilesTreeViewSelectionChanged(Sender: TObject);
