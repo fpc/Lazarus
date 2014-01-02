@@ -1893,7 +1893,8 @@ begin
   IsDir:=IsDirectoryNode(CurNode) or (CurNode=FFilesNode);
   CurFilename:='';
   HasLFM:=false;
-  if (FSelectedFile<>nil) and (FSelectedFile.FileType in PkgFileRealUnitTypes) then begin
+  if (FSelectedFile<>nil) and (FSelectedFile.FileType in PkgFileRealUnitTypes) then
+  begin
     CurFilename:=FSelectedFile.GetFullFilename;
     HasLFM:=FilenameIsAbsolute(CurFilename)
         and FileExistsCached(ChangeFileExt(CurFilename,'.lfm'));
@@ -1913,7 +1914,8 @@ begin
                                      and LazPackage.EnableI18NForLFM;
   FDirSummaryLabel.Visible:=IsDir;
 
-  b:=(Assigned(FSelectedFile) or Assigned(FSelectedDependency)) and not SortAlphabetically;
+  b:=(Assigned(FSelectedFile) or Assigned(FSelectedDependency))
+      and not (SortAlphabetically or Removed);
   MoveUpBtn.Enabled  :=b and Assigned(CurNode.GetPrevVisibleSibling);
   MoveDownBtn.Enabled:=b and Assigned(CurNode.GetNextVisibleSibling);
 
