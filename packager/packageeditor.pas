@@ -523,33 +523,38 @@ var
   Dependency: TPkgDependency;
   Removed: boolean;
 begin
-  PkgFile:=GetCurrentFile(Removed);
-  if (PkgFile<>nil) then begin
-    if Removed then begin
-      // re-add file
-      AFilename:=PkgFile.GetFullFilename;
-      if PkgFile.FileType in PkgFileRealUnitTypes then begin
-        if not CheckAddingUnitFilename(LazPackage,d2ptUnit,
-          PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
-      end else if PkgFile.FileType=pftVirtualUnit then begin
-        if not CheckAddingUnitFilename(LazPackage,d2ptVirtualUnit,
-          PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
-      end else begin
-        if not CheckAddingUnitFilename(LazPackage,d2ptFile,
-          PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
+  FilesTreeView.OnSelectionChanged:=Nil;
+  try
+    PkgFile:=GetCurrentFile(Removed);
+    if (PkgFile<>nil) then begin
+      if Removed then begin
+        // re-add file
+        AFilename:=PkgFile.GetFullFilename;
+        if PkgFile.FileType in PkgFileRealUnitTypes then begin
+          if not CheckAddingUnitFilename(LazPackage,d2ptUnit,
+            PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
+        end else if PkgFile.FileType=pftVirtualUnit then begin
+          if not CheckAddingUnitFilename(LazPackage,d2ptVirtualUnit,
+            PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
+        end else begin
+          if not CheckAddingUnitFilename(LazPackage,d2ptFile,
+            PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
+        end;
+        PkgFile.Filename:=AFilename;
+        LazPackage.UnremovePkgFile(PkgFile);
+        UpdateAll(true);
       end;
-      PkgFile.Filename:=AFilename;
-      LazPackage.UnremovePkgFile(PkgFile);
-      UpdateAll(true);
+    end else begin
+      Dependency:=GetCurrentDependency(Removed);
+      if (Dependency<>nil) and Removed then begin
+        // re-add dependency
+        if CheckAddingDependency(LazPackage,Dependency,false,true)<>mrOk then exit;
+        LazPackage.RemoveRemovedDependency(Dependency);
+        PackageGraph.AddDependencyToPackage(LazPackage,Dependency);
+      end;
     end;
-  end else begin
-    Dependency:=GetCurrentDependency(Removed);
-    if (Dependency<>nil) and Removed then begin
-      // re-add dependency
-      if CheckAddingDependency(LazPackage,Dependency,false,true)<>mrOk then exit;
-      LazPackage.RemoveRemovedDependency(Dependency);
-      PackageGraph.AddDependencyToPackage(LazPackage,Dependency);
-    end;
+  finally
+    FilesTreeView.OnSelectionChanged:=@FilesTreeViewSelectionChanged;
   end;
 end;
 
@@ -979,47 +984,52 @@ var
   mt: TMsgDlgType;
   Removed: boolean;
 begin
-  ANode:=FilesTreeView.Selected;
-  if (ANode=nil) or LazPackage.ReadOnly then begin
-    UpdateButtons;
-    exit;
-  end;
-
-  // get current package file
-  CurFile:=GetCurrentFile(Removed);
-  if CurFile<>nil then begin
-    if Removed then exit;
-    // confirm deletion
-    s:='';
-    mt:=mtConfirmation;
-    if CurFile.FileType=pftMainUnit then begin
-      s:=Format(lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas,
-                [LineEnding+LineEnding, lowercase(LazPackage.Name)]);
-      mt:=mtWarning;
+  FilesTreeView.OnSelectionChanged:=Nil;
+  try
+    ANode:=FilesTreeView.Selected;
+    if (ANode=nil) or LazPackage.ReadOnly then begin
+      UpdateButtons;
+      exit;
     end;
-    if MessageDlg(lisPckEditRemoveFile2,
-      Format(lisPckEditRemoveFileFromPackage, ['"', CurFile.Filename, '"',
-        LineEnding, '"', LazPackage.IDAsString, '"'])+s,
-      mt,[mbYes,mbNo],0)=mrNo
-    then
-      exit;
-    LazPackage.RemoveFile(CurFile);
-    UpdateAll(false);
-    exit;
-  end;
 
-  // get current dependency
-  CurDependency:=GetCurrentDependency(Removed);
-  if (CurDependency<>nil) then begin
-    if Removed then exit;
-    // confirm deletion
-    if MessageDlg(lisPckEditRemoveDependency2,
-      Format(lisPckEditRemoveDependencyFromPackage, ['"',
-        CurDependency.AsString, '"', LineEnding, '"', LazPackage.IDAsString, '"']),
-      mtConfirmation,[mbYes,mbNo],0)=mrNo
-    then
+    // get current package file
+    CurFile:=GetCurrentFile(Removed);
+    if CurFile<>nil then begin
+      if Removed then exit;
+      // confirm deletion
+      s:='';
+      mt:=mtConfirmation;
+      if CurFile.FileType=pftMainUnit then begin
+        s:=Format(lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas,
+                  [LineEnding+LineEnding, lowercase(LazPackage.Name)]);
+        mt:=mtWarning;
+      end;
+      if MessageDlg(lisPckEditRemoveFile2,
+        Format(lisPckEditRemoveFileFromPackage, ['"', CurFile.Filename, '"',
+          LineEnding, '"', LazPackage.IDAsString, '"'])+s,
+        mt,[mbYes,mbNo],0)=mrNo
+      then
+        exit;
+      LazPackage.RemoveFile(CurFile);
+      UpdateAll(false);
       exit;
-    PackageGraph.RemoveDependencyFromPackage(LazPackage,CurDependency,true);
+    end;
+
+    // get current dependency
+    CurDependency:=GetCurrentDependency(Removed);
+    if (CurDependency<>nil) then begin
+      if Removed then exit;
+      // confirm deletion
+      if MessageDlg(lisPckEditRemoveDependency2,
+        Format(lisPckEditRemoveDependencyFromPackage, ['"',
+          CurDependency.AsString, '"', LineEnding, '"', LazPackage.IDAsString, '"']),
+        mtConfirmation,[mbYes,mbNo],0)=mrNo
+      then
+        exit;
+      PackageGraph.RemoveDependencyFromPackage(LazPackage,CurDependency,true);
+    end;
+  finally
+    FilesTreeView.OnSelectionChanged:=@FilesTreeViewSelectionChanged;
   end;
 end;
 
@@ -1129,7 +1139,12 @@ end;
 
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
 begin
-  ShowAddDialog(fLastDlgPage);
+  FilesTreeView.OnSelectionChanged:=Nil;
+  try
+    ShowAddDialog(fLastDlgPage);
+  finally
+    FilesTreeView.OnSelectionChanged:=@FilesTreeViewSelectionChanged;
+  end;
 end;
 
 procedure TPackageEditorForm.AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
