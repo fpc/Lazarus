@@ -2334,23 +2334,22 @@ end;
 
 procedure TPackageEditorForm.DoMoveCurrentFile(Offset: integer);
 var
-  Removed: boolean;
+  Removed: Boolean;
+  OldIndex, NewIndex: Integer;
   CurFile: TPkgFile;
-  OldIndex: Integer;
-  NewIndex: Integer;
-  TreeSelection: TStringList;
+  FilesBranch: TTreeFilterBranch;
 begin
   CurFile:=GetCurrentFile(Removed);
   if (CurFile=nil) or Removed then exit;
   OldIndex:=LazPackage.IndexOfPkgFile(CurFile);
   NewIndex:=OldIndex+Offset;
   if (NewIndex<0) or (NewIndex>=LazPackage.FileCount) then exit;
-  TreeSelection:=FilesTreeView.StoreCurrentSelection;
+  FilesBranch:=FilterEdit.GetExistingBranch(FFilesNode);
   LazPackage.MoveFile(OldIndex,NewIndex);
-  UpdateFiles;
-  FilesTreeView.ApplyStoredSelection(TreeSelection);
-  UpdateButtons;
+  FilesBranch.MoveFile(OldIndex,NewIndex);
+  UpdateSelectedFile;
   UpdateStatusBar;
+  FilterEdit.InvalidateFilter;
 end;
 
 procedure TPackageEditorForm.DoMoveDependency(Offset: integer);

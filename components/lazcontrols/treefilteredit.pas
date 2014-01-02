@@ -53,6 +53,7 @@ type
     procedure FreeNodeData(ANode: TTreeNode);
     function GetData(AIndex: integer): TObject;
     procedure Clear;
+    procedure MoveFile(CurIndex, NewIndex: integer);
   end;
 
   TBranchList = specialize TFPGObjectList<TTreeFilterBranch>;
@@ -194,7 +195,7 @@ begin
         if CompareFNs(s,fSortedData[i])>=0 then break;
         dec(i);
       end;
-      fSortedData.InsertObject(i+1,s, fOriginalData.Objects[Origi]);
+      fSortedData.InsertObject(i+1, s, fOriginalData.Objects[Origi]);
     end;
   end;
 end;
@@ -366,6 +367,11 @@ end;
 procedure TTreeFilterBranch.Clear;
 Begin
   RemoveChildrenData(fRootNode);
+end;
+
+procedure TTreeFilterBranch.MoveFile(CurIndex, NewIndex: integer);
+begin
+  fOriginalData.Move(CurIndex, NewIndex);
 end;
 
 { TFileNameItem }
