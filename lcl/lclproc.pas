@@ -27,9 +27,7 @@ interface
 uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
   {$IFDEF win32}
-  {$IFnDEF VER2_4}
   Win9xWsManager, // Support for Lower/UpperWideStringProc on Win9x, also used by some Utf8 string handling functions
-  {$ENDIF}
   {$ENDIF}
   {$IFnDEF WithOldDebugln} LazLogger, {$ENDIF}
   Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,

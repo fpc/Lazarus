@@ -390,15 +390,9 @@ type
   public
     function  GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
-{$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
-    function _AddRef: LongInt; stdcall;
-    function _Release: LongInt; stdcall;
-{$ENDIF}
   protected
     procedure ClearPixelToColorTree;
     procedure InternalRead(Str: TStream; Img: TFPCustomImage); override;
@@ -492,15 +486,9 @@ type
   public
     function  GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
-{$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
-    function _AddRef: LongInt; stdcall;
-    function _Release: LongInt; stdcall;
-{$ENDIF}
   protected
     procedure InitLineBuf;
     procedure FreeLineBuf;
@@ -539,15 +527,9 @@ type
 
   TLazWriterBMP = class(TFPWriterBMP, ILazImageWriter)
   public
-{$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
-    function _AddRef: LongInt; stdcall;
-    function _Release: LongInt; stdcall;
-{$ENDIF}
   public
     procedure Initialize(AImage: TLazIntfImage);
     procedure Finalize;
@@ -572,15 +554,9 @@ type
   public
     function  GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
-{$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
-    function _AddRef: LongInt; stdcall;
-    function _Release: LongInt; stdcall;
-{$ENDIF}
   protected
     procedure DoDecompress; override;
     procedure HandleAlpha; override;
@@ -593,15 +569,9 @@ type
 
   TLazWriterPNG = class(TFPWriterPNG, ILazImageWriter)
   public
-{$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
-    function _AddRef: LongInt; stdcall;
-    function _Release: LongInt; stdcall;
-{$ENDIF}
   public
     procedure Initialize(AImage: TLazIntfImage);
     procedure Finalize;
@@ -637,15 +607,9 @@ type
   public
     function  GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
-{$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
-    function _AddRef: LongInt; stdcall;
-    function _Release: LongInt; stdcall;
-{$ENDIF}
   protected
     procedure InternalRead(Str:TStream; Img:TFPCustomImage); override;
   public
@@ -656,15 +620,9 @@ type
 
   TLazWriterTiff = class(TFPWriterTiff, ILazImageWriter)
   public
-{$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
-    function _AddRef: LongInt; stdcall;
-    function _Release: LongInt; stdcall;
-{$ENDIF}
   protected
     procedure InternalWrite(Stream: TStream; Img: TFPCustomImage); override;
   public
@@ -697,15 +655,9 @@ type
   public
     function GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
-{$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
-    function _AddRef: LongInt; stdcall;
-    function _Release: LongInt; stdcall;
-{$ENDIF}
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -4320,11 +4272,7 @@ begin
   Progress(psEnding, 100, false, Rect(0,0,0,0), '', FContinue);
 end;
 
-{$IFDEF FPC_HAS_CONSTREF}
 function TLazReaderXPM.QueryInterface(constref iid: TGuid; out obj): longint; {$IFDEF WINDOWs}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-function TLazReaderXPM.QueryInterface(const iid: TGuid; out obj): longint; stdcall;
-{$ENDIF}
 begin
   if GetInterface(iid, obj)
   then Result := S_OK
@@ -4336,12 +4284,12 @@ begin
   FUpdateDescription := AValue;
 end;
 
-function TLazReaderXPM._AddRef: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazReaderXPM._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
 
-function TLazReaderXPM._Release: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazReaderXPM._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
@@ -5137,23 +5085,19 @@ begin
   BitsPerPixel := AImage.DataDescription.Depth;
 end;
 
-{$IFDEF FPC_HAS_CONSTREF}
 function TLazWriterBMP.QueryInterface(constref iid: TGuid; out obj): longint; {$IFDEF WINDOWs}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-function TLazWriterBMP.QueryInterface(const iid: TGuid; out obj): longint; stdcall;
-{$ENDIF}
 begin
   if GetInterface(iid, obj)
   then Result := S_OK
   else Result := E_NOINTERFACE;
 end;
 
-function TLazWriterBMP._AddRef: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazWriterBMP._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
 
-function TLazWriterBMP._Release: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazWriterBMP._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
@@ -5575,12 +5519,12 @@ begin
   end;
 end;
 
-function TLazReaderDIB._AddRef: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazReaderDIB._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
 
-function TLazReaderDIB._Release: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazReaderDIB._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
@@ -5832,11 +5776,7 @@ begin
   then CheckAlphaDescription(TheImage);
 end;
 
-{$IFDEF FPC_HAS_CONSTREF}
 function TLazReaderDIB.QueryInterface(constref iid: TGuid; out obj): longint; {$IFDEF WINDOWs}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-function TLazReaderDIB.QueryInterface(const iid: TGuid; out obj): longint; stdcall;
-{$ENDIF}
 begin
   if GetInterface(iid, obj)
   then Result := S_OK
@@ -6139,27 +6079,9 @@ begin
 end;
 
 procedure TLazReaderPNG.HandleAlpha;
-{$ifdef VER2_4}
-var
-  n: Integer;
-  c: TFPColor;
-{$endif}
 begin
   inherited HandleAlpha;
   FAlphaPalette := Header.ColorType = 3;
-
-  // check for fpc 2.4, it expands the alpha channel wrong, so the MSByte isn't set
-  {$ifdef VER2_4}
-  if not FAlphaPalette then Exit;
-  for n := 0 to ThePalette.Count - 1 do
-  begin
-    c := ThePalette[n];
-    if c.Alpha and $FF00 <> 0 then Continue;
-    if c.Alpha = 0 then Continue;
-    c.Alpha := c.Alpha shl 8 or c.Alpha;
-    ThePalette[n] := c;
-  end;
-  {$endif}
 end;
 
 procedure TLazReaderPNG.InternalRead(Str: TStream; Img: TFPCustomImage);
@@ -6168,11 +6090,7 @@ begin
   inherited InternalRead(Str, Img);
 end;
 
-{$IFDEF FPC_HAS_CONSTREF}
 function TLazReaderPNG.QueryInterface(constref iid: TGuid; out obj): longint; {$IFDEF WINDOWs}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-function TLazReaderPNG.QueryInterface(const iid: TGuid; out obj): longint; stdcall;
-{$ENDIF}
 begin
   if GetInterface(iid, obj)
   then Result := S_OK
@@ -6184,12 +6102,12 @@ begin
   FUpdateDescription := AValue;
 end;
 
-function TLazReaderPNG._AddRef: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazReaderPNG._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
 
-function TLazReaderPNG._Release: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazReaderPNG._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
@@ -6210,23 +6128,19 @@ begin
             or (AImage.DataDescription.BluePrec > 8);
 end;
 
-{$IFDEF FPC_HAS_CONSTREF}
 function TLazWriterPNG.QueryInterface(constref iid: TGuid; out obj): longint; {$IFDEF WINDOWs}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-function TLazWriterPNG.QueryInterface(const iid: TGuid; out obj): longint; stdcall;
-{$ENDIF}
 begin
   if GetInterface(iid, obj)
   then Result := S_OK
   else Result := E_NOINTERFACE;
 end;
 
-function TLazWriterPNG._AddRef: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazWriterPNG._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
 
-function TLazWriterPNG._Release: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazWriterPNG._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
@@ -6334,11 +6248,7 @@ begin
   {$ENDIF}
 end;
 
-{$IFDEF FPC_HAS_CONSTREF}
 function TLazReaderTiff.QueryInterface(constref iid: TGuid; out obj): longint; {$IFDEF WINDOWs}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-function TLazReaderTiff.QueryInterface(const iid: TGuid; out obj): longint; stdcall;
-{$ENDIF}
 begin
   if GetInterface(iid, obj)
   then Result := S_OK
@@ -6350,12 +6260,12 @@ begin
   FUpdateDescription := AValue;
 end;
 
-function TLazReaderTiff._AddRef: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazReaderTiff._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
 
-function TLazReaderTiff._Release: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazReaderTiff._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
@@ -6391,23 +6301,19 @@ begin
   SaveToStream(Stream);
 end;
 
-{$IFDEF FPC_HAS_CONSTREF}
 function TLazWriterTiff.QueryInterface(constref iid: TGuid; out obj): longint; {$IFDEF WINDOWs}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-function TLazWriterTiff.QueryInterface(const iid: TGuid; out obj): longint; stdcall;
-{$ENDIF}
 begin
   if GetInterface(iid, obj)
   then Result := S_OK
   else Result := E_NOINTERFACE;
 end;
 
-function TLazWriterTiff._AddRef: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazWriterTiff._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
 
-function TLazWriterTiff._Release: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazWriterTiff._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
@@ -6474,23 +6380,19 @@ begin
   end;
 end;
 
-{$IFDEF FPC_HAS_CONSTREF}
 function TLazReaderIcnsPart.QueryInterface(constref iid: TGuid; out obj): longint; {$IFDEF WINDOWs}stdcall{$ELSE}cdecl{$ENDIF};
-{$ELSE}
-function TLazReaderIcnsPart.QueryInterface(const iid: TGuid; out obj): longint; stdcall;
-{$ENDIF}
 begin
   if GetInterface(iid, obj)
   then Result := S_OK
   else Result := E_NOINTERFACE;
 end;
 
-function TLazReaderIcnsPart._AddRef: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazReaderIcnsPart._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
 
-function TLazReaderIcnsPart._Release: LongInt; {$IFDEF FPC_HAS_CONSTREF}{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}{$ELSE}stdcall{$ENDIF};
+function TLazReaderIcnsPart._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;

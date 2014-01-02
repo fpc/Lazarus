@@ -69,13 +69,8 @@ uses
  file_utils_ ;
 
 const
-  {$IFDEF Ver2_2}
-  xFalse = False;
-  xTrue = True;
-  {$ELSE}
   xFalse = 0;
   xTrue = 1;
-  {$ENDIF}
 
 { TYPES DEFINITION }
 const

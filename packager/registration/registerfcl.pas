@@ -55,12 +55,7 @@ end;
 
 procedure RegisterDB;
 begin
-  RegisterComponents('Data Access',[TDatasource
-// Only for fpc version 2.4.1 and above
-{$IFNDEF VER2_4_0}
-                                    ,TBufDataset  // this bites dbflaz
-{$ENDIF}
-                                    ]);
+  RegisterComponents('Data Access',[TDatasource,TBufDataset]); // this bites dbflaz
 end;
 
 procedure RegisterSimpleIPC;

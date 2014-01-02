@@ -87,15 +87,9 @@ type
     procedure SetVisible(AValue: Boolean);
   protected
     // IUnknown implementation
-    {$IFDEF FPC_HAS_CONSTREF}
-      function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-      function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-      function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-    {$ELSE}
-      function QueryInterface(const iid : tguid;out obj) : longint;stdcall;
-      function _AddRef : longint;stdcall;
-      function _Release : longint;stdcall;
-    {$ENDIF}
+    function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+    function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+    function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function EatArrowKeys(const AKey: Word): Boolean; virtual;
     function getText: String; virtual;
     procedure setText(AValue: String); virtual;

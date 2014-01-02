@@ -201,10 +201,8 @@ function Replace(Const Str, OrigStr, ReplStr: String; Const Global: Boolean): St
   Str into substrings around SplitStr }
 function Split(Const Str: String; SplitStr: String; Count: Integer; Const CaseSensitive: Boolean): TStringList;
 
-//{$ifdef VER2_0}
 function GET_X_LPARAM(lp : Windows.LParam) : longint;
 function GET_Y_LPARAM(lp : Windows.LParam) : longint;
-//{$endif VER2_0}
 
 // the declaration in the windows unit doesn't have the FlagsEx field
 type
@@ -351,18 +349,15 @@ Begin
   End;
 End;
 
-//{$ifdef VER2_0}
 function GET_X_LPARAM(lp : Windows.LParam) : longint;
   begin
     result:=smallint(LOWORD(lp));
   end;
 
-
 function GET_Y_LPARAM(lp : Windows.LParam) : longint;
   begin
     result:=smallint(HIWORD(lp));
   end;
-//{$endif VER2_0}
 
 Initialization
 

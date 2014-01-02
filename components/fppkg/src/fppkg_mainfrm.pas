@@ -31,8 +31,6 @@ unit fppkg_mainfrm;
 
 {$mode objfpc}{$H+}
 
-{$IFDEF VER2_4}{$ERROR This package requires at least fpc 2.5.1}{$ENDIF}
-
 interface
 
 uses

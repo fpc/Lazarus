@@ -50,7 +50,7 @@ type
     function IsPointInPart(AX, AY: Integer): Boolean; override;
   end;
 
-  {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
+  {$if defined(ver2_6)}
   TFPCustomRegion = class
     function GetBoundingRect: TRect; virtual; abstract;
     function IsPointInRegion(AX, AY: Integer): Boolean; virtual; abstract;

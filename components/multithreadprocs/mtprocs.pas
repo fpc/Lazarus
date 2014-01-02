@@ -789,11 +789,7 @@ begin
         AThread.AddToList(FFirstActiveThread,mtptlPool);
         AThread.Item.FState:=mtptsActive;
         if NewThread then
-          {$IF defined(VER2_4_2) or defined(VER2_4_3)}
-          AThread.Resume
-          {$ELSE}
           AThread.Start
-          {$ENDIF}
         else
           RTLeventSetEvent(AThread.Item.fWaitForPool);
       end;

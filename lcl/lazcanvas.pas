@@ -87,7 +87,7 @@ type
     FAssignedFont: TFPCustomFont;
     FAssignedPen: TFPCustomPen;
     FBaseWindowOrg: TPoint;
-    {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
+    {$if defined(ver2_6)}
     FLazClipRegion: TFPCustomRegion;
     {$endif}
     FWindowOrg: TPoint; // already in absolute coords with BaseWindowOrg summed up
@@ -127,11 +127,6 @@ type
       const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
     procedure CanvasCopyRect(ASource: TLazCanvas;
       const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
-    // Compatibility with older FPC versions
-    {$if defined(ver2_4) or defined(ver2_5)}
-    procedure FillRect(const ARect: TRect);
-    procedure FillRect(X1,Y1,X2,Y2: Integer);
-    {$endif}
     // Fills the entire drawing with a color
     // AIgnoreClippingAndWindowOrg speeds up the drawing a lot, but it is dangerous,
     // don't use it unless you know what you are doing!
@@ -153,7 +148,7 @@ type
     // because operations of SetWindowOrg inside a non-native wincontrol will be
     // based upon the BaseWindowOrg which is set relative to the Form canvas
     property BaseWindowOrg: TPoint read FBaseWindowOrg write FBaseWindowOrg;
-    {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
+    {$if defined(ver2_6)}
     property ClipRegion: TFPCustomRegion read FLazClipRegion write FLazClipRegion;
     {$endif}
     property WindowOrg: TPoint read GetWindowOrg write SetWindowOrg;
@@ -216,7 +211,7 @@ var
 begin
   lx := x + FWindowOrg.X;
   ly := y + FWindowOrg.Y;
-  {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
+  {$if defined(ver2_6)}
   if Clipping and (not FLazClipRegion.IsPointInRegion(lx, ly)) then
     Exit;
   if (lx >= 0) and (lx < width) and (ly >= 0) and (ly < height) then
@@ -438,7 +433,7 @@ end;
 procedure TLazCanvas.SetLazClipRegion(ARegion: TLazRegion);
 begin
   Clipping := True;
-  {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
+  {$if defined(ver2_6)}
   ClipRect := TLazRegionRect(ARegion.Parts.Items[0]).Rect;
   FLazClipRegion := ARegion;
   {$else}
@@ -689,25 +684,6 @@ begin
   DebugLn(Format('[TLazCanvas.CanvasCopyRect] Paint duration: %d ms', [DateTimeToTimeStamp(NowUTC() - lTimeStart).Time]));
   {$ENDIF}
 end;
-
-{$if defined(ver2_4) or defined(ver2_5)}
-procedure TLazCanvas.FillRect(const ARect: TRect);
-begin
-  if (Brush.style <> bsClear) then
-    begin
-    //if not (brush is TFPCustomDrawBrush) then
-      DoRectangleFill (ARect)
-    //else
-    //  with ARect do
-    //    TFPCustomDrawBrush(Brush).Rectangle (left,top,right,bottom);
-    end;
-end;
-
-procedure TLazCanvas.FillRect(X1, Y1, X2, Y2: Integer);
-begin
-  FillRect (Rect(X1,Y1,X2,Y2));
-end;
-{$endif}
 
 procedure TLazCanvas.FillColor(AColor: TFPColor;
   AIgnoreClippingAndWindowOrg: Boolean);

@@ -47,13 +47,6 @@ function OSError(AResult: OSStatus; const AObject: TObject; const AMethodName, A
 function OSError(AResult: OSStatus; const AMethodName, ACallName: String;
   const AText: String; AValidResult: OSStatus): Boolean;
 
-{$IFDEF VER2_4}
-const
-	kFontNoPlatformCode = $FFFFFFFF;
-	kFontNoScriptCode = $FFFFFFFF;
-	kFontNoLanguageCode = $FFFFFFFF;
-{$ENDIF}
-
 var
   DefaultTextStyle: ATSUStyle; // default Carbon text style
   RGBColorSpace: CGColorSpaceRef; // global RGB color space

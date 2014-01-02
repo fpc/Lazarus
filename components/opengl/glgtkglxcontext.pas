@@ -13,20 +13,12 @@ unit GLGtkGlxContext;
 {$LinkLib GL}
 {$PACKRECORDS C}
 
-{$IFNDEF VER2_4}
-  {$Define UseFPGLX}
-{$ENDIF}
-
 interface
 
 uses
   Classes, SysUtils, ctypes, LCLProc, LCLType, X, XUtil, XLib, gl,
   InterfaceBase,
-  {$IFDEF UseFPGLX}
   glx,
-  {$ELSE}
-  ctypes,
-  {$ENDIF}
   WSLCLClasses,
   {$IFDEF LCLGTK2}
   LMessages, Gtk2Def, gdk2x, glib2, gdk2, gtk2, Gtk2Int,
@@ -36,51 +28,11 @@ uses
   {$ENDIF}
   Controls;
 
-{$IFDEF UseFPGLX}
 type
   TGLBool = longbool;
 const
   GLXTrue:longbool = true;
   GLXFalse:longbool = false;
-{$ELSE}
-type
-  TGLBool = cint;
-const
-  GLXTrue = 1;
-  GLXFalse = 0;
-  
-  { Constants below are the same as in FPC GLX unit. }
-
-  // GLX 1.3 and later:
-  GLX_X_RENDERABLE                = $8012;
-  
-  // Tokens for glXChooseVisual and glXGetConfig.
-  GLX_USE_GL                            = 1;
-  GLX_BUFFER_SIZE                       = 2;
-  GLX_LEVEL                             = 3;
-  GLX_RGBA                              = 4;
-  GLX_DOUBLEBUFFER                      = 5;
-  GLX_STEREO                            = 6;
-  GLX_AUX_BUFFERS                       = 7;
-  GLX_RED_SIZE                          = 8;
-  GLX_GREEN_SIZE                        = 9;
-  GLX_BLUE_SIZE                         = 10;
-  GLX_ALPHA_SIZE                        = 11;
-  GLX_DEPTH_SIZE                        = 12;
-  GLX_STENCIL_SIZE                      = 13;
-  GLX_ACCUM_RED_SIZE                    = 14;
-  GLX_ACCUM_GREEN_SIZE                  = 15;
-  GLX_ACCUM_BLUE_SIZE                   = 16;
-  GLX_ACCUM_ALPHA_SIZE                  = 17;
-
-  // For non conformant FBConfigs
-  GLX_CONFIG_CAVEAT                     = 32;
-  GLX_NON_CONFORMANT_CONFIG             = 32781;
-
-  // GLX_ARB_multisample
-  GLX_SAMPLE_BUFFERS_ARB             = 100000;
-  GLX_SAMPLES_ARB                    = 100001;
-{$ENDIF}
 
 type
   TGdkGLContext = record end;
@@ -193,28 +145,6 @@ type
 
   //PGLXDrawable = ^GLXDrawable;
   GLXDrawable = {%H-}TXID;
-
-{$IFNDEF UseFPGLX}
-{ GLX 1.0 functions. }
-
-function glXChooseVisual(dpy:PDisplay; screen:longint; attrib_list:Plongint):PXVisualInfo;cdecl;external;
-procedure glXCopyContext(dpy:PDisplay; src:TGLXContext; dst:TGLXContext; mask: cardinal);cdecl;external;
-function glXCreateContext(dpy:PDisplay; vis:PXVisualInfo; share_list:TGLXContext; direct:TGLBool):TGLXContext;cdecl;external;
-function glXCreateGLXPixmap(dpy:PDisplay; vis:PXVisualInfo; pixmap:TPixmap):GLXPixmap;cdecl;external;
-procedure glXDestroyContext(dpy:PDisplay; ctx:TGLXContext);cdecl;external;
-procedure glXDestroyGLXPixmap(dpy:PDisplay; pix:GLXPixmap);cdecl;external;
-function glXGetConfig(dpy:PDisplay; vis:PXVisualInfo; attrib:longint; var value:longint):longint;cdecl;external;
-function glXGetCurrentContext:TGLXContext;cdecl;external;
-function glXGetCurrentDrawable:GLXDrawable;cdecl;external;
-function glXIsDirect(dpy:PDisplay; ctx:TGLXContext):TGLBool;cdecl;external;
-function glXMakeCurrent(dpy:PDisplay; drawable:GLXDrawable; ctx:TGLXContext):TGLBool;cdecl;external;
-function glXQueryExtension(dpy:PDisplay; var error_base:longint; var event_base:longint):TGLBool;cdecl;external;
-function glXQueryVersion(dpy:PDisplay; major:Plongint; minor:Plongint):TGLBool;cdecl;external;
-procedure glXSwapBuffers(dpy:PDisplay; drawable:GLXDrawable);cdecl;external;
-procedure glXUseXFont(font:TFont; first:longint; count:longint; list_base:longint);cdecl;external;
-procedure glXWaitGL;cdecl;external;
-procedure glXWaitX;cdecl;external;
-{$ENDIF}
 
 procedure g_return_if_fail(b: boolean; const Msg: string);
 begin
@@ -653,56 +583,15 @@ begin
 end;
 {$ENDIF}
 
-function gtk_gl_area_share_new(Attribs: TContextAttribs; share: PGtkGLArea
-  ): PGtkWidget;
+function gtk_gl_area_share_new(Attribs: TContextAttribs; share: PGtkGLArea): PGtkWidget;
 var
   gl_area: PGtkGLArea;
-  {$IFNDEF UseFPGLX}
-  visual: PGdkVisual;
-  sharelist: PGdkGLContext;
-  glcontext: PGdkGLContext;
-  {$ENDIF}
 begin
   Result := nil;
   //DebugLn(['gtk_gl_area_share_new START']);
   if (share <> nil) and (not GTK_IS_GL_AREA(share)) then
     exit;
-  {$IFDEF UseFPGLX}
-    gl_area:=gtk_gl_area_share_new_usefpglx(Attribs, share);
-  {$ELSE}
-    {$IFNDEF MSWindows}
-      {$IFDEF lclgtk2}
-        visual := nil;
-      {$ELSE}
-        visual := gdk_gl_choose_visual(attrlist);
-        if (visual = nil) then exit;
-      {$ENDIF}
-    {$ENDIF non MSWindows}
-
-    sharelist := nil;
-    if share <> nil then sharelist := share^.glcontext;
-    glcontext := gdk_gl_context_share_new(visual, sharelist, GLXTrue, attrlist);
-    if (glcontext = nil) then exit;
-
-    {$IFNDEF MSWindows}
-      if visual <> nil then begin
-        // use colormap and visual suitable for OpenGL rendering
-        gtk_widget_push_colormap(gdk_colormap_new(visual, gtk_TRUE));
-        gtk_widget_push_visual(visual);
-      end;
-    {$ENDIF non MSWindows}
-
-    gl_area := gtk_type_new (gtk_gl_area_get_type);
-    gl_area^.glcontext := glcontext;
-
-    {$IFNDEF MSWindows}
-      if visual<>nil then begin
-        // pop back defaults
-        gtk_widget_pop_visual;
-        gtk_widget_pop_colormap;
-      end;
-    {$ENDIF non MSWindows}
-  {$ENDIF UseFPGLX}
+  gl_area:=gtk_gl_area_share_new_usefpglx(Attribs, share);
   Result:=PGtkWidget(gl_area);
 end;
 
@@ -1013,13 +902,7 @@ begin
   debugln(['LOpenGLCreateContext MultiSampling=',MultiSampling]);
   {$ENDIF}
   if (MultiSampling > 1) and
-     {$IFDEF UseFPGLX}
      GLX_ARB_multisample(GetDefaultXDisplay, DefaultScreen(GetDefaultXDisplay))
-     {$ELSE}
-     false { no GLX_ARB_multisample support when UseFPGLX undefined,
-             it would be too convoluted to replicate GLX unit extension querying
-             functionality here }
-     {$ENDIF}
   then begin
     {$IFDEF VerboseMultiSampling}
     debugln(['LOpenGLCreateContext GLX_ARB_multisample succeeded']);
@@ -1113,7 +996,7 @@ begin
   {$IFDEF VerboseMultiSampling}
   debugln(['CreateOpenGLContextAttrList MultiSampling=',MultiSampling]);
   {$ENDIF}
-  UseFBConfig := {$IFDEF UseFPGLX} GLX_version_1_3(GetDefaultXDisplay) {$else} false {$endif};
+  UseFBConfig := GLX_version_1_3(GetDefaultXDisplay);
   Result:=nil;
   CreateList;
   GetMem(Result,SizeOf(integer)*p);

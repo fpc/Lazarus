@@ -18,10 +18,6 @@
   MA 02111-1307, USA.
 }
 
-{$IFNDEF VER2_4}
-{$DEFINE HAVESTRICT}
-{$ENDIF}
-
 unit frmmain;
 
 {$mode objfpc}{$H+}
@@ -908,9 +904,6 @@ Var
   S : String;
 
 begin
-{$IFNDEF HAVESTRICT}
-  MIStrict.Visible:=False;
-{$ENDIF}
   S:=GetAppConfigFile(false,true);
   PSMain.IniFileName:=S;
   S:=ExtractFilePath(S);
@@ -952,9 +945,7 @@ begin
   try
     P:=TJSONParser.Create(S);
     try
-{$IFDEF HAVESTRICT}
       P.Strict:=FStrict;
-{$ENDIF}
       D:=P.Parse;
     finally
       P.Free;
