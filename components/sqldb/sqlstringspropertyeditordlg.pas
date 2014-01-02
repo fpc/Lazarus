@@ -1,17 +1,13 @@
 unit SQLStringsPropertyEditorDlg;
 
-{$IFDEF VER2_5_1}
-{$DEFINE HASSQLPARSER}
-{$ENDIF}
-
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, strutils,
   SynEdit, ButtonPanel, SynHighlighterSQL, ComCtrls, SQLDb, db, DBGrids, Menus,
-  SrcEditorIntf,clipbrd, StdCtrls;
+  SrcEditorIntf, clipbrd, StdCtrls, fpsqltree, fpsqlparser;
 
 type
 
@@ -86,12 +82,6 @@ type
 
 implementation
 
-uses
-{$IFDEF HASSQLPARSER}
-  fpsqltree,fpsqlparser,
-{$ENDIF}
-  strutils;
-
 {$R *.lfm}
 
 resourcestring
@@ -104,12 +94,10 @@ resourcestring
   SMetaPleaseSpecifyATableInTheObjectField = 'Please specify a table in the '
     +'object field.';
   SMetaSysTables    = 'SysTables';
-  {$IFDEF HASSQLPARSER}
   SSQLOK            = 'SQL OK';
   SQLSyntaxOK       = 'No syntax errors in SQL statement.';
   SSQLError         = 'SQL Error';
   SSQLSyntaxError   = 'Syntax error in SQL statement:'+slineBreak+'%s';
-  {$ENDIF}
 
 { TSQLStringsPropertyEditorDlg }
 
@@ -178,13 +166,8 @@ Var
   D : TSQLDialect;
 
 begin
-  {$IFDEF HASSQLPARSER}
   TBCheck.Visible:=True;
   MICheck.Visible:=True;
-  {$ELSE}
-  TBCheck.Visible:=False;
-  MICheck.Visible:=True;
-  {$ENDIF}
   D:=sqlStandard;
   If Assigned(FConnection) then
     begin
@@ -367,16 +350,13 @@ begin
 end;
 
 procedure TSQLStringsPropertyEditorDlg.CheckSQLSyntax(SQL : TStrings);
-{$IFDEF HASSQLPARSER}
 Var
   S : TStream;
   P : TSQLParser;
   E : TSQLElement;
   EL : TSQLElementList;
   Msg : String;
-{$ENDIF}
 begin
-  {$IFDEF HASSQLPARSER}
   S:=TMemoryStream.Create;
   try
     SQL.SaveToStream(S);
@@ -406,7 +386,7 @@ begin
   finally
     S.Free;
   end;
-  {$ENDIF}
 end;
+
 end.
 
