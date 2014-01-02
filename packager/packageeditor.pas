@@ -1517,8 +1517,7 @@ begin
   UpdateStatusBar;
 end;
 
-function TPackageEditorForm.ShowAddDialog(var DlgPage: TAddToPkgType
-  ): TModalResult;
+function TPackageEditorForm.ShowAddDialog(var DlgPage: TAddToPkgType): TModalResult;
 var
   IgnoreUnitPaths, IgnoreIncPaths: TFilenameToStringTree;
 
@@ -1646,7 +1645,7 @@ var
           end;
         end;
         FNextSelectedPart := LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,
-                                            NewPkgFileFlags, cpNormal);
+                                                NewPkgFileFlags, cpNormal);
         UpdateAll(true);
       end;
     end;
@@ -1967,7 +1966,8 @@ begin
     end;
     // put them in the RegisteredListBox
     RegisteredListBox.Items.Assign(FPlugins);
-  end else if FSelectedDependency<>nil then begin
+  end
+  else if FSelectedDependency<>nil then begin
     FilePropsGroupBox.Enabled:=not Removed;
     FilePropsGroupBox.Caption:=lisPckEditDependencyProperties;
     UseMinVersionCheckBox.Checked:=pdfMinVersion in FSelectedDependency.Flags;
@@ -1977,13 +1977,15 @@ begin
     MaxVersionEdit.Text:=FSelectedDependency.MaxVersion.AsString;
     MaxVersionEdit.Enabled:=pdfMaxVersion in FSelectedDependency.Flags;
     UpdateApplyDependencyButton;
-  end else if IsDir then begin
+  end
+  else if IsDir then begin
     FilePropsGroupBox.Enabled:=true;
     GetDirectorySummary(CurNode,FileCount,HasRegisterProcCount,AddToUsesPkgSectionCount);
     FDirSummaryLabel.Caption:='Files: '+IntToStr(FileCount)
              +', has Register procedure: '+IntToStr(HasRegisterProcCount)
              +', in package uses section: '+IntToStr(AddToUsesPkgSectionCount);
-  end else begin
+  end
+  else begin
     FilePropsGroupBox.Enabled:=false;
   end;
 end;
@@ -2226,8 +2228,8 @@ begin
   if (IgnoreIncPaths<>nil) and (IgnoreIncPaths.Contains(ShortDirectory))
   then exit;
   if MessageDlg(lisPENewFileNotInIncludePath,
-     Format(lisPETheFileIsCurrentlyNotInTheIncludePathOfThePackageA, [
-       AnIncludeFile, LineEnding, ShortDirectory]),
+     Format(lisPETheFileIsCurrentlyNotInTheIncludePathOfThePackageA,
+            [AnIncludeFile, LineEnding, ShortDirectory]),
       mtConfirmation,[mbYes,mbNo],0)<>mrYes
   then begin
     if IgnoreIncPaths=nil then
@@ -2265,8 +2267,7 @@ end;
 procedure TPackageEditorForm.DoRevert;
 begin
   if MessageDlg(lisPkgEditRevertPackage,
-    Format(lisPkgEditDoYouReallyWantToForgetAllChangesToPackageAnd, [
-      LazPackage.IDAsString]),
+    Format(lisPkgEditDoYouReallyWantToForgetAllChangesToPackageAnd, [LazPackage.IDAsString]),
     mtConfirmation,[mbYes,mbNo],0)<>mrYes
   then exit;
   PackageEditors.RevertPackage(LazPackage);
@@ -2591,8 +2592,8 @@ function TPackageEditors.InstallPackage(APackage: TLazPackage): TModalResult;
 begin
   if ShouldNotBeInstalled(APackage) then begin
     if IDEQuestionDialog(lisNotAnInstallPackage,
-      Format(lisThePackageDoesNotHaveAnyRegisterProcedureWhichTypi, [APackage.
-        Name, LineEnding, LineEnding]),
+      Format(lisThePackageDoesNotHaveAnyRegisterProcedureWhichTypi,
+             [APackage.Name, LineEnding, LineEnding]),
       mtWarning,
       [mrIgnore, lisInstallItILikeTheFat, mrCancel, lisCancel], '')<>mrIgnore
     then exit(mrCancel);
