@@ -226,15 +226,13 @@ begin
       TVNode:=fOwner.fFilteredTreeview.Items.AddChild(fRootNode,FileN);
     // Save the long filename to Node.Data
     AObject := TObject(fNodeTextToDataMap[FileN]);
-    If Assigned(AObject) And AObject.InheritsFrom(TTFENodeData) then Begin
-      TTFENodeData(AObject).Node := TVNode;
-      TTFENodeData(AObject).Branch := Self;
-    end;
     if fNodeTextToFullFilenameMap.Count > 0 then begin
       s:=FileN;
       if fNodeTextToFullFilenameMap.Contains(FileN) then
         s:=fNodeTextToFullFilenameMap[FileN];           // Full file name.
       AObject := TFileNameItem.Create(s, AObject);
+    end;
+    If Assigned(AObject) and (AObject is TTFENodeData) then Begin
       TTFENodeData(AObject).Node := TVNode;
       TTFENodeData(AObject).Branch := Self;
     end;
@@ -473,7 +471,7 @@ begin
 end;
 
 procedure TTreeFilterEdit.SortAndFilter;
-// Copy data from fOriginalData to fSortedData in sorted order
+// Sort and filter either branches or the whole tree depending on operation mode.
 var
   i: Integer;
 begin
