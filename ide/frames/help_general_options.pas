@@ -161,6 +161,7 @@ begin
     Parent := ViewerPropsGroupBox;
     Align := alClient;
     BorderSpacing.Around := 6;
+    PreferredSplitterX := 150;
   end;
 
   DatabasesPropertiesGrid := TCustomPropertiesGrid.Create(Self);
@@ -170,6 +171,7 @@ begin
     Parent := DataBasesPropsGroupBox;
     Align := alClient;
     BorderSpacing.Around := 6;
+    PreferredSplitterX := 150;
   end;
 end;
 
