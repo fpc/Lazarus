@@ -900,6 +900,7 @@ begin
     Add('LOCAL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NEAR'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NORETURN'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NOSTACKFRAME' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OLDFPCCALL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OVERLOAD'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
