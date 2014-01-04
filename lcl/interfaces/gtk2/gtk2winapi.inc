@@ -84,6 +84,7 @@ begin
   inc(Bottom, DCOrigin.Y);
 
   {$IFDEF DebugGDKTraps}BeginGDKErrorTrap;{$ENDIF}
+  DevCtx.RemovePixbuf;
   gdk_draw_arc(DevCtx.Drawable, DevCtx.GC, 0, left, top, right - left, bottom - top,
                    Angle1*4, Angle2*4);
   {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
@@ -2005,6 +2006,7 @@ var
 
     if aStyle<>nil then
     begin
+      aDC.RemovePixbuf;
       if (Shadow=GTK_SHADOW_NONE) then
         gtk_paint_flat_box(aStyle,aDC.Drawable,
            State,
@@ -2076,6 +2078,7 @@ var
     Result := Style <> nil;
     if Result then
     begin
+      aDC.RemovePixbuf;
       if IsRadioButton then
         gtk_paint_option(Style,aDC.Drawable, State,
           Shadow, @ClipArea, Widget, 'radiobutton',
@@ -2170,6 +2173,7 @@ var
   begin
     inc(X1,Origin.X);
     inc(Y1,Origin.Y);
+    TGtkDeviceContext(DC).RemovePixbuf;
     gdk_draw_point(TGtkDeviceContext(DC).Drawable, TGtkDeviceContext(DC).GC, X1, Y1);
   end;
   
@@ -2333,11 +2337,17 @@ begin
 
       // Draw outer rect
       if BOuter then
+      begin
+        RemovePixbuf;
         DrawEdges(R, GC,Drawable,OuterTL,OuterBR);
+      end;
 
       // Draw inner rect
       if BInner then
+      begin
+        RemovePixbuf;
         DrawEdges(R,GC,Drawable,InnerTL,InnerBR);
+      end;
 
   //      gdk_colormap_free_colors(gdk_colormap_get_system, @OuterTL, 1);
   //      gdk_colormap_free_colors(gdk_colormap_get_system, @OuterBR, 1);
@@ -2347,6 +2357,7 @@ begin
       //Draw interiour
       if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) then
       begin
+        RemovePixbuf;
         MiddleColor := AllocGDKColor(GetSysColor(COLOR_BTNFACE));
         gdk_gc_set_foreground(GC, @MiddleColor);
         gdk_draw_rectangle(Drawable, GC, 1, R.Left, R.Top,
@@ -3572,6 +3583,7 @@ begin
   if not DevCtx.IsNullBrush then
   begin
     DevCtx.SelectBrushProps;
+    DevCtx.RemovePixbuf;
     gdk_draw_arc(DevCtx.Drawable, DevCtx.GC, 1,
                  Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height, 0, 360 shl 6);
   end;
@@ -3584,6 +3596,7 @@ begin
     Result := True;
     if not DevCtx.IsNullPen then
     begin
+      DevCtx.RemovePixbuf;
       gdk_draw_arc(DevCtx.Drawable, DevCtx.GC, 0,
                    Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height, 0, 360 shl 6);
     end;
@@ -3833,6 +3846,7 @@ begin
     Width := Rect^.Right - Rect^.Left;
     Height := Rect^.Bottom - Rect^.Top;
     EnsureGCColor(DC, dccCurrentBackColor, True, False);
+    DevCtx.RemovePixbuf;
     gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 1,
                        Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
                        Width, Height);
@@ -4019,6 +4033,7 @@ begin
       gdk_gc_set_subwindow(gc2, GDK_INCLUDE_INFERIORS);
     end;
 
+    DevCtx.RemovePixbuf;
     for i := 1 to AWidth do
     begin
       gdk_draw_line(Drawable, gc1, ARect.Left + Offset.x, ARect.Top + Offset.y,
@@ -4070,6 +4085,7 @@ begin
   LPtoDP(DC, R, 2);
 
   DCOrigin := DevCtx.Offset;
+  DevCtx.RemovePixbuf;
   gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 0,
                      R.Left + DCOrigin.X, R.Top + DCOrigin.Y,
                      R.Right-R.Left-1, R.Bottom-R.Top-1);
@@ -6410,6 +6426,7 @@ begin
   LPToDP(DC, ToPt, 1);
   
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+  DevCtx.RemovePixbuf;
   gdk_draw_line(DevCtx.Drawable, DevCtx.GC, FromPt.X, FromPt.Y, ToPt.X, ToPt.Y);
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
@@ -6758,6 +6775,7 @@ begin
     end else
     begin
       DevCtx.SelectBrushProps;
+      DevCtx.RemovePixbuf;
       gdk_draw_polygon(DevCtx.Drawable, DevCtx.GC, 1, PointArray, NumPts);
     end;
   end;
@@ -6766,6 +6784,7 @@ begin
   if not DevCtx.IsNullPen
   then begin
     DevCtx.SelectPenProps;
+    DevCtx.RemovePixbuf;
     gdk_draw_polygon(DevCtx.Drawable, DevCtx.GC, 0, PointArray, NumPts);
   end;
 
@@ -6806,6 +6825,7 @@ begin
   if Result and not DevCtx.IsNullPen
   then begin
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+    DevCtx.RemovePixbuf;
     gdk_draw_lines(DevCtx.Drawable, DevCtx.GC, PointArray, NumPts);
     {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
   end;
@@ -7058,6 +7078,7 @@ begin
   begin
     ClipArea := DevCtx.ClipRect;
     Brush := DevCtx.GetBrush;
+    DevCtx.RemovePixbuf;
     if  (Brush^.GDIBrushFill = GDK_SOLID) and
       (IsBackgroundColor(TColor(Brush^.GDIBrushColor.ColorRef)))
     then
@@ -7072,8 +7093,11 @@ begin
   DevCtx.SelectPenProps;
   Result := dcfPenSelected in DevCtx.Flags;
   if Result and not DevCtx.IsNullPen
-  then gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 0,
-                          Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height);
+  then begin
+    DevCtx.RemovePixbuf;
+    gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 0,
+                       Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height);
+  end;
 
   {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
 end;

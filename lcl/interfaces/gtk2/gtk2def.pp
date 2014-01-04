@@ -270,6 +270,8 @@ type
                              // or the gdk_bitmap/pixmap of the selected image
                              // or the double buffer (OriginalDrawable will hold the original)
 
+    FPixbuf: PGdkPixbuf;     // pixbuf reference for when the drawable comes from a pixbuf
+
     FOriginalDrawable: PGDKDrawable; // only set if dcfDoubleBuffer in DCFlags
 
     FWidget: PGtkWidget;     // the owner (in case of a windowDC)
@@ -344,6 +346,7 @@ type
     Antialiasing: Boolean;
 
     constructor Create; virtual;
+    destructor Destroy; override;
     procedure CreateGDIObject(AGDIType: TGDIType);
     procedure SelectBrushProps; virtual;
     procedure SelectTextProps; virtual;
@@ -364,6 +367,7 @@ type
     function IsNullPen: boolean;
     function SelectObject(AGdiObject: PGdiObject): PGdiObject;
     procedure SetTextMetricsValid(AValid: Boolean); // temp helper, to allow flag manipulation
+    procedure RemovePixbuf; // called to remove the stored pixbuf (because, f.e., the pixmap was modified)
 
     // viewport/affine transformations
     procedure InvTransfPoint(var X1, Y1: Integer);
@@ -410,6 +414,7 @@ type
     property Flags: TDeviceContextsFlags read FFlags write FFlags;
     property OwnedGDIObjects[ID: TGDIType]: PGdiObject read GetOwnedGDIObjects write SetOwnedGDIObjects;
     property Drawable: PGDKDrawable read FDrawable;
+    property Pixbuf: PGdkPixbuf read FPixbuf;
     property Widget: PGtkWidget read FWidget; // the owner
     property GC: pgdkGC read GetGC write FGC;
     property WithChildWindows: Boolean read FWithChildWindows;

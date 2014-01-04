@@ -319,6 +319,15 @@ begin
     Exclude(FFlags, dcfTextMetricsValid);
 end;
 
+procedure TGtkDeviceContext.RemovePixbuf;
+begin
+  if Assigned(FPixbuf) then
+  begin
+    gdk_pixbuf_unref(FPixbuf);
+    FPixbuf := nil;
+  end;
+end;
+
 procedure TGtkDeviceContext.InvTransfPoint(var X1, Y1: Integer);
 begin
   X1 := MulDiv(X1 + FWindowOrg.x - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
@@ -516,6 +525,7 @@ begin
 
   FWithChildWindows := AWithChildWindows;
   FWidget := AWidget;
+  FPixbuf := nil;
 
   if AWidget = nil then
   begin
@@ -583,8 +593,10 @@ var
   end;
 
 begin
+  if Assigned(FPixbuf) then gdk_pixbuf_unref(FPixbuf);
   FWidget := nil;
   FDrawable := nil;
+  FPixbuf := nil;
   FGC := nil;
   FillChar(FGCValues, SizeOf(FGCValues), 0);
 
@@ -662,6 +674,7 @@ begin
 
   FWithChildWindows := ASource.FWithChildWindows;
   FDrawable := ASource.FDrawable;
+  FPixbuf := ASource.Pixbuf;
   FOriginalDrawable := ASource.FOriginalDrawable;
 
   if Assigned(FGC) then
@@ -777,6 +790,7 @@ begin
 
     DCOrigin := Offset;
     ClipArea := ClipRect;
+    RemovePixbuf;
     if (CurrentBrush^.GDIBrushFill = GDK_SOLID) and
        (IsBackgroundColor(CurrentBrush^.GDIBrushColor.ColorRef)) then
       StyleFillRectangle(Drawable, GC,
@@ -987,6 +1001,7 @@ end;
 
 function TGtkDeviceContext.SelectBitmap(AGdiObject: PGdiObject): PGdiObject;
 var
+  NewPixbuf: PGdkPixbuf = nil;
   NewDrawable: PGdkPixmap;
   Mask: PGdkBitmap;
 begin
@@ -1003,9 +1018,9 @@ begin
         begin
           NewDrawable := nil;
           Mask := nil;
+          NewPixbuf := GDIPixbufObject;
           gdk_pixbuf_render_pixmap_and_mask(GDIPixbufObject, NewDrawable, Mask, $80);
           GDIBitmapType := gbPixmap;
-          gdk_pixbuf_unref(GDIPixbufObject);
           GDIPixmapObject.Image := NewDrawable;
           GDIPixmapObject.Mask := Mask;
           if Visual <> nil then
@@ -1024,6 +1039,7 @@ begin
   if FGC <> nil then
     gdk_gc_unref(FGC);
   FDrawable := NewDrawable;
+  FPixbuf := NewPixbuf;
   FGC := gdk_gc_new(FDrawable);
   gdk_gc_set_function(FGC, GDK_COPY);
   SelectedColors := dcscCustom;
@@ -1084,6 +1100,12 @@ constructor TGtkDeviceContext.Create;
 begin
   Clear;
   BkMode := OPAQUE;
+end;
+
+destructor TGtkDeviceContext.Destroy;
+begin
+  if Assigned(FPixbuf) then gdk_pixbuf_unref(FPixbuf);
+  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------
@@ -1290,6 +1312,7 @@ begin
       renderer := gdk_pango_renderer_get_default(gtk_widget_get_screen(Widget))
     else
       renderer := gdk_pango_renderer_get_default(gdk_screen_get_default);
+    RemovePixbuf;
     gdk_pango_renderer_set_drawable(renderer, drawable);
     gdk_pango_renderer_set_gc(renderer, GC);
     SetColors(FGColor, BGColor);

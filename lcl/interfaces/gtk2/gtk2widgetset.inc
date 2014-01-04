@@ -3817,8 +3817,51 @@ var
     ClipMask: PGdkBitmap;
     SrcGDIBitmap: PGdiObject;
     B: Boolean;
+    TmpPixbuf, TmpPixbuf2: PGdkPixbuf;
   begin
     Result:=true;
+
+    // special case for copying from bitmaps with alpha channel
+    if (ROP=SRCCOPY) and Assigned(SrcDevContext.Pixbuf) then
+    begin
+      if SizeChange then
+      begin
+        // there isn't a "stretch draw" function for pixbufs so we need to make
+        // a temporary scaled copy if we have a different size
+        if (Width <> SrcWidth) or (Height <> SrcHeight) then begin
+          TmpPixbuf:=gdk_pixbuf_scale_simple(SrcDevContext.Pixbuf, Width, Height, GDK_INTERP_HYPER);
+          if not Assigned(TmpPixbuf) then
+          begin
+            DebugLn('SrcDevBitmapToDrawable: failed to create temporary pixbuf for scaled draw');
+            exit;
+          end;
+        end else begin
+          // same size but we have flips, just increase the refcount of the
+          // original pixbuf
+          TmpPixbuf:=SrcDevContext.Pixbuf;
+          gdk_pixbuf_ref(TmpPixbuf);
+        end;
+        // flip the pixmap, if necessary
+        if FlipHorz then begin
+          TmpPixbuf2:=gdk_pixbuf_flip(TmpPixbuf, True);
+          gdk_pixbuf_unref(TmpPixbuf);
+          TmpPixbuf:=TmpPixbuf2;
+        end;
+        if FlipVert then begin
+          TmpPixbuf2:=gdk_pixbuf_flip(TmpPixbuf, False);
+          gdk_pixbuf_unref(TmpPixbuf);
+          TmpPixbuf:=TmpPixbuf2;
+        end;
+        // draw and release the final pixbuf
+        gdk_draw_pixbuf(DstDevContext.Drawable, DstDevContext.GC, TmpPixbuf, XSrc, YSrc, X, Y, Width, Height, GDK_RGB_DITHER_MAX, 0, 0);
+        gdk_pixbuf_unref(TmpPixbuf);
+      end else
+      begin
+        gdk_draw_pixbuf(DstDevContext.Drawable, DstDevContext.GC, SrcDevContext.Pixbuf, XSrc, YSrc, X, Y, Width, Height, GDK_RGB_DITHER_MAX, 0, 0);
+      end;
+      Exit;
+    end;
+
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('SrcDevBitmapToDrawable Start');
     {$ENDIF}
