@@ -1899,7 +1899,17 @@ end;
 
 function TSynPasSyn.Func122: TtkTokenKind;
 begin
-  if KeyComp('Otherwise') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Otherwise') then begin
+    Result := tkKey;
+    while (TopPascalCodeFoldBlockType = cfbtIfThen) do
+      EndPascalCodeFoldBlock;
+    if TopPascalCodeFoldBlockType = cfbtCase then begin
+      StartPascalCodeFoldBlock(cfbtCaseElse);
+      FTokenIsCaseLabel := True;
+    end;
+  end
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func124: TtkTokenKind;

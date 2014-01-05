@@ -206,7 +206,6 @@ type
     procedure FilesTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MorePopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewDblClick(Sender: TObject);
-    procedure FilesTreeViewKeyPress(Sender: TObject; var Key: Char);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
     procedure FixFilesCaseMenuItemClick(Sender: TObject);
     procedure HelpBitBtnClick(Sender: TObject);
@@ -770,20 +769,30 @@ end;
 
 procedure TPackageEditorForm.FilesTreeViewKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
+var
+  Handled: Boolean;
 begin
-  if (ssCtrl in shift ) and ((Key = VK_UP) or (Key = VK_DOWN)) then begin
+  Handled := True;
+  if (ssCtrl in Shift) then
+  begin
     if Key = VK_UP then
       MoveUpBtnClick(Nil)
+    else if Key = VK_DOWN then
+      MoveDownBtnClick(Nil)
     else
-      MoveDownBtnClick(Nil);
-    Key:=VK_UNKNOWN;
-  end;
-end;
+      Handled := False;
+  end
+  else if Key = VK_RETURN then
+    OpenFileMenuItemClick(Nil)
+  else if Key = VK_DELETE then
+    RemoveBitBtnClick(Nil)
+  else if Key = VK_INSERT then
+    AddBitBtnClick(Nil)
+  else
+    Handled := False;
 
-procedure TPackageEditorForm.FilesTreeViewKeyPress(Sender: TObject; var Key: Char);
-begin
-  if Key = char(VK_RETURN) then
-    OpenFileMenuItemClick(Self);
+  if Handled then
+    Key := VK_UNKNOWN;
 end;
 
 procedure TPackageEditorForm.FilesTreeViewSelectionChanged(Sender: TObject);
@@ -1896,7 +1905,8 @@ begin
   IsDir:=IsDirectoryNode(CurNode) or (CurNode=FFilesNode);
   CurFilename:='';
   HasLFM:=false;
-  if (FSelectedFile<>nil) and (FSelectedFile.FileType in PkgFileRealUnitTypes) then begin
+  if (FSelectedFile<>nil) and (FSelectedFile.FileType in PkgFileRealUnitTypes) then
+  begin
     CurFilename:=FSelectedFile.GetFullFilename;
     HasLFM:=FilenameIsAbsolute(CurFilename)
         and FileExistsCached(ChangeFileExt(CurFilename,'.lfm'));
@@ -1916,7 +1926,8 @@ begin
                                      and LazPackage.EnableI18NForLFM;
   FDirSummaryLabel.Visible:=IsDir;
 
-  b:=(Assigned(FSelectedFile) or Assigned(FSelectedDependency)) and not SortAlphabetically;
+  b:=(Assigned(FSelectedFile) or Assigned(FSelectedDependency))
+      and not (SortAlphabetically or Removed);
   MoveUpBtn.Enabled  :=b and Assigned(CurNode.GetPrevVisibleSibling);
   MoveDownBtn.Enabled:=b and Assigned(CurNode.GetNextVisibleSibling);
 
@@ -2337,23 +2348,22 @@ end;
 
 procedure TPackageEditorForm.DoMoveCurrentFile(Offset: integer);
 var
-  Removed: boolean;
+  Removed: Boolean;
+  OldIndex, NewIndex: Integer;
   CurFile: TPkgFile;
-  OldIndex: Integer;
-  NewIndex: Integer;
-  TreeSelection: TStringList;
+  FilesBranch: TTreeFilterBranch;
 begin
   CurFile:=GetCurrentFile(Removed);
   if (CurFile=nil) or Removed then exit;
   OldIndex:=LazPackage.IndexOfPkgFile(CurFile);
   NewIndex:=OldIndex+Offset;
   if (NewIndex<0) or (NewIndex>=LazPackage.FileCount) then exit;
-  TreeSelection:=FilesTreeView.StoreCurrentSelection;
+  FilesBranch:=FilterEdit.GetExistingBranch(FFilesNode);
   LazPackage.MoveFile(OldIndex,NewIndex);
-  UpdateFiles;
-  FilesTreeView.ApplyStoredSelection(TreeSelection);
-  UpdateButtons;
+  FilesBranch.MoveFile(OldIndex,NewIndex);
+  UpdateSelectedFile;
   UpdateStatusBar;
+  FilterEdit.InvalidateFilter;
 end;
 
 procedure TPackageEditorForm.DoMoveDependency(Offset: integer);

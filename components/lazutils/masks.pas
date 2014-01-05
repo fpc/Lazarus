@@ -20,21 +20,23 @@ interface
 
 uses
   // For Smart Linking: Do not use the LCL!
-  Classes, SysUtils, Contnrs, StrUtils, LazUtilsStrConsts;
+  Classes, SysUtils, Contnrs, LazUtilsStrConsts, LazUtf8;
 
 type
   TMaskCharType = (mcChar, mcCharSet, mcAnyChar, mcAnyText);
-  
+
   TCharSet = set of Char;
   PCharSet = ^TCharSet;
-  
+
+  TUtf8Char = String[7];
+
   TMaskChar = record
     case CharType: TMaskCharType of
-      mcChar: (CharValue: Char);
+      mcChar: (CharValue: TUtf8Char);
       mcCharSet: (Negative: Boolean; SetValue: PCharSet);
       mcAnyChar, mcAnyText: ();
   end;
-  
+
   TMaskString = record
     MinLength: Integer;
     MaxLength: Integer;
@@ -53,18 +55,18 @@ type
   public
     constructor Create(const AValue: String; const CaseSensitive: Boolean = False);
     destructor Destroy; override;
-    
+
     function Matches(const AFileName: String): Boolean;
     function MatchesWindowsMask(const AFileName: String): Boolean;
   end;
-  
+
   { TParseStringList }
 
   TParseStringList = class(TStringList)
   public
     constructor Create(const AText, ASeparators: String);
   end;
-  
+
   { TMaskList }
 
   TMaskList = class
@@ -75,10 +77,10 @@ type
   public
     constructor Create(const AValue: String; ASeparator: Char = ';'; const CaseSensitive: Boolean = False);
     destructor Destroy; override;
-    
+
     function Matches(const AFileName: String): Boolean;
     function MatchesWindowsMask(const AFileName: String): Boolean;
-    
+
     property Count: Integer read GetCount;
     property Items[Index: Integer]: TMask read GetItem;
   end;
@@ -89,6 +91,26 @@ function MatchesMaskList(const FileName, Mask: String; Separator: Char = ';'; co
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char = ';'; const CaseSensitive: Boolean = False): Boolean;
 
 implementation
+
+//Utf8 helper functions
+
+function GetCodePoint(const S: String; const Index: PtrInt): TUTF8Char;
+//equivalent for Result := S[Index], but for Utf8 encoded strings
+var
+  p: PChar;
+  PLen: PtrInt;
+  Res: AnsiString; //intermediate needed for PChar -> String -> ShortString assignement
+begin
+  Result := '';
+  p := UTF8CharStart(PChar(S), Length(S), Index - 1); //zero-based call
+  //determine the length in bytes of this UTF-8 character
+  PLen := UTF8CharacterLength(p);
+  Res := p;
+  //Set correct length for Result (otherwise it returns all chars up to the end of the original string)
+  SetLength(Res,PLen);
+  Result := Res;
+end;
+
 
 function MatchesMask(const FileName, Mask: String; const CaseSensitive: Boolean): Boolean;
 var
@@ -184,6 +206,7 @@ var
     CharSet: TCharSet;
     Valid: Boolean;
     C, Last: Char;
+    CP: TUtf8Char;
   begin
     SkipAnyText := False;
 
@@ -191,7 +214,7 @@ var
     FMask.Chars[High(FMask.Chars)].CharType := mcCharSet;
 
     Inc(I);
-    if (I <= Length(AValue)) and (AValue[I] = '!') then
+    if (I <= Utf8Length(AValue)) and (GetCodePoint(AValue,I) = '!') then
     begin
       FMask.Chars[High(FMask.Chars)].Negative := True;
       Inc(I);
@@ -201,24 +224,30 @@ var
     Last := '-';
     CharSet := [];
     Valid := False;
-    while I <= Length(AValue) do
+    while I <= Utf8Length(AValue) do
     begin
-      case AValue[I] of
+      CP := GetCodePoint(AValue,I);
+      //CharSets can only contain 1-byte codepoints
+      if (Length(CP) <> 1) then CharSetError;
+      case CP of
         '-':
           begin
             if Last = '-' then CharSetError;
             Inc(I);
-
-            if (I > Length(AValue)) then CharSetError;
+            if (I > Utf8Length(AValue)) then CharSetError;
+            CP := GetCodePoint(AValue, I);
+            if (Length(CP) <> 1) then CharSetError;
             if fCaseSensitive then
             begin
-              //DebugLn('Set:  ' + Last + '-' + (AValue[I]));
-              for C := Last to (AValue[I]) do Include(CharSet, C);
+              //writeln('MaskUtf8: Set:  ' + Last + '-' + (CP[1]));
+              for C := Last to CP[1] do
+                Include(CharSet, C)
             end
             else
             begin
-              //DebugLn('Set:  ' + Last + '-' + UpCase(AValue[I]));
-              for C := Last to UpCase(AValue[I]) do Include(CharSet, C);
+              //writeln('MaskUtf8: Set:  ' + Last + '-' + UpCase(CP[1]));
+              for C := Last to UpCase(CP[1]) do
+                Include(CharSet, C)
             end;
             Inc(I);
           end;
@@ -230,15 +259,14 @@ var
         else
         begin
           if fCaseSensitive then
-            Last := AValue[I]
+            Last := CP[1]
           else
-            Last := UpCase(AValue[I]);
+            Last := UpCase(CP[1]);
           Include(CharSet, Last);
           Inc(I);
         end;
       end;
     end;
-
     if (not Valid) or (CharSet = []) then CharSetError;
 
     New(FMask.Chars[High(FMask.Chars)].SetValue);
@@ -259,9 +287,9 @@ var
     begin
       CharType := mcChar;
       if fCaseSensitive then
-        CharValue := AValue[I]
+        CharValue := GetCodePoint(AValue,I)
       else
-        CharValue := UpCase(AValue[I]);
+        CharValue := Utf8UpperCase(GetCodePoint(AValue,I));
     end;
 
     Inc(FMask.MinLength);
@@ -278,9 +306,9 @@ begin
   SkipAnyText := False;
 
   I := 1;
-  while I <= Length(AValue) do
+  while I <= Utf8Length(AValue) do
   begin
-    case AValue[I] of
+    case GetCodePoint(AValue,I) of
       '*': AddAnyText;
       '?': AddAnyChar;
       '[': AddCharSet;
@@ -316,13 +344,14 @@ function TMask.Matches(const AFileName: String): Boolean;
 var
   L: Integer;
   S: String;
-  
+
   function MatchToEnd(MaskIndex, CharIndex: Integer): Boolean;
   var
     I, J: Integer;
+    CP: TUtf8Char;
   begin
     Result := False;
-    
+
     for I := MaskIndex to High(FMask.Chars) do
     begin
       case FMask.Chars[I].CharType of
@@ -330,14 +359,17 @@ var
           begin
             if CharIndex > L then Exit;
             //DebugLn('Match ' + S[CharIndex] + '<?>' + FMask.Chars[I].CharValue);
-            if S[CharIndex] <> FMask.Chars[I].CharValue then Exit;
+            if GetCodePoint(S,CharIndex) <> FMask.Chars[I].CharValue then Exit;
             Inc(CharIndex);
           end;
         mcCharSet:
           begin
             if CharIndex > L then Exit;
+            CP := GetCodePoint(S, CharIndex);
+            //There are only 1-byte codepoints in charsets
+            if (Length(CP) <> 1) then Exit;
             if FMask.Chars[I].Negative xor
-               (S[CharIndex] in FMask.Chars[I].SetValue^) then Inc(CharIndex)
+               (Cp[1] in FMask.Chars[I].SetValue^) then Inc(CharIndex)
             else Exit;
           end;
         mcAnyChar:
@@ -352,7 +384,7 @@ var
               Result := True;
               Exit;
             end;
-            
+
             for J := CharIndex to L do
               if MatchToEnd(I + 1, J) then
               begin
@@ -362,24 +394,24 @@ var
           end;
       end;
     end;
-    
+
     Result := CharIndex > L;
   end;
-  
+
 begin
   Result := False;
-  L := Length(AFileName);
+  L := Utf8Length(AFileName);
   if L = 0 then
   begin
     if FMask.MinLength = 0 then Result := True;
     Exit;
   end;
-  
+
   if (L < FMask.MinLength) or (L > FMask.MaxLength) then Exit;
   if fCaseSensitive then
     S := AFileName
   else
-    S := UpperCase(AFileName);
+    S := Utf8UpperCase(AFileName);
   Result := MatchToEnd(0, 1);
 end;
 
@@ -394,10 +426,10 @@ begin
   // foo. matches only foo but not foo.txt
   // foo.* -> match either foo or foo.*
 
-  if (Length(fInitialMask) > 2) and (RightStr(fInitialMask,3) = '*.*') then
+  if (Utf8Length(fInitialMask) > 2) and (Utf8RightStr(fInitialMask,3) = '*.*') then
   // foo*.*
   begin
-    NewMaskValue := Copy(fInitialMask,1,Length(fInitialMask)-2);
+    NewMaskValue := Utf8Copy(fInitialMask,1,Utf8Length(fInitialMask)-2);
     ClearMaskString;
     InitMaskString(NewMaskValue, fCaseSensitive);
     Result := Matches(AFileName);
@@ -406,7 +438,7 @@ begin
     InitMaskString(fInitialMask, fCaseSensitive);
   end
   //else if (Length(fInitialMask) > 1) and (RightStr(fInitialMask,2) = '*.') then
-  else if (Length(fInitialMask) > 1) and (fInitialMask[Length(fInitialMask)] = '.') then
+  else if (Utf8Length(fInitialMask) > 1) and (GetCodePoint(fInitialMask,Utf8Length(fInitialMask)) = '.') then
 
   //foo*. or *. or foo.
   begin
@@ -415,7 +447,7 @@ begin
     Ext := ExtractFileExt(AFileName);
     if (Ext = '') or (Ext = AFileName) then
     begin
-      NewMaskValue := Copy(fInitialMask,1,Length(fInitialMask)-1);
+      NewMaskValue := Utf8Copy(fInitialMask,1,Utf8Length(fInitialMask)-1);
       ClearMaskString;
       InitMaskString(NewMaskValue, fCaseSensitive);
       Result := Matches(AFileName);
@@ -428,14 +460,14 @@ begin
       Result := False;
     end;
   end
-  else if (Length(fInitialMask) > 2) and (RightStr(fInitialMask,2) = '.*') then
+  else if (Utf8Length(fInitialMask) > 2) and (Utf8RightStr(fInitialMask,2) = '.*') then
   //foo.*  (but not '.*')
   begin
     //First see if we have 'foo'
     if fCaseSensitive then
-      Result := (AFileName = Copy(fInitialMask,1,Length(fInitialMask)-2))
+      Result := (AFileName = Utf8Copy(fInitialMask,1,Utf8Length(fInitialMask)-2))
     else
-      Result := (CompareText(AFileName,Copy(fInitialMask,1,Length(fInitialMask)-2)) = 0);
+      Result := (Utf8CompareText(AFileName,Utf8Copy(fInitialMask,1,Utf8Length(fInitialMask)-2)) = 0);
     if not Result then Result := Matches(AFileName);
   end
   else
@@ -462,7 +494,7 @@ begin
       S := I + 1;
     end;
   end;
-  
+
   if Length(AText) >= S then Add(Copy(AText, S, Length(AText) - S + 1));
 end;
 
@@ -484,7 +516,7 @@ var
   I: Integer;
 begin
   FMasks := TObjectList.Create(True);
-  
+
   S := TParseStringList.Create(AValue, ASeparator);
   try
     for I := 0 to S.Count - 1 do
@@ -497,7 +529,7 @@ end;
 destructor TMaskList.Destroy;
 begin
   FMasks.Free;
-  
+
   inherited Destroy;
 end;
 
@@ -506,7 +538,7 @@ var
   I: Integer;
 begin
   Result := False;
-  
+
   for I := 0 to FMasks.Count - 1 do
   begin
     if TMask(FMasks.Items[I]).Matches(AFileName) then

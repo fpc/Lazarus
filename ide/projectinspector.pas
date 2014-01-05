@@ -225,11 +225,24 @@ end;
 
 procedure TProjectInspectorForm.ItemsTreeViewKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
+var
+  Handled: Boolean;
 begin
-  if Key = 27 then
-  begin
-    Key:=0;
-    Close;
+  Handled := True;
+  try
+    if Key = VK_ESCAPE then
+      Close
+    else if Key = VK_RETURN then
+      OpenButtonClick(Nil)
+    else if Key = VK_DELETE then
+      RemoveBitBtnClick(Nil)
+    else if Key = VK_INSERT then
+      AddBitBtnClick(Nil)
+    else
+      Handled := False;
+  finally
+    if Handled then
+      Key := VK_UNKNOWN;
   end;
 end;
 

@@ -3300,8 +3300,7 @@ begin
   end;
 end;
 
-function TLazPackage.GetFileDialogInitialDir(const DefaultDirectory: string
-  ): string;
+function TLazPackage.GetFileDialogInitialDir(const DefaultDirectory: string): string;
 begin
   Result:=AppendPathDelim(TrimFilename(DefaultDirectory));
   if (SourceDirectories.GetFileReference(Result)=nil)
@@ -3313,7 +3312,11 @@ procedure TLazPackage.MoveFile(CurIndex, NewIndex: integer);
 begin
   if CurIndex=NewIndex then exit;
   FFiles.Move(CurIndex,NewIndex);
-  Modified:=true;
+  Include(FFlags,lpfModified);
+  if FChangeStamp<High(FChangeStamp) then
+    inc(FChangeStamp)
+  else
+    FChangeStamp:=low(FChangeStamp);
 end;
 
 procedure TLazPackage.SortFiles;

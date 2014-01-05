@@ -5746,84 +5746,65 @@ end;
 
 procedure TQtBitBtn.preferredSize(var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
+const
+  IconDistance = 4; // hardcoded in qt libs
 var
-  TheSize: TSize;
-
-  function AutoSizeButtonFromStyle(const ASize: TSize): TSize;
-  const
-    IconDistance = 4; // hardcoded in qt libs
-  var
-    AOpt: QStyleOptionButtonH;
-    AText: WideString;
-    AMetrics: QFontMetricsH;
-    BtnWidth: Integer;
-    BtnHeight: Integer;
-    IconSize: TSize;
-    TextSize: TSize;
-    {style pixel metrics}
-    BtnMargin, FocusH, FocusV, ShiftH, ShiftV: Integer;
-  begin
-    Result := ASize;
-    AOpt := QStyleOptionButton_create();
-    QStyleOption_initFrom(AOpt, Widget);
-    AText := getText;
-    QStyleOptionButton_setText(AOpt, @AText);
-    AMetrics := QFontMetrics_create(QWidget_font(Widget));
-    try
-      QStyleOption_fontMetrics(AOpt, AMetrics);
-
-      // QtTextShowMnemonic = $0800
-      if AText <> '' then
-        QFontMetrics_size(AMetrics, PSize(@TextSize),
-          QtAlignLeft or $0800, PWideString(@AText))
-      else
-        TextSize := Size(0, 0);
-      BtnWidth := TextSize.cx;
-      BtnHeight := TextSize.cy;
-      Result.cx := BtnWidth;
-      Result.cy := BtnHeight;
-      BtnMargin := GetPixelMetric(QStylePM_ButtonMargin, nil, Widget);
-      FocusV := GetPixelMetric(QStylePM_FocusFrameVMargin, nil, Widget);
-      FocusH := GetPixelMetric(QStylePM_FocusFrameHMargin, nil, Widget);
-      ShiftH := GetPixelMetric(QStylePM_ButtonShiftHorizontal, nil, Widget);
-      ShiftV := GetPixelMetric(QStylePM_ButtonShiftVertical, nil, Widget);
-
-      if ShiftH = 0 then
-        ShiftH := FocusH;
-
-      Result.cx := Result.cx + BtnMargin + (FocusH * 2) + (ShiftH * 2);
-      Result.cy := Result.cy + BtnMargin + (FocusV * 2) + (ShiftV * 2);
-
-      // now check if we have icon
-      if Assigned(FIcon) and not QIcon_isNull(FIcon) then
-      begin
-        IconSize := Self.FIconSize;
-        Result.cx := Result.cx + IconSize.cx + (FocusH * 2) + (ShiftH * 2);
-        if IconSize.cy + BtnMargin + (FocusV * 2) + (ShiftV * 2) > Result.cy then
-          Result.cy := IconSize.cy + BtnMargin + (FocusV * 2) + (ShiftV * 2);
-        if FText <> '' then
-        begin
-          if FGlyphLayout in [2, 3] then
-            inc(Result.cy, BtnHeight + IconDistance)
-          else
-            inc(Result.cx, IconDistance);
-        end;
-      end;
-
-      if ShiftV = 0 then
-        inc(Result.cy, 1);
-
-    finally
-      QStyleOptionButton_destroy(AOpt);
-      QFontMetrics_destroy(AMetrics);
-    end;
-  end;
+  AOpt: QStyleOptionButtonH;
+  AText: WideString;
+  AMetrics: QFontMetricsH;
+  TextSize: TSize;
+  {style pixel metrics}
+  BtnMargin, FocusH, FocusV, ShiftH, ShiftV, fsh, fsvm: Integer;
 begin
-  QPushButton_sizeHint(QPushButtonH(Widget), @TheSize);
-  if Assigned(LCLObject) and LCLObject.AutoSize then
-    TheSize := AutoSizeButtonFromStyle(TheSize);
-  PreferredWidth := TheSize.cx;
-  PreferredHeight := TheSize.cy;
+  AOpt := QStyleOptionButton_create();
+  QStyleOption_initFrom(AOpt, Widget);
+  AText := getText;
+  QStyleOptionButton_setText(AOpt, @AText);
+  AMetrics := QFontMetrics_create(QWidget_font(Widget));
+  try
+    QStyleOption_fontMetrics(AOpt, AMetrics);
+
+    // QtTextShowMnemonic = $0800
+    if AText <> '' then
+      QFontMetrics_size(AMetrics, PSize(@TextSize),
+        QtAlignLeft or $0800, PWideString(@AText))
+    else
+      TextSize := Size(0, 0);
+    PreferredWidth := TextSize.cx;
+    PreferredHeight := TextSize.cy;
+    BtnMargin := GetPixelMetric(QStylePM_ButtonMargin, nil, Widget);
+    FocusV := GetPixelMetric(QStylePM_FocusFrameVMargin, nil, Widget);
+    FocusH := GetPixelMetric(QStylePM_FocusFrameHMargin, nil, Widget);
+    ShiftH := GetPixelMetric(QStylePM_ButtonShiftHorizontal, nil, Widget);
+    ShiftV := GetPixelMetric(QStylePM_ButtonShiftVertical, nil, Widget);
+    if ShiftH = 0 then
+      ShiftH := FocusH;
+    fsh  := (FocusH * 2) + (ShiftH * 2);
+    fsvm := (FocusV * 2) + (ShiftV * 2) + BtnMargin;
+    Inc(PreferredWidth, fsh + BtnMargin);
+    Inc(PreferredHeight, fsvm);
+
+    // now check if we have icon
+    if Assigned(FIcon) and not QIcon_isNull(FIcon) then
+    begin
+      Inc(PreferredWidth, FIconSize.cx + fsh);
+      if FIconSize.cy + fsvm > PreferredHeight then
+        PreferredHeight := FIconSize.cy + fsvm;
+      if FText <> '' then
+      begin
+        if FGlyphLayout in [2, 3] then
+          Inc(PreferredHeight, TextSize.cy + IconDistance)
+        else
+          Inc(PreferredWidth, IconDistance);
+      end;
+    end;
+
+    if ShiftV = 0 then
+      Inc(PreferredHeight, 1);
+  finally
+    QStyleOptionButton_destroy(AOpt);
+    QFontMetrics_destroy(AMetrics);
+  end;
 end;
 
 function TQtBitBtn.getIconSize: TSize;
