@@ -1523,15 +1523,6 @@ begin
     end;
     WM_LBUTTONDOWN:
     begin
-      // if mouse-click, focus-change, mouse-click, cursor hasn't moved:
-      // simulate double click, assume focus change due to first mouse-click
-      if (MouseDownFocusStatus = mfFocusChanged) and (MouseDownFocusWindow = Window)
-          and (GetTickCount - MouseDownTime <= GetDoubleClickTime)
-          and CheckMouseMovement then
-      begin
-        PostMessage(Window, WM_LBUTTONDBLCLK, WParam, LParam);
-      end;
-
       {$ifndef win32}
       // Gesture recognition process to enable popup menus.
       if (lWinControl.PopupMenu <> nil) then
@@ -1548,8 +1539,6 @@ begin
 
       MouseDownTime := GetTickCount;
       MouseDownWindow := Window;
-      MouseDownFocusWindow := 0;
-      MouseDownFocusStatus := mfFocusSense;
       GetCursorPos(MouseDownPos);
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
@@ -1572,8 +1561,6 @@ begin
     end;
     WM_LBUTTONUP:
     begin
-      if (MouseDownWindow = Window) and (MouseDownFocusStatus = mfNone) then
-        MouseDownFocusStatus := mfFocusSense;
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       with LMMouse Do
@@ -1853,12 +1840,6 @@ begin
 {$ifdef DEBUG_CARET}
       DebugLn('WM_SETFOCUS received for window ', IntToHex(Window, 8));
 {$endif}
-      // handle feature mouse-click, setfocus, mouse-click -> double-click
-      if (Window <> MouseDownWindow) and (MouseDownFocusStatus <> mfNone) then
-      begin
-        MouseDownFocusStatus := mfFocusChanged;
-        MouseDownFocusWindow := Window;
-      end;
       LMessage.Msg := LM_SETFOCUS;
       if (lWinControl <> nil) and (lWinControl.FCompStyle = csEdit) then
         Windows.SendMessage(Window, EM_SETSEL, 0, -1);
@@ -2203,11 +2184,6 @@ begin
 
   else
     case Msg of
-      WM_LBUTTONDOWN, WM_LBUTTONUP:
-      begin
-        if MouseDownFocusStatus = mfFocusSense then
-          MouseDownFocusStatus := mfNone;
-      end;
       WM_NCDESTROY:
       begin
         //roozbeh : test this....

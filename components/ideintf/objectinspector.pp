@@ -291,7 +291,7 @@ type
     FTopY: integer;
     FDrawHorzGridLines: Boolean;
     FActiveRowBmp: TCustomBitmap;
-    FFirstClickTime: TDateTime;
+    FFirstClickTime: DWORD;
     FKeySearchText: string;
 
     // hint stuff
@@ -1498,8 +1498,12 @@ begin
   if (Button=mbLeft) then begin
     if (Shift=[ssCtrl,ssLeft]) then
       DoCallEdit(oiqeShowValue)
-    else if (FFirstClickTime<>0) and (Now-FFirstClickTime<(1/86400*0.4)) then
-      ValueEditDblClick(Sender);
+    else if (FFirstClickTime<>0) and (GetTickCount <= FFirstClickTime + GetDoubleClickTime)
+      and (not ValueComboBox.DroppedDown) then
+    begin
+      FFirstClickTime:=0;
+      ToggleRow;
+    end;
   end;
 end;
 
@@ -2015,7 +2019,7 @@ begin
   HideHint;
 
   if Button=mbLeft then begin
-    FFirstClickTime:=Now;
+    FFirstClickTime:=GetTickCount;
     if Cursor=crHSplit then begin
       FDragging:=true;
     end

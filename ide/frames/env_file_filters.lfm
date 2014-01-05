@@ -1,12 +1,14 @@
-inherited FileFiltersOptionsFrame: TFileFiltersOptionsFrame
+object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
+  Left = 0
   Height = 319
+  Top = 0
   Width = 455
   ClientHeight = 319
   ClientWidth = 455
   TabOrder = 0
-  DesignLeft = 367
-  DesignTop = 168
-  object grdFileFilters: TStringGrid[0]
+  DesignLeft = 386
+  DesignTop = 179
+  object grdFileFilters: TStringGrid
     Left = 8
     Height = 281
     Top = 32
@@ -17,12 +19,10 @@ inherited FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     Columns = <    
       item
         Title.Caption = 'Name'
-        Title.PrefixOption = poNone
-        Width = 130
+        Width = 250
       end    
       item
         Title.Caption = 'File mask'
-        Title.PrefixOption = poNone
         Width = 300
       end>
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goThumbTracking, goSmoothScroll, goFixedRowNumbering]
@@ -31,15 +31,15 @@ inherited FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     TabOrder = 0
     OnKeyDown = grdFileFiltersKeyDown
   end
-  object lblTitle: TLabel[1]
+  object lblTitle: TLabel
     Left = 8
-    Height = 17
+    Height = 20
     Top = 9
-    Width = 43
+    Width = 46
     Caption = 'lblTitle'
     ParentColor = False
   end
-  object pmGrid: TPopupMenu[2]
+  object pmGrid: TPopupMenu
     left = 205
     top = 75
     object pmiAddRow: TMenuItem

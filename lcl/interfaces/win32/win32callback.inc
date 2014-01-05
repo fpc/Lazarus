@@ -1701,16 +1701,7 @@ begin
     WM_LBUTTONDOWN:
     begin
       if (MouseDownCount < 1) or (MouseDownCount > 4) then MouseDownCount := 1;
-      // if mouse-click, focus-change, mouse-click, cursor hasn't moved:
-      // simulate double click, assume focus change due to first mouse-click
-      if (MouseDownFocusStatus = mfFocusChanged) and (MouseDownFocusWindow = Window)
-          and (GetTickCount - MouseDownTime <= GetDoubleClickTime)
-          and CheckMouseMovement then
-      begin
-        inc(MouseDownCount);
-        PostMessage(Window, WM_LBUTTONDBLCLK, WParam, LParam);
-      end
-      else if (MouseDownWindow = Window)
+      if (MouseDownWindow = Window)
           and (GetTickCount - MouseDownTime <= GetDoubleClickTime)
           and CheckMouseMovement then
         inc(MouseDownCount)
@@ -1719,8 +1710,6 @@ begin
 
       MouseDownTime := GetTickCount;
       MouseDownWindow := Window;
-      MouseDownFocusWindow := 0;
-      MouseDownFocusStatus := mfFocusSense;
       GetCursorPos(MouseDownPos);
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
@@ -1739,8 +1728,6 @@ begin
     end;
     WM_LBUTTONUP:
     begin
-      if (MouseDownWindow = Window) and (MouseDownFocusStatus = mfNone) then
-        MouseDownFocusStatus := mfFocusSense;
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       with LMMouse Do
@@ -2101,12 +2088,6 @@ begin
       // move focus to another application window but process event first
       if (Window = Win32WidgetSet.AppHandle) then
         PostMessage(Window, CM_ACTIVATE, 0, 0);
-      // handle feature mouse-click, setfocus, mouse-click -> double-click
-      if (Window <> MouseDownWindow) and (MouseDownFocusStatus <> mfNone) then
-      begin
-        MouseDownFocusStatus := mfFocusChanged;
-        MouseDownFocusWindow := Window;
-      end;
       LMessage.Msg := LM_SETFOCUS;
     end;
     WM_SHOWWINDOW:
@@ -2546,11 +2527,6 @@ begin
     end;
   else
     case Msg of
-      WM_LBUTTONDOWN, WM_LBUTTONUP:
-      begin
-        if MouseDownFocusStatus = mfFocusSense then
-          MouseDownFocusStatus := mfNone;
-      end;
       {$ifndef RedirectDestroyMessages}
       WM_NCDESTROY:
       begin

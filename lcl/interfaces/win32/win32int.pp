@@ -253,8 +253,6 @@ uses
   Win32Extra, LclProc, LCLMessageGlue;
 
 type
-  TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);
-
   PProcessEvent = ^TProcessEvent;
   TProcessEvent = record
     Handle: THandle;
@@ -268,8 +266,6 @@ var
   MouseDownTime: dword;
   MouseDownPos: TPoint;
   MouseDownWindow: HWND = 0;
-  MouseDownFocusWindow: HWND;
-  MouseDownFocusStatus: TMouseDownFocusStatus = mfNone;
   ComboBoxHandleSizeWindow: HWND = 0;
   IgnoreNextCharWindow: HWND = 0;  // ignore next WM_(SYS)CHAR message
   // set to true, if we are redirecting a WM_MOUSEWHEEL message, to prevent recursion
