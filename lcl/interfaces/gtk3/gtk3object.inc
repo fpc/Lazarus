@@ -98,7 +98,7 @@ begin
   AId := 'lcl.' + dbgHex(PtrUInt(AGtkThread));
   FGtk3Application := TGtkApplication.new(PgChar(AId), G_APPLICATION_NON_UNIQUE);
   // FGtk3Application^.set_application_id(PgChar(AId));
-  FGtk3Application^.register(g_cancellable_new);
+  FGtk3Application^.register(nil, nil);
 
   GTK3WidgetSet := Self;
 end;
@@ -137,9 +137,10 @@ procedure TGtk3WidgetSet.SetDefaultAppFontName;
 var
   AValue: TGValue;
 begin
-  AValue.g_type := G_TYPE_STRING;
+  AValue.init(G_TYPE_STRING);
   g_object_get_property(gtk_settings_get_default, 'gtk-font-name', @AValue);
   FDefaultAppFontName := AValue.get_string;
+  AValue.unset;
 end;
 
 procedure TGtk3WidgetSet.InitSysColorBrushes;

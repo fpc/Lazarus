@@ -1048,7 +1048,7 @@ type
     procedure hold; cdecl; inline;
     procedure open(files: PPGFile; n_files: gint; hint: Pgchar); cdecl; inline;
     procedure quit; cdecl; inline;
-    function register(cancellable: PGCancellable): gboolean; cdecl; inline;
+    function register(cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
     procedure release; cdecl; inline;
     function run(argc: gint; argv: PPgchar): gint; cdecl; inline;
     procedure set_action_group(action_group: PGActionGroup); cdecl; inline;
@@ -5511,7 +5511,7 @@ function g_application_get_is_remote(AApplication: PGApplication): gboolean; cde
 function g_application_get_type: TGType; cdecl; external;
 function g_application_id_is_valid(application_id: Pgchar): gboolean; cdecl; external;
 function g_application_new(application_id: Pgchar; flags: TGApplicationFlags): PGApplication; cdecl; external;
-function g_application_register(AApplication: PGApplication; cancellable: PGCancellable): gboolean; cdecl; external;
+function g_application_register(AApplication: PGApplication; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_application_run(AApplication: PGApplication; argc: gint; argv: PPgchar): gint; cdecl; external;
 function g_async_initable_get_type: TGType; cdecl; external;
 function g_async_initable_init_finish(AAsyncInitable: PGAsyncInitable; res: PGAsyncResult): gboolean; cdecl; external;
@@ -7405,9 +7405,9 @@ begin
   LazGio2.g_application_quit(@self);
 end;
 
-function TGApplication.register(cancellable: PGCancellable): gboolean; cdecl;
+function TGApplication.register(cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGio2.g_application_register(@self, cancellable);
+  Result := LazGio2.g_application_register(@self, cancellable, error);
 end;
 
 procedure TGApplication.release; cdecl;
