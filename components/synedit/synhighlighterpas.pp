@@ -405,6 +405,7 @@ type
     function Func117: TtkTokenKind;
     function Func122: TtkTokenKind; // "otherwise"
     function Func124: TtkTokenKind;
+    function Func125: TtkTokenKind;
     function Func126: TtkTokenKind;
     function Func128: TtkTokenKind;
     function Func129: TtkTokenKind;
@@ -751,6 +752,7 @@ begin
   fIdentFuncTable[117] := @Func117;
   fIdentFuncTable[122] := @Func122;
   fIdentFuncTable[124] := @Func124;
+  fIdentFuncTable[125] := @Func125;
   fIdentFuncTable[126] := @Func126;
   fIdentFuncTable[128] := @Func128;
   fIdentFuncTable[129] := @Func129;
@@ -1938,6 +1940,14 @@ begin
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func125: TtkTokenKind;
+begin
+  if KeyComp('NoReturn') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
+    Result := tkKey
   else
     Result := tkIdentifier;
 end;
