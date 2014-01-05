@@ -361,7 +361,6 @@ var
   I       : Integer;
   Lines : TStrings;
   TDC : hDC;
-  pStr : PChar;
   tmpString,
   AStr : String;
   pIndex,
@@ -626,7 +625,8 @@ var
             OffsetRect(theRect, 0, Rect.Bottom - theRect.Bottom);
         end;
   end;
-
+var
+  pStr: PChar;
 begin
   Result := 0;
   Lines := nil;
@@ -636,34 +636,39 @@ begin
     Count := StrLen(Str);
 
   {Calculate # Lines, etc.}
-  pStr := StrAlloc(Count + 1);
-  try
-    StrLCopy(pStr, Str, Count);
-    pStr[Count] := #0;
-    AStr := String(pStr);
-
-    tmpString := Copy(AStr, 1, Length(ASTR));
-
-    {Get font & string metrics}
-    GetTextMetrics(DC, TM);
-    If not NoPrefix then
-      DeleteAmpersands(tmpString);
-
-    If tmpString > '' then begin
-      AP:=TextExtent(DC, tmpString);
-      AP.cX := AP.cX div Length(tmpString);
-    end
-    else begin
-      AP.cY := TM.tmHeight;
-      AP.cX := TM.tmAveCharWidth;
+  if Count > 0 then
+  begin
+    pStr := StrAlloc(Count + 1);
+    try
+      StrLCopy(pStr, Str, Count);
+      pStr[Count] := #0;
+      AStr := String(pStr);
+    finally
+      StrDispose(pStr);
     end;
+  end
+  else
+    AStr := '';
 
-    {Break string into individual lines}
-    MaxLength := (Rect.Right - Rect.Left);
-    Lines := DoBreakString(AStr);
-  finally
-    StrDispose(pStr);
+  tmpString := Copy(AStr, 1, Length(AStr));
+
+  {Get font & string metrics}
+  GetTextMetrics(DC, TM);
+  If not NoPrefix then
+    DeleteAmpersands(tmpString);
+
+  If tmpString > '' then begin
+    AP:=TextExtent(DC, tmpString);
+    AP.cX := AP.cX div Length(tmpString);
+  end
+  else begin
+    AP.cY := TM.tmHeight;
+    AP.cX := TM.tmAveCharWidth;
   end;
+
+  {Break string into individual lines}
+  MaxLength := (Rect.Right - Rect.Left);
+  Lines := DoBreakString(AStr);
 
   {Error occcured...}
   If Lines = nil then
