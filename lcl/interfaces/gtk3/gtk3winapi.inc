@@ -1497,6 +1497,8 @@ begin
           exit;
         end;
 
+        Clip := CreateRectRGN(R.Left, R.Top, R.Right, R.Bottom);
+
         Tmp := CreateEmptyRegion;
         Result := CombineRGN(Tmp, HRGN(Clip), RGN, MODE);
 
@@ -1507,6 +1509,7 @@ begin
         // use code from intfbasewinapi.inc TWidgetSet.ExcludeClipRect()
         // which calls this function and then combineRgn.
         SelectClipRGN(DC, Tmp);
+        DeleteObject(Clip);
         DeleteObject(Tmp);
       end;
   end;
