@@ -13,6 +13,9 @@
 			<short>Bitmap button color cannot be changed</short>
 			<descr>It is impossible to implement without making them owner drawn.</descr>
 		</issue>
+		<issue name="TColorDialog.Title">
+			<short>The title cannot be changed, it is set by the OS.</short>
+		</issue>
 		<issue name="TPopupMenu.OnClose">
 			<short>OnClose happens before OnClick</short>
 			<descr>If you delete the clicked menu item during OnClose the OnClick will be omitted.</descr>
