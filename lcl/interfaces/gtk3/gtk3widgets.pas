@@ -2140,12 +2140,12 @@ end;
 
 procedure TGtk3Widget.SetFontColor(AValue: TColor);
 var
-  AColor: TGdkColor;
+  AColor: TGdkRGBA;
   i: TGtkStateType;
 begin
   if IsWidgetOK then
   begin
-    AColor := TColortoTGDKColor(AValue);
+    AColor := TColortoTGdkRGBA(AValue);
     if FWidget <> GetContainerWidget then
     begin
       with FWidget^ do
@@ -2164,7 +2164,7 @@ end;
 
 procedure TGtk3Widget.SetColor(AValue: TColor);
 var
-  AColor: TGdkColor;
+  AColor: TGdkRGBA;
   i: TGtkStateType;
   ARgba: TGdkRGBA;
   R: Double;
@@ -2188,11 +2188,14 @@ begin
       *)
     end else
     begin
-      ColorToCairoRGB(ColorToRGB(AValue), R, G, B);
+      ARgba := TColortoTGdkRGBA(AValue);
+      {$info GTK3: set GdkRGBA.alpah to 1.0?}
+
+      {ColorToCairoRGB(ColorToRGB(AValue), R, G, B);
       ARgba.red := R;
       ARgba.green := G;
       ARgba.blue := B;
-      ARgba.alpha := 1.0;
+      ARgba.alpha := 1.0;}
     end;
     if FWidget <> GetContainerWidget then
     begin
@@ -2229,22 +2232,18 @@ begin
     end;
   end;
 
-
-  // OLD WAY
-
   if IsWidgetOK then
   begin
-    // this is deprecated gtk2 way, works on gtk3 too
-    AColor := TColortoTGDKColor(ColorToRGB(AValue));
+    AColor := TColortoTGdkRGBA(AValue);
     if FWidget <> GetContainerWidget then
     begin
       with FWidget^ do
       begin
         for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
           if AValue = clDefault then
-            override_background_color(i, nil) // this is deprecated gtk2 way, works on gtk3 too
+            override_background_color(i, nil)
           else
-            override_background_color(i, @AColor); // this is deprecated gtk2 way, works on gtk3 too
+            override_background_color(i, @AColor);
       end;
     end;
     with GetContainerWidget^ do

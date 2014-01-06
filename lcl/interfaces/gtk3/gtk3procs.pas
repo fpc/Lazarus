@@ -280,6 +280,8 @@ function Gtk3ScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
 
 function TGDKColorToTColor(const value : TGDKColor) : TColor;
 function TColortoTGDKColor(const value : TColor) : TGDKColor;
+function TGdkRGBAToTColor(const value : TGdkRGBA) : TColor;
+function TColortoTGdkRGBA(const value : TColor) : TGdkRGBA;
 function ColorToCairoRGB(AColor: TColor; out ARed, AGreen, ABlue: Double): Boolean;
 function RectFromGtkAllocation(AGtkAllocation: TGtkAllocation): TRect;
 function RectFromGdkRect(AGdkRect: TGdkRectangle): TRect;
@@ -323,6 +325,22 @@ procedure ReleaseAllStyles;
 
 implementation
 uses LCLProc;
+
+function TGdkRGBAToTColor(const value: TGdkRGBA): TColor;
+begin
+  Result := Trunc(value.red * $FF)
+         or (Trunc(value.green * $FF) shl  8)
+         or (Trunc(value.blue * $FF) shl  16)
+         or (Trunc(value.alpha * $FF) shl  24);
+end;
+
+function TColortoTGdkRGBA(const value: TColor): TGdkRGBA;
+begin
+  Result.red := (value and $FF) / 255;
+  Result.green := ((value shr 8) and $FF) / 255;
+  Result.blue := ((value shr 16) and $FF) / 255;
+  Result.alpha := ((value shr 24) and $FF) / 255;
+end;
 
 function ColorToCairoRGB(AColor: TColor; out ARed, AGreen, ABlue: Double): Boolean;
 begin
