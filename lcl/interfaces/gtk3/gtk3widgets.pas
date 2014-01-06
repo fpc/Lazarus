@@ -79,12 +79,12 @@ type
     function GetCairoContext: Pcairo_t;
     function GetEnabled: Boolean;
     function GetFont: PPangoFontDescription;
-    function GetStyle: PGtkStyle;
+    function GetStyleContext: PGtkStyleContext;
     function GetVisible: Boolean;
     procedure SetEnabled(AValue: Boolean);
     procedure SetFont(AValue: PPangoFontDescription);
-    procedure SetStyle(AValue: PGtkStyle);
     procedure SetVisible(AValue: Boolean);
+    procedure SetStyleContext(AValue: PGtkStyleContext);
   protected
     // IUnknown implementation
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -171,7 +171,7 @@ type
     property FontColor: TColor read GetFontColor write SetFontColor;
     property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
     property PaintData: TPaintData read FPaintData write FPaintData;
-    property Style: PGtkStyle read GetStyle write SetStyle;
+    property StyleContext: PGtkStyleContext read GetStyleContext write SetStyleContext;
     property Text: String read getText write setText;
     property Visible: Boolean read GetVisible write SetVisible;
     property Widget: PGtkWidget read FWidget;
@@ -2259,11 +2259,11 @@ begin
   end;
 end;
 
-function TGtk3Widget.GetStyle: PGtkStyle;
+function TGtk3Widget.GetStyleContext: PGtkStyleContext;
 begin
   Result := nil;
   if IsWidgetOK then
-    Result := GetContainerWidget^.get_style;
+    Result := GetContainerWidget^.get_style_context;
 end;
 
 function TGtk3Widget.GetFont: PPangoFontDescription;
@@ -2297,32 +2297,37 @@ end;
 
 function TGtk3Widget.GetFontColor: TColor;
 var
-  AStyle: PGtkStyle;
+  AStyle: PGtkStyleContext;
+  AGdkRGBA: TGdkRGBA;
 begin
   Result := clDefault;
   if IsWidgetOK then
   begin
-    AStyle := GetStyle;
-    Result := TGDKColorToTColor(AStyle^.text[GTK_STATE_NORMAL]);
+    AStyle := GetStyleContext;
+    AStyle^.get_background_color(GTK_STATE_NORMAL, @AGdkRGBA);
+    Result := TGdkRGBAToTColor(AGdkRGBA);
   end;
 end;
 
 function TGtk3Widget.GetColor: TColor;
 var
-  AStyle: PGtkStyle;
+  AStyle: PGtkStyleContext;
+  AColor: TGdkRGBA;
 begin
   Result := clDefault;
   if IsWidgetOK then
   begin
-    AStyle := GetStyle;
-    Result := TGDKColorToTColor(AStyle^.bg[GTK_STATE_NORMAL]);
+    AStyle := GetStyleContext;
+    AStyle^.get_background_color(GTK_STATE_NORMAL, @AColor);
+    Result := TGdkRGBAToTColor(AColor);
   end;
 end;
 
-procedure TGtk3Widget.SetStyle(AValue: PGtkStyle);
+procedure TGtk3Widget.SetStyleContext(AValue: PGtkStyleContext);
 begin
-  if IsWidgetOK then
-    GetContainerWidget^.set_style(AValue);
+  {$NOTE Gtk3: Find a nice way to assign StyleContext}
+  {if IsWidgetOK then
+    GetContainerWidget^.set_style(AValue);}
 end;
 
 function TGtk3Widget.getText: String;
@@ -2858,20 +2863,23 @@ var
   AGdkRGBA: TGdkRGBA;
   AColor: TGdkColor;
 begin
-  inherited SetColor(AValue);
+  //inherited SetColor(AValue);
   exit;
   if (AValue = clDefault) or (AValue = clBackground) then
   begin
     // this is just to test if we can get transparent panel again
     // clDefault must be extracted from style
-    FWidget^.set_style(nil);
-    AColor := GetStyle^.bg[0];
+
+    // nil resets color to gtk default
+    FWidget^.override_background_color(GTK_STATE_FLAG_NORMAL, nil);
+    StyleContext^.get_background_color(GTK_STATE_FLAG_NORMAL, @AGdkRGBA);
+
     // writeln('ACOLOR R=',AColor.Red,' G=',AColor.green,' B=',AColor.blue);
     // AColor := TColortoTGDKColor(AValue);
-    AGdkRGBA.alpha := 0;
+    {AGdkRGBA.alpha := 0;
     AGdkRGBA.red := AColor.red / 65535.00;
     AGdkRGBA.blue := AColor.blue / 65535.00;
-    AGdkRGBA.green := AColor.red / 65535.00;
+    AGdkRGBA.green := AColor.red / 65535.00;}
     FWidget^.override_background_color(GTK_STATE_FLAG_NORMAL, @AGdkRGBA);
     FWidget^.override_background_color(GTK_STATE_FLAG_ACTIVE, @AGdkRGBA);
     FWidget^.override_background_color(GTK_STATE_FLAG_FOCUSED, @AGdkRGBA);
@@ -2881,7 +2889,7 @@ begin
   begin
     AColor := TColortoTGDKColor(AValue);
     // writeln('ACOLOR R=',AColor.Red,' G=',AColor.green,' B=',AColor.blue);
-    inherited SetColor(AValue);
+    //inherited SetColor(AValue);
   end;
 end;
 

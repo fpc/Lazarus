@@ -338,8 +338,8 @@ function TColortoTGdkRGBA(const value: TColor): TGdkRGBA;
 begin
   Result.red := (value and $FF) / 255;
   Result.green := ((value shr 8) and $FF) / 255;
-  Result.blue := ((value shr 16) and $FF) / 255;
-  Result.alpha := ((value shr 24) and $FF) / 255;
+  Result.blue := 1.0;//((value shr 16) and $FF) / 255;
+  Result.alpha := 1.0;//((value shr 24) and $FF) / 255;
 end;
 
 function ColorToCairoRGB(AColor: TColor; out ARed, AGreen, ABlue: Double): Boolean;
