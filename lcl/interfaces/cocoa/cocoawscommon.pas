@@ -27,6 +27,7 @@ type
       FContext: TCocoaContext;
       FHasCaret: Boolean;
       FTarget: TWinControl;
+      FBoundsReportedToChildren: boolean;
     function GetHasCaret: Boolean;
     procedure SetHasCaret(AValue: Boolean);
   protected
@@ -220,6 +221,7 @@ begin
   FPropStorage := TStringList.Create;
   FPropStorage.Sorted := True;
   FPropStorage.Duplicates := dupAccept;
+  FBoundsReportedToChildren:=false;
 end;
 
 destructor TLCLCommonCallback.Destroy;
@@ -751,7 +753,7 @@ var
   SizeType: Integer;
 begin
   NewBounds := Owner.lclFrame;
-  //debugln('Newbounds:'+ dbgs(newbounds));
+  //debugln('Newbounds='+ dbgs(newbounds));
   // send window pos changed
   PosMsg.Msg := LM_WINDOWPOSCHANGED;
   PosMsg.Result := 0;
@@ -772,11 +774,12 @@ begin
   end;
 
   OldBounds := Target.BoundsRect;
-  //debugln(Target.Name+':'+ dbgs(OldBounds));
+  //debugln('OldBounds Target='+Target.Name+':'+ dbgs(OldBounds));
 
   Resized :=
     (OldBounds.Right - OldBounds.Left <> NewBounds.Right - NewBounds.Left) or
     (OldBounds.Bottom - OldBounds.Top <> NewBounds.Bottom - NewBounds.Top);
+
   Moved :=
     (OldBounds.Left <> NewBounds.Left) or
     (OldBounds.Top <> NewBounds.Top);
@@ -784,9 +787,9 @@ begin
   ClientResized := False;
 
   // update client rect
-  if Resized or Target.ClientRectNeedsInterfaceUpdate then
+  if Resized or Target.ClientRectNeedsInterfaceUpdate  then
   begin
-    Target.InvalidateClientRectCache(False);
+    Target.InvalidateClientRectCache(false);
     ClientResized := True;
   end;
 
@@ -803,6 +806,13 @@ begin
     LCLSendMoveMsg(Target, NewBounds.Left,
       NewBounds.Top, Move_SourceIsInterface);
   end;
+
+if not FBoundsReportedToChildren then // first time we need this to update non cocoa based client rects
+   begin
+   Target.InvalidateClientRectCache(true);
+   FBoundsReportedToChildren:=true;
+   end;
+
 end;
 
 procedure TLCLCommonCallback.BecomeFirstResponder;
@@ -1005,9 +1015,13 @@ end;
 
 class procedure TCocoaWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
+
 begin
   if AWinControl.HandleAllocated then
+    begin
+    //debugln('TCocoaWSWinControl.SetBounds: '+AWinControl.Name+'Bounds='+dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
     NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
+    end;
 end;
 
 class procedure TCocoaWSWinControl.SetCursor(const AWinControl: TWinControl;

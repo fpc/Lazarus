@@ -927,9 +927,9 @@ begin
   if Result then
   begin
     if TCocoaWindowContent(handle).isembedded then
-      TCocoaWindowContent(handle).lclRelativePos(Left, Top)
+       TCocoaWindowContent(handle).lclRelativePos(Left, Top)
     else
-      TCocoaWindowContent(handle).window.lclRelativePos(Left, Top);
+       TCocoaWindowContent(handle).window.lclRelativePos(Left, Top);
   end
 end;
 
@@ -940,7 +940,11 @@ begin
   Result := Handle <> 0;
   if Result then
   begin
-    r := NSObject(Handle).lclFrame;
+    if TCocoaWindowContent(handle).isembedded then
+      r := TCocoaWindowContent(handle).lclFrame
+    else
+      r:=TCocoaWindowContent(handle).window.lclFrame;
+
     Width := R.Right - R.Left;
     Height := R.Bottom - R.Top;
   end;
