@@ -106,6 +106,7 @@ type
     FAddress: TDbgPtr;
     FSize: Integer;
     FTypeInfo: TDbgSymbol;
+    FReference: TDbgSymbol;
     FMemberVisibility: TDbgSymbolMemberVisibility;
 
     function GetSymbolType: TDbgSymbolType; inline;
@@ -123,8 +124,9 @@ type
     function GetFile: String; virtual;
     function GetFlags: TDbgSymbolFlags; virtual;
     function GetLine: Cardinal; virtual;
-    function GetParent: TDbgSymbol; virtual;
+    procedure SetReference(AValue: TDbgSymbol); virtual;
     function GetReference: TDbgSymbol; virtual;
+    function GetParent: TDbgSymbol; virtual;
 
     function GetValueObject: TDbgSymbolValue; virtual;
     function GetHasOrdinalValue: Boolean; virtual;
@@ -185,7 +187,8 @@ type
     //
     property Flags: TDbgSymbolFlags read GetFlags;
     property Count: Integer read GetCount; deprecated;
-    property Reference: TDbgSymbol read GetReference; deprecated;
+    // Reference: opposite of TypeInfo / The variable to which a type belongs
+    property Reference: TDbgSymbol read GetReference write SetReference;
     property Parent: TDbgSymbol read GetParent; deprecated;
     //property Children[AIndex: Integer]: TDbgSymbol read GetChild;
     // VALUE
@@ -296,8 +299,8 @@ end;
 
 destructor TDbgSymbol.Destroy;
 begin
+  SetTypeInfo(nil);
   inherited Destroy;
-  ReleaseRefAndNil(FTypeInfo);
 end;
 
 function TDbgSymbol.GetAddress: TDbgPtr;
@@ -319,6 +322,11 @@ begin
   if not(sfiMemberVisibility in FEvaluatedFields) then
     MemberVisibilityNeeded;
   Result := FMemberVisibility;
+end;
+
+procedure TDbgSymbol.SetReference(AValue: TDbgSymbol);
+begin
+  FReference := AValue;
 end;
 
 function TDbgSymbol.GetValueObject: TDbgSymbolValue;
@@ -352,6 +360,11 @@ begin
   if not(sfiSymType in FEvaluatedFields) then
     SymbolTypeNeeded;
   Result := FSymbolType;
+end;
+
+function TDbgSymbol.GetReference: TDbgSymbol;
+begin
+  Result := FReference;
 end;
 
 function TDbgSymbol.GetHasBounds: Boolean;
@@ -420,11 +433,18 @@ end;
 
 procedure TDbgSymbol.SetTypeInfo(AValue: TDbgSymbol);
 begin
-  ReleaseRefAndNil(FTypeInfo);
+  if FTypeInfo <> nil then begin
+    //Assert((FTypeInfo.Reference = self) or (FTypeInfo.Reference = nil), 'FTypeInfo.Reference = self|nil');
+    FTypeInfo.Reference := nil;
+    {$IFDEF WITH_REFCOUNT_DEBUG}FTypeInfo.ReleaseReference(@FTypeInfo, 'SetTypeInfo'); FTypeInfo := nil;{$ENDIF}
+    ReleaseRefAndNil(FTypeInfo);
+  end;
   FTypeInfo := AValue;
   Include(FEvaluatedFields, sfiTypeInfo);
-  if FTypeInfo <> nil then
-    FTypeInfo.AddReference;
+  if FTypeInfo <> nil then begin
+    FTypeInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeInfo, 'SetTypeInfo'){$ENDIF};
+    FTypeInfo.Reference := self;
+  end;
 end;
 
 procedure TDbgSymbol.SetMemberVisibility(AValue: TDbgSymbolMemberVisibility);
@@ -470,11 +490,6 @@ begin
 end;
 
 function TDbgSymbol.GetParent: TDbgSymbol;
-begin
-  Result := nil;
-end;
-
-function TDbgSymbol.GetReference: TDbgSymbol;
 begin
   Result := nil;
 end;

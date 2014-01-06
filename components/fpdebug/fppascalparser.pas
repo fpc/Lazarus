@@ -425,6 +425,7 @@ end;
 
 procedure TPasParserSymbolPointer.TypeInfoNeeded;
 begin
+  // TODO: review, this changes reference in typeinfo, which points to another object already
   SetTypeInfo(FPointedTo);
 end;
 

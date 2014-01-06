@@ -363,6 +363,8 @@ type
     function  ReadName(out AName: String): Boolean; inline;
     function  ReadName(out AName: PChar): Boolean; inline;
     function  ReadStartScope(out AStartScope: TDbgPtr): Boolean; inline;
+    function  IsAddressInStartScope(AnAddress: TDbgPtr): Boolean; inline;
+    function  IsArtificial: Boolean; inline;
   public
     // Scope
     procedure GoParent; inline;
@@ -586,20 +588,33 @@ type
   private
     FCU: TDwarfCompilationUnit;
     FInformationEntry: TDwarfInformationEntry;
-    FParentTypeInfo: TDbgDwarfIdentifier;
+    FOwnerTypeInfo: TDbgDwarfIdentifier;
     FNestedTypeInfo: TDbgDwarfTypeIdentifier;
-    FDwarfReadFlags: set of (didtNameRead, didtTypeRead);
+    FParentTypeInfo: TDbgDwarfIdentifier;
+    FRefByParentCount: Integer;
+    FDwarfReadFlags: set of (didtNameRead, didtTypeRead, didtArtificialRead, didtIsArtifical);
     function GetNestedTypeInfo: TDbgDwarfTypeIdentifier;
-    function GetParentTypeInfo: TDbgDwarfIdentifier;
     procedure SetParentTypeInfo(AValue: TDbgDwarfIdentifier);
   protected
+    (* There will be a circular reference between parenttype and self
+       "self" will only set its reference to parenttype, if self has other references.  *)
+    procedure DoReferenceAdded; override;
+    procedure DoReferenceReleased; override;
+    procedure IncRefByParentCount;
+    procedure DecRefByParentCount;
+
     function  DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier; virtual;
     function  ReadMemberVisibility(out AMemberVisibility: TDbgSymbolMemberVisibility): Boolean;
+    function  IsArtificial: Boolean; // usud by formal param and subprogram
     procedure NameNeeded; override;
     procedure TypeInfoNeeded; override;
     property NestedTypeInfo: TDbgDwarfTypeIdentifier read GetNestedTypeInfo;
     property InformationEntry: TDwarfInformationEntry read FInformationEntry;
-    property ParentTypeInfo: TDbgDwarfIdentifier read GetParentTypeInfo write SetParentTypeInfo;
+
+    // OwnerTypeInfo: reverse of "NestedTypeInfo" (variable that is of this type)
+    property OwnerTypeInfo: TDbgDwarfIdentifier read FOwnerTypeInfo; // write SetOwnerTypeInfo;
+    // ParentTypeInfo: funtion for local var / class for member
+    property ParentTypeInfo: TDbgDwarfIdentifier read FParentTypeInfo write SetParentTypeInfo;
 
     procedure Init; virtual;
     class function GetSubClass(ATag: Cardinal): TDbgDwarfIdentifierClass;
@@ -620,7 +635,21 @@ type
     procedure MemberVisibilityNeeded; override;
     procedure Init; override;
   public
+    destructor Destroy; override;
     class function CreateValueSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfValueIdentifier;
+  end;
+
+  { TDbgDwarfValueLocationIdentifier }
+
+  TDbgDwarfValueLocationIdentifier = class(TDbgDwarfValueIdentifier)
+  private
+    FLocationParser: TDwarfLocationExpression;
+    procedure FrameBaseNeeded(ASender: TObject);
+  protected
+    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression); virtual;
+    procedure AddressNeeded; override; // DW_AT_location
+  public
+    destructor Destroy; override;
   end;
 
   { TDbgDwarfTypeIdentifier }
@@ -812,8 +841,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   { TDbgDwarfIdentifierMember }
 
-  TDbgDwarfIdentifierMember = class(TDbgDwarfValueIdentifier)
+  TDbgDwarfIdentifierMember = class(TDbgDwarfValueLocationIdentifier)
   protected
+    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression); override;
   end;
 
   { TDbgDwarfIdentifierStructure }
@@ -822,7 +852,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   // record or class
   private
     FMembers: TRefCntObjList;
-    FLastChildByName: TDbgSymbol;
+    FLastChildByName: TDbgDwarfIdentifier;
     procedure CreateMembers;
   protected
     procedure KindNeeded; override;
@@ -861,6 +891,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FAddressInfo: PDwarfAddressInfo;
     FStateMachine: TDwarfLineInfoStateMachine;
     FFrameBaseParser: TDwarfLocationExpression;
+    FSelfParameter: TDbgDwarfValueIdentifier;
     function StateMachineValid: Boolean;
     function  ReadVirtuality(out AFlags: TDbgSymbolFlags): Boolean;
   protected
@@ -868,29 +899,26 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure KindNeeded; override;
     procedure SizeNeeded; override;
     function GetFlags: TDbgSymbolFlags; override;
+    function GetSelfParameter(AnAddress: TDbgPtr = 0): TDbgDwarfValueIdentifier;
 
-    function GetChild(AIndex: Integer): TDbgSymbol; override;
     function GetColumn: Cardinal; override;
-    function GetCount: Integer; override;
     function GetFile: String; override;
 //    function GetFlags: TDbgSymbolFlags; override;
     function GetLine: Cardinal; override;
-//    function GetReference: TDbgSymbol; override;
   public
     constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr); overload;
     destructor Destroy; override;
+    // TODO members = locals ?
   end;
 
   { TDbgDwarfIdentifierVariable }
 
-  TDbgDwarfIdentifierVariable = class(TDbgDwarfValueIdentifier)
-  private
-    FLocationParser: TDwarfLocationExpression;
-    procedure FrameBaseNeeded(ASender: TObject);
-  protected
-    procedure AddressNeeded; override;
+  TDbgDwarfIdentifierVariable = class(TDbgDwarfValueLocationIdentifier)
   public
-    destructor Destroy; override;
+  end;
+
+  TDbgDwarfIdentifierParameter = class(TDbgDwarfValueLocationIdentifier)
+  public
   end;
 
   { TDbgDwarfUnit }
@@ -1445,19 +1473,43 @@ begin
   end;
 end;
 
-{ TDbgDwarfIdentifierVariable }
+{ TDbgDwarfIdentifierMember }
 
-procedure TDbgDwarfIdentifierVariable.FrameBaseNeeded(ASender: TObject);
+procedure TDbgDwarfIdentifierMember.InitLocationParser(const ALocationParser: TDwarfLocationExpression);
+var
+  owner: TDbgDwarfIdentifier;
+begin
+  inherited InitLocationParser(ALocationParser);
+  owner := OwnerTypeInfo;
+  while (owner <> nil) and not(owner is TDbgDwarfValueIdentifier) do
+    owner := owner.OwnerTypeInfo;
+  if owner <> nil then
+    ALocationParser.FStack.Push(owner.Address, lseValue);
+end;
+
+{ TDbgDwarfValueLocationIdentifier }
+
+procedure TDbgDwarfValueLocationIdentifier.InitLocationParser(const ALocationParser: TDwarfLocationExpression);
+begin
+end;
+
+procedure TDbgDwarfValueLocationIdentifier.FrameBaseNeeded(ASender: TObject);
 var
   p: TDbgDwarfIdentifier;
 begin
 debugln(['TDbgDwarfIdentifierVariable.FrameBaseNeeded ']);
   p := ParentTypeInfo;
   if (p <> nil) and (p is TDbgDwarfProcSymbol) then
-    (ASender as TDwarfLocationExpression).FFrameBase := TDbgDwarfProcSymbol(p).GetFrameBase;
+    (ASender as TDwarfLocationExpression).FFrameBase := TDbgDwarfProcSymbol(p).GetFrameBase
+;
+{$warning TODO}
+  //else
+  //if OwnerTypeInfo <> nil then
+  //  OwnerTypeInfo.fr;
+  // TODO: check owner
 end;
 
-procedure TDbgDwarfIdentifierVariable.AddressNeeded;
+procedure TDbgDwarfValueLocationIdentifier.AddressNeeded;
 var
   Val: TByteDynArray;
 begin
@@ -1480,6 +1532,7 @@ DebugLnEnter(['>> TDbgDwarfIdentifierVariable.AddressNeeded ']); try
     end;
 
     FLocationParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), FCU);
+    InitLocationParser(FLocationParser);
     FLocationParser.OnFrameBaseNeeded := @FrameBaseNeeded;
     FLocationParser.Evaluate;
   end;
@@ -1491,7 +1544,7 @@ DebugLnEnter(['>> TDbgDwarfIdentifierVariable.AddressNeeded ']); try
 finally DebugLnExit(['<< TDbgDwarfIdentifierVariable.AddressNeeded ']); end;
 end;
 
-destructor TDbgDwarfIdentifierVariable.Destroy;
+destructor TDbgDwarfValueLocationIdentifier.Destroy;
 begin
   FreeAndNil(FLocationParser);
   inherited Destroy;
@@ -2661,7 +2714,8 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
-          FStack.Modify(0, Entry2.Value div (1 shl Entry.Value), lseValue);
+          if Entry.Value > 0 then
+            FStack.Modify(0, Entry2.Value div (1 shl (Entry.Value - 1)), lseValue);
         end;
 
       DW_OP_skip: begin
@@ -2742,7 +2796,11 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
   DW_OP_bit_piece             = $9d;    // 2
 *)
       else
-        debugln(['TDwarfLocationExpression.Evaluate UNKNOWN ', p^]);
+        begin
+          debugln(['TDwarfLocationExpression.Evaluate UNKNOWN ', p^]);
+          SetError;
+          exit;
+        end;
     end;
   end;
 end;
@@ -3312,6 +3370,23 @@ begin
     Result := False;
 end;
 
+function TDwarfInformationEntry.IsAddressInStartScope(AnAddress: TDbgPtr): Boolean;
+var
+  StartScope: TDbgPtr;
+begin
+  Result := not ReadStartScope(StartScope);
+  if Result then exit; // no startscope, always in scope
+  Result := AnAddress >= StartScope;
+end;
+
+function TDwarfInformationEntry.IsArtificial: Boolean;
+var
+  Val: Integer;
+begin
+  Result := ReadValue(DW_AT_artificial, Val);
+  if Result then Result := Val <> 0;
+end;
+
 { TDbgDwarfUnit }
 
 procedure TDbgDwarfUnit.Init;
@@ -3333,6 +3408,7 @@ begin
   Ident.GoNamedChildEx(AIndex);
   if Ident <> nil then
     Result := TDbgDwarfIdentifier.CreateSubClass('', Ident);
+  // No need to set ParentTypeInfo
   ReleaseRefAndNil(Ident);
   FLastChildByName := Result;
 end;
@@ -3585,6 +3661,8 @@ begin
       sym := TDbgDwarfIdentifier.CreateSubClass('', Info2);
       FMembers.Add(sym);
       sym.ReleaseReference;
+      sym.IncRefByParentCount;
+      sym.ParentTypeInfo := self;
       Info2.ReleaseReference;
     end;
     Info.GoNext;
@@ -3658,8 +3736,17 @@ begin
 end;
 
 destructor TDbgDwarfIdentifierEnum.Destroy;
+var
+  i: Integer;
 begin
-  FreeAndNil(FMembers);
+  if FMembers <> nil then begin
+    for i := 0 to FMembers.Count - 1 do
+      with TDbgDwarfIdentifier(FMembers[i]) do begin
+        ParentTypeInfo := nil;
+        DecRefByParentCount;
+      end;
+    FreeAndNil(FMembers);
+  end;
   inherited Destroy;
 end;
 
@@ -3781,6 +3868,12 @@ begin
   SetSymbolType(stValue);
 end;
 
+destructor TDbgDwarfValueIdentifier.Destroy;
+begin
+  ParentTypeInfo := nil;
+  inherited Destroy;
+end;
+
 class function TDbgDwarfValueIdentifier.CreateValueSubClass(AName: String;
   AnInformationEntry: TDwarfInformationEntry): TDbgDwarfValueIdentifier;
 var
@@ -3816,6 +3909,8 @@ begin
       sym := TDbgDwarfIdentifier.CreateSubClass('', Info2);
       FMembers.Add(sym);
       sym.ReleaseReference;
+      sym.IncRefByParentCount;
+      sym.ParentTypeInfo := self;
       Info2.ReleaseReference;
     end;
     Info.GoNext;
@@ -3876,8 +3971,17 @@ begin
 end;
 
 destructor TDbgDwarfIdentifierArray.Destroy;
+var
+  i: Integer;
 begin
-  FreeAndNil(FMembers);
+  if FMembers <> nil then begin
+    for i := 0 to FMembers.Count - 1 do
+      with TDbgDwarfIdentifier(FMembers[i]) do begin
+        ParentTypeInfo := nil;
+        DecRefByParentCount;
+      end;
+    FreeAndNil(FMembers);
+  end;
   inherited Destroy;
 end;
 
@@ -3889,26 +3993,28 @@ var
   ti: TDbgSymbol;
 begin
   // Todo, maybe create all children?
-  ReleaseRefAndNil(FLastChildByName);
+  if FLastChildByName <> nil then begin
+    FLastChildByName.ParentTypeInfo := nil;
+    FLastChildByName.DecRefByParentCount;
+    ReleaseRefAndNil(FLastChildByName);
+  end;
   Result := nil;
 
   Ident := FInformationEntry.FindNamedChild(AIndex);
-  if Ident <> nil then
-    Result := TDbgDwarfIdentifier.CreateSubClass('', Ident);
-  //assert is member ?
-  ReleaseRefAndNil(Ident);
-  FLastChildByName := Result;
-  if (Result <> nil) then
-    exit;
+  if Ident <> nil then begin
+    FLastChildByName := TDbgDwarfIdentifier.CreateSubClass('', Ident);
+    FLastChildByName.IncRefByParentCount;
+    FLastChildByName.ParentTypeInfo := self;
+    //assert is member ?
+    ReleaseRefAndNil(Ident);
+    Result := FLastChildByName;
 
+    exit;
+  end;
 
   ti := TypeInfo; // Parent
-  if ti <> nil then begin
+  if ti <> nil then
     Result := ti.MemberByName[AIndex];
-    FLastChildByName := Result;
-    if FLastChildByName <> nil then
-      FLastChildByName.AddReference;
-  end;
 end;
 
 function TDbgDwarfIdentifierStructure.GetMemberCount: Integer;
@@ -3924,9 +4030,22 @@ begin
 end;
 
 destructor TDbgDwarfIdentifierStructure.Destroy;
+var
+  i: Integer;
 begin
-  ReleaseRefAndNil(FLastChildByName);
-  FreeAndNil(FMembers);
+  if FMembers <> nil then begin
+    for i := 0 to FMembers.Count - 1 do
+      with TDbgDwarfIdentifier(FMembers[i]) do begin
+        ParentTypeInfo := nil;
+        DecRefByParentCount;
+      end;
+    FreeAndNil(FMembers);
+  end;
+  if FLastChildByName <> nil then begin
+    FLastChildByName.ParentTypeInfo := nil;
+    FLastChildByName.DecRefByParentCount;
+    ReleaseRefAndNil(FLastChildByName);
+  end;
   inherited Destroy;
 end;
 
@@ -3948,6 +4067,8 @@ begin
       sym := TDbgDwarfIdentifier.CreateSubClass('', Info2);
       FMembers.Add(sym);
       sym.ReleaseReference;
+      sym.IncRefByParentCount;
+      sym.ParentTypeInfo := self;
       Info2.ReleaseReference;
     end;
     Info.GoNext;
@@ -4114,32 +4235,53 @@ begin
   Result := FNestedTypeInfo;
   if (Result <> nil) or (didtTypeRead in FDwarfReadFlags) then
     exit;
+
   include(FDwarfReadFlags, didtTypeRead);
   FNestedTypeInfo := DoGetNestedTypeInfo;
+  if FNestedTypeInfo <> nil then
+    FNestedTypeInfo.FOwnerTypeInfo := Self;
   Result := FNestedTypeInfo;
-end;
-
-function TDbgDwarfIdentifier.GetParentTypeInfo: TDbgDwarfIdentifier;
-var
-  ti: TDwarfInformationEntry;
-begin
-  Result := FParentTypeInfo;
-  if Result <> nil then
-    exit;
-
-  ti := FInformationEntry.Clone;
-  ti.GoParent;
-  if ti.HasValidScope then begin
-    FParentTypeInfo := TDbgDwarfIdentifier.CreateSubClass('', ti);
-    Result := FParentTypeInfo;
-  end;
-
-  ti.ReleaseReference;
 end;
 
 procedure TDbgDwarfIdentifier.SetParentTypeInfo(AValue: TDbgDwarfIdentifier);
 begin
+  if FParentTypeInfo = AValue then exit;
+
+  if (RefCount > FRefByParentCount) and (FParentTypeInfo <> nil) then
+    FParentTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
+
   FParentTypeInfo := AValue;
+
+  if (RefCount > FRefByParentCount) and (FParentTypeInfo <> nil) then
+    FParentTypeInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
+end;
+
+procedure TDbgDwarfIdentifier.DoReferenceAdded;
+begin
+  inherited DoReferenceAdded;
+  if (RefCount = FRefByParentCount + 1) and (FParentTypeInfo <> nil) then
+    FParentTypeInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
+end;
+
+procedure TDbgDwarfIdentifier.DoReferenceReleased;
+begin
+  inherited DoReferenceReleased;
+  if (RefCount = FRefByParentCount) and (FParentTypeInfo <> nil) then
+    FParentTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
+end;
+
+procedure TDbgDwarfIdentifier.IncRefByParentCount;
+begin
+  inc(FRefByParentCount);
+  if (RefCount = FRefByParentCount) and (FParentTypeInfo <> nil) then
+    FParentTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
+end;
+
+procedure TDbgDwarfIdentifier.DecRefByParentCount;
+begin
+  dec(FRefByParentCount);
+  if (RefCount = FRefByParentCount + 1) and (FParentTypeInfo <> nil) then
+    FParentTypeInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
 end;
 
 function TDbgDwarfIdentifier.DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier;
@@ -4179,6 +4321,16 @@ begin
   end;
 end;
 
+function TDbgDwarfIdentifier.IsArtificial: Boolean;
+begin
+  if not(didtArtificialRead in FDwarfReadFlags) then begin
+    if FInformationEntry.IsArtificial then
+      Include(FDwarfReadFlags, didtIsArtifical);
+    Include(FDwarfReadFlags, didtArtificialRead);
+  end;
+  Result := didtIsArtifical in FDwarfReadFlags;
+end;
+
 procedure TDbgDwarfIdentifier.NameNeeded;
 var
   AName: String;
@@ -4203,7 +4355,6 @@ class function TDbgDwarfIdentifier.GetSubClass(ATag: Cardinal): TDbgDwarfIdentif
 begin
   case ATag of
     // TODO:
-    DW_TAG_formal_parameter,
     DW_TAG_constant:
       Result := TDbgDwarfValueIdentifier;
     DW_TAG_string_type,
@@ -4230,6 +4381,7 @@ begin
     DW_TAG_array_type:       Result := TDbgDwarfIdentifierArray;
     // Value types
     DW_TAG_variable:         Result := TDbgDwarfIdentifierVariable;
+    DW_TAG_formal_parameter: Result := TDbgDwarfIdentifierParameter;
     DW_TAG_member:           Result := TDbgDwarfIdentifierMember;
     DW_TAG_subprogram:       Result := TDbgDwarfProcSymbol;
     //
@@ -4274,6 +4426,10 @@ begin
   ReleaseRefAndNil(FInformationEntry);
   ReleaseRefAndNil(FNestedTypeInfo);
   ReleaseRefAndNil(FParentTypeInfo);
+  if FNestedTypeInfo <> nil then begin
+    assert((FNestedTypeInfo.FOwnerTypeInfo = nil) or (FNestedTypeInfo.FOwnerTypeInfo= self), 'FNestedTypeInfo.FOwnerTypeInfo is nil or self');
+    FNestedTypeInfo.FOwnerTypeInfo := nil;
+  end;
 end;
 
 function TDbgDwarfIdentifier.StartScope: TDbgPtr;
@@ -4349,12 +4505,12 @@ end;
 destructor TDbgDwarfProcSymbol.Destroy;
 begin
   FreeAndNil(FStateMachine);
+  if FSelfParameter <> nil then begin
+    FSelfParameter.ParentTypeInfo := nil;
+    FSelfParameter.DecRefByParentCount;
+    FSelfParameter.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSelfParameter, 'FSelfParameter'){$ENDIF};
+  end;
   inherited Destroy;
-end;
-
-function TDbgDwarfProcSymbol.GetChild(AIndex: Integer): TDbgSymbol;
-begin
-  Result:=inherited GetChild(AIndex);
 end;
 
 function TDbgDwarfProcSymbol.GetColumn: Cardinal;
@@ -4362,11 +4518,6 @@ begin
   if StateMachineValid
   then Result := FStateMachine.Column
   else Result := inherited GetColumn;
-end;
-
-function TDbgDwarfProcSymbol.GetCount: Integer;
-begin
-  Result:=inherited GetCount;
 end;
 
 function TDbgDwarfProcSymbol.GetFile: String;
@@ -4488,6 +4639,43 @@ begin
   Result := inherited GetFlags;
   if ReadVirtuality(flg) then
     Result := Result + flg;
+end;
+
+function TDbgDwarfProcSymbol.GetSelfParameter(AnAddress: TDbgPtr): TDbgDwarfValueIdentifier;
+const
+  this1: string = 'THIS';
+  this2: string = 'this';
+var
+  InfoEntry: TDwarfInformationEntry;
+  tg: Cardinal;
+begin
+  // special: search "self"
+  // Todo nested procs
+  Result := FSelfParameter;
+  if Result <> nil then exit;
+
+  InfoEntry := InformationEntry.Clone;
+  //StartScopeIdx := InfoEntry.ScopeIndex;
+  InfoEntry.GoParent;
+  tg := InfoEntry.AbbrevTag;
+  if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
+    InfoEntry.ScopeIndex := InformationEntry.ScopeIndex;
+    if InfoEntry.GoNamedChildEx(@this1[1], @this2[1]) then begin
+      if ((AnAddress = 0) or InfoEntry.IsAddressInStartScope(AnAddress)) and
+         InfoEntry.IsArtificial
+      then begin
+        Result := TDbgDwarfValueIdentifier.CreateValueSubClass('self', InfoEntry);
+        FSelfParameter := Result;
+        {$IFDEF WITH_REFCOUNT_DEBUG} // Rename the ref
+        FSelfParameter.AddReference(@FSelfParameter, 'FSelfParameter'); FSelfParameter.ReleaseReference;
+        {$ENDIF}
+        FSelfParameter.IncRefByParentCount;
+        FSelfParameter.ParentTypeInfo := Self;
+        debugln(['TDbgDwarfProcSymbol.GetSelfParameter ', dbgs(InfoEntry.FScope, FCU), DbgSName(Result)]);
+      end;
+    end;
+  end;
+  InfoEntry.ReleaseReference;
 end;
 
 { TDbgDwarf }
@@ -5814,12 +6002,12 @@ begin
   FAddress := AnAddress;
   FDwarf   := ADwarf;
   FSymbol  := ASymbol;
-  FSymbol.AddReference;
+  FSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'Context to Symbol'){$ENDIF};
 end;
 
 destructor TDbgDwarfInfoAddressContext.Destroy;
 begin
-  FSymbol.ReleaseReference;
+  FSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'Context to Symbol'){$ENDIF};
   inherited Destroy;
 end;
 
@@ -5835,7 +6023,7 @@ var
   FwdInfoPtr: Pointer;
   tg: Cardinal;
   p1, p2: PChar;
-  StartScope: TDbgPtr;
+  SelfParam: TDbgDwarfValueIdentifier;
 begin
   Result := nil;
   if (FSymbol = nil) or not(FSymbol is TDbgDwarfProcSymbol) or (AName = '') then
@@ -5853,6 +6041,16 @@ begin
     //InfoEntry := TDwarfInformationEntry.Create(CU, nil);
     //InfoEntry.ScopeIndex := SubRoutine.FAddressInfo^.ScopeIndex;
 
+    // special: search "self"
+    // Todo nested procs
+    if s2 = 'self' then begin
+      Result := SubRoutine.GetSelfParameter(FAddress);
+      if Result <> nil then begin
+        Result.AddReference;
+        exit;
+      end;
+    end;
+
     while InfoEntry.HasValidScope do begin
       debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
       StartScopeIdx := InfoEntry.ScopeIndex;
@@ -5860,17 +6058,15 @@ begin
       //if InfoEntry.Abbrev = nil then
       //  exit;
 
-      if InfoEntry.ReadStartScope(StartScope)
+      if not InfoEntry.IsAddressInStartScope(FAddress) // StartScope = first valid address
       then begin
-        if StartScope > FAddress then begin
-          // CONTINUE: Search parent(s)
-          InfoEntry.ScopeIndex := StartScopeIdx;
-          InfoEntry.GoParent;
-          Continue;
-        end;
+        // CONTINUE: Search parent(s)
+        InfoEntry.ScopeIndex := StartScopeIdx;
+        InfoEntry.GoParent;
+        Continue;
       end;
 
-      if InfoEntry.ReadName(InfoName)
+      if InfoEntry.ReadName(InfoName) and not InfoEntry.IsArtificial
       then begin
         if (CompareUtf8BothCase(p1, p2, InfoName)) then begin
           Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
@@ -5882,16 +6078,33 @@ begin
       tg := InfoEntry.AbbrevTag;
 
       if InfoEntry.GoNamedChildEx(p1, p2) then begin
-        if not InfoEntry.ReadStartScope(StartScope) then
-          StartScope := 0;
-        if StartScope <= FAddress then begin
-          Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
+        if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
+          if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
+            // access via self
+            SelfParam := SubRoutine.GetSelfParameter(FAddress);
+            if (SelfParam <> nil) then begin
+              // TODO: only valid, as long as context is valid, because if comnext is freed, then self is lost too
+              Result := SelfParam.TypeInfo.MemberByName[AName];
+              Result.AddReference;
+if Result<> nil then debugln(['TDbgDwarfInfoAddressContext.FindSymbol SELF !!!!!!!!!!!!!'])
+else debugln(['TDbgDwarfInfoAddressContext.FindSymbol ????????????????']);
+            end;
+          end;
+          if Result = nil then
+            Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
+
+          // TODO: nested
+          if (StartScopeIdx = SubRoutine.InformationEntry.ScopeIndex) then // searching in subroutine
+            TDbgDwarfIdentifier(Result).ParentTypeInfo := SubRoutine;
+
           DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
           exit;
         end;
       end;
 
       if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
+        // TODO: only search most inner class (if classes can be nested.
+        // outer classes static data may be available.
         // search parent class
         InfoEntry.ScopeIndex := StartScopeIdx;
         InfoEntryParent := InfoEntry.FindChildByTag(DW_TAG_inheritance);
@@ -5900,16 +6113,24 @@ begin
           InfoEntryParent := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
           DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier  PARENT ', dbgs(InfoEntryParent, FwdCompUint) ]);
 
-          if InfoEntryParent.ReadStartScope(StartScope) then
-            if StartScope > FAddress then
-              break;
+          if not InfoEntry.IsAddressInStartScope(FAddress) then
+            break;
 
           InfoEntryTmp := InfoEntryParent.FindChildByTag(DW_TAG_inheritance);
           if InfoEntryParent.GoNamedChildEx(p1, p2) then begin
-            if not InfoEntryParent.ReadStartScope(StartScope) then
-              StartScope := 0;
-            if StartScope <= FAddress then begin
-              Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntryParent);
+            if InfoEntry.IsAddressInStartScope(FAddress) then begin
+              SelfParam := SubRoutine.GetSelfParameter(FAddress);
+              if (SelfParam <> nil) then begin
+                // TODO: only valid, as long as context is valid, because if comnext is freed, then self is lost too
+                Result := SelfParam.TypeInfo.MemberByName[AName];
+                Result.AddReference;
+if Result<> nil then debugln(['TDbgDwarfInfoAddressContext.FindSymbol SELF !!!!!!!!!!!!!'])
+else debugln(['TDbgDwarfInfoAddressContext.FindSymbol ????????????????']);
+              end
+else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
+              ;
+              if Result = nil then
+                Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntryParent);
               InfoEntryParent.ReleaseReference;
               InfoEntryTmp.ReleaseReference;
               DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntryParent.FScope, CU), DbgSName(Result)]);
@@ -5952,9 +6173,7 @@ begin
 
       CU2.ScanAllEntries;
       if InfoEntry.GoNamedChildEx(p1, p2) then begin
-        if not InfoEntry.ReadStartScope(StartScope) then
-          StartScope := 0;
-        if StartScope <= FAddress then begin
+        if InfoEntry.IsAddressInStartScope(FAddress) then begin
           // only variables are marked "external", but types not / so we may need all top level
           Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
           DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found (other unit) ', dbgs(InfoEntry.FScope, CU2), DbgSName(Result)]);
