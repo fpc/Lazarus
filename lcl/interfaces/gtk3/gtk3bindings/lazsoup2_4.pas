@@ -9,141 +9,151 @@ unit LazSoup2_4;
 {$LINKLIB libsoup-2.4.so.1}
 interface
 uses
-  CTypes, LazGLib2, LazGObject2, LazGio2;
+  CTypes, LazGio2, LazGLib2, LazGObject2;
 
 const
   Soup2_4_library = 'libsoup-2.4.so.1';
 
-  ADDRESS_ANY_PORT = 0;
-  ADDRESS_FAMILY = 'family';
-  ADDRESS_NAME = 'name';
-  ADDRESS_PHYSICAL = 'physical';
-  ADDRESS_PORT = 'port';
-  ADDRESS_SOCKADDR = 'sockaddr';
-  AUTH_DOMAIN_ADD_PATH = 'add-path';
-  AUTH_DOMAIN_BASIC_AUTH_CALLBACK = 'auth-callback';
-  AUTH_DOMAIN_BASIC_AUTH_DATA = 'auth-data';
-  AUTH_DOMAIN_BASIC_H = 1;
-  AUTH_DOMAIN_DIGEST_AUTH_CALLBACK = 'auth-callback';
-  AUTH_DOMAIN_DIGEST_AUTH_DATA = 'auth-data';
-  AUTH_DOMAIN_DIGEST_H = 1;
-  AUTH_DOMAIN_FILTER = 'filter';
-  AUTH_DOMAIN_FILTER_DATA = 'filter-data';
-  AUTH_DOMAIN_GENERIC_AUTH_CALLBACK = 'generic-auth-callback';
-  AUTH_DOMAIN_GENERIC_AUTH_DATA = 'generic-auth-data';
-  AUTH_DOMAIN_H = 1;
-  AUTH_DOMAIN_PROXY = 'proxy';
-  AUTH_DOMAIN_REALM = 'realm';
-  AUTH_DOMAIN_REMOVE_PATH = 'remove-path';
-  AUTH_H = 1;
-  AUTH_HOST = 'host';
-  AUTH_IS_AUTHENTICATED = 'is-authenticated';
-  AUTH_IS_FOR_PROXY = 'is-for-proxy';
-  AUTH_REALM = 'realm';
-  AUTH_SCHEME_NAME = 'scheme-name';
-  CACHE_H = 1;
-  CHAR_HTTP_CTL = 16;
-  CHAR_HTTP_SEPARATOR = 8;
-  CHAR_URI_GEN_DELIMS = 2;
-  CHAR_URI_PERCENT_ENCODED = 1;
-  CHAR_URI_SUB_DELIMS = 4;
-  CONTENT_DECODER_H = 1;
-  CONTENT_SNIFFER_H = 1;
-  COOKIE_H = 1;
-  COOKIE_JAR_ACCEPT_POLICY = 'accept-policy';
-  COOKIE_JAR_H = 1;
-  COOKIE_JAR_READ_ONLY = 'read-only';
-  COOKIE_JAR_TEXT_FILENAME = 'filename';
-  COOKIE_JAR_TEXT_H = 1;
-  COOKIE_MAX_AGE_ONE_DAY = 0;
-  COOKIE_MAX_AGE_ONE_HOUR = 3600;
-  COOKIE_MAX_AGE_ONE_WEEK = 0;
-  COOKIE_MAX_AGE_ONE_YEAR = 0;
-  DATE_H = 1;
-  FORM_H = 1;
-  FORM_MIME_TYPE_MULTIPART = 'multipart/form-data';
-  FORM_MIME_TYPE_URLENCODED = 'application/x-www-form-urlencoded';
-  HEADERS_H = 1;
-  LOGGER_H = 1;
-  MESSAGE_BODY_H = 1;
-  MESSAGE_FIRST_PARTY = 'first-party';
-  MESSAGE_FLAGS = 'flags';
-  MESSAGE_H = 1;
-  MESSAGE_HEADERS_H = 1;
-  MESSAGE_HTTP_VERSION = 'http-version';
-  MESSAGE_METHOD = 'method';
-  MESSAGE_REASON_PHRASE = 'reason-phrase';
-  MESSAGE_REQUEST_BODY = 'request-body';
-  MESSAGE_REQUEST_HEADERS = 'request-headers';
-  MESSAGE_RESPONSE_BODY = 'response-body';
-  MESSAGE_RESPONSE_HEADERS = 'response-headers';
-  MESSAGE_SERVER_SIDE = 'server-side';
-  MESSAGE_STATUS_CODE = 'status-code';
-  MESSAGE_TLS_CERTIFICATE = 'tls-certificate';
-  MESSAGE_TLS_ERRORS = 'tls-errors';
-  MESSAGE_URI = 'uri';
-  METHOD_H = 1;
-  MISC_H = 1;
-  MULTIPART_H = 1;
-  PASSWORD_MANAGER_H = 1;
-  PROXY_RESOLVER_DEFAULT_H = 1;
-  PROXY_URI_RESOLVER_H = 1;
-  REQUESTER_H = 1;
-  REQUEST_DATA_H = 1;
-  REQUEST_FILE_H = 1;
-  REQUEST_H = 1;
-  REQUEST_HTTP_H = 1;
-  REQUEST_SESSION = 'session';
-  REQUEST_URI = 'uri';
-  SERVER_ASYNC_CONTEXT = 'async-context';
-  SERVER_H = 1;
-  SERVER_INTERFACE = 'interface';
-  SERVER_PORT = 'port';
-  SERVER_RAW_PATHS = 'raw-paths';
-  SERVER_SERVER_HEADER = 'server-header';
-  SERVER_SSL_CERT_FILE = 'ssl-cert-file';
-  SERVER_SSL_KEY_FILE = 'ssl-key-file';
-  SERVER_TLS_CERTIFICATE = 'tls-certificate';
-  SESSION_ACCEPT_LANGUAGE = 'accept-language';
-  SESSION_ACCEPT_LANGUAGE_AUTO = 'accept-language-auto';
-  SESSION_ASYNC_CONTEXT = 'async-context';
-  SESSION_ASYNC_H = 1;
-  SESSION_FEATURE_H = 1;
-  SESSION_H = 1;
-  SESSION_HTTPS_ALIASES = 'https-aliases';
-  SESSION_HTTP_ALIASES = 'http-aliases';
-  SESSION_IDLE_TIMEOUT = 'idle-timeout';
-  SESSION_MAX_CONNS = 'max-conns';
-  SESSION_MAX_CONNS_PER_HOST = 'max-conns-per-host';
-  SESSION_PROXY_URI = 'proxy-uri';
-  SESSION_SSL_CA_FILE = 'ssl-ca-file';
-  SESSION_SSL_STRICT = 'ssl-strict';
-  SESSION_SSL_USE_SYSTEM_CA_FILE = 'ssl-use-system-ca-file';
-  SESSION_SYNC_H = 1;
-  SESSION_TIMEOUT = 'timeout';
-  SESSION_TLS_DATABASE = 'tls-database';
-  SESSION_USER_AGENT = 'user-agent';
-  SESSION_USE_NTLM = 'use-ntlm';
-  SESSION_USE_THREAD_CONTEXT = 'use-thread-context';
-  SOCKET_ASYNC_CONTEXT = 'async-context';
-  SOCKET_FLAG_NONBLOCKING = 'non-blocking';
-  SOCKET_H = 1;
-  SOCKET_IS_SERVER = 'is-server';
-  SOCKET_LOCAL_ADDRESS = 'local-address';
-  SOCKET_REMOTE_ADDRESS = 'remote-address';
-  SOCKET_SSL_CREDENTIALS = 'ssl-creds';
-  SOCKET_SSL_FALLBACK = 'ssl-fallback';
-  SOCKET_SSL_STRICT = 'ssl-strict';
-  SOCKET_TIMEOUT = 'timeout';
-  SOCKET_TLS_CERTIFICATE = 'tls-certificate';
-  SOCKET_TLS_ERRORS = 'tls-errors';
-  SOCKET_TRUSTED_CERTIFICATE = 'trusted-certificate';
-  SOCKET_USE_THREAD_CONTEXT = 'use-thread-context';
-  STATUS_H = 1;
-  TYPES_H = 1;
-  URI_H = 1;
-  VALUE_UTILS_H = 1;
-  XMLRPC_H = 1;
+  SOUP_ADDRESS_ANY_PORT = 0;
+  SOUP_ADDRESS_FAMILY = 'family';
+  SOUP_ADDRESS_NAME = 'name';
+  SOUP_ADDRESS_PHYSICAL = 'physical';
+  SOUP_ADDRESS_PORT = 'port';
+  SOUP_ADDRESS_PROTOCOL = 'protocol';
+  SOUP_ADDRESS_SOCKADDR = 'sockaddr';
+  SOUP_AUTH_DOMAIN_ADD_PATH = 'add-path';
+  SOUP_AUTH_DOMAIN_BASIC_AUTH_CALLBACK = 'auth-callback';
+  SOUP_AUTH_DOMAIN_BASIC_AUTH_DATA = 'auth-data';
+  SOUP_AUTH_DOMAIN_BASIC_H = 1;
+  SOUP_AUTH_DOMAIN_DIGEST_AUTH_CALLBACK = 'auth-callback';
+  SOUP_AUTH_DOMAIN_DIGEST_AUTH_DATA = 'auth-data';
+  SOUP_AUTH_DOMAIN_DIGEST_H = 1;
+  SOUP_AUTH_DOMAIN_FILTER = 'filter';
+  SOUP_AUTH_DOMAIN_FILTER_DATA = 'filter-data';
+  SOUP_AUTH_DOMAIN_GENERIC_AUTH_CALLBACK = 'generic-auth-callback';
+  SOUP_AUTH_DOMAIN_GENERIC_AUTH_DATA = 'generic-auth-data';
+  SOUP_AUTH_DOMAIN_H = 1;
+  SOUP_AUTH_DOMAIN_PROXY = 'proxy';
+  SOUP_AUTH_DOMAIN_REALM = 'realm';
+  SOUP_AUTH_DOMAIN_REMOVE_PATH = 'remove-path';
+  SOUP_AUTH_H = 1;
+  SOUP_AUTH_HOST = 'host';
+  SOUP_AUTH_IS_AUTHENTICATED = 'is-authenticated';
+  SOUP_AUTH_IS_FOR_PROXY = 'is-for-proxy';
+  SOUP_AUTH_MANAGER_H = 1;
+  SOUP_AUTH_REALM = 'realm';
+  SOUP_AUTH_SCHEME_NAME = 'scheme-name';
+  SOUP_CACHE_H = 1;
+  SOUP_CHAR_HTTP_CTL = 16;
+  SOUP_CHAR_HTTP_SEPARATOR = 8;
+  SOUP_CHAR_URI_GEN_DELIMS = 2;
+  SOUP_CHAR_URI_PERCENT_ENCODED = 1;
+  SOUP_CHAR_URI_SUB_DELIMS = 4;
+  SOUP_CONTENT_DECODER_H = 1;
+  SOUP_CONTENT_SNIFFER_H = 1;
+  SOUP_COOKIE_H = 1;
+  SOUP_COOKIE_JAR_ACCEPT_POLICY = 'accept-policy';
+  SOUP_COOKIE_JAR_DB_FILENAME = 'filename';
+  SOUP_COOKIE_JAR_DB_H = 1;
+  SOUP_COOKIE_JAR_H = 1;
+  SOUP_COOKIE_JAR_READ_ONLY = 'read-only';
+  SOUP_COOKIE_JAR_TEXT_FILENAME = 'filename';
+  SOUP_COOKIE_JAR_TEXT_H = 1;
+  SOUP_COOKIE_MAX_AGE_ONE_DAY = 0;
+  SOUP_COOKIE_MAX_AGE_ONE_HOUR = 3600;
+  SOUP_COOKIE_MAX_AGE_ONE_WEEK = 0;
+  SOUP_COOKIE_MAX_AGE_ONE_YEAR = 0;
+  SOUP_DATE_H = 1;
+  SOUP_FORM_H = 1;
+  SOUP_FORM_MIME_TYPE_MULTIPART = 'multipart/form-data';
+  SOUP_FORM_MIME_TYPE_URLENCODED = 'application/x-www-form-urlencoded';
+  SOUP_HEADERS_H = 1;
+  SOUP_LOGGER_H = 1;
+  SOUP_MESSAGE_BODY_H = 1;
+  SOUP_MESSAGE_FIRST_PARTY = 'first-party';
+  SOUP_MESSAGE_FLAGS = 'flags';
+  SOUP_MESSAGE_H = 1;
+  SOUP_MESSAGE_HEADERS_H = 1;
+  SOUP_MESSAGE_HTTP_VERSION = 'http-version';
+  SOUP_MESSAGE_METHOD = 'method';
+  SOUP_MESSAGE_REASON_PHRASE = 'reason-phrase';
+  SOUP_MESSAGE_REQUEST_BODY = 'request-body';
+  SOUP_MESSAGE_REQUEST_HEADERS = 'request-headers';
+  SOUP_MESSAGE_RESPONSE_BODY = 'response-body';
+  SOUP_MESSAGE_RESPONSE_HEADERS = 'response-headers';
+  SOUP_MESSAGE_SERVER_SIDE = 'server-side';
+  SOUP_MESSAGE_STATUS_CODE = 'status-code';
+  SOUP_MESSAGE_TLS_CERTIFICATE = 'tls-certificate';
+  SOUP_MESSAGE_TLS_ERRORS = 'tls-errors';
+  SOUP_MESSAGE_URI = 'uri';
+  SOUP_METHOD_H = 1;
+  SOUP_MISC_H = 1;
+  SOUP_MULTIPART_H = 1;
+  SOUP_MULTIPART_INPUT_STREAM_H = 1;
+  SOUP_PASSWORD_MANAGER_H = 1;
+  SOUP_PROXY_RESOLVER_DEFAULT_H = 1;
+  SOUP_PROXY_URI_RESOLVER_H = 1;
+  SOUP_REQUESTER_H = 1;
+  SOUP_REQUEST_DATA_H = 1;
+  SOUP_REQUEST_FILE_H = 1;
+  SOUP_REQUEST_H = 1;
+  SOUP_REQUEST_HTTP_H = 1;
+  SOUP_REQUEST_SESSION = 'session';
+  SOUP_REQUEST_URI = 'uri';
+  SOUP_SERVER_ASYNC_CONTEXT = 'async-context';
+  SOUP_SERVER_H = 1;
+  SOUP_SERVER_INTERFACE = 'interface';
+  SOUP_SERVER_PORT = 'port';
+  SOUP_SERVER_RAW_PATHS = 'raw-paths';
+  SOUP_SERVER_SERVER_HEADER = 'server-header';
+  SOUP_SERVER_SSL_CERT_FILE = 'ssl-cert-file';
+  SOUP_SERVER_SSL_KEY_FILE = 'ssl-key-file';
+  SOUP_SERVER_TLS_CERTIFICATE = 'tls-certificate';
+  SOUP_SESSION_ACCEPT_LANGUAGE = 'accept-language';
+  SOUP_SESSION_ACCEPT_LANGUAGE_AUTO = 'accept-language-auto';
+  SOUP_SESSION_ADD_FEATURE = 'add-feature';
+  SOUP_SESSION_ADD_FEATURE_BY_TYPE = 'add-feature-by-type';
+  SOUP_SESSION_ASYNC_CONTEXT = 'async-context';
+  SOUP_SESSION_ASYNC_H = 1;
+  SOUP_SESSION_FEATURE_H = 1;
+  SOUP_SESSION_H = 1;
+  SOUP_SESSION_HTTPS_ALIASES = 'https-aliases';
+  SOUP_SESSION_HTTP_ALIASES = 'http-aliases';
+  SOUP_SESSION_IDLE_TIMEOUT = 'idle-timeout';
+  SOUP_SESSION_LOCAL_ADDRESS = 'local-address';
+  SOUP_SESSION_MAX_CONNS = 'max-conns';
+  SOUP_SESSION_MAX_CONNS_PER_HOST = 'max-conns-per-host';
+  SOUP_SESSION_PROXY_RESOLVER = 'proxy-resolver';
+  SOUP_SESSION_PROXY_URI = 'proxy-uri';
+  SOUP_SESSION_REMOVE_FEATURE_BY_TYPE = 'remove-feature-by-type';
+  SOUP_SESSION_SSL_CA_FILE = 'ssl-ca-file';
+  SOUP_SESSION_SSL_STRICT = 'ssl-strict';
+  SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE = 'ssl-use-system-ca-file';
+  SOUP_SESSION_SYNC_H = 1;
+  SOUP_SESSION_TIMEOUT = 'timeout';
+  SOUP_SESSION_TLS_DATABASE = 'tls-database';
+  SOUP_SESSION_USER_AGENT = 'user-agent';
+  SOUP_SESSION_USE_NTLM = 'use-ntlm';
+  SOUP_SESSION_USE_THREAD_CONTEXT = 'use-thread-context';
+  SOUP_SOCKET_ASYNC_CONTEXT = 'async-context';
+  SOUP_SOCKET_FLAG_NONBLOCKING = 'non-blocking';
+  SOUP_SOCKET_H = 1;
+  SOUP_SOCKET_IS_SERVER = 'is-server';
+  SOUP_SOCKET_LOCAL_ADDRESS = 'local-address';
+  SOUP_SOCKET_REMOTE_ADDRESS = 'remote-address';
+  SOUP_SOCKET_SSL_CREDENTIALS = 'ssl-creds';
+  SOUP_SOCKET_SSL_FALLBACK = 'ssl-fallback';
+  SOUP_SOCKET_SSL_STRICT = 'ssl-strict';
+  SOUP_SOCKET_TIMEOUT = 'timeout';
+  SOUP_SOCKET_TLS_CERTIFICATE = 'tls-certificate';
+  SOUP_SOCKET_TLS_ERRORS = 'tls-errors';
+  SOUP_SOCKET_TRUSTED_CERTIFICATE = 'trusted-certificate';
+  SOUP_SOCKET_USE_THREAD_CONTEXT = 'use-thread-context';
+  SOUP_STATUS_H = 1;
+  SOUP_TYPES_H = 1;
+  SOUP_URI_H = 1;
+  SOUP_VALUE_UTILS_H = 1;
+  SOUP_XMLRPC_H = 1;
 
 type
   TSoupAddressFamily = Integer;
@@ -163,6 +173,7 @@ const
   SOUP_MESSAGE_CONTENT_DECODED: TSoupMessageFlags = 16;
   SOUP_MESSAGE_CERTIFICATE_TRUSTED: TSoupMessageFlags = 32;
   SOUP_MESSAGE_NEW_CONNECTION: TSoupMessageFlags = 64;
+  SOUP_MESSAGE_IDEMPOTENT: TSoupMessageFlags = 128;
 
 type
   TSoupHTTPVersion = Integer;
@@ -181,14 +192,6 @@ const
   SOUP_MEMORY_TEMPORARY: TSoupMemoryUse = 3;
 
 type
-  TSoupCacheResponse = Integer;
-const
-  { SoupCacheResponse }
-  SOUP_CACHE_RESPONSE_FRESH: TSoupCacheResponse = 0;
-  SOUP_CACHE_RESPONSE_NEEDS_VALIDATION: TSoupCacheResponse = 1;
-  SOUP_CACHE_RESPONSE_STALE: TSoupCacheResponse = 2;
-
-type
   TSoupCacheType = Integer;
 const
   { SoupCacheType }
@@ -203,6 +206,14 @@ const
   SOUP_CACHE_UNCACHEABLE: TSoupCacheability = 2;
   SOUP_CACHE_INVALIDATES: TSoupCacheability = 4;
   SOUP_CACHE_VALIDATES: TSoupCacheability = 8;
+
+type
+  TSoupCacheResponse = Integer;
+const
+  { SoupCacheResponse }
+  SOUP_CACHE_RESPONSE_FRESH: TSoupCacheResponse = 0;
+  SOUP_CACHE_RESPONSE_NEEDS_VALIDATION: TSoupCacheResponse = 1;
+  SOUP_CACHE_RESPONSE_STALE: TSoupCacheResponse = 2;
 
 type
   TSoupConnectionState = Integer;
@@ -339,6 +350,15 @@ const
   SOUP_MESSAGE_HEADERS_MULTIPART: TSoupMessageHeadersType = 2;
 
 type
+  TSoupRequestError = Integer;
+const
+  { SoupRequestError }
+  SOUP_REQUEST_ERROR_BAD_URI: TSoupRequestError = 0;
+  SOUP_REQUEST_ERROR_UNSUPPORTED_URI_SCHEME: TSoupRequestError = 1;
+  SOUP_REQUEST_ERROR_PARSING: TSoupRequestError = 2;
+  SOUP_REQUEST_ERROR_ENCODING: TSoupRequestError = 3;
+
+type
   TSoupRequesterError = Integer;
 const
   { SoupRequesterError }
@@ -353,6 +373,15 @@ const
   SOUP_SOCKET_WOULD_BLOCK: TSoupSocketIOStatus = 1;
   SOUP_SOCKET_EOF: TSoupSocketIOStatus = 2;
   SOUP_SOCKET_ERROR: TSoupSocketIOStatus = 3;
+
+type
+  TSoupTLDError = Integer;
+const
+  { SoupTLDError }
+  SOUP_TLD_ERROR_INVALID_HOSTNAME: TSoupTLDError = 0;
+  SOUP_TLD_ERROR_IS_IP_ADDRESS: TSoupTLDError = 1;
+  SOUP_TLD_ERROR_NOT_ENOUGH_DOMAINS: TSoupTLDError = 2;
+  SOUP_TLD_ERROR_NO_BASE_DOMAIN: TSoupTLDError = 3;
 
 type
   TSoupXMLRPCError = Integer;
@@ -390,8 +419,8 @@ type
     function new(name: Pgchar; port: guint): PSoupAddress; cdecl; inline; static;
     function new_any(family: TSoupAddressFamily; port: guint): PSoupAddress; cdecl; inline; static;
     function new_from_sockaddr(sa: Pgpointer; len: gint): PSoupAddress; cdecl; inline; static;
-    function equal_by_ip(addr2: TSoupAddress): gboolean; cdecl; inline;
-    function equal_by_name(addr2: TSoupAddress): gboolean; cdecl; inline;
+    function equal_by_ip(addr2: PSoupAddress): gboolean; cdecl; inline;
+    function equal_by_name(addr2: PSoupAddress): gboolean; cdecl; inline;
     function get_gsockaddr: PGSocketAddress; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
     function get_physical: Pgchar; cdecl; inline;
@@ -406,6 +435,7 @@ type
     property name: Pgchar read get_name  { property is writeable but setter not declared } ;
     property physical: Pgchar read get_physical ;
     property port: guint read get_port  { property is writeable but setter not declared } ;
+    //property protocol: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_protocol  { property is writeable but setter not declared } ;
     //property sockaddr: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_sockaddr  { property is writeable but setter not declared } ;
   end;
 
@@ -437,9 +467,14 @@ type
     function get_info: Pgchar; cdecl; inline;
     function get_protection_space(source_uri: PSoupURI): PGSList; cdecl; inline;
     function get_realm: Pgchar; cdecl; inline;
+    function get_saved_password(user: Pgchar): Pgchar; cdecl; inline;
+    function get_saved_users: PGSList; cdecl; inline;
     function get_scheme_name: Pgchar; cdecl; inline;
+    procedure has_saved_password(username: Pgchar; password: Pgchar); cdecl; inline;
     function is_authenticated: gboolean; cdecl; inline;
     function is_for_proxy: gboolean; cdecl; inline;
+    function is_ready(msg: PSoupMessage): gboolean; cdecl; inline;
+    procedure save_password(username: Pgchar; password: Pgchar); cdecl; inline;
     function update(msg: PSoupMessage; auth_header: Pgchar): gboolean; cdecl; inline;
     property host: Pgchar read get_host  { property is writeable but setter not declared } ;
     //property is_authenticated1: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_is_authenticated ;
@@ -454,12 +489,11 @@ type
   PPSoupHTTPVersion = ^PSoupHTTPVersion;
   PSoupHTTPVersion = ^TSoupHTTPVersion;
 
+  PPSoupRequest = ^PSoupRequest;
+  PSoupRequest = ^TSoupRequest;
+
   PPSoupBuffer = ^PSoupBuffer;
   PSoupBuffer = ^TSoupBuffer;
-
-  PPSoupChunkAllocator = ^PSoupChunkAllocator;
-  PSoupChunkAllocator = ^TSoupChunkAllocator;
-  TSoupChunkAllocator = function(msg: PSoupMessage; max_len: gsize; user_data: gpointer): PSoupBuffer; cdecl;
 
   PPSoupMemoryUse = ^PSoupMemoryUse;
   PSoupMemoryUse = ^TSoupMemoryUse;
@@ -489,6 +523,7 @@ type
     function get_flags: TSoupMessageFlags; cdecl; inline;
     function get_http_version: TSoupHTTPVersion; cdecl; inline;
     function get_https_status(certificate: PPGTlsCertificate; errors: PGTlsCertificateFlags): gboolean; cdecl; inline;
+    function get_soup_request: PSoupRequest; cdecl; inline;
     function get_uri: PSoupURI; cdecl; inline;
     procedure got_body; cdecl; inline;
     procedure got_chunk(chunk: PSoupBuffer); cdecl; inline;
@@ -496,7 +531,6 @@ type
     procedure got_informational; cdecl; inline;
     function is_keepalive: gboolean; cdecl; inline;
     procedure restarted; cdecl; inline;
-    procedure set_chunk_allocator(allocator: TSoupChunkAllocator; user_data: gpointer; destroy_notify: TGDestroyNotify); cdecl; inline;
     procedure set_first_party(first_party: PSoupURI); cdecl; inline;
     procedure set_flags(flags: TSoupMessageFlags); cdecl; inline;
     procedure set_http_version(version: TSoupHTTPVersion); cdecl; inline;
@@ -548,7 +582,7 @@ type
     function get_query: Pgchar; cdecl; inline;
     function get_scheme: Pgchar; cdecl; inline;
     function get_user: Pgchar; cdecl; inline;
-    function host_equal(v2: TSoupURI): gboolean; cdecl; inline;
+    function host_equal(v2: PSoupURI): gboolean; cdecl; inline;
     function host_hash: guint; cdecl; inline;
     function new_with_base(uri_string: Pgchar): PSoupURI; cdecl; inline;
     procedure set_fragment(fragment: Pgchar); cdecl; inline;
@@ -579,12 +613,12 @@ type
     parent_class: TGObjectClass;
     scheme_name: Pgchar;
     strength: guint;
-    update: function(auth: PSoupAuth; msg: PSoupMessage; auth_params: PGHashTable): gboolean; cdecl;
+    update: function(auth: PSoupAuth; msg: PSoupMessage; auth_header: PGHashTable): gboolean; cdecl;
     get_protection_space: function(auth: PSoupAuth; source_uri: PSoupURI): PGSList; cdecl;
     authenticate: procedure(auth: PSoupAuth; username: Pgchar; password: Pgchar); cdecl;
     is_authenticated: function(auth: PSoupAuth): gboolean; cdecl;
     get_authorization: function(auth: PSoupAuth; msg: PSoupMessage): Pgchar; cdecl;
-    _libsoup_reserved1: procedure; cdecl;
+    is_ready: function(auth: PSoupAuth; msg: PSoupMessage): gboolean; cdecl;
     _libsoup_reserved2: procedure; cdecl;
     _libsoup_reserved3: procedure; cdecl;
     _libsoup_reserved4: procedure; cdecl;
@@ -597,22 +631,22 @@ type
 
   PPSoupAuthDomain = ^PSoupAuthDomain;
   PSoupAuthDomain = ^TSoupAuthDomain;
-  TSoupAuthDomainBasicAuthCallback = function(domain: PSoupAuthDomain; msg: PSoupMessage; username: Pgchar; password: Pgchar; user_data: gpointer): gboolean; cdecl;
-  TSoupAuthDomainDigestAuthCallback = function(domain: PSoupAuthDomain; msg: PSoupMessage; username: Pgchar; user_data: gpointer): Pgchar; cdecl;
-  TSoupAuthDomainFilter = function(domain: PSoupAuthDomain; msg: PSoupMessage; user_data: gpointer): gboolean; cdecl;
-  TSoupAuthDomainGenericAuthCallback = function(domain: PSoupAuthDomain; msg: PSoupMessage; username: Pgchar; user_data: gpointer): gboolean; cdecl;
 
   PPSoupAuthDomainBasicAuthCallback = ^PSoupAuthDomainBasicAuthCallback;
   PSoupAuthDomainBasicAuthCallback = ^TSoupAuthDomainBasicAuthCallback;
+  TSoupAuthDomainBasicAuthCallback = function(domain: PSoupAuthDomain; msg: PSoupMessage; username: Pgchar; password: Pgchar; user_data: gpointer): gboolean; cdecl;
 
   PPSoupAuthDomainDigestAuthCallback = ^PSoupAuthDomainDigestAuthCallback;
   PSoupAuthDomainDigestAuthCallback = ^TSoupAuthDomainDigestAuthCallback;
+  TSoupAuthDomainDigestAuthCallback = function(domain: PSoupAuthDomain; msg: PSoupMessage; username: Pgchar; user_data: gpointer): Pgchar; cdecl;
 
   PPSoupAuthDomainFilter = ^PSoupAuthDomainFilter;
   PSoupAuthDomainFilter = ^TSoupAuthDomainFilter;
+  TSoupAuthDomainFilter = function(domain: PSoupAuthDomain; msg: PSoupMessage; user_data: gpointer): gboolean; cdecl;
 
   PPSoupAuthDomainGenericAuthCallback = ^PSoupAuthDomainGenericAuthCallback;
   PSoupAuthDomainGenericAuthCallback = ^TSoupAuthDomainGenericAuthCallback;
+  TSoupAuthDomainGenericAuthCallback = function(domain: PSoupAuthDomain; msg: PSoupMessage; username: Pgchar; user_data: gpointer): gboolean; cdecl;
   TSoupAuthDomain = object(TGObject)
     function accepts(msg: PSoupMessage): Pgchar; cdecl; inline;
     procedure add_path(path: Pgchar); cdecl; inline;
@@ -685,6 +719,41 @@ type
     _libsoup_reserved4: procedure; cdecl;
   end;
 
+  PPSoupSessionFeature = ^PSoupSessionFeature;
+  PSoupSessionFeature = ^TSoupSessionFeature;
+
+  PPSoupSession = ^PSoupSession;
+  PSoupSession = ^TSoupSession;
+  TSoupSessionFeature = object
+    function add_feature(type_: TGType): gboolean; cdecl; inline;
+    procedure attach(session: PSoupSession); cdecl; inline;
+    procedure detach(session: PSoupSession); cdecl; inline;
+    function has_feature(type_: TGType): gboolean; cdecl; inline;
+    function remove_feature(type_: TGType): gboolean; cdecl; inline;
+  end;
+
+  PPSoupAuthManager = ^PSoupAuthManager;
+  PSoupAuthManager = ^TSoupAuthManager;
+
+  PPSoupAuthManagerPrivate = ^PSoupAuthManagerPrivate;
+  PSoupAuthManagerPrivate = ^TSoupAuthManagerPrivate;
+  TSoupAuthManager = object(TGObject)
+    priv: PSoupAuthManagerPrivate;
+    procedure use_auth(uri: PSoupURI; auth: PSoupAuth); cdecl; inline;
+  end;
+
+  TSoupAuthManagerPrivate = record
+  end;
+
+
+
+  PPSoupAuthManagerClass = ^PSoupAuthManagerClass;
+  PSoupAuthManagerClass = ^TSoupAuthManagerClass;
+  TSoupAuthManagerClass = object
+    parent_class: TGObjectClass;
+    authenticate: procedure(manager: PSoupAuthManager; msg: PSoupMessage; auth: PSoupAuth; retrying: gboolean); cdecl;
+  end;
+
   PPSoupAuthNTLM = ^PSoupAuthNTLM;
   PSoupAuthNTLM = ^TSoupAuthNTLM;
   TSoupAuthNTLM = object(TSoupAuth)
@@ -692,27 +761,72 @@ type
   TSoupBuffer = object
     data: gpointer;
     length: gsize;
-    function new(use: TSoupMemoryUse; data: gpointer; length: gsize): PSoupBuffer; cdecl; inline; static;
+    function new(use: TSoupMemoryUse; data: Pgpointer; length: gsize): PSoupBuffer; cdecl; inline; static;
     function new_take(data: Pguint8; length: gsize): PSoupBuffer; cdecl; inline; static;
-    function new_with_owner(data: gpointer; length: gsize; owner: gpointer; owner_dnotify: TGDestroyNotify): PSoupBuffer; cdecl; inline; static;
+    function new_with_owner(data: Pgpointer; length: gsize; owner: gpointer; owner_dnotify: TGDestroyNotify): PSoupBuffer; cdecl; inline; static;
     function copy: PSoupBuffer; cdecl; inline;
     procedure free; cdecl; inline;
+    function get_as_bytes: PGBytes; cdecl; inline;
     procedure get_data(data: PPguint8; length: Pgsize); cdecl; inline;
     function get_owner: gpointer; cdecl; inline;
     function new_subbuffer(offset: gsize; length: gsize): PSoupBuffer; cdecl; inline;
   end;
 
-  PPSoupCacheResponse = ^PSoupCacheResponse;
-  PSoupCacheResponse = ^TSoupCacheResponse;
+  PPSoupCache = ^PSoupCache;
+  PSoupCache = ^TSoupCache;
 
   PPSoupCacheType = ^PSoupCacheType;
   PSoupCacheType = ^TSoupCacheType;
 
+  PPSoupCachePrivate = ^PSoupCachePrivate;
+  PSoupCachePrivate = ^TSoupCachePrivate;
+  TSoupCache = object(TGObject)
+    priv: PSoupCachePrivate;
+    function new(cache_dir: Pgchar; cache_type: TSoupCacheType): PSoupCache; cdecl; inline; static;
+    procedure clear; cdecl; inline;
+    procedure dump; cdecl; inline;
+    procedure flush; cdecl; inline;
+    function get_max_size: guint; cdecl; inline;
+    procedure load; cdecl; inline;
+    procedure set_max_size(max_size: guint); cdecl; inline;
+    //property cache_dir: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_cache_dir  { property is writeable but setter not declared } ;
+    //property cache_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_cache_type  { property is writeable but setter not declared } ;
+  end;
+
   PPSoupCacheability = ^PSoupCacheability;
   PSoupCacheability = ^TSoupCacheability;
 
+  TSoupCachePrivate = record
+  end;
+
+
+
+  PPSoupCacheClass = ^PSoupCacheClass;
+  PSoupCacheClass = ^TSoupCacheClass;
+  TSoupCacheClass = object
+    parent_class: TGObjectClass;
+    get_cacheability: function(cache: PSoupCache; msg: PSoupMessage): TSoupCacheability; cdecl;
+    _libsoup_reserved1: procedure; cdecl;
+    _libsoup_reserved2: procedure; cdecl;
+    _libsoup_reserved3: procedure; cdecl;
+  end;
+
+  PPSoupCacheResponse = ^PSoupCacheResponse;
+  PSoupCacheResponse = ^TSoupCacheResponse;
+  TSoupChunkAllocator = function(msg: PSoupMessage; max_len: gsize; user_data: gpointer): PSoupBuffer; cdecl;
+
+  PPSoupClientContext = ^PSoupClientContext;
+  PSoupClientContext = ^TSoupClientContext;
+
   PPSoupSocket = ^PSoupSocket;
   PSoupSocket = ^TSoupSocket;
+  TSoupClientContext = object
+    function get_address: PSoupAddress; cdecl; inline;
+    function get_auth_domain: PSoupAuthDomain; cdecl; inline;
+    function get_auth_user: Pgchar; cdecl; inline;
+    function get_host: Pgchar; cdecl; inline;
+    function get_socket: PSoupSocket; cdecl; inline;
+  end;
 
   PPSoupSocketCallback = ^PSoupSocketCallback;
   PSoupSocketCallback = ^TSoupSocketCallback;
@@ -731,16 +845,17 @@ type
     function is_connected: gboolean; cdecl; inline;
     function is_ssl: gboolean; cdecl; inline;
     function listen: gboolean; cdecl; inline;
-    function read(buffer: gpointer; len: gsize; nread: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl; inline;
-    function read_until(buffer: gpointer; len: gsize; boundary: gpointer; boundary_len: gsize; nread: Pgsize; got_boundary: Pgboolean; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl; inline;
+    function read(buffer: gpointer; len: gsize; nread: Pgsize; cancellable: PGCancellable; error: PPGError): TSoupSocketIOStatus; cdecl; inline;
+    function read_until(buffer: gpointer; len: gsize; boundary: Pgpointer; boundary_len: gsize; nread: Pgsize; got_boundary: Pgboolean; cancellable: PGCancellable; error: PPGError): TSoupSocketIOStatus; cdecl; inline;
     function start_proxy_ssl(ssl_host: Pgchar; cancellable: PGCancellable): gboolean; cdecl; inline;
     function start_ssl(cancellable: PGCancellable): gboolean; cdecl; inline;
-    function write(buffer: gpointer; len: gsize; nwrote: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl; inline;
+    function write(buffer: Pgpointer; len: gsize; nwrote: Pgsize; cancellable: PGCancellable; error: PPGError): TSoupSocketIOStatus; cdecl; inline;
     //property async_context: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_async_context  { property is writeable but setter not declared } ;
     //property clean_dispose: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_clean_dispose  { property is writeable but setter not declared } ;
     //property is_server: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_is_server ;
     property local_address: PSoupAddress read get_local_address  { property is writeable but setter not declared } ;
     //property non_blocking: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_non_blocking  { property is writeable but setter not declared } ;
+    //property proxy_resolver: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_proxy_resolver  { property is writeable but setter not declared } ;
     property remote_address: PSoupAddress read get_remote_address  { property is writeable but setter not declared } ;
     //property ssl_creds: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_ssl_creds  { property is writeable but setter not declared } ;
     //property ssl_fallback: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_ssl_fallback  { property is writeable but setter not declared } ;
@@ -750,16 +865,6 @@ type
     //property tls_errors: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_tls_errors ;
     //property trusted_certificate: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_trusted_certificate ;
     //property use_thread_context: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_use_thread_context  { property is writeable but setter not declared } ;
-  end;
-
-  PPSoupClientContext = ^PSoupClientContext;
-  PSoupClientContext = ^TSoupClientContext;
-  TSoupClientContext = object
-    function get_address: PSoupAddress; cdecl; inline;
-    function get_auth_domain: PSoupAuthDomain; cdecl; inline;
-    function get_auth_user: Pgchar; cdecl; inline;
-    function get_host: Pgchar; cdecl; inline;
-    function get_socket: PSoupSocket; cdecl; inline;
   end;
 
   PPSoupConnection = ^PSoupConnection;
@@ -772,19 +877,6 @@ type
 
   PPSoupConnectionState = ^PSoupConnectionState;
   PSoupConnectionState = ^TSoupConnectionState;
-
-  PPSoupSessionFeature = ^PSoupSessionFeature;
-  PSoupSessionFeature = ^TSoupSessionFeature;
-
-  PPSoupSession = ^PSoupSession;
-  PSoupSession = ^TSoupSession;
-  TSoupSessionFeature = object
-    function add_feature(type_: TGType): gboolean; cdecl; inline;
-    procedure attach(session: PSoupSession); cdecl; inline;
-    procedure detach(session: PSoupSession); cdecl; inline;
-    function has_feature(type_: TGType): gboolean; cdecl; inline;
-    function remove_feature(type_: TGType): gboolean; cdecl; inline;
-  end;
 
   PPSoupContentDecoderPrivate = ^PSoupContentDecoderPrivate;
   PSoupContentDecoderPrivate = ^TSoupContentDecoderPrivate;
@@ -819,6 +911,7 @@ type
   TSoupContentSniffer = object(TGObject)
     priv: PSoupContentSnifferPrivate;
     function new: PSoupContentSniffer; cdecl; inline; static;
+    function get_buffer_size: gsize; cdecl; inline;
     function sniff(msg: PSoupMessage; buffer: PSoupBuffer; params: PPGHashTable): Pgchar; cdecl; inline;
   end;
 
@@ -918,11 +1011,13 @@ type
   TSoupCookieJar = object(TGObject)
     function new: PSoupCookieJar; cdecl; inline; static;
     procedure add_cookie(cookie: PSoupCookie); cdecl; inline;
+    procedure add_cookie_with_first_party(first_party: PSoupURI; cookie: PSoupCookie); cdecl; inline;
     function all_cookies: PGSList; cdecl; inline;
     procedure delete_cookie(cookie: PSoupCookie); cdecl; inline;
     function get_accept_policy: TSoupCookieJarAcceptPolicy; cdecl; inline;
+    function get_cookie_list(uri: PSoupURI; for_http: gboolean): PGSList; cdecl; inline;
     function get_cookies(uri: PSoupURI; for_http: gboolean): Pgchar; cdecl; inline;
-    procedure save; cdecl; inline;
+    function is_persistent: gboolean; cdecl; inline;
     procedure set_accept_policy(policy: TSoupCookieJarAcceptPolicy); cdecl; inline;
     procedure set_cookie(uri: PSoupURI; cookie: Pgchar); cdecl; inline;
     procedure set_cookie_with_first_party(uri: PSoupURI; first_party: PSoupURI; cookie: Pgchar); cdecl; inline;
@@ -935,10 +1030,27 @@ type
   TSoupCookieJarClass = object
     parent_class: TGObjectClass;
     save: procedure(jar: PSoupCookieJar); cdecl;
+    is_persistent: function(jar: PSoupCookieJar): gboolean; cdecl;
     changed: procedure(jar: PSoupCookieJar; old_cookie: PSoupCookie; new_cookie: PSoupCookie); cdecl;
     _libsoup_reserved1: procedure; cdecl;
     _libsoup_reserved2: procedure; cdecl;
+  end;
+
+  PPSoupCookieJarDB = ^PSoupCookieJarDB;
+  PSoupCookieJarDB = ^TSoupCookieJarDB;
+  TSoupCookieJarDB = object(TSoupCookieJar)
+    function new(filename: Pgchar; read_only: gboolean): PSoupCookieJarDB; cdecl; inline; static;
+    //property filename: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_filename  { property is writeable but setter not declared } ;
+  end;
+
+  PPSoupCookieJarDBClass = ^PSoupCookieJarDBClass;
+  PSoupCookieJarDBClass = ^TSoupCookieJarDBClass;
+  TSoupCookieJarDBClass = object
+    parent_class: TSoupCookieJarClass;
+    _libsoup_reserved1: procedure; cdecl;
+    _libsoup_reserved2: procedure; cdecl;
     _libsoup_reserved3: procedure; cdecl;
+    _libsoup_reserved4: procedure; cdecl;
   end;
 
   PPSoupCookieJarText = ^PSoupCookieJarText;
@@ -990,7 +1102,12 @@ type
   PPSoupSessionCallback = ^PSoupSessionCallback;
   PSoupSessionCallback = ^TSoupSessionCallback;
   TSoupSessionCallback = procedure(session: PSoupSession; msg: PSoupMessage; user_data: gpointer); cdecl;
+
+  PPSoupRequestHTTP = ^PSoupRequestHTTP;
+  PSoupRequestHTTP = ^TSoupRequestHTTP;
   TSoupSession = object(TGObject)
+    function new: PSoupSession; cdecl; inline; static;
+    //function new_with_options(optname1: Pgchar; args: array of const): PSoupSession; cdecl; inline; static;
     procedure abort; cdecl; inline;
     procedure add_feature(feature: PSoupSessionFeature); cdecl; inline;
     procedure add_feature_by_type(feature_type: TGType); cdecl; inline;
@@ -999,14 +1116,21 @@ type
     function get_feature(feature_type: TGType): PSoupSessionFeature; cdecl; inline;
     function get_feature_for_message(feature_type: TGType; msg: PSoupMessage): PSoupSessionFeature; cdecl; inline;
     function get_features(feature_type: TGType): PGSList; cdecl; inline;
+    function has_feature(feature_type: TGType): gboolean; cdecl; inline;
     procedure pause_message(msg: PSoupMessage); cdecl; inline;
     procedure prefetch_dns(hostname: Pgchar; cancellable: PGCancellable; callback: TSoupAddressCallback; user_data: gpointer); cdecl; inline;
-    procedure prepare_for_uri(uri: PSoupURI); cdecl; inline;
     procedure queue_message(msg: PSoupMessage; callback: TSoupSessionCallback; user_data: gpointer); cdecl; inline;
     function redirect_message(msg: PSoupMessage): gboolean; cdecl; inline;
     procedure remove_feature(feature: PSoupSessionFeature); cdecl; inline;
     procedure remove_feature_by_type(feature_type: TGType); cdecl; inline;
+    function request(uri_string: Pgchar; error: PPGError): PSoupRequest; cdecl; inline;
+    function request_http(method: Pgchar; uri_string: Pgchar; error: PPGError): PSoupRequestHTTP; cdecl; inline;
+    function request_http_uri(method: Pgchar; uri: PSoupURI; error: PPGError): PSoupRequestHTTP; cdecl; inline;
+    function request_uri(uri: PSoupURI; error: PPGError): PSoupRequest; cdecl; inline;
     procedure requeue_message(msg: PSoupMessage); cdecl; inline;
+    function send(msg: PSoupMessage; cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl; inline;
+    procedure send_async(msg: PSoupMessage; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function send_finish(result_: PGAsyncResult; error: PPGError): PGInputStream; cdecl; inline;
     function send_message(msg: PSoupMessage): guint; cdecl; inline;
     procedure unpause_message(msg: PSoupMessage); cdecl; inline;
     function would_redirect(msg: PSoupMessage): gboolean; cdecl; inline;
@@ -1018,8 +1142,10 @@ type
     //property http_aliases: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_http_aliases  { property is writeable but setter not declared } ;
     //property https_aliases: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_https_aliases  { property is writeable but setter not declared } ;
     //property idle_timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_idle_timeout  { property is writeable but setter not declared } ;
+    //property local_address: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_local_address  { property is writeable but setter not declared } ;
     //property max_conns: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_max_conns  { property is writeable but setter not declared } ;
     //property max_conns_per_host: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_max_conns_per_host  { property is writeable but setter not declared } ;
+    //property proxy_resolver: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_proxy_resolver  { property is writeable but setter not declared } ;
     //property proxy_uri: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_proxy_uri  { property is writeable but setter not declared } ;
     //property remove_feature_by_type1: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_remove_feature_by_type  { property is writeable but setter not declared } ;
     //property ssl_ca_file: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_ssl_ca_file  { property is writeable but setter not declared } ;
@@ -1040,6 +1166,21 @@ type
     _libsoup_reserved2: procedure; cdecl;
     _libsoup_reserved3: procedure; cdecl;
     _libsoup_reserved4: procedure; cdecl;
+  end;
+
+  PPSoupRequestPrivate = ^PSoupRequestPrivate;
+  PSoupRequestPrivate = ^TSoupRequestPrivate;
+  TSoupRequest = object(TGObject)
+    priv: PSoupRequestPrivate;
+    function get_content_length: gint64; cdecl; inline;
+    function get_content_type: Pgchar; cdecl; inline;
+    function get_session: PSoupSession; cdecl; inline;
+    function get_uri: PSoupURI; cdecl; inline;
+    function send(cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl; inline;
+    procedure send_async(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function send_finish(result_: PGAsyncResult; error: PPGError): PGInputStream; cdecl; inline;
+    property session: PSoupSession read get_session  { property is writeable but setter not declared } ;
+    property uri: PSoupURI read get_uri  { property is writeable but setter not declared } ;
   end;
   TSoupMessageBody = object
     data: Pgchar;
@@ -1128,8 +1269,8 @@ type
   PSoupMessageHeadersIter = ^TSoupMessageHeadersIter;
   TSoupMessageHeadersIter = object
     dummy: array [0..2] of gpointer;
-    procedure init(hdrs: PSoupMessageHeaders); cdecl; inline;
     function next(name: PPgchar; value: PPgchar): gboolean; cdecl; inline;
+    procedure init(iter: PSoupMessageHeadersIter; hdrs: PSoupMessageHeaders); cdecl; inline; static;
   end;
 
   PPSoupMessageQueue = ^PSoupMessageQueue;
@@ -1160,6 +1301,51 @@ type
     function get_length: gint; cdecl; inline;
     function get_part(part: gint; headers: PPSoupMessageHeaders; body: PPSoupBuffer): gboolean; cdecl; inline;
     procedure to_message(dest_headers: PSoupMessageHeaders; dest_body: PSoupMessageBody); cdecl; inline;
+  end;
+
+  PPSoupMultipartInputStream = ^PSoupMultipartInputStream;
+  PSoupMultipartInputStream = ^TSoupMultipartInputStream;
+
+  PPSoupMultipartInputStreamPrivate = ^PSoupMultipartInputStreamPrivate;
+  PSoupMultipartInputStreamPrivate = ^TSoupMultipartInputStreamPrivate;
+  TSoupMultipartInputStream = object(TGFilterInputStream)
+    priv1: PSoupMultipartInputStreamPrivate;
+    function new(msg: PSoupMessage; base_stream: PGInputStream): PSoupMultipartInputStream; cdecl; inline; static;
+    function get_headers: PSoupMessageHeaders; cdecl; inline;
+    function next_part(cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl; inline;
+    procedure next_part_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; data: gpointer); cdecl; inline;
+    function next_part_finish(result_: PGAsyncResult; error: PPGError): PGInputStream; cdecl; inline;
+    //property message: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_message  { property is writeable but setter not declared } ;
+  end;
+
+  TSoupMultipartInputStreamPrivate = record
+  end;
+
+
+
+  PPSoupMultipartInputStreamClass = ^PSoupMultipartInputStreamClass;
+  PSoupMultipartInputStreamClass = ^TSoupMultipartInputStreamClass;
+  TSoupMultipartInputStreamClass = object
+    parent_class: TGFilterInputStreamClass;
+  end;
+
+  PPSoupPasswordManager = ^PSoupPasswordManager;
+  PSoupPasswordManager = ^TSoupPasswordManager;
+
+  PPSoupPasswordManagerCallback = ^PSoupPasswordManagerCallback;
+  PSoupPasswordManagerCallback = ^TSoupPasswordManagerCallback;
+  TSoupPasswordManagerCallback = procedure(arg0: PSoupPasswordManager; arg1: PSoupMessage; arg2: PSoupAuth; retrying: gboolean; user_data: gpointer); cdecl;
+  TSoupPasswordManager = object
+    procedure get_passwords_async(msg: PSoupMessage; auth: PSoupAuth; retrying: gboolean; async_context: PGMainContext; cancellable: PGCancellable; callback: TSoupPasswordManagerCallback; user_data: gpointer); cdecl; inline;
+    procedure get_passwords_sync(msg: PSoupMessage; auth: PSoupAuth; cancellable: PGCancellable); cdecl; inline;
+  end;
+
+  PPSoupPasswordManagerInterface = ^PSoupPasswordManagerInterface;
+  PSoupPasswordManagerInterface = ^TSoupPasswordManagerInterface;
+  TSoupPasswordManagerInterface = object
+    base: TGTypeInterface;
+    get_passwords_async: procedure(arg0: PSoupPasswordManager; arg1: PSoupMessage; arg2: PSoupAuth; arg3: gboolean; arg4: PGMainContext; arg5: PGCancellable; arg6: TSoupPasswordManagerCallback; arg7: gpointer); cdecl;
+    get_passwords_sync: procedure(arg0: PSoupPasswordManager; arg1: PSoupMessage; arg2: PSoupAuth; arg3: PGCancellable); cdecl;
   end;
 
   PPSoupProxyURIResolver = ^PSoupProxyURIResolver;
@@ -1195,6 +1381,109 @@ type
     _libsoup_reserved2: procedure; cdecl;
     _libsoup_reserved3: procedure; cdecl;
     _libsoup_reserved4: procedure; cdecl;
+  end;
+
+  TSoupRequestPrivate = record
+  end;
+
+
+
+  PPSoupRequestClass = ^PSoupRequestClass;
+  PSoupRequestClass = ^TSoupRequestClass;
+  TSoupRequestClass = object
+    parent: TGObjectClass;
+    schemes: PPgchar;
+    check_uri: function(req_base: PSoupRequest; uri: PSoupURI; error: PPGError): gboolean; cdecl;
+    send: function(request: PSoupRequest; cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl;
+    send_async: procedure(request: PSoupRequest; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+    send_finish: function(request: PSoupRequest; result_: PGAsyncResult; error: PPGError): PGInputStream; cdecl;
+    get_content_length: function(request: PSoupRequest): gint64; cdecl;
+    get_content_type: function(request: PSoupRequest): Pgchar; cdecl;
+  end;
+
+  PPSoupRequestDataPrivate = ^PSoupRequestDataPrivate;
+  PSoupRequestDataPrivate = ^TSoupRequestDataPrivate;
+
+  TSoupRequestDataPrivate = record
+  end;
+
+
+
+  PPSoupRequestData = ^PSoupRequestData;
+  PSoupRequestData = ^TSoupRequestData;
+  TSoupRequestData = object(TSoupRequest)
+    priv1: PSoupRequestDataPrivate;
+  end;
+
+  PPSoupRequestDataClass = ^PSoupRequestDataClass;
+  PSoupRequestDataClass = ^TSoupRequestDataClass;
+  TSoupRequestDataClass = object
+    parent: TSoupRequestClass;
+  end;
+
+  PPSoupRequestError = ^PSoupRequestError;
+  PSoupRequestError = ^TSoupRequestError;
+
+  PPSoupRequestFile = ^PSoupRequestFile;
+  PSoupRequestFile = ^TSoupRequestFile;
+
+  PPSoupRequestFilePrivate = ^PSoupRequestFilePrivate;
+  PSoupRequestFilePrivate = ^TSoupRequestFilePrivate;
+  TSoupRequestFile = object(TSoupRequest)
+    priv1: PSoupRequestFilePrivate;
+    function get_file: PGFile; cdecl; inline;
+  end;
+
+  TSoupRequestFilePrivate = record
+  end;
+
+
+
+  PPSoupRequestFileClass = ^PSoupRequestFileClass;
+  PSoupRequestFileClass = ^TSoupRequestFileClass;
+  TSoupRequestFileClass = object
+    parent: TSoupRequestClass;
+  end;
+
+  PPSoupRequestHTTPPrivate = ^PSoupRequestHTTPPrivate;
+  PSoupRequestHTTPPrivate = ^TSoupRequestHTTPPrivate;
+  TSoupRequestHTTP = object(TSoupRequest)
+    priv1: PSoupRequestHTTPPrivate;
+    function get_message: PSoupMessage; cdecl; inline;
+  end;
+
+  TSoupRequestHTTPPrivate = record
+  end;
+
+
+
+  PPSoupRequestHTTPClass = ^PSoupRequestHTTPClass;
+  PSoupRequestHTTPClass = ^TSoupRequestHTTPClass;
+  TSoupRequestHTTPClass = object
+    parent: TSoupRequestClass;
+  end;
+
+  PPSoupRequester = ^PSoupRequester;
+  PSoupRequester = ^TSoupRequester;
+
+  PPSoupRequesterPrivate = ^PSoupRequesterPrivate;
+  PSoupRequesterPrivate = ^TSoupRequesterPrivate;
+  TSoupRequester = object(TGObject)
+    priv: PSoupRequesterPrivate;
+    function new: PSoupRequester; cdecl; inline; static;
+    function request(uri_string: Pgchar; error: PPGError): PSoupRequest; cdecl; inline;
+    function request_uri(uri: PSoupURI; error: PPGError): PSoupRequest; cdecl; inline;
+  end;
+
+  TSoupRequesterPrivate = record
+  end;
+
+
+
+  PPSoupRequesterClass = ^PSoupRequesterClass;
+  PSoupRequesterClass = ^TSoupRequesterClass;
+  TSoupRequesterClass = object
+    parent_class: TGObjectClass;
   end;
 
   PPSoupRequesterError = ^PSoupRequesterError;
@@ -1249,8 +1538,6 @@ type
   PPSoupSessionAsync = ^PSoupSessionAsync;
   PSoupSessionAsync = ^TSoupSessionAsync;
   TSoupSessionAsync = object(TSoupSession)
-    function new: PSoupSessionAsync; cdecl; inline; static;
-    //function new_with_options(optname1: Pgchar; args: array of const): PSoupSessionAsync; cdecl; inline; static;
   end;
 
   PPSoupSessionClass = ^PSoupSessionClass;
@@ -1296,8 +1583,6 @@ type
   PPSoupSessionSync = ^PSoupSessionSync;
   PSoupSessionSync = ^TSoupSessionSync;
   TSoupSessionSync = object(TSoupSession)
-    function new: PSoupSessionSync; cdecl; inline; static;
-    //function new_with_options(optname1: Pgchar; args: array of const): PSoupSessionSync; cdecl; inline; static;
   end;
 
   PPSoupSessionSyncClass = ^PSoupSessionSyncClass;
@@ -1314,15 +1599,18 @@ type
   PSoupSocketClass = ^TSoupSocketClass;
   TSoupSocketClass = object
     parent_class: TGObjectClass;
-    readable: procedure(param0: PSoupSocket); cdecl;
-    writable: procedure(param0: PSoupSocket); cdecl;
-    disconnected: procedure(param0: PSoupSocket); cdecl;
-    new_connection: procedure(param0: PSoupSocket; param1: PSoupSocket); cdecl;
+    readable: procedure(arg0: PSoupSocket); cdecl;
+    writable: procedure(arg0: PSoupSocket); cdecl;
+    disconnected: procedure(arg0: PSoupSocket); cdecl;
+    new_connection: procedure(arg0: PSoupSocket; arg1: PSoupSocket); cdecl;
     _libsoup_reserved1: procedure; cdecl;
     _libsoup_reserved2: procedure; cdecl;
     _libsoup_reserved3: procedure; cdecl;
     _libsoup_reserved4: procedure; cdecl;
   end;
+
+  PPSoupTLDError = ^PSoupTLDError;
+  PSoupTLDError = ^TSoupTLDError;
 
   PPSoupXMLRPCError = ^PSoupXMLRPCError;
   PSoupXMLRPCError = ^TSoupXMLRPCError;
@@ -1334,106 +1622,119 @@ function soup_add_completion(async_context: PGMainContext; function_: TGSourceFu
 function soup_add_idle(async_context: PGMainContext; function_: TGSourceFunc; data: gpointer): PGSource; cdecl; external;
 function soup_add_io_watch(async_context: PGMainContext; chan: PGIOChannel; condition: TGIOCondition; function_: TGIOFunc; data: gpointer): PGSource; cdecl; external;
 function soup_add_timeout(async_context: PGMainContext; interval: guint; function_: TGSourceFunc; data: gpointer): PGSource; cdecl; external;
-function soup_address_equal_by_ip(AAddress: PSoupAddress; addr2: TSoupAddress): gboolean; cdecl; external;
-function soup_address_equal_by_name(AAddress: PSoupAddress; addr2: TSoupAddress): gboolean; cdecl; external;
-function soup_address_get_gsockaddr(AAddress: PSoupAddress): PGSocketAddress; cdecl; external;
-function soup_address_get_name(AAddress: PSoupAddress): Pgchar; cdecl; external;
-function soup_address_get_physical(AAddress: PSoupAddress): Pgchar; cdecl; external;
-function soup_address_get_port(AAddress: PSoupAddress): guint; cdecl; external;
-function soup_address_get_sockaddr(AAddress: PSoupAddress; len: Pgint): Pgpointer; cdecl; external;
+function soup_address_equal_by_ip(addr1: PSoupAddress; addr2: PSoupAddress): gboolean; cdecl; external;
+function soup_address_equal_by_name(addr1: PSoupAddress; addr2: PSoupAddress): gboolean; cdecl; external;
+function soup_address_get_gsockaddr(addr: PSoupAddress): PGSocketAddress; cdecl; external;
+function soup_address_get_name(addr: PSoupAddress): Pgchar; cdecl; external;
+function soup_address_get_physical(addr: PSoupAddress): Pgchar; cdecl; external;
+function soup_address_get_port(addr: PSoupAddress): guint; cdecl; external;
+function soup_address_get_sockaddr(addr: PSoupAddress; len: Pgint): Pgpointer; cdecl; external;
 function soup_address_get_type: TGType; cdecl; external;
-function soup_address_hash_by_ip(AAddress: PSoupAddress): guint; cdecl; external;
-function soup_address_hash_by_name(AAddress: PSoupAddress): guint; cdecl; external;
-function soup_address_is_resolved(AAddress: PSoupAddress): gboolean; cdecl; external;
+function soup_address_hash_by_ip(addr: PSoupAddress): guint; cdecl; external;
+function soup_address_hash_by_name(addr: PSoupAddress): guint; cdecl; external;
+function soup_address_is_resolved(addr: PSoupAddress): gboolean; cdecl; external;
 function soup_address_new(name: Pgchar; port: guint): PSoupAddress; cdecl; external;
 function soup_address_new_any(family: TSoupAddressFamily; port: guint): PSoupAddress; cdecl; external;
 function soup_address_new_from_sockaddr(sa: Pgpointer; len: gint): PSoupAddress; cdecl; external;
-function soup_address_resolve_sync(AAddress: PSoupAddress; cancellable: PGCancellable): guint; cdecl; external;
+function soup_address_resolve_sync(addr: PSoupAddress; cancellable: PGCancellable): guint; cdecl; external;
 function soup_auth_basic_get_type: TGType; cdecl; external;
 function soup_auth_digest_get_type: TGType; cdecl; external;
-function soup_auth_domain_accepts(AAuthDomain: PSoupAuthDomain; msg: PSoupMessage): Pgchar; cdecl; external;
+function soup_auth_domain_accepts(domain: PSoupAuthDomain; msg: PSoupMessage): Pgchar; cdecl; external;
 function soup_auth_domain_basic_get_type: TGType; cdecl; external;
 function soup_auth_domain_basic_new(optname1: Pgchar; args: array of const): PSoupAuthDomainBasic; cdecl; external;
-function soup_auth_domain_check_password(AAuthDomain: PSoupAuthDomain; msg: PSoupMessage; username: Pgchar; password: Pgchar): gboolean; cdecl; external;
-function soup_auth_domain_covers(AAuthDomain: PSoupAuthDomain; msg: PSoupMessage): gboolean; cdecl; external;
+function soup_auth_domain_check_password(domain: PSoupAuthDomain; msg: PSoupMessage; username: Pgchar; password: Pgchar): gboolean; cdecl; external;
+function soup_auth_domain_covers(domain: PSoupAuthDomain; msg: PSoupMessage): gboolean; cdecl; external;
 function soup_auth_domain_digest_encode_password(username: Pgchar; realm: Pgchar; password: Pgchar): Pgchar; cdecl; external;
 function soup_auth_domain_digest_get_type: TGType; cdecl; external;
 function soup_auth_domain_digest_new(optname1: Pgchar; args: array of const): PSoupAuthDomainDigest; cdecl; external;
-function soup_auth_domain_get_realm(AAuthDomain: PSoupAuthDomain): Pgchar; cdecl; external;
+function soup_auth_domain_get_realm(domain: PSoupAuthDomain): Pgchar; cdecl; external;
 function soup_auth_domain_get_type: TGType; cdecl; external;
-function soup_auth_domain_try_generic_auth_callback(AAuthDomain: PSoupAuthDomain; msg: PSoupMessage; username: Pgchar): gboolean; cdecl; external;
-function soup_auth_get_authorization(AAuth: PSoupAuth; msg: PSoupMessage): Pgchar; cdecl; external;
-function soup_auth_get_host(AAuth: PSoupAuth): Pgchar; cdecl; external;
-function soup_auth_get_info(AAuth: PSoupAuth): Pgchar; cdecl; external;
-function soup_auth_get_protection_space(AAuth: PSoupAuth; source_uri: PSoupURI): PGSList; cdecl; external;
-function soup_auth_get_realm(AAuth: PSoupAuth): Pgchar; cdecl; external;
-function soup_auth_get_scheme_name(AAuth: PSoupAuth): Pgchar; cdecl; external;
+function soup_auth_domain_try_generic_auth_callback(domain: PSoupAuthDomain; msg: PSoupMessage; username: Pgchar): gboolean; cdecl; external;
+function soup_auth_get_authorization(auth: PSoupAuth; msg: PSoupMessage): Pgchar; cdecl; external;
+function soup_auth_get_host(auth: PSoupAuth): Pgchar; cdecl; external;
+function soup_auth_get_info(auth: PSoupAuth): Pgchar; cdecl; external;
+function soup_auth_get_protection_space(auth: PSoupAuth; source_uri: PSoupURI): PGSList; cdecl; external;
+function soup_auth_get_realm(auth: PSoupAuth): Pgchar; cdecl; external;
+function soup_auth_get_saved_password(auth: PSoupAuth; user: Pgchar): Pgchar; cdecl; external;
+function soup_auth_get_saved_users(auth: PSoupAuth): PGSList; cdecl; external;
+function soup_auth_get_scheme_name(auth: PSoupAuth): Pgchar; cdecl; external;
 function soup_auth_get_type: TGType; cdecl; external;
-function soup_auth_is_authenticated(AAuth: PSoupAuth): gboolean; cdecl; external;
-function soup_auth_is_for_proxy(AAuth: PSoupAuth): gboolean; cdecl; external;
+function soup_auth_is_authenticated(auth: PSoupAuth): gboolean; cdecl; external;
+function soup_auth_is_for_proxy(auth: PSoupAuth): gboolean; cdecl; external;
+function soup_auth_is_ready(auth: PSoupAuth; msg: PSoupMessage): gboolean; cdecl; external;
+function soup_auth_manager_get_type: TGType; cdecl; external;
 function soup_auth_new(type_: TGType; msg: PSoupMessage; auth_header: Pgchar): PSoupAuth; cdecl; external;
 function soup_auth_ntlm_get_type: TGType; cdecl; external;
-function soup_auth_update(AAuth: PSoupAuth; msg: PSoupMessage; auth_header: Pgchar): gboolean; cdecl; external;
-function soup_buffer_copy(ABuffer: PSoupBuffer): PSoupBuffer; cdecl; external;
-function soup_buffer_get_owner(ABuffer: PSoupBuffer): gpointer; cdecl; external;
+function soup_auth_update(auth: PSoupAuth; msg: PSoupMessage; auth_header: Pgchar): gboolean; cdecl; external;
+function soup_buffer_copy(buffer: PSoupBuffer): PSoupBuffer; cdecl; external;
+function soup_buffer_get_as_bytes(buffer: PSoupBuffer): PGBytes; cdecl; external;
+function soup_buffer_get_owner(buffer: PSoupBuffer): gpointer; cdecl; external;
 function soup_buffer_get_type: TGType; cdecl; external;
-function soup_buffer_new(use: TSoupMemoryUse; data: gpointer; length: gsize): PSoupBuffer; cdecl; external;
-function soup_buffer_new_subbuffer(ABuffer: PSoupBuffer; offset: gsize; length: gsize): PSoupBuffer; cdecl; external;
+function soup_buffer_new(use: TSoupMemoryUse; data: Pgpointer; length: gsize): PSoupBuffer; cdecl; external;
+function soup_buffer_new_subbuffer(parent: PSoupBuffer; offset: gsize; length: gsize): PSoupBuffer; cdecl; external;
 function soup_buffer_new_take(data: Pguint8; length: gsize): PSoupBuffer; cdecl; external;
-function soup_buffer_new_with_owner(data: gpointer; length: gsize; owner: gpointer; owner_dnotify: TGDestroyNotify): PSoupBuffer; cdecl; external;
-function soup_client_context_get_address(AClientContext: PSoupClientContext): PSoupAddress; cdecl; external;
-function soup_client_context_get_auth_domain(AClientContext: PSoupClientContext): PSoupAuthDomain; cdecl; external;
-function soup_client_context_get_auth_user(AClientContext: PSoupClientContext): Pgchar; cdecl; external;
-function soup_client_context_get_host(AClientContext: PSoupClientContext): Pgchar; cdecl; external;
-function soup_client_context_get_socket(AClientContext: PSoupClientContext): PSoupSocket; cdecl; external;
+function soup_buffer_new_with_owner(data: Pgpointer; length: gsize; owner: gpointer; owner_dnotify: TGDestroyNotify): PSoupBuffer; cdecl; external;
+function soup_cache_get_max_size(cache: PSoupCache): guint; cdecl; external;
+function soup_cache_get_type: TGType; cdecl; external;
+function soup_cache_new(cache_dir: Pgchar; cache_type: TSoupCacheType): PSoupCache; cdecl; external;
+function soup_client_context_get_address(client: PSoupClientContext): PSoupAddress; cdecl; external;
+function soup_client_context_get_auth_domain(client: PSoupClientContext): PSoupAuthDomain; cdecl; external;
+function soup_client_context_get_auth_user(client: PSoupClientContext): Pgchar; cdecl; external;
+function soup_client_context_get_host(client: PSoupClientContext): Pgchar; cdecl; external;
+function soup_client_context_get_socket(client: PSoupClientContext): PSoupSocket; cdecl; external;
 function soup_client_context_get_type: TGType; cdecl; external;
 function soup_content_decoder_get_type: TGType; cdecl; external;
+function soup_content_sniffer_get_buffer_size(sniffer: PSoupContentSniffer): gsize; cdecl; external;
 function soup_content_sniffer_get_type: TGType; cdecl; external;
 function soup_content_sniffer_new: PSoupContentSniffer; cdecl; external;
-function soup_content_sniffer_sniff(AContentSniffer: PSoupContentSniffer; msg: PSoupMessage; buffer: PSoupBuffer; params: PPGHashTable): Pgchar; cdecl; external;
-function soup_cookie_applies_to_uri(ACookie: PSoupCookie; uri: PSoupURI): gboolean; cdecl; external;
-function soup_cookie_copy(ACookie: PSoupCookie): PSoupCookie; cdecl; external;
-function soup_cookie_domain_matches(ACookie: PSoupCookie; host: Pgchar): gboolean; cdecl; external;
-function soup_cookie_equal(ACookie: PSoupCookie; cookie2: PSoupCookie): gboolean; cdecl; external;
-function soup_cookie_get_domain(ACookie: PSoupCookie): Pgchar; cdecl; external;
-function soup_cookie_get_expires(ACookie: PSoupCookie): PSoupDate; cdecl; external;
-function soup_cookie_get_http_only(ACookie: PSoupCookie): gboolean; cdecl; external;
-function soup_cookie_get_name(ACookie: PSoupCookie): Pgchar; cdecl; external;
-function soup_cookie_get_path(ACookie: PSoupCookie): Pgchar; cdecl; external;
-function soup_cookie_get_secure(ACookie: PSoupCookie): gboolean; cdecl; external;
+function soup_content_sniffer_sniff(sniffer: PSoupContentSniffer; msg: PSoupMessage; buffer: PSoupBuffer; params: PPGHashTable): Pgchar; cdecl; external;
+function soup_cookie_applies_to_uri(cookie: PSoupCookie; uri: PSoupURI): gboolean; cdecl; external;
+function soup_cookie_copy(cookie: PSoupCookie): PSoupCookie; cdecl; external;
+function soup_cookie_domain_matches(cookie: PSoupCookie; host: Pgchar): gboolean; cdecl; external;
+function soup_cookie_equal(cookie1: PSoupCookie; cookie2: PSoupCookie): gboolean; cdecl; external;
+function soup_cookie_get_domain(cookie: PSoupCookie): Pgchar; cdecl; external;
+function soup_cookie_get_expires(cookie: PSoupCookie): PSoupDate; cdecl; external;
+function soup_cookie_get_http_only(cookie: PSoupCookie): gboolean; cdecl; external;
+function soup_cookie_get_name(cookie: PSoupCookie): Pgchar; cdecl; external;
+function soup_cookie_get_path(cookie: PSoupCookie): Pgchar; cdecl; external;
+function soup_cookie_get_secure(cookie: PSoupCookie): gboolean; cdecl; external;
 function soup_cookie_get_type: TGType; cdecl; external;
-function soup_cookie_get_value(ACookie: PSoupCookie): Pgchar; cdecl; external;
-function soup_cookie_jar_all_cookies(ACookieJar: PSoupCookieJar): PGSList; cdecl; external;
-function soup_cookie_jar_get_accept_policy(ACookieJar: PSoupCookieJar): TSoupCookieJarAcceptPolicy; cdecl; external;
-function soup_cookie_jar_get_cookies(ACookieJar: PSoupCookieJar; uri: PSoupURI; for_http: gboolean): Pgchar; cdecl; external;
+function soup_cookie_get_value(cookie: PSoupCookie): Pgchar; cdecl; external;
+function soup_cookie_jar_all_cookies(jar: PSoupCookieJar): PGSList; cdecl; external;
+function soup_cookie_jar_db_get_type: TGType; cdecl; external;
+function soup_cookie_jar_db_new(filename: Pgchar; read_only: gboolean): PSoupCookieJarDB; cdecl; external;
+function soup_cookie_jar_get_accept_policy(jar: PSoupCookieJar): TSoupCookieJarAcceptPolicy; cdecl; external;
+function soup_cookie_jar_get_cookie_list(jar: PSoupCookieJar; uri: PSoupURI; for_http: gboolean): PGSList; cdecl; external;
+function soup_cookie_jar_get_cookies(jar: PSoupCookieJar; uri: PSoupURI; for_http: gboolean): Pgchar; cdecl; external;
 function soup_cookie_jar_get_type: TGType; cdecl; external;
+function soup_cookie_jar_is_persistent(jar: PSoupCookieJar): gboolean; cdecl; external;
 function soup_cookie_jar_new: PSoupCookieJar; cdecl; external;
 function soup_cookie_jar_text_get_type: TGType; cdecl; external;
 function soup_cookie_jar_text_new(filename: Pgchar; read_only: gboolean): PSoupCookieJarText; cdecl; external;
 function soup_cookie_new(name: Pgchar; value: Pgchar; domain: Pgchar; path: Pgchar; max_age: gint): PSoupCookie; cdecl; external;
 function soup_cookie_parse(header: Pgchar; origin: PSoupURI): PSoupCookie; cdecl; external;
-function soup_cookie_to_cookie_header(ACookie: PSoupCookie): Pgchar; cdecl; external;
-function soup_cookie_to_set_cookie_header(ACookie: PSoupCookie): Pgchar; cdecl; external;
+function soup_cookie_to_cookie_header(cookie: PSoupCookie): Pgchar; cdecl; external;
+function soup_cookie_to_set_cookie_header(cookie: PSoupCookie): Pgchar; cdecl; external;
 function soup_cookies_from_request(msg: PSoupMessage): PGSList; cdecl; external;
 function soup_cookies_from_response(msg: PSoupMessage): PGSList; cdecl; external;
 function soup_cookies_to_cookie_header(cookies: PGSList): Pgchar; cdecl; external;
-function soup_date_copy(ADate: PSoupDate): PSoupDate; cdecl; external;
-function soup_date_get_day(ADate: PSoupDate): gint; cdecl; external;
-function soup_date_get_hour(ADate: PSoupDate): gint; cdecl; external;
-function soup_date_get_minute(ADate: PSoupDate): gint; cdecl; external;
-function soup_date_get_month(ADate: PSoupDate): gint; cdecl; external;
-function soup_date_get_offset(ADate: PSoupDate): gint; cdecl; external;
-function soup_date_get_second(ADate: PSoupDate): gint; cdecl; external;
+function soup_date_copy(date: PSoupDate): PSoupDate; cdecl; external;
+function soup_date_get_day(date: PSoupDate): gint; cdecl; external;
+function soup_date_get_hour(date: PSoupDate): gint; cdecl; external;
+function soup_date_get_minute(date: PSoupDate): gint; cdecl; external;
+function soup_date_get_month(date: PSoupDate): gint; cdecl; external;
+function soup_date_get_offset(date: PSoupDate): gint; cdecl; external;
+function soup_date_get_second(date: PSoupDate): gint; cdecl; external;
 function soup_date_get_type: TGType; cdecl; external;
-function soup_date_get_utc(ADate: PSoupDate): gint; cdecl; external;
-function soup_date_get_year(ADate: PSoupDate): gint; cdecl; external;
-function soup_date_is_past(ADate: PSoupDate): gboolean; cdecl; external;
+function soup_date_get_utc(date: PSoupDate): gint; cdecl; external;
+function soup_date_get_year(date: PSoupDate): gint; cdecl; external;
+function soup_date_is_past(date: PSoupDate): gboolean; cdecl; external;
 function soup_date_new(year: gint; month: gint; day: gint; hour: gint; minute: gint; second: gint): PSoupDate; cdecl; external;
 function soup_date_new_from_now(offset_seconds: gint): PSoupDate; cdecl; external;
 function soup_date_new_from_string(date_string: Pgchar): PSoupDate; cdecl; external;
 function soup_date_new_from_time_t(when: glong): PSoupDate; cdecl; external;
-function soup_date_to_string(ADate: PSoupDate; format: TSoupDateFormat): Pgchar; cdecl; external;
-function soup_date_to_time_t(ADate: PSoupDate): glong; cdecl; external;
+function soup_date_to_string(date: PSoupDate; format: TSoupDateFormat): Pgchar; cdecl; external;
+function soup_date_to_time_t(date: PSoupDate): glong; cdecl; external;
 function soup_form_decode(encoded_form: Pgchar): PGHashTable; cdecl; external;
 function soup_form_decode_multipart(msg: PSoupMessage; file_control_name: Pgchar; filename: PPgchar; content_type: PPgchar; file_: PPSoupBuffer): PGHashTable; cdecl; external;
 function soup_form_encode(first_field: Pgchar; args: array of const): Pgchar; cdecl; external;
@@ -1456,106 +1757,139 @@ function soup_headers_parse_status_line(status_line: Pgchar; ver: PSoupHTTPVersi
 function soup_http_error_quark: TGQuark; cdecl; external;
 function soup_logger_get_type: TGType; cdecl; external;
 function soup_logger_new(level: TSoupLoggerLogLevel; max_body_size: gint): PSoupLogger; cdecl; external;
-function soup_message_add_header_handler(AMessage: PSoupMessage; signal: Pgchar; header: Pgchar; callback: TGCallback; user_data: gpointer): guint; cdecl; external;
-function soup_message_add_status_code_handler(AMessage: PSoupMessage; signal: Pgchar; status_code: guint; callback: TGCallback; user_data: gpointer): guint; cdecl; external;
-function soup_message_body_flatten(AMessageBody: PSoupMessageBody): PSoupBuffer; cdecl; external;
-function soup_message_body_get_accumulate(AMessageBody: PSoupMessageBody): gboolean; cdecl; external;
-function soup_message_body_get_chunk(AMessageBody: PSoupMessageBody; offset: gint64): PSoupBuffer; cdecl; external;
+function soup_message_add_header_handler(msg: PSoupMessage; signal: Pgchar; header: Pgchar; callback: TGCallback; user_data: gpointer): guint; cdecl; external;
+function soup_message_add_status_code_handler(msg: PSoupMessage; signal: Pgchar; status_code: guint; callback: TGCallback; user_data: gpointer): guint; cdecl; external;
+function soup_message_body_flatten(body: PSoupMessageBody): PSoupBuffer; cdecl; external;
+function soup_message_body_get_accumulate(body: PSoupMessageBody): gboolean; cdecl; external;
+function soup_message_body_get_chunk(body: PSoupMessageBody; offset: gint64): PSoupBuffer; cdecl; external;
 function soup_message_body_get_type: TGType; cdecl; external;
 function soup_message_body_new: PSoupMessageBody; cdecl; external;
-function soup_message_get_address(AMessage: PSoupMessage): PSoupAddress; cdecl; external;
-function soup_message_get_first_party(AMessage: PSoupMessage): PSoupURI; cdecl; external;
-function soup_message_get_flags(AMessage: PSoupMessage): TSoupMessageFlags; cdecl; external;
-function soup_message_get_http_version(AMessage: PSoupMessage): TSoupHTTPVersion; cdecl; external;
-function soup_message_get_https_status(AMessage: PSoupMessage; certificate: PPGTlsCertificate; errors: PGTlsCertificateFlags): gboolean; cdecl; external;
+function soup_message_get_address(msg: PSoupMessage): PSoupAddress; cdecl; external;
+function soup_message_get_first_party(msg: PSoupMessage): PSoupURI; cdecl; external;
+function soup_message_get_flags(msg: PSoupMessage): TSoupMessageFlags; cdecl; external;
+function soup_message_get_http_version(msg: PSoupMessage): TSoupHTTPVersion; cdecl; external;
+function soup_message_get_https_status(msg: PSoupMessage; certificate: PPGTlsCertificate; errors: PGTlsCertificateFlags): gboolean; cdecl; external;
+function soup_message_get_soup_request(msg: PSoupMessage): PSoupRequest; cdecl; external;
 function soup_message_get_type: TGType; cdecl; external;
-function soup_message_get_uri(AMessage: PSoupMessage): PSoupURI; cdecl; external;
-function soup_message_headers_get_content_disposition(AMessageHeaders: PSoupMessageHeaders; disposition: PPgchar; params: PPGHashTable): gboolean; cdecl; external;
-function soup_message_headers_get_content_length(AMessageHeaders: PSoupMessageHeaders): gint64; cdecl; external;
-function soup_message_headers_get_content_range(AMessageHeaders: PSoupMessageHeaders; start: Pgint64; end_: Pgint64; total_length: Pgint64): gboolean; cdecl; external;
-function soup_message_headers_get_content_type(AMessageHeaders: PSoupMessageHeaders; params: PPGHashTable): Pgchar; cdecl; external;
-function soup_message_headers_get_encoding(AMessageHeaders: PSoupMessageHeaders): TSoupEncoding; cdecl; external;
-function soup_message_headers_get_expectations(AMessageHeaders: PSoupMessageHeaders): TSoupExpectation; cdecl; external;
-function soup_message_headers_get_list(AMessageHeaders: PSoupMessageHeaders; name: Pgchar): Pgchar; cdecl; external;
-function soup_message_headers_get_one(AMessageHeaders: PSoupMessageHeaders; name: Pgchar): Pgchar; cdecl; external;
-function soup_message_headers_get_ranges(AMessageHeaders: PSoupMessageHeaders; total_length: gint64; ranges: PPSoupRange; length: Pgint): gboolean; cdecl; external;
+function soup_message_get_uri(msg: PSoupMessage): PSoupURI; cdecl; external;
+function soup_message_headers_get_content_disposition(hdrs: PSoupMessageHeaders; disposition: PPgchar; params: PPGHashTable): gboolean; cdecl; external;
+function soup_message_headers_get_content_length(hdrs: PSoupMessageHeaders): gint64; cdecl; external;
+function soup_message_headers_get_content_range(hdrs: PSoupMessageHeaders; start: Pgint64; end_: Pgint64; total_length: Pgint64): gboolean; cdecl; external;
+function soup_message_headers_get_content_type(hdrs: PSoupMessageHeaders; params: PPGHashTable): Pgchar; cdecl; external;
+function soup_message_headers_get_encoding(hdrs: PSoupMessageHeaders): TSoupEncoding; cdecl; external;
+function soup_message_headers_get_expectations(hdrs: PSoupMessageHeaders): TSoupExpectation; cdecl; external;
+function soup_message_headers_get_list(hdrs: PSoupMessageHeaders; name: Pgchar): Pgchar; cdecl; external;
+function soup_message_headers_get_one(hdrs: PSoupMessageHeaders; name: Pgchar): Pgchar; cdecl; external;
+function soup_message_headers_get_ranges(hdrs: PSoupMessageHeaders; total_length: gint64; ranges: PPSoupRange; length: Pgint): gboolean; cdecl; external;
 function soup_message_headers_get_type: TGType; cdecl; external;
-function soup_message_headers_iter_next(AMessageHeadersIter: PSoupMessageHeadersIter; name: PPgchar; value: PPgchar): gboolean; cdecl; external;
+function soup_message_headers_iter_next(iter: PSoupMessageHeadersIter; name: PPgchar; value: PPgchar): gboolean; cdecl; external;
 function soup_message_headers_new(type_: TSoupMessageHeadersType): PSoupMessageHeaders; cdecl; external;
-function soup_message_is_keepalive(AMessage: PSoupMessage): gboolean; cdecl; external;
+function soup_message_is_keepalive(msg: PSoupMessage): gboolean; cdecl; external;
 function soup_message_new(method: Pgchar; uri_string: Pgchar): PSoupMessage; cdecl; external;
 function soup_message_new_from_uri(method: Pgchar; uri: PSoupURI): PSoupMessage; cdecl; external;
-function soup_multipart_get_length(AMultipart: PSoupMultipart): gint; cdecl; external;
-function soup_multipart_get_part(AMultipart: PSoupMultipart; part: gint; headers: PPSoupMessageHeaders; body: PPSoupBuffer): gboolean; cdecl; external;
+function soup_multipart_get_length(multipart: PSoupMultipart): gint; cdecl; external;
+function soup_multipart_get_part(multipart: PSoupMultipart; part: gint; headers: PPSoupMessageHeaders; body: PPSoupBuffer): gboolean; cdecl; external;
 function soup_multipart_get_type: TGType; cdecl; external;
+function soup_multipart_input_stream_get_headers(multipart: PSoupMultipartInputStream): PSoupMessageHeaders; cdecl; external;
+function soup_multipart_input_stream_get_type: TGType; cdecl; external;
+function soup_multipart_input_stream_new(msg: PSoupMessage; base_stream: PGInputStream): PSoupMultipartInputStream; cdecl; external;
+function soup_multipart_input_stream_next_part(multipart: PSoupMultipartInputStream; cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl; external;
+function soup_multipart_input_stream_next_part_finish(multipart: PSoupMultipartInputStream; result_: PGAsyncResult; error: PPGError): PGInputStream; cdecl; external;
 function soup_multipart_new(mime_type: Pgchar): PSoupMultipart; cdecl; external;
 function soup_multipart_new_from_message(headers: PSoupMessageHeaders; body: PSoupMessageBody): PSoupMultipart; cdecl; external;
+function soup_password_manager_get_type: TGType; cdecl; external;
 function soup_proxy_resolver_default_get_type: TGType; cdecl; external;
-function soup_proxy_uri_resolver_get_proxy_uri_sync(AProxyURIResolver: PSoupProxyURIResolver; uri: PSoupURI; cancellable: PGCancellable; proxy_uri: PPSoupURI): guint; cdecl; external;
+function soup_proxy_uri_resolver_get_proxy_uri_sync(proxy_uri_resolver: PSoupProxyURIResolver; uri: PSoupURI; cancellable: PGCancellable; proxy_uri: PPSoupURI): guint; cdecl; external;
 function soup_proxy_uri_resolver_get_type: TGType; cdecl; external;
-function soup_server_get_async_context(AServer: PSoupServer): PGMainContext; cdecl; external;
-function soup_server_get_listener(AServer: PSoupServer): PSoupSocket; cdecl; external;
-function soup_server_get_port(AServer: PSoupServer): guint; cdecl; external;
+function soup_request_data_get_type: TGType; cdecl; external;
+function soup_request_error_quark: TGQuark; cdecl; external;
+function soup_request_file_get_file(file_: PSoupRequestFile): PGFile; cdecl; external;
+function soup_request_file_get_type: TGType; cdecl; external;
+function soup_request_get_content_length(request: PSoupRequest): gint64; cdecl; external;
+function soup_request_get_content_type(request: PSoupRequest): Pgchar; cdecl; external;
+function soup_request_get_session(request: PSoupRequest): PSoupSession; cdecl; external;
+function soup_request_get_type: TGType; cdecl; external;
+function soup_request_get_uri(request: PSoupRequest): PSoupURI; cdecl; external;
+function soup_request_http_get_message(http: PSoupRequestHTTP): PSoupMessage; cdecl; external;
+function soup_request_http_get_type: TGType; cdecl; external;
+function soup_request_send(request: PSoupRequest; cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl; external;
+function soup_request_send_finish(request: PSoupRequest; result_: PGAsyncResult; error: PPGError): PGInputStream; cdecl; external;
+function soup_requester_error_quark: TGQuark; cdecl; external;
+function soup_requester_get_type: TGType; cdecl; external;
+function soup_requester_new: PSoupRequester; cdecl; external;
+function soup_requester_request(requester: PSoupRequester; uri_string: Pgchar; error: PPGError): PSoupRequest; cdecl; external;
+function soup_requester_request_uri(requester: PSoupRequester; uri: PSoupURI; error: PPGError): PSoupRequest; cdecl; external;
+function soup_server_get_async_context(server: PSoupServer): PGMainContext; cdecl; external;
+function soup_server_get_listener(server: PSoupServer): PSoupSocket; cdecl; external;
+function soup_server_get_port(server: PSoupServer): guint; cdecl; external;
 function soup_server_get_type: TGType; cdecl; external;
-function soup_server_is_https(AServer: PSoupServer): gboolean; cdecl; external;
+function soup_server_is_https(server: PSoupServer): gboolean; cdecl; external;
 function soup_server_new(optname1: Pgchar; args: array of const): PSoupServer; cdecl; external;
 function soup_session_async_get_type: TGType; cdecl; external;
-function soup_session_async_new: PSoupSessionAsync; cdecl; external;
-function soup_session_async_new_with_options(optname1: Pgchar; args: array of const): PSoupSessionAsync; cdecl; external;
-function soup_session_feature_add_feature(ASessionFeature: PSoupSessionFeature; type_: TGType): gboolean; cdecl; external;
+function soup_session_feature_add_feature(feature: PSoupSessionFeature; type_: TGType): gboolean; cdecl; external;
 function soup_session_feature_get_type: TGType; cdecl; external;
-function soup_session_feature_has_feature(ASessionFeature: PSoupSessionFeature; type_: TGType): gboolean; cdecl; external;
-function soup_session_feature_remove_feature(ASessionFeature: PSoupSessionFeature; type_: TGType): gboolean; cdecl; external;
-function soup_session_get_async_context(ASession: PSoupSession): PGMainContext; cdecl; external;
-function soup_session_get_feature(ASession: PSoupSession; feature_type: TGType): PSoupSessionFeature; cdecl; external;
-function soup_session_get_feature_for_message(ASession: PSoupSession; feature_type: TGType; msg: PSoupMessage): PSoupSessionFeature; cdecl; external;
-function soup_session_get_features(ASession: PSoupSession; feature_type: TGType): PGSList; cdecl; external;
+function soup_session_feature_has_feature(feature: PSoupSessionFeature; type_: TGType): gboolean; cdecl; external;
+function soup_session_feature_remove_feature(feature: PSoupSessionFeature; type_: TGType): gboolean; cdecl; external;
+function soup_session_get_async_context(session: PSoupSession): PGMainContext; cdecl; external;
+function soup_session_get_feature(session: PSoupSession; feature_type: TGType): PSoupSessionFeature; cdecl; external;
+function soup_session_get_feature_for_message(session: PSoupSession; feature_type: TGType; msg: PSoupMessage): PSoupSessionFeature; cdecl; external;
+function soup_session_get_features(session: PSoupSession; feature_type: TGType): PGSList; cdecl; external;
 function soup_session_get_type: TGType; cdecl; external;
-function soup_session_redirect_message(ASession: PSoupSession; msg: PSoupMessage): gboolean; cdecl; external;
-function soup_session_send_message(ASession: PSoupSession; msg: PSoupMessage): guint; cdecl; external;
+function soup_session_has_feature(session: PSoupSession; feature_type: TGType): gboolean; cdecl; external;
+function soup_session_new: PSoupSession; cdecl; external;
+function soup_session_new_with_options(optname1: Pgchar; args: array of const): PSoupSession; cdecl; external;
+function soup_session_redirect_message(session: PSoupSession; msg: PSoupMessage): gboolean; cdecl; external;
+function soup_session_request(session: PSoupSession; uri_string: Pgchar; error: PPGError): PSoupRequest; cdecl; external;
+function soup_session_request_http(session: PSoupSession; method: Pgchar; uri_string: Pgchar; error: PPGError): PSoupRequestHTTP; cdecl; external;
+function soup_session_request_http_uri(session: PSoupSession; method: Pgchar; uri: PSoupURI; error: PPGError): PSoupRequestHTTP; cdecl; external;
+function soup_session_request_uri(session: PSoupSession; uri: PSoupURI; error: PPGError): PSoupRequest; cdecl; external;
+function soup_session_send(session: PSoupSession; msg: PSoupMessage; cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl; external;
+function soup_session_send_finish(session: PSoupSession; result_: PGAsyncResult; error: PPGError): PGInputStream; cdecl; external;
+function soup_session_send_message(session: PSoupSession; msg: PSoupMessage): guint; cdecl; external;
 function soup_session_sync_get_type: TGType; cdecl; external;
-function soup_session_sync_new: PSoupSessionSync; cdecl; external;
-function soup_session_sync_new_with_options(optname1: Pgchar; args: array of const): PSoupSessionSync; cdecl; external;
-function soup_session_would_redirect(ASession: PSoupSession; msg: PSoupMessage): gboolean; cdecl; external;
-function soup_socket_connect_sync(ASocket: PSoupSocket; cancellable: PGCancellable): guint; cdecl; external;
-function soup_socket_get_fd(ASocket: PSoupSocket): gint; cdecl; external;
-function soup_socket_get_local_address(ASocket: PSoupSocket): PSoupAddress; cdecl; external;
-function soup_socket_get_remote_address(ASocket: PSoupSocket): PSoupAddress; cdecl; external;
+function soup_session_would_redirect(session: PSoupSession; msg: PSoupMessage): gboolean; cdecl; external;
+function soup_socket_connect_sync(sock: PSoupSocket; cancellable: PGCancellable): guint; cdecl; external;
+function soup_socket_get_fd(sock: PSoupSocket): gint; cdecl; external;
+function soup_socket_get_local_address(sock: PSoupSocket): PSoupAddress; cdecl; external;
+function soup_socket_get_remote_address(sock: PSoupSocket): PSoupAddress; cdecl; external;
 function soup_socket_get_type: TGType; cdecl; external;
-function soup_socket_is_connected(ASocket: PSoupSocket): gboolean; cdecl; external;
-function soup_socket_is_ssl(ASocket: PSoupSocket): gboolean; cdecl; external;
-function soup_socket_listen(ASocket: PSoupSocket): gboolean; cdecl; external;
+function soup_socket_is_connected(sock: PSoupSocket): gboolean; cdecl; external;
+function soup_socket_is_ssl(sock: PSoupSocket): gboolean; cdecl; external;
+function soup_socket_listen(sock: PSoupSocket): gboolean; cdecl; external;
 function soup_socket_new(optname1: Pgchar; args: array of const): PSoupSocket; cdecl; external;
-function soup_socket_read(ASocket: PSoupSocket; buffer: gpointer; len: gsize; nread: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl; external;
-function soup_socket_read_until(ASocket: PSoupSocket; buffer: gpointer; len: gsize; boundary: gpointer; boundary_len: gsize; nread: Pgsize; got_boundary: Pgboolean; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl; external;
-function soup_socket_start_proxy_ssl(ASocket: PSoupSocket; ssl_host: Pgchar; cancellable: PGCancellable): gboolean; cdecl; external;
-function soup_socket_start_ssl(ASocket: PSoupSocket; cancellable: PGCancellable): gboolean; cdecl; external;
-function soup_socket_write(ASocket: PSoupSocket; buffer: gpointer; len: gsize; nwrote: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl; external;
+function soup_socket_read(sock: PSoupSocket; buffer: gpointer; len: gsize; nread: Pgsize; cancellable: PGCancellable; error: PPGError): TSoupSocketIOStatus; cdecl; external;
+function soup_socket_read_until(sock: PSoupSocket; buffer: gpointer; len: gsize; boundary: Pgpointer; boundary_len: gsize; nread: Pgsize; got_boundary: Pgboolean; cancellable: PGCancellable; error: PPGError): TSoupSocketIOStatus; cdecl; external;
+function soup_socket_start_proxy_ssl(sock: PSoupSocket; ssl_host: Pgchar; cancellable: PGCancellable): gboolean; cdecl; external;
+function soup_socket_start_ssl(sock: PSoupSocket; cancellable: PGCancellable): gboolean; cdecl; external;
+function soup_socket_write(sock: PSoupSocket; buffer: Pgpointer; len: gsize; nwrote: Pgsize; cancellable: PGCancellable; error: PPGError): TSoupSocketIOStatus; cdecl; external;
 function soup_status_get_phrase(status_code: guint): Pgchar; cdecl; external;
 function soup_status_proxify(status_code: guint): guint; cdecl; external;
-function soup_str_case_equal(v1: gpointer; v2: gpointer): gboolean; cdecl; external;
-function soup_str_case_hash(key: gpointer): guint; cdecl; external;
-function soup_uri_copy(AURI: PSoupURI): PSoupURI; cdecl; external;
-function soup_uri_copy_host(AURI: PSoupURI): PSoupURI; cdecl; external;
+function soup_str_case_equal(v1: Pgpointer; v2: Pgpointer): gboolean; cdecl; external;
+function soup_str_case_hash(key: Pgpointer): guint; cdecl; external;
+function soup_tld_domain_is_public_suffix(domain: Pgchar): gboolean; cdecl; external;
+function soup_tld_error_quark: TGQuark; cdecl; external;
+function soup_tld_get_base_domain(hostname: Pgchar; error: PPGError): Pgchar; cdecl; external;
+function soup_uri_copy(uri: PSoupURI): PSoupURI; cdecl; external;
+function soup_uri_copy_host(uri: PSoupURI): PSoupURI; cdecl; external;
 function soup_uri_decode(part: Pgchar): Pgchar; cdecl; external;
 function soup_uri_encode(part: Pgchar; escape_extra: Pgchar): Pgchar; cdecl; external;
-function soup_uri_equal(AURI: PSoupURI; uri2: PSoupURI): gboolean; cdecl; external;
-function soup_uri_get_fragment(AURI: PSoupURI): Pgchar; cdecl; external;
-function soup_uri_get_host(AURI: PSoupURI): Pgchar; cdecl; external;
-function soup_uri_get_password(AURI: PSoupURI): Pgchar; cdecl; external;
-function soup_uri_get_path(AURI: PSoupURI): Pgchar; cdecl; external;
-function soup_uri_get_port(AURI: PSoupURI): guint; cdecl; external;
-function soup_uri_get_query(AURI: PSoupURI): Pgchar; cdecl; external;
-function soup_uri_get_scheme(AURI: PSoupURI): Pgchar; cdecl; external;
+function soup_uri_equal(uri1: PSoupURI; uri2: PSoupURI): gboolean; cdecl; external;
+function soup_uri_get_fragment(uri: PSoupURI): Pgchar; cdecl; external;
+function soup_uri_get_host(uri: PSoupURI): Pgchar; cdecl; external;
+function soup_uri_get_password(uri: PSoupURI): Pgchar; cdecl; external;
+function soup_uri_get_path(uri: PSoupURI): Pgchar; cdecl; external;
+function soup_uri_get_port(uri: PSoupURI): guint; cdecl; external;
+function soup_uri_get_query(uri: PSoupURI): Pgchar; cdecl; external;
+function soup_uri_get_scheme(uri: PSoupURI): Pgchar; cdecl; external;
 function soup_uri_get_type: TGType; cdecl; external;
-function soup_uri_get_user(AURI: PSoupURI): Pgchar; cdecl; external;
-function soup_uri_host_equal(AURI: PSoupURI; v2: TSoupURI): gboolean; cdecl; external;
-function soup_uri_host_hash(AURI: PSoupURI): guint; cdecl; external;
+function soup_uri_get_user(uri: PSoupURI): Pgchar; cdecl; external;
+function soup_uri_host_equal(v1: PSoupURI; v2: PSoupURI): gboolean; cdecl; external;
+function soup_uri_host_hash(key: PSoupURI): guint; cdecl; external;
 function soup_uri_new(uri_string: Pgchar): PSoupURI; cdecl; external;
-function soup_uri_new_with_base(AURI: PSoupURI; uri_string: Pgchar): PSoupURI; cdecl; external;
+function soup_uri_new_with_base(base: PSoupURI; uri_string: Pgchar): PSoupURI; cdecl; external;
 function soup_uri_normalize(part: Pgchar; unescape_extra: Pgchar): Pgchar; cdecl; external;
-function soup_uri_to_string(AURI: PSoupURI; just_path_and_query: gboolean): Pgchar; cdecl; external;
-function soup_uri_uses_default_port(AURI: PSoupURI): gboolean; cdecl; external;
+function soup_uri_to_string(uri: PSoupURI; just_path_and_query: gboolean): Pgchar; cdecl; external;
+function soup_uri_uses_default_port(uri: PSoupURI): gboolean; cdecl; external;
 function soup_value_array_from_args(args: Tva_list): PGValueArray; cdecl; external;
 function soup_value_array_get_nth(array_: PGValueArray; index_: guint; type_: TGType; args: array of const): gboolean; cdecl; external;
 function soup_value_array_new: PGValueArray; cdecl; external;
@@ -1573,139 +1907,150 @@ function soup_xmlrpc_extract_method_call(method_call: Pgchar; length: gint; meth
 function soup_xmlrpc_extract_method_response(method_response: Pgchar; length: gint; error: PPGError; type_: TGType; args: array of const): gboolean; cdecl; external;
 function soup_xmlrpc_fault_quark: TGQuark; cdecl; external;
 function soup_xmlrpc_parse_method_call(method_call: Pgchar; length: gint; method_name: PPgchar; params: PPGValueArray): gboolean; cdecl; external;
-function soup_xmlrpc_parse_method_response(method_response: Pgchar; length: gint; value: PGValue): gboolean; cdecl; external;
+function soup_xmlrpc_parse_method_response(method_response: Pgchar; length: gint; value: PGValue; error: PPGError): gboolean; cdecl; external;
 function soup_xmlrpc_request_new(uri: Pgchar; method_name: Pgchar; args: array of const): PSoupMessage; cdecl; external;
-procedure soup_address_resolve_async(AAddress: PSoupAddress; async_context: PGMainContext; cancellable: PGCancellable; callback: TSoupAddressCallback; user_data: gpointer); cdecl; external;
-procedure soup_auth_authenticate(AAuth: PSoupAuth; username: Pgchar; password: Pgchar); cdecl; external;
-procedure soup_auth_domain_add_path(AAuthDomain: PSoupAuthDomain; path: Pgchar); cdecl; external;
-procedure soup_auth_domain_basic_set_auth_callback(AAuthDomain: PSoupAuthDomain; callback: TSoupAuthDomainBasicAuthCallback; user_data: gpointer; dnotify: TGDestroyNotify); cdecl; external;
-procedure soup_auth_domain_challenge(AAuthDomain: PSoupAuthDomain; msg: PSoupMessage); cdecl; external;
-procedure soup_auth_domain_digest_set_auth_callback(AAuthDomain: PSoupAuthDomain; callback: TSoupAuthDomainDigestAuthCallback; user_data: gpointer; dnotify: TGDestroyNotify); cdecl; external;
-procedure soup_auth_domain_remove_path(AAuthDomain: PSoupAuthDomain; path: Pgchar); cdecl; external;
-procedure soup_auth_domain_set_filter(AAuthDomain: PSoupAuthDomain; filter: TSoupAuthDomainFilter; filter_data: gpointer; dnotify: TGDestroyNotify); cdecl; external;
-procedure soup_auth_domain_set_generic_auth_callback(AAuthDomain: PSoupAuthDomain; auth_callback: TSoupAuthDomainGenericAuthCallback; auth_data: gpointer; dnotify: TGDestroyNotify); cdecl; external;
-procedure soup_auth_free_protection_space(AAuth: PSoupAuth; space: PGSList); cdecl; external;
-procedure soup_buffer_free(ABuffer: PSoupBuffer); cdecl; external;
-procedure soup_buffer_get_data(ABuffer: PSoupBuffer; data: PPguint8; length: Pgsize); cdecl; external;
-procedure soup_cookie_free(ACookie: PSoupCookie); cdecl; external;
-procedure soup_cookie_jar_add_cookie(ACookieJar: PSoupCookieJar; cookie: PSoupCookie); cdecl; external;
-procedure soup_cookie_jar_delete_cookie(ACookieJar: PSoupCookieJar; cookie: PSoupCookie); cdecl; external;
-procedure soup_cookie_jar_save(ACookieJar: PSoupCookieJar); cdecl; external;
-procedure soup_cookie_jar_set_accept_policy(ACookieJar: PSoupCookieJar; policy: TSoupCookieJarAcceptPolicy); cdecl; external;
-procedure soup_cookie_jar_set_cookie(ACookieJar: PSoupCookieJar; uri: PSoupURI; cookie: Pgchar); cdecl; external;
-procedure soup_cookie_jar_set_cookie_with_first_party(ACookieJar: PSoupCookieJar; uri: PSoupURI; first_party: PSoupURI; cookie: Pgchar); cdecl; external;
-procedure soup_cookie_set_domain(ACookie: PSoupCookie; domain: Pgchar); cdecl; external;
-procedure soup_cookie_set_expires(ACookie: PSoupCookie; expires: PSoupDate); cdecl; external;
-procedure soup_cookie_set_http_only(ACookie: PSoupCookie; http_only: gboolean); cdecl; external;
-procedure soup_cookie_set_max_age(ACookie: PSoupCookie; max_age: gint); cdecl; external;
-procedure soup_cookie_set_name(ACookie: PSoupCookie; name: Pgchar); cdecl; external;
-procedure soup_cookie_set_path(ACookie: PSoupCookie; path: Pgchar); cdecl; external;
-procedure soup_cookie_set_secure(ACookie: PSoupCookie; secure: gboolean); cdecl; external;
-procedure soup_cookie_set_value(ACookie: PSoupCookie; value: Pgchar); cdecl; external;
+procedure soup_address_resolve_async(addr: PSoupAddress; async_context: PGMainContext; cancellable: PGCancellable; callback: TSoupAddressCallback; user_data: gpointer); cdecl; external;
+procedure soup_auth_authenticate(auth: PSoupAuth; username: Pgchar; password: Pgchar); cdecl; external;
+procedure soup_auth_domain_add_path(domain: PSoupAuthDomain; path: Pgchar); cdecl; external;
+procedure soup_auth_domain_basic_set_auth_callback(domain: PSoupAuthDomain; callback: TSoupAuthDomainBasicAuthCallback; user_data: gpointer; dnotify: TGDestroyNotify); cdecl; external;
+procedure soup_auth_domain_challenge(domain: PSoupAuthDomain; msg: PSoupMessage); cdecl; external;
+procedure soup_auth_domain_digest_set_auth_callback(domain: PSoupAuthDomain; callback: TSoupAuthDomainDigestAuthCallback; user_data: gpointer; dnotify: TGDestroyNotify); cdecl; external;
+procedure soup_auth_domain_remove_path(domain: PSoupAuthDomain; path: Pgchar); cdecl; external;
+procedure soup_auth_domain_set_filter(domain: PSoupAuthDomain; filter: TSoupAuthDomainFilter; filter_data: gpointer; dnotify: TGDestroyNotify); cdecl; external;
+procedure soup_auth_domain_set_generic_auth_callback(domain: PSoupAuthDomain; auth_callback: TSoupAuthDomainGenericAuthCallback; auth_data: gpointer; dnotify: TGDestroyNotify); cdecl; external;
+procedure soup_auth_free_protection_space(auth: PSoupAuth; space: PGSList); cdecl; external;
+procedure soup_auth_has_saved_password(auth: PSoupAuth; username: Pgchar; password: Pgchar); cdecl; external;
+procedure soup_auth_manager_use_auth(manager: PSoupAuthManager; uri: PSoupURI; auth: PSoupAuth); cdecl; external;
+procedure soup_auth_save_password(auth: PSoupAuth; username: Pgchar; password: Pgchar); cdecl; external;
+procedure soup_buffer_free(buffer: PSoupBuffer); cdecl; external;
+procedure soup_buffer_get_data(buffer: PSoupBuffer; data: PPguint8; length: Pgsize); cdecl; external;
+procedure soup_cache_clear(cache: PSoupCache); cdecl; external;
+procedure soup_cache_dump(cache: PSoupCache); cdecl; external;
+procedure soup_cache_flush(cache: PSoupCache); cdecl; external;
+procedure soup_cache_load(cache: PSoupCache); cdecl; external;
+procedure soup_cache_set_max_size(cache: PSoupCache; max_size: guint); cdecl; external;
+procedure soup_cookie_free(cookie: PSoupCookie); cdecl; external;
+procedure soup_cookie_jar_add_cookie(jar: PSoupCookieJar; cookie: PSoupCookie); cdecl; external;
+procedure soup_cookie_jar_add_cookie_with_first_party(jar: PSoupCookieJar; first_party: PSoupURI; cookie: PSoupCookie); cdecl; external;
+procedure soup_cookie_jar_delete_cookie(jar: PSoupCookieJar; cookie: PSoupCookie); cdecl; external;
+procedure soup_cookie_jar_set_accept_policy(jar: PSoupCookieJar; policy: TSoupCookieJarAcceptPolicy); cdecl; external;
+procedure soup_cookie_jar_set_cookie(jar: PSoupCookieJar; uri: PSoupURI; cookie: Pgchar); cdecl; external;
+procedure soup_cookie_jar_set_cookie_with_first_party(jar: PSoupCookieJar; uri: PSoupURI; first_party: PSoupURI; cookie: Pgchar); cdecl; external;
+procedure soup_cookie_set_domain(cookie: PSoupCookie; domain: Pgchar); cdecl; external;
+procedure soup_cookie_set_expires(cookie: PSoupCookie; expires: PSoupDate); cdecl; external;
+procedure soup_cookie_set_http_only(cookie: PSoupCookie; http_only: gboolean); cdecl; external;
+procedure soup_cookie_set_max_age(cookie: PSoupCookie; max_age: gint); cdecl; external;
+procedure soup_cookie_set_name(cookie: PSoupCookie; name: Pgchar); cdecl; external;
+procedure soup_cookie_set_path(cookie: PSoupCookie; path: Pgchar); cdecl; external;
+procedure soup_cookie_set_secure(cookie: PSoupCookie; secure: gboolean); cdecl; external;
+procedure soup_cookie_set_value(cookie: PSoupCookie; value: Pgchar); cdecl; external;
 procedure soup_cookies_free(cookies: PGSList); cdecl; external;
 procedure soup_cookies_to_request(cookies: PGSList; msg: PSoupMessage); cdecl; external;
 procedure soup_cookies_to_response(cookies: PGSList; msg: PSoupMessage); cdecl; external;
-procedure soup_date_free(ADate: PSoupDate); cdecl; external;
-procedure soup_date_to_timeval(ADate: PSoupDate; time: PGTimeVal); cdecl; external;
+procedure soup_date_free(date: PSoupDate); cdecl; external;
+procedure soup_date_to_timeval(date: PSoupDate; time: PGTimeVal); cdecl; external;
 procedure soup_header_free_list(list: PGSList); cdecl; external;
 procedure soup_header_free_param_list(param_list: PGHashTable); cdecl; external;
 procedure soup_header_g_string_append_param(string_: PGString; name: Pgchar; value: Pgchar); cdecl; external;
 procedure soup_header_g_string_append_param_quoted(string_: PGString; name: Pgchar; value: Pgchar); cdecl; external;
-procedure soup_logger_set_printer(ALogger: PSoupLogger; printer: TSoupLoggerPrinter; printer_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure soup_logger_set_request_filter(ALogger: PSoupLogger; request_filter: TSoupLoggerFilter; filter_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure soup_logger_set_response_filter(ALogger: PSoupLogger; response_filter: TSoupLoggerFilter; filter_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure soup_message_body_append(AMessageBody: PSoupMessageBody; use: TSoupMemoryUse; data: guint8; length: gsize); cdecl; external;
-procedure soup_message_body_append_buffer(AMessageBody: PSoupMessageBody; buffer: PSoupBuffer); cdecl; external;
-procedure soup_message_body_append_take(AMessageBody: PSoupMessageBody; data: Pguint8; length: gsize); cdecl; external;
-procedure soup_message_body_complete(AMessageBody: PSoupMessageBody); cdecl; external;
-procedure soup_message_body_free(AMessageBody: PSoupMessageBody); cdecl; external;
-procedure soup_message_body_got_chunk(AMessageBody: PSoupMessageBody; chunk: PSoupBuffer); cdecl; external;
-procedure soup_message_body_set_accumulate(AMessageBody: PSoupMessageBody; accumulate: gboolean); cdecl; external;
-procedure soup_message_body_truncate(AMessageBody: PSoupMessageBody); cdecl; external;
-procedure soup_message_body_wrote_chunk(AMessageBody: PSoupMessageBody; chunk: PSoupBuffer); cdecl; external;
-procedure soup_message_content_sniffed(AMessage: PSoupMessage; content_type: Pgchar; params: PGHashTable); cdecl; external;
-procedure soup_message_disable_feature(AMessage: PSoupMessage; feature_type: TGType); cdecl; external;
-procedure soup_message_finished(AMessage: PSoupMessage); cdecl; external;
-procedure soup_message_got_body(AMessage: PSoupMessage); cdecl; external;
-procedure soup_message_got_chunk(AMessage: PSoupMessage; chunk: PSoupBuffer); cdecl; external;
-procedure soup_message_got_headers(AMessage: PSoupMessage); cdecl; external;
-procedure soup_message_got_informational(AMessage: PSoupMessage); cdecl; external;
-procedure soup_message_headers_append(AMessageHeaders: PSoupMessageHeaders; name: Pgchar; value: Pgchar); cdecl; external;
-procedure soup_message_headers_clean_connection_headers(AMessageHeaders: PSoupMessageHeaders); cdecl; external;
-procedure soup_message_headers_clear(AMessageHeaders: PSoupMessageHeaders); cdecl; external;
-procedure soup_message_headers_foreach(AMessageHeaders: PSoupMessageHeaders; func: TSoupMessageHeadersForeachFunc; user_data: gpointer); cdecl; external;
-procedure soup_message_headers_free(AMessageHeaders: PSoupMessageHeaders); cdecl; external;
-procedure soup_message_headers_free_ranges(AMessageHeaders: PSoupMessageHeaders; ranges: PSoupRange); cdecl; external;
-procedure soup_message_headers_iter_init(AMessageHeadersIter: PSoupMessageHeadersIter; hdrs: PSoupMessageHeaders); cdecl; external;
-procedure soup_message_headers_remove(AMessageHeaders: PSoupMessageHeaders; name: Pgchar); cdecl; external;
-procedure soup_message_headers_replace(AMessageHeaders: PSoupMessageHeaders; name: Pgchar; value: Pgchar); cdecl; external;
-procedure soup_message_headers_set_content_disposition(AMessageHeaders: PSoupMessageHeaders; disposition: Pgchar; params: PGHashTable); cdecl; external;
-procedure soup_message_headers_set_content_length(AMessageHeaders: PSoupMessageHeaders; content_length: gint64); cdecl; external;
-procedure soup_message_headers_set_content_range(AMessageHeaders: PSoupMessageHeaders; start: gint64; end_: gint64; total_length: gint64); cdecl; external;
-procedure soup_message_headers_set_content_type(AMessageHeaders: PSoupMessageHeaders; content_type: Pgchar; params: PGHashTable); cdecl; external;
-procedure soup_message_headers_set_encoding(AMessageHeaders: PSoupMessageHeaders; encoding: TSoupEncoding); cdecl; external;
-procedure soup_message_headers_set_expectations(AMessageHeaders: PSoupMessageHeaders; expectations: TSoupExpectation); cdecl; external;
-procedure soup_message_headers_set_range(AMessageHeaders: PSoupMessageHeaders; start: gint64; end_: gint64); cdecl; external;
-procedure soup_message_headers_set_ranges(AMessageHeaders: PSoupMessageHeaders; ranges: PSoupRange; length: gint); cdecl; external;
-procedure soup_message_restarted(AMessage: PSoupMessage); cdecl; external;
-procedure soup_message_set_chunk_allocator(AMessage: PSoupMessage; allocator: TSoupChunkAllocator; user_data: gpointer; destroy_notify: TGDestroyNotify); cdecl; external;
-procedure soup_message_set_first_party(AMessage: PSoupMessage; first_party: PSoupURI); cdecl; external;
-procedure soup_message_set_flags(AMessage: PSoupMessage; flags: TSoupMessageFlags); cdecl; external;
-procedure soup_message_set_http_version(AMessage: PSoupMessage; version: TSoupHTTPVersion); cdecl; external;
-procedure soup_message_set_redirect(AMessage: PSoupMessage; status_code: guint; redirect_uri: Pgchar); cdecl; external;
-procedure soup_message_set_request(AMessage: PSoupMessage; content_type: Pgchar; req_use: TSoupMemoryUse; req_body: Pgchar; req_length: gsize); cdecl; external;
-procedure soup_message_set_response(AMessage: PSoupMessage; content_type: Pgchar; resp_use: TSoupMemoryUse; resp_body: Pgchar; resp_length: gsize); cdecl; external;
-procedure soup_message_set_status(AMessage: PSoupMessage; status_code: guint); cdecl; external;
-procedure soup_message_set_status_full(AMessage: PSoupMessage; status_code: guint; reason_phrase: Pgchar); cdecl; external;
-procedure soup_message_set_uri(AMessage: PSoupMessage; uri: PSoupURI); cdecl; external;
-procedure soup_message_wrote_body(AMessage: PSoupMessage); cdecl; external;
-procedure soup_message_wrote_body_data(AMessage: PSoupMessage; chunk: PSoupBuffer); cdecl; external;
-procedure soup_message_wrote_chunk(AMessage: PSoupMessage); cdecl; external;
-procedure soup_message_wrote_headers(AMessage: PSoupMessage); cdecl; external;
-procedure soup_message_wrote_informational(AMessage: PSoupMessage); cdecl; external;
-procedure soup_multipart_append_form_file(AMultipart: PSoupMultipart; control_name: Pgchar; filename: Pgchar; content_type: Pgchar; body: PSoupBuffer); cdecl; external;
-procedure soup_multipart_append_form_string(AMultipart: PSoupMultipart; control_name: Pgchar; data: Pgchar); cdecl; external;
-procedure soup_multipart_append_part(AMultipart: PSoupMultipart; headers: PSoupMessageHeaders; body: PSoupBuffer); cdecl; external;
-procedure soup_multipart_free(AMultipart: PSoupMultipart); cdecl; external;
-procedure soup_multipart_to_message(AMultipart: PSoupMultipart; dest_headers: PSoupMessageHeaders; dest_body: PSoupMessageBody); cdecl; external;
-procedure soup_proxy_uri_resolver_get_proxy_uri_async(AProxyURIResolver: PSoupProxyURIResolver; uri: PSoupURI; async_context: PGMainContext; cancellable: PGCancellable; callback: TSoupProxyURIResolverCallback; user_data: gpointer); cdecl; external;
-procedure soup_server_add_auth_domain(AServer: PSoupServer; auth_domain: PSoupAuthDomain); cdecl; external;
-procedure soup_server_add_handler(AServer: PSoupServer; path: Pgchar; callback: TSoupServerCallback; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure soup_server_disconnect(AServer: PSoupServer); cdecl; external;
-procedure soup_server_pause_message(AServer: PSoupServer; msg: PSoupMessage); cdecl; external;
-procedure soup_server_quit(AServer: PSoupServer); cdecl; external;
-procedure soup_server_remove_auth_domain(AServer: PSoupServer; auth_domain: PSoupAuthDomain); cdecl; external;
-procedure soup_server_remove_handler(AServer: PSoupServer; path: Pgchar); cdecl; external;
-procedure soup_server_run(AServer: PSoupServer); cdecl; external;
-procedure soup_server_run_async(AServer: PSoupServer); cdecl; external;
-procedure soup_server_unpause_message(AServer: PSoupServer; msg: PSoupMessage); cdecl; external;
-procedure soup_session_abort(ASession: PSoupSession); cdecl; external;
-procedure soup_session_add_feature(ASession: PSoupSession; feature: PSoupSessionFeature); cdecl; external;
-procedure soup_session_add_feature_by_type(ASession: PSoupSession; feature_type: TGType); cdecl; external;
-procedure soup_session_cancel_message(ASession: PSoupSession; msg: PSoupMessage; status_code: guint); cdecl; external;
-procedure soup_session_feature_attach(ASessionFeature: PSoupSessionFeature; session: PSoupSession); cdecl; external;
-procedure soup_session_feature_detach(ASessionFeature: PSoupSessionFeature; session: PSoupSession); cdecl; external;
-procedure soup_session_pause_message(ASession: PSoupSession; msg: PSoupMessage); cdecl; external;
-procedure soup_session_prefetch_dns(ASession: PSoupSession; hostname: Pgchar; cancellable: PGCancellable; callback: TSoupAddressCallback; user_data: gpointer); cdecl; external;
-procedure soup_session_prepare_for_uri(ASession: PSoupSession; uri: PSoupURI); cdecl; external;
-procedure soup_session_queue_message(ASession: PSoupSession; msg: PSoupMessage; callback: TSoupSessionCallback; user_data: gpointer); cdecl; external;
-procedure soup_session_remove_feature(ASession: PSoupSession; feature: PSoupSessionFeature); cdecl; external;
-procedure soup_session_remove_feature_by_type(ASession: PSoupSession; feature_type: TGType); cdecl; external;
-procedure soup_session_requeue_message(ASession: PSoupSession; msg: PSoupMessage); cdecl; external;
-procedure soup_session_unpause_message(ASession: PSoupSession; msg: PSoupMessage); cdecl; external;
-procedure soup_socket_connect_async(ASocket: PSoupSocket; cancellable: PGCancellable; callback: TSoupSocketCallback; user_data: gpointer); cdecl; external;
-procedure soup_socket_disconnect(ASocket: PSoupSocket); cdecl; external;
-procedure soup_uri_free(AURI: PSoupURI); cdecl; external;
-procedure soup_uri_set_fragment(AURI: PSoupURI; fragment: Pgchar); cdecl; external;
-procedure soup_uri_set_host(AURI: PSoupURI; host: Pgchar); cdecl; external;
-procedure soup_uri_set_password(AURI: PSoupURI; password: Pgchar); cdecl; external;
-procedure soup_uri_set_path(AURI: PSoupURI; path: Pgchar); cdecl; external;
-procedure soup_uri_set_port(AURI: PSoupURI; port: guint); cdecl; external;
-procedure soup_uri_set_query(AURI: PSoupURI; query: Pgchar); cdecl; external;
-procedure soup_uri_set_query_from_fields(AURI: PSoupURI; first_field: Pgchar; args: array of const); cdecl; external;
-procedure soup_uri_set_query_from_form(AURI: PSoupURI; form: PGHashTable); cdecl; external;
-procedure soup_uri_set_scheme(AURI: PSoupURI; scheme: Pgchar); cdecl; external;
-procedure soup_uri_set_user(AURI: PSoupURI; user: Pgchar); cdecl; external;
+procedure soup_logger_set_printer(logger: PSoupLogger; printer: TSoupLoggerPrinter; printer_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure soup_logger_set_request_filter(logger: PSoupLogger; request_filter: TSoupLoggerFilter; filter_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure soup_logger_set_response_filter(logger: PSoupLogger; response_filter: TSoupLoggerFilter; filter_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure soup_message_body_append(body: PSoupMessageBody; use: TSoupMemoryUse; data: guint8; length: gsize); cdecl; external;
+procedure soup_message_body_append_buffer(body: PSoupMessageBody; buffer: PSoupBuffer); cdecl; external;
+procedure soup_message_body_append_take(body: PSoupMessageBody; data: Pguint8; length: gsize); cdecl; external;
+procedure soup_message_body_complete(body: PSoupMessageBody); cdecl; external;
+procedure soup_message_body_free(body: PSoupMessageBody); cdecl; external;
+procedure soup_message_body_got_chunk(body: PSoupMessageBody; chunk: PSoupBuffer); cdecl; external;
+procedure soup_message_body_set_accumulate(body: PSoupMessageBody; accumulate: gboolean); cdecl; external;
+procedure soup_message_body_truncate(body: PSoupMessageBody); cdecl; external;
+procedure soup_message_body_wrote_chunk(body: PSoupMessageBody; chunk: PSoupBuffer); cdecl; external;
+procedure soup_message_content_sniffed(msg: PSoupMessage; content_type: Pgchar; params: PGHashTable); cdecl; external;
+procedure soup_message_disable_feature(msg: PSoupMessage; feature_type: TGType); cdecl; external;
+procedure soup_message_finished(msg: PSoupMessage); cdecl; external;
+procedure soup_message_got_body(msg: PSoupMessage); cdecl; external;
+procedure soup_message_got_chunk(msg: PSoupMessage; chunk: PSoupBuffer); cdecl; external;
+procedure soup_message_got_headers(msg: PSoupMessage); cdecl; external;
+procedure soup_message_got_informational(msg: PSoupMessage); cdecl; external;
+procedure soup_message_headers_append(hdrs: PSoupMessageHeaders; name: Pgchar; value: Pgchar); cdecl; external;
+procedure soup_message_headers_clean_connection_headers(hdrs: PSoupMessageHeaders); cdecl; external;
+procedure soup_message_headers_clear(hdrs: PSoupMessageHeaders); cdecl; external;
+procedure soup_message_headers_foreach(hdrs: PSoupMessageHeaders; func: TSoupMessageHeadersForeachFunc; user_data: gpointer); cdecl; external;
+procedure soup_message_headers_free(hdrs: PSoupMessageHeaders); cdecl; external;
+procedure soup_message_headers_free_ranges(hdrs: PSoupMessageHeaders; ranges: PSoupRange); cdecl; external;
+procedure soup_message_headers_iter_init(iter: PSoupMessageHeadersIter; hdrs: PSoupMessageHeaders); cdecl; external;
+procedure soup_message_headers_remove(hdrs: PSoupMessageHeaders; name: Pgchar); cdecl; external;
+procedure soup_message_headers_replace(hdrs: PSoupMessageHeaders; name: Pgchar; value: Pgchar); cdecl; external;
+procedure soup_message_headers_set_content_disposition(hdrs: PSoupMessageHeaders; disposition: Pgchar; params: PGHashTable); cdecl; external;
+procedure soup_message_headers_set_content_length(hdrs: PSoupMessageHeaders; content_length: gint64); cdecl; external;
+procedure soup_message_headers_set_content_range(hdrs: PSoupMessageHeaders; start: gint64; end_: gint64; total_length: gint64); cdecl; external;
+procedure soup_message_headers_set_content_type(hdrs: PSoupMessageHeaders; content_type: Pgchar; params: PGHashTable); cdecl; external;
+procedure soup_message_headers_set_encoding(hdrs: PSoupMessageHeaders; encoding: TSoupEncoding); cdecl; external;
+procedure soup_message_headers_set_expectations(hdrs: PSoupMessageHeaders; expectations: TSoupExpectation); cdecl; external;
+procedure soup_message_headers_set_range(hdrs: PSoupMessageHeaders; start: gint64; end_: gint64); cdecl; external;
+procedure soup_message_headers_set_ranges(hdrs: PSoupMessageHeaders; ranges: PSoupRange; length: gint); cdecl; external;
+procedure soup_message_restarted(msg: PSoupMessage); cdecl; external;
+procedure soup_message_set_first_party(msg: PSoupMessage; first_party: PSoupURI); cdecl; external;
+procedure soup_message_set_flags(msg: PSoupMessage; flags: TSoupMessageFlags); cdecl; external;
+procedure soup_message_set_http_version(msg: PSoupMessage; version: TSoupHTTPVersion); cdecl; external;
+procedure soup_message_set_redirect(msg: PSoupMessage; status_code: guint; redirect_uri: Pgchar); cdecl; external;
+procedure soup_message_set_request(msg: PSoupMessage; content_type: Pgchar; req_use: TSoupMemoryUse; req_body: Pgchar; req_length: gsize); cdecl; external;
+procedure soup_message_set_response(msg: PSoupMessage; content_type: Pgchar; resp_use: TSoupMemoryUse; resp_body: Pgchar; resp_length: gsize); cdecl; external;
+procedure soup_message_set_status(msg: PSoupMessage; status_code: guint); cdecl; external;
+procedure soup_message_set_status_full(msg: PSoupMessage; status_code: guint; reason_phrase: Pgchar); cdecl; external;
+procedure soup_message_set_uri(msg: PSoupMessage; uri: PSoupURI); cdecl; external;
+procedure soup_message_wrote_body(msg: PSoupMessage); cdecl; external;
+procedure soup_message_wrote_body_data(msg: PSoupMessage; chunk: PSoupBuffer); cdecl; external;
+procedure soup_message_wrote_chunk(msg: PSoupMessage); cdecl; external;
+procedure soup_message_wrote_headers(msg: PSoupMessage); cdecl; external;
+procedure soup_message_wrote_informational(msg: PSoupMessage); cdecl; external;
+procedure soup_multipart_append_form_file(multipart: PSoupMultipart; control_name: Pgchar; filename: Pgchar; content_type: Pgchar; body: PSoupBuffer); cdecl; external;
+procedure soup_multipart_append_form_string(multipart: PSoupMultipart; control_name: Pgchar; data: Pgchar); cdecl; external;
+procedure soup_multipart_append_part(multipart: PSoupMultipart; headers: PSoupMessageHeaders; body: PSoupBuffer); cdecl; external;
+procedure soup_multipart_free(multipart: PSoupMultipart); cdecl; external;
+procedure soup_multipart_input_stream_next_part_async(multipart: PSoupMultipartInputStream; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; data: gpointer); cdecl; external;
+procedure soup_multipart_to_message(multipart: PSoupMultipart; dest_headers: PSoupMessageHeaders; dest_body: PSoupMessageBody); cdecl; external;
+procedure soup_password_manager_get_passwords_async(password_manager: PSoupPasswordManager; msg: PSoupMessage; auth: PSoupAuth; retrying: gboolean; async_context: PGMainContext; cancellable: PGCancellable; callback: TSoupPasswordManagerCallback; user_data: gpointer); cdecl; external;
+procedure soup_password_manager_get_passwords_sync(password_manager: PSoupPasswordManager; msg: PSoupMessage; auth: PSoupAuth; cancellable: PGCancellable); cdecl; external;
+procedure soup_proxy_uri_resolver_get_proxy_uri_async(proxy_uri_resolver: PSoupProxyURIResolver; uri: PSoupURI; async_context: PGMainContext; cancellable: PGCancellable; callback: TSoupProxyURIResolverCallback; user_data: gpointer); cdecl; external;
+procedure soup_request_send_async(request: PSoupRequest; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure soup_server_add_auth_domain(server: PSoupServer; auth_domain: PSoupAuthDomain); cdecl; external;
+procedure soup_server_add_handler(server: PSoupServer; path: Pgchar; callback: TSoupServerCallback; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure soup_server_disconnect(server: PSoupServer); cdecl; external;
+procedure soup_server_pause_message(server: PSoupServer; msg: PSoupMessage); cdecl; external;
+procedure soup_server_quit(server: PSoupServer); cdecl; external;
+procedure soup_server_remove_auth_domain(server: PSoupServer; auth_domain: PSoupAuthDomain); cdecl; external;
+procedure soup_server_remove_handler(server: PSoupServer; path: Pgchar); cdecl; external;
+procedure soup_server_run(server: PSoupServer); cdecl; external;
+procedure soup_server_run_async(server: PSoupServer); cdecl; external;
+procedure soup_server_unpause_message(server: PSoupServer; msg: PSoupMessage); cdecl; external;
+procedure soup_session_abort(session: PSoupSession); cdecl; external;
+procedure soup_session_add_feature(session: PSoupSession; feature: PSoupSessionFeature); cdecl; external;
+procedure soup_session_add_feature_by_type(session: PSoupSession; feature_type: TGType); cdecl; external;
+procedure soup_session_cancel_message(session: PSoupSession; msg: PSoupMessage; status_code: guint); cdecl; external;
+procedure soup_session_feature_attach(feature: PSoupSessionFeature; session: PSoupSession); cdecl; external;
+procedure soup_session_feature_detach(feature: PSoupSessionFeature; session: PSoupSession); cdecl; external;
+procedure soup_session_pause_message(session: PSoupSession; msg: PSoupMessage); cdecl; external;
+procedure soup_session_prefetch_dns(session: PSoupSession; hostname: Pgchar; cancellable: PGCancellable; callback: TSoupAddressCallback; user_data: gpointer); cdecl; external;
+procedure soup_session_queue_message(session: PSoupSession; msg: PSoupMessage; callback: TSoupSessionCallback; user_data: gpointer); cdecl; external;
+procedure soup_session_remove_feature(session: PSoupSession; feature: PSoupSessionFeature); cdecl; external;
+procedure soup_session_remove_feature_by_type(session: PSoupSession; feature_type: TGType); cdecl; external;
+procedure soup_session_requeue_message(session: PSoupSession; msg: PSoupMessage); cdecl; external;
+procedure soup_session_send_async(session: PSoupSession; msg: PSoupMessage; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure soup_session_unpause_message(session: PSoupSession; msg: PSoupMessage); cdecl; external;
+procedure soup_socket_connect_async(sock: PSoupSocket; cancellable: PGCancellable; callback: TSoupSocketCallback; user_data: gpointer); cdecl; external;
+procedure soup_socket_disconnect(sock: PSoupSocket); cdecl; external;
+procedure soup_uri_free(uri: PSoupURI); cdecl; external;
+procedure soup_uri_set_fragment(uri: PSoupURI; fragment: Pgchar); cdecl; external;
+procedure soup_uri_set_host(uri: PSoupURI; host: Pgchar); cdecl; external;
+procedure soup_uri_set_password(uri: PSoupURI; password: Pgchar); cdecl; external;
+procedure soup_uri_set_path(uri: PSoupURI; path: Pgchar); cdecl; external;
+procedure soup_uri_set_port(uri: PSoupURI; port: guint); cdecl; external;
+procedure soup_uri_set_query(uri: PSoupURI; query: Pgchar); cdecl; external;
+procedure soup_uri_set_query_from_fields(uri: PSoupURI; first_field: Pgchar; args: array of const); cdecl; external;
+procedure soup_uri_set_query_from_form(uri: PSoupURI; form: PGHashTable); cdecl; external;
+procedure soup_uri_set_scheme(uri: PSoupURI; scheme: Pgchar); cdecl; external;
+procedure soup_uri_set_user(uri: PSoupURI; user: Pgchar); cdecl; external;
 procedure soup_value_array_append(array_: PGValueArray; type_: TGType; args: array of const); cdecl; external;
 procedure soup_value_array_append_vals(array_: PGValueArray; first_type: TGType; args: array of const); cdecl; external;
 procedure soup_value_array_insert(array_: PGValueArray; index_: guint; type_: TGType; args: array of const); cdecl; external;
@@ -1717,1412 +2062,1627 @@ procedure soup_xmlrpc_set_response(msg: PSoupMessage; type_: TGType; args: array
 implementation
 function TSoupAddress.new(name: Pgchar; port: guint): PSoupAddress; cdecl;
 begin
-  Result := Soup2_4.soup_address_new(name, port);
+  Result := LazSoup2_4.soup_address_new(name, port);
 end;
 
 function TSoupAddress.new_any(family: TSoupAddressFamily; port: guint): PSoupAddress; cdecl;
 begin
-  Result := Soup2_4.soup_address_new_any(family, port);
+  Result := LazSoup2_4.soup_address_new_any(family, port);
 end;
 
 function TSoupAddress.new_from_sockaddr(sa: Pgpointer; len: gint): PSoupAddress; cdecl;
 begin
-  Result := Soup2_4.soup_address_new_from_sockaddr(sa, len);
+  Result := LazSoup2_4.soup_address_new_from_sockaddr(sa, len);
 end;
 
-function TSoupAddress.equal_by_ip(addr2: TSoupAddress): gboolean; cdecl;
+function TSoupAddress.equal_by_ip(addr2: PSoupAddress): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_address_equal_by_ip(@self, addr2);
+  Result := LazSoup2_4.soup_address_equal_by_ip(@self, addr2);
 end;
 
-function TSoupAddress.equal_by_name(addr2: TSoupAddress): gboolean; cdecl;
+function TSoupAddress.equal_by_name(addr2: PSoupAddress): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_address_equal_by_name(@self, addr2);
+  Result := LazSoup2_4.soup_address_equal_by_name(@self, addr2);
 end;
 
 function TSoupAddress.get_gsockaddr: PGSocketAddress; cdecl;
 begin
-  Result := Soup2_4.soup_address_get_gsockaddr(@self);
+  Result := LazSoup2_4.soup_address_get_gsockaddr(@self);
 end;
 
 function TSoupAddress.get_name: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_address_get_name(@self);
+  Result := LazSoup2_4.soup_address_get_name(@self);
 end;
 
 function TSoupAddress.get_physical: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_address_get_physical(@self);
+  Result := LazSoup2_4.soup_address_get_physical(@self);
 end;
 
 function TSoupAddress.get_port: guint; cdecl;
 begin
-  Result := Soup2_4.soup_address_get_port(@self);
+  Result := LazSoup2_4.soup_address_get_port(@self);
 end;
 
 function TSoupAddress.get_sockaddr(len: Pgint): Pgpointer; cdecl;
 begin
-  Result := Soup2_4.soup_address_get_sockaddr(@self, len);
+  Result := LazSoup2_4.soup_address_get_sockaddr(@self, len);
 end;
 
 function TSoupAddress.hash_by_ip: guint; cdecl;
 begin
-  Result := Soup2_4.soup_address_hash_by_ip(@self);
+  Result := LazSoup2_4.soup_address_hash_by_ip(@self);
 end;
 
 function TSoupAddress.hash_by_name: guint; cdecl;
 begin
-  Result := Soup2_4.soup_address_hash_by_name(@self);
+  Result := LazSoup2_4.soup_address_hash_by_name(@self);
 end;
 
 function TSoupAddress.is_resolved: gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_address_is_resolved(@self);
+  Result := LazSoup2_4.soup_address_is_resolved(@self);
 end;
 
 procedure TSoupAddress.resolve_async(async_context: PGMainContext; cancellable: PGCancellable; callback: TSoupAddressCallback; user_data: gpointer); cdecl;
 begin
-  Soup2_4.soup_address_resolve_async(@self, async_context, cancellable, callback, user_data);
+  LazSoup2_4.soup_address_resolve_async(@self, async_context, cancellable, callback, user_data);
 end;
 
 function TSoupAddress.resolve_sync(cancellable: PGCancellable): guint; cdecl;
 begin
-  Result := Soup2_4.soup_address_resolve_sync(@self, cancellable);
+  Result := LazSoup2_4.soup_address_resolve_sync(@self, cancellable);
 end;
 
 function TSoupAuth.new(type_: TGType; msg: PSoupMessage; auth_header: Pgchar): PSoupAuth; cdecl;
 begin
-  Result := Soup2_4.soup_auth_new(type_, msg, auth_header);
+  Result := LazSoup2_4.soup_auth_new(type_, msg, auth_header);
 end;
 
 procedure TSoupAuth.authenticate(username: Pgchar; password: Pgchar); cdecl;
 begin
-  Soup2_4.soup_auth_authenticate(@self, username, password);
+  LazSoup2_4.soup_auth_authenticate(@self, username, password);
 end;
 
 procedure TSoupAuth.free_protection_space(space: PGSList); cdecl;
 begin
-  Soup2_4.soup_auth_free_protection_space(@self, space);
+  LazSoup2_4.soup_auth_free_protection_space(@self, space);
 end;
 
 function TSoupAuth.get_authorization(msg: PSoupMessage): Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_auth_get_authorization(@self, msg);
+  Result := LazSoup2_4.soup_auth_get_authorization(@self, msg);
 end;
 
 function TSoupAuth.get_host: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_auth_get_host(@self);
+  Result := LazSoup2_4.soup_auth_get_host(@self);
 end;
 
 function TSoupAuth.get_info: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_auth_get_info(@self);
+  Result := LazSoup2_4.soup_auth_get_info(@self);
 end;
 
 function TSoupAuth.get_protection_space(source_uri: PSoupURI): PGSList; cdecl;
 begin
-  Result := Soup2_4.soup_auth_get_protection_space(@self, source_uri);
+  Result := LazSoup2_4.soup_auth_get_protection_space(@self, source_uri);
 end;
 
 function TSoupAuth.get_realm: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_auth_get_realm(@self);
+  Result := LazSoup2_4.soup_auth_get_realm(@self);
+end;
+
+function TSoupAuth.get_saved_password(user: Pgchar): Pgchar; cdecl;
+begin
+  Result := LazSoup2_4.soup_auth_get_saved_password(@self, user);
+end;
+
+function TSoupAuth.get_saved_users: PGSList; cdecl;
+begin
+  Result := LazSoup2_4.soup_auth_get_saved_users(@self);
 end;
 
 function TSoupAuth.get_scheme_name: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_auth_get_scheme_name(@self);
+  Result := LazSoup2_4.soup_auth_get_scheme_name(@self);
+end;
+
+procedure TSoupAuth.has_saved_password(username: Pgchar; password: Pgchar); cdecl;
+begin
+  LazSoup2_4.soup_auth_has_saved_password(@self, username, password);
 end;
 
 function TSoupAuth.is_authenticated: gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_auth_is_authenticated(@self);
+  Result := LazSoup2_4.soup_auth_is_authenticated(@self);
 end;
 
 function TSoupAuth.is_for_proxy: gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_auth_is_for_proxy(@self);
+  Result := LazSoup2_4.soup_auth_is_for_proxy(@self);
+end;
+
+function TSoupAuth.is_ready(msg: PSoupMessage): gboolean; cdecl;
+begin
+  Result := LazSoup2_4.soup_auth_is_ready(@self, msg);
+end;
+
+procedure TSoupAuth.save_password(username: Pgchar; password: Pgchar); cdecl;
+begin
+  LazSoup2_4.soup_auth_save_password(@self, username, password);
 end;
 
 function TSoupAuth.update(msg: PSoupMessage; auth_header: Pgchar): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_auth_update(@self, msg, auth_header);
+  Result := LazSoup2_4.soup_auth_update(@self, msg, auth_header);
 end;
 
 function TSoupMessage.new(method: Pgchar; uri_string: Pgchar): PSoupMessage; cdecl;
 begin
-  Result := Soup2_4.soup_message_new(method, uri_string);
+  Result := LazSoup2_4.soup_message_new(method, uri_string);
 end;
 
 function TSoupMessage.new_from_uri(method: Pgchar; uri: PSoupURI): PSoupMessage; cdecl;
 begin
-  Result := Soup2_4.soup_message_new_from_uri(method, uri);
+  Result := LazSoup2_4.soup_message_new_from_uri(method, uri);
 end;
 
 function TSoupMessage.add_header_handler(signal: Pgchar; header: Pgchar; callback: TGCallback; user_data: gpointer): guint; cdecl;
 begin
-  Result := Soup2_4.soup_message_add_header_handler(@self, signal, header, callback, user_data);
+  Result := LazSoup2_4.soup_message_add_header_handler(@self, signal, header, callback, user_data);
 end;
 
 function TSoupMessage.add_status_code_handler(signal: Pgchar; status_code: guint; callback: TGCallback; user_data: gpointer): guint; cdecl;
 begin
-  Result := Soup2_4.soup_message_add_status_code_handler(@self, signal, status_code, callback, user_data);
+  Result := LazSoup2_4.soup_message_add_status_code_handler(@self, signal, status_code, callback, user_data);
 end;
 
 procedure TSoupMessage.content_sniffed(content_type: Pgchar; params: PGHashTable); cdecl;
 begin
-  Soup2_4.soup_message_content_sniffed(@self, content_type, params);
+  LazSoup2_4.soup_message_content_sniffed(@self, content_type, params);
 end;
 
 procedure TSoupMessage.disable_feature(feature_type: TGType); cdecl;
 begin
-  Soup2_4.soup_message_disable_feature(@self, feature_type);
+  LazSoup2_4.soup_message_disable_feature(@self, feature_type);
 end;
 
 procedure TSoupMessage.finished; cdecl;
 begin
-  Soup2_4.soup_message_finished(@self);
+  LazSoup2_4.soup_message_finished(@self);
 end;
 
 function TSoupMessage.get_address: PSoupAddress; cdecl;
 begin
-  Result := Soup2_4.soup_message_get_address(@self);
+  Result := LazSoup2_4.soup_message_get_address(@self);
 end;
 
 function TSoupMessage.get_first_party: PSoupURI; cdecl;
 begin
-  Result := Soup2_4.soup_message_get_first_party(@self);
+  Result := LazSoup2_4.soup_message_get_first_party(@self);
 end;
 
 function TSoupMessage.get_flags: TSoupMessageFlags; cdecl;
 begin
-  Result := Soup2_4.soup_message_get_flags(@self);
+  Result := LazSoup2_4.soup_message_get_flags(@self);
 end;
 
 function TSoupMessage.get_http_version: TSoupHTTPVersion; cdecl;
 begin
-  Result := Soup2_4.soup_message_get_http_version(@self);
+  Result := LazSoup2_4.soup_message_get_http_version(@self);
 end;
 
 function TSoupMessage.get_https_status(certificate: PPGTlsCertificate; errors: PGTlsCertificateFlags): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_message_get_https_status(@self, certificate, errors);
+  Result := LazSoup2_4.soup_message_get_https_status(@self, certificate, errors);
+end;
+
+function TSoupMessage.get_soup_request: PSoupRequest; cdecl;
+begin
+  Result := LazSoup2_4.soup_message_get_soup_request(@self);
 end;
 
 function TSoupMessage.get_uri: PSoupURI; cdecl;
 begin
-  Result := Soup2_4.soup_message_get_uri(@self);
+  Result := LazSoup2_4.soup_message_get_uri(@self);
 end;
 
 procedure TSoupMessage.got_body; cdecl;
 begin
-  Soup2_4.soup_message_got_body(@self);
+  LazSoup2_4.soup_message_got_body(@self);
 end;
 
 procedure TSoupMessage.got_chunk(chunk: PSoupBuffer); cdecl;
 begin
-  Soup2_4.soup_message_got_chunk(@self, chunk);
+  LazSoup2_4.soup_message_got_chunk(@self, chunk);
 end;
 
 procedure TSoupMessage.got_headers; cdecl;
 begin
-  Soup2_4.soup_message_got_headers(@self);
+  LazSoup2_4.soup_message_got_headers(@self);
 end;
 
 procedure TSoupMessage.got_informational; cdecl;
 begin
-  Soup2_4.soup_message_got_informational(@self);
+  LazSoup2_4.soup_message_got_informational(@self);
 end;
 
 function TSoupMessage.is_keepalive: gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_message_is_keepalive(@self);
+  Result := LazSoup2_4.soup_message_is_keepalive(@self);
 end;
 
 procedure TSoupMessage.restarted; cdecl;
 begin
-  Soup2_4.soup_message_restarted(@self);
-end;
-
-procedure TSoupMessage.set_chunk_allocator(allocator: TSoupChunkAllocator; user_data: gpointer; destroy_notify: TGDestroyNotify); cdecl;
-begin
-  Soup2_4.soup_message_set_chunk_allocator(@self, allocator, user_data, destroy_notify);
+  LazSoup2_4.soup_message_restarted(@self);
 end;
 
 procedure TSoupMessage.set_first_party(first_party: PSoupURI); cdecl;
 begin
-  Soup2_4.soup_message_set_first_party(@self, first_party);
+  LazSoup2_4.soup_message_set_first_party(@self, first_party);
 end;
 
 procedure TSoupMessage.set_flags(flags: TSoupMessageFlags); cdecl;
 begin
-  Soup2_4.soup_message_set_flags(@self, flags);
+  LazSoup2_4.soup_message_set_flags(@self, flags);
 end;
 
 procedure TSoupMessage.set_http_version(version: TSoupHTTPVersion); cdecl;
 begin
-  Soup2_4.soup_message_set_http_version(@self, version);
+  LazSoup2_4.soup_message_set_http_version(@self, version);
 end;
 
 procedure TSoupMessage.set_redirect(status_code: guint; redirect_uri: Pgchar); cdecl;
 begin
-  Soup2_4.soup_message_set_redirect(@self, status_code, redirect_uri);
+  LazSoup2_4.soup_message_set_redirect(@self, status_code, redirect_uri);
 end;
 
 procedure TSoupMessage.set_request(content_type: Pgchar; req_use: TSoupMemoryUse; req_body: Pgchar; req_length: gsize); cdecl;
 begin
-  Soup2_4.soup_message_set_request(@self, content_type, req_use, req_body, req_length);
+  LazSoup2_4.soup_message_set_request(@self, content_type, req_use, req_body, req_length);
 end;
 
 procedure TSoupMessage.set_response(content_type: Pgchar; resp_use: TSoupMemoryUse; resp_body: Pgchar; resp_length: gsize); cdecl;
 begin
-  Soup2_4.soup_message_set_response(@self, content_type, resp_use, resp_body, resp_length);
+  LazSoup2_4.soup_message_set_response(@self, content_type, resp_use, resp_body, resp_length);
 end;
 
 procedure TSoupMessage.set_status(status_code: guint); cdecl;
 begin
-  Soup2_4.soup_message_set_status(@self, status_code);
+  LazSoup2_4.soup_message_set_status(@self, status_code);
 end;
 
 procedure TSoupMessage.set_status_full(status_code: guint; reason_phrase: Pgchar); cdecl;
 begin
-  Soup2_4.soup_message_set_status_full(@self, status_code, reason_phrase);
+  LazSoup2_4.soup_message_set_status_full(@self, status_code, reason_phrase);
 end;
 
 procedure TSoupMessage.set_uri(uri: PSoupURI); cdecl;
 begin
-  Soup2_4.soup_message_set_uri(@self, uri);
+  LazSoup2_4.soup_message_set_uri(@self, uri);
 end;
 
 procedure TSoupMessage.wrote_body; cdecl;
 begin
-  Soup2_4.soup_message_wrote_body(@self);
+  LazSoup2_4.soup_message_wrote_body(@self);
 end;
 
 procedure TSoupMessage.wrote_body_data(chunk: PSoupBuffer); cdecl;
 begin
-  Soup2_4.soup_message_wrote_body_data(@self, chunk);
+  LazSoup2_4.soup_message_wrote_body_data(@self, chunk);
 end;
 
 procedure TSoupMessage.wrote_chunk; cdecl;
 begin
-  Soup2_4.soup_message_wrote_chunk(@self);
+  LazSoup2_4.soup_message_wrote_chunk(@self);
 end;
 
 procedure TSoupMessage.wrote_headers; cdecl;
 begin
-  Soup2_4.soup_message_wrote_headers(@self);
+  LazSoup2_4.soup_message_wrote_headers(@self);
 end;
 
 procedure TSoupMessage.wrote_informational; cdecl;
 begin
-  Soup2_4.soup_message_wrote_informational(@self);
+  LazSoup2_4.soup_message_wrote_informational(@self);
 end;
 
 function TSoupURI.new(uri_string: Pgchar): PSoupURI; cdecl;
 begin
-  Result := Soup2_4.soup_uri_new(uri_string);
+  Result := LazSoup2_4.soup_uri_new(uri_string);
 end;
 
 function TSoupURI.copy: PSoupURI; cdecl;
 begin
-  Result := Soup2_4.soup_uri_copy(@self);
+  Result := LazSoup2_4.soup_uri_copy(@self);
 end;
 
 function TSoupURI.copy_host: PSoupURI; cdecl;
 begin
-  Result := Soup2_4.soup_uri_copy_host(@self);
+  Result := LazSoup2_4.soup_uri_copy_host(@self);
 end;
 
 function TSoupURI.equal(uri2: PSoupURI): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_uri_equal(@self, uri2);
+  Result := LazSoup2_4.soup_uri_equal(@self, uri2);
 end;
 
 procedure TSoupURI.free; cdecl;
 begin
-  Soup2_4.soup_uri_free(@self);
+  LazSoup2_4.soup_uri_free(@self);
 end;
 
 function TSoupURI.get_fragment: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_uri_get_fragment(@self);
+  Result := LazSoup2_4.soup_uri_get_fragment(@self);
 end;
 
 function TSoupURI.get_host: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_uri_get_host(@self);
+  Result := LazSoup2_4.soup_uri_get_host(@self);
 end;
 
 function TSoupURI.get_password: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_uri_get_password(@self);
+  Result := LazSoup2_4.soup_uri_get_password(@self);
 end;
 
 function TSoupURI.get_path: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_uri_get_path(@self);
+  Result := LazSoup2_4.soup_uri_get_path(@self);
 end;
 
 function TSoupURI.get_port: guint; cdecl;
 begin
-  Result := Soup2_4.soup_uri_get_port(@self);
+  Result := LazSoup2_4.soup_uri_get_port(@self);
 end;
 
 function TSoupURI.get_query: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_uri_get_query(@self);
+  Result := LazSoup2_4.soup_uri_get_query(@self);
 end;
 
 function TSoupURI.get_scheme: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_uri_get_scheme(@self);
+  Result := LazSoup2_4.soup_uri_get_scheme(@self);
 end;
 
 function TSoupURI.get_user: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_uri_get_user(@self);
+  Result := LazSoup2_4.soup_uri_get_user(@self);
 end;
 
-function TSoupURI.host_equal(v2: TSoupURI): gboolean; cdecl;
+function TSoupURI.host_equal(v2: PSoupURI): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_uri_host_equal(@self, v2);
+  Result := LazSoup2_4.soup_uri_host_equal(@self, v2);
 end;
 
 function TSoupURI.host_hash: guint; cdecl;
 begin
-  Result := Soup2_4.soup_uri_host_hash(@self);
+  Result := LazSoup2_4.soup_uri_host_hash(@self);
 end;
 
 function TSoupURI.new_with_base(uri_string: Pgchar): PSoupURI; cdecl;
 begin
-  Result := Soup2_4.soup_uri_new_with_base(@self, uri_string);
+  Result := LazSoup2_4.soup_uri_new_with_base(@self, uri_string);
 end;
 
 procedure TSoupURI.set_fragment(fragment: Pgchar); cdecl;
 begin
-  Soup2_4.soup_uri_set_fragment(@self, fragment);
+  LazSoup2_4.soup_uri_set_fragment(@self, fragment);
 end;
 
 procedure TSoupURI.set_host(host: Pgchar); cdecl;
 begin
-  Soup2_4.soup_uri_set_host(@self, host);
+  LazSoup2_4.soup_uri_set_host(@self, host);
 end;
 
 procedure TSoupURI.set_password(password: Pgchar); cdecl;
 begin
-  Soup2_4.soup_uri_set_password(@self, password);
+  LazSoup2_4.soup_uri_set_password(@self, password);
 end;
 
 procedure TSoupURI.set_path(path: Pgchar); cdecl;
 begin
-  Soup2_4.soup_uri_set_path(@self, path);
+  LazSoup2_4.soup_uri_set_path(@self, path);
 end;
 
 procedure TSoupURI.set_port(port: guint); cdecl;
 begin
-  Soup2_4.soup_uri_set_port(@self, port);
+  LazSoup2_4.soup_uri_set_port(@self, port);
 end;
 
 procedure TSoupURI.set_query(query: Pgchar); cdecl;
 begin
-  Soup2_4.soup_uri_set_query(@self, query);
+  LazSoup2_4.soup_uri_set_query(@self, query);
 end;
 
 procedure TSoupURI.set_query_from_form(form: PGHashTable); cdecl;
 begin
-  Soup2_4.soup_uri_set_query_from_form(@self, form);
+  LazSoup2_4.soup_uri_set_query_from_form(@self, form);
 end;
 
 procedure TSoupURI.set_scheme(scheme: Pgchar); cdecl;
 begin
-  Soup2_4.soup_uri_set_scheme(@self, scheme);
+  LazSoup2_4.soup_uri_set_scheme(@self, scheme);
 end;
 
 procedure TSoupURI.set_user(user: Pgchar); cdecl;
 begin
-  Soup2_4.soup_uri_set_user(@self, user);
+  LazSoup2_4.soup_uri_set_user(@self, user);
 end;
 
 function TSoupURI.to_string(just_path_and_query: gboolean): Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_uri_to_string(@self, just_path_and_query);
+  Result := LazSoup2_4.soup_uri_to_string(@self, just_path_and_query);
 end;
 
 function TSoupURI.uses_default_port: gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_uri_uses_default_port(@self);
+  Result := LazSoup2_4.soup_uri_uses_default_port(@self);
 end;
 
 function TSoupURI.decode(part: Pgchar): Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_uri_decode(part);
+  Result := LazSoup2_4.soup_uri_decode(part);
 end;
 
 function TSoupURI.encode(part: Pgchar; escape_extra: Pgchar): Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_uri_encode(part, escape_extra);
+  Result := LazSoup2_4.soup_uri_encode(part, escape_extra);
 end;
 
 function TSoupURI.normalize(part: Pgchar; unescape_extra: Pgchar): Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_uri_normalize(part, unescape_extra);
+  Result := LazSoup2_4.soup_uri_normalize(part, unescape_extra);
 end;
 
 function TSoupAuthDomain.accepts(msg: PSoupMessage): Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_auth_domain_accepts(@self, msg);
+  Result := LazSoup2_4.soup_auth_domain_accepts(@self, msg);
 end;
 
 procedure TSoupAuthDomain.add_path(path: Pgchar); cdecl;
 begin
-  Soup2_4.soup_auth_domain_add_path(@self, path);
+  LazSoup2_4.soup_auth_domain_add_path(@self, path);
 end;
 
 procedure TSoupAuthDomain.basic_set_auth_callback(callback: TSoupAuthDomainBasicAuthCallback; user_data: gpointer; dnotify: TGDestroyNotify); cdecl;
 begin
-  Soup2_4.soup_auth_domain_basic_set_auth_callback(@self, callback, user_data, dnotify);
+  LazSoup2_4.soup_auth_domain_basic_set_auth_callback(@self, callback, user_data, dnotify);
 end;
 
 procedure TSoupAuthDomain.challenge(msg: PSoupMessage); cdecl;
 begin
-  Soup2_4.soup_auth_domain_challenge(@self, msg);
+  LazSoup2_4.soup_auth_domain_challenge(@self, msg);
 end;
 
 function TSoupAuthDomain.check_password(msg: PSoupMessage; username: Pgchar; password: Pgchar): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_auth_domain_check_password(@self, msg, username, password);
+  Result := LazSoup2_4.soup_auth_domain_check_password(@self, msg, username, password);
 end;
 
 function TSoupAuthDomain.covers(msg: PSoupMessage): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_auth_domain_covers(@self, msg);
+  Result := LazSoup2_4.soup_auth_domain_covers(@self, msg);
 end;
 
 procedure TSoupAuthDomain.digest_set_auth_callback(callback: TSoupAuthDomainDigestAuthCallback; user_data: gpointer; dnotify: TGDestroyNotify); cdecl;
 begin
-  Soup2_4.soup_auth_domain_digest_set_auth_callback(@self, callback, user_data, dnotify);
+  LazSoup2_4.soup_auth_domain_digest_set_auth_callback(@self, callback, user_data, dnotify);
 end;
 
 function TSoupAuthDomain.get_realm: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_auth_domain_get_realm(@self);
+  Result := LazSoup2_4.soup_auth_domain_get_realm(@self);
 end;
 
 procedure TSoupAuthDomain.remove_path(path: Pgchar); cdecl;
 begin
-  Soup2_4.soup_auth_domain_remove_path(@self, path);
+  LazSoup2_4.soup_auth_domain_remove_path(@self, path);
 end;
 
 procedure TSoupAuthDomain.set_filter(filter: TSoupAuthDomainFilter; filter_data: gpointer; dnotify: TGDestroyNotify); cdecl;
 begin
-  Soup2_4.soup_auth_domain_set_filter(@self, filter, filter_data, dnotify);
+  LazSoup2_4.soup_auth_domain_set_filter(@self, filter, filter_data, dnotify);
 end;
 
 procedure TSoupAuthDomain.set_generic_auth_callback(auth_callback: TSoupAuthDomainGenericAuthCallback; auth_data: gpointer; dnotify: TGDestroyNotify); cdecl;
 begin
-  Soup2_4.soup_auth_domain_set_generic_auth_callback(@self, auth_callback, auth_data, dnotify);
+  LazSoup2_4.soup_auth_domain_set_generic_auth_callback(@self, auth_callback, auth_data, dnotify);
 end;
 
 function TSoupAuthDomain.try_generic_auth_callback(msg: PSoupMessage; username: Pgchar): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_auth_domain_try_generic_auth_callback(@self, msg, username);
+  Result := LazSoup2_4.soup_auth_domain_try_generic_auth_callback(@self, msg, username);
 end;
 
 function TSoupAuthDomainDigest.encode_password(username: Pgchar; realm: Pgchar; password: Pgchar): Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_auth_domain_digest_encode_password(username, realm, password);
-end;
-
-function TSoupBuffer.new(use: TSoupMemoryUse; data: gpointer; length: gsize): PSoupBuffer; cdecl;
-begin
-  Result := Soup2_4.soup_buffer_new(use, data, length);
-end;
-
-function TSoupBuffer.new_take(data: Pguint8; length: gsize): PSoupBuffer; cdecl;
-begin
-  Result := Soup2_4.soup_buffer_new_take(data, length);
-end;
-
-function TSoupBuffer.new_with_owner(data: gpointer; length: gsize; owner: gpointer; owner_dnotify: TGDestroyNotify): PSoupBuffer; cdecl;
-begin
-  Result := Soup2_4.soup_buffer_new_with_owner(data, length, owner, owner_dnotify);
-end;
-
-function TSoupBuffer.copy: PSoupBuffer; cdecl;
-begin
-  Result := Soup2_4.soup_buffer_copy(@self);
-end;
-
-procedure TSoupBuffer.free; cdecl;
-begin
-  Soup2_4.soup_buffer_free(@self);
-end;
-
-procedure TSoupBuffer.get_data(data: PPguint8; length: Pgsize); cdecl;
-begin
-  Soup2_4.soup_buffer_get_data(@self, data, length);
-end;
-
-function TSoupBuffer.get_owner: gpointer; cdecl;
-begin
-  Result := Soup2_4.soup_buffer_get_owner(@self);
-end;
-
-function TSoupBuffer.new_subbuffer(offset: gsize; length: gsize): PSoupBuffer; cdecl;
-begin
-  Result := Soup2_4.soup_buffer_new_subbuffer(@self, offset, length);
-end;
-
-procedure TSoupSocket.connect_async(cancellable: PGCancellable; callback: TSoupSocketCallback; user_data: gpointer); cdecl;
-begin
-  Soup2_4.soup_socket_connect_async(@self, cancellable, callback, user_data);
-end;
-
-function TSoupSocket.connect_sync(cancellable: PGCancellable): guint; cdecl;
-begin
-  Result := Soup2_4.soup_socket_connect_sync(@self, cancellable);
-end;
-
-procedure TSoupSocket.disconnect; cdecl;
-begin
-  Soup2_4.soup_socket_disconnect(@self);
-end;
-
-function TSoupSocket.get_fd: gint; cdecl;
-begin
-  Result := Soup2_4.soup_socket_get_fd(@self);
-end;
-
-function TSoupSocket.get_local_address: PSoupAddress; cdecl;
-begin
-  Result := Soup2_4.soup_socket_get_local_address(@self);
-end;
-
-function TSoupSocket.get_remote_address: PSoupAddress; cdecl;
-begin
-  Result := Soup2_4.soup_socket_get_remote_address(@self);
-end;
-
-function TSoupSocket.is_connected: gboolean; cdecl;
-begin
-  Result := Soup2_4.soup_socket_is_connected(@self);
-end;
-
-function TSoupSocket.is_ssl: gboolean; cdecl;
-begin
-  Result := Soup2_4.soup_socket_is_ssl(@self);
-end;
-
-function TSoupSocket.listen: gboolean; cdecl;
-begin
-  Result := Soup2_4.soup_socket_listen(@self);
-end;
-
-function TSoupSocket.read(buffer: gpointer; len: gsize; nread: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl;
-begin
-  Result := Soup2_4.soup_socket_read(@self, buffer, len, nread, cancellable);
-end;
-
-function TSoupSocket.read_until(buffer: gpointer; len: gsize; boundary: gpointer; boundary_len: gsize; nread: Pgsize; got_boundary: Pgboolean; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl;
-begin
-  Result := Soup2_4.soup_socket_read_until(@self, buffer, len, boundary, boundary_len, nread, got_boundary, cancellable);
-end;
-
-function TSoupSocket.start_proxy_ssl(ssl_host: Pgchar; cancellable: PGCancellable): gboolean; cdecl;
-begin
-  Result := Soup2_4.soup_socket_start_proxy_ssl(@self, ssl_host, cancellable);
-end;
-
-function TSoupSocket.start_ssl(cancellable: PGCancellable): gboolean; cdecl;
-begin
-  Result := Soup2_4.soup_socket_start_ssl(@self, cancellable);
-end;
-
-function TSoupSocket.write(buffer: gpointer; len: gsize; nwrote: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl;
-begin
-  Result := Soup2_4.soup_socket_write(@self, buffer, len, nwrote, cancellable);
-end;
-
-function TSoupClientContext.get_address: PSoupAddress; cdecl;
-begin
-  Result := Soup2_4.soup_client_context_get_address(@self);
-end;
-
-function TSoupClientContext.get_auth_domain: PSoupAuthDomain; cdecl;
-begin
-  Result := Soup2_4.soup_client_context_get_auth_domain(@self);
-end;
-
-function TSoupClientContext.get_auth_user: Pgchar; cdecl;
-begin
-  Result := Soup2_4.soup_client_context_get_auth_user(@self);
-end;
-
-function TSoupClientContext.get_host: Pgchar; cdecl;
-begin
-  Result := Soup2_4.soup_client_context_get_host(@self);
-end;
-
-function TSoupClientContext.get_socket: PSoupSocket; cdecl;
-begin
-  Result := Soup2_4.soup_client_context_get_socket(@self);
+  Result := LazSoup2_4.soup_auth_domain_digest_encode_password(username, realm, password);
 end;
 
 function TSoupSessionFeature.add_feature(type_: TGType): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_session_feature_add_feature(@self, type_);
+  Result := LazSoup2_4.soup_session_feature_add_feature(@self, type_);
 end;
 
 procedure TSoupSessionFeature.attach(session: PSoupSession); cdecl;
 begin
-  Soup2_4.soup_session_feature_attach(@self, session);
+  LazSoup2_4.soup_session_feature_attach(@self, session);
 end;
 
 procedure TSoupSessionFeature.detach(session: PSoupSession); cdecl;
 begin
-  Soup2_4.soup_session_feature_detach(@self, session);
+  LazSoup2_4.soup_session_feature_detach(@self, session);
 end;
 
 function TSoupSessionFeature.has_feature(type_: TGType): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_session_feature_has_feature(@self, type_);
+  Result := LazSoup2_4.soup_session_feature_has_feature(@self, type_);
 end;
 
 function TSoupSessionFeature.remove_feature(type_: TGType): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_session_feature_remove_feature(@self, type_);
+  Result := LazSoup2_4.soup_session_feature_remove_feature(@self, type_);
+end;
+
+procedure TSoupAuthManager.use_auth(uri: PSoupURI; auth: PSoupAuth); cdecl;
+begin
+  LazSoup2_4.soup_auth_manager_use_auth(@self, uri, auth);
+end;
+
+function TSoupBuffer.new(use: TSoupMemoryUse; data: Pgpointer; length: gsize): PSoupBuffer; cdecl;
+begin
+  Result := LazSoup2_4.soup_buffer_new(use, data, length);
+end;
+
+function TSoupBuffer.new_take(data: Pguint8; length: gsize): PSoupBuffer; cdecl;
+begin
+  Result := LazSoup2_4.soup_buffer_new_take(data, length);
+end;
+
+function TSoupBuffer.new_with_owner(data: Pgpointer; length: gsize; owner: gpointer; owner_dnotify: TGDestroyNotify): PSoupBuffer; cdecl;
+begin
+  Result := LazSoup2_4.soup_buffer_new_with_owner(data, length, owner, owner_dnotify);
+end;
+
+function TSoupBuffer.copy: PSoupBuffer; cdecl;
+begin
+  Result := LazSoup2_4.soup_buffer_copy(@self);
+end;
+
+procedure TSoupBuffer.free; cdecl;
+begin
+  LazSoup2_4.soup_buffer_free(@self);
+end;
+
+function TSoupBuffer.get_as_bytes: PGBytes; cdecl;
+begin
+  Result := LazSoup2_4.soup_buffer_get_as_bytes(@self);
+end;
+
+procedure TSoupBuffer.get_data(data: PPguint8; length: Pgsize); cdecl;
+begin
+  LazSoup2_4.soup_buffer_get_data(@self, data, length);
+end;
+
+function TSoupBuffer.get_owner: gpointer; cdecl;
+begin
+  Result := LazSoup2_4.soup_buffer_get_owner(@self);
+end;
+
+function TSoupBuffer.new_subbuffer(offset: gsize; length: gsize): PSoupBuffer; cdecl;
+begin
+  Result := LazSoup2_4.soup_buffer_new_subbuffer(@self, offset, length);
+end;
+
+function TSoupCache.new(cache_dir: Pgchar; cache_type: TSoupCacheType): PSoupCache; cdecl;
+begin
+  Result := LazSoup2_4.soup_cache_new(cache_dir, cache_type);
+end;
+
+procedure TSoupCache.clear; cdecl;
+begin
+  LazSoup2_4.soup_cache_clear(@self);
+end;
+
+procedure TSoupCache.dump; cdecl;
+begin
+  LazSoup2_4.soup_cache_dump(@self);
+end;
+
+procedure TSoupCache.flush; cdecl;
+begin
+  LazSoup2_4.soup_cache_flush(@self);
+end;
+
+function TSoupCache.get_max_size: guint; cdecl;
+begin
+  Result := LazSoup2_4.soup_cache_get_max_size(@self);
+end;
+
+procedure TSoupCache.load; cdecl;
+begin
+  LazSoup2_4.soup_cache_load(@self);
+end;
+
+procedure TSoupCache.set_max_size(max_size: guint); cdecl;
+begin
+  LazSoup2_4.soup_cache_set_max_size(@self, max_size);
+end;
+
+function TSoupClientContext.get_address: PSoupAddress; cdecl;
+begin
+  Result := LazSoup2_4.soup_client_context_get_address(@self);
+end;
+
+function TSoupClientContext.get_auth_domain: PSoupAuthDomain; cdecl;
+begin
+  Result := LazSoup2_4.soup_client_context_get_auth_domain(@self);
+end;
+
+function TSoupClientContext.get_auth_user: Pgchar; cdecl;
+begin
+  Result := LazSoup2_4.soup_client_context_get_auth_user(@self);
+end;
+
+function TSoupClientContext.get_host: Pgchar; cdecl;
+begin
+  Result := LazSoup2_4.soup_client_context_get_host(@self);
+end;
+
+function TSoupClientContext.get_socket: PSoupSocket; cdecl;
+begin
+  Result := LazSoup2_4.soup_client_context_get_socket(@self);
+end;
+
+procedure TSoupSocket.connect_async(cancellable: PGCancellable; callback: TSoupSocketCallback; user_data: gpointer); cdecl;
+begin
+  LazSoup2_4.soup_socket_connect_async(@self, cancellable, callback, user_data);
+end;
+
+function TSoupSocket.connect_sync(cancellable: PGCancellable): guint; cdecl;
+begin
+  Result := LazSoup2_4.soup_socket_connect_sync(@self, cancellable);
+end;
+
+procedure TSoupSocket.disconnect; cdecl;
+begin
+  LazSoup2_4.soup_socket_disconnect(@self);
+end;
+
+function TSoupSocket.get_fd: gint; cdecl;
+begin
+  Result := LazSoup2_4.soup_socket_get_fd(@self);
+end;
+
+function TSoupSocket.get_local_address: PSoupAddress; cdecl;
+begin
+  Result := LazSoup2_4.soup_socket_get_local_address(@self);
+end;
+
+function TSoupSocket.get_remote_address: PSoupAddress; cdecl;
+begin
+  Result := LazSoup2_4.soup_socket_get_remote_address(@self);
+end;
+
+function TSoupSocket.is_connected: gboolean; cdecl;
+begin
+  Result := LazSoup2_4.soup_socket_is_connected(@self);
+end;
+
+function TSoupSocket.is_ssl: gboolean; cdecl;
+begin
+  Result := LazSoup2_4.soup_socket_is_ssl(@self);
+end;
+
+function TSoupSocket.listen: gboolean; cdecl;
+begin
+  Result := LazSoup2_4.soup_socket_listen(@self);
+end;
+
+function TSoupSocket.read(buffer: gpointer; len: gsize; nread: Pgsize; cancellable: PGCancellable; error: PPGError): TSoupSocketIOStatus; cdecl;
+begin
+  Result := LazSoup2_4.soup_socket_read(@self, buffer, len, nread, cancellable, error);
+end;
+
+function TSoupSocket.read_until(buffer: gpointer; len: gsize; boundary: Pgpointer; boundary_len: gsize; nread: Pgsize; got_boundary: Pgboolean; cancellable: PGCancellable; error: PPGError): TSoupSocketIOStatus; cdecl;
+begin
+  Result := LazSoup2_4.soup_socket_read_until(@self, buffer, len, boundary, boundary_len, nread, got_boundary, cancellable, error);
+end;
+
+function TSoupSocket.start_proxy_ssl(ssl_host: Pgchar; cancellable: PGCancellable): gboolean; cdecl;
+begin
+  Result := LazSoup2_4.soup_socket_start_proxy_ssl(@self, ssl_host, cancellable);
+end;
+
+function TSoupSocket.start_ssl(cancellable: PGCancellable): gboolean; cdecl;
+begin
+  Result := LazSoup2_4.soup_socket_start_ssl(@self, cancellable);
+end;
+
+function TSoupSocket.write(buffer: Pgpointer; len: gsize; nwrote: Pgsize; cancellable: PGCancellable; error: PPGError): TSoupSocketIOStatus; cdecl;
+begin
+  Result := LazSoup2_4.soup_socket_write(@self, buffer, len, nwrote, cancellable, error);
 end;
 
 function TSoupContentSniffer.new: PSoupContentSniffer; cdecl;
 begin
-  Result := Soup2_4.soup_content_sniffer_new();
+  Result := LazSoup2_4.soup_content_sniffer_new();
+end;
+
+function TSoupContentSniffer.get_buffer_size: gsize; cdecl;
+begin
+  Result := LazSoup2_4.soup_content_sniffer_get_buffer_size(@self);
 end;
 
 function TSoupContentSniffer.sniff(msg: PSoupMessage; buffer: PSoupBuffer; params: PPGHashTable): Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_content_sniffer_sniff(@self, msg, buffer, params);
+  Result := LazSoup2_4.soup_content_sniffer_sniff(@self, msg, buffer, params);
 end;
 
 function TSoupDate.new(year: gint; month: gint; day: gint; hour: gint; minute: gint; second: gint): PSoupDate; cdecl;
 begin
-  Result := Soup2_4.soup_date_new(year, month, day, hour, minute, second);
+  Result := LazSoup2_4.soup_date_new(year, month, day, hour, minute, second);
 end;
 
 function TSoupDate.new_from_now(offset_seconds: gint): PSoupDate; cdecl;
 begin
-  Result := Soup2_4.soup_date_new_from_now(offset_seconds);
+  Result := LazSoup2_4.soup_date_new_from_now(offset_seconds);
 end;
 
 function TSoupDate.new_from_string(date_string: Pgchar): PSoupDate; cdecl;
 begin
-  Result := Soup2_4.soup_date_new_from_string(date_string);
+  Result := LazSoup2_4.soup_date_new_from_string(date_string);
 end;
 
 function TSoupDate.new_from_time_t(when: glong): PSoupDate; cdecl;
 begin
-  Result := Soup2_4.soup_date_new_from_time_t(when);
+  Result := LazSoup2_4.soup_date_new_from_time_t(when);
 end;
 
 function TSoupDate.copy: PSoupDate; cdecl;
 begin
-  Result := Soup2_4.soup_date_copy(@self);
+  Result := LazSoup2_4.soup_date_copy(@self);
 end;
 
 procedure TSoupDate.free; cdecl;
 begin
-  Soup2_4.soup_date_free(@self);
+  LazSoup2_4.soup_date_free(@self);
 end;
 
 function TSoupDate.get_day: gint; cdecl;
 begin
-  Result := Soup2_4.soup_date_get_day(@self);
+  Result := LazSoup2_4.soup_date_get_day(@self);
 end;
 
 function TSoupDate.get_hour: gint; cdecl;
 begin
-  Result := Soup2_4.soup_date_get_hour(@self);
+  Result := LazSoup2_4.soup_date_get_hour(@self);
 end;
 
 function TSoupDate.get_minute: gint; cdecl;
 begin
-  Result := Soup2_4.soup_date_get_minute(@self);
+  Result := LazSoup2_4.soup_date_get_minute(@self);
 end;
 
 function TSoupDate.get_month: gint; cdecl;
 begin
-  Result := Soup2_4.soup_date_get_month(@self);
+  Result := LazSoup2_4.soup_date_get_month(@self);
 end;
 
 function TSoupDate.get_offset: gint; cdecl;
 begin
-  Result := Soup2_4.soup_date_get_offset(@self);
+  Result := LazSoup2_4.soup_date_get_offset(@self);
 end;
 
 function TSoupDate.get_second: gint; cdecl;
 begin
-  Result := Soup2_4.soup_date_get_second(@self);
+  Result := LazSoup2_4.soup_date_get_second(@self);
 end;
 
 function TSoupDate.get_utc: gint; cdecl;
 begin
-  Result := Soup2_4.soup_date_get_utc(@self);
+  Result := LazSoup2_4.soup_date_get_utc(@self);
 end;
 
 function TSoupDate.get_year: gint; cdecl;
 begin
-  Result := Soup2_4.soup_date_get_year(@self);
+  Result := LazSoup2_4.soup_date_get_year(@self);
 end;
 
 function TSoupDate.is_past: gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_date_is_past(@self);
+  Result := LazSoup2_4.soup_date_is_past(@self);
 end;
 
 function TSoupDate.to_string(format: TSoupDateFormat): Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_date_to_string(@self, format);
+  Result := LazSoup2_4.soup_date_to_string(@self, format);
 end;
 
 function TSoupDate.to_time_t: glong; cdecl;
 begin
-  Result := Soup2_4.soup_date_to_time_t(@self);
+  Result := LazSoup2_4.soup_date_to_time_t(@self);
 end;
 
 procedure TSoupDate.to_timeval(time: PGTimeVal); cdecl;
 begin
-  Soup2_4.soup_date_to_timeval(@self, time);
+  LazSoup2_4.soup_date_to_timeval(@self, time);
 end;
 
 function TSoupCookie.new(name: Pgchar; value: Pgchar; domain: Pgchar; path: Pgchar; max_age: gint): PSoupCookie; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_new(name, value, domain, path, max_age);
+  Result := LazSoup2_4.soup_cookie_new(name, value, domain, path, max_age);
 end;
 
 function TSoupCookie.applies_to_uri(uri: PSoupURI): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_applies_to_uri(@self, uri);
+  Result := LazSoup2_4.soup_cookie_applies_to_uri(@self, uri);
 end;
 
 function TSoupCookie.copy: PSoupCookie; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_copy(@self);
+  Result := LazSoup2_4.soup_cookie_copy(@self);
 end;
 
 function TSoupCookie.domain_matches(host: Pgchar): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_domain_matches(@self, host);
+  Result := LazSoup2_4.soup_cookie_domain_matches(@self, host);
 end;
 
 function TSoupCookie.equal(cookie2: PSoupCookie): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_equal(@self, cookie2);
+  Result := LazSoup2_4.soup_cookie_equal(@self, cookie2);
 end;
 
 procedure TSoupCookie.free; cdecl;
 begin
-  Soup2_4.soup_cookie_free(@self);
+  LazSoup2_4.soup_cookie_free(@self);
 end;
 
 function TSoupCookie.get_domain: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_get_domain(@self);
+  Result := LazSoup2_4.soup_cookie_get_domain(@self);
 end;
 
 function TSoupCookie.get_expires: PSoupDate; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_get_expires(@self);
+  Result := LazSoup2_4.soup_cookie_get_expires(@self);
 end;
 
 function TSoupCookie.get_http_only: gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_get_http_only(@self);
+  Result := LazSoup2_4.soup_cookie_get_http_only(@self);
 end;
 
 function TSoupCookie.get_name: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_get_name(@self);
+  Result := LazSoup2_4.soup_cookie_get_name(@self);
 end;
 
 function TSoupCookie.get_path: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_get_path(@self);
+  Result := LazSoup2_4.soup_cookie_get_path(@self);
 end;
 
 function TSoupCookie.get_secure: gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_get_secure(@self);
+  Result := LazSoup2_4.soup_cookie_get_secure(@self);
 end;
 
 function TSoupCookie.get_value: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_get_value(@self);
+  Result := LazSoup2_4.soup_cookie_get_value(@self);
 end;
 
 procedure TSoupCookie.set_domain(domain: Pgchar); cdecl;
 begin
-  Soup2_4.soup_cookie_set_domain(@self, domain);
+  LazSoup2_4.soup_cookie_set_domain(@self, domain);
 end;
 
 procedure TSoupCookie.set_expires(expires: PSoupDate); cdecl;
 begin
-  Soup2_4.soup_cookie_set_expires(@self, expires);
+  LazSoup2_4.soup_cookie_set_expires(@self, expires);
 end;
 
 procedure TSoupCookie.set_http_only(http_only: gboolean); cdecl;
 begin
-  Soup2_4.soup_cookie_set_http_only(@self, http_only);
+  LazSoup2_4.soup_cookie_set_http_only(@self, http_only);
 end;
 
 procedure TSoupCookie.set_max_age(max_age: gint); cdecl;
 begin
-  Soup2_4.soup_cookie_set_max_age(@self, max_age);
+  LazSoup2_4.soup_cookie_set_max_age(@self, max_age);
 end;
 
 procedure TSoupCookie.set_name(name: Pgchar); cdecl;
 begin
-  Soup2_4.soup_cookie_set_name(@self, name);
+  LazSoup2_4.soup_cookie_set_name(@self, name);
 end;
 
 procedure TSoupCookie.set_path(path: Pgchar); cdecl;
 begin
-  Soup2_4.soup_cookie_set_path(@self, path);
+  LazSoup2_4.soup_cookie_set_path(@self, path);
 end;
 
 procedure TSoupCookie.set_secure(secure: gboolean); cdecl;
 begin
-  Soup2_4.soup_cookie_set_secure(@self, secure);
+  LazSoup2_4.soup_cookie_set_secure(@self, secure);
 end;
 
 procedure TSoupCookie.set_value(value: Pgchar); cdecl;
 begin
-  Soup2_4.soup_cookie_set_value(@self, value);
+  LazSoup2_4.soup_cookie_set_value(@self, value);
 end;
 
 function TSoupCookie.to_cookie_header: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_to_cookie_header(@self);
+  Result := LazSoup2_4.soup_cookie_to_cookie_header(@self);
 end;
 
 function TSoupCookie.to_set_cookie_header: Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_to_set_cookie_header(@self);
+  Result := LazSoup2_4.soup_cookie_to_set_cookie_header(@self);
 end;
 
 function TSoupCookie.parse(header: Pgchar; origin: PSoupURI): PSoupCookie; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_parse(header, origin);
+  Result := LazSoup2_4.soup_cookie_parse(header, origin);
 end;
 
 function TSoupCookieJar.new: PSoupCookieJar; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_jar_new();
+  Result := LazSoup2_4.soup_cookie_jar_new();
 end;
 
 procedure TSoupCookieJar.add_cookie(cookie: PSoupCookie); cdecl;
 begin
-  Soup2_4.soup_cookie_jar_add_cookie(@self, cookie);
+  LazSoup2_4.soup_cookie_jar_add_cookie(@self, cookie);
+end;
+
+procedure TSoupCookieJar.add_cookie_with_first_party(first_party: PSoupURI; cookie: PSoupCookie); cdecl;
+begin
+  LazSoup2_4.soup_cookie_jar_add_cookie_with_first_party(@self, first_party, cookie);
 end;
 
 function TSoupCookieJar.all_cookies: PGSList; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_jar_all_cookies(@self);
+  Result := LazSoup2_4.soup_cookie_jar_all_cookies(@self);
 end;
 
 procedure TSoupCookieJar.delete_cookie(cookie: PSoupCookie); cdecl;
 begin
-  Soup2_4.soup_cookie_jar_delete_cookie(@self, cookie);
+  LazSoup2_4.soup_cookie_jar_delete_cookie(@self, cookie);
 end;
 
 function TSoupCookieJar.get_accept_policy: TSoupCookieJarAcceptPolicy; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_jar_get_accept_policy(@self);
+  Result := LazSoup2_4.soup_cookie_jar_get_accept_policy(@self);
+end;
+
+function TSoupCookieJar.get_cookie_list(uri: PSoupURI; for_http: gboolean): PGSList; cdecl;
+begin
+  Result := LazSoup2_4.soup_cookie_jar_get_cookie_list(@self, uri, for_http);
 end;
 
 function TSoupCookieJar.get_cookies(uri: PSoupURI; for_http: gboolean): Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_jar_get_cookies(@self, uri, for_http);
+  Result := LazSoup2_4.soup_cookie_jar_get_cookies(@self, uri, for_http);
 end;
 
-procedure TSoupCookieJar.save; cdecl;
+function TSoupCookieJar.is_persistent: gboolean; cdecl;
 begin
-  Soup2_4.soup_cookie_jar_save(@self);
+  Result := LazSoup2_4.soup_cookie_jar_is_persistent(@self);
 end;
 
 procedure TSoupCookieJar.set_accept_policy(policy: TSoupCookieJarAcceptPolicy); cdecl;
 begin
-  Soup2_4.soup_cookie_jar_set_accept_policy(@self, policy);
+  LazSoup2_4.soup_cookie_jar_set_accept_policy(@self, policy);
 end;
 
 procedure TSoupCookieJar.set_cookie(uri: PSoupURI; cookie: Pgchar); cdecl;
 begin
-  Soup2_4.soup_cookie_jar_set_cookie(@self, uri, cookie);
+  LazSoup2_4.soup_cookie_jar_set_cookie(@self, uri, cookie);
 end;
 
 procedure TSoupCookieJar.set_cookie_with_first_party(uri: PSoupURI; first_party: PSoupURI; cookie: Pgchar); cdecl;
 begin
-  Soup2_4.soup_cookie_jar_set_cookie_with_first_party(@self, uri, first_party, cookie);
+  LazSoup2_4.soup_cookie_jar_set_cookie_with_first_party(@self, uri, first_party, cookie);
+end;
+
+function TSoupCookieJarDB.new(filename: Pgchar; read_only: gboolean): PSoupCookieJarDB; cdecl;
+begin
+  Result := LazSoup2_4.soup_cookie_jar_db_new(filename, read_only);
 end;
 
 function TSoupCookieJarText.new(filename: Pgchar; read_only: gboolean): PSoupCookieJarText; cdecl;
 begin
-  Result := Soup2_4.soup_cookie_jar_text_new(filename, read_only);
+  Result := LazSoup2_4.soup_cookie_jar_text_new(filename, read_only);
 end;
 
 function TSoupLogger.new(level: TSoupLoggerLogLevel; max_body_size: gint): PSoupLogger; cdecl;
 begin
-  Result := Soup2_4.soup_logger_new(level, max_body_size);
+  Result := LazSoup2_4.soup_logger_new(level, max_body_size);
 end;
 
 procedure TSoupLogger.set_printer(printer: TSoupLoggerPrinter; printer_data: gpointer; destroy_: TGDestroyNotify); cdecl;
 begin
-  Soup2_4.soup_logger_set_printer(@self, printer, printer_data, destroy_);
+  LazSoup2_4.soup_logger_set_printer(@self, printer, printer_data, destroy_);
 end;
 
 procedure TSoupLogger.set_request_filter(request_filter: TSoupLoggerFilter; filter_data: gpointer; destroy_: TGDestroyNotify); cdecl;
 begin
-  Soup2_4.soup_logger_set_request_filter(@self, request_filter, filter_data, destroy_);
+  LazSoup2_4.soup_logger_set_request_filter(@self, request_filter, filter_data, destroy_);
 end;
 
 procedure TSoupLogger.set_response_filter(response_filter: TSoupLoggerFilter; filter_data: gpointer; destroy_: TGDestroyNotify); cdecl;
 begin
-  Soup2_4.soup_logger_set_response_filter(@self, response_filter, filter_data, destroy_);
+  LazSoup2_4.soup_logger_set_response_filter(@self, response_filter, filter_data, destroy_);
+end;
+
+function TSoupSession.new: PSoupSession; cdecl;
+begin
+  Result := LazSoup2_4.soup_session_new();
 end;
 
 procedure TSoupSession.abort; cdecl;
 begin
-  Soup2_4.soup_session_abort(@self);
+  LazSoup2_4.soup_session_abort(@self);
 end;
 
 procedure TSoupSession.add_feature(feature: PSoupSessionFeature); cdecl;
 begin
-  Soup2_4.soup_session_add_feature(@self, feature);
+  LazSoup2_4.soup_session_add_feature(@self, feature);
 end;
 
 procedure TSoupSession.add_feature_by_type(feature_type: TGType); cdecl;
 begin
-  Soup2_4.soup_session_add_feature_by_type(@self, feature_type);
+  LazSoup2_4.soup_session_add_feature_by_type(@self, feature_type);
 end;
 
 procedure TSoupSession.cancel_message(msg: PSoupMessage; status_code: guint); cdecl;
 begin
-  Soup2_4.soup_session_cancel_message(@self, msg, status_code);
+  LazSoup2_4.soup_session_cancel_message(@self, msg, status_code);
 end;
 
 function TSoupSession.get_async_context: PGMainContext; cdecl;
 begin
-  Result := Soup2_4.soup_session_get_async_context(@self);
+  Result := LazSoup2_4.soup_session_get_async_context(@self);
 end;
 
 function TSoupSession.get_feature(feature_type: TGType): PSoupSessionFeature; cdecl;
 begin
-  Result := Soup2_4.soup_session_get_feature(@self, feature_type);
+  Result := LazSoup2_4.soup_session_get_feature(@self, feature_type);
 end;
 
 function TSoupSession.get_feature_for_message(feature_type: TGType; msg: PSoupMessage): PSoupSessionFeature; cdecl;
 begin
-  Result := Soup2_4.soup_session_get_feature_for_message(@self, feature_type, msg);
+  Result := LazSoup2_4.soup_session_get_feature_for_message(@self, feature_type, msg);
 end;
 
 function TSoupSession.get_features(feature_type: TGType): PGSList; cdecl;
 begin
-  Result := Soup2_4.soup_session_get_features(@self, feature_type);
+  Result := LazSoup2_4.soup_session_get_features(@self, feature_type);
+end;
+
+function TSoupSession.has_feature(feature_type: TGType): gboolean; cdecl;
+begin
+  Result := LazSoup2_4.soup_session_has_feature(@self, feature_type);
 end;
 
 procedure TSoupSession.pause_message(msg: PSoupMessage); cdecl;
 begin
-  Soup2_4.soup_session_pause_message(@self, msg);
+  LazSoup2_4.soup_session_pause_message(@self, msg);
 end;
 
 procedure TSoupSession.prefetch_dns(hostname: Pgchar; cancellable: PGCancellable; callback: TSoupAddressCallback; user_data: gpointer); cdecl;
 begin
-  Soup2_4.soup_session_prefetch_dns(@self, hostname, cancellable, callback, user_data);
-end;
-
-procedure TSoupSession.prepare_for_uri(uri: PSoupURI); cdecl;
-begin
-  Soup2_4.soup_session_prepare_for_uri(@self, uri);
+  LazSoup2_4.soup_session_prefetch_dns(@self, hostname, cancellable, callback, user_data);
 end;
 
 procedure TSoupSession.queue_message(msg: PSoupMessage; callback: TSoupSessionCallback; user_data: gpointer); cdecl;
 begin
-  Soup2_4.soup_session_queue_message(@self, msg, callback, user_data);
+  LazSoup2_4.soup_session_queue_message(@self, msg, callback, user_data);
 end;
 
 function TSoupSession.redirect_message(msg: PSoupMessage): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_session_redirect_message(@self, msg);
+  Result := LazSoup2_4.soup_session_redirect_message(@self, msg);
 end;
 
 procedure TSoupSession.remove_feature(feature: PSoupSessionFeature); cdecl;
 begin
-  Soup2_4.soup_session_remove_feature(@self, feature);
+  LazSoup2_4.soup_session_remove_feature(@self, feature);
 end;
 
 procedure TSoupSession.remove_feature_by_type(feature_type: TGType); cdecl;
 begin
-  Soup2_4.soup_session_remove_feature_by_type(@self, feature_type);
+  LazSoup2_4.soup_session_remove_feature_by_type(@self, feature_type);
+end;
+
+function TSoupSession.request(uri_string: Pgchar; error: PPGError): PSoupRequest; cdecl;
+begin
+  Result := LazSoup2_4.soup_session_request(@self, uri_string, error);
+end;
+
+function TSoupSession.request_http(method: Pgchar; uri_string: Pgchar; error: PPGError): PSoupRequestHTTP; cdecl;
+begin
+  Result := LazSoup2_4.soup_session_request_http(@self, method, uri_string, error);
+end;
+
+function TSoupSession.request_http_uri(method: Pgchar; uri: PSoupURI; error: PPGError): PSoupRequestHTTP; cdecl;
+begin
+  Result := LazSoup2_4.soup_session_request_http_uri(@self, method, uri, error);
+end;
+
+function TSoupSession.request_uri(uri: PSoupURI; error: PPGError): PSoupRequest; cdecl;
+begin
+  Result := LazSoup2_4.soup_session_request_uri(@self, uri, error);
 end;
 
 procedure TSoupSession.requeue_message(msg: PSoupMessage); cdecl;
 begin
-  Soup2_4.soup_session_requeue_message(@self, msg);
+  LazSoup2_4.soup_session_requeue_message(@self, msg);
+end;
+
+function TSoupSession.send(msg: PSoupMessage; cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl;
+begin
+  Result := LazSoup2_4.soup_session_send(@self, msg, cancellable, error);
+end;
+
+procedure TSoupSession.send_async(msg: PSoupMessage; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazSoup2_4.soup_session_send_async(@self, msg, cancellable, callback, user_data);
+end;
+
+function TSoupSession.send_finish(result_: PGAsyncResult; error: PPGError): PGInputStream; cdecl;
+begin
+  Result := LazSoup2_4.soup_session_send_finish(@self, result_, error);
 end;
 
 function TSoupSession.send_message(msg: PSoupMessage): guint; cdecl;
 begin
-  Result := Soup2_4.soup_session_send_message(@self, msg);
+  Result := LazSoup2_4.soup_session_send_message(@self, msg);
 end;
 
 procedure TSoupSession.unpause_message(msg: PSoupMessage); cdecl;
 begin
-  Soup2_4.soup_session_unpause_message(@self, msg);
+  LazSoup2_4.soup_session_unpause_message(@self, msg);
 end;
 
 function TSoupSession.would_redirect(msg: PSoupMessage): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_session_would_redirect(@self, msg);
+  Result := LazSoup2_4.soup_session_would_redirect(@self, msg);
+end;
+
+function TSoupRequest.get_content_length: gint64; cdecl;
+begin
+  Result := LazSoup2_4.soup_request_get_content_length(@self);
+end;
+
+function TSoupRequest.get_content_type: Pgchar; cdecl;
+begin
+  Result := LazSoup2_4.soup_request_get_content_type(@self);
+end;
+
+function TSoupRequest.get_session: PSoupSession; cdecl;
+begin
+  Result := LazSoup2_4.soup_request_get_session(@self);
+end;
+
+function TSoupRequest.get_uri: PSoupURI; cdecl;
+begin
+  Result := LazSoup2_4.soup_request_get_uri(@self);
+end;
+
+function TSoupRequest.send(cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl;
+begin
+  Result := LazSoup2_4.soup_request_send(@self, cancellable, error);
+end;
+
+procedure TSoupRequest.send_async(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazSoup2_4.soup_request_send_async(@self, cancellable, callback, user_data);
+end;
+
+function TSoupRequest.send_finish(result_: PGAsyncResult; error: PPGError): PGInputStream; cdecl;
+begin
+  Result := LazSoup2_4.soup_request_send_finish(@self, result_, error);
 end;
 
 function TSoupMessageBody.new: PSoupMessageBody; cdecl;
 begin
-  Result := Soup2_4.soup_message_body_new();
+  Result := LazSoup2_4.soup_message_body_new();
 end;
 
 procedure TSoupMessageBody.append(use: TSoupMemoryUse; data: guint8; length: gsize); cdecl;
 begin
-  Soup2_4.soup_message_body_append(@self, use, data, length);
+  LazSoup2_4.soup_message_body_append(@self, use, data, length);
 end;
 
 procedure TSoupMessageBody.append_buffer(buffer: PSoupBuffer); cdecl;
 begin
-  Soup2_4.soup_message_body_append_buffer(@self, buffer);
+  LazSoup2_4.soup_message_body_append_buffer(@self, buffer);
 end;
 
 procedure TSoupMessageBody.append_take(data: Pguint8; length: gsize); cdecl;
 begin
-  Soup2_4.soup_message_body_append_take(@self, data, length);
+  LazSoup2_4.soup_message_body_append_take(@self, data, length);
 end;
 
 procedure TSoupMessageBody.complete; cdecl;
 begin
-  Soup2_4.soup_message_body_complete(@self);
+  LazSoup2_4.soup_message_body_complete(@self);
 end;
 
 function TSoupMessageBody.flatten: PSoupBuffer; cdecl;
 begin
-  Result := Soup2_4.soup_message_body_flatten(@self);
+  Result := LazSoup2_4.soup_message_body_flatten(@self);
 end;
 
 procedure TSoupMessageBody.free; cdecl;
 begin
-  Soup2_4.soup_message_body_free(@self);
+  LazSoup2_4.soup_message_body_free(@self);
 end;
 
 function TSoupMessageBody.get_accumulate: gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_message_body_get_accumulate(@self);
+  Result := LazSoup2_4.soup_message_body_get_accumulate(@self);
 end;
 
 function TSoupMessageBody.get_chunk(offset: gint64): PSoupBuffer; cdecl;
 begin
-  Result := Soup2_4.soup_message_body_get_chunk(@self, offset);
+  Result := LazSoup2_4.soup_message_body_get_chunk(@self, offset);
 end;
 
 procedure TSoupMessageBody.got_chunk(chunk: PSoupBuffer); cdecl;
 begin
-  Soup2_4.soup_message_body_got_chunk(@self, chunk);
+  LazSoup2_4.soup_message_body_got_chunk(@self, chunk);
 end;
 
 procedure TSoupMessageBody.set_accumulate(accumulate: gboolean); cdecl;
 begin
-  Soup2_4.soup_message_body_set_accumulate(@self, accumulate);
+  LazSoup2_4.soup_message_body_set_accumulate(@self, accumulate);
 end;
 
 procedure TSoupMessageBody.truncate; cdecl;
 begin
-  Soup2_4.soup_message_body_truncate(@self);
+  LazSoup2_4.soup_message_body_truncate(@self);
 end;
 
 procedure TSoupMessageBody.wrote_chunk(chunk: PSoupBuffer); cdecl;
 begin
-  Soup2_4.soup_message_body_wrote_chunk(@self, chunk);
+  LazSoup2_4.soup_message_body_wrote_chunk(@self, chunk);
 end;
 
 function TSoupMessageHeaders.new(type_: TSoupMessageHeadersType): PSoupMessageHeaders; cdecl;
 begin
-  Result := Soup2_4.soup_message_headers_new(type_);
+  Result := LazSoup2_4.soup_message_headers_new(type_);
 end;
 
 procedure TSoupMessageHeaders.append(name: Pgchar; value: Pgchar); cdecl;
 begin
-  Soup2_4.soup_message_headers_append(@self, name, value);
+  LazSoup2_4.soup_message_headers_append(@self, name, value);
 end;
 
 procedure TSoupMessageHeaders.clean_connection_headers; cdecl;
 begin
-  Soup2_4.soup_message_headers_clean_connection_headers(@self);
+  LazSoup2_4.soup_message_headers_clean_connection_headers(@self);
 end;
 
 procedure TSoupMessageHeaders.clear; cdecl;
 begin
-  Soup2_4.soup_message_headers_clear(@self);
+  LazSoup2_4.soup_message_headers_clear(@self);
 end;
 
 procedure TSoupMessageHeaders.foreach(func: TSoupMessageHeadersForeachFunc; user_data: gpointer); cdecl;
 begin
-  Soup2_4.soup_message_headers_foreach(@self, func, user_data);
+  LazSoup2_4.soup_message_headers_foreach(@self, func, user_data);
 end;
 
 procedure TSoupMessageHeaders.free; cdecl;
 begin
-  Soup2_4.soup_message_headers_free(@self);
+  LazSoup2_4.soup_message_headers_free(@self);
 end;
 
 procedure TSoupMessageHeaders.free_ranges(ranges: PSoupRange); cdecl;
 begin
-  Soup2_4.soup_message_headers_free_ranges(@self, ranges);
+  LazSoup2_4.soup_message_headers_free_ranges(@self, ranges);
 end;
 
 function TSoupMessageHeaders.get_content_disposition(disposition: PPgchar; params: PPGHashTable): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_message_headers_get_content_disposition(@self, disposition, params);
+  Result := LazSoup2_4.soup_message_headers_get_content_disposition(@self, disposition, params);
 end;
 
 function TSoupMessageHeaders.get_content_length: gint64; cdecl;
 begin
-  Result := Soup2_4.soup_message_headers_get_content_length(@self);
+  Result := LazSoup2_4.soup_message_headers_get_content_length(@self);
 end;
 
 function TSoupMessageHeaders.get_content_range(start: Pgint64; end_: Pgint64; total_length: Pgint64): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_message_headers_get_content_range(@self, start, end_, total_length);
+  Result := LazSoup2_4.soup_message_headers_get_content_range(@self, start, end_, total_length);
 end;
 
 function TSoupMessageHeaders.get_content_type(params: PPGHashTable): Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_message_headers_get_content_type(@self, params);
+  Result := LazSoup2_4.soup_message_headers_get_content_type(@self, params);
 end;
 
 function TSoupMessageHeaders.get_encoding: TSoupEncoding; cdecl;
 begin
-  Result := Soup2_4.soup_message_headers_get_encoding(@self);
+  Result := LazSoup2_4.soup_message_headers_get_encoding(@self);
 end;
 
 function TSoupMessageHeaders.get_expectations: TSoupExpectation; cdecl;
 begin
-  Result := Soup2_4.soup_message_headers_get_expectations(@self);
+  Result := LazSoup2_4.soup_message_headers_get_expectations(@self);
 end;
 
 function TSoupMessageHeaders.get_list(name: Pgchar): Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_message_headers_get_list(@self, name);
+  Result := LazSoup2_4.soup_message_headers_get_list(@self, name);
 end;
 
 function TSoupMessageHeaders.get_one(name: Pgchar): Pgchar; cdecl;
 begin
-  Result := Soup2_4.soup_message_headers_get_one(@self, name);
+  Result := LazSoup2_4.soup_message_headers_get_one(@self, name);
 end;
 
 function TSoupMessageHeaders.get_ranges(total_length: gint64; ranges: PPSoupRange; length: Pgint): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_message_headers_get_ranges(@self, total_length, ranges, length);
+  Result := LazSoup2_4.soup_message_headers_get_ranges(@self, total_length, ranges, length);
 end;
 
 procedure TSoupMessageHeaders.remove(name: Pgchar); cdecl;
 begin
-  Soup2_4.soup_message_headers_remove(@self, name);
+  LazSoup2_4.soup_message_headers_remove(@self, name);
 end;
 
 procedure TSoupMessageHeaders.replace(name: Pgchar; value: Pgchar); cdecl;
 begin
-  Soup2_4.soup_message_headers_replace(@self, name, value);
+  LazSoup2_4.soup_message_headers_replace(@self, name, value);
 end;
 
 procedure TSoupMessageHeaders.set_content_disposition(disposition: Pgchar; params: PGHashTable); cdecl;
 begin
-  Soup2_4.soup_message_headers_set_content_disposition(@self, disposition, params);
+  LazSoup2_4.soup_message_headers_set_content_disposition(@self, disposition, params);
 end;
 
 procedure TSoupMessageHeaders.set_content_length(content_length: gint64); cdecl;
 begin
-  Soup2_4.soup_message_headers_set_content_length(@self, content_length);
+  LazSoup2_4.soup_message_headers_set_content_length(@self, content_length);
 end;
 
 procedure TSoupMessageHeaders.set_content_range(start: gint64; end_: gint64; total_length: gint64); cdecl;
 begin
-  Soup2_4.soup_message_headers_set_content_range(@self, start, end_, total_length);
+  LazSoup2_4.soup_message_headers_set_content_range(@self, start, end_, total_length);
 end;
 
 procedure TSoupMessageHeaders.set_content_type(content_type: Pgchar; params: PGHashTable); cdecl;
 begin
-  Soup2_4.soup_message_headers_set_content_type(@self, content_type, params);
+  LazSoup2_4.soup_message_headers_set_content_type(@self, content_type, params);
 end;
 
 procedure TSoupMessageHeaders.set_encoding(encoding: TSoupEncoding); cdecl;
 begin
-  Soup2_4.soup_message_headers_set_encoding(@self, encoding);
+  LazSoup2_4.soup_message_headers_set_encoding(@self, encoding);
 end;
 
 procedure TSoupMessageHeaders.set_expectations(expectations: TSoupExpectation); cdecl;
 begin
-  Soup2_4.soup_message_headers_set_expectations(@self, expectations);
+  LazSoup2_4.soup_message_headers_set_expectations(@self, expectations);
 end;
 
 procedure TSoupMessageHeaders.set_range(start: gint64; end_: gint64); cdecl;
 begin
-  Soup2_4.soup_message_headers_set_range(@self, start, end_);
+  LazSoup2_4.soup_message_headers_set_range(@self, start, end_);
 end;
 
 procedure TSoupMessageHeaders.set_ranges(ranges: PSoupRange; length: gint); cdecl;
 begin
-  Soup2_4.soup_message_headers_set_ranges(@self, ranges, length);
-end;
-
-procedure TSoupMessageHeadersIter.init(hdrs: PSoupMessageHeaders); cdecl;
-begin
-  Soup2_4.soup_message_headers_iter_init(@self, hdrs);
+  LazSoup2_4.soup_message_headers_set_ranges(@self, ranges, length);
 end;
 
 function TSoupMessageHeadersIter.next(name: PPgchar; value: PPgchar): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_message_headers_iter_next(@self, name, value);
+  Result := LazSoup2_4.soup_message_headers_iter_next(@self, name, value);
+end;
+
+procedure TSoupMessageHeadersIter.init(iter: PSoupMessageHeadersIter; hdrs: PSoupMessageHeaders); cdecl;
+begin
+  LazSoup2_4.soup_message_headers_iter_init(iter, hdrs);
 end;
 
 function TSoupMultipart.new(mime_type: Pgchar): PSoupMultipart; cdecl;
 begin
-  Result := Soup2_4.soup_multipart_new(mime_type);
+  Result := LazSoup2_4.soup_multipart_new(mime_type);
 end;
 
 function TSoupMultipart.new_from_message(headers: PSoupMessageHeaders; body: PSoupMessageBody): PSoupMultipart; cdecl;
 begin
-  Result := Soup2_4.soup_multipart_new_from_message(headers, body);
+  Result := LazSoup2_4.soup_multipart_new_from_message(headers, body);
 end;
 
 procedure TSoupMultipart.append_form_file(control_name: Pgchar; filename: Pgchar; content_type: Pgchar; body: PSoupBuffer); cdecl;
 begin
-  Soup2_4.soup_multipart_append_form_file(@self, control_name, filename, content_type, body);
+  LazSoup2_4.soup_multipart_append_form_file(@self, control_name, filename, content_type, body);
 end;
 
 procedure TSoupMultipart.append_form_string(control_name: Pgchar; data: Pgchar); cdecl;
 begin
-  Soup2_4.soup_multipart_append_form_string(@self, control_name, data);
+  LazSoup2_4.soup_multipart_append_form_string(@self, control_name, data);
 end;
 
 procedure TSoupMultipart.append_part(headers: PSoupMessageHeaders; body: PSoupBuffer); cdecl;
 begin
-  Soup2_4.soup_multipart_append_part(@self, headers, body);
+  LazSoup2_4.soup_multipart_append_part(@self, headers, body);
 end;
 
 procedure TSoupMultipart.free; cdecl;
 begin
-  Soup2_4.soup_multipart_free(@self);
+  LazSoup2_4.soup_multipart_free(@self);
 end;
 
 function TSoupMultipart.get_length: gint; cdecl;
 begin
-  Result := Soup2_4.soup_multipart_get_length(@self);
+  Result := LazSoup2_4.soup_multipart_get_length(@self);
 end;
 
 function TSoupMultipart.get_part(part: gint; headers: PPSoupMessageHeaders; body: PPSoupBuffer): gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_multipart_get_part(@self, part, headers, body);
+  Result := LazSoup2_4.soup_multipart_get_part(@self, part, headers, body);
 end;
 
 procedure TSoupMultipart.to_message(dest_headers: PSoupMessageHeaders; dest_body: PSoupMessageBody); cdecl;
 begin
-  Soup2_4.soup_multipart_to_message(@self, dest_headers, dest_body);
+  LazSoup2_4.soup_multipart_to_message(@self, dest_headers, dest_body);
+end;
+
+function TSoupMultipartInputStream.new(msg: PSoupMessage; base_stream: PGInputStream): PSoupMultipartInputStream; cdecl;
+begin
+  Result := LazSoup2_4.soup_multipart_input_stream_new(msg, base_stream);
+end;
+
+function TSoupMultipartInputStream.get_headers: PSoupMessageHeaders; cdecl;
+begin
+  Result := LazSoup2_4.soup_multipart_input_stream_get_headers(@self);
+end;
+
+function TSoupMultipartInputStream.next_part(cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl;
+begin
+  Result := LazSoup2_4.soup_multipart_input_stream_next_part(@self, cancellable, error);
+end;
+
+procedure TSoupMultipartInputStream.next_part_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; data: gpointer); cdecl;
+begin
+  LazSoup2_4.soup_multipart_input_stream_next_part_async(@self, io_priority, cancellable, callback, data);
+end;
+
+function TSoupMultipartInputStream.next_part_finish(result_: PGAsyncResult; error: PPGError): PGInputStream; cdecl;
+begin
+  Result := LazSoup2_4.soup_multipart_input_stream_next_part_finish(@self, result_, error);
+end;
+
+procedure TSoupPasswordManager.get_passwords_async(msg: PSoupMessage; auth: PSoupAuth; retrying: gboolean; async_context: PGMainContext; cancellable: PGCancellable; callback: TSoupPasswordManagerCallback; user_data: gpointer); cdecl;
+begin
+  LazSoup2_4.soup_password_manager_get_passwords_async(@self, msg, auth, retrying, async_context, cancellable, callback, user_data);
+end;
+
+procedure TSoupPasswordManager.get_passwords_sync(msg: PSoupMessage; auth: PSoupAuth; cancellable: PGCancellable); cdecl;
+begin
+  LazSoup2_4.soup_password_manager_get_passwords_sync(@self, msg, auth, cancellable);
 end;
 
 procedure TSoupProxyURIResolver.get_proxy_uri_async(uri: PSoupURI; async_context: PGMainContext; cancellable: PGCancellable; callback: TSoupProxyURIResolverCallback; user_data: gpointer); cdecl;
 begin
-  Soup2_4.soup_proxy_uri_resolver_get_proxy_uri_async(@self, uri, async_context, cancellable, callback, user_data);
+  LazSoup2_4.soup_proxy_uri_resolver_get_proxy_uri_async(@self, uri, async_context, cancellable, callback, user_data);
 end;
 
 function TSoupProxyURIResolver.get_proxy_uri_sync(uri: PSoupURI; cancellable: PGCancellable; proxy_uri: PPSoupURI): guint; cdecl;
 begin
-  Result := Soup2_4.soup_proxy_uri_resolver_get_proxy_uri_sync(@self, uri, cancellable, proxy_uri);
+  Result := LazSoup2_4.soup_proxy_uri_resolver_get_proxy_uri_sync(@self, uri, cancellable, proxy_uri);
+end;
+
+function TSoupRequestFile.get_file: PGFile; cdecl;
+begin
+  Result := LazSoup2_4.soup_request_file_get_file(@self);
+end;
+
+function TSoupRequestHTTP.get_message: PSoupMessage; cdecl;
+begin
+  Result := LazSoup2_4.soup_request_http_get_message(@self);
+end;
+
+function TSoupRequester.new: PSoupRequester; cdecl;
+begin
+  Result := LazSoup2_4.soup_requester_new();
+end;
+
+function TSoupRequester.request(uri_string: Pgchar; error: PPGError): PSoupRequest; cdecl;
+begin
+  Result := LazSoup2_4.soup_requester_request(@self, uri_string, error);
+end;
+
+function TSoupRequester.request_uri(uri: PSoupURI; error: PPGError): PSoupRequest; cdecl;
+begin
+  Result := LazSoup2_4.soup_requester_request_uri(@self, uri, error);
 end;
 
 procedure TSoupServer.add_auth_domain(auth_domain: PSoupAuthDomain); cdecl;
 begin
-  Soup2_4.soup_server_add_auth_domain(@self, auth_domain);
+  LazSoup2_4.soup_server_add_auth_domain(@self, auth_domain);
 end;
 
 procedure TSoupServer.add_handler(path: Pgchar; callback: TSoupServerCallback; user_data: gpointer; destroy_: TGDestroyNotify); cdecl;
 begin
-  Soup2_4.soup_server_add_handler(@self, path, callback, user_data, destroy_);
+  LazSoup2_4.soup_server_add_handler(@self, path, callback, user_data, destroy_);
 end;
 
 procedure TSoupServer.disconnect; cdecl;
 begin
-  Soup2_4.soup_server_disconnect(@self);
+  LazSoup2_4.soup_server_disconnect(@self);
 end;
 
 function TSoupServer.get_async_context: PGMainContext; cdecl;
 begin
-  Result := Soup2_4.soup_server_get_async_context(@self);
+  Result := LazSoup2_4.soup_server_get_async_context(@self);
 end;
 
 function TSoupServer.get_listener: PSoupSocket; cdecl;
 begin
-  Result := Soup2_4.soup_server_get_listener(@self);
+  Result := LazSoup2_4.soup_server_get_listener(@self);
 end;
 
 function TSoupServer.get_port: guint; cdecl;
 begin
-  Result := Soup2_4.soup_server_get_port(@self);
+  Result := LazSoup2_4.soup_server_get_port(@self);
 end;
 
 function TSoupServer.is_https: gboolean; cdecl;
 begin
-  Result := Soup2_4.soup_server_is_https(@self);
+  Result := LazSoup2_4.soup_server_is_https(@self);
 end;
 
 procedure TSoupServer.pause_message(msg: PSoupMessage); cdecl;
 begin
-  Soup2_4.soup_server_pause_message(@self, msg);
+  LazSoup2_4.soup_server_pause_message(@self, msg);
 end;
 
 procedure TSoupServer.quit; cdecl;
 begin
-  Soup2_4.soup_server_quit(@self);
+  LazSoup2_4.soup_server_quit(@self);
 end;
 
 procedure TSoupServer.remove_auth_domain(auth_domain: PSoupAuthDomain); cdecl;
 begin
-  Soup2_4.soup_server_remove_auth_domain(@self, auth_domain);
+  LazSoup2_4.soup_server_remove_auth_domain(@self, auth_domain);
 end;
 
 procedure TSoupServer.remove_handler(path: Pgchar); cdecl;
 begin
-  Soup2_4.soup_server_remove_handler(@self, path);
+  LazSoup2_4.soup_server_remove_handler(@self, path);
 end;
 
 procedure TSoupServer.run; cdecl;
 begin
-  Soup2_4.soup_server_run(@self);
+  LazSoup2_4.soup_server_run(@self);
 end;
 
 procedure TSoupServer.run_async; cdecl;
 begin
-  Soup2_4.soup_server_run_async(@self);
+  LazSoup2_4.soup_server_run_async(@self);
 end;
 
 procedure TSoupServer.unpause_message(msg: PSoupMessage); cdecl;
 begin
-  Soup2_4.soup_server_unpause_message(@self, msg);
-end;
-
-function TSoupSessionAsync.new: PSoupSessionAsync; cdecl;
-begin
-  Result := Soup2_4.soup_session_async_new();
-end;
-
-function TSoupSessionSync.new: PSoupSessionSync; cdecl;
-begin
-  Result := Soup2_4.soup_session_sync_new();
+  LazSoup2_4.soup_server_unpause_message(@self, msg);
 end;
 
 end.

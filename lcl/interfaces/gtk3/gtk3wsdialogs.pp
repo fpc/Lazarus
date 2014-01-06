@@ -521,7 +521,7 @@ begin
     end
     else
     begin
-      NewFilterIndex := g_slist_index(GtkFilterList, GtkFilter);
+      NewFilterIndex := g_slist_index(GtkFilterList, Pgpointer(GtkFilter));
       theDialog.IntfFileTypeChanged(NewFilterIndex + 1);
     end;
     g_slist_free(GtkFilterList);
@@ -1262,7 +1262,7 @@ begin
   // Help button
   if (ofShowHelp in OpenDialog.Options) then
   begin
-    HelpButton := gtk_dialog_add_button(PGtkDialog(FileSelWidget), STOCK_HELP, GTK_RESPONSE_NONE);
+    HelpButton := gtk_dialog_add_button(PGtkDialog(FileSelWidget), GTK_STOCK_HELP, GTK_RESPONSE_NONE);
 
     g_signal_connect_data(HelpButton,
       'clicked', TGCallback(@gtkDialogHelpclickedCB), TGtk3Dialog(Result), nil, 0);
@@ -1358,18 +1358,18 @@ var
 begin
   // Defines an action for the dialog and creates it
   Action := GTK_FILE_CHOOSER_ACTION_OPEN;
-  Button1 := STOCK_OPEN;
+  Button1 := GTK_STOCK_OPEN;
 
   if (FileDialog is TSaveDialog) or (FileDialog is TSavePictureDialog) then
   begin
     Action := GTK_FILE_CHOOSER_ACTION_SAVE;
-    Button1 := STOCK_SAVE;
+    Button1 := GTK_STOCK_SAVE;
   end
   else
   if FileDialog is TSelectDirectoryDialog then
   begin
     Action := GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER;
-    Button1 := STOCK_OPEN;
+    Button1 := GTK_STOCK_OPEN;
   end;
 
 

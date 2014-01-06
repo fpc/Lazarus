@@ -1884,13 +1884,13 @@ begin
 
   if length(AEventString) = 0 then
   begin
-    if KeyValue = KEY_Alt_L then
+    if KeyValue = GDK_KEY_Alt_L then
       LCLModifiers := LCLModifiers or KF_ALTDOWN
     else
-    if (KeyValue = KEY_Control_L) or (KeyValue = KEY_Control_R)  then
+    if (KeyValue = GDK_KEY_Control_L) or (KeyValue = GDK_KEY_Control_R)  then
       LCLModifiers := LCLModifiers or MK_CONTROL
     else
-    if (KeyValue = KEY_Shift_L) or (KeyValue = KEY_Shift_R) then
+    if (KeyValue = GDK_KEY_Shift_L) or (KeyValue = GDK_KEY_Shift_R) then
       LCLModifiers := LCLModifiers or MK_SHIFT;
     // writeln('MODIFIERS BY KEYS ',LCLModifiers);
   end;
@@ -2134,7 +2134,7 @@ procedure TGtk3Widget.SetFont(AValue: PPangoFontDescription);
 begin
   if IsWidgetOk then
   begin
-    GetContainerWidget^.modify_font(AValue);
+    GetContainerWidget^.override_font(AValue);
   end;
 end;
 
@@ -2151,13 +2151,13 @@ begin
       with FWidget^ do
       begin
         for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
-          modify_fg(i, @AColor);
+          override_color(i, @AColor);
       end;
     end;
     with GetContainerWidget^ do
     begin
       for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
-        modify_fg(i, @AColor);
+        override_color(i, @AColor);
     end;
   end;
 end;
@@ -2242,9 +2242,9 @@ begin
       begin
         for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
           if AValue = clDefault then
-            modify_bg(i, nil) // this is deprecated gtk2 way, works on gtk3 too
+            override_background_color(i, nil) // this is deprecated gtk2 way, works on gtk3 too
           else
-            modify_bg(i, @AColor); // this is deprecated gtk2 way, works on gtk3 too
+            override_background_color(i, @AColor); // this is deprecated gtk2 way, works on gtk3 too
       end;
     end;
     with GetContainerWidget^ do
@@ -2252,9 +2252,9 @@ begin
       for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
       begin
         if AValue = clDefault then
-          modify_bg(i, nil) // this is deprecated gtk2 way, works on gtk3 too
+          override_background_color(i, nil)
         else
-          modify_bg(i, @AColor); // this is deprecated gtk2 way, works on gtk3 too
+          override_background_color(i, @AColor);
       end;
     end;
   end;
@@ -6107,10 +6107,13 @@ begin
 
   // this is deprecated since 3.8 .add() should be used
   // in this case viewport should be blocked somehow.....
-  if FUseLayout then
-    PGtkScrolledWindow(Result)^.add(FCentralWidget)
-  else
-    PGtkScrolledWindow(Result)^.add_with_viewport(FCentralWidget);
+  //if FUseLayout then
+  //  PGtkScrolledWindow(Result)^.add(FCentralWidget)
+  //else
+  //  PGtkScrolledWindow(Result)^.add_with_viewport(FCentralWidget);
+
+  // gtk_container_add() will now automatically add a GtkViewport if the child doesn't implement GtkScrollable.
+  PGtkScrolledWindow(Result)^.add(FCentralWidget);
 
   // PGtkViewport(PGtkScrolledWindow(Result)^.get_child)^.;
   // also works fine with 3.6 but raises asserts
@@ -6666,22 +6669,22 @@ begin
   CommonDialog := ACommonDialog;
   // Defines an action for the dialog and creates it
   Action := GTK_FILE_CHOOSER_ACTION_OPEN;
-  Button1 := STOCK_OPEN;
+  Button1 := GTK_STOCK_OPEN;
 
   if (FileDialog is TSaveDialog) or (FileDialog is TSavePictureDialog) then
   begin
     Action := GTK_FILE_CHOOSER_ACTION_SAVE;
-    Button1 := STOCK_SAVE;
+    Button1 := GTK_STOCK_SAVE;
   end
   else
   if FileDialog is TSelectDirectoryDialog then
   begin
     Action := GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER;
-    Button1 := STOCK_OPEN;
+    Button1 := GTK_STOCK_OPEN;
   end;
 
   FWidget := gtk_file_chooser_dialog_new(PgChar(FileDialog.Title), nil,
-    Action, PChar(STOCK_CANCEL),
+    Action, PChar(GTK_STOCK_CANCEL),
     [GTK_RESPONSE_CANCEL, PChar(Button1), GTK_RESPONSE_OK, nil]);
 
   AFileDialog := PGtkFileChooserDialog(FWidget);

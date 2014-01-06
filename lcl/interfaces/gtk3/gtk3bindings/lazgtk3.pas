@@ -10,241 +10,247 @@ unit LazGtk3;
 {$LINKLIB libgdk-3.so.0}
 interface
 uses
-  CTypes, LazAtk1, LazGLib2, LazGModule2, LazGObject2, LazGdk3, LazGdkPixbuf2, LazGio2, LazPango1, LazCairo1
-  {$IFDEF UNIX}
-  ,x
-  {$ENDIF};
+  CTypes, LazAtk1, LazGdk3, Lazxlib2, LazGLib2, LazGdkPixbuf2, LazGObject2, LazGio2, Lazcairo1, LazPango1;
 
 const
   Gtk3_library = 'libgtk-3.so.0';
 
-  BINARY_AGE = 404;
-  INPUT_ERROR = -1;
-  INTERFACE_AGE = 4;
-  MAJOR_VERSION = 3;
-  MAX_COMPOSE_LEN = 7;
-  MICRO_VERSION = 4;
-  MINOR_VERSION = 4;
-  PAPER_NAME_A3 = 'iso_a3';
-  PAPER_NAME_A4 = 'iso_a4';
-  PAPER_NAME_A5 = 'iso_a5';
-  PAPER_NAME_B5 = 'iso_b5';
-  PAPER_NAME_EXECUTIVE = 'na_executive';
-  PAPER_NAME_LEGAL = 'na_legal';
-  PAPER_NAME_LETTER = 'na_letter';
-  PATH_PRIO_MASK = 15;
-  PRINT_SETTINGS_COLLATE = 'collate';
-  PRINT_SETTINGS_DEFAULT_SOURCE = 'default-source';
-  PRINT_SETTINGS_DITHER = 'dither';
-  PRINT_SETTINGS_DUPLEX = 'duplex';
-  PRINT_SETTINGS_FINISHINGS = 'finishings';
-  PRINT_SETTINGS_MEDIA_TYPE = 'media-type';
-  PRINT_SETTINGS_NUMBER_UP = 'number-up';
-  PRINT_SETTINGS_NUMBER_UP_LAYOUT = 'number-up-layout';
-  PRINT_SETTINGS_N_COPIES = 'n-copies';
-  PRINT_SETTINGS_ORIENTATION = 'orientation';
-  PRINT_SETTINGS_OUTPUT_BIN = 'output-bin';
-  PRINT_SETTINGS_OUTPUT_FILE_FORMAT = 'output-file-format';
-  PRINT_SETTINGS_OUTPUT_URI = 'output-uri';
-  PRINT_SETTINGS_PAGE_RANGES = 'page-ranges';
-  PRINT_SETTINGS_PAGE_SET = 'page-set';
-  PRINT_SETTINGS_PAPER_FORMAT = 'paper-format';
-  PRINT_SETTINGS_PAPER_HEIGHT = 'paper-height';
-  PRINT_SETTINGS_PAPER_WIDTH = 'paper-width';
-  PRINT_SETTINGS_PRINTER = 'printer';
-  PRINT_SETTINGS_PRINTER_LPI = 'printer-lpi';
-  PRINT_SETTINGS_PRINT_PAGES = 'print-pages';
-  PRINT_SETTINGS_QUALITY = 'quality';
-  PRINT_SETTINGS_RESOLUTION = 'resolution';
-  PRINT_SETTINGS_RESOLUTION_X = 'resolution-x';
-  PRINT_SETTINGS_RESOLUTION_Y = 'resolution-y';
-  PRINT_SETTINGS_REVERSE = 'reverse';
-  PRINT_SETTINGS_SCALE = 'scale';
-  PRINT_SETTINGS_USE_COLOR = 'use-color';
-  PRINT_SETTINGS_WIN32_DRIVER_EXTRA = 'win32-driver-extra';
-  PRINT_SETTINGS_WIN32_DRIVER_VERSION = 'win32-driver-version';
-  PRIORITY_RESIZE = 10;
-  STOCK_ABOUT = 'gtk-about';
-  STOCK_ADD = 'gtk-add';
-  STOCK_APPLY = 'gtk-apply';
-  STOCK_BOLD = 'gtk-bold';
-  STOCK_CANCEL = 'gtk-cancel';
-  STOCK_CAPS_LOCK_WARNING = 'gtk-caps-lock-warning';
-  STOCK_CDROM = 'gtk-cdrom';
-  STOCK_CLEAR = 'gtk-clear';
-  STOCK_CLOSE = 'gtk-close';
-  STOCK_COLOR_PICKER = 'gtk-color-picker';
-  STOCK_CONNECT = 'gtk-connect';
-  STOCK_CONVERT = 'gtk-convert';
-  STOCK_COPY = 'gtk-copy';
-  STOCK_CUT = 'gtk-cut';
-  STOCK_DELETE = 'gtk-delete';
-  STOCK_DIALOG_AUTHENTICATION = 'gtk-dialog-authentication';
-  STOCK_DIALOG_ERROR = 'gtk-dialog-error';
-  STOCK_DIALOG_INFO = 'gtk-dialog-info';
-  STOCK_DIALOG_QUESTION = 'gtk-dialog-question';
-  STOCK_DIALOG_WARNING = 'gtk-dialog-warning';
-  STOCK_DIRECTORY = 'gtk-directory';
-  STOCK_DISCARD = 'gtk-discard';
-  STOCK_DISCONNECT = 'gtk-disconnect';
-  STOCK_DND = 'gtk-dnd';
-  STOCK_DND_MULTIPLE = 'gtk-dnd-multiple';
-  STOCK_EDIT = 'gtk-edit';
-  STOCK_EXECUTE = 'gtk-execute';
-  STOCK_FILE = 'gtk-file';
-  STOCK_FIND = 'gtk-find';
-  STOCK_FIND_AND_REPLACE = 'gtk-find-and-replace';
-  STOCK_FLOPPY = 'gtk-floppy';
-  STOCK_FULLSCREEN = 'gtk-fullscreen';
-  STOCK_GOTO_BOTTOM = 'gtk-goto-bottom';
-  STOCK_GOTO_FIRST = 'gtk-goto-first';
-  STOCK_GOTO_LAST = 'gtk-goto-last';
-  STOCK_GOTO_TOP = 'gtk-goto-top';
-  STOCK_GO_BACK = 'gtk-go-back';
-  STOCK_GO_DOWN = 'gtk-go-down';
-  STOCK_GO_FORWARD = 'gtk-go-forward';
-  STOCK_GO_UP = 'gtk-go-up';
-  STOCK_HARDDISK = 'gtk-harddisk';
-  STOCK_HELP = 'gtk-help';
-  STOCK_HOME = 'gtk-home';
-  STOCK_INDENT = 'gtk-indent';
-  STOCK_INDEX = 'gtk-index';
-  STOCK_INFO = 'gtk-info';
-  STOCK_ITALIC = 'gtk-italic';
-  STOCK_JUMP_TO = 'gtk-jump-to';
-  STOCK_JUSTIFY_CENTER = 'gtk-justify-center';
-  STOCK_JUSTIFY_FILL = 'gtk-justify-fill';
-  STOCK_JUSTIFY_LEFT = 'gtk-justify-left';
-  STOCK_JUSTIFY_RIGHT = 'gtk-justify-right';
-  STOCK_LEAVE_FULLSCREEN = 'gtk-leave-fullscreen';
-  STOCK_MEDIA_FORWARD = 'gtk-media-forward';
-  STOCK_MEDIA_NEXT = 'gtk-media-next';
-  STOCK_MEDIA_PAUSE = 'gtk-media-pause';
-  STOCK_MEDIA_PLAY = 'gtk-media-play';
-  STOCK_MEDIA_PREVIOUS = 'gtk-media-previous';
-  STOCK_MEDIA_RECORD = 'gtk-media-record';
-  STOCK_MEDIA_REWIND = 'gtk-media-rewind';
-  STOCK_MEDIA_STOP = 'gtk-media-stop';
-  STOCK_MISSING_IMAGE = 'gtk-missing-image';
-  STOCK_NETWORK = 'gtk-network';
-  STOCK_NEW = 'gtk-new';
-  STOCK_NO = 'gtk-no';
-  STOCK_OK = 'gtk-ok';
-  STOCK_OPEN = 'gtk-open';
-  STOCK_ORIENTATION_LANDSCAPE = 'gtk-orientation-landscape';
-  STOCK_ORIENTATION_PORTRAIT = 'gtk-orientation-portrait';
-  STOCK_ORIENTATION_REVERSE_LANDSCAPE = 'gtk-orientation-reverse-landscape';
-  STOCK_ORIENTATION_REVERSE_PORTRAIT = 'gtk-orientation-reverse-portrait';
-  STOCK_PAGE_SETUP = 'gtk-page-setup';
-  STOCK_PASTE = 'gtk-paste';
-  STOCK_PREFERENCES = 'gtk-preferences';
-  STOCK_PRINT = 'gtk-print';
-  STOCK_PRINT_ERROR = 'gtk-print-error';
-  STOCK_PRINT_PAUSED = 'gtk-print-paused';
-  STOCK_PRINT_PREVIEW = 'gtk-print-preview';
-  STOCK_PRINT_REPORT = 'gtk-print-report';
-  STOCK_PRINT_WARNING = 'gtk-print-warning';
-  STOCK_PROPERTIES = 'gtk-properties';
-  STOCK_QUIT = 'gtk-quit';
-  STOCK_REDO = 'gtk-redo';
-  STOCK_REFRESH = 'gtk-refresh';
-  STOCK_REMOVE = 'gtk-remove';
-  STOCK_REVERT_TO_SAVED = 'gtk-revert-to-saved';
-  STOCK_SAVE = 'gtk-save';
-  STOCK_SAVE_AS = 'gtk-save-as';
-  STOCK_SELECT_ALL = 'gtk-select-all';
-  STOCK_SELECT_COLOR = 'gtk-select-color';
-  STOCK_SELECT_FONT = 'gtk-select-font';
-  STOCK_SORT_ASCENDING = 'gtk-sort-ascending';
-  STOCK_SORT_DESCENDING = 'gtk-sort-descending';
-  STOCK_SPELL_CHECK = 'gtk-spell-check';
-  STOCK_STOP = 'gtk-stop';
-  STOCK_STRIKETHROUGH = 'gtk-strikethrough';
-  STOCK_UNDELETE = 'gtk-undelete';
-  STOCK_UNDERLINE = 'gtk-underline';
-  STOCK_UNDO = 'gtk-undo';
-  STOCK_UNINDENT = 'gtk-unindent';
-  STOCK_YES = 'gtk-yes';
-  STOCK_ZOOM_100 = 'gtk-zoom-100';
-  STOCK_ZOOM_FIT = 'gtk-zoom-fit';
-  STOCK_ZOOM_IN = 'gtk-zoom-in';
-  STOCK_ZOOM_OUT = 'gtk-zoom-out';
-  STYLE_CLASS_ACCELERATOR = 'accelerator';
-  STYLE_CLASS_ARROW = 'arrow';
-  STYLE_CLASS_BACKGROUND = 'background';
-  STYLE_CLASS_BOTTOM = 'bottom';
-  STYLE_CLASS_BUTTON = 'button';
-  STYLE_CLASS_CALENDAR = 'calendar';
-  STYLE_CLASS_CELL = 'cell';
-  STYLE_CLASS_CHECK = 'check';
-  STYLE_CLASS_COMBOBOX_ENTRY = 'combobox-entry';
-  STYLE_CLASS_DEFAULT = 'default';
-  STYLE_CLASS_DND = 'dnd';
-  STYLE_CLASS_DOCK = 'dock';
-  STYLE_CLASS_ENTRY = 'entry';
-  STYLE_CLASS_ERROR = 'error';
-  STYLE_CLASS_EXPANDER = 'expander';
-  STYLE_CLASS_FRAME = 'frame';
-  STYLE_CLASS_GRIP = 'grip';
-  STYLE_CLASS_HEADER = 'header';
-  STYLE_CLASS_HIGHLIGHT = 'highlight';
-  STYLE_CLASS_HORIZONTAL = 'horizontal';
-  STYLE_CLASS_IMAGE = 'image';
-  STYLE_CLASS_INFO = 'info';
-  STYLE_CLASS_INLINE_TOOLBAR = 'inline-toolbar';
-  STYLE_CLASS_LEFT = 'left';
-  STYLE_CLASS_LINKED = 'linked';
-  STYLE_CLASS_MARK = 'mark';
-  STYLE_CLASS_MENU = 'menu';
-  STYLE_CLASS_MENUBAR = 'menubar';
-  STYLE_CLASS_MENUITEM = 'menuitem';
-  STYLE_CLASS_NOTEBOOK = 'notebook';
-  STYLE_CLASS_PANE_SEPARATOR = 'pane-separator';
-  STYLE_CLASS_PRIMARY_TOOLBAR = 'primary-toolbar';
-  STYLE_CLASS_PROGRESSBAR = 'progressbar';
-  STYLE_CLASS_PULSE = 'pulse';
-  STYLE_CLASS_QUESTION = 'question';
-  STYLE_CLASS_RADIO = 'radio';
-  STYLE_CLASS_RAISED = 'raised';
-  STYLE_CLASS_RIGHT = 'right';
-  STYLE_CLASS_RUBBERBAND = 'rubberband';
-  STYLE_CLASS_SCALE = 'scale';
-  STYLE_CLASS_SCALE_HAS_MARKS_ABOVE = 'scale-has-marks-above';
-  STYLE_CLASS_SCALE_HAS_MARKS_BELOW = 'scale-has-marks-below';
-  STYLE_CLASS_SCROLLBAR = 'scrollbar';
-  STYLE_CLASS_SCROLLBARS_JUNCTION = 'scrollbars-junction';
-  STYLE_CLASS_SEPARATOR = 'separator';
-  STYLE_CLASS_SIDEBAR = 'sidebar';
-  STYLE_CLASS_SLIDER = 'slider';
-  STYLE_CLASS_SPINBUTTON = 'spinbutton';
-  STYLE_CLASS_SPINNER = 'spinner';
-  STYLE_CLASS_TOOLBAR = 'toolbar';
-  STYLE_CLASS_TOOLTIP = 'tooltip';
-  STYLE_CLASS_TOP = 'top';
-  STYLE_CLASS_TROUGH = 'trough';
-  STYLE_CLASS_VERTICAL = 'vertical';
-  STYLE_CLASS_VIEW = 'view';
-  STYLE_CLASS_WARNING = 'warning';
-  STYLE_PROPERTY_BACKGROUND_COLOR = 'background-color';
-  STYLE_PROPERTY_BACKGROUND_IMAGE = 'background-image';
-  STYLE_PROPERTY_BORDER_COLOR = 'border-color';
-  STYLE_PROPERTY_BORDER_RADIUS = 'border-radius';
-  STYLE_PROPERTY_BORDER_STYLE = 'border-style';
-  STYLE_PROPERTY_BORDER_WIDTH = 'border-width';
-  STYLE_PROPERTY_COLOR = 'color';
-  STYLE_PROPERTY_FONT = 'font';
-  STYLE_PROPERTY_MARGIN = 'margin';
-  STYLE_PROPERTY_PADDING = 'padding';
-  STYLE_PROVIDER_PRIORITY_APPLICATION = 600;
-  STYLE_PROVIDER_PRIORITY_FALLBACK = 1;
-  STYLE_PROVIDER_PRIORITY_SETTINGS = 400;
-  STYLE_PROVIDER_PRIORITY_THEME = 200;
-  STYLE_PROVIDER_PRIORITY_USER = 800;
-  STYLE_REGION_COLUMN = 'column';
-  STYLE_REGION_COLUMN_HEADER = 'column-header';
-  STYLE_REGION_ROW = 'row';
-  STYLE_REGION_TAB = 'tab';
-  TEXT_VIEW_PRIORITY_VALIDATE = 5;
+  GTK_BINARY_AGE = 806;
+  GTK_INPUT_ERROR = -1;
+  GTK_INTERFACE_AGE = 6;
+  GTK_LEVEL_BAR_OFFSET_HIGH = 'high';
+  GTK_LEVEL_BAR_OFFSET_LOW = 'low';
+  GTK_MAJOR_VERSION = 3;
+  GTK_MAX_COMPOSE_LEN = 7;
+  GTK_MICRO_VERSION = 6;
+  GTK_MINOR_VERSION = 8;
+  GTK_PAPER_NAME_A3 = 'iso_a3';
+  GTK_PAPER_NAME_A4 = 'iso_a4';
+  GTK_PAPER_NAME_A5 = 'iso_a5';
+  GTK_PAPER_NAME_B5 = 'iso_b5';
+  GTK_PAPER_NAME_EXECUTIVE = 'na_executive';
+  GTK_PAPER_NAME_LEGAL = 'na_legal';
+  GTK_PAPER_NAME_LETTER = 'na_letter';
+  GTK_PATH_PRIO_MASK = 15;
+  GTK_PRINT_SETTINGS_COLLATE = 'collate';
+  GTK_PRINT_SETTINGS_DEFAULT_SOURCE = 'default-source';
+  GTK_PRINT_SETTINGS_DITHER = 'dither';
+  GTK_PRINT_SETTINGS_DUPLEX = 'duplex';
+  GTK_PRINT_SETTINGS_FINISHINGS = 'finishings';
+  GTK_PRINT_SETTINGS_MEDIA_TYPE = 'media-type';
+  GTK_PRINT_SETTINGS_NUMBER_UP = 'number-up';
+  GTK_PRINT_SETTINGS_NUMBER_UP_LAYOUT = 'number-up-layout';
+  GTK_PRINT_SETTINGS_N_COPIES = 'n-copies';
+  GTK_PRINT_SETTINGS_ORIENTATION = 'orientation';
+  GTK_PRINT_SETTINGS_OUTPUT_BASENAME = 'output-basename';
+  GTK_PRINT_SETTINGS_OUTPUT_BIN = 'output-bin';
+  GTK_PRINT_SETTINGS_OUTPUT_DIR = 'output-dir';
+  GTK_PRINT_SETTINGS_OUTPUT_FILE_FORMAT = 'output-file-format';
+  GTK_PRINT_SETTINGS_OUTPUT_URI = 'output-uri';
+  GTK_PRINT_SETTINGS_PAGE_RANGES = 'page-ranges';
+  GTK_PRINT_SETTINGS_PAGE_SET = 'page-set';
+  GTK_PRINT_SETTINGS_PAPER_FORMAT = 'paper-format';
+  GTK_PRINT_SETTINGS_PAPER_HEIGHT = 'paper-height';
+  GTK_PRINT_SETTINGS_PAPER_WIDTH = 'paper-width';
+  GTK_PRINT_SETTINGS_PRINTER = 'printer';
+  GTK_PRINT_SETTINGS_PRINTER_LPI = 'printer-lpi';
+  GTK_PRINT_SETTINGS_PRINT_PAGES = 'print-pages';
+  GTK_PRINT_SETTINGS_QUALITY = 'quality';
+  GTK_PRINT_SETTINGS_RESOLUTION = 'resolution';
+  GTK_PRINT_SETTINGS_RESOLUTION_X = 'resolution-x';
+  GTK_PRINT_SETTINGS_RESOLUTION_Y = 'resolution-y';
+  GTK_PRINT_SETTINGS_REVERSE = 'reverse';
+  GTK_PRINT_SETTINGS_SCALE = 'scale';
+  GTK_PRINT_SETTINGS_USE_COLOR = 'use-color';
+  GTK_PRINT_SETTINGS_WIN32_DRIVER_EXTRA = 'win32-driver-extra';
+  GTK_PRINT_SETTINGS_WIN32_DRIVER_VERSION = 'win32-driver-version';
+  GTK_PRIORITY_RESIZE = 10;
+  GTK_STOCK_ABOUT = 'gtk-about';
+  GTK_STOCK_ADD_ = 'gtk-add';
+  GTK_STOCK_APPLY = 'gtk-apply';
+  GTK_STOCK_BOLD = 'gtk-bold';
+  GTK_STOCK_CANCEL = 'gtk-cancel';
+  GTK_STOCK_CAPS_LOCK_WARNING = 'gtk-caps-lock-warning';
+  GTK_STOCK_CDROM = 'gtk-cdrom';
+  GTK_STOCK_CLEAR = 'gtk-clear';
+  GTK_STOCK_CLOSE = 'gtk-close';
+  GTK_STOCK_COLOR_PICKER = 'gtk-color-picker';
+  GTK_STOCK_CONNECT = 'gtk-connect';
+  GTK_STOCK_CONVERT = 'gtk-convert';
+  GTK_STOCK_COPY = 'gtk-copy';
+  GTK_STOCK_CUT = 'gtk-cut';
+  GTK_STOCK_DELETE = 'gtk-delete';
+  GTK_STOCK_DIALOG_AUTHENTICATION = 'gtk-dialog-authentication';
+  GTK_STOCK_DIALOG_ERROR = 'gtk-dialog-error';
+  GTK_STOCK_DIALOG_INFO = 'gtk-dialog-info';
+  GTK_STOCK_DIALOG_QUESTION = 'gtk-dialog-question';
+  GTK_STOCK_DIALOG_WARNING = 'gtk-dialog-warning';
+  GTK_STOCK_DIRECTORY = 'gtk-directory';
+  GTK_STOCK_DISCARD = 'gtk-discard';
+  GTK_STOCK_DISCONNECT = 'gtk-disconnect';
+  GTK_STOCK_DND = 'gtk-dnd';
+  GTK_STOCK_DND_MULTIPLE = 'gtk-dnd-multiple';
+  GTK_STOCK_EDIT = 'gtk-edit';
+  GTK_STOCK_EXECUTE = 'gtk-execute';
+  GTK_STOCK_FILE = 'gtk-file';
+  GTK_STOCK_FIND = 'gtk-find';
+  GTK_STOCK_FIND_AND_REPLACE = 'gtk-find-and-replace';
+  GTK_STOCK_FLOPPY = 'gtk-floppy';
+  GTK_STOCK_FULLSCREEN = 'gtk-fullscreen';
+  GTK_STOCK_GOTO_BOTTOM = 'gtk-goto-bottom';
+  GTK_STOCK_GOTO_FIRST = 'gtk-goto-first';
+  GTK_STOCK_GOTO_LAST = 'gtk-goto-last';
+  GTK_STOCK_GOTO_TOP = 'gtk-goto-top';
+  GTK_STOCK_GO_BACK = 'gtk-go-back';
+  GTK_STOCK_GO_DOWN = 'gtk-go-down';
+  GTK_STOCK_GO_FORWARD = 'gtk-go-forward';
+  GTK_STOCK_GO_UP = 'gtk-go-up';
+  GTK_STOCK_HARDDISK = 'gtk-harddisk';
+  GTK_STOCK_HELP = 'gtk-help';
+  GTK_STOCK_HOME = 'gtk-home';
+  GTK_STOCK_INDENT = 'gtk-indent';
+  GTK_STOCK_INDEX = 'gtk-index';
+  GTK_STOCK_INFO = 'gtk-info';
+  GTK_STOCK_ITALIC = 'gtk-italic';
+  GTK_STOCK_JUMP_TO = 'gtk-jump-to';
+  GTK_STOCK_JUSTIFY_CENTER = 'gtk-justify-center';
+  GTK_STOCK_JUSTIFY_FILL = 'gtk-justify-fill';
+  GTK_STOCK_JUSTIFY_LEFT = 'gtk-justify-left';
+  GTK_STOCK_JUSTIFY_RIGHT = 'gtk-justify-right';
+  GTK_STOCK_LEAVE_FULLSCREEN = 'gtk-leave-fullscreen';
+  GTK_STOCK_MEDIA_FORWARD = 'gtk-media-forward';
+  GTK_STOCK_MEDIA_NEXT = 'gtk-media-next';
+  GTK_STOCK_MEDIA_PAUSE = 'gtk-media-pause';
+  GTK_STOCK_MEDIA_PLAY = 'gtk-media-play';
+  GTK_STOCK_MEDIA_PREVIOUS = 'gtk-media-previous';
+  GTK_STOCK_MEDIA_RECORD = 'gtk-media-record';
+  GTK_STOCK_MEDIA_REWIND = 'gtk-media-rewind';
+  GTK_STOCK_MEDIA_STOP = 'gtk-media-stop';
+  GTK_STOCK_MISSING_IMAGE = 'gtk-missing-image';
+  GTK_STOCK_NETWORK = 'gtk-network';
+  GTK_STOCK_NEW = 'gtk-new';
+  GTK_STOCK_NO = 'gtk-no';
+  GTK_STOCK_OK = 'gtk-ok';
+  GTK_STOCK_OPEN = 'gtk-open';
+  GTK_STOCK_ORIENTATION_LANDSCAPE = 'gtk-orientation-landscape';
+  GTK_STOCK_ORIENTATION_PORTRAIT = 'gtk-orientation-portrait';
+  GTK_STOCK_ORIENTATION_REVERSE_LANDSCAPE = 'gtk-orientation-reverse-landscape';
+  GTK_STOCK_ORIENTATION_REVERSE_PORTRAIT = 'gtk-orientation-reverse-portrait';
+  GTK_STOCK_PAGE_SETUP = 'gtk-page-setup';
+  GTK_STOCK_PASTE = 'gtk-paste';
+  GTK_STOCK_PREFERENCES = 'gtk-preferences';
+  GTK_STOCK_PRINT = 'gtk-print';
+  GTK_STOCK_PRINT_ERROR = 'gtk-print-error';
+  GTK_STOCK_PRINT_PAUSED = 'gtk-print-paused';
+  GTK_STOCK_PRINT_PREVIEW = 'gtk-print-preview';
+  GTK_STOCK_PRINT_REPORT = 'gtk-print-report';
+  GTK_STOCK_PRINT_WARNING = 'gtk-print-warning';
+  GTK_STOCK_PROPERTIES = 'gtk-properties';
+  GTK_STOCK_QUIT = 'gtk-quit';
+  GTK_STOCK_REDO = 'gtk-redo';
+  GTK_STOCK_REFRESH = 'gtk-refresh';
+  GTK_STOCK_REMOVE = 'gtk-remove';
+  GTK_STOCK_REVERT_TO_SAVED = 'gtk-revert-to-saved';
+  GTK_STOCK_SAVE = 'gtk-save';
+  GTK_STOCK_SAVE_AS = 'gtk-save-as';
+  GTK_STOCK_SELECT_ALL = 'gtk-select-all';
+  GTK_STOCK_SELECT_COLOR = 'gtk-select-color';
+  GTK_STOCK_SELECT_FONT = 'gtk-select-font';
+  GTK_STOCK_SORT_ASCENDING = 'gtk-sort-ascending';
+  GTK_STOCK_SORT_DESCENDING = 'gtk-sort-descending';
+  GTK_STOCK_SPELL_CHECK = 'gtk-spell-check';
+  GTK_STOCK_STOP = 'gtk-stop';
+  GTK_STOCK_STRIKETHROUGH = 'gtk-strikethrough';
+  GTK_STOCK_UNDELETE = 'gtk-undelete';
+  GTK_STOCK_UNDERLINE = 'gtk-underline';
+  GTK_STOCK_UNDO = 'gtk-undo';
+  GTK_STOCK_UNINDENT = 'gtk-unindent';
+  GTK_STOCK_YES = 'gtk-yes';
+  GTK_STOCK_ZOOM_100 = 'gtk-zoom-100';
+  GTK_STOCK_ZOOM_FIT = 'gtk-zoom-fit';
+  GTK_STOCK_ZOOM_IN = 'gtk-zoom-in';
+  GTK_STOCK_ZOOM_OUT = 'gtk-zoom-out';
+  GTK_STYLE_CLASS_ACCELERATOR = 'accelerator';
+  GTK_STYLE_CLASS_ARROW = 'arrow';
+  GTK_STYLE_CLASS_BACKGROUND = 'background';
+  GTK_STYLE_CLASS_BOTTOM = 'bottom';
+  GTK_STYLE_CLASS_BUTTON = 'button';
+  GTK_STYLE_CLASS_CALENDAR = 'calendar';
+  GTK_STYLE_CLASS_CELL = 'cell';
+  GTK_STYLE_CLASS_CHECK = 'check';
+  GTK_STYLE_CLASS_COMBOBOX_ENTRY = 'combobox-entry';
+  GTK_STYLE_CLASS_CURSOR_HANDLE = 'cursor-handle';
+  GTK_STYLE_CLASS_DEFAULT = 'default';
+  GTK_STYLE_CLASS_DIM_LABEL = 'dim-label';
+  GTK_STYLE_CLASS_DND = 'dnd';
+  GTK_STYLE_CLASS_DOCK = 'dock';
+  GTK_STYLE_CLASS_ENTRY = 'entry';
+  GTK_STYLE_CLASS_ERROR = 'error';
+  GTK_STYLE_CLASS_EXPANDER = 'expander';
+  GTK_STYLE_CLASS_FRAME = 'frame';
+  GTK_STYLE_CLASS_GRIP = 'grip';
+  GTK_STYLE_CLASS_HEADER = 'header';
+  GTK_STYLE_CLASS_HIGHLIGHT = 'highlight';
+  GTK_STYLE_CLASS_HORIZONTAL = 'horizontal';
+  GTK_STYLE_CLASS_IMAGE = 'image';
+  GTK_STYLE_CLASS_INFO = 'info';
+  GTK_STYLE_CLASS_INLINE_TOOLBAR = 'inline-toolbar';
+  GTK_STYLE_CLASS_INSERTION_CURSOR = 'insertion-cursor';
+  GTK_STYLE_CLASS_LEFT = 'left';
+  GTK_STYLE_CLASS_LEVEL_BAR = 'level-bar';
+  GTK_STYLE_CLASS_LINKED = 'linked';
+  GTK_STYLE_CLASS_MARK = 'mark';
+  GTK_STYLE_CLASS_MENU = 'menu';
+  GTK_STYLE_CLASS_MENUBAR = 'menubar';
+  GTK_STYLE_CLASS_MENUITEM = 'menuitem';
+  GTK_STYLE_CLASS_NOTEBOOK = 'notebook';
+  GTK_STYLE_CLASS_OSD = 'osd';
+  GTK_STYLE_CLASS_PANE_SEPARATOR = 'pane-separator';
+  GTK_STYLE_CLASS_PRIMARY_TOOLBAR = 'primary-toolbar';
+  GTK_STYLE_CLASS_PROGRESSBAR = 'progressbar';
+  GTK_STYLE_CLASS_PULSE = 'pulse';
+  GTK_STYLE_CLASS_QUESTION = 'question';
+  GTK_STYLE_CLASS_RADIO = 'radio';
+  GTK_STYLE_CLASS_RAISED = 'raised';
+  GTK_STYLE_CLASS_RIGHT = 'right';
+  GTK_STYLE_CLASS_RUBBERBAND = 'rubberband';
+  GTK_STYLE_CLASS_SCALE = 'scale';
+  GTK_STYLE_CLASS_SCALE_HAS_MARKS_ABOVE = 'scale-has-marks-above';
+  GTK_STYLE_CLASS_SCALE_HAS_MARKS_BELOW = 'scale-has-marks-below';
+  GTK_STYLE_CLASS_SCROLLBAR = 'scrollbar';
+  GTK_STYLE_CLASS_SCROLLBARS_JUNCTION = 'scrollbars-junction';
+  GTK_STYLE_CLASS_SEPARATOR = 'separator';
+  GTK_STYLE_CLASS_SIDEBAR = 'sidebar';
+  GTK_STYLE_CLASS_SLIDER = 'slider';
+  GTK_STYLE_CLASS_SPINBUTTON = 'spinbutton';
+  GTK_STYLE_CLASS_SPINNER = 'spinner';
+  GTK_STYLE_CLASS_TOOLBAR = 'toolbar';
+  GTK_STYLE_CLASS_TOOLTIP = 'tooltip';
+  GTK_STYLE_CLASS_TOP = 'top';
+  GTK_STYLE_CLASS_TROUGH = 'trough';
+  GTK_STYLE_CLASS_VERTICAL = 'vertical';
+  GTK_STYLE_CLASS_VIEW = 'view';
+  GTK_STYLE_CLASS_WARNING = 'warning';
+  GTK_STYLE_PROPERTY_BACKGROUND_COLOR = 'background-color';
+  GTK_STYLE_PROPERTY_BACKGROUND_IMAGE = 'background-image';
+  GTK_STYLE_PROPERTY_BORDER_COLOR = 'border-color';
+  GTK_STYLE_PROPERTY_BORDER_RADIUS = 'border-radius';
+  GTK_STYLE_PROPERTY_BORDER_STYLE = 'border-style';
+  GTK_STYLE_PROPERTY_BORDER_WIDTH = 'border-width';
+  GTK_STYLE_PROPERTY_COLOR = 'color';
+  GTK_STYLE_PROPERTY_FONT = 'font';
+  GTK_STYLE_PROPERTY_MARGIN = 'margin';
+  GTK_STYLE_PROPERTY_PADDING = 'padding';
+  GTK_STYLE_PROVIDER_PRIORITY_APPLICATION = 600;
+  GTK_STYLE_PROVIDER_PRIORITY_FALLBACK = 1;
+  GTK_STYLE_PROVIDER_PRIORITY_SETTINGS = 400;
+  GTK_STYLE_PROVIDER_PRIORITY_THEME = 200;
+  GTK_STYLE_PROVIDER_PRIORITY_USER = 800;
+  GTK_STYLE_REGION_COLUMN = 'column';
+  GTK_STYLE_REGION_COLUMN_HEADER = 'column-header';
+  GTK_STYLE_REGION_ROW = 'row';
+  GTK_STYLE_REGION_TAB = 'tab';
+  GTK_TEXT_VIEW_PRIORITY_VALIDATE = 5;
 
 type
   TGtkTextDirection = Integer;
@@ -301,18 +307,8 @@ const
   GTK_STATE_FLAG_INCONSISTENT: TGtkStateFlags = 16;
   GTK_STATE_FLAG_FOCUSED: TGtkStateFlags = 32;
   GTK_STATE_FLAG_BACKDROP: TGtkStateFlags = 64;
-
-type
-  TGtkStateType = Integer;
-const
-  { GtkStateType }
-  GTK_STATE_NORMAL: TGtkStateType = 0;
-  GTK_STATE_ACTIVE: TGtkStateType = 1;
-  GTK_STATE_PRELIGHT: TGtkStateType = 2;
-  GTK_STATE_SELECTED: TGtkStateType = 3;
-  GTK_STATE_INSENSITIVE: TGtkStateType = 4;
-  GTK_STATE_INCONSISTENT: TGtkStateType = 5;
-  GTK_STATE_FOCUSED: TGtkStateType = 6;
+  GTK_STATE_FLAG_DIR_LTR: TGtkStateFlags = 128;
+  GTK_STATE_FLAG_DIR_RTL: TGtkStateFlags = 256;
 
 type
   TGtkAlign = Integer;
@@ -322,20 +318,6 @@ const
   GTK_ALIGN_START: TGtkAlign = 1;
   GTK_ALIGN_END: TGtkAlign = 2;
   GTK_ALIGN_CENTER: TGtkAlign = 3;
-
-type
-  TGtkLicense = Integer;
-const
-  { GtkLicense }
-  GTK_LICENSE_UNKNOWN: TGtkLicense = 0;
-  GTK_LICENSE_CUSTOM: TGtkLicense = 1;
-  GTK_LICENSE_GPL_2_0: TGtkLicense = 2;
-  GTK_LICENSE_GPL_3_0: TGtkLicense = 3;
-  GTK_LICENSE_LGPL_2_1: TGtkLicense = 4;
-  GTK_LICENSE_LGPL_3_0: TGtkLicense = 5;
-  GTK_LICENSE_BSD: TGtkLicense = 6;
-  GTK_LICENSE_MIT_X11: TGtkLicense = 7;
-  GTK_LICENSE_ARTISTIC: TGtkLicense = 8;
 
 type
   TGtkResizeMode = Integer;
@@ -368,6 +350,32 @@ const
   { GtkDialogFlags }
   GTK_DIALOG_MODAL: TGtkDialogFlags = 1;
   GTK_DIALOG_DESTROY_WITH_PARENT: TGtkDialogFlags = 2;
+
+type
+  TGtkLicense = Integer;
+const
+  { GtkLicense }
+  GTK_LICENSE_UNKNOWN: TGtkLicense = 0;
+  GTK_LICENSE_CUSTOM: TGtkLicense = 1;
+  GTK_LICENSE_GPL_2_0: TGtkLicense = 2;
+  GTK_LICENSE_GPL_3_0: TGtkLicense = 3;
+  GTK_LICENSE_LGPL_2_1: TGtkLicense = 4;
+  GTK_LICENSE_LGPL_3_0: TGtkLicense = 5;
+  GTK_LICENSE_BSD: TGtkLicense = 6;
+  GTK_LICENSE_MIT_X11: TGtkLicense = 7;
+  GTK_LICENSE_ARTISTIC: TGtkLicense = 8;
+
+type
+  TGtkStateType = Integer;
+const
+  { GtkStateType }
+  GTK_STATE_NORMAL: TGtkStateType = 0;
+  GTK_STATE_ACTIVE: TGtkStateType = 1;
+  GTK_STATE_PRELIGHT: TGtkStateType = 2;
+  GTK_STATE_SELECTED: TGtkStateType = 3;
+  GTK_STATE_INSENSITIVE: TGtkStateType = 4;
+  GTK_STATE_INCONSISTENT: TGtkStateType = 5;
+  GTK_STATE_FOCUSED: TGtkStateType = 6;
 
 type
   TGtkDragResult = Integer;
@@ -696,6 +704,7 @@ const
   GTK_CSS_SECTION_SELECTOR: TGtkCssSectionType = 5;
   GTK_CSS_SECTION_DECLARATION: TGtkCssSectionType = 6;
   GTK_CSS_SECTION_VALUE: TGtkCssSectionType = 7;
+  GTK_CSS_SECTION_KEYFRAMES: TGtkCssSectionType = 8;
 
 type
   TGtkDebugFlag = Integer;
@@ -714,6 +723,7 @@ const
   GTK_DEBUG_PRINTING: TGtkDebugFlag = 1024;
   GTK_DEBUG_BUILDER: TGtkDebugFlag = 2048;
   GTK_DEBUG_SIZE_REQUEST: TGtkDebugFlag = 4096;
+  GTK_DEBUG_NO_CSS_CACHE: TGtkDebugFlag = 8192;
 
 type
   TGtkDeleteType = Integer;
@@ -734,6 +744,35 @@ const
   { GtkEntryIconPosition }
   GTK_ENTRY_ICON_PRIMARY: TGtkEntryIconPosition = 0;
   GTK_ENTRY_ICON_SECONDARY: TGtkEntryIconPosition = 1;
+
+type
+  TGtkInputHints = Integer;
+const
+  { GtkInputHints }
+  GTK_INPUT_HINT_NONE: TGtkInputHints = 0;
+  GTK_INPUT_HINT_SPELLCHECK: TGtkInputHints = 1;
+  GTK_INPUT_HINT_NO_SPELLCHECK: TGtkInputHints = 2;
+  GTK_INPUT_HINT_WORD_COMPLETION: TGtkInputHints = 4;
+  GTK_INPUT_HINT_LOWERCASE: TGtkInputHints = 8;
+  GTK_INPUT_HINT_UPPERCASE_CHARS: TGtkInputHints = 16;
+  GTK_INPUT_HINT_UPPERCASE_WORDS: TGtkInputHints = 32;
+  GTK_INPUT_HINT_UPPERCASE_SENTENCES: TGtkInputHints = 64;
+  GTK_INPUT_HINT_INHIBIT_OSK: TGtkInputHints = 128;
+
+type
+  TGtkInputPurpose = Integer;
+const
+  { GtkInputPurpose }
+  GTK_INPUT_PURPOSE_FREE_FORM: TGtkInputPurpose = 0;
+  GTK_INPUT_PURPOSE_ALPHA: TGtkInputPurpose = 1;
+  GTK_INPUT_PURPOSE_DIGITS: TGtkInputPurpose = 2;
+  GTK_INPUT_PURPOSE_NUMBER: TGtkInputPurpose = 3;
+  GTK_INPUT_PURPOSE_PHONE: TGtkInputPurpose = 4;
+  GTK_INPUT_PURPOSE_URL: TGtkInputPurpose = 5;
+  GTK_INPUT_PURPOSE_EMAIL: TGtkInputPurpose = 6;
+  GTK_INPUT_PURPOSE_NAME: TGtkInputPurpose = 7;
+  GTK_INPUT_PURPOSE_PASSWORD: TGtkInputPurpose = 8;
+  GTK_INPUT_PURPOSE_PIN: TGtkInputPurpose = 9;
 
 type
   TGtkImageType = Integer;
@@ -757,15 +796,6 @@ const
   GTK_EXPANDER_EXPANDED: TGtkExpanderStyle = 3;
 
 type
-  TGtkFileFilterFlags = Integer;
-const
-  { GtkFileFilterFlags }
-  GTK_FILE_FILTER_FILENAME: TGtkFileFilterFlags = 1;
-  GTK_FILE_FILTER_URI: TGtkFileFilterFlags = 2;
-  GTK_FILE_FILTER_DISPLAY_NAME: TGtkFileFilterFlags = 4;
-  GTK_FILE_FILTER_MIME_TYPE: TGtkFileFilterFlags = 8;
-
-type
   TGtkFileChooserAction = Integer;
 const
   { GtkFileChooserAction }
@@ -773,6 +803,15 @@ const
   GTK_FILE_CHOOSER_ACTION_SAVE: TGtkFileChooserAction = 1;
   GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER: TGtkFileChooserAction = 2;
   GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER: TGtkFileChooserAction = 3;
+
+type
+  TGtkFileFilterFlags = Integer;
+const
+  { GtkFileFilterFlags }
+  GTK_FILE_FILTER_FILENAME: TGtkFileFilterFlags = 1;
+  GTK_FILE_FILTER_URI: TGtkFileFilterFlags = 2;
+  GTK_FILE_FILTER_DISPLAY_NAME: TGtkFileFilterFlags = 4;
+  GTK_FILE_FILTER_MIME_TYPE: TGtkFileFilterFlags = 8;
 
 type
   TGtkFileChooserConfirmation = Integer;
@@ -876,6 +915,13 @@ const
   GTK_MESSAGE_OTHER: TGtkMessageType = 4;
 
 type
+  TGtkLevelBarMode = Integer;
+const
+  { GtkLevelBarMode }
+  GTK_LEVEL_BAR_MODE_CONTINUOUS: TGtkLevelBarMode = 0;
+  GTK_LEVEL_BAR_MODE_DISCRETE: TGtkLevelBarMode = 1;
+
+type
   TGtkSortType = Integer;
 const
   { GtkSortType }
@@ -941,7 +987,7 @@ type
   TGtkUnit = Integer;
 const
   { GtkUnit }
-  GTK_UNIT_PIXEL: TGtkUnit = 0;
+  GTK_UNIT_NONE: TGtkUnit = 0;
   GTK_UNIT_POINTS: TGtkUnit = 1;
   GTK_UNIT_INCH: TGtkUnit = 2;
   GTK_UNIT_MM: TGtkUnit = 3;
@@ -1309,14 +1355,15 @@ type
   PPGtkTextDirection = ^PGtkTextDirection;
   PGtkTextDirection = ^TGtkTextDirection;
 
-  PPGtkStyle = ^PGtkStyle;
-  PGtkStyle = ^TGtkStyle;
-
   PPGtkAccelGroup = ^PGtkAccelGroup;
   PGtkAccelGroup = ^TGtkAccelGroup;
 
   PPGtkAccelFlags = ^PGtkAccelFlags;
   PGtkAccelFlags = ^TGtkAccelFlags;
+
+  PPGtkTickCallback = ^PGtkTickCallback;
+  PGtkTickCallback = ^TGtkTickCallback;
+  TGtkTickCallback = function(widget: PGtkWidget; frame_clock: PGdkFrameClock; user_data: gpointer): gboolean; cdecl;
 
   PPGtkDirectionType = ^PGtkDirectionType;
   PGtkDirectionType = ^TGtkDirectionType;
@@ -1340,9 +1387,6 @@ type
   PPGtkAlign = ^PGtkAlign;
   PGtkAlign = ^TGtkAlign;
 
-  PPGtkRcStyle = ^PGtkRcStyle;
-  PGtkRcStyle = ^TGtkRcStyle;
-
   PPGtkWidgetPath = ^PGtkWidgetPath;
   PGtkWidgetPath = ^TGtkWidgetPath;
 
@@ -1364,8 +1408,8 @@ type
   PPGtkWindow = ^PGtkWindow;
   PGtkWindow = ^TGtkWindow;
 
-  PPGtkStateType = ^PGtkStateType;
-  PGtkStateType = ^TGtkStateType;
+  PPGtkStyle = ^PGtkStyle;
+  PGtkStyle = ^TGtkStyle;
 
   PPGtkWidgetPrivate = ^PGtkWidgetPrivate;
   PGtkWidgetPrivate = ^TGtkWidgetPrivate;
@@ -1373,7 +1417,6 @@ type
     priv: PGtkWidgetPrivate;
     //function new(type_: TGType; first_property_name: Pgchar; args: array of const): PGtkWidget; cdecl; inline; static;
     function get_default_direction: TGtkTextDirection; cdecl; inline; static;
-    function get_default_style: PGtkStyle; cdecl; inline; static;
     procedure pop_composite_child; cdecl; inline; static;
     procedure push_composite_child; cdecl; inline; static;
     procedure set_default_direction(dir: TGtkTextDirection); cdecl; inline; static;
@@ -1382,10 +1425,10 @@ type
     procedure add_device_events(device: PGdkDevice; events: TGdkEventMask); cdecl; inline;
     procedure add_events(events: gint); cdecl; inline;
     procedure add_mnemonic_label(label_: PGtkWidget); cdecl; inline;
+    function add_tick_callback(callback: TGtkTickCallback; user_data: gpointer; notify: TGDestroyNotify): guint; cdecl; inline;
     function can_activate_accel(signal_id: guint): gboolean; cdecl; inline;
     function child_focus(direction: TGtkDirectionType): gboolean; cdecl; inline;
     procedure child_notify(child_property: Pgchar); cdecl; inline;
-    procedure class_path(path_length: Pguint; path: PPgchar; path_reversed: PPgchar); cdecl; inline;
     function compute_expand(orientation: TGtkOrientation): gboolean; cdecl; inline;
     function create_pango_context: PPangoContext; cdecl; inline;
     function create_pango_layout(text: Pgchar): PPangoLayout; cdecl; inline;
@@ -1420,7 +1463,6 @@ type
     procedure drag_source_unset; cdecl; inline;
     procedure drag_unhighlight; cdecl; inline;
     procedure draw(cr: Pcairo_t); cdecl; inline;
-    procedure ensure_style; cdecl; inline;
     procedure error_bell; cdecl; inline;
     function event(event: PGdkEvent): gboolean; cdecl; inline;
     procedure freeze_child_notify; cdecl; inline;
@@ -1441,6 +1483,7 @@ type
     function get_display: PGdkDisplay; cdecl; inline;
     function get_double_buffered: gboolean; cdecl; inline;
     function get_events: gint; cdecl; inline;
+    function get_frame_clock: PGdkFrameClock; cdecl; inline;
     function get_halign: TGtkAlign; cdecl; inline;
     function get_has_tooltip: gboolean; cdecl; inline;
     function get_has_window: gboolean; cdecl; inline;
@@ -1452,9 +1495,9 @@ type
     function get_margin_right: gint; cdecl; inline;
     function get_margin_top: gint; cdecl; inline;
     function get_modifier_mask(intent: TGdkModifierIntent): TGdkModifierType; cdecl; inline;
-    function get_modifier_style: PGtkRcStyle; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
     function get_no_show_all: gboolean; cdecl; inline;
+    function get_opacity: gdouble; cdecl; inline;
     function get_pango_context: PPangoContext; cdecl; inline;
     function get_parent: PGtkWidget; cdecl; inline;
     function get_parent_window: PGdkWindow; cdecl; inline;
@@ -1473,7 +1516,10 @@ type
     function get_settings: PGtkSettings; cdecl; inline;
     procedure get_size_request(width: Pgint; height: Pgint); cdecl; inline;
     function get_state_flags: TGtkStateFlags; cdecl; inline;
-    function get_style: PGtkStyle; cdecl; inline;
+    function get_style: PGtkStyle; cdecl; inline; deprecated 'migrate to get_style_context';
+    procedure set_style(style: PGtkStyle); cdecl; inline; deprecated 'migrate to set_style_context';
+    function ensure_style: PGtkStyle; cdecl; inline; deprecated 'migrate to GtkStyleContext';
+
     function get_style_context: PGtkStyleContext; cdecl; inline;
     function get_support_multidevice: gboolean; cdecl; inline;
     function get_tooltip_markup: Pgchar; cdecl; inline;
@@ -1493,13 +1539,13 @@ type
     function has_default: gboolean; cdecl; inline;
     function has_focus: gboolean; cdecl; inline;
     function has_grab: gboolean; cdecl; inline;
-    function has_rc_style: gboolean; cdecl; inline;
     function has_screen: gboolean; cdecl; inline;
     function has_visible_focus: gboolean; cdecl; inline;
     procedure hide; cdecl; inline;
     function hide_on_delete: gboolean; cdecl; inline;
     function in_destruction: gboolean; cdecl; inline;
     procedure input_shape_combine_region(region: Pcairo_region_t); cdecl; inline;
+    procedure insert_action_group(name: Pgchar; group: PGActionGroup); cdecl; inline;
     function intersect(area: PGdkRectangle; intersection: PGdkRectangle): gboolean; cdecl; inline;
     function is_ancestor(ancestor: PGtkWidget): gboolean; cdecl; inline;
     function is_composited: gboolean; cdecl; inline;
@@ -1507,23 +1553,17 @@ type
     function is_focus: gboolean; cdecl; inline;
     function is_sensitive: gboolean; cdecl; inline;
     function is_toplevel: gboolean; cdecl; inline;
+    function is_visible: gboolean; cdecl; inline;
     function keynav_failed(direction: TGtkDirectionType): gboolean; cdecl; inline;
     function list_accel_closures: PGList; cdecl; inline;
     function list_mnemonic_labels: PGList; cdecl; inline;
     procedure map; cdecl; inline;
     function mnemonic_activate(group_cycling: gboolean): gboolean; cdecl; inline;
-    procedure modify_base(state: TGtkStateType; color: PGdkColor); cdecl; inline;
-    procedure modify_bg(state: TGtkStateType; color: PGdkColor); cdecl; inline;
-    procedure modify_fg(state: TGtkStateType; color: PGdkColor); cdecl; inline;
-    procedure modify_font(font_desc: PPangoFontDescription); cdecl; inline;
-    procedure modify_style(style: PGtkRcStyle); cdecl; inline;
-    procedure modify_text(state: TGtkStateType; color: PGdkColor); cdecl; inline;
     procedure override_background_color(state: TGtkStateFlags; color: PGdkRGBA); cdecl; inline;
     procedure override_color(state: TGtkStateFlags; color: PGdkRGBA); cdecl; inline;
     procedure override_cursor(cursor: PGdkRGBA; secondary_cursor: PGdkRGBA); cdecl; inline;
     procedure override_font(font_desc: PPangoFontDescription); cdecl; inline;
     procedure override_symbolic_color(name: Pgchar; color: PGdkRGBA); cdecl; inline;
-    procedure path(path_length: Pguint; path: PPgchar; path_reversed: PPgchar); cdecl; inline;
     procedure queue_compute_expand; cdecl; inline;
     procedure queue_draw; cdecl; inline;
     procedure queue_draw_area(x: gint; y: gint; width: gint; height: gint); cdecl; inline;
@@ -1532,11 +1572,12 @@ type
     procedure queue_resize_no_redraw; cdecl; inline;
     procedure realize; cdecl; inline;
     function region_intersect(region: Pcairo_region_t): Pcairo_region_t; cdecl; inline;
+    procedure register_window(window: PGdkWindow); cdecl; inline;
     function remove_accelerator(accel_group: PGtkAccelGroup; accel_key: guint; accel_mods: TGdkModifierType): gboolean; cdecl; inline;
     procedure remove_mnemonic_label(label_: PGtkWidget); cdecl; inline;
+    procedure remove_tick_callback(id: guint); cdecl; inline;
     function render_icon_pixbuf(stock_id: Pgchar; size: gint): PGdkPixbuf; cdecl; inline;
     procedure reparent(new_parent: PGtkWidget); cdecl; inline;
-    procedure reset_rc_styles; cdecl; inline;
     procedure reset_style; cdecl; inline;
     function send_expose(event: PGdkEvent): gint; cdecl; inline;
     function send_focus_change(event: PGdkEvent): gboolean; cdecl; inline;
@@ -1564,6 +1605,7 @@ type
     procedure set_margin_top(margin: gint); cdecl; inline;
     procedure set_name(name: Pgchar); cdecl; inline;
     procedure set_no_show_all(no_show_all: gboolean); cdecl; inline;
+    procedure set_opacity(opacity: gdouble); cdecl; inline;
     procedure set_parent(parent: PGtkWidget); cdecl; inline;
     procedure set_parent_window(parent_window: PGdkWindow); cdecl; inline;
     procedure set_realized(realized: gboolean); cdecl; inline;
@@ -1572,7 +1614,6 @@ type
     procedure set_sensitive(sensitive: gboolean); cdecl; inline;
     procedure set_size_request(width: gint; height: gint); cdecl; inline;
     procedure set_state_flags(flags: TGtkStateFlags; clear: gboolean); cdecl; inline;
-    procedure set_style(style: PGtkStyle); cdecl; inline;
     procedure set_support_multidevice(support_multidevice: gboolean); cdecl; inline;
     procedure set_tooltip_markup(markup: Pgchar); cdecl; inline;
     procedure set_tooltip_text(text: Pgchar); cdecl; inline;
@@ -1597,6 +1638,7 @@ type
     procedure unmap; cdecl; inline;
     procedure unparent; cdecl; inline;
     procedure unrealize; cdecl; inline;
+    procedure unregister_window(window: PGdkWindow); cdecl; inline;
     procedure unset_state_flags(flags: TGtkStateFlags); cdecl; inline;
     property app_paintable: gboolean read get_app_paintable write set_app_paintable;
     property can_default: gboolean read get_can_default write set_can_default;
@@ -1620,10 +1662,11 @@ type
     property margin_top: gint read get_margin_top write set_margin_top;
     property name: Pgchar read get_name write set_name;
     property no_show_all: gboolean read get_no_show_all write set_no_show_all;
+    property opacity: gdouble read get_opacity write set_opacity;
     property parent: PGtkWidget read get_parent write set_parent;
     property receives_default: gboolean read get_receives_default write set_receives_default;
     property sensitive: gboolean read get_sensitive write set_sensitive;
-    property style: PGtkStyle read get_style write set_style;
+    //property style: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_style  { property is writeable but setter not declared } ;
     property tooltip_markup: Pgchar read get_tooltip_markup write set_tooltip_markup;
     property tooltip_text: Pgchar read get_tooltip_text write set_tooltip_text;
     property valign: TGtkAlign read get_valign write set_valign;
@@ -1634,8 +1677,8 @@ type
     property window: PGdkWindow read get_window ;
   end;
 
-  PPGtkLicense = ^PGtkLicense;
-  PGtkLicense = ^TGtkLicense;
+  PPGtkAboutDialog = ^PGtkAboutDialog;
+  PGtkAboutDialog = ^TGtkAboutDialog;
 
   PPGtkDialog = ^PGtkDialog;
   PGtkDialog = ^TGtkDialog;
@@ -1726,7 +1769,7 @@ type
     function list_toplevels: PGList; cdecl; inline; static;
     procedure set_auto_startup_notification(setting: gboolean); cdecl; inline; static;
     procedure set_default_icon(icon: PGdkPixbuf); cdecl; inline; static;
-    function set_default_icon_from_file(filename: Pgchar): gboolean; cdecl; inline; static;
+    function set_default_icon_from_file(filename: Pgchar; error: PPGError): gboolean; cdecl; inline; static;
     procedure set_default_icon_list(list: PGList); cdecl; inline; static;
     procedure set_default_icon_name(name: Pgchar); cdecl; inline; static;
     function activate_default: gboolean; cdecl; inline;
@@ -1759,7 +1802,6 @@ type
     function get_mnemonic_modifier: TGdkModifierType; cdecl; inline;
     function get_mnemonics_visible: gboolean; cdecl; inline;
     function get_modal: gboolean; cdecl; inline;
-    function get_opacity: gdouble; cdecl; inline;
     procedure get_position(root_x: Pgint; root_y: Pgint); cdecl; inline;
     function get_resizable: gboolean; cdecl; inline;
     function get_resize_grip_area(rect: PGdkRectangle): gboolean; cdecl; inline;
@@ -1808,7 +1850,7 @@ type
     procedure set_has_user_ref_count(setting: gboolean); cdecl; inline;
     procedure set_hide_titlebar_when_maximized(setting: gboolean); cdecl; inline;
     procedure set_icon(icon: PGdkPixbuf); cdecl; inline;
-    function set_icon_from_file(filename: Pgchar): gboolean; cdecl; inline;
+    function set_icon_from_file(filename: Pgchar; error: PPGError): gboolean; cdecl; inline;
     procedure set_icon_list(list: PGList); cdecl; inline;
     procedure set_icon_name(name: Pgchar); cdecl; inline;
     procedure set_keep_above(setting: gboolean); cdecl; inline;
@@ -1816,7 +1858,6 @@ type
     procedure set_mnemonic_modifier(modifier: TGdkModifierType); cdecl; inline;
     procedure set_mnemonics_visible(setting: gboolean); cdecl; inline;
     procedure set_modal(modal: gboolean); cdecl; inline;
-    procedure set_opacity(opacity: gdouble); cdecl; inline;
     procedure set_position(position: TGtkWindowPosition); cdecl; inline;
     procedure set_resizable(resizable: gboolean); cdecl; inline;
     procedure set_role(role: Pgchar); cdecl; inline;
@@ -1852,7 +1893,6 @@ type
     //property is_active1: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_is_active ;
     property mnemonics_visible: gboolean read get_mnemonics_visible write set_mnemonics_visible;
     property modal: gboolean read get_modal write set_modal;
-    property opacity: gdouble read get_opacity write set_opacity;
     property resizable: gboolean read get_resizable write set_resizable;
     //property resize_grip_visible: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_resize_grip_visible ;
     property role: Pgchar read get_role write set_role;
@@ -1892,16 +1932,11 @@ type
     procedure set_response_sensitive(response_id: gint; setting: gboolean); cdecl; inline;
   end;
 
+  PPGtkLicense = ^PGtkLicense;
+  PGtkLicense = ^TGtkLicense;
+
   PPGtkAboutDialogPrivate = ^PGtkAboutDialogPrivate;
   PGtkAboutDialogPrivate = ^TGtkAboutDialogPrivate;
-
-  TGtkAboutDialogPrivate = record
-  end;
-
-
-
-  PPGtkAboutDialog = ^PGtkAboutDialog;
-  PGtkAboutDialog = ^TGtkAboutDialog;
   TGtkAboutDialog = object(TGtkDialog)
     priv5: PGtkAboutDialogPrivate;
     function new: PGtkAboutDialog; cdecl; inline; static;
@@ -1953,6 +1988,11 @@ type
     property wrap_license: gboolean read get_wrap_license write set_wrap_license;
   end;
 
+  TGtkAboutDialogPrivate = record
+  end;
+
+
+
   PPGtkDialogClass = ^PGtkDialogClass;
   PGtkDialogClass = ^TGtkDialogClass;
 
@@ -1971,6 +2011,9 @@ type
   PPGtkRcPropertyParser = ^PGtkRcPropertyParser;
   PGtkRcPropertyParser = ^TGtkRcPropertyParser;
   TGtkRcPropertyParser = function(pspec: PGParamSpec; rc_string: PGString; property_value: PGValue): gboolean; cdecl;
+
+  PPGtkStateType = ^PGtkStateType;
+  PGtkStateType = ^TGtkStateType;
 
   PPGtkSelectionData = ^PGtkSelectionData;
   PGtkSelectionData = ^TGtkSelectionData;
@@ -2006,7 +2049,7 @@ type
     style_set: procedure(widget: PGtkWidget; previous_style: PGtkStyle); cdecl;
     direction_changed: procedure(widget: PGtkWidget; previous_direction: TGtkTextDirection); cdecl;
     grab_notify: procedure(widget: PGtkWidget; was_grabbed: gboolean); cdecl;
-    child_notify: procedure(widget: PGtkWidget; pspec: PGParamSpec); cdecl;
+    child_notify: procedure(widget: PGtkWidget; child_property: PGParamSpec); cdecl;
     draw: function(widget: PGtkWidget; cr: Pcairo_t): gboolean; cdecl;
     get_request_mode: function(widget: PGtkWidget): TGtkSizeRequestMode; cdecl;
     get_preferred_height: procedure(widget: PGtkWidget; minimum_height: Pgint; natural_height: Pgint); cdecl;
@@ -2218,6 +2261,9 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
+  PPGtkAccelLabel = ^PGtkAccelLabel;
+  PGtkAccelLabel = ^TGtkAccelLabel;
+
   PPGtkLabel = ^PGtkLabel;
   PGtkLabel = ^TGtkLabel;
 
@@ -2312,25 +2358,23 @@ type
 
   PPGtkAccelLabelPrivate = ^PGtkAccelLabelPrivate;
   PGtkAccelLabelPrivate = ^TGtkAccelLabelPrivate;
-
-  TGtkAccelLabelPrivate = record
-  end;
-
-
-
-  PPGtkAccelLabel = ^PGtkAccelLabel;
-  PGtkAccelLabel = ^TGtkAccelLabel;
   TGtkAccelLabel = object(TGtkLabel)
     priv3: PGtkAccelLabelPrivate;
     function new(string_: Pgchar): PGtkAccelLabel; cdecl; inline; static;
     function get_accel_widget: PGtkWidget; cdecl; inline;
     function get_accel_width: guint; cdecl; inline;
     function refetch: gboolean; cdecl; inline;
+    procedure set_accel(accelerator_key: guint; accelerator_mods: TGdkModifierType); cdecl; inline;
     procedure set_accel_closure(accel_closure: PGClosure); cdecl; inline;
     procedure set_accel_widget(accel_widget: PGtkWidget); cdecl; inline;
     //property accel_closure: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accel_closure  { property is writeable but setter not declared } ;
     property accel_widget: PGtkWidget read get_accel_widget write set_accel_widget;
   end;
+
+  TGtkAccelLabelPrivate = record
+  end;
+
+
 
   PPGtkLabelClass = ^PGtkLabelClass;
   PGtkLabelClass = ^TGtkLabelClass;
@@ -2410,22 +2454,22 @@ type
   TGtkAccelMapClass = object
   end;
 
-  PPGtkAccessiblePrivate = ^PGtkAccessiblePrivate;
-  PGtkAccessiblePrivate = ^TGtkAccessiblePrivate;
-
-  TGtkAccessiblePrivate = record
-  end;
-
-
-
   PPGtkAccessible = ^PGtkAccessible;
   PGtkAccessible = ^TGtkAccessible;
+
+  PPGtkAccessiblePrivate = ^PGtkAccessiblePrivate;
+  PGtkAccessiblePrivate = ^TGtkAccessiblePrivate;
   TGtkAccessible = object(TAtkObject)
     priv: PGtkAccessiblePrivate;
     function get_widget: PGtkWidget; cdecl; inline;
     procedure set_widget(widget: PGtkWidget); cdecl; inline;
     property widget: PGtkWidget read get_widget write set_widget;
   end;
+
+  TGtkAccessiblePrivate = record
+  end;
+
+
 
   PPGtkAccessibleClass = ^PGtkAccessibleClass;
   PGtkAccessibleClass = ^TGtkAccessibleClass;
@@ -2534,17 +2578,20 @@ type
     procedure add_radio_actions_full(entries: PGtkRadioActionEntry; n_entries: guint; value: gint; on_change: TGCallback; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
     procedure add_toggle_actions(entries: PGtkToggleActionEntry; n_entries: guint; user_data: gpointer); cdecl; inline;
     procedure add_toggle_actions_full(entries: PGtkToggleActionEntry; n_entries: guint; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
+    function get_accel_group: PGtkAccelGroup; cdecl; inline;
     function get_action(action_name: Pgchar): PGtkAction; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
     function get_sensitive: gboolean; cdecl; inline;
     function get_visible: gboolean; cdecl; inline;
     function list_actions: PGList; cdecl; inline;
     procedure remove_action(action: PGtkAction); cdecl; inline;
+    procedure set_accel_group(accel_group: PGtkAccelGroup); cdecl; inline;
     procedure set_sensitive(sensitive: gboolean); cdecl; inline;
     procedure set_translate_func(func: TGtkTranslateFunc; data: gpointer; notify: TGDestroyNotify); cdecl; inline;
     procedure set_translation_domain(domain: Pgchar); cdecl; inline;
     procedure set_visible(visible: gboolean); cdecl; inline;
     function translate_string(string_: Pgchar): Pgchar; cdecl; inline;
+    property accel_group: PGtkAccelGroup read get_accel_group write set_accel_group;
     property name: Pgchar read get_name  { property is writeable but setter not declared } ;
     property sensitive: gboolean read get_sensitive write set_sensitive;
     property visible: gboolean read get_visible write set_visible;
@@ -2643,7 +2690,7 @@ type
     get_action_name: function(actionable: PGtkActionable): Pgchar; cdecl;
     set_action_name: procedure(actionable: PGtkActionable; action_name: Pgchar); cdecl;
     get_action_target_value: function(actionable: PGtkActionable): PGVariant; cdecl;
-    set_action_target_value: procedure(actionable: PGtkActionable; action_target_value: PGVariant); cdecl;
+    set_action_target_value: procedure(actionable: PGtkActionable; target_value: PGVariant); cdecl;
   end;
 
   PPGtkActivatable = ^PGtkActivatable;
@@ -2714,16 +2761,11 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkAlignmentPrivate = ^PGtkAlignmentPrivate;
-  PGtkAlignmentPrivate = ^TGtkAlignmentPrivate;
-
-  TGtkAlignmentPrivate = record
-  end;
-
-
-
   PPGtkAlignment = ^PGtkAlignment;
   PGtkAlignment = ^TGtkAlignment;
+
+  PPGtkAlignmentPrivate = ^PGtkAlignmentPrivate;
+  PGtkAlignmentPrivate = ^TGtkAlignmentPrivate;
   TGtkAlignment = object(TGtkBin)
     priv3: PGtkAlignmentPrivate;
     function new(xalign: gfloat; yalign: gfloat; xscale: gfloat; yscale: gfloat): PGtkAlignment; cdecl; inline; static;
@@ -2739,6 +2781,11 @@ type
     //property yalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_yalign  { property is writeable but setter not declared } ;
     //property yscale: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_yscale  { property is writeable but setter not declared } ;
   end;
+
+  TGtkAlignmentPrivate = record
+  end;
+
+
 
   PPGtkAlignmentClass = ^PGtkAlignmentClass;
   PGtkAlignmentClass = ^TGtkAlignmentClass;
@@ -2800,6 +2847,9 @@ type
     //procedure set_attributes(cell: PGtkCellRenderer; args: array of const); cdecl; inline;
     procedure set_cell_data_func(cell: PGtkCellRenderer; func: TGtkCellLayoutDataFunc; func_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
   end;
+
+  PPGtkAppChooserButton = ^PGtkAppChooserButton;
+  PGtkAppChooserButton = ^TGtkAppChooserButton;
 
   PPGtkComboBox = ^PGtkComboBox;
   PGtkComboBox = ^TGtkComboBox;
@@ -2877,14 +2927,6 @@ type
 
   PPGtkAppChooserButtonPrivate = ^PGtkAppChooserButtonPrivate;
   PGtkAppChooserButtonPrivate = ^TGtkAppChooserButtonPrivate;
-
-  TGtkAppChooserButtonPrivate = record
-  end;
-
-
-
-  PPGtkAppChooserButton = ^PGtkAppChooserButton;
-  PGtkAppChooserButton = ^TGtkAppChooserButton;
   TGtkAppChooserButton = object(TGtkComboBox)
     priv4: PGtkAppChooserButtonPrivate;
     function new(content_type: Pgchar): PGtkAppChooserButton; cdecl; inline; static;
@@ -2901,6 +2943,11 @@ type
     property show_default_item: gboolean read get_show_default_item write set_show_default_item;
     property show_dialog_item: gboolean read get_show_dialog_item write set_show_dialog_item;
   end;
+
+  TGtkAppChooserButtonPrivate = record
+  end;
+
+
 
   PPGtkComboBoxClass = ^PGtkComboBoxClass;
   PGtkComboBoxClass = ^TGtkComboBoxClass;
@@ -2921,16 +2968,11 @@ type
     padding: array [0..15] of gpointer;
   end;
 
-  PPGtkAppChooserDialogPrivate = ^PGtkAppChooserDialogPrivate;
-  PGtkAppChooserDialogPrivate = ^TGtkAppChooserDialogPrivate;
-
-  TGtkAppChooserDialogPrivate = record
-  end;
-
-
-
   PPGtkAppChooserDialog = ^PGtkAppChooserDialog;
   PGtkAppChooserDialog = ^TGtkAppChooserDialog;
+
+  PPGtkAppChooserDialogPrivate = ^PGtkAppChooserDialogPrivate;
+  PGtkAppChooserDialogPrivate = ^TGtkAppChooserDialogPrivate;
   TGtkAppChooserDialog = object(TGtkDialog)
     priv5: PGtkAppChooserDialogPrivate;
     function new(parent: PGtkWindow; flags: TGtkDialogFlags; file_: PGFile): PGtkAppChooserDialog; cdecl; inline; static;
@@ -2941,6 +2983,11 @@ type
     //property gfile: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gfile  { property is writeable but setter not declared } ;
     property heading: Pgchar read get_heading write set_heading;
   end;
+
+  TGtkAppChooserDialogPrivate = record
+  end;
+
+
 
   PPGtkAppChooserDialogClass = ^PGtkAppChooserDialogClass;
   PGtkAppChooserDialogClass = ^TGtkAppChooserDialogClass;
@@ -2957,6 +3004,58 @@ type
     property orientation: TGtkOrientation read get_orientation write set_orientation;
   end;
 
+  PPGtkAppChooserWidget = ^PGtkAppChooserWidget;
+  PGtkAppChooserWidget = ^TGtkAppChooserWidget;
+
+  PPGtkBox = ^PGtkBox;
+  PGtkBox = ^TGtkBox;
+
+  PPGtkPackType = ^PGtkPackType;
+  PGtkPackType = ^TGtkPackType;
+
+  PPGtkBoxPrivate = ^PGtkBoxPrivate;
+  PGtkBoxPrivate = ^TGtkBoxPrivate;
+  TGtkBox = object(TGtkContainer)
+    priv2: PGtkBoxPrivate;
+    function new(orientation: TGtkOrientation; spacing: gint): PGtkBox; cdecl; inline; static;
+    function get_homogeneous: gboolean; cdecl; inline;
+    function get_spacing: gint; cdecl; inline;
+    procedure pack_end(child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint); cdecl; inline;
+    procedure pack_start(child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint); cdecl; inline;
+    procedure query_child_packing(child: PGtkWidget; expand: Pgboolean; fill: Pgboolean; padding: Pguint; pack_type: PGtkPackType); cdecl; inline;
+    procedure reorder_child(child: PGtkWidget; position: gint); cdecl; inline;
+    procedure set_child_packing(child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint; pack_type: TGtkPackType); cdecl; inline;
+    procedure set_homogeneous(homogeneous: gboolean); cdecl; inline;
+    procedure set_spacing(spacing: gint); cdecl; inline;
+    property homogeneous: gboolean read get_homogeneous write set_homogeneous;
+    property spacing: gint read get_spacing write set_spacing;
+  end;
+
+  PPGtkAppChooserWidgetPrivate = ^PGtkAppChooserWidgetPrivate;
+  PGtkAppChooserWidgetPrivate = ^TGtkAppChooserWidgetPrivate;
+  TGtkAppChooserWidget = object(TGtkBox)
+    priv3: PGtkAppChooserWidgetPrivate;
+    function new(content_type: Pgchar): PGtkAppChooserWidget; cdecl; inline; static;
+    function get_default_text: Pgchar; cdecl; inline;
+    function get_show_all: gboolean; cdecl; inline;
+    function get_show_default: gboolean; cdecl; inline;
+    function get_show_fallback: gboolean; cdecl; inline;
+    function get_show_other: gboolean; cdecl; inline;
+    function get_show_recommended: gboolean; cdecl; inline;
+    procedure set_default_text(text: Pgchar); cdecl; inline;
+    procedure set_show_all(setting: gboolean); cdecl; inline;
+    procedure set_show_default(setting: gboolean); cdecl; inline;
+    procedure set_show_fallback(setting: gboolean); cdecl; inline;
+    procedure set_show_other(setting: gboolean); cdecl; inline;
+    procedure set_show_recommended(setting: gboolean); cdecl; inline;
+    property default_text: Pgchar read get_default_text write set_default_text;
+    property show_all: gboolean read get_show_all write set_show_all;
+    property show_default: gboolean read get_show_default write set_show_default;
+    property show_fallback: gboolean read get_show_fallback write set_show_fallback;
+    property show_other: gboolean read get_show_other write set_show_other;
+    property show_recommended: gboolean read get_show_recommended write set_show_recommended;
+  end;
+
   PPGtkMenuShell = ^PGtkMenuShell;
   PGtkMenuShell = ^TGtkMenuShell;
 
@@ -2966,6 +3065,7 @@ type
     priv2: PGtkMenuShellPrivate;
     procedure activate_item(menu_item: PGtkWidget; force_deactivate: gboolean); cdecl; inline;
     procedure append(child: PGtkWidget); cdecl; inline;
+    procedure bind_model(model: PGMenuModel; action_namespace: Pgchar; with_separators: gboolean); cdecl; inline;
     procedure cancel; cdecl; inline;
     procedure deactivate; cdecl; inline;
     procedure deselect; cdecl; inline;
@@ -3029,62 +3129,10 @@ type
     //property tearoff_title: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_tearoff_title  { property is writeable but setter not declared } ;
   end;
 
-  PPGtkBox = ^PGtkBox;
-  PGtkBox = ^TGtkBox;
-
-  PPGtkPackType = ^PGtkPackType;
-  PGtkPackType = ^TGtkPackType;
-
-  PPGtkBoxPrivate = ^PGtkBoxPrivate;
-  PGtkBoxPrivate = ^TGtkBoxPrivate;
-  TGtkBox = object(TGtkContainer)
-    priv2: PGtkBoxPrivate;
-    function new(orientation: TGtkOrientation; spacing: gint): PGtkBox; cdecl; inline; static;
-    function get_homogeneous: gboolean; cdecl; inline;
-    function get_spacing: gint; cdecl; inline;
-    procedure pack_end(child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint); cdecl; inline;
-    procedure pack_start(child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint); cdecl; inline;
-    procedure query_child_packing(child: PGtkWidget; expand: Pgboolean; fill: Pgboolean; padding: Pguint; pack_type: PGtkPackType); cdecl; inline;
-    procedure reorder_child(child: PGtkWidget; position: gint); cdecl; inline;
-    procedure set_child_packing(child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint; pack_type: TGtkPackType); cdecl; inline;
-    procedure set_homogeneous(homogeneous: gboolean); cdecl; inline;
-    procedure set_spacing(spacing: gint); cdecl; inline;
-    property homogeneous: gboolean read get_homogeneous write set_homogeneous;
-    property spacing: gint read get_spacing write set_spacing;
-  end;
-
-  PPGtkAppChooserWidgetPrivate = ^PGtkAppChooserWidgetPrivate;
-  PGtkAppChooserWidgetPrivate = ^TGtkAppChooserWidgetPrivate;
-
   TGtkAppChooserWidgetPrivate = record
   end;
 
 
-
-  PPGtkAppChooserWidget = ^PGtkAppChooserWidget;
-  PGtkAppChooserWidget = ^TGtkAppChooserWidget;
-  TGtkAppChooserWidget = object(TGtkBox)
-    priv3: PGtkAppChooserWidgetPrivate;
-    function new(content_type: Pgchar): PGtkAppChooserWidget; cdecl; inline; static;
-    function get_default_text: Pgchar; cdecl; inline;
-    function get_show_all: gboolean; cdecl; inline;
-    function get_show_default: gboolean; cdecl; inline;
-    function get_show_fallback: gboolean; cdecl; inline;
-    function get_show_other: gboolean; cdecl; inline;
-    function get_show_recommended: gboolean; cdecl; inline;
-    procedure set_default_text(text: Pgchar); cdecl; inline;
-    procedure set_show_all(setting: gboolean); cdecl; inline;
-    procedure set_show_default(setting: gboolean); cdecl; inline;
-    procedure set_show_fallback(setting: gboolean); cdecl; inline;
-    procedure set_show_other(setting: gboolean); cdecl; inline;
-    procedure set_show_recommended(setting: gboolean); cdecl; inline;
-    property default_text: Pgchar read get_default_text write set_default_text;
-    property show_all: gboolean read get_show_all write set_show_all;
-    property show_default: gboolean read get_show_default write set_show_default;
-    property show_fallback: gboolean read get_show_fallback write set_show_fallback;
-    property show_other: gboolean read get_show_other write set_show_other;
-    property show_recommended: gboolean read get_show_recommended write set_show_recommended;
-  end;
 
   PPGtkBoxClass = ^PGtkBoxClass;
   PGtkBoxClass = ^TGtkBoxClass;
@@ -3116,8 +3164,10 @@ type
     function new(application_id: Pgchar; flags: TGApplicationFlags): PGtkApplication; cdecl; inline; static;
     procedure add_accelerator(accelerator: Pgchar; action_name: Pgchar; parameter: PGVariant); cdecl; inline;
     procedure add_window(window: PGtkWindow); cdecl; inline;
+    function get_active_window: PGtkWindow; cdecl; inline;
     function get_app_menu: PGMenuModel; cdecl; inline;
     function get_menubar: PGMenuModel; cdecl; inline;
+    function get_window_by_id(id: guint): PGtkWindow; cdecl; inline;
     function get_windows: PGList; cdecl; inline;
     function inhibit(window: PGtkWindow; flags: TGtkApplicationInhibitFlags; reason: Pgchar): guint; cdecl; inline;
     function is_inhibited(flags: TGtkApplicationInhibitFlags): gboolean; cdecl; inline;
@@ -3126,6 +3176,7 @@ type
     procedure set_app_menu(app_menu: PGMenuModel); cdecl; inline;
     procedure set_menubar(menubar: PGMenuModel); cdecl; inline;
     procedure uninhibit(cookie: guint); cdecl; inline;
+    property active_window: PGtkWindow read get_active_window ;
     property app_menu: PGMenuModel read get_app_menu write set_app_menu;
     property menubar: PGMenuModel read get_menubar write set_menubar;
     //property register_session: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_register_session  { property is writeable but setter not declared } ;
@@ -3145,23 +3196,24 @@ type
     padding: array [0..11] of gpointer;
   end;
 
+  PPGtkApplicationWindow = ^PGtkApplicationWindow;
+  PGtkApplicationWindow = ^TGtkApplicationWindow;
+
   PPGtkApplicationWindowPrivate = ^PGtkApplicationWindowPrivate;
   PGtkApplicationWindowPrivate = ^TGtkApplicationWindowPrivate;
+  TGtkApplicationWindow = object(TGtkWindow)
+    priv4: PGtkApplicationWindowPrivate;
+    function new(application: PGtkApplication): PGtkApplicationWindow; cdecl; inline; static;
+    function get_id: guint; cdecl; inline;
+    function get_show_menubar: gboolean; cdecl; inline;
+    procedure set_show_menubar(show_menubar: gboolean); cdecl; inline;
+    property show_menubar: gboolean read get_show_menubar write set_show_menubar;
+  end;
 
   TGtkApplicationWindowPrivate = record
   end;
 
 
-
-  PPGtkApplicationWindow = ^PGtkApplicationWindow;
-  PGtkApplicationWindow = ^TGtkApplicationWindow;
-  TGtkApplicationWindow = object(TGtkWindow)
-    priv4: PGtkApplicationWindowPrivate;
-    function new(application: PGtkApplication): PGtkApplicationWindow; cdecl; inline; static;
-    function get_show_menubar: gboolean; cdecl; inline;
-    procedure set_show_menubar(show_menubar: gboolean); cdecl; inline;
-    property show_menubar: gboolean read get_show_menubar write set_show_menubar;
-  end;
 
   PPGtkApplicationWindowClass = ^PGtkApplicationWindowClass;
   PGtkApplicationWindowClass = ^TGtkApplicationWindowClass;
@@ -3176,16 +3228,11 @@ type
   PPGtkShadowType = ^PGtkShadowType;
   PGtkShadowType = ^TGtkShadowType;
 
-  PPGtkArrowPrivate = ^PGtkArrowPrivate;
-  PGtkArrowPrivate = ^TGtkArrowPrivate;
-
-  TGtkArrowPrivate = record
-  end;
-
-
-
   PPGtkArrow = ^PGtkArrow;
   PGtkArrow = ^TGtkArrow;
+
+  PPGtkArrowPrivate = ^PGtkArrowPrivate;
+  PGtkArrowPrivate = ^TGtkArrowPrivate;
   TGtkArrow = object(TGtkMisc)
     priv2: PGtkArrowPrivate;
     function new(arrow_type: TGtkArrowType; shadow_type: TGtkShadowType): PGtkArrow; cdecl; inline; static;
@@ -3193,6 +3240,11 @@ type
     //property arrow_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_arrow_type  { property is writeable but setter not declared } ;
     //property shadow_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_shadow_type  { property is writeable but setter not declared } ;
   end;
+
+  TGtkArrowPrivate = record
+  end;
+
+
 
   PPGtkArrowClass = ^PGtkArrowClass;
   PGtkArrowClass = ^TGtkArrowClass;
@@ -3206,6 +3258,9 @@ type
 
   PPGtkArrowPlacement = ^PGtkArrowPlacement;
   PGtkArrowPlacement = ^TGtkArrowPlacement;
+
+  PPGtkAspectFrame = ^PGtkAspectFrame;
+  PGtkAspectFrame = ^TGtkAspectFrame;
 
   PPGtkFrame = ^PGtkFrame;
   PGtkFrame = ^TGtkFrame;
@@ -3232,14 +3287,6 @@ type
 
   PPGtkAspectFramePrivate = ^PGtkAspectFramePrivate;
   PGtkAspectFramePrivate = ^TGtkAspectFramePrivate;
-
-  TGtkAspectFramePrivate = record
-  end;
-
-
-
-  PPGtkAspectFrame = ^PGtkAspectFrame;
-  PGtkAspectFrame = ^TGtkAspectFrame;
   TGtkAspectFrame = object(TGtkFrame)
     priv4: PGtkAspectFramePrivate;
     function new(label_: Pgchar; xalign: gfloat; yalign: gfloat; ratio: gfloat; obey_child: gboolean): PGtkAspectFrame; cdecl; inline; static;
@@ -3249,6 +3296,11 @@ type
     //property xalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_xalign  { property is writeable but setter not declared } ;
     //property yalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_yalign  { property is writeable but setter not declared } ;
   end;
+
+  TGtkAspectFramePrivate = record
+  end;
+
+
 
   PPGtkFrameClass = ^PGtkFrameClass;
   PGtkFrameClass = ^TGtkFrameClass;
@@ -3271,23 +3323,18 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
+  PPGtkAssistant = ^PGtkAssistant;
+  PGtkAssistant = ^TGtkAssistant;
+
   PPGtkAssistantPageType = ^PGtkAssistantPageType;
   PGtkAssistantPageType = ^TGtkAssistantPageType;
+
+  PPGtkAssistantPageFunc = ^PGtkAssistantPageFunc;
+  PGtkAssistantPageFunc = ^TGtkAssistantPageFunc;
   TGtkAssistantPageFunc = function(current_page: gint; data: gpointer): gint; cdecl;
 
   PPGtkAssistantPrivate = ^PGtkAssistantPrivate;
   PGtkAssistantPrivate = ^TGtkAssistantPrivate;
-
-  TGtkAssistantPrivate = record
-  end;
-
-
-
-  PPGtkAssistant = ^PGtkAssistant;
-  PGtkAssistant = ^TGtkAssistant;
-
-  PPGtkAssistantPageFunc = ^PGtkAssistantPageFunc;
-  PGtkAssistantPageFunc = ^TGtkAssistantPageFunc;
   TGtkAssistant = object(TGtkWindow)
     priv4: PGtkAssistantPrivate;
     function new: PGtkAssistant; cdecl; inline; static;
@@ -3313,6 +3360,11 @@ type
     procedure set_page_type(page: PGtkWidget; type_: TGtkAssistantPageType); cdecl; inline;
     procedure update_buttons_state; cdecl; inline;
   end;
+
+  TGtkAssistantPrivate = record
+  end;
+
+
 
   PPGtkAssistantClass = ^PGtkAssistantClass;
   PGtkAssistantClass = ^TGtkAssistantClass;
@@ -3443,21 +3495,22 @@ type
   TGtkBuilder = object(TGObject)
     priv: PGtkBuilderPrivate;
     function new: PGtkBuilder; cdecl; inline; static;
-    function add_from_file(filename: Pgchar): guint; cdecl; inline;
-    function add_from_resource(resource_path: Pgchar): guint; cdecl; inline;
-    function add_from_string(buffer: Pgchar; length: gsize): guint; cdecl; inline;
-    function add_objects_from_file(filename: Pgchar; object_ids: PPgchar): guint; cdecl; inline;
-    function add_objects_from_resource(resource_path: Pgchar; object_ids: PPgchar): guint; cdecl; inline;
-    function add_objects_from_string(buffer: Pgchar; length: gsize; object_ids: PPgchar): guint; cdecl; inline;
+    function add_from_file(filename: Pgchar; error: PPGError): guint; cdecl; inline;
+    function add_from_resource(resource_path: Pgchar; error: PPGError): guint; cdecl; inline;
+    function add_from_string(buffer: Pgchar; length: gsize; error: PPGError): guint; cdecl; inline;
+    function add_objects_from_file(filename: Pgchar; object_ids: PPgchar; error: PPGError): guint; cdecl; inline;
+    function add_objects_from_resource(resource_path: Pgchar; object_ids: PPgchar; error: PPGError): guint; cdecl; inline;
+    function add_objects_from_string(buffer: Pgchar; length: gsize; object_ids: PPgchar; error: PPGError): guint; cdecl; inline;
     procedure connect_signals(user_data: gpointer); cdecl; inline;
     procedure connect_signals_full(func: TGtkBuilderConnectFunc; user_data: gpointer); cdecl; inline;
+    procedure expose_object(name: Pgchar; object_: PGObject); cdecl; inline;
     function get_object(name: Pgchar): PGObject; cdecl; inline;
     function get_objects: PGSList; cdecl; inline;
     function get_translation_domain: Pgchar; cdecl; inline;
     function get_type_from_name(type_name: Pgchar): TGType; cdecl; inline;
     procedure set_translation_domain(domain: Pgchar); cdecl; inline;
-    function value_from_string(pspec: PGParamSpec; string_: Pgchar; value: PGValue): gboolean; cdecl; inline;
-    function value_from_string_type(type_: TGType; string_: Pgchar; value: PGValue): gboolean; cdecl; inline;
+    function value_from_string(pspec: PGParamSpec; string_: Pgchar; value: PGValue; error: PPGError): gboolean; cdecl; inline;
+    function value_from_string_type(type_: TGType; string_: Pgchar; value: PGValue; error: PPGError): gboolean; cdecl; inline;
     property translation_domain: Pgchar read get_translation_domain write set_translation_domain;
   end;
 
@@ -3500,6 +3553,9 @@ type
   PPGtkBuilderError = ^PGtkBuilderError;
   PGtkBuilderError = ^TGtkBuilderError;
 
+  PPGtkButton = ^PGtkButton;
+  PGtkButton = ^TGtkButton;
+
   PPGtkPositionType = ^PGtkPositionType;
   PGtkPositionType = ^TGtkPositionType;
 
@@ -3508,14 +3564,6 @@ type
 
   PPGtkButtonPrivate = ^PGtkButtonPrivate;
   PGtkButtonPrivate = ^TGtkButtonPrivate;
-
-  TGtkButtonPrivate = record
-  end;
-
-
-
-  PPGtkButton = ^PGtkButton;
-  PGtkButton = ^TGtkButton;
   TGtkButton = object(TGtkBin)
     priv3: PGtkButtonPrivate;
     function new: PGtkButton; cdecl; inline; static;
@@ -3524,6 +3572,7 @@ type
     function new_with_mnemonic(label_: Pgchar): PGtkButton; cdecl; inline; static;
     procedure clicked; cdecl; inline;
     procedure get_alignment(xalign: Pgfloat; yalign: Pgfloat); cdecl; inline;
+    function get_always_show_image: gboolean; cdecl; inline;
     function get_event_window: PGdkWindow; cdecl; inline;
     function get_focus_on_click: gboolean; cdecl; inline;
     function get_image: PGtkWidget; cdecl; inline;
@@ -3533,6 +3582,7 @@ type
     function get_use_stock: gboolean; cdecl; inline;
     function get_use_underline: gboolean; cdecl; inline;
     procedure set_alignment(xalign: gfloat; yalign: gfloat); cdecl; inline;
+    procedure set_always_show_image(always_show: gboolean); cdecl; inline;
     procedure set_focus_on_click(focus_on_click: gboolean); cdecl; inline;
     procedure set_image(image: PGtkWidget); cdecl; inline;
     procedure set_image_position(position: TGtkPositionType); cdecl; inline;
@@ -3540,6 +3590,7 @@ type
     procedure set_relief(newstyle: TGtkReliefStyle); cdecl; inline;
     procedure set_use_stock(use_stock: gboolean); cdecl; inline;
     procedure set_use_underline(use_underline: gboolean); cdecl; inline;
+    property always_show_image: gboolean read get_always_show_image write set_always_show_image;
     property focus_on_click: gboolean read get_focus_on_click write set_focus_on_click;
     property image: PGtkWidget read get_image write set_image;
     property image_position: TGtkPositionType read get_image_position write set_image_position;
@@ -3551,19 +3602,19 @@ type
     //property yalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_yalign  { property is writeable but setter not declared } ;
   end;
 
-  PPGtkButtonBoxStyle = ^PGtkButtonBoxStyle;
-  PGtkButtonBoxStyle = ^TGtkButtonBoxStyle;
-
-  PPGtkButtonBoxPrivate = ^PGtkButtonBoxPrivate;
-  PGtkButtonBoxPrivate = ^TGtkButtonBoxPrivate;
-
-  TGtkButtonBoxPrivate = record
+  TGtkButtonPrivate = record
   end;
 
 
 
   PPGtkButtonBox = ^PGtkButtonBox;
   PGtkButtonBox = ^TGtkButtonBox;
+
+  PPGtkButtonBoxStyle = ^PGtkButtonBoxStyle;
+  PGtkButtonBoxStyle = ^TGtkButtonBoxStyle;
+
+  PPGtkButtonBoxPrivate = ^PGtkButtonBoxPrivate;
+  PGtkButtonBoxPrivate = ^TGtkButtonBoxPrivate;
   TGtkButtonBox = object(TGtkBox)
     priv3: PGtkButtonBoxPrivate;
     function new(orientation: TGtkOrientation): PGtkButtonBox; cdecl; inline; static;
@@ -3575,6 +3626,11 @@ type
     procedure set_layout(layout_style: TGtkButtonBoxStyle); cdecl; inline;
     //property layout_style: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_layout_style  { property is writeable but setter not declared } ;
   end;
+
+  TGtkButtonBoxPrivate = record
+  end;
+
+
 
   PPGtkButtonBoxClass = ^PGtkButtonBoxClass;
   PGtkButtonBoxClass = ^TGtkButtonBoxClass;
@@ -3605,23 +3661,18 @@ type
   PPGtkButtonsType = ^PGtkButtonsType;
   PGtkButtonsType = ^TGtkButtonsType;
 
+  PPGtkCalendar = ^PGtkCalendar;
+  PGtkCalendar = ^TGtkCalendar;
+
   PPGtkCalendarDisplayOptions = ^PGtkCalendarDisplayOptions;
   PGtkCalendarDisplayOptions = ^TGtkCalendarDisplayOptions;
 
-  PPGtkCalendar = ^PGtkCalendar;
-  PGtkCalendar = ^TGtkCalendar;
+  PPGtkCalendarDetailFunc = ^PGtkCalendarDetailFunc;
+  PGtkCalendarDetailFunc = ^TGtkCalendarDetailFunc;
   TGtkCalendarDetailFunc = function(calendar: PGtkCalendar; year: guint; month: guint; day: guint; user_data: gpointer): Pgchar; cdecl;
 
   PPGtkCalendarPrivate = ^PGtkCalendarPrivate;
   PGtkCalendarPrivate = ^TGtkCalendarPrivate;
-
-  TGtkCalendarPrivate = record
-  end;
-
-
-
-  PPGtkCalendarDetailFunc = ^PGtkCalendarDetailFunc;
-  PGtkCalendarDetailFunc = ^TGtkCalendarDetailFunc;
   TGtkCalendar = object(TGtkWidget)
     priv1: PGtkCalendarPrivate;
     function new: PGtkCalendar; cdecl; inline; static;
@@ -3650,6 +3701,11 @@ type
     //property show_week_numbers: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_show_week_numbers  { property is writeable but setter not declared } ;
     //property year: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_year  { property is writeable but setter not declared } ;
   end;
+
+  TGtkCalendarPrivate = record
+  end;
+
+
 
   PPGtkCalendarClass = ^PGtkCalendarClass;
   PGtkCalendarClass = ^TGtkCalendarClass;
@@ -3719,6 +3775,65 @@ type
 
   PPGtkCellAreaContext = ^PGtkCellAreaContext;
   PGtkCellAreaContext = ^TGtkCellAreaContext;
+
+  PPGtkCellCallback = ^PGtkCellCallback;
+  PGtkCellCallback = ^TGtkCellCallback;
+  TGtkCellCallback = function(renderer: PGtkCellRenderer; data: gpointer): gboolean; cdecl;
+
+  PPGtkCellAllocCallback = ^PGtkCellAllocCallback;
+  PGtkCellAllocCallback = ^TGtkCellAllocCallback;
+
+  PPGtkCellAreaPrivate = ^PGtkCellAreaPrivate;
+  PGtkCellAreaPrivate = ^TGtkCellAreaPrivate;
+  TGtkCellArea = object(TGInitiallyUnowned)
+    priv: PGtkCellAreaPrivate;
+    function activate(context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; flags: TGtkCellRendererState; edit_only: gboolean): gboolean; cdecl; inline;
+    function activate_cell(widget: PGtkWidget; renderer: PGtkCellRenderer; event: PGdkEvent; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gboolean; cdecl; inline;
+    procedure add(renderer: PGtkCellRenderer); cdecl; inline;
+    procedure add_focus_sibling(renderer: PGtkCellRenderer; sibling: PGtkCellRenderer); cdecl; inline;
+    //procedure add_with_properties(renderer: PGtkCellRenderer; first_prop_name: Pgchar; args: array of const); cdecl; inline;
+    procedure apply_attributes(tree_model: PGtkTreeModel; iter: PGtkTreeIter; is_expander: gboolean; is_expanded: gboolean); cdecl; inline;
+    procedure attribute_connect(renderer: PGtkCellRenderer; attribute: Pgchar; column: gint); cdecl; inline;
+    procedure attribute_disconnect(renderer: PGtkCellRenderer; attribute: Pgchar); cdecl; inline;
+    //procedure cell_get(renderer: PGtkCellRenderer; first_prop_name: Pgchar; args: array of const); cdecl; inline;
+    procedure cell_get_property(renderer: PGtkCellRenderer; property_name: Pgchar; value: PGValue); cdecl; inline;
+    //procedure cell_get_valist(renderer: PGtkCellRenderer; first_property_name: Pgchar; var_args: Tva_list); cdecl; inline;
+    //procedure cell_set(renderer: PGtkCellRenderer; first_prop_name: Pgchar; args: array of const); cdecl; inline;
+    procedure cell_set_property(renderer: PGtkCellRenderer; property_name: Pgchar; value: PGValue); cdecl; inline;
+    //procedure cell_set_valist(renderer: PGtkCellRenderer; first_property_name: Pgchar; var_args: Tva_list); cdecl; inline;
+    function copy_context(context: PGtkCellAreaContext): PGtkCellAreaContext; cdecl; inline;
+    function create_context: PGtkCellAreaContext; cdecl; inline;
+    function event(context: PGtkCellAreaContext; widget: PGtkWidget; event: PGdkEvent; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gint; cdecl; inline;
+    function focus(direction: TGtkDirectionType): gboolean; cdecl; inline;
+    procedure foreach(callback: TGtkCellCallback; callback_data: gpointer); cdecl; inline;
+    procedure foreach_alloc(context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; background_area: PGdkRectangle; callback: TGtkCellAllocCallback; callback_data: gpointer); cdecl; inline;
+    procedure get_cell_allocation(context: PGtkCellAreaContext; widget: PGtkWidget; renderer: PGtkCellRenderer; cell_area: PGdkRectangle; allocation: PGdkRectangle); cdecl; inline;
+    function get_cell_at_position(context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; x: gint; y: gint; alloc_area: PGdkRectangle): PGtkCellRenderer; cdecl; inline;
+    function get_current_path_string: Pgchar; cdecl; inline;
+    function get_edit_widget: PGtkCellEditable; cdecl; inline;
+    function get_edited_cell: PGtkCellRenderer; cdecl; inline;
+    function get_focus_cell: PGtkCellRenderer; cdecl; inline;
+    function get_focus_from_sibling(renderer: PGtkCellRenderer): PGtkCellRenderer; cdecl; inline;
+    function get_focus_siblings(renderer: PGtkCellRenderer): PGList; cdecl; inline;
+    procedure get_preferred_height(context: PGtkCellAreaContext; widget: PGtkWidget; minimum_height: Pgint; natural_height: Pgint); cdecl; inline;
+    procedure get_preferred_height_for_width(context: PGtkCellAreaContext; widget: PGtkWidget; width: gint; minimum_height: Pgint; natural_height: Pgint); cdecl; inline;
+    procedure get_preferred_width(context: PGtkCellAreaContext; widget: PGtkWidget; minimum_width: Pgint; natural_width: Pgint); cdecl; inline;
+    procedure get_preferred_width_for_height(context: PGtkCellAreaContext; widget: PGtkWidget; height: gint; minimum_width: Pgint; natural_width: Pgint); cdecl; inline;
+    function get_request_mode: TGtkSizeRequestMode; cdecl; inline;
+    function has_renderer(renderer: PGtkCellRenderer): gboolean; cdecl; inline;
+    procedure inner_cell_area(widget: PGtkWidget; cell_area: PGdkRectangle; inner_area: PGdkRectangle); cdecl; inline;
+    function is_activatable: gboolean; cdecl; inline;
+    function is_focus_sibling(renderer: PGtkCellRenderer; sibling: PGtkCellRenderer): gboolean; cdecl; inline;
+    procedure remove(renderer: PGtkCellRenderer); cdecl; inline;
+    procedure remove_focus_sibling(renderer: PGtkCellRenderer; sibling: PGtkCellRenderer); cdecl; inline;
+    procedure render(context: PGtkCellAreaContext; widget: PGtkWidget; cr: Pcairo_t; background_area: PGdkRectangle; cell_area: PGdkRectangle; flags: TGtkCellRendererState; paint_focus: gboolean); cdecl; inline;
+    procedure request_renderer(renderer: PGtkCellRenderer; orientation: TGtkOrientation; widget: PGtkWidget; for_size: gint; minimum_size: Pgint; natural_size: Pgint); cdecl; inline;
+    procedure set_focus_cell(renderer: PGtkCellRenderer); cdecl; inline;
+    procedure stop_editing(canceled: gboolean); cdecl; inline;
+    property edit_widget: PGtkCellEditable read get_edit_widget ;
+    property edited_cell: PGtkCellRenderer read get_edited_cell ;
+    property focus_cell: PGtkCellRenderer read get_focus_cell write set_focus_cell;
+  end;
 
   PPGtkCellAreaContextPrivate = ^PGtkCellAreaContextPrivate;
   PGtkCellAreaContextPrivate = ^TGtkCellAreaContextPrivate;
@@ -3815,97 +3930,16 @@ type
     procedure unref_node(iter: PGtkTreeIter); cdecl; inline;
   end;
 
-
-  PPGtkTreeRowReference = ^PGtkTreeRowReference;
-  PGtkTreeRowReference = ^TGtkTreeRowReference;
-  TGtkTreeRowReference = object
-    function new(model: PGtkTreeModel; path: PGtkTreePath): PGtkTreeRowReference; cdecl; inline; static;
-    function new_proxy(proxy: PGObject; model: PGtkTreeModel; path: PGtkTreePath): PGtkTreeRowReference; cdecl; inline; static;
-    function copy: PGtkTreeRowReference; cdecl; inline;
-    procedure free; cdecl; inline;
-    function get_model: PGtkTreeModel; cdecl; inline;
-    function get_path: PGtkTreePath; cdecl; inline;
-    function valid: gboolean; cdecl; inline;
-    procedure deleted(proxy: PGObject; path: PGtkTreePath); cdecl; inline; static;
-    procedure inserted(proxy: PGObject; path: PGtkTreePath); cdecl; inline; static;
-    procedure reordered(proxy: PGObject; path: PGtkTreePath; iter: PGtkTreeIter; new_order: Pgint); cdecl; inline; static;
-  end;
-
-  TGtkCellCallback = function(renderer: PGtkCellRenderer; data: gpointer): gboolean; cdecl;
-
-  PPGtkCellAreaPrivate = ^PGtkCellAreaPrivate;
-  PGtkCellAreaPrivate = ^TGtkCellAreaPrivate;
-
   TGtkCellAreaPrivate = record
-  end;
-
-
-
-  PPGtkCellCallback = ^PGtkCellCallback;
-  PGtkCellCallback = ^TGtkCellCallback;
-
-  PPGtkCellAllocCallback = ^PGtkCellAllocCallback;
-  PGtkCellAllocCallback = ^TGtkCellAllocCallback;
-  TGtkCellArea = object(TGInitiallyUnowned)
-    priv: PGtkCellAreaPrivate;
-    function activate(context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; flags: TGtkCellRendererState; edit_only: gboolean): gboolean; cdecl; inline;
-    function activate_cell(widget: PGtkWidget; renderer: PGtkCellRenderer; event: PGdkEvent; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gboolean; cdecl; inline;
-    procedure add(renderer: PGtkCellRenderer); cdecl; inline;
-    procedure add_focus_sibling(renderer: PGtkCellRenderer; sibling: PGtkCellRenderer); cdecl; inline;
-    //procedure add_with_properties(renderer: PGtkCellRenderer; first_prop_name: Pgchar; args: array of const); cdecl; inline;
-    procedure apply_attributes(tree_model: PGtkTreeModel; iter: PGtkTreeIter; is_expander: gboolean; is_expanded: gboolean); cdecl; inline;
-    procedure attribute_connect(renderer: PGtkCellRenderer; attribute: Pgchar; column: gint); cdecl; inline;
-    procedure attribute_disconnect(renderer: PGtkCellRenderer; attribute: Pgchar); cdecl; inline;
-    //procedure cell_get(renderer: PGtkCellRenderer; first_prop_name: Pgchar; args: array of const); cdecl; inline;
-    procedure cell_get_property(renderer: PGtkCellRenderer; property_name: Pgchar; value: PGValue); cdecl; inline;
-    //procedure cell_get_valist(renderer: PGtkCellRenderer; first_property_name: Pgchar; var_args: Tva_list); cdecl; inline;
-    //procedure cell_set(renderer: PGtkCellRenderer; first_prop_name: Pgchar; args: array of const); cdecl; inline;
-    procedure cell_set_property(renderer: PGtkCellRenderer; property_name: Pgchar; value: PGValue); cdecl; inline;
-    //procedure cell_set_valist(renderer: PGtkCellRenderer; first_property_name: Pgchar; var_args: Tva_list); cdecl; inline;
-    function copy_context(context: PGtkCellAreaContext): PGtkCellAreaContext; cdecl; inline;
-    function create_context: PGtkCellAreaContext; cdecl; inline;
-    function event(context: PGtkCellAreaContext; widget: PGtkWidget; event: PGdkEvent; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gint; cdecl; inline;
-    function focus(direction: TGtkDirectionType): gboolean; cdecl; inline;
-    procedure foreach(callback: TGtkCellCallback; callback_data: gpointer); cdecl; inline;
-    procedure foreach_alloc(context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; background_area: PGdkRectangle; callback: TGtkCellAllocCallback; callback_data: gpointer); cdecl; inline;
-    procedure get_cell_allocation(context: PGtkCellAreaContext; widget: PGtkWidget; renderer: PGtkCellRenderer; cell_area: PGdkRectangle; allocation: PGdkRectangle); cdecl; inline;
-    function get_cell_at_position(context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; x: gint; y: gint; alloc_area: PGdkRectangle): PGtkCellRenderer; cdecl; inline;
-    function get_current_path_string: Pgchar; cdecl; inline;
-    function get_edit_widget: PGtkCellEditable; cdecl; inline;
-    function get_edited_cell: PGtkCellRenderer; cdecl; inline;
-    function get_focus_cell: PGtkCellRenderer; cdecl; inline;
-    function get_focus_from_sibling(renderer: PGtkCellRenderer): PGtkCellRenderer; cdecl; inline;
-    function get_focus_siblings(renderer: PGtkCellRenderer): PGList; cdecl; inline;
-    procedure get_preferred_height(context: PGtkCellAreaContext; widget: PGtkWidget; minimum_height: Pgint; natural_height: Pgint); cdecl; inline;
-    procedure get_preferred_height_for_width(context: PGtkCellAreaContext; widget: PGtkWidget; width: gint; minimum_height: Pgint; natural_height: Pgint); cdecl; inline;
-    procedure get_preferred_width(context: PGtkCellAreaContext; widget: PGtkWidget; minimum_width: Pgint; natural_width: Pgint); cdecl; inline;
-    procedure get_preferred_width_for_height(context: PGtkCellAreaContext; widget: PGtkWidget; height: gint; minimum_width: Pgint; natural_width: Pgint); cdecl; inline;
-    function get_request_mode: TGtkSizeRequestMode; cdecl; inline;
-    function has_renderer(renderer: PGtkCellRenderer): gboolean; cdecl; inline;
-    procedure inner_cell_area(widget: PGtkWidget; cell_area: PGdkRectangle; inner_area: PGdkRectangle); cdecl; inline;
-    function is_activatable: gboolean; cdecl; inline;
-    function is_focus_sibling(renderer: PGtkCellRenderer; sibling: PGtkCellRenderer): gboolean; cdecl; inline;
-    procedure remove(renderer: PGtkCellRenderer); cdecl; inline;
-    procedure remove_focus_sibling(renderer: PGtkCellRenderer; sibling: PGtkCellRenderer); cdecl; inline;
-    procedure render(context: PGtkCellAreaContext; widget: PGtkWidget; cr: Pcairo_t; background_area: PGdkRectangle; cell_area: PGdkRectangle; flags: TGtkCellRendererState; paint_focus: gboolean); cdecl; inline;
-    procedure request_renderer(renderer: PGtkCellRenderer; orientation: TGtkOrientation; widget: PGtkWidget; for_size: gint; minimum_size: Pgint; natural_size: Pgint); cdecl; inline;
-    procedure set_focus_cell(renderer: PGtkCellRenderer); cdecl; inline;
-    procedure stop_editing(canceled: gboolean); cdecl; inline;
-    property edit_widget: PGtkCellEditable read get_edit_widget ;
-    property edited_cell: PGtkCellRenderer read get_edited_cell ;
-    property focus_cell: PGtkCellRenderer read get_focus_cell write set_focus_cell;
-  end;
-
-  PPGtkCellAreaBoxPrivate = ^PGtkCellAreaBoxPrivate;
-  PGtkCellAreaBoxPrivate = ^TGtkCellAreaBoxPrivate;
-
-  TGtkCellAreaBoxPrivate = record
   end;
 
 
 
   PPGtkCellAreaBox = ^PGtkCellAreaBox;
   PGtkCellAreaBox = ^TGtkCellAreaBox;
+
+  PPGtkCellAreaBoxPrivate = ^PGtkCellAreaBoxPrivate;
+  PGtkCellAreaBoxPrivate = ^TGtkCellAreaBoxPrivate;
   TGtkCellAreaBox = object(TGtkCellArea)
     priv1: PGtkCellAreaBoxPrivate;
     function new: PGtkCellAreaBox; cdecl; inline; static;
@@ -3915,6 +3949,11 @@ type
     procedure set_spacing(spacing: gint); cdecl; inline;
     property spacing: gint read get_spacing write set_spacing;
   end;
+
+  TGtkCellAreaBoxPrivate = record
+  end;
+
+
 
   PPGtkCellAreaClass = ^PGtkCellAreaClass;
   PGtkCellAreaClass = ^TGtkCellAreaClass;
@@ -4022,8 +4061,8 @@ type
 
 
 
-  PPGtkCellRendererAccelMode = ^PGtkCellRendererAccelMode;
-  PGtkCellRendererAccelMode = ^TGtkCellRendererAccelMode;
+  PPGtkCellRendererAccel = ^PGtkCellRendererAccel;
+  PGtkCellRendererAccel = ^TGtkCellRendererAccel;
 
   PPGtkCellRendererText = ^PGtkCellRendererText;
   PGtkCellRendererText = ^TGtkCellRendererText;
@@ -4057,6 +4096,7 @@ type
     //property language_set: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_language_set  { property is writeable but setter not declared } ;
     //property markup: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_markup  { property is writeable but setter not declared } ;
     //property max_width_chars: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_max_width_chars  { property is writeable but setter not declared } ;
+    //property placeholder_text: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_placeholder_text  { property is writeable but setter not declared } ;
     //property rise: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_rise  { property is writeable but setter not declared } ;
     //property rise_set: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_rise_set  { property is writeable but setter not declared } ;
     //property scale: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_scale  { property is writeable but setter not declared } ;
@@ -4085,14 +4125,6 @@ type
 
   PPGtkCellRendererAccelPrivate = ^PGtkCellRendererAccelPrivate;
   PGtkCellRendererAccelPrivate = ^TGtkCellRendererAccelPrivate;
-
-  TGtkCellRendererAccelPrivate = record
-  end;
-
-
-
-  PPGtkCellRendererAccel = ^PGtkCellRendererAccel;
-  PGtkCellRendererAccel = ^TGtkCellRendererAccel;
   TGtkCellRendererAccel = object(TGtkCellRendererText)
     priv2: PGtkCellRendererAccelPrivate;
     function new: PGtkCellRendererAccel; cdecl; inline; static;
@@ -4101,6 +4133,14 @@ type
     //property accel_mods: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accel_mods  { property is writeable but setter not declared } ;
     //property keycode: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_keycode  { property is writeable but setter not declared } ;
   end;
+
+  PPGtkCellRendererAccelMode = ^PGtkCellRendererAccelMode;
+  PGtkCellRendererAccelMode = ^TGtkCellRendererAccelMode;
+
+  TGtkCellRendererAccelPrivate = record
+  end;
+
+
 
   PPGtkCellRendererTextClass = ^PGtkCellRendererTextClass;
   PGtkCellRendererTextClass = ^TGtkCellRendererTextClass;
@@ -4128,6 +4168,7 @@ type
     _gtk_reserved2: procedure; cdecl;
     _gtk_reserved3: procedure; cdecl;
     _gtk_reserved4: procedure; cdecl;
+    procedure set_accessible_type(type_: TGType); cdecl; inline;
   end;
   TGtkCellRendererTextClass = object
     parent_class: TGtkCellRendererClass;
@@ -4313,16 +4354,11 @@ type
 
 
 
-  PPGtkCellRendererTogglePrivate = ^PGtkCellRendererTogglePrivate;
-  PGtkCellRendererTogglePrivate = ^TGtkCellRendererTogglePrivate;
-
-  TGtkCellRendererTogglePrivate = record
-  end;
-
-
-
   PPGtkCellRendererToggle = ^PGtkCellRendererToggle;
   PGtkCellRendererToggle = ^TGtkCellRendererToggle;
+
+  PPGtkCellRendererTogglePrivate = ^PGtkCellRendererTogglePrivate;
+  PGtkCellRendererTogglePrivate = ^TGtkCellRendererTogglePrivate;
   TGtkCellRendererToggle = object(TGtkCellRenderer)
     priv1: PGtkCellRendererTogglePrivate;
     function new: PGtkCellRendererToggle; cdecl; inline; static;
@@ -4339,6 +4375,11 @@ type
     property radio: gboolean read get_radio write set_radio;
   end;
 
+  TGtkCellRendererTogglePrivate = record
+  end;
+
+
+
   PPGtkCellRendererToggleClass = ^PGtkCellRendererToggleClass;
   PGtkCellRendererToggleClass = ^TGtkCellRendererToggleClass;
   TGtkCellRendererToggleClass = object
@@ -4350,16 +4391,11 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkCellViewPrivate = ^PGtkCellViewPrivate;
-  PGtkCellViewPrivate = ^TGtkCellViewPrivate;
-
-  TGtkCellViewPrivate = record
-  end;
-
-
-
   PPGtkCellView = ^PGtkCellView;
   PGtkCellView = ^TGtkCellView;
+
+  PPGtkCellViewPrivate = ^PGtkCellViewPrivate;
+  PGtkCellViewPrivate = ^TGtkCellViewPrivate;
   TGtkCellView = object(TGtkWidget)
     priv1: PGtkCellViewPrivate;
     function new: PGtkCellView; cdecl; inline; static;
@@ -4387,6 +4423,11 @@ type
     property model: PGtkTreeModel read get_model write set_model;
   end;
 
+  TGtkCellViewPrivate = record
+  end;
+
+
+
   PPGtkCellViewClass = ^PGtkCellViewClass;
   PGtkCellViewClass = ^TGtkCellViewClass;
   TGtkCellViewClass = object
@@ -4396,6 +4437,9 @@ type
     _gtk_reserved3: procedure; cdecl;
     _gtk_reserved4: procedure; cdecl;
   end;
+
+  PPGtkCheckButton = ^PGtkCheckButton;
+  PGtkCheckButton = ^TGtkCheckButton;
 
   PPGtkToggleButton = ^PGtkToggleButton;
   PGtkToggleButton = ^TGtkToggleButton;
@@ -4418,9 +4462,6 @@ type
     //property draw_indicator: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_draw_indicator  { property is writeable but setter not declared } ;
     property inconsistent: gboolean read get_inconsistent write set_inconsistent;
   end;
-
-  PPGtkCheckButton = ^PGtkCheckButton;
-  PGtkCheckButton = ^TGtkCheckButton;
   TGtkCheckButton = object(TGtkToggleButton)
     function new: PGtkCheckButton; cdecl; inline; static;
     function new_with_label(label_: Pgchar): PGtkCheckButton; cdecl; inline; static;
@@ -4448,6 +4489,9 @@ type
     _gtk_reserved3: procedure; cdecl;
     _gtk_reserved4: procedure; cdecl;
   end;
+
+  PPGtkCheckMenuItem = ^PGtkCheckMenuItem;
+  PGtkCheckMenuItem = ^TGtkCheckMenuItem;
 
   PPGtkMenuItem = ^PGtkMenuItem;
   PGtkMenuItem = ^TGtkMenuItem;
@@ -4483,14 +4527,6 @@ type
 
   PPGtkCheckMenuItemPrivate = ^PGtkCheckMenuItemPrivate;
   PGtkCheckMenuItemPrivate = ^TGtkCheckMenuItemPrivate;
-
-  TGtkCheckMenuItemPrivate = record
-  end;
-
-
-
-  PPGtkCheckMenuItem = ^PGtkCheckMenuItem;
-  PGtkCheckMenuItem = ^TGtkCheckMenuItem;
   TGtkCheckMenuItem = object(TGtkMenuItem)
     priv4: PGtkCheckMenuItemPrivate;
     function new: PGtkCheckMenuItem; cdecl; inline; static;
@@ -4507,6 +4543,11 @@ type
     property draw_as_radio: gboolean read get_draw_as_radio write set_draw_as_radio;
     property inconsistent: gboolean read get_inconsistent write set_inconsistent;
   end;
+
+  TGtkCheckMenuItemPrivate = record
+  end;
+
+
 
   PPGtkMenuItemClass = ^PGtkMenuItemClass;
   PGtkMenuItemClass = ^TGtkMenuItemClass;
@@ -4625,7 +4666,7 @@ type
 
   PPGtkTextBufferDeserializeFunc = ^PGtkTextBufferDeserializeFunc;
   PGtkTextBufferDeserializeFunc = ^TGtkTextBufferDeserializeFunc;
-  TGtkTextBufferDeserializeFunc = function(register_buffer: PGtkTextBuffer; content_buffer: PGtkTextBuffer; iter: PGtkTextIter; data: Pguint8; length: gsize; create_tags: gboolean; user_data: gpointer): gboolean; cdecl;
+  TGtkTextBufferDeserializeFunc = function(register_buffer: PGtkTextBuffer; content_buffer: PGtkTextBuffer; iter: PGtkTextIter; data: Pguint8; length: gsize; create_tags: gboolean; user_data: gpointer; error: PPGError): gboolean; cdecl;
 
   PPGtkTextBufferSerializeFunc = ^PGtkTextBufferSerializeFunc;
   PGtkTextBufferSerializeFunc = ^TGtkTextBufferSerializeFunc;
@@ -4652,7 +4693,7 @@ type
     procedure delete_mark(mark: PGtkTextMark); cdecl; inline;
     procedure delete_mark_by_name(name: Pgchar); cdecl; inline;
     function delete_selection(interactive: gboolean; default_editable: gboolean): gboolean; cdecl; inline;
-    function deserialize(content_buffer: PGtkTextBuffer; format: TGdkAtom; iter: PGtkTextIter; data: Pguint8; length: gsize): gboolean; cdecl; inline;
+    function deserialize(content_buffer: PGtkTextBuffer; format: TGdkAtom; iter: PGtkTextIter; data: Pguint8; length: gsize; error: PPGError): gboolean; cdecl; inline;
     function deserialize_get_can_create_tags(format: TGdkAtom): gboolean; cdecl; inline;
     procedure deserialize_set_can_create_tags(format: TGdkAtom; can_create_tags: gboolean); cdecl; inline;
     procedure end_user_action; cdecl; inline;
@@ -4761,16 +4802,11 @@ type
     property use_alpha: gboolean read get_use_alpha write set_use_alpha;
   end;
 
-  PPGtkColorButtonPrivate = ^PGtkColorButtonPrivate;
-  PGtkColorButtonPrivate = ^TGtkColorButtonPrivate;
-
-  TGtkColorButtonPrivate = record
-  end;
-
-
-
   PPGtkColorButton = ^PGtkColorButton;
   PGtkColorButton = ^TGtkColorButton;
+
+  PPGtkColorButtonPrivate = ^PGtkColorButtonPrivate;
+  PGtkColorButtonPrivate = ^TGtkColorButtonPrivate;
   TGtkColorButton = object(TGtkButton)
     priv4: PGtkColorButtonPrivate;
     function new: PGtkColorButton; cdecl; inline; static;
@@ -4783,6 +4819,11 @@ type
     property title: Pgchar read get_title write set_title;
     //property use_alpha: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_use_alpha  { property is writeable but setter not declared } ;
   end;
+
+  TGtkColorButtonPrivate = record
+  end;
+
+
 
   PPGtkColorButtonClass = ^PGtkColorButtonClass;
   PGtkColorButtonClass = ^TGtkColorButtonClass;
@@ -4863,19 +4904,14 @@ type
   end;
   TGtkColorSelectionChangePaletteWithScreenFunc = procedure(screen: PGdkScreen; colors: PGdkColor; n_colors: gint); cdecl;
 
-  PPGtkColorSelectionPrivate = ^PGtkColorSelectionPrivate;
-  PGtkColorSelectionPrivate = ^TGtkColorSelectionPrivate;
-
-  TGtkColorSelectionPrivate = record
-  end;
-
-
-
   PPGtkColorSelection = ^PGtkColorSelection;
   PGtkColorSelection = ^TGtkColorSelection;
 
   PPGtkColorSelectionChangePaletteWithScreenFunc = ^PGtkColorSelectionChangePaletteWithScreenFunc;
   PGtkColorSelectionChangePaletteWithScreenFunc = ^TGtkColorSelectionChangePaletteWithScreenFunc;
+
+  PPGtkColorSelectionPrivate = ^PGtkColorSelectionPrivate;
+  PGtkColorSelectionPrivate = ^TGtkColorSelectionPrivate;
   TGtkColorSelection = object(TGtkBox)
     private_data: PGtkColorSelectionPrivate;
     function new: PGtkColorSelection; cdecl; inline; static;
@@ -4901,6 +4937,11 @@ type
     property has_opacity_control: gboolean read get_has_opacity_control write set_has_opacity_control;
     property has_palette: gboolean read get_has_palette write set_has_palette;
   end;
+
+  TGtkColorSelectionPrivate = record
+  end;
+
+
   TGtkColorSelectionChangePaletteFunc = procedure(colors: PGdkColor; n_colors: gint); cdecl;
 
   PPGtkColorSelectionClass = ^PGtkColorSelectionClass;
@@ -4914,16 +4955,11 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkColorSelectionDialogPrivate = ^PGtkColorSelectionDialogPrivate;
-  PGtkColorSelectionDialogPrivate = ^TGtkColorSelectionDialogPrivate;
-
-  TGtkColorSelectionDialogPrivate = record
-  end;
-
-
-
   PPGtkColorSelectionDialog = ^PGtkColorSelectionDialog;
   PGtkColorSelectionDialog = ^TGtkColorSelectionDialog;
+
+  PPGtkColorSelectionDialogPrivate = ^PGtkColorSelectionDialogPrivate;
+  PGtkColorSelectionDialogPrivate = ^TGtkColorSelectionDialogPrivate;
   TGtkColorSelectionDialog = object(TGtkDialog)
     priv5: PGtkColorSelectionDialogPrivate;
     function new(title: Pgchar): PGtkColorSelectionDialog; cdecl; inline; static;
@@ -4934,6 +4970,11 @@ type
     //property ok_button: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_ok_button ;
   end;
 
+  TGtkColorSelectionDialogPrivate = record
+  end;
+
+
+
   PPGtkColorSelectionDialogClass = ^PGtkColorSelectionDialogClass;
   PGtkColorSelectionDialogClass = ^TGtkColorSelectionDialogClass;
   TGtkColorSelectionDialogClass = object
@@ -4943,6 +4984,9 @@ type
     _gtk_reserved3: procedure; cdecl;
     _gtk_reserved4: procedure; cdecl;
   end;
+
+  PPGtkTreeRowReference = ^PGtkTreeRowReference;
+  PGtkTreeRowReference = ^TGtkTreeRowReference;
 
   TGtkComboBoxPrivate = record
     model: PGtkTreeModel;
@@ -4982,51 +5026,44 @@ type
     scroll_timer: guint;
     resize_idle_id: guint;
 
-    (* For "has-entry" specific behavior we track
+    (*For "has-entry" specific behavior we track
      * an automated cell renderer and text column
      *)
-    text_column: gint;
-    text_renderer: PGtkCellRenderer;
+     text_column: gint;
+     text_renderer: PGtkCellRenderer;
 
-    id_column: gint;
+     id_column: gint;
 
-    popup_in_progress: guint;
-    popup_shown: guint;
-    add_tearoffs: guint;
-    has_frame: guint;
-    is_cell_renderer: guint;
-    editing_canceled: guint;
-    auto_scroll: guint;
-    focus_on_click: guint;
-    button_sensitivity: guint;
-    has_entry: guint;
-    popup_fixed_width: guint;
+     popup_in_progress: guint;
+     popup_shown: guint;
+     add_tearoffs: guint;
+     has_frame: guint;
+     is_cell_renderer: guint;
+     editing_canceled: guint;
+     auto_scroll: guint;
+     focus_on_click: guint;
+     button_sensitivity: guint;
+     has_entry: guint;
+     popup_fixed_width: guint;
 
-    row_separator_func: TGtkTreeViewRowSeparatorFunc;
-    row_separator_data: gpointer;
-    row_separator_destroy: TGDestroyNotify;
+     row_separator_func: TGtkTreeViewRowSeparatorFunc;
+     row_separator_data: gpointer;
+     row_separator_destroy: TGDestroyNotify;
 
-    grab_pointer: PGdkDevice;
-    grab_keyboard: PGdkDevice;
+     grab_pointer: PGdkDevice;
+     grab_keyboard: PGdkDevice;
 
-    tearoff_title: Pgchar;
+     tearoff_title: Pgchar;
   end;
-
-
 
   PPGtkScrollType = ^PGtkScrollType;
   PGtkScrollType = ^TGtkScrollType;
 
-  PPGtkComboBoxTextPrivate = ^PGtkComboBoxTextPrivate;
-  PGtkComboBoxTextPrivate = ^TGtkComboBoxTextPrivate;
-
-  TGtkComboBoxTextPrivate = record
-  end;
-
-
-
   PPGtkComboBoxText = ^PGtkComboBoxText;
   PGtkComboBoxText = ^TGtkComboBoxText;
+
+  PPGtkComboBoxTextPrivate = ^PGtkComboBoxTextPrivate;
+  PGtkComboBoxTextPrivate = ^TGtkComboBoxTextPrivate;
   TGtkComboBoxText = object(TGtkComboBox)
     priv4: PGtkComboBoxTextPrivate;
     function new: PGtkComboBoxText; cdecl; inline; static;
@@ -5041,6 +5078,11 @@ type
     procedure remove(position: gint); cdecl; inline;
     procedure remove_all; cdecl; inline;
   end;
+
+  TGtkComboBoxTextPrivate = record
+  end;
+
+
 
   PPGtkComboBoxTextClass = ^PGtkComboBoxTextClass;
   PGtkComboBoxTextClass = ^TGtkComboBoxTextClass;
@@ -5101,15 +5143,7 @@ type
 
   PPGtkStyleProvider = ^PGtkStyleProvider;
   PGtkStyleProvider = ^TGtkStyleProvider;
-
-  PPGtkIconFactory = ^PGtkIconFactory;
-  PGtkIconFactory = ^TGtkIconFactory;
-
-  PPGtkStyleProperties = ^PGtkStyleProperties;
-  PGtkStyleProperties = ^TGtkStyleProperties;
   TGtkStyleProvider = object
-    function get_icon_factory(path: PGtkWidgetPath): PGtkIconFactory; cdecl; inline;
-    function get_style(path: PGtkWidgetPath): PGtkStyleProperties; cdecl; inline;
     function get_style_property(path: PGtkWidgetPath; state: TGtkStateFlags; pspec: PGParamSpec; value: PGValue): gboolean; cdecl; inline;
   end;
 
@@ -5123,9 +5157,9 @@ type
     function new: PGtkCssProvider; cdecl; inline; static;
     function get_default: PGtkCssProvider; cdecl; inline; static;
     function get_named(name: Pgchar; variant: Pgchar): PGtkCssProvider; cdecl; inline; static;
-    function load_from_data(data: Pgchar; length: gssize): gboolean; cdecl; inline;
-    function load_from_file(file_: PGFile): gboolean; cdecl; inline;
-    function load_from_path(path: Pgchar): gboolean; cdecl; inline;
+    function load_from_data(data: Pgchar; length: gssize; error: PPGError): gboolean; cdecl; inline;
+    function load_from_file(file_: PGFile; error: PPGError): gboolean; cdecl; inline;
+    function load_from_path(path: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function to_string: Pgchar; cdecl; inline;
   end;
 
@@ -5197,7 +5231,7 @@ type
   TGtkEditable = object
     changed: procedure; cdecl;
     delete_text1: procedure(start_pos: gint; end_pos: gint); cdecl;
-    insert_text1: procedure(new_text: gchar; new_text_length: gint; position: gint); cdecl;
+    insert_text1: procedure(new_text: Pgchar; new_text_length: gint; position: Pgint); cdecl;
     procedure copy_clipboard; cdecl; inline;
     procedure cut_clipboard; cdecl; inline;
     procedure delete_selection; cdecl; inline;
@@ -5252,8 +5286,145 @@ type
     property text: Pgchar read get_text  { property is writeable but setter not declared } ;
   end;
 
+  PPGtkEntry = ^PGtkEntry;
+  PGtkEntry = ^TGtkEntry;
+
   PPGtkEntryCompletion = ^PGtkEntryCompletion;
   PGtkEntryCompletion = ^TGtkEntryCompletion;
+
+  PPGtkEntryIconPosition = ^PGtkEntryIconPosition;
+  PGtkEntryIconPosition = ^TGtkEntryIconPosition;
+
+  PPGtkImageType = ^PGtkImageType;
+  PGtkImageType = ^TGtkImageType;
+
+  PPGtkInputHints = ^PGtkInputHints;
+  PGtkInputHints = ^TGtkInputHints;
+
+  PPGtkInputPurpose = ^PGtkInputPurpose;
+  PGtkInputPurpose = ^TGtkInputPurpose;
+
+  PPGtkEntryPrivate = ^PGtkEntryPrivate;
+  PGtkEntryPrivate = ^TGtkEntryPrivate;
+  TGtkEntry = object(TGtkWidget)
+    priv1: PGtkEntryPrivate;
+    function new: PGtkEntry; cdecl; inline; static;
+    function new_with_buffer(buffer: PGtkEntryBuffer): PGtkEntry; cdecl; inline; static;
+    function get_activates_default: gboolean; cdecl; inline;
+    function get_alignment: gfloat; cdecl; inline;
+    function get_attributes: PPangoAttrList; cdecl; inline;
+    function get_buffer: PGtkEntryBuffer; cdecl; inline;
+    function get_completion: PGtkEntryCompletion; cdecl; inline;
+    function get_current_icon_drag_source: gint; cdecl; inline;
+    function get_cursor_hadjustment: PGtkAdjustment; cdecl; inline;
+    function get_has_frame: gboolean; cdecl; inline;
+    function get_icon_activatable(icon_pos: TGtkEntryIconPosition): gboolean; cdecl; inline;
+    procedure get_icon_area(icon_pos: TGtkEntryIconPosition; icon_area: PGdkRectangle); cdecl; inline;
+    function get_icon_at_pos(x: gint; y: gint): gint; cdecl; inline;
+    function get_icon_gicon(icon_pos: TGtkEntryIconPosition): PGIcon; cdecl; inline;
+    function get_icon_name(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; inline;
+    function get_icon_pixbuf(icon_pos: TGtkEntryIconPosition): PGdkPixbuf; cdecl; inline;
+    function get_icon_sensitive(icon_pos: TGtkEntryIconPosition): gboolean; cdecl; inline;
+    function get_icon_stock(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; inline;
+    function get_icon_storage_type(icon_pos: TGtkEntryIconPosition): TGtkImageType; cdecl; inline;
+    function get_icon_tooltip_markup(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; inline;
+    function get_icon_tooltip_text(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; inline;
+    function get_input_hints: TGtkInputHints; cdecl; inline;
+    function get_input_purpose: TGtkInputPurpose; cdecl; inline;
+    function get_invisible_char: gunichar; cdecl; inline;
+    function get_layout: PPangoLayout; cdecl; inline;
+    procedure get_layout_offsets(x: Pgint; y: Pgint); cdecl; inline;
+    function get_max_length: gint; cdecl; inline;
+    function get_overwrite_mode: gboolean; cdecl; inline;
+    function get_placeholder_text: Pgchar; cdecl; inline;
+    function get_progress_fraction: gdouble; cdecl; inline;
+    function get_progress_pulse_step: gdouble; cdecl; inline;
+    function get_text: Pgchar; cdecl; inline;
+    procedure get_text_area(text_area: PGdkRectangle); cdecl; inline;
+    function get_text_length: guint16; cdecl; inline;
+    function get_visibility: gboolean; cdecl; inline;
+    function get_width_chars: gint; cdecl; inline;
+    function im_context_filter_keypress(event: PGdkEventKey): gboolean; cdecl; inline;
+    function layout_index_to_text_index(layout_index: gint): gint; cdecl; inline;
+    procedure progress_pulse; cdecl; inline;
+    procedure reset_im_context; cdecl; inline;
+    procedure set_activates_default(setting: gboolean); cdecl; inline;
+    procedure set_alignment(xalign: gfloat); cdecl; inline;
+    procedure set_attributes(attrs: PPangoAttrList); cdecl; inline;
+    procedure set_buffer(buffer: PGtkEntryBuffer); cdecl; inline;
+    procedure set_completion(completion: PGtkEntryCompletion); cdecl; inline;
+    procedure set_cursor_hadjustment(adjustment: PGtkAdjustment); cdecl; inline;
+    procedure set_has_frame(setting: gboolean); cdecl; inline;
+    procedure set_icon_activatable(icon_pos: TGtkEntryIconPosition; activatable: gboolean); cdecl; inline;
+    procedure set_icon_drag_source(icon_pos: TGtkEntryIconPosition; target_list: PGtkTargetList; actions: TGdkDragAction); cdecl; inline;
+    procedure set_icon_from_gicon(icon_pos: TGtkEntryIconPosition; icon: PGIcon); cdecl; inline;
+    procedure set_icon_from_icon_name(icon_pos: TGtkEntryIconPosition; icon_name: Pgchar); cdecl; inline;
+    procedure set_icon_from_pixbuf(icon_pos: TGtkEntryIconPosition; pixbuf: PGdkPixbuf); cdecl; inline;
+    procedure set_icon_from_stock(icon_pos: TGtkEntryIconPosition; stock_id: Pgchar); cdecl; inline;
+    procedure set_icon_sensitive(icon_pos: TGtkEntryIconPosition; sensitive: gboolean); cdecl; inline;
+    procedure set_icon_tooltip_markup(icon_pos: TGtkEntryIconPosition; tooltip: Pgchar); cdecl; inline;
+    procedure set_icon_tooltip_text(icon_pos: TGtkEntryIconPosition; tooltip: Pgchar); cdecl; inline;
+    procedure set_input_hints(hints: TGtkInputHints); cdecl; inline;
+    procedure set_input_purpose(purpose: TGtkInputPurpose); cdecl; inline;
+    procedure set_invisible_char(ch: gunichar); cdecl; inline;
+    procedure set_max_length(max: gint); cdecl; inline;
+    procedure set_overwrite_mode(overwrite: gboolean); cdecl; inline;
+    procedure set_placeholder_text(text: Pgchar); cdecl; inline;
+    procedure set_progress_fraction(fraction: gdouble); cdecl; inline;
+    procedure set_progress_pulse_step(fraction: gdouble); cdecl; inline;
+    procedure set_text(text: Pgchar); cdecl; inline;
+    procedure set_visibility(visible: gboolean); cdecl; inline;
+    procedure set_width_chars(n_chars: gint); cdecl; inline;
+    function text_index_to_layout_index(text_index: gint): gint; cdecl; inline;
+    procedure unset_invisible_char; cdecl; inline;
+    property activates_default: gboolean read get_activates_default write set_activates_default;
+    property attributes: PPangoAttrList read get_attributes write set_attributes;
+    property buffer: PGtkEntryBuffer read get_buffer write set_buffer;
+    //property caps_lock_warning: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_caps_lock_warning  { property is writeable but setter not declared } ;
+    property completion: PGtkEntryCompletion read get_completion write set_completion;
+    //property cursor_position: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_cursor_position ;
+    //property editable: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_editable  { property is writeable but setter not declared } ;
+    property has_frame: gboolean read get_has_frame write set_has_frame;
+    //property im_module: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_im_module  { property is writeable but setter not declared } ;
+    //property inner_border: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_inner_border  { property is writeable but setter not declared } ;
+    property input_hints: TGtkInputHints read get_input_hints write set_input_hints;
+    property input_purpose: TGtkInputPurpose read get_input_purpose write set_input_purpose;
+    property invisible_char: gunichar read get_invisible_char write set_invisible_char;
+    //property invisible_char_set: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_invisible_char_set  { property is writeable but setter not declared } ;
+    property max_length: gint read get_max_length write set_max_length;
+    property overwrite_mode: gboolean read get_overwrite_mode write set_overwrite_mode;
+    property placeholder_text: Pgchar read get_placeholder_text write set_placeholder_text;
+    //property populate_all: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_populate_all  { property is writeable but setter not declared } ;
+    //property primary_icon_activatable: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_activatable  { property is writeable but setter not declared } ;
+    //property primary_icon_gicon: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_gicon  { property is writeable but setter not declared } ;
+    //property primary_icon_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_name  { property is writeable but setter not declared } ;
+    //property primary_icon_pixbuf: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_pixbuf  { property is writeable but setter not declared } ;
+    //property primary_icon_sensitive: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_sensitive  { property is writeable but setter not declared } ;
+    //property primary_icon_stock: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_stock  { property is writeable but setter not declared } ;
+    //property primary_icon_storage_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_storage_type ;
+    //property primary_icon_tooltip_markup: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_tooltip_markup  { property is writeable but setter not declared } ;
+    //property primary_icon_tooltip_text: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_tooltip_text  { property is writeable but setter not declared } ;
+    property progress_fraction: gdouble read get_progress_fraction write set_progress_fraction;
+    property progress_pulse_step: gdouble read get_progress_pulse_step write set_progress_pulse_step;
+    //property scroll_offset: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_scroll_offset ;
+    //property secondary_icon_activatable: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_activatable  { property is writeable but setter not declared } ;
+    //property secondary_icon_gicon: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_gicon  { property is writeable but setter not declared } ;
+    //property secondary_icon_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_name  { property is writeable but setter not declared } ;
+    //property secondary_icon_pixbuf: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_pixbuf  { property is writeable but setter not declared } ;
+    //property secondary_icon_sensitive: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_sensitive  { property is writeable but setter not declared } ;
+    //property secondary_icon_stock: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_stock  { property is writeable but setter not declared } ;
+    //property secondary_icon_storage_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_storage_type ;
+    //property secondary_icon_tooltip_markup: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_tooltip_markup  { property is writeable but setter not declared } ;
+    //property secondary_icon_tooltip_text: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_tooltip_text  { property is writeable but setter not declared } ;
+    //property selection_bound: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_selection_bound ;
+    //property shadow_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_shadow_type  { property is writeable but setter not declared } ;
+    property text: Pgchar read get_text write set_text;
+    property text_length: guint16 read get_text_length ;
+    //property truncate_multiline: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_truncate_multiline  { property is writeable but setter not declared } ;
+    property visibility: gboolean read get_visibility write set_visibility;
+    property width_chars: gint read get_width_chars write set_width_chars;
+    //property xalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_xalign  { property is writeable but setter not declared } ;
+  end;
 
   PPGtkEntryCompletionMatchFunc = ^PGtkEntryCompletionMatchFunc;
   PGtkEntryCompletionMatchFunc = ^TGtkEntryCompletionMatchFunc;
@@ -5300,12 +5471,6 @@ type
     property popup_single_match: gboolean read get_popup_single_match write set_popup_single_match;
     property text_column: gint read get_text_column write set_text_column;
   end;
-
-  PPGtkEntryIconPosition = ^PGtkEntryIconPosition;
-  PGtkEntryIconPosition = ^TGtkEntryIconPosition;
-
-  PPGtkImageType = ^PGtkImageType;
-  PGtkImageType = ^TGtkImageType;
   TGtkTargetList = object
     function new(targets: PGtkTargetEntry; ntargets: guint): PGtkTargetList; cdecl; inline; static;
     procedure add(target: TGdkAtom; flags: guint; info: guint); cdecl; inline;
@@ -5320,125 +5485,10 @@ type
     procedure unref; cdecl; inline;
   end;
 
-  PPGtkEntryPrivate = ^PGtkEntryPrivate;
-  PGtkEntryPrivate = ^TGtkEntryPrivate;
-
   TGtkEntryPrivate = record
   end;
 
 
-
-  PPGtkEntry = ^PGtkEntry;
-  PGtkEntry = ^TGtkEntry;
-  TGtkEntry = object(TGtkWidget)
-    priv1: PGtkEntryPrivate;
-    function new: PGtkEntry; cdecl; inline; static;
-    function new_with_buffer(buffer: PGtkEntryBuffer): PGtkEntry; cdecl; inline; static;
-    function get_activates_default: gboolean; cdecl; inline;
-    function get_alignment: gfloat; cdecl; inline;
-    function get_buffer: PGtkEntryBuffer; cdecl; inline;
-    function get_completion: PGtkEntryCompletion; cdecl; inline;
-    function get_current_icon_drag_source: gint; cdecl; inline;
-    function get_cursor_hadjustment: PGtkAdjustment; cdecl; inline;
-    function get_has_frame: gboolean; cdecl; inline;
-    function get_icon_activatable(icon_pos: TGtkEntryIconPosition): gboolean; cdecl; inline;
-    procedure get_icon_area(icon_pos: TGtkEntryIconPosition; icon_area: PGdkRectangle); cdecl; inline;
-    function get_icon_at_pos(x: gint; y: gint): gint; cdecl; inline;
-    function get_icon_gicon(icon_pos: TGtkEntryIconPosition): PGIcon; cdecl; inline;
-    function get_icon_name(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; inline;
-    function get_icon_pixbuf(icon_pos: TGtkEntryIconPosition): PGdkPixbuf; cdecl; inline;
-    function get_icon_sensitive(icon_pos: TGtkEntryIconPosition): gboolean; cdecl; inline;
-    function get_icon_stock(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; inline;
-    function get_icon_storage_type(icon_pos: TGtkEntryIconPosition): TGtkImageType; cdecl; inline;
-    function get_icon_tooltip_markup(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; inline;
-    function get_icon_tooltip_text(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; inline;
-    function get_invisible_char: gunichar; cdecl; inline;
-    function get_layout: PPangoLayout; cdecl; inline;
-    procedure get_layout_offsets(x: Pgint; y: Pgint); cdecl; inline;
-    function get_max_length: gint; cdecl; inline;
-    function get_overwrite_mode: gboolean; cdecl; inline;
-    function get_placeholder_text: Pgchar; cdecl; inline;
-    function get_progress_fraction: gdouble; cdecl; inline;
-    function get_progress_pulse_step: gdouble; cdecl; inline;
-    function get_text: Pgchar; cdecl; inline;
-    procedure get_text_area(text_area: PGdkRectangle); cdecl; inline;
-    function get_text_length: guint16; cdecl; inline;
-    function get_visibility: gboolean; cdecl; inline;
-    function get_width_chars: gint; cdecl; inline;
-    function im_context_filter_keypress(event: PGdkEventKey): gboolean; cdecl; inline;
-    function layout_index_to_text_index(layout_index: gint): gint; cdecl; inline;
-    procedure progress_pulse; cdecl; inline;
-    procedure reset_im_context; cdecl; inline;
-    procedure set_activates_default(setting: gboolean); cdecl; inline;
-    procedure set_alignment(xalign: gfloat); cdecl; inline;
-    procedure set_buffer(buffer: PGtkEntryBuffer); cdecl; inline;
-    procedure set_completion(completion: PGtkEntryCompletion); cdecl; inline;
-    procedure set_cursor_hadjustment(adjustment: PGtkAdjustment); cdecl; inline;
-    procedure set_has_frame(setting: gboolean); cdecl; inline;
-    procedure set_icon_activatable(icon_pos: TGtkEntryIconPosition; activatable: gboolean); cdecl; inline;
-    procedure set_icon_drag_source(icon_pos: TGtkEntryIconPosition; target_list: PGtkTargetList; actions: TGdkDragAction); cdecl; inline;
-    procedure set_icon_from_gicon(icon_pos: TGtkEntryIconPosition; icon: PGIcon); cdecl; inline;
-    procedure set_icon_from_icon_name(icon_pos: TGtkEntryIconPosition; icon_name: Pgchar); cdecl; inline;
-    procedure set_icon_from_pixbuf(icon_pos: TGtkEntryIconPosition; pixbuf: PGdkPixbuf); cdecl; inline;
-    procedure set_icon_from_stock(icon_pos: TGtkEntryIconPosition; stock_id: Pgchar); cdecl; inline;
-    procedure set_icon_sensitive(icon_pos: TGtkEntryIconPosition; sensitive: gboolean); cdecl; inline;
-    procedure set_icon_tooltip_markup(icon_pos: TGtkEntryIconPosition; tooltip: Pgchar); cdecl; inline;
-    procedure set_icon_tooltip_text(icon_pos: TGtkEntryIconPosition; tooltip: Pgchar); cdecl; inline;
-    procedure set_invisible_char(ch: gunichar); cdecl; inline;
-    procedure set_max_length(max: gint); cdecl; inline;
-    procedure set_overwrite_mode(overwrite: gboolean); cdecl; inline;
-    procedure set_placeholder_text(text: Pgchar); cdecl; inline;
-    procedure set_progress_fraction(fraction: gdouble); cdecl; inline;
-    procedure set_progress_pulse_step(fraction: gdouble); cdecl; inline;
-    procedure set_text(text: Pgchar); cdecl; inline;
-    procedure set_visibility(visible: gboolean); cdecl; inline;
-    procedure set_width_chars(n_chars: gint); cdecl; inline;
-    function text_index_to_layout_index(text_index: gint): gint; cdecl; inline;
-    procedure unset_invisible_char; cdecl; inline;
-    property activates_default: gboolean read get_activates_default write set_activates_default;
-    property buffer: PGtkEntryBuffer read get_buffer write set_buffer;
-    //property caps_lock_warning: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_caps_lock_warning  { property is writeable but setter not declared } ;
-    property completion: PGtkEntryCompletion read get_completion write set_completion;
-    //property cursor_position: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_cursor_position ;
-    //property editable: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_editable  { property is writeable but setter not declared } ;
-    property has_frame: gboolean read get_has_frame write set_has_frame;
-    //property im_module: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_im_module  { property is writeable but setter not declared } ;
-    //property inner_border: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_inner_border  { property is writeable but setter not declared } ;
-    property invisible_char: gunichar read get_invisible_char write set_invisible_char;
-    //property invisible_char_set: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_invisible_char_set  { property is writeable but setter not declared } ;
-    property max_length: gint read get_max_length write set_max_length;
-    property overwrite_mode: gboolean read get_overwrite_mode write set_overwrite_mode;
-    property placeholder_text: Pgchar read get_placeholder_text write set_placeholder_text;
-    //property primary_icon_activatable: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_activatable  { property is writeable but setter not declared } ;
-    //property primary_icon_gicon: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_gicon  { property is writeable but setter not declared } ;
-    //property primary_icon_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_name  { property is writeable but setter not declared } ;
-    //property primary_icon_pixbuf: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_pixbuf  { property is writeable but setter not declared } ;
-    //property primary_icon_sensitive: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_sensitive  { property is writeable but setter not declared } ;
-    //property primary_icon_stock: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_stock  { property is writeable but setter not declared } ;
-    //property primary_icon_storage_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_storage_type ;
-    //property primary_icon_tooltip_markup: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_tooltip_markup  { property is writeable but setter not declared } ;
-    //property primary_icon_tooltip_text: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_primary_icon_tooltip_text  { property is writeable but setter not declared } ;
-    property progress_fraction: gdouble read get_progress_fraction write set_progress_fraction;
-    property progress_pulse_step: gdouble read get_progress_pulse_step write set_progress_pulse_step;
-    //property scroll_offset: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_scroll_offset ;
-    //property secondary_icon_activatable: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_activatable  { property is writeable but setter not declared } ;
-    //property secondary_icon_gicon: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_gicon  { property is writeable but setter not declared } ;
-    //property secondary_icon_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_name  { property is writeable but setter not declared } ;
-    //property secondary_icon_pixbuf: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_pixbuf  { property is writeable but setter not declared } ;
-    //property secondary_icon_sensitive: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_sensitive  { property is writeable but setter not declared } ;
-    //property secondary_icon_stock: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_stock  { property is writeable but setter not declared } ;
-    //property secondary_icon_storage_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_storage_type ;
-    //property secondary_icon_tooltip_markup: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_tooltip_markup  { property is writeable but setter not declared } ;
-    //property secondary_icon_tooltip_text: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_secondary_icon_tooltip_text  { property is writeable but setter not declared } ;
-    //property selection_bound: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_selection_bound ;
-    //property shadow_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_shadow_type  { property is writeable but setter not declared } ;
-    property text: Pgchar read get_text write set_text;
-    property text_length: guint16 read get_text_length ;
-    //property truncate_multiline: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_truncate_multiline  { property is writeable but setter not declared } ;
-    property visibility: gboolean read get_visibility write set_visibility;
-    property width_chars: gint read get_width_chars write set_width_chars;
-    //property xalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_xalign  { property is writeable but setter not declared } ;
-  end;
 
   TGtkEntryBufferPrivate = record
   end;
@@ -5469,7 +5519,7 @@ type
   PGtkEntryClass = ^TGtkEntryClass;
   TGtkEntryClass = object
     parent_class: TGtkWidgetClass;
-    populate_popup: procedure(entry: PGtkEntry; menu: PGtkMenu); cdecl;
+    populate_popup: procedure(entry: PGtkEntry; popup: PGtkWidget); cdecl;
     activate: procedure(entry: PGtkEntry); cdecl;
     move_cursor: procedure(entry: PGtkEntry; step: TGtkMovementStep; count: gint; extend_selection: gboolean); cdecl;
     insert_at_cursor: procedure(entry: PGtkEntry; str: Pgchar); cdecl;
@@ -5480,6 +5530,7 @@ type
     paste_clipboard: procedure(entry: PGtkEntry); cdecl;
     toggle_overwrite: procedure(entry: PGtkEntry); cdecl;
     get_text_area_size: procedure(entry: PGtkEntry; x: Pgint; y: Pgint; width: Pgint; height: Pgint); cdecl;
+    get_frame_size: procedure(entry: PGtkEntry; x: Pgint; y: Pgint; width: Pgint; height: Pgint); cdecl;
     _gtk_reserved1: procedure; cdecl;
     _gtk_reserved2: procedure; cdecl;
     _gtk_reserved3: procedure; cdecl;
@@ -5487,7 +5538,6 @@ type
     _gtk_reserved5: procedure; cdecl;
     _gtk_reserved6: procedure; cdecl;
     _gtk_reserved7: procedure; cdecl;
-    _gtk_reserved8: procedure; cdecl;
   end;
 
   TGtkEntryCompletionPrivate = record
@@ -5509,16 +5559,11 @@ type
     _gtk_reserved3: procedure; cdecl;
   end;
 
-  PPGtkEventBoxPrivate = ^PGtkEventBoxPrivate;
-  PGtkEventBoxPrivate = ^TGtkEventBoxPrivate;
-
-  TGtkEventBoxPrivate = record
-  end;
-
-
-
   PPGtkEventBox = ^PGtkEventBox;
   PGtkEventBox = ^TGtkEventBox;
+
+  PPGtkEventBoxPrivate = ^PGtkEventBoxPrivate;
+  PGtkEventBoxPrivate = ^TGtkEventBoxPrivate;
   TGtkEventBox = object(TGtkBin)
     priv3: PGtkEventBoxPrivate;
     function new: PGtkEventBox; cdecl; inline; static;
@@ -5530,6 +5575,11 @@ type
     property visible_window: gboolean read get_visible_window write set_visible_window;
   end;
 
+  TGtkEventBoxPrivate = record
+  end;
+
+
+
   PPGtkEventBoxClass = ^PGtkEventBoxClass;
   PGtkEventBoxClass = ^TGtkEventBoxClass;
   TGtkEventBoxClass = object
@@ -5540,16 +5590,11 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkExpanderPrivate = ^PGtkExpanderPrivate;
-  PGtkExpanderPrivate = ^TGtkExpanderPrivate;
-
-  TGtkExpanderPrivate = record
-  end;
-
-
-
   PPGtkExpander = ^PGtkExpander;
   PGtkExpander = ^TGtkExpander;
+
+  PPGtkExpanderPrivate = ^PGtkExpanderPrivate;
+  PGtkExpanderPrivate = ^TGtkExpanderPrivate;
   TGtkExpander = object(TGtkBin)
     priv3: PGtkExpanderPrivate;
     function new(label_: Pgchar): PGtkExpander; cdecl; inline; static;
@@ -5580,6 +5625,11 @@ type
     property use_underline: gboolean read get_use_underline write set_use_underline;
   end;
 
+  TGtkExpanderPrivate = record
+  end;
+
+
+
   PPGtkExpanderClass = ^PGtkExpanderClass;
   PGtkExpanderClass = ^TGtkExpanderClass;
   TGtkExpanderClass = object
@@ -5594,38 +5644,17 @@ type
   PPGtkExpanderStyle = ^PGtkExpanderStyle;
   PGtkExpanderStyle = ^TGtkExpanderStyle;
 
+  PPGtkFileChooser = ^PGtkFileChooser;
+  PGtkFileChooser = ^TGtkFileChooser;
+
   PPGtkFileFilter = ^PGtkFileFilter;
   PGtkFileFilter = ^TGtkFileFilter;
-
-  PPGtkFileFilterFlags = ^PGtkFileFilterFlags;
-  PGtkFileFilterFlags = ^TGtkFileFilterFlags;
-
-  PPGtkFileFilterFunc = ^PGtkFileFilterFunc;
-  PGtkFileFilterFunc = ^TGtkFileFilterFunc;
-
-  PPGtkFileFilterInfo = ^PGtkFileFilterInfo;
-  PGtkFileFilterInfo = ^TGtkFileFilterInfo;
-  TGtkFileFilterFunc = function(filter_info: PGtkFileFilterInfo; data: gpointer): gboolean; cdecl;
-  TGtkFileFilter = object(TGInitiallyUnowned)
-    function new: PGtkFileFilter; cdecl; inline; static;
-    procedure add_custom(needed: TGtkFileFilterFlags; func: TGtkFileFilterFunc; data: gpointer; notify: TGDestroyNotify); cdecl; inline;
-    procedure add_mime_type(mime_type: Pgchar); cdecl; inline;
-    procedure add_pattern(pattern: Pgchar); cdecl; inline;
-    procedure add_pixbuf_formats; cdecl; inline;
-    function filter(filter_info: PGtkFileFilterInfo): gboolean; cdecl; inline;
-    function get_name: Pgchar; cdecl; inline;
-    function get_needed: TGtkFileFilterFlags; cdecl; inline;
-    procedure set_name(name: Pgchar); cdecl; inline;
-  end;
 
   PPGtkFileChooserAction = ^PGtkFileChooserAction;
   PGtkFileChooserAction = ^TGtkFileChooserAction;
 
   PPGtkFileChooserConfirmation = ^PGtkFileChooserConfirmation;
   PGtkFileChooserConfirmation = ^TGtkFileChooserConfirmation;
-
-  PPGtkFileChooser = ^PGtkFileChooser;
-  PGtkFileChooser = ^TGtkFileChooser;
   TGtkFileChooser = object
     confirm_overwrite: function: TGtkFileChooserConfirmation; cdecl;
     current_folder_changed: procedure; cdecl;
@@ -5633,8 +5662,8 @@ type
     selection_changed: procedure; cdecl;
     update_preview: procedure; cdecl;
     procedure add_filter(filter: PGtkFileFilter); cdecl; inline;
-    function add_shortcut_folder(folder: Pgchar): gboolean; cdecl; inline;
-    function add_shortcut_folder_uri(uri: Pgchar): gboolean; cdecl; inline;
+    function add_shortcut_folder(folder: Pgchar; error: PPGError): gboolean; cdecl; inline;
+    function add_shortcut_folder_uri(uri: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function get_action: TGtkFileChooserAction; cdecl; inline;
     function get_create_folders: gboolean; cdecl; inline;
     function get_current_folder: Pgchar; cdecl; inline;
@@ -5662,21 +5691,21 @@ type
     function list_shortcut_folder_uris: PGSList; cdecl; inline;
     function list_shortcut_folders: PGSList; cdecl; inline;
     procedure remove_filter(filter: PGtkFileFilter); cdecl; inline;
-    function remove_shortcut_folder(folder: Pgchar): gboolean; cdecl; inline;
-    function remove_shortcut_folder_uri(uri: Pgchar): gboolean; cdecl; inline;
+    function remove_shortcut_folder(folder: Pgchar; error: PPGError): gboolean; cdecl; inline;
+    function remove_shortcut_folder_uri(uri: Pgchar; error: PPGError): gboolean; cdecl; inline;
     procedure select_all; cdecl; inline;
-    function select_file(file_: PGFile): gboolean; cdecl; inline;
+    function select_file(file_: PGFile; error: PPGError): gboolean; cdecl; inline;
     function select_filename(filename: Pgchar): gboolean; cdecl; inline;
     function select_uri(uri: Pgchar): gboolean; cdecl; inline;
     procedure set_action(action: TGtkFileChooserAction); cdecl; inline;
     procedure set_create_folders(create_folders: gboolean); cdecl; inline;
     function set_current_folder(filename: Pgchar): gboolean; cdecl; inline;
-    function set_current_folder_file(file_: PGFile): gboolean; cdecl; inline;
+    function set_current_folder_file(file_: PGFile; error: PPGError): gboolean; cdecl; inline;
     function set_current_folder_uri(uri: Pgchar): gboolean; cdecl; inline;
     procedure set_current_name(name: Pgchar); cdecl; inline;
     procedure set_do_overwrite_confirmation(do_overwrite_confirmation: gboolean); cdecl; inline;
     procedure set_extra_widget(extra_widget: PGtkWidget); cdecl; inline;
-    function set_file(file_: PGFile): gboolean; cdecl; inline;
+    function set_file(file_: PGFile; error: PPGError): gboolean; cdecl; inline;
     function set_filename(filename: Pgchar): gboolean; cdecl; inline;
     procedure set_filter(filter: PGtkFileFilter); cdecl; inline;
     procedure set_local_only(local_only: gboolean); cdecl; inline;
@@ -5703,16 +5732,32 @@ type
     property use_preview_label: gboolean read get_use_preview_label write set_use_preview_label;
   end;
 
-  PPGtkFileChooserButtonPrivate = ^PGtkFileChooserButtonPrivate;
-  PGtkFileChooserButtonPrivate = ^TGtkFileChooserButtonPrivate;
+  PPGtkFileFilterFlags = ^PGtkFileFilterFlags;
+  PGtkFileFilterFlags = ^TGtkFileFilterFlags;
 
-  TGtkFileChooserButtonPrivate = record
+  PPGtkFileFilterFunc = ^PGtkFileFilterFunc;
+  PGtkFileFilterFunc = ^TGtkFileFilterFunc;
+
+  PPGtkFileFilterInfo = ^PGtkFileFilterInfo;
+  PGtkFileFilterInfo = ^TGtkFileFilterInfo;
+  TGtkFileFilterFunc = function(filter_info: PGtkFileFilterInfo; data: gpointer): gboolean; cdecl;
+  TGtkFileFilter = object(TGInitiallyUnowned)
+    function new: PGtkFileFilter; cdecl; inline; static;
+    procedure add_custom(needed: TGtkFileFilterFlags; func: TGtkFileFilterFunc; data: gpointer; notify: TGDestroyNotify); cdecl; inline;
+    procedure add_mime_type(mime_type: Pgchar); cdecl; inline;
+    procedure add_pattern(pattern: Pgchar); cdecl; inline;
+    procedure add_pixbuf_formats; cdecl; inline;
+    function filter(filter_info: PGtkFileFilterInfo): gboolean; cdecl; inline;
+    function get_name: Pgchar; cdecl; inline;
+    function get_needed: TGtkFileFilterFlags; cdecl; inline;
+    procedure set_name(name: Pgchar); cdecl; inline;
   end;
-
-
 
   PPGtkFileChooserButton = ^PGtkFileChooserButton;
   PGtkFileChooserButton = ^TGtkFileChooserButton;
+
+  PPGtkFileChooserButtonPrivate = ^PGtkFileChooserButtonPrivate;
+  PGtkFileChooserButtonPrivate = ^TGtkFileChooserButtonPrivate;
   TGtkFileChooserButton = object(TGtkBox)
     priv3: PGtkFileChooserButtonPrivate;
     function new(title: Pgchar; action: TGtkFileChooserAction): PGtkFileChooserButton; cdecl; inline; static;
@@ -5728,6 +5773,11 @@ type
     property title: Pgchar read get_title write set_title;
     property width_chars: gint read get_width_chars write set_width_chars;
   end;
+
+  TGtkFileChooserButtonPrivate = record
+  end;
+
+
 
   PPGtkFileChooserButtonClass = ^PGtkFileChooserButtonClass;
   PGtkFileChooserButtonClass = ^TGtkFileChooserButtonClass;
@@ -5803,22 +5853,22 @@ type
 
 
 
-  PPGtkFixedPrivate = ^PGtkFixedPrivate;
-  PGtkFixedPrivate = ^TGtkFixedPrivate;
-
-  TGtkFixedPrivate = record
-  end;
-
-
-
   PPGtkFixed = ^PGtkFixed;
   PGtkFixed = ^TGtkFixed;
+
+  PPGtkFixedPrivate = ^PGtkFixedPrivate;
+  PGtkFixedPrivate = ^TGtkFixedPrivate;
   TGtkFixed = object(TGtkContainer)
     priv2: PGtkFixedPrivate;
     function new: PGtkFixed; cdecl; inline; static;
     procedure move(widget: PGtkWidget; x: gint; y: gint); cdecl; inline;
     procedure put(widget: PGtkWidget; x: gint; y: gint); cdecl; inline;
   end;
+
+  TGtkFixedPrivate = record
+  end;
+
+
 
   PPGtkFixedChild = ^PGtkFixedChild;
   PGtkFixedChild = ^TGtkFixedChild;
@@ -5848,7 +5898,7 @@ type
   PGtkFontFilterFunc = ^TGtkFontFilterFunc;
   TGtkFontFilterFunc = function(family: PPangoFontFamily; face: PPangoFontFace; data: gpointer): gboolean; cdecl;
   TGtkFontChooser = object
-    font_activated: procedure(object_: gchar); cdecl;
+    font_activated: procedure(fontname: Pgchar); cdecl;
     function get_font: Pgchar; cdecl; inline;
     function get_font_desc: PPangoFontDescription; cdecl; inline;
     function get_font_face: PPangoFontFace; cdecl; inline;
@@ -5867,16 +5917,11 @@ type
     property show_preview_entry: gboolean read get_show_preview_entry write set_show_preview_entry;
   end;
 
-  PPGtkFontButtonPrivate = ^PGtkFontButtonPrivate;
-  PGtkFontButtonPrivate = ^TGtkFontButtonPrivate;
-
-  TGtkFontButtonPrivate = record
-  end;
-
-
-
   PPGtkFontButton = ^PGtkFontButton;
   PGtkFontButton = ^TGtkFontButton;
+
+  PPGtkFontButtonPrivate = ^PGtkFontButtonPrivate;
+  PGtkFontButtonPrivate = ^TGtkFontButtonPrivate;
   TGtkFontButton = object(TGtkButton)
     priv4: PGtkFontButtonPrivate;
     function new: PGtkFontButton; cdecl; inline; static;
@@ -5900,6 +5945,11 @@ type
     property use_font: gboolean read get_use_font write set_use_font;
     property use_size: gboolean read get_use_size write set_use_size;
   end;
+
+  TGtkFontButtonPrivate = record
+  end;
+
+
 
   PPGtkFontButtonClass = ^PGtkFontButtonClass;
   PGtkFontButtonClass = ^TGtkFontButtonClass;
@@ -5941,10 +5991,10 @@ type
   PGtkFontChooserIface = ^TGtkFontChooserIface;
   TGtkFontChooserIface = object
     base_iface: TGTypeInterface;
-    get_font_family: function(chooser: PGtkFontChooser): PPangoFontFamily; cdecl;
-    get_font_face: function(chooser: PGtkFontChooser): PPangoFontFace; cdecl;
-    get_font_size: function(chooser: PGtkFontChooser): gint; cdecl;
-    set_filter_func: procedure(chooser: PGtkFontChooser; filter: TGtkFontFilterFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl;
+    get_font_family: function(fontchooser: PGtkFontChooser): PPangoFontFamily; cdecl;
+    get_font_face: function(fontchooser: PGtkFontChooser): PPangoFontFace; cdecl;
+    get_font_size: function(fontchooser: PGtkFontChooser): gint; cdecl;
+    set_filter_func: procedure(fontchooser: PGtkFontChooser; filter: TGtkFontFilterFunc; user_data: gpointer; destroy_: TGDestroyNotify); cdecl;
     font_activated: procedure(chooser: PGtkFontChooser; fontname: Pgchar); cdecl;
     padding: array [0..11] of gpointer;
   end;
@@ -5978,22 +6028,21 @@ type
     _gtk_reserved8: procedure; cdecl;
   end;
 
+  PPGtkFontSelection = ^PGtkFontSelection;
+  PGtkFontSelection = ^TGtkFontSelection;
+
   PPGtkFontSelectionPrivate = ^PGtkFontSelectionPrivate;
   PGtkFontSelectionPrivate = ^TGtkFontSelectionPrivate;
+  TGtkFontSelection = object(TGtkBox)
+    priv3: PGtkFontSelectionPrivate;
+    //property font_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_font_name  { property is writeable but setter not declared } ;
+    //property preview_text: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_preview_text  { property is writeable but setter not declared } ;
+  end;
 
   TGtkFontSelectionPrivate = record
   end;
 
 
-
-  PPGtkFontSelection = ^PGtkFontSelection;
-  PGtkFontSelection = ^TGtkFontSelection;
-  TGtkFontSelection = object(TGtkBox)
-    priv3: PGtkFontSelectionPrivate;
-    function new: PGtkFontSelection; cdecl; inline; static;
-    //property font_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_font_name  { property is writeable but setter not declared } ;
-    //property preview_text: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_preview_text  { property is writeable but setter not declared } ;
-  end;
 
   PPGtkFontSelectionClass = ^PGtkFontSelectionClass;
   PGtkFontSelectionClass = ^TGtkFontSelectionClass;
@@ -6005,19 +6054,19 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
+  PPGtkFontSelectionDialog = ^PGtkFontSelectionDialog;
+  PGtkFontSelectionDialog = ^TGtkFontSelectionDialog;
+
   PPGtkFontSelectionDialogPrivate = ^PGtkFontSelectionDialogPrivate;
   PGtkFontSelectionDialogPrivate = ^TGtkFontSelectionDialogPrivate;
+  TGtkFontSelectionDialog = object(TGtkDialog)
+    priv5: PGtkFontSelectionDialogPrivate;
+  end;
 
   TGtkFontSelectionDialogPrivate = record
   end;
 
 
-
-  PPGtkFontSelectionDialog = ^PGtkFontSelectionDialog;
-  PGtkFontSelectionDialog = ^TGtkFontSelectionDialog;
-  TGtkFontSelectionDialog = object(TGtkDialog)
-    priv5: PGtkFontSelectionDialogPrivate;
-  end;
 
   PPGtkFontSelectionDialogClass = ^PGtkFontSelectionDialogClass;
   PGtkFontSelectionDialogClass = ^TGtkFontSelectionDialogClass;
@@ -6036,49 +6085,27 @@ type
 
   PPGtkGradient = ^PGtkGradient;
   PGtkGradient = ^TGtkGradient;
+  TGtkGradient = object
+    function resolve_for_context(context: PGtkStyleContext): Pcairo_pattern_t; cdecl; inline;
+  end;
 
   PPGtkSymbolicColor = ^PGtkSymbolicColor;
   PGtkSymbolicColor = ^TGtkSymbolicColor;
-  TGtkGradient = object
-    function new_linear(x0: gdouble; y0: gdouble; x1: gdouble; y1: gdouble): PGtkGradient; cdecl; inline; static;
-    function new_radial(x0: gdouble; y0: gdouble; radius0: gdouble; x1: gdouble; y1: gdouble; radius1: gdouble): PGtkGradient; cdecl; inline; static;
-    procedure add_color_stop(offset: gdouble; color: PGtkSymbolicColor); cdecl; inline;
-    function ref: PGtkGradient; cdecl; inline;
-    function resolve(props: PGtkStyleProperties; resolved_gradient: PPcairo_pattern_t): gboolean; cdecl; inline;
-    function resolve_for_context(context: PGtkStyleContext): Pcairo_pattern_t; cdecl; inline;
-    function to_string: Pgchar; cdecl; inline;
-    procedure unref; cdecl; inline;
-  end;
   TGtkSymbolicColor = object
-    function new_alpha(color: PGtkSymbolicColor; factor: gdouble): PGtkSymbolicColor; cdecl; inline; static;
-    function new_literal(color: PGdkRGBA): PGtkSymbolicColor; cdecl; inline; static;
-    function new_mix(color1: PGtkSymbolicColor; color2: PGtkSymbolicColor; factor: gdouble): PGtkSymbolicColor; cdecl; inline; static;
-    function new_name(name: Pgchar): PGtkSymbolicColor; cdecl; inline; static;
-    function new_shade(color: PGtkSymbolicColor; factor: gdouble): PGtkSymbolicColor; cdecl; inline; static;
-    function new_win32(theme_class: Pgchar; id: gint): PGtkSymbolicColor; cdecl; inline; static;
-    function ref: PGtkSymbolicColor; cdecl; inline;
-    function resolve(props: PGtkStyleProperties; resolved_color: PGdkRGBA): gboolean; cdecl; inline;
-    function to_string: Pgchar; cdecl; inline;
-    procedure unref; cdecl; inline;
   end;
 
-  PPGtkStylePropertyParser = ^PGtkStylePropertyParser;
-  PGtkStylePropertyParser = ^TGtkStylePropertyParser;
-  TGtkStylePropertyParser = function(string_: Pgchar; value: PGValue): gboolean; cdecl;
+  PPGtkStyleProperties = ^PGtkStyleProperties;
+  PGtkStyleProperties = ^TGtkStyleProperties;
 
   PPGtkStylePropertiesPrivate = ^PGtkStylePropertiesPrivate;
   PGtkStylePropertiesPrivate = ^TGtkStylePropertiesPrivate;
   TGtkStyleProperties = object(TGObject)
     priv: PGtkStylePropertiesPrivate;
     function new: PGtkStyleProperties; cdecl; inline; static;
-    function lookup_property(property_name: Pgchar; parse_func: PGtkStylePropertyParser; pspec: PPGParamSpec): gboolean; cdecl; inline; static;
-    procedure register_property(parse_func: TGtkStylePropertyParser; pspec: PGParamSpec); cdecl; inline; static;
     procedure clear; cdecl; inline;
     //procedure get(state: TGtkStateFlags; args: array of const); cdecl; inline;
     function get_property(property_: Pgchar; state: TGtkStateFlags; value: PGValue): gboolean; cdecl; inline;
     //procedure get_valist(state: TGtkStateFlags; args: Tva_list); cdecl; inline;
-    function lookup_color(name: Pgchar): PGtkSymbolicColor; cdecl; inline;
-    procedure map_color(name: Pgchar; color: PGtkSymbolicColor); cdecl; inline;
     procedure merge(props_to_merge: PGtkStyleProperties; replace: gboolean); cdecl; inline;
     //procedure set_(state: TGtkStateFlags; args: array of const); cdecl; inline;
     procedure set_property(property_: Pgchar; state: TGtkStateFlags; value: PGValue); cdecl; inline;
@@ -6103,14 +6130,12 @@ type
     procedure add_class(class_name: Pgchar); cdecl; inline;
     procedure add_provider(provider: PGtkStyleProvider; priority: guint); cdecl; inline;
     procedure add_region(region_name: Pgchar; flags: TGtkRegionFlags); cdecl; inline;
-    procedure cancel_animations(region_id: gpointer); cdecl; inline;
     //procedure get(state: TGtkStateFlags; args: array of const); cdecl; inline;
     procedure get_background_color(state: TGtkStateFlags; color: PGdkRGBA); cdecl; inline;
     procedure get_border(state: TGtkStateFlags; border: PGtkBorder); cdecl; inline;
     procedure get_border_color(state: TGtkStateFlags; color: PGdkRGBA); cdecl; inline;
     procedure get_color(state: TGtkStateFlags; color: PGdkRGBA); cdecl; inline;
-    function get_direction: TGtkTextDirection; cdecl; inline;
-    function get_font(state: TGtkStateFlags): PPangoFontDescription; cdecl; inline;
+    function get_frame_clock: PGdkFrameClock; cdecl; inline;
     function get_junction_sides: TGtkJunctionSides; cdecl; inline;
     procedure get_margin(state: TGtkStateFlags; margin: PGtkBorder); cdecl; inline;
     procedure get_padding(state: TGtkStateFlags; padding: PGtkBorder); cdecl; inline;
@@ -6131,38 +6156,29 @@ type
     function list_regions: PGList; cdecl; inline;
     function lookup_color(color_name: Pgchar; color: PGdkRGBA): gboolean; cdecl; inline;
     function lookup_icon_set(stock_id: Pgchar): PGtkIconSet; cdecl; inline;
-    procedure notify_state_change(window: PGdkWindow; region_id: gpointer; state: TGtkStateType; state_value: gboolean); cdecl; inline;
-    procedure pop_animatable_region; cdecl; inline;
-    procedure push_animatable_region(region_id: gpointer); cdecl; inline;
     procedure remove_class(class_name: Pgchar); cdecl; inline;
     procedure remove_provider(provider: PGtkStyleProvider); cdecl; inline;
     procedure remove_region(region_name: Pgchar); cdecl; inline;
     procedure restore; cdecl; inline;
     procedure save; cdecl; inline;
-    procedure scroll_animations(window: PGdkWindow; dx: gint; dy: gint); cdecl; inline;
     procedure set_background(window: PGdkWindow); cdecl; inline;
-    procedure set_direction(direction: TGtkTextDirection); cdecl; inline;
+    procedure set_frame_clock(frame_clock: PGdkFrameClock); cdecl; inline;
     procedure set_junction_sides(sides: TGtkJunctionSides); cdecl; inline;
     procedure set_parent(parent: PGtkStyleContext); cdecl; inline;
     procedure set_path(path: PGtkWidgetPath); cdecl; inline;
     procedure set_screen(screen: PGdkScreen); cdecl; inline;
     procedure set_state(flags: TGtkStateFlags); cdecl; inline;
-    function state_is_running(state: TGtkStateType; progress: Pgdouble): gboolean; cdecl; inline;
-    property direction: TGtkTextDirection read get_direction write set_direction;
+    //property direction: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_direction  { property is writeable but setter not declared } ;
+    //property paint_clock: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_paint_clock  { property is writeable but setter not declared } ;
     property parent: PGtkStyleContext read get_parent write set_parent;
     property screen: PGdkScreen read get_screen write set_screen;
   end;
 
-  PPGtkGridPrivate = ^PGtkGridPrivate;
-  PGtkGridPrivate = ^TGtkGridPrivate;
-
-  TGtkGridPrivate = record
-  end;
-
-
-
   PPGtkGrid = ^PGtkGrid;
   PGtkGrid = ^TGtkGrid;
+
+  PPGtkGridPrivate = ^PGtkGridPrivate;
+  PGtkGridPrivate = ^TGtkGridPrivate;
   TGtkGrid = object(TGtkContainer)
     priv2: PGtkGridPrivate;
     function new: PGtkGrid; cdecl; inline; static;
@@ -6185,6 +6201,11 @@ type
     property row_homogeneous: gboolean read get_row_homogeneous write set_row_homogeneous;
     property row_spacing: guint read get_row_spacing write set_row_spacing;
   end;
+
+  TGtkGridPrivate = record
+  end;
+
+
 
   PPGtkGridClass = ^PGtkGridClass;
   PGtkGridClass = ^TGtkGridClass;
@@ -6272,16 +6293,11 @@ type
     parent_class: TGtkPanedClass;
   end;
 
-  PPGtkHSVPrivate = ^PGtkHSVPrivate;
-  PGtkHSVPrivate = ^TGtkHSVPrivate;
-
-  TGtkHSVPrivate = record
-  end;
-
-
-
   PPGtkHSV = ^PGtkHSV;
   PGtkHSV = ^TGtkHSV;
+
+  PPGtkHSVPrivate = ^PGtkHSVPrivate;
+  PGtkHSVPrivate = ^TGtkHSVPrivate;
   TGtkHSV = object(TGtkWidget)
     priv1: PGtkHSVPrivate;
     function new: PGtkHSV; cdecl; inline; static;
@@ -6292,6 +6308,11 @@ type
     procedure set_color(h: gdouble; s: gdouble; v: gdouble); cdecl; inline;
     procedure set_metrics(size: gint; ring_width: gint); cdecl; inline;
   end;
+
+  TGtkHSVPrivate = record
+  end;
+
+
 
   PPGtkHSVClass = ^PGtkHSVClass;
   PGtkHSVClass = ^TGtkHSVClass;
@@ -6476,16 +6497,11 @@ type
     parent_class: TGtkSeparatorClass;
   end;
 
-  PPGtkHandleBoxPrivate = ^PGtkHandleBoxPrivate;
-  PGtkHandleBoxPrivate = ^TGtkHandleBoxPrivate;
-
-  TGtkHandleBoxPrivate = record
-  end;
-
-
-
   PPGtkHandleBox = ^PGtkHandleBox;
   PGtkHandleBox = ^TGtkHandleBox;
+
+  PPGtkHandleBoxPrivate = ^PGtkHandleBoxPrivate;
+  PGtkHandleBoxPrivate = ^TGtkHandleBoxPrivate;
   TGtkHandleBox = object(TGtkBin)
     priv3: PGtkHandleBoxPrivate;
     //property child_detached: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_child_detached ;
@@ -6494,6 +6510,11 @@ type
     //property snap_edge: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_snap_edge  { property is writeable but setter not declared } ;
     //property snap_edge_set: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_snap_edge_set  { property is writeable but setter not declared } ;
   end;
+
+  TGtkHandleBoxPrivate = record
+  end;
+
+
 
   PPGtkHandleBoxClass = ^PGtkHandleBoxClass;
   PGtkHandleBoxClass = ^TGtkHandleBoxClass;
@@ -6521,6 +6542,8 @@ type
     procedure set_cursor_location(area: PGdkRectangle); cdecl; inline;
     procedure set_surrounding(text: Pgchar; len: gint; cursor_index: gint); cdecl; inline;
     procedure set_use_preedit(use_preedit: gboolean); cdecl; inline;
+    //property input_hints: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_input_hints  { property is writeable but setter not declared } ;
+    //property input_purpose: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_input_purpose  { property is writeable but setter not declared } ;
   end;
 
   PPGtkIMContextClass = ^PGtkIMContextClass;
@@ -6564,21 +6587,21 @@ type
 
 
 
-  PPGtkIMContextSimplePrivate = ^PGtkIMContextSimplePrivate;
-  PGtkIMContextSimplePrivate = ^TGtkIMContextSimplePrivate;
-
-  TGtkIMContextSimplePrivate = record
-  end;
-
-
-
   PPGtkIMContextSimple = ^PGtkIMContextSimple;
   PGtkIMContextSimple = ^TGtkIMContextSimple;
+
+  PPGtkIMContextSimplePrivate = ^PGtkIMContextSimplePrivate;
+  PGtkIMContextSimplePrivate = ^TGtkIMContextSimplePrivate;
   TGtkIMContextSimple = object(TGtkIMContext)
     priv: PGtkIMContextSimplePrivate;
     function new: PGtkIMContextSimple; cdecl; inline; static;
     procedure add_table(data: Pguint16; max_seq_len: gint; n_seqs: gint); cdecl; inline;
   end;
+
+  TGtkIMContextSimplePrivate = record
+  end;
+
+
 
   PPGtkIMContextSimpleClass = ^PGtkIMContextSimpleClass;
   PGtkIMContextSimpleClass = ^TGtkIMContextSimpleClass;
@@ -6586,16 +6609,11 @@ type
     parent_class: TGtkIMContextClass;
   end;
 
-  PPGtkIMMulticontextPrivate = ^PGtkIMMulticontextPrivate;
-  PGtkIMMulticontextPrivate = ^TGtkIMMulticontextPrivate;
-
-  TGtkIMMulticontextPrivate = record
-  end;
-
-
-
   PPGtkIMMulticontext = ^PGtkIMMulticontext;
   PGtkIMMulticontext = ^TGtkIMMulticontext;
+
+  PPGtkIMMulticontextPrivate = ^PGtkIMMulticontextPrivate;
+  PGtkIMMulticontextPrivate = ^TGtkIMMulticontextPrivate;
   TGtkIMMulticontext = object(TGtkIMContext)
     priv: PGtkIMMulticontextPrivate;
     function new: PGtkIMMulticontext; cdecl; inline; static;
@@ -6603,6 +6621,11 @@ type
     function get_context_id: Pgchar; cdecl; inline;
     procedure set_context_id(context_id: Pgchar); cdecl; inline;
   end;
+
+  TGtkIMMulticontextPrivate = record
+  end;
+
+
 
   PPGtkIMMulticontextClass = ^PGtkIMMulticontextClass;
   PGtkIMMulticontextClass = ^TGtkIMMulticontextClass;
@@ -6619,6 +6642,9 @@ type
 
   PPGtkIMStatusStyle = ^PGtkIMStatusStyle;
   PGtkIMStatusStyle = ^TGtkIMStatusStyle;
+
+  PPGtkIconFactory = ^PGtkIconFactory;
+  PGtkIconFactory = ^TGtkIconFactory;
 
   PPGtkIconFactoryPrivate = ^PGtkIconFactoryPrivate;
   PGtkIconFactoryPrivate = ^TGtkIconFactoryPrivate;
@@ -6665,19 +6691,23 @@ type
 
   PPGtkIconTheme = ^PGtkIconTheme;
   PGtkIconTheme = ^TGtkIconTheme;
-  TGtkIconInfo = object
+  TGtkIconInfo = object(TGObject)
     function new_for_pixbuf(icon_theme: PGtkIconTheme; pixbuf: PGdkPixbuf): PGtkIconInfo; cdecl; inline; static;
-    function copy: PGtkIconInfo; cdecl; inline;
-    procedure free; cdecl; inline;
     function get_attach_points(points: PPGdkPoint; n_points: Pgint): gboolean; cdecl; inline;
     function get_base_size: gint; cdecl; inline;
     function get_builtin_pixbuf: PGdkPixbuf; cdecl; inline;
     function get_display_name: Pgchar; cdecl; inline;
     function get_embedded_rect(rectangle: PGdkRectangle): gboolean; cdecl; inline;
     function get_filename: Pgchar; cdecl; inline;
-    function load_icon: PGdkPixbuf; cdecl; inline;
-    function load_symbolic(fg: PGdkRGBA; success_color: PGdkRGBA; warning_color: PGdkRGBA; error_color: PGdkRGBA; was_symbolic: Pgboolean): PGdkPixbuf; cdecl; inline;
-    function load_symbolic_for_context(context: PGtkStyleContext; was_symbolic: Pgboolean): PGdkPixbuf; cdecl; inline;
+    function load_icon(error: PPGError): PGdkPixbuf; cdecl; inline;
+    procedure load_icon_async(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function load_icon_finish(res: PGAsyncResult; error: PPGError): PGdkPixbuf; cdecl; inline;
+    function load_symbolic(fg: PGdkRGBA; success_color: PGdkRGBA; warning_color: PGdkRGBA; error_color: PGdkRGBA; was_symbolic: Pgboolean; error: PPGError): PGdkPixbuf; cdecl; inline;
+    procedure load_symbolic_async(fg: PGdkRGBA; success_color: PGdkRGBA; warning_color: PGdkRGBA; error_color: PGdkRGBA; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function load_symbolic_finish(res: PGAsyncResult; was_symbolic: Pgboolean; error: PPGError): PGdkPixbuf; cdecl; inline;
+    function load_symbolic_for_context(context: PGtkStyleContext; was_symbolic: Pgboolean; error: PPGError): PGdkPixbuf; cdecl; inline;
+    procedure load_symbolic_for_context_async(context: PGtkStyleContext; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function load_symbolic_for_context_finish(res: PGAsyncResult; was_symbolic: Pgboolean; error: PPGError): PGdkPixbuf; cdecl; inline;
     procedure set_raw_coordinates(raw_coordinates: gboolean); cdecl; inline;
   end;
 
@@ -6700,7 +6730,7 @@ type
     function has_icon(icon_name: Pgchar): gboolean; cdecl; inline;
     function list_contexts: PGList; cdecl; inline;
     function list_icons(context: Pgchar): PGList; cdecl; inline;
-    function load_icon(icon_name: Pgchar; size: gint; flags: TGtkIconLookupFlags): PGdkPixbuf; cdecl; inline;
+    function load_icon(icon_name: Pgchar; size: gint; flags: TGtkIconLookupFlags; error: PPGError): PGdkPixbuf; cdecl; inline;
     function lookup_by_gicon(icon: PGIcon; size: gint; flags: TGtkIconLookupFlags): PGtkIconInfo; cdecl; inline;
     function lookup_icon(icon_name: Pgchar; size: gint; flags: TGtkIconLookupFlags): PGtkIconInfo; cdecl; inline;
     procedure prepend_search_path(path: Pgchar); cdecl; inline;
@@ -6709,6 +6739,9 @@ type
     procedure set_screen(screen: PGdkScreen); cdecl; inline;
     procedure set_search_path(path: Pgchar; n_elements: gint); cdecl; inline;
   end;
+
+  PPGtkRcStyle = ^PGtkRcStyle;
+  PGtkRcStyle = ^TGtkRcStyle;
   TGtkStyle = object(TGObject)
     fg: array [0..4] of TGdkColor;
     bg: array [0..4] of TGdkColor;
@@ -6731,19 +6764,16 @@ type
     styles: PGSList;
     property_cache: gpointer;
     icon_factories: PGSList;
-    procedure apply_default_background(cr: Pcairo_t; window: PGdkWindow; state_type: TGtkStateType; x: gint; y: gint; width: gint; height: gint); cdecl; inline;
-    function attach(window: PGdkWindow): PGtkStyle; cdecl; inline;
-    function copy: PGtkStyle; cdecl; inline;
-    procedure detach; cdecl; inline;
     //procedure get(widget_type: TGType; first_property_name: Pgchar; args: array of const); cdecl; inline;
     procedure get_style_property(widget_type: TGType; property_name: Pgchar; value: PGValue); cdecl; inline;
     //procedure get_valist(widget_type: TGType; first_property_name: Pgchar; var_args: Tva_list); cdecl; inline;
     function has_context: gboolean; cdecl; inline;
-    function lookup_color(color_name: Pgchar; color: PGdkColor): gboolean; cdecl; inline;
-    function lookup_icon_set(stock_id: Pgchar): PGtkIconSet; cdecl; inline;
-    function render_icon(source: PGtkIconSource; direction: TGtkTextDirection; state: TGtkStateType; size: gint; widget: PGtkWidget; detail: Pgchar): PGdkPixbuf; cdecl; inline;
-    procedure set_background(window: PGdkWindow; state_type: TGtkStateType); cdecl; inline;
     //property context: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_context  { property is writeable but setter not declared } ;
+  end;
+
+  PPGtkIconInfoClass = ^PGtkIconInfoClass;
+  PGtkIconInfoClass = ^TGtkIconInfoClass;
+  TGtkIconInfoClass = object
   end;
   TGtkIconSource = object
     function new: PGtkIconSource; cdecl; inline; static;
@@ -6806,6 +6836,7 @@ type
     //property gtk_enable_event_sounds: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_event_sounds  { property is writeable but setter not declared } ;
     //property gtk_enable_input_feedback_sounds: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_input_feedback_sounds  { property is writeable but setter not declared } ;
     //property gtk_enable_mnemonics: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_mnemonics  { property is writeable but setter not declared } ;
+    //property gtk_enable_primary_paste: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_primary_paste  { property is writeable but setter not declared } ;
     //property gtk_enable_tooltips: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_tooltips  { property is writeable but setter not declared } ;
     //property gtk_entry_password_hint_timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_entry_password_hint_timeout  { property is writeable but setter not declared } ;
     //property gtk_entry_select_on_focus: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_entry_select_on_focus  { property is writeable but setter not declared } ;
@@ -6829,8 +6860,10 @@ type
     //property gtk_menu_popdown_delay: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_menu_popdown_delay  { property is writeable but setter not declared } ;
     //property gtk_menu_popup_delay: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_menu_popup_delay  { property is writeable but setter not declared } ;
     //property gtk_modules: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_modules  { property is writeable but setter not declared } ;
+    //property gtk_primary_button_warps_slider: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_primary_button_warps_slider  { property is writeable but setter not declared } ;
     //property gtk_print_backends: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_print_backends  { property is writeable but setter not declared } ;
     //property gtk_print_preview_command: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_print_preview_command  { property is writeable but setter not declared } ;
+    //property gtk_recent_files_enabled: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_recent_files_enabled  { property is writeable but setter not declared } ;
     //property gtk_recent_files_limit: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_recent_files_limit  { property is writeable but setter not declared } ;
     //property gtk_recent_files_max_age: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_recent_files_max_age  { property is writeable but setter not declared } ;
     //property gtk_scrolled_window_placement: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_scrolled_window_placement  { property is writeable but setter not declared } ;
@@ -6897,37 +6930,21 @@ type
     property vscroll_policy: TGtkScrollablePolicy read get_vscroll_policy write set_vscroll_policy;
   end;
 
+  PPGtkIconView = ^PGtkIconView;
+  PGtkIconView = ^TGtkIconView;
+
   PPGtkIconViewDropPosition = ^PGtkIconViewDropPosition;
   PGtkIconViewDropPosition = ^TGtkIconViewDropPosition;
 
   PPGtkSelectionMode = ^PGtkSelectionMode;
   PGtkSelectionMode = ^TGtkSelectionMode;
 
-  PPGtkIconView = ^PGtkIconView;
-  PGtkIconView = ^TGtkIconView;
+  PPGtkIconViewForeachFunc = ^PGtkIconViewForeachFunc;
+  PGtkIconViewForeachFunc = ^TGtkIconViewForeachFunc;
   TGtkIconViewForeachFunc = procedure(icon_view: PGtkIconView; path: PGtkTreePath; data: gpointer); cdecl;
-  TGtkTooltip = object(TGObject)
-    procedure trigger_tooltip_query(display: PGdkDisplay); cdecl; inline; static;
-    procedure set_custom(custom_widget: PGtkWidget); cdecl; inline;
-    procedure set_icon(pixbuf: PGdkPixbuf); cdecl; inline;
-    procedure set_icon_from_gicon(gicon: PGIcon; size: gint); cdecl; inline;
-    procedure set_icon_from_icon_name(icon_name: Pgchar; size: gint); cdecl; inline;
-    procedure set_icon_from_stock(stock_id: Pgchar; size: gint); cdecl; inline;
-    procedure set_markup(markup: Pgchar); cdecl; inline;
-    procedure set_text(text: Pgchar); cdecl; inline;
-    procedure set_tip_area(rect: PGdkRectangle); cdecl; inline;
-  end;
 
   PPGtkIconViewPrivate = ^PGtkIconViewPrivate;
   PGtkIconViewPrivate = ^TGtkIconViewPrivate;
-
-  TGtkIconViewPrivate = record
-  end;
-
-
-
-  PPGtkIconViewForeachFunc = ^PGtkIconViewForeachFunc;
-  PGtkIconViewForeachFunc = ^TGtkIconViewForeachFunc;
   TGtkIconView = object(TGtkContainer)
     priv2: PGtkIconViewPrivate;
     function new: PGtkIconView; cdecl; inline; static;
@@ -6937,6 +6954,8 @@ type
     function create_drag_icon(path: PGtkTreePath): Pcairo_surface_t; cdecl; inline;
     procedure enable_model_drag_dest(targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; inline;
     procedure enable_model_drag_source(start_button_mask: TGdkModifierType; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; inline;
+    function get_activate_on_single_click: gboolean; cdecl; inline;
+    function get_cell_rect(path: PGtkTreePath; cell: PGtkCellRenderer; rect: PGdkRectangle): gboolean; cdecl; inline;
     function get_column_spacing: gint; cdecl; inline;
     function get_columns: gint; cdecl; inline;
     function get_cursor(path: PPGtkTreePath; cell: PPGtkCellRenderer): gboolean; cdecl; inline;
@@ -6968,6 +6987,7 @@ type
     procedure select_all; cdecl; inline;
     procedure select_path(path: PGtkTreePath); cdecl; inline;
     procedure selected_foreach(func: TGtkIconViewForeachFunc; data: gpointer); cdecl; inline;
+    procedure set_activate_on_single_click(single: gboolean); cdecl; inline;
     procedure set_column_spacing(column_spacing: gint); cdecl; inline;
     procedure set_columns(columns: gint); cdecl; inline;
     procedure set_cursor(path: PGtkTreePath; cell: PGtkCellRenderer; start_editing: gboolean); cdecl; inline;
@@ -6991,6 +7011,7 @@ type
     procedure unselect_path(path: PGtkTreePath); cdecl; inline;
     procedure unset_model_drag_dest; cdecl; inline;
     procedure unset_model_drag_source; cdecl; inline;
+    property activate_on_single_click: gboolean read get_activate_on_single_click write set_activate_on_single_click;
     //property cell_area: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_cell_area  { property is writeable but setter not declared } ;
     property column_spacing: gint read get_column_spacing write set_column_spacing;
     property columns: gint read get_columns write set_columns;
@@ -7008,6 +7029,22 @@ type
     property text_column: gint read get_text_column write set_text_column;
     property tooltip_column: gint read get_tooltip_column write set_tooltip_column;
   end;
+  TGtkTooltip = object(TGObject)
+    procedure trigger_tooltip_query(display: PGdkDisplay); cdecl; inline; static;
+    procedure set_custom(custom_widget: PGtkWidget); cdecl; inline;
+    procedure set_icon(pixbuf: PGdkPixbuf); cdecl; inline;
+    procedure set_icon_from_gicon(gicon: PGIcon; size: gint); cdecl; inline;
+    procedure set_icon_from_icon_name(icon_name: Pgchar; size: gint); cdecl; inline;
+    procedure set_icon_from_stock(stock_id: Pgchar; size: gint); cdecl; inline;
+    procedure set_markup(markup: Pgchar); cdecl; inline;
+    procedure set_text(text: Pgchar); cdecl; inline;
+    procedure set_tip_area(rect: PGdkRectangle); cdecl; inline;
+  end;
+
+  TGtkIconViewPrivate = record
+  end;
+
+
 
   PPGtkIconViewClass = ^PGtkIconViewClass;
   PGtkIconViewClass = ^TGtkIconViewClass;
@@ -7027,16 +7064,11 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkImagePrivate = ^PGtkImagePrivate;
-  PGtkImagePrivate = ^TGtkImagePrivate;
-
-  TGtkImagePrivate = record
-  end;
-
-
-
   PPGtkImage = ^PGtkImage;
   PGtkImage = ^TGtkImage;
+
+  PPGtkImagePrivate = ^PGtkImagePrivate;
+  PGtkImagePrivate = ^TGtkImagePrivate;
   TGtkImage = object(TGtkMisc)
     priv2: PGtkImagePrivate;
     function new: PGtkImage; cdecl; inline; static;
@@ -7074,10 +7106,16 @@ type
     property pixbuf: PGdkPixbuf read get_pixbuf  { property is writeable but setter not declared } ;
     //property pixbuf_animation: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_pixbuf_animation  { property is writeable but setter not declared } ;
     property pixel_size: gint read get_pixel_size write set_pixel_size;
+    //property resource: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_resource  { property is writeable but setter not declared } ;
     //property stock: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_stock  { property is writeable but setter not declared } ;
     property storage_type: TGtkImageType read get_storage_type ;
     //property use_fallback: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_use_fallback  { property is writeable but setter not declared } ;
   end;
+
+  TGtkImagePrivate = record
+  end;
+
+
 
   PPGtkImageClass = ^PGtkImageClass;
   PGtkImageClass = ^TGtkImageClass;
@@ -7089,16 +7127,11 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkImageMenuItemPrivate = ^PGtkImageMenuItemPrivate;
-  PGtkImageMenuItemPrivate = ^TGtkImageMenuItemPrivate;
-
-  TGtkImageMenuItemPrivate = record
-  end;
-
-
-
   PPGtkImageMenuItem = ^PGtkImageMenuItem;
   PGtkImageMenuItem = ^TGtkImageMenuItem;
+
+  PPGtkImageMenuItemPrivate = ^PGtkImageMenuItemPrivate;
+  PGtkImageMenuItemPrivate = ^TGtkImageMenuItemPrivate;
   TGtkImageMenuItem = object(TGtkMenuItem)
     priv4: PGtkImageMenuItemPrivate;
     function new: PGtkImageMenuItem; cdecl; inline; static;
@@ -7118,6 +7151,11 @@ type
     property use_stock: gboolean read get_use_stock write set_use_stock;
   end;
 
+  TGtkImageMenuItemPrivate = record
+  end;
+
+
+
   PPGtkImageMenuItemClass = ^PGtkImageMenuItemClass;
   PGtkImageMenuItemClass = ^TGtkImageMenuItemClass;
   TGtkImageMenuItemClass = object
@@ -7128,19 +7166,14 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
+  PPGtkInfoBar = ^PGtkInfoBar;
+  PGtkInfoBar = ^TGtkInfoBar;
+
   PPGtkMessageType = ^PGtkMessageType;
   PGtkMessageType = ^TGtkMessageType;
 
   PPGtkInfoBarPrivate = ^PGtkInfoBarPrivate;
   PGtkInfoBarPrivate = ^TGtkInfoBarPrivate;
-
-  TGtkInfoBarPrivate = record
-  end;
-
-
-
-  PPGtkInfoBar = ^PGtkInfoBar;
-  PGtkInfoBar = ^TGtkInfoBar;
   TGtkInfoBar = object(TGtkBox)
     priv3: PGtkInfoBarPrivate;
     function new: PGtkInfoBar; cdecl; inline; static;
@@ -7158,6 +7191,11 @@ type
     property message_type: TGtkMessageType read get_message_type write set_message_type;
   end;
 
+  TGtkInfoBarPrivate = record
+  end;
+
+
+
   PPGtkInfoBarClass = ^PGtkInfoBarClass;
   PGtkInfoBarClass = ^TGtkInfoBarClass;
   TGtkInfoBarClass = object
@@ -7170,16 +7208,11 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkInvisiblePrivate = ^PGtkInvisiblePrivate;
-  PGtkInvisiblePrivate = ^TGtkInvisiblePrivate;
-
-  TGtkInvisiblePrivate = record
-  end;
-
-
-
   PPGtkInvisible = ^PGtkInvisible;
   PGtkInvisible = ^TGtkInvisible;
+
+  PPGtkInvisiblePrivate = ^PGtkInvisiblePrivate;
+  PGtkInvisiblePrivate = ^TGtkInvisiblePrivate;
   TGtkInvisible = object(TGtkWidget)
     priv1: PGtkInvisiblePrivate;
     function new: PGtkInvisible; cdecl; inline; static;
@@ -7188,6 +7221,11 @@ type
     procedure set_screen(screen: PGdkScreen); cdecl; inline;
     property screen: PGdkScreen read get_screen write set_screen;
   end;
+
+  TGtkInvisiblePrivate = record
+  end;
+
+
 
   PPGtkInvisibleClass = ^PGtkInvisibleClass;
   PGtkInvisibleClass = ^TGtkInvisibleClass;
@@ -7213,16 +7251,11 @@ type
 
 
 
-  PPGtkLayoutPrivate = ^PGtkLayoutPrivate;
-  PGtkLayoutPrivate = ^TGtkLayoutPrivate;
-
-  TGtkLayoutPrivate = record
-  end;
-
-
-
   PPGtkLayout = ^PGtkLayout;
   PGtkLayout = ^TGtkLayout;
+
+  PPGtkLayoutPrivate = ^PGtkLayoutPrivate;
+  PGtkLayoutPrivate = ^TGtkLayoutPrivate;
   TGtkLayout = object(TGtkContainer)
     priv2: PGtkLayoutPrivate;
     function new(hadjustment: PGtkAdjustment; vadjustment: PGtkAdjustment): PGtkLayout; cdecl; inline; static;
@@ -7235,6 +7268,11 @@ type
     //property width: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_width  { property is writeable but setter not declared } ;
   end;
 
+  TGtkLayoutPrivate = record
+  end;
+
+
+
   PPGtkLayoutClass = ^PGtkLayoutClass;
   PGtkLayoutClass = ^TGtkLayoutClass;
   TGtkLayoutClass = object
@@ -7245,16 +7283,56 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkLinkButtonPrivate = ^PGtkLinkButtonPrivate;
-  PGtkLinkButtonPrivate = ^TGtkLinkButtonPrivate;
+  PPGtkLevelBar = ^PGtkLevelBar;
+  PGtkLevelBar = ^TGtkLevelBar;
 
-  TGtkLinkButtonPrivate = record
+  PPGtkLevelBarMode = ^PGtkLevelBarMode;
+  PGtkLevelBarMode = ^TGtkLevelBarMode;
+
+  PPGtkLevelBarPrivate = ^PGtkLevelBarPrivate;
+  PGtkLevelBarPrivate = ^TGtkLevelBarPrivate;
+  TGtkLevelBar = object(TGtkWidget)
+    priv1: PGtkLevelBarPrivate;
+    function new: PGtkLevelBar; cdecl; inline; static;
+    function new_for_interval(min_value: gdouble; max_value: gdouble): PGtkLevelBar; cdecl; inline; static;
+    procedure add_offset_value(name: Pgchar; value: gdouble); cdecl; inline;
+    function get_inverted: gboolean; cdecl; inline;
+    function get_max_value: gdouble; cdecl; inline;
+    function get_min_value: gdouble; cdecl; inline;
+    function get_mode: TGtkLevelBarMode; cdecl; inline;
+    function get_offset_value(name: Pgchar; value: Pgdouble): gboolean; cdecl; inline;
+    function get_value: gdouble; cdecl; inline;
+    procedure remove_offset_value(name: Pgchar); cdecl; inline;
+    procedure set_inverted(inverted: gboolean); cdecl; inline;
+    procedure set_max_value(value: gdouble); cdecl; inline;
+    procedure set_min_value(value: gdouble); cdecl; inline;
+    procedure set_mode(mode: TGtkLevelBarMode); cdecl; inline;
+    procedure set_value(value: gdouble); cdecl; inline;
+    property inverted: gboolean read get_inverted write set_inverted;
+    property max_value: gdouble read get_max_value write set_max_value;
+    property min_value: gdouble read get_min_value write set_min_value;
+    property mode: TGtkLevelBarMode read get_mode write set_mode;
+    property value: gdouble read get_value write set_value;
+  end;
+
+  TGtkLevelBarPrivate = record
   end;
 
 
 
+  PPGtkLevelBarClass = ^PGtkLevelBarClass;
+  PGtkLevelBarClass = ^TGtkLevelBarClass;
+  TGtkLevelBarClass = object
+    parent_class: TGtkWidgetClass;
+    offset_changed: procedure(self: PGtkLevelBar; name: Pgchar); cdecl;
+    padding: array [0..15] of gpointer;
+  end;
+
   PPGtkLinkButton = ^PGtkLinkButton;
   PGtkLinkButton = ^TGtkLinkButton;
+
+  PPGtkLinkButtonPrivate = ^PGtkLinkButtonPrivate;
+  PGtkLinkButtonPrivate = ^TGtkLinkButtonPrivate;
   TGtkLinkButton = object(TGtkButton)
     priv4: PGtkLinkButtonPrivate;
     function new(uri: Pgchar): PGtkLinkButton; cdecl; inline; static;
@@ -7266,6 +7344,11 @@ type
     property uri: Pgchar read get_uri write set_uri;
     property visited: gboolean read get_visited write set_visited;
   end;
+
+  TGtkLinkButtonPrivate = record
+  end;
+
+
 
   PPGtkLinkButtonClass = ^PGtkLinkButtonClass;
   PGtkLinkButtonClass = ^TGtkLinkButtonClass;
@@ -7357,16 +7440,11 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkLockButtonPrivate = ^PGtkLockButtonPrivate;
-  PGtkLockButtonPrivate = ^TGtkLockButtonPrivate;
-
-  TGtkLockButtonPrivate = record
-  end;
-
-
-
   PPGtkLockButton = ^PGtkLockButton;
   PGtkLockButton = ^TGtkLockButton;
+
+  PPGtkLockButtonPrivate = ^PGtkLockButtonPrivate;
+  PGtkLockButtonPrivate = ^TGtkLockButtonPrivate;
   TGtkLockButton = object(TGtkButton)
     priv4: PGtkLockButtonPrivate;
     function new(permission: PGPermission): PGtkLockButton; cdecl; inline; static;
@@ -7379,6 +7457,11 @@ type
     //property tooltip_not_authorized: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_tooltip_not_authorized  { property is writeable but setter not declared } ;
     //property tooltip_unlock: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_tooltip_unlock  { property is writeable but setter not declared } ;
   end;
+
+  TGtkLockButtonPrivate = record
+  end;
+
+
 
   PPGtkLockButtonClass = ^PGtkLockButtonClass;
   PGtkLockButtonClass = ^TGtkLockButtonClass;
@@ -7402,16 +7485,11 @@ type
   PPGtkPackDirection = ^PGtkPackDirection;
   PGtkPackDirection = ^TGtkPackDirection;
 
-  PPGtkMenuBarPrivate = ^PGtkMenuBarPrivate;
-  PGtkMenuBarPrivate = ^TGtkMenuBarPrivate;
-
-  TGtkMenuBarPrivate = record
-  end;
-
-
-
   PPGtkMenuBar = ^PGtkMenuBar;
   PGtkMenuBar = ^TGtkMenuBar;
+
+  PPGtkMenuBarPrivate = ^PGtkMenuBarPrivate;
+  PGtkMenuBarPrivate = ^TGtkMenuBarPrivate;
   TGtkMenuBar = object(TGtkMenuShell)
     priv3: PGtkMenuBarPrivate;
     function new: PGtkMenuBar; cdecl; inline; static;
@@ -7423,6 +7501,11 @@ type
     property child_pack_direction: TGtkPackDirection read get_child_pack_direction write set_child_pack_direction;
     property pack_direction: TGtkPackDirection read get_pack_direction write set_pack_direction;
   end;
+
+  TGtkMenuBarPrivate = record
+  end;
+
+
 
   PPGtkMenuShellClass = ^PGtkMenuShellClass;
   PGtkMenuShellClass = ^TGtkMenuShellClass;
@@ -7455,6 +7538,43 @@ type
   PGtkMenuBarClass = ^TGtkMenuBarClass;
   TGtkMenuBarClass = object
     parent_class: TGtkMenuShellClass;
+    _gtk_reserved1: procedure; cdecl;
+    _gtk_reserved2: procedure; cdecl;
+    _gtk_reserved3: procedure; cdecl;
+    _gtk_reserved4: procedure; cdecl;
+  end;
+
+  PPGtkMenuButton = ^PGtkMenuButton;
+  PGtkMenuButton = ^TGtkMenuButton;
+
+  PPGtkMenuButtonPrivate = ^PGtkMenuButtonPrivate;
+  PGtkMenuButtonPrivate = ^TGtkMenuButtonPrivate;
+  TGtkMenuButton = object(TGtkToggleButton)
+    priv5: PGtkMenuButtonPrivate;
+    function new: PGtkMenuButton; cdecl; inline; static;
+    function get_align_widget: PGtkWidget; cdecl; inline;
+    function get_direction: TGtkArrowType; cdecl; inline;
+    function get_menu_model: PGMenuModel; cdecl; inline;
+    function get_popup: PGtkMenu; cdecl; inline;
+    procedure set_align_widget(align_widget: PGtkWidget); cdecl; inline;
+    procedure set_direction(direction: TGtkArrowType); cdecl; inline;
+    procedure set_menu_model(menu_model: PGMenuModel); cdecl; inline;
+    procedure set_popup(popup: PGtkWidget); cdecl; inline;
+    property align_widget: PGtkWidget read get_align_widget write set_align_widget;
+    property direction: TGtkArrowType read get_direction write set_direction;
+    property menu_model: PGMenuModel read get_menu_model write set_menu_model;
+    property popup: PGtkMenu read get_popup  { property is writeable but setter not declared } ;
+  end;
+
+  TGtkMenuButtonPrivate = record
+  end;
+
+
+
+  PPGtkMenuButtonClass = ^PGtkMenuButtonClass;
+  PGtkMenuButtonClass = ^TGtkMenuButtonClass;
+  TGtkMenuButtonClass = object
+    parent_class: TGtkToggleButtonClass;
     _gtk_reserved1: procedure; cdecl;
     _gtk_reserved2: procedure; cdecl;
     _gtk_reserved3: procedure; cdecl;
@@ -7527,6 +7647,9 @@ type
     property visible_vertical: gboolean read get_visible_vertical write set_visible_vertical;
   end;
 
+  PPGtkMenuToolButton = ^PGtkMenuToolButton;
+  PGtkMenuToolButton = ^TGtkMenuToolButton;
+
   PPGtkToolButton = ^PGtkToolButton;
   PGtkToolButton = ^TGtkToolButton;
 
@@ -7558,14 +7681,6 @@ type
 
   PPGtkMenuToolButtonPrivate = ^PGtkMenuToolButtonPrivate;
   PGtkMenuToolButtonPrivate = ^TGtkMenuToolButtonPrivate;
-
-  TGtkMenuToolButtonPrivate = record
-  end;
-
-
-
-  PPGtkMenuToolButton = ^PGtkMenuToolButton;
-  PGtkMenuToolButton = ^TGtkMenuToolButton;
   TGtkMenuToolButton = object(TGtkToolButton)
     priv5: PGtkMenuToolButtonPrivate;
     function new(icon_widget: PGtkWidget; label_: Pgchar): PGtkMenuToolButton; cdecl; inline; static;
@@ -7576,6 +7691,11 @@ type
     procedure set_menu(menu: PGtkWidget); cdecl; inline;
     property menu: PGtkWidget read get_menu write set_menu;
   end;
+
+  TGtkMenuToolButtonPrivate = record
+  end;
+
+
 
   PPGtkToolButtonClass = ^PGtkToolButtonClass;
   PGtkToolButtonClass = ^TGtkToolButtonClass;
@@ -7612,16 +7732,11 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkMessageDialogPrivate = ^PGtkMessageDialogPrivate;
-  PGtkMessageDialogPrivate = ^TGtkMessageDialogPrivate;
-
-  TGtkMessageDialogPrivate = record
-  end;
-
-
-
   PPGtkMessageDialog = ^PGtkMessageDialog;
   PGtkMessageDialog = ^TGtkMessageDialog;
+
+  PPGtkMessageDialogPrivate = ^PGtkMessageDialogPrivate;
+  PGtkMessageDialogPrivate = ^TGtkMessageDialogPrivate;
   TGtkMessageDialog = object(TGtkDialog)
     priv5: PGtkMessageDialogPrivate;
     //function new(parent: PGtkWindow; flags: TGtkDialogFlags; type_: TGtkMessageType; buttons: TGtkButtonsType; message_format: Pgchar; args: array of const): PGtkMessageDialog; cdecl; inline; static;
@@ -7642,6 +7757,11 @@ type
     //property use_markup: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_use_markup  { property is writeable but setter not declared } ;
   end;
 
+  TGtkMessageDialogPrivate = record
+  end;
+
+
+
   PPGtkMessageDialogClass = ^PGtkMessageDialogClass;
   PGtkMessageDialogClass = ^TGtkMessageDialogClass;
   TGtkMessageDialogClass = object
@@ -7659,16 +7779,11 @@ type
   TGtkModuleDisplayInitFunc = procedure(display: PGdkDisplay); cdecl;
   TGtkModuleInitFunc = procedure(argc: Pgint; argv: PPPgchar); cdecl;
 
-  PPGtkMountOperationPrivate = ^PGtkMountOperationPrivate;
-  PGtkMountOperationPrivate = ^TGtkMountOperationPrivate;
-
-  TGtkMountOperationPrivate = record
-  end;
-
-
-
   PPGtkMountOperation = ^PGtkMountOperation;
   PGtkMountOperation = ^TGtkMountOperation;
+
+  PPGtkMountOperationPrivate = ^PGtkMountOperationPrivate;
+  PGtkMountOperationPrivate = ^TGtkMountOperationPrivate;
   TGtkMountOperation = object(TGMountOperation)
     priv1: PGtkMountOperationPrivate;
     function new(parent: PGtkWindow): PGtkMountOperation; cdecl; inline; static;
@@ -7681,6 +7796,11 @@ type
     property parent: PGtkWindow read get_parent write set_parent;
     property screen: PGdkScreen read get_screen write set_screen;
   end;
+
+  TGtkMountOperationPrivate = record
+  end;
+
+
 
   PPGtkMountOperationClass = ^PGtkMountOperationClass;
   PGtkMountOperationClass = ^TGtkMountOperationClass;
@@ -7786,16 +7906,11 @@ type
   PPGtkNumberUpLayout = ^PGtkNumberUpLayout;
   PGtkNumberUpLayout = ^TGtkNumberUpLayout;
 
-  PPGtkNumerableIconPrivate = ^PGtkNumerableIconPrivate;
-  PGtkNumerableIconPrivate = ^TGtkNumerableIconPrivate;
-
-  TGtkNumerableIconPrivate = record
-  end;
-
-
-
   PPGtkNumerableIcon = ^PGtkNumerableIcon;
   PGtkNumerableIcon = ^TGtkNumerableIcon;
+
+  PPGtkNumerableIconPrivate = ^PGtkNumerableIconPrivate;
+  PGtkNumerableIconPrivate = ^TGtkNumerableIconPrivate;
   TGtkNumerableIcon = object(TGEmblemedIcon)
     priv1: PGtkNumerableIconPrivate;
     function new(base_icon: PGIcon): PGIcon; cdecl; inline; static;
@@ -7816,6 +7931,11 @@ type
     property label_: Pgchar read get_label write set_label;
     property style_context: PGtkStyleContext read get_style_context write set_style_context;
   end;
+
+  TGtkNumerableIconPrivate = record
+  end;
+
+
 
   PPGtkNumerableIconClass = ^PGtkNumerableIconClass;
   PGtkNumerableIconClass = ^TGtkNumerableIconClass;
@@ -7848,21 +7968,21 @@ type
     base_iface: TGTypeInterface;
   end;
 
-  PPGtkOverlayPrivate = ^PGtkOverlayPrivate;
-  PGtkOverlayPrivate = ^TGtkOverlayPrivate;
-
-  TGtkOverlayPrivate = record
-  end;
-
-
-
   PPGtkOverlay = ^PGtkOverlay;
   PGtkOverlay = ^TGtkOverlay;
+
+  PPGtkOverlayPrivate = ^PGtkOverlayPrivate;
+  PGtkOverlayPrivate = ^TGtkOverlayPrivate;
   TGtkOverlay = object(TGtkBin)
     priv3: PGtkOverlayPrivate;
     function new: PGtkOverlay; cdecl; inline; static;
     procedure add_overlay(widget: PGtkWidget); cdecl; inline;
   end;
+
+  TGtkOverlayPrivate = record
+  end;
+
+
 
   PPGtkOverlayClass = ^PGtkOverlayClass;
   PGtkOverlayClass = ^TGtkOverlayClass;
@@ -7905,8 +8025,8 @@ type
   PGtkPaperSize = ^TGtkPaperSize;
   TGtkPageSetup = object(TGObject)
     function new: PGtkPageSetup; cdecl; inline; static;
-    function new_from_file(file_name: Pgchar): PGtkPageSetup; cdecl; inline; static;
-    function new_from_key_file(key_file: PGKeyFile; group_name: Pgchar): PGtkPageSetup; cdecl; inline; static;
+    function new_from_file(file_name: Pgchar; error: PPGError): PGtkPageSetup; cdecl; inline; static;
+    function new_from_key_file(key_file: PGKeyFile; group_name: Pgchar; error: PPGError): PGtkPageSetup; cdecl; inline; static;
     function copy: PGtkPageSetup; cdecl; inline;
     function get_bottom_margin(unit_: TGtkUnit): gdouble; cdecl; inline;
     function get_left_margin(unit_: TGtkUnit): gdouble; cdecl; inline;
@@ -7918,8 +8038,8 @@ type
     function get_paper_width(unit_: TGtkUnit): gdouble; cdecl; inline;
     function get_right_margin(unit_: TGtkUnit): gdouble; cdecl; inline;
     function get_top_margin(unit_: TGtkUnit): gdouble; cdecl; inline;
-    function load_file(file_name: Pgchar): gboolean; cdecl; inline;
-    function load_key_file(key_file: PGKeyFile; group_name: Pgchar): gboolean; cdecl; inline;
+    function load_file(file_name: Pgchar; error: PPGError): gboolean; cdecl; inline;
+    function load_key_file(key_file: PGKeyFile; group_name: Pgchar; error: PPGError): gboolean; cdecl; inline;
     procedure set_bottom_margin(margin: gdouble; unit_: TGtkUnit); cdecl; inline;
     procedure set_left_margin(margin: gdouble; unit_: TGtkUnit); cdecl; inline;
     procedure set_orientation(orientation: TGtkPageOrientation); cdecl; inline;
@@ -7927,13 +8047,13 @@ type
     procedure set_paper_size_and_default_margins(size: PGtkPaperSize); cdecl; inline;
     procedure set_right_margin(margin: gdouble; unit_: TGtkUnit); cdecl; inline;
     procedure set_top_margin(margin: gdouble; unit_: TGtkUnit); cdecl; inline;
-    function to_file(file_name: Pgchar): gboolean; cdecl; inline;
+    function to_file(file_name: Pgchar; error: PPGError): gboolean; cdecl; inline;
     procedure to_key_file(key_file: PGKeyFile; group_name: Pgchar); cdecl; inline;
   end;
   TGtkPaperSize = object
     function new(name: Pgchar): PGtkPaperSize; cdecl; inline; static;
     function new_custom(name: Pgchar; display_name: Pgchar; width: gdouble; height: gdouble; unit_: TGtkUnit): PGtkPaperSize; cdecl; inline; static;
-    function new_from_key_file(key_file: PGKeyFile; group_name: Pgchar): PGtkPaperSize; cdecl; inline; static;
+    function new_from_key_file(key_file: PGKeyFile; group_name: Pgchar; error: PPGError): PGtkPaperSize; cdecl; inline; static;
     function new_from_ppd(ppd_name: Pgchar; ppd_display_name: Pgchar; width: gdouble; height: gdouble): PGtkPaperSize; cdecl; inline; static;
     function copy: PGtkPaperSize; cdecl; inline;
     procedure free; cdecl; inline;
@@ -7960,16 +8080,11 @@ type
 
 
 
-  PPGtkPlugPrivate = ^PGtkPlugPrivate;
-  PGtkPlugPrivate = ^TGtkPlugPrivate;
-
-  TGtkPlugPrivate = record
-  end;
-
-
-
   PPGtkPlug = ^PGtkPlug;
   PGtkPlug = ^TGtkPlug;
+
+  PPGtkPlugPrivate = ^PGtkPlugPrivate;
+  PGtkPlugPrivate = ^TGtkPlugPrivate;
   TGtkPlug = object(TGtkWindow)
     priv4: PGtkPlugPrivate;
     function new(socket_id: TWindow): PGtkPlug; cdecl; inline; static;
@@ -7982,6 +8097,11 @@ type
     property embedded: gboolean read get_embedded ;
     property socket_window: PGdkWindow read get_socket_window ;
   end;
+
+  TGtkPlugPrivate = record
+  end;
+
+
 
   PPGtkPlugClass = ^PGtkPlugClass;
   PGtkPlugClass = ^TGtkPlugClass;
@@ -8053,7 +8173,7 @@ type
     procedure draw_page_finish; cdecl; inline;
     function get_default_page_setup: PGtkPageSetup; cdecl; inline;
     function get_embed_page_setup: gboolean; cdecl; inline;
-    procedure get_error; cdecl; inline;
+    procedure get_error(error: PPGError); cdecl; inline;
     function get_has_selection: gboolean; cdecl; inline;
     function get_n_pages_to_print: gint; cdecl; inline;
     function get_print_settings: PGtkPrintSettings; cdecl; inline;
@@ -8061,7 +8181,7 @@ type
     function get_status_string: Pgchar; cdecl; inline;
     function get_support_selection: gboolean; cdecl; inline;
     function is_finished: gboolean; cdecl; inline;
-    function run(action: TGtkPrintOperationAction; parent: PGtkWindow): TGtkPrintOperationResult; cdecl; inline;
+    function run(action: TGtkPrintOperationAction; parent: PGtkWindow; error: PPGError): TGtkPrintOperationResult; cdecl; inline;
     procedure set_allow_async(allow_async: gboolean); cdecl; inline;
     procedure set_current_page(current_page: gint); cdecl; inline;
     procedure set_custom_tab_label(label_: Pgchar); cdecl; inline;
@@ -8109,8 +8229,8 @@ type
   PGtkPrintQuality = ^TGtkPrintQuality;
   TGtkPrintSettings = object(TGObject)
     function new: PGtkPrintSettings; cdecl; inline; static;
-    function new_from_file(file_name: Pgchar): PGtkPrintSettings; cdecl; inline; static;
-    function new_from_key_file(key_file: PGKeyFile; group_name: Pgchar): PGtkPrintSettings; cdecl; inline; static;
+    function new_from_file(file_name: Pgchar; error: PPGError): PGtkPrintSettings; cdecl; inline; static;
+    function new_from_key_file(key_file: PGKeyFile; group_name: Pgchar; error: PPGError): PGtkPrintSettings; cdecl; inline; static;
     function copy: PGtkPrintSettings; cdecl; inline;
     procedure foreach(func: TGtkPrintSettingsFunc; user_data: gpointer); cdecl; inline;
     function get(key: Pgchar): Pgchar; cdecl; inline;
@@ -8147,8 +8267,8 @@ type
     function get_scale: gdouble; cdecl; inline;
     function get_use_color: gboolean; cdecl; inline;
     function has_key(key: Pgchar): gboolean; cdecl; inline;
-    function load_file(file_name: Pgchar): gboolean; cdecl; inline;
-    function load_key_file(key_file: PGKeyFile; group_name: Pgchar): gboolean; cdecl; inline;
+    function load_file(file_name: Pgchar; error: PPGError): gboolean; cdecl; inline;
+    function load_key_file(key_file: PGKeyFile; group_name: Pgchar; error: PPGError): gboolean; cdecl; inline;
     procedure set_(key: Pgchar; value: Pgchar); cdecl; inline;
     procedure set_bool(key: Pgchar; value: gboolean); cdecl; inline;
     procedure set_collate(collate: gboolean); cdecl; inline;
@@ -8179,7 +8299,7 @@ type
     procedure set_reverse(reverse: gboolean); cdecl; inline;
     procedure set_scale(scale: gdouble); cdecl; inline;
     procedure set_use_color(use_color: gboolean); cdecl; inline;
-    function to_file(file_name: Pgchar): gboolean; cdecl; inline;
+    function to_file(file_name: Pgchar; error: PPGError): gboolean; cdecl; inline;
     procedure to_key_file(key_file: PGKeyFile; group_name: Pgchar); cdecl; inline;
     procedure unset(key: Pgchar); cdecl; inline;
   end;
@@ -8233,16 +8353,11 @@ type
     _gtk_reserved8: procedure; cdecl;
   end;
 
-  PPGtkProgressBarPrivate = ^PGtkProgressBarPrivate;
-  PGtkProgressBarPrivate = ^TGtkProgressBarPrivate;
-
-  TGtkProgressBarPrivate = record
-  end;
-
-
-
   PPGtkProgressBar = ^PGtkProgressBar;
   PGtkProgressBar = ^TGtkProgressBar;
+
+  PPGtkProgressBarPrivate = ^PGtkProgressBarPrivate;
+  PGtkProgressBarPrivate = ^TGtkProgressBarPrivate;
   TGtkProgressBar = object(TGtkWidget)
     priv1: PGtkProgressBarPrivate;
     function new: PGtkProgressBar; cdecl; inline; static;
@@ -8266,6 +8381,11 @@ type
     property show_text: gboolean read get_show_text write set_show_text;
     property text: Pgchar read get_text write set_text;
   end;
+
+  TGtkProgressBarPrivate = record
+  end;
+
+
 
   PPGtkProgressBarClass = ^PGtkProgressBarClass;
   PGtkProgressBarClass = ^TGtkProgressBarClass;
@@ -8543,8 +8663,8 @@ type
     function list_filters: PGSList; cdecl; inline;
     procedure remove_filter(filter: PGtkRecentFilter); cdecl; inline;
     procedure select_all; cdecl; inline;
-    function select_uri(uri: Pgchar): gboolean; cdecl; inline;
-    function set_current_uri(uri: Pgchar): gboolean; cdecl; inline;
+    function select_uri(uri: Pgchar; error: PPGError): gboolean; cdecl; inline;
+    function set_current_uri(uri: Pgchar; error: PPGError): gboolean; cdecl; inline;
     procedure set_filter(filter: PGtkRecentFilter); cdecl; inline;
     procedure set_limit(limit: gint); cdecl; inline;
     procedure set_local_only(local_only: gboolean); cdecl; inline;
@@ -8585,24 +8705,19 @@ type
     function add_item(uri: Pgchar): gboolean; cdecl; inline;
     function get_items: PGList; cdecl; inline;
     function has_item(uri: Pgchar): gboolean; cdecl; inline;
-    function lookup_item(uri: Pgchar): PGtkRecentInfo; cdecl; inline;
-    function move_item(uri: Pgchar; new_uri: Pgchar): gboolean; cdecl; inline;
-    function purge_items: gint; cdecl; inline;
-    function remove_item(uri: Pgchar): gboolean; cdecl; inline;
+    function lookup_item(uri: Pgchar; error: PPGError): PGtkRecentInfo; cdecl; inline;
+    function move_item(uri: Pgchar; new_uri: Pgchar; error: PPGError): gboolean; cdecl; inline;
+    function purge_items(error: PPGError): gint; cdecl; inline;
+    function remove_item(uri: Pgchar; error: PPGError): gboolean; cdecl; inline;
     //property filename: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_filename  { property is writeable but setter not declared } ;
     //property size: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_size ;
   end;
 
-  PPGtkRecentActionPrivate = ^PGtkRecentActionPrivate;
-  PGtkRecentActionPrivate = ^TGtkRecentActionPrivate;
-
-  TGtkRecentActionPrivate = record
-  end;
-
-
-
   PPGtkRecentAction = ^PGtkRecentAction;
   PGtkRecentAction = ^TGtkRecentAction;
+
+  PPGtkRecentActionPrivate = ^PGtkRecentActionPrivate;
+  PGtkRecentActionPrivate = ^TGtkRecentActionPrivate;
   TGtkRecentAction = object(TGtkAction)
     priv: PGtkRecentActionPrivate;
     function new(name: Pgchar; label_: Pgchar; tooltip: Pgchar; stock_id: Pgchar): PGtkRecentAction; cdecl; inline; static;
@@ -8611,6 +8726,11 @@ type
     procedure set_show_numbers(show_numbers: gboolean); cdecl; inline;
     property show_numbers: gboolean read get_show_numbers write set_show_numbers;
   end;
+
+  TGtkRecentActionPrivate = record
+  end;
+
+
 
   PPGtkRecentActionClass = ^PGtkRecentActionClass;
   PGtkRecentActionClass = ^TGtkRecentActionClass;
@@ -8646,7 +8766,7 @@ type
     procedure set_name(name: Pgchar); cdecl; inline;
   end;
   TGtkRecentInfo = object
-    function create_app_info(app_name: Pgchar): PGAppInfo; cdecl; inline;
+    function create_app_info(app_name: Pgchar; error: PPGError): PGAppInfo; cdecl; inline;
     function exists: gboolean; cdecl; inline;
     function get_added: glong; cdecl; inline;
     function get_age: gint; cdecl; inline;
@@ -8706,9 +8826,9 @@ type
   PGtkRecentChooserIface = ^TGtkRecentChooserIface;
   TGtkRecentChooserIface = object
     base_iface: TGTypeInterface;
-    set_current_uri: function(chooser: PGtkRecentChooser; uri: Pgchar): gboolean; cdecl;
+    set_current_uri: function(chooser: PGtkRecentChooser; uri: Pgchar; error: PPGError): gboolean; cdecl;
     get_current_uri: function(chooser: PGtkRecentChooser): Pgchar; cdecl;
-    select_uri: function(chooser: PGtkRecentChooser; uri: Pgchar): gboolean; cdecl;
+    select_uri: function(chooser: PGtkRecentChooser; uri: Pgchar; error: PPGError): gboolean; cdecl;
     unselect_uri: procedure(chooser: PGtkRecentChooser; uri: Pgchar); cdecl;
     select_all: procedure(chooser: PGtkRecentChooser); cdecl;
     unselect_all: procedure(chooser: PGtkRecentChooser); cdecl;
@@ -8722,16 +8842,11 @@ type
     selection_changed: procedure(chooser: PGtkRecentChooser); cdecl;
   end;
 
-  PPGtkRecentChooserMenuPrivate = ^PGtkRecentChooserMenuPrivate;
-  PGtkRecentChooserMenuPrivate = ^TGtkRecentChooserMenuPrivate;
-
-  TGtkRecentChooserMenuPrivate = record
-  end;
-
-
-
   PPGtkRecentChooserMenu = ^PGtkRecentChooserMenu;
   PGtkRecentChooserMenu = ^TGtkRecentChooserMenu;
+
+  PPGtkRecentChooserMenuPrivate = ^PGtkRecentChooserMenuPrivate;
+  PGtkRecentChooserMenuPrivate = ^TGtkRecentChooserMenuPrivate;
   TGtkRecentChooserMenu = object(TGtkMenu)
     priv4: PGtkRecentChooserMenuPrivate;
     function new: PGtkRecentChooserMenu; cdecl; inline; static;
@@ -8740,6 +8855,11 @@ type
     procedure set_show_numbers(show_numbers: gboolean); cdecl; inline;
     property show_numbers: gboolean read get_show_numbers write set_show_numbers;
   end;
+
+  TGtkRecentChooserMenuPrivate = record
+  end;
+
+
 
   PPGtkRecentChooserMenuClass = ^PGtkRecentChooserMenuClass;
   PGtkRecentChooserMenuClass = ^TGtkRecentChooserMenuClass;
@@ -8839,16 +8959,11 @@ type
 
 
 
-  PPGtkScaleButtonPrivate = ^PGtkScaleButtonPrivate;
-  PGtkScaleButtonPrivate = ^TGtkScaleButtonPrivate;
-
-  TGtkScaleButtonPrivate = record
-  end;
-
-
-
   PPGtkScaleButton = ^PGtkScaleButton;
   PGtkScaleButton = ^TGtkScaleButton;
+
+  PPGtkScaleButtonPrivate = ^PGtkScaleButtonPrivate;
+  PGtkScaleButtonPrivate = ^TGtkScaleButtonPrivate;
   TGtkScaleButton = object(TGtkButton)
     priv4: PGtkScaleButtonPrivate;
     function new(size: gint; min: gdouble; max: gdouble; step: gdouble; icons: PPgchar): PGtkScaleButton; cdecl; inline; static;
@@ -8865,6 +8980,11 @@ type
     //property size: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_size  { property is writeable but setter not declared } ;
     property value: gdouble read get_value write set_value;
   end;
+
+  TGtkScaleButtonPrivate = record
+  end;
+
+
 
   PPGtkScaleButtonClass = ^PGtkScaleButtonClass;
   PGtkScaleButtonClass = ^TGtkScaleButtonClass;
@@ -8886,20 +9006,14 @@ type
     base_iface: TGTypeInterface;
   end;
 
-  PPGtkScrolledWindowPrivate = ^PGtkScrolledWindowPrivate;
-  PGtkScrolledWindowPrivate = ^TGtkScrolledWindowPrivate;
-
-  TGtkScrolledWindowPrivate = record
-  end;
-
-
-
   PPGtkScrolledWindow = ^PGtkScrolledWindow;
   PGtkScrolledWindow = ^TGtkScrolledWindow;
+
+  PPGtkScrolledWindowPrivate = ^PGtkScrolledWindowPrivate;
+  PGtkScrolledWindowPrivate = ^TGtkScrolledWindowPrivate;
   TGtkScrolledWindow = object(TGtkBin)
     priv3: PGtkScrolledWindowPrivate;
     function new(hadjustment: PGtkAdjustment; vadjustment: PGtkAdjustment): PGtkScrolledWindow; cdecl; inline; static;
-    procedure add_with_viewport(child: PGtkWidget); cdecl; inline;
     function get_capture_button_press: gboolean; cdecl; inline;
     function get_hadjustment: PGtkAdjustment; cdecl; inline;
     function get_hscrollbar: PGtkWidget; cdecl; inline;
@@ -8911,6 +9025,7 @@ type
     function get_shadow_type: TGtkShadowType; cdecl; inline;
     function get_vadjustment: PGtkAdjustment; cdecl; inline;
     function get_vscrollbar: PGtkWidget; cdecl; inline;
+    procedure add_with_viewport(child: PGtkWidget); cdecl; inline; deprecated 'since 3.8 use add';
     procedure set_capture_button_press(capture_button_press: gboolean); cdecl; inline;
     procedure set_hadjustment(hadjustment: PGtkAdjustment); cdecl; inline;
     procedure set_kinetic_scrolling(kinetic_scrolling: gboolean); cdecl; inline;
@@ -8933,6 +9048,11 @@ type
     //property window_placement_set: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_window_placement_set  { property is writeable but setter not declared } ;
   end;
 
+  TGtkScrolledWindowPrivate = record
+  end;
+
+
+
   PPGtkScrolledWindowClass = ^PGtkScrolledWindowClass;
   PGtkScrolledWindowClass = ^TGtkScrolledWindowClass;
   TGtkScrolledWindowClass = object
@@ -8940,6 +9060,22 @@ type
     scrollbar_spacing: gint;
     scroll_child: function(scrolled_window: PGtkScrolledWindow; scroll: TGtkScrollType; horizontal: gboolean): gboolean; cdecl;
     move_focus_out: procedure(scrolled_window: PGtkScrolledWindow; direction: TGtkDirectionType); cdecl;
+    _gtk_reserved1: procedure; cdecl;
+    _gtk_reserved2: procedure; cdecl;
+    _gtk_reserved3: procedure; cdecl;
+    _gtk_reserved4: procedure; cdecl;
+  end;
+
+  PPGtkSearchEntry = ^PGtkSearchEntry;
+  PGtkSearchEntry = ^TGtkSearchEntry;
+  TGtkSearchEntry = object(TGtkEntry)
+    function new: PGtkSearchEntry; cdecl; inline; static;
+  end;
+
+  PPGtkSearchEntryClass = ^PGtkSearchEntryClass;
+  PGtkSearchEntryClass = ^TGtkSearchEntryClass;
+  TGtkSearchEntryClass = object
+    parent_class: TGtkEntryClass;
     _gtk_reserved1: procedure; cdecl;
     _gtk_reserved2: procedure; cdecl;
     _gtk_reserved3: procedure; cdecl;
@@ -8967,16 +9103,11 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkSeparatorToolItemPrivate = ^PGtkSeparatorToolItemPrivate;
-  PGtkSeparatorToolItemPrivate = ^TGtkSeparatorToolItemPrivate;
-
-  TGtkSeparatorToolItemPrivate = record
-  end;
-
-
-
   PPGtkSeparatorToolItem = ^PGtkSeparatorToolItem;
   PGtkSeparatorToolItem = ^TGtkSeparatorToolItem;
+
+  PPGtkSeparatorToolItemPrivate = ^PGtkSeparatorToolItemPrivate;
+  PGtkSeparatorToolItemPrivate = ^TGtkSeparatorToolItemPrivate;
   TGtkSeparatorToolItem = object(TGtkToolItem)
     priv4: PGtkSeparatorToolItemPrivate;
     function new: PGtkSeparatorToolItem; cdecl; inline; static;
@@ -8984,6 +9115,11 @@ type
     procedure set_draw(draw: gboolean); cdecl; inline;
     property draw: gboolean read get_draw write set_draw;
   end;
+
+  TGtkSeparatorToolItemPrivate = record
+  end;
+
+
 
   PPGtkSeparatorToolItemClass = ^PGtkSeparatorToolItemClass;
   PGtkSeparatorToolItemClass = ^TGtkSeparatorToolItemClass;
@@ -9051,16 +9187,11 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkSocketPrivate = ^PGtkSocketPrivate;
-  PGtkSocketPrivate = ^TGtkSocketPrivate;
-
-  TGtkSocketPrivate = record
-  end;
-
-
-
   PPGtkSocket = ^PGtkSocket;
   PGtkSocket = ^TGtkSocket;
+
+  PPGtkSocketPrivate = ^PGtkSocketPrivate;
+  PGtkSocketPrivate = ^TGtkSocketPrivate;
   TGtkSocket = object(TGtkContainer)
     priv2: PGtkSocketPrivate;
     function new: PGtkSocket; cdecl; inline; static;
@@ -9068,6 +9199,11 @@ type
     function get_id: TWindow; cdecl; inline;
     function get_plug_window: PGdkWindow; cdecl; inline;
   end;
+
+  TGtkSocketPrivate = record
+  end;
+
+
 
   PPGtkSocketClass = ^PGtkSocketClass;
   PGtkSocketClass = ^TGtkSocketClass;
@@ -9081,6 +9217,9 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
+  PPGtkSpinButton = ^PGtkSpinButton;
+  PGtkSpinButton = ^TGtkSpinButton;
+
   PPGtkSpinButtonUpdatePolicy = ^PGtkSpinButtonUpdatePolicy;
   PGtkSpinButtonUpdatePolicy = ^TGtkSpinButtonUpdatePolicy;
 
@@ -9089,14 +9228,6 @@ type
 
   PPGtkSpinButtonPrivate = ^PGtkSpinButtonPrivate;
   PGtkSpinButtonPrivate = ^TGtkSpinButtonPrivate;
-
-  TGtkSpinButtonPrivate = record
-  end;
-
-
-
-  PPGtkSpinButton = ^PGtkSpinButton;
-  PGtkSpinButton = ^TGtkSpinButton;
   TGtkSpinButton = object(TGtkEntry)
     priv2: PGtkSpinButtonPrivate;
     function new(adjustment: PGtkAdjustment; climb_rate: gdouble; digits: guint): PGtkSpinButton; cdecl; inline; static;
@@ -9133,6 +9264,11 @@ type
     property wrap: gboolean read get_wrap write set_wrap;
   end;
 
+  TGtkSpinButtonPrivate = record
+  end;
+
+
+
   PPGtkSpinButtonClass = ^PGtkSpinButtonClass;
   PGtkSpinButtonClass = ^TGtkSpinButtonClass;
   TGtkSpinButtonClass = object
@@ -9148,16 +9284,11 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkSpinnerPrivate = ^PGtkSpinnerPrivate;
-  PGtkSpinnerPrivate = ^TGtkSpinnerPrivate;
-
-  TGtkSpinnerPrivate = record
-  end;
-
-
-
   PPGtkSpinner = ^PGtkSpinner;
   PGtkSpinner = ^TGtkSpinner;
+
+  PPGtkSpinnerPrivate = ^PGtkSpinnerPrivate;
+  PGtkSpinnerPrivate = ^TGtkSpinnerPrivate;
   TGtkSpinner = object(TGtkWidget)
     priv1: PGtkSpinnerPrivate;
     function new: PGtkSpinner; cdecl; inline; static;
@@ -9165,6 +9296,11 @@ type
     procedure stop; cdecl; inline;
     //property active: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_active  { property is writeable but setter not declared } ;
   end;
+
+  TGtkSpinnerPrivate = record
+  end;
+
+
 
   PPGtkSpinnerClass = ^PGtkSpinnerClass;
   PGtkSpinnerClass = ^TGtkSpinnerClass;
@@ -9256,16 +9392,11 @@ type
     __gtk_reserved4: Pgpointer;
   end;
 
-  PPGtkStatusbarPrivate = ^PGtkStatusbarPrivate;
-  PGtkStatusbarPrivate = ^TGtkStatusbarPrivate;
-
-  TGtkStatusbarPrivate = record
-  end;
-
-
-
   PPGtkStatusbar = ^PGtkStatusbar;
   PGtkStatusbar = ^TGtkStatusbar;
+
+  PPGtkStatusbarPrivate = ^PGtkStatusbarPrivate;
+  PGtkStatusbarPrivate = ^TGtkStatusbarPrivate;
   TGtkStatusbar = object(TGtkBox)
     priv3: PGtkStatusbarPrivate;
     function new: PGtkStatusbar; cdecl; inline; static;
@@ -9276,6 +9407,11 @@ type
     procedure remove(context_id: guint; message_id: guint); cdecl; inline;
     procedure remove_all(context_id: guint); cdecl; inline;
   end;
+
+  TGtkStatusbarPrivate = record
+  end;
+
+
 
   PPGtkStatusbarClass = ^PGtkStatusbarClass;
   PGtkStatusbarClass = ^TGtkStatusbarClass;
@@ -9361,6 +9497,7 @@ type
     _gtk_reserved3: procedure; cdecl;
     _gtk_reserved4: procedure; cdecl;
   end;
+  TGtkStylePropertyParser = function(string_: Pgchar; value: PGValue; error: PPGError): gboolean; cdecl;
 
   TGtkStylePropertiesPrivate = record
   end;
@@ -9386,16 +9523,11 @@ type
     get_icon_factory: function(provider: PGtkStyleProvider; path: PGtkWidgetPath): PGtkIconFactory; cdecl;
   end;
 
-  PPGtkSwitchPrivate = ^PGtkSwitchPrivate;
-  PGtkSwitchPrivate = ^TGtkSwitchPrivate;
-
-  TGtkSwitchPrivate = record
-  end;
-
-
-
   PPGtkSwitch = ^PGtkSwitch;
   PGtkSwitch = ^TGtkSwitch;
+
+  PPGtkSwitchPrivate = ^PGtkSwitchPrivate;
+  PGtkSwitchPrivate = ^TGtkSwitchPrivate;
   TGtkSwitch = object(TGtkWidget)
     priv1: PGtkSwitchPrivate;
     function new: PGtkSwitch; cdecl; inline; static;
@@ -9403,6 +9535,11 @@ type
     procedure set_active(is_active: gboolean); cdecl; inline;
     property active: gboolean read get_active write set_active;
   end;
+
+  TGtkSwitchPrivate = record
+  end;
+
+
 
   PPGtkSwitchClass = ^PGtkSwitchClass;
   PGtkSwitchClass = ^TGtkSwitchClass;
@@ -9417,16 +9554,11 @@ type
     _switch_padding_6: procedure; cdecl;
   end;
 
-  PPGtkTablePrivate = ^PGtkTablePrivate;
-  PGtkTablePrivate = ^TGtkTablePrivate;
-
-  TGtkTablePrivate = record
-  end;
-
-
-
   PPGtkTable = ^PGtkTable;
   PGtkTable = ^TGtkTable;
+
+  PPGtkTablePrivate = ^PGtkTablePrivate;
+  PGtkTablePrivate = ^TGtkTablePrivate;
   TGtkTable = object(TGtkContainer)
     priv2: PGtkTablePrivate;
     //property column_spacing: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_column_spacing  { property is writeable but setter not declared } ;
@@ -9435,6 +9567,11 @@ type
     //property n_rows: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_n_rows  { property is writeable but setter not declared } ;
     //property row_spacing: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_row_spacing  { property is writeable but setter not declared } ;
   end;
+
+  TGtkTablePrivate = record
+  end;
+
+
 
   PPGtkTableChild = ^PGtkTableChild;
   PGtkTableChild = ^TGtkTableChild;
@@ -9892,19 +10029,14 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
+  PPGtkTextView = ^PGtkTextView;
+  PGtkTextView = ^TGtkTextView;
+
   PPGtkTextWindowType = ^PGtkTextWindowType;
   PGtkTextWindowType = ^TGtkTextWindowType;
 
   PPGtkTextViewPrivate = ^PGtkTextViewPrivate;
   PGtkTextViewPrivate = ^TGtkTextViewPrivate;
-
-  TGtkTextViewPrivate = record
-  end;
-
-
-
-  PPGtkTextView = ^PGtkTextView;
-  PGtkTextView = ^TGtkTextView;
   TGtkTextView = object(TGtkContainer)
     priv2: PGtkTextViewPrivate;
     function new: PGtkTextView; cdecl; inline; static;
@@ -9924,6 +10056,8 @@ type
     function get_default_attributes: PGtkTextAttributes; cdecl; inline;
     function get_editable: gboolean; cdecl; inline;
     function get_indent: gint; cdecl; inline;
+    function get_input_hints: TGtkInputHints; cdecl; inline;
+    function get_input_purpose: TGtkInputPurpose; cdecl; inline;
     procedure get_iter_at_location(iter: PGtkTextIter; x: gint; y: gint); cdecl; inline;
     procedure get_iter_at_position(iter: PGtkTextIter; trailing: Pgint; x: gint; y: gint); cdecl; inline;
     procedure get_iter_location(iter: PGtkTextIter; location: PGdkRectangle); cdecl; inline;
@@ -9956,6 +10090,8 @@ type
     procedure set_cursor_visible(setting: gboolean); cdecl; inline;
     procedure set_editable(setting: gboolean); cdecl; inline;
     procedure set_indent(indent: gint); cdecl; inline;
+    procedure set_input_hints(hints: TGtkInputHints); cdecl; inline;
+    procedure set_input_purpose(purpose: TGtkInputPurpose); cdecl; inline;
     procedure set_justification(justification: TGtkJustification); cdecl; inline;
     procedure set_left_margin(left_margin: gint); cdecl; inline;
     procedure set_overwrite(overwrite: gboolean); cdecl; inline;
@@ -9973,22 +10109,30 @@ type
     property editable: gboolean read get_editable write set_editable;
     //property im_module: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_im_module  { property is writeable but setter not declared } ;
     property indent: gint read get_indent write set_indent;
+    property input_hints: TGtkInputHints read get_input_hints write set_input_hints;
+    property input_purpose: TGtkInputPurpose read get_input_purpose write set_input_purpose;
     property justification: TGtkJustification read get_justification write set_justification;
     property left_margin: gint read get_left_margin write set_left_margin;
     property overwrite: gboolean read get_overwrite write set_overwrite;
     property pixels_above_lines: gint read get_pixels_above_lines write set_pixels_above_lines;
     property pixels_below_lines: gint read get_pixels_below_lines write set_pixels_below_lines;
     property pixels_inside_wrap: gint read get_pixels_inside_wrap write set_pixels_inside_wrap;
+    //property populate_all: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_populate_all  { property is writeable but setter not declared } ;
     property right_margin: gint read get_right_margin write set_right_margin;
     property tabs: PPangoTabArray read get_tabs write set_tabs;
     property wrap_mode: TGtkWrapMode read get_wrap_mode write set_wrap_mode;
   end;
 
+  TGtkTextViewPrivate = record
+  end;
+
+
+
   PPGtkTextViewClass = ^PGtkTextViewClass;
   PGtkTextViewClass = ^TGtkTextViewClass;
   TGtkTextViewClass = object
     parent_class: TGtkContainerClass;
-    populate_popup: procedure(text_view: PGtkTextView; menu: PGtkMenu); cdecl;
+    populate_popup: procedure(text_view: PGtkTextView; popup: PGtkWidget); cdecl;
     move_cursor: procedure(text_view: PGtkTextView; step: TGtkMovementStep; count: gint; extend_selection: gboolean); cdecl;
     set_anchor: procedure(text_view: PGtkTextView); cdecl;
     insert_at_cursor: procedure(text_view: PGtkTextView; str: Pgchar); cdecl;
@@ -10024,14 +10168,11 @@ type
   TGtkThemingEngine = object(TGObject)
     priv: PGtkThemingEnginePrivate;
     function load(name: Pgchar): PGtkThemingEngine; cdecl; inline; static;
-    procedure register_property(name_space: Pgchar; parse_func: TGtkStylePropertyParser; pspec: PGParamSpec); cdecl; inline; static;
     //procedure get(state: TGtkStateFlags; args: array of const); cdecl; inline;
     procedure get_background_color(state: TGtkStateFlags; color: PGdkRGBA); cdecl; inline;
     procedure get_border(state: TGtkStateFlags; border: PGtkBorder); cdecl; inline;
     procedure get_border_color(state: TGtkStateFlags; color: PGdkRGBA); cdecl; inline;
     procedure get_color(state: TGtkStateFlags; color: PGdkRGBA); cdecl; inline;
-    function get_direction: TGtkTextDirection; cdecl; inline;
-    function get_font(state: TGtkStateFlags): PPangoFontDescription; cdecl; inline;
     function get_junction_sides: TGtkJunctionSides; cdecl; inline;
     procedure get_margin(state: TGtkStateFlags; margin: PGtkBorder); cdecl; inline;
     procedure get_padding(state: TGtkStateFlags; padding: PGtkBorder); cdecl; inline;
@@ -10046,7 +10187,6 @@ type
     function has_class(style_class: Pgchar): gboolean; cdecl; inline;
     function has_region(style_region: Pgchar; flags: PGtkRegionFlags): gboolean; cdecl; inline;
     function lookup_color(color_name: Pgchar; color: PGdkRGBA): gboolean; cdecl; inline;
-    function state_is_running(state: TGtkStateType; progress: Pgdouble): gboolean; cdecl; inline;
     //property name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_name  { property is writeable but setter not declared } ;
   end;
 
@@ -10117,16 +10257,11 @@ type
     procedure rebuild_menu; cdecl; inline;
   end;
 
-  PPGtkToolItemGroupPrivate = ^PGtkToolItemGroupPrivate;
-  PGtkToolItemGroupPrivate = ^TGtkToolItemGroupPrivate;
-
-  TGtkToolItemGroupPrivate = record
-  end;
-
-
-
   PPGtkToolItemGroup = ^PGtkToolItemGroup;
   PGtkToolItemGroup = ^TGtkToolItemGroup;
+
+  PPGtkToolItemGroupPrivate = ^PGtkToolItemGroupPrivate;
+  PGtkToolItemGroupPrivate = ^TGtkToolItemGroupPrivate;
   TGtkToolItemGroup = object(TGtkContainer)
     priv2: PGtkToolItemGroupPrivate;
     function new(label_: Pgchar): PGtkToolItemGroup; cdecl; inline; static;
@@ -10153,6 +10288,11 @@ type
     property label_widget: PGtkWidget read get_label_widget write set_label_widget;
   end;
 
+  TGtkToolItemGroupPrivate = record
+  end;
+
+
+
   PPGtkToolItemGroupClass = ^PGtkToolItemGroupClass;
   PGtkToolItemGroupClass = ^TGtkToolItemGroupClass;
   TGtkToolItemGroupClass = object
@@ -10163,19 +10303,14 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
+  PPGtkToolPalette = ^PGtkToolPalette;
+  PGtkToolPalette = ^TGtkToolPalette;
+
   PPGtkToolPaletteDragTargets = ^PGtkToolPaletteDragTargets;
   PGtkToolPaletteDragTargets = ^TGtkToolPaletteDragTargets;
 
   PPGtkToolPalettePrivate = ^PGtkToolPalettePrivate;
   PGtkToolPalettePrivate = ^TGtkToolPalettePrivate;
-
-  TGtkToolPalettePrivate = record
-  end;
-
-
-
-  PPGtkToolPalette = ^PGtkToolPalette;
-  PGtkToolPalette = ^TGtkToolPalette;
   TGtkToolPalette = object(TGtkContainer)
     priv2: PGtkToolPalettePrivate;
     function new: PGtkToolPalette; cdecl; inline; static;
@@ -10203,6 +10338,11 @@ type
     //property toolbar_style: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_toolbar_style  { property is writeable but setter not declared } ;
   end;
 
+  TGtkToolPalettePrivate = record
+  end;
+
+
+
   PPGtkToolPaletteClass = ^PGtkToolPaletteClass;
   PGtkToolPaletteClass = ^TGtkToolPaletteClass;
   TGtkToolPaletteClass = object
@@ -10228,16 +10368,11 @@ type
     get_text_size_group: function(shell: PGtkToolShell): PGtkSizeGroup; cdecl;
   end;
 
-  PPGtkToolbarPrivate = ^PGtkToolbarPrivate;
-  PGtkToolbarPrivate = ^TGtkToolbarPrivate;
-
-  TGtkToolbarPrivate = record
-  end;
-
-
-
   PPGtkToolbar = ^PGtkToolbar;
   PGtkToolbar = ^TGtkToolbar;
+
+  PPGtkToolbarPrivate = ^PGtkToolbarPrivate;
+  PGtkToolbarPrivate = ^TGtkToolbarPrivate;
   TGtkToolbar = object(TGtkContainer)
     priv2: PGtkToolbarPrivate;
     function new: PGtkToolbar; cdecl; inline; static;
@@ -10261,6 +10396,11 @@ type
     property show_arrow: gboolean read get_show_arrow write set_show_arrow;
     //property toolbar_style: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_toolbar_style  { property is writeable but setter not declared } ;
   end;
+
+  TGtkToolbarPrivate = record
+  end;
+
+
 
   PPGtkToolbarClass = ^PGtkToolbarClass;
   PGtkToolbarClass = ^TGtkToolbarClass;
@@ -10416,6 +10556,7 @@ type
     procedure expand_all; cdecl; inline;
     function expand_row(path: PGtkTreePath; open_all: gboolean): gboolean; cdecl; inline;
     procedure expand_to_path(path: PGtkTreePath); cdecl; inline;
+    function get_activate_on_single_click: gboolean; cdecl; inline;
     procedure get_background_area(path: PGtkTreePath; column: PGtkTreeViewColumn; rect: PGdkRectangle); cdecl; inline;
     function get_bin_window: PGdkWindow; cdecl; inline;
     procedure get_cell_area(path: PGtkTreePath; column: PGtkTreeViewColumn; rect: PGdkRectangle); cdecl; inline;
@@ -10463,6 +10604,7 @@ type
     function row_expanded(path: PGtkTreePath): gboolean; cdecl; inline;
     procedure scroll_to_cell(path: PGtkTreePath; column: PGtkTreeViewColumn; use_align: gboolean; row_align: gfloat; col_align: gfloat); cdecl; inline;
     procedure scroll_to_point(tree_x: gint; tree_y: gint); cdecl; inline;
+    procedure set_activate_on_single_click(single: gboolean); cdecl; inline;
     procedure set_column_drag_function(func: TGtkTreeViewColumnDropFunc; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
     procedure set_cursor(path: PGtkTreePath; focus_column: PGtkTreeViewColumn; start_editing: gboolean); cdecl; inline;
     procedure set_cursor_on_cell(path: PGtkTreePath; focus_column: PGtkTreeViewColumn; focus_cell: PGtkCellRenderer; start_editing: gboolean); cdecl; inline;
@@ -10492,6 +10634,7 @@ type
     procedure set_tooltip_row(tooltip: PGtkTooltip; path: PGtkTreePath); cdecl; inline;
     procedure unset_rows_drag_dest; cdecl; inline;
     procedure unset_rows_drag_source; cdecl; inline;
+    property activate_on_single_click: gboolean read get_activate_on_single_click write set_activate_on_single_click;
     //property enable_grid_lines: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_enable_grid_lines  { property is writeable but setter not declared } ;
     property enable_search: gboolean read get_enable_search write set_enable_search;
     property enable_tree_lines: gboolean read get_enable_tree_lines write set_enable_tree_lines;
@@ -10528,25 +10671,20 @@ type
     drag_data_get: function(drag_source: PGtkTreeDragSource; path: PGtkTreePath; selection_data: PGtkSelectionData): gboolean; cdecl;
     drag_data_delete: function(drag_source: PGtkTreeDragSource; path: PGtkTreePath): gboolean; cdecl;
   end;
-  TGtkTreeModelFilterModifyFunc = procedure(model: PGtkTreeModel; iter: PGtkTreeIter; value: PGValue; column: gint; data: gpointer); cdecl;
-  TGtkTreeModelFilterVisibleFunc = function(model: PGtkTreeModel; iter: PGtkTreeIter; data: gpointer): gboolean; cdecl;
-
-  PPGtkTreeModelFilterPrivate = ^PGtkTreeModelFilterPrivate;
-  PGtkTreeModelFilterPrivate = ^TGtkTreeModelFilterPrivate;
-
-  TGtkTreeModelFilterPrivate = record
-  end;
-
-
 
   PPGtkTreeModelFilter = ^PGtkTreeModelFilter;
   PGtkTreeModelFilter = ^TGtkTreeModelFilter;
 
   PPGtkTreeModelFilterModifyFunc = ^PGtkTreeModelFilterModifyFunc;
   PGtkTreeModelFilterModifyFunc = ^TGtkTreeModelFilterModifyFunc;
+  TGtkTreeModelFilterModifyFunc = procedure(model: PGtkTreeModel; iter: PGtkTreeIter; value: PGValue; column: gint; data: gpointer); cdecl;
 
   PPGtkTreeModelFilterVisibleFunc = ^PGtkTreeModelFilterVisibleFunc;
   PGtkTreeModelFilterVisibleFunc = ^TGtkTreeModelFilterVisibleFunc;
+  TGtkTreeModelFilterVisibleFunc = function(model: PGtkTreeModel; iter: PGtkTreeIter; data: gpointer): gboolean; cdecl;
+
+  PPGtkTreeModelFilterPrivate = ^PGtkTreeModelFilterPrivate;
+  PGtkTreeModelFilterPrivate = ^TGtkTreeModelFilterPrivate;
   TGtkTreeModelFilter = object(TGObject)
     priv: PGtkTreeModelFilterPrivate;
     procedure clear_cache; cdecl; inline;
@@ -10562,6 +10700,11 @@ type
     //property child_model: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_child_model  { property is writeable but setter not declared } ;
     //property virtual_root: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_virtual_root  { property is writeable but setter not declared } ;
   end;
+
+  TGtkTreeModelFilterPrivate = record
+  end;
+
+
 
   PPGtkTreeModelFilterClass = ^PGtkTreeModelFilterClass;
   PGtkTreeModelFilterClass = ^TGtkTreeModelFilterClass;
@@ -10601,16 +10744,11 @@ type
     unref_node: procedure(tree_model: PGtkTreeModel; iter: PGtkTreeIter); cdecl;
   end;
 
-  PPGtkTreeModelSortPrivate = ^PGtkTreeModelSortPrivate;
-  PGtkTreeModelSortPrivate = ^TGtkTreeModelSortPrivate;
-
-  TGtkTreeModelSortPrivate = record
-  end;
-
-
-
   PPGtkTreeModelSort = ^PGtkTreeModelSort;
   PGtkTreeModelSort = ^TGtkTreeModelSort;
+
+  PPGtkTreeModelSortPrivate = ^PGtkTreeModelSortPrivate;
+  PGtkTreeModelSortPrivate = ^TGtkTreeModelSortPrivate;
   TGtkTreeModelSort = object(TGObject)
     priv: PGtkTreeModelSortPrivate;
     procedure clear_cache; cdecl; inline;
@@ -10624,6 +10762,11 @@ type
     property model: PGtkTreeModel read get_model  { property is writeable but setter not declared } ;
   end;
 
+  TGtkTreeModelSortPrivate = record
+  end;
+
+
+
   PPGtkTreeModelSortClass = ^PGtkTreeModelSortClass;
   PGtkTreeModelSortClass = ^TGtkTreeModelSortClass;
   TGtkTreeModelSortClass = object
@@ -10634,9 +10777,6 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  (*
-  PPGtkTreeRowReference = ^PGtkTreeRowReference;
-  PGtkTreeRowReference = ^TGtkTreeRowReference;
   TGtkTreeRowReference = object
     function new(model: PGtkTreeModel; path: PGtkTreePath): PGtkTreeRowReference; cdecl; inline; static;
     function new_proxy(proxy: PGObject; model: PGtkTreeModel; path: PGtkTreePath): PGtkTreeRowReference; cdecl; inline; static;
@@ -10649,24 +10789,17 @@ type
     procedure inserted(proxy: PGObject; path: PGtkTreePath); cdecl; inline; static;
     procedure reordered(proxy: PGObject; path: PGtkTreePath; iter: PGtkTreeIter; new_order: Pgint); cdecl; inline; static;
   end;
-  *)
 
+  PPGtkTreeSelectionFunc = ^PGtkTreeSelectionFunc;
+  PGtkTreeSelectionFunc = ^TGtkTreeSelectionFunc;
   TGtkTreeSelectionFunc = function(selection: PGtkTreeSelection; model: PGtkTreeModel; path: PGtkTreePath; path_currently_selected: gboolean; data: gpointer): gboolean; cdecl;
+
+  PPGtkTreeSelectionForeachFunc = ^PGtkTreeSelectionForeachFunc;
+  PGtkTreeSelectionForeachFunc = ^TGtkTreeSelectionForeachFunc;
   TGtkTreeSelectionForeachFunc = procedure(model: PGtkTreeModel; path: PGtkTreePath; iter: PGtkTreeIter; data: gpointer); cdecl;
 
   PPGtkTreeSelectionPrivate = ^PGtkTreeSelectionPrivate;
   PGtkTreeSelectionPrivate = ^TGtkTreeSelectionPrivate;
-
-  TGtkTreeSelectionPrivate = record
-  end;
-
-
-
-  PPGtkTreeSelectionFunc = ^PGtkTreeSelectionFunc;
-  PGtkTreeSelectionFunc = ^TGtkTreeSelectionFunc;
-
-  PPGtkTreeSelectionForeachFunc = ^PGtkTreeSelectionForeachFunc;
-  PGtkTreeSelectionForeachFunc = ^TGtkTreeSelectionForeachFunc;
   TGtkTreeSelection = object(TGObject)
     priv: PGtkTreeSelectionPrivate;
     function count_selected_rows: gint; cdecl; inline;
@@ -10691,6 +10824,11 @@ type
     procedure unselect_range(start_path: PGtkTreePath; end_path: PGtkTreePath); cdecl; inline;
     property mode: TGtkSelectionMode read get_mode write set_mode;
   end;
+
+  TGtkTreeSelectionPrivate = record
+  end;
+
+
 
   PPGtkTreeSelectionClass = ^PGtkTreeSelectionClass;
   PGtkTreeSelectionClass = ^TGtkTreeSelectionClass;
@@ -10824,9 +10962,9 @@ type
     private_data: PGtkUIManagerPrivate;
     function new: PGtkUIManager; cdecl; inline; static;
     procedure add_ui(merge_id: guint; path: Pgchar; name: Pgchar; action: Pgchar; type_: TGtkUIManagerItemType; top: gboolean); cdecl; inline;
-    function add_ui_from_file(filename: Pgchar): guint; cdecl; inline;
-    function add_ui_from_resource(resource_path: Pgchar): guint; cdecl; inline;
-    function add_ui_from_string(buffer: Pgchar; length: gssize): guint; cdecl; inline;
+    function add_ui_from_file(filename: Pgchar; error: PPGError): guint; cdecl; inline;
+    function add_ui_from_resource(resource_path: Pgchar; error: PPGError): guint; cdecl; inline;
+    function add_ui_from_string(buffer: Pgchar; length: gssize; error: PPGError): guint; cdecl; inline;
     procedure ensure_update; cdecl; inline;
     function get_accel_group: PGtkAccelGroup; cdecl; inline;
     function get_action(path: Pgchar): PGtkAction; cdecl; inline;
@@ -10931,16 +11069,11 @@ type
     parent_class: TGtkSeparatorClass;
   end;
 
-  PPGtkViewportPrivate = ^PGtkViewportPrivate;
-  PGtkViewportPrivate = ^TGtkViewportPrivate;
-
-  TGtkViewportPrivate = record
-  end;
-
-
-
   PPGtkViewport = ^PGtkViewport;
   PGtkViewport = ^TGtkViewport;
+
+  PPGtkViewportPrivate = ^PGtkViewportPrivate;
+  PGtkViewportPrivate = ^TGtkViewportPrivate;
   TGtkViewport = object(TGtkBin)
     priv3: PGtkViewportPrivate;
     function new(hadjustment: PGtkAdjustment; vadjustment: PGtkAdjustment): PGtkViewport; cdecl; inline; static;
@@ -10950,6 +11083,11 @@ type
     procedure set_shadow_type(type_: TGtkShadowType); cdecl; inline;
     property shadow_type: TGtkShadowType read get_shadow_type write set_shadow_type;
   end;
+
+  TGtkViewportPrivate = record
+  end;
+
+
 
   PPGtkViewportClass = ^PGtkViewportClass;
   PGtkViewportClass = ^TGtkViewportClass;
@@ -11057,40 +11195,40 @@ type
 
 
 
-function gtk_about_dialog_get_artists(AAboutDialog: PGtkAboutDialog): PPgchar; cdecl; external;
-function gtk_about_dialog_get_authors(AAboutDialog: PGtkAboutDialog): PPgchar; cdecl; external;
-function gtk_about_dialog_get_comments(AAboutDialog: PGtkAboutDialog): Pgchar; cdecl; external;
-function gtk_about_dialog_get_copyright(AAboutDialog: PGtkAboutDialog): Pgchar; cdecl; external;
-function gtk_about_dialog_get_documenters(AAboutDialog: PGtkAboutDialog): PPgchar; cdecl; external;
-function gtk_about_dialog_get_license(AAboutDialog: PGtkAboutDialog): Pgchar; cdecl; external;
-function gtk_about_dialog_get_license_type(AAboutDialog: PGtkAboutDialog): TGtkLicense; cdecl; external;
-function gtk_about_dialog_get_logo(AAboutDialog: PGtkAboutDialog): PGdkPixbuf; cdecl; external;
-function gtk_about_dialog_get_logo_icon_name(AAboutDialog: PGtkAboutDialog): Pgchar; cdecl; external;
-function gtk_about_dialog_get_program_name(AAboutDialog: PGtkAboutDialog): Pgchar; cdecl; external;
-function gtk_about_dialog_get_translator_credits(AAboutDialog: PGtkAboutDialog): Pgchar; cdecl; external;
+function gtk_about_dialog_get_artists(about: PGtkAboutDialog): PPgchar; cdecl; external;
+function gtk_about_dialog_get_authors(about: PGtkAboutDialog): PPgchar; cdecl; external;
+function gtk_about_dialog_get_comments(about: PGtkAboutDialog): Pgchar; cdecl; external;
+function gtk_about_dialog_get_copyright(about: PGtkAboutDialog): Pgchar; cdecl; external;
+function gtk_about_dialog_get_documenters(about: PGtkAboutDialog): PPgchar; cdecl; external;
+function gtk_about_dialog_get_license(about: PGtkAboutDialog): Pgchar; cdecl; external;
+function gtk_about_dialog_get_license_type(about: PGtkAboutDialog): TGtkLicense; cdecl; external;
+function gtk_about_dialog_get_logo(about: PGtkAboutDialog): PGdkPixbuf; cdecl; external;
+function gtk_about_dialog_get_logo_icon_name(about: PGtkAboutDialog): Pgchar; cdecl; external;
+function gtk_about_dialog_get_program_name(about: PGtkAboutDialog): Pgchar; cdecl; external;
+function gtk_about_dialog_get_translator_credits(about: PGtkAboutDialog): Pgchar; cdecl; external;
 function gtk_about_dialog_get_type: TGType; cdecl; external;
-function gtk_about_dialog_get_version(AAboutDialog: PGtkAboutDialog): Pgchar; cdecl; external;
-function gtk_about_dialog_get_website(AAboutDialog: PGtkAboutDialog): Pgchar; cdecl; external;
-function gtk_about_dialog_get_website_label(AAboutDialog: PGtkAboutDialog): Pgchar; cdecl; external;
-function gtk_about_dialog_get_wrap_license(AAboutDialog: PGtkAboutDialog): gboolean; cdecl; external;
+function gtk_about_dialog_get_version(about: PGtkAboutDialog): Pgchar; cdecl; external;
+function gtk_about_dialog_get_website(about: PGtkAboutDialog): Pgchar; cdecl; external;
+function gtk_about_dialog_get_website_label(about: PGtkAboutDialog): Pgchar; cdecl; external;
+function gtk_about_dialog_get_wrap_license(about: PGtkAboutDialog): gboolean; cdecl; external;
 function gtk_about_dialog_new: PGtkAboutDialog; cdecl; external;
-function gtk_accel_group_activate(AAccelGroup: PGtkAccelGroup; accel_quark: TGQuark; acceleratable: PGObject; accel_key: guint; accel_mods: TGdkModifierType): gboolean; cdecl; external;
-function gtk_accel_group_disconnect(AAccelGroup: PGtkAccelGroup; closure: PGClosure): gboolean; cdecl; external;
-function gtk_accel_group_disconnect_key(AAccelGroup: PGtkAccelGroup; accel_key: guint; accel_mods: TGdkModifierType): gboolean; cdecl; external;
-function gtk_accel_group_find(AAccelGroup: PGtkAccelGroup; find_func: TGtkAccelGroupFindFunc; data: gpointer): PGtkAccelKey; cdecl; external;
+function gtk_accel_group_activate(accel_group: PGtkAccelGroup; accel_quark: TGQuark; acceleratable: PGObject; accel_key: guint; accel_mods: TGdkModifierType): gboolean; cdecl; external;
+function gtk_accel_group_disconnect(accel_group: PGtkAccelGroup; closure: PGClosure): gboolean; cdecl; external;
+function gtk_accel_group_disconnect_key(accel_group: PGtkAccelGroup; accel_key: guint; accel_mods: TGdkModifierType): gboolean; cdecl; external;
+function gtk_accel_group_find(accel_group: PGtkAccelGroup; find_func: TGtkAccelGroupFindFunc; data: gpointer): PGtkAccelKey; cdecl; external;
 function gtk_accel_group_from_accel_closure(closure: PGClosure): PGtkAccelGroup; cdecl; external;
-function gtk_accel_group_get_is_locked(AAccelGroup: PGtkAccelGroup): gboolean; cdecl; external;
-function gtk_accel_group_get_modifier_mask(AAccelGroup: PGtkAccelGroup): TGdkModifierType; cdecl; external;
+function gtk_accel_group_get_is_locked(accel_group: PGtkAccelGroup): gboolean; cdecl; external;
+function gtk_accel_group_get_modifier_mask(accel_group: PGtkAccelGroup): TGdkModifierType; cdecl; external;
 function gtk_accel_group_get_type: TGType; cdecl; external;
 function gtk_accel_group_new: PGtkAccelGroup; cdecl; external;
-function gtk_accel_group_query(AAccelGroup: PGtkAccelGroup; accel_key: guint; accel_mods: TGdkModifierType; n_entries: Pguint): PGtkAccelGroupEntry; cdecl; external;
+function gtk_accel_group_query(accel_group: PGtkAccelGroup; accel_key: guint; accel_mods: TGdkModifierType; n_entries: Pguint): PGtkAccelGroupEntry; cdecl; external;
 function gtk_accel_groups_activate(object_: PGObject; accel_key: guint; accel_mods: TGdkModifierType): gboolean; cdecl; external;
 function gtk_accel_groups_from_object(object_: PGObject): PGSList; cdecl; external;
-function gtk_accel_label_get_accel_widget(AAccelLabel: PGtkAccelLabel): PGtkWidget; cdecl; external;
-function gtk_accel_label_get_accel_width(AAccelLabel: PGtkAccelLabel): guint; cdecl; external;
+function gtk_accel_label_get_accel_widget(accel_label: PGtkAccelLabel): PGtkWidget; cdecl; external;
+function gtk_accel_label_get_accel_width(accel_label: PGtkAccelLabel): guint; cdecl; external;
 function gtk_accel_label_get_type: TGType; cdecl; external;
 function gtk_accel_label_new(string_: Pgchar): PGtkAccelLabel; cdecl; external;
-function gtk_accel_label_refetch(AAccelLabel: PGtkAccelLabel): gboolean; cdecl; external;
+function gtk_accel_label_refetch(accel_label: PGtkAccelLabel): gboolean; cdecl; external;
 function gtk_accel_map_change_entry(accel_path: Pgchar; accel_key: guint; accel_mods: TGdkModifierType; replace: gboolean): gboolean; cdecl; external;
 function gtk_accel_map_get: PGtkAccelMap; cdecl; external;
 function gtk_accel_map_get_type: TGType; cdecl; external;
@@ -11102,204 +11240,209 @@ function gtk_accelerator_name(accelerator_key: guint; accelerator_mods: TGdkModi
 function gtk_accelerator_name_with_keycode(display: PGdkDisplay; accelerator_key: guint; keycode: guint; accelerator_mods: TGdkModifierType): Pgchar; cdecl; external;
 function gtk_accelerator_valid(keyval: guint; modifiers: TGdkModifierType): gboolean; cdecl; external;
 function gtk_accessible_get_type: TGType; cdecl; external;
-function gtk_accessible_get_widget(AAccessible: PGtkAccessible): PGtkWidget; cdecl; external;
-function gtk_action_create_icon(AAction: PGtkAction; icon_size: gint): PGtkWidget; cdecl; external;
-function gtk_action_create_menu(AAction: PGtkAction): PGtkWidget; cdecl; external;
-function gtk_action_create_menu_item(AAction: PGtkAction): PGtkWidget; cdecl; external;
-function gtk_action_create_tool_item(AAction: PGtkAction): PGtkWidget; cdecl; external;
-function gtk_action_get_accel_closure(AAction: PGtkAction): PGClosure; cdecl; external;
-function gtk_action_get_accel_path(AAction: PGtkAction): Pgchar; cdecl; external;
-function gtk_action_get_always_show_image(AAction: PGtkAction): gboolean; cdecl; external;
-function gtk_action_get_gicon(AAction: PGtkAction): PGIcon; cdecl; external;
-function gtk_action_get_icon_name(AAction: PGtkAction): Pgchar; cdecl; external;
-function gtk_action_get_is_important(AAction: PGtkAction): gboolean; cdecl; external;
-function gtk_action_get_label(AAction: PGtkAction): Pgchar; cdecl; external;
-function gtk_action_get_name(AAction: PGtkAction): Pgchar; cdecl; external;
-function gtk_action_get_proxies(AAction: PGtkAction): PGSList; cdecl; external;
-function gtk_action_get_sensitive(AAction: PGtkAction): gboolean; cdecl; external;
-function gtk_action_get_short_label(AAction: PGtkAction): Pgchar; cdecl; external;
-function gtk_action_get_stock_id(AAction: PGtkAction): Pgchar; cdecl; external;
-function gtk_action_get_tooltip(AAction: PGtkAction): Pgchar; cdecl; external;
+function gtk_accessible_get_widget(accessible: PGtkAccessible): PGtkWidget; cdecl; external;
+function gtk_action_create_icon(action: PGtkAction; icon_size: gint): PGtkWidget; cdecl; external;
+function gtk_action_create_menu(action: PGtkAction): PGtkWidget; cdecl; external;
+function gtk_action_create_menu_item(action: PGtkAction): PGtkWidget; cdecl; external;
+function gtk_action_create_tool_item(action: PGtkAction): PGtkWidget; cdecl; external;
+function gtk_action_get_accel_closure(action: PGtkAction): PGClosure; cdecl; external;
+function gtk_action_get_accel_path(action: PGtkAction): Pgchar; cdecl; external;
+function gtk_action_get_always_show_image(action: PGtkAction): gboolean; cdecl; external;
+function gtk_action_get_gicon(action: PGtkAction): PGIcon; cdecl; external;
+function gtk_action_get_icon_name(action: PGtkAction): Pgchar; cdecl; external;
+function gtk_action_get_is_important(action: PGtkAction): gboolean; cdecl; external;
+function gtk_action_get_label(action: PGtkAction): Pgchar; cdecl; external;
+function gtk_action_get_name(action: PGtkAction): Pgchar; cdecl; external;
+function gtk_action_get_proxies(action: PGtkAction): PGSList; cdecl; external;
+function gtk_action_get_sensitive(action: PGtkAction): gboolean; cdecl; external;
+function gtk_action_get_short_label(action: PGtkAction): Pgchar; cdecl; external;
+function gtk_action_get_stock_id(action: PGtkAction): Pgchar; cdecl; external;
+function gtk_action_get_tooltip(action: PGtkAction): Pgchar; cdecl; external;
 function gtk_action_get_type: TGType; cdecl; external;
-function gtk_action_get_visible(AAction: PGtkAction): gboolean; cdecl; external;
-function gtk_action_get_visible_horizontal(AAction: PGtkAction): gboolean; cdecl; external;
-function gtk_action_get_visible_vertical(AAction: PGtkAction): gboolean; cdecl; external;
-function gtk_action_group_get_action(AActionGroup: PGtkActionGroup; action_name: Pgchar): PGtkAction; cdecl; external;
-function gtk_action_group_get_name(AActionGroup: PGtkActionGroup): Pgchar; cdecl; external;
-function gtk_action_group_get_sensitive(AActionGroup: PGtkActionGroup): gboolean; cdecl; external;
+function gtk_action_get_visible(action: PGtkAction): gboolean; cdecl; external;
+function gtk_action_get_visible_horizontal(action: PGtkAction): gboolean; cdecl; external;
+function gtk_action_get_visible_vertical(action: PGtkAction): gboolean; cdecl; external;
+function gtk_action_group_get_accel_group(action_group: PGtkActionGroup): PGtkAccelGroup; cdecl; external;
+function gtk_action_group_get_action(action_group: PGtkActionGroup; action_name: Pgchar): PGtkAction; cdecl; external;
+function gtk_action_group_get_name(action_group: PGtkActionGroup): Pgchar; cdecl; external;
+function gtk_action_group_get_sensitive(action_group: PGtkActionGroup): gboolean; cdecl; external;
 function gtk_action_group_get_type: TGType; cdecl; external;
-function gtk_action_group_get_visible(AActionGroup: PGtkActionGroup): gboolean; cdecl; external;
-function gtk_action_group_list_actions(AActionGroup: PGtkActionGroup): PGList; cdecl; external;
+function gtk_action_group_get_visible(action_group: PGtkActionGroup): gboolean; cdecl; external;
+function gtk_action_group_list_actions(action_group: PGtkActionGroup): PGList; cdecl; external;
 function gtk_action_group_new(name: Pgchar): PGtkActionGroup; cdecl; external;
-function gtk_action_group_translate_string(AActionGroup: PGtkActionGroup; string_: Pgchar): Pgchar; cdecl; external;
-function gtk_action_is_sensitive(AAction: PGtkAction): gboolean; cdecl; external;
-function gtk_action_is_visible(AAction: PGtkAction): gboolean; cdecl; external;
+function gtk_action_group_translate_string(action_group: PGtkActionGroup; string_: Pgchar): Pgchar; cdecl; external;
+function gtk_action_is_sensitive(action: PGtkAction): gboolean; cdecl; external;
+function gtk_action_is_visible(action: PGtkAction): gboolean; cdecl; external;
 function gtk_action_new(name: Pgchar; label_: Pgchar; tooltip: Pgchar; stock_id: Pgchar): PGtkAction; cdecl; external;
-function gtk_actionable_get_action_name(AActionable: PGtkActionable): Pgchar; cdecl; external;
-function gtk_actionable_get_action_target_value(AActionable: PGtkActionable): PGVariant; cdecl; external;
+function gtk_actionable_get_action_name(actionable: PGtkActionable): Pgchar; cdecl; external;
+function gtk_actionable_get_action_target_value(actionable: PGtkActionable): PGVariant; cdecl; external;
 function gtk_actionable_get_type: TGType; cdecl; external;
-function gtk_activatable_get_related_action(AActivatable: PGtkActivatable): PGtkAction; cdecl; external;
+function gtk_activatable_get_related_action(activatable: PGtkActivatable): PGtkAction; cdecl; external;
 function gtk_activatable_get_type: TGType; cdecl; external;
-function gtk_activatable_get_use_action_appearance(AActivatable: PGtkActivatable): gboolean; cdecl; external;
-function gtk_adjustment_get_lower(AAdjustment: PGtkAdjustment): gdouble; cdecl; external;
-function gtk_adjustment_get_minimum_increment(AAdjustment: PGtkAdjustment): gdouble; cdecl; external;
-function gtk_adjustment_get_page_increment(AAdjustment: PGtkAdjustment): gdouble; cdecl; external;
-function gtk_adjustment_get_page_size(AAdjustment: PGtkAdjustment): gdouble; cdecl; external;
-function gtk_adjustment_get_step_increment(AAdjustment: PGtkAdjustment): gdouble; cdecl; external;
+function gtk_activatable_get_use_action_appearance(activatable: PGtkActivatable): gboolean; cdecl; external;
+function gtk_adjustment_get_lower(adjustment: PGtkAdjustment): gdouble; cdecl; external;
+function gtk_adjustment_get_minimum_increment(adjustment: PGtkAdjustment): gdouble; cdecl; external;
+function gtk_adjustment_get_page_increment(adjustment: PGtkAdjustment): gdouble; cdecl; external;
+function gtk_adjustment_get_page_size(adjustment: PGtkAdjustment): gdouble; cdecl; external;
+function gtk_adjustment_get_step_increment(adjustment: PGtkAdjustment): gdouble; cdecl; external;
 function gtk_adjustment_get_type: TGType; cdecl; external;
-function gtk_adjustment_get_upper(AAdjustment: PGtkAdjustment): gdouble; cdecl; external;
-function gtk_adjustment_get_value(AAdjustment: PGtkAdjustment): gdouble; cdecl; external;
+function gtk_adjustment_get_upper(adjustment: PGtkAdjustment): gdouble; cdecl; external;
+function gtk_adjustment_get_value(adjustment: PGtkAdjustment): gdouble; cdecl; external;
 function gtk_adjustment_new(value: gdouble; lower: gdouble; upper: gdouble; step_increment: gdouble; page_increment: gdouble; page_size: gdouble): PGtkAdjustment; cdecl; external;
 function gtk_alignment_get_type: TGType; cdecl; external;
 function gtk_alignment_new(xalign: gfloat; yalign: gfloat; xscale: gfloat; yscale: gfloat): PGtkAlignment; cdecl; external;
 function gtk_alternative_dialog_button_order(screen: PGdkScreen): gboolean; cdecl; external;
-function gtk_app_chooser_button_get_heading(AAppChooserButton: PGtkAppChooserButton): Pgchar; cdecl; external;
-function gtk_app_chooser_button_get_show_default_item(AAppChooserButton: PGtkAppChooserButton): gboolean; cdecl; external;
-function gtk_app_chooser_button_get_show_dialog_item(AAppChooserButton: PGtkAppChooserButton): gboolean; cdecl; external;
+function gtk_app_chooser_button_get_heading(self: PGtkAppChooserButton): Pgchar; cdecl; external;
+function gtk_app_chooser_button_get_show_default_item(self: PGtkAppChooserButton): gboolean; cdecl; external;
+function gtk_app_chooser_button_get_show_dialog_item(self: PGtkAppChooserButton): gboolean; cdecl; external;
 function gtk_app_chooser_button_get_type: TGType; cdecl; external;
 function gtk_app_chooser_button_new(content_type: Pgchar): PGtkAppChooserButton; cdecl; external;
-function gtk_app_chooser_dialog_get_heading(AAppChooserDialog: PGtkAppChooserDialog): Pgchar; cdecl; external;
+function gtk_app_chooser_dialog_get_heading(self: PGtkAppChooserDialog): Pgchar; cdecl; external;
 function gtk_app_chooser_dialog_get_type: TGType; cdecl; external;
-function gtk_app_chooser_dialog_get_widget(AAppChooserDialog: PGtkAppChooserDialog): PGtkWidget; cdecl; external;
+function gtk_app_chooser_dialog_get_widget(self: PGtkAppChooserDialog): PGtkWidget; cdecl; external;
 function gtk_app_chooser_dialog_new(parent: PGtkWindow; flags: TGtkDialogFlags; file_: PGFile): PGtkAppChooserDialog; cdecl; external;
 function gtk_app_chooser_dialog_new_for_content_type(parent: PGtkWindow; flags: TGtkDialogFlags; content_type: Pgchar): PGtkAppChooserDialog; cdecl; external;
-function gtk_app_chooser_get_app_info(AAppChooser: PGtkAppChooser): PGAppInfo; cdecl; external;
-function gtk_app_chooser_get_content_type(AAppChooser: PGtkAppChooser): Pgchar; cdecl; external;
+function gtk_app_chooser_get_app_info(self: PGtkAppChooser): PGAppInfo; cdecl; external;
+function gtk_app_chooser_get_content_type(self: PGtkAppChooser): Pgchar; cdecl; external;
 function gtk_app_chooser_get_type: TGType; cdecl; external;
-function gtk_app_chooser_widget_get_default_text(AAppChooserWidget: PGtkAppChooserWidget): Pgchar; cdecl; external;
-function gtk_app_chooser_widget_get_show_all(AAppChooserWidget: PGtkAppChooserWidget): gboolean; cdecl; external;
-function gtk_app_chooser_widget_get_show_default(AAppChooserWidget: PGtkAppChooserWidget): gboolean; cdecl; external;
-function gtk_app_chooser_widget_get_show_fallback(AAppChooserWidget: PGtkAppChooserWidget): gboolean; cdecl; external;
-function gtk_app_chooser_widget_get_show_other(AAppChooserWidget: PGtkAppChooserWidget): gboolean; cdecl; external;
-function gtk_app_chooser_widget_get_show_recommended(AAppChooserWidget: PGtkAppChooserWidget): gboolean; cdecl; external;
+function gtk_app_chooser_widget_get_default_text(self: PGtkAppChooserWidget): Pgchar; cdecl; external;
+function gtk_app_chooser_widget_get_show_all(self: PGtkAppChooserWidget): gboolean; cdecl; external;
+function gtk_app_chooser_widget_get_show_default(self: PGtkAppChooserWidget): gboolean; cdecl; external;
+function gtk_app_chooser_widget_get_show_fallback(self: PGtkAppChooserWidget): gboolean; cdecl; external;
+function gtk_app_chooser_widget_get_show_other(self: PGtkAppChooserWidget): gboolean; cdecl; external;
+function gtk_app_chooser_widget_get_show_recommended(self: PGtkAppChooserWidget): gboolean; cdecl; external;
 function gtk_app_chooser_widget_get_type: TGType; cdecl; external;
 function gtk_app_chooser_widget_new(content_type: Pgchar): PGtkAppChooserWidget; cdecl; external;
-function gtk_application_get_app_menu(AApplication: PGtkApplication): PGMenuModel; cdecl; external;
-function gtk_application_get_menubar(AApplication: PGtkApplication): PGMenuModel; cdecl; external;
+function gtk_application_get_active_window(application: PGtkApplication): PGtkWindow; cdecl; external;
+function gtk_application_get_app_menu(application: PGtkApplication): PGMenuModel; cdecl; external;
+function gtk_application_get_menubar(application: PGtkApplication): PGMenuModel; cdecl; external;
 function gtk_application_get_type: TGType; cdecl; external;
-function gtk_application_get_windows(AApplication: PGtkApplication): PGList; cdecl; external;
-function gtk_application_inhibit(AApplication: PGtkApplication; window: PGtkWindow; flags: TGtkApplicationInhibitFlags; reason: Pgchar): guint; cdecl; external;
-function gtk_application_is_inhibited(AApplication: PGtkApplication; flags: TGtkApplicationInhibitFlags): gboolean; cdecl; external;
+function gtk_application_get_window_by_id(application: PGtkApplication; id: guint): PGtkWindow; cdecl; external;
+function gtk_application_get_windows(application: PGtkApplication): PGList; cdecl; external;
+function gtk_application_inhibit(application: PGtkApplication; window: PGtkWindow; flags: TGtkApplicationInhibitFlags; reason: Pgchar): guint; cdecl; external;
+function gtk_application_is_inhibited(application: PGtkApplication; flags: TGtkApplicationInhibitFlags): gboolean; cdecl; external;
 function gtk_application_new(application_id: Pgchar; flags: TGApplicationFlags): PGtkApplication; cdecl; external;
-function gtk_application_window_get_show_menubar(AApplicationWindow: PGtkApplicationWindow): gboolean; cdecl; external;
+function gtk_application_window_get_id(window: PGtkApplicationWindow): guint; cdecl; external;
+function gtk_application_window_get_show_menubar(window: PGtkApplicationWindow): gboolean; cdecl; external;
 function gtk_application_window_get_type: TGType; cdecl; external;
 function gtk_application_window_new(application: PGtkApplication): PGtkApplicationWindow; cdecl; external;
 function gtk_arrow_get_type: TGType; cdecl; external;
 function gtk_arrow_new(arrow_type: TGtkArrowType; shadow_type: TGtkShadowType): PGtkArrow; cdecl; external;
 function gtk_aspect_frame_get_type: TGType; cdecl; external;
 function gtk_aspect_frame_new(label_: Pgchar; xalign: gfloat; yalign: gfloat; ratio: gfloat; obey_child: gboolean): PGtkAspectFrame; cdecl; external;
-function gtk_assistant_append_page(AAssistant: PGtkAssistant; page: PGtkWidget): gint; cdecl; external;
-function gtk_assistant_get_current_page(AAssistant: PGtkAssistant): gint; cdecl; external;
-function gtk_assistant_get_n_pages(AAssistant: PGtkAssistant): gint; cdecl; external;
-function gtk_assistant_get_nth_page(AAssistant: PGtkAssistant; page_num: gint): PGtkWidget; cdecl; external;
-function gtk_assistant_get_page_complete(AAssistant: PGtkAssistant; page: PGtkWidget): gboolean; cdecl; external;
-function gtk_assistant_get_page_title(AAssistant: PGtkAssistant; page: PGtkWidget): Pgchar; cdecl; external;
-function gtk_assistant_get_page_type(AAssistant: PGtkAssistant; page: PGtkWidget): TGtkAssistantPageType; cdecl; external;
+function gtk_assistant_append_page(assistant: PGtkAssistant; page: PGtkWidget): gint; cdecl; external;
+function gtk_assistant_get_current_page(assistant: PGtkAssistant): gint; cdecl; external;
+function gtk_assistant_get_n_pages(assistant: PGtkAssistant): gint; cdecl; external;
+function gtk_assistant_get_nth_page(assistant: PGtkAssistant; page_num: gint): PGtkWidget; cdecl; external;
+function gtk_assistant_get_page_complete(assistant: PGtkAssistant; page: PGtkWidget): gboolean; cdecl; external;
+function gtk_assistant_get_page_title(assistant: PGtkAssistant; page: PGtkWidget): Pgchar; cdecl; external;
+function gtk_assistant_get_page_type(assistant: PGtkAssistant; page: PGtkWidget): TGtkAssistantPageType; cdecl; external;
 function gtk_assistant_get_type: TGType; cdecl; external;
-function gtk_assistant_insert_page(AAssistant: PGtkAssistant; page: PGtkWidget; position: gint): gint; cdecl; external;
+function gtk_assistant_insert_page(assistant: PGtkAssistant; page: PGtkWidget; position: gint): gint; cdecl; external;
 function gtk_assistant_new: PGtkAssistant; cdecl; external;
-function gtk_assistant_prepend_page(AAssistant: PGtkAssistant; page: PGtkWidget): gint; cdecl; external;
-function gtk_bin_get_child(ABin: PGtkBin): PGtkWidget; cdecl; external;
+function gtk_assistant_prepend_page(assistant: PGtkAssistant; page: PGtkWidget): gint; cdecl; external;
+function gtk_bin_get_child(bin: PGtkBin): PGtkWidget; cdecl; external;
 function gtk_bin_get_type: TGType; cdecl; external;
 function gtk_binding_entry_add_signal_from_string(binding_set: PGtkBindingSet; signal_desc: Pgchar): TGTokenType; cdecl; external;
-function gtk_binding_set_activate(ABindingSet: PGtkBindingSet; keyval: guint; modifiers: TGdkModifierType; object_: PGObject): gboolean; cdecl; external;
+function gtk_binding_set_activate(binding_set: PGtkBindingSet; keyval: guint; modifiers: TGdkModifierType; object_: PGObject): gboolean; cdecl; external;
 function gtk_binding_set_by_class(object_class: gpointer): PGtkBindingSet; cdecl; external;
 function gtk_binding_set_find(set_name: Pgchar): PGtkBindingSet; cdecl; external;
 function gtk_binding_set_new(set_name: Pgchar): PGtkBindingSet; cdecl; external;
 function gtk_bindings_activate(object_: PGObject; keyval: guint; modifiers: TGdkModifierType): gboolean; cdecl; external;
 function gtk_bindings_activate_event(object_: PGObject; event: PGdkEventKey): gboolean; cdecl; external;
-function gtk_border_copy(ABorder: PGtkBorder): PGtkBorder; cdecl; external;
+function gtk_border_copy(border_: PGtkBorder): PGtkBorder; cdecl; external;
 function gtk_border_get_type: TGType; cdecl; external;
 function gtk_border_new: PGtkBorder; cdecl; external;
-function gtk_box_get_homogeneous(ABox: PGtkBox): gboolean; cdecl; external;
-function gtk_box_get_spacing(ABox: PGtkBox): gint; cdecl; external;
+function gtk_box_get_homogeneous(box: PGtkBox): gboolean; cdecl; external;
+function gtk_box_get_spacing(box: PGtkBox): gint; cdecl; external;
 function gtk_box_get_type: TGType; cdecl; external;
 function gtk_box_new(orientation: TGtkOrientation; spacing: gint): PGtkBox; cdecl; external;
-function gtk_buildable_construct_child(ABuildable: PGtkBuildable; builder: PGtkBuilder; name: Pgchar): PGObject; cdecl; external;
-function gtk_buildable_custom_tag_start(ABuildable: PGtkBuildable; builder: PGtkBuilder; child: PGObject; tagname: Pgchar; parser: PGMarkupParser; data: Pgpointer): gboolean; cdecl; external;
-function gtk_buildable_get_internal_child(ABuildable: PGtkBuildable; builder: PGtkBuilder; childname: Pgchar): PGObject; cdecl; external;
-function gtk_buildable_get_name(ABuildable: PGtkBuildable): Pgchar; cdecl; external;
+function gtk_buildable_construct_child(buildable: PGtkBuildable; builder: PGtkBuilder; name: Pgchar): PGObject; cdecl; external;
+function gtk_buildable_custom_tag_start(buildable: PGtkBuildable; builder: PGtkBuilder; child: PGObject; tagname: Pgchar; parser: PGMarkupParser; data: Pgpointer): gboolean; cdecl; external;
+function gtk_buildable_get_internal_child(buildable: PGtkBuildable; builder: PGtkBuilder; childname: Pgchar): PGObject; cdecl; external;
+function gtk_buildable_get_name(buildable: PGtkBuildable): Pgchar; cdecl; external;
 function gtk_buildable_get_type: TGType; cdecl; external;
-function gtk_builder_add_from_file(ABuilder: PGtkBuilder; filename: Pgchar): guint; cdecl; external;
-function gtk_builder_add_from_resource(ABuilder: PGtkBuilder; resource_path: Pgchar): guint; cdecl; external;
-function gtk_builder_add_from_string(ABuilder: PGtkBuilder; buffer: Pgchar; length: gsize): guint; cdecl; external;
-function gtk_builder_add_objects_from_file(ABuilder: PGtkBuilder; filename: Pgchar; object_ids: PPgchar): guint; cdecl; external;
-function gtk_builder_add_objects_from_resource(ABuilder: PGtkBuilder; resource_path: Pgchar; object_ids: PPgchar): guint; cdecl; external;
-function gtk_builder_add_objects_from_string(ABuilder: PGtkBuilder; buffer: Pgchar; length: gsize; object_ids: PPgchar): guint; cdecl; external;
+function gtk_builder_add_from_file(builder: PGtkBuilder; filename: Pgchar; error: PPGError): guint; cdecl; external;
+function gtk_builder_add_from_resource(builder: PGtkBuilder; resource_path: Pgchar; error: PPGError): guint; cdecl; external;
+function gtk_builder_add_from_string(builder: PGtkBuilder; buffer: Pgchar; length: gsize; error: PPGError): guint; cdecl; external;
+function gtk_builder_add_objects_from_file(builder: PGtkBuilder; filename: Pgchar; object_ids: PPgchar; error: PPGError): guint; cdecl; external;
+function gtk_builder_add_objects_from_resource(builder: PGtkBuilder; resource_path: Pgchar; object_ids: PPgchar; error: PPGError): guint; cdecl; external;
+function gtk_builder_add_objects_from_string(builder: PGtkBuilder; buffer: Pgchar; length: gsize; object_ids: PPgchar; error: PPGError): guint; cdecl; external;
 function gtk_builder_error_quark: TGQuark; cdecl; external;
-function gtk_builder_get_object(ABuilder: PGtkBuilder; name: Pgchar): PGObject; cdecl; external;
-function gtk_builder_get_objects(ABuilder: PGtkBuilder): PGSList; cdecl; external;
-function gtk_builder_get_translation_domain(ABuilder: PGtkBuilder): Pgchar; cdecl; external;
+function gtk_builder_get_object(builder: PGtkBuilder; name: Pgchar): PGObject; cdecl; external;
+function gtk_builder_get_objects(builder: PGtkBuilder): PGSList; cdecl; external;
+function gtk_builder_get_translation_domain(builder: PGtkBuilder): Pgchar; cdecl; external;
 function gtk_builder_get_type: TGType; cdecl; external;
-function gtk_builder_get_type_from_name(ABuilder: PGtkBuilder; type_name: Pgchar): TGType; cdecl; external;
+function gtk_builder_get_type_from_name(builder: PGtkBuilder; type_name: Pgchar): TGType; cdecl; external;
 function gtk_builder_new: PGtkBuilder; cdecl; external;
-function gtk_builder_value_from_string(ABuilder: PGtkBuilder; pspec: PGParamSpec; string_: Pgchar; value: PGValue): gboolean; cdecl; external;
-function gtk_builder_value_from_string_type(ABuilder: PGtkBuilder; type_: TGType; string_: Pgchar; value: PGValue): gboolean; cdecl; external;
-function gtk_button_box_get_child_non_homogeneous(AButtonBox: PGtkButtonBox; child: PGtkWidget): gboolean; cdecl; external;
-function gtk_button_box_get_child_secondary(AButtonBox: PGtkButtonBox; child: PGtkWidget): gboolean; cdecl; external;
-function gtk_button_box_get_layout(AButtonBox: PGtkButtonBox): TGtkButtonBoxStyle; cdecl; external;
+function gtk_builder_value_from_string(builder: PGtkBuilder; pspec: PGParamSpec; string_: Pgchar; value: PGValue; error: PPGError): gboolean; cdecl; external;
+function gtk_builder_value_from_string_type(builder: PGtkBuilder; type_: TGType; string_: Pgchar; value: PGValue; error: PPGError): gboolean; cdecl; external;
+function gtk_button_box_get_child_non_homogeneous(widget: PGtkButtonBox; child: PGtkWidget): gboolean; cdecl; external;
+function gtk_button_box_get_child_secondary(widget: PGtkButtonBox; child: PGtkWidget): gboolean; cdecl; external;
+function gtk_button_box_get_layout(widget: PGtkButtonBox): TGtkButtonBoxStyle; cdecl; external;
 function gtk_button_box_get_type: TGType; cdecl; external;
 function gtk_button_box_new(orientation: TGtkOrientation): PGtkButtonBox; cdecl; external;
-function gtk_button_get_event_window(AButton: PGtkButton): PGdkWindow; cdecl; external;
-function gtk_button_get_focus_on_click(AButton: PGtkButton): gboolean; cdecl; external;
-function gtk_button_get_image(AButton: PGtkButton): PGtkWidget; cdecl; external;
-function gtk_button_get_image_position(AButton: PGtkButton): TGtkPositionType; cdecl; external;
-function gtk_button_get_label(AButton: PGtkButton): Pgchar; cdecl; external;
-function gtk_button_get_relief(AButton: PGtkButton): TGtkReliefStyle; cdecl; external;
+function gtk_button_get_always_show_image(button: PGtkButton): gboolean; cdecl; external;
+function gtk_button_get_event_window(button: PGtkButton): PGdkWindow; cdecl; external;
+function gtk_button_get_focus_on_click(button: PGtkButton): gboolean; cdecl; external;
+function gtk_button_get_image(button: PGtkButton): PGtkWidget; cdecl; external;
+function gtk_button_get_image_position(button: PGtkButton): TGtkPositionType; cdecl; external;
+function gtk_button_get_label(button: PGtkButton): Pgchar; cdecl; external;
+function gtk_button_get_relief(button: PGtkButton): TGtkReliefStyle; cdecl; external;
 function gtk_button_get_type: TGType; cdecl; external;
-function gtk_button_get_use_stock(AButton: PGtkButton): gboolean; cdecl; external;
-function gtk_button_get_use_underline(AButton: PGtkButton): gboolean; cdecl; external;
+function gtk_button_get_use_stock(button: PGtkButton): gboolean; cdecl; external;
+function gtk_button_get_use_underline(button: PGtkButton): gboolean; cdecl; external;
 function gtk_button_new: PGtkButton; cdecl; external;
 function gtk_button_new_from_stock(stock_id: Pgchar): PGtkButton; cdecl; external;
 function gtk_button_new_with_label(label_: Pgchar): PGtkButton; cdecl; external;
 function gtk_button_new_with_mnemonic(label_: Pgchar): PGtkButton; cdecl; external;
 function gtk_cairo_should_draw_window(cr: Pcairo_t; window: PGdkWindow): gboolean; cdecl; external;
-function gtk_calendar_get_day_is_marked(ACalendar: PGtkCalendar; day: guint): gboolean; cdecl; external;
-function gtk_calendar_get_detail_height_rows(ACalendar: PGtkCalendar): gint; cdecl; external;
-function gtk_calendar_get_detail_width_chars(ACalendar: PGtkCalendar): gint; cdecl; external;
-function gtk_calendar_get_display_options(ACalendar: PGtkCalendar): TGtkCalendarDisplayOptions; cdecl; external;
+function gtk_calendar_get_day_is_marked(calendar: PGtkCalendar; day: guint): gboolean; cdecl; external;
+function gtk_calendar_get_detail_height_rows(calendar: PGtkCalendar): gint; cdecl; external;
+function gtk_calendar_get_detail_width_chars(calendar: PGtkCalendar): gint; cdecl; external;
+function gtk_calendar_get_display_options(calendar: PGtkCalendar): TGtkCalendarDisplayOptions; cdecl; external;
 function gtk_calendar_get_type: TGType; cdecl; external;
 function gtk_calendar_new: PGtkCalendar; cdecl; external;
-function gtk_cell_area_activate(ACellArea: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; flags: TGtkCellRendererState; edit_only: gboolean): gboolean; cdecl; external;
-function gtk_cell_area_activate_cell(ACellArea: PGtkCellArea; widget: PGtkWidget; renderer: PGtkCellRenderer; event: PGdkEvent; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gboolean; cdecl; external;
-function gtk_cell_area_box_get_spacing(ACellAreaBox: PGtkCellAreaBox): gint; cdecl; external;
+function gtk_cell_area_activate(area: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; flags: TGtkCellRendererState; edit_only: gboolean): gboolean; cdecl; external;
+function gtk_cell_area_activate_cell(area: PGtkCellArea; widget: PGtkWidget; renderer: PGtkCellRenderer; event: PGdkEvent; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gboolean; cdecl; external;
+function gtk_cell_area_box_get_spacing(box: PGtkCellAreaBox): gint; cdecl; external;
 function gtk_cell_area_box_get_type: TGType; cdecl; external;
 function gtk_cell_area_box_new: PGtkCellAreaBox; cdecl; external;
-function gtk_cell_area_class_find_cell_property(ACellAreaClass: PGtkCellAreaClass; property_name: Pgchar): PGParamSpec; cdecl; external;
-function gtk_cell_area_class_list_cell_properties(ACellAreaClass: PGtkCellAreaClass; n_properties: Pguint): PPGParamSpec; cdecl; external;
-function gtk_cell_area_context_get_area(ACellAreaContext: PGtkCellAreaContext): PGtkCellArea; cdecl; external;
+function gtk_cell_area_class_find_cell_property(aclass: PGtkCellAreaClass; property_name: Pgchar): PGParamSpec; cdecl; external;
+function gtk_cell_area_class_list_cell_properties(aclass: PGtkCellAreaClass; n_properties: Pguint): PPGParamSpec; cdecl; external;
+function gtk_cell_area_context_get_area(context: PGtkCellAreaContext): PGtkCellArea; cdecl; external;
 function gtk_cell_area_context_get_type: TGType; cdecl; external;
-function gtk_cell_area_copy_context(ACellArea: PGtkCellArea; context: PGtkCellAreaContext): PGtkCellAreaContext; cdecl; external;
-function gtk_cell_area_create_context(ACellArea: PGtkCellArea): PGtkCellAreaContext; cdecl; external;
-function gtk_cell_area_event(ACellArea: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; event: PGdkEvent; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gint; cdecl; external;
-function gtk_cell_area_focus(ACellArea: PGtkCellArea; direction: TGtkDirectionType): gboolean; cdecl; external;
-function gtk_cell_area_get_cell_at_position(ACellArea: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; x: gint; y: gint; alloc_area: PGdkRectangle): PGtkCellRenderer; cdecl; external;
-function gtk_cell_area_get_current_path_string(ACellArea: PGtkCellArea): Pgchar; cdecl; external;
-function gtk_cell_area_get_edit_widget(ACellArea: PGtkCellArea): PGtkCellEditable; cdecl; external;
-function gtk_cell_area_get_edited_cell(ACellArea: PGtkCellArea): PGtkCellRenderer; cdecl; external;
-function gtk_cell_area_get_focus_cell(ACellArea: PGtkCellArea): PGtkCellRenderer; cdecl; external;
-function gtk_cell_area_get_focus_from_sibling(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer): PGtkCellRenderer; cdecl; external;
-function gtk_cell_area_get_focus_siblings(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer): PGList; cdecl; external;
-function gtk_cell_area_get_request_mode(ACellArea: PGtkCellArea): TGtkSizeRequestMode; cdecl; external;
+function gtk_cell_area_copy_context(area: PGtkCellArea; context: PGtkCellAreaContext): PGtkCellAreaContext; cdecl; external;
+function gtk_cell_area_create_context(area: PGtkCellArea): PGtkCellAreaContext; cdecl; external;
+function gtk_cell_area_event(area: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; event: PGdkEvent; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gint; cdecl; external;
+function gtk_cell_area_focus(area: PGtkCellArea; direction: TGtkDirectionType): gboolean; cdecl; external;
+function gtk_cell_area_get_cell_at_position(area: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; x: gint; y: gint; alloc_area: PGdkRectangle): PGtkCellRenderer; cdecl; external;
+function gtk_cell_area_get_current_path_string(area: PGtkCellArea): Pgchar; cdecl; external;
+function gtk_cell_area_get_edit_widget(area: PGtkCellArea): PGtkCellEditable; cdecl; external;
+function gtk_cell_area_get_edited_cell(area: PGtkCellArea): PGtkCellRenderer; cdecl; external;
+function gtk_cell_area_get_focus_cell(area: PGtkCellArea): PGtkCellRenderer; cdecl; external;
+function gtk_cell_area_get_focus_from_sibling(area: PGtkCellArea; renderer: PGtkCellRenderer): PGtkCellRenderer; cdecl; external;
+function gtk_cell_area_get_focus_siblings(area: PGtkCellArea; renderer: PGtkCellRenderer): PGList; cdecl; external;
+function gtk_cell_area_get_request_mode(area: PGtkCellArea): TGtkSizeRequestMode; cdecl; external;
 function gtk_cell_area_get_type: TGType; cdecl; external;
-function gtk_cell_area_has_renderer(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer): gboolean; cdecl; external;
-function gtk_cell_area_is_activatable(ACellArea: PGtkCellArea): gboolean; cdecl; external;
-function gtk_cell_area_is_focus_sibling(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer; sibling: PGtkCellRenderer): gboolean; cdecl; external;
+function gtk_cell_area_has_renderer(area: PGtkCellArea; renderer: PGtkCellRenderer): gboolean; cdecl; external;
+function gtk_cell_area_is_activatable(area: PGtkCellArea): gboolean; cdecl; external;
+function gtk_cell_area_is_focus_sibling(area: PGtkCellArea; renderer: PGtkCellRenderer; sibling: PGtkCellRenderer): gboolean; cdecl; external;
 function gtk_cell_editable_get_type: TGType; cdecl; external;
-function gtk_cell_layout_get_area(ACellLayout: PGtkCellLayout): PGtkCellArea; cdecl; external;
-function gtk_cell_layout_get_cells(ACellLayout: PGtkCellLayout): PGList; cdecl; external;
+function gtk_cell_layout_get_area(cell_layout: PGtkCellLayout): PGtkCellArea; cdecl; external;
+function gtk_cell_layout_get_cells(cell_layout: PGtkCellLayout): PGList; cdecl; external;
 function gtk_cell_layout_get_type: TGType; cdecl; external;
 function gtk_cell_renderer_accel_get_type: TGType; cdecl; external;
 function gtk_cell_renderer_accel_new: PGtkCellRendererAccel; cdecl; external;
-function gtk_cell_renderer_activate(ACellRenderer: PGtkCellRenderer; event: PGdkEvent; widget: PGtkWidget; path: Pgchar; background_area: PGdkRectangle; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gboolean; cdecl; external;
+function gtk_cell_renderer_activate(cell: PGtkCellRenderer; event: PGdkEvent; widget: PGtkWidget; path: Pgchar; background_area: PGdkRectangle; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gboolean; cdecl; external;
 function gtk_cell_renderer_combo_get_type: TGType; cdecl; external;
 function gtk_cell_renderer_combo_new: PGtkCellRendererCombo; cdecl; external;
-function gtk_cell_renderer_get_request_mode(ACellRenderer: PGtkCellRenderer): TGtkSizeRequestMode; cdecl; external;
-function gtk_cell_renderer_get_sensitive(ACellRenderer: PGtkCellRenderer): gboolean; cdecl; external;
-function gtk_cell_renderer_get_state(ACellRenderer: PGtkCellRenderer; widget: PGtkWidget; cell_state: TGtkCellRendererState): TGtkStateFlags; cdecl; external;
+function gtk_cell_renderer_get_request_mode(cell: PGtkCellRenderer): TGtkSizeRequestMode; cdecl; external;
+function gtk_cell_renderer_get_sensitive(cell: PGtkCellRenderer): gboolean; cdecl; external;
+function gtk_cell_renderer_get_state(cell: PGtkCellRenderer; widget: PGtkWidget; cell_state: TGtkCellRendererState): TGtkStateFlags; cdecl; external;
 function gtk_cell_renderer_get_type: TGType; cdecl; external;
-function gtk_cell_renderer_get_visible(ACellRenderer: PGtkCellRenderer): gboolean; cdecl; external;
-function gtk_cell_renderer_is_activatable(ACellRenderer: PGtkCellRenderer): gboolean; cdecl; external;
+function gtk_cell_renderer_get_visible(cell: PGtkCellRenderer): gboolean; cdecl; external;
+function gtk_cell_renderer_is_activatable(cell: PGtkCellRenderer): gboolean; cdecl; external;
 function gtk_cell_renderer_pixbuf_get_type: TGType; cdecl; external;
 function gtk_cell_renderer_pixbuf_new: PGtkCellRendererPixbuf; cdecl; external;
 function gtk_cell_renderer_progress_get_type: TGType; cdecl; external;
@@ -11308,18 +11451,18 @@ function gtk_cell_renderer_spin_get_type: TGType; cdecl; external;
 function gtk_cell_renderer_spin_new: PGtkCellRendererSpin; cdecl; external;
 function gtk_cell_renderer_spinner_get_type: TGType; cdecl; external;
 function gtk_cell_renderer_spinner_new: PGtkCellRendererSpinner; cdecl; external;
-function gtk_cell_renderer_start_editing(ACellRenderer: PGtkCellRenderer; event: PGdkEvent; widget: PGtkWidget; path: Pgchar; background_area: PGdkRectangle; cell_area: PGdkRectangle; flags: TGtkCellRendererState): PGtkCellEditable; cdecl; external;
+function gtk_cell_renderer_start_editing(cell: PGtkCellRenderer; event: PGdkEvent; widget: PGtkWidget; path: Pgchar; background_area: PGdkRectangle; cell_area: PGdkRectangle; flags: TGtkCellRendererState): PGtkCellEditable; cdecl; external;
 function gtk_cell_renderer_text_get_type: TGType; cdecl; external;
 function gtk_cell_renderer_text_new: PGtkCellRendererText; cdecl; external;
-function gtk_cell_renderer_toggle_get_activatable(ACellRendererToggle: PGtkCellRendererToggle): gboolean; cdecl; external;
-function gtk_cell_renderer_toggle_get_active(ACellRendererToggle: PGtkCellRendererToggle): gboolean; cdecl; external;
-function gtk_cell_renderer_toggle_get_radio(ACellRendererToggle: PGtkCellRendererToggle): gboolean; cdecl; external;
+function gtk_cell_renderer_toggle_get_activatable(toggle: PGtkCellRendererToggle): gboolean; cdecl; external;
+function gtk_cell_renderer_toggle_get_active(toggle: PGtkCellRendererToggle): gboolean; cdecl; external;
+function gtk_cell_renderer_toggle_get_radio(toggle: PGtkCellRendererToggle): gboolean; cdecl; external;
 function gtk_cell_renderer_toggle_get_type: TGType; cdecl; external;
 function gtk_cell_renderer_toggle_new: PGtkCellRendererToggle; cdecl; external;
-function gtk_cell_view_get_displayed_row(ACellView: PGtkCellView): PGtkTreePath; cdecl; external;
-function gtk_cell_view_get_draw_sensitive(ACellView: PGtkCellView): gboolean; cdecl; external;
-function gtk_cell_view_get_fit_model(ACellView: PGtkCellView): gboolean; cdecl; external;
-function gtk_cell_view_get_model(ACellView: PGtkCellView): PGtkTreeModel; cdecl; external;
+function gtk_cell_view_get_displayed_row(cell_view: PGtkCellView): PGtkTreePath; cdecl; external;
+function gtk_cell_view_get_draw_sensitive(cell_view: PGtkCellView): gboolean; cdecl; external;
+function gtk_cell_view_get_fit_model(cell_view: PGtkCellView): gboolean; cdecl; external;
+function gtk_cell_view_get_model(cell_view: PGtkCellView): PGtkTreeModel; cdecl; external;
 function gtk_cell_view_get_type: TGType; cdecl; external;
 function gtk_cell_view_new: PGtkCellView; cdecl; external;
 function gtk_cell_view_new_with_context(area: PGtkCellArea; context: PGtkCellAreaContext): PGtkCellView; cdecl; external;
@@ -11330,297 +11473,299 @@ function gtk_check_button_get_type: TGType; cdecl; external;
 function gtk_check_button_new: PGtkCheckButton; cdecl; external;
 function gtk_check_button_new_with_label(label_: Pgchar): PGtkCheckButton; cdecl; external;
 function gtk_check_button_new_with_mnemonic(label_: Pgchar): PGtkCheckButton; cdecl; external;
-function gtk_check_menu_item_get_active(ACheckMenuItem: PGtkCheckMenuItem): gboolean; cdecl; external;
-function gtk_check_menu_item_get_draw_as_radio(ACheckMenuItem: PGtkCheckMenuItem): gboolean; cdecl; external;
-function gtk_check_menu_item_get_inconsistent(ACheckMenuItem: PGtkCheckMenuItem): gboolean; cdecl; external;
+function gtk_check_menu_item_get_active(check_menu_item: PGtkCheckMenuItem): gboolean; cdecl; external;
+function gtk_check_menu_item_get_draw_as_radio(check_menu_item: PGtkCheckMenuItem): gboolean; cdecl; external;
+function gtk_check_menu_item_get_inconsistent(check_menu_item: PGtkCheckMenuItem): gboolean; cdecl; external;
 function gtk_check_menu_item_get_type: TGType; cdecl; external;
 function gtk_check_menu_item_new: PGtkCheckMenuItem; cdecl; external;
 function gtk_check_menu_item_new_with_label(label_: Pgchar): PGtkCheckMenuItem; cdecl; external;
 function gtk_check_menu_item_new_with_mnemonic(label_: Pgchar): PGtkCheckMenuItem; cdecl; external;
 function gtk_check_version(required_major: guint; required_minor: guint; required_micro: guint): Pgchar; cdecl; external;
 function gtk_clipboard_get(selection: TGdkAtom): PGtkClipboard; cdecl; external;
-function gtk_clipboard_get_display(AClipboard: PGtkClipboard): PGdkDisplay; cdecl; external;
+function gtk_clipboard_get_display(clipboard: PGtkClipboard): PGdkDisplay; cdecl; external;
 function gtk_clipboard_get_for_display(display: PGdkDisplay; selection: TGdkAtom): PGtkClipboard; cdecl; external;
-function gtk_clipboard_get_owner(AClipboard: PGtkClipboard): PGObject; cdecl; external;
+function gtk_clipboard_get_owner(clipboard: PGtkClipboard): PGObject; cdecl; external;
 function gtk_clipboard_get_type: TGType; cdecl; external;
-function gtk_clipboard_set_with_data(AClipboard: PGtkClipboard; targets: PGtkTargetEntry; n_targets: guint; get_func: TGtkClipboardGetFunc; clear_func: TGtkClipboardClearFunc; user_data: gpointer): gboolean; cdecl; external;
-function gtk_clipboard_set_with_owner(AClipboard: PGtkClipboard; targets: PGtkTargetEntry; n_targets: guint; get_func: TGtkClipboardGetFunc; clear_func: TGtkClipboardClearFunc; owner: PGObject): gboolean; cdecl; external;
-function gtk_clipboard_wait_for_contents(AClipboard: PGtkClipboard; target: TGdkAtom): PGtkSelectionData; cdecl; external;
-function gtk_clipboard_wait_for_image(AClipboard: PGtkClipboard): PGdkPixbuf; cdecl; external;
-function gtk_clipboard_wait_for_rich_text(AClipboard: PGtkClipboard; buffer: PGtkTextBuffer; format: PGdkAtom; length: Pgsize): Pguint8; cdecl; external;
-function gtk_clipboard_wait_for_targets(AClipboard: PGtkClipboard; targets: PPGdkAtom; n_targets: Pgint): gboolean; cdecl; external;
-function gtk_clipboard_wait_for_text(AClipboard: PGtkClipboard): Pgchar; cdecl; external;
-function gtk_clipboard_wait_for_uris(AClipboard: PGtkClipboard): PPgchar; cdecl; external;
-function gtk_clipboard_wait_is_image_available(AClipboard: PGtkClipboard): gboolean; cdecl; external;
-function gtk_clipboard_wait_is_rich_text_available(AClipboard: PGtkClipboard; buffer: PGtkTextBuffer): gboolean; cdecl; external;
-function gtk_clipboard_wait_is_target_available(AClipboard: PGtkClipboard; target: TGdkAtom): gboolean; cdecl; external;
-function gtk_clipboard_wait_is_text_available(AClipboard: PGtkClipboard): gboolean; cdecl; external;
-function gtk_clipboard_wait_is_uris_available(AClipboard: PGtkClipboard): gboolean; cdecl; external;
-function gtk_color_button_get_title(AColorButton: PGtkColorButton): Pgchar; cdecl; external;
+function gtk_clipboard_set_with_data(clipboard: PGtkClipboard; targets: PGtkTargetEntry; n_targets: guint; get_func: TGtkClipboardGetFunc; clear_func: TGtkClipboardClearFunc; user_data: gpointer): gboolean; cdecl; external;
+function gtk_clipboard_set_with_owner(clipboard: PGtkClipboard; targets: PGtkTargetEntry; n_targets: guint; get_func: TGtkClipboardGetFunc; clear_func: TGtkClipboardClearFunc; owner: PGObject): gboolean; cdecl; external;
+function gtk_clipboard_wait_for_contents(clipboard: PGtkClipboard; target: TGdkAtom): PGtkSelectionData; cdecl; external;
+function gtk_clipboard_wait_for_image(clipboard: PGtkClipboard): PGdkPixbuf; cdecl; external;
+function gtk_clipboard_wait_for_rich_text(clipboard: PGtkClipboard; buffer: PGtkTextBuffer; format: PGdkAtom; length: Pgsize): Pguint8; cdecl; external;
+function gtk_clipboard_wait_for_targets(clipboard: PGtkClipboard; targets: PPGdkAtom; n_targets: Pgint): gboolean; cdecl; external;
+function gtk_clipboard_wait_for_text(clipboard: PGtkClipboard): Pgchar; cdecl; external;
+function gtk_clipboard_wait_for_uris(clipboard: PGtkClipboard): PPgchar; cdecl; external;
+function gtk_clipboard_wait_is_image_available(clipboard: PGtkClipboard): gboolean; cdecl; external;
+function gtk_clipboard_wait_is_rich_text_available(clipboard: PGtkClipboard; buffer: PGtkTextBuffer): gboolean; cdecl; external;
+function gtk_clipboard_wait_is_target_available(clipboard: PGtkClipboard; target: TGdkAtom): gboolean; cdecl; external;
+function gtk_clipboard_wait_is_text_available(clipboard: PGtkClipboard): gboolean; cdecl; external;
+function gtk_clipboard_wait_is_uris_available(clipboard: PGtkClipboard): gboolean; cdecl; external;
+function gtk_color_button_get_title(button: PGtkColorButton): Pgchar; cdecl; external;
 function gtk_color_button_get_type: TGType; cdecl; external;
 function gtk_color_button_new: PGtkColorButton; cdecl; external;
 function gtk_color_button_new_with_rgba(rgba: PGdkRGBA): PGtkColorButton; cdecl; external;
 function gtk_color_chooser_dialog_get_type: TGType; cdecl; external;
 function gtk_color_chooser_dialog_new(title: Pgchar; parent: PGtkWindow): PGtkColorChooserDialog; cdecl; external;
 function gtk_color_chooser_get_type: TGType; cdecl; external;
-function gtk_color_chooser_get_use_alpha(AColorChooser: PGtkColorChooser): gboolean; cdecl; external;
+function gtk_color_chooser_get_use_alpha(chooser: PGtkColorChooser): gboolean; cdecl; external;
 function gtk_color_chooser_widget_get_type: TGType; cdecl; external;
 function gtk_color_chooser_widget_new: PGtkColorChooserWidget; cdecl; external;
-function gtk_color_selection_dialog_get_color_selection(AColorSelectionDialog: PGtkColorSelectionDialog): PGtkWidget; cdecl; external;
+function gtk_color_selection_dialog_get_color_selection(colorsel: PGtkColorSelectionDialog): PGtkWidget; cdecl; external;
 function gtk_color_selection_dialog_get_type: TGType; cdecl; external;
 function gtk_color_selection_dialog_new(title: Pgchar): PGtkColorSelectionDialog; cdecl; external;
-function gtk_color_selection_get_current_alpha(AColorSelection: PGtkColorSelection): guint16; cdecl; external;
-function gtk_color_selection_get_has_opacity_control(AColorSelection: PGtkColorSelection): gboolean; cdecl; external;
-function gtk_color_selection_get_has_palette(AColorSelection: PGtkColorSelection): gboolean; cdecl; external;
-function gtk_color_selection_get_previous_alpha(AColorSelection: PGtkColorSelection): guint16; cdecl; external;
+function gtk_color_selection_get_current_alpha(colorsel: PGtkColorSelection): guint16; cdecl; external;
+function gtk_color_selection_get_has_opacity_control(colorsel: PGtkColorSelection): gboolean; cdecl; external;
+function gtk_color_selection_get_has_palette(colorsel: PGtkColorSelection): gboolean; cdecl; external;
+function gtk_color_selection_get_previous_alpha(colorsel: PGtkColorSelection): guint16; cdecl; external;
 function gtk_color_selection_get_type: TGType; cdecl; external;
-function gtk_color_selection_is_adjusting(AColorSelection: PGtkColorSelection): gboolean; cdecl; external;
+function gtk_color_selection_is_adjusting(colorsel: PGtkColorSelection): gboolean; cdecl; external;
 function gtk_color_selection_new: PGtkColorSelection; cdecl; external;
 function gtk_color_selection_palette_from_string(str: Pgchar; colors: PPGdkColor; n_colors: Pgint): gboolean; cdecl; external;
 function gtk_color_selection_palette_to_string(colors: PGdkColor; n_colors: gint): Pgchar; cdecl; external;
 function gtk_color_selection_set_change_palette_with_screen_hook(func: TGtkColorSelectionChangePaletteWithScreenFunc): TGtkColorSelectionChangePaletteWithScreenFunc; cdecl; external;
-function gtk_combo_box_get_active(AComboBox: PGtkComboBox): gint; cdecl; external;
-function gtk_combo_box_get_active_id(AComboBox: PGtkComboBox): Pgchar; cdecl; external;
-function gtk_combo_box_get_active_iter(AComboBox: PGtkComboBox; iter: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_combo_box_get_add_tearoffs(AComboBox: PGtkComboBox): gboolean; cdecl; external;
-function gtk_combo_box_get_button_sensitivity(AComboBox: PGtkComboBox): TGtkSensitivityType; cdecl; external;
-function gtk_combo_box_get_column_span_column(AComboBox: PGtkComboBox): gint; cdecl; external;
-function gtk_combo_box_get_entry_text_column(AComboBox: PGtkComboBox): gint; cdecl; external;
-function gtk_combo_box_get_focus_on_click(AComboBox: PGtkComboBox): gboolean; cdecl; external;
-function gtk_combo_box_get_has_entry(AComboBox: PGtkComboBox): gboolean; cdecl; external;
-function gtk_combo_box_get_id_column(AComboBox: PGtkComboBox): gint; cdecl; external;
-function gtk_combo_box_get_model(AComboBox: PGtkComboBox): PGtkTreeModel; cdecl; external;
-function gtk_combo_box_get_popup_accessible(AComboBox: PGtkComboBox): PAtkObject; cdecl; external;
-function gtk_combo_box_get_popup_fixed_width(AComboBox: PGtkComboBox): gboolean; cdecl; external;
-function gtk_combo_box_get_row_separator_func(AComboBox: PGtkComboBox): TGtkTreeViewRowSeparatorFunc; cdecl; external;
-function gtk_combo_box_get_row_span_column(AComboBox: PGtkComboBox): gint; cdecl; external;
-function gtk_combo_box_get_title(AComboBox: PGtkComboBox): Pgchar; cdecl; external;
+function gtk_combo_box_get_active(combo_box: PGtkComboBox): gint; cdecl; external;
+function gtk_combo_box_get_active_id(combo_box: PGtkComboBox): Pgchar; cdecl; external;
+function gtk_combo_box_get_active_iter(combo_box: PGtkComboBox; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_combo_box_get_add_tearoffs(combo_box: PGtkComboBox): gboolean; cdecl; external;
+function gtk_combo_box_get_button_sensitivity(combo_box: PGtkComboBox): TGtkSensitivityType; cdecl; external;
+function gtk_combo_box_get_column_span_column(combo_box: PGtkComboBox): gint; cdecl; external;
+function gtk_combo_box_get_entry_text_column(combo_box: PGtkComboBox): gint; cdecl; external;
+function gtk_combo_box_get_focus_on_click(combo: PGtkComboBox): gboolean; cdecl; external;
+function gtk_combo_box_get_has_entry(combo_box: PGtkComboBox): gboolean; cdecl; external;
+function gtk_combo_box_get_id_column(combo_box: PGtkComboBox): gint; cdecl; external;
+function gtk_combo_box_get_model(combo_box: PGtkComboBox): PGtkTreeModel; cdecl; external;
+function gtk_combo_box_get_popup_accessible(combo_box: PGtkComboBox): PAtkObject; cdecl; external;
+function gtk_combo_box_get_popup_fixed_width(combo_box: PGtkComboBox): gboolean; cdecl; external;
+function gtk_combo_box_get_row_separator_func(combo_box: PGtkComboBox): TGtkTreeViewRowSeparatorFunc; cdecl; external;
+function gtk_combo_box_get_row_span_column(combo_box: PGtkComboBox): gint; cdecl; external;
+function gtk_combo_box_get_title(combo_box: PGtkComboBox): Pgchar; cdecl; external;
 function gtk_combo_box_get_type: TGType; cdecl; external;
-function gtk_combo_box_get_wrap_width(AComboBox: PGtkComboBox): gint; cdecl; external;
+function gtk_combo_box_get_wrap_width(combo_box: PGtkComboBox): gint; cdecl; external;
 function gtk_combo_box_new: PGtkComboBox; cdecl; external;
 function gtk_combo_box_new_with_area(area: PGtkCellArea): PGtkComboBox; cdecl; external;
 function gtk_combo_box_new_with_area_and_entry(area: PGtkCellArea): PGtkComboBox; cdecl; external;
 function gtk_combo_box_new_with_entry: PGtkComboBox; cdecl; external;
 function gtk_combo_box_new_with_model(model: PGtkTreeModel): PGtkComboBox; cdecl; external;
 function gtk_combo_box_new_with_model_and_entry(model: PGtkTreeModel): PGtkComboBox; cdecl; external;
-function gtk_combo_box_set_active_id(AComboBox: PGtkComboBox; active_id: Pgchar): gboolean; cdecl; external;
-function gtk_combo_box_text_get_active_text(AComboBoxText: PGtkComboBoxText): Pgchar; cdecl; external;
+function gtk_combo_box_set_active_id(combo_box: PGtkComboBox; active_id: Pgchar): gboolean; cdecl; external;
+function gtk_combo_box_text_get_active_text(combo_box: PGtkComboBoxText): Pgchar; cdecl; external;
 function gtk_combo_box_text_get_type: TGType; cdecl; external;
 function gtk_combo_box_text_new: PGtkComboBoxText; cdecl; external;
 function gtk_combo_box_text_new_with_entry: PGtkComboBoxText; cdecl; external;
-function gtk_container_child_type(AContainer: PGtkContainer): TGType; cdecl; external;
-function gtk_container_class_find_child_property(AContainerClass: PGtkContainerClass; property_name: Pgchar): PGParamSpec; cdecl; external;
-function gtk_container_class_list_child_properties(AContainerClass: PGtkContainerClass; n_properties: Pguint): PPGParamSpec; cdecl; external;
-function gtk_container_get_border_width(AContainer: PGtkContainer): guint; cdecl; external;
-function gtk_container_get_children(AContainer: PGtkContainer): PGList; cdecl; external;
-function gtk_container_get_focus_chain(AContainer: PGtkContainer; focusable_widgets: PPGList): gboolean; cdecl; external;
-function gtk_container_get_focus_child(AContainer: PGtkContainer): PGtkWidget; cdecl; external;
-function gtk_container_get_focus_hadjustment(AContainer: PGtkContainer): PGtkAdjustment; cdecl; external;
-function gtk_container_get_focus_vadjustment(AContainer: PGtkContainer): PGtkAdjustment; cdecl; external;
-function gtk_container_get_path_for_child(AContainer: PGtkContainer; child: PGtkWidget): PGtkWidgetPath; cdecl; external;
-function gtk_container_get_resize_mode(AContainer: PGtkContainer): TGtkResizeMode; cdecl; external;
+function gtk_container_child_type(container: PGtkContainer): TGType; cdecl; external;
+function gtk_container_class_find_child_property(cclass: PGtkContainerClass; property_name: Pgchar): PGParamSpec; cdecl; external;
+function gtk_container_class_list_child_properties(cclass: PGtkContainerClass; n_properties: Pguint): PPGParamSpec; cdecl; external;
+function gtk_container_get_border_width(container: PGtkContainer): guint; cdecl; external;
+function gtk_container_get_children(container: PGtkContainer): PGList; cdecl; external;
+function gtk_container_get_focus_chain(container: PGtkContainer; focusable_widgets: PPGList): gboolean; cdecl; external;
+function gtk_container_get_focus_child(container: PGtkContainer): PGtkWidget; cdecl; external;
+function gtk_container_get_focus_hadjustment(container: PGtkContainer): PGtkAdjustment; cdecl; external;
+function gtk_container_get_focus_vadjustment(container: PGtkContainer): PGtkAdjustment; cdecl; external;
+function gtk_container_get_path_for_child(container: PGtkContainer; child: PGtkWidget): PGtkWidgetPath; cdecl; external;
+function gtk_container_get_resize_mode(container: PGtkContainer): TGtkResizeMode; cdecl; external;
 function gtk_container_get_type: TGType; cdecl; external;
 function gtk_css_provider_error_quark: TGQuark; cdecl; external;
 function gtk_css_provider_get_default: PGtkCssProvider; cdecl; external;
 function gtk_css_provider_get_named(name: Pgchar; variant: Pgchar): PGtkCssProvider; cdecl; external;
 function gtk_css_provider_get_type: TGType; cdecl; external;
-function gtk_css_provider_load_from_data(ACssProvider: PGtkCssProvider; data: Pgchar; length: gssize): gboolean; cdecl; external;
-function gtk_css_provider_load_from_file(ACssProvider: PGtkCssProvider; file_: PGFile): gboolean; cdecl; external;
-function gtk_css_provider_load_from_path(ACssProvider: PGtkCssProvider; path: Pgchar): gboolean; cdecl; external;
+function gtk_css_provider_load_from_data(css_provider: PGtkCssProvider; data: Pgchar; length: gssize; error: PPGError): gboolean; cdecl; external;
+function gtk_css_provider_load_from_file(css_provider: PGtkCssProvider; file_: PGFile; error: PPGError): gboolean; cdecl; external;
+function gtk_css_provider_load_from_path(css_provider: PGtkCssProvider; path: Pgchar; error: PPGError): gboolean; cdecl; external;
 function gtk_css_provider_new: PGtkCssProvider; cdecl; external;
-function gtk_css_provider_to_string(ACssProvider: PGtkCssProvider): Pgchar; cdecl; external;
-function gtk_css_section_get_end_line(ACssSection: PGtkCssSection): guint; cdecl; external;
-function gtk_css_section_get_end_position(ACssSection: PGtkCssSection): guint; cdecl; external;
-function gtk_css_section_get_file(ACssSection: PGtkCssSection): PGFile; cdecl; external;
-function gtk_css_section_get_parent(ACssSection: PGtkCssSection): PGtkCssSection; cdecl; external;
-function gtk_css_section_get_section_type(ACssSection: PGtkCssSection): TGtkCssSectionType; cdecl; external;
-function gtk_css_section_get_start_line(ACssSection: PGtkCssSection): guint; cdecl; external;
-function gtk_css_section_get_start_position(ACssSection: PGtkCssSection): guint; cdecl; external;
+function gtk_css_provider_to_string(provider: PGtkCssProvider): Pgchar; cdecl; external;
+function gtk_css_section_get_end_line(section: PGtkCssSection): guint; cdecl; external;
+function gtk_css_section_get_end_position(section: PGtkCssSection): guint; cdecl; external;
+function gtk_css_section_get_file(section: PGtkCssSection): PGFile; cdecl; external;
+function gtk_css_section_get_parent(section: PGtkCssSection): PGtkCssSection; cdecl; external;
+function gtk_css_section_get_section_type(section: PGtkCssSection): TGtkCssSectionType; cdecl; external;
+function gtk_css_section_get_start_line(section: PGtkCssSection): guint; cdecl; external;
+function gtk_css_section_get_start_position(section: PGtkCssSection): guint; cdecl; external;
 function gtk_css_section_get_type: TGType; cdecl; external;
-function gtk_css_section_ref(ACssSection: PGtkCssSection): PGtkCssSection; cdecl; external;
-function gtk_dialog_add_button(ADialog: PGtkDialog; button_text: Pgchar; response_id: gint): PGtkWidget; cdecl; external;
-function gtk_dialog_get_action_area(ADialog: PGtkDialog): PGtkWidget; cdecl; external;
-function gtk_dialog_get_content_area(ADialog: PGtkDialog): PGtkWidget; cdecl; external;
-function gtk_dialog_get_response_for_widget(ADialog: PGtkDialog; widget: PGtkWidget): gint; cdecl; external;
+function gtk_css_section_ref(section: PGtkCssSection): PGtkCssSection; cdecl; external;
+function gtk_dialog_add_button(dialog: PGtkDialog; button_text: Pgchar; response_id: gint): PGtkWidget; cdecl; external;
+function gtk_dialog_get_action_area(dialog: PGtkDialog): PGtkWidget; cdecl; external;
+function gtk_dialog_get_content_area(dialog: PGtkDialog): PGtkWidget; cdecl; external;
+function gtk_dialog_get_response_for_widget(dialog: PGtkDialog; widget: PGtkWidget): gint; cdecl; external;
 function gtk_dialog_get_type: TGType; cdecl; external;
-function gtk_dialog_get_widget_for_response(ADialog: PGtkDialog; response_id: gint): PGtkWidget; cdecl; external;
+function gtk_dialog_get_widget_for_response(dialog: PGtkDialog; response_id: gint): PGtkWidget; cdecl; external;
 function gtk_dialog_new: PGtkDialog; cdecl; external;
 function gtk_dialog_new_with_buttons(title: Pgchar; parent: PGtkWindow; flags: TGtkDialogFlags; first_button_text: Pgchar; args: array of const): PGtkDialog; cdecl; external;
-function gtk_dialog_run(ADialog: PGtkDialog): gint; cdecl; external;
+function gtk_dialog_run(dialog: PGtkDialog): gint; cdecl; external;
 function gtk_distribute_natural_allocation(extra_space: gint; n_requested_sizes: guint; sizes: PGtkRequestedSize): gint; cdecl; external;
-function gtk_drag_begin(AWidget: PGtkWidget; targets: PGtkTargetList; actions: TGdkDragAction; button: gint; event: PGdkEvent): PGdkDragContext; cdecl; external;
-function gtk_drag_check_threshold(AWidget: PGtkWidget; start_x: gint; start_y: gint; current_x: gint; current_y: gint): gboolean; cdecl; external;
-function gtk_drag_dest_find_target(AWidget: PGtkWidget; context: PGdkDragContext; target_list: PGtkTargetList): TGdkAtom; cdecl; external;
-function gtk_drag_dest_get_target_list(AWidget: PGtkWidget): PGtkTargetList; cdecl; external;
-function gtk_drag_dest_get_track_motion(AWidget: PGtkWidget): gboolean; cdecl; external;
+function gtk_drag_begin(widget: PGtkWidget; targets: PGtkTargetList; actions: TGdkDragAction; button: gint; event: PGdkEvent): PGdkDragContext; cdecl; external;
+function gtk_drag_check_threshold(widget: PGtkWidget; start_x: gint; start_y: gint; current_x: gint; current_y: gint): gboolean; cdecl; external;
+function gtk_drag_dest_find_target(widget: PGtkWidget; context: PGdkDragContext; target_list: PGtkTargetList): TGdkAtom; cdecl; external;
+function gtk_drag_dest_get_target_list(widget: PGtkWidget): PGtkTargetList; cdecl; external;
+function gtk_drag_dest_get_track_motion(widget: PGtkWidget): gboolean; cdecl; external;
 function gtk_drag_get_source_widget(context: PGdkDragContext): PGtkWidget; cdecl; external;
-function gtk_drag_source_get_target_list(AWidget: PGtkWidget): PGtkTargetList; cdecl; external;
+function gtk_drag_source_get_target_list(widget: PGtkWidget): PGtkTargetList; cdecl; external;
 function gtk_drawing_area_get_type: TGType; cdecl; external;
 function gtk_drawing_area_new: PGtkDrawingArea; cdecl; external;
-function gtk_editable_get_chars(AEditable: PGtkEditable; start_pos: gint; end_pos: gint): Pgchar; cdecl; external;
-function gtk_editable_get_editable(AEditable: PGtkEditable): gboolean; cdecl; external;
-function gtk_editable_get_position(AEditable: PGtkEditable): gint; cdecl; external;
-function gtk_editable_get_selection_bounds(AEditable: PGtkEditable; start_pos: Pgint; end_pos: Pgint): gboolean; cdecl; external;
+function gtk_editable_get_chars(editable: PGtkEditable; start_pos: gint; end_pos: gint): Pgchar; cdecl; external;
+function gtk_editable_get_editable(editable: PGtkEditable): gboolean; cdecl; external;
+function gtk_editable_get_position(editable: PGtkEditable): gint; cdecl; external;
+function gtk_editable_get_selection_bounds(editable: PGtkEditable; start_pos: Pgint; end_pos: Pgint): gboolean; cdecl; external;
 function gtk_editable_get_type: TGType; cdecl; external;
-function gtk_entry_buffer_delete_text(AEntryBuffer: PGtkEntryBuffer; position: guint; n_chars: gint): guint; cdecl; external;
-function gtk_entry_buffer_get_bytes(AEntryBuffer: PGtkEntryBuffer): gsize; cdecl; external;
-function gtk_entry_buffer_get_length(AEntryBuffer: PGtkEntryBuffer): guint; cdecl; external;
-function gtk_entry_buffer_get_max_length(AEntryBuffer: PGtkEntryBuffer): gint; cdecl; external;
-function gtk_entry_buffer_get_text(AEntryBuffer: PGtkEntryBuffer): Pgchar; cdecl; external;
+function gtk_entry_buffer_delete_text(buffer: PGtkEntryBuffer; position: guint; n_chars: gint): guint; cdecl; external;
+function gtk_entry_buffer_get_bytes(buffer: PGtkEntryBuffer): gsize; cdecl; external;
+function gtk_entry_buffer_get_length(buffer: PGtkEntryBuffer): guint; cdecl; external;
+function gtk_entry_buffer_get_max_length(buffer: PGtkEntryBuffer): gint; cdecl; external;
+function gtk_entry_buffer_get_text(buffer: PGtkEntryBuffer): Pgchar; cdecl; external;
 function gtk_entry_buffer_get_type: TGType; cdecl; external;
-function gtk_entry_buffer_insert_text(AEntryBuffer: PGtkEntryBuffer; position: guint; chars: Pgchar; n_chars: gint): guint; cdecl; external;
+function gtk_entry_buffer_insert_text(buffer: PGtkEntryBuffer; position: guint; chars: Pgchar; n_chars: gint): guint; cdecl; external;
 function gtk_entry_buffer_new(initial_chars: Pgchar; n_initial_chars: gint): PGtkEntryBuffer; cdecl; external;
-function gtk_entry_completion_compute_prefix(AEntryCompletion: PGtkEntryCompletion; key: Pgchar): Pgchar; cdecl; external;
-function gtk_entry_completion_get_completion_prefix(AEntryCompletion: PGtkEntryCompletion): Pgchar; cdecl; external;
-function gtk_entry_completion_get_entry(AEntryCompletion: PGtkEntryCompletion): PGtkWidget; cdecl; external;
-function gtk_entry_completion_get_inline_completion(AEntryCompletion: PGtkEntryCompletion): gboolean; cdecl; external;
-function gtk_entry_completion_get_inline_selection(AEntryCompletion: PGtkEntryCompletion): gboolean; cdecl; external;
-function gtk_entry_completion_get_minimum_key_length(AEntryCompletion: PGtkEntryCompletion): gint; cdecl; external;
-function gtk_entry_completion_get_model(AEntryCompletion: PGtkEntryCompletion): PGtkTreeModel; cdecl; external;
-function gtk_entry_completion_get_popup_completion(AEntryCompletion: PGtkEntryCompletion): gboolean; cdecl; external;
-function gtk_entry_completion_get_popup_set_width(AEntryCompletion: PGtkEntryCompletion): gboolean; cdecl; external;
-function gtk_entry_completion_get_popup_single_match(AEntryCompletion: PGtkEntryCompletion): gboolean; cdecl; external;
-function gtk_entry_completion_get_text_column(AEntryCompletion: PGtkEntryCompletion): gint; cdecl; external;
+function gtk_entry_completion_compute_prefix(completion: PGtkEntryCompletion; key: Pgchar): Pgchar; cdecl; external;
+function gtk_entry_completion_get_completion_prefix(completion: PGtkEntryCompletion): Pgchar; cdecl; external;
+function gtk_entry_completion_get_entry(completion: PGtkEntryCompletion): PGtkWidget; cdecl; external;
+function gtk_entry_completion_get_inline_completion(completion: PGtkEntryCompletion): gboolean; cdecl; external;
+function gtk_entry_completion_get_inline_selection(completion: PGtkEntryCompletion): gboolean; cdecl; external;
+function gtk_entry_completion_get_minimum_key_length(completion: PGtkEntryCompletion): gint; cdecl; external;
+function gtk_entry_completion_get_model(completion: PGtkEntryCompletion): PGtkTreeModel; cdecl; external;
+function gtk_entry_completion_get_popup_completion(completion: PGtkEntryCompletion): gboolean; cdecl; external;
+function gtk_entry_completion_get_popup_set_width(completion: PGtkEntryCompletion): gboolean; cdecl; external;
+function gtk_entry_completion_get_popup_single_match(completion: PGtkEntryCompletion): gboolean; cdecl; external;
+function gtk_entry_completion_get_text_column(completion: PGtkEntryCompletion): gint; cdecl; external;
 function gtk_entry_completion_get_type: TGType; cdecl; external;
 function gtk_entry_completion_new: PGtkEntryCompletion; cdecl; external;
 function gtk_entry_completion_new_with_area(area: PGtkCellArea): PGtkEntryCompletion; cdecl; external;
-function gtk_entry_get_activates_default(AEntry: PGtkEntry): gboolean; cdecl; external;
-function gtk_entry_get_alignment(AEntry: PGtkEntry): gfloat; cdecl; external;
-function gtk_entry_get_buffer(AEntry: PGtkEntry): PGtkEntryBuffer; cdecl; external;
-function gtk_entry_get_completion(AEntry: PGtkEntry): PGtkEntryCompletion; cdecl; external;
-function gtk_entry_get_current_icon_drag_source(AEntry: PGtkEntry): gint; cdecl; external;
-function gtk_entry_get_cursor_hadjustment(AEntry: PGtkEntry): PGtkAdjustment; cdecl; external;
-function gtk_entry_get_has_frame(AEntry: PGtkEntry): gboolean; cdecl; external;
-function gtk_entry_get_icon_activatable(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition): gboolean; cdecl; external;
-function gtk_entry_get_icon_at_pos(AEntry: PGtkEntry; x: gint; y: gint): gint; cdecl; external;
-function gtk_entry_get_icon_gicon(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition): PGIcon; cdecl; external;
-function gtk_entry_get_icon_name(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; external;
-function gtk_entry_get_icon_pixbuf(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition): PGdkPixbuf; cdecl; external;
-function gtk_entry_get_icon_sensitive(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition): gboolean; cdecl; external;
-function gtk_entry_get_icon_stock(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; external;
-function gtk_entry_get_icon_storage_type(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition): TGtkImageType; cdecl; external;
-function gtk_entry_get_icon_tooltip_markup(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; external;
-function gtk_entry_get_icon_tooltip_text(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; external;
-function gtk_entry_get_invisible_char(AEntry: PGtkEntry): gunichar; cdecl; external;
-function gtk_entry_get_layout(AEntry: PGtkEntry): PPangoLayout; cdecl; external;
-function gtk_entry_get_max_length(AEntry: PGtkEntry): gint; cdecl; external;
-function gtk_entry_get_overwrite_mode(AEntry: PGtkEntry): gboolean; cdecl; external;
-function gtk_entry_get_placeholder_text(AEntry: PGtkEntry): Pgchar; cdecl; external;
-function gtk_entry_get_progress_fraction(AEntry: PGtkEntry): gdouble; cdecl; external;
-function gtk_entry_get_progress_pulse_step(AEntry: PGtkEntry): gdouble; cdecl; external;
-function gtk_entry_get_text(AEntry: PGtkEntry): Pgchar; cdecl; external;
-function gtk_entry_get_text_length(AEntry: PGtkEntry): guint16; cdecl; external;
+function gtk_entry_get_activates_default(entry: PGtkEntry): gboolean; cdecl; external;
+function gtk_entry_get_alignment(entry: PGtkEntry): gfloat; cdecl; external;
+function gtk_entry_get_attributes(entry: PGtkEntry): PPangoAttrList; cdecl; external;
+function gtk_entry_get_buffer(entry: PGtkEntry): PGtkEntryBuffer; cdecl; external;
+function gtk_entry_get_completion(entry: PGtkEntry): PGtkEntryCompletion; cdecl; external;
+function gtk_entry_get_current_icon_drag_source(entry: PGtkEntry): gint; cdecl; external;
+function gtk_entry_get_cursor_hadjustment(entry: PGtkEntry): PGtkAdjustment; cdecl; external;
+function gtk_entry_get_has_frame(entry: PGtkEntry): gboolean; cdecl; external;
+function gtk_entry_get_icon_activatable(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition): gboolean; cdecl; external;
+function gtk_entry_get_icon_at_pos(entry: PGtkEntry; x: gint; y: gint): gint; cdecl; external;
+function gtk_entry_get_icon_gicon(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition): PGIcon; cdecl; external;
+function gtk_entry_get_icon_name(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; external;
+function gtk_entry_get_icon_pixbuf(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition): PGdkPixbuf; cdecl; external;
+function gtk_entry_get_icon_sensitive(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition): gboolean; cdecl; external;
+function gtk_entry_get_icon_stock(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; external;
+function gtk_entry_get_icon_storage_type(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition): TGtkImageType; cdecl; external;
+function gtk_entry_get_icon_tooltip_markup(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; external;
+function gtk_entry_get_icon_tooltip_text(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition): Pgchar; cdecl; external;
+function gtk_entry_get_input_hints(entry: PGtkEntry): TGtkInputHints; cdecl; external;
+function gtk_entry_get_input_purpose(entry: PGtkEntry): TGtkInputPurpose; cdecl; external;
+function gtk_entry_get_invisible_char(entry: PGtkEntry): gunichar; cdecl; external;
+function gtk_entry_get_layout(entry: PGtkEntry): PPangoLayout; cdecl; external;
+function gtk_entry_get_max_length(entry: PGtkEntry): gint; cdecl; external;
+function gtk_entry_get_overwrite_mode(entry: PGtkEntry): gboolean; cdecl; external;
+function gtk_entry_get_placeholder_text(entry: PGtkEntry): Pgchar; cdecl; external;
+function gtk_entry_get_progress_fraction(entry: PGtkEntry): gdouble; cdecl; external;
+function gtk_entry_get_progress_pulse_step(entry: PGtkEntry): gdouble; cdecl; external;
+function gtk_entry_get_text(entry: PGtkEntry): Pgchar; cdecl; external;
+function gtk_entry_get_text_length(entry: PGtkEntry): guint16; cdecl; external;
 function gtk_entry_get_type: TGType; cdecl; external;
-function gtk_entry_get_visibility(AEntry: PGtkEntry): gboolean; cdecl; external;
-function gtk_entry_get_width_chars(AEntry: PGtkEntry): gint; cdecl; external;
-function gtk_entry_im_context_filter_keypress(AEntry: PGtkEntry; event: PGdkEventKey): gboolean; cdecl; external;
-function gtk_entry_layout_index_to_text_index(AEntry: PGtkEntry; layout_index: gint): gint; cdecl; external;
+function gtk_entry_get_visibility(entry: PGtkEntry): gboolean; cdecl; external;
+function gtk_entry_get_width_chars(entry: PGtkEntry): gint; cdecl; external;
+function gtk_entry_im_context_filter_keypress(entry: PGtkEntry; event: PGdkEventKey): gboolean; cdecl; external;
+function gtk_entry_layout_index_to_text_index(entry: PGtkEntry; layout_index: gint): gint; cdecl; external;
 function gtk_entry_new: PGtkEntry; cdecl; external;
 function gtk_entry_new_with_buffer(buffer: PGtkEntryBuffer): PGtkEntry; cdecl; external;
-function gtk_entry_text_index_to_layout_index(AEntry: PGtkEntry; text_index: gint): gint; cdecl; external;
-function gtk_event_box_get_above_child(AEventBox: PGtkEventBox): gboolean; cdecl; external;
+function gtk_entry_text_index_to_layout_index(entry: PGtkEntry; text_index: gint): gint; cdecl; external;
+function gtk_event_box_get_above_child(event_box: PGtkEventBox): gboolean; cdecl; external;
 function gtk_event_box_get_type: TGType; cdecl; external;
-function gtk_event_box_get_visible_window(AEventBox: PGtkEventBox): gboolean; cdecl; external;
+function gtk_event_box_get_visible_window(event_box: PGtkEventBox): gboolean; cdecl; external;
 function gtk_event_box_new: PGtkEventBox; cdecl; external;
 function gtk_events_pending: gboolean; cdecl; external;
-function gtk_expander_get_expanded(AExpander: PGtkExpander): gboolean; cdecl; external;
-function gtk_expander_get_label(AExpander: PGtkExpander): Pgchar; cdecl; external;
-function gtk_expander_get_label_fill(AExpander: PGtkExpander): gboolean; cdecl; external;
-function gtk_expander_get_label_widget(AExpander: PGtkExpander): PGtkWidget; cdecl; external;
-function gtk_expander_get_resize_toplevel(AExpander: PGtkExpander): gboolean; cdecl; external;
-function gtk_expander_get_spacing(AExpander: PGtkExpander): gint; cdecl; external;
+function gtk_expander_get_expanded(expander: PGtkExpander): gboolean; cdecl; external;
+function gtk_expander_get_label(expander: PGtkExpander): Pgchar; cdecl; external;
+function gtk_expander_get_label_fill(expander: PGtkExpander): gboolean; cdecl; external;
+function gtk_expander_get_label_widget(expander: PGtkExpander): PGtkWidget; cdecl; external;
+function gtk_expander_get_resize_toplevel(expander: PGtkExpander): gboolean; cdecl; external;
+function gtk_expander_get_spacing(expander: PGtkExpander): gint; cdecl; external;
 function gtk_expander_get_type: TGType; cdecl; external;
-function gtk_expander_get_use_markup(AExpander: PGtkExpander): gboolean; cdecl; external;
-function gtk_expander_get_use_underline(AExpander: PGtkExpander): gboolean; cdecl; external;
+function gtk_expander_get_use_markup(expander: PGtkExpander): gboolean; cdecl; external;
+function gtk_expander_get_use_underline(expander: PGtkExpander): gboolean; cdecl; external;
 function gtk_expander_new(label_: Pgchar): PGtkExpander; cdecl; external;
 function gtk_expander_new_with_mnemonic(label_: Pgchar): PGtkExpander; cdecl; external;
 function gtk_false: gboolean; cdecl; external;
-function gtk_file_chooser_add_shortcut_folder(AFileChooser: PGtkFileChooser; folder: Pgchar): gboolean; cdecl; external;
-function gtk_file_chooser_add_shortcut_folder_uri(AFileChooser: PGtkFileChooser; uri: Pgchar): gboolean; cdecl; external;
-function gtk_file_chooser_button_get_focus_on_click(AFileChooserButton: PGtkFileChooserButton): gboolean; cdecl; external;
-function gtk_file_chooser_button_get_title(AFileChooserButton: PGtkFileChooserButton): Pgchar; cdecl; external;
+function gtk_file_chooser_add_shortcut_folder(chooser: PGtkFileChooser; folder: Pgchar; error: PPGError): gboolean; cdecl; external;
+function gtk_file_chooser_add_shortcut_folder_uri(chooser: PGtkFileChooser; uri: Pgchar; error: PPGError): gboolean; cdecl; external;
+function gtk_file_chooser_button_get_focus_on_click(button: PGtkFileChooserButton): gboolean; cdecl; external;
+function gtk_file_chooser_button_get_title(button: PGtkFileChooserButton): Pgchar; cdecl; external;
 function gtk_file_chooser_button_get_type: TGType; cdecl; external;
-function gtk_file_chooser_button_get_width_chars(AFileChooserButton: PGtkFileChooserButton): gint; cdecl; external;
+function gtk_file_chooser_button_get_width_chars(button: PGtkFileChooserButton): gint; cdecl; external;
 function gtk_file_chooser_button_new(title: Pgchar; action: TGtkFileChooserAction): PGtkFileChooserButton; cdecl; external;
 function gtk_file_chooser_button_new_with_dialog(dialog: PGtkWidget): PGtkFileChooserButton; cdecl; external;
 function gtk_file_chooser_dialog_get_type: TGType; cdecl; external;
 function gtk_file_chooser_dialog_new(title: Pgchar; parent: PGtkWindow; action: TGtkFileChooserAction; first_button_text: Pgchar; args: array of const): PGtkFileChooserDialog; cdecl; external;
 function gtk_file_chooser_error_quark: TGQuark; cdecl; external;
-function gtk_file_chooser_get_action(AFileChooser: PGtkFileChooser): TGtkFileChooserAction; cdecl; external;
-function gtk_file_chooser_get_create_folders(AFileChooser: PGtkFileChooser): gboolean; cdecl; external;
-function gtk_file_chooser_get_current_folder(AFileChooser: PGtkFileChooser): Pgchar; cdecl; external;
-function gtk_file_chooser_get_current_folder_file(AFileChooser: PGtkFileChooser): PGFile; cdecl; external;
-function gtk_file_chooser_get_current_folder_uri(AFileChooser: PGtkFileChooser): Pgchar; cdecl; external;
-function gtk_file_chooser_get_do_overwrite_confirmation(AFileChooser: PGtkFileChooser): gboolean; cdecl; external;
-function gtk_file_chooser_get_extra_widget(AFileChooser: PGtkFileChooser): PGtkWidget; cdecl; external;
-function gtk_file_chooser_get_file(AFileChooser: PGtkFileChooser): PGFile; cdecl; external;
-function gtk_file_chooser_get_filename(AFileChooser: PGtkFileChooser): Pgchar; cdecl; external;
-function gtk_file_chooser_get_filenames(AFileChooser: PGtkFileChooser): PGSList; cdecl; external;
-function gtk_file_chooser_get_files(AFileChooser: PGtkFileChooser): PGSList; cdecl; external;
-function gtk_file_chooser_get_filter(AFileChooser: PGtkFileChooser): PGtkFileFilter; cdecl; external;
-function gtk_file_chooser_get_local_only(AFileChooser: PGtkFileChooser): gboolean; cdecl; external;
-function gtk_file_chooser_get_preview_file(AFileChooser: PGtkFileChooser): PGFile; cdecl; external;
-function gtk_file_chooser_get_preview_filename(AFileChooser: PGtkFileChooser): Pgchar; cdecl; external;
-function gtk_file_chooser_get_preview_uri(AFileChooser: PGtkFileChooser): Pgchar; cdecl; external;
-function gtk_file_chooser_get_preview_widget(AFileChooser: PGtkFileChooser): PGtkWidget; cdecl; external;
-function gtk_file_chooser_get_preview_widget_active(AFileChooser: PGtkFileChooser): gboolean; cdecl; external;
-function gtk_file_chooser_get_select_multiple(AFileChooser: PGtkFileChooser): gboolean; cdecl; external;
-function gtk_file_chooser_get_show_hidden(AFileChooser: PGtkFileChooser): gboolean; cdecl; external;
+function gtk_file_chooser_get_action(chooser: PGtkFileChooser): TGtkFileChooserAction; cdecl; external;
+function gtk_file_chooser_get_create_folders(chooser: PGtkFileChooser): gboolean; cdecl; external;
+function gtk_file_chooser_get_current_folder(chooser: PGtkFileChooser): Pgchar; cdecl; external;
+function gtk_file_chooser_get_current_folder_file(chooser: PGtkFileChooser): PGFile; cdecl; external;
+function gtk_file_chooser_get_current_folder_uri(chooser: PGtkFileChooser): Pgchar; cdecl; external;
+function gtk_file_chooser_get_do_overwrite_confirmation(chooser: PGtkFileChooser): gboolean; cdecl; external;
+function gtk_file_chooser_get_extra_widget(chooser: PGtkFileChooser): PGtkWidget; cdecl; external;
+function gtk_file_chooser_get_file(chooser: PGtkFileChooser): PGFile; cdecl; external;
+function gtk_file_chooser_get_filename(chooser: PGtkFileChooser): Pgchar; cdecl; external;
+function gtk_file_chooser_get_filenames(chooser: PGtkFileChooser): PGSList; cdecl; external;
+function gtk_file_chooser_get_files(chooser: PGtkFileChooser): PGSList; cdecl; external;
+function gtk_file_chooser_get_filter(chooser: PGtkFileChooser): PGtkFileFilter; cdecl; external;
+function gtk_file_chooser_get_local_only(chooser: PGtkFileChooser): gboolean; cdecl; external;
+function gtk_file_chooser_get_preview_file(chooser: PGtkFileChooser): PGFile; cdecl; external;
+function gtk_file_chooser_get_preview_filename(chooser: PGtkFileChooser): Pgchar; cdecl; external;
+function gtk_file_chooser_get_preview_uri(chooser: PGtkFileChooser): Pgchar; cdecl; external;
+function gtk_file_chooser_get_preview_widget(chooser: PGtkFileChooser): PGtkWidget; cdecl; external;
+function gtk_file_chooser_get_preview_widget_active(chooser: PGtkFileChooser): gboolean; cdecl; external;
+function gtk_file_chooser_get_select_multiple(chooser: PGtkFileChooser): gboolean; cdecl; external;
+function gtk_file_chooser_get_show_hidden(chooser: PGtkFileChooser): gboolean; cdecl; external;
 function gtk_file_chooser_get_type: TGType; cdecl; external;
-function gtk_file_chooser_get_uri(AFileChooser: PGtkFileChooser): Pgchar; cdecl; external;
-function gtk_file_chooser_get_uris(AFileChooser: PGtkFileChooser): PGSList; cdecl; external;
-function gtk_file_chooser_get_use_preview_label(AFileChooser: PGtkFileChooser): gboolean; cdecl; external;
-function gtk_file_chooser_list_filters(AFileChooser: PGtkFileChooser): PGSList; cdecl; external;
-function gtk_file_chooser_list_shortcut_folder_uris(AFileChooser: PGtkFileChooser): PGSList; cdecl; external;
-function gtk_file_chooser_list_shortcut_folders(AFileChooser: PGtkFileChooser): PGSList; cdecl; external;
-function gtk_file_chooser_remove_shortcut_folder(AFileChooser: PGtkFileChooser; folder: Pgchar): gboolean; cdecl; external;
-function gtk_file_chooser_remove_shortcut_folder_uri(AFileChooser: PGtkFileChooser; uri: Pgchar): gboolean; cdecl; external;
-function gtk_file_chooser_select_file(AFileChooser: PGtkFileChooser; file_: PGFile): gboolean; cdecl; external;
-function gtk_file_chooser_select_filename(AFileChooser: PGtkFileChooser; filename: Pgchar): gboolean; cdecl; external;
-function gtk_file_chooser_select_uri(AFileChooser: PGtkFileChooser; uri: Pgchar): gboolean; cdecl; external;
-function gtk_file_chooser_set_current_folder(AFileChooser: PGtkFileChooser; filename: Pgchar): gboolean; cdecl; external;
-function gtk_file_chooser_set_current_folder_file(AFileChooser: PGtkFileChooser; file_: PGFile): gboolean; cdecl; external;
-function gtk_file_chooser_set_current_folder_uri(AFileChooser: PGtkFileChooser; uri: Pgchar): gboolean; cdecl; external;
-function gtk_file_chooser_set_file(AFileChooser: PGtkFileChooser; file_: PGFile): gboolean; cdecl; external;
-function gtk_file_chooser_set_filename(AFileChooser: PGtkFileChooser; filename: Pgchar): gboolean; cdecl; external;
-function gtk_file_chooser_set_uri(AFileChooser: PGtkFileChooser; uri: Pgchar): gboolean; cdecl; external;
+function gtk_file_chooser_get_uri(chooser: PGtkFileChooser): Pgchar; cdecl; external;
+function gtk_file_chooser_get_uris(chooser: PGtkFileChooser): PGSList; cdecl; external;
+function gtk_file_chooser_get_use_preview_label(chooser: PGtkFileChooser): gboolean; cdecl; external;
+function gtk_file_chooser_list_filters(chooser: PGtkFileChooser): PGSList; cdecl; external;
+function gtk_file_chooser_list_shortcut_folder_uris(chooser: PGtkFileChooser): PGSList; cdecl; external;
+function gtk_file_chooser_list_shortcut_folders(chooser: PGtkFileChooser): PGSList; cdecl; external;
+function gtk_file_chooser_remove_shortcut_folder(chooser: PGtkFileChooser; folder: Pgchar; error: PPGError): gboolean; cdecl; external;
+function gtk_file_chooser_remove_shortcut_folder_uri(chooser: PGtkFileChooser; uri: Pgchar; error: PPGError): gboolean; cdecl; external;
+function gtk_file_chooser_select_file(chooser: PGtkFileChooser; file_: PGFile; error: PPGError): gboolean; cdecl; external;
+function gtk_file_chooser_select_filename(chooser: PGtkFileChooser; filename: Pgchar): gboolean; cdecl; external;
+function gtk_file_chooser_select_uri(chooser: PGtkFileChooser; uri: Pgchar): gboolean; cdecl; external;
+function gtk_file_chooser_set_current_folder(chooser: PGtkFileChooser; filename: Pgchar): gboolean; cdecl; external;
+function gtk_file_chooser_set_current_folder_file(chooser: PGtkFileChooser; file_: PGFile; error: PPGError): gboolean; cdecl; external;
+function gtk_file_chooser_set_current_folder_uri(chooser: PGtkFileChooser; uri: Pgchar): gboolean; cdecl; external;
+function gtk_file_chooser_set_file(chooser: PGtkFileChooser; file_: PGFile; error: PPGError): gboolean; cdecl; external;
+function gtk_file_chooser_set_filename(chooser: PGtkFileChooser; filename: Pgchar): gboolean; cdecl; external;
+function gtk_file_chooser_set_uri(chooser: PGtkFileChooser; uri: Pgchar): gboolean; cdecl; external;
 function gtk_file_chooser_widget_get_type: TGType; cdecl; external;
 function gtk_file_chooser_widget_new(action: TGtkFileChooserAction): PGtkFileChooserWidget; cdecl; external;
-function gtk_file_filter_filter(AFileFilter: PGtkFileFilter; filter_info: PGtkFileFilterInfo): gboolean; cdecl; external;
-function gtk_file_filter_get_name(AFileFilter: PGtkFileFilter): Pgchar; cdecl; external;
-function gtk_file_filter_get_needed(AFileFilter: PGtkFileFilter): TGtkFileFilterFlags; cdecl; external;
+function gtk_file_filter_filter(filter: PGtkFileFilter; filter_info: PGtkFileFilterInfo): gboolean; cdecl; external;
+function gtk_file_filter_get_name(filter: PGtkFileFilter): Pgchar; cdecl; external;
+function gtk_file_filter_get_needed(filter: PGtkFileFilter): TGtkFileFilterFlags; cdecl; external;
 function gtk_file_filter_get_type: TGType; cdecl; external;
 function gtk_file_filter_new: PGtkFileFilter; cdecl; external;
 function gtk_fixed_get_type: TGType; cdecl; external;
 function gtk_fixed_new: PGtkFixed; cdecl; external;
-function gtk_font_button_get_font_name(AFontButton: PGtkFontButton): Pgchar; cdecl; external;
-function gtk_font_button_get_show_size(AFontButton: PGtkFontButton): gboolean; cdecl; external;
-function gtk_font_button_get_show_style(AFontButton: PGtkFontButton): gboolean; cdecl; external;
-function gtk_font_button_get_title(AFontButton: PGtkFontButton): Pgchar; cdecl; external;
+function gtk_font_button_get_font_name(font_button: PGtkFontButton): Pgchar; cdecl; external;
+function gtk_font_button_get_show_size(font_button: PGtkFontButton): gboolean; cdecl; external;
+function gtk_font_button_get_show_style(font_button: PGtkFontButton): gboolean; cdecl; external;
+function gtk_font_button_get_title(font_button: PGtkFontButton): Pgchar; cdecl; external;
 function gtk_font_button_get_type: TGType; cdecl; external;
-function gtk_font_button_get_use_font(AFontButton: PGtkFontButton): gboolean; cdecl; external;
-function gtk_font_button_get_use_size(AFontButton: PGtkFontButton): gboolean; cdecl; external;
+function gtk_font_button_get_use_font(font_button: PGtkFontButton): gboolean; cdecl; external;
+function gtk_font_button_get_use_size(font_button: PGtkFontButton): gboolean; cdecl; external;
 function gtk_font_button_new: PGtkFontButton; cdecl; external;
 function gtk_font_button_new_with_font(fontname: Pgchar): PGtkFontButton; cdecl; external;
-function gtk_font_button_set_font_name(AFontButton: PGtkFontButton; fontname: Pgchar): gboolean; cdecl; external;
+function gtk_font_button_set_font_name(font_button: PGtkFontButton; fontname: Pgchar): gboolean; cdecl; external;
 function gtk_font_chooser_dialog_get_type: TGType; cdecl; external;
 function gtk_font_chooser_dialog_new(title: Pgchar; parent: PGtkWindow): PGtkFontChooserDialog; cdecl; external;
-function gtk_font_chooser_get_font(AFontChooser: PGtkFontChooser): Pgchar; cdecl; external;
-function gtk_font_chooser_get_font_desc(AFontChooser: PGtkFontChooser): PPangoFontDescription; cdecl; external;
-function gtk_font_chooser_get_font_face(AFontChooser: PGtkFontChooser): PPangoFontFace; cdecl; external;
-function gtk_font_chooser_get_font_family(AFontChooser: PGtkFontChooser): PPangoFontFamily; cdecl; external;
-function gtk_font_chooser_get_font_size(AFontChooser: PGtkFontChooser): gint; cdecl; external;
-function gtk_font_chooser_get_preview_text(AFontChooser: PGtkFontChooser): Pgchar; cdecl; external;
-function gtk_font_chooser_get_show_preview_entry(AFontChooser: PGtkFontChooser): gboolean; cdecl; external;
+function gtk_font_chooser_get_font(fontchooser: PGtkFontChooser): Pgchar; cdecl; external;
+function gtk_font_chooser_get_font_desc(fontchooser: PGtkFontChooser): PPangoFontDescription; cdecl; external;
+function gtk_font_chooser_get_font_face(fontchooser: PGtkFontChooser): PPangoFontFace; cdecl; external;
+function gtk_font_chooser_get_font_family(fontchooser: PGtkFontChooser): PPangoFontFamily; cdecl; external;
+function gtk_font_chooser_get_font_size(fontchooser: PGtkFontChooser): gint; cdecl; external;
+function gtk_font_chooser_get_preview_text(fontchooser: PGtkFontChooser): Pgchar; cdecl; external;
+function gtk_font_chooser_get_show_preview_entry(fontchooser: PGtkFontChooser): gboolean; cdecl; external;
 function gtk_font_chooser_get_type: TGType; cdecl; external;
 function gtk_font_chooser_widget_get_type: TGType; cdecl; external;
 function gtk_font_chooser_widget_new: PGtkFontChooserWidget; cdecl; external;
 function gtk_font_selection_dialog_get_type: TGType; cdecl; external;
 function gtk_font_selection_get_type: TGType; cdecl; external;
-function gtk_font_selection_new: PGtkFontSelection; cdecl; external;
-function gtk_frame_get_label(AFrame: PGtkFrame): Pgchar; cdecl; external;
-function gtk_frame_get_label_widget(AFrame: PGtkFrame): PGtkWidget; cdecl; external;
-function gtk_frame_get_shadow_type(AFrame: PGtkFrame): TGtkShadowType; cdecl; external;
+function gtk_frame_get_label(frame: PGtkFrame): Pgchar; cdecl; external;
+function gtk_frame_get_label_widget(frame: PGtkFrame): PGtkWidget; cdecl; external;
+function gtk_frame_get_shadow_type(frame: PGtkFrame): TGtkShadowType; cdecl; external;
 function gtk_frame_get_type: TGType; cdecl; external;
 function gtk_frame_new(label_: Pgchar): PGtkFrame; cdecl; external;
 function gtk_get_binary_age: guint; cdecl; external;
@@ -11638,17 +11783,12 @@ function gtk_get_minor_version: guint; cdecl; external;
 function gtk_get_option_group(open_default_display: gboolean): PGOptionGroup; cdecl; external;
 function gtk_grab_get_current: PGtkWidget; cdecl; external;
 function gtk_gradient_get_type: TGType; cdecl; external;
-function gtk_gradient_new_linear(x0: gdouble; y0: gdouble; x1: gdouble; y1: gdouble): PGtkGradient; cdecl; external;
-function gtk_gradient_new_radial(x0: gdouble; y0: gdouble; radius0: gdouble; x1: gdouble; y1: gdouble; radius1: gdouble): PGtkGradient; cdecl; external;
-function gtk_gradient_ref(AGradient: PGtkGradient): PGtkGradient; cdecl; external;
-function gtk_gradient_resolve(AGradient: PGtkGradient; props: PGtkStyleProperties; resolved_gradient: PPcairo_pattern_t): gboolean; cdecl; external;
-function gtk_gradient_resolve_for_context(AGradient: PGtkGradient; context: PGtkStyleContext): Pcairo_pattern_t; cdecl; external;
-function gtk_gradient_to_string(AGradient: PGtkGradient): Pgchar; cdecl; external;
-function gtk_grid_get_child_at(AGrid: PGtkGrid; left: gint; top: gint): PGtkWidget; cdecl; external;
-function gtk_grid_get_column_homogeneous(AGrid: PGtkGrid): gboolean; cdecl; external;
-function gtk_grid_get_column_spacing(AGrid: PGtkGrid): guint; cdecl; external;
-function gtk_grid_get_row_homogeneous(AGrid: PGtkGrid): gboolean; cdecl; external;
-function gtk_grid_get_row_spacing(AGrid: PGtkGrid): guint; cdecl; external;
+function gtk_gradient_resolve_for_context(gradient: PGtkGradient; context: PGtkStyleContext): Pcairo_pattern_t; cdecl; external;
+function gtk_grid_get_child_at(grid: PGtkGrid; left: gint; top: gint): PGtkWidget; cdecl; external;
+function gtk_grid_get_column_homogeneous(grid: PGtkGrid): gboolean; cdecl; external;
+function gtk_grid_get_column_spacing(grid: PGtkGrid): guint; cdecl; external;
+function gtk_grid_get_row_homogeneous(grid: PGtkGrid): gboolean; cdecl; external;
+function gtk_grid_get_row_spacing(grid: PGtkGrid): guint; cdecl; external;
 function gtk_grid_get_type: TGType; cdecl; external;
 function gtk_grid_new: PGtkGrid; cdecl; external;
 function gtk_handle_box_get_type: TGType; cdecl; external;
@@ -11659,110 +11799,114 @@ function gtk_hscale_get_type: TGType; cdecl; external;
 function gtk_hscrollbar_get_type: TGType; cdecl; external;
 function gtk_hseparator_get_type: TGType; cdecl; external;
 function gtk_hsv_get_type: TGType; cdecl; external;
-function gtk_hsv_is_adjusting(AHSV: PGtkHSV): gboolean; cdecl; external;
+function gtk_hsv_is_adjusting(hsv: PGtkHSV): gboolean; cdecl; external;
 function gtk_hsv_new: PGtkHSV; cdecl; external;
 function gtk_icon_factory_get_type: TGType; cdecl; external;
-function gtk_icon_factory_lookup(AIconFactory: PGtkIconFactory; stock_id: Pgchar): PGtkIconSet; cdecl; external;
+function gtk_icon_factory_lookup(factory: PGtkIconFactory; stock_id: Pgchar): PGtkIconSet; cdecl; external;
 function gtk_icon_factory_lookup_default(stock_id: Pgchar): PGtkIconSet; cdecl; external;
 function gtk_icon_factory_new: PGtkIconFactory; cdecl; external;
-function gtk_icon_info_copy(AIconInfo: PGtkIconInfo): PGtkIconInfo; cdecl; external;
-function gtk_icon_info_get_attach_points(AIconInfo: PGtkIconInfo; points: PPGdkPoint; n_points: Pgint): gboolean; cdecl; external;
-function gtk_icon_info_get_base_size(AIconInfo: PGtkIconInfo): gint; cdecl; external;
-function gtk_icon_info_get_builtin_pixbuf(AIconInfo: PGtkIconInfo): PGdkPixbuf; cdecl; external;
-function gtk_icon_info_get_display_name(AIconInfo: PGtkIconInfo): Pgchar; cdecl; external;
-function gtk_icon_info_get_embedded_rect(AIconInfo: PGtkIconInfo; rectangle: PGdkRectangle): gboolean; cdecl; external;
-function gtk_icon_info_get_filename(AIconInfo: PGtkIconInfo): Pgchar; cdecl; external;
+function gtk_icon_info_get_attach_points(icon_info: PGtkIconInfo; points: PPGdkPoint; n_points: Pgint): gboolean; cdecl; external;
+function gtk_icon_info_get_base_size(icon_info: PGtkIconInfo): gint; cdecl; external;
+function gtk_icon_info_get_builtin_pixbuf(icon_info: PGtkIconInfo): PGdkPixbuf; cdecl; external;
+function gtk_icon_info_get_display_name(icon_info: PGtkIconInfo): Pgchar; cdecl; external;
+function gtk_icon_info_get_embedded_rect(icon_info: PGtkIconInfo; rectangle: PGdkRectangle): gboolean; cdecl; external;
+function gtk_icon_info_get_filename(icon_info: PGtkIconInfo): Pgchar; cdecl; external;
 function gtk_icon_info_get_type: TGType; cdecl; external;
-function gtk_icon_info_load_icon(AIconInfo: PGtkIconInfo): PGdkPixbuf; cdecl; external;
-function gtk_icon_info_load_symbolic(AIconInfo: PGtkIconInfo; fg: PGdkRGBA; success_color: PGdkRGBA; warning_color: PGdkRGBA; error_color: PGdkRGBA; was_symbolic: Pgboolean): PGdkPixbuf; cdecl; external;
-function gtk_icon_info_load_symbolic_for_context(AIconInfo: PGtkIconInfo; context: PGtkStyleContext; was_symbolic: Pgboolean): PGdkPixbuf; cdecl; external;
+function gtk_icon_info_load_icon(icon_info: PGtkIconInfo; error: PPGError): PGdkPixbuf; cdecl; external;
+function gtk_icon_info_load_icon_finish(icon_info: PGtkIconInfo; res: PGAsyncResult; error: PPGError): PGdkPixbuf; cdecl; external;
+function gtk_icon_info_load_symbolic(icon_info: PGtkIconInfo; fg: PGdkRGBA; success_color: PGdkRGBA; warning_color: PGdkRGBA; error_color: PGdkRGBA; was_symbolic: Pgboolean; error: PPGError): PGdkPixbuf; cdecl; external;
+function gtk_icon_info_load_symbolic_finish(icon_info: PGtkIconInfo; res: PGAsyncResult; was_symbolic: Pgboolean; error: PPGError): PGdkPixbuf; cdecl; external;
+function gtk_icon_info_load_symbolic_for_context(icon_info: PGtkIconInfo; context: PGtkStyleContext; was_symbolic: Pgboolean; error: PPGError): PGdkPixbuf; cdecl; external;
+function gtk_icon_info_load_symbolic_for_context_finish(icon_info: PGtkIconInfo; res: PGAsyncResult; was_symbolic: Pgboolean; error: PPGError): PGdkPixbuf; cdecl; external;
 function gtk_icon_info_new_for_pixbuf(icon_theme: PGtkIconTheme; pixbuf: PGdkPixbuf): PGtkIconInfo; cdecl; external;
-function gtk_icon_set_copy(AIconSet: PGtkIconSet): PGtkIconSet; cdecl; external;
+function gtk_icon_set_copy(icon_set: PGtkIconSet): PGtkIconSet; cdecl; external;
 function gtk_icon_set_get_type: TGType; cdecl; external;
 function gtk_icon_set_new: PGtkIconSet; cdecl; external;
 function gtk_icon_set_new_from_pixbuf(pixbuf: PGdkPixbuf): PGtkIconSet; cdecl; external;
-function gtk_icon_set_ref(AIconSet: PGtkIconSet): PGtkIconSet; cdecl; external;
-function gtk_icon_set_render_icon_pixbuf(AIconSet: PGtkIconSet; context: PGtkStyleContext; size: gint): PGdkPixbuf; cdecl; external;
+function gtk_icon_set_ref(icon_set: PGtkIconSet): PGtkIconSet; cdecl; external;
+function gtk_icon_set_render_icon_pixbuf(icon_set: PGtkIconSet; context: PGtkStyleContext; size: gint): PGdkPixbuf; cdecl; external;
 function gtk_icon_size_from_name(name: Pgchar): gint; cdecl; external;
 function gtk_icon_size_get_name(size: gint): Pgchar; cdecl; external;
 function gtk_icon_size_lookup(size: gint; width: Pgint; height: Pgint): gboolean; cdecl; external;
 function gtk_icon_size_lookup_for_settings(settings: PGtkSettings; size: gint; width: Pgint; height: Pgint): gboolean; cdecl; external;
 function gtk_icon_size_register(name: Pgchar; width: gint; height: gint): gint; cdecl; external;
-function gtk_icon_source_copy(AIconSource: PGtkIconSource): PGtkIconSource; cdecl; external;
-function gtk_icon_source_get_direction(AIconSource: PGtkIconSource): TGtkTextDirection; cdecl; external;
-function gtk_icon_source_get_direction_wildcarded(AIconSource: PGtkIconSource): gboolean; cdecl; external;
-function gtk_icon_source_get_filename(AIconSource: PGtkIconSource): Pgchar; cdecl; external;
-function gtk_icon_source_get_icon_name(AIconSource: PGtkIconSource): Pgchar; cdecl; external;
-function gtk_icon_source_get_pixbuf(AIconSource: PGtkIconSource): PGdkPixbuf; cdecl; external;
-function gtk_icon_source_get_size(AIconSource: PGtkIconSource): gint; cdecl; external;
-function gtk_icon_source_get_size_wildcarded(AIconSource: PGtkIconSource): gboolean; cdecl; external;
-function gtk_icon_source_get_state(AIconSource: PGtkIconSource): TGtkStateType; cdecl; external;
-function gtk_icon_source_get_state_wildcarded(AIconSource: PGtkIconSource): gboolean; cdecl; external;
+function gtk_icon_source_copy(source: PGtkIconSource): PGtkIconSource; cdecl; external;
+function gtk_icon_source_get_direction(source: PGtkIconSource): TGtkTextDirection; cdecl; external;
+function gtk_icon_source_get_direction_wildcarded(source: PGtkIconSource): gboolean; cdecl; external;
+function gtk_icon_source_get_filename(source: PGtkIconSource): Pgchar; cdecl; external;
+function gtk_icon_source_get_icon_name(source: PGtkIconSource): Pgchar; cdecl; external;
+function gtk_icon_source_get_pixbuf(source: PGtkIconSource): PGdkPixbuf; cdecl; external;
+function gtk_icon_source_get_size(source: PGtkIconSource): gint; cdecl; external;
+function gtk_icon_source_get_size_wildcarded(source: PGtkIconSource): gboolean; cdecl; external;
+function gtk_icon_source_get_state(source: PGtkIconSource): TGtkStateType; cdecl; external;
+function gtk_icon_source_get_state_wildcarded(source: PGtkIconSource): gboolean; cdecl; external;
 function gtk_icon_source_get_type: TGType; cdecl; external;
 function gtk_icon_source_new: PGtkIconSource; cdecl; external;
-function gtk_icon_theme_choose_icon(AIconTheme: PGtkIconTheme; icon_names: Pgchar; size: gint; flags: TGtkIconLookupFlags): PGtkIconInfo; cdecl; external;
+function gtk_icon_theme_choose_icon(icon_theme: PGtkIconTheme; icon_names: Pgchar; size: gint; flags: TGtkIconLookupFlags): PGtkIconInfo; cdecl; external;
 function gtk_icon_theme_error_quark: TGQuark; cdecl; external;
 function gtk_icon_theme_get_default: PGtkIconTheme; cdecl; external;
-function gtk_icon_theme_get_example_icon_name(AIconTheme: PGtkIconTheme): Pgchar; cdecl; external;
+function gtk_icon_theme_get_example_icon_name(icon_theme: PGtkIconTheme): Pgchar; cdecl; external;
 function gtk_icon_theme_get_for_screen(screen: PGdkScreen): PGtkIconTheme; cdecl; external;
-function gtk_icon_theme_get_icon_sizes(AIconTheme: PGtkIconTheme; icon_name: Pgchar): Pgint; cdecl; external;
+function gtk_icon_theme_get_icon_sizes(icon_theme: PGtkIconTheme; icon_name: Pgchar): Pgint; cdecl; external;
 function gtk_icon_theme_get_type: TGType; cdecl; external;
-function gtk_icon_theme_has_icon(AIconTheme: PGtkIconTheme; icon_name: Pgchar): gboolean; cdecl; external;
-function gtk_icon_theme_list_contexts(AIconTheme: PGtkIconTheme): PGList; cdecl; external;
-function gtk_icon_theme_list_icons(AIconTheme: PGtkIconTheme; context: Pgchar): PGList; cdecl; external;
-function gtk_icon_theme_load_icon(AIconTheme: PGtkIconTheme; icon_name: Pgchar; size: gint; flags: TGtkIconLookupFlags): PGdkPixbuf; cdecl; external;
-function gtk_icon_theme_lookup_by_gicon(AIconTheme: PGtkIconTheme; icon: PGIcon; size: gint; flags: TGtkIconLookupFlags): PGtkIconInfo; cdecl; external;
-function gtk_icon_theme_lookup_icon(AIconTheme: PGtkIconTheme; icon_name: Pgchar; size: gint; flags: TGtkIconLookupFlags): PGtkIconInfo; cdecl; external;
+function gtk_icon_theme_has_icon(icon_theme: PGtkIconTheme; icon_name: Pgchar): gboolean; cdecl; external;
+function gtk_icon_theme_list_contexts(icon_theme: PGtkIconTheme): PGList; cdecl; external;
+function gtk_icon_theme_list_icons(icon_theme: PGtkIconTheme; context: Pgchar): PGList; cdecl; external;
+function gtk_icon_theme_load_icon(icon_theme: PGtkIconTheme; icon_name: Pgchar; size: gint; flags: TGtkIconLookupFlags; error: PPGError): PGdkPixbuf; cdecl; external;
+function gtk_icon_theme_lookup_by_gicon(icon_theme: PGtkIconTheme; icon: PGIcon; size: gint; flags: TGtkIconLookupFlags): PGtkIconInfo; cdecl; external;
+function gtk_icon_theme_lookup_icon(icon_theme: PGtkIconTheme; icon_name: Pgchar; size: gint; flags: TGtkIconLookupFlags): PGtkIconInfo; cdecl; external;
 function gtk_icon_theme_new: PGtkIconTheme; cdecl; external;
-function gtk_icon_theme_rescan_if_needed(AIconTheme: PGtkIconTheme): gboolean; cdecl; external;
-function gtk_icon_view_create_drag_icon(AIconView: PGtkIconView; path: PGtkTreePath): Pcairo_surface_t; cdecl; external;
-function gtk_icon_view_get_column_spacing(AIconView: PGtkIconView): gint; cdecl; external;
-function gtk_icon_view_get_columns(AIconView: PGtkIconView): gint; cdecl; external;
-function gtk_icon_view_get_cursor(AIconView: PGtkIconView; path: PPGtkTreePath; cell: PPGtkCellRenderer): gboolean; cdecl; external;
-function gtk_icon_view_get_dest_item_at_pos(AIconView: PGtkIconView; drag_x: gint; drag_y: gint; path: PPGtkTreePath; pos: PGtkIconViewDropPosition): gboolean; cdecl; external;
-function gtk_icon_view_get_item_at_pos(AIconView: PGtkIconView; x: gint; y: gint; path: PPGtkTreePath; cell: PPGtkCellRenderer): gboolean; cdecl; external;
-function gtk_icon_view_get_item_column(AIconView: PGtkIconView; path: PGtkTreePath): gint; cdecl; external;
-function gtk_icon_view_get_item_orientation(AIconView: PGtkIconView): TGtkOrientation; cdecl; external;
-function gtk_icon_view_get_item_padding(AIconView: PGtkIconView): gint; cdecl; external;
-function gtk_icon_view_get_item_row(AIconView: PGtkIconView; path: PGtkTreePath): gint; cdecl; external;
-function gtk_icon_view_get_item_width(AIconView: PGtkIconView): gint; cdecl; external;
-function gtk_icon_view_get_margin(AIconView: PGtkIconView): gint; cdecl; external;
-function gtk_icon_view_get_markup_column(AIconView: PGtkIconView): gint; cdecl; external;
-function gtk_icon_view_get_model(AIconView: PGtkIconView): PGtkTreeModel; cdecl; external;
-function gtk_icon_view_get_path_at_pos(AIconView: PGtkIconView; x: gint; y: gint): PGtkTreePath; cdecl; external;
-function gtk_icon_view_get_pixbuf_column(AIconView: PGtkIconView): gint; cdecl; external;
-function gtk_icon_view_get_reorderable(AIconView: PGtkIconView): gboolean; cdecl; external;
-function gtk_icon_view_get_row_spacing(AIconView: PGtkIconView): gint; cdecl; external;
-function gtk_icon_view_get_selected_items(AIconView: PGtkIconView): PGList; cdecl; external;
-function gtk_icon_view_get_selection_mode(AIconView: PGtkIconView): TGtkSelectionMode; cdecl; external;
-function gtk_icon_view_get_spacing(AIconView: PGtkIconView): gint; cdecl; external;
-function gtk_icon_view_get_text_column(AIconView: PGtkIconView): gint; cdecl; external;
-function gtk_icon_view_get_tooltip_column(AIconView: PGtkIconView): gint; cdecl; external;
-function gtk_icon_view_get_tooltip_context(AIconView: PGtkIconView; x: Pgint; y: Pgint; keyboard_tip: gboolean; model: PPGtkTreeModel; path: PPGtkTreePath; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_icon_theme_rescan_if_needed(icon_theme: PGtkIconTheme): gboolean; cdecl; external;
+function gtk_icon_view_create_drag_icon(icon_view: PGtkIconView; path: PGtkTreePath): Pcairo_surface_t; cdecl; external;
+function gtk_icon_view_get_activate_on_single_click(icon_view: PGtkIconView): gboolean; cdecl; external;
+function gtk_icon_view_get_cell_rect(icon_view: PGtkIconView; path: PGtkTreePath; cell: PGtkCellRenderer; rect: PGdkRectangle): gboolean; cdecl; external;
+function gtk_icon_view_get_column_spacing(icon_view: PGtkIconView): gint; cdecl; external;
+function gtk_icon_view_get_columns(icon_view: PGtkIconView): gint; cdecl; external;
+function gtk_icon_view_get_cursor(icon_view: PGtkIconView; path: PPGtkTreePath; cell: PPGtkCellRenderer): gboolean; cdecl; external;
+function gtk_icon_view_get_dest_item_at_pos(icon_view: PGtkIconView; drag_x: gint; drag_y: gint; path: PPGtkTreePath; pos: PGtkIconViewDropPosition): gboolean; cdecl; external;
+function gtk_icon_view_get_item_at_pos(icon_view: PGtkIconView; x: gint; y: gint; path: PPGtkTreePath; cell: PPGtkCellRenderer): gboolean; cdecl; external;
+function gtk_icon_view_get_item_column(icon_view: PGtkIconView; path: PGtkTreePath): gint; cdecl; external;
+function gtk_icon_view_get_item_orientation(icon_view: PGtkIconView): TGtkOrientation; cdecl; external;
+function gtk_icon_view_get_item_padding(icon_view: PGtkIconView): gint; cdecl; external;
+function gtk_icon_view_get_item_row(icon_view: PGtkIconView; path: PGtkTreePath): gint; cdecl; external;
+function gtk_icon_view_get_item_width(icon_view: PGtkIconView): gint; cdecl; external;
+function gtk_icon_view_get_margin(icon_view: PGtkIconView): gint; cdecl; external;
+function gtk_icon_view_get_markup_column(icon_view: PGtkIconView): gint; cdecl; external;
+function gtk_icon_view_get_model(icon_view: PGtkIconView): PGtkTreeModel; cdecl; external;
+function gtk_icon_view_get_path_at_pos(icon_view: PGtkIconView; x: gint; y: gint): PGtkTreePath; cdecl; external;
+function gtk_icon_view_get_pixbuf_column(icon_view: PGtkIconView): gint; cdecl; external;
+function gtk_icon_view_get_reorderable(icon_view: PGtkIconView): gboolean; cdecl; external;
+function gtk_icon_view_get_row_spacing(icon_view: PGtkIconView): gint; cdecl; external;
+function gtk_icon_view_get_selected_items(icon_view: PGtkIconView): PGList; cdecl; external;
+function gtk_icon_view_get_selection_mode(icon_view: PGtkIconView): TGtkSelectionMode; cdecl; external;
+function gtk_icon_view_get_spacing(icon_view: PGtkIconView): gint; cdecl; external;
+function gtk_icon_view_get_text_column(icon_view: PGtkIconView): gint; cdecl; external;
+function gtk_icon_view_get_tooltip_column(icon_view: PGtkIconView): gint; cdecl; external;
+function gtk_icon_view_get_tooltip_context(icon_view: PGtkIconView; x: Pgint; y: Pgint; keyboard_tip: gboolean; model: PPGtkTreeModel; path: PPGtkTreePath; iter: PGtkTreeIter): gboolean; cdecl; external;
 function gtk_icon_view_get_type: TGType; cdecl; external;
-function gtk_icon_view_get_visible_range(AIconView: PGtkIconView; start_path: PPGtkTreePath; end_path: PPGtkTreePath): gboolean; cdecl; external;
+function gtk_icon_view_get_visible_range(icon_view: PGtkIconView; start_path: PPGtkTreePath; end_path: PPGtkTreePath): gboolean; cdecl; external;
 function gtk_icon_view_new: PGtkIconView; cdecl; external;
 function gtk_icon_view_new_with_area(area: PGtkCellArea): PGtkIconView; cdecl; external;
 function gtk_icon_view_new_with_model(model: PGtkTreeModel): PGtkIconView; cdecl; external;
-function gtk_icon_view_path_is_selected(AIconView: PGtkIconView; path: PGtkTreePath): gboolean; cdecl; external;
-function gtk_im_context_delete_surrounding(AIMContext: PGtkIMContext; offset: gint; n_chars: gint): gboolean; cdecl; external;
-function gtk_im_context_filter_keypress(AIMContext: PGtkIMContext; event: PGdkEventKey): gboolean; cdecl; external;
-function gtk_im_context_get_surrounding(AIMContext: PGtkIMContext; text: PPgchar; cursor_index: Pgint): gboolean; cdecl; external;
+function gtk_icon_view_path_is_selected(icon_view: PGtkIconView; path: PGtkTreePath): gboolean; cdecl; external;
+function gtk_im_context_delete_surrounding(context: PGtkIMContext; offset: gint; n_chars: gint): gboolean; cdecl; external;
+function gtk_im_context_filter_keypress(context: PGtkIMContext; event: PGdkEventKey): gboolean; cdecl; external;
+function gtk_im_context_get_surrounding(context: PGtkIMContext; text: PPgchar; cursor_index: Pgint): gboolean; cdecl; external;
 function gtk_im_context_get_type: TGType; cdecl; external;
 function gtk_im_context_simple_get_type: TGType; cdecl; external;
 function gtk_im_context_simple_new: PGtkIMContextSimple; cdecl; external;
-function gtk_im_multicontext_get_context_id(AIMMulticontext: PGtkIMMulticontext): Pgchar; cdecl; external;
+function gtk_im_multicontext_get_context_id(context: PGtkIMMulticontext): Pgchar; cdecl; external;
 function gtk_im_multicontext_get_type: TGType; cdecl; external;
 function gtk_im_multicontext_new: PGtkIMMulticontext; cdecl; external;
-function gtk_image_get_animation(AImage: PGtkImage): PGdkPixbufAnimation; cdecl; external;
-function gtk_image_get_pixbuf(AImage: PGtkImage): PGdkPixbuf; cdecl; external;
-function gtk_image_get_pixel_size(AImage: PGtkImage): gint; cdecl; external;
-function gtk_image_get_storage_type(AImage: PGtkImage): TGtkImageType; cdecl; external;
+function gtk_image_get_animation(image: PGtkImage): PGdkPixbufAnimation; cdecl; external;
+function gtk_image_get_pixbuf(image: PGtkImage): PGdkPixbuf; cdecl; external;
+function gtk_image_get_pixel_size(image: PGtkImage): gint; cdecl; external;
+function gtk_image_get_storage_type(image: PGtkImage): TGtkImageType; cdecl; external;
 function gtk_image_get_type: TGType; cdecl; external;
-function gtk_image_menu_item_get_always_show_image(AImageMenuItem: PGtkImageMenuItem): gboolean; cdecl; external;
-function gtk_image_menu_item_get_image(AImageMenuItem: PGtkImageMenuItem): PGtkWidget; cdecl; external;
+function gtk_image_menu_item_get_always_show_image(image_menu_item: PGtkImageMenuItem): gboolean; cdecl; external;
+function gtk_image_menu_item_get_image(image_menu_item: PGtkImageMenuItem): PGtkWidget; cdecl; external;
 function gtk_image_menu_item_get_type: TGType; cdecl; external;
-function gtk_image_menu_item_get_use_stock(AImageMenuItem: PGtkImageMenuItem): gboolean; cdecl; external;
+function gtk_image_menu_item_get_use_stock(image_menu_item: PGtkImageMenuItem): gboolean; cdecl; external;
 function gtk_image_menu_item_new: PGtkImageMenuItem; cdecl; external;
 function gtk_image_menu_item_new_from_stock(stock_id: Pgchar; accel_group: PGtkAccelGroup): PGtkImageMenuItem; cdecl; external;
 function gtk_image_menu_item_new_with_label(label_: Pgchar): PGtkImageMenuItem; cdecl; external;
@@ -11776,279 +11920,294 @@ function gtk_image_new_from_icon_set(icon_set: PGtkIconSet; size: gint): PGtkIma
 function gtk_image_new_from_pixbuf(pixbuf: PGdkPixbuf): PGtkImage; cdecl; external;
 function gtk_image_new_from_resource(resource_path: Pgchar): PGtkImage; cdecl; external;
 function gtk_image_new_from_stock(stock_id: Pgchar; size: gint): PGtkImage; cdecl; external;
-function gtk_info_bar_add_button(AInfoBar: PGtkInfoBar; button_text: Pgchar; response_id: gint): PGtkWidget; cdecl; external;
-function gtk_info_bar_get_action_area(AInfoBar: PGtkInfoBar): PGtkWidget; cdecl; external;
-function gtk_info_bar_get_content_area(AInfoBar: PGtkInfoBar): PGtkWidget; cdecl; external;
-function gtk_info_bar_get_message_type(AInfoBar: PGtkInfoBar): TGtkMessageType; cdecl; external;
+function gtk_info_bar_add_button(info_bar: PGtkInfoBar; button_text: Pgchar; response_id: gint): PGtkWidget; cdecl; external;
+function gtk_info_bar_get_action_area(info_bar: PGtkInfoBar): PGtkWidget; cdecl; external;
+function gtk_info_bar_get_content_area(info_bar: PGtkInfoBar): PGtkWidget; cdecl; external;
+function gtk_info_bar_get_message_type(info_bar: PGtkInfoBar): TGtkMessageType; cdecl; external;
 function gtk_info_bar_get_type: TGType; cdecl; external;
 function gtk_info_bar_new: PGtkInfoBar; cdecl; external;
 function gtk_info_bar_new_with_buttons(first_button_text: Pgchar; args: array of const): PGtkInfoBar; cdecl; external;
 function gtk_init_check(argc: Pgint; argv: PPPgchar): gboolean; cdecl; external;
-function gtk_init_with_args(argc: Pgint; argv: PPPgchar; parameter_string: Pgchar; entries: PGOptionEntry; translation_domain: Pgchar): gboolean; cdecl; external;
-function gtk_invisible_get_screen(AInvisible: PGtkInvisible): PGdkScreen; cdecl; external;
+function gtk_init_with_args(argc: Pgint; argv: PPPgchar; parameter_string: Pgchar; entries: PGOptionEntry; translation_domain: Pgchar; error: PPGError): gboolean; cdecl; external;
+function gtk_invisible_get_screen(invisible: PGtkInvisible): PGdkScreen; cdecl; external;
 function gtk_invisible_get_type: TGType; cdecl; external;
 function gtk_invisible_new: PGtkInvisible; cdecl; external;
 function gtk_invisible_new_for_screen(screen: PGdkScreen): PGtkInvisible; cdecl; external;
 function gtk_key_snooper_install(snooper: TGtkKeySnoopFunc; func_data: gpointer): guint; cdecl; external;
-function gtk_label_get_angle(ALabel: PGtkLabel): gdouble; cdecl; external;
-function gtk_label_get_attributes(ALabel: PGtkLabel): PPangoAttrList; cdecl; external;
-function gtk_label_get_current_uri(ALabel: PGtkLabel): Pgchar; cdecl; external;
-function gtk_label_get_ellipsize(ALabel: PGtkLabel): TPangoEllipsizeMode; cdecl; external;
-function gtk_label_get_justify(ALabel: PGtkLabel): TGtkJustification; cdecl; external;
-function gtk_label_get_label(ALabel: PGtkLabel): Pgchar; cdecl; external;
-function gtk_label_get_layout(ALabel: PGtkLabel): PPangoLayout; cdecl; external;
-function gtk_label_get_line_wrap(ALabel: PGtkLabel): gboolean; cdecl; external;
-function gtk_label_get_line_wrap_mode(ALabel: PGtkLabel): TPangoWrapMode; cdecl; external;
-function gtk_label_get_max_width_chars(ALabel: PGtkLabel): gint; cdecl; external;
-function gtk_label_get_mnemonic_keyval(ALabel: PGtkLabel): guint; cdecl; external;
-function gtk_label_get_mnemonic_widget(ALabel: PGtkLabel): PGtkWidget; cdecl; external;
-function gtk_label_get_selectable(ALabel: PGtkLabel): gboolean; cdecl; external;
-function gtk_label_get_selection_bounds(ALabel: PGtkLabel; start: Pgint; end_: Pgint): gboolean; cdecl; external;
-function gtk_label_get_single_line_mode(ALabel: PGtkLabel): gboolean; cdecl; external;
-function gtk_label_get_text(ALabel: PGtkLabel): Pgchar; cdecl; external;
-function gtk_label_get_track_visited_links(ALabel: PGtkLabel): gboolean; cdecl; external;
+function gtk_label_get_angle(label_: PGtkLabel): gdouble; cdecl; external;
+function gtk_label_get_attributes(label_: PGtkLabel): PPangoAttrList; cdecl; external;
+function gtk_label_get_current_uri(label_: PGtkLabel): Pgchar; cdecl; external;
+function gtk_label_get_ellipsize(label_: PGtkLabel): TPangoEllipsizeMode; cdecl; external;
+function gtk_label_get_justify(label_: PGtkLabel): TGtkJustification; cdecl; external;
+function gtk_label_get_label(label_: PGtkLabel): Pgchar; cdecl; external;
+function gtk_label_get_layout(label_: PGtkLabel): PPangoLayout; cdecl; external;
+function gtk_label_get_line_wrap(label_: PGtkLabel): gboolean; cdecl; external;
+function gtk_label_get_line_wrap_mode(label_: PGtkLabel): TPangoWrapMode; cdecl; external;
+function gtk_label_get_max_width_chars(label_: PGtkLabel): gint; cdecl; external;
+function gtk_label_get_mnemonic_keyval(label_: PGtkLabel): guint; cdecl; external;
+function gtk_label_get_mnemonic_widget(label_: PGtkLabel): PGtkWidget; cdecl; external;
+function gtk_label_get_selectable(label_: PGtkLabel): gboolean; cdecl; external;
+function gtk_label_get_selection_bounds(label_: PGtkLabel; start: Pgint; end_: Pgint): gboolean; cdecl; external;
+function gtk_label_get_single_line_mode(label_: PGtkLabel): gboolean; cdecl; external;
+function gtk_label_get_text(label_: PGtkLabel): Pgchar; cdecl; external;
+function gtk_label_get_track_visited_links(label_: PGtkLabel): gboolean; cdecl; external;
 function gtk_label_get_type: TGType; cdecl; external;
-function gtk_label_get_use_markup(ALabel: PGtkLabel): gboolean; cdecl; external;
-function gtk_label_get_use_underline(ALabel: PGtkLabel): gboolean; cdecl; external;
-function gtk_label_get_width_chars(ALabel: PGtkLabel): gint; cdecl; external;
+function gtk_label_get_use_markup(label_: PGtkLabel): gboolean; cdecl; external;
+function gtk_label_get_use_underline(label_: PGtkLabel): gboolean; cdecl; external;
+function gtk_label_get_width_chars(label_: PGtkLabel): gint; cdecl; external;
 function gtk_label_new(str: Pgchar): PGtkLabel; cdecl; external;
 function gtk_label_new_with_mnemonic(str: Pgchar): PGtkLabel; cdecl; external;
-function gtk_layout_get_bin_window(ALayout: PGtkLayout): PGdkWindow; cdecl; external;
+function gtk_layout_get_bin_window(layout: PGtkLayout): PGdkWindow; cdecl; external;
 function gtk_layout_get_type: TGType; cdecl; external;
 function gtk_layout_new(hadjustment: PGtkAdjustment; vadjustment: PGtkAdjustment): PGtkLayout; cdecl; external;
+function gtk_level_bar_get_inverted(self: PGtkLevelBar): gboolean; cdecl; external;
+function gtk_level_bar_get_max_value(self: PGtkLevelBar): gdouble; cdecl; external;
+function gtk_level_bar_get_min_value(self: PGtkLevelBar): gdouble; cdecl; external;
+function gtk_level_bar_get_mode(self: PGtkLevelBar): TGtkLevelBarMode; cdecl; external;
+function gtk_level_bar_get_offset_value(self: PGtkLevelBar; name: Pgchar; value: Pgdouble): gboolean; cdecl; external;
+function gtk_level_bar_get_type: TGType; cdecl; external;
+function gtk_level_bar_get_value(self: PGtkLevelBar): gdouble; cdecl; external;
+function gtk_level_bar_new: PGtkLevelBar; cdecl; external;
+function gtk_level_bar_new_for_interval(min_value: gdouble; max_value: gdouble): PGtkLevelBar; cdecl; external;
 function gtk_link_button_get_type: TGType; cdecl; external;
-function gtk_link_button_get_uri(ALinkButton: PGtkLinkButton): Pgchar; cdecl; external;
-function gtk_link_button_get_visited(ALinkButton: PGtkLinkButton): gboolean; cdecl; external;
+function gtk_link_button_get_uri(link_button: PGtkLinkButton): Pgchar; cdecl; external;
+function gtk_link_button_get_visited(link_button: PGtkLinkButton): gboolean; cdecl; external;
 function gtk_link_button_new(uri: Pgchar): PGtkLinkButton; cdecl; external;
 function gtk_link_button_new_with_label(uri: Pgchar; label_: Pgchar): PGtkLinkButton; cdecl; external;
 function gtk_list_store_get_type: TGType; cdecl; external;
-function gtk_list_store_iter_is_valid(AListStore: PGtkListStore; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_list_store_iter_is_valid(list_store: PGtkListStore; iter: PGtkTreeIter): gboolean; cdecl; external;
 function gtk_list_store_new(n_columns: gint; args: array of const): PGtkListStore; cdecl; external;
 function gtk_list_store_newv(n_columns: gint; types: PGType): PGtkListStore; cdecl; external;
-function gtk_list_store_remove(AListStore: PGtkListStore; iter: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_lock_button_get_permission(ALockButton: PGtkLockButton): PGPermission; cdecl; external;
+function gtk_list_store_remove(list_store: PGtkListStore; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_lock_button_get_permission(button: PGtkLockButton): PGPermission; cdecl; external;
 function gtk_lock_button_get_type: TGType; cdecl; external;
 function gtk_lock_button_new(permission: PGPermission): PGtkLockButton; cdecl; external;
 function gtk_main_iteration: gboolean; cdecl; external;
 function gtk_main_iteration_do(blocking: gboolean): gboolean; cdecl; external;
 function gtk_main_level: guint; cdecl; external;
-function gtk_menu_bar_get_child_pack_direction(AMenuBar: PGtkMenuBar): TGtkPackDirection; cdecl; external;
-function gtk_menu_bar_get_pack_direction(AMenuBar: PGtkMenuBar): TGtkPackDirection; cdecl; external;
+function gtk_menu_bar_get_child_pack_direction(menubar: PGtkMenuBar): TGtkPackDirection; cdecl; external;
+function gtk_menu_bar_get_pack_direction(menubar: PGtkMenuBar): TGtkPackDirection; cdecl; external;
 function gtk_menu_bar_get_type: TGType; cdecl; external;
 function gtk_menu_bar_new: PGtkMenuBar; cdecl; external;
 function gtk_menu_bar_new_from_model(model: PGMenuModel): PGtkMenuBar; cdecl; external;
-function gtk_menu_get_accel_group(AMenu: PGtkMenu): PGtkAccelGroup; cdecl; external;
-function gtk_menu_get_accel_path(AMenu: PGtkMenu): Pgchar; cdecl; external;
-function gtk_menu_get_active(AMenu: PGtkMenu): PGtkWidget; cdecl; external;
-function gtk_menu_get_attach_widget(AMenu: PGtkMenu): PGtkWidget; cdecl; external;
+function gtk_menu_button_get_align_widget(menu_button: PGtkMenuButton): PGtkWidget; cdecl; external;
+function gtk_menu_button_get_direction(menu_button: PGtkMenuButton): TGtkArrowType; cdecl; external;
+function gtk_menu_button_get_menu_model(menu_button: PGtkMenuButton): PGMenuModel; cdecl; external;
+function gtk_menu_button_get_popup(menu_button: PGtkMenuButton): PGtkMenu; cdecl; external;
+function gtk_menu_button_get_type: TGType; cdecl; external;
+function gtk_menu_button_new: PGtkMenuButton; cdecl; external;
+function gtk_menu_get_accel_group(menu: PGtkMenu): PGtkAccelGroup; cdecl; external;
+function gtk_menu_get_accel_path(menu: PGtkMenu): Pgchar; cdecl; external;
+function gtk_menu_get_active(menu: PGtkMenu): PGtkWidget; cdecl; external;
+function gtk_menu_get_attach_widget(menu: PGtkMenu): PGtkWidget; cdecl; external;
 function gtk_menu_get_for_attach_widget(widget: PGtkWidget): PGList; cdecl; external;
-function gtk_menu_get_monitor(AMenu: PGtkMenu): gint; cdecl; external;
-function gtk_menu_get_reserve_toggle_size(AMenu: PGtkMenu): gboolean; cdecl; external;
-function gtk_menu_get_tearoff_state(AMenu: PGtkMenu): gboolean; cdecl; external;
-function gtk_menu_get_title(AMenu: PGtkMenu): Pgchar; cdecl; external;
+function gtk_menu_get_monitor(menu: PGtkMenu): gint; cdecl; external;
+function gtk_menu_get_reserve_toggle_size(menu: PGtkMenu): gboolean; cdecl; external;
+function gtk_menu_get_tearoff_state(menu: PGtkMenu): gboolean; cdecl; external;
+function gtk_menu_get_title(menu: PGtkMenu): Pgchar; cdecl; external;
 function gtk_menu_get_type: TGType; cdecl; external;
-function gtk_menu_item_get_accel_path(AMenuItem: PGtkMenuItem): Pgchar; cdecl; external;
-function gtk_menu_item_get_label(AMenuItem: PGtkMenuItem): Pgchar; cdecl; external;
-function gtk_menu_item_get_reserve_indicator(AMenuItem: PGtkMenuItem): gboolean; cdecl; external;
-function gtk_menu_item_get_submenu(AMenuItem: PGtkMenuItem): PGtkWidget; cdecl; external;
+function gtk_menu_item_get_accel_path(menu_item: PGtkMenuItem): Pgchar; cdecl; external;
+function gtk_menu_item_get_label(menu_item: PGtkMenuItem): Pgchar; cdecl; external;
+function gtk_menu_item_get_reserve_indicator(menu_item: PGtkMenuItem): gboolean; cdecl; external;
+function gtk_menu_item_get_submenu(menu_item: PGtkMenuItem): PGtkWidget; cdecl; external;
 function gtk_menu_item_get_type: TGType; cdecl; external;
-function gtk_menu_item_get_use_underline(AMenuItem: PGtkMenuItem): gboolean; cdecl; external;
+function gtk_menu_item_get_use_underline(menu_item: PGtkMenuItem): gboolean; cdecl; external;
 function gtk_menu_item_new: PGtkMenuItem; cdecl; external;
 function gtk_menu_item_new_with_label(label_: Pgchar): PGtkMenuItem; cdecl; external;
 function gtk_menu_item_new_with_mnemonic(label_: Pgchar): PGtkMenuItem; cdecl; external;
 function gtk_menu_new: PGtkMenu; cdecl; external;
 function gtk_menu_new_from_model(model: PGMenuModel): PGtkMenu; cdecl; external;
-function gtk_menu_shell_get_parent_shell(AMenuShell: PGtkMenuShell): PGtkWidget; cdecl; external;
-function gtk_menu_shell_get_selected_item(AMenuShell: PGtkMenuShell): PGtkWidget; cdecl; external;
-function gtk_menu_shell_get_take_focus(AMenuShell: PGtkMenuShell): gboolean; cdecl; external;
+function gtk_menu_shell_get_parent_shell(menu_shell: PGtkMenuShell): PGtkWidget; cdecl; external;
+function gtk_menu_shell_get_selected_item(menu_shell: PGtkMenuShell): PGtkWidget; cdecl; external;
+function gtk_menu_shell_get_take_focus(menu_shell: PGtkMenuShell): gboolean; cdecl; external;
 function gtk_menu_shell_get_type: TGType; cdecl; external;
-function gtk_menu_tool_button_get_menu(AMenuToolButton: PGtkMenuToolButton): PGtkWidget; cdecl; external;
+function gtk_menu_tool_button_get_menu(button: PGtkMenuToolButton): PGtkWidget; cdecl; external;
 function gtk_menu_tool_button_get_type: TGType; cdecl; external;
 function gtk_menu_tool_button_new(icon_widget: PGtkWidget; label_: Pgchar): PGtkMenuToolButton; cdecl; external;
 function gtk_menu_tool_button_new_from_stock(stock_id: Pgchar): PGtkMenuToolButton; cdecl; external;
-function gtk_message_dialog_get_image(AMessageDialog: PGtkMessageDialog): PGtkWidget; cdecl; external;
-function gtk_message_dialog_get_message_area(AMessageDialog: PGtkMessageDialog): PGtkWidget; cdecl; external;
+function gtk_message_dialog_get_image(dialog: PGtkMessageDialog): PGtkWidget; cdecl; external;
+function gtk_message_dialog_get_message_area(message_dialog: PGtkMessageDialog): PGtkWidget; cdecl; external;
 function gtk_message_dialog_get_type: TGType; cdecl; external;
 function gtk_message_dialog_new(parent: PGtkWindow; flags: TGtkDialogFlags; type_: TGtkMessageType; buttons: TGtkButtonsType; message_format: Pgchar; args: array of const): PGtkMessageDialog; cdecl; external;
 function gtk_message_dialog_new_with_markup(parent: PGtkWindow; flags: TGtkDialogFlags; type_: TGtkMessageType; buttons: TGtkButtonsType; message_format: Pgchar; args: array of const): PGtkMessageDialog; cdecl; external;
 function gtk_misc_get_type: TGType; cdecl; external;
-function gtk_mount_operation_get_parent(AMountOperation: PGtkMountOperation): PGtkWindow; cdecl; external;
-function gtk_mount_operation_get_screen(AMountOperation: PGtkMountOperation): PGdkScreen; cdecl; external;
+function gtk_mount_operation_get_parent(op: PGtkMountOperation): PGtkWindow; cdecl; external;
+function gtk_mount_operation_get_screen(op: PGtkMountOperation): PGdkScreen; cdecl; external;
 function gtk_mount_operation_get_type: TGType; cdecl; external;
-function gtk_mount_operation_is_showing(AMountOperation: PGtkMountOperation): gboolean; cdecl; external;
+function gtk_mount_operation_is_showing(op: PGtkMountOperation): gboolean; cdecl; external;
 function gtk_mount_operation_new(parent: PGtkWindow): PGtkMountOperation; cdecl; external;
-function gtk_notebook_append_page(ANotebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget): gint; cdecl; external;
-function gtk_notebook_append_page_menu(ANotebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget; menu_label: PGtkWidget): gint; cdecl; external;
-function gtk_notebook_get_action_widget(ANotebook: PGtkNotebook; pack_type: TGtkPackType): PGtkWidget; cdecl; external;
-function gtk_notebook_get_current_page(ANotebook: PGtkNotebook): gint; cdecl; external;
-function gtk_notebook_get_group_name(ANotebook: PGtkNotebook): Pgchar; cdecl; external;
-function gtk_notebook_get_menu_label(ANotebook: PGtkNotebook; child: PGtkWidget): PGtkWidget; cdecl; external;
-function gtk_notebook_get_menu_label_text(ANotebook: PGtkNotebook; child: PGtkWidget): Pgchar; cdecl; external;
-function gtk_notebook_get_n_pages(ANotebook: PGtkNotebook): gint; cdecl; external;
-function gtk_notebook_get_nth_page(ANotebook: PGtkNotebook; page_num: gint): PGtkWidget; cdecl; external;
-function gtk_notebook_get_scrollable(ANotebook: PGtkNotebook): gboolean; cdecl; external;
-function gtk_notebook_get_show_border(ANotebook: PGtkNotebook): gboolean; cdecl; external;
-function gtk_notebook_get_show_tabs(ANotebook: PGtkNotebook): gboolean; cdecl; external;
-function gtk_notebook_get_tab_detachable(ANotebook: PGtkNotebook; child: PGtkWidget): gboolean; cdecl; external;
-function gtk_notebook_get_tab_label(ANotebook: PGtkNotebook; child: PGtkWidget): PGtkWidget; cdecl; external;
-function gtk_notebook_get_tab_label_text(ANotebook: PGtkNotebook; child: PGtkWidget): Pgchar; cdecl; external;
-function gtk_notebook_get_tab_pos(ANotebook: PGtkNotebook): TGtkPositionType; cdecl; external;
-function gtk_notebook_get_tab_reorderable(ANotebook: PGtkNotebook; child: PGtkWidget): gboolean; cdecl; external;
+function gtk_notebook_append_page(notebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget): gint; cdecl; external;
+function gtk_notebook_append_page_menu(notebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget; menu_label: PGtkWidget): gint; cdecl; external;
+function gtk_notebook_get_action_widget(notebook: PGtkNotebook; pack_type: TGtkPackType): PGtkWidget; cdecl; external;
+function gtk_notebook_get_current_page(notebook: PGtkNotebook): gint; cdecl; external;
+function gtk_notebook_get_group_name(notebook: PGtkNotebook): Pgchar; cdecl; external;
+function gtk_notebook_get_menu_label(notebook: PGtkNotebook; child: PGtkWidget): PGtkWidget; cdecl; external;
+function gtk_notebook_get_menu_label_text(notebook: PGtkNotebook; child: PGtkWidget): Pgchar; cdecl; external;
+function gtk_notebook_get_n_pages(notebook: PGtkNotebook): gint; cdecl; external;
+function gtk_notebook_get_nth_page(notebook: PGtkNotebook; page_num: gint): PGtkWidget; cdecl; external;
+function gtk_notebook_get_scrollable(notebook: PGtkNotebook): gboolean; cdecl; external;
+function gtk_notebook_get_show_border(notebook: PGtkNotebook): gboolean; cdecl; external;
+function gtk_notebook_get_show_tabs(notebook: PGtkNotebook): gboolean; cdecl; external;
+function gtk_notebook_get_tab_detachable(notebook: PGtkNotebook; child: PGtkWidget): gboolean; cdecl; external;
+function gtk_notebook_get_tab_label(notebook: PGtkNotebook; child: PGtkWidget): PGtkWidget; cdecl; external;
+function gtk_notebook_get_tab_label_text(notebook: PGtkNotebook; child: PGtkWidget): Pgchar; cdecl; external;
+function gtk_notebook_get_tab_pos(notebook: PGtkNotebook): TGtkPositionType; cdecl; external;
+function gtk_notebook_get_tab_reorderable(notebook: PGtkNotebook; child: PGtkWidget): gboolean; cdecl; external;
 function gtk_notebook_get_type: TGType; cdecl; external;
-function gtk_notebook_insert_page(ANotebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget; position: gint): gint; cdecl; external;
-function gtk_notebook_insert_page_menu(ANotebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget; menu_label: PGtkWidget; position: gint): gint; cdecl; external;
+function gtk_notebook_insert_page(notebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget; position: gint): gint; cdecl; external;
+function gtk_notebook_insert_page_menu(notebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget; menu_label: PGtkWidget; position: gint): gint; cdecl; external;
 function gtk_notebook_new: PGtkNotebook; cdecl; external;
-function gtk_notebook_page_num(ANotebook: PGtkNotebook; child: PGtkWidget): gint; cdecl; external;
-function gtk_notebook_prepend_page(ANotebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget): gint; cdecl; external;
-function gtk_notebook_prepend_page_menu(ANotebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget; menu_label: PGtkWidget): gint; cdecl; external;
-function gtk_numerable_icon_get_background_gicon(ANumerableIcon: PGtkNumerableIcon): PGIcon; cdecl; external;
-function gtk_numerable_icon_get_background_icon_name(ANumerableIcon: PGtkNumerableIcon): Pgchar; cdecl; external;
-function gtk_numerable_icon_get_count(ANumerableIcon: PGtkNumerableIcon): gint; cdecl; external;
-function gtk_numerable_icon_get_label(ANumerableIcon: PGtkNumerableIcon): Pgchar; cdecl; external;
-function gtk_numerable_icon_get_style_context(ANumerableIcon: PGtkNumerableIcon): PGtkStyleContext; cdecl; external;
+function gtk_notebook_page_num(notebook: PGtkNotebook; child: PGtkWidget): gint; cdecl; external;
+function gtk_notebook_prepend_page(notebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget): gint; cdecl; external;
+function gtk_notebook_prepend_page_menu(notebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget; menu_label: PGtkWidget): gint; cdecl; external;
+function gtk_numerable_icon_get_background_gicon(self: PGtkNumerableIcon): PGIcon; cdecl; external;
+function gtk_numerable_icon_get_background_icon_name(self: PGtkNumerableIcon): Pgchar; cdecl; external;
+function gtk_numerable_icon_get_count(self: PGtkNumerableIcon): gint; cdecl; external;
+function gtk_numerable_icon_get_label(self: PGtkNumerableIcon): Pgchar; cdecl; external;
+function gtk_numerable_icon_get_style_context(self: PGtkNumerableIcon): PGtkStyleContext; cdecl; external;
 function gtk_numerable_icon_get_type: TGType; cdecl; external;
 function gtk_numerable_icon_new(base_icon: PGIcon): PGIcon; cdecl; external;
 function gtk_numerable_icon_new_with_style_context(base_icon: PGIcon; context: PGtkStyleContext): PGIcon; cdecl; external;
-function gtk_offscreen_window_get_pixbuf(AOffscreenWindow: PGtkOffscreenWindow): PGdkPixbuf; cdecl; external;
-function gtk_offscreen_window_get_surface(AOffscreenWindow: PGtkOffscreenWindow): Pcairo_surface_t; cdecl; external;
+function gtk_offscreen_window_get_pixbuf(offscreen: PGtkOffscreenWindow): PGdkPixbuf; cdecl; external;
+function gtk_offscreen_window_get_surface(offscreen: PGtkOffscreenWindow): Pcairo_surface_t; cdecl; external;
 function gtk_offscreen_window_get_type: TGType; cdecl; external;
 function gtk_offscreen_window_new: PGtkOffscreenWindow; cdecl; external;
-function gtk_orientable_get_orientation(AOrientable: PGtkOrientable): TGtkOrientation; cdecl; external;
+function gtk_orientable_get_orientation(orientable: PGtkOrientable): TGtkOrientation; cdecl; external;
 function gtk_orientable_get_type: TGType; cdecl; external;
 function gtk_overlay_get_type: TGType; cdecl; external;
 function gtk_overlay_new: PGtkOverlay; cdecl; external;
-function gtk_page_setup_copy(APageSetup: PGtkPageSetup): PGtkPageSetup; cdecl; external;
-function gtk_page_setup_get_bottom_margin(APageSetup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_page_setup_get_left_margin(APageSetup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_page_setup_get_orientation(APageSetup: PGtkPageSetup): TGtkPageOrientation; cdecl; external;
-function gtk_page_setup_get_page_height(APageSetup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_page_setup_get_page_width(APageSetup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_page_setup_get_paper_height(APageSetup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_page_setup_get_paper_size(APageSetup: PGtkPageSetup): PGtkPaperSize; cdecl; external;
-function gtk_page_setup_get_paper_width(APageSetup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_page_setup_get_right_margin(APageSetup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_page_setup_get_top_margin(APageSetup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_page_setup_copy(other: PGtkPageSetup): PGtkPageSetup; cdecl; external;
+function gtk_page_setup_get_bottom_margin(setup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_page_setup_get_left_margin(setup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_page_setup_get_orientation(setup: PGtkPageSetup): TGtkPageOrientation; cdecl; external;
+function gtk_page_setup_get_page_height(setup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_page_setup_get_page_width(setup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_page_setup_get_paper_height(setup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_page_setup_get_paper_size(setup: PGtkPageSetup): PGtkPaperSize; cdecl; external;
+function gtk_page_setup_get_paper_width(setup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_page_setup_get_right_margin(setup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_page_setup_get_top_margin(setup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
 function gtk_page_setup_get_type: TGType; cdecl; external;
-function gtk_page_setup_load_file(APageSetup: PGtkPageSetup; file_name: Pgchar): gboolean; cdecl; external;
-function gtk_page_setup_load_key_file(APageSetup: PGtkPageSetup; key_file: PGKeyFile; group_name: Pgchar): gboolean; cdecl; external;
+function gtk_page_setup_load_file(setup: PGtkPageSetup; file_name: Pgchar; error: PPGError): gboolean; cdecl; external;
+function gtk_page_setup_load_key_file(setup: PGtkPageSetup; key_file: PGKeyFile; group_name: Pgchar; error: PPGError): gboolean; cdecl; external;
 function gtk_page_setup_new: PGtkPageSetup; cdecl; external;
-function gtk_page_setup_new_from_file(file_name: Pgchar): PGtkPageSetup; cdecl; external;
-function gtk_page_setup_new_from_key_file(key_file: PGKeyFile; group_name: Pgchar): PGtkPageSetup; cdecl; external;
-function gtk_page_setup_to_file(APageSetup: PGtkPageSetup; file_name: Pgchar): gboolean; cdecl; external;
-function gtk_paned_get_child1(APaned: PGtkPaned): PGtkWidget; cdecl; external;
-function gtk_paned_get_child2(APaned: PGtkPaned): PGtkWidget; cdecl; external;
-function gtk_paned_get_handle_window(APaned: PGtkPaned): PGdkWindow; cdecl; external;
-function gtk_paned_get_position(APaned: PGtkPaned): gint; cdecl; external;
+function gtk_page_setup_new_from_file(file_name: Pgchar; error: PPGError): PGtkPageSetup; cdecl; external;
+function gtk_page_setup_new_from_key_file(key_file: PGKeyFile; group_name: Pgchar; error: PPGError): PGtkPageSetup; cdecl; external;
+function gtk_page_setup_to_file(setup: PGtkPageSetup; file_name: Pgchar; error: PPGError): gboolean; cdecl; external;
+function gtk_paned_get_child1(paned: PGtkPaned): PGtkWidget; cdecl; external;
+function gtk_paned_get_child2(paned: PGtkPaned): PGtkWidget; cdecl; external;
+function gtk_paned_get_handle_window(paned: PGtkPaned): PGdkWindow; cdecl; external;
+function gtk_paned_get_position(paned: PGtkPaned): gint; cdecl; external;
 function gtk_paned_get_type: TGType; cdecl; external;
 function gtk_paned_new(orientation: TGtkOrientation): PGtkPaned; cdecl; external;
-function gtk_paper_size_copy(APaperSize: PGtkPaperSize): PGtkPaperSize; cdecl; external;
+function gtk_paper_size_copy(other: PGtkPaperSize): PGtkPaperSize; cdecl; external;
 function gtk_paper_size_get_default: Pgchar; cdecl; external;
-function gtk_paper_size_get_default_bottom_margin(APaperSize: PGtkPaperSize; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_paper_size_get_default_left_margin(APaperSize: PGtkPaperSize; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_paper_size_get_default_right_margin(APaperSize: PGtkPaperSize; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_paper_size_get_default_top_margin(APaperSize: PGtkPaperSize; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_paper_size_get_display_name(APaperSize: PGtkPaperSize): Pgchar; cdecl; external;
-function gtk_paper_size_get_height(APaperSize: PGtkPaperSize; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_paper_size_get_name(APaperSize: PGtkPaperSize): Pgchar; cdecl; external;
+function gtk_paper_size_get_default_bottom_margin(size: PGtkPaperSize; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_paper_size_get_default_left_margin(size: PGtkPaperSize; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_paper_size_get_default_right_margin(size: PGtkPaperSize; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_paper_size_get_default_top_margin(size: PGtkPaperSize; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_paper_size_get_display_name(size: PGtkPaperSize): Pgchar; cdecl; external;
+function gtk_paper_size_get_height(size: PGtkPaperSize; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_paper_size_get_name(size: PGtkPaperSize): Pgchar; cdecl; external;
 function gtk_paper_size_get_paper_sizes(include_custom: gboolean): PGList; cdecl; external;
-function gtk_paper_size_get_ppd_name(APaperSize: PGtkPaperSize): Pgchar; cdecl; external;
+function gtk_paper_size_get_ppd_name(size: PGtkPaperSize): Pgchar; cdecl; external;
 function gtk_paper_size_get_type: TGType; cdecl; external;
-function gtk_paper_size_get_width(APaperSize: PGtkPaperSize; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_paper_size_is_custom(APaperSize: PGtkPaperSize): gboolean; cdecl; external;
-function gtk_paper_size_is_equal(APaperSize: PGtkPaperSize; size2: PGtkPaperSize): gboolean; cdecl; external;
+function gtk_paper_size_get_width(size: PGtkPaperSize; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_paper_size_is_custom(size: PGtkPaperSize): gboolean; cdecl; external;
+function gtk_paper_size_is_equal(size1: PGtkPaperSize; size2: PGtkPaperSize): gboolean; cdecl; external;
 function gtk_paper_size_new(name: Pgchar): PGtkPaperSize; cdecl; external;
 function gtk_paper_size_new_custom(name: Pgchar; display_name: Pgchar; width: gdouble; height: gdouble; unit_: TGtkUnit): PGtkPaperSize; cdecl; external;
-function gtk_paper_size_new_from_key_file(key_file: PGKeyFile; group_name: Pgchar): PGtkPaperSize; cdecl; external;
+function gtk_paper_size_new_from_key_file(key_file: PGKeyFile; group_name: Pgchar; error: PPGError): PGtkPaperSize; cdecl; external;
 function gtk_paper_size_new_from_ppd(ppd_name: Pgchar; ppd_display_name: Pgchar; width: gdouble; height: gdouble): PGtkPaperSize; cdecl; external;
 function gtk_parse_args(argc: Pgint; argv: PPPgchar): gboolean; cdecl; external;
-function gtk_plug_get_embedded(APlug: PGtkPlug): gboolean; cdecl; external;
-function gtk_plug_get_id(APlug: PGtkPlug): TWindow; cdecl; external;
-function gtk_plug_get_socket_window(APlug: PGtkPlug): PGdkWindow; cdecl; external;
+function gtk_plug_get_embedded(plug: PGtkPlug): gboolean; cdecl; external;
+function gtk_plug_get_id(plug: PGtkPlug): TWindow; cdecl; external;
+function gtk_plug_get_socket_window(plug: PGtkPlug): PGdkWindow; cdecl; external;
 function gtk_plug_get_type: TGType; cdecl; external;
 function gtk_plug_new(socket_id: TWindow): PGtkPlug; cdecl; external;
 function gtk_plug_new_for_display(display: PGdkDisplay; socket_id: TWindow): PGtkPlug; cdecl; external;
-function gtk_print_context_create_pango_context(APrintContext: PGtkPrintContext): PPangoContext; cdecl; external;
-function gtk_print_context_create_pango_layout(APrintContext: PGtkPrintContext): PPangoLayout; cdecl; external;
-function gtk_print_context_get_cairo_context(APrintContext: PGtkPrintContext): Pcairo_t; cdecl; external;
-function gtk_print_context_get_dpi_x(APrintContext: PGtkPrintContext): gdouble; cdecl; external;
-function gtk_print_context_get_dpi_y(APrintContext: PGtkPrintContext): gdouble; cdecl; external;
-function gtk_print_context_get_hard_margins(APrintContext: PGtkPrintContext; top: Pgdouble; bottom: Pgdouble; left: Pgdouble; right: Pgdouble): gboolean; cdecl; external;
-function gtk_print_context_get_height(APrintContext: PGtkPrintContext): gdouble; cdecl; external;
-function gtk_print_context_get_page_setup(APrintContext: PGtkPrintContext): PGtkPageSetup; cdecl; external;
-function gtk_print_context_get_pango_fontmap(APrintContext: PGtkPrintContext): PPangoFontMap; cdecl; external;
+function gtk_print_context_create_pango_context(context: PGtkPrintContext): PPangoContext; cdecl; external;
+function gtk_print_context_create_pango_layout(context: PGtkPrintContext): PPangoLayout; cdecl; external;
+function gtk_print_context_get_cairo_context(context: PGtkPrintContext): Pcairo_t; cdecl; external;
+function gtk_print_context_get_dpi_x(context: PGtkPrintContext): gdouble; cdecl; external;
+function gtk_print_context_get_dpi_y(context: PGtkPrintContext): gdouble; cdecl; external;
+function gtk_print_context_get_hard_margins(context: PGtkPrintContext; top: Pgdouble; bottom: Pgdouble; left: Pgdouble; right: Pgdouble): gboolean; cdecl; external;
+function gtk_print_context_get_height(context: PGtkPrintContext): gdouble; cdecl; external;
+function gtk_print_context_get_page_setup(context: PGtkPrintContext): PGtkPageSetup; cdecl; external;
+function gtk_print_context_get_pango_fontmap(context: PGtkPrintContext): PPangoFontMap; cdecl; external;
 function gtk_print_context_get_type: TGType; cdecl; external;
-function gtk_print_context_get_width(APrintContext: PGtkPrintContext): gdouble; cdecl; external;
+function gtk_print_context_get_width(context: PGtkPrintContext): gdouble; cdecl; external;
 function gtk_print_error_quark: TGQuark; cdecl; external;
-function gtk_print_operation_get_default_page_setup(APrintOperation: PGtkPrintOperation): PGtkPageSetup; cdecl; external;
-function gtk_print_operation_get_embed_page_setup(APrintOperation: PGtkPrintOperation): gboolean; cdecl; external;
-function gtk_print_operation_get_has_selection(APrintOperation: PGtkPrintOperation): gboolean; cdecl; external;
-function gtk_print_operation_get_n_pages_to_print(APrintOperation: PGtkPrintOperation): gint; cdecl; external;
-function gtk_print_operation_get_print_settings(APrintOperation: PGtkPrintOperation): PGtkPrintSettings; cdecl; external;
-function gtk_print_operation_get_status(APrintOperation: PGtkPrintOperation): TGtkPrintStatus; cdecl; external;
-function gtk_print_operation_get_status_string(APrintOperation: PGtkPrintOperation): Pgchar; cdecl; external;
-function gtk_print_operation_get_support_selection(APrintOperation: PGtkPrintOperation): gboolean; cdecl; external;
+function gtk_print_operation_get_default_page_setup(op: PGtkPrintOperation): PGtkPageSetup; cdecl; external;
+function gtk_print_operation_get_embed_page_setup(op: PGtkPrintOperation): gboolean; cdecl; external;
+function gtk_print_operation_get_has_selection(op: PGtkPrintOperation): gboolean; cdecl; external;
+function gtk_print_operation_get_n_pages_to_print(op: PGtkPrintOperation): gint; cdecl; external;
+function gtk_print_operation_get_print_settings(op: PGtkPrintOperation): PGtkPrintSettings; cdecl; external;
+function gtk_print_operation_get_status(op: PGtkPrintOperation): TGtkPrintStatus; cdecl; external;
+function gtk_print_operation_get_status_string(op: PGtkPrintOperation): Pgchar; cdecl; external;
+function gtk_print_operation_get_support_selection(op: PGtkPrintOperation): gboolean; cdecl; external;
 function gtk_print_operation_get_type: TGType; cdecl; external;
-function gtk_print_operation_is_finished(APrintOperation: PGtkPrintOperation): gboolean; cdecl; external;
+function gtk_print_operation_is_finished(op: PGtkPrintOperation): gboolean; cdecl; external;
 function gtk_print_operation_new: PGtkPrintOperation; cdecl; external;
 function gtk_print_operation_preview_get_type: TGType; cdecl; external;
-function gtk_print_operation_preview_is_selected(APrintOperationPreview: PGtkPrintOperationPreview; page_nr: gint): gboolean; cdecl; external;
-function gtk_print_operation_run(APrintOperation: PGtkPrintOperation; action: TGtkPrintOperationAction; parent: PGtkWindow): TGtkPrintOperationResult; cdecl; external;
+function gtk_print_operation_preview_is_selected(preview: PGtkPrintOperationPreview; page_nr: gint): gboolean; cdecl; external;
+function gtk_print_operation_run(op: PGtkPrintOperation; action: TGtkPrintOperationAction; parent: PGtkWindow; error: PPGError): TGtkPrintOperationResult; cdecl; external;
 function gtk_print_run_page_setup_dialog(parent: PGtkWindow; page_setup: PGtkPageSetup; settings: PGtkPrintSettings): PGtkPageSetup; cdecl; external;
-function gtk_print_settings_copy(APrintSettings: PGtkPrintSettings): PGtkPrintSettings; cdecl; external;
-function gtk_print_settings_get(APrintSettings: PGtkPrintSettings; key: Pgchar): Pgchar; cdecl; external;
-function gtk_print_settings_get_bool(APrintSettings: PGtkPrintSettings; key: Pgchar): gboolean; cdecl; external;
-function gtk_print_settings_get_collate(APrintSettings: PGtkPrintSettings): gboolean; cdecl; external;
-function gtk_print_settings_get_default_source(APrintSettings: PGtkPrintSettings): Pgchar; cdecl; external;
-function gtk_print_settings_get_dither(APrintSettings: PGtkPrintSettings): Pgchar; cdecl; external;
-function gtk_print_settings_get_double(APrintSettings: PGtkPrintSettings; key: Pgchar): gdouble; cdecl; external;
-function gtk_print_settings_get_double_with_default(APrintSettings: PGtkPrintSettings; key: Pgchar; def: gdouble): gdouble; cdecl; external;
-function gtk_print_settings_get_duplex(APrintSettings: PGtkPrintSettings): TGtkPrintDuplex; cdecl; external;
-function gtk_print_settings_get_finishings(APrintSettings: PGtkPrintSettings): Pgchar; cdecl; external;
-function gtk_print_settings_get_int(APrintSettings: PGtkPrintSettings; key: Pgchar): gint; cdecl; external;
-function gtk_print_settings_get_int_with_default(APrintSettings: PGtkPrintSettings; key: Pgchar; def: gint): gint; cdecl; external;
-function gtk_print_settings_get_length(APrintSettings: PGtkPrintSettings; key: Pgchar; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_print_settings_get_media_type(APrintSettings: PGtkPrintSettings): Pgchar; cdecl; external;
-function gtk_print_settings_get_n_copies(APrintSettings: PGtkPrintSettings): gint; cdecl; external;
-function gtk_print_settings_get_number_up(APrintSettings: PGtkPrintSettings): gint; cdecl; external;
-function gtk_print_settings_get_number_up_layout(APrintSettings: PGtkPrintSettings): TGtkNumberUpLayout; cdecl; external;
-function gtk_print_settings_get_orientation(APrintSettings: PGtkPrintSettings): TGtkPageOrientation; cdecl; external;
-function gtk_print_settings_get_output_bin(APrintSettings: PGtkPrintSettings): Pgchar; cdecl; external;
-function gtk_print_settings_get_page_ranges(APrintSettings: PGtkPrintSettings; num_ranges: Pgint): PGtkPageRange; cdecl; external;
-function gtk_print_settings_get_page_set(APrintSettings: PGtkPrintSettings): TGtkPageSet; cdecl; external;
-function gtk_print_settings_get_paper_height(APrintSettings: PGtkPrintSettings; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_print_settings_get_paper_size(APrintSettings: PGtkPrintSettings): PGtkPaperSize; cdecl; external;
-function gtk_print_settings_get_paper_width(APrintSettings: PGtkPrintSettings; unit_: TGtkUnit): gdouble; cdecl; external;
-function gtk_print_settings_get_print_pages(APrintSettings: PGtkPrintSettings): TGtkPrintPages; cdecl; external;
-function gtk_print_settings_get_printer(APrintSettings: PGtkPrintSettings): Pgchar; cdecl; external;
-function gtk_print_settings_get_printer_lpi(APrintSettings: PGtkPrintSettings): gdouble; cdecl; external;
-function gtk_print_settings_get_quality(APrintSettings: PGtkPrintSettings): TGtkPrintQuality; cdecl; external;
-function gtk_print_settings_get_resolution(APrintSettings: PGtkPrintSettings): gint; cdecl; external;
-function gtk_print_settings_get_resolution_x(APrintSettings: PGtkPrintSettings): gint; cdecl; external;
-function gtk_print_settings_get_resolution_y(APrintSettings: PGtkPrintSettings): gint; cdecl; external;
-function gtk_print_settings_get_reverse(APrintSettings: PGtkPrintSettings): gboolean; cdecl; external;
-function gtk_print_settings_get_scale(APrintSettings: PGtkPrintSettings): gdouble; cdecl; external;
+function gtk_print_settings_copy(other: PGtkPrintSettings): PGtkPrintSettings; cdecl; external;
+function gtk_print_settings_get(settings: PGtkPrintSettings; key: Pgchar): Pgchar; cdecl; external;
+function gtk_print_settings_get_bool(settings: PGtkPrintSettings; key: Pgchar): gboolean; cdecl; external;
+function gtk_print_settings_get_collate(settings: PGtkPrintSettings): gboolean; cdecl; external;
+function gtk_print_settings_get_default_source(settings: PGtkPrintSettings): Pgchar; cdecl; external;
+function gtk_print_settings_get_dither(settings: PGtkPrintSettings): Pgchar; cdecl; external;
+function gtk_print_settings_get_double(settings: PGtkPrintSettings; key: Pgchar): gdouble; cdecl; external;
+function gtk_print_settings_get_double_with_default(settings: PGtkPrintSettings; key: Pgchar; def: gdouble): gdouble; cdecl; external;
+function gtk_print_settings_get_duplex(settings: PGtkPrintSettings): TGtkPrintDuplex; cdecl; external;
+function gtk_print_settings_get_finishings(settings: PGtkPrintSettings): Pgchar; cdecl; external;
+function gtk_print_settings_get_int(settings: PGtkPrintSettings; key: Pgchar): gint; cdecl; external;
+function gtk_print_settings_get_int_with_default(settings: PGtkPrintSettings; key: Pgchar; def: gint): gint; cdecl; external;
+function gtk_print_settings_get_length(settings: PGtkPrintSettings; key: Pgchar; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_print_settings_get_media_type(settings: PGtkPrintSettings): Pgchar; cdecl; external;
+function gtk_print_settings_get_n_copies(settings: PGtkPrintSettings): gint; cdecl; external;
+function gtk_print_settings_get_number_up(settings: PGtkPrintSettings): gint; cdecl; external;
+function gtk_print_settings_get_number_up_layout(settings: PGtkPrintSettings): TGtkNumberUpLayout; cdecl; external;
+function gtk_print_settings_get_orientation(settings: PGtkPrintSettings): TGtkPageOrientation; cdecl; external;
+function gtk_print_settings_get_output_bin(settings: PGtkPrintSettings): Pgchar; cdecl; external;
+function gtk_print_settings_get_page_ranges(settings: PGtkPrintSettings; num_ranges: Pgint): PGtkPageRange; cdecl; external;
+function gtk_print_settings_get_page_set(settings: PGtkPrintSettings): TGtkPageSet; cdecl; external;
+function gtk_print_settings_get_paper_height(settings: PGtkPrintSettings; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_print_settings_get_paper_size(settings: PGtkPrintSettings): PGtkPaperSize; cdecl; external;
+function gtk_print_settings_get_paper_width(settings: PGtkPrintSettings; unit_: TGtkUnit): gdouble; cdecl; external;
+function gtk_print_settings_get_print_pages(settings: PGtkPrintSettings): TGtkPrintPages; cdecl; external;
+function gtk_print_settings_get_printer(settings: PGtkPrintSettings): Pgchar; cdecl; external;
+function gtk_print_settings_get_printer_lpi(settings: PGtkPrintSettings): gdouble; cdecl; external;
+function gtk_print_settings_get_quality(settings: PGtkPrintSettings): TGtkPrintQuality; cdecl; external;
+function gtk_print_settings_get_resolution(settings: PGtkPrintSettings): gint; cdecl; external;
+function gtk_print_settings_get_resolution_x(settings: PGtkPrintSettings): gint; cdecl; external;
+function gtk_print_settings_get_resolution_y(settings: PGtkPrintSettings): gint; cdecl; external;
+function gtk_print_settings_get_reverse(settings: PGtkPrintSettings): gboolean; cdecl; external;
+function gtk_print_settings_get_scale(settings: PGtkPrintSettings): gdouble; cdecl; external;
 function gtk_print_settings_get_type: TGType; cdecl; external;
-function gtk_print_settings_get_use_color(APrintSettings: PGtkPrintSettings): gboolean; cdecl; external;
-function gtk_print_settings_has_key(APrintSettings: PGtkPrintSettings; key: Pgchar): gboolean; cdecl; external;
-function gtk_print_settings_load_file(APrintSettings: PGtkPrintSettings; file_name: Pgchar): gboolean; cdecl; external;
-function gtk_print_settings_load_key_file(APrintSettings: PGtkPrintSettings; key_file: PGKeyFile; group_name: Pgchar): gboolean; cdecl; external;
+function gtk_print_settings_get_use_color(settings: PGtkPrintSettings): gboolean; cdecl; external;
+function gtk_print_settings_has_key(settings: PGtkPrintSettings; key: Pgchar): gboolean; cdecl; external;
+function gtk_print_settings_load_file(settings: PGtkPrintSettings; file_name: Pgchar; error: PPGError): gboolean; cdecl; external;
+function gtk_print_settings_load_key_file(settings: PGtkPrintSettings; key_file: PGKeyFile; group_name: Pgchar; error: PPGError): gboolean; cdecl; external;
 function gtk_print_settings_new: PGtkPrintSettings; cdecl; external;
-function gtk_print_settings_new_from_file(file_name: Pgchar): PGtkPrintSettings; cdecl; external;
-function gtk_print_settings_new_from_key_file(key_file: PGKeyFile; group_name: Pgchar): PGtkPrintSettings; cdecl; external;
-function gtk_print_settings_to_file(APrintSettings: PGtkPrintSettings; file_name: Pgchar): gboolean; cdecl; external;
-function gtk_progress_bar_get_ellipsize(AProgressBar: PGtkProgressBar): TPangoEllipsizeMode; cdecl; external;
-function gtk_progress_bar_get_fraction(AProgressBar: PGtkProgressBar): gdouble; cdecl; external;
-function gtk_progress_bar_get_inverted(AProgressBar: PGtkProgressBar): gboolean; cdecl; external;
-function gtk_progress_bar_get_pulse_step(AProgressBar: PGtkProgressBar): gdouble; cdecl; external;
-function gtk_progress_bar_get_show_text(AProgressBar: PGtkProgressBar): gboolean; cdecl; external;
-function gtk_progress_bar_get_text(AProgressBar: PGtkProgressBar): Pgchar; cdecl; external;
+function gtk_print_settings_new_from_file(file_name: Pgchar; error: PPGError): PGtkPrintSettings; cdecl; external;
+function gtk_print_settings_new_from_key_file(key_file: PGKeyFile; group_name: Pgchar; error: PPGError): PGtkPrintSettings; cdecl; external;
+function gtk_print_settings_to_file(settings: PGtkPrintSettings; file_name: Pgchar; error: PPGError): gboolean; cdecl; external;
+function gtk_progress_bar_get_ellipsize(pbar: PGtkProgressBar): TPangoEllipsizeMode; cdecl; external;
+function gtk_progress_bar_get_fraction(pbar: PGtkProgressBar): gdouble; cdecl; external;
+function gtk_progress_bar_get_inverted(pbar: PGtkProgressBar): gboolean; cdecl; external;
+function gtk_progress_bar_get_pulse_step(pbar: PGtkProgressBar): gdouble; cdecl; external;
+function gtk_progress_bar_get_show_text(pbar: PGtkProgressBar): gboolean; cdecl; external;
+function gtk_progress_bar_get_text(pbar: PGtkProgressBar): Pgchar; cdecl; external;
 function gtk_progress_bar_get_type: TGType; cdecl; external;
 function gtk_progress_bar_new: PGtkProgressBar; cdecl; external;
-function gtk_radio_action_get_current_value(ARadioAction: PGtkRadioAction): gint; cdecl; external;
-function gtk_radio_action_get_group(ARadioAction: PGtkRadioAction): PGSList; cdecl; external;
+function gtk_radio_action_get_current_value(action: PGtkRadioAction): gint; cdecl; external;
+function gtk_radio_action_get_group(action: PGtkRadioAction): PGSList; cdecl; external;
 function gtk_radio_action_get_type: TGType; cdecl; external;
 function gtk_radio_action_new(name: Pgchar; label_: Pgchar; tooltip: Pgchar; stock_id: Pgchar; value: gint): PGtkRadioAction; cdecl; external;
-function gtk_radio_button_get_group(ARadioButton: PGtkRadioButton): PGSList; cdecl; external;
+function gtk_radio_button_get_group(radio_button: PGtkRadioButton): PGSList; cdecl; external;
 function gtk_radio_button_get_type: TGType; cdecl; external;
 function gtk_radio_button_new(group: PGSList): PGtkRadioButton; cdecl; external;
 function gtk_radio_button_new_from_widget(radio_group_member: PGtkRadioButton): PGtkRadioButton; cdecl; external;
@@ -12056,7 +12215,7 @@ function gtk_radio_button_new_with_label(group: PGSList; label_: Pgchar): PGtkRa
 function gtk_radio_button_new_with_label_from_widget(radio_group_member: PGtkRadioButton; label_: Pgchar): PGtkRadioButton; cdecl; external;
 function gtk_radio_button_new_with_mnemonic(group: PGSList; label_: Pgchar): PGtkRadioButton; cdecl; external;
 function gtk_radio_button_new_with_mnemonic_from_widget(radio_group_member: PGtkRadioButton; label_: Pgchar): PGtkRadioButton; cdecl; external;
-function gtk_radio_menu_item_get_group(ARadioMenuItem: PGtkRadioMenuItem): PGSList; cdecl; external;
+function gtk_radio_menu_item_get_group(radio_menu_item: PGtkRadioMenuItem): PGSList; cdecl; external;
 function gtk_radio_menu_item_get_type: TGType; cdecl; external;
 function gtk_radio_menu_item_new(group: PGSList): PGtkRadioMenuItem; cdecl; external;
 function gtk_radio_menu_item_new_from_widget(group: PGtkRadioMenuItem): PGtkRadioMenuItem; cdecl; external;
@@ -12064,25 +12223,25 @@ function gtk_radio_menu_item_new_with_label(group: PGSList; label_: Pgchar): PGt
 function gtk_radio_menu_item_new_with_label_from_widget(group: PGtkRadioMenuItem; label_: Pgchar): PGtkRadioMenuItem; cdecl; external;
 function gtk_radio_menu_item_new_with_mnemonic(group: PGSList; label_: Pgchar): PGtkRadioMenuItem; cdecl; external;
 function gtk_radio_menu_item_new_with_mnemonic_from_widget(group: PGtkRadioMenuItem; label_: Pgchar): PGtkRadioMenuItem; cdecl; external;
-function gtk_radio_tool_button_get_group(ARadioToolButton: PGtkRadioToolButton): PGSList; cdecl; external;
+function gtk_radio_tool_button_get_group(button: PGtkRadioToolButton): PGSList; cdecl; external;
 function gtk_radio_tool_button_get_type: TGType; cdecl; external;
 function gtk_radio_tool_button_new(group: PGSList): PGtkRadioToolButton; cdecl; external;
 function gtk_radio_tool_button_new_from_stock(group: PGSList; stock_id: Pgchar): PGtkRadioToolButton; cdecl; external;
 function gtk_radio_tool_button_new_from_widget(group: PGtkRadioToolButton): PGtkRadioToolButton; cdecl; external;
 function gtk_radio_tool_button_new_with_stock_from_widget(group: PGtkRadioToolButton; stock_id: Pgchar): PGtkRadioToolButton; cdecl; external;
-function gtk_range_get_adjustment(ARange: PGtkRange): PGtkAdjustment; cdecl; external;
-function gtk_range_get_fill_level(ARange: PGtkRange): gdouble; cdecl; external;
-function gtk_range_get_flippable(ARange: PGtkRange): gboolean; cdecl; external;
-function gtk_range_get_inverted(ARange: PGtkRange): gboolean; cdecl; external;
-function gtk_range_get_lower_stepper_sensitivity(ARange: PGtkRange): TGtkSensitivityType; cdecl; external;
-function gtk_range_get_min_slider_size(ARange: PGtkRange): gint; cdecl; external;
-function gtk_range_get_restrict_to_fill_level(ARange: PGtkRange): gboolean; cdecl; external;
-function gtk_range_get_round_digits(ARange: PGtkRange): gint; cdecl; external;
-function gtk_range_get_show_fill_level(ARange: PGtkRange): gboolean; cdecl; external;
-function gtk_range_get_slider_size_fixed(ARange: PGtkRange): gboolean; cdecl; external;
+function gtk_range_get_adjustment(range: PGtkRange): PGtkAdjustment; cdecl; external;
+function gtk_range_get_fill_level(range: PGtkRange): gdouble; cdecl; external;
+function gtk_range_get_flippable(range: PGtkRange): gboolean; cdecl; external;
+function gtk_range_get_inverted(range: PGtkRange): gboolean; cdecl; external;
+function gtk_range_get_lower_stepper_sensitivity(range: PGtkRange): TGtkSensitivityType; cdecl; external;
+function gtk_range_get_min_slider_size(range: PGtkRange): gint; cdecl; external;
+function gtk_range_get_restrict_to_fill_level(range: PGtkRange): gboolean; cdecl; external;
+function gtk_range_get_round_digits(range: PGtkRange): gint; cdecl; external;
+function gtk_range_get_show_fill_level(range: PGtkRange): gboolean; cdecl; external;
+function gtk_range_get_slider_size_fixed(range: PGtkRange): gboolean; cdecl; external;
 function gtk_range_get_type: TGType; cdecl; external;
-function gtk_range_get_upper_stepper_sensitivity(ARange: PGtkRange): TGtkSensitivityType; cdecl; external;
-function gtk_range_get_value(ARange: PGtkRange): gdouble; cdecl; external;
+function gtk_range_get_upper_stepper_sensitivity(range: PGtkRange): TGtkSensitivityType; cdecl; external;
+function gtk_range_get_value(range: PGtkRange): gdouble; cdecl; external;
 function gtk_rc_find_module_in_path(module_file: Pgchar): Pgchar; cdecl; external;
 function gtk_rc_find_pixmap_in_path(settings: PGtkSettings; scanner: PGScanner; pixmap_file: Pgchar): Pgchar; cdecl; external;
 function gtk_rc_get_default_files: PPgchar; cdecl; external;
@@ -12105,7 +12264,7 @@ function gtk_rc_reparse_all: gboolean; cdecl; external;
 function gtk_rc_reparse_all_for_settings(settings: PGtkSettings; force_load: gboolean): gboolean; cdecl; external;
 function gtk_rc_scanner_new: PGScanner; cdecl; external;
 function gtk_rc_style_get_type: TGType; cdecl; external;
-function gtk_recent_action_get_show_numbers(ARecentAction: PGtkRecentAction): gboolean; cdecl; external;
+function gtk_recent_action_get_show_numbers(action: PGtkRecentAction): gboolean; cdecl; external;
 function gtk_recent_action_get_type: TGType; cdecl; external;
 function gtk_recent_action_new(name: Pgchar; label_: Pgchar; tooltip: Pgchar; stock_id: Pgchar): PGtkRecentAction; cdecl; external;
 function gtk_recent_action_new_for_manager(name: Pgchar; label_: Pgchar; tooltip: Pgchar; stock_id: Pgchar; manager: PGtkRecentManager): PGtkRecentAction; cdecl; external;
@@ -12113,251 +12272,234 @@ function gtk_recent_chooser_dialog_get_type: TGType; cdecl; external;
 function gtk_recent_chooser_dialog_new(title: Pgchar; parent: PGtkWindow; first_button_text: Pgchar; args: array of const): PGtkRecentChooserDialog; cdecl; external;
 function gtk_recent_chooser_dialog_new_for_manager(title: Pgchar; parent: PGtkWindow; manager: PGtkRecentManager; first_button_text: Pgchar; args: array of const): PGtkRecentChooserDialog; cdecl; external;
 function gtk_recent_chooser_error_quark: TGQuark; cdecl; external;
-function gtk_recent_chooser_get_current_item(ARecentChooser: PGtkRecentChooser): PGtkRecentInfo; cdecl; external;
-function gtk_recent_chooser_get_current_uri(ARecentChooser: PGtkRecentChooser): Pgchar; cdecl; external;
-function gtk_recent_chooser_get_filter(ARecentChooser: PGtkRecentChooser): PGtkRecentFilter; cdecl; external;
-function gtk_recent_chooser_get_items(ARecentChooser: PGtkRecentChooser): PGList; cdecl; external;
-function gtk_recent_chooser_get_limit(ARecentChooser: PGtkRecentChooser): gint; cdecl; external;
-function gtk_recent_chooser_get_local_only(ARecentChooser: PGtkRecentChooser): gboolean; cdecl; external;
-function gtk_recent_chooser_get_select_multiple(ARecentChooser: PGtkRecentChooser): gboolean; cdecl; external;
-function gtk_recent_chooser_get_show_icons(ARecentChooser: PGtkRecentChooser): gboolean; cdecl; external;
-function gtk_recent_chooser_get_show_not_found(ARecentChooser: PGtkRecentChooser): gboolean; cdecl; external;
-function gtk_recent_chooser_get_show_private(ARecentChooser: PGtkRecentChooser): gboolean; cdecl; external;
-function gtk_recent_chooser_get_show_tips(ARecentChooser: PGtkRecentChooser): gboolean; cdecl; external;
-function gtk_recent_chooser_get_sort_type(ARecentChooser: PGtkRecentChooser): TGtkRecentSortType; cdecl; external;
+function gtk_recent_chooser_get_current_item(chooser: PGtkRecentChooser): PGtkRecentInfo; cdecl; external;
+function gtk_recent_chooser_get_current_uri(chooser: PGtkRecentChooser): Pgchar; cdecl; external;
+function gtk_recent_chooser_get_filter(chooser: PGtkRecentChooser): PGtkRecentFilter; cdecl; external;
+function gtk_recent_chooser_get_items(chooser: PGtkRecentChooser): PGList; cdecl; external;
+function gtk_recent_chooser_get_limit(chooser: PGtkRecentChooser): gint; cdecl; external;
+function gtk_recent_chooser_get_local_only(chooser: PGtkRecentChooser): gboolean; cdecl; external;
+function gtk_recent_chooser_get_select_multiple(chooser: PGtkRecentChooser): gboolean; cdecl; external;
+function gtk_recent_chooser_get_show_icons(chooser: PGtkRecentChooser): gboolean; cdecl; external;
+function gtk_recent_chooser_get_show_not_found(chooser: PGtkRecentChooser): gboolean; cdecl; external;
+function gtk_recent_chooser_get_show_private(chooser: PGtkRecentChooser): gboolean; cdecl; external;
+function gtk_recent_chooser_get_show_tips(chooser: PGtkRecentChooser): gboolean; cdecl; external;
+function gtk_recent_chooser_get_sort_type(chooser: PGtkRecentChooser): TGtkRecentSortType; cdecl; external;
 function gtk_recent_chooser_get_type: TGType; cdecl; external;
-function gtk_recent_chooser_get_uris(ARecentChooser: PGtkRecentChooser; length: Pgsize): PPgchar; cdecl; external;
-function gtk_recent_chooser_list_filters(ARecentChooser: PGtkRecentChooser): PGSList; cdecl; external;
-function gtk_recent_chooser_menu_get_show_numbers(ARecentChooserMenu: PGtkRecentChooserMenu): gboolean; cdecl; external;
+function gtk_recent_chooser_get_uris(chooser: PGtkRecentChooser; length: Pgsize): PPgchar; cdecl; external;
+function gtk_recent_chooser_list_filters(chooser: PGtkRecentChooser): PGSList; cdecl; external;
+function gtk_recent_chooser_menu_get_show_numbers(menu: PGtkRecentChooserMenu): gboolean; cdecl; external;
 function gtk_recent_chooser_menu_get_type: TGType; cdecl; external;
 function gtk_recent_chooser_menu_new: PGtkRecentChooserMenu; cdecl; external;
 function gtk_recent_chooser_menu_new_for_manager(manager: PGtkRecentManager): PGtkRecentChooserMenu; cdecl; external;
-function gtk_recent_chooser_select_uri(ARecentChooser: PGtkRecentChooser; uri: Pgchar): gboolean; cdecl; external;
-function gtk_recent_chooser_set_current_uri(ARecentChooser: PGtkRecentChooser; uri: Pgchar): gboolean; cdecl; external;
+function gtk_recent_chooser_select_uri(chooser: PGtkRecentChooser; uri: Pgchar; error: PPGError): gboolean; cdecl; external;
+function gtk_recent_chooser_set_current_uri(chooser: PGtkRecentChooser; uri: Pgchar; error: PPGError): gboolean; cdecl; external;
 function gtk_recent_chooser_widget_get_type: TGType; cdecl; external;
 function gtk_recent_chooser_widget_new: PGtkRecentChooserWidget; cdecl; external;
 function gtk_recent_chooser_widget_new_for_manager(manager: PGtkRecentManager): PGtkRecentChooserWidget; cdecl; external;
-function gtk_recent_filter_filter(ARecentFilter: PGtkRecentFilter; filter_info: PGtkRecentFilterInfo): gboolean; cdecl; external;
-function gtk_recent_filter_get_name(ARecentFilter: PGtkRecentFilter): Pgchar; cdecl; external;
-function gtk_recent_filter_get_needed(ARecentFilter: PGtkRecentFilter): TGtkRecentFilterFlags; cdecl; external;
+function gtk_recent_filter_filter(filter: PGtkRecentFilter; filter_info: PGtkRecentFilterInfo): gboolean; cdecl; external;
+function gtk_recent_filter_get_name(filter: PGtkRecentFilter): Pgchar; cdecl; external;
+function gtk_recent_filter_get_needed(filter: PGtkRecentFilter): TGtkRecentFilterFlags; cdecl; external;
 function gtk_recent_filter_get_type: TGType; cdecl; external;
 function gtk_recent_filter_new: PGtkRecentFilter; cdecl; external;
-function gtk_recent_info_create_app_info(ARecentInfo: PGtkRecentInfo; app_name: Pgchar): PGAppInfo; cdecl; external;
-function gtk_recent_info_exists(ARecentInfo: PGtkRecentInfo): gboolean; cdecl; external;
-function gtk_recent_info_get_added(ARecentInfo: PGtkRecentInfo): glong; cdecl; external;
-function gtk_recent_info_get_age(ARecentInfo: PGtkRecentInfo): gint; cdecl; external;
-function gtk_recent_info_get_application_info(ARecentInfo: PGtkRecentInfo; app_name: Pgchar; app_exec: PPgchar; count: Pguint; time_: Pglong): gboolean; cdecl; external;
-function gtk_recent_info_get_applications(ARecentInfo: PGtkRecentInfo; length: Pgsize): PPgchar; cdecl; external;
-function gtk_recent_info_get_description(ARecentInfo: PGtkRecentInfo): Pgchar; cdecl; external;
-function gtk_recent_info_get_display_name(ARecentInfo: PGtkRecentInfo): Pgchar; cdecl; external;
-function gtk_recent_info_get_gicon(ARecentInfo: PGtkRecentInfo): PGIcon; cdecl; external;
-function gtk_recent_info_get_groups(ARecentInfo: PGtkRecentInfo; length: Pgsize): PPgchar; cdecl; external;
-function gtk_recent_info_get_icon(ARecentInfo: PGtkRecentInfo; size: gint): PGdkPixbuf; cdecl; external;
-function gtk_recent_info_get_mime_type(ARecentInfo: PGtkRecentInfo): Pgchar; cdecl; external;
-function gtk_recent_info_get_modified(ARecentInfo: PGtkRecentInfo): glong; cdecl; external;
-function gtk_recent_info_get_private_hint(ARecentInfo: PGtkRecentInfo): gboolean; cdecl; external;
-function gtk_recent_info_get_short_name(ARecentInfo: PGtkRecentInfo): Pgchar; cdecl; external;
+function gtk_recent_info_create_app_info(info: PGtkRecentInfo; app_name: Pgchar; error: PPGError): PGAppInfo; cdecl; external;
+function gtk_recent_info_exists(info: PGtkRecentInfo): gboolean; cdecl; external;
+function gtk_recent_info_get_added(info: PGtkRecentInfo): glong; cdecl; external;
+function gtk_recent_info_get_age(info: PGtkRecentInfo): gint; cdecl; external;
+function gtk_recent_info_get_application_info(info: PGtkRecentInfo; app_name: Pgchar; app_exec: PPgchar; count: Pguint; time_: Pglong): gboolean; cdecl; external;
+function gtk_recent_info_get_applications(info: PGtkRecentInfo; length: Pgsize): PPgchar; cdecl; external;
+function gtk_recent_info_get_description(info: PGtkRecentInfo): Pgchar; cdecl; external;
+function gtk_recent_info_get_display_name(info: PGtkRecentInfo): Pgchar; cdecl; external;
+function gtk_recent_info_get_gicon(info: PGtkRecentInfo): PGIcon; cdecl; external;
+function gtk_recent_info_get_groups(info: PGtkRecentInfo; length: Pgsize): PPgchar; cdecl; external;
+function gtk_recent_info_get_icon(info: PGtkRecentInfo; size: gint): PGdkPixbuf; cdecl; external;
+function gtk_recent_info_get_mime_type(info: PGtkRecentInfo): Pgchar; cdecl; external;
+function gtk_recent_info_get_modified(info: PGtkRecentInfo): glong; cdecl; external;
+function gtk_recent_info_get_private_hint(info: PGtkRecentInfo): gboolean; cdecl; external;
+function gtk_recent_info_get_short_name(info: PGtkRecentInfo): Pgchar; cdecl; external;
 function gtk_recent_info_get_type: TGType; cdecl; external;
-function gtk_recent_info_get_uri(ARecentInfo: PGtkRecentInfo): Pgchar; cdecl; external;
-function gtk_recent_info_get_uri_display(ARecentInfo: PGtkRecentInfo): Pgchar; cdecl; external;
-function gtk_recent_info_get_visited(ARecentInfo: PGtkRecentInfo): glong; cdecl; external;
-function gtk_recent_info_has_application(ARecentInfo: PGtkRecentInfo; app_name: Pgchar): gboolean; cdecl; external;
-function gtk_recent_info_has_group(ARecentInfo: PGtkRecentInfo; group_name: Pgchar): gboolean; cdecl; external;
-function gtk_recent_info_is_local(ARecentInfo: PGtkRecentInfo): gboolean; cdecl; external;
-function gtk_recent_info_last_application(ARecentInfo: PGtkRecentInfo): Pgchar; cdecl; external;
-function gtk_recent_info_match(ARecentInfo: PGtkRecentInfo; info_b: PGtkRecentInfo): gboolean; cdecl; external;
-function gtk_recent_info_ref(ARecentInfo: PGtkRecentInfo): PGtkRecentInfo; cdecl; external;
-function gtk_recent_manager_add_full(ARecentManager: PGtkRecentManager; uri: Pgchar; recent_data: PGtkRecentData): gboolean; cdecl; external;
-function gtk_recent_manager_add_item(ARecentManager: PGtkRecentManager; uri: Pgchar): gboolean; cdecl; external;
+function gtk_recent_info_get_uri(info: PGtkRecentInfo): Pgchar; cdecl; external;
+function gtk_recent_info_get_uri_display(info: PGtkRecentInfo): Pgchar; cdecl; external;
+function gtk_recent_info_get_visited(info: PGtkRecentInfo): glong; cdecl; external;
+function gtk_recent_info_has_application(info: PGtkRecentInfo; app_name: Pgchar): gboolean; cdecl; external;
+function gtk_recent_info_has_group(info: PGtkRecentInfo; group_name: Pgchar): gboolean; cdecl; external;
+function gtk_recent_info_is_local(info: PGtkRecentInfo): gboolean; cdecl; external;
+function gtk_recent_info_last_application(info: PGtkRecentInfo): Pgchar; cdecl; external;
+function gtk_recent_info_match(info_a: PGtkRecentInfo; info_b: PGtkRecentInfo): gboolean; cdecl; external;
+function gtk_recent_info_ref(info: PGtkRecentInfo): PGtkRecentInfo; cdecl; external;
+function gtk_recent_manager_add_full(manager: PGtkRecentManager; uri: Pgchar; recent_data: PGtkRecentData): gboolean; cdecl; external;
+function gtk_recent_manager_add_item(manager: PGtkRecentManager; uri: Pgchar): gboolean; cdecl; external;
 function gtk_recent_manager_error_quark: TGQuark; cdecl; external;
 function gtk_recent_manager_get_default: PGtkRecentManager; cdecl; external;
-function gtk_recent_manager_get_items(ARecentManager: PGtkRecentManager): PGList; cdecl; external;
+function gtk_recent_manager_get_items(manager: PGtkRecentManager): PGList; cdecl; external;
 function gtk_recent_manager_get_type: TGType; cdecl; external;
-function gtk_recent_manager_has_item(ARecentManager: PGtkRecentManager; uri: Pgchar): gboolean; cdecl; external;
-function gtk_recent_manager_lookup_item(ARecentManager: PGtkRecentManager; uri: Pgchar): PGtkRecentInfo; cdecl; external;
-function gtk_recent_manager_move_item(ARecentManager: PGtkRecentManager; uri: Pgchar; new_uri: Pgchar): gboolean; cdecl; external;
+function gtk_recent_manager_has_item(manager: PGtkRecentManager; uri: Pgchar): gboolean; cdecl; external;
+function gtk_recent_manager_lookup_item(manager: PGtkRecentManager; uri: Pgchar; error: PPGError): PGtkRecentInfo; cdecl; external;
+function gtk_recent_manager_move_item(manager: PGtkRecentManager; uri: Pgchar; new_uri: Pgchar; error: PPGError): gboolean; cdecl; external;
 function gtk_recent_manager_new: PGtkRecentManager; cdecl; external;
-function gtk_recent_manager_purge_items(ARecentManager: PGtkRecentManager): gint; cdecl; external;
-function gtk_recent_manager_remove_item(ARecentManager: PGtkRecentManager; uri: Pgchar): gboolean; cdecl; external;
+function gtk_recent_manager_purge_items(manager: PGtkRecentManager; error: PPGError): gint; cdecl; external;
+function gtk_recent_manager_remove_item(manager: PGtkRecentManager; uri: Pgchar; error: PPGError): gboolean; cdecl; external;
 function gtk_render_icon_pixbuf(context: PGtkStyleContext; source: PGtkIconSource; size: gint): PGdkPixbuf; cdecl; external;
-function gtk_requisition_copy(ARequisition: PGtkRequisition): PGtkRequisition; cdecl; external;
+function gtk_requisition_copy(requisition: PGtkRequisition): PGtkRequisition; cdecl; external;
 function gtk_requisition_get_type: TGType; cdecl; external;
 function gtk_requisition_new: PGtkRequisition; cdecl; external;
-function gtk_scale_button_get_adjustment(AScaleButton: PGtkScaleButton): PGtkAdjustment; cdecl; external;
-function gtk_scale_button_get_minus_button(AScaleButton: PGtkScaleButton): PGtkWidget; cdecl; external;
-function gtk_scale_button_get_plus_button(AScaleButton: PGtkScaleButton): PGtkWidget; cdecl; external;
-function gtk_scale_button_get_popup(AScaleButton: PGtkScaleButton): PGtkWidget; cdecl; external;
+function gtk_scale_button_get_adjustment(button: PGtkScaleButton): PGtkAdjustment; cdecl; external;
+function gtk_scale_button_get_minus_button(button: PGtkScaleButton): PGtkWidget; cdecl; external;
+function gtk_scale_button_get_plus_button(button: PGtkScaleButton): PGtkWidget; cdecl; external;
+function gtk_scale_button_get_popup(button: PGtkScaleButton): PGtkWidget; cdecl; external;
 function gtk_scale_button_get_type: TGType; cdecl; external;
-function gtk_scale_button_get_value(AScaleButton: PGtkScaleButton): gdouble; cdecl; external;
+function gtk_scale_button_get_value(button: PGtkScaleButton): gdouble; cdecl; external;
 function gtk_scale_button_new(size: gint; min: gdouble; max: gdouble; step: gdouble; icons: PPgchar): PGtkScaleButton; cdecl; external;
-function gtk_scale_get_digits(AScale: PGtkScale): gint; cdecl; external;
-function gtk_scale_get_draw_value(AScale: PGtkScale): gboolean; cdecl; external;
-function gtk_scale_get_has_origin(AScale: PGtkScale): gboolean; cdecl; external;
-function gtk_scale_get_layout(AScale: PGtkScale): PPangoLayout; cdecl; external;
+function gtk_scale_get_digits(scale: PGtkScale): gint; cdecl; external;
+function gtk_scale_get_draw_value(scale: PGtkScale): gboolean; cdecl; external;
+function gtk_scale_get_has_origin(scale: PGtkScale): gboolean; cdecl; external;
+function gtk_scale_get_layout(scale: PGtkScale): PPangoLayout; cdecl; external;
 function gtk_scale_get_type: TGType; cdecl; external;
-function gtk_scale_get_value_pos(AScale: PGtkScale): TGtkPositionType; cdecl; external;
+function gtk_scale_get_value_pos(scale: PGtkScale): TGtkPositionType; cdecl; external;
 function gtk_scale_new(orientation: TGtkOrientation; adjustment: PGtkAdjustment): PGtkScale; cdecl; external;
 function gtk_scale_new_with_range(orientation: TGtkOrientation; min: gdouble; max: gdouble; step: gdouble): PGtkScale; cdecl; external;
-function gtk_scrollable_get_hadjustment(AScrollable: PGtkScrollable): PGtkAdjustment; cdecl; external;
-function gtk_scrollable_get_hscroll_policy(AScrollable: PGtkScrollable): TGtkScrollablePolicy; cdecl; external;
+function gtk_scrollable_get_hadjustment(scrollable: PGtkScrollable): PGtkAdjustment; cdecl; external;
+function gtk_scrollable_get_hscroll_policy(scrollable: PGtkScrollable): TGtkScrollablePolicy; cdecl; external;
 function gtk_scrollable_get_type: TGType; cdecl; external;
-function gtk_scrollable_get_vadjustment(AScrollable: PGtkScrollable): PGtkAdjustment; cdecl; external;
-function gtk_scrollable_get_vscroll_policy(AScrollable: PGtkScrollable): TGtkScrollablePolicy; cdecl; external;
+function gtk_scrollable_get_vadjustment(scrollable: PGtkScrollable): PGtkAdjustment; cdecl; external;
+function gtk_scrollable_get_vscroll_policy(scrollable: PGtkScrollable): TGtkScrollablePolicy; cdecl; external;
 function gtk_scrollbar_get_type: TGType; cdecl; external;
+procedure gtk_scrolled_window_add_with_viewport(scrolled_window: PGtkScrolledWindow; child: PGtkWidget); cdecl; external; deprecated 'since 3.8 use gtk_container_add';
 function gtk_scrollbar_new(orientation: TGtkOrientation; adjustment: PGtkAdjustment): PGtkScrollbar; cdecl; external;
-function gtk_scrolled_window_get_capture_button_press(AScrolledWindow: PGtkScrolledWindow): gboolean; cdecl; external;
-function gtk_scrolled_window_get_hadjustment(AScrolledWindow: PGtkScrolledWindow): PGtkAdjustment; cdecl; external;
-function gtk_scrolled_window_get_hscrollbar(AScrolledWindow: PGtkScrolledWindow): PGtkWidget; cdecl; external;
-function gtk_scrolled_window_get_kinetic_scrolling(AScrolledWindow: PGtkScrolledWindow): gboolean; cdecl; external;
-function gtk_scrolled_window_get_min_content_height(AScrolledWindow: PGtkScrolledWindow): gint; cdecl; external;
-function gtk_scrolled_window_get_min_content_width(AScrolledWindow: PGtkScrolledWindow): gint; cdecl; external;
-function gtk_scrolled_window_get_placement(AScrolledWindow: PGtkScrolledWindow): TGtkCornerType; cdecl; external;
-function gtk_scrolled_window_get_shadow_type(AScrolledWindow: PGtkScrolledWindow): TGtkShadowType; cdecl; external;
+function gtk_scrolled_window_get_capture_button_press(scrolled_window: PGtkScrolledWindow): gboolean; cdecl; external;
+function gtk_scrolled_window_get_hadjustment(scrolled_window: PGtkScrolledWindow): PGtkAdjustment; cdecl; external;
+function gtk_scrolled_window_get_hscrollbar(scrolled_window: PGtkScrolledWindow): PGtkWidget; cdecl; external;
+function gtk_scrolled_window_get_kinetic_scrolling(scrolled_window: PGtkScrolledWindow): gboolean; cdecl; external;
+function gtk_scrolled_window_get_min_content_height(scrolled_window: PGtkScrolledWindow): gint; cdecl; external;
+function gtk_scrolled_window_get_min_content_width(scrolled_window: PGtkScrolledWindow): gint; cdecl; external;
+function gtk_scrolled_window_get_placement(scrolled_window: PGtkScrolledWindow): TGtkCornerType; cdecl; external;
+function gtk_scrolled_window_get_shadow_type(scrolled_window: PGtkScrolledWindow): TGtkShadowType; cdecl; external;
 function gtk_scrolled_window_get_type: TGType; cdecl; external;
-function gtk_scrolled_window_get_vadjustment(AScrolledWindow: PGtkScrolledWindow): PGtkAdjustment; cdecl; external;
-function gtk_scrolled_window_get_vscrollbar(AScrolledWindow: PGtkScrolledWindow): PGtkWidget; cdecl; external;
+function gtk_scrolled_window_get_vadjustment(scrolled_window: PGtkScrolledWindow): PGtkAdjustment; cdecl; external;
+function gtk_scrolled_window_get_vscrollbar(scrolled_window: PGtkScrolledWindow): PGtkWidget; cdecl; external;
 function gtk_scrolled_window_new(hadjustment: PGtkAdjustment; vadjustment: PGtkAdjustment): PGtkScrolledWindow; cdecl; external;
+function gtk_search_entry_get_type: TGType; cdecl; external;
+function gtk_search_entry_new: PGtkSearchEntry; cdecl; external;
 function gtk_selection_convert(widget: PGtkWidget; selection: TGdkAtom; target: TGdkAtom; time_: guint32): gboolean; cdecl; external;
-function gtk_selection_data_copy(ASelectionData: PGtkSelectionData): PGtkSelectionData; cdecl; external;
-function gtk_selection_data_get_data(ASelectionData: PGtkSelectionData): Pguint8; cdecl; external;
-function gtk_selection_data_get_data_type(ASelectionData: PGtkSelectionData): TGdkAtom; cdecl; external;
-function gtk_selection_data_get_data_with_length(ASelectionData: PGtkSelectionData; length: Pgint): Pguint8; cdecl; external;
-function gtk_selection_data_get_display(ASelectionData: PGtkSelectionData): PGdkDisplay; cdecl; external;
-function gtk_selection_data_get_format(ASelectionData: PGtkSelectionData): gint; cdecl; external;
-function gtk_selection_data_get_length(ASelectionData: PGtkSelectionData): gint; cdecl; external;
-function gtk_selection_data_get_pixbuf(ASelectionData: PGtkSelectionData): PGdkPixbuf; cdecl; external;
-function gtk_selection_data_get_selection(ASelectionData: PGtkSelectionData): TGdkAtom; cdecl; external;
-function gtk_selection_data_get_target(ASelectionData: PGtkSelectionData): TGdkAtom; cdecl; external;
-function gtk_selection_data_get_targets(ASelectionData: PGtkSelectionData; targets: PPGdkAtom; n_atoms: Pgint): gboolean; cdecl; external;
-function gtk_selection_data_get_text(ASelectionData: PGtkSelectionData): Pgchar; cdecl; external;
+function gtk_selection_data_copy(data: PGtkSelectionData): PGtkSelectionData; cdecl; external;
+function gtk_selection_data_get_data(selection_data: PGtkSelectionData): Pguint8; cdecl; external;
+function gtk_selection_data_get_data_type(selection_data: PGtkSelectionData): TGdkAtom; cdecl; external;
+function gtk_selection_data_get_data_with_length(selection_data: PGtkSelectionData; length: Pgint): Pguint8; cdecl; external;
+function gtk_selection_data_get_display(selection_data: PGtkSelectionData): PGdkDisplay; cdecl; external;
+function gtk_selection_data_get_format(selection_data: PGtkSelectionData): gint; cdecl; external;
+function gtk_selection_data_get_length(selection_data: PGtkSelectionData): gint; cdecl; external;
+function gtk_selection_data_get_pixbuf(selection_data: PGtkSelectionData): PGdkPixbuf; cdecl; external;
+function gtk_selection_data_get_selection(selection_data: PGtkSelectionData): TGdkAtom; cdecl; external;
+function gtk_selection_data_get_target(selection_data: PGtkSelectionData): TGdkAtom; cdecl; external;
+function gtk_selection_data_get_targets(selection_data: PGtkSelectionData; targets: PPGdkAtom; n_atoms: Pgint): gboolean; cdecl; external;
+function gtk_selection_data_get_text(selection_data: PGtkSelectionData): Pgchar; cdecl; external;
 function gtk_selection_data_get_type: TGType; cdecl; external;
-function gtk_selection_data_get_uris(ASelectionData: PGtkSelectionData): PPgchar; cdecl; external;
-function gtk_selection_data_set_pixbuf(ASelectionData: PGtkSelectionData; pixbuf: PGdkPixbuf): gboolean; cdecl; external;
-function gtk_selection_data_set_text(ASelectionData: PGtkSelectionData; str: Pgchar; len: gint): gboolean; cdecl; external;
-function gtk_selection_data_set_uris(ASelectionData: PGtkSelectionData; uris: PPgchar): gboolean; cdecl; external;
-function gtk_selection_data_targets_include_image(ASelectionData: PGtkSelectionData; writable: gboolean): gboolean; cdecl; external;
-function gtk_selection_data_targets_include_rich_text(ASelectionData: PGtkSelectionData; buffer: PGtkTextBuffer): gboolean; cdecl; external;
-function gtk_selection_data_targets_include_text(ASelectionData: PGtkSelectionData): gboolean; cdecl; external;
-function gtk_selection_data_targets_include_uri(ASelectionData: PGtkSelectionData): gboolean; cdecl; external;
+function gtk_selection_data_get_uris(selection_data: PGtkSelectionData): PPgchar; cdecl; external;
+function gtk_selection_data_set_pixbuf(selection_data: PGtkSelectionData; pixbuf: PGdkPixbuf): gboolean; cdecl; external;
+function gtk_selection_data_set_text(selection_data: PGtkSelectionData; str: Pgchar; len: gint): gboolean; cdecl; external;
+function gtk_selection_data_set_uris(selection_data: PGtkSelectionData; uris: PPgchar): gboolean; cdecl; external;
+function gtk_selection_data_targets_include_image(selection_data: PGtkSelectionData; writable: gboolean): gboolean; cdecl; external;
+function gtk_selection_data_targets_include_rich_text(selection_data: PGtkSelectionData; buffer: PGtkTextBuffer): gboolean; cdecl; external;
+function gtk_selection_data_targets_include_text(selection_data: PGtkSelectionData): gboolean; cdecl; external;
+function gtk_selection_data_targets_include_uri(selection_data: PGtkSelectionData): gboolean; cdecl; external;
 function gtk_selection_owner_set(widget: PGtkWidget; selection: TGdkAtom; time_: guint32): gboolean; cdecl; external;
 function gtk_selection_owner_set_for_display(display: PGdkDisplay; widget: PGtkWidget; selection: TGdkAtom; time_: guint32): gboolean; cdecl; external;
 function gtk_separator_get_type: TGType; cdecl; external;
 function gtk_separator_menu_item_get_type: TGType; cdecl; external;
 function gtk_separator_menu_item_new: PGtkSeparatorMenuItem; cdecl; external;
 function gtk_separator_new(orientation: TGtkOrientation): PGtkSeparator; cdecl; external;
-function gtk_separator_tool_item_get_draw(ASeparatorToolItem: PGtkSeparatorToolItem): gboolean; cdecl; external;
+function gtk_separator_tool_item_get_draw(item: PGtkSeparatorToolItem): gboolean; cdecl; external;
 function gtk_separator_tool_item_get_type: TGType; cdecl; external;
 function gtk_separator_tool_item_new: PGtkSeparatorToolItem; cdecl; external;
 function gtk_settings_get_default: PGtkSettings; cdecl; external;
 function gtk_settings_get_for_screen(screen: PGdkScreen): PGtkSettings; cdecl; external;
 function gtk_settings_get_type: TGType; cdecl; external;
-function gtk_show_uri(screen: PGdkScreen; uri: Pgchar; timestamp: guint32): gboolean; cdecl; external;
-function gtk_size_group_get_ignore_hidden(ASizeGroup: PGtkSizeGroup): gboolean; cdecl; external;
-function gtk_size_group_get_mode(ASizeGroup: PGtkSizeGroup): TGtkSizeGroupMode; cdecl; external;
+function gtk_show_uri(screen: PGdkScreen; uri: Pgchar; timestamp: guint32; error: PPGError): gboolean; cdecl; external;
+function gtk_size_group_get_ignore_hidden(size_group: PGtkSizeGroup): gboolean; cdecl; external;
+function gtk_size_group_get_mode(size_group: PGtkSizeGroup): TGtkSizeGroupMode; cdecl; external;
 function gtk_size_group_get_type: TGType; cdecl; external;
-function gtk_size_group_get_widgets(ASizeGroup: PGtkSizeGroup): PGSList; cdecl; external;
+function gtk_size_group_get_widgets(size_group: PGtkSizeGroup): PGSList; cdecl; external;
 function gtk_size_group_new(mode: TGtkSizeGroupMode): PGtkSizeGroup; cdecl; external;
-function gtk_socket_get_id(ASocket: PGtkSocket): TWindow; cdecl; external;
-function gtk_socket_get_plug_window(ASocket: PGtkSocket): PGdkWindow; cdecl; external;
+function gtk_socket_get_id(socket_: PGtkSocket): TWindow; cdecl; external;
+function gtk_socket_get_plug_window(socket_: PGtkSocket): PGdkWindow; cdecl; external;
 function gtk_socket_get_type: TGType; cdecl; external;
 function gtk_socket_new: PGtkSocket; cdecl; external;
-function gtk_spin_button_get_adjustment(ASpinButton: PGtkSpinButton): PGtkAdjustment; cdecl; external;
-function gtk_spin_button_get_digits(ASpinButton: PGtkSpinButton): guint; cdecl; external;
-function gtk_spin_button_get_numeric(ASpinButton: PGtkSpinButton): gboolean; cdecl; external;
-function gtk_spin_button_get_snap_to_ticks(ASpinButton: PGtkSpinButton): gboolean; cdecl; external;
+function gtk_spin_button_get_adjustment(spin_button: PGtkSpinButton): PGtkAdjustment; cdecl; external;
+function gtk_spin_button_get_digits(spin_button: PGtkSpinButton): guint; cdecl; external;
+function gtk_spin_button_get_numeric(spin_button: PGtkSpinButton): gboolean; cdecl; external;
+function gtk_spin_button_get_snap_to_ticks(spin_button: PGtkSpinButton): gboolean; cdecl; external;
 function gtk_spin_button_get_type: TGType; cdecl; external;
-function gtk_spin_button_get_update_policy(ASpinButton: PGtkSpinButton): TGtkSpinButtonUpdatePolicy; cdecl; external;
-function gtk_spin_button_get_value(ASpinButton: PGtkSpinButton): gdouble; cdecl; external;
-function gtk_spin_button_get_value_as_int(ASpinButton: PGtkSpinButton): gint; cdecl; external;
-function gtk_spin_button_get_wrap(ASpinButton: PGtkSpinButton): gboolean; cdecl; external;
+function gtk_spin_button_get_update_policy(spin_button: PGtkSpinButton): TGtkSpinButtonUpdatePolicy; cdecl; external;
+function gtk_spin_button_get_value(spin_button: PGtkSpinButton): gdouble; cdecl; external;
+function gtk_spin_button_get_value_as_int(spin_button: PGtkSpinButton): gint; cdecl; external;
+function gtk_spin_button_get_wrap(spin_button: PGtkSpinButton): gboolean; cdecl; external;
 function gtk_spin_button_new(adjustment: PGtkAdjustment; climb_rate: gdouble; digits: guint): PGtkSpinButton; cdecl; external;
 function gtk_spin_button_new_with_range(min: gdouble; max: gdouble; step: gdouble): PGtkSpinButton; cdecl; external;
 function gtk_spinner_get_type: TGType; cdecl; external;
 function gtk_spinner_new: PGtkSpinner; cdecl; external;
-function gtk_status_icon_get_geometry(AStatusIcon: PGtkStatusIcon; screen: PPGdkScreen; area: PGdkRectangle; orientation: PGtkOrientation): gboolean; cdecl; external;
-function gtk_status_icon_get_gicon(AStatusIcon: PGtkStatusIcon): PGIcon; cdecl; external;
-function gtk_status_icon_get_has_tooltip(AStatusIcon: PGtkStatusIcon): gboolean; cdecl; external;
-function gtk_status_icon_get_icon_name(AStatusIcon: PGtkStatusIcon): Pgchar; cdecl; external;
-function gtk_status_icon_get_pixbuf(AStatusIcon: PGtkStatusIcon): PGdkPixbuf; cdecl; external;
-function gtk_status_icon_get_screen(AStatusIcon: PGtkStatusIcon): PGdkScreen; cdecl; external;
-function gtk_status_icon_get_size(AStatusIcon: PGtkStatusIcon): gint; cdecl; external;
-function gtk_status_icon_get_stock(AStatusIcon: PGtkStatusIcon): Pgchar; cdecl; external;
-function gtk_status_icon_get_storage_type(AStatusIcon: PGtkStatusIcon): TGtkImageType; cdecl; external;
-function gtk_status_icon_get_title(AStatusIcon: PGtkStatusIcon): Pgchar; cdecl; external;
-function gtk_status_icon_get_tooltip_markup(AStatusIcon: PGtkStatusIcon): Pgchar; cdecl; external;
-function gtk_status_icon_get_tooltip_text(AStatusIcon: PGtkStatusIcon): Pgchar; cdecl; external;
+function gtk_status_icon_get_geometry(status_icon: PGtkStatusIcon; screen: PPGdkScreen; area: PGdkRectangle; orientation: PGtkOrientation): gboolean; cdecl; external;
+function gtk_status_icon_get_gicon(status_icon: PGtkStatusIcon): PGIcon; cdecl; external;
+function gtk_status_icon_get_has_tooltip(status_icon: PGtkStatusIcon): gboolean; cdecl; external;
+function gtk_status_icon_get_icon_name(status_icon: PGtkStatusIcon): Pgchar; cdecl; external;
+function gtk_status_icon_get_pixbuf(status_icon: PGtkStatusIcon): PGdkPixbuf; cdecl; external;
+function gtk_status_icon_get_screen(status_icon: PGtkStatusIcon): PGdkScreen; cdecl; external;
+function gtk_status_icon_get_size(status_icon: PGtkStatusIcon): gint; cdecl; external;
+function gtk_status_icon_get_stock(status_icon: PGtkStatusIcon): Pgchar; cdecl; external;
+function gtk_status_icon_get_storage_type(status_icon: PGtkStatusIcon): TGtkImageType; cdecl; external;
+function gtk_status_icon_get_title(status_icon: PGtkStatusIcon): Pgchar; cdecl; external;
+function gtk_status_icon_get_tooltip_markup(status_icon: PGtkStatusIcon): Pgchar; cdecl; external;
+function gtk_status_icon_get_tooltip_text(status_icon: PGtkStatusIcon): Pgchar; cdecl; external;
 function gtk_status_icon_get_type: TGType; cdecl; external;
-function gtk_status_icon_get_visible(AStatusIcon: PGtkStatusIcon): gboolean; cdecl; external;
-function gtk_status_icon_get_x11_window_id(AStatusIcon: PGtkStatusIcon): guint32; cdecl; external;
-function gtk_status_icon_is_embedded(AStatusIcon: PGtkStatusIcon): gboolean; cdecl; external;
+function gtk_status_icon_get_visible(status_icon: PGtkStatusIcon): gboolean; cdecl; external;
+function gtk_status_icon_get_x11_window_id(status_icon: PGtkStatusIcon): guint32; cdecl; external;
+function gtk_status_icon_is_embedded(status_icon: PGtkStatusIcon): gboolean; cdecl; external;
 function gtk_status_icon_new: PGtkStatusIcon; cdecl; external;
 function gtk_status_icon_new_from_file(filename: Pgchar): PGtkStatusIcon; cdecl; external;
 function gtk_status_icon_new_from_gicon(icon: PGIcon): PGtkStatusIcon; cdecl; external;
 function gtk_status_icon_new_from_icon_name(icon_name: Pgchar): PGtkStatusIcon; cdecl; external;
 function gtk_status_icon_new_from_pixbuf(pixbuf: PGdkPixbuf): PGtkStatusIcon; cdecl; external;
 function gtk_status_icon_new_from_stock(stock_id: Pgchar): PGtkStatusIcon; cdecl; external;
-function gtk_statusbar_get_context_id(AStatusbar: PGtkStatusbar; context_description: Pgchar): guint; cdecl; external;
-function gtk_statusbar_get_message_area(AStatusbar: PGtkStatusbar): PGtkWidget; cdecl; external;
+function gtk_statusbar_get_context_id(statusbar: PGtkStatusbar; context_description: Pgchar): guint; cdecl; external;
+function gtk_statusbar_get_message_area(statusbar: PGtkStatusbar): PGtkWidget; cdecl; external;
 function gtk_statusbar_get_type: TGType; cdecl; external;
 function gtk_statusbar_new: PGtkStatusbar; cdecl; external;
-function gtk_statusbar_push(AStatusbar: PGtkStatusbar; context_id: guint; text: Pgchar): guint; cdecl; external;
-function gtk_stock_item_copy(AStockItem: PGtkStockItem): PGtkStockItem; cdecl; external;
+function gtk_statusbar_push(statusbar: PGtkStatusbar; context_id: guint; text: Pgchar): guint; cdecl; external;
+function gtk_stock_item_copy(item: PGtkStockItem): PGtkStockItem; cdecl; external;
 function gtk_stock_list_ids: PGSList; cdecl; external;
 function gtk_stock_lookup(stock_id: Pgchar; item: PGtkStockItem): gboolean; cdecl; external;
-function gtk_style_attach(AStyle: PGtkStyle; window: PGdkWindow): PGtkStyle; cdecl; external;
-function gtk_style_context_get_direction(AStyleContext: PGtkStyleContext): TGtkTextDirection; cdecl; external;
-function gtk_style_context_get_font(AStyleContext: PGtkStyleContext; state: TGtkStateFlags): PPangoFontDescription; cdecl; external;
-function gtk_style_context_get_junction_sides(AStyleContext: PGtkStyleContext): TGtkJunctionSides; cdecl; external;
-function gtk_style_context_get_parent(AStyleContext: PGtkStyleContext): PGtkStyleContext; cdecl; external;
-function gtk_style_context_get_path(AStyleContext: PGtkStyleContext): PGtkWidgetPath; cdecl; external;
-function gtk_style_context_get_screen(AStyleContext: PGtkStyleContext): PGdkScreen; cdecl; external;
-function gtk_style_context_get_section(AStyleContext: PGtkStyleContext; property_: Pgchar): PGtkCssSection; cdecl; external;
-function gtk_style_context_get_state(AStyleContext: PGtkStyleContext): TGtkStateFlags; cdecl; external;
+function gtk_style_context_get_frame_clock(context: PGtkStyleContext): PGdkFrameClock; cdecl; external;
+function gtk_style_context_get_junction_sides(context: PGtkStyleContext): TGtkJunctionSides; cdecl; external;
+function gtk_style_context_get_parent(context: PGtkStyleContext): PGtkStyleContext; cdecl; external;
+function gtk_style_context_get_path(context: PGtkStyleContext): PGtkWidgetPath; cdecl; external;
+function gtk_style_context_get_screen(context: PGtkStyleContext): PGdkScreen; cdecl; external;
+function gtk_style_context_get_section(context: PGtkStyleContext; property_: Pgchar): PGtkCssSection; cdecl; external;
+function gtk_style_context_get_state(context: PGtkStyleContext): TGtkStateFlags; cdecl; external;
 function gtk_style_context_get_type: TGType; cdecl; external;
-function gtk_style_context_has_class(AStyleContext: PGtkStyleContext; class_name: Pgchar): gboolean; cdecl; external;
-function gtk_style_context_has_region(AStyleContext: PGtkStyleContext; region_name: Pgchar; flags_return: PGtkRegionFlags): gboolean; cdecl; external;
-function gtk_style_context_list_classes(AStyleContext: PGtkStyleContext): PGList; cdecl; external;
-function gtk_style_context_list_regions(AStyleContext: PGtkStyleContext): PGList; cdecl; external;
-function gtk_style_context_lookup_color(AStyleContext: PGtkStyleContext; color_name: Pgchar; color: PGdkRGBA): gboolean; cdecl; external;
-function gtk_style_context_lookup_icon_set(AStyleContext: PGtkStyleContext; stock_id: Pgchar): PGtkIconSet; cdecl; external;
+function gtk_style_context_has_class(context: PGtkStyleContext; class_name: Pgchar): gboolean; cdecl; external;
+function gtk_style_context_has_region(context: PGtkStyleContext; region_name: Pgchar; flags_return: PGtkRegionFlags): gboolean; cdecl; external;
+function gtk_style_context_list_classes(context: PGtkStyleContext): PGList; cdecl; external;
+function gtk_style_context_list_regions(context: PGtkStyleContext): PGList; cdecl; external;
+function gtk_style_context_lookup_color(context: PGtkStyleContext; color_name: Pgchar; color: PGdkRGBA): gboolean; cdecl; external;
+function gtk_style_context_lookup_icon_set(context: PGtkStyleContext; stock_id: Pgchar): PGtkIconSet; cdecl; external;
 function gtk_style_context_new: PGtkStyleContext; cdecl; external;
-function gtk_style_context_state_is_running(AStyleContext: PGtkStyleContext; state: TGtkStateType; progress: Pgdouble): gboolean; cdecl; external;
-function gtk_style_copy(AStyle: PGtkStyle): PGtkStyle; cdecl; external;
 function gtk_style_get_type: TGType; cdecl; external;
-function gtk_style_has_context(AStyle: PGtkStyle): gboolean; cdecl; external;
-function gtk_style_lookup_color(AStyle: PGtkStyle; color_name: Pgchar; color: PGdkColor): gboolean; cdecl; external;
-function gtk_style_lookup_icon_set(AStyle: PGtkStyle; stock_id: Pgchar): PGtkIconSet; cdecl; external;
-function gtk_style_properties_get_property(AStyleProperties: PGtkStyleProperties; property_: Pgchar; state: TGtkStateFlags; value: PGValue): gboolean; cdecl; external;
+function gtk_style_has_context(style: PGtkStyle): gboolean; cdecl; external;
+function gtk_style_properties_get_property(props: PGtkStyleProperties; property_: Pgchar; state: TGtkStateFlags; value: PGValue): gboolean; cdecl; external;
 function gtk_style_properties_get_type: TGType; cdecl; external;
-function gtk_style_properties_lookup_color(AStyleProperties: PGtkStyleProperties; name: Pgchar): PGtkSymbolicColor; cdecl; external;
-function gtk_style_properties_lookup_property(property_name: Pgchar; parse_func: PGtkStylePropertyParser; pspec: PPGParamSpec): gboolean; cdecl; external;
 function gtk_style_properties_new: PGtkStyleProperties; cdecl; external;
-function gtk_style_provider_get_icon_factory(AStyleProvider: PGtkStyleProvider; path: PGtkWidgetPath): PGtkIconFactory; cdecl; external;
-function gtk_style_provider_get_style(AStyleProvider: PGtkStyleProvider; path: PGtkWidgetPath): PGtkStyleProperties; cdecl; external;
-function gtk_style_provider_get_style_property(AStyleProvider: PGtkStyleProvider; path: PGtkWidgetPath; state: TGtkStateFlags; pspec: PGParamSpec; value: PGValue): gboolean; cdecl; external;
+function gtk_style_provider_get_style_property(provider: PGtkStyleProvider; path: PGtkWidgetPath; state: TGtkStateFlags; pspec: PGParamSpec; value: PGValue): gboolean; cdecl; external;
 function gtk_style_provider_get_type: TGType; cdecl; external;
-function gtk_style_render_icon(AStyle: PGtkStyle; source: PGtkIconSource; direction: TGtkTextDirection; state: TGtkStateType; size: gint; widget: PGtkWidget; detail: Pgchar): PGdkPixbuf; cdecl; external;
-function gtk_switch_get_active(ASwitch: PGtkSwitch): gboolean; cdecl; external;
+function gtk_switch_get_active(sw: PGtkSwitch): gboolean; cdecl; external;
 function gtk_switch_get_type: TGType; cdecl; external;
 function gtk_switch_new: PGtkSwitch; cdecl; external;
 function gtk_symbolic_color_get_type: TGType; cdecl; external;
-function gtk_symbolic_color_new_alpha(color: PGtkSymbolicColor; factor: gdouble): PGtkSymbolicColor; cdecl; external;
-function gtk_symbolic_color_new_literal(color: PGdkRGBA): PGtkSymbolicColor; cdecl; external;
-function gtk_symbolic_color_new_mix(color1: PGtkSymbolicColor; color2: PGtkSymbolicColor; factor: gdouble): PGtkSymbolicColor; cdecl; external;
-function gtk_symbolic_color_new_name(name: Pgchar): PGtkSymbolicColor; cdecl; external;
-function gtk_symbolic_color_new_shade(color: PGtkSymbolicColor; factor: gdouble): PGtkSymbolicColor; cdecl; external;
-function gtk_symbolic_color_new_win32(theme_class: Pgchar; id: gint): PGtkSymbolicColor; cdecl; external;
-function gtk_symbolic_color_ref(ASymbolicColor: PGtkSymbolicColor): PGtkSymbolicColor; cdecl; external;
-function gtk_symbolic_color_resolve(ASymbolicColor: PGtkSymbolicColor; props: PGtkStyleProperties; resolved_color: PGdkRGBA): gboolean; cdecl; external;
-function gtk_symbolic_color_to_string(ASymbolicColor: PGtkSymbolicColor): Pgchar; cdecl; external;
 function gtk_table_get_type: TGType; cdecl; external;
-function gtk_target_entry_copy(ATargetEntry: PGtkTargetEntry): PGtkTargetEntry; cdecl; external;
+function gtk_target_entry_copy(data: PGtkTargetEntry): PGtkTargetEntry; cdecl; external;
 function gtk_target_entry_get_type: TGType; cdecl; external;
 function gtk_target_entry_new(target: Pgchar; flags: guint; info: guint): PGtkTargetEntry; cdecl; external;
-function gtk_target_list_find(ATargetList: PGtkTargetList; target: TGdkAtom; info: Pguint): gboolean; cdecl; external;
+function gtk_target_list_find(list: PGtkTargetList; target: TGdkAtom; info: Pguint): gboolean; cdecl; external;
 function gtk_target_list_get_type: TGType; cdecl; external;
 function gtk_target_list_new(targets: PGtkTargetEntry; ntargets: guint): PGtkTargetList; cdecl; external;
-function gtk_target_list_ref(ATargetList: PGtkTargetList): PGtkTargetList; cdecl; external;
+function gtk_target_list_ref(list: PGtkTargetList): PGtkTargetList; cdecl; external;
 function gtk_target_table_new_from_list(list: PGtkTargetList; n_targets: Pgint): PGtkTargetEntry; cdecl; external;
 function gtk_targets_include_image(targets: PGdkAtom; n_targets: gint; writable: gboolean): gboolean; cdecl; external;
 function gtk_targets_include_rich_text(targets: PGdkAtom; n_targets: gint; buffer: PGtkTextBuffer): gboolean; cdecl; external;
@@ -12376,443 +12518,443 @@ function gtk_test_spin_button_click(spinner: PGtkSpinButton; button: guint; upwa
 function gtk_test_text_get(widget: PGtkWidget): Pgchar; cdecl; external;
 function gtk_test_widget_click(widget: PGtkWidget; button: guint; modifiers: TGdkModifierType): gboolean; cdecl; external;
 function gtk_test_widget_send_key(widget: PGtkWidget; keyval: guint; modifiers: TGdkModifierType): gboolean; cdecl; external;
-function gtk_text_attributes_copy(ATextAttributes: PGtkTextAttributes): PGtkTextAttributes; cdecl; external;
+function gtk_text_attributes_copy(src: PGtkTextAttributes): PGtkTextAttributes; cdecl; external;
 function gtk_text_attributes_get_type: TGType; cdecl; external;
 function gtk_text_attributes_new: PGtkTextAttributes; cdecl; external;
-function gtk_text_attributes_ref(ATextAttributes: PGtkTextAttributes): PGtkTextAttributes; cdecl; external;
-function gtk_text_buffer_backspace(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; interactive: gboolean; default_editable: gboolean): gboolean; cdecl; external;
-function gtk_text_buffer_create_child_anchor(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter): PGtkTextChildAnchor; cdecl; external;
-function gtk_text_buffer_create_mark(ATextBuffer: PGtkTextBuffer; mark_name: Pgchar; where: PGtkTextIter; left_gravity: gboolean): PGtkTextMark; cdecl; external;
-function gtk_text_buffer_create_tag(ATextBuffer: PGtkTextBuffer; tag_name: Pgchar; first_property_name: Pgchar; args: array of const): PGtkTextTag; cdecl; external;
-function gtk_text_buffer_delete_interactive(ATextBuffer: PGtkTextBuffer; start_iter: PGtkTextIter; end_iter: PGtkTextIter; default_editable: gboolean): gboolean; cdecl; external;
-function gtk_text_buffer_delete_selection(ATextBuffer: PGtkTextBuffer; interactive: gboolean; default_editable: gboolean): gboolean; cdecl; external;
-function gtk_text_buffer_deserialize(ATextBuffer: PGtkTextBuffer; content_buffer: PGtkTextBuffer; format: TGdkAtom; iter: PGtkTextIter; data: Pguint8; length: gsize): gboolean; cdecl; external;
-function gtk_text_buffer_deserialize_get_can_create_tags(ATextBuffer: PGtkTextBuffer; format: TGdkAtom): gboolean; cdecl; external;
-function gtk_text_buffer_get_char_count(ATextBuffer: PGtkTextBuffer): gint; cdecl; external;
-function gtk_text_buffer_get_copy_target_list(ATextBuffer: PGtkTextBuffer): PGtkTargetList; cdecl; external;
-function gtk_text_buffer_get_deserialize_formats(ATextBuffer: PGtkTextBuffer; n_formats: Pgint): PGdkAtom; cdecl; external;
-function gtk_text_buffer_get_has_selection(ATextBuffer: PGtkTextBuffer): gboolean; cdecl; external;
-function gtk_text_buffer_get_insert(ATextBuffer: PGtkTextBuffer): PGtkTextMark; cdecl; external;
-function gtk_text_buffer_get_line_count(ATextBuffer: PGtkTextBuffer): gint; cdecl; external;
-function gtk_text_buffer_get_mark(ATextBuffer: PGtkTextBuffer; name: Pgchar): PGtkTextMark; cdecl; external;
-function gtk_text_buffer_get_modified(ATextBuffer: PGtkTextBuffer): gboolean; cdecl; external;
-function gtk_text_buffer_get_paste_target_list(ATextBuffer: PGtkTextBuffer): PGtkTargetList; cdecl; external;
-function gtk_text_buffer_get_selection_bound(ATextBuffer: PGtkTextBuffer): PGtkTextMark; cdecl; external;
-function gtk_text_buffer_get_selection_bounds(ATextBuffer: PGtkTextBuffer; start: PGtkTextIter; end_: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_buffer_get_serialize_formats(ATextBuffer: PGtkTextBuffer; n_formats: Pgint): PGdkAtom; cdecl; external;
-function gtk_text_buffer_get_slice(ATextBuffer: PGtkTextBuffer; start: PGtkTextIter; end_: PGtkTextIter; include_hidden_chars: gboolean): Pgchar; cdecl; external;
-function gtk_text_buffer_get_tag_table(ATextBuffer: PGtkTextBuffer): PGtkTextTagTable; cdecl; external;
-function gtk_text_buffer_get_text(ATextBuffer: PGtkTextBuffer; start: PGtkTextIter; end_: PGtkTextIter; include_hidden_chars: gboolean): Pgchar; cdecl; external;
+function gtk_text_attributes_ref(values: PGtkTextAttributes): PGtkTextAttributes; cdecl; external;
+function gtk_text_buffer_backspace(buffer: PGtkTextBuffer; iter: PGtkTextIter; interactive: gboolean; default_editable: gboolean): gboolean; cdecl; external;
+function gtk_text_buffer_create_child_anchor(buffer: PGtkTextBuffer; iter: PGtkTextIter): PGtkTextChildAnchor; cdecl; external;
+function gtk_text_buffer_create_mark(buffer: PGtkTextBuffer; mark_name: Pgchar; where: PGtkTextIter; left_gravity: gboolean): PGtkTextMark; cdecl; external;
+function gtk_text_buffer_create_tag(buffer: PGtkTextBuffer; tag_name: Pgchar; first_property_name: Pgchar; args: array of const): PGtkTextTag; cdecl; external;
+function gtk_text_buffer_delete_interactive(buffer: PGtkTextBuffer; start_iter: PGtkTextIter; end_iter: PGtkTextIter; default_editable: gboolean): gboolean; cdecl; external;
+function gtk_text_buffer_delete_selection(buffer: PGtkTextBuffer; interactive: gboolean; default_editable: gboolean): gboolean; cdecl; external;
+function gtk_text_buffer_deserialize(register_buffer: PGtkTextBuffer; content_buffer: PGtkTextBuffer; format: TGdkAtom; iter: PGtkTextIter; data: Pguint8; length: gsize; error: PPGError): gboolean; cdecl; external;
+function gtk_text_buffer_deserialize_get_can_create_tags(buffer: PGtkTextBuffer; format: TGdkAtom): gboolean; cdecl; external;
+function gtk_text_buffer_get_char_count(buffer: PGtkTextBuffer): gint; cdecl; external;
+function gtk_text_buffer_get_copy_target_list(buffer: PGtkTextBuffer): PGtkTargetList; cdecl; external;
+function gtk_text_buffer_get_deserialize_formats(buffer: PGtkTextBuffer; n_formats: Pgint): PGdkAtom; cdecl; external;
+function gtk_text_buffer_get_has_selection(buffer: PGtkTextBuffer): gboolean; cdecl; external;
+function gtk_text_buffer_get_insert(buffer: PGtkTextBuffer): PGtkTextMark; cdecl; external;
+function gtk_text_buffer_get_line_count(buffer: PGtkTextBuffer): gint; cdecl; external;
+function gtk_text_buffer_get_mark(buffer: PGtkTextBuffer; name: Pgchar): PGtkTextMark; cdecl; external;
+function gtk_text_buffer_get_modified(buffer: PGtkTextBuffer): gboolean; cdecl; external;
+function gtk_text_buffer_get_paste_target_list(buffer: PGtkTextBuffer): PGtkTargetList; cdecl; external;
+function gtk_text_buffer_get_selection_bound(buffer: PGtkTextBuffer): PGtkTextMark; cdecl; external;
+function gtk_text_buffer_get_selection_bounds(buffer: PGtkTextBuffer; start: PGtkTextIter; end_: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_buffer_get_serialize_formats(buffer: PGtkTextBuffer; n_formats: Pgint): PGdkAtom; cdecl; external;
+function gtk_text_buffer_get_slice(buffer: PGtkTextBuffer; start: PGtkTextIter; end_: PGtkTextIter; include_hidden_chars: gboolean): Pgchar; cdecl; external;
+function gtk_text_buffer_get_tag_table(buffer: PGtkTextBuffer): PGtkTextTagTable; cdecl; external;
+function gtk_text_buffer_get_text(buffer: PGtkTextBuffer; start: PGtkTextIter; end_: PGtkTextIter; include_hidden_chars: gboolean): Pgchar; cdecl; external;
 function gtk_text_buffer_get_type: TGType; cdecl; external;
-function gtk_text_buffer_insert_interactive(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; text: Pgchar; len: gint; default_editable: gboolean): gboolean; cdecl; external;
-function gtk_text_buffer_insert_interactive_at_cursor(ATextBuffer: PGtkTextBuffer; text: Pgchar; len: gint; default_editable: gboolean): gboolean; cdecl; external;
-function gtk_text_buffer_insert_range_interactive(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; start: PGtkTextIter; end_: PGtkTextIter; default_editable: gboolean): gboolean; cdecl; external;
+function gtk_text_buffer_insert_interactive(buffer: PGtkTextBuffer; iter: PGtkTextIter; text: Pgchar; len: gint; default_editable: gboolean): gboolean; cdecl; external;
+function gtk_text_buffer_insert_interactive_at_cursor(buffer: PGtkTextBuffer; text: Pgchar; len: gint; default_editable: gboolean): gboolean; cdecl; external;
+function gtk_text_buffer_insert_range_interactive(buffer: PGtkTextBuffer; iter: PGtkTextIter; start: PGtkTextIter; end_: PGtkTextIter; default_editable: gboolean): gboolean; cdecl; external;
 function gtk_text_buffer_new(table: PGtkTextTagTable): PGtkTextBuffer; cdecl; external;
-function gtk_text_buffer_register_deserialize_format(ATextBuffer: PGtkTextBuffer; mime_type: Pgchar; function_: TGtkTextBufferDeserializeFunc; user_data: gpointer; user_data_destroy: TGDestroyNotify): TGdkAtom; cdecl; external;
-function gtk_text_buffer_register_deserialize_tagset(ATextBuffer: PGtkTextBuffer; tagset_name: Pgchar): TGdkAtom; cdecl; external;
-function gtk_text_buffer_register_serialize_format(ATextBuffer: PGtkTextBuffer; mime_type: Pgchar; function_: TGtkTextBufferSerializeFunc; user_data: gpointer; user_data_destroy: TGDestroyNotify): TGdkAtom; cdecl; external;
-function gtk_text_buffer_register_serialize_tagset(ATextBuffer: PGtkTextBuffer; tagset_name: Pgchar): TGdkAtom; cdecl; external;
-function gtk_text_buffer_serialize(ATextBuffer: PGtkTextBuffer; content_buffer: PGtkTextBuffer; format: TGdkAtom; start: PGtkTextIter; end_: PGtkTextIter; length: Pgsize): Pguint8; cdecl; external;
-function gtk_text_child_anchor_get_deleted(ATextChildAnchor: PGtkTextChildAnchor): gboolean; cdecl; external;
+function gtk_text_buffer_register_deserialize_format(buffer: PGtkTextBuffer; mime_type: Pgchar; function_: TGtkTextBufferDeserializeFunc; user_data: gpointer; user_data_destroy: TGDestroyNotify): TGdkAtom; cdecl; external;
+function gtk_text_buffer_register_deserialize_tagset(buffer: PGtkTextBuffer; tagset_name: Pgchar): TGdkAtom; cdecl; external;
+function gtk_text_buffer_register_serialize_format(buffer: PGtkTextBuffer; mime_type: Pgchar; function_: TGtkTextBufferSerializeFunc; user_data: gpointer; user_data_destroy: TGDestroyNotify): TGdkAtom; cdecl; external;
+function gtk_text_buffer_register_serialize_tagset(buffer: PGtkTextBuffer; tagset_name: Pgchar): TGdkAtom; cdecl; external;
+function gtk_text_buffer_serialize(register_buffer: PGtkTextBuffer; content_buffer: PGtkTextBuffer; format: TGdkAtom; start: PGtkTextIter; end_: PGtkTextIter; length: Pgsize): Pguint8; cdecl; external;
+function gtk_text_child_anchor_get_deleted(anchor: PGtkTextChildAnchor): gboolean; cdecl; external;
 function gtk_text_child_anchor_get_type: TGType; cdecl; external;
-function gtk_text_child_anchor_get_widgets(ATextChildAnchor: PGtkTextChildAnchor): PGList; cdecl; external;
+function gtk_text_child_anchor_get_widgets(anchor: PGtkTextChildAnchor): PGList; cdecl; external;
 function gtk_text_child_anchor_new: PGtkTextChildAnchor; cdecl; external;
-function gtk_text_iter_backward_char(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_backward_chars(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_backward_cursor_position(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_backward_cursor_positions(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_backward_find_char(ATextIter: PGtkTextIter; pred: TGtkTextCharPredicate; user_data: gpointer; limit: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_backward_line(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_backward_lines(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_backward_search(ATextIter: PGtkTextIter; str: Pgchar; flags: TGtkTextSearchFlags; match_start: PGtkTextIter; match_end: PGtkTextIter; limit: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_backward_sentence_start(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_backward_sentence_starts(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_backward_to_tag_toggle(ATextIter: PGtkTextIter; tag: PGtkTextTag): gboolean; cdecl; external;
-function gtk_text_iter_backward_visible_cursor_position(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_backward_visible_cursor_positions(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_backward_visible_line(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_backward_visible_lines(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_backward_visible_word_start(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_backward_visible_word_starts(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_backward_word_start(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_backward_word_starts(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_begins_tag(ATextIter: PGtkTextIter; tag: PGtkTextTag): gboolean; cdecl; external;
-function gtk_text_iter_can_insert(ATextIter: PGtkTextIter; default_editability: gboolean): gboolean; cdecl; external;
-function gtk_text_iter_compare(ATextIter: PGtkTextIter; rhs: PGtkTextIter): gint; cdecl; external;
-function gtk_text_iter_copy(ATextIter: PGtkTextIter): PGtkTextIter; cdecl; external;
-function gtk_text_iter_editable(ATextIter: PGtkTextIter; default_setting: gboolean): gboolean; cdecl; external;
-function gtk_text_iter_ends_line(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_ends_sentence(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_ends_tag(ATextIter: PGtkTextIter; tag: PGtkTextTag): gboolean; cdecl; external;
-function gtk_text_iter_ends_word(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_equal(ATextIter: PGtkTextIter; rhs: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_forward_char(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_forward_chars(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_forward_cursor_position(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_forward_cursor_positions(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_forward_find_char(ATextIter: PGtkTextIter; pred: TGtkTextCharPredicate; user_data: gpointer; limit: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_forward_line(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_forward_lines(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_forward_search(ATextIter: PGtkTextIter; str: Pgchar; flags: TGtkTextSearchFlags; match_start: PGtkTextIter; match_end: PGtkTextIter; limit: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_forward_sentence_end(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_forward_sentence_ends(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_forward_to_line_end(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_forward_to_tag_toggle(ATextIter: PGtkTextIter; tag: PGtkTextTag): gboolean; cdecl; external;
-function gtk_text_iter_forward_visible_cursor_position(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_forward_visible_cursor_positions(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_forward_visible_line(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_forward_visible_lines(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_forward_visible_word_end(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_forward_visible_word_ends(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_forward_word_end(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_forward_word_ends(ATextIter: PGtkTextIter; count: gint): gboolean; cdecl; external;
-function gtk_text_iter_get_attributes(ATextIter: PGtkTextIter; values: PGtkTextAttributes): gboolean; cdecl; external;
-function gtk_text_iter_get_buffer(ATextIter: PGtkTextIter): PGtkTextBuffer; cdecl; external;
-function gtk_text_iter_get_bytes_in_line(ATextIter: PGtkTextIter): gint; cdecl; external;
-function gtk_text_iter_get_char(ATextIter: PGtkTextIter): gunichar; cdecl; external;
-function gtk_text_iter_get_chars_in_line(ATextIter: PGtkTextIter): gint; cdecl; external;
-function gtk_text_iter_get_child_anchor(ATextIter: PGtkTextIter): PGtkTextChildAnchor; cdecl; external;
-function gtk_text_iter_get_language(ATextIter: PGtkTextIter): PPangoLanguage; cdecl; external;
-function gtk_text_iter_get_line(ATextIter: PGtkTextIter): gint; cdecl; external;
-function gtk_text_iter_get_line_index(ATextIter: PGtkTextIter): gint; cdecl; external;
-function gtk_text_iter_get_line_offset(ATextIter: PGtkTextIter): gint; cdecl; external;
-function gtk_text_iter_get_marks(ATextIter: PGtkTextIter): PGSList; cdecl; external;
-function gtk_text_iter_get_offset(ATextIter: PGtkTextIter): gint; cdecl; external;
-function gtk_text_iter_get_pixbuf(ATextIter: PGtkTextIter): PGdkPixbuf; cdecl; external;
-function gtk_text_iter_get_slice(ATextIter: PGtkTextIter; end_: PGtkTextIter): Pgchar; cdecl; external;
-function gtk_text_iter_get_tags(ATextIter: PGtkTextIter): PGSList; cdecl; external;
-function gtk_text_iter_get_text(ATextIter: PGtkTextIter; end_: PGtkTextIter): Pgchar; cdecl; external;
-function gtk_text_iter_get_toggled_tags(ATextIter: PGtkTextIter; toggled_on: gboolean): PGSList; cdecl; external;
+function gtk_text_iter_backward_char(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_backward_chars(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_backward_cursor_position(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_backward_cursor_positions(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_backward_find_char(iter: PGtkTextIter; pred: TGtkTextCharPredicate; user_data: gpointer; limit: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_backward_line(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_backward_lines(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_backward_search(iter: PGtkTextIter; str: Pgchar; flags: TGtkTextSearchFlags; match_start: PGtkTextIter; match_end: PGtkTextIter; limit: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_backward_sentence_start(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_backward_sentence_starts(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_backward_to_tag_toggle(iter: PGtkTextIter; tag: PGtkTextTag): gboolean; cdecl; external;
+function gtk_text_iter_backward_visible_cursor_position(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_backward_visible_cursor_positions(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_backward_visible_line(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_backward_visible_lines(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_backward_visible_word_start(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_backward_visible_word_starts(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_backward_word_start(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_backward_word_starts(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_begins_tag(iter: PGtkTextIter; tag: PGtkTextTag): gboolean; cdecl; external;
+function gtk_text_iter_can_insert(iter: PGtkTextIter; default_editability: gboolean): gboolean; cdecl; external;
+function gtk_text_iter_compare(lhs: PGtkTextIter; rhs: PGtkTextIter): gint; cdecl; external;
+function gtk_text_iter_copy(iter: PGtkTextIter): PGtkTextIter; cdecl; external;
+function gtk_text_iter_editable(iter: PGtkTextIter; default_setting: gboolean): gboolean; cdecl; external;
+function gtk_text_iter_ends_line(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_ends_sentence(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_ends_tag(iter: PGtkTextIter; tag: PGtkTextTag): gboolean; cdecl; external;
+function gtk_text_iter_ends_word(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_equal(lhs: PGtkTextIter; rhs: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_forward_char(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_forward_chars(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_forward_cursor_position(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_forward_cursor_positions(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_forward_find_char(iter: PGtkTextIter; pred: TGtkTextCharPredicate; user_data: gpointer; limit: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_forward_line(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_forward_lines(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_forward_search(iter: PGtkTextIter; str: Pgchar; flags: TGtkTextSearchFlags; match_start: PGtkTextIter; match_end: PGtkTextIter; limit: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_forward_sentence_end(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_forward_sentence_ends(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_forward_to_line_end(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_forward_to_tag_toggle(iter: PGtkTextIter; tag: PGtkTextTag): gboolean; cdecl; external;
+function gtk_text_iter_forward_visible_cursor_position(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_forward_visible_cursor_positions(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_forward_visible_line(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_forward_visible_lines(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_forward_visible_word_end(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_forward_visible_word_ends(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_forward_word_end(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_forward_word_ends(iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_iter_get_attributes(iter: PGtkTextIter; values: PGtkTextAttributes): gboolean; cdecl; external;
+function gtk_text_iter_get_buffer(iter: PGtkTextIter): PGtkTextBuffer; cdecl; external;
+function gtk_text_iter_get_bytes_in_line(iter: PGtkTextIter): gint; cdecl; external;
+function gtk_text_iter_get_char(iter: PGtkTextIter): gunichar; cdecl; external;
+function gtk_text_iter_get_chars_in_line(iter: PGtkTextIter): gint; cdecl; external;
+function gtk_text_iter_get_child_anchor(iter: PGtkTextIter): PGtkTextChildAnchor; cdecl; external;
+function gtk_text_iter_get_language(iter: PGtkTextIter): PPangoLanguage; cdecl; external;
+function gtk_text_iter_get_line(iter: PGtkTextIter): gint; cdecl; external;
+function gtk_text_iter_get_line_index(iter: PGtkTextIter): gint; cdecl; external;
+function gtk_text_iter_get_line_offset(iter: PGtkTextIter): gint; cdecl; external;
+function gtk_text_iter_get_marks(iter: PGtkTextIter): PGSList; cdecl; external;
+function gtk_text_iter_get_offset(iter: PGtkTextIter): gint; cdecl; external;
+function gtk_text_iter_get_pixbuf(iter: PGtkTextIter): PGdkPixbuf; cdecl; external;
+function gtk_text_iter_get_slice(start: PGtkTextIter; end_: PGtkTextIter): Pgchar; cdecl; external;
+function gtk_text_iter_get_tags(iter: PGtkTextIter): PGSList; cdecl; external;
+function gtk_text_iter_get_text(start: PGtkTextIter; end_: PGtkTextIter): Pgchar; cdecl; external;
+function gtk_text_iter_get_toggled_tags(iter: PGtkTextIter; toggled_on: gboolean): PGSList; cdecl; external;
 function gtk_text_iter_get_type: TGType; cdecl; external;
-function gtk_text_iter_get_visible_line_index(ATextIter: PGtkTextIter): gint; cdecl; external;
-function gtk_text_iter_get_visible_line_offset(ATextIter: PGtkTextIter): gint; cdecl; external;
-function gtk_text_iter_get_visible_slice(ATextIter: PGtkTextIter; end_: PGtkTextIter): Pgchar; cdecl; external;
-function gtk_text_iter_get_visible_text(ATextIter: PGtkTextIter; end_: PGtkTextIter): Pgchar; cdecl; external;
-function gtk_text_iter_has_tag(ATextIter: PGtkTextIter; tag: PGtkTextTag): gboolean; cdecl; external;
-function gtk_text_iter_in_range(ATextIter: PGtkTextIter; start: PGtkTextIter; end_: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_inside_sentence(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_inside_word(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_is_cursor_position(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_is_end(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_is_start(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_starts_line(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_starts_sentence(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_starts_word(ATextIter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_iter_toggles_tag(ATextIter: PGtkTextIter; tag: PGtkTextTag): gboolean; cdecl; external;
-function gtk_text_mark_get_buffer(ATextMark: PGtkTextMark): PGtkTextBuffer; cdecl; external;
-function gtk_text_mark_get_deleted(ATextMark: PGtkTextMark): gboolean; cdecl; external;
-function gtk_text_mark_get_left_gravity(ATextMark: PGtkTextMark): gboolean; cdecl; external;
-function gtk_text_mark_get_name(ATextMark: PGtkTextMark): Pgchar; cdecl; external;
+function gtk_text_iter_get_visible_line_index(iter: PGtkTextIter): gint; cdecl; external;
+function gtk_text_iter_get_visible_line_offset(iter: PGtkTextIter): gint; cdecl; external;
+function gtk_text_iter_get_visible_slice(start: PGtkTextIter; end_: PGtkTextIter): Pgchar; cdecl; external;
+function gtk_text_iter_get_visible_text(start: PGtkTextIter; end_: PGtkTextIter): Pgchar; cdecl; external;
+function gtk_text_iter_has_tag(iter: PGtkTextIter; tag: PGtkTextTag): gboolean; cdecl; external;
+function gtk_text_iter_in_range(iter: PGtkTextIter; start: PGtkTextIter; end_: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_inside_sentence(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_inside_word(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_is_cursor_position(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_is_end(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_is_start(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_starts_line(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_starts_sentence(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_starts_word(iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_iter_toggles_tag(iter: PGtkTextIter; tag: PGtkTextTag): gboolean; cdecl; external;
+function gtk_text_mark_get_buffer(mark: PGtkTextMark): PGtkTextBuffer; cdecl; external;
+function gtk_text_mark_get_deleted(mark: PGtkTextMark): gboolean; cdecl; external;
+function gtk_text_mark_get_left_gravity(mark: PGtkTextMark): gboolean; cdecl; external;
+function gtk_text_mark_get_name(mark: PGtkTextMark): Pgchar; cdecl; external;
 function gtk_text_mark_get_type: TGType; cdecl; external;
-function gtk_text_mark_get_visible(ATextMark: PGtkTextMark): gboolean; cdecl; external;
+function gtk_text_mark_get_visible(mark: PGtkTextMark): gboolean; cdecl; external;
 function gtk_text_mark_new(name: Pgchar; left_gravity: gboolean): PGtkTextMark; cdecl; external;
-function gtk_text_tag_event(ATextTag: PGtkTextTag; event_object: PGObject; event: PGdkEvent; iter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_tag_get_priority(ATextTag: PGtkTextTag): gint; cdecl; external;
+function gtk_text_tag_event(tag: PGtkTextTag; event_object: PGObject; event: PGdkEvent; iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_tag_get_priority(tag: PGtkTextTag): gint; cdecl; external;
 function gtk_text_tag_get_type: TGType; cdecl; external;
 function gtk_text_tag_new(name: Pgchar): PGtkTextTag; cdecl; external;
-function gtk_text_tag_table_get_size(ATextTagTable: PGtkTextTagTable): gint; cdecl; external;
+function gtk_text_tag_table_get_size(table: PGtkTextTagTable): gint; cdecl; external;
 function gtk_text_tag_table_get_type: TGType; cdecl; external;
-function gtk_text_tag_table_lookup(ATextTagTable: PGtkTextTagTable; name: Pgchar): PGtkTextTag; cdecl; external;
+function gtk_text_tag_table_lookup(table: PGtkTextTagTable; name: Pgchar): PGtkTextTag; cdecl; external;
 function gtk_text_tag_table_new: PGtkTextTagTable; cdecl; external;
-function gtk_text_view_backward_display_line(ATextView: PGtkTextView; iter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_view_backward_display_line_start(ATextView: PGtkTextView; iter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_view_forward_display_line(ATextView: PGtkTextView; iter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_view_forward_display_line_end(ATextView: PGtkTextView; iter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_text_view_get_accepts_tab(ATextView: PGtkTextView): gboolean; cdecl; external;
-function gtk_text_view_get_border_window_size(ATextView: PGtkTextView; type_: TGtkTextWindowType): gint; cdecl; external;
-function gtk_text_view_get_buffer(ATextView: PGtkTextView): PGtkTextBuffer; cdecl; external;
-function gtk_text_view_get_cursor_visible(ATextView: PGtkTextView): gboolean; cdecl; external;
-function gtk_text_view_get_default_attributes(ATextView: PGtkTextView): PGtkTextAttributes; cdecl; external;
-function gtk_text_view_get_editable(ATextView: PGtkTextView): gboolean; cdecl; external;
-function gtk_text_view_get_indent(ATextView: PGtkTextView): gint; cdecl; external;
-function gtk_text_view_get_justification(ATextView: PGtkTextView): TGtkJustification; cdecl; external;
-function gtk_text_view_get_left_margin(ATextView: PGtkTextView): gint; cdecl; external;
-function gtk_text_view_get_overwrite(ATextView: PGtkTextView): gboolean; cdecl; external;
-function gtk_text_view_get_pixels_above_lines(ATextView: PGtkTextView): gint; cdecl; external;
-function gtk_text_view_get_pixels_below_lines(ATextView: PGtkTextView): gint; cdecl; external;
-function gtk_text_view_get_pixels_inside_wrap(ATextView: PGtkTextView): gint; cdecl; external;
-function gtk_text_view_get_right_margin(ATextView: PGtkTextView): gint; cdecl; external;
-function gtk_text_view_get_tabs(ATextView: PGtkTextView): PPangoTabArray; cdecl; external;
+function gtk_text_view_backward_display_line(text_view: PGtkTextView; iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_view_backward_display_line_start(text_view: PGtkTextView; iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_view_forward_display_line(text_view: PGtkTextView; iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_view_forward_display_line_end(text_view: PGtkTextView; iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_text_view_get_accepts_tab(text_view: PGtkTextView): gboolean; cdecl; external;
+function gtk_text_view_get_border_window_size(text_view: PGtkTextView; type_: TGtkTextWindowType): gint; cdecl; external;
+function gtk_text_view_get_buffer(text_view: PGtkTextView): PGtkTextBuffer; cdecl; external;
+function gtk_text_view_get_cursor_visible(text_view: PGtkTextView): gboolean; cdecl; external;
+function gtk_text_view_get_default_attributes(text_view: PGtkTextView): PGtkTextAttributes; cdecl; external;
+function gtk_text_view_get_editable(text_view: PGtkTextView): gboolean; cdecl; external;
+function gtk_text_view_get_indent(text_view: PGtkTextView): gint; cdecl; external;
+function gtk_text_view_get_input_hints(text_view: PGtkTextView): TGtkInputHints; cdecl; external;
+function gtk_text_view_get_input_purpose(text_view: PGtkTextView): TGtkInputPurpose; cdecl; external;
+function gtk_text_view_get_justification(text_view: PGtkTextView): TGtkJustification; cdecl; external;
+function gtk_text_view_get_left_margin(text_view: PGtkTextView): gint; cdecl; external;
+function gtk_text_view_get_overwrite(text_view: PGtkTextView): gboolean; cdecl; external;
+function gtk_text_view_get_pixels_above_lines(text_view: PGtkTextView): gint; cdecl; external;
+function gtk_text_view_get_pixels_below_lines(text_view: PGtkTextView): gint; cdecl; external;
+function gtk_text_view_get_pixels_inside_wrap(text_view: PGtkTextView): gint; cdecl; external;
+function gtk_text_view_get_right_margin(text_view: PGtkTextView): gint; cdecl; external;
+function gtk_text_view_get_tabs(text_view: PGtkTextView): PPangoTabArray; cdecl; external;
 function gtk_text_view_get_type: TGType; cdecl; external;
-function gtk_text_view_get_window(ATextView: PGtkTextView; win: TGtkTextWindowType): PGdkWindow; cdecl; external;
-function gtk_text_view_get_window_type(ATextView: PGtkTextView; window: PGdkWindow): TGtkTextWindowType; cdecl; external;
-function gtk_text_view_get_wrap_mode(ATextView: PGtkTextView): TGtkWrapMode; cdecl; external;
-function gtk_text_view_im_context_filter_keypress(ATextView: PGtkTextView; event: PGdkEventKey): gboolean; cdecl; external;
-function gtk_text_view_move_mark_onscreen(ATextView: PGtkTextView; mark: PGtkTextMark): gboolean; cdecl; external;
-function gtk_text_view_move_visually(ATextView: PGtkTextView; iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
+function gtk_text_view_get_window(text_view: PGtkTextView; win: TGtkTextWindowType): PGdkWindow; cdecl; external;
+function gtk_text_view_get_window_type(text_view: PGtkTextView; window: PGdkWindow): TGtkTextWindowType; cdecl; external;
+function gtk_text_view_get_wrap_mode(text_view: PGtkTextView): TGtkWrapMode; cdecl; external;
+function gtk_text_view_im_context_filter_keypress(text_view: PGtkTextView; event: PGdkEventKey): gboolean; cdecl; external;
+function gtk_text_view_move_mark_onscreen(text_view: PGtkTextView; mark: PGtkTextMark): gboolean; cdecl; external;
+function gtk_text_view_move_visually(text_view: PGtkTextView; iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
 function gtk_text_view_new: PGtkTextView; cdecl; external;
 function gtk_text_view_new_with_buffer(buffer: PGtkTextBuffer): PGtkTextView; cdecl; external;
-function gtk_text_view_place_cursor_onscreen(ATextView: PGtkTextView): gboolean; cdecl; external;
-function gtk_text_view_scroll_to_iter(ATextView: PGtkTextView; iter: PGtkTextIter; within_margin: gdouble; use_align: gboolean; xalign: gdouble; yalign: gdouble): gboolean; cdecl; external;
-function gtk_text_view_starts_display_line(ATextView: PGtkTextView; iter: PGtkTextIter): gboolean; cdecl; external;
-function gtk_theming_engine_get_direction(AThemingEngine: PGtkThemingEngine): TGtkTextDirection; cdecl; external;
-function gtk_theming_engine_get_font(AThemingEngine: PGtkThemingEngine; state: TGtkStateFlags): PPangoFontDescription; cdecl; external;
-function gtk_theming_engine_get_junction_sides(AThemingEngine: PGtkThemingEngine): TGtkJunctionSides; cdecl; external;
-function gtk_theming_engine_get_path(AThemingEngine: PGtkThemingEngine): PGtkWidgetPath; cdecl; external;
-function gtk_theming_engine_get_screen(AThemingEngine: PGtkThemingEngine): PGdkScreen; cdecl; external;
-function gtk_theming_engine_get_state(AThemingEngine: PGtkThemingEngine): TGtkStateFlags; cdecl; external;
+function gtk_text_view_place_cursor_onscreen(text_view: PGtkTextView): gboolean; cdecl; external;
+function gtk_text_view_scroll_to_iter(text_view: PGtkTextView; iter: PGtkTextIter; within_margin: gdouble; use_align: gboolean; xalign: gdouble; yalign: gdouble): gboolean; cdecl; external;
+function gtk_text_view_starts_display_line(text_view: PGtkTextView; iter: PGtkTextIter): gboolean; cdecl; external;
+function gtk_theming_engine_get_junction_sides(engine: PGtkThemingEngine): TGtkJunctionSides; cdecl; external;
+function gtk_theming_engine_get_path(engine: PGtkThemingEngine): PGtkWidgetPath; cdecl; external;
+function gtk_theming_engine_get_screen(engine: PGtkThemingEngine): PGdkScreen; cdecl; external;
+function gtk_theming_engine_get_state(engine: PGtkThemingEngine): TGtkStateFlags; cdecl; external;
 function gtk_theming_engine_get_type: TGType; cdecl; external;
-function gtk_theming_engine_has_class(AThemingEngine: PGtkThemingEngine; style_class: Pgchar): gboolean; cdecl; external;
-function gtk_theming_engine_has_region(AThemingEngine: PGtkThemingEngine; style_region: Pgchar; flags: PGtkRegionFlags): gboolean; cdecl; external;
+function gtk_theming_engine_has_class(engine: PGtkThemingEngine; style_class: Pgchar): gboolean; cdecl; external;
+function gtk_theming_engine_has_region(engine: PGtkThemingEngine; style_region: Pgchar; flags: PGtkRegionFlags): gboolean; cdecl; external;
 function gtk_theming_engine_load(name: Pgchar): PGtkThemingEngine; cdecl; external;
-function gtk_theming_engine_lookup_color(AThemingEngine: PGtkThemingEngine; color_name: Pgchar; color: PGdkRGBA): gboolean; cdecl; external;
-function gtk_theming_engine_state_is_running(AThemingEngine: PGtkThemingEngine; state: TGtkStateType; progress: Pgdouble): gboolean; cdecl; external;
-function gtk_toggle_action_get_active(AToggleAction: PGtkToggleAction): gboolean; cdecl; external;
-function gtk_toggle_action_get_draw_as_radio(AToggleAction: PGtkToggleAction): gboolean; cdecl; external;
+function gtk_theming_engine_lookup_color(engine: PGtkThemingEngine; color_name: Pgchar; color: PGdkRGBA): gboolean; cdecl; external;
+function gtk_toggle_action_get_active(action: PGtkToggleAction): gboolean; cdecl; external;
+function gtk_toggle_action_get_draw_as_radio(action: PGtkToggleAction): gboolean; cdecl; external;
 function gtk_toggle_action_get_type: TGType; cdecl; external;
 function gtk_toggle_action_new(name: Pgchar; label_: Pgchar; tooltip: Pgchar; stock_id: Pgchar): PGtkToggleAction; cdecl; external;
-function gtk_toggle_button_get_active(AToggleButton: PGtkToggleButton): gboolean; cdecl; external;
-function gtk_toggle_button_get_inconsistent(AToggleButton: PGtkToggleButton): gboolean; cdecl; external;
-function gtk_toggle_button_get_mode(AToggleButton: PGtkToggleButton): gboolean; cdecl; external;
+function gtk_toggle_button_get_active(toggle_button: PGtkToggleButton): gboolean; cdecl; external;
+function gtk_toggle_button_get_inconsistent(toggle_button: PGtkToggleButton): gboolean; cdecl; external;
+function gtk_toggle_button_get_mode(toggle_button: PGtkToggleButton): gboolean; cdecl; external;
 function gtk_toggle_button_get_type: TGType; cdecl; external;
 function gtk_toggle_button_new: PGtkToggleButton; cdecl; external;
 function gtk_toggle_button_new_with_label(label_: Pgchar): PGtkToggleButton; cdecl; external;
 function gtk_toggle_button_new_with_mnemonic(label_: Pgchar): PGtkToggleButton; cdecl; external;
-function gtk_toggle_tool_button_get_active(AToggleToolButton: PGtkToggleToolButton): gboolean; cdecl; external;
+function gtk_toggle_tool_button_get_active(button: PGtkToggleToolButton): gboolean; cdecl; external;
 function gtk_toggle_tool_button_get_type: TGType; cdecl; external;
 function gtk_toggle_tool_button_new: PGtkToggleToolButton; cdecl; external;
 function gtk_toggle_tool_button_new_from_stock(stock_id: Pgchar): PGtkToggleToolButton; cdecl; external;
-function gtk_tool_button_get_icon_name(AToolButton: PGtkToolButton): Pgchar; cdecl; external;
-function gtk_tool_button_get_icon_widget(AToolButton: PGtkToolButton): PGtkWidget; cdecl; external;
-function gtk_tool_button_get_label(AToolButton: PGtkToolButton): Pgchar; cdecl; external;
-function gtk_tool_button_get_label_widget(AToolButton: PGtkToolButton): PGtkWidget; cdecl; external;
-function gtk_tool_button_get_stock_id(AToolButton: PGtkToolButton): Pgchar; cdecl; external;
+function gtk_tool_button_get_icon_name(button: PGtkToolButton): Pgchar; cdecl; external;
+function gtk_tool_button_get_icon_widget(button: PGtkToolButton): PGtkWidget; cdecl; external;
+function gtk_tool_button_get_label(button: PGtkToolButton): Pgchar; cdecl; external;
+function gtk_tool_button_get_label_widget(button: PGtkToolButton): PGtkWidget; cdecl; external;
+function gtk_tool_button_get_stock_id(button: PGtkToolButton): Pgchar; cdecl; external;
 function gtk_tool_button_get_type: TGType; cdecl; external;
-function gtk_tool_button_get_use_underline(AToolButton: PGtkToolButton): gboolean; cdecl; external;
+function gtk_tool_button_get_use_underline(button: PGtkToolButton): gboolean; cdecl; external;
 function gtk_tool_button_new(icon_widget: PGtkWidget; label_: Pgchar): PGtkToolButton; cdecl; external;
 function gtk_tool_button_new_from_stock(stock_id: Pgchar): PGtkToolButton; cdecl; external;
-function gtk_tool_item_get_ellipsize_mode(AToolItem: PGtkToolItem): TPangoEllipsizeMode; cdecl; external;
-function gtk_tool_item_get_expand(AToolItem: PGtkToolItem): gboolean; cdecl; external;
-function gtk_tool_item_get_homogeneous(AToolItem: PGtkToolItem): gboolean; cdecl; external;
-function gtk_tool_item_get_icon_size(AToolItem: PGtkToolItem): gint; cdecl; external;
-function gtk_tool_item_get_is_important(AToolItem: PGtkToolItem): gboolean; cdecl; external;
-function gtk_tool_item_get_orientation(AToolItem: PGtkToolItem): TGtkOrientation; cdecl; external;
-function gtk_tool_item_get_proxy_menu_item(AToolItem: PGtkToolItem; menu_item_id: Pgchar): PGtkWidget; cdecl; external;
-function gtk_tool_item_get_relief_style(AToolItem: PGtkToolItem): TGtkReliefStyle; cdecl; external;
-function gtk_tool_item_get_text_alignment(AToolItem: PGtkToolItem): gfloat; cdecl; external;
-function gtk_tool_item_get_text_orientation(AToolItem: PGtkToolItem): TGtkOrientation; cdecl; external;
-function gtk_tool_item_get_text_size_group(AToolItem: PGtkToolItem): PGtkSizeGroup; cdecl; external;
-function gtk_tool_item_get_toolbar_style(AToolItem: PGtkToolItem): TGtkToolbarStyle; cdecl; external;
+function gtk_tool_item_get_ellipsize_mode(tool_item: PGtkToolItem): TPangoEllipsizeMode; cdecl; external;
+function gtk_tool_item_get_expand(tool_item: PGtkToolItem): gboolean; cdecl; external;
+function gtk_tool_item_get_homogeneous(tool_item: PGtkToolItem): gboolean; cdecl; external;
+function gtk_tool_item_get_icon_size(tool_item: PGtkToolItem): gint; cdecl; external;
+function gtk_tool_item_get_is_important(tool_item: PGtkToolItem): gboolean; cdecl; external;
+function gtk_tool_item_get_orientation(tool_item: PGtkToolItem): TGtkOrientation; cdecl; external;
+function gtk_tool_item_get_proxy_menu_item(tool_item: PGtkToolItem; menu_item_id: Pgchar): PGtkWidget; cdecl; external;
+function gtk_tool_item_get_relief_style(tool_item: PGtkToolItem): TGtkReliefStyle; cdecl; external;
+function gtk_tool_item_get_text_alignment(tool_item: PGtkToolItem): gfloat; cdecl; external;
+function gtk_tool_item_get_text_orientation(tool_item: PGtkToolItem): TGtkOrientation; cdecl; external;
+function gtk_tool_item_get_text_size_group(tool_item: PGtkToolItem): PGtkSizeGroup; cdecl; external;
+function gtk_tool_item_get_toolbar_style(tool_item: PGtkToolItem): TGtkToolbarStyle; cdecl; external;
 function gtk_tool_item_get_type: TGType; cdecl; external;
-function gtk_tool_item_get_use_drag_window(AToolItem: PGtkToolItem): gboolean; cdecl; external;
-function gtk_tool_item_get_visible_horizontal(AToolItem: PGtkToolItem): gboolean; cdecl; external;
-function gtk_tool_item_get_visible_vertical(AToolItem: PGtkToolItem): gboolean; cdecl; external;
-function gtk_tool_item_group_get_collapsed(AToolItemGroup: PGtkToolItemGroup): gboolean; cdecl; external;
-function gtk_tool_item_group_get_drop_item(AToolItemGroup: PGtkToolItemGroup; x: gint; y: gint): PGtkToolItem; cdecl; external;
-function gtk_tool_item_group_get_ellipsize(AToolItemGroup: PGtkToolItemGroup): TPangoEllipsizeMode; cdecl; external;
-function gtk_tool_item_group_get_header_relief(AToolItemGroup: PGtkToolItemGroup): TGtkReliefStyle; cdecl; external;
-function gtk_tool_item_group_get_item_position(AToolItemGroup: PGtkToolItemGroup; item: PGtkToolItem): gint; cdecl; external;
-function gtk_tool_item_group_get_label(AToolItemGroup: PGtkToolItemGroup): Pgchar; cdecl; external;
-function gtk_tool_item_group_get_label_widget(AToolItemGroup: PGtkToolItemGroup): PGtkWidget; cdecl; external;
-function gtk_tool_item_group_get_n_items(AToolItemGroup: PGtkToolItemGroup): guint; cdecl; external;
-function gtk_tool_item_group_get_nth_item(AToolItemGroup: PGtkToolItemGroup; index: guint): PGtkToolItem; cdecl; external;
+function gtk_tool_item_get_use_drag_window(tool_item: PGtkToolItem): gboolean; cdecl; external;
+function gtk_tool_item_get_visible_horizontal(tool_item: PGtkToolItem): gboolean; cdecl; external;
+function gtk_tool_item_get_visible_vertical(tool_item: PGtkToolItem): gboolean; cdecl; external;
+function gtk_tool_item_group_get_collapsed(group: PGtkToolItemGroup): gboolean; cdecl; external;
+function gtk_tool_item_group_get_drop_item(group: PGtkToolItemGroup; x: gint; y: gint): PGtkToolItem; cdecl; external;
+function gtk_tool_item_group_get_ellipsize(group: PGtkToolItemGroup): TPangoEllipsizeMode; cdecl; external;
+function gtk_tool_item_group_get_header_relief(group: PGtkToolItemGroup): TGtkReliefStyle; cdecl; external;
+function gtk_tool_item_group_get_item_position(group: PGtkToolItemGroup; item: PGtkToolItem): gint; cdecl; external;
+function gtk_tool_item_group_get_label(group: PGtkToolItemGroup): Pgchar; cdecl; external;
+function gtk_tool_item_group_get_label_widget(group: PGtkToolItemGroup): PGtkWidget; cdecl; external;
+function gtk_tool_item_group_get_n_items(group: PGtkToolItemGroup): guint; cdecl; external;
+function gtk_tool_item_group_get_nth_item(group: PGtkToolItemGroup; index: guint): PGtkToolItem; cdecl; external;
 function gtk_tool_item_group_get_type: TGType; cdecl; external;
 function gtk_tool_item_group_new(label_: Pgchar): PGtkToolItemGroup; cdecl; external;
 function gtk_tool_item_new: PGtkToolItem; cdecl; external;
-function gtk_tool_item_retrieve_proxy_menu_item(AToolItem: PGtkToolItem): PGtkWidget; cdecl; external;
-function gtk_tool_palette_get_drag_item(AToolPalette: PGtkToolPalette; selection: PGtkSelectionData): PGtkWidget; cdecl; external;
+function gtk_tool_item_retrieve_proxy_menu_item(tool_item: PGtkToolItem): PGtkWidget; cdecl; external;
+function gtk_tool_palette_get_drag_item(palette: PGtkToolPalette; selection: PGtkSelectionData): PGtkWidget; cdecl; external;
 function gtk_tool_palette_get_drag_target_group: PGtkTargetEntry; cdecl; external;
 function gtk_tool_palette_get_drag_target_item: PGtkTargetEntry; cdecl; external;
-function gtk_tool_palette_get_drop_group(AToolPalette: PGtkToolPalette; x: gint; y: gint): PGtkToolItemGroup; cdecl; external;
-function gtk_tool_palette_get_drop_item(AToolPalette: PGtkToolPalette; x: gint; y: gint): PGtkToolItem; cdecl; external;
-function gtk_tool_palette_get_exclusive(AToolPalette: PGtkToolPalette; group: PGtkToolItemGroup): gboolean; cdecl; external;
-function gtk_tool_palette_get_expand(AToolPalette: PGtkToolPalette; group: PGtkToolItemGroup): gboolean; cdecl; external;
-function gtk_tool_palette_get_group_position(AToolPalette: PGtkToolPalette; group: PGtkToolItemGroup): gint; cdecl; external;
-function gtk_tool_palette_get_icon_size(AToolPalette: PGtkToolPalette): gint; cdecl; external;
-function gtk_tool_palette_get_style(AToolPalette: PGtkToolPalette): TGtkToolbarStyle; cdecl; external;
+function gtk_tool_palette_get_drop_group(palette: PGtkToolPalette; x: gint; y: gint): PGtkToolItemGroup; cdecl; external;
+function gtk_tool_palette_get_drop_item(palette: PGtkToolPalette; x: gint; y: gint): PGtkToolItem; cdecl; external;
+function gtk_tool_palette_get_exclusive(palette: PGtkToolPalette; group: PGtkToolItemGroup): gboolean; cdecl; external;
+function gtk_tool_palette_get_expand(palette: PGtkToolPalette; group: PGtkToolItemGroup): gboolean; cdecl; external;
+function gtk_tool_palette_get_group_position(palette: PGtkToolPalette; group: PGtkToolItemGroup): gint; cdecl; external;
+function gtk_tool_palette_get_icon_size(palette: PGtkToolPalette): gint; cdecl; external;
+function gtk_tool_palette_get_style(palette: PGtkToolPalette): TGtkToolbarStyle; cdecl; external;
 function gtk_tool_palette_get_type: TGType; cdecl; external;
 function gtk_tool_palette_new: PGtkToolPalette; cdecl; external;
-function gtk_tool_shell_get_ellipsize_mode(AToolShell: PGtkToolShell): TPangoEllipsizeMode; cdecl; external;
-function gtk_tool_shell_get_icon_size(AToolShell: PGtkToolShell): gint; cdecl; external;
-function gtk_tool_shell_get_orientation(AToolShell: PGtkToolShell): TGtkOrientation; cdecl; external;
-function gtk_tool_shell_get_relief_style(AToolShell: PGtkToolShell): TGtkReliefStyle; cdecl; external;
-function gtk_tool_shell_get_style(AToolShell: PGtkToolShell): TGtkToolbarStyle; cdecl; external;
-function gtk_tool_shell_get_text_alignment(AToolShell: PGtkToolShell): gfloat; cdecl; external;
-function gtk_tool_shell_get_text_orientation(AToolShell: PGtkToolShell): TGtkOrientation; cdecl; external;
-function gtk_tool_shell_get_text_size_group(AToolShell: PGtkToolShell): PGtkSizeGroup; cdecl; external;
+function gtk_tool_shell_get_ellipsize_mode(shell: PGtkToolShell): TPangoEllipsizeMode; cdecl; external;
+function gtk_tool_shell_get_icon_size(shell: PGtkToolShell): gint; cdecl; external;
+function gtk_tool_shell_get_orientation(shell: PGtkToolShell): TGtkOrientation; cdecl; external;
+function gtk_tool_shell_get_relief_style(shell: PGtkToolShell): TGtkReliefStyle; cdecl; external;
+function gtk_tool_shell_get_style(shell: PGtkToolShell): TGtkToolbarStyle; cdecl; external;
+function gtk_tool_shell_get_text_alignment(shell: PGtkToolShell): gfloat; cdecl; external;
+function gtk_tool_shell_get_text_orientation(shell: PGtkToolShell): TGtkOrientation; cdecl; external;
+function gtk_tool_shell_get_text_size_group(shell: PGtkToolShell): PGtkSizeGroup; cdecl; external;
 function gtk_tool_shell_get_type: TGType; cdecl; external;
-function gtk_toolbar_get_drop_index(AToolbar: PGtkToolbar; x: gint; y: gint): gint; cdecl; external;
-function gtk_toolbar_get_icon_size(AToolbar: PGtkToolbar): gint; cdecl; external;
-function gtk_toolbar_get_item_index(AToolbar: PGtkToolbar; item: PGtkToolItem): gint; cdecl; external;
-function gtk_toolbar_get_n_items(AToolbar: PGtkToolbar): gint; cdecl; external;
-function gtk_toolbar_get_nth_item(AToolbar: PGtkToolbar; n: gint): PGtkToolItem; cdecl; external;
-function gtk_toolbar_get_relief_style(AToolbar: PGtkToolbar): TGtkReliefStyle; cdecl; external;
-function gtk_toolbar_get_show_arrow(AToolbar: PGtkToolbar): gboolean; cdecl; external;
-function gtk_toolbar_get_style(AToolbar: PGtkToolbar): TGtkToolbarStyle; cdecl; external;
+function gtk_toolbar_get_drop_index(toolbar: PGtkToolbar; x: gint; y: gint): gint; cdecl; external;
+function gtk_toolbar_get_icon_size(toolbar: PGtkToolbar): gint; cdecl; external;
+function gtk_toolbar_get_item_index(toolbar: PGtkToolbar; item: PGtkToolItem): gint; cdecl; external;
+function gtk_toolbar_get_n_items(toolbar: PGtkToolbar): gint; cdecl; external;
+function gtk_toolbar_get_nth_item(toolbar: PGtkToolbar; n: gint): PGtkToolItem; cdecl; external;
+function gtk_toolbar_get_relief_style(toolbar: PGtkToolbar): TGtkReliefStyle; cdecl; external;
+function gtk_toolbar_get_show_arrow(toolbar: PGtkToolbar): gboolean; cdecl; external;
+function gtk_toolbar_get_style(toolbar: PGtkToolbar): TGtkToolbarStyle; cdecl; external;
 function gtk_toolbar_get_type: TGType; cdecl; external;
 function gtk_toolbar_new: PGtkToolbar; cdecl; external;
 function gtk_tooltip_get_type: TGType; cdecl; external;
-function gtk_tree_drag_dest_drag_data_received(ATreeDragDest: PGtkTreeDragDest; dest: PGtkTreePath; selection_data: PGtkSelectionData): gboolean; cdecl; external;
+function gtk_tree_drag_dest_drag_data_received(drag_dest: PGtkTreeDragDest; dest: PGtkTreePath; selection_data: PGtkSelectionData): gboolean; cdecl; external;
 function gtk_tree_drag_dest_get_type: TGType; cdecl; external;
-function gtk_tree_drag_dest_row_drop_possible(ATreeDragDest: PGtkTreeDragDest; dest_path: PGtkTreePath; selection_data: PGtkSelectionData): gboolean; cdecl; external;
-function gtk_tree_drag_source_drag_data_delete(ATreeDragSource: PGtkTreeDragSource; path: PGtkTreePath): gboolean; cdecl; external;
-function gtk_tree_drag_source_drag_data_get(ATreeDragSource: PGtkTreeDragSource; path: PGtkTreePath; selection_data: PGtkSelectionData): gboolean; cdecl; external;
+function gtk_tree_drag_dest_row_drop_possible(drag_dest: PGtkTreeDragDest; dest_path: PGtkTreePath; selection_data: PGtkSelectionData): gboolean; cdecl; external;
+function gtk_tree_drag_source_drag_data_delete(drag_source: PGtkTreeDragSource; path: PGtkTreePath): gboolean; cdecl; external;
+function gtk_tree_drag_source_drag_data_get(drag_source: PGtkTreeDragSource; path: PGtkTreePath; selection_data: PGtkSelectionData): gboolean; cdecl; external;
 function gtk_tree_drag_source_get_type: TGType; cdecl; external;
-function gtk_tree_drag_source_row_draggable(ATreeDragSource: PGtkTreeDragSource; path: PGtkTreePath): gboolean; cdecl; external;
+function gtk_tree_drag_source_row_draggable(drag_source: PGtkTreeDragSource; path: PGtkTreePath): gboolean; cdecl; external;
 function gtk_tree_get_row_drag_data(selection_data: PGtkSelectionData; tree_model: PPGtkTreeModel; path: PPGtkTreePath): gboolean; cdecl; external;
-function gtk_tree_iter_copy(ATreeIter: PGtkTreeIter): PGtkTreeIter; cdecl; external;
+function gtk_tree_iter_copy(iter: PGtkTreeIter): PGtkTreeIter; cdecl; external;
 function gtk_tree_iter_get_type: TGType; cdecl; external;
-function gtk_tree_model_filter_convert_child_iter_to_iter(ATreeModelFilter: PGtkTreeModelFilter; filter_iter: PGtkTreeIter; child_iter: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_tree_model_filter_convert_child_path_to_path(ATreeModelFilter: PGtkTreeModelFilter; child_path: PGtkTreePath): PGtkTreePath; cdecl; external;
-function gtk_tree_model_filter_convert_path_to_child_path(ATreeModelFilter: PGtkTreeModelFilter; filter_path: PGtkTreePath): PGtkTreePath; cdecl; external;
-function gtk_tree_model_filter_get_model(ATreeModelFilter: PGtkTreeModelFilter): PGtkTreeModel; cdecl; external;
+function gtk_tree_model_filter_convert_child_iter_to_iter(filter: PGtkTreeModelFilter; filter_iter: PGtkTreeIter; child_iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_model_filter_convert_child_path_to_path(filter: PGtkTreeModelFilter; child_path: PGtkTreePath): PGtkTreePath; cdecl; external;
+function gtk_tree_model_filter_convert_path_to_child_path(filter: PGtkTreeModelFilter; filter_path: PGtkTreePath): PGtkTreePath; cdecl; external;
+function gtk_tree_model_filter_get_model(filter: PGtkTreeModelFilter): PGtkTreeModel; cdecl; external;
 function gtk_tree_model_filter_get_type: TGType; cdecl; external;
-function gtk_tree_model_filter_new(ATreeModel: PGtkTreeModel; root: PGtkTreePath): PGtkTreeModel; cdecl; external;
-function gtk_tree_model_get_column_type(ATreeModel: PGtkTreeModel; index_: gint): TGType; cdecl; external;
-function gtk_tree_model_get_flags(ATreeModel: PGtkTreeModel): TGtkTreeModelFlags; cdecl; external;
-function gtk_tree_model_get_iter(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter; path: PGtkTreePath): gboolean; cdecl; external;
-function gtk_tree_model_get_iter_first(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_tree_model_get_iter_from_string(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter; path_string: Pgchar): gboolean; cdecl; external;
-function gtk_tree_model_get_n_columns(ATreeModel: PGtkTreeModel): gint; cdecl; external;
-function gtk_tree_model_get_path(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter): PGtkTreePath; cdecl; external;
-function gtk_tree_model_get_string_from_iter(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter): Pgchar; cdecl; external;
+function gtk_tree_model_filter_new(child_model: PGtkTreeModel; root: PGtkTreePath): PGtkTreeModel; cdecl; external;
+function gtk_tree_model_get_column_type(tree_model: PGtkTreeModel; index_: gint): TGType; cdecl; external;
+function gtk_tree_model_get_flags(tree_model: PGtkTreeModel): TGtkTreeModelFlags; cdecl; external;
+function gtk_tree_model_get_iter(tree_model: PGtkTreeModel; iter: PGtkTreeIter; path: PGtkTreePath): gboolean; cdecl; external;
+function gtk_tree_model_get_iter_first(tree_model: PGtkTreeModel; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_model_get_iter_from_string(tree_model: PGtkTreeModel; iter: PGtkTreeIter; path_string: Pgchar): gboolean; cdecl; external;
+function gtk_tree_model_get_n_columns(tree_model: PGtkTreeModel): gint; cdecl; external;
+function gtk_tree_model_get_path(tree_model: PGtkTreeModel; iter: PGtkTreeIter): PGtkTreePath; cdecl; external;
+function gtk_tree_model_get_string_from_iter(tree_model: PGtkTreeModel; iter: PGtkTreeIter): Pgchar; cdecl; external;
 function gtk_tree_model_get_type: TGType; cdecl; external;
-function gtk_tree_model_iter_children(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter; parent: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_tree_model_iter_has_child(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_tree_model_iter_n_children(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter): gint; cdecl; external;
-function gtk_tree_model_iter_next(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_tree_model_iter_nth_child(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter; parent: PGtkTreeIter; n: gint): gboolean; cdecl; external;
-function gtk_tree_model_iter_parent(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter; child: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_tree_model_iter_previous(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_tree_model_sort_convert_child_iter_to_iter(ATreeModelSort: PGtkTreeModelSort; sort_iter: PGtkTreeIter; child_iter: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_tree_model_sort_convert_child_path_to_path(ATreeModelSort: PGtkTreeModelSort; child_path: PGtkTreePath): PGtkTreePath; cdecl; external;
-function gtk_tree_model_sort_convert_path_to_child_path(ATreeModelSort: PGtkTreeModelSort; sorted_path: PGtkTreePath): PGtkTreePath; cdecl; external;
-function gtk_tree_model_sort_get_model(ATreeModelSort: PGtkTreeModelSort): PGtkTreeModel; cdecl; external;
+function gtk_tree_model_iter_children(tree_model: PGtkTreeModel; iter: PGtkTreeIter; parent: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_model_iter_has_child(tree_model: PGtkTreeModel; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_model_iter_n_children(tree_model: PGtkTreeModel; iter: PGtkTreeIter): gint; cdecl; external;
+function gtk_tree_model_iter_next(tree_model: PGtkTreeModel; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_model_iter_nth_child(tree_model: PGtkTreeModel; iter: PGtkTreeIter; parent: PGtkTreeIter; n: gint): gboolean; cdecl; external;
+function gtk_tree_model_iter_parent(tree_model: PGtkTreeModel; iter: PGtkTreeIter; child: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_model_iter_previous(tree_model: PGtkTreeModel; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_model_sort_convert_child_iter_to_iter(tree_model_sort: PGtkTreeModelSort; sort_iter: PGtkTreeIter; child_iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_model_sort_convert_child_path_to_path(tree_model_sort: PGtkTreeModelSort; child_path: PGtkTreePath): PGtkTreePath; cdecl; external;
+function gtk_tree_model_sort_convert_path_to_child_path(tree_model_sort: PGtkTreeModelSort; sorted_path: PGtkTreePath): PGtkTreePath; cdecl; external;
+function gtk_tree_model_sort_get_model(tree_model: PGtkTreeModelSort): PGtkTreeModel; cdecl; external;
 function gtk_tree_model_sort_get_type: TGType; cdecl; external;
-function gtk_tree_model_sort_iter_is_valid(ATreeModelSort: PGtkTreeModelSort; iter: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_tree_model_sort_new_with_model(ATreeModel: PGtkTreeModel): PGtkTreeModel; cdecl; external;
-function gtk_tree_path_compare(ATreePath: PGtkTreePath; b: PGtkTreePath): gint; cdecl; external;
-function gtk_tree_path_copy(ATreePath: PGtkTreePath): PGtkTreePath; cdecl; external;
-function gtk_tree_path_get_depth(ATreePath: PGtkTreePath): gint; cdecl; external;
-function gtk_tree_path_get_indices(ATreePath: PGtkTreePath): Pgint; cdecl; external;
-function gtk_tree_path_get_indices_with_depth(ATreePath: PGtkTreePath; depth: Pgint): Pgint; cdecl; external;
+function gtk_tree_model_sort_iter_is_valid(tree_model_sort: PGtkTreeModelSort; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_model_sort_new_with_model(child_model: PGtkTreeModel): PGtkTreeModel; cdecl; external;
+function gtk_tree_path_compare(a: PGtkTreePath; b: PGtkTreePath): gint; cdecl; external;
+function gtk_tree_path_copy(path: PGtkTreePath): PGtkTreePath; cdecl; external;
+function gtk_tree_path_get_depth(path: PGtkTreePath): gint; cdecl; external;
+function gtk_tree_path_get_indices(path: PGtkTreePath): Pgint; cdecl; external;
+function gtk_tree_path_get_indices_with_depth(path: PGtkTreePath; depth: Pgint): Pgint; cdecl; external;
 function gtk_tree_path_get_type: TGType; cdecl; external;
-function gtk_tree_path_is_ancestor(ATreePath: PGtkTreePath; descendant: PGtkTreePath): gboolean; cdecl; external;
-function gtk_tree_path_is_descendant(ATreePath: PGtkTreePath; ancestor: PGtkTreePath): gboolean; cdecl; external;
+function gtk_tree_path_is_ancestor(path: PGtkTreePath; descendant: PGtkTreePath): gboolean; cdecl; external;
+function gtk_tree_path_is_descendant(path: PGtkTreePath; ancestor: PGtkTreePath): gboolean; cdecl; external;
 function gtk_tree_path_new: PGtkTreePath; cdecl; external;
 function gtk_tree_path_new_first: PGtkTreePath; cdecl; external;
 function gtk_tree_path_new_from_indices(first_index: gint; args: array of const): PGtkTreePath; cdecl; external;
 function gtk_tree_path_new_from_string(path: Pgchar): PGtkTreePath; cdecl; external;
-function gtk_tree_path_prev(ATreePath: PGtkTreePath): gboolean; cdecl; external;
-function gtk_tree_path_to_string(ATreePath: PGtkTreePath): Pgchar; cdecl; external;
-function gtk_tree_path_up(ATreePath: PGtkTreePath): gboolean; cdecl; external;
-function gtk_tree_row_reference_copy(ATreeRowReference: PGtkTreeRowReference): PGtkTreeRowReference; cdecl; external;
-function gtk_tree_row_reference_get_model(ATreeRowReference: PGtkTreeRowReference): PGtkTreeModel; cdecl; external;
-function gtk_tree_row_reference_get_path(ATreeRowReference: PGtkTreeRowReference): PGtkTreePath; cdecl; external;
+function gtk_tree_path_prev(path: PGtkTreePath): gboolean; cdecl; external;
+function gtk_tree_path_to_string(path: PGtkTreePath): Pgchar; cdecl; external;
+function gtk_tree_path_up(path: PGtkTreePath): gboolean; cdecl; external;
+function gtk_tree_row_reference_copy(reference: PGtkTreeRowReference): PGtkTreeRowReference; cdecl; external;
+function gtk_tree_row_reference_get_model(reference: PGtkTreeRowReference): PGtkTreeModel; cdecl; external;
+function gtk_tree_row_reference_get_path(reference: PGtkTreeRowReference): PGtkTreePath; cdecl; external;
 function gtk_tree_row_reference_get_type: TGType; cdecl; external;
 function gtk_tree_row_reference_new(model: PGtkTreeModel; path: PGtkTreePath): PGtkTreeRowReference; cdecl; external;
 function gtk_tree_row_reference_new_proxy(proxy: PGObject; model: PGtkTreeModel; path: PGtkTreePath): PGtkTreeRowReference; cdecl; external;
-function gtk_tree_row_reference_valid(ATreeRowReference: PGtkTreeRowReference): gboolean; cdecl; external;
-function gtk_tree_selection_count_selected_rows(ATreeSelection: PGtkTreeSelection): gint; cdecl; external;
-function gtk_tree_selection_get_mode(ATreeSelection: PGtkTreeSelection): TGtkSelectionMode; cdecl; external;
-function gtk_tree_selection_get_select_function(ATreeSelection: PGtkTreeSelection): TGtkTreeSelectionFunc; cdecl; external;
-function gtk_tree_selection_get_selected(ATreeSelection: PGtkTreeSelection; model: PPGtkTreeModel; iter: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_tree_selection_get_selected_rows(ATreeSelection: PGtkTreeSelection; model: PPGtkTreeModel): PGList; cdecl; external;
-function gtk_tree_selection_get_tree_view(ATreeSelection: PGtkTreeSelection): PGtkTreeView; cdecl; external;
+function gtk_tree_row_reference_valid(reference: PGtkTreeRowReference): gboolean; cdecl; external;
+function gtk_tree_selection_count_selected_rows(selection: PGtkTreeSelection): gint; cdecl; external;
+function gtk_tree_selection_get_mode(selection: PGtkTreeSelection): TGtkSelectionMode; cdecl; external;
+function gtk_tree_selection_get_select_function(selection: PGtkTreeSelection): TGtkTreeSelectionFunc; cdecl; external;
+function gtk_tree_selection_get_selected(selection: PGtkTreeSelection; model: PPGtkTreeModel; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_selection_get_selected_rows(selection: PGtkTreeSelection; model: PPGtkTreeModel): PGList; cdecl; external;
+function gtk_tree_selection_get_tree_view(selection: PGtkTreeSelection): PGtkTreeView; cdecl; external;
 function gtk_tree_selection_get_type: TGType; cdecl; external;
-function gtk_tree_selection_get_user_data(ATreeSelection: PGtkTreeSelection): gpointer; cdecl; external;
-function gtk_tree_selection_iter_is_selected(ATreeSelection: PGtkTreeSelection; iter: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_tree_selection_path_is_selected(ATreeSelection: PGtkTreeSelection; path: PGtkTreePath): gboolean; cdecl; external;
+function gtk_tree_selection_get_user_data(selection: PGtkTreeSelection): gpointer; cdecl; external;
+function gtk_tree_selection_iter_is_selected(selection: PGtkTreeSelection; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_selection_path_is_selected(selection: PGtkTreeSelection; path: PGtkTreePath): gboolean; cdecl; external;
 function gtk_tree_set_row_drag_data(selection_data: PGtkSelectionData; tree_model: PGtkTreeModel; path: PGtkTreePath): gboolean; cdecl; external;
-function gtk_tree_sortable_get_sort_column_id(ATreeSortable: PGtkTreeSortable; sort_column_id: Pgint; order: PGtkSortType): gboolean; cdecl; external;
+function gtk_tree_sortable_get_sort_column_id(sortable: PGtkTreeSortable; sort_column_id: Pgint; order: PGtkSortType): gboolean; cdecl; external;
 function gtk_tree_sortable_get_type: TGType; cdecl; external;
-function gtk_tree_sortable_has_default_sort_func(ATreeSortable: PGtkTreeSortable): gboolean; cdecl; external;
+function gtk_tree_sortable_has_default_sort_func(sortable: PGtkTreeSortable): gboolean; cdecl; external;
 function gtk_tree_store_get_type: TGType; cdecl; external;
-function gtk_tree_store_is_ancestor(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; descendant: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_tree_store_iter_depth(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter): gint; cdecl; external;
-function gtk_tree_store_iter_is_valid(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_store_is_ancestor(tree_store: PGtkTreeStore; iter: PGtkTreeIter; descendant: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_store_iter_depth(tree_store: PGtkTreeStore; iter: PGtkTreeIter): gint; cdecl; external;
+function gtk_tree_store_iter_is_valid(tree_store: PGtkTreeStore; iter: PGtkTreeIter): gboolean; cdecl; external;
 function gtk_tree_store_new(n_columns: gint; args: array of const): PGtkTreeStore; cdecl; external;
 function gtk_tree_store_newv(n_columns: gint; types: PGType): PGtkTreeStore; cdecl; external;
-function gtk_tree_store_remove(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter): gboolean; cdecl; external;
-function gtk_tree_view_append_column(ATreeView: PGtkTreeView; column: PGtkTreeViewColumn): gint; cdecl; external;
-function gtk_tree_view_collapse_row(ATreeView: PGtkTreeView; path: PGtkTreePath): gboolean; cdecl; external;
-function gtk_tree_view_column_cell_get_position(ATreeViewColumn: PGtkTreeViewColumn; cell_renderer: PGtkCellRenderer; x_offset: Pgint; width: Pgint): gboolean; cdecl; external;
-function gtk_tree_view_column_cell_is_visible(ATreeViewColumn: PGtkTreeViewColumn): gboolean; cdecl; external;
-function gtk_tree_view_column_get_alignment(ATreeViewColumn: PGtkTreeViewColumn): gfloat; cdecl; external;
-function gtk_tree_view_column_get_button(ATreeViewColumn: PGtkTreeViewColumn): PGtkWidget; cdecl; external;
-function gtk_tree_view_column_get_clickable(ATreeViewColumn: PGtkTreeViewColumn): gboolean; cdecl; external;
-function gtk_tree_view_column_get_expand(ATreeViewColumn: PGtkTreeViewColumn): gboolean; cdecl; external;
-function gtk_tree_view_column_get_fixed_width(ATreeViewColumn: PGtkTreeViewColumn): gint; cdecl; external;
-function gtk_tree_view_column_get_max_width(ATreeViewColumn: PGtkTreeViewColumn): gint; cdecl; external;
-function gtk_tree_view_column_get_min_width(ATreeViewColumn: PGtkTreeViewColumn): gint; cdecl; external;
-function gtk_tree_view_column_get_reorderable(ATreeViewColumn: PGtkTreeViewColumn): gboolean; cdecl; external;
-function gtk_tree_view_column_get_resizable(ATreeViewColumn: PGtkTreeViewColumn): gboolean; cdecl; external;
-function gtk_tree_view_column_get_sizing(ATreeViewColumn: PGtkTreeViewColumn): TGtkTreeViewColumnSizing; cdecl; external;
-function gtk_tree_view_column_get_sort_column_id(ATreeViewColumn: PGtkTreeViewColumn): gint; cdecl; external;
-function gtk_tree_view_column_get_sort_indicator(ATreeViewColumn: PGtkTreeViewColumn): gboolean; cdecl; external;
-function gtk_tree_view_column_get_sort_order(ATreeViewColumn: PGtkTreeViewColumn): TGtkSortType; cdecl; external;
-function gtk_tree_view_column_get_spacing(ATreeViewColumn: PGtkTreeViewColumn): gint; cdecl; external;
-function gtk_tree_view_column_get_title(ATreeViewColumn: PGtkTreeViewColumn): Pgchar; cdecl; external;
-function gtk_tree_view_column_get_tree_view(ATreeViewColumn: PGtkTreeViewColumn): PGtkWidget; cdecl; external;
+function gtk_tree_store_remove(tree_store: PGtkTreeStore; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_view_append_column(tree_view: PGtkTreeView; column: PGtkTreeViewColumn): gint; cdecl; external;
+function gtk_tree_view_collapse_row(tree_view: PGtkTreeView; path: PGtkTreePath): gboolean; cdecl; external;
+function gtk_tree_view_column_cell_get_position(tree_column: PGtkTreeViewColumn; cell_renderer: PGtkCellRenderer; x_offset: Pgint; width: Pgint): gboolean; cdecl; external;
+function gtk_tree_view_column_cell_is_visible(tree_column: PGtkTreeViewColumn): gboolean; cdecl; external;
+function gtk_tree_view_column_get_alignment(tree_column: PGtkTreeViewColumn): gfloat; cdecl; external;
+function gtk_tree_view_column_get_button(tree_column: PGtkTreeViewColumn): PGtkWidget; cdecl; external;
+function gtk_tree_view_column_get_clickable(tree_column: PGtkTreeViewColumn): gboolean; cdecl; external;
+function gtk_tree_view_column_get_expand(tree_column: PGtkTreeViewColumn): gboolean; cdecl; external;
+function gtk_tree_view_column_get_fixed_width(tree_column: PGtkTreeViewColumn): gint; cdecl; external;
+function gtk_tree_view_column_get_max_width(tree_column: PGtkTreeViewColumn): gint; cdecl; external;
+function gtk_tree_view_column_get_min_width(tree_column: PGtkTreeViewColumn): gint; cdecl; external;
+function gtk_tree_view_column_get_reorderable(tree_column: PGtkTreeViewColumn): gboolean; cdecl; external;
+function gtk_tree_view_column_get_resizable(tree_column: PGtkTreeViewColumn): gboolean; cdecl; external;
+function gtk_tree_view_column_get_sizing(tree_column: PGtkTreeViewColumn): TGtkTreeViewColumnSizing; cdecl; external;
+function gtk_tree_view_column_get_sort_column_id(tree_column: PGtkTreeViewColumn): gint; cdecl; external;
+function gtk_tree_view_column_get_sort_indicator(tree_column: PGtkTreeViewColumn): gboolean; cdecl; external;
+function gtk_tree_view_column_get_sort_order(tree_column: PGtkTreeViewColumn): TGtkSortType; cdecl; external;
+function gtk_tree_view_column_get_spacing(tree_column: PGtkTreeViewColumn): gint; cdecl; external;
+function gtk_tree_view_column_get_title(tree_column: PGtkTreeViewColumn): Pgchar; cdecl; external;
+function gtk_tree_view_column_get_tree_view(tree_column: PGtkTreeViewColumn): PGtkWidget; cdecl; external;
 function gtk_tree_view_column_get_type: TGType; cdecl; external;
-function gtk_tree_view_column_get_visible(ATreeViewColumn: PGtkTreeViewColumn): gboolean; cdecl; external;
-function gtk_tree_view_column_get_widget(ATreeViewColumn: PGtkTreeViewColumn): PGtkWidget; cdecl; external;
-function gtk_tree_view_column_get_width(ATreeViewColumn: PGtkTreeViewColumn): gint; cdecl; external;
-function gtk_tree_view_column_get_x_offset(ATreeViewColumn: PGtkTreeViewColumn): gint; cdecl; external;
+function gtk_tree_view_column_get_visible(tree_column: PGtkTreeViewColumn): gboolean; cdecl; external;
+function gtk_tree_view_column_get_widget(tree_column: PGtkTreeViewColumn): PGtkWidget; cdecl; external;
+function gtk_tree_view_column_get_width(tree_column: PGtkTreeViewColumn): gint; cdecl; external;
+function gtk_tree_view_column_get_x_offset(tree_column: PGtkTreeViewColumn): gint; cdecl; external;
 function gtk_tree_view_column_new: PGtkTreeViewColumn; cdecl; external;
 function gtk_tree_view_column_new_with_area(area: PGtkCellArea): PGtkTreeViewColumn; cdecl; external;
 function gtk_tree_view_column_new_with_attributes(title: Pgchar; cell: PGtkCellRenderer; args: array of const): PGtkTreeViewColumn; cdecl; external;
-function gtk_tree_view_create_row_drag_icon(ATreeView: PGtkTreeView; path: PGtkTreePath): Pcairo_surface_t; cdecl; external;
-function gtk_tree_view_expand_row(ATreeView: PGtkTreeView; path: PGtkTreePath; open_all: gboolean): gboolean; cdecl; external;
-function gtk_tree_view_get_bin_window(ATreeView: PGtkTreeView): PGdkWindow; cdecl; external;
-function gtk_tree_view_get_column(ATreeView: PGtkTreeView; n: gint): PGtkTreeViewColumn; cdecl; external;
-function gtk_tree_view_get_columns(ATreeView: PGtkTreeView): PGList; cdecl; external;
-function gtk_tree_view_get_dest_row_at_pos(ATreeView: PGtkTreeView; drag_x: gint; drag_y: gint; path: PPGtkTreePath; pos: PGtkTreeViewDropPosition): gboolean; cdecl; external;
-function gtk_tree_view_get_enable_search(ATreeView: PGtkTreeView): gboolean; cdecl; external;
-function gtk_tree_view_get_enable_tree_lines(ATreeView: PGtkTreeView): gboolean; cdecl; external;
-function gtk_tree_view_get_expander_column(ATreeView: PGtkTreeView): PGtkTreeViewColumn; cdecl; external;
-function gtk_tree_view_get_fixed_height_mode(ATreeView: PGtkTreeView): gboolean; cdecl; external;
-function gtk_tree_view_get_grid_lines(ATreeView: PGtkTreeView): TGtkTreeViewGridLines; cdecl; external;
-function gtk_tree_view_get_headers_clickable(ATreeView: PGtkTreeView): gboolean; cdecl; external;
-function gtk_tree_view_get_headers_visible(ATreeView: PGtkTreeView): gboolean; cdecl; external;
-function gtk_tree_view_get_hover_expand(ATreeView: PGtkTreeView): gboolean; cdecl; external;
-function gtk_tree_view_get_hover_selection(ATreeView: PGtkTreeView): gboolean; cdecl; external;
-function gtk_tree_view_get_level_indentation(ATreeView: PGtkTreeView): gint; cdecl; external;
-function gtk_tree_view_get_model(ATreeView: PGtkTreeView): PGtkTreeModel; cdecl; external;
-function gtk_tree_view_get_n_columns(ATreeView: PGtkTreeView): guint; cdecl; external;
-function gtk_tree_view_get_path_at_pos(ATreeView: PGtkTreeView; x: gint; y: gint; path: PPGtkTreePath; column: PPGtkTreeViewColumn; cell_x: Pgint; cell_y: Pgint): gboolean; cdecl; external;
-function gtk_tree_view_get_reorderable(ATreeView: PGtkTreeView): gboolean; cdecl; external;
-function gtk_tree_view_get_row_separator_func(ATreeView: PGtkTreeView): TGtkTreeViewRowSeparatorFunc; cdecl; external;
-function gtk_tree_view_get_rubber_banding(ATreeView: PGtkTreeView): gboolean; cdecl; external;
-function gtk_tree_view_get_rules_hint(ATreeView: PGtkTreeView): gboolean; cdecl; external;
-function gtk_tree_view_get_search_column(ATreeView: PGtkTreeView): gint; cdecl; external;
-function gtk_tree_view_get_search_entry(ATreeView: PGtkTreeView): PGtkEntry; cdecl; external;
-function gtk_tree_view_get_search_equal_func(ATreeView: PGtkTreeView): TGtkTreeViewSearchEqualFunc; cdecl; external;
-function gtk_tree_view_get_search_position_func(ATreeView: PGtkTreeView): TGtkTreeViewSearchPositionFunc; cdecl; external;
-function gtk_tree_view_get_selection(ATreeView: PGtkTreeView): PGtkTreeSelection; cdecl; external;
-function gtk_tree_view_get_show_expanders(ATreeView: PGtkTreeView): gboolean; cdecl; external;
-function gtk_tree_view_get_tooltip_column(ATreeView: PGtkTreeView): gint; cdecl; external;
-function gtk_tree_view_get_tooltip_context(ATreeView: PGtkTreeView; x: Pgint; y: Pgint; keyboard_tip: gboolean; model: PPGtkTreeModel; path: PPGtkTreePath; iter: PGtkTreeIter): gboolean; cdecl; external;
+function gtk_tree_view_create_row_drag_icon(tree_view: PGtkTreeView; path: PGtkTreePath): Pcairo_surface_t; cdecl; external;
+function gtk_tree_view_expand_row(tree_view: PGtkTreeView; path: PGtkTreePath; open_all: gboolean): gboolean; cdecl; external;
+function gtk_tree_view_get_activate_on_single_click(tree_view: PGtkTreeView): gboolean; cdecl; external;
+function gtk_tree_view_get_bin_window(tree_view: PGtkTreeView): PGdkWindow; cdecl; external;
+function gtk_tree_view_get_column(tree_view: PGtkTreeView; n: gint): PGtkTreeViewColumn; cdecl; external;
+function gtk_tree_view_get_columns(tree_view: PGtkTreeView): PGList; cdecl; external;
+function gtk_tree_view_get_dest_row_at_pos(tree_view: PGtkTreeView; drag_x: gint; drag_y: gint; path: PPGtkTreePath; pos: PGtkTreeViewDropPosition): gboolean; cdecl; external;
+function gtk_tree_view_get_enable_search(tree_view: PGtkTreeView): gboolean; cdecl; external;
+function gtk_tree_view_get_enable_tree_lines(tree_view: PGtkTreeView): gboolean; cdecl; external;
+function gtk_tree_view_get_expander_column(tree_view: PGtkTreeView): PGtkTreeViewColumn; cdecl; external;
+function gtk_tree_view_get_fixed_height_mode(tree_view: PGtkTreeView): gboolean; cdecl; external;
+function gtk_tree_view_get_grid_lines(tree_view: PGtkTreeView): TGtkTreeViewGridLines; cdecl; external;
+function gtk_tree_view_get_headers_clickable(tree_view: PGtkTreeView): gboolean; cdecl; external;
+function gtk_tree_view_get_headers_visible(tree_view: PGtkTreeView): gboolean; cdecl; external;
+function gtk_tree_view_get_hover_expand(tree_view: PGtkTreeView): gboolean; cdecl; external;
+function gtk_tree_view_get_hover_selection(tree_view: PGtkTreeView): gboolean; cdecl; external;
+function gtk_tree_view_get_level_indentation(tree_view: PGtkTreeView): gint; cdecl; external;
+function gtk_tree_view_get_model(tree_view: PGtkTreeView): PGtkTreeModel; cdecl; external;
+function gtk_tree_view_get_n_columns(tree_view: PGtkTreeView): guint; cdecl; external;
+function gtk_tree_view_get_path_at_pos(tree_view: PGtkTreeView; x: gint; y: gint; path: PPGtkTreePath; column: PPGtkTreeViewColumn; cell_x: Pgint; cell_y: Pgint): gboolean; cdecl; external;
+function gtk_tree_view_get_reorderable(tree_view: PGtkTreeView): gboolean; cdecl; external;
+function gtk_tree_view_get_row_separator_func(tree_view: PGtkTreeView): TGtkTreeViewRowSeparatorFunc; cdecl; external;
+function gtk_tree_view_get_rubber_banding(tree_view: PGtkTreeView): gboolean; cdecl; external;
+function gtk_tree_view_get_rules_hint(tree_view: PGtkTreeView): gboolean; cdecl; external;
+function gtk_tree_view_get_search_column(tree_view: PGtkTreeView): gint; cdecl; external;
+function gtk_tree_view_get_search_entry(tree_view: PGtkTreeView): PGtkEntry; cdecl; external;
+function gtk_tree_view_get_search_equal_func(tree_view: PGtkTreeView): TGtkTreeViewSearchEqualFunc; cdecl; external;
+function gtk_tree_view_get_search_position_func(tree_view: PGtkTreeView): TGtkTreeViewSearchPositionFunc; cdecl; external;
+function gtk_tree_view_get_selection(tree_view: PGtkTreeView): PGtkTreeSelection; cdecl; external;
+function gtk_tree_view_get_show_expanders(tree_view: PGtkTreeView): gboolean; cdecl; external;
+function gtk_tree_view_get_tooltip_column(tree_view: PGtkTreeView): gint; cdecl; external;
+function gtk_tree_view_get_tooltip_context(tree_view: PGtkTreeView; x: Pgint; y: Pgint; keyboard_tip: gboolean; model: PPGtkTreeModel; path: PPGtkTreePath; iter: PGtkTreeIter): gboolean; cdecl; external;
 function gtk_tree_view_get_type: TGType; cdecl; external;
-function gtk_tree_view_get_visible_range(ATreeView: PGtkTreeView; start_path: PPGtkTreePath; end_path: PPGtkTreePath): gboolean; cdecl; external;
-function gtk_tree_view_insert_column(ATreeView: PGtkTreeView; column: PGtkTreeViewColumn; position: gint): gint; cdecl; external;
-function gtk_tree_view_insert_column_with_attributes(ATreeView: PGtkTreeView; position: gint; title: Pgchar; cell: PGtkCellRenderer; args: array of const): gint; cdecl; external;
-function gtk_tree_view_insert_column_with_data_func(ATreeView: PGtkTreeView; position: gint; title: Pgchar; cell: PGtkCellRenderer; func: TGtkTreeCellDataFunc; data: gpointer; dnotify: TGDestroyNotify): gint; cdecl; external;
-function gtk_tree_view_is_blank_at_pos(ATreeView: PGtkTreeView; x: gint; y: gint; path: PPGtkTreePath; column: PPGtkTreeViewColumn; cell_x: Pgint; cell_y: Pgint): gboolean; cdecl; external;
-function gtk_tree_view_is_rubber_banding_active(ATreeView: PGtkTreeView): gboolean; cdecl; external;
+function gtk_tree_view_get_visible_range(tree_view: PGtkTreeView; start_path: PPGtkTreePath; end_path: PPGtkTreePath): gboolean; cdecl; external;
+function gtk_tree_view_insert_column(tree_view: PGtkTreeView; column: PGtkTreeViewColumn; position: gint): gint; cdecl; external;
+function gtk_tree_view_insert_column_with_attributes(tree_view: PGtkTreeView; position: gint; title: Pgchar; cell: PGtkCellRenderer; args: array of const): gint; cdecl; external;
+function gtk_tree_view_insert_column_with_data_func(tree_view: PGtkTreeView; position: gint; title: Pgchar; cell: PGtkCellRenderer; func: TGtkTreeCellDataFunc; data: gpointer; dnotify: TGDestroyNotify): gint; cdecl; external;
+function gtk_tree_view_is_blank_at_pos(tree_view: PGtkTreeView; x: gint; y: gint; path: PPGtkTreePath; column: PPGtkTreeViewColumn; cell_x: Pgint; cell_y: Pgint): gboolean; cdecl; external;
+function gtk_tree_view_is_rubber_banding_active(tree_view: PGtkTreeView): gboolean; cdecl; external;
 function gtk_tree_view_new: PGtkTreeView; cdecl; external;
 function gtk_tree_view_new_with_model(model: PGtkTreeModel): PGtkTreeView; cdecl; external;
-function gtk_tree_view_remove_column(ATreeView: PGtkTreeView; column: PGtkTreeViewColumn): gint; cdecl; external;
-function gtk_tree_view_row_expanded(ATreeView: PGtkTreeView; path: PGtkTreePath): gboolean; cdecl; external;
+function gtk_tree_view_remove_column(tree_view: PGtkTreeView; column: PGtkTreeViewColumn): gint; cdecl; external;
+function gtk_tree_view_row_expanded(tree_view: PGtkTreeView; path: PGtkTreePath): gboolean; cdecl; external;
 function gtk_true: gboolean; cdecl; external;
-function gtk_ui_manager_add_ui_from_file(AUIManager: PGtkUIManager; filename: Pgchar): guint; cdecl; external;
-function gtk_ui_manager_add_ui_from_resource(AUIManager: PGtkUIManager; resource_path: Pgchar): guint; cdecl; external;
-function gtk_ui_manager_add_ui_from_string(AUIManager: PGtkUIManager; buffer: Pgchar; length: gssize): guint; cdecl; external;
-function gtk_ui_manager_get_accel_group(AUIManager: PGtkUIManager): PGtkAccelGroup; cdecl; external;
-function gtk_ui_manager_get_action(AUIManager: PGtkUIManager; path: Pgchar): PGtkAction; cdecl; external;
-function gtk_ui_manager_get_action_groups(AUIManager: PGtkUIManager): PGList; cdecl; external;
-function gtk_ui_manager_get_toplevels(AUIManager: PGtkUIManager; types: TGtkUIManagerItemType): PGSList; cdecl; external;
+function gtk_ui_manager_add_ui_from_file(manager: PGtkUIManager; filename: Pgchar; error: PPGError): guint; cdecl; external;
+function gtk_ui_manager_add_ui_from_resource(manager: PGtkUIManager; resource_path: Pgchar; error: PPGError): guint; cdecl; external;
+function gtk_ui_manager_add_ui_from_string(manager: PGtkUIManager; buffer: Pgchar; length: gssize; error: PPGError): guint; cdecl; external;
+function gtk_ui_manager_get_accel_group(manager: PGtkUIManager): PGtkAccelGroup; cdecl; external;
+function gtk_ui_manager_get_action(manager: PGtkUIManager; path: Pgchar): PGtkAction; cdecl; external;
+function gtk_ui_manager_get_action_groups(manager: PGtkUIManager): PGList; cdecl; external;
+function gtk_ui_manager_get_toplevels(manager: PGtkUIManager; types: TGtkUIManagerItemType): PGSList; cdecl; external;
 function gtk_ui_manager_get_type: TGType; cdecl; external;
-function gtk_ui_manager_get_ui(AUIManager: PGtkUIManager): Pgchar; cdecl; external;
-function gtk_ui_manager_get_widget(AUIManager: PGtkUIManager; path: Pgchar): PGtkWidget; cdecl; external;
+function gtk_ui_manager_get_ui(manager: PGtkUIManager): Pgchar; cdecl; external;
+function gtk_ui_manager_get_widget(manager: PGtkUIManager; path: Pgchar): PGtkWidget; cdecl; external;
 function gtk_ui_manager_new: PGtkUIManager; cdecl; external;
-function gtk_ui_manager_new_merge_id(AUIManager: PGtkUIManager): guint; cdecl; external;
+function gtk_ui_manager_new_merge_id(manager: PGtkUIManager): guint; cdecl; external;
 function gtk_vbox_get_type: TGType; cdecl; external;
 function gtk_vbutton_box_get_type: TGType; cdecl; external;
-function gtk_viewport_get_bin_window(AViewport: PGtkViewport): PGdkWindow; cdecl; external;
-function gtk_viewport_get_shadow_type(AViewport: PGtkViewport): TGtkShadowType; cdecl; external;
+function gtk_viewport_get_bin_window(viewport: PGtkViewport): PGdkWindow; cdecl; external;
+function gtk_viewport_get_shadow_type(viewport: PGtkViewport): TGtkShadowType; cdecl; external;
 function gtk_viewport_get_type: TGType; cdecl; external;
-function gtk_viewport_get_view_window(AViewport: PGtkViewport): PGdkWindow; cdecl; external;
+function gtk_viewport_get_view_window(viewport: PGtkViewport): PGdkWindow; cdecl; external;
 function gtk_viewport_new(hadjustment: PGtkAdjustment; vadjustment: PGtkAdjustment): PGtkViewport; cdecl; external;
 function gtk_volume_button_get_type: TGType; cdecl; external;
 function gtk_volume_button_new: PGtkVolumeButton; cdecl; external;
@@ -12820,200 +12962,204 @@ function gtk_vpaned_get_type: TGType; cdecl; external;
 function gtk_vscale_get_type: TGType; cdecl; external;
 function gtk_vscrollbar_get_type: TGType; cdecl; external;
 function gtk_vseparator_get_type: TGType; cdecl; external;
-function gtk_widget_activate(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_can_activate_accel(AWidget: PGtkWidget; signal_id: guint): gboolean; cdecl; external;
-function gtk_widget_child_focus(AWidget: PGtkWidget; direction: TGtkDirectionType): gboolean; cdecl; external;
-function gtk_widget_class_find_style_property(AWidgetClass: PGtkWidgetClass; property_name: Pgchar): PGParamSpec; cdecl; external;
-function gtk_widget_class_list_style_properties(AWidgetClass: PGtkWidgetClass; n_properties: Pguint): PPGParamSpec; cdecl; external;
-function gtk_widget_compute_expand(AWidget: PGtkWidget; orientation: TGtkOrientation): gboolean; cdecl; external;
-function gtk_widget_create_pango_context(AWidget: PGtkWidget): PPangoContext; cdecl; external;
-function gtk_widget_create_pango_layout(AWidget: PGtkWidget; text: Pgchar): PPangoLayout; cdecl; external;
-function gtk_widget_device_is_shadowed(AWidget: PGtkWidget; device: PGdkDevice): gboolean; cdecl; external;
-function gtk_widget_event(AWidget: PGtkWidget; event: PGdkEvent): gboolean; cdecl; external;
-function gtk_widget_get_accessible(AWidget: PGtkWidget): PAtkObject; cdecl; external;
-function gtk_widget_get_allocated_height(AWidget: PGtkWidget): gint; cdecl; external;
-function gtk_widget_get_allocated_width(AWidget: PGtkWidget): gint; cdecl; external;
-function gtk_widget_get_ancestor(AWidget: PGtkWidget; widget_type: TGType): PGtkWidget; cdecl; external;
-function gtk_widget_get_app_paintable(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_can_default(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_can_focus(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_child_visible(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_clipboard(AWidget: PGtkWidget; selection: TGdkAtom): PGtkClipboard; cdecl; external;
-function gtk_widget_get_composite_name(AWidget: PGtkWidget): Pgchar; cdecl; external;
+function gtk_widget_activate(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_add_tick_callback(widget: PGtkWidget; callback: TGtkTickCallback; user_data: gpointer; notify: TGDestroyNotify): guint; cdecl; external;
+function gtk_widget_can_activate_accel(widget: PGtkWidget; signal_id: guint): gboolean; cdecl; external;
+function gtk_widget_child_focus(widget: PGtkWidget; direction: TGtkDirectionType): gboolean; cdecl; external;
+function gtk_widget_class_find_style_property(klass: PGtkWidgetClass; property_name: Pgchar): PGParamSpec; cdecl; external;
+function gtk_widget_class_list_style_properties(klass: PGtkWidgetClass; n_properties: Pguint): PPGParamSpec; cdecl; external;
+function gtk_widget_compute_expand(widget: PGtkWidget; orientation: TGtkOrientation): gboolean; cdecl; external;
+function gtk_widget_create_pango_context(widget: PGtkWidget): PPangoContext; cdecl; external;
+function gtk_widget_create_pango_layout(widget: PGtkWidget; text: Pgchar): PPangoLayout; cdecl; external;
+function gtk_widget_device_is_shadowed(widget: PGtkWidget; device: PGdkDevice): gboolean; cdecl; external;
+function gtk_widget_event(widget: PGtkWidget; event: PGdkEvent): gboolean; cdecl; external;
+function gtk_widget_get_accessible(widget: PGtkWidget): PAtkObject; cdecl; external;
+function gtk_widget_get_allocated_height(widget: PGtkWidget): gint; cdecl; external;
+function gtk_widget_get_allocated_width(widget: PGtkWidget): gint; cdecl; external;
+function gtk_widget_get_ancestor(widget: PGtkWidget; widget_type: TGType): PGtkWidget; cdecl; external;
+function gtk_widget_get_app_paintable(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_can_default(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_can_focus(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_child_visible(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_clipboard(widget: PGtkWidget; selection: TGdkAtom): PGtkClipboard; cdecl; external;
+function gtk_widget_get_composite_name(widget: PGtkWidget): Pgchar; cdecl; external;
 function gtk_widget_get_default_direction: TGtkTextDirection; cdecl; external;
-function gtk_widget_get_default_style: PGtkStyle; cdecl; external;
-function gtk_widget_get_device_enabled(AWidget: PGtkWidget; device: PGdkDevice): gboolean; cdecl; external;
-function gtk_widget_get_device_events(AWidget: PGtkWidget; device: PGdkDevice): TGdkEventMask; cdecl; external;
-function gtk_widget_get_direction(AWidget: PGtkWidget): TGtkTextDirection; cdecl; external;
-function gtk_widget_get_display(AWidget: PGtkWidget): PGdkDisplay; cdecl; external;
-function gtk_widget_get_double_buffered(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_events(AWidget: PGtkWidget): gint; cdecl; external;
-function gtk_widget_get_halign(AWidget: PGtkWidget): TGtkAlign; cdecl; external;
-function gtk_widget_get_has_tooltip(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_has_window(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_hexpand(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_hexpand_set(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_mapped(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_margin_bottom(AWidget: PGtkWidget): gint; cdecl; external;
-function gtk_widget_get_margin_left(AWidget: PGtkWidget): gint; cdecl; external;
-function gtk_widget_get_margin_right(AWidget: PGtkWidget): gint; cdecl; external;
-function gtk_widget_get_margin_top(AWidget: PGtkWidget): gint; cdecl; external;
-function gtk_widget_get_modifier_mask(AWidget: PGtkWidget; intent: TGdkModifierIntent): TGdkModifierType; cdecl; external;
-function gtk_widget_get_modifier_style(AWidget: PGtkWidget): PGtkRcStyle; cdecl; external;
-function gtk_widget_get_name(AWidget: PGtkWidget): Pgchar; cdecl; external;
-function gtk_widget_get_no_show_all(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_pango_context(AWidget: PGtkWidget): PPangoContext; cdecl; external;
-function gtk_widget_get_parent(AWidget: PGtkWidget): PGtkWidget; cdecl; external;
-function gtk_widget_get_parent_window(AWidget: PGtkWidget): PGdkWindow; cdecl; external;
-function gtk_widget_get_path(AWidget: PGtkWidget): PGtkWidgetPath; cdecl; external;
-function gtk_widget_get_realized(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_receives_default(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_request_mode(AWidget: PGtkWidget): TGtkSizeRequestMode; cdecl; external;
-function gtk_widget_get_root_window(AWidget: PGtkWidget): PGdkWindow; cdecl; external;
-function gtk_widget_get_screen(AWidget: PGtkWidget): PGdkScreen; cdecl; external;
-function gtk_widget_get_sensitive(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_settings(AWidget: PGtkWidget): PGtkSettings; cdecl; external;
-function gtk_widget_get_state_flags(AWidget: PGtkWidget): TGtkStateFlags; cdecl; external;
-function gtk_widget_get_style(AWidget: PGtkWidget): PGtkStyle; cdecl; external;
-function gtk_widget_get_style_context(AWidget: PGtkWidget): PGtkStyleContext; cdecl; external;
-function gtk_widget_get_support_multidevice(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_tooltip_markup(AWidget: PGtkWidget): Pgchar; cdecl; external;
-function gtk_widget_get_tooltip_text(AWidget: PGtkWidget): Pgchar; cdecl; external;
-function gtk_widget_get_tooltip_window(AWidget: PGtkWidget): PGtkWindow; cdecl; external;
-function gtk_widget_get_toplevel(AWidget: PGtkWidget): PGtkWidget; cdecl; external;
+function gtk_widget_get_device_enabled(widget: PGtkWidget; device: PGdkDevice): gboolean; cdecl; external;
+function gtk_widget_get_device_events(widget: PGtkWidget; device: PGdkDevice): TGdkEventMask; cdecl; external;
+function gtk_widget_get_direction(widget: PGtkWidget): TGtkTextDirection; cdecl; external;
+function gtk_widget_get_display(widget: PGtkWidget): PGdkDisplay; cdecl; external;
+function gtk_widget_get_double_buffered(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_events(widget: PGtkWidget): gint; cdecl; external;
+function gtk_widget_get_frame_clock(widget: PGtkWidget): PGdkFrameClock; cdecl; external;
+function gtk_widget_get_halign(widget: PGtkWidget): TGtkAlign; cdecl; external;
+function gtk_widget_get_has_tooltip(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_has_window(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_hexpand(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_hexpand_set(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_mapped(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_margin_bottom(widget: PGtkWidget): gint; cdecl; external;
+function gtk_widget_get_margin_left(widget: PGtkWidget): gint; cdecl; external;
+function gtk_widget_get_margin_right(widget: PGtkWidget): gint; cdecl; external;
+function gtk_widget_get_margin_top(widget: PGtkWidget): gint; cdecl; external;
+function gtk_widget_get_modifier_mask(widget: PGtkWidget; intent: TGdkModifierIntent): TGdkModifierType; cdecl; external;
+function gtk_widget_get_name(widget: PGtkWidget): Pgchar; cdecl; external;
+function gtk_widget_get_no_show_all(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_opacity(widget: PGtkWidget): gdouble; cdecl; external;
+function gtk_widget_get_pango_context(widget: PGtkWidget): PPangoContext; cdecl; external;
+function gtk_widget_get_parent(widget: PGtkWidget): PGtkWidget; cdecl; external;
+function gtk_widget_get_parent_window(widget: PGtkWidget): PGdkWindow; cdecl; external;
+function gtk_widget_get_path(widget: PGtkWidget): PGtkWidgetPath; cdecl; external;
+function gtk_widget_get_realized(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_receives_default(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_request_mode(widget: PGtkWidget): TGtkSizeRequestMode; cdecl; external;
+function gtk_widget_get_root_window(widget: PGtkWidget): PGdkWindow; cdecl; external;
+function gtk_widget_get_screen(widget: PGtkWidget): PGdkScreen; cdecl; external;
+function gtk_widget_get_sensitive(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_settings(widget: PGtkWidget): PGtkSettings; cdecl; external;
+function gtk_widget_get_state_flags(widget: PGtkWidget): TGtkStateFlags; cdecl; external;
+function gtk_widget_get_style(widget: PGtkWidget): PGtkStyle; cdecl; external; deprecated 'Use gtk_widget_get_style_context';
+procedure gtk_widget_set_style(widget: PGtkWidget; style: PGtkStyle); cdecl; external; deprecated 'Use gtk_widget_set_style_context';
+function gtk_widget_ensure_style(widget: PGtkWidget): PGtkStyle; cdecl; external; deprecated 'Migrate to GtkStyleContext';
+function gtk_widget_get_default_style: PGtkStyle; cdecl; external; deprecated 'Migrate to GtkStyleContext';
+function gtk_widget_get_style_context(widget: PGtkWidget): PGtkStyleContext; cdecl; external;
+function gtk_widget_get_support_multidevice(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_tooltip_markup(widget: PGtkWidget): Pgchar; cdecl; external;
+function gtk_widget_get_tooltip_text(widget: PGtkWidget): Pgchar; cdecl; external;
+function gtk_widget_get_tooltip_window(widget: PGtkWidget): PGtkWindow; cdecl; external;
+function gtk_widget_get_toplevel(widget: PGtkWidget): PGtkWidget; cdecl; external;
 function gtk_widget_get_type: TGType; cdecl; external;
-function gtk_widget_get_valign(AWidget: PGtkWidget): TGtkAlign; cdecl; external;
-function gtk_widget_get_vexpand(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_vexpand_set(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_visible(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_visual(AWidget: PGtkWidget): PGdkVisual; cdecl; external;
-function gtk_widget_get_window(AWidget: PGtkWidget): PGdkWindow; cdecl; external;
-function gtk_widget_has_default(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_has_focus(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_has_grab(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_has_rc_style(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_has_screen(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_has_visible_focus(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_hide_on_delete(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_in_destruction(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_intersect(AWidget: PGtkWidget; area: PGdkRectangle; intersection: PGdkRectangle): gboolean; cdecl; external;
-function gtk_widget_is_ancestor(AWidget: PGtkWidget; ancestor: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_is_composited(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_is_drawable(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_is_focus(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_is_sensitive(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_is_toplevel(AWidget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_keynav_failed(AWidget: PGtkWidget; direction: TGtkDirectionType): gboolean; cdecl; external;
-function gtk_widget_list_accel_closures(AWidget: PGtkWidget): PGList; cdecl; external;
-function gtk_widget_list_mnemonic_labels(AWidget: PGtkWidget): PGList; cdecl; external;
-function gtk_widget_mnemonic_activate(AWidget: PGtkWidget; group_cycling: gboolean): gboolean; cdecl; external;
+function gtk_widget_get_valign(widget: PGtkWidget): TGtkAlign; cdecl; external;
+function gtk_widget_get_vexpand(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_vexpand_set(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_visible(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_get_visual(widget: PGtkWidget): PGdkVisual; cdecl; external;
+function gtk_widget_get_window(widget: PGtkWidget): PGdkWindow; cdecl; external;
+function gtk_widget_has_default(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_has_focus(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_has_grab(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_has_screen(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_has_visible_focus(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_hide_on_delete(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_in_destruction(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_intersect(widget: PGtkWidget; area: PGdkRectangle; intersection: PGdkRectangle): gboolean; cdecl; external;
+function gtk_widget_is_ancestor(widget: PGtkWidget; ancestor: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_is_composited(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_is_drawable(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_is_focus(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_is_sensitive(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_is_toplevel(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_is_visible(widget: PGtkWidget): gboolean; cdecl; external;
+function gtk_widget_keynav_failed(widget: PGtkWidget; direction: TGtkDirectionType): gboolean; cdecl; external;
+function gtk_widget_list_accel_closures(widget: PGtkWidget): PGList; cdecl; external;
+function gtk_widget_list_mnemonic_labels(widget: PGtkWidget): PGList; cdecl; external;
+function gtk_widget_mnemonic_activate(widget: PGtkWidget; group_cycling: gboolean): gboolean; cdecl; external;
 function gtk_widget_new(type_: TGType; first_property_name: Pgchar; args: array of const): PGtkWidget; cdecl; external;
-function gtk_widget_path_append_for_widget(AWidgetPath: PGtkWidgetPath; widget: PGtkWidget): gint; cdecl; external;
-function gtk_widget_path_append_type(AWidgetPath: PGtkWidgetPath; type_: TGType): gint; cdecl; external;
-function gtk_widget_path_append_with_siblings(AWidgetPath: PGtkWidgetPath; siblings: PGtkWidgetPath; sibling_index: guint): gint; cdecl; external;
-function gtk_widget_path_copy(AWidgetPath: PGtkWidgetPath): PGtkWidgetPath; cdecl; external;
-function gtk_widget_path_get_object_type(AWidgetPath: PGtkWidgetPath): TGType; cdecl; external;
+function gtk_widget_path_append_for_widget(path: PGtkWidgetPath; widget: PGtkWidget): gint; cdecl; external;
+function gtk_widget_path_append_type(path: PGtkWidgetPath; type_: TGType): gint; cdecl; external;
+function gtk_widget_path_append_with_siblings(path: PGtkWidgetPath; siblings: PGtkWidgetPath; sibling_index: guint): gint; cdecl; external;
+function gtk_widget_path_copy(path: PGtkWidgetPath): PGtkWidgetPath; cdecl; external;
+function gtk_widget_path_get_object_type(path: PGtkWidgetPath): TGType; cdecl; external;
 function gtk_widget_path_get_type: TGType; cdecl; external;
-function gtk_widget_path_has_parent(AWidgetPath: PGtkWidgetPath; type_: TGType): gboolean; cdecl; external;
-function gtk_widget_path_is_type(AWidgetPath: PGtkWidgetPath; type_: TGType): gboolean; cdecl; external;
-function gtk_widget_path_iter_get_name(AWidgetPath: PGtkWidgetPath; pos: gint): Pgchar; cdecl; external;
-function gtk_widget_path_iter_get_object_type(AWidgetPath: PGtkWidgetPath; pos: gint): TGType; cdecl; external;
-function gtk_widget_path_iter_get_sibling_index(AWidgetPath: PGtkWidgetPath; pos: gint): guint; cdecl; external;
-function gtk_widget_path_iter_get_siblings(AWidgetPath: PGtkWidgetPath; pos: gint): PGtkWidgetPath; cdecl; external;
-function gtk_widget_path_iter_has_class(AWidgetPath: PGtkWidgetPath; pos: gint; name: Pgchar): gboolean; cdecl; external;
-function gtk_widget_path_iter_has_name(AWidgetPath: PGtkWidgetPath; pos: gint; name: Pgchar): gboolean; cdecl; external;
-function gtk_widget_path_iter_has_qclass(AWidgetPath: PGtkWidgetPath; pos: gint; qname: TGQuark): gboolean; cdecl; external;
-function gtk_widget_path_iter_has_qname(AWidgetPath: PGtkWidgetPath; pos: gint; qname: TGQuark): gboolean; cdecl; external;
-function gtk_widget_path_iter_has_qregion(AWidgetPath: PGtkWidgetPath; pos: gint; qname: TGQuark; flags: PGtkRegionFlags): gboolean; cdecl; external;
-function gtk_widget_path_iter_has_region(AWidgetPath: PGtkWidgetPath; pos: gint; name: Pgchar; flags: PGtkRegionFlags): gboolean; cdecl; external;
-function gtk_widget_path_iter_list_classes(AWidgetPath: PGtkWidgetPath; pos: gint): PGSList; cdecl; external;
-function gtk_widget_path_iter_list_regions(AWidgetPath: PGtkWidgetPath; pos: gint): PGSList; cdecl; external;
-function gtk_widget_path_length(AWidgetPath: PGtkWidgetPath): gint; cdecl; external;
+function gtk_widget_path_has_parent(path: PGtkWidgetPath; type_: TGType): gboolean; cdecl; external;
+function gtk_widget_path_is_type(path: PGtkWidgetPath; type_: TGType): gboolean; cdecl; external;
+function gtk_widget_path_iter_get_name(path: PGtkWidgetPath; pos: gint): Pgchar; cdecl; external;
+function gtk_widget_path_iter_get_object_type(path: PGtkWidgetPath; pos: gint): TGType; cdecl; external;
+function gtk_widget_path_iter_get_sibling_index(path: PGtkWidgetPath; pos: gint): guint; cdecl; external;
+function gtk_widget_path_iter_get_siblings(path: PGtkWidgetPath; pos: gint): PGtkWidgetPath; cdecl; external;
+function gtk_widget_path_iter_has_class(path: PGtkWidgetPath; pos: gint; name: Pgchar): gboolean; cdecl; external;
+function gtk_widget_path_iter_has_name(path: PGtkWidgetPath; pos: gint; name: Pgchar): gboolean; cdecl; external;
+function gtk_widget_path_iter_has_qclass(path: PGtkWidgetPath; pos: gint; qname: TGQuark): gboolean; cdecl; external;
+function gtk_widget_path_iter_has_qname(path: PGtkWidgetPath; pos: gint; qname: TGQuark): gboolean; cdecl; external;
+function gtk_widget_path_iter_has_qregion(path: PGtkWidgetPath; pos: gint; qname: TGQuark; flags: PGtkRegionFlags): gboolean; cdecl; external;
+function gtk_widget_path_iter_has_region(path: PGtkWidgetPath; pos: gint; name: Pgchar; flags: PGtkRegionFlags): gboolean; cdecl; external;
+function gtk_widget_path_iter_list_classes(path: PGtkWidgetPath; pos: gint): PGSList; cdecl; external;
+function gtk_widget_path_iter_list_regions(path: PGtkWidgetPath; pos: gint): PGSList; cdecl; external;
+function gtk_widget_path_length(path: PGtkWidgetPath): gint; cdecl; external;
 function gtk_widget_path_new: PGtkWidgetPath; cdecl; external;
-function gtk_widget_path_ref(AWidgetPath: PGtkWidgetPath): PGtkWidgetPath; cdecl; external;
-function gtk_widget_path_to_string(AWidgetPath: PGtkWidgetPath): Pgchar; cdecl; external;
-function gtk_widget_region_intersect(AWidget: PGtkWidget; region: Pcairo_region_t): Pcairo_region_t; cdecl; external;
-function gtk_widget_remove_accelerator(AWidget: PGtkWidget; accel_group: PGtkAccelGroup; accel_key: guint; accel_mods: TGdkModifierType): gboolean; cdecl; external;
-function gtk_widget_render_icon_pixbuf(AWidget: PGtkWidget; stock_id: Pgchar; size: gint): PGdkPixbuf; cdecl; external;
-function gtk_widget_send_expose(AWidget: PGtkWidget; event: PGdkEvent): gint; cdecl; external;
-function gtk_widget_send_focus_change(AWidget: PGtkWidget; event: PGdkEvent): gboolean; cdecl; external;
-function gtk_widget_translate_coordinates(AWidget: PGtkWidget; dest_widget: PGtkWidget; src_x: gint; src_y: gint; dest_x: Pgint; dest_y: Pgint): gboolean; cdecl; external;
-function gtk_window_activate_default(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_activate_focus(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_activate_key(AWindow: PGtkWindow; event: PGdkEventKey): gboolean; cdecl; external;
-function gtk_window_get_accept_focus(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_application(AWindow: PGtkWindow): PGtkApplication; cdecl; external;
-function gtk_window_get_attached_to(AWindow: PGtkWindow): PGtkWidget; cdecl; external;
-function gtk_window_get_decorated(AWindow: PGtkWindow): gboolean; cdecl; external;
+function gtk_widget_path_ref(path: PGtkWidgetPath): PGtkWidgetPath; cdecl; external;
+function gtk_widget_path_to_string(path: PGtkWidgetPath): Pgchar; cdecl; external;
+function gtk_widget_region_intersect(widget: PGtkWidget; region: Pcairo_region_t): Pcairo_region_t; cdecl; external;
+function gtk_widget_remove_accelerator(widget: PGtkWidget; accel_group: PGtkAccelGroup; accel_key: guint; accel_mods: TGdkModifierType): gboolean; cdecl; external;
+function gtk_widget_render_icon_pixbuf(widget: PGtkWidget; stock_id: Pgchar; size: gint): PGdkPixbuf; cdecl; external;
+function gtk_widget_send_expose(widget: PGtkWidget; event: PGdkEvent): gint; cdecl; external;
+function gtk_widget_send_focus_change(widget: PGtkWidget; event: PGdkEvent): gboolean; cdecl; external;
+function gtk_widget_translate_coordinates(src_widget: PGtkWidget; dest_widget: PGtkWidget; src_x: gint; src_y: gint; dest_x: Pgint; dest_y: Pgint): gboolean; cdecl; external;
+function gtk_window_activate_default(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_activate_focus(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_activate_key(window: PGtkWindow; event: PGdkEventKey): gboolean; cdecl; external;
+function gtk_window_get_accept_focus(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_get_application(window: PGtkWindow): PGtkApplication; cdecl; external;
+function gtk_window_get_attached_to(window: PGtkWindow): PGtkWidget; cdecl; external;
+function gtk_window_get_decorated(window: PGtkWindow): gboolean; cdecl; external;
 function gtk_window_get_default_icon_list: PGList; cdecl; external;
 function gtk_window_get_default_icon_name: Pgchar; cdecl; external;
-function gtk_window_get_default_widget(AWindow: PGtkWindow): PGtkWidget; cdecl; external;
-function gtk_window_get_deletable(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_destroy_with_parent(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_focus(AWindow: PGtkWindow): PGtkWidget; cdecl; external;
-function gtk_window_get_focus_on_map(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_focus_visible(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_gravity(AWindow: PGtkWindow): TGdkGravity; cdecl; external;
-function gtk_window_get_group(AWindow: PGtkWindow): PGtkWindowGroup; cdecl; external;
-function gtk_window_get_has_resize_grip(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_hide_titlebar_when_maximized(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_icon(AWindow: PGtkWindow): PGdkPixbuf; cdecl; external;
-function gtk_window_get_icon_list(AWindow: PGtkWindow): PGList; cdecl; external;
-function gtk_window_get_icon_name(AWindow: PGtkWindow): Pgchar; cdecl; external;
-function gtk_window_get_mnemonic_modifier(AWindow: PGtkWindow): TGdkModifierType; cdecl; external;
-function gtk_window_get_mnemonics_visible(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_modal(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_opacity(AWindow: PGtkWindow): gdouble; cdecl; external;
-function gtk_window_get_resizable(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_resize_grip_area(AWindow: PGtkWindow; rect: PGdkRectangle): gboolean; cdecl; external;
-function gtk_window_get_role(AWindow: PGtkWindow): Pgchar; cdecl; external;
-function gtk_window_get_screen(AWindow: PGtkWindow): PGdkScreen; cdecl; external;
-function gtk_window_get_skip_pager_hint(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_skip_taskbar_hint(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_title(AWindow: PGtkWindow): Pgchar; cdecl; external;
-function gtk_window_get_transient_for(AWindow: PGtkWindow): PGtkWindow; cdecl; external;
+function gtk_window_get_default_widget(window: PGtkWindow): PGtkWidget; cdecl; external;
+function gtk_window_get_deletable(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_get_destroy_with_parent(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_get_focus(window: PGtkWindow): PGtkWidget; cdecl; external;
+function gtk_window_get_focus_on_map(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_get_focus_visible(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_get_gravity(window: PGtkWindow): TGdkGravity; cdecl; external;
+function gtk_window_get_group(window: PGtkWindow): PGtkWindowGroup; cdecl; external;
+function gtk_window_get_has_resize_grip(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_get_hide_titlebar_when_maximized(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_get_icon(window: PGtkWindow): PGdkPixbuf; cdecl; external;
+function gtk_window_get_icon_list(window: PGtkWindow): PGList; cdecl; external;
+function gtk_window_get_icon_name(window: PGtkWindow): Pgchar; cdecl; external;
+function gtk_window_get_mnemonic_modifier(window: PGtkWindow): TGdkModifierType; cdecl; external;
+function gtk_window_get_mnemonics_visible(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_get_modal(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_get_resizable(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_get_resize_grip_area(window: PGtkWindow; rect: PGdkRectangle): gboolean; cdecl; external;
+function gtk_window_get_role(window: PGtkWindow): Pgchar; cdecl; external;
+function gtk_window_get_screen(window: PGtkWindow): PGdkScreen; cdecl; external;
+function gtk_window_get_skip_pager_hint(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_get_skip_taskbar_hint(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_get_title(window: PGtkWindow): Pgchar; cdecl; external;
+function gtk_window_get_transient_for(window: PGtkWindow): PGtkWindow; cdecl; external;
 function gtk_window_get_type: TGType; cdecl; external;
-function gtk_window_get_type_hint(AWindow: PGtkWindow): TGdkWindowTypeHint; cdecl; external;
-function gtk_window_get_urgency_hint(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_window_type(AWindow: PGtkWindow): TGtkWindowType; cdecl; external;
-function gtk_window_group_get_current_device_grab(AWindowGroup: PGtkWindowGroup; device: PGdkDevice): PGtkWidget; cdecl; external;
-function gtk_window_group_get_current_grab(AWindowGroup: PGtkWindowGroup): PGtkWidget; cdecl; external;
+function gtk_window_get_type_hint(window: PGtkWindow): TGdkWindowTypeHint; cdecl; external;
+function gtk_window_get_urgency_hint(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_get_window_type(window: PGtkWindow): TGtkWindowType; cdecl; external;
+function gtk_window_group_get_current_device_grab(window_group: PGtkWindowGroup; device: PGdkDevice): PGtkWidget; cdecl; external;
+function gtk_window_group_get_current_grab(window_group: PGtkWindowGroup): PGtkWidget; cdecl; external;
 function gtk_window_group_get_type: TGType; cdecl; external;
-function gtk_window_group_list_windows(AWindowGroup: PGtkWindowGroup): PGList; cdecl; external;
+function gtk_window_group_list_windows(window_group: PGtkWindowGroup): PGList; cdecl; external;
 function gtk_window_group_new: PGtkWindowGroup; cdecl; external;
-function gtk_window_has_group(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_has_toplevel_focus(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_is_active(AWindow: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_has_group(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_has_toplevel_focus(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_is_active(window: PGtkWindow): gboolean; cdecl; external;
 function gtk_window_list_toplevels: PGList; cdecl; external;
-function gtk_window_mnemonic_activate(AWindow: PGtkWindow; keyval: guint; modifier: TGdkModifierType): gboolean; cdecl; external;
+function gtk_window_mnemonic_activate(window: PGtkWindow; keyval: guint; modifier: TGdkModifierType): gboolean; cdecl; external;
 function gtk_window_new(type_: TGtkWindowType): PGtkWindow; cdecl; external;
-function gtk_window_parse_geometry(AWindow: PGtkWindow; geometry: Pgchar): gboolean; cdecl; external;
-function gtk_window_propagate_key_event(AWindow: PGtkWindow; event: PGdkEventKey): gboolean; cdecl; external;
-function gtk_window_resize_grip_is_visible(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_set_default_icon_from_file(filename: Pgchar): gboolean; cdecl; external;
-function gtk_window_set_icon_from_file(AWindow: PGtkWindow; filename: Pgchar): gboolean; cdecl; external;
-procedure gtk_about_dialog_add_credit_section(AAboutDialog: PGtkAboutDialog; section_name: Pgchar; people: PPgchar); cdecl; external;
-procedure gtk_about_dialog_set_artists(AAboutDialog: PGtkAboutDialog; artists: PPgchar); cdecl; external;
-procedure gtk_about_dialog_set_authors(AAboutDialog: PGtkAboutDialog; authors: PPgchar); cdecl; external;
-procedure gtk_about_dialog_set_comments(AAboutDialog: PGtkAboutDialog; comments: Pgchar); cdecl; external;
-procedure gtk_about_dialog_set_copyright(AAboutDialog: PGtkAboutDialog; copyright: Pgchar); cdecl; external;
-procedure gtk_about_dialog_set_documenters(AAboutDialog: PGtkAboutDialog; documenters: PPgchar); cdecl; external;
-procedure gtk_about_dialog_set_license(AAboutDialog: PGtkAboutDialog; license: Pgchar); cdecl; external;
-procedure gtk_about_dialog_set_license_type(AAboutDialog: PGtkAboutDialog; license_type: TGtkLicense); cdecl; external;
-procedure gtk_about_dialog_set_logo(AAboutDialog: PGtkAboutDialog; logo: PGdkPixbuf); cdecl; external;
-procedure gtk_about_dialog_set_logo_icon_name(AAboutDialog: PGtkAboutDialog; icon_name: Pgchar); cdecl; external;
-procedure gtk_about_dialog_set_program_name(AAboutDialog: PGtkAboutDialog; name: Pgchar); cdecl; external;
-procedure gtk_about_dialog_set_translator_credits(AAboutDialog: PGtkAboutDialog; translator_credits: Pgchar); cdecl; external;
-procedure gtk_about_dialog_set_version(AAboutDialog: PGtkAboutDialog; version: Pgchar); cdecl; external;
-procedure gtk_about_dialog_set_website(AAboutDialog: PGtkAboutDialog; website: Pgchar); cdecl; external;
-procedure gtk_about_dialog_set_website_label(AAboutDialog: PGtkAboutDialog; website_label: Pgchar); cdecl; external;
-procedure gtk_about_dialog_set_wrap_license(AAboutDialog: PGtkAboutDialog; wrap_license: gboolean); cdecl; external;
-procedure gtk_accel_group_connect(AAccelGroup: PGtkAccelGroup; accel_key: guint; accel_mods: TGdkModifierType; accel_flags: TGtkAccelFlags; closure: PGClosure); cdecl; external;
-procedure gtk_accel_group_connect_by_path(AAccelGroup: PGtkAccelGroup; accel_path: Pgchar; closure: PGClosure); cdecl; external;
-procedure gtk_accel_group_lock(AAccelGroup: PGtkAccelGroup); cdecl; external;
-procedure gtk_accel_group_unlock(AAccelGroup: PGtkAccelGroup); cdecl; external;
-procedure gtk_accel_label_set_accel_closure(AAccelLabel: PGtkAccelLabel; accel_closure: PGClosure); cdecl; external;
-procedure gtk_accel_label_set_accel_widget(AAccelLabel: PGtkAccelLabel; accel_widget: PGtkWidget); cdecl; external;
+function gtk_window_parse_geometry(window: PGtkWindow; geometry: Pgchar): gboolean; cdecl; external;
+function gtk_window_propagate_key_event(window: PGtkWindow; event: PGdkEventKey): gboolean; cdecl; external;
+function gtk_window_resize_grip_is_visible(window: PGtkWindow): gboolean; cdecl; external;
+function gtk_window_set_default_icon_from_file(filename: Pgchar; error: PPGError): gboolean; cdecl; external;
+function gtk_window_set_icon_from_file(window: PGtkWindow; filename: Pgchar; error: PPGError): gboolean; cdecl; external;
+procedure gtk_about_dialog_add_credit_section(about: PGtkAboutDialog; section_name: Pgchar; people: PPgchar); cdecl; external;
+procedure gtk_about_dialog_set_artists(about: PGtkAboutDialog; artists: PPgchar); cdecl; external;
+procedure gtk_about_dialog_set_authors(about: PGtkAboutDialog; authors: PPgchar); cdecl; external;
+procedure gtk_about_dialog_set_comments(about: PGtkAboutDialog; comments: Pgchar); cdecl; external;
+procedure gtk_about_dialog_set_copyright(about: PGtkAboutDialog; copyright: Pgchar); cdecl; external;
+procedure gtk_about_dialog_set_documenters(about: PGtkAboutDialog; documenters: PPgchar); cdecl; external;
+procedure gtk_about_dialog_set_license(about: PGtkAboutDialog; license: Pgchar); cdecl; external;
+procedure gtk_about_dialog_set_license_type(about: PGtkAboutDialog; license_type: TGtkLicense); cdecl; external;
+procedure gtk_about_dialog_set_logo(about: PGtkAboutDialog; logo: PGdkPixbuf); cdecl; external;
+procedure gtk_about_dialog_set_logo_icon_name(about: PGtkAboutDialog; icon_name: Pgchar); cdecl; external;
+procedure gtk_about_dialog_set_program_name(about: PGtkAboutDialog; name: Pgchar); cdecl; external;
+procedure gtk_about_dialog_set_translator_credits(about: PGtkAboutDialog; translator_credits: Pgchar); cdecl; external;
+procedure gtk_about_dialog_set_version(about: PGtkAboutDialog; version: Pgchar); cdecl; external;
+procedure gtk_about_dialog_set_website(about: PGtkAboutDialog; website: Pgchar); cdecl; external;
+procedure gtk_about_dialog_set_website_label(about: PGtkAboutDialog; website_label: Pgchar); cdecl; external;
+procedure gtk_about_dialog_set_wrap_license(about: PGtkAboutDialog; wrap_license: gboolean); cdecl; external;
+procedure gtk_accel_group_connect(accel_group: PGtkAccelGroup; accel_key: guint; accel_mods: TGdkModifierType; accel_flags: TGtkAccelFlags; closure: PGClosure); cdecl; external;
+procedure gtk_accel_group_connect_by_path(accel_group: PGtkAccelGroup; accel_path: Pgchar; closure: PGClosure); cdecl; external;
+procedure gtk_accel_group_lock(accel_group: PGtkAccelGroup); cdecl; external;
+procedure gtk_accel_group_unlock(accel_group: PGtkAccelGroup); cdecl; external;
+procedure gtk_accel_label_set_accel(accel_label: PGtkAccelLabel; accelerator_key: guint; accelerator_mods: TGdkModifierType); cdecl; external;
+procedure gtk_accel_label_set_accel_closure(accel_label: PGtkAccelLabel; accel_closure: PGClosure); cdecl; external;
+procedure gtk_accel_label_set_accel_widget(accel_label: PGtkAccelLabel; accel_widget: PGtkWidget); cdecl; external;
 procedure gtk_accel_map_add_entry(accel_path: Pgchar; accel_key: guint; accel_mods: TGdkModifierType); cdecl; external;
 procedure gtk_accel_map_add_filter(filter_pattern: Pgchar); cdecl; external;
 procedure gtk_accel_map_foreach(data: gpointer; foreach_func: TGtkAccelMapForeach); cdecl; external;
@@ -13028,316 +13174,320 @@ procedure gtk_accel_map_unlock_path(accel_path: Pgchar); cdecl; external;
 procedure gtk_accelerator_parse(accelerator: Pgchar; accelerator_key: Pguint; accelerator_mods: PGdkModifierType); cdecl; external;
 procedure gtk_accelerator_parse_with_keycode(accelerator: Pgchar; accelerator_key: Pguint; accelerator_codes: PPguint; accelerator_mods: PGdkModifierType); cdecl; external;
 procedure gtk_accelerator_set_default_mod_mask(default_mod_mask: TGdkModifierType); cdecl; external;
-procedure gtk_accessible_set_widget(AAccessible: PGtkAccessible; widget: PGtkWidget); cdecl; external;
-procedure gtk_action_activate(AAction: PGtkAction); cdecl; external;
-procedure gtk_action_block_activate(AAction: PGtkAction); cdecl; external;
-procedure gtk_action_connect_accelerator(AAction: PGtkAction); cdecl; external;
-procedure gtk_action_disconnect_accelerator(AAction: PGtkAction); cdecl; external;
-procedure gtk_action_group_add_action(AActionGroup: PGtkActionGroup; action: PGtkAction); cdecl; external;
-procedure gtk_action_group_add_action_with_accel(AActionGroup: PGtkActionGroup; action: PGtkAction; accelerator: Pgchar); cdecl; external;
-procedure gtk_action_group_add_actions(AActionGroup: PGtkActionGroup; entries: PGtkActionEntry; n_entries: guint; user_data: gpointer); cdecl; external;
-procedure gtk_action_group_add_actions_full(AActionGroup: PGtkActionGroup; entries: PGtkActionEntry; n_entries: guint; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_action_group_add_radio_actions(AActionGroup: PGtkActionGroup; entries: PGtkRadioActionEntry; n_entries: guint; value: gint; on_change: TGCallback; user_data: gpointer); cdecl; external;
-procedure gtk_action_group_add_radio_actions_full(AActionGroup: PGtkActionGroup; entries: PGtkRadioActionEntry; n_entries: guint; value: gint; on_change: TGCallback; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_action_group_add_toggle_actions(AActionGroup: PGtkActionGroup; entries: PGtkToggleActionEntry; n_entries: guint; user_data: gpointer); cdecl; external;
-procedure gtk_action_group_add_toggle_actions_full(AActionGroup: PGtkActionGroup; entries: PGtkToggleActionEntry; n_entries: guint; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_action_group_remove_action(AActionGroup: PGtkActionGroup; action: PGtkAction); cdecl; external;
-procedure gtk_action_group_set_sensitive(AActionGroup: PGtkActionGroup; sensitive: gboolean); cdecl; external;
-procedure gtk_action_group_set_translate_func(AActionGroup: PGtkActionGroup; func: TGtkTranslateFunc; data: gpointer; notify: TGDestroyNotify); cdecl; external;
-procedure gtk_action_group_set_translation_domain(AActionGroup: PGtkActionGroup; domain: Pgchar); cdecl; external;
-procedure gtk_action_group_set_visible(AActionGroup: PGtkActionGroup; visible: gboolean); cdecl; external;
-procedure gtk_action_set_accel_group(AAction: PGtkAction; accel_group: PGtkAccelGroup); cdecl; external;
-procedure gtk_action_set_accel_path(AAction: PGtkAction; accel_path: Pgchar); cdecl; external;
-procedure gtk_action_set_always_show_image(AAction: PGtkAction; always_show: gboolean); cdecl; external;
-procedure gtk_action_set_gicon(AAction: PGtkAction; icon: PGIcon); cdecl; external;
-procedure gtk_action_set_icon_name(AAction: PGtkAction; icon_name: Pgchar); cdecl; external;
-procedure gtk_action_set_is_important(AAction: PGtkAction; is_important: gboolean); cdecl; external;
-procedure gtk_action_set_label(AAction: PGtkAction; label_: Pgchar); cdecl; external;
-procedure gtk_action_set_sensitive(AAction: PGtkAction; sensitive: gboolean); cdecl; external;
-procedure gtk_action_set_short_label(AAction: PGtkAction; short_label: Pgchar); cdecl; external;
-procedure gtk_action_set_stock_id(AAction: PGtkAction; stock_id: Pgchar); cdecl; external;
-procedure gtk_action_set_tooltip(AAction: PGtkAction; tooltip: Pgchar); cdecl; external;
-procedure gtk_action_set_visible(AAction: PGtkAction; visible: gboolean); cdecl; external;
-procedure gtk_action_set_visible_horizontal(AAction: PGtkAction; visible_horizontal: gboolean); cdecl; external;
-procedure gtk_action_set_visible_vertical(AAction: PGtkAction; visible_vertical: gboolean); cdecl; external;
-procedure gtk_action_unblock_activate(AAction: PGtkAction); cdecl; external;
-procedure gtk_actionable_set_action_name(AActionable: PGtkActionable; action_name: Pgchar); cdecl; external;
-procedure gtk_actionable_set_action_target(AActionable: PGtkActionable; format_string: Pgchar; args: array of const); cdecl; external;
-procedure gtk_actionable_set_action_target_value(AActionable: PGtkActionable; target_value: PGVariant); cdecl; external;
-procedure gtk_actionable_set_detailed_action_name(AActionable: PGtkActionable; detailed_action_name: Pgchar); cdecl; external;
-procedure gtk_activatable_do_set_related_action(AActivatable: PGtkActivatable; action: PGtkAction); cdecl; external;
-procedure gtk_activatable_set_related_action(AActivatable: PGtkActivatable; action: PGtkAction); cdecl; external;
-procedure gtk_activatable_set_use_action_appearance(AActivatable: PGtkActivatable; use_appearance: gboolean); cdecl; external;
-procedure gtk_activatable_sync_action_properties(AActivatable: PGtkActivatable; action: PGtkAction); cdecl; external;
-procedure gtk_adjustment_changed(AAdjustment: PGtkAdjustment); cdecl; external;
-procedure gtk_adjustment_clamp_page(AAdjustment: PGtkAdjustment; lower: gdouble; upper: gdouble); cdecl; external;
-procedure gtk_adjustment_configure(AAdjustment: PGtkAdjustment; value: gdouble; lower: gdouble; upper: gdouble; step_increment: gdouble; page_increment: gdouble; page_size: gdouble); cdecl; external;
-procedure gtk_adjustment_set_lower(AAdjustment: PGtkAdjustment; lower: gdouble); cdecl; external;
-procedure gtk_adjustment_set_page_increment(AAdjustment: PGtkAdjustment; page_increment: gdouble); cdecl; external;
-procedure gtk_adjustment_set_page_size(AAdjustment: PGtkAdjustment; page_size: gdouble); cdecl; external;
-procedure gtk_adjustment_set_step_increment(AAdjustment: PGtkAdjustment; step_increment: gdouble); cdecl; external;
-procedure gtk_adjustment_set_upper(AAdjustment: PGtkAdjustment; upper: gdouble); cdecl; external;
-procedure gtk_adjustment_set_value(AAdjustment: PGtkAdjustment; value: gdouble); cdecl; external;
-procedure gtk_adjustment_value_changed(AAdjustment: PGtkAdjustment); cdecl; external;
-procedure gtk_alignment_get_padding(AAlignment: PGtkAlignment; padding_top: Pguint; padding_bottom: Pguint; padding_left: Pguint; padding_right: Pguint); cdecl; external;
-procedure gtk_alignment_set(AAlignment: PGtkAlignment; xalign: gfloat; yalign: gfloat; xscale: gfloat; yscale: gfloat); cdecl; external;
-procedure gtk_alignment_set_padding(AAlignment: PGtkAlignment; padding_top: guint; padding_bottom: guint; padding_left: guint; padding_right: guint); cdecl; external;
-procedure gtk_app_chooser_button_append_custom_item(AAppChooserButton: PGtkAppChooserButton; name: Pgchar; label_: Pgchar; icon: PGIcon); cdecl; external;
-procedure gtk_app_chooser_button_append_separator(AAppChooserButton: PGtkAppChooserButton); cdecl; external;
-procedure gtk_app_chooser_button_set_active_custom_item(AAppChooserButton: PGtkAppChooserButton; name: Pgchar); cdecl; external;
-procedure gtk_app_chooser_button_set_heading(AAppChooserButton: PGtkAppChooserButton; heading: Pgchar); cdecl; external;
-procedure gtk_app_chooser_button_set_show_default_item(AAppChooserButton: PGtkAppChooserButton; setting: gboolean); cdecl; external;
-procedure gtk_app_chooser_button_set_show_dialog_item(AAppChooserButton: PGtkAppChooserButton; setting: gboolean); cdecl; external;
-procedure gtk_app_chooser_dialog_set_heading(AAppChooserDialog: PGtkAppChooserDialog; heading: Pgchar); cdecl; external;
-procedure gtk_app_chooser_refresh(AAppChooser: PGtkAppChooser); cdecl; external;
-procedure gtk_app_chooser_widget_set_default_text(AAppChooserWidget: PGtkAppChooserWidget; text: Pgchar); cdecl; external;
-procedure gtk_app_chooser_widget_set_show_all(AAppChooserWidget: PGtkAppChooserWidget; setting: gboolean); cdecl; external;
-procedure gtk_app_chooser_widget_set_show_default(AAppChooserWidget: PGtkAppChooserWidget; setting: gboolean); cdecl; external;
-procedure gtk_app_chooser_widget_set_show_fallback(AAppChooserWidget: PGtkAppChooserWidget; setting: gboolean); cdecl; external;
-procedure gtk_app_chooser_widget_set_show_other(AAppChooserWidget: PGtkAppChooserWidget; setting: gboolean); cdecl; external;
-procedure gtk_app_chooser_widget_set_show_recommended(AAppChooserWidget: PGtkAppChooserWidget; setting: gboolean); cdecl; external;
-procedure gtk_application_add_accelerator(AApplication: PGtkApplication; accelerator: Pgchar; action_name: Pgchar; parameter: PGVariant); cdecl; external;
-procedure gtk_application_add_window(AApplication: PGtkApplication; window: PGtkWindow); cdecl; external;
-procedure gtk_application_remove_accelerator(AApplication: PGtkApplication; action_name: Pgchar; parameter: PGVariant); cdecl; external;
-procedure gtk_application_remove_window(AApplication: PGtkApplication; window: PGtkWindow); cdecl; external;
-procedure gtk_application_set_app_menu(AApplication: PGtkApplication; app_menu: PGMenuModel); cdecl; external;
-procedure gtk_application_set_menubar(AApplication: PGtkApplication; menubar: PGMenuModel); cdecl; external;
-procedure gtk_application_uninhibit(AApplication: PGtkApplication; cookie: guint); cdecl; external;
-procedure gtk_application_window_set_show_menubar(AApplicationWindow: PGtkApplicationWindow; show_menubar: gboolean); cdecl; external;
-procedure gtk_arrow_set(AArrow: PGtkArrow; arrow_type: TGtkArrowType; shadow_type: TGtkShadowType); cdecl; external;
-procedure gtk_aspect_frame_set(AAspectFrame: PGtkAspectFrame; xalign: gfloat; yalign: gfloat; ratio: gfloat; obey_child: gboolean); cdecl; external;
-procedure gtk_assistant_add_action_widget(AAssistant: PGtkAssistant; child: PGtkWidget); cdecl; external;
-procedure gtk_assistant_commit(AAssistant: PGtkAssistant); cdecl; external;
-procedure gtk_assistant_next_page(AAssistant: PGtkAssistant); cdecl; external;
-procedure gtk_assistant_previous_page(AAssistant: PGtkAssistant); cdecl; external;
-procedure gtk_assistant_remove_action_widget(AAssistant: PGtkAssistant; child: PGtkWidget); cdecl; external;
-procedure gtk_assistant_remove_page(AAssistant: PGtkAssistant; page_num: gint); cdecl; external;
-procedure gtk_assistant_set_current_page(AAssistant: PGtkAssistant; page_num: gint); cdecl; external;
-procedure gtk_assistant_set_forward_page_func(AAssistant: PGtkAssistant; page_func: TGtkAssistantPageFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_assistant_set_page_complete(AAssistant: PGtkAssistant; page: PGtkWidget; complete: gboolean); cdecl; external;
-procedure gtk_assistant_set_page_title(AAssistant: PGtkAssistant; page: PGtkWidget; title: Pgchar); cdecl; external;
-procedure gtk_assistant_set_page_type(AAssistant: PGtkAssistant; page: PGtkWidget; type_: TGtkAssistantPageType); cdecl; external;
-procedure gtk_assistant_update_buttons_state(AAssistant: PGtkAssistant); cdecl; external;
+procedure gtk_accessible_set_widget(accessible: PGtkAccessible; widget: PGtkWidget); cdecl; external;
+procedure gtk_action_activate(action: PGtkAction); cdecl; external;
+procedure gtk_action_block_activate(action: PGtkAction); cdecl; external;
+procedure gtk_action_connect_accelerator(action: PGtkAction); cdecl; external;
+procedure gtk_action_disconnect_accelerator(action: PGtkAction); cdecl; external;
+procedure gtk_action_group_add_action(action_group: PGtkActionGroup; action: PGtkAction); cdecl; external;
+procedure gtk_action_group_add_action_with_accel(action_group: PGtkActionGroup; action: PGtkAction; accelerator: Pgchar); cdecl; external;
+procedure gtk_action_group_add_actions(action_group: PGtkActionGroup; entries: PGtkActionEntry; n_entries: guint; user_data: gpointer); cdecl; external;
+procedure gtk_action_group_add_actions_full(action_group: PGtkActionGroup; entries: PGtkActionEntry; n_entries: guint; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_action_group_add_radio_actions(action_group: PGtkActionGroup; entries: PGtkRadioActionEntry; n_entries: guint; value: gint; on_change: TGCallback; user_data: gpointer); cdecl; external;
+procedure gtk_action_group_add_radio_actions_full(action_group: PGtkActionGroup; entries: PGtkRadioActionEntry; n_entries: guint; value: gint; on_change: TGCallback; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_action_group_add_toggle_actions(action_group: PGtkActionGroup; entries: PGtkToggleActionEntry; n_entries: guint; user_data: gpointer); cdecl; external;
+procedure gtk_action_group_add_toggle_actions_full(action_group: PGtkActionGroup; entries: PGtkToggleActionEntry; n_entries: guint; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_action_group_remove_action(action_group: PGtkActionGroup; action: PGtkAction); cdecl; external;
+procedure gtk_action_group_set_accel_group(action_group: PGtkActionGroup; accel_group: PGtkAccelGroup); cdecl; external;
+procedure gtk_action_group_set_sensitive(action_group: PGtkActionGroup; sensitive: gboolean); cdecl; external;
+procedure gtk_action_group_set_translate_func(action_group: PGtkActionGroup; func: TGtkTranslateFunc; data: gpointer; notify: TGDestroyNotify); cdecl; external;
+procedure gtk_action_group_set_translation_domain(action_group: PGtkActionGroup; domain: Pgchar); cdecl; external;
+procedure gtk_action_group_set_visible(action_group: PGtkActionGroup; visible: gboolean); cdecl; external;
+procedure gtk_action_set_accel_group(action: PGtkAction; accel_group: PGtkAccelGroup); cdecl; external;
+procedure gtk_action_set_accel_path(action: PGtkAction; accel_path: Pgchar); cdecl; external;
+procedure gtk_action_set_always_show_image(action: PGtkAction; always_show: gboolean); cdecl; external;
+procedure gtk_action_set_gicon(action: PGtkAction; icon: PGIcon); cdecl; external;
+procedure gtk_action_set_icon_name(action: PGtkAction; icon_name: Pgchar); cdecl; external;
+procedure gtk_action_set_is_important(action: PGtkAction; is_important: gboolean); cdecl; external;
+procedure gtk_action_set_label(action: PGtkAction; label_: Pgchar); cdecl; external;
+procedure gtk_action_set_sensitive(action: PGtkAction; sensitive: gboolean); cdecl; external;
+procedure gtk_action_set_short_label(action: PGtkAction; short_label: Pgchar); cdecl; external;
+procedure gtk_action_set_stock_id(action: PGtkAction; stock_id: Pgchar); cdecl; external;
+procedure gtk_action_set_tooltip(action: PGtkAction; tooltip: Pgchar); cdecl; external;
+procedure gtk_action_set_visible(action: PGtkAction; visible: gboolean); cdecl; external;
+procedure gtk_action_set_visible_horizontal(action: PGtkAction; visible_horizontal: gboolean); cdecl; external;
+procedure gtk_action_set_visible_vertical(action: PGtkAction; visible_vertical: gboolean); cdecl; external;
+procedure gtk_action_unblock_activate(action: PGtkAction); cdecl; external;
+procedure gtk_actionable_set_action_name(actionable: PGtkActionable; action_name: Pgchar); cdecl; external;
+procedure gtk_actionable_set_action_target(actionable: PGtkActionable; format_string: Pgchar; args: array of const); cdecl; external;
+procedure gtk_actionable_set_action_target_value(actionable: PGtkActionable; target_value: PGVariant); cdecl; external;
+procedure gtk_actionable_set_detailed_action_name(actionable: PGtkActionable; detailed_action_name: Pgchar); cdecl; external;
+procedure gtk_activatable_do_set_related_action(activatable: PGtkActivatable; action: PGtkAction); cdecl; external;
+procedure gtk_activatable_set_related_action(activatable: PGtkActivatable; action: PGtkAction); cdecl; external;
+procedure gtk_activatable_set_use_action_appearance(activatable: PGtkActivatable; use_appearance: gboolean); cdecl; external;
+procedure gtk_activatable_sync_action_properties(activatable: PGtkActivatable; action: PGtkAction); cdecl; external;
+procedure gtk_adjustment_changed(adjustment: PGtkAdjustment); cdecl; external;
+procedure gtk_adjustment_clamp_page(adjustment: PGtkAdjustment; lower: gdouble; upper: gdouble); cdecl; external;
+procedure gtk_adjustment_configure(adjustment: PGtkAdjustment; value: gdouble; lower: gdouble; upper: gdouble; step_increment: gdouble; page_increment: gdouble; page_size: gdouble); cdecl; external;
+procedure gtk_adjustment_set_lower(adjustment: PGtkAdjustment; lower: gdouble); cdecl; external;
+procedure gtk_adjustment_set_page_increment(adjustment: PGtkAdjustment; page_increment: gdouble); cdecl; external;
+procedure gtk_adjustment_set_page_size(adjustment: PGtkAdjustment; page_size: gdouble); cdecl; external;
+procedure gtk_adjustment_set_step_increment(adjustment: PGtkAdjustment; step_increment: gdouble); cdecl; external;
+procedure gtk_adjustment_set_upper(adjustment: PGtkAdjustment; upper: gdouble); cdecl; external;
+procedure gtk_adjustment_set_value(adjustment: PGtkAdjustment; value: gdouble); cdecl; external;
+procedure gtk_adjustment_value_changed(adjustment: PGtkAdjustment); cdecl; external;
+procedure gtk_alignment_get_padding(alignment: PGtkAlignment; padding_top: Pguint; padding_bottom: Pguint; padding_left: Pguint; padding_right: Pguint); cdecl; external;
+procedure gtk_alignment_set(alignment: PGtkAlignment; xalign: gfloat; yalign: gfloat; xscale: gfloat; yscale: gfloat); cdecl; external;
+procedure gtk_alignment_set_padding(alignment: PGtkAlignment; padding_top: guint; padding_bottom: guint; padding_left: guint; padding_right: guint); cdecl; external;
+procedure gtk_app_chooser_button_append_custom_item(self: PGtkAppChooserButton; name: Pgchar; label_: Pgchar; icon: PGIcon); cdecl; external;
+procedure gtk_app_chooser_button_append_separator(self: PGtkAppChooserButton); cdecl; external;
+procedure gtk_app_chooser_button_set_active_custom_item(self: PGtkAppChooserButton; name: Pgchar); cdecl; external;
+procedure gtk_app_chooser_button_set_heading(self: PGtkAppChooserButton; heading: Pgchar); cdecl; external;
+procedure gtk_app_chooser_button_set_show_default_item(self: PGtkAppChooserButton; setting: gboolean); cdecl; external;
+procedure gtk_app_chooser_button_set_show_dialog_item(self: PGtkAppChooserButton; setting: gboolean); cdecl; external;
+procedure gtk_app_chooser_dialog_set_heading(self: PGtkAppChooserDialog; heading: Pgchar); cdecl; external;
+procedure gtk_app_chooser_refresh(self: PGtkAppChooser); cdecl; external;
+procedure gtk_app_chooser_widget_set_default_text(self: PGtkAppChooserWidget; text: Pgchar); cdecl; external;
+procedure gtk_app_chooser_widget_set_show_all(self: PGtkAppChooserWidget; setting: gboolean); cdecl; external;
+procedure gtk_app_chooser_widget_set_show_default(self: PGtkAppChooserWidget; setting: gboolean); cdecl; external;
+procedure gtk_app_chooser_widget_set_show_fallback(self: PGtkAppChooserWidget; setting: gboolean); cdecl; external;
+procedure gtk_app_chooser_widget_set_show_other(self: PGtkAppChooserWidget; setting: gboolean); cdecl; external;
+procedure gtk_app_chooser_widget_set_show_recommended(self: PGtkAppChooserWidget; setting: gboolean); cdecl; external;
+procedure gtk_application_add_accelerator(application: PGtkApplication; accelerator: Pgchar; action_name: Pgchar; parameter: PGVariant); cdecl; external;
+procedure gtk_application_add_window(application: PGtkApplication; window: PGtkWindow); cdecl; external;
+procedure gtk_application_remove_accelerator(application: PGtkApplication; action_name: Pgchar; parameter: PGVariant); cdecl; external;
+procedure gtk_application_remove_window(application: PGtkApplication; window: PGtkWindow); cdecl; external;
+procedure gtk_application_set_app_menu(application: PGtkApplication; app_menu: PGMenuModel); cdecl; external;
+procedure gtk_application_set_menubar(application: PGtkApplication; menubar: PGMenuModel); cdecl; external;
+procedure gtk_application_uninhibit(application: PGtkApplication; cookie: guint); cdecl; external;
+procedure gtk_application_window_set_show_menubar(window: PGtkApplicationWindow; show_menubar: gboolean); cdecl; external;
+procedure gtk_arrow_set(arrow: PGtkArrow; arrow_type: TGtkArrowType; shadow_type: TGtkShadowType); cdecl; external;
+procedure gtk_aspect_frame_set(aspect_frame: PGtkAspectFrame; xalign: gfloat; yalign: gfloat; ratio: gfloat; obey_child: gboolean); cdecl; external;
+procedure gtk_assistant_add_action_widget(assistant: PGtkAssistant; child: PGtkWidget); cdecl; external;
+procedure gtk_assistant_commit(assistant: PGtkAssistant); cdecl; external;
+procedure gtk_assistant_next_page(assistant: PGtkAssistant); cdecl; external;
+procedure gtk_assistant_previous_page(assistant: PGtkAssistant); cdecl; external;
+procedure gtk_assistant_remove_action_widget(assistant: PGtkAssistant; child: PGtkWidget); cdecl; external;
+procedure gtk_assistant_remove_page(assistant: PGtkAssistant; page_num: gint); cdecl; external;
+procedure gtk_assistant_set_current_page(assistant: PGtkAssistant; page_num: gint); cdecl; external;
+procedure gtk_assistant_set_forward_page_func(assistant: PGtkAssistant; page_func: TGtkAssistantPageFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_assistant_set_page_complete(assistant: PGtkAssistant; page: PGtkWidget; complete: gboolean); cdecl; external;
+procedure gtk_assistant_set_page_title(assistant: PGtkAssistant; page: PGtkWidget; title: Pgchar); cdecl; external;
+procedure gtk_assistant_set_page_type(assistant: PGtkAssistant; page: PGtkWidget; type_: TGtkAssistantPageType); cdecl; external;
+procedure gtk_assistant_update_buttons_state(assistant: PGtkAssistant); cdecl; external;
 procedure gtk_binding_entry_add_signal(binding_set: PGtkBindingSet; keyval: guint; modifiers: TGdkModifierType; signal_name: Pgchar; n_args: guint; args: array of const); cdecl; external;
 procedure gtk_binding_entry_add_signall(binding_set: PGtkBindingSet; keyval: guint; modifiers: TGdkModifierType; signal_name: Pgchar; binding_args: PGSList); cdecl; external;
 procedure gtk_binding_entry_remove(binding_set: PGtkBindingSet; keyval: guint; modifiers: TGdkModifierType); cdecl; external;
 procedure gtk_binding_entry_skip(binding_set: PGtkBindingSet; keyval: guint; modifiers: TGdkModifierType); cdecl; external;
-procedure gtk_border_free(ABorder: PGtkBorder); cdecl; external;
-procedure gtk_box_pack_end(ABox: PGtkBox; child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint); cdecl; external;
-procedure gtk_box_pack_start(ABox: PGtkBox; child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint); cdecl; external;
-procedure gtk_box_query_child_packing(ABox: PGtkBox; child: PGtkWidget; expand: Pgboolean; fill: Pgboolean; padding: Pguint; pack_type: PGtkPackType); cdecl; external;
-procedure gtk_box_reorder_child(ABox: PGtkBox; child: PGtkWidget; position: gint); cdecl; external;
-procedure gtk_box_set_child_packing(ABox: PGtkBox; child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint; pack_type: TGtkPackType); cdecl; external;
-procedure gtk_box_set_homogeneous(ABox: PGtkBox; homogeneous: gboolean); cdecl; external;
-procedure gtk_box_set_spacing(ABox: PGtkBox; spacing: gint); cdecl; external;
-procedure gtk_buildable_add_child(ABuildable: PGtkBuildable; builder: PGtkBuilder; child: PGObject; type_: Pgchar); cdecl; external;
-procedure gtk_buildable_custom_finished(ABuildable: PGtkBuildable; builder: PGtkBuilder; child: PGObject; tagname: Pgchar; data: gpointer); cdecl; external;
-procedure gtk_buildable_custom_tag_end(ABuildable: PGtkBuildable; builder: PGtkBuilder; child: PGObject; tagname: Pgchar; data: Pgpointer); cdecl; external;
-procedure gtk_buildable_parser_finished(ABuildable: PGtkBuildable; builder: PGtkBuilder); cdecl; external;
-procedure gtk_buildable_set_buildable_property(ABuildable: PGtkBuildable; builder: PGtkBuilder; name: Pgchar; value: PGValue); cdecl; external;
-procedure gtk_buildable_set_name(ABuildable: PGtkBuildable; name: Pgchar); cdecl; external;
-procedure gtk_builder_connect_signals(ABuilder: PGtkBuilder; user_data: gpointer); cdecl; external;
-procedure gtk_builder_connect_signals_full(ABuilder: PGtkBuilder; func: TGtkBuilderConnectFunc; user_data: gpointer); cdecl; external;
-procedure gtk_builder_set_translation_domain(ABuilder: PGtkBuilder; domain: Pgchar); cdecl; external;
-procedure gtk_button_box_set_child_non_homogeneous(AButtonBox: PGtkButtonBox; child: PGtkWidget; non_homogeneous: gboolean); cdecl; external;
-procedure gtk_button_box_set_child_secondary(AButtonBox: PGtkButtonBox; child: PGtkWidget; is_secondary: gboolean); cdecl; external;
-procedure gtk_button_box_set_layout(AButtonBox: PGtkButtonBox; layout_style: TGtkButtonBoxStyle); cdecl; external;
-procedure gtk_button_clicked(AButton: PGtkButton); cdecl; external;
-procedure gtk_button_get_alignment(AButton: PGtkButton; xalign: Pgfloat; yalign: Pgfloat); cdecl; external;
-procedure gtk_button_set_alignment(AButton: PGtkButton; xalign: gfloat; yalign: gfloat); cdecl; external;
-procedure gtk_button_set_focus_on_click(AButton: PGtkButton; focus_on_click: gboolean); cdecl; external;
-procedure gtk_button_set_image(AButton: PGtkButton; image: PGtkWidget); cdecl; external;
-procedure gtk_button_set_image_position(AButton: PGtkButton; position: TGtkPositionType); cdecl; external;
-procedure gtk_button_set_label(AButton: PGtkButton; label_: Pgchar); cdecl; external;
-procedure gtk_button_set_relief(AButton: PGtkButton; newstyle: TGtkReliefStyle); cdecl; external;
-procedure gtk_button_set_use_stock(AButton: PGtkButton; use_stock: gboolean); cdecl; external;
-procedure gtk_button_set_use_underline(AButton: PGtkButton; use_underline: gboolean); cdecl; external;
+procedure gtk_border_free(border_: PGtkBorder); cdecl; external;
+procedure gtk_box_pack_end(box: PGtkBox; child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint); cdecl; external;
+procedure gtk_box_pack_start(box: PGtkBox; child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint); cdecl; external;
+procedure gtk_box_query_child_packing(box: PGtkBox; child: PGtkWidget; expand: Pgboolean; fill: Pgboolean; padding: Pguint; pack_type: PGtkPackType); cdecl; external;
+procedure gtk_box_reorder_child(box: PGtkBox; child: PGtkWidget; position: gint); cdecl; external;
+procedure gtk_box_set_child_packing(box: PGtkBox; child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint; pack_type: TGtkPackType); cdecl; external;
+procedure gtk_box_set_homogeneous(box: PGtkBox; homogeneous: gboolean); cdecl; external;
+procedure gtk_box_set_spacing(box: PGtkBox; spacing: gint); cdecl; external;
+procedure gtk_buildable_add_child(buildable: PGtkBuildable; builder: PGtkBuilder; child: PGObject; type_: Pgchar); cdecl; external;
+procedure gtk_buildable_custom_finished(buildable: PGtkBuildable; builder: PGtkBuilder; child: PGObject; tagname: Pgchar; data: gpointer); cdecl; external;
+procedure gtk_buildable_custom_tag_end(buildable: PGtkBuildable; builder: PGtkBuilder; child: PGObject; tagname: Pgchar; data: Pgpointer); cdecl; external;
+procedure gtk_buildable_parser_finished(buildable: PGtkBuildable; builder: PGtkBuilder); cdecl; external;
+procedure gtk_buildable_set_buildable_property(buildable: PGtkBuildable; builder: PGtkBuilder; name: Pgchar; value: PGValue); cdecl; external;
+procedure gtk_buildable_set_name(buildable: PGtkBuildable; name: Pgchar); cdecl; external;
+procedure gtk_builder_connect_signals(builder: PGtkBuilder; user_data: gpointer); cdecl; external;
+procedure gtk_builder_connect_signals_full(builder: PGtkBuilder; func: TGtkBuilderConnectFunc; user_data: gpointer); cdecl; external;
+procedure gtk_builder_expose_object(builder: PGtkBuilder; name: Pgchar; object_: PGObject); cdecl; external;
+procedure gtk_builder_set_translation_domain(builder: PGtkBuilder; domain: Pgchar); cdecl; external;
+procedure gtk_button_box_set_child_non_homogeneous(widget: PGtkButtonBox; child: PGtkWidget; non_homogeneous: gboolean); cdecl; external;
+procedure gtk_button_box_set_child_secondary(widget: PGtkButtonBox; child: PGtkWidget; is_secondary: gboolean); cdecl; external;
+procedure gtk_button_box_set_layout(widget: PGtkButtonBox; layout_style: TGtkButtonBoxStyle); cdecl; external;
+procedure gtk_button_clicked(button: PGtkButton); cdecl; external;
+procedure gtk_button_get_alignment(button: PGtkButton; xalign: Pgfloat; yalign: Pgfloat); cdecl; external;
+procedure gtk_button_set_alignment(button: PGtkButton; xalign: gfloat; yalign: gfloat); cdecl; external;
+procedure gtk_button_set_always_show_image(button: PGtkButton; always_show: gboolean); cdecl; external;
+procedure gtk_button_set_focus_on_click(button: PGtkButton; focus_on_click: gboolean); cdecl; external;
+procedure gtk_button_set_image(button: PGtkButton; image: PGtkWidget); cdecl; external;
+procedure gtk_button_set_image_position(button: PGtkButton; position: TGtkPositionType); cdecl; external;
+procedure gtk_button_set_label(button: PGtkButton; label_: Pgchar); cdecl; external;
+procedure gtk_button_set_relief(button: PGtkButton; newstyle: TGtkReliefStyle); cdecl; external;
+procedure gtk_button_set_use_stock(button: PGtkButton; use_stock: gboolean); cdecl; external;
+procedure gtk_button_set_use_underline(button: PGtkButton; use_underline: gboolean); cdecl; external;
 procedure gtk_cairo_transform_to_window(cr: Pcairo_t; widget: PGtkWidget; window: PGdkWindow); cdecl; external;
-procedure gtk_calendar_clear_marks(ACalendar: PGtkCalendar); cdecl; external;
-procedure gtk_calendar_get_date(ACalendar: PGtkCalendar; year: Pguint; month: Pguint; day: Pguint); cdecl; external;
-procedure gtk_calendar_mark_day(ACalendar: PGtkCalendar; day: guint); cdecl; external;
-procedure gtk_calendar_select_day(ACalendar: PGtkCalendar; day: guint); cdecl; external;
-procedure gtk_calendar_select_month(ACalendar: PGtkCalendar; month: guint; year: guint); cdecl; external;
-procedure gtk_calendar_set_detail_func(ACalendar: PGtkCalendar; func: TGtkCalendarDetailFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_calendar_set_detail_height_rows(ACalendar: PGtkCalendar; rows: gint); cdecl; external;
-procedure gtk_calendar_set_detail_width_chars(ACalendar: PGtkCalendar; chars: gint); cdecl; external;
-procedure gtk_calendar_set_display_options(ACalendar: PGtkCalendar; flags: TGtkCalendarDisplayOptions); cdecl; external;
-procedure gtk_calendar_unmark_day(ACalendar: PGtkCalendar; day: guint); cdecl; external;
-procedure gtk_cell_area_add(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer); cdecl; external;
-procedure gtk_cell_area_add_focus_sibling(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer; sibling: PGtkCellRenderer); cdecl; external;
-procedure gtk_cell_area_add_with_properties(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer; first_prop_name: Pgchar; args: array of const); cdecl; external;
-procedure gtk_cell_area_apply_attributes(ACellArea: PGtkCellArea; tree_model: PGtkTreeModel; iter: PGtkTreeIter; is_expander: gboolean; is_expanded: gboolean); cdecl; external;
-procedure gtk_cell_area_attribute_connect(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer; attribute: Pgchar; column: gint); cdecl; external;
-procedure gtk_cell_area_attribute_disconnect(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer; attribute: Pgchar); cdecl; external;
-procedure gtk_cell_area_box_pack_end(ACellAreaBox: PGtkCellAreaBox; renderer: PGtkCellRenderer; expand: gboolean; align: gboolean; fixed: gboolean); cdecl; external;
-procedure gtk_cell_area_box_pack_start(ACellAreaBox: PGtkCellAreaBox; renderer: PGtkCellRenderer; expand: gboolean; align: gboolean; fixed: gboolean); cdecl; external;
-procedure gtk_cell_area_box_set_spacing(ACellAreaBox: PGtkCellAreaBox; spacing: gint); cdecl; external;
-procedure gtk_cell_area_cell_get(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer; first_prop_name: Pgchar; args: array of const); cdecl; external;
-procedure gtk_cell_area_cell_get_property(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer; property_name: Pgchar; value: PGValue); cdecl; external;
-procedure gtk_cell_area_cell_get_valist(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
-procedure gtk_cell_area_cell_set(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer; first_prop_name: Pgchar; args: array of const); cdecl; external;
-procedure gtk_cell_area_cell_set_property(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer; property_name: Pgchar; value: PGValue); cdecl; external;
-procedure gtk_cell_area_cell_set_valist(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
-procedure gtk_cell_area_class_install_cell_property(ACellAreaClass: PGtkCellAreaClass; property_id: guint; pspec: PGParamSpec); cdecl; external;
-procedure gtk_cell_area_context_allocate(ACellAreaContext: PGtkCellAreaContext; width: gint; height: gint); cdecl; external;
-procedure gtk_cell_area_context_get_allocation(ACellAreaContext: PGtkCellAreaContext; width: Pgint; height: Pgint); cdecl; external;
-procedure gtk_cell_area_context_get_preferred_height(ACellAreaContext: PGtkCellAreaContext; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
-procedure gtk_cell_area_context_get_preferred_height_for_width(ACellAreaContext: PGtkCellAreaContext; width: gint; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
-procedure gtk_cell_area_context_get_preferred_width(ACellAreaContext: PGtkCellAreaContext; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
-procedure gtk_cell_area_context_get_preferred_width_for_height(ACellAreaContext: PGtkCellAreaContext; height: gint; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
-procedure gtk_cell_area_context_push_preferred_height(ACellAreaContext: PGtkCellAreaContext; minimum_height: gint; natural_height: gint); cdecl; external;
-procedure gtk_cell_area_context_push_preferred_width(ACellAreaContext: PGtkCellAreaContext; minimum_width: gint; natural_width: gint); cdecl; external;
-procedure gtk_cell_area_context_reset(ACellAreaContext: PGtkCellAreaContext); cdecl; external;
-procedure gtk_cell_area_foreach(ACellArea: PGtkCellArea; callback: TGtkCellCallback; callback_data: gpointer); cdecl; external;
-procedure gtk_cell_area_foreach_alloc(ACellArea: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; background_area: PGdkRectangle; callback: TGtkCellAllocCallback; callback_data: gpointer); cdecl; external;
-procedure gtk_cell_area_get_cell_allocation(ACellArea: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; renderer: PGtkCellRenderer; cell_area: PGdkRectangle; allocation: PGdkRectangle); cdecl; external;
-procedure gtk_cell_area_get_preferred_height(ACellArea: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
-procedure gtk_cell_area_get_preferred_height_for_width(ACellArea: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; width: gint; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
-procedure gtk_cell_area_get_preferred_width(ACellArea: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
-procedure gtk_cell_area_get_preferred_width_for_height(ACellArea: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; height: gint; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
-procedure gtk_cell_area_inner_cell_area(ACellArea: PGtkCellArea; widget: PGtkWidget; cell_area: PGdkRectangle; inner_area: PGdkRectangle); cdecl; external;
-procedure gtk_cell_area_remove(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer); cdecl; external;
-procedure gtk_cell_area_remove_focus_sibling(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer; sibling: PGtkCellRenderer); cdecl; external;
-procedure gtk_cell_area_render(ACellArea: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; cr: Pcairo_t; background_area: PGdkRectangle; cell_area: PGdkRectangle; flags: TGtkCellRendererState; paint_focus: gboolean); cdecl; external;
-procedure gtk_cell_area_request_renderer(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer; orientation: TGtkOrientation; widget: PGtkWidget; for_size: gint; minimum_size: Pgint; natural_size: Pgint); cdecl; external;
-procedure gtk_cell_area_set_focus_cell(ACellArea: PGtkCellArea; renderer: PGtkCellRenderer); cdecl; external;
-procedure gtk_cell_area_stop_editing(ACellArea: PGtkCellArea; canceled: gboolean); cdecl; external;
-procedure gtk_cell_editable_editing_done(ACellEditable: PGtkCellEditable); cdecl; external;
-procedure gtk_cell_editable_remove_widget(ACellEditable: PGtkCellEditable); cdecl; external;
-procedure gtk_cell_editable_start_editing(ACellEditable: PGtkCellEditable; event: PGdkEvent); cdecl; external;
-procedure gtk_cell_layout_add_attribute(ACellLayout: PGtkCellLayout; cell: PGtkCellRenderer; attribute: Pgchar; column: gint); cdecl; external;
-procedure gtk_cell_layout_clear(ACellLayout: PGtkCellLayout); cdecl; external;
-procedure gtk_cell_layout_clear_attributes(ACellLayout: PGtkCellLayout; cell: PGtkCellRenderer); cdecl; external;
-procedure gtk_cell_layout_pack_end(ACellLayout: PGtkCellLayout; cell: PGtkCellRenderer; expand: gboolean); cdecl; external;
-procedure gtk_cell_layout_pack_start(ACellLayout: PGtkCellLayout; cell: PGtkCellRenderer; expand: gboolean); cdecl; external;
-procedure gtk_cell_layout_reorder(ACellLayout: PGtkCellLayout; cell: PGtkCellRenderer; position: gint); cdecl; external;
-procedure gtk_cell_layout_set_attributes(ACellLayout: PGtkCellLayout; cell: PGtkCellRenderer; args: array of const); cdecl; external;
-procedure gtk_cell_layout_set_cell_data_func(ACellLayout: PGtkCellLayout; cell: PGtkCellRenderer; func: TGtkCellLayoutDataFunc; func_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_cell_renderer_get_aligned_area(ACellRenderer: PGtkCellRenderer; widget: PGtkWidget; flags: TGtkCellRendererState; cell_area: PGdkRectangle; aligned_area: PGdkRectangle); cdecl; external;
-procedure gtk_cell_renderer_get_alignment(ACellRenderer: PGtkCellRenderer; xalign: Pgfloat; yalign: Pgfloat); cdecl; external;
-procedure gtk_cell_renderer_get_fixed_size(ACellRenderer: PGtkCellRenderer; width: Pgint; height: Pgint); cdecl; external;
-procedure gtk_cell_renderer_get_padding(ACellRenderer: PGtkCellRenderer; xpad: Pgint; ypad: Pgint); cdecl; external;
-procedure gtk_cell_renderer_get_preferred_height(ACellRenderer: PGtkCellRenderer; widget: PGtkWidget; minimum_size: Pgint; natural_size: Pgint); cdecl; external;
-procedure gtk_cell_renderer_get_preferred_height_for_width(ACellRenderer: PGtkCellRenderer; widget: PGtkWidget; width: gint; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
-procedure gtk_cell_renderer_get_preferred_size(ACellRenderer: PGtkCellRenderer; widget: PGtkWidget; minimum_size: PGtkRequisition; natural_size: PGtkRequisition); cdecl; external;
-procedure gtk_cell_renderer_get_preferred_width(ACellRenderer: PGtkCellRenderer; widget: PGtkWidget; minimum_size: Pgint; natural_size: Pgint); cdecl; external;
-procedure gtk_cell_renderer_get_preferred_width_for_height(ACellRenderer: PGtkCellRenderer; widget: PGtkWidget; height: gint; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
-procedure gtk_cell_renderer_render(ACellRenderer: PGtkCellRenderer; cr: Pcairo_t; widget: PGtkWidget; background_area: PGdkRectangle; cell_area: PGdkRectangle; flags: TGtkCellRendererState); cdecl; external;
-procedure gtk_cell_renderer_set_alignment(ACellRenderer: PGtkCellRenderer; xalign: gfloat; yalign: gfloat); cdecl; external;
-procedure gtk_cell_renderer_set_fixed_size(ACellRenderer: PGtkCellRenderer; width: gint; height: gint); cdecl; external;
-procedure gtk_cell_renderer_set_padding(ACellRenderer: PGtkCellRenderer; xpad: gint; ypad: gint); cdecl; external;
-procedure gtk_cell_renderer_set_sensitive(ACellRenderer: PGtkCellRenderer; sensitive: gboolean); cdecl; external;
-procedure gtk_cell_renderer_set_visible(ACellRenderer: PGtkCellRenderer; visible: gboolean); cdecl; external;
-procedure gtk_cell_renderer_stop_editing(ACellRenderer: PGtkCellRenderer; canceled: gboolean); cdecl; external;
-procedure gtk_cell_renderer_text_set_fixed_height_from_font(ACellRendererText: PGtkCellRendererText; number_of_rows: gint); cdecl; external;
-procedure gtk_cell_renderer_toggle_set_activatable(ACellRendererToggle: PGtkCellRendererToggle; setting: gboolean); cdecl; external;
-procedure gtk_cell_renderer_toggle_set_active(ACellRendererToggle: PGtkCellRendererToggle; setting: gboolean); cdecl; external;
-procedure gtk_cell_renderer_toggle_set_radio(ACellRendererToggle: PGtkCellRendererToggle; radio: gboolean); cdecl; external;
-procedure gtk_cell_view_set_background_rgba(ACellView: PGtkCellView; rgba: PGdkRGBA); cdecl; external;
-procedure gtk_cell_view_set_displayed_row(ACellView: PGtkCellView; path: PGtkTreePath); cdecl; external;
-procedure gtk_cell_view_set_draw_sensitive(ACellView: PGtkCellView; draw_sensitive: gboolean); cdecl; external;
-procedure gtk_cell_view_set_fit_model(ACellView: PGtkCellView; fit_model: gboolean); cdecl; external;
-procedure gtk_cell_view_set_model(ACellView: PGtkCellView; model: PGtkTreeModel); cdecl; external;
-procedure gtk_check_menu_item_set_active(ACheckMenuItem: PGtkCheckMenuItem; is_active: gboolean); cdecl; external;
-procedure gtk_check_menu_item_set_draw_as_radio(ACheckMenuItem: PGtkCheckMenuItem; draw_as_radio: gboolean); cdecl; external;
-procedure gtk_check_menu_item_set_inconsistent(ACheckMenuItem: PGtkCheckMenuItem; setting: gboolean); cdecl; external;
-procedure gtk_check_menu_item_toggled(ACheckMenuItem: PGtkCheckMenuItem); cdecl; external;
-procedure gtk_clipboard_clear(AClipboard: PGtkClipboard); cdecl; external;
-procedure gtk_clipboard_request_contents(AClipboard: PGtkClipboard; target: TGdkAtom; callback: TGtkClipboardReceivedFunc; user_data: gpointer); cdecl; external;
-procedure gtk_clipboard_request_image(AClipboard: PGtkClipboard; callback: TGtkClipboardImageReceivedFunc; user_data: gpointer); cdecl; external;
-procedure gtk_clipboard_request_rich_text(AClipboard: PGtkClipboard; buffer: PGtkTextBuffer; callback: TGtkClipboardRichTextReceivedFunc; user_data: gpointer); cdecl; external;
-procedure gtk_clipboard_request_targets(AClipboard: PGtkClipboard; callback: TGtkClipboardTargetsReceivedFunc; user_data: gpointer); cdecl; external;
-procedure gtk_clipboard_request_text(AClipboard: PGtkClipboard; callback: TGtkClipboardTextReceivedFunc; user_data: gpointer); cdecl; external;
-procedure gtk_clipboard_request_uris(AClipboard: PGtkClipboard; callback: TGtkClipboardURIReceivedFunc; user_data: gpointer); cdecl; external;
-procedure gtk_clipboard_set_can_store(AClipboard: PGtkClipboard; targets: PGtkTargetEntry; n_targets: gint); cdecl; external;
-procedure gtk_clipboard_set_image(AClipboard: PGtkClipboard; pixbuf: PGdkPixbuf); cdecl; external;
-procedure gtk_clipboard_set_text(AClipboard: PGtkClipboard; text: Pgchar; len: gint); cdecl; external;
-procedure gtk_clipboard_store(AClipboard: PGtkClipboard); cdecl; external;
-procedure gtk_color_button_set_title(AColorButton: PGtkColorButton; title: Pgchar); cdecl; external;
-procedure gtk_color_chooser_add_palette(AColorChooser: PGtkColorChooser; orientation: TGtkOrientation; colors_per_line: gint; n_colors: gint; colors: PGdkRGBA); cdecl; external;
-procedure gtk_color_chooser_get_rgba(AColorChooser: PGtkColorChooser; color: PGdkRGBA); cdecl; external;
-procedure gtk_color_chooser_set_rgba(AColorChooser: PGtkColorChooser; color: PGdkRGBA); cdecl; external;
-procedure gtk_color_chooser_set_use_alpha(AColorChooser: PGtkColorChooser; use_alpha: gboolean); cdecl; external;
-procedure gtk_color_selection_get_current_rgba(AColorSelection: PGtkColorSelection; rgba: PGdkRGBA); cdecl; external;
-procedure gtk_color_selection_get_previous_rgba(AColorSelection: PGtkColorSelection; rgba: PGdkRGBA); cdecl; external;
-procedure gtk_color_selection_set_current_alpha(AColorSelection: PGtkColorSelection; alpha: guint16); cdecl; external;
-procedure gtk_color_selection_set_current_rgba(AColorSelection: PGtkColorSelection; rgba: PGdkRGBA); cdecl; external;
-procedure gtk_color_selection_set_has_opacity_control(AColorSelection: PGtkColorSelection; has_opacity: gboolean); cdecl; external;
-procedure gtk_color_selection_set_has_palette(AColorSelection: PGtkColorSelection; has_palette: gboolean); cdecl; external;
-procedure gtk_color_selection_set_previous_alpha(AColorSelection: PGtkColorSelection; alpha: guint16); cdecl; external;
-procedure gtk_color_selection_set_previous_rgba(AColorSelection: PGtkColorSelection; rgba: PGdkRGBA); cdecl; external;
-procedure gtk_combo_box_popdown(AComboBox: PGtkComboBox); cdecl; external;
-procedure gtk_combo_box_popup(AComboBox: PGtkComboBox); cdecl; external;
-procedure gtk_combo_box_popup_for_device(AComboBox: PGtkComboBox; device: PGdkDevice); cdecl; external;
-procedure gtk_combo_box_set_active(AComboBox: PGtkComboBox; index_: gint); cdecl; external;
-procedure gtk_combo_box_set_active_iter(AComboBox: PGtkComboBox; iter: PGtkTreeIter); cdecl; external;
-procedure gtk_combo_box_set_add_tearoffs(AComboBox: PGtkComboBox; add_tearoffs: gboolean); cdecl; external;
-procedure gtk_combo_box_set_button_sensitivity(AComboBox: PGtkComboBox; sensitivity: TGtkSensitivityType); cdecl; external;
-procedure gtk_combo_box_set_column_span_column(AComboBox: PGtkComboBox; column_span: gint); cdecl; external;
-procedure gtk_combo_box_set_entry_text_column(AComboBox: PGtkComboBox; text_column: gint); cdecl; external;
-procedure gtk_combo_box_set_focus_on_click(AComboBox: PGtkComboBox; focus_on_click: gboolean); cdecl; external;
-procedure gtk_combo_box_set_id_column(AComboBox: PGtkComboBox; id_column: gint); cdecl; external;
-procedure gtk_combo_box_set_model(AComboBox: PGtkComboBox; model: PGtkTreeModel); cdecl; external;
-procedure gtk_combo_box_set_popup_fixed_width(AComboBox: PGtkComboBox; fixed: gboolean); cdecl; external;
-procedure gtk_combo_box_set_row_separator_func(AComboBox: PGtkComboBox; func: TGtkTreeViewRowSeparatorFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_combo_box_set_row_span_column(AComboBox: PGtkComboBox; row_span: gint); cdecl; external;
-procedure gtk_combo_box_set_title(AComboBox: PGtkComboBox; title: Pgchar); cdecl; external;
-procedure gtk_combo_box_set_wrap_width(AComboBox: PGtkComboBox; width: gint); cdecl; external;
-procedure gtk_combo_box_text_append(AComboBoxText: PGtkComboBoxText; id: Pgchar; text: Pgchar); cdecl; external;
-procedure gtk_combo_box_text_append_text(AComboBoxText: PGtkComboBoxText; text: Pgchar); cdecl; external;
-procedure gtk_combo_box_text_insert(AComboBoxText: PGtkComboBoxText; position: gint; id: Pgchar; text: Pgchar); cdecl; external;
-procedure gtk_combo_box_text_insert_text(AComboBoxText: PGtkComboBoxText; position: gint; text: Pgchar); cdecl; external;
-procedure gtk_combo_box_text_prepend(AComboBoxText: PGtkComboBoxText; id: Pgchar; text: Pgchar); cdecl; external;
-procedure gtk_combo_box_text_prepend_text(AComboBoxText: PGtkComboBoxText; text: Pgchar); cdecl; external;
-procedure gtk_combo_box_text_remove(AComboBoxText: PGtkComboBoxText; position: gint); cdecl; external;
-procedure gtk_combo_box_text_remove_all(AComboBoxText: PGtkComboBoxText); cdecl; external;
-procedure gtk_container_add(AContainer: PGtkContainer; widget: PGtkWidget); cdecl; external;
-procedure gtk_container_add_with_properties(AContainer: PGtkContainer; widget: PGtkWidget; first_prop_name: Pgchar; args: array of const); cdecl; external;
-procedure gtk_container_check_resize(AContainer: PGtkContainer); cdecl; external;
-procedure gtk_container_child_get(AContainer: PGtkContainer; child: PGtkWidget; first_prop_name: Pgchar; args: array of const); cdecl; external;
-procedure gtk_container_child_get_property(AContainer: PGtkContainer; child: PGtkWidget; property_name: Pgchar; value: PGValue); cdecl; external;
-procedure gtk_container_child_get_valist(AContainer: PGtkContainer; child: PGtkWidget; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
-procedure gtk_container_child_notify(AContainer: PGtkContainer; child: PGtkWidget; child_property: Pgchar); cdecl; external;
-procedure gtk_container_child_set(AContainer: PGtkContainer; child: PGtkWidget; first_prop_name: Pgchar; args: array of const); cdecl; external;
-procedure gtk_container_child_set_property(AContainer: PGtkContainer; child: PGtkWidget; property_name: Pgchar; value: PGValue); cdecl; external;
-procedure gtk_container_child_set_valist(AContainer: PGtkContainer; child: PGtkWidget; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
-procedure gtk_container_class_handle_border_width(AContainerClass: PGtkContainerClass); cdecl; external;
-procedure gtk_container_class_install_child_property(AContainerClass: PGtkContainerClass; property_id: guint; pspec: PGParamSpec); cdecl; external;
-procedure gtk_container_forall(AContainer: PGtkContainer; callback: TGtkCallback; callback_data: gpointer); cdecl; external;
-procedure gtk_container_foreach(AContainer: PGtkContainer; callback: TGtkCallback; callback_data: gpointer); cdecl; external;
-procedure gtk_container_propagate_draw(AContainer: PGtkContainer; child: PGtkWidget; cr: Pcairo_t); cdecl; external;
-procedure gtk_container_remove(AContainer: PGtkContainer; widget: PGtkWidget); cdecl; external;
-procedure gtk_container_resize_children(AContainer: PGtkContainer); cdecl; external;
-procedure gtk_container_set_border_width(AContainer: PGtkContainer; border_width: guint); cdecl; external;
-procedure gtk_container_set_focus_chain(AContainer: PGtkContainer; focusable_widgets: PGList); cdecl; external;
-procedure gtk_container_set_focus_child(AContainer: PGtkContainer; child: PGtkWidget); cdecl; external;
-procedure gtk_container_set_focus_hadjustment(AContainer: PGtkContainer; adjustment: PGtkAdjustment); cdecl; external;
-procedure gtk_container_set_focus_vadjustment(AContainer: PGtkContainer; adjustment: PGtkAdjustment); cdecl; external;
-procedure gtk_container_set_reallocate_redraws(AContainer: PGtkContainer; needs_redraws: gboolean); cdecl; external;
-procedure gtk_container_set_resize_mode(AContainer: PGtkContainer; resize_mode: TGtkResizeMode); cdecl; external;
-procedure gtk_container_unset_focus_chain(AContainer: PGtkContainer); cdecl; external;
-procedure gtk_css_section_unref(ACssSection: PGtkCssSection); cdecl; external;
+procedure gtk_calendar_clear_marks(calendar: PGtkCalendar); cdecl; external;
+procedure gtk_calendar_get_date(calendar: PGtkCalendar; year: Pguint; month: Pguint; day: Pguint); cdecl; external;
+procedure gtk_calendar_mark_day(calendar: PGtkCalendar; day: guint); cdecl; external;
+procedure gtk_calendar_select_day(calendar: PGtkCalendar; day: guint); cdecl; external;
+procedure gtk_calendar_select_month(calendar: PGtkCalendar; month: guint; year: guint); cdecl; external;
+procedure gtk_calendar_set_detail_func(calendar: PGtkCalendar; func: TGtkCalendarDetailFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_calendar_set_detail_height_rows(calendar: PGtkCalendar; rows: gint); cdecl; external;
+procedure gtk_calendar_set_detail_width_chars(calendar: PGtkCalendar; chars: gint); cdecl; external;
+procedure gtk_calendar_set_display_options(calendar: PGtkCalendar; flags: TGtkCalendarDisplayOptions); cdecl; external;
+procedure gtk_calendar_unmark_day(calendar: PGtkCalendar; day: guint); cdecl; external;
+procedure gtk_cell_area_add(area: PGtkCellArea; renderer: PGtkCellRenderer); cdecl; external;
+procedure gtk_cell_area_add_focus_sibling(area: PGtkCellArea; renderer: PGtkCellRenderer; sibling: PGtkCellRenderer); cdecl; external;
+procedure gtk_cell_area_add_with_properties(area: PGtkCellArea; renderer: PGtkCellRenderer; first_prop_name: Pgchar; args: array of const); cdecl; external;
+procedure gtk_cell_area_apply_attributes(area: PGtkCellArea; tree_model: PGtkTreeModel; iter: PGtkTreeIter; is_expander: gboolean; is_expanded: gboolean); cdecl; external;
+procedure gtk_cell_area_attribute_connect(area: PGtkCellArea; renderer: PGtkCellRenderer; attribute: Pgchar; column: gint); cdecl; external;
+procedure gtk_cell_area_attribute_disconnect(area: PGtkCellArea; renderer: PGtkCellRenderer; attribute: Pgchar); cdecl; external;
+procedure gtk_cell_area_box_pack_end(box: PGtkCellAreaBox; renderer: PGtkCellRenderer; expand: gboolean; align: gboolean; fixed: gboolean); cdecl; external;
+procedure gtk_cell_area_box_pack_start(box: PGtkCellAreaBox; renderer: PGtkCellRenderer; expand: gboolean; align: gboolean; fixed: gboolean); cdecl; external;
+procedure gtk_cell_area_box_set_spacing(box: PGtkCellAreaBox; spacing: gint); cdecl; external;
+procedure gtk_cell_area_cell_get(area: PGtkCellArea; renderer: PGtkCellRenderer; first_prop_name: Pgchar; args: array of const); cdecl; external;
+procedure gtk_cell_area_cell_get_property(area: PGtkCellArea; renderer: PGtkCellRenderer; property_name: Pgchar; value: PGValue); cdecl; external;
+procedure gtk_cell_area_cell_get_valist(area: PGtkCellArea; renderer: PGtkCellRenderer; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
+procedure gtk_cell_area_cell_set(area: PGtkCellArea; renderer: PGtkCellRenderer; first_prop_name: Pgchar; args: array of const); cdecl; external;
+procedure gtk_cell_area_cell_set_property(area: PGtkCellArea; renderer: PGtkCellRenderer; property_name: Pgchar; value: PGValue); cdecl; external;
+procedure gtk_cell_area_cell_set_valist(area: PGtkCellArea; renderer: PGtkCellRenderer; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
+procedure gtk_cell_area_class_install_cell_property(aclass: PGtkCellAreaClass; property_id: guint; pspec: PGParamSpec); cdecl; external;
+procedure gtk_cell_area_context_allocate(context: PGtkCellAreaContext; width: gint; height: gint); cdecl; external;
+procedure gtk_cell_area_context_get_allocation(context: PGtkCellAreaContext; width: Pgint; height: Pgint); cdecl; external;
+procedure gtk_cell_area_context_get_preferred_height(context: PGtkCellAreaContext; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
+procedure gtk_cell_area_context_get_preferred_height_for_width(context: PGtkCellAreaContext; width: gint; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
+procedure gtk_cell_area_context_get_preferred_width(context: PGtkCellAreaContext; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
+procedure gtk_cell_area_context_get_preferred_width_for_height(context: PGtkCellAreaContext; height: gint; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
+procedure gtk_cell_area_context_push_preferred_height(context: PGtkCellAreaContext; minimum_height: gint; natural_height: gint); cdecl; external;
+procedure gtk_cell_area_context_push_preferred_width(context: PGtkCellAreaContext; minimum_width: gint; natural_width: gint); cdecl; external;
+procedure gtk_cell_area_context_reset(context: PGtkCellAreaContext); cdecl; external;
+procedure gtk_cell_area_foreach(area: PGtkCellArea; callback: TGtkCellCallback; callback_data: gpointer); cdecl; external;
+procedure gtk_cell_area_foreach_alloc(area: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; background_area: PGdkRectangle; callback: TGtkCellAllocCallback; callback_data: gpointer); cdecl; external;
+procedure gtk_cell_area_get_cell_allocation(area: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; renderer: PGtkCellRenderer; cell_area: PGdkRectangle; allocation: PGdkRectangle); cdecl; external;
+procedure gtk_cell_area_get_preferred_height(area: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
+procedure gtk_cell_area_get_preferred_height_for_width(area: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; width: gint; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
+procedure gtk_cell_area_get_preferred_width(area: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
+procedure gtk_cell_area_get_preferred_width_for_height(area: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; height: gint; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
+procedure gtk_cell_area_inner_cell_area(area: PGtkCellArea; widget: PGtkWidget; cell_area: PGdkRectangle; inner_area: PGdkRectangle); cdecl; external;
+procedure gtk_cell_area_remove(area: PGtkCellArea; renderer: PGtkCellRenderer); cdecl; external;
+procedure gtk_cell_area_remove_focus_sibling(area: PGtkCellArea; renderer: PGtkCellRenderer; sibling: PGtkCellRenderer); cdecl; external;
+procedure gtk_cell_area_render(area: PGtkCellArea; context: PGtkCellAreaContext; widget: PGtkWidget; cr: Pcairo_t; background_area: PGdkRectangle; cell_area: PGdkRectangle; flags: TGtkCellRendererState; paint_focus: gboolean); cdecl; external;
+procedure gtk_cell_area_request_renderer(area: PGtkCellArea; renderer: PGtkCellRenderer; orientation: TGtkOrientation; widget: PGtkWidget; for_size: gint; minimum_size: Pgint; natural_size: Pgint); cdecl; external;
+procedure gtk_cell_area_set_focus_cell(area: PGtkCellArea; renderer: PGtkCellRenderer); cdecl; external;
+procedure gtk_cell_area_stop_editing(area: PGtkCellArea; canceled: gboolean); cdecl; external;
+procedure gtk_cell_editable_editing_done(cell_editable: PGtkCellEditable); cdecl; external;
+procedure gtk_cell_editable_remove_widget(cell_editable: PGtkCellEditable); cdecl; external;
+procedure gtk_cell_editable_start_editing(cell_editable: PGtkCellEditable; event: PGdkEvent); cdecl; external;
+procedure gtk_cell_layout_add_attribute(cell_layout: PGtkCellLayout; cell: PGtkCellRenderer; attribute: Pgchar; column: gint); cdecl; external;
+procedure gtk_cell_layout_clear(cell_layout: PGtkCellLayout); cdecl; external;
+procedure gtk_cell_layout_clear_attributes(cell_layout: PGtkCellLayout; cell: PGtkCellRenderer); cdecl; external;
+procedure gtk_cell_layout_pack_end(cell_layout: PGtkCellLayout; cell: PGtkCellRenderer; expand: gboolean); cdecl; external;
+procedure gtk_cell_layout_pack_start(cell_layout: PGtkCellLayout; cell: PGtkCellRenderer; expand: gboolean); cdecl; external;
+procedure gtk_cell_layout_reorder(cell_layout: PGtkCellLayout; cell: PGtkCellRenderer; position: gint); cdecl; external;
+procedure gtk_cell_layout_set_attributes(cell_layout: PGtkCellLayout; cell: PGtkCellRenderer; args: array of const); cdecl; external;
+procedure gtk_cell_layout_set_cell_data_func(cell_layout: PGtkCellLayout; cell: PGtkCellRenderer; func: TGtkCellLayoutDataFunc; func_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_cell_renderer_class_set_accessible_type(renderer_class: PGtkCellRendererClass; type_: TGType); cdecl; external;
+procedure gtk_cell_renderer_get_aligned_area(cell: PGtkCellRenderer; widget: PGtkWidget; flags: TGtkCellRendererState; cell_area: PGdkRectangle; aligned_area: PGdkRectangle); cdecl; external;
+procedure gtk_cell_renderer_get_alignment(cell: PGtkCellRenderer; xalign: Pgfloat; yalign: Pgfloat); cdecl; external;
+procedure gtk_cell_renderer_get_fixed_size(cell: PGtkCellRenderer; width: Pgint; height: Pgint); cdecl; external;
+procedure gtk_cell_renderer_get_padding(cell: PGtkCellRenderer; xpad: Pgint; ypad: Pgint); cdecl; external;
+procedure gtk_cell_renderer_get_preferred_height(cell: PGtkCellRenderer; widget: PGtkWidget; minimum_size: Pgint; natural_size: Pgint); cdecl; external;
+procedure gtk_cell_renderer_get_preferred_height_for_width(cell: PGtkCellRenderer; widget: PGtkWidget; width: gint; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
+procedure gtk_cell_renderer_get_preferred_size(cell: PGtkCellRenderer; widget: PGtkWidget; minimum_size: PGtkRequisition; natural_size: PGtkRequisition); cdecl; external;
+procedure gtk_cell_renderer_get_preferred_width(cell: PGtkCellRenderer; widget: PGtkWidget; minimum_size: Pgint; natural_size: Pgint); cdecl; external;
+procedure gtk_cell_renderer_get_preferred_width_for_height(cell: PGtkCellRenderer; widget: PGtkWidget; height: gint; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
+procedure gtk_cell_renderer_render(cell: PGtkCellRenderer; cr: Pcairo_t; widget: PGtkWidget; background_area: PGdkRectangle; cell_area: PGdkRectangle; flags: TGtkCellRendererState); cdecl; external;
+procedure gtk_cell_renderer_set_alignment(cell: PGtkCellRenderer; xalign: gfloat; yalign: gfloat); cdecl; external;
+procedure gtk_cell_renderer_set_fixed_size(cell: PGtkCellRenderer; width: gint; height: gint); cdecl; external;
+procedure gtk_cell_renderer_set_padding(cell: PGtkCellRenderer; xpad: gint; ypad: gint); cdecl; external;
+procedure gtk_cell_renderer_set_sensitive(cell: PGtkCellRenderer; sensitive: gboolean); cdecl; external;
+procedure gtk_cell_renderer_set_visible(cell: PGtkCellRenderer; visible: gboolean); cdecl; external;
+procedure gtk_cell_renderer_stop_editing(cell: PGtkCellRenderer; canceled: gboolean); cdecl; external;
+procedure gtk_cell_renderer_text_set_fixed_height_from_font(renderer: PGtkCellRendererText; number_of_rows: gint); cdecl; external;
+procedure gtk_cell_renderer_toggle_set_activatable(toggle: PGtkCellRendererToggle; setting: gboolean); cdecl; external;
+procedure gtk_cell_renderer_toggle_set_active(toggle: PGtkCellRendererToggle; setting: gboolean); cdecl; external;
+procedure gtk_cell_renderer_toggle_set_radio(toggle: PGtkCellRendererToggle; radio: gboolean); cdecl; external;
+procedure gtk_cell_view_set_background_rgba(cell_view: PGtkCellView; rgba: PGdkRGBA); cdecl; external;
+procedure gtk_cell_view_set_displayed_row(cell_view: PGtkCellView; path: PGtkTreePath); cdecl; external;
+procedure gtk_cell_view_set_draw_sensitive(cell_view: PGtkCellView; draw_sensitive: gboolean); cdecl; external;
+procedure gtk_cell_view_set_fit_model(cell_view: PGtkCellView; fit_model: gboolean); cdecl; external;
+procedure gtk_cell_view_set_model(cell_view: PGtkCellView; model: PGtkTreeModel); cdecl; external;
+procedure gtk_check_menu_item_set_active(check_menu_item: PGtkCheckMenuItem; is_active: gboolean); cdecl; external;
+procedure gtk_check_menu_item_set_draw_as_radio(check_menu_item: PGtkCheckMenuItem; draw_as_radio: gboolean); cdecl; external;
+procedure gtk_check_menu_item_set_inconsistent(check_menu_item: PGtkCheckMenuItem; setting: gboolean); cdecl; external;
+procedure gtk_check_menu_item_toggled(check_menu_item: PGtkCheckMenuItem); cdecl; external;
+procedure gtk_clipboard_clear(clipboard: PGtkClipboard); cdecl; external;
+procedure gtk_clipboard_request_contents(clipboard: PGtkClipboard; target: TGdkAtom; callback: TGtkClipboardReceivedFunc; user_data: gpointer); cdecl; external;
+procedure gtk_clipboard_request_image(clipboard: PGtkClipboard; callback: TGtkClipboardImageReceivedFunc; user_data: gpointer); cdecl; external;
+procedure gtk_clipboard_request_rich_text(clipboard: PGtkClipboard; buffer: PGtkTextBuffer; callback: TGtkClipboardRichTextReceivedFunc; user_data: gpointer); cdecl; external;
+procedure gtk_clipboard_request_targets(clipboard: PGtkClipboard; callback: TGtkClipboardTargetsReceivedFunc; user_data: gpointer); cdecl; external;
+procedure gtk_clipboard_request_text(clipboard: PGtkClipboard; callback: TGtkClipboardTextReceivedFunc; user_data: gpointer); cdecl; external;
+procedure gtk_clipboard_request_uris(clipboard: PGtkClipboard; callback: TGtkClipboardURIReceivedFunc; user_data: gpointer); cdecl; external;
+procedure gtk_clipboard_set_can_store(clipboard: PGtkClipboard; targets: PGtkTargetEntry; n_targets: gint); cdecl; external;
+procedure gtk_clipboard_set_image(clipboard: PGtkClipboard; pixbuf: PGdkPixbuf); cdecl; external;
+procedure gtk_clipboard_set_text(clipboard: PGtkClipboard; text: Pgchar; len: gint); cdecl; external;
+procedure gtk_clipboard_store(clipboard: PGtkClipboard); cdecl; external;
+procedure gtk_color_button_set_title(button: PGtkColorButton; title: Pgchar); cdecl; external;
+procedure gtk_color_chooser_add_palette(chooser: PGtkColorChooser; orientation: TGtkOrientation; colors_per_line: gint; n_colors: gint; colors: PGdkRGBA); cdecl; external;
+procedure gtk_color_chooser_get_rgba(chooser: PGtkColorChooser; color: PGdkRGBA); cdecl; external;
+procedure gtk_color_chooser_set_rgba(chooser: PGtkColorChooser; color: PGdkRGBA); cdecl; external;
+procedure gtk_color_chooser_set_use_alpha(chooser: PGtkColorChooser; use_alpha: gboolean); cdecl; external;
+procedure gtk_color_selection_get_current_rgba(colorsel: PGtkColorSelection; rgba: PGdkRGBA); cdecl; external;
+procedure gtk_color_selection_get_previous_rgba(colorsel: PGtkColorSelection; rgba: PGdkRGBA); cdecl; external;
+procedure gtk_color_selection_set_current_alpha(colorsel: PGtkColorSelection; alpha: guint16); cdecl; external;
+procedure gtk_color_selection_set_current_rgba(colorsel: PGtkColorSelection; rgba: PGdkRGBA); cdecl; external;
+procedure gtk_color_selection_set_has_opacity_control(colorsel: PGtkColorSelection; has_opacity: gboolean); cdecl; external;
+procedure gtk_color_selection_set_has_palette(colorsel: PGtkColorSelection; has_palette: gboolean); cdecl; external;
+procedure gtk_color_selection_set_previous_alpha(colorsel: PGtkColorSelection; alpha: guint16); cdecl; external;
+procedure gtk_color_selection_set_previous_rgba(colorsel: PGtkColorSelection; rgba: PGdkRGBA); cdecl; external;
+procedure gtk_combo_box_popdown(combo_box: PGtkComboBox); cdecl; external;
+procedure gtk_combo_box_popup(combo_box: PGtkComboBox); cdecl; external;
+procedure gtk_combo_box_popup_for_device(combo_box: PGtkComboBox; device: PGdkDevice); cdecl; external;
+procedure gtk_combo_box_set_active(combo_box: PGtkComboBox; index_: gint); cdecl; external;
+procedure gtk_combo_box_set_active_iter(combo_box: PGtkComboBox; iter: PGtkTreeIter); cdecl; external;
+procedure gtk_combo_box_set_add_tearoffs(combo_box: PGtkComboBox; add_tearoffs: gboolean); cdecl; external;
+procedure gtk_combo_box_set_button_sensitivity(combo_box: PGtkComboBox; sensitivity: TGtkSensitivityType); cdecl; external;
+procedure gtk_combo_box_set_column_span_column(combo_box: PGtkComboBox; column_span: gint); cdecl; external;
+procedure gtk_combo_box_set_entry_text_column(combo_box: PGtkComboBox; text_column: gint); cdecl; external;
+procedure gtk_combo_box_set_focus_on_click(combo: PGtkComboBox; focus_on_click: gboolean); cdecl; external;
+procedure gtk_combo_box_set_id_column(combo_box: PGtkComboBox; id_column: gint); cdecl; external;
+procedure gtk_combo_box_set_model(combo_box: PGtkComboBox; model: PGtkTreeModel); cdecl; external;
+procedure gtk_combo_box_set_popup_fixed_width(combo_box: PGtkComboBox; fixed: gboolean); cdecl; external;
+procedure gtk_combo_box_set_row_separator_func(combo_box: PGtkComboBox; func: TGtkTreeViewRowSeparatorFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_combo_box_set_row_span_column(combo_box: PGtkComboBox; row_span: gint); cdecl; external;
+procedure gtk_combo_box_set_title(combo_box: PGtkComboBox; title: Pgchar); cdecl; external;
+procedure gtk_combo_box_set_wrap_width(combo_box: PGtkComboBox; width: gint); cdecl; external;
+procedure gtk_combo_box_text_append(combo_box: PGtkComboBoxText; id: Pgchar; text: Pgchar); cdecl; external;
+procedure gtk_combo_box_text_append_text(combo_box: PGtkComboBoxText; text: Pgchar); cdecl; external;
+procedure gtk_combo_box_text_insert(combo_box: PGtkComboBoxText; position: gint; id: Pgchar; text: Pgchar); cdecl; external;
+procedure gtk_combo_box_text_insert_text(combo_box: PGtkComboBoxText; position: gint; text: Pgchar); cdecl; external;
+procedure gtk_combo_box_text_prepend(combo_box: PGtkComboBoxText; id: Pgchar; text: Pgchar); cdecl; external;
+procedure gtk_combo_box_text_prepend_text(combo_box: PGtkComboBoxText; text: Pgchar); cdecl; external;
+procedure gtk_combo_box_text_remove(combo_box: PGtkComboBoxText; position: gint); cdecl; external;
+procedure gtk_combo_box_text_remove_all(combo_box: PGtkComboBoxText); cdecl; external;
+procedure gtk_container_add(container: PGtkContainer; widget: PGtkWidget); cdecl; external;
+procedure gtk_container_add_with_properties(container: PGtkContainer; widget: PGtkWidget; first_prop_name: Pgchar; args: array of const); cdecl; external;
+procedure gtk_container_check_resize(container: PGtkContainer); cdecl; external;
+procedure gtk_container_child_get(container: PGtkContainer; child: PGtkWidget; first_prop_name: Pgchar; args: array of const); cdecl; external;
+procedure gtk_container_child_get_property(container: PGtkContainer; child: PGtkWidget; property_name: Pgchar; value: PGValue); cdecl; external;
+procedure gtk_container_child_get_valist(container: PGtkContainer; child: PGtkWidget; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
+procedure gtk_container_child_notify(container: PGtkContainer; child: PGtkWidget; child_property: Pgchar); cdecl; external;
+procedure gtk_container_child_set(container: PGtkContainer; child: PGtkWidget; first_prop_name: Pgchar; args: array of const); cdecl; external;
+procedure gtk_container_child_set_property(container: PGtkContainer; child: PGtkWidget; property_name: Pgchar; value: PGValue); cdecl; external;
+procedure gtk_container_child_set_valist(container: PGtkContainer; child: PGtkWidget; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
+procedure gtk_container_class_handle_border_width(klass: PGtkContainerClass); cdecl; external;
+procedure gtk_container_class_install_child_property(cclass: PGtkContainerClass; property_id: guint; pspec: PGParamSpec); cdecl; external;
+procedure gtk_container_forall(container: PGtkContainer; callback: TGtkCallback; callback_data: gpointer); cdecl; external;
+procedure gtk_container_foreach(container: PGtkContainer; callback: TGtkCallback; callback_data: gpointer); cdecl; external;
+procedure gtk_container_propagate_draw(container: PGtkContainer; child: PGtkWidget; cr: Pcairo_t); cdecl; external;
+procedure gtk_container_remove(container: PGtkContainer; widget: PGtkWidget); cdecl; external;
+procedure gtk_container_resize_children(container: PGtkContainer); cdecl; external;
+procedure gtk_container_set_border_width(container: PGtkContainer; border_width: guint); cdecl; external;
+procedure gtk_container_set_focus_chain(container: PGtkContainer; focusable_widgets: PGList); cdecl; external;
+procedure gtk_container_set_focus_child(container: PGtkContainer; child: PGtkWidget); cdecl; external;
+procedure gtk_container_set_focus_hadjustment(container: PGtkContainer; adjustment: PGtkAdjustment); cdecl; external;
+procedure gtk_container_set_focus_vadjustment(container: PGtkContainer; adjustment: PGtkAdjustment); cdecl; external;
+procedure gtk_container_set_reallocate_redraws(container: PGtkContainer; needs_redraws: gboolean); cdecl; external;
+procedure gtk_container_set_resize_mode(container: PGtkContainer; resize_mode: TGtkResizeMode); cdecl; external;
+procedure gtk_container_unset_focus_chain(container: PGtkContainer); cdecl; external;
+procedure gtk_css_section_unref(section: PGtkCssSection); cdecl; external;
 procedure gtk_device_grab_add(widget: PGtkWidget; device: PGdkDevice; block_others: gboolean); cdecl; external;
 procedure gtk_device_grab_remove(widget: PGtkWidget; device: PGdkDevice); cdecl; external;
-procedure gtk_dialog_add_action_widget(ADialog: PGtkDialog; child: PGtkWidget; response_id: gint); cdecl; external;
-procedure gtk_dialog_add_buttons(ADialog: PGtkDialog; first_button_text: Pgchar; args: array of const); cdecl; external;
-procedure gtk_dialog_response(ADialog: PGtkDialog; response_id: gint); cdecl; external;
-procedure gtk_dialog_set_alternative_button_order(ADialog: PGtkDialog; first_response_id: gint; args: array of const); cdecl; external;
-procedure gtk_dialog_set_alternative_button_order_from_array(ADialog: PGtkDialog; n_params: gint; new_order: Pgint); cdecl; external;
-procedure gtk_dialog_set_default_response(ADialog: PGtkDialog; response_id: gint); cdecl; external;
-procedure gtk_dialog_set_response_sensitive(ADialog: PGtkDialog; response_id: gint; setting: gboolean); cdecl; external;
+procedure gtk_dialog_add_action_widget(dialog: PGtkDialog; child: PGtkWidget; response_id: gint); cdecl; external;
+procedure gtk_dialog_add_buttons(dialog: PGtkDialog; first_button_text: Pgchar; args: array of const); cdecl; external;
+procedure gtk_dialog_response(dialog: PGtkDialog; response_id: gint); cdecl; external;
+procedure gtk_dialog_set_alternative_button_order(dialog: PGtkDialog; first_response_id: gint; args: array of const); cdecl; external;
+procedure gtk_dialog_set_alternative_button_order_from_array(dialog: PGtkDialog; n_params: gint; new_order: Pgint); cdecl; external;
+procedure gtk_dialog_set_default_response(dialog: PGtkDialog; response_id: gint); cdecl; external;
+procedure gtk_dialog_set_response_sensitive(dialog: PGtkDialog; response_id: gint; setting: gboolean); cdecl; external;
 procedure gtk_disable_setlocale; cdecl; external;
-procedure gtk_drag_dest_add_image_targets(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_drag_dest_add_text_targets(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_drag_dest_add_uri_targets(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_drag_dest_set(AWidget: PGtkWidget; flags: TGtkDestDefaults; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; external;
-procedure gtk_drag_dest_set_proxy(AWidget: PGtkWidget; proxy_window: PGdkWindow; protocol: TGdkDragProtocol; use_coordinates: gboolean); cdecl; external;
-procedure gtk_drag_dest_set_target_list(AWidget: PGtkWidget; target_list: PGtkTargetList); cdecl; external;
-procedure gtk_drag_dest_set_track_motion(AWidget: PGtkWidget; track_motion: gboolean); cdecl; external;
-procedure gtk_drag_dest_unset(AWidget: PGtkWidget); cdecl; external;
+procedure gtk_drag_dest_add_image_targets(widget: PGtkWidget); cdecl; external;
+procedure gtk_drag_dest_add_text_targets(widget: PGtkWidget); cdecl; external;
+procedure gtk_drag_dest_add_uri_targets(widget: PGtkWidget); cdecl; external;
+procedure gtk_drag_dest_set(widget: PGtkWidget; flags: TGtkDestDefaults; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; external;
+procedure gtk_drag_dest_set_proxy(widget: PGtkWidget; proxy_window: PGdkWindow; protocol: TGdkDragProtocol; use_coordinates: gboolean); cdecl; external;
+procedure gtk_drag_dest_set_target_list(widget: PGtkWidget; target_list: PGtkTargetList); cdecl; external;
+procedure gtk_drag_dest_set_track_motion(widget: PGtkWidget; track_motion: gboolean); cdecl; external;
+procedure gtk_drag_dest_unset(widget: PGtkWidget); cdecl; external;
 procedure gtk_drag_finish(context: PGdkDragContext; success: gboolean; del: gboolean; time_: guint32); cdecl; external;
-procedure gtk_drag_get_data(AWidget: PGtkWidget; context: PGdkDragContext; target: TGdkAtom; time_: guint32); cdecl; external;
-procedure gtk_drag_highlight(AWidget: PGtkWidget); cdecl; external;
+procedure gtk_drag_get_data(widget: PGtkWidget; context: PGdkDragContext; target: TGdkAtom; time_: guint32); cdecl; external;
+procedure gtk_drag_highlight(widget: PGtkWidget); cdecl; external;
 procedure gtk_drag_set_icon_default(context: PGdkDragContext); cdecl; external;
 procedure gtk_drag_set_icon_gicon(context: PGdkDragContext; icon: PGIcon; hot_x: gint; hot_y: gint); cdecl; external;
 procedure gtk_drag_set_icon_name(context: PGdkDragContext; icon_name: Pgchar; hot_x: gint; hot_y: gint); cdecl; external;
@@ -13345,377 +13495,393 @@ procedure gtk_drag_set_icon_pixbuf(context: PGdkDragContext; pixbuf: PGdkPixbuf;
 procedure gtk_drag_set_icon_stock(context: PGdkDragContext; stock_id: Pgchar; hot_x: gint; hot_y: gint); cdecl; external;
 procedure gtk_drag_set_icon_surface(context: PGdkDragContext; surface: Pcairo_surface_t); cdecl; external;
 procedure gtk_drag_set_icon_widget(context: PGdkDragContext; widget: PGtkWidget; hot_x: gint; hot_y: gint); cdecl; external;
-procedure gtk_drag_source_add_image_targets(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_drag_source_add_text_targets(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_drag_source_add_uri_targets(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_drag_source_set(AWidget: PGtkWidget; start_button_mask: TGdkModifierType; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; external;
-procedure gtk_drag_source_set_icon_gicon(AWidget: PGtkWidget; icon: PGIcon); cdecl; external;
-procedure gtk_drag_source_set_icon_name(AWidget: PGtkWidget; icon_name: Pgchar); cdecl; external;
-procedure gtk_drag_source_set_icon_pixbuf(AWidget: PGtkWidget; pixbuf: PGdkPixbuf); cdecl; external;
-procedure gtk_drag_source_set_icon_stock(AWidget: PGtkWidget; stock_id: Pgchar); cdecl; external;
-procedure gtk_drag_source_set_target_list(AWidget: PGtkWidget; target_list: PGtkTargetList); cdecl; external;
-procedure gtk_drag_source_unset(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_drag_unhighlight(AWidget: PGtkWidget); cdecl; external;
+procedure gtk_drag_source_add_image_targets(widget: PGtkWidget); cdecl; external;
+procedure gtk_drag_source_add_text_targets(widget: PGtkWidget); cdecl; external;
+procedure gtk_drag_source_add_uri_targets(widget: PGtkWidget); cdecl; external;
+procedure gtk_drag_source_set(widget: PGtkWidget; start_button_mask: TGdkModifierType; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; external;
+procedure gtk_drag_source_set_icon_gicon(widget: PGtkWidget; icon: PGIcon); cdecl; external;
+procedure gtk_drag_source_set_icon_name(widget: PGtkWidget; icon_name: Pgchar); cdecl; external;
+procedure gtk_drag_source_set_icon_pixbuf(widget: PGtkWidget; pixbuf: PGdkPixbuf); cdecl; external;
+procedure gtk_drag_source_set_icon_stock(widget: PGtkWidget; stock_id: Pgchar); cdecl; external;
+procedure gtk_drag_source_set_target_list(widget: PGtkWidget; target_list: PGtkTargetList); cdecl; external;
+procedure gtk_drag_source_unset(widget: PGtkWidget); cdecl; external;
+procedure gtk_drag_unhighlight(widget: PGtkWidget); cdecl; external;
 procedure gtk_draw_insertion_cursor(widget: PGtkWidget; cr: Pcairo_t; location: PGdkRectangle; is_primary: gboolean; direction: TGtkTextDirection; draw_arrow: gboolean); cdecl; external;
-procedure gtk_editable_copy_clipboard(AEditable: PGtkEditable); cdecl; external;
-procedure gtk_editable_cut_clipboard(AEditable: PGtkEditable); cdecl; external;
-procedure gtk_editable_delete_selection(AEditable: PGtkEditable); cdecl; external;
-procedure gtk_editable_delete_text(AEditable: PGtkEditable; start_pos: gint; end_pos: gint); cdecl; external;
-procedure gtk_editable_insert_text(AEditable: PGtkEditable; new_text: Pgchar; new_text_length: gint; position: Pgint); cdecl; external;
-procedure gtk_editable_paste_clipboard(AEditable: PGtkEditable); cdecl; external;
-procedure gtk_editable_select_region(AEditable: PGtkEditable; start_pos: gint; end_pos: gint); cdecl; external;
-procedure gtk_editable_set_editable(AEditable: PGtkEditable; is_editable: gboolean); cdecl; external;
-procedure gtk_editable_set_position(AEditable: PGtkEditable; position: gint); cdecl; external;
-procedure gtk_entry_buffer_emit_deleted_text(AEntryBuffer: PGtkEntryBuffer; position: guint; n_chars: guint); cdecl; external;
-procedure gtk_entry_buffer_emit_inserted_text(AEntryBuffer: PGtkEntryBuffer; position: guint; chars: Pgchar; n_chars: guint); cdecl; external;
-procedure gtk_entry_buffer_set_max_length(AEntryBuffer: PGtkEntryBuffer; max_length: gint); cdecl; external;
-procedure gtk_entry_buffer_set_text(AEntryBuffer: PGtkEntryBuffer; chars: Pgchar; n_chars: gint); cdecl; external;
-procedure gtk_entry_completion_complete(AEntryCompletion: PGtkEntryCompletion); cdecl; external;
-procedure gtk_entry_completion_delete_action(AEntryCompletion: PGtkEntryCompletion; index_: gint); cdecl; external;
-procedure gtk_entry_completion_insert_action_markup(AEntryCompletion: PGtkEntryCompletion; index_: gint; markup: Pgchar); cdecl; external;
-procedure gtk_entry_completion_insert_action_text(AEntryCompletion: PGtkEntryCompletion; index_: gint; text: Pgchar); cdecl; external;
-procedure gtk_entry_completion_insert_prefix(AEntryCompletion: PGtkEntryCompletion); cdecl; external;
-procedure gtk_entry_completion_set_inline_completion(AEntryCompletion: PGtkEntryCompletion; inline_completion: gboolean); cdecl; external;
-procedure gtk_entry_completion_set_inline_selection(AEntryCompletion: PGtkEntryCompletion; inline_selection: gboolean); cdecl; external;
-procedure gtk_entry_completion_set_match_func(AEntryCompletion: PGtkEntryCompletion; func: TGtkEntryCompletionMatchFunc; func_data: gpointer; func_notify: TGDestroyNotify); cdecl; external;
-procedure gtk_entry_completion_set_minimum_key_length(AEntryCompletion: PGtkEntryCompletion; length: gint); cdecl; external;
-procedure gtk_entry_completion_set_model(AEntryCompletion: PGtkEntryCompletion; model: PGtkTreeModel); cdecl; external;
-procedure gtk_entry_completion_set_popup_completion(AEntryCompletion: PGtkEntryCompletion; popup_completion: gboolean); cdecl; external;
-procedure gtk_entry_completion_set_popup_set_width(AEntryCompletion: PGtkEntryCompletion; popup_set_width: gboolean); cdecl; external;
-procedure gtk_entry_completion_set_popup_single_match(AEntryCompletion: PGtkEntryCompletion; popup_single_match: gboolean); cdecl; external;
-procedure gtk_entry_completion_set_text_column(AEntryCompletion: PGtkEntryCompletion; column: gint); cdecl; external;
-procedure gtk_entry_get_icon_area(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition; icon_area: PGdkRectangle); cdecl; external;
-procedure gtk_entry_get_layout_offsets(AEntry: PGtkEntry; x: Pgint; y: Pgint); cdecl; external;
-procedure gtk_entry_get_text_area(AEntry: PGtkEntry; text_area: PGdkRectangle); cdecl; external;
-procedure gtk_entry_progress_pulse(AEntry: PGtkEntry); cdecl; external;
-procedure gtk_entry_reset_im_context(AEntry: PGtkEntry); cdecl; external;
-procedure gtk_entry_set_activates_default(AEntry: PGtkEntry; setting: gboolean); cdecl; external;
-procedure gtk_entry_set_alignment(AEntry: PGtkEntry; xalign: gfloat); cdecl; external;
-procedure gtk_entry_set_buffer(AEntry: PGtkEntry; buffer: PGtkEntryBuffer); cdecl; external;
-procedure gtk_entry_set_completion(AEntry: PGtkEntry; completion: PGtkEntryCompletion); cdecl; external;
-procedure gtk_entry_set_cursor_hadjustment(AEntry: PGtkEntry; adjustment: PGtkAdjustment); cdecl; external;
-procedure gtk_entry_set_has_frame(AEntry: PGtkEntry; setting: gboolean); cdecl; external;
-procedure gtk_entry_set_icon_activatable(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition; activatable: gboolean); cdecl; external;
-procedure gtk_entry_set_icon_drag_source(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition; target_list: PGtkTargetList; actions: TGdkDragAction); cdecl; external;
-procedure gtk_entry_set_icon_from_gicon(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition; icon: PGIcon); cdecl; external;
-procedure gtk_entry_set_icon_from_icon_name(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition; icon_name: Pgchar); cdecl; external;
-procedure gtk_entry_set_icon_from_pixbuf(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition; pixbuf: PGdkPixbuf); cdecl; external;
-procedure gtk_entry_set_icon_from_stock(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition; stock_id: Pgchar); cdecl; external;
-procedure gtk_entry_set_icon_sensitive(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition; sensitive: gboolean); cdecl; external;
-procedure gtk_entry_set_icon_tooltip_markup(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition; tooltip: Pgchar); cdecl; external;
-procedure gtk_entry_set_icon_tooltip_text(AEntry: PGtkEntry; icon_pos: TGtkEntryIconPosition; tooltip: Pgchar); cdecl; external;
-procedure gtk_entry_set_invisible_char(AEntry: PGtkEntry; ch: gunichar); cdecl; external;
-procedure gtk_entry_set_max_length(AEntry: PGtkEntry; max: gint); cdecl; external;
-procedure gtk_entry_set_overwrite_mode(AEntry: PGtkEntry; overwrite: gboolean); cdecl; external;
-procedure gtk_entry_set_placeholder_text(AEntry: PGtkEntry; text: Pgchar); cdecl; external;
-procedure gtk_entry_set_progress_fraction(AEntry: PGtkEntry; fraction: gdouble); cdecl; external;
-procedure gtk_entry_set_progress_pulse_step(AEntry: PGtkEntry; fraction: gdouble); cdecl; external;
-procedure gtk_entry_set_text(AEntry: PGtkEntry; text: Pgchar); cdecl; external;
-procedure gtk_entry_set_visibility(AEntry: PGtkEntry; visible: gboolean); cdecl; external;
-procedure gtk_entry_set_width_chars(AEntry: PGtkEntry; n_chars: gint); cdecl; external;
-procedure gtk_entry_unset_invisible_char(AEntry: PGtkEntry); cdecl; external;
-procedure gtk_event_box_set_above_child(AEventBox: PGtkEventBox; above_child: gboolean); cdecl; external;
-procedure gtk_event_box_set_visible_window(AEventBox: PGtkEventBox; visible_window: gboolean); cdecl; external;
-procedure gtk_expander_set_expanded(AExpander: PGtkExpander; expanded: gboolean); cdecl; external;
-procedure gtk_expander_set_label(AExpander: PGtkExpander; label_: Pgchar); cdecl; external;
-procedure gtk_expander_set_label_fill(AExpander: PGtkExpander; label_fill: gboolean); cdecl; external;
-procedure gtk_expander_set_label_widget(AExpander: PGtkExpander; label_widget: PGtkWidget); cdecl; external;
-procedure gtk_expander_set_resize_toplevel(AExpander: PGtkExpander; resize_toplevel: gboolean); cdecl; external;
-procedure gtk_expander_set_spacing(AExpander: PGtkExpander; spacing: gint); cdecl; external;
-procedure gtk_expander_set_use_markup(AExpander: PGtkExpander; use_markup: gboolean); cdecl; external;
-procedure gtk_expander_set_use_underline(AExpander: PGtkExpander; use_underline: gboolean); cdecl; external;
-procedure gtk_file_chooser_add_filter(AFileChooser: PGtkFileChooser; filter: PGtkFileFilter); cdecl; external;
-procedure gtk_file_chooser_button_set_focus_on_click(AFileChooserButton: PGtkFileChooserButton; focus_on_click: gboolean); cdecl; external;
-procedure gtk_file_chooser_button_set_title(AFileChooserButton: PGtkFileChooserButton; title: Pgchar); cdecl; external;
-procedure gtk_file_chooser_button_set_width_chars(AFileChooserButton: PGtkFileChooserButton; n_chars: gint); cdecl; external;
-procedure gtk_file_chooser_remove_filter(AFileChooser: PGtkFileChooser; filter: PGtkFileFilter); cdecl; external;
-procedure gtk_file_chooser_select_all(AFileChooser: PGtkFileChooser); cdecl; external;
-procedure gtk_file_chooser_set_action(AFileChooser: PGtkFileChooser; action: TGtkFileChooserAction); cdecl; external;
-procedure gtk_file_chooser_set_create_folders(AFileChooser: PGtkFileChooser; create_folders: gboolean); cdecl; external;
-procedure gtk_file_chooser_set_current_name(AFileChooser: PGtkFileChooser; name: Pgchar); cdecl; external;
-procedure gtk_file_chooser_set_do_overwrite_confirmation(AFileChooser: PGtkFileChooser; do_overwrite_confirmation: gboolean); cdecl; external;
-procedure gtk_file_chooser_set_extra_widget(AFileChooser: PGtkFileChooser; extra_widget: PGtkWidget); cdecl; external;
-procedure gtk_file_chooser_set_filter(AFileChooser: PGtkFileChooser; filter: PGtkFileFilter); cdecl; external;
-procedure gtk_file_chooser_set_local_only(AFileChooser: PGtkFileChooser; local_only: gboolean); cdecl; external;
-procedure gtk_file_chooser_set_preview_widget(AFileChooser: PGtkFileChooser; preview_widget: PGtkWidget); cdecl; external;
-procedure gtk_file_chooser_set_preview_widget_active(AFileChooser: PGtkFileChooser; active: gboolean); cdecl; external;
-procedure gtk_file_chooser_set_select_multiple(AFileChooser: PGtkFileChooser; select_multiple: gboolean); cdecl; external;
-procedure gtk_file_chooser_set_show_hidden(AFileChooser: PGtkFileChooser; show_hidden: gboolean); cdecl; external;
-procedure gtk_file_chooser_set_use_preview_label(AFileChooser: PGtkFileChooser; use_label: gboolean); cdecl; external;
-procedure gtk_file_chooser_unselect_all(AFileChooser: PGtkFileChooser); cdecl; external;
-procedure gtk_file_chooser_unselect_file(AFileChooser: PGtkFileChooser; file_: PGFile); cdecl; external;
-procedure gtk_file_chooser_unselect_filename(AFileChooser: PGtkFileChooser; filename: Pgchar); cdecl; external;
-procedure gtk_file_chooser_unselect_uri(AFileChooser: PGtkFileChooser; uri: Pgchar); cdecl; external;
-procedure gtk_file_filter_add_custom(AFileFilter: PGtkFileFilter; needed: TGtkFileFilterFlags; func: TGtkFileFilterFunc; data: gpointer; notify: TGDestroyNotify); cdecl; external;
-procedure gtk_file_filter_add_mime_type(AFileFilter: PGtkFileFilter; mime_type: Pgchar); cdecl; external;
-procedure gtk_file_filter_add_pattern(AFileFilter: PGtkFileFilter; pattern: Pgchar); cdecl; external;
-procedure gtk_file_filter_add_pixbuf_formats(AFileFilter: PGtkFileFilter); cdecl; external;
-procedure gtk_file_filter_set_name(AFileFilter: PGtkFileFilter; name: Pgchar); cdecl; external;
-procedure gtk_fixed_move(AFixed: PGtkFixed; widget: PGtkWidget; x: gint; y: gint); cdecl; external;
-procedure gtk_fixed_put(AFixed: PGtkFixed; widget: PGtkWidget; x: gint; y: gint); cdecl; external;
-procedure gtk_font_button_set_show_size(AFontButton: PGtkFontButton; show_size: gboolean); cdecl; external;
-procedure gtk_font_button_set_show_style(AFontButton: PGtkFontButton; show_style: gboolean); cdecl; external;
-procedure gtk_font_button_set_title(AFontButton: PGtkFontButton; title: Pgchar); cdecl; external;
-procedure gtk_font_button_set_use_font(AFontButton: PGtkFontButton; use_font: gboolean); cdecl; external;
-procedure gtk_font_button_set_use_size(AFontButton: PGtkFontButton; use_size: gboolean); cdecl; external;
-procedure gtk_font_chooser_set_filter_func(AFontChooser: PGtkFontChooser; filter: TGtkFontFilterFunc; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_font_chooser_set_font(AFontChooser: PGtkFontChooser; fontname: Pgchar); cdecl; external;
-procedure gtk_font_chooser_set_font_desc(AFontChooser: PGtkFontChooser; font_desc: PPangoFontDescription); cdecl; external;
-procedure gtk_font_chooser_set_preview_text(AFontChooser: PGtkFontChooser; text: Pgchar); cdecl; external;
-procedure gtk_font_chooser_set_show_preview_entry(AFontChooser: PGtkFontChooser; show_preview_entry: gboolean); cdecl; external;
-procedure gtk_frame_get_label_align(AFrame: PGtkFrame; xalign: Pgfloat; yalign: Pgfloat); cdecl; external;
-procedure gtk_frame_set_label(AFrame: PGtkFrame; label_: Pgchar); cdecl; external;
-procedure gtk_frame_set_label_align(AFrame: PGtkFrame; xalign: gfloat; yalign: gfloat); cdecl; external;
-procedure gtk_frame_set_label_widget(AFrame: PGtkFrame; label_widget: PGtkWidget); cdecl; external;
-procedure gtk_frame_set_shadow_type(AFrame: PGtkFrame; type_: TGtkShadowType); cdecl; external;
-procedure gtk_grab_add(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_grab_remove(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_gradient_add_color_stop(AGradient: PGtkGradient; offset: gdouble; color: PGtkSymbolicColor); cdecl; external;
-procedure gtk_gradient_unref(AGradient: PGtkGradient); cdecl; external;
-procedure gtk_grid_attach(AGrid: PGtkGrid; child: PGtkWidget; left: gint; top: gint; width: gint; height: gint); cdecl; external;
-procedure gtk_grid_attach_next_to(AGrid: PGtkGrid; child: PGtkWidget; sibling: PGtkWidget; side: TGtkPositionType; width: gint; height: gint); cdecl; external;
-procedure gtk_grid_insert_column(AGrid: PGtkGrid; position: gint); cdecl; external;
-procedure gtk_grid_insert_next_to(AGrid: PGtkGrid; sibling: PGtkWidget; side: TGtkPositionType); cdecl; external;
-procedure gtk_grid_insert_row(AGrid: PGtkGrid; position: gint); cdecl; external;
-procedure gtk_grid_set_column_homogeneous(AGrid: PGtkGrid; homogeneous: gboolean); cdecl; external;
-procedure gtk_grid_set_column_spacing(AGrid: PGtkGrid; spacing: guint); cdecl; external;
-procedure gtk_grid_set_row_homogeneous(AGrid: PGtkGrid; homogeneous: gboolean); cdecl; external;
-procedure gtk_grid_set_row_spacing(AGrid: PGtkGrid; spacing: guint); cdecl; external;
-procedure gtk_hsv_get_color(AHSV: PGtkHSV; h: Pgdouble; s: Pgdouble; v: Pgdouble); cdecl; external;
-procedure gtk_hsv_get_metrics(AHSV: PGtkHSV; size: Pgint; ring_width: Pgint); cdecl; external;
-procedure gtk_hsv_set_color(AHSV: PGtkHSV; h: gdouble; s: gdouble; v: gdouble); cdecl; external;
-procedure gtk_hsv_set_metrics(AHSV: PGtkHSV; size: gint; ring_width: gint); cdecl; external;
+procedure gtk_editable_copy_clipboard(editable: PGtkEditable); cdecl; external;
+procedure gtk_editable_cut_clipboard(editable: PGtkEditable); cdecl; external;
+procedure gtk_editable_delete_selection(editable: PGtkEditable); cdecl; external;
+procedure gtk_editable_delete_text(editable: PGtkEditable; start_pos: gint; end_pos: gint); cdecl; external;
+procedure gtk_editable_insert_text(editable: PGtkEditable; new_text: Pgchar; new_text_length: gint; position: Pgint); cdecl; external;
+procedure gtk_editable_paste_clipboard(editable: PGtkEditable); cdecl; external;
+procedure gtk_editable_select_region(editable: PGtkEditable; start_pos: gint; end_pos: gint); cdecl; external;
+procedure gtk_editable_set_editable(editable: PGtkEditable; is_editable: gboolean); cdecl; external;
+procedure gtk_editable_set_position(editable: PGtkEditable; position: gint); cdecl; external;
+procedure gtk_entry_buffer_emit_deleted_text(buffer: PGtkEntryBuffer; position: guint; n_chars: guint); cdecl; external;
+procedure gtk_entry_buffer_emit_inserted_text(buffer: PGtkEntryBuffer; position: guint; chars: Pgchar; n_chars: guint); cdecl; external;
+procedure gtk_entry_buffer_set_max_length(buffer: PGtkEntryBuffer; max_length: gint); cdecl; external;
+procedure gtk_entry_buffer_set_text(buffer: PGtkEntryBuffer; chars: Pgchar; n_chars: gint); cdecl; external;
+procedure gtk_entry_completion_complete(completion: PGtkEntryCompletion); cdecl; external;
+procedure gtk_entry_completion_delete_action(completion: PGtkEntryCompletion; index_: gint); cdecl; external;
+procedure gtk_entry_completion_insert_action_markup(completion: PGtkEntryCompletion; index_: gint; markup: Pgchar); cdecl; external;
+procedure gtk_entry_completion_insert_action_text(completion: PGtkEntryCompletion; index_: gint; text: Pgchar); cdecl; external;
+procedure gtk_entry_completion_insert_prefix(completion: PGtkEntryCompletion); cdecl; external;
+procedure gtk_entry_completion_set_inline_completion(completion: PGtkEntryCompletion; inline_completion: gboolean); cdecl; external;
+procedure gtk_entry_completion_set_inline_selection(completion: PGtkEntryCompletion; inline_selection: gboolean); cdecl; external;
+procedure gtk_entry_completion_set_match_func(completion: PGtkEntryCompletion; func: TGtkEntryCompletionMatchFunc; func_data: gpointer; func_notify: TGDestroyNotify); cdecl; external;
+procedure gtk_entry_completion_set_minimum_key_length(completion: PGtkEntryCompletion; length: gint); cdecl; external;
+procedure gtk_entry_completion_set_model(completion: PGtkEntryCompletion; model: PGtkTreeModel); cdecl; external;
+procedure gtk_entry_completion_set_popup_completion(completion: PGtkEntryCompletion; popup_completion: gboolean); cdecl; external;
+procedure gtk_entry_completion_set_popup_set_width(completion: PGtkEntryCompletion; popup_set_width: gboolean); cdecl; external;
+procedure gtk_entry_completion_set_popup_single_match(completion: PGtkEntryCompletion; popup_single_match: gboolean); cdecl; external;
+procedure gtk_entry_completion_set_text_column(completion: PGtkEntryCompletion; column: gint); cdecl; external;
+procedure gtk_entry_get_icon_area(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition; icon_area: PGdkRectangle); cdecl; external;
+procedure gtk_entry_get_layout_offsets(entry: PGtkEntry; x: Pgint; y: Pgint); cdecl; external;
+procedure gtk_entry_get_text_area(entry: PGtkEntry; text_area: PGdkRectangle); cdecl; external;
+procedure gtk_entry_progress_pulse(entry: PGtkEntry); cdecl; external;
+procedure gtk_entry_reset_im_context(entry: PGtkEntry); cdecl; external;
+procedure gtk_entry_set_activates_default(entry: PGtkEntry; setting: gboolean); cdecl; external;
+procedure gtk_entry_set_alignment(entry: PGtkEntry; xalign: gfloat); cdecl; external;
+procedure gtk_entry_set_attributes(entry: PGtkEntry; attrs: PPangoAttrList); cdecl; external;
+procedure gtk_entry_set_buffer(entry: PGtkEntry; buffer: PGtkEntryBuffer); cdecl; external;
+procedure gtk_entry_set_completion(entry: PGtkEntry; completion: PGtkEntryCompletion); cdecl; external;
+procedure gtk_entry_set_cursor_hadjustment(entry: PGtkEntry; adjustment: PGtkAdjustment); cdecl; external;
+procedure gtk_entry_set_has_frame(entry: PGtkEntry; setting: gboolean); cdecl; external;
+procedure gtk_entry_set_icon_activatable(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition; activatable: gboolean); cdecl; external;
+procedure gtk_entry_set_icon_drag_source(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition; target_list: PGtkTargetList; actions: TGdkDragAction); cdecl; external;
+procedure gtk_entry_set_icon_from_gicon(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition; icon: PGIcon); cdecl; external;
+procedure gtk_entry_set_icon_from_icon_name(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition; icon_name: Pgchar); cdecl; external;
+procedure gtk_entry_set_icon_from_pixbuf(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition; pixbuf: PGdkPixbuf); cdecl; external;
+procedure gtk_entry_set_icon_from_stock(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition; stock_id: Pgchar); cdecl; external;
+procedure gtk_entry_set_icon_sensitive(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition; sensitive: gboolean); cdecl; external;
+procedure gtk_entry_set_icon_tooltip_markup(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition; tooltip: Pgchar); cdecl; external;
+procedure gtk_entry_set_icon_tooltip_text(entry: PGtkEntry; icon_pos: TGtkEntryIconPosition; tooltip: Pgchar); cdecl; external;
+procedure gtk_entry_set_input_hints(entry: PGtkEntry; hints: TGtkInputHints); cdecl; external;
+procedure gtk_entry_set_input_purpose(entry: PGtkEntry; purpose: TGtkInputPurpose); cdecl; external;
+procedure gtk_entry_set_invisible_char(entry: PGtkEntry; ch: gunichar); cdecl; external;
+procedure gtk_entry_set_max_length(entry: PGtkEntry; max: gint); cdecl; external;
+procedure gtk_entry_set_overwrite_mode(entry: PGtkEntry; overwrite: gboolean); cdecl; external;
+procedure gtk_entry_set_placeholder_text(entry: PGtkEntry; text: Pgchar); cdecl; external;
+procedure gtk_entry_set_progress_fraction(entry: PGtkEntry; fraction: gdouble); cdecl; external;
+procedure gtk_entry_set_progress_pulse_step(entry: PGtkEntry; fraction: gdouble); cdecl; external;
+procedure gtk_entry_set_text(entry: PGtkEntry; text: Pgchar); cdecl; external;
+procedure gtk_entry_set_visibility(entry: PGtkEntry; visible: gboolean); cdecl; external;
+procedure gtk_entry_set_width_chars(entry: PGtkEntry; n_chars: gint); cdecl; external;
+procedure gtk_entry_unset_invisible_char(entry: PGtkEntry); cdecl; external;
+procedure gtk_event_box_set_above_child(event_box: PGtkEventBox; above_child: gboolean); cdecl; external;
+procedure gtk_event_box_set_visible_window(event_box: PGtkEventBox; visible_window: gboolean); cdecl; external;
+procedure gtk_expander_set_expanded(expander: PGtkExpander; expanded: gboolean); cdecl; external;
+procedure gtk_expander_set_label(expander: PGtkExpander; label_: Pgchar); cdecl; external;
+procedure gtk_expander_set_label_fill(expander: PGtkExpander; label_fill: gboolean); cdecl; external;
+procedure gtk_expander_set_label_widget(expander: PGtkExpander; label_widget: PGtkWidget); cdecl; external;
+procedure gtk_expander_set_resize_toplevel(expander: PGtkExpander; resize_toplevel: gboolean); cdecl; external;
+procedure gtk_expander_set_spacing(expander: PGtkExpander; spacing: gint); cdecl; external;
+procedure gtk_expander_set_use_markup(expander: PGtkExpander; use_markup: gboolean); cdecl; external;
+procedure gtk_expander_set_use_underline(expander: PGtkExpander; use_underline: gboolean); cdecl; external;
+procedure gtk_file_chooser_add_filter(chooser: PGtkFileChooser; filter: PGtkFileFilter); cdecl; external;
+procedure gtk_file_chooser_button_set_focus_on_click(button: PGtkFileChooserButton; focus_on_click: gboolean); cdecl; external;
+procedure gtk_file_chooser_button_set_title(button: PGtkFileChooserButton; title: Pgchar); cdecl; external;
+procedure gtk_file_chooser_button_set_width_chars(button: PGtkFileChooserButton; n_chars: gint); cdecl; external;
+procedure gtk_file_chooser_remove_filter(chooser: PGtkFileChooser; filter: PGtkFileFilter); cdecl; external;
+procedure gtk_file_chooser_select_all(chooser: PGtkFileChooser); cdecl; external;
+procedure gtk_file_chooser_set_action(chooser: PGtkFileChooser; action: TGtkFileChooserAction); cdecl; external;
+procedure gtk_file_chooser_set_create_folders(chooser: PGtkFileChooser; create_folders: gboolean); cdecl; external;
+procedure gtk_file_chooser_set_current_name(chooser: PGtkFileChooser; name: Pgchar); cdecl; external;
+procedure gtk_file_chooser_set_do_overwrite_confirmation(chooser: PGtkFileChooser; do_overwrite_confirmation: gboolean); cdecl; external;
+procedure gtk_file_chooser_set_extra_widget(chooser: PGtkFileChooser; extra_widget: PGtkWidget); cdecl; external;
+procedure gtk_file_chooser_set_filter(chooser: PGtkFileChooser; filter: PGtkFileFilter); cdecl; external;
+procedure gtk_file_chooser_set_local_only(chooser: PGtkFileChooser; local_only: gboolean); cdecl; external;
+procedure gtk_file_chooser_set_preview_widget(chooser: PGtkFileChooser; preview_widget: PGtkWidget); cdecl; external;
+procedure gtk_file_chooser_set_preview_widget_active(chooser: PGtkFileChooser; active: gboolean); cdecl; external;
+procedure gtk_file_chooser_set_select_multiple(chooser: PGtkFileChooser; select_multiple: gboolean); cdecl; external;
+procedure gtk_file_chooser_set_show_hidden(chooser: PGtkFileChooser; show_hidden: gboolean); cdecl; external;
+procedure gtk_file_chooser_set_use_preview_label(chooser: PGtkFileChooser; use_label: gboolean); cdecl; external;
+procedure gtk_file_chooser_unselect_all(chooser: PGtkFileChooser); cdecl; external;
+procedure gtk_file_chooser_unselect_file(chooser: PGtkFileChooser; file_: PGFile); cdecl; external;
+procedure gtk_file_chooser_unselect_filename(chooser: PGtkFileChooser; filename: Pgchar); cdecl; external;
+procedure gtk_file_chooser_unselect_uri(chooser: PGtkFileChooser; uri: Pgchar); cdecl; external;
+procedure gtk_file_filter_add_custom(filter: PGtkFileFilter; needed: TGtkFileFilterFlags; func: TGtkFileFilterFunc; data: gpointer; notify: TGDestroyNotify); cdecl; external;
+procedure gtk_file_filter_add_mime_type(filter: PGtkFileFilter; mime_type: Pgchar); cdecl; external;
+procedure gtk_file_filter_add_pattern(filter: PGtkFileFilter; pattern: Pgchar); cdecl; external;
+procedure gtk_file_filter_add_pixbuf_formats(filter: PGtkFileFilter); cdecl; external;
+procedure gtk_file_filter_set_name(filter: PGtkFileFilter; name: Pgchar); cdecl; external;
+procedure gtk_fixed_move(fixed: PGtkFixed; widget: PGtkWidget; x: gint; y: gint); cdecl; external;
+procedure gtk_fixed_put(fixed: PGtkFixed; widget: PGtkWidget; x: gint; y: gint); cdecl; external;
+procedure gtk_font_button_set_show_size(font_button: PGtkFontButton; show_size: gboolean); cdecl; external;
+procedure gtk_font_button_set_show_style(font_button: PGtkFontButton; show_style: gboolean); cdecl; external;
+procedure gtk_font_button_set_title(font_button: PGtkFontButton; title: Pgchar); cdecl; external;
+procedure gtk_font_button_set_use_font(font_button: PGtkFontButton; use_font: gboolean); cdecl; external;
+procedure gtk_font_button_set_use_size(font_button: PGtkFontButton; use_size: gboolean); cdecl; external;
+procedure gtk_font_chooser_set_filter_func(fontchooser: PGtkFontChooser; filter: TGtkFontFilterFunc; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_font_chooser_set_font(fontchooser: PGtkFontChooser; fontname: Pgchar); cdecl; external;
+procedure gtk_font_chooser_set_font_desc(fontchooser: PGtkFontChooser; font_desc: PPangoFontDescription); cdecl; external;
+procedure gtk_font_chooser_set_preview_text(fontchooser: PGtkFontChooser; text: Pgchar); cdecl; external;
+procedure gtk_font_chooser_set_show_preview_entry(fontchooser: PGtkFontChooser; show_preview_entry: gboolean); cdecl; external;
+procedure gtk_frame_get_label_align(frame: PGtkFrame; xalign: Pgfloat; yalign: Pgfloat); cdecl; external;
+procedure gtk_frame_set_label(frame: PGtkFrame; label_: Pgchar); cdecl; external;
+procedure gtk_frame_set_label_align(frame: PGtkFrame; xalign: gfloat; yalign: gfloat); cdecl; external;
+procedure gtk_frame_set_label_widget(frame: PGtkFrame; label_widget: PGtkWidget); cdecl; external;
+procedure gtk_frame_set_shadow_type(frame: PGtkFrame; type_: TGtkShadowType); cdecl; external;
+procedure gtk_grab_add(widget: PGtkWidget); cdecl; external;
+procedure gtk_grab_remove(widget: PGtkWidget); cdecl; external;
+procedure gtk_grid_attach(grid: PGtkGrid; child: PGtkWidget; left: gint; top: gint; width: gint; height: gint); cdecl; external;
+procedure gtk_grid_attach_next_to(grid: PGtkGrid; child: PGtkWidget; sibling: PGtkWidget; side: TGtkPositionType; width: gint; height: gint); cdecl; external;
+procedure gtk_grid_insert_column(grid: PGtkGrid; position: gint); cdecl; external;
+procedure gtk_grid_insert_next_to(grid: PGtkGrid; sibling: PGtkWidget; side: TGtkPositionType); cdecl; external;
+procedure gtk_grid_insert_row(grid: PGtkGrid; position: gint); cdecl; external;
+procedure gtk_grid_set_column_homogeneous(grid: PGtkGrid; homogeneous: gboolean); cdecl; external;
+procedure gtk_grid_set_column_spacing(grid: PGtkGrid; spacing: guint); cdecl; external;
+procedure gtk_grid_set_row_homogeneous(grid: PGtkGrid; homogeneous: gboolean); cdecl; external;
+procedure gtk_grid_set_row_spacing(grid: PGtkGrid; spacing: guint); cdecl; external;
+procedure gtk_hsv_get_color(hsv: PGtkHSV; h: Pgdouble; s: Pgdouble; v: Pgdouble); cdecl; external;
+procedure gtk_hsv_get_metrics(hsv: PGtkHSV; size: Pgint; ring_width: Pgint); cdecl; external;
+procedure gtk_hsv_set_color(hsv: PGtkHSV; h: gdouble; s: gdouble; v: gdouble); cdecl; external;
+procedure gtk_hsv_set_metrics(hsv: PGtkHSV; size: gint; ring_width: gint); cdecl; external;
 procedure gtk_hsv_to_rgb(h: gdouble; s: gdouble; v: gdouble; r: Pgdouble; g: Pgdouble; b: Pgdouble); cdecl; external;
-procedure gtk_icon_factory_add(AIconFactory: PGtkIconFactory; stock_id: Pgchar; icon_set: PGtkIconSet); cdecl; external;
-procedure gtk_icon_factory_add_default(AIconFactory: PGtkIconFactory); cdecl; external;
-procedure gtk_icon_factory_remove_default(AIconFactory: PGtkIconFactory); cdecl; external;
-procedure gtk_icon_info_free(AIconInfo: PGtkIconInfo); cdecl; external;
-procedure gtk_icon_info_set_raw_coordinates(AIconInfo: PGtkIconInfo; raw_coordinates: gboolean); cdecl; external;
-procedure gtk_icon_set_add_source(AIconSet: PGtkIconSet; source: PGtkIconSource); cdecl; external;
-procedure gtk_icon_set_get_sizes(AIconSet: PGtkIconSet; sizes: PPgint; n_sizes: Pgint); cdecl; external;
-procedure gtk_icon_set_unref(AIconSet: PGtkIconSet); cdecl; external;
+procedure gtk_icon_factory_add(factory: PGtkIconFactory; stock_id: Pgchar; icon_set: PGtkIconSet); cdecl; external;
+procedure gtk_icon_factory_add_default(factory: PGtkIconFactory); cdecl; external;
+procedure gtk_icon_factory_remove_default(factory: PGtkIconFactory); cdecl; external;
+procedure gtk_icon_info_load_icon_async(icon_info: PGtkIconInfo; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure gtk_icon_info_load_symbolic_async(icon_info: PGtkIconInfo; fg: PGdkRGBA; success_color: PGdkRGBA; warning_color: PGdkRGBA; error_color: PGdkRGBA; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure gtk_icon_info_load_symbolic_for_context_async(icon_info: PGtkIconInfo; context: PGtkStyleContext; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure gtk_icon_info_set_raw_coordinates(icon_info: PGtkIconInfo; raw_coordinates: gboolean); cdecl; external;
+procedure gtk_icon_set_add_source(icon_set: PGtkIconSet; source: PGtkIconSource); cdecl; external;
+procedure gtk_icon_set_get_sizes(icon_set: PGtkIconSet; sizes: PPgint; n_sizes: Pgint); cdecl; external;
+procedure gtk_icon_set_unref(icon_set: PGtkIconSet); cdecl; external;
 procedure gtk_icon_size_register_alias(alias: Pgchar; target: gint); cdecl; external;
-procedure gtk_icon_source_free(AIconSource: PGtkIconSource); cdecl; external;
-procedure gtk_icon_source_set_direction(AIconSource: PGtkIconSource; direction: TGtkTextDirection); cdecl; external;
-procedure gtk_icon_source_set_direction_wildcarded(AIconSource: PGtkIconSource; setting: gboolean); cdecl; external;
-procedure gtk_icon_source_set_filename(AIconSource: PGtkIconSource; filename: Pgchar); cdecl; external;
-procedure gtk_icon_source_set_icon_name(AIconSource: PGtkIconSource; icon_name: Pgchar); cdecl; external;
-procedure gtk_icon_source_set_pixbuf(AIconSource: PGtkIconSource; pixbuf: PGdkPixbuf); cdecl; external;
-procedure gtk_icon_source_set_size(AIconSource: PGtkIconSource; size: gint); cdecl; external;
-procedure gtk_icon_source_set_size_wildcarded(AIconSource: PGtkIconSource; setting: gboolean); cdecl; external;
-procedure gtk_icon_source_set_state(AIconSource: PGtkIconSource; state: TGtkStateType); cdecl; external;
-procedure gtk_icon_source_set_state_wildcarded(AIconSource: PGtkIconSource; setting: gboolean); cdecl; external;
+procedure gtk_icon_source_free(source: PGtkIconSource); cdecl; external;
+procedure gtk_icon_source_set_direction(source: PGtkIconSource; direction: TGtkTextDirection); cdecl; external;
+procedure gtk_icon_source_set_direction_wildcarded(source: PGtkIconSource; setting: gboolean); cdecl; external;
+procedure gtk_icon_source_set_filename(source: PGtkIconSource; filename: Pgchar); cdecl; external;
+procedure gtk_icon_source_set_icon_name(source: PGtkIconSource; icon_name: Pgchar); cdecl; external;
+procedure gtk_icon_source_set_pixbuf(source: PGtkIconSource; pixbuf: PGdkPixbuf); cdecl; external;
+procedure gtk_icon_source_set_size(source: PGtkIconSource; size: gint); cdecl; external;
+procedure gtk_icon_source_set_size_wildcarded(source: PGtkIconSource; setting: gboolean); cdecl; external;
+procedure gtk_icon_source_set_state(source: PGtkIconSource; state: TGtkStateType); cdecl; external;
+procedure gtk_icon_source_set_state_wildcarded(source: PGtkIconSource; setting: gboolean); cdecl; external;
 procedure gtk_icon_theme_add_builtin_icon(icon_name: Pgchar; size: gint; pixbuf: PGdkPixbuf); cdecl; external;
-procedure gtk_icon_theme_append_search_path(AIconTheme: PGtkIconTheme; path: Pgchar); cdecl; external;
-procedure gtk_icon_theme_get_search_path(AIconTheme: PGtkIconTheme; path: PPgchar; n_elements: Pgint); cdecl; external;
-procedure gtk_icon_theme_prepend_search_path(AIconTheme: PGtkIconTheme; path: Pgchar); cdecl; external;
-procedure gtk_icon_theme_set_custom_theme(AIconTheme: PGtkIconTheme; theme_name: Pgchar); cdecl; external;
-procedure gtk_icon_theme_set_screen(AIconTheme: PGtkIconTheme; screen: PGdkScreen); cdecl; external;
-procedure gtk_icon_theme_set_search_path(AIconTheme: PGtkIconTheme; path: Pgchar; n_elements: gint); cdecl; external;
-procedure gtk_icon_view_convert_widget_to_bin_window_coords(AIconView: PGtkIconView; wx: gint; wy: gint; bx: Pgint; by: Pgint); cdecl; external;
-procedure gtk_icon_view_enable_model_drag_dest(AIconView: PGtkIconView; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; external;
-procedure gtk_icon_view_enable_model_drag_source(AIconView: PGtkIconView; start_button_mask: TGdkModifierType; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; external;
-procedure gtk_icon_view_get_drag_dest_item(AIconView: PGtkIconView; path: PPGtkTreePath; pos: PGtkIconViewDropPosition); cdecl; external;
-procedure gtk_icon_view_item_activated(AIconView: PGtkIconView; path: PGtkTreePath); cdecl; external;
-procedure gtk_icon_view_scroll_to_path(AIconView: PGtkIconView; path: PGtkTreePath; use_align: gboolean; row_align: gfloat; col_align: gfloat); cdecl; external;
-procedure gtk_icon_view_select_all(AIconView: PGtkIconView); cdecl; external;
-procedure gtk_icon_view_select_path(AIconView: PGtkIconView; path: PGtkTreePath); cdecl; external;
-procedure gtk_icon_view_selected_foreach(AIconView: PGtkIconView; func: TGtkIconViewForeachFunc; data: gpointer); cdecl; external;
-procedure gtk_icon_view_set_column_spacing(AIconView: PGtkIconView; column_spacing: gint); cdecl; external;
-procedure gtk_icon_view_set_columns(AIconView: PGtkIconView; columns: gint); cdecl; external;
-procedure gtk_icon_view_set_cursor(AIconView: PGtkIconView; path: PGtkTreePath; cell: PGtkCellRenderer; start_editing: gboolean); cdecl; external;
-procedure gtk_icon_view_set_drag_dest_item(AIconView: PGtkIconView; path: PGtkTreePath; pos: TGtkIconViewDropPosition); cdecl; external;
-procedure gtk_icon_view_set_item_orientation(AIconView: PGtkIconView; orientation: TGtkOrientation); cdecl; external;
-procedure gtk_icon_view_set_item_padding(AIconView: PGtkIconView; item_padding: gint); cdecl; external;
-procedure gtk_icon_view_set_item_width(AIconView: PGtkIconView; item_width: gint); cdecl; external;
-procedure gtk_icon_view_set_margin(AIconView: PGtkIconView; margin: gint); cdecl; external;
-procedure gtk_icon_view_set_markup_column(AIconView: PGtkIconView; column: gint); cdecl; external;
-procedure gtk_icon_view_set_model(AIconView: PGtkIconView; model: PGtkTreeModel); cdecl; external;
-procedure gtk_icon_view_set_pixbuf_column(AIconView: PGtkIconView; column: gint); cdecl; external;
-procedure gtk_icon_view_set_reorderable(AIconView: PGtkIconView; reorderable: gboolean); cdecl; external;
-procedure gtk_icon_view_set_row_spacing(AIconView: PGtkIconView; row_spacing: gint); cdecl; external;
-procedure gtk_icon_view_set_selection_mode(AIconView: PGtkIconView; mode: TGtkSelectionMode); cdecl; external;
-procedure gtk_icon_view_set_spacing(AIconView: PGtkIconView; spacing: gint); cdecl; external;
-procedure gtk_icon_view_set_text_column(AIconView: PGtkIconView; column: gint); cdecl; external;
-procedure gtk_icon_view_set_tooltip_cell(AIconView: PGtkIconView; tooltip: PGtkTooltip; path: PGtkTreePath; cell: PGtkCellRenderer); cdecl; external;
-procedure gtk_icon_view_set_tooltip_column(AIconView: PGtkIconView; column: gint); cdecl; external;
-procedure gtk_icon_view_set_tooltip_item(AIconView: PGtkIconView; tooltip: PGtkTooltip; path: PGtkTreePath); cdecl; external;
-procedure gtk_icon_view_unselect_all(AIconView: PGtkIconView); cdecl; external;
-procedure gtk_icon_view_unselect_path(AIconView: PGtkIconView; path: PGtkTreePath); cdecl; external;
-procedure gtk_icon_view_unset_model_drag_dest(AIconView: PGtkIconView); cdecl; external;
-procedure gtk_icon_view_unset_model_drag_source(AIconView: PGtkIconView); cdecl; external;
-procedure gtk_im_context_focus_in(AIMContext: PGtkIMContext); cdecl; external;
-procedure gtk_im_context_focus_out(AIMContext: PGtkIMContext); cdecl; external;
-procedure gtk_im_context_get_preedit_string(AIMContext: PGtkIMContext; str: PPgchar; attrs: PPPangoAttrList; cursor_pos: Pgint); cdecl; external;
-procedure gtk_im_context_reset(AIMContext: PGtkIMContext); cdecl; external;
-procedure gtk_im_context_set_client_window(AIMContext: PGtkIMContext; window: PGdkWindow); cdecl; external;
-procedure gtk_im_context_set_cursor_location(AIMContext: PGtkIMContext; area: PGdkRectangle); cdecl; external;
-procedure gtk_im_context_set_surrounding(AIMContext: PGtkIMContext; text: Pgchar; len: gint; cursor_index: gint); cdecl; external;
-procedure gtk_im_context_set_use_preedit(AIMContext: PGtkIMContext; use_preedit: gboolean); cdecl; external;
-procedure gtk_im_context_simple_add_table(AIMContextSimple: PGtkIMContextSimple; data: Pguint16; max_seq_len: gint; n_seqs: gint); cdecl; external;
-procedure gtk_im_multicontext_append_menuitems(AIMMulticontext: PGtkIMMulticontext; menushell: PGtkMenuShell); cdecl; external;
-procedure gtk_im_multicontext_set_context_id(AIMMulticontext: PGtkIMMulticontext; context_id: Pgchar); cdecl; external;
-procedure gtk_image_clear(AImage: PGtkImage); cdecl; external;
-procedure gtk_image_get_gicon(AImage: PGtkImage; gicon: PPGIcon; size: Pgint); cdecl; external;
-procedure gtk_image_get_icon_name(AImage: PGtkImage; icon_name: PPgchar; size: Pgint); cdecl; external;
-procedure gtk_image_get_icon_set(AImage: PGtkImage; icon_set: PPGtkIconSet; size: Pgint); cdecl; external;
-procedure gtk_image_get_stock(AImage: PGtkImage; stock_id: PPgchar; size: Pgint); cdecl; external;
-procedure gtk_image_menu_item_set_accel_group(AImageMenuItem: PGtkImageMenuItem; accel_group: PGtkAccelGroup); cdecl; external;
-procedure gtk_image_menu_item_set_always_show_image(AImageMenuItem: PGtkImageMenuItem; always_show: gboolean); cdecl; external;
-procedure gtk_image_menu_item_set_image(AImageMenuItem: PGtkImageMenuItem; image: PGtkWidget); cdecl; external;
-procedure gtk_image_menu_item_set_use_stock(AImageMenuItem: PGtkImageMenuItem; use_stock: gboolean); cdecl; external;
-procedure gtk_image_set_from_animation(AImage: PGtkImage; animation: PGdkPixbufAnimation); cdecl; external;
-procedure gtk_image_set_from_file(AImage: PGtkImage; filename: Pgchar); cdecl; external;
-procedure gtk_image_set_from_gicon(AImage: PGtkImage; icon: PGIcon; size: gint); cdecl; external;
-procedure gtk_image_set_from_icon_name(AImage: PGtkImage; icon_name: Pgchar; size: gint); cdecl; external;
-procedure gtk_image_set_from_icon_set(AImage: PGtkImage; icon_set: PGtkIconSet; size: gint); cdecl; external;
-procedure gtk_image_set_from_pixbuf(AImage: PGtkImage; pixbuf: PGdkPixbuf); cdecl; external;
-procedure gtk_image_set_from_resource(AImage: PGtkImage; resource_path: Pgchar); cdecl; external;
-procedure gtk_image_set_from_stock(AImage: PGtkImage; stock_id: Pgchar; size: gint); cdecl; external;
-procedure gtk_image_set_pixel_size(AImage: PGtkImage; pixel_size: gint); cdecl; external;
-procedure gtk_info_bar_add_action_widget(AInfoBar: PGtkInfoBar; child: PGtkWidget; response_id: gint); cdecl; external;
-procedure gtk_info_bar_add_buttons(AInfoBar: PGtkInfoBar; first_button_text: Pgchar; args: array of const); cdecl; external;
-procedure gtk_info_bar_response(AInfoBar: PGtkInfoBar; response_id: gint); cdecl; external;
-procedure gtk_info_bar_set_default_response(AInfoBar: PGtkInfoBar; response_id: gint); cdecl; external;
-procedure gtk_info_bar_set_message_type(AInfoBar: PGtkInfoBar; message_type: TGtkMessageType); cdecl; external;
-procedure gtk_info_bar_set_response_sensitive(AInfoBar: PGtkInfoBar; response_id: gint; setting: gboolean); cdecl; external;
+procedure gtk_icon_theme_append_search_path(icon_theme: PGtkIconTheme; path: Pgchar); cdecl; external;
+procedure gtk_icon_theme_get_search_path(icon_theme: PGtkIconTheme; path: PPgchar; n_elements: Pgint); cdecl; external;
+procedure gtk_icon_theme_prepend_search_path(icon_theme: PGtkIconTheme; path: Pgchar); cdecl; external;
+procedure gtk_icon_theme_set_custom_theme(icon_theme: PGtkIconTheme; theme_name: Pgchar); cdecl; external;
+procedure gtk_icon_theme_set_screen(icon_theme: PGtkIconTheme; screen: PGdkScreen); cdecl; external;
+procedure gtk_icon_theme_set_search_path(icon_theme: PGtkIconTheme; path: Pgchar; n_elements: gint); cdecl; external;
+procedure gtk_icon_view_convert_widget_to_bin_window_coords(icon_view: PGtkIconView; wx: gint; wy: gint; bx: Pgint; by: Pgint); cdecl; external;
+procedure gtk_icon_view_enable_model_drag_dest(icon_view: PGtkIconView; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; external;
+procedure gtk_icon_view_enable_model_drag_source(icon_view: PGtkIconView; start_button_mask: TGdkModifierType; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; external;
+procedure gtk_icon_view_get_drag_dest_item(icon_view: PGtkIconView; path: PPGtkTreePath; pos: PGtkIconViewDropPosition); cdecl; external;
+procedure gtk_icon_view_item_activated(icon_view: PGtkIconView; path: PGtkTreePath); cdecl; external;
+procedure gtk_icon_view_scroll_to_path(icon_view: PGtkIconView; path: PGtkTreePath; use_align: gboolean; row_align: gfloat; col_align: gfloat); cdecl; external;
+procedure gtk_icon_view_select_all(icon_view: PGtkIconView); cdecl; external;
+procedure gtk_icon_view_select_path(icon_view: PGtkIconView; path: PGtkTreePath); cdecl; external;
+procedure gtk_icon_view_selected_foreach(icon_view: PGtkIconView; func: TGtkIconViewForeachFunc; data: gpointer); cdecl; external;
+procedure gtk_icon_view_set_activate_on_single_click(icon_view: PGtkIconView; single: gboolean); cdecl; external;
+procedure gtk_icon_view_set_column_spacing(icon_view: PGtkIconView; column_spacing: gint); cdecl; external;
+procedure gtk_icon_view_set_columns(icon_view: PGtkIconView; columns: gint); cdecl; external;
+procedure gtk_icon_view_set_cursor(icon_view: PGtkIconView; path: PGtkTreePath; cell: PGtkCellRenderer; start_editing: gboolean); cdecl; external;
+procedure gtk_icon_view_set_drag_dest_item(icon_view: PGtkIconView; path: PGtkTreePath; pos: TGtkIconViewDropPosition); cdecl; external;
+procedure gtk_icon_view_set_item_orientation(icon_view: PGtkIconView; orientation: TGtkOrientation); cdecl; external;
+procedure gtk_icon_view_set_item_padding(icon_view: PGtkIconView; item_padding: gint); cdecl; external;
+procedure gtk_icon_view_set_item_width(icon_view: PGtkIconView; item_width: gint); cdecl; external;
+procedure gtk_icon_view_set_margin(icon_view: PGtkIconView; margin: gint); cdecl; external;
+procedure gtk_icon_view_set_markup_column(icon_view: PGtkIconView; column: gint); cdecl; external;
+procedure gtk_icon_view_set_model(icon_view: PGtkIconView; model: PGtkTreeModel); cdecl; external;
+procedure gtk_icon_view_set_pixbuf_column(icon_view: PGtkIconView; column: gint); cdecl; external;
+procedure gtk_icon_view_set_reorderable(icon_view: PGtkIconView; reorderable: gboolean); cdecl; external;
+procedure gtk_icon_view_set_row_spacing(icon_view: PGtkIconView; row_spacing: gint); cdecl; external;
+procedure gtk_icon_view_set_selection_mode(icon_view: PGtkIconView; mode: TGtkSelectionMode); cdecl; external;
+procedure gtk_icon_view_set_spacing(icon_view: PGtkIconView; spacing: gint); cdecl; external;
+procedure gtk_icon_view_set_text_column(icon_view: PGtkIconView; column: gint); cdecl; external;
+procedure gtk_icon_view_set_tooltip_cell(icon_view: PGtkIconView; tooltip: PGtkTooltip; path: PGtkTreePath; cell: PGtkCellRenderer); cdecl; external;
+procedure gtk_icon_view_set_tooltip_column(icon_view: PGtkIconView; column: gint); cdecl; external;
+procedure gtk_icon_view_set_tooltip_item(icon_view: PGtkIconView; tooltip: PGtkTooltip; path: PGtkTreePath); cdecl; external;
+procedure gtk_icon_view_unselect_all(icon_view: PGtkIconView); cdecl; external;
+procedure gtk_icon_view_unselect_path(icon_view: PGtkIconView; path: PGtkTreePath); cdecl; external;
+procedure gtk_icon_view_unset_model_drag_dest(icon_view: PGtkIconView); cdecl; external;
+procedure gtk_icon_view_unset_model_drag_source(icon_view: PGtkIconView); cdecl; external;
+procedure gtk_im_context_focus_in(context: PGtkIMContext); cdecl; external;
+procedure gtk_im_context_focus_out(context: PGtkIMContext); cdecl; external;
+procedure gtk_im_context_get_preedit_string(context: PGtkIMContext; str: PPgchar; attrs: PPPangoAttrList; cursor_pos: Pgint); cdecl; external;
+procedure gtk_im_context_reset(context: PGtkIMContext); cdecl; external;
+procedure gtk_im_context_set_client_window(context: PGtkIMContext; window: PGdkWindow); cdecl; external;
+procedure gtk_im_context_set_cursor_location(context: PGtkIMContext; area: PGdkRectangle); cdecl; external;
+procedure gtk_im_context_set_surrounding(context: PGtkIMContext; text: Pgchar; len: gint; cursor_index: gint); cdecl; external;
+procedure gtk_im_context_set_use_preedit(context: PGtkIMContext; use_preedit: gboolean); cdecl; external;
+procedure gtk_im_context_simple_add_table(context_simple: PGtkIMContextSimple; data: Pguint16; max_seq_len: gint; n_seqs: gint); cdecl; external;
+procedure gtk_im_multicontext_append_menuitems(context: PGtkIMMulticontext; menushell: PGtkMenuShell); cdecl; external;
+procedure gtk_im_multicontext_set_context_id(context: PGtkIMMulticontext; context_id: Pgchar); cdecl; external;
+procedure gtk_image_clear(image: PGtkImage); cdecl; external;
+procedure gtk_image_get_gicon(image: PGtkImage; gicon: PPGIcon; size: Pgint); cdecl; external;
+procedure gtk_image_get_icon_name(image: PGtkImage; icon_name: PPgchar; size: Pgint); cdecl; external;
+procedure gtk_image_get_icon_set(image: PGtkImage; icon_set: PPGtkIconSet; size: Pgint); cdecl; external;
+procedure gtk_image_get_stock(image: PGtkImage; stock_id: PPgchar; size: Pgint); cdecl; external;
+procedure gtk_image_menu_item_set_accel_group(image_menu_item: PGtkImageMenuItem; accel_group: PGtkAccelGroup); cdecl; external;
+procedure gtk_image_menu_item_set_always_show_image(image_menu_item: PGtkImageMenuItem; always_show: gboolean); cdecl; external;
+procedure gtk_image_menu_item_set_image(image_menu_item: PGtkImageMenuItem; image: PGtkWidget); cdecl; external;
+procedure gtk_image_menu_item_set_use_stock(image_menu_item: PGtkImageMenuItem; use_stock: gboolean); cdecl; external;
+procedure gtk_image_set_from_animation(image: PGtkImage; animation: PGdkPixbufAnimation); cdecl; external;
+procedure gtk_image_set_from_file(image: PGtkImage; filename: Pgchar); cdecl; external;
+procedure gtk_image_set_from_gicon(image: PGtkImage; icon: PGIcon; size: gint); cdecl; external;
+procedure gtk_image_set_from_icon_name(image: PGtkImage; icon_name: Pgchar; size: gint); cdecl; external;
+procedure gtk_image_set_from_icon_set(image: PGtkImage; icon_set: PGtkIconSet; size: gint); cdecl; external;
+procedure gtk_image_set_from_pixbuf(image: PGtkImage; pixbuf: PGdkPixbuf); cdecl; external;
+procedure gtk_image_set_from_resource(image: PGtkImage; resource_path: Pgchar); cdecl; external;
+procedure gtk_image_set_from_stock(image: PGtkImage; stock_id: Pgchar; size: gint); cdecl; external;
+procedure gtk_image_set_pixel_size(image: PGtkImage; pixel_size: gint); cdecl; external;
+procedure gtk_info_bar_add_action_widget(info_bar: PGtkInfoBar; child: PGtkWidget; response_id: gint); cdecl; external;
+procedure gtk_info_bar_add_buttons(info_bar: PGtkInfoBar; first_button_text: Pgchar; args: array of const); cdecl; external;
+procedure gtk_info_bar_response(info_bar: PGtkInfoBar; response_id: gint); cdecl; external;
+procedure gtk_info_bar_set_default_response(info_bar: PGtkInfoBar; response_id: gint); cdecl; external;
+procedure gtk_info_bar_set_message_type(info_bar: PGtkInfoBar; message_type: TGtkMessageType); cdecl; external;
+procedure gtk_info_bar_set_response_sensitive(info_bar: PGtkInfoBar; response_id: gint; setting: gboolean); cdecl; external;
 procedure gtk_init(argc: Pgint; argv: PPPgchar); cdecl; external;
-procedure gtk_invisible_set_screen(AInvisible: PGtkInvisible; screen: PGdkScreen); cdecl; external;
+procedure gtk_invisible_set_screen(invisible: PGtkInvisible; screen: PGdkScreen); cdecl; external;
 procedure gtk_key_snooper_remove(snooper_handler_id: guint); cdecl; external;
-procedure gtk_label_get_layout_offsets(ALabel: PGtkLabel; x: Pgint; y: Pgint); cdecl; external;
-procedure gtk_label_select_region(ALabel: PGtkLabel; start_offset: gint; end_offset: gint); cdecl; external;
-procedure gtk_label_set_angle(ALabel: PGtkLabel; angle: gdouble); cdecl; external;
-procedure gtk_label_set_attributes(ALabel: PGtkLabel; attrs: PPangoAttrList); cdecl; external;
-procedure gtk_label_set_ellipsize(ALabel: PGtkLabel; mode: TPangoEllipsizeMode); cdecl; external;
-procedure gtk_label_set_justify(ALabel: PGtkLabel; jtype: TGtkJustification); cdecl; external;
-procedure gtk_label_set_label(ALabel: PGtkLabel; str: Pgchar); cdecl; external;
-procedure gtk_label_set_line_wrap(ALabel: PGtkLabel; wrap: gboolean); cdecl; external;
-procedure gtk_label_set_line_wrap_mode(ALabel: PGtkLabel; wrap_mode: TPangoWrapMode); cdecl; external;
-procedure gtk_label_set_markup(ALabel: PGtkLabel; str: Pgchar); cdecl; external;
-procedure gtk_label_set_markup_with_mnemonic(ALabel: PGtkLabel; str: Pgchar); cdecl; external;
-procedure gtk_label_set_max_width_chars(ALabel: PGtkLabel; n_chars: gint); cdecl; external;
-procedure gtk_label_set_mnemonic_widget(ALabel: PGtkLabel; widget: PGtkWidget); cdecl; external;
-procedure gtk_label_set_pattern(ALabel: PGtkLabel; pattern: Pgchar); cdecl; external;
-procedure gtk_label_set_selectable(ALabel: PGtkLabel; setting: gboolean); cdecl; external;
-procedure gtk_label_set_single_line_mode(ALabel: PGtkLabel; single_line_mode: gboolean); cdecl; external;
-procedure gtk_label_set_text(ALabel: PGtkLabel; str: Pgchar); cdecl; external;
-procedure gtk_label_set_text_with_mnemonic(ALabel: PGtkLabel; str: Pgchar); cdecl; external;
-procedure gtk_label_set_track_visited_links(ALabel: PGtkLabel; track_links: gboolean); cdecl; external;
-procedure gtk_label_set_use_markup(ALabel: PGtkLabel; setting: gboolean); cdecl; external;
-procedure gtk_label_set_use_underline(ALabel: PGtkLabel; setting: gboolean); cdecl; external;
-procedure gtk_label_set_width_chars(ALabel: PGtkLabel; n_chars: gint); cdecl; external;
-procedure gtk_layout_get_size(ALayout: PGtkLayout; width: Pguint; height: Pguint); cdecl; external;
-procedure gtk_layout_move(ALayout: PGtkLayout; child_widget: PGtkWidget; x: gint; y: gint); cdecl; external;
-procedure gtk_layout_put(ALayout: PGtkLayout; child_widget: PGtkWidget; x: gint; y: gint); cdecl; external;
-procedure gtk_layout_set_size(ALayout: PGtkLayout; width: guint; height: guint); cdecl; external;
-procedure gtk_link_button_set_uri(ALinkButton: PGtkLinkButton; uri: Pgchar); cdecl; external;
-procedure gtk_link_button_set_visited(ALinkButton: PGtkLinkButton; visited: gboolean); cdecl; external;
-procedure gtk_list_store_append(AListStore: PGtkListStore; iter: PGtkTreeIter); cdecl; external;
-procedure gtk_list_store_clear(AListStore: PGtkListStore); cdecl; external;
-procedure gtk_list_store_insert(AListStore: PGtkListStore; iter: PGtkTreeIter; position: gint); cdecl; external;
-procedure gtk_list_store_insert_after(AListStore: PGtkListStore; iter: PGtkTreeIter; sibling: PGtkTreeIter); cdecl; external;
-procedure gtk_list_store_insert_before(AListStore: PGtkListStore; iter: PGtkTreeIter; sibling: PGtkTreeIter); cdecl; external;
-procedure gtk_list_store_insert_with_values(AListStore: PGtkListStore; iter: PGtkTreeIter; position: gint; args: array of const); cdecl; external;
-procedure gtk_list_store_insert_with_valuesv(AListStore: PGtkListStore; iter: PGtkTreeIter; position: gint; columns: Pgint; values: PGValue; n_values: gint); cdecl; external;
-procedure gtk_list_store_move_after(AListStore: PGtkListStore; iter: PGtkTreeIter; position: PGtkTreeIter); cdecl; external;
-procedure gtk_list_store_move_before(AListStore: PGtkListStore; iter: PGtkTreeIter; position: PGtkTreeIter); cdecl; external;
-procedure gtk_list_store_prepend(AListStore: PGtkListStore; iter: PGtkTreeIter); cdecl; external;
-procedure gtk_list_store_reorder(AListStore: PGtkListStore; new_order: Pgint); cdecl; external;
-procedure gtk_list_store_set(AListStore: PGtkListStore; iter: PGtkTreeIter; args: array of const); cdecl; external;
-procedure gtk_list_store_set_column_types(AListStore: PGtkListStore; n_columns: gint; types: PGType); cdecl; external;
-procedure gtk_list_store_set_valist(AListStore: PGtkListStore; iter: PGtkTreeIter; var_args: Tva_list); cdecl; external;
-procedure gtk_list_store_set_value(AListStore: PGtkListStore; iter: PGtkTreeIter; column: gint; value: PGValue); cdecl; external;
-procedure gtk_list_store_set_valuesv(AListStore: PGtkListStore; iter: PGtkTreeIter; columns: Pgint; values: PGValue; n_values: gint); cdecl; external;
-procedure gtk_list_store_swap(AListStore: PGtkListStore; a: PGtkTreeIter; b: PGtkTreeIter); cdecl; external;
-procedure gtk_lock_button_set_permission(ALockButton: PGtkLockButton; permission: PGPermission); cdecl; external;
+procedure gtk_label_get_layout_offsets(label_: PGtkLabel; x: Pgint; y: Pgint); cdecl; external;
+procedure gtk_label_select_region(label_: PGtkLabel; start_offset: gint; end_offset: gint); cdecl; external;
+procedure gtk_label_set_angle(label_: PGtkLabel; angle: gdouble); cdecl; external;
+procedure gtk_label_set_attributes(label_: PGtkLabel; attrs: PPangoAttrList); cdecl; external;
+procedure gtk_label_set_ellipsize(label_: PGtkLabel; mode: TPangoEllipsizeMode); cdecl; external;
+procedure gtk_label_set_justify(label_: PGtkLabel; jtype: TGtkJustification); cdecl; external;
+procedure gtk_label_set_label(label_: PGtkLabel; str: Pgchar); cdecl; external;
+procedure gtk_label_set_line_wrap(label_: PGtkLabel; wrap: gboolean); cdecl; external;
+procedure gtk_label_set_line_wrap_mode(label_: PGtkLabel; wrap_mode: TPangoWrapMode); cdecl; external;
+procedure gtk_label_set_markup(label_: PGtkLabel; str: Pgchar); cdecl; external;
+procedure gtk_label_set_markup_with_mnemonic(label_: PGtkLabel; str: Pgchar); cdecl; external;
+procedure gtk_label_set_max_width_chars(label_: PGtkLabel; n_chars: gint); cdecl; external;
+procedure gtk_label_set_mnemonic_widget(label_: PGtkLabel; widget: PGtkWidget); cdecl; external;
+procedure gtk_label_set_pattern(label_: PGtkLabel; pattern: Pgchar); cdecl; external;
+procedure gtk_label_set_selectable(label_: PGtkLabel; setting: gboolean); cdecl; external;
+procedure gtk_label_set_single_line_mode(label_: PGtkLabel; single_line_mode: gboolean); cdecl; external;
+procedure gtk_label_set_text(label_: PGtkLabel; str: Pgchar); cdecl; external;
+procedure gtk_label_set_text_with_mnemonic(label_: PGtkLabel; str: Pgchar); cdecl; external;
+procedure gtk_label_set_track_visited_links(label_: PGtkLabel; track_links: gboolean); cdecl; external;
+procedure gtk_label_set_use_markup(label_: PGtkLabel; setting: gboolean); cdecl; external;
+procedure gtk_label_set_use_underline(label_: PGtkLabel; setting: gboolean); cdecl; external;
+procedure gtk_label_set_width_chars(label_: PGtkLabel; n_chars: gint); cdecl; external;
+procedure gtk_layout_get_size(layout: PGtkLayout; width: Pguint; height: Pguint); cdecl; external;
+procedure gtk_layout_move(layout: PGtkLayout; child_widget: PGtkWidget; x: gint; y: gint); cdecl; external;
+procedure gtk_layout_put(layout: PGtkLayout; child_widget: PGtkWidget; x: gint; y: gint); cdecl; external;
+procedure gtk_layout_set_size(layout: PGtkLayout; width: guint; height: guint); cdecl; external;
+procedure gtk_level_bar_add_offset_value(self: PGtkLevelBar; name: Pgchar; value: gdouble); cdecl; external;
+procedure gtk_level_bar_remove_offset_value(self: PGtkLevelBar; name: Pgchar); cdecl; external;
+procedure gtk_level_bar_set_inverted(self: PGtkLevelBar; inverted: gboolean); cdecl; external;
+procedure gtk_level_bar_set_max_value(self: PGtkLevelBar; value: gdouble); cdecl; external;
+procedure gtk_level_bar_set_min_value(self: PGtkLevelBar; value: gdouble); cdecl; external;
+procedure gtk_level_bar_set_mode(self: PGtkLevelBar; mode: TGtkLevelBarMode); cdecl; external;
+procedure gtk_level_bar_set_value(self: PGtkLevelBar; value: gdouble); cdecl; external;
+procedure gtk_link_button_set_uri(link_button: PGtkLinkButton; uri: Pgchar); cdecl; external;
+procedure gtk_link_button_set_visited(link_button: PGtkLinkButton; visited: gboolean); cdecl; external;
+procedure gtk_list_store_append(list_store: PGtkListStore; iter: PGtkTreeIter); cdecl; external;
+procedure gtk_list_store_clear(list_store: PGtkListStore); cdecl; external;
+procedure gtk_list_store_insert(list_store: PGtkListStore; iter: PGtkTreeIter; position: gint); cdecl; external;
+procedure gtk_list_store_insert_after(list_store: PGtkListStore; iter: PGtkTreeIter; sibling: PGtkTreeIter); cdecl; external;
+procedure gtk_list_store_insert_before(list_store: PGtkListStore; iter: PGtkTreeIter; sibling: PGtkTreeIter); cdecl; external;
+procedure gtk_list_store_insert_with_values(list_store: PGtkListStore; iter: PGtkTreeIter; position: gint; args: array of const); cdecl; external;
+procedure gtk_list_store_insert_with_valuesv(list_store: PGtkListStore; iter: PGtkTreeIter; position: gint; columns: Pgint; values: PGValue; n_values: gint); cdecl; external;
+procedure gtk_list_store_move_after(store: PGtkListStore; iter: PGtkTreeIter; position: PGtkTreeIter); cdecl; external;
+procedure gtk_list_store_move_before(store: PGtkListStore; iter: PGtkTreeIter; position: PGtkTreeIter); cdecl; external;
+procedure gtk_list_store_prepend(list_store: PGtkListStore; iter: PGtkTreeIter); cdecl; external;
+procedure gtk_list_store_reorder(store: PGtkListStore; new_order: Pgint); cdecl; external;
+procedure gtk_list_store_set(list_store: PGtkListStore; iter: PGtkTreeIter; args: array of const); cdecl; external;
+procedure gtk_list_store_set_column_types(list_store: PGtkListStore; n_columns: gint; types: PGType); cdecl; external;
+procedure gtk_list_store_set_valist(list_store: PGtkListStore; iter: PGtkTreeIter; var_args: Tva_list); cdecl; external;
+procedure gtk_list_store_set_value(list_store: PGtkListStore; iter: PGtkTreeIter; column: gint; value: PGValue); cdecl; external;
+procedure gtk_list_store_set_valuesv(list_store: PGtkListStore; iter: PGtkTreeIter; columns: Pgint; values: PGValue; n_values: gint); cdecl; external;
+procedure gtk_list_store_swap(store: PGtkListStore; a: PGtkTreeIter; b: PGtkTreeIter); cdecl; external;
+procedure gtk_lock_button_set_permission(button: PGtkLockButton; permission: PGPermission); cdecl; external;
 procedure gtk_main; cdecl; external;
 procedure gtk_main_do_event(event: PGdkEvent); cdecl; external;
 procedure gtk_main_quit; cdecl; external;
-procedure gtk_menu_attach(AMenu: PGtkMenu; child: PGtkWidget; left_attach: guint; right_attach: guint; top_attach: guint; bottom_attach: guint); cdecl; external;
-procedure gtk_menu_attach_to_widget(AMenu: PGtkMenu; attach_widget: PGtkWidget; detacher: TGtkMenuDetachFunc); cdecl; external;
-procedure gtk_menu_bar_set_child_pack_direction(AMenuBar: PGtkMenuBar; child_pack_dir: TGtkPackDirection); cdecl; external;
-procedure gtk_menu_bar_set_pack_direction(AMenuBar: PGtkMenuBar; pack_dir: TGtkPackDirection); cdecl; external;
-procedure gtk_menu_detach(AMenu: PGtkMenu); cdecl; external;
-procedure gtk_menu_item_activate(AMenuItem: PGtkMenuItem); cdecl; external;
-procedure gtk_menu_item_deselect(AMenuItem: PGtkMenuItem); cdecl; external;
-procedure gtk_menu_item_select(AMenuItem: PGtkMenuItem); cdecl; external;
-procedure gtk_menu_item_set_accel_path(AMenuItem: PGtkMenuItem; accel_path: Pgchar); cdecl; external;
-procedure gtk_menu_item_set_label(AMenuItem: PGtkMenuItem; label_: Pgchar); cdecl; external;
-procedure gtk_menu_item_set_reserve_indicator(AMenuItem: PGtkMenuItem; reserve: gboolean); cdecl; external;
-procedure gtk_menu_item_set_submenu(AMenuItem: PGtkMenuItem; submenu: PGtkWidget); cdecl; external;
-procedure gtk_menu_item_set_use_underline(AMenuItem: PGtkMenuItem; setting: gboolean); cdecl; external;
-procedure gtk_menu_item_toggle_size_allocate(AMenuItem: PGtkMenuItem; allocation: gint); cdecl; external;
-procedure gtk_menu_item_toggle_size_request(AMenuItem: PGtkMenuItem; requisition: Pgint); cdecl; external;
-procedure gtk_menu_popdown(AMenu: PGtkMenu); cdecl; external;
-procedure gtk_menu_popup(AMenu: PGtkMenu; parent_menu_shell: PGtkWidget; parent_menu_item: PGtkWidget; func: TGtkMenuPositionFunc; data: gpointer; button: guint; activate_time: guint32); cdecl; external;
-procedure gtk_menu_popup_for_device(AMenu: PGtkMenu; device: PGdkDevice; parent_menu_shell: PGtkWidget; parent_menu_item: PGtkWidget; func: TGtkMenuPositionFunc; data: gpointer; destroy_: TGDestroyNotify; button: guint; activate_time: guint32); cdecl; external;
-procedure gtk_menu_reorder_child(AMenu: PGtkMenu; child: PGtkWidget; position: gint); cdecl; external;
-procedure gtk_menu_reposition(AMenu: PGtkMenu); cdecl; external;
-procedure gtk_menu_set_accel_group(AMenu: PGtkMenu; accel_group: PGtkAccelGroup); cdecl; external;
-procedure gtk_menu_set_accel_path(AMenu: PGtkMenu; accel_path: Pgchar); cdecl; external;
-procedure gtk_menu_set_active(AMenu: PGtkMenu; index: guint); cdecl; external;
-procedure gtk_menu_set_monitor(AMenu: PGtkMenu; monitor_num: gint); cdecl; external;
-procedure gtk_menu_set_reserve_toggle_size(AMenu: PGtkMenu; reserve_toggle_size: gboolean); cdecl; external;
-procedure gtk_menu_set_screen(AMenu: PGtkMenu; screen: PGdkScreen); cdecl; external;
-procedure gtk_menu_set_tearoff_state(AMenu: PGtkMenu; torn_off: gboolean); cdecl; external;
-procedure gtk_menu_set_title(AMenu: PGtkMenu; title: Pgchar); cdecl; external;
-procedure gtk_menu_shell_activate_item(AMenuShell: PGtkMenuShell; menu_item: PGtkWidget; force_deactivate: gboolean); cdecl; external;
-procedure gtk_menu_shell_append(AMenuShell: PGtkMenuShell; child: PGtkWidget); cdecl; external;
-procedure gtk_menu_shell_cancel(AMenuShell: PGtkMenuShell); cdecl; external;
-procedure gtk_menu_shell_deactivate(AMenuShell: PGtkMenuShell); cdecl; external;
-procedure gtk_menu_shell_deselect(AMenuShell: PGtkMenuShell); cdecl; external;
-procedure gtk_menu_shell_insert(AMenuShell: PGtkMenuShell; child: PGtkWidget; position: gint); cdecl; external;
-procedure gtk_menu_shell_prepend(AMenuShell: PGtkMenuShell; child: PGtkWidget); cdecl; external;
-procedure gtk_menu_shell_select_first(AMenuShell: PGtkMenuShell; search_sensitive: gboolean); cdecl; external;
-procedure gtk_menu_shell_select_item(AMenuShell: PGtkMenuShell; menu_item: PGtkWidget); cdecl; external;
-procedure gtk_menu_shell_set_take_focus(AMenuShell: PGtkMenuShell; take_focus: gboolean); cdecl; external;
-procedure gtk_menu_tool_button_set_arrow_tooltip_markup(AMenuToolButton: PGtkMenuToolButton; markup: Pgchar); cdecl; external;
-procedure gtk_menu_tool_button_set_arrow_tooltip_text(AMenuToolButton: PGtkMenuToolButton; text: Pgchar); cdecl; external;
-procedure gtk_menu_tool_button_set_menu(AMenuToolButton: PGtkMenuToolButton; menu: PGtkWidget); cdecl; external;
-procedure gtk_message_dialog_format_secondary_markup(AMessageDialog: PGtkMessageDialog; message_format: Pgchar; args: array of const); cdecl; external;
-procedure gtk_message_dialog_format_secondary_text(AMessageDialog: PGtkMessageDialog; message_format: Pgchar; args: array of const); cdecl; external;
-procedure gtk_message_dialog_set_image(AMessageDialog: PGtkMessageDialog; image: PGtkWidget); cdecl; external;
-procedure gtk_message_dialog_set_markup(AMessageDialog: PGtkMessageDialog; str: Pgchar); cdecl; external;
-procedure gtk_misc_get_alignment(AMisc: PGtkMisc; xalign: Pgfloat; yalign: Pgfloat); cdecl; external;
-procedure gtk_misc_get_padding(AMisc: PGtkMisc; xpad: Pgint; ypad: Pgint); cdecl; external;
-procedure gtk_misc_set_alignment(AMisc: PGtkMisc; xalign: gfloat; yalign: gfloat); cdecl; external;
-procedure gtk_misc_set_padding(AMisc: PGtkMisc; xpad: gint; ypad: gint); cdecl; external;
-procedure gtk_mount_operation_set_parent(AMountOperation: PGtkMountOperation; parent: PGtkWindow); cdecl; external;
-procedure gtk_mount_operation_set_screen(AMountOperation: PGtkMountOperation; screen: PGdkScreen); cdecl; external;
-procedure gtk_notebook_next_page(ANotebook: PGtkNotebook); cdecl; external;
-procedure gtk_notebook_popup_disable(ANotebook: PGtkNotebook); cdecl; external;
-procedure gtk_notebook_popup_enable(ANotebook: PGtkNotebook); cdecl; external;
-procedure gtk_notebook_prev_page(ANotebook: PGtkNotebook); cdecl; external;
-procedure gtk_notebook_remove_page(ANotebook: PGtkNotebook; page_num: gint); cdecl; external;
-procedure gtk_notebook_reorder_child(ANotebook: PGtkNotebook; child: PGtkWidget; position: gint); cdecl; external;
-procedure gtk_notebook_set_action_widget(ANotebook: PGtkNotebook; widget: PGtkWidget; pack_type: TGtkPackType); cdecl; external;
-procedure gtk_notebook_set_current_page(ANotebook: PGtkNotebook; page_num: gint); cdecl; external;
-procedure gtk_notebook_set_group_name(ANotebook: PGtkNotebook; group_name: Pgchar); cdecl; external;
-procedure gtk_notebook_set_menu_label(ANotebook: PGtkNotebook; child: PGtkWidget; menu_label: PGtkWidget); cdecl; external;
-procedure gtk_notebook_set_menu_label_text(ANotebook: PGtkNotebook; child: PGtkWidget; menu_text: Pgchar); cdecl; external;
-procedure gtk_notebook_set_scrollable(ANotebook: PGtkNotebook; scrollable: gboolean); cdecl; external;
-procedure gtk_notebook_set_show_border(ANotebook: PGtkNotebook; show_border: gboolean); cdecl; external;
-procedure gtk_notebook_set_show_tabs(ANotebook: PGtkNotebook; show_tabs: gboolean); cdecl; external;
-procedure gtk_notebook_set_tab_detachable(ANotebook: PGtkNotebook; child: PGtkWidget; detachable: gboolean); cdecl; external;
-procedure gtk_notebook_set_tab_label(ANotebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget); cdecl; external;
-procedure gtk_notebook_set_tab_label_text(ANotebook: PGtkNotebook; child: PGtkWidget; tab_text: Pgchar); cdecl; external;
-procedure gtk_notebook_set_tab_pos(ANotebook: PGtkNotebook; pos: TGtkPositionType); cdecl; external;
-procedure gtk_notebook_set_tab_reorderable(ANotebook: PGtkNotebook; child: PGtkWidget; reorderable: gboolean); cdecl; external;
-procedure gtk_numerable_icon_set_background_gicon(ANumerableIcon: PGtkNumerableIcon; icon: PGIcon); cdecl; external;
-procedure gtk_numerable_icon_set_background_icon_name(ANumerableIcon: PGtkNumerableIcon; icon_name: Pgchar); cdecl; external;
-procedure gtk_numerable_icon_set_count(ANumerableIcon: PGtkNumerableIcon; count: gint); cdecl; external;
-procedure gtk_numerable_icon_set_label(ANumerableIcon: PGtkNumerableIcon; label_: Pgchar); cdecl; external;
-procedure gtk_numerable_icon_set_style_context(ANumerableIcon: PGtkNumerableIcon; style: PGtkStyleContext); cdecl; external;
-procedure gtk_orientable_set_orientation(AOrientable: PGtkOrientable; orientation: TGtkOrientation); cdecl; external;
-procedure gtk_overlay_add_overlay(AOverlay: PGtkOverlay; widget: PGtkWidget); cdecl; external;
-procedure gtk_page_setup_set_bottom_margin(APageSetup: PGtkPageSetup; margin: gdouble; unit_: TGtkUnit); cdecl; external;
-procedure gtk_page_setup_set_left_margin(APageSetup: PGtkPageSetup; margin: gdouble; unit_: TGtkUnit); cdecl; external;
-procedure gtk_page_setup_set_orientation(APageSetup: PGtkPageSetup; orientation: TGtkPageOrientation); cdecl; external;
-procedure gtk_page_setup_set_paper_size(APageSetup: PGtkPageSetup; size: PGtkPaperSize); cdecl; external;
-procedure gtk_page_setup_set_paper_size_and_default_margins(APageSetup: PGtkPageSetup; size: PGtkPaperSize); cdecl; external;
-procedure gtk_page_setup_set_right_margin(APageSetup: PGtkPageSetup; margin: gdouble; unit_: TGtkUnit); cdecl; external;
-procedure gtk_page_setup_set_top_margin(APageSetup: PGtkPageSetup; margin: gdouble; unit_: TGtkUnit); cdecl; external;
-procedure gtk_page_setup_to_key_file(APageSetup: PGtkPageSetup; key_file: PGKeyFile; group_name: Pgchar); cdecl; external;
+procedure gtk_menu_attach(menu: PGtkMenu; child: PGtkWidget; left_attach: guint; right_attach: guint; top_attach: guint; bottom_attach: guint); cdecl; external;
+procedure gtk_menu_attach_to_widget(menu: PGtkMenu; attach_widget: PGtkWidget; detacher: TGtkMenuDetachFunc); cdecl; external;
+procedure gtk_menu_bar_set_child_pack_direction(menubar: PGtkMenuBar; child_pack_dir: TGtkPackDirection); cdecl; external;
+procedure gtk_menu_bar_set_pack_direction(menubar: PGtkMenuBar; pack_dir: TGtkPackDirection); cdecl; external;
+procedure gtk_menu_button_set_align_widget(menu_button: PGtkMenuButton; align_widget: PGtkWidget); cdecl; external;
+procedure gtk_menu_button_set_direction(menu_button: PGtkMenuButton; direction: TGtkArrowType); cdecl; external;
+procedure gtk_menu_button_set_menu_model(menu_button: PGtkMenuButton; menu_model: PGMenuModel); cdecl; external;
+procedure gtk_menu_button_set_popup(menu_button: PGtkMenuButton; popup: PGtkWidget); cdecl; external;
+procedure gtk_menu_detach(menu: PGtkMenu); cdecl; external;
+procedure gtk_menu_item_activate(menu_item: PGtkMenuItem); cdecl; external;
+procedure gtk_menu_item_deselect(menu_item: PGtkMenuItem); cdecl; external;
+procedure gtk_menu_item_select(menu_item: PGtkMenuItem); cdecl; external;
+procedure gtk_menu_item_set_accel_path(menu_item: PGtkMenuItem; accel_path: Pgchar); cdecl; external;
+procedure gtk_menu_item_set_label(menu_item: PGtkMenuItem; label_: Pgchar); cdecl; external;
+procedure gtk_menu_item_set_reserve_indicator(menu_item: PGtkMenuItem; reserve: gboolean); cdecl; external;
+procedure gtk_menu_item_set_submenu(menu_item: PGtkMenuItem; submenu: PGtkWidget); cdecl; external;
+procedure gtk_menu_item_set_use_underline(menu_item: PGtkMenuItem; setting: gboolean); cdecl; external;
+procedure gtk_menu_item_toggle_size_allocate(menu_item: PGtkMenuItem; allocation: gint); cdecl; external;
+procedure gtk_menu_item_toggle_size_request(menu_item: PGtkMenuItem; requisition: Pgint); cdecl; external;
+procedure gtk_menu_popdown(menu: PGtkMenu); cdecl; external;
+procedure gtk_menu_popup(menu: PGtkMenu; parent_menu_shell: PGtkWidget; parent_menu_item: PGtkWidget; func: TGtkMenuPositionFunc; data: gpointer; button: guint; activate_time: guint32); cdecl; external;
+procedure gtk_menu_popup_for_device(menu: PGtkMenu; device: PGdkDevice; parent_menu_shell: PGtkWidget; parent_menu_item: PGtkWidget; func: TGtkMenuPositionFunc; data: gpointer; destroy_: TGDestroyNotify; button: guint; activate_time: guint32); cdecl; external;
+procedure gtk_menu_reorder_child(menu: PGtkMenu; child: PGtkWidget; position: gint); cdecl; external;
+procedure gtk_menu_reposition(menu: PGtkMenu); cdecl; external;
+procedure gtk_menu_set_accel_group(menu: PGtkMenu; accel_group: PGtkAccelGroup); cdecl; external;
+procedure gtk_menu_set_accel_path(menu: PGtkMenu; accel_path: Pgchar); cdecl; external;
+procedure gtk_menu_set_active(menu: PGtkMenu; index: guint); cdecl; external;
+procedure gtk_menu_set_monitor(menu: PGtkMenu; monitor_num: gint); cdecl; external;
+procedure gtk_menu_set_reserve_toggle_size(menu: PGtkMenu; reserve_toggle_size: gboolean); cdecl; external;
+procedure gtk_menu_set_screen(menu: PGtkMenu; screen: PGdkScreen); cdecl; external;
+procedure gtk_menu_set_tearoff_state(menu: PGtkMenu; torn_off: gboolean); cdecl; external;
+procedure gtk_menu_set_title(menu: PGtkMenu; title: Pgchar); cdecl; external;
+procedure gtk_menu_shell_activate_item(menu_shell: PGtkMenuShell; menu_item: PGtkWidget; force_deactivate: gboolean); cdecl; external;
+procedure gtk_menu_shell_append(menu_shell: PGtkMenuShell; child: PGtkWidget); cdecl; external;
+procedure gtk_menu_shell_bind_model(menu_shell: PGtkMenuShell; model: PGMenuModel; action_namespace: Pgchar; with_separators: gboolean); cdecl; external;
+procedure gtk_menu_shell_cancel(menu_shell: PGtkMenuShell); cdecl; external;
+procedure gtk_menu_shell_deactivate(menu_shell: PGtkMenuShell); cdecl; external;
+procedure gtk_menu_shell_deselect(menu_shell: PGtkMenuShell); cdecl; external;
+procedure gtk_menu_shell_insert(menu_shell: PGtkMenuShell; child: PGtkWidget; position: gint); cdecl; external;
+procedure gtk_menu_shell_prepend(menu_shell: PGtkMenuShell; child: PGtkWidget); cdecl; external;
+procedure gtk_menu_shell_select_first(menu_shell: PGtkMenuShell; search_sensitive: gboolean); cdecl; external;
+procedure gtk_menu_shell_select_item(menu_shell: PGtkMenuShell; menu_item: PGtkWidget); cdecl; external;
+procedure gtk_menu_shell_set_take_focus(menu_shell: PGtkMenuShell; take_focus: gboolean); cdecl; external;
+procedure gtk_menu_tool_button_set_arrow_tooltip_markup(button: PGtkMenuToolButton; markup: Pgchar); cdecl; external;
+procedure gtk_menu_tool_button_set_arrow_tooltip_text(button: PGtkMenuToolButton; text: Pgchar); cdecl; external;
+procedure gtk_menu_tool_button_set_menu(button: PGtkMenuToolButton; menu: PGtkWidget); cdecl; external;
+procedure gtk_message_dialog_format_secondary_markup(message_dialog: PGtkMessageDialog; message_format: Pgchar; args: array of const); cdecl; external;
+procedure gtk_message_dialog_format_secondary_text(message_dialog: PGtkMessageDialog; message_format: Pgchar; args: array of const); cdecl; external;
+procedure gtk_message_dialog_set_image(dialog: PGtkMessageDialog; image: PGtkWidget); cdecl; external;
+procedure gtk_message_dialog_set_markup(message_dialog: PGtkMessageDialog; str: Pgchar); cdecl; external;
+procedure gtk_misc_get_alignment(misc: PGtkMisc; xalign: Pgfloat; yalign: Pgfloat); cdecl; external;
+procedure gtk_misc_get_padding(misc: PGtkMisc; xpad: Pgint; ypad: Pgint); cdecl; external;
+procedure gtk_misc_set_alignment(misc: PGtkMisc; xalign: gfloat; yalign: gfloat); cdecl; external;
+procedure gtk_misc_set_padding(misc: PGtkMisc; xpad: gint; ypad: gint); cdecl; external;
+procedure gtk_mount_operation_set_parent(op: PGtkMountOperation; parent: PGtkWindow); cdecl; external;
+procedure gtk_mount_operation_set_screen(op: PGtkMountOperation; screen: PGdkScreen); cdecl; external;
+procedure gtk_notebook_next_page(notebook: PGtkNotebook); cdecl; external;
+procedure gtk_notebook_popup_disable(notebook: PGtkNotebook); cdecl; external;
+procedure gtk_notebook_popup_enable(notebook: PGtkNotebook); cdecl; external;
+procedure gtk_notebook_prev_page(notebook: PGtkNotebook); cdecl; external;
+procedure gtk_notebook_remove_page(notebook: PGtkNotebook; page_num: gint); cdecl; external;
+procedure gtk_notebook_reorder_child(notebook: PGtkNotebook; child: PGtkWidget; position: gint); cdecl; external;
+procedure gtk_notebook_set_action_widget(notebook: PGtkNotebook; widget: PGtkWidget; pack_type: TGtkPackType); cdecl; external;
+procedure gtk_notebook_set_current_page(notebook: PGtkNotebook; page_num: gint); cdecl; external;
+procedure gtk_notebook_set_group_name(notebook: PGtkNotebook; group_name: Pgchar); cdecl; external;
+procedure gtk_notebook_set_menu_label(notebook: PGtkNotebook; child: PGtkWidget; menu_label: PGtkWidget); cdecl; external;
+procedure gtk_notebook_set_menu_label_text(notebook: PGtkNotebook; child: PGtkWidget; menu_text: Pgchar); cdecl; external;
+procedure gtk_notebook_set_scrollable(notebook: PGtkNotebook; scrollable: gboolean); cdecl; external;
+procedure gtk_notebook_set_show_border(notebook: PGtkNotebook; show_border: gboolean); cdecl; external;
+procedure gtk_notebook_set_show_tabs(notebook: PGtkNotebook; show_tabs: gboolean); cdecl; external;
+procedure gtk_notebook_set_tab_detachable(notebook: PGtkNotebook; child: PGtkWidget; detachable: gboolean); cdecl; external;
+procedure gtk_notebook_set_tab_label(notebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget); cdecl; external;
+procedure gtk_notebook_set_tab_label_text(notebook: PGtkNotebook; child: PGtkWidget; tab_text: Pgchar); cdecl; external;
+procedure gtk_notebook_set_tab_pos(notebook: PGtkNotebook; pos: TGtkPositionType); cdecl; external;
+procedure gtk_notebook_set_tab_reorderable(notebook: PGtkNotebook; child: PGtkWidget; reorderable: gboolean); cdecl; external;
+procedure gtk_numerable_icon_set_background_gicon(self: PGtkNumerableIcon; icon: PGIcon); cdecl; external;
+procedure gtk_numerable_icon_set_background_icon_name(self: PGtkNumerableIcon; icon_name: Pgchar); cdecl; external;
+procedure gtk_numerable_icon_set_count(self: PGtkNumerableIcon; count: gint); cdecl; external;
+procedure gtk_numerable_icon_set_label(self: PGtkNumerableIcon; label_: Pgchar); cdecl; external;
+procedure gtk_numerable_icon_set_style_context(self: PGtkNumerableIcon; style: PGtkStyleContext); cdecl; external;
+procedure gtk_orientable_set_orientation(orientable: PGtkOrientable; orientation: TGtkOrientation); cdecl; external;
+procedure gtk_overlay_add_overlay(overlay: PGtkOverlay; widget: PGtkWidget); cdecl; external;
+procedure gtk_page_setup_set_bottom_margin(setup: PGtkPageSetup; margin: gdouble; unit_: TGtkUnit); cdecl; external;
+procedure gtk_page_setup_set_left_margin(setup: PGtkPageSetup; margin: gdouble; unit_: TGtkUnit); cdecl; external;
+procedure gtk_page_setup_set_orientation(setup: PGtkPageSetup; orientation: TGtkPageOrientation); cdecl; external;
+procedure gtk_page_setup_set_paper_size(setup: PGtkPageSetup; size: PGtkPaperSize); cdecl; external;
+procedure gtk_page_setup_set_paper_size_and_default_margins(setup: PGtkPageSetup; size: PGtkPaperSize); cdecl; external;
+procedure gtk_page_setup_set_right_margin(setup: PGtkPageSetup; margin: gdouble; unit_: TGtkUnit); cdecl; external;
+procedure gtk_page_setup_set_top_margin(setup: PGtkPageSetup; margin: gdouble; unit_: TGtkUnit); cdecl; external;
+procedure gtk_page_setup_to_key_file(setup: PGtkPageSetup; key_file: PGKeyFile; group_name: Pgchar); cdecl; external;
 procedure gtk_paint_arrow(style: PGtkStyle; cr: Pcairo_t; state_type: TGtkStateType; shadow_type: TGtkShadowType; widget: PGtkWidget; detail: Pgchar; arrow_type: TGtkArrowType; fill: gboolean; x: gint; y: gint; width: gint; height: gint); cdecl; external;
 procedure gtk_paint_box(style: PGtkStyle; cr: Pcairo_t; state_type: TGtkStateType; shadow_type: TGtkShadowType; widget: PGtkWidget; detail: Pgchar; x: gint; y: gint; width: gint; height: gint); cdecl; external;
 procedure gtk_paint_box_gap(style: PGtkStyle; cr: Pcairo_t; state_type: TGtkStateType; shadow_type: TGtkShadowType; widget: PGtkWidget; detail: Pgchar; x: gint; y: gint; width: gint; height: gint; gap_side: TGtkPositionType; gap_x: gint; gap_width: gint); cdecl; external;
@@ -13736,134 +13902,134 @@ procedure gtk_paint_slider(style: PGtkStyle; cr: Pcairo_t; state_type: TGtkState
 procedure gtk_paint_spinner(style: PGtkStyle; cr: Pcairo_t; state_type: TGtkStateType; widget: PGtkWidget; detail: Pgchar; step: guint; x: gint; y: gint; width: gint; height: gint); cdecl; external;
 procedure gtk_paint_tab(style: PGtkStyle; cr: Pcairo_t; state_type: TGtkStateType; shadow_type: TGtkShadowType; widget: PGtkWidget; detail: Pgchar; x: gint; y: gint; width: gint; height: gint); cdecl; external;
 procedure gtk_paint_vline(style: PGtkStyle; cr: Pcairo_t; state_type: TGtkStateType; widget: PGtkWidget; detail: Pgchar; y1_: gint; y2_: gint; x: gint); cdecl; external;
-procedure gtk_paned_add1(APaned: PGtkPaned; child: PGtkWidget); cdecl; external;
-procedure gtk_paned_add2(APaned: PGtkPaned; child: PGtkWidget); cdecl; external;
-procedure gtk_paned_pack1(APaned: PGtkPaned; child: PGtkWidget; resize: gboolean; shrink: gboolean); cdecl; external;
-procedure gtk_paned_pack2(APaned: PGtkPaned; child: PGtkWidget; resize: gboolean; shrink: gboolean); cdecl; external;
-procedure gtk_paned_set_position(APaned: PGtkPaned; position: gint); cdecl; external;
-procedure gtk_paper_size_free(APaperSize: PGtkPaperSize); cdecl; external;
-procedure gtk_paper_size_set_size(APaperSize: PGtkPaperSize; width: gdouble; height: gdouble; unit_: TGtkUnit); cdecl; external;
-procedure gtk_paper_size_to_key_file(APaperSize: PGtkPaperSize; key_file: PGKeyFile; group_name: Pgchar); cdecl; external;
-procedure gtk_plug_construct(APlug: PGtkPlug; socket_id: TWindow); cdecl; external;
-procedure gtk_plug_construct_for_display(APlug: PGtkPlug; display: PGdkDisplay; socket_id: TWindow); cdecl; external;
-procedure gtk_print_context_set_cairo_context(APrintContext: PGtkPrintContext; cr: Pcairo_t; dpi_x: gdouble; dpi_y: gdouble); cdecl; external;
-procedure gtk_print_operation_cancel(APrintOperation: PGtkPrintOperation); cdecl; external;
-procedure gtk_print_operation_draw_page_finish(APrintOperation: PGtkPrintOperation); cdecl; external;
-procedure gtk_print_operation_get_error(APrintOperation: PGtkPrintOperation); cdecl; external;
-procedure gtk_print_operation_preview_end_preview(APrintOperationPreview: PGtkPrintOperationPreview); cdecl; external;
-procedure gtk_print_operation_preview_render_page(APrintOperationPreview: PGtkPrintOperationPreview; page_nr: gint); cdecl; external;
-procedure gtk_print_operation_set_allow_async(APrintOperation: PGtkPrintOperation; allow_async: gboolean); cdecl; external;
-procedure gtk_print_operation_set_current_page(APrintOperation: PGtkPrintOperation; current_page: gint); cdecl; external;
-procedure gtk_print_operation_set_custom_tab_label(APrintOperation: PGtkPrintOperation; label_: Pgchar); cdecl; external;
-procedure gtk_print_operation_set_default_page_setup(APrintOperation: PGtkPrintOperation; default_page_setup: PGtkPageSetup); cdecl; external;
-procedure gtk_print_operation_set_defer_drawing(APrintOperation: PGtkPrintOperation); cdecl; external;
-procedure gtk_print_operation_set_embed_page_setup(APrintOperation: PGtkPrintOperation; embed: gboolean); cdecl; external;
-procedure gtk_print_operation_set_export_filename(APrintOperation: PGtkPrintOperation; filename: Pgchar); cdecl; external;
-procedure gtk_print_operation_set_has_selection(APrintOperation: PGtkPrintOperation; has_selection: gboolean); cdecl; external;
-procedure gtk_print_operation_set_job_name(APrintOperation: PGtkPrintOperation; job_name: Pgchar); cdecl; external;
-procedure gtk_print_operation_set_n_pages(APrintOperation: PGtkPrintOperation; n_pages: gint); cdecl; external;
-procedure gtk_print_operation_set_print_settings(APrintOperation: PGtkPrintOperation; print_settings: PGtkPrintSettings); cdecl; external;
-procedure gtk_print_operation_set_show_progress(APrintOperation: PGtkPrintOperation; show_progress: gboolean); cdecl; external;
-procedure gtk_print_operation_set_support_selection(APrintOperation: PGtkPrintOperation; support_selection: gboolean); cdecl; external;
-procedure gtk_print_operation_set_track_print_status(APrintOperation: PGtkPrintOperation; track_status: gboolean); cdecl; external;
-procedure gtk_print_operation_set_unit(APrintOperation: PGtkPrintOperation; unit_: TGtkUnit); cdecl; external;
-procedure gtk_print_operation_set_use_full_page(APrintOperation: PGtkPrintOperation; full_page: gboolean); cdecl; external;
+procedure gtk_paned_add1(paned: PGtkPaned; child: PGtkWidget); cdecl; external;
+procedure gtk_paned_add2(paned: PGtkPaned; child: PGtkWidget); cdecl; external;
+procedure gtk_paned_pack1(paned: PGtkPaned; child: PGtkWidget; resize: gboolean; shrink: gboolean); cdecl; external;
+procedure gtk_paned_pack2(paned: PGtkPaned; child: PGtkWidget; resize: gboolean; shrink: gboolean); cdecl; external;
+procedure gtk_paned_set_position(paned: PGtkPaned; position: gint); cdecl; external;
+procedure gtk_paper_size_free(size: PGtkPaperSize); cdecl; external;
+procedure gtk_paper_size_set_size(size: PGtkPaperSize; width: gdouble; height: gdouble; unit_: TGtkUnit); cdecl; external;
+procedure gtk_paper_size_to_key_file(size: PGtkPaperSize; key_file: PGKeyFile; group_name: Pgchar); cdecl; external;
+procedure gtk_plug_construct(plug: PGtkPlug; socket_id: TWindow); cdecl; external;
+procedure gtk_plug_construct_for_display(plug: PGtkPlug; display: PGdkDisplay; socket_id: TWindow); cdecl; external;
+procedure gtk_print_context_set_cairo_context(context: PGtkPrintContext; cr: Pcairo_t; dpi_x: gdouble; dpi_y: gdouble); cdecl; external;
+procedure gtk_print_operation_cancel(op: PGtkPrintOperation); cdecl; external;
+procedure gtk_print_operation_draw_page_finish(op: PGtkPrintOperation); cdecl; external;
+procedure gtk_print_operation_get_error(op: PGtkPrintOperation; error: PPGError); cdecl; external;
+procedure gtk_print_operation_preview_end_preview(preview: PGtkPrintOperationPreview); cdecl; external;
+procedure gtk_print_operation_preview_render_page(preview: PGtkPrintOperationPreview; page_nr: gint); cdecl; external;
+procedure gtk_print_operation_set_allow_async(op: PGtkPrintOperation; allow_async: gboolean); cdecl; external;
+procedure gtk_print_operation_set_current_page(op: PGtkPrintOperation; current_page: gint); cdecl; external;
+procedure gtk_print_operation_set_custom_tab_label(op: PGtkPrintOperation; label_: Pgchar); cdecl; external;
+procedure gtk_print_operation_set_default_page_setup(op: PGtkPrintOperation; default_page_setup: PGtkPageSetup); cdecl; external;
+procedure gtk_print_operation_set_defer_drawing(op: PGtkPrintOperation); cdecl; external;
+procedure gtk_print_operation_set_embed_page_setup(op: PGtkPrintOperation; embed: gboolean); cdecl; external;
+procedure gtk_print_operation_set_export_filename(op: PGtkPrintOperation; filename: Pgchar); cdecl; external;
+procedure gtk_print_operation_set_has_selection(op: PGtkPrintOperation; has_selection: gboolean); cdecl; external;
+procedure gtk_print_operation_set_job_name(op: PGtkPrintOperation; job_name: Pgchar); cdecl; external;
+procedure gtk_print_operation_set_n_pages(op: PGtkPrintOperation; n_pages: gint); cdecl; external;
+procedure gtk_print_operation_set_print_settings(op: PGtkPrintOperation; print_settings: PGtkPrintSettings); cdecl; external;
+procedure gtk_print_operation_set_show_progress(op: PGtkPrintOperation; show_progress: gboolean); cdecl; external;
+procedure gtk_print_operation_set_support_selection(op: PGtkPrintOperation; support_selection: gboolean); cdecl; external;
+procedure gtk_print_operation_set_track_print_status(op: PGtkPrintOperation; track_status: gboolean); cdecl; external;
+procedure gtk_print_operation_set_unit(op: PGtkPrintOperation; unit_: TGtkUnit); cdecl; external;
+procedure gtk_print_operation_set_use_full_page(op: PGtkPrintOperation; full_page: gboolean); cdecl; external;
 procedure gtk_print_run_page_setup_dialog_async(parent: PGtkWindow; page_setup: PGtkPageSetup; settings: PGtkPrintSettings; done_cb: TGtkPageSetupDoneFunc; data: gpointer); cdecl; external;
-procedure gtk_print_settings_foreach(APrintSettings: PGtkPrintSettings; func: TGtkPrintSettingsFunc; user_data: gpointer); cdecl; external;
-procedure gtk_print_settings_set(APrintSettings: PGtkPrintSettings; key: Pgchar; value: Pgchar); cdecl; external;
-procedure gtk_print_settings_set_bool(APrintSettings: PGtkPrintSettings; key: Pgchar; value: gboolean); cdecl; external;
-procedure gtk_print_settings_set_collate(APrintSettings: PGtkPrintSettings; collate: gboolean); cdecl; external;
-procedure gtk_print_settings_set_default_source(APrintSettings: PGtkPrintSettings; default_source: Pgchar); cdecl; external;
-procedure gtk_print_settings_set_dither(APrintSettings: PGtkPrintSettings; dither: Pgchar); cdecl; external;
-procedure gtk_print_settings_set_double(APrintSettings: PGtkPrintSettings; key: Pgchar; value: gdouble); cdecl; external;
-procedure gtk_print_settings_set_duplex(APrintSettings: PGtkPrintSettings; duplex: TGtkPrintDuplex); cdecl; external;
-procedure gtk_print_settings_set_finishings(APrintSettings: PGtkPrintSettings; finishings: Pgchar); cdecl; external;
-procedure gtk_print_settings_set_int(APrintSettings: PGtkPrintSettings; key: Pgchar; value: gint); cdecl; external;
-procedure gtk_print_settings_set_length(APrintSettings: PGtkPrintSettings; key: Pgchar; value: gdouble; unit_: TGtkUnit); cdecl; external;
-procedure gtk_print_settings_set_media_type(APrintSettings: PGtkPrintSettings; media_type: Pgchar); cdecl; external;
-procedure gtk_print_settings_set_n_copies(APrintSettings: PGtkPrintSettings; num_copies: gint); cdecl; external;
-procedure gtk_print_settings_set_number_up(APrintSettings: PGtkPrintSettings; number_up: gint); cdecl; external;
-procedure gtk_print_settings_set_number_up_layout(APrintSettings: PGtkPrintSettings; number_up_layout: TGtkNumberUpLayout); cdecl; external;
-procedure gtk_print_settings_set_orientation(APrintSettings: PGtkPrintSettings; orientation: TGtkPageOrientation); cdecl; external;
-procedure gtk_print_settings_set_output_bin(APrintSettings: PGtkPrintSettings; output_bin: Pgchar); cdecl; external;
-procedure gtk_print_settings_set_page_ranges(APrintSettings: PGtkPrintSettings; page_ranges: PGtkPageRange; num_ranges: gint); cdecl; external;
-procedure gtk_print_settings_set_page_set(APrintSettings: PGtkPrintSettings; page_set: TGtkPageSet); cdecl; external;
-procedure gtk_print_settings_set_paper_height(APrintSettings: PGtkPrintSettings; height: gdouble; unit_: TGtkUnit); cdecl; external;
-procedure gtk_print_settings_set_paper_size(APrintSettings: PGtkPrintSettings; paper_size: PGtkPaperSize); cdecl; external;
-procedure gtk_print_settings_set_paper_width(APrintSettings: PGtkPrintSettings; width: gdouble; unit_: TGtkUnit); cdecl; external;
-procedure gtk_print_settings_set_print_pages(APrintSettings: PGtkPrintSettings; pages: TGtkPrintPages); cdecl; external;
-procedure gtk_print_settings_set_printer(APrintSettings: PGtkPrintSettings; printer: Pgchar); cdecl; external;
-procedure gtk_print_settings_set_printer_lpi(APrintSettings: PGtkPrintSettings; lpi: gdouble); cdecl; external;
-procedure gtk_print_settings_set_quality(APrintSettings: PGtkPrintSettings; quality: TGtkPrintQuality); cdecl; external;
-procedure gtk_print_settings_set_resolution(APrintSettings: PGtkPrintSettings; resolution: gint); cdecl; external;
-procedure gtk_print_settings_set_resolution_xy(APrintSettings: PGtkPrintSettings; resolution_x: gint; resolution_y: gint); cdecl; external;
-procedure gtk_print_settings_set_reverse(APrintSettings: PGtkPrintSettings; reverse: gboolean); cdecl; external;
-procedure gtk_print_settings_set_scale(APrintSettings: PGtkPrintSettings; scale: gdouble); cdecl; external;
-procedure gtk_print_settings_set_use_color(APrintSettings: PGtkPrintSettings; use_color: gboolean); cdecl; external;
-procedure gtk_print_settings_to_key_file(APrintSettings: PGtkPrintSettings; key_file: PGKeyFile; group_name: Pgchar); cdecl; external;
-procedure gtk_print_settings_unset(APrintSettings: PGtkPrintSettings; key: Pgchar); cdecl; external;
-procedure gtk_progress_bar_pulse(AProgressBar: PGtkProgressBar); cdecl; external;
-procedure gtk_progress_bar_set_ellipsize(AProgressBar: PGtkProgressBar; mode: TPangoEllipsizeMode); cdecl; external;
-procedure gtk_progress_bar_set_fraction(AProgressBar: PGtkProgressBar; fraction: gdouble); cdecl; external;
-procedure gtk_progress_bar_set_inverted(AProgressBar: PGtkProgressBar; inverted: gboolean); cdecl; external;
-procedure gtk_progress_bar_set_pulse_step(AProgressBar: PGtkProgressBar; fraction: gdouble); cdecl; external;
-procedure gtk_progress_bar_set_show_text(AProgressBar: PGtkProgressBar; show_text: gboolean); cdecl; external;
-procedure gtk_progress_bar_set_text(AProgressBar: PGtkProgressBar; text: Pgchar); cdecl; external;
+procedure gtk_print_settings_foreach(settings: PGtkPrintSettings; func: TGtkPrintSettingsFunc; user_data: gpointer); cdecl; external;
+procedure gtk_print_settings_set(settings: PGtkPrintSettings; key: Pgchar; value: Pgchar); cdecl; external;
+procedure gtk_print_settings_set_bool(settings: PGtkPrintSettings; key: Pgchar; value: gboolean); cdecl; external;
+procedure gtk_print_settings_set_collate(settings: PGtkPrintSettings; collate: gboolean); cdecl; external;
+procedure gtk_print_settings_set_default_source(settings: PGtkPrintSettings; default_source: Pgchar); cdecl; external;
+procedure gtk_print_settings_set_dither(settings: PGtkPrintSettings; dither: Pgchar); cdecl; external;
+procedure gtk_print_settings_set_double(settings: PGtkPrintSettings; key: Pgchar; value: gdouble); cdecl; external;
+procedure gtk_print_settings_set_duplex(settings: PGtkPrintSettings; duplex: TGtkPrintDuplex); cdecl; external;
+procedure gtk_print_settings_set_finishings(settings: PGtkPrintSettings; finishings: Pgchar); cdecl; external;
+procedure gtk_print_settings_set_int(settings: PGtkPrintSettings; key: Pgchar; value: gint); cdecl; external;
+procedure gtk_print_settings_set_length(settings: PGtkPrintSettings; key: Pgchar; value: gdouble; unit_: TGtkUnit); cdecl; external;
+procedure gtk_print_settings_set_media_type(settings: PGtkPrintSettings; media_type: Pgchar); cdecl; external;
+procedure gtk_print_settings_set_n_copies(settings: PGtkPrintSettings; num_copies: gint); cdecl; external;
+procedure gtk_print_settings_set_number_up(settings: PGtkPrintSettings; number_up: gint); cdecl; external;
+procedure gtk_print_settings_set_number_up_layout(settings: PGtkPrintSettings; number_up_layout: TGtkNumberUpLayout); cdecl; external;
+procedure gtk_print_settings_set_orientation(settings: PGtkPrintSettings; orientation: TGtkPageOrientation); cdecl; external;
+procedure gtk_print_settings_set_output_bin(settings: PGtkPrintSettings; output_bin: Pgchar); cdecl; external;
+procedure gtk_print_settings_set_page_ranges(settings: PGtkPrintSettings; page_ranges: PGtkPageRange; num_ranges: gint); cdecl; external;
+procedure gtk_print_settings_set_page_set(settings: PGtkPrintSettings; page_set: TGtkPageSet); cdecl; external;
+procedure gtk_print_settings_set_paper_height(settings: PGtkPrintSettings; height: gdouble; unit_: TGtkUnit); cdecl; external;
+procedure gtk_print_settings_set_paper_size(settings: PGtkPrintSettings; paper_size: PGtkPaperSize); cdecl; external;
+procedure gtk_print_settings_set_paper_width(settings: PGtkPrintSettings; width: gdouble; unit_: TGtkUnit); cdecl; external;
+procedure gtk_print_settings_set_print_pages(settings: PGtkPrintSettings; pages: TGtkPrintPages); cdecl; external;
+procedure gtk_print_settings_set_printer(settings: PGtkPrintSettings; printer: Pgchar); cdecl; external;
+procedure gtk_print_settings_set_printer_lpi(settings: PGtkPrintSettings; lpi: gdouble); cdecl; external;
+procedure gtk_print_settings_set_quality(settings: PGtkPrintSettings; quality: TGtkPrintQuality); cdecl; external;
+procedure gtk_print_settings_set_resolution(settings: PGtkPrintSettings; resolution: gint); cdecl; external;
+procedure gtk_print_settings_set_resolution_xy(settings: PGtkPrintSettings; resolution_x: gint; resolution_y: gint); cdecl; external;
+procedure gtk_print_settings_set_reverse(settings: PGtkPrintSettings; reverse: gboolean); cdecl; external;
+procedure gtk_print_settings_set_scale(settings: PGtkPrintSettings; scale: gdouble); cdecl; external;
+procedure gtk_print_settings_set_use_color(settings: PGtkPrintSettings; use_color: gboolean); cdecl; external;
+procedure gtk_print_settings_to_key_file(settings: PGtkPrintSettings; key_file: PGKeyFile; group_name: Pgchar); cdecl; external;
+procedure gtk_print_settings_unset(settings: PGtkPrintSettings; key: Pgchar); cdecl; external;
+procedure gtk_progress_bar_pulse(pbar: PGtkProgressBar); cdecl; external;
+procedure gtk_progress_bar_set_ellipsize(pbar: PGtkProgressBar; mode: TPangoEllipsizeMode); cdecl; external;
+procedure gtk_progress_bar_set_fraction(pbar: PGtkProgressBar; fraction: gdouble); cdecl; external;
+procedure gtk_progress_bar_set_inverted(pbar: PGtkProgressBar; inverted: gboolean); cdecl; external;
+procedure gtk_progress_bar_set_pulse_step(pbar: PGtkProgressBar; fraction: gdouble); cdecl; external;
+procedure gtk_progress_bar_set_show_text(pbar: PGtkProgressBar; show_text: gboolean); cdecl; external;
+procedure gtk_progress_bar_set_text(pbar: PGtkProgressBar; text: Pgchar); cdecl; external;
 procedure gtk_propagate_event(widget: PGtkWidget; event: PGdkEvent); cdecl; external;
-procedure gtk_radio_action_join_group(ARadioAction: PGtkRadioAction; group_source: PGtkRadioAction); cdecl; external;
-procedure gtk_radio_action_set_current_value(ARadioAction: PGtkRadioAction; current_value: gint); cdecl; external;
-procedure gtk_radio_action_set_group(ARadioAction: PGtkRadioAction; group: PGSList); cdecl; external;
-procedure gtk_radio_button_join_group(ARadioButton: PGtkRadioButton; group_source: PGtkRadioButton); cdecl; external;
-procedure gtk_radio_button_set_group(ARadioButton: PGtkRadioButton; group: PGSList); cdecl; external;
-procedure gtk_radio_menu_item_set_group(ARadioMenuItem: PGtkRadioMenuItem; group: PGSList); cdecl; external;
-procedure gtk_radio_tool_button_set_group(ARadioToolButton: PGtkRadioToolButton; group: PGSList); cdecl; external;
-procedure gtk_range_get_range_rect(ARange: PGtkRange; range_rect: PGdkRectangle); cdecl; external;
-procedure gtk_range_get_slider_range(ARange: PGtkRange; slider_start: Pgint; slider_end: Pgint); cdecl; external;
-procedure gtk_range_set_adjustment(ARange: PGtkRange; adjustment: PGtkAdjustment); cdecl; external;
-procedure gtk_range_set_fill_level(ARange: PGtkRange; fill_level: gdouble); cdecl; external;
-procedure gtk_range_set_flippable(ARange: PGtkRange; flippable: gboolean); cdecl; external;
-procedure gtk_range_set_increments(ARange: PGtkRange; step: gdouble; page: gdouble); cdecl; external;
-procedure gtk_range_set_inverted(ARange: PGtkRange; setting: gboolean); cdecl; external;
-procedure gtk_range_set_lower_stepper_sensitivity(ARange: PGtkRange; sensitivity: TGtkSensitivityType); cdecl; external;
-procedure gtk_range_set_min_slider_size(ARange: PGtkRange; min_size: gint); cdecl; external;
-procedure gtk_range_set_range(ARange: PGtkRange; min: gdouble; max: gdouble); cdecl; external;
-procedure gtk_range_set_restrict_to_fill_level(ARange: PGtkRange; restrict_to_fill_level: gboolean); cdecl; external;
-procedure gtk_range_set_round_digits(ARange: PGtkRange; round_digits: gint); cdecl; external;
-procedure gtk_range_set_show_fill_level(ARange: PGtkRange; show_fill_level: gboolean); cdecl; external;
-procedure gtk_range_set_slider_size_fixed(ARange: PGtkRange; size_fixed: gboolean); cdecl; external;
-procedure gtk_range_set_upper_stepper_sensitivity(ARange: PGtkRange; sensitivity: TGtkSensitivityType); cdecl; external;
-procedure gtk_range_set_value(ARange: PGtkRange; value: gdouble); cdecl; external;
+procedure gtk_radio_action_join_group(action: PGtkRadioAction; group_source: PGtkRadioAction); cdecl; external;
+procedure gtk_radio_action_set_current_value(action: PGtkRadioAction; current_value: gint); cdecl; external;
+procedure gtk_radio_action_set_group(action: PGtkRadioAction; group: PGSList); cdecl; external;
+procedure gtk_radio_button_join_group(radio_button: PGtkRadioButton; group_source: PGtkRadioButton); cdecl; external;
+procedure gtk_radio_button_set_group(radio_button: PGtkRadioButton; group: PGSList); cdecl; external;
+procedure gtk_radio_menu_item_set_group(radio_menu_item: PGtkRadioMenuItem; group: PGSList); cdecl; external;
+procedure gtk_radio_tool_button_set_group(button: PGtkRadioToolButton; group: PGSList); cdecl; external;
+procedure gtk_range_get_range_rect(range: PGtkRange; range_rect: PGdkRectangle); cdecl; external;
+procedure gtk_range_get_slider_range(range: PGtkRange; slider_start: Pgint; slider_end: Pgint); cdecl; external;
+procedure gtk_range_set_adjustment(range: PGtkRange; adjustment: PGtkAdjustment); cdecl; external;
+procedure gtk_range_set_fill_level(range: PGtkRange; fill_level: gdouble); cdecl; external;
+procedure gtk_range_set_flippable(range: PGtkRange; flippable: gboolean); cdecl; external;
+procedure gtk_range_set_increments(range: PGtkRange; step: gdouble; page: gdouble); cdecl; external;
+procedure gtk_range_set_inverted(range: PGtkRange; setting: gboolean); cdecl; external;
+procedure gtk_range_set_lower_stepper_sensitivity(range: PGtkRange; sensitivity: TGtkSensitivityType); cdecl; external;
+procedure gtk_range_set_min_slider_size(range: PGtkRange; min_size: gint); cdecl; external;
+procedure gtk_range_set_range(range: PGtkRange; min: gdouble; max: gdouble); cdecl; external;
+procedure gtk_range_set_restrict_to_fill_level(range: PGtkRange; restrict_to_fill_level: gboolean); cdecl; external;
+procedure gtk_range_set_round_digits(range: PGtkRange; round_digits: gint); cdecl; external;
+procedure gtk_range_set_show_fill_level(range: PGtkRange; show_fill_level: gboolean); cdecl; external;
+procedure gtk_range_set_slider_size_fixed(range: PGtkRange; size_fixed: gboolean); cdecl; external;
+procedure gtk_range_set_upper_stepper_sensitivity(range: PGtkRange; sensitivity: TGtkSensitivityType); cdecl; external;
+procedure gtk_range_set_value(range: PGtkRange; value: gdouble); cdecl; external;
 procedure gtk_rc_add_default_file(filename: Pgchar); cdecl; external;
 procedure gtk_rc_parse(filename: Pgchar); cdecl; external;
 procedure gtk_rc_parse_string(rc_string: Pgchar); cdecl; external;
 procedure gtk_rc_reset_styles(settings: PGtkSettings); cdecl; external;
 procedure gtk_rc_set_default_files(filenames: PPgchar); cdecl; external;
-procedure gtk_recent_action_set_show_numbers(ARecentAction: PGtkRecentAction; show_numbers: gboolean); cdecl; external;
-procedure gtk_recent_chooser_add_filter(ARecentChooser: PGtkRecentChooser; filter: PGtkRecentFilter); cdecl; external;
-procedure gtk_recent_chooser_menu_set_show_numbers(ARecentChooserMenu: PGtkRecentChooserMenu; show_numbers: gboolean); cdecl; external;
-procedure gtk_recent_chooser_remove_filter(ARecentChooser: PGtkRecentChooser; filter: PGtkRecentFilter); cdecl; external;
-procedure gtk_recent_chooser_select_all(ARecentChooser: PGtkRecentChooser); cdecl; external;
-procedure gtk_recent_chooser_set_filter(ARecentChooser: PGtkRecentChooser; filter: PGtkRecentFilter); cdecl; external;
-procedure gtk_recent_chooser_set_limit(ARecentChooser: PGtkRecentChooser; limit: gint); cdecl; external;
-procedure gtk_recent_chooser_set_local_only(ARecentChooser: PGtkRecentChooser; local_only: gboolean); cdecl; external;
-procedure gtk_recent_chooser_set_select_multiple(ARecentChooser: PGtkRecentChooser; select_multiple: gboolean); cdecl; external;
-procedure gtk_recent_chooser_set_show_icons(ARecentChooser: PGtkRecentChooser; show_icons: gboolean); cdecl; external;
-procedure gtk_recent_chooser_set_show_not_found(ARecentChooser: PGtkRecentChooser; show_not_found: gboolean); cdecl; external;
-procedure gtk_recent_chooser_set_show_private(ARecentChooser: PGtkRecentChooser; show_private: gboolean); cdecl; external;
-procedure gtk_recent_chooser_set_show_tips(ARecentChooser: PGtkRecentChooser; show_tips: gboolean); cdecl; external;
-procedure gtk_recent_chooser_set_sort_func(ARecentChooser: PGtkRecentChooser; sort_func: TGtkRecentSortFunc; sort_data: gpointer; data_destroy: TGDestroyNotify); cdecl; external;
-procedure gtk_recent_chooser_set_sort_type(ARecentChooser: PGtkRecentChooser; sort_type: TGtkRecentSortType); cdecl; external;
-procedure gtk_recent_chooser_unselect_all(ARecentChooser: PGtkRecentChooser); cdecl; external;
-procedure gtk_recent_chooser_unselect_uri(ARecentChooser: PGtkRecentChooser; uri: Pgchar); cdecl; external;
-procedure gtk_recent_filter_add_age(ARecentFilter: PGtkRecentFilter; days: gint); cdecl; external;
-procedure gtk_recent_filter_add_application(ARecentFilter: PGtkRecentFilter; application: Pgchar); cdecl; external;
-procedure gtk_recent_filter_add_custom(ARecentFilter: PGtkRecentFilter; needed: TGtkRecentFilterFlags; func: TGtkRecentFilterFunc; data: gpointer; data_destroy: TGDestroyNotify); cdecl; external;
-procedure gtk_recent_filter_add_group(ARecentFilter: PGtkRecentFilter; group: Pgchar); cdecl; external;
-procedure gtk_recent_filter_add_mime_type(ARecentFilter: PGtkRecentFilter; mime_type: Pgchar); cdecl; external;
-procedure gtk_recent_filter_add_pattern(ARecentFilter: PGtkRecentFilter; pattern: Pgchar); cdecl; external;
-procedure gtk_recent_filter_add_pixbuf_formats(ARecentFilter: PGtkRecentFilter); cdecl; external;
-procedure gtk_recent_filter_set_name(ARecentFilter: PGtkRecentFilter; name: Pgchar); cdecl; external;
-procedure gtk_recent_info_unref(ARecentInfo: PGtkRecentInfo); cdecl; external;
+procedure gtk_recent_action_set_show_numbers(action: PGtkRecentAction; show_numbers: gboolean); cdecl; external;
+procedure gtk_recent_chooser_add_filter(chooser: PGtkRecentChooser; filter: PGtkRecentFilter); cdecl; external;
+procedure gtk_recent_chooser_menu_set_show_numbers(menu: PGtkRecentChooserMenu; show_numbers: gboolean); cdecl; external;
+procedure gtk_recent_chooser_remove_filter(chooser: PGtkRecentChooser; filter: PGtkRecentFilter); cdecl; external;
+procedure gtk_recent_chooser_select_all(chooser: PGtkRecentChooser); cdecl; external;
+procedure gtk_recent_chooser_set_filter(chooser: PGtkRecentChooser; filter: PGtkRecentFilter); cdecl; external;
+procedure gtk_recent_chooser_set_limit(chooser: PGtkRecentChooser; limit: gint); cdecl; external;
+procedure gtk_recent_chooser_set_local_only(chooser: PGtkRecentChooser; local_only: gboolean); cdecl; external;
+procedure gtk_recent_chooser_set_select_multiple(chooser: PGtkRecentChooser; select_multiple: gboolean); cdecl; external;
+procedure gtk_recent_chooser_set_show_icons(chooser: PGtkRecentChooser; show_icons: gboolean); cdecl; external;
+procedure gtk_recent_chooser_set_show_not_found(chooser: PGtkRecentChooser; show_not_found: gboolean); cdecl; external;
+procedure gtk_recent_chooser_set_show_private(chooser: PGtkRecentChooser; show_private: gboolean); cdecl; external;
+procedure gtk_recent_chooser_set_show_tips(chooser: PGtkRecentChooser; show_tips: gboolean); cdecl; external;
+procedure gtk_recent_chooser_set_sort_func(chooser: PGtkRecentChooser; sort_func: TGtkRecentSortFunc; sort_data: gpointer; data_destroy: TGDestroyNotify); cdecl; external;
+procedure gtk_recent_chooser_set_sort_type(chooser: PGtkRecentChooser; sort_type: TGtkRecentSortType); cdecl; external;
+procedure gtk_recent_chooser_unselect_all(chooser: PGtkRecentChooser); cdecl; external;
+procedure gtk_recent_chooser_unselect_uri(chooser: PGtkRecentChooser; uri: Pgchar); cdecl; external;
+procedure gtk_recent_filter_add_age(filter: PGtkRecentFilter; days: gint); cdecl; external;
+procedure gtk_recent_filter_add_application(filter: PGtkRecentFilter; application: Pgchar); cdecl; external;
+procedure gtk_recent_filter_add_custom(filter: PGtkRecentFilter; needed: TGtkRecentFilterFlags; func: TGtkRecentFilterFunc; data: gpointer; data_destroy: TGDestroyNotify); cdecl; external;
+procedure gtk_recent_filter_add_group(filter: PGtkRecentFilter; group: Pgchar); cdecl; external;
+procedure gtk_recent_filter_add_mime_type(filter: PGtkRecentFilter; mime_type: Pgchar); cdecl; external;
+procedure gtk_recent_filter_add_pattern(filter: PGtkRecentFilter; pattern: Pgchar); cdecl; external;
+procedure gtk_recent_filter_add_pixbuf_formats(filter: PGtkRecentFilter); cdecl; external;
+procedure gtk_recent_filter_set_name(filter: PGtkRecentFilter; name: Pgchar); cdecl; external;
+procedure gtk_recent_info_unref(info: PGtkRecentInfo); cdecl; external;
 procedure gtk_render_activity(context: PGtkStyleContext; cr: Pcairo_t; x: gdouble; y: gdouble; width: gdouble; height: gdouble); cdecl; external;
 procedure gtk_render_arrow(context: PGtkStyleContext; cr: Pcairo_t; angle: gdouble; x: gdouble; y: gdouble; size: gdouble); cdecl; external;
 procedure gtk_render_background(context: PGtkStyleContext; cr: Pcairo_t; x: gdouble; y: gdouble; width: gdouble; height: gdouble); cdecl; external;
@@ -13880,653 +14046,636 @@ procedure gtk_render_layout(context: PGtkStyleContext; cr: Pcairo_t; x: gdouble;
 procedure gtk_render_line(context: PGtkStyleContext; cr: Pcairo_t; x0: gdouble; y0: gdouble; x1: gdouble; y1: gdouble); cdecl; external;
 procedure gtk_render_option(context: PGtkStyleContext; cr: Pcairo_t; x: gdouble; y: gdouble; width: gdouble; height: gdouble); cdecl; external;
 procedure gtk_render_slider(context: PGtkStyleContext; cr: Pcairo_t; x: gdouble; y: gdouble; width: gdouble; height: gdouble; orientation: TGtkOrientation); cdecl; external;
-procedure gtk_requisition_free(ARequisition: PGtkRequisition); cdecl; external;
+procedure gtk_requisition_free(requisition: PGtkRequisition); cdecl; external;
 procedure gtk_rgb_to_hsv(r: gdouble; g: gdouble; b: gdouble; h: Pgdouble; s: Pgdouble; v: Pgdouble); cdecl; external;
-procedure gtk_scale_add_mark(AScale: PGtkScale; value: gdouble; position: TGtkPositionType; markup: Pgchar); cdecl; external;
-procedure gtk_scale_button_set_adjustment(AScaleButton: PGtkScaleButton; adjustment: PGtkAdjustment); cdecl; external;
-procedure gtk_scale_button_set_icons(AScaleButton: PGtkScaleButton; icons: PPgchar); cdecl; external;
-procedure gtk_scale_button_set_value(AScaleButton: PGtkScaleButton; value: gdouble); cdecl; external;
-procedure gtk_scale_clear_marks(AScale: PGtkScale); cdecl; external;
-procedure gtk_scale_get_layout_offsets(AScale: PGtkScale; x: Pgint; y: Pgint); cdecl; external;
-procedure gtk_scale_set_digits(AScale: PGtkScale; digits: gint); cdecl; external;
-procedure gtk_scale_set_draw_value(AScale: PGtkScale; draw_value: gboolean); cdecl; external;
-procedure gtk_scale_set_has_origin(AScale: PGtkScale; has_origin: gboolean); cdecl; external;
-procedure gtk_scale_set_value_pos(AScale: PGtkScale; pos: TGtkPositionType); cdecl; external;
-procedure gtk_scrollable_set_hadjustment(AScrollable: PGtkScrollable; hadjustment: PGtkAdjustment); cdecl; external;
-procedure gtk_scrollable_set_hscroll_policy(AScrollable: PGtkScrollable; policy: TGtkScrollablePolicy); cdecl; external;
-procedure gtk_scrollable_set_vadjustment(AScrollable: PGtkScrollable; vadjustment: PGtkAdjustment); cdecl; external;
-procedure gtk_scrollable_set_vscroll_policy(AScrollable: PGtkScrollable; policy: TGtkScrollablePolicy); cdecl; external;
-procedure gtk_scrolled_window_add_with_viewport(AScrolledWindow: PGtkScrolledWindow; child: PGtkWidget); cdecl; external;
-procedure gtk_scrolled_window_get_policy(AScrolledWindow: PGtkScrolledWindow; hscrollbar_policy: PGtkPolicyType; vscrollbar_policy: PGtkPolicyType); cdecl; external;
-procedure gtk_scrolled_window_set_capture_button_press(AScrolledWindow: PGtkScrolledWindow; capture_button_press: gboolean); cdecl; external;
-procedure gtk_scrolled_window_set_hadjustment(AScrolledWindow: PGtkScrolledWindow; hadjustment: PGtkAdjustment); cdecl; external;
-procedure gtk_scrolled_window_set_kinetic_scrolling(AScrolledWindow: PGtkScrolledWindow; kinetic_scrolling: gboolean); cdecl; external;
-procedure gtk_scrolled_window_set_min_content_height(AScrolledWindow: PGtkScrolledWindow; height: gint); cdecl; external;
-procedure gtk_scrolled_window_set_min_content_width(AScrolledWindow: PGtkScrolledWindow; width: gint); cdecl; external;
-procedure gtk_scrolled_window_set_placement(AScrolledWindow: PGtkScrolledWindow; window_placement: TGtkCornerType); cdecl; external;
-procedure gtk_scrolled_window_set_policy(AScrolledWindow: PGtkScrolledWindow; hscrollbar_policy: TGtkPolicyType; vscrollbar_policy: TGtkPolicyType); cdecl; external;
-procedure gtk_scrolled_window_set_shadow_type(AScrolledWindow: PGtkScrolledWindow; type_: TGtkShadowType); cdecl; external;
-procedure gtk_scrolled_window_set_vadjustment(AScrolledWindow: PGtkScrolledWindow; vadjustment: PGtkAdjustment); cdecl; external;
-procedure gtk_scrolled_window_unset_placement(AScrolledWindow: PGtkScrolledWindow); cdecl; external;
+procedure gtk_scale_add_mark(scale: PGtkScale; value: gdouble; position: TGtkPositionType; markup: Pgchar); cdecl; external;
+procedure gtk_scale_button_set_adjustment(button: PGtkScaleButton; adjustment: PGtkAdjustment); cdecl; external;
+procedure gtk_scale_button_set_icons(button: PGtkScaleButton; icons: PPgchar); cdecl; external;
+procedure gtk_scale_button_set_value(button: PGtkScaleButton; value: gdouble); cdecl; external;
+procedure gtk_scale_clear_marks(scale: PGtkScale); cdecl; external;
+procedure gtk_scale_get_layout_offsets(scale: PGtkScale; x: Pgint; y: Pgint); cdecl; external;
+procedure gtk_scale_set_digits(scale: PGtkScale; digits: gint); cdecl; external;
+procedure gtk_scale_set_draw_value(scale: PGtkScale; draw_value: gboolean); cdecl; external;
+procedure gtk_scale_set_has_origin(scale: PGtkScale; has_origin: gboolean); cdecl; external;
+procedure gtk_scale_set_value_pos(scale: PGtkScale; pos: TGtkPositionType); cdecl; external;
+procedure gtk_scrollable_set_hadjustment(scrollable: PGtkScrollable; hadjustment: PGtkAdjustment); cdecl; external;
+procedure gtk_scrollable_set_hscroll_policy(scrollable: PGtkScrollable; policy: TGtkScrollablePolicy); cdecl; external;
+procedure gtk_scrollable_set_vadjustment(scrollable: PGtkScrollable; vadjustment: PGtkAdjustment); cdecl; external;
+procedure gtk_scrollable_set_vscroll_policy(scrollable: PGtkScrollable; policy: TGtkScrollablePolicy); cdecl; external;
+procedure gtk_scrolled_window_get_policy(scrolled_window: PGtkScrolledWindow; hscrollbar_policy: PGtkPolicyType; vscrollbar_policy: PGtkPolicyType); cdecl; external;
+procedure gtk_scrolled_window_set_capture_button_press(scrolled_window: PGtkScrolledWindow; capture_button_press: gboolean); cdecl; external;
+procedure gtk_scrolled_window_set_hadjustment(scrolled_window: PGtkScrolledWindow; hadjustment: PGtkAdjustment); cdecl; external;
+procedure gtk_scrolled_window_set_kinetic_scrolling(scrolled_window: PGtkScrolledWindow; kinetic_scrolling: gboolean); cdecl; external;
+procedure gtk_scrolled_window_set_min_content_height(scrolled_window: PGtkScrolledWindow; height: gint); cdecl; external;
+procedure gtk_scrolled_window_set_min_content_width(scrolled_window: PGtkScrolledWindow; width: gint); cdecl; external;
+procedure gtk_scrolled_window_set_placement(scrolled_window: PGtkScrolledWindow; window_placement: TGtkCornerType); cdecl; external;
+procedure gtk_scrolled_window_set_policy(scrolled_window: PGtkScrolledWindow; hscrollbar_policy: TGtkPolicyType; vscrollbar_policy: TGtkPolicyType); cdecl; external;
+procedure gtk_scrolled_window_set_shadow_type(scrolled_window: PGtkScrolledWindow; type_: TGtkShadowType); cdecl; external;
+procedure gtk_scrolled_window_set_vadjustment(scrolled_window: PGtkScrolledWindow; vadjustment: PGtkAdjustment); cdecl; external;
+procedure gtk_scrolled_window_unset_placement(scrolled_window: PGtkScrolledWindow); cdecl; external;
 procedure gtk_selection_add_target(widget: PGtkWidget; selection: TGdkAtom; target: TGdkAtom; info: guint); cdecl; external;
 procedure gtk_selection_add_targets(widget: PGtkWidget; selection: TGdkAtom; targets: PGtkTargetEntry; ntargets: guint); cdecl; external;
 procedure gtk_selection_clear_targets(widget: PGtkWidget; selection: TGdkAtom); cdecl; external;
-procedure gtk_selection_data_free(ASelectionData: PGtkSelectionData); cdecl; external;
-procedure gtk_selection_data_set(ASelectionData: PGtkSelectionData; type_: TGdkAtom; format: gint; data: Pguint8; length: gint); cdecl; external;
+procedure gtk_selection_data_free(data: PGtkSelectionData); cdecl; external;
+procedure gtk_selection_data_set(selection_data: PGtkSelectionData; type_: TGdkAtom; format: gint; data: Pguint8; length: gint); cdecl; external;
 procedure gtk_selection_remove_all(widget: PGtkWidget); cdecl; external;
-procedure gtk_separator_tool_item_set_draw(ASeparatorToolItem: PGtkSeparatorToolItem; draw: gboolean); cdecl; external;
+procedure gtk_separator_tool_item_set_draw(item: PGtkSeparatorToolItem; draw: gboolean); cdecl; external;
 procedure gtk_set_debug_flags(flags: guint); cdecl; external;
 procedure gtk_settings_install_property(pspec: PGParamSpec); cdecl; external;
 procedure gtk_settings_install_property_parser(pspec: PGParamSpec; parser: TGtkRcPropertyParser); cdecl; external;
-procedure gtk_settings_set_double_property(ASettings: PGtkSettings; name: Pgchar; v_double: gdouble; origin: Pgchar); cdecl; external;
-procedure gtk_settings_set_long_property(ASettings: PGtkSettings; name: Pgchar; v_long: glong; origin: Pgchar); cdecl; external;
-procedure gtk_settings_set_property_value(ASettings: PGtkSettings; name: Pgchar; svalue: PGtkSettingsValue); cdecl; external;
-procedure gtk_settings_set_string_property(ASettings: PGtkSettings; name: Pgchar; v_string: Pgchar; origin: Pgchar); cdecl; external;
+procedure gtk_settings_set_double_property(settings: PGtkSettings; name: Pgchar; v_double: gdouble; origin: Pgchar); cdecl; external;
+procedure gtk_settings_set_long_property(settings: PGtkSettings; name: Pgchar; v_long: glong; origin: Pgchar); cdecl; external;
+procedure gtk_settings_set_property_value(settings: PGtkSettings; name: Pgchar; svalue: PGtkSettingsValue); cdecl; external;
+procedure gtk_settings_set_string_property(settings: PGtkSettings; name: Pgchar; v_string: Pgchar; origin: Pgchar); cdecl; external;
 procedure gtk_show_about_dialog(parent: PGtkWindow; first_property_name: Pgchar; args: array of const); cdecl; external;
-procedure gtk_size_group_add_widget(ASizeGroup: PGtkSizeGroup; widget: PGtkWidget); cdecl; external;
-procedure gtk_size_group_remove_widget(ASizeGroup: PGtkSizeGroup; widget: PGtkWidget); cdecl; external;
-procedure gtk_size_group_set_ignore_hidden(ASizeGroup: PGtkSizeGroup; ignore_hidden: gboolean); cdecl; external;
-procedure gtk_size_group_set_mode(ASizeGroup: PGtkSizeGroup; mode: TGtkSizeGroupMode); cdecl; external;
-procedure gtk_socket_add_id(ASocket: PGtkSocket; window: TWindow); cdecl; external;
-procedure gtk_spin_button_configure(ASpinButton: PGtkSpinButton; adjustment: PGtkAdjustment; climb_rate: gdouble; digits: guint); cdecl; external;
-procedure gtk_spin_button_get_increments(ASpinButton: PGtkSpinButton; step: Pgdouble; page: Pgdouble); cdecl; external;
-procedure gtk_spin_button_get_range(ASpinButton: PGtkSpinButton; min: Pgdouble; max: Pgdouble); cdecl; external;
-procedure gtk_spin_button_set_adjustment(ASpinButton: PGtkSpinButton; adjustment: PGtkAdjustment); cdecl; external;
-procedure gtk_spin_button_set_digits(ASpinButton: PGtkSpinButton; digits: guint); cdecl; external;
-procedure gtk_spin_button_set_increments(ASpinButton: PGtkSpinButton; step: gdouble; page: gdouble); cdecl; external;
-procedure gtk_spin_button_set_numeric(ASpinButton: PGtkSpinButton; numeric: gboolean); cdecl; external;
-procedure gtk_spin_button_set_range(ASpinButton: PGtkSpinButton; min: gdouble; max: gdouble); cdecl; external;
-procedure gtk_spin_button_set_snap_to_ticks(ASpinButton: PGtkSpinButton; snap_to_ticks: gboolean); cdecl; external;
-procedure gtk_spin_button_set_update_policy(ASpinButton: PGtkSpinButton; policy: TGtkSpinButtonUpdatePolicy); cdecl; external;
-procedure gtk_spin_button_set_value(ASpinButton: PGtkSpinButton; value: gdouble); cdecl; external;
-procedure gtk_spin_button_set_wrap(ASpinButton: PGtkSpinButton; wrap: gboolean); cdecl; external;
-procedure gtk_spin_button_spin(ASpinButton: PGtkSpinButton; direction: TGtkSpinType; increment: gdouble); cdecl; external;
-procedure gtk_spin_button_update(ASpinButton: PGtkSpinButton); cdecl; external;
-procedure gtk_spinner_start(ASpinner: PGtkSpinner); cdecl; external;
-procedure gtk_spinner_stop(ASpinner: PGtkSpinner); cdecl; external;
+procedure gtk_size_group_add_widget(size_group: PGtkSizeGroup; widget: PGtkWidget); cdecl; external;
+procedure gtk_size_group_remove_widget(size_group: PGtkSizeGroup; widget: PGtkWidget); cdecl; external;
+procedure gtk_size_group_set_ignore_hidden(size_group: PGtkSizeGroup; ignore_hidden: gboolean); cdecl; external;
+procedure gtk_size_group_set_mode(size_group: PGtkSizeGroup; mode: TGtkSizeGroupMode); cdecl; external;
+procedure gtk_socket_add_id(socket_: PGtkSocket; window: TWindow); cdecl; external;
+procedure gtk_spin_button_configure(spin_button: PGtkSpinButton; adjustment: PGtkAdjustment; climb_rate: gdouble; digits: guint); cdecl; external;
+procedure gtk_spin_button_get_increments(spin_button: PGtkSpinButton; step: Pgdouble; page: Pgdouble); cdecl; external;
+procedure gtk_spin_button_get_range(spin_button: PGtkSpinButton; min: Pgdouble; max: Pgdouble); cdecl; external;
+procedure gtk_spin_button_set_adjustment(spin_button: PGtkSpinButton; adjustment: PGtkAdjustment); cdecl; external;
+procedure gtk_spin_button_set_digits(spin_button: PGtkSpinButton; digits: guint); cdecl; external;
+procedure gtk_spin_button_set_increments(spin_button: PGtkSpinButton; step: gdouble; page: gdouble); cdecl; external;
+procedure gtk_spin_button_set_numeric(spin_button: PGtkSpinButton; numeric: gboolean); cdecl; external;
+procedure gtk_spin_button_set_range(spin_button: PGtkSpinButton; min: gdouble; max: gdouble); cdecl; external;
+procedure gtk_spin_button_set_snap_to_ticks(spin_button: PGtkSpinButton; snap_to_ticks: gboolean); cdecl; external;
+procedure gtk_spin_button_set_update_policy(spin_button: PGtkSpinButton; policy: TGtkSpinButtonUpdatePolicy); cdecl; external;
+procedure gtk_spin_button_set_value(spin_button: PGtkSpinButton; value: gdouble); cdecl; external;
+procedure gtk_spin_button_set_wrap(spin_button: PGtkSpinButton; wrap: gboolean); cdecl; external;
+procedure gtk_spin_button_spin(spin_button: PGtkSpinButton; direction: TGtkSpinType; increment: gdouble); cdecl; external;
+procedure gtk_spin_button_update(spin_button: PGtkSpinButton); cdecl; external;
+procedure gtk_spinner_start(spinner: PGtkSpinner); cdecl; external;
+procedure gtk_spinner_stop(spinner: PGtkSpinner); cdecl; external;
 procedure gtk_status_icon_position_menu(menu: PGtkMenu; x: Pgint; y: Pgint; push_in: Pgboolean; user_data: PGtkStatusIcon); cdecl; external;
-procedure gtk_status_icon_set_from_file(AStatusIcon: PGtkStatusIcon; filename: Pgchar); cdecl; external;
-procedure gtk_status_icon_set_from_gicon(AStatusIcon: PGtkStatusIcon; icon: PGIcon); cdecl; external;
-procedure gtk_status_icon_set_from_icon_name(AStatusIcon: PGtkStatusIcon; icon_name: Pgchar); cdecl; external;
-procedure gtk_status_icon_set_from_pixbuf(AStatusIcon: PGtkStatusIcon; pixbuf: PGdkPixbuf); cdecl; external;
-procedure gtk_status_icon_set_from_stock(AStatusIcon: PGtkStatusIcon; stock_id: Pgchar); cdecl; external;
-procedure gtk_status_icon_set_has_tooltip(AStatusIcon: PGtkStatusIcon; has_tooltip: gboolean); cdecl; external;
-procedure gtk_status_icon_set_name(AStatusIcon: PGtkStatusIcon; name: Pgchar); cdecl; external;
-procedure gtk_status_icon_set_screen(AStatusIcon: PGtkStatusIcon; screen: PGdkScreen); cdecl; external;
-procedure gtk_status_icon_set_title(AStatusIcon: PGtkStatusIcon; title: Pgchar); cdecl; external;
-procedure gtk_status_icon_set_tooltip_markup(AStatusIcon: PGtkStatusIcon; markup: Pgchar); cdecl; external;
-procedure gtk_status_icon_set_tooltip_text(AStatusIcon: PGtkStatusIcon; text: Pgchar); cdecl; external;
-procedure gtk_status_icon_set_visible(AStatusIcon: PGtkStatusIcon; visible: gboolean); cdecl; external;
-procedure gtk_statusbar_pop(AStatusbar: PGtkStatusbar; context_id: guint); cdecl; external;
-procedure gtk_statusbar_remove(AStatusbar: PGtkStatusbar; context_id: guint; message_id: guint); cdecl; external;
-procedure gtk_statusbar_remove_all(AStatusbar: PGtkStatusbar; context_id: guint); cdecl; external;
+procedure gtk_status_icon_set_from_file(status_icon: PGtkStatusIcon; filename: Pgchar); cdecl; external;
+procedure gtk_status_icon_set_from_gicon(status_icon: PGtkStatusIcon; icon: PGIcon); cdecl; external;
+procedure gtk_status_icon_set_from_icon_name(status_icon: PGtkStatusIcon; icon_name: Pgchar); cdecl; external;
+procedure gtk_status_icon_set_from_pixbuf(status_icon: PGtkStatusIcon; pixbuf: PGdkPixbuf); cdecl; external;
+procedure gtk_status_icon_set_from_stock(status_icon: PGtkStatusIcon; stock_id: Pgchar); cdecl; external;
+procedure gtk_status_icon_set_has_tooltip(status_icon: PGtkStatusIcon; has_tooltip: gboolean); cdecl; external;
+procedure gtk_status_icon_set_name(status_icon: PGtkStatusIcon; name: Pgchar); cdecl; external;
+procedure gtk_status_icon_set_screen(status_icon: PGtkStatusIcon; screen: PGdkScreen); cdecl; external;
+procedure gtk_status_icon_set_title(status_icon: PGtkStatusIcon; title: Pgchar); cdecl; external;
+procedure gtk_status_icon_set_tooltip_markup(status_icon: PGtkStatusIcon; markup: Pgchar); cdecl; external;
+procedure gtk_status_icon_set_tooltip_text(status_icon: PGtkStatusIcon; text: Pgchar); cdecl; external;
+procedure gtk_status_icon_set_visible(status_icon: PGtkStatusIcon; visible: gboolean); cdecl; external;
+procedure gtk_statusbar_pop(statusbar: PGtkStatusbar; context_id: guint); cdecl; external;
+procedure gtk_statusbar_remove(statusbar: PGtkStatusbar; context_id: guint; message_id: guint); cdecl; external;
+procedure gtk_statusbar_remove_all(statusbar: PGtkStatusbar; context_id: guint); cdecl; external;
 procedure gtk_stock_add(items: PGtkStockItem; n_items: guint); cdecl; external;
 procedure gtk_stock_add_static(items: PGtkStockItem; n_items: guint); cdecl; external;
-procedure gtk_stock_item_free(AStockItem: PGtkStockItem); cdecl; external;
+procedure gtk_stock_item_free(item: PGtkStockItem); cdecl; external;
 procedure gtk_stock_set_translate_func(domain: Pgchar; func: TGtkTranslateFunc; data: gpointer; notify: TGDestroyNotify); cdecl; external;
-procedure gtk_style_apply_default_background(AStyle: PGtkStyle; cr: Pcairo_t; window: PGdkWindow; state_type: TGtkStateType; x: gint; y: gint; width: gint; height: gint); cdecl; external;
-procedure gtk_style_context_add_class(AStyleContext: PGtkStyleContext; class_name: Pgchar); cdecl; external;
-procedure gtk_style_context_add_provider(AStyleContext: PGtkStyleContext; provider: PGtkStyleProvider; priority: guint); cdecl; external;
+procedure gtk_style_context_add_class(context: PGtkStyleContext; class_name: Pgchar); cdecl; external;
+procedure gtk_style_context_add_provider(context: PGtkStyleContext; provider: PGtkStyleProvider; priority: guint); cdecl; external;
 procedure gtk_style_context_add_provider_for_screen(screen: PGdkScreen; provider: PGtkStyleProvider; priority: guint); cdecl; external;
-procedure gtk_style_context_add_region(AStyleContext: PGtkStyleContext; region_name: Pgchar; flags: TGtkRegionFlags); cdecl; external;
-procedure gtk_style_context_cancel_animations(AStyleContext: PGtkStyleContext; region_id: gpointer); cdecl; external;
-procedure gtk_style_context_get(AStyleContext: PGtkStyleContext; state: TGtkStateFlags; args: array of const); cdecl; external;
-procedure gtk_style_context_get_background_color(AStyleContext: PGtkStyleContext; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
-procedure gtk_style_context_get_border(AStyleContext: PGtkStyleContext; state: TGtkStateFlags; border: PGtkBorder); cdecl; external;
-procedure gtk_style_context_get_border_color(AStyleContext: PGtkStyleContext; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
-procedure gtk_style_context_get_color(AStyleContext: PGtkStyleContext; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
-procedure gtk_style_context_get_margin(AStyleContext: PGtkStyleContext; state: TGtkStateFlags; margin: PGtkBorder); cdecl; external;
-procedure gtk_style_context_get_padding(AStyleContext: PGtkStyleContext; state: TGtkStateFlags; padding: PGtkBorder); cdecl; external;
-procedure gtk_style_context_get_property(AStyleContext: PGtkStyleContext; property_: Pgchar; state: TGtkStateFlags; value: PGValue); cdecl; external;
-procedure gtk_style_context_get_style(AStyleContext: PGtkStyleContext; args: array of const); cdecl; external;
-procedure gtk_style_context_get_style_property(AStyleContext: PGtkStyleContext; property_name: Pgchar; value: PGValue); cdecl; external;
-procedure gtk_style_context_get_style_valist(AStyleContext: PGtkStyleContext; args: Tva_list); cdecl; external;
-procedure gtk_style_context_get_valist(AStyleContext: PGtkStyleContext; state: TGtkStateFlags; args: Tva_list); cdecl; external;
-procedure gtk_style_context_invalidate(AStyleContext: PGtkStyleContext); cdecl; external;
-procedure gtk_style_context_notify_state_change(AStyleContext: PGtkStyleContext; window: PGdkWindow; region_id: gpointer; state: TGtkStateType; state_value: gboolean); cdecl; external;
-procedure gtk_style_context_pop_animatable_region(AStyleContext: PGtkStyleContext); cdecl; external;
-procedure gtk_style_context_push_animatable_region(AStyleContext: PGtkStyleContext; region_id: gpointer); cdecl; external;
-procedure gtk_style_context_remove_class(AStyleContext: PGtkStyleContext; class_name: Pgchar); cdecl; external;
-procedure gtk_style_context_remove_provider(AStyleContext: PGtkStyleContext; provider: PGtkStyleProvider); cdecl; external;
+procedure gtk_style_context_add_region(context: PGtkStyleContext; region_name: Pgchar; flags: TGtkRegionFlags); cdecl; external;
+procedure gtk_style_context_get(context: PGtkStyleContext; state: TGtkStateFlags; args: array of const); cdecl; external;
+procedure gtk_style_context_get_background_color(context: PGtkStyleContext; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
+procedure gtk_style_context_get_border(context: PGtkStyleContext; state: TGtkStateFlags; border: PGtkBorder); cdecl; external;
+procedure gtk_style_context_get_border_color(context: PGtkStyleContext; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
+procedure gtk_style_context_get_color(context: PGtkStyleContext; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
+procedure gtk_style_context_get_margin(context: PGtkStyleContext; state: TGtkStateFlags; margin: PGtkBorder); cdecl; external;
+procedure gtk_style_context_get_padding(context: PGtkStyleContext; state: TGtkStateFlags; padding: PGtkBorder); cdecl; external;
+procedure gtk_style_context_get_property(context: PGtkStyleContext; property_: Pgchar; state: TGtkStateFlags; value: PGValue); cdecl; external;
+procedure gtk_style_context_get_style(context: PGtkStyleContext; args: array of const); cdecl; external;
+procedure gtk_style_context_get_style_property(context: PGtkStyleContext; property_name: Pgchar; value: PGValue); cdecl; external;
+procedure gtk_style_context_get_style_valist(context: PGtkStyleContext; args: Tva_list); cdecl; external;
+procedure gtk_style_context_get_valist(context: PGtkStyleContext; state: TGtkStateFlags; args: Tva_list); cdecl; external;
+procedure gtk_style_context_invalidate(context: PGtkStyleContext); cdecl; external;
+procedure gtk_style_context_remove_class(context: PGtkStyleContext; class_name: Pgchar); cdecl; external;
+procedure gtk_style_context_remove_provider(context: PGtkStyleContext; provider: PGtkStyleProvider); cdecl; external;
 procedure gtk_style_context_remove_provider_for_screen(screen: PGdkScreen; provider: PGtkStyleProvider); cdecl; external;
-procedure gtk_style_context_remove_region(AStyleContext: PGtkStyleContext; region_name: Pgchar); cdecl; external;
+procedure gtk_style_context_remove_region(context: PGtkStyleContext; region_name: Pgchar); cdecl; external;
 procedure gtk_style_context_reset_widgets(screen: PGdkScreen); cdecl; external;
-procedure gtk_style_context_restore(AStyleContext: PGtkStyleContext); cdecl; external;
-procedure gtk_style_context_save(AStyleContext: PGtkStyleContext); cdecl; external;
-procedure gtk_style_context_scroll_animations(AStyleContext: PGtkStyleContext; window: PGdkWindow; dx: gint; dy: gint); cdecl; external;
-procedure gtk_style_context_set_background(AStyleContext: PGtkStyleContext; window: PGdkWindow); cdecl; external;
-procedure gtk_style_context_set_direction(AStyleContext: PGtkStyleContext; direction: TGtkTextDirection); cdecl; external;
-procedure gtk_style_context_set_junction_sides(AStyleContext: PGtkStyleContext; sides: TGtkJunctionSides); cdecl; external;
-procedure gtk_style_context_set_parent(AStyleContext: PGtkStyleContext; parent: PGtkStyleContext); cdecl; external;
-procedure gtk_style_context_set_path(AStyleContext: PGtkStyleContext; path: PGtkWidgetPath); cdecl; external;
-procedure gtk_style_context_set_screen(AStyleContext: PGtkStyleContext; screen: PGdkScreen); cdecl; external;
-procedure gtk_style_context_set_state(AStyleContext: PGtkStyleContext; flags: TGtkStateFlags); cdecl; external;
-procedure gtk_style_detach(AStyle: PGtkStyle); cdecl; external;
-procedure gtk_style_get(AStyle: PGtkStyle; widget_type: TGType; first_property_name: Pgchar; args: array of const); cdecl; external;
-procedure gtk_style_get_style_property(AStyle: PGtkStyle; widget_type: TGType; property_name: Pgchar; value: PGValue); cdecl; external;
-procedure gtk_style_get_valist(AStyle: PGtkStyle; widget_type: TGType; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
-procedure gtk_style_properties_clear(AStyleProperties: PGtkStyleProperties); cdecl; external;
-procedure gtk_style_properties_get(AStyleProperties: PGtkStyleProperties; state: TGtkStateFlags; args: array of const); cdecl; external;
-procedure gtk_style_properties_get_valist(AStyleProperties: PGtkStyleProperties; state: TGtkStateFlags; args: Tva_list); cdecl; external;
-procedure gtk_style_properties_map_color(AStyleProperties: PGtkStyleProperties; name: Pgchar; color: PGtkSymbolicColor); cdecl; external;
-procedure gtk_style_properties_merge(AStyleProperties: PGtkStyleProperties; props_to_merge: PGtkStyleProperties; replace: gboolean); cdecl; external;
-procedure gtk_style_properties_register_property(parse_func: TGtkStylePropertyParser; pspec: PGParamSpec); cdecl; external;
-procedure gtk_style_properties_set(AStyleProperties: PGtkStyleProperties; state: TGtkStateFlags; args: array of const); cdecl; external;
-procedure gtk_style_properties_set_property(AStyleProperties: PGtkStyleProperties; property_: Pgchar; state: TGtkStateFlags; value: PGValue); cdecl; external;
-procedure gtk_style_properties_set_valist(AStyleProperties: PGtkStyleProperties; state: TGtkStateFlags; args: Tva_list); cdecl; external;
-procedure gtk_style_properties_unset_property(AStyleProperties: PGtkStyleProperties; property_: Pgchar; state: TGtkStateFlags); cdecl; external;
-procedure gtk_style_set_background(AStyle: PGtkStyle; window: PGdkWindow; state_type: TGtkStateType); cdecl; external;
-procedure gtk_switch_set_active(ASwitch: PGtkSwitch; is_active: gboolean); cdecl; external;
-procedure gtk_symbolic_color_unref(ASymbolicColor: PGtkSymbolicColor); cdecl; external;
-procedure gtk_target_entry_free(ATargetEntry: PGtkTargetEntry); cdecl; external;
-procedure gtk_target_list_add(ATargetList: PGtkTargetList; target: TGdkAtom; flags: guint; info: guint); cdecl; external;
-procedure gtk_target_list_add_image_targets(ATargetList: PGtkTargetList; info: guint; writable: gboolean); cdecl; external;
-procedure gtk_target_list_add_rich_text_targets(ATargetList: PGtkTargetList; info: guint; deserializable: gboolean; buffer: PGtkTextBuffer); cdecl; external;
-procedure gtk_target_list_add_table(ATargetList: PGtkTargetList; targets: PGtkTargetEntry; ntargets: guint); cdecl; external;
-procedure gtk_target_list_add_text_targets(ATargetList: PGtkTargetList; info: guint); cdecl; external;
-procedure gtk_target_list_add_uri_targets(ATargetList: PGtkTargetList; info: guint); cdecl; external;
-procedure gtk_target_list_remove(ATargetList: PGtkTargetList; target: TGdkAtom); cdecl; external;
-procedure gtk_target_list_unref(ATargetList: PGtkTargetList); cdecl; external;
+procedure gtk_style_context_restore(context: PGtkStyleContext); cdecl; external;
+procedure gtk_style_context_save(context: PGtkStyleContext); cdecl; external;
+procedure gtk_style_context_set_background(context: PGtkStyleContext; window: PGdkWindow); cdecl; external;
+procedure gtk_style_context_set_frame_clock(context: PGtkStyleContext; frame_clock: PGdkFrameClock); cdecl; external;
+procedure gtk_style_context_set_junction_sides(context: PGtkStyleContext; sides: TGtkJunctionSides); cdecl; external;
+procedure gtk_style_context_set_parent(context: PGtkStyleContext; parent: PGtkStyleContext); cdecl; external;
+procedure gtk_style_context_set_path(context: PGtkStyleContext; path: PGtkWidgetPath); cdecl; external;
+procedure gtk_style_context_set_screen(context: PGtkStyleContext; screen: PGdkScreen); cdecl; external;
+procedure gtk_style_context_set_state(context: PGtkStyleContext; flags: TGtkStateFlags); cdecl; external;
+procedure gtk_style_get(style: PGtkStyle; widget_type: TGType; first_property_name: Pgchar; args: array of const); cdecl; external;
+procedure gtk_style_get_style_property(style: PGtkStyle; widget_type: TGType; property_name: Pgchar; value: PGValue); cdecl; external;
+procedure gtk_style_get_valist(style: PGtkStyle; widget_type: TGType; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
+procedure gtk_style_properties_clear(props: PGtkStyleProperties); cdecl; external;
+procedure gtk_style_properties_get(props: PGtkStyleProperties; state: TGtkStateFlags; args: array of const); cdecl; external;
+procedure gtk_style_properties_get_valist(props: PGtkStyleProperties; state: TGtkStateFlags; args: Tva_list); cdecl; external;
+procedure gtk_style_properties_merge(props: PGtkStyleProperties; props_to_merge: PGtkStyleProperties; replace: gboolean); cdecl; external;
+procedure gtk_style_properties_set(props: PGtkStyleProperties; state: TGtkStateFlags; args: array of const); cdecl; external;
+procedure gtk_style_properties_set_property(props: PGtkStyleProperties; property_: Pgchar; state: TGtkStateFlags; value: PGValue); cdecl; external;
+procedure gtk_style_properties_set_valist(props: PGtkStyleProperties; state: TGtkStateFlags; args: Tva_list); cdecl; external;
+procedure gtk_style_properties_unset_property(props: PGtkStyleProperties; property_: Pgchar; state: TGtkStateFlags); cdecl; external;
+procedure gtk_switch_set_active(sw: PGtkSwitch; is_active: gboolean); cdecl; external;
+procedure gtk_target_entry_free(data: PGtkTargetEntry); cdecl; external;
+procedure gtk_target_list_add(list: PGtkTargetList; target: TGdkAtom; flags: guint; info: guint); cdecl; external;
+procedure gtk_target_list_add_image_targets(list: PGtkTargetList; info: guint; writable: gboolean); cdecl; external;
+procedure gtk_target_list_add_rich_text_targets(list: PGtkTargetList; info: guint; deserializable: gboolean; buffer: PGtkTextBuffer); cdecl; external;
+procedure gtk_target_list_add_table(list: PGtkTargetList; targets: PGtkTargetEntry; ntargets: guint); cdecl; external;
+procedure gtk_target_list_add_text_targets(list: PGtkTargetList; info: guint); cdecl; external;
+procedure gtk_target_list_add_uri_targets(list: PGtkTargetList; info: guint); cdecl; external;
+procedure gtk_target_list_remove(list: PGtkTargetList; target: TGdkAtom); cdecl; external;
+procedure gtk_target_list_unref(list: PGtkTargetList); cdecl; external;
 procedure gtk_target_table_free(targets: PGtkTargetEntry; n_targets: gint); cdecl; external;
 procedure gtk_test_init(argcp: Pgint; argvp: PPPgchar; args: array of const); cdecl; external;
 procedure gtk_test_register_all_types; cdecl; external;
 procedure gtk_test_slider_set_perc(widget: PGtkWidget; percentage: gdouble); cdecl; external;
 procedure gtk_test_text_set(widget: PGtkWidget; string_: Pgchar); cdecl; external;
-procedure gtk_text_attributes_copy_values(ATextAttributes: PGtkTextAttributes; dest: PGtkTextAttributes); cdecl; external;
-procedure gtk_text_attributes_unref(ATextAttributes: PGtkTextAttributes); cdecl; external;
-procedure gtk_text_buffer_add_mark(ATextBuffer: PGtkTextBuffer; mark: PGtkTextMark; where: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_add_selection_clipboard(ATextBuffer: PGtkTextBuffer; clipboard: PGtkClipboard); cdecl; external;
-procedure gtk_text_buffer_apply_tag(ATextBuffer: PGtkTextBuffer; tag: PGtkTextTag; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_apply_tag_by_name(ATextBuffer: PGtkTextBuffer; name: Pgchar; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_begin_user_action(ATextBuffer: PGtkTextBuffer); cdecl; external;
-procedure gtk_text_buffer_copy_clipboard(ATextBuffer: PGtkTextBuffer; clipboard: PGtkClipboard); cdecl; external;
-procedure gtk_text_buffer_cut_clipboard(ATextBuffer: PGtkTextBuffer; clipboard: PGtkClipboard; default_editable: gboolean); cdecl; external;
-procedure gtk_text_buffer_delete(ATextBuffer: PGtkTextBuffer; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_delete_mark(ATextBuffer: PGtkTextBuffer; mark: PGtkTextMark); cdecl; external;
-procedure gtk_text_buffer_delete_mark_by_name(ATextBuffer: PGtkTextBuffer; name: Pgchar); cdecl; external;
-procedure gtk_text_buffer_deserialize_set_can_create_tags(ATextBuffer: PGtkTextBuffer; format: TGdkAtom; can_create_tags: gboolean); cdecl; external;
-procedure gtk_text_buffer_end_user_action(ATextBuffer: PGtkTextBuffer); cdecl; external;
-procedure gtk_text_buffer_get_bounds(ATextBuffer: PGtkTextBuffer; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_get_end_iter(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_get_iter_at_child_anchor(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; anchor: PGtkTextChildAnchor); cdecl; external;
-procedure gtk_text_buffer_get_iter_at_line(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; line_number: gint); cdecl; external;
-procedure gtk_text_buffer_get_iter_at_line_index(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; line_number: gint; byte_index: gint); cdecl; external;
-procedure gtk_text_buffer_get_iter_at_line_offset(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; line_number: gint; char_offset: gint); cdecl; external;
-procedure gtk_text_buffer_get_iter_at_mark(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; mark: PGtkTextMark); cdecl; external;
-procedure gtk_text_buffer_get_iter_at_offset(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; char_offset: gint); cdecl; external;
-procedure gtk_text_buffer_get_start_iter(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_insert(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; text: Pgchar; len: gint); cdecl; external;
-procedure gtk_text_buffer_insert_at_cursor(ATextBuffer: PGtkTextBuffer; text: Pgchar; len: gint); cdecl; external;
-procedure gtk_text_buffer_insert_child_anchor(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; anchor: PGtkTextChildAnchor); cdecl; external;
-procedure gtk_text_buffer_insert_pixbuf(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; pixbuf: PGdkPixbuf); cdecl; external;
-procedure gtk_text_buffer_insert_range(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_insert_with_tags(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; text: Pgchar; len: gint; first_tag: PGtkTextTag; args: array of const); cdecl; external;
-procedure gtk_text_buffer_insert_with_tags_by_name(ATextBuffer: PGtkTextBuffer; iter: PGtkTextIter; text: Pgchar; len: gint; first_tag_name: Pgchar; args: array of const); cdecl; external;
-procedure gtk_text_buffer_move_mark(ATextBuffer: PGtkTextBuffer; mark: PGtkTextMark; where: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_move_mark_by_name(ATextBuffer: PGtkTextBuffer; name: Pgchar; where: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_paste_clipboard(ATextBuffer: PGtkTextBuffer; clipboard: PGtkClipboard; override_location: PGtkTextIter; default_editable: gboolean); cdecl; external;
-procedure gtk_text_buffer_place_cursor(ATextBuffer: PGtkTextBuffer; where: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_remove_all_tags(ATextBuffer: PGtkTextBuffer; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_remove_selection_clipboard(ATextBuffer: PGtkTextBuffer; clipboard: PGtkClipboard); cdecl; external;
-procedure gtk_text_buffer_remove_tag(ATextBuffer: PGtkTextBuffer; tag: PGtkTextTag; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_remove_tag_by_name(ATextBuffer: PGtkTextBuffer; name: Pgchar; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_select_range(ATextBuffer: PGtkTextBuffer; ins: PGtkTextIter; bound: PGtkTextIter); cdecl; external;
-procedure gtk_text_buffer_set_modified(ATextBuffer: PGtkTextBuffer; setting: gboolean); cdecl; external;
-procedure gtk_text_buffer_set_text(ATextBuffer: PGtkTextBuffer; text: Pgchar; len: gint); cdecl; external;
-procedure gtk_text_buffer_unregister_deserialize_format(ATextBuffer: PGtkTextBuffer; format: TGdkAtom); cdecl; external;
-procedure gtk_text_buffer_unregister_serialize_format(ATextBuffer: PGtkTextBuffer; format: TGdkAtom); cdecl; external;
-procedure gtk_text_iter_assign(ATextIter: PGtkTextIter; other: PGtkTextIter); cdecl; external;
-procedure gtk_text_iter_forward_to_end(ATextIter: PGtkTextIter); cdecl; external;
-procedure gtk_text_iter_free(ATextIter: PGtkTextIter); cdecl; external;
-procedure gtk_text_iter_order(ATextIter: PGtkTextIter; second: PGtkTextIter); cdecl; external;
-procedure gtk_text_iter_set_line(ATextIter: PGtkTextIter; line_number: gint); cdecl; external;
-procedure gtk_text_iter_set_line_index(ATextIter: PGtkTextIter; byte_on_line: gint); cdecl; external;
-procedure gtk_text_iter_set_line_offset(ATextIter: PGtkTextIter; char_on_line: gint); cdecl; external;
-procedure gtk_text_iter_set_offset(ATextIter: PGtkTextIter; char_offset: gint); cdecl; external;
-procedure gtk_text_iter_set_visible_line_index(ATextIter: PGtkTextIter; byte_on_line: gint); cdecl; external;
-procedure gtk_text_iter_set_visible_line_offset(ATextIter: PGtkTextIter; char_on_line: gint); cdecl; external;
-procedure gtk_text_mark_set_visible(ATextMark: PGtkTextMark; setting: gboolean); cdecl; external;
-procedure gtk_text_tag_set_priority(ATextTag: PGtkTextTag; priority: gint); cdecl; external;
-procedure gtk_text_tag_table_add(ATextTagTable: PGtkTextTagTable; tag: PGtkTextTag); cdecl; external;
-procedure gtk_text_tag_table_foreach(ATextTagTable: PGtkTextTagTable; func: TGtkTextTagTableForeach; data: gpointer); cdecl; external;
-procedure gtk_text_tag_table_remove(ATextTagTable: PGtkTextTagTable; tag: PGtkTextTag); cdecl; external;
-procedure gtk_text_view_add_child_at_anchor(ATextView: PGtkTextView; child: PGtkWidget; anchor: PGtkTextChildAnchor); cdecl; external;
-procedure gtk_text_view_add_child_in_window(ATextView: PGtkTextView; child: PGtkWidget; which_window: TGtkTextWindowType; xpos: gint; ypos: gint); cdecl; external;
-procedure gtk_text_view_buffer_to_window_coords(ATextView: PGtkTextView; win: TGtkTextWindowType; buffer_x: gint; buffer_y: gint; window_x: Pgint; window_y: Pgint); cdecl; external;
-procedure gtk_text_view_get_cursor_locations(ATextView: PGtkTextView; iter: PGtkTextIter; strong: PGdkRectangle; weak: PGdkRectangle); cdecl; external;
-procedure gtk_text_view_get_iter_at_location(ATextView: PGtkTextView; iter: PGtkTextIter; x: gint; y: gint); cdecl; external;
-procedure gtk_text_view_get_iter_at_position(ATextView: PGtkTextView; iter: PGtkTextIter; trailing: Pgint; x: gint; y: gint); cdecl; external;
-procedure gtk_text_view_get_iter_location(ATextView: PGtkTextView; iter: PGtkTextIter; location: PGdkRectangle); cdecl; external;
-procedure gtk_text_view_get_line_at_y(ATextView: PGtkTextView; target_iter: PGtkTextIter; y: gint; line_top: Pgint); cdecl; external;
-procedure gtk_text_view_get_line_yrange(ATextView: PGtkTextView; iter: PGtkTextIter; y: Pgint; height: Pgint); cdecl; external;
-procedure gtk_text_view_get_visible_rect(ATextView: PGtkTextView; visible_rect: PGdkRectangle); cdecl; external;
-procedure gtk_text_view_move_child(ATextView: PGtkTextView; child: PGtkWidget; xpos: gint; ypos: gint); cdecl; external;
-procedure gtk_text_view_reset_im_context(ATextView: PGtkTextView); cdecl; external;
-procedure gtk_text_view_scroll_mark_onscreen(ATextView: PGtkTextView; mark: PGtkTextMark); cdecl; external;
-procedure gtk_text_view_scroll_to_mark(ATextView: PGtkTextView; mark: PGtkTextMark; within_margin: gdouble; use_align: gboolean; xalign: gdouble; yalign: gdouble); cdecl; external;
-procedure gtk_text_view_set_accepts_tab(ATextView: PGtkTextView; accepts_tab: gboolean); cdecl; external;
-procedure gtk_text_view_set_border_window_size(ATextView: PGtkTextView; type_: TGtkTextWindowType; size: gint); cdecl; external;
-procedure gtk_text_view_set_buffer(ATextView: PGtkTextView; buffer: PGtkTextBuffer); cdecl; external;
-procedure gtk_text_view_set_cursor_visible(ATextView: PGtkTextView; setting: gboolean); cdecl; external;
-procedure gtk_text_view_set_editable(ATextView: PGtkTextView; setting: gboolean); cdecl; external;
-procedure gtk_text_view_set_indent(ATextView: PGtkTextView; indent: gint); cdecl; external;
-procedure gtk_text_view_set_justification(ATextView: PGtkTextView; justification: TGtkJustification); cdecl; external;
-procedure gtk_text_view_set_left_margin(ATextView: PGtkTextView; left_margin: gint); cdecl; external;
-procedure gtk_text_view_set_overwrite(ATextView: PGtkTextView; overwrite: gboolean); cdecl; external;
-procedure gtk_text_view_set_pixels_above_lines(ATextView: PGtkTextView; pixels_above_lines: gint); cdecl; external;
-procedure gtk_text_view_set_pixels_below_lines(ATextView: PGtkTextView; pixels_below_lines: gint); cdecl; external;
-procedure gtk_text_view_set_pixels_inside_wrap(ATextView: PGtkTextView; pixels_inside_wrap: gint); cdecl; external;
-procedure gtk_text_view_set_right_margin(ATextView: PGtkTextView; right_margin: gint); cdecl; external;
-procedure gtk_text_view_set_tabs(ATextView: PGtkTextView; tabs: PPangoTabArray); cdecl; external;
-procedure gtk_text_view_set_wrap_mode(ATextView: PGtkTextView; wrap_mode: TGtkWrapMode); cdecl; external;
-procedure gtk_text_view_window_to_buffer_coords(ATextView: PGtkTextView; win: TGtkTextWindowType; window_x: gint; window_y: gint; buffer_x: Pgint; buffer_y: Pgint); cdecl; external;
-procedure gtk_theming_engine_get(AThemingEngine: PGtkThemingEngine; state: TGtkStateFlags; args: array of const); cdecl; external;
-procedure gtk_theming_engine_get_background_color(AThemingEngine: PGtkThemingEngine; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
-procedure gtk_theming_engine_get_border(AThemingEngine: PGtkThemingEngine; state: TGtkStateFlags; border: PGtkBorder); cdecl; external;
-procedure gtk_theming_engine_get_border_color(AThemingEngine: PGtkThemingEngine; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
-procedure gtk_theming_engine_get_color(AThemingEngine: PGtkThemingEngine; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
-procedure gtk_theming_engine_get_margin(AThemingEngine: PGtkThemingEngine; state: TGtkStateFlags; margin: PGtkBorder); cdecl; external;
-procedure gtk_theming_engine_get_padding(AThemingEngine: PGtkThemingEngine; state: TGtkStateFlags; padding: PGtkBorder); cdecl; external;
-procedure gtk_theming_engine_get_property(AThemingEngine: PGtkThemingEngine; property_: Pgchar; state: TGtkStateFlags; value: PGValue); cdecl; external;
-procedure gtk_theming_engine_get_style(AThemingEngine: PGtkThemingEngine; args: array of const); cdecl; external;
-procedure gtk_theming_engine_get_style_property(AThemingEngine: PGtkThemingEngine; property_name: Pgchar; value: PGValue); cdecl; external;
-procedure gtk_theming_engine_get_style_valist(AThemingEngine: PGtkThemingEngine; args: Tva_list); cdecl; external;
-procedure gtk_theming_engine_get_valist(AThemingEngine: PGtkThemingEngine; state: TGtkStateFlags; args: Tva_list); cdecl; external;
-procedure gtk_theming_engine_register_property(name_space: Pgchar; parse_func: TGtkStylePropertyParser; pspec: PGParamSpec); cdecl; external;
-procedure gtk_toggle_action_set_active(AToggleAction: PGtkToggleAction; is_active: gboolean); cdecl; external;
-procedure gtk_toggle_action_set_draw_as_radio(AToggleAction: PGtkToggleAction; draw_as_radio: gboolean); cdecl; external;
-procedure gtk_toggle_action_toggled(AToggleAction: PGtkToggleAction); cdecl; external;
-procedure gtk_toggle_button_set_active(AToggleButton: PGtkToggleButton; is_active: gboolean); cdecl; external;
-procedure gtk_toggle_button_set_inconsistent(AToggleButton: PGtkToggleButton; setting: gboolean); cdecl; external;
-procedure gtk_toggle_button_set_mode(AToggleButton: PGtkToggleButton; draw_indicator: gboolean); cdecl; external;
-procedure gtk_toggle_button_toggled(AToggleButton: PGtkToggleButton); cdecl; external;
-procedure gtk_toggle_tool_button_set_active(AToggleToolButton: PGtkToggleToolButton; is_active: gboolean); cdecl; external;
-procedure gtk_tool_button_set_icon_name(AToolButton: PGtkToolButton; icon_name: Pgchar); cdecl; external;
-procedure gtk_tool_button_set_icon_widget(AToolButton: PGtkToolButton; icon_widget: PGtkWidget); cdecl; external;
-procedure gtk_tool_button_set_label(AToolButton: PGtkToolButton; label_: Pgchar); cdecl; external;
-procedure gtk_tool_button_set_label_widget(AToolButton: PGtkToolButton; label_widget: PGtkWidget); cdecl; external;
-procedure gtk_tool_button_set_stock_id(AToolButton: PGtkToolButton; stock_id: Pgchar); cdecl; external;
-procedure gtk_tool_button_set_use_underline(AToolButton: PGtkToolButton; use_underline: gboolean); cdecl; external;
-procedure gtk_tool_item_group_insert(AToolItemGroup: PGtkToolItemGroup; item: PGtkToolItem; position: gint); cdecl; external;
-procedure gtk_tool_item_group_set_collapsed(AToolItemGroup: PGtkToolItemGroup; collapsed: gboolean); cdecl; external;
-procedure gtk_tool_item_group_set_ellipsize(AToolItemGroup: PGtkToolItemGroup; ellipsize: TPangoEllipsizeMode); cdecl; external;
-procedure gtk_tool_item_group_set_header_relief(AToolItemGroup: PGtkToolItemGroup; style: TGtkReliefStyle); cdecl; external;
-procedure gtk_tool_item_group_set_item_position(AToolItemGroup: PGtkToolItemGroup; item: PGtkToolItem; position: gint); cdecl; external;
-procedure gtk_tool_item_group_set_label(AToolItemGroup: PGtkToolItemGroup; label_: Pgchar); cdecl; external;
-procedure gtk_tool_item_group_set_label_widget(AToolItemGroup: PGtkToolItemGroup; label_widget: PGtkWidget); cdecl; external;
-procedure gtk_tool_item_rebuild_menu(AToolItem: PGtkToolItem); cdecl; external;
-procedure gtk_tool_item_set_expand(AToolItem: PGtkToolItem; expand: gboolean); cdecl; external;
-procedure gtk_tool_item_set_homogeneous(AToolItem: PGtkToolItem; homogeneous: gboolean); cdecl; external;
-procedure gtk_tool_item_set_is_important(AToolItem: PGtkToolItem; is_important: gboolean); cdecl; external;
-procedure gtk_tool_item_set_proxy_menu_item(AToolItem: PGtkToolItem; menu_item_id: Pgchar; menu_item: PGtkWidget); cdecl; external;
-procedure gtk_tool_item_set_tooltip_markup(AToolItem: PGtkToolItem; markup: Pgchar); cdecl; external;
-procedure gtk_tool_item_set_tooltip_text(AToolItem: PGtkToolItem; text: Pgchar); cdecl; external;
-procedure gtk_tool_item_set_use_drag_window(AToolItem: PGtkToolItem; use_drag_window: gboolean); cdecl; external;
-procedure gtk_tool_item_set_visible_horizontal(AToolItem: PGtkToolItem; visible_horizontal: gboolean); cdecl; external;
-procedure gtk_tool_item_set_visible_vertical(AToolItem: PGtkToolItem; visible_vertical: gboolean); cdecl; external;
-procedure gtk_tool_item_toolbar_reconfigured(AToolItem: PGtkToolItem); cdecl; external;
-procedure gtk_tool_palette_add_drag_dest(AToolPalette: PGtkToolPalette; widget: PGtkWidget; flags: TGtkDestDefaults; targets: TGtkToolPaletteDragTargets; actions: TGdkDragAction); cdecl; external;
-procedure gtk_tool_palette_set_drag_source(AToolPalette: PGtkToolPalette; targets: TGtkToolPaletteDragTargets); cdecl; external;
-procedure gtk_tool_palette_set_exclusive(AToolPalette: PGtkToolPalette; group: PGtkToolItemGroup; exclusive: gboolean); cdecl; external;
-procedure gtk_tool_palette_set_expand(AToolPalette: PGtkToolPalette; group: PGtkToolItemGroup; expand: gboolean); cdecl; external;
-procedure gtk_tool_palette_set_group_position(AToolPalette: PGtkToolPalette; group: PGtkToolItemGroup; position: gint); cdecl; external;
-procedure gtk_tool_palette_set_icon_size(AToolPalette: PGtkToolPalette; icon_size: gint); cdecl; external;
-procedure gtk_tool_palette_set_style(AToolPalette: PGtkToolPalette; style: TGtkToolbarStyle); cdecl; external;
-procedure gtk_tool_palette_unset_icon_size(AToolPalette: PGtkToolPalette); cdecl; external;
-procedure gtk_tool_palette_unset_style(AToolPalette: PGtkToolPalette); cdecl; external;
-procedure gtk_tool_shell_rebuild_menu(AToolShell: PGtkToolShell); cdecl; external;
-procedure gtk_toolbar_insert(AToolbar: PGtkToolbar; item: PGtkToolItem; pos: gint); cdecl; external;
-procedure gtk_toolbar_set_drop_highlight_item(AToolbar: PGtkToolbar; tool_item: PGtkToolItem; index_: gint); cdecl; external;
-procedure gtk_toolbar_set_icon_size(AToolbar: PGtkToolbar; icon_size: gint); cdecl; external;
-procedure gtk_toolbar_set_show_arrow(AToolbar: PGtkToolbar; show_arrow: gboolean); cdecl; external;
-procedure gtk_toolbar_set_style(AToolbar: PGtkToolbar; style: TGtkToolbarStyle); cdecl; external;
-procedure gtk_toolbar_unset_icon_size(AToolbar: PGtkToolbar); cdecl; external;
-procedure gtk_toolbar_unset_style(AToolbar: PGtkToolbar); cdecl; external;
-procedure gtk_tooltip_set_custom(ATooltip: PGtkTooltip; custom_widget: PGtkWidget); cdecl; external;
-procedure gtk_tooltip_set_icon(ATooltip: PGtkTooltip; pixbuf: PGdkPixbuf); cdecl; external;
-procedure gtk_tooltip_set_icon_from_gicon(ATooltip: PGtkTooltip; gicon: PGIcon; size: gint); cdecl; external;
-procedure gtk_tooltip_set_icon_from_icon_name(ATooltip: PGtkTooltip; icon_name: Pgchar; size: gint); cdecl; external;
-procedure gtk_tooltip_set_icon_from_stock(ATooltip: PGtkTooltip; stock_id: Pgchar; size: gint); cdecl; external;
-procedure gtk_tooltip_set_markup(ATooltip: PGtkTooltip; markup: Pgchar); cdecl; external;
-procedure gtk_tooltip_set_text(ATooltip: PGtkTooltip; text: Pgchar); cdecl; external;
-procedure gtk_tooltip_set_tip_area(ATooltip: PGtkTooltip; rect: PGdkRectangle); cdecl; external;
+procedure gtk_text_attributes_copy_values(src: PGtkTextAttributes; dest: PGtkTextAttributes); cdecl; external;
+procedure gtk_text_attributes_unref(values: PGtkTextAttributes); cdecl; external;
+procedure gtk_text_buffer_add_mark(buffer: PGtkTextBuffer; mark: PGtkTextMark; where: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_add_selection_clipboard(buffer: PGtkTextBuffer; clipboard: PGtkClipboard); cdecl; external;
+procedure gtk_text_buffer_apply_tag(buffer: PGtkTextBuffer; tag: PGtkTextTag; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_apply_tag_by_name(buffer: PGtkTextBuffer; name: Pgchar; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_begin_user_action(buffer: PGtkTextBuffer); cdecl; external;
+procedure gtk_text_buffer_copy_clipboard(buffer: PGtkTextBuffer; clipboard: PGtkClipboard); cdecl; external;
+procedure gtk_text_buffer_cut_clipboard(buffer: PGtkTextBuffer; clipboard: PGtkClipboard; default_editable: gboolean); cdecl; external;
+procedure gtk_text_buffer_delete(buffer: PGtkTextBuffer; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_delete_mark(buffer: PGtkTextBuffer; mark: PGtkTextMark); cdecl; external;
+procedure gtk_text_buffer_delete_mark_by_name(buffer: PGtkTextBuffer; name: Pgchar); cdecl; external;
+procedure gtk_text_buffer_deserialize_set_can_create_tags(buffer: PGtkTextBuffer; format: TGdkAtom; can_create_tags: gboolean); cdecl; external;
+procedure gtk_text_buffer_end_user_action(buffer: PGtkTextBuffer); cdecl; external;
+procedure gtk_text_buffer_get_bounds(buffer: PGtkTextBuffer; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_get_end_iter(buffer: PGtkTextBuffer; iter: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_get_iter_at_child_anchor(buffer: PGtkTextBuffer; iter: PGtkTextIter; anchor: PGtkTextChildAnchor); cdecl; external;
+procedure gtk_text_buffer_get_iter_at_line(buffer: PGtkTextBuffer; iter: PGtkTextIter; line_number: gint); cdecl; external;
+procedure gtk_text_buffer_get_iter_at_line_index(buffer: PGtkTextBuffer; iter: PGtkTextIter; line_number: gint; byte_index: gint); cdecl; external;
+procedure gtk_text_buffer_get_iter_at_line_offset(buffer: PGtkTextBuffer; iter: PGtkTextIter; line_number: gint; char_offset: gint); cdecl; external;
+procedure gtk_text_buffer_get_iter_at_mark(buffer: PGtkTextBuffer; iter: PGtkTextIter; mark: PGtkTextMark); cdecl; external;
+procedure gtk_text_buffer_get_iter_at_offset(buffer: PGtkTextBuffer; iter: PGtkTextIter; char_offset: gint); cdecl; external;
+procedure gtk_text_buffer_get_start_iter(buffer: PGtkTextBuffer; iter: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_insert(buffer: PGtkTextBuffer; iter: PGtkTextIter; text: Pgchar; len: gint); cdecl; external;
+procedure gtk_text_buffer_insert_at_cursor(buffer: PGtkTextBuffer; text: Pgchar; len: gint); cdecl; external;
+procedure gtk_text_buffer_insert_child_anchor(buffer: PGtkTextBuffer; iter: PGtkTextIter; anchor: PGtkTextChildAnchor); cdecl; external;
+procedure gtk_text_buffer_insert_pixbuf(buffer: PGtkTextBuffer; iter: PGtkTextIter; pixbuf: PGdkPixbuf); cdecl; external;
+procedure gtk_text_buffer_insert_range(buffer: PGtkTextBuffer; iter: PGtkTextIter; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_insert_with_tags(buffer: PGtkTextBuffer; iter: PGtkTextIter; text: Pgchar; len: gint; first_tag: PGtkTextTag; args: array of const); cdecl; external;
+procedure gtk_text_buffer_insert_with_tags_by_name(buffer: PGtkTextBuffer; iter: PGtkTextIter; text: Pgchar; len: gint; first_tag_name: Pgchar; args: array of const); cdecl; external;
+procedure gtk_text_buffer_move_mark(buffer: PGtkTextBuffer; mark: PGtkTextMark; where: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_move_mark_by_name(buffer: PGtkTextBuffer; name: Pgchar; where: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_paste_clipboard(buffer: PGtkTextBuffer; clipboard: PGtkClipboard; override_location: PGtkTextIter; default_editable: gboolean); cdecl; external;
+procedure gtk_text_buffer_place_cursor(buffer: PGtkTextBuffer; where: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_remove_all_tags(buffer: PGtkTextBuffer; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_remove_selection_clipboard(buffer: PGtkTextBuffer; clipboard: PGtkClipboard); cdecl; external;
+procedure gtk_text_buffer_remove_tag(buffer: PGtkTextBuffer; tag: PGtkTextTag; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_remove_tag_by_name(buffer: PGtkTextBuffer; name: Pgchar; start: PGtkTextIter; end_: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_select_range(buffer: PGtkTextBuffer; ins: PGtkTextIter; bound: PGtkTextIter); cdecl; external;
+procedure gtk_text_buffer_set_modified(buffer: PGtkTextBuffer; setting: gboolean); cdecl; external;
+procedure gtk_text_buffer_set_text(buffer: PGtkTextBuffer; text: Pgchar; len: gint); cdecl; external;
+procedure gtk_text_buffer_unregister_deserialize_format(buffer: PGtkTextBuffer; format: TGdkAtom); cdecl; external;
+procedure gtk_text_buffer_unregister_serialize_format(buffer: PGtkTextBuffer; format: TGdkAtom); cdecl; external;
+procedure gtk_text_iter_assign(iter: PGtkTextIter; other: PGtkTextIter); cdecl; external;
+procedure gtk_text_iter_forward_to_end(iter: PGtkTextIter); cdecl; external;
+procedure gtk_text_iter_free(iter: PGtkTextIter); cdecl; external;
+procedure gtk_text_iter_order(first: PGtkTextIter; second: PGtkTextIter); cdecl; external;
+procedure gtk_text_iter_set_line(iter: PGtkTextIter; line_number: gint); cdecl; external;
+procedure gtk_text_iter_set_line_index(iter: PGtkTextIter; byte_on_line: gint); cdecl; external;
+procedure gtk_text_iter_set_line_offset(iter: PGtkTextIter; char_on_line: gint); cdecl; external;
+procedure gtk_text_iter_set_offset(iter: PGtkTextIter; char_offset: gint); cdecl; external;
+procedure gtk_text_iter_set_visible_line_index(iter: PGtkTextIter; byte_on_line: gint); cdecl; external;
+procedure gtk_text_iter_set_visible_line_offset(iter: PGtkTextIter; char_on_line: gint); cdecl; external;
+procedure gtk_text_mark_set_visible(mark: PGtkTextMark; setting: gboolean); cdecl; external;
+procedure gtk_text_tag_set_priority(tag: PGtkTextTag; priority: gint); cdecl; external;
+procedure gtk_text_tag_table_add(table: PGtkTextTagTable; tag: PGtkTextTag); cdecl; external;
+procedure gtk_text_tag_table_foreach(table: PGtkTextTagTable; func: TGtkTextTagTableForeach; data: gpointer); cdecl; external;
+procedure gtk_text_tag_table_remove(table: PGtkTextTagTable; tag: PGtkTextTag); cdecl; external;
+procedure gtk_text_view_add_child_at_anchor(text_view: PGtkTextView; child: PGtkWidget; anchor: PGtkTextChildAnchor); cdecl; external;
+procedure gtk_text_view_add_child_in_window(text_view: PGtkTextView; child: PGtkWidget; which_window: TGtkTextWindowType; xpos: gint; ypos: gint); cdecl; external;
+procedure gtk_text_view_buffer_to_window_coords(text_view: PGtkTextView; win: TGtkTextWindowType; buffer_x: gint; buffer_y: gint; window_x: Pgint; window_y: Pgint); cdecl; external;
+procedure gtk_text_view_get_cursor_locations(text_view: PGtkTextView; iter: PGtkTextIter; strong: PGdkRectangle; weak: PGdkRectangle); cdecl; external;
+procedure gtk_text_view_get_iter_at_location(text_view: PGtkTextView; iter: PGtkTextIter; x: gint; y: gint); cdecl; external;
+procedure gtk_text_view_get_iter_at_position(text_view: PGtkTextView; iter: PGtkTextIter; trailing: Pgint; x: gint; y: gint); cdecl; external;
+procedure gtk_text_view_get_iter_location(text_view: PGtkTextView; iter: PGtkTextIter; location: PGdkRectangle); cdecl; external;
+procedure gtk_text_view_get_line_at_y(text_view: PGtkTextView; target_iter: PGtkTextIter; y: gint; line_top: Pgint); cdecl; external;
+procedure gtk_text_view_get_line_yrange(text_view: PGtkTextView; iter: PGtkTextIter; y: Pgint; height: Pgint); cdecl; external;
+procedure gtk_text_view_get_visible_rect(text_view: PGtkTextView; visible_rect: PGdkRectangle); cdecl; external;
+procedure gtk_text_view_move_child(text_view: PGtkTextView; child: PGtkWidget; xpos: gint; ypos: gint); cdecl; external;
+procedure gtk_text_view_reset_im_context(text_view: PGtkTextView); cdecl; external;
+procedure gtk_text_view_scroll_mark_onscreen(text_view: PGtkTextView; mark: PGtkTextMark); cdecl; external;
+procedure gtk_text_view_scroll_to_mark(text_view: PGtkTextView; mark: PGtkTextMark; within_margin: gdouble; use_align: gboolean; xalign: gdouble; yalign: gdouble); cdecl; external;
+procedure gtk_text_view_set_accepts_tab(text_view: PGtkTextView; accepts_tab: gboolean); cdecl; external;
+procedure gtk_text_view_set_border_window_size(text_view: PGtkTextView; type_: TGtkTextWindowType; size: gint); cdecl; external;
+procedure gtk_text_view_set_buffer(text_view: PGtkTextView; buffer: PGtkTextBuffer); cdecl; external;
+procedure gtk_text_view_set_cursor_visible(text_view: PGtkTextView; setting: gboolean); cdecl; external;
+procedure gtk_text_view_set_editable(text_view: PGtkTextView; setting: gboolean); cdecl; external;
+procedure gtk_text_view_set_indent(text_view: PGtkTextView; indent: gint); cdecl; external;
+procedure gtk_text_view_set_input_hints(text_view: PGtkTextView; hints: TGtkInputHints); cdecl; external;
+procedure gtk_text_view_set_input_purpose(text_view: PGtkTextView; purpose: TGtkInputPurpose); cdecl; external;
+procedure gtk_text_view_set_justification(text_view: PGtkTextView; justification: TGtkJustification); cdecl; external;
+procedure gtk_text_view_set_left_margin(text_view: PGtkTextView; left_margin: gint); cdecl; external;
+procedure gtk_text_view_set_overwrite(text_view: PGtkTextView; overwrite: gboolean); cdecl; external;
+procedure gtk_text_view_set_pixels_above_lines(text_view: PGtkTextView; pixels_above_lines: gint); cdecl; external;
+procedure gtk_text_view_set_pixels_below_lines(text_view: PGtkTextView; pixels_below_lines: gint); cdecl; external;
+procedure gtk_text_view_set_pixels_inside_wrap(text_view: PGtkTextView; pixels_inside_wrap: gint); cdecl; external;
+procedure gtk_text_view_set_right_margin(text_view: PGtkTextView; right_margin: gint); cdecl; external;
+procedure gtk_text_view_set_tabs(text_view: PGtkTextView; tabs: PPangoTabArray); cdecl; external;
+procedure gtk_text_view_set_wrap_mode(text_view: PGtkTextView; wrap_mode: TGtkWrapMode); cdecl; external;
+procedure gtk_text_view_window_to_buffer_coords(text_view: PGtkTextView; win: TGtkTextWindowType; window_x: gint; window_y: gint; buffer_x: Pgint; buffer_y: Pgint); cdecl; external;
+procedure gtk_theming_engine_get(engine: PGtkThemingEngine; state: TGtkStateFlags; args: array of const); cdecl; external;
+procedure gtk_theming_engine_get_background_color(engine: PGtkThemingEngine; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
+procedure gtk_theming_engine_get_border(engine: PGtkThemingEngine; state: TGtkStateFlags; border: PGtkBorder); cdecl; external;
+procedure gtk_theming_engine_get_border_color(engine: PGtkThemingEngine; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
+procedure gtk_theming_engine_get_color(engine: PGtkThemingEngine; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
+procedure gtk_theming_engine_get_margin(engine: PGtkThemingEngine; state: TGtkStateFlags; margin: PGtkBorder); cdecl; external;
+procedure gtk_theming_engine_get_padding(engine: PGtkThemingEngine; state: TGtkStateFlags; padding: PGtkBorder); cdecl; external;
+procedure gtk_theming_engine_get_property(engine: PGtkThemingEngine; property_: Pgchar; state: TGtkStateFlags; value: PGValue); cdecl; external;
+procedure gtk_theming_engine_get_style(engine: PGtkThemingEngine; args: array of const); cdecl; external;
+procedure gtk_theming_engine_get_style_property(engine: PGtkThemingEngine; property_name: Pgchar; value: PGValue); cdecl; external;
+procedure gtk_theming_engine_get_style_valist(engine: PGtkThemingEngine; args: Tva_list); cdecl; external;
+procedure gtk_theming_engine_get_valist(engine: PGtkThemingEngine; state: TGtkStateFlags; args: Tva_list); cdecl; external;
+procedure gtk_toggle_action_set_active(action: PGtkToggleAction; is_active: gboolean); cdecl; external;
+procedure gtk_toggle_action_set_draw_as_radio(action: PGtkToggleAction; draw_as_radio: gboolean); cdecl; external;
+procedure gtk_toggle_action_toggled(action: PGtkToggleAction); cdecl; external;
+procedure gtk_toggle_button_set_active(toggle_button: PGtkToggleButton; is_active: gboolean); cdecl; external;
+procedure gtk_toggle_button_set_inconsistent(toggle_button: PGtkToggleButton; setting: gboolean); cdecl; external;
+procedure gtk_toggle_button_set_mode(toggle_button: PGtkToggleButton; draw_indicator: gboolean); cdecl; external;
+procedure gtk_toggle_button_toggled(toggle_button: PGtkToggleButton); cdecl; external;
+procedure gtk_toggle_tool_button_set_active(button: PGtkToggleToolButton; is_active: gboolean); cdecl; external;
+procedure gtk_tool_button_set_icon_name(button: PGtkToolButton; icon_name: Pgchar); cdecl; external;
+procedure gtk_tool_button_set_icon_widget(button: PGtkToolButton; icon_widget: PGtkWidget); cdecl; external;
+procedure gtk_tool_button_set_label(button: PGtkToolButton; label_: Pgchar); cdecl; external;
+procedure gtk_tool_button_set_label_widget(button: PGtkToolButton; label_widget: PGtkWidget); cdecl; external;
+procedure gtk_tool_button_set_stock_id(button: PGtkToolButton; stock_id: Pgchar); cdecl; external;
+procedure gtk_tool_button_set_use_underline(button: PGtkToolButton; use_underline: gboolean); cdecl; external;
+procedure gtk_tool_item_group_insert(group: PGtkToolItemGroup; item: PGtkToolItem; position: gint); cdecl; external;
+procedure gtk_tool_item_group_set_collapsed(group: PGtkToolItemGroup; collapsed: gboolean); cdecl; external;
+procedure gtk_tool_item_group_set_ellipsize(group: PGtkToolItemGroup; ellipsize: TPangoEllipsizeMode); cdecl; external;
+procedure gtk_tool_item_group_set_header_relief(group: PGtkToolItemGroup; style: TGtkReliefStyle); cdecl; external;
+procedure gtk_tool_item_group_set_item_position(group: PGtkToolItemGroup; item: PGtkToolItem; position: gint); cdecl; external;
+procedure gtk_tool_item_group_set_label(group: PGtkToolItemGroup; label_: Pgchar); cdecl; external;
+procedure gtk_tool_item_group_set_label_widget(group: PGtkToolItemGroup; label_widget: PGtkWidget); cdecl; external;
+procedure gtk_tool_item_rebuild_menu(tool_item: PGtkToolItem); cdecl; external;
+procedure gtk_tool_item_set_expand(tool_item: PGtkToolItem; expand: gboolean); cdecl; external;
+procedure gtk_tool_item_set_homogeneous(tool_item: PGtkToolItem; homogeneous: gboolean); cdecl; external;
+procedure gtk_tool_item_set_is_important(tool_item: PGtkToolItem; is_important: gboolean); cdecl; external;
+procedure gtk_tool_item_set_proxy_menu_item(tool_item: PGtkToolItem; menu_item_id: Pgchar; menu_item: PGtkWidget); cdecl; external;
+procedure gtk_tool_item_set_tooltip_markup(tool_item: PGtkToolItem; markup: Pgchar); cdecl; external;
+procedure gtk_tool_item_set_tooltip_text(tool_item: PGtkToolItem; text: Pgchar); cdecl; external;
+procedure gtk_tool_item_set_use_drag_window(tool_item: PGtkToolItem; use_drag_window: gboolean); cdecl; external;
+procedure gtk_tool_item_set_visible_horizontal(tool_item: PGtkToolItem; visible_horizontal: gboolean); cdecl; external;
+procedure gtk_tool_item_set_visible_vertical(tool_item: PGtkToolItem; visible_vertical: gboolean); cdecl; external;
+procedure gtk_tool_item_toolbar_reconfigured(tool_item: PGtkToolItem); cdecl; external;
+procedure gtk_tool_palette_add_drag_dest(palette: PGtkToolPalette; widget: PGtkWidget; flags: TGtkDestDefaults; targets: TGtkToolPaletteDragTargets; actions: TGdkDragAction); cdecl; external;
+procedure gtk_tool_palette_set_drag_source(palette: PGtkToolPalette; targets: TGtkToolPaletteDragTargets); cdecl; external;
+procedure gtk_tool_palette_set_exclusive(palette: PGtkToolPalette; group: PGtkToolItemGroup; exclusive: gboolean); cdecl; external;
+procedure gtk_tool_palette_set_expand(palette: PGtkToolPalette; group: PGtkToolItemGroup; expand: gboolean); cdecl; external;
+procedure gtk_tool_palette_set_group_position(palette: PGtkToolPalette; group: PGtkToolItemGroup; position: gint); cdecl; external;
+procedure gtk_tool_palette_set_icon_size(palette: PGtkToolPalette; icon_size: gint); cdecl; external;
+procedure gtk_tool_palette_set_style(palette: PGtkToolPalette; style: TGtkToolbarStyle); cdecl; external;
+procedure gtk_tool_palette_unset_icon_size(palette: PGtkToolPalette); cdecl; external;
+procedure gtk_tool_palette_unset_style(palette: PGtkToolPalette); cdecl; external;
+procedure gtk_tool_shell_rebuild_menu(shell: PGtkToolShell); cdecl; external;
+procedure gtk_toolbar_insert(toolbar: PGtkToolbar; item: PGtkToolItem; pos: gint); cdecl; external;
+procedure gtk_toolbar_set_drop_highlight_item(toolbar: PGtkToolbar; tool_item: PGtkToolItem; index_: gint); cdecl; external;
+procedure gtk_toolbar_set_icon_size(toolbar: PGtkToolbar; icon_size: gint); cdecl; external;
+procedure gtk_toolbar_set_show_arrow(toolbar: PGtkToolbar; show_arrow: gboolean); cdecl; external;
+procedure gtk_toolbar_set_style(toolbar: PGtkToolbar; style: TGtkToolbarStyle); cdecl; external;
+procedure gtk_toolbar_unset_icon_size(toolbar: PGtkToolbar); cdecl; external;
+procedure gtk_toolbar_unset_style(toolbar: PGtkToolbar); cdecl; external;
+procedure gtk_tooltip_set_custom(tooltip: PGtkTooltip; custom_widget: PGtkWidget); cdecl; external;
+procedure gtk_tooltip_set_icon(tooltip: PGtkTooltip; pixbuf: PGdkPixbuf); cdecl; external;
+procedure gtk_tooltip_set_icon_from_gicon(tooltip: PGtkTooltip; gicon: PGIcon; size: gint); cdecl; external;
+procedure gtk_tooltip_set_icon_from_icon_name(tooltip: PGtkTooltip; icon_name: Pgchar; size: gint); cdecl; external;
+procedure gtk_tooltip_set_icon_from_stock(tooltip: PGtkTooltip; stock_id: Pgchar; size: gint); cdecl; external;
+procedure gtk_tooltip_set_markup(tooltip: PGtkTooltip; markup: Pgchar); cdecl; external;
+procedure gtk_tooltip_set_text(tooltip: PGtkTooltip; text: Pgchar); cdecl; external;
+procedure gtk_tooltip_set_tip_area(tooltip: PGtkTooltip; rect: PGdkRectangle); cdecl; external;
 procedure gtk_tooltip_trigger_tooltip_query(display: PGdkDisplay); cdecl; external;
-procedure gtk_tree_iter_free(ATreeIter: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_model_filter_clear_cache(ATreeModelFilter: PGtkTreeModelFilter); cdecl; external;
-procedure gtk_tree_model_filter_convert_iter_to_child_iter(ATreeModelFilter: PGtkTreeModelFilter; child_iter: PGtkTreeIter; filter_iter: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_model_filter_refilter(ATreeModelFilter: PGtkTreeModelFilter); cdecl; external;
-procedure gtk_tree_model_filter_set_modify_func(ATreeModelFilter: PGtkTreeModelFilter; n_columns: gint; types: PGType; func: TGtkTreeModelFilterModifyFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_tree_model_filter_set_visible_column(ATreeModelFilter: PGtkTreeModelFilter; column: gint); cdecl; external;
-procedure gtk_tree_model_filter_set_visible_func(ATreeModelFilter: PGtkTreeModelFilter; func: TGtkTreeModelFilterVisibleFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_tree_model_foreach(ATreeModel: PGtkTreeModel; func: TGtkTreeModelForeachFunc; user_data: gpointer); cdecl; external;
-procedure gtk_tree_model_get(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter; args: array of const); cdecl; external;
-procedure gtk_tree_model_get_valist(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter; var_args: Tva_list); cdecl; external;
-procedure gtk_tree_model_get_value(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter; column: gint; value: PGValue); cdecl; external;
-procedure gtk_tree_model_ref_node(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_model_row_changed(ATreeModel: PGtkTreeModel; path: PGtkTreePath; iter: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_model_row_deleted(ATreeModel: PGtkTreeModel; path: PGtkTreePath); cdecl; external;
-procedure gtk_tree_model_row_has_child_toggled(ATreeModel: PGtkTreeModel; path: PGtkTreePath; iter: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_model_row_inserted(ATreeModel: PGtkTreeModel; path: PGtkTreePath; iter: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_model_rows_reordered(ATreeModel: PGtkTreeModel; path: PGtkTreePath; iter: PGtkTreeIter; new_order: Pgint); cdecl; external;
-procedure gtk_tree_model_sort_clear_cache(ATreeModelSort: PGtkTreeModelSort); cdecl; external;
-procedure gtk_tree_model_sort_convert_iter_to_child_iter(ATreeModelSort: PGtkTreeModelSort; child_iter: PGtkTreeIter; sorted_iter: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_model_sort_reset_default_sort_func(ATreeModelSort: PGtkTreeModelSort); cdecl; external;
-procedure gtk_tree_model_unref_node(ATreeModel: PGtkTreeModel; iter: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_path_append_index(ATreePath: PGtkTreePath; index_: gint); cdecl; external;
-procedure gtk_tree_path_down(ATreePath: PGtkTreePath); cdecl; external;
-procedure gtk_tree_path_free(ATreePath: PGtkTreePath); cdecl; external;
-procedure gtk_tree_path_next(ATreePath: PGtkTreePath); cdecl; external;
-procedure gtk_tree_path_prepend_index(ATreePath: PGtkTreePath; index_: gint); cdecl; external;
+procedure gtk_tree_iter_free(iter: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_model_filter_clear_cache(filter: PGtkTreeModelFilter); cdecl; external;
+procedure gtk_tree_model_filter_convert_iter_to_child_iter(filter: PGtkTreeModelFilter; child_iter: PGtkTreeIter; filter_iter: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_model_filter_refilter(filter: PGtkTreeModelFilter); cdecl; external;
+procedure gtk_tree_model_filter_set_modify_func(filter: PGtkTreeModelFilter; n_columns: gint; types: PGType; func: TGtkTreeModelFilterModifyFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_tree_model_filter_set_visible_column(filter: PGtkTreeModelFilter; column: gint); cdecl; external;
+procedure gtk_tree_model_filter_set_visible_func(filter: PGtkTreeModelFilter; func: TGtkTreeModelFilterVisibleFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_tree_model_foreach(model: PGtkTreeModel; func: TGtkTreeModelForeachFunc; user_data: gpointer); cdecl; external;
+procedure gtk_tree_model_get(tree_model: PGtkTreeModel; iter: PGtkTreeIter; args: array of const); cdecl; external;
+procedure gtk_tree_model_get_valist(tree_model: PGtkTreeModel; iter: PGtkTreeIter; var_args: Tva_list); cdecl; external;
+procedure gtk_tree_model_get_value(tree_model: PGtkTreeModel; iter: PGtkTreeIter; column: gint; value: PGValue); cdecl; external;
+procedure gtk_tree_model_ref_node(tree_model: PGtkTreeModel; iter: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_model_row_changed(tree_model: PGtkTreeModel; path: PGtkTreePath; iter: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_model_row_deleted(tree_model: PGtkTreeModel; path: PGtkTreePath); cdecl; external;
+procedure gtk_tree_model_row_has_child_toggled(tree_model: PGtkTreeModel; path: PGtkTreePath; iter: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_model_row_inserted(tree_model: PGtkTreeModel; path: PGtkTreePath; iter: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_model_rows_reordered(tree_model: PGtkTreeModel; path: PGtkTreePath; iter: PGtkTreeIter; new_order: Pgint); cdecl; external;
+procedure gtk_tree_model_sort_clear_cache(tree_model_sort: PGtkTreeModelSort); cdecl; external;
+procedure gtk_tree_model_sort_convert_iter_to_child_iter(tree_model_sort: PGtkTreeModelSort; child_iter: PGtkTreeIter; sorted_iter: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_model_sort_reset_default_sort_func(tree_model_sort: PGtkTreeModelSort); cdecl; external;
+procedure gtk_tree_model_unref_node(tree_model: PGtkTreeModel; iter: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_path_append_index(path: PGtkTreePath; index_: gint); cdecl; external;
+procedure gtk_tree_path_down(path: PGtkTreePath); cdecl; external;
+procedure gtk_tree_path_free(path: PGtkTreePath); cdecl; external;
+procedure gtk_tree_path_next(path: PGtkTreePath); cdecl; external;
+procedure gtk_tree_path_prepend_index(path: PGtkTreePath; index_: gint); cdecl; external;
 procedure gtk_tree_row_reference_deleted(proxy: PGObject; path: PGtkTreePath); cdecl; external;
-procedure gtk_tree_row_reference_free(ATreeRowReference: PGtkTreeRowReference); cdecl; external;
+procedure gtk_tree_row_reference_free(reference: PGtkTreeRowReference); cdecl; external;
 procedure gtk_tree_row_reference_inserted(proxy: PGObject; path: PGtkTreePath); cdecl; external;
 procedure gtk_tree_row_reference_reordered(proxy: PGObject; path: PGtkTreePath; iter: PGtkTreeIter; new_order: Pgint); cdecl; external;
-procedure gtk_tree_selection_select_all(ATreeSelection: PGtkTreeSelection); cdecl; external;
-procedure gtk_tree_selection_select_iter(ATreeSelection: PGtkTreeSelection; iter: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_selection_select_path(ATreeSelection: PGtkTreeSelection; path: PGtkTreePath); cdecl; external;
-procedure gtk_tree_selection_select_range(ATreeSelection: PGtkTreeSelection; start_path: PGtkTreePath; end_path: PGtkTreePath); cdecl; external;
-procedure gtk_tree_selection_selected_foreach(ATreeSelection: PGtkTreeSelection; func: TGtkTreeSelectionForeachFunc; data: gpointer); cdecl; external;
-procedure gtk_tree_selection_set_mode(ATreeSelection: PGtkTreeSelection; type_: TGtkSelectionMode); cdecl; external;
-procedure gtk_tree_selection_set_select_function(ATreeSelection: PGtkTreeSelection; func: TGtkTreeSelectionFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_tree_selection_unselect_all(ATreeSelection: PGtkTreeSelection); cdecl; external;
-procedure gtk_tree_selection_unselect_iter(ATreeSelection: PGtkTreeSelection; iter: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_selection_unselect_path(ATreeSelection: PGtkTreeSelection; path: PGtkTreePath); cdecl; external;
-procedure gtk_tree_selection_unselect_range(ATreeSelection: PGtkTreeSelection; start_path: PGtkTreePath; end_path: PGtkTreePath); cdecl; external;
-procedure gtk_tree_sortable_set_default_sort_func(ATreeSortable: PGtkTreeSortable; sort_func: TGtkTreeIterCompareFunc; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_tree_sortable_set_sort_column_id(ATreeSortable: PGtkTreeSortable; sort_column_id: gint; order: TGtkSortType); cdecl; external;
-procedure gtk_tree_sortable_set_sort_func(ATreeSortable: PGtkTreeSortable; sort_column_id: gint; sort_func: TGtkTreeIterCompareFunc; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_tree_sortable_sort_column_changed(ATreeSortable: PGtkTreeSortable); cdecl; external;
-procedure gtk_tree_store_append(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_store_clear(ATreeStore: PGtkTreeStore); cdecl; external;
-procedure gtk_tree_store_insert(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter; position: gint); cdecl; external;
-procedure gtk_tree_store_insert_after(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter; sibling: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_store_insert_before(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter; sibling: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_store_insert_with_values(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter; position: gint; args: array of const); cdecl; external;
-procedure gtk_tree_store_insert_with_valuesv(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter; position: gint; columns: Pgint; values: PGValue; n_values: gint); cdecl; external;
-procedure gtk_tree_store_move_after(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; position: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_store_move_before(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; position: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_store_prepend(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_store_reorder(ATreeStore: PGtkTreeStore; parent: PGtkTreeIter; new_order: Pgint); cdecl; external;
-procedure gtk_tree_store_set(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; args: array of const); cdecl; external;
-procedure gtk_tree_store_set_column_types(ATreeStore: PGtkTreeStore; n_columns: gint; types: PGType); cdecl; external;
-procedure gtk_tree_store_set_valist(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; var_args: Tva_list); cdecl; external;
-procedure gtk_tree_store_set_value(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; column: gint; value: PGValue); cdecl; external;
-procedure gtk_tree_store_set_valuesv(ATreeStore: PGtkTreeStore; iter: PGtkTreeIter; columns: Pgint; values: PGValue; n_values: gint); cdecl; external;
-procedure gtk_tree_store_swap(ATreeStore: PGtkTreeStore; a: PGtkTreeIter; b: PGtkTreeIter); cdecl; external;
-procedure gtk_tree_view_collapse_all(ATreeView: PGtkTreeView); cdecl; external;
-procedure gtk_tree_view_column_add_attribute(ATreeViewColumn: PGtkTreeViewColumn; cell_renderer: PGtkCellRenderer; attribute: Pgchar; column: gint); cdecl; external;
-procedure gtk_tree_view_column_cell_get_size(ATreeViewColumn: PGtkTreeViewColumn; cell_area: PGdkRectangle; x_offset: Pgint; y_offset: Pgint; width: Pgint; height: Pgint); cdecl; external;
-procedure gtk_tree_view_column_cell_set_cell_data(ATreeViewColumn: PGtkTreeViewColumn; tree_model: PGtkTreeModel; iter: PGtkTreeIter; is_expander: gboolean; is_expanded: gboolean); cdecl; external;
-procedure gtk_tree_view_column_clear(ATreeViewColumn: PGtkTreeViewColumn); cdecl; external;
-procedure gtk_tree_view_column_clear_attributes(ATreeViewColumn: PGtkTreeViewColumn; cell_renderer: PGtkCellRenderer); cdecl; external;
-procedure gtk_tree_view_column_clicked(ATreeViewColumn: PGtkTreeViewColumn); cdecl; external;
-procedure gtk_tree_view_column_focus_cell(ATreeViewColumn: PGtkTreeViewColumn; cell: PGtkCellRenderer); cdecl; external;
-procedure gtk_tree_view_column_pack_end(ATreeViewColumn: PGtkTreeViewColumn; cell: PGtkCellRenderer; expand: gboolean); cdecl; external;
-procedure gtk_tree_view_column_pack_start(ATreeViewColumn: PGtkTreeViewColumn; cell: PGtkCellRenderer; expand: gboolean); cdecl; external;
-procedure gtk_tree_view_column_queue_resize(ATreeViewColumn: PGtkTreeViewColumn); cdecl; external;
-procedure gtk_tree_view_column_set_alignment(ATreeViewColumn: PGtkTreeViewColumn; xalign: gfloat); cdecl; external;
-procedure gtk_tree_view_column_set_attributes(ATreeViewColumn: PGtkTreeViewColumn; cell_renderer: PGtkCellRenderer; args: array of const); cdecl; external;
-procedure gtk_tree_view_column_set_cell_data_func(ATreeViewColumn: PGtkTreeViewColumn; cell_renderer: PGtkCellRenderer; func: TGtkTreeCellDataFunc; func_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_tree_view_column_set_clickable(ATreeViewColumn: PGtkTreeViewColumn; clickable: gboolean); cdecl; external;
-procedure gtk_tree_view_column_set_expand(ATreeViewColumn: PGtkTreeViewColumn; expand: gboolean); cdecl; external;
-procedure gtk_tree_view_column_set_fixed_width(ATreeViewColumn: PGtkTreeViewColumn; fixed_width: gint); cdecl; external;
-procedure gtk_tree_view_column_set_max_width(ATreeViewColumn: PGtkTreeViewColumn; max_width: gint); cdecl; external;
-procedure gtk_tree_view_column_set_min_width(ATreeViewColumn: PGtkTreeViewColumn; min_width: gint); cdecl; external;
-procedure gtk_tree_view_column_set_reorderable(ATreeViewColumn: PGtkTreeViewColumn; reorderable: gboolean); cdecl; external;
-procedure gtk_tree_view_column_set_resizable(ATreeViewColumn: PGtkTreeViewColumn; resizable: gboolean); cdecl; external;
-procedure gtk_tree_view_column_set_sizing(ATreeViewColumn: PGtkTreeViewColumn; type_: TGtkTreeViewColumnSizing); cdecl; external;
-procedure gtk_tree_view_column_set_sort_column_id(ATreeViewColumn: PGtkTreeViewColumn; sort_column_id: gint); cdecl; external;
-procedure gtk_tree_view_column_set_sort_indicator(ATreeViewColumn: PGtkTreeViewColumn; setting: gboolean); cdecl; external;
-procedure gtk_tree_view_column_set_sort_order(ATreeViewColumn: PGtkTreeViewColumn; order: TGtkSortType); cdecl; external;
-procedure gtk_tree_view_column_set_spacing(ATreeViewColumn: PGtkTreeViewColumn; spacing: gint); cdecl; external;
-procedure gtk_tree_view_column_set_title(ATreeViewColumn: PGtkTreeViewColumn; title: Pgchar); cdecl; external;
-procedure gtk_tree_view_column_set_visible(ATreeViewColumn: PGtkTreeViewColumn; visible: gboolean); cdecl; external;
-procedure gtk_tree_view_column_set_widget(ATreeViewColumn: PGtkTreeViewColumn; widget: PGtkWidget); cdecl; external;
-procedure gtk_tree_view_columns_autosize(ATreeView: PGtkTreeView); cdecl; external;
-procedure gtk_tree_view_convert_bin_window_to_tree_coords(ATreeView: PGtkTreeView; bx: gint; by: gint; tx: Pgint; ty: Pgint); cdecl; external;
-procedure gtk_tree_view_convert_bin_window_to_widget_coords(ATreeView: PGtkTreeView; bx: gint; by: gint; wx: Pgint; wy: Pgint); cdecl; external;
-procedure gtk_tree_view_convert_tree_to_bin_window_coords(ATreeView: PGtkTreeView; tx: gint; ty: gint; bx: Pgint; by: Pgint); cdecl; external;
-procedure gtk_tree_view_convert_tree_to_widget_coords(ATreeView: PGtkTreeView; tx: gint; ty: gint; wx: Pgint; wy: Pgint); cdecl; external;
-procedure gtk_tree_view_convert_widget_to_bin_window_coords(ATreeView: PGtkTreeView; wx: gint; wy: gint; bx: Pgint; by: Pgint); cdecl; external;
-procedure gtk_tree_view_convert_widget_to_tree_coords(ATreeView: PGtkTreeView; wx: gint; wy: gint; tx: Pgint; ty: Pgint); cdecl; external;
-procedure gtk_tree_view_enable_model_drag_dest(ATreeView: PGtkTreeView; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; external;
-procedure gtk_tree_view_enable_model_drag_source(ATreeView: PGtkTreeView; start_button_mask: TGdkModifierType; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; external;
-procedure gtk_tree_view_expand_all(ATreeView: PGtkTreeView); cdecl; external;
-procedure gtk_tree_view_expand_to_path(ATreeView: PGtkTreeView; path: PGtkTreePath); cdecl; external;
-procedure gtk_tree_view_get_background_area(ATreeView: PGtkTreeView; path: PGtkTreePath; column: PGtkTreeViewColumn; rect: PGdkRectangle); cdecl; external;
-procedure gtk_tree_view_get_cell_area(ATreeView: PGtkTreeView; path: PGtkTreePath; column: PGtkTreeViewColumn; rect: PGdkRectangle); cdecl; external;
-procedure gtk_tree_view_get_cursor(ATreeView: PGtkTreeView; path: PPGtkTreePath; focus_column: PPGtkTreeViewColumn); cdecl; external;
-procedure gtk_tree_view_get_drag_dest_row(ATreeView: PGtkTreeView; path: PPGtkTreePath; pos: PGtkTreeViewDropPosition); cdecl; external;
-procedure gtk_tree_view_get_visible_rect(ATreeView: PGtkTreeView; visible_rect: PGdkRectangle); cdecl; external;
-procedure gtk_tree_view_map_expanded_rows(ATreeView: PGtkTreeView; func: TGtkTreeViewMappingFunc; data: gpointer); cdecl; external;
-procedure gtk_tree_view_move_column_after(ATreeView: PGtkTreeView; column: PGtkTreeViewColumn; base_column: PGtkTreeViewColumn); cdecl; external;
-procedure gtk_tree_view_row_activated(ATreeView: PGtkTreeView; path: PGtkTreePath; column: PGtkTreeViewColumn); cdecl; external;
-procedure gtk_tree_view_scroll_to_cell(ATreeView: PGtkTreeView; path: PGtkTreePath; column: PGtkTreeViewColumn; use_align: gboolean; row_align: gfloat; col_align: gfloat); cdecl; external;
-procedure gtk_tree_view_scroll_to_point(ATreeView: PGtkTreeView; tree_x: gint; tree_y: gint); cdecl; external;
-procedure gtk_tree_view_set_column_drag_function(ATreeView: PGtkTreeView; func: TGtkTreeViewColumnDropFunc; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_tree_view_set_cursor(ATreeView: PGtkTreeView; path: PGtkTreePath; focus_column: PGtkTreeViewColumn; start_editing: gboolean); cdecl; external;
-procedure gtk_tree_view_set_cursor_on_cell(ATreeView: PGtkTreeView; path: PGtkTreePath; focus_column: PGtkTreeViewColumn; focus_cell: PGtkCellRenderer; start_editing: gboolean); cdecl; external;
-procedure gtk_tree_view_set_drag_dest_row(ATreeView: PGtkTreeView; path: PGtkTreePath; pos: TGtkTreeViewDropPosition); cdecl; external;
-procedure gtk_tree_view_set_enable_search(ATreeView: PGtkTreeView; enable_search: gboolean); cdecl; external;
-procedure gtk_tree_view_set_enable_tree_lines(ATreeView: PGtkTreeView; enabled: gboolean); cdecl; external;
-procedure gtk_tree_view_set_expander_column(ATreeView: PGtkTreeView; column: PGtkTreeViewColumn); cdecl; external;
-procedure gtk_tree_view_set_fixed_height_mode(ATreeView: PGtkTreeView; enable: gboolean); cdecl; external;
-procedure gtk_tree_view_set_grid_lines(ATreeView: PGtkTreeView; grid_lines: TGtkTreeViewGridLines); cdecl; external;
-procedure gtk_tree_view_set_headers_clickable(ATreeView: PGtkTreeView; setting: gboolean); cdecl; external;
-procedure gtk_tree_view_set_headers_visible(ATreeView: PGtkTreeView; headers_visible: gboolean); cdecl; external;
-procedure gtk_tree_view_set_hover_expand(ATreeView: PGtkTreeView; expand: gboolean); cdecl; external;
-procedure gtk_tree_view_set_hover_selection(ATreeView: PGtkTreeView; hover: gboolean); cdecl; external;
-procedure gtk_tree_view_set_level_indentation(ATreeView: PGtkTreeView; indentation: gint); cdecl; external;
-procedure gtk_tree_view_set_model(ATreeView: PGtkTreeView; model: PGtkTreeModel); cdecl; external;
-procedure gtk_tree_view_set_reorderable(ATreeView: PGtkTreeView; reorderable: gboolean); cdecl; external;
-procedure gtk_tree_view_set_row_separator_func(ATreeView: PGtkTreeView; func: TGtkTreeViewRowSeparatorFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_tree_view_set_rubber_banding(ATreeView: PGtkTreeView; enable: gboolean); cdecl; external;
-procedure gtk_tree_view_set_rules_hint(ATreeView: PGtkTreeView; setting: gboolean); cdecl; external;
-procedure gtk_tree_view_set_search_column(ATreeView: PGtkTreeView; column: gint); cdecl; external;
-procedure gtk_tree_view_set_search_entry(ATreeView: PGtkTreeView; entry: PGtkEntry); cdecl; external;
-procedure gtk_tree_view_set_search_equal_func(ATreeView: PGtkTreeView; search_equal_func: TGtkTreeViewSearchEqualFunc; search_user_data: gpointer; search_destroy: TGDestroyNotify); cdecl; external;
-procedure gtk_tree_view_set_search_position_func(ATreeView: PGtkTreeView; func: TGtkTreeViewSearchPositionFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure gtk_tree_view_set_show_expanders(ATreeView: PGtkTreeView; enabled: gboolean); cdecl; external;
-procedure gtk_tree_view_set_tooltip_cell(ATreeView: PGtkTreeView; tooltip: PGtkTooltip; path: PGtkTreePath; column: PGtkTreeViewColumn; cell: PGtkCellRenderer); cdecl; external;
-procedure gtk_tree_view_set_tooltip_column(ATreeView: PGtkTreeView; column: gint); cdecl; external;
-procedure gtk_tree_view_set_tooltip_row(ATreeView: PGtkTreeView; tooltip: PGtkTooltip; path: PGtkTreePath); cdecl; external;
-procedure gtk_tree_view_unset_rows_drag_dest(ATreeView: PGtkTreeView); cdecl; external;
-procedure gtk_tree_view_unset_rows_drag_source(ATreeView: PGtkTreeView); cdecl; external;
-procedure gtk_ui_manager_add_ui(AUIManager: PGtkUIManager; merge_id: guint; path: Pgchar; name: Pgchar; action: Pgchar; type_: TGtkUIManagerItemType; top: gboolean); cdecl; external;
-procedure gtk_ui_manager_ensure_update(AUIManager: PGtkUIManager); cdecl; external;
-procedure gtk_ui_manager_insert_action_group(AUIManager: PGtkUIManager; action_group: PGtkActionGroup; pos: gint); cdecl; external;
-procedure gtk_ui_manager_remove_action_group(AUIManager: PGtkUIManager; action_group: PGtkActionGroup); cdecl; external;
-procedure gtk_ui_manager_remove_ui(AUIManager: PGtkUIManager; merge_id: guint); cdecl; external;
-procedure gtk_viewport_set_shadow_type(AViewport: PGtkViewport; type_: TGtkShadowType); cdecl; external;
-procedure gtk_widget_add_accelerator(AWidget: PGtkWidget; accel_signal: Pgchar; accel_group: PGtkAccelGroup; accel_key: guint; accel_mods: TGdkModifierType; accel_flags: TGtkAccelFlags); cdecl; external;
-procedure gtk_widget_add_device_events(AWidget: PGtkWidget; device: PGdkDevice; events: TGdkEventMask); cdecl; external;
-procedure gtk_widget_add_events(AWidget: PGtkWidget; events: gint); cdecl; external;
-procedure gtk_widget_add_mnemonic_label(AWidget: PGtkWidget; label_: PGtkWidget); cdecl; external;
-procedure gtk_widget_child_notify(AWidget: PGtkWidget; child_property: Pgchar); cdecl; external;
-procedure gtk_widget_class_install_style_property(AWidgetClass: PGtkWidgetClass; pspec: PGParamSpec); cdecl; external;
-procedure gtk_widget_class_install_style_property_parser(AWidgetClass: PGtkWidgetClass; pspec: PGParamSpec; parser: TGtkRcPropertyParser); cdecl; external;
-procedure gtk_widget_class_path(AWidget: PGtkWidget; path_length: Pguint; path: PPgchar; path_reversed: PPgchar); cdecl; external;
-procedure gtk_widget_class_set_accessible_role(AWidgetClass: PGtkWidgetClass; role: TAtkRole); cdecl; external;
-procedure gtk_widget_class_set_accessible_type(AWidgetClass: PGtkWidgetClass; type_: TGType); cdecl; external;
-procedure gtk_widget_destroy(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_destroyed(AWidget: PGtkWidget; widget_pointer: PPGtkWidget); cdecl; external;
-procedure gtk_widget_draw(AWidget: PGtkWidget; cr: Pcairo_t); cdecl; external;
-procedure gtk_widget_ensure_style(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_error_bell(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_freeze_child_notify(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_get_allocation(AWidget: PGtkWidget; allocation: PGtkAllocation); cdecl; external;
-procedure gtk_widget_get_preferred_height(AWidget: PGtkWidget; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
-procedure gtk_widget_get_preferred_height_for_width(AWidget: PGtkWidget; width: gint; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
-procedure gtk_widget_get_preferred_size(AWidget: PGtkWidget; minimum_size: PGtkRequisition; natural_size: PGtkRequisition); cdecl; external;
-procedure gtk_widget_get_preferred_width(AWidget: PGtkWidget; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
-procedure gtk_widget_get_preferred_width_for_height(AWidget: PGtkWidget; height: gint; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
-procedure gtk_widget_get_size_request(AWidget: PGtkWidget; width: Pgint; height: Pgint); cdecl; external;
-procedure gtk_widget_grab_default(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_grab_focus(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_hide(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_input_shape_combine_region(AWidget: PGtkWidget; region: Pcairo_region_t); cdecl; external;
-procedure gtk_widget_map(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_modify_base(AWidget: PGtkWidget; state: TGtkStateType; color: PGdkColor); cdecl; external;
-procedure gtk_widget_modify_bg(AWidget: PGtkWidget; state: TGtkStateType; color: PGdkColor); cdecl; external;
-procedure gtk_widget_modify_fg(AWidget: PGtkWidget; state: TGtkStateType; color: PGdkColor); cdecl; external;
-procedure gtk_widget_modify_font(AWidget: PGtkWidget; font_desc: PPangoFontDescription); cdecl; external;
-procedure gtk_widget_modify_style(AWidget: PGtkWidget; style: PGtkRcStyle); cdecl; external;
-procedure gtk_widget_modify_text(AWidget: PGtkWidget; state: TGtkStateType; color: PGdkColor); cdecl; external;
-procedure gtk_widget_override_background_color(AWidget: PGtkWidget; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
-procedure gtk_widget_override_color(AWidget: PGtkWidget; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
-procedure gtk_widget_override_cursor(AWidget: PGtkWidget; cursor: PGdkRGBA; secondary_cursor: PGdkRGBA); cdecl; external;
-procedure gtk_widget_override_font(AWidget: PGtkWidget; font_desc: PPangoFontDescription); cdecl; external;
-procedure gtk_widget_override_symbolic_color(AWidget: PGtkWidget; name: Pgchar; color: PGdkRGBA); cdecl; external;
-procedure gtk_widget_path(AWidget: PGtkWidget; path_length: Pguint; path: PPgchar; path_reversed: PPgchar); cdecl; external;
-procedure gtk_widget_path_free(AWidgetPath: PGtkWidgetPath); cdecl; external;
-procedure gtk_widget_path_iter_add_class(AWidgetPath: PGtkWidgetPath; pos: gint; name: Pgchar); cdecl; external;
-procedure gtk_widget_path_iter_add_region(AWidgetPath: PGtkWidgetPath; pos: gint; name: Pgchar; flags: TGtkRegionFlags); cdecl; external;
-procedure gtk_widget_path_iter_clear_classes(AWidgetPath: PGtkWidgetPath; pos: gint); cdecl; external;
-procedure gtk_widget_path_iter_clear_regions(AWidgetPath: PGtkWidgetPath; pos: gint); cdecl; external;
-procedure gtk_widget_path_iter_remove_class(AWidgetPath: PGtkWidgetPath; pos: gint; name: Pgchar); cdecl; external;
-procedure gtk_widget_path_iter_remove_region(AWidgetPath: PGtkWidgetPath; pos: gint; name: Pgchar); cdecl; external;
-procedure gtk_widget_path_iter_set_name(AWidgetPath: PGtkWidgetPath; pos: gint; name: Pgchar); cdecl; external;
-procedure gtk_widget_path_iter_set_object_type(AWidgetPath: PGtkWidgetPath; pos: gint; type_: TGType); cdecl; external;
-procedure gtk_widget_path_prepend_type(AWidgetPath: PGtkWidgetPath; type_: TGType); cdecl; external;
-procedure gtk_widget_path_unref(AWidgetPath: PGtkWidgetPath); cdecl; external;
+procedure gtk_tree_selection_select_all(selection: PGtkTreeSelection); cdecl; external;
+procedure gtk_tree_selection_select_iter(selection: PGtkTreeSelection; iter: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_selection_select_path(selection: PGtkTreeSelection; path: PGtkTreePath); cdecl; external;
+procedure gtk_tree_selection_select_range(selection: PGtkTreeSelection; start_path: PGtkTreePath; end_path: PGtkTreePath); cdecl; external;
+procedure gtk_tree_selection_selected_foreach(selection: PGtkTreeSelection; func: TGtkTreeSelectionForeachFunc; data: gpointer); cdecl; external;
+procedure gtk_tree_selection_set_mode(selection: PGtkTreeSelection; type_: TGtkSelectionMode); cdecl; external;
+procedure gtk_tree_selection_set_select_function(selection: PGtkTreeSelection; func: TGtkTreeSelectionFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_tree_selection_unselect_all(selection: PGtkTreeSelection); cdecl; external;
+procedure gtk_tree_selection_unselect_iter(selection: PGtkTreeSelection; iter: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_selection_unselect_path(selection: PGtkTreeSelection; path: PGtkTreePath); cdecl; external;
+procedure gtk_tree_selection_unselect_range(selection: PGtkTreeSelection; start_path: PGtkTreePath; end_path: PGtkTreePath); cdecl; external;
+procedure gtk_tree_sortable_set_default_sort_func(sortable: PGtkTreeSortable; sort_func: TGtkTreeIterCompareFunc; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_tree_sortable_set_sort_column_id(sortable: PGtkTreeSortable; sort_column_id: gint; order: TGtkSortType); cdecl; external;
+procedure gtk_tree_sortable_set_sort_func(sortable: PGtkTreeSortable; sort_column_id: gint; sort_func: TGtkTreeIterCompareFunc; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_tree_sortable_sort_column_changed(sortable: PGtkTreeSortable); cdecl; external;
+procedure gtk_tree_store_append(tree_store: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_store_clear(tree_store: PGtkTreeStore); cdecl; external;
+procedure gtk_tree_store_insert(tree_store: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter; position: gint); cdecl; external;
+procedure gtk_tree_store_insert_after(tree_store: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter; sibling: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_store_insert_before(tree_store: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter; sibling: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_store_insert_with_values(tree_store: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter; position: gint; args: array of const); cdecl; external;
+procedure gtk_tree_store_insert_with_valuesv(tree_store: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter; position: gint; columns: Pgint; values: PGValue; n_values: gint); cdecl; external;
+procedure gtk_tree_store_move_after(tree_store: PGtkTreeStore; iter: PGtkTreeIter; position: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_store_move_before(tree_store: PGtkTreeStore; iter: PGtkTreeIter; position: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_store_prepend(tree_store: PGtkTreeStore; iter: PGtkTreeIter; parent: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_store_reorder(tree_store: PGtkTreeStore; parent: PGtkTreeIter; new_order: Pgint); cdecl; external;
+procedure gtk_tree_store_set(tree_store: PGtkTreeStore; iter: PGtkTreeIter; args: array of const); cdecl; external;
+procedure gtk_tree_store_set_column_types(tree_store: PGtkTreeStore; n_columns: gint; types: PGType); cdecl; external;
+procedure gtk_tree_store_set_valist(tree_store: PGtkTreeStore; iter: PGtkTreeIter; var_args: Tva_list); cdecl; external;
+procedure gtk_tree_store_set_value(tree_store: PGtkTreeStore; iter: PGtkTreeIter; column: gint; value: PGValue); cdecl; external;
+procedure gtk_tree_store_set_valuesv(tree_store: PGtkTreeStore; iter: PGtkTreeIter; columns: Pgint; values: PGValue; n_values: gint); cdecl; external;
+procedure gtk_tree_store_swap(tree_store: PGtkTreeStore; a: PGtkTreeIter; b: PGtkTreeIter); cdecl; external;
+procedure gtk_tree_view_collapse_all(tree_view: PGtkTreeView); cdecl; external;
+procedure gtk_tree_view_column_add_attribute(tree_column: PGtkTreeViewColumn; cell_renderer: PGtkCellRenderer; attribute: Pgchar; column: gint); cdecl; external;
+procedure gtk_tree_view_column_cell_get_size(tree_column: PGtkTreeViewColumn; cell_area: PGdkRectangle; x_offset: Pgint; y_offset: Pgint; width: Pgint; height: Pgint); cdecl; external;
+procedure gtk_tree_view_column_cell_set_cell_data(tree_column: PGtkTreeViewColumn; tree_model: PGtkTreeModel; iter: PGtkTreeIter; is_expander: gboolean; is_expanded: gboolean); cdecl; external;
+procedure gtk_tree_view_column_clear(tree_column: PGtkTreeViewColumn); cdecl; external;
+procedure gtk_tree_view_column_clear_attributes(tree_column: PGtkTreeViewColumn; cell_renderer: PGtkCellRenderer); cdecl; external;
+procedure gtk_tree_view_column_clicked(tree_column: PGtkTreeViewColumn); cdecl; external;
+procedure gtk_tree_view_column_focus_cell(tree_column: PGtkTreeViewColumn; cell: PGtkCellRenderer); cdecl; external;
+procedure gtk_tree_view_column_pack_end(tree_column: PGtkTreeViewColumn; cell: PGtkCellRenderer; expand: gboolean); cdecl; external;
+procedure gtk_tree_view_column_pack_start(tree_column: PGtkTreeViewColumn; cell: PGtkCellRenderer; expand: gboolean); cdecl; external;
+procedure gtk_tree_view_column_queue_resize(tree_column: PGtkTreeViewColumn); cdecl; external;
+procedure gtk_tree_view_column_set_alignment(tree_column: PGtkTreeViewColumn; xalign: gfloat); cdecl; external;
+procedure gtk_tree_view_column_set_attributes(tree_column: PGtkTreeViewColumn; cell_renderer: PGtkCellRenderer; args: array of const); cdecl; external;
+procedure gtk_tree_view_column_set_cell_data_func(tree_column: PGtkTreeViewColumn; cell_renderer: PGtkCellRenderer; func: TGtkTreeCellDataFunc; func_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_tree_view_column_set_clickable(tree_column: PGtkTreeViewColumn; clickable: gboolean); cdecl; external;
+procedure gtk_tree_view_column_set_expand(tree_column: PGtkTreeViewColumn; expand: gboolean); cdecl; external;
+procedure gtk_tree_view_column_set_fixed_width(tree_column: PGtkTreeViewColumn; fixed_width: gint); cdecl; external;
+procedure gtk_tree_view_column_set_max_width(tree_column: PGtkTreeViewColumn; max_width: gint); cdecl; external;
+procedure gtk_tree_view_column_set_min_width(tree_column: PGtkTreeViewColumn; min_width: gint); cdecl; external;
+procedure gtk_tree_view_column_set_reorderable(tree_column: PGtkTreeViewColumn; reorderable: gboolean); cdecl; external;
+procedure gtk_tree_view_column_set_resizable(tree_column: PGtkTreeViewColumn; resizable: gboolean); cdecl; external;
+procedure gtk_tree_view_column_set_sizing(tree_column: PGtkTreeViewColumn; type_: TGtkTreeViewColumnSizing); cdecl; external;
+procedure gtk_tree_view_column_set_sort_column_id(tree_column: PGtkTreeViewColumn; sort_column_id: gint); cdecl; external;
+procedure gtk_tree_view_column_set_sort_indicator(tree_column: PGtkTreeViewColumn; setting: gboolean); cdecl; external;
+procedure gtk_tree_view_column_set_sort_order(tree_column: PGtkTreeViewColumn; order: TGtkSortType); cdecl; external;
+procedure gtk_tree_view_column_set_spacing(tree_column: PGtkTreeViewColumn; spacing: gint); cdecl; external;
+procedure gtk_tree_view_column_set_title(tree_column: PGtkTreeViewColumn; title: Pgchar); cdecl; external;
+procedure gtk_tree_view_column_set_visible(tree_column: PGtkTreeViewColumn; visible: gboolean); cdecl; external;
+procedure gtk_tree_view_column_set_widget(tree_column: PGtkTreeViewColumn; widget: PGtkWidget); cdecl; external;
+procedure gtk_tree_view_columns_autosize(tree_view: PGtkTreeView); cdecl; external;
+procedure gtk_tree_view_convert_bin_window_to_tree_coords(tree_view: PGtkTreeView; bx: gint; by: gint; tx: Pgint; ty: Pgint); cdecl; external;
+procedure gtk_tree_view_convert_bin_window_to_widget_coords(tree_view: PGtkTreeView; bx: gint; by: gint; wx: Pgint; wy: Pgint); cdecl; external;
+procedure gtk_tree_view_convert_tree_to_bin_window_coords(tree_view: PGtkTreeView; tx: gint; ty: gint; bx: Pgint; by: Pgint); cdecl; external;
+procedure gtk_tree_view_convert_tree_to_widget_coords(tree_view: PGtkTreeView; tx: gint; ty: gint; wx: Pgint; wy: Pgint); cdecl; external;
+procedure gtk_tree_view_convert_widget_to_bin_window_coords(tree_view: PGtkTreeView; wx: gint; wy: gint; bx: Pgint; by: Pgint); cdecl; external;
+procedure gtk_tree_view_convert_widget_to_tree_coords(tree_view: PGtkTreeView; wx: gint; wy: gint; tx: Pgint; ty: Pgint); cdecl; external;
+procedure gtk_tree_view_enable_model_drag_dest(tree_view: PGtkTreeView; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; external;
+procedure gtk_tree_view_enable_model_drag_source(tree_view: PGtkTreeView; start_button_mask: TGdkModifierType; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl; external;
+procedure gtk_tree_view_expand_all(tree_view: PGtkTreeView); cdecl; external;
+procedure gtk_tree_view_expand_to_path(tree_view: PGtkTreeView; path: PGtkTreePath); cdecl; external;
+procedure gtk_tree_view_get_background_area(tree_view: PGtkTreeView; path: PGtkTreePath; column: PGtkTreeViewColumn; rect: PGdkRectangle); cdecl; external;
+procedure gtk_tree_view_get_cell_area(tree_view: PGtkTreeView; path: PGtkTreePath; column: PGtkTreeViewColumn; rect: PGdkRectangle); cdecl; external;
+procedure gtk_tree_view_get_cursor(tree_view: PGtkTreeView; path: PPGtkTreePath; focus_column: PPGtkTreeViewColumn); cdecl; external;
+procedure gtk_tree_view_get_drag_dest_row(tree_view: PGtkTreeView; path: PPGtkTreePath; pos: PGtkTreeViewDropPosition); cdecl; external;
+procedure gtk_tree_view_get_visible_rect(tree_view: PGtkTreeView; visible_rect: PGdkRectangle); cdecl; external;
+procedure gtk_tree_view_map_expanded_rows(tree_view: PGtkTreeView; func: TGtkTreeViewMappingFunc; data: gpointer); cdecl; external;
+procedure gtk_tree_view_move_column_after(tree_view: PGtkTreeView; column: PGtkTreeViewColumn; base_column: PGtkTreeViewColumn); cdecl; external;
+procedure gtk_tree_view_row_activated(tree_view: PGtkTreeView; path: PGtkTreePath; column: PGtkTreeViewColumn); cdecl; external;
+procedure gtk_tree_view_scroll_to_cell(tree_view: PGtkTreeView; path: PGtkTreePath; column: PGtkTreeViewColumn; use_align: gboolean; row_align: gfloat; col_align: gfloat); cdecl; external;
+procedure gtk_tree_view_scroll_to_point(tree_view: PGtkTreeView; tree_x: gint; tree_y: gint); cdecl; external;
+procedure gtk_tree_view_set_activate_on_single_click(tree_view: PGtkTreeView; single: gboolean); cdecl; external;
+procedure gtk_tree_view_set_column_drag_function(tree_view: PGtkTreeView; func: TGtkTreeViewColumnDropFunc; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_tree_view_set_cursor(tree_view: PGtkTreeView; path: PGtkTreePath; focus_column: PGtkTreeViewColumn; start_editing: gboolean); cdecl; external;
+procedure gtk_tree_view_set_cursor_on_cell(tree_view: PGtkTreeView; path: PGtkTreePath; focus_column: PGtkTreeViewColumn; focus_cell: PGtkCellRenderer; start_editing: gboolean); cdecl; external;
+procedure gtk_tree_view_set_drag_dest_row(tree_view: PGtkTreeView; path: PGtkTreePath; pos: TGtkTreeViewDropPosition); cdecl; external;
+procedure gtk_tree_view_set_enable_search(tree_view: PGtkTreeView; enable_search: gboolean); cdecl; external;
+procedure gtk_tree_view_set_enable_tree_lines(tree_view: PGtkTreeView; enabled: gboolean); cdecl; external;
+procedure gtk_tree_view_set_expander_column(tree_view: PGtkTreeView; column: PGtkTreeViewColumn); cdecl; external;
+procedure gtk_tree_view_set_fixed_height_mode(tree_view: PGtkTreeView; enable: gboolean); cdecl; external;
+procedure gtk_tree_view_set_grid_lines(tree_view: PGtkTreeView; grid_lines: TGtkTreeViewGridLines); cdecl; external;
+procedure gtk_tree_view_set_headers_clickable(tree_view: PGtkTreeView; setting: gboolean); cdecl; external;
+procedure gtk_tree_view_set_headers_visible(tree_view: PGtkTreeView; headers_visible: gboolean); cdecl; external;
+procedure gtk_tree_view_set_hover_expand(tree_view: PGtkTreeView; expand: gboolean); cdecl; external;
+procedure gtk_tree_view_set_hover_selection(tree_view: PGtkTreeView; hover: gboolean); cdecl; external;
+procedure gtk_tree_view_set_level_indentation(tree_view: PGtkTreeView; indentation: gint); cdecl; external;
+procedure gtk_tree_view_set_model(tree_view: PGtkTreeView; model: PGtkTreeModel); cdecl; external;
+procedure gtk_tree_view_set_reorderable(tree_view: PGtkTreeView; reorderable: gboolean); cdecl; external;
+procedure gtk_tree_view_set_row_separator_func(tree_view: PGtkTreeView; func: TGtkTreeViewRowSeparatorFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_tree_view_set_rubber_banding(tree_view: PGtkTreeView; enable: gboolean); cdecl; external;
+procedure gtk_tree_view_set_rules_hint(tree_view: PGtkTreeView; setting: gboolean); cdecl; external;
+procedure gtk_tree_view_set_search_column(tree_view: PGtkTreeView; column: gint); cdecl; external;
+procedure gtk_tree_view_set_search_entry(tree_view: PGtkTreeView; entry: PGtkEntry); cdecl; external;
+procedure gtk_tree_view_set_search_equal_func(tree_view: PGtkTreeView; search_equal_func: TGtkTreeViewSearchEqualFunc; search_user_data: gpointer; search_destroy: TGDestroyNotify); cdecl; external;
+procedure gtk_tree_view_set_search_position_func(tree_view: PGtkTreeView; func: TGtkTreeViewSearchPositionFunc; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure gtk_tree_view_set_show_expanders(tree_view: PGtkTreeView; enabled: gboolean); cdecl; external;
+procedure gtk_tree_view_set_tooltip_cell(tree_view: PGtkTreeView; tooltip: PGtkTooltip; path: PGtkTreePath; column: PGtkTreeViewColumn; cell: PGtkCellRenderer); cdecl; external;
+procedure gtk_tree_view_set_tooltip_column(tree_view: PGtkTreeView; column: gint); cdecl; external;
+procedure gtk_tree_view_set_tooltip_row(tree_view: PGtkTreeView; tooltip: PGtkTooltip; path: PGtkTreePath); cdecl; external;
+procedure gtk_tree_view_unset_rows_drag_dest(tree_view: PGtkTreeView); cdecl; external;
+procedure gtk_tree_view_unset_rows_drag_source(tree_view: PGtkTreeView); cdecl; external;
+procedure gtk_ui_manager_add_ui(manager: PGtkUIManager; merge_id: guint; path: Pgchar; name: Pgchar; action: Pgchar; type_: TGtkUIManagerItemType; top: gboolean); cdecl; external;
+procedure gtk_ui_manager_ensure_update(manager: PGtkUIManager); cdecl; external;
+procedure gtk_ui_manager_insert_action_group(manager: PGtkUIManager; action_group: PGtkActionGroup; pos: gint); cdecl; external;
+procedure gtk_ui_manager_remove_action_group(manager: PGtkUIManager; action_group: PGtkActionGroup); cdecl; external;
+procedure gtk_ui_manager_remove_ui(manager: PGtkUIManager; merge_id: guint); cdecl; external;
+procedure gtk_viewport_set_shadow_type(viewport: PGtkViewport; type_: TGtkShadowType); cdecl; external;
+procedure gtk_widget_add_accelerator(widget: PGtkWidget; accel_signal: Pgchar; accel_group: PGtkAccelGroup; accel_key: guint; accel_mods: TGdkModifierType; accel_flags: TGtkAccelFlags); cdecl; external;
+procedure gtk_widget_add_device_events(widget: PGtkWidget; device: PGdkDevice; events: TGdkEventMask); cdecl; external;
+procedure gtk_widget_add_events(widget: PGtkWidget; events: gint); cdecl; external;
+procedure gtk_widget_add_mnemonic_label(widget: PGtkWidget; label_: PGtkWidget); cdecl; external;
+procedure gtk_widget_child_notify(widget: PGtkWidget; child_property: Pgchar); cdecl; external;
+procedure gtk_widget_class_install_style_property(klass: PGtkWidgetClass; pspec: PGParamSpec); cdecl; external;
+procedure gtk_widget_class_install_style_property_parser(klass: PGtkWidgetClass; pspec: PGParamSpec; parser: TGtkRcPropertyParser); cdecl; external;
+procedure gtk_widget_class_set_accessible_role(widget_class: PGtkWidgetClass; role: TAtkRole); cdecl; external;
+procedure gtk_widget_class_set_accessible_type(widget_class: PGtkWidgetClass; type_: TGType); cdecl; external;
+procedure gtk_widget_destroy(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_destroyed(widget: PGtkWidget; widget_pointer: PPGtkWidget); cdecl; external;
+procedure gtk_widget_draw(widget: PGtkWidget; cr: Pcairo_t); cdecl; external;
+procedure gtk_widget_error_bell(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_freeze_child_notify(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_get_allocation(widget: PGtkWidget; allocation: PGtkAllocation); cdecl; external;
+procedure gtk_widget_get_preferred_height(widget: PGtkWidget; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
+procedure gtk_widget_get_preferred_height_for_width(widget: PGtkWidget; width: gint; minimum_height: Pgint; natural_height: Pgint); cdecl; external;
+procedure gtk_widget_get_preferred_size(widget: PGtkWidget; minimum_size: PGtkRequisition; natural_size: PGtkRequisition); cdecl; external;
+procedure gtk_widget_get_preferred_width(widget: PGtkWidget; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
+procedure gtk_widget_get_preferred_width_for_height(widget: PGtkWidget; height: gint; minimum_width: Pgint; natural_width: Pgint); cdecl; external;
+procedure gtk_widget_get_size_request(widget: PGtkWidget; width: Pgint; height: Pgint); cdecl; external;
+procedure gtk_widget_grab_default(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_grab_focus(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_hide(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_input_shape_combine_region(widget: PGtkWidget; region: Pcairo_region_t); cdecl; external;
+procedure gtk_widget_insert_action_group(widget: PGtkWidget; name: Pgchar; group: PGActionGroup); cdecl; external;
+procedure gtk_widget_map(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_override_background_color(widget: PGtkWidget; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
+procedure gtk_widget_override_color(widget: PGtkWidget; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
+procedure gtk_widget_override_cursor(widget: PGtkWidget; cursor: PGdkRGBA; secondary_cursor: PGdkRGBA); cdecl; external;
+procedure gtk_widget_override_font(widget: PGtkWidget; font_desc: PPangoFontDescription); cdecl; external;
+procedure gtk_widget_override_symbolic_color(widget: PGtkWidget; name: Pgchar; color: PGdkRGBA); cdecl; external;
+procedure gtk_widget_path_free(path: PGtkWidgetPath); cdecl; external;
+procedure gtk_widget_path_iter_add_class(path: PGtkWidgetPath; pos: gint; name: Pgchar); cdecl; external;
+procedure gtk_widget_path_iter_add_region(path: PGtkWidgetPath; pos: gint; name: Pgchar; flags: TGtkRegionFlags); cdecl; external;
+procedure gtk_widget_path_iter_clear_classes(path: PGtkWidgetPath; pos: gint); cdecl; external;
+procedure gtk_widget_path_iter_clear_regions(path: PGtkWidgetPath; pos: gint); cdecl; external;
+procedure gtk_widget_path_iter_remove_class(path: PGtkWidgetPath; pos: gint; name: Pgchar); cdecl; external;
+procedure gtk_widget_path_iter_remove_region(path: PGtkWidgetPath; pos: gint; name: Pgchar); cdecl; external;
+procedure gtk_widget_path_iter_set_name(path: PGtkWidgetPath; pos: gint; name: Pgchar); cdecl; external;
+procedure gtk_widget_path_iter_set_object_type(path: PGtkWidgetPath; pos: gint; type_: TGType); cdecl; external;
+procedure gtk_widget_path_prepend_type(path: PGtkWidgetPath; type_: TGType); cdecl; external;
+procedure gtk_widget_path_unref(path: PGtkWidgetPath); cdecl; external;
 procedure gtk_widget_pop_composite_child; cdecl; external;
 procedure gtk_widget_push_composite_child; cdecl; external;
-procedure gtk_widget_queue_compute_expand(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_queue_draw(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_queue_draw_area(AWidget: PGtkWidget; x: gint; y: gint; width: gint; height: gint); cdecl; external;
-procedure gtk_widget_queue_draw_region(AWidget: PGtkWidget; region: Pcairo_region_t); cdecl; external;
-procedure gtk_widget_queue_resize(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_queue_resize_no_redraw(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_realize(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_remove_mnemonic_label(AWidget: PGtkWidget; label_: PGtkWidget); cdecl; external;
-procedure gtk_widget_reparent(AWidget: PGtkWidget; new_parent: PGtkWidget); cdecl; external;
-procedure gtk_widget_reset_rc_styles(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_reset_style(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_set_accel_path(AWidget: PGtkWidget; accel_path: Pgchar; accel_group: PGtkAccelGroup); cdecl; external;
-procedure gtk_widget_set_allocation(AWidget: PGtkWidget; allocation: PGtkAllocation); cdecl; external;
-procedure gtk_widget_set_app_paintable(AWidget: PGtkWidget; app_paintable: gboolean); cdecl; external;
-procedure gtk_widget_set_can_default(AWidget: PGtkWidget; can_default: gboolean); cdecl; external;
-procedure gtk_widget_set_can_focus(AWidget: PGtkWidget; can_focus: gboolean); cdecl; external;
-procedure gtk_widget_set_child_visible(AWidget: PGtkWidget; is_visible: gboolean); cdecl; external;
-procedure gtk_widget_set_composite_name(AWidget: PGtkWidget; name: Pgchar); cdecl; external;
+procedure gtk_widget_queue_compute_expand(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_queue_draw(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_queue_draw_area(widget: PGtkWidget; x: gint; y: gint; width: gint; height: gint); cdecl; external;
+procedure gtk_widget_queue_draw_region(widget: PGtkWidget; region: Pcairo_region_t); cdecl; external;
+procedure gtk_widget_queue_resize(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_queue_resize_no_redraw(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_realize(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_register_window(widget: PGtkWidget; window: PGdkWindow); cdecl; external;
+procedure gtk_widget_remove_mnemonic_label(widget: PGtkWidget; label_: PGtkWidget); cdecl; external;
+procedure gtk_widget_remove_tick_callback(widget: PGtkWidget; id: guint); cdecl; external;
+procedure gtk_widget_reparent(widget: PGtkWidget; new_parent: PGtkWidget); cdecl; external;
+procedure gtk_widget_reset_style(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_set_accel_path(widget: PGtkWidget; accel_path: Pgchar; accel_group: PGtkAccelGroup); cdecl; external;
+procedure gtk_widget_set_allocation(widget: PGtkWidget; allocation: PGtkAllocation); cdecl; external;
+procedure gtk_widget_set_app_paintable(widget: PGtkWidget; app_paintable: gboolean); cdecl; external;
+procedure gtk_widget_set_can_default(widget: PGtkWidget; can_default: gboolean); cdecl; external;
+procedure gtk_widget_set_can_focus(widget: PGtkWidget; can_focus: gboolean); cdecl; external;
+procedure gtk_widget_set_child_visible(widget: PGtkWidget; is_visible: gboolean); cdecl; external;
+procedure gtk_widget_set_composite_name(widget: PGtkWidget; name: Pgchar); cdecl; external;
 procedure gtk_widget_set_default_direction(dir: TGtkTextDirection); cdecl; external;
-procedure gtk_widget_set_device_enabled(AWidget: PGtkWidget; device: PGdkDevice; enabled: gboolean); cdecl; external;
-procedure gtk_widget_set_device_events(AWidget: PGtkWidget; device: PGdkDevice; events: TGdkEventMask); cdecl; external;
-procedure gtk_widget_set_direction(AWidget: PGtkWidget; dir: TGtkTextDirection); cdecl; external;
-procedure gtk_widget_set_double_buffered(AWidget: PGtkWidget; double_buffered: gboolean); cdecl; external;
-procedure gtk_widget_set_events(AWidget: PGtkWidget; events: gint); cdecl; external;
-procedure gtk_widget_set_halign(AWidget: PGtkWidget; align: TGtkAlign); cdecl; external;
-procedure gtk_widget_set_has_tooltip(AWidget: PGtkWidget; has_tooltip: gboolean); cdecl; external;
-procedure gtk_widget_set_has_window(AWidget: PGtkWidget; has_window: gboolean); cdecl; external;
-procedure gtk_widget_set_hexpand(AWidget: PGtkWidget; expand: gboolean); cdecl; external;
-procedure gtk_widget_set_hexpand_set(AWidget: PGtkWidget; set_: gboolean); cdecl; external;
-procedure gtk_widget_set_mapped(AWidget: PGtkWidget; mapped: gboolean); cdecl; external;
-procedure gtk_widget_set_margin_bottom(AWidget: PGtkWidget; margin: gint); cdecl; external;
-procedure gtk_widget_set_margin_left(AWidget: PGtkWidget; margin: gint); cdecl; external;
-procedure gtk_widget_set_margin_right(AWidget: PGtkWidget; margin: gint); cdecl; external;
-procedure gtk_widget_set_margin_top(AWidget: PGtkWidget; margin: gint); cdecl; external;
-procedure gtk_widget_set_name(AWidget: PGtkWidget; name: Pgchar); cdecl; external;
-procedure gtk_widget_set_no_show_all(AWidget: PGtkWidget; no_show_all: gboolean); cdecl; external;
-procedure gtk_widget_set_parent(AWidget: PGtkWidget; parent: PGtkWidget); cdecl; external;
-procedure gtk_widget_set_parent_window(AWidget: PGtkWidget; parent_window: PGdkWindow); cdecl; external;
-procedure gtk_widget_set_realized(AWidget: PGtkWidget; realized: gboolean); cdecl; external;
-procedure gtk_widget_set_receives_default(AWidget: PGtkWidget; receives_default: gboolean); cdecl; external;
-procedure gtk_widget_set_redraw_on_allocate(AWidget: PGtkWidget; redraw_on_allocate: gboolean); cdecl; external;
-procedure gtk_widget_set_sensitive(AWidget: PGtkWidget; sensitive: gboolean); cdecl; external;
-procedure gtk_widget_set_size_request(AWidget: PGtkWidget; width: gint; height: gint); cdecl; external;
-procedure gtk_widget_set_state_flags(AWidget: PGtkWidget; flags: TGtkStateFlags; clear: gboolean); cdecl; external;
-procedure gtk_widget_set_style(AWidget: PGtkWidget; style: PGtkStyle); cdecl; external;
-procedure gtk_widget_set_support_multidevice(AWidget: PGtkWidget; support_multidevice: gboolean); cdecl; external;
-procedure gtk_widget_set_tooltip_markup(AWidget: PGtkWidget; markup: Pgchar); cdecl; external;
-procedure gtk_widget_set_tooltip_text(AWidget: PGtkWidget; text: Pgchar); cdecl; external;
-procedure gtk_widget_set_tooltip_window(AWidget: PGtkWidget; custom_window: PGtkWindow); cdecl; external;
-procedure gtk_widget_set_valign(AWidget: PGtkWidget; align: TGtkAlign); cdecl; external;
-procedure gtk_widget_set_vexpand(AWidget: PGtkWidget; expand: gboolean); cdecl; external;
-procedure gtk_widget_set_vexpand_set(AWidget: PGtkWidget; set_: gboolean); cdecl; external;
-procedure gtk_widget_set_visible(AWidget: PGtkWidget; visible: gboolean); cdecl; external;
-procedure gtk_widget_set_visual(AWidget: PGtkWidget; visual: PGdkVisual); cdecl; external;
-procedure gtk_widget_set_window(AWidget: PGtkWidget; window: PGdkWindow); cdecl; external;
-procedure gtk_widget_shape_combine_region(AWidget: PGtkWidget; region: Pcairo_region_t); cdecl; external;
-procedure gtk_widget_show(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_show_all(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_show_now(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_size_allocate(AWidget: PGtkWidget; allocation: PGtkAllocation); cdecl; external;
-procedure gtk_widget_style_get(AWidget: PGtkWidget; first_property_name: Pgchar; args: array of const); cdecl; external;
-procedure gtk_widget_style_get_property(AWidget: PGtkWidget; property_name: Pgchar; value: PGValue); cdecl; external;
-procedure gtk_widget_style_get_valist(AWidget: PGtkWidget; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
-procedure gtk_widget_thaw_child_notify(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_trigger_tooltip_query(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_unmap(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_unparent(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_unrealize(AWidget: PGtkWidget); cdecl; external;
-procedure gtk_widget_unset_state_flags(AWidget: PGtkWidget; flags: TGtkStateFlags); cdecl; external;
-procedure gtk_window_add_accel_group(AWindow: PGtkWindow; accel_group: PGtkAccelGroup); cdecl; external;
-procedure gtk_window_add_mnemonic(AWindow: PGtkWindow; keyval: guint; target: PGtkWidget); cdecl; external;
-procedure gtk_window_begin_move_drag(AWindow: PGtkWindow; button: gint; root_x: gint; root_y: gint; timestamp: guint32); cdecl; external;
-procedure gtk_window_begin_resize_drag(AWindow: PGtkWindow; edge: TGdkWindowEdge; button: gint; root_x: gint; root_y: gint; timestamp: guint32); cdecl; external;
-procedure gtk_window_deiconify(AWindow: PGtkWindow); cdecl; external;
-procedure gtk_window_fullscreen(AWindow: PGtkWindow); cdecl; external;
-procedure gtk_window_get_default_size(AWindow: PGtkWindow; width: Pgint; height: Pgint); cdecl; external;
-procedure gtk_window_get_position(AWindow: PGtkWindow; root_x: Pgint; root_y: Pgint); cdecl; external;
-procedure gtk_window_get_size(AWindow: PGtkWindow; width: Pgint; height: Pgint); cdecl; external;
-procedure gtk_window_group_add_window(AWindowGroup: PGtkWindowGroup; window: PGtkWindow); cdecl; external;
-procedure gtk_window_group_remove_window(AWindowGroup: PGtkWindowGroup; window: PGtkWindow); cdecl; external;
-procedure gtk_window_iconify(AWindow: PGtkWindow); cdecl; external;
-procedure gtk_window_maximize(AWindow: PGtkWindow); cdecl; external;
-procedure gtk_window_move(AWindow: PGtkWindow; x: gint; y: gint); cdecl; external;
-procedure gtk_window_present(AWindow: PGtkWindow); cdecl; external;
-procedure gtk_window_present_with_time(AWindow: PGtkWindow; timestamp: guint32); cdecl; external;
-procedure gtk_window_remove_accel_group(AWindow: PGtkWindow; accel_group: PGtkAccelGroup); cdecl; external;
-procedure gtk_window_remove_mnemonic(AWindow: PGtkWindow; keyval: guint; target: PGtkWidget); cdecl; external;
-procedure gtk_window_reshow_with_initial_size(AWindow: PGtkWindow); cdecl; external;
-procedure gtk_window_resize(AWindow: PGtkWindow; width: gint; height: gint); cdecl; external;
-procedure gtk_window_resize_to_geometry(AWindow: PGtkWindow; width: gint; height: gint); cdecl; external;
-procedure gtk_window_set_accept_focus(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_application(AWindow: PGtkWindow; application: PGtkApplication); cdecl; external;
-procedure gtk_window_set_attached_to(AWindow: PGtkWindow; attach_widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_set_device_enabled(widget: PGtkWidget; device: PGdkDevice; enabled: gboolean); cdecl; external;
+procedure gtk_widget_set_device_events(widget: PGtkWidget; device: PGdkDevice; events: TGdkEventMask); cdecl; external;
+procedure gtk_widget_set_direction(widget: PGtkWidget; dir: TGtkTextDirection); cdecl; external;
+procedure gtk_widget_set_double_buffered(widget: PGtkWidget; double_buffered: gboolean); cdecl; external;
+procedure gtk_widget_set_events(widget: PGtkWidget; events: gint); cdecl; external;
+procedure gtk_widget_set_halign(widget: PGtkWidget; align: TGtkAlign); cdecl; external;
+procedure gtk_widget_set_has_tooltip(widget: PGtkWidget; has_tooltip: gboolean); cdecl; external;
+procedure gtk_widget_set_has_window(widget: PGtkWidget; has_window: gboolean); cdecl; external;
+procedure gtk_widget_set_hexpand(widget: PGtkWidget; expand: gboolean); cdecl; external;
+procedure gtk_widget_set_hexpand_set(widget: PGtkWidget; set_: gboolean); cdecl; external;
+procedure gtk_widget_set_mapped(widget: PGtkWidget; mapped: gboolean); cdecl; external;
+procedure gtk_widget_set_margin_bottom(widget: PGtkWidget; margin: gint); cdecl; external;
+procedure gtk_widget_set_margin_left(widget: PGtkWidget; margin: gint); cdecl; external;
+procedure gtk_widget_set_margin_right(widget: PGtkWidget; margin: gint); cdecl; external;
+procedure gtk_widget_set_margin_top(widget: PGtkWidget; margin: gint); cdecl; external;
+procedure gtk_widget_set_name(widget: PGtkWidget; name: Pgchar); cdecl; external;
+procedure gtk_widget_set_no_show_all(widget: PGtkWidget; no_show_all: gboolean); cdecl; external;
+procedure gtk_widget_set_opacity(widget: PGtkWidget; opacity: gdouble); cdecl; external;
+procedure gtk_widget_set_parent(widget: PGtkWidget; parent: PGtkWidget); cdecl; external;
+procedure gtk_widget_set_parent_window(widget: PGtkWidget; parent_window: PGdkWindow); cdecl; external;
+procedure gtk_widget_set_realized(widget: PGtkWidget; realized: gboolean); cdecl; external;
+procedure gtk_widget_set_receives_default(widget: PGtkWidget; receives_default: gboolean); cdecl; external;
+procedure gtk_widget_set_redraw_on_allocate(widget: PGtkWidget; redraw_on_allocate: gboolean); cdecl; external;
+procedure gtk_widget_set_sensitive(widget: PGtkWidget; sensitive: gboolean); cdecl; external;
+procedure gtk_widget_set_size_request(widget: PGtkWidget; width: gint; height: gint); cdecl; external;
+procedure gtk_widget_set_state_flags(widget: PGtkWidget; flags: TGtkStateFlags; clear: gboolean); cdecl; external;
+procedure gtk_widget_set_support_multidevice(widget: PGtkWidget; support_multidevice: gboolean); cdecl; external;
+procedure gtk_widget_set_tooltip_markup(widget: PGtkWidget; markup: Pgchar); cdecl; external;
+procedure gtk_widget_set_tooltip_text(widget: PGtkWidget; text: Pgchar); cdecl; external;
+procedure gtk_widget_set_tooltip_window(widget: PGtkWidget; custom_window: PGtkWindow); cdecl; external;
+procedure gtk_widget_set_valign(widget: PGtkWidget; align: TGtkAlign); cdecl; external;
+procedure gtk_widget_set_vexpand(widget: PGtkWidget; expand: gboolean); cdecl; external;
+procedure gtk_widget_set_vexpand_set(widget: PGtkWidget; set_: gboolean); cdecl; external;
+procedure gtk_widget_set_visible(widget: PGtkWidget; visible: gboolean); cdecl; external;
+procedure gtk_widget_set_visual(widget: PGtkWidget; visual: PGdkVisual); cdecl; external;
+procedure gtk_widget_set_window(widget: PGtkWidget; window: PGdkWindow); cdecl; external;
+procedure gtk_widget_shape_combine_region(widget: PGtkWidget; region: Pcairo_region_t); cdecl; external;
+procedure gtk_widget_show(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_show_all(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_show_now(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_size_allocate(widget: PGtkWidget; allocation: PGtkAllocation); cdecl; external;
+procedure gtk_widget_style_get(widget: PGtkWidget; first_property_name: Pgchar; args: array of const); cdecl; external;
+procedure gtk_widget_style_get_property(widget: PGtkWidget; property_name: Pgchar; value: PGValue); cdecl; external;
+procedure gtk_widget_style_get_valist(widget: PGtkWidget; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
+procedure gtk_widget_thaw_child_notify(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_trigger_tooltip_query(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_unmap(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_unparent(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_unrealize(widget: PGtkWidget); cdecl; external;
+procedure gtk_widget_unregister_window(widget: PGtkWidget; window: PGdkWindow); cdecl; external;
+procedure gtk_widget_unset_state_flags(widget: PGtkWidget; flags: TGtkStateFlags); cdecl; external;
+procedure gtk_window_add_accel_group(window: PGtkWindow; accel_group: PGtkAccelGroup); cdecl; external;
+procedure gtk_window_add_mnemonic(window: PGtkWindow; keyval: guint; target: PGtkWidget); cdecl; external;
+procedure gtk_window_begin_move_drag(window: PGtkWindow; button: gint; root_x: gint; root_y: gint; timestamp: guint32); cdecl; external;
+procedure gtk_window_begin_resize_drag(window: PGtkWindow; edge: TGdkWindowEdge; button: gint; root_x: gint; root_y: gint; timestamp: guint32); cdecl; external;
+procedure gtk_window_deiconify(window: PGtkWindow); cdecl; external;
+procedure gtk_window_fullscreen(window: PGtkWindow); cdecl; external;
+procedure gtk_window_get_default_size(window: PGtkWindow; width: Pgint; height: Pgint); cdecl; external;
+procedure gtk_window_get_position(window: PGtkWindow; root_x: Pgint; root_y: Pgint); cdecl; external;
+procedure gtk_window_get_size(window: PGtkWindow; width: Pgint; height: Pgint); cdecl; external;
+procedure gtk_window_group_add_window(window_group: PGtkWindowGroup; window: PGtkWindow); cdecl; external;
+procedure gtk_window_group_remove_window(window_group: PGtkWindowGroup; window: PGtkWindow); cdecl; external;
+procedure gtk_window_iconify(window: PGtkWindow); cdecl; external;
+procedure gtk_window_maximize(window: PGtkWindow); cdecl; external;
+procedure gtk_window_move(window: PGtkWindow; x: gint; y: gint); cdecl; external;
+procedure gtk_window_present(window: PGtkWindow); cdecl; external;
+procedure gtk_window_present_with_time(window: PGtkWindow; timestamp: guint32); cdecl; external;
+procedure gtk_window_remove_accel_group(window: PGtkWindow; accel_group: PGtkAccelGroup); cdecl; external;
+procedure gtk_window_remove_mnemonic(window: PGtkWindow; keyval: guint; target: PGtkWidget); cdecl; external;
+procedure gtk_window_reshow_with_initial_size(window: PGtkWindow); cdecl; external;
+procedure gtk_window_resize(window: PGtkWindow; width: gint; height: gint); cdecl; external;
+procedure gtk_window_resize_to_geometry(window: PGtkWindow; width: gint; height: gint); cdecl; external;
+procedure gtk_window_set_accept_focus(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_application(window: PGtkWindow; application: PGtkApplication); cdecl; external;
+procedure gtk_window_set_attached_to(window: PGtkWindow; attach_widget: PGtkWidget); cdecl; external;
 procedure gtk_window_set_auto_startup_notification(setting: gboolean); cdecl; external;
-procedure gtk_window_set_decorated(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_default(AWindow: PGtkWindow; default_widget: PGtkWidget); cdecl; external;
-procedure gtk_window_set_default_geometry(AWindow: PGtkWindow; width: gint; height: gint); cdecl; external;
+procedure gtk_window_set_decorated(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_default(window: PGtkWindow; default_widget: PGtkWidget); cdecl; external;
+procedure gtk_window_set_default_geometry(window: PGtkWindow; width: gint; height: gint); cdecl; external;
 procedure gtk_window_set_default_icon(icon: PGdkPixbuf); cdecl; external;
 procedure gtk_window_set_default_icon_list(list: PGList); cdecl; external;
 procedure gtk_window_set_default_icon_name(name: Pgchar); cdecl; external;
-procedure gtk_window_set_default_size(AWindow: PGtkWindow; width: gint; height: gint); cdecl; external;
-procedure gtk_window_set_deletable(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_destroy_with_parent(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_focus(AWindow: PGtkWindow; focus: PGtkWidget); cdecl; external;
-procedure gtk_window_set_focus_on_map(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_focus_visible(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_geometry_hints(AWindow: PGtkWindow; geometry_widget: PGtkWidget; geometry: PGdkGeometry; geom_mask: TGdkWindowHints); cdecl; external;
-procedure gtk_window_set_gravity(AWindow: PGtkWindow; gravity: TGdkGravity); cdecl; external;
-procedure gtk_window_set_has_resize_grip(AWindow: PGtkWindow; value: gboolean); cdecl; external;
-procedure gtk_window_set_has_user_ref_count(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_hide_titlebar_when_maximized(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_icon(AWindow: PGtkWindow; icon: PGdkPixbuf); cdecl; external;
-procedure gtk_window_set_icon_list(AWindow: PGtkWindow; list: PGList); cdecl; external;
-procedure gtk_window_set_icon_name(AWindow: PGtkWindow; name: Pgchar); cdecl; external;
-procedure gtk_window_set_keep_above(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_keep_below(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_mnemonic_modifier(AWindow: PGtkWindow; modifier: TGdkModifierType); cdecl; external;
-procedure gtk_window_set_mnemonics_visible(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_modal(AWindow: PGtkWindow; modal: gboolean); cdecl; external;
-procedure gtk_window_set_opacity(AWindow: PGtkWindow; opacity: gdouble); cdecl; external;
-procedure gtk_window_set_position(AWindow: PGtkWindow; position: TGtkWindowPosition); cdecl; external;
-procedure gtk_window_set_resizable(AWindow: PGtkWindow; resizable: gboolean); cdecl; external;
-procedure gtk_window_set_role(AWindow: PGtkWindow; role: Pgchar); cdecl; external;
-procedure gtk_window_set_screen(AWindow: PGtkWindow; screen: PGdkScreen); cdecl; external;
-procedure gtk_window_set_skip_pager_hint(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_skip_taskbar_hint(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_startup_id(AWindow: PGtkWindow; startup_id: Pgchar); cdecl; external;
-procedure gtk_window_set_title(AWindow: PGtkWindow; title: Pgchar); cdecl; external;
-procedure gtk_window_set_transient_for(AWindow: PGtkWindow; parent: PGtkWindow); cdecl; external;
-procedure gtk_window_set_type_hint(AWindow: PGtkWindow; hint: TGdkWindowTypeHint); cdecl; external;
-procedure gtk_window_set_urgency_hint(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
-procedure gtk_window_set_wmclass(AWindow: PGtkWindow; wmclass_name: Pgchar; wmclass_class: Pgchar); cdecl; external;
-procedure gtk_window_stick(AWindow: PGtkWindow); cdecl; external;
-procedure gtk_window_unfullscreen(AWindow: PGtkWindow); cdecl; external;
-procedure gtk_window_unmaximize(AWindow: PGtkWindow); cdecl; external;
-procedure gtk_window_unstick(AWindow: PGtkWindow); cdecl; external;
+procedure gtk_window_set_default_size(window: PGtkWindow; width: gint; height: gint); cdecl; external;
+procedure gtk_window_set_deletable(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_destroy_with_parent(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_focus(window: PGtkWindow; focus: PGtkWidget); cdecl; external;
+procedure gtk_window_set_focus_on_map(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_focus_visible(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_geometry_hints(window: PGtkWindow; geometry_widget: PGtkWidget; geometry: PGdkGeometry; geom_mask: TGdkWindowHints); cdecl; external;
+procedure gtk_window_set_gravity(window: PGtkWindow; gravity: TGdkGravity); cdecl; external;
+procedure gtk_window_set_has_resize_grip(window: PGtkWindow; value: gboolean); cdecl; external;
+procedure gtk_window_set_has_user_ref_count(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_hide_titlebar_when_maximized(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_icon(window: PGtkWindow; icon: PGdkPixbuf); cdecl; external;
+procedure gtk_window_set_icon_list(window: PGtkWindow; list: PGList); cdecl; external;
+procedure gtk_window_set_icon_name(window: PGtkWindow; name: Pgchar); cdecl; external;
+procedure gtk_window_set_keep_above(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_keep_below(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_mnemonic_modifier(window: PGtkWindow; modifier: TGdkModifierType); cdecl; external;
+procedure gtk_window_set_mnemonics_visible(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_modal(window: PGtkWindow; modal: gboolean); cdecl; external;
+procedure gtk_window_set_position(window: PGtkWindow; position: TGtkWindowPosition); cdecl; external;
+procedure gtk_window_set_resizable(window: PGtkWindow; resizable: gboolean); cdecl; external;
+procedure gtk_window_set_role(window: PGtkWindow; role: Pgchar); cdecl; external;
+procedure gtk_window_set_screen(window: PGtkWindow; screen: PGdkScreen); cdecl; external;
+procedure gtk_window_set_skip_pager_hint(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_skip_taskbar_hint(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_startup_id(window: PGtkWindow; startup_id: Pgchar); cdecl; external;
+procedure gtk_window_set_title(window: PGtkWindow; title: Pgchar); cdecl; external;
+procedure gtk_window_set_transient_for(window: PGtkWindow; parent: PGtkWindow); cdecl; external;
+procedure gtk_window_set_type_hint(window: PGtkWindow; hint: TGdkWindowTypeHint); cdecl; external;
+procedure gtk_window_set_urgency_hint(window: PGtkWindow; setting: gboolean); cdecl; external;
+procedure gtk_window_set_wmclass(window: PGtkWindow; wmclass_name: Pgchar; wmclass_class: Pgchar); cdecl; external;
+procedure gtk_window_stick(window: PGtkWindow); cdecl; external;
+procedure gtk_window_unfullscreen(window: PGtkWindow); cdecl; external;
+procedure gtk_window_unmaximize(window: PGtkWindow); cdecl; external;
+procedure gtk_window_unstick(window: PGtkWindow); cdecl; external;
 implementation
 procedure TGtkBuildable.add_child(builder: PGtkBuilder; child: PGObject; type_: Pgchar); cdecl;
 begin
@@ -14583,11 +14732,6 @@ begin
   Result := LazGtk3.gtk_widget_get_default_direction();
 end;
 
-function TGtkWidget.get_default_style: PGtkStyle; cdecl;
-begin
-  Result := LazGtk3.gtk_widget_get_default_style();
-end;
-
 procedure TGtkWidget.pop_composite_child; cdecl;
 begin
   LazGtk3.gtk_widget_pop_composite_child();
@@ -14628,6 +14772,11 @@ begin
   LazGtk3.gtk_widget_add_mnemonic_label(@self, label_);
 end;
 
+function TGtkWidget.add_tick_callback(callback: TGtkTickCallback; user_data: gpointer; notify: TGDestroyNotify): guint; cdecl;
+begin
+  Result := LazGtk3.gtk_widget_add_tick_callback(@self, callback, user_data, notify);
+end;
+
 function TGtkWidget.can_activate_accel(signal_id: guint): gboolean; cdecl;
 begin
   Result := LazGtk3.gtk_widget_can_activate_accel(@self, signal_id);
@@ -14641,11 +14790,6 @@ end;
 procedure TGtkWidget.child_notify(child_property: Pgchar); cdecl;
 begin
   LazGtk3.gtk_widget_child_notify(@self, child_property);
-end;
-
-procedure TGtkWidget.class_path(path_length: Pguint; path: PPgchar; path_reversed: PPgchar); cdecl;
-begin
-  LazGtk3.gtk_widget_class_path(@self, path_length, path, path_reversed);
 end;
 
 function TGtkWidget.compute_expand(orientation: TGtkOrientation): gboolean; cdecl;
@@ -14818,11 +14962,6 @@ begin
   LazGtk3.gtk_widget_draw(@self, cr);
 end;
 
-procedure TGtkWidget.ensure_style; cdecl;
-begin
-  LazGtk3.gtk_widget_ensure_style(@self);
-end;
-
 procedure TGtkWidget.error_bell; cdecl;
 begin
   LazGtk3.gtk_widget_error_bell(@self);
@@ -14923,6 +15062,11 @@ begin
   Result := LazGtk3.gtk_widget_get_events(@self);
 end;
 
+function TGtkWidget.get_frame_clock: PGdkFrameClock; cdecl;
+begin
+  Result := LazGtk3.gtk_widget_get_frame_clock(@self);
+end;
+
 function TGtkWidget.get_halign: TGtkAlign; cdecl;
 begin
   Result := LazGtk3.gtk_widget_get_halign(@self);
@@ -14978,11 +15122,6 @@ begin
   Result := LazGtk3.gtk_widget_get_modifier_mask(@self, intent);
 end;
 
-function TGtkWidget.get_modifier_style: PGtkRcStyle; cdecl;
-begin
-  Result := LazGtk3.gtk_widget_get_modifier_style(@self);
-end;
-
 function TGtkWidget.get_name: Pgchar; cdecl;
 begin
   Result := LazGtk3.gtk_widget_get_name(@self);
@@ -14991,6 +15130,11 @@ end;
 function TGtkWidget.get_no_show_all: gboolean; cdecl;
 begin
   Result := LazGtk3.gtk_widget_get_no_show_all(@self);
+end;
+
+function TGtkWidget.get_opacity: gdouble; cdecl;
+begin
+  Result := LazGtk3.gtk_widget_get_opacity(@self);
 end;
 
 function TGtkWidget.get_pango_context: PPangoContext; cdecl;
@@ -15088,6 +15232,17 @@ begin
   Result := LazGtk3.gtk_widget_get_style(@self);
 end;
 
+procedure TGtkWidget.set_style(style: PGtkStyle); cdecl;
+begin
+  LazGtk3.gtk_widget_set_style(@self, style);
+end;
+
+
+function TGtkWidget.ensure_style: PGtkStyle; cdecl;
+begin
+  Result := LazGtk3.gtk_widget_ensure_style(@self);
+end;
+
 function TGtkWidget.get_style_context: PGtkStyleContext; cdecl;
 begin
   Result := LazGtk3.gtk_widget_get_style_context(@self);
@@ -15183,11 +15338,6 @@ begin
   Result := LazGtk3.gtk_widget_has_grab(@self);
 end;
 
-function TGtkWidget.has_rc_style: gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_widget_has_rc_style(@self);
-end;
-
 function TGtkWidget.has_screen: gboolean; cdecl;
 begin
   Result := LazGtk3.gtk_widget_has_screen(@self);
@@ -15216,6 +15366,11 @@ end;
 procedure TGtkWidget.input_shape_combine_region(region: Pcairo_region_t); cdecl;
 begin
   LazGtk3.gtk_widget_input_shape_combine_region(@self, region);
+end;
+
+procedure TGtkWidget.insert_action_group(name: Pgchar; group: PGActionGroup); cdecl;
+begin
+  LazGtk3.gtk_widget_insert_action_group(@self, name, group);
 end;
 
 function TGtkWidget.intersect(area: PGdkRectangle; intersection: PGdkRectangle): gboolean; cdecl;
@@ -15253,6 +15408,11 @@ begin
   Result := LazGtk3.gtk_widget_is_toplevel(@self);
 end;
 
+function TGtkWidget.is_visible: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_widget_is_visible(@self);
+end;
+
 function TGtkWidget.keynav_failed(direction: TGtkDirectionType): gboolean; cdecl;
 begin
   Result := LazGtk3.gtk_widget_keynav_failed(@self, direction);
@@ -15278,36 +15438,6 @@ begin
   Result := LazGtk3.gtk_widget_mnemonic_activate(@self, group_cycling);
 end;
 
-procedure TGtkWidget.modify_base(state: TGtkStateType; color: PGdkColor); cdecl;
-begin
-  LazGtk3.gtk_widget_modify_base(@self, state, color);
-end;
-
-procedure TGtkWidget.modify_bg(state: TGtkStateType; color: PGdkColor); cdecl;
-begin
-  LazGtk3.gtk_widget_modify_bg(@self, state, color);
-end;
-
-procedure TGtkWidget.modify_fg(state: TGtkStateType; color: PGdkColor); cdecl;
-begin
-  LazGtk3.gtk_widget_modify_fg(@self, state, color);
-end;
-
-procedure TGtkWidget.modify_font(font_desc: PPangoFontDescription); cdecl;
-begin
-  LazGtk3.gtk_widget_modify_font(@self, font_desc);
-end;
-
-procedure TGtkWidget.modify_style(style: PGtkRcStyle); cdecl;
-begin
-  LazGtk3.gtk_widget_modify_style(@self, style);
-end;
-
-procedure TGtkWidget.modify_text(state: TGtkStateType; color: PGdkColor); cdecl;
-begin
-  LazGtk3.gtk_widget_modify_text(@self, state, color);
-end;
-
 procedure TGtkWidget.override_background_color(state: TGtkStateFlags; color: PGdkRGBA); cdecl;
 begin
   LazGtk3.gtk_widget_override_background_color(@self, state, color);
@@ -15331,11 +15461,6 @@ end;
 procedure TGtkWidget.override_symbolic_color(name: Pgchar; color: PGdkRGBA); cdecl;
 begin
   LazGtk3.gtk_widget_override_symbolic_color(@self, name, color);
-end;
-
-procedure TGtkWidget.path(path_length: Pguint; path: PPgchar; path_reversed: PPgchar); cdecl;
-begin
-  LazGtk3.gtk_widget_path(@self, path_length, path, path_reversed);
 end;
 
 procedure TGtkWidget.queue_compute_expand; cdecl;
@@ -15378,6 +15503,11 @@ begin
   Result := LazGtk3.gtk_widget_region_intersect(@self, region);
 end;
 
+procedure TGtkWidget.register_window(window: PGdkWindow); cdecl;
+begin
+  LazGtk3.gtk_widget_register_window(@self, window);
+end;
+
 function TGtkWidget.remove_accelerator(accel_group: PGtkAccelGroup; accel_key: guint; accel_mods: TGdkModifierType): gboolean; cdecl;
 begin
   Result := LazGtk3.gtk_widget_remove_accelerator(@self, accel_group, accel_key, accel_mods);
@@ -15388,6 +15518,11 @@ begin
   LazGtk3.gtk_widget_remove_mnemonic_label(@self, label_);
 end;
 
+procedure TGtkWidget.remove_tick_callback(id: guint); cdecl;
+begin
+  LazGtk3.gtk_widget_remove_tick_callback(@self, id);
+end;
+
 function TGtkWidget.render_icon_pixbuf(stock_id: Pgchar; size: gint): PGdkPixbuf; cdecl;
 begin
   Result := LazGtk3.gtk_widget_render_icon_pixbuf(@self, stock_id, size);
@@ -15396,11 +15531,6 @@ end;
 procedure TGtkWidget.reparent(new_parent: PGtkWidget); cdecl;
 begin
   LazGtk3.gtk_widget_reparent(@self, new_parent);
-end;
-
-procedure TGtkWidget.reset_rc_styles; cdecl;
-begin
-  LazGtk3.gtk_widget_reset_rc_styles(@self);
 end;
 
 procedure TGtkWidget.reset_style; cdecl;
@@ -15538,6 +15668,11 @@ begin
   LazGtk3.gtk_widget_set_no_show_all(@self, no_show_all);
 end;
 
+procedure TGtkWidget.set_opacity(opacity: gdouble); cdecl;
+begin
+  LazGtk3.gtk_widget_set_opacity(@self, opacity);
+end;
+
 procedure TGtkWidget.set_parent(parent: PGtkWidget); cdecl;
 begin
   LazGtk3.gtk_widget_set_parent(@self, parent);
@@ -15576,11 +15711,6 @@ end;
 procedure TGtkWidget.set_state_flags(flags: TGtkStateFlags; clear: gboolean); cdecl;
 begin
   LazGtk3.gtk_widget_set_state_flags(@self, flags, clear);
-end;
-
-procedure TGtkWidget.set_style(style: PGtkStyle); cdecl;
-begin
-  LazGtk3.gtk_widget_set_style(@self, style);
 end;
 
 procedure TGtkWidget.set_support_multidevice(support_multidevice: gboolean); cdecl;
@@ -15691,6 +15821,11 @@ end;
 procedure TGtkWidget.unrealize; cdecl;
 begin
   LazGtk3.gtk_widget_unrealize(@self);
+end;
+
+procedure TGtkWidget.unregister_window(window: PGdkWindow); cdecl;
+begin
+  LazGtk3.gtk_widget_unregister_window(@self, window);
 end;
 
 procedure TGtkWidget.unset_state_flags(flags: TGtkStateFlags); cdecl;
@@ -15868,9 +16003,9 @@ begin
   LazGtk3.gtk_window_set_default_icon(icon);
 end;
 
-function TGtkWindow.set_default_icon_from_file(filename: Pgchar): gboolean; cdecl;
+function TGtkWindow.set_default_icon_from_file(filename: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_window_set_default_icon_from_file(filename);
+  Result := LazGtk3.gtk_window_set_default_icon_from_file(filename, error);
 end;
 
 procedure TGtkWindow.set_default_icon_list(list: PGList); cdecl;
@@ -16031,11 +16166,6 @@ end;
 function TGtkWindow.get_modal: gboolean; cdecl;
 begin
   Result := LazGtk3.gtk_window_get_modal(@self);
-end;
-
-function TGtkWindow.get_opacity: gdouble; cdecl;
-begin
-  Result := LazGtk3.gtk_window_get_opacity(@self);
 end;
 
 procedure TGtkWindow.get_position(root_x: Pgint; root_y: Pgint); cdecl;
@@ -16278,9 +16408,9 @@ begin
   LazGtk3.gtk_window_set_icon(@self, icon);
 end;
 
-function TGtkWindow.set_icon_from_file(filename: Pgchar): gboolean; cdecl;
+function TGtkWindow.set_icon_from_file(filename: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_window_set_icon_from_file(@self, filename);
+  Result := LazGtk3.gtk_window_set_icon_from_file(@self, filename, error);
 end;
 
 procedure TGtkWindow.set_icon_list(list: PGList); cdecl;
@@ -16316,11 +16446,6 @@ end;
 procedure TGtkWindow.set_modal(modal: gboolean); cdecl;
 begin
   LazGtk3.gtk_window_set_modal(@self, modal);
-end;
-
-procedure TGtkWindow.set_opacity(opacity: gdouble); cdecl;
-begin
-  LazGtk3.gtk_window_set_opacity(@self, opacity);
 end;
 
 procedure TGtkWindow.set_position(position: TGtkWindowPosition); cdecl;
@@ -16998,6 +17123,11 @@ begin
   Result := LazGtk3.gtk_accel_label_refetch(@self);
 end;
 
+procedure TGtkAccelLabel.set_accel(accelerator_key: guint; accelerator_mods: TGdkModifierType); cdecl;
+begin
+  LazGtk3.gtk_accel_label_set_accel(@self, accelerator_key, accelerator_mods);
+end;
+
 procedure TGtkAccelLabel.set_accel_closure(accel_closure: PGClosure); cdecl;
 begin
   LazGtk3.gtk_accel_label_set_accel_closure(@self, accel_closure);
@@ -17343,6 +17473,11 @@ begin
   LazGtk3.gtk_action_group_add_toggle_actions_full(@self, entries, n_entries, user_data, destroy_);
 end;
 
+function TGtkActionGroup.get_accel_group: PGtkAccelGroup; cdecl;
+begin
+  Result := LazGtk3.gtk_action_group_get_accel_group(@self);
+end;
+
 function TGtkActionGroup.get_action(action_name: Pgchar): PGtkAction; cdecl;
 begin
   Result := LazGtk3.gtk_action_group_get_action(@self, action_name);
@@ -17371,6 +17506,11 @@ end;
 procedure TGtkActionGroup.remove_action(action: PGtkAction); cdecl;
 begin
   LazGtk3.gtk_action_group_remove_action(@self, action);
+end;
+
+procedure TGtkActionGroup.set_accel_group(accel_group: PGtkAccelGroup); cdecl;
+begin
+  LazGtk3.gtk_action_group_set_accel_group(@self, accel_group);
 end;
 
 procedure TGtkActionGroup.set_sensitive(sensitive: gboolean); cdecl;
@@ -17928,6 +18068,121 @@ begin
   LazGtk3.gtk_orientable_set_orientation(@self, orientation);
 end;
 
+function TGtkBox.new(orientation: TGtkOrientation; spacing: gint): PGtkBox; cdecl;
+begin
+  Result := LazGtk3.gtk_box_new(orientation, spacing);
+end;
+
+function TGtkBox.get_homogeneous: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_box_get_homogeneous(@self);
+end;
+
+function TGtkBox.get_spacing: gint; cdecl;
+begin
+  Result := LazGtk3.gtk_box_get_spacing(@self);
+end;
+
+procedure TGtkBox.pack_end(child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint); cdecl;
+begin
+  LazGtk3.gtk_box_pack_end(@self, child, expand, fill, padding);
+end;
+
+procedure TGtkBox.pack_start(child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint); cdecl;
+begin
+  LazGtk3.gtk_box_pack_start(@self, child, expand, fill, padding);
+end;
+
+procedure TGtkBox.query_child_packing(child: PGtkWidget; expand: Pgboolean; fill: Pgboolean; padding: Pguint; pack_type: PGtkPackType); cdecl;
+begin
+  LazGtk3.gtk_box_query_child_packing(@self, child, expand, fill, padding, pack_type);
+end;
+
+procedure TGtkBox.reorder_child(child: PGtkWidget; position: gint); cdecl;
+begin
+  LazGtk3.gtk_box_reorder_child(@self, child, position);
+end;
+
+procedure TGtkBox.set_child_packing(child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint; pack_type: TGtkPackType); cdecl;
+begin
+  LazGtk3.gtk_box_set_child_packing(@self, child, expand, fill, padding, pack_type);
+end;
+
+procedure TGtkBox.set_homogeneous(homogeneous: gboolean); cdecl;
+begin
+  LazGtk3.gtk_box_set_homogeneous(@self, homogeneous);
+end;
+
+procedure TGtkBox.set_spacing(spacing: gint); cdecl;
+begin
+  LazGtk3.gtk_box_set_spacing(@self, spacing);
+end;
+
+function TGtkAppChooserWidget.new(content_type: Pgchar): PGtkAppChooserWidget; cdecl;
+begin
+  Result := LazGtk3.gtk_app_chooser_widget_new(content_type);
+end;
+
+function TGtkAppChooserWidget.get_default_text: Pgchar; cdecl;
+begin
+  Result := LazGtk3.gtk_app_chooser_widget_get_default_text(@self);
+end;
+
+function TGtkAppChooserWidget.get_show_all: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_app_chooser_widget_get_show_all(@self);
+end;
+
+function TGtkAppChooserWidget.get_show_default: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_app_chooser_widget_get_show_default(@self);
+end;
+
+function TGtkAppChooserWidget.get_show_fallback: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_app_chooser_widget_get_show_fallback(@self);
+end;
+
+function TGtkAppChooserWidget.get_show_other: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_app_chooser_widget_get_show_other(@self);
+end;
+
+function TGtkAppChooserWidget.get_show_recommended: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_app_chooser_widget_get_show_recommended(@self);
+end;
+
+procedure TGtkAppChooserWidget.set_default_text(text: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_app_chooser_widget_set_default_text(@self, text);
+end;
+
+procedure TGtkAppChooserWidget.set_show_all(setting: gboolean); cdecl;
+begin
+  LazGtk3.gtk_app_chooser_widget_set_show_all(@self, setting);
+end;
+
+procedure TGtkAppChooserWidget.set_show_default(setting: gboolean); cdecl;
+begin
+  LazGtk3.gtk_app_chooser_widget_set_show_default(@self, setting);
+end;
+
+procedure TGtkAppChooserWidget.set_show_fallback(setting: gboolean); cdecl;
+begin
+  LazGtk3.gtk_app_chooser_widget_set_show_fallback(@self, setting);
+end;
+
+procedure TGtkAppChooserWidget.set_show_other(setting: gboolean); cdecl;
+begin
+  LazGtk3.gtk_app_chooser_widget_set_show_other(@self, setting);
+end;
+
+procedure TGtkAppChooserWidget.set_show_recommended(setting: gboolean); cdecl;
+begin
+  LazGtk3.gtk_app_chooser_widget_set_show_recommended(@self, setting);
+end;
+
 procedure TGtkMenuShell.activate_item(menu_item: PGtkWidget; force_deactivate: gboolean); cdecl;
 begin
   LazGtk3.gtk_menu_shell_activate_item(@self, menu_item, force_deactivate);
@@ -17936,6 +18191,11 @@ end;
 procedure TGtkMenuShell.append(child: PGtkWidget); cdecl;
 begin
   LazGtk3.gtk_menu_shell_append(@self, child);
+end;
+
+procedure TGtkMenuShell.bind_model(model: PGMenuModel; action_namespace: Pgchar; with_separators: gboolean); cdecl;
+begin
+  LazGtk3.gtk_menu_shell_bind_model(@self, model, action_namespace, with_separators);
 end;
 
 procedure TGtkMenuShell.cancel; cdecl;
@@ -18128,121 +18388,6 @@ begin
   LazGtk3.gtk_menu_set_title(@self, title);
 end;
 
-function TGtkBox.new(orientation: TGtkOrientation; spacing: gint): PGtkBox; cdecl;
-begin
-  Result := LazGtk3.gtk_box_new(orientation, spacing);
-end;
-
-function TGtkBox.get_homogeneous: gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_box_get_homogeneous(@self);
-end;
-
-function TGtkBox.get_spacing: gint; cdecl;
-begin
-  Result := LazGtk3.gtk_box_get_spacing(@self);
-end;
-
-procedure TGtkBox.pack_end(child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint); cdecl;
-begin
-  LazGtk3.gtk_box_pack_end(@self, child, expand, fill, padding);
-end;
-
-procedure TGtkBox.pack_start(child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint); cdecl;
-begin
-  LazGtk3.gtk_box_pack_start(@self, child, expand, fill, padding);
-end;
-
-procedure TGtkBox.query_child_packing(child: PGtkWidget; expand: Pgboolean; fill: Pgboolean; padding: Pguint; pack_type: PGtkPackType); cdecl;
-begin
-  LazGtk3.gtk_box_query_child_packing(@self, child, expand, fill, padding, pack_type);
-end;
-
-procedure TGtkBox.reorder_child(child: PGtkWidget; position: gint); cdecl;
-begin
-  LazGtk3.gtk_box_reorder_child(@self, child, position);
-end;
-
-procedure TGtkBox.set_child_packing(child: PGtkWidget; expand: gboolean; fill: gboolean; padding: guint; pack_type: TGtkPackType); cdecl;
-begin
-  LazGtk3.gtk_box_set_child_packing(@self, child, expand, fill, padding, pack_type);
-end;
-
-procedure TGtkBox.set_homogeneous(homogeneous: gboolean); cdecl;
-begin
-  LazGtk3.gtk_box_set_homogeneous(@self, homogeneous);
-end;
-
-procedure TGtkBox.set_spacing(spacing: gint); cdecl;
-begin
-  LazGtk3.gtk_box_set_spacing(@self, spacing);
-end;
-
-function TGtkAppChooserWidget.new(content_type: Pgchar): PGtkAppChooserWidget; cdecl;
-begin
-  Result := LazGtk3.gtk_app_chooser_widget_new(content_type);
-end;
-
-function TGtkAppChooserWidget.get_default_text: Pgchar; cdecl;
-begin
-  Result := LazGtk3.gtk_app_chooser_widget_get_default_text(@self);
-end;
-
-function TGtkAppChooserWidget.get_show_all: gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_app_chooser_widget_get_show_all(@self);
-end;
-
-function TGtkAppChooserWidget.get_show_default: gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_app_chooser_widget_get_show_default(@self);
-end;
-
-function TGtkAppChooserWidget.get_show_fallback: gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_app_chooser_widget_get_show_fallback(@self);
-end;
-
-function TGtkAppChooserWidget.get_show_other: gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_app_chooser_widget_get_show_other(@self);
-end;
-
-function TGtkAppChooserWidget.get_show_recommended: gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_app_chooser_widget_get_show_recommended(@self);
-end;
-
-procedure TGtkAppChooserWidget.set_default_text(text: Pgchar); cdecl;
-begin
-  LazGtk3.gtk_app_chooser_widget_set_default_text(@self, text);
-end;
-
-procedure TGtkAppChooserWidget.set_show_all(setting: gboolean); cdecl;
-begin
-  LazGtk3.gtk_app_chooser_widget_set_show_all(@self, setting);
-end;
-
-procedure TGtkAppChooserWidget.set_show_default(setting: gboolean); cdecl;
-begin
-  LazGtk3.gtk_app_chooser_widget_set_show_default(@self, setting);
-end;
-
-procedure TGtkAppChooserWidget.set_show_fallback(setting: gboolean); cdecl;
-begin
-  LazGtk3.gtk_app_chooser_widget_set_show_fallback(@self, setting);
-end;
-
-procedure TGtkAppChooserWidget.set_show_other(setting: gboolean); cdecl;
-begin
-  LazGtk3.gtk_app_chooser_widget_set_show_other(@self, setting);
-end;
-
-procedure TGtkAppChooserWidget.set_show_recommended(setting: gboolean); cdecl;
-begin
-  LazGtk3.gtk_app_chooser_widget_set_show_recommended(@self, setting);
-end;
-
 function TGtkApplication.new(application_id: Pgchar; flags: TGApplicationFlags): PGtkApplication; cdecl;
 begin
   Result := LazGtk3.gtk_application_new(application_id, flags);
@@ -18258,6 +18403,11 @@ begin
   LazGtk3.gtk_application_add_window(@self, window);
 end;
 
+function TGtkApplication.get_active_window: PGtkWindow; cdecl;
+begin
+  Result := LazGtk3.gtk_application_get_active_window(@self);
+end;
+
 function TGtkApplication.get_app_menu: PGMenuModel; cdecl;
 begin
   Result := LazGtk3.gtk_application_get_app_menu(@self);
@@ -18266,6 +18416,11 @@ end;
 function TGtkApplication.get_menubar: PGMenuModel; cdecl;
 begin
   Result := LazGtk3.gtk_application_get_menubar(@self);
+end;
+
+function TGtkApplication.get_window_by_id(id: guint): PGtkWindow; cdecl;
+begin
+  Result := LazGtk3.gtk_application_get_window_by_id(@self, id);
 end;
 
 function TGtkApplication.get_windows: PGList; cdecl;
@@ -18311,6 +18466,11 @@ end;
 function TGtkApplicationWindow.new(application: PGtkApplication): PGtkApplicationWindow; cdecl;
 begin
   Result := LazGtk3.gtk_application_window_new(application);
+end;
+
+function TGtkApplicationWindow.get_id: guint; cdecl;
+begin
+  Result := LazGtk3.gtk_application_window_get_id(@self);
 end;
 
 function TGtkApplicationWindow.get_show_menubar: gboolean; cdecl;
@@ -18558,34 +18718,34 @@ begin
   Result := LazGtk3.gtk_builder_new();
 end;
 
-function TGtkBuilder.add_from_file(filename: Pgchar): guint; cdecl;
+function TGtkBuilder.add_from_file(filename: Pgchar; error: PPGError): guint; cdecl;
 begin
-  Result := LazGtk3.gtk_builder_add_from_file(@self, filename);
+  Result := LazGtk3.gtk_builder_add_from_file(@self, filename, error);
 end;
 
-function TGtkBuilder.add_from_resource(resource_path: Pgchar): guint; cdecl;
+function TGtkBuilder.add_from_resource(resource_path: Pgchar; error: PPGError): guint; cdecl;
 begin
-  Result := LazGtk3.gtk_builder_add_from_resource(@self, resource_path);
+  Result := LazGtk3.gtk_builder_add_from_resource(@self, resource_path, error);
 end;
 
-function TGtkBuilder.add_from_string(buffer: Pgchar; length: gsize): guint; cdecl;
+function TGtkBuilder.add_from_string(buffer: Pgchar; length: gsize; error: PPGError): guint; cdecl;
 begin
-  Result := LazGtk3.gtk_builder_add_from_string(@self, buffer, length);
+  Result := LazGtk3.gtk_builder_add_from_string(@self, buffer, length, error);
 end;
 
-function TGtkBuilder.add_objects_from_file(filename: Pgchar; object_ids: PPgchar): guint; cdecl;
+function TGtkBuilder.add_objects_from_file(filename: Pgchar; object_ids: PPgchar; error: PPGError): guint; cdecl;
 begin
-  Result := LazGtk3.gtk_builder_add_objects_from_file(@self, filename, object_ids);
+  Result := LazGtk3.gtk_builder_add_objects_from_file(@self, filename, object_ids, error);
 end;
 
-function TGtkBuilder.add_objects_from_resource(resource_path: Pgchar; object_ids: PPgchar): guint; cdecl;
+function TGtkBuilder.add_objects_from_resource(resource_path: Pgchar; object_ids: PPgchar; error: PPGError): guint; cdecl;
 begin
-  Result := LazGtk3.gtk_builder_add_objects_from_resource(@self, resource_path, object_ids);
+  Result := LazGtk3.gtk_builder_add_objects_from_resource(@self, resource_path, object_ids, error);
 end;
 
-function TGtkBuilder.add_objects_from_string(buffer: Pgchar; length: gsize; object_ids: PPgchar): guint; cdecl;
+function TGtkBuilder.add_objects_from_string(buffer: Pgchar; length: gsize; object_ids: PPgchar; error: PPGError): guint; cdecl;
 begin
-  Result := LazGtk3.gtk_builder_add_objects_from_string(@self, buffer, length, object_ids);
+  Result := LazGtk3.gtk_builder_add_objects_from_string(@self, buffer, length, object_ids, error);
 end;
 
 procedure TGtkBuilder.connect_signals(user_data: gpointer); cdecl;
@@ -18596,6 +18756,11 @@ end;
 procedure TGtkBuilder.connect_signals_full(func: TGtkBuilderConnectFunc; user_data: gpointer); cdecl;
 begin
   LazGtk3.gtk_builder_connect_signals_full(@self, func, user_data);
+end;
+
+procedure TGtkBuilder.expose_object(name: Pgchar; object_: PGObject); cdecl;
+begin
+  LazGtk3.gtk_builder_expose_object(@self, name, object_);
 end;
 
 function TGtkBuilder.get_object(name: Pgchar): PGObject; cdecl;
@@ -18623,14 +18788,14 @@ begin
   LazGtk3.gtk_builder_set_translation_domain(@self, domain);
 end;
 
-function TGtkBuilder.value_from_string(pspec: PGParamSpec; string_: Pgchar; value: PGValue): gboolean; cdecl;
+function TGtkBuilder.value_from_string(pspec: PGParamSpec; string_: Pgchar; value: PGValue; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_builder_value_from_string(@self, pspec, string_, value);
+  Result := LazGtk3.gtk_builder_value_from_string(@self, pspec, string_, value, error);
 end;
 
-function TGtkBuilder.value_from_string_type(type_: TGType; string_: Pgchar; value: PGValue): gboolean; cdecl;
+function TGtkBuilder.value_from_string_type(type_: TGType; string_: Pgchar; value: PGValue; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_builder_value_from_string_type(@self, type_, string_, value);
+  Result := LazGtk3.gtk_builder_value_from_string_type(@self, type_, string_, value, error);
 end;
 
 function TGtkButton.new: PGtkButton; cdecl;
@@ -18661,6 +18826,11 @@ end;
 procedure TGtkButton.get_alignment(xalign: Pgfloat; yalign: Pgfloat); cdecl;
 begin
   LazGtk3.gtk_button_get_alignment(@self, xalign, yalign);
+end;
+
+function TGtkButton.get_always_show_image: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_button_get_always_show_image(@self);
 end;
 
 function TGtkButton.get_event_window: PGdkWindow; cdecl;
@@ -18706,6 +18876,11 @@ end;
 procedure TGtkButton.set_alignment(xalign: gfloat; yalign: gfloat); cdecl;
 begin
   LazGtk3.gtk_button_set_alignment(@self, xalign, yalign);
+end;
+
+procedure TGtkButton.set_always_show_image(always_show: gboolean); cdecl;
+begin
+  LazGtk3.gtk_button_set_always_show_image(@self, always_show);
 end;
 
 procedure TGtkButton.set_focus_on_click(focus_on_click: gboolean); cdecl;
@@ -18966,6 +19141,196 @@ end;
 procedure TGtkCellRenderer.stop_editing(canceled: gboolean); cdecl;
 begin
   LazGtk3.gtk_cell_renderer_stop_editing(@self, canceled);
+end;
+
+function TGtkCellArea.activate(context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; flags: TGtkCellRendererState; edit_only: gboolean): gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_activate(@self, context, widget, cell_area, flags, edit_only);
+end;
+
+function TGtkCellArea.activate_cell(widget: PGtkWidget; renderer: PGtkCellRenderer; event: PGdkEvent; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_activate_cell(@self, widget, renderer, event, cell_area, flags);
+end;
+
+procedure TGtkCellArea.add(renderer: PGtkCellRenderer); cdecl;
+begin
+  LazGtk3.gtk_cell_area_add(@self, renderer);
+end;
+
+procedure TGtkCellArea.add_focus_sibling(renderer: PGtkCellRenderer; sibling: PGtkCellRenderer); cdecl;
+begin
+  LazGtk3.gtk_cell_area_add_focus_sibling(@self, renderer, sibling);
+end;
+
+procedure TGtkCellArea.apply_attributes(tree_model: PGtkTreeModel; iter: PGtkTreeIter; is_expander: gboolean; is_expanded: gboolean); cdecl;
+begin
+  LazGtk3.gtk_cell_area_apply_attributes(@self, tree_model, iter, is_expander, is_expanded);
+end;
+
+procedure TGtkCellArea.attribute_connect(renderer: PGtkCellRenderer; attribute: Pgchar; column: gint); cdecl;
+begin
+  LazGtk3.gtk_cell_area_attribute_connect(@self, renderer, attribute, column);
+end;
+
+procedure TGtkCellArea.attribute_disconnect(renderer: PGtkCellRenderer; attribute: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_cell_area_attribute_disconnect(@self, renderer, attribute);
+end;
+
+procedure TGtkCellArea.cell_get_property(renderer: PGtkCellRenderer; property_name: Pgchar; value: PGValue); cdecl;
+begin
+  LazGtk3.gtk_cell_area_cell_get_property(@self, renderer, property_name, value);
+end;
+
+procedure TGtkCellArea.cell_set_property(renderer: PGtkCellRenderer; property_name: Pgchar; value: PGValue); cdecl;
+begin
+  LazGtk3.gtk_cell_area_cell_set_property(@self, renderer, property_name, value);
+end;
+
+function TGtkCellArea.copy_context(context: PGtkCellAreaContext): PGtkCellAreaContext; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_copy_context(@self, context);
+end;
+
+function TGtkCellArea.create_context: PGtkCellAreaContext; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_create_context(@self);
+end;
+
+function TGtkCellArea.event(context: PGtkCellAreaContext; widget: PGtkWidget; event: PGdkEvent; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gint; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_event(@self, context, widget, event, cell_area, flags);
+end;
+
+function TGtkCellArea.focus(direction: TGtkDirectionType): gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_focus(@self, direction);
+end;
+
+procedure TGtkCellArea.foreach(callback: TGtkCellCallback; callback_data: gpointer); cdecl;
+begin
+  LazGtk3.gtk_cell_area_foreach(@self, callback, callback_data);
+end;
+
+procedure TGtkCellArea.foreach_alloc(context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; background_area: PGdkRectangle; callback: TGtkCellAllocCallback; callback_data: gpointer); cdecl;
+begin
+  LazGtk3.gtk_cell_area_foreach_alloc(@self, context, widget, cell_area, background_area, callback, callback_data);
+end;
+
+procedure TGtkCellArea.get_cell_allocation(context: PGtkCellAreaContext; widget: PGtkWidget; renderer: PGtkCellRenderer; cell_area: PGdkRectangle; allocation: PGdkRectangle); cdecl;
+begin
+  LazGtk3.gtk_cell_area_get_cell_allocation(@self, context, widget, renderer, cell_area, allocation);
+end;
+
+function TGtkCellArea.get_cell_at_position(context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; x: gint; y: gint; alloc_area: PGdkRectangle): PGtkCellRenderer; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_get_cell_at_position(@self, context, widget, cell_area, x, y, alloc_area);
+end;
+
+function TGtkCellArea.get_current_path_string: Pgchar; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_get_current_path_string(@self);
+end;
+
+function TGtkCellArea.get_edit_widget: PGtkCellEditable; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_get_edit_widget(@self);
+end;
+
+function TGtkCellArea.get_edited_cell: PGtkCellRenderer; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_get_edited_cell(@self);
+end;
+
+function TGtkCellArea.get_focus_cell: PGtkCellRenderer; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_get_focus_cell(@self);
+end;
+
+function TGtkCellArea.get_focus_from_sibling(renderer: PGtkCellRenderer): PGtkCellRenderer; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_get_focus_from_sibling(@self, renderer);
+end;
+
+function TGtkCellArea.get_focus_siblings(renderer: PGtkCellRenderer): PGList; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_get_focus_siblings(@self, renderer);
+end;
+
+procedure TGtkCellArea.get_preferred_height(context: PGtkCellAreaContext; widget: PGtkWidget; minimum_height: Pgint; natural_height: Pgint); cdecl;
+begin
+  LazGtk3.gtk_cell_area_get_preferred_height(@self, context, widget, minimum_height, natural_height);
+end;
+
+procedure TGtkCellArea.get_preferred_height_for_width(context: PGtkCellAreaContext; widget: PGtkWidget; width: gint; minimum_height: Pgint; natural_height: Pgint); cdecl;
+begin
+  LazGtk3.gtk_cell_area_get_preferred_height_for_width(@self, context, widget, width, minimum_height, natural_height);
+end;
+
+procedure TGtkCellArea.get_preferred_width(context: PGtkCellAreaContext; widget: PGtkWidget; minimum_width: Pgint; natural_width: Pgint); cdecl;
+begin
+  LazGtk3.gtk_cell_area_get_preferred_width(@self, context, widget, minimum_width, natural_width);
+end;
+
+procedure TGtkCellArea.get_preferred_width_for_height(context: PGtkCellAreaContext; widget: PGtkWidget; height: gint; minimum_width: Pgint; natural_width: Pgint); cdecl;
+begin
+  LazGtk3.gtk_cell_area_get_preferred_width_for_height(@self, context, widget, height, minimum_width, natural_width);
+end;
+
+function TGtkCellArea.get_request_mode: TGtkSizeRequestMode; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_get_request_mode(@self);
+end;
+
+function TGtkCellArea.has_renderer(renderer: PGtkCellRenderer): gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_has_renderer(@self, renderer);
+end;
+
+procedure TGtkCellArea.inner_cell_area(widget: PGtkWidget; cell_area: PGdkRectangle; inner_area: PGdkRectangle); cdecl;
+begin
+  LazGtk3.gtk_cell_area_inner_cell_area(@self, widget, cell_area, inner_area);
+end;
+
+function TGtkCellArea.is_activatable: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_is_activatable(@self);
+end;
+
+function TGtkCellArea.is_focus_sibling(renderer: PGtkCellRenderer; sibling: PGtkCellRenderer): gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_cell_area_is_focus_sibling(@self, renderer, sibling);
+end;
+
+procedure TGtkCellArea.remove(renderer: PGtkCellRenderer); cdecl;
+begin
+  LazGtk3.gtk_cell_area_remove(@self, renderer);
+end;
+
+procedure TGtkCellArea.remove_focus_sibling(renderer: PGtkCellRenderer; sibling: PGtkCellRenderer); cdecl;
+begin
+  LazGtk3.gtk_cell_area_remove_focus_sibling(@self, renderer, sibling);
+end;
+
+procedure TGtkCellArea.render(context: PGtkCellAreaContext; widget: PGtkWidget; cr: Pcairo_t; background_area: PGdkRectangle; cell_area: PGdkRectangle; flags: TGtkCellRendererState; paint_focus: gboolean); cdecl;
+begin
+  LazGtk3.gtk_cell_area_render(@self, context, widget, cr, background_area, cell_area, flags, paint_focus);
+end;
+
+procedure TGtkCellArea.request_renderer(renderer: PGtkCellRenderer; orientation: TGtkOrientation; widget: PGtkWidget; for_size: gint; minimum_size: Pgint; natural_size: Pgint); cdecl;
+begin
+  LazGtk3.gtk_cell_area_request_renderer(@self, renderer, orientation, widget, for_size, minimum_size, natural_size);
+end;
+
+procedure TGtkCellArea.set_focus_cell(renderer: PGtkCellRenderer); cdecl;
+begin
+  LazGtk3.gtk_cell_area_set_focus_cell(@self, renderer);
+end;
+
+procedure TGtkCellArea.stop_editing(canceled: gboolean); cdecl;
+begin
+  LazGtk3.gtk_cell_area_stop_editing(@self, canceled);
 end;
 
 procedure TGtkCellAreaContext.allocate(width: gint; height: gint); cdecl;
@@ -19248,196 +19613,6 @@ begin
   LazGtk3.gtk_tree_iter_free(@self);
 end;
 
-function TGtkCellArea.activate(context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; flags: TGtkCellRendererState; edit_only: gboolean): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_activate(@self, context, widget, cell_area, flags, edit_only);
-end;
-
-function TGtkCellArea.activate_cell(widget: PGtkWidget; renderer: PGtkCellRenderer; event: PGdkEvent; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_activate_cell(@self, widget, renderer, event, cell_area, flags);
-end;
-
-procedure TGtkCellArea.add(renderer: PGtkCellRenderer); cdecl;
-begin
-  LazGtk3.gtk_cell_area_add(@self, renderer);
-end;
-
-procedure TGtkCellArea.add_focus_sibling(renderer: PGtkCellRenderer; sibling: PGtkCellRenderer); cdecl;
-begin
-  LazGtk3.gtk_cell_area_add_focus_sibling(@self, renderer, sibling);
-end;
-
-procedure TGtkCellArea.apply_attributes(tree_model: PGtkTreeModel; iter: PGtkTreeIter; is_expander: gboolean; is_expanded: gboolean); cdecl;
-begin
-  LazGtk3.gtk_cell_area_apply_attributes(@self, tree_model, iter, is_expander, is_expanded);
-end;
-
-procedure TGtkCellArea.attribute_connect(renderer: PGtkCellRenderer; attribute: Pgchar; column: gint); cdecl;
-begin
-  LazGtk3.gtk_cell_area_attribute_connect(@self, renderer, attribute, column);
-end;
-
-procedure TGtkCellArea.attribute_disconnect(renderer: PGtkCellRenderer; attribute: Pgchar); cdecl;
-begin
-  LazGtk3.gtk_cell_area_attribute_disconnect(@self, renderer, attribute);
-end;
-
-procedure TGtkCellArea.cell_get_property(renderer: PGtkCellRenderer; property_name: Pgchar; value: PGValue); cdecl;
-begin
-  LazGtk3.gtk_cell_area_cell_get_property(@self, renderer, property_name, value);
-end;
-
-procedure TGtkCellArea.cell_set_property(renderer: PGtkCellRenderer; property_name: Pgchar; value: PGValue); cdecl;
-begin
-  LazGtk3.gtk_cell_area_cell_set_property(@self, renderer, property_name, value);
-end;
-
-function TGtkCellArea.copy_context(context: PGtkCellAreaContext): PGtkCellAreaContext; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_copy_context(@self, context);
-end;
-
-function TGtkCellArea.create_context: PGtkCellAreaContext; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_create_context(@self);
-end;
-
-function TGtkCellArea.event(context: PGtkCellAreaContext; widget: PGtkWidget; event: PGdkEvent; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gint; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_event(@self, context, widget, event, cell_area, flags);
-end;
-
-function TGtkCellArea.focus(direction: TGtkDirectionType): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_focus(@self, direction);
-end;
-
-procedure TGtkCellArea.foreach(callback: TGtkCellCallback; callback_data: gpointer); cdecl;
-begin
-  LazGtk3.gtk_cell_area_foreach(@self, callback, callback_data);
-end;
-
-procedure TGtkCellArea.foreach_alloc(context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; background_area: PGdkRectangle; callback: TGtkCellAllocCallback; callback_data: gpointer); cdecl;
-begin
-  LazGtk3.gtk_cell_area_foreach_alloc(@self, context, widget, cell_area, background_area, callback, callback_data);
-end;
-
-procedure TGtkCellArea.get_cell_allocation(context: PGtkCellAreaContext; widget: PGtkWidget; renderer: PGtkCellRenderer; cell_area: PGdkRectangle; allocation: PGdkRectangle); cdecl;
-begin
-  LazGtk3.gtk_cell_area_get_cell_allocation(@self, context, widget, renderer, cell_area, allocation);
-end;
-
-function TGtkCellArea.get_cell_at_position(context: PGtkCellAreaContext; widget: PGtkWidget; cell_area: PGdkRectangle; x: gint; y: gint; alloc_area: PGdkRectangle): PGtkCellRenderer; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_get_cell_at_position(@self, context, widget, cell_area, x, y, alloc_area);
-end;
-
-function TGtkCellArea.get_current_path_string: Pgchar; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_get_current_path_string(@self);
-end;
-
-function TGtkCellArea.get_edit_widget: PGtkCellEditable; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_get_edit_widget(@self);
-end;
-
-function TGtkCellArea.get_edited_cell: PGtkCellRenderer; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_get_edited_cell(@self);
-end;
-
-function TGtkCellArea.get_focus_cell: PGtkCellRenderer; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_get_focus_cell(@self);
-end;
-
-function TGtkCellArea.get_focus_from_sibling(renderer: PGtkCellRenderer): PGtkCellRenderer; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_get_focus_from_sibling(@self, renderer);
-end;
-
-function TGtkCellArea.get_focus_siblings(renderer: PGtkCellRenderer): PGList; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_get_focus_siblings(@self, renderer);
-end;
-
-procedure TGtkCellArea.get_preferred_height(context: PGtkCellAreaContext; widget: PGtkWidget; minimum_height: Pgint; natural_height: Pgint); cdecl;
-begin
-  LazGtk3.gtk_cell_area_get_preferred_height(@self, context, widget, minimum_height, natural_height);
-end;
-
-procedure TGtkCellArea.get_preferred_height_for_width(context: PGtkCellAreaContext; widget: PGtkWidget; width: gint; minimum_height: Pgint; natural_height: Pgint); cdecl;
-begin
-  LazGtk3.gtk_cell_area_get_preferred_height_for_width(@self, context, widget, width, minimum_height, natural_height);
-end;
-
-procedure TGtkCellArea.get_preferred_width(context: PGtkCellAreaContext; widget: PGtkWidget; minimum_width: Pgint; natural_width: Pgint); cdecl;
-begin
-  LazGtk3.gtk_cell_area_get_preferred_width(@self, context, widget, minimum_width, natural_width);
-end;
-
-procedure TGtkCellArea.get_preferred_width_for_height(context: PGtkCellAreaContext; widget: PGtkWidget; height: gint; minimum_width: Pgint; natural_width: Pgint); cdecl;
-begin
-  LazGtk3.gtk_cell_area_get_preferred_width_for_height(@self, context, widget, height, minimum_width, natural_width);
-end;
-
-function TGtkCellArea.get_request_mode: TGtkSizeRequestMode; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_get_request_mode(@self);
-end;
-
-function TGtkCellArea.has_renderer(renderer: PGtkCellRenderer): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_has_renderer(@self, renderer);
-end;
-
-procedure TGtkCellArea.inner_cell_area(widget: PGtkWidget; cell_area: PGdkRectangle; inner_area: PGdkRectangle); cdecl;
-begin
-  LazGtk3.gtk_cell_area_inner_cell_area(@self, widget, cell_area, inner_area);
-end;
-
-function TGtkCellArea.is_activatable: gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_is_activatable(@self);
-end;
-
-function TGtkCellArea.is_focus_sibling(renderer: PGtkCellRenderer; sibling: PGtkCellRenderer): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_cell_area_is_focus_sibling(@self, renderer, sibling);
-end;
-
-procedure TGtkCellArea.remove(renderer: PGtkCellRenderer); cdecl;
-begin
-  LazGtk3.gtk_cell_area_remove(@self, renderer);
-end;
-
-procedure TGtkCellArea.remove_focus_sibling(renderer: PGtkCellRenderer; sibling: PGtkCellRenderer); cdecl;
-begin
-  LazGtk3.gtk_cell_area_remove_focus_sibling(@self, renderer, sibling);
-end;
-
-procedure TGtkCellArea.render(context: PGtkCellAreaContext; widget: PGtkWidget; cr: Pcairo_t; background_area: PGdkRectangle; cell_area: PGdkRectangle; flags: TGtkCellRendererState; paint_focus: gboolean); cdecl;
-begin
-  LazGtk3.gtk_cell_area_render(@self, context, widget, cr, background_area, cell_area, flags, paint_focus);
-end;
-
-procedure TGtkCellArea.request_renderer(renderer: PGtkCellRenderer; orientation: TGtkOrientation; widget: PGtkWidget; for_size: gint; minimum_size: Pgint; natural_size: Pgint); cdecl;
-begin
-  LazGtk3.gtk_cell_area_request_renderer(@self, renderer, orientation, widget, for_size, minimum_size, natural_size);
-end;
-
-procedure TGtkCellArea.set_focus_cell(renderer: PGtkCellRenderer); cdecl;
-begin
-  LazGtk3.gtk_cell_area_set_focus_cell(@self, renderer);
-end;
-
-procedure TGtkCellArea.stop_editing(canceled: gboolean); cdecl;
-begin
-  LazGtk3.gtk_cell_area_stop_editing(@self, canceled);
-end;
-
 function TGtkCellAreaBox.new: PGtkCellAreaBox; cdecl;
 begin
   Result := LazGtk3.gtk_cell_area_box_new();
@@ -19506,6 +19681,11 @@ end;
 function TGtkCellRendererAccel.new: PGtkCellRendererAccel; cdecl;
 begin
   Result := LazGtk3.gtk_cell_renderer_accel_new();
+end;
+
+procedure TGtkCellRendererClass.set_accessible_type(type_: TGType); cdecl;
+begin
+  LazGtk3.gtk_cell_renderer_class_set_accessible_type(@self, type_);
 end;
 
 function TGtkCellRendererCombo.new: PGtkCellRendererCombo; cdecl;
@@ -20063,9 +20243,9 @@ begin
   Result := LazGtk3.gtk_text_buffer_delete_selection(@self, interactive, default_editable);
 end;
 
-function TGtkTextBuffer.deserialize(content_buffer: PGtkTextBuffer; format: TGdkAtom; iter: PGtkTextIter; data: Pguint8; length: gsize): gboolean; cdecl;
+function TGtkTextBuffer.deserialize(content_buffer: PGtkTextBuffer; format: TGdkAtom; iter: PGtkTextIter; data: Pguint8; length: gsize; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_text_buffer_deserialize(@self, content_buffer, format, iter, data, length);
+  Result := LazGtk3.gtk_text_buffer_deserialize(@self, content_buffer, format, iter, data, length, error);
 end;
 
 function TGtkTextBuffer.deserialize_get_can_create_tags(format: TGdkAtom): gboolean; cdecl;
@@ -20833,16 +21013,6 @@ begin
   LazGtk3.gtk_widget_path_unref(@self);
 end;
 
-function TGtkStyleProvider.get_icon_factory(path: PGtkWidgetPath): PGtkIconFactory; cdecl;
-begin
-  Result := LazGtk3.gtk_style_provider_get_icon_factory(@self, path);
-end;
-
-function TGtkStyleProvider.get_style(path: PGtkWidgetPath): PGtkStyleProperties; cdecl;
-begin
-  Result := LazGtk3.gtk_style_provider_get_style(@self, path);
-end;
-
 function TGtkStyleProvider.get_style_property(path: PGtkWidgetPath; state: TGtkStateFlags; pspec: PGParamSpec; value: PGValue): gboolean; cdecl;
 begin
   Result := LazGtk3.gtk_style_provider_get_style_property(@self, path, state, pspec, value);
@@ -20863,19 +21033,19 @@ begin
   Result := LazGtk3.gtk_css_provider_get_named(name, variant);
 end;
 
-function TGtkCssProvider.load_from_data(data: Pgchar; length: gssize): gboolean; cdecl;
+function TGtkCssProvider.load_from_data(data: Pgchar; length: gssize; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_css_provider_load_from_data(@self, data, length);
+  Result := LazGtk3.gtk_css_provider_load_from_data(@self, data, length, error);
 end;
 
-function TGtkCssProvider.load_from_file(file_: PGFile): gboolean; cdecl;
+function TGtkCssProvider.load_from_file(file_: PGFile; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_css_provider_load_from_file(@self, file_);
+  Result := LazGtk3.gtk_css_provider_load_from_file(@self, file_, error);
 end;
 
-function TGtkCssProvider.load_from_path(path: Pgchar): gboolean; cdecl;
+function TGtkCssProvider.load_from_path(path: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_css_provider_load_from_path(@self, path);
+  Result := LazGtk3.gtk_css_provider_load_from_path(@self, path, error);
 end;
 
 function TGtkCssProvider.to_string: Pgchar; cdecl;
@@ -21051,6 +21221,351 @@ end;
 procedure TGtkEntryBuffer.set_text(chars: Pgchar; n_chars: gint); cdecl;
 begin
   LazGtk3.gtk_entry_buffer_set_text(@self, chars, n_chars);
+end;
+
+function TGtkEntry.new: PGtkEntry; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_new();
+end;
+
+function TGtkEntry.new_with_buffer(buffer: PGtkEntryBuffer): PGtkEntry; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_new_with_buffer(buffer);
+end;
+
+function TGtkEntry.get_activates_default: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_activates_default(@self);
+end;
+
+function TGtkEntry.get_alignment: gfloat; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_alignment(@self);
+end;
+
+function TGtkEntry.get_attributes: PPangoAttrList; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_attributes(@self);
+end;
+
+function TGtkEntry.get_buffer: PGtkEntryBuffer; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_buffer(@self);
+end;
+
+function TGtkEntry.get_completion: PGtkEntryCompletion; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_completion(@self);
+end;
+
+function TGtkEntry.get_current_icon_drag_source: gint; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_current_icon_drag_source(@self);
+end;
+
+function TGtkEntry.get_cursor_hadjustment: PGtkAdjustment; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_cursor_hadjustment(@self);
+end;
+
+function TGtkEntry.get_has_frame: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_has_frame(@self);
+end;
+
+function TGtkEntry.get_icon_activatable(icon_pos: TGtkEntryIconPosition): gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_icon_activatable(@self, icon_pos);
+end;
+
+procedure TGtkEntry.get_icon_area(icon_pos: TGtkEntryIconPosition; icon_area: PGdkRectangle); cdecl;
+begin
+  LazGtk3.gtk_entry_get_icon_area(@self, icon_pos, icon_area);
+end;
+
+function TGtkEntry.get_icon_at_pos(x: gint; y: gint): gint; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_icon_at_pos(@self, x, y);
+end;
+
+function TGtkEntry.get_icon_gicon(icon_pos: TGtkEntryIconPosition): PGIcon; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_icon_gicon(@self, icon_pos);
+end;
+
+function TGtkEntry.get_icon_name(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_icon_name(@self, icon_pos);
+end;
+
+function TGtkEntry.get_icon_pixbuf(icon_pos: TGtkEntryIconPosition): PGdkPixbuf; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_icon_pixbuf(@self, icon_pos);
+end;
+
+function TGtkEntry.get_icon_sensitive(icon_pos: TGtkEntryIconPosition): gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_icon_sensitive(@self, icon_pos);
+end;
+
+function TGtkEntry.get_icon_stock(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_icon_stock(@self, icon_pos);
+end;
+
+function TGtkEntry.get_icon_storage_type(icon_pos: TGtkEntryIconPosition): TGtkImageType; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_icon_storage_type(@self, icon_pos);
+end;
+
+function TGtkEntry.get_icon_tooltip_markup(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_icon_tooltip_markup(@self, icon_pos);
+end;
+
+function TGtkEntry.get_icon_tooltip_text(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_icon_tooltip_text(@self, icon_pos);
+end;
+
+function TGtkEntry.get_input_hints: TGtkInputHints; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_input_hints(@self);
+end;
+
+function TGtkEntry.get_input_purpose: TGtkInputPurpose; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_input_purpose(@self);
+end;
+
+function TGtkEntry.get_invisible_char: gunichar; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_invisible_char(@self);
+end;
+
+function TGtkEntry.get_layout: PPangoLayout; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_layout(@self);
+end;
+
+procedure TGtkEntry.get_layout_offsets(x: Pgint; y: Pgint); cdecl;
+begin
+  LazGtk3.gtk_entry_get_layout_offsets(@self, x, y);
+end;
+
+function TGtkEntry.get_max_length: gint; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_max_length(@self);
+end;
+
+function TGtkEntry.get_overwrite_mode: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_overwrite_mode(@self);
+end;
+
+function TGtkEntry.get_placeholder_text: Pgchar; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_placeholder_text(@self);
+end;
+
+function TGtkEntry.get_progress_fraction: gdouble; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_progress_fraction(@self);
+end;
+
+function TGtkEntry.get_progress_pulse_step: gdouble; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_progress_pulse_step(@self);
+end;
+
+function TGtkEntry.get_text: Pgchar; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_text(@self);
+end;
+
+procedure TGtkEntry.get_text_area(text_area: PGdkRectangle); cdecl;
+begin
+  LazGtk3.gtk_entry_get_text_area(@self, text_area);
+end;
+
+function TGtkEntry.get_text_length: guint16; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_text_length(@self);
+end;
+
+function TGtkEntry.get_visibility: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_visibility(@self);
+end;
+
+function TGtkEntry.get_width_chars: gint; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_get_width_chars(@self);
+end;
+
+function TGtkEntry.im_context_filter_keypress(event: PGdkEventKey): gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_im_context_filter_keypress(@self, event);
+end;
+
+function TGtkEntry.layout_index_to_text_index(layout_index: gint): gint; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_layout_index_to_text_index(@self, layout_index);
+end;
+
+procedure TGtkEntry.progress_pulse; cdecl;
+begin
+  LazGtk3.gtk_entry_progress_pulse(@self);
+end;
+
+procedure TGtkEntry.reset_im_context; cdecl;
+begin
+  LazGtk3.gtk_entry_reset_im_context(@self);
+end;
+
+procedure TGtkEntry.set_activates_default(setting: gboolean); cdecl;
+begin
+  LazGtk3.gtk_entry_set_activates_default(@self, setting);
+end;
+
+procedure TGtkEntry.set_alignment(xalign: gfloat); cdecl;
+begin
+  LazGtk3.gtk_entry_set_alignment(@self, xalign);
+end;
+
+procedure TGtkEntry.set_attributes(attrs: PPangoAttrList); cdecl;
+begin
+  LazGtk3.gtk_entry_set_attributes(@self, attrs);
+end;
+
+procedure TGtkEntry.set_buffer(buffer: PGtkEntryBuffer); cdecl;
+begin
+  LazGtk3.gtk_entry_set_buffer(@self, buffer);
+end;
+
+procedure TGtkEntry.set_completion(completion: PGtkEntryCompletion); cdecl;
+begin
+  LazGtk3.gtk_entry_set_completion(@self, completion);
+end;
+
+procedure TGtkEntry.set_cursor_hadjustment(adjustment: PGtkAdjustment); cdecl;
+begin
+  LazGtk3.gtk_entry_set_cursor_hadjustment(@self, adjustment);
+end;
+
+procedure TGtkEntry.set_has_frame(setting: gboolean); cdecl;
+begin
+  LazGtk3.gtk_entry_set_has_frame(@self, setting);
+end;
+
+procedure TGtkEntry.set_icon_activatable(icon_pos: TGtkEntryIconPosition; activatable: gboolean); cdecl;
+begin
+  LazGtk3.gtk_entry_set_icon_activatable(@self, icon_pos, activatable);
+end;
+
+procedure TGtkEntry.set_icon_drag_source(icon_pos: TGtkEntryIconPosition; target_list: PGtkTargetList; actions: TGdkDragAction); cdecl;
+begin
+  LazGtk3.gtk_entry_set_icon_drag_source(@self, icon_pos, target_list, actions);
+end;
+
+procedure TGtkEntry.set_icon_from_gicon(icon_pos: TGtkEntryIconPosition; icon: PGIcon); cdecl;
+begin
+  LazGtk3.gtk_entry_set_icon_from_gicon(@self, icon_pos, icon);
+end;
+
+procedure TGtkEntry.set_icon_from_icon_name(icon_pos: TGtkEntryIconPosition; icon_name: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_entry_set_icon_from_icon_name(@self, icon_pos, icon_name);
+end;
+
+procedure TGtkEntry.set_icon_from_pixbuf(icon_pos: TGtkEntryIconPosition; pixbuf: PGdkPixbuf); cdecl;
+begin
+  LazGtk3.gtk_entry_set_icon_from_pixbuf(@self, icon_pos, pixbuf);
+end;
+
+procedure TGtkEntry.set_icon_from_stock(icon_pos: TGtkEntryIconPosition; stock_id: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_entry_set_icon_from_stock(@self, icon_pos, stock_id);
+end;
+
+procedure TGtkEntry.set_icon_sensitive(icon_pos: TGtkEntryIconPosition; sensitive: gboolean); cdecl;
+begin
+  LazGtk3.gtk_entry_set_icon_sensitive(@self, icon_pos, sensitive);
+end;
+
+procedure TGtkEntry.set_icon_tooltip_markup(icon_pos: TGtkEntryIconPosition; tooltip: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_entry_set_icon_tooltip_markup(@self, icon_pos, tooltip);
+end;
+
+procedure TGtkEntry.set_icon_tooltip_text(icon_pos: TGtkEntryIconPosition; tooltip: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_entry_set_icon_tooltip_text(@self, icon_pos, tooltip);
+end;
+
+procedure TGtkEntry.set_input_hints(hints: TGtkInputHints); cdecl;
+begin
+  LazGtk3.gtk_entry_set_input_hints(@self, hints);
+end;
+
+procedure TGtkEntry.set_input_purpose(purpose: TGtkInputPurpose); cdecl;
+begin
+  LazGtk3.gtk_entry_set_input_purpose(@self, purpose);
+end;
+
+procedure TGtkEntry.set_invisible_char(ch: gunichar); cdecl;
+begin
+  LazGtk3.gtk_entry_set_invisible_char(@self, ch);
+end;
+
+procedure TGtkEntry.set_max_length(max: gint); cdecl;
+begin
+  LazGtk3.gtk_entry_set_max_length(@self, max);
+end;
+
+procedure TGtkEntry.set_overwrite_mode(overwrite: gboolean); cdecl;
+begin
+  LazGtk3.gtk_entry_set_overwrite_mode(@self, overwrite);
+end;
+
+procedure TGtkEntry.set_placeholder_text(text: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_entry_set_placeholder_text(@self, text);
+end;
+
+procedure TGtkEntry.set_progress_fraction(fraction: gdouble); cdecl;
+begin
+  LazGtk3.gtk_entry_set_progress_fraction(@self, fraction);
+end;
+
+procedure TGtkEntry.set_progress_pulse_step(fraction: gdouble); cdecl;
+begin
+  LazGtk3.gtk_entry_set_progress_pulse_step(@self, fraction);
+end;
+
+procedure TGtkEntry.set_text(text: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_entry_set_text(@self, text);
+end;
+
+procedure TGtkEntry.set_visibility(visible: gboolean); cdecl;
+begin
+  LazGtk3.gtk_entry_set_visibility(@self, visible);
+end;
+
+procedure TGtkEntry.set_width_chars(n_chars: gint); cdecl;
+begin
+  LazGtk3.gtk_entry_set_width_chars(@self, n_chars);
+end;
+
+function TGtkEntry.text_index_to_layout_index(text_index: gint): gint; cdecl;
+begin
+  Result := LazGtk3.gtk_entry_text_index_to_layout_index(@self, text_index);
+end;
+
+procedure TGtkEntry.unset_invisible_char; cdecl;
+begin
+  LazGtk3.gtk_entry_unset_invisible_char(@self);
 end;
 
 function TGtkEntryCompletion.new: PGtkEntryCompletion; cdecl;
@@ -21243,321 +21758,6 @@ begin
   LazGtk3.gtk_target_list_unref(@self);
 end;
 
-function TGtkEntry.new: PGtkEntry; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_new();
-end;
-
-function TGtkEntry.new_with_buffer(buffer: PGtkEntryBuffer): PGtkEntry; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_new_with_buffer(buffer);
-end;
-
-function TGtkEntry.get_activates_default: gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_activates_default(@self);
-end;
-
-function TGtkEntry.get_alignment: gfloat; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_alignment(@self);
-end;
-
-function TGtkEntry.get_buffer: PGtkEntryBuffer; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_buffer(@self);
-end;
-
-function TGtkEntry.get_completion: PGtkEntryCompletion; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_completion(@self);
-end;
-
-function TGtkEntry.get_current_icon_drag_source: gint; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_current_icon_drag_source(@self);
-end;
-
-function TGtkEntry.get_cursor_hadjustment: PGtkAdjustment; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_cursor_hadjustment(@self);
-end;
-
-function TGtkEntry.get_has_frame: gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_has_frame(@self);
-end;
-
-function TGtkEntry.get_icon_activatable(icon_pos: TGtkEntryIconPosition): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_icon_activatable(@self, icon_pos);
-end;
-
-procedure TGtkEntry.get_icon_area(icon_pos: TGtkEntryIconPosition; icon_area: PGdkRectangle); cdecl;
-begin
-  LazGtk3.gtk_entry_get_icon_area(@self, icon_pos, icon_area);
-end;
-
-function TGtkEntry.get_icon_at_pos(x: gint; y: gint): gint; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_icon_at_pos(@self, x, y);
-end;
-
-function TGtkEntry.get_icon_gicon(icon_pos: TGtkEntryIconPosition): PGIcon; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_icon_gicon(@self, icon_pos);
-end;
-
-function TGtkEntry.get_icon_name(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_icon_name(@self, icon_pos);
-end;
-
-function TGtkEntry.get_icon_pixbuf(icon_pos: TGtkEntryIconPosition): PGdkPixbuf; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_icon_pixbuf(@self, icon_pos);
-end;
-
-function TGtkEntry.get_icon_sensitive(icon_pos: TGtkEntryIconPosition): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_icon_sensitive(@self, icon_pos);
-end;
-
-function TGtkEntry.get_icon_stock(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_icon_stock(@self, icon_pos);
-end;
-
-function TGtkEntry.get_icon_storage_type(icon_pos: TGtkEntryIconPosition): TGtkImageType; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_icon_storage_type(@self, icon_pos);
-end;
-
-function TGtkEntry.get_icon_tooltip_markup(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_icon_tooltip_markup(@self, icon_pos);
-end;
-
-function TGtkEntry.get_icon_tooltip_text(icon_pos: TGtkEntryIconPosition): Pgchar; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_icon_tooltip_text(@self, icon_pos);
-end;
-
-function TGtkEntry.get_invisible_char: gunichar; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_invisible_char(@self);
-end;
-
-function TGtkEntry.get_layout: PPangoLayout; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_layout(@self);
-end;
-
-procedure TGtkEntry.get_layout_offsets(x: Pgint; y: Pgint); cdecl;
-begin
-  LazGtk3.gtk_entry_get_layout_offsets(@self, x, y);
-end;
-
-function TGtkEntry.get_max_length: gint; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_max_length(@self);
-end;
-
-function TGtkEntry.get_overwrite_mode: gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_overwrite_mode(@self);
-end;
-
-function TGtkEntry.get_placeholder_text: Pgchar; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_placeholder_text(@self);
-end;
-
-function TGtkEntry.get_progress_fraction: gdouble; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_progress_fraction(@self);
-end;
-
-function TGtkEntry.get_progress_pulse_step: gdouble; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_progress_pulse_step(@self);
-end;
-
-function TGtkEntry.get_text: Pgchar; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_text(@self);
-end;
-
-procedure TGtkEntry.get_text_area(text_area: PGdkRectangle); cdecl;
-begin
-  LazGtk3.gtk_entry_get_text_area(@self, text_area);
-end;
-
-function TGtkEntry.get_text_length: guint16; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_text_length(@self);
-end;
-
-function TGtkEntry.get_visibility: gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_visibility(@self);
-end;
-
-function TGtkEntry.get_width_chars: gint; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_get_width_chars(@self);
-end;
-
-function TGtkEntry.im_context_filter_keypress(event: PGdkEventKey): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_im_context_filter_keypress(@self, event);
-end;
-
-function TGtkEntry.layout_index_to_text_index(layout_index: gint): gint; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_layout_index_to_text_index(@self, layout_index);
-end;
-
-procedure TGtkEntry.progress_pulse; cdecl;
-begin
-  LazGtk3.gtk_entry_progress_pulse(@self);
-end;
-
-procedure TGtkEntry.reset_im_context; cdecl;
-begin
-  LazGtk3.gtk_entry_reset_im_context(@self);
-end;
-
-procedure TGtkEntry.set_activates_default(setting: gboolean); cdecl;
-begin
-  LazGtk3.gtk_entry_set_activates_default(@self, setting);
-end;
-
-procedure TGtkEntry.set_alignment(xalign: gfloat); cdecl;
-begin
-  LazGtk3.gtk_entry_set_alignment(@self, xalign);
-end;
-
-procedure TGtkEntry.set_buffer(buffer: PGtkEntryBuffer); cdecl;
-begin
-  LazGtk3.gtk_entry_set_buffer(@self, buffer);
-end;
-
-procedure TGtkEntry.set_completion(completion: PGtkEntryCompletion); cdecl;
-begin
-  LazGtk3.gtk_entry_set_completion(@self, completion);
-end;
-
-procedure TGtkEntry.set_cursor_hadjustment(adjustment: PGtkAdjustment); cdecl;
-begin
-  LazGtk3.gtk_entry_set_cursor_hadjustment(@self, adjustment);
-end;
-
-procedure TGtkEntry.set_has_frame(setting: gboolean); cdecl;
-begin
-  LazGtk3.gtk_entry_set_has_frame(@self, setting);
-end;
-
-procedure TGtkEntry.set_icon_activatable(icon_pos: TGtkEntryIconPosition; activatable: gboolean); cdecl;
-begin
-  LazGtk3.gtk_entry_set_icon_activatable(@self, icon_pos, activatable);
-end;
-
-procedure TGtkEntry.set_icon_drag_source(icon_pos: TGtkEntryIconPosition; target_list: PGtkTargetList; actions: TGdkDragAction); cdecl;
-begin
-  LazGtk3.gtk_entry_set_icon_drag_source(@self, icon_pos, target_list, actions);
-end;
-
-procedure TGtkEntry.set_icon_from_gicon(icon_pos: TGtkEntryIconPosition; icon: PGIcon); cdecl;
-begin
-  LazGtk3.gtk_entry_set_icon_from_gicon(@self, icon_pos, icon);
-end;
-
-procedure TGtkEntry.set_icon_from_icon_name(icon_pos: TGtkEntryIconPosition; icon_name: Pgchar); cdecl;
-begin
-  LazGtk3.gtk_entry_set_icon_from_icon_name(@self, icon_pos, icon_name);
-end;
-
-procedure TGtkEntry.set_icon_from_pixbuf(icon_pos: TGtkEntryIconPosition; pixbuf: PGdkPixbuf); cdecl;
-begin
-  LazGtk3.gtk_entry_set_icon_from_pixbuf(@self, icon_pos, pixbuf);
-end;
-
-procedure TGtkEntry.set_icon_from_stock(icon_pos: TGtkEntryIconPosition; stock_id: Pgchar); cdecl;
-begin
-  LazGtk3.gtk_entry_set_icon_from_stock(@self, icon_pos, stock_id);
-end;
-
-procedure TGtkEntry.set_icon_sensitive(icon_pos: TGtkEntryIconPosition; sensitive: gboolean); cdecl;
-begin
-  LazGtk3.gtk_entry_set_icon_sensitive(@self, icon_pos, sensitive);
-end;
-
-procedure TGtkEntry.set_icon_tooltip_markup(icon_pos: TGtkEntryIconPosition; tooltip: Pgchar); cdecl;
-begin
-  LazGtk3.gtk_entry_set_icon_tooltip_markup(@self, icon_pos, tooltip);
-end;
-
-procedure TGtkEntry.set_icon_tooltip_text(icon_pos: TGtkEntryIconPosition; tooltip: Pgchar); cdecl;
-begin
-  LazGtk3.gtk_entry_set_icon_tooltip_text(@self, icon_pos, tooltip);
-end;
-
-procedure TGtkEntry.set_invisible_char(ch: gunichar); cdecl;
-begin
-  LazGtk3.gtk_entry_set_invisible_char(@self, ch);
-end;
-
-procedure TGtkEntry.set_max_length(max: gint); cdecl;
-begin
-  LazGtk3.gtk_entry_set_max_length(@self, max);
-end;
-
-procedure TGtkEntry.set_overwrite_mode(overwrite: gboolean); cdecl;
-begin
-  LazGtk3.gtk_entry_set_overwrite_mode(@self, overwrite);
-end;
-
-procedure TGtkEntry.set_placeholder_text(text: Pgchar); cdecl;
-begin
-  LazGtk3.gtk_entry_set_placeholder_text(@self, text);
-end;
-
-procedure TGtkEntry.set_progress_fraction(fraction: gdouble); cdecl;
-begin
-  LazGtk3.gtk_entry_set_progress_fraction(@self, fraction);
-end;
-
-procedure TGtkEntry.set_progress_pulse_step(fraction: gdouble); cdecl;
-begin
-  LazGtk3.gtk_entry_set_progress_pulse_step(@self, fraction);
-end;
-
-procedure TGtkEntry.set_text(text: Pgchar); cdecl;
-begin
-  LazGtk3.gtk_entry_set_text(@self, text);
-end;
-
-procedure TGtkEntry.set_visibility(visible: gboolean); cdecl;
-begin
-  LazGtk3.gtk_entry_set_visibility(@self, visible);
-end;
-
-procedure TGtkEntry.set_width_chars(n_chars: gint); cdecl;
-begin
-  LazGtk3.gtk_entry_set_width_chars(@self, n_chars);
-end;
-
-function TGtkEntry.text_index_to_layout_index(text_index: gint): gint; cdecl;
-begin
-  Result := LazGtk3.gtk_entry_text_index_to_layout_index(@self, text_index);
-end;
-
-procedure TGtkEntry.unset_invisible_char; cdecl;
-begin
-  LazGtk3.gtk_entry_unset_invisible_char(@self);
-end;
-
 function TGtkEventBox.new: PGtkEventBox; cdecl;
 begin
   Result := LazGtk3.gtk_event_box_new();
@@ -21673,64 +21873,19 @@ begin
   LazGtk3.gtk_expander_set_use_underline(@self, use_underline);
 end;
 
-function TGtkFileFilter.new: PGtkFileFilter; cdecl;
-begin
-  Result := LazGtk3.gtk_file_filter_new();
-end;
-
-procedure TGtkFileFilter.add_custom(needed: TGtkFileFilterFlags; func: TGtkFileFilterFunc; data: gpointer; notify: TGDestroyNotify); cdecl;
-begin
-  LazGtk3.gtk_file_filter_add_custom(@self, needed, func, data, notify);
-end;
-
-procedure TGtkFileFilter.add_mime_type(mime_type: Pgchar); cdecl;
-begin
-  LazGtk3.gtk_file_filter_add_mime_type(@self, mime_type);
-end;
-
-procedure TGtkFileFilter.add_pattern(pattern: Pgchar); cdecl;
-begin
-  LazGtk3.gtk_file_filter_add_pattern(@self, pattern);
-end;
-
-procedure TGtkFileFilter.add_pixbuf_formats; cdecl;
-begin
-  LazGtk3.gtk_file_filter_add_pixbuf_formats(@self);
-end;
-
-function TGtkFileFilter.filter(filter_info: PGtkFileFilterInfo): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_file_filter_filter(@self, filter_info);
-end;
-
-function TGtkFileFilter.get_name: Pgchar; cdecl;
-begin
-  Result := LazGtk3.gtk_file_filter_get_name(@self);
-end;
-
-function TGtkFileFilter.get_needed: TGtkFileFilterFlags; cdecl;
-begin
-  Result := LazGtk3.gtk_file_filter_get_needed(@self);
-end;
-
-procedure TGtkFileFilter.set_name(name: Pgchar); cdecl;
-begin
-  LazGtk3.gtk_file_filter_set_name(@self, name);
-end;
-
 procedure TGtkFileChooser.add_filter(filter: PGtkFileFilter); cdecl;
 begin
   LazGtk3.gtk_file_chooser_add_filter(@self, filter);
 end;
 
-function TGtkFileChooser.add_shortcut_folder(folder: Pgchar): gboolean; cdecl;
+function TGtkFileChooser.add_shortcut_folder(folder: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_file_chooser_add_shortcut_folder(@self, folder);
+  Result := LazGtk3.gtk_file_chooser_add_shortcut_folder(@self, folder, error);
 end;
 
-function TGtkFileChooser.add_shortcut_folder_uri(uri: Pgchar): gboolean; cdecl;
+function TGtkFileChooser.add_shortcut_folder_uri(uri: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_file_chooser_add_shortcut_folder_uri(@self, uri);
+  Result := LazGtk3.gtk_file_chooser_add_shortcut_folder_uri(@self, uri, error);
 end;
 
 function TGtkFileChooser.get_action: TGtkFileChooserAction; cdecl;
@@ -21868,14 +22023,14 @@ begin
   LazGtk3.gtk_file_chooser_remove_filter(@self, filter);
 end;
 
-function TGtkFileChooser.remove_shortcut_folder(folder: Pgchar): gboolean; cdecl;
+function TGtkFileChooser.remove_shortcut_folder(folder: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_file_chooser_remove_shortcut_folder(@self, folder);
+  Result := LazGtk3.gtk_file_chooser_remove_shortcut_folder(@self, folder, error);
 end;
 
-function TGtkFileChooser.remove_shortcut_folder_uri(uri: Pgchar): gboolean; cdecl;
+function TGtkFileChooser.remove_shortcut_folder_uri(uri: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_file_chooser_remove_shortcut_folder_uri(@self, uri);
+  Result := LazGtk3.gtk_file_chooser_remove_shortcut_folder_uri(@self, uri, error);
 end;
 
 procedure TGtkFileChooser.select_all; cdecl;
@@ -21883,9 +22038,9 @@ begin
   LazGtk3.gtk_file_chooser_select_all(@self);
 end;
 
-function TGtkFileChooser.select_file(file_: PGFile): gboolean; cdecl;
+function TGtkFileChooser.select_file(file_: PGFile; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_file_chooser_select_file(@self, file_);
+  Result := LazGtk3.gtk_file_chooser_select_file(@self, file_, error);
 end;
 
 function TGtkFileChooser.select_filename(filename: Pgchar): gboolean; cdecl;
@@ -21913,9 +22068,9 @@ begin
   Result := LazGtk3.gtk_file_chooser_set_current_folder(@self, filename);
 end;
 
-function TGtkFileChooser.set_current_folder_file(file_: PGFile): gboolean; cdecl;
+function TGtkFileChooser.set_current_folder_file(file_: PGFile; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_file_chooser_set_current_folder_file(@self, file_);
+  Result := LazGtk3.gtk_file_chooser_set_current_folder_file(@self, file_, error);
 end;
 
 function TGtkFileChooser.set_current_folder_uri(uri: Pgchar): gboolean; cdecl;
@@ -21938,9 +22093,9 @@ begin
   LazGtk3.gtk_file_chooser_set_extra_widget(@self, extra_widget);
 end;
 
-function TGtkFileChooser.set_file(file_: PGFile): gboolean; cdecl;
+function TGtkFileChooser.set_file(file_: PGFile; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_file_chooser_set_file(@self, file_);
+  Result := LazGtk3.gtk_file_chooser_set_file(@self, file_, error);
 end;
 
 function TGtkFileChooser.set_filename(filename: Pgchar): gboolean; cdecl;
@@ -22006,6 +22161,51 @@ end;
 procedure TGtkFileChooser.unselect_uri(uri: Pgchar); cdecl;
 begin
   LazGtk3.gtk_file_chooser_unselect_uri(@self, uri);
+end;
+
+function TGtkFileFilter.new: PGtkFileFilter; cdecl;
+begin
+  Result := LazGtk3.gtk_file_filter_new();
+end;
+
+procedure TGtkFileFilter.add_custom(needed: TGtkFileFilterFlags; func: TGtkFileFilterFunc; data: gpointer; notify: TGDestroyNotify); cdecl;
+begin
+  LazGtk3.gtk_file_filter_add_custom(@self, needed, func, data, notify);
+end;
+
+procedure TGtkFileFilter.add_mime_type(mime_type: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_file_filter_add_mime_type(@self, mime_type);
+end;
+
+procedure TGtkFileFilter.add_pattern(pattern: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_file_filter_add_pattern(@self, pattern);
+end;
+
+procedure TGtkFileFilter.add_pixbuf_formats; cdecl;
+begin
+  LazGtk3.gtk_file_filter_add_pixbuf_formats(@self);
+end;
+
+function TGtkFileFilter.filter(filter_info: PGtkFileFilterInfo): gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_file_filter_filter(@self, filter_info);
+end;
+
+function TGtkFileFilter.get_name: Pgchar; cdecl;
+begin
+  Result := LazGtk3.gtk_file_filter_get_name(@self);
+end;
+
+function TGtkFileFilter.get_needed: TGtkFileFilterFlags; cdecl;
+begin
+  Result := LazGtk3.gtk_file_filter_get_needed(@self);
+end;
+
+procedure TGtkFileFilter.set_name(name: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_file_filter_set_name(@self, name);
 end;
 
 function TGtkFileChooserButton.new(title: Pgchar; action: TGtkFileChooserAction): PGtkFileChooserButton; cdecl;
@@ -22208,114 +22408,14 @@ begin
   Result := LazGtk3.gtk_font_chooser_widget_new();
 end;
 
-function TGtkFontSelection.new: PGtkFontSelection; cdecl;
-begin
-  Result := LazGtk3.gtk_font_selection_new();
-end;
-
-function TGtkGradient.new_linear(x0: gdouble; y0: gdouble; x1: gdouble; y1: gdouble): PGtkGradient; cdecl;
-begin
-  Result := LazGtk3.gtk_gradient_new_linear(x0, y0, x1, y1);
-end;
-
-function TGtkGradient.new_radial(x0: gdouble; y0: gdouble; radius0: gdouble; x1: gdouble; y1: gdouble; radius1: gdouble): PGtkGradient; cdecl;
-begin
-  Result := LazGtk3.gtk_gradient_new_radial(x0, y0, radius0, x1, y1, radius1);
-end;
-
-procedure TGtkGradient.add_color_stop(offset: gdouble; color: PGtkSymbolicColor); cdecl;
-begin
-  LazGtk3.gtk_gradient_add_color_stop(@self, offset, color);
-end;
-
-function TGtkGradient.ref: PGtkGradient; cdecl;
-begin
-  Result := LazGtk3.gtk_gradient_ref(@self);
-end;
-
-function TGtkGradient.resolve(props: PGtkStyleProperties; resolved_gradient: PPcairo_pattern_t): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_gradient_resolve(@self, props, resolved_gradient);
-end;
-
 function TGtkGradient.resolve_for_context(context: PGtkStyleContext): Pcairo_pattern_t; cdecl;
 begin
   Result := LazGtk3.gtk_gradient_resolve_for_context(@self, context);
 end;
 
-function TGtkGradient.to_string: Pgchar; cdecl;
-begin
-  Result := LazGtk3.gtk_gradient_to_string(@self);
-end;
-
-procedure TGtkGradient.unref; cdecl;
-begin
-  LazGtk3.gtk_gradient_unref(@self);
-end;
-
-function TGtkSymbolicColor.new_alpha(color: PGtkSymbolicColor; factor: gdouble): PGtkSymbolicColor; cdecl;
-begin
-  Result := LazGtk3.gtk_symbolic_color_new_alpha(color, factor);
-end;
-
-function TGtkSymbolicColor.new_literal(color: PGdkRGBA): PGtkSymbolicColor; cdecl;
-begin
-  Result := LazGtk3.gtk_symbolic_color_new_literal(color);
-end;
-
-function TGtkSymbolicColor.new_mix(color1: PGtkSymbolicColor; color2: PGtkSymbolicColor; factor: gdouble): PGtkSymbolicColor; cdecl;
-begin
-  Result := LazGtk3.gtk_symbolic_color_new_mix(color1, color2, factor);
-end;
-
-function TGtkSymbolicColor.new_name(name: Pgchar): PGtkSymbolicColor; cdecl;
-begin
-  Result := LazGtk3.gtk_symbolic_color_new_name(name);
-end;
-
-function TGtkSymbolicColor.new_shade(color: PGtkSymbolicColor; factor: gdouble): PGtkSymbolicColor; cdecl;
-begin
-  Result := LazGtk3.gtk_symbolic_color_new_shade(color, factor);
-end;
-
-function TGtkSymbolicColor.new_win32(theme_class: Pgchar; id: gint): PGtkSymbolicColor; cdecl;
-begin
-  Result := LazGtk3.gtk_symbolic_color_new_win32(theme_class, id);
-end;
-
-function TGtkSymbolicColor.ref: PGtkSymbolicColor; cdecl;
-begin
-  Result := LazGtk3.gtk_symbolic_color_ref(@self);
-end;
-
-function TGtkSymbolicColor.resolve(props: PGtkStyleProperties; resolved_color: PGdkRGBA): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_symbolic_color_resolve(@self, props, resolved_color);
-end;
-
-function TGtkSymbolicColor.to_string: Pgchar; cdecl;
-begin
-  Result := LazGtk3.gtk_symbolic_color_to_string(@self);
-end;
-
-procedure TGtkSymbolicColor.unref; cdecl;
-begin
-  LazGtk3.gtk_symbolic_color_unref(@self);
-end;
-
 function TGtkStyleProperties.new: PGtkStyleProperties; cdecl;
 begin
   Result := LazGtk3.gtk_style_properties_new();
-end;
-
-function TGtkStyleProperties.lookup_property(property_name: Pgchar; parse_func: PGtkStylePropertyParser; pspec: PPGParamSpec): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_style_properties_lookup_property(property_name, parse_func, pspec);
-end;
-
-procedure TGtkStyleProperties.register_property(parse_func: TGtkStylePropertyParser; pspec: PGParamSpec); cdecl;
-begin
-  LazGtk3.gtk_style_properties_register_property(parse_func, pspec);
 end;
 
 procedure TGtkStyleProperties.clear; cdecl;
@@ -22326,16 +22426,6 @@ end;
 function TGtkStyleProperties.get_property(property_: Pgchar; state: TGtkStateFlags; value: PGValue): gboolean; cdecl;
 begin
   Result := LazGtk3.gtk_style_properties_get_property(@self, property_, state, value);
-end;
-
-function TGtkStyleProperties.lookup_color(name: Pgchar): PGtkSymbolicColor; cdecl;
-begin
-  Result := LazGtk3.gtk_style_properties_lookup_color(@self, name);
-end;
-
-procedure TGtkStyleProperties.map_color(name: Pgchar; color: PGtkSymbolicColor); cdecl;
-begin
-  LazGtk3.gtk_style_properties_map_color(@self, name, color);
 end;
 
 procedure TGtkStyleProperties.merge(props_to_merge: PGtkStyleProperties; replace: gboolean); cdecl;
@@ -22388,11 +22478,6 @@ begin
   LazGtk3.gtk_style_context_add_region(@self, region_name, flags);
 end;
 
-procedure TGtkStyleContext.cancel_animations(region_id: gpointer); cdecl;
-begin
-  LazGtk3.gtk_style_context_cancel_animations(@self, region_id);
-end;
-
 procedure TGtkStyleContext.get_background_color(state: TGtkStateFlags; color: PGdkRGBA); cdecl;
 begin
   LazGtk3.gtk_style_context_get_background_color(@self, state, color);
@@ -22413,14 +22498,9 @@ begin
   LazGtk3.gtk_style_context_get_color(@self, state, color);
 end;
 
-function TGtkStyleContext.get_direction: TGtkTextDirection; cdecl;
+function TGtkStyleContext.get_frame_clock: PGdkFrameClock; cdecl;
 begin
-  Result := LazGtk3.gtk_style_context_get_direction(@self);
-end;
-
-function TGtkStyleContext.get_font(state: TGtkStateFlags): PPangoFontDescription; cdecl;
-begin
-  Result := LazGtk3.gtk_style_context_get_font(@self, state);
+  Result := LazGtk3.gtk_style_context_get_frame_clock(@self);
 end;
 
 function TGtkStyleContext.get_junction_sides: TGtkJunctionSides; cdecl;
@@ -22508,21 +22588,6 @@ begin
   Result := LazGtk3.gtk_style_context_lookup_icon_set(@self, stock_id);
 end;
 
-procedure TGtkStyleContext.notify_state_change(window: PGdkWindow; region_id: gpointer; state: TGtkStateType; state_value: gboolean); cdecl;
-begin
-  LazGtk3.gtk_style_context_notify_state_change(@self, window, region_id, state, state_value);
-end;
-
-procedure TGtkStyleContext.pop_animatable_region; cdecl;
-begin
-  LazGtk3.gtk_style_context_pop_animatable_region(@self);
-end;
-
-procedure TGtkStyleContext.push_animatable_region(region_id: gpointer); cdecl;
-begin
-  LazGtk3.gtk_style_context_push_animatable_region(@self, region_id);
-end;
-
 procedure TGtkStyleContext.remove_class(class_name: Pgchar); cdecl;
 begin
   LazGtk3.gtk_style_context_remove_class(@self, class_name);
@@ -22548,19 +22613,14 @@ begin
   LazGtk3.gtk_style_context_save(@self);
 end;
 
-procedure TGtkStyleContext.scroll_animations(window: PGdkWindow; dx: gint; dy: gint); cdecl;
-begin
-  LazGtk3.gtk_style_context_scroll_animations(@self, window, dx, dy);
-end;
-
 procedure TGtkStyleContext.set_background(window: PGdkWindow); cdecl;
 begin
   LazGtk3.gtk_style_context_set_background(@self, window);
 end;
 
-procedure TGtkStyleContext.set_direction(direction: TGtkTextDirection); cdecl;
+procedure TGtkStyleContext.set_frame_clock(frame_clock: PGdkFrameClock); cdecl;
 begin
-  LazGtk3.gtk_style_context_set_direction(@self, direction);
+  LazGtk3.gtk_style_context_set_frame_clock(@self, frame_clock);
 end;
 
 procedure TGtkStyleContext.set_junction_sides(sides: TGtkJunctionSides); cdecl;
@@ -22586,11 +22646,6 @@ end;
 procedure TGtkStyleContext.set_state(flags: TGtkStateFlags); cdecl;
 begin
   LazGtk3.gtk_style_context_set_state(@self, flags);
-end;
-
-function TGtkStyleContext.state_is_running(state: TGtkStateType; progress: Pgdouble): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_style_context_state_is_running(@self, state, progress);
 end;
 
 function TGtkGrid.new: PGtkGrid; cdecl;
@@ -23133,16 +23188,6 @@ begin
   Result := LazGtk3.gtk_icon_info_new_for_pixbuf(icon_theme, pixbuf);
 end;
 
-function TGtkIconInfo.copy: PGtkIconInfo; cdecl;
-begin
-  Result := LazGtk3.gtk_icon_info_copy(@self);
-end;
-
-procedure TGtkIconInfo.free; cdecl;
-begin
-  LazGtk3.gtk_icon_info_free(@self);
-end;
-
 function TGtkIconInfo.get_attach_points(points: PPGdkPoint; n_points: Pgint): gboolean; cdecl;
 begin
   Result := LazGtk3.gtk_icon_info_get_attach_points(@self, points, n_points);
@@ -23173,19 +23218,49 @@ begin
   Result := LazGtk3.gtk_icon_info_get_filename(@self);
 end;
 
-function TGtkIconInfo.load_icon: PGdkPixbuf; cdecl;
+function TGtkIconInfo.load_icon(error: PPGError): PGdkPixbuf; cdecl;
 begin
-  Result := LazGtk3.gtk_icon_info_load_icon(@self);
+  Result := LazGtk3.gtk_icon_info_load_icon(@self, error);
 end;
 
-function TGtkIconInfo.load_symbolic(fg: PGdkRGBA; success_color: PGdkRGBA; warning_color: PGdkRGBA; error_color: PGdkRGBA; was_symbolic: Pgboolean): PGdkPixbuf; cdecl;
+procedure TGtkIconInfo.load_icon_async(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
-  Result := LazGtk3.gtk_icon_info_load_symbolic(@self, fg, success_color, warning_color, error_color, was_symbolic);
+  LazGtk3.gtk_icon_info_load_icon_async(@self, cancellable, callback, user_data);
 end;
 
-function TGtkIconInfo.load_symbolic_for_context(context: PGtkStyleContext; was_symbolic: Pgboolean): PGdkPixbuf; cdecl;
+function TGtkIconInfo.load_icon_finish(res: PGAsyncResult; error: PPGError): PGdkPixbuf; cdecl;
 begin
-  Result := LazGtk3.gtk_icon_info_load_symbolic_for_context(@self, context, was_symbolic);
+  Result := LazGtk3.gtk_icon_info_load_icon_finish(@self, res, error);
+end;
+
+function TGtkIconInfo.load_symbolic(fg: PGdkRGBA; success_color: PGdkRGBA; warning_color: PGdkRGBA; error_color: PGdkRGBA; was_symbolic: Pgboolean; error: PPGError): PGdkPixbuf; cdecl;
+begin
+  Result := LazGtk3.gtk_icon_info_load_symbolic(@self, fg, success_color, warning_color, error_color, was_symbolic, error);
+end;
+
+procedure TGtkIconInfo.load_symbolic_async(fg: PGdkRGBA; success_color: PGdkRGBA; warning_color: PGdkRGBA; error_color: PGdkRGBA; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGtk3.gtk_icon_info_load_symbolic_async(@self, fg, success_color, warning_color, error_color, cancellable, callback, user_data);
+end;
+
+function TGtkIconInfo.load_symbolic_finish(res: PGAsyncResult; was_symbolic: Pgboolean; error: PPGError): PGdkPixbuf; cdecl;
+begin
+  Result := LazGtk3.gtk_icon_info_load_symbolic_finish(@self, res, was_symbolic, error);
+end;
+
+function TGtkIconInfo.load_symbolic_for_context(context: PGtkStyleContext; was_symbolic: Pgboolean; error: PPGError): PGdkPixbuf; cdecl;
+begin
+  Result := LazGtk3.gtk_icon_info_load_symbolic_for_context(@self, context, was_symbolic, error);
+end;
+
+procedure TGtkIconInfo.load_symbolic_for_context_async(context: PGtkStyleContext; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGtk3.gtk_icon_info_load_symbolic_for_context_async(@self, context, cancellable, callback, user_data);
+end;
+
+function TGtkIconInfo.load_symbolic_for_context_finish(res: PGAsyncResult; was_symbolic: Pgboolean; error: PPGError): PGdkPixbuf; cdecl;
+begin
+  Result := LazGtk3.gtk_icon_info_load_symbolic_for_context_finish(@self, res, was_symbolic, error);
 end;
 
 procedure TGtkIconInfo.set_raw_coordinates(raw_coordinates: gboolean); cdecl;
@@ -23253,9 +23328,9 @@ begin
   Result := LazGtk3.gtk_icon_theme_list_icons(@self, context);
 end;
 
-function TGtkIconTheme.load_icon(icon_name: Pgchar; size: gint; flags: TGtkIconLookupFlags): PGdkPixbuf; cdecl;
+function TGtkIconTheme.load_icon(icon_name: Pgchar; size: gint; flags: TGtkIconLookupFlags; error: PPGError): PGdkPixbuf; cdecl;
 begin
-  Result := LazGtk3.gtk_icon_theme_load_icon(@self, icon_name, size, flags);
+  Result := LazGtk3.gtk_icon_theme_load_icon(@self, icon_name, size, flags, error);
 end;
 
 function TGtkIconTheme.lookup_by_gicon(icon: PGIcon; size: gint; flags: TGtkIconLookupFlags): PGtkIconInfo; cdecl;
@@ -23293,26 +23368,6 @@ begin
   LazGtk3.gtk_icon_theme_set_search_path(@self, path, n_elements);
 end;
 
-procedure TGtkStyle.apply_default_background(cr: Pcairo_t; window: PGdkWindow; state_type: TGtkStateType; x: gint; y: gint; width: gint; height: gint); cdecl;
-begin
-  LazGtk3.gtk_style_apply_default_background(@self, cr, window, state_type, x, y, width, height);
-end;
-
-function TGtkStyle.attach(window: PGdkWindow): PGtkStyle; cdecl;
-begin
-  Result := LazGtk3.gtk_style_attach(@self, window);
-end;
-
-function TGtkStyle.copy: PGtkStyle; cdecl;
-begin
-  Result := LazGtk3.gtk_style_copy(@self);
-end;
-
-procedure TGtkStyle.detach; cdecl;
-begin
-  LazGtk3.gtk_style_detach(@self);
-end;
-
 procedure TGtkStyle.get_style_property(widget_type: TGType; property_name: Pgchar; value: PGValue); cdecl;
 begin
   LazGtk3.gtk_style_get_style_property(@self, widget_type, property_name, value);
@@ -23321,26 +23376,6 @@ end;
 function TGtkStyle.has_context: gboolean; cdecl;
 begin
   Result := LazGtk3.gtk_style_has_context(@self);
-end;
-
-function TGtkStyle.lookup_color(color_name: Pgchar; color: PGdkColor): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_style_lookup_color(@self, color_name, color);
-end;
-
-function TGtkStyle.lookup_icon_set(stock_id: Pgchar): PGtkIconSet; cdecl;
-begin
-  Result := LazGtk3.gtk_style_lookup_icon_set(@self, stock_id);
-end;
-
-function TGtkStyle.render_icon(source: PGtkIconSource; direction: TGtkTextDirection; state: TGtkStateType; size: gint; widget: PGtkWidget; detail: Pgchar): PGdkPixbuf; cdecl;
-begin
-  Result := LazGtk3.gtk_style_render_icon(@self, source, direction, state, size, widget, detail);
-end;
-
-procedure TGtkStyle.set_background(window: PGdkWindow; state_type: TGtkStateType); cdecl;
-begin
-  LazGtk3.gtk_style_set_background(@self, window, state_type);
 end;
 
 function TGtkIconSource.new: PGtkIconSource; cdecl;
@@ -23528,51 +23563,6 @@ begin
   LazGtk3.gtk_scrollable_set_vscroll_policy(@self, policy);
 end;
 
-procedure TGtkTooltip.trigger_tooltip_query(display: PGdkDisplay); cdecl;
-begin
-  LazGtk3.gtk_tooltip_trigger_tooltip_query(display);
-end;
-
-procedure TGtkTooltip.set_custom(custom_widget: PGtkWidget); cdecl;
-begin
-  LazGtk3.gtk_tooltip_set_custom(@self, custom_widget);
-end;
-
-procedure TGtkTooltip.set_icon(pixbuf: PGdkPixbuf); cdecl;
-begin
-  LazGtk3.gtk_tooltip_set_icon(@self, pixbuf);
-end;
-
-procedure TGtkTooltip.set_icon_from_gicon(gicon: PGIcon; size: gint); cdecl;
-begin
-  LazGtk3.gtk_tooltip_set_icon_from_gicon(@self, gicon, size);
-end;
-
-procedure TGtkTooltip.set_icon_from_icon_name(icon_name: Pgchar; size: gint); cdecl;
-begin
-  LazGtk3.gtk_tooltip_set_icon_from_icon_name(@self, icon_name, size);
-end;
-
-procedure TGtkTooltip.set_icon_from_stock(stock_id: Pgchar; size: gint); cdecl;
-begin
-  LazGtk3.gtk_tooltip_set_icon_from_stock(@self, stock_id, size);
-end;
-
-procedure TGtkTooltip.set_markup(markup: Pgchar); cdecl;
-begin
-  LazGtk3.gtk_tooltip_set_markup(@self, markup);
-end;
-
-procedure TGtkTooltip.set_text(text: Pgchar); cdecl;
-begin
-  LazGtk3.gtk_tooltip_set_text(@self, text);
-end;
-
-procedure TGtkTooltip.set_tip_area(rect: PGdkRectangle); cdecl;
-begin
-  LazGtk3.gtk_tooltip_set_tip_area(@self, rect);
-end;
-
 function TGtkIconView.new: PGtkIconView; cdecl;
 begin
   Result := LazGtk3.gtk_icon_view_new();
@@ -23606,6 +23596,16 @@ end;
 procedure TGtkIconView.enable_model_drag_source(start_button_mask: TGdkModifierType; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl;
 begin
   LazGtk3.gtk_icon_view_enable_model_drag_source(@self, start_button_mask, targets, n_targets, actions);
+end;
+
+function TGtkIconView.get_activate_on_single_click: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_icon_view_get_activate_on_single_click(@self);
+end;
+
+function TGtkIconView.get_cell_rect(path: PGtkTreePath; cell: PGtkCellRenderer; rect: PGdkRectangle): gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_icon_view_get_cell_rect(@self, path, cell, rect);
 end;
 
 function TGtkIconView.get_column_spacing: gint; cdecl;
@@ -23763,6 +23763,11 @@ begin
   LazGtk3.gtk_icon_view_selected_foreach(@self, func, data);
 end;
 
+procedure TGtkIconView.set_activate_on_single_click(single: gboolean); cdecl;
+begin
+  LazGtk3.gtk_icon_view_set_activate_on_single_click(@self, single);
+end;
+
 procedure TGtkIconView.set_column_spacing(column_spacing: gint); cdecl;
 begin
   LazGtk3.gtk_icon_view_set_column_spacing(@self, column_spacing);
@@ -23876,6 +23881,51 @@ end;
 procedure TGtkIconView.unset_model_drag_source; cdecl;
 begin
   LazGtk3.gtk_icon_view_unset_model_drag_source(@self);
+end;
+
+procedure TGtkTooltip.trigger_tooltip_query(display: PGdkDisplay); cdecl;
+begin
+  LazGtk3.gtk_tooltip_trigger_tooltip_query(display);
+end;
+
+procedure TGtkTooltip.set_custom(custom_widget: PGtkWidget); cdecl;
+begin
+  LazGtk3.gtk_tooltip_set_custom(@self, custom_widget);
+end;
+
+procedure TGtkTooltip.set_icon(pixbuf: PGdkPixbuf); cdecl;
+begin
+  LazGtk3.gtk_tooltip_set_icon(@self, pixbuf);
+end;
+
+procedure TGtkTooltip.set_icon_from_gicon(gicon: PGIcon; size: gint); cdecl;
+begin
+  LazGtk3.gtk_tooltip_set_icon_from_gicon(@self, gicon, size);
+end;
+
+procedure TGtkTooltip.set_icon_from_icon_name(icon_name: Pgchar; size: gint); cdecl;
+begin
+  LazGtk3.gtk_tooltip_set_icon_from_icon_name(@self, icon_name, size);
+end;
+
+procedure TGtkTooltip.set_icon_from_stock(stock_id: Pgchar; size: gint); cdecl;
+begin
+  LazGtk3.gtk_tooltip_set_icon_from_stock(@self, stock_id, size);
+end;
+
+procedure TGtkTooltip.set_markup(markup: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_tooltip_set_markup(@self, markup);
+end;
+
+procedure TGtkTooltip.set_text(text: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_tooltip_set_text(@self, text);
+end;
+
+procedure TGtkTooltip.set_tip_area(rect: PGdkRectangle); cdecl;
+begin
+  LazGtk3.gtk_tooltip_set_tip_area(@self, rect);
 end;
 
 function TGtkImage.new: PGtkImage; cdecl;
@@ -24168,6 +24218,81 @@ begin
   LazGtk3.gtk_layout_set_size(@self, width, height);
 end;
 
+function TGtkLevelBar.new: PGtkLevelBar; cdecl;
+begin
+  Result := LazGtk3.gtk_level_bar_new();
+end;
+
+function TGtkLevelBar.new_for_interval(min_value: gdouble; max_value: gdouble): PGtkLevelBar; cdecl;
+begin
+  Result := LazGtk3.gtk_level_bar_new_for_interval(min_value, max_value);
+end;
+
+procedure TGtkLevelBar.add_offset_value(name: Pgchar; value: gdouble); cdecl;
+begin
+  LazGtk3.gtk_level_bar_add_offset_value(@self, name, value);
+end;
+
+function TGtkLevelBar.get_inverted: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_level_bar_get_inverted(@self);
+end;
+
+function TGtkLevelBar.get_max_value: gdouble; cdecl;
+begin
+  Result := LazGtk3.gtk_level_bar_get_max_value(@self);
+end;
+
+function TGtkLevelBar.get_min_value: gdouble; cdecl;
+begin
+  Result := LazGtk3.gtk_level_bar_get_min_value(@self);
+end;
+
+function TGtkLevelBar.get_mode: TGtkLevelBarMode; cdecl;
+begin
+  Result := LazGtk3.gtk_level_bar_get_mode(@self);
+end;
+
+function TGtkLevelBar.get_offset_value(name: Pgchar; value: Pgdouble): gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_level_bar_get_offset_value(@self, name, value);
+end;
+
+function TGtkLevelBar.get_value: gdouble; cdecl;
+begin
+  Result := LazGtk3.gtk_level_bar_get_value(@self);
+end;
+
+procedure TGtkLevelBar.remove_offset_value(name: Pgchar); cdecl;
+begin
+  LazGtk3.gtk_level_bar_remove_offset_value(@self, name);
+end;
+
+procedure TGtkLevelBar.set_inverted(inverted: gboolean); cdecl;
+begin
+  LazGtk3.gtk_level_bar_set_inverted(@self, inverted);
+end;
+
+procedure TGtkLevelBar.set_max_value(value: gdouble); cdecl;
+begin
+  LazGtk3.gtk_level_bar_set_max_value(@self, value);
+end;
+
+procedure TGtkLevelBar.set_min_value(value: gdouble); cdecl;
+begin
+  LazGtk3.gtk_level_bar_set_min_value(@self, value);
+end;
+
+procedure TGtkLevelBar.set_mode(mode: TGtkLevelBarMode); cdecl;
+begin
+  LazGtk3.gtk_level_bar_set_mode(@self, mode);
+end;
+
+procedure TGtkLevelBar.set_value(value: gdouble); cdecl;
+begin
+  LazGtk3.gtk_level_bar_set_value(@self, value);
+end;
+
 function TGtkLinkButton.new(uri: Pgchar): PGtkLinkButton; cdecl;
 begin
   Result := LazGtk3.gtk_link_button_new(uri);
@@ -24381,6 +24506,51 @@ end;
 procedure TGtkMenuBar.set_pack_direction(pack_dir: TGtkPackDirection); cdecl;
 begin
   LazGtk3.gtk_menu_bar_set_pack_direction(@self, pack_dir);
+end;
+
+function TGtkMenuButton.new: PGtkMenuButton; cdecl;
+begin
+  Result := LazGtk3.gtk_menu_button_new();
+end;
+
+function TGtkMenuButton.get_align_widget: PGtkWidget; cdecl;
+begin
+  Result := LazGtk3.gtk_menu_button_get_align_widget(@self);
+end;
+
+function TGtkMenuButton.get_direction: TGtkArrowType; cdecl;
+begin
+  Result := LazGtk3.gtk_menu_button_get_direction(@self);
+end;
+
+function TGtkMenuButton.get_menu_model: PGMenuModel; cdecl;
+begin
+  Result := LazGtk3.gtk_menu_button_get_menu_model(@self);
+end;
+
+function TGtkMenuButton.get_popup: PGtkMenu; cdecl;
+begin
+  Result := LazGtk3.gtk_menu_button_get_popup(@self);
+end;
+
+procedure TGtkMenuButton.set_align_widget(align_widget: PGtkWidget); cdecl;
+begin
+  LazGtk3.gtk_menu_button_set_align_widget(@self, align_widget);
+end;
+
+procedure TGtkMenuButton.set_direction(direction: TGtkArrowType); cdecl;
+begin
+  LazGtk3.gtk_menu_button_set_direction(@self, direction);
+end;
+
+procedure TGtkMenuButton.set_menu_model(menu_model: PGMenuModel); cdecl;
+begin
+  LazGtk3.gtk_menu_button_set_menu_model(@self, menu_model);
+end;
+
+procedure TGtkMenuButton.set_popup(popup: PGtkWidget); cdecl;
+begin
+  LazGtk3.gtk_menu_button_set_popup(@self, popup);
 end;
 
 function TGtkToolItem.new: PGtkToolItem; cdecl;
@@ -24973,14 +25143,14 @@ begin
   Result := LazGtk3.gtk_page_setup_new();
 end;
 
-function TGtkPageSetup.new_from_file(file_name: Pgchar): PGtkPageSetup; cdecl;
+function TGtkPageSetup.new_from_file(file_name: Pgchar; error: PPGError): PGtkPageSetup; cdecl;
 begin
-  Result := LazGtk3.gtk_page_setup_new_from_file(file_name);
+  Result := LazGtk3.gtk_page_setup_new_from_file(file_name, error);
 end;
 
-function TGtkPageSetup.new_from_key_file(key_file: PGKeyFile; group_name: Pgchar): PGtkPageSetup; cdecl;
+function TGtkPageSetup.new_from_key_file(key_file: PGKeyFile; group_name: Pgchar; error: PPGError): PGtkPageSetup; cdecl;
 begin
-  Result := LazGtk3.gtk_page_setup_new_from_key_file(key_file, group_name);
+  Result := LazGtk3.gtk_page_setup_new_from_key_file(key_file, group_name, error);
 end;
 
 function TGtkPageSetup.copy: PGtkPageSetup; cdecl;
@@ -25038,14 +25208,14 @@ begin
   Result := LazGtk3.gtk_page_setup_get_top_margin(@self, unit_);
 end;
 
-function TGtkPageSetup.load_file(file_name: Pgchar): gboolean; cdecl;
+function TGtkPageSetup.load_file(file_name: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_page_setup_load_file(@self, file_name);
+  Result := LazGtk3.gtk_page_setup_load_file(@self, file_name, error);
 end;
 
-function TGtkPageSetup.load_key_file(key_file: PGKeyFile; group_name: Pgchar): gboolean; cdecl;
+function TGtkPageSetup.load_key_file(key_file: PGKeyFile; group_name: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_page_setup_load_key_file(@self, key_file, group_name);
+  Result := LazGtk3.gtk_page_setup_load_key_file(@self, key_file, group_name, error);
 end;
 
 procedure TGtkPageSetup.set_bottom_margin(margin: gdouble; unit_: TGtkUnit); cdecl;
@@ -25083,9 +25253,9 @@ begin
   LazGtk3.gtk_page_setup_set_top_margin(@self, margin, unit_);
 end;
 
-function TGtkPageSetup.to_file(file_name: Pgchar): gboolean; cdecl;
+function TGtkPageSetup.to_file(file_name: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_page_setup_to_file(@self, file_name);
+  Result := LazGtk3.gtk_page_setup_to_file(@self, file_name, error);
 end;
 
 procedure TGtkPageSetup.to_key_file(key_file: PGKeyFile; group_name: Pgchar); cdecl;
@@ -25103,9 +25273,9 @@ begin
   Result := LazGtk3.gtk_paper_size_new_custom(name, display_name, width, height, unit_);
 end;
 
-function TGtkPaperSize.new_from_key_file(key_file: PGKeyFile; group_name: Pgchar): PGtkPaperSize; cdecl;
+function TGtkPaperSize.new_from_key_file(key_file: PGKeyFile; group_name: Pgchar; error: PPGError): PGtkPaperSize; cdecl;
 begin
-  Result := LazGtk3.gtk_paper_size_new_from_key_file(key_file, group_name);
+  Result := LazGtk3.gtk_paper_size_new_from_key_file(key_file, group_name, error);
 end;
 
 function TGtkPaperSize.new_from_ppd(ppd_name: Pgchar; ppd_display_name: Pgchar; width: gdouble; height: gdouble): PGtkPaperSize; cdecl;
@@ -25328,9 +25498,9 @@ begin
   Result := LazGtk3.gtk_print_operation_get_embed_page_setup(@self);
 end;
 
-procedure TGtkPrintOperation.get_error; cdecl;
+procedure TGtkPrintOperation.get_error(error: PPGError); cdecl;
 begin
-  LazGtk3.gtk_print_operation_get_error(@self);
+  LazGtk3.gtk_print_operation_get_error(@self, error);
 end;
 
 function TGtkPrintOperation.get_has_selection: gboolean; cdecl;
@@ -25368,9 +25538,9 @@ begin
   Result := LazGtk3.gtk_print_operation_is_finished(@self);
 end;
 
-function TGtkPrintOperation.run(action: TGtkPrintOperationAction; parent: PGtkWindow): TGtkPrintOperationResult; cdecl;
+function TGtkPrintOperation.run(action: TGtkPrintOperationAction; parent: PGtkWindow; error: PPGError): TGtkPrintOperationResult; cdecl;
 begin
-  Result := LazGtk3.gtk_print_operation_run(@self, action, parent);
+  Result := LazGtk3.gtk_print_operation_run(@self, action, parent, error);
 end;
 
 procedure TGtkPrintOperation.set_allow_async(allow_async: gboolean); cdecl;
@@ -25458,14 +25628,14 @@ begin
   Result := LazGtk3.gtk_print_settings_new();
 end;
 
-function TGtkPrintSettings.new_from_file(file_name: Pgchar): PGtkPrintSettings; cdecl;
+function TGtkPrintSettings.new_from_file(file_name: Pgchar; error: PPGError): PGtkPrintSettings; cdecl;
 begin
-  Result := LazGtk3.gtk_print_settings_new_from_file(file_name);
+  Result := LazGtk3.gtk_print_settings_new_from_file(file_name, error);
 end;
 
-function TGtkPrintSettings.new_from_key_file(key_file: PGKeyFile; group_name: Pgchar): PGtkPrintSettings; cdecl;
+function TGtkPrintSettings.new_from_key_file(key_file: PGKeyFile; group_name: Pgchar; error: PPGError): PGtkPrintSettings; cdecl;
 begin
-  Result := LazGtk3.gtk_print_settings_new_from_key_file(key_file, group_name);
+  Result := LazGtk3.gtk_print_settings_new_from_key_file(key_file, group_name, error);
 end;
 
 function TGtkPrintSettings.copy: PGtkPrintSettings; cdecl;
@@ -25648,14 +25818,14 @@ begin
   Result := LazGtk3.gtk_print_settings_has_key(@self, key);
 end;
 
-function TGtkPrintSettings.load_file(file_name: Pgchar): gboolean; cdecl;
+function TGtkPrintSettings.load_file(file_name: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_print_settings_load_file(@self, file_name);
+  Result := LazGtk3.gtk_print_settings_load_file(@self, file_name, error);
 end;
 
-function TGtkPrintSettings.load_key_file(key_file: PGKeyFile; group_name: Pgchar): gboolean; cdecl;
+function TGtkPrintSettings.load_key_file(key_file: PGKeyFile; group_name: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_print_settings_load_key_file(@self, key_file, group_name);
+  Result := LazGtk3.gtk_print_settings_load_key_file(@self, key_file, group_name, error);
 end;
 
 procedure TGtkPrintSettings.set_(key: Pgchar; value: Pgchar); cdecl;
@@ -25808,9 +25978,9 @@ begin
   LazGtk3.gtk_print_settings_set_use_color(@self, use_color);
 end;
 
-function TGtkPrintSettings.to_file(file_name: Pgchar): gboolean; cdecl;
+function TGtkPrintSettings.to_file(file_name: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_print_settings_to_file(@self, file_name);
+  Result := LazGtk3.gtk_print_settings_to_file(@self, file_name, error);
 end;
 
 procedure TGtkPrintSettings.to_key_file(key_file: PGKeyFile; group_name: Pgchar); cdecl;
@@ -26173,14 +26343,14 @@ begin
   LazGtk3.gtk_recent_chooser_select_all(@self);
 end;
 
-function TGtkRecentChooser.select_uri(uri: Pgchar): gboolean; cdecl;
+function TGtkRecentChooser.select_uri(uri: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_recent_chooser_select_uri(@self, uri);
+  Result := LazGtk3.gtk_recent_chooser_select_uri(@self, uri, error);
 end;
 
-function TGtkRecentChooser.set_current_uri(uri: Pgchar): gboolean; cdecl;
+function TGtkRecentChooser.set_current_uri(uri: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_recent_chooser_set_current_uri(@self, uri);
+  Result := LazGtk3.gtk_recent_chooser_set_current_uri(@self, uri, error);
 end;
 
 procedure TGtkRecentChooser.set_filter(filter: PGtkRecentFilter); cdecl;
@@ -26273,24 +26443,24 @@ begin
   Result := LazGtk3.gtk_recent_manager_has_item(@self, uri);
 end;
 
-function TGtkRecentManager.lookup_item(uri: Pgchar): PGtkRecentInfo; cdecl;
+function TGtkRecentManager.lookup_item(uri: Pgchar; error: PPGError): PGtkRecentInfo; cdecl;
 begin
-  Result := LazGtk3.gtk_recent_manager_lookup_item(@self, uri);
+  Result := LazGtk3.gtk_recent_manager_lookup_item(@self, uri, error);
 end;
 
-function TGtkRecentManager.move_item(uri: Pgchar; new_uri: Pgchar): gboolean; cdecl;
+function TGtkRecentManager.move_item(uri: Pgchar; new_uri: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_recent_manager_move_item(@self, uri, new_uri);
+  Result := LazGtk3.gtk_recent_manager_move_item(@self, uri, new_uri, error);
 end;
 
-function TGtkRecentManager.purge_items: gint; cdecl;
+function TGtkRecentManager.purge_items(error: PPGError): gint; cdecl;
 begin
-  Result := LazGtk3.gtk_recent_manager_purge_items(@self);
+  Result := LazGtk3.gtk_recent_manager_purge_items(@self, error);
 end;
 
-function TGtkRecentManager.remove_item(uri: Pgchar): gboolean; cdecl;
+function TGtkRecentManager.remove_item(uri: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGtk3.gtk_recent_manager_remove_item(@self, uri);
+  Result := LazGtk3.gtk_recent_manager_remove_item(@self, uri, error);
 end;
 
 function TGtkRecentAction.new(name: Pgchar; label_: Pgchar; tooltip: Pgchar; stock_id: Pgchar): PGtkRecentAction; cdecl;
@@ -26373,9 +26543,9 @@ begin
   LazGtk3.gtk_recent_filter_set_name(@self, name);
 end;
 
-function TGtkRecentInfo.create_app_info(app_name: Pgchar): PGAppInfo; cdecl;
+function TGtkRecentInfo.create_app_info(app_name: Pgchar; error: PPGError): PGAppInfo; cdecl;
 begin
-  Result := LazGtk3.gtk_recent_info_create_app_info(@self, app_name);
+  Result := LazGtk3.gtk_recent_info_create_app_info(@self, app_name, error);
 end;
 
 function TGtkRecentInfo.exists: gboolean; cdecl;
@@ -26578,11 +26748,6 @@ begin
   Result := LazGtk3.gtk_scrolled_window_new(hadjustment, vadjustment);
 end;
 
-procedure TGtkScrolledWindow.add_with_viewport(child: PGtkWidget); cdecl;
-begin
-  LazGtk3.gtk_scrolled_window_add_with_viewport(@self, child);
-end;
-
 function TGtkScrolledWindow.get_capture_button_press: gboolean; cdecl;
 begin
   Result := LazGtk3.gtk_scrolled_window_get_capture_button_press(@self);
@@ -26638,6 +26803,11 @@ begin
   Result := LazGtk3.gtk_scrolled_window_get_vscrollbar(@self);
 end;
 
+procedure TGtkScrolledWindow.add_with_viewport(child: PGtkWidget); cdecl;
+begin
+  LazGtk3.gtk_scrolled_window_add_with_viewport(@self, child);
+end;
+
 procedure TGtkScrolledWindow.set_capture_button_press(capture_button_press: gboolean); cdecl;
 begin
   LazGtk3.gtk_scrolled_window_set_capture_button_press(@self, capture_button_press);
@@ -26686,6 +26856,11 @@ end;
 procedure TGtkScrolledWindow.unset_placement; cdecl;
 begin
   LazGtk3.gtk_scrolled_window_unset_placement(@self);
+end;
+
+function TGtkSearchEntry.new: PGtkSearchEntry; cdecl;
+begin
+  Result := LazGtk3.gtk_search_entry_new();
 end;
 
 function TGtkSeparatorMenuItem.new: PGtkSeparatorMenuItem; cdecl;
@@ -27798,6 +27973,16 @@ begin
   Result := LazGtk3.gtk_text_view_get_indent(@self);
 end;
 
+function TGtkTextView.get_input_hints: TGtkInputHints; cdecl;
+begin
+  Result := LazGtk3.gtk_text_view_get_input_hints(@self);
+end;
+
+function TGtkTextView.get_input_purpose: TGtkInputPurpose; cdecl;
+begin
+  Result := LazGtk3.gtk_text_view_get_input_purpose(@self);
+end;
+
 procedure TGtkTextView.get_iter_at_location(iter: PGtkTextIter; x: gint; y: gint); cdecl;
 begin
   LazGtk3.gtk_text_view_get_iter_at_location(@self, iter, x, y);
@@ -27958,6 +28143,16 @@ begin
   LazGtk3.gtk_text_view_set_indent(@self, indent);
 end;
 
+procedure TGtkTextView.set_input_hints(hints: TGtkInputHints); cdecl;
+begin
+  LazGtk3.gtk_text_view_set_input_hints(@self, hints);
+end;
+
+procedure TGtkTextView.set_input_purpose(purpose: TGtkInputPurpose); cdecl;
+begin
+  LazGtk3.gtk_text_view_set_input_purpose(@self, purpose);
+end;
+
 procedure TGtkTextView.set_justification(justification: TGtkJustification); cdecl;
 begin
   LazGtk3.gtk_text_view_set_justification(@self, justification);
@@ -28018,11 +28213,6 @@ begin
   Result := LazGtk3.gtk_theming_engine_load(name);
 end;
 
-procedure TGtkThemingEngine.register_property(name_space: Pgchar; parse_func: TGtkStylePropertyParser; pspec: PGParamSpec); cdecl;
-begin
-  LazGtk3.gtk_theming_engine_register_property(name_space, parse_func, pspec);
-end;
-
 procedure TGtkThemingEngine.get_background_color(state: TGtkStateFlags; color: PGdkRGBA); cdecl;
 begin
   LazGtk3.gtk_theming_engine_get_background_color(@self, state, color);
@@ -28041,16 +28231,6 @@ end;
 procedure TGtkThemingEngine.get_color(state: TGtkStateFlags; color: PGdkRGBA); cdecl;
 begin
   LazGtk3.gtk_theming_engine_get_color(@self, state, color);
-end;
-
-function TGtkThemingEngine.get_direction: TGtkTextDirection; cdecl;
-begin
-  Result := LazGtk3.gtk_theming_engine_get_direction(@self);
-end;
-
-function TGtkThemingEngine.get_font(state: TGtkStateFlags): PPangoFontDescription; cdecl;
-begin
-  Result := LazGtk3.gtk_theming_engine_get_font(@self, state);
 end;
 
 function TGtkThemingEngine.get_junction_sides: TGtkJunctionSides; cdecl;
@@ -28106,11 +28286,6 @@ end;
 function TGtkThemingEngine.lookup_color(color_name: Pgchar; color: PGdkRGBA): gboolean; cdecl;
 begin
   Result := LazGtk3.gtk_theming_engine_lookup_color(@self, color_name, color);
-end;
-
-function TGtkThemingEngine.state_is_running(state: TGtkStateType; progress: Pgdouble): gboolean; cdecl;
-begin
-  Result := LazGtk3.gtk_theming_engine_state_is_running(@self, state, progress);
 end;
 
 function TGtkToolShell.get_ellipsize_mode: TPangoEllipsizeMode; cdecl;
@@ -28768,6 +28943,11 @@ begin
   LazGtk3.gtk_tree_view_expand_to_path(@self, path);
 end;
 
+function TGtkTreeView.get_activate_on_single_click: gboolean; cdecl;
+begin
+  Result := LazGtk3.gtk_tree_view_get_activate_on_single_click(@self);
+end;
+
 procedure TGtkTreeView.get_background_area(path: PGtkTreePath; column: PGtkTreeViewColumn; rect: PGdkRectangle); cdecl;
 begin
   LazGtk3.gtk_tree_view_get_background_area(@self, path, column, rect);
@@ -28996,6 +29176,11 @@ end;
 procedure TGtkTreeView.scroll_to_point(tree_x: gint; tree_y: gint); cdecl;
 begin
   LazGtk3.gtk_tree_view_scroll_to_point(@self, tree_x, tree_y);
+end;
+
+procedure TGtkTreeView.set_activate_on_single_click(single: gboolean); cdecl;
+begin
+  LazGtk3.gtk_tree_view_set_activate_on_single_click(@self, single);
 end;
 
 procedure TGtkTreeView.set_column_drag_function(func: TGtkTreeViewColumnDropFunc; user_data: gpointer; destroy_: TGDestroyNotify); cdecl;
@@ -29488,19 +29673,19 @@ begin
   LazGtk3.gtk_ui_manager_add_ui(@self, merge_id, path, name, action, type_, top);
 end;
 
-function TGtkUIManager.add_ui_from_file(filename: Pgchar): guint; cdecl;
+function TGtkUIManager.add_ui_from_file(filename: Pgchar; error: PPGError): guint; cdecl;
 begin
-  Result := LazGtk3.gtk_ui_manager_add_ui_from_file(@self, filename);
+  Result := LazGtk3.gtk_ui_manager_add_ui_from_file(@self, filename, error);
 end;
 
-function TGtkUIManager.add_ui_from_resource(resource_path: Pgchar): guint; cdecl;
+function TGtkUIManager.add_ui_from_resource(resource_path: Pgchar; error: PPGError): guint; cdecl;
 begin
-  Result := LazGtk3.gtk_ui_manager_add_ui_from_resource(@self, resource_path);
+  Result := LazGtk3.gtk_ui_manager_add_ui_from_resource(@self, resource_path, error);
 end;
 
-function TGtkUIManager.add_ui_from_string(buffer: Pgchar; length: gssize): guint; cdecl;
+function TGtkUIManager.add_ui_from_string(buffer: Pgchar; length: gssize; error: PPGError): guint; cdecl;
 begin
-  Result := LazGtk3.gtk_ui_manager_add_ui_from_string(@self, buffer, length);
+  Result := LazGtk3.gtk_ui_manager_add_ui_from_string(@self, buffer, length, error);
 end;
 
 procedure TGtkUIManager.ensure_update; cdecl;

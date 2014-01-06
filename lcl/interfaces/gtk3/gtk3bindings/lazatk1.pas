@@ -9,11 +9,16 @@ unit LazAtk1;
 {$LINKLIB libatk-1.0.so.0}
 interface
 uses
-  CTypes, LazGLib2, LazGObject2;
+  CTypes, LazGObject2, LazGLib2;
 
 const
   Atk1_library = 'libatk-1.0.so.0';
 
+  ATK_BINARY_AGE = 20810;
+  ATK_INTERFACE_AGE = 1;
+  ATK_MAJOR_VERSION = 2;
+  ATK_MICRO_VERSION = 0;
+  ATK_MINOR_VERSION = 8;
 
 type
   TAtkCoordType = Integer;
@@ -163,7 +168,8 @@ const
   ATK_ROLE_IMAGE_MAP: TAtkRole = 98;
   ATK_ROLE_NOTIFICATION: TAtkRole = 99;
   ATK_ROLE_INFO_BAR: TAtkRole = 100;
-  ATK_ROLE_LAST_DEFINED: TAtkRole = 101;
+  ATK_ROLE_LEVEL_BAR: TAtkRole = 101;
+  ATK_ROLE_LAST_DEFINED: TAtkRole = 102;
 
 type
   TAtkHyperlinkStateFlags = Integer;
@@ -299,7 +305,7 @@ type
     function get_name(i: gint): Pgchar; cdecl; inline;
     function set_description(i: gint; desc: Pgchar): gboolean; cdecl; inline;
   end;
-  TAtkFunction = function(data: gpointer): gboolean; cdecl;
+  TAtkFunction = function(user_data: gpointer): gboolean; cdecl;
 
   PPAtkActionIface = ^PAtkActionIface;
   PAtkActionIface = ^TAtkActionIface;
@@ -326,9 +332,21 @@ type
     procedure set_free(attrib_set: PAtkAttributeSet); cdecl; inline; static;
   end;
 
+  PPAtkComponent = ^PAtkComponent;
+  PAtkComponent = ^TAtkComponent;
+
+  PPAtkFocusHandler = ^PAtkFocusHandler;
+  PAtkFocusHandler = ^TAtkFocusHandler;
+
   PPAtkObject = ^PAtkObject;
   PAtkObject = ^TAtkObject;
-  TAtkFocusHandler = procedure(param0: PAtkObject; param1: gboolean); cdecl;
+  TAtkFocusHandler = procedure(arg0: PAtkObject; arg1: gboolean); cdecl;
+
+  PPAtkCoordType = ^PAtkCoordType;
+  PAtkCoordType = ^TAtkCoordType;
+
+  PPAtkLayer = ^PAtkLayer;
+  PAtkLayer = ^TAtkLayer;
 
   PPAtkRectangle = ^PAtkRectangle;
   PAtkRectangle = ^TAtkRectangle;
@@ -338,12 +356,23 @@ type
     width: gint;
     height: gint;
   end;
-
-  PPAtkCoordType = ^PAtkCoordType;
-  PAtkCoordType = ^TAtkCoordType;
-
-  PPAtkLayer = ^PAtkLayer;
-  PAtkLayer = ^TAtkLayer;
+  TAtkComponent = object
+    bounds_changed: procedure(object_: TAtkRectangle); cdecl;
+    function add_focus_handler(handler: TAtkFocusHandler): guint; cdecl; inline;
+    function contains(x: gint; y: gint; coord_type: TAtkCoordType): gboolean; cdecl; inline;
+    function get_alpha: gdouble; cdecl; inline;
+    procedure get_extents(x: Pgint; y: Pgint; width: Pgint; height: Pgint; coord_type: TAtkCoordType); cdecl; inline;
+    function get_layer: TAtkLayer; cdecl; inline;
+    function get_mdi_zorder: gint; cdecl; inline;
+    procedure get_position(x: Pgint; y: Pgint; coord_type: TAtkCoordType); cdecl; inline;
+    procedure get_size(width: Pgint; height: Pgint); cdecl; inline;
+    function grab_focus: gboolean; cdecl; inline;
+    function ref_accessible_at_point(x: gint; y: gint; coord_type: TAtkCoordType): PAtkObject; cdecl; inline;
+    procedure remove_focus_handler(handler_id: guint); cdecl; inline;
+    function set_extents(x: gint; y: gint; width: gint; height: gint; coord_type: TAtkCoordType): gboolean; cdecl; inline;
+    function set_position(x: gint; y: gint; coord_type: TAtkCoordType): gboolean; cdecl; inline;
+    function set_size(width: gint; height: gint): gboolean; cdecl; inline;
+  end;
 
   PPAtkRelationType = ^PAtkRelationType;
   PAtkRelationType = ^TAtkRelationType;
@@ -352,7 +381,7 @@ type
   PAtkPropertyChangeHandler = ^TAtkPropertyChangeHandler;
 
   PAtkPropertyValues = ^TAtkPropertyValues;
-  TAtkPropertyChangeHandler = procedure(param0: PAtkObject; param1: PAtkPropertyValues); cdecl;
+  TAtkPropertyChangeHandler = procedure(obj: PAtkObject; vals: PAtkPropertyValues); cdecl;
 
   PPAtkRole = ^PAtkRole;
   PAtkRole = ^TAtkRole;
@@ -376,6 +405,7 @@ type
     function get_index_in_parent: gint; cdecl; inline;
     function get_n_accessible_children: gint; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
+    function get_object_locale: Pgchar; cdecl; inline;
     function get_parent: PAtkObject; cdecl; inline;
     function get_role: TAtkRole; cdecl; inline;
     procedure initialize(data: gpointer); cdecl; inline;
@@ -404,29 +434,6 @@ type
     //property accessible_table_row_header: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_row_header  { property is writeable but setter not declared } ;
     //property accessible_table_summary: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_summary  { property is writeable but setter not declared } ;
     //property accessible_value: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_value  { property is writeable but setter not declared } ;
-  end;
-
-  PPAtkComponent = ^PAtkComponent;
-  PAtkComponent = ^TAtkComponent;
-
-  PPAtkFocusHandler = ^PAtkFocusHandler;
-  PAtkFocusHandler = ^TAtkFocusHandler;
-  TAtkComponent = object
-    bounds_changed: procedure(object_: TAtkRectangle); cdecl;
-    function add_focus_handler(handler: TAtkFocusHandler): guint; cdecl; inline;
-    function contains(x: gint; y: gint; coord_type: TAtkCoordType): gboolean; cdecl; inline;
-    function get_alpha: gdouble; cdecl; inline;
-    procedure get_extents(x: Pgint; y: Pgint; width: Pgint; height: Pgint; coord_type: TAtkCoordType); cdecl; inline;
-    function get_layer: TAtkLayer; cdecl; inline;
-    function get_mdi_zorder: gint; cdecl; inline;
-    procedure get_position(x: Pgint; y: Pgint; coord_type: TAtkCoordType); cdecl; inline;
-    procedure get_size(width: Pgint; height: Pgint); cdecl; inline;
-    function grab_focus: gboolean; cdecl; inline;
-    function ref_accessible_at_point(x: gint; y: gint; coord_type: TAtkCoordType): PAtkObject; cdecl; inline;
-    procedure remove_focus_handler(handler_id: guint); cdecl; inline;
-    function set_extents(x: gint; y: gint; width: gint; height: gint; coord_type: TAtkCoordType): gboolean; cdecl; inline;
-    function set_position(x: gint; y: gint; coord_type: TAtkCoordType): gboolean; cdecl; inline;
-    function set_size(width: gint; height: gint): gboolean; cdecl; inline;
   end;
 
   PPAtkComponentIface = ^PAtkComponentIface;
@@ -460,7 +467,6 @@ type
     function get_attributes: PAtkAttributeSet; cdecl; inline;
     function get_document: gpointer; cdecl; inline;
     function get_document_type: Pgchar; cdecl; inline;
-    function get_locale: Pgchar; cdecl; inline;
     function set_attribute_value(attribute_name: Pgchar; attribute_value: Pgchar): gboolean; cdecl; inline;
   end;
 
@@ -545,8 +551,8 @@ type
     visible_data_changed: procedure(accessible: PAtkObject); cdecl;
     active_descendant_changed: procedure(accessible: PAtkObject; child: Pgpointer); cdecl;
     get_attributes: function(accessible: PAtkObject): PAtkAttributeSet; cdecl;
+    get_object_locale: function(accessible: PAtkObject): Pgchar; cdecl;
     pad1: TAtkFunction;
-    pad2: TAtkFunction;
   end;
 
   PPAtkGObjectAccessibleClass = ^PAtkGObjectAccessibleClass;
@@ -566,7 +572,6 @@ type
     function get_start_index: gint; cdecl; inline;
     function get_uri(i: gint): Pgchar; cdecl; inline;
     function is_inline: gboolean; cdecl; inline;
-    function is_selected_link: gboolean; cdecl; inline;
     function is_valid: gboolean; cdecl; inline;
     property end_index: gint read get_end_index ;
     //property number_of_anchors: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_number_of_anchors ;
@@ -679,7 +684,7 @@ type
 
   PPAtkKeyEventType = ^PAtkKeyEventType;
   PAtkKeyEventType = ^TAtkKeyEventType;
-  TAtkKeySnoopFunc = function(event: PAtkKeyEventStruct; func_data: gpointer): gint; cdecl;
+  TAtkKeySnoopFunc = function(event: PAtkKeyEventStruct; user_data: gpointer): gint; cdecl;
 
   PPAtkMisc = ^PAtkMisc;
   PAtkMisc = ^TAtkMisc;
@@ -770,10 +775,10 @@ type
     text_attributes_changed: procedure; cdecl;
     text_caret_moved: procedure(object_: gint); cdecl;
     text_changed: procedure(object_: gint; p0: gint); cdecl;
-    text_insert: procedure(object_: gint; p0: gint; p1: gchar); cdecl;
-    text_remove: procedure(object_: gint; p0: gint; p1: gchar); cdecl;
+    text_insert: procedure(object_: gint; p0: gint; p1: Pgchar); cdecl;
+    text_remove: procedure(object_: gint; p0: gint; p1: Pgchar); cdecl;
     text_selection_changed: procedure; cdecl;
-    text_update: procedure(object_: gint; p0: gint; p1: gint; p2: gchar); cdecl;
+    text_update: procedure(object_: gint; p0: gint; p1: gint; p2: Pgchar); cdecl;
     procedure free_ranges(ranges: PPAtkTextRange); cdecl; inline; static;
     function add_selection(start_offset: gint; end_offset: gint): gboolean; cdecl; inline;
     function get_bounded_ranges(rect: PAtkTextRectangle; coord_type: TAtkCoordType; x_clip_type: TAtkTextClipType; y_clip_type: TAtkTextClipType): PPAtkTextRange; cdecl; inline;
@@ -878,6 +883,7 @@ type
     procedure add(relation: PAtkRelation); cdecl; inline;
     procedure add_relation_by_type(relationship: TAtkRelationType; target: PAtkObject); cdecl; inline;
     function contains(relationship: TAtkRelationType): gboolean; cdecl; inline;
+    function contains_target(relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl; inline;
     function get_n_relations: gint; cdecl; inline;
     function get_relation(i: gint): PAtkRelation; cdecl; inline;
     function get_relation_by_type(relationship: TAtkRelationType): PAtkRelation; cdecl; inline;
@@ -927,10 +933,10 @@ type
     function new(targets: PPAtkObject; n_targets: gint; relationship: TAtkRelationType): PAtkRelation; cdecl; inline; static;
     procedure add_target(target: PAtkObject); cdecl; inline;
     function get_relation_type: TAtkRelationType; cdecl; inline;
-    function get_target: Pgpointer; cdecl; inline;
+    function get_target: PAtkObject; cdecl; inline;
     function remove_target(target: PAtkObject): gboolean; cdecl; inline;
     property relation_type: TAtkRelationType read get_relation_type  { property is writeable but setter not declared } ;
-    property target: Pgpointer read get_target  { property is writeable but setter not declared } ;
+    property target: PAtkObject read get_target  { property is writeable but setter not declared } ;
   end;
 
   PPAtkRelationClass = ^PAtkRelationClass;
@@ -1172,106 +1178,111 @@ type
 
 
 
-function atk_action_do_action(AAction: PAtkAction; i: gint): gboolean; cdecl; external;
-function atk_action_get_description(AAction: PAtkAction; i: gint): Pgchar; cdecl; external;
-function atk_action_get_keybinding(AAction: PAtkAction; i: gint): Pgchar; cdecl; external;
-function atk_action_get_localized_name(AAction: PAtkAction; i: gint): Pgchar; cdecl; external;
-function atk_action_get_n_actions(AAction: PAtkAction): gint; cdecl; external;
-function atk_action_get_name(AAction: PAtkAction; i: gint): Pgchar; cdecl; external;
+function atk_action_do_action(action: PAtkAction; i: gint): gboolean; cdecl; external;
+function atk_action_get_description(action: PAtkAction; i: gint): Pgchar; cdecl; external;
+function atk_action_get_keybinding(action: PAtkAction; i: gint): Pgchar; cdecl; external;
+function atk_action_get_localized_name(action: PAtkAction; i: gint): Pgchar; cdecl; external;
+function atk_action_get_n_actions(action: PAtkAction): gint; cdecl; external;
+function atk_action_get_name(action: PAtkAction; i: gint): Pgchar; cdecl; external;
 function atk_action_get_type: TGType; cdecl; external;
-function atk_action_set_description(AAction: PAtkAction; i: gint; desc: Pgchar): gboolean; cdecl; external;
+function atk_action_set_description(action: PAtkAction; i: gint; desc: Pgchar): gboolean; cdecl; external;
 function atk_add_focus_tracker(focus_tracker: TAtkEventListener): guint; cdecl; external;
 function atk_add_global_event_listener(listener: TGSignalEmissionHook; event_type: Pgchar): guint; cdecl; external;
 function atk_add_key_event_listener(listener: TAtkKeySnoopFunc; data: gpointer): guint; cdecl; external;
-function atk_component_add_focus_handler(AComponent: PAtkComponent; handler: TAtkFocusHandler): guint; cdecl; external;
-function atk_component_contains(AComponent: PAtkComponent; x: gint; y: gint; coord_type: TAtkCoordType): gboolean; cdecl; external;
-function atk_component_get_alpha(AComponent: PAtkComponent): gdouble; cdecl; external;
-function atk_component_get_layer(AComponent: PAtkComponent): TAtkLayer; cdecl; external;
-function atk_component_get_mdi_zorder(AComponent: PAtkComponent): gint; cdecl; external;
+function atk_component_add_focus_handler(component: PAtkComponent; handler: TAtkFocusHandler): guint; cdecl; external;
+function atk_component_contains(component: PAtkComponent; x: gint; y: gint; coord_type: TAtkCoordType): gboolean; cdecl; external;
+function atk_component_get_alpha(component: PAtkComponent): gdouble; cdecl; external;
+function atk_component_get_layer(component: PAtkComponent): TAtkLayer; cdecl; external;
+function atk_component_get_mdi_zorder(component: PAtkComponent): gint; cdecl; external;
 function atk_component_get_type: TGType; cdecl; external;
-function atk_component_grab_focus(AComponent: PAtkComponent): gboolean; cdecl; external;
-function atk_component_ref_accessible_at_point(AComponent: PAtkComponent; x: gint; y: gint; coord_type: TAtkCoordType): PAtkObject; cdecl; external;
-function atk_component_set_extents(AComponent: PAtkComponent; x: gint; y: gint; width: gint; height: gint; coord_type: TAtkCoordType): gboolean; cdecl; external;
-function atk_component_set_position(AComponent: PAtkComponent; x: gint; y: gint; coord_type: TAtkCoordType): gboolean; cdecl; external;
-function atk_component_set_size(AComponent: PAtkComponent; width: gint; height: gint): gboolean; cdecl; external;
-function atk_document_get_attribute_value(ADocument: PAtkDocument; attribute_name: Pgchar): Pgchar; cdecl; external;
-function atk_document_get_attributes(ADocument: PAtkDocument): PAtkAttributeSet; cdecl; external;
-function atk_document_get_document(ADocument: PAtkDocument): gpointer; cdecl; external;
-function atk_document_get_document_type(ADocument: PAtkDocument): Pgchar; cdecl; external;
-function atk_document_get_locale(ADocument: PAtkDocument): Pgchar; cdecl; external;
+function atk_component_grab_focus(component: PAtkComponent): gboolean; cdecl; external;
+function atk_component_ref_accessible_at_point(component: PAtkComponent; x: gint; y: gint; coord_type: TAtkCoordType): PAtkObject; cdecl; external;
+function atk_component_set_extents(component: PAtkComponent; x: gint; y: gint; width: gint; height: gint; coord_type: TAtkCoordType): gboolean; cdecl; external;
+function atk_component_set_position(component: PAtkComponent; x: gint; y: gint; coord_type: TAtkCoordType): gboolean; cdecl; external;
+function atk_component_set_size(component: PAtkComponent; width: gint; height: gint): gboolean; cdecl; external;
+function atk_document_get_attribute_value(document: PAtkDocument; attribute_name: Pgchar): Pgchar; cdecl; external;
+function atk_document_get_attributes(document: PAtkDocument): PAtkAttributeSet; cdecl; external;
+function atk_document_get_document(document: PAtkDocument): gpointer; cdecl; external;
+function atk_document_get_document_type(document: PAtkDocument): Pgchar; cdecl; external;
 function atk_document_get_type: TGType; cdecl; external;
-function atk_document_set_attribute_value(ADocument: PAtkDocument; attribute_name: Pgchar; attribute_value: Pgchar): gboolean; cdecl; external;
+function atk_document_set_attribute_value(document: PAtkDocument; attribute_name: Pgchar; attribute_value: Pgchar): gboolean; cdecl; external;
 function atk_editable_text_get_type: TGType; cdecl; external;
-function atk_editable_text_set_run_attributes(AEditableText: PAtkEditableText; attrib_set: PAtkAttributeSet; start_offset: gint; end_offset: gint): gboolean; cdecl; external;
+function atk_editable_text_set_run_attributes(text: PAtkEditableText; attrib_set: PAtkAttributeSet; start_offset: gint; end_offset: gint): gboolean; cdecl; external;
+function atk_get_binary_age: guint; cdecl; external;
 function atk_get_default_registry: PAtkRegistry; cdecl; external;
 function atk_get_focus_object: PAtkObject; cdecl; external;
+function atk_get_interface_age: guint; cdecl; external;
+function atk_get_major_version: guint; cdecl; external;
+function atk_get_micro_version: guint; cdecl; external;
+function atk_get_minor_version: guint; cdecl; external;
 function atk_get_root: PAtkObject; cdecl; external;
 function atk_get_toolkit_name: Pgchar; cdecl; external;
 function atk_get_toolkit_version: Pgchar; cdecl; external;
 function atk_get_version: Pgchar; cdecl; external;
 function atk_gobject_accessible_for_object(obj: PGObject): PAtkObject; cdecl; external;
-function atk_gobject_accessible_get_object(AGObjectAccessible: PAtkGObjectAccessible): PGObject; cdecl; external;
+function atk_gobject_accessible_get_object(obj: PAtkGObjectAccessible): PGObject; cdecl; external;
 function atk_gobject_accessible_get_type: TGType; cdecl; external;
-function atk_hyperlink_get_end_index(AHyperlink: PAtkHyperlink): gint; cdecl; external;
-function atk_hyperlink_get_n_anchors(AHyperlink: PAtkHyperlink): gint; cdecl; external;
-function atk_hyperlink_get_object(AHyperlink: PAtkHyperlink; i: gint): PAtkObject; cdecl; external;
-function atk_hyperlink_get_start_index(AHyperlink: PAtkHyperlink): gint; cdecl; external;
+function atk_hyperlink_get_end_index(link_: PAtkHyperlink): gint; cdecl; external;
+function atk_hyperlink_get_n_anchors(link_: PAtkHyperlink): gint; cdecl; external;
+function atk_hyperlink_get_object(link_: PAtkHyperlink; i: gint): PAtkObject; cdecl; external;
+function atk_hyperlink_get_start_index(link_: PAtkHyperlink): gint; cdecl; external;
 function atk_hyperlink_get_type: TGType; cdecl; external;
-function atk_hyperlink_get_uri(AHyperlink: PAtkHyperlink; i: gint): Pgchar; cdecl; external;
-function atk_hyperlink_impl_get_hyperlink(AHyperlinkImpl: PAtkHyperlinkImpl): PAtkHyperlink; cdecl; external;
+function atk_hyperlink_get_uri(link_: PAtkHyperlink; i: gint): Pgchar; cdecl; external;
+function atk_hyperlink_impl_get_hyperlink(impl: PAtkHyperlinkImpl): PAtkHyperlink; cdecl; external;
 function atk_hyperlink_impl_get_type: TGType; cdecl; external;
-function atk_hyperlink_is_inline(AHyperlink: PAtkHyperlink): gboolean; cdecl; external;
-function atk_hyperlink_is_selected_link(AHyperlink: PAtkHyperlink): gboolean; cdecl; external;
-function atk_hyperlink_is_valid(AHyperlink: PAtkHyperlink): gboolean; cdecl; external;
-function atk_hypertext_get_link(AHypertext: PAtkHypertext; link_index: gint): PAtkHyperlink; cdecl; external;
-function atk_hypertext_get_link_index(AHypertext: PAtkHypertext; char_index: gint): gint; cdecl; external;
-function atk_hypertext_get_n_links(AHypertext: PAtkHypertext): gint; cdecl; external;
+function atk_hyperlink_is_inline(link_: PAtkHyperlink): gboolean; cdecl; external;
+function atk_hyperlink_is_valid(link_: PAtkHyperlink): gboolean; cdecl; external;
+function atk_hypertext_get_link(hypertext: PAtkHypertext; link_index: gint): PAtkHyperlink; cdecl; external;
+function atk_hypertext_get_link_index(hypertext: PAtkHypertext; char_index: gint): gint; cdecl; external;
+function atk_hypertext_get_n_links(hypertext: PAtkHypertext): gint; cdecl; external;
 function atk_hypertext_get_type: TGType; cdecl; external;
-function atk_image_get_image_description(AImage: PAtkImage): Pgchar; cdecl; external;
-function atk_image_get_image_locale(AImage: PAtkImage): Pgchar; cdecl; external;
+function atk_image_get_image_description(image: PAtkImage): Pgchar; cdecl; external;
+function atk_image_get_image_locale(image: PAtkImage): Pgchar; cdecl; external;
 function atk_image_get_type: TGType; cdecl; external;
-function atk_image_set_image_description(AImage: PAtkImage; description: Pgchar): gboolean; cdecl; external;
+function atk_image_set_image_description(image: PAtkImage; description: Pgchar): gboolean; cdecl; external;
 function atk_implementor_get_type: TGType; cdecl; external;
-function atk_implementor_ref_accessible(AImplementor: PAtkImplementor): PAtkObject; cdecl; external;
+function atk_implementor_ref_accessible(implementor: PAtkImplementor): PAtkObject; cdecl; external;
 function atk_misc_get_instance: PAtkMisc; cdecl; external;
 function atk_misc_get_type: TGType; cdecl; external;
 function atk_no_op_object_factory_get_type: TGType; cdecl; external;
 function atk_no_op_object_factory_new: PAtkNoOpObjectFactory; cdecl; external;
 function atk_no_op_object_get_type: TGType; cdecl; external;
 function atk_no_op_object_new(obj: PGObject): PAtkNoOpObject; cdecl; external;
-function atk_object_add_relationship(AObject: PAtkObject; relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl; external;
-function atk_object_connect_property_change_handler(AObject: PAtkObject; handler: PAtkPropertyChangeHandler): guint; cdecl; external;
-function atk_object_factory_create_accessible(AObjectFactory: PAtkObjectFactory; obj: PGObject): PAtkObject; cdecl; external;
-function atk_object_factory_get_accessible_type(AObjectFactory: PAtkObjectFactory): TGType; cdecl; external;
+function atk_object_add_relationship(object_: PAtkObject; relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl; external;
+function atk_object_connect_property_change_handler(accessible: PAtkObject; handler: PAtkPropertyChangeHandler): guint; cdecl; external;
+function atk_object_factory_create_accessible(factory: PAtkObjectFactory; obj: PGObject): PAtkObject; cdecl; external;
+function atk_object_factory_get_accessible_type(factory: PAtkObjectFactory): TGType; cdecl; external;
 function atk_object_factory_get_type: TGType; cdecl; external;
-function atk_object_get_attributes(AObject: PAtkObject): PAtkAttributeSet; cdecl; external;
-function atk_object_get_description(AObject: PAtkObject): Pgchar; cdecl; external;
-function atk_object_get_index_in_parent(AObject: PAtkObject): gint; cdecl; external;
-function atk_object_get_n_accessible_children(AObject: PAtkObject): gint; cdecl; external;
-function atk_object_get_name(AObject: PAtkObject): Pgchar; cdecl; external;
-function atk_object_get_parent(AObject: PAtkObject): PAtkObject; cdecl; external;
-function atk_object_get_role(AObject: PAtkObject): TAtkRole; cdecl; external;
+function atk_object_get_attributes(accessible: PAtkObject): PAtkAttributeSet; cdecl; external;
+function atk_object_get_description(accessible: PAtkObject): Pgchar; cdecl; external;
+function atk_object_get_index_in_parent(accessible: PAtkObject): gint; cdecl; external;
+function atk_object_get_n_accessible_children(accessible: PAtkObject): gint; cdecl; external;
+function atk_object_get_name(accessible: PAtkObject): Pgchar; cdecl; external;
+function atk_object_get_object_locale(accessible: PAtkObject): Pgchar; cdecl; external;
+function atk_object_get_parent(accessible: PAtkObject): PAtkObject; cdecl; external;
+function atk_object_get_role(accessible: PAtkObject): TAtkRole; cdecl; external;
 function atk_object_get_type: TGType; cdecl; external;
-function atk_object_ref_accessible_child(AObject: PAtkObject; i: gint): PAtkObject; cdecl; external;
-function atk_object_ref_relation_set(AObject: PAtkObject): PAtkRelationSet; cdecl; external;
-function atk_object_ref_state_set(AObject: PAtkObject): PAtkStateSet; cdecl; external;
-function atk_object_remove_relationship(AObject: PAtkObject; relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl; external;
-function atk_plug_get_id(APlug: PAtkPlug): Pgchar; cdecl; external;
+function atk_object_ref_accessible_child(accessible: PAtkObject; i: gint): PAtkObject; cdecl; external;
+function atk_object_ref_relation_set(accessible: PAtkObject): PAtkRelationSet; cdecl; external;
+function atk_object_ref_state_set(accessible: PAtkObject): PAtkStateSet; cdecl; external;
+function atk_object_remove_relationship(object_: PAtkObject; relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl; external;
+function atk_plug_get_id(plug: PAtkPlug): Pgchar; cdecl; external;
 function atk_plug_get_type: TGType; cdecl; external;
 function atk_plug_new: PAtkPlug; cdecl; external;
 function atk_rectangle_get_type: TGType; cdecl; external;
-function atk_registry_get_factory(ARegistry: PAtkRegistry; type_: TGType): PAtkObjectFactory; cdecl; external;
-function atk_registry_get_factory_type(ARegistry: PAtkRegistry; type_: TGType): TGType; cdecl; external;
+function atk_registry_get_factory(registry: PAtkRegistry; type_: TGType): PAtkObjectFactory; cdecl; external;
+function atk_registry_get_factory_type(registry: PAtkRegistry; type_: TGType): TGType; cdecl; external;
 function atk_registry_get_type: TGType; cdecl; external;
-function atk_relation_get_relation_type(ARelation: PAtkRelation): TAtkRelationType; cdecl; external;
-function atk_relation_get_target(ARelation: PAtkRelation): Pgpointer; cdecl; external;
+function atk_relation_get_relation_type(relation: PAtkRelation): TAtkRelationType; cdecl; external;
+function atk_relation_get_target(relation: PAtkRelation): PAtkObject; cdecl; external;
 function atk_relation_get_type: TGType; cdecl; external;
 function atk_relation_new(targets: PPAtkObject; n_targets: gint; relationship: TAtkRelationType): PAtkRelation; cdecl; external;
-function atk_relation_remove_target(ARelation: PAtkRelation; target: PAtkObject): gboolean; cdecl; external;
-function atk_relation_set_contains(ARelationSet: PAtkRelationSet; relationship: TAtkRelationType): gboolean; cdecl; external;
-function atk_relation_set_get_n_relations(ARelationSet: PAtkRelationSet): gint; cdecl; external;
-function atk_relation_set_get_relation(ARelationSet: PAtkRelationSet; i: gint): PAtkRelation; cdecl; external;
-function atk_relation_set_get_relation_by_type(ARelationSet: PAtkRelationSet; relationship: TAtkRelationType): PAtkRelation; cdecl; external;
+function atk_relation_remove_target(relation: PAtkRelation; target: PAtkObject): gboolean; cdecl; external;
+function atk_relation_set_contains(set_: PAtkRelationSet; relationship: TAtkRelationType): gboolean; cdecl; external;
+function atk_relation_set_contains_target(set_: PAtkRelationSet; relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl; external;
+function atk_relation_set_get_n_relations(set_: PAtkRelationSet): gint; cdecl; external;
+function atk_relation_set_get_relation(set_: PAtkRelationSet; i: gint): PAtkRelation; cdecl; external;
+function atk_relation_set_get_relation_by_type(set_: PAtkRelationSet; relationship: TAtkRelationType): PAtkRelation; cdecl; external;
 function atk_relation_set_get_type: TGType; cdecl; external;
 function atk_relation_set_new: PAtkRelationSet; cdecl; external;
 function atk_relation_type_for_name(name: Pgchar): TAtkRelationType; cdecl; external;
@@ -1281,135 +1292,135 @@ function atk_role_for_name(name: Pgchar): TAtkRole; cdecl; external;
 function atk_role_get_localized_name(role: TAtkRole): Pgchar; cdecl; external;
 function atk_role_get_name(role: TAtkRole): Pgchar; cdecl; external;
 function atk_role_register(name: Pgchar): TAtkRole; cdecl; external;
-function atk_selection_add_selection(ASelection: PAtkSelection; i: gint): gboolean; cdecl; external;
-function atk_selection_clear_selection(ASelection: PAtkSelection): gboolean; cdecl; external;
-function atk_selection_get_selection_count(ASelection: PAtkSelection): gint; cdecl; external;
+function atk_selection_add_selection(selection: PAtkSelection; i: gint): gboolean; cdecl; external;
+function atk_selection_clear_selection(selection: PAtkSelection): gboolean; cdecl; external;
+function atk_selection_get_selection_count(selection: PAtkSelection): gint; cdecl; external;
 function atk_selection_get_type: TGType; cdecl; external;
-function atk_selection_is_child_selected(ASelection: PAtkSelection; i: gint): gboolean; cdecl; external;
-function atk_selection_ref_selection(ASelection: PAtkSelection; i: gint): PAtkObject; cdecl; external;
-function atk_selection_remove_selection(ASelection: PAtkSelection; i: gint): gboolean; cdecl; external;
-function atk_selection_select_all_selection(ASelection: PAtkSelection): gboolean; cdecl; external;
+function atk_selection_is_child_selected(selection: PAtkSelection; i: gint): gboolean; cdecl; external;
+function atk_selection_ref_selection(selection: PAtkSelection; i: gint): PAtkObject; cdecl; external;
+function atk_selection_remove_selection(selection: PAtkSelection; i: gint): gboolean; cdecl; external;
+function atk_selection_select_all_selection(selection: PAtkSelection): gboolean; cdecl; external;
 function atk_socket_get_type: TGType; cdecl; external;
-function atk_socket_is_occupied(ASocket: PAtkSocket): gboolean; cdecl; external;
+function atk_socket_is_occupied(obj: PAtkSocket): gboolean; cdecl; external;
 function atk_socket_new: PAtkSocket; cdecl; external;
-function atk_state_set_add_state(AStateSet: PAtkStateSet; type_: TAtkStateType): gboolean; cdecl; external;
-function atk_state_set_and_sets(AStateSet: PAtkStateSet; compare_set: PAtkStateSet): PAtkStateSet; cdecl; external;
-function atk_state_set_contains_state(AStateSet: PAtkStateSet; type_: TAtkStateType): gboolean; cdecl; external;
-function atk_state_set_contains_states(AStateSet: PAtkStateSet; types: PAtkStateType; n_types: gint): gboolean; cdecl; external;
+function atk_state_set_add_state(set_: PAtkStateSet; type_: TAtkStateType): gboolean; cdecl; external;
+function atk_state_set_and_sets(set_: PAtkStateSet; compare_set: PAtkStateSet): PAtkStateSet; cdecl; external;
+function atk_state_set_contains_state(set_: PAtkStateSet; type_: TAtkStateType): gboolean; cdecl; external;
+function atk_state_set_contains_states(set_: PAtkStateSet; types: PAtkStateType; n_types: gint): gboolean; cdecl; external;
 function atk_state_set_get_type: TGType; cdecl; external;
-function atk_state_set_is_empty(AStateSet: PAtkStateSet): gboolean; cdecl; external;
+function atk_state_set_is_empty(set_: PAtkStateSet): gboolean; cdecl; external;
 function atk_state_set_new: PAtkStateSet; cdecl; external;
-function atk_state_set_or_sets(AStateSet: PAtkStateSet; compare_set: PAtkStateSet): PAtkStateSet; cdecl; external;
-function atk_state_set_remove_state(AStateSet: PAtkStateSet; type_: TAtkStateType): gboolean; cdecl; external;
-function atk_state_set_xor_sets(AStateSet: PAtkStateSet; compare_set: PAtkStateSet): PAtkStateSet; cdecl; external;
+function atk_state_set_or_sets(set_: PAtkStateSet; compare_set: PAtkStateSet): PAtkStateSet; cdecl; external;
+function atk_state_set_remove_state(set_: PAtkStateSet; type_: TAtkStateType): gboolean; cdecl; external;
+function atk_state_set_xor_sets(set_: PAtkStateSet; compare_set: PAtkStateSet): PAtkStateSet; cdecl; external;
 function atk_state_type_for_name(name: Pgchar): TAtkStateType; cdecl; external;
 function atk_state_type_get_name(type_: TAtkStateType): Pgchar; cdecl; external;
 function atk_state_type_register(name: Pgchar): TAtkStateType; cdecl; external;
-function atk_streamable_content_get_mime_type(AStreamableContent: PAtkStreamableContent; i: gint): Pgchar; cdecl; external;
-function atk_streamable_content_get_n_mime_types(AStreamableContent: PAtkStreamableContent): gint; cdecl; external;
-function atk_streamable_content_get_stream(AStreamableContent: PAtkStreamableContent; mime_type: Pgchar): PGIOChannel; cdecl; external;
+function atk_streamable_content_get_mime_type(streamable: PAtkStreamableContent; i: gint): Pgchar; cdecl; external;
+function atk_streamable_content_get_n_mime_types(streamable: PAtkStreamableContent): gint; cdecl; external;
+function atk_streamable_content_get_stream(streamable: PAtkStreamableContent; mime_type: Pgchar): PGIOChannel; cdecl; external;
 function atk_streamable_content_get_type: TGType; cdecl; external;
-function atk_streamable_content_get_uri(AStreamableContent: PAtkStreamableContent; mime_type: Pgchar): Pgchar; cdecl; external;
-function atk_table_add_column_selection(ATable: PAtkTable; column: gint): gboolean; cdecl; external;
-function atk_table_add_row_selection(ATable: PAtkTable; row: gint): gboolean; cdecl; external;
-function atk_table_get_caption(ATable: PAtkTable): PAtkObject; cdecl; external;
-function atk_table_get_column_at_index(ATable: PAtkTable; index_: gint): gint; cdecl; external;
-function atk_table_get_column_description(ATable: PAtkTable; column: gint): Pgchar; cdecl; external;
-function atk_table_get_column_extent_at(ATable: PAtkTable; row: gint; column: gint): gint; cdecl; external;
-function atk_table_get_column_header(ATable: PAtkTable; column: gint): PAtkObject; cdecl; external;
-function atk_table_get_index_at(ATable: PAtkTable; row: gint; column: gint): gint; cdecl; external;
-function atk_table_get_n_columns(ATable: PAtkTable): gint; cdecl; external;
-function atk_table_get_n_rows(ATable: PAtkTable): gint; cdecl; external;
-function atk_table_get_row_at_index(ATable: PAtkTable; index_: gint): gint; cdecl; external;
-function atk_table_get_row_description(ATable: PAtkTable; row: gint): Pgchar; cdecl; external;
-function atk_table_get_row_extent_at(ATable: PAtkTable; row: gint; column: gint): gint; cdecl; external;
-function atk_table_get_row_header(ATable: PAtkTable; row: gint): PAtkObject; cdecl; external;
-function atk_table_get_selected_columns(ATable: PAtkTable; selected: PPgint): gint; cdecl; external;
-function atk_table_get_selected_rows(ATable: PAtkTable; selected: PPgint): gint; cdecl; external;
-function atk_table_get_summary(ATable: PAtkTable): PAtkObject; cdecl; external;
+function atk_streamable_content_get_uri(streamable: PAtkStreamableContent; mime_type: Pgchar): Pgchar; cdecl; external;
+function atk_table_add_column_selection(table: PAtkTable; column: gint): gboolean; cdecl; external;
+function atk_table_add_row_selection(table: PAtkTable; row: gint): gboolean; cdecl; external;
+function atk_table_get_caption(table: PAtkTable): PAtkObject; cdecl; external;
+function atk_table_get_column_at_index(table: PAtkTable; index_: gint): gint; cdecl; external;
+function atk_table_get_column_description(table: PAtkTable; column: gint): Pgchar; cdecl; external;
+function atk_table_get_column_extent_at(table: PAtkTable; row: gint; column: gint): gint; cdecl; external;
+function atk_table_get_column_header(table: PAtkTable; column: gint): PAtkObject; cdecl; external;
+function atk_table_get_index_at(table: PAtkTable; row: gint; column: gint): gint; cdecl; external;
+function atk_table_get_n_columns(table: PAtkTable): gint; cdecl; external;
+function atk_table_get_n_rows(table: PAtkTable): gint; cdecl; external;
+function atk_table_get_row_at_index(table: PAtkTable; index_: gint): gint; cdecl; external;
+function atk_table_get_row_description(table: PAtkTable; row: gint): Pgchar; cdecl; external;
+function atk_table_get_row_extent_at(table: PAtkTable; row: gint; column: gint): gint; cdecl; external;
+function atk_table_get_row_header(table: PAtkTable; row: gint): PAtkObject; cdecl; external;
+function atk_table_get_selected_columns(table: PAtkTable; selected: PPgint): gint; cdecl; external;
+function atk_table_get_selected_rows(table: PAtkTable; selected: PPgint): gint; cdecl; external;
+function atk_table_get_summary(table: PAtkTable): PAtkObject; cdecl; external;
 function atk_table_get_type: TGType; cdecl; external;
-function atk_table_is_column_selected(ATable: PAtkTable; column: gint): gboolean; cdecl; external;
-function atk_table_is_row_selected(ATable: PAtkTable; row: gint): gboolean; cdecl; external;
-function atk_table_is_selected(ATable: PAtkTable; row: gint; column: gint): gboolean; cdecl; external;
-function atk_table_ref_at(ATable: PAtkTable; row: gint; column: gint): PAtkObject; cdecl; external;
-function atk_table_remove_column_selection(ATable: PAtkTable; column: gint): gboolean; cdecl; external;
-function atk_table_remove_row_selection(ATable: PAtkTable; row: gint): gboolean; cdecl; external;
-function atk_text_add_selection(AText: PAtkText; start_offset: gint; end_offset: gint): gboolean; cdecl; external;
+function atk_table_is_column_selected(table: PAtkTable; column: gint): gboolean; cdecl; external;
+function atk_table_is_row_selected(table: PAtkTable; row: gint): gboolean; cdecl; external;
+function atk_table_is_selected(table: PAtkTable; row: gint; column: gint): gboolean; cdecl; external;
+function atk_table_ref_at(table: PAtkTable; row: gint; column: gint): PAtkObject; cdecl; external;
+function atk_table_remove_column_selection(table: PAtkTable; column: gint): gboolean; cdecl; external;
+function atk_table_remove_row_selection(table: PAtkTable; row: gint): gboolean; cdecl; external;
+function atk_text_add_selection(text: PAtkText; start_offset: gint; end_offset: gint): gboolean; cdecl; external;
 function atk_text_attribute_for_name(name: Pgchar): TAtkTextAttribute; cdecl; external;
 function atk_text_attribute_get_name(attr: TAtkTextAttribute): Pgchar; cdecl; external;
 function atk_text_attribute_get_value(attr: TAtkTextAttribute; index_: gint): Pgchar; cdecl; external;
 function atk_text_attribute_register(name: Pgchar): TAtkTextAttribute; cdecl; external;
-function atk_text_get_bounded_ranges(AText: PAtkText; rect: PAtkTextRectangle; coord_type: TAtkCoordType; x_clip_type: TAtkTextClipType; y_clip_type: TAtkTextClipType): PPAtkTextRange; cdecl; external;
-function atk_text_get_caret_offset(AText: PAtkText): gint; cdecl; external;
-function atk_text_get_character_at_offset(AText: PAtkText; offset: gint): gunichar; cdecl; external;
-function atk_text_get_character_count(AText: PAtkText): gint; cdecl; external;
-function atk_text_get_default_attributes(AText: PAtkText): PAtkAttributeSet; cdecl; external;
-function atk_text_get_n_selections(AText: PAtkText): gint; cdecl; external;
-function atk_text_get_offset_at_point(AText: PAtkText; x: gint; y: gint; coords: TAtkCoordType): gint; cdecl; external;
-function atk_text_get_run_attributes(AText: PAtkText; offset: gint; start_offset: Pgint; end_offset: Pgint): PAtkAttributeSet; cdecl; external;
-function atk_text_get_selection(AText: PAtkText; selection_num: gint; start_offset: Pgint; end_offset: Pgint): Pgchar; cdecl; external;
-function atk_text_get_text(AText: PAtkText; start_offset: gint; end_offset: gint): Pgchar; cdecl; external;
-function atk_text_get_text_after_offset(AText: PAtkText; offset: gint; boundary_type: TAtkTextBoundary; start_offset: Pgint; end_offset: Pgint): Pgchar; cdecl; external;
-function atk_text_get_text_at_offset(AText: PAtkText; offset: gint; boundary_type: TAtkTextBoundary; start_offset: Pgint; end_offset: Pgint): Pgchar; cdecl; external;
-function atk_text_get_text_before_offset(AText: PAtkText; offset: gint; boundary_type: TAtkTextBoundary; start_offset: Pgint; end_offset: Pgint): Pgchar; cdecl; external;
+function atk_text_get_bounded_ranges(text: PAtkText; rect: PAtkTextRectangle; coord_type: TAtkCoordType; x_clip_type: TAtkTextClipType; y_clip_type: TAtkTextClipType): PPAtkTextRange; cdecl; external;
+function atk_text_get_caret_offset(text: PAtkText): gint; cdecl; external;
+function atk_text_get_character_at_offset(text: PAtkText; offset: gint): gunichar; cdecl; external;
+function atk_text_get_character_count(text: PAtkText): gint; cdecl; external;
+function atk_text_get_default_attributes(text: PAtkText): PAtkAttributeSet; cdecl; external;
+function atk_text_get_n_selections(text: PAtkText): gint; cdecl; external;
+function atk_text_get_offset_at_point(text: PAtkText; x: gint; y: gint; coords: TAtkCoordType): gint; cdecl; external;
+function atk_text_get_run_attributes(text: PAtkText; offset: gint; start_offset: Pgint; end_offset: Pgint): PAtkAttributeSet; cdecl; external;
+function atk_text_get_selection(text: PAtkText; selection_num: gint; start_offset: Pgint; end_offset: Pgint): Pgchar; cdecl; external;
+function atk_text_get_text(text: PAtkText; start_offset: gint; end_offset: gint): Pgchar; cdecl; external;
+function atk_text_get_text_after_offset(text: PAtkText; offset: gint; boundary_type: TAtkTextBoundary; start_offset: Pgint; end_offset: Pgint): Pgchar; cdecl; external;
+function atk_text_get_text_at_offset(text: PAtkText; offset: gint; boundary_type: TAtkTextBoundary; start_offset: Pgint; end_offset: Pgint): Pgchar; cdecl; external;
+function atk_text_get_text_before_offset(text: PAtkText; offset: gint; boundary_type: TAtkTextBoundary; start_offset: Pgint; end_offset: Pgint): Pgchar; cdecl; external;
 function atk_text_get_type: TGType; cdecl; external;
 function atk_text_range_get_type: TGType; cdecl; external;
-function atk_text_remove_selection(AText: PAtkText; selection_num: gint): gboolean; cdecl; external;
-function atk_text_set_caret_offset(AText: PAtkText; offset: gint): gboolean; cdecl; external;
-function atk_text_set_selection(AText: PAtkText; selection_num: gint; start_offset: gint; end_offset: gint): gboolean; cdecl; external;
+function atk_text_remove_selection(text: PAtkText; selection_num: gint): gboolean; cdecl; external;
+function atk_text_set_caret_offset(text: PAtkText; offset: gint): gboolean; cdecl; external;
+function atk_text_set_selection(text: PAtkText; selection_num: gint; start_offset: gint; end_offset: gint): gboolean; cdecl; external;
 function atk_util_get_type: TGType; cdecl; external;
 function atk_value_get_type: TGType; cdecl; external;
-function atk_value_set_current_value(AValue: PAtkValue; value: PGValue): gboolean; cdecl; external;
+function atk_value_set_current_value(obj: PAtkValue; value: PGValue): gboolean; cdecl; external;
 function atk_window_get_type: TGType; cdecl; external;
 procedure atk_attribute_set_free(attrib_set: PAtkAttributeSet); cdecl; external;
-procedure atk_component_get_extents(AComponent: PAtkComponent; x: Pgint; y: Pgint; width: Pgint; height: Pgint; coord_type: TAtkCoordType); cdecl; external;
-procedure atk_component_get_position(AComponent: PAtkComponent; x: Pgint; y: Pgint; coord_type: TAtkCoordType); cdecl; external;
-procedure atk_component_get_size(AComponent: PAtkComponent; width: Pgint; height: Pgint); cdecl; external;
-procedure atk_component_remove_focus_handler(AComponent: PAtkComponent; handler_id: guint); cdecl; external;
-procedure atk_editable_text_copy_text(AEditableText: PAtkEditableText; start_pos: gint; end_pos: gint); cdecl; external;
-procedure atk_editable_text_cut_text(AEditableText: PAtkEditableText; start_pos: gint; end_pos: gint); cdecl; external;
-procedure atk_editable_text_delete_text(AEditableText: PAtkEditableText; start_pos: gint; end_pos: gint); cdecl; external;
-procedure atk_editable_text_insert_text(AEditableText: PAtkEditableText; string_: Pgchar; length: gint; position: Pgint); cdecl; external;
-procedure atk_editable_text_paste_text(AEditableText: PAtkEditableText; position: gint); cdecl; external;
-procedure atk_editable_text_set_text_contents(AEditableText: PAtkEditableText; string_: Pgchar); cdecl; external;
+procedure atk_component_get_extents(component: PAtkComponent; x: Pgint; y: Pgint; width: Pgint; height: Pgint; coord_type: TAtkCoordType); cdecl; external;
+procedure atk_component_get_position(component: PAtkComponent; x: Pgint; y: Pgint; coord_type: TAtkCoordType); cdecl; external;
+procedure atk_component_get_size(component: PAtkComponent; width: Pgint; height: Pgint); cdecl; external;
+procedure atk_component_remove_focus_handler(component: PAtkComponent; handler_id: guint); cdecl; external;
+procedure atk_editable_text_copy_text(text: PAtkEditableText; start_pos: gint; end_pos: gint); cdecl; external;
+procedure atk_editable_text_cut_text(text: PAtkEditableText; start_pos: gint; end_pos: gint); cdecl; external;
+procedure atk_editable_text_delete_text(text: PAtkEditableText; start_pos: gint; end_pos: gint); cdecl; external;
+procedure atk_editable_text_insert_text(text: PAtkEditableText; string_: Pgchar; length: gint; position: Pgint); cdecl; external;
+procedure atk_editable_text_paste_text(text: PAtkEditableText; position: gint); cdecl; external;
+procedure atk_editable_text_set_text_contents(text: PAtkEditableText; string_: Pgchar); cdecl; external;
 procedure atk_focus_tracker_init(init: TAtkEventListenerInit); cdecl; external;
 procedure atk_focus_tracker_notify(object_: PAtkObject); cdecl; external;
-procedure atk_image_get_image_position(AImage: PAtkImage; x: Pgint; y: Pgint; coord_type: TAtkCoordType); cdecl; external;
-procedure atk_image_get_image_size(AImage: PAtkImage; width: Pgint; height: Pgint); cdecl; external;
-procedure atk_misc_threads_enter(AMisc: PAtkMisc); cdecl; external;
-procedure atk_misc_threads_leave(AMisc: PAtkMisc); cdecl; external;
-procedure atk_object_factory_invalidate(AObjectFactory: PAtkObjectFactory); cdecl; external;
-procedure atk_object_initialize(AObject: PAtkObject; data: gpointer); cdecl; external;
-procedure atk_object_notify_state_change(AObject: PAtkObject; state: TAtkState; value: gboolean); cdecl; external;
-procedure atk_object_remove_property_change_handler(AObject: PAtkObject; handler_id: guint); cdecl; external;
-procedure atk_object_set_description(AObject: PAtkObject; description: Pgchar); cdecl; external;
-procedure atk_object_set_name(AObject: PAtkObject; name: Pgchar); cdecl; external;
-procedure atk_object_set_parent(AObject: PAtkObject; parent: PAtkObject); cdecl; external;
-procedure atk_object_set_role(AObject: PAtkObject; role: TAtkRole); cdecl; external;
-procedure atk_registry_set_factory_type(ARegistry: PAtkRegistry; type_: TGType; factory_type: TGType); cdecl; external;
-procedure atk_relation_add_target(ARelation: PAtkRelation; target: PAtkObject); cdecl; external;
-procedure atk_relation_set_add(ARelationSet: PAtkRelationSet; relation: PAtkRelation); cdecl; external;
-procedure atk_relation_set_add_relation_by_type(ARelationSet: PAtkRelationSet; relationship: TAtkRelationType; target: PAtkObject); cdecl; external;
-procedure atk_relation_set_remove(ARelationSet: PAtkRelationSet; relation: PAtkRelation); cdecl; external;
+procedure atk_image_get_image_position(image: PAtkImage; x: Pgint; y: Pgint; coord_type: TAtkCoordType); cdecl; external;
+procedure atk_image_get_image_size(image: PAtkImage; width: Pgint; height: Pgint); cdecl; external;
+procedure atk_misc_threads_enter(misc: PAtkMisc); cdecl; external;
+procedure atk_misc_threads_leave(misc: PAtkMisc); cdecl; external;
+procedure atk_object_factory_invalidate(factory: PAtkObjectFactory); cdecl; external;
+procedure atk_object_initialize(accessible: PAtkObject; data: gpointer); cdecl; external;
+procedure atk_object_notify_state_change(accessible: PAtkObject; state: TAtkState; value: gboolean); cdecl; external;
+procedure atk_object_remove_property_change_handler(accessible: PAtkObject; handler_id: guint); cdecl; external;
+procedure atk_object_set_description(accessible: PAtkObject; description: Pgchar); cdecl; external;
+procedure atk_object_set_name(accessible: PAtkObject; name: Pgchar); cdecl; external;
+procedure atk_object_set_parent(accessible: PAtkObject; parent: PAtkObject); cdecl; external;
+procedure atk_object_set_role(accessible: PAtkObject; role: TAtkRole); cdecl; external;
+procedure atk_registry_set_factory_type(registry: PAtkRegistry; type_: TGType; factory_type: TGType); cdecl; external;
+procedure atk_relation_add_target(relation: PAtkRelation; target: PAtkObject); cdecl; external;
+procedure atk_relation_set_add(set_: PAtkRelationSet; relation: PAtkRelation); cdecl; external;
+procedure atk_relation_set_add_relation_by_type(set_: PAtkRelationSet; relationship: TAtkRelationType; target: PAtkObject); cdecl; external;
+procedure atk_relation_set_remove(set_: PAtkRelationSet; relation: PAtkRelation); cdecl; external;
 procedure atk_remove_focus_tracker(tracker_id: guint); cdecl; external;
 procedure atk_remove_global_event_listener(listener_id: guint); cdecl; external;
 procedure atk_remove_key_event_listener(listener_id: guint); cdecl; external;
-procedure atk_socket_embed(ASocket: PAtkSocket; plug_id: Pgchar); cdecl; external;
-procedure atk_state_set_add_states(AStateSet: PAtkStateSet; types: PAtkStateType; n_types: gint); cdecl; external;
-procedure atk_state_set_clear_states(AStateSet: PAtkStateSet); cdecl; external;
-procedure atk_table_set_caption(ATable: PAtkTable; caption: PAtkObject); cdecl; external;
-procedure atk_table_set_column_description(ATable: PAtkTable; column: gint; description: Pgchar); cdecl; external;
-procedure atk_table_set_column_header(ATable: PAtkTable; column: gint; header: PAtkObject); cdecl; external;
-procedure atk_table_set_row_description(ATable: PAtkTable; row: gint; description: Pgchar); cdecl; external;
-procedure atk_table_set_row_header(ATable: PAtkTable; row: gint; header: PAtkObject); cdecl; external;
-procedure atk_table_set_summary(ATable: PAtkTable; accessible: PAtkObject); cdecl; external;
+procedure atk_socket_embed(obj: PAtkSocket; plug_id: Pgchar); cdecl; external;
+procedure atk_state_set_add_states(set_: PAtkStateSet; types: PAtkStateType; n_types: gint); cdecl; external;
+procedure atk_state_set_clear_states(set_: PAtkStateSet); cdecl; external;
+procedure atk_table_set_caption(table: PAtkTable; caption: PAtkObject); cdecl; external;
+procedure atk_table_set_column_description(table: PAtkTable; column: gint; description: Pgchar); cdecl; external;
+procedure atk_table_set_column_header(table: PAtkTable; column: gint; header: PAtkObject); cdecl; external;
+procedure atk_table_set_row_description(table: PAtkTable; row: gint; description: Pgchar); cdecl; external;
+procedure atk_table_set_row_header(table: PAtkTable; row: gint; header: PAtkObject); cdecl; external;
+procedure atk_table_set_summary(table: PAtkTable; accessible: PAtkObject); cdecl; external;
 procedure atk_text_free_ranges(ranges: PPAtkTextRange); cdecl; external;
-procedure atk_text_get_character_extents(AText: PAtkText; offset: gint; x: Pgint; y: Pgint; width: Pgint; height: Pgint; coords: TAtkCoordType); cdecl; external;
-procedure atk_text_get_range_extents(AText: PAtkText; start_offset: gint; end_offset: gint; coord_type: TAtkCoordType; rect: PAtkTextRectangle); cdecl; external;
-procedure atk_value_get_current_value(AValue: PAtkValue; value: PGValue); cdecl; external;
-procedure atk_value_get_maximum_value(AValue: PAtkValue; value: PGValue); cdecl; external;
-procedure atk_value_get_minimum_increment(AValue: PAtkValue; value: PGValue); cdecl; external;
-procedure atk_value_get_minimum_value(AValue: PAtkValue; value: PGValue); cdecl; external;
+procedure atk_text_get_character_extents(text: PAtkText; offset: gint; x: Pgint; y: Pgint; width: Pgint; height: Pgint; coords: TAtkCoordType); cdecl; external;
+procedure atk_text_get_range_extents(text: PAtkText; start_offset: gint; end_offset: gint; coord_type: TAtkCoordType; rect: PAtkTextRectangle); cdecl; external;
+procedure atk_value_get_current_value(obj: PAtkValue; value: PGValue); cdecl; external;
+procedure atk_value_get_maximum_value(obj: PAtkValue; value: PGValue); cdecl; external;
+procedure atk_value_get_minimum_increment(obj: PAtkValue; value: PGValue); cdecl; external;
+procedure atk_value_get_minimum_value(obj: PAtkValue; value: PGValue); cdecl; external;
 implementation
 function TAtkAction.do_action(i: gint): gboolean; cdecl;
 begin
@@ -1449,106 +1460,6 @@ end;
 procedure TAtkAttribute.set_free(attrib_set: PAtkAttributeSet); cdecl;
 begin
   LazAtk1.atk_attribute_set_free(attrib_set);
-end;
-
-function TAtkObject.add_relationship(relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl;
-begin
-  Result := LazAtk1.atk_object_add_relationship(@self, relationship, target);
-end;
-
-function TAtkObject.connect_property_change_handler(handler: PAtkPropertyChangeHandler): guint; cdecl;
-begin
-  Result := LazAtk1.atk_object_connect_property_change_handler(@self, handler);
-end;
-
-function TAtkObject.get_attributes: PAtkAttributeSet; cdecl;
-begin
-  Result := LazAtk1.atk_object_get_attributes(@self);
-end;
-
-function TAtkObject.get_description: Pgchar; cdecl;
-begin
-  Result := LazAtk1.atk_object_get_description(@self);
-end;
-
-function TAtkObject.get_index_in_parent: gint; cdecl;
-begin
-  Result := LazAtk1.atk_object_get_index_in_parent(@self);
-end;
-
-function TAtkObject.get_n_accessible_children: gint; cdecl;
-begin
-  Result := LazAtk1.atk_object_get_n_accessible_children(@self);
-end;
-
-function TAtkObject.get_name: Pgchar; cdecl;
-begin
-  Result := LazAtk1.atk_object_get_name(@self);
-end;
-
-function TAtkObject.get_parent: PAtkObject; cdecl;
-begin
-  Result := LazAtk1.atk_object_get_parent(@self);
-end;
-
-function TAtkObject.get_role: TAtkRole; cdecl;
-begin
-  Result := LazAtk1.atk_object_get_role(@self);
-end;
-
-procedure TAtkObject.initialize(data: gpointer); cdecl;
-begin
-  LazAtk1.atk_object_initialize(@self, data);
-end;
-
-procedure TAtkObject.notify_state_change(state: TAtkState; value: gboolean); cdecl;
-begin
-  LazAtk1.atk_object_notify_state_change(@self, state, value);
-end;
-
-function TAtkObject.ref_accessible_child(i: gint): PAtkObject; cdecl;
-begin
-  Result := LazAtk1.atk_object_ref_accessible_child(@self, i);
-end;
-
-function TAtkObject.ref_relation_set: PAtkRelationSet; cdecl;
-begin
-  Result := LazAtk1.atk_object_ref_relation_set(@self);
-end;
-
-function TAtkObject.ref_state_set: PAtkStateSet; cdecl;
-begin
-  Result := LazAtk1.atk_object_ref_state_set(@self);
-end;
-
-procedure TAtkObject.remove_property_change_handler(handler_id: guint); cdecl;
-begin
-  LazAtk1.atk_object_remove_property_change_handler(@self, handler_id);
-end;
-
-function TAtkObject.remove_relationship(relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl;
-begin
-  Result := LazAtk1.atk_object_remove_relationship(@self, relationship, target);
-end;
-
-procedure TAtkObject.set_description(description: Pgchar); cdecl;
-begin
-  LazAtk1.atk_object_set_description(@self, description);
-end;
-
-procedure TAtkObject.set_name(name: Pgchar); cdecl;
-begin
-  LazAtk1.atk_object_set_name(@self, name);
-end;
-
-procedure TAtkObject.set_parent(parent: PAtkObject); cdecl;
-begin
-  LazAtk1.atk_object_set_parent(@self, parent);
-end;
-
-procedure TAtkObject.set_role(role: TAtkRole); cdecl;
-begin
-  LazAtk1.atk_object_set_role(@self, role);
 end;
 
 function TAtkComponent.add_focus_handler(handler: TAtkFocusHandler): guint; cdecl;
@@ -1621,6 +1532,111 @@ begin
   Result := LazAtk1.atk_component_set_size(@self, width, height);
 end;
 
+function TAtkObject.add_relationship(relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl;
+begin
+  Result := LazAtk1.atk_object_add_relationship(@self, relationship, target);
+end;
+
+function TAtkObject.connect_property_change_handler(handler: PAtkPropertyChangeHandler): guint; cdecl;
+begin
+  Result := LazAtk1.atk_object_connect_property_change_handler(@self, handler);
+end;
+
+function TAtkObject.get_attributes: PAtkAttributeSet; cdecl;
+begin
+  Result := LazAtk1.atk_object_get_attributes(@self);
+end;
+
+function TAtkObject.get_description: Pgchar; cdecl;
+begin
+  Result := LazAtk1.atk_object_get_description(@self);
+end;
+
+function TAtkObject.get_index_in_parent: gint; cdecl;
+begin
+  Result := LazAtk1.atk_object_get_index_in_parent(@self);
+end;
+
+function TAtkObject.get_n_accessible_children: gint; cdecl;
+begin
+  Result := LazAtk1.atk_object_get_n_accessible_children(@self);
+end;
+
+function TAtkObject.get_name: Pgchar; cdecl;
+begin
+  Result := LazAtk1.atk_object_get_name(@self);
+end;
+
+function TAtkObject.get_object_locale: Pgchar; cdecl;
+begin
+  Result := LazAtk1.atk_object_get_object_locale(@self);
+end;
+
+function TAtkObject.get_parent: PAtkObject; cdecl;
+begin
+  Result := LazAtk1.atk_object_get_parent(@self);
+end;
+
+function TAtkObject.get_role: TAtkRole; cdecl;
+begin
+  Result := LazAtk1.atk_object_get_role(@self);
+end;
+
+procedure TAtkObject.initialize(data: gpointer); cdecl;
+begin
+  LazAtk1.atk_object_initialize(@self, data);
+end;
+
+procedure TAtkObject.notify_state_change(state: TAtkState; value: gboolean); cdecl;
+begin
+  LazAtk1.atk_object_notify_state_change(@self, state, value);
+end;
+
+function TAtkObject.ref_accessible_child(i: gint): PAtkObject; cdecl;
+begin
+  Result := LazAtk1.atk_object_ref_accessible_child(@self, i);
+end;
+
+function TAtkObject.ref_relation_set: PAtkRelationSet; cdecl;
+begin
+  Result := LazAtk1.atk_object_ref_relation_set(@self);
+end;
+
+function TAtkObject.ref_state_set: PAtkStateSet; cdecl;
+begin
+  Result := LazAtk1.atk_object_ref_state_set(@self);
+end;
+
+procedure TAtkObject.remove_property_change_handler(handler_id: guint); cdecl;
+begin
+  LazAtk1.atk_object_remove_property_change_handler(@self, handler_id);
+end;
+
+function TAtkObject.remove_relationship(relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl;
+begin
+  Result := LazAtk1.atk_object_remove_relationship(@self, relationship, target);
+end;
+
+procedure TAtkObject.set_description(description: Pgchar); cdecl;
+begin
+  LazAtk1.atk_object_set_description(@self, description);
+end;
+
+procedure TAtkObject.set_name(name: Pgchar); cdecl;
+begin
+  LazAtk1.atk_object_set_name(@self, name);
+end;
+
+procedure TAtkObject.set_parent(parent: PAtkObject); cdecl;
+begin
+  LazAtk1.atk_object_set_parent(@self, parent);
+end;
+
+procedure TAtkObject.set_role(role: TAtkRole); cdecl;
+begin
+  LazAtk1.atk_object_set_role(@self, role);
+end;
+
 function TAtkDocument.get_attribute_value(attribute_name: Pgchar): Pgchar; cdecl;
 begin
   Result := LazAtk1.atk_document_get_attribute_value(@self, attribute_name);
@@ -1639,11 +1655,6 @@ end;
 function TAtkDocument.get_document_type: Pgchar; cdecl;
 begin
   Result := LazAtk1.atk_document_get_document_type(@self);
-end;
-
-function TAtkDocument.get_locale: Pgchar; cdecl;
-begin
-  Result := LazAtk1.atk_document_get_locale(@self);
 end;
 
 function TAtkDocument.set_attribute_value(attribute_name: Pgchar; attribute_value: Pgchar): gboolean; cdecl;
@@ -1724,11 +1735,6 @@ end;
 function TAtkHyperlink.is_inline: gboolean; cdecl;
 begin
   Result := LazAtk1.atk_hyperlink_is_inline(@self);
-end;
-
-function TAtkHyperlink.is_selected_link: gboolean; cdecl;
-begin
-  Result := LazAtk1.atk_hyperlink_is_selected_link(@self);
 end;
 
 function TAtkHyperlink.is_valid: gboolean; cdecl;
@@ -2151,6 +2157,11 @@ begin
   Result := LazAtk1.atk_relation_set_contains(@self, relationship);
 end;
 
+function TAtkRelationSet.contains_target(relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl;
+begin
+  Result := LazAtk1.atk_relation_set_contains_target(@self, relationship, target);
+end;
+
 function TAtkRelationSet.get_n_relations: gint; cdecl;
 begin
   Result := LazAtk1.atk_relation_set_get_n_relations(@self);
@@ -2266,7 +2277,7 @@ begin
   Result := LazAtk1.atk_relation_get_relation_type(@self);
 end;
 
-function TAtkRelation.get_target: Pgpointer; cdecl;
+function TAtkRelation.get_target: PAtkObject; cdecl;
 begin
   Result := LazAtk1.atk_relation_get_target(@self);
 end;

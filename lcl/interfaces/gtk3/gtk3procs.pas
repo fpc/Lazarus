@@ -616,23 +616,23 @@ begin
     exit(AValue);
   Result := VK_UNKNOWN;
   case AValue of
-    KEY_Return,
-    KEY_KP_Enter, KEY_3270_Enter: Result := VK_RETURN;
-    KEY_Insert: Result := VK_INSERT;
-    KEY_Delete: Result := VK_DELETE;
-    KEY_BackSpace: Result := VK_BACK;
-    KEY_Home: Result := VK_HOME;
-    KEY_End: Result := VK_END;
-    KEY_Page_Up: Result := VK_PRIOR;
-    KEY_Page_Down: Result := VK_NEXT;
-    KEY_Left: Result := VK_LEFT;
-    KEY_Up: Result := VK_UP;
-    KEY_Right: Result := VK_RIGHT;
-    KEY_Down: Result := VK_DOWN;
-    KEY_Menu: Result := VK_APPS;
-    KEY_Tab, KEY_3270_BackTab, KEY_ISO_Left_Tab: Result := VK_TAB;
-    KEY_Shift_L, KEY_Shift_R: Result := VK_SHIFT;
-    KEY_Control_L, KEY_Control_R: Result := VK_CONTROL;
+    GDK_KEY_Return,
+    GDK_KEY_KP_Enter, GDK_KEY_3270_Enter: Result := VK_RETURN;
+    GDK_KEY_Insert: Result := VK_INSERT;
+    GDK_KEY_Delete: Result := VK_DELETE;
+    GDK_KEY_BackSpace: Result := VK_BACK;
+    GDK_KEY_Home: Result := VK_HOME;
+    GDK_KEY_End: Result := VK_END;
+    GDK_KEY_Page_Up: Result := VK_PRIOR;
+    GDK_KEY_Page_Down: Result := VK_NEXT;
+    GDK_KEY_Left: Result := VK_LEFT;
+    GDK_KEY_Up: Result := VK_UP;
+    GDK_KEY_Right: Result := VK_RIGHT;
+    GDK_KEY_Down: Result := VK_DOWN;
+    GDK_KEY_Menu: Result := VK_APPS;
+    GDK_KEY_Tab, GDK_KEY_3270_BackTab, GDK_KEY_ISO_Left_Tab: Result := VK_TAB;
+    GDK_KEY_Shift_L, GDK_KEY_Shift_R: Result := VK_SHIFT;
+    GDK_KEY_Control_L, GDK_KEY_Control_R: Result := VK_CONTROL;
   end;
 end;
 

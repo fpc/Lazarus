@@ -43,13 +43,13 @@ type
   TGModuleUnload = procedure(module: PGModule); cdecl;
 
 function g_module_build_path(directory: Pgchar; module_name: Pgchar): Pgchar; cdecl; external;
-function g_module_close(AModule: PGModule): gboolean; cdecl; external;
+function g_module_close(module: PGModule): gboolean; cdecl; external;
 function g_module_error: Pgchar; cdecl; external;
-function g_module_name(AModule: PGModule): Pgchar; cdecl; external;
+function g_module_name(module: PGModule): Pgchar; cdecl; external;
 function g_module_open(file_name: Pgchar; flags: TGModuleFlags): PGModule; cdecl; external;
 function g_module_supported: gboolean; cdecl; external;
-function g_module_symbol(AModule: PGModule; symbol_name: Pgchar; symbol: Pgpointer): gboolean; cdecl; external;
-procedure g_module_make_resident(AModule: PGModule); cdecl; external;
+function g_module_symbol(module: PGModule; symbol_name: Pgchar; symbol: Pgpointer): gboolean; cdecl; external;
+procedure g_module_make_resident(module: PGModule); cdecl; external;
 implementation
 function TGModule.close: gboolean; cdecl;
 begin
