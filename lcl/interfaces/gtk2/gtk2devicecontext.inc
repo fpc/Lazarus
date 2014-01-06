@@ -1001,7 +1001,7 @@ end;
 
 function TGtkDeviceContext.SelectBitmap(AGdiObject: PGdiObject): PGdiObject;
 var
-  NewPixbuf: PGdkPixbuf = nil;
+  NewPixbuf: PGdkPixbuf;
   NewDrawable: PGdkPixmap;
   Mask: PGdkBitmap;
 begin
@@ -1009,6 +1009,7 @@ begin
   Result := GetBitmap;
   if CurrentBitmap = AGDIObject then Exit;
 
+  NewPixbuf := nil;
   CurrentBitmap := AGDIObject;
   with FCurrentBitmap^ do
     case GDIBitmapType of
