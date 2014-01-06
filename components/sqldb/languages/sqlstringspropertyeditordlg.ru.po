@@ -33,9 +33,29 @@ msgstr "Метаданные"
 msgid "Tables"
 msgstr "Таблицы"
 
+#: sqlstringspropertyeditordlg.sqlsyntaxok
+msgid "No syntax errors in SQL statement."
+msgstr "Выражение SQL не содержит синтаксических ошибок."
+
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
 msgstr "Результаты"
+
+#: sqlstringspropertyeditordlg.ssqlerror
+msgid "SQL Error"
+msgstr "Код SQL некорректен"
+
+#: sqlstringspropertyeditordlg.ssqlok
+msgid "SQL OK"
+msgstr "Код SQL корректен"
+
+#: sqlstringspropertyeditordlg.ssqlsyntaxerror
+msgid ""
+"Syntax error in SQL statement:\n"
+"%s\n"
+msgstr ""
+"Синтаксическая ошибка в выражении SQL:\n"
+"%s\n"
 
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"

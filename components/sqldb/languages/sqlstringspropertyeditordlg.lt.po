@@ -1,4 +1,3 @@
- Valdas Jankunas <zmuogs@gmail.com>, 2010, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36,9 +35,27 @@ msgstr "Metaduomenys"
 msgid "Tables"
 msgstr "Lentelės"
 
+#: sqlstringspropertyeditordlg.sqlsyntaxok
+msgid "No syntax errors in SQL statement."
+msgstr ""
+
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
 msgstr "Rezultatai"
+
+#: sqlstringspropertyeditordlg.ssqlerror
+msgid "SQL Error"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.ssqlok
+msgid "SQL OK"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.ssqlsyntaxerror
+msgid ""
+"Syntax error in SQL statement:\n"
+"%s\n"
+msgstr ""
 
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"

@@ -33,9 +33,27 @@ msgstr "Metadatos"
 msgid "Tables"
 msgstr "Tablas"
 
+#: sqlstringspropertyeditordlg.sqlsyntaxok
+msgid "No syntax errors in SQL statement."
+msgstr ""
+
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
 msgstr "Resultados"
+
+#: sqlstringspropertyeditordlg.ssqlerror
+msgid "SQL Error"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.ssqlok
+msgid "SQL OK"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.ssqlsyntaxerror
+msgid ""
+"Syntax error in SQL statement:\n"
+"%s\n"
+msgstr ""
 
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"
