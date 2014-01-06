@@ -616,6 +616,12 @@ type
     // ParentTypeInfo: funtion for local var / class for member
     property ParentTypeInfo: TDbgDwarfIdentifier read FParentTypeInfo write SetParentTypeInfo;
 
+  protected
+// TODO: InitLocationParser may fail
+    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AData: TDbgDwarfIdentifier = nil); virtual;
+    function  LocationFromTag(ATag: Cardinal; out AnAddress: TDbgPtr; AData: TDbgDwarfIdentifier = nil): Boolean;
+    function  GetStructureBaseAddress(out AnAddress: TDbgPtr; AMember: TDbgDwarfIdentifier; InheritedLoc: Boolean): Boolean; virtual;
+
     procedure Init; virtual;
     class function GetSubClass(ATag: Cardinal): TDbgDwarfIdentifierClass;
   public
@@ -643,13 +649,9 @@ type
 
   TDbgDwarfValueLocationIdentifier = class(TDbgDwarfValueIdentifier)
   private
-    FLocationParser: TDwarfLocationExpression;
     procedure FrameBaseNeeded(ASender: TObject);
   protected
-    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression); virtual;
-    procedure AddressNeeded; override; // DW_AT_location
-  public
-    destructor Destroy; override;
+    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AData: TDbgDwarfIdentifier = nil); override;
   end;
 
   { TDbgDwarfTypeIdentifier }
@@ -742,6 +744,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TDbgDwarfTypeIdentifierRef = class(TDbgDwarfTypeIdentifierModifier)
   protected
     function GetFlags: TDbgSymbolFlags; override;
+    function GetStructureBaseAddress(out AnAddress: TDbgPtr; AMember: TDbgDwarfIdentifier; InheritedLoc: Boolean): Boolean; override;
   end;
 
   { TDbgDwarfTypeIdentifierDeclaration }
@@ -794,6 +797,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure TypeInfoNeeded; override;
     procedure KindNeeded; override;
     procedure ForwardToSymbolNeeded; override;
+    function GetStructureBaseAddress(out AnAddress: TDbgPtr; AMember: TDbgDwarfIdentifier; InheritedLoc: Boolean): Boolean; override;
   public
     property IsInternalPointer: Boolean read GetIsInternalPointer write FIsInternalPointer; // Class (also DynArray, but DynArray is handled without this)
   end;
@@ -843,7 +847,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   TDbgDwarfIdentifierMember = class(TDbgDwarfValueLocationIdentifier)
   protected
-    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression); override;
+    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AData: TDbgDwarfIdentifier); override;
+    procedure AddressNeeded; override;
   end;
 
   { TDbgDwarfIdentifierStructure }
@@ -861,6 +866,10 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetMember(AIndex: Integer): TDbgSymbol; override;
     function GetMemberByName(AIndex: String): TDbgSymbol; override;
     function GetMemberCount: Integer; override;
+
+    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression;
+      AData: TDbgDwarfIdentifier = nil); override;
+    function GetStructureBaseAddress(out AnAddress: TDbgPtr; AMember: TDbgDwarfIdentifier; InheritedLoc: Boolean): Boolean;  override;
   public
     destructor Destroy; override;
   end;
@@ -914,10 +923,16 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   { TDbgDwarfIdentifierVariable }
 
   TDbgDwarfIdentifierVariable = class(TDbgDwarfValueLocationIdentifier)
+  protected
+    procedure AddressNeeded; override;
   public
   end;
 
+  { TDbgDwarfIdentifierParameter }
+
   TDbgDwarfIdentifierParameter = class(TDbgDwarfValueLocationIdentifier)
+  protected
+    procedure AddressNeeded; override;
   public
   end;
 
@@ -1473,24 +1488,68 @@ begin
   end;
 end;
 
+{ TDbgDwarfIdentifierParameter }
+
+procedure TDbgDwarfIdentifierParameter.AddressNeeded;
+var
+  t: TDbgPtr;
+begin
+  if LocationFromTag(DW_AT_location, t) then
+    SetAddress(t)
+  else
+    SetAddress(0);
+end;
+
+{ TDbgDwarfIdentifierVariable }
+
+procedure TDbgDwarfIdentifierVariable.AddressNeeded;
+var
+  t: TDbgPtr;
+begin
+  if LocationFromTag(DW_AT_location, t) then
+    SetAddress(t)
+  else
+    SetAddress(0);
+end;
+
 { TDbgDwarfIdentifierMember }
 
-procedure TDbgDwarfIdentifierMember.InitLocationParser(const ALocationParser: TDwarfLocationExpression);
+procedure TDbgDwarfIdentifierMember.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
+  AData: TDbgDwarfIdentifier);
 var
-  owner: TDbgDwarfIdentifier;
+  AnAddress: TDbgPtr;
 begin
-  inherited InitLocationParser(ALocationParser);
-  owner := OwnerTypeInfo;
-  while (owner <> nil) and not(owner is TDbgDwarfValueIdentifier) do
-    owner := owner.OwnerTypeInfo;
-  if owner <> nil then
-    ALocationParser.FStack.Push(owner.Address, lseValue);
+  inherited InitLocationParser(ALocationParser, AData);
+  if (ParentTypeInfo <> nil) and
+     ParentTypeInfo.GetStructureBaseAddress(AnAddress, Self, False)
+  then
+  if AnAddress <> 0 then begin
+    debugln(['TDbgDwarfIdentifierMember.InitLocationParser ', AnAddress]);
+    ALocationParser.FStack.Push(AnAddress, lseValue);
+    exit
+  end;
+
+  //TODO: error
+  debugln(['TDbgDwarfIdentifierMember.InitLocationParser FAILED']);
+end;
+
+procedure TDbgDwarfIdentifierMember.AddressNeeded;
+var
+  t: TDbgPtr;
+begin
+  if LocationFromTag(DW_AT_data_member_location, t) then
+    SetAddress(t)
+  else
+    SetAddress(0);
 end;
 
 { TDbgDwarfValueLocationIdentifier }
 
-procedure TDbgDwarfValueLocationIdentifier.InitLocationParser(const ALocationParser: TDwarfLocationExpression);
+procedure TDbgDwarfValueLocationIdentifier.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
+  AData: TDbgDwarfIdentifier);
 begin
+  inherited InitLocationParser(ALocationParser, AData);
+  ALocationParser.OnFrameBaseNeeded := @FrameBaseNeeded;
 end;
 
 procedure TDbgDwarfValueLocationIdentifier.FrameBaseNeeded(ASender: TObject);
@@ -1507,47 +1566,6 @@ debugln(['TDbgDwarfIdentifierVariable.FrameBaseNeeded ']);
   //if OwnerTypeInfo <> nil then
   //  OwnerTypeInfo.fr;
   // TODO: check owner
-end;
-
-procedure TDbgDwarfValueLocationIdentifier.AddressNeeded;
-var
-  Val: TByteDynArray;
-begin
-DebugLnEnter(['>> TDbgDwarfIdentifierVariable.AddressNeeded ']); try
-  //inherited AddressNeeded;
-  if FLocationParser = nil then begin
-
-    //TODO: avoid copying data
-    if not  FInformationEntry.ReadValue(DW_AT_location, Val) then begin
-      // error
-      DebugLn('failed to read DW_AT_location');
-      SetAddress(0);
-      exit;
-    end;
-    if Length(Val) = 0 then begin
-      // error
-      DebugLn('failed to read DW_AT_location');
-      SetAddress(0);
-      exit;
-    end;
-
-    FLocationParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), FCU);
-    InitLocationParser(FLocationParser);
-    FLocationParser.OnFrameBaseNeeded := @FrameBaseNeeded;
-    FLocationParser.Evaluate;
-  end;
-
-  if FLocationParser.ResultKind in [lseValue] then
-    SetAddress(FLocationParser.ResultData)
-  else
-    SetAddress(0);
-finally DebugLnExit(['<< TDbgDwarfIdentifierVariable.AddressNeeded ']); end;
-end;
-
-destructor TDbgDwarfValueLocationIdentifier.Destroy;
-begin
-  FreeAndNil(FLocationParser);
-  inherited Destroy;
 end;
 
 { TLEB128PreFixTree }
@@ -3757,6 +3775,32 @@ begin
   Result := (inherited GetFlags) + [sfInternalRef];
 end;
 
+function TDbgDwarfTypeIdentifierRef.GetStructureBaseAddress(out AnAddress: TDbgPtr;
+  AMember: TDbgDwarfIdentifier; InheritedLoc: Boolean): Boolean;
+var
+  Addr4: DWORD;
+  Addr8: QWord;
+begin
+  Result := FCU.FOwner.MemReader <> nil;
+  if not Result then
+    exit;
+  Result := inherited GetStructureBaseAddress(AnAddress, AMember, InheritedLoc);
+  if Result then begin
+    case FCU.FAddressSize of
+      4: begin
+          FCU.FOwner.MemReader.ReadMemory(AnAddress, 4, @Addr4);
+          AnAddress := Addr4;
+        end;
+      8: begin
+          FCU.FOwner.MemReader.ReadMemory(AnAddress, 8, @Addr8);
+          AnAddress := Addr8;
+        end;
+      else
+        Result := False;
+    end;
+  end;
+end;
+
 { TDbgDwarfTypeIdentifierPointer }
 
 function TDbgDwarfTypeIdentifierPointer.IsInternalDynArrayPointer: Boolean;
@@ -3803,6 +3847,32 @@ begin
     SetForwardToSymbol(NestedTypeInfo) // Same as TypeInfo, but does not try to be forwarded
   else
     SetForwardToSymbol(nil); // inherited ForwardToSymbolNeeded;
+end;
+
+function TDbgDwarfTypeIdentifierPointer.GetStructureBaseAddress(out AnAddress: TDbgPtr;
+  AMember: TDbgDwarfIdentifier; InheritedLoc: Boolean): Boolean;
+var
+  Addr4: DWORD;
+  Addr8: QWord;
+begin
+  Result := FCU.FOwner.MemReader <> nil;
+  if not Result then
+    exit;
+  Result := inherited GetStructureBaseAddress(AnAddress, AMember, InheritedLoc);
+  if Result then begin
+    case FCU.FAddressSize of
+      4: begin
+          FCU.FOwner.MemReader.ReadMemory(AnAddress, 4, @Addr4);
+          AnAddress := Addr4;
+        end;
+      8: begin
+          FCU.FOwner.MemReader.ReadMemory(AnAddress, 8, @Addr8);
+          AnAddress := Addr8;
+        end;
+      else
+        Result := False;
+    end;
+  end;
 end;
 
 { TDbgDwarfTypeIdentifierDeclaration }
@@ -4021,6 +4091,40 @@ function TDbgDwarfIdentifierStructure.GetMemberCount: Integer;
 begin
   CreateMembers;
   Result := FMembers.Count;
+end;
+
+procedure TDbgDwarfIdentifierStructure.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
+  AData: TDbgDwarfIdentifier);
+var
+  t: TDbgPtr;
+begin
+  inherited InitLocationParser(ALocationParser, AData);
+  if (AData <> nil) and (AData is TDbgDwarfValueLocationIdentifier) then
+    ALocationParser.OnFrameBaseNeeded := @TDbgDwarfValueLocationIdentifier(AData).FrameBaseNeeded;
+
+  if inherited GetStructureBaseAddress(t, AData, True) then begin
+    ALocationParser.FStack.Push(t, lseValue);
+  end
+  else
+    ;// TODO error
+end;
+
+function TDbgDwarfIdentifierStructure.GetStructureBaseAddress(out AnAddress: TDbgPtr;
+  AMember: TDbgDwarfIdentifier; InheritedLoc: Boolean): Boolean;
+var
+  t: TDbgPtr;
+begin
+  Result := False;
+  if InheritedLoc then begin
+    // TODO, only keep address, if failed because there was no tag.
+    if LocationFromTag(DW_AT_data_member_location, t) then begin
+      AnAddress := t;
+      Result := True;
+      exit;
+    end;
+  end;
+
+  Result := inherited GetStructureBaseAddress(AnAddress, AMember, True);
 end;
 
 function TDbgDwarfIdentifierStructure.GetMember(AIndex: Integer): TDbgSymbol;
@@ -4344,6 +4448,64 @@ end;
 procedure TDbgDwarfIdentifier.TypeInfoNeeded;
 begin
   SetTypeInfo(NestedTypeInfo);
+end;
+
+procedure TDbgDwarfIdentifier.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
+  AData: TDbgDwarfIdentifier);
+begin
+end;
+
+function TDbgDwarfIdentifier.LocationFromTag(ATag: Cardinal; out AnAddress: TDbgPtr;
+  AData: TDbgDwarfIdentifier): Boolean;
+var
+  Val: TByteDynArray;
+  LocationParser: TDwarfLocationExpression;
+begin
+  debugln(['TDbgDwarfIdentifier.InitLocationParser ', ClassName]);
+
+  Result := False;
+
+  //TODO: avoid copying data
+  // DW_AT_data_member_location in members [ block or const]
+  // DW_AT_location [block or reference] todo: const
+  if not  FInformationEntry.ReadValue(ATag, Val) then begin
+    DebugLn('failed to read DW_AT_location');
+    exit;
+  end;
+  if Length(Val) = 0 then begin
+    DebugLn('Warning DW_AT_location empty');
+    //exit;
+  end;
+
+  LocationParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), FCU);
+  InitLocationParser(LocationParser, AData);
+  LocationParser.Evaluate;
+
+  if LocationParser.ResultKind in [lseValue] then begin
+    AnAddress := LocationParser.ResultData;
+    Result := True;
+  end;
+
+  LocationParser.Free;
+end;
+
+function TDbgDwarfIdentifier.GetStructureBaseAddress(out AnAddress: TDbgPtr;
+  AMember: TDbgDwarfIdentifier; InheritedLoc: Boolean): Boolean;
+begin
+  Result := (Reference <> nil) and (Reference.SymbolType = stValue);
+  if Result then begin
+    AnAddress := Reference.Address;
+    exit;
+  end;
+  Result := OwnerTypeInfo <> nil;
+  if Result then begin
+    Result := OwnerTypeInfo.GetStructureBaseAddress(AnAddress, AMember, InheritedLoc);
+    exit;
+  end;
+  Result := (Reference <> nil) and (Reference is TDbgDwarfIdentifier);
+  // inheritance is typeInfo, not NestedTypeInfo.
+  if Result then
+    Result := TDbgDwarfIdentifier(Reference).GetStructureBaseAddress(AnAddress, AMember, InheritedLoc);
 end;
 
 procedure TDbgDwarfIdentifier.Init;

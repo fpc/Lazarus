@@ -166,6 +166,8 @@ begin
     PByte(ADest + i)^ := Byte(MemDump.ItemNum[i]);
   end;
 
+  MemDump.Free;
+
 debugln(['TFpGDBMIDbgMemReader.ReadMemory ', dbgs(AnAddress), '  ', dbgMemRange(ADest, ASize)]);
 end;
 
@@ -392,7 +394,7 @@ const
     if inherited IndexOf(AThreadId, AStackFrame, AReq) < 0 then begin
       AReq.Result := ParseTypeFromGdb(AAnswer);
       Add(AThreadId, AStackFrame, AReq);
-      debugln(['**** AddToGDBMICache ', AReq.Request, ' T:', AThreadId, ' S:',AStackFrame, ' >>>> ', AAnswer, ' <<<<']);
+      //debugln(['**** AddToGDBMICache ', AReq.Request, ' T:', AThreadId, ' S:',AStackFrame, ' >>>> ', AAnswer, ' <<<<']);
     end;
   end;
 
@@ -711,7 +713,7 @@ then begin
   rt := TFpPascalExpressionPartIdentifer(TFpPascalExpressionHack(PasExpr).ExpressionPart).FDbgType;
   if (rt <> nil) then begin
   debugln(['@@@@@ ',rt.ClassName]);
-  if (rt <> nil) and (rt is TDbgDwarfIdentifierVariable) then begin
+  if (rt <> nil) and (rt is TDbgDwarfValueIdentifier) then begin
     DebugLn(['########### ', rt.Address ]);
   end;end;
 end;
