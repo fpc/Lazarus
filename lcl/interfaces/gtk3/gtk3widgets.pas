@@ -347,6 +347,7 @@ type
 
   TGtk3Page = class(TGtk3Container)
   protected
+    procedure setText(AValue: String); override;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   public
     function getClientRect: TRect; override;
@@ -3836,6 +3837,17 @@ end;
 
 { TGtk3Page }
 
+procedure TGtk3Page.setText(AValue: String);
+var
+  Parent: TGtk3NoteBook;
+begin
+  Parent := TGtk3NoteBook(getParent);
+  if Parent <> nil then
+  begin
+    Parent.SetTabLabelText(TCustomPage(LCLObject), AValue);
+  end;
+end;
+
 function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FWidgetType := FWidgetType + [wtContainer];
@@ -3844,6 +3856,7 @@ begin
   PGtkHBox(Result)^.pack_start(FCentralWidget, True , True, 0);
   PGtkFixed(FCentralWidget)^.set_has_window(True);
   // PGtkFixed(FCentralWidget)^.set_can_focus(True);
+
 end;
 
 function TGtk3Page.getClientRect: TRect;
