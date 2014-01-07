@@ -34,7 +34,9 @@ msgid "Tables"
 msgstr "Таблицы"
 
 #: sqlstringspropertyeditordlg.sqlsyntaxok
-msgid "No syntax errors in SQL statement."
+#, fuzzy
+#| msgid "No syntax errors in SQL statement."
+msgid "No syntax errors in SQL statement found."
 msgstr "Выражение SQL не содержит синтаксических ошибок."
 
 #: sqlstringspropertyeditordlg.sresulttabcaption
@@ -42,16 +44,24 @@ msgid "Results"
 msgstr "Результаты"
 
 #: sqlstringspropertyeditordlg.ssqlerror
-msgid "SQL Error"
+#, fuzzy
+#| msgid "SQL Error"
+msgid "Probable SQL error"
 msgstr "Код SQL некорректен"
 
 #: sqlstringspropertyeditordlg.ssqlok
-msgid "SQL OK"
+#, fuzzy
+#| msgid "SQL OK"
+msgid "Quick SQL check OK"
 msgstr "Код SQL корректен"
 
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
+#, fuzzy
+#| msgid ""
+#| "Syntax error in SQL statement:\n"
+#| "%s\n"
 msgid ""
-"Syntax error in SQL statement:\n"
+"Probable syntax error in SQL statement:\n"
 "%s\n"
 msgstr ""
 "Синтаксическая ошибка в выражении SQL:\n"

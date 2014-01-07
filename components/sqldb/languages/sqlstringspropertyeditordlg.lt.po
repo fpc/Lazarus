@@ -36,7 +36,7 @@ msgid "Tables"
 msgstr "Lentelės"
 
 #: sqlstringspropertyeditordlg.sqlsyntaxok
-msgid "No syntax errors in SQL statement."
+msgid "No syntax errors in SQL statement found."
 msgstr ""
 
 #: sqlstringspropertyeditordlg.sresulttabcaption
@@ -44,16 +44,16 @@ msgid "Results"
 msgstr "Rezultatai"
 
 #: sqlstringspropertyeditordlg.ssqlerror
-msgid "SQL Error"
+msgid "Probable SQL error"
 msgstr ""
 
 #: sqlstringspropertyeditordlg.ssqlok
-msgid "SQL OK"
+msgid "Quick SQL check OK"
 msgstr ""
 
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
 msgid ""
-"Syntax error in SQL statement:\n"
+"Probable syntax error in SQL statement:\n"
 "%s\n"
 msgstr ""
 
