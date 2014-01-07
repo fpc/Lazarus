@@ -2863,7 +2863,7 @@ var
   AGdkRGBA: TGdkRGBA;
   AColor: TGdkColor;
 begin
-  //inherited SetColor(AValue);
+  inherited SetColor(AValue);
   exit;
   if (AValue = clDefault) or (AValue = clBackground) then
   begin
