@@ -348,6 +348,7 @@ type
   TGtk3Page = class(TGtk3Container)
   protected
     procedure setText(AValue: String); override;
+    function getText: String; override;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   public
     function getClientRect: TRect; override;
@@ -366,6 +367,7 @@ type
     procedure SetShowTabs(const AShowTabs: Boolean);
     procedure SetTabPosition(const ATabPosition: TTabPosition);
     procedure SetTabLabelText(AChild: TCustomPage; AText: String);
+    function  GetTabLabelText(AChild: TCustomPage): String;
   end;
 
   { TGtk3Bin }
@@ -3848,6 +3850,15 @@ begin
   end;
 end;
 
+function TGtk3Page.getText: String;
+var
+  Parent: TGtk3NoteBook;
+begin
+  Parent := TGtk3NoteBook(getParent);
+  if Parent <> nil then
+    Result := Parent.GetTabLabelText(TCustomPage(LCLObject));
+end;
+
 function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FWidgetType := FWidgetType + [wtContainer];
@@ -4077,6 +4088,15 @@ procedure TGtk3NoteBook.SetTabLabelText(AChild: TCustomPage; AText: String);
 begin
   if IsWidgetOK then
     PGtkNoteBook(GetContainerWidget)^.set_tab_label_text(TGtk3Widget(AChild.Handle).Widget, PgChar(AText));
+end;
+
+function TGtk3NoteBook.GetTabLabelText(AChild: TCustomPage): String;
+begin
+  if IsWidgetOK then
+    Result := PGtkNoteBook(GetContainerWidget)^.get_tab_label_text(TGtk3Widget(AChild.Handle).Widget)
+  else
+    Result := '';
+
 end;
 
 { TGtk3MenuShell }
