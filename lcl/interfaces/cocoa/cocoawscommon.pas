@@ -807,11 +807,11 @@ begin
       NewBounds.Top, Move_SourceIsInterface);
   end;
 
-if not FBoundsReportedToChildren then // first time we need this to update non cocoa based client rects
-   begin
-   Target.InvalidateClientRectCache(true);
-   FBoundsReportedToChildren:=true;
-   end;
+  if not FBoundsReportedToChildren then // first time we need this to update non cocoa based client rects
+  begin
+    Target.InvalidateClientRectCache(true);
+    FBoundsReportedToChildren:=true;
+  end;
 
 end;
 

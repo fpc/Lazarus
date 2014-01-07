@@ -554,11 +554,11 @@ class procedure TCocoaWSCustomForm.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
   if AWinControl.HandleAllocated then
-   begin
-   //debugln('TCocoaWSCustomForm.SetBounds: '+AWinControl.Name+'Bounds='+dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
-   NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
-   TCocoaWindowContent(AwinControl.Handle).callback.boundsDidChange;
-   end;
+  begin
+    //debugln('TCocoaWSCustomForm.SetBounds: '+AWinControl.Name+'Bounds='+dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
+    NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
+    TCocoaWindowContent(AwinControl.Handle).callback.boundsDidChange;
+  end;
 end;
 
 end.
