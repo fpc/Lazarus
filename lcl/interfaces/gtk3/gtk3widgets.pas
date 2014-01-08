@@ -2177,7 +2177,7 @@ var
   R: Double;
   G: Double;
   B: Double;
-begin
+begin  exit;
   // new way (gtk3) but still buggy
   if IsWidgetOK and (0 > 1) then
   begin
@@ -6166,12 +6166,13 @@ begin
 
   // this is deprecated since 3.8 .add() should be used
   // in this case viewport should be blocked somehow.....
-  //if FUseLayout then
+  //if FUseLayout or (gtk_get_major_version > 3 or gtk_get_minor_version >=8 )then
   //  PGtkScrolledWindow(Result)^.add(FCentralWidget)
   //else
   //  PGtkScrolledWindow(Result)^.add_with_viewport(FCentralWidget);
 
   // gtk_container_add() will now automatically add a GtkViewport if the child doesn't implement GtkScrollable.
+
   PGtkScrolledWindow(Result)^.add(FCentralWidget);
 
   // PGtkViewport(PGtkScrolledWindow(Result)^.get_child)^.;
