@@ -12,6 +12,10 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: sqlstringspropertyeditordlg.sloadsqlcodehint
+msgid "Load SQL code ..."
+msgstr ""
+
 #: sqlstringspropertyeditordlg.smetacolumns
 msgid "Columns"
 msgstr ""
@@ -40,9 +44,21 @@ msgstr ""
 msgid "No syntax errors in SQL statement found."
 msgstr ""
 
+#: sqlstringspropertyeditordlg.squickcheckofsqlsyntaxhint
+msgid "Quick check of SQL syntax"
+msgstr ""
+
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
 msgstr "返回值"
+
+#: sqlstringspropertyeditordlg.srunsqlcodehint
+msgid "Run SQL code"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.ssavesqlcodehint
+msgid "Save SQL code ..."
+msgstr ""
 
 #: sqlstringspropertyeditordlg.ssqlerror
 msgid "Probable SQL error"

@@ -94,6 +94,12 @@ resourcestring
   SMetaPleaseSpecifyATableInTheObjectField = 'Please specify a table in the '
     +'object field.';
   SMetaSysTables    = 'SysTables';
+
+  SLoadSQLCodeHint = 'Load SQL code ...';
+  SSaveSQLCodeHint = 'Save SQL code ...';
+  SRunSQLCodeHint = 'Run SQL code';
+  SQuickCheckOfSQLSyntaxHint = 'Quick check of SQL syntax';
+
   // SQL Parser results:
   // Note: sql parser is not quite exact, so indicate it's not completely sure
   SSQLOK            = 'Quick SQL check OK';
@@ -112,6 +118,10 @@ begin
   EditorTabSheet.Caption := SSQLTabCaption;
   ResultTabSheet.Caption := SResultTabCaption;
   MetaTabSheet.Caption := SMetaTabCaption;
+  OpenToolButton.Hint := SLoadSQLCodeHint;
+  SaveToolButton.Hint := SSaveSQLCodeHint;
+  ExecuteToolButton.Hint := SRunSQLCodeHint;
+  TBCheck.Hint := SQuickCheckOfSQLSyntaxHint;
   CbxMetaData.Items.Add(SMetaTables);
   CbxMetaData.Items.Add(SMetaSysTables);
   CbxMetaData.Items.Add(SMetaColumns);
