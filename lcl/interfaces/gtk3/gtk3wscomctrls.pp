@@ -1046,6 +1046,7 @@ class procedure TGtk3WSCustomTabControl.RemovePage(
 begin
   if not WSCheckHandleAllocated(ATabControl, 'RemovePage') then
     Exit;
+  TGtk3Notebook(ATabControl.Handle).RemovePage(AIndex);
 end;
 
 class function TGtk3WSCustomTabControl.GetCapabilities: TCTabControlCapabilities;

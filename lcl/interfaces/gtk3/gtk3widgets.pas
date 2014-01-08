@@ -352,6 +352,7 @@ type
     procedure setText(AValue: String); override;
     function getText: String; override;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
+    procedure DestroyWidget; override;
   public
     function getClientRect: TRect; override;
   end;
@@ -365,6 +366,7 @@ type
     function getClientRect: TRect; override;
     procedure InsertPage(ACustomPage: TCustomPage; AIndex: Integer);
     procedure MovePage(ACustomPage: TCustomPage; ANewIndex: Integer);
+    procedure RemovePage(AIndex: Integer);
     procedure SetPageIndex(AIndex: Integer);
     procedure SetShowTabs(const AShowTabs: Boolean);
     procedure SetTabPosition(const ATabPosition: TTabPosition);
@@ -3859,11 +3861,20 @@ function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FWidgetType := FWidgetType + [wtContainer];
   FPageLabel:= TGtkLabel.new(PChar(Params.Caption));
+  // ref it to save it in case TabVisble is set to false
+  FPageLabel^.ref;
   Result := TGtkHBox.new(GTK_ORIENTATION_HORIZONTAL, 0);
   FCentralWidget := TGtkFixed.new;
   PGtkHBox(Result)^.pack_start(FCentralWidget, True , True, 0);
-  PGtkFixed(FCentralWidget)^.set_has_window(True);
+  //PGtkFixed(FCentralWidget)^.set_has_window(True);
   // PGtkFixed(FCentralWidget)^.set_can_focus(True);
+end;
+
+procedure TGtk3Page.DestroyWidget;
+begin
+  inherited DestroyWidget;
+  // unref it to allow it to be destroyed
+  FPageLabel^.unref;
 end;
 
 function TGtk3Page.getClientRect: TRect;
@@ -4055,6 +4066,14 @@ procedure TGtk3NoteBook.MovePage(ACustomPage: TCustomPage; ANewIndex: Integer);
 begin
   if IsWidgetOK then
     PGtkNoteBook(GetContainerWidget)^.reorder_child(TGtk3Widget(ACustomPage.Handle).Widget, ANewIndex);
+end;
+
+procedure TGtk3NoteBook.RemovePage(AIndex: Integer);
+begin
+  if IsWidgetOK then
+  begin
+    PGtkNotebook(GetContainerWidget)^.remove_page(AIndex);
+  end;
 end;
 
 procedure TGtk3NoteBook.SetPageIndex(AIndex: Integer);
