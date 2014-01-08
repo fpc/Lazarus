@@ -346,6 +346,8 @@ type
   { TGtk3Page }
 
   TGtk3Page = class(TGtk3Container)
+  private
+    FPageLabel: PGtkLabel;
   protected
     procedure setText(AValue: String); override;
     function getText: String; override;
@@ -3840,34 +3842,28 @@ end;
 { TGtk3Page }
 
 procedure TGtk3Page.setText(AValue: String);
-var
-  Parent: TGtk3NoteBook;
 begin
-  Parent := TGtk3NoteBook(getParent);
-  if Parent <> nil then
-  begin
-    Parent.SetTabLabelText(TCustomPage(LCLObject), AValue);
-  end;
+  if Assigned(FPageLabel) then
+    FPageLabel^.set_text(PChar(AValue));
 end;
 
 function TGtk3Page.getText: String;
-var
-  Parent: TGtk3NoteBook;
 begin
-  Parent := TGtk3NoteBook(getParent);
-  if Parent <> nil then
-    Result := Parent.GetTabLabelText(TCustomPage(LCLObject));
+  if Assigned(FPageLabel) then
+    Result := FPageLabel^.get_text
+  else
+    Result := '';
 end;
 
 function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FWidgetType := FWidgetType + [wtContainer];
+  FPageLabel:= TGtkLabel.new(PChar(Params.Caption));
   Result := TGtkHBox.new(GTK_ORIENTATION_HORIZONTAL, 0);
   FCentralWidget := TGtkFixed.new;
   PGtkHBox(Result)^.pack_start(FCentralWidget, True , True, 0);
   PGtkFixed(FCentralWidget)^.set_has_window(True);
   // PGtkFixed(FCentralWidget)^.set_can_focus(True);
-
 end;
 
 function TGtk3Page.getClientRect: TRect;
@@ -4045,9 +4041,14 @@ begin
 end;
 
 procedure TGtk3NoteBook.InsertPage(ACustomPage: TCustomPage; AIndex: Integer);
+var
+  Gtk3Page: TGtk3Page;
 begin
   if IsWidgetOK then
-    PGtkNoteBook(GetContainerWidget)^.insert_page(TGtk3Widget(ACustomPage.Handle).Widget, nil, AIndex);
+  begin
+    Gtk3Page := TGtk3Page(ACustomPage.Handle);
+    PGtkNoteBook(GetContainerWidget)^.insert_page(Gtk3Page.Widget, Gtk3Page.FPageLabel, AIndex);
+  end;
 end;
 
 procedure TGtk3NoteBook.MovePage(ACustomPage: TCustomPage; ANewIndex: Integer);
@@ -4087,16 +4088,15 @@ end;
 procedure TGtk3NoteBook.SetTabLabelText(AChild: TCustomPage; AText: String);
 begin
   if IsWidgetOK then
-    PGtkNoteBook(GetContainerWidget)^.set_tab_label_text(TGtk3Widget(AChild.Handle).Widget, PgChar(AText));
+    TGtk3Widget(AChild.Handle).setText(AText);
 end;
 
 function TGtk3NoteBook.GetTabLabelText(AChild: TCustomPage): String;
 begin
   if IsWidgetOK then
-    Result := PGtkNoteBook(GetContainerWidget)^.get_tab_label_text(TGtk3Widget(AChild.Handle).Widget)
+    Result := TGtk3Widget(AChild.Handle).getText
   else
     Result := '';
-
 end;
 
 { TGtk3MenuShell }
