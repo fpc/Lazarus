@@ -11,6 +11,10 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Language: lt\n"
 
+#: sqlstringspropertyeditordlg.sloadsqlcodehint
+msgid "Load SQL code ..."
+msgstr ""
+
 #: sqlstringspropertyeditordlg.smetacolumns
 msgid "Columns"
 msgstr "Stulpeliai"
@@ -36,24 +40,36 @@ msgid "Tables"
 msgstr "Lentelės"
 
 #: sqlstringspropertyeditordlg.sqlsyntaxok
-msgid "No syntax errors in SQL statement."
+msgid "No syntax errors in SQL statement found."
+msgstr ""
+
+#: sqlstringspropertyeditordlg.squickcheckofsqlsyntaxhint
+msgid "Quick check of SQL syntax"
 msgstr ""
 
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
 msgstr "Rezultatai"
 
+#: sqlstringspropertyeditordlg.srunsqlcodehint
+msgid "Run SQL code"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.ssavesqlcodehint
+msgid "Save SQL code ..."
+msgstr ""
+
 #: sqlstringspropertyeditordlg.ssqlerror
-msgid "SQL Error"
+msgid "Probable SQL error"
 msgstr ""
 
 #: sqlstringspropertyeditordlg.ssqlok
-msgid "SQL OK"
+msgid "Quick SQL check OK"
 msgstr ""
 
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
 msgid ""
-"Syntax error in SQL statement:\n"
+"Probable syntax error in SQL statement:\n"
 "%s\n"
 msgstr ""
 

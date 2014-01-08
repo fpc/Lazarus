@@ -10,6 +10,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
+#: sqlstringspropertyeditordlg.sloadsqlcodehint
+msgid "Load SQL code ..."
+msgstr ""
+
 #: sqlstringspropertyeditordlg.smetacolumns
 msgid "Columns"
 msgstr "Sloupce"
@@ -35,24 +39,36 @@ msgid "Tables"
 msgstr "Tabulky"
 
 #: sqlstringspropertyeditordlg.sqlsyntaxok
-msgid "No syntax errors in SQL statement."
+msgid "No syntax errors in SQL statement found."
+msgstr ""
+
+#: sqlstringspropertyeditordlg.squickcheckofsqlsyntaxhint
+msgid "Quick check of SQL syntax"
 msgstr ""
 
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
 msgstr "Výsledky"
 
+#: sqlstringspropertyeditordlg.srunsqlcodehint
+msgid "Run SQL code"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.ssavesqlcodehint
+msgid "Save SQL code ..."
+msgstr ""
+
 #: sqlstringspropertyeditordlg.ssqlerror
-msgid "SQL Error"
+msgid "Probable SQL error"
 msgstr ""
 
 #: sqlstringspropertyeditordlg.ssqlok
-msgid "SQL OK"
+msgid "Quick SQL check OK"
 msgstr ""
 
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
 msgid ""
-"Syntax error in SQL statement:\n"
+"Probable syntax error in SQL statement:\n"
 "%s\n"
 msgstr ""
 
