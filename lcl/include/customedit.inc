@@ -32,6 +32,8 @@ begin
   Params.Style := Params.Style or ES_AUTOHSCROLL or AlignmentStyle[Alignment];
   if ReadOnly then
     Params.Style := Params.Style or ES_READONLY;
+  if NumbersOnly then
+    Params.Style := Params.Style or ES_NUMBER;
   if not HideSelection then
     Params.Style := Params.Style or ES_NOHIDESEL;
 end;
@@ -283,6 +285,11 @@ begin
     Result := False;
 end;
 
+function TCustomEdit.GetNumbersOnly: Boolean;
+begin
+  Result := FNumbersOnly;
+end;
+
 function TCustomEdit.GetReadOnly: Boolean;
 begin
   Result := FReadOnly;
@@ -345,6 +352,7 @@ begin
   FModified := Value;
 end;
 
+
 procedure TCustomEdit.SetPasswordChar(const AValue: Char);
 begin
   if FPasswordChar=AValue then exit;
@@ -392,6 +400,22 @@ begin
   if HandleAllocated then
     TWSCustomEditClass(WidgetSetClass).SetEchoMode(Self, Val);
 end;
+
+{------------------------------------------------------------------------------
+  Method:  TCustomEdit.SetNumbersOnly
+  Params:  Value to set FNumbersOnly to
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TCustomEdit.SetNumbersOnly(Value: Boolean);
+begin
+  if FNumbersOnly <> Value then
+  begin
+    FNumbersOnly := Value;
+    if HandleAllocated then
+      TWSCustomEditClass(WidgetSetClass).SetNumbersOnly(Self, Value);
+  end;
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetReadOnly
@@ -568,6 +592,7 @@ begin
   if HandleAllocated then
     TWSCustomEditClass(WidgetSetClass).SetAlignment(Self, FAlignment);
 end;
+
 
 
 

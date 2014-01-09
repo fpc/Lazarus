@@ -48,7 +48,7 @@ Different behaviour than Delphi, but by design (October 2009, BB)
    - Restore all MaskLiterals in the text
 }
 
-unit maskedit;
+unit MaskEdit;
 
 {$mode objfpc}{$H+}
 
@@ -230,7 +230,7 @@ const
     function GetCharCase: TEditCharCase;
     procedure SetMaxLength(Value: Integer);
     function GetMaxLength: Integer;
-
+    procedure SetNumbersOnly(Value: Boolean); override;
     procedure Loaded; override;
 
     procedure LMPasteFromClip(var Message: TLMessage); message LM_PASTE;
@@ -639,7 +639,11 @@ begin
     FFirstFreePos := 1;
     //Determine first position where text can be entered (needed for DeleteChars()
     while (FFirstFreePos <= FMaskLength) and IsLiteral(FMask[FFirstFreePos])  do Inc(FFirstFreePos);
-    if (FMaskLength > 0) then SetCharCase(ecNormal);
+    if (FMaskLength > 0) then
+    begin
+      SetCharCase(ecNormal);
+      SetNumbersOnly(False);
+    end;
     //SetMaxLegth must be before Clear, otherwise Clear uses old MaxLength value!
     SetMaxLength(FMaskLength);
     Clear;
@@ -1518,6 +1522,15 @@ end;
 function TCustomMaskEdit.GetMaxLength: Integer;
 begin
   Result := inherited Maxlength;
+end;
+
+procedure TCustomMaskEdit.SetNumbersOnly(Value: Boolean);
+begin
+  if not IsMasked then
+    inherited SetNumbersOnly(Value)
+  else
+    //NumersOnly interferes with masking
+    inherited SetNumbersOnly(False);
 end;
 
 procedure TCustomMaskEdit.Loaded;

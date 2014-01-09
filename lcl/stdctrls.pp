@@ -697,6 +697,7 @@ type
     FModified: Boolean;
     FPasswordChar: Char;
     FReadOnly: Boolean;
+    FNumbersOnly: Boolean;
     FOnChange: TNotifyEvent;
     FSelLength: integer;
     FSelStart: integer;
@@ -719,12 +720,14 @@ type
     procedure DoEnter; override;
     procedure DoExit; override;
     function GetCaretPos: TPoint; virtual;
+    function GetNumbersOnly: Boolean; virtual;
     function GetReadOnly: Boolean; virtual;
     function GetSelLength: integer; virtual;
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
     procedure SetCaretPos(const Value: TPoint); virtual;
     procedure SetEchoMode(Val: TEchoMode); virtual;
+    procedure SetNumbersOnly(Value: Boolean); virtual;
     procedure SetReadOnly(Value: Boolean); virtual;
     procedure SetSelLength(Val: integer); virtual;
     procedure SetSelStart(Val: integer); virtual;
@@ -760,6 +763,7 @@ type
     property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
     property MaxLength: Integer read FMaxLength write SetMaxLength default 0;
     property Modified: Boolean read GetModified write SetModified;
+    property NumbersOnly: Boolean read GetNumbersOnly write SetNumbersOnly default false;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property PasswordChar: Char read FPasswordChar write SetPasswordChar default #0;
     property PopupMenu;
@@ -865,6 +869,7 @@ type
     property Font;
     property HideSelection;
     property MaxLength;
+    property NumbersOnly;
     property ParentBidiMode;
     property OnChange;
     property OnChangeBounds;

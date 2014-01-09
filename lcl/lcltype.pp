@@ -963,6 +963,7 @@ const
   ES_AUTOVSCROLL   = $0040;
   ES_AUTOHSCROLL   = $0080;
   ES_NOHIDESEL     = $0100;
+  ES_NUMBER        = $2000;
   ES_READONLY      = $0800;
   ES_WANTRETURN    = $1000;
 

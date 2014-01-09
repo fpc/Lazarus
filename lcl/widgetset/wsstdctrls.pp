@@ -152,6 +152,7 @@ type
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); virtual;
     class procedure SetHideSelection(const ACustomEdit: TCustomEdit; NewHideSelection: Boolean); virtual;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); virtual;
+    class procedure SetNumbersOnly(const ACustomEdit: TCustomEdit; NewNumbersOnly: Boolean); virtual;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); virtual;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); virtual;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); virtual;
@@ -530,6 +531,11 @@ begin
 end;
 
 class procedure TWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+begin
+end;
+
+class procedure TWSCustomEdit.SetNumbersOnly(const ACustomEdit: TCustomEdit;
+  NewNumbersOnly: Boolean);
 begin
 end;
 

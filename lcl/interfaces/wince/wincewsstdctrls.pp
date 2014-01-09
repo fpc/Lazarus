@@ -153,6 +153,7 @@ type
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetHideSelection(const ACustomEdit: TCustomEdit; NewHideSelection: Boolean); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetNumbersOnly(const ACustomEdit: TCustomEdit; NewNumbersOnly: Boolean); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
@@ -974,6 +975,14 @@ begin
   winhandle := ACustomEdit.Handle;
   SendMessage(winhandle, EM_LIMITTEXT, NewLength, 0);
   GetWindowInfo(winhandle)^.MaxLength := NewLength;
+end;
+
+class procedure TWin32WSCustomEdit.SetNumbersOnly(const ACustomEdit: TCustomEdit; NewNumbersOnly: Boolean);
+const
+  EditStyles: array[Boolean] of integer = (0, ES_NUMBER);
+  EditStyleMask = ES_NUMBER;
+begin
+  UpdateWindowStyle(ACustomEdit.Handle, EditStyles[NewNumbersOnly], EditStyleMask);
 end;
 
 class procedure TWinCEWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
