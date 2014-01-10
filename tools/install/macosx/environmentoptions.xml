@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <EnvironmentOptions>
-    <Version Value="108" Lazarus="1.2RC2"/>
+    <Version Value="108" Lazarus="1.2RC3"/>
     <LazarusDirectory Value="/Developer/lazarus/">
       <History Count="1">
         <Item1 Value="/Developer/lazarus/"/>
