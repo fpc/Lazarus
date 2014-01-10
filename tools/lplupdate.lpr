@@ -423,6 +423,7 @@ begin
         if (Link.Major<>Pkg.Major)
         or (Link.Minor<>Pkg.Minor)
         or (Link.Release<>Pkg.Release)
+        or (Link.Build<>Pkg.Build)
         // ignore build
         then begin
           if not (Quiet and WriteCommands) then
