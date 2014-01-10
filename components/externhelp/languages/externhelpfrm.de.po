@@ -52,7 +52,7 @@ msgstr "Allgemein"
 
 #: externhelpfrm.ehrsgrouptitle
 msgid "Extern help"
-msgstr ""
+msgstr "Externe Hilfe"
 
 #: externhelpfrm.ehrshelp
 msgid "Help"
