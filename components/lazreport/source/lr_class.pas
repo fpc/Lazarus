@@ -18,7 +18,7 @@ uses
   SysUtils, Math, {$IFDEF UNIX}CLocale,{$ENDIF} Classes, MaskUtils, Controls, FileUtil,
   Forms, Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters,
   DOM, XMLWrite, XMLRead, XMLConf, LCLType, LCLIntf, TypInfo, LCLProc, LR_View, LR_Pars,
-  LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, LMessages;
+  LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, LMessages, DbCtrls;
 
 const
 // object flags
@@ -964,6 +964,7 @@ type
   TfrReport = class(TComponent)
   private
     FDataType: TfrDataType;
+    FOnDBImageRead: TOnDBImageRead;
     FDefaultCopies: Integer;
     FMouseOverObject: TMouseOverObjectEvent;
     FObjectClick: TObjectClickEvent;
@@ -1170,6 +1171,8 @@ type
     property OnPrintColumn: TPrintColumnEvent read FOnPrintColumn write FOnPrintColumn;
     property OnManualBuild: TManualBuildEvent read FOnManualBuild write FOnManualBuild;
     property OnExportFilterSetup: TExportFilterSetup read FOnExportFilterSetup write FOnExportFilterSetup;
+    // If wanted, you can use your own handler to determine the graphic class of the image
+    property OnDBImageRead: TOnDBImageRead read FOnDBImageRead write FOnDBImageRead;
     property OnObjectClick: TObjectClickEvent read FObjectClick write FObjectClick;
     property OnMouseOverObject: TMouseOverObjectEvent read FMouseOverObject write FMouseOverObject;
   end;
@@ -4963,36 +4966,70 @@ var
   GraphExt: string;
   gc: TGraphicClass;
   AGraphic: TGraphic;
-begin
-  if b.IsNull then
-    Picture.Assign(nil)
-  else begin
-    // todo: TBlobField.AssignTo is not implemented yet
-    s := TDataset(FDataSet).CreateBlobStream(TField(b),bmRead);
-    if s.Size = 0 then
-      begin
-        Picture.Clear;
-        s.Free;
-      end
-    else
-    begin
+
+  function LoadImageFromStream: boolean;
+  var
+    CurPos: Int64;
+  begin
+    result := (s<>nil);
+    if result then
       try
-        GraphExt :=  s.ReadAnsiString;
-        gc := GetGraphicClassForFileExtension(GraphExt);
-        if assigned(gc) then
-        begin
-          AGraphic := gc.Create;
-          AGraphic.LoadFromStream(s);
-          Picture.Assign(AGraphic);
-        end else
-          AGraphic := nil;
-      finally
-        if assigned(AGraphic) then
-          AGraphic.Free;
-        s.Free;
-      end
-    end;
+        curPos := s.Position;
+        Picture.LoadFromStream(s);
+      except
+        s.Position := Curpos;
+        result := false;
+      end;
   end;
+
+begin
+
+  Picture.Clear;
+
+  if b.IsNull then
+    exit;
+
+  // todo: TBlobField.AssignTo is not implemented yet
+  s := TDataset(FDataSet).CreateBlobStream(TField(b),bmRead);
+  if (s=nil) or (s.Size = 0) then
+  begin
+    s.Free;
+    exit;
+  end;
+
+  try
+    GraphExt := '';
+    AGraphic := nil;
+
+    if assigned(CurReport.OnDbImageRead) then
+      CurReport.OnDBImageRead(Self, s, GraphExt)
+    else
+    if LoadImageFromStream then
+      exit;
+
+    try
+      if GraphExt='' then begin
+        GraphExt := s.ReadAnsiString;
+        if Length(GraphExt)>10 then
+          GraphExt := ''; // even 10 would mean we have a false positive
+      end;
+
+      gc := GetGraphicClassForFileExtension(GraphExt);
+      if assigned(gc) then
+      begin
+        AGraphic := gc.Create;
+        AGraphic.LoadFromStream(s);
+        Picture.Assign(AGraphic);
+      end;
+
+    except
+    end;
+
+  finally
+    s.Free;
+    AGraphic.Free;
+  end;
+
 end;
 
 procedure TfrPictureView.DefinePopupMenu(Popup: TPopupMenu);
