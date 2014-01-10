@@ -78,6 +78,7 @@ function GetCfgFileContent: TStrings;
 function GetParamsAndCfgFile: TStrings;
 function ParamsAndCfgCount: Integer;
 function ParamsAndCfgStr(Idx: Integer): String;
+procedure ResetParamsAndCfg;
 
 
 implementation
@@ -151,6 +152,11 @@ begin
     Result := ''
   else
     Result := GetParamsAndCfgFile[Idx];
+end;
+
+procedure ResetParamsAndCfg;
+begin
+  FreeAndNil(ParamsAndCfgFileContent);
 end;
 
 procedure ParseCommandLine(aCmdLineParams: TStrings; out IDEPid: Integer; out

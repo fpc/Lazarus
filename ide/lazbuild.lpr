@@ -98,6 +98,9 @@ type
                                  {%H-}DlgType: TMsgDlgType; {%H-}Buttons: array of const;
                                  const {%H-}HelpKeyword: string): Integer;
   protected
+    function GetParams(Index: Integer): String; override;
+    function GetParamCount: Integer; override;
+
     // Builds project or package, depending on extension.
     // Packages can also be specified by package name if they are known to the IDE.
     function BuildFile(Filename: string): boolean;
@@ -176,6 +179,48 @@ const
   ErrorPackageNameInvalid = 4;
   ErrorLoadProjectFailed = 5;
   VersionStr = {$I version.inc};
+
+procedure FilterConfigFileContent;
+var
+  l: TStrings;
+  i: Integer;
+begin
+  ResetParamsAndCfg;
+  l := GetCfgFileContent;
+  i := l.Count - 1;
+  while i >= 0 do begin
+    if not(
+        (copy(l[i], 1, 22) = '--primary-config-path=') or
+        (copy(l[i], 1, 24) = '--secondary-config-path=') or
+        (copy(l[i], 1,  6) = '--pcp=') or
+        (copy(l[i], 1,  6) = '--scp=')
+       )
+    then
+      l.Delete(i);
+    dec(i);
+  end;
+end;
+
+Function ParamCount: Integer;
+begin
+  Result := GetParamsAndCfgFile.Count - 1;
+end;
+
+Function Paramstr(Param : Integer) : Ansistring;
+begin
+  if Param >= GetParamsAndCfgFile.Count then
+    Result := ''
+  else
+    Result := GetParamsAndCfgFile[Param];
+end;
+
+Function ParamStrUTF8(Param : Integer) : Ansistring;
+begin
+  if Param >= GetParamsAndCfgFile.Count then
+    Result := ''
+  else
+    Result := GetParamsAndCfgFile[Param];
+end;
 
 procedure GetDescriptionOfDependencyOwner(Dependency: TPkgDependency;
   out Description: string);
@@ -312,6 +357,19 @@ begin
   Error(ErrorBuildFailed, Format(lisLazbuildIsNonInteractiveAbortingNow, [
     aCaption, #13, aMsg, #13]));
   Result:=mrCancel;
+end;
+
+function TLazBuildApplication.GetParams(Index: Integer): String;
+begin
+  if Index >= GetParamsAndCfgFile.Count then
+    Result := ''
+  else
+    Result := GetParamsAndCfgFile[Index];
+end;
+
+function TLazBuildApplication.GetParamCount: Integer;
+begin
+  Result := GetParamsAndCfgFile.Count - 1;
 end;
 
 function TLazBuildApplication.BuildFile(Filename: string): boolean;
@@ -1618,6 +1676,7 @@ begin
   {$IFDEF BuildWidgetSetCocoa}  Result:=lpCocoa;  {$ENDIF}
   {$IFDEF BuildWidgetSetNoGui}  Result:=lpNoGUI;  {$ENDIF}
 
+  FilterConfigFileContent;
   // free LCL application
   FreeAndNil(Forms.Application);
   // start our own application
