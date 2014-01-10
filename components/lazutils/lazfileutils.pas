@@ -136,7 +136,7 @@ implementation
 // to get more detailed error messages consider the os
 uses
 {$IFDEF Windows}
-  Windows, WinDirs;
+  Windows {$IFnDEF WinCE}, WinDirs{$ENDIF};
 {$ELSE}
   {$IFDEF darwin}
   MacOSAll,
