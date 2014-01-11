@@ -696,11 +696,12 @@ end;
 function GetAppConfigDirWide(Global: Boolean; Create: boolean = false): string;
 const
   CSIDL_GLOBAL = {$IFDEF WINCE}CSIDL_WINDOWS{$ELSE}CSIDL_COMMON_APPDATA{$ENDIF WINCE};
+  CSIDL_LOCAL = {$IFDEF WINCE}CSIDL_APPDATA{$ELSE}CSIDL_LOCAL_APPDATA{$ENDIF};
 begin
   If Global then
     Result := GetWindowsSpecialDirW(CSIDL_GLOBAL)
   else
-    Result := GetWindowsSpecialDirW(CSIDL_LOCAL_APPDATA);
+    Result := GetWindowsSpecialDirW(CSIDL_LOCAL);
   If (Result <> '') then
     begin
       if VendorName <> '' then
