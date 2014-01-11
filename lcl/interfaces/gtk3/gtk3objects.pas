@@ -957,8 +957,8 @@ procedure TGtk3DeviceContext.ApplyPen;
 var
   cap: cairo_line_cap_t;
 begin
-
   SetSourceColor(FCurrentPen.Color);
+
   if FCurrentPen.Cosmetic then
     cairo_set_line_width(Widget, 1.0)
   else
@@ -1357,8 +1357,35 @@ end;
 
 procedure TGtk3DeviceContext.drawPolygon(P: PPoint; NumPts: Integer;
   FillRule: integer);
+var
+  i: Integer;
+const
+  PixelOffset = 0.5;
 begin
+  cairo_save(Widget);
+  try
+    // first apply the fill because the line is drawn over the filled area after
+    applyBrush;
+    cairo_set_fill_rule(Widget, cairo_fill_rule_t(FillRule));
+    // + Offset is so the center of the pixel is used.
+    cairo_move_to(Widget, P[0].X+PixelOffset, P[0].Y+PixelOffset);
+    for i := 1 to NumPts-1 do
+      cairo_line_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset);
 
+    cairo_close_path(Widget);
+    cairo_fill_preserve(Widget);
+
+    // now draw the line
+    ApplyPen;
+    //cairo_set_antialias(widget, CAIRO_ANTIALIAS_SUBPIXEL);
+    cairo_move_to(Widget, P[0].X+PixelOffset, P[0].Y+PixelOffset);
+    for i := 1 to NumPts-1 do
+      cairo_line_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset);
+    cairo_close_path(Widget);
+    cairo_stroke_preserve(Widget);
+  finally
+    cairo_restore(Widget);
+  end;
 end;
 
 procedure TGtk3DeviceContext.eraseRect(ARect: PRect);

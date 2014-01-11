@@ -3090,10 +3090,13 @@ end;
 function TGtk3WidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: boolean): boolean;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.Polygon not implemented ...');
-  {$ENDIF}
-  Result:=inherited Polygon(DC, Points, NumPts, Winding);
+  if not IsValidDC(DC) then
+    exit(False);
+  if not Winding then // faster
+    TGtk3DeviceContext(DC).drawPolygon(Points, NumPts, ord(CAIRO_FILL_RULE_EVEN_ODD))
+  else
+    TGtk3DeviceContext(DC).drawPolygon(Points, NumPts, Ord(CAIRO_FILL_RULE_WINDING));
+  Result:= True;
 end;
 
 function TGtk3WidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer
