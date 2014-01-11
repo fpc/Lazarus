@@ -10,6 +10,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
+#: sqlstringspropertyeditordlg.sloadsqlcodehint
+msgid "Load SQL code ..."
+msgstr ""
+
 #: sqlstringspropertyeditordlg.smetacolumns
 msgid "Columns"
 msgstr "Spalten"
@@ -35,24 +39,46 @@ msgid "Tables"
 msgstr "Tabellen"
 
 #: sqlstringspropertyeditordlg.sqlsyntaxok
-msgid "No syntax errors in SQL statement."
+#, fuzzy
+#| msgid "No syntax errors in SQL statement."
+msgid "No syntax errors in SQL statement found."
 msgstr "Keine Syntax-Fehler in der SQL-Anweisung"
+
+#: sqlstringspropertyeditordlg.squickcheckofsqlsyntaxhint
+msgid "Quick check of SQL syntax"
+msgstr ""
 
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
 msgstr "Ergebnisse"
 
+#: sqlstringspropertyeditordlg.srunsqlcodehint
+msgid "Run SQL code"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.ssavesqlcodehint
+msgid "Save SQL code ..."
+msgstr ""
+
 #: sqlstringspropertyeditordlg.ssqlerror
-msgid "SQL Error"
+#, fuzzy
+#| msgid "SQL Error"
+msgid "Probable SQL error"
 msgstr "SQL-Fehler"
 
 #: sqlstringspropertyeditordlg.ssqlok
-msgid "SQL OK"
+#, fuzzy
+#| msgid "SQL OK"
+msgid "Quick SQL check OK"
 msgstr "SQL ist OK"
 
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
+#, fuzzy
+#| msgid ""
+#| "Syntax error in SQL statement:\n"
+#| "%s\n"
 msgid ""
-"Syntax error in SQL statement:\n"
+"Probable syntax error in SQL statement:\n"
 "%s\n"
 msgstr ""
 "Syntax-Fehler in SQL-Anweisung:\n"
@@ -61,3 +87,4 @@ msgstr ""
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"
 msgstr "SQL-Code"
+
