@@ -293,7 +293,7 @@ end;
 procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 begin
   ns.origin.x:=lcl.left;
-  ns.origin.y:=ParentHeight-(lcl.bottom-lcl.Top)-lcl.Top;
+  ns.origin.y:=ParentHeight-lcl.bottom;
   ns.size.width:=lcl.Right-lcl.Left;
   ns.size.height:=lcl.Bottom-lcl.Top;
 end;

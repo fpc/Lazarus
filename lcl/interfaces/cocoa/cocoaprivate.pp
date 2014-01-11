@@ -1731,12 +1731,22 @@ end;
 
 procedure LCLWindowExtension.lclSetFrame(const r: TRect);
 var
-  ns: NSREct;
+  ns: NSRect;
+  nw,nf: NSRect;
+  h:integer;
 begin
   if Assigned(screen) then
     LCLToNSRect(r, screen.frame.size.height, ns)
   else
     ns := RectToNSRect(r);
+
+  // get topbar height and add
+  nf:= NSMakeRect (0, 0, 100, 100);
+  nw:=contentRectForFrameRect(nf);
+  h:=round(nf.size.height-nw.size.height);
+  ns.size.height:=ns.size.height+h;
+  ns.origin.y:=ns.origin.y-h;
+
   setFrame_display(ns, isVisible);
 end;
 
