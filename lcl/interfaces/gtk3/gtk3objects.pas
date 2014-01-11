@@ -1351,7 +1351,21 @@ begin
 end;
 
 procedure TGtk3DeviceContext.drawPolyLine(P: PPoint; NumPts: Integer);
+const
+  PixelOffset = 0.5;
+var
+  i: Integer;
 begin
+  cairo_save(Widget);
+  try
+    ApplyPen;
+    cairo_move_to(Widget, P[0].X+PixelOffset, P[0].Y+PixelOffset);
+    for i := 1 to NumPts-1 do
+      cairo_line_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset);
+    cairo_stroke(Widget);
+  finally
+    cairo_restore(Widget);
+  end;
 
 end;
 

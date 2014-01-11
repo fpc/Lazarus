@@ -3102,10 +3102,10 @@ end;
 function TGtk3WidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer
   ): boolean;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.PolyLine not implemented ...');
-  {$ENDIF}
-  Result:=inherited Polyline(DC, Points, NumPts);
+  if not IsValidDC(DC) then
+    exit(False);
+  TGtk3DeviceContext(DC).drawPolyLine(Points, NumPts);
+  Result:=True;
 end;
 
 
