@@ -2292,6 +2292,7 @@ components/sqldb/design/tmysql41connection.png -text svneol=unset#image/png
 components/sqldb/design/tmysql50connection.png -text svneol=unset#image/png
 components/sqldb/design/tmysql51connection.png -text svneol=unset#image/png
 components/sqldb/design/tmysql55connection.png -text svneol=unset#image/png
+components/sqldb/design/tmysql56connection.png -text svneol=unset#image/png
 components/sqldb/design/tmysqlconnection.png -text svneol=unset#image/png
 components/sqldb/design/todbcconnection.png -text svneol=unset#image/png
 components/sqldb/design/toracleconnection.png -text svneol=unset#image/png

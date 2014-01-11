@@ -83,12 +83,15 @@ uses
 {$IFDEF HASMYSQL51CONNECTION}
   mysql51conn,
 {$ENDIF}
-{$IFDEF HASMYSQL55CONNECTION}
-  mysql55conn,
-{$ENDIF}
-{$IFDEF HASSQLITE3CONNECTION}
-  sqlite3conn,
-{$ENDIF}
+  {$IFDEF HASMYSQL55CONNECTION}
+    mysql55conn,
+  {$ENDIF}
+  {$IFDEF HASMYSQL56CONNECTION}
+    mysql56conn,
+  {$ENDIF}
+  {$IFDEF HASSQLITE3CONNECTION}
+    sqlite3conn,
+  {$ENDIF}
 {$IFDEF HASFBADMIN}
   fbadmin,
 {$ENDIF}
@@ -195,6 +198,9 @@ begin
 {$ENDIF}
 {$IFDEF HASMYSQL55CONNECTION}
                               TMySQL55Connection,
+{$ENDIF}
+{$IFDEF HASMYSQL56CONNECTION}
+    ,TMySQL56Connection
 {$ENDIF}
 {$IFDEF HASSQLITE3CONNECTION}
                               TSQLite3Connection,
