@@ -21,10 +21,8 @@ var
   _SetCurrentDirUtf8   : function(const NewDir: String): Boolean;
   _CreateDirUtf8       : function(const NewDir: String): Boolean;
   _RemoveDirUtf8       : function(const Dir: String): Boolean ;
-  {$ifndef WinCE}
   _GetAppConfigDirUTF8 : function(Global: Boolean; Create: boolean = false): string;
   _GetAppConfigFileUTF8: function(Global: Boolean; SubDir: boolean = false;CreateDir: boolean = false): string;
-  {$endif}
 
 
 
@@ -129,28 +127,7 @@ begin
   Result := _FindNextUtf8(Rslt);
 end;
 
-{$ifdef WinCE}
-function GetAppConfigDirUTF8(Global: Boolean; Create: boolean = false): string;
-begin
-  Result:=SysToUTF8(SysUtils.GetAppConfigDir(Global));
-  if Result='' then exit;
-  if Create and not ForceDirectoriesUTF8(Result) then
-    raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Result]));
-end;
 
-function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean;
-  CreateDir: boolean): string;
-var
-  Dir: string;
-begin
-  Result:=SysToUTF8(SysUtils.GetAppConfigFile(Global,SubDir));
-  if not CreateDir then exit;
-  Dir:=ExtractFilePath(Result);
-  if Dir='' then exit;
-  if not ForceDirectoriesUTF8(Dir) then
-    raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Dir]));
-end;
-{$else}
 function GetAppConfigDirUTF8(Global: Boolean; Create: boolean = false): string;
 begin
   Result := _GetAppConfigDirUtf8(Global, Create);
@@ -161,7 +138,6 @@ function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean;
 begin
   Result := _GetAppConfigFileUTF8(Global, SubDir, CreateDir);
 end;
-{$endif}
 
 // ******** Start of AnsiString specific implementations ************
 
@@ -628,6 +604,28 @@ begin
 end;
 {$endif}
 
+
+{$IFDEF WINCE}
+// In WinCE these API calls are in Windows unit
+function GetWindowsSpecialDirW(ID :  Integer) : String;
+Var
+  APath : Array[0..MAX_PATH] of WideChar;
+  WS: WideString;
+  Len: SizeInt;
+begin
+  Result := '';
+  if SHGetSpecialFolderPath(0, APath, ID, True) then
+  begin
+    Len := StrLen(APath);
+    SetLength(WS, Len);
+    System.Move(APath[0], WS[1], Len * SizeOf(WideChar));
+    Result := AppendPathDelim(Utf16ToUtf8(WS));
+  end
+  else
+    Result:='';
+end;
+{$ELSE}
+
 Type
   PFNSHGetFolderPathW = Function(Ahwnd: HWND; Csidl: Integer; Token: THandle; Flags: DWord; Path: PWChar): HRESULT; stdcall;
 
@@ -635,7 +633,6 @@ var
   SHGetFolderPathW : PFNSHGetFolderPathW = Nil;
   CFGDLLHandle : THandle = 0;
 
-{$IFnDEF WinCE}
 Procedure InitDLL;
 Var
   pathBuf: array[0..MAX_PATH-1] of char;
@@ -663,7 +660,6 @@ begin
   If (@ShGetFolderPathW=Nil) then
     Raise Exception.Create('Could not determine SHGetFolderPathW Function');
 end;
-{$endif}
 
 function GetWindowsSpecialDirW(ID :  Integer) : String;
 Var
@@ -672,7 +668,6 @@ Var
   Len: SizeInt;
 begin
   Result := '';
-  {$IFnDEF WinCE}
   if (CFGDLLHandle = 0) then
     InitDLL;
   If (SHGetFolderPathW <> Nil) then
@@ -683,15 +678,14 @@ begin
       Len := StrLen(APath);
       SetLength(WS, Len);
       System.Move(APath[0], WS[1], Len * SizeOf(WideChar));
-      //WS := (StrPas(@APath[0]));
       Result := AppendPathDelim(Utf16ToUtf8(WS));
     end;
   end
   else
     Result := SysToUtf8(GetWindowsSpecialDir(ID));
-  {$ENDIF}
 end;
 
+{$ENDIF WINCE}
 
 function DGetAppConfigDir(Global : Boolean) : String;
 begin
@@ -700,12 +694,14 @@ end;
 
 
 function GetAppConfigDirWide(Global: Boolean; Create: boolean = false): string;
+const
+  CSIDL_GLOBAL = {$IFDEF WINCE}CSIDL_WINDOWS{$ELSE}CSIDL_COMMON_APPDATA{$ENDIF WINCE};
+  CSIDL_LOCAL = {$IFDEF WINCE}CSIDL_APPDATA{$ELSE}CSIDL_LOCAL_APPDATA{$ENDIF};
 begin
-  {$IFnDEF WinCE}
   If Global then
-    Result := GetWindowsSpecialDirW(CSIDL_COMMON_APPDATA)
+    Result := GetWindowsSpecialDirW(CSIDL_GLOBAL)
   else
-    Result := GetWindowsSpecialDirW(CSIDL_LOCAL_APPDATA);
+    Result := GetWindowsSpecialDirW(CSIDL_LOCAL);
   If (Result <> '') then
     begin
       if VendorName <> '' then
@@ -717,9 +713,6 @@ begin
   if Result = '' then exit;
   if Create and not ForceDirectoriesUtf8(Result) then
     raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Result]));
-  {$ELSE}
-  Result := '';
-  {$ENDIF}
 end;
 
 function GetAppConfigFileWide(Global: Boolean; SubDir: boolean;
@@ -1083,15 +1076,15 @@ begin
     _RemoveDirUtf8 := @RemoveDirWide;
     _FindFirstUtf8 := @FindFirstWide;
     _FindNextUtf8 := @FindNextWide;
-    {$ifndef WinCE}
     _GetAppConfigDirUtf8 := @GetAppConfigDirWide;
     _GetAppConfigFileUtf8 := @GetAppConfigFileWide;
-    {$endif}
   end;
 end;
 
 procedure FinalizeLazFileUtils;
 begin
+  {$IFnDEF WINCE}
   if CFGDLLHandle <> 0 then
     FreeLibrary(CFGDllHandle);
+  {$ENDIF WINCE}
 end;
