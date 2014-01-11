@@ -8,6 +8,7 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: pocheckerconsts.rspochecker
 msgid "PO File Checker"
@@ -20,6 +21,10 @@ msgid ""
 "for selected file\n"
 "%s\n"
 msgstr ""
+"Kann die Master-po-Datei:\n"
+"%s\n"
+"für die gewählte Datei file\n"
+"%s nicht finden\n"
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
@@ -43,7 +48,7 @@ msgstr "Überprüfung der Anzahl der Einträge"
 
 #: pocheckerconsts.scheckstatistics
 msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr ""
+msgstr "Zeige Prozente (nicht) übersetzter und ungeklärter Zeichenketten"
 
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
@@ -63,7 +68,8 @@ msgstr "[Zeile %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
 msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
-msgstr "Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
+msgstr ""
+"Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -71,6 +77,9 @@ msgid ""
 "%s\n"
 "Please close the program\n"
 msgstr ""
+"Ein nicht behebbarer Fehler ist aufgetreten\n"
+"%s\n"
+"Bitte schließen Sie das Programm\n"
 
 #: pocheckerconsts.serroroncreate
 msgid ""
@@ -141,7 +150,7 @@ msgstr ""
 
 #: pocheckerconsts.snrofitemsmismatchd
 msgid "%s: %d items"
-msgstr ""
+msgstr "%s: %d Elemente"
 
 #: pocheckerconsts.snrwarningsfound
 msgid "Found %d warnings."
@@ -157,15 +166,15 @@ msgstr "Original"
 
 #: pocheckerconsts.spercfuzzy
 msgid "Fuzzy strings: %2.0f%%."
-msgstr ""
+msgstr "Ungeklärte Zeichenketten: %2.0f%%."
 
 #: pocheckerconsts.sperctranslated
 msgid "Translated strings: %2.0f%%."
-msgstr ""
+msgstr "Übersetzte Zeichenketten: %2.0f%%."
 
 #: pocheckerconsts.spercuntranslated
 msgid "Untranslated strings: %2.0f%%."
-msgstr ""
+msgstr "Nicht übersetzte Zeichenketten: %2.0f%%."
 
 #: pocheckerconsts.sresults
 msgid "Results"
@@ -189,7 +198,7 @@ msgstr ""
 
 #: pocheckerconsts.sselectbasictests
 msgid "Select basic tests"
-msgstr ""
+msgstr "Basistests auswählen"
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -209,5 +218,4 @@ msgstr "Übersetzung"
 
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation statistics for:"
-msgstr ""
-
+msgstr "Übersetzungsstatistik für:"

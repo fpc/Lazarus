@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
-"PO-Revision-Date: 2013-07-14 11:46-0000\n"
+"PO-Revision-Date: 2014-01-05 12:05+0100\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -268,7 +268,7 @@ msgstr "COPY(<String>, <Position>, <Length>)/gibt <Length> Zeichen von <String> 
 
 #: lr_const.sdescriptioncount
 #, fuzzy
-#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgstr "COUNT(<BandName>)/Liefert die Zahl der Datenreihen des angegebenen <BandName>. "
 
@@ -294,7 +294,7 @@ msgstr "FRAC(<Value>)/Ergibt den Bruchanteil der Gleitkommazahl <Value>."
 
 #: lr_const.sdescriptioninput
 #, fuzzy
-#| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+#| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string.INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Caption> [,Default])/Zeigt ein Dialogfenster mit der Überschrift <Caption> und einem Eingabefeld. Ist der Parameter [Default] gesetzt, wird dieser String im Eingabefeld eingesetzt. Drückt der Anwender OK, wird der Text im Eingabefeld zurückgeliefert."
 
@@ -467,7 +467,6 @@ msgid "Report:"
 msgstr "Report:"
 
 #: lr_const.sdocautor
-#, fuzzy
 #| msgid "Autor"
 msgid "Author"
 msgstr "Autor"
@@ -493,7 +492,6 @@ msgid "Comments"
 msgstr "Kommentare"
 
 #: lr_const.sdocoptformkeywords
-#, fuzzy
 #| msgid "Keys words"
 msgid "Keywords"
 msgstr "Schlüsselworte"
@@ -584,7 +582,6 @@ msgid "Error"
 msgstr "Fehler"
 
 #: lr_const.serroroccured
-#, fuzzy
 #| msgid "An error occured during calculating"
 msgid "An error occurred during calculation"
 msgstr "Bei der Berechnung trat ein Fehler auf"
@@ -1419,7 +1416,6 @@ msgid "&Vertical"
 msgstr "&Vertikal"
 
 #: lr_const.sinsroundrect
-#, fuzzy
 #| msgid "Insert an RoundRect with shadow area"
 msgid "Insert a RoundRect with shadow area"
 msgstr "Schattierten RoundRect einfügen"
@@ -2143,7 +2139,6 @@ msgid "&Whole page"
 msgstr "&Ganze &Seite"
 
 #: lr_const.sprintererror
-#, fuzzy
 #| msgid "Printer selected is not valid"
 msgid "Selected printer is not valid"
 msgstr "Gewählter Drucker ist ungültig"
@@ -2203,20 +2198,18 @@ msgid "Report file"
 msgstr "Reportdatei"
 
 #: lr_const.sreportcreatedate
-#, fuzzy
 #| msgid "Report create date"
 msgid "Report creation date"
 msgstr "Erstelldatum"
 
 #: lr_const.sreportlastmodifydate
-#, fuzzy
 #| msgid "Report last modify date"
 msgid "Report last modification date"
 msgstr "Datum der letzten Änderung"
 
 #: lr_const.sreportloadingerror
 msgid "Error while loading report"
-msgstr ""
+msgstr "Fehler beim Laden des Reports"
 
 #: lr_const.sreportpreparing
 #, fuzzy
@@ -2257,7 +2250,6 @@ msgid "Gradient"
 msgstr ""
 
 #: lr_const.sroundrectformhint
-#, fuzzy
 #| msgid "Click here to define the shadow color or gradian colors"
 msgid "Click here to define the shadow color or gradient colors"
 msgstr "Klicken Sie hier, um die Schattenfarbe oder die Farben für den Verlauf festzulegen"
