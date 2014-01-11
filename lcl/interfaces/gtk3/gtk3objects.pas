@@ -1416,13 +1416,12 @@ begin
   cairo_save(Widget);
   try
     ApplyPen;
-    cairo_move_to(Widget, P[0].X+PixelOffset, P[0].Y+PixelOffset); // start point
-    i := 1;
 
+    i := 0;
     // we need 3 points left for continuous and 4 for not continous
     while i < NumPoints-1 - (3 + ord(not Continuous)) do
     begin
-      if Not Continuous then
+      if (i = 0) or Not Continuous then
       begin
         cairo_move_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset); // start point
         Inc(i);
