@@ -1177,6 +1177,7 @@ var
 begin
   System.EnterCriticalsection(CriticalSection);
   try
+    Application.CancelHint;
     if not Assigned(SavedHintHandlesList) then
       exit;
     for i := SavedHintHandlesList.Count - 1 downto 0 do
