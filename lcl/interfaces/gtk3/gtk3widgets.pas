@@ -1214,6 +1214,10 @@ begin
     begin
       // DebugLn('****** GDK_MAP FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
     end;
+    15: // GDK_UNMAP
+    begin
+       // DebugLn('****** GDK_UNMAP FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
+    end;
     16: // GDK_PROPERTY_NOTIFY
     begin
       // DebugLn('****** GDK_PROPERTY_NOTIFY FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
@@ -1239,6 +1243,10 @@ begin
       // DebugLn('****** GDK_WINDOW_STATE FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
       // this doesn't work as expected ... must use GDK_CONFIGURE to get active status ?!?
     end;
+  otherwise
+    DebugLn('****** GDK unhandled event type ' + dbgsName(TGtk3Widget(Data).LCLObject));
+    WriteLn(event^.type_);
+
   end;
 end;
 
@@ -1722,6 +1730,7 @@ begin
     P := Point(0, 0);
   end;
 
+  {$NOTE Currently TGtk3DeviceContext(Msg.DC).Translate(P) is creating incorrect offsets inside TPages for TLabel and maybe others}
   TGtk3DeviceContext(Msg.DC).Translate(P);
 
   try
@@ -2177,7 +2186,7 @@ var
   R: Double;
   G: Double;
   B: Double;
-begin  exit;
+begin
   // new way (gtk3) but still buggy
   if IsWidgetOK and (0 > 1) then
   begin
@@ -3866,7 +3875,7 @@ begin
   Result := TGtkHBox.new(GTK_ORIENTATION_HORIZONTAL, 0);
   FCentralWidget := TGtkFixed.new;
   PGtkHBox(Result)^.pack_start(FCentralWidget, True , True, 0);
-  //PGtkFixed(FCentralWidget)^.set_has_window(True);
+  PGtkFixed(FCentralWidget)^.set_has_window(True);
   // PGtkFixed(FCentralWidget)^.set_can_focus(True);
 end;
 
