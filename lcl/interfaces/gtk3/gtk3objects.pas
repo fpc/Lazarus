@@ -236,6 +236,7 @@ type
     procedure drawPixmap(p: PPoint; pm: PGdkPixbuf; sr: PRect);
     procedure drawPolyLine(P: PPoint; NumPts: Integer);
     procedure drawPolygon(P: PPoint; NumPts: Integer; FillRule: integer);
+    procedure drawPolyBezier(P: PPoint; NumPoints: Integer; Filled, Continuous: boolean);
     procedure EllipseArcPath(CX, CY, RX, RY: Double; Angle1, Angle2: Double; Clockwise, Continuous: Boolean);
     procedure eraseRect(ARect: PRect);
     procedure fillRect(ARect: PRect; ABrush: HBRUSH); overload;
@@ -1397,6 +1398,51 @@ begin
       cairo_line_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset);
     cairo_close_path(Widget);
     cairo_stroke_preserve(Widget);
+  finally
+    cairo_restore(Widget);
+  end;
+end;
+
+procedure TGtk3DeviceContext.drawPolyBezier(P: PPoint; NumPoints: Integer; Filled, Continuous: boolean);
+var
+  i: Integer;
+const
+  PixelOffset = 0.5;
+begin
+  // 3 points per curve + a starting point for the first curve
+  if (NumPoints < 4) then
+    Exit;
+
+  cairo_save(Widget);
+  try
+    ApplyPen;
+    cairo_move_to(Widget, P[0].X+PixelOffset, P[0].Y+PixelOffset); // start point
+    i := 1;
+
+    // we need 3 points left for continuous and 4 for not continous
+    while i < NumPoints-1 - (3 + ord(not Continuous)) do
+    begin
+      if Not Continuous then
+      begin
+        cairo_move_to(Widget, P[i].X+PixelOffset, P[i].Y+PixelOffset); // start point
+        Inc(i);
+      end;
+      cairo_curve_to(Widget,
+                     P[i].X+PixelOffset, P[i].Y+PixelOffset, // control point 1
+                     P[i+1].X+PixelOffset, P[i+1].Y+PixelOffset, // control point 2
+                     P[i+2].X+PixelOffset, P[i+2].Y+PixelOffset); // end point and start point of next
+      Inc(i, 3);
+    end;
+    cairo_stroke_preserve(Widget);
+
+    if Filled then
+    begin
+      ApplyBrush;
+      // join start and end points
+      cairo_close_path(Widget);
+      cairo_fill(Widget);
+    end;
+
   finally
     cairo_restore(Widget);
   end;

@@ -3081,10 +3081,10 @@ end;
 function TGtk3WidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: boolean): boolean;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.PolyBezier not implemented ...');
-  {$ENDIF}
-  Result:=inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
+  if not IsValidDC(DC) then
+    exit(False);
+  TGtk3DeviceContext(DC).drawPolyBezier(Points, NumPts, Filled, Continuous);
+  Result:=True;
 end;
 
 function TGtk3WidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
