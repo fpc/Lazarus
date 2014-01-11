@@ -2802,7 +2802,7 @@ begin
   ResHandle := FindResource(Instance, PChar(ResName), PChar(RT_RCDATA));
   if ResHandle <> 0 then
   begin
-    Stream := TResourceStream.Create(Instance, PChar(ResName), PChar(RT_RCDATA));
+    Stream := TResourceStream.Create(Instance, ResName, RT_RCDATA);
     try
       GraphicClass := GetPicFileFormats.FindByStreamFormat(Stream);
       if Assigned(GraphicClass) and GraphicClass.InheritsFrom(TCustomBitmap) then
