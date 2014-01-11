@@ -977,7 +977,7 @@ begin
   GetWindowInfo(winhandle)^.MaxLength := NewLength;
 end;
 
-class procedure TWin32WSCustomEdit.SetNumbersOnly(const ACustomEdit: TCustomEdit; NewNumbersOnly: Boolean);
+class procedure TWinCEWSCustomEdit.SetNumbersOnly(const ACustomEdit: TCustomEdit; NewNumbersOnly: Boolean);
 const
   EditStyles: array[Boolean] of integer = (0, ES_NUMBER);
   EditStyleMask = ES_NUMBER;
