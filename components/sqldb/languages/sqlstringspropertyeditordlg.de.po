@@ -83,3 +83,4 @@ msgstr ""
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"
 msgstr "SQL-Code"
+
