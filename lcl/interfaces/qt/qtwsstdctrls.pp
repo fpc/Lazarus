@@ -143,6 +143,7 @@ type
     class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetNumbersOnly(const ACustomEdit: TCustomEdit; NewNumbersOnly: Boolean); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
@@ -831,6 +832,7 @@ begin
   QtLineEdit := TQtLineEdit.Create(AWinControl, AParams);
   QtLineEdit.setBorder(TCustomEdit(AWinControl).BorderStyle = bsSingle);
   QtLineEdit.setAlignment(AlignmentMap[TCustomEdit(AWinControl).Alignment]);
+  QtLineEdit.NumbersOnly := TCustomEdit(AWinControl).NumbersOnly;
   QtLineEdit.AttachEvents;
 
   Result := TLCLIntfHandle(QtLineEdit);
@@ -926,6 +928,15 @@ begin
     if NewLength <> MaxLength then
       QtEdit.setMaxLength(NewLength);
   end;
+end;
+
+class procedure TQtWSCustomEdit.SetNumbersOnly(const ACustomEdit: TCustomEdit;
+  NewNumbersOnly: Boolean);
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetNumbersOnly') then
+    Exit;
+  if TQtWidget(ACustomEdit.Handle) is TQtLineEdit then
+    TQtLineEdit(ACustomEdit.Handle).NumbersOnly := NewNumbersOnly;
 end;
 
 {------------------------------------------------------------------------------

@@ -781,8 +781,11 @@ type
 
   TQtLineEdit = class(TQtWidget, IQtEdit)
   private
+    FNumbersOnly: boolean;
+    FIntValidator: QIntValidatorH;
     FTextChanged: QLineEdit_hookH;
     function getTextMargins: TRect;
+    procedure SetNumbersOnly(AValue: boolean);
     procedure setTextMargins(ARect: TRect);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
@@ -813,12 +816,14 @@ type
     procedure Paste;
     procedure Undo;
   public
+    destructor Destroy; override;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
       WithThemeSpace: Boolean); override;
     procedure SignalTextChanged(p1: PWideString); cdecl;
+    property NumbersOnly: boolean read FNumbersOnly write SetNumbersOnly;
     property TextMargins: TRect read GetTextMargins write SetTextMargins;
   end;
 
@@ -8209,6 +8214,8 @@ function TQtLineEdit.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
+  FIntValidator := nil;
+  FNumbersOnly := False;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -8269,6 +8276,23 @@ begin
   QLineEdit_getTextMargins(QLineEditH(Widget),
     @L, @T, @R, @B);
   Result := Rect(L, T, R, B);
+end;
+
+procedure TQtLineEdit.SetNumbersOnly(AValue: boolean);
+begin
+  if FNumbersOnly=AValue then Exit;
+  FNumbersOnly:=AValue;
+  if Assigned(FIntValidator) then
+  begin
+    QLineEdit_setValidator(QLineEditH(Widget), nil);
+    QIntValidator_destroy(FIntValidator);
+    FIntValidator := nil;
+  end;
+  if FNumbersOnly then
+  begin
+    FIntValidator := QIntValidator_create(0, MAXINT, Widget);
+    QLineEdit_setValidator(QLineEditH(Widget), FIntValidator);
+  end;
 end;
 
 function TQtLineEdit.getTextStatic: Boolean;
@@ -8422,6 +8446,16 @@ end;
 procedure TQtLineEdit.Undo;
 begin
   QLineEdit_undo(QLineEditH(Widget));
+end;
+
+destructor TQtLineEdit.Destroy;
+begin
+  if Assigned(FIntValidator) then
+  begin
+    QIntValidator_destroy(FIntValidator);
+    FIntValidator := nil;
+  end;
+  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------
