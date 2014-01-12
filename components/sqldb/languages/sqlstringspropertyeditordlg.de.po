@@ -12,7 +12,7 @@ msgstr ""
 
 #: sqlstringspropertyeditordlg.sloadsqlcodehint
 msgid "Load SQL code ..."
-msgstr ""
+msgstr "SQL-Code laden..."
 
 #: sqlstringspropertyeditordlg.smetacolumns
 msgid "Columns"
@@ -39,14 +39,13 @@ msgid "Tables"
 msgstr "Tabellen"
 
 #: sqlstringspropertyeditordlg.sqlsyntaxok
-#, fuzzy
 #| msgid "No syntax errors in SQL statement."
 msgid "No syntax errors in SQL statement found."
-msgstr "Keine Syntax-Fehler in der SQL-Anweisung"
+msgstr "Keine Syntax-Fehler in der SQL-Anweisung gefunden."
 
 #: sqlstringspropertyeditordlg.squickcheckofsqlsyntaxhint
 msgid "Quick check of SQL syntax"
-msgstr ""
+msgstr "Schnellüberprüfung der SQL-Syntax"
 
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
@@ -54,26 +53,23 @@ msgstr "Ergebnisse"
 
 #: sqlstringspropertyeditordlg.srunsqlcodehint
 msgid "Run SQL code"
-msgstr ""
+msgstr "SQL-Code starten"
 
 #: sqlstringspropertyeditordlg.ssavesqlcodehint
 msgid "Save SQL code ..."
-msgstr ""
+msgstr "SQL-Code speichern..."
 
 #: sqlstringspropertyeditordlg.ssqlerror
-#, fuzzy
 #| msgid "SQL Error"
 msgid "Probable SQL error"
-msgstr "SQL-Fehler"
+msgstr "Wahrscheinlicher SQL-Fehler"
 
 #: sqlstringspropertyeditordlg.ssqlok
-#, fuzzy
 #| msgid "SQL OK"
 msgid "Quick SQL check OK"
-msgstr "SQL ist OK"
+msgstr "Schnelle SQL-Prüfung ist OK"
 
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
-#, fuzzy
 #| msgid ""
 #| "Syntax error in SQL statement:\n"
 #| "%s\n"
@@ -81,7 +77,7 @@ msgid ""
 "Probable syntax error in SQL statement:\n"
 "%s\n"
 msgstr ""
-"Syntax-Fehler in SQL-Anweisung:\n"
+"Wahrscheinlicher Syntax-Fehler in SQL-Anweisung:\n"
 "%s\n"
 
 #: sqlstringspropertyeditordlg.ssqltabcaption
