@@ -67,7 +67,7 @@ type
     FTransaction:TSQLTransaction;
     FWordUnderCursor:string;
     function CheckConnection:boolean;
-    procedure CheckSQLSyntax({%H-}SQL: TStrings; ShowOk: boolean);
+    procedure CheckSQLSyntax({%H-}SQL: TStrings);
     procedure CleanupDelphiCode;
     procedure CreateConstant;
     procedure ShowMetaData;
@@ -361,8 +361,7 @@ begin
   CheckSQLSyntax(SQLEditor.Lines,true)
 end;
 
-procedure TSQLStringsPropertyEditorDlg.CheckSQLSyntax(SQL: TStrings;
-  ShowOk: boolean);
+procedure TSQLStringsPropertyEditorDlg.CheckSQLSyntax(SQL: TStrings);
 Var
   S : TStream;
   P : TSQLParser;
@@ -374,6 +373,8 @@ begin
   try
     SQL.SaveToStream(S);
     S.Position:=0;
+    if S.Size=0 then
+      exit; // no message for empty input
     P:=TSQLParser.Create(S);
     try
       try
@@ -386,8 +387,7 @@ begin
           E:=P.Parse;
           E.Free;
         end;
-        if ShowOk then
-          MessageDLG(SSQLOK,SQLSyntaxOK,mtInformation,[mbOK],0);
+        MessageDLG(SSQLOK,SQLSyntaxOK,mtInformation,[mbOK],0);
       except
         On E : Exception do
           begin
