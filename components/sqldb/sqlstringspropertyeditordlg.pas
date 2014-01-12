@@ -358,7 +358,7 @@ end;
 
 procedure TSQLStringsPropertyEditorDlg.TBCheckClick(Sender: TObject);
 begin
-  CheckSQLSyntax(SQLEditor.Lines,true)
+  CheckSQLSyntax(SQLEditor.Lines);
 end;
 
 procedure TSQLStringsPropertyEditorDlg.CheckSQLSyntax(SQL: TStrings);
