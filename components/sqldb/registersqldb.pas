@@ -56,6 +56,10 @@ unit registersqldb;
  {$DEFINE HASLIBLOADER}
 {$ENDIF}
 
+{$IF FPC_FULLVERSION>= 20603}
+  {$DEFINE HASMYSQL56CONNECTION}
+{$ENDIF}
+
 interface
 
 uses
