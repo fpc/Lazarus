@@ -67,7 +67,7 @@ type
     FTransaction:TSQLTransaction;
     FWordUnderCursor:string;
     function CheckConnection:boolean;
-    procedure CheckSQLSyntax({%H-}SQL: TStrings);
+    procedure CheckSQLSyntax({%H-}SQL: TStrings; ShowOk: boolean);
     procedure CleanupDelphiCode;
     procedure CreateConstant;
     procedure ShowMetaData;
@@ -358,10 +358,11 @@ end;
 
 procedure TSQLStringsPropertyEditorDlg.TBCheckClick(Sender: TObject);
 begin
-  CheckSQLSyntax(SQLEditor.Lines)
+  CheckSQLSyntax(SQLEditor.Lines,true)
 end;
 
-procedure TSQLStringsPropertyEditorDlg.CheckSQLSyntax(SQL : TStrings);
+procedure TSQLStringsPropertyEditorDlg.CheckSQLSyntax(SQL: TStrings;
+  ShowOk: boolean);
 Var
   S : TStream;
   P : TSQLParser;
@@ -376,15 +377,17 @@ begin
     P:=TSQLParser.Create(S);
     try
       try
-        E:=Nil;
-        EL:=Nil;
         If IsSQLScript then
-          EL:=P.ParseScript
-        else
+        begin
+          EL:=P.ParseScript;
+          EL.Free;
+        end
+        else begin
           E:=P.Parse;
-        E.Free;
-        EL.Free;
-        MessageDLG(SSQLOK,SQLSyntaxOK,mtInformation,[mbOK],0);
+          E.Free;
+        end;
+        if ShowOk then
+          MessageDLG(SSQLOK,SQLSyntaxOK,mtInformation,[mbOK],0);
       except
         On E : Exception do
           begin
