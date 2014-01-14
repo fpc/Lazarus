@@ -6711,18 +6711,25 @@ function TGtk2WidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: boolean): boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
-
   i: integer;
   PointArray: PGDKPoint;
   Tmp, RGN : hRGN;
   ClipRect : TRect;
   DCOrigin: TPoint;
   OldNumPts: integer;
+  CurPoint: types.TPoint;
+  ThePoints: array of types.TPoint;
+  PThePoints: PPoint;
 begin
   if not IsValidDC(DC) then Exit(False);
 
   if NumPts <= 0 then Exit(True);
-  
+
+  //Create a copy of the points so we can freely alter them
+  SetLength(ThePoints, NumPts);
+  for i := 0 to NumPts - 1 do ThePoints[i] := Points[i];
+  PThePoints := @ThePoints[0];
+
   DCOrigin := DevCtx.Offset;
   OldNumPts := NumPts;
 
@@ -6736,9 +6743,9 @@ begin
     for i := 0 to NumPts - 1 do
     begin
       if DevCtx.HasTransf then
-        Points[I] := DevCtx.TransfPointIndirect(Points[I]);
-      PointArray[i].x := Points[i].x + DCOrigin.X;
-      PointArray[i].y := Points[i].y + DCOrigin.Y;
+        ThePoints[I] := DevCtx.TransfPointIndirect(ThePoints[I]);
+      PointArray[i].x := ThePoints[I].x + DCOrigin.X;
+      PointArray[i].y := ThePoints[I].y + DCOrigin.Y;
     end;
 
     if (Points[NumPts-1].X <> Points[0].X) or
@@ -6762,7 +6769,7 @@ begin
       Tmp := CreateEmptyRegion;
       GetClipRGN(DC, Tmp);
       // apply new clipping
-      RGN := CreatePolygonRgn(Points, OldNumPts, LCLType.Winding);
+      RGN := CreatePolygonRgn(PThePoints, OldNumPts, LCLType.Winding);
       ExtSelectClipRGN(DC, RGN, RGN_AND);
       DeleteObject(RGN);
       GetClipBox(DC, @ClipRect);
@@ -6779,7 +6786,7 @@ begin
       gdk_draw_polygon(DevCtx.Drawable, DevCtx.GC, 1, PointArray, NumPts);
     end;
   end;
-    
+
   // draw outline
   if not DevCtx.IsNullPen
   then begin
@@ -6791,9 +6798,10 @@ begin
   {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
 
   if PointArray <> nil then FreeMem(PointArray);
-
+  SetLength(ThePoints,0);
   Result := True;
 end;
+
 
 function TGtk2WidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
 var
