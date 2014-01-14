@@ -579,9 +579,47 @@ type
 
   TDbgDwarfIdentifier = class;
   TDbgDwarfTypeIdentifier = class;
+  TDbgDwarfValueIdentifier = class;
   TDbgDwarfIdentifierClass = class of TDbgDwarfIdentifier;
   TDbgDwarfValueIdentifierClass = class of TDbgDwarfValueIdentifier;
   TDbgDwarfTypeIdentifierClass = class of TDbgDwarfTypeIdentifier;
+
+  { TDbgDwarfSymbolValue }
+
+  TDbgDwarfSymbolValue = class(TDbgSymbolValue)
+  private
+    FOwner: TDbgDwarfValueIdentifier; // nor refcounted
+  public
+    constructor Create;
+    procedure SetOwner(AOwner: TDbgDwarfValueIdentifier);
+  end;
+
+  { TDbgDwarfIntegerSymbolValue }
+
+  TDbgDwarfIntegerSymbolValue = class(TDbgDwarfSymbolValue)
+  private
+    FValue: Int64;
+    FSize: Integer;
+    FEvaluated: Boolean;
+  protected
+    function GetAsInteger: Int64; override;
+  public
+    constructor Create(ASize: Integer);
+  end;
+
+  { TDbgDwarfCardinalSymbolValue }
+
+  TDbgDwarfCardinalSymbolValue = class(TDbgDwarfSymbolValue)
+  private
+    FValue: QWord;
+    FSize: Integer;
+    FEvaluated: Boolean;
+  protected
+    function GetAsCardinal: QWord; override;
+  public
+    constructor Create(ASize: Integer);
+  end;
+
   { TDbgDwarfIdentifier }
 
   TDbgDwarfIdentifier = class(TDbgSymbolForwarder)
@@ -637,6 +675,8 @@ type
 
   TDbgDwarfValueIdentifier = class(TDbgDwarfIdentifier) // var, const, member, ...
   protected
+    FValueObject: TDbgDwarfSymbolValue;
+
     procedure KindNeeded; override;
     procedure MemberVisibilityNeeded; override;
     procedure Init; override;
@@ -651,6 +691,7 @@ type
   private
     procedure FrameBaseNeeded(ASender: TObject);
   protected
+    function GetValueObject: TDbgSymbolValue; override;
     procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AData: TDbgDwarfIdentifier = nil); override;
   end;
 
@@ -715,6 +756,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure Init; override;
     procedure MemberVisibilityNeeded; override;
+    function GetTypedValueObject: TDbgDwarfSymbolValue; virtual; // returns refcount=1 for caller, no cached copy kept
   public
     class function CreateTypeSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfTypeIdentifier;
   end;
@@ -725,7 +767,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   //function DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier; // return nil
   protected
     procedure KindNeeded; override;
+    procedure SizeNeeded; override;
     procedure TypeInfoNeeded; override;
+    function GetTypedValueObject: TDbgDwarfSymbolValue; override;
     function GetHasBounds: Boolean; override;
     function GetOrdHighBound: Int64; override;
     function GetOrdLowBound: Int64; override;
@@ -755,6 +799,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     // typedef > pointer > srtuct
     // while a pointer to class/object: pointer > typedef > ....
     function DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier; override;
+    function GetTypedValueObject: TDbgDwarfSymbolValue; override;
   end;
 
   { TDbgDwarfIdentifierSubRange }
@@ -1488,6 +1533,100 @@ begin
   end;
 end;
 
+{ TDbgDwarfCardinalSymbolValue }
+
+function TDbgDwarfCardinalSymbolValue.GetAsCardinal: QWord;
+var
+  m: TFpDbgMemReaderBase;
+  addr: TDbgPtr;
+begin
+  if FEvaluated then begin
+    Result := FValue;
+    exit;
+  end;
+  if (FOwner = nil) or (FOwner.FCU = nil) or
+     (FOwner.FCU.FOwner = nil) or (FOwner.FCU.FOwner.MemReader = nil) or
+     ((FSize <= 0) or (FSize > SizeOf(Result)))
+  then begin
+    Result := inherited GetAsInteger;
+    exit;
+  end;
+
+  addr := FOwner.Address;
+  if (addr = 0) then begin
+    Result := inherited GetAsInteger;
+    exit;
+  end;
+
+  m := FOwner.FCU.FOwner.MemReader;
+  // TODO endian
+  Result := 0;
+  m.ReadMemory(addr, FSize, @Result);
+
+end;
+
+constructor TDbgDwarfCardinalSymbolValue.Create(ASize: Integer);
+begin
+  inherited Create;
+  FSize := ASize;
+  FEvaluated := False;
+end;
+
+{ TDbgDwarfIntegerSymbolValue }
+
+function TDbgDwarfIntegerSymbolValue.GetAsInteger: Int64;
+var
+  m: TFpDbgMemReaderBase;
+  addr: TDbgPtr;
+begin
+  if FEvaluated then begin
+    Result := FValue;
+    exit;
+  end;
+  if (FOwner = nil) or (FOwner.FCU = nil) or
+     (FOwner.FCU.FOwner = nil) or (FOwner.FCU.FOwner.MemReader = nil) or
+     ((FSize <= 0) or (FSize > SizeOf(Result)))
+  then begin
+    Result := inherited GetAsInteger;
+    exit;
+  end;
+
+  addr := FOwner.Address;
+  if (addr = 0) then begin
+    Result := inherited GetAsInteger;
+    exit;
+  end;
+
+  m := FOwner.FCU.FOwner.MemReader;
+  // TODO endian
+  Result := 0;
+  m.ReadMemory(addr, FSize, @Result);
+
+  if Result and (int64(1) shl (FSize * 8 - 1)) <> 0 then
+    Result := Result or (int64(-1) shl (FSize * 8));
+
+end;
+
+constructor TDbgDwarfIntegerSymbolValue.Create(ASize: Integer);
+begin
+  inherited Create;
+  FSize := ASize;
+  FEvaluated := False;
+end;
+
+{ TDbgDwarfSymbolValue }
+
+constructor TDbgDwarfSymbolValue.Create;
+begin
+  inherited Create;
+  AddReference;
+end;
+
+procedure TDbgDwarfSymbolValue.SetOwner(AOwner: TDbgDwarfValueIdentifier);
+begin
+  FOwner := AOwner;
+end;
+
 { TDbgDwarfIdentifierParameter }
 
 procedure TDbgDwarfIdentifierParameter.AddressNeeded;
@@ -1566,6 +1705,23 @@ debugln(['TDbgDwarfIdentifierVariable.FrameBaseNeeded ']);
   //if OwnerTypeInfo <> nil then
   //  OwnerTypeInfo.fr;
   // TODO: check owner
+end;
+
+function TDbgDwarfValueLocationIdentifier.GetValueObject: TDbgSymbolValue;
+var
+  ti: TDbgSymbol;
+begin
+  Result := FValueObject;
+  if Result <> nil then exit;
+
+  ti := TypeInfo;
+  if (ti = nil) or not (ti is TDbgDwarfTypeIdentifier) then exit;
+
+  FValueObject := TDbgDwarfTypeIdentifier(ti).GetTypedValueObject;
+  if FValueObject <> nil then
+    FValueObject.SetOwner(self);
+
+  Result := FValueObject;
 end;
 
 { TLEB128PreFixTree }
@@ -2464,10 +2620,13 @@ procedure TDwarfLocationExpression.Evaluate;
 
 var
   MemReader: TFpDbgMemReaderBase;
+  AddrSize: Byte;
 
   function ReadValueFromMemory(AnAddress: TDbgPtr; ASize: Cardinal; out AValue: TDbgPtr): Boolean;
   begin
-    if ASize > SizeOf(AValue) then exit(False);
+    //TODO: zero fill / sign extend
+    if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
+    AValue := 0;
     Result := MemReader.ReadMemory(AnAddress, ASize, @AValue);
     if not Result then
       SetError;
@@ -2475,7 +2634,9 @@ var
 
   function ReadValueFromMemoryEx(AnAddress, AnAddrSpace: TDbgPtr; ASize: Cardinal; out AValue: TDbgPtr): Boolean;
   begin
-    if ASize > SizeOf(AValue) then exit(False);
+    //TODO: zero fill / sign extend
+    if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
+    AValue := 0;
     Result := MemReader.ReadMemoryEx(AnAddress, AnAddrSpace, ASize, @AValue);
     if not Result then
       SetError;
@@ -2507,13 +2668,12 @@ var
 
 var
   p: PByte;
-  AdrSize: Byte;
   NewValue: TDbgPtr;
   i: TDbgPtr;
   x : integer;
   Entry, Entry2: TDwarfLocationStackEntry;
 begin
-  AdrSize := FCU.FAddressSize;
+  AddrSize := FCU.FAddressSize;
   MemReader := FCU.FOwner.MemReader;
   while FData < FMaxData do begin
     p := FData;
@@ -2524,14 +2684,14 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
       DW_OP_addr:  FStack.Push(FCU.ReadAddressAtPointer(FData, True), lseValue);
       DW_OP_deref: begin
           if not AssertAddressOnStack then exit;
-          if not ReadValueFromMemory(FStack.Pop.Value, AdrSize, NewValue) then exit;
+          if not ReadValueFromMemory(FStack.Pop.Value, AddrSize, NewValue) then exit;
           FStack.Push(NewValue, lseValue);
         end;
       DW_OP_xderef: begin
           if not AssertAddressOnStack  then exit;
           i := FStack.Pop.Value;
           if not AssertAddressOnStack then exit;
-          if not ReadValueFromMemoryEx(i, FStack.Pop.Value, AdrSize, NewValue) then exit;
+          if not ReadValueFromMemoryEx(i, FStack.Pop.Value, AddrSize, NewValue) then exit;
           FStack.Push(NewValue, lseValue);
         end;
       DW_OP_deref_size: begin
@@ -2650,6 +2810,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
           {$PUSH}{$R-}{$Q-}
+          //TODO: 32 bit overflow?
           FStack.Modify(0, Entry.Value+Entry2.Value, lseValue); // adding signed values works via overflow
           {$POP}
         end;
@@ -3786,6 +3947,7 @@ begin
     exit;
   Result := inherited GetStructureBaseAddress(AnAddress, AMember, InheritedLoc);
   if Result then begin
+    //TODO: zero fill / sign extend
     case FCU.FAddressSize of
       4: begin
           FCU.FOwner.MemReader.ReadMemory(AnAddress, 4, @Addr4);
@@ -3906,6 +4068,17 @@ begin
   end;
 end;
 
+function TDbgDwarfTypeIdentifierDeclaration.GetTypedValueObject: TDbgDwarfSymbolValue;
+var
+  ti: TDbgDwarfTypeIdentifier;
+begin
+  ti := NestedTypeInfo;
+  if ti <> nil then
+    Result := ti.GetTypedValueObject
+  else
+    Result := inherited GetTypedValueObject;
+end;
+
 { TDbgDwarfValueIdentifier }
 
 procedure TDbgDwarfValueIdentifier.KindNeeded;
@@ -3940,6 +4113,10 @@ end;
 
 destructor TDbgDwarfValueIdentifier.Destroy;
 begin
+  if FValueObject <> nil then begin
+    FValueObject.SetOwner(nil);
+    ReleaseRefAndNil(FValueObject);
+  end;
   ParentTypeInfo := nil;
   inherited Destroy;
 end;
@@ -4250,8 +4427,7 @@ begin
   end;
 
   if FInformationEntry.ReadValue(DW_AT_byte_size, ByteSize) then
-    //SetSize(ByteSize);
-  ;
+    SetSize(ByteSize);
 
   case Encoding of
     DW_ATE_address :      SetKind(skPointer);
@@ -4270,9 +4446,31 @@ begin
   end;
 end;
 
+procedure TDbgDwarfBaseIdentifierBase.SizeNeeded;
+var
+  ByteSize: Integer;
+begin
+  if FInformationEntry.ReadValue(DW_AT_byte_size, ByteSize) then
+    SetSize(ByteSize)
+  else
+    inherited SizeNeeded;
+end;
+
 procedure TDbgDwarfBaseIdentifierBase.TypeInfoNeeded;
 begin
   SetTypeInfo(nil);
+end;
+
+function TDbgDwarfBaseIdentifierBase.GetTypedValueObject: TDbgDwarfSymbolValue;
+begin
+  case Kind of
+    skPointer: ;
+    skInteger:  Result := TDbgDwarfIntegerSymbolValue.Create(Size);
+    skCardinal: Result := TDbgDwarfCardinalSymbolValue.Create(Size);
+    skBoolean: ;
+    skChar: ;
+    skFloat: ;
+  end;
 end;
 
 function TDbgDwarfBaseIdentifierBase.GetHasBounds: Boolean;
@@ -4316,6 +4514,11 @@ begin
     SetMemberVisibility(Val)
   else
     inherited MemberVisibilityNeeded;
+end;
+
+function TDbgDwarfTypeIdentifier.GetTypedValueObject: TDbgDwarfSymbolValue;
+begin
+  Result := nil;
 end;
 
 class function TDbgDwarfTypeIdentifier.CreateTypeSubClass(AName: String;
@@ -5809,13 +6012,13 @@ function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; out
   var
     idx: Integer;
     ADefs: PDwarfAbbrevEntry;
-    AdrSize: Byte;
+    AddrSize: Byte;
   begin
     ADefs := FAbbrevList.EntryPointer[ADef^.Index];
-    AdrSize := FAddressSize;
+    AddrSize := FAddressSize;
     for idx := 0 to ADef^.Count - 1 do
     begin
-      if not SkipEntryDataForForm(p, ADefs^.Form, AdrSize) then
+      if not SkipEntryDataForForm(p, ADefs^.Form, AddrSize) then
         exit(False);
       inc(ADefs);
     end;

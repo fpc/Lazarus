@@ -86,11 +86,19 @@ type
   );
   TDbgSymbolFields = set of TDbgSymbolField;
 
+  { TDbgSymbolValue }
+
   TDbgSymbolValue = class(TRefCountedObject)
+  protected
+    function GetAsBool: Boolean;  virtual;
+    function GetAsCardinal: QWord; virtual;
+    function GetAsInteger: Int64; virtual;
   public
-  // AsInt
-  // AsBool
-  // ...
+    property AsInteger: Int64 read GetAsInteger;
+    property AsCardinal: QWord read GetAsCardinal;
+    property AsBool: Boolean read GetAsBool;
+  // memdump
+    //function AsPrintable: String; virtual;
   end;
 
   { TDbgSymbol }
@@ -219,6 +227,7 @@ type
     procedure MemberVisibilityNeeded; override;
 
     function GetFlags: TDbgSymbolFlags; override;
+    function GetValueObject: TDbgSymbolValue; override;
     function GetHasOrdinalValue: Boolean; override;
     function GetOrdinalValue: Int64; override;
     function GetHasBounds: Boolean; override;
@@ -266,6 +275,23 @@ function dbgs(ADbgSymbolKind: TDbgSymbolKind): String;
 begin
   Result := '';
   WriteStr(Result, ADbgSymbolKind);
+end;
+
+{ TDbgSymbolValue }
+
+function TDbgSymbolValue.GetAsBool: Boolean;
+begin
+  Result := False;
+end;
+
+function TDbgSymbolValue.GetAsCardinal: QWord;
+begin
+  Result := 0;
+end;
+
+function TDbgSymbolValue.GetAsInteger: Int64;
+begin
+  Result := 0;
 end;
 
 { TDbgInfoAddressContext }
@@ -627,6 +653,17 @@ begin
     Result := p.Flags
   else
     Result := [];  //  Result := inherited GetFlags;
+end;
+
+function TDbgSymbolForwarder.GetValueObject: TDbgSymbolValue;
+var
+  p: TDbgSymbol;
+begin
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.Value
+  else
+    Result := nil;  //  Result := inherited Value;
 end;
 
 function TDbgSymbolForwarder.GetHasOrdinalValue: Boolean;
