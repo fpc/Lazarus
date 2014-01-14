@@ -951,12 +951,12 @@ end;
 
 function TChart.GetChartHeight: Integer;
 begin
-  Result := FClipRect.Right - FClipRect.Left;
+  Result := FClipRect.Bottom - FClipRect.Top;
 end;
 
 function TChart.GetChartWidth: Integer;
 begin
-  Result := FClipRect.Bottom - FClipRect.Top;
+  Result := FClipRect.Right - FClipRect.Left;
 end;
 
 procedure TChart.GetChildren(AProc: TGetChildProc; ARoot: TComponent);
