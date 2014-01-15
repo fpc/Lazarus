@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Juha Manninen <juha.manninen@phnet.fi>\n"
+"Last-Translator: x <y>\n"
 "Language-Team: \n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -4458,7 +4458,7 @@ msgstr "FPC käännösyksikköä: %s.ppu ei löydy käännettynä.%sSe tavallise
 
 #: lazarusidestrconsts.lisccoppuolderthancompiler
 msgid "There is a .ppu file older than the compiler itself:%s%s"
-msgstr "Löytyi itse kääntäjää vanhempi .ppu tiedosto:%s%s"
+msgstr "Löytyi itse kääntäjää vanhempi .ppu-tiedosto:%s%s"
 
 #: lazarusidestrconsts.lisccoseveralcompilers
 msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
@@ -5798,7 +5798,7 @@ msgstr "Kääntäjä"
 
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 msgid "Compiler \"%s\" does not support target %s-%s"
-msgstr "Kääntäjä \"%s\" ei tuo kohdetta %s-%s"
+msgstr "Kääntäjä \"%s\" ei tue kohdetta %s-%s"
 
 #: lazarusidestrconsts.liscompilererrorinvalidcompiler
 msgid "Error: invalid compiler: %s"
@@ -6318,7 +6318,7 @@ msgstr "Käy läpi FPC-viestit"
 
 #: lazarusidestrconsts.liscoscanformakemessages
 msgid "Scan for Make messages"
-msgstr "Käy läpi Make viestit"
+msgstr "Käy läpi Make-viestit"
 
 #: lazarusidestrconsts.liscoscanformessages
 msgid "Scan for messages:"
@@ -12251,7 +12251,7 @@ msgstr "Näytä tarpeettomat riippuvuudet"
 
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
-msgstr "Kun lomake on talletettu, IDE voi tallentaa kaikki TTranslateString ominaisuudet paketin po tiedostoon. Siksi I18N pitää sallia tälle paketille, antaa po-hakemisto ja jättää tämä asetus ruksaamatta."
+msgstr "Kun lomake on talletettu, IDE voi tallentaa kaikki TTranslateString ominaisuudet paketin po-tiedostoon. Siksi I18N pitää sallia tälle paketille, antaa po-hakemisto ja jättää tämä asetus ruksaamatta."
 
 #: lazarusidestrconsts.lispdabort
 msgctxt "lazarusidestrconsts.lispdabort"
@@ -13026,7 +13026,7 @@ msgstr "Muuta kirjasinta"
 
 #: lazarusidestrconsts.lisplistcopymethodtoclipboard
 msgid "Copy method name to the clipboard"
-msgstr "Kopio metodin nimi leikepöydälle"
+msgstr "Kopioi metodin nimi leikepöydälle"
 
 #: lazarusidestrconsts.lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -13059,7 +13059,7 @@ msgstr "Tyyppi"
 
 #: lazarusidestrconsts.lispochoosepofiledirectory
 msgid "Choose .po file directory"
-msgstr "Valitse .po tiedoston hakemisto"
+msgstr "Valitse .po-tiedoston hakemisto"
 
 #: lazarusidestrconsts.lispodonotsaveanysessioninfo
 msgid "Do not save any session info"
@@ -14289,7 +14289,7 @@ msgstr "Laskeva"
 
 #: lazarusidestrconsts.lissortseldomain
 msgid "Domain"
-msgstr "Lajittelu peruste"
+msgstr "Lajitteluperuste"
 
 #: lazarusidestrconsts.lissortselignorespace
 msgid "Ignore Space"
@@ -14883,7 +14883,7 @@ msgstr "Projektilla ei ole päätiedostoa."
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
-msgstr "Projektin info tiedosto %s%s%s%son/olisi saman niminen kuin projektin pääohjelman tiedosto!"
+msgstr "Projektin info-tiedosto %s%s%s%son/olisi saman niminen kuin projektin pääohjelman tiedosto!"
 
 #: lazarusidestrconsts.listheprojectinformationfilehaschangedondisk
 msgid "The project information file %s%s%s%shas changed on disk."
@@ -15419,7 +15419,7 @@ msgstr "kyllä"
 
 #: lazarusidestrconsts.lisuishowcodetoolsvalues
 msgid "Show CodeTools Values"
-msgstr "Näytä CodeTools arvot"
+msgstr "Näytä CodeTools-arvot"
 
 #: lazarusidestrconsts.lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"
@@ -15848,7 +15848,7 @@ msgstr "Ylös"
 
 #: lazarusidestrconsts.lisupdateinfo
 msgid "Update info"
-msgstr "Päivitä info"
+msgstr "Päivitä tiedot"
 
 #: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
 msgid "Update other procedure signatures when only letter case has changed"
@@ -16013,7 +16013,7 @@ msgstr "Pystysuunta"
 
 #: lazarusidestrconsts.lisvertoclipboard
 msgid "Copy version information to clipboard"
-msgstr "Kopio versiotieto leikepöydälle"
+msgstr "Kopioi versiotieto leikepöydälle"
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
 msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
@@ -16866,7 +16866,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmeccopy
 msgid "Copy selection to clipboard"
-msgstr "Kopio valinta leikepöydälle"
+msgstr "Kopioi valinta leikepöydälle"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
@@ -17952,7 +17952,7 @@ msgstr "&Sulje välilehti"
 
 #: lazarusidestrconsts.uemcopyfilename
 msgid "Copy Filename"
-msgstr "Kopio tiedoston nimi"
+msgstr "Kopioi tiedoston nimi"
 
 #: lazarusidestrconsts.uemcopytonewwindow
 msgid "Clone to New Window"
