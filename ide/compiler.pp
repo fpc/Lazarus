@@ -644,7 +644,7 @@ begin
     // ToDo: figure out the length in a more clever way.
     if (Length(aOptAndValue) < 3) or (aOptAndValue[1] <> '-') then
       raise Exception.CreateFmt('Invalid option or value "%s".', [aOptAndValue]);
-    if aOptAndValue[2] in ['e', 'd', 'u', 'I', 'k', 'o'] then
+    if aOptAndValue[2] in ['e', 'u', 'I', 'k', 'o'] then
       OptLen := 2
     else
       OptLen := 3;
@@ -1125,7 +1125,7 @@ begin
       for j := 0 to sl.Count-1 do
         if AnsiStartsStr('-d', sl[j]) then
         begin
-          if not AnsiStartsStr(CommentId, sl[j]) then
+          if (Length(sl[j]) > 2) and not AnsiStartsStr(CommentId, sl[j]) then
             fDefines.Add(sl[j])
         end
         else

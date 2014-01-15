@@ -146,6 +146,7 @@ var
 begin
   EditForm := TCustomDefinesForm.Create(Nil);
   try
+  try
     EditForm.OptionsReader := FOptionsReader;
     EditForm.OptionsThread := FOptionsThread;
     EditForm.CustomOptions := memoCustomOptions.Lines;
@@ -158,6 +159,10 @@ begin
       EditForm.ToCustomOptions(memoCustomOptions.Lines);
       memoCustomOptions.Invalidate;
     end;
+  except
+    on E: Exception do
+      ShowMessage('Error parsing custom options: '+E.Message);
+  end;
   finally
     EditForm.Free;
   end;
