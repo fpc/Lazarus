@@ -354,7 +354,7 @@ type
                            const OnQuickSyntaxCheckEvent: TModalHandledFunction;
                            AsLast: boolean = false);
     procedure RemoveHandlerOnQuickSyntaxCheck(
-                               const OnQuickSyntaxCheckEvent: TModalHandledFunction);
+                           const OnQuickSyntaxCheckEvent: TModalHandledFunction);
   end;
   
 var

@@ -597,7 +597,7 @@ begin
         end;
       end;
     end;
-  // ConvertUnit .dfm file to .lfm file (without context type checking)
+  // Convert Unit .dfm file to .lfm file (without context type checking)
   if FileExistsUTF8(LfmFilename) then begin
     DFMConverter:=TDFMConverter.Create;
     try
@@ -607,9 +607,10 @@ begin
     finally
       DFMConverter.Free;
     end;
-    // Change encoding to UTF-8
+    // Read pascal unit code in.
     Result:=LoadCodeBuffer(TempLFMBuffer,LfmFilename,
                            [lbfCheckIfText,lbfUpdateFromDisk],true);
+    // Change encoding to UTF-8
     if TempLFMBuffer.DiskEncoding<>EncodingUTF8 then begin
       fOwnerConverter.fSettings.AddLogLine(Format(lisConvDelphiChangedEncodingToUTF8,
                                                   [TempLFMBuffer.DiskEncoding]));
