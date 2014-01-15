@@ -187,6 +187,7 @@ var
 begin
   ResetParamsAndCfg;
   l := GetCfgFileContent;
+  if l = nil then exit;
   i := l.Count - 1;
   while i >= 0 do begin
     if not(
