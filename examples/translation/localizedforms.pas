@@ -23,7 +23,9 @@ type
   protected
     procedure UpdateTranslation(ALang: String); virtual;
   public
+    (* Activate for Lazarus version older than 1.2
     procedure FlipChildren(AllLevels: Boolean); override;
+    *)
   end;
 
 var
@@ -35,9 +37,11 @@ procedure UpdateBiDiMode(ALang: String);
 procedure UpdateFormatSettings(ALang: String);  // Windows only!
 
 // Utility functions for Windows only
+{$IFDEF MSWINDOWS}
 function GetFullLangCodeFromLCID(LCID: Integer): String;
 function GetLangCodeFromLCID(LCID: Integer): String;
 function GetLCIDFromLangCode(ALang: String): Integer;
+{$ENDIF}
 
 
 implementation
@@ -53,6 +57,7 @@ uses
 
 { Local procedures }
 
+{$IFDEF MSWINDOWS}
 function GetLocaleStr(LCID, LT: Longint; const Def: string): ShortString;
 // borrowed from SysUtils
 var
@@ -65,20 +70,19 @@ begin
   else
     Result := Def;
 end;
+{$ENDIF}
 
 
-{ Utility procedures }
+{ Utility procedures - Windows-only }
 
+{$IFDEF MSWINDOWS}
 { This is how to convert LCID to language code like 'de', 'en', etc.
   Works only for Windows.
   See also: GetFullLangCode}
 function GetLangCodeFromLCID(LCID: Integer): String;
-{$IFDEF MSWINDOWS}
 var
   language: PAnsiChar;
-{$ENDIF}
 begin
- {$IFDEF MSWINDOWS}
   language := StrAlloc(255);
   try
     GetLocaleInfoA(LCID, LOCALE_SISO639LANGNAME, PAnsiChar(language), 255);
@@ -86,9 +90,7 @@ begin
   finally
     StrDispose(language);
   end;
- {$ELSE}
   Result := '';
- {$ENDIF}
 end;
 
 { This is how to convert LCID to language code like 'de_DE', 'en_US', etc.
@@ -98,12 +100,9 @@ end;
   or http://delphi.cjcsoft.net/viewthread.php?tid=45881
   or http://msdn.microsoft.com/en-us/library/dd318101%28VS.85%29.aspx }
 function GetFullLangCodeFromLCID(LCID: Integer): String;
-{$IFDEF MSWINDOWS}
 var
   language, country: PAnsiChar;
-{$ENDIF}
 begin
- {$IFDEF MSWINDOWS}
   language := StrAlloc(255);
   country := StrAlloc(255);
   try
@@ -114,24 +113,12 @@ begin
     StrDispose(country);
     StrDispose(language);
   end;
- {$ELSE}
-  Result := '';
- {$ENDIF}
-end;
-
-procedure UpdateBiDiMode(ALang: String);
-begin
-  if Application.IsRTLLang(ALang) then
-    Application.BidiMode := bdRightToLeft
-  else
-    Application.BiDiMode := bdLeftToRight;
 end;
 
 { This function determines the LCID from the language code.
   Works only for Windows. }
 function GetLCIDFromLangCode(ALang: String): Integer;
 begin
- {$IFDEF MSWINDOWS}
  case lowercase(ALang) of
    'ar'   : Result := $0401;    // Arabic
    'bg'   : Result := $0403;    // Bulgarian
@@ -155,8 +142,8 @@ begin
    // http://www.science.co.il/Language/Locale-codes.asp
    else  raise Exception.CreateFmt('Language "%s" not supported. Please add to GetLCIDFromLangCode.',[ALang]);
  end;
- {$ENDIF}
 end;
+{$ENDIF}
 
 { SetDefaultSettings changes the FormatSettings according to the selected
   language. Unfortunately there is not platform-independent way to do this
@@ -182,14 +169,21 @@ begin
  {$ENDIF}
 end;
 
+procedure UpdateBiDiMode(ALang: String);
+begin
+  if Application.IsRTLLang(ALang) then
+    Application.BidiMode := bdRightToLeft
+  else
+    Application.BiDiMode := bdLeftToRight;
+end;
+
 
 {  TLocalizedForm  }
 
-{ FlipChildren does not work correctly with TRadioGroup and TCheckGroup. This
-  work-around by-passes these classes for the FlipChildren action.
-  A patch has been submitted to bugtracker fixing this issue permanently
-  (http://mantis.freepascal.org/view.php?id=25408). This method is no longer
-  needed once that patch has been included in Lazarus. }
+{ This is a workaround for older version of Lazarus where FlipChildren does
+  not work correctly with TRadioGroup and TCheckGroup. Activate this code
+  for versions older than Lazarus 1.2 }
+(*
 procedure TLocalizedForm.FlipChildren(AllLevels: Boolean);
 
   procedure _DoFlipChildren(AControl: TWinControl);
@@ -213,6 +207,7 @@ begin
    _DoFlipChildren(Self);
  inherited FlipChildren(false);
 end;
+*)
 
 { Each inherited form will have to put code in procedure
   UpdateTranslation(ALang: String) to translate strings not
