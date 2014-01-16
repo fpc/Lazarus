@@ -4506,9 +4506,9 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiUnit;
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist,ofAllowMultiSelect];
     OpenDialog.Filter:=lisDelphiUnit+' (*.pas)|*.pas|'+
                        dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
-    OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
     if InputHistories.LastConvertDelphiUnit<>'' then begin
       OpenDialog.InitialDir:=ExtractFilePath(InputHistories.LastConvertDelphiUnit);
       OpenDialog.Filename  :=ExtractFileName(InputHistories.LastConvertDelphiUnit);
@@ -4543,6 +4543,7 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiProject;
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
     OpenDialog.Filter:=lisDelphiProject+' (*.dpr)|*.dpr|'+
                        lisLazarusProject+' (*.lpr)|*.lpr|'+
                        dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
@@ -4572,6 +4573,7 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiPackage;
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
     OpenDialog.Filter:=lisDelphiPackage+' (*.dpk)|*.dpk|'+
                        dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     if InputHistories.LastConvertDelphiPackage<>'' then begin
