@@ -189,6 +189,8 @@ begin
   RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartListbox]);
 end;
 
+{ TChartListbox }
+
 constructor TChartListbox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -213,11 +215,12 @@ var
 begin
   ACheckBoxRect := ZeroRect;
   ASeriesIconRect := ZeroRect;
-  w := GetSystemMetrics(SM_CYMENUCHECK);
-  x := 2;
+
+  w := Canvas.TextHeight('Tg');
+  x := 4;
   if cloShowCheckboxes in Options then begin
     with AItemRect do
-      ACheckboxRect := Bounds(Left + 1, (Top + Bottom - w) div 2, w, w);
+      ACheckboxRect := Bounds(Left + 4, (Top + Bottom - w) div 2, w, w);
     if cloShowIcons in Options then
       x += ACheckboxRect.Right;
   end
@@ -304,9 +307,8 @@ begin
     OnDrawItem(Self, AIndex, ARect, AState);
     exit;
   end;
-  if
-    (odPainted in AState) or (FChart = nil) or not InRange(AIndex, 0, Count - 1)
-  then exit;
+  if (FChart = nil) or not InRange(AIndex, 0, Count - 1) then
+    exit;
 
   Canvas.FillRect(ARect);
   CalcRects(ARect, rcb, ricon);
