@@ -1178,6 +1178,7 @@ end;
 
 procedure TZoomDragTool.MouseMove(APoint: TPoint);
 begin
+  if not IsActive then exit;
   SelectionRect := Rect(SelectionRect.Left, SelectionRect.Top, APoint.X, APoint.Y);
   Handled;
 end;
