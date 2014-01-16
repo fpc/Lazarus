@@ -527,7 +527,7 @@ begin
     FSize := Round(NSFont.systemFontSize);
   end
   else
-    FSize := ALogFont.lfHeight;
+    FSize := Abs(ALogFont.lfHeight);
 
   // create font attributes
   Win32Weight := ALogFont.lfWeight;
@@ -543,7 +543,7 @@ begin
 
   Attributes := NSDictionary.dictionaryWithObjectsAndKeys(
         NSStringUTF8(FName), NSFontFamilyAttribute,
-        NSNumber.numberWithFloat(ALogFont.lfHeight), NSFontSizeAttribute,
+        NSNumber.numberWithFloat(FSize), NSFontSizeAttribute,
         nil);
 
   Descriptor := NSFontDescriptor.fontDescriptorWithFontAttributes(Attributes);
