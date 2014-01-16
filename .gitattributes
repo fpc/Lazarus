@@ -4399,6 +4399,25 @@ examples/database/sqldbtutorial3/readme.txt svneol=native#text/plain
 examples/database/sqldbtutorial3/sqldbtutorial3.ini svneol=native#text/plain
 examples/database/sqldbtutorial3/sqldbtutorial3.lpi svneol=native#text/plain
 examples/database/sqldbtutorial3/sqldbtutorial3.lpr svneol=native#text/pascal
+examples/database/sqlite_mushrooms/ImageTest.db3 -text
+examples/database/sqlite_mushrooms/Mushroom_Report.lrf svneol=native#text/plain
+examples/database/sqlite_mushrooms/Readme.txt svneol=native#text/plain
+examples/database/sqlite_mushrooms/images/320px-Amanita_phalloides.jpg -text svneol=unset#image/jpeg
+examples/database/sqlite_mushrooms/images/320px-Conocybe.jpg -text svneol=unset#image/jpeg
+examples/database/sqlite_mushrooms/images/320px-Destroying_Angel.jpg -text svneol=unset#image/jpeg
+examples/database/sqlite_mushrooms/images/320px-FalseMorel.jpg -text svneol=unset#image/jpeg
+examples/database/sqlite_mushrooms/images/320px-Galerina.jpg -text svneol=unset#image/jpeg
+examples/database/sqlite_mushrooms/images/Small-Amanita_phalloides_1.JPG -text svneol=unset#image/jpeg
+examples/database/sqlite_mushrooms/images/Small-Conocybe_rugosa.jpg -text svneol=unset#image/jpeg
+examples/database/sqlite_mushrooms/images/Small-Destroying_Angel_02.jpg -text svneol=unset#image/jpeg
+examples/database/sqlite_mushrooms/images/Small-FalseMorel.JPG -text svneol=unset#image/jpeg
+examples/database/sqlite_mushrooms/images/Small-Galerina.jpg -text svneol=unset#image/jpeg
+examples/database/sqlite_mushrooms/project1.ico -text svneol=unset#image/ico
+examples/database/sqlite_mushrooms/project1.lpi svneol=native#text/plain
+examples/database/sqlite_mushrooms/project1.lpr svneol=native#text/pascal
+examples/database/sqlite_mushrooms/project1.res -text
+examples/database/sqlite_mushrooms/unit1.lfm svneol=native#text/plain
+examples/database/sqlite_mushrooms/unit1.pas svneol=native#text/pascal
 examples/database/tsqlscript/dbconfig.pas svneol=native#text/pascal
 examples/database/tsqlscript/dbconfiggui.lfm svneol=native#text/plain
 examples/database/tsqlscript/dbconfiggui.pas svneol=native#text/pascal
