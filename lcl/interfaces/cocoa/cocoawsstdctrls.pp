@@ -678,8 +678,12 @@ begin
   scr.setHasHorizontalScroller(HorizontalScrollerVisible[TMemo(AWinControl).ScrollBars]);
   scr.setAutohidesScrollers(ScrollerAutoHide[TMemo(AWinControl).ScrollBars]);
 
+  if TCustomMemo(AWinControl).BorderStyle=bsSingle then
+     scr.setBorderType(NSBezelBorder);
+
   nr:=scr.documentVisibleRect;
   txt.setFrame(nr);
+  txt.textContainer.setLineFragmentPadding(0);
 
   txt.callback := TLCLCommonCallback.Create(txt, AWinControl);
   ns := NSStringUtf8(AParams.Caption);
