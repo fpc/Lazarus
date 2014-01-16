@@ -915,11 +915,16 @@ begin
     FTextStorage.addAttribute_value_range(NSFontAttributeName, FFont.Font, Range);
     // aply font attributes which are not in NSFont
     if cfs_Underline in FFont.Style then
-      FTextStorage.addAttribute_value_range(NSUnderlineStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range);
+      FTextStorage.addAttribute_value_range(NSUnderlineStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range)
+     else
+     FTextStorage.removeAttribute_range(NSUnderlineStyleAttributeName, Range);
+
     if cfs_Strikeout in FFont.Style then
       FTextStorage.addAttribute_value_range(NSStrikethroughStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range)
     else
       FTextStorage.removeAttribute_range(NSStrikethroughStyleAttributeName, Range);
+
+
   end;
 end;
 
