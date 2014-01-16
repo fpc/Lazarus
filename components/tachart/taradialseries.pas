@@ -123,6 +123,7 @@ type
     function GraphPoint(AIndex: Integer): TDoublePoint;
     procedure PrepareAngleCache;
   protected
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure SourceChanged(ASender: TObject); override;
   public
     procedure Assign(ASource: TPersistent); override;
@@ -593,6 +594,11 @@ begin
   Result := EmptyExtent;
   for i := 0 to Count - 1 do
     ExpandRect(Result, GraphPoint(i));
+end;
+
+procedure TPolarSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemLine.Create(LinePen, LegendTextSingle));
 end;
 
 function TPolarSeries.GraphPoint(AIndex: Integer): TDoublePoint;
