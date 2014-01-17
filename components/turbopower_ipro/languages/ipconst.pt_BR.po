@@ -406,6 +406,14 @@ msgid "Unsupported protocol in URL:%s"
 msgstr "Protocolo não suportado na URL: %s"
 
 #: ipconst.sicmpecho
+#, fuzzy
+#| msgid ""
+#| "Echo reply (Hop number: %d)\n"
+#| "             Status = %d\n"
+#| "             RTTime = %d\n"
+#| "             Ttl = %d\n"
+#| "             Tos = %d\n"
+#| "             IpFlags = %d\n"
 msgid ""
 "Echo reply (Hop number: %d)\n"
 "             Status = %d\n"
