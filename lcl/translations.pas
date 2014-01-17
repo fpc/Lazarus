@@ -60,27 +60,17 @@ unit Translations;
 {$mode objfpc}{$H+}{$INLINE ON}
 {$include include/lcl_defines.inc}
 
-{$IF FPC_FULLVERSION>20602}
-  {$DEFINE HasRSJ}
-{$ENDIF}
-
 interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList, AvgLvlTree,
-  LConvEncoding
-  {$IFDEF HasRSJ}
-  ,jsonparser, fpjson
-  {$ENDIF}
-  ;
+  LConvEncoding, jsonparser, fpjson;
 
 type
   TStringsType = (
     stLrt, // Lazarus resource string table
-    stRst // FPC resource string table
-    {$IFDEF HasRSJ}
-    ,stRsj  // resource string table in JSON format
-    {$ENDIF}
+    stRst, // FPC resource string table (before FPC 2.7.1)
+    stRsj  // FPC resource string table in JSON format (since FPC 2.7.1)
     );
   TTranslateUnitResult = (turOK, turNoLang, turNoFBLang, turEmptyParam);
 
@@ -349,11 +339,9 @@ begin
 
           if CompareFileExt(Filename,'.lrt')=0 then
             BasePOFile.UpdateStrings(InputLines, stLrt)
-          {$IFDEF HasRSJ}
           else
           if CompareFileExt(Filename,'.rsj')=0 then
             BasePOFile.UpdateStrings(InputLines, stRsj)
-          {$ENDIF}
           else
             BasePOFile.UpdateStrings(InputLines, stRst);
 
@@ -872,38 +860,37 @@ var
     p := 1;
   end;
 
-  {$IFDEF HasRSJ}
   procedure UpdateFromRsj;
   var
     Parser: TJSONParser;
-    JsonData, JsonItems: TJSONData;
-    JsonItem: TJSONObject;
+    JsonItems: TJSONArray;
+    JsonData, JsonItem: TJSONObject;
     I: Integer;
   begin
     Parser := TJSONParser.Create(InputLines.Text);
     try
-      JsonData := Parser.Parse;
-      JsonItems := JsonData.GetPath('strings');
-      for I := 0 to JsonItems.Count - 1 do
-      begin
-        JsonItem := JsonItems.Items[I] as TJSONObject;
-        UpdateItem(JsonItem.Get('name'), JsonItem.Get('value'));
+      JsonData := Parser.Parse as TJSONObject;
+      try
+        JsonItems := JsonData.Arrays['strings'];
+        for I := 0 to JsonItems.Count - 1 do
+        begin
+          JsonItem := JsonItems.Items[I] as TJSONObject;
+          UpdateItem(JsonItem.Get('name'), JsonItem.Get('value'));
+        end;
+      finally
+        JsonData.Free;
       end;
-      JsonData.Free;
     finally
       Parser.Free;
     end;
   end;
-  {$ENDIF}
 
 begin
   ClearModuleList;
   UntagAll;
-  {$IFDEF HasRSJ}
   if SType = stRsj then
     UpdateFromRsj
   else
-  {$ENDIF}
   begin
     // for each string in lrt/rst list check if it's already in PO
     // if not add it

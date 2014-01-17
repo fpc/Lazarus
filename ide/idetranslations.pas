@@ -27,10 +27,6 @@ unit IDETranslations;
 
 {$mode objfpc}{$H+}
 
-{$IF FPC_FULLVERSION>20602}
-  {$DEFINE HasRSJ}
-{$ENDIF}
-
 interface
 
 uses
@@ -337,10 +333,8 @@ begin
         FileType:=stLrt
       else if CompareFileExt(Filename,'.rst',false)=0 then
         FileType:=stRst
-      {$IFDEF HasRSJ}
       else if CompareFileExt(Filename,'.rsj',false)=0 then
         FileType:=stRsj
-      {$ENDIF}
       else
         continue;
       SrcBuf:=CodeToolBoss.LoadFile(Filename,true,false);
