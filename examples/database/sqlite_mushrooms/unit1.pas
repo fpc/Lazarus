@@ -106,7 +106,7 @@ end;
 procedure TForm1.Bt_PrintClick(Sender: TObject);
 begin
   frReport1.LoadFromFile(ExtractFilePath(application.ExeName) +
-    '\Mushroom_Report.lrf');
+    'Mushroom_Report.lrf');
   frReport1.ShowReport();
 end;
 procedure TForm1.DBEdit1Change(Sender: TObject);
@@ -213,9 +213,9 @@ end;
 
 procedure TForm1.frReport1EnterRect(Memo: TStringList; View: TfrView);
 begin
-    if View.Name = 'Picture2' then
-       if   DBEdit1.Text <> '' then
-  TFrPictureView(View).Picture.LoadFromFile(ExtractFilePath(ParamStr(0)) +
+   if  (View.Name = 'Picture2') AND
+   (frDBDataSet1.DataSet.FieldByName('Image_Link').AsString <> '') then
+    TFrPictureView(View).Picture.LoadFromFile(ExtractFilePath(ParamStr(0)) +
   'images' +  DirectorySeparator +  frDBDataSet1.DataSet.FieldByName('Image_Link').AsString);
 end;
 

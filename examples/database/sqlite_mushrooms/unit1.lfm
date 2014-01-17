@@ -179,7 +179,7 @@ object Form1: TForm1
   end
   object DBText1: TDBText
     Left = 88
-    Height = 20
+    Height = 24
     Top = 48
     Width = 240
     Alignment = taCenter
