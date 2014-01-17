@@ -1806,7 +1806,7 @@ begin
   if (Msk <> nil) and (Msk.Image <> nil) then
     begin
     MskImage := Msk.CreateMaskImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight));
-    ImgRect := CGRectMake(0, 0, SrcWidth, SrcHeight);
+    ImgRect := CGRectMake(x, -y, SrcWidth, SrcHeight);
     CGContextSaveGState(CGContext);
     CGContextScaleCTM(CGContext, 1, -1);
     CGContextTranslateCTM(CGContext, 0, -SrcHeight);
