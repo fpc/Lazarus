@@ -64,10 +64,10 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList, AvgLvlTree,
-  LConvEncoding;
+  LConvEncoding, jsonparser, fpjson;
 
 type
-  TStringsType = (stLrt, stRst);
+  TStringsType = (stLrt, stRst, stRsj);
   TTranslateUnitResult = (turOK, turNoLang, turNoFBLang, turEmptyParam);
 
 type
@@ -324,8 +324,9 @@ begin
     // Update po file with lrt or/and rst files
     for i:=0 to Files.Count-1 do begin
       Filename:=Files[i];
-      if (CompareFileExt(Filename,'.lrt')=0)
-      or (CompareFileExt(Filename,'.rst')=0) then
+      if (CompareFileExt(Filename,'.lrt')=0) or 
+         (CompareFileExt(Filename,'.rst')=0) or 
+         (CompareFileExt(Filename,'.rsj')=0) then
         try
           //DebugLn('');
           //DebugLn(['AddFiles2Po Filename="',Filename,'"']);
@@ -334,6 +335,9 @@ begin
 
           if CompareFileExt(Filename,'.lrt')=0 then
             BasePOFile.UpdateStrings(InputLines, stLrt)
+          else
+          if CompareFileExt(Filename,'.rsj')=0 then
+            BasePOFile.UpdateStrings(InputLines, stRsj)
           else
             BasePOFile.UpdateStrings(InputLines, stRst);
 
@@ -852,110 +856,135 @@ var
     p := 1;
   end;
 
+  procedure UpdateFromRsj;
+  var
+    Parser: TJSONParser;
+    JsonData: TJSONData;
+    JsonItem: TJSONObject;
+    I: Integer;
+  begin
+    Parser := TJSONParser.Create(InputLines.Text);
+    try
+      JsonData := Parser.Parse.GetPath('strings');
+      for I := 0 to JsonData.Count - 1 do
+      begin
+        JsonItem := JsonData.Items[I] as TJSONObject;
+        UpdateItem(JsonItem.Get('name'), JsonItem.Get('value'));
+      end;
+    finally
+      Parser.Free;
+    end;
+  end;
+
 begin
   ClearModuleList;
   UntagAll;
-  // for each string in lrt/rst list check if it's already in PO
-  // if not add it
-  Value := '';
-  Identifier := '';
-  i := 0;
-  while i < InputLines.Count do begin
+  if SType = stRsj then
+    UpdateFromRsj
+  else
+  begin
+    // for each string in lrt/rst list check if it's already in PO
+    // if not add it
+    Value := '';
+    Identifier := '';
+    i := 0;
+    while i < InputLines.Count do begin
 
-    Line := InputLines[i];
-    n := Length(Line);
+      Line := InputLines[i];
+      n := Length(Line);
 
-    if n=0 then
-      // empty line
-    else
-    if SType=stLrt then begin
-
-      p:=Pos('=',Line);
-      Value :=copy(Line,p+1,n-p); //if p=0, that's OK, all the string
-      Identifier:=copy(Line,1,p-1);
-      UpdateItem(Identifier, Value);
-
-    end else begin
-      // rst file
-      if Line[1]='#' then begin
-        // rst file: comment
-
-        Value := '';
-        Identifier := '';
-        MultilinedValue := false;
-
-      end else begin
+      if n=0 then
+        // empty line
+      else
+      if SType=stLrt then begin
 
         p:=Pos('=',Line);
-        if P>0 then begin
+        Value :=copy(Line,p+1,n-p); //if p=0, that's OK, all the string
+        Identifier:=copy(Line,1,p-1);
+        UpdateItem(Identifier, Value);
 
-          Identifier := copy(Line,1,p-1);
-          inc(p); // points to ' after =
+      end else begin
+        // rst file
+        if Line[1]='#' then begin
+          // rst file: comment
 
           Value := '';
-          while p<=n do begin
+          Identifier := '';
+          MultilinedValue := false;
 
-            if Line[p]='''' then begin
-              inc(p);
-              j:=p;
-              while (p<=n)and(Line[p]<>'''') do
-                inc(p);
-              Value := Value + copy(Line, j, P-j);
-              inc(p);
-              continue;
-            end else
-            if Line[p] = '#' then begin
-              // a #decimal
-              repeat
+        end else begin
+
+          p:=Pos('=',Line);
+          if P>0 then begin
+
+            Identifier := copy(Line,1,p-1);
+            inc(p); // points to ' after =
+
+            Value := '';
+            while p<=n do begin
+
+              if Line[p]='''' then begin
                 inc(p);
                 j:=p;
-                while (p<=n)and(Line[p] in ['0'..'9']) do
+                while (p<=n)and(Line[p]<>'''') do
                   inc(p);
+                Value := Value + copy(Line, j, P-j);
+                inc(p);
+                continue;
+              end else
+              if Line[p] = '#' then begin
+                // a #decimal
+                repeat
+                  inc(p);
+                  j:=p;
+                  while (p<=n)and(Line[p] in ['0'..'9']) do
+                    inc(p);
 
-                Ch := Chr(StrToInt(copy(Line, j, p-j)));
-                Value := Value + Ch;
-                if Ch in [#13,#10] then
-                  MultilinedValue := True;
+                  Ch := Chr(StrToInt(copy(Line, j, p-j)));
+                  Value := Value + Ch;
+                  if Ch in [#13,#10] then
+                    MultilinedValue := True;
 
-                if (p=n) and (Line[p]='+') then
-                  NextLine;
+                  if (p=n) and (Line[p]='+') then
+                    NextLine;
 
-              until (p>n) or (Line[p]<>'#');
-            end else
-            if Line[p]='+' then
-              NextLine
-            else
-              inc(p); // this is an unexpected string
-          end;
-
-          if Value<>'' then begin
-            if MultiLinedValue then begin
-              // check that we end on lineending, multilined
-              // resource strings from rst usually do not end
-              // in lineending, fix here.
-              if not (Value[Length(Value)] in [#13,#10]) then
-                Value := Value + LineEnding;
-            end;
-            // po requires special characters as #number
-            p:=1;
-            while p<=length(Value) do begin
-              j := UTF8CharacterLength(pchar(@Value[p]));
-              if (j=1) and (Value[p] in [#0..#9,#11,#12,#14..#31,#127..#255]) then
-                Value := copy(Value,1,p-1)+'#'+IntToStr(ord(Value[p]))+copy(Value,p+1,length(Value))
+                until (p>n) or (Line[p]<>'#');
+              end else
+              if Line[p]='+' then
+                NextLine
               else
-                inc(p,j);
+                inc(p); // this is an unexpected string
             end;
 
-            UpdateItem(Identifier, Value);
-          end;
+            if Value<>'' then begin
+              if MultiLinedValue then begin
+                // check that we end on lineending, multilined
+                // resource strings from rst usually do not end
+                // in lineending, fix here.
+                if not (Value[Length(Value)] in [#13,#10]) then
+                  Value := Value + LineEnding;
+              end;
+              // po requires special characters as #number
+              p:=1;
+              while p<=length(Value) do begin
+                j := UTF8CharacterLength(pchar(@Value[p]));
+                if (j=1) and (Value[p] in [#0..#9,#11,#12,#14..#31,#127..#255]) then
+                  Value := copy(Value,1,p-1)+'#'+IntToStr(ord(Value[p]))+copy(Value,p+1,length(Value))
+                else
+                  inc(p,j);
+              end;
 
-        end; // if p>0 then begin
+              UpdateItem(Identifier, Value);
+            end;
+
+          end; // if p>0 then begin
+        end;
       end;
-    end;
 
-    inc(i);
+      inc(i);
+    end;
   end;
-  
+
   RemoveUntaggedModules;
 end;
 
