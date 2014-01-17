@@ -412,14 +412,6 @@ msgid "Unsupported protocol in URL:%s"
 msgstr "不支持的协议 URL:%s"
 
 #: ipconst.sicmpecho
-#, fuzzy
-#| msgid ""
-#| "Echo reply (Hop number: %d)\n"
-#| "             Status = %d\n"
-#| "             RTTime = %d\n"
-#| "             Ttl = %d\n"
-#| "             Tos = %d\n"
-#| "             IpFlags = %d\n"
 msgid ""
 "Echo reply (Hop number: %d)\n"
 "             Status = %d\n"

@@ -2440,10 +2440,6 @@ msgctxt "lazarusidestrconsts.dlgmouseoptmodshift"
 msgid "Shift"
 msgstr "Shift"
 
-#: lazarusidestrconsts.dlgmouseoptmovemousefalse
-msgid ""
-msgstr ""
-
 #: lazarusidestrconsts.dlgmouseoptmovemousetrue
 msgctxt "lazarusidestrconsts.dlgmouseoptmovemousetrue"
 msgid "Y"
@@ -3500,10 +3496,6 @@ msgstr "Переглянути Історію"
 #: lazarusidestrconsts.histdlgbtnshowsnaphint
 msgid "View Snapshots"
 msgstr "Переглянути Знімок"
-
-#: lazarusidestrconsts.histdlgcolumncur
-msgid ""
-msgstr ""
 
 #: lazarusidestrconsts.histdlgcolumnloc
 msgid "Location"

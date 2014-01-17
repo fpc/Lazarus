@@ -2360,10 +2360,6 @@ msgctxt "lazarusidestrconsts.dlgmouseoptmodshift"
 msgid "Shift"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmouseoptmovemousefalse
-msgid ""
-msgstr ""
-
 #: lazarusidestrconsts.dlgmouseoptmovemousetrue
 msgctxt "lazarusidestrconsts.dlgmouseoptmovemousetrue"
 msgid "Y"
@@ -3373,10 +3369,6 @@ msgstr "Näytä historia"
 #: lazarusidestrconsts.histdlgbtnshowsnaphint
 msgid "View Snapshots"
 msgstr "Näytä pikakuvat"
-
-#: lazarusidestrconsts.histdlgcolumncur
-msgid ""
-msgstr ""
 
 #: lazarusidestrconsts.histdlgcolumnloc
 msgid "Location"
