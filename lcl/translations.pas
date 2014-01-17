@@ -859,18 +859,20 @@ var
   procedure UpdateFromRsj;
   var
     Parser: TJSONParser;
-    JsonData: TJSONData;
+    JsonData, JsonItems: TJSONData;
     JsonItem: TJSONObject;
     I: Integer;
   begin
     Parser := TJSONParser.Create(InputLines.Text);
     try
-      JsonData := Parser.Parse.GetPath('strings');
-      for I := 0 to JsonData.Count - 1 do
+      JsonData := Parser.Parse;
+      JsonItems := JsonData.GetPath('strings');
+      for I := 0 to JsonItems.Count - 1 do
       begin
-        JsonItem := JsonData.Items[I] as TJSONObject;
+        JsonItem := JsonItems.Items[I] as TJSONObject;
         UpdateItem(JsonItem.Get('name'), JsonItem.Get('value'));
       end;
+      JsonData.Free;
     finally
       Parser.Free;
     end;
