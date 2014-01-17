@@ -3368,9 +3368,10 @@ begin
   end else if CurPos.Flag=cafEND then begin
     UndoReadNextAtom;
   end else begin
-    // no postfix modifier
+    // the current atom is not a postfix modifier
     if not HasSemicolon then
       SaveRaiseCharExpectedButAtomFound(';');
+    UndoReadNextAtom;
   end;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
