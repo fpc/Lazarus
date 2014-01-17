@@ -212,7 +212,7 @@ begin
     exit(true);
   end;
 
-  // find all .rst files in package output directory
+  // find all .rst/.rsj files in package output directory
   // TODO: lrt files...
   PODirectory:=AppendPathDelim(PODirectory);
 
@@ -225,8 +225,9 @@ begin
     Item:=nil;
     // collect all rst/po files that needs update
     for i:=0 to Files.Count-1 do begin
-      if (CompareFileExt(Files[i],'.rst',false)<>0)
-      and (CompareFileExt(Files[i],'.lrt',false)<>0)
+      if (CompareFileExt(Files[i],'.rst',false)<>0) and 
+         (CompareFileExt(Files[i],'.lrt',false)<>0) and
+         (CompareFileExt(Files[i],'.rsj',false)<>0)
       then continue;
       RSTFilename:=RSTDirectory+Files[i];
       if POFilename='' then
@@ -332,6 +333,8 @@ begin
         FileType:=stLrt
       else if CompareFileExt(Filename,'.rst',false)=0 then
         FileType:=stRst
+      else if CompareFileExt(Filename,'.rsj',false)=0 then
+        FileType:=stRsj
       else
         continue;
       SrcBuf:=CodeToolBoss.LoadFile(Filename,true,false);

@@ -4211,6 +4211,7 @@ var
   LRTFilename: String;
   UnitOutputDir: String;
   RSTFilename: String;
+  RSJFilename: String;
   FileList: TStringList;
 begin
   Result:=mrCancel;
@@ -4261,19 +4262,24 @@ begin
       if FileExistsCached(LRTFilename)
       and ((not POFileAgeValid) or (FileAgeCached(LRTFilename)>POFileAge)) then
         Files[LRTFilename]:=nil;
-      // check .rst file
+      // check .rst/.rsj file
       RSTFilename:=ChangeFileExt(CurFilename,'.rst');
+      RSJFilename:=ChangeFileExt(CurFilename,'.rsj');
       // the compiler puts the .rst in the unit output directory if -FU is given
       if AProject.CompilerOptions.UnitOutputDirectory<>'' then
       begin
         UnitOutputDir:=AProject.GetOutputDirectory;
         if UnitOutputDir<>'' then
+        begin
           RSTFilename:=TrimFilename(AppendPathDelim(UnitOutputDir)+ExtractFilename(RSTFilename));
+          RSJFilename:=TrimFilename(AppendPathDelim(UnitOutputDir)+ExtractFilename(RSJFilename));
+        end;
       end;
       //DebugLn(['TMainIDE.UpdateProjectPOFile Looking for .rst file ="',RSTFilename,'"']);
-      if FileExistsCached(RSTFilename)
-      and ((not POFileAgeValid) or (FileAgeCached(RSTFilename)>POFileAge)) then
+      if FileExistsCached(RSTFilename) and ((not POFileAgeValid) or (FileAgeCached(RSTFilename)>POFileAge)) then
         Files[RSTFilename]:=nil;
+      if FileExistsCached(RSJFilename) and ((not POFileAgeValid) or (FileAgeCached(RSJFilename)>POFileAge)) then
+        Files[RSJFilename]:=nil;
     end;
 
     // update po files

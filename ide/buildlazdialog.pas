@@ -238,7 +238,7 @@ function MakeLazarus(Profile: TBuildLazarusProfile;
         end
         else begin
           Ext:=LowerCase(ExtractFileExt(FileInfo.Name));
-          if (Ext='.ppu') or (Ext='.o') or (Ext='.rst') then begin
+          if (Ext='.ppu') or (Ext='.o') or (Ext='.rst') or (Ext='.rsj') then begin
             if not DeleteFileUTF8(Filename) then
               debugln(['CleanLazarusSrcDir failed to delete file "',Filename,'"']);
           end;
