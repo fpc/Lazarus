@@ -373,6 +373,7 @@ type
     procedure InvertRectangle(X1, Y1, X2, Y2: Integer);
     procedure MoveTo(X, Y: Integer);
     procedure LineTo(X, Y: Integer);
+    procedure SetPixel(X,Y:integer; AColor:TColor); virtual;
     procedure Polygon(const Points: array of TPoint; NumPts: Integer; Winding: boolean);
     procedure Polyline(const Points: array of TPoint; NumPts: Integer);
     procedure Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
@@ -427,7 +428,6 @@ type
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
-
     property Bitmap: TCocoaBitmap read FBitmap write SetBitmap;
   end;
 
@@ -1173,6 +1173,7 @@ begin
   inherited Destroy;
 end;
 
+
 function TCocoaContext.GetTextColor: TColor;
 begin
   Result := FText.ForegroundColor;
@@ -1525,6 +1526,34 @@ begin
   FPenPos.y := Y;
 end;
 
+
+procedure TCocoaContext.SetPixel(X,Y:integer; AColor:TColor);
+ var
+    cg: CGContextRef;
+    fillbrush: TCocoaBrush;
+    r:CGRect;
+
+begin
+    cg := CGContext;
+    if not Assigned(cg) then Exit;
+
+    fillbrush:=TCocoaBrush.Create(ColorToNSColor(AColor));
+    fillbrush.Apply(self);
+
+    r.origin.x:=x;
+    r.origin.y:=y;
+    r.size.height:=1;
+    r.size.width:=1;
+
+    CGContextFillRect(cg,r);
+
+    fillbrush.Free;
+
+      //restore the brush
+    if Assigned(FBrush) then
+       FBrush.Apply(Self);
+end;
+
 procedure CGContextAddLCLPoints(cg: CGContextRef; const Points: array of TPoint;NumPts:Integer);
 var
   cp: array of CGPoint;
@@ -1602,19 +1631,22 @@ begin
   if not Assigned(cg) then Exit;
 
   CGContextBeginPath(cg);
+
   if FillRect then
   begin
     CGContextAddLCLRect(cg, X1, Y1, X2, Y2, false);
     //using the brush
-    if Assigned(UseBrush) then UseBrush.Apply(Self);
+    if Assigned(UseBrush) then
+       UseBrush.Apply(Self);
     CGContextFillPath(cg);
     //restore the brush
-    if Assigned(UseBrush) and Assigned(FBrush) then FBrush.Apply(Self);
+    if Assigned(UseBrush) and Assigned(FBrush) then
+       FBrush.Apply(Self);
   end
-  else begin
+  else
     CGContextAddLCLRect(cg, X1, Y1, X2, Y2, true);
-    CGContextStrokePath(cg);
-  end;
+
+  CGContextStrokePath(cg);
 end;
 
 procedure TCocoaContext.Ellipse(X1, Y1, X2, Y2:Integer);

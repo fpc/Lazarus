@@ -413,7 +413,8 @@ end;
 
 procedure TCocoaWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
 begin
-
+  if CanvasHandle <> 0 then
+     TCocoaContext(CanvasHandle).SetPixel(X,Y,AColor);
 end;
 
 procedure TCocoaWidgetSet.DCRedraw(CanvasHandle: HDC);
