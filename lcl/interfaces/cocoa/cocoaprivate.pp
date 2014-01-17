@@ -143,6 +143,12 @@ type
     procedure ButtonClick;
   end;
 
+    { IListBoxCallBack }
+
+  IListBoxCallBack = interface(ICommonCallback)
+    procedure SelectionChanged;
+  end;
+
   { IWindowCallback }
 
   IWindowCallback = interface(ICommonCallBack)
@@ -439,9 +445,9 @@ type
 
   { TCocoaListView }
 
-  TCocoaListView = objcclass(NSTableView, NSTableViewDataSourceProtocol)
+  TCocoaListView = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol )
   public
-    callback: ICommonCallback;
+    callback: IListBoxCallback;
     list: TCocoaStringList;
     resultNS: NSString;  //use to return values to combo
     function acceptsFirstResponder: Boolean; override;
@@ -450,11 +456,35 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function numberOfRowsInTableView(aTableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
+
+    function tableView_shouldEditTableColumn_row(tableView: NSTableView;
+      tableColumn: NSTableColumn; row: NSInteger): Boolean;
+      message 'tableView:shouldEditTableColumn:row:';
+
     function tableView_objectValueForTableColumn_row(tableView: NSTableView;
       objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
       message 'tableView:objectValueForTableColumn:row:';
+
+    procedure tableViewSelectionDidChange(notification: NSNotification); message 'tableViewSelectionDidChange:';
+
     procedure dealloc; override;
     procedure resetCursorRects; override;
+
+    // mouse
+    procedure mouseDown(event: NSEvent); override;
+    // procedure mouseUp(event: NSEvent); override;   This is eaten by NSTableView - worked around with NSTableViewDelegateProtocol
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseEntered(event: NSEvent); override;
+    procedure mouseExited(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+    // key
+    procedure keyDown(event: NSEvent); override;
+    procedure keyUp(event: NSEvent); override;
+
   end;
 
   { TCocoaGroupBox }
@@ -1802,6 +1832,12 @@ begin
     Result := 0;
 end;
 
+
+function TCocoaListView.tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean;
+begin
+result:=false;  // disable cell editing by default
+end;
+
 function TCocoaListView.tableView_objectValueForTableColumn_row(tableView: NSTableView;
   objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
 begin
@@ -1829,6 +1865,75 @@ procedure TCocoaListView.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
+end;
+
+procedure TCocoaListView.tableViewSelectionDidChange(notification: NSNotification);
+begin
+   if Assigned(callback) then
+      callback.SelectionChanged;
+end;
+
+procedure TCocoaListView.mouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseDown(event);
+end;
+
+procedure TCocoaListView.rightMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaListView.rightMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaListView.otherMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaListView.otherMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaListView.mouseDragged(event: NSEvent);
+begin
+if not Assigned(callback) or not callback.MouseMove(event) then
+  inherited mouseDragged(event);
+end;
+
+procedure TCocoaListView.mouseEntered(event: NSEvent);
+begin
+  inherited mouseEntered(event);
+end;
+
+procedure TCocoaListView.mouseExited(event: NSEvent);
+begin
+  inherited mouseExited(event);
+end;
+
+procedure TCocoaListView.mouseMoved(event: NSEvent);
+begin
+  inherited mouseMoved(event);
+end;
+
+procedure TCocoaListView.keyDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    inherited keyDown(event);
+end;
+
+procedure TCocoaListView.keyUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    inherited keyUp(event);
 end;
 
 { TCocoaStringList }

@@ -88,10 +88,10 @@ type
   TCocoaWSCustomListBox = class(TWSCustomListBox)
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    {class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
+    {class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;  }
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
-    class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
+   { class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;}
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     {class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
@@ -147,6 +147,17 @@ type
     procedure ButtonClick; virtual;
   end;
   TLCLButtonCallBackClass = class of TLCLButtonCallBack;
+
+  { TLCLListBoxCallback }
+
+  TLCLListBoxCallback = class(TLCLCommonCallback, IListBoxCallback)
+  public
+    procedure SelectionChanged; virtual;
+  end;
+  TLCLListBoxCallBackClass = class of TLCLListBoxCallBack;
+
+
+
 
   { TCocoaWSButton }
 
@@ -313,6 +324,15 @@ procedure TLCLButtonCallback.ButtonClick;
 begin
   SendSimpleMessage(Target, LM_CLICKED);
 end;
+
+{ TLCLListBoxCallback }
+
+procedure TLCLListBoxCallback.SelectionChanged;
+begin
+  SendSimpleMessage(Target, LM_SELCHANGE);
+end;
+
+
 
 { TLCLCheckBoxCallback }
 
@@ -909,11 +929,13 @@ begin
     Result := 0;
     Exit;
   end;
-  list.callback := TLCLCommonCallback.Create(list, AWinControl);
+  list.callback := TLCLListBoxCallback.Create(list, AWinControl);
   list.list := TCocoaStringList.Create(list);
   list.addTableColumn(NSTableColumn.alloc.init);
   list.setHeaderView(nil);
   list.setDataSource(list);
+  list.setDelegate(list);
+
 
   scroll := EmbedInScrollView(list);
   if not Assigned(scroll) then
@@ -937,6 +959,43 @@ begin
     Result:=nil
   else
     Result:=view.list;
+end;
+
+class function TCocoaWSCustomListBox.GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean;
+var view : TCocoaListView;
+    r:NSRect;
+begin
+  Result := False;
+
+  view:=GetListView(ACustomListBox);
+  if not Assigned(view) then
+    begin
+    Result:=false;
+    exit;
+    end;
+
+  r:=view.frameOfCellAtColumn_row(0,index);
+  Arect:=NSRectToRect(r);
+  Result := True;
+
+end;
+
+class function TCocoaWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
+var
+  view : TCocoaListView;
+  indexset: NSIndexSet;
+begin
+
+  view:=GetListView(ACustomListBox);
+  if not Assigned(view) then
+    begin
+    Result:=-1;
+    exit;
+    end;
+
+  indexset:=view.selectedRowIndexes();
+  result:=indexset.firstIndex;
+
 end;
 
 end.
