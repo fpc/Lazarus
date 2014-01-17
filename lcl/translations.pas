@@ -60,14 +60,28 @@ unit Translations;
 {$mode objfpc}{$H+}{$INLINE ON}
 {$include include/lcl_defines.inc}
 
+{$IF FPC_FULLVERSION>20602}
+  {$DEFINE HasRSJ}
+{$ENDIF}
+
 interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList, AvgLvlTree,
-  LConvEncoding, jsonparser, fpjson;
+  LConvEncoding
+  {$IFDEF HasRSJ}
+  ,jsonparser, fpjson
+  {$ENDIF}
+  ;
 
 type
-  TStringsType = (stLrt, stRst, stRsj);
+  TStringsType = (
+    stLrt, // Lazarus resource string table
+    stRst // FPC resource string table
+    {$IFDEF HasRSJ}
+    ,stRsj  // resource string table in JSON format
+    {$ENDIF}
+    );
   TTranslateUnitResult = (turOK, turNoLang, turNoFBLang, turEmptyParam);
 
 type
@@ -335,9 +349,11 @@ begin
 
           if CompareFileExt(Filename,'.lrt')=0 then
             BasePOFile.UpdateStrings(InputLines, stLrt)
+          {$IFDEF HasRSJ}
           else
           if CompareFileExt(Filename,'.rsj')=0 then
             BasePOFile.UpdateStrings(InputLines, stRsj)
+          {$ENDIF}
           else
             BasePOFile.UpdateStrings(InputLines, stRst);
 
@@ -856,6 +872,7 @@ var
     p := 1;
   end;
 
+  {$IFDEF HasRSJ}
   procedure UpdateFromRsj;
   var
     Parser: TJSONParser;
@@ -877,13 +894,16 @@ var
       Parser.Free;
     end;
   end;
+  {$ENDIF}
 
 begin
   ClearModuleList;
   UntagAll;
+  {$IFDEF HasRSJ}
   if SType = stRsj then
     UpdateFromRsj
   else
+  {$ENDIF}
   begin
     // for each string in lrt/rst list check if it's already in PO
     // if not add it

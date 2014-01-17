@@ -12984,6 +12984,8 @@ begin
   end
   else if CompareFileExt(AnUnitInfo.Filename,'inc',false)=0 then
     OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,True);
+  if OkToAdd then
+    ;
   Project1.Modified:=true;
 end;
 
