@@ -147,7 +147,7 @@ object Form1: TForm1
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.2.0.2'
+  LCLVersion = '1.3'
   object DBNavigator1: TDBNavigator
     Left = 6
     Height = 35
@@ -206,7 +206,7 @@ object Form1: TForm1
   end
   object DBEdit1: TDBEdit
     Left = 128
-    Height = 23
+    Height = 21
     Top = 408
     Width = 166
     DataField = 'Image_Link'
@@ -236,22 +236,22 @@ object Form1: TForm1
     Columns = <    
       item
         Title.Caption = 'Common Name'
-        Width = 101
+        Width = 86
         FieldName = 'Common_Name'
       end    
       item
         Title.Caption = 'Scientific Name'
-        Width = 98
+        Width = 87
         FieldName = 'Scientific_Name'
       end    
       item
         Title.Caption = 'Order'
-        Width = 45
+        Width = 43
         FieldName = 'Order'
       end    
       item
         Title.Caption = 'Genus'
-        Width = 48
+        Width = 45
         FieldName = 'Genus'
       end    
       item
@@ -261,7 +261,7 @@ object Form1: TForm1
       end    
       item
         Title.Caption = 'Notes'
-        Width = 46
+        Width = 43
         FieldName = 'Notes'
       end>
     DataSource = Datasource1
@@ -322,23 +322,22 @@ object Form1: TForm1
       DataSource = Datasource1
       OnDblClick = DBImage1DblClick
       OnDBImageRead = DBImage1DBImageRead
-      OnDBImageWrite = DBImage1DBImageWrite
       Proportional = True
     end
   end
   object Label1: TLabel
     Left = 8
-    Height = 15
+    Height = 13
     Top = 55
-    Width = 22
+    Width = 18
     Caption = 'Link'
     ParentColor = False
   end
   object Label2: TLabel
     Left = 360
-    Height = 15
+    Height = 13
     Top = 55
-    Width = 24
+    Width = 20
     Caption = 'Blob'
     ParentColor = False
   end
@@ -353,13 +352,13 @@ object Form1: TForm1
   end
   object Label3: TLabel
     Left = 8
-    Height = 15
+    Height = 13
     Top = 424
-    Width = 32
+    Width = 30
     Caption = 'Note :'
     ParentColor = False
   end
-  object Datasource1: TDatasource
+  object Datasource1: TDataSource
     DataSet = SQLQuery1
     left = 216
     top = 192
@@ -380,14 +379,14 @@ object Form1: TForm1
     top = 192
   end
   object SQLTransaction1: TSQLTransaction
-    Active = True
+    Active = False
     Action = caCommitRetaining
     Database = SQLite3Connection1
     left = 208
     top = 120
   end
   object SQLite3Connection1: TSQLite3Connection
-    Connected = True
+    Connected = False
     LoginPrompt = False
     DatabaseName = 'ImageTest.db3'
     KeepConnection = False

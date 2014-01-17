@@ -43,8 +43,6 @@ type
       Column: TColumn; AState: TGridDrawState);
     procedure DBImage1DBImageRead(Sender: TObject; S: TStream;
       var GraphExt: string);
-    procedure DBImage1DBImageWrite(Sender: TObject; S: TStream; GraphExt: string
-      );
     procedure DBImage1DblClick(Sender: TObject);
     procedure DBNavigator1BeforeAction(Sender: TObject; Button: TDBNavButtonType
       );
@@ -131,12 +129,6 @@ end;
 
 
 
-procedure TForm1.DBImage1DBImageWrite(Sender: TObject; S: TStream;
-  GraphExt: string);
-begin
-
-end;
-
 procedure TForm1.DBImage1DblClick(Sender: TObject);
 var
   BlobStream: TStream;
@@ -186,7 +178,7 @@ end;
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   SQLQuery1.ApplyUpdates;
- SQLTransaction1.CommitRetaining;
+  SQLTransaction1.Commit;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
