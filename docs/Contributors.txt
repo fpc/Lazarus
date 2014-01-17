@@ -150,6 +150,7 @@ Pawel Trochimczuk
 Peter Dyson
 Petr Kristan
 Philip J. Hess
+Philippe Picard
 Pierre Gillmann
 Przemyslaw Nagay
 Radek Cervinka
