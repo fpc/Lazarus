@@ -1518,9 +1518,21 @@ begin
 end;
 
 procedure TSynEditSelection.LineChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
+var
+  i, i2: Integer;
 begin
-  if (FCaret <> nil) and (not FCaret.AllowPastEOL) and (not FIsSettingText) then
-    AdjustAfterTrimming;
+  if (FCaret <> nil) and (not FCaret.AllowPastEOL) and (not FIsSettingText) then begin
+    i := ToPos(AIndex);
+    i2 := i + ACount - 1;
+
+    //AdjustAfterTrimming;
+    if (FStartLinePos >= i) and (FStartLinePos <= i2) then
+      if FStartBytePos > Length(FLines[FStartLinePos-1]) + 1 then
+        FStartBytePos := Length(FLines[FStartLinePos-1]) + 1;
+    if (FEndLinePos >= i) and (FEndLinePos <= i2) then
+      if FEndBytePos > Length(FLines[FEndLinePos-1]) + 1 then
+        FEndBytePos := Length(FLines[FEndLinePos-1]) + 1;
+  end;
 end;
 
 procedure TSynEditSelection.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
