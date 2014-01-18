@@ -792,7 +792,9 @@ procedure TSynEditCaret.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePo
 var
   p: TPoint;
 begin
-  if FAutoMoveOnEdit > 0 then begin
+  if (FAutoMoveOnEdit > 0) and
+     ( (aLineBrkCnt <> 0) or (aLinePos = FLinePos) )
+  then begin
     IncForcePastEOL;
     ValidateBytePos;
     p :=  AdjustPoint(Point(FBytePos, FLinePos));
