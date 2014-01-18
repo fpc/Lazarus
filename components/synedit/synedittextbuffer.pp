@@ -63,6 +63,13 @@ type
 
   TStringListIndexEvent = procedure(Index: Integer) of object;
 
+  { TLinesModifiedNotificationList }
+
+  TLinesModifiedNotificationList = Class(TSynMethodList)
+  public
+    Procedure CallRangeNotifyEvents(Sender: TSynEditStrings; aIndex, aNewCount, aOldCount: Integer);
+  end;
+
   { TLineRangeNotificationList }
 
   TLineRangeNotificationList = Class(TSynMethodList)
@@ -140,6 +147,7 @@ type
     FCachedNotify: Boolean;
     FCachedNotifyStart, FCachedNotifyCount: Integer;
     FCachedNotifySender: TSynEditStrings;
+    FModifiedNotifyStart, FModifiedNotifyNewCount, FModifiedNotifyOldCount: Integer;
 
     FIsInEditAction: Integer;
     FIgnoreSendNotification: array [TSynEditNotifyReason] of Integer;
@@ -215,8 +223,10 @@ type
     procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
+                ASender: TSynEditStrings; aIndex, aCount: Integer); override;
+    procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TSynEditStrings; aIndex, aCount: Integer;
-                aBytePos: Integer = -1; aLen: Integer = 0; aTxt: String = ''); override;
+                aBytePos: Integer; aLen: Integer; aTxt: String); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TObject); override;
     procedure FlushNotificationCache; override;
@@ -226,7 +236,7 @@ type
     property  AttachedSynEdits[Index: Integer]: TSynEditBase read GetAttachedSynEdits;
     procedure CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
     procedure RemoveHanlders(AOwner: TObject);
-    procedure SendCachedNotify; // ToDO: review caghing versus changes to topline and other values
+    procedure SendCachedNotify; // ToDO: review caching versus changes to topline and other values
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
@@ -567,6 +577,8 @@ begin
   do case r of
     senrLineCount, senrLineChange, senrHighlightChanged:
       FNotifyLists[r] := TLineRangeNotificationList.Create;
+    senrLinesModified:
+      FNotifyLists[r] := TLinesModifiedNotificationList.Create;
     senrEditAction:
       FNotifyLists[r] := TLineEditNotificationList.Create;
     else
@@ -666,7 +678,7 @@ begin
   EndUpdate;
 end;
 
-procedure TSynEditStringList.DeleteLines(Index, NumLines: Integer);
+procedure TSynEditStringList.DeleteLines(Index, NumLines: integer);
 begin
   if NumLines > 0 then begin
     // Ensure correct index, so DeleteLines will not throw exception
@@ -1213,9 +1225,17 @@ begin
     SendNotification(senrIncPaintLock, Sender);       // DoIncPaintLock
     SendNotification(senrAfterIncPaintLock, Sender);
     FCachedNotify := False;
+    FModifiedNotifyStart := -1;
+    FModifiedNotifyOldCount := 0;
+    FModifiedNotifyNewCount := 0;
   end else begin
     if FCachedNotify then
       SendCachedNotify;
+    assert( (FModifiedNotifyOldCount >= 0) and (FModifiedNotifyNewCount >= 0), 'FModifiedNotify___Count >= 0');
+    if (FModifiedNotifyOldCount > 0) or (FModifiedNotifyNewCount > 0) then
+      TLinesModifiedNotificationList(FNotifyLists[senrLinesModified])
+        .CallRangeNotifyEvents(Self, FModifiedNotifyStart, FModifiedNotifyNewCount, FModifiedNotifyOldCount);
+    // Above notifications must be before senrDecPaintLock is sent
     FIsInDecPaintLock := True;
     try
       SendNotification(senrBeforeDecPaintLock, Sender);
@@ -1392,12 +1412,56 @@ begin
 end;
 
 procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason;
-  ASender: TSynEditStrings; aIndex, aCount: Integer;
-  aBytePos: Integer = -1; aLen: Integer = 0; aTxt: String = '');
+  ASender: TSynEditStrings; aIndex, aCount: Integer);
+var
+  i, oldcount, overlap: Integer;
 begin
+  assert(AReason in [senrLineChange, senrLineCount, senrLinesModified, senrHighlightChanged], 'Correct SendNotification');
   if FIgnoreSendNotification[AReason] > 0 then exit;
 
-  if IsUpdating then begin;
+  if IsUpdating and (AReason in [senrLineChange, senrLineCount]) then begin
+    // senrLinesModified
+    assert( (FModifiedNotifyOldCount >= 0) and (FModifiedNotifyNewCount >= 0), 'FModifiedNotify___Count >= 0');
+    assert(aIndex >= 0, 'SendNotification index');
+    if (FModifiedNotifyOldCount = 0) and (FModifiedNotifyNewCount = 0) then
+      FModifiedNotifyStart := aIndex;
+
+    if aIndex < FModifiedNotifyStart then begin
+      i := FModifiedNotifyStart - aIndex;
+      FModifiedNotifyStart := aIndex;
+      FModifiedNotifyNewCount := FModifiedNotifyNewCount + i;
+      FModifiedNotifyOldCount := FModifiedNotifyOldCount + i;
+    end;
+
+    if AReason = senrLineCount then begin
+      if aCount < 0 then begin
+        oldcount := -aCount;
+        if (aIndex < FModifiedNotifyStart + FModifiedNotifyNewCount) then begin
+          overlap := (FModifiedNotifyStart + FModifiedNotifyNewCount) - aIndex;
+          if overlap > oldcount then overlap := oldcount;
+          FModifiedNotifyNewCount := FModifiedNotifyNewCount - overlap;
+          oldcount := oldcount - overlap;
+        end;
+        FModifiedNotifyOldCount := FModifiedNotifyOldCount + oldcount;
+        oldcount := 0;
+      end
+      else begin
+        FModifiedNotifyNewCount := FModifiedNotifyNewCount + aCount;
+        oldcount := aCount; // because already added to newcount
+      end;
+    end
+    else
+    if AReason = senrLineChange then begin
+      oldcount := aCount;
+    end;
+
+    if aIndex + oldcount > FModifiedNotifyStart + FModifiedNotifyNewCount then begin
+      i := (aIndex + oldcount) - (FModifiedNotifyStart + FModifiedNotifyNewCount);
+      FModifiedNotifyNewCount := FModifiedNotifyNewCount + i;
+      FModifiedNotifyOldCount := FModifiedNotifyOldCount + i;
+    end;
+
+    // CacheNotify
     if AReason = senrLineCount then begin
       // maybe cache and combine
       if not FCachedNotify then begin
@@ -1418,7 +1482,8 @@ begin
           FCachedNotify := False;
         exit;
       end;
-    end;
+    end
+    else
     if FCachedNotify and (AReason = senrLineChange) and
        (ASender = FCachedNotifySender) and (FCachedNotifyCount > 0) and
        (aIndex >= FCachedNotifyStart) and
@@ -1428,19 +1493,35 @@ begin
 
     if FCachedNotify then
       SendCachedNotify;
+  end
+  else begin
+    case AReason of
+      senrLineChange:
+        TLinesModifiedNotificationList(FNotifyLists[senrLinesModified])
+          .CallRangeNotifyEvents(ASender, aIndex, aCount, aCount);
+      senrLineCount:
+        TLinesModifiedNotificationList(FNotifyLists[senrLinesModified])
+          .CallRangeNotifyEvents(ASender, aIndex, aCount, 0);
+    end;
   end;
 
-  case AReason of
-    senrLineChange, senrLineCount, senrHighlightChanged:
-      TLineRangeNotificationList(FNotifyLists[AReason])
-        .CallRangeNotifyEvents(ASender, aIndex, aCount);
-    senrEditAction:
-        // aindex is mis-named (linepos) for edit action
-        TLineEditNotificationList(FNotifyLists[AReason])
-          .CallRangeNotifyEvents(ASender, aIndex, aBytePos, aLen, aCount, aTxt);
-    else
-      raise Exception.Create('Invalid');
-  end;
+  TLineRangeNotificationList(FNotifyLists[AReason])
+    .CallRangeNotifyEvents(ASender, aIndex, aCount);
+end;
+
+procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason;
+  ASender: TSynEditStrings; aIndex, aCount: Integer;
+  aBytePos: Integer; aLen: Integer; aTxt: String);
+begin
+  assert(AReason in [senrEditAction], 'Correct SendNotification');
+  if FIgnoreSendNotification[AReason] > 0 then exit;
+
+  if FCachedNotify then
+    SendCachedNotify;
+
+  // aindex is mis-named (linepos) for edit action
+  TLineEditNotificationList(FNotifyLists[AReason])
+    .CallRangeNotifyEvents(ASender, aIndex, aBytePos, aLen, aCount, aTxt);
 end;
 
 procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason;
@@ -1448,7 +1529,7 @@ procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason;
 begin
   if FCachedNotify then
     SendCachedNotify;
-  if AReason in [senrLineChange, senrLineCount, senrHighlightChanged, senrEditAction] then
+  if AReason in [senrLineChange, senrLineCount, senrLinesModified, senrHighlightChanged, senrEditAction] then
     raise Exception.Create('Invalid');
   FNotifyLists[AReason].CallNotifyEvents(ASender);
 end;
@@ -1597,6 +1678,18 @@ begin
     AValue.Capacity := Capacity;
     AValue.Count := Count;
   end;
+end;
+
+{ TLinesModifiedNotificationList }
+
+procedure TLinesModifiedNotificationList.CallRangeNotifyEvents(Sender: TSynEditStrings; aIndex,
+  aNewCount, aOldCount: Integer);
+var
+  i: LongInt;
+begin
+  i:=Count;
+  while NextDownIndex(i) do
+    TStringListLinesModifiedEvent(Items[i])(Sender, aIndex, aNewCount, aOldCount);
 end;
 
 { TLineRangeNotificationList }

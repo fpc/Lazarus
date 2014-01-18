@@ -46,7 +46,7 @@ type
     FLastMouseCaretLogical: TPoint;
     function GetIsMouseOverLink: Boolean;
     procedure SetLastMouseCaret(const AValue: TPoint);
-    Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+    Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ANewCount, AOldCount : Integer);
     function  IsCtrlMouseShiftState(AShift: TShiftState; OnlyShowLink: Boolean): Boolean;
     procedure InternalUpdateCtrlMouse;
   protected
@@ -104,8 +104,8 @@ begin
   Result := FCtrlLinkable and (FCtrlMouseLine >= 0);
 end;
 
-procedure TSynEditMarkupCtrlMouseLink.LinesChanged(Sender: TSynEditStrings; AIndex,
-  ACount: Integer);
+procedure TSynEditMarkupCtrlMouseLink.LinesChanged(Sender: TSynEditStrings; AIndex, ANewCount,
+  AOldCount: Integer);
 begin
   If LastMouseCaret.Y < 0 then exit;
   LastMouseCaret := Point(-1, -1);
@@ -218,8 +218,7 @@ end;
 destructor TSynEditMarkupCtrlMouseLink.Destroy;
 begin
   if Lines <> nil then begin;
-    Lines.RemoveChangeHandler(senrLineCount, @LinesChanged);
-    Lines.RemoveChangeHandler(senrLineChange, @LinesChanged);
+    Lines.RemoveModifiedHandler(senrLinesModified, @LinesChanged);
   end;
   inherited Destroy;
 end;
@@ -228,8 +227,7 @@ procedure TSynEditMarkupCtrlMouseLink.SetLines(const AValue: TSynEditStrings);
 begin
   inherited SetLines(AValue);
   if Lines <> nil then begin;
-    Lines.AddChangeHandler(senrLineCount, @LinesChanged);
-    Lines.AddChangeHandler(senrLineChange, @LinesChanged);
+    Lines.AddModifiedHandler(senrLinesModified, @LinesChanged);
   end;
 end;
 

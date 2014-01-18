@@ -39,6 +39,8 @@ uses
 type
   TSynEditStrings = class;
 
+  TStringListLinesModifiedEvent = procedure(Sender: TSynEditStrings;
+                                        aIndex, aNewCount, aOldCount: Integer) of object;
   TStringListLineCountEvent = procedure(Sender: TSynEditStrings;
                                         aIndex, aCount: Integer) of object;
   TStringListLineEditEvent = procedure(Sender: TSynEditStrings;
@@ -48,6 +50,7 @@ type
   TSynEditNotifyReason = ( // TStringListLineCountEvent
                            senrLineCount,        // Lines Inserted or Deleted (if not empty, they will trigger senrLineChange too)
                            senrLineChange,       // Lines modified (also triggered by senrEditAction)
+                           senrLinesModified,    // Send once in "EndUpdate". Modified, inserted or deleted
                            senrHighlightChanged, // used by Highlighter (invalidate and fold checks needed)
                            // TStringListLineEditEvent
                            senrEditAction,       // EditInsert, EditDelete, EditLineBreak, ...
@@ -289,6 +292,8 @@ type
 
     procedure AddGenericHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); virtual; abstract;
+    procedure AddModifiedHandler(AReason: TSynEditNotifyReason;
+                AHandler: TStringListLinesModifiedEvent);
     procedure AddChangeHandler(AReason: TSynEditNotifyReason;
                 AHandler: TStringListLineCountEvent);
     procedure AddNotifyHandler(AReason: TSynEditNotifyReason;
@@ -296,6 +301,8 @@ type
 
     procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); virtual; abstract;
+    procedure RemoveModifiedHandler(AReason: TSynEditNotifyReason;
+                AHandler: TStringListLinesModifiedEvent);
     procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
                 AHandler: TStringListLineCountEvent);
     procedure RemoveNotifyHandler(AReason: TSynEditNotifyReason;
@@ -305,9 +312,10 @@ type
     procedure RemoveEditHandler(AHandler: TStringListLineEditEvent);
     procedure SendHighlightChanged(aIndex, aCount: Integer); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
+                ASender: TSynEditStrings; aIndex, aCount: Integer); virtual; abstract;
+    procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TSynEditStrings; aIndex, aCount: Integer;
-                aBytePos: Integer = -1; aLen: Integer = 0;
-                aTxt: String = ''); virtual; abstract;
+                aBytePos: Integer; aLen: Integer; aTxt: String); virtual; abstract;
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TObject); virtual; abstract;
    procedure FlushNotificationCache; virtual; abstract;
@@ -432,9 +440,10 @@ type
     procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
+                ASender: TSynEditStrings; aIndex, aCount: Integer); override;
+    procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TSynEditStrings; aIndex, aCount: Integer;
-                aBytePos: Integer = -1; aLen: Integer = 0;
-                aTxt: String = ''); override;
+                aBytePos: Integer; aLen: Integer; aTxt: String); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TObject); override;
    procedure FlushNotificationCache; override;
@@ -967,6 +976,13 @@ begin
   Result := (FSenderUpdateCount > 0) or (UpdateCount > 0);
 end;
 
+procedure TSynEditStrings.AddModifiedHandler(AReason: TSynEditNotifyReason;
+  AHandler: TStringListLinesModifiedEvent);
+begin
+  assert(AReason in [senrLinesModified], 'AddModifiedHandler');
+  AddGenericHandler(AReason, TMethod(AHandler));
+end;
+
 procedure TSynEditStrings.AddChangeHandler(AReason: TSynEditNotifyReason;
   AHandler: TStringListLineCountEvent);
 begin
@@ -977,6 +993,13 @@ procedure TSynEditStrings.AddNotifyHandler(AReason: TSynEditNotifyReason;
   AHandler: TNotifyEvent);
 begin
   AddGenericHandler(AReason, TMethod(AHandler));
+end;
+
+procedure TSynEditStrings.RemoveModifiedHandler(AReason: TSynEditNotifyReason;
+  AHandler: TStringListLinesModifiedEvent);
+begin
+  assert(AReason in [senrLinesModified], 'RemoveModifiedHandler');
+  RemoveGenericHandler(AReason, TMethod(AHandler));
 end;
 
 procedure TSynEditStrings.RemoveChangeHandler(AReason: TSynEditNotifyReason;
@@ -1413,6 +1436,12 @@ end;
 procedure TSynEditStringsLinked.EditRedo(Item: TSynEditUndoItem);
 begin
   fSynStrings.EditRedo(Item);
+end;
+
+procedure TSynEditStringsLinked.SendNotification(AReason: TSynEditNotifyReason;
+  ASender: TSynEditStrings; aIndex, aCount: Integer);
+begin
+  fSynStrings.SendNotification(AReason, ASender, aIndex, aCount);
 end;
 
 procedure TSynEditStringsLinked.SendNotification(AReason: TSynEditNotifyReason;

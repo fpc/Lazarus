@@ -229,8 +229,7 @@ type
     procedure ReCalc; override;
 
     procedure BufferChanged(Sender: TObject);
-    procedure LineChanged(Sender: TSynEditStrings;  AIndex, ACount: Integer);
-    procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
+    procedure LineModified(Sender: TSynEditStrings; aIndex, aNewCount, aOldCount: Integer);
     procedure SynStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
   public
     constructor Create(AOwner: TComponent); override;
@@ -1070,28 +1069,24 @@ end;
 procedure TSynGutterLOvProviderModifiedLines.BufferChanged(Sender: TObject);
 begin
   TSynEditStringList(Sender).RemoveHanlders(self);
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrLineChange, TMethod(@LineChanged));
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrLineCount, TMethod(@LineCountChanged));
+  TSynEditStringList(TextBuffer).AddModifiedHandler(senrLinesModified, @LineModified);
   TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod(@BufferChanged));
 end;
 
-procedure TSynGutterLOvProviderModifiedLines.LineChanged(Sender: TSynEditStrings;
-  AIndex, ACount: Integer);
+procedure TSynGutterLOvProviderModifiedLines.LineModified(Sender: TSynEditStrings; aIndex,
+  aNewCount, aOldCount: Integer);
 begin
   if (FFirstTextLineChanged < 0) or (AIndex + 1 < FFirstTextLineChanged) then
     FFirstTextLineChanged := AIndex + 1;
+
+  if aOldCount = aNewCount then
+    aIndex := aIndex + aOldCount
+  else
+    aIndex := TextBuffer.Count;
   if (FLastTextLineChanged <> 0) and (AIndex + 1 > FLastTextLineChanged) then
     FLastTextLineChanged := AIndex + 1;
-  InvalidateTextLines(FFirstTextLineChanged, FLastTextLineChanged);
-end;
 
-procedure TSynGutterLOvProviderModifiedLines.LineCountChanged(Sender: TSynEditStrings; AIndex,
-  ACount: Integer);
-begin
-  if (FFirstTextLineChanged < 0) or (AIndex + 1 < FFirstTextLineChanged) then
-    FFirstTextLineChanged := AIndex + 1;
-  FLastTextLineChanged := 0; // open end
-  InvalidateTextLines(FFirstTextLineChanged, TextBuffer.Count);
+  InvalidateTextLines(FFirstTextLineChanged, FLastTextLineChanged);
 end;
 
 procedure TSynGutterLOvProviderModifiedLines.SynStatusChanged(Sender: TObject;
@@ -1107,8 +1102,7 @@ end;
 constructor TSynGutterLOvProviderModifiedLines.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrLineChange, TMethod(@LineChanged));
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrLineCount, TMethod(@LineCountChanged));
+  TSynEditStringList(TextBuffer).AddModifiedHandler(senrLinesModified, @LineModified);
   TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod(@BufferChanged));
   TCustomSynEdit(SynEdit).RegisterStatusChangedHandler(@SynStatusChanged, [scModified]);
   FFirstTextLineChanged := -1;

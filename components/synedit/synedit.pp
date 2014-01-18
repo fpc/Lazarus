@@ -6307,7 +6307,7 @@ begin
         begin
           FCaret.LinePos := FFoldedLinesView.ViewPosToTextIndex(FFoldedLinesView.Count)+1;
         end;
-        
+
 // goto special line / column position
       ecGotoXY, ecSelGotoXY:
         if Assigned(Data) then begin
@@ -8087,11 +8087,11 @@ begin
   begin
     // not at start of line -> jump to start of line
     NewPos.X := 1;
-  end else 
+  end else
   begin
     // calculate line start position
     FirstNonBlank := -1;
-    if CaretY <= FTheLinesView.Count then 
+    if CaretY <= FTheLinesView.Count then
     begin
       s := FTheLinesView[CaretXY.Y - 1];
 
@@ -8109,7 +8109,7 @@ begin
       // this line is not blank
       if FirstNonBlank < 1 then FirstNonBlank := 1;
       LineStart := LogicalToPhysicalPos(Point(FirstNonBlank, CaretY)).x;
-    end else 
+    end else
     begin
       // this line is blank
       // -> use automatic line indent
@@ -8905,7 +8905,7 @@ begin
     fOnChange(Self);
 end;
 
-procedure TCustomSynEdit.ModifiedChanged(Sender: TObject); 
+procedure TCustomSynEdit.ModifiedChanged(Sender: TObject);
 begin
   StatusChanged([scModified]);
 end;
