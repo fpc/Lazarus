@@ -196,6 +196,7 @@ type
     procedure Put(Index: integer; const S: string); override;
     procedure PutObject(Index: integer; AObject: TObject); override;
     procedure SetCapacity(NewCapacity: integer); override;
+    procedure MaybeSendSenrLinesModified; inline;
     procedure SetUpdateState(Updating: Boolean; Sender: TObject); override;
 
     procedure UndoEditLinesDelete(LogY, ACount: Integer);
@@ -1218,6 +1219,14 @@ begin
   IncreaseTextChangeStamp;
 end;
 
+procedure TSynEditStringList.MaybeSendSenrLinesModified;
+begin
+    assert( (FModifiedNotifyOldCount >= 0) and (FModifiedNotifyNewCount >= 0), 'FModifiedNotify___Count >= 0');
+    if (FModifiedNotifyOldCount > 0) or (FModifiedNotifyNewCount > 0) then
+      TLinesModifiedNotificationList(FNotifyLists[senrLinesModified])
+        .CallRangeNotifyEvents(Self, FModifiedNotifyStart, FModifiedNotifyNewCount, FModifiedNotifyOldCount);
+end;
+
 procedure TSynEditStringList.SetUpdateState(Updating: Boolean; Sender: TObject);
 begin
   if FIsInDecPaintLock then exit;
@@ -1231,11 +1240,7 @@ begin
   end else begin
     if FCachedNotify then
       SendCachedNotify;
-    assert( (FModifiedNotifyOldCount >= 0) and (FModifiedNotifyNewCount >= 0), 'FModifiedNotify___Count >= 0');
-    if (FModifiedNotifyOldCount > 0) or (FModifiedNotifyNewCount > 0) then
-      TLinesModifiedNotificationList(FNotifyLists[senrLinesModified])
-        .CallRangeNotifyEvents(Self, FModifiedNotifyStart, FModifiedNotifyNewCount, FModifiedNotifyOldCount);
-    // Above notifications must be before senrDecPaintLock is sent
+    MaybeSendSenrLinesModified; // must be before senrDecPaintLock is sent
     FIsInDecPaintLock := True;
     try
       SendNotification(senrBeforeDecPaintLock, Sender);
@@ -1527,10 +1532,12 @@ end;
 procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason;
   ASender: TObject);
 begin
-  if FCachedNotify then
-    SendCachedNotify;
   if AReason in [senrLineChange, senrLineCount, senrLinesModified, senrHighlightChanged, senrEditAction] then
     raise Exception.Create('Invalid');
+  if FCachedNotify then
+    SendCachedNotify;
+  if (AReason in [senrCleared, senrTextBufferChanging]) then
+    MaybeSendSenrLinesModified;
   FNotifyLists[AReason].CallNotifyEvents(ASender);
 end;
 
