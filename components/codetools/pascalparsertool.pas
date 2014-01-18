@@ -201,9 +201,11 @@ type
         const Attr: TProcHeadAttributes): boolean;
     function ReadParamList(ExceptionOnError, Extract: boolean;
         const Attr: TProcHeadAttributes): boolean;
+    // uses, requires, contains
     function ReadUsesSection(ExceptionOnError: boolean): boolean;
     function ReadRequiresSection(ExceptionOnError: boolean): boolean;
     function ReadContainsSection(ExceptionOnError: boolean): boolean;
+    // terms
     function ReadSubRange(ExceptionOnError: boolean): boolean;
     function ReadTilBracketCloseOrUnexpected(ExceptionOnNotFound: boolean;
       Flags: TSkipBracketChecks): boolean;
@@ -3242,6 +3244,7 @@ end;
 
 procedure TPascalParserTool.ReadVariableType;
 { creates nodes for variable type
+  CurPos will be on the last atom, on the semicolon or the atom in front of the 'end'
 
   examples:
 
@@ -3253,6 +3256,12 @@ procedure TPascalParserTool.ReadVariableType;
         a:b; external name 'string constant';
         a:b; cvar; external;
         a:b; external 'library' name 'avar';
+        SomeVar : PChar External 'some_lib' Name 'somevar';
+        SomeOtherProgramHasAccessToThisVar : Integer Public Name 'somevar2';
+        SomeOtherVar : Word Public;
+        SomeOtherOtherVar : LongInt External Name 'somevar3';
+        somevar4 : Byte External;
+        somevar5 : Integer External 'some_lib';
 
     implementation
 
@@ -3262,12 +3271,14 @@ procedure TPascalParserTool.ReadVariableType;
 }
 var
   ParentNode: TCodeTreeNode;
+  HasSemicolon: Boolean;
 begin
   ReadNextAtom;
   // type
   ParseType(CurPos.StartPos);
 
   ParentNode:=CurNode.Parent;
+
   // optional: absolute
   if (ParentNode.Desc=ctnVarSection) then begin
     if UpAtomIs('ABSOLUTE') then begin
@@ -3287,73 +3298,78 @@ begin
   // optional: hint modifier
   ReadHintModifiers;
 
-  // semicolon and postfix modifiers
+  HasSemicolon:=false;
   if CurPos.Flag=cafSemicolon then begin
     // read ;
+    HasSemicolon:=true;
     ReadNextAtom;
-    if UpAtomIs('CVAR') then begin
-      // for example: 'var a: char; cvar;'
+  end;
+
+  // postfix modifiers
+  if UpAtomIs('CVAR') then begin
+    // for example: 'var a: char; cvar;'
+    ReadNextAtom;
+    if CurPos.Flag<>cafSemicolon then
+      SaveRaiseCharExpectedButAtomFound(';');
+    ReadNextAtom;
+  end;
+  if UpAtomIs('STATIC') and (CurNode.Parent<>nil)
+  and (CurNode.Parent.Desc in AllClassSections) then begin
+    // 'static' is allowed for class variables
+    // for example: 'a: char; static;'
+    ReadNextAtom;
+    if CurPos.Flag<>cafSemicolon then
+      SaveRaiseCharExpectedButAtomFound(';');
+    ReadNextAtom;
+  end;
+  //if UpAtomIs('EXTERNAL') then
+  //  debugln(['TPascalParserTool.ReadVariableType ',CurNode.Parent.Parent.DescAsString,' ',CurNode.Parent.DescAsString,' ',CurNode.DescAsString]);
+  if (CurNode.Parent.Desc in [ctnVarSection,ctnClassClassVar])
+  and ((CurNode.Parent.Parent.Desc in AllCodeSections)
+       or ((CurNode.Parent.Parent.Desc in (AllClassBaseSections+AllClassInterfaces))
+            and Scanner.Values.IsDefined('CPUJVM')))
+  and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL')
+    or UpAtomIs('WEAKEXTERNAL')) then
+  begin
+    // examples:
+    //   a: b; public;
+    //   a: b; external;
+    //   a: b; external c;
+    //   a: b; external name 'c';
+    //   a: b; external 'library' name 'c';
+    if UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL') then begin
+      // read external identifier
       ReadNextAtom;
-      if CurPos.Flag<>cafSemicolon then
-        SaveRaiseCharExpectedButAtomFound(';');
+      if (CurPos.Flag<>cafSemicolon) and (not UpAtomIs('NAME')) then
+        ReadConstant(true,false,[]); // library name
+    end else
       ReadNextAtom;
-    end;
-    if UpAtomIs('STATIC') and (CurNode.Parent<>nil)
-    and (CurNode.Parent.Desc in AllClassSections) then begin
-      // 'static' is allowed for class variables
-      // for example: 'a: char; static;'
+    if UpAtomIs('NAME') then begin
+      // for example 'var a: char; public name 'b' ;'
+      // for example 'var a: char; public name test;'
       ReadNextAtom;
-      if CurPos.Flag<>cafSemicolon then
-        SaveRaiseCharExpectedButAtomFound(';');
-      ReadNextAtom;
-    end;
-    //if UpAtomIs('EXTERNAL') then
-    //  debugln(['TPascalParserTool.ReadVariableType ',CurNode.Parent.Parent.DescAsString,' ',CurNode.Parent.DescAsString,' ',CurNode.DescAsString]);
-    if (CurNode.Parent.Desc in [ctnVarSection,ctnClassClassVar])
-    and ((CurNode.Parent.Parent.Desc in AllCodeSections)
-         or ((CurNode.Parent.Parent.Desc in (AllClassBaseSections+AllClassInterfaces))
-              and Scanner.Values.IsDefined('CPUJVM')))
-    and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL')
-      or UpAtomIs('WEAKEXTERNAL') or UpAtomIs('CVAR')) then
-    begin
-      // examples:
-      //   a: b; public;
-      //   a: b; external;
-      //   a: b; external c;
-      //   a: b; external name 'c';
-      //   a: b; external 'library' name 'c';
-      if UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL') then begin
-        // read external identifier
-        ReadNextAtom;
-        if (CurPos.Flag<>cafSemicolon) and (not UpAtomIs('NAME')) then
-          ReadConstant(true,false,[]); // library name
-      end else
-        ReadNextAtom;
-      if UpAtomIs('NAME') then begin
-        // for example 'var a: char; public name 'b' ;'
-        // for example 'var a: char; public name test;'
+      if (not AtomIsStringConstant)
+      and (not AtomIsIdentifier) then
+        SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
+      ReadConstant(true,false,[]);
+      if UpAtomIs('SECTION') then begin
+        // for example FreePascal_TLS_callback : pointer = @Exec_Tls_callback; public name '__FPC_tls_callbacks' section '.CRT$XLFPC'
         ReadNextAtom;
         if (not AtomIsStringConstant)
         and (not AtomIsIdentifier) then
           SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
         ReadConstant(true,false,[]);
-        if UpAtomIs('SECTION') then begin
-          // for example FreePascal_TLS_callback : pointer = @Exec_Tls_callback; public name '__FPC_tls_callbacks' section '.CRT$XLFPC'
-          ReadNextAtom;
-          if (not AtomIsStringConstant)
-          and (not AtomIsIdentifier) then
-            SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
-          ReadConstant(true,false,[]);
-        end;
       end;
-      if CurPos.Flag<>cafSemicolon then
-        SaveRaiseCharExpectedButAtomFound(';');
-    end else
-      UndoReadNextAtom;
+    end;
+    if CurPos.Flag<>cafSemicolon then
+      SaveRaiseCharExpectedButAtomFound(';');
   end else if CurPos.Flag=cafEND then begin
     UndoReadNextAtom;
   end else begin
-    SaveRaiseCharExpectedButAtomFound(';');
+    // the current atom is not a postfix modifier
+    if not HasSemicolon then
+      SaveRaiseCharExpectedButAtomFound(';');
+    UndoReadNextAtom;
   end;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
