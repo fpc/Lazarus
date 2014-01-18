@@ -1446,7 +1446,7 @@ end;
 
 procedure TSynEditStringsLinked.SendNotification(AReason: TSynEditNotifyReason;
   ASender: TSynEditStrings; aIndex, aCount: Integer;
-  aBytePos: Integer = -1; aLen: Integer = 0; aTxt: String = '');
+  aBytePos: Integer; aLen: Integer; aTxt: String);
 begin
   fSynStrings.SendNotification(AReason, ASender, aIndex, aCount, aBytePos, aLen, aTxt);
 end;
