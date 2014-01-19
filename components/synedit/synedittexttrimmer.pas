@@ -52,6 +52,27 @@ type
     function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
   end;
 
+  TSynEditTrimSpaceListEntry = record
+    LineIndex: Integer;
+    TrimmedSpaces: String;
+  end;
+
+  { TSynEditTrimSpaceList }
+
+  TSynEditTrimSpaceList = object
+  private
+    FCount: Integer;
+  protected
+    Procedure Grow;
+  public
+    Entries: array of TSynEditTrimSpaceListEntry;
+    property Count: Integer read FCount;
+    procedure Clear;
+    procedure Add(ALineIdx: Integer; ASpaces: String);
+    procedure Delete(AEntryIdx: Integer);
+    function IndexOf(ALineIdx: Integer): Integer;
+  end;
+
   { TSynEditStringTrimmingList }
 
   TSynEditStringTrimmingList = class(TSynEditStringsLinked)
@@ -65,7 +86,7 @@ type
     fEnabled: Boolean;
     FUndoTrimmedSpaces: Boolean;
     fLockCount: Integer;
-    fLockList : TStringList;
+    fLockList : TSynEditTrimSpaceList;
     FLineEdited: Boolean;
     FTempLineStringForPChar: String; // experimental; used by GetPChar;
     FViewChangeStamp: int64;
@@ -206,6 +227,84 @@ type
     constructor Create(APosY: Integer; AText: String);
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
+
+{ TSynEditTrimSpaceList }
+
+procedure TSynEditTrimSpaceList.Grow;
+var
+  l: Integer;
+begin
+  l := Length(Entries);
+  if l < 16
+  then l := 32
+  else l := l * 2;
+  SetLength(Entries, l);
+end;
+
+procedure TSynEditTrimSpaceList.Clear;
+begin
+  SetLength(Entries, 0);
+  FCount := 0;
+end;
+
+procedure TSynEditTrimSpaceList.Add(ALineIdx: Integer; ASpaces: String);
+var
+  l, h, m: Integer;
+begin
+  if FCount = Length(Entries) then
+    Grow;
+
+  l := 0;
+  h := FCount - 1;
+  while h > l do begin
+    m := (h + l) div 2;
+    if ALineIdx <= Entries[m].LineIndex
+    then h := m
+    else l := m + 1;
+  end;
+  if (FCount > 0) and (ALineIdx >= Entries[l].LineIndex) then
+    inc(l);
+
+  if l < FCount then begin
+    Entries[FCount].TrimmedSpaces := '';
+    Move(Entries[l], Entries[l+1], (FCount-l)*SizeOf(Entries[0]));
+    Pointer(Entries[l].TrimmedSpaces) := nil;
+  end;
+
+  Entries[l].LineIndex := ALineIdx;
+  Entries[l].TrimmedSpaces := ASpaces;
+  inc(FCount);
+end;
+
+procedure TSynEditTrimSpaceList.Delete(AEntryIdx: Integer);
+begin
+  Assert((AEntryIdx >= 0) and (AEntryIdx < FCount), 'TSynEditTrimSpaceList.Delete index');
+  Entries[AEntryIdx].TrimmedSpaces := '';
+  if AEntryIdx < FCount then begin
+    Move(Entries[AEntryIdx+1], Entries[AEntryIdx], (FCount-AEntryIdx)*SizeOf(Entries[0]));
+    Pointer(Entries[FCount].TrimmedSpaces) := nil;
+  end;
+  dec(FCount);
+end;
+
+function TSynEditTrimSpaceList.IndexOf(ALineIdx: Integer): Integer;
+var
+  l, h, m: Integer;
+begin
+  if FCount <= 0 then
+    exit(-1);
+  l := 0;
+  h := FCount - 1;
+  while h > l do begin
+    m := (h + l) div 2;
+    if ALineIdx <= Entries[m].LineIndex
+    then h := m
+    else l := m + 1;
+  end;
+  if ALineIdx = Entries[l].LineIndex
+  then Result := l
+  else Result := -1;
+end;
 
 { TLazSynDisplayTrim }
 
@@ -408,7 +507,8 @@ constructor TSynEditStringTrimmingList.Create(ASynStringSource : TSynEditStrings
 begin
   fCaret := ACaret;
   fCaret.AddChangeHandler(@DoCaretChanged);
-  fLockList := TStringList.Create;
+  //fLockList := TSynEditTrimSpaceList.Create;
+  fLockList.Clear;
   FDisplayView := TLazSynDisplayTrim.Create(Self);
   FDisplayView.NextView := ASynStringSource.DisplayView;
   fLineIndex:= -1;
@@ -431,7 +531,7 @@ begin
   fSynStrings.RemoveNotifyHandler(senrCleared, @ListCleared);
   fCaret.RemoveChangeHandler(@DoCaretChanged);
   FreeAndNil(FDisplayView);
-  FreeAndNil(fLockList);
+  //FreeAndNil(fLockList);
   inherited Destroy;
 end;
 
@@ -543,11 +643,11 @@ begin
   if  fLockCount > 0 then begin
     {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- Lines Changed (ins/del)  locked ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces) ]);{$ENDIF}
     for i := fLockList.Count-1 downto 0 do begin
-      j := Integer(PtrUInt(Pointer(fLockList.Objects[i])));
+      j := fLockList.Entries[i].LineIndex;
       if (j >= Index) and (j < Index - N) then
         fLockList.Delete(i)
       else if j >= Index then
-        fLockList.Objects[i] := TObject(Pointer(j + N));
+        fLockList.Entries[i].LineIndex := j + N;
     end;
   end else begin
     {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- Lines Changed (ins/del) not locked ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces) ]);{$ENDIF}
@@ -615,11 +715,11 @@ var
 begin
   {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- StoreSpacesforLine ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' Spacestr=',length(SpaceStr), ' LineStr=',length(LineStr),  '  fLockCount=',fLockCount]);{$ENDIF}
   if fLockCount > 0 then begin
-    i := fLockList.IndexOfObject(TObject(pointer(PtrUInt(Index))));
+    i := fLockList.IndexOf(Index);
     if i < 0 then
-      fLockList.AddObject(SpaceStr, TObject(pointer(PtrUInt(Index))))
+      fLockList.Add(Index, SpaceStr)
     else
-      fLockList[i] := SpaceStr;
+      fLockList.Entries[i].TrimmedSpaces := SpaceStr;
   end;
   if (fLineIndex = Index) then begin
     fSpaces := SpaceStr;
@@ -633,11 +733,11 @@ var
 begin
   if (not fEnabled) then exit('');
   if fLockCount > 0 then begin
-    i := fLockList.IndexOfObject(TObject(Pointer(PtrUInt(Index))));
+    i := fLockList.IndexOf(Index);
     if i < 0 then
       result := ''
     else
-      result := fLockList[i];
+      result := fLockList.Entries[i].TrimmedSpaces;
   //{$IFDEF SynTrimDebug}debugln(['--- Trimmer -- Spaces (for line / locked)', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' Result=',length(Result)]);{$ENDIF}
     exit;
   end;
@@ -655,7 +755,7 @@ end;
 procedure TSynEditStringTrimmingList.Lock;
 begin
   if (fLockCount = 0) and (fLineIndex >= 0) and Enabled then begin
-    fLockList.AddObject(Spaces(fLineIndex), TObject(Pointer(PtrUInt(fLineIndex))));
+    fLockList.Add(fLineIndex, Spaces(fLineIndex));
     FLineEdited := False;
   end;
   inc(fLockCount);
@@ -676,11 +776,11 @@ begin
   if (not fEnabled) then exit;
   FIsTrimming := True;
   {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- TrimAfterLock', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' LockList=',fLockList.CommaText]);{$ENDIF}
-  i := fLockList.IndexOfObject(TObject(Pointer(PtrUInt(fLineIndex))));
+  i := fLockList.IndexOf(fLineIndex);
   if i >= 0 then begin
-    if fSpaces <> fLockList[i] then
+    if fSpaces <> fLockList.Entries[i].TrimmedSpaces then
       IncViewChangeStamp;
-    fSpaces:= fLockList[i];
+    fSpaces:= fLockList.Entries[i].TrimmedSpaces;
     if (fLineIndex >= 0) and (fLineIndex < fSynStrings.Count) then
       fLineText := fSynStrings[fLineIndex];
     fLockList.Delete(i);
@@ -694,13 +794,13 @@ begin
     IncViewChangeStamp;
   try
     for i := 0 to fLockList.Count-1 do begin
-      index := Integer(PtrUInt(Pointer(fLockList.Objects[i])));
-      slen := length(fLockList[i]);
+      index := fLockList.Entries[i].LineIndex;
+      slen := length(fLockList.Entries[i].TrimmedSpaces);
       if (slen > 0) and (index >= 0) and (index < fSynStrings.Count) then begin
         ltext := fSynStrings[index];
 // TODO: Avoid triggering the highlighter
         fSynStrings[index] := ltext;                                            // trigger OnPutted, so the line gets repainted
-        MaybeAddUndoForget(Index+1, fLockList[i]);
+        MaybeAddUndoForget(Index+1, fLockList.Entries[i].TrimmedSpaces);
       end;
     end;
   finally
@@ -841,7 +941,7 @@ begin
   // check if we need to apend spaces
   if (not fEnabled) then exit;
   if (fLockCount = 0) and (fLineIndex <> ALineIndex) then exit;
-  if (fLockCount > 0) and (fLockList.IndexOfObject(TObject(Pointer(PtrUInt(ALineIndex)))) < 0) then exit;
+  if (fLockCount > 0) and (fLockList.IndexOf(ALineIndex) < 0) then exit;
 
   Result:= GetPCharSpaces(ALineIndex, ALen);
 end;
