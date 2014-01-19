@@ -1935,7 +1935,7 @@ begin
 
   ConstrainStartLineBytePos(Value);
 
-  if SelAvail then begin
+  if WasAvail then begin
     if FStartLinePos < FEndLinePos then begin
       nInval1 := Min(Value.Y, FStartLinePos);
       nInval2 := Max(Value.Y, FEndLinePos);
