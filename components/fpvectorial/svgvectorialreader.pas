@@ -112,6 +112,7 @@ type
     procedure ConvertSVGDeltaToFPVDelta(
       const AData: TvVectorialPage;
       const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
+    procedure AutoDetectDocSize(var ALeft, ATop, ARight, ABottom: Double; ABaseNode: TDOMNode);
   public
     { General reading methods }
     constructor Create; override;
@@ -764,13 +765,16 @@ begin
   lStrings := TStringList.Create;
   try
     lStrings.Delimiter := ';';
+    lStrings.StrictDelimiter := True;
     lStrings.DelimitedText := LowerCase(AValue);
     for i := 0 to lStrings.Count-1 do
     begin
       lStr := lStrings.Strings[i];
       lPosEqual := Pos(':', lStr);
       lStyleKeyStr := Copy(lStr, 0, lPosEqual-1);
+      lStyleKeyStr := Trim(lStyleKeyStr);
       lStyleValueStr := Copy(lStr, lPosEqual+1, Length(lStr));
+      lStyleValueStr := Trim(lStyleValueStr);
       ReadSVGPenStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
       ReadSVGGeneralStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
       if AUseFillAsPen and (lStyleKeyStr = 'fill') then
@@ -842,7 +846,7 @@ begin
   end
   else if AKey = 'stroke-opacity' then
   begin
-    ADestEntity.Pen.Color.Alpha := StrToInt(AValue)*$101
+    ADestEntity.Pen.Color.Alpha := Round(StrToFloat(AValue)*$FFFF);
   end
   else if AKey = 'stroke-linecap' then
   begin
@@ -1307,7 +1311,7 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
-    lNodeValue := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if  lNodeName = 'cx' then
       cx := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'cy' then
@@ -1987,7 +1991,7 @@ begin
   begin
     X := FSVGPathTokenizer.Tokens.Items[i].Value;
     Y := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-    ConvertSVGDeltaToFPVDelta(AData, X, Y, CurX, CurY);
+    ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, CurX, CurY);
     AData.AddLineToPath(CurX, CurY);
 
     Inc(i, 2);
@@ -2154,7 +2158,7 @@ begin
 
   // Recover the position if there was a transformation matrix
   lx := lx + lText.X;
-  ly := lx + lText.Y;
+  ly := ly + lText.Y;
 
   // Set the coordinates
   ConvertSVGCoordinatesToFPVCoordinates(
@@ -2304,6 +2308,51 @@ begin
   ADestY := - ASrcY * FLOAT_MILIMETERS_PER_PIXEL;
 end;
 
+procedure TvSVGVectorialReader.AutoDetectDocSize(var ALeft, ATop, ARight, ABottom: Double;
+  ABaseNode: TDOMNode);
+var
+  i: Integer;
+  lCurNode: TDOMNode;
+  lx, ly, lcx, lcy: Double;
+  lNodeName, lNodeValue: DomString;
+begin
+  lx := 0;
+  ly := 0;
+  lcx := 0;
+  lcy := 0;
+  // read the attributes
+  if ABaseNode.Attributes <> nil then
+  begin
+    for i := 0 to ABaseNode.Attributes.Length - 1 do
+    begin
+      lNodeName := ABaseNode.Attributes.Item[i].NodeName;
+      lNodeValue := ABaseNode.Attributes.Item[i].NodeValue;
+      if (lNodeName = 'x') or (lNodeName = 'cx') then
+        lx := lx + StringWithUnitToFloat(lNodeValue)
+      else if (lNodeName = 'y') or (lNodeName = 'cy') then
+        ly := ly + StringWithUnitToFloat(lNodeValue)
+      else if lNodeName = 'width' then
+        lcx := StringWithUnitToFloat(lNodeValue)
+      else if lNodeName = 'height' then
+        lcy := StringWithUnitToFloat(lNodeValue);
+    end;
+  end;
+
+  // Borders guessing
+  if lx < ALeft then ALeft := lx;
+  if ly < ATop then ATop := ly;
+  if lx + lcx > ARight then ARight := lx + lcx;
+  if ly + lcy > ABottom then ABottom := ly + lcy;
+
+  // iterate through children
+  lCurNode := ABaseNode.FirstChild;
+  while Assigned(lCurNode) do
+  begin
+    AutoDetectDocSize(ALeft, ATop, ARight, ABottom, lCurNode);
+    lCurNode := lCurNode.NextSibling;
+  end;
+end;
+
 constructor TvSVGVectorialReader.Create;
 begin
   inherited Create;
@@ -2356,6 +2405,9 @@ var
   i: Integer;
   lCurEntity: TvEntity;
   lViewBox: TDoubleArray;
+  lStr: string;
+  lDocNeedsSizeAutoDetection: Boolean = True;
+  lx, ly, lx2, ly2: Double;
 begin
   FPathNumber := 0;
 
@@ -2363,7 +2415,13 @@ begin
   // Read the properties of the <svg> tag
   // ----------------
   AData.Width := StringWithUnitToFloat(Doc.DocumentElement.GetAttribute('width'));
-  AData.Height := StringWithUnitToFloat(Doc.DocumentElement.GetAttribute('height'));
+  lStr := Doc.DocumentElement.GetAttribute('height');
+  if lStr <> '' then
+  begin
+    lDocNeedsSizeAutoDetection := False;
+    AData.Height := StringWithUnitToFloat(lStr);
+  end;
+
   {$ifdef SVG_MERGE_LAYER_STYLES}
   FLayerStylesKeys.Clear;
   FLayerStylesValues.Clear;
@@ -2380,6 +2438,7 @@ begin
     if lNodeName = 'viewBox' then
     begin
       lViewBox := ReadSpaceSeparatedFloats(lNodeValue, '');
+      lDocNeedsSizeAutoDetection := False;
       AData.Width := lViewBox[2] - lViewBox[0];
       AData.Height := lViewBox[3] - lViewBox[1];
     end
@@ -2396,6 +2455,23 @@ begin
       lLayerStyleValues.Add(lNodeValue);
       {$endif}
     end;
+  end;
+
+  // Auto-detect the document size of necessary
+  if lDocNeedsSizeAutoDetection then
+  begin
+    lx := 0;
+    ly := 0;
+    lx2 := 0;
+    ly2 := 0;
+    lCurNode := Doc.DocumentElement.FirstChild;
+    while Assigned(lCurNode) do
+    begin
+      AutoDetectDocSize(lx, ly, lx2, ly2, lCurNode);
+      lCurNode := lCurNode.NextSibling;
+    end;
+    AData.Width := lx2 - lx;
+    AData.Height := ly2 - ly;
   end;
 
   // ----------------
