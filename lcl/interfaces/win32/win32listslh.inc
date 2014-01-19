@@ -84,6 +84,7 @@ Type
     procedure InitFlags; override;
     procedure UpdateComboHeight;
   public
+    procedure AddStrings(TheStrings: TStrings); override;
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: integer); override;
