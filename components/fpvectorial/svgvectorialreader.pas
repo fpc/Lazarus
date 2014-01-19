@@ -113,6 +113,7 @@ type
       const AData: TvVectorialPage;
       const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
     procedure AutoDetectDocSize(var ALeft, ATop, ARight, ABottom: Double; ABaseNode: TDOMNode);
+    function SVGColorValueStrToWord(AStr: string): Word;
   public
     { General reading methods }
     constructor Create; override;
@@ -393,12 +394,13 @@ begin
     try
       lStr := Copy(lValue, 5, Length(lValue)-5);
       lStrings.Delimiter := ',';
+      lStrings.StrictDelimiter := True;
       lStrings.DelimitedText := lStr;
       if lStrings.Count = 3 then
       begin
-        Result.Red := StrToInt(lStrings.Strings[0]) * $101;
-        Result.Green := StrToInt(lStrings.Strings[1]) * $101;
-        Result.Blue := StrToInt(lStrings.Strings[2]) * $101;
+        Result.Red := SVGColorValueStrToWord(lStrings.Strings[0]);
+        Result.Green := SVGColorValueStrToWord(lStrings.Strings[1]);
+        Result.Blue := SVGColorValueStrToWord(lStrings.Strings[2]);
       end
       else
         raise Exception.Create(Format('[TvSVGVectorialReader.ReadSVGColor] An unexpected number of channels was found: %d', [lStrings.Count]));
@@ -2351,6 +2353,21 @@ begin
     AutoDetectDocSize(ALeft, ATop, ARight, ABottom, lCurNode);
     lCurNode := lCurNode.NextSibling;
   end;
+end;
+
+// From 0..255 to 0..$FFFF
+// From 0%..100% to 0..$FFFF
+function TvSVGVectorialReader.SVGColorValueStrToWord(AStr: string): Word;
+var
+  lStr: string;
+begin
+  lStr := Trim(AStr);
+  if lStr[Length(lStr)] = '%' then
+  begin
+    lStr := Copy(lStr, 1, Length(lStr)-1);
+    Result := StrToInt(lStr) * $FFFF div 100;
+  end
+  else Result := StrToInt(lStr) * $101;
 end;
 
 constructor TvSVGVectorialReader.Create;
