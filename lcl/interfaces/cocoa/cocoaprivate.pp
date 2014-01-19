@@ -1597,11 +1597,11 @@ var
 begin
   // 1. convert to window base
   P.x := X;
-  P.y := Y;
+  P.y := frame.size.height-y;   // convert to Cocoa system
   P := convertPoint_ToView(P, nil);
 
   X := Round(P.X);
-  Y := Round(frame.size.height-P.Y);
+  Y := Round(window.frame.size.height-P.Y); // convert to LCL system
 
   // 2. convert window to screen
   window.lclLocalToScreen(X, Y);
@@ -1612,14 +1612,15 @@ var
   P: NSPoint;
 begin
   // 1. convert from screen to window
+
   window.lclScreenToLocal(X, Y);
   P.x := X;
-  P.y := Y;
+  P.y := Round(window.frame.size.height-Y); // convert to Cocoa system
 
   // 2. convert from window to local
   P := convertPoint_FromView(P, nil);
   X := Round(P.x);
-  Y := Round(P.y);
+  Y := Round(frame.size.height-P.y);   // convert to Cocoa system
 end;
 
 function LCLViewExtension.lclParent:id;
@@ -1740,7 +1741,7 @@ begin
   begin
     f := frame;
     inc(X, Round(f.origin.x));
-    inc(Y, Round(screen.frame.size.height - f.size.height - f.origin.y)+lclGetTopBarHeight);
+    inc(Y, Round(screen.frame.size.height - f.size.height - f.origin.y));
   end;
 end;
 

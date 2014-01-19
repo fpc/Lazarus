@@ -94,32 +94,11 @@ begin
 end;
 
 function TCocoaWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
-var nr,nw:NSRect;
-    h:integer;
 begin
   Result := Handle <> 0;
 
   if Result then
-  begin
-    // convert client to window
-    with NSObject(Handle).lclClientFrame do
-    begin
-      inc(P.X, Left);
-      inc(P.Y, Top);
-    end;
-
-    // get topbar height and add
-    nr:=NSView(Handle).window.frame;
-    nw:=NSView(Handle).window.contentRectForFrameRect(nr);
-    h:=round(nr.size.height-nw.size.height);
-
-    //debugln(NSStringToString(NSView(Handle).window.title) +' '+ dbgs(h));
-
-    inc(P.Y, h);
-
-    // convert window to screen
-    NSObject(Handle).lclLocalToScreen(P.X, P.Y);
-  end;
+     NSObject(Handle).lclLocalToScreen(P.X, P.Y);
 end;
 
 function TCocoaWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;
@@ -2012,16 +1991,8 @@ begin
   Result := Ord(Handle <> 0);
 
   if Result = 1 then
-  begin
-    // 1. convert screen to window
     NSObject(Handle).lclScreenToLocal(P.X, P.Y);
-    // 2. convert window to client
-    with NSObject(Handle).lclClientFrame do
-    begin
-      dec(P.X, Left);
-      dec(P.Y, Top);
-    end;
-  end;
+
 end;
 
 function TCocoaWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
