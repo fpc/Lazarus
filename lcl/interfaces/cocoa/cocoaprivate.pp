@@ -135,6 +135,7 @@ type
     function lclFrame: TRect; message 'lclFrame'; reintroduce;
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:'; reintroduce;
     function lclClientFrame: TRect; message 'lclClientFrame'; reintroduce;
+    function lclGetTopBarHeight:integer; message 'lclGetTopBarHeight'; reintroduce;
   end;
 
   { IButtonCallback }
@@ -1592,13 +1593,16 @@ end;
 procedure LCLViewExtension.lclLocalToScreen(var X, Y:Integer);
 var
   P: NSPoint;
+
 begin
   // 1. convert to window base
   P.x := X;
   P.y := Y;
   P := convertPoint_ToView(P, nil);
+
   X := Round(P.X);
-  Y := Round(P.Y);
+  Y := Round(frame.size.height-P.Y);
+
   // 2. convert window to screen
   window.lclLocalToScreen(X, Y);
 end;
@@ -1611,6 +1615,7 @@ begin
   window.lclScreenToLocal(X, Y);
   P.x := X;
   P.y := Y;
+
   // 2. convert from window to local
   P := convertPoint_FromView(P, nil);
   X := Round(P.x);
@@ -1735,7 +1740,7 @@ begin
   begin
     f := frame;
     inc(X, Round(f.origin.x));
-    inc(Y, Round(screen.frame.size.height - f.size.height - f.origin.y));
+    inc(Y, Round(screen.frame.size.height - f.size.height - f.origin.y)+lclGetTopBarHeight);
   end;
 end;
 
@@ -1759,10 +1764,17 @@ begin
     Result := NSRectToRect(frame);
 end;
 
+function LCLWindowExtension.lclGetTopBarHeight:integer;
+var nw,nf: NSRect;
+begin
+  nf:= NSMakeRect (0, 0, 100, 100);
+  nw:=contentRectForFrameRect(nf);
+  result:=round(nf.size.height-nw.size.height);
+end;
+
 procedure LCLWindowExtension.lclSetFrame(const r: TRect);
 var
   ns: NSRect;
-  nw,nf: NSRect;
   h:integer;
 begin
   if Assigned(screen) then
@@ -1770,10 +1782,8 @@ begin
   else
     ns := RectToNSRect(r);
 
-  // get topbar height and add
-  nf:= NSMakeRect (0, 0, 100, 100);
-  nw:=contentRectForFrameRect(nf);
-  h:=round(nf.size.height-nw.size.height);
+  // add topbar height
+  h:=lclGetTopBarHeight;
   ns.size.height:=ns.size.height+h;
   ns.origin.y:=ns.origin.y-h;
 
