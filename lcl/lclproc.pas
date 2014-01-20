@@ -294,6 +294,7 @@ function DbgsVKCode(c: word): string;
 function DbgS(const ASize: TSize): string; overload; inline;
 function DbgS(const ATM: TTextMetric): string; overload;
 function DbgS(const AScrollInfo: TScrollInfo): string; overload;
+function DbgS(const AVariant: Variant): string; overload;
 
 procedure DbgOutThreadLog(const Msg: string); overload;
 procedure DebuglnThreadLog(const Msg: string); overload;
@@ -2310,6 +2311,17 @@ begin
     Result := Result + ' TrackPos: ' + DbgS(AScrollInfo.nTrackPos);
 
   if Result = '' then Result := '(no scrollinfo)';
+end;
+
+function DbgS(const AVariant: Variant): string;
+begin
+  if TVarData(AVariant).VType = varEmpty then
+    result := '<empty>'
+  else
+  if TVarData(AVariant).vtype = varNull then
+    result := '<null>'
+  else
+    result := AVariant;
 end;
 
 procedure DbgOutThreadLog(const Msg: string);
