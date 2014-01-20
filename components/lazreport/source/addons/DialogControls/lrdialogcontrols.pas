@@ -137,6 +137,8 @@ type
   protected
     procedure PaintDesignControl; override;
     function CreateControl:TControl;override;
+    function GetText:string;override;
+    procedure SetText(AValue:string);override;
   public
     constructor Create(AOwnerPage:TfrPage); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
@@ -783,6 +785,16 @@ end;
 function TlrMemo.CreateControl: TControl;
 begin
   Result:=TMemo.Create(nil);
+end;
+
+function TlrMemo.GetText: string;
+begin
+  Result:=TMemo(FControl).Lines.Text;
+end;
+
+procedure TlrMemo.SetText(AValue: string);
+begin
+  TMemo(FControl).Lines.Text:=AValue;
 end;
 
 constructor TlrMemo.Create(AOwnerPage: TfrPage);

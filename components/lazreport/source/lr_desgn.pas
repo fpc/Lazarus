@@ -6271,7 +6271,7 @@ var
   Res:integer;
 begin
 //  if FileModified and (CurReport<>nil) and
-  if Modified and (CurReport<>nil) and
+  if (not PreparedReportEditor) and Modified and (CurReport<>nil) and
     (not ((csDesigning in CurReport.ComponentState) and CurReport.StoreInForm)) then
   begin
     Res:=Application.MessageBox(PChar(sSaveChanges + ' ' + sTo + ' ' + ExtractFileName(CurDocName) + '?'),

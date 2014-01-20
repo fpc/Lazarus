@@ -741,7 +741,8 @@ begin
   end;
   {$ELSE}
   frPrintForm := TfrPrintForm.Create(nil);
-  frPrintForm.E1.Text:=IntToStr(TfrReport(Doc).DefaultCopies);
+  frPrintForm.E1.Value:=TfrReport(Doc).DefaultCopies;
+  frPrintForm.cbCollate.Checked:=TfrReport(Doc).DefaultCollate;
   with frPrintForm do
   begin
     if ShowModal = mrOk then
@@ -760,7 +761,8 @@ begin
         else
            Pages := E2.Text;
 
-      PrintReport(StrToInt(E1.Text));
+      TfrReport(Doc).DefaultCollate:=frPrintForm.cbCollate.Checked;
+      PrintReport(E1.Value);
     end;
     Free;
   end;

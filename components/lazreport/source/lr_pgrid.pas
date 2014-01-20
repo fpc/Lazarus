@@ -244,12 +244,16 @@ var
   Page: TfrPage;
   BM  : TBookMark;
   XPos,YPos: Integer;
+  SaveDesign:TfrReportDesigner;
 begin
   if (FDBGrid = nil) or (TDBGrid(DBGrid).Datasource = nil) or
      (TDBGrid(DBGrid).Datasource.Dataset = nil) then Exit;
 
   if (FTemplate<>'') and not FileExists(FTemplate) then
       raise Exception.CreateFmt('Template file %s does not exists',[FTemplate]);
+
+  SaveDesign:=frDesigner;
+  frDesigner:=nil;
 
   FReport := TfrReport.Create(Self);
   if FTemplate<>'' then
@@ -369,6 +373,7 @@ begin
     FReportDataSet.Free;
     FColumnDataSet.Free;
   end;
+  SaveDesign:=frDesigner;
 end;
 
 procedure TfrPrintGrid.OnEnterRect(Memo: TStringList; View: TfrView);

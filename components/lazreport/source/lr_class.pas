@@ -189,6 +189,8 @@ type
     procedure SetWidth(AValue: Integer);virtual;
     procedure SetHeight(AValue: Integer);virtual;
     procedure SetVisible(AValue: Boolean);virtual;
+    function GetText:string;virtual;
+    procedure SetText(AValue:string);virtual;
   public
     x, y, dx, dy: Integer;
 
@@ -964,6 +966,7 @@ type
   TfrReport = class(TComponent)
   private
     FDataType: TfrDataType;
+    FDefaultCollate: boolean;
     FOnDBImageRead: TOnDBImageRead;
     FDefaultCopies: Integer;
     FMouseOverObject: TMouseOverObjectEvent;
@@ -1140,6 +1143,8 @@ type
     property DefExportFilterClass: string read fDefExportFilterClass write fDefExportFilterClass;
     property DefExportFileName: string read fDefExportFileName write fDefExportFileName;
 
+    property DefaultCollate : boolean read FDefaultCollate write FDefaultCollate;
+
   published
     property Dataset: TfrDataset read FDataset write FDataset;
     property DefaultCopies: Integer read FDefaultCopies write FDefaultCopies default 1;
@@ -1195,6 +1200,7 @@ type
     procedure SetModified(AValue: Boolean);virtual;
   public
     Page: TfrPage;
+    PreparedReportEditor:boolean;
     procedure {%H-}RegisterObject(ButtonBmp: TBitmap; const ButtonHint: String;
       ButtonTag: Integer; ObjectType:TfrObjectType); virtual; abstract;
     procedure {%H-}RegisterTool(const MenuCaption: String; ButtonBmp: TBitmap;
@@ -1434,7 +1440,18 @@ var
   CompositeMode: Boolean;
   MaxTitleSize: Integer = 0;
   FHyp: THyphen = nil;
-  
+
+  {-----------------------------------------------------------------------------}
+const
+  PropCount = 6;
+  PropNames: Array[0..PropCount - 1] of String =
+      ('Text','FontName', 'FontSize', 'FontStyle', 'FontColor', 'Adjust');
+
+  ColNames: Array[0..16] of String =
+      ('clWhite', 'clBlack', 'clMaroon', 'clGreen', 'clOlive', 'clNavy',
+       'clPurple', 'clTeal', 'clGray', 'clSilver', 'clRed', 'clLime',
+       'clYellow', 'clBlue', 'clFuchsia', 'clAqua', 'clTransparent');
+
 {$IFDEF DebugLR}
 function Bandtyp2str(typ: TfrBandType): string;
 begin
@@ -10139,7 +10156,7 @@ end;
 
 procedure TfrReport.DoPrintReport(const PageNumbers: String; Copies: Integer);
 var
-  i, j: Integer;
+  k, FCollateCopies: Integer;
   f: Boolean;
   pgList: TStringList;
 
@@ -10237,6 +10254,32 @@ var
   end;
   {$ENDIF}
 
+procedure InternalPrintEMFPage;
+var
+  i, j:integer;
+begin
+  for i := 0 to EMFPages.Count - 1 do
+  begin
+    if (pgList.Count = 0) or (pgList.IndexOf(IntToStr(i + 1)) <> -1) then
+    begin
+      for j := 0 to Copies - 1 do
+      begin
+        {$IFDEF DebugLR}
+        DebugPrnInfo('=== Before PrintPage('+IntToStr(i)+')');
+        {$ENDIF}
+        PrintPage(i);
+
+        if Terminated then
+        begin
+          Printer.Abort;
+          pgList.Free;
+          Exit;
+        end;
+      end;
+    end;
+  end;
+end;
+
 begin
   {$IFDEF DebugLR}
   DebugLn('DoPrintReport INIT');
@@ -10246,8 +10289,11 @@ begin
   pgList := TStringList.Create;
 
   ParsePageNumbers;
+
   if Copies <= 0 then
     Copies := 1;
+
+  FCollateCopies:=Copies;
 
   with EMFPages[0]^ do
   begin
@@ -10264,27 +10310,38 @@ begin
 
   Printer.BeginDoc;
   f:= True;
-  for i := 0 to EMFPages.Count - 1 do
+
+  if FDefaultCollate then
   begin
-    if (pgList.Count = 0) or (pgList.IndexOf(IntToStr(i + 1)) <> -1) then
+    Copies:=1;
+    for k:=1 to FCollateCopies do
+      InternalPrintEMFPage;
+  end
+  else
+    InternalPrintEMFPage;
+(*  begin
+    for i := 0 to EMFPages.Count - 1 do
     begin
-      for j := 0 to Copies - 1 do
+      if (pgList.Count = 0) or (pgList.IndexOf(IntToStr(i + 1)) <> -1) then
       begin
-        {$IFDEF DebugLR}
-        DebugPrnInfo('=== Before PrintPage('+IntToStr(i)+')');
-        {$ENDIF}
-        PrintPage(i);
-        
-        if Terminated then
+        for j := 0 to Copies - 1 do
         begin
-          Printer.Abort;
-          pgList.Free;
-          Exit;
+          {$IFDEF DebugLR}
+          DebugPrnInfo('=== Before PrintPage('+IntToStr(i)+')');
+          {$ENDIF}
+          PrintPage(i);
+
+          if Terminated then
+          begin
+            Printer.Abort;
+            pgList.Free;
+            Exit;
+          end;
         end;
       end;
     end;
-  end;
-  
+  end; *)
+
   Printer.EndDoc;
   pgList.Free;
   {$IFDEF DebugLR}
@@ -10382,6 +10439,7 @@ begin
   Designer.Page := nil;
   frDesigner := TfrReportDesigner(frDesigner.ClassType.NewInstance);
   frDesigner.Create(nil){%H-};
+  frDesigner.PreparedReportEditor:=true;
   Stream := TMemoryStream.Create;
   SaveToStream(Stream);
   Pages.Clear;
@@ -10600,7 +10658,10 @@ var
   n:integer;
   PropInfo:PPropInfo;
   St:string;
+  i:integer;
 begin
+
+(*
 {  !!!! Надо переписать и дописать!!!!
   if Name = 'CURY' then
   begin
@@ -10681,6 +10742,143 @@ begin
       end;
 
     end;
+  end;
+
+*)
+
+  t := CurView;
+  Prop := AName;
+
+  if frVariables.IndexOf(AName) <> -1 then
+  begin
+    AValue := frVariables[AName];
+    exit;
+  end;
+
+  if AName = 'FREESPACE' then
+  begin
+    AValue:=IntToStr(CurPage.CurBottomY-CurPage.CurY);
+    exit;
+  end;
+
+  N:=PosLast('.', AName);
+  t:=nil;
+
+  if N>0 then
+  begin
+    Prop:=Copy(AName, N+1, Length(AName));
+    Delete(AName, N, Length(AName));
+    //Проверим - существует ли такой объект?
+    t := FindObjectByName(AName);
+  end;
+(*
+  if Pos('.', AName) <> 0 then
+  begin
+    //Find Object
+    t := CurPage.FindRTObject(Copy(AName, 1, Pos('.', AName) - 1));
+    if not Assigned(t) then
+      t:=CurReport.FindObject(Copy(AName, 1, Pos('.', AName) - 1));
+    //Property of object
+    Prop:=Copy(AName, Pos('.', AName)+1, Length(AName));
+  end;
+*)
+//  if not Assigned(t) then
+//      frParser.OnGetValue(Name, Value)
+//    else
+  if Assigned(t) then
+  begin
+       //Retreive property informations
+    PropInfo:=GetPropInfo(t,Prop);
+    if Assigned(PropInfo) then
+    begin
+      {$IFDEF DebugLR}
+      DebugLn('TInterpretator.GetValue(',Name,') Prop=',Prop, ' Kind=',InttoStr(Ord(PropInfo^.PropType^.Kind)));
+      {$ENDIF}
+      case PropInfo^.PropType^.Kind of
+        tkChar,tkAString,tkWString,
+        tkSString,tkLString :
+          begin
+            St:=GetStrProp(t, Prop);
+            {$IFDEF DebugLR}
+            DebugLn('St=',St);
+            {$ENDIF}
+            AValue:=St;
+          end;
+        tkBool,tkInt64,tkQWord,
+        tkInteger                   : AValue:=GetOrdProp(t,PropInfo);
+        tkSet                       : begin
+                                            St:=GetSetProp(t,Prop);
+                                            {$IFDEF DebugLR}
+                                            DebugLn('St=',St);
+                                            {$ENDIF}
+                                            AValue:=St;
+                                          end;
+        tkFloat                     : AValue:=GetFloatProp(t,Prop);
+        tkEnumeration               : begin
+                                            St:=GetEnumProp(t,Prop);
+                                            {$IFDEF DebugLR}
+                                            DebugLn('St=',St);
+                                            {$ENDIF}
+                                            AValue:=St;
+                                          end;
+      end;
+    end
+    else
+    begin
+      // it's not a property of t, try with known color names first
+      for i := 0 to 16 do
+        if AnsiCompareText(ColNames[i], Prop) = 0 then
+        begin
+            // color constant found.
+          if i <> 16 then
+            AValue := frColors[i]
+          else
+            AValue := clNone;
+          exit;
+        end;
+
+        // it's not a color name, try with customized properties
+        // not included directly in t
+      if not (t is TfrBandView) then
+      begin
+        for i:=0 to propcount-1 do
+          if CompareText(PropNames[i], Prop)=0 then
+          begin
+              {$IFDEF DebugLR}
+              DbgOut('A CustomField was found ', Prop);
+              if i=0 then
+                DbgOut(', t.memo.text=',DbgStr(t.Memo.Text));
+              DebugLn;
+              {$ENDIF}
+              case i of
+                0: AValue := t.GetText; //t.Memo.Text;
+                1: AValue := TfrMemoView(t).Font.Name;
+                2: AValue := TfrMemoView(t).Font.Size;
+                3: AValue := frGetFontStyle(TfrMemoView(t).Font.Style);
+                4: AValue := TfrMemoView(t).Font.Color;
+                5: AValue := TfrMemoView(t).Adjust;
+              end;
+              exit;
+          end;
+      end;
+    end;
+
+    {$IFDEF DebugLR}
+    DebugLn('TInterpretator.GetValue(',Name,') No Propinfo for Prop=',Prop);
+    {$ENDIF}
+(*
+    if VarIsNull(AValue) or VarIsEmpty(AValue) then
+    begin
+      {$IFDEF DebugLR}
+      DebugLn('TInterpretator.GetValue(',Name,')=NULL >> Value="',Name,'"');
+      {$ENDIF}
+      AValue:=Name;
+    end
+*)
+    {$IFDEF DebugLR}
+       else
+        DebugLn('TInterpretator.GetValue(',Name,')=',VarToStr(Value));
+    {$ENDIF}
   end;
 end;
 
@@ -11375,16 +11573,6 @@ begin
   {$ENDIF}
 end;
 
-{-----------------------------------------------------------------------------}
-const
-  PropCount = 6;
-  PropNames: Array[0..PropCount - 1] of String =
-    ('Text','FontName', 'FontSize', 'FontStyle', 'FontColor', 'Adjust');
-
-  ColNames: Array[0..16] of String =
-    ('clWhite', 'clBlack', 'clMaroon', 'clGreen', 'clOlive', 'clNavy',
-     'clPurple', 'clTeal', 'clGray', 'clSilver', 'clRed', 'clLime',
-     'clYellow', 'clBlue', 'clFuchsia', 'clAqua', 'clTransparent');
 
 {$WARNINGS OFF}
 
@@ -11396,6 +11584,9 @@ var
   St        : String;
   i         : Integer;
 begin
+  if Assigned(frParser.OnGetValue) then
+    frParser.OnGetValue(Name, Value);
+  (*
   {$IFDEF DebugLR}
   DebugLn('TInterpretator.GetValue(',Name,') INIT');
   {$ENDIF}
@@ -11491,7 +11682,7 @@ begin
             DebugLn;
             {$ENDIF}
             case i of
-              0: Value := t.Memo.Text;
+              0: Value := t.GetText; //t.Memo.Text;
               1: Value := TfrMemoView(t).Font.Name;
               2: Value := TfrMemoView(t).Font.Size;
               3: Value := frGetFontStyle(TfrMemoView(t).Font.Style);
@@ -11522,6 +11713,7 @@ begin
       DebugLn('TInterpretator.GetValue(',Name,')=',VarToStr(Value));
      {$ENDIF}
   end;
+  *)
 end;
 {$WARNINGS ON}
 
@@ -11604,7 +11796,7 @@ begin
           DebugLn;
           {$ENDIF}
           case i of
-            0: t.Memo.Text := Value;
+            0: T.SetText(Value); //t.Memo.Text := Value;
             1: TfrMemoView(t).Font.Name := Value;
             2: TfrMemoView(t).Font.Size := Value;
             3: TfrMemoView(t).Font.Style := frSetFontStyle(Value);
@@ -11756,6 +11948,16 @@ procedure TfrObject.SetVisible(AValue: Boolean);
 begin
   if fVisible=AValue then Exit;
   fVisible:=AValue;
+end;
+
+function TfrObject.GetText: string;
+begin
+  Result:=fMemo.Text;
+end;
+
+procedure TfrObject.SetText(AValue: string);
+begin
+  fMemo.Text:=AValue;
 end;
 
 procedure TfrObject.SetWidth(AValue: Integer);
