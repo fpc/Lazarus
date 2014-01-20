@@ -10254,31 +10254,31 @@ var
   end;
   {$ENDIF}
 
-procedure InternalPrintEMFPage;
-var
-  i, j:integer;
-begin
-  for i := 0 to EMFPages.Count - 1 do
+  procedure InternalPrintEMFPage;
+  var
+    i, j:integer;
   begin
-    if (pgList.Count = 0) or (pgList.IndexOf(IntToStr(i + 1)) <> -1) then
+    for i := 0 to EMFPages.Count - 1 do
     begin
-      for j := 0 to Copies - 1 do
+      if (pgList.Count = 0) or (pgList.IndexOf(IntToStr(i + 1)) <> -1) then
       begin
-        {$IFDEF DebugLR}
-        DebugPrnInfo('=== Before PrintPage('+IntToStr(i)+')');
-        {$ENDIF}
-        PrintPage(i);
-
-        if Terminated then
+        for j := 0 to Copies - 1 do
         begin
-          Printer.Abort;
-          pgList.Free;
-          Exit;
+          {$IFDEF DebugLR}
+          DebugPrnInfo('=== Before PrintPage('+IntToStr(i)+')');
+          {$ENDIF}
+          PrintPage(i);
+
+          if Terminated then
+          begin
+            Printer.Abort;
+            pgList.Free;
+            Exit;
+          end;
         end;
       end;
     end;
   end;
-end;
 
 begin
   {$IFDEF DebugLR}
@@ -10319,28 +10319,6 @@ begin
   end
   else
     InternalPrintEMFPage;
-(*  begin
-    for i := 0 to EMFPages.Count - 1 do
-    begin
-      if (pgList.Count = 0) or (pgList.IndexOf(IntToStr(i + 1)) <> -1) then
-      begin
-        for j := 0 to Copies - 1 do
-        begin
-          {$IFDEF DebugLR}
-          DebugPrnInfo('=== Before PrintPage('+IntToStr(i)+')');
-          {$ENDIF}
-          PrintPage(i);
-
-          if Terminated then
-          begin
-            Printer.Abort;
-            pgList.Free;
-            Exit;
-          end;
-        end;
-      end;
-    end;
-  end; *)
 
   Printer.EndDoc;
   pgList.Free;
@@ -10661,91 +10639,6 @@ var
   i:integer;
 begin
 
-(*
-{  !!!! Надо переписать и дописать!!!!
-  if Name = 'CURY' then
-  begin
-    Value := CurPage.CurY;
-    Exit;
-  end;
-  if Name = 'FREESPACE' then
-  begin
-    Value := CurPage.CurBottomY - CurPage.CurY;
-    Exit;
-  end;
-  if Name = 'FINALPASS' then
-  begin
-    Value := MasterReport.FinalPass;
-    Exit;
-  end;
-  if Name = 'PAGEHEIGHT' then
-  begin
-    Value := CurPage.CurBottomY;
-    Exit;
-  end;
-  if Name = 'PAGEWIDTH' then
-  begin
-    Value := CurPage.RightMargin;
-    Exit;
-  end;
-}
-
-  N:=PosLast('.', AName);
-  t:=nil;
-
-  if N>0 then
-  begin
-    Prop:=Copy(AName, N+1, Length(AName));
-    Delete(AName, N, Length(AName));
-    //Проверим - существует ли такой объект?
-    t := FindObjectByName(AName);
-    if Assigned(T) then
-    begin
-      PropInfo:=GetPropInfo(t,Prop);
-      if Assigned(PropInfo) then
-      begin
-         {$IFDEF DebugLR}
-         DebugLn('TInterpretator.GetValue(',Name,') Prop=',Prop,
-         ' Kind=',InttoStr(Ord(PropInfo^.PropType^.Kind)));
-         {$ENDIF}
-         Case PropInfo^.PropType^.Kind of
-           tkChar,tkAString,tkWString,
-           tkSString,tkLString         : begin
-                                           St:=GetStrProp(t,Prop);
-                                           {$IFDEF DebugLR}
-                                           DebugLn('St=',St);
-                                           {$ENDIF}
-                                           AValue:=St;
-                                         end;
-           tkBool,tkInt64,tkQWord,
-           tkInteger                   : AValue:=GetOrdProp(t,PropInfo);
-           tkSet                       : begin
-                                           St:=GetSetProp(t,Prop);
-                                           {$IFDEF DebugLR}
-                                           DebugLn('St=',St);
-                                           {$ENDIF}
-                                           AValue:=St;
-                                         end;
-           tkFloat                     : AValue:=GetFloatProp(t,Prop);
-           tkEnumeration               : begin
-                                           St:=GetEnumProp(t,Prop);
-                                           {$IFDEF DebugLR}
-                                           DebugLn('St=',St);
-                                           {$ENDIF}
-                                           AValue:=St;
-                                         end;
-         end;
-{      if (t <> nil) and (t.PropRec[Prop] <> nil) then
-      Value := t.Prop[Prop]
-      else if frConsts.IndexOf(Name) <> -1 then
-       Value := frConsts[Name];}
-      end;
-
-    end;
-  end;
-
-*)
-
   t := CurView;
   Prop := AName;
 
@@ -10771,20 +10664,7 @@ begin
     //Проверим - существует ли такой объект?
     t := FindObjectByName(AName);
   end;
-(*
-  if Pos('.', AName) <> 0 then
-  begin
-    //Find Object
-    t := CurPage.FindRTObject(Copy(AName, 1, Pos('.', AName) - 1));
-    if not Assigned(t) then
-      t:=CurReport.FindObject(Copy(AName, 1, Pos('.', AName) - 1));
-    //Property of object
-    Prop:=Copy(AName, Pos('.', AName)+1, Length(AName));
-  end;
-*)
-//  if not Assigned(t) then
-//      frParser.OnGetValue(Name, Value)
-//    else
+
   if Assigned(t) then
   begin
        //Retreive property informations
@@ -10864,20 +10744,7 @@ begin
     end;
 
     {$IFDEF DebugLR}
-    DebugLn('TInterpretator.GetValue(',Name,') No Propinfo for Prop=',Prop);
-    {$ENDIF}
-(*
-    if VarIsNull(AValue) or VarIsEmpty(AValue) then
-    begin
-      {$IFDEF DebugLR}
-      DebugLn('TInterpretator.GetValue(',Name,')=NULL >> Value="',Name,'"');
-      {$ENDIF}
-      AValue:=Name;
-    end
-*)
-    {$IFDEF DebugLR}
-       else
-        DebugLn('TInterpretator.GetValue(',Name,')=',VarToStr(Value));
+    DebugLn('TInterpretator.GetValue(',Name,') No Propinfo for Prop=',Prop,' Value=',dbgs(AValue));
     {$ENDIF}
   end;
 end;
@@ -11573,149 +11440,11 @@ begin
   {$ENDIF}
 end;
 
-
-{$WARNINGS OFF}
-
 procedure TInterpretator.GetValue(const Name: String; var Value: Variant);
-var
-  t         : TfrObject;
-  Prop      : String;
-  PropInfo  : PPropInfo;
-  St        : String;
-  i         : Integer;
 begin
   if Assigned(frParser.OnGetValue) then
     frParser.OnGetValue(Name, Value);
-  (*
-  {$IFDEF DebugLR}
-  DebugLn('TInterpretator.GetValue(',Name,') INIT');
-  {$ENDIF}
-  //Value := 0;
-  t := CurView;
-  Prop := Name;
-
-  if frVariables.IndexOf(Name) <> -1 then
-  begin
-    Value := frVariables[Name];
-    Exit;
-  end;
-
-  if Name = 'FREESPACE' then
-  begin
-    Value:=IntToStr(CurPage.CurBottomY-CurPage.CurY);
-    Exit;
-  end;
-  
-  if Pos('.', Name) <> 0 then
-  begin
-    //Find Object
-    t := CurPage.FindRTObject(Copy(Name, 1, Pos('.', Name) - 1));
-    if not Assigned(t) then
-       t:=CurReport.FindObject(Copy(Name, 1, Pos('.', Name) - 1));
-    //Property of object
-    Prop:=Copy(Name, Pos('.',Name)+1,255);
-  end;
-  
-  if not Assigned(t) then
-    frParser.OnGetValue(Name, Value)
-  else
-  begin
-     //Retreive property informations
-     PropInfo:=GetPropInfo(t,Prop);
-     if Assigned(PropInfo) then
-     begin
-        {$IFDEF DebugLR}
-        DebugLn('TInterpretator.GetValue(',Name,') Prop=',Prop,
-        ' Kind=',InttoStr(Ord(PropInfo^.PropType^.Kind)));
-        {$ENDIF}
-        Case PropInfo^.PropType^.Kind of
-          tkChar,tkAString,tkWString,
-          tkSString,tkLString         : begin
-                                          St:=GetStrProp(t,Prop);
-                                          {$IFDEF DebugLR}
-                                          DebugLn('St=',St);
-                                          {$ENDIF}
-                                          Value:=St;
-                                        end;
-          tkBool,tkInt64,tkQWord,
-          tkInteger                   : Value:=GetOrdProp(t,PropInfo);
-          tkSet                       : begin
-                                          St:=GetSetProp(t,Prop);
-                                          {$IFDEF DebugLR}
-                                          DebugLn('St=',St);
-                                          {$ENDIF}
-                                          Value:=St;
-                                        end;
-          tkFloat                     : Value:=GetFloatProp(t,Prop);
-          tkEnumeration               : begin
-                                          St:=GetEnumProp(t,Prop);
-                                          {$IFDEF DebugLR}
-                                          DebugLn('St=',St);
-                                          {$ENDIF}
-                                          Value:=St;
-                                        end;
-        end;
-     end else
-     begin
-      // it's not a property of t, try with known color names first
-      for i := 0 to 16 do
-        if AnsiCompareText(ColNames[i], Prop) = 0 then
-        begin
-          // color constant found.
-          if i <> 16 then
-            Value := frColors[i] else
-            Value := clNone;
-          exit;
-        end;
-
-      // it's not a color name, try with customized properties
-      // not included directly in t
-      if not (t is TfrBandView) then
-      begin
-        for i:=0 to propcount-1 do
-          if CompareText(PropNames[i], Prop)=0 then
-          begin
-            {$IFDEF DebugLR}
-            DbgOut('A CustomField was found ', Prop);
-            if i=0 then
-              DbgOut(', t.memo.text=',DbgStr(t.Memo.Text));
-            DebugLn;
-            {$ENDIF}
-            case i of
-              0: Value := t.GetText; //t.Memo.Text;
-              1: Value := TfrMemoView(t).Font.Name;
-              2: Value := TfrMemoView(t).Font.Size;
-              3: Value := frGetFontStyle(TfrMemoView(t).Font.Style);
-              4: Value := TfrMemoView(t).Font.Color;
-              5: Value := TfrMemoView(t).Adjust;
-            end;
-            exit;
-          end;
-      end;
-
-      // no luck yet, try next if it's a custom variable
-      if Assigned(frParser.OnGetValue) then
-        frParser.OnGetValue(Name, Value);
-     end;
-     {$IFDEF DebugLR}
-     DebugLn('TInterpretator.GetValue(',Name,') No Propinfo for Prop=',Prop);
-     {$ENDIF}
-
-     if VarIsNull(Value) or VarIsEmpty(Value) then
-     begin
-      {$IFDEF DebugLR}
-      DebugLn('TInterpretator.GetValue(',Name,')=NULL >> Value="',Name,'"');
-      {$ENDIF}
-      Value:=Name;
-     end
-     {$IFDEF DebugLR}
-     else
-      DebugLn('TInterpretator.GetValue(',Name,')=',VarToStr(Value));
-     {$ENDIF}
-  end;
-  *)
 end;
-{$WARNINGS ON}
 
 procedure TInterpretator.SetValue(const Name: String; Value: Variant);
 var
