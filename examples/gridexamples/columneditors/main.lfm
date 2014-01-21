@@ -58,7 +58,7 @@ object Form1: TForm1
         Title.Caption = 'PickList'
       end>
     FixedCols = 0
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAlwaysShowEditor, goSmoothScroll, goCellHints]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goTabs, goAlwaysShowEditor, goSmoothScroll, goCellHints]
     ParentShowHint = False
     ScrollBars = ssBoth
     ShowHint = True
