@@ -776,7 +776,7 @@ end;
 
 procedure TLazLogger.DebugLnEnter(Args: array of const);
 begin
-  if high(Args) > low(Args) then
+  if high(Args) >= low(Args) then
     DoDebugLn(ArgsToString(Args));
   IncreaseIndent;
 end;
@@ -806,7 +806,7 @@ end;
 procedure TLazLogger.DebugLnExit(Args: array of const);
 begin
   DecreaseIndent;
-  if high(Args) > low(Args) then
+  if high(Args) >= low(Args) then
     DoDebugLn(ArgsToString(Args));
 end;
 
