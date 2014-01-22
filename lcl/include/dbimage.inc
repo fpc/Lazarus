@@ -104,7 +104,10 @@ begin
       if assigned(FOnDBImageWrite)  then
         OnDBImageWrite(self,s,fe) //Call extermal method to save type of image
       else
-        s.WriteAnsiString(fe);  //otherwise write file extension to stream
+        begin
+        if FWriteHeader then
+          s.WriteAnsiString(fe);  //otherwise write file extension to stream
+        end;
       Picture.Graphic.SaveToStream(s);
     finally
       s.Free;
@@ -125,7 +128,21 @@ var s        : Tstream;
     GraphExt : string;
     gc       : TGraphicClass;
     AGraphic : TGraphic;
+    CurPos   : Int64;
     
+    function LoadImageFromStream: boolean;
+    begin
+      result := (s<>nil);
+      if result then
+        try
+          curPos := s.Position;
+          Picture.LoadFromStream(s);
+        except
+          s.Position := Curpos;
+          result := false;
+        end;
+    end;
+
 begin
   if not FPictureLoaded then
     begin
@@ -136,35 +153,59 @@ begin
       begin
       if FDatalink.field is TBlobField then
         begin
+
         if FDatalink.Field.IsNull then
           begin
           Picture.Clear;
           exit;
           end;
+
         s := FDataLink.DataSet.CreateBlobStream(FDataLink.Field,bmRead);
         if (S=Nil) or (s.Size = 0) then
           begin
           Picture.Clear;
           exit;
           end;
-        AGraphic := nil;
+
         try
+          AGraphic := nil;
+          GraphExt := '';
+          //External method to identify graphic type
+          //returns file extension for graphic type (e.g. jpg)
           if assigned(FOnDBImageRead) then
-            OnDBImageRead(self,s,GraphExt) //External method to identify graphic type
-                                             //returns file extension for graphic type (e.g. jpg)
+            OnDBImageRead(self,s,GraphExt)
           else
-            GraphExt :=  s.ReadAnsiString;  //Read file extension Graphic type from stream
-
-          gc := GetGraphicClassForFileExtension(GraphExt);
-          if assigned(gc) then
             begin
-            AGraphic := gc.Create;
-            AGraphic.LoadFromStream(s);
-
-            Picture.Assign(AGraphic);
+            CurPos := s.Position;
+            try
+              GraphExt := s.ReadAnsiString;
+            except
+              s.Position := CurPos;
+              GraphExt := '';
             end;
+            end;
+
+          if GraphExt <> '' then
+            begin
+            gc := GetGraphicClassForFileExtension(GraphExt);
+            if gc<>nil then
+              begin
+              AGraphic := gc.Create;
+              AGraphic.LoadFromStream(s);
+              Picture.Assign(AGraphic);
+              end
+              else
+                GraphExt := ''; // try next loading direct stream
+            end;
+
+          if GraphExt = '' then
+            begin
+            if not LoadImageFromStream then
+              Picture.Clear;
+            end;
+
         finally
-          if assigned(AGraphic) then AGraphic.Free;
+          AGraphic.Free;
           s.Free;
         end {try}
 
@@ -194,6 +235,7 @@ begin
   ControlStyle:=ControlStyle+[csReplicatable];
   FAutoDisplay:=True;
   FQuickDraw:=true;
+  FWriteHeader:=True;
   FDataLink:=TFieldDataLink.Create;
   FDataLink.Control:=Self;
   FDataLink.OnDataChange:=@DataChange;

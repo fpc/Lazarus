@@ -974,6 +974,7 @@ Type
     FQuickDraw: Boolean;
     FPictureLoaded: boolean;
     FUpdatingRecord: boolean;
+    FWriteHeader: Boolean;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -1025,6 +1026,7 @@ Type
     property Stretch;
     property Transparent;
     property Visible;
+    property WriteHeader: Boolean read FWriteHeader write FWriteHeader default True;
   end;
 
   { TDBCalendar }
