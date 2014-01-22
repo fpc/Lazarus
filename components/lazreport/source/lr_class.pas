@@ -4983,10 +4983,9 @@ var
   GraphExt: string;
   gc: TGraphicClass;
   AGraphic: TGraphic;
+  CurPos: Int64;
 
   function LoadImageFromStream: boolean;
-  var
-    CurPos: Int64;
   begin
     result := (s<>nil);
     if result then
@@ -5021,26 +5020,31 @@ begin
     if assigned(CurReport.OnDbImageRead) then
       CurReport.OnDBImageRead(Self, s, GraphExt)
     else
-    if LoadImageFromStream then
-      exit;
-
-    try
-      if GraphExt='' then begin
+    begin
+      CurPos := s.Position;
+      try
         GraphExt := s.ReadAnsiString;
         if Length(GraphExt)>10 then
           GraphExt := ''; // even 10 would mean we have a false positive
+      except
+        s.Position := CurPos;
+        GraphExt := '';
       end;
+    end;
 
+    if GraphExt<>'' then begin
       gc := GetGraphicClassForFileExtension(GraphExt);
       if assigned(gc) then
       begin
         AGraphic := gc.Create;
         AGraphic.LoadFromStream(s);
         Picture.Assign(AGraphic);
-      end;
-
-    except
+      end else
+        GraphExt := '';
     end;
+
+    if GraphExt='' then
+      LoadImageFromStream;
 
   finally
     s.Free;
