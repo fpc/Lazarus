@@ -143,6 +143,25 @@ var s        : Tstream;
         end;
     end;
 
+    procedure GraphExtToClass;
+    begin
+      gc := GetGraphicClassForFileExtension(GraphExt);
+    end;
+
+    procedure ReadImageHeader;
+    begin
+      CurPos := s.Position;
+      try
+        GraphExt := s.ReadAnsiString;
+      except
+        s.Position := CurPos;
+        GraphExt := '';
+      end;
+      GraphExtToClass;
+      if gc=nil then
+        s.Position := CurPos;
+    end;
+
 begin
   if not FPictureLoaded then
     begin
@@ -170,35 +189,37 @@ begin
         try
           AGraphic := nil;
           GraphExt := '';
-          //External method to identify graphic type
-          //returns file extension for graphic type (e.g. jpg)
           if assigned(FOnDBImageRead) then
-            OnDBImageRead(self,s,GraphExt)
+            begin
+            // External method to identify graphic type
+            // returns file extension for graphic type (e.g. jpg)
+            // If user implements OnDBImageRead, the control assumes that
+            // the programmer either:
+            //
+            // -- Returns a valid identifier that matches a graphic class and
+            //    the remainder of stream contains the image data. An instance of
+            //    of graphic class will be used to load the image data.
+            // or
+            // -- Returns an invalid identifier that doesn't match a graphic class
+            //    and the remainder of stream contains the image data. The control
+            //    will try to load the image trying to identify the format
+            //    by it's content
+            //
+            // In particular, returning an invalid identifier while the stream has
+            // a image header will not work.
+            OnDBImageRead(self,s,GraphExt);
+            GraphExtToClass;
+            end
           else
-            begin
-            CurPos := s.Position;
-            try
-              GraphExt := s.ReadAnsiString;
-            except
-              s.Position := CurPos;
-              GraphExt := '';
-            end;
-            end;
+            ReadImageHeader;
 
-          if GraphExt <> '' then
+          if gc<>nil then
             begin
-            gc := GetGraphicClassForFileExtension(GraphExt);
-            if gc<>nil then
-              begin
-              AGraphic := gc.Create;
-              AGraphic.LoadFromStream(s);
-              Picture.Assign(AGraphic);
-              end
-              else
-                GraphExt := ''; // try next loading direct stream
-            end;
-
-          if GraphExt = '' then
+            AGraphic := gc.Create;
+            AGraphic.LoadFromStream(s);
+            Picture.Assign(AGraphic);
+            end
+          else
             begin
             if not LoadImageFromStream then
               Picture.Clear;
