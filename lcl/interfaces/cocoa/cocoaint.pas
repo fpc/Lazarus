@@ -80,6 +80,9 @@ type
 
     FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
 
+    function PromptUser(const DialogCaption, DialogMessage: String;
+      DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
+      EscapeResult: Longint): Longint; override;
     function GetAppHandle: THandle; override;
   public
     constructor Create; override;
