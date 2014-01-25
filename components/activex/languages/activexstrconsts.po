@@ -1,0 +1,35 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: activexstrconsts.axconvertdependanttypelibs
+msgid "Convert dependant typelibs"
+msgstr ""
+
+#: activexstrconsts.axcreatepackage
+msgid "Create package"
+msgstr ""
+
+#: activexstrconsts.axcreatevisualcomponenttactivexcontainerdescendant
+msgid "Create visual component (TActiveXContainer descendant)"
+msgstr ""
+
+#: activexstrconsts.axfilecontainingtypelibrary
+msgid "File containing type library:"
+msgstr ""
+
+#: activexstrconsts.aximporttypelibrary
+msgid "Import Type Library"
+msgstr ""
+
+#: activexstrconsts.aximporttypelibrarymenu
+msgid "Import Type Library ..."
+msgstr ""
+
+#: activexstrconsts.axselectdirectorytostorepackageplpk
+msgid "Select directory to store package %sP.lpk"
+msgstr ""
+
+#: activexstrconsts.axtypelibraryfilestlbdllexeocxolbtlbdllexeocxolballf
+msgid "Type library files (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|All Files (*.*)|*.*"
+msgstr ""
+

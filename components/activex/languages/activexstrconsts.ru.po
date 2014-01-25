@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: activexstrconsts.axconvertdependanttypelibs
+msgid "Convert dependant typelibs"
+msgstr "Преобразовать зависимости библиотеки типов"
+
+#: activexstrconsts.axcreatepackage
+msgid "Create package"
+msgstr "Создать пакет"
+
+#: activexstrconsts.axcreatevisualcomponenttactivexcontainerdescendant
+msgid "Create visual component (TActiveXContainer descendant)"
+msgstr "Создать визуальный компонент (потомок TActiveXContainer)"
+
+#: activexstrconsts.axfilecontainingtypelibrary
+msgid "File containing type library:"
+msgstr "Файл библиотеки типов:"
+
+#: activexstrconsts.aximporttypelibrary
+msgid "Import Type Library"
+msgstr "Импортировать библиотеку типов"
+
+#: activexstrconsts.aximporttypelibrarymenu
+msgid "Import Type Library ..."
+msgstr "Импортировать библиотеку типов ..."
+
+#: activexstrconsts.axselectdirectorytostorepackageplpk
+msgid "Select directory to store package %sP.lpk"
+msgstr "Выберите каталог для сохранения пакета %sP.lpk"
+
+#: activexstrconsts.axtypelibraryfilestlbdllexeocxolbtlbdllexeocxolballf
+msgid "Type library files (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|All Files (*.*)|*.*"
+msgstr "Файлы библиотек типов (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|All Files (*.*)|*.*"
+

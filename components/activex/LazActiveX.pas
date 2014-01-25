@@ -7,7 +7,8 @@ unit LazActiveX;
 interface
 
 uses
-  activexcontainer, lazactivexreg, ImportTypelib, LazarusPackageIntf;
+  activexcontainer, lazactivexreg, ImportTypelib, activexstrconsts, 
+  LazarusPackageIntf;
 
 implementation
 

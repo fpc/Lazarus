@@ -43,13 +43,14 @@ procedure Register;
 
 implementation
 
-uses  classes,LResources,MenuIntf, LCLIntf;
+uses Classes, LResources, MenuIntf, LCLIntf, activexstrconsts;
 
 
 procedure Register; 
 begin
   {$ifndef wince}
-  RegisterIDEMenuCommand(itmSecondaryTools, 'ImportTL','Import Type Library',nil,@ImpTypeLib);
+  RegisterIDEMenuCommand(itmSecondaryTools, 'ImportTL', axImportTypeLibraryMenu, nil
+    , @ImpTypeLib);
   {$endif wince}
   RegisterComponents('ActiveX', [TActiveXContainer]);
 end;
