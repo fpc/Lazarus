@@ -459,6 +459,9 @@ begin
   // GDB MI interface
   TranslateUnitResourceStrings('GDBMIDebugger',
     Dir+'languages/gdbmidebugger'+Ext,Lang,FallbackLang);
+  // GDB Server interface
+  TranslateUnitResourceStrings('GDBMIServerDebugger',
+    Dir+'languages/gdbmiserverdebugger'+Ext,Lang,FallbackLang);
   // Debugger GUI
   TranslateUnitResourceStrings('DebuggerStrConst',
     Dir+'languages/debuggerstrconst'+Ext,Lang,FallbackLang);
