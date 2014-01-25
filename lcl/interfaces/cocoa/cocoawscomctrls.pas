@@ -15,6 +15,16 @@ uses
 
 type
 
+  { TCocoaWSStatusBar }
+
+  TCocoaWSStatusBar = class(TWSStatusBar)
+  published
+    //class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    //class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    //class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    //class procedure Update(const AStatusBar: TStatusBar); override;
+  end;
+
   { TCocoaWSProgressBar }
 
   TCocoaWSProgressBar = class(TWSProgressBar)
