@@ -6,8 +6,9 @@ unit CocoaUtils;
 interface
 
 uses
+  classes,
   MacOSAll, CocoaAll,
-  Types, LCLType;
+  Types, LCLType, LCLProc, menus;
 
 const
   LCLEventSubTypeMessage = MaxShort - 1;
@@ -60,6 +61,8 @@ function NSColorToRGB(const Color: NSColor): TColorRef; inline;
 // extract ColorRef from any NSColor
 function NSColorToColorRef(const Color: NSColor): TColorRef;
 function ColorToNSColor(const Color: TColorRef): NSColor; inline;
+
+procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: string; out shiftKeyMask: NSUInteger);
 
 implementation
 
@@ -150,6 +153,29 @@ begin
     (Color and $FF) / $FF,
     ((Color shr 8) and $FF) / $FF,
     ((Color shr 16) and $FF) / $FF, 1);
+end;
+
+procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: string; out shiftKeyMask: NSUInteger);
+var
+  w: word;
+  s: TShiftState;
+begin
+  ShortCutToKey(AShortCut, w, s);
+  case w of
+    VK_DELETE: key := char(NSDeleteCharacter);
+    VK_OEM_2 : key := char(44);
+  else
+    key := lowercase(char(w and $ff));
+  end;
+  shiftKeyMask := 0;
+  if ssShift in s then
+    ShiftKeyMask := ShiftKeyMask + NSShiftKeyMask;
+  if ssAlt in s then
+    ShiftKeyMask := ShiftKeyMask + NSAlternateKeyMask;
+  if ssCtrl in s then
+    ShiftKeyMask := ShiftKeyMask + NSControlKeyMask;
+  if ssMeta in s then
+    ShiftKeyMask := ShiftKeyMask + NSCommandKeyMask;
 end;
 
 function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;

@@ -112,6 +112,8 @@ type
     procedure FreeStockItems;
     procedure FreeSysColorBrushes;
 
+    procedure SetMainMenu(const AMenu: HMENU);
+
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;

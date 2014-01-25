@@ -246,7 +246,26 @@ begin
 end;
 
 procedure TLCLWindowCallback.Activate;
+var
+  ACustForm: TCustomForm;
 begin
+  ACustForm := Target as TCustomForm;
+
+  if (ACustForm.Menu <> nil) and
+     (ACustForm.Menu.HandleAllocated) then
+    begin
+    if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenuItem) then
+      begin
+      if TCocoaMenuItem(ACustForm.Menu.Handle).hasSubmenu then
+        CocoaWidgetSet.SetMainMenu(HMENU(TCocoaMenuItem(ACustForm.Menu.Handle).submenu))
+      else
+        debugln('Warning: Menu does not have a valid handle.');
+      end
+    else
+      CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle);
+    end
+  else
+    CocoaWidgetSet.SetMainMenu(0);
   LCLSendActivateMsg(Target, WA_ACTIVE, false);
 end;
 

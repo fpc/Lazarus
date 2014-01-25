@@ -397,6 +397,12 @@ begin
     DeleteAndNilObject(FSysColorBrushes[i]);
 end;
 
+procedure TCocoaWidgetSet.SetMainMenu(const AMenu: HMENU);
+begin
+  if AMenu<>0 then
+    NSApp.setMainMenu(NSMenu(AMenu));
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.GetAppHandle
   Returns: Returns NSApp object, created via NSApplication.sharedApplication

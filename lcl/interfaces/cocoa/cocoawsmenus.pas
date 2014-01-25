@@ -25,6 +25,8 @@ uses
   // Libs
   CocoaAll,
   MacOSAll,
+  // RTL
+  sysutils,
   // LCL
   Controls, Forms, Menus, Graphics, LCLType, LMessages, LCLProc, Classes,
   // Widgetset
@@ -113,7 +115,7 @@ end;
  ------------------------------------------------------------------------------}
 class function TCocoaWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
-  Result:=HMENU(TCocoaMenu.alloc.initWithTitle(NSString.alloc.initWithCString('hello world')));
+  Result:=HMENU(TCocoaMenu.alloc.init) ;
 end;
 
 { TCocoaWSMenuItem }
@@ -129,15 +131,25 @@ var
   ParObj  : NSObject;
   Parent  : TCocoaMenu;
   item    : NSMenuItem;
+  ns      : NSString;
+  s       : string;
 begin
   if not Assigned(AMenuItem) or (AMenuItem.Handle=0) or not Assigned(AMenuItem.Parent) or (AMenuItem.Parent.Handle=0) then Exit;
   ParObj:=NSObject(AMenuItem.Parent.Handle);
 
   if ParObj.isKindOfClass_(NSMenuItem) then
   begin
-    item:=NSMenuItem(AMenuItem.Handle);
-    if not item.hasSubmenu then item.setSubmenu(TCocoaMenu.alloc.initWithTitle(NSSTR('')));
-    Parent:=TCocoaMenu(item.submenu);
+    if not NSMenuItem(ParObj).hasSubmenu then
+    begin
+      s := AMenuItem.Parent.Caption;
+      DeleteAmpersands(s);
+      ns := NSStringUtf8(pchar(s));
+      Parent := TCocoaMenu.alloc.initWithTitle(ns);
+      NSMenuItem(ParObj).setSubmenu(Parent);
+      ns.release;
+    end
+    else
+      Parent:=TCocoaMenu(NSMenuItem(ParObj).submenu);
   end else if ParObj.isKindOfClass_(NSMenu) then
     Parent:=TCocoaMenu(ParObj)
   else
@@ -157,7 +169,12 @@ end;
 class function TCocoaWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 var
   item    : NSMenuItem;
+  ANSMenu : NSMenu;
+  s       : string;
   ns      : NSString;
+  nsKey   : NSString;
+  key     : string;
+  ShiftSt : NSUInteger;
 begin
   if not Assigned(AMenuItem) then Exit;
 
@@ -165,10 +182,24 @@ begin
     item := NSMenuItem.separatorItem
   else
   begin
-    ns := NSStringUtf8(AMenuItem.Caption);
+    s := AMenuItem.Caption;
+    DeleteAmpersands(s);
+    ShortcutToKeyEquivalent(AMenuItem.ShortCut, key, ShiftSt);
+
+    nsKey := NSString(CFStringCreateWithCString(nil, pointer(pchar(key)), kCFStringEncodingASCII));
+    ns := NSStringUtf8(s);
     item := TCocoaMenuItem.alloc.initWithTitle_action_keyEquivalent(ns,
-      objcselector('lclItemSelected:'), NSString.alloc.init);
+      objcselector('lclItemSelected:'), nsKey);
+    item.setKeyEquivalentModifierMask(ShiftSt);
+
+    if AMenuItem.IsInMenuBar then
+      begin
+      ANSMenu := TCocoaMenu.alloc.initWithTitle(ns);
+      item.setSubmenu(ANSMenu);
+      end;
+
     ns.release;
+    nsKey.release;
     item.setTarget(item);
     TCocoaMenuItem(item).menuItemCallback:=TLCLMenuItemCallback.Create(item, AMenuItem);
     item.setEnabled(AMenuItem.Enabled);
@@ -187,20 +218,29 @@ class procedure TCocoaWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 var
   callback: IMenuItemCallback;
   callbackObject: TObject;
-  item: TCocoaMenuItem;
+  item    : NSObject;
+  parItem : NSObject;
 begin
   if AMenuItem.Caption <> '-' then
-  begin
-    item := TCocoaMenuItem(AMenuItem.Handle);
-    callback := item.lclGetCallback;
-    if Assigned(callback) then
     begin
-      callbackObject := callback.GetCallbackObject;
-      callback := nil;
-      item.lclClearCallback;
-      callbackObject.Free;
+    item:=NSObject(AMenuItem.Handle);
+    if item.isKindOfClass_(TCocoaMenuItem) then
+      begin
+      callback := TCocoaMenuItem(item).lclGetCallback;
+      if Assigned(callback) then
+        begin
+        callbackObject := callback.GetCallbackObject;
+        callback := nil;
+        TCocoaMenuItem(item).lclClearCallback;
+        callbackObject.Free;
+        end;
+      parItem := TCocoaMenuItem(Item).parentItem;
+      if assigned(parItem) and parItem.isKindOfClass_(NSMenuItem) then
+        NSMenuItem(paritem).submenu.removeItem(NSMenuItem(item));
+      Item.Release;
+      AMenuItem.Handle := 0;
+      end
     end;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -213,10 +253,15 @@ end;
 class procedure TCocoaWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
 var
   ns : NSString;
+  s: string;
 begin
   if not Assigned(AMenuItem) or (AMenuItem.Handle=0) then Exit;
-  ns:=NSStringUtf8(ACaption);
+  s := ACaption;
+  DeleteAmpersands(s);
+  ns:=NSStringUtf8(s);
   NSMenuItem(AMenuItem.Handle).setTitle(ns);
+  if NSMenuItem(AMenuItem.Handle).hasSubmenu then
+    NSMenuItem(AMenuItem.Handle).submenu.setTitle(ns);
   ns.release;
 end;
 
@@ -229,8 +274,16 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCocoaWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const ShortCutK1, ShortCutK2: TShortCut);
+var
+  key: string;
+  ShiftState: NSUInteger;
+  ns: NSString;
 begin
-
+  ShortcutToKeyEquivalent(ShortCutK1, key, ShiftState);
+  ns := NSString(CFStringCreateWithCString(nil, pointer(pchar(key)), kCFStringEncodingASCII));
+  TCocoaMenuItem(AMenuItem.Handle).setKeyEquivalentModifierMask(ShiftState);
+  TCocoaMenuItem(AMenuItem.Handle).setKeyEquivalent(ns);
+  ns.release;
 end;
 
 {------------------------------------------------------------------------------
