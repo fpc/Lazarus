@@ -412,6 +412,11 @@ begin
   Result:=THandle(NSApp);
 end;
 
+function TCocoaWidgetSet.CreateThemeServices: TThemeServices;
+begin
+  Result:=TCocoaThemeServices.Create;
+end;
+
 function TCocoaWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
 begin
   Result:=0;

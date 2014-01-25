@@ -6350,6 +6350,7 @@ lcl/interfaces/cocoa/cocoalclintfh.inc svneol=native#text/pascal
 lcl/interfaces/cocoa/cocoaobject.inc svneol=native#text/pascal
 lcl/interfaces/cocoa/cocoaprivate.pp svneol=native#text/plain
 lcl/interfaces/cocoa/cocoaproc.pas svneol=native#text/pascal
+lcl/interfaces/cocoa/cocoathemes.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoatrayicon.inc svneol=native#text/pascal
 lcl/interfaces/cocoa/cocoautils.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoawinapi.inc svneol=native#text/pascal

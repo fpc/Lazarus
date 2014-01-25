@@ -36,7 +36,7 @@ uses
   CocoaProc,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
-  Controls, Forms,
+  Controls, Forms, Themes,
   IntfGraphics, Graphics, CocoaWSFactory;
 
 type
@@ -84,6 +84,7 @@ type
       DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
       EscapeResult: Longint): Longint; override;
     function GetAppHandle: THandle; override;
+    function CreateThemeServices: TThemeServices; override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -138,7 +139,8 @@ var
 implementation
 
 uses
-  CocoaCaret;
+  CocoaCaret,
+  CocoaThemes;
 
 // the implementation of the utility methods
 {$I cocoaobject.inc}
