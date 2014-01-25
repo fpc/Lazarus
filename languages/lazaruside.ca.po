@@ -6752,6 +6752,22 @@ msgctxt "lazarusidestrconsts.liscut"
 msgid "Cut"
 msgstr "Talla"
 
+#: lazarusidestrconsts.lisdadattach
+msgid "Attach"
+msgstr ""
+
+#: lazarusidestrconsts.lisdadimagename
+msgid "Image Name"
+msgstr ""
+
+#: lazarusidestrconsts.lisdadpid
+msgid "PID"
+msgstr ""
+
+#: lazarusidestrconsts.lisdadrunningprocesses
+msgid "Running Processes"
+msgstr ""
+
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr ""

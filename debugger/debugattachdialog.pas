@@ -22,6 +22,7 @@ type
     labelRunningProcesses: TLabel;
     lvProcesses: TListView;
     procedure btnRefreshClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure lvProcessesChange(Sender: TObject; Item: TListItem;
       Change: TItemChange);
     procedure lvProcessesColumnClick(Sender: TObject; Column: TListColumn);
@@ -317,6 +318,17 @@ begin
   then
     EnumerateProcesses(FList);
   lvProcesses.Items.Count := FList.Count;
+end;
+
+procedure TDebugAttachDialogForm.FormCreate(Sender: TObject);
+begin
+  Caption:=rsAttachTo;
+  labelRunningProcesses.Caption:=lisDADRunningProcesses;
+  lvProcesses.Column[0].Caption:=lisDADImageName;
+  lvProcesses.Column[1].Caption:=lisDADPID;
+  btnRefresh.Caption:=dlgUnitDepRefresh;
+  btnAttach.Caption:=lisDADAttach;
+  btnCancel.Caption:=lisCancel;
 end;
 
 function TDebugAttachDialogForm.ChooseProcess(AList: TRunningProcessInfoList;

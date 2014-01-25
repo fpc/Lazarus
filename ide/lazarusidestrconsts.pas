@@ -5584,6 +5584,12 @@ resourcestring
     ;
   lisUpdateInfo = 'Update info';
 
+  //Debugger Attaching dialog
+  lisDADRunningProcesses = 'Running Processes';
+  lisDADImageName = 'Image Name';
+  lisDADPID = 'PID';
+  lisDADAttach = 'Attach';
+
 implementation
 
 end.
