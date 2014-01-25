@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="ChmHelpPkg"/>
@@ -47,6 +47,10 @@
         <UnitName Value="LazCHMHelpRegister"/>
       </Item5>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="4">
       <Item1>
