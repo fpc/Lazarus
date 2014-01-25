@@ -50,6 +50,10 @@ Extends the Editors macro recorder and player. Macros can be written in pascal s
         <UnitName Value="emsstrings"/>
       </Item6>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">
       <Item1>
