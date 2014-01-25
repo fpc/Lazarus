@@ -80,6 +80,7 @@ type
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure Invalidate(const AWinControl: TWinControl); override;
   end;
 
 
@@ -1089,6 +1090,12 @@ class procedure TCocoaWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
   if AWinControl.HandleAllocated then
     NSObject(AWinControl.Handle).lclSetVisible(AWinControl.HandleObjectShouldBeVisible);
+end;
+
+class procedure TCocoaWSWinControl.Invalidate(const AWinControl: TWinControl);
+begin
+  if AWinControl.HandleAllocated then
+     NSObject(AWinControl.Handle).lclInvalidate;
 end;
 
 { TCocoaWSCustomControl }
