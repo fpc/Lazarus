@@ -522,7 +522,9 @@ uses
   SynEdit;
 var
   TheDict: TSynRefCountedDict = nil;
-XXXCurTree: TSynMarkupHighIfDefLinesTree = nil;
+  {$IFDEF WITH_SYN_DEBUG_MARKUP_IFDEF}
+  DebugCurTreeForAssert: TSynMarkupHighIfDefLinesTree = nil;
+  {$ENDIF}
 
 type
 
@@ -2105,7 +2107,9 @@ var
 
 begin
   // Line nodes vill be invalidated in DoHighlightChanged
-XXXCurTree := self; try
+  {$IFDEF WITH_SYN_DEBUG_MARKUP_IFDEF}
+  DebugCurTreeForAssert := self; try
+  {$ENDIF}
 
   IncChangeStep;
 
@@ -2311,7 +2315,9 @@ XXXCurTree := self; try
 
   end;
 
-finally XXXCurTree := nil; end;
+  {$IFDEF WITH_SYN_DEBUG_MARKUP_IFDEF}
+  finally DebugCurTreeForAssert := nil; end;
+  {$ENDIF}
 end;
 
 procedure TSynMarkupHighIfDefLinesTree.DoHighlightChanged(Sender: TSynEditStrings; AIndex,
@@ -2850,7 +2856,9 @@ var
   i, j, NodeValidTo: Integer;
   SkipPeers: Boolean;
 begin
-XXXCurTree := self; try
+  {$IFDEF WITH_SYN_DEBUG_MARKUP_IFDEF}
+  DebugCurTreeForAssert := self; try
+  {$ENDIF}
   TmpNode.FTree := Self;
 
   NotInCodeLowLevel := MaxInt;
@@ -3012,7 +3020,9 @@ XXXCurTree := self; try
     end;
   end;
 
-finally XXXCurTree := nil; end;
+  {$IFDEF WITH_SYN_DEBUG_MARKUP_IFDEF}
+  finally DebugCurTreeForAssert := nil; end;
+  {$ENDIF}
 end;
 
 procedure TSynMarkupHighIfDefLinesTree.SetNodeState(ALinePos, AstartPos: Integer;
@@ -3547,9 +3557,11 @@ begin
   FLastValidLastLine := LastLine;
   FLastValidTreeStep := FIfDefTree.ChangeStep;
 
-try
+  {$IFDEF WITH_SYN_DEBUG_MARKUP_IFDEF}
+  try
+  DebugCurTreeForAssert := FIfDefTree; try
+  {$ENDIF}
 //debugln(['TSynEditMarkupIfDef.DoTreeUnlocked ', TopLine, ' - ', LastLine]);
-XXXCurTree := FIfDefTree; try
 
   ScanDisRange    := MarkupInfoDisabled.IsEnabled;
   ScanEnaRange    := MarkupInfoEnabled.IsEnabled;
@@ -3732,8 +3744,10 @@ XXXCurTree := FIfDefTree; try
   FMarkupNodes.EndMatchScan(LastLine);
   EndMatchScan(LastLine);
 
-finally XXXCurTree := nil; end;
-except FIfDefTree.DebugPrint(true); end;
+  {$IFDEF WITH_SYN_DEBUG_MARKUP_IFDEF}
+  finally DebugCurTreeForAssert := nil; end;
+  except FIfDefTree.DebugPrint(true); end;
+  {$ENDIF}
 end;
 
 procedure TSynEditMarkupIfDef.DoTreeChanged(Sender: TObject);
@@ -4065,25 +4079,29 @@ begin
 end;
 
 
+{$IFDEF WITH_SYN_DEBUG_MARKUP_IFDEF}
 var OldAssert: TAssertErrorProc = @SysAssert;
 Procedure MyAssert(const Msg,FName:ShortString;LineNo:Longint;ErrorAddr:Pointer);
 var
   t: TSynMarkupHighIfDefLinesTree;
 begin
 debugln('################# '+Msg);
-if XXXCurTree <> nil then begin
-  t := XXXCurTree;
-  XXXCurTree:= nil;
+if DebugCurTreeForAssert <> nil then begin
+  t := DebugCurTreeForAssert;
+  DebugCurTreeForAssert:= nil;
   t.DebugPrint(true);
 end;
   if OldAssert <> nil
   then OldAssert(Msg, FName, LineNo, ErrorAddr)
   else halt(0);
 end;
+{$ENDIF}
 
+{$IFDEF WITH_SYN_DEBUG_MARKUP_IFDEF}
 initialization
   OldAssert := AssertErrorProc;
   AssertErrorProc := @MyAssert;
+{$ENDIF}
 
 end.
 
