@@ -69,6 +69,7 @@ type
     sttQuadraticBezierTo, sttRelativeQuadraticBezierTo,
     // Elliptic curves
     sttEllipticArcTo, sttRelativeEllipticArcTo,
+    sttEllipticArcToWithAngle,
     // ToDo: Find out what these are
     sttUnknown,
     // numbers
@@ -286,8 +287,22 @@ begin
   // Elliptic curves
   'A': lToken.TokenType := sttEllipticArcTo;
   'a': lToken.TokenType := sttRelativeEllipticArcTo;
+  // U -> angle- ellipse
+  // (x y w h t0 t1) +
+  // The same as the “T” command, except that a implied moveto
+  // to the starting point is done.
+  // T -> angle- ellipseto
+  // (x y w h t0 t1) +
+  // Draws a segment of an ellipse. The ellipse is specified by
+  // the center(x, y), the size(w, h) and the start-angle t0 and end-angle t1.
+  'U', 'T': lToken.TokenType := sttEllipticArcToWithAngle;
+  // End path
+  // Ends the current set of sub-paths. The sub- paths will be filled
+  // by using the “even-odd” filling rule. Other following subpaths will
+  // be filled independently.
+  'N': lToken.TokenType := sttUnknown;
   // Types that I don't know what they do
-  'U', 'N', 'e':  lToken.TokenType := sttUnknown;
+  'e': lToken.TokenType := sttUnknown;
   // Constants
   '$':
   begin
@@ -678,6 +693,7 @@ procedure TvODGVectorialReader.ConvertPathStringToTPath(AStr: string;
   AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double);
 var
   x1, y1, x2, y2, lCurX, lCurY: double;
+  t1, t2, lSrcX, lSrcY, lDestX, lDestY: Double;
   j: Integer;
   lNodeName, lNodeValue: string;
   lTokenizer: TSVGPathTokenizer;
@@ -737,10 +753,53 @@ begin
 {      // cubic beziers
       sttBezierTo, sttRelativeBezierTo,
       // quadratic beziers
-      sttQuadraticBezierTo, sttRelativeQuadraticBezierTo,
+      sttQuadraticBezierTo, sttRelativeQuadraticBezierTo,}
       // Elliptic curves
-      sttEllipticArcTo, sttRelativeEllipticArcTo,
-      // numbers
+      //
+      // A -> arcto
+      // (x1 y1 x2 y2 x3 y3 x y) +
+      // (x1, y1) and (x2, y2) is defining the bounding box of a ellipse.
+      // A line is then drawn from the current point to the start angle of
+      // the arc that is specified by the radial vector of point (x3, y3)
+      // and then counter clockwise to the end-angle that is specified by point (x4, y4).
+      //
+      // T -> angle- ellipseto
+      // (x y w h t0 t1) +
+      // Draws a segment of an ellipse. The ellipse is specified by
+      // the center(x, y), the size(w, h) and the start-angle t0 and end-angle t1.
+      sttEllipticArcTo, sttRelativeEllipticArcTo, sttEllipticArcToWithAngle:
+      begin
+        CurToken := TSVGToken(lTokenizer.Tokens.Items[j+1]);
+        x1 := CurToken.Value;// + ADeltaX;
+        CurToken := TSVGToken(lTokenizer.Tokens.Items[j+2]);
+        y1 := CurToken.Value;// + ADeltaY;
+        CurToken := TSVGToken(lTokenizer.Tokens.Items[j+3]);
+        x2 := CurToken.Value / 2;
+        CurToken := TSVGToken(lTokenizer.Tokens.Items[j+4]);
+        y2 := CurToken.Value / 2;
+        CurToken := TSVGToken(lTokenizer.Tokens.Items[j+5]);
+        t1 := CurToken.Value;
+        t1 := t1 / Pi;
+        CurToken := TSVGToken(lTokenizer.Tokens.Items[j+6]);
+        t2 := CurToken.Value;
+        t2 := t2 / Pi;
+
+        ConvertODGCoordinatesToFPVCoordinates(AData, x1, y1, x1, y1);
+        ConvertODGDeltaToFPVDelta(AData, x2, y2, x2, y2);
+
+        // Parametrized Ellipse equation
+        lSrcX := x2 * Cos(t1) + x1;
+        lSrcY := y2 * Sin(t1) + y1;
+        lDestX := x2 * Cos(t2) + x1;
+        lDestY := y2 * Sin(t2) + y1;
+
+        // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
+        ADest.AppendMoveToSegment(lSrcX, lSrcY);
+        ADest.AppendEllipticalArc(x2, y2, 0, lDestX, lDestY, False, False);
+
+        Inc(j, 7);
+      end;
+      {// numbers
       sttFloatValue);}
       else
         Inc(j);

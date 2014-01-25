@@ -342,7 +342,7 @@ type
     E1, E2: T3DPoint;
     function AlignedEllipseCenterEquationT1(AParam: Double): Double;
   public
-    RX, RY, XRotation: Double;
+    RX, RY, XRotation: Double; // RX and RY are the X and Y half axis sizes
     LeftmostEllipse, ClockwiseArcFlag: Boolean;
     CX, CY: Double;
     procedure CalculateCenter;
@@ -489,6 +489,7 @@ type
     procedure AppendSegment(ASegment: TPathSegment);
     procedure AppendMoveToSegment(AX, AY: Double);
     procedure AppendLineToSegment(AX, AY: Double);
+    procedure AppendEllipticalArc(ARadX, ARadY, AXAxisRotation, ADestX, ADestY: Double; ALeftmostEllipse, AClockwiseArcFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
     procedure Move(ADeltaX, ADeltaY: Double); override;
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); override;
     function  MoveToSubpart(ASubpart: Cardinal): TPathSegment;
@@ -2589,6 +2590,24 @@ begin
   segment.SegmentType := st2DLine;
   segment.X := AX;
   segment.Y := AY;
+  AppendSegment(segment);
+end;
+
+procedure TPath.AppendEllipticalArc(ARadX, ARadY, AXAxisRotation, ADestX,
+  ADestY: Double; ALeftmostEllipse, AClockwiseArcFlag: Boolean);
+var
+  segment: T2DEllipticalArcSegment;
+begin
+  segment := T2DEllipticalArcSegment.Create;
+  segment.SegmentType := st2DEllipticalArc;
+  segment.X := ADestX;
+  segment.Y := ADestY;
+  segment.RX := ARadX;
+  segment.RY := ARadY;
+  segment.XRotation := AXAxisRotation;
+  segment.LeftmostEllipse := ALeftmostEllipse;
+  segment.ClockwiseArcFlag := AClockwiseArcFlag;
+
   AppendSegment(segment);
 end;
 
