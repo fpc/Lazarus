@@ -382,8 +382,13 @@ begin
     cnt.callback := TCocoaWindow(win).callback;
     win.setContentView(cnt);
 
-    if AParams.WndParent <> 0 then
-      NSWindow(AParams.WndParent).addChildWindow_ordered(win, NSWindowAbove);
+    if (AParams.WndParent <> 0) then
+    begin
+      if (NSObject(AParams.WndParent).isKindOfClass(TCocoaWindowContent)) and (not TCocoaWindowContent(AParams.WndParent).isembedded) then
+        TCocoaWindowContent(AParams.WndParent).window.addChildWindow_ordered(win, NSWindowAbove)
+      else
+        NSWindow(AParams.WndParent).addChildWindow_ordered(win, NSWindowAbove);
+    end;
   end
   else
   begin
