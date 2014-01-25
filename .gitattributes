@@ -681,6 +681,7 @@ components/chmhelp/packages/idehelp/chmlcl.pas svneol=native#text/plain
 components/chmhelp/packages/idehelp/chmprog.pas svneol=native#text/plain
 components/chmhelp/packages/idehelp/languages/lazchmhelp.de.po svneol=native#text/plain
 components/chmhelp/packages/idehelp/languages/lazchmhelp.po svneol=native#text/plain
+components/chmhelp/packages/idehelp/languages/lazchmhelp.ru.po svneol=native#text/plain
 components/chmhelp/packages/idehelp/lazchmhelp.pas svneol=native#text/plain
 components/chmhelp/packages/idehelp/lazchmhelpregister.pas svneol=native#text/plain
 components/codetools/Makefile.compiled svneol=native#text/plain
