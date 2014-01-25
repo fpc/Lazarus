@@ -373,7 +373,6 @@ begin
     inherited Assign(Source);
     
     // restore text in edit box
-    UpdateComboHeight;
     TWin32WSWinControl.SetText(FSender, EditText);
     if EditText = '' then
       lItemIndex := -1
@@ -418,6 +417,14 @@ begin
   Width := FSender.Width;
   Height := ComboHeight;
   SetWindowPos(FSender.Handle, 0, 0, 0, Width, Height, SWP_NOZORDER or SWP_NOACTIVATE or SWP_NOMOVE);
+end;
+
+procedure TWin32ComboBoxStringList.AddStrings(TheStrings: TStrings);
+begin
+  inherited AddStrings(TheStrings);
+
+  // Make sure dropdown etc is set correctly
+  UpdateComboHeight;
 end;
 
 procedure TWin32ComboBoxStringList.Clear;
