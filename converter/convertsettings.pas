@@ -622,6 +622,8 @@ begin
     AddDefaultCategory(Categ);
     AddFunc(Categ, 'Ptr','Pointer($1)' ,'','');
     AddFunc(Categ, 'RecreateWnd','RecreateWnd(Self)' ,'LCL', 'Controls');
+    // SysUtils has AnsiSameStr and SameText but no SameStr.
+    AddFunc(Categ, 'SameStr','(CompareStr($1,$2) = 0)' ,'', 'SysUtils');
   end;
 end;
 
