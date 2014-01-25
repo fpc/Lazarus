@@ -1,5 +1,4 @@
 object EMSIdeOptionsFrame: TEMSIdeOptionsFrame
-  Cursor = crDrag
   Left = 0
   Height = 240
   Top = 0
@@ -11,7 +10,7 @@ object EMSIdeOptionsFrame: TEMSIdeOptionsFrame
   DesignTop = 156
   object lblStatus: TLabel
     Left = 6
-    Height = 17
+    Height = 13
     Top = 6
     Width = 308
     Align = alTop
@@ -25,9 +24,10 @@ object EMSIdeOptionsFrame: TEMSIdeOptionsFrame
     AnchorSideTop.Control = lblStatus
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 25
-    Top = 29
-    Width = 75
+    Height = 23
+    Top = 25
+    Width = 82
+    AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'btnActivate'
     OnClick = btnActivateClick
