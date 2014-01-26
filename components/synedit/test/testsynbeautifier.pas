@@ -1045,7 +1045,7 @@ begin
       PushBaseName('Curly - TSynCommentIndentFlag');
 
       // sbitSpace, sbitCopySpaceTab, sbitPositionCaret
-      for ParentIndentType := low(TSynBeautifierIndentType) to high(TSynBeautifierIndentType)
+      for ParentIndentType := low(TSynBeautifierIndentType) to sbitPositionCaret // high(TSynBeautifierIndentType)
       do begin
         Beautifier.IndentType := ParentIndentType;
         WriteStr(PIName, ParentIndentType);
