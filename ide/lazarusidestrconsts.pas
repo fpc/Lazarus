@@ -1566,6 +1566,8 @@ resourcestring
   dlgBlockIndentTypeSpace = 'Spaces';
   dlgBlockIndentTypeCopy = 'Space/tab as prev Line';
   dlgBlockIndentTypePos = 'Position only';
+  dlgBlockIndentTypeTabSpace ='Tabs, then spaces';
+  dlgBlockIndentTypeTabOnly = 'Tabs, cut off';
   dlgTrimSpaceTypeCaption = 'Trim spaces style';
   dlgTrimSpaceTypeLeaveLine = 'Leave line';
   dlgTrimSpaceTypeEditLine = 'Line Edited';

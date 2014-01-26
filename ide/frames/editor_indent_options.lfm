@@ -216,7 +216,6 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     Top = 6
     Width = 433
     Caption = 'TabsGroupDivider'
-    Autosize = True
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Font.Style = [fsBold]
@@ -298,7 +297,6 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     Top = 71
     Width = 433
     Caption = 'IndentsGroupDivider'
-    Autosize = True
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Font.Style = [fsBold]
@@ -328,7 +326,6 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     Top = 191
     Width = 433
     Caption = 'CommentsGroupDivider'
-    Autosize = True
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Font.Style = [fsBold]

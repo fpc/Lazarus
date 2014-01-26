@@ -4944,6 +4944,8 @@ begin
       Result := 'CopySpaceTabIndent';
     sbitPositionCaret:
       Result := 'PositionIndent';
+    else
+      WriteStr(Result, IndentType);
   end;
 end;
 
@@ -4952,8 +4954,15 @@ begin
   Result := sbitSpace;
   if IndentName = 'CopySpaceTabIndent' then
     Result := sbitCopySpaceTab
-  else if IndentName = 'PositionIndent' then
-    Result := sbitPositionCaret;
+  else
+  if IndentName = 'PositionIndent' then
+    Result := sbitPositionCaret
+  else
+  if IndentName = 'sbitConvertToTabSpace' then
+    Result := sbitConvertToTabSpace
+  else
+  if IndentName = 'sbitConvertToTabOnly' then
+    Result := sbitConvertToTabOnly;
 end;
 
 function TEditorOptions.GetTrimSpaceName(IndentType: TSynEditStringTrimmingType): string;

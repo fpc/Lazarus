@@ -186,6 +186,8 @@ begin
   BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeSpace);
   BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeCopy);
   BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypePos);
+  BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeTabSpace);
+  BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeTabOnly);
 
   TabIndentBlocksCheckBox.Caption := dlgTabIndent;
   AutoIndentLink.Caption := dlgAutoIndentLink;
