@@ -603,7 +603,7 @@ const
     );
 
 const
-  EditorOptsFormatVersion = 9;
+  EditorOptsFormatVersion = 10;
   { * Changes in Version 6:
        - ColorSchemes now have a Global settings part.
          Language specific changes must save UseSchemeGlobals=False (Default is true)
@@ -616,6 +616,8 @@ const
          Fix ahaMouseLink. It only used Foreground, and would underline with it too.
          It now uses all fields. Old entries will copy Foreground to Frame and
          set sfeBottom
+    * Changes in Version 10:
+         eoTabIndent was added to SynEditDefaultOptions
   }
   EditorMouseOptsFormatVersion = 1;
   { * Changes in Version 6:
@@ -656,7 +658,7 @@ const
 
 const
   SynEditDefaultOptions = SYNEDIT_DEFAULT_OPTIONS - [eoShowScrollHint]
-                                                  + [eoHalfPageScroll];
+                                                  + [eoHalfPageScroll, eoTabIndent];
   SynEditDefaultOptions2 = SYNEDIT_DEFAULT_OPTIONS2;
 
   EditorOptionsMinimumFontSize = 5;
@@ -4375,6 +4377,8 @@ begin
   fTabWidth := 8;
   FBracketHighlightStyle := sbhsBoth;
   FGutterSeparatorIndex := 3;
+  fSynEditOptions := SynEditDefaultOptions;
+  fSynEditOptions2 := SynEditDefaultOptions2;
 
   // Display options
   fEditorFont := SynDefaultFontName;
@@ -4467,7 +4471,7 @@ var
   i: Integer;
   SynEditOpt2: TSynEditorOption2;
   FileVersion: LongInt;
-
+  DefOpts: TSynEditorOptions;
 begin
   try
     FileVersion:=XMLConfig.GetValue('EditorOptions/Version', 0);
@@ -4475,12 +4479,15 @@ begin
     XMLConfig.ReadObject('EditorOptions/Misc/', Self, FDefaultValues);
 
     // general options
+    DefOpts := SynEditDefaultOptions;
+    // FileVersion=0: load an empty (none existing) file
+    if (FileVersion > 0) and (FileVersion < 10) then DefOpts := DefOpts - [eoTabIndent];
     for SynEditOpt := Low(TSynEditorOption) to High(TSynEditorOption) do
     begin
       SynEditOptName := GetSynEditOptionName(SynEditOpt);
       if SynEditOptName <> '' then
         if XMLConfig.GetValue('EditorOptions/General/Editor/' + SynEditOptName,
-          SynEditOpt in SynEditDefaultOptions) then
+          SynEditOpt in DefOpts) then
           Include(fSynEditOptions, SynEditOpt)
         else
           Exclude(fSynEditOptions, SynEditOpt);
