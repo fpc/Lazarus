@@ -124,7 +124,12 @@ type
   end;
 
   TSynCustomBeautifierClass = class of TSynCustomBeautifier;
-  TSynBeautifierIndentType = (sbitSpace, sbitCopySpaceTab, sbitPositionCaret);
+  TSynBeautifierIndentType = (
+    sbitSpace, sbitCopySpaceTab,
+    sbitPositionCaret,
+    sbitConvertToTabSpace,   // convert to tabs, fill with spcaces if needed
+    sbitConvertToTabOnly     // convert to tabs, even if shorter
+  );
 
   { TSynBeautifier }
 
@@ -147,8 +152,10 @@ type
     function GetIndent(const LinePos: Integer; out BasedOnLine: Integer;
                        AStopScanAtLine: Integer = 0): Integer;
     function AdjustCharMix(DesiredIndent: Integer; CharMix, AppendMix: String): String;
-    function GetCharMix(const LinePos, Indent: Integer;
-                        var IndentCharsFromLinePos: Integer = 0): String;
+    function CreateTabSpaceMix(var DesiredIndent: Integer; OnlyTabs: Boolean): String;
+    function GetCharMix(const LinePos: Integer; var Indent: Integer;
+                        var IndentCharsFromLinePos: Integer = 0;
+                        ModifyIndent: Boolean = False): String;
     procedure ApplyIndent(LinePos: Integer; Indent: Integer;
                           RelativeToLinePos: Integer = 0; IndentChars: String = '';
                           IndentCharsFromLinePos: Integer = 0);
@@ -1091,6 +1098,8 @@ begin
     try
       if IndentType = sbitPositionCaret then
         IndentType := sbitSpace;
+      if IndentType = sbitConvertToTabOnly then
+        IndentType := sbitConvertToTabSpace;
 
       if PreviousIsFirst and not IsAtBOL and
          (FIndentFirstLineMax[FoldTyp] > 0) and
@@ -1432,7 +1441,7 @@ begin
     AnIndent := GetIndent(LinePos, b, AStopScanAtLine);
 
   if AnIndent > 0 then begin
-    ACharMix := GetCharMix(LinePos, AnIndent, b);
+    ACharMix := GetCharMix(LinePos, AnIndent, b, True);
     if (FIndentType = sbitPositionCaret) and (GetLine(LinePos-1) = '') then
       ACharMix := '';
   end;
@@ -1575,17 +1584,64 @@ begin
   Result := CharMix;
 end;
 
-function TSynBeautifier.GetCharMix(const LinePos, Indent: Integer;
-  var IndentCharsFromLinePos: Integer = 0): String;
+function TSynBeautifier.CreateTabSpaceMix(var DesiredIndent: Integer;
+  OnlyTabs: Boolean): String;
+var
+  i: Integer;
+  CurLen: Integer;
+begin
+  CurLen := 0;
+  Result := '';
+  while CurLen < DesiredIndent do begin
+    Result := Result + #9;
+    CurLen := FCurrentLines.LogicalToPhysicalCol(Result, -1, length(Result)+1) - 1; // TODO: Need the real index of the line
+  end;
+
+  if CurLen = DesiredIndent then
+    exit;
+
+  Delete(Result, Length(Result), 1);
+  if OnlyTabs then begin
+    CurLen := FCurrentLines.LogicalToPhysicalCol(Result, -1, length(Result)+1) - 1; // TODO: Need the real index of the line
+    DesiredIndent := CurLen;
+    exit;
+  end;
+
+  repeat
+    Result := Result + ' ';
+    CurLen := FCurrentLines.LogicalToPhysicalCol(Result, -1, length(Result)+1) - 1; // TODO: Need the real index of the line
+  until CurLen >= DesiredIndent;
+end;
+
+function TSynBeautifier.GetCharMix(const LinePos: Integer; var Indent: Integer;
+  var IndentCharsFromLinePos: Integer; ModifyIndent: Boolean): String;
 var
   Temp, KnownMix, BasedMix: string;
   KnownPhysLen, PhysLen: Integer;
   BackCounter: LongInt;
+  OrigIndent: Integer;
 begin
-  if FIndentType <> sbitCopySpaceTab then begin
-    IndentCharsFromLinePos := 0;
-    Result := StringOfChar(' ', Indent);
-    exit;
+  OrigIndent := Indent;
+  case FIndentType of
+      sbitSpace, sbitPositionCaret:
+      begin
+        IndentCharsFromLinePos := 0;
+        Result := StringOfChar(' ', Indent);
+        if not ModifyIndent then Indent := OrigIndent;
+        exit;
+      end;
+    sbitConvertToTabSpace:
+      begin
+        Result := CreateTabSpaceMix(Indent, False);
+        exit;
+        if not ModifyIndent then Indent := OrigIndent;
+      end;
+    sbitConvertToTabOnly:
+      begin
+        Result := CreateTabSpaceMix(Indent, True);
+        if not ModifyIndent then Indent := OrigIndent;
+        exit;
+      end;
   end;
 
   if (IndentCharsFromLinePos > 0) and (IndentCharsFromLinePos <= FCurrentLines.Count) then
@@ -1615,6 +1671,7 @@ begin
   end;
 
   Result := AdjustCharMix(Indent, KnownMix, '');
+  if not ModifyIndent then Indent := OrigIndent;
 end;
 
 procedure TSynBeautifier.ApplyIndent(LinePos: Integer;
@@ -1722,6 +1779,18 @@ begin
         PhysLen := Lines.LogicalToPhysicalCol(Temp, ACaret.LinePos - 1, Length(Temp) + 1);
         if PhysLen < Result then
           DesiredIndent := DesiredIndent + StringOfChar(' ', Result - PhysLen);
+      end;
+    sbitConvertToTabSpace:
+      begin
+        dec(Result);
+        DesiredIndent := CreateTabSpaceMix(Result, False);
+        inc(Result);
+      end;
+    sbitConvertToTabOnly:
+      begin
+        dec(Result);
+        DesiredIndent := CreateTabSpaceMix(Result, True);
+        inc(Result);
       end;
     else
       DesiredIndent := StringOfChar(' ', Result - 1);
