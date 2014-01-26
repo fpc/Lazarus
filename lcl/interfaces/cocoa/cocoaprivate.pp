@@ -84,6 +84,7 @@ type
     function lclGetPropStorage: TStringList; message 'lclGetPropStorage';
     function lclGetTarget: TObject; message 'lclGetTarget';
     function lclDeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; message 'lclDeliverMessage:::';
+    function lclIsHandle: Boolean; message 'lclIsHandle';
   end;
 
   { LCLViewExtension }
@@ -176,6 +177,7 @@ type
   TCocoaMenu = objcclass(NSMenu)
   public
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+    function lclIsHandle: Boolean; override;
   end;
 
   { TCocoaMenuItem }
@@ -185,6 +187,7 @@ type
     menuItemCallback: IMenuItemCallback;
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
     function lclGetCallback: IMenuItemCallback; override;
+    function lclIsHandle: Boolean; override;
   end;
 
   { TCocoaButton }
@@ -215,6 +218,8 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure resetCursorRects; override;
+    function lclIsHandle: Boolean; override;
+
   end;
 
   { TCocoaTextField }
@@ -227,6 +232,7 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
+    function lclIsHandle: Boolean; override;
   end;
 
   { TCocoaSecureTextField }
@@ -238,6 +244,7 @@ type
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     procedure resetCursorRects; override;
+    function lclIsHandle: Boolean; override;
   end;
 
 
@@ -252,6 +259,7 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
+    function lclIsHandle: Boolean; override;
   end;
 
   { TCocoaPanel }
@@ -284,6 +292,7 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure sendEvent(event: NSEvent); override;
+    function lclIsHandle: Boolean; override;
   end;
 
 
@@ -315,6 +324,7 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure sendEvent(event: NSEvent); override;
+    function lclIsHandle: Boolean; override;
   end;
 
   { TCocoaCustomControl }
@@ -345,6 +355,7 @@ type
     procedure flagsChanged(event: NSEvent); override;
     // other
     procedure resetCursorRects; override;
+    function lclIsHandle: Boolean; override;
   end;
 
   { TCocoaWindowContent }
@@ -360,6 +371,7 @@ type
     procedure viewWillMoveToWindow(newWindow: NSWindow); override;
     procedure dealloc; override;
     procedure setHidden(aisHidden: Boolean); override;
+    function lclIsHandle: Boolean; override;
   end;
 
   { TCocoaScrollView }
@@ -373,6 +385,7 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
+    function lclIsHandle: Boolean; override;
   end;
 
 
@@ -417,6 +430,7 @@ type
     procedure comboBoxWillDismiss(notification: NSNotification); message 'comboBoxWillDismiss:';
     procedure comboBoxSelectionDidChange(notification: NSNotification); message 'comboBoxSelectionDidChange:';
     procedure comboBoxSelectionIsChanging(notification: NSNotification); message 'comboBoxSelectionIsChanging:';
+    function lclIsHandle: Boolean; override;
   end;
 
   { TCocoaScrollBar }
@@ -430,6 +444,7 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
+    function lclIsHandle: Boolean; override;
   end;
 
   TCocoaListView = objcclass;
@@ -485,6 +500,7 @@ type
     // key
     procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
+    function lclIsHandle: Boolean; override;
 
   end;
 
@@ -499,6 +515,7 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
+    function lclIsHandle: Boolean; override;
   end;
 
 procedure SetViewDefaults(AView: NSView);
@@ -518,6 +535,11 @@ begin
 end;
 
 { TCocoaWindowContent }
+
+function TCocoaWindowContent.lclIsHandle: Boolean;
+begin
+  Result:=true;
+end;
 
 function TCocoaWindowContent.lclOwnWindow: NSWindow;
 begin
@@ -589,6 +611,11 @@ begin
 end;
 
 { TCocoaPanel }
+
+function TCocoaPanel.lclIsHandle: Boolean;
+begin
+  Result:=true;
+end;
 
 function TCocoaPanel.windowShouldClose(sender: id): LongBool;
 var
@@ -757,6 +784,11 @@ begin
 end;
 
 { TCocoaWindow }
+
+function TCocoaWindow.lclIsHandle: Boolean;
+begin
+  Result:=true;
+end;
 
 function TCocoaWindow.windowShouldClose(sender: id): LongBool;
 var
@@ -928,6 +960,11 @@ end;
 
 { TCocoaScrollView }
 
+function TCocoaScrollView.lclIsHandle: Boolean;
+begin
+  Result := True;
+end;
+
 function TCocoaScrollView.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -964,6 +1001,11 @@ begin
 end;
 
 { TCocoaScrollBar }
+
+function TCocoaScrollBar.lclIsHandle: Boolean;
+begin
+  Result := True;
+end;
 
 function TCocoaScrollBar.acceptsFirstResponder: Boolean;
 begin
@@ -1002,6 +1044,11 @@ end;
 
 { TCocoaGroupBox }
 
+function TCocoaGroupBox.lclIsHandle: Boolean;
+begin
+  Result := True;
+end;
+
 function TCocoaGroupBox.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -1038,6 +1085,11 @@ begin
 end;
 
 { TCocoaButton }
+
+function TCocoaButton.lclIsHandle: Boolean;
+begin
+  Result := True;
+end;
 
 procedure TCocoaButton.actionButtonClick(sender: NSObject);
 begin
@@ -1167,6 +1219,11 @@ end;
 
 { TCocoaTextField }
 
+function TCocoaTextField.lclIsHandle: Boolean;
+begin
+  Result := True;
+end;
+
 function TCocoaTextField.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -1205,6 +1262,11 @@ end;
 
 { TCocoaTextView }
 
+function TCocoaTextView.lclIsHandle: Boolean;
+begin
+  Result := True;
+end;
+
 function TCocoaTextView.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -1240,6 +1302,11 @@ end;
 
 { TCocoaSecureTextField }
 
+function TCocoaSecureTextField.lclIsHandle: Boolean;
+begin
+  Result := True;
+end;
+
 function TCocoaSecureTextField.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -1264,6 +1331,11 @@ begin
 end;
 
 { TCocoaCustomControl }
+
+function TCocoaCustomControl.lclIsHandle: Boolean;
+begin
+  Result := True;
+end;
 
 function TCocoaCustomControl.acceptsFirstResponder: Boolean;
 begin
@@ -1494,6 +1566,11 @@ begin
     Result := 0;
 end;
 
+function LCLObjectExtension.lclIsHandle: Boolean;
+begin
+result:=false;
+end;
+
 { LCLControlExtension }
 
 function RectToViewCoord(view: NSView; const r: TRect): NSRect;
@@ -1665,6 +1742,7 @@ begin
   end;
 end;
 
+
 { LCLWindowExtension }
 
 function LCLWindowExtension.lclIsVisible: Boolean;
@@ -1808,6 +1886,11 @@ begin
 end;
 
 { TCocoaListView }
+
+function TCocoaListView.lclIsHandle: Boolean;
+begin
+  Result:=true;
+end;
 
 function TCocoaListView.acceptsFirstResponder: Boolean;
 begin
@@ -1977,6 +2060,11 @@ end;
 
 { TCocoaComboBox }
 
+function TCocoaComboBox.lclIsHandle: Boolean;
+begin
+  Result:=true;
+end;
+
 function TCocoaComboBox.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -2057,12 +2145,22 @@ end;
 
 { TCocoaMenu }
 
+function TCocoaMenu.lclIsHandle: Boolean;
+begin
+  Result:=true;
+end;
+
 procedure TCocoaMenu.lclItemSelected(sender:id);
 begin
 
 end;
 
 { TCocoaMenuITem }
+
+function TCocoaMenuItem.lclIsHandle: Boolean;
+begin
+  Result:=true;
+end;
 
 procedure TCocoaMenuItem.lclItemSelected(sender:id);
 begin

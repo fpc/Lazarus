@@ -988,13 +988,10 @@ begin
 end;
 
 function TCocoaWidgetSet.IsWindow(handle: HWND): boolean;
-var 
-  Obj: NSObject;
 begin
   if handle <> 0 then
   begin
-    Obj := NSObject(handle);
-    Result := Obj.isKindOfClass(NSWindow);
+    Result := NSObject(handle).lclIsHandle;
   end
   else
     Result := False;
@@ -1002,41 +999,66 @@ end;
 
 function TCocoaWidgetSet.WindowFromPoint(Point: TPoint): HWND;
 var 
-  r: TRect;
+  winrect: TRect;
   windows: NSArray;
-  subviews: NSArray;
-  contentView: NSView;
-  i, n: integer;
-  obj: NSObject;
+  win: integer;
+  window: NSWindow;
+
+function ViewFromPoint(view:NSView): HWND;
+var rect: TRect;
+    p:TPoint;
+begin
+  Result:=0;
+  if not assigned(view) then
+     exit;
+  if view.lclIsHandle then
+      begin
+      p:=Point;
+      view.lclScreenToLocal(p.X,p.Y);
+      rect:=view.lclClientFrame;
+      if PtInRect(rect, p) then
+         Result:=HWND(view);
+      //debugln('Point:'+DbgS(p)+'  Rect:'+DbgS(rect)+' Result:'+dbgS(Result));
+      end
+  //else
+    //  debugln('No lcl');
+end;
+
+
+function RecurseSubviews(view:NSView):HWND;
+var  sv:integer;
+begin
+  // first check views subview if there is a embedded view
+  Result:=0;
+  sv:=0;
+  while (Result=0) and (sv<view.subviews.count) do
+    begin
+    Result:=RecurseSubviews(view.subviews.objectAtIndex(sv));
+    inc(sv)
+    end;
+  if Result=0 then
+     Result:=ViewFromPoint(view);
+end;
+
 begin
   Result := 0;
   if not assigned(NSApp) then
     Exit;
 
   windows := NSApp.windows;
-
-  for i := 0 to windows.count - 1 do
+  for win := 0 to windows.count - 1 do
   begin
-    obj:=windows.objectAtIndex(i);
-    if obj.isKindOfClass(NSWindow) then
-    begin
-      r := NSWindow(obj).lclFrame;
-      if PtInRect(r, Point) then
-      begin
-        //debugln('Point:'+DbgS(point)+'  Rect:'+DbgS(r));
-        //todo: Find NSViews
-        { contentView:=NSWindow(obj).contentView;
-         if assigned(contentView) then
-            begin
-		
-            end;         }
-
-        Result := HWND(obj);
-        Exit;
+    window:=windows.objectAtIndex(win);
+    winrect := window.lclFrame;
+    if PtInRect(winrect, Point) then
+       begin
+       Result:=RecurseSubviews(window.contentView);
+       if Result<>0 then
+          exit;
       end;
     end;
-  end;
 end;
+
 
 function TCocoaWidgetSet.GetRgnBox(RGN: HRGN; lpRect: PRect): Longint;
 begin
