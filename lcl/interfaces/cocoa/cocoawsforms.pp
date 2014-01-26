@@ -370,13 +370,7 @@ begin
   //todo: create TCocoaWindow or TCocoaPanel depending on the border style
   //      if parent is specified neither Window nor Panel needs to be created
   //      the only thing that needs to be created is Content
-  win := TCocoaWindow(TCocoaWindow.alloc);
 
-  if not Assigned(win) then
-  begin
-    Result := 0;
-    Exit;
-  end;
 
   R := CreateParamsToNSRect(AParams);
   R.origin.x := 0;
@@ -386,6 +380,14 @@ begin
   if (AParams.Style and WS_CHILD) = 0 then
   begin
     R := CreateParamsToNSRect(AParams);
+    win := TCocoaWindow(TCocoaWindow.alloc);
+
+    if not Assigned(win) then
+       begin
+       Result := 0;
+       Exit;
+       end;
+
     win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(R, GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
     UpdateWindowIcons(win, GetDesigningBorderStyle(Form), Form.BorderIcons);
     win.setLevel(FormStyleToWindowLevel[Form.FormStyle]);
