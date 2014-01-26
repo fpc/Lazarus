@@ -197,7 +197,7 @@ type
     property Line: TLineIdx read FLine write SetLine;
   end;
 
-  TSynCustomFoldConfigMode = (fmFold, fmHide);
+  TSynCustomFoldConfigMode = (fmFold, fmHide, fmMarkup);
   TSynCustomFoldConfigModes = set of TSynCustomFoldConfigMode;
 
   { TSynCustomFoldConfig }
@@ -209,8 +209,9 @@ type
     FModes: TSynCustomFoldConfigModes;
     FOnChange: TNotifyEvent;
     FSupportedModes: TSynCustomFoldConfigModes;
-    procedure SetFEnabled(const AValue: Boolean);
-    procedure SetModes(const AValue: TSynCustomFoldConfigModes);
+    procedure SetEnabled(const AValue: Boolean);
+    procedure SetModes(AValue: TSynCustomFoldConfigModes);
+    procedure SetSupportedModes(AValue: TSynCustomFoldConfigModes);
   protected
     procedure DoOnChange;
   public
@@ -218,11 +219,11 @@ type
     procedure Assign(Src: TSynCustomFoldConfig); reintroduce; virtual;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property SupportedModes: TSynCustomFoldConfigModes
-             read FSupportedModes write FSupportedModes;
+             read FSupportedModes write SetSupportedModes;
     // Actions representing the modes
     property FoldActions: TSynFoldActions read FFoldActions;
   published
-    property Enabled: Boolean read FEnabled write SetFEnabled;
+    property Enabled: Boolean read FEnabled write SetEnabled;
     property Modes: TSynCustomFoldConfigModes read FModes write SetModes default [fmFold];
   end;
 
@@ -1436,22 +1437,30 @@ end;
 
 { TSynCustomFoldConfig }
 
-procedure TSynCustomFoldConfig.SetFEnabled(const AValue: Boolean);
+procedure TSynCustomFoldConfig.SetEnabled(const AValue: Boolean);
 begin
   if FEnabled = AValue then exit;
   FEnabled := AValue;
   DoOnChange;
 end;
 
-procedure TSynCustomFoldConfig.SetModes(const AValue: TSynCustomFoldConfigModes);
+procedure TSynCustomFoldConfig.SetModes(AValue: TSynCustomFoldConfigModes);
 begin
+  AValue := AValue * FSupportedModes;
   if FModes = AValue then exit;
   FModes := AValue;
   FFoldActions := [];
-  if AValue <> [] then FFoldActions := FFoldActions + [sfaFold];
-  if fmFold in AValue then FFoldActions := FFoldActions + [sfaFoldFold];
-  if fmHide in AValue then FFoldActions := FFoldActions + [sfaFoldHide];
+  if fmFold   in AValue then FFoldActions := FFoldActions + [sfaFold, sfaFoldFold];
+  if fmHide   in AValue then FFoldActions := FFoldActions + [sfaFold, sfaFoldHide];
+  if fmMarkup in AValue then FFoldActions := FFoldActions + [sfaMarkup];
   DoOnChange;
+end;
+
+procedure TSynCustomFoldConfig.SetSupportedModes(AValue: TSynCustomFoldConfigModes);
+begin
+  if FSupportedModes = AValue then Exit;
+  FSupportedModes := AValue;
+  Modes := Modes * FSupportedModes;
 end;
 
 procedure TSynCustomFoldConfig.DoOnChange;

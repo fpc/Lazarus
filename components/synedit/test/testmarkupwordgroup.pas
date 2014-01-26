@@ -183,7 +183,7 @@ begin
 
   PushBaseName('Text 1');
   SetLines(TestText1);
-  EnableFolds([]);
+  EnableFolds([cfbtBeginEnd.. cfbtNone], [], [cfbtBeginEnd.. cfbtNone]);
 
   CheckWord('Procedure 1',  1, 2,   1,10,2,  1,6,3,  1,4,7);
   CheckWord('Procedure 2',  2, 2,   1,10,2,  1,6,3,  1,4,7);
