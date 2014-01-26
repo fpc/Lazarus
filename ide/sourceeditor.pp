@@ -2862,7 +2862,7 @@ end;
 
 procedure TSourceEditor.GetDialogPosition(Width, Height: integer;
   out Left, Top: integer);
-var 
+var
   P: TPoint;
   ABounds: TRect;
 begin

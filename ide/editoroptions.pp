@@ -434,7 +434,7 @@ type
 const
 
   (* When adding new entries, ensure that resourcestrings are re-assigned in InitLocale *)
-  EditorOptionsFoldInfoPas: Array [0..22] of TEditorOptionsFoldInfo
+  EditorOptionsFoldInfoPas: Array [0..23] of TEditorOptionsFoldInfo
   = (
       (Name:  dlgFoldPasProcedure;     Xml:     'Procedure';
        Index: ord(cfbtProcedure);    Enabled: True),
@@ -486,7 +486,10 @@ const
        Index: ord(cfbtSlashComment); Enabled: True),
 
       (Name:  dlgFoldPasNestedComment; Xml:     'NestedComment';
-       Index: ord(cfbtNestedComment);Enabled: True)
+       Index: ord(cfbtNestedComment);Enabled: True),
+
+      (Name:  dlgFoldPasIfThen; Xml:     'IfThen';
+       Index: ord(cfbtIfThen); Enabled: False)
     );
 
   EditorOptionsFoldInfoLFM: Array [0..2] of TEditorOptionsFoldInfo
@@ -580,8 +583,8 @@ const
     TEditorOptionsFoldRecord =
     ( (Count:  0; Info: nil), // none
       (Count:  0; Info: nil), // text
-      (Count: 23; Info: @EditorOptionsFoldInfoPas[0]), // Freepas
-      (Count: 23; Info: @EditorOptionsFoldInfoPas[0]), // pas
+      (Count: 24; Info: @EditorOptionsFoldInfoPas[0]), // Freepas
+      (Count: 24; Info: @EditorOptionsFoldInfoPas[0]), // pas
       (Count:  3; Info: @EditorOptionsFoldInfoLFM[0]), // lfm
       (Count:  5; Info: @EditorOptionsFoldInfoXML[0]), // xml
       (Count:  3; Info: @EditorOptionsFoldInfoHTML[0]), // html
@@ -1422,7 +1425,7 @@ type
     procedure ReadHighlighterSettings(Syn: TSrcIDEHighlighter;
                                       SynColorScheme: String);
 
-    procedure ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
+    procedure ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter; ReadForOptions: Boolean = False);
     procedure ReadDefaultsForHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
     procedure WriteHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
 
@@ -5119,33 +5122,46 @@ begin
   LangScheme.ApplyTo(Syn);
 end;
 
-procedure TEditorOptions.ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
+procedure TEditorOptions.ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter;
+  ReadForOptions: Boolean);
 var
   ConfName: String;
   Path: String;
-  i, h: Integer;
+  i, h, idx: Integer;
   TheFoldInfo: TEditorOptionsFoldRecord;
+  DefHl, FoldHl: TSynCustomFoldHighlighter;
 begin
   h := HighlighterList.FindByHighlighter(Syn);
   if h < 0 then
     h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then exit;
 
-  ReadDefaultsForHighlighterFoldSettings(Syn);
-
   if (syn is TSynCustomFoldHighlighter) then begin
-    TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
-    for i := 0 to TheFoldInfo.Count - 1 do begin
-      ConfName := TheFoldInfo.Info^[i].Xml;
-      Path := 'EditorOptions/FoldConfig/Lang' +
-        StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
-    // try reading the old config first
-    TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index].Enabled :=
-      XMLConfig.GetValue(Path + 'Enabled/Value',
-        TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index].Enabled);
-      XMLConfig.ReadObject(Path + 'Settings/',
-        TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index],
-        TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index]);
+    DefHl := TSynCustomFoldHighlighter(TCustomSynClass(Syn.ClassType).Create(nil));
+    try
+      ReadDefaultsForHighlighterFoldSettings(DefHl);
+      FoldHl := TSynCustomFoldHighlighter(Syn);
+      TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
+      for i := 0 to TheFoldInfo.Count - 1 do begin
+        idx := TheFoldInfo.Info^[i].Index;
+        ConfName := TheFoldInfo.Info^[i].Xml;
+        Path := 'EditorOptions/FoldConfig/Lang' +
+          StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
+      // try reading the old config first
+      FoldHl.FoldConfig[idx].Enabled :=
+        XMLConfig.GetValue(Path + 'Enabled/Value', FoldHl.FoldConfig[idx].Enabled);
+      XMLConfig.ReadObject(Path + 'Settings/', FoldHl.FoldConfig[idx], DefHl.FoldConfig[idx]);
+
+        (* if ReadForOptions=True then Enabled appies only to fmFold,fmHide.
+           This allows to store what selection was previously active *)
+        if not ReadForOptions then begin
+          if not FoldHl.FoldConfig[idx].Enabled then
+            FoldHl.FoldConfig[idx].Modes := FoldHl.FoldConfig[idx].Modes - [fmFold, fmHide];
+          FoldHl.FoldConfig[idx].Enabled := FoldHl.FoldConfig[idx].Modes <> [];
+        end;
+      end;
+    finally
+      DefHl.Free;
     end;
   end;
 end;

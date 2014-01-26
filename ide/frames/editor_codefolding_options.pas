@@ -61,8 +61,6 @@ type
     FModeLock: Boolean;
     procedure UpdateFoldHideRadio;
   protected
-    function GetHighlighter(SynType: TLazSyntaxHighlighter;
-      CreateIfNotExists: Boolean): TSrcIDEHighlighter;
     procedure ClearHighlighters;
   public
     destructor Destroy; override;
@@ -70,6 +68,8 @@ type
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    function GetHighlighter(SynType: TLazSyntaxHighlighter;
+      CreateIfNotExists: Boolean): TSrcIDEHighlighter;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
@@ -97,7 +97,7 @@ procedure TEditorCodefoldingOptionsFrame.LanguageComboBoxExit(Sender: TObject);
 var
   ComboBox: TComboBox absolute Sender;
   tp: TLazSyntaxHighlighter;
-  i: Integer;
+  i, j: Integer;
   Hl: TSynCustomFoldHighlighter;
 begin
   tp := EditorOpts.HighlighterList
@@ -111,23 +111,32 @@ begin
   Hl := TSynCustomFoldHighlighter(FCurHighlighter);
 
   for i := 0 to FCurFoldInfo.Count - 1 do begin
-    FoldConfigCheckListBox.Items.add(FCurFoldInfo.Info^[i].Name);
-    FoldConfigCheckListBox.Checked[i] :=
-      Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled;
+    if Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].SupportedModes * [fmFold, fmHide] <> [] then begin
+      j := FoldConfigCheckListBox.Items.Add(FCurFoldInfo.Info^[i].Name);
+      FoldConfigCheckListBox.Checked[j] :=
+        Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled and
+        (Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Modes * [fmFold, fmHide] <> []);
+      FoldConfigCheckListBox.Items.Objects[j] := TObject(i);
+    end;
   end;
 end;
 
 procedure TEditorCodefoldingOptionsFrame.FoldConfigCheckListBoxClickCheck(Sender: TObject);
 var
-  i: Integer;
+  i, j: Integer;
   Hl: TSynCustomFoldHighlighter;
 begin
   if not (assigned(FCurHighlighter) and
          (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
   Hl := TSynCustomFoldHighlighter(FCurHighlighter);
-  for i := 0 to FCurFoldInfo.Count - 1 do
-    Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled
-      := FoldConfigCheckListBox.Checked[i];
+  j := 0;
+  for i := 0 to FCurFoldInfo.Count - 1 do begin
+    if Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].SupportedModes * [fmFold, fmHide] <> [] then begin
+      Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled
+        := FoldConfigCheckListBox.Checked[j];
+      inc(j);
+    end;
+  end;
 
   UpdateFoldHideRadio;
 end;
@@ -143,12 +152,14 @@ begin
   Hl := TSynCustomFoldHighlighter(FCurHighlighter);
   FModeLock := True;
   i := FoldConfigCheckListBox.ItemIndex;
+  if i >= 0 then
+    i := PtrUInt(FoldConfigCheckListBox.Items.Objects[i]);
   AvailModes := [];
   Modes := [fmFold];
   if i >= 0 then begin
     i := FCurFoldInfo.Info^[i].Index;
-    AvailModes := Hl.FoldConfig[i].SupportedModes;
-    Modes := Hl.FoldConfig[i].Modes;
+    AvailModes := Hl.FoldConfig[i].SupportedModes * [fmFold, fmHide];
+    Modes := Hl.FoldConfig[i].Modes * [fmFold, fmHide];
   end;
   chkFold.Checked := Modes = [fmFold];
   chkHide.Checked := Modes = [fmHide];
@@ -173,12 +184,13 @@ begin
          (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
   i := FoldConfigCheckListBox.ItemIndex;
   if i < 0 then exit;
+  i := PtrUInt(FoldConfigCheckListBox.Items.Objects[i]);
   i := FCurFoldInfo.Info^[i].Index;
   Hl := TSynCustomFoldHighlighter(FCurHighlighter);
   Modes := [fmFold];
   if chkHide.Checked then Modes := [fmHide];
   if chkBoth.Checked then Modes := [fmFold, fmHide];
-  Hl.FoldConfig[i].Modes := Modes;
+  Hl.FoldConfig[i].Modes := (Hl.FoldConfig[i].Modes - [fmFold, fmHide]) + Modes;
 end;
 
 procedure TEditorCodefoldingOptionsFrame.chkCodeFoldingEnabledChange(Sender: TObject);
@@ -208,7 +220,7 @@ begin
   Result := SynClass.Create(nil);
   FHighlighters[SynType] := Result;
   Result.BeginUpdate;
-  EditorOpts.ReadHighlighterFoldSettings(Result);
+  EditorOpts.ReadHighlighterFoldSettings(Result, True);
   result.EndUpdate;
 end;
 

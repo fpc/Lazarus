@@ -1627,6 +1627,7 @@ resourcestring
   dlgMarkupGroup = 'Highlight of Word under Caret';
   dlgBracketMatchGroup = 'Matching bracket pairs';
   dlgPasExtKeywordsGroup = 'Extended Pascal Keyword Options';
+  dlgPasKeywordsMatches = 'Matching Keywords';
   dlgPasExtKeywords = 'Highlight control statements as keywords';
   dlgPasStringKeywords = 'Highlight "String" keyword(s)';
   dlgPasStringKeywordsOptDefault = 'Default';
@@ -1708,6 +1709,7 @@ resourcestring
   dlgFoldPasBeginEnd        = 'Begin/End (nested)';
   dlgFoldPasProcBeginEnd    = 'Begin/End (procedure)';
   dlgFoldPasNestedComment   = 'Nested Comment';
+  dlgFoldPasIfThen          = 'If/Then/Else';
   dlgFoldPasProcedure       = 'Procedure';
   dlgFoldPasUses            = 'Uses';
   dlgFoldPasVarType         = 'Var/Type (global)';

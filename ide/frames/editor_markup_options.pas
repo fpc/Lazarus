@@ -25,11 +25,11 @@ unit editor_markup_options;
 interface
 
 uses
-  Classes, StdCtrls, ComCtrls, Graphics, sysutils, EditorOptions,
-  LazarusIDEStrConsts, SourceMarks, IDEOptionsIntf, Spin, ExtCtrls,
-  SynEditMarkupBracket, editor_color_options, editor_general_options,
-  editor_keymapping_options, SynEdit, SynCompletion, SynHighlighterPas,
-  SynEditKeyCmds, DividerBevel, LCLType;
+  Classes, StdCtrls, ComCtrls, Graphics, sysutils, EditorOptions, LazarusIDEStrConsts,
+  SourceMarks, IDEOptionsIntf, Spin, ExtCtrls, SynEditMarkupBracket, editor_color_options,
+  editor_general_options, editor_keymapping_options, editor_codefolding_options, SynEdit,
+  SynCompletion, SynHighlighterPas, SynEditKeyCmds, SynEditHighlighterFoldBase, DividerBevel,
+  LCLType, CheckLst, Controls;
 
 type
   { TEditorMarkupOptionsFrame }
@@ -38,7 +38,9 @@ type
     BracketCombo: TComboBox;
     BracketLabel: TLabel;
     BracketLink: TLabel;
+    chkKWGroups: TCheckListBox;
     chkExtPasKeywords: TCheckBox;
+    divKeyWordGroups: TDividerBevel;
     dropPasStringKeywords: TComboBox;
     divKeywords: TDividerBevel;
     divMatchingBrackets: TDividerBevel;
@@ -61,13 +63,17 @@ type
     procedure BracketLinkMouseEnter(Sender: TObject);
     procedure BracketLinkMouseLeave(Sender: TObject);
     procedure chkExtPasKeywordsChange(Sender: TObject);
+    procedure chkKWGroupsClickCheck(Sender: TObject);
+    procedure chkKWGroupsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure dropPasStringKeywordsChange(Sender: TObject);
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
+    function FoldPage: TEditorCodefoldingOptionsFrame; inline;
     procedure MarkupColorLinkClick(Sender: TObject);
     procedure MarkupKeyLinkClick(Sender: TObject);
   private
     { private declarations }
     FDialog: TAbstractOptionsEditorDialog;
+    FKWMathHighLighter: TSynCustomFoldHighlighter;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -147,6 +153,31 @@ begin
   GeneralPage.UpdatePrevieEdits;
 end;
 
+procedure TEditorMarkupOptionsFrame.chkKWGroupsClickCheck(Sender: TObject);
+var
+  i, j, idx: Integer;
+  CurFoldInfo: TEditorOptionsFoldRecord;
+begin
+  j := 0;
+  CurFoldInfo := EditorOptionsFoldDefaults[lshFreePascal];
+  for i := 0 to CurFoldInfo.Count - 1 do begin
+    idx := CurFoldInfo.Info^[i].Index;
+    if fmMarkup in FKWMathHighLighter.FoldConfig[idx].SupportedModes then begin
+      if chkKWGroups.Checked[j] then
+        FKWMathHighLighter.FoldConfig[idx].Modes := FKWMathHighLighter.FoldConfig[idx].Modes + [fmMarkup]
+      else
+        FKWMathHighLighter.FoldConfig[idx].Modes := FKWMathHighLighter.FoldConfig[idx].Modes - [fmMarkup];
+      inc(j);
+    end;
+  end;
+end;
+
+procedure TEditorMarkupOptionsFrame.chkKWGroupsKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  chkKWGroupsClickCheck(nil);
+end;
+
 procedure TEditorMarkupOptionsFrame.dropPasStringKeywordsChange(Sender: TObject);
 begin
   GeneralPage.PasStringKeywordMode := TSynPasStringMode(dropPasStringKeywords.ItemIndex);
@@ -156,6 +187,11 @@ end;
 function TEditorMarkupOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame; inline;
 begin
   Result := TEditorGeneralOptionsFrame(FDialog.FindEditor(TEditorGeneralOptionsFrame));
+end;
+
+function TEditorMarkupOptionsFrame.FoldPage: TEditorCodefoldingOptionsFrame;
+begin
+  Result := TEditorCodefoldingOptionsFrame(FDialog.FindEditor(TEditorCodefoldingOptionsFrame));
 end;
 
 procedure TEditorMarkupOptionsFrame.MarkupColorLinkClick(Sender: TObject);
@@ -209,9 +245,14 @@ begin
   dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptDefault);
   dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptString);
   dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptNone);
+
+  divKeyWordGroups.Caption := dlgPasKeywordsMatches;
 end;
 
 procedure TEditorMarkupOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  CurFoldInfo: TEditorOptionsFoldRecord;
+  i, j, idx: Integer;
 begin
   with AOptions as TEditorOptions do
   begin
@@ -230,6 +271,17 @@ begin
     dropPasStringKeywords.ItemIndex := ord(PasStringKeywordMode);
   end;
   AutoDelayTrackBarChange(nil);
+
+  FKWMathHighLighter := TSynCustomFoldHighlighter(FoldPage.GetHighlighter(lshFreePascal, True));
+  CurFoldInfo := EditorOptionsFoldDefaults[lshFreePascal];
+  for i := 0 to CurFoldInfo.Count - 1 do begin
+    idx := CurFoldInfo.Info^[i].Index;
+    if fmMarkup in FKWMathHighLighter.FoldConfig[idx].SupportedModes then begin
+      j := chkKWGroups.Items.Add(CurFoldInfo.Info^[i].Name);
+      chkKWGroups.Checked[j] := fmMarkup in FKWMathHighLighter.FoldConfig[idx].Modes;
+    end;
+  end;
+
 end;
 
 procedure TEditorMarkupOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);

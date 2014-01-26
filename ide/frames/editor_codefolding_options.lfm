@@ -1,5 +1,7 @@
-inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
+object EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
+  Left = 0
   Height = 352
+  Top = 0
   Width = 511
   Anchors = [akTop]
   ClientHeight = 352
@@ -8,7 +10,7 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
   Visible = False
   DesignLeft = 346
   DesignTop = 366
-  object Bevel1: TBevel[0]
+  object Bevel1: TBevel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = chkCodeFoldingEnabled
     AnchorSideTop.Side = asrBottom
@@ -21,20 +23,20 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
   end
-  object LanguageLabel: TLabel[1]
+  object LanguageLabel: TLabel
     AnchorSideLeft.Control = LanguageComboBox
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = LanguageComboBox
     AnchorSideTop.Side = asrCenter
     Left = 206
-    Height = 16
-    Top = 34
-    Width = 81
+    Height = 15
+    Top = 35
+    Width = 80
     BorderSpacing.Left = 6
     Caption = 'LanguageLabel'
     ParentColor = False
   end
-  object chkCodeFoldingEnabled: TCheckBox[2]
+  object chkCodeFoldingEnabled: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
@@ -45,7 +47,7 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
     OnChange = chkCodeFoldingEnabledChange
     TabOrder = 0
   end
-  object LanguageComboBox: TComboBox[3]
+  object LanguageComboBox: TComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Bevel1
     Left = 0
@@ -60,7 +62,7 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
     Style = csDropDownList
     TabOrder = 1
   end
-  object FoldConfPanel: TPanel[4]
+  object FoldConfPanel: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = LanguageComboBox
     AnchorSideTop.Side = asrBottom
@@ -141,7 +143,7 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
       end
     end
   end
-  object chkPopOrder: TCheckBox[5]
+  object chkPopOrder: TCheckBox
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
