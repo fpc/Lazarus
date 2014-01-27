@@ -116,7 +116,7 @@ begin
       FoldConfigCheckListBox.Checked[j] :=
         Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled and
         (Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Modes * [fmFold, fmHide] <> []);
-      FoldConfigCheckListBox.Items.Objects[j] := TObject(i);
+      FoldConfigCheckListBox.Items.Objects[j] := TObject(Pointer(i));
     end;
   end;
 end;
