@@ -300,6 +300,7 @@ resourcestring
   sPrintFormCurPg = 'Current &page';
   sPrintFormNumber= '&Numbers:';
   sPrintFormInfo = 'Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12';
+  sPrintFormCollate = 'Collate';
 
 //--- BandEditorForm resources ------------------------------------------------
   sBandEditorFormCapt = 'Band data source';

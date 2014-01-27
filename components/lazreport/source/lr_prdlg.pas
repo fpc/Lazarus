@@ -82,6 +82,7 @@ begin
   Label2.Caption := sPrintFormInfo;
   OkButton.Caption := sOk;
   CancelButton.Caption := sCancel;
+  cbCollate.Caption:=sPrintFormCollate;
   {$IFDEF PRINTDIALOG_DISABLE_PRINTER_PROPERTIES}
   propButton.Enabled := false;
   {$ENDIF}

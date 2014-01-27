@@ -1311,6 +1311,7 @@ var
   V:TfrObject;
   i, j, SK:integer;
   Pages : TfrEMFPages;
+  S:string;
 begin
   Result:=false;
   if not Assigned(EMFPages) then exit;
@@ -1334,7 +1335,11 @@ begin
       V:=TfrView(P^.Page.Objects[j]);
       if Assigned(V) and (V is TfrMemoView) then
       begin
-        if Pos(SearchFindStr, TfrMemoView(V).Memo.Text)>0 then
+        S:=TfrMemoView(V).Memo.Text;
+        if not SearchCaseSensitive then
+          S := UTF8UpperCase(S);
+
+        if UTF8Pos(SearchFindStr, S)>0 then
         begin
           CurPage:=i + 1;
 
@@ -1458,7 +1463,7 @@ begin
     SearchDirecion:=SrchForm.GroupBox2.ItemIndex;
 
     if not SearchCaseSensitive then
-      SearchFindStr := AnsiUpperCase(SearchFindStr);
+      SearchFindStr := UTF8UpperCase(SearchFindStr);
     if SrchForm.GroupBox2.ItemIndex = 0 {RB1.Checked} then
     begin
       SearchLastFoundPage := 0;

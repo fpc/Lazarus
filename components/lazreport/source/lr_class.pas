@@ -636,7 +636,7 @@ type
     CalculatedHeight: Integer;
 
     procedure InitDataSet(const Desc: String);
-    procedure DoError;
+    procedure DoError(const AErrorMsg: String);
     function CalcHeight: Integer;
     procedure StretchObjects(MaxHeight: Integer);
     procedure UnStretchObjects;
@@ -5370,7 +5370,7 @@ begin
     DataSet := CurReport.Dataset;
 end;
 
-procedure TfrBand.DoError;
+procedure TfrBand.DoError(const AErrorMsg: String);
 var
   i: Integer;
 begin
@@ -5384,6 +5384,10 @@ begin
   if Assigned(CurView.Parent) then
     ErrorStr := ErrorStr + LineEnding +
       sBand + ' ' + CurView.Parent.Name;  //frBandNames[Integer(CurView.Parent.Typ)];
+
+  if AErrorMsg<>'' then
+    ErrorStr := ErrorStr + LineEnding + AErrorMsg;
+
   MasterReport.Terminated := True;
 end;
 
@@ -5538,7 +5542,8 @@ begin
         Parent.AfterPrint;
     end;
   except
-    on exception do DoError;
+    on E:Exception do
+      DoError(E.Message);
   end;
   {$IFDEF DebugLR}
   DebugLnExit('TfrBand.DrawObject DONE t=%s:%s',[dbgsname(t),t.name]);
@@ -5690,7 +5695,8 @@ begin
         end;
     end;
   except
-    on E: exception do DoError; //(E);
+    on E:Exception do
+      DoError(E.Message); //(E);
   end;
 end;
 
@@ -10469,8 +10475,13 @@ begin
     frDesigner.Free;
     frDesigner := Designer;
     frDesigner.Name := DesName;
-    frDesigner.Page := Pages[0];
-    frDesigner.RedrawPage;
+    if Pages.Count>0 then
+    begin
+     frDesigner.Page := Pages[0];
+     frDesigner.RedrawPage;
+    end
+    else
+      frDesigner.Page := nil;
   end;
 end;
 
@@ -11569,7 +11580,11 @@ begin
     {$IFDEF DebugLR}
     DebugLn('frVariables[',Name,'] := ',Value);
     {$ENDIF}
-    frVariables[Name] := Value;
+
+    if IsValidIdent(Name) then
+      frVariables[Name] := Value
+    else
+      raise Exception.CreateFmt('"%s" is not a valid variable name.', [Name]); //TODO: Translate this
   end;
 end;
 
