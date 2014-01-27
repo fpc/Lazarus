@@ -2203,6 +2203,10 @@ msgstr "Wybrana drukarka jest nieprawidłowa"
 msgid "&All"
 msgstr "&Wszystko"
 
+#: lr_const.sprintformcollate
+msgid "Collate"
+msgstr ""
+
 #: lr_const.sprintformcopy
 msgid "&Copies:"
 msgstr "&Kopie:"

@@ -2188,6 +2188,10 @@ msgstr "Nurodytas netinkamas spausdintuvas"
 msgid "&All"
 msgstr "&Visus"
 
+#: lr_const.sprintformcollate
+msgid "Collate"
+msgstr ""
+
 #: lr_const.sprintformcopy
 msgid "&Copies:"
 msgstr "&Kopijos:"

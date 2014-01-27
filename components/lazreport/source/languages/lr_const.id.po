@@ -2200,6 +2200,10 @@ msgstr "Printer yang dipilih tidak benar"
 msgid "&All"
 msgstr "Semu&a"
 
+#: lr_const.sprintformcollate
+msgid "Collate"
+msgstr ""
+
 #: lr_const.sprintformcopy
 msgid "&Copies:"
 msgstr "&Duplikat:"

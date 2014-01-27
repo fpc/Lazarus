@@ -2189,6 +2189,10 @@ msgstr "Вибраний невірний принтер"
 msgid "&All"
 msgstr "&Всі"
 
+#: lr_const.sprintformcollate
+msgid "Collate"
+msgstr ""
+
 #: lr_const.sprintformcopy
 msgid "&Copies:"
 msgstr "&Копії:"

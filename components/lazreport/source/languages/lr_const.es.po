@@ -2196,6 +2196,10 @@ msgstr "La impresora seleccionada no es válida"
 msgid "&All"
 msgstr "&Todo"
 
+#: lr_const.sprintformcollate
+msgid "Collate"
+msgstr ""
+
 #: lr_const.sprintformcopy
 msgid "&Copies:"
 msgstr "&Copias:"

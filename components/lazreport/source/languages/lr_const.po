@@ -2151,6 +2151,10 @@ msgstr ""
 msgid "&All"
 msgstr ""
 
+#: lr_const.sprintformcollate
+msgid "Collate"
+msgstr ""
+
 #: lr_const.sprintformcopy
 msgid "&Copies:"
 msgstr ""

@@ -2198,6 +2198,10 @@ msgstr "Zvolená tiskárna není validní"
 msgid "&All"
 msgstr "Vše"
 
+#: lr_const.sprintformcollate
+msgid "Collate"
+msgstr ""
+
 #: lr_const.sprintformcopy
 msgid "&Copies:"
 msgstr "Kopie:"

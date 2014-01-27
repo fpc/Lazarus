@@ -2191,6 +2191,10 @@ msgstr "Gewählter Drucker ist ungültig"
 msgid "&All"
 msgstr "&Alle"
 
+#: lr_const.sprintformcollate
+msgid "Collate"
+msgstr ""
+
 #: lr_const.sprintformcopy
 msgid "&Copies:"
 msgstr "&Kopien:"
