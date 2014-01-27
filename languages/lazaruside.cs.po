@@ -674,6 +674,14 @@ msgstr "Pouze pozice"
 msgid "Spaces"
 msgstr "Mezery"
 
+#: lazarusidestrconsts.dlgblockindenttypetabonly
+msgid "Tabs, cut off"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttypetabspace
+msgid "Tabs, then spaces"
+msgstr ""
+
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
 msgstr "Zarovnání bloků (tabulátorů)"
@@ -1581,6 +1589,10 @@ msgstr "Except/Finally"
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
 msgstr "{$IfDef}"
+
+#: lazarusidestrconsts.dlgfoldpasifthen
+msgid "If/Then/Else"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasnestedcomment
 msgid "Nested Comment"
@@ -2588,6 +2600,10 @@ msgstr "Zvýraznit ovládací příkazy jako klíčová slova"
 #: lazarusidestrconsts.dlgpasextkeywordsgroup
 msgid "Extended Pascal Keyword Options"
 msgstr "Volby rozšířených klíčových slov Pascalu"
+
+#: lazarusidestrconsts.dlgpaskeywordsmatches
+msgid "Matching Keywords"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
 #, fuzzy

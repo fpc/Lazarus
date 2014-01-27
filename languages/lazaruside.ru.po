@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-01-26 01:38+0400\n"
+"PO-Revision-Date: 2014-01-28 01:35+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -684,15 +684,23 @@ msgstr "(изменить клавиши)"
 
 #: lazarusidestrconsts.dlgblockindenttypecopy
 msgid "Space/tab as prev Line"
-msgstr "Пробел/ТАБ как на строке ранее"
+msgstr "Пробел/ТАБ как на строке выше"
 
 #: lazarusidestrconsts.dlgblockindenttypepos
 msgid "Position only"
-msgstr "По положению"
+msgstr "Только положение"
 
 #: lazarusidestrconsts.dlgblockindenttypespace
 msgid "Spaces"
 msgstr "Пробелы"
+
+#: lazarusidestrconsts.dlgblockindenttypetabonly
+msgid "Tabs, cut off"
+msgstr "ТАБы, обрезать \"лишнее\""
+
+#: lazarusidestrconsts.dlgblockindenttypetabspace
+msgid "Tabs, then spaces"
+msgstr "ТАБы, затем пробелы"
 
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
@@ -1631,6 +1639,10 @@ msgstr "Except/Finally"
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
 msgstr "{$IfDef}"
+
+#: lazarusidestrconsts.dlgfoldpasifthen
+msgid "If/Then/Else"
+msgstr "If/Then/Else"
 
 #: lazarusidestrconsts.dlgfoldpasnestedcomment
 msgid "Nested Comment"
@@ -2663,6 +2675,10 @@ msgstr "Подсвечивать операторы управления как 
 #| msgid "Extended Pascal keyword options"
 msgid "Extended Pascal Keyword Options"
 msgstr "Расширенные параметры ключевых слов Паскаля"
+
+#: lazarusidestrconsts.dlgpaskeywordsmatches
+msgid "Matching Keywords"
+msgstr "Связанные ключевые слова"
 
 #: lazarusidestrconsts.dlgpassoptslinker
 #| msgid "Pass options to linker (delimiter is space)"

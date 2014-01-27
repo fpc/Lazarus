@@ -682,6 +682,14 @@ msgstr "Tik poziciją"
 msgid "Spaces"
 msgstr "Tarpai"
 
+#: lazarusidestrconsts.dlgblockindenttypetabonly
+msgid "Tabs, cut off"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttypetabspace
+msgid "Tabs, then spaces"
+msgstr ""
+
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
 msgstr "Blokų įtrauka (tabuliatoriais)"
@@ -1614,6 +1622,10 @@ msgstr "Except/Finally"
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
 msgstr "{$IfDef}"
+
+#: lazarusidestrconsts.dlgfoldpasifthen
+msgid "If/Then/Else"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasnestedcomment
 msgid "Nested Comment"
@@ -2646,6 +2658,10 @@ msgstr "Valdymo sakinius paryškinti kaip raktažodžius"
 #: lazarusidestrconsts.dlgpasextkeywordsgroup
 msgid "Extended Pascal Keyword Options"
 msgstr "Papildomos paskalio raktažodžių parinktys"
+
+#: lazarusidestrconsts.dlgpaskeywordsmatches
+msgid "Matching Keywords"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
 #, fuzzy

@@ -690,6 +690,14 @@ msgstr ""
 msgid "Spaces"
 msgstr "Spacje"
 
+#: lazarusidestrconsts.dlgblockindenttypetabonly
+msgid "Tabs, cut off"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttypetabspace
+msgid "Tabs, then spaces"
+msgstr ""
+
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
 msgstr "Wcięcie bloku (tabulatorem)"
@@ -1647,6 +1655,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpasifthen
+msgid "If/Then/Else"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasnestedcomment
@@ -2699,6 +2711,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpasextkeywordsgroup
 msgid "Extended Pascal Keyword Options"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpaskeywordsmatches
+msgid "Matching Keywords"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker

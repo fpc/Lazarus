@@ -691,6 +691,14 @@ msgstr "Posicionar somente"
 msgid "Spaces"
 msgstr "Espaços"
 
+#: lazarusidestrconsts.dlgblockindenttypetabonly
+msgid "Tabs, cut off"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttypetabspace
+msgid "Tabs, then spaces"
+msgstr ""
+
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
 msgstr "Identação de bloco (tabs)"
@@ -1625,6 +1633,10 @@ msgstr "Except/Finally"
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
 msgstr "{$IfDef}"
+
+#: lazarusidestrconsts.dlgfoldpasifthen
+msgid "If/Then/Else"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasnestedcomment
 msgid "Nested Comment"
@@ -2656,6 +2668,10 @@ msgstr "Realçar declarações de controle como palavras-chave"
 #| msgid "Extended Pascal keyword options"
 msgid "Extended Pascal Keyword Options"
 msgstr "Opções de palavras-chave Pascal Extendido"
+
+#: lazarusidestrconsts.dlgpaskeywordsmatches
+msgid "Matching Keywords"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
 #| msgid "Pass options to linker (delimiter is space)"

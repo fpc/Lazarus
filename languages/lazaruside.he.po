@@ -686,6 +686,14 @@ msgstr "מיקום בלבד"
 msgid "Spaces"
 msgstr "רווחים"
 
+#: lazarusidestrconsts.dlgblockindenttypetabonly
+msgid "Tabs, cut off"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttypetabspace
+msgid "Tabs, then spaces"
+msgstr ""
+
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
 msgstr ""
@@ -1639,6 +1647,10 @@ msgstr "קבל/לבסוף"
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
 msgstr "{$IfDef}"
+
+#: lazarusidestrconsts.dlgfoldpasifthen
+msgid "If/Then/Else"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasnestedcomment
 msgid "Nested Comment"
@@ -2693,6 +2705,10 @@ msgstr "הדגש משפטי בקרה כמילות מפתח"
 #| msgid "Extended Pascal keyword options"
 msgid "Extended Pascal Keyword Options"
 msgstr "פרוש את אפשרויות המקלדת של פסקל"
+
+#: lazarusidestrconsts.dlgpaskeywordsmatches
+msgid "Matching Keywords"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
 #, fuzzy

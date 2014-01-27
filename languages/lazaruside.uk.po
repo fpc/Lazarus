@@ -679,6 +679,14 @@ msgstr "Лише позиція"
 msgid "Spaces"
 msgstr "Пробіли"
 
+#: lazarusidestrconsts.dlgblockindenttypetabonly
+msgid "Tabs, cut off"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttypetabspace
+msgid "Tabs, then spaces"
+msgstr ""
+
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
 msgstr "Відступ блоку (таби)"
@@ -1608,6 +1616,10 @@ msgstr "Except/Finally"
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
 msgstr "{$IfDef}"
+
+#: lazarusidestrconsts.dlgfoldpasifthen
+msgid "If/Then/Else"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasnestedcomment
 msgid "Nested Comment"
@@ -2638,6 +2650,10 @@ msgstr "Підсвічувати оператори управління як к
 #| msgid "Extended Pascal keyword options"
 msgid "Extended Pascal Keyword Options"
 msgstr "Розширені Параметри Ключових слів Паскаля"
+
+#: lazarusidestrconsts.dlgpaskeywordsmatches
+msgid "Matching Keywords"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
 #, fuzzy

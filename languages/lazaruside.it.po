@@ -684,6 +684,14 @@ msgstr "Solo posizione"
 msgid "Spaces"
 msgstr "Spazi"
 
+#: lazarusidestrconsts.dlgblockindenttypetabonly
+msgid "Tabs, cut off"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttypetabspace
+msgid "Tabs, then spaces"
+msgstr ""
+
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
 msgstr ""
@@ -1638,6 +1646,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpasifthen
+msgid "If/Then/Else"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasnestedcomment
@@ -2695,6 +2707,10 @@ msgstr "Evidenzia istruzioni di controllo come parole chiave"
 #| msgid "Extended Pascal keyword options"
 msgid "Extended Pascal Keyword Options"
 msgstr "Opzioni per parole chiave pascal estese"
+
+#: lazarusidestrconsts.dlgpaskeywordsmatches
+msgid "Matching Keywords"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
 #, fuzzy

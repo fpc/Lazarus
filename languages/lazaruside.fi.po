@@ -664,6 +664,14 @@ msgstr "Vain sijainti"
 msgid "Spaces"
 msgstr "Välilyönnit"
 
+#: lazarusidestrconsts.dlgblockindenttypetabonly
+msgid "Tabs, cut off"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttypetabspace
+msgid "Tabs, then spaces"
+msgstr ""
+
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
 msgstr "Lohkon sisennys (tabit)"
@@ -1553,6 +1561,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpasifthen
+msgid "If/Then/Else"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasnestedcomment
@@ -2549,6 +2561,10 @@ msgstr "Korosta ohjauskäskyt avainsanoina"
 #: lazarusidestrconsts.dlgpasextkeywordsgroup
 msgid "Extended Pascal Keyword Options"
 msgstr "Laajennetut Pascalin avainsanojen asetukset"
+
+#: lazarusidestrconsts.dlgpaskeywordsmatches
+msgid "Matching Keywords"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass options to linker with \"-k\", delimiter is space"
