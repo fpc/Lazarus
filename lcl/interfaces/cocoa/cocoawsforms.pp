@@ -366,7 +366,7 @@ var
   cnt: TCocoaWindowContent;
   ns: NSString;
   R: NSRect;
-begin
+ begin
   //todo: create TCocoaWindow or TCocoaPanel depending on the border style
   //      if parent is specified neither Window nor Panel needs to be created
   //      the only thing that needs to be created is Content
@@ -415,7 +415,10 @@ begin
   begin
     cnt.callback := TLCLCustomControlCallback.Create(cnt, AWinControl);
     if AParams.WndParent <> 0 then
+      begin
       NSView(APArams.WndParent).addSubView(cnt);
+      cnt.window.setAcceptsMouseMovedEvents(True);
+      end;
   end;
 
   Result := TLCLIntfHandle(cnt);
