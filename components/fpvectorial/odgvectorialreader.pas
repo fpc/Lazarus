@@ -112,6 +112,11 @@ type
     PageWidth, PageHeight: Double;
   end;
 
+  TCustomShapeInfo = packed record
+    Width, Height: Double; // in milimiters
+    ViewBox_Left, ViewBox_Top, ViewBox_Width, ViewBox_Height: Double; // unitless
+  end;
+
   { TvODGVectorialReader }
 
   TvODGVectorialReader = class(TvCustomVectorialReader)
@@ -131,8 +136,8 @@ type
     //
     procedure ReadStyleNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadStyleStyleNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure ReadEnhancedGeometryNodeToTPath(ANode: TDOMNode; AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double);
-    procedure ConvertPathStringToTPath(AStr: string; AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double);
+    procedure ReadEnhancedGeometryNodeToTPath(ANode: TDOMNode; AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double; var AInfo: TCustomShapeInfo);
+    procedure ConvertPathStringToTPath(AStr: string; AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double; AInfo: TCustomShapeInfo);
     //
     procedure ReadElement(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadCustomShapeNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -154,6 +159,12 @@ type
       const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
     procedure ConvertODGDeltaToFPVDelta(
       const AData: TvVectorialPage;
+      const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
+    procedure ConvertViewBoxCoordinatesToODGCoordinates(
+      const AInfo: TCustomShapeInfo;
+      const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
+    procedure ConvertViewBoxDeltaToODGDelta(
+      const AInfo: TCustomShapeInfo;
       const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
   public
     { General reading methods }
@@ -670,13 +681,36 @@ end;
   <draw:enhanced-geometry svg:viewBox="0 0 21600 21600" draw:type="rectangle"
    draw:enhanced-path="M 0 0 L 21600 0 21600 21600 0 21600 0 0 Z N"/>
 </draw:custom-shape>
+
+  For the drawing units see http://stackoverflow.com/questions/15335926/svg-viewbox-attribute
 }
 procedure TvODGVectorialReader.ReadEnhancedGeometryNodeToTPath(ANode: TDOMNode;
-  AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double);
+  AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double; var AInfo: TCustomShapeInfo);
 var
   i: Integer;
   lNodeName, lNodeValue: string;
+  l10Strings: T10Strings;
 begin
+  // First of all we need the viewBox, or else we can't map the coordinates
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
+    if lNodeName = 'draw:viewBox' then
+    begin
+      // From OpenDocument 1.1 specs page 300
+      // The syntax for using this attribute is the same as the [SVG] syntax.
+      // The value of the attribute are four numbers separated by white spaces,
+      // which define the left, top, right, and bottom dimensions of the user
+      // coordinate system.
+      l10Strings := SeparateString(lNodeValue, ' ');
+      AInfo.ViewBox_Left := StringWithUnitToFloat(l10Strings[0]);
+      AInfo.ViewBox_Top := StringWithUnitToFloat(l10Strings[1]);
+      AInfo.ViewBox_Width := StringWithUnitToFloat(l10Strings[2]) - AInfo.ViewBox_Left;
+      AInfo.ViewBox_Height := StringWithUnitToFloat(l10Strings[3]) - AInfo.ViewBox_Top;
+    end;
+  end;
+
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
@@ -684,13 +718,13 @@ begin
     lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if lNodeName = 'draw:enhanced-path' then
     begin
-      ConvertPathStringToTPath(lNodeValue, AData, ADest, ADeltaX, ADeltaY);
+      ConvertPathStringToTPath(lNodeValue, AData, ADest, ADeltaX, ADeltaY, AInfo);
     end;
   end;
 end;
 
 procedure TvODGVectorialReader.ConvertPathStringToTPath(AStr: string;
-  AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double);
+  AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double; AInfo: TCustomShapeInfo);
 var
   x1, y1, x2, y2, lCurX, lCurY: double;
   t1, t2, lSrcX, lSrcY, lDestX, lDestY: Double;
@@ -784,7 +818,10 @@ begin
         t2 := CurToken.Value;
         t2 := t2 / Pi;
 
+        ConvertViewBoxCoordinatesToODGCoordinates(AInfo, x1, y1, x1, y1);
         ConvertODGCoordinatesToFPVCoordinates(AData, x1, y1, x1, y1);
+
+        ConvertViewBoxDeltaToODGDelta(AInfo, x2, y2, x2, y2);
         ConvertODGDeltaToFPVDelta(AData, x2, y2, x2, y2);
 
         // Parametrized Ellipse equation
@@ -846,6 +883,7 @@ var
   lGroup: TvEntityWithSubEntities;
   lPath: TPath;
   lText: TvText;
+  lInfo: TCustomShapeInfo;
 begin
   x1 := 0.0;
   y1 := 0.0;
@@ -905,7 +943,9 @@ begin
     end;
     'draw:enhanced-geometry':
     begin
-      ReadEnhancedGeometryNodeToTPath(lCurNode, AData, lPath, x1, y1);
+      lInfo.Width := lWidth;
+      lInfo.Height := lHeight;
+      ReadEnhancedGeometryNodeToTPath(lCurNode, AData, lPath, x1, y1, lInfo);
     end;
     end;
 
@@ -1629,6 +1669,32 @@ procedure TvODGVectorialReader.ConvertODGDeltaToFPVDelta(
 begin
   ADestX := ASrcX * FLOAT_MILIMETERS_PER_PIXEL;
   ADestY := - ASrcY * FLOAT_MILIMETERS_PER_PIXEL;
+end;
+
+{
+  For the drawing units see http://stackoverflow.com/questions/15335926/svg-viewbox-attribute
+
+  We should use these formulas to obtain the X, Y position from something in the drawing:
+
+  Xreal = Xenhanced-path * (draw:custom-shape_svg:width / svg:viewBox_Width) + svg:viewBox_Xo;
+  And the same for Y
+
+  For sizes just use without Xo
+}
+procedure TvODGVectorialReader.ConvertViewBoxCoordinatesToODGCoordinates(
+  const AInfo: TCustomShapeInfo; const ASrcX, ASrcY: Double; var ADestX,
+  ADestY: Double);
+begin
+  ADestX := ASrcX * (AInfo.Width / AInfo.ViewBox_Width) + AInfo.ViewBox_Left;
+  ADestY := ASrcY * (AInfo.Height / AInfo.ViewBox_Height) + AInfo.ViewBox_Top;
+end;
+
+procedure TvODGVectorialReader.ConvertViewBoxDeltaToODGDelta(
+  const AInfo: TCustomShapeInfo; const ASrcX, ASrcY: Double; var ADestX,
+  ADestY: Double);
+begin
+  ADestX := ASrcX * (AInfo.Width / AInfo.ViewBox_Width);
+  ADestY := ASrcY * (AInfo.Height / AInfo.ViewBox_Height);
 end;
 
 constructor TvODGVectorialReader.Create;
