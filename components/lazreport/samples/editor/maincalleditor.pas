@@ -29,8 +29,8 @@ uses
   Classes, SysUtils, Variants, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   Buttons, StdCtrls, LR_Const, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet, IniFiles,
   LR_PGrid, Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV, LR_DSet,
-  LR_BarC, LR_RRect, LR_Shape, LR_ChBox, lr_e_pdf, lconvencoding, lr_e_gen,
-  lr_utils, LCLProc, ExtCtrls, custompreview, LR_Pars, LR_e_htmldiv, lr_e_cairo,
+  LR_BarC, LR_RRect, LR_Shape, LR_ChBox, lconvencoding, lr_e_gen,
+  lr_utils, LCLProc, ExtCtrls, custompreview, LR_Pars, LR_e_htmldiv,
   LazLogger;
 
 type
@@ -68,8 +68,6 @@ type
     comboIndex: TComboBox;
     frDbMaster: TfrDBDataSet;
     frHtmlDivExport1: TfrHtmlDivExport;
-    frTNPDFExport1: TfrTNPDFExport;
-    lrCairoExport1: TlrCairoExport;
     mastergrid: TDBGrid;
     Panel1: TPanel;
     srcMaster: TDatasource;
@@ -557,7 +555,7 @@ function TfrmMain.GetDataPath: string;
 begin
   result := ExtractFilePath(ParamStr(0));
   {$ifdef Darwin}
-  result := IncludeTrailingPathDelimiter(ExpandFileName(dataPath + '../../..'));
+  result := IncludeTrailingPathDelimiter(ExpandFileName(result + '../../..'));
   {$endif}
 end;
 

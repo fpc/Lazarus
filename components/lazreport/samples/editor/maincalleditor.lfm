@@ -5,21 +5,21 @@ object frmMain: TfrmMain
   Width = 828
   ActiveControl = Panel1
   Caption = 'LazReport Test Suite'
-  ClientHeight = 525
+  ClientHeight = 545
   ClientWidth = 828
   Font.Name = 'Sans'
   Menu = MainMenu1
   OnCloseQuery = FormCloseQuery
   OnCreate = frmMainCreate
   ShowHint = True
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object lblIndex: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = grid
     Left = 6
-    Height = 18
-    Top = 98
-    Width = 36
+    Height = 17
+    Top = 94
+    Width = 33
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Index'
@@ -29,10 +29,10 @@ object frmMain: TfrmMain
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = grid
-    Left = 744
-    Height = 18
-    Top = 98
-    Width = 78
+    Left = 756
+    Height = 17
+    Top = 94
+    Width = 66
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Expression'
@@ -40,8 +40,8 @@ object frmMain: TfrmMain
   end
   object sbar: TStatusBar
     Left = 0
-    Height = 23
-    Top = 502
+    Height = 15
+    Top = 530
     Width = 828
     Panels = <    
       item
@@ -56,13 +56,13 @@ object frmMain: TfrmMain
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = lblExpr
     AnchorSideBottom.Control = grid
-    Left = 48
-    Height = 26
+    Left = 45
+    Height = 21
     Top = 90
-    Width = 690
+    Width = 705
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
-    ItemHeight = 18
+    ItemHeight = 0
     OnSelect = comboIndexSelect
     TabOrder = 2
   end
@@ -73,8 +73,8 @@ object frmMain: TfrmMain
     AnchorSideRight.Control = grid
     AnchorSideBottom.Control = sbar
     Left = 0
-    Height = 380
-    Top = 122
+    Height = 413
+    Top = 117
     Width = 204
     Anchors = [akTop, akLeft, akBottom]
     Color = clMoneyGreen
@@ -92,8 +92,8 @@ object frmMain: TfrmMain
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = sbar
     Left = 0
-    Height = 380
-    Top = 122
+    Height = 413
+    Top = 117
     Width = 828
     Anchors = [akTop, akLeft, akRight, akBottom]
     Color = clWhite
@@ -122,59 +122,59 @@ object frmMain: TfrmMain
     TabOrder = 4
     object btnNewReport: TButton
       Left = 6
-      Height = 33
+      Height = 31
       Top = 6
-      Width = 116
+      Width = 117
       Action = accNewReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 0
     end
     object btnOpenReport: TButton
-      Left = 128
-      Height = 33
+      Left = 129
+      Height = 31
       Top = 6
-      Width = 123
+      Width = 124
       Action = accOpenReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 2
     end
     object btnEditReport: TButton
-      Left = 257
-      Height = 33
+      Left = 259
+      Height = 31
       Top = 6
-      Width = 113
+      Width = 119
       Action = accEditReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 3
     end
     object btnPreviewReport: TButton
-      Left = 376
-      Height = 33
+      Left = 384
+      Height = 31
       Top = 6
-      Width = 154
+      Width = 149
       Action = accPreviewReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 4
     end
     object btnPrintReport: TButton
-      Left = 536
-      Height = 33
+      Left = 539
+      Height = 31
       Top = 6
-      Width = 134
+      Width = 133
       Action = accPrintReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 5
     end
     object btnCustomPreview: TButton
-      Left = 676
-      Height = 33
+      Left = 678
+      Height = 31
       Top = 6
-      Width = 146
+      Width = 144
       Action = accCustomPreview
       AutoSize = True
       BorderSpacing.Around = 6
@@ -183,9 +183,9 @@ object frmMain: TfrmMain
     object btnPrintGrid: TButton
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 33
-      Top = 45
-      Width = 116
+      Height = 35
+      Top = 43
+      Width = 117
       Action = accPrintGrid
       AutoSize = True
       BorderSpacing.Around = 6
@@ -193,10 +193,10 @@ object frmMain: TfrmMain
     end
     object btnComposite: TButton
       AnchorSideTop.Side = asrBottom
-      Left = 128
-      Height = 33
-      Top = 45
-      Width = 123
+      Left = 129
+      Height = 35
+      Top = 43
+      Width = 124
       Action = accComposite
       AutoSize = True
       BorderSpacing.Around = 6
@@ -205,20 +205,20 @@ object frmMain: TfrmMain
     object btnImageList: TButton
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 257
-      Height = 33
-      Top = 45
-      Width = 113
+      Left = 259
+      Height = 35
+      Top = 43
+      Width = 119
       Action = accThumbnails
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 7
     end
     object btnMasterDetail: TToggleBox
-      Left = 376
-      Height = 33
-      Top = 45
-      Width = 154
+      Left = 384
+      Height = 35
+      Top = 43
+      Width = 149
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Master-Detail Test'
@@ -226,10 +226,10 @@ object frmMain: TfrmMain
       TabOrder = 9
     end
     object btnExportLast: TButton
-      Left = 536
-      Height = 33
-      Top = 45
-      Width = 134
+      Left = 539
+      Height = 35
+      Top = 43
+      Width = 133
       Caption = 'Repeat Export'
       OnClick = btnExportLastClick
       TabOrder = 10
@@ -398,7 +398,7 @@ object frmMain: TfrmMain
       Visible = False
     end
   end
-  object srcDetail: TDatasource
+  object srcDetail: TDataSource
     DataSet = Detail
     left = 184
     top = 248
@@ -622,7 +622,7 @@ object frmMain: TfrmMain
     left = 184
     top = 312
   end
-  object srcMaster: TDatasource
+  object srcMaster: TDataSource
     DataSet = master
     left = 184
     top = 368
@@ -635,13 +635,5 @@ object frmMain: TfrmMain
   object frHtmlDivExport1: TfrHtmlDivExport
     left = 500
     top = 228
-  end
-  object frTNPDFExport1: TfrTNPDFExport
-    left = 420
-    top = 312
-  end
-  object lrCairoExport1: TlrCairoExport
-    left = 352
-    top = 128
   end
 end
