@@ -275,32 +275,18 @@ msgid "Default printer"
 msgstr "Standarddrucker"
 
 #: lr_const.sdescriptionavg
-msgid ""
-"AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> "
-"for [BandName] row given. If [1] parameter is used, calculates average for "
-"non-visible rows too."
-msgstr ""
-"AVG(<Ausdruck> [,BandName [,1]])/Berechnet den Durchschnitt von <Ausdruck> "
-"für die in [BandName] festgelegte Reihe. Ist der Parameter [1] angegeben, "
-"wird der Durchschnitt auch für nicht sichtbare Reihen berechnet."
+msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
+msgstr "AVG(<Ausdruck> [,BandName [,1]])/Berechnet den Durchschnitt von <Ausdruck> für die in [BandName] festgelegte Reihe. Ist der Parameter [1] angegeben, wird der Durchschnitt auch für nicht sichtbare Reihen berechnet."
 
 #: lr_const.sdescriptioncopy
-msgid ""
-"COPY(<String>, <Position>, <Length>)/Returns <Length> characters from "
-"<String> starting at <Position>."
-msgstr ""
-"COPY(<String>, <Position>, <Length>)/gibt <Length> Zeichen von <String> ab "
-"<Position>."
+msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
+msgstr "COPY(<String>, <Position>, <Length>)/gibt <Length> Zeichen von <String> ab <Position>."
 
 #: lr_const.sdescriptioncount
 #, fuzzy
-#| msgid ""
-#| "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
-#| "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
+#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
 msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
-msgstr ""
-"COUNT(<BandName>)/Liefert die Zahl der Datenreihen des angegebenen "
-"<BandName>. "
+msgstr "COUNT(<BandName>)/Liefert die Zahl der Datenreihen des angegebenen <BandName>. "
 
 #: lr_const.sdescriptiondayof
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
@@ -311,28 +297,16 @@ msgid "DEC(<Value>)/Decrement <Value>."
 msgstr "DEC(<Value>)/Erhöht <Value>."
 
 #: lr_const.sdescriptionformatdatetime
-msgid ""
-"FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string "
-"using mask in <Fmt>."
-msgstr ""
-"FORMATDATETIME(<Fmt>, <DateTime>)/Konvertiert einen <DateTime>-Wert in einen "
-"in <Fmt> maskierten String."
+msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
+msgstr "FORMATDATETIME(<Fmt>, <DateTime>)/Konvertiert einen <DateTime>-Wert in einen in <Fmt> maskierten String."
 
 #: lr_const.sdescriptionformatfloat
-msgid ""
-"FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using "
-"mask in <Fmt>."
-msgstr ""
-"FORMATFLOAT(<Fmt>, <Zahl>)/Konvertiert eine  <Zahl> über die Maske <Fmt> in "
-"einen String."
+msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
+msgstr "FORMATFLOAT(<Fmt>, <Zahl>)/Konvertiert eine  <Zahl> über die Maske <Fmt> in einen String."
 
 #: lr_const.sdescriptionformattext
-msgid ""
-"FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns "
-"formatted string."
-msgstr ""
-"FORMATTEXT(<Maske>, <String>)/Wendet <Maske>auf den angegebenen <String> und "
-"gibt den formatierten String zurück."
+msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
+msgstr "FORMATTEXT(<Maske>, <String>)/Wendet <Maske>auf den angegebenen <String> und gibt den formatierten String zurück."
 
 #: lr_const.sdescriptionfrac
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
@@ -343,22 +317,10 @@ msgid "INC(<Value>)/Increment <Value>."
 msgstr "INC(<Value>)/Verringert <Value>."
 
 #: lr_const.sdescriptioninput
-#| msgid ""
-#| "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> "
-#| "and edit box. If [Default] parameter is set, puts this string in edit "
-#| "box. After user clicks OK, returns input string.INPUT(<Caption> [,"
-#| "Default])/Shows dialog window with title <Caption> and edit box. If "
-#| "[Default] parameter is set, puts this string in edit box. After user "
-#| "clicks OK, returns input string."
-msgid ""
-"INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and "
-"edit box. If [Default] parameter is set, puts this string in edit box. After "
-"user clicks OK, returns input string."
-msgstr ""
-"INPUT(<Caption> [,Default])/Zeigt ein Dialogfenster mit der Überschrift "
-"<Caption> und einem Eingabefeld. Ist der Parameter [Default] gesetzt, wird "
-"dieser String im Eingabefeld eingesetzt. Drückt der Anwender OK, wird der "
-"Text im Eingabefeld zurückgeliefert."
+#, fuzzy
+#| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgstr "INPUT(<Caption> [,Default])/Zeigt ein Dialogfenster mit der Überschrift <Caption> und einem Eingabefeld. Ist der Parameter [Default] gesetzt, wird dieser String im Eingabefeld eingesetzt. Drückt der Anwender OK, wird der Text im Eingabefeld zurückgeliefert."
 
 #: lr_const.sdescriptionint
 msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
@@ -370,81 +332,51 @@ msgstr "LENGTH(<String>)/Gibt die Länge von <String> zurück."
 
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
-msgstr ""
-"LOWERCASE(<String>)/Konvertiert die Zeichen in <String> in Kleinbuchstaben."
+msgstr "LOWERCASE(<String>)/Konvertiert die Zeichen in <String> in Kleinbuchstaben."
 
 #: lr_const.sdescriptionmax
-msgid ""
-"MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> "
-"for [BandName] row given. If [1] parameter is used, calculates maximum for "
-"non-visible rows too."
-msgstr ""
-"MAX(<Ausdruck> [,BandName [,1]])/Berechnet das Maximum von <Ausdruck> für "
-"die Reihen von[BandName]. Ist der Parameter [1] angegeben, werden auch nicht "
-"sichtbare Reihen berücksichtigt."
+msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
+msgstr "MAX(<Ausdruck> [,BandName [,1]])/Berechnet das Maximum von <Ausdruck> für die Reihen von[BandName]. Ist der Parameter [1] angegeben, werden auch nicht sichtbare Reihen berücksichtigt."
 
 #: lr_const.sdescriptionmaxnum
 msgid "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
 msgstr "MAXNUM(<Wert1>, <Wert2>)/Liefert das Maximum der angegeben Werte."
 
 #: lr_const.sdescriptionmessagebox
-msgid ""
-"MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with "
-"title, text and buttons."
-msgstr ""
-"MESSAGEBOX(<Text>, <Titel>, <Buttons>)/Zeigt eine normale Dialogbox mit "
-"Titel, Text und Buttons."
+msgid "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
+msgstr "MESSAGEBOX(<Text>, <Titel>, <Buttons>)/Zeigt eine normale Dialogbox mit Titel, Text und Buttons."
 
 #: lr_const.sdescriptionmin
-msgid ""
-"MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> "
-"for [BandName] row given. If [1] parameter is used, calculates minimum for "
-"non-visible rows too."
-msgstr ""
-"MIN(<Ausdruck> [,BandName [,1]])/Berechnet das Minimum von <Ausdruck> für "
-"die in [BandName] angegebene Reihe. Ist [1] angegeben, werden auch die Werte "
-"in nicht sichtbaren Reihen berücksichtigt."
+msgid "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
+msgstr "MIN(<Ausdruck> [,BandName [,1]])/Berechnet das Minimum von <Ausdruck> für die in [BandName] angegebene Reihe. Ist [1] angegeben, werden auch die Werte in nicht sichtbaren Reihen berücksichtigt."
 
 #: lr_const.sdescriptionminnum
 msgid "MINNUM(<Value1>, <Value2>)/Returns min of given values."
-msgstr ""
-"MINNUM(<Wert1>, <Wert2>)/Liefert den kleineren der angebenen Werte zurück."
+msgstr "MINNUM(<Wert1>, <Wert2>)/Liefert den kleineren der angebenen Werte zurück."
 
 #: lr_const.sdescriptionmonthof
 msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
-msgstr ""
-"MONTHOF(<Datum>)/Gibt den Monat (1..12) aus einem angegebenen <Datum> zurück."
+msgstr "MONTHOF(<Datum>)/Gibt den Monat (1..12) aus einem angegebenen <Datum> zurück."
 
 #: lr_const.sdescriptionnamecase
-msgid ""
-"NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol "
-"is in upper case."
-msgstr ""
-"NAMECASE(<String>)/Konvertiert alle Zeichen in <String> in Klein- und das "
-"erste Zeichen in Großbuchstaben."
+msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
+msgstr "NAMECASE(<String>)/Konvertiert alle Zeichen in <String> in Klein- und das erste Zeichen in Großbuchstaben."
 
 #: lr_const.sdescriptionnewcolumn
 msgid "NEWCOLUMN/Create new column on page for current report."
-msgstr ""
-"NEWCOLUMN/Erzeugt eine neue Spalte auf der Seite des aktuellen Reports."
+msgstr "NEWCOLUMN/Erzeugt eine neue Spalte auf der Seite des aktuellen Reports."
 
 #: lr_const.sdescriptionnewpage
 msgid "NEWPAGE/Create new page for current report."
 msgstr "NEWPAGE/Erzeugt eine neue Seite für den aktuellen Report."
 
 #: lr_const.sdescriptionpos
-msgid ""
-"POS(<SubString>, <String>)/Returns position of substring in given string."
-msgstr ""
-"POS(<SubString>, <String>)/Liefert die Position des Substrings im "
-"angegebenen String zurück."
+msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
+msgstr "POS(<SubString>, <String>)/Liefert die Position des Substrings im angegebenen String zurück."
 
 #: lr_const.sdescriptionround
-msgid ""
-"ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
-msgstr ""
-"ROUND(<Value>)/Runden die Gleitkommazahl <Value> in die nächstliegende ganze "
-"Zahl."
+msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
+msgstr "ROUND(<Value>)/Runden die Gleitkommazahl <Value> in die nächstliegende ganze Zahl."
 
 #: lr_const.sdescriptionshowband
 msgid "SHOWBAND(<BandName>)/Show <BandName> in report."
@@ -456,8 +388,7 @@ msgstr "STOPREPORT/Beendet die Reporterzeugung."
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
-msgstr ""
-"STR(<Value>)/Wandelt den angegebenen (Zahlen-) <Value> in einen String."
+msgstr "STR(<Value>)/Wandelt den angegebenen (Zahlen-) <Value> in einen String."
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
@@ -468,27 +399,16 @@ msgid "STRTOTIME(<String>)/Converts <String> to time."
 msgstr "STRTOTIME(<String>)/Konvertiert den <String> in eine Zeitangabe."
 
 #: lr_const.sdescriptionsum
-msgid ""
-"SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for "
-"[BandName] row given. If [1] parameter is used, calculates sum for non-"
-"visible rows too."
-msgstr ""
-"SUM(<Ausdruck> [,BandName [,1]])/Berechnet die Summe von [Ausdruck] für die "
-"Reihen von [BandName]. Ist der Parameter [1] angegeben, werden auch nicht "
-"sichtbare Reihen berechnet."
+msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
+msgstr "SUM(<Ausdruck> [,BandName [,1]])/Berechnet die Summe von [Ausdruck] für die Reihen von [BandName]. Ist der Parameter [1] angegeben, werden auch nicht sichtbare Reihen berechnet."
 
 #: lr_const.sdescriptiontrim
-msgid ""
-"TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns "
-"resulting string."
-msgstr ""
-"TRIM(<String>)/Schneidet alle führenden und anhängenden Leerzeichen aus dem "
-"<String> und liefert ihn als Ergebnis wieder zurück."
+msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
+msgstr "TRIM(<String>)/Schneidet alle führenden und anhängenden Leerzeichen aus dem <String> und liefert ihn als Ergebnis wieder zurück."
 
 #: lr_const.sdescriptionuppercase
 msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
-msgstr ""
-"UPPERCASE(<String>)/Wandert die Zeichen in <String> in Großbuchstaben um."
+msgstr "UPPERCASE(<String>)/Wandert die Zeichen in <String> in Großbuchstaben um."
 
 #: lr_const.sdescriptionyearof
 msgid "YEAROF(<Date>)/Returns year of given <Date>."
@@ -2285,12 +2205,8 @@ msgid "Current &page"
 msgstr "Aktuelle &Seite"
 
 #: lr_const.sprintforminfo
-msgid ""
-"Enter page numbers and/or page ranges, separated by commas. For example, "
-"1,3,5-12"
-msgstr ""
-"Geben sie die Seitenzahlen und/oder -bereiche durch ein Komma getrennt ein, "
-"z.B. 1,3,5-12"
+msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
+msgstr "Geben sie die Seitenzahlen und/oder -bereiche durch ein Komma getrennt ein, z.B. 1,3,5-12"
 
 #: lr_const.sprintformnumber
 msgid "&Numbers:"
@@ -2384,9 +2300,7 @@ msgstr ""
 #: lr_const.sroundrectformhint
 #| msgid "Click here to define the shadow color or gradian colors"
 msgid "Click here to define the shadow color or gradient colors"
-msgstr ""
-"Klicken Sie hier, um die Schattenfarbe oder die Farben für den Verlauf "
-"festzulegen"
+msgstr "Klicken Sie hier, um die Schattenfarbe oder die Farben für den Verlauf festzulegen"
 
 #: lr_const.sroundrectformsample
 msgid "Sample :"
@@ -2615,3 +2529,4 @@ msgstr "Wortumbruch"
 #: lr_const.syes
 msgid "Yes"
 msgstr "Ja"
+
