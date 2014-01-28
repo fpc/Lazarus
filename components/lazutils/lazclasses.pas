@@ -29,6 +29,8 @@ type
     {$IFDEF WITH_REFCOUNT_DEBUG}
     FDebugList: TStringList;
     FInDestroy: Boolean;
+    procedure DbgAddName(DebugIdAdr: Pointer = nil; DebugIdTxt: String = '');
+    procedure DbgRemoveName(DebugIdAdr: Pointer = nil; DebugIdTxt: String = '');
     {$ENDIF}
   protected
     procedure DoFree; virtual;
@@ -40,6 +42,10 @@ type
     destructor  Destroy; override;
     procedure AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
     procedure ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
+    {$IFDEF WITH_REFCOUNT_DEBUG}
+    procedure DbgRenameReference(DebugIdAdr: Pointer; DebugIdTxt: String);
+    procedure DbgRenameReference(OldDebugIdAdr: Pointer; OldDebugIdTxt: String; DebugIdAdr: Pointer; DebugIdTxt: String = '');
+    {$ENDIF}
   end;
 
   { TRefCntObjList }
@@ -85,12 +91,21 @@ end;
 { TRefCountedObject }
 
 procedure TRefCountedObject.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
-{$IFDEF WITH_REFCOUNT_DEBUG}
-var
-  s: String;
-{$ENDIF}
 begin
   {$IFDEF WITH_REFCOUNT_DEBUG}
+  DbgAddName(DebugIdAdr, DebugIdTxt);
+  {$ENDIF}
+  Inc(FRefcount);
+  // call only if overridden
+  If TMethod(@DoReferenceAdded).Code <> Pointer(@TRefCountedObject.DoReferenceAdded) then
+    DoReferenceAdded;
+end;
+
+{$IFDEF WITH_REFCOUNT_DEBUG}
+procedure TRefCountedObject.DbgAddName(DebugIdAdr: Pointer; DebugIdTxt: String);
+var
+  s: String;
+begin
   if FDebugList = nil then FDebugList := TStringList.Create;
   if (DebugIdAdr <> nil) or (DebugIdTxt <> '') then
     s := inttostr(PtrUInt(DebugIdAdr))+': '+DebugIdTxt
@@ -104,12 +119,26 @@ begin
     FDebugList.Objects[FDebugList.IndexOf(s)] :=
       TObject(PtrUint(FDebugList.Objects[FDebugList.IndexOf(s)])+1);
   end;
-  {$ENDIF}
-  Inc(FRefcount);
-  // call only if overridden
-  If TMethod(@DoReferenceAdded).Code <> Pointer(@TRefCountedObject.DoReferenceAdded) then
-    DoReferenceAdded;
 end;
+
+procedure TRefCountedObject.DbgRemoveName(DebugIdAdr: Pointer; DebugIdTxt: String);
+var
+  s: String;
+begin
+  if FDebugList = nil then FDebugList := TStringList.Create;
+  if (DebugIdAdr <> nil) or (DebugIdTxt <> '') then
+    s := inttostr(PtrUInt(DebugIdAdr))+': '+DebugIdTxt
+  else
+    s := 'not named';
+  assert(FDebugList.indexOf(s) >= 0, 'Has reference (entry) for '+s);
+  assert(PtrUint(FDebugList.Objects[FDebugList.IndexOf(s)]) > 0, 'Has reference (> 0) for '+s);
+  if PtrUint(FDebugList.Objects[FDebugList.IndexOf(s)]) = 1 then
+    FDebugList.Delete(FDebugList.IndexOf(s))
+  else
+    FDebugList.Objects[FDebugList.IndexOf(s)] :=
+      TObject(PtrInt(FDebugList.Objects[FDebugList.IndexOf(s)])-1);
+end;
+{$ENDIF}
 
 procedure TRefCountedObject.DoFree;
 begin
@@ -150,25 +179,10 @@ begin
 end;
 
 procedure TRefCountedObject.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
-{$IFDEF WITH_REFCOUNT_DEBUG}
-var
-  s: String;
-{$ENDIF}
 begin
   if Self = nil then exit;
   {$IFDEF WITH_REFCOUNT_DEBUG}
-  if FDebugList = nil then FDebugList := TStringList.Create;
-  if (DebugIdAdr <> nil) or (DebugIdTxt <> '') then
-    s := inttostr(PtrUInt(DebugIdAdr))+': '+DebugIdTxt
-  else
-    s := 'not named';
-  assert(FDebugList.indexOf(s) >= 0, 'Has reference (entry) for '+s);
-  assert(PtrUint(FDebugList.Objects[FDebugList.IndexOf(s)]) > 0, 'Has reference (> 0) for '+s);
-  if PtrUint(FDebugList.Objects[FDebugList.IndexOf(s)]) = 1 then
-    FDebugList.Delete(FDebugList.IndexOf(s))
-  else
-    FDebugList.Objects[FDebugList.IndexOf(s)] :=
-      TObject(PtrInt(FDebugList.Objects[FDebugList.IndexOf(s)])-1);
+  DbgRemoveName(DebugIdAdr, DebugIdTxt);
   {$ENDIF}
   Assert(FRefCount > 0, 'TRefCountedObject.ReleaseReference  RefCount > 0');
   Dec(FRefCount);
@@ -177,6 +191,21 @@ begin
     DoReferenceReleased;
   if FRefCount = 0 then DoFree;
 end;
+
+{$IFDEF WITH_REFCOUNT_DEBUG}
+procedure TRefCountedObject.DbgRenameReference(DebugIdAdr: Pointer; DebugIdTxt: String);
+begin
+  DbgRemoveName(nil, '');
+  DbgAddName(DebugIdAdr, DebugIdTxt);
+end;
+
+procedure TRefCountedObject.DbgRenameReference(OldDebugIdAdr: Pointer; OldDebugIdTxt: String;
+  DebugIdAdr: Pointer; DebugIdTxt: String);
+begin
+  DbgRemoveName(OldDebugIdAdr, OldDebugIdTxt);
+  DbgAddName(DebugIdAdr, DebugIdTxt);
+end;
+{$ENDIF}
 
 { TRefCntObjList }
 
