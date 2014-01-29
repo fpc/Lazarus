@@ -2613,6 +2613,8 @@ begin
     // the outer Processrunning should stop, due to process no longer running
     FDidKillNow := True;
     FTheDebugger.TerminateGDB;
+    SetDebuggerState(dsStop);
+    FTheDebugger.CancelAllQueued;  // stop queued new cmd
     Result := True;
     exit;
   end;
@@ -8829,6 +8831,7 @@ begin
               '',
               ftError, [frOk]
             );
+      SetState(dsError);
     end;
   end;
 end;
