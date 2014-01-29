@@ -73,6 +73,7 @@ type
     procedure SetLineEnds(ALineEnds: TStringDynArray);
     function  ReadLineTimedOut: Boolean; virtual;
     property  ReadLineWasAbortedByNested: Boolean read FReadLineWasAbortedByNested;
+    procedure AbortReadLine;
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -273,7 +274,7 @@ begin
     except
       Application.HandleException(Application);
     end;
-    if Application.Terminated then Break;
+    if Application.Terminated or not DebugProcessRunning then Break;
     // sleep a bit
     Sleep(10);
   end;
@@ -563,6 +564,11 @@ end;
 function TCmdLineDebugger.ReadLineTimedOut: Boolean;
 begin
   Result := FReadLineTimedOut;
+end;
+
+procedure TCmdLineDebugger.AbortReadLine;
+begin
+  inc(FReadLineCallStamp);
 end;
 
 procedure TCmdLineDebugger.TestCmd(const ACommand: String);
