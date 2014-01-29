@@ -3138,7 +3138,7 @@ begin
   for n := Low(FModifiedToUpdate) to High(FModifiedToUpdate) do
     FModifiedToUpdate[n] := False;
 
-  ExecuteCommand('-data-list-changed-registers', [cfscIgnoreError], R);
+  ExecuteCommand('-data-list-changed-registers', R, [cfscIgnoreError]);
   if R.State = dsError then Exit;
 
   List := TGDBMINameValueList.Create(R, ['changed-registers']);
