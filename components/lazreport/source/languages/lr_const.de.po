@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
-"PO-Revision-Date: 2014-01-05 12:05+0100\n"
+"PO-Revision-Date: 2014-01-28 15:52+0100\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -49,7 +49,7 @@ msgstr "Detail-Fußzeile"
 
 #: lr_const.sband11
 msgid "Subdetail header"
-msgstr "Subdetail-Header"
+msgstr "Subdetail-Kopfzeile"
 
 #: lr_const.sband12
 msgid "Subdetail data"
@@ -57,7 +57,7 @@ msgstr "Subdetail-Daten"
 
 #: lr_const.sband13
 msgid "Subdetail footer"
-msgstr "Subdetail-Footer"
+msgstr "Subdetail-Fußzeile"
 
 #: lr_const.sband14
 msgid "Overlay"
@@ -73,11 +73,11 @@ msgstr "Spaltenfooter"
 
 #: lr_const.sband17
 msgid "Group header"
-msgstr "Gruppen-Header"
+msgstr "Gruppen-Kopfzeile"
 
 #: lr_const.sband18
 msgid "Group footer"
-msgstr "Gruppen-Footer"
+msgstr "Gruppen-Fußzeile"
 
 #: lr_const.sband19
 msgid "Cross header"
@@ -101,15 +101,15 @@ msgstr "Keiner"
 
 #: lr_const.sband3
 msgid "Page header"
-msgstr "Seiten-Header"
+msgstr "Seiten-Kopfzeile"
 
 #: lr_const.sband4
 msgid "Page footer"
-msgstr "Seiten-Footer"
+msgstr "Seiten-Fußzeile"
 
 #: lr_const.sband5
 msgid "Master header"
-msgstr "Haupt-Header"
+msgstr "Haupt-Kopfzeile"
 
 #: lr_const.sband6
 msgid "Master data"
@@ -117,15 +117,15 @@ msgstr "Master-Daten"
 
 #: lr_const.sband7
 msgid "Master footer"
-msgstr "Haupt-Footer"
+msgstr "Haupt-Fußzeile"
 
 #: lr_const.sband8
 msgid "Detail header"
-msgstr "Detailkopf"
+msgstr "Detail-Kopfzeile"
 
 #: lr_const.sband9
 msgid "Detail data"
-msgstr "Report entwerfen"
+msgstr "Detail-Daten"
 
 #: lr_const.sbandeditorformcapt
 msgid "Band data source"
@@ -268,7 +268,7 @@ msgstr "COPY(<String>, <Position>, <Length>)/gibt <Length> Zeichen von <String> 
 
 #: lr_const.sdescriptioncount
 #, fuzzy
-#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
+#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
 msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgstr "COUNT(<BandName>)/Liefert die Zahl der Datenreihen des angegebenen <BandName>. "
 
@@ -294,7 +294,7 @@ msgstr "FRAC(<Value>)/Ergibt den Bruchanteil der Gleitkommazahl <Value>."
 
 #: lr_const.sdescriptioninput
 #, fuzzy
-#| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string.INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+#| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Caption> [,Default])/Zeigt ein Dialogfenster mit der Überschrift <Caption> und einem Eingabefeld. Ist der Parameter [Default] gesetzt, wird dieser String im Eingabefeld eingesetzt. Drückt der Anwender OK, wird der Text im Eingabefeld zurückgeliefert."
 
@@ -1034,7 +1034,7 @@ msgstr "Alles auswählen"
 
 #: lr_const.sfrdesignerformselectsameclass
 msgid "Select same class objects"
-msgstr ""
+msgstr "Selbe Klassenobjekte auswählen"
 
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
@@ -1104,7 +1104,7 @@ msgstr "&Nach hinten anordnen"
 
 #: lr_const.sfrdesignerform_beforeprintscript
 msgid "&Before print script ..."
-msgstr ""
+msgstr "Skript vor dem Drucken ..."
 
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
