@@ -3524,8 +3524,10 @@ begin
     {Workaround: we must convert image to ARGB32 , since we can get strange
      results with RGB32 images on Linux and Win32 if DstRect <> sourceRect.
      Explanation: Look at #11713 linux & win screenshoots.
-     Note: This is slower operation than QImage_scaled() we used before.}
-    if not EqualRect(LocalRect, sourceRect^) and
+     Note: This is slower operation than QImage_scaled() we used before.
+     Issue #25590 - check if we are RGB32 and mask is nil, so make conversion
+     too.}
+    if (not EqualRect(LocalRect, sourceRect^) or (Mask = nil)) and
       (QImage_format(Image) = QImageFormat_RGB32) then
     begin
 
