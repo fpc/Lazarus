@@ -34,6 +34,7 @@ type
     class function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt; static;
     class function CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt; static;
     procedure OffsetMousePos(var Point: NSPoint);
+    procedure ScreenMousePos(var Point: NSPoint);
   public
     Owner: NSObject;
     class constructor Create;
@@ -207,6 +208,24 @@ begin
   end;
 end;
 
+procedure TLCLCommonCallback.ScreenMousePos(var Point: NSPoint);
+var f:NSRect;
+begin
+  if Owner.isKindOfClass(NSWindow) then
+    begin
+      f:=NSWindow(Owner).frame;
+      Point.x := Point.x+f.origin.x;
+      Point.y := NSWindow(Owner).screen.frame.size.height- f.origin.y - Point.y;
+    end
+  else
+  if Owner.isKindOfClass(NSView) then
+  begin
+     f:=NSView(Owner).window.frame;
+     Point.x := Point.x+f.origin.x;
+     Point.y := NSView(Owner).window.screen.frame.size.height- f.origin.y - Point.y;
+  end;
+end;
+
 class constructor TLCLCommonCallback.Create;
 begin
   PrevKeyModifiers := 0;
@@ -267,6 +286,7 @@ const
 
 var
   Msg: TLMMouse;
+  MsgContext: TLMContextMenu;
   MousePos: NSPoint;
   MButton: NSInteger;
 
@@ -317,12 +337,17 @@ begin
       NotifyApplicationUserInput(Target, Msg.Msg);
       Result := DeliverMessage(Msg) <> 0;
 
-      // TODO: 1. LM_CONTEXTMENU should be called even if PopupMenu is not assigned
-      // TODO: 2. Check if Cocoa has special context menu check event
-      if (Event.type_ = NSRightMouseDown) and (GetTarget is TControl) and Assigned(TControl(GetTarget).PopupMenu) then
+      // TODO: Check if Cocoa has special context menu check event
+      if (Event.type_ = NSRightMouseDown) and (GetTarget is TControl) then
       begin
-        Msg.Msg := LM_CONTEXTMENU;
-        Result := DeliverMessage(Msg) <> 0;
+        FillChar(MsgContext, SizeOf(MsgContext), #0);
+        MsgContext.Msg := LM_CONTEXTMENU;
+        MsgContext.hWnd := HWND(Owner);
+        MousePos := Event.locationInWindow;
+        ScreenMousePos(MousePos);
+        MsgContext.XPos := Round(MousePos.X);
+        MsgContext.YPos := Round(MousePos.Y);
+        Result := DeliverMessage(MsgContext) <> 0;
      end;
     end;
     NSLeftMouseUp,
@@ -336,7 +361,7 @@ begin
     end;
   end;
 
-//debugln('MouseUpDownEvent:'+DbgS(Msg.Msg)+' Target='+Target.name);
+//debugln('MouseUpDownEvent:'+DbgS(Msg.Msg)+' Target='+Target.name+);
 end;
 
 function TLCLCommonCallback.KeyEvent(Event: NSEvent): Boolean;
