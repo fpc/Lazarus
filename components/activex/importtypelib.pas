@@ -7,15 +7,15 @@ interface
 {$ifndef wince}
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, EditBtn,
-  StdCtrls,lazideintf,projectintf,PackageIntf;
+  StdCtrls, ButtonPanel, lazideintf, projectintf, PackageIntf, activexstrconsts,
+  LazUTF8;
 
 type
 
   { TFrmTL }
 
   TFrmTL = class(TForm)
-    BtnTLOK: TButton;
-    BtnTLCancel: TButton;
+    ButtonPanel: TButtonPanel;
     CBxTLActiveX: TCheckBox;
     CBxTLPackage: TCheckBox;
     CBxTLRecurse: TCheckBox;
@@ -24,6 +24,7 @@ type
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     procedure CBxTLActiveXChange(Sender: TObject);
     procedure CBxTLPackageChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { private declarations }
   public
@@ -39,6 +40,7 @@ procedure ImpTypeLib(Sender: TObject);
 implementation
 
 {$ifndef wince}
+
 uses typelib;
 
 procedure ImpTypeLib(Sender: TObject);
@@ -74,7 +76,7 @@ begin
             begin
             with FrmTL.SelectDirectoryDialog1 do
               begin
-              Title:='Select directory to store package '+sUnitName+'P.lpk';
+              Title:=Format(axSelectDirectoryToStorePackagePLpk, [sUnitName]);
               Execute;
               sDir:=Filename;
               end;
@@ -113,7 +115,7 @@ begin
             if slTypelibs.IndexOf(TLI.Dependencies[j])=-1 then
               slTypelibs.Add(TLI.Dependencies[j]);
         except
-          on E: Exception do ShowMessage(E.Message)
+          on E: Exception do ShowMessage(UTF16ToUTF8(E.Message));
         end;
       finally
         TLI.destroy;
@@ -138,6 +140,16 @@ procedure TFrmTL.CBxTLPackageChange(Sender: TObject);
 begin
   if CBxTLPackage.Checked then
     CBxTLActiveX.Checked:=true;
+end;
+
+procedure TFrmTL.FormCreate(Sender: TObject);
+begin
+  Caption:=axImportTypeLibrary;
+  Label1.Caption:=axFileContainingTypeLibrary;
+  CBxTLActiveX.Caption:=axCreateVisualComponentTActiveXContainerDescendant;
+  CBxTLPackage.Caption:=axCreatePackage;
+  CBxTLRecurse.Caption:=axConvertDependantTypelibs;
+  FNETL.Filter:=axTypeLibraryFilesTlbDllExeOcxOlbTlbDllExeOcxOlbAllF;
 end;
 
 {$R *.lfm}
