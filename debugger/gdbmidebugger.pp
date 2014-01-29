@@ -452,7 +452,7 @@ type
   private
     FCanKillNow, FDidKillNow: Boolean;
   protected
-    function ProcessRunning(var AStoppedParams: String; out AResult: TGDBMIExecResult): Boolean;
+    function ProcessRunning(var AStoppedParams: String; out AResult: TGDBMIExecResult; ATimeOut: Integer = 0): Boolean;
     function ParseBreakInsertError(var AText: String; out AnId: Integer): Boolean;
     function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean; virtual;
   public
@@ -687,7 +687,7 @@ type
     function  StartDebugging(AContinueCommand: TGDBMIExecCommandType): Boolean;
     function  StartDebugging(AContinueCommand: TGDBMIExecCommandType; AValues: array of const): Boolean;
     function  StartDebugging(AContinueCommand: TGDBMIDebuggerCommand = nil): Boolean;
-
+    procedure TerminateGDB;
   protected
     FNeedStateToIdle, FNeedReset: Boolean;
     {$IFDEF MSWindows}
@@ -823,6 +823,11 @@ resourcestring
   gdbmiEventLogDebugOutput = 'Debug Output: %s';
   gdbmiEventLogProcessExitNormally = 'Process Exit: normally';
   gdbmiEventLogProcessExitCode = 'Process Exit: %s';
+  gdbmiFailedToTerminateGDBTitle = 'Error: GDB did not terminate';
+  gdbmiFailedToTerminateGDB = 'The IDE was unable to terminate the GDB process. '
+    + 'This process may be left running outside the control of IDE.%0:s'
+    + 'To ensure the process is noh affecting your System, you should locate it, '
+    + 'and terminate it yourself.';
 
 
 implementation
@@ -2208,7 +2213,7 @@ end;
 { TGDBMIDebuggerCommandExecuteBase }
 
 function TGDBMIDebuggerCommandExecuteBase.ProcessRunning(var AStoppedParams: String; out
-  AResult: TGDBMIExecResult): Boolean;
+  AResult: TGDBMIExecResult; ATimeOut: Integer): Boolean;
 var
   InLogWarning: Boolean;
 
@@ -2410,9 +2415,18 @@ begin
   InLogWarning := False;
   FGotStopped := False;
   FLogWarnings := '';
-  while FTheDebugger.DebugProcessRunning do
+  while FTheDebugger.DebugProcessRunning and not(FTheDebugger.State in [dsError, dsDestroying]) do
   begin
-    S := FTheDebugger.ReadLine(50);
+    if ATimeOut > 0 then begin
+      S := FTheDebugger.ReadLine(ATimeOut);
+      if FTheDebugger.ReadLineTimedOut then begin
+        FProcessResultTimedOut := True;
+        break;
+      end;
+    end
+    else
+      S := FTheDebugger.ReadLine(50);
+
     if (S = '(gdb) ') or
        ( (S = '') and FDidKillNow )
     then
@@ -2513,22 +2527,25 @@ begin
   FTheDebugger.GDBPause(True);
   FTheDebugger.CancelAllQueued; // before ProcessStopped
   FDidKillNow := False; // allow  ProcessRunning
-  Result := ProcessRunning(StoppedParams, R);
+  Result := ProcessRunning(StoppedParams, R, 1500);
   if ProcessResultTimedOut then begin
-    // the uter Processrunning should stop, due to process no longer running
+    // the outer Processrunning should stop, due to process no longer running
     FDidKillNow := True;
-    FTheDebugger.DebugProcess.Terminate(0);
+    FTheDebugger.TerminateGDB;
+    SetDebuggerState(dsStop);
+    FTheDebugger.CancelAllQueued;  // stop queued new cmd
     Result := True;
     exit;
   end;
   FDidKillNow := True;
   if StoppedParams <> ''
   then ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
+  FTheDebugger.FPauseWaitState := pwsNone;
 
   ExecuteCommand('kill', [cfNoThreadContext], 1500);
   FTheDebugger.FCurrentStackFrameValid := False;
   FTheDebugger.FCurrentThreadIdValid   := False;
-  Result := ExecuteCommand('info program', [cfNoThreadContext], R);
+  Result := ExecuteCommand('info program', R, [cfNoThreadContext], 1500);
   Result := Result and (Pos('not being run', R.Values) > 0);
   if Result
   then SetDebuggerState(dsStop);
@@ -2859,7 +2876,7 @@ begin
   if (not CmdRes)
   or (Pos('not being run', R.Values) <= 0)
   then begin
-    FTheDebugger.DebugProcess.Terminate(0);
+    FTheDebugger.TerminateGDB;
     SetDebuggerState(dsError); // failed to stop
     exit;
   end;
@@ -7283,7 +7300,7 @@ begin
     FCurrentThreadId := 0;
     FCurrentStackFrame := 0;
     SendCmdLn('kill'); // try to kill the debugged process. bypass all queues.
-    DebugProcess.Terminate(0);
+    TerminateGDB;
   end;
   if (OldState in [dsPause, dsInternalPause]) and (State = dsRun)
   then begin
@@ -8229,7 +8246,7 @@ begin
   then begin
     // We don't know the state of the debugger,
     // force a reinit. Let's hope this works.
-    DebugProcess.Terminate(0);
+    TerminateGDB;
     Done;
     Result := True;
     Exit;
@@ -8700,6 +8717,27 @@ begin
   if not Result
   then Cmd.Cancel;
   Cmd.ReleaseReference;
+end;
+
+procedure TGDBMIDebugger.TerminateGDB;
+begin
+  AbortReadLine;
+  FPauseWaitState := pwsNone;
+  if DebugProcessRunning then begin
+    debugln(DBG_VERBOSE, ['TGDBMIDebugger.TerminateGDB ']);
+    if not DebugProcess.Terminate(0) then begin
+      if OnFeedback = nil then
+        MessageDlg(gdbmiFailedToTerminateGDBTitle,
+                   Format(gdbmiFailedToTerminateGDB, [LineEnding]), mtError, [mbOK], 0)
+      else
+        OnFeedback(Self,
+              Format(gdbmiFailedToTerminateGDB, [LineEnding]),
+              '',
+              ftError, [frOk]
+            );
+      SetState(dsError);
+    end;
+  end;
 end;
 
 {$IFDEF DBG_ENABLE_TERMINAL}
