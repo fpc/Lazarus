@@ -86,6 +86,8 @@ type
   );
   TDbgSymbolFields = set of TDbgSymbolField;
 
+  TDbgSymbol = class;
+
   { TDbgSymbolValue }
 
   TDbgSymbolValue = class(TRefCountedObject)
@@ -93,12 +95,38 @@ type
     function GetAsBool: Boolean;  virtual;
     function GetAsCardinal: QWord; virtual;
     function GetAsInteger: Int64; virtual;
+    function GetAsString: AnsiString; virtual;
+    function GetAsWideString: WideString; virtual;
+    function GetKind: TDbgSymbolKind; virtual;
+    function GetMember(AIndex: Integer): TDbgSymbolValue; virtual;
+    function GetMemberByName(AIndex: String): TDbgSymbolValue; virtual;
+    function GetMemberCount: Integer; virtual;
+    function GetDbgSymbol: TDbgSymbol; virtual;
   public
+    // Kind: determines which types of value are available
+    property Kind: TDbgSymbolKind read GetKind;
+
     property AsInteger: Int64 read GetAsInteger;
     property AsCardinal: QWord read GetAsCardinal;
     property AsBool: Boolean read GetAsBool;
-  // memdump
-    //function AsPrintable: String; virtual;
+    property AsString: AnsiString read GetAsString;
+    property AsWideString: WideString read GetAsWideString;
+    // complex
+    // double
+    // memdump / Address / Size / Memory
+  public
+    (* Member:
+       For TypeInfo (skType) it excludes BaseClass
+       For Value (skValue): ???
+    *)
+// base class? Or Member inncludes member from base
+    property MemberCount: Integer read GetMemberCount;
+    property Member[AIndex: Integer]: TDbgSymbolValue read GetMember;
+    property MemberByName[AIndex: String]: TDbgSymbolValue read GetMemberByName; // Includes inheritance
+
+    (* DbgSymbol: The TDbgSymbol from which this value came, maybe nil.
+                  Maybe a stType, then there is no Value *)
+    property DbgSymbol: TDbgSymbol read GetDbgSymbol;
   end;
 
   { TDbgSymbol }
@@ -115,7 +143,7 @@ type
     FSize: Integer;
     FTypeInfo: TDbgSymbol;
     FReference: TDbgSymbol;
-    FMemberVisibility: TDbgSymbolMemberVisibility;
+    FMemberVisibility: TDbgSymbolMemberVisibility; // Todo: not cached
 
     function GetSymbolType: TDbgSymbolType; inline;
     function GetKind: TDbgSymbolKind; inline;
@@ -182,14 +210,18 @@ type
     // stValue (Variable): Type
     // stType: Pointer: type pointed to / Array: Element Type / Func: Result / Class: itheritance
     property TypeInfo: TDbgSymbol read GetTypeInfo;
-    property MemberVisibility: TDbgSymbolMemberVisibility read GetMemberVisibility;
     // Location
     property FileName: String read GetFile;
     property Line: Cardinal read GetLine;
     property Column: Cardinal read GetColumn;
     // Methods for structures (record / class / enum)
     //         array: each member represents an index (enum or subrange) and has low/high bounds
+    property MemberVisibility: TDbgSymbolMemberVisibility read GetMemberVisibility;
     property MemberCount: Integer read GetMemberCount;
+    (* Member:
+       For TypeInfo (skType) it excludes BaseClass
+       For Value (skValue): ???
+    *)
     property Member[AIndex: Integer]: TDbgSymbol read GetMember;
     property MemberByName[AIndex: String]: TDbgSymbol read GetMemberByName; // Includes inheritance
     //
@@ -198,15 +230,16 @@ type
     // Reference: opposite of TypeInfo / The variable to which a type belongs
     property Reference: TDbgSymbol read GetReference write SetReference;
     property Parent: TDbgSymbol read GetParent; deprecated;
-    //property Children[AIndex: Integer]: TDbgSymbol read GetChild;
-    // VALUE
-    property Value: TDbgSymbolValue read GetValueObject;
-    property HasOrdinalValue: Boolean read GetHasOrdinalValue;
-    property OrdinalValue: Int64 read GetOrdinalValue; // need typecast for QuadWord
     // for Subranges
     property HasBounds: Boolean read GetHasBounds;
     property OrdLowBound: Int64 read GetOrdLowBound; // need typecast for QuadWord
     property OrdHighBound: Int64 read GetOrdHighBound; // need typecast for QuadWord
+    // VALUE
+    property Value: TDbgSymbolValue read GetValueObject;
+    property HasOrdinalValue: Boolean read GetHasOrdinalValue;
+    property OrdinalValue: Int64 read GetOrdinalValue; // need typecast for QuadWord
+
+    //TypeCastValue(AValue: TDbgSymbolValue): TDbgSymbolValue;
   end;
 
   { TDbgSymbolForwarder }
@@ -278,6 +311,41 @@ begin
 end;
 
 { TDbgSymbolValue }
+
+function TDbgSymbolValue.GetAsString: AnsiString;
+begin
+  Result := '';
+end;
+
+function TDbgSymbolValue.GetAsWideString: WideString;
+begin
+  Result := '';
+end;
+
+function TDbgSymbolValue.GetDbgSymbol: TDbgSymbol;
+begin
+  Result := nil;
+end;
+
+function TDbgSymbolValue.GetKind: TDbgSymbolKind;
+begin
+  Result := skNone;
+end;
+
+function TDbgSymbolValue.GetMember(AIndex: Integer): TDbgSymbolValue;
+begin
+  Result := nil;
+end;
+
+function TDbgSymbolValue.GetMemberByName(AIndex: String): TDbgSymbolValue;
+begin
+  Result := nil;
+end;
+
+function TDbgSymbolValue.GetMemberCount: Integer;
+begin
+  Result := 0;
+end;
 
 function TDbgSymbolValue.GetAsBool: Boolean;
 begin
