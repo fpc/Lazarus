@@ -21,7 +21,7 @@ type
     FStackFrame: Integer;
     FDebugger: TFpGDBMIDebugger;
   protected
-    function GetDbgTyeForIdentifier(AnIdent: String): TDbgSymbol; override;
+    function GetDbgSymbolForIdentifier(AnIdent: String): TDbgSymbol; override;
   public
     constructor Create(ATextExpression: String; ADebugger: TFpGDBMIDebugger; AThreadId, AStackFrame: Integer);
   end;
@@ -216,23 +216,21 @@ end;
 
 { TFpGDBMIPascalExpression }
 
-function TFpGDBMIPascalExpression.GetDbgTyeForIdentifier(AnIdent: String): TDbgSymbol;
+function TFpGDBMIPascalExpression.GetDbgSymbolForIdentifier(AnIdent: String): TDbgSymbol;
 var
   Loc: TDBGPtr;
   Ctx: TDbgInfoAddressContext;
 begin
   Result := nil;
-  if FDebugger.HasDwarf then begin
-    if AnIdent <> '' then begin
-      //Loc := FDebugger.GetLocationForContext(FThreadId, FStackFrame);
-      //if (Loc <> 0) then begin
-        Ctx := FDebugger.GetInfoContextForContext(FThreadId, FStackFrame);
-        //Ctx := FDebugger.FDwarfInfo.FindContext(Loc);
-      if Ctx <> nil then
-        Result := Ctx.FindSymbol(AnIdent);
-        //Ctx.ReleaseReference;
-      //end;
-    end;
+  if  (AnIdent <> '') and FDebugger.HasDwarf then begin
+    //Loc := FDebugger.GetLocationForContext(FThreadId, FStackFrame);
+    //if (Loc <> 0) then begin
+      Ctx := FDebugger.GetInfoContextForContext(FThreadId, FStackFrame);
+      //Ctx := FDebugger.FDwarfInfo.FindContext(Loc);
+    if Ctx <> nil then
+      Result := Ctx.FindSymbol(AnIdent);
+      //Ctx.ReleaseReference;
+    //end;
   end;
 end;
 
@@ -253,12 +251,6 @@ begin
   FInIndexOf := False;
   inherited Create;
 end;
-
-type
-  TFpPascalExpressionHack = class(TFpPascalExpression)
-  public
-    property ExpressionPart;
-  end;
 
 function TFpGDBPTypeRequestCache.IndexOf(AThreadId, AStackFrame: Integer;
   ARequest: TGDBPTypeRequest): Integer;
@@ -704,23 +696,21 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
 
       if IdentName <> '' then begin
         PasExpr := TFpGDBMIPascalExpression.Create(IdentName, FDebugger, AThreadId, AStackFrame);
-        if PasExpr.Valid then begin
-(*
-if (TFpPascalExpressionHack(PasExpr).ExpressionPart <> nil) and
-   (TFpPascalExpressionHack(PasExpr).ExpressionPart is TFpPascalExpressionPartIdentifer)
-then begin
-  PasExpr.ResultType;
-  rt := TFpPascalExpressionPartIdentifer(TFpPascalExpressionHack(PasExpr).ExpressionPart).FDbgType;
-  if (rt <> nil) then begin
+        rt := nil;
+        if PasExpr.Valid and (PasExpr.ResultValue <> nil) then begin
+          rt := PasExpr.ResultValue.DbgSymbol; // value or typecast
+//(*
+if rt <> nil then begin
   debugln(['@@@@@ ',rt.ClassName]);
-  if (rt <> nil) and (rt is TDbgDwarfValueIdentifier) then begin
+  if (rt is TDbgDwarfValueIdentifier) then begin
     DebugLn(['########### ', rt.Address ]);
-  end;end;
+  end;
 end;
-*)
-          rt := PasExpr.ResultType;
-            if (rt = nil) and (TFpPascalExpressionHack(PasExpr).ExpressionPart <> nil) then
-            rt := TFpPascalExpressionHack(PasExpr).ExpressionPart.ResultTypeCast;
+if PasExpr.ResultValue <> nil then
+      DebugLn(['== VAL === ', PasExpr.ResultValue.AsInteger, '  /  ', PasExpr.ResultValue.AsCardinal,  '  /  ', PasExpr.ResultValue.AsBool]);
+//*)
+          if (rt <> nil) and (rt is TDbgDwarfValueIdentifier) then
+            rt := rt.TypeInfo;
           if rt <> nil then begin
             AddType(IdentName, rt);
             Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
