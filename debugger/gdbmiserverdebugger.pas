@@ -120,7 +120,7 @@ begin
     exit;
   end;
 
-  // TODO: Maybe should be done in CommandStart, But Filename, and Environment will be done beforle Start
+  // TODO: Maybe should be done in CommandStart, But Filename, and Environment will be done before Start
   FSuccess := ExecuteCommand(Format('target remote %s:%s',
                              [TGDBMIServerDebuggerProperties(DebuggerProperties).FDebugger_Remote_Hostname,
                               TGDBMIServerDebuggerProperties(DebuggerProperties).Debugger_Remote_Port ]),
