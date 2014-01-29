@@ -28,8 +28,11 @@ type
       FHasCaret: Boolean;
       FTarget: TWinControl;
       FBoundsReportedToChildren: boolean;
+      FIsOpaque:boolean;
     function GetHasCaret: Boolean;
     procedure SetHasCaret(AValue: Boolean);
+    function GetIsOpaque: Boolean;
+    procedure SetIsOpaque(AValue: Boolean);
   protected
     class function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt; static;
     class function CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt; static;
@@ -59,6 +62,7 @@ type
 
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property Target: TWinControl read FTarget;
+    property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
   end;
 
   TLCLCommonCallBackClass = class of TLCLCommonCallBack;
@@ -80,6 +84,7 @@ type
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
   end;
@@ -242,6 +247,7 @@ begin
   FPropStorage.Sorted := True;
   FPropStorage.Duplicates := dupAccept;
   FBoundsReportedToChildren:=false;
+  FIsOpaque:=false;
 end;
 
 destructor TLCLCommonCallback.Destroy;
@@ -871,6 +877,7 @@ procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
   const bounds, dirty: NSRect);
 var
   PS: PPaintStruct;
+  r: TRect;
 begin
   // todo: think more about draw call while previous draw still active
   if Assigned(FContext) then
@@ -879,6 +886,13 @@ begin
   try
     if FContext.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
     begin
+       if FIsOpaque then
+          begin
+          FContext.BkMode:=OPAQUE;
+          FContext.BkColor:=Target.Color;
+          FContext.BackgroundFill(dirty);
+          end;
+
       New(PS);
       try
         FillChar(PS^, SizeOf(TPaintStruct), 0);
@@ -921,6 +935,16 @@ begin
     if Result then
       View.addCursorRect_cursor(View.visibleRect, TCocoaCursor(Screen.Cursors[ACursor]).Cursor);
   end;
+end;
+
+function TLCLCommonCallback.GetIsOpaque: Boolean;
+begin
+  Result:= FIsOpaque;
+end;
+
+procedure TLCLCommonCallback.SetIsOpaque(AValue: Boolean);
+begin
+  FIsOpaque:=AValue;
 end;
 
 { TCocoaWSWinControl }
@@ -1109,6 +1133,11 @@ begin
         NSText(Obj).setTextColor(ColorToNSColor(ColorToRGB(AFont.Color)));
     end;
   end;
+end;
+
+class procedure TCocoaWSWinControl.SetColor(const AWinControl: TWinControl);
+begin
+  invalidate(AWinControl);
 end;
 
 class procedure TCocoaWSWinControl.ShowHide(const AWinControl: TWinControl);

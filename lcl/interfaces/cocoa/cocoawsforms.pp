@@ -401,6 +401,7 @@ var
 
 
     cnt.callback := TCocoaWindow(win).callback;
+    cnt.callback.IsOpaque:=true;
     win.setContentView(cnt);
 
     if (AParams.WndParent <> 0) then
@@ -418,6 +419,7 @@ var
       begin
       NSView(APArams.WndParent).addSubView(cnt);
       cnt.window.setAcceptsMouseMovedEvents(True);
+      cnt.callback.IsOpaque:=true;
       end;
   end;
 

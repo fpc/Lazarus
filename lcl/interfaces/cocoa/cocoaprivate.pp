@@ -55,9 +55,12 @@ type
     function GetHasCaret: Boolean;
     function GetCallbackObject: TObject;
     procedure SetHasCaret(AValue: Boolean);
+    function GetIsOpaque: Boolean;
+    procedure SetIsOpaque(AValue: Boolean);
 
     // properties
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
+    property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
   end;
 
   { LCLObjectExtension }
@@ -90,6 +93,7 @@ type
   { LCLViewExtension }
 
   LCLViewExtension = objccategory(NSView)
+
     function lclInitWithCreateParams(const AParams: TCreateParams): id; message 'lclInitWithCreateParams:';
 
     function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;

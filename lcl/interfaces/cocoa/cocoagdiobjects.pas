@@ -377,6 +377,7 @@ type
     procedure Polygon(const Points: array of TPoint; NumPts: Integer; Winding: boolean);
     procedure Polyline(const Points: array of TPoint; NumPts: Integer);
     procedure Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
+    procedure BackgroundFill(dirtyRect:NSRect);
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure TextOut(X, Y: Integer; Options: Longint; Rect: PRect; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
     procedure Frame(const R: TRect);
@@ -631,21 +632,27 @@ begin
 end;
 
 procedure TCocoaColorObject.GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
+var alpha:single;
 begin
+  if FA then
+     alpha:=1
+  else
+     alpha:=0;
+
   case AROP2 of
     R2_BLACK:
     begin
       AR := 0;
       AG := 0;
       AB := 0;
-      AA := Byte(FA);
+      AA := alpha;
     end;
     R2_WHITE:
     begin
       AR := 1;
       AG := 1;
       AB := 1;
-      AA := Byte(FA);
+      AA := alpha;
     end;
     R2_NOP:
     begin
@@ -659,21 +666,21 @@ begin
       AR := 1;
       AG := 1;
       AB := 1;
-      AA := Byte(FA);
+      AA := alpha;
     end;
     R2_NOTCOPYPEN:
     begin
       AR := (255 - FR) / 255;
       AG := (255 - FG) / 255;
       AB := (255 - FB) / 255;
-      AA := Byte(FA);
+      AA := alpha;
     end;
   else // copy
     begin
       AR := FR / 255;
       AG := FG / 255;
       AB := FB / 255;
-      AA := Byte(FA);
+      AA := alpha;
     end;
   end;
 end;
@@ -964,7 +971,6 @@ end;
 
 constructor TCocoaTextLayout.Create;
 var
-  S: NSString;
   LocalPool: NSAutoReleasePool;
 begin
   inherited Create;
@@ -1647,6 +1653,20 @@ begin
     CGContextAddLCLRect(cg, X1, Y1, X2, Y2, true);
 
   CGContextStrokePath(cg);
+end;
+
+procedure TCocoaContext.BackgroundFill(dirtyRect:NSRect);
+var
+  cg: CGContextRef;
+
+begin
+  cg := CGContext;
+  if not Assigned(cg) then Exit;
+
+  FBkBrush.Apply(Self);
+
+  CGContextFillRect(cg,CGRect(dirtyRect));
+
 end;
 
 procedure TCocoaContext.Ellipse(X1, Y1, X2, Y2:Integer);
