@@ -2609,7 +2609,7 @@ begin
   ExecuteCommand('kill', [cfNoThreadContext], 1500);
   FTheDebugger.FCurrentStackFrameValid := False;
   FTheDebugger.FCurrentThreadIdValid   := False;
-  Result := ExecuteCommand('info program', [cfNoThreadContext], R);
+  Result := ExecuteCommand('info program', R, [cfNoThreadContext], 1500);
   Result := Result and (Pos('not being run', R.Values) > 0);
   if Result
   then SetDebuggerState(dsStop);
