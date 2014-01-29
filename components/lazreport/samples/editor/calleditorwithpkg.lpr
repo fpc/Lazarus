@@ -6,8 +6,7 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms,
   maincalleditor,
-  lazreportpdfexport,
-  lazreport, lrcairoexport;
+  lazreport;
 
 {$R calleditorwithpkg.res}
 
