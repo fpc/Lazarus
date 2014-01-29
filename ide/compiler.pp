@@ -135,6 +135,7 @@ type
   private
     // List of options belonging to this group.
     fCompilerOpts: TCompilerOptList;
+    function OneCharOptions(aOptAndValue: string): TCompilerOpt;
   protected
     procedure ParseEditKind; override;
   public
@@ -620,10 +621,28 @@ begin
   Result := FindOptionSub(Self);
 end;
 
+function TCompilerOptGroup.OneCharOptions(aOptAndValue: string): TCompilerOpt;
+// Split and select option characters like in -Criot.
+// Returns reference to the last option object if all characters were valid opts.
+var
+  i: Integer;
+  OptBase: String;
+begin
+  OptBase := Copy(aOptAndValue, 1, 2);
+  for i := 3 to Length(aOptAndValue) do
+  begin
+    Result := FindOption(OptBase + aOptAndValue[i]);
+    if Assigned(Result) then
+      Result.Value := 'True'
+    else
+      Exit(Nil);
+  end;
+end;
+
 function TCompilerOptGroup.SelectOption(aOptAndValue: string): Boolean;
 var
   Opt: TCompilerOpt;
-  OptStr, Param: string;
+  Param: string;
   OptLen, ParamLen: integer;
 begin
   Opt := FindOption(aOptAndValue);
@@ -634,23 +653,26 @@ begin
     // ToDo: figure out the length in a more clever way.
     if (Length(aOptAndValue) < 3) or (aOptAndValue[1] <> '-') then
       raise Exception.CreateFmt('Invalid option or value "%s".', [aOptAndValue]);
-    if aOptAndValue[2] in ['e', 'd', 'u', 'I', 'k', 'o'] then
+    if aOptAndValue[2] in ['e', 'u', 'I', 'k', 'o'] then
       OptLen := 2
     else
       OptLen := 3;
-    OptStr := Copy(aOptAndValue, 1, OptLen);
     ParamLen := Length(aOptAndValue) - OptLen;
-    if (ParamLen > 0)
+    Opt := Nil;
+    if (ParamLen > 1)
     and (aOptAndValue[OptLen+1] in ['''', '"'])
     and (aOptAndValue[Length(aOptAndValue)] in ['''', '"']) then
-    begin
-      Inc(OptLen);                // Strip quotes
-      Dec(ParamLen, 2);
+      Param := Copy(aOptAndValue, OptLen+2, ParamLen-2) // Strip quotes
+    else begin
+      Param := Copy(aOptAndValue, OptLen+1, ParamLen);
+      if OptLen = 3 then // Can contain one char options like -Criot. Can be combined.
+        Opt := OneCharOptions(aOptAndValue);
     end;
-    Param := Copy(aOptAndValue, OptLen+1, ParamLen);
-    Opt := FindOption(OptStr);
-    if Assigned(Opt) then
-      Opt.Value := Param;
+    if Opt = Nil then begin
+      Opt := FindOption(Copy(aOptAndValue, 1, OptLen));
+      if Assigned(Opt) then
+        Opt.Value := Param;
+    end;
   end;
   Result := Assigned(Opt);
 end;
@@ -707,7 +729,7 @@ begin
     Opt := TCompilerOpt(fCompilerOpts[i]);
     if Opt.Value <> '' then
       case Opt.EditKind of
-        oeSetElem: s := s + Opt.Option;
+        oeSetElem  : s := s + Opt.Option;
         oeSetNumber: s := s + Opt.Value;
       end;
   end;
@@ -1098,7 +1120,7 @@ begin
       for j := 0 to sl.Count-1 do
         if AnsiStartsStr('-d', sl[j]) then
         begin
-          if not AnsiStartsStr(CommentId, sl[j]) then
+          if (Length(sl[j]) > 2) and not AnsiStartsStr(CommentId, sl[j]) then
             fDefines.Add(sl[j])
         end
         else
