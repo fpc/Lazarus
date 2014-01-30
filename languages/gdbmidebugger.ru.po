@@ -90,6 +90,16 @@ msgstr "Завершение процесса: нормальное"
 msgid "Process Start: %s"
 msgstr "Запуск процесса: %s"
 
+#: gdbmidebugger.gdbmifailedtoterminategdb
+#| msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is noh affecting your System, you should locate it, and terminate it yourself."
+msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
+msgstr "IDE не удалось завершить процесс GDB. Теперь он может выполняться без контроля с её стороны.%0:sДля уверенности в том, что это не окажет негативного влияния на систему, вам следует найти и завершить его самостоятельно."
+
+#: gdbmidebugger.gdbmifailedtoterminategdbtitle
+#| msgid "Error: GDB did not terminate"
+msgid "GDB did not terminate"
+msgstr "Процесс GDB не завершился"
+
 #: gdbmidebugger.gdbmifatalerroroccured
 #| msgid "Unrecoverable Error: \"%s\""
 msgid "Unrecoverable error: \"%s\""

@@ -823,10 +823,10 @@ resourcestring
   gdbmiEventLogDebugOutput = 'Debug Output: %s';
   gdbmiEventLogProcessExitNormally = 'Process Exit: normally';
   gdbmiEventLogProcessExitCode = 'Process Exit: %s';
-  gdbmiFailedToTerminateGDBTitle = 'Error: GDB did not terminate';
+  gdbmiFailedToTerminateGDBTitle = 'GDB did not terminate';
   gdbmiFailedToTerminateGDB = 'The IDE was unable to terminate the GDB process. '
     + 'This process may be left running outside the control of IDE.%0:s'
-    + 'To ensure the process is noh affecting your System, you should locate it, '
+    + 'To ensure the process is not affecting your System, you should locate '
     + 'and terminate it yourself.';
 
 
