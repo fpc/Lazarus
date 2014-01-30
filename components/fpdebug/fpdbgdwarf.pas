@@ -590,13 +590,15 @@ type
   private
     FOwner: TDbgDwarfValueIdentifier; // nor refcounted
   protected
+    procedure DoReferenceAdded; override;
+    procedure DoReferenceReleased; override;
     function GetKind: TDbgSymbolKind; override;
+    function GetAddress: TDbgPtr; override;
     function GetMemberCount: Integer; override;
     function GetMemberByName(AIndex: String): TDbgSymbolValue; override;
     function GetMember(AIndex: Integer): TDbgSymbolValue; override;
     function GetDbgSymbol: TDbgSymbol; override;
   public
-    constructor Create;
     procedure SetOwner(AOwner: TDbgDwarfValueIdentifier);
 // SourceValue: TDbgSymbolValue
   end;
@@ -1653,12 +1655,34 @@ end;
 
 { TDbgDwarfSymbolValue }
 
+procedure TDbgDwarfSymbolValue.DoReferenceAdded;
+begin
+  inherited DoReferenceAdded;
+  if (FOwner <> nil) and (RefCount = 2) then
+    FOwner.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FOwner, 'TDbgDwarfSymbolValue'){$ENDIF};
+end;
+
+procedure TDbgDwarfSymbolValue.DoReferenceReleased;
+begin
+  inherited DoReferenceReleased;
+  if (FOwner <> nil) and (RefCount = 1) then
+    FOwner.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FOwner, 'TDbgDwarfSymbolValue'){$ENDIF};
+end;
+
 function TDbgDwarfSymbolValue.GetKind: TDbgSymbolKind;
 begin
   if FOwner <> nil then
     Result := FOwner.Kind
   else
     Result := inherited GetKind;
+end;
+
+function TDbgDwarfSymbolValue.GetAddress: TDbgPtr;
+begin
+  if FOwner <> nil then
+    Result := FOwner.Address
+  else
+    Result := inherited GetAddress;
 end;
 
 function TDbgDwarfSymbolValue.GetMemberCount: Integer;
@@ -1698,15 +1722,15 @@ begin
   Result := FOwner;
 end;
 
-constructor TDbgDwarfSymbolValue.Create;
-begin
-  inherited Create;
-  AddReference;
-end;
-
 procedure TDbgDwarfSymbolValue.SetOwner(AOwner: TDbgDwarfValueIdentifier);
 begin
+  if FOwner = AOwner then
+    exit;
+  if (FOwner <> nil) and (RefCount >= 2) then
+    FOwner.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FOwner, 'TDbgDwarfSymbolValue'){$ENDIF};
   FOwner := AOwner;
+  if (FOwner <> nil) and (RefCount >= 2) then
+    FOwner.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FOwner, 'TDbgDwarfSymbolValue'){$ENDIF};
 end;
 
 { TDbgDwarfIdentifierParameter }
@@ -4418,6 +4442,7 @@ begin
   Result := False;
   if InheritedLoc then begin
     // TODO, only keep address, if failed because there was no tag.
+    // LocationFromTag calls InitLocationParser, whirh calls interited GetStructureBaseAddress
     if LocationFromTag(DW_AT_data_member_location, t) then begin
       AnAddress := t;
       Result := True;

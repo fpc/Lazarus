@@ -91,20 +91,30 @@ type
   { TDbgSymbolValue }
 
   TDbgSymbolValue = class(TRefCountedObject)
+  private
   protected
+    function GetKind: TDbgSymbolKind; virtual;
     function GetAsBool: Boolean;  virtual;
     function GetAsCardinal: QWord; virtual;
     function GetAsInteger: Int64; virtual;
     function GetAsString: AnsiString; virtual;
     function GetAsWideString: WideString; virtual;
-    function GetKind: TDbgSymbolKind; virtual;
+
+    function GetAddress: TDbgPtr;  virtual;
+    function GetSize: Integer;  virtual;
+    function GetDataAddress: TDbgPtr;  virtual;
+    function GetDataSize: Integer;  virtual;
+
     function GetMember(AIndex: Integer): TDbgSymbolValue; virtual;
     function GetMemberByName(AIndex: String): TDbgSymbolValue; virtual;
     function GetMemberCount: Integer; virtual;
     function GetDbgSymbol: TDbgSymbol; virtual;
+    function GetTypeInfo: TDbgSymbol; virtual;
   public
+    constructor Create;
     // Kind: determines which types of value are available
     property Kind: TDbgSymbolKind read GetKind;
+    // AvailableInfo: set of (svInteger, svCardinal... svAddress);
 
     property AsInteger: Int64 read GetAsInteger;
     property AsCardinal: QWord read GetAsCardinal;
@@ -113,7 +123,12 @@ type
     property AsWideString: WideString read GetAsWideString;
     // complex
     // double
-    // memdump / Address / Size / Memory
+
+    property Address: TDbgPtr read GetAddress;     // Address of variable
+    property Size: Integer read GetSize;           // Size of variable
+    property DataAddress: TDbgPtr read GetDataAddress; // Address of Data, if avail (e.g. String, TObject, ..., BUT NOT record)
+    property DataSize: Integer read GetDataSize;       // Sive of Data, if avail (e.g. String, TObject, ..., BUT NOT record)
+    // memdump
   public
     (* Member:
        For TypeInfo (skType) it excludes BaseClass
@@ -127,6 +142,7 @@ type
     (* DbgSymbol: The TDbgSymbol from which this value came, maybe nil.
                   Maybe a stType, then there is no Value *)
     property DbgSymbol: TDbgSymbol read GetDbgSymbol;
+    property TypeInfo: TDbgSymbol read GetTypeInfo;
   end;
 
   { TDbgSymbol }
@@ -239,7 +255,7 @@ type
     property HasOrdinalValue: Boolean read GetHasOrdinalValue;
     property OrdinalValue: Int64 read GetOrdinalValue; // need typecast for QuadWord
 
-    //TypeCastValue(AValue: TDbgSymbolValue): TDbgSymbolValue;
+    //function TypeCastValue(AValue: TDbgSymbolValue): TDbgSymbolValue;
   end;
 
   { TDbgSymbolForwarder }
@@ -327,6 +343,20 @@ begin
   Result := nil;
 end;
 
+constructor TDbgSymbolValue.Create;
+begin
+  inherited Create;
+  AddReference;
+end;
+
+function TDbgSymbolValue.GetTypeInfo: TDbgSymbol;
+begin
+  if (DbgSymbol <> nil) and (DbgSymbol.SymbolType = stValue) then
+    Result := DbgSymbol.TypeInfo
+  else
+    Result := nil;
+end;
+
 function TDbgSymbolValue.GetKind: TDbgSymbolKind;
 begin
   Result := skNone;
@@ -343,6 +373,26 @@ begin
 end;
 
 function TDbgSymbolValue.GetMemberCount: Integer;
+begin
+  Result := 0;
+end;
+
+function TDbgSymbolValue.GetAddress: TDbgPtr;
+begin
+  Result := 0;
+end;
+
+function TDbgSymbolValue.GetDataAddress: TDbgPtr;
+begin
+  Result := 0;
+end;
+
+function TDbgSymbolValue.GetDataSize: Integer;
+begin
+  Result := 0;
+end;
+
+function TDbgSymbolValue.GetSize: Integer;
 begin
   Result := 0;
 end;
