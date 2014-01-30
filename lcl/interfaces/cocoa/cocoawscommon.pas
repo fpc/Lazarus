@@ -886,7 +886,7 @@ begin
   try
     if FContext.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
     begin
-       if FIsOpaque then
+       if FIsOpaque and (Target.Color<>clDefault) then
           begin
           FContext.BkMode:=OPAQUE;
           FContext.BkColor:=Target.Color;
