@@ -39,6 +39,7 @@ type
     procedure MouseClick;
     function MouseMove(Event: NSEvent): Boolean;
     function KeyEvent(Event: NSEvent): Boolean;
+    function scrollWheel(Event: NSEvent): Boolean;
     // size, pos events
     procedure frameDidChange;
     procedure boundsDidChange;
@@ -327,6 +328,7 @@ type
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
+    procedure scrollWheel(event: NSEvent); override;
     procedure sendEvent(event: NSEvent); override;
     function lclIsHandle: Boolean; override;
   end;
@@ -353,6 +355,7 @@ type
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
+    procedure scrollWheel(event: NSEvent); override;
     // key
     procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
@@ -929,6 +932,12 @@ begin
     inherited mouseMoved(event);
 end;
 
+procedure TCocoaWindow.scrollWheel(event: NSEvent);
+begin
+if not Assigned(callback) or not callback.scrollWheel(event) then
+  inherited scrollWheel(event);
+end;
+
 procedure TCocoaWindow.sendEvent(event: NSEvent);
 var
   Message: NSMutableDictionary;
@@ -1403,6 +1412,12 @@ procedure TCocoaCustomControl.mouseMoved(event: NSEvent);
 begin
 if not Assigned(callback) or not callback.MouseMove(event) then
   inherited mouseMoved(event);
+end;
+
+procedure TCocoaCustomControl.scrollWheel(event: NSEvent);
+begin
+if not Assigned(callback) or not callback.scrollWheel(event) then
+  inherited scrollWheel(event);
 end;
 
 procedure TCocoaCustomControl.keyDown(event: NSEvent);
