@@ -84,6 +84,14 @@ msgstr ""
 msgid "Process Start: %s"
 msgstr ""
 
+#: gdbmidebugger.gdbmifailedtoterminategdb
+msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
+msgstr ""
+
+#: gdbmidebugger.gdbmifailedtoterminategdbtitle
+msgid "GDB did not terminate"
+msgstr ""
+
 #: gdbmidebugger.gdbmifatalerroroccured
 msgid "Unrecoverable error: \"%s\""
 msgstr "Критична помилка: \"%s\""

@@ -93,6 +93,14 @@ msgstr "Término do Processo: normal"
 msgid "Process Start: %s"
 msgstr "Início do Processo: %s"
 
+#: gdbmidebugger.gdbmifailedtoterminategdb
+msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
+msgstr ""
+
+#: gdbmidebugger.gdbmifailedtoterminategdbtitle
+msgid "GDB did not terminate"
+msgstr ""
+
 #: gdbmidebugger.gdbmifatalerroroccured
 #| msgid "Unrecoverable Error: \"%s\""
 msgid "Unrecoverable error: \"%s\""
