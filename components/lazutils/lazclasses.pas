@@ -25,7 +25,7 @@ type
 
   TRefCountedObject = class(TFreeNotifyingObject)
   private
-    FRefCount: Integer;
+    FRefCount, FInDecRefCount: Integer;
     {$IFDEF WITH_REFCOUNT_DEBUG}
     FDebugList: TStringList;
     FInDestroy: Boolean;
@@ -162,6 +162,7 @@ end;
 constructor TRefCountedObject.Create;
 begin
   FRefCount := 0;
+  FInDecRefCount := 0;
   {$IFDEF WITH_REFCOUNT_DEBUG}
   if FDebugList = nil then
     FDebugList := TStringList.Create;
@@ -172,7 +173,7 @@ end;
 destructor TRefCountedObject.Destroy;
 begin
   {$IFDEF WITH_REFCOUNT_DEBUG}
-  FDebugList.Free;
+  FreeAndNil(FDebugList);
   {$ENDIF}
   Assert(FRefcount = 0, 'Destroying referenced object');
   inherited;
@@ -185,11 +186,18 @@ begin
   DbgRemoveName(DebugIdAdr, DebugIdTxt);
   {$ENDIF}
   Assert(FRefCount > 0, 'TRefCountedObject.ReleaseReference  RefCount > 0');
+
   Dec(FRefCount);
+  inc(FInDecRefCount);
   // call only if overridden
+
+  // Do not check for RefCount = 0, since this was done, by whoever decreased it;
   If TMethod(@DoReferenceReleased).Code <> Pointer(@TRefCountedObject.DoReferenceReleased) then
     DoReferenceReleased;
-  if FRefCount = 0 then DoFree;
+
+  dec(FInDecRefCount);
+  if (FRefCount = 0) and (FInDecRefCount = 0) then
+    DoFree;
 end;
 
 {$IFDEF WITH_REFCOUNT_DEBUG}
