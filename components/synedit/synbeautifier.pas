@@ -1490,7 +1490,6 @@ begin
     else
       y := ACaret.LinePos + 1;
 
-
     GetIndentInfo(y, s, Indent);
 
     if s <> '' then begin;
@@ -1632,12 +1631,14 @@ begin
       end;
     sbitConvertToTabSpace:
       begin
+        IndentCharsFromLinePos := 0;
         Result := CreateTabSpaceMix(Indent, False);
         exit;
         if not ModifyIndent then Indent := OrigIndent;
       end;
     sbitConvertToTabOnly:
       begin
+        IndentCharsFromLinePos := 0;
         Result := CreateTabSpaceMix(Indent, True);
         if not ModifyIndent then Indent := OrigIndent;
         exit;
