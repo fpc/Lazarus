@@ -10,6 +10,38 @@ uses
 type
   TDbgPtr = QWord; // PtrUInt;
 
+  { TFpDbgCircularRefCountedObject }
+
+  TFpDbgCircularRefCountedObject = class(TRefCountedObject)
+  private
+    FCircleRefCount: Integer;
+  protected
+    (* InOrder to activate, and use an interited class must override
+       DoReferenceAdded; and DoReferenceReleased;
+       And Point then to
+       DoPlainReferenceAdded; and DoPlainReferenceReleased;
+    *)
+    procedure DoPlainReferenceAdded; inline;
+    procedure DoPlainReferenceReleased; inline;
+
+    procedure AddCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
+    procedure ReleaseCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
+
+    procedure MakePlainRefToCirclular;
+    procedure MakeCirclularRefToPlain;
+
+    function  CircleBackRefsActive: Boolean; inline;
+    procedure CircleBackRefActiveChanged(NewActive: Boolean); virtual;
+  end;
+
+  { TFpDbgCircularRefCntObjList }
+
+  TFpDbgCircularRefCntObjList = class(TRefCntObjList)
+  protected
+    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+  end;
+
+
   TFpDbgMemReaderBase = class
   public
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual; abstract;
@@ -147,7 +179,7 @@ type
 
   { TDbgSymbol }
 
-  TDbgSymbol = class(TRefCountedObject)
+  TDbgSymbol = class(TFpDbgCircularRefCountedObject)
   private
     FEvaluatedFields: TDbgSymbolFields;
 
@@ -319,6 +351,83 @@ function dbgs(ADbgSymbolKind: TDbgSymbolKind): String;
 begin
   Result := '';
   WriteStr(Result, ADbgSymbolKind);
+end;
+
+{ TFpDbgCircularRefCountedObject }
+
+procedure TFpDbgCircularRefCountedObject.DoPlainReferenceAdded;
+begin
+  if (RefCount = FCircleRefCount + 1) then
+    CircleBackRefActiveChanged(True);
+end;
+
+procedure TFpDbgCircularRefCountedObject.DoPlainReferenceReleased;
+begin
+  if (RefCount = FCircleRefCount) then
+    CircleBackRefActiveChanged(False);
+end;
+
+procedure TFpDbgCircularRefCountedObject.AddCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
+begin
+  if CircleBackRefsActive then begin
+    AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
+    inc(FCircleRefCount);
+  end
+  else begin
+    inc(FCircleRefCount);
+    AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
+  end;
+end;
+
+procedure TFpDbgCircularRefCountedObject.ReleaseCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
+begin
+  Assert(FCircleRefCount > 0, 'ReleaseCirclularReference > 0');
+  if CircleBackRefsActive then begin
+    dec(FCircleRefCount);
+    ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
+  end
+  else begin
+    ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
+    dec(FCircleRefCount);
+  end;
+end;
+
+procedure TFpDbgCircularRefCountedObject.MakePlainRefToCirclular;
+begin
+  Assert(FCircleRefCount < RefCount, 'MakePlainRefToCirclular < max');
+  inc(FCircleRefCount);
+  if (RefCount = FCircleRefCount) then
+    CircleBackRefActiveChanged(False);
+end;
+
+procedure TFpDbgCircularRefCountedObject.MakeCirclularRefToPlain;
+begin
+  Assert(FCircleRefCount > 0, 'MakeCirclularRefToPlain > 0');
+  dec(FCircleRefCount);
+  if (RefCount = FCircleRefCount + 1) then
+    CircleBackRefActiveChanged(True);
+end;
+
+function TFpDbgCircularRefCountedObject.CircleBackRefsActive: Boolean;
+begin
+  Result := (RefCount > FCircleRefCount);
+end;
+
+procedure TFpDbgCircularRefCountedObject.CircleBackRefActiveChanged(NewActive: Boolean);
+begin
+  //
+end;
+
+{ TFpDbgCircularRefCntObjList }
+
+procedure TFpDbgCircularRefCntObjList.Notify(Ptr: Pointer; Action: TListNotification);
+begin
+  // Do NOT call inherited
+  case Action of
+    lnAdded:   TFpDbgCircularRefCountedObject(Ptr).AddCirclularReference;
+    lnExtracted,
+    lnDeleted: TFpDbgCircularRefCountedObject(Ptr).ReleaseCirclularReference;
+  end;
 end;
 
 { TDbgSymbolValue }

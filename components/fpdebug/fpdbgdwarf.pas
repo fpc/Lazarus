@@ -658,7 +658,6 @@ type
 //    FOwnerTypeInfo: TDbgDwarfIdentifier;
     FNestedTypeInfo: TDbgDwarfTypeIdentifier;
     FParentTypeInfo: TDbgDwarfIdentifier;
-    FRefByParentCount: Integer;
     FDwarfReadFlags: set of (didtNameRead, didtTypeRead, didtArtificialRead, didtIsArtifical);
     function GetNestedTypeInfo: TDbgDwarfTypeIdentifier;
   protected
@@ -666,10 +665,7 @@ type
        "self" will only set its reference to parenttype, if self has other references.  *)
     procedure DoReferenceAdded; override;
     procedure DoReferenceReleased; override;
-    procedure IncRefByParentCount;
-    procedure DecRefByParentCount;
-    function  RefToParentActive: Boolean; inline;
-    procedure RefToParentChanged; virtual;
+    procedure CircleBackRefActiveChanged(ANewActive: Boolean); override;
     procedure SetParentTypeInfo(AValue: TDbgDwarfIdentifier); virtual;
 
     function  DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier; virtual;
@@ -687,7 +683,7 @@ type
 
   protected
 // TODO: InitLocationParser may fail
-    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TDbgPtr = nil); virtual;
+    procedure InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression; {%H-}AnObjectDataAddress: TDbgPtr = nil); virtual;
     function  LocationFromTag(ATag: Cardinal; out AnAddress: TDbgPtr;
                               AnObjectDataAddress: TDbgPtr = 0;
                               AnInformationEntry: TDwarfInformationEntry = nil
@@ -711,6 +707,7 @@ type
   TDbgDwarfValueIdentifier = class(TDbgDwarfIdentifier) // var, const, member, ...
   protected
     FValueObject: TDbgDwarfSymbolValue;
+    FMembers: TFpDbgCircularRefCntObjList;
 
     function GetDataAddress(out AnAddress: TDbgPtr; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; reintroduce;
     procedure KindNeeded; override;
@@ -906,7 +903,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   TDbgDwarfIdentifierEnum = class(TDbgDwarfTypeIdentifier)
   private
-    FMembers: TRefCntObjList;
+    FMembers: TFpDbgCircularRefCntObjList;
     procedure CreateMembers;
   protected
     procedure KindNeeded; override;
@@ -969,7 +966,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TDbgPtr = nil); override;
     procedure AddressNeeded; override;
-    procedure RefToParentChanged; override;
+    procedure CircleBackRefActiveChanged(ANewActive: Boolean); override;
     procedure SetParentTypeInfo(AValue: TDbgDwarfIdentifier); override;
   public
     destructor Destroy; override;
@@ -981,7 +978,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TDbgDwarfIdentifierStructure = class(TDbgDwarfTypeIdentifier)
   // record or class
   private
-    FMembers: TRefCntObjList;
+    FMembers: TFpDbgCircularRefCntObjList;
     FLastChildByName: TDbgDwarfIdentifier;
     FInheritanceInfo: TDwarfInformationEntry;
     procedure CreateMembers;
@@ -1005,7 +1002,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   TDbgDwarfIdentifierArray = class(TDbgDwarfTypeIdentifier)
   private
-    FMembers: TRefCntObjList;
+    FMembers: TFpDbgCircularRefCntObjList;
     procedure CreateMembers;
   protected
     procedure KindNeeded; override;
@@ -1810,12 +1807,12 @@ procedure TDbgDwarfIdentifierMember.SetStructureValueInfo(AValue: TDbgDwarfValue
 begin
   if FStructureValueInfo = AValue then Exit;
 
-  if (FStructureValueInfo <> nil) and RefToParentActive then
+  if (FStructureValueInfo <> nil) and CircleBackRefsActive then
     FStructureValueInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValueInfo, 'FStructureValueInfo'){$ENDIF};
 
   FStructureValueInfo := AValue;
 
-  if (FStructureValueInfo <> nil) and RefToParentActive then
+  if (FStructureValueInfo <> nil) and CircleBackRefsActive then
     FStructureValueInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValueInfo, 'FStructureValueInfo'){$ENDIF};
 end;
 
@@ -1854,12 +1851,12 @@ DebugLnEnter(['>>> TDbgDwarfIdentifierMember.AddressNeeded ']);
 DebugLnExit(['<<< ',t]);
 end;
 
-procedure TDbgDwarfIdentifierMember.RefToParentChanged;
+procedure TDbgDwarfIdentifierMember.CircleBackRefActiveChanged(ANewActive: Boolean);
 begin
-  inherited RefToParentChanged;
+  inherited;
   if (FStructureValueInfo = nil) then
     exit;
-  if RefToParentActive then
+  if ANewActive then
     FStructureValueInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValueInfo, 'FStructureValueInfo'){$ENDIF}
   else
     FStructureValueInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValueInfo, 'FStructureValueInfo'){$ENDIF};
@@ -1874,8 +1871,8 @@ end;
 
 destructor TDbgDwarfIdentifierMember.Destroy;
 begin
-  if RefToParentActive then
-    FStructureValueInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValueInfo, 'FStructureValueInfo'){$ENDIF};
+  Assert(not CircleBackRefsActive, 'CircleBackRefsActive can not be is ddestructor');
+  // FStructureValueInfo := nil;
   inherited Destroy;
 end;
 
@@ -4027,7 +4024,7 @@ var
 begin
   if FMembers <> nil then
     exit;
-  FMembers := TRefCntObjList.Create;
+  FMembers := TFpDbgCircularRefCntObjList.Create;
   Info := FInformationEntry.FirstChild;
   if Info = nil then exit;
 
@@ -4037,7 +4034,6 @@ begin
       sym := TDbgDwarfIdentifier.CreateSubClass('', Info2);
       FMembers.Add(sym);
       sym.ReleaseReference;
-      sym.IncRefByParentCount;
       sym.ParentTypeInfo := self;
       Info2.ReleaseReference;
     end;
@@ -4115,14 +4111,10 @@ destructor TDbgDwarfIdentifierEnum.Destroy;
 var
   i: Integer;
 begin
-  if FMembers <> nil then begin
+  if FMembers <> nil then
     for i := 0 to FMembers.Count - 1 do
-      with TDbgDwarfIdentifier(FMembers[i]) do begin
-        ParentTypeInfo := nil;
-        DecRefByParentCount;
-      end;
-    FreeAndNil(FMembers);
-  end;
+      TDbgDwarfIdentifier(FMembers[i]).ParentTypeInfo := nil;
+  FreeAndNil(FMembers);
   inherited Destroy;
 end;
 
@@ -4343,8 +4335,12 @@ begin
   else
     Result := inherited GetMember(AIndex);
 
-  if Result is TDbgDwarfIdentifierMember then
+  if (Result <> nil) and (Result is TDbgDwarfIdentifierMember) then begin
+    if FMembers = nil then
+      FMembers := TFpDbgCircularRefCntObjList.Create;
+    FMembers.Add(Result);
     TDbgDwarfIdentifierMember(Result).StructureValueInfo := Self;
+  end;
 end;
 
 function TDbgDwarfValueIdentifier.GetMemberByName(AIndex: String): TDbgSymbol;
@@ -4357,8 +4353,12 @@ begin
   else
     Result := inherited GetMemberByName(AIndex);
 
-  if Result is TDbgDwarfIdentifierMember then
+  if (Result <> nil) and (Result is TDbgDwarfIdentifierMember) then begin
+    if FMembers = nil then
+      FMembers := TFpDbgCircularRefCntObjList.Create;
+    FMembers.Add(Result);
     TDbgDwarfIdentifierMember(Result).StructureValueInfo := Self;
+  end;
 end;
 
 function TDbgDwarfValueIdentifier.GetMemberCount: Integer;
@@ -4379,7 +4379,13 @@ begin
 end;
 
 destructor TDbgDwarfValueIdentifier.Destroy;
+var
+  i: Integer;
 begin
+  if FMembers <> nil then
+    for i := 0 to FMembers.Count - 1 do
+      TDbgDwarfIdentifierMember(FMembers[i]).StructureValueInfo := nil;
+  FreeAndNil(FMembers);
   if FValueObject <> nil then begin
     FValueObject.SetOwner(nil);
     ReleaseRefAndNil(FValueObject);
@@ -4411,7 +4417,7 @@ var
 begin
   if FMembers <> nil then
     exit;
-  FMembers := TRefCntObjList.Create;
+  FMembers := TFpDbgCircularRefCntObjList.Create;
 
   Info := FInformationEntry.FirstChild;
   if Info = nil then exit;
@@ -4423,7 +4429,6 @@ begin
       sym := TDbgDwarfIdentifier.CreateSubClass('', Info2);
       FMembers.Add(sym);
       sym.ReleaseReference;
-      sym.IncRefByParentCount;
       sym.ParentTypeInfo := self;
       Info2.ReleaseReference;
     end;
@@ -4490,10 +4495,7 @@ var
 begin
   if FMembers <> nil then begin
     for i := 0 to FMembers.Count - 1 do
-      with TDbgDwarfIdentifier(FMembers[i]) do begin
-        ParentTypeInfo := nil;
-        DecRefByParentCount;
-      end;
+      TDbgDwarfIdentifier(FMembers[i]).ParentTypeInfo := nil;
     FreeAndNil(FMembers);
   end;
   inherited Destroy;
@@ -4509,15 +4511,15 @@ begin
   // Todo, maybe create all children?
   if FLastChildByName <> nil then begin
     FLastChildByName.ParentTypeInfo := nil;
-    FLastChildByName.DecRefByParentCount;
-    ReleaseRefAndNil(FLastChildByName);
+    FLastChildByName.ReleaseCirclularReference;
+    FLastChildByName := nil;
   end;
   Result := nil;
 
   Ident := FInformationEntry.FindNamedChild(AIndex);
   if Ident <> nil then begin
     FLastChildByName := TDbgDwarfIdentifier.CreateSubClass('', Ident);
-    FLastChildByName.IncRefByParentCount;
+    FLastChildByName.MakePlainRefToCirclular;
     FLastChildByName.ParentTypeInfo := self;
     //assert is member ?
     ReleaseRefAndNil(Ident);
@@ -4539,8 +4541,6 @@ end;
 
 procedure TDbgDwarfIdentifierStructure.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
   AnObjectDataAddress: TDbgPtr);
-var
-  t: TDbgPtr;
 begin
   inherited InitLocationParser(ALocationParser, AnObjectDataAddress);
 
@@ -4593,16 +4593,13 @@ begin
   ReleaseRefAndNil(FInheritanceInfo);
   if FMembers <> nil then begin
     for i := 0 to FMembers.Count - 1 do
-      with TDbgDwarfIdentifier(FMembers[i]) do begin
-        ParentTypeInfo := nil;
-        DecRefByParentCount;
-      end;
+      TDbgDwarfIdentifier(FMembers[i]).ParentTypeInfo := nil;
     FreeAndNil(FMembers);
   end;
   if FLastChildByName <> nil then begin
     FLastChildByName.ParentTypeInfo := nil;
-    FLastChildByName.DecRefByParentCount;
-    ReleaseRefAndNil(FLastChildByName);
+    FLastChildByName.ReleaseCirclularReference;
+    FLastChildByName := nil;
   end;
   inherited Destroy;
 end;
@@ -4615,7 +4612,7 @@ var
 begin
   if FMembers <> nil then
     exit;
-  FMembers := TRefCntObjList.Create;
+  FMembers := TFpDbgCircularRefCntObjList.Create;
   Info := FInformationEntry.Clone;
   Info.GoChild;
 
@@ -4625,7 +4622,6 @@ begin
       sym := TDbgDwarfIdentifier.CreateSubClass('', Info2);
       FMembers.Add(sym);
       sym.ReleaseReference;
-      sym.IncRefByParentCount;
       sym.ParentTypeInfo := self;
       Info2.ReleaseReference;
     end;
@@ -4832,8 +4828,6 @@ begin
 
   include(FDwarfReadFlags, didtTypeRead);
   FNestedTypeInfo := DoGetNestedTypeInfo;
-//  if FNestedTypeInfo <> nil then
-//    FNestedTypeInfo.FOwnerTypeInfo := Self;
   Result := FNestedTypeInfo;
 end;
 
@@ -4841,57 +4835,32 @@ procedure TDbgDwarfIdentifier.SetParentTypeInfo(AValue: TDbgDwarfIdentifier);
 begin
   if FParentTypeInfo = AValue then exit;
 
-  if (FParentTypeInfo <> nil) and RefToParentActive then
+  if (FParentTypeInfo <> nil) and CircleBackRefsActive then
     FParentTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
 
   FParentTypeInfo := AValue;
 
-  if (FParentTypeInfo <> nil) and RefToParentActive then
+  if (FParentTypeInfo <> nil) and CircleBackRefsActive then
     FParentTypeInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
 end;
 
 procedure TDbgDwarfIdentifier.DoReferenceAdded;
 begin
   inherited DoReferenceAdded;
-  if (RefCount = FRefByParentCount + 1) and (FParentTypeInfo <> nil) then
-    RefToParentChanged;
-    //FParentTypeInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
+  DoPlainReferenceAdded;
 end;
 
 procedure TDbgDwarfIdentifier.DoReferenceReleased;
 begin
   inherited DoReferenceReleased;
-  if (RefCount = FRefByParentCount) and (FParentTypeInfo <> nil) then
-    RefToParentChanged;
-    //FParentTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
+  DoPlainReferenceReleased;
 end;
 
-procedure TDbgDwarfIdentifier.IncRefByParentCount;
-begin
-  inc(FRefByParentCount);
-  if (RefCount = FRefByParentCount) and (FParentTypeInfo <> nil) then
-    RefToParentChanged;
-    //FParentTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
-end;
-
-procedure TDbgDwarfIdentifier.DecRefByParentCount;
-begin
-  dec(FRefByParentCount);
-  if (RefCount = FRefByParentCount + 1) and (FParentTypeInfo <> nil) then
-    RefToParentChanged;
-    //FParentTypeInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
-end;
-
-function TDbgDwarfIdentifier.RefToParentActive: Boolean;
-begin
-  Result := (RefCount > FRefByParentCount);
-end;
-
-procedure TDbgDwarfIdentifier.RefToParentChanged;
+procedure TDbgDwarfIdentifier.CircleBackRefActiveChanged(ANewActive: Boolean);
 begin
   if (FParentTypeInfo = nil) then
     exit;
-  if RefToParentActive then
+  if ANewActive then
     FParentTypeInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF}
   else
     FParentTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
@@ -5098,12 +5067,8 @@ begin
   inherited Destroy;
   ReleaseRefAndNil(FInformationEntry);
   ReleaseRefAndNil(FNestedTypeInfo);
-  if RefToParentActive then
-    FParentTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FParentTypeInfo, 'FParentTypeInfo'){$ENDIF};
-//  if FNestedTypeInfo <> nil then begin
-//    assert((FNestedTypeInfo.FOwnerTypeInfo = nil) or (FNestedTypeInfo.FOwnerTypeInfo= self), 'FNestedTypeInfo.FOwnerTypeInfo is nil or self');
-//    FNestedTypeInfo.FOwnerTypeInfo := nil;
-//  end;
+  Assert(not CircleBackRefsActive, 'CircleBackRefsActive can not be is ddestructor');
+  // FParentTypeInfo := nil
 end;
 
 function TDbgDwarfIdentifier.StartScope: TDbgPtr;
@@ -5181,7 +5146,6 @@ begin
   FreeAndNil(FStateMachine);
   if FSelfParameter <> nil then begin
     FSelfParameter.ParentTypeInfo := nil;
-    FSelfParameter.DecRefByParentCount;
     FSelfParameter.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSelfParameter, 'FSelfParameter'){$ENDIF};
   end;
   inherited Destroy;
@@ -5340,10 +5304,7 @@ begin
       then begin
         Result := TDbgDwarfValueIdentifier.CreateValueSubClass('self', InfoEntry);
         FSelfParameter := Result;
-        {$IFDEF WITH_REFCOUNT_DEBUG} // Rename the ref
-        FSelfParameter.AddReference(@FSelfParameter, 'FSelfParameter'); FSelfParameter.ReleaseReference;
-        {$ENDIF}
-        //FSelfParameter.IncRefByParentCount;
+        {$IFDEF WITH_REFCOUNT_DEBUG}FSelfParameter.DbgRenameReference(@FSelfParameter, 'FSelfParameter');{$ENDIF}
         //FSelfParameter.ParentTypeInfo := Self;
         debugln(['TDbgDwarfProcSymbol.GetSelfParameter ', dbgs(InfoEntry.FScope, FCU), DbgSName(Result)]);
       end;
@@ -5873,7 +5834,7 @@ var
   Attrib: Pointer;
   Form: Cardinal;
   Info: TDwarfAddressInfo;
-  Scope, ResultScope: TDwarfScopeInfo;
+  Scope: TDwarfScopeInfo;
   ScopeIdx: Integer;
   Abbrev: TDwarfAbbrev;
 begin
