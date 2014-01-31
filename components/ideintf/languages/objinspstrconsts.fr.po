@@ -1,4 +1,4 @@
-msgid ""
+﻿msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
@@ -509,7 +509,7 @@ msgstr ""
 
 #: objinspstrconsts.oisevents
 msgid "Events"
-msgstr "Evènements"
+msgstr "Evénements"
 
 #: objinspstrconsts.oisfavorites
 msgid "Favorites"

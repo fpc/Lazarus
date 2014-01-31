@@ -1,4 +1,4 @@
-msgid ""
+﻿msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
@@ -11665,7 +11665,7 @@ msgstr "Classe de la méthode introuvable"
 
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
-msgstr "Evènement manquants"
+msgstr "Evénement manquants"
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
