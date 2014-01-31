@@ -1198,6 +1198,7 @@ var
   sl: TStringList;
 begin
   Result := mrOK;
+  fCurOrigLine := 0;
   fRootOptGroup.DeselectAll;
   fDefines.Clear;
   fInvalidOptions.Clear;
@@ -1206,7 +1207,6 @@ begin
     // Separate options that are on one line.
     for i := 0 to aStrings.Count-1 do
     begin
-      fCurOrigLine := i;
       s := Trim(aStrings[i]);
       if s = '' then Continue;
       sl.Clear;
@@ -1222,6 +1222,7 @@ begin
         else
           if not fRootOptGroup.SelectOption(s) then
             fInvalidOptions.AddObject(s, TObject(Pointer(i)));
+        Inc(fCurOrigLine);
       end;
     end;
   finally
