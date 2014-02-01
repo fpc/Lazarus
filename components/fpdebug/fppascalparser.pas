@@ -90,7 +90,7 @@ type
     function DebugDump(AIndent: String): String; virtual;
   protected
     procedure Init; virtual;
-    function  DoGetIsTypeCast: Boolean; virtual;
+    function  DoGetIsTypeCast: Boolean; virtual; deprecated;
     function  DoGetResultValue: TDbgSymbolValue; virtual;
 
     Procedure ReplaceInParent(AReplacement: TFpPascalExpressionPart);
@@ -216,7 +216,7 @@ type
   // function arguments or type cast // this acts a operator: first element is the function/type
   protected
     procedure Init; override;
-    //function DoGetResultType: TDbgSymbol; override;
+    function DoGetResultValue: TDbgSymbolValue; override;
     function DoGetIsTypeCast: Boolean; override;
     function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; override;
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
@@ -717,22 +717,27 @@ begin
   inherited Init;
 end;
 
-//function TFpPascalExpressionPartBracketArgumentList.DoGetResultType: TDbgSymbol;
-//begin
-//  Result := nil;
-//
-//  if (Count = 2) then begin
-//    Result := Items[0].ResultTypeCast;
-//    if Result <> nil then begin
-//      // This is a typecast
-//      // TODO: verify cast compatibilty
-//      Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultType'){$ENDIF};
-//      exit;
-//    end;
-//  end;
-//
-//  Result := inherited DoGetResultType;
-//end;
+function TFpPascalExpressionPartBracketArgumentList.DoGetResultValue: TDbgSymbolValue;
+var
+  tmp: TDbgSymbolValue;
+begin
+  Result := nil;
+
+  if (Count = 2) then begin
+    Result := Items[0].ResultValue;
+    if (Result <> nil) and (Result.DbgSymbol <> nil) and
+       (Result.DbgSymbol.SymbolType = stType)
+    then begin
+      // This is a typecast
+      tmp := Items[1].ResultValue;
+      if tmp <> nil then
+        Result := Result.DbgSymbol.TypeCastValue(tmp);
+      if Result <> nil then
+        {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
+      exit;
+    end;
+  end;
+end;
 
 function TFpPascalExpressionPartBracketArgumentList.DoGetIsTypeCast: Boolean;
 begin

@@ -120,9 +120,13 @@ type
 
   TDbgSymbol = class;
 
+  // TODO: need unified methods for typecasting
+  TDbgSymbolBase = class(TFpDbgCircularRefCountedObject)
+  end;
+
   { TDbgSymbolValue }
 
-  TDbgSymbolValue = class(TRefCountedObject)
+  TDbgSymbolValue = class(TDbgSymbolBase)
   private
   protected
     function GetKind: TDbgSymbolKind; virtual;
@@ -179,7 +183,7 @@ type
 
   { TDbgSymbol }
 
-  TDbgSymbol = class(TFpDbgCircularRefCountedObject)
+  TDbgSymbol = class(TDbgSymbolBase)
   private
     FEvaluatedFields: TDbgSymbolFields;
 
@@ -282,7 +286,9 @@ type
     property HasOrdinalValue: Boolean read GetHasOrdinalValue;
     property OrdinalValue: Int64 read GetOrdinalValue; // need typecast for QuadWord
 
-    //function TypeCastValue(AValue: TDbgSymbolValue): TDbgSymbolValue;
+    // TypeCastValue| only fon stType symbols, may return nil
+    // Returns a reference to caller / caller must release
+    function TypeCastValue(AValue: TDbgSymbolValue): TDbgSymbolValue; virtual;
   end;
 
   { TDbgSymbolForwarder }
@@ -549,6 +555,11 @@ destructor TDbgSymbol.Destroy;
 begin
   SetTypeInfo(nil);
   inherited Destroy;
+end;
+
+function TDbgSymbol.TypeCastValue(AValue: TDbgSymbolValue): TDbgSymbolValue;
+begin
+  Result := nil;
 end;
 
 function TDbgSymbol.GetAddress: TDbgPtr;
