@@ -801,7 +801,7 @@ begin
   New(WindowInfo);
   FillChar(WindowInfo^, sizeof(WindowInfo^), 0);
   WindowInfo^.DrawItemIndex := -1;
-  Windows.SetProp(Window, PChar(PtrUInt(WindowInfoAtom)), PtrUInt(WindowInfo));
+  Windows.SetProp(Window, PTChar(PtrUInt(WindowInfoAtom)), PtrUInt(WindowInfo));
   Result := WindowInfo;
 end;
 
@@ -809,8 +809,8 @@ function DisposeWindowInfo(Window: HWND): boolean;
 var
   WindowInfo: PWin32WindowInfo;
 begin
-  WindowInfo := PWin32WindowInfo(Windows.GetProp(Window, PChar(PtrUInt(WindowInfoAtom))));
-  Result := Windows.RemoveProp(Window, PChar(PtrUInt(WindowInfoAtom))) <> 0;
+  WindowInfo := PWin32WindowInfo(Windows.GetProp(Window, PTChar(PtrUInt(WindowInfoAtom))));
+  Result := Windows.RemoveProp(Window, PTChar(PtrUInt(WindowInfoAtom))) <> 0;
   if Result then
   begin
     WindowInfo^.StayOnTopList.Free;
@@ -820,7 +820,7 @@ end;
 
 function GetWin32WindowInfo(Window: HWND): PWin32WindowInfo;
 begin
-  Result := PWin32WindowInfo(Windows.GetProp(Window, PChar(PtrUInt(WindowInfoAtom))));
+  Result := PWin32WindowInfo(Windows.GetProp(Window, PTChar(PtrUInt(WindowInfoAtom))));
   if Result = nil then
     Result := @DefaultWindowInfo;
 end;
@@ -1057,7 +1057,7 @@ begin
     TextLen := Windows.GetWindowTextLength(AHandle);
     SetLength(AnsiBuffer, TextLen);
     if TextLen > 0 // Never give Windows the chance to write to System.emptychar
-    then TextLen := Windows.GetWindowText(AHandle, PChar(AnsiBuffer), TextLen + 1);
+    then TextLen := Windows.GetWindowText(AHandle, PTChar(AnsiBuffer), TextLen + 1);
     SetLength(AnsiBuffer, TextLen);
     Result := AnsiToUtf8(AnsiBuffer);
   end;
