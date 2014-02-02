@@ -5,12 +5,10 @@ unit TestTypeInfo;
 interface
 
 uses
-  Classes, SysUtils, FpPascalParser, FpDbgDwarf, FpDbgInfo, FpDbgLoader, FpPascalBuilder,
-  FpDbgUtil, FpDbgDwarfConst, FileUtil, LazLoggerBase, LazUTF8, fpcunit, testutils,
-  testregistry, TestHelperClasses;
+  FpPascalParser, FpDbgDwarf, FpDbgInfo,
+  FpDbgUtil, FpDbgDwarfConst, LazLoggerBase, LazUTF8, sysutils, fpcunit,
+  testregistry, TestHelperClasses, TestDwarfSetup1;
 
-const
-  TESTPROG1_FUNC_BAR_LINE = 185;
 
 type
 
@@ -25,17 +23,6 @@ type
     constructor Create(ATextExpression: String; AContext: TDbgInfoAddressContext);
   end;
 
-  { TTestMemReader }
-
-  TTestMemReader = class(TFpDbgMemReaderBase)
-  public
-    RegisterValues: array[0..30] of TDbgPtr;
-    function ReadMemory(AnAddress: FpDbgInfo.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
-    function ReadMemoryEx({%H-}AnAddress, {%H-}AnAddressSpace: FpDbgInfo.TDbgPtr; {%H-}ASize: Cardinal; {%H-}ADest: Pointer): Boolean; override;
-    function ReadRegister(ARegNum: Integer; out AValue: FpDbgInfo.TDbgPtr): Boolean; override;
-  end;
-
-
   { TTestTypInfo }
 
   TTestTypInfo = class(TTestCase)
@@ -47,27 +34,6 @@ type
   end;
 
 implementation
-
-{ TTestMemReader }
-
-function TTestMemReader.ReadMemory(AnAddress: FpDbgInfo.TDbgPtr; ASize: Cardinal;
-  ADest: Pointer): Boolean;
-begin
-  Result := True;
-  Move(Pointer(AnAddress)^, ADest^, ASize);
-end;
-
-function TTestMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: FpDbgInfo.TDbgPtr;
-  ASize: Cardinal; ADest: Pointer): Boolean;
-begin
-  Result := False;
-end;
-
-function TTestMemReader.ReadRegister(ARegNum: Integer; out AValue: FpDbgInfo.TDbgPtr): Boolean;
-begin
-  Result := True;
-  AValue := RegisterValues[ARegNum];
-end;
 
 { TTestPascalExpression }
 
@@ -97,132 +63,222 @@ end;
 
 procedure TTestTypInfo.New1;
 var
-  ImageLoader: TTestDummyImageLoader;
-  SectionDbgInfo: TTestDummySectionInfoEntries;
-  CompUnit, Prog1, Prog2,
-  GlobVar1, TypeInt, TypeIntDecl: TTestDwarfInfoEntry;
+  ImageLoader: TTestLoaderSetup1;
+  MemReader: TTestMemReader;
   Ctx: TDbgInfoAddressContext;
   sym: TDbgSymbol;
-  MemReader: TTestMemReader;
 
-  TestStackFrame: record
-    AVal: Integer; // -8
-    AVal2: Integer; // -4
-    EndPoint: Cardinal;
-  end;
+  obj1: TTestSetup1Class;
+  vobj1: TTestSetup1Object;
+
   Expression: TTestPascalExpression;
 begin
-  ImageLoader := TTestDummyImageLoader.Create;
-  SectionDbgInfo := ImageLoader.TestImgReader.TestSection['.debug_info'] as TTestDummySectionInfoEntries;
+  ImageLoader := TTestLoaderSetup1.Create;
 
-  {%region}
-  CompUnit := SectionDbgInfo.GetFirstInfoEntryObj;
-  CompUnit.Tag := DW_TAG_compile_unit;
-  CompUnit.Children := 1; //DW_CHILDREN_yes
-  CompUnit.Add(DW_AT_name, DW_FORM_string, 'testprog1.pas'+#0);
-  CompUnit.Add(DW_AT_producer, DW_FORM_string, 'Free Pascal 2.6.2 2013/02/16'+#0);
-  CompUnit.Add(DW_AT_comp_dir, DW_FORM_string, 'B:/lazarus_latest/components/fpdebug/test/testapps/'+#0);
-  CompUnit.Add(DW_AT_language, DW_FORM_data1, [$09]);
-  CompUnit.Add(DW_AT_identifier_case, DW_FORM_data1, [$03]);
-  CompUnit.Add(DW_AT_stmt_list, DW_FORM_data4, [$00, $00, $00, $00]);
-  CompUnit.AddAddr(DW_AT_low_pc, DW_FORM_addr, $00400000);
-  CompUnit.AddAddr(DW_AT_high_pc, DW_FORM_addr, $00501A50);
-
-  Prog1 := CompUnit.GetNewChild;
-  Prog1.Tag := DW_TAG_subprogram;
-  Prog1.Children := 1;
-  Prog1.Add(DW_AT_name, DW_FORM_string, 'BAR'+#0);
-  Prog1.Add(DW_AT_prototyped, DW_FORM_flag, [$01]);
-  Prog1.Add(DW_AT_calling_convention, DW_FORM_data1, [$41]);
-  Prog1.Add(DW_AT_external, DW_FORM_flag, [$01]);
-  Prog1.AddAddr(DW_AT_low_pc, DW_FORM_addr, $00401000);
-  Prog1.AddAddr(DW_AT_high_pc, DW_FORM_addr, $00402000);
-
-  Prog2 := CompUnit.GetNewChild;
-  Prog2.Tag := DW_TAG_subprogram;
-  Prog2.Children := 0;
-  Prog2.Add(DW_AT_name, DW_FORM_string, 'BAR2'+#0);
-  Prog2.Add(DW_AT_prototyped, DW_FORM_flag, [$01]);
-  Prog2.Add(DW_AT_calling_convention, DW_FORM_data1, [$41]);
-  Prog2.Add(DW_AT_external, DW_FORM_flag, [$01]);
-  Prog2.AddAddr(DW_AT_low_pc, DW_FORM_addr, $00403000);
-  Prog2.AddAddr(DW_AT_high_pc, DW_FORM_addr, $00404000);
+  obj1 := TTestSetup1Class.Create;
+  ImageLoader.TestStackFrame.Int1 := -299;
+  ImageLoader.TestStackFrame.Rec1.FWord := 1021;
+  ImageLoader.TestStackFrame.VObj1 := @vobj1;
+  ImageLoader.TestStackFrame.Obj1 := obj1;
 
 
-  TypeInt := CompUnit.GetNewChild;
-  TypeInt.Tag := DW_TAG_base_type;
-  TypeInt.Children := 0;
-  TypeInt.Add(DW_AT_name, DW_FORM_string, 'LONGINT'+#0);
-  TypeInt.Add(DW_AT_encoding, DW_FORM_data1, [$05]);
-  TypeInt.Add(DW_AT_byte_size, DW_FORM_data1, [$04]);
-
-  TypeIntDecl := CompUnit.GetNewChild;
-  TypeIntDecl.Tag := DW_TAG_typedef;
-  TypeIntDecl.Children := 0;
-  TypeIntDecl.Add(DW_AT_name, DW_FORM_string, 'LONGINT'+#0);
-  TypeIntDecl.AddRef(DW_AT_type, DW_FORM_ref4, TypeInt); // $7A, $06, $00, $00
-
-  GlobVar1 := CompUnit.GetNewChild;
-  GlobVar1.Tag := DW_TAG_variable;
-  GlobVar1.Children := 0;
-  GlobVar1.Add(DW_AT_name, DW_FORM_string, 'INT1'+#0);
-  GlobVar1.Add(DW_AT_location, DW_FORM_block1, [$02, $75, $78]);  // DW_OP_breg5-8
-  GlobVar1.AddRef(DW_AT_type, DW_FORM_ref4, TypeIntDecl);
-
-  {%endregion}
-
-  TestStackFrame.AVal := -299;
-
-
-  SectionDbgInfo.CreateSectionData;
-  SectionDbgInfo.AbbrevSection.CreateSectionData;
   MemReader := TTestMemReader.Create;
-  MemReader.RegisterValues[5] := TDbgPtr(@TestStackFrame.EndPoint);
+  MemReader.RegisterValues[5] := TDbgPtr(@ImageLoader.TestStackFrame.EndPoint);
 
-  //////////////////////////////////////////////////////////
-
+  Ctx := nil;
   FDwarfInfo := TDbgDwarf.Create(ImageLoader);
-  FDwarfInfo.LoadCompilationUnits;
-  FDwarfInfo.MemReader := MemReader;
+  try
+    FDwarfInfo.LoadCompilationUnits;
+    FDwarfInfo.MemReader := MemReader;
+    //////////////////////////////////////////////////////////
 
-  Ctx := FDwarfInfo.FindContext($00401010);
-  AssertTrue('got ctx', Ctx <> nil);
+    Ctx := FDwarfInfo.FindContext($00401010);
+    AssertTrue('got ctx', Ctx <> nil);
 
-  sym := Ctx.FindSymbol('Int1');
-  AssertTrue('got sym',  sym <> nil);
-  sym.ReleaseReference();
+    sym := Ctx.FindSymbol('Int1');
+    AssertTrue('got sym',  sym <> nil);
+    sym.ReleaseReference();
 
-  Expression := TTestPascalExpression.Create('Int1', Ctx);
-  AssertTrue(Expression.Valid);
-  AssertTrue(Expression.ResultValue <> nil);
-  AssertEquals(Expression.ResultValue.AsInteger, -299 );
-  Expression.Free;
+    Expression := TTestPascalExpression.Create('Int1', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(-299, Expression.ResultValue.AsInteger);
+    Expression.Free;
 
-  Expression := TTestPascalExpression.Create('@Int1', Ctx);
-  AssertTrue(Expression.Valid);
-  AssertTrue(Expression.ResultValue <> nil);
-  AssertEquals(Expression.ResultValue.AsInteger, PtrInt(@TestStackFrame.AVal));
-  Expression.Free;
+    Expression := TTestPascalExpression.Create('@Int1', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(PtrInt(@ImageLoader.TestStackFrame.Int1), Expression.ResultValue.AsInteger);
+    Expression.Free;
 
-  Expression := TTestPascalExpression.Create('@Int1^', Ctx);
-  AssertTrue(Expression.Valid);
-  AssertTrue(Expression.ResultValue <> nil);
-  AssertEquals(Expression.ResultValue.AsInteger, -299 );
-  Expression.Free;
+    Expression := TTestPascalExpression.Create('@Int1^', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(-299, Expression.ResultValue.AsInteger);
+    Expression.Free;
 
-  Expression := TTestPascalExpression.Create('(@Int1)^', Ctx);
-  AssertTrue(Expression.Valid);
-  AssertTrue(Expression.ResultValue <> nil);
-  AssertEquals(Expression.ResultValue.AsInteger, -299 );
-  Expression.Free;
+    Expression := TTestPascalExpression.Create('(@Int1)^', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(-299, Expression.ResultValue.AsInteger);
+    Expression.Free;
+
+    // Class/Object
+    Expression := TTestPascalExpression.Create('Obj1', Ctx);
+    AssertTrue(Expression.Valid);
+    Expression.ResultValue; // just access it
+    Expression.Free;
+
+    Obj1.FWord := 1019;
+    Expression := TTestPascalExpression.Create('Obj1.FWord', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('TTestSetup1Class(Obj1).FWord', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('Obj1.FTest', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('TTestSetup1Class(Obj1).FTest', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    Expression.Free;
+
+    obj1.FTest := obj1;
+    Expression := TTestPascalExpression.Create('Obj1.FTest.FWord', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('TTestSetup1Class(Obj1).FTest.FWord', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('TTestSetup1Class(TTestSetup1Class(Obj1).FTest).FWord', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    Expression.Free;
 
 
-  Ctx.ReleaseReference;
+    Expression := TTestPascalExpression.Create('Obj1.NotExisting', Ctx);
+    if Expression.Valid then;
+    Expression.ResultValue; // just access it
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('TObject(Obj1).FWord', Ctx);
+    if Expression.Valid then;
+    Expression.ResultValue; // just access it
+    Expression.Free;
+
+    // @
+    Expression := TTestPascalExpression.Create('@Obj1', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+//TODO
+    //AssertEquals(PtrUint(@obj1), Expression.ResultValue.AsCardinal);
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('@Obj1.FWord', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(PtrUint(@obj1.FWord), Expression.ResultValue.AsCardinal);
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('@Obj1.FTest', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+//TODO
+    //AssertEquals(PtrUint(@obj1), Expression.ResultValue.AsCardinal);
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('@Obj1.FWord^', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('(@Obj1^).FWord', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('@(Obj1.FWord)^', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    Expression.Free;
+
+    // Record
+    Expression := TTestPascalExpression.Create('Rec1', Ctx);
+    AssertTrue(Expression.Valid);
+    Expression.ResultValue; // just access it
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('Rec1.FWord', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(1021, Expression.ResultValue.AsInteger);
+    Expression.Free;
+
+    // var param // old style object
+    vobj1.FWord := 1122;
+    vobj1.FInt := -122;
+    Expression := TTestPascalExpression.Create('vobj1', Ctx);
+    AssertTrue(Expression.Valid);
+    Expression.ResultValue; // just access it
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('vobj1.FWord', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(1122, Expression.ResultValue.AsCardinal);
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('vobj1.FInt', Ctx);
+    AssertTrue(Expression.Valid);
+    AssertTrue(Expression.ResultValue <> nil);
+    AssertEquals(-122, Expression.ResultValue.AsInteger);
+    Expression.Free;
+
+
+
+    // Not existing
+    Expression := TTestPascalExpression.Create('NotExisting1399', Ctx);
+    //AssertTrue(Expression.Valid);
+    if Expression.Valid then;
+    Expression.ResultValue; // just access it
+    Expression.Free;
+
+    // Not Existing Typecast
+    Expression := TTestPascalExpression.Create('TNotExisting1399(Int1)', Ctx);
+    //AssertTrue(Expression.Valid);
+    if Expression.Valid then;
+    Expression.ResultValue; // just access it
+    Expression.Free;
+
+
 
   ///////////////////////////
-  FDwarfInfo.Free;
-  ImageLoader.Free;
-  MemReader.Free;
+  finally
+    Ctx.ReleaseReference;
+    FDwarfInfo.Free;
+    ImageLoader.Free;
+    MemReader.Free;
+    obj1.Free;
+  end;
 end;
 
 

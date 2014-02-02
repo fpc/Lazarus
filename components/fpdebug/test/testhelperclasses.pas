@@ -5,9 +5,22 @@ unit TestHelperClasses;
 interface
 
 uses
-  Classes, SysUtils, FpImgReaderBase, FpDbgDwarfConst, FpDbgLoader;
+  Classes, SysUtils, FpImgReaderBase, FpDbgDwarfConst, FpDbgLoader, FpDbgInfo;
+
+const
+  TestAddrSize = sizeof(Pointer);
 
 type
+
+  { TTestMemReader }
+
+  TTestMemReader = class(TFpDbgMemReaderBase)
+  public
+    RegisterValues: array[0..30] of TDbgPtr;
+    function ReadMemory(AnAddress: FpDbgInfo.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemoryEx({%H-}AnAddress, {%H-}AnAddressSpace: FpDbgInfo.TDbgPtr; {%H-}ASize: Cardinal; {%H-}ADest: Pointer): Boolean; override;
+    function ReadRegister(ARegNum: Integer; out AValue: FpDbgInfo.TDbgPtr): Boolean; override;
+  end;
 
   TTestDwarfAbbrev = class;
   TTestDwarfInfoEntry = class;
@@ -18,56 +31,6 @@ type
   public
     Section: TDbgImageSection;
     procedure CreateSectionData; virtual;
-  end;
-
-  { TTestDummySectionAbbrevs }
-
-  TTestDummySectionAbbrevs = class(TTestDummySection)
-  private
-    FCurrentID: Cardinal;
-    FList: TList;
-    function GetNextID: Cardinal;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    function GetNewAbbrevObj: TTestDwarfAbbrev;
-    procedure CreateSectionData; override;
-  end;
-
-  (*
-  TDwarfCUHeader32 = record
-    Length: LongWord;
-    Version: Word;
-    AbbrevOffset: LongWord;
-    AddressSize: Byte;
-  end;
-
-  TDwarfCUHeader64 = record
-    Signature: LongWord;
-    Length: QWord;
-    Version: Word;
-    AbbrevOffset: QWord;
-    AddressSize: Byte;
-  end;
-  *)
-
-  { TTestDummySectionInfoEntries }
-
-  TTestDummySectionInfoEntries = class(TTestDummySection)
-  private
-    FAddrSize: Byte;
-    FFirstEntry: TTestDwarfInfoEntry;
-    FVersion: Word;
-  protected
-    function CreateInfoEntryObj: TTestDwarfInfoEntry;
-  public
-    AbbrevSection: TTestDummySectionAbbrevs;
-    constructor Create;
-    destructor Destroy; override;
-    property Version: Word read FVersion write FVersion;
-    property AddrSize: Byte read FAddrSize write FAddrSize;
-    function GetFirstInfoEntryObj: TTestDwarfInfoEntry;
-    procedure CreateSectionData; override;
   end;
 
   { TTestDummyFileSource }
@@ -95,10 +58,42 @@ type
     FImgReader: TTestDummyFileSource;
   protected
   public
-    constructor Create; virtual;
+    constructor Create; override;
     property TestImgReader: TTestDummyFileSource read FImgReader;
   end;
 
+  { TTestDummySectionAbbrevs }
+
+  TTestDummySectionAbbrevs = class(TTestDummySection)
+  private
+    FCurrentID: Cardinal;
+    FList: TList;
+    function GetNextID: Cardinal;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function GetNewAbbrevObj: TTestDwarfAbbrev;
+    procedure CreateSectionData; override;
+  end;
+
+  { TTestDummySectionInfoEntries }
+
+  TTestDummySectionInfoEntries = class(TTestDummySection)
+  private
+    FAddrSize: Byte;
+    FFirstEntry: TTestDwarfInfoEntry;
+    FVersion: Word;
+  protected
+    function CreateInfoEntryObj: TTestDwarfInfoEntry;
+  public
+    AbbrevSection: TTestDummySectionAbbrevs;
+    constructor Create;
+    destructor Destroy; override;
+    property Version: Word read FVersion write FVersion;
+    property AddrSize: Byte read FAddrSize write FAddrSize;
+    function GetFirstInfoEntryObj: TTestDwarfInfoEntry;
+    procedure CreateSectionData; override;
+  end;
 
   { TTestDwarfAbbrev }
 
@@ -122,6 +117,7 @@ type
 
   { TTestDwarfInfoEntry }
 
+  PTestDwarfInfoEntry = ^TTestDwarfInfoEntry;
   TTestDwarfInfoEntry = class
   private
     FAbbrevObj: TTestDwarfAbbrev;
@@ -131,6 +127,7 @@ type
     FRefList: array of record
         Index, FSize: Integer;
         AData: TTestDwarfInfoEntry;
+        ADataRef: PTestDwarfInfoEntry;
       end;
     function GetChildren: Byte;
     function GetTag: Cardinal;
@@ -155,6 +152,7 @@ type
     procedure AddAddr(AnAttrib, AForm: Cardinal; AData: QWord);
     procedure Add(AnAttrib, AForm: Cardinal; AData: QWord); // ULEB
     function AddRef(AnAttrib, AForm: Cardinal; AData: TTestDwarfInfoEntry): Integer;
+    function AddRef(AnAttrib, AForm: Cardinal; AData: PTestDwarfInfoEntry): Integer;
 
     procedure SetRef(AIndex: Integer; AData: TTestDwarfInfoEntry);
 
@@ -163,7 +161,104 @@ type
     function Data: Pointer;
   end;
 
+function ULEB(ANum: QWord): TBytes;
+function SLEB(ANum: Int64): TBytes;
+function AddrB(ANum: Int64): TBytes;
+function NumS(ANum: Int64; ASize: Integer): TBytes;
+function NumU(ANum: QWord; ASize: Integer): TBytes;
+
+function Bytes(a: Array of TBytes): TBytes;
+function BytesLen1(a: Array of TBytes): TBytes;
+function BytesLen2(a: Array of TBytes): TBytes;
+function BytesLen4(a: Array of TBytes): TBytes;
+function BytesLen8(a: Array of TBytes): TBytes;
+function BytesLenU(a: Array of TBytes): TBytes;
+
+operator := (a: Smallint) b: TBytes;
+
 implementation
+
+operator := (a: Smallint)b: TBytes;
+begin
+  assert( (a>= -128) and (a<=255));
+  SetLength(b, 1);
+  b[0] := Byte(a and 255);
+end;
+
+function Bytes(a: array of TBytes): TBytes;
+var
+  i, l, p: Integer;
+begin
+  l := 0;
+  for i := low(a) to high(a) do
+    l := l + Length(a[i]);
+  SetLength(Result, l);
+  p := 0;
+  for i := low(a) to high(a) do begin
+    l := Length(a[i]);
+    if l > 0 then
+      move(a[i][0], Result[p], l*SizeOf(Result[0]));
+    inc(p, l);
+  end;
+end;
+
+function BytesLen1(a: array of TBytes): TBytes;
+var
+  l: Integer;
+  d: TBytes;
+begin
+  d := Bytes(a);
+  l := Length(d);
+  assert(l <= $ff);
+  Result := Bytes([Byte(l), d]);
+end;
+
+function BytesLen2(a: array of TBytes): TBytes;
+var
+  l: Integer;
+  b: array[0..1] of Byte;
+  d: TBytes;
+begin
+  d := Bytes(a);
+  l := Length(d);
+  assert(l <= $ffff);
+  PWord(@b[0])^ := Word(l);
+  Result := Bytes([b[0], b[1], Bytes(d)]);
+end;
+
+function BytesLen4(a: array of TBytes): TBytes;
+var
+  l: Integer;
+  b: array[0..3] of Byte;
+  d: TBytes;
+begin
+  d := Bytes(a);
+  l := Length(d);
+  assert(l <= $ffff);
+  PDWord(@b[0])^ := DWord(l);
+  Result := Bytes([b[0], b[1], b[2], b[3], Bytes(d)]);
+end;
+
+function BytesLen8(a: array of TBytes): TBytes;
+var
+  l: Integer;
+  b: array[0..7] of Byte;
+  d: TBytes;
+begin
+  d := Bytes(a);
+  l := Length(d);
+  assert(l <= $ffff);
+  PQWord(@b[0])^ := QWord(l);
+  Result := Bytes([b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], Bytes(d)]);
+end;
+
+function BytesLenU(a: array of TBytes): TBytes;
+var
+  l: Integer;
+begin
+  l := Length(a);
+  Result := Bytes([ULEB(l), Bytes(a)]);
+end;
 
 procedure WriteULEB128(ANum: QWord; var ADest: TBytes; ADestIdx: Integer);
   procedure AddByte(AByte: Byte);
@@ -197,30 +292,32 @@ procedure WriteSLEB128(ANum: Int64; var ADest: TBytes; ADestIdx: Integer);
 var
   n: Integer;
   c: Boolean;
+  UNum: QWord;
 begin
   if ANum = 0 then begin
     AddByte(0);
     exit;
   end;
 
-  if ANum < 0 then begin;
-    n := 10*7;
+  if ANum < 0 then begin
+    UNum := QWord(ANum);
+    n := 9*7;
     while n > 0 do begin
-      if (ANum and ($7f shl n) = (Int64(-1) and ($7f shl n)) ) and
-         (ANum and (int64(1) shl (n-1)) <> 0)
+      if ( (UNum and (QWord($7f) shl n)) = (high(QWord) and (QWord($7f) shl n)) ) and
+         ( (UNum and (QWord(1) shl (n-1))) <> 0 )
       then
-        ANum := ANum and not(-1 shl n)
+        UNum := UNum and not(high(QWord) shl n)
       else
         break;
       dec(n, 7);
     end;
 
-    while ANum <> 0 do begin
-      if ANum > $7f then
-        AddByte((ANum and $7f) + $80)
+    while UNum <> 0 do begin
+      if UNum > $7f then
+        AddByte((UNum and $7f) + $80)
       else
-        AddByte((ANum and $7f));
-      ANum := ANum shr 7;
+        AddByte((UNum and $7f));
+      UNum := UNum shr 7;
     end;
 
   end
@@ -232,11 +329,74 @@ begin
         AddByte((ANum and $7f) + $80)
       else
         AddByte((ANum and $7f));
-      c := (ANum and $40) <> 0; // write extra 0, to prlevent sign extend
+      c := (ANum and $40) <> 0; // write extra 0, to prevent sign extend
       ANum := ANum shr 7;
     end;
 
   end;
+end;
+
+function ULEB(ANum: QWord): TBytes;
+begin
+  SetLength(Result, 0);
+  WriteULEB128(ANum, Result, 0);
+end;
+
+function SLEB(ANum: Int64): TBytes;
+begin
+  SetLength(Result, 0);
+  WriteSLEB128(ANum, Result, 0);
+end;
+
+function AddrB(ANum: Int64): TBytes;
+begin
+  SetLength(Result, TestAddrSize);
+  if TestAddrSize = 4
+  then PInteger(@Result[0])^ := Integer(ANum)
+  else PInt64(@Result[0])^ := Int64(ANum);
+end;
+
+function NumS(ANum: Int64; ASize: Integer): TBytes;
+begin
+  SetLength(Result, ASize);
+  case ASize of
+    1: PShortInt(@Result[0])^ := ShortInt(ANum);
+    2: PSmallInt(@Result[0])^ := SmallInt(ANum);
+    4: PInteger(@Result[0])^ := Integer(ANum);
+    8: PInt64(@Result[0])^ := Int64(ANum);
+  end;
+end;
+
+function NumU(ANum: QWord; ASize: Integer): TBytes;
+begin
+  SetLength(Result, ASize);
+  case ASize of
+    1: PByte(@Result[0])^ := Byte(ANum);
+    2: PWord(@Result[0])^ := Word(ANum);
+    4: PDWord(@Result[0])^ := DWord(ANum);
+    8: PQWord(@Result[0])^ := QWord(ANum);
+  end;
+end;
+
+{ TTestMemReader }
+
+function TTestMemReader.ReadMemory(AnAddress: FpDbgInfo.TDbgPtr; ASize: Cardinal;
+  ADest: Pointer): Boolean;
+begin
+  Result := True;
+  Move(Pointer(AnAddress)^, ADest^, ASize);
+end;
+
+function TTestMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: FpDbgInfo.TDbgPtr;
+  ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  Result := False;
+end;
+
+function TTestMemReader.ReadRegister(ARegNum: Integer; out AValue: FpDbgInfo.TDbgPtr): Boolean;
+begin
+  Result := True;
+  AValue := RegisterValues[ARegNum];
 end;
 
 { TTestDwarfInfoEntry }
@@ -302,9 +462,14 @@ procedure TTestDwarfInfoEntry.WriteToSectionFIxRef(ASectionMem: PByte);
 var
   i: Integer;
   v: Integer;
+  o: TTestDwarfInfoEntry;
 begin
   for i := 0 to Length(FRefList) - 1 do begin
-    v := FRefList[i].AData.FWrittenAtIndex;
+    assert((FRefList[i].AData <> nil) xor (FRefList[i].ADataRef <> nil));
+    o := FRefList[i].AData;
+    if (o = nil) then
+      o := FRefList[i].ADataRef^;
+    v := o.FWrittenAtIndex;
     case FRefList[i].FSize of
       1:  PByte(ASectionMem + FWrittenAtIndex + FRefList[i].Index)^ := v;
       2:  PWord(ASectionMem + FWrittenAtIndex + FRefList[i].Index)^ := v;
@@ -405,7 +570,7 @@ begin
   Result := length(FRefList);
   SetLength(FRefList, Result + 1);
 
-  l := 4;
+  l := TestAddrSize;
   case AForm of
     DW_FORM_ref1: l := 1;
     DW_FORM_ref2: l := 2;
@@ -417,6 +582,43 @@ begin
   end;
 
   FRefList[Result].AData := AData;
+  FRefList[Result].FSize := l;
+  FRefList[Result].Index := length(FEncoded);
+
+  c := Length(FEncoded);
+  SetLength(FEncoded, c + l);
+  case l of
+    1:  PByte(@FEncoded[c])^ := 0;
+    2:  PWord(@FEncoded[c])^ := 0;
+    4:  PCardinal(@FEncoded[c])^ := 0;
+    8:  PQWord(@FEncoded[c])^ := 0;
+  end;
+end;
+
+function TTestDwarfInfoEntry.AddRef(AnAttrib, AForm: Cardinal;
+  AData: PTestDwarfInfoEntry): Integer;
+var
+  c: Integer;
+  l: Integer;
+begin
+  if Length(FEncoded) = 0 then InitEncoded;
+  FAbbrevObj.Add(AnAttrib, AForm);
+
+  Result := length(FRefList);
+  SetLength(FRefList, Result + 1);
+
+  l := TestAddrSize;
+  case AForm of
+    DW_FORM_ref1: l := 1;
+    DW_FORM_ref2: l := 2;
+    DW_FORM_ref4: l := 4;
+    DW_FORM_ref8: l := 8;
+    DW_FORM_ref_addr: l := FSection.AddrSize;
+    //DW_FORM_ref_udata: l := 1;
+    else Assert(false);
+  end;
+
+  FRefList[Result].ADataRef := AData;
   FRefList[Result].FSize := l;
   FRefList[Result].Index := length(FEncoded);
 
@@ -467,7 +669,7 @@ end;
 constructor TTestDummySectionInfoEntries.Create;
 begin
   FVersion := 2;
-  FAddrSize := 4;
+  FAddrSize := TestAddrSize;
 end;
 
 destructor TTestDummySectionInfoEntries.Destroy;

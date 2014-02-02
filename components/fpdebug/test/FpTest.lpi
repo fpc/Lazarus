@@ -42,7 +42,7 @@
         <PackageName Value="FCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="5">
       <Unit0>
         <Filename Value="FpTest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -58,6 +58,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestTypeInfo"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="testhelperclasses.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestHelperClasses"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="testdwarfsetup1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestDwarfSetup1"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

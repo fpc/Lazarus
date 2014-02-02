@@ -3,7 +3,8 @@ program FpTest;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Forms, GuiTestRunner, TestPascalParser, TestTypeInfo, TestHelperClasses;
+  Interfaces, Forms, GuiTestRunner, TestPascalParser, TestTypeInfo, TestHelperClasses,
+TestDwarfSetup1;
 
 {$R *.res}
 

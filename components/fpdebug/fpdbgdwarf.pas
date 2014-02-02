@@ -299,6 +299,7 @@ type
     FData: PByte;
     FMaxData: PByte;
   public
+  //TODO: caller keeps data, and determines livetime of data
     constructor Create(AExpressionData: Pointer; AMaxCount: Integer; ACU: TDwarfCompilationUnit);
     procedure Evaluate;
     function  ResultKind: TDwarfLocationStackEntryKind;
