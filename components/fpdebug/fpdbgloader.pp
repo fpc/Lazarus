@@ -55,12 +55,13 @@ type
   private
     FFileLoader: TDbgFileLoader;
     FImgReader: TDbgImageReader;
-    function GetSection(const AName: String): PDbgImageSection; virtual;
   protected
     FImage64Bit: Boolean  unimplemented;
     FImageBase: QWord unimplemented;
+    function GetSection(const AName: String): PDbgImageSection; virtual;
     //procedure SetImageBase(ABase: QWord);
     //procedure SetImage64Bit(AValue: Boolean);
+    property ImgReader: TDbgImageReader read FImgReader write FImgReader;
   public
     constructor Create; virtual;
     constructor Create(AFileName: String);
