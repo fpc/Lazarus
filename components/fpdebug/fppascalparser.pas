@@ -359,10 +359,11 @@ const
   PRECEDENCE_ARG_LIST   =  2;        // foo() / TFoo()
   PRECEDENCE_ARRAY_IDX  =  2;        // foo[1]
   PRECEDENCE_DEREF      =  5;        // a^    // Precedence acts only to the left side
-  PRECEDENCE_ADRESS_OF  =  5;        // @a
-  PRECEDENCE_UNARY_SIGN =  6;        // -a
-  PRECEDENCE_MUL_DIV    = 10;        // a * b
-  PRECEDENCE_PLUS_MINUS = 11;        // a + b
+  PRECEDENCE_ADRESS_OF  =  6;        // @a
+  //PRECEDENCE_POWER      = 10;        // ** (power) must be stronger than unary -
+  PRECEDENCE_UNARY_SIGN = 11;        // -a
+  PRECEDENCE_MUL_DIV    = 12;        // a * b
+  PRECEDENCE_PLUS_MINUS = 13;        // a + b
 
 type
 

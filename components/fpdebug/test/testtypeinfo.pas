@@ -100,75 +100,83 @@ begin
     sym.ReleaseReference();
 
     Expression := TTestPascalExpression.Create('Int1', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(-299, Expression.ResultValue.AsInteger);
+    AssertTrue('Int1: valid', Expression.Valid);
+    AssertTrue('Int1: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('Int1: Value', -299, Expression.ResultValue.AsInteger);
     Expression.Free;
 
     Expression := TTestPascalExpression.Create('@Int1', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(PtrInt(@ImageLoader.TestStackFrame.Int1), Expression.ResultValue.AsInteger);
+    AssertTrue('@Int1: valid', Expression.Valid);
+    AssertTrue('@Int1: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('@Int1: Value', PtrInt(@ImageLoader.TestStackFrame.Int1), Expression.ResultValue.AsInteger);
     Expression.Free;
 
+    // TODO, invalid
     Expression := TTestPascalExpression.Create('@Int1^', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(-299, Expression.ResultValue.AsInteger);
+    //AssertTrue('@Int1^: valid', Expression.Valid);
+    //AssertTrue('@Int1^: has ResVal', Expression.ResultValue <> nil);
+    ////AssertEquals('@Int1^: Value', -299, Expression.ResultValue.AsInteger);
     Expression.Free;
 
     Expression := TTestPascalExpression.Create('(@Int1)^', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(-299, Expression.ResultValue.AsInteger);
+    AssertTrue('(@Int1)^: valid', Expression.Valid);
+    AssertTrue('(@Int1)^: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('(@Int1)^: Value', -299, Expression.ResultValue.AsInteger);
     Expression.Free;
 
     // Class/Object
     Expression := TTestPascalExpression.Create('Obj1', Ctx);
-    AssertTrue(Expression.Valid);
+    AssertTrue('Obj1: valid', Expression.Valid);
     Expression.ResultValue; // just access it
     Expression.Free;
 
     Obj1.FWord := 1019;
     Expression := TTestPascalExpression.Create('Obj1.FWord', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    AssertTrue('Obj1.FWord: valid', Expression.Valid);
+    AssertTrue('Obj1.FWord: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('Obj1.FWord: Value', 1019, Expression.ResultValue.AsCardinal);
     Expression.Free;
 
     Expression := TTestPascalExpression.Create('TTestSetup1Class(Obj1).FWord', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    AssertTrue('TTestSetup1Class(Obj1).FWord: valid', Expression.Valid);
+    AssertTrue('TTestSetup1Class(Obj1).FWord: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('TTestSetup1Class(Obj1).FWord: Value', 1019, Expression.ResultValue.AsCardinal);
     Expression.Free;
 
     Expression := TTestPascalExpression.Create('Obj1.FTest', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
+    AssertTrue('Obj1.FTest: valid', Expression.Valid);
+    AssertTrue('Obj1.FTest: has ResVal', Expression.ResultValue <> nil);
     Expression.Free;
 
     Expression := TTestPascalExpression.Create('TTestSetup1Class(Obj1).FTest', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
+    AssertTrue('TTestSetup1Class(Obj1).FTest: valid', Expression.Valid);
+    AssertTrue('TTestSetup1Class(Obj1).FTest: has ResVal', Expression.ResultValue <> nil);
+    Expression.Free;
+
+    // cast int to object
+    Expression := TTestPascalExpression.Create('TTestSetup1Class('+IntToStr(PtrUInt(@obj1))+').FWord', Ctx);
+    AssertTrue('TTestSetup1Class('+IntToStr(PtrUInt(@obj1))+').FWord: valid', Expression.Valid);
+    AssertTrue('TTestSetup1Class('+IntToStr(PtrUInt(@obj1))+').FWord: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('TTestSetup1Class('+IntToStr(PtrUInt(@obj1))+').FWord: Value', 1019, Expression.ResultValue.AsCardinal);
     Expression.Free;
 
     obj1.FTest := obj1;
     Expression := TTestPascalExpression.Create('Obj1.FTest.FWord', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    AssertTrue('Obj1.FTest.FWord: valid', Expression.Valid);
+    AssertTrue('Obj1.FTest.FWord: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('Obj1.FTest.FWord: Value', 1019, Expression.ResultValue.AsCardinal);
     Expression.Free;
 
     Expression := TTestPascalExpression.Create('TTestSetup1Class(Obj1).FTest.FWord', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    AssertTrue('TTestSetup1Class(Obj1).FTest.FWord: valid', Expression.Valid);
+    AssertTrue('TTestSetup1Class(Obj1).FTest.FWord: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('TTestSetup1Class(Obj1).FTest.FWord: Value', 1019, Expression.ResultValue.AsCardinal);
     Expression.Free;
 
     Expression := TTestPascalExpression.Create('TTestSetup1Class(TTestSetup1Class(Obj1).FTest).FWord', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    AssertTrue('TTestSetup1Class(TTestSetup1Class(Obj1).FTest).FWord: valid', Expression.Valid);
+    AssertTrue('TTestSetup1Class(TTestSetup1Class(Obj1).FTest).FWord: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('TTestSetup1Class(TTestSetup1Class(Obj1).FTest).FWord: Value', 1019, Expression.ResultValue.AsCardinal);
     Expression.Free;
 
 
@@ -184,73 +192,73 @@ begin
 
     // @
     Expression := TTestPascalExpression.Create('@Obj1', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-//TODO
-    //AssertEquals(PtrUint(@obj1), Expression.ResultValue.AsCardinal);
+    AssertTrue('@Obj1: valid', Expression.Valid);
+    AssertTrue('@Obj1: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('@Obj1: Value', PtrUint(@ImageLoader.TestStackFrame.Obj1), Expression.ResultValue.AsCardinal);
     Expression.Free;
 
     Expression := TTestPascalExpression.Create('@Obj1.FWord', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(PtrUint(@obj1.FWord), Expression.ResultValue.AsCardinal);
+    AssertTrue('@Obj1.FWord: valid', Expression.Valid);
+    AssertTrue('@Obj1.FWord: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('@Obj1.FWord: Value', PtrUint(@obj1.FWord), Expression.ResultValue.AsCardinal);
     Expression.Free;
 
     Expression := TTestPascalExpression.Create('@Obj1.FTest', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-//TODO
-    //AssertEquals(PtrUint(@obj1), Expression.ResultValue.AsCardinal);
+    AssertTrue('@Obj1.FTest: valid', Expression.Valid);
+    AssertTrue('@Obj1.FTest: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('@Obj1.FTest: Value', PtrUint(@obj1.FTest), Expression.ResultValue.AsCardinal);
     Expression.Free;
 
+    // TODO: NOT valid (^ operates before @
     Expression := TTestPascalExpression.Create('@Obj1.FWord^', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+//debugln( Expression.DebugDump);
+    //AssertTrue(not '@Obj1.FWord^: valid', Expression.Valid);
+    //AssertTrue('@Obj1.FWord^: has ResVal', Expression.ResultValue <> nil);
+    //AssertEquals('@Obj1.FWord^: Value', 1019, Expression.ResultValue.AsCardinal);
     Expression.Free;
 
-    Expression := TTestPascalExpression.Create('(@Obj1^).FWord', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    Expression := TTestPascalExpression.Create('(@Obj1)^.FWord', Ctx);
+    AssertTrue('(@Obj1)^.FWord: valid', Expression.Valid);
+    AssertTrue('(@Obj1)^.FWord: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('(@Obj1)^.FWord: Value', 1019, Expression.ResultValue.AsCardinal);
     Expression.Free;
 
-    Expression := TTestPascalExpression.Create('@(Obj1.FWord)^', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(1019, Expression.ResultValue.AsCardinal);
+    Expression := TTestPascalExpression.Create('(@Obj1.FWord)^', Ctx);
+    AssertTrue('(@Obj1.FWord)^: valid', Expression.Valid);
+    AssertTrue('(@Obj1.FWord)^: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('(@Obj1.FWord)^: Value', 1019, Expression.ResultValue.AsCardinal);
     Expression.Free;
 
     // Record
     Expression := TTestPascalExpression.Create('Rec1', Ctx);
-    AssertTrue(Expression.Valid);
+    AssertTrue('Rec1: valid', Expression.Valid);
     Expression.ResultValue; // just access it
     Expression.Free;
 
     Expression := TTestPascalExpression.Create('Rec1.FWord', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(1021, Expression.ResultValue.AsInteger);
+    AssertTrue('Rec1.FWord: valid', Expression.Valid);
+    AssertTrue('Rec1.FWord: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('Rec1.FWord: Value', 1021, Expression.ResultValue.AsInteger);
     Expression.Free;
 
     // var param // old style object
     vobj1.FWord := 1122;
     vobj1.FInt := -122;
     Expression := TTestPascalExpression.Create('vobj1', Ctx);
-    AssertTrue(Expression.Valid);
+    AssertTrue('vobj1: valid', Expression.Valid);
     Expression.ResultValue; // just access it
     Expression.Free;
 
     Expression := TTestPascalExpression.Create('vobj1.FWord', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(1122, Expression.ResultValue.AsCardinal);
+    AssertTrue('vobj1.FWord: valid', Expression.Valid);
+    AssertTrue('vobj1.FWord: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('vobj1.FWord: Value', 1122, Expression.ResultValue.AsCardinal);
     Expression.Free;
 
     Expression := TTestPascalExpression.Create('vobj1.FInt', Ctx);
-    AssertTrue(Expression.Valid);
-    AssertTrue(Expression.ResultValue <> nil);
-    AssertEquals(-122, Expression.ResultValue.AsInteger);
+    AssertTrue('vobj1.FInt: valid', Expression.Valid);
+    AssertTrue('vobj1.FInt: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('vobj1.FInt: Value', -122, Expression.ResultValue.AsInteger);
     Expression.Free;
 
 

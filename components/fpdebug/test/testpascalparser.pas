@@ -348,8 +348,8 @@ begin
     TestExpr([0,0],   TFpPascalExpressionPartIdentifer, 'a', 0);
 
     CreateExpr('@a^', True);
-    TestExpr([],  TFpPascalExpressionPartOperatorDeRef, '^', 1);
-    TestExpr([0],  TFpPascalExpressionPartOperatorAddressOf, '@', 1);
+    TestExpr([],  TFpPascalExpressionPartOperatorAddressOf, '@', 1);
+    TestExpr([0],  TFpPascalExpressionPartOperatorDeRef, '^', 1);
     TestExpr([0,0],   TFpPascalExpressionPartIdentifer, 'a', 0);
 
     CreateExpr('-@a', True);
@@ -359,8 +359,8 @@ begin
 
     CreateExpr('-@a^', True);
     TestExpr([],  TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
-    TestExpr([0],  TFpPascalExpressionPartOperatorDeRef, '^', 1);
-    TestExpr([0,0],  TFpPascalExpressionPartOperatorAddressOf, '@', 1);
+    TestExpr([0],  TFpPascalExpressionPartOperatorAddressOf, '@', 1);
+    TestExpr([0,0],  TFpPascalExpressionPartOperatorDeRef, '^', 1);
     TestExpr([0,0,0],   TFpPascalExpressionPartIdentifer, 'a', 0);
 
     CreateExpr('^f(a)', True);
