@@ -250,7 +250,7 @@ type
   end;
 
 
-function GetWidgetWithWindow(const AHandle: THandle): PGtkWidget;
+function GetWidgetWithWindow(const AHandle: HWND): PGtkWidget;
 procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor;
   ARecursive: Boolean; ASetDefault: Boolean);
 procedure SetCursorForWindowsWithInfo(AWindow: PGdkWindow; AInfo: PWidgetInfo;
@@ -471,7 +471,7 @@ end;
 
 // Helper functions
 
-function GetWidgetWithWindow(const AHandle: THandle): PGtkWidget;
+function GetWidgetWithWindow(const AHandle: HWND): PGtkWidget;
 var
   Children: PGList;
 begin
