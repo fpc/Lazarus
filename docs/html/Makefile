@@ -23,15 +23,15 @@ chmdocs: build_lcl_docs
 	./$< --outfmt chm
 
 build_lcl_docs: build_lcl_docs.lpi build_lcl_docs.lpr
-ifeq (${LAZBUILD},)
+ifeq ($(realpath ${LAZBUILD}),)
 	echo 'Executable "lazbuild" not found, trying direct FPC call.'
-	${FPC} -o$@ build_lcl_docs.lpr
+	${FPC}  -FU. $(addprefix -Fu../../,components/lazutils lcl) -o$@ build_lcl_docs.lpr
 else
 	${LAZBUILD} $<
 endif
 
 clean:
-	${RM} build_lcl_docs lcl lazutils
+	${RM} build_lcl_docs lcl lazutils *.o *.ppu *.rst
 
 htmlinstall chminstall:
 	install -d ${INSTALL_DOCDIR}
