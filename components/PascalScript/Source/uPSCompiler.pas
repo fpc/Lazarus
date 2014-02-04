@@ -6774,7 +6774,11 @@ function TPSPascalCompiler.ProcessSub(BlockInfo: TPSBlockInfo): Boolean;
               u := rr.aType;
             end;
           end
-          {$IFDEF PS_HAVEVARIANT}else if (u.BaseType = btVariant) then break else {$ENDIF}
+          {$IFDEF PS_HAVEVARIANT}
+          else if (u.BaseType = btVariant) then break else
+          {$ELSE}
+          ;
+          {$ENDIF}
 
           begin
             x.Free;
@@ -7285,6 +7289,7 @@ function TPSPascalCompiler.ProcessSub(BlockInfo: TPSBlockInfo): Boolean;
         end;
         FType2 := GetTypeNo(BlockInfo, Temp);
         if ((typeno.BaseType = btClass){$IFNDEF PS_NOINTERFACES} or (TypeNo.basetype = btInterface){$ENDIF}) and
+          (ftype2<>nil) and
           ((ftype2.BaseType = btClass){$IFNDEF PS_NOINTERFACES} or (ftype2.BaseType = btInterface){$ENDIF}) and (TypeNo <> ftype2) then
         begin
 {$IFNDEF PS_NOINTERFACES}
@@ -7338,7 +7343,7 @@ function TPSPascalCompiler.ProcessSub(BlockInfo: TPSBlockInfo): Boolean;
           FParser.Next;
           Exit;
         end;
-        if not IsCompatibleType(TypeNo, FType2, True) then
+        if (FType2=nil) or not IsCompatibleType(TypeNo, FType2, True) then
         begin
           temp.Free;
           MakeError('', ecTypeMismatch, '');
