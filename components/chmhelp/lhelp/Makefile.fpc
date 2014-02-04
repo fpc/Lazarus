@@ -65,7 +65,7 @@ files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
 .PHONY: all clean
 
 all:    $(COMPILER_UNITTARGETDIR)
-        $(MAKE) --assume-new=lhelp.lpr OPT="$(LHELP_OPT) $(OPT)" lhelp$(EXEEXT)
+        $(MAKE) --assume-new=lhelp.lpr OPT="$(LHELP_OPT) $(subst ",\",${OPT})" lhelp$(EXEEXT)
 
 # end.
 
