@@ -551,7 +551,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgallfiles
 msgid "All files"
-msgstr "كم الجذاذات"
+msgstr "كلّ الجذاذات"
 
 #: lazarusidestrconsts.dlgalphabetically
 msgid "Alphabetically"
@@ -691,7 +691,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgccocaption
 msgid "Checking compiler options"
-msgstr ""
+msgstr "التّحقّق من خيارات التّرجمة"
 
 #: lazarusidestrconsts.dlgccoorphanedfilefound
 msgid "orphaned file found: %s"
@@ -744,7 +744,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcdtlast
 msgid "Last"
-msgstr "الآخر"
+msgstr "الأخير"
 
 #: lazarusidestrconsts.dlgcdtlower
 msgid "lowercase"
@@ -987,16 +987,16 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcompilermessage
 msgid "Compiler messages"
-msgstr ""
+msgstr "تعاليق المترجم"
 
 #: lazarusidestrconsts.dlgcompilermessages
 msgid "Compiler messages language file"
-msgstr ""
+msgstr "الجذاذة المحدّدة للغة تعاليق المترحم"
 
 #: lazarusidestrconsts.dlgcompileroptions
 msgctxt "lazarusidestrconsts.dlgcompileroptions"
 msgid "Compiler Options"
-msgstr ""
+msgstr "خيارات التّرجمة"
 
 #: lazarusidestrconsts.dlgcompleteproperties
 msgid "Complete properties"
@@ -1013,7 +1013,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgcoother
 msgctxt "lazarusidestrconsts.dlgcoother"
 msgid "Other"
-msgstr "أخرى"
+msgstr "الأخرى"
 
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
@@ -1512,7 +1512,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgfoldhtmlcomment
 msgctxt "lazarusidestrconsts.dlgfoldhtmlcomment"
 msgid "Comment"
-msgstr ""
+msgstr "الهامش"
 
 #: lazarusidestrconsts.dlgfoldhtmlnode
 msgctxt "lazarusidestrconsts.dlgfoldhtmlnode"
@@ -1637,7 +1637,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgfoldxmlcomment
 msgctxt "lazarusidestrconsts.dlgfoldxmlcomment"
 msgid "Comment"
-msgstr ""
+msgstr "الهامش"
 
 #: lazarusidestrconsts.dlgfoldxmldoctype
 msgid "DocType"
@@ -1666,7 +1666,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfpcpath
 msgid "Compiler path (e.g. %s)"
-msgstr ""
+msgstr "الطّريق إلى المترجم (مثلا %s)"
 
 #: lazarusidestrconsts.dlgfpcsrcpath
 msgid "FPC source directory"
@@ -1965,7 +1965,7 @@ msgstr ""
 #: lazarusidestrconsts.dlglang
 msgctxt "lazarusidestrconsts.dlglang"
 msgid "Language"
-msgstr "اللّغة"
+msgstr ""
 
 #: lazarusidestrconsts.dlglast
 msgid "Last (i.e. at end of source)"
@@ -2240,11 +2240,11 @@ msgstr "الأيمن"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheeldown
 msgid "Wheel down"
-msgstr ""
+msgstr "العجلة إلى أسفل"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheelup
 msgid "Wheel up"
-msgstr ""
+msgstr "العجلة إلى أعلى"
 
 #: lazarusidestrconsts.dlgmouseoptcapture
 msgid "Capture"
@@ -2385,7 +2385,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptnodeall
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
 msgid "All"
-msgstr ""
+msgstr "الكلّ"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
@@ -2446,7 +2446,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
-msgstr ""
+msgstr "تعيين متعدّد"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
 msgid "Find Editor for Jump Targets"
@@ -2521,7 +2521,7 @@ msgstr "متفرّقات"
 #: lazarusidestrconsts.dlgoioptions
 msgctxt "lazarusidestrconsts.dlgoioptions"
 msgid "Options"
-msgstr ""
+msgstr "خيارات"
 
 #: lazarusidestrconsts.dlgoispeedsettings
 msgid "Speed settings"
@@ -2583,7 +2583,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgpasstringkeywordsoptnone
 msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptnone"
 msgid "None"
-msgstr "لا شيء"
+msgstr "لا شيئ"
 
 #: lazarusidestrconsts.dlgpasstringkeywordsoptstring
 msgid "Only \"String\""
@@ -2644,7 +2644,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgpoicondescnone
 msgctxt "lazarusidestrconsts.dlgpoicondescnone"
 msgid "(none)"
-msgstr ""
+msgstr "(لا شيئ)"
 
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "&Load Icon"
@@ -2718,7 +2718,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgqautoclosecompiledialog
 msgid "Auto close compile dialog"
-msgstr ""
+msgstr "أغلق نافذة التّخاطب مع المترجم آليّا بعد انتهاء التّرجمة"
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"
@@ -2730,7 +2730,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgqshowcompiledialog
 msgid "Show compile dialog"
-msgstr ""
+msgstr "أظهر نافذة التّخاطب مع المترجم"
 
 #: lazarusidestrconsts.dlgqshowgrid
 msgid "Show grid"
@@ -2798,7 +2798,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgrunoenvironment
 msgctxt "lazarusidestrconsts.dlgrunoenvironment"
 msgid "Environment"
-msgstr "البيئة"
+msgstr ""
 
 #: lazarusidestrconsts.dlgrunolocal
 msgid "Local"
@@ -2879,7 +2879,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
-msgstr ""
+msgstr "النّصّ المعيّن"
 
 #: lazarusidestrconsts.dlgsetallelementdefault
 msgid "Set all elements to default"
@@ -2912,7 +2912,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgshowconditionals
 msgid "Show conditionals"
-msgstr ""
+msgstr "أظهر الشّروط"
 
 #: lazarusidestrconsts.dlgshowdebuginfo
 msgid "Show debug info"
@@ -3289,7 +3289,7 @@ msgstr ""
 
 #: lazarusidestrconsts.fdmdeleteselection
 msgid "Delete Selection"
-msgstr ""
+msgstr "إمح التّعيين"
 
 #: lazarusidestrconsts.fdmmirrorhorizontal
 msgid "Mirror Horizontal"
@@ -3334,7 +3334,7 @@ msgstr ""
 #: lazarusidestrconsts.fdmselectall
 msgctxt "lazarusidestrconsts.fdmselectall"
 msgid "Select All"
-msgstr ""
+msgstr "عيّن الكلّ"
 
 #: lazarusidestrconsts.fdmsizemenu
 msgid "Size ..."
@@ -3378,7 +3378,7 @@ msgstr ""
 
 #: lazarusidestrconsts.histdlgbtnremovehint
 msgid "Remove selected entry"
-msgstr ""
+msgstr "إمح المدخل المعيّن"
 
 #: lazarusidestrconsts.histdlgbtnshowhisthint
 msgid "View history"
@@ -4357,7 +4357,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscannotcompileproject
 msgid "Cannot compile project"
-msgstr ""
+msgstr "تعذّرت ترجمة المشروع"
 
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Cannot copy top level component."
@@ -4665,7 +4665,7 @@ msgstr ""
 #: lazarusidestrconsts.lisceothergroup
 msgctxt "lazarusidestrconsts.lisceothergroup"
 msgid "Other"
-msgstr "أخرى"
+msgstr "الأخرى"
 
 #: lazarusidestrconsts.lisceoupdate
 msgid "Update"
@@ -4949,15 +4949,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lischoosecompilermessages
 msgid "Choose compiler messages file"
-msgstr ""
+msgstr "إختر جذاذة لغة تعاليق المترجم"
 
 #: lazarusidestrconsts.lischoosecompilerpath
 msgid "Choose compiler filename (%s)"
-msgstr ""
+msgstr "إختر اسم برنامج التّرجمة"
 
 #: lazarusidestrconsts.lischoosedebuggerpath
 msgid "Choose debugger filename"
-msgstr ""
+msgstr "إختر اسم برنامج التّنقيح"
 
 #: lazarusidestrconsts.lischoosedelphipackage
 msgid "Choose Delphi package (*.dpk)"
@@ -5142,7 +5142,7 @@ msgstr "أغلق"
 #: lazarusidestrconsts.liscloseall
 msgctxt "lazarusidestrconsts.liscloseall"
 msgid "Close All"
-msgstr "أغلق الكلّ"
+msgstr ""
 
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
@@ -5319,7 +5319,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodehelpnotagcaption
 msgid "<NONE>"
-msgstr ""
+msgstr "<لا شيئ>"
 
 #: lazarusidestrconsts.liscodehelpseealsotag
 msgid "See also"
@@ -5376,7 +5376,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodetemplcomment
 msgid "Comment:"
-msgstr ""
+msgstr "الهامش:"
 
 #: lazarusidestrconsts.liscodetempleditcodetemplate
 msgid "Edit code template"
@@ -5417,11 +5417,11 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefscompilerpath
 msgid "Compiler path"
-msgstr ""
+msgstr "الطّريق إلى المترجم"
 
 #: lazarusidestrconsts.liscodetoolsdefsconvertnode
 msgid "Convert node"
-msgstr ""
+msgstr "حوّل العقدة"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
@@ -5453,7 +5453,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsdeletenode
 msgid "Delete node"
-msgstr ""
+msgstr "إحذف العقدة"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectorydesc
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: C:/Programme/Borland/Delphi%s"
@@ -5627,7 +5627,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsnoneselected
 msgid "none selected"
-msgstr ""
+msgstr "لم يقع تعيين أيّ شيئ"
 
 #: lazarusidestrconsts.liscodetoolsdefsparentnodecannotcontainch
 msgid "Parent node cannot contain child nodes."
@@ -5656,7 +5656,7 @@ msgstr "إحفظ ثمّ أخرج من البرنامج"
 
 #: lazarusidestrconsts.liscodetoolsdefsselectednode
 msgid "Selected Node:"
-msgstr ""
+msgstr "العقدة المعيّنة:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
 msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
@@ -5750,7 +5750,7 @@ msgstr ""
 #: lazarusidestrconsts.liscodetoolsoptsnone
 msgctxt "lazarusidestrconsts.liscodetoolsoptsnone"
 msgid "None"
-msgstr "لا شيء"
+msgstr "لا شيئ"
 
 #: lazarusidestrconsts.liscodetoolsoptsnumber
 msgid "Number"
@@ -5883,7 +5883,7 @@ msgstr ""
 #: lazarusidestrconsts.liscompletionlonglinehinttypenone
 msgctxt "lazarusidestrconsts.liscompletionlonglinehinttypenone"
 msgid "Never"
-msgstr ""
+msgstr "أبدا"
 
 #: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
 msgid "Extend right only"
@@ -6699,7 +6699,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
-msgstr ""
+msgstr "لم يقع تعيين أيّ منقّح"
 
 #: lazarusidestrconsts.lisdbgmangsetthebreakpointanyway
 msgid "Set the breakpoint anyway"
@@ -6974,7 +6974,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdeleteselectedfiles
 msgid "Delete selected files"
-msgstr ""
+msgstr "إمح الجذاذات المعيّنة"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
@@ -7050,7 +7050,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdiffdlgonlyselection
 msgid "Only selection"
-msgstr ""
+msgstr "المعيّن فقط"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
@@ -7777,7 +7777,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liseventslogaddcomment2
 msgid "Add Comment"
-msgstr ""
+msgstr "أضف هامشا"
 
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number"
@@ -8876,7 +8876,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
-msgstr ""
+msgstr "ثبّت التّعيينات"
 
 #: lazarusidestrconsts.lisinstalluninstallpackages
 msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
@@ -9353,32 +9353,32 @@ msgstr "إحفظ نسخة جديدة من المشروع"
 #: lazarusidestrconsts.liskmselectlineend
 msgctxt "lazarusidestrconsts.liskmselectlineend"
 msgid "Select Line End"
-msgstr ""
+msgstr "عيّن نهاية السّطر"
 
 #: lazarusidestrconsts.liskmselectlinestart
 msgctxt "lazarusidestrconsts.liskmselectlinestart"
 msgid "Select Line Start"
-msgstr ""
+msgstr "عيّن بداية السّطر"
 
 #: lazarusidestrconsts.liskmselectpagebottom
 msgctxt "lazarusidestrconsts.liskmselectpagebottom"
 msgid "Select Page Bottom"
-msgstr ""
+msgstr "عيّن نهاية الصّفحة"
 
 #: lazarusidestrconsts.liskmselectpagetop
 msgctxt "lazarusidestrconsts.liskmselectpagetop"
 msgid "Select Page Top"
-msgstr ""
+msgstr "عيّن بداية الصّفحة"
 
 #: lazarusidestrconsts.liskmselectwordleft
 msgctxt "lazarusidestrconsts.liskmselectwordleft"
 msgid "Select Word Left"
-msgstr ""
+msgstr "عيّن الكلمة الّتي على اليسار"
 
 #: lazarusidestrconsts.liskmselectwordright
 msgctxt "lazarusidestrconsts.liskmselectwordright"
 msgid "Select Word Right"
-msgstr ""
+msgstr "عيّن الكلمة الّتي على اليمين"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"
@@ -10733,7 +10733,7 @@ msgstr "عيّن"
 #: lazarusidestrconsts.lismenuselectall
 msgctxt "lazarusidestrconsts.lismenuselectall"
 msgid "Select All"
-msgstr "عيّن الكلّ"
+msgstr "عيّى الكلّ"
 
 #: lazarusidestrconsts.lismenuselectcodeblock
 msgid "Select Code Block"
@@ -10741,11 +10741,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuselectline
 msgid "Select Line"
-msgstr "عيّن السّطر"
+msgstr "عيّن سطرا"
 
 #: lazarusidestrconsts.lismenuselectparagraph
 msgid "Select Paragraph"
-msgstr "عيّن الفقرة"
+msgstr "عيّن فقرة"
 
 #: lazarusidestrconsts.lismenuselecttobrace
 msgid "Select to Brace"
@@ -10753,7 +10753,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuselectword
 msgid "Select Word"
-msgstr "عيّن الكلمة"
+msgstr "عيّن كلمة"
 
 #: lazarusidestrconsts.lismenusetfreebookmark
 msgctxt "lazarusidestrconsts.lismenusetfreebookmark"
@@ -11100,7 +11100,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismitnotice
 msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-msgstr ""
+msgstr "<وصف>%sحقوق الطبع (ن) <سنة> <حاملوا حقوق النسخ>%sبهذا يتم منح الترخيص، بدون مقابل، لأي فرد يتحصّل على نسخة من هذا البرنامج وملفات التوثيق المرافقة (ال \"Software\"), للتعامل مع البرنامج بدون قيد متضمنا بلا حدود الحقوق للاستخدام، والنسخ، والتعديل، والدمج، والنشر، والتوزيع، والترخيص الفرعي، و/أو بيع نسخ من البرنامج، والسماح للأفراد الذين زؤّدوا بالبرنامج بالتصرّف بالمثل، مع الخضوع للشروط التالية: %sيجب تضمين إشعار حقوق الملكية أعلاه وإشعار الإذن هذا في كل نسخ البرنامج أو أجزاءه المهمة. %sالبرنامج مقدّم \"AS IS\"، بدون ضمانة من أي نوع، صراحة كانت أو تضمينا، بما في ذلك و بلا حدّ ضمانات الصلاحية السوقية، والملائمة لغرض معين، وعدم الاخلال. تحت أي طارئ لا يتحمّل المؤلفون أو حاملو حقوق الملكية مسؤولية أي ادّعاء، أو ضرر أو أية مسؤوليات أخرى، سواء كانت جرّاء عقد، أو خطأ أو غير ذلك، تنتج من، أو عن أو بالارتباط بالبرنامج أو الاستخدام أو أية تعاملات أخرى تخصّ البرنامج."
 
 #: lazarusidestrconsts.lismmadditionsandoverrides
 msgid "Additions and Overrides"
@@ -11373,11 +11373,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
 msgid "No item selected"
-msgstr ""
+msgstr "لم يقع تعيين أيّ عنصر"
 
 #: lazarusidestrconsts.lisnewdlgpleaseselectanitemfirst
 msgid "Please select an item first."
-msgstr ""
+msgstr "عيّن عنصرا أوّلا"
 
 #: lazarusidestrconsts.lisnewencoding
 msgid "New encoding:"
@@ -11427,7 +11427,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnocodeselected
 msgid "No code selected"
-msgstr ""
+msgstr "لم يقع تعيين أيّة أوامر"
 
 #: lazarusidestrconsts.lisnocompileroptionsinherited
 msgid "No compiler options inherited."
@@ -11439,7 +11439,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnoidewindowselected
 msgid "No IDE window selected"
-msgstr ""
+msgstr "لم يقع تعيين أية نافذة"
 
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
@@ -11463,7 +11463,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
-msgstr ""
+msgstr "لم بقع تقيين أيّة عقدة"
 
 #: lazarusidestrconsts.lisnopascalfile
 msgid "No Pascal file"
@@ -12130,7 +12130,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckeditremoveselecteditem
 msgid "Remove selected item"
-msgstr ""
+msgstr "إمح العناصر المعيّنة"
 
 #: lazarusidestrconsts.lispckeditrequiredpackages
 msgid "Required Packages"
@@ -13705,7 +13705,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
-msgstr ""
+msgstr "إمح الوحدات المعيّنة"
 
 #: lazarusidestrconsts.lisremovethem
 msgid "Remove them"
@@ -14124,7 +14124,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisselectanode
 msgid "Select a node"
-msgstr ""
+msgstr "عيّن عقدة"
 
 #: lazarusidestrconsts.lisselectanotherlclwidgetsetmacrolclwidgettype
 msgid "Select another LCL widget set (macro LCLWidgetType)"
@@ -15291,15 +15291,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lisudcollapseallnodes
 msgid "Collapse all nodes"
-msgstr ""
+msgstr "أخف كلّ العقد"
 
 #: lazarusidestrconsts.lisudexpandallnodes
 msgid "Expand all nodes"
-msgstr ""
+msgstr "إعرض كلّ العقد"
 
 #: lazarusidestrconsts.lisudfile
 msgid "File: %s"
-msgstr ""
+msgstr "خذاذة: %s"
 
 #: lazarusidestrconsts.lisudfilter
 msgid "(Filter)"
@@ -16923,12 +16923,12 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmeccompile
 msgid "compile program/project"
-msgstr ""
+msgstr "ترجم المشروع"
 
 #: lazarusidestrconsts.srkmeccompletecode
 msgctxt "lazarusidestrconsts.srkmeccompletecode"
 msgid "Complete Code"
-msgstr ""
+msgstr "أكمل الأوامر"
 
 #: lazarusidestrconsts.srkmecconfigbuildfile
 msgid "config build file"
