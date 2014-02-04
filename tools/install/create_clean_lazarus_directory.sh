@@ -55,7 +55,7 @@ find . -name "CVS" -exec rm -rf {} \;
 # delete all SVN directories
 find . -name ".svn" -exec rm -rf {} \;
 # delete all executables
-find . -perm +a+x -type f -exec rm -f {} \;
+find . -perm /a+x -type f -exec rm -f {} \;
 rm -rf tools/install/*.tgz
 rm -rf tools/install/*.*.spec
 cd -
