@@ -325,7 +325,7 @@ function CompareFilenameAndFilenameToStringTreeItemI(Key, Data: Pointer): intege
 
 function CompareAnsiStringPtrs(Data1, Data2: Pointer): integer;
 
-{$IF FPC_FULLVERSION<20701}
+{$IF FPC_FULLVERSION<20601}
   {$DEFINE EnableAVLFindPointerFix}
 {$ENDIF}
 function AVLFindPointer(Tree: TAVLTree; Data: Pointer): TAVLTreeNode; {$IFNDEF EnableAVLFindPointerFix}inline;{$ENDIF}
