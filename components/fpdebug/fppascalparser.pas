@@ -147,7 +147,6 @@ type
 
   TFpPascalExpressionPartIdentifer = class(TFpPascalExpressionPartContainer)
   protected
-    //function DoGetResultType: TDbgSymbol; override;
     function DoGetIsTypeCast: Boolean; override;
     function DoGetResultValue: TDbgSymbolValue; override;
   end;
@@ -206,7 +205,6 @@ type
   TFpPascalExpressionPartBracketSubExpression = class(TFpPascalExpressionPartRoundBracket)
   protected
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
-    //function DoGetResultType: TDbgSymbol; override;
     function DoGetResultValue: TDbgSymbolValue; override;
   end;
 
@@ -832,16 +830,6 @@ begin
   Add(APart);
 end;
 
-//function TFpPascalExpressionPartBracketSubExpression.DoGetResultType: TDbgSymbol;
-//begin
-//  if Count <> 1 then
-//    Result := nil
-//  else
-//    Result := Items[0].ResultType;
-//  if Result <> nil then
-//    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultType'){$ENDIF};
-//end;
-
 function TFpPascalExpressionPartBracketSubExpression.DoGetResultValue: TDbgSymbolValue;
 begin
   if Count <> 1 then
@@ -853,22 +841,6 @@ begin
 end;
 
 { TFpPascalExpressionPartIdentifer }
-
-//function TFpPascalExpressionPartIdentifer.DoGetResultType: TDbgSymbol;
-//begin
-//  Result := ResultValue.DbgSymbol;
-//  if Result = nil then
-//    exit;
-//
-//  case Result.SymbolType of
-//    stValue: Result := Result.TypeInfo;
-//    stType:  Result := Result;
-//    else     Result := nil;
-//  end;
-//
-//  if Result <> nil then
-//    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultType'){$ENDIF};
-//end;
 
 function TFpPascalExpressionPartIdentifer.DoGetIsTypeCast: Boolean;
 begin
@@ -1627,7 +1599,7 @@ begin
   if Count <> 1 then exit;
 
   tmp := Items[0].ResultValue;
-  if (tmp.DbgSymbol = nil) or (tmp.DbgSymbol.SymbolType <> stType) then
+  if (tmp = nil) or (tmp.DbgSymbol = nil) or (tmp.DbgSymbol.SymbolType <> stType) then
     exit;
 
   Result := TPasParserWrapperSymbolValue.Create(TPasParserSymbolPointer.Create(tmp.DbgSymbol));

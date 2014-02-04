@@ -63,22 +63,137 @@ end;
 
 procedure TTestTypInfo.New1;
 var
+  CurrentTestName: String;
+  Ctx: TDbgInfoAddressContext;
+  Expression: TTestPascalExpression;
+
+  procedure InitTest(Expr: String; ExtraName: String = '');
+  begin
+    if ExtraName <> '' then ExtraName := ' (' + ExtraName + ')';
+    CurrentTestName := Expr + ExtraName + ': ';
+    Expression.Free;
+    Expression := TTestPascalExpression.Create(Expr, Ctx);
+  end;
+  procedure StartTest(Expr: String; ExtraName: String = '');
+  begin
+    InitTest(Expr, ExtraName);
+    AssertTrue(CurrentTestName + 'valid', Expression.Valid);
+    AssertTrue(CurrentTestName + 'has ResVal', Expression.ResultValue <> nil);
+  end;
+  procedure StartInvalTest(Expr: String; ExpError: String; ExtraName: String = '');
+  begin
+    InitTest(Expr, ExtraName);
+    Expression.ResultValue;
+    AssertTrue(CurrentTestName + 'invalid', (not Expression.Valid) or (Expression.ResultValue = nil));
+    //AssertTrue(CurrentTestName + 'invalid', (not Expression.Valid));
+    //ExpError
+  end;
+
+  procedure ExpFlags(ExpFlags: TDbgSymbolValueFieldFlags; ExpNotFlags: TDbgSymbolValueFieldFlags = []);
+  var
+    i: TDbgSymbolValueFieldFlag;
+    s: string;
+    f: TDbgSymbolValueFieldFlags;
+  begin
+    AssertTrue(CurrentTestName + 'has ResVal', Expression.ResultValue <> nil);
+    f := Expression.ResultValue.FieldFlags;
+    For i := low(TDbgSymbolValueFieldFlag) to High(TDbgSymbolValueFieldFlag) do
+      if i in ExpFlags then begin
+        WriteStr(s, i);
+        AssertTrue('Has flag' + s, i in f);
+      end;
+    For i := low(TDbgSymbolValueFieldFlag) to High(TDbgSymbolValueFieldFlag) do
+      if i in ExpNotFlags then begin
+        WriteStr(s, i);
+        AssertTrue('Has NOT flag + s', not (i in f));
+      end;
+  end;
+  procedure ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: QWord);
+    procedure AssertEqualsQW(const AMessage: string; Expected, Actual: QWord);
+    begin
+      AssertTrue(AMessage + ComparisonMsg(IntToStr(Expected), IntToStr(Actual)), Expected = Actual);
+    end;
+  var
+    s: string;
+  begin
+    ExpFlags([Field]);
+    WriteStr(s, Field);
+    case Field of
+      svfAddress:           AssertEqualsQW('VAlue for '+s, ExpValue, Expression.ResultValue.Address);
+      svfSize:              AssertEqualsQW('VAlue for '+s, ExpValue, Expression.ResultValue.Size);
+      svfDataAddress:       AssertEqualsQW('VAlue for '+s, ExpValue, Expression.ResultValue.DataAddress);
+      svfDataSize:          AssertEqualsQW('VAlue for '+s, ExpValue, Expression.ResultValue.DataSize);
+      svfInteger:           AssertEqualsQW('VAlue for '+s, ExpValue, Expression.ResultValue.AsInteger);
+      svfCardinal:          AssertEqualsQW('VAlue for '+s, ExpValue, Expression.ResultValue.AsCardinal);
+      svfOrdinal:           AssertEqualsQW('VAlue for '+s, ExpValue, Expression.ResultValue.AsCardinal);
+      else                  AssertTrue('No test method avail', False);
+    end;
+  end;
+  procedure ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: Int64);
+  var
+    s: string;
+  begin
+    ExpFlags([Field]);
+    WriteStr(s, Field);
+    case Field of
+      svfAddress:           AssertEquals('VAlue for '+s, ExpValue, Expression.ResultValue.Address);
+      svfSize:              AssertEquals('VAlue for '+s, ExpValue, Expression.ResultValue.Size);
+      svfDataAddress:       AssertEquals('VAlue for '+s, ExpValue, Expression.ResultValue.DataAddress);
+      svfDataSize:          AssertEquals('VAlue for '+s, ExpValue, Expression.ResultValue.DataSize);
+      svfInteger:           AssertEquals('VAlue for '+s, ExpValue, Expression.ResultValue.AsInteger);
+      svfCardinal:          AssertEquals('VAlue for '+s, ExpValue, Expression.ResultValue.AsCardinal);
+      svfOrdinal:           AssertEquals('VAlue for '+s, ExpValue, Expression.ResultValue.AsCardinal);
+      else                  AssertTrue('No test method avail', False);
+    end;
+  end;
+  procedure ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: Boolean);
+  var
+    s: string;
+  begin
+    ExpFlags([Field]);
+    WriteStr(s, Field);
+    case Field of
+      svfBoolean:           AssertEquals('VAlue for '+s, ExpValue, Expression.ResultValue.AsBool);
+      else                  AssertTrue('No test method avail', False);
+    end;
+  end;
+  procedure ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: String);
+  var
+    s: string;
+  begin
+    ExpFlags([Field]);
+    WriteStr(s, Field);
+    case Field of
+      svfString:            AssertEquals('VAlue for '+s, ExpValue, Expression.ResultValue.AsString);
+      else                  AssertTrue('No test method avail', False);
+    end;
+  end;
+  procedure ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: WideString);
+  var
+    s: string;
+  begin
+    ExpFlags([Field]);
+    WriteStr(s, Field);
+    case Field of
+      svfWideString:        AssertEquals('VAlue for '+s, ExpValue, Expression.ResultValue.AsWideString);
+      else                  AssertTrue('No test method avail', False);
+    end;
+  end;
+
+var
   ImageLoader: TTestLoaderSetup1;
   MemReader: TTestMemReader;
-  Ctx: TDbgInfoAddressContext;
   sym: TDbgSymbol;
 
   obj1: TTestSetup1Class;
   vobj1: TTestSetup1Object;
-
-  Expression: TTestPascalExpression;
 begin
   ImageLoader := TTestLoaderSetup1.Create;
 
   obj1 := TTestSetup1Class.Create;
   ImageLoader.TestStackFrame.Int1 := -299;
   ImageLoader.TestStackFrame.Rec1.FWord := 1021;
-  ImageLoader.TestStackFrame.VObj1 := @vobj1;
+  ImageLoader.TestStackFrame.VParamTestSetup1Object := @vobj1;
   ImageLoader.TestStackFrame.Obj1 := obj1;
 
 
@@ -86,6 +201,7 @@ begin
   MemReader.RegisterValues[5] := TDbgPtr(@ImageLoader.TestStackFrame.EndPoint);
 
   Ctx := nil;
+  Expression := nil;
   FDwarfInfo := TDbgDwarf.Create(ImageLoader);
   try
     FDwarfInfo.LoadCompilationUnits;
@@ -99,205 +215,130 @@ begin
     AssertTrue('got sym',  sym <> nil);
     sym.ReleaseReference();
 
-    Expression := TTestPascalExpression.Create('Int1', Ctx);
-    AssertTrue('Int1: valid', Expression.Valid);
-    AssertTrue('Int1: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('Int1: Value', -299, Expression.ResultValue.AsInteger);
-    Expression.Free;
+    StartTest('Int1');
+    ExpResult(svfInteger, -299);
+    ExpFlags([svfInteger, svfOrdinal, svfAddress]); // svfSize;
 
-    Expression := TTestPascalExpression.Create('@Int1', Ctx);
-    AssertTrue('@Int1: valid', Expression.Valid);
-    AssertTrue('@Int1: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('@Int1: Value', PtrInt(@ImageLoader.TestStackFrame.Int1), Expression.ResultValue.AsInteger);
-    Expression.Free;
+    StartTest('@Int1');
+    ExpResult(svfCardinal, PtrUInt(@ImageLoader.TestStackFrame.Int1));
+    ExpFlags([svfCardinal, svfOrdinal], [svfAddress]);
 
-    // TODO, invalid
-    Expression := TTestPascalExpression.Create('@Int1^', Ctx);
-    //AssertTrue('@Int1^: valid', Expression.Valid);
-    //AssertTrue('@Int1^: has ResVal', Expression.ResultValue <> nil);
-    ////AssertEquals('@Int1^: Value', -299, Expression.ResultValue.AsInteger);
-    Expression.Free;
+    StartInvalTest('@Int1^', 'xxx');
 
-    Expression := TTestPascalExpression.Create('(@Int1)^', Ctx);
-    AssertTrue('(@Int1)^: valid', Expression.Valid);
-    AssertTrue('(@Int1)^: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('(@Int1)^: Value', -299, Expression.ResultValue.AsInteger);
-    Expression.Free;
+    StartTest('(@Int1)^');
+    ExpResult(svfInteger, -299);
+    ExpFlags([svfInteger, svfOrdinal, svfAddress]); // svfSize;
 
-    Expression := TTestPascalExpression.Create('Word(Int1)', Ctx);
-    AssertTrue('Word(Int1): valid', Expression.Valid);
-    AssertTrue('Word(Int1): has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('Word(Int1): Value', $FED5, Expression.ResultValue.AsCardinal);
-    AssertTrue('Word(Int1): svfCardinal', svfCardinal in  Expression.ResultValue.FieldFlags);
-    Expression.Free;
+    StartTest('Word(Int1)');
+    ExpResult(svfCardinal, $FED5);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress], [svfInteger]); // svfSize;
 
-    Expression := TTestPascalExpression.Create('LongInt(Obj1)', Ctx);
-    AssertTrue('LongInt(Obj1): valid', Expression.Valid);
-    AssertTrue('LongInt(Obj1): has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('LongInt(Obj1): Value', PtrUInt(ImageLoader.TestStackFrame.Obj1), Expression.ResultValue.AsCardinal);
-    AssertTrue('LongInt(Obj1): svfInteger', svfInteger in  Expression.ResultValue.FieldFlags);
-    Expression.Free;
+    StartTest('LongInt(Obj1)');
+    ExpResult(svfOrdinal, PtrUInt(ImageLoader.TestStackFrame.Obj1));
+    ExpResult(svfInteger, PtrInt(ImageLoader.TestStackFrame.Obj1));
+    ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfCardinal]); // svfSize;
 
     // Class/Object
-    Expression := TTestPascalExpression.Create('Obj1', Ctx);
-    AssertTrue('Obj1: valid', Expression.Valid);
-    Expression.ResultValue; // just access it
-    Expression.Free;
+    StartTest('Obj1');
+    ExpFlags([svfMembers, svfOrdinal, svfAddress]); // svfSize;
 
     Obj1.FWord := 1019;
-    Expression := TTestPascalExpression.Create('Obj1.FWord', Ctx);
-    AssertTrue('Obj1.FWord: valid', Expression.Valid);
-    AssertTrue('Obj1.FWord: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('Obj1.FWord: Value', 1019, Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartTest('Obj1.FWord');
+    ExpResult(svfCardinal, 1019);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize;
 
-    Expression := TTestPascalExpression.Create('TTestSetup1Class(Obj1).FWord', Ctx);
-    AssertTrue('TTestSetup1Class(Obj1).FWord: valid', Expression.Valid);
-    AssertTrue('TTestSetup1Class(Obj1).FWord: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('TTestSetup1Class(Obj1).FWord: Value', 1019, Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartTest('TTestSetup1Class(Obj1).FWord');
+    ExpResult(svfCardinal, 1019);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize;
 
-    Expression := TTestPascalExpression.Create('Obj1.FTest', Ctx);
-    AssertTrue('Obj1.FTest: valid', Expression.Valid);
-    AssertTrue('Obj1.FTest: has ResVal', Expression.ResultValue <> nil);
-    Expression.Free;
+    StartTest('Obj1.FTest');
+    ExpFlags([svfMembers, svfOrdinal, svfAddress]); // svfSize;
 
-    Expression := TTestPascalExpression.Create('TTestSetup1Class(Obj1).FTest', Ctx);
-    AssertTrue('TTestSetup1Class(Obj1).FTest: valid', Expression.Valid);
-    AssertTrue('TTestSetup1Class(Obj1).FTest: has ResVal', Expression.ResultValue <> nil);
-    Expression.Free;
+    StartTest('TTestSetup1Class(Obj1).FTest');
+    ExpFlags([svfMembers, svfOrdinal, svfAddress]); // svfSize;
 
     // cast int to object
-    Expression := TTestPascalExpression.Create('TTestSetup1Class('+IntToStr(PtrUInt(obj1))+').FWord', Ctx);
-    AssertTrue('TTestSetup1Class('+IntToStr(PtrUInt(@obj1))+').FWord: valid', Expression.Valid);
-    AssertTrue('TTestSetup1Class('+IntToStr(PtrUInt(@obj1))+').FWord: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('TTestSetup1Class('+IntToStr(PtrUInt(@obj1))+').FWord: Value', 1019, Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartTest('TTestSetup1Class('+IntToStr(PtrUInt(obj1))+').FWord');
+    ExpResult(svfCardinal, 1019);
+//todo: address
+    //ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize;
+    ExpFlags([svfCardinal, svfOrdinal]); // svfSize;
 
     //TODO 64 bit
     ImageLoader.TestStackFrame.Int1 := PtrInt(obj1);
-    Expression := TTestPascalExpression.Create('TTestSetup1Class(Int1).FWord', Ctx);
-    AssertTrue('TTestSetup1Class(Int1).FWord: valid', Expression.Valid);
-    AssertTrue('TTestSetup1Class(Int1).FWord: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('TTestSetup1Class(Int1).FWord: Value', 1019, Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartTest('TTestSetup1Class(Int1).FWord');
+    ExpResult(svfCardinal, 1019);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize;
 
     obj1.FTest := obj1;
-    Expression := TTestPascalExpression.Create('Obj1.FTest.FWord', Ctx);
-    AssertTrue('Obj1.FTest.FWord: valid', Expression.Valid);
-    AssertTrue('Obj1.FTest.FWord: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('Obj1.FTest.FWord: Value', 1019, Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartTest('Obj1.FTest.FWord');
+    ExpResult(svfCardinal, 1019);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize;
 
-    Expression := TTestPascalExpression.Create('TTestSetup1Class(Obj1).FTest.FWord', Ctx);
-    AssertTrue('TTestSetup1Class(Obj1).FTest.FWord: valid', Expression.Valid);
-    AssertTrue('TTestSetup1Class(Obj1).FTest.FWord: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('TTestSetup1Class(Obj1).FTest.FWord: Value', 1019, Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartTest('TTestSetup1Class(Obj1).FTest.FWord');
+    ExpResult(svfCardinal, 1019);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize;
 
-    Expression := TTestPascalExpression.Create('TTestSetup1Class(TTestSetup1Class(Obj1).FTest).FWord', Ctx);
-    AssertTrue('TTestSetup1Class(TTestSetup1Class(Obj1).FTest).FWord: valid', Expression.Valid);
-    AssertTrue('TTestSetup1Class(TTestSetup1Class(Obj1).FTest).FWord: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('TTestSetup1Class(TTestSetup1Class(Obj1).FTest).FWord: Value', 1019, Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartTest('TTestSetup1Class(TTestSetup1Class(Obj1).FTest).FWord');
+    ExpResult(svfCardinal, 1019);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize;
 
+    StartInvalTest('Obj1.NotExisting', 'xxx');
 
-    Expression := TTestPascalExpression.Create('Obj1.NotExisting', Ctx);
-    if Expression.Valid then;
-    Expression.ResultValue; // just access it
-    Expression.Free;
-
-    Expression := TTestPascalExpression.Create('TObject(Obj1).FWord', Ctx);
-    if Expression.Valid then;
-    Expression.ResultValue; // just access it
-    Expression.Free;
+    StartInvalTest('TObject(Obj1).FWord', 'xxx');
 
     // @
-    Expression := TTestPascalExpression.Create('@Obj1', Ctx);
-    AssertTrue('@Obj1: valid', Expression.Valid);
-    AssertTrue('@Obj1: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('@Obj1: Value', PtrUint(@ImageLoader.TestStackFrame.Obj1), Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartTest('@Obj1');
+    ExpResult(svfCardinal, PtrUint(@ImageLoader.TestStackFrame.Obj1));
+    ExpFlags([svfCardinal, svfOrdinal], [svfAddress]);
 
-    Expression := TTestPascalExpression.Create('@Obj1.FWord', Ctx);
-    AssertTrue('@Obj1.FWord: valid', Expression.Valid);
-    AssertTrue('@Obj1.FWord: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('@Obj1.FWord: Value', PtrUint(@obj1.FWord), Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartTest('@Obj1.FWord');
+    ExpResult(svfCardinal, PtrUint(@ImageLoader.TestStackFrame.Obj1.FWord));
+    ExpFlags([svfCardinal, svfOrdinal], [svfAddress]);
 
-    Expression := TTestPascalExpression.Create('@Obj1.FTest', Ctx);
-    AssertTrue('@Obj1.FTest: valid', Expression.Valid);
-    AssertTrue('@Obj1.FTest: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('@Obj1.FTest: Value', PtrUint(@obj1.FTest), Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartTest('@Obj1.FTest');
+    ExpResult(svfCardinal, PtrUint(@ImageLoader.TestStackFrame.Obj1.FTest));
+    ExpFlags([svfCardinal, svfOrdinal], [svfAddress]);
 
     // TODO: NOT valid (^ operates before @
-    Expression := TTestPascalExpression.Create('@Obj1.FWord^', Ctx);
-//debugln( Expression.DebugDump);
-    //AssertTrue(not '@Obj1.FWord^: valid', Expression.Valid);
-    //AssertTrue('@Obj1.FWord^: has ResVal', Expression.ResultValue <> nil);
-    //AssertEquals('@Obj1.FWord^: Value', 1019, Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartInvalTest('@Obj1.FWord^', 'xxx');
+////debugln( Expression.DebugDump);
 
-    Expression := TTestPascalExpression.Create('(@Obj1)^.FWord', Ctx);
-    AssertTrue('(@Obj1)^.FWord: valid', Expression.Valid);
-    AssertTrue('(@Obj1)^.FWord: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('(@Obj1)^.FWord: Value', 1019, Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartTest('(@Obj1)^.FWord');
+    ExpResult(svfCardinal, 1019);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize;
 
-    Expression := TTestPascalExpression.Create('(@Obj1.FWord)^', Ctx);
-    AssertTrue('(@Obj1.FWord)^: valid', Expression.Valid);
-    AssertTrue('(@Obj1.FWord)^: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('(@Obj1.FWord)^: Value', 1019, Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartTest('(@Obj1.FWord)^');
+    ExpResult(svfCardinal, 1019);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize;
 
     // Record
-    Expression := TTestPascalExpression.Create('Rec1', Ctx);
-    AssertTrue('Rec1: valid', Expression.Valid);
-    Expression.ResultValue; // just access it
-    Expression.Free;
+    StartTest('Rec1');
 
-    Expression := TTestPascalExpression.Create('Rec1.FWord', Ctx);
-    AssertTrue('Rec1.FWord: valid', Expression.Valid);
-    AssertTrue('Rec1.FWord: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('Rec1.FWord: Value', 1021, Expression.ResultValue.AsInteger);
-    Expression.Free;
+    StartTest('Rec1.FWord');
+    ExpResult(svfCardinal, 1021);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]);
 
     // var param // old style object
     vobj1.FWord := 1122;
     vobj1.FInt := -122;
-    Expression := TTestPascalExpression.Create('vobj1', Ctx);
-    AssertTrue('vobj1: valid', Expression.Valid);
-    Expression.ResultValue; // just access it
-    Expression.Free;
 
-    Expression := TTestPascalExpression.Create('vobj1.FWord', Ctx);
-    AssertTrue('vobj1.FWord: valid', Expression.Valid);
-    AssertTrue('vobj1.FWord: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('vobj1.FWord: Value', 1122, Expression.ResultValue.AsCardinal);
-    Expression.Free;
+    StartTest('VParamTestSetup1Object');
 
-    Expression := TTestPascalExpression.Create('vobj1.FInt', Ctx);
-    AssertTrue('vobj1.FInt: valid', Expression.Valid);
-    AssertTrue('vobj1.FInt: has ResVal', Expression.ResultValue <> nil);
-    AssertEquals('vobj1.FInt: Value', -122, Expression.ResultValue.AsInteger);
-    Expression.Free;
+    StartTest('VParamTestSetup1Object.FWord');
+    ExpResult(svfCardinal, 1122);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]);
 
+    StartTest('VParamTestSetup1Object.FInt');
+    ExpResult(svfInteger, -122);
+    ExpFlags([svfInteger, svfOrdinal, svfAddress]);
 
 
     // Not existing
-    Expression := TTestPascalExpression.Create('NotExisting1399', Ctx);
-    //AssertTrue(Expression.Valid);
-    if Expression.Valid then;
-    Expression.ResultValue; // just access it
-    Expression.Free;
+    StartInvalTest('NotExisting1399', 'xxx');
 
     // Not Existing Typecast
-    Expression := TTestPascalExpression.Create('TNotExisting1399(Int1)', Ctx);
-    //AssertTrue(Expression.Valid);
-    if Expression.Valid then;
-    Expression.ResultValue; // just access it
-    Expression.Free;
+    StartInvalTest('TNotExisting1399(Int1)', 'xxx');
 
 
 
@@ -308,6 +349,7 @@ begin
     ImageLoader.Free;
     MemReader.Free;
     obj1.Free;
+    Expression.Free;
   end;
 end;
 
