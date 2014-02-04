@@ -18,7 +18,7 @@ msgid "The debugger failed to get the application's PID.%0:sThis may be caused b
 msgstr ""
 
 #: gdbmidebugger.gdbmicommandstartmainruntostoperror
-msgid "The debugger was unable to initalize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
 msgstr ""
 
 #: gdbmidebugger.gdbmierroronruncommand

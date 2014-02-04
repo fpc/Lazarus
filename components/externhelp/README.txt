@@ -1,7 +1,7 @@
 ExternHelp.lpk
 ==============
 
-This designtime package allows to setup online help for bindings. For example,
+This designtime package allows one to setup online help for bindings. For example,
 when the source editor cursor is on an identifier in the windows unit and the
 user presses F1, a browser is opened to the MSDN.
 

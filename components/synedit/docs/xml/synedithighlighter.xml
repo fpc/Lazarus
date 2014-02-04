@@ -69,7 +69,7 @@ If the Highlighter uses objects for ranges, it may use an instance of <link id="
         </seealso>
         <descr>
           <p>List to hold the Highlighter's Ranges </p>
-          <p>This list provides storage for a pointer sized item for each Line of text. The pointer size allows to store the most common forms of Ranges (set, enum, object).  A Highlighter can use a subclass of this, which could provide memory for other form of ranges (Records or several values)</p>
+          <p>This list provides storage for a pointer sized item for each Line of text. The pointer size allows one to store the most common forms of Ranges (set, enum, object).  A Highlighter can use a subclass of this, which could provide memory for other form of ranges (Records or several values)</p>
           <p>The List is not permanently stored on the Highlighter, as one list is needed for  each SynEdit using the Highlighter. The list is stored on the Lines of each SynEdit. The size of the list is maintained by SynEdit's Lines (see <link id="TSynEditStringList.Ranges">TSynEditStringList.Ranges</link>). SynEdit's Line also take care of keeping the list in sync with the text lines, by inserting and deleting entries whenever text-lines are inserted or deleted. Changes to text Lines are reported to the Highlighters ScanFrom method and updated from there</p>
           <ul>
             <li>For more about ranges see <link id="TSynCustomHighlighter.SetRange">TSynCustomHighlighter.SetRange</link>
@@ -83,7 +83,7 @@ If the Highlighter uses objects for ranges, it may use an instance of <link id="
         <short>The Size (in Bytes) of one Range. [SizeOf(Pointer)]</short>
         <descr>
           <p>The Size (in Bytes) of one Range. </p>
-          <p>The default Size of a range is SizeOf(Pointer), which allows to store the most common forms of Ranges (set, enum, object). </p>
+          <p>The default Size of a range is SizeOf(Pointer), which allows one to store the most common forms of Ranges (set, enum, object). </p>
           <ul>
             <li>For more about ranges see <link id="TSynCustomHighlighter.SetRange">TSynCustomHighlighter.SetRange</link>
             </li>

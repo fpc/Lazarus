@@ -354,7 +354,7 @@ begin
       j := FTabData[i];
       if j = LINE_LEN_UNKNOWN then begin
         // embedd a copy of ExpandedStringLength
-        // allows to re-use CharWidths
+        // allows one to re-use CharWidths
         Line := NextLines.GetPChar(i,LineLen); // fSynStrings[i];
         j := 0;
         if (LineLen = 0) then begin

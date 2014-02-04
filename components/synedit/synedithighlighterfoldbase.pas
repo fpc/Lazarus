@@ -103,7 +103,7 @@ type
      - Highlighter that do not store foldblocks that are unavailable (e.g. off by
        config) always return the same set
 
-     Using a record, as argument is the virtual methods, allows to add further
+     Using a record, as argument is the virtual methods, allows one to add further
      fields/values, without breaking inheritance.
      New fields values are expected to be ignored (handled as default) by existing
      highlighter.

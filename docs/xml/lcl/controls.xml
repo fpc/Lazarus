@@ -2092,7 +2092,7 @@ dmFindTarget: find child control under the mouse
       <element name="TDragDockObject">
         <short>A drag object for drag-dock.</short>
         <descr>
-          <p>This object type serves two main purposes: it allows to distinguish between drag-drop and drag-dock operations, and it implements docking specific information and behaviour.</p>
+          <p>This object type serves two main purposes: it allows one to distinguish between drag-drop and drag-dock operations, and it implements docking specific information and behaviour.</p>
           <p>The primary use is for tree docking, as assumed in the TControl and TWinControl methods.</p>
           <p>[entire review DoDi 2011-09-10]</p>
         </descr>
@@ -2407,7 +2407,7 @@ dmFindTarget: find child control under the mouse
         <descr>
           <p>InsertControl determines the placement of the just docked control, forcing a repaint of the container control if necessary.</p>
           <remark>When SetReplacingControl has been called with a non-Nil Control before, the dropped control only should replace that control.</remark>
-          <p>An overloaded version passes the DragDockObject to the dockmanager, allowing to pass more information about the drop. It allows to implement other than tree-style docksites.</p>
+          <p>An overloaded version passes the DragDockObject to the dockmanager, allowing to pass more information about the drop. It allows one to implement other than tree-style docksites.</p>
         </descr>
         <errors/>
         <seealso>
@@ -3775,7 +3775,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larDateField">
-        <short>A controls which displays and possibly allows to choose a date</short>
+        <short>A controls which displays and possibly allows one to choose a date</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larGrid">
@@ -3831,7 +3831,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larSpinner">
-        <short>A control which allows to increment / decrement a value</short>
+        <short>A control which allows one to increment / decrement a value</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larTabControl">
@@ -3847,7 +3847,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larTrackBar">
-        <short>A control which allows to drag a slider</short>
+        <short>A control which allows one to drag a slider</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TLazAccessibilityRole.larTreeView">
@@ -14133,7 +14133,7 @@ While CanFocus checks all control parents it does not check whether a form contr
       <topic name="Anchoring Controls">
         <short>How multiple controls can be aligned and resized together, at runtime.</short>
         <descr>
-          <p>The tree-style layout of a form allows to specify table-style areas,
+          <p>The tree-style layout of a form allows one to specify table-style areas,
             with a common width or height of all controls in the same area (using container controls like e.g. TPanel).
           </p>
           <p>Delphi introduced control anchoring to the sides of the Parent control.
@@ -14148,7 +14148,7 @@ While CanFocus checks all control parents it does not check whether a form contr
           <p>When a control shall e.g. use the available space, left over to its right,
             Anchors=[akLeft,akRight] will result in a variable-width control.
           </p>
-          <p>The Align property allows to stack controls at their Parent's sides,
+          <p>The Align property allows one to stack controls at their Parent's sides,
             e.g. all controls with Align=alTop are stacked at the top of their Parent.
             The remaining space in the Parent can be occupied by a single control,
             of Align=alClient.
@@ -14163,7 +14163,7 @@ While CanFocus checks all control parents it does not check whether a form contr
           <remark>This freedom requires that the GUI designer is responsible for consistent anchor specifications,
             which do not result in unresolvable cyclic references or other contradictions.
           </remark>
-          <p>Anchor docking allows to anchor every side of a control to an arbitrary side of another control,
+          <p>Anchor docking allows one to anchor every side of a control to an arbitrary side of another control,
             i.e. the left side of an Edit control can be anchored to the right side of its associated Label.
           </p>
           <code>Example1
@@ -14185,7 +14185,7 @@ While CanFocus checks all control parents it does not check whether a form contr
           <p>BorderSpacing is in effect even for controls without special anchoring,
             when AutoSize is used.
           </p>
-          <p>Anchor docking also allows to center a control relative to another control.
+          <p>Anchor docking also allows one to center a control relative to another control.
           </p>
           <code>Example2
     --------

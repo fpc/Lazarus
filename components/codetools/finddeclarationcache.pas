@@ -198,7 +198,7 @@ type
     Node- and BaseTypeCache depends on their codetool and the
     node- and basetypecaches of other codetools (=used codetools). The used
     codetools dependencies are saved in the TCodeToolDependencies, which is
-    simple an TAVLTree of codetools. This allows to decide, wether the cache of
+    simple an TAVLTree of codetools. This allows one to decide, wether the cache of
     a codetools must be rebuild.
   }
 

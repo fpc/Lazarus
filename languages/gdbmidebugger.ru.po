@@ -27,7 +27,7 @@ msgid "The debugger failed to get the application's PID.%0:sThis may be caused b
 msgstr "Отладчик не смог получить идентификатор процесса приложения.%0:sЭто может быть вызвано отсутствием отладочной информации."
 
 #: gdbmidebugger.gdbmicommandstartmainruntostoperror
-msgid "The debugger was unable to initalize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
 msgstr "Отладчик не смог инициализироваться.%0:sПриложение было запущено (и завершило работу) до того, как отладчик установил точки останова. %0:sЭто может быть вызвано отсутствием отладочной информации."
 
 #: gdbmidebugger.gdbmierroronruncommand

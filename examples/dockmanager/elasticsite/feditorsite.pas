@@ -1,6 +1,6 @@
 unit fEditorSite;
 (* EditorSite by DoDi <DrDiettrich1@aol.com>
-Mimics an Delphi editor window, that allows to dock other windows to it,
+Mimics an Delphi editor window, that allows one to dock other windows to it,
 with several extensions:
 - optionally enlarging the window
 - detach a page into a new editor window
@@ -10,7 +10,7 @@ with several extensions:
 Some quirks should be handled properly in a true IDE implementation:
 
 For simplicity an IDE main menu has been added to the main window,
-that allows to create several project (View) window dummies,
+that allows one to create several project (View) window dummies,
 which can be docked to each other, or to the editor window.
 
 Mixed docking of editor pages and View windows (currently) is not blocked,

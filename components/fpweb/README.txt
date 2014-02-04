@@ -42,9 +42,9 @@ The following components are registered:
  THTMLPageProducer
   Creates a HTML page using an event handler.
 THTMLDataSetFormShowProducer
-  Creates a <FORM> which allows to show a single record of a dataset.
+  Creates a <FORM> which allows one to show a single record of a dataset.
 THTMLDataSetFormEditProducer
-  Creates a <FORM> which allows to edit a single record of a dataset.
+  Creates a <FORM> which allows one to edit a single record of a dataset.
 THTMLDataSetFormGridProducer
   Creates a series of forms.
 

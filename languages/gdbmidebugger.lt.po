@@ -28,7 +28,7 @@ msgid "The debugger failed to get the application's PID.%0:sThis may be caused b
 msgstr "Derintuvei nepavyko gauti programos PID.%0:sTikėtina to priežastis – nėra derinimo informacijos."
 
 #: gdbmidebugger.gdbmicommandstartmainruntostoperror
-msgid "The debugger was unable to initalize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
 msgstr "Derintuvei nepavyko savęs inicializuoti.%0:sPrograma startavo (ir baigė darbą) dar prieš derintuvei dedant stabdos taškus.%0:sTikėtina to priežastis – nėra derinimo informacijos."
 
 #: gdbmidebugger.gdbmierroronruncommand

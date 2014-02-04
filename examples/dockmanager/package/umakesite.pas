@@ -258,7 +258,7 @@ begin
   Used also to restore a layout.
 
 Options (to come or to be removed)
-  fMultiInst allows to auto-create new instances (if True),
+  fMultiInst allows one to auto-create new instances (if True),
   otherwise an already existing instance is returned. (really returned?)
 *)
 //get the form

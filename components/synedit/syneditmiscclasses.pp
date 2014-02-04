@@ -514,7 +514,7 @@ type
     FPositionOffset: Integer;
 
     (* Size:  Each node can have a Size, or similar value.
-              LeftSizeSum is the Sum of all sizes on the Left. This allows to quickly
+              LeftSizeSum is the Sum of all sizes on the Left. This allows one to quickly
               calculate the sum of all preceding nodes together
     *)
     FSize: Integer;

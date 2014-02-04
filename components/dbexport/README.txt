@@ -21,7 +21,7 @@ TFPDBFEport - Export to a DBF file.
 
 TXMLXSDExporter - Export to various kinds of UTF-8 XML file formats (Microsoft Access, Microsoft Excel, ADO.NET, Delphi ClientDataset)
 
-TDataExporter - Dialog component which allows to select a registered export
+TDataExporter - Dialog component which allows one to select a registered export
 format, configures the export settings, and exports the data. Right-click on
 the component and select 'Execute' from the component editor menu to try
 this in the designer.

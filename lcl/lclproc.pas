@@ -850,7 +850,7 @@ end;
   Raises an exception.
   Normally gdb does not catch fpc Exception objects, therefore this procedure
   raises a standard "division by zero" exception which is catched by gdb.
-  This allows to stop a program, without extra gdb configuration.
+  This allows one to stop a program, without extra gdb configuration.
  ------------------------------------------------------------------------------}
 procedure RaiseGDBException(const Msg: string);
 begin

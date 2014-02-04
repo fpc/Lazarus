@@ -29,7 +29,7 @@ Some items not updated wile in a Begin/EndUpdate block:
 
 This means for example, that setting the caret pos temporarily to a position outside the visible area, will not force an update of the topline, while in update state.
 
-It also allows to insert code like the begin and end of a multiline comment "(*" / "*)" as 2 separate changes, without folded code below the new comment being affected (even the code would temporarily become a comment, and not have any keywords (begin/end) on which to fold)
+It also allows one to insert code like the begin and end of a multiline comment "(*" / "*)" as 2 separate changes, without folded code below the new comment being affected (even the code would temporarily become a comment, and not have any keywords (begin/end) on which to fold)
 
 </descr>
       </element>

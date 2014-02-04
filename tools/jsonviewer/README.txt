@@ -1,5 +1,5 @@
 
-This little application allows to view JSON data in a graphical tree.
+This little application allows one to view JSON data in a graphical tree.
 Each array and object is represented in the tree with the members (or
 elements) below them.
 

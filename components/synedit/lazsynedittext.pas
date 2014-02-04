@@ -351,7 +351,7 @@ type
        While in EditAction a "senrEditAction" event is triggerred, that contains
        more detailed line-count change info.
        Yet senrLineCount is also sent.
-       IsInEditAction allows to skip senrLineCount, that are sent as senrEditAction
+       IsInEditAction allows one to skip senrLineCount, that are sent as senrEditAction
        Currently used by FoldView
     *)
     property IsInEditAction: Boolean read GetIsInEditAction; // Todo: have individual event types instead

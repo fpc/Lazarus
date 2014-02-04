@@ -807,7 +807,7 @@ resourcestring
     + 'This may be caused by missing debug info.';
   gdbmiCommandStartMainRunError = 'The debugger could not run the application.%0:s'
     + 'This may be caused by missing debug info.';
-  gdbmiCommandStartMainRunToStopError = 'The debugger was unable to initalize itself.%0:s'
+  gdbmiCommandStartMainRunToStopError = 'The debugger was unable to initialize itself.%0:s'
     + 'The application did run (and terminated) before the debugger could set'
     + ' any breakpoints. %0:s'
     + 'This may be caused by missing debug info.';

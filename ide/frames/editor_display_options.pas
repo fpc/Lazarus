@@ -384,7 +384,7 @@ begin
   with AOptions as TEditorOptions do
   begin
     // init the spin-edit first, since it does not trigger on change,
-    // but is copied when checkboxes are initalized
+    // but is copied when checkboxes are initialized
     ShowOnlyLineNumbersMultiplesOfSpinEdit.Value := ShowOnlyLineNumbersMultiplesOf;
     GutterSeparatorIndexSpinBox.Value := GutterSeparatorIndex;
     VisibleRightMarginCheckBox.Checked := VisibleRightMargin;

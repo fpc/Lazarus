@@ -5,7 +5,7 @@
       <element name="TDockMaster">
         <short>A DockMaster with extended capabilities, ready for use in any application.</short>
         <descr>
-          <p>This DockMaster allows to make forms dockable, and to add elastic docksites to forms. It defines the event handlers, installed in such controls.</p>
+          <p>This DockMaster allows one to make forms dockable, and to add elastic docksites to forms. It defines the event handlers, installed in such controls.</p>
         </descr>
       </element>
       <element name="TDockMaster.FormEndDock">

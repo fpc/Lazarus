@@ -195,7 +195,7 @@ type
       WriteEmptyInheritedChilds = false (default).
 
     Reason:
-      This allows to delete/rename controls in ancestors without the need
+      This allows one to delete/rename controls in ancestors without the need
       to update all descendants.
   }
 

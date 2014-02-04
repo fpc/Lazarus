@@ -83,7 +83,7 @@
       <element name="TLCLComponent.RemoveAllHandlersOfObject">
         <short>Override this method to remove all references to notification handlers in AnObject.
         </short>
-        <descr>An override is required as soon as a component allows to add notification handlers.
+        <descr>An override is required as soon as a component allows one to add notification handlers.
           Then all such handlers must be removed, when their owner (AnObject) is destroyed.
         </descr>
         <errors/>

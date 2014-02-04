@@ -997,7 +997,7 @@
             of the same name in all platforms supported by Lazarus.
           </p><p>
             It copies a section of a Canvas to another one, without any stretching.
-            It allows to select the kind of operation which should be
+            It allows one to select the kind of operation which should be
             performed to draw the pixels into the destination in the parameter ROP.
             Allowed operations go from simply copying the pixels without change
             to inverting them and also to executing logical operations involving the source pixels and the previously

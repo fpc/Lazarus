@@ -17,7 +17,7 @@ routines, so you can not do anything useful with this widgetset.
 The unit mywidgetdesigner.pas contains the designer mediator TMyWidgetMediator
 which is registered in the Register procedure:
   FormEditingHook.RegisterDesignerMediator(TMyWidgetMediator);
-When the package is installed in the IDE, the mediator allows to design
+When the package is installed in the IDE, the mediator allows one to design
 TMyWidget components visually. Without the mediator the IDE would show them as
 icons, like TOpenDialog or TDataSource.
 

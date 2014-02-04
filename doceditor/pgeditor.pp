@@ -40,7 +40,7 @@
   editor. This allows changing either of them without needing to change the other.
   The page editor handles all communication between the two.
   
-  This allows to implement several editors. One could also implement the
+  This allows one to implement several editors. One could also implement the
   editor page so it is split horizontal, whatever.
 
 }
