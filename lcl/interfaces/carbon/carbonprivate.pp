@@ -954,16 +954,33 @@ end;
 procedure TCarbonCustomControl.Invalidate(Rect:PRect);
 var
   v : HIViewRef;
+  r : HIRect;
+  b : HIRect;
 begin
   inherited Invalidate(Rect);
 
   // Forced invalidation of ScrollBars
-  if Assigned(FScrollView) then
+  if Assigned(FScrollView) and not Assigned(Rect) then
   begin
     v:=HIViewGetFirstSubview(FScrollView);
-    while ASsigned(v) do
+    while Assigned(v) do
     begin
       HIViewSetNeedsDisplay(v, true);
+      v:=HIViewGetNextView(v);
+    end;
+  end
+  else
+  begin
+    v:=HIViewGetFirstSubview(FScrollView);
+    r:=RectToCGRect(Rect^);
+    while Assigned(v) do
+    begin
+      HIViewGetBounds(v, b);
+      r.origin.x:=Rect^.Left+b.origin.x;
+      r.origin.y:=Rect^.Top+b.origin.y;
+      OSError(
+        HIViewSetNeedsDisplayInRect(v, r, True), Self,
+        SInvalidate, SViewNeedsDisplayRect);
       v:=HIViewGetNextView(v);
     end;
   end;
