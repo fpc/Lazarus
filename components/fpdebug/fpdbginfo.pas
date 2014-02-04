@@ -120,16 +120,28 @@ type
 
   TDbgSymbol = class;
 
-  // TODO: need unified methods for typecasting
   TDbgSymbolBase = class(TFpDbgCircularRefCountedObject)
   end;
+
+  TDbgSymbolValueFieldFlag = (
+    svfAddress, svfSize, svfSizeOfPointer,
+    svfDataAddress, svfDataSize, svfDataSizeOfPointer,
+    svfInteger, svfCardinal,
+    svfString, svfWideString,
+    svfBoolean,
+    svfMembers,
+    svfOrdinal       // AsCardinal ruturns an ordinal value, but the value is not represented as cardinal (e.g. bool, enum)
+                     // if size > 8, then ordinal (if present) is based on a part only
+  );
+  TDbgSymbolValueFieldFlags = set of TDbgSymbolValueFieldFlag;
 
   { TDbgSymbolValue }
 
   TDbgSymbolValue = class(TDbgSymbolBase)
-  private
   protected
     function GetKind: TDbgSymbolKind; virtual;
+    function GetFieldFlags: TDbgSymbolValueFieldFlags; virtual;
+
     function GetAsBool: Boolean;  virtual;
     function GetAsCardinal: QWord; virtual;
     function GetAsInteger: Int64; virtual;
@@ -150,7 +162,7 @@ type
     constructor Create;
     // Kind: determines which types of value are available
     property Kind: TDbgSymbolKind read GetKind;
-    // AvailableInfo: set of (svInteger, svCardinal... svAddress);
+    property FieldFlags: TDbgSymbolValueFieldFlags read GetFieldFlags;
 
     property AsInteger: Int64 read GetAsInteger;
     property AsCardinal: QWord read GetAsCardinal;
@@ -465,6 +477,11 @@ begin
     Result := DbgSymbol.TypeInfo
   else
     Result := nil;
+end;
+
+function TDbgSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
+begin
+  Result := [];
 end;
 
 function TDbgSymbolValue.GetKind: TDbgSymbolKind;

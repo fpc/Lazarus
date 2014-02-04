@@ -401,6 +401,7 @@ type
     FSymbol: TDbgSymbol;
   protected
     function GetKind: TDbgSymbolKind; override;
+    //function GetFieldFlags: TDbgSymbolValueFieldFlags; override; // should be a type, not value
     function GetDbgSymbol: TDbgSymbol; override;
   public
     constructor Create(ATypeInfo: TDbgSymbol);
@@ -415,6 +416,7 @@ type
     FSigned: Boolean;
   protected
     function GetKind: TDbgSymbolKind; override;
+    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
     function GetAsInteger: Int64; override;
   public
@@ -430,6 +432,7 @@ type
     function GetPointedToValue: TDbgSymbolValue;
   protected
     function GetKind: TDbgSymbolKind; override;
+    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetAsInteger: Int64; override;
     function GetAsCardinal: QWord; override;
     function GetTypeInfo: TDbgSymbol; override;
@@ -449,6 +452,11 @@ end;
 function TPasParserAddressOfSymbolValue.GetKind: TDbgSymbolKind;
 begin
   Result := skPointer;
+end;
+
+function TPasParserAddressOfSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
+begin
+    Result := Result + [svfOrdinal, svfSizeOfPointer];
 end;
 
 function TPasParserAddressOfSymbolValue.GetAsInteger: Int64;
@@ -496,6 +504,14 @@ begin
     Result := skInteger
   else
     Result := skCardinal;
+end;
+
+function TPasParserConstNumberSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
+begin
+  if FSigned then
+    Result := Result + [svfOrdinal, svfInteger]
+  else
+    Result := Result + [svfOrdinal, svfCardinal];
 end;
 
 function TPasParserConstNumberSymbolValue.GetAsCardinal: QWord;

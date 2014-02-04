@@ -124,6 +124,20 @@ begin
     AssertEquals('(@Int1)^: Value', -299, Expression.ResultValue.AsInteger);
     Expression.Free;
 
+    Expression := TTestPascalExpression.Create('Word(Int1)', Ctx);
+    AssertTrue('Word(Int1): valid', Expression.Valid);
+    AssertTrue('Word(Int1): has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('Word(Int1): Value', $FED5, Expression.ResultValue.AsCardinal);
+    AssertTrue('Word(Int1): svfCardinal', svfCardinal in  Expression.ResultValue.FieldFlags);
+    Expression.Free;
+
+    Expression := TTestPascalExpression.Create('LongInt(Obj1)', Ctx);
+    AssertTrue('LongInt(Obj1): valid', Expression.Valid);
+    AssertTrue('LongInt(Obj1): has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('LongInt(Obj1): Value', PtrUInt(ImageLoader.TestStackFrame.Obj1), Expression.ResultValue.AsCardinal);
+    AssertTrue('LongInt(Obj1): svfInteger', svfInteger in  Expression.ResultValue.FieldFlags);
+    Expression.Free;
+
     // Class/Object
     Expression := TTestPascalExpression.Create('Obj1', Ctx);
     AssertTrue('Obj1: valid', Expression.Valid);
@@ -154,10 +168,18 @@ begin
     Expression.Free;
 
     // cast int to object
-    Expression := TTestPascalExpression.Create('TTestSetup1Class('+IntToStr(PtrUInt(@obj1))+').FWord', Ctx);
+    Expression := TTestPascalExpression.Create('TTestSetup1Class('+IntToStr(PtrUInt(obj1))+').FWord', Ctx);
     AssertTrue('TTestSetup1Class('+IntToStr(PtrUInt(@obj1))+').FWord: valid', Expression.Valid);
     AssertTrue('TTestSetup1Class('+IntToStr(PtrUInt(@obj1))+').FWord: has ResVal', Expression.ResultValue <> nil);
     AssertEquals('TTestSetup1Class('+IntToStr(PtrUInt(@obj1))+').FWord: Value', 1019, Expression.ResultValue.AsCardinal);
+    Expression.Free;
+
+    //TODO 64 bit
+    ImageLoader.TestStackFrame.Int1 := PtrInt(obj1);
+    Expression := TTestPascalExpression.Create('TTestSetup1Class(Int1).FWord', Ctx);
+    AssertTrue('TTestSetup1Class(Int1).FWord: valid', Expression.Valid);
+    AssertTrue('TTestSetup1Class(Int1).FWord: has ResVal', Expression.ResultValue <> nil);
+    AssertEquals('TTestSetup1Class(Int1).FWord: Value', 1019, Expression.ResultValue.AsCardinal);
     Expression.Free;
 
     obj1.FTest := obj1;
