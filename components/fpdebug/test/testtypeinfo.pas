@@ -427,7 +427,14 @@ begin
     ExpResult(svfInteger, -299);
     ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
 
-    // TODO Integer(pointer(pi)^)
+    StartTest('LongInt(pointer(pi)^)', skInteger, [ttHasType]);
+    ExpResult(svfInteger, -299);
+    ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
+
+    StartTest('LongInt(GlobTestSetup1Pointer^)', skInteger, [ttHasType]);
+    ExpResult(svfInteger, -299);
+    ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
+
 
   ///////////////////////////
   finally

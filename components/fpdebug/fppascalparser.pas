@@ -590,7 +590,7 @@ begin
   FSigned := ASigned;
 end;
 
-{ TPasParserTypeCastSymbolValue }
+{ TPasParserWrapperSymbolValue }
 
 function TPasParserWrapperSymbolValue.GetKind: TDbgSymbolKind;
 begin
@@ -1698,13 +1698,17 @@ begin
   else
   if tmp.Kind = skPointer then begin
     if (svfDataAddress in tmp.FieldFlags) and (tmp.DataAddress <> 0) and
-       (tmp.TypeInfo <> nil) and (tmp.TypeInfo.TypeInfo <> nil)
+       (tmp.TypeInfo <> nil) //and (tmp.TypeInfo.TypeInfo <> nil)
     then begin
       //TODO: maybe introduce a method TypeCastFromAddress, so we can skip the twp2 object
       tmp2 := TPasParserDerefPointerSymbolValue.Create(tmp);
-      Result := tmp.TypeInfo.TypeInfo.TypeCastValue(tmp2);
+      if (tmp.TypeInfo.TypeInfo <> nil) then
+        Result := tmp.TypeInfo.TypeInfo.TypeCastValue(tmp2)
+      else
+        Result := tmp2;
       {$IFDEF WITH_REFCOUNT_DEBUG} if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
-      tmp2.ReleaseReference;
+      if (tmp.TypeInfo.TypeInfo <> nil) then
+        tmp2.ReleaseReference;
     end;
   end
   //if tmp.Kind = skArray then // dynarray

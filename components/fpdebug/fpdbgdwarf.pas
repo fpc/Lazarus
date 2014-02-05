@@ -1918,6 +1918,9 @@ end;
 function TDbgDwarfNumericSymbolValue.CanUseTypeCastAddress: Boolean;
 begin
   Result := True;
+  if (FTypeCastSource.FieldFlags * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
+    exit
+  else
   if (FTypeCastSource.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) and
      (FTypeCastSource.Size = FSize)
   then
