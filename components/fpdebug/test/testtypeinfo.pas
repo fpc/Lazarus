@@ -129,7 +129,7 @@ var
     For i := low(TDbgSymbolValueFieldFlag) to High(TDbgSymbolValueFieldFlag) do
       if i in ExpNotFlags then begin
         WriteStr(s, i);
-        AssertTrue(CurrentTestName + 'Has NOT flag + s', not (i in f));
+        AssertTrue(CurrentTestName + 'Has NOT flag' + s, not (i in f));
       end;
   end;
   procedure ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: QWord);
@@ -220,8 +220,6 @@ begin
 
   obj1 := TTestSetup1Class.Create;
   ImageLoader.TestStackFrame.Int1 := -299;
-  ImageLoader.TestStackFrame.Rec1.FWord := 1021;
-  ImageLoader.TestStackFrame.VParamTestSetup1Object := @vobj1;
   ImageLoader.TestStackFrame.Obj1 := obj1;
 
 
@@ -249,16 +247,26 @@ begin
     // Not Existing Typecast
     StartInvalTest('TNotExisting1399(Int1)', 'xxx');
 
+    StartInvalTest('@99', 'xxx');
+
+
+    // TODO: maybe treat numbers as integer?
+    StartTest('244', skCardinal, []);
+    ExpFlags([svfCardinal, svfOrdinal], [svfAddress, svfSize, svfSizeOfPointer, svfDataAddress, svfDataSize]);
+    ExpResult(svfCardinal, 244);
+    ExpResult(svfOrdinal, QWord(244));
 
 
     StartTest('Int1', skInteger, [ttHasType]);
+    ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
     ExpResult(svfInteger, -299);
-    ExpFlags([svfInteger, svfOrdinal, svfAddress]); // svfSize;
+    ExpResult(svfOrdinal, QWord(-299));
+    ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Int1)));
 
     StartTest('@Int1');
-// TODO: dataAddr
-    ExpResult(svfCardinal, PtrUInt(@ImageLoader.TestStackFrame.Int1));
-    ExpFlags([svfCardinal, svfOrdinal], [svfAddress]);
+    ExpFlags([svfCardinal, svfOrdinal, svfDataAddress], [svfAddress]);
+    ExpResult(svfOrdinal, PtrUInt(@ImageLoader.TestStackFrame.Int1));
+    ExpResult(svfDataAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Int1)));
 
     StartInvalTest('@Int1^', 'xxx');
 
@@ -278,10 +286,13 @@ begin
     // Class/Object
     ImageLoader.GlobTestSetup1.VarQWord := PtrInt(obj1);
     ImageLoader.GlobTestSetup1.VarPointer := @ImageLoader.TestStackFrame.Obj1;
+    ImageLoader.TestStackFrame.PObj1 := @ImageLoader.TestStackFrame.Obj1;
+    ImageLoader.TestStackFrame.VParamTestSetup1Class := @ImageLoader.TestStackFrame.Obj1;
+    ImageLoader.TestStackFrame.VParamTestSetup1ClassP := @ImageLoader.TestStackFrame.PObj1;
     Obj1.FWord := 1019;
     Obj1.FWordL := QWord($9aa99aa97bb7b77b); // Make sure there is data, if other fields read to much
 
-    for i := 0 to 15 do begin
+    for i := 0 to 22 do begin
        case i of
          11..13: ImageLoader.GlobTestSetup1.VarPointer := @ImageLoader.TestStackFrame.Obj1;
          14:   ImageLoader.GlobTestSetup1.VarPointer := Pointer(ImageLoader.TestStackFrame.Obj1);
@@ -311,6 +322,13 @@ begin
         14: s := 'TTestSetup1Class(GlobTestSetup1Pointer)'; // no deref
         15: s := '(@Obj1)^';
         16: s := 'TTestSetup1Class(@(PInt(Obj1)^))';
+         //
+        17: s := 'PObj1^';
+        18: s := 'TTestSetup1Class(PObj1^)';
+        19: s := 'PTestSetup1Class(PObj1)^';
+        20: s := '(@PObj1)^^';
+        21: s := 'VParamTestSetup1Class';
+        22: s := 'VParamTestSetup1ClassP^';
       end;
       FieldsExp := [svfMembers, svfOrdinal, svfAddress, svfDataAddress]; // svfSize dataSize;
       AddrExp   := TDbgPtr(@ImageLoader.TestStackFrame.Obj1);
@@ -318,6 +336,7 @@ begin
       if i in [10] then AddrExp := TDbgPtr(@ImageLoader.GlobTestSetup1.VarQWord);
       if i in [14] then AddrExp := TDbgPtr(@ImageLoader.GlobTestSetup1.VarPointer);
 
+      // Check result for object
       StartTest(s, skClass, [ttHasType]);
       ExpFlags(FieldsExp);
       if i in [7..9, 16] then
@@ -327,8 +346,26 @@ begin
       ExpResult(svfDataAddress, TDbgPtr(PtrUInt(ImageLoader.TestStackFrame.Obj1)));
       ExpResult(svfOrdinal, PtrUInt (ImageLoader.TestStackFrame.Obj1));
 
+
+      // Check result for @object
+      if svfAddress in FieldsExp then begin
+        StartTest('@('+s+')', skPointer, [ttHasType]);
+        ExpFlags([svfCardinal, svfOrdinal, svfDataAddress], [svfAddress]);
+        ExpResult(svfCardinal, QWord(AddrExp));
+        ExpResult(svfDataAddress, AddrExp);
+
+        if not (i in [12, 13, 15, 17, 19, 20]) then begin
+          StartTest('@'+s, skPointer, [ttHasType]);
+          ExpFlags([svfCardinal, svfOrdinal, svfDataAddress], [svfAddress]);
+          ExpResult(svfCardinal, QWord(AddrExp));
+          ExpResult(svfDataAddress, AddrExp);
+        end;
+      end;
+
+
       if not (i in [5,6]) then begin
 
+        // Object.FWord
         for j := 0 to 2 do begin
           case j of
             0: s2 := s+'.FWord';
@@ -342,7 +379,21 @@ begin
           ExpResult(svfAddress, TDbgPtr(@ImageLoader.TestStackFrame.Obj1.FWord));
         end;
 
+        // @Object.FWord
+        StartTest('@('+s2+')');
+        ExpFlags([svfCardinal, svfOrdinal, svfDataAddress], [svfAddress]);
+        ExpResult(svfCardinal, QWord(TDbgPtr(@ImageLoader.TestStackFrame.Obj1.FWord)));
+        ExpResult(svfDataAddress, TDbgPtr(@ImageLoader.TestStackFrame.Obj1.FWord));
 
+        if not (j in [2]) then begin
+          StartTest('@'+s2);
+          ExpFlags([svfCardinal, svfOrdinal, svfDataAddress], [svfAddress]);
+          ExpResult(svfCardinal, QWord(TDbgPtr(@ImageLoader.TestStackFrame.Obj1.FWord)));
+          ExpResult(svfDataAddress, TDbgPtr(@ImageLoader.TestStackFrame.Obj1.FWord));
+        end;
+
+
+        // Object.FTest
         ImageLoader.TestStackFrame.Obj1.FTest := nil;
         StartTest(s+'.FTest', skClass, [ttHasType]);
         ExpFlags([svfMembers, svfOrdinal, svfAddress, svfDataAddress]); // svfSize;
@@ -361,19 +412,6 @@ begin
     end;
 
 
-    StartInvalTest('Obj1.NotExisting', 'xxx');
-
-    StartInvalTest('TObject(Obj1).FWord', 'xxx');
-
-    // @
-    StartTest('@Obj1');
-    ExpResult(svfCardinal, PtrUint(@ImageLoader.TestStackFrame.Obj1));
-    ExpFlags([svfCardinal, svfOrdinal], [svfAddress]);
-
-    StartTest('@Obj1.FWord');
-    ExpResult(svfCardinal, PtrUint(@ImageLoader.TestStackFrame.Obj1.FWord));
-    ExpFlags([svfCardinal, svfOrdinal], [svfAddress]);
-
     StartTest('@Obj1.FTest');
     ExpResult(svfCardinal, PtrUint(@ImageLoader.TestStackFrame.Obj1.FTest));
     ExpFlags([svfCardinal, svfOrdinal], [svfAddress]);
@@ -381,34 +419,125 @@ begin
     // TODO: NOT valid (^ operates before @
     StartInvalTest('@Obj1.FWord^', 'xxx');
 
-    StartTest('(@Obj1)^.FWord');
-    ExpResult(svfCardinal, 1019);
-    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize; //
-
     StartTest('(@Obj1.FWord)^');
     ExpResult(svfCardinal, 1019);
     ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize;
 
+
+    StartInvalTest('Obj1.@FWord', 'xxx');
+    StartInvalTest('Obj1.@Int1', 'xxx');
+    StartInvalTest('Obj1.@Obj1', 'xxx');
+    StartInvalTest('Obj1.Obj1', 'xxx');
+    StartInvalTest('Int1.FWord', 'xxx');
+    StartInvalTest('Obj1.NotExisting', 'xxx');
+    StartInvalTest('Obj1.123', 'xxx');
+    StartInvalTest('123.NotExisting', 'xxx');
+
+    StartInvalTest('TObject(Obj1).FWord', 'xxx');
+
     // Record
+    // VParamTestRecord mis-named
+    ImageLoader.TestStackFrame.Rec1.FWord := $9ab7;
+    ImageLoader.TestStackFrame.PRec1 := @ImageLoader.TestStackFrame.Rec1;
+    ImageLoader.TestStackFrame.VParamTestSetup1Record := @ImageLoader.TestStackFrame.Rec1;
+    ImageLoader.TestStackFrame.VParamTestRecord := @ImageLoader.TestStackFrame.PRec1;
+
+    StartTest('PRec1', skPointer, [ttHasType]);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress, svfDataAddress]); // svfSize;
+
+    for i := 0 to 5 do begin
+      case i of
+         0: s := 'Rec1';
+         1: s := 'PRec1^';
+         2: s := '(@Rec1)^';
+         3: s := '(@PRec1)^^';
+         4: s := 'VParamTestSetup1Record';
+         5: s := 'VParamTestRecord^';
+      end;
+
+      StartTest(s, skRecord, [ttHasType]);
+      // svfSize;
+      ExpFlags([svfMembers, svfAddress], [svfOrdinal, svfCardinal, svfInteger, svfDataAddress]);
+      ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Rec1)));
+
+
+      StartTest(s+'.FWord', skCardinal, [ttHasType]);
+      ExpFlags([svfCardinal, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
+      ExpResult(svfCardinal, $9ab7);
+      ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Rec1.FWord)));
+
+      StartTest('@'+s+'.FWord', skPointer, [ttHasType]);
+      ExpFlags([svfCardinal, svfOrdinal, svfDataAddress], [svfAddress]); // svfSize;
+      ExpResult(svfCardinal, QWord(PtrUInt(@ImageLoader.TestStackFrame.Rec1.FWord)));
+      ExpResult(svfDataAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Rec1.FWord)));
+
+
+      ImageLoader.TestStackFrame.Rec1.FBool := False;
+      StartTest(s+'.FBool', skBoolean, [ttHasType]);
+      ExpFlags([svfBoolean, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
+      ExpResult(svfBoolean, False);
+      ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Rec1.FBool)));
+
+      ImageLoader.TestStackFrame.Rec1.FBool := True;
+      StartTest(s+'.FBool', skBoolean, [ttHasType]);
+      ExpResult(svfBoolean, True);
+
+    end;
+
+    // Record
+    ImageLoader.TestStackFrame.Rec1.FWord := 1021;
     StartTest('Rec1');
 
     StartTest('Rec1.FWord');
     ExpResult(svfCardinal, 1021);
     ExpFlags([svfCardinal, svfOrdinal, svfAddress]);
 
+
+    // type = Object ... end;
+    StartTest('OldObj1', skObject, [ttHasType]);
+    ExpFlags([svfMembers, svfAddress], [svfOrdinal, svfCardinal, svfInteger, svfDataAddress]);
+    ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.OldObj1)));
+
     // var param // old style object
     vobj1.FWord := 1122;
     vobj1.FInt := -122;
+    ImageLoader.TestStackFrame.OldObj1 := vobj1;
+    ImageLoader.TestStackFrame.POldObj1 := @vobj1;
+    ImageLoader.TestStackFrame.VParamTestSetup1Object := @vobj1;
+    ImageLoader.TestStackFrame.VParamTestSetup1ObjectP := @ImageLoader.TestStackFrame.POldObj1;
 
-    StartTest('VParamTestSetup1Object');
+    for i := 0 to 5 do begin
+      case i of
+         2,4: AddrExp := TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.OldObj1));
+         else AddrExp := TDbgPtr(PtrUInt(@vobj1));
+      end;
+      case i of
+         0: s := 'VParamTestSetup1Object';
+         1: s := 'VParamTestSetup1ObjectP^';
+         2: s := 'OldObj1';
+         3: s := 'POldObj1^';
+         4: s := '(@OldObj1)^';
+         5: s := '(@POldObj1)^^';
+      end;
 
-    StartTest('VParamTestSetup1Object.FWord');
-    ExpResult(svfCardinal, 1122);
-    ExpFlags([svfCardinal, svfOrdinal, svfAddress]);
+      StartTest(s, skObject, [ttHasType]);
+      ExpFlags([svfMembers, svfAddress], [svfOrdinal, svfCardinal, svfInteger, svfDataAddress]);
+      ExpResult(svfAddress, AddrExp);
 
-    StartTest('VParamTestSetup1Object.FInt');
-    ExpResult(svfInteger, -122);
-    ExpFlags([svfInteger, svfOrdinal, svfAddress]);
+      case i of
+         2,4: AddrExp := TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.OldObj1.FWord));
+         else AddrExp := TDbgPtr(PtrUInt(@vobj1.FWord));
+      end;
+      StartTest(s+'.FWord');
+      ExpFlags([svfCardinal, svfOrdinal, svfAddress]);
+      ExpResult(svfCardinal, 1122);
+      ExpResult(svfAddress, AddrExp);
+
+      StartTest(s+'.FInt');
+      ExpResult(svfInteger, -122);
+      ExpFlags([svfInteger, svfOrdinal, svfAddress]);
+
+    end;
 
 
     // pointer

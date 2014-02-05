@@ -62,7 +62,7 @@ type
     skUnit,          // contains syms defined in this unit
     //--------------------------------------------------------------------------
     skRecord,        // the address member is the relative location within the
-    skObject,        // structure
+    skObject,        // structure: type TFoo=object end;
     skClass,
     skInterface,
     skProcedure,

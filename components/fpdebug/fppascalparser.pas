@@ -448,6 +448,7 @@ type
     function GetAsInteger: Int64; override;
     function GetAsCardinal: QWord; override;
     function GetTypeInfo: TDbgSymbol; override;
+    function GetDataAddress: TDbgPtr; override;
   public
     constructor Create(AValue: TDbgSymbolValue);
     destructor Destroy; override;
@@ -515,7 +516,7 @@ end;
 
 function TPasParserAddressOfSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
-    Result := Result + [svfOrdinal, svfSizeOfPointer];
+    Result := [svfOrdinal, svfCardinal, svfDataAddress];
 end;
 
 function TPasParserAddressOfSymbolValue.GetAsInteger: Int64;
@@ -539,6 +540,11 @@ begin
   FTypeInfo := TPasParserSymbolPointer.Create(FValue.TypeInfo);
   {$IFDEF WITH_REFCOUNT_DEBUG}FTypeInfo.DbgRenameReference(@FTypeInfo, 'TPasParserAddressOfSymbolValue');{$ENDIF}
   Result := FTypeInfo;
+end;
+
+function TPasParserAddressOfSymbolValue.GetDataAddress: TDbgPtr;
+begin
+  Result := FValue.Address;
 end;
 
 constructor TPasParserAddressOfSymbolValue.Create(AValue: TDbgSymbolValue);
@@ -568,9 +574,9 @@ end;
 function TPasParserConstNumberSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   if FSigned then
-    Result := Result + [svfOrdinal, svfInteger]
+    Result := [svfOrdinal, svfInteger]
   else
-    Result := Result + [svfOrdinal, svfCardinal];
+    Result := [svfOrdinal, svfCardinal];
 end;
 
 function TPasParserConstNumberSymbolValue.GetAsCardinal: QWord;
@@ -1787,7 +1793,7 @@ begin
   tmp := Items[0].ResultValue;
   if (tmp = nil) then exit;
   // Todo unit
-  if (tmp.Kind = skClass) or (tmp.Kind = skRecord) then begin
+  if (tmp.Kind in [skClass, skRecord, skObject]) then begin
     Result := tmp.MemberByName[Items[1].GetText];
     if Result <> nil then
       Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};

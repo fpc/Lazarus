@@ -628,6 +628,8 @@ type
     FSize: Integer;
     FEvaluated: set of (doneUInt, doneInt);
   protected
+    function ReadMemory(ADest: PQWord): Boolean; // read to FValue
+    function GetCardinalValue: QWord;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function CanUseTypeCastAddress: Boolean;
     function IsValidTypeCast: Boolean; override;
@@ -642,6 +644,7 @@ type
   TDbgDwarfIntegerSymbolValue = class(TDbgDwarfNumericSymbolValue)
   protected
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetAsCardinal: QWord; override;
   end;
 
   { TDbgDwarfCardinalSymbolValue }
@@ -1690,7 +1693,8 @@ end;
 function TDbgDwarfPointerSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
-  Result := Result + [svfOrdinal, svfSizeOfPointer, svfDataAddress] - [svfSize]; // data address
+  //TODO: svfDataAddress should depend on (hidden) Pointer or Ref in the TypeInfo
+  Result := Result + [svfCardinal, svfOrdinal, svfSizeOfPointer, svfDataAddress] - [svfSize]; // data address
 end;
 
 function TDbgDwarfPointerSymbolValue.GetDataAddress: TDbgPtr;
@@ -1706,6 +1710,11 @@ begin
   Result := Result + [svfInteger];
 end;
 
+function TDbgDwarfIntegerSymbolValue.GetAsCardinal: QWord;
+begin
+  Result := QWord(GetAsInteger);  // include sign extension
+end;
+
 { TDbgDwarfCardinalSymbolValue }
 
 function TDbgDwarfCardinalSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
@@ -1719,8 +1728,13 @@ end;
 function TDbgDwarfStructSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
-  Result := Result + [svfMembers, svfDataAddress, svfSizeOfPointer]; // svfDataSize
-  if (FValueSymbol <> nil) and FValueSymbol.HasAddress then Result := Result + [svfOrdinal];
+  Result := Result + [svfMembers]; // svfDataSize
+  //TODO: svfDataAddress should depend on (hidden) Pointer or Ref in the TypeInfo
+  if Kind in [skClass] then begin
+    Result := Result + [svfDataAddress, svfSizeOfPointer]; // svfDataSize
+    if (FValueSymbol <> nil) and FValueSymbol.HasAddress then
+      Result := Result + [svfOrdinal];
+  end;
 end;
 
 function TDbgDwarfStructSymbolValue.GetAsCardinal: QWord;
@@ -1752,7 +1766,11 @@ end;
 function TDbgDwarfStructTypeCastSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
-  Result := Result + [svfMembers, svfOrdinal, svfDataAddress, svfSizeOfPointer]; // svfDataSize
+  Result := Result + [svfMembers]; // svfDataSize
+
+  //TODO: svfDataAddress should depend on (hidden) Pointer or Ref in the TypeInfo
+  if Kind in [skClass] then
+    Result := Result + [svfOrdinal, svfDataAddress, svfSizeOfPointer]; // svfDataSize
 end;
 
 function TDbgDwarfStructTypeCastSymbolValue.GetKind: TDbgSymbolKind;
@@ -1943,6 +1961,49 @@ end;
 
 { TDbgDwarfCardinalSymbolValue }
 
+function TDbgDwarfNumericSymbolValue.ReadMemory(ADest: PQWord): Boolean;
+var
+  addr: TDbgPtr;
+begin
+  // TODO: memory representation of values is not dwarf, but platform - move
+  Result := False;
+
+  if ( (FValueSymbol <> nil) or
+       (HasTypeCastInfo and CanUseTypeCastAddress)
+     ) and (MemReader <> nil)
+  then begin
+    if FValueSymbol <> nil then
+      addr := FValueSymbol.Address
+    else
+      addr := FTypeCastSource.Address;
+
+    Result := addr <> 0;
+    if not Result then
+      exit;
+
+    // TODO endian
+    ADest^ := 0;
+    MemReader.ReadMemory(addr, FSize, ADest);
+  end;
+end;
+
+function TDbgDwarfNumericSymbolValue.GetCardinalValue: QWord;
+begin
+  if (FSize <= 0) or (FSize > SizeOf(Result)) then begin
+    Result := inherited GetAsCardinal;
+  end
+
+  else
+  if HasTypeCastInfo and (svfOrdinal in FTypeCastSource.FieldFlags) then begin
+    Result := FTypeCastSource.AsCardinal;
+    Result := Result and (QWord(-1) shr ((SizeOf(Result)-FSize) * 8));
+  end
+
+  else
+  if not ReadMemory(@Result) then  // ReadMemory stores to FValue
+    Result := inherited GetAsCardinal;
+end;
+
 function TDbgDwarfNumericSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
@@ -1978,48 +2039,14 @@ begin
 end;
 
 function TDbgDwarfNumericSymbolValue.GetAsCardinal: QWord;
-var
-  addr: TDbgPtr;
 begin
-  // TODO: memory representation of values is not dwarf, but platform - move
   if doneUInt in FEvaluated then begin
     Result := FValue;
     exit;
   end;
   Include(FEvaluated, doneUInt);
 
-  if (FSize <= 0) or (FSize > SizeOf(Result)) then begin
-    Result := inherited GetAsCardinal;
-  end
-
-  else
-  if HasTypeCastInfo and (svfOrdinal in FTypeCastSource.FieldFlags) then begin
-    Result := FTypeCastSource.AsCardinal;
-    Result := Result and (QWord(-1) shr ((SizeOf(Result)-FSize) * 8));
-  end
-
-  else
-  if ( (FValueSymbol <> nil) or
-       (HasTypeCastInfo and CanUseTypeCastAddress)
-     ) and (MemReader <> nil)
-  then begin
-    if FValueSymbol <> nil then
-      addr := FValueSymbol.Address
-    else
-      addr := FTypeCastSource.Address;
-    if (addr = 0) then begin
-      Result := inherited GetAsCardinal;
-      FValue := Result;
-      exit;
-    end;
-
-    // TODO endian
-    Result := 0;
-    MemReader.ReadMemory(addr, FSize, @Result);
-  end
-  else
-    Result := inherited GetAsCardinal;
-
+  Result := GetCardinalValue;
   FValue := Result;
 end;
 
@@ -2031,7 +2058,7 @@ begin
   end;
   Include(FEvaluated, doneInt);
 
-  Result := Int64(GetAsCardinal);
+  Result := Int64(GetCardinalValue);
   // sign extend
   if Result and (int64(1) shl (FSize * 8 - 1)) <> 0 then
     Result := Result or (int64(-1) shl (FSize * 8));
@@ -4568,10 +4595,15 @@ begin
 end;
 
 procedure TDbgDwarfTypeIdentifierPointer.KindNeeded;
+var
+  k: TDbgSymbolKind;
 begin
   if IsInternalPointer then begin
-    SetForwardToSymbol(NestedTypeInfo);
-    inherited KindNeeded;
+    k := NestedTypeInfo.Kind;
+    if k = skObject then
+      SetKind(skClass)
+    else
+      SetKind(k);
   end
   else
     SetKind(skPointer);
@@ -5131,11 +5163,14 @@ begin
     SetKind(skClass)
   else
   begin
-    if TypeInfo <> nil then
-      SetKind(skClass)
+    if TypeInfo <> nil then // inheritance
+      SetKind(skObject)
     else
     if MemberByName['_vptr$TOBJECT'] <> nil then
-      SetKind(skClass)
+      SetKind(skObject)
+    else
+    if MemberByName['_vptr$'+Name] <> nil then
+      SetKind(skObject)
     else
       SetKind(skRecord);
   end;
