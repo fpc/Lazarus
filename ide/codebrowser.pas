@@ -257,6 +257,7 @@ type
   private
     FHintWindow: THintWindow;
     FIDEDescription: string;
+    FIdleConnected: boolean;
     FOptions: TCodeBrowserViewOptions;
     FOptionsChangeStamp: integer;
     FProjectDescription: string;
@@ -298,6 +299,7 @@ type
     procedure LoadLevelsGroupBox;
     procedure LoadFilterGroupbox;
     procedure FillScopeComboBox;
+    procedure SetIdleConnected(AValue: boolean);
     procedure SetScannedBytes(const AValue: PtrInt);
     procedure SetScannedIdentifiers(const AValue: PtrInt);
     procedure SetScannedLines(const AValue: PtrInt);
@@ -371,6 +373,7 @@ type
     property VisibleUnits: integer read FVisibleUnits write SetVisibleUnits;
     property VisibleIdentifiers: PtrInt read FVisibleIdentifiers write SetVisibleIdentifiers;
     property UpdateNeeded: boolean read FUpdateNeeded write SetUpdateNeeded;
+    property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
 {$IFDEF EnableNewExtTools}
@@ -401,6 +404,7 @@ function StringToCodeBrowserTextFilter(const s: string): TCodeBrowserTextFilter;
 
 procedure InitCodeBrowserQuickFixItems;
 procedure CreateCodeBrowser;
+procedure ShowCodeBrowser(const Identifier: string);
 
 implementation
 
@@ -450,6 +454,14 @@ procedure CreateCodeBrowser;
 begin
   if CodeBrowserView=nil then
     CodeBrowserView:=TCodeBrowserView.Create(LazarusIDE.OwningComponent);
+end;
+
+procedure ShowCodeBrowser(const Identifier: string);
+begin
+  CreateCodeBrowser;
+  CodeBrowserView.SetScopeToCurUnitOwner(true,true);
+  CodeBrowserView.SetFilterToSimpleIdentifier(Identifier);
+  IDEWindowCreators.ShowForm(CodeBrowserView,true);
 end;
 
 
@@ -509,17 +521,19 @@ begin
   LoadOptions;
   FillScopeComboBox;
   ScopeComboBox.ItemIndex:=0;
-  Application.AddOnIdleHandler(@OnIdle);
+  IdleConnected:=true;
 end;
 
 procedure TCodeBrowserView.FormDestroy(Sender: TObject);
 begin
+  IdleConnected:=false;
   ClearTreeView;
   FreeAndNil(fOutdatedFiles);
   FreeAndNil(FViewRoot);
   FreeAndNil(FParserRoot);
   FreeAndNil(FWorkingParserRoot);
   FreeAndNil(FOptions);
+  IdleConnected:=false;
 end;
 
 procedure TCodeBrowserView.IdleTimer1Timer(Sender: TObject);
@@ -794,6 +808,17 @@ begin
       sl.Free;
     end;
   end;
+end;
+
+procedure TCodeBrowserView.SetIdleConnected(AValue: boolean);
+begin
+  if csDestroying in ComponentState then AValue:=false;
+  if FIdleConnected=AValue then Exit;
+  FIdleConnected:=AValue;
+  if IdleConnected then
+    Application.AddOnIdleHandler(@OnIdle)
+  else
+    Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
 procedure TCodeBrowserView.InitImageList;
@@ -2597,8 +2622,9 @@ end;
 
 procedure TCodeBrowserView.InvalidateStage(AStage: TCodeBrowserWorkStage);
 begin
-  if ord(fStage)>ord(AStage) then
-    fStage:=AStage;
+  if ord(fStage)<=ord(AStage) then exit;
+  fStage:=AStage;
+  IdleConnected:=true;
 end;
 
 function TCodeBrowserView.GetSelectedUnit: TCodeBrowserUnit;
@@ -2835,15 +2861,11 @@ function TCodeBrowserView.SetScopeToCurUnitOwner(UseFCLAsDefault,
   WithRequiredPackages: boolean): boolean;
 var
   NewScope: String;
-//  i: LongInt;
 begin
   Result:=false;
   NewScope:=GetScopeToCurUnitOwner(UseFCLAsDefault);
   if NewScope='' then exit;
   ScopeComboBox.Text:=NewScope;
-{  i:=ScopeComboBox.Items.IndexOf(NewScope);
-  if i>=0 then                     - not needed for csDropDownList style combobox
-    ScopeComboBox.ItemIndex:=i;  }
   ScopeWithRequiredPackagesCheckBox.Checked:=WithRequiredPackages;
   InvalidateStage(cbwsGetScopeOptions);
 end;
@@ -3337,10 +3359,7 @@ begin
     then exit;
 
     // start code browser
-    CreateCodeBrowser;
-    CodeBrowserView.SetScopeToCurUnitOwner(true,true);
-    CodeBrowserView.SetFilterToSimpleIdentifier(Identifier);
-    IDEWindowCreators.ShowForm(CodeBrowserView,true);
+    ShowCodeBrowser(Identifier);
   end;
 end;
 {$ENDIF EnableNewExtTools}
