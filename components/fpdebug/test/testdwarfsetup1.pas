@@ -69,23 +69,6 @@ type
   PPInt = ^Pint;
   PPPInt = ^PPint;
   PQWord = ^QWord;
-
-var // Globals
-  GlobTestSetup1Record: TTestSetup1Record;
-  GlobTestSetup1RecordP: PTestSetup1Record;
-
-  GlobTestSetup1Class: TTestSetup1Class;
-  GlobTestSetup1ClassP: PTestSetup1Class;
-  GlobTestSetup1ClassChild: TTestSetup1ClassChild;
-  GlobTestSetup1ClassChildP: PTestSetup1ClassChild;
-  GlobTestSetup1ClassClass: TTestSetup1ClassClass;
-  GlobTestSetup1ClassChildClass: TTestSetup1ClassChildClass;
-
-  GlobTestSetup1Object: TTestSetup1Object;
-  GlobTestSetup1ObjectP: PTestSetup1Object;
-
-  GlobTestSetup1Pointer: Pointer;
-  GlobTestSetup1QWord: QWord;
   {%endregion}
 
 type
@@ -94,6 +77,7 @@ type
   TTestLoaderSetup1 = class(TTestDummyImageLoader)
   public
     constructor Create; override;
+    procedure  PoissonTestFrame;
   public
     SectionDbgInfo: TTestDummySectionInfoEntries;
     //CompUnit, Prog1, Prog2,
@@ -103,55 +87,79 @@ type
     : TTestDwarfInfoEntry;
 
 
+    // global vars
+    GlobTestSetup1: record
+      PAD_Before: QWord; // padding will be filled with bad data
+      VarRecord, PAD_VarRecord: TTestSetup1Record;
+      VarRecordP, PAD_VarRecordP: PTestSetup1Record;
+
+      VarClass, PAD_VarClass: TTestSetup1Class;
+      VarClassP, PAD_VarClassP: PTestSetup1Class;
+      VarClassChild, PAD_VarClassChild: TTestSetup1ClassChild;
+      VarClassChildP, PAD_VarClassChildP: PTestSetup1ClassChild;
+      VarClassClass, PAD_VarClassClass: TTestSetup1ClassClass;
+      VarClassChildClass, PAD_VarClassChildClass: TTestSetup1ClassChildClass;
+
+      VarObject, PAD_VarObject: TTestSetup1Object;
+      VarObjectP, PAD_VarObjectP: PTestSetup1Object;
+
+      VarPointer, PAD_VarPointer: Pointer;
+      VarQWord, PAD_VarQWord: QWord;
+
+      PAD_After: QWord;
+    end;
+
+    // stackframe for "Bar"
     TestStackFrame: record
+      PAD_Before: QWord; // padding will be filled with bad data
       // locals
-      int1: Integer;
-      pint1: ^Integer;
-      bool1: Boolean;
+      int1, PAD_int1: Integer;
+      pint1, PAD_pint1: ^Integer;
+      bool1, PAD_bool1: Boolean;
 
-      Obj1: TTestSetup1Class;
-      PObj1: ^TTestSetup1Class;
-      OldObj1: TTestSetup1Object;
-      POldObj1: PTestSetup1Object;
-      Rec1: TTestSetup1Record;
-      PRec1: ^TTestSetup1Record;
-      Rec2: record    FWord: Word;    FBool: Boolean;  end;
+      Obj1, PAD_Obj1: TTestSetup1Class;
+      PObj1, PAD_PObj1: ^TTestSetup1Class;
+      OldObj1, PAD_OldObj1: TTestSetup1Object;
+      POldObj1, PAD_POldObj1: PTestSetup1Object;
+      Rec1, PAD_Rec1: TTestSetup1Record;
+      PRec1, PAD_PRec1: ^TTestSetup1Record;
+      Rec2, PAD_Rec2: record    FWord: Word;    FBool: Boolean;  end;
 
-      pi: Pint;
-      ppi: PPint;
-      pppi: PPPint;
+      pi, PAD_pi: Pint;
+      ppi, PAD_ppi: PPint;
+      pppi, PAD_pppi: PPPint;
 
-      subr: 1..9;
-      subr2: -11..-9;
-      subr3: #9..'m';
+      subr, PAD_subr: 1..9;
+      subr2, PAD_subr2: -11..-9;
+      subr3, PAD_subr3: #9..'m';
 
       // param
-      ParamTestSetup1Record: TTestSetup1Record;
-      ParamTestRecord: PTestSetup1Record;
+      ParamTestSetup1Record, PAD_ParamTestSetup1Record: TTestSetup1Record;
+      ParamTestRecord, PAD_ParamTestRecord: PTestSetup1Record;
 
-      ParamTestSetup1Class: TTestSetup1Class;
-      ParamTestSetup1ClassP: PTestSetup1Class;
-      ParamTestSetup1ClassChild: TTestSetup1ClassChild;
-      ParamTestSetup1ClassChildP: PTestSetup1ClassChild;
-      ParamTestSetup1ClassClass: TTestSetup1ClassClass;
-      ParamTestSetup1ClassChildClass: TTestSetup1ClassChildClass;
+      ParamTestSetup1Class, PAD_ParamTestSetup1Class: TTestSetup1Class;
+      ParamTestSetup1ClassP, PAD_ParamTestSetup1ClassP: PTestSetup1Class;
+      ParamTestSetup1ClassChild, PAD_ParamTestSetup1ClassChild: TTestSetup1ClassChild;
+      ParamTestSetup1ClassChildP, PAD_ParamTestSetup1ClassChildP: PTestSetup1ClassChild;
+      ParamTestSetup1ClassClass, PAD_ParamTestSetup1ClassClass: TTestSetup1ClassClass;
+      ParamTestSetup1ClassChildClass, PAD_ParamTestSetup1ClassChildClass: TTestSetup1ClassChildClass;
 
-      ParamTestSetup1Object: TTestSetup1Object;
-      ParamTestSetup1ObjectP: PTestSetup1Object;
+      ParamTestSetup1Object, PAD_ParamTestSetup1Object: TTestSetup1Object;
+      ParamTestSetup1ObjectP, PAD_ParamTestSetup1ObjectP: PTestSetup1Object;
 
       // simulate varparam / declare one pointer level
-      VParamTestSetup1Record: ^TTestSetup1Record;
-      VParamTestRecord: ^PTestSetup1Record;
+      VParamTestSetup1Record, PAD_VParamTestSetup1Record: ^TTestSetup1Record;
+      VParamTestRecord, PAD_VParamTestRecord: ^PTestSetup1Record;
 
-      VParamTestSetup1Class: ^TTestSetup1Class;
-      VParamTestSetup1ClassP: ^PTestSetup1Class;
-      VParamTestSetup1ClassChild: ^TTestSetup1ClassChild;
-      VParamTestSetup1ClassChildP: ^PTestSetup1ClassChild;
-      VParamTestSetup1ClassClass: ^TTestSetup1ClassClass;
-      VParamTestSetup1ClassChildClass: ^TTestSetup1ClassChildClass;
+      VParamTestSetup1Class, PAD_VParamTestSetup1Class: ^TTestSetup1Class;
+      VParamTestSetup1ClassP, PAD_VParamTestSetup1ClassP: ^PTestSetup1Class;
+      VParamTestSetup1ClassChild, PAD_VParamTestSetup1ClassChild: ^TTestSetup1ClassChild;
+      VParamTestSetup1ClassChildP, PAD_VParamTestSetup1ClassChildP: ^PTestSetup1ClassChild;
+      VParamTestSetup1ClassClass, PAD_VParamTestSetup1ClassClass: ^TTestSetup1ClassClass;
+      VParamTestSetup1ClassChildClass, PAD_VParamTestSetup1ClassChildClass: ^TTestSetup1ClassChildClass;
 
-      VParamTestSetup1Object: ^TTestSetup1Object;
-      VParamTestSetup1ObjectP: ^PTestSetup1Object;
+      VParamTestSetup1Object, PAD_VParamTestSetup1Object: ^TTestSetup1Object;
+      VParamTestSetup1ObjectP, PAD_VParamTestSetup1ObjectP: ^PTestSetup1Object;
 
       //
       EndPoint: pointer;
@@ -182,6 +190,7 @@ var
   StackOffs: LongInt;
 begin
   inherited Create;
+  PoissonTestFrame;
 
   SectionDbgInfo := TestImgReader.TestSection['.debug_info'] as TTestDummySectionInfoEntries;
   Unitdwarfsetup1_lpr_0 := SectionDbgInfo.GetFirstInfoEntryObj;
@@ -203,84 +212,84 @@ Unitdwarfsetup1_lpr_0.AddAddr(DW_AT_high_pc, DW_FORM_addr, $00501510);
   VarGLOBTESTSETUP1RECORD_1.Tag := DW_TAG_variable;
   VarGLOBTESTSETUP1RECORD_1.Children := 0;
   VarGLOBTESTSETUP1RECORD_1.Add(DW_AT_name, DW_FORM_string, 'GLOBTESTSETUP1RECORD'+#0);
-  VarGLOBTESTSETUP1RECORD_1.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GLOBTESTSETUP1RECORD)])); // $03, $00, $90, $40, $00
+  VarGLOBTESTSETUP1RECORD_1.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GlobTestSetup1.VarRECORD)])); // $03, $00, $90, $40, $00
   VarGLOBTESTSETUP1RECORD_1.AddRef(DW_AT_type, DW_FORM_ref4, @TypeDeclTTESTSETUP1RECORD_102); // $90, $07, $00, $00
 
   VarGLOBTESTSETUP1RECORDP_2 := Unitdwarfsetup1_lpr_0.GetNewChild;
   VarGLOBTESTSETUP1RECORDP_2.Tag := DW_TAG_variable;
   VarGLOBTESTSETUP1RECORDP_2.Children := 0;
   VarGLOBTESTSETUP1RECORDP_2.Add(DW_AT_name, DW_FORM_string, 'GLOBTESTSETUP1RECORDP'+#0);
-  VarGLOBTESTSETUP1RECORDP_2.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GLOBTESTSETUP1RECORDP)])); // $03, $10, $90, $40, $00
+  VarGLOBTESTSETUP1RECORDP_2.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GlobTestSetup1.VarRECORDP)])); // $03, $10, $90, $40, $00
   VarGLOBTESTSETUP1RECORDP_2.AddRef(DW_AT_type, DW_FORM_ref4, @TypeDeclPTESTSETUP1RECORD_108); // $EB, $07, $00, $00
 
   VarGLOBTESTSETUP1CLASS_3 := Unitdwarfsetup1_lpr_0.GetNewChild;
   VarGLOBTESTSETUP1CLASS_3.Tag := DW_TAG_variable;
   VarGLOBTESTSETUP1CLASS_3.Children := 0;
   VarGLOBTESTSETUP1CLASS_3.Add(DW_AT_name, DW_FORM_string, 'GLOBTESTSETUP1CLASS'+#0);
-  VarGLOBTESTSETUP1CLASS_3.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GLOBTESTSETUP1CLASS)])); // $03, $20, $90, $40, $00
+  VarGLOBTESTSETUP1CLASS_3.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GlobTestSetup1.VarCLASS)])); // $03, $20, $90, $40, $00
   VarGLOBTESTSETUP1CLASS_3.AddRef(DW_AT_type, DW_FORM_ref4, @TypeDeclTTESTSETUP1CLASS_88); // $D3, $06, $00, $00
 
   VarGLOBTESTSETUP1CLASSP_4 := Unitdwarfsetup1_lpr_0.GetNewChild;
   VarGLOBTESTSETUP1CLASSP_4.Tag := DW_TAG_variable;
   VarGLOBTESTSETUP1CLASSP_4.Children := 0;
   VarGLOBTESTSETUP1CLASSP_4.Add(DW_AT_name, DW_FORM_string, 'GLOBTESTSETUP1CLASSP'+#0);
-  VarGLOBTESTSETUP1CLASSP_4.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GLOBTESTSETUP1CLASSP)])); // $03, $30, $90, $40, $00
+  VarGLOBTESTSETUP1CLASSP_4.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GlobTestSetup1.VarCLASSP)])); // $03, $30, $90, $40, $00
   VarGLOBTESTSETUP1CLASSP_4.AddRef(DW_AT_type, DW_FORM_ref4, @TypeDeclPTESTSETUP1CLASS_111); // $0C, $08, $00, $00
 
   VarGLOBTESTSETUP1CLASSCHILD_5 := Unitdwarfsetup1_lpr_0.GetNewChild;
   VarGLOBTESTSETUP1CLASSCHILD_5.Tag := DW_TAG_variable;
   VarGLOBTESTSETUP1CLASSCHILD_5.Children := 0;
   VarGLOBTESTSETUP1CLASSCHILD_5.Add(DW_AT_name, DW_FORM_string, 'GLOBTESTSETUP1CLASSCHILD'+#0);
-  VarGLOBTESTSETUP1CLASSCHILD_5.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GLOBTESTSETUP1CLASSCHILD)])); // $03, $40, $90, $40, $00
+  VarGLOBTESTSETUP1CLASSCHILD_5.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GlobTestSetup1.VarCLASSCHILD)])); // $03, $40, $90, $40, $00
   VarGLOBTESTSETUP1CLASSCHILD_5.AddRef(DW_AT_type, DW_FORM_ref4, @TypeDeclTTESTSETUP1CLASSCHILD_114); // $2C, $08, $00, $00
 
   VarGLOBTESTSETUP1CLASSCHILDP_6 := Unitdwarfsetup1_lpr_0.GetNewChild;
   VarGLOBTESTSETUP1CLASSCHILDP_6.Tag := DW_TAG_variable;
   VarGLOBTESTSETUP1CLASSCHILDP_6.Children := 0;
   VarGLOBTESTSETUP1CLASSCHILDP_6.Add(DW_AT_name, DW_FORM_string, 'GLOBTESTSETUP1CLASSCHILDP'+#0);
-  VarGLOBTESTSETUP1CLASSCHILDP_6.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GLOBTESTSETUP1CLASSCHILDP)])); // $03, $50, $90, $40, $00
+  VarGLOBTESTSETUP1CLASSCHILDP_6.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GlobTestSetup1.VarCLASSCHILDP)])); // $03, $50, $90, $40, $00
   VarGLOBTESTSETUP1CLASSCHILDP_6.AddRef(DW_AT_type, DW_FORM_ref4, @TypeDeclPTESTSETUP1CLASSCHILD_121); // $91, $08, $00, $00
 
   VarGLOBTESTSETUP1CLASSCLASS_7 := Unitdwarfsetup1_lpr_0.GetNewChild;
   VarGLOBTESTSETUP1CLASSCLASS_7.Tag := DW_TAG_variable;
   VarGLOBTESTSETUP1CLASSCLASS_7.Children := 0;
   VarGLOBTESTSETUP1CLASSCLASS_7.Add(DW_AT_name, DW_FORM_string, 'GLOBTESTSETUP1CLASSCLASS'+#0);
-  VarGLOBTESTSETUP1CLASSCLASS_7.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GLOBTESTSETUP1CLASSCLASS)])); // $03, $60, $90, $40, $00
+  VarGLOBTESTSETUP1CLASSCLASS_7.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GlobTestSetup1.VarCLASSCLASS)])); // $03, $60, $90, $40, $00
   VarGLOBTESTSETUP1CLASSCLASS_7.AddRef(DW_AT_type, DW_FORM_ref4, @TypeDeclTTESTSETUP1CLASSCLASS_124); // $B6, $08, $00, $00
 
   VarGLOBTESTSETUP1CLASSCHILDCLASS_8 := Unitdwarfsetup1_lpr_0.GetNewChild;
   VarGLOBTESTSETUP1CLASSCHILDCLASS_8.Tag := DW_TAG_variable;
   VarGLOBTESTSETUP1CLASSCHILDCLASS_8.Children := 0;
   VarGLOBTESTSETUP1CLASSCHILDCLASS_8.Add(DW_AT_name, DW_FORM_string, 'GLOBTESTSETUP1CLASSCHILDCLASS'+#0);
-  VarGLOBTESTSETUP1CLASSCHILDCLASS_8.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GLOBTESTSETUP1CLASSCHILDCLASS)])); // $03, $70, $90, $40, $00
+  VarGLOBTESTSETUP1CLASSCHILDCLASS_8.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GlobTestSetup1.VarCLASSCHILDCLASS)])); // $03, $70, $90, $40, $00
   VarGLOBTESTSETUP1CLASSCHILDCLASS_8.AddRef(DW_AT_type, DW_FORM_ref4, @TypeDeclTTESTSETUP1CLASSCHILDCLASS_127); // $DB, $08, $00, $00
 
   VarGLOBTESTSETUP1OBJECT_9 := Unitdwarfsetup1_lpr_0.GetNewChild;
   VarGLOBTESTSETUP1OBJECT_9.Tag := DW_TAG_variable;
   VarGLOBTESTSETUP1OBJECT_9.Children := 0;
   VarGLOBTESTSETUP1OBJECT_9.Add(DW_AT_name, DW_FORM_string, 'GLOBTESTSETUP1OBJECT'+#0);
-  VarGLOBTESTSETUP1OBJECT_9.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GLOBTESTSETUP1OBJECT)])); // $03, $80, $90, $40, $00
+  VarGLOBTESTSETUP1OBJECT_9.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GlobTestSetup1.VarOBJECT)])); // $03, $80, $90, $40, $00
   VarGLOBTESTSETUP1OBJECT_9.AddRef(DW_AT_type, DW_FORM_ref4, @TypeDeclTTESTSETUP1OBJECT_130); // $05, $09, $00, $00
 
   VarGLOBTESTSETUP1OBJECTP_10 := Unitdwarfsetup1_lpr_0.GetNewChild;
   VarGLOBTESTSETUP1OBJECTP_10.Tag := DW_TAG_variable;
   VarGLOBTESTSETUP1OBJECTP_10.Children := 0;
   VarGLOBTESTSETUP1OBJECTP_10.Add(DW_AT_name, DW_FORM_string, 'GLOBTESTSETUP1OBJECTP'+#0);
-  VarGLOBTESTSETUP1OBJECTP_10.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GLOBTESTSETUP1OBJECTP)])); // $03, $C0, $90, $40, $00
+  VarGLOBTESTSETUP1OBJECTP_10.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GlobTestSetup1.VarOBJECTP)])); // $03, $C0, $90, $40, $00
   VarGLOBTESTSETUP1OBJECTP_10.AddRef(DW_AT_type, DW_FORM_ref4, @TypeDeclPTESTSETUP1OBJECT_145); // $F6, $09, $00, $00
 
   VarGLOBTESTSETUP1POINTER_11 := Unitdwarfsetup1_lpr_0.GetNewChild;
   VarGLOBTESTSETUP1POINTER_11.Tag := DW_TAG_variable;
   VarGLOBTESTSETUP1POINTER_11.Children := 0;
   VarGLOBTESTSETUP1POINTER_11.Add(DW_AT_name, DW_FORM_string, 'GLOBTESTSETUP1POINTER'+#0);
-  VarGLOBTESTSETUP1POINTER_11.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GLOBTESTSETUP1POINTER)])); // $03, $00, $00, $00, $00
+  VarGLOBTESTSETUP1POINTER_11.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GlobTestSetup1.VarPOINTER)])); // $03, $00, $00, $00, $00
   VarGLOBTESTSETUP1POINTER_11.AddRef(DW_AT_type, DW_FORM_ref4, @TypeDeclPOINTER_85); // $C0, $06, $00, $00
 
   VarGLOBTESTSETUP1QWORD_12 := Unitdwarfsetup1_lpr_0.GetNewChild;
   VarGLOBTESTSETUP1QWORD_12.Tag := DW_TAG_variable;
   VarGLOBTESTSETUP1QWORD_12.Children := 0;
   VarGLOBTESTSETUP1QWORD_12.Add(DW_AT_name, DW_FORM_string, 'GLOBTESTSETUP1QWORD'+#0);
-  VarGLOBTESTSETUP1QWORD_12.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GLOBTESTSETUP1QWORD)])); // $03, $00, $00, $00, $00
+  VarGLOBTESTSETUP1QWORD_12.Add(DW_AT_location, DW_FORM_block1, BytesLen1([DW_OP_addr, AddrB(@GlobTestSetup1.VarQWORD)])); // $03, $00, $00, $00, $00
   VarGLOBTESTSETUP1QWORD_12.AddRef(DW_AT_type, DW_FORM_ref4, @TypeDeclQWORD_79); // $8A, $06, $00, $00
 
   Progmain_13 := Unitdwarfsetup1_lpr_0.GetNewChild;
@@ -2933,6 +2942,14 @@ Unitdwarfsetup1_lpr_0.AddAddr(DW_AT_high_pc, DW_FORM_addr, $00501510);
   //
   SectionDbgInfo.CreateSectionData;
   SectionDbgInfo.AbbrevSection.CreateSectionData;
+end;
+
+procedure TTestLoaderSetup1.PoissonTestFrame;
+begin
+  // Ensure any out of bound reads get bad data
+  FillByte(TestStackFrame, SizeOf(TestStackFrame), $D5);
+  FillByte(GlobTestSetup1, SizeOf(GlobTestSetup1), $D5);
+
 end;
 
 end.
