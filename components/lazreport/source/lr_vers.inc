@@ -56,7 +56,7 @@
 {$ENDIF}
 {$DEFINE Delphi5}
 
-{$if FPC_FULLVERSION<20603}
+{$if FPC_FULLVERSION<20605}
   // in former FCL versions TBookmark was a simple pointer
   {$DEFINE noautomatedbookmark}
 {$endif}
