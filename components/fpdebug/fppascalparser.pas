@@ -795,19 +795,19 @@ end;
 
 function TFpPascalExpressionPartBracketArgumentList.DoGetResultValue: TDbgSymbolValue;
 var
-  tmp: TDbgSymbolValue;
+  tmp, tmp2: TDbgSymbolValue;
 begin
   Result := nil;
 
   if (Count = 2) then begin
-    Result := Items[0].ResultValue;
-    if (Result <> nil) and (Result.DbgSymbol <> nil) and
-       (Result.DbgSymbol.SymbolType = stType)
+    tmp := Items[0].ResultValue;
+    if (tmp <> nil) and (tmp.DbgSymbol <> nil) and
+       (tmp.DbgSymbol.SymbolType = stType)
     then begin
       // This is a typecast
-      tmp := Items[1].ResultValue;
-      if tmp <> nil then
-        Result := Result.DbgSymbol.TypeCastValue(tmp);
+      tmp2 := Items[1].ResultValue;
+      if tmp2 <> nil then
+        Result := tmp.DbgSymbol.TypeCastValue(tmp2);
       if Result <> nil then
         {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
       exit;

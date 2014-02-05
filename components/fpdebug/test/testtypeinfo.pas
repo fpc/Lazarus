@@ -423,11 +423,11 @@ begin
     ExpResult(svfInteger, -299);
     ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
 
-    StartTest('PInt(GlobTestSetup1Pointer)^', skInteger, [ttHasType]);
+    StartTest('LongInt(pointer(pi)^)', skInteger, [ttHasType]);
     ExpResult(svfInteger, -299);
     ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
 
-    StartTest('LongInt(pointer(pi)^)', skInteger, [ttHasType]);
+    StartTest('PInt(GlobTestSetup1Pointer)^', skInteger, [ttHasType]);
     ExpResult(svfInteger, -299);
     ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
 
@@ -435,6 +435,40 @@ begin
     ExpResult(svfInteger, -299);
     ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
 
+    StartTest('PInt(GlobTestSetup1QWord)^', skInteger, [ttHasType]);
+    ExpResult(svfInteger, -299);
+    ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
+
+    StartInvalTest('LongInt(GlobTestSetup1QWord^)', '');
+
+    //StartTest('LongInt(GlobTestSetup1QWord^)', skInteger, [ttHasType]);
+    //ExpResult(svfInteger, -299);
+    //ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
+
+
+    ImageLoader.TestStackFrame.pi := @ImageLoader.TestStackFrame.Obj1;
+    GlobTestSetup1Pointer := @ImageLoader.TestStackFrame.Obj1;
+    GlobTestSetup1QWord := QWord(@ImageLoader.TestStackFrame.Obj1);
+
+    StartTest('TTestSetup1Class(pi^).FWord', skCardinal, [ttHasType]);
+    ExpResult(svfCardinal, 1019);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize; //
+
+    StartTest('PTestSetup1Class(pi)^.FWord', skCardinal, [ttHasType]);
+    ExpResult(svfCardinal, 1019);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize; //
+
+    StartTest('TTestSetup1Class(GlobTestSetup1Pointer^).FWord', skCardinal, [ttHasType]);
+    ExpResult(svfCardinal, 1019);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize; //
+
+    StartTest('PTestSetup1Class(GlobTestSetup1Pointer)^.FWord', skCardinal, [ttHasType]);
+    ExpResult(svfCardinal, 1019);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize; //
+
+    StartTest('PTestSetup1Class(GlobTestSetup1QWord)^.FWord', skCardinal, [ttHasType]);
+    ExpResult(svfCardinal, 1019);
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize; //
 
   ///////////////////////////
   finally

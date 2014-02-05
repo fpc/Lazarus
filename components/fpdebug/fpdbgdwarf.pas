@@ -1947,7 +1947,7 @@ function TDbgDwarfNumericSymbolValue.GetAsCardinal: QWord;
 var
   addr: TDbgPtr;
 begin
-  // TODO: memory representation of values is not dwar, but platform - move
+  // TODO: memory representation of values is not dwarf, but platform - move
   if doneUInt in FEvaluated then begin
     Result := FValue;
     exit;
