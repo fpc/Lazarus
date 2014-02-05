@@ -607,6 +607,7 @@ type
     function GetMemberByName(AIndex: String): TDbgSymbolValue; override;
     function GetMember(AIndex: Integer): TDbgSymbolValue; override;
     function GetDbgSymbol: TDbgSymbol; override;
+    function GetTypeInfo: TDbgSymbol; override;
 
     property MemReader: TFpDbgMemReaderBase read FMemReader;
   public
@@ -680,6 +681,7 @@ type
   TDbgDwarfPointerSymbolValue = class(TDbgDwarfNumericSymbolValue)
   protected
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetDataAddress: TDbgPtr; override;
   end;
 
 
@@ -1681,7 +1683,12 @@ end;
 function TDbgDwarfPointerSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
-  Result := Result + [svfSizeOfPointer] - [svfSize]; // data address
+  Result := Result + [svfOrdinal, svfSizeOfPointer, svfDataAddress] - [svfSize]; // data address
+end;
+
+function TDbgDwarfPointerSymbolValue.GetDataAddress: TDbgPtr;
+begin
+  Result := GetAsCardinal;
 end;
 
 { TDbgDwarfIntegerSymbolValue }
@@ -1819,7 +1826,7 @@ begin
 
   tmp := FTypeCastInfo.MemberByName[AIndex];
   if (tmp <> nil) then begin
-    assert(tmp is TDbgDwarfIdentifierMember);
+    assert(tmp is TDbgDwarfIdentifierMember, 'TDbgDwarfStructTypeCastSymbolValue.GetMemberByName'+DbgSName(tmp));
     if FMembers = nil then
       FMembers := TFpDbgCircularRefCntObjList.Create;
     FMembers.Add(tmp);
@@ -1915,10 +1922,12 @@ begin
      (FTypeCastSource.Size = FSize)
   then
     exit;
-  //if (FTypeCastSource.FieldFlags * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer]) and
-  //   (FSize = AddressSize xxxxxxx)
-  //then
-  //  exit;
+  if (FTypeCastSource.FieldFlags * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer]) and
+     not ( (FTypeCastInfo.Kind = skPointer) //or
+           //(FSize = AddressSize xxxxxxx)
+         )
+  then
+    exit;
   Result := False;
 end;
 
@@ -2044,6 +2053,9 @@ begin
   if FOwner <> nil then
     Result := FOwner.Kind
   else
+  if HasTypeCastInfo then
+    Result := FTypeCastInfo.Kind
+  else
     Result := inherited GetKind;
 end;
 
@@ -2093,6 +2105,14 @@ end;
 function TDbgDwarfSymbolValue.GetDbgSymbol: TDbgSymbol;
 begin
   Result := FOwner;
+end;
+
+function TDbgDwarfSymbolValue.GetTypeInfo: TDbgSymbol;
+begin
+  if HasTypeCastInfo then
+    Result := FTypeCastInfo
+  else
+    Result := inherited GetTypeInfo;
 end;
 
 constructor TDbgDwarfSymbolValue.Create(AMemReader: TFpDbgMemReaderBase);
@@ -4553,8 +4573,7 @@ begin
   if IsInternalPointer then
     Result := NestedTypeInfo.GetTypedValueObject(ATypeCast)
   else
-    // TODO:
-  Result := TDbgDwarfPointerSymbolValue.Create(FCU.FOwner.FMemReader, FCU.FAddressSize);
+    Result := TDbgDwarfPointerSymbolValue.Create(FCU.FOwner.FMemReader, FCU.FAddressSize);
 end;
 
 { TDbgDwarfTypeIdentifierDeclaration }

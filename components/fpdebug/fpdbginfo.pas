@@ -124,6 +124,7 @@ type
   end;
 
   TDbgSymbolValueFieldFlag = (
+    // svfAddress, svfDataAddress this symbol does have an address, but it may still be nil
     svfAddress, svfSize, svfSizeOfPointer,
     svfDataAddress, svfDataSize, svfDataSizeOfPointer,
     svfInteger, svfCardinal,

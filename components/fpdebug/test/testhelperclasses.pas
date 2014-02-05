@@ -164,6 +164,7 @@ type
 function ULEB(ANum: QWord): TBytes;
 function SLEB(ANum: Int64): TBytes;
 function AddrB(ANum: Int64): TBytes;
+function AddrB(ANum: Pointer): TBytes;
 function NumS(ANum: Int64; ASize: Integer): TBytes;
 function NumU(ANum: QWord; ASize: Integer): TBytes;
 
@@ -354,6 +355,11 @@ begin
   if TestAddrSize = 4
   then PInteger(@Result[0])^ := Integer(ANum)
   else PInt64(@Result[0])^ := Int64(ANum);
+end;
+
+function AddrB(ANum: Pointer): TBytes;
+begin
+  Result := AddrB(Int64(ANum));
 end;
 
 function NumS(ANum: Int64; ASize: Integer): TBytes;

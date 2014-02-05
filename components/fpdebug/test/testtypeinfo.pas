@@ -62,6 +62,9 @@ begin
 end;
 
 procedure TTestTypInfo.New1;
+type
+  TTestFlag = (ttHasType, ttNotHasType, ttHasSymbol, ttHasValSymbol, ttHasTypeSymbol);
+  TTestFlags = set of TTestFlag;
 var
   CurrentTestName: String;
   Ctx: TDbgInfoAddressContext;
@@ -74,11 +77,32 @@ var
     Expression.Free;
     Expression := TTestPascalExpression.Create(Expr, Ctx);
   end;
-  procedure StartTest(Expr: String; ExtraName: String = '');
+  procedure StartTest(Expr: String; TestFlags: TTestFlags = []; ExtraName: String = '');
+  var
+    i: TTestFlag;
   begin
     InitTest(Expr, ExtraName);
     AssertTrue(CurrentTestName + 'valid', Expression.Valid);
     AssertTrue(CurrentTestName + 'has ResVal', Expression.ResultValue <> nil);
+    for i := low(TTestFlags) to high(TTestFlags) do
+      if i in TestFlags then
+        case i of
+          ttHasType:      AssertTrue('hastype', Expression.ResultValue.TypeInfo <> nil);
+          ttNotHasType:   AssertTrue('has not type', Expression.ResultValue.TypeInfo = nil);
+          ttHasSymbol:    AssertTrue('hassymbol', Expression.ResultValue.DbgSymbol <> nil);
+          ttHasValSymbol: AssertTrue('hassymbol', (Expression.ResultValue.DbgSymbol <> nil) and
+                                                  (Expression.ResultValue.DbgSymbol.SymbolType = stValue));
+          ttHasTypeSymbol: AssertTrue('hassymbol', (Expression.ResultValue.DbgSymbol <> nil) and
+                                                   (Expression.ResultValue.DbgSymbol.SymbolType = stType));
+        end;
+  end;
+  procedure StartTest(Expr: String; ExpKind: TDbgSymbolKind; TestFlags: TTestFlags = []; ExtraName: String = '');
+  var
+    s: String;
+  begin
+    StartTest(Expr, TestFlags, ExtraName);
+    WriteStr(s, 'Kind exected ', ExpKind, ' but was ', Expression.ResultValue.Kind);
+    AssertTrue(s, Expression.ResultValue.Kind = ExpKind);
   end;
   procedure StartInvalTest(Expr: String; ExpError: String; ExtraName: String = '');
   begin
@@ -215,11 +239,20 @@ begin
     AssertTrue('got sym',  sym <> nil);
     sym.ReleaseReference();
 
-    StartTest('Int1');
+    // Not existing
+    StartInvalTest('NotExisting1399', 'xxx');
+
+    // Not Existing Typecast
+    StartInvalTest('TNotExisting1399(Int1)', 'xxx');
+
+
+
+    StartTest('Int1', skInteger, [ttHasType]);
     ExpResult(svfInteger, -299);
     ExpFlags([svfInteger, svfOrdinal, svfAddress]); // svfSize;
 
     StartTest('@Int1');
+// TODO: dataAddr
     ExpResult(svfCardinal, PtrUInt(@ImageLoader.TestStackFrame.Int1));
     ExpFlags([svfCardinal, svfOrdinal], [svfAddress]);
 
@@ -306,7 +339,7 @@ begin
 
     StartTest('(@Obj1)^.FWord');
     ExpResult(svfCardinal, 1019);
-    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize;
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize; //
 
     StartTest('(@Obj1.FWord)^');
     ExpResult(svfCardinal, 1019);
@@ -334,13 +367,67 @@ begin
     ExpFlags([svfInteger, svfOrdinal, svfAddress]);
 
 
-    // Not existing
-    StartInvalTest('NotExisting1399', 'xxx');
+    // pointer
+    ImageLoader.TestStackFrame.Int1 := -299;
+    ImageLoader.TestStackFrame.pi := @ImageLoader.TestStackFrame.int1;
+    GlobTestSetup1Pointer := @ImageLoader.TestStackFrame.int1;
+    GlobTestSetup1QWord := QWord(@ImageLoader.TestStackFrame.int1);
 
-    // Not Existing Typecast
-    StartInvalTest('TNotExisting1399(Int1)', 'xxx');
+    StartTest('pi', skPointer, [ttHasType]);
+    ExpResult(svfOrdinal, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpResult(svfAddress, QWord(@ImageLoader.TestStackFrame.pi));
+    ExpResult(svfDataAddress, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpFlags([svfOrdinal, svfAddress, svfDataAddress, svfSizeOfPointer]);
 
+    StartTest('GlobTestSetup1Pointer', skPointer, [ttHasType]);
+    ExpResult(svfOrdinal, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpResult(svfAddress, QWord(@GlobTestSetup1Pointer));
+    ExpResult(svfDataAddress, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpFlags([svfOrdinal, svfAddress, svfDataAddress, svfSizeOfPointer]);
 
+    StartTest('pointer(pi)', skPointer, [ttHasType]);
+    ExpResult(svfOrdinal, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpResult(svfAddress, QWord(@ImageLoader.TestStackFrame.pi));
+    ExpResult(svfDataAddress, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpFlags([svfOrdinal, svfAddress, svfDataAddress, svfSizeOfPointer]);
+
+    StartTest('PInt(pi)', skPointer, [ttHasType]);
+    ExpResult(svfOrdinal, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpResult(svfAddress, QWord(@ImageLoader.TestStackFrame.pi));
+    ExpResult(svfDataAddress, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpFlags([svfOrdinal, svfAddress, svfDataAddress, svfSizeOfPointer]);
+
+    StartTest('PTestSetup1Class(pi)', skPointer, [ttHasType]);
+    ExpResult(svfOrdinal, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpResult(svfAddress, QWord(@ImageLoader.TestStackFrame.pi));
+    ExpResult(svfDataAddress, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpFlags([svfOrdinal, svfAddress, svfDataAddress, svfSizeOfPointer]);
+
+    StartTest('pointer(GlobTestSetup1Pointer)', skPointer, [ttHasType]);
+    ExpResult(svfOrdinal, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpResult(svfAddress, QWord(@GlobTestSetup1Pointer));
+    ExpResult(svfDataAddress, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpFlags([svfOrdinal, svfAddress, svfDataAddress, svfSizeOfPointer]);
+
+    StartTest('pint(GlobTestSetup1Pointer)', skPointer, [ttHasType]);
+    ExpResult(svfOrdinal, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpResult(svfAddress, QWord(@GlobTestSetup1Pointer));
+    ExpResult(svfDataAddress, QWord(@ImageLoader.TestStackFrame.int1));
+    ExpFlags([svfOrdinal, svfAddress, svfDataAddress, svfSizeOfPointer]);
+
+    StartTest('pi^', skInteger, [ttHasType]);
+    ExpResult(svfInteger, -299);
+    ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
+
+    StartTest('PInt(pi)^', skInteger, [ttHasType]);
+    ExpResult(svfInteger, -299);
+    ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
+
+    StartTest('PInt(GlobTestSetup1Pointer)^', skInteger, [ttHasType]);
+    ExpResult(svfInteger, -299);
+    ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
+
+    // TODO Integer(pointer(pi)^)
 
   ///////////////////////////
   finally

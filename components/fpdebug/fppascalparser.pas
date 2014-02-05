@@ -421,6 +421,20 @@ type
     constructor Create(AValue: QWord; ASigned: Boolean = False);
   end;
 
+  { TPasParserDerefPointerSymbolValue }
+
+  TPasParserDerefPointerSymbolValue = class(TDbgSymbolValue)
+  private
+    FValue: TDbgSymbolValue;
+  protected
+    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetAddress: TDbgPtr; override;
+    function GetSize: Integer; override;
+  public
+    constructor Create(AValue: TDbgSymbolValue);
+    destructor Destroy; override;
+  end;
+
   { TPasParserAddressOfSymbolValue }
 
   TPasParserAddressOfSymbolValue = class(TDbgSymbolValue)
@@ -439,6 +453,53 @@ type
     destructor Destroy; override;
     property PointedToValue: TDbgSymbolValue read GetPointedToValue;
   end;
+
+{ TPasParserDerefPointerSymbolValue }
+
+function TPasParserDerefPointerSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
+var
+  t: TDbgSymbol;
+begin
+  // MUST *NOT* have ordinal
+  Result := [svfAddress];
+  t := FValue.TypeInfo;
+  if t <> nil then t := t.TypeInfo;
+  if t <> nil then
+    if t.Kind = skPointer then
+      Result := Result + [svfSizeOfPointer]
+    else
+      Result := Result + [svfSize];
+end;
+
+function TPasParserDerefPointerSymbolValue.GetAddress: TDbgPtr;
+begin
+  Result := FValue.DataAddress;
+end;
+
+function TPasParserDerefPointerSymbolValue.GetSize: Integer;
+var
+  t: TDbgSymbol;
+begin
+  t := FValue.TypeInfo;
+  if t <> nil then t := t.TypeInfo;
+  if t <> nil then
+    Result := t.Size
+  else
+    Result := inherited GetSize;
+end;
+
+constructor TPasParserDerefPointerSymbolValue.Create(AValue: TDbgSymbolValue);
+begin
+  inherited Create;
+  FValue := AValue;
+  FValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserDerefPointerSymbolValue'){$ENDIF};
+end;
+
+destructor TPasParserDerefPointerSymbolValue.Destroy;
+begin
+  inherited Destroy;
+  FValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserDerefPointerSymbolValue'){$ENDIF};
+end;
 
 { TPasParserAddressOfSymbolValue }
 
@@ -1621,7 +1682,7 @@ end;
 
 function TFpPascalExpressionPartOperatorDeRef.DoGetResultValue: TDbgSymbolValue;
 var
-  tmp: TDbgSymbolValue;
+  tmp, tmp2: TDbgSymbolValue;
 begin
   Result := nil;
   if Count <> 1 then exit;
@@ -1636,8 +1697,15 @@ begin
   end
   else
   if tmp.Kind = skPointer then begin
-    // TODO
-    //Result := Result.TypeInfo;
+    if (svfDataAddress in tmp.FieldFlags) and (tmp.DataAddress <> 0) and
+       (tmp.TypeInfo <> nil) and (tmp.TypeInfo.TypeInfo <> nil)
+    then begin
+      //TODO: maybe introduce a method TypeCastFromAddress, so we can skip the twp2 object
+      tmp2 := TPasParserDerefPointerSymbolValue.Create(tmp);
+      Result := tmp.TypeInfo.TypeInfo.TypeCastValue(tmp2);
+      {$IFDEF WITH_REFCOUNT_DEBUG} if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
+      tmp2.ReleaseReference;
+    end;
   end
   //if tmp.Kind = skArray then // dynarray
   else
