@@ -702,7 +702,7 @@ msgstr "Hilfe für Direktive %s%s%s nicht in Datenbank %s%s%s gefunden."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
-msgstr "Hilfeschlüsselwort %s%s%s nciht gefunden."
+msgstr "Hilfeschlüsselwort %s%s%s nicht gefunden."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
