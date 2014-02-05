@@ -43,8 +43,8 @@ type
     shrSuccess,
     shrCancel,
     shrDatabaseNotFound,
-    shrContextNotFound,
-    shrViewerNotFound,
+    shrContextNotFound, // database found, but the element was not found
+    shrViewerNotFound,  // no viewer registered for this format
     shrHelpNotFound,
     shrViewerError,
     shrSelectorError
@@ -250,7 +250,7 @@ function ShowHelpForContext(HelpDatabaseID: THelpDatabaseID;
 function ShowHelpForContext(HelpContext: THelpContext; var ErrMsg: string
   ): TShowHelpResult; overload;
 
-// help by keyword (an arbitrary keyword, not a fpc keyword)
+// help by keyword (an arbitrary keyword, not only fpc keyword)
 function ShowHelpOrErrorForKeyword(HelpDatabaseID: THelpDatabaseID;
   const HelpKeyword: string): TShowHelpResult;
 function ShowHelpForKeyword(HelpDatabaseID: THelpDatabaseID;

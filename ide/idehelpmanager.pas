@@ -1400,8 +1400,13 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
       Result:=ShowHelpForDirective('',IDEDirectiveHelpPrefix+Keyword,ErrorMsg)
     else
       Result:=ShowHelpForKeyword('',FPCKeyWordHelpPrefix+Keyword,ErrorMsg);
-    if Result=shrHelpNotFound then exit;
+    if Result=shrSuccess then
+      exit;
+    if Result in [shrNone,shrDatabaseNotFound,shrContextNotFound,shrHelpNotFound] then
+      exit(shrHelpNotFound); // not a FPC keyword
+    // viewer error
     HelpManager.ShowError(Result,ErrorMsg);
+    Result:=shrCancel;
   end;
 
   function CollectDeclarations(CodeBuffer: TCodeBuffer;
@@ -1471,7 +1476,10 @@ begin
 
   Result:=CollectDeclarations(CodeBuffer,Complete);
   if Complete then exit;
+  debugln(['TIDEHelpManager.ShowHelpForSourcePosition no declaration found, trying keywords ...']);
   Result:=CollectKeyWords(CodeBuffer);
+  if Result in [shrCancel,shrSuccess] then exit;
+  debugln(['TIDEHelpManager.ShowHelpForSourcePosition END']);
 end;
 
 function TIDEHelpManager.ConvertCodePosToPascalHelpContext(
