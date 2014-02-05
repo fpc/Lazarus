@@ -2311,6 +2311,7 @@ var
 
 var
   lvl: TCodeBrowserLevel;
+  i: Integer;
 begin
   ShowPackages:=Options.HasLevel(cblPackages);
   ShowUnits:=Options.HasLevel(cblUnits);
@@ -2341,6 +2342,11 @@ begin
 
     // create treeview nodes
     AddTreeNodes(ViewRoot,nil);
+
+    // if there are only a few items expand the whole tree
+    if BrowseTreeView.Items.Count<30 then
+      for i:=0 to BrowseTreeView.Items.TopLvlCount-1 do
+        BrowseTreeView.Items.TopLvlItems[i].Expand(true);
   finally
     CodeToolBoss.DeactivateWriteLock;
     //DebugLn(['TCodeBrowserView.UpdateTreeView EndUpdate']);
