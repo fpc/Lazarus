@@ -178,7 +178,10 @@ end;
 
 function TViewUnitsEntryEnumerator.GetCurrent: TViewUnitsEntry;
 begin
-  Result:=TViewUnitsEntry(PStringToPointerTreeItem(FCurrent.Data)^.Value);
+  if (FCurrent<>nil) and (FCurrent.Data<>nil) then
+    Result:=TViewUnitsEntry(PStringToPointerTreeItem(FCurrent.Data)^.Value)
+  else
+    Result:=nil;
 end;
 
 constructor TViewUnitsEntryEnumerator.Create(Tree: TAVLTree);
@@ -249,6 +252,7 @@ end;
 destructor TViewUnitEntries.Destroy;
 begin
   Clear;
+  FreeAndNil(fItems);
   inherited Destroy;
 end;
 
@@ -257,7 +261,10 @@ var
   S2PItem: PStringToPointerTreeItem;
 begin
   for S2PItem in fItems do
+  begin
     TViewUnitsEntry(S2PItem^.Value).Free;
+    S2PItem^.Value:=nil;
+  end;
   fItems.Clear;
 end;
 
