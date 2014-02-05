@@ -54,7 +54,7 @@ uses
   {$ENDIF}
   IDEFPDocFileSearch, PackageDefs, PackageSystem,
   HelpOptions, MainIntf, LazConf, HelpFPCMessages, CodeHelp,
-  IDEContextHelpEdit, IDEWindowHelp;
+  IDEContextHelpEdit, IDEWindowHelp, CodeBrowser;
 
 type
 
@@ -1377,7 +1377,7 @@ end;
 function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
   const CodePos: TPoint; var ErrMsg: string): TShowHelpResult;
   
-  function CollectKeyWords(CodeBuffer: TCodeBuffer): TShowHelpResult;
+  function CollectKeyWords(CodeBuffer: TCodeBuffer; out Identifier: string): TShowHelpResult;
   var
     p: Integer;
     IdentStart, IdentEnd: integer;
@@ -1385,11 +1385,13 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
     ErrorMsg: String;
   begin
     Result:=shrHelpNotFound;
+    Identifier:='';
     p:=0;
     CodeBuffer.LineColToPosition(CodePos.Y,CodePos.X,p);
     if p<1 then exit;
     GetIdentStartEndAtPosition(CodeBuffer.Source,p,IdentStart,IdentEnd);
     if IdentEnd<=IdentStart then exit;
+    Identifier:=copy(CodeBuffer.Source,IdentStart,IdentEnd-IdentStart);
     if (IdentStart > 1) and (CodeBuffer.Source[IdentStart - 1] in ['$','%']) then
       Dec(IdentStart);
     KeyWord:=copy(CodeBuffer.Source,IdentStart,IdentEnd-IdentStart);
@@ -1463,6 +1465,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
 var
   CodeBuffer: TCodeBuffer;
   Complete: boolean;
+  Identifier: string;
 begin
   debugln('TIDEHelpManager.ShowHelpForSourcePosition A Filename=',Filename,' ',dbgs(CodePos));
   Result:=shrHelpNotFound;
@@ -1477,9 +1480,15 @@ begin
   Result:=CollectDeclarations(CodeBuffer,Complete);
   if Complete then exit;
   debugln(['TIDEHelpManager.ShowHelpForSourcePosition no declaration found, trying keywords ...']);
-  Result:=CollectKeyWords(CodeBuffer);
+  Result:=CollectKeyWords(CodeBuffer,Identifier);
   if Result in [shrCancel,shrSuccess] then exit;
-  debugln(['TIDEHelpManager.ShowHelpForSourcePosition END']);
+  if IsValidIdent(Identifier) then
+  begin
+    debugln(['TIDEHelpManager.ShowHelpForSourcePosition "',Identifier,'" is not a FPC keyword, search via code browser ...']);
+    ShowCodeBrowser(Identifier);
+    exit(shrSuccess);
+  end;
+  debugln(['TIDEHelpManager.ShowHelpForSourcePosition "',Identifier,'" is not a FPC keyword']);
 end;
 
 function TIDEHelpManager.ConvertCodePosToPascalHelpContext(
