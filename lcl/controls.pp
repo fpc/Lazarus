@@ -908,7 +908,7 @@ type
     larClock, // A clock displaying time.
     larColorPicker, // A control which allows selecting a color.
     larComboBox, // A list of choices that the user can select from.
-    larDateField, // A controls which displays and possibly allows to choose a date.
+    larDateField, // A controls which displays and possibly allows one to choose a date.
     larGrid, // A grid control which displays cells
     larGroup, // A control which groups others, such as a TGroupBox.
     larIgnore, // Something to be ignored. For example a blank space between other objects.
@@ -922,11 +922,11 @@ type
     larRadioButton, // A radio button, see for example TRadioButton.
     larResizeGrip, // A grip that the user can drag to change the size of widgets.
     larScrollBar, // A control to scroll another one
-    larSpinner, // A control which allows to increment / decrement a value.
+    larSpinner, // A control which allows one to increment / decrement a value.
     larTabControl, // A control with tabs, like TPageControl.
     larTextEditorMultiline, // A multi-line text editor (for example: TMemo, SynEdit)
     larTextEditorSingleline, // A single-line text editor (for example: TEdit)
-    larTrackBar, // A control which allows to drag a slider.
+    larTrackBar, // A control which allows one to drag a slider.
     larTreeView, // A list of items in a tree structure.
     larTreeItem, // An item in a tree structure.
     larWindow // A top level window.

@@ -9,7 +9,7 @@
  Author: Olivier Guilbaud (OG)
 
  Abstract:
-   Printer select and configure dialog. This dialog box allows to choose
+   Printer select and configure dialog. This dialog box allows one to choose
    a printer and to modify some options to print a file.
    
  history

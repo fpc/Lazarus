@@ -1,4 +1,4 @@
-This example allows to traverse stock images which can be requeted from LCL.
+This example allows one to traverse stock images which can be requeted from LCL.
 
 There are 2 kind of such images:
 

@@ -18,7 +18,7 @@ msgid "The debugger failed to get the application's PID.%0:sThis may be caused b
 msgstr "デバッガはアプリケーションのPIDを取得できませんでした。%0:これはおそらくデバッグ情報の欠損により引き起こされたものでしょう。"
 
 #: gdbmidebugger.gdbmicommandstartmainruntostoperror
-msgid "The debugger was unable to initalize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
 msgstr "デバッガは自身を初期化できませんでした。%0:sアプリケーションはデバッガがブレークポイントを設置する前に開始（そして終了）しました。%0:これはおそらくデバッグ情報の欠損により引き起こされたものでしょう。"
 
 #: gdbmidebugger.gdbmierroronruncommand

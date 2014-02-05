@@ -1397,7 +1397,7 @@
           <p>
             The Items strings are displayed in the static or drop-down list of the control.
           </p><p>
-            Reading allows to access the contents of the list (TStrings compatible).
+            Reading allows one to access the contents of the list (TStrings compatible).
           </p><p>
             Assign another string list to replace the items.
           </p>
@@ -1450,7 +1450,7 @@
         <short>Handler invoked when widgetset items list can be populated</short>
         <descr>
           <p>Some widgetsets like gtk call this just before the list drops down, while others do it on handle creation.
-            This event allows to handle both cases with one event.
+            This event allows one to handle both cases with one event.
           </p>
         </descr>
         <seealso><link id="TCustomComboBox.IntfGetItems"/>
@@ -2280,7 +2280,7 @@ Assign an new string to replace the selected text.</descr>
         <short>The list of all items in the control.</short>
         <descr>
           <p>
-            Reading allows to access the contents of the list (TStrings compatible).
+            Reading allows one to access the contents of the list (TStrings compatible).
           </p><p>
             Assign another string list to replace the items.
           </p>
@@ -3094,7 +3094,7 @@ Qt and Carbon have not implemented it.</descr>
             The Enter key typically is used to press the default button in a form,
             so that it cannot be used to add line breaks into the text.
           </p><p>
-            Setting WantReturns to True allows to enter line breaks, when the control has the focus.
+            Setting WantReturns to True allows one to enter line breaks, when the control has the focus.
           </p><p>
             Even if WantReturns is False, CTRL-Enter inserts an line break.
           </p>
@@ -4567,7 +4567,7 @@ Qt and Carbon have not implemented it.</descr>
             A label control cannot receive the focus (it's read-only), but can display an accelerator key indicator, just as menu entries can do.
             <br/>A windowed control (Edit...) can receive focus, but cannot indicate an accelerator key.
           </p><p>
-            Using a combination of both an label and another control allows to specify both the accelerator key, in the label's caption,
+            Using a combination of both an label and another control allows one to specify both the accelerator key, in the label's caption,
             and make the other control receive the focus when the user presses that accelerator key.
           </p><p>
             An accelerator key is marked by an ampersand '&amp;' in the label's caption,
@@ -4964,7 +4964,7 @@ Qt and Carbon have not implemented it.</descr>
             <tr>
               <td>OnKeyDown</td>
               <td>Action to be taken if a key is down while focus is in this control.
-                This allows to filter or process control characters in a special way.
+                This allows one to filter or process control characters in a special way.
               </td>
             </tr>
             <tr>

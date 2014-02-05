@@ -25,7 +25,7 @@ msgid "The debugger failed to get the application's PID.%0:sThis may be caused b
 msgstr "Налагоджувач не зміг отримати PID додатку.%0:sЦе може бути викликано відсутністю налагоджувальної інформації."
 
 #: gdbmidebugger.gdbmicommandstartmainruntostoperror
-msgid "The debugger was unable to initalize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
 msgstr "Налагоджувач не зміг себе ініціалізувати.%0:sЗастосунок запустився (і завершився) перш ніж налагоджувач міг встановити точки зупинки. %0:sЦе може бути викликано відсутністю налагоджувальної інформації."
 
 #: gdbmidebugger.gdbmierroronruncommand

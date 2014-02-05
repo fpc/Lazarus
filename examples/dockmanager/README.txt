@@ -43,7 +43,7 @@ A Lazarus-like IDE with:
 - persistent layouts with special form handling
 
 In contrast to MiniIDE this project only uses dockable forms,
-floating in a hostsite that allows to dock multiple forms together.
+floating in a hostsite that allows one to dock multiple forms together.
 An editor form only is one of such forms, special only in the save/reload of its content.
 An elastic site is created only for the MainBar, to allow for monolithic (single-form) layouts.
 

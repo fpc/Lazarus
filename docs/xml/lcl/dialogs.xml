@@ -3069,7 +3069,7 @@ the difference is that the password that was typed in is returned as the result 
       </element>
       <!-- function Visibility: default -->
       <element name="SelectDirectory">
-        <short>A function that allows to user to select a directory.</short>
+        <short>A function that allows one to user to select a directory.</short>
         <descr>This function will show a dialog which allows the user to select the required directory when the directory structure is displayed as a tree. <br/>
 
 Under Windows the caption from the resulting dialog cannot be set, but the label above the directory tree will have this value.<br/>

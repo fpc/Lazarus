@@ -200,7 +200,7 @@
             This routine implements the equivalent Windows GDI API
             of the same name in all platforms supported by Lazarus.
             It copies a section of a Canvas to another one, without any stretching.
-            It allows to select the kind of operation which should be
+            It allows one to select the kind of operation which should be
             performed to draw the pixels into the destination in the parameter ROP.
             Allowed operations go from simply copying the pixels without change
             to inverting them and also to executing logical operations involving the source pixels and the previously
@@ -1122,7 +1122,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <!-- function Visibility: default -->
       <element name="ExcludeClipRect">
         <short>Excludes a rectangle from the clipping region,
-          i.e. allows to paint within the rectangle.
+          i.e. allows one to paint within the rectangle.
         </short>
         <descr/>
         <errors/>

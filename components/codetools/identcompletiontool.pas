@@ -192,7 +192,7 @@ type
     ilcfNeedsEndComma,     // after context a comma is needed. e.g. 'uses sysutil| classes'
     ilcfNeedsDo,           // after context a 'do' is needed. e.g. 'with Form1| do'
     ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
-    ilcfCanProcDeclaration,// context allows to declare a procedure/method
+    ilcfCanProcDeclaration,// context allows one to declare a procedure/method
     ilcfEndOfLine          // atom at end of line
     );
   TIdentifierListContextFlags = set of TIdentifierListContextFlag;

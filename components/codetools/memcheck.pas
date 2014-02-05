@@ -75,7 +75,7 @@ const
     can check for memory overwrites at the end of a block }
   add_tail : boolean = true;
   { put crc in sig
-    this allows to test for writing into that part }
+    this allows one to test for writing into that part }
   usecrc : boolean = true;
 
 
@@ -87,7 +87,7 @@ implementation
 {$UNDEF MC_ImplementationStart}
 
 const
-  { allows to add custom info in heap_mem_info, this is the size that will
+  { allows one to add custom info in heap_mem_info, this is the size that will
     be allocated for this information }
   extra_info_size : ptruint = 0;
   exact_info_size : ptruint = 0;
