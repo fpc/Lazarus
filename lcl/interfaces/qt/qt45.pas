@@ -36,9 +36,9 @@ const
 
 // Set qtopia yourself if using QTOPIA with QVFB on i386
 // ppc386 -dQTOPIA
-{$IFDEF CPUARM}
-  {$DEFINE QTOPIA}
-{$ENDIF}
+//{$IFDEF CPUARM}
+//  {$DEFINE QTOPIA}
+//{$ENDIF}
 
 {$IFDEF QTOPIA}
   Qt4PasLib = 'libQt4Pas.so.5';
