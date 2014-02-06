@@ -34,6 +34,9 @@
 unit ViewUnit_Dlg;
 
 {$mode objfpc}{$H+}
+{$IF FPC_FULLVERSION<20700}
+{$OPTIMIZATION NOSTACKFRAME}
+{$ENDIF}
 
 interface
 
