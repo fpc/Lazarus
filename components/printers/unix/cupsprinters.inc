@@ -1,3 +1,4 @@
+{%MainUnit ../osprinters.pas}
 {$IFDEF DebugCUPS}
 {$DEFINE LogPrintoutFile}
 {$ENDIF}
