@@ -2701,6 +2701,7 @@ var
 
     if (Length(FArrayIndexValues) > 0) then begin
       FExprEvaluatedAsText := '';
+      FFields := TDBGFields.Create;
       for i := 0 to Length(FArrayIndexValues) - 1 do begin
         s := FArrayIndexValues[i].ExprEvaluatedAsText;
         if (pos(',', s) > 0) and not(s[1] in ['(', '[', '{', '"', '''', '#']) then
@@ -2708,11 +2709,14 @@ var
         if i > 0 then
           FExprEvaluatedAsText := FExprEvaluatedAsText + ', ';
         FExprEvaluatedAsText := FExprEvaluatedAsText + s;
+
+        FFields.Add(TDBGField.Create(IntToStr(FBoundLow + i), FArrayIndexValues[i], flPublic));
       end;
       if Length(FArrayIndexValues) < FLen then
         FExprEvaluatedAsText := FExprEvaluatedAsText + ', ...';
       FExprEvaluatedAsText := '(' + FExprEvaluatedAsText + ')';
 
+      SetLength(FArrayIndexValues, 0);
       FHasExprEvaluatedAsText := True;
       Result := True;
       exit;
@@ -3327,6 +3331,8 @@ begin
       FKind := skSimple;
       FreeAndNil(FFields);
     end;
+    if Value.AsString = '' then
+      Value.AsString := ExprEvaluatedAsText;
 
     FProcessState := gtpsFinished;
   end;

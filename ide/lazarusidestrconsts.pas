@@ -454,6 +454,11 @@ resourcestring
   lisInspectData = 'Data';
   lisInspectProperties = 'Properties';
   lisInspectMethods = 'Methods';
+  lisInspectUseInstance = 'Instance';
+  lisInspectUseInstanceHint = 'Use instance class';
+  lisInspectShowColClass = 'Show class column';
+  lisInspectShowColType = 'Show type column';
+  lisInspectShowColVisibility = 'Show visibility column';
 
   lisMenuNewPackage = 'New Package ...';
   lisMenuOpenPackage = 'Open Loaded Package ...';

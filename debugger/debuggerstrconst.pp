@@ -64,6 +64,8 @@ resourcestring
   drsInspectColWidthDataName = 'Data name column';
   drsInspectColWidthDataType = 'Data type column';
   drsInspectColWidthDataValue = 'Data value column';
+  drsInspectColWidthDataClass = 'Data class column';
+  drsInspectColWidthDataVisibility = 'Data visibility column';
   drsInspectColWidthMethName = 'Method name column';
   drsInspectColWidthMethType = 'Method type column';
   drsInspectColWidthMethReturns = 'Method returns column';

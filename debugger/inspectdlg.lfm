@@ -1,7 +1,7 @@
 inherited IDEInspectDlg: TIDEInspectDlg
-  Left = 366
+  Left = 423
   Height = 406
-  Top = 185
+  Top = 139
   Width = 295
   BorderStyle = bsSizeToolWin
   Caption = 'IDEInspectDlg'
@@ -13,7 +13,6 @@ inherited IDEInspectDlg: TIDEInspectDlg
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  PopupMenu = PopupMenu1
   object StatusBar1: TStatusBar[0]
     Left = 0
     Height = 23
@@ -23,15 +22,17 @@ inherited IDEInspectDlg: TIDEInspectDlg
   end
   object PageControl: TPageControl[1]
     Left = 0
-    Height = 360
-    Top = 23
+    Height = 334
+    Top = 49
     Width = 295
     ActivePage = DataPage
     Align = alClient
     TabIndex = 0
     TabOrder = 1
+    OnMouseDown = DataGridMouseDown
     object DataPage: TTabSheet
       Caption = 'DataPage'
+      OnMouseDown = DataGridMouseDown
     end
     object PropertiesPage: TTabSheet
       Caption = 'PropertiesPage'
@@ -52,14 +53,77 @@ inherited IDEInspectDlg: TIDEInspectDlg
     TabOrder = 2
     Text = '(...)'
   end
-  object PopupMenu1: TPopupMenu[3]
-    left = 243
-    top = 30
-    object menuClassType: TMenuItem
-      Caption = 'New Item1'
-      Checked = True
-      ShowAlwaysCheckable = True
-      OnClick = menuClassTypeClick
+  object ToolBar1: TToolBar[3]
+    AnchorSideTop.Control = EdInspect
+    Left = 0
+    Height = 26
+    Top = 23
+    Width = 295
+    Caption = 'ToolBar1'
+    ShowCaptions = True
+    TabOrder = 3
+    object btnUseInstance: TToolButton
+      Left = 54
+      Hint = 'Use Instance class'
+      Top = 2
+      AllowAllUp = True
+      Caption = 'Instance'
+      OnClick = btnUseInstanceClick
+      Style = tbsCheck
+    end
+    object ToolButton2: TToolButton
+      Left = 106
+      Top = 2
+      Width = 5
+      Caption = 'ToolButton2'
+      Style = tbsDivider
+    end
+    object btnColClass: TToolButton
+      Left = 111
+      Hint = 'Show Class Column'
+      Top = 2
+      AllowAllUp = True
+      Caption = 'C'
+      Down = True
+      OnClick = btnColClassClick
+      Style = tbsCheck
+    end
+    object btnColType: TToolButton
+      Left = 134
+      Top = 2
+      AllowAllUp = True
+      Caption = 'T'
+      Down = True
+      OnClick = btnColClassClick
+      Style = tbsCheck
+    end
+    object btnColVisibility: TToolButton
+      Left = 157
+      Top = 2
+      AllowAllUp = True
+      Caption = 'V'
+      Down = True
+      OnClick = btnColClassClick
+      Style = tbsCheck
+    end
+    object btnBackward: TToolButton
+      Left = 1
+      Top = 2
+      Caption = '<<'
+      OnClick = btnBackwardClick
+    end
+    object btnForward: TToolButton
+      Left = 25
+      Top = 2
+      Caption = '>>'
+      OnClick = btnForwardClick
+    end
+    object ToolButton4: TToolButton
+      Left = 49
+      Top = 2
+      Width = 5
+      Caption = 'ToolButton4'
+      Style = tbsDivider
     end
   end
 end
