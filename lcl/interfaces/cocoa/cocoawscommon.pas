@@ -754,6 +754,13 @@ function TLCLCommonCallback.MouseMove(Event: NSEvent): Boolean;
 var
   Msg: TLMMouseMove;
   MousePos: NSPoint;
+  i: integer;
+  rect: TRect;
+  mp: TPoint;
+  obj: NSObject;
+  callback: ICommonCallback;
+  targetControl: TWinControl;
+  childControl:TWinControl;
 begin
   Result := False; // allow cocoa to handle message
 
@@ -762,12 +769,44 @@ begin
 
   MousePos := Event.locationInWindow;
   OffsetMousePos(MousePos);
+  mp.X:=round(MousePos.x);
+  mp.Y:=round(MousePos.y);
+
+  rect:=Owner.lclClientFrame;
+  targetControl:=nil;
+
+  if assigned(Target.Parent) and not PtInRect(rect, mp) then
+     targetControl:=Target.Parent                            // outside myself then go to parent
+  else
+  for i:=Target.ComponentCount-1 downto 0  do                // otherwise check, if over child
+    if Target.Components[i] is TWinControl then
+      begin
+        childControl:=TWinControl(Target.Components[i]);
+        rect:=childControl.BoundsRect;
+         if  PtInRect(rect, mp) then
+             begin
+             targetControl:=childControl;
+             break;
+             end;
+       end;
+
+
+  if assigned(targetControl) then
+     begin
+     //debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(mp)+' Rect'+dbgs(rect));
+     obj:=NSView(targetControl.Handle);
+     callback:=obj.lclGetCallback;
+     result:=callback.MouseMove(Event);
+     exit;
+     end;
+
+  //debugln('Send to: '+Target.name+' Point: '+dbgs(mp));
 
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_MOUSEMOVE;
   Msg.Keys := CocoaModifiersToKeyState(Event.modifierFlags) or CocoaPressedMouseButtonsToKeyState(Event.pressedMouseButtons);
-  Msg.XPos := Round(MousePos.X);
-  Msg.YPos := Round(MousePos.Y);
+  Msg.XPos := mp.X;
+  Msg.YPos := mp.Y;
 
   //debugln('MouseMove x='+dbgs(MousePos.X)+' y='+dbgs(MousePos.Y)+' Target='+Target.Name);
 
@@ -1112,18 +1151,19 @@ end;
 
 class procedure TCocoaWSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
-var
-  Obj: NSObject;
 begin
-  if (AWinControl.Handle <> 0) then
+  //debugln('SetCursor '+AWinControl.name+' '+dbgs(ACursor));
+ if CocoaWidgetSet.CurrentCursor<>ACursor then
   begin
-    Obj := NSObject(AWinControl.Handle);
-    if Obj.isKindOfClass_(NSWindow) then
-      NSWindow(Obj).resetCursorRects
-    else
-    if Obj.isKindOfClass_(NSView) then
-      NSView(Obj).resetCursorRects;
+  CocoaWidgetSet.CurrentCursor:= ACursor;
+
+  if ACursor<>0 then
+     TCocoaCursor(ACursor).SetCursor
+     else
+     TCocoaCursor.SetDefaultCursor;
+
   end;
+
 end;
 
 class procedure TCocoaWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);

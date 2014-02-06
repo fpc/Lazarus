@@ -257,6 +257,8 @@ type
     constructor CreateFromBitmap(const ABitmap: TCocoaBitmap; const hotSpot: NSPoint);
     destructor Destroy; override;
     function Install: TCocoaCursor;
+    procedure SetCursor;
+    class procedure SetDefaultCursor;
     property Cursor: NSCursor read FCursor;
     property Standard: Boolean read FStandard;
   end;
@@ -905,6 +907,16 @@ begin
   // also request form cursors invalidation
   CocoaWidgetSet.NSApp.keyWindow.resetCursorRects;
   Result := nil;
+end;
+
+procedure TCocoaCursor.SetCursor;
+begin
+ FCursor.set_;
+end;
+
+class procedure TCocoaCursor.SetDefaultCursor;
+begin
+ NSCursor.arrowCursor.set_;
 end;
 
 { TCocoaTextLayout }

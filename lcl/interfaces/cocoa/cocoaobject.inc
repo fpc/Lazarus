@@ -86,6 +86,7 @@ begin
   CocoaWidgetSet := Self;
   inherited Create;
   FTerminating := False;
+  FCurrentCursor:= 0;
 
   {  Creates the AutoreleasePool }
   pool := NSAutoreleasePool.alloc.init;
