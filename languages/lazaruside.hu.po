@@ -6099,6 +6099,14 @@ msgstr "Végrehajtás fordítás után"
 msgid "Execute before"
 msgstr "Végrehajtás fordítás előtt"
 
+#: lazarusidestrconsts.liscoladdress
+msgid "Address"
+msgstr ""
+
+#: lazarusidestrconsts.liscolclass
+msgid "Class"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr ""
@@ -6114,6 +6122,14 @@ msgstr "Minden csomag összezárása"
 #: lazarusidestrconsts.liscollapseallunits
 msgid "Collapse all units"
 msgstr "Minden unit összezárása"
+
+#: lazarusidestrconsts.liscolreturns
+msgid "Returns"
+msgstr ""
+
+#: lazarusidestrconsts.liscolvisibility
+msgid "Visibility"
+msgstr ""
 
 #: lazarusidestrconsts.liscommandafter
 msgid "Command after"
@@ -9216,6 +9232,10 @@ msgstr ""
 msgid "&Inspect"
 msgstr "Megv&izsgál"
 
+#: lazarusidestrconsts.lisinspectclassinherit
+msgid "%s : Class %s inherits from %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
 msgstr "Adat"
@@ -9227,6 +9247,10 @@ msgstr "Hiba felügyelő"
 #: lazarusidestrconsts.lisinspectmethods
 msgid "Methods"
 msgstr "Metódusok"
+
+#: lazarusidestrconsts.lisinspectpointerto
+msgid "Pointer to %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisinspectproperties
 msgctxt "lazarusidestrconsts.lisinspectproperties"
@@ -9243,6 +9267,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinspectshowcolvisibility
 msgid "Show visibility column"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectunavailable
+msgid "%s : unavailable"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspectuseinstance

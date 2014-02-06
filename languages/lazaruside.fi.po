@@ -5786,6 +5786,14 @@ msgstr "Suorita jälkeen"
 msgid "Execute before"
 msgstr "Suorita ennen"
 
+#: lazarusidestrconsts.liscoladdress
+msgid "Address"
+msgstr ""
+
+#: lazarusidestrconsts.liscolclass
+msgid "Class"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "Supista kaikki (/)"
@@ -5801,6 +5809,14 @@ msgstr "Supista kaikki paketit"
 #: lazarusidestrconsts.liscollapseallunits
 msgid "Collapse all units"
 msgstr "Supista kaikki käännösyksiköt"
+
+#: lazarusidestrconsts.liscolreturns
+msgid "Returns"
+msgstr ""
+
+#: lazarusidestrconsts.liscolvisibility
+msgid "Visibility"
+msgstr ""
 
 #: lazarusidestrconsts.liscommandafter
 msgid "Command after"
@@ -8866,6 +8882,10 @@ msgstr "Istunnossa"
 msgid "&Inspect"
 msgstr "&Tutki"
 
+#: lazarusidestrconsts.lisinspectclassinherit
+msgid "%s : Class %s inherits from %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
 msgstr ""
@@ -8877,6 +8897,10 @@ msgstr ""
 #: lazarusidestrconsts.lisinspectmethods
 msgid "Methods"
 msgstr "Metodit"
+
+#: lazarusidestrconsts.lisinspectpointerto
+msgid "Pointer to %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisinspectproperties
 msgctxt "lazarusidestrconsts.lisinspectproperties"
@@ -8893,6 +8917,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinspectshowcolvisibility
 msgid "Show visibility column"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectunavailable
+msgid "%s : unavailable"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspectuseinstance

@@ -117,7 +117,7 @@ msgstr "Столбец имени метода"
 
 #: debuggerstrconst.drsinspectcolwidthmethreturns
 msgid "Method returns column"
-msgstr "Столбец типа возвращаемого значения метода"
+msgstr "Столбец типа результата метода"
 
 #: debuggerstrconst.drsinspectcolwidthmethtype
 msgid "Method type column"

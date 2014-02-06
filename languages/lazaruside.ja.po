@@ -5849,6 +5849,14 @@ msgstr "次の後に実行："
 msgid "Execute before"
 msgstr "次の前に実行："
 
+#: lazarusidestrconsts.liscoladdress
+msgid "Address"
+msgstr ""
+
+#: lazarusidestrconsts.liscolclass
+msgid "Class"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "すべてを折り畳み (/)"
@@ -5864,6 +5872,14 @@ msgstr "すべてのパッケージを折り畳み"
 #: lazarusidestrconsts.liscollapseallunits
 msgid "Collapse all units"
 msgstr "すべてのユニットを折り畳み"
+
+#: lazarusidestrconsts.liscolreturns
+msgid "Returns"
+msgstr ""
+
+#: lazarusidestrconsts.liscolvisibility
+msgid "Visibility"
+msgstr ""
 
 #: lazarusidestrconsts.liscommandafter
 msgid "Command after"
@@ -8934,6 +8950,10 @@ msgstr "In セッション"
 msgid "&Inspect"
 msgstr "検査(&I)"
 
+#: lazarusidestrconsts.lisinspectclassinherit
+msgid "%s : Class %s inherits from %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
 msgstr "データ"
@@ -8945,6 +8965,10 @@ msgstr "デバッグインスペクタ"
 #: lazarusidestrconsts.lisinspectmethods
 msgid "Methods"
 msgstr "メソッド"
+
+#: lazarusidestrconsts.lisinspectpointerto
+msgid "Pointer to %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisinspectproperties
 msgctxt "lazarusidestrconsts.lisinspectproperties"
@@ -8961,6 +8985,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinspectshowcolvisibility
 msgid "Show visibility column"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectunavailable
+msgid "%s : unavailable"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspectuseinstance

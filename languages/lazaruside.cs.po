@@ -5871,6 +5871,14 @@ msgstr "Spustit pak"
 msgid "Execute before"
 msgstr "Spustit před"
 
+#: lazarusidestrconsts.liscoladdress
+msgid "Address"
+msgstr ""
+
+#: lazarusidestrconsts.liscolclass
+msgid "Class"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "Sesunout vše (/)"
@@ -5886,6 +5894,14 @@ msgstr "Sesunout všechny balíčky"
 #: lazarusidestrconsts.liscollapseallunits
 msgid "Collapse all units"
 msgstr "Sesunout všechny jednotky"
+
+#: lazarusidestrconsts.liscolreturns
+msgid "Returns"
+msgstr ""
+
+#: lazarusidestrconsts.liscolvisibility
+msgid "Visibility"
+msgstr ""
 
 #: lazarusidestrconsts.liscommandafter
 msgid "Command after"
@@ -8973,6 +8989,10 @@ msgstr "V sezení"
 msgid "&Inspect"
 msgstr "&Zkoumat"
 
+#: lazarusidestrconsts.lisinspectclassinherit
+msgid "%s : Class %s inherits from %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
 msgstr "Data"
@@ -8984,6 +9004,10 @@ msgstr "Prohlížeč ladění"
 #: lazarusidestrconsts.lisinspectmethods
 msgid "Methods"
 msgstr "Metody"
+
+#: lazarusidestrconsts.lisinspectpointerto
+msgid "Pointer to %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisinspectproperties
 msgctxt "lazarusidestrconsts.lisinspectproperties"
@@ -9000,6 +9024,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinspectshowcolvisibility
 msgid "Show visibility column"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectunavailable
+msgid "%s : unavailable"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspectuseinstance

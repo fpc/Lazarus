@@ -6066,6 +6066,14 @@ msgstr "Exécuter après"
 msgid "Execute before"
 msgstr "Exécuter avant"
 
+#: lazarusidestrconsts.liscoladdress
+msgid "Address"
+msgstr ""
+
+#: lazarusidestrconsts.liscolclass
+msgid "Class"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr ""
@@ -6081,6 +6089,14 @@ msgstr "Replier tous les paquets"
 #: lazarusidestrconsts.liscollapseallunits
 msgid "Collapse all units"
 msgstr "Replier toutes les unités"
+
+#: lazarusidestrconsts.liscolreturns
+msgid "Returns"
+msgstr ""
+
+#: lazarusidestrconsts.liscolvisibility
+msgid "Visibility"
+msgstr ""
 
 #: lazarusidestrconsts.liscommandafter
 msgid "Command after"
@@ -9205,6 +9221,10 @@ msgstr ""
 msgid "&Inspect"
 msgstr "&Inspecter"
 
+#: lazarusidestrconsts.lisinspectclassinherit
+msgid "%s : Class %s inherits from %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
 msgstr "Données"
@@ -9216,6 +9236,10 @@ msgstr "Inspecteur de débogage"
 #: lazarusidestrconsts.lisinspectmethods
 msgid "Methods"
 msgstr "Méthodes"
+
+#: lazarusidestrconsts.lisinspectpointerto
+msgid "Pointer to %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisinspectproperties
 msgctxt "lazarusidestrconsts.lisinspectproperties"
@@ -9232,6 +9256,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinspectshowcolvisibility
 msgid "Show visibility column"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectunavailable
+msgid "%s : unavailable"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspectuseinstance

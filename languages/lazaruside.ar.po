@@ -5825,6 +5825,14 @@ msgstr ""
 msgid "Execute before"
 msgstr ""
 
+#: lazarusidestrconsts.liscoladdress
+msgid "Address"
+msgstr ""
+
+#: lazarusidestrconsts.liscolclass
+msgid "Class"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr ""
@@ -5839,6 +5847,14 @@ msgstr ""
 
 #: lazarusidestrconsts.liscollapseallunits
 msgid "Collapse all units"
+msgstr ""
+
+#: lazarusidestrconsts.liscolreturns
+msgid "Returns"
+msgstr ""
+
+#: lazarusidestrconsts.liscolvisibility
+msgid "Visibility"
 msgstr ""
 
 #: lazarusidestrconsts.liscommandafter
@@ -8905,6 +8921,10 @@ msgstr ""
 msgid "&Inspect"
 msgstr ""
 
+#: lazarusidestrconsts.lisinspectclassinherit
+msgid "%s : Class %s inherits from %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
 msgstr ""
@@ -8915,6 +8935,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinspectmethods
 msgid "Methods"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectpointerto
+msgid "Pointer to %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspectproperties
@@ -8932,6 +8956,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinspectshowcolvisibility
 msgid "Show visibility column"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectunavailable
+msgid "%s : unavailable"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspectuseinstance

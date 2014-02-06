@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-02-07 02:39+0400\n"
+"PO-Revision-Date: 2014-02-07 03:09+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -6010,6 +6010,14 @@ msgstr "Выполнить после компиляции"
 msgid "Execute before"
 msgstr "Выполнить перед компиляцией"
 
+#: lazarusidestrconsts.liscoladdress
+msgid "Address"
+msgstr "Адрес"
+
+#: lazarusidestrconsts.liscolclass
+msgid "Class"
+msgstr "Класс"
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "Свернуть всё (/)"
@@ -6025,6 +6033,14 @@ msgstr "Свернуть все пакеты"
 #: lazarusidestrconsts.liscollapseallunits
 msgid "Collapse all units"
 msgstr "Свернуть все модули"
+
+#: lazarusidestrconsts.liscolreturns
+msgid "Returns"
+msgstr "Тип результата"
+
+#: lazarusidestrconsts.liscolvisibility
+msgid "Visibility"
+msgstr "Видимость"
 
 #: lazarusidestrconsts.liscommandafter
 msgid "Command after"
@@ -9141,6 +9157,10 @@ msgstr "В сеансе"
 msgid "&Inspect"
 msgstr "&Просмотреть"
 
+#: lazarusidestrconsts.lisinspectclassinherit
+msgid "%s : Class %s inherits from %s"
+msgstr "%s : класс %s наследуется от %s"
+
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
 msgstr "Данные"
@@ -9152,6 +9172,10 @@ msgstr "Инспектор отладки"
 #: lazarusidestrconsts.lisinspectmethods
 msgid "Methods"
 msgstr "Методы"
+
+#: lazarusidestrconsts.lisinspectpointerto
+msgid "Pointer to %s"
+msgstr "Указатель на %s"
 
 #: lazarusidestrconsts.lisinspectproperties
 msgctxt "lazarusidestrconsts.lisinspectproperties"
@@ -9169,6 +9193,10 @@ msgstr "Показать столбец типа"
 #: lazarusidestrconsts.lisinspectshowcolvisibility
 msgid "Show visibility column"
 msgstr "Показать столбец видимости"
+
+#: lazarusidestrconsts.lisinspectunavailable
+msgid "%s : unavailable"
+msgstr "%s : недоступно"
 
 #: lazarusidestrconsts.lisinspectuseinstance
 msgid "Instance"
