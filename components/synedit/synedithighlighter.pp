@@ -982,8 +982,8 @@ const
   var
     {$IFNDEF SYN_LAZARUS}
     descript : string;
-    fgColRGB : string;
-    bgColRGB : string;
+    //fgColRGB : string;
+    //bgColRGB : string;
     fontStyle: string;
     fgDefault: string;
     bgDefault: string;
@@ -1015,8 +1015,8 @@ const
             try
               if ValueExists(attrName) then begin
                 descript := ReadString(attrName);
-                fgColRGB  := Get(descript);
-                bgColRGB  := Get(descript);
+                //fgColRGB  := Get(descript);
+                //bgColRGB  := Get(descript);
                 fontStyle := Get(descript);
                 fgDefault := Get(descript);
                 bgDefault := Get(descript);

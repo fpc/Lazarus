@@ -1586,7 +1586,6 @@ end;
 function TSynBeautifier.CreateTabSpaceMix(var DesiredIndent: Integer;
   OnlyTabs: Boolean): String;
 var
-  i: Integer;
   CurLen: Integer;
 begin
   CurLen := 0;
