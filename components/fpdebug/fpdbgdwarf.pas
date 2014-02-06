@@ -755,7 +755,7 @@ type
 
   protected
 // TODO: InitLocationParser may fail
-    procedure InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression; {%H-}AnObjectDataAddress: TDbgPtr = nil); virtual;
+    procedure InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression; {%H-}AnObjectDataAddress: TDbgPtr = 0); virtual;
     function  LocationFromTag(ATag: Cardinal; out AnAddress: TDbgPtr;
                               AnObjectDataAddress: TDbgPtr = 0;
                               AnInformationEntry: TDwarfInformationEntry = nil
@@ -810,7 +810,7 @@ type
     procedure FrameBaseNeeded(ASender: TObject);
   protected
     function GetValueObject: TDbgSymbolValue; override;
-    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TDbgPtr = nil); override;
+    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TDbgPtr = 0); override;
   end;
 
   { TDbgDwarfTypeIdentifier }
@@ -1042,7 +1042,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   TDbgDwarfIdentifierMember = class(TDbgDwarfValueLocationIdentifier)
   protected
-    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TDbgPtr = nil); override;
+    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TDbgPtr = 0); override;
     procedure AddressNeeded; override;
     function HasAddress: Boolean; override;
   end;
@@ -1066,7 +1066,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetMemberByName(AIndex: String): TDbgSymbol; override;
     function GetMemberCount: Integer; override;
 
-    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TDbgPtr = nil); override;
+    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TDbgPtr = 0); override;
     function GetDataAddress(var AnAddress: TDbgPtr; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; override;
   public
     destructor Destroy; override;
