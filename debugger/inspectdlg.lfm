@@ -1,4 +1,4 @@
-inherited IDEInspectDlg: TIDEInspectDlg
+object IDEInspectDlg: TIDEInspectDlg
   Left = 423
   Height = 406
   Top = 139
@@ -13,17 +13,18 @@ inherited IDEInspectDlg: TIDEInspectDlg
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  object StatusBar1: TStatusBar[0]
+  LCLVersion = '1.3'
+  object StatusBar1: TStatusBar
     Left = 0
     Height = 23
     Top = 383
     Width = 295
     Panels = <>
   end
-  object PageControl: TPageControl[1]
+  object PageControl: TPageControl
     Left = 0
-    Height = 334
-    Top = 49
+    Height = 336
+    Top = 47
     Width = 295
     ActivePage = DataPage
     Align = alClient
@@ -41,23 +42,23 @@ inherited IDEInspectDlg: TIDEInspectDlg
       Caption = 'MethodsPage'
     end
   end
-  object EdInspect: TComboBox[2]
+  object EdInspect: TComboBox
     Left = 0
-    Height = 23
+    Height = 21
     Top = 0
     Width = 295
     Align = alTop
-    ItemHeight = 15
+    ItemHeight = 13
     OnEditingDone = EdInspectEditingDone
     OnKeyDown = EdInspectKeyDown
     TabOrder = 2
     Text = '(...)'
   end
-  object ToolBar1: TToolBar[3]
+  object ToolBar1: TToolBar
     AnchorSideTop.Control = EdInspect
     Left = 0
     Height = 26
-    Top = 23
+    Top = 21
     Width = 295
     Caption = 'ToolBar1'
     ShowCaptions = True
@@ -69,41 +70,49 @@ inherited IDEInspectDlg: TIDEInspectDlg
       AllowAllUp = True
       Caption = 'Instance'
       OnClick = btnUseInstanceClick
+      ParentShowHint = False
+      ShowHint = True
       Style = tbsCheck
     end
     object ToolButton2: TToolButton
-      Left = 106
+      Left = 104
       Top = 2
       Width = 5
       Caption = 'ToolButton2'
       Style = tbsDivider
     end
     object btnColClass: TToolButton
-      Left = 111
+      Left = 109
       Hint = 'Show Class Column'
       Top = 2
       AllowAllUp = True
       Caption = 'C'
       Down = True
       OnClick = btnColClassClick
+      ParentShowHint = False
+      ShowHint = True
       Style = tbsCheck
     end
     object btnColType: TToolButton
-      Left = 134
+      Left = 132
       Top = 2
       AllowAllUp = True
       Caption = 'T'
       Down = True
       OnClick = btnColClassClick
+      ParentShowHint = False
+      ShowHint = True
       Style = tbsCheck
     end
     object btnColVisibility: TToolButton
-      Left = 157
+      Left = 155
       Top = 2
       AllowAllUp = True
       Caption = 'V'
       Down = True
       OnClick = btnColClassClick
+      ParentShowHint = False
+      ShowHint = True
       Style = tbsCheck
     end
     object btnBackward: TToolButton

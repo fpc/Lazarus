@@ -313,7 +313,8 @@ begin
 
   if not Assigned(FDBGInfo) then exit;
   if not Assigned(FDBGInfo.Fields) then exit;
-  StatusBar1.SimpleText:=FExpression+' : Class '+FDBGInfo.TypeName+' inherits from '+FDBGInfo.Ancestor;
+  StatusBar1.SimpleText:=Format(lisInspectClassInherit, [FExpression, FDBGInfo.
+    TypeName, FDBGInfo.Ancestor]);
   GridDataSetup;
   ShowDataFields;
   //FGridData.AutoSizeColumn(1);
@@ -486,7 +487,8 @@ begin
   GridDataSetup;
   FGridData.Cells[1,1]:=FExpression;
   if (FDBGInfo.TypeName <> '') and (FDBGInfo.TypeName[1] = '^')
-  then FGridData.Cells[2,1]:='Pointer to '+copy(FDBGInfo.TypeName, 2, length(FDBGInfo.TypeName))
+  then FGridData.Cells[2, 1]:=Format(lisInspectPointerTo, [copy(FDBGInfo.
+    TypeName, 2, length(FDBGInfo.TypeName))])
   else FGridData.Cells[2,1]:=FDBGInfo.TypeName;
   {$PUSH}{$RANGECHECKS OFF}
   FGridData.Cells[3,1]:=format('$%x',[PtrUInt(FDBGInfo.Value.AsPointer)]);
@@ -518,11 +520,11 @@ begin
       //Cols[3].Text:='Value';
       //Cols[4].Text:='Visibility';
       Color:=clBtnFace;
-      Columns.Add.Title.Caption:='Class';
-      Columns.Add.Title.Caption:='Name';
-      Columns.Add.Title.Caption:='Type';
-      Columns.Add.Title.Caption:='Value';
-      Columns.Add.Title.Caption:='Visibility';
+      Columns.Add.Title.Caption:=lisColClass;
+      Columns.Add.Title.Caption:=lisName;
+      Columns.Add.Title.Caption:=dlgEnvType;
+      Columns.Add.Title.Caption:=lisValue;
+      Columns.Add.Title.Caption:=lisColVisibility;
     end;
   FGridData.RowCount:=1;
   FGridData.RowCount:=2;
@@ -548,10 +550,10 @@ begin
       FixedRows:=1;
       FixedCols:=0;
       ColCount:=4;
-      Cols[0].Text:='Name';
-      Cols[1].Text:='Type';
-      Cols[2].Text:='Returns';
-      Cols[3].Text:='Address';
+      Cols[0].Text:=lisName;
+      Cols[1].Text:=dlgEnvType;
+      Cols[2].Text:=lisColReturns;
+      Cols[3].Text:=lisColAddress;
       Color:=clBtnFace;
     end;
   FGridMethods.RowCount:=1;
@@ -875,7 +877,7 @@ begin
     begin
       FreeAndNil(FDBGInfo);
       Clear;
-      StatusBar1.SimpleText:=FExpression + ' : unavailable';
+      StatusBar1.SimpleText:=Format(lisInspectUnavailable, [FExpression]);
       Exit;
     end;
     case FDBGInfo.Kind of
