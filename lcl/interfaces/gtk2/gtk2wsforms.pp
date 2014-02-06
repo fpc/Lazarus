@@ -938,8 +938,7 @@ begin
   if (TControl(AWidgetInfo^.LCLObject).Parent = nil) then
     with TGTK2WidgetSet(Widgetset) do
     begin
-      {$note test with smaller minor versions and check where LM_CONFIGUREEVENT
-       is needed.}
+      {$note test with smaller minor versions and check where LM_CONFIGUREEVENT is needed.}
        {$IFDEF HASX}
        // fix for buggy compiz.
        // see http://bugs.freepascal.org/view.php?id=17523

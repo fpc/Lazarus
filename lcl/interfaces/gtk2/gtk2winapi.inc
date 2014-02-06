@@ -6717,7 +6717,6 @@ var
   ClipRect : TRect;
   DCOrigin: TPoint;
   OldNumPts: integer;
-  CurPoint: types.TPoint;
   ThePoints: array of types.TPoint;
   PThePoints: PPoint;
 begin
