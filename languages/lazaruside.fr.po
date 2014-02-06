@@ -1,4 +1,4 @@
-﻿msgid ""
+msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
@@ -9221,6 +9221,26 @@ msgstr "Méthodes"
 msgctxt "lazarusidestrconsts.lisinspectproperties"
 msgid "Properties"
 msgstr "Propriétés "
+
+#: lazarusidestrconsts.lisinspectshowcolclass
+msgid "Show class column"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectshowcoltype
+msgid "Show type column"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectshowcolvisibility
+msgid "Show visibility column"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectuseinstance
+msgid "Instance"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectuseinstancehint
+msgid "Use instance class"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"

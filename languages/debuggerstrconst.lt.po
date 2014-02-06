@@ -89,6 +89,10 @@ msgstr "Vietos stulpelis"
 msgid "Time column"
 msgstr "Laiko stulpelis"
 
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr ""
+
 #: debuggerstrconst.drsinspectcolwidthdataname
 msgid "Data name column"
 msgstr "Duomenų pavadinimo stulpelis"
@@ -100,6 +104,10 @@ msgstr "Duomenų tipo stulpelis"
 #: debuggerstrconst.drsinspectcolwidthdatavalue
 msgid "Data value column"
 msgstr "Duomenų vertės stulpelis"
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr ""
 
 #: debuggerstrconst.drsinspectcolwidthmethaddress
 msgid "Method address column"

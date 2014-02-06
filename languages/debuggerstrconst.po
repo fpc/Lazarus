@@ -79,6 +79,10 @@ msgstr ""
 msgid "Time column"
 msgstr ""
 
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr ""
+
 #: debuggerstrconst.drsinspectcolwidthdataname
 msgid "Data name column"
 msgstr ""
@@ -89,6 +93,10 @@ msgstr ""
 
 #: debuggerstrconst.drsinspectcolwidthdatavalue
 msgid "Data value column"
+msgstr ""
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
 msgstr ""
 
 #: debuggerstrconst.drsinspectcolwidthmethaddress

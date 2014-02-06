@@ -1977,7 +1977,7 @@ msgstr ""
 #: lazarusidestrconsts.dlglang
 msgctxt "lazarusidestrconsts.dlglang"
 msgid "Language"
-msgstr ""
+msgstr "اللّغة"
 
 #: lazarusidestrconsts.dlglast
 msgid "Last (i.e. at end of source)"
@@ -2822,7 +2822,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgrunoenvironment
 msgctxt "lazarusidestrconsts.dlgrunoenvironment"
 msgid "Environment"
-msgstr ""
+msgstr "البيئة"
 
 #: lazarusidestrconsts.dlgrunolocal
 msgid "Local"
@@ -7519,7 +7519,7 @@ msgstr ""
 #: lazarusidestrconsts.lisemdall
 msgctxt "lazarusidestrconsts.lisemdall"
 msgid "All"
-msgstr ""
+msgstr "الكلّ"
 
 #: lazarusidestrconsts.lisemdemptymethods
 msgctxt "lazarusidestrconsts.lisemdemptymethods"
@@ -8920,6 +8920,26 @@ msgstr ""
 #: lazarusidestrconsts.lisinspectproperties
 msgctxt "lazarusidestrconsts.lisinspectproperties"
 msgid "Properties"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectshowcolclass
+msgid "Show class column"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectshowcoltype
+msgid "Show type column"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectshowcolvisibility
+msgid "Show visibility column"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectuseinstance
+msgid "Instance"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspectuseinstancehint
+msgid "Use instance class"
 msgstr ""
 
 #: lazarusidestrconsts.lisinstallationfailed
@@ -11384,7 +11404,7 @@ msgstr ""
 #: lazarusidestrconsts.lisnever
 msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
-msgstr ""
+msgstr "أبدا"
 
 #: lazarusidestrconsts.lisnew
 msgctxt "lazarusidestrconsts.lisnew"
@@ -14448,7 +14468,7 @@ msgstr ""
 #: lazarusidestrconsts.lissortseloptions
 msgctxt "lazarusidestrconsts.lissortseloptions"
 msgid "Options"
-msgstr ""
+msgstr "خيارات"
 
 #: lazarusidestrconsts.lissortselparagraphs
 msgid "Paragraphs"
@@ -17566,12 +17586,12 @@ msgstr ""
 #: lazarusidestrconsts.srkmecsellineend
 msgctxt "lazarusidestrconsts.srkmecsellineend"
 msgid "Select Line End"
-msgstr ""
+msgstr "عيّن نهاية السّطر"
 
 #: lazarusidestrconsts.srkmecsellinestart
 msgctxt "lazarusidestrconsts.srkmecsellinestart"
 msgid "Select Line Start"
-msgstr ""
+msgstr "عيّن بداية السّطر"
 
 #: lazarusidestrconsts.srkmecsellinetextstart
 msgid "Select to text start in line"
@@ -17580,7 +17600,7 @@ msgstr ""
 #: lazarusidestrconsts.srkmecselpagebottom
 msgctxt "lazarusidestrconsts.srkmecselpagebottom"
 msgid "Select Page Bottom"
-msgstr ""
+msgstr "عيّن نهاية الصّفحة"
 
 #: lazarusidestrconsts.srkmecselpagedown
 msgid "Select Page Down"
@@ -17597,7 +17617,7 @@ msgstr ""
 #: lazarusidestrconsts.srkmecselpagetop
 msgctxt "lazarusidestrconsts.srkmecselpagetop"
 msgid "Select Page Top"
-msgstr ""
+msgstr "عيّن بداية الصّفحة"
 
 #: lazarusidestrconsts.srkmecselpageup
 msgid "Select Page Up"
@@ -17638,12 +17658,12 @@ msgstr ""
 #: lazarusidestrconsts.srkmecselwordleft
 msgctxt "lazarusidestrconsts.srkmecselwordleft"
 msgid "Select Word Left"
-msgstr ""
+msgstr "عيّن الكلمة الّتي على اليسار"
 
 #: lazarusidestrconsts.srkmecselwordright
 msgctxt "lazarusidestrconsts.srkmecselwordright"
 msgid "Select Word Right"
-msgstr ""
+msgstr "عيّن الكلمة الّتي على اليمين"
 
 #: lazarusidestrconsts.srkmecsetfreebookmark
 msgctxt "lazarusidestrconsts.srkmecsetfreebookmark"

@@ -92,7 +92,8 @@ msgstr ""
 msgid "GDB did not terminate"
 msgstr ""
 
-#: gdbmidebugger.gdbmifatalerroroccured
+#: gdbmidebugger.gdbmifatalerroroccurred
+msgctxt "gdbmidebugger.gdbmifatalerroroccurred"
 msgid "Unrecoverable error: \"%s\""
 msgstr "Критична помилка: \"%s\""
 

@@ -86,6 +86,10 @@ msgstr "Графа розміщення"
 msgid "Time column"
 msgstr "Графа часу"
 
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr ""
+
 #: debuggerstrconst.drsinspectcolwidthdataname
 msgid "Data name column"
 msgstr "Графа назви даних"
@@ -97,6 +101,10 @@ msgstr "Графа типу даних"
 #: debuggerstrconst.drsinspectcolwidthdatavalue
 msgid "Data value column"
 msgstr "Графа значення даних"
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr ""
 
 #: debuggerstrconst.drsinspectcolwidthmethaddress
 msgid "Method address column"

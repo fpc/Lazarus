@@ -101,8 +101,8 @@ msgstr ""
 msgid "GDB did not terminate"
 msgstr ""
 
-#: gdbmidebugger.gdbmifatalerroroccured
-#| msgid "Unrecoverable Error: \"%s\""
+#: gdbmidebugger.gdbmifatalerroroccurred
+msgctxt "gdbmidebugger.gdbmifatalerroroccurred"
 msgid "Unrecoverable error: \"%s\""
 msgstr "Erro irrecuperável: \"%s\""
 

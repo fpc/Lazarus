@@ -100,8 +100,8 @@ msgstr "IDE не удалось завершить процесс GDB. Тепе�
 msgid "GDB did not terminate"
 msgstr "Процесс GDB не завершился"
 
-#: gdbmidebugger.gdbmifatalerroroccured
-#| msgid "Unrecoverable Error: \"%s\""
+#: gdbmidebugger.gdbmifatalerroroccurred
+msgctxt "gdbmidebugger.gdbmifatalerroroccurred"
 msgid "Unrecoverable error: \"%s\""
 msgstr "Неустранимая ошибка: \"%s\""
 

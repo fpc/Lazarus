@@ -87,6 +87,10 @@ msgstr "Столбец расположения"
 msgid "Time column"
 msgstr "Столбец времени"
 
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr "Столбец класса поля"
+
 #: debuggerstrconst.drsinspectcolwidthdataname
 msgid "Data name column"
 msgstr "Столбец имени поля"
@@ -98,6 +102,10 @@ msgstr "Столбец типа поля"
 #: debuggerstrconst.drsinspectcolwidthdatavalue
 msgid "Data value column"
 msgstr "Столбец значения поля"
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr "Столбец видимости поля"
 
 #: debuggerstrconst.drsinspectcolwidthmethaddress
 msgid "Method address column"
