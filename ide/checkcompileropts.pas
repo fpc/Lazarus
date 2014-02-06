@@ -27,6 +27,8 @@ unit CheckCompilerOpts;
 
 {$mode objfpc}{$H+}
 
+{$I ide.inc}
+
 interface
 
 uses

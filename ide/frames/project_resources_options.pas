@@ -2,6 +2,8 @@ unit project_resources_options;
 
 {$mode objfpc}{$H+}
 
+{$I ide.inc}
+
 interface
 
 uses

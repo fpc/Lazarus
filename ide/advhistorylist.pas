@@ -2,6 +2,8 @@ unit AdvHistoryList;
 
 {$mode objfpc}{$H+}
 
+{$I ide.inc}
+
 interface
 
 uses
