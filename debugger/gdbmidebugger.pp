@@ -871,7 +871,7 @@ resourcestring
     + 'and correct the problem, or choose an alternative run command.%0:s'
     + 'Press "Stop" to end the debug session.';
   gdbmiTimeOutForCmd = 'Time-out for command: "%s"';
-  gdbmiFatalErrorOccured = 'Unrecoverable error: "%s"';
+  gdbmiFatalErrorOccurred = 'Unrecoverable error: "%s"';
   gdbmiErrorStateGenericInfo = 'Error in: %1:s %0:s';
   gdbmiErrorStateInfoCommandError =
       '%0:sThe GDB command:%0:s"%1:s"%0:sreturned the error:%0:s"%2:s"%0:s';
@@ -6102,7 +6102,7 @@ const
   begin
     Result := False;
     if (ARes.State = dsError) and (not HandleRunError(ARes)) then begin
-      DoDbgEvent(ecDebugger, etDefault, Format(gdbmiFatalErrorOccured, [ARes.Values]));
+      DoDbgEvent(ecDebugger, etDefault, Format(gdbmiFatalErrorOccurred, [ARes.Values]));
       SetDebuggerState(dsError);
       Result := True;
     end;
@@ -7459,7 +7459,7 @@ var
   Report, Report2: string;
 begin
   try
-    debugln(['ERROR: Exception occured in ',Sender.ClassName+': ',
+    debugln(['ERROR: Exception occurred in ',Sender.ClassName+': ',
               AnException.ClassName, ' Msg="', AnException.Message, '" Addr=', dbgs(ExceptAddr),
               ' Dbg.State=', dbgs(State)]);
     Report :=  BackTraceStrFunc(ExceptAddr);
@@ -7738,7 +7738,7 @@ begin
   except
     On E: Exception do DoUnknownException(Self, E);
     else
-      debugln(['ERROR: Exception occured in ',ClassName+': ',
+      debugln(['ERROR: Exception occurred in ',ClassName+': ',
                 '" Addr=', dbgs(ExceptAddr), ' Dbg.State=', dbgs(State)]);
   end;
 
@@ -10629,7 +10629,7 @@ end;
 procedure TGDBMIDebuggerCommand.DoTimeoutFeedback;
 begin
   if DebuggerProperties.WarnOnTimeOut
-  then MessageDlg('Warning', 'A timeout occured, the debugger will try to continue, but further error may occur later',
+  then MessageDlg('Warning', 'A timeout occurred, the debugger will try to continue, but further error may occur later',
                   mtWarning, [mbOK], 0);
 end;
 
@@ -11399,7 +11399,7 @@ begin
 
     On E: Exception do FTheDebugger.DoUnknownException(Self, E)
     else
-      debugln(['ERROR: Exception occured in ',ClassName+'.DoExecute ',
+      debugln(['ERROR: Exception occurred in ',ClassName+'.DoExecute ',
                 '" Addr=', dbgs(ExceptAddr), ' Dbg.State=', dbgs(FTheDebugger.State)]);
   end;
   // No re-raise in the except block. So no try-finally required
