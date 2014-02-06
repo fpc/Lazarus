@@ -107,7 +107,7 @@ type
     procedure IncreaseIndent({%H-}LogGroup: PLazLoggerLogGroup); overload; virtual;
     procedure DecreaseIndent({%H-}LogGroup: PLazLoggerLogGroup); overload; virtual;
     procedure IndentChanged; virtual;
-    function  GetBlockHandler(AIndex: Integer): TLazLoggerBlockHandler; virtual;
+    function  GetBlockHandler({%H-}AIndex: Integer): TLazLoggerBlockHandler; virtual;
 
     procedure DoDbgOut(const {%H-}s: string); virtual;
     procedure DoDebugLn(const {%H-}s: string); virtual;
@@ -134,8 +134,8 @@ type
     property  LogGroupList: TLazLoggerLogGroupList read GetLogGroupList;
     property  UseGlobalLogGroupList: Boolean read FUseGlobalLogGroupList write SetUseGlobalLogGroupList;
 
-    procedure AddBlockHandler(AHandler: TLazLoggerBlockHandler); virtual;
-    procedure RemoveBlockHandler(AHandler: TLazLoggerBlockHandler); virtual;
+    procedure AddBlockHandler({%H-}AHandler: TLazLoggerBlockHandler); virtual;
+    procedure RemoveBlockHandler({%H-}AHandler: TLazLoggerBlockHandler); virtual;
     function  BlockHandlerCount: Integer; virtual;
     property  BlockHandler[AIndex: Integer]: TLazLoggerBlockHandler read GetBlockHandler;
   public
