@@ -38,6 +38,7 @@ type
     procedure CheckListBox1KeyPress(Sender: TObject; var Key: char);
     procedure CloseButtonClick(Sender: TObject);
     procedure DoEditorsChanged(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure HelpButtonClick(Sender: TObject);
     procedure MoveDownBtnClick(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
@@ -251,6 +252,12 @@ end;
 procedure TEditorFileManagerForm.DoEditorsChanged(Sender: TObject);
 begin
   PopulateList;
+end;
+
+procedure TEditorFileManagerForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) and (Shift = []) then
+    Close;
 end;
 
 procedure TEditorFileManagerForm.HelpButtonClick(Sender: TObject);
