@@ -2,16 +2,14 @@ Source: lazarus
 Section: devel
 Priority: optional
 Maintainer: Carlos Laviola <claviola@debian.org>
-Uploaders: Torsten Werner <twerner@debian.org>, Abou Al Montacir <abou.almontacir@sfr.fr>
-DM-Upload-Allowed: yes
-Standards-Version: 3.9.3
-Build-Depends: debhelper (>= 7), quilt, fpc, fpc-source, fp-utils, imagemagick, po-debconf
+Uploaders: Torsten Werner <twerner@debian.org>, Abou Al Montacir <abou.almontacir@sfr.fr>, Paul Gevers <elbrus@debian.org>
+Standards-Version: 3.9.5
+Build-Depends: debhelper (>= 7), fpc, fpc-source, fp-utils, imagemagick, po-debconf
 Vcs-Svn: https://bollin.googlecode.com/svn/lazarus/trunk
-Vcs-Browser: http://bollin.googlecode.com/svn/lazarus/trunk
+Vcs-Browser: http://code.google.com/p/bollin/source/browse/lazarus/trunk
 Homepage: http://www.lazarus.freepascal.org
 
 Package: lazarus${PACKAGESUFFIX}
-Section: metapackages
 Architecture: all
 Depends: ${misc:Depends}, lazarus-ide${PACKAGESUFFIX} (>= ${source:Version}), lazarus-src${PACKAGESUFFIX} (>= ${source:Version}), lazarus-doc${PACKAGESUFFIX} (>= ${source:Version})
 Recommends: fpc, fpc-source
@@ -68,7 +66,7 @@ Description: IDE for Free Pascal - LCL source code
  in code).
 
 Package: lazarus-ide${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel armhf
+Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, fp-compiler, lazarus-src${PACKAGESUFFIX}, lazarus-ide-gtk${PACKAGESUFFIX} | lazarus-ide-qt${PACKAGESUFFIX}
 Recommends: fpc, lcl${PACKAGESUFFIX}, gdb
 Suggests: fp-utils
@@ -95,7 +93,7 @@ Description: IDE for Free Pascal - common IDE files
  This package contains the common files required to run Lazarus IDE.
 
 Package: lazarus-ide-gtk2${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel armhf
+Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, lazarus-ide${PACKAGESUFFIX}
 Recommends: fpc, lcl${PACKAGESUFFIX}, gdb
 Suggests: fp-utils
@@ -122,7 +120,7 @@ Description: IDE for Free Pascal - GTK+ version
  This package contains the GTK+ version of the Lazarus IDE.
 
 Package: lazarus-ide-qt4${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel armhf
+Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, lazarus-ide${PACKAGESUFFIX}, lazarus-ide-gtk${PACKAGESUFFIX}
 Recommends: fpc, lcl${PACKAGESUFFIX}, gdb
 Suggests: fp-utils
@@ -147,11 +145,10 @@ Description: IDE for Free Pascal - Qt version
  Component Library (LCL).
  .
  This is the placeholder package for the Qt version of the Lazarus IDE,
- which currently just depends on the GTK version.
+ which currently just depends on the GTK+ version.
 
 Package: lcl${PACKAGESUFFIX}
-Section: metapackages
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, lcl-units${PACKAGESUFFIX}, lcl-utils${PACKAGESUFFIX}
 Recommends: fpc, lazarus-ide${PACKAGESUFFIX}
 Suggests: gdb
@@ -178,7 +175,7 @@ Description: Lazarus Components Library - LCL suite
  This metapackage installs the full LCL and components.
 
 Package: lcl-utils${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel armhf
+Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, fp-compiler
 Recommends: lcl${PACKAGESUFFIX}, lazarus-ide${PACKAGESUFFIX}
 Provides: lcl-utils
@@ -205,8 +202,8 @@ Description: Lazarus Components Library - command line build tools
  applications.
 
 Package: lcl-units${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel armhf
-Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, lcl-gtk2${PACKAGESUFFIX} (= ${binary:Version}) | lcl-gtk${PACKAGESUFFIX} (= ${binary:Version}) | lcl-qt${PACKAGESUFFIX} (= ${binary:Version})
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, lcl-gtk2${PACKAGESUFFIX} (= ${binary:Version}) | lcl-qt4${PACKAGESUFFIX} (= ${binary:Version})
 Recommends: lazarus-ide${PACKAGESUFFIX}, fpc
 Suggests: gdb
 Provides: lcl-units, lcl-${source:Upstream-Version}
@@ -232,7 +229,7 @@ Description: Lazarus Components Library - backend independent components
  This package contains common components of the LCL.
 
 Package: lcl-nogui${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel armhf
+Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, fp-units-rtl, fp-units-base, fp-units-fcl
 Recommends: lazarus-ide${PACKAGESUFFIX}, fpc
 Suggests: gdb
@@ -260,11 +257,11 @@ Description: Lazarus Components Library - no GUI backend
  applications and command line tools.
 
 Package: lcl-gtk2${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel armhf
+Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, fp-units-rtl, fp-units-base, fp-units-fcl, fp-units-gtk2
 Recommends: lazarus-ide${PACKAGESUFFIX}, fpc
 Suggests: gdb
-Provides: lcl-gtk2, lcl-gtk, lcl-gtk${PACKAGESUFFIX}
+Provides: lcl-gtk2, lcl-gtk
 Breaks: lcl-gtk2 (<< 0.9.28.2), lazarus-ide${PACKAGESUFFIX} (<= 0.9.28.2-2)
 Replaces: lcl-gtk2 (<< 0.9.28.2), lazarus-ide${PACKAGESUFFIX} (<= 0.9.28.2-2)
 Description: Lazarus Components Library - GTK+ backend
@@ -287,11 +284,11 @@ Description: Lazarus Components Library - GTK+ backend
  This package contains the part of the LCL for developing GTK+ applications.
 
 Package: lcl-qt4${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel armhf
+Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, fp-units-rtl, fp-units-base, fp-units-fcl, libqt4pas-dev
 Recommends: lazarus-ide${PACKAGESUFFIX}, fpc
 Suggests: gdb
-Provides: lcl-qt, lcl-qt${PACKAGESUFFIX}
+Provides: lcl-qt4, lcl-qt
 Description: Lazarus Components Library - Qt backend
  Lazarus is an IDE to create (graphical and console) applications with Free
  Pascal, the (L)GPLed Pascal and Object Pascal compiler that runs on
@@ -316,9 +313,9 @@ Section: doc
 Architecture: all
 Depends: ${misc:Depends}
 Suggests: lazarus-ide${PACKAGESUFFIX}
-Provides: lazarus-docs
-Breaks: lazarus-docs (<< 0.9.28.2-13)
-Replaces: lazarus-docs (<< 0.9.28.2-13)
+Provides: lazarus-doc
+Breaks: lazarus-doc (<< 0.9.28.2-13)
+Replaces: lazarus-doc (<< 0.9.28.2-13)
 Description: IDE for Free Pascal - documentation
  Lazarus is an IDE to create (graphical and console) applications with Free
  Pascal, the (L)GPLed Pascal and Object Pascal compiler that runs on
@@ -344,7 +341,6 @@ Description: IDE for Free Pascal - documentation
 ##################### backward compatibility meta packages#####################
 
 Package: lazarus
-Section: metapackages
 Architecture: all
 Depends: ${misc:Depends}, lazarus${PACKAGESUFFIX} (= ${binary:Version})
 Description: IDE for Free Pascal - SDK dependency package
@@ -369,7 +365,6 @@ Description: IDE for Free Pascal - SDK dependency package
  Lazarus installation.
 
 Package: lazarus-src
-Section: metapackages
 Architecture: all
 Depends: ${misc:Depends}, lazarus-src${PACKAGESUFFIX} (= ${binary:Version})
 Description: IDE for Free Pascal - LCL source code dependency package
@@ -394,8 +389,7 @@ Description: IDE for Free Pascal - LCL source code dependency package
  properly (retrieving declarations and navigating in code).
 
 Package: lazarus-ide
-Section: metapackages
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends}, lazarus-ide${PACKAGESUFFIX} (= ${binary:Version})
 Description: IDE for Free Pascal - common IDE files dependency package
  Lazarus is an IDE to create (graphical and console) applications with Free
@@ -418,10 +412,9 @@ Description: IDE for Free Pascal - common IDE files dependency package
  the package pulling in the common files required to run Lazarus IDE.
 
 Package: lazarus-ide-gtk2
-Section: metapackages
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends}, lazarus-ide-gtk2${PACKAGESUFFIX} (= ${binary:Version})
-Description: IDE for Free Pascal - GTK+ version
+Description: IDE for Free Pascal - Last GTK+ version dependency package
  Lazarus is an IDE to create (graphical and console) applications with Free
  Pascal, the (L)GPLed Pascal and Object Pascal compiler that runs on
  Windows, Linux, Mac OS X, FreeBSD and more.
@@ -442,10 +435,9 @@ Description: IDE for Free Pascal - GTK+ version
  the package containing the GTK+ version of the Lazarus IDE.
 
 Package: lazarus-ide-qt4
-Section: metapackages
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends}, lazarus-ide-qt4${PACKAGESUFFIX} (= ${binary:Version})
-Description: IDE for Free Pascal - IDE build on top of Qt backend dependency package
+Description: IDE for Free Pascal - Last Qt version dependency package
  Lazarus is an IDE to create (graphical and console) applications with Free
  Pascal, the (L)GPLed Pascal and Object Pascal compiler that runs on
  Windows, Linux, Mac OS X, FreeBSD and more.
@@ -464,11 +456,10 @@ Description: IDE for Free Pascal - IDE build on top of Qt backend dependency pac
  .
  This dependency package always depends on the latest available version of
  the placeholder package for the Qt version of the Lazarus IDE, which
- currently just depends on the GTK version.
+ currently just depends on the GTK+ version.
 
 Package: lcl
-Section: metapackages
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends}, lcl${PACKAGESUFFIX} (= ${binary:Version})
 Description: Lazarus Components Library - LCL dependency package
  Lazarus is an IDE to create (graphical and console) applications with Free
@@ -491,8 +482,7 @@ Description: Lazarus Components Library - LCL dependency package
  the metapackage installing the full LCL and components.
 
 Package: lcl-utils
-Section: metapackages
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends}, lcl-utils${PACKAGESUFFIX} (= ${binary:Version})
 Description: Lazarus Components Library - command line build tools dependency package
  Lazarus is an IDE to create (graphical and console) applications with Free
@@ -516,8 +506,7 @@ Description: Lazarus Components Library - command line build tools dependency pa
  applications.
 
 Package: lcl-units
-Section: metapackages
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends}, lcl-units${PACKAGESUFFIX} (= ${binary:Version})
 Description: Lazarus Components Library - backend independent components dependency package
  Lazarus is an IDE to create (graphical and console) applications with Free
@@ -540,8 +529,7 @@ Description: Lazarus Components Library - backend independent components depende
  the package containing common components.
 
 Package: lcl-nogui
-Section: metapackages
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends}, lcl-nogui${PACKAGESUFFIX} (= ${binary:Version})
 Description: Lazarus Components Library - no GUI backend dependency package
  Lazarus is an IDE to create (graphical and console) applications with Free
@@ -565,8 +553,7 @@ Description: Lazarus Components Library - no GUI backend dependency package
  applications and command line tools.
 
 Package: lcl-gtk2
-Section: metapackages
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends}, lcl-gtk2${PACKAGESUFFIX} (= ${binary:Version})
 Description: Lazarus Components Library - GTK+ backend dependency package
  Lazarus is an IDE to create (graphical and console) applications with Free
@@ -590,8 +577,7 @@ Description: Lazarus Components Library - GTK+ backend dependency package
  applications.
 
 Package: lcl-qt4
-Section: metapackages
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends}, lcl-qt4${PACKAGESUFFIX} (= ${binary:Version})
 Description: Lazarus Components Library - Qt backend dependency package
  Lazarus is an IDE to create (graphical and console) applications with Free

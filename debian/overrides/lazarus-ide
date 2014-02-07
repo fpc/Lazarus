@@ -1,3 +1,7 @@
 # False spell error detectios
 lazarus-ide: spelling-error-in-binary */startlazarus Childs Children
-lazarus-ide: spelling-error-in-binary */startlazarus allows to allows one to
+
+# This package is compiled by the FPC and Lazarus. These compilers don't have
+# hardening flags yet, so ignoring these lintian warnings for now
+# Paul Gevers <elbrus@debian.org>, 22 Jun 2013
+lazarus-ide: hardening-no-fortify-functions */startlazarus

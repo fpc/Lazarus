@@ -1,24 +1,37 @@
-#!/bin/sh -e
+#!/bin/sh -xe
 
-VERSION=$1
-SEDSCRIPT="s/Last Changed Rev: \([0-9]\+\)/const RevisionStr = '\1';/p"
+PACKAGE_NAME=lazarus
+TMP_DIR=`/bin/mktemp -d -t lazarus.XXXXXX` || exit 1
+ORIG_PATH=$(pwd)
 
-SVNVER=$(echo $VERSION | tr . _)
-SVNURL=http://svn.freepascal.org/svn/lazarus/tags/lazarus_$SVNVER
+while test $# -gt 0
+do
+	case $1 in
+		--upstream-version)
+			shift
+			VERSION=$1
+			;;
+		*)
+			ORIG_SRC_TAR=$(readlink -m $1)
+			;;
+	esac
+	shift
+done
 
-DIR=lazarus-$VERSION
-TAR=../lazarus_$VERSION.orig.tar.gz
+ORIG_SRC_DIR=${PACKAGE_NAME}
+DEB_SRC_DIR=${PACKAGE_NAME}-${VERSION}+dfsg
+DEB_SRC_TAR=${PACKAGE_NAME}_${VERSION}+dfsg.orig.tar.gz
 
-svn export $SVNURL $DIR
-# Add revision.inc
-svn info $SVNURL | sed -ne "$SEDSCRIPT" > $DIR/ide/revision.inc
-tar czf $TAR $DIR
-rm -rf $DIR
-
-# move to directory 'tarballs'
-if [ -r .svn/deb-layout ]; then
-    . .svn/deb-layout
-    mv $TAR $origDir
-    echo "moved $TAR to $origDir"
-fi
-
+cd ${TMP_DIR}
+tar -axf ${ORIG_SRC_TAR}
+mv ${ORIG_SRC_DIR} ${DEB_SRC_DIR}
+cd ${DEB_SRC_DIR}
+rm -rf components/aggpas
+rm -rf packager/globallinks/aggpas*.lpl
+rm -rf debian
+find '(' -name '*.icns' -or -name '*.java' ')' -exec chmod a-x {} ';'
+cd ..
+tar -acf ${DEB_SRC_TAR} ${DEB_SRC_DIR}
+cd ${ORIG_PATH}
+mv ${TMP_DIR}/${DEB_SRC_TAR} ../
+rm -rf ${TMP_DIR}
