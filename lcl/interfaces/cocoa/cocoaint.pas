@@ -64,6 +64,7 @@ type
     pool: NSAutoreleasePool;
     FNSApp: NSApplication;
     FCurrentCursor: HCursor;
+    FCaptureControl: HWND;
     delegate: TCocoaAppDelegate;
   protected
     FStockNullBrush: HBRUSH;
@@ -129,6 +130,7 @@ type
     function GetImagePixelData(AImage: CGImageRef; out bitmapByteCount: PtrUInt): Pointer;
     property NSApp: NSApplication read FNSApp;
     property CurrentCursor: HCursor read FCurrentCursor write FCurrentCursor;
+    property CaptureControl: HWND read FCaptureControl;
     // the winapi compatibility methods
     {$I cocoawinapih.inc}
     // the extra LCL interface methods

@@ -87,6 +87,7 @@ begin
   inherited Create;
   FTerminating := False;
   FCurrentCursor:= 0;
+  FCaptureControl:= 0;
 
   {  Creates the AutoreleasePool }
   pool := NSAutoreleasePool.alloc.init;

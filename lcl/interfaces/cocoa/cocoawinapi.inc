@@ -557,6 +557,11 @@ begin
     Result := CLR_INVALID;
 end;
 
+function TCocoaWidgetSet.GetCapture: HWND;
+begin
+  Result:=FCaptureControl;
+end;
+
 function TCocoaWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
 begin
   Result := CocoaCaret.GetCaretPos(lpPoint);
@@ -1686,6 +1691,11 @@ begin
     Result := 0;
 end;
 
+function TCocoaWidgetSet.SetCapture(AHandle: HWND): HWND;
+begin
+  FCaptureControl:= AHandle;
+end;
+
 function TCocoaWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
 begin
   Result := CocoaCaret.SetCaretPos(X, Y);
@@ -1718,6 +1728,11 @@ begin
 
   ClipBox := CGContextGetClipBoundingBox(ctx.CGContext);
   Result := IntersectRect(R, ARect, CGRectToRect(ClipBox));
+end;
+
+function TCocoaWidgetSet.ReleaseCapture : Boolean;
+begin
+  FCaptureControl:=0;
 end;
 
 function TCocoaWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;

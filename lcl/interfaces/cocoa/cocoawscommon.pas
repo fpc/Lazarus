@@ -29,6 +29,7 @@ type
       FTarget: TWinControl;
       FBoundsReportedToChildren: boolean;
       FIsOpaque:boolean;
+      FIsEventRouting:boolean;
     function CheckMouseButtonDown(Event: NSEvent; AButton: Integer): Cardinal;
     function GetHasCaret: Boolean;
     procedure SetHasCaret(AValue: Boolean);
@@ -250,6 +251,7 @@ begin
   FPropStorage.Duplicates := dupAccept;
   FBoundsReportedToChildren:=false;
   FIsOpaque:=false;
+  FIsEventRouting:=false;
 end;
 
 destructor TLCLCommonCallback.Destroy;
@@ -685,12 +687,28 @@ var
   MsgContext: TLMContextMenu;
   MousePos: NSPoint;
   MButton: NSInteger;
+  obj:NSObject;
+  callback: ICommonCallback;
 
 begin
   Result := False; // allow cocoa to handle message
 
   if Assigned(Target) and (not (csDesigning in Target.ComponentState) and not Owner.lclIsEnabled) then
     Exit;
+
+   //debugln('MouseUpDownEvent '+Target.name);
+   if CocoaWidgetSet.CaptureControl<>0 then       // check if to route event to capture control
+    begin
+      obj:=NSObject(CocoaWidgetSet.CaptureControl);
+      if (obj<>Owner) and not FIsEventRouting then
+        begin
+          FIsEventRouting:=true;
+          callback:=obj.lclGetCallback;
+          Result:=callback.MouseUpDownEvent(Event);
+          FIsEventRouting:=false;
+          exit;
+        end;
+    end;
 
   // idea of multi click implementation is taken from gtk
 
@@ -775,32 +793,49 @@ begin
   rect:=Owner.lclClientFrame;
   targetControl:=nil;
 
-  if assigned(Target.Parent) and not PtInRect(rect, mp) then
-     targetControl:=Target.Parent                            // outside myself then go to parent
-  else
-  for i:=Target.ComponentCount-1 downto 0  do                // otherwise check, if over child
-    if Target.Components[i] is TWinControl then
-      begin
-        childControl:=TWinControl(Target.Components[i]);
-        rect:=childControl.BoundsRect;
-         if  PtInRect(rect, mp) then
-             begin
-             targetControl:=childControl;
-             break;
-             end;
-       end;
+  if CocoaWidgetSet.CaptureControl<>0 then       // check if to route event to capture control
+    begin
+      obj:=NSObject(CocoaWidgetSet.CaptureControl);
+      if (obj<>Owner) and not FIsEventRouting then
+        begin
+          FIsEventRouting:=true;
+          callback:=obj.lclGetCallback;
+          result:=callback.MouseMove(Event);
+          FIsEventRouting:=false;
+          exit;
+        end;
+    end
+    else
+    begin
 
+      if assigned(Target.Parent) and not PtInRect(rect, mp) then
+         targetControl:=Target.Parent                            // outside myself then route to parent
+      else
+      for i:=Target.ComponentCount-1 downto 0  do                // otherwise check, if over child and route to child
+        if Target.Components[i] is TWinControl then
+          begin
+            childControl:=TWinControl(Target.Components[i]);
+            rect:=childControl.BoundsRect;
+             if  PtInRect(rect, mp) then
+                 begin
+                   targetControl:=childControl;
+                   break;
+                 end;
+           end;
+    end;
 
-  if assigned(targetControl) then
+  if assigned(targetControl) and not FIsEventRouting then
      begin
-     //debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(mp)+' Rect'+dbgs(rect));
-     obj:=NSView(targetControl.Handle);
-     callback:=obj.lclGetCallback;
-     result:=callback.MouseMove(Event);
-     exit;
+       FIsEventRouting:=true;
+       // debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(mp)+' Rect'+dbgs(rect));
+       obj:=NSView(targetControl.Handle);
+       callback:=obj.lclGetCallback;
+       result:=callback.MouseMove(Event);
+       FIsEventRouting:=false;
+       exit;
      end;
 
-  //debugln('Send to: '+Target.name+' Point: '+dbgs(mp));
+  // debugln('Send to: '+Target.name+' Point: '+dbgs(mp));
 
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_MOUSEMOVE;
