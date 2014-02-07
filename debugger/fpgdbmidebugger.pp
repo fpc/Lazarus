@@ -633,7 +633,6 @@ var
   IdentName: String;
   PasExpr: TFpPascalExpression;
   rt: TDbgSymbol;
-  Ctx: TDbgInfoAddressContext;
 begin
   Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
 DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
@@ -643,7 +642,6 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
 
   FInIndexOf := True;
   PasExpr := nil;
-  Ctx := nil;
   try
     if (ARequest.ReqType = gcrtPType) and (length(ARequest.Request) > 0) then begin
 //DebugLn('######## '+ARequest.Request);
@@ -655,8 +653,7 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
       end;
 
       if IdentName <> '' then begin
-        Ctx := FDebugger.GetInfoContextForContext(AThreadId, AStackFrame);
-        PasExpr := TFpPascalExpression.Create(IdentName, Ctx);
+        PasExpr := TFpPascalExpression.Create(IdentName, FDebugger.GetInfoContextForContext(AThreadId, AStackFrame));
         rt := nil;
         if PasExpr.Valid and (PasExpr.ResultValue <> nil) then begin
           rt := PasExpr.ResultValue.DbgSymbol; // value or typecast
@@ -682,7 +679,6 @@ if PasExpr.ResultValue <> nil then
 
   finally
     PasExpr.Free;
-    Ctx.Free;
     FInIndexOf := False;
   end;
 
