@@ -73,11 +73,14 @@ type
     // ToDo: Find out what these are
     sttUnknown,
     // numbers
-    sttFloatValue);
+    sttFloatValue,
+    // text
+    sttConstantValue, sttNamedEquation);
 
   TSVGToken = class
     TokenType: TSVGTokenType;
     Value: Float;
+    StrValue: string;
   end;
 
   TSVGTokenList = specialize TFPGList<TSVGToken>;
@@ -94,15 +97,15 @@ type
     procedure TokenizePathString(AStr: string);
   end;
 
+  TODGStyle = class(TvStyle)
+    //
+  end;
+
   TODGMasterPage = class
   public
     Name: string;
     PageLayoutName: string;
     StyleName: string;
-  end;
-
-  TODGStyle = class(TvEntityWithPenBrushAndFont)
-  public
   end;
 
   TODGPageLayout = class
@@ -131,15 +134,16 @@ type
     //FSVGPathTokenizer: TSVGPathTokenizer;
     //
     procedure DeleteStyle(data,arg:pointer);
+    procedure ApplyGraphicAttributeToPenAndBrush(ANodeName, ANodeValue: string; var APen: TvPen; var ABrush: TvBrush);
     procedure ApplyGraphicAttributeToEntity(ANodeName, ANodeValue: string; ADest: TvEntityWithPen);
     procedure ApplyStyleByNameToEntity(AStyleName: string; ADest: TvEntityWithPen);
     procedure ApplyTextStyleByNameToEntity(AStyleName: string; ADest: TvEntityWithPen);
     procedure ApplyMasterPageToPage(AMasterPageName: string; ADest: TvVectorialPage);
     //
-    procedure ReadStyleNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadStyleStyleNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadEnhancedGeometryNodeToTPath(ANode: TDOMNode; AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double; var AInfo: TCustomShapeInfo);
     procedure ConvertPathStringToTPath(AStr: string; AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double; AInfo: TCustomShapeInfo);
+    function  ResolveEnhancedGeometryFormula(AInput: TSVGToken; AInfo: TCustomShapeInfo): Double;
     //
     procedure ReadElement(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadCustomShapeNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -319,14 +323,16 @@ begin
   // Constants
   '$':
   begin
-    lToken.TokenType := sttFloatValue;
-    lToken.Value := 0; // ToDo
+    lToken.TokenType := sttConstantValue;
+    lToken.Value := 0;
+    lToken.StrValue := lStr;
   end;
   // Named Equations
   '?':
   begin
-    lToken.TokenType := sttFloatValue;
-    lToken.Value := 0; // ToDo
+    lToken.TokenType := sttNamedEquation;
+    lToken.Value := 0;
+    lToken.StrValue := lStr;
   end;
   else
     lToken.TokenType := sttFloatValue;
@@ -334,7 +340,8 @@ begin
   end;
 
   // Sometimes we get a command glued to a value, for example M150
-  if (lToken.TokenType <> sttFloatValue) and (Length(lStr) > 1) then
+  if (not (lToken.TokenType in [sttFloatValue, sttConstantValue, sttNamedEquation]))
+    and (Length(lStr) > 1) then
   begin
     Tokens.Add(lToken);
     lToken.TokenType := sttFloatValue;
@@ -432,30 +439,26 @@ begin
   TObject(data).Free;
 end;
 
-procedure TvODGVectorialReader.ApplyGraphicAttributeToEntity(ANodeName,
-  ANodeValue: string; ADest: TvEntityWithPen);
+procedure TvODGVectorialReader.ApplyGraphicAttributeToPenAndBrush(ANodeName,
+  ANodeValue: string; var APen: TvPen; var ABrush: TvBrush);
 var
   i: Integer;
   lColor: TFPColor;
-  lDestBrush: TvEntityWithPenAndBrush absolute ADest;
-  lDestFont: TvEntityWithPenBrushAndFont absolute ADest;
 begin
   case ANodeName of
   // "none", "solid"
   'draw:fill':
   begin
-    if not (ADest is TvEntityWithPenAndBrush) then Exit;
     case ANodeValue of
-    'none': lDestBrush.Brush.Style := bsClear;
-    'solid': lDestBrush.Brush.Style := bsSolid;
+    'none': ABrush.Style := bsClear;
+    'solid': ABrush.Style := bsSolid;
     end;
   end;
   // "#ffffff"
   'draw:fill-color':
   begin
-    if not (ADest is TvEntityWithPenAndBrush) then Exit;
     lColor := ReadSVGColor(ANodeValue);
-    lDestBrush.Brush.Color := lColor;
+    ABrush.Color := lColor;
   end;
   // Values: "justify", "center", "left"
   'draw:textarea-horizontal-align':
@@ -477,8 +480,8 @@ begin
   'draw:stroke':
   begin
     case ANodeValue of
-    'none': ADest.Pen.Style := psClear;
-    'dash': ADest.Pen.Style := psDash;
+    'none': APen.Style := psClear;
+    'dash': APen.Style := psDash;
     end;
   end;
   // "Fine_20_Dashed_20__28_var_29_"
@@ -506,9 +509,9 @@ begin
   begin
   end;
   // "0.1cm"
-  'svg:stroke-width': ADest.Pen.Width := Round(StringWithUnitToFloat(ANodeValue));
+  'svg:stroke-width': APen.Width := Round(StringWithUnitToFloat(ANodeValue));
   // "#000000"
-  'svg:stroke-color': ADest.Pen.Color := ReadSVGColor(ANodeValue);
+  'svg:stroke-color': APen.Color := ReadSVGColor(ANodeValue);
   // "0cm"
   'fo:min-height':
   begin
@@ -540,16 +543,30 @@ begin
   end;
 end;
 
+procedure TvODGVectorialReader.ApplyGraphicAttributeToEntity(ANodeName,
+  ANodeValue: string; ADest: TvEntityWithPen);
+var
+  DummyBrush: TvBrush;
+begin
+  if (ADest is TvEntityWithPenAndBrush) then
+  begin
+    ApplyGraphicAttributeToPenAndBrush(ANodeName, ANodeValue, ADest.Pen,
+      (ADest as TvEntityWithPenAndBrush).Brush);
+  end
+  else
+    ApplyGraphicAttributeToPenAndBrush(ANodeName, ANodeValue, ADest.Pen, DummyBrush);
+end;
+
 // Don't apply font properties here, because there is a separate method for this
 procedure TvODGVectorialReader.ApplyStyleByNameToEntity(AStyleName: string;
   ADest: TvEntityWithPen);
 var
   i: Integer;
-  lCurStyle: TvEntityWithPenBrushAndFont;
+  lCurStyle: TODGStyle;
 begin
   for i := 0 to FStyles.Count-1 do
   begin
-    lCurStyle := TvEntityWithPenBrushAndFont(FStyles.Items[i]);
+    lCurStyle := TODGStyle(FStyles.Items[i]);
     if lCurStyle.Name = AStyleName then
     begin
       ADest.AssignPen(lCurStyle.Pen);
@@ -565,11 +582,11 @@ procedure TvODGVectorialReader.ApplyTextStyleByNameToEntity(AStyleName: string;
   ADest: TvEntityWithPen);
 var
   i: Integer;
-  lCurStyle: TvEntityWithPenBrushAndFont;
+  lCurStyle: TODGStyle;
 begin
   for i := 0 to FStyles.Count-1 do
   begin
-    lCurStyle := TvEntityWithPenBrushAndFont(FStyles.Items[i]);
+    lCurStyle := TODGStyle(FStyles.Items[i]);
     if lCurStyle.Name = AStyleName then
     begin
       if ADest is TvEntityWithPenBrushAndFont then
@@ -613,17 +630,6 @@ begin
   ADest.Height := lMasterPageLayout.PageHeight;
 end;
 
-procedure TvODGVectorialReader.ReadStyleNode(ANode: TDOMNode;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
-var
-  Str: String;
-begin
-  Str := LowerCase(ANode.NodeName);
-  case Str of
-  'style:style': ReadStyleStyleNode(ANode, AData, ADoc);
-  end;
-end;
-
 {
 <style:style style:name="gr2" style:family="graphic" style:parent-style-name="standard">
   <style:graphic-properties draw:fill="solid" draw:fill-color="#ffff99"
@@ -633,22 +639,25 @@ end;
 procedure TvODGVectorialReader.ReadStyleStyleNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
-  lStyle: TvEntityWithPenBrushAndFont;
-  lGraphicPropertiesNode: TDOMNode;
+  lStyle: TvStyle;
   i: Integer;
+  lGraphicPropertiesNode: TDOMNode;
   lNodeName, lNodeValue: DOMString;
 begin
-  lStyle := TODGStyle.Create(AData);
+  lStyle := TODGStyle.Create();
 
   // Read attributes of the main style tag
   // <style:style style:name="gr4" style:family="graphic" style:parent-style-name="standard">;
-  for i := 0 to lGraphicPropertiesNode.Attributes.Length - 1 do
+  for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := LowerCase(ANode.Attributes.Item[i].NodeName);
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
     case lNodeName of
+    'style:name': lStyle.Name := lNodeValue;
+    //'style:family'
     'style:parent-style-name':
     begin
-      lNodeValue := LowerCase(ANode.Attributes.Item[i].NodeValue);
+      lNodeValue := LowerCase(lNodeValue);
       case lNodeValue of
       // "standard"
       'standard': Continue;
@@ -670,7 +679,7 @@ begin
     begin
       lNodeName := LowerCase(lGraphicPropertiesNode.Attributes.Item[i].NodeName);
       lNodeValue := LowerCase(lGraphicPropertiesNode.Attributes.Item[i].NodeValue);
-      ApplyGraphicAttributeToEntity(lNodeName, lNodeValue, lStyle);
+      ApplyGraphicAttributeToPenAndBrush(lNodeName, lNodeValue, lStyle.Pen, lStyle.Brush);
     end;
   end;
   FStyles.Add(lStyle);
@@ -751,7 +760,7 @@ begin
           lAttrValue := StringReplace(lAttrValue, '$0', '0', [rfReplaceAll, rfIgnoreCase]);
           lAttrValue := StringReplace(lAttrValue, '-0', '', [rfReplaceAll, rfIgnoreCase]);
 
-          AInfo.VariableValues[Len] := StrToFloat(lAttrValue);
+          AInfo.VariableValues[Len] := StringWithUnitToFloat(lAttrValue);
         end;
       end;
     end;
@@ -864,9 +873,9 @@ begin
         CurToken := TSVGToken(lTokenizer.Tokens.Items[j+2]);
         y1 := CurToken.Value;// + ADeltaY;
         CurToken := TSVGToken(lTokenizer.Tokens.Items[j+3]);
-        x2 := CurToken.Value / 2;
+        x2 := ResolveEnhancedGeometryFormula(CurToken, AInfo) / 2;
         CurToken := TSVGToken(lTokenizer.Tokens.Items[j+4]);
-        y2 := CurToken.Value / 2;
+        y2 := ResolveEnhancedGeometryFormula(CurToken, AInfo) / 2;
         CurToken := TSVGToken(lTokenizer.Tokens.Items[j+5]);
         t1 := CurToken.Value;
         t1 := t1 / Pi;
@@ -901,6 +910,28 @@ begin
     end;
   finally
     lTokenizer.Free;
+  end;
+end;
+
+function TvODGVectorialReader.ResolveEnhancedGeometryFormula(AInput: TSVGToken;
+  AInfo: TCustomShapeInfo): Double;
+var
+  i: Integer;
+  lStr: string;
+begin
+  Result := 0;
+
+  case AInput.TokenType of
+  sttFloatValue: Result := AInput.Value;
+  sttNamedEquation:
+  begin
+    for i := 0 to Length(AInfo.VariableNames)-1 do
+    begin
+      lStr := '?' + AInfo.VariableNames[i];
+      if lStr = AInput.StrValue then
+        Result := AInfo.VariableValues[i];
+    end;
+  end;
   end;
 end;
 
@@ -1095,7 +1126,7 @@ var
   x1, y1, x2, y2: double;
   lPath: TPath;
   i: Integer;
-  lNodeName: DOMString;
+  lNodeName, lNodeValue: DOMString;
 begin
   x1 := 0.0;
   y1 := 0.0;
@@ -1108,22 +1139,23 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if  lNodeName = 'svg:x1' then
-      x1 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      x1 := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'svg:y1' then
-      y1 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      y1 := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'svg:x2' then
-      x2 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      x2 := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'svg:y2' then
-      y2 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      y2 := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'draw:style-name' then
-      ApplyStyleByNameToEntity(ANode.Attributes.Item[i].NodeValue, lPath)
+      ApplyStyleByNameToEntity(lNodeValue, lPath)
     else if lNodeName = 'draw:text-style-name' then
-      ApplyTextStyleByNameToEntity(ANode.Attributes.Item[i].NodeValue, lPath)
+      ApplyTextStyleByNameToEntity(lNodeValue, lPath)
 //    else if lNodeName = 'id' then
-//      lEllipse.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+//      lEllipse.Name := UTF16ToUTF8(lNodeValue)
     else
-      ApplyGraphicAttributeToEntity(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+      ApplyGraphicAttributeToEntity(lNodeName, lNodeValue, lPath);
   end;
 
   ConvertODGCoordinatesToFPVCoordinates(
@@ -1845,6 +1877,7 @@ begin
     // Now process the contents
     ReadXMLFile(Doc,FilePath+'content.xml');
     DeleteFile(FilePath+'content.xml');
+    ReadFromStylesXMLDocument(Doc, AData); // The content.xml may also contain styles
     ReadFromContentXMLDocument(Doc, AData);
   finally
     Doc.Free;
@@ -1919,6 +1952,7 @@ begin
       lNodeName := LowerCase(ElementNode.NodeName);
       case lNodeName of
       'style:page-layout': ReadStylesPageLayout(ElementNode, CurPage, AData);
+      'style:style': ReadStyleStyleNode(ElementNode, CurPage, AData);
       end;
 
       ElementNode := ElementNode.NextSibling;
