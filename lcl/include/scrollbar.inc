@@ -204,9 +204,8 @@ begin
       if Message.ScrollCode = SB_THUMBPOSITION
       then ScrollCode := scPosition
       else ScrollCode := scTrack;
-      { We need to reverse the positioning because SetPosition below
-        calls SetParams that reverses the position. This acts as a
-        double negative. }
+      { We need to reverse the positioning because SetPosition below calls
+        SetParams that reverses the position. This acts as a double negative. }
       if NotRightToLeft
       then NewPos := Message.Pos
       else NewPos := FMax - Message.Pos;
@@ -226,8 +225,8 @@ begin
     Exit;
   end;
 
+  if NewPos > (FMax - FPageSize) then NewPos := FMax - FPageSize;
   if NewPos < FMin then NewPos := FMin;
-  if NewPos > FMax then NewPos := FMax;
   ScrollPos := NewPos;
   Scroll(ScrollCode, ScrollPos);
   SetPosition(ScrollPos);
