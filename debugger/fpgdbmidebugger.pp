@@ -13,19 +13,6 @@ type
 
   TFpGDBMIDebugger = class;
 
-  { TFpGDBMIPascalExpression }
-
-  TFpGDBMIPascalExpression = class(TFpPascalExpression)
-  private
-    FThreadId: Integer;
-    FStackFrame: Integer;
-    FDebugger: TFpGDBMIDebugger;
-  protected
-    function GetDbgSymbolForIdentifier(AnIdent: String): TDbgSymbol; override;
-  public
-    constructor Create(ATextExpression: String; ADebugger: TFpGDBMIDebugger; AThreadId, AStackFrame: Integer);
-  end;
-
   { TFpGDBMIDbgMemReader }
 
   TFpGDBMIDbgMemReader = class(TFpDbgMemReaderBase)
@@ -212,35 +199,6 @@ debugln(['TFpGDBMIDbgMemReader.ReadRegister ',rname, '  ', v]);
         end;
         exit;
       end;
-end;
-
-{ TFpGDBMIPascalExpression }
-
-function TFpGDBMIPascalExpression.GetDbgSymbolForIdentifier(AnIdent: String): TDbgSymbol;
-var
-  Loc: TDBGPtr;
-  Ctx: TDbgInfoAddressContext;
-begin
-  Result := nil;
-  if  (AnIdent <> '') and FDebugger.HasDwarf then begin
-    //Loc := FDebugger.GetLocationForContext(FThreadId, FStackFrame);
-    //if (Loc <> 0) then begin
-      Ctx := FDebugger.GetInfoContextForContext(FThreadId, FStackFrame);
-      //Ctx := FDebugger.FDwarfInfo.FindContext(Loc);
-    if Ctx <> nil then
-      Result := Ctx.FindSymbol(AnIdent);
-      //Ctx.ReleaseReference;
-    //end;
-  end;
-end;
-
-constructor TFpGDBMIPascalExpression.Create(ATextExpression: String;
-  ADebugger: TFpGDBMIDebugger; AThreadId, AStackFrame: Integer);
-begin
-  FDebugger := ADebugger;
-  FThreadId := AStackFrame;
-  FStackFrame := AStackFrame;
-  inherited Create(ATextExpression);
 end;
 
 { TFpGDBPTypeRequestCache }
@@ -673,8 +631,9 @@ const
 
 var
   IdentName: String;
-  PasExpr: TFpGDBMIPascalExpression;
+  PasExpr: TFpPascalExpression;
   rt: TDbgSymbol;
+  Ctx: TDbgInfoAddressContext;
 begin
   Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
 DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
@@ -684,6 +643,7 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
 
   FInIndexOf := True;
   PasExpr := nil;
+  Ctx := nil;
   try
     if (ARequest.ReqType = gcrtPType) and (length(ARequest.Request) > 0) then begin
 //DebugLn('######## '+ARequest.Request);
@@ -695,7 +655,8 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
       end;
 
       if IdentName <> '' then begin
-        PasExpr := TFpGDBMIPascalExpression.Create(IdentName, FDebugger, AThreadId, AStackFrame);
+        Ctx := FDebugger.GetInfoContextForContext(AThreadId, AStackFrame);
+        PasExpr := TFpPascalExpression.Create(IdentName, Ctx);
         rt := nil;
         if PasExpr.Valid and (PasExpr.ResultValue <> nil) then begin
           rt := PasExpr.ResultValue.DbgSymbol; // value or typecast
@@ -721,6 +682,7 @@ if PasExpr.ResultValue <> nil then
 
   finally
     PasExpr.Free;
+    Ctx.Free;
     FInIndexOf := False;
   end;
 
@@ -976,7 +938,7 @@ begin
      (FLastContext[AStackFrame - FlastStackFrame] <> nil) and
      (FLastContext[AStackFrame - FlastStackFrame].Address = Addr)
   then begin
-DebugLn('cached contex');
+DebugLn('******* cached contex <<<<<<<<<<<');
     Result := FLastContext[AStackFrame - FlastStackFrame];
     exit;
   end;
