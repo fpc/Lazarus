@@ -12,17 +12,6 @@ uses
 
 type
 
-  { TTestPascalExpression }
-
-  TTestPascalExpression = class(TFpPascalExpression)
-  private
-    FContext: TDbgInfoAddressContext;
-  protected
-    function GetDbgSymbolForIdentifier(AnIdent: String): TDbgSymbol; override;
-  public
-    constructor Create(ATextExpression: String; AContext: TDbgInfoAddressContext);
-  end;
-
   { TTestTypInfo }
 
   TTestTypInfo = class(TTestCase)
@@ -35,30 +24,21 @@ type
 
 implementation
 
-{ TTestPascalExpression }
-
-function TTestPascalExpression.GetDbgSymbolForIdentifier(AnIdent: String): TDbgSymbol;
-begin
-  Result := nil;
-  if (AnIdent <> '') and (FContext <> nil) then
-    Result := FContext.FindSymbol(AnIdent);
-end;
-
-constructor TTestPascalExpression.Create(ATextExpression: String;
-  AContext: TDbgInfoAddressContext);
-begin
-  FContext := AContext;
-  inherited Create(ATextExpression);
-end;
-
 procedure TTestTypInfo.X;
 var
   s1, s2,s3: String;
 begin
-  s1 := '_vptr$TOBJECT';
   s2 := UTF8UpperCase( '_vptr$TOBJECT');
   s3 := UTF8LowerCase( '_vptr$TOBJECT');
-  DebugLn (dbgs(  CompareUtf8BothCase(@s2[1],@s3[1],@s1[1]) ));
+
+  s1 := '_vptr$TOBJECT';
+  AssertTrue( CompareUtf8BothCase(@s2[1],@s3[1],@s1[1]) );
+  s1 := '_Vptr$TOBJECT';
+  AssertTrue( CompareUtf8BothCase(@s2[1],@s3[1],@s1[1]) );
+  s1 := '_vPtR$TOBJECT';
+  AssertTrue( CompareUtf8BothCase(@s2[1],@s3[1],@s1[1]) );
+  s1 := '_Vvptr$TOBJECT';
+  AssertFalse( CompareUtf8BothCase(@s2[1],@s3[1],@s1[1]) );
 end;
 
 procedure TTestTypInfo.New1;
@@ -68,15 +48,15 @@ type
 var
   CurrentTestName: String;
   Ctx: TDbgInfoAddressContext;
-  Expression: TTestPascalExpression;
+  Expression: TFpPascalExpression;
 
   procedure InitTest(Expr: String; ExtraName: String = '');
   begin
     if ExtraName <> '' then ExtraName := ' (' + ExtraName + ')';
     CurrentTestName := Expr + ExtraName + ': ';
     Expression.Free;
-    Expression := TTestPascalExpression.Create(Expr, Ctx);
-debugln(Expression.DebugDump);
+    Expression := TFpPascalExpression.Create(Expr, Ctx);
+//debugln(Expression.DebugDump);
   end;
   procedure StartTest(Expr: String; TestFlags: TTestFlags = []; ExtraName: String = '');
   var
@@ -88,12 +68,12 @@ debugln(Expression.DebugDump);
     for i := low(TTestFlags) to high(TTestFlags) do
       if i in TestFlags then
         case i of
-          ttHasType:      AssertTrue('hastype', Expression.ResultValue.TypeInfo <> nil);
-          ttNotHasType:   AssertTrue('has not type', Expression.ResultValue.TypeInfo = nil);
-          ttHasSymbol:    AssertTrue('hassymbol', Expression.ResultValue.DbgSymbol <> nil);
-          ttHasValSymbol: AssertTrue('hassymbol', (Expression.ResultValue.DbgSymbol <> nil) and
+          ttHasType:      AssertTrue(CurrentTestName + 'hastype', Expression.ResultValue.TypeInfo <> nil);
+          ttNotHasType:   AssertTrue(CurrentTestName + 'has not type', Expression.ResultValue.TypeInfo = nil);
+          ttHasSymbol:    AssertTrue(CurrentTestName + 'hassymbol', Expression.ResultValue.DbgSymbol <> nil);
+          ttHasValSymbol: AssertTrue(CurrentTestName + 'hassymbol', (Expression.ResultValue.DbgSymbol <> nil) and
                                                   (Expression.ResultValue.DbgSymbol.SymbolType = stValue));
-          ttHasTypeSymbol: AssertTrue('hassymbol', (Expression.ResultValue.DbgSymbol <> nil) and
+          ttHasTypeSymbol: AssertTrue(CurrentTestName + 'hassymbol', (Expression.ResultValue.DbgSymbol <> nil) and
                                                    (Expression.ResultValue.DbgSymbol.SymbolType = stType));
         end;
   end;
@@ -102,8 +82,12 @@ debugln(Expression.DebugDump);
     s: String;
   begin
     StartTest(Expr, TestFlags, ExtraName);
-    WriteStr(s, 'Kind exected ', ExpKind, ' but was ', Expression.ResultValue.Kind);
+    WriteStr(s, CurrentTestName, 'Kind exected ', ExpKind, ' but was ', Expression.ResultValue.Kind);
     AssertTrue(s, Expression.ResultValue.Kind = ExpKind);
+    if (ttHasType in TestFlags) and (ExpKind <> skNone) then begin
+      WriteStr(s, CurrentTestName, 'typeinfo.Kind exected ', ExpKind, ' but was ', Expression.ResultValue.TypeInfo.Kind);
+      AssertTrue(s, Expression.ResultValue.TypeInfo.Kind = ExpKind);
+    end;
   end;
   procedure StartInvalTest(Expr: String; ExpError: String; ExtraName: String = '');
   begin
@@ -264,7 +248,9 @@ begin
     ExpResult(svfOrdinal, QWord(244));
 
     ImageLoader.TestStackFrame.pint1 := @ImageLoader.TestStackFrame.Int1;
-    for i := 0 to 11 do begin
+    ImageLoader.GlobTestSetup1.VarQWord := PtrInt(@ImageLoader.TestStackFrame.pint1);
+    ImageLoader.GlobTestSetup1.VarPointer := @ImageLoader.TestStackFrame.pint1;
+    for i := 0 to 17 do begin
       case i of
          0: s := 'Int1';
          1: s := 'longint(Int1)';
@@ -278,7 +264,12 @@ begin
          9: s := 'PInt('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.Int1)))+')^';
         10: s := '^longint('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.Int1)))+')^';
         11: s := 'LongInt(Pointer('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.Int1)))+')^)';
-        //12: s := '^^longint('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.PInt1)))+')^^';
+        12: s := '^^longint('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.PInt1)))+')^^';
+        13: s := '^^longint(GlobTestSetup1Pointer)^^';
+        14: s := '^^^longint(@GlobTestSetup1Pointer)^^^';
+        15: s := '^^longint(GlobTestSetup1QWord)^^';
+        16: s := '^^^longint(@GlobTestSetup1QWord)^^^';
+        17: s := '^^^longint('+IntToStr((PtrUInt(@ImageLoader.GlobTestSetup1.VarPointer)))+')^^^';
       end;
 
       StartTest(s, skInteger, [ttHasType]);
@@ -288,7 +279,7 @@ begin
       ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Int1)));
     end;
 
-    for i := 0 to 10 do begin
+    for i := 0 to 19 do begin
       case i of
          0: s := '@Int1';
          1: s := 'PInt(@Int1)';
@@ -302,6 +293,14 @@ begin
          9: s := '@int64(Int1)';
         10: s := '^longint('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.Int1)))+')';
         11: s := 'PInt('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.Int1)))+')';
+        12: s := '@PInt(@Int1)^';
+        13: s := '@^longint(@Int1)^';
+        14: s := '^^longint('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.PInt1)))+')^';
+        15: s := '^^longint(GlobTestSetup1Pointer)^';
+        16: s := '^^^longint(@GlobTestSetup1Pointer)^^';
+        17: s := '^^longint(GlobTestSetup1QWord)^';
+        18: s := '^^^longint(@GlobTestSetup1QWord)^^';
+        19: s := '^^^longint('+IntToStr((PtrUInt(@ImageLoader.GlobTestSetup1.VarPointer)))+')^^';
       end;
 
       StartTest(s, skPointer, [ttHasType]);
@@ -309,6 +308,23 @@ begin
       ExpResult(svfOrdinal, PtrUInt(@ImageLoader.TestStackFrame.Int1));
       ExpResult(svfDataAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Int1)));
     end;
+
+    for i := 0 to 5 do begin
+      case i of
+         0: s := '^^longint('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.PInt1)))+')';
+         1: s := '^^longint(GlobTestSetup1Pointer)';
+         2: s := '^^^longint(@GlobTestSetup1Pointer)^';
+         3: s := '^^longint(GlobTestSetup1QWord)';
+         4: s := '^^^longint(@GlobTestSetup1QWord)^';
+         5: s := '^^^longint('+IntToStr((PtrUInt(@ImageLoader.GlobTestSetup1.VarPointer)))+')^';
+      end;
+
+      StartTest(s, skPointer, [ttHasType]);
+      ExpFlags([svfCardinal, svfOrdinal, svfDataAddress], [svfAddress]);
+      ExpResult(svfOrdinal, PtrUInt(@ImageLoader.TestStackFrame.PInt1));
+      ExpResult(svfDataAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.PInt1)));
+    end;
+
 
     // intentionally read more mem
     StartTest('^int64(@Int1)^', skInteger, [ttHasType]);

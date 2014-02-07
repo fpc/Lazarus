@@ -72,7 +72,7 @@ var
   begin
     FreeAndNil(CurrentTestExprObj);
     CurrentTestExprText := t;
-    CurrentTestExprObj := TTestFpPascalExpression.Create(CurrentTestExprText);
+    CurrentTestExprObj := TTestFpPascalExpression.Create(CurrentTestExprText, nil);
 DebugLn(CurrentTestExprObj.DebugDump);
     AssertEquals('Valid '+CurrentTestExprObj.Error+ ' # '+CurrentTestExprText, ExpValid, CurrentTestExprObj.Valid);
   end;

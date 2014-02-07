@@ -1216,6 +1216,8 @@ type
   protected
     function GetSymbolAtAddress: TDbgSymbol; override;
     function GetAddress: TDbgPtr; override;
+    function GetSizeOfAddress: Integer; override;
+    function GetMemReader: TFpDbgMemReaderBase; override;
   public
     constructor Create(AnAddress: TDbgPtr; ASymbol: TDbgSymbol; ADwarf: TDbgDwarf);
     destructor Destroy; override;
@@ -7168,6 +7170,17 @@ end;
 function TDbgDwarfInfoAddressContext.GetAddress: TDbgPtr;
 begin
   Result := FAddress;
+end;
+
+function TDbgDwarfInfoAddressContext.GetSizeOfAddress: Integer;
+begin
+  assert(FSymbol is TDbgDwarfIdentifier, 'TDbgDwarfInfoAddressContext.GetSizeOfAddress');
+  Result := TDbgDwarfIdentifier(FSymbol).FCU.FAddressSize;
+end;
+
+function TDbgDwarfInfoAddressContext.GetMemReader: TFpDbgMemReaderBase;
+begin
+  Result := FDwarf.MemReader;
 end;
 
 constructor TDbgDwarfInfoAddressContext.Create(AnAddress: TDbgPtr; ASymbol: TDbgSymbol;

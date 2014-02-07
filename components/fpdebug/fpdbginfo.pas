@@ -339,11 +339,15 @@ type
   protected
     function GetAddress: TDbgPtr; virtual; abstract;
     function GetSymbolAtAddress: TDbgSymbol; virtual;
+    function GetMemReader: TFpDbgMemReaderBase; virtual;
+    function GetSizeOfAddress: Integer; virtual;
   public
     property Address: TDbgPtr read GetAddress;
     property SymbolAtAddress: TDbgSymbol read GetSymbolAtAddress;
     // search this, and all parent context
     function FindSymbol(const {%H-}AName: String): TDbgSymbol; virtual;
+    property MemReader: TFpDbgMemReaderBase read GetMemReader;
+    property SizeOfAddress: Integer read GetSizeOfAddress;
   end;
 
   { TDbgInfo }
@@ -541,6 +545,16 @@ begin
 end;
 
 { TDbgInfoAddressContext }
+
+function TDbgInfoAddressContext.GetMemReader: TFpDbgMemReaderBase;
+begin
+  Result := nil;
+end;
+
+function TDbgInfoAddressContext.GetSizeOfAddress: Integer;
+begin
+  Result := -1;
+end;
 
 function TDbgInfoAddressContext.GetSymbolAtAddress: TDbgSymbol;
 begin
