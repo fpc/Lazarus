@@ -1221,7 +1221,7 @@ begin
         end
         else
           if not fRootOptGroup.SelectOption(s) then
-            fInvalidOptions.AddObject(s, TObject(Pointer(i)));
+            fInvalidOptions.AddObject(s, TObject(Pointer(PtrUInt(i))));
         Inc(fCurOrigLine);
       end;
     end;
@@ -1244,7 +1244,7 @@ begin
     begin                                       // TCompilerOptSet
       s := TCompilerOptSet(aRoot).CollectSelectedOptions(fUseComments);
       if s <> '' then
-        fGenStrings.AddObject(s, TObject(Pointer(aRoot.fOrigLine)));
+        fGenStrings.AddObject(s, TObject(Pointer(PtrUInt(aRoot.fOrigLine))));
     end
     else begin                                  // TCompilerOptGroup
       for i := 0 to Children.Count-1 do
@@ -1253,7 +1253,7 @@ begin
   end
   else if aRoot.Value <> '' then                // TCompilerOpt
     fGenStrings.AddObject(aRoot.GenerateOptValue(fUseComments),
-                          TObject(Pointer(aRoot.fOrigLine)));
+                          TObject(Pointer(PtrUINt(aRoot.fOrigLine))));
 end;
 
 function TCompilerOptReader.FindLowestOrigLine(aStrings: TStrings;
@@ -1268,7 +1268,7 @@ begin
   MinOrigLine := MaxInt;
   for i := 0 to aStrings.Count-1 do
   begin
-    OriLine := Integer(Pointer(aStrings.Objects[i]));
+    OriLine := Integer(PtrUInt(Pointer(aStrings.Objects[i])));
     if (OriLine > -1) and (OriLine < MinOrigLine) then
     begin
       MinOrigLine := OriLine;
