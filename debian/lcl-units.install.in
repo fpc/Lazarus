@@ -12,6 +12,7 @@
 /usr/lib/lazarus/${VERSION}/components/fpcunit
 /usr/lib/lazarus/${VERSION}/components/fpweb
 /usr/lib/lazarus/${VERSION}/components/h2pas
+/usr/lib/lazarus/${VERSION}/components/ideintf
 /usr/lib/lazarus/${VERSION}/components/instantfpc
 /usr/lib/lazarus/${VERSION}/components/lazcontrols
 /usr/lib/lazarus/${VERSION}/components/lazreport
@@ -42,7 +43,6 @@
 #/usr/lib/lazarus/${VERSION}/debugger
 #/usr/lib/lazarus/${VERSION}/doceditor
 /usr/lib/lazarus/${VERSION}/ide
-/usr/lib/lazarus/${VERSION}/components/ideintf
 /usr/lib/lazarus/${VERSION}/lcl/units/*/*.*
 /usr/lib/lazarus/${VERSION}/lcl/interfaces/*.lpk
 /usr/lib/lazarus/${VERSION}/lcl/*.lpk

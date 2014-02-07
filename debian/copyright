@@ -1,7 +1,15 @@
 This package was debianized by Carlos Laviola <claviola@debian.org> on
 Wed, 18 Aug 2004 14:45:08 -0300.
 
-It was downloaded from http://www.lazarus.freepascal.org.
+Detailed information about Lazarus could be found on the official WWW site
+http://www.lazarus.freepascal.org.
+
+Original upstream sources of Lazarus are available on Sourceforge
+http://sourceforge.net/projects/lazarus/files/Lazarus%20Zip%20_%20GZip/
+
+The Debian sources were repacked from orginial upstream sources in
+order to remove non DFSG compliant code such as aggpas and gpc using the
+debian/orig-tar.sh script.
 
 Upstream Authors: Andreas Hausladen, Andrew Haines, Andrew Johnson, Bob
   Wingard, Christian Iversen, Cliff Baeseman, Colin Western, Curtis White,

@@ -1,26 +1,156 @@
-lazarus (1.2.0-2) unstable; urgency=low
+lazarus (1.2RC3-0) unstable; urgency=low
 
-  * Release candidate 2
+  * New candidate release RC3.
 
- -- Mattias Gaertner <mattias@freepascal.org>  Sun, 10 Jan 2013 12:30:00 +0100
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Wed, 05 Feb 2014 22:27:58 +0100
 
-lazarus (1.2.0-1) unstable; urgency=low
+lazarus (1.1.99+dfsg-1) unstable; urgency=low
 
-  * Release candidate 1
+  [ Abou Al Montacir ]
+  * New upstream pre-release.
+    + Moved ideintf to components directory.
+  * Remove usage of depreciated parameters form of find. (Closes: Bug#724776)
+  * Bumped standard version to 3.9.5.
+  * Clean the way handling make files generation and removal.
 
- -- Mattias Gaertner <mattias@freepascal.org>  Sun, 3 Nov 2013 10:11:12 +0100
+  [ Paul Gevers ]
+  * Remove nearly obsolete bzip compression for binary packages
+    (See https://lists.debian.org/debian-devel/2014/01/msg00542.html)
 
-lazarus (1.1.99-0) unstable; urgency=low
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Wed, 29 Jan 2014 18:54:37 +0100
 
-  * Prerelease
+lazarus (1.0.10+dfsg-2) unstable; urgency=low
 
- -- Mattias Gaertner <mattias@freepascal.org>  Sun, 15 Sep 2013 16:39:12 +0100
+  * Install global links files with binary packages instead as they are now
+    used to retreive installed packages.
+  * Fixed VCS browser link.
 
-lazarus (1.1-0) unstable; urgency=low
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sun, 28 Jun 2013 10:05:06 +0200
 
-  * Snapshot building.
+lazarus (1.0.10+dfsg-1) unstable; urgency=low
 
- -- Vincent Snijders <vincents@freepascal.org>  Sun, 15 Jun 2012 20:12:12 +0200
+  [ Abou Al Montacir ]
+  * New upstream maintenance release offering many fixes improving the IDE and
+    the LCL stability level.
+    - The detailed list of changes can be found here:
+      http://wiki.lazarus.freepascal.org/Lazarus_1.0_fixes_branch#Fixes_for_1.0.10
+  * Use compiler configuration file to pass debian custom compiler flags.
+  * Recover FTBFS on arm machines fix, dropped unintentionally when upgrading
+    to 1.0.8. QT4 based LCL WS could not use QTOPIA. (Closes: Bug#712834)
+  * Update copyright notice to highlight that upstream source where repacked.
+
+  [ Paul Gevers ]
+  * Update Standard to 3.9.4 (no changes needed)
+  * Remove obsolete DM-Upload-Allowed
+  * Update lintian overrides
+  * Add myself to uploaders
+  * Update Vsc-Browser URL to the browse interface
+
+ -- Paul Gevers <elbrus@debian.org>  Sat, 22 Jun 2013 13:31:45 +0200
+
+lazarus (1.0.8+dfsg-1) unstable; urgency=low
+
+  [ Abou Al Montacir ]
+  * New upstream major release and multiple maintenace release offering many
+    fixes and new features marking a new milestone for the Lazarus development
+    and its stability level.
+    - The detailed list of changes can be found here:
+      http://wiki.lazarus.freepascal.org/Lazarus_1.0_release_notes
+      http://wiki.lazarus.freepascal.org/Lazarus_1.0_fixes_branch
+  * LCL changes:
+    - LCL is now a normal package.
+        + Platform independent parts of the LCL are now in the package LCLBase
+        + LCL is automatically recompiled when switching the target platform,
+          unless pre-compiled binaries for this target are already installed.
+        + No impact on existing projects.
+        + Linker options needed by LCL are no more added to projects that do
+          not use the LCL package.
+    - Minor changes in LCL basic classes behaviour
+        + TCustomForm.Create raises an exception if a form resource is not
+          found.
+        + TNotebook and TPage: a new implementation of these classes was added.
+        + TDBNavigator: It is now possible to have focusable buttons by setting
+          Options = [navFocusableButtons] and TabStop = True, useful for
+          accessibility and for devices with neither mouse nor touch screen.
+        + Names of TControlBorderSpacing.GetSideSpace and GetSpace were swapped
+          and are now consistent. GetSideSpace = Around + GetSpace.
+        + TForm.WindowState=wsFullscreen was added
+        + TCanvas.TextFitInfo was added to calculate how many characters will
+          fit into a specified Width. Useful for word-wrapping calculations.
+        + TControl.GetColorResolvingParent and
+          TControl.GetRGBColorResolvingParent were added, simplifying the work
+          to obtain the final color of the control while resolving clDefault
+          and the ParentColor.
+        + LCLIntf.GetTextExtentExPoint now has a good default implementation
+          which works in any platform not providing a specific implementation.
+          However, Widgetset specific implementation is better, when available.
+        + TTabControl was reorganized. Now it has the correct class hierarchy
+          and inherits from TCustomTabControl as it should.
+    - New unit in the LCL:
+        + lazdialogs.pas: adds non-native versions of various native dialogs,
+          for example TLazOpenDialog, TLazSaveDialog, TLazSelectDirectoryDialog.
+          It is used by widgetsets which either do not have a native dialog, or
+          do not wish to use it because it is limited. These dialogs can also be
+          used by user applications directly.
+        + lazdeviceapis.pas: offers an interface to more hardware devices such
+          as the accelerometer, GPS, etc. See LazDeviceAPIs
+        + lazcanvas.pas: provides a TFPImageCanvas descendent implementing
+          drawing in a LCL-compatible way, but 100% in Pascal.
+        + lazregions.pas. LazRegions is a wholly Pascal implementation of
+          regions for canvas clipping, event clipping, finding in which control
+          of a region tree one an event should reach, for drawing polygons, etc.
+        + customdrawncontrols.pas, customdrawndrawers.pas,
+          customdrawn_common.pas, customdrawn_android.pas and
+          customdrawn_winxp.pas: are the Lazarus Custom Drawn Controls -controls
+          which imitate the standard LCL ones, but with the difference that they
+          are non-native and support skinning.
+    - New APIs added to the LCL to improve support of accessibility software
+      such as screen readers.
+  * IDE changes:
+    - Many improvments.
+    - The detailed list of changes can be found here:
+      http://wiki.lazarus.freepascal.org/New_IDE_features_since#v1.0_.282012-08-29.29
+      http://wiki.lazarus.freepascal.org/Lazarus_1.0_release_notes#IDE_Changes
+  * Debugger / Editor changes:
+    - Added pascal sources and breakpoints to the disassembler
+    - Added threads dialog.
+  * Components changes:
+    - TAChart: many fixes and new features
+    - CodeTool: support Delphi style generics and new syntax extensions.
+    - AggPas: removed to honor free licencing. (Closes: Bug#708695)
+  [Bart Martens]
+  * New debian/watch file fixing issues with upstream RC release.
+  [Abou Al Montacir]
+  * Avoid changing files in .pc hidden directory, these are used by quilt for
+    internal purpose and could lead to surprises during build.
+  [Paul Gevers]
+  * Updated get-orig-source target and it compinion script orig-tar.sh so that
+    they repack the source file, allowing bug 708695 to be fixed.
+
+ -- Paul Gevers <elbrus@debian.org>  Sat, 08 Jun 2013 14:12:17 +0200
+
+lazarus (0.9.30.4-7) unstable; urgency=low
+
+  [Hiroyuki Yamamoto]
+  * Added support for ppc64 architecture. (Closes: Bug#694045)
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sat, 11 May 2013 11:37:00 +0200
+
+lazarus (0.9.30.4-6) unstable; urgency=low
+
+  * Fixed typo in name of conflicting packages (lazarus-docs => lazarus-doc).
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Tue, 05 Mar 2013 09:15:00 +0100
+
+lazarus (0.9.30.4-5) unstable; urgency=low
+
+  * Fix detection of user choice about migration of configuration to
+    alternatives system. (Closes: Bug#698385, Bug#696075)
+  * Pass LDFLAGS to the linker, removes many lintian warnings.
+  * Removed auto-generation of debian/control during build process as required
+    by policy. (Closes: Bug#698827, Bug#698828)
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Fri, 29 Jan 2013 19:28:00 +0100
 
 lazarus (0.9.30.4-4) unstable; urgency=low
 
@@ -37,8 +167,12 @@ lazarus (0.9.30.4-4) unstable; urgency=low
   * Added Spanish translation. (Closes: Bug#690597)
   * Added French translation. (Closes: Bug#690740)
   * Added Swedish translation. (Closes: Bug#690897)
+  * Detect when user refused to migrate to update-alternatives managed and
+    do not handle configuration files. (Closes: Bug#696075)
+  * Removed optional dependency on packages that do not exist, fixing lintian
+    errors.
 
- -- Abou Al Montacir <abou.almontacir@sfr.fr>  Oct, 25 Oct 2012 19:44:00 +0200
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Tue, 08 Jan 2013 17:37:00 +0100
 
 lazarus (0.9.30.4-3) unstable; urgency=low
 
