@@ -3759,6 +3759,7 @@ debian/lcl-utils.install.in svneol=native#text/plain
 debian/lcl-utils.links.in svneol=native#text/plain
 debian/lcl-utils.manpages.in svneol=native#text/plain
 debian/lcl-utils.postinst.in svneol=native#text/plain
+debian/lcl-utils.postrm.in svneol=native#text/plain
 debian/lcl-utils.prerm.in svneol=native#text/plain
 debian/lcl-utils.templates.in svneol=native#text/plain
 debian/orig-tar.sh svneol=native#text/plain
