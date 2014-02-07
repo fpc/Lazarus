@@ -571,7 +571,7 @@ end;
 function TPasParserSymbolValueCastToPointer.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   if svfCardinal in FValue.FieldFlags then
-    Result := [svfOrdinal, svfCardinal, svfDataAddress]
+    Result := [svfOrdinal, svfCardinal, svfSizeOfPointer, svfDataAddress]
   else
     Result := [];
 end;
@@ -768,7 +768,7 @@ end;
 
 function TPasParserSymbolValueAddressOf.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
-    Result := [svfOrdinal, svfCardinal, svfDataAddress];
+    Result := [svfOrdinal, svfCardinal, svfSizeOfPointer, svfDataAddress];
 end;
 
 function TPasParserSymbolValueAddressOf.GetAsInteger: Int64;

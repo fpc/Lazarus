@@ -18,13 +18,13 @@ type
   protected
     FDwarfInfo: TDbgDwarf;
   published
-    Procedure New1;
-    procedure X;
+    Procedure TestExpressions;
+    procedure TestCompareUtf8BothCase;
   end;
 
 implementation
 
-procedure TTestTypInfo.X;
+procedure TTestTypInfo.TestCompareUtf8BothCase;
 var
   s1, s2,s3: String;
 begin
@@ -41,7 +41,7 @@ begin
   AssertFalse( CompareUtf8BothCase(@s2[1],@s3[1],@s1[1]) );
 end;
 
-procedure TTestTypInfo.New1;
+procedure TTestTypInfo.TestExpressions;
 type
   TTestFlag = (ttHasType, ttNotHasType, ttHasSymbol, ttHasValSymbol, ttHasTypeSymbol);
   TTestFlags = set of TTestFlag;
@@ -49,6 +49,26 @@ var
   CurrentTestName: String;
   Ctx: TDbgInfoAddressContext;
   Expression: TFpPascalExpression;
+
+  procedure ExpFlags(ExpFlags: TDbgSymbolValueFieldFlags; ExpNotFlags: TDbgSymbolValueFieldFlags = []);
+  var
+    i: TDbgSymbolValueFieldFlag;
+    s: string;
+    f: TDbgSymbolValueFieldFlags;
+  begin
+    AssertTrue(CurrentTestName + 'has ResVal', Expression.ResultValue <> nil);
+    f := Expression.ResultValue.FieldFlags;
+    For i := low(TDbgSymbolValueFieldFlag) to High(TDbgSymbolValueFieldFlag) do
+      if i in ExpFlags then begin
+        WriteStr(s, i);
+        AssertTrue(CurrentTestName + 'Has flag' + s, i in f);
+      end;
+    For i := low(TDbgSymbolValueFieldFlag) to High(TDbgSymbolValueFieldFlag) do
+      if i in ExpNotFlags then begin
+        WriteStr(s, i);
+        AssertTrue(CurrentTestName + 'Has NOT flag' + s, not (i in f));
+      end;
+  end;
 
   procedure InitTest(Expr: String; ExtraName: String = '');
   begin
@@ -88,7 +108,40 @@ var
       WriteStr(s, CurrentTestName, 'typeinfo.Kind exected ', ExpKind, ' but was ', Expression.ResultValue.TypeInfo.Kind);
       AssertTrue(s, Expression.ResultValue.TypeInfo.Kind = ExpKind);
     end;
+    // some general assumptions
+    s := CurrentTestName;
+    WriteStr(CurrentTestName, s, ' Expecting for kind:', ExpKind);
+    case ExpKind of
+      skInstance: ;
+      skUnit: ;
+      skRecord:  ExpFlags([svfMembers], [svfOrdinal, svfInteger, svfCardinal, svfDataAddress, svfDataSize]);
+      skObject:  ExpFlags([svfMembers], [svfOrdinal, svfInteger, svfCardinal, svfDataAddress, svfDataSize]);
+      // skClass does NOT have svfSize (maybe svfSizeOfPointer ?);
+      skClass:   ExpFlags([svfOrdinal, svfMembers, svfDataAddress, svfDataSize], [svfSize, svfInteger, svfCardinal]);
+      skInterface: ;
+      skProcedure: ;
+      skFunction: ;
+      skArray: ;
+      // skPointer: svfOrdinal, svfCardinal, svfDataAddress are all the same value
+      skPointer:  ExpFlags([svfOrdinal, svfCardinal, svfDataAddress, svfSizeOfPointer], [svfMembers]);
+      skInteger:  ExpFlags([svfOrdinal, svfInteger], [svfDataAddress, svfDataSize, svfMembers]);
+      skCardinal: ExpFlags([svfOrdinal, svfCardinal], [svfDataAddress, svfDataSize, svfMembers]);
+      skBoolean: ;
+      skChar: ;
+      skFloat: ;
+      skString: ;
+      skAnsiString: ;
+      skCurrency: ;
+      skVariant: ;
+      skWideString: ;
+      skEnum: ;
+      skEnumValue: ;
+      skSet: ;
+      skRegister: ;
+    end;
+    CurrentTestName := s;
   end;
+
   procedure StartInvalTest(Expr: String; ExpError: String; ExtraName: String = '');
   begin
     InitTest(Expr, ExtraName);
@@ -98,25 +151,6 @@ var
     //ExpError
   end;
 
-  procedure ExpFlags(ExpFlags: TDbgSymbolValueFieldFlags; ExpNotFlags: TDbgSymbolValueFieldFlags = []);
-  var
-    i: TDbgSymbolValueFieldFlag;
-    s: string;
-    f: TDbgSymbolValueFieldFlags;
-  begin
-    AssertTrue(CurrentTestName + 'has ResVal', Expression.ResultValue <> nil);
-    f := Expression.ResultValue.FieldFlags;
-    For i := low(TDbgSymbolValueFieldFlag) to High(TDbgSymbolValueFieldFlag) do
-      if i in ExpFlags then begin
-        WriteStr(s, i);
-        AssertTrue(CurrentTestName + 'Has flag' + s, i in f);
-      end;
-    For i := low(TDbgSymbolValueFieldFlag) to High(TDbgSymbolValueFieldFlag) do
-      if i in ExpNotFlags then begin
-        WriteStr(s, i);
-        AssertTrue(CurrentTestName + 'Has NOT flag' + s, not (i in f));
-      end;
-  end;
   procedure ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: QWord);
     procedure AssertEqualsQW(const AMessage: string; Expected, Actual: QWord);
     begin
@@ -238,7 +272,13 @@ begin
     StartInvalTest('^longint(@99)', 'xxx');
     StartInvalTest('PInt(@99)', 'xxx');
     StartInvalTest('@Int1^', 'xxx');
+    StartInvalTest('^(longint(Int1))', 'xxx'); // no ( allowed between ^ and type
 
+
+    StartTest('LongInt', [ttHasSymbol, ttNotHasType]);
+    StartTest('^LongInt', [ttHasSymbol, ttNotHasType]);
+    StartTest('TObject', [ttHasSymbol, ttNotHasType]);
+    StartTest('^TObject', [ttHasSymbol, ttNotHasType]);
 
 
     // TODO: maybe treat numbers as integer?
@@ -250,7 +290,7 @@ begin
     ImageLoader.TestStackFrame.pint1 := @ImageLoader.TestStackFrame.Int1;
     ImageLoader.GlobTestSetup1.VarQWord := PtrInt(@ImageLoader.TestStackFrame.pint1);
     ImageLoader.GlobTestSetup1.VarPointer := @ImageLoader.TestStackFrame.pint1;
-    for i := 0 to 17 do begin
+    for i := 0 to 22 do begin
       case i of
          0: s := 'Int1';
          1: s := 'longint(Int1)';
@@ -270,6 +310,11 @@ begin
         15: s := '^^longint(GlobTestSetup1QWord)^^';
         16: s := '^^^longint(@GlobTestSetup1QWord)^^^';
         17: s := '^^^longint('+IntToStr((PtrUInt(@ImageLoader.GlobTestSetup1.VarPointer)))+')^^^';
+        18: s := '(^^^longint('+IntToStr((PtrUInt(@ImageLoader.GlobTestSetup1.VarPointer)))+')^^)^';
+        19: s := '(^^^longint('+IntToStr((PtrUInt(@ImageLoader.GlobTestSetup1.VarPointer)))+')^)^^';
+        20: s := '((^^^longint('+IntToStr((PtrUInt(@ImageLoader.GlobTestSetup1.VarPointer)))+')^)^)^';
+        21: s := '^^PInt('+IntToStr((PtrUInt(@ImageLoader.GlobTestSetup1.VarPointer)))+')^^^';
+        22: s := '(^^PInt('+IntToStr((PtrUInt(@ImageLoader.GlobTestSetup1.VarPointer)))+')^^)^';
       end;
 
       StartTest(s, skInteger, [ttHasType]);
@@ -277,6 +322,10 @@ begin
       ExpResult(svfInteger, -299);
       ExpResult(svfOrdinal, QWord(-299));
       ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Int1)));
+      case i of
+        0,1,3..7,10..22: ExpResult(svfSize, 4); // integer
+        2,8: ExpResult(svfSize, 8); // int64
+      end;
     end;
 
     for i := 0 to 19 do begin
@@ -355,9 +404,9 @@ begin
     Obj1.FWord := 1019;
     Obj1.FWordL := QWord($9aa99aa97bb7b77b); // Make sure there is data, if other fields read to much
 
-    for i := 0 to 22 do begin
+    for i := 0 to 23 do begin
        case i of
-         11..13: ImageLoader.GlobTestSetup1.VarPointer := @ImageLoader.TestStackFrame.Obj1;
+         11..13, 23: ImageLoader.GlobTestSetup1.VarPointer := @ImageLoader.TestStackFrame.Obj1;
          14:   ImageLoader.GlobTestSetup1.VarPointer := Pointer(ImageLoader.TestStackFrame.Obj1);
        end;
       // Different ways to access an object
@@ -392,6 +441,7 @@ begin
         20: s := '(@PObj1)^^';
         21: s := 'VParamTestSetup1Class';
         22: s := 'VParamTestSetup1ClassP^';
+        23: s := '^TTestSetup1Class(GlobTestSetup1Pointer)^';
       end;
       FieldsExp := [svfMembers, svfOrdinal, svfAddress, svfDataAddress]; // svfSize dataSize;
       AddrExp   := TDbgPtr(@ImageLoader.TestStackFrame.Obj1);
@@ -408,6 +458,10 @@ begin
         ExpResult(svfAddress, AddrExp);
       ExpResult(svfDataAddress, TDbgPtr(PtrUInt(ImageLoader.TestStackFrame.Obj1)));
       ExpResult(svfOrdinal, PtrUInt (ImageLoader.TestStackFrame.Obj1));
+      case i of
+        5,6: ExpResult(svfDataSize, TObject.InstanceSize);
+        else ExpResult(svfDataSize, ImageLoader.TestStackFrame.Obj1.InstanceSize);
+      end;
 
 
       // Check result for @object
@@ -522,6 +576,7 @@ begin
       // svfSize;
       ExpFlags([svfMembers, svfAddress], [svfOrdinal, svfCardinal, svfInteger, svfDataAddress]);
       ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Rec1)));
+      ExpResult(svfSize, SizeOf(ImageLoader.TestStackFrame.Rec1));
 
 
       StartTest(s+'.FWord', skCardinal, [ttHasType]);
@@ -586,6 +641,7 @@ begin
       StartTest(s, skObject, [ttHasType]);
       ExpFlags([svfMembers, svfAddress], [svfOrdinal, svfCardinal, svfInteger, svfDataAddress]);
       ExpResult(svfAddress, AddrExp);
+      ExpResult(svfSize, SizeOf(ImageLoader.TestStackFrame.OldObj1));
 
       case i of
          2,4: AddrExp := TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.OldObj1.FWord));

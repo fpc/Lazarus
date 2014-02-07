@@ -150,7 +150,7 @@ type
     function GetAsWideString: WideString; virtual;
 
     function GetAddress: TDbgPtr;  virtual;
-    function GetSize: Integer;  virtual;
+    function GetSize: Integer;  virtual;  // returns -1, if not available
     function GetDataAddress: TDbgPtr;  virtual;
     function GetDataSize: Integer;  virtual;
 
@@ -526,7 +526,7 @@ end;
 
 function TDbgSymbolValue.GetSize: Integer;
 begin
-  Result := 0;
+  Result := -1;
 end;
 
 function TDbgSymbolValue.GetAsBool: Boolean;

@@ -635,6 +635,7 @@ type
     function IsValidTypeCast: Boolean; override;
     function GetAsCardinal: QWord; override;
     function GetAsInteger: Int64; override;
+    function GetSize: Integer; override;
   public
     constructor Create(AOwner: TDbgDwarfIdentifier; ASize: Integer);
   end;
@@ -698,6 +699,8 @@ type
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
     function GetDataAddress: TDbgPtr; override;
+    function GetDataSize: Integer; override;
+    function GetSize: Integer; override;
   end;
 
   { TDbgDwarfStructTypeCastSymbolValue }
@@ -711,6 +714,8 @@ type
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetKind: TDbgSymbolKind; override;
     function GetAsCardinal: QWord; override;
+    function GetSize: Integer; override;
+    function GetDataSize: Integer; override;
     function GetDataAddress: TDbgPtr; override;
     function GetDwarfDataAddress(out AnAddress: TDbgPtr; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; reintroduce;
     function IsValidTypeCast: Boolean; override;
@@ -1060,6 +1065,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure KindNeeded; override;
     procedure TypeInfoNeeded; override;                       // nil or inherited
+    procedure SizeNeeded; override;
     function GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
 
     function GetMember(AIndex: Integer): TDbgSymbol; override;
@@ -1730,7 +1736,11 @@ end;
 function TDbgDwarfStructSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
-  Result := Result + [svfMembers]; // svfDataSize
+  Result := Result + [svfMembers];
+  if kind = skClass then // todo detect hidden pointer
+    Result := Result + [svfDataSize]
+  else
+    Result := Result + [svfSize];
   //TODO: svfDataAddress should depend on (hidden) Pointer or Ref in the TypeInfo
   if Kind in [skClass] then begin
     Result := Result + [svfDataAddress, svfSizeOfPointer]; // svfDataSize
@@ -1763,12 +1773,32 @@ begin
     Result := inherited GetDataAddress;
 end;
 
+function TDbgDwarfStructSymbolValue.GetDataSize: Integer;
+begin
+  if (FValueSymbol <> nil) and (FValueSymbol.TypeInfo <> nil) then
+    Result := FValueSymbol.TypeInfo.Size
+  else
+    Result := -1;
+end;
+
+function TDbgDwarfStructSymbolValue.GetSize: Integer;
+begin
+  if (Kind <> skClass) and (FValueSymbol <> nil) and (FValueSymbol.TypeInfo <> nil) then
+    Result := FValueSymbol.TypeInfo.Size
+  else
+    Result := -1;
+end;
+
 { TDbgDwarfStructSymbolValue }
 
 function TDbgDwarfStructTypeCastSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
-  Result := Result + [svfMembers]; // svfDataSize
+  Result := Result + [svfMembers];
+  if kind = skClass then // todo detect hidden pointer
+    Result := Result + [svfDataSize]
+  else
+    Result := Result + [svfSize];
 
   //TODO: svfDataAddress should depend on (hidden) Pointer or Ref in the TypeInfo
   if Kind in [skClass] then
@@ -1786,6 +1816,22 @@ end;
 function TDbgDwarfStructTypeCastSymbolValue.GetAsCardinal: QWord;
 begin
   Result := QWord(DataAddress);
+end;
+
+function TDbgDwarfStructTypeCastSymbolValue.GetSize: Integer;
+begin
+  if (Kind <> skClass) and (FTypeCastInfo <> nil) then
+    Result := FTypeCastInfo.Size
+  else
+    Result := -1;
+end;
+
+function TDbgDwarfStructTypeCastSymbolValue.GetDataSize: Integer;
+begin
+  if FTypeCastInfo <> nil then
+    Result := FTypeCastInfo.Size
+  else
+    Result := -1;
 end;
 
 function TDbgDwarfStructTypeCastSymbolValue.GetDataAddress: TDbgPtr;
@@ -1848,9 +1894,7 @@ begin
   if not Result then
     exit;
 
-  DebugLnEnter(['>>> TDbgDwarfStructSymbolValue.GetDataAddress ', IntToHex(AnAddress,8)]);
   Result := FTypeCastInfo.GetDataAddress(AnAddress, ATargetType);
-  DebugLnExit(['<<< TDbgDwarfStructSymbolValue.GetDataAddress ']);
 end;
 
 function TDbgDwarfStructTypeCastSymbolValue.IsValidTypeCast: Boolean;
@@ -2019,7 +2063,7 @@ begin
     exit
   else
   if (FTypeCastSource.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) and
-     (FTypeCastSource.Size = FSize)
+     (FTypeCastSource.Size = FSize) and (FSize > 0)
   then
     exit;
   if (FTypeCastSource.FieldFlags * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer]) and
@@ -2066,6 +2110,11 @@ begin
     Result := Result or (int64(-1) shl (FSize * 8));
 
   FIntValue := Result;
+end;
+
+function TDbgDwarfNumericSymbolValue.GetSize: Integer;
+begin
+  Result := FSize;
 end;
 
 constructor TDbgDwarfNumericSymbolValue.Create(AOwner: TDbgDwarfIdentifier; ASize: Integer);
@@ -4632,7 +4681,6 @@ begin
   Result := FCU.FOwner.MemReader <> nil;
   if not Result then
     exit;
-DebugLnEnter(['>>> POINTER  TDbgDwarfTypeIdentifierPointer.GetDataAddress ']);
   //TODO: zero fill / sign extend
   case FCU.FAddressSize of
     4: begin
@@ -4648,7 +4696,6 @@ DebugLnEnter(['>>> POINTER  TDbgDwarfTypeIdentifierPointer.GetDataAddress ']);
   end;
   if Result then
     Result := inherited GetDataAddress(AnAddress, ATargetType);
-DebugLnExit(['<<< POINTER  TDbgDwarfTypeIdentifierPointer.GetDataAddress ']);
 end;
 
 function TDbgDwarfTypeIdentifierPointer.GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue;
@@ -4742,9 +4789,7 @@ begin
     exit;
   Assert((TypeInfo is TDbgDwarfIdentifier) and (TypeInfo.SymbolType = stType), 'TDbgDwarfValueIdentifier.GetDataAddress');
   AnAddress := Address;
-DebugLnEnter(['>>> TDbgDwarfValueIdentifier.GetDataAddress ', IntToHex(AnAddress,8)]);
   Result := TDbgDwarfTypeIdentifier(TypeInfo).GetDataAddress(AnAddress, ATargetType);
-DebugLnExit(['<<< TDbgDwarfValueIdentifier.GetDataAddress ']);
 end;
 
 procedure TDbgDwarfValueIdentifier.KindNeeded;
@@ -4967,24 +5012,20 @@ procedure TDbgDwarfIdentifierMember.InitLocationParser(const ALocationParser: TD
 var
   BaseAddr: TDbgPtr;
 begin
-DebugLnEnter(['>>> TDbgDwarfIdentifierMember.InitLocationParser ',Self.Name]);
   inherited InitLocationParser(ALocationParser, AnObjectDataAddress);
 
   if (StructureValueInfo <> nil) and (ParentTypeInfo <> nil) then begin
-DebugLn(['TDbgDwarfIdentifierMember.InitLocationParser AAA']);
     Assert((ParentTypeInfo is TDbgDwarfIdentifier) and (ParentTypeInfo.SymbolType = stType), '');
 
     if StructureValueInfo is TDbgDwarfValueIdentifier then begin
       if TDbgDwarfValueIdentifier(StructureValueInfo).GetDataAddress(BaseAddr, TDbgDwarfTypeIdentifier(ParentTypeInfo)) then begin
         ALocationParser.FStack.Push(BaseAddr, lseValue);
-  DebugLnExit(['<<< TDbgDwarfIdentifierMember.InitLocationParser GOOD ', BaseAddr,'  ',IntToHex(BaseAddr,8)]);
         exit
       end;
     end;
     if StructureValueInfo is TDbgDwarfStructTypeCastSymbolValue then begin
       if TDbgDwarfStructTypeCastSymbolValue(StructureValueInfo).GetDwarfDataAddress(BaseAddr, TDbgDwarfTypeIdentifier(ParentTypeInfo)) then begin
         ALocationParser.FStack.Push(BaseAddr, lseValue);
-  DebugLnExit(['<<< TDbgDwarfIdentifierMember.InitLocationParser GOOD ', BaseAddr,'  ',IntToHex(BaseAddr,8)]);
         exit
       end;
     end;
@@ -4992,20 +5033,16 @@ DebugLn(['TDbgDwarfIdentifierMember.InitLocationParser AAA']);
   end;
 
   //TODO: error
-  debugln(['TDbgDwarfIdentifierMember.InitLocationParser FAILED']);
-DebugLnExit(['<<< TDbgDwarfIdentifierMember.InitLocationParser ']);
 end;
 
 procedure TDbgDwarfIdentifierMember.AddressNeeded;
 var
   t: TDbgPtr;
 begin
-DebugLnEnter(['>>> TDbgDwarfIdentifierMember.AddressNeeded ']);
   if LocationFromTag(DW_AT_data_member_location, t) then
     SetAddress(t)
   else
     SetAddress(0);
-DebugLnExit(['<<< ',t]);
 end;
 
 function TDbgDwarfIdentifierMember.HasAddress: Boolean;
@@ -5087,19 +5124,15 @@ begin
     exit;
   end;
 
-DebugLnEnter(['>>> STRUCT TDbgDwarfIdentifierStructure.GetDataAddress ']); try
   InitInheritanceInfo;
-DebugLn([DbgSName(FInheritanceInfo)]);
 
   //TODO: may be a constant // offset
   Result := LocationFromTag(DW_AT_data_member_location, t, AnAddress, FInheritanceInfo);
   if not Result then
     exit;
 
-debugln(['TDbgDwarfIdentifierStructure.GetDataAddress ', IntToHex(AnAddress,8), ' new ',IntToHex(t,8) ]);
   AnAddress := t;
   Result := inherited GetDataAddress(AnAddress, ATargetType);
-finally DebugLnExit(['>>> STRUCT TDbgDwarfIdentifierStructure.GetDataAddress ']);end;
 end;
 
 function TDbgDwarfIdentifierStructure.GetMember(AIndex: Integer): TDbgSymbol;
@@ -5197,6 +5230,16 @@ begin
   end;
   SetTypeInfo(ti);
   ti.ReleaseReference;
+end;
+
+procedure TDbgDwarfIdentifierStructure.SizeNeeded;
+var
+  ByteSize: Integer;
+begin
+  if FInformationEntry.ReadValue(DW_AT_byte_size, ByteSize) then
+    SetSize(ByteSize)
+  else
+    SetSize(0);
 end;
 
 function TDbgDwarfIdentifierStructure.GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue;
@@ -5513,7 +5556,6 @@ function TDbgDwarfIdentifier.GetDataAddress(var AnAddress: TDbgPtr;
 var
   ti: TDbgDwarfTypeIdentifier;
 begin
-debugln(['TDbgDwarfIdentifier.GetDataAddress ',DbgSName(Self), '  targ ',DbgSName(ATargetType)]);
   if ATargetType = Self then begin
     Result := True;
   end
