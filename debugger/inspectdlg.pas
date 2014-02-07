@@ -89,6 +89,7 @@ type
     FHistory: TStringList;
     FHistoryIndex: Integer;
     procedure Localize;
+    function  ShortenedExpression: String;
     procedure ContextChanged(Sender: TObject);
     procedure InspectClass;
     procedure InspectRecord;
@@ -295,6 +296,15 @@ begin
   btnColVisibility.Hint  := lisInspectShowColVisibility;
 end;
 
+function TIDEInspectDlg.ShortenedExpression: String;
+const
+  MAX_SHORT_EXPR_LEN = 25;
+begin
+  Result := FExpression;
+  if Length(Result) > MAX_SHORT_EXPR_LEN then
+    Result := copy(Result, 1, MAX_SHORT_EXPR_LEN-3) + '...';
+end;
+
 procedure TIDEInspectDlg.InspectClass;
 begin
   DataPage.TabVisible:=true;
@@ -313,7 +323,7 @@ begin
 
   if not Assigned(FDBGInfo) then exit;
   if not Assigned(FDBGInfo.Fields) then exit;
-  StatusBar1.SimpleText:=Format(lisInspectClassInherit, [FExpression, FDBGInfo.
+  StatusBar1.SimpleText:=Format(lisInspectClassInherit, [ShortenedExpression, FDBGInfo.
     TypeName, FDBGInfo.Ancestor]);
   GridDataSetup;
   ShowDataFields;
@@ -340,7 +350,7 @@ begin
   btnColVisibility.Enabled := False;
 
   if not Assigned(FDBGInfo) then exit;
-  StatusBar1.SimpleText:=FExpression+' : Variant';
+  StatusBar1.SimpleText:=ShortenedExpression+' : Variant';
   GridDataSetup;
   FGridData.Cells[1,1]:=FExpression;
   FGridData.Cells[2,1]:='Variant';
@@ -364,7 +374,7 @@ begin
 
   if not Assigned(FDBGInfo) then exit;
   if not Assigned(FDBGInfo.Fields) then exit;
-  StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName;
   GridDataSetup;
   ShowDataFields;
   //FGridData.AutoSizeColumn(2);
@@ -392,9 +402,9 @@ begin
 
   if FDBGInfo.Attributes*[saArray,saDynArray] <> [] then begin
     if FDBGInfo.Len >= 0 then
-      StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = Len:' + IntToStr(FDBGInfo.Len) + ' ' + FDBGInfo.Value.AsString
+      StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName + ' = Len:' + IntToStr(FDBGInfo.Len) + ' ' + FDBGInfo.Value.AsString
     else
-      StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+      StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
 
     if FDBGInfo.Fields.Count > 0 then begin
       FGridData.RowCount:=FDBGInfo.Fields.Count+1;
@@ -408,7 +418,7 @@ begin
     end;
   end
   else
-    StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+    StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
 
   FGridData.Cells[1,1]:=FExpression;
   FGridData.Cells[2,1]:=FDBGInfo.TypeName;
@@ -431,7 +441,7 @@ begin
   btnColVisibility.Enabled := False;
 
   if not Assigned(FDBGInfo) then exit;
-  StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
   FGridData.Cells[1,1]:=FExpression;
   FGridData.Cells[2,1]:=FDBGInfo.TypeName;
@@ -457,7 +467,7 @@ begin
   btnColVisibility.Enabled := False;
 
   if not Assigned(FDBGInfo) then exit;
-  StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
   FGridData.Cells[1,1]:=FExpression;
   FGridData.Cells[2,1]:=FDBGInfo.TypeName;
@@ -483,7 +493,7 @@ begin
   btnColVisibility.Enabled := False;
 
   if not Assigned(FDBGInfo) then exit;
-  StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
   FGridData.Cells[1,1]:=FExpression;
   if (FDBGInfo.TypeName <> '') and (FDBGInfo.TypeName[1] = '^')
@@ -877,7 +887,7 @@ begin
     begin
       FreeAndNil(FDBGInfo);
       Clear;
-      StatusBar1.SimpleText:=Format(lisInspectUnavailable, [FExpression]);
+      StatusBar1.SimpleText:=Format(lisInspectUnavailable, [ShortenedExpression]);
       Exit;
     end;
     case FDBGInfo.Kind of
