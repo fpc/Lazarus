@@ -1104,10 +1104,12 @@ begin
     UpdateNeeded:=false;
     Done:=true;
     ProgressBar1.Position:=ProgressTotal;
+    ProgressBar1.Visible:=false;
     exit;
   end;
   if ord(OldStage)<ord(cbwsFinished) then begin
     Done:=false;
+    ProgressBar1.Visible:=true;
     UpdateStatusBar(fStage<cbwsFinished);
   end;
   //if fStage=cbwsFinished then CodeToolBoss.WriteMemoryStats;
