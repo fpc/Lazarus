@@ -76,6 +76,7 @@ var
     CurrentTestName := Expr + ExtraName + ': ';
     Expression.Free;
     Expression := TTestPascalExpression.Create(Expr, Ctx);
+debugln(Expression.DebugDump);
   end;
   procedure StartTest(Expr: String; TestFlags: TTestFlags = []; ExtraName: String = '');
   var
@@ -248,6 +249,12 @@ begin
     StartInvalTest('TNotExisting1399(Int1)', 'xxx');
 
     StartInvalTest('@99', 'xxx');
+    StartInvalTest('99^', 'xxx');
+    StartInvalTest('longint(@99)', 'xxx');
+    StartInvalTest('^longint(@99)', 'xxx');
+    StartInvalTest('PInt(@99)', 'xxx');
+    StartInvalTest('@Int1^', 'xxx');
+
 
 
     // TODO: maybe treat numbers as integer?
@@ -256,27 +263,67 @@ begin
     ExpResult(svfCardinal, 244);
     ExpResult(svfOrdinal, QWord(244));
 
+    ImageLoader.TestStackFrame.pint1 := @ImageLoader.TestStackFrame.Int1;
+    for i := 0 to 11 do begin
+      case i of
+         0: s := 'Int1';
+         1: s := 'longint(Int1)';
+         2: s := 'int64(Int1)';
+         3: s := '(@Int1)^';
+         4: s := 'PInt(@Int1)^';
+         5: s := '^longint(@Int1)^';
+         6: s := '^longint(pointer(@Int1))^';
+         7: s := 'longint(^longint(@Int1)^)';
+         8: s := 'int64(^longint(@Int1)^)';
+         9: s := 'PInt('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.Int1)))+')^';
+        10: s := '^longint('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.Int1)))+')^';
+        11: s := 'LongInt(Pointer('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.Int1)))+')^)';
+        //12: s := '^^longint('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.PInt1)))+')^^';
+      end;
 
-    StartTest('Int1', skInteger, [ttHasType]);
-    ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
-    ExpResult(svfInteger, -299);
-    ExpResult(svfOrdinal, QWord(-299));
+      StartTest(s, skInteger, [ttHasType]);
+      ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfCardinal, svfDataAddress]); // svfSize;
+      ExpResult(svfInteger, -299);
+      ExpResult(svfOrdinal, QWord(-299));
+      ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Int1)));
+    end;
+
+    for i := 0 to 10 do begin
+      case i of
+         0: s := '@Int1';
+         1: s := 'PInt(@Int1)';
+         2: s := 'PInt(Pointer(@Int1))';
+         3: s := '^longint(@Int1)';
+         4: s := '^word(@Int1)';
+         5: s := '^int64(@Int1)';
+         6: s := '@longint(Int1)';
+         7: s := '@(longint(Int1))';
+         8: s := '@word(Int1)';
+         9: s := '@int64(Int1)';
+        10: s := '^longint('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.Int1)))+')';
+        11: s := 'PInt('+IntToStr((PtrUInt(@ImageLoader.TestStackFrame.Int1)))+')';
+      end;
+
+      StartTest(s, skPointer, [ttHasType]);
+      ExpFlags([svfCardinal, svfOrdinal, svfDataAddress], [svfAddress]);
+      ExpResult(svfOrdinal, PtrUInt(@ImageLoader.TestStackFrame.Int1));
+      ExpResult(svfDataAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Int1)));
+    end;
+
+    // intentionally read more mem
+    StartTest('^int64(@Int1)^', skInteger, [ttHasType]);
+    ExpFlags([svfInteger, svfOrdinal, svfAddress], [svfCardinal, svfDataAddress]); // svfSize;
     ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Int1)));
-
-    StartTest('@Int1');
-    ExpFlags([svfCardinal, svfOrdinal, svfDataAddress], [svfAddress]);
-    ExpResult(svfOrdinal, PtrUInt(@ImageLoader.TestStackFrame.Int1));
-    ExpResult(svfDataAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Int1)));
-
-    StartInvalTest('@Int1^', 'xxx');
-
-    StartTest('(@Int1)^');
-    ExpResult(svfInteger, -299);
-    ExpFlags([svfInteger, svfOrdinal, svfAddress]); // svfSize;
+    DebugLn([Expression.ResultValue.AsInteger, '  ', IntToHex(Expression.ResultValue.AsInteger,16)]);
+    AssertTrue(CurrentTestName+'unknown result', -299 <> Expression.ResultValue.AsInteger);
+    AssertTrue(CurrentTestName+'result and mask',
+               (Integer((Expression.ResultValue.AsInteger shr 32) and int64($ffffffff))  = -299) or
+               (Integer((Expression.ResultValue.AsInteger)        and int64($ffffffff))  = -299) );
 
     StartTest('Word(Int1)');
+    ExpFlags([svfCardinal, svfOrdinal, svfAddress], [svfInteger, svfDataAddress]); // svfSize;
     ExpResult(svfCardinal, $FED5);
-    ExpFlags([svfCardinal, svfOrdinal, svfAddress], [svfInteger]); // svfSize;
+    ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.Int1)));
 
     StartTest('LongInt(Obj1)');
     ExpResult(svfOrdinal, PtrUInt(ImageLoader.TestStackFrame.Obj1));

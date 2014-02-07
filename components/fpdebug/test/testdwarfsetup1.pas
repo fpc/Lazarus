@@ -65,7 +65,7 @@ type
   end;
   PTestSetup1Object  = ^TTestSetup1Object;
 
-  Pint = ^ integer;
+  Pint = ^integer;
   PPInt = ^Pint;
   PPPInt = ^PPint;
   PQWord = ^QWord;
