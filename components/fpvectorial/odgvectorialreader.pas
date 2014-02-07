@@ -115,6 +115,8 @@ type
   TCustomShapeInfo = packed record
     Width, Height: Double; // in milimiters
     ViewBox_Left, ViewBox_Top, ViewBox_Width, ViewBox_Height: Double; // unitless
+    VariableNames: array of string;
+    VariableValues: array of Double;
   end;
 
   { TvODGVectorialReader }
@@ -687,16 +689,23 @@ end;
 procedure TvODGVectorialReader.ReadEnhancedGeometryNodeToTPath(ANode: TDOMNode;
   AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double; var AInfo: TCustomShapeInfo);
 var
-  i: Integer;
-  lNodeName, lNodeValue: string;
+  i, Len: Integer;
+  lNodeName, lNodeValue, lAttrName, lAttrValue: string;
   l10Strings: T10Strings;
+  lCurNode: TDOMNode;
 begin
+  // Initial values to avoid invalid initial ones
+  AInfo.ViewBox_Left := 0;
+  AInfo.ViewBox_Top := 0;
+  AInfo.ViewBox_Width := 10000;
+  AInfo.ViewBox_Height := 10000;
+
   // First of all we need the viewBox, or else we can't map the coordinates
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
     lNodeValue := ANode.Attributes.Item[i].NodeValue;
-    if lNodeName = 'draw:viewBox' then
+    if (lNodeName = 'draw:viewBox') or (lNodeName = 'svg:viewBox') then
     begin
       // From OpenDocument 1.1 specs page 300
       // The syntax for using this attribute is the same as the [SVG] syntax.
@@ -710,6 +719,53 @@ begin
       AInfo.ViewBox_Height := StringWithUnitToFloat(l10Strings[3]) - AInfo.ViewBox_Top;
     end;
   end;
+
+  // Read child elements
+  lCurNode := ANode.FirstChild;
+  while lCurNode <> nil do
+  begin
+    lNodeName := lCurNode.NodeName;
+
+    case lNodeName of
+    // Read variables
+    // <draw:equation draw:name="f0" draw:formula="$0 " />
+    // <draw:equation draw:name="f1" draw:formula="10800-$0 " />
+    'draw:equation':
+    begin
+      for i := 0 to lCurNode.Attributes.Length - 1 do
+      begin
+        lAttrName := lCurNode.Attributes.Item[i].NodeName;
+        lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
+
+        if (lAttrName = 'draw:name') then
+        begin
+          Len := Length(AInfo.VariableNames);
+          SetLength(AInfo.VariableNames, Len+1);
+          AInfo.VariableNames[Len] := lAttrValue;
+        end
+        else if (lAttrName = 'draw:formula') then
+        begin
+          Len := Length(AInfo.VariableValues);
+          SetLength(AInfo.VariableValues, Len+1);
+          // ToDo: Implement a real formula calculation
+          lAttrValue := StringReplace(lAttrValue, '$0', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '-0', '', [rfReplaceAll, rfIgnoreCase]);
+
+          AInfo.VariableValues[Len] := StrToFloat(lAttrValue);
+        end;
+      end;
+    end;
+    // <draw:handle draw:handle-position="$0 10800" draw:handle-range-x-minimum="0"
+    //  draw:handle-range-x-maximum="10800" />
+    'draw:handle':
+    begin
+
+    end;
+    end;
+
+    lCurNode := lCurNode.NextSibling;
+  end;
+
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
