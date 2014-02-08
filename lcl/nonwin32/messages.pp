@@ -53,6 +53,7 @@ const
   WM_NCPAINT          = LM_NCPAINT;
   WM_CAPTURECHANGED   = LM_CAPTURECHANGED;
   WM_KEYDOWN          = LM_KEYDOWN;
+  WM_KEYUP            = LM_KEYUP;
   WM_WINDOWPOSCHANGED = LM_WINDOWPOSCHANGED;
   WM_CUT              = LM_CUT;
   WM_COPY             = LM_COPY;
@@ -81,6 +82,7 @@ type
   TWMHScroll          = TLMHScroll;
   TWMVScroll          = TLMVScroll;
   TWMKeyDown          = TLMKeyDown;
+  TWMKeyUp            = TLMKeyUp;
   TWMWindowPosChanged = TLMWindowPosChanged;
   TWMPaint            = TLMPaint;
   TWMLButtonDown      = TLMLButtonDown;
