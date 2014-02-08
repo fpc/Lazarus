@@ -227,6 +227,7 @@ type
 
     // title
     FIDETitleStartsWithProject: boolean;
+    FIDETitleIncludesBuildMode: boolean;
     FIDEProjectDirectoryInIdeTitle: boolean;
 
     // main buttons
@@ -463,6 +464,8 @@ type
     property HideMessagesIcons: boolean read fHideMessagesIcons write fHideMessagesIcons;
     property IDETitleStartsWithProject: boolean read FIDETitleStartsWithProject
                                                write FIDETitleStartsWithProject;
+    property IDETitleIncludesBuildMode: boolean read FIDETitleIncludesBuildMode
+                                               write FIDETitleIncludesBuildMode;
     property IDEProjectDirectoryInIdeTitle: boolean read FIDEProjectDirectoryInIdeTitle
                                                     write FIDEProjectDirectoryInIdeTitle;
     property ComponentPaletteVisible: boolean read FComponentPaletteVisible
@@ -850,6 +853,7 @@ begin
   FHideIDEOnRun:=false;
   FHideMessagesIcons:=false;
   FIDETitleStartsWithProject:=false;
+  FIDETitleIncludesBuildMode:=false;
   FIDEProjectDirectoryInIdeTitle:=false;
   FComponentPaletteVisible:=true;
   FIDESpeedButtonsVisible:=true;
@@ -1159,6 +1163,8 @@ begin
         Path+'Desktop/HideMessagesIcons/Value',false);
       FIDETitleStartsWithProject:=XMLConfig.GetValue(
         Path+'Desktop/IDETitleStartsWithProject/Value',false);
+      FIDETitleIncludesBuildMode:=XMLConfig.GetValue(
+        Path+'Desktop/IDETitleIncludesBuildMode/Value',false);
       IDEProjectDirectoryInIdeTitle:=XMLConfig.GetValue(
         Path+'Desktop/IDEProjectDirectoryInIdeTitle/Value',false);
       FComponentPaletteVisible:=XMLConfig.GetValue(
@@ -1528,6 +1534,8 @@ begin
                                false);
       XMLConfig.SetDeleteValue(Path+'Desktop/IDETitleStartsWithProject/Value',
                                FIDETitleStartsWithProject,false);
+      XMLConfig.SetDeleteValue(Path+'Desktop/IDETitleIncludesBuildMode/Value',
+                               FIDETitleIncludesBuildMode,false);
       XMLConfig.SetDeleteValue(Path+'Desktop/IDEProjectDirectoryInIdeTitle/Value',
                                FIDEProjectDirectoryInIdeTitle,false);
       XMLConfig.SetDeleteValue(Path+'Desktop/ComponentPaletteVisible/Value',

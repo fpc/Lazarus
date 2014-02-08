@@ -1174,6 +1174,7 @@ resourcestring
   dlgHideIDEOnRun = 'Hide IDE windows on run';
   dlgHideMessagesIcons = 'Hide Messages Icons';
   lisIDETitleStartsWithProjectName = 'IDE title starts with project name';
+  lisIDETitleIncludeBuildMode = 'IDE title shows selected build mode';
   lisIDEProjectDirInIdeTitle = 'Show project directory in IDE title';
   dlgDesktopHints = 'Hints';
   dlgPalHints = 'Hints for component palette';
@@ -1190,6 +1191,8 @@ resourcestring
   dlgWinPos = 'Window positions';
   lisTitleInTaskbarShowsForExampleProject1LpiLazarus = 'Title in taskbar '
     +'shows for example: project1.lpi - Lazarus';
+  lisBuildModeInTitleInExample = 'Title in taskbar '
+    +'shows for example: project1.lpi - Release - Lazarus';
   lisProjectDirectoryIsShowedInIdeTitleBar = 'Title in taskbar '
     +'shows also directory path of the project';
 

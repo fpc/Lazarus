@@ -3677,6 +3677,7 @@ begin
 
   Project1.ActiveBuildMode:=NewMode;
   MainBuildBoss.SetBuildTargetProject1(false);
+  UpdateCaption;
 end;
 
 function TMainIDE.CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
@@ -8690,12 +8691,12 @@ procedure TMainIDE.UpdateCaption;
 var
   NewCaption: String;
 
-  procedure AddToCaption(const CaptAddition: string);
+  function AddToCaption(const CurrentCaption, CaptAddition: string): String;
   begin
     if EnvironmentOptions.IDETitleStartsWithProject then
-      NewCaption := CaptAddition + ' - ' + NewCaption
+      Result := CaptAddition + ' - ' + CurrentCaption
     else
-      NewCaption := NewCaption + ' - ' + CaptAddition;
+      Result := CurrentCaption + ' - ' + CaptAddition;
   end;
 
 var
@@ -8706,7 +8707,7 @@ begin
   NewCaption := Format(lisLazarusEditorV, [GetLazarusVersionString]);
   NewTitle := NewCaption;
   if MainBarSubTitle <> '' then
-    AddToCaption(MainBarSubTitle)
+    NewCaption := AddToCaption(NewCaption, MainBarSubTitle)
   else
   begin
     if Project1 <> nil then
@@ -8720,11 +8721,15 @@ begin
           if DirName <> '' then
             ProjectName := ProjectName + ' ('+DirName+')';
         end;
-        AddToCaption(ProjectName);
       end
       else
-        AddToCaption(lisnewProject);
-      NewTitle := NewCaption;
+        ProjectName := lisnewProject;
+      NewTitle := AddToCaption(NewCaption, ProjectName);
+      if EnvironmentOptions.IDETitleIncludesBuildMode and
+         (Project1.BuildModes.Count > 1)
+      then
+        ProjectName:= ProjectName + ' - ' +Project1.ActiveBuildMode.GetCaption;
+      NewCaption := AddToCaption(NewCaption, ProjectName);
     end;
   end;
   case ToolStatus of

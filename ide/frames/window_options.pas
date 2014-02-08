@@ -38,6 +38,7 @@ type
     ApplyButton: TButton;
     Bevel1: TBevel;
     Bevel2: TBevel;
+    TitleIncludesBuildMode: TCheckBox;
     dropSplitterPlacement: TComboBox;
     CustomGeometryRadioButton: TRadioButton;
     FixedDefaultRadioButton: TRadioButton;
@@ -117,6 +118,9 @@ begin
   TitleStartsWithProjectCheckBox.Caption:=lisIDETitleStartsWithProjectName;
   TitleStartsWithProjectCheckBox.Hint:=
     lisTitleInTaskbarShowsForExampleProject1LpiLazarus;
+  TitleIncludesBuildMode.Caption:=lisIDETitleIncludeBuildMode;
+  TitleIncludesBuildMode.Hint:=
+    lisBuildModeInTitleInExample;
   ProjectDirInIdeTitleCheckBox.Caption:=lisIDEProjectDirInIdeTitle;
   ProjectDirInIdeTitleCheckBox.Hint:=
     lisProjectDirectoryIsShowedInIdeTitleBar;
@@ -134,6 +138,7 @@ begin
     HideIDEOnRunCheckBox.Checked := HideIDEOnRun;
     HideMessagesIconsCheckBox.Checked := HideMessagesIcons;
     TitleStartsWithProjectCheckBox.Checked:=IDETitleStartsWithProject;
+    TitleIncludesBuildMode.Checked:=IDETitleIncludesBuildMode;
     ProjectDirInIdeTitleCheckBox.Checked:=IDEProjectDirectoryInIdeTitle;
   end;
 
@@ -210,6 +215,7 @@ begin
     HideIDEOnRun:=HideIDEOnRunCheckBox.Checked;
     HideMessagesIcons:=HideMessagesIconsCheckBox.Checked;
     IDETitleStartsWithProject:=TitleStartsWithProjectCheckBox.Checked;
+    IDETitleIncludesBuildMode := TitleIncludesBuildMode.Checked;
     IDEProjectDirectoryInIdeTitle:=ProjectDirInIdeTitleCheckBox.Checked;
   end;
 end;
