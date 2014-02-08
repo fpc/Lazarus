@@ -1,5 +1,11 @@
 program ProgFoo;
 {$mode objfpc}{$H+}
+{$IF FPC_FULLVERSION>=20701}
+  {$OPTIMIZATION NOREMOVEEMPTYPROCS}
+  {$OPTIMIZATION NOORDERFIELDS}
+{$ENDIF}
+{$OPTIMIZATION OFF}
+{$A2}
 
 type
 
@@ -14,17 +20,30 @@ type
   end;
   PTestSetup1Record = ^TTestSetup1Record;
 
+  TTestSetup1Record2 = record // same size
+    FWord: Word;
+    FBool: Boolean;
+    FTest: TTestSetup1Class;
+  end;
+  PTestSetup1Record2 = ^TTestSetup1Record2;
+
+  TTestSetup1Record3 = record // other size
+    FWord: Word;
+  end;
+  PTestSetup1Record3 = ^TTestSetup1Record3;
+
   { TTestSetup1Class }
 
   TTestSetup1Class = class
   public
+    FBool: Boolean;
     FWord: Word;
     FWordL: QWord;
     FInt: ShortInt;
     FIntL: Int64;
-    FBool: Boolean;
     FTest: TTestSetup1Class;
-    procedure f0(a:integer); virtual;
+    FByte: Byte;
+    procedure ClassProc0(a:integer); virtual;
   end;
   PTestSetup1Class = ^TTestSetup1Class;
 
@@ -33,6 +52,13 @@ type
     FQWord: QWord;
   end;
   PTestSetup1ClassChild = ^TTestSetup1ClassChild;
+
+  TTestSetup1Class2 = class
+  public
+    FInt: Integer;
+    FWord: Word;
+  end;
+  PTestSetup1Class2 = ^TTestSetup1Class2;
 
   TTestSetup1ClassClass = class of TTestSetup1Class;
   TTestSetup1ClassChildClass = class of TTestSetup1ClassChild;
@@ -49,9 +75,41 @@ type
     FBool2: LongBool;
     FBool3: ByteBool;
     FTest: TTestSetup1Class;
-    procedure f0(a:integer); virtual;
+    procedure ObjProc0(o1:integer); virtual;
+    //only with a wirtual method, will there be a vptr entry
   end;
   PTestSetup1Object  = ^TTestSetup1Object;
+
+  { TTestSetup1Object2 }
+
+  TTestSetup1Object2 = object // same size
+  public
+    FWord: Word;
+    FWordL: QWord;
+    FInt: ShortInt;
+    FIntL: Int64;
+    FBool: Boolean;
+    FBool2: LongBool;
+    FBool3: ByteBool;
+    FTest: TTestSetup1Class;
+    procedure ObjProc1(o2:integer); virtual;
+  end;
+  PTestSetup1Object2  = ^TTestSetup1Object2;
+
+  { TTestSetup1Object3 }
+
+  TTestSetup1Object3 = object // diff size
+  public
+    FWord: Word;
+    procedure ObjProc1(o2:integer); virtual;
+  end;
+  PTestSetup1Object3  = ^TTestSetup1Object3;
+
+  TTestSetup1Object4 = object // looks like a record....
+  public
+    FWord: Word;
+  end;
+  PTestSetup1Object4  = ^TTestSetup1Object4;
 
   Pint = ^ integer;
   PPInt = ^Pint;
@@ -61,23 +119,35 @@ type
 var // Globals
   GlobTestSetup1Record: TTestSetup1Record;
   GlobTestSetup1RecordP: PTestSetup1Record;
+  GlobTestSetup1Record2: TTestSetup1Record2;
+  GlobTestSetup1Record2P: PTestSetup1Record2;
+  GlobTestSetup1Record3: TTestSetup1Record3;
+  GlobTestSetup1Record3P: PTestSetup1Record3;
 
   GlobTestSetup1Class: TTestSetup1Class;
   GlobTestSetup1ClassP: PTestSetup1Class;
   GlobTestSetup1ClassChild: TTestSetup1ClassChild;
   GlobTestSetup1ClassChildP: PTestSetup1ClassChild;
+  GlobTestSetup1Class2: TTestSetup1Class2;
+  GlobTestSetup1Class2P: PTestSetup1Class2;
   GlobTestSetup1ClassClass: TTestSetup1ClassClass;
   GlobTestSetup1ClassChildClass: TTestSetup1ClassChildClass;
 
   GlobTestSetup1Object: TTestSetup1Object;
   GlobTestSetup1ObjectP: PTestSetup1Object;
+  GlobTestSetup1Object2: TTestSetup1Object2;
+  GlobTestSetup1Object2P: PTestSetup1Object2;
+  GlobTestSetup1Object3: TTestSetup1Object3;
+  GlobTestSetup1Object3P: PTestSetup1Object3;
+  GlobTestSetup1Object4: TTestSetup1Object4;
+  GlobTestSetup1Object4P: PTestSetup1Object4;
 
   GlobTestSetup1Pointer: Pointer;
   GlobTestSetup1QWord: QWord;
 
 function TestSetup1Bar(
   ParamTestSetup1Record: TTestSetup1Record;
-  ParamTestRecord: PTestSetup1Record;
+  ParamTestSetup1RecordP: PTestSetup1Record;
 
   ParamTestSetup1Class: TTestSetup1Class;
   ParamTestSetup1ClassP: PTestSetup1Class;
@@ -140,17 +210,31 @@ begin
   subr3 := #9;
 end;
 
+{ TTestSetup1Object3 }
 
-procedure TTestSetup1Class.f0(a: integer);
+procedure TTestSetup1Object3.ObjProc1(o2: integer);
 begin
+  FWord := 0;//
+end;
 
+{ TTestSetup1Object2 }
+
+procedure TTestSetup1Object2.ObjProc1(o2: integer);
+begin
+  FWord := 0;
+end;
+
+
+procedure TTestSetup1Class.ClassProc0(a: integer);
+begin
+  FWord := 0;
 end;
 
 { TTestSetup1Object }
 
-procedure TTestSetup1Object.f0(a: integer);
+procedure TTestSetup1Object.ObjProc0(o1: integer);
 begin
-
+  FWord := 0;
 end;
 
 begin

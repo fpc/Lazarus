@@ -17,6 +17,9 @@ type
   TTestTypInfo = class(TTestCase)
   protected
     FDwarfInfo: TDbgDwarf;
+  public
+    //procedure SetUp; override;
+    //procedure TearDown; override;
   published
     Procedure TestExpressions;
     procedure TestCompareUtf8BothCase;
@@ -253,7 +256,7 @@ begin
     FDwarfInfo.MemReader := MemReader;
     //////////////////////////////////////////////////////////
 
-    Ctx := FDwarfInfo.FindContext($00401010);
+    Ctx := FDwarfInfo.FindContext(TTestSetup1ProcBarAddr);
     AssertTrue('got ctx', Ctx <> nil);
 
     sym := Ctx.FindSymbol('Int1');
@@ -402,6 +405,7 @@ begin
     ImageLoader.TestStackFrame.VParamTestSetup1Class := @ImageLoader.TestStackFrame.Obj1;
     ImageLoader.TestStackFrame.VParamTestSetup1ClassP := @ImageLoader.TestStackFrame.PObj1;
     Obj1.FWord := 1019;
+    Obj1.FBool := Boolean($9aa99aa9); // Make sure there is data, if other fields read to much
     Obj1.FWordL := QWord($9aa99aa97bb7b77b); // Make sure there is data, if other fields read to much
 
     for i := 0 to 23 do begin
