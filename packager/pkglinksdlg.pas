@@ -331,7 +331,8 @@ begin
           Link.LPKInfo.Assign(Info);
           if Link.LPKInfo.LPKParsed=lpkiParsedError then
             Link.IsValid:=false;
-        end;
+        end else
+          Link.IsValid:=false;
         if Link.IsValid then begin
           if not LPKFileValidCheckBox.Checked then Link.Visible:=false;
         end else begin
