@@ -458,8 +458,10 @@ begin
       ExpFlags(FieldsExp);
       if i in [7..9, 16] then
         ExpFlags([], [svfAddress]);
-      if svfAddress in FieldsExp then
+      if svfAddress in FieldsExp then begin
         ExpResult(svfAddress, AddrExp);
+        ExpFlags([svfSizeOfPointer]);
+      end;
       ExpResult(svfDataAddress, TDbgPtr(PtrUInt(ImageLoader.TestStackFrame.Obj1)));
       ExpResult(svfOrdinal, PtrUInt (ImageLoader.TestStackFrame.Obj1));
       case i of
@@ -566,7 +568,7 @@ begin
     StartTest('PRec1', skPointer, [ttHasType]);
     ExpFlags([svfCardinal, svfOrdinal, svfAddress, svfDataAddress]); // svfSize;
 
-    for i := 0 to 5 do begin
+    for i := 0 to 7 do begin
       case i of
          0: s := 'Rec1';
          1: s := 'PRec1^';
@@ -574,6 +576,8 @@ begin
          3: s := '(@PRec1)^^';
          4: s := 'VParamTestSetup1Record';
          5: s := 'VParamTestRecord^';
+         6: s := 'TTestSetup1Record(Rec1)';
+         7: s := 'TTestSetup1Record2(Rec1)'; // TTestSetup1Record2 is a sdistinct type, but same sive (actually identical)
       end;
 
       StartTest(s, skRecord, [ttHasType]);
@@ -615,6 +619,11 @@ begin
     ExpFlags([svfCardinal, svfOrdinal, svfAddress]);
 
 
+    StartInvalTest('TTestSetup1Record3(Rec1)', 'xxx'); // wrong size
+    StartInvalTest('TTestSetup1Record3(Rec1).FWord', 'xxx'); // wrong size
+
+
+
     // type = Object ... end;
     StartTest('OldObj1', skObject, [ttHasType]);
     ExpFlags([svfMembers, svfAddress], [svfOrdinal, svfCardinal, svfInteger, svfDataAddress]);
@@ -628,7 +637,7 @@ begin
     ImageLoader.TestStackFrame.VParamTestSetup1Object := @vobj1;
     ImageLoader.TestStackFrame.VParamTestSetup1ObjectP := @ImageLoader.TestStackFrame.POldObj1;
 
-    for i := 0 to 5 do begin
+    for i := 0 to 7 do begin
       case i of
          2,4: AddrExp := TDbgPtr(PtrUInt(@ImageLoader.TestStackFrame.OldObj1));
          else AddrExp := TDbgPtr(PtrUInt(@vobj1));
@@ -640,6 +649,8 @@ begin
          3: s := 'POldObj1^';
          4: s := '(@OldObj1)^';
          5: s := '(@POldObj1)^^';
+         6: s := 'TTestSetup1Object(VParamTestSetup1Object)';
+         7: s := 'TTestSetup1Object2(VParamTestSetup1Object)';
       end;
 
       StartTest(s, skObject, [ttHasType]);
@@ -662,6 +673,7 @@ begin
 
     end;
 
+    StartInvalTest('TTestSetup1Object3(VParamTestSetup1Object)', 'xxx');
 
     // pointer
     ImageLoader.TestStackFrame.Int1 := -299;

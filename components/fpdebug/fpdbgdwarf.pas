@@ -593,8 +593,8 @@ type
   private
     FOwner: TDbgDwarfIdentifier;        // the creator, usually the type
     FValueSymbol: TDbgDwarfValueIdentifier;
-    FTypeCastInfo: TDbgDwarfTypeIdentifier;
-    FTypeCastSource: TDbgSymbolValue;
+    FTypeCastTargetType: TDbgDwarfTypeIdentifier;
+    FTypeCastSourceValue: TDbgSymbolValue;
     function MemReader: TFpDbgMemReaderBase; inline;
     function AddressSize: Byte; inline;
   protected
@@ -758,6 +758,7 @@ type
     // ParentTypeInfo: funtion for local var / class for member
     property ParentTypeInfo: TDbgDwarfIdentifier read FParentTypeInfo write SetParentTypeInfo;
 
+    function DataSize: Integer; virtual;
   protected
 // TODO: InitLocationParser may fail
     procedure InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression; {%H-}AnObjectDataAddress: TDbgPtr = 0); virtual;
@@ -964,9 +965,11 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure TypeInfoNeeded; override;
     procedure KindNeeded; override;
+    procedure SizeNeeded; override;
     procedure ForwardToSymbolNeeded; override;
     function GetDataAddress(var AnAddress: TDbgPtr; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; override;
     function GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
+    function DataSize: Integer; override;
   public
     property IsInternalPointer: Boolean read GetIsInternalPointer write FIsInternalPointer; // Class (also DynArray, but DynArray is handled without this)
   end;
@@ -1737,15 +1740,15 @@ function TDbgDwarfStructSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
   Result := Result + [svfMembers];
-  if kind = skClass then // todo detect hidden pointer
-    Result := Result + [svfDataSize]
-  else
-    Result := Result + [svfSize];
+
   //TODO: svfDataAddress should depend on (hidden) Pointer or Ref in the TypeInfo
   if Kind in [skClass] then begin
-    Result := Result + [svfDataAddress, svfSizeOfPointer]; // svfDataSize
+    Result := Result + [svfOrdinal, svfDataAddress, svfDataSize]; // svfDataSize
     if (FValueSymbol <> nil) and FValueSymbol.HasAddress then
-      Result := Result + [svfOrdinal];
+      Result := Result + [svfSizeOfPointer];
+  end
+  else begin
+    Result := Result + [svfSize];
   end;
 end;
 
@@ -1775,8 +1778,12 @@ end;
 
 function TDbgDwarfStructSymbolValue.GetDataSize: Integer;
 begin
+  Assert((FValueSymbol = nil) or (FValueSymbol.TypeInfo is TDbgDwarfIdentifier));
   if (FValueSymbol <> nil) and (FValueSymbol.TypeInfo <> nil) then
-    Result := FValueSymbol.TypeInfo.Size
+    if FValueSymbol.TypeInfo.Kind = skClass then
+      Result := TDbgDwarfIdentifier(FValueSymbol.TypeInfo).DataSize
+    else
+      Result := FValueSymbol.TypeInfo.Size
   else
     Result := -1;
 end;
@@ -1808,7 +1815,7 @@ end;
 function TDbgDwarfStructTypeCastSymbolValue.GetKind: TDbgSymbolKind;
 begin
   if HasTypeCastInfo then
-    Result := FTypeCastInfo.Kind
+    Result := FTypeCastTargetType.Kind
   else
     Result := inherited GetKind;
 end;
@@ -1820,16 +1827,20 @@ end;
 
 function TDbgDwarfStructTypeCastSymbolValue.GetSize: Integer;
 begin
-  if (Kind <> skClass) and (FTypeCastInfo <> nil) then
-    Result := FTypeCastInfo.Size
+  if (Kind <> skClass) and (FTypeCastTargetType <> nil) then
+    Result := FTypeCastTargetType.Size
   else
     Result := -1;
 end;
 
 function TDbgDwarfStructTypeCastSymbolValue.GetDataSize: Integer;
 begin
-  if FTypeCastInfo <> nil then
-    Result := FTypeCastInfo.Size
+  Assert((FTypeCastTargetType = nil) or (FTypeCastTargetType is TDbgDwarfIdentifier));
+  if FTypeCastTargetType <> nil then
+    if FTypeCastTargetType.Kind = skClass then
+      Result := TDbgDwarfIdentifier(FTypeCastTargetType).DataSize
+    else
+      Result := FTypeCastTargetType.Size
   else
     Result := -1;
 end;
@@ -1841,13 +1852,14 @@ var
 begin
   if HasTypeCastInfo then begin
     if not FDataAddressDone then begin
-      fields := FTypeCastSource.FieldFlags;
+// TODO: wrong for records // use GetDwarfDataAddress
+      fields := FTypeCastSourceValue.FieldFlags;
       if svfOrdinal in fields then
-        FDataAddress := TDbgPtr(FTypeCastSource.AsCardinal)
+        FDataAddress := TDbgPtr(FTypeCastSourceValue.AsCardinal)
       else
       if svfAddress in fields then begin
         FDataAddress := 0;
-        t := FTypeCastSource.Address;
+        t := FTypeCastSourceValue.Address;
         assert(SizeOf(FDataAddress) >= AddressSize, 'TDbgDwarfStructSymbolValue.GetDataAddress');
         if (t <> 0) and (MemReader <> nil) then
           MemReader.ReadMemory(t, AddressSize, @FDataAddress);
@@ -1869,12 +1881,12 @@ begin
   Result := HasTypeCastInfo;
   if not Result then
     exit;
-  fields := FTypeCastSource.FieldFlags;
+  fields := FTypeCastSourceValue.FieldFlags;
   AnAddress := 0;
   if svfOrdinal in fields then begin
-    AnAddress := FTypeCastSource.AsCardinal;
+    AnAddress := FTypeCastSourceValue.AsCardinal;
 // MUST store, and provide address of it // for now, skip the pointer
-    t := FTypeCastInfo;
+    t := FTypeCastTargetType;
     if t is TDbgDwarfTypeIdentifierDeclaration then t := t.NestedTypeInfo;
     if (t<> nil) and (t is TDbgDwarfTypeIdentifierPointer)  then t := t.NestedTypeInfo;
     if (t<> nil) then begin
@@ -1888,19 +1900,47 @@ begin
   end
   else
   if svfAddress in fields then
-    AnAddress := FTypeCastSource.Address;
+    AnAddress := FTypeCastSourceValue.Address;
 
   Result := AnAddress <> 0;
   if not Result then
     exit;
 
-  Result := FTypeCastInfo.GetDataAddress(AnAddress, ATargetType);
+  Result := FTypeCastTargetType.GetDataAddress(AnAddress, ATargetType);
 end;
 
 function TDbgDwarfStructTypeCastSymbolValue.IsValidTypeCast: Boolean;
+var
+  f: TDbgSymbolValueFieldFlags;
 begin
-  Result := HasTypeCastInfo and
-            (FTypeCastSource.FieldFlags * [svfOrdinal, svfAddress] <> []);
+  Result := HasTypeCastInfo;
+  if not Result then
+    exit;
+
+  if FTypeCastTargetType.Kind = skClass then begin
+    f := FTypeCastSourceValue.FieldFlags;
+    Result := (svfOrdinal in f); // ordinal is prefered in GetDataAddress
+    if Result then
+      exit;
+    Result := (svfAddress in f) and
+              ( ( not(svfSize in f) ) or // either svfSizeOfPointer or a void type, e.g. pointer(1)^
+                ( (svfSize in f) and (FTypeCastSourceValue.Size = AddressSize) )
+              );
+  end
+  else begin
+    f := FTypeCastSourceValue.FieldFlags;
+    if (f * [{svfOrdinal, }svfAddress] = [svfAddress]) then begin
+      if (f * [svfSize, svfSizeOfPointer]) = [svfSize] then
+        Result := Result and (FTypeCastTargetType.Size = FTypeCastSourceValue.Size)
+      else
+      if (f * [svfSize, svfSizeOfPointer]) = [svfSizeOfPointer] then
+        Result := Result and (FTypeCastTargetType.Size = AddressSize)
+      else
+        Result := (f * [svfSize, svfSizeOfPointer]) = []; // source is a void type, e.g. pointer(1)^
+    end
+    else
+      Result := False;
+  end;
 end;
 
 destructor TDbgDwarfStructTypeCastSymbolValue.Destroy;
@@ -1922,7 +1962,7 @@ begin
   if not HasTypeCastInfo then
     exit;
 
-  tmp := FTypeCastInfo.MemberByName[AIndex];
+  tmp := FTypeCastTargetType.MemberByName[AIndex];
   if (tmp <> nil) then begin
     assert((tmp is TDbgDwarfValueIdentifier), 'TDbgDwarfStructTypeCastSymbolValue.GetMemberByName'+DbgSName(tmp));
     if FMembers = nil then
@@ -1943,7 +1983,7 @@ begin
   if not HasTypeCastInfo then
     exit;
 
-  tmp := FTypeCastInfo.Member[AIndex];
+  tmp := FTypeCastTargetType.Member[AIndex];
   if (tmp <> nil) then begin
     assert((tmp is TDbgDwarfValueIdentifier), 'TDbgDwarfStructTypeCastSymbolValue.GetMemberByName'+DbgSName(tmp));
     if FMembers = nil then
@@ -1962,7 +2002,7 @@ begin
   if not HasTypeCastInfo then
     exit;
 
-  Result := FTypeCastInfo.MemberCount;
+  Result := FTypeCastTargetType.MemberCount;
 end;
 
 { TDbgDwarfBooleanSymbolValue }
@@ -2021,7 +2061,7 @@ begin
     if FValueSymbol <> nil then
       addr := FValueSymbol.Address
     else
-      addr := FTypeCastSource.Address;
+      addr := FTypeCastSourceValue.Address;
 
     Result := addr <> 0;
     if not Result then
@@ -2040,8 +2080,8 @@ begin
   end
 
   else
-  if HasTypeCastInfo and (svfOrdinal in FTypeCastSource.FieldFlags) then begin
-    Result := FTypeCastSource.AsCardinal;
+  if HasTypeCastInfo and (svfOrdinal in FTypeCastSourceValue.FieldFlags) then begin
+    Result := FTypeCastSourceValue.AsCardinal;
     Result := Result and (QWord(-1) shr ((SizeOf(Result)-FSize) * 8));
   end
 
@@ -2059,15 +2099,15 @@ end;
 function TDbgDwarfNumericSymbolValue.CanUseTypeCastAddress: Boolean;
 begin
   Result := True;
-  if (FTypeCastSource.FieldFlags * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
+  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
     exit
   else
-  if (FTypeCastSource.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) and
-     (FTypeCastSource.Size = FSize) and (FSize > 0)
+  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) and
+     (FTypeCastSourceValue.Size = FSize) and (FSize > 0)
   then
     exit;
-  if (FTypeCastSource.FieldFlags * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer]) and
-     not ( (FTypeCastInfo.Kind = skPointer) //or
+  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer]) and
+     not ( (FTypeCastTargetType.Kind = skPointer) //or
            //(FSize = AddressSize xxxxxxx)
          )
   then
@@ -2080,7 +2120,7 @@ begin
   Result := HasTypeCastInfo;
   If not Result then
     exit;
-  if (svfOrdinal in FTypeCastSource.FieldFlags) or CanUseTypeCastAddress then
+  if (svfOrdinal in FTypeCastSourceValue.FieldFlags) or CanUseTypeCastAddress then
     exit;
 end;
 
@@ -2146,13 +2186,13 @@ begin
   end
   else
   if HasTypeCastInfo then begin
-    Result := Result + FTypeCastSource.FieldFlags * [svfAddress];
+    Result := Result + FTypeCastSourceValue.FieldFlags * [svfAddress];
   end;
 end;
 
 function TDbgDwarfSymbolValue.HasTypeCastInfo: Boolean;
 begin
-  Result := (FTypeCastInfo <> nil) and (FTypeCastSource <> nil);
+  Result := (FTypeCastTargetType <> nil) and (FTypeCastSourceValue <> nil);
 end;
 
 function TDbgDwarfSymbolValue.IsValidTypeCast: Boolean;
@@ -2180,7 +2220,7 @@ begin
     Result := FValueSymbol.Kind
   else
   if HasTypeCastInfo then
-    Result := FTypeCastInfo.Kind
+    Result := FTypeCastTargetType.Kind
   else
     Result := inherited GetKind;
 end;
@@ -2191,7 +2231,7 @@ begin
     Result := FValueSymbol.Address
   else
   if HasTypeCastInfo then
-    Result := FTypeCastSource.Address
+    Result := FTypeCastSourceValue.Address
   else
     Result := inherited GetAddress;
 end;
@@ -2236,7 +2276,7 @@ end;
 function TDbgDwarfSymbolValue.GetTypeInfo: TDbgSymbol;
 begin
   if HasTypeCastInfo then
-    Result := FTypeCastInfo
+    Result := FTypeCastTargetType
   else
     Result := inherited GetTypeInfo;
 end;
@@ -2249,8 +2289,8 @@ end;
 
 destructor TDbgDwarfSymbolValue.Destroy;
 begin
-  ReleaseRefAndNil(FTypeCastInfo);
-  ReleaseRefAndNil(FTypeCastSource);
+  ReleaseRefAndNil(FTypeCastTargetType);
+  ReleaseRefAndNil(FTypeCastSourceValue);
   inherited Destroy;
 end;
 
@@ -2268,20 +2308,20 @@ end;
 function TDbgDwarfSymbolValue.SetTypeCastInfo(AStructure: TDbgDwarfTypeIdentifier;
   ASource: TDbgSymbolValue): Boolean;
 begin
-  if FTypeCastSource <> ASource then begin
-    if FTypeCastSource <> nil then
-      FTypeCastSource.ReleaseReference;
-    FTypeCastSource := ASource;
-    if FTypeCastSource <> nil then
-      FTypeCastSource.AddReference;
+  if FTypeCastSourceValue <> ASource then begin
+    if FTypeCastSourceValue <> nil then
+      FTypeCastSourceValue.ReleaseReference;
+    FTypeCastSourceValue := ASource;
+    if FTypeCastSourceValue <> nil then
+      FTypeCastSourceValue.AddReference;
   end;
 
-  if FTypeCastInfo <> AStructure then begin
-    if FTypeCastInfo <> nil then
-      FTypeCastInfo.ReleaseReference;
-    FTypeCastInfo := AStructure;
-    if FTypeCastInfo <> nil then
-      FTypeCastInfo.AddReference;
+  if FTypeCastTargetType <> AStructure then begin
+    if FTypeCastTargetType <> nil then
+      FTypeCastTargetType.ReleaseReference;
+    FTypeCastTargetType := AStructure;
+    if FTypeCastTargetType <> nil then
+      FTypeCastTargetType.AddReference;
   end;
 
   Result := IsValidTypeCast;
@@ -4660,6 +4700,11 @@ begin
     SetKind(skPointer);
 end;
 
+procedure TDbgDwarfTypeIdentifierPointer.SizeNeeded;
+begin
+  SetSize(FCU.FAddressSize);
+end;
+
 procedure TDbgDwarfTypeIdentifierPointer.ForwardToSymbolNeeded;
 begin
   if IsInternalPointer then
@@ -4704,6 +4749,14 @@ begin
     Result := NestedTypeInfo.GetTypedValueObject(ATypeCast)
   else
     Result := TDbgDwarfPointerSymbolValue.Create(Self, FCU.FAddressSize);
+end;
+
+function TDbgDwarfTypeIdentifierPointer.DataSize: Integer;
+begin
+  if Kind = skClass then
+    Result := NestedTypeInfo.Size
+  else
+    Result := inherited DataSize;
 end;
 
 { TDbgDwarfTypeIdentifierDeclaration }
@@ -5506,6 +5559,17 @@ end;
 procedure TDbgDwarfIdentifier.TypeInfoNeeded;
 begin
   SetTypeInfo(NestedTypeInfo);
+end;
+
+function TDbgDwarfIdentifier.DataSize: Integer;
+var
+  t: TDbgDwarfTypeIdentifier;
+begin
+  t := NestedTypeInfo;
+  if t <> nil then
+    Result := t.DataSize
+  else
+    Result := 0;
 end;
 
 procedure TDbgDwarfIdentifier.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
