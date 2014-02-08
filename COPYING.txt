@@ -1,41 +1,43 @@
-This is the file COPYING, it gives an overview of the licenses used in the
-lazarus sources.
+This is the file COPYING. It gives an overview of the licenses used in the
+Lazarus sources.
 
 The Lazarus sources consists of several parts and each part has its own
-license. Three licenses are in use. The GPL 2, a modified LGPL and the MPL. In
-general, each file contains a header, describing the license of the file.
+license. Three main licenses are in use:
+* the GNU General Public License, version 2 (GPLv2)
+* a modified LGPL (as described in COPYING.modifiedLGPL)
+* the MPL
+In general, each file contains a header, describing the license of the file.
 
 The license directory tree:
 
 <lazarus>/
  |
- +- ide             (GPL2)
+ +- ide             (GPLv2)
  |
- +- designer        (GPL2)
+ +- designer        (GPLv2)
  |
- +- debugger        (GPL2)
+ +- debugger        (GPLv2)
  |
- +- packager        (GPL2)
+ +- examples        (GPLv2)
  |
- +- tools           (GPL2)
+ +- packager        (GPLv2)
  |
- +- examples        (GPL2)
+ +- tools           (GPLv2)
  |
  +- lcl             (modified LGPL)
  |
  +- components/
     |
-    +- synedit      (MPL - Mozilla public license)
+    +- codetools    (GPLv2)
     |
-    +- codetools    (GPL 2)
+    +- synedit      (MPL - Mozilla public license)
     |
     +- xxx There are various packages under various licenses. Mostly the
            modified LGPL. See the license in the package files for details.
            Some are not free for commercial use.
            
-
-The IDE files are the files in the <lazarus>, designer, packager and debugger
-directory. They are under the GPL 2, with the following exceptions:
+The IDE files are the files in the ide, designer, packager and debugger
+directory. They are under the GPLv2, with the following exceptions:
 transfermacros.pp, wordcompletion.pp, patheditordlg.pas, outputfilter.pas,
 inputfiledialog.pas, findreplacedialog.pp, findinfilesdlg.pas
 These files are under the modified LGPL as described in COPYING.modifiedLGPL.
