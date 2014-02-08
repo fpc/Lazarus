@@ -76,6 +76,7 @@ type
       var AIsEnabled: Boolean): Integer;
     procedure LPKParsingTimerTimer(Sender: TObject);
     procedure OnAllLPKParsed(Sender: TObject);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure TreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
       var PaintImages, DefaultDraw: Boolean);
@@ -94,12 +95,14 @@ type
     procedure SaveAndExitButtonClick(Sender: TObject);
     procedure UninstallButtonClick(Sender: TObject);
   private
+    FIdleConnected: boolean;
     FNewInstalledPackages: TObjectList; // list of TLazPackageID (not TLazPackage)
     FOldInstalledPackages: TPkgDependency;
     FOnCheckInstallPackageList: TOnCheckInstallPackageList;
     FRebuildIDE: boolean;
     FSelectedPkgState: TLPKInfoState;
     FSelectedPkgID: string;
+    fAvailablePkgsNeedUpdate: boolean;
     ImgIndexPackage: integer;
     ImgIndexInstallPackage: integer;
     ImgIndexInstalledPackage: integer;
@@ -112,6 +115,7 @@ type
     ImgIndexOverlayLazarusPackage: integer;
     ImgIndexOverlayDesigntimePackage: integer;
     ImgIndexOverlayRuntimePackage: integer;
+    procedure SetIdleConnected(AValue: boolean);
     procedure SetOldInstalledPackages(const AValue: TPkgDependency);
     procedure AssignOldInstalledPackagesToList;
     function PackageInInstallList(PkgName: string): boolean;
@@ -141,6 +145,7 @@ type
     property RebuildIDE: boolean read FRebuildIDE write FRebuildIDE;
     property OnCheckInstallPackageList: TOnCheckInstallPackageList
                read FOnCheckInstallPackageList write FOnCheckInstallPackageList;
+    property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
 function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
@@ -300,15 +305,22 @@ end;
 
 procedure TInstallPkgSetDialog.LPKParsingTimerTimer(Sender: TObject);
 begin
-  UpdateAvailablePackages(false);
   UpdateNewInstalledPackages;
+  UpdateAvailablePackages;
 end;
 
 procedure TInstallPkgSetDialog.OnAllLPKParsed(Sender: TObject);
 begin
   LPKParsingTimer.Enabled:=false;
-  UpdateAvailablePackages(false);
   UpdateNewInstalledPackages;
+  UpdateAvailablePackages;
+end;
+
+procedure TInstallPkgSetDialog.OnIdle(Sender: TObject; var Done: Boolean);
+begin
+  if fAvailablePkgsNeedUpdate then
+    UpdateAvailablePackages(true);
+  IdleConnected:=false;
 end;
 
 procedure TInstallPkgSetDialog.TreeViewAdvancedCustomDrawItem(
@@ -386,6 +398,7 @@ begin
   LPKInfoCache.RemoveOnQueueEmpty(@OnAllLPKParsed);
   ClearNewInstalledPackages;
   FreeAndNil(FNewInstalledPackages);
+  IdleConnected:=false;
 end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogResize(Sender: TObject);
@@ -422,6 +435,16 @@ begin
   AssignOldInstalledPackagesToList;
 end;
 
+procedure TInstallPkgSetDialog.SetIdleConnected(AValue: boolean);
+begin
+  if FIdleConnected=AValue then Exit;
+  FIdleConnected:=AValue;
+  if IdleConnected then
+    Application.AddOnIdleHandler(@OnIdle)
+  else
+    Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
 procedure TInstallPkgSetDialog.AssignOldInstalledPackagesToList;
 var
   Dependency: TPkgDependency;
@@ -445,6 +468,7 @@ begin
     inc(Cnt);
   end;
   UpdateNewInstalledPackages;
+  UpdateAvailablePackages;
 end;
 
 function TInstallPkgSetDialog.PackageInInstallList(PkgName: string): boolean;
@@ -492,6 +516,12 @@ var
   List: TStringList;
   i: Integer;
 begin
+  if not Immediately then begin
+    fAvailablePkgsNeedUpdate:=true;
+    IdleConnected:=true;
+    exit;
+  end;
+  fAvailablePkgsNeedUpdate:=false;
   List:=TStringList.Create;
   try
     // collect available packages, not yet installed
@@ -822,6 +852,7 @@ begin
       FNewInstalledPackages:=NewList;
       NewList:=nil;
       UpdateNewInstalledPackages;
+      UpdateAvailablePackages;
       UpdateButtonStates;
     finally
       XMLConfig.Free;
