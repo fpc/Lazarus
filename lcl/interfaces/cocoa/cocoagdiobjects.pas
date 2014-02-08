@@ -1769,13 +1769,7 @@ end;
 
 procedure TCocoaContext.FrameRect(const ARect: TRect; const ABrush: TCocoaBrush);
 begin
-  if ABrush <> Brush then
-    ABrush.Apply(Self);
-  if not ctx.currentContextDrawingToScreen then
-    ctx.setCurrentContext(ctx);
-  NSFrameRect(RectToNSRect(ARect));
-  if ABrush <> Brush then
-    Brush.Apply(Self);
+ Rectangle(Arect.Left,ARect.Top,Arect.Right,ARect.Bottom, False, ABrush);
 end;
 
 procedure TCocoaContext.SetCGFillping(Ctx: CGContextRef; Width, Height: CGFloat);
