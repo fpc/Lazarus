@@ -8688,8 +8688,6 @@ begin
 end;
 
 procedure TMainIDE.UpdateCaption;
-var
-  NewCaption: String;
 
   function AddToCaption(const CurrentCaption, CaptAddition: string): String;
   begin
@@ -8700,7 +8698,7 @@ var
   end;
 
 var
-  NewTitle, ProjectName, DirName: String;
+  NewCaption, NewTitle, ProjectName, DirName: String;
 begin
   if MainIDEBar = nil then Exit;
   if ToolStatus = itExiting then Exit;
@@ -8725,8 +8723,7 @@ begin
       else
         ProjectName := lisnewProject;
       NewTitle := AddToCaption(NewCaption, ProjectName);
-      if EnvironmentOptions.IDETitleIncludesBuildMode and
-         (Project1.BuildModes.Count > 1)
+      if EnvironmentOptions.IDETitleIncludesBuildMode and (Project1.BuildModes.Count > 1)
       then
         ProjectName:= ProjectName + ' - ' +Project1.ActiveBuildMode.GetCaption;
       NewCaption := AddToCaption(NewCaption, ProjectName);

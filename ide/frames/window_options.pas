@@ -116,14 +116,11 @@ begin
   HideIDEOnRunCheckBox.Caption := dlgHideIDEOnRun;
   HideMessagesIconsCheckBox.Caption := dlgHideMessagesIcons;
   TitleStartsWithProjectCheckBox.Caption:=lisIDETitleStartsWithProjectName;
-  TitleStartsWithProjectCheckBox.Hint:=
-    lisTitleInTaskbarShowsForExampleProject1LpiLazarus;
-  TitleIncludesBuildMode.Caption:=lisIDETitleIncludeBuildMode;
-  TitleIncludesBuildMode.Hint:=
-    lisBuildModeInTitleInExample;
-  ProjectDirInIdeTitleCheckBox.Caption:=lisIDEProjectDirInIdeTitle;
-  ProjectDirInIdeTitleCheckBox.Hint:=
-    lisProjectDirectoryIsShowedInIdeTitleBar;
+  TitleStartsWithProjectCheckBox.Hint:=lisTitleInTaskbarShowsForExampleProject1LpiLazarus;
+  TitleIncludesBuildMode.Caption:=lisIDETitleShowsBuildMode;
+  TitleIncludesBuildMode.Hint:=lisBuildModeInTitleInExample;
+  ProjectDirInIdeTitleCheckBox.Caption:=lisIDETitleShowsProjectDir;
+  ProjectDirInIdeTitleCheckBox.Hint:=lisProjectDirectoryIsShowedInIdeTitleBar;
 end;
 
 procedure TWindowOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

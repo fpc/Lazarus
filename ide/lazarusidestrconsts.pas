@@ -1174,8 +1174,8 @@ resourcestring
   dlgHideIDEOnRun = 'Hide IDE windows on run';
   dlgHideMessagesIcons = 'Hide Messages Icons';
   lisIDETitleStartsWithProjectName = 'IDE title starts with project name';
-  lisIDETitleIncludeBuildMode = 'IDE title shows selected build mode';
-  lisIDEProjectDirInIdeTitle = 'Show project directory in IDE title';
+  lisIDETitleShowsProjectDir = 'IDE title shows project directory';
+  lisIDETitleShowsBuildMode = 'IDE title shows selected build mode';
   dlgDesktopHints = 'Hints';
   dlgPalHints = 'Hints for component palette';
   dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
