@@ -987,27 +987,32 @@ procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
   const bounds, dirty: NSRect);
 var
   PS: PPaintStruct;
-  r: TRect;
+  nsr:NSRect;
 begin
   // todo: think more about draw call while previous draw still active
   if Assigned(FContext) then
     Exit;
   FContext := TCocoaContext.Create(ControlContext);
   try
+    // debugln('Draw '+Target.name+' bounds='+Dbgs(NSRectToRect(bounds))+' dirty='+Dbgs(NSRectToRect(dirty)));
     if FContext.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
     begin
+      nsr:=dirty;
+      nsr.origin.y:=bounds.size.height-dirty.origin.y-dirty.size.height;
+
        if FIsOpaque and (Target.Color<>clDefault) then
           begin
           FContext.BkMode:=OPAQUE;
           FContext.BkColor:=Target.Color;
-          FContext.BackgroundFill(dirty);
+          FContext.BackgroundFill(nsr);
+          //debugln('Background '+Target.name+Dbgs(NSRectToRect(dirty)));
           end;
 
       New(PS);
       try
         FillChar(PS^, SizeOf(TPaintStruct), 0);
         PS^.hdc := HDC(FContext);
-        PS^.rcPaint := NSRectToRect(dirty);
+        PS^.rcPaint := NSRectToRect(nsr);
         LCLSendPaintMsg(Target, HDC(FContext), PS);
         if FHasCaret then
           DrawCaret;

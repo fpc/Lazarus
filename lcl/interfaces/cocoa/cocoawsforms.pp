@@ -373,13 +373,11 @@ var
 
 
   R := CreateParamsToNSRect(AParams);
-  R.origin.x := 0;
-  R.origin.y := 0;
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
 
   if (AParams.Style and WS_CHILD) = 0 then
   begin
-    R := CreateParamsToNSRect(AParams);
+
     win := TCocoaWindow(TCocoaWindow.alloc);
 
     if not Assigned(win) then
