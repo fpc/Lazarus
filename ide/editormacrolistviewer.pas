@@ -244,7 +244,7 @@ var
   SelectedEditorMacro: TEditorMacro = nil;
 
 const
-  EditorMacroVirtualDrive = '%Macro:/';
+  EditorMacroVirtualDrive = '%Macro:|'; // do not use \ or /, they can be converted by the IDE
 
 implementation
 
@@ -1070,7 +1070,7 @@ begin
   M := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
   if M = nil then exit;
   LazarusIDE.DoOpenEditorFile(
-    EditorMacroVirtualDrive+MacroListToName(CurrentEditorMacroList)+'/'+M.MacroName,
+    EditorMacroVirtualDrive+MacroListToName(CurrentEditorMacroList)+'|'+M.MacroName,
     -1, -1, [ofVirtualFile, ofInternalFile]);
 end;
 
@@ -1347,14 +1347,14 @@ end;
 function TMacroListView.MacroByFullName(AName: String): TEditorMacro;
 const
   FolderStart = length(EditorMacroVirtualDrive)+1;
-  NameStart = FolderStart+length('PRJ/');
+  NameStart = FolderStart+length('PRJ|');
 var
   Alist: TEditorMacroList;
   i: Integer;
 begin
   Result := nil;
   If (copy(AName, 1, length(EditorMacroVirtualDrive)) <> EditorMacroVirtualDrive) or
-     (copy(AName, NameStart-1, 1) <> '/')
+     (copy(AName, NameStart-1, 1) <> '|')
   then exit;
   Alist := NameToMacroList(copy(AName, FolderStart, 3));
   if (Alist = nil) then exit;
