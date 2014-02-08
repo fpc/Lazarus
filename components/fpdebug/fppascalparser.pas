@@ -1968,7 +1968,7 @@ begin
   if tmp is TPasParserSymbolValueMakeReftype then begin
     TPasParserSymbolValueMakeReftype(tmp).IncRefLevel;
     Result := tmp;
-    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue');{$ENDIF}
+    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
     exit;
   end;
 
@@ -1976,7 +1976,7 @@ begin
     exit;
 
   Result := TPasParserSymbolValueMakeReftype.Create(tmp.DbgSymbol);
-  {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+  {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
 function TFpPascalExpressionPartOperatorMakeRef.DoGetIsTypeCast: Boolean;
