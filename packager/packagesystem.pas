@@ -324,8 +324,7 @@ type
     procedure LoadStaticBasePackages;
     procedure LoadAutoInstallPackages(PkgList: TStringList);
     procedure SortAutoInstallDependencies;
-    function GetIDEInstallPackageOptions(FirstDependency: TPkgDependency;
-                 var InheritedOptionStrings: TInheritedCompOptsStrings): string;
+    function GetIDEInstallPackageOptions(var InheritedOptStrs: TInheritedCompOptsStrings): string;
     function SaveAutoInstallConfig: TModalResult;// for the uses section
     function IsStaticBasePackage(PackageName: string): boolean;
     procedure FreeAutoInstallDependencies;
@@ -1752,8 +1751,7 @@ begin
 end;
 
 function TLazPackageGraph.GetIDEInstallPackageOptions(
-  FirstDependency: TPkgDependency;
-  var InheritedOptionStrings: TInheritedCompOptsStrings): string;
+  var InheritedOptStrs: TInheritedCompOptsStrings): string;
 
   procedure AddOption(const s: string);
   begin
@@ -1772,19 +1770,19 @@ begin
   Result:='';
   // get all required packages
   PkgList:=nil;
-  GetAllRequiredPackages(nil,FirstDependency,PkgList,[pirCompileOrder]);
+  GetAllRequiredPackages(nil,FirstAutoInstallDependency,PkgList,[pirCompileOrder]);
   if PkgList=nil then exit;
   // get all usage options
   AddOptionsList:=GetUsageOptionsList(PkgList);
   PkgList.Free;
   if AddOptionsList<>nil then begin
     // combine options of same type
-    GatherInheritedOptions(AddOptionsList,coptParsed,InheritedOptionStrings);
+    GatherInheritedOptions(AddOptionsList,coptParsed,InheritedOptStrs);
     AddOptionsList.Free;
   end;
 
   // convert options to compiler parameters
-  Result:=InheritedOptionsToCompilerParameters(InheritedOptionStrings,[]);
+  Result:=InheritedOptionsToCompilerParameters(InheritedOptStrs,[]);
 
   // add activate-static-packages option
   AddOption('-dAddStaticPkgs');

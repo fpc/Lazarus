@@ -7566,7 +7566,7 @@ end;
 
 function TMainIDE.DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult;
 var
-  InheritedOptionStrings: TInheritedCompOptsStrings;
+  InhOptStrs: TInheritedCompOptsStrings;
   FPCVersion, FPCRelease, FPCPatch: integer;
   Builder: TLazarusBuilder;
 begin
@@ -7583,7 +7583,7 @@ begin
   Builder:=TLazarusBuilder.Create(MiscellaneousOptions.BuildLazProfiles.Current);
   try
     // create inherited compiler options
-    Builder.PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
+    Builder.PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InhOptStrs);
     Result:=Builder.SaveIDEMakeOptions(Flags+[blfOnlyIDE]);
   finally
     Builder.Free;
@@ -7598,8 +7598,8 @@ end;
 function TMainIDE.DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
 var
   IDEBuildFlags: TBuildLazarusFlags;
-  InheritedOptionStrings: TInheritedCompOptsStrings;
-  CompiledUnitExt: String;
+  InhOptStrs: TInheritedCompOptsStrings;
+  CompiledUnitExt, LazDir: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
   PkgCompileFlags: TPkgCompileFlags;
   BuilderCreated: Boolean;
@@ -7660,17 +7660,15 @@ begin
     end;
 
     // create inherited compiler options
-    fBuilder.PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
+    fBuilder.PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InhOptStrs);
 
     // check ambiguous units
-    CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.GetParsedLazarusDirectory,
-                                           FPCVersion,FPCRelease,FPCPatch);
+    LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
+    CodeToolBoss.GetFPCVersionForDirectory(LazDir,FPCVersion,FPCRelease,FPCPatch);
     if FPCPatch=0 then ;
     CompiledUnitExt:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
     Result:=MainBuildBoss.CheckUnitPathForAmbiguousPascalFiles(
-                     EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+'ide',
-                     InheritedOptionStrings[icoUnitPath],
-                     CompiledUnitExt,'IDE');
+             LazDir+PathDelim+'ide',InhOptStrs[icoUnitPath],CompiledUnitExt,'IDE');
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Check UnitPath for ambiguous pascal files failed.');
       exit;
