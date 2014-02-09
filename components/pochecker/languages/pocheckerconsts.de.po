@@ -68,8 +68,7 @@ msgstr "[Zeile %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
 msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
-msgstr ""
-"Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
+msgstr "Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -219,3 +218,4 @@ msgstr "Übersetzung"
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation statistics for:"
 msgstr "Übersetzungsstatistik für:"
+
