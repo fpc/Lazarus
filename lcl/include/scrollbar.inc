@@ -225,8 +225,8 @@ begin
     Exit;
   end;
 
-  if NewPos > (FMax - FPageSize) then NewPos := FMax - FPageSize;
   if NewPos < FMin then NewPos := FMin;
+  if NewPos > FMax then NewPos := FMax;
   ScrollPos := NewPos;
   Scroll(ScrollCode, ScrollPos);
   SetPosition(ScrollPos);
