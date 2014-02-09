@@ -58,6 +58,9 @@ type
     procedure boundsDidChange; virtual;
     procedure BecomeFirstResponder; virtual;
     procedure ResignFirstResponder; virtual;
+    procedure DidBecomeKeyNotification; virtual;
+    procedure DidResignKeyNotification; virtual;
+
     function DeliverMessage(var Msg): LRESULT; virtual; overload;
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; virtual; overload;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
@@ -965,6 +968,18 @@ end;
 procedure TLCLCommonCallback.ResignFirstResponder;
 begin
   LCLSendKillFocusMsg(Target);
+end;
+
+procedure TLCLCommonCallback.DidBecomeKeyNotification;
+begin
+   LCLSendActivateMsg(Target, WA_ACTIVE, false);
+   LCLSendSetFocusMsg(Target);
+end;
+
+procedure TLCLCommonCallback.DidResignKeyNotification;
+begin
+   LCLSendActivateMsg(Target, WA_INACTIVE, false);
+   LCLSendKillFocusMsg(Target);
 end;
 
 function TLCLCommonCallback.DeliverMessage(var Msg): LRESULT;

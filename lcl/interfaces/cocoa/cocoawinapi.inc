@@ -1002,14 +1002,7 @@ begin
     Result := False;
 end;
 
-function TCocoaWidgetSet.WindowFromPoint(Point: TPoint): HWND;
-var 
-  winrect: TRect;
-  windows: NSArray;
-  win: integer;
-  window: NSWindow;
-
-function ViewFromPoint(view:NSView): HWND;
+function ViewFromPoint(view: NSView;Point: TPoint): HWND;
 var rect: TRect;
     p:TPoint;
 begin
@@ -1029,8 +1022,7 @@ begin
     //  debugln('No lcl');
 end;
 
-
-function RecurseSubviews(view:NSView):HWND;
+function RecurseSubviews(view: NSView;Point: TPoint):HWND;
 var  sv:integer;
 begin
   // first check views subview if there is a embedded view
@@ -1038,12 +1030,19 @@ begin
   sv:=0;
   while (Result=0) and (sv<view.subviews.count) do
     begin
-    Result:=RecurseSubviews(view.subviews.objectAtIndex(sv));
+    Result:=RecurseSubviews(view.subviews.objectAtIndex(sv),Point);
     inc(sv)
     end;
   if Result=0 then
-     Result:=ViewFromPoint(view);
+     Result:=ViewFromPoint(view,Point);
 end;
+
+function TCocoaWidgetSet.WindowFromPoint(Point: TPoint): HWND;
+var 
+  winrect: TRect;
+  windows: NSArray;
+  win: integer;
+  window: NSWindow;
 
 begin
   Result := 0;
@@ -1054,12 +1053,15 @@ begin
   for win := 0 to windows.count - 1 do
   begin
     window:=windows.objectAtIndex(win);
-    winrect := window.lclFrame;
-    if PtInRect(winrect, Point) then
-       begin
-       Result:=RecurseSubviews(window.contentView);
-       if Result<>0 then
-          exit;
+    if window.isKeyWindow then
+      begin
+      winrect := window.lclFrame;
+      if PtInRect(winrect, Point) then
+         begin
+         Result:=RecurseSubviews(window.contentView, Point);
+         if Result<>0 then
+            exit;
+        end;
       end;
     end;
 end;

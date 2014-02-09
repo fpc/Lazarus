@@ -48,6 +48,8 @@ type
     function ResetCursorRects: Boolean;
     procedure BecomeFirstResponder;
     procedure ResignFirstResponder;
+    procedure DidBecomeKeyNotification;
+    procedure DidResignKeyNotification;
     // non event methods
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     function GetPropStorage: TStringList;
@@ -368,6 +370,9 @@ type
   { TCocoaWindowContent }
 
   TCocoaWindowContent = objcclass(TCocoaCustomControl)
+    protected
+    procedure didBecomeKeyNotification(sender: NSNotification); message 'didBecomeKeyNotification:';
+    procedure didResignKeyNotification(sender: NSNotification); message 'didResignKeyNotification:';
   public
     isembedded: Boolean; // true - if the content is inside of another control, false - if the content is in its own window;
     ownwin: NSWindow;
@@ -546,6 +551,18 @@ end;
 function TCocoaWindowContent.lclIsHandle: Boolean;
 begin
   Result:=true;
+end;
+
+procedure TCocoaWindowContent.didBecomeKeyNotification(sender: NSNotification);
+begin
+  if Assigned(callback) then
+    callback.DidBecomeKeyNotification;
+end;
+
+procedure TCocoaWindowContent.didResignKeyNotification(sender: NSNotification);
+begin
+  if Assigned(callback) then
+    callback.DidResignKeyNotification;
 end;
 
 function TCocoaWindowContent.lclOwnWindow: NSWindow;

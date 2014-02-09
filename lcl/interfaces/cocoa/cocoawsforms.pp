@@ -269,11 +269,13 @@ begin
   else
     CocoaWidgetSet.SetMainMenu(0);
   LCLSendActivateMsg(Target, WA_ACTIVE, false);
+  LCLSendSetFocusMsg(Target);
 end;
 
 procedure TLCLWindowCallback.Deactivate;
 begin
   LCLSendActivateMsg(Target, WA_INACTIVE, false);
+  LCLSendKillFocusMsg(Target);
 end;
 
 procedure TLCLWindowCallback.CloseQuery(var CanClose: Boolean);
@@ -420,6 +422,9 @@ var
       NSView(APArams.WndParent).addSubView(cnt);
       cnt.window.setAcceptsMouseMovedEvents(True);
       cnt.callback.IsOpaque:=true;
+      NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didBecomeKeyNotification:'), NSWindowDidBecomeKeyNotification, cnt.window);
+      NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didResignKeyNotification:'), NSWindowDidResignKeyNotification, cnt.window);
+
       end;
   end;
 
