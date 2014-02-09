@@ -644,7 +644,6 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
   PasExpr := nil;
   try
     if (ARequest.ReqType = gcrtPType) and (length(ARequest.Request) > 0) then begin
-//DebugLn('######## '+ARequest.Request);
       case ARequest.Request[1] of
         'p': if copy(ARequest.Request, 1, 6) = 'ptype ' then
                IdentName := trim(copy(ARequest.Request, 7, length(ARequest.Request)));
@@ -657,23 +656,18 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
         rt := nil;
         if PasExpr.Valid and (PasExpr.ResultValue <> nil) then begin
           rt := PasExpr.ResultValue.DbgSymbol; // value or typecast
-//(*
-if rt <> nil then begin
-  debugln(['@@@@@ ',rt.ClassName]);
-  if (rt is TDbgDwarfValueIdentifier) then begin
-    DebugLn(['########### ', rt.Address ]);
-  end;
-end;
-if PasExpr.ResultValue <> nil then
-      DebugLn(['== VAL === ', PasExpr.ResultValue.AsInteger, '  /  ', PasExpr.ResultValue.AsCardinal,  '  /  ', PasExpr.ResultValue.AsBool]);
-//*)
+if rt <> nil then  debugln(['@@@@@ ',rt.ClassName, '   ADDR=', rt.Address]);
+DebugLn(['== VAL === ', PasExpr.ResultValue.AsInteger, '  /  ', PasExpr.ResultValue.AsCardinal,  '  /  ', PasExpr.ResultValue.AsBool,  '  /  ', PasExpr.ResultValue.AsString,  '  /  ', PasExpr.ResultValue.MemberCount]);
+
           if (rt <> nil) and (rt is TDbgDwarfValueIdentifier) then
             rt := rt.TypeInfo;
           if rt <> nil then begin
             AddType(IdentName, rt);
             Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
           end;
-        end;
+        end
+else DebugLn(['NOT VALID ', PasExpr.DebugDump(True)])
+        ;
       end;
     end;
 
