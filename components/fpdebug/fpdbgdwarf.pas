@@ -7463,6 +7463,7 @@ else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
 
       s := CU2.UnitName;
       if (s <> '') and (CompareUtf8BothCase(p1, p2, @s[1])) then begin
+        Result.ReleaseReference;
         Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
         DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found unit ', dbgs(InfoEntry.FScope, CU2), DbgSName(Result)]);
         break;
@@ -7472,6 +7473,7 @@ else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
       if InfoEntry.GoNamedChildEx(p1, p2) then begin
         if InfoEntry.IsAddressInStartScope(FAddress) then begin
           // only variables are marked "external", but types not / so we may need all top level
+          Result.ReleaseReference;
           Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
           DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found (other unit) ', dbgs(InfoEntry.FScope, CU2), DbgSName(Result)]);
           // DW_AT_visibility ?
