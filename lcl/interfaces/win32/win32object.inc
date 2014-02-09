@@ -728,9 +728,7 @@ end;
 procedure TWin32WidgetSet.SetAppHandle(const AValue: THandle);
 begin
   // Do it only if handle is not yet created (for example for DLL initialization)
-  // if handle is already created we can't reassign it
-  if AppHandle = 0 then
-    FAppHandle := AValue;
+  FAppHandle := AValue;
 end;
 
 function TWin32WidgetSet.GetDotsPatternBitmap: HBitmap;
