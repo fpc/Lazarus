@@ -4312,6 +4312,10 @@ msgstr "Erot muihin koontamoodeihin"
 msgid "Mode:"
 msgstr "Moodi:"
 
+#: lazarusidestrconsts.lisbuildmodeintitleinexample
+msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
 msgstr "Koontamoodit"
@@ -8581,9 +8585,13 @@ msgstr "Tunniste sisältää ..."
 msgid "IDE Options:"
 msgstr "IDEn asetukset:"
 
-#: lazarusidestrconsts.lisideprojectdirinidetitle
-msgid "Show project directory in IDE title"
-msgstr "Näytä projektihakemisto IDEn otsikossa"
+#: lazarusidestrconsts.lisidetitleshowsbuildmode
+msgid "IDE title shows selected build mode"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleshowsprojectdir
+msgid "IDE title shows project directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"

@@ -4499,6 +4499,10 @@ msgstr "Unterschiede zu anderen Erstellmodi"
 msgid "Mode:"
 msgstr "Modus:"
 
+#: lazarusidestrconsts.lisbuildmodeintitleinexample
+msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
 msgstr "Erstellmodi"
@@ -8859,9 +8863,13 @@ msgstr "Bezeichner enthält ..."
 msgid "IDE Options:"
 msgstr "IDE-Einstellungen"
 
-#: lazarusidestrconsts.lisideprojectdirinidetitle
-msgid "Show project directory in IDE title"
-msgstr "Projektverzeichnis im IDE-Titel anzeigen"
+#: lazarusidestrconsts.lisidetitleshowsbuildmode
+msgid "IDE title shows selected build mode"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleshowsprojectdir
+msgid "IDE title shows project directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"

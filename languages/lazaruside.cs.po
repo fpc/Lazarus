@@ -4371,6 +4371,10 @@ msgstr "Rozdíly s ostatními sestavovacími módy"
 msgid "Mode:"
 msgstr "Mód:"
 
+#: lazarusidestrconsts.lisbuildmodeintitleinexample
+msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
 msgstr "Režimy sestavení"
@@ -8683,9 +8687,13 @@ msgstr "Identifikátor obsahuje..."
 msgid "IDE Options:"
 msgstr "Volby IDE:"
 
-#: lazarusidestrconsts.lisideprojectdirinidetitle
-msgid "Show project directory in IDE title"
-msgstr "Ukázat adresář projektu v titulku IDE"
+#: lazarusidestrconsts.lisidetitleshowsbuildmode
+msgid "IDE title shows selected build mode"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleshowsprojectdir
+msgid "IDE title shows project directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"

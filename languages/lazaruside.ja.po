@@ -4363,6 +4363,10 @@ msgstr "他の構築モードとの違い"
 msgid "Mode:"
 msgstr "モード："
 
+#: lazarusidestrconsts.lisbuildmodeintitleinexample
+msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
 msgstr "構築モード"
@@ -8648,9 +8652,13 @@ msgstr "識別子が次を含む ..."
 msgid "IDE Options:"
 msgstr "IDE オプション"
 
-#: lazarusidestrconsts.lisideprojectdirinidetitle
-msgid "Show project directory in IDE title"
-msgstr "IDEのタイトルにプロジェクトディレクトリを表示"
+#: lazarusidestrconsts.lisidetitleshowsbuildmode
+msgid "IDE title shows selected build mode"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleshowsprojectdir
+msgid "IDE title shows project directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"

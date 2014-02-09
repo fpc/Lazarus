@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-02-07 03:44+0400\n"
+"PO-Revision-Date: 2014-02-09 16:11+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4498,6 +4498,10 @@ msgstr "Отличия от других режимов сборки"
 msgid "Mode:"
 msgstr "Режим:"
 
+#: lazarusidestrconsts.lisbuildmodeintitleinexample
+msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+msgstr "Пример отображаемых данных в заголовке в панели задач: project1.lpi - Release - Lazarus"
+
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
 msgstr "Режимы сборки"
@@ -8849,9 +8853,13 @@ msgstr "Идентификатор содержит ..."
 msgid "IDE Options:"
 msgstr "Параметры IDE:"
 
-#: lazarusidestrconsts.lisideprojectdirinidetitle
-msgid "Show project directory in IDE title"
-msgstr "Отображать каталог проекта в заголовке IDE"
+#: lazarusidestrconsts.lisidetitleshowsbuildmode
+msgid "IDE title shows selected build mode"
+msgstr "Отображать в заголовке IDE выбранный режим сборки"
+
+#: lazarusidestrconsts.lisidetitleshowsprojectdir
+msgid "IDE title shows project directory"
+msgstr "Отображать в заголовке IDE каталог проекта"
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"

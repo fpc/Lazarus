@@ -4492,6 +4492,10 @@ msgstr "Skirtumai lyginant su kitomis darymo veiksenomis"
 msgid "Mode:"
 msgstr "Veiksena:"
 
+#: lazarusidestrconsts.lisbuildmodeintitleinexample
+msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
 msgstr "Darymo veiksenos"
@@ -8843,9 +8847,13 @@ msgstr "Identifikatoriuje yra…"
 msgid "IDE Options:"
 msgstr "IKA parinktys:"
 
-#: lazarusidestrconsts.lisideprojectdirinidetitle
-msgid "Show project directory in IDE title"
-msgstr "IKA antraštėje rodyti projekto aplanką"
+#: lazarusidestrconsts.lisidetitleshowsbuildmode
+msgid "IDE title shows selected build mode"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleshowsprojectdir
+msgid "IDE title shows project directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
