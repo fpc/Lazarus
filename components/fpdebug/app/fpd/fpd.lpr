@@ -44,7 +44,8 @@ uses
   FPDLoop,
   FPDPEImage,
   FPDType,
-  FpDbgClasses, FpDbgWinExtra, FpDbgPETypes, FpDbgDwarfConst, FpDbgDwarf;
+  FpDbgClasses, FpDbgWinExtra, FpDbgPETypes, FpDbgDwarfConst, FpDbgDwarf,
+  FpDbgWinClasses;
 
 function CtrlCHandler(CtrlType: Cardinal): BOOL; stdcall;
 begin
@@ -54,7 +55,7 @@ begin
     CTRL_BREAK_EVENT: begin
       if GState <> dsRun then Exit;
       if GMainProcess = nil then Exit;
-      GMainProcess.Interrupt;
+      TDbgWinProcess(GMainProcess).Interrupt;
 
       Result := True;
     end;

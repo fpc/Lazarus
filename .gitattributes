@@ -1257,6 +1257,7 @@ components/fpdebug/fpdbgloader.pp svneol=native#text/pascal
 components/fpdebug/fpdbgpetypes.pp svneol=native#text/pascal
 components/fpdebug/fpdbgsymbols.pas svneol=native#text/pascal
 components/fpdebug/fpdbgutil.pp svneol=native#text/pascal
+components/fpdebug/fpdbgwinclasses.pas svneol=native#text/pascal
 components/fpdebug/fpdbgwinextra.pp svneol=native#text/pascal
 components/fpdebug/fpdebug.lpk svneol=native#text/pascal
 components/fpdebug/fpdebug.pas svneol=native#text/pascal

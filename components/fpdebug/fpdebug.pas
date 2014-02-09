@@ -7,10 +7,11 @@ unit fpdebug;
 interface
 
 uses
-  FpDbgClasses, FpDbgDisasX86, FpDbgDwarf, FpDbgDwarfConst, FpDbgLoader, FpDbgPETypes, 
-  FpDbgSymbols, FpDbgUtil, FpDbgWinExtra, FpImgReaderWinPE, FpImgReaderElf, 
-  FpImgReaderElfTypes, FpImgReaderBase, FpPascalParser, macho, FpImgReaderMachoFile, 
-  FpImgReaderMacho, FpPascalBuilder, FpDbgInfo, LazarusPackageIntf;
+  FpDbgClasses, FpDbgDisasX86, FpDbgDwarf, FpDbgDwarfConst, FpDbgLoader, 
+  FpDbgPETypes, FpDbgSymbols, FpDbgUtil, FpDbgWinExtra, FpImgReaderWinPE, 
+  FpImgReaderElf, FpImgReaderElfTypes, FpImgReaderBase, FpPascalParser, macho, 
+  FpImgReaderMachoFile, FpImgReaderMacho, FpPascalBuilder, FpDbgInfo, 
+  LazarusPackageIntf;
 
 implementation
 

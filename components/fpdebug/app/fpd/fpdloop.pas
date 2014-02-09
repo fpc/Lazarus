@@ -37,7 +37,8 @@ unit FPDLoop;
 interface
 
 uses
-  Windows, Classes, SysUtils, FileUtil, FpDbgInfo, FpDbgClasses, FpDbgWinExtra, FpDbgDisasX86;
+  Windows, Classes, SysUtils, FileUtil, FpDbgInfo, FpDbgClasses, FpDbgWinExtra, FpDbgDisasX86,
+  FpDbgWinClasses;
 
 procedure DebugLoop;
 
@@ -67,7 +68,7 @@ begin
 
   if GMainProcess = nil
   then S := GFileName;
-  Proc := TDbgProcess.Create(S, AEvent.dwProcessId, AEvent.dwThreadId, AEvent.CreateProcessInfo);
+  Proc := TDbgWinProcess.Create(S, AEvent.dwProcessId, AEvent.dwThreadId, AEvent.CreateProcessInfo);
   if GMainProcess = nil
   then GMainProcess := Proc;
   GProcessMap.Add(AEvent.dwProcessId, Proc);
@@ -465,7 +466,7 @@ begin
   repeat
     if (GCurrentProcess <> nil) and (GState = dsPause)
     then begin
-      GCurrentProcess.ContinueDebugEvent(GCurrentThread, MDebugEvent);
+      (GCurrentProcess as TDbgWinProcess).ContinueDebugEvent(GCurrentThread, MDebugEvent);
     end;
 
     if GState in [dsStop, dsPause, dsEvent]
@@ -488,7 +489,7 @@ begin
     GState := dsEvent;
     if GCurrentProcess <> nil
     then begin
-      if GCurrentProcess.HandleDebugEvent(MDebugEvent) then Continue;
+      if TDbgWinProcess(GCurrentProcess).HandleDebugEvent(MDebugEvent) then Continue;
       if not GCurrentProcess.GetThread(MDebugEvent.dwTHreadID, GCurrentThread)
       then WriteLN('LOOP: Unable to retrieve current thread');
     end;

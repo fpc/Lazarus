@@ -37,12 +37,8 @@ unit FpDbgClasses;
 interface
 
 uses
-{$ifdef windows}
-  Windows,
-{$endif}
   Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgWinExtra, FpDbgLoader, FpDbgInfo, LazLoggerBase, LazClasses;
 
-{$ifdef windows}
 type
   TDbgProcess = class;
 
@@ -56,30 +52,32 @@ type
     FSingleStepping: Boolean;
   protected
   public
-    constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle; const ABase, AStart: Pointer);
+    constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle; const ABase, AStart: Pointer); virtual;
     destructor Destroy; override;
-    function SingleStep: Boolean;
+    function SingleStep: Boolean; virtual;
     property ID: Integer read FID;
     property Handle: THandle read FHandle;
     property SingleStepping: boolean read FSingleStepping;
   end;
+  TDbgThreadClass = class of TDbgThread;
 
-  TDbgBreakpoint = class;
-  TDbgBreakpointEvent = procedure(const ASender: TDbgBreakpoint; const AContext: TContext) of object;
   TDbgBreakpoint = class(TObject)
   private
     FProcess: TDbgProcess;
     FLocation: TDbgPtr;
-    FOrgValue: Byte;
-    procedure SetBreak;
-    procedure ResetBreak;
   protected
+    FOrgValue: Byte;
+    property Process: TDbgProcess read FProcess;
   public
-    constructor Create(const AProcess: TDbgProcess; const ALocation: TDbgPtr);
+    constructor Create(const AProcess: TDbgProcess; const ALocation: TDbgPtr); virtual;
     destructor Destroy; override;
-    function Hit(const AThreadID: Integer): Boolean;
+    function Hit(const AThreadID: Integer): Boolean; virtual;
     property Location: TDbgPtr read FLocation;
+
+    procedure SetBreak; virtual;
+    procedure ResetBreak; virtual;
   end;
+  TDbgBreakpointClass = class of TDbgBreakpoint;
 
   { TDbgInstance }
 
@@ -93,11 +91,14 @@ type
     FDbgInfo: TDbgInfo;
     FLoader: TDbgImageLoader;
 
-    procedure LoadInfo;
+    procedure LoadInfo; virtual;
     procedure CheckName;
     procedure SetName(const AValue: String);
+  protected
+    function InitializeLoader: TDbgImageLoader; virtual;
+    function GetModuleFileName(AModuleHandle: THandle): string; virtual;
   public
-    constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: Boolean);
+    constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: Boolean); virtual;
     destructor Destroy; override;
 
     function AddBreak(const AFileName: String; ALine: Cardinal): TDbgBreakpoint;
@@ -108,12 +109,14 @@ type
     property Process: TDbgProcess read FProcess;
     property ModuleHandle: THandle read FModuleHandle;
     property BaseAddr: TDbgPtr read FBaseAddr;
+    property DbgInfo: TDbgInfo read FDbgInfo;
   end;
 
+  { TDbgLibrary }
+
   TDbgLibrary = class(TDbgInstance)
-  private
   public
-    constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AInfo: TLoadDLLDebugInfo);
+    constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: Boolean);
     property Name: String read FName;
   end;
 
@@ -123,61 +126,81 @@ type
   private
     FProcessID: Integer;
     FThreadID: Integer;
-    FInfo: TCreateProcessDebugInfo;
 
-    FThreadMap: TMap; // map ThreadID -> ThreadObject
-    FLibMap: TMap;    // map LibAddr -> LibObject
-    FBreakMap: TMap;  // map BreakAddr -> BreakObject
-    
-    FSymInstances: TList;  // list of dbgInstances with debug info
-
-    FMainThread: TDbgThread;
-
+    procedure SetName(const AValue: String);
+    procedure ThreadDestroyed(const AThread: TDbgThread);
+  protected
     FCurrentBreakpoint: TDbgBreakpoint;  // set if we are executing the code at the break
                                          // if the singlestep is done, set the break again
     FReEnableBreakStep: Boolean;         // Set when we are reenabling a breakpoint
                                          // We need a single step, so the IP is after the break to set
 
-    procedure SetName(const AValue: String);
-    procedure ThreadDestroyed(const AThread: TDbgThread);
-  protected
+    FSymInstances: TList;  // list of dbgInstances with debug info
+
+    FThreadMap: TMap; // map ThreadID -> ThreadObject
+    FLibMap: TMap;    // map LibAddr -> LibObject
+    FBreakMap: TMap;  // map BreakAddr -> BreakObject
+
+    FMainThread: TDbgThread;
+    property ProcessID: integer read FProcessID;
+    function GetHandle: THandle; virtual;
   public
-    constructor Create(const ADefaultName: String; const AProcessID, AThreadID: Integer; const AInfo: TCreateProcessDebugInfo);
+    constructor Create(const ADefaultName: String; const AProcessID, AThreadID: Integer; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: boolean);
     destructor Destroy; override;
     function  AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
-    function  AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
-    procedure AddThread(const AID: Integer; const AInfo: TCreateThreadDebugInfo);
     function  FindSymbol(const AName: String): TDbgSymbol;
     function  FindSymbol(AAdress: TDbgPtr): TDbgSymbol;
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
-    procedure Interrupt;
-    procedure ContinueDebugEvent(const AThread: TDbgThread; const ADebugEvent: TDebugEvent);
-    function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
     function  RemoveBreak(const ALocation: TDbgPtr): Boolean;
-    procedure RemoveLib(const AInfo: TUnloadDLLDebugInfo);
     procedure RemoveThread(const AID: DWord);
 
-    function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
-    function ReadOrdinal(const AAdress: TDbgPtr; out AData): Boolean;
-    function ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean;
-    function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean;
+    function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; virtual;
+    function ReadOrdinal(const AAdress: TDbgPtr; out AData): Boolean; virtual;
+    function ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean; virtual;
+    function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean; virtual;
 
-    function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;
+    function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
 
-    property Handle: THandle read FInfo.hProcess;
+    property Handle: THandle read GetHandle;
     property Name: String read FName write SetName;
   end;
-  {$endif}
+  TDbgProcessClass = class of TDbgProcess;
+
+  TOSDbgClasses = class
+  public
+    DbgThreadClass : TDbgThreadClass;
+    DbgBreakpointClass : TDbgBreakpointClass;
+    DbgProcessClass : TDbgProcessClass;
+  end;
+
+function OSDbgClasses: TOSDbgClasses;
 
 implementation
 
-procedure LogLastError;
+{$ifdef windows}
+uses
+  FpDbgWinClasses;
+{$endif}
+
+var
+  GOSDbgClasses : TOSDbgClasses;
+
+function OSDbgClasses: TOSDbgClasses;
 begin
-  DebugLn('FpDbg-ERROR: ', GetLastErrorText);
+  if GOSDbgClasses=nil then
+    begin
+    GOSDbgClasses := TOSDbgClasses.create;
+    GOSDbgClasses.DbgThreadClass := TDbgThread;
+    GOSDbgClasses.DbgBreakpointClass := TDbgBreakpoint;
+    GOSDbgClasses.DbgProcessClass := TDbgProcess;
+    {$ifdef windows}
+    RegisterDbgClasses;
+    {$endif windows}
+    end;
+  result := OSDbgClasses;
 end;
 
-{$ifdef windows}
 { TDbgInstance }
 
 function TDbgInstance.AddBreak(const AFileName: String; ALine: Cardinal): TDbgBreakpoint;
@@ -207,7 +230,6 @@ var
   NamePtr: TDbgPtr;
   S: String;
   W: WideString;
-  len: Integer;
 begin
   FBaseAddr := ABaseAddr;
   FModuleHandle := AModuleHandle;
@@ -231,15 +253,7 @@ begin
 
   if W = ''
   then begin
-    SetLength(S, MAX_PATH);
-    len := GetModuleFileName(FModuleHandle, @S[1], MAX_PATH);
-    if len > 0
-    then SetLength(S, len - 1)
-    else begin
-      S := '';
-      LogLastError;
-    end;
-    W := S;
+    W := GetModuleFileName(FModuleHandle);
   end;
 
   if W = ''
@@ -273,7 +287,7 @@ end;
 
 procedure TDbgInstance.LoadInfo;
 begin
-  FLoader := TDbgImageLoader.Create(FModuleHandle);
+  FLoader := InitializeLoader;
   assert(false, 'fpc will not compile this');
   FDbgInfo := TDbgDwarf.Create(FLoader);
   TDbgDwarf(FDbgInfo).LoadCompilationUnits;
@@ -295,63 +309,33 @@ begin
   FName := AValue;
   CheckName;
 end;
-{$endif}
 
-{$ifdef windows}
+function TDbgInstance.InitializeLoader: TDbgImageLoader;
+begin
+  result := nil;
+end;
+
+function TDbgInstance.GetModuleFileName(AModuleHandle: THandle): string;
+begin
+  result := '';
+end;
+
 { TDbgLibrary }
 
-constructor TDbgLibrary.Create(const AProcess: TDbgProcess; const ADefaultName: String; const AInfo: TLoadDLLDebugInfo);
+constructor TDbgLibrary.Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: Boolean);
 begin
-  inherited Create(AProcess, ADefaultName, AInfo.hFile, TDbgPtr(AInfo.lpBaseOfDll), TDbgPtr(AInfo.lpImageName), AInfo.fUnicode <> 0);
+  inherited Create(AProcess, ADefaultName, AModuleHandle, ABaseAddr, ANameAddr, AUnicode);
 end;
-{$endif}
 
-{$ifdef windows}
 { TDbgProcess }
 
 function TDbgProcess.AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
 begin
-  Result := TDbgBreakpoint.Create(Self, ALocation);
+  Result := OSDbgClasses.DbgBreakpointClass.Create(Self, ALocation);
   FBreakMap.Add(ALocation, Result);
 end;
 
-function TDbgProcess.AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
-var
-  ID: TDbgPtr;
-begin
-  Result := TDbgLibrary.Create(Self, HexValue(AInfo.lpBaseOfDll, SizeOf(Pointer), [hvfIncludeHexchar]), AInfo);
-  ID := TDbgPtr(AInfo.lpBaseOfDll);
-  FLibMap.Add(ID, Result);
-  if Result.FDbgInfo.HasInfo
-  then FSymInstances.Add(Result);
-end;
-
-procedure TDbgProcess.AddThread(const AID: Integer; const AInfo: TCreateThreadDebugInfo);
-var
-  Thread: TDbgThread;
-begin
-  Thread := TDbgThread.Create(Self, AID, AInfo.hThread, AInfo.lpThreadLocalBase, AInfo.lpStartAddress);
-  FThreadMap.Add(AID, Thread);
-end;
-
-procedure TDbgProcess.ContinueDebugEvent(const AThread: TDbgThread; const ADebugEvent: TDebugEvent);
-begin
-  case ADebugEvent.dwDebugEventCode of
-    EXCEPTION_DEBUG_EVENT: begin
-      case ADebugEvent.Exception.ExceptionRecord.ExceptionCode of
-        EXCEPTION_BREAKPOINT: begin
-          if AThread = nil then Exit;
-          if FCurrentBreakpoint = nil then Exit;
-          if AThread.SingleStepping then Exit;
-          AThread.SingleStep;
-          FReEnableBreakStep := True;
-        end;
-      end;
-    end;
-  end;
-end;
-
-constructor TDbgProcess.Create(const ADefaultName: String; const AProcessID, AThreadID: Integer; const AInfo: TCreateProcessDebugInfo);
+constructor TDbgProcess.Create(const ADefaultName: String; const AProcessID, AThreadID: Integer; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: boolean);
 const
   {.$IFDEF CPU64}
   MAP_ID_SIZE = itu8;
@@ -361,8 +345,7 @@ const
 begin
   FProcessID := AProcessID;
   FThreadID := AThreadID;
-  FInfo := AInfo;
-  
+
   FThreadMap := TMap.Create(itu4, SizeOf(TDbgThread));
   FLibMap := TMap.Create(MAP_ID_SIZE, SizeOf(TDbgLibrary));
   FBreakMap := TMap.Create(MAP_ID_SIZE, SizeOf(TDbgBreakpoint));
@@ -370,9 +353,8 @@ begin
 
   FSymInstances := TList.Create;
 
-  inherited Create(Self, ADefaultName, AInfo.hFile, TDbgPtr(AInfo.lpBaseOfImage), TDbgPtr(AInfo.lpImageName), AInfo.fUnicode <> 0);
+  inherited Create(Self, ADefaultName, AModuleHandle, ABaseAddr, ANameAddr, AUnicode);
 
-  FMainThread := TDbgThread.Create(Self, AThreadID, AInfo.hThread, AInfo.lpThreadLocalBase, AInfo.lpStartAddress);
   FThreadMap.Add(AThreadID, FMainThread);
   
   if FDbgInfo.HasInfo
@@ -382,7 +364,6 @@ end;
 destructor TDbgProcess.Destroy;
 begin
 //  CloseHandle(FInfo.hThread);
-  CloseHandle(FInfo.hProcess);
   FreeAndNil(FBreakMap);
   FreeAndNil(FThreadMap);
   FreeAndNil(FLibMap);
@@ -440,146 +421,9 @@ begin
   else Log('Unknown thread ID %u for process %u', [AID, FProcessID]);
 end;
 
-{ ------------------------------------------------------------------
-  HandleDebugEvent
-  
-  Result: True if the event was triggered internally
-          The callee should continue the process
-  ------------------------------------------------------------------ }
-function TDbgProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
-
-  function DoBreak: Boolean;
-  var
-    ID: TDbgPtr;
-  begin
-    Result := False;
-    ID := TDbgPtr(ADebugEvent.Exception.ExceptionRecord.ExceptionAddress);
-    if not FBreakMap.GetData(ID, FCurrentBreakpoint) then Exit;
-    if FCurrentBreakpoint = nil then Exit;
-
-    Result := True;
-    if not FCurrentBreakpoint.Hit(ADebugEvent.dwThreadId)
-    then FCurrentBreakpoint := nil; // no need for a singlestep if we continue
-  end;
-
-  function DoSingleStep: Boolean;
-  var
-    _UC: record
-      C: TContext;
-      D: array[1..16] of Byte;
-    end;
-    Context: PContext;
-  begin
-    Result := False;
-    // check if we are interupting
-    Context := AlignPtr(@_UC, $10);
-    Context^.ContextFlags := CONTEXT_DEBUG_REGISTERS;
-    if GetThreadContext(FInfo.hThread, Context^)
-    then begin
-      if Context^.Dr6 and 1 <> 0
-      then begin
-        // interrupt !
-        // disable break.
-        Context^.Dr7 := Context^.Dr7 and not $1;
-        Context^.Dr0 := 0;
-        if not SetThreadContext(FInfo.hThread, Context^)
-        then begin
-          // Heeellppp!!
-          Log('Thread %u: Unable to reset BR0', [ADebugEvent.dwThreadId]);
-        end;
-        // check if we are also singlestepping
-        // if not, then exit, else proceed to next check
-        if Context^.Dr6 and $40 = 0
-        then Exit;
-      end;
-    end
-    else begin
-      // if we can not get the context, we probable weren't able to set it either
-      Log('Thread %u: Unable to get context', [ADebugEvent.dwThreadId]);
-    end;
-
-    // check if we are single stepping ourself
-    if FCurrentBreakpoint = nil then Exit;
-
-    FCurrentBreakpoint.SetBreak;
-    FCurrentBreakpoint := nil;
-    Result := FReEnableBreakStep;
-    FReEnableBreakStep := False;
-  end;
-  
-begin
-  Result := False;
-  case ADebugEvent.dwDebugEventCode of
-    EXCEPTION_DEBUG_EVENT: begin
-      case ADebugEvent.Exception.ExceptionRecord.ExceptionCode of
-        EXCEPTION_BREAKPOINT:  {Result :=} DoBreak; // we never set a break ourself, let the callee pause!
-        EXCEPTION_SINGLE_STEP: Result := DoSingleStep;
-      end;
-    end;
-    CREATE_THREAD_DEBUG_EVENT: begin
-      AddThread(ADebugEvent.dwThreadId, ADebugEvent.CreateThread)
-    end;
-    EXIT_THREAD_DEBUG_EVENT: begin
-      RemoveThread(ADebugEvent.dwThreadId);
-    end;
-    LOAD_DLL_DEBUG_EVENT: begin
-      AddLib(ADebugEvent.LoadDll);
-    end;
-    UNLOAD_DLL_DEBUG_EVENT: begin
-      RemoveLib(ADebugEvent.UnloadDll);
-    end;
-  end;
-end;
-
-procedure TDbgProcess.Interrupt;
-var
-  _UC: record
-    C: TContext;
-    D: array[1..16] of Byte;
-  end;
-  Context: PContext;
-begin
-  // Interrupting is implemented by suspending the thread and set DB0 to the
-  // (to be) executed EIP. When the thread is resumed, it will generate a break
-  // Single stepping doesn't work in all cases.
-  
-  // A context needs to be aligned to 16 bytes. Unfortunately, the compiler has
-  // no directive for this, so align it somewhere in our "reserved" memory
-  Context := AlignPtr(@_UC, $10);
-  SuspendThread(FInfo.hThread);
-  try
-    Context^.ContextFlags := CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
-    if not GetThreadContext(FInfo.hThread, Context^)
-    then begin
-      Log('Proces %u interrupt: Unable to get context', [FProcessID]);
-      Exit;
-    end;
-
-    Context^.ContextFlags := CONTEXT_DEBUG_REGISTERS;
-    {$ifdef cpui386}
-    Context^.Dr0 := Context^.Eip;
-    {$else}
-    Context^.Dr0 := Context^.Rip;
-    {$endif}
-    Context^.Dr7 := (Context^.Dr7 and $FFF0FFFF) or $1;
-
-    if not SetThreadContext(FInfo.hThread, Context^)
-    then begin
-      Log('Proces %u interrupt: Unable to set context', [FProcessID]);
-      Exit;
-    end;
-  finally
-    ResumeTHread(FInfo.hThread);
-  end;
-end;
-
 function TDbgProcess.ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
-var
-  BytesRead: Cardinal;
 begin
-  Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @AData, ASize, BytesRead) and (BytesRead = ASize);
-
-  if not Result then LogLastError;
+  result := false
 end;
 
 function TDbgProcess.ReadOrdinal(const AAdress: TDbgPtr; out AData): Boolean;
@@ -588,32 +432,13 @@ begin
 end;
 
 function TDbgProcess.ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean;
-var
-  BytesRead: Cardinal;
-  buf: array of Char;
 begin
-  SetLength(buf, AMaxSize + 1);
-  Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @Buf[0], AMaxSize, BytesRead);
-  if not Result then Exit;
-  if BytesRead < AMaxSize
-  then Buf[BytesRead] := #0
-  else Buf[AMaxSize] := #0;
-  AData := PChar(@Buf[0]);
+  Result := false;
 end;
 
 function TDbgProcess.ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean;
-var
-  BytesRead: Cardinal;
-  buf: array of WChar;
 begin
-  SetLength(buf, AMaxSize + 1);
-  Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @Buf[0], SizeOf(WChar) * AMaxSize, BytesRead);
-  if not Result then Exit;
-  BytesRead := BytesRead div SizeOf(WChar);
-  if BytesRead < AMaxSize
-  then Buf[BytesRead] := #0
-  else Buf[AMaxSize] := #0;
-  AData := PWChar(@Buf[0]);
+  result := false;
 end;
 
 function TDbgProcess.RemoveBreak(const ALocation: TDbgPtr): Boolean;
@@ -621,20 +446,6 @@ begin
   if FBreakMap = nil
   then Result := False
   else Result := FBreakMap.Delete(ALocation);
-end;
-
-procedure TDbgProcess.RemoveLib(const AInfo: TUnloadDLLDebugInfo);
-var
-  Lib: TDbgLibrary;
-  ID: TDbgPtr;
-begin
-  if FLibMap = nil then Exit;
-  ID := TDbgPtr(AInfo.lpBaseOfDll);
-  if not FLibMap.GetData(ID, Lib) then Exit;
-  if Lib.FDbgInfo.HasInfo
-  then FSymInstances.Remove(Lib);
-  FLibMap.Delete(ID);
-  // TODO: Free lib ???
 end;
 
 procedure TDbgProcess.RemoveThread(const AID: DWord);
@@ -648,6 +459,11 @@ begin
   FName := AValue;
 end;
 
+function TDbgProcess.GetHandle: THandle;
+begin
+  result := 0;
+end;
+
 procedure TDbgProcess.ThreadDestroyed(const AThread: TDbgThread);
 begin
   if AThread = FMainThread
@@ -655,16 +471,10 @@ begin
 end;
 
 function TDbgProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;
-var
-  BytesWritten: Cardinal;
 begin
-  Result := WriteProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @AData, ASize, BytesWritten) and (BytesWritten = ASize);
-
-  if not Result then LogLastError;
+  result := false;
 end;
-{$endif}
 
-{$ifdef windows}
 { TDbgThread }
 
 constructor TDbgThread.Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle; const ABase, AStart: Pointer);
@@ -685,35 +495,10 @@ begin
 end;
 
 function TDbgThread.SingleStep: Boolean;
-var
-  _UC: record
-    C: TContext;
-    D: array[1..16] of Byte;
-  end;
-  Context: PContext;
 begin
-  Context := AlignPtr(@_UC, $10);
-  Context^.ContextFlags := CONTEXT_CONTROL;
-  if not GetThreadContext(FHandle, Context^)
-  then begin
-    Log('Thread %u: Unable to get context', [FID]);
-    Exit;
-  end;
-
-  Context^.ContextFlags := CONTEXT_CONTROL;
-  Context^.EFlags := Context^.EFlags or FLAG_TRACE_BIT;
-
-  if not SetThreadContext(FHandle, Context^)
-  then begin
-    Log('Thread %u: Unable to set context', [FID]);
-    Exit;
-  end;
-
   FSingleStepping := True;
 end;
-{$endif}
 
-{$ifdef windows}
 { TDbgBreak }
 
 constructor TDbgBreakpoint.Create(const AProcess: TDbgProcess; const ALocation: TDbgPtr);
@@ -731,43 +516,8 @@ begin
 end;
 
 function TDbgBreakpoint.Hit(const AThreadID: Integer): Boolean;
-var
-  Thread: TDbgThread;
-  _UC: record
-    C: TContext;
-    D: array[1..16] of Byte;
-  end;
-  Context: PContext;
 begin
-  Result := False;
-  if FOrgValue = $CC then Exit; // breakpoint on a hardcoded breakpoint
-                                // no need to jum back and restore instruction
-  ResetBreak;
-
-  if not FProcess.GetThread(AThreadId, Thread) then Exit;
-  
-  Context := AlignPtr(@_UC, $10);
-
-  Context^.ContextFlags := CONTEXT_CONTROL;
-  if not GetThreadContext(Thread.Handle, Context^)
-  then begin
-    Log('Break $s: Unable to get context', [HexValue(FLocation, SizeOf(Pointer), [hvfIncludeHexchar])]);
-    Exit;
-  end;
-
-  Context^.ContextFlags := CONTEXT_CONTROL;
-  {$ifdef cpui386}
-  Dec(Context^.Eip);
-  {$else}
-  Dec(Context^.Rip);
-  {$endif}
-
-  if not SetThreadContext(Thread.Handle, Context^)
-  then begin
-    Log('Break %s: Unable to set context', [HexValue(FLocation, SizeOf(Pointer), [hvfIncludeHexchar])]);
-    Exit;
-  end;
-  Result := True;
+  result := false;
 end;
 
 procedure TDbgBreakpoint.ResetBreak;
@@ -779,7 +529,6 @@ begin
     Log('Unable to reset breakpoint at $%p', [FLocation]);
     Exit;
   end;
-  FlushInstructionCache(FProcess.FInfo.hProcess, Pointer(PtrUInt(FLocation)), 1);
 end;
 
 procedure TDbgBreakpoint.SetBreak;
@@ -799,8 +548,10 @@ begin
     Log('Unable to set breakpoint at $%p', [FLocation]);
     Exit;
   end;
-  FlushInstructionCache(FProcess.FInfo.hProcess, Pointer(PtrUInt(FLocation)), 1);
 end;
-{$endif}
 
+initialization
+  GOSDbgClasses := nil;
+finalization
+  GOSDbgClasses.Free;
 end.
