@@ -91,7 +91,7 @@ type
     procedure SetError(AMsg: String = '');
     procedure SetError(APart: TFpPascalExpressionPart; AMsg: String = '');
   protected
-    function DebugText(AIndent: String; AWithResults: Boolean): String; virtual; // Self desc only
+    function DebugText(AIndent: String; {%H-}AWithResults: Boolean): String; virtual; // Self desc only
     function DebugDump(AIndent: String; AWithResults: Boolean): String; virtual;
   protected
     procedure Init; virtual;
@@ -544,7 +544,7 @@ begin
     Result := DbgSName(AVal);
 end;
 
-function DbgsSymbol(AVal: TDbgSymbol; AIndent: String): String;
+function DbgsSymbol(AVal: TDbgSymbol; {%H-}AIndent: String): String;
 begin
   Result := DbgSName(AVal);
 end;
@@ -1599,11 +1599,11 @@ end;
 function TFpPascalExpressionPart.DebugDump(AIndent: String; AWithResults: Boolean): String;
 begin
   Result := DebugText(AIndent, AWithResults);
-  if AWithResults and (ResultValue <> nil) then
-    if (ResultValue is TPasParserSymbolValue) then
-      Result := Result + TPasParserSymbolValue(ResultValue).DebugText(AIndent+'    //  ')
+  if AWithResults and (FResultValue <> nil) then
+    if (FResultValue is TPasParserSymbolValue) then
+      Result := Result + TPasParserSymbolValue(FResultValue).DebugText(AIndent+'    //  ')
     else
-      Result := Result + AIndent+'    //  ResultValue = ' + DbgSName(ResultValue) + LineEnding;
+      Result := Result + AIndent+'    //  FResultValue = ' + DbgSName(FResultValue) + LineEnding;
 end;
 
 constructor TFpPascalExpressionPart.Create(AExpression: TFpPascalExpression; AStartChar: PChar;

@@ -688,6 +688,31 @@ type
     function GetDataAddress: TDbgPtr; override;
   end;
 
+  { TDbgDwarfEnumSymbolValue }
+
+  TDbgDwarfEnumSymbolValue = class(TDbgDwarfNumericSymbolValue)
+  private
+    FMemberIndex: Integer;
+    FMemberValueDone: Boolean;
+    procedure InitMemberIndex;
+  protected
+    //function IsValidTypeCast: Boolean; override;
+    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetAsString: AnsiString; override;
+    // Has exactly 0 (if the ordinal value is out of range) or 1 member (the current value's enum)
+    function GetMemberCount: Integer; override;
+    function GetMember({%H-}AIndex: Integer): TDbgSymbolValue; override;
+  end;
+
+  { TDbgDwarfEnumMemberSymbolValue }
+
+  TDbgDwarfEnumMemberSymbolValue = class(TDbgDwarfSymbolValue)
+  protected
+    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetAsCardinal: QWord; override;
+    function GetAsString: AnsiString; override;
+    function IsValidTypeCast: Boolean; override;
+  end;
 
   { TDbgDwarfStructSymbolValue }
 
@@ -879,7 +904,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure Init; override;
     procedure MemberVisibilityNeeded; override;
-    function GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue; virtual; // returns refcount=1 for caller, no cached copy kept
+    procedure SizeNeeded; override;
+    function GetTypedValueObject({%H-}ATypeCast: Boolean): TDbgDwarfSymbolValue; virtual; // returns refcount=1 for caller, no cached copy kept
   public
     class function CreateTypeSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfTypeIdentifier;
     function TypeCastValue(AValue: TDbgSymbolValue): TDbgSymbolValue; override;
@@ -891,9 +917,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   //function DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier; // return nil
   protected
     procedure KindNeeded; override;
-    procedure SizeNeeded; override;
     procedure TypeInfoNeeded; override;
-    function GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
+    function GetTypedValueObject({%H-}ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
     function GetHasBounds: Boolean; override;
     function GetOrdHighBound: Int64; override;
     function GetOrdLowBound: Int64; override;
@@ -976,7 +1001,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   { TDbgDwarfIdentifierEnumElement }
 
-  TDbgDwarfIdentifierEnumElement  = class(TDbgDwarfValueIdentifier)
+  { TDbgDwarfIdentifierEnumMember }
+
+  TDbgDwarfIdentifierEnumMember  = class(TDbgDwarfValueIdentifier)
     FOrdinalValue: Int64;
     FOrdinalValueRead, FHasOrdinalValue: Boolean;
     procedure ReadOrdinalValue;
@@ -985,6 +1012,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetHasOrdinalValue: Boolean; override;
     function GetOrdinalValue: Int64; override;
     procedure Init; override;
+    function GetValueObject: TDbgSymbolValue; override;
   end;
 
 
@@ -995,6 +1023,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FMembers: TFpDbgCircularRefCntObjList;
     procedure CreateMembers;
   protected
+    function GetTypedValueObject({%H-}ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
     procedure KindNeeded; override;
     function GetMember(AIndex: Integer): TDbgSymbol; override;
     function GetMemberByName(AIndex: String): TDbgSymbol; override;
@@ -1068,7 +1097,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure KindNeeded; override;
     procedure TypeInfoNeeded; override;                       // nil or inherited
-    procedure SizeNeeded; override;
     function GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
 
     function GetMember(AIndex: Integer): TDbgSymbol; override;
@@ -1697,6 +1725,81 @@ begin
   else
     Result := Format('DW_ID_%d', [AValue]);
   end;
+end;
+
+{ TDbgDwarfEnumMemberSymbolValue }
+
+function TDbgDwarfEnumMemberSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
+begin
+  Result := inherited GetFieldFlags;
+  Result := Result + [svfOrdinal, svfIdentifier];
+end;
+
+function TDbgDwarfEnumMemberSymbolValue.GetAsCardinal: QWord;
+begin
+  Result := FOwner.OrdinalValue;
+end;
+
+function TDbgDwarfEnumMemberSymbolValue.GetAsString: AnsiString;
+begin
+  Result := FOwner.Name;
+end;
+
+function TDbgDwarfEnumMemberSymbolValue.IsValidTypeCast: Boolean;
+begin
+  assert(False, 'TDbgDwarfEnumMemberSymbolValue.IsValidTypeCast can not be returned for typecast');
+end;
+
+{ TDbgDwarfEnumSymbolValue }
+
+procedure TDbgDwarfEnumSymbolValue.InitMemberIndex;
+var
+  v: QWord;
+  i: Integer;
+begin
+  if FMemberValueDone then exit;
+  // FTypeCastTargetType (if not nil) must be same as FOwner. It may have wrappers like declaration.
+  v := GetAsCardinal;
+  i := FOwner.MemberCount - 1;
+  while i >= 0 do begin
+    if FOwner.Member[i].OrdinalValue = v then break;
+    dec(i);
+  end;
+  FMemberIndex := i;
+  FMemberValueDone := True;
+end;
+
+function TDbgDwarfEnumSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
+begin
+  Result := inherited GetFieldFlags;
+  Result := Result + [svfOrdinal, svfMembers, svfIdentifier];
+end;
+
+function TDbgDwarfEnumSymbolValue.GetAsString: AnsiString;
+begin
+  InitMemberIndex;
+  if FMemberIndex >= 0 then
+    Result := FOwner.Member[FMemberIndex].Name
+  else
+    Result := '';
+end;
+
+function TDbgDwarfEnumSymbolValue.GetMemberCount: Integer;
+begin
+  InitMemberIndex;
+  if FMemberIndex < 0 then
+    Result := 0
+  else
+    Result := 1;
+end;
+
+function TDbgDwarfEnumSymbolValue.GetMember(AIndex: Integer): TDbgSymbolValue;
+begin
+  InitMemberIndex;
+  if (FMemberIndex >= 0) and (AIndex = 0) then
+    Result := FOwner.Member[FMemberIndex].Value
+  else
+    Result := nil;
 end;
 
 { TDbgDwarfPointerSymbolValue }
@@ -3827,7 +3930,6 @@ end;
 function TDwarfInformationEntry.HasAttrib(AnAttrib: Cardinal): Boolean;
 var
   i: Integer;
-  AddrSize: Byte;
 begin
   Result := False;
   if not PrepareAbbrevData then exit;
@@ -3877,7 +3979,7 @@ begin
 
       if CompareUtf8BothCase(@s1[1], @s2[1], EntryName) then begin
       // TODO: check DW_AT_start_scope;
-      DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChild found ', dbgs(FScope, FCompUnit), DbgSName(Self)]);
+      DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChild found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', AName]);
       Result := True;
       exit;
     end;
@@ -3913,7 +4015,7 @@ begin
 
       if CompareUtf8BothCase(ANameUpper, AnameLower, EntryName) then begin
         // TODO: check DW_AT_start_scope;
-        DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChildEx found ', dbgs(FScope, FCompUnit), DbgSName(Self)]);
+        DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChildEX found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', AnameLower]);
         Result := True;
         exit;
       end;
@@ -4478,34 +4580,45 @@ end;
 
 { TDbgDwarfIdentifierEnumElement }
 
-procedure TDbgDwarfIdentifierEnumElement.ReadOrdinalValue;
+procedure TDbgDwarfIdentifierEnumMember.ReadOrdinalValue;
 begin
   if FOrdinalValueRead then exit;
   FOrdinalValueRead := True;
   FHasOrdinalValue := FInformationEntry.ReadValue(DW_AT_const_value, FOrdinalValue);
 end;
 
-procedure TDbgDwarfIdentifierEnumElement.KindNeeded;
+procedure TDbgDwarfIdentifierEnumMember.KindNeeded;
 begin
   SetKind(skEnumValue);
 end;
 
-function TDbgDwarfIdentifierEnumElement.GetHasOrdinalValue: Boolean;
+function TDbgDwarfIdentifierEnumMember.GetHasOrdinalValue: Boolean;
 begin
   ReadOrdinalValue;
   Result := FHasOrdinalValue;
 end;
 
-function TDbgDwarfIdentifierEnumElement.GetOrdinalValue: Int64;
+function TDbgDwarfIdentifierEnumMember.GetOrdinalValue: Int64;
 begin
   ReadOrdinalValue;
   Result := FOrdinalValue;
 end;
 
-procedure TDbgDwarfIdentifierEnumElement.Init;
+procedure TDbgDwarfIdentifierEnumMember.Init;
 begin
   FOrdinalValueRead := False;
   inherited Init;
+end;
+
+function TDbgDwarfIdentifierEnumMember.GetValueObject: TDbgSymbolValue;
+begin
+  Result := FValueObject;
+  if Result <> nil then exit;
+
+  FValueObject := TDbgDwarfEnumMemberSymbolValue.Create(Self);
+  FValueObject.SetValueSymbol(self);
+
+  Result := FValueObject;
 end;
 
 { TDbgDwarfIdentifierSet }
@@ -4541,6 +4654,11 @@ begin
   end;
 
   Info.ReleaseReference;
+end;
+
+function TDbgDwarfIdentifierEnum.GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue;
+begin
+  Result := TDbgDwarfEnumSymbolValue.Create(Self, Size);
 end;
 
 procedure TDbgDwarfIdentifierEnum.KindNeeded;
@@ -5285,16 +5403,6 @@ begin
   ti.ReleaseReference;
 end;
 
-procedure TDbgDwarfIdentifierStructure.SizeNeeded;
-var
-  ByteSize: Integer;
-begin
-  if FInformationEntry.ReadValue(DW_AT_byte_size, ByteSize) then
-    SetSize(ByteSize)
-  else
-    SetSize(0);
-end;
-
 function TDbgDwarfIdentifierStructure.GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue;
 begin
   if ATypeCast then
@@ -5351,16 +5459,6 @@ begin
         inherited KindNeeded;
       end;
   end;
-end;
-
-procedure TDbgDwarfBaseIdentifierBase.SizeNeeded;
-var
-  ByteSize: Integer;
-begin
-  if FInformationEntry.ReadValue(DW_AT_byte_size, ByteSize) then
-    SetSize(ByteSize)
-  else
-    inherited SizeNeeded;
 end;
 
 procedure TDbgDwarfBaseIdentifierBase.TypeInfoNeeded;
@@ -5421,6 +5519,16 @@ begin
     SetMemberVisibility(Val)
   else
     inherited MemberVisibilityNeeded;
+end;
+
+procedure TDbgDwarfTypeIdentifier.SizeNeeded;
+var
+  ByteSize: Integer;
+begin
+  if FInformationEntry.ReadValue(DW_AT_byte_size, ByteSize) then
+    SetSize(ByteSize)
+  else
+    inherited SizeNeeded;
 end;
 
 function TDbgDwarfTypeIdentifier.GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue;
@@ -5665,7 +5773,7 @@ begin
     DW_TAG_base_type:        Result := TDbgDwarfBaseIdentifierBase;
     DW_TAG_subrange_type:    Result := TDbgDwarfIdentifierSubRange;
     DW_TAG_enumeration_type: Result := TDbgDwarfIdentifierEnum;
-    DW_TAG_enumerator:       Result := TDbgDwarfIdentifierEnumElement;
+    DW_TAG_enumerator:       Result := TDbgDwarfIdentifierEnumMember;
     DW_TAG_set_type:         Result := TDbgDwarfIdentifierSet;
     DW_TAG_structure_type,
     DW_TAG_class_type:       Result := TDbgDwarfIdentifierStructure;
@@ -6401,10 +6509,6 @@ begin
   while FLineInfo.StateMachine.NextLine do
   begin
     Line := FLineInfo.StateMachine.Line;
-    if Line < 0 then begin
-      DebugLn(FPDBG_DWARF_WARNINGS, ['NEGATIVE LINE ', Line]);
-      Continue;
-    end;
 
     if (idx < 0) or (CurrentFileName <> FLineInfo.StateMachine.FileName) then begin
       idx := FLineNumberMap.IndexOf(FLineInfo.StateMachine.FileName);
@@ -7347,7 +7451,7 @@ begin
     end;
 
     while InfoEntry.HasValidScope do begin
-      debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
+      //debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);
       StartScopeIdx := InfoEntry.ScopeIndex;
 
       //if InfoEntry.Abbrev = nil then
@@ -7365,7 +7469,6 @@ begin
       then begin
         if (CompareUtf8BothCase(p1, p2, InfoName)) then begin
           Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
-          DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
           exit;
         end;
       end;
@@ -7382,8 +7485,7 @@ begin
               Result := SelfParam.MemberByName[AName];
               assert(Result <> nil, 'FindSymbol: SelfParam.MemberByName[AName]');
               Result.AddReference;
-if Result<> nil then debugln(['TDbgDwarfInfoAddressContext.FindSymbol SELF !!!!!!!!!!!!!'])
-else debugln(['TDbgDwarfInfoAddressContext.FindSymbol ????????????????']);
+              if Result= nil then debugln(['TDbgDwarfInfoAddressContext.FindSymbol   NOT IN SELF !!!!!!!!!!!!!']);
             end;
           end;
           if Result = nil then
@@ -7392,8 +7494,6 @@ else debugln(['TDbgDwarfInfoAddressContext.FindSymbol ????????????????']);
           // TODO: nested
           if (StartScopeIdx = SubRoutine.InformationEntry.ScopeIndex) then // searching in subroutine
             TDbgDwarfIdentifier(Result).ParentTypeInfo := SubRoutine;
-
-          DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntry.FScope, CU), DbgSName(Result)]);
           exit;
         end;
       end;
@@ -7421,8 +7521,7 @@ else debugln(['TDbgDwarfInfoAddressContext.FindSymbol ????????????????']);
                 Result := SelfParam.MemberByName[AName];
                 assert(Result <> nil, 'FindSymbol: SelfParam.MemberByName[AName]');
                 Result.AddReference;
-if Result<> nil then debugln(['TDbgDwarfInfoAddressContext.FindSymbol SELF !!!!!!!!!!!!!'])
-else debugln(['TDbgDwarfInfoAddressContext.FindSymbol ????????????????']);
+                if Result<> nil then debugln(['TDbgDwarfInfoAddressContext.FindSymbol  NOT IN SELF !!!!!!!!!!!!!']);
               end
 else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
               ;
@@ -7430,7 +7529,6 @@ else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
                 Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntryParent);
               InfoEntryParent.ReleaseReference;
               InfoEntryTmp.ReleaseReference;
-              DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found ', dbgs(InfoEntryParent.FScope, CU), DbgSName(Result)]);
               exit;
             end;
           end;
@@ -7465,7 +7563,6 @@ else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
       if (s <> '') and (CompareUtf8BothCase(p1, p2, @s[1])) then begin
         Result.ReleaseReference;
         Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
-        DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found unit ', dbgs(InfoEntry.FScope, CU2), DbgSName(Result)]);
         break;
       end;
 
@@ -7475,7 +7572,6 @@ else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
           // only variables are marked "external", but types not / so we may need all top level
           Result.ReleaseReference;
           Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
-          DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found (other unit) ', dbgs(InfoEntry.FScope, CU2), DbgSName(Result)]);
           // DW_AT_visibility ?
           if InfoEntry.ReadValue(DW_AT_external, ExtVal) then
             if ExtVal <> 0 then
@@ -7487,6 +7583,9 @@ else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
     end;
 
   finally
+    if (Result = nil) or (InfoEntry = nil)
+    then DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier NOT found  Name=', AName])
+    else DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found Scope=', dbgs(InfoEntry.FScope, TDbgDwarfIdentifier(Result).FCU), '  Result=', DbgSName(Result), ' ', Result.Name]);
     ReleaseRefAndNil(InfoEntry);
   end;
 end;
@@ -7865,7 +7964,7 @@ p := AData;
         case Form of
           DW_FORM_addr     : begin
             Value := FCU.ReadAddressAtPointer(AData);
-            ValuePtr := Pointer(PtrUInt(Value));
+            ValuePtr := {%H-}Pointer(PtrUInt(Value));
             ValueSize := FCU.FAddressSize;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.FAddressSize * 2)]);
             Inc(AData, FCU.FAddressSize);
@@ -7924,13 +8023,13 @@ p := AData;
           DW_FORM_sdata    : begin
             p := AData;
             Value := ULEB128toOrdinal(AData);
-            ValueSize := PtrUInt(AData) - PtrUInt(p);
+            ValueSize := {%H-}PtrUInt(AData) - {%H-}PtrUInt(p);
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, ValueSize * 2)]);
           end;
           DW_FORM_udata    : begin
             p := AData;
             Value := ULEB128toOrdinal(AData);
-            ValueSize := PtrUInt(AData) - PtrUInt(p);
+            ValueSize := {%H-}PtrUInt(AData) - {%H-}PtrUInt(p);
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, ValueSize * 2)]);
           end;
           DW_FORM_flag     : begin
@@ -7966,12 +8065,12 @@ p := AData;
           DW_FORM_ref_udata: begin
             p := AData;
             Value := ULEB128toOrdinal(AData);
-            ValueSize := PtrUInt(AData) - PtrUInt(p);
+            ValueSize := {%H-}PtrUInt(AData) - {%H-}PtrUInt(p);
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, ValueSize * 2)]);
           end;
           DW_FORM_ref_addr : begin
             Value := FCU.ReadAddressAtPointer(AData);
-            ValuePtr := Pointer(PtrUInt(Value));
+            ValuePtr := {%H-}Pointer(PtrUInt(Value));
             ValueSize := FCU.FAddressSize;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.FAddressSize * 2)]);
             Inc(AData, FCU.FAddressSize);
@@ -7979,7 +8078,7 @@ p := AData;
           DW_FORM_string   : begin
             ValuePtr := AData;
             DumpStr(AData);
-            ValueSize := PtrUInt(AData) - PtrUInt(ValuePtr);
+            ValueSize := {%H-}PtrUInt(AData) - {%H-}PtrUInt(ValuePtr);
           end;
           DW_FORM_strp     : begin
             Value := FCU.ReadAddressAtPointer(AData);
@@ -8521,7 +8620,6 @@ var
 var
   p, next: Pointer;
   pb: PByte absolute p;
-  pw: PWord absolute p;
   pi: PInteger absolute p;
   pc: PCardinal absolute p;
   pq: PQWord absolute p;
@@ -8535,7 +8633,7 @@ begin
   p := AData;
   while p < Adata + ASize do
   begin
-    DebugLn(FPDBG_DWARF_VERBOSE, ['[', PtrUInt(p) - PtrUInt(AData), ']']);
+    DebugLn(FPDBG_DWARF_VERBOSE, ['[', {%H-}PtrUInt(p) - {%H-}PtrUInt(AData), ']']);
 
     Is64bit := pi^ = -1;
     if Is64bit

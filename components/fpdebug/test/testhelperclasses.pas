@@ -61,6 +61,7 @@ type
     constructor Create; override;
     property TestImgReader: TTestDummyFileSource read FImgReader;
   end;
+  TTestDummyImageLoaderClass = class of TTestDummyImageLoader;
 
   { TTestDummySectionAbbrevs }
 

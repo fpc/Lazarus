@@ -130,7 +130,9 @@ type
     svfInteger, svfCardinal,
     svfString, svfWideString,
     svfBoolean,
+    svfIdentifier,   // returned via AsString: a named value (enum, set-member)
     svfMembers,
+    //svfParent, // TODO: for members, get the parent (object/record-fields, enum/set-members
     svfOrdinal       // AsCardinal ruturns an ordinal value, but the value is not represented as cardinal (e.g. bool, enum)
                      // if size > 8, then ordinal (if present) is based on a part only
   );
