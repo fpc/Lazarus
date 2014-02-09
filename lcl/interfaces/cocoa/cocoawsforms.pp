@@ -158,13 +158,15 @@ uses
 
 const
   FormStyleToWindowLevel: array[TFormStyle] of NSInteger = (
- { fsNormal          } 0, // NSNormalWindowLevel,
- { fsMDIChild        } 0, // NSNormalWindowLevel,
- { fsMDIForm         } 0, // NSNormalWindowLevel,
- { fsStayOnTop       } 3, // NSFloatingWindowLevel,
- { fsSplash          } 3, // NSFloatingWindowLevel,
- { fsSystemStayOnTop } 8  // NSModalPanelWindowLevel or maybe NSStatusWindowLevel?
+ { fsNormal          } 4, // NSNormalWindowLevel
+ { fsMDIChild        } 4, // NSNormalWindowLevel
+ { fsMDIForm         } 4, // NSNormalWindowLevel
+ { fsStayOnTop       } 9, // NSStatusWindowLevel
+ { fsSplash          } 9, // NSStatusWindowLevel
+ { fsSystemStayOnTop } 10  // NSModalPanelWindowLevel
   );
+
+  HintWindowLevel = 11;  // NSPopUpMenuWindowLevel
 
 function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
 begin
@@ -197,7 +199,7 @@ begin
   R := CreateParamsToNSRect(AParams);
   win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(R, WinMask, NSBackingStoreBuffered, False));
   win.enableCursorRects;
-  win.setLevel(FormStyleToWindowLevel[fsSystemStayOnTop]);
+  win.setLevel(HintWindowLevel);
   TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
   win.setAcceptsMouseMovedEvents(True);
