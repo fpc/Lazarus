@@ -30,6 +30,8 @@
 
 { $DEFINE VerboseIDEMultiForm}
 
+{$DEFINE CheckExtTools}
+
 {off $apptype console}
 
 {off $define UseTurbopowerInHelp}
@@ -48,6 +50,12 @@
   {$IFDEF windows}
     {$DEFINE UseAsyncProcess}
   {$ENDIF}
+{$ENDIF}
+
+{$IF FPC_FULLVERSION<20700}
+// fpc 2.6.2 and 2.6.3 have a bug with -O2 and for..in
+// see http://bugs.freepascal.org/view.php?id=25588
+  {$OPTIMIZATION NOSTACKFRAME}
 {$ENDIF}
 
 // end.

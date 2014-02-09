@@ -25,6 +25,8 @@ unit BuildModeDiffDlg;
 
 {$mode objfpc}{$H+}
 
+{$I ide.inc}
+
 interface
 
 uses

@@ -30,6 +30,8 @@ unit UnitDependencies;
 
 {$mode objfpc}{$H+}
 
+{$I ide.inc}
+
 interface
 
 uses

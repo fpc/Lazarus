@@ -27,7 +27,7 @@ unit etMessageFrame;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE CheckExtTools}
+{$I ide.inc}
 
 interface
 
