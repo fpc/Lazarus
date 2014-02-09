@@ -344,7 +344,7 @@ type
     function getValue: Integer;
     function getPageStep: Integer;
     function getMin: Integer;
-    function getMax: Integer; virtual;
+    function getMax: Integer;
     function getSingleStep: Integer;
     function getSliderDown: Boolean;
     function getSliderPosition: Integer;
@@ -376,7 +376,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    function getMax: Integer; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure SlotSliderReleased; cdecl; override;
@@ -7932,13 +7931,6 @@ begin
   if (QtVersionMajor = 4) and (QtVersionMinor < 6) then
     QWidget_setAutoFillBackground(Result, True);
   FHasPaint := True;
-end;
-
-function TQtScrollBar.getMax: Integer;
-begin
-  Result:=inherited getMax;
-  if (FOwner = nil) then
-    Result := Result + getPageStep;
 end;
 
 procedure TQtScrollBar.preferredSize(var PreferredWidth,
