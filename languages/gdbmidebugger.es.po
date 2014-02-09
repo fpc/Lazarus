@@ -26,7 +26,7 @@ msgid "The debugger failed to get the application's PID.%0:sThis may be caused b
 msgstr "El depurador no pudo conseguir PID de la aplicación.%0:sEsto puede ser causado por falta de información de depuración."
 
 #: gdbmidebugger.gdbmicommandstartmainruntostoperror
-msgid "The debugger was unable to initalize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
 msgstr "El depurador fue incapaz de initalizarse.%0:sLa aplicación se ha ejecutado (y terminado) antes de que el depurador puede establecer puntos de interrupción. %0:sEsto puede ser causado por falta de información de depuración."
 
 #: gdbmidebugger.gdbmierroronruncommand
