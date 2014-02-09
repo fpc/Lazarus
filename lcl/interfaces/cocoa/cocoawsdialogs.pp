@@ -203,7 +203,7 @@ begin
     saveDlg.setAllowedFileTypes(nsfilter);
     saveDlg.setDirectoryURL(NSURL.fileURLWithPath(
       NSStringUtf8(FileDialog.InitialDir)));
-    saveDlg.setNameFieldStringValue(NSStringUtf8(FileDialog.FileName));
+    saveDlg.setNameFieldStringValue(NSStringUtf8(extractfilename(FileDialog.FileName)));
     if saveDlg.runModal = NSOKButton then
     begin
       FileDialog.FileName := NSStringToString(saveDlg.URL.path);
