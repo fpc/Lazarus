@@ -621,6 +621,8 @@ begin
     Categ:='Other';
     AddDefaultCategory(Categ);
     AddFunc(Categ, 'Ptr','Pointer($1)' ,'','');
+    // SysUtils has AnsiSameStr and SameText but no SameStr.
+    AddFunc(Categ, 'SameStr','(CompareStr($1,$2) = 0)' ,'', 'SysUtils');
   end;
 end;
 
