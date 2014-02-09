@@ -4234,8 +4234,10 @@ function TQtClipboard.GetOwnerShip(ClipboardType: TClipboardType;
       MimeType := FormatToMimeType(Formats[I]);
       FOnClipBoardRequest[ClipboardType](Formats[I], DataStream);
       Data := QByteArray_create(PAnsiChar(DataStream.Memory), DataStream.Size);
-      if (QByteArray_length(Data) > 1) and QByteArray_endsWith(Data, #0) then
-        QByteArray_chop(Data, 1);
+      {do not remove #0 from Application/X-Laz-SynEdit-Tagged issue #25692}
+      if (MimeType <> 'Application/X-Laz-SynEdit-Tagged') and
+        (QByteArray_length(Data) > 1) and QByteArray_endsWith(Data, #0) then
+          QByteArray_chop(Data, 1);
       QMimeData_setData(MimeData, @MimeType, Data);
       QByteArray_destroy(Data);
     end;
