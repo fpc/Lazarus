@@ -198,7 +198,7 @@ begin
     RegisterDbgClasses;
     {$endif windows}
     end;
-  result := OSDbgClasses;
+  result := GOSDbgClasses;
 end;
 
 { TDbgInstance }
