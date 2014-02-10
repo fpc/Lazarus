@@ -55,8 +55,10 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
-    Procedure TestExpressionStructures;
+    Procedure TestExpressionInt;
+    Procedure TestExpressionBool;
     Procedure TestExpressionEnumAndSet;
+    Procedure TestExpressionStructures;
   end;
 
 implementation
@@ -102,8 +104,8 @@ begin
   case AExpKind of
     skInstance: ;
     skUnit: ;
-    skRecord:    ExpFlags(AVal, [svfMembers], [svfOrdinal, svfInteger, svfCardinal, svfDataAddress, svfDataSize]);
-    skObject:    ExpFlags(AVal, [svfMembers], [svfOrdinal, svfInteger, svfCardinal, svfDataAddress, svfDataSize]);
+    skRecord:    ExpFlags(AVal, [svfMembers], [svfOrdinal, svfInteger, svfCardinal, svfDataAddress, svfDataSize, svfIdentifier]);
+    skObject:    ExpFlags(AVal, [svfMembers], [svfOrdinal, svfInteger, svfCardinal, svfDataAddress, svfDataSize, svfIdentifier]);
     // skClass does NOT have svfSize (maybe svfSizeOfPointer ?);
     skClass:     ExpFlags(AVal, [svfOrdinal, svfMembers, svfDataAddress, svfDataSize], [svfSize, svfInteger, svfCardinal]);
     skInterface: ;
@@ -111,10 +113,10 @@ begin
     skFunction: ;
     skArray: ;
     // skPointer: svfOrdinal, svfCardinal, svfDataAddress are all the same value
-    skPointer:   ExpFlags(AVal, [svfOrdinal, svfCardinal, svfDataAddress, svfSizeOfPointer], [svfMembers]);
-    skInteger:   ExpFlags(AVal, [svfOrdinal, svfInteger], [svfDataAddress, svfDataSize, svfMembers]);
-    skCardinal:  ExpFlags(AVal, [svfOrdinal, svfCardinal], [svfDataAddress, svfDataSize, svfMembers]);
-    skBoolean: ;
+    skPointer:   ExpFlags(AVal, [svfOrdinal, svfCardinal, svfDataAddress, svfSizeOfPointer], [svfMembers, svfIdentifier]);
+    skInteger:   ExpFlags(AVal, [svfOrdinal, svfInteger], [svfDataAddress, svfDataSize, svfMembers, svfIdentifier]);
+    skCardinal:  ExpFlags(AVal, [svfOrdinal, svfCardinal], [svfDataAddress, svfDataSize, svfMembers, svfIdentifier]);
+    skBoolean:   ExpFlags(AVal, [svfOrdinal, svfBoolean], [svfSizeOfPointer, svfDataAddress, svfDataSize, svfMembers, svfIdentifier]);
     skChar: ;
     skFloat: ;
     skString: ;
@@ -334,6 +336,109 @@ begin
   FImageLoader.Free;
   FMemReader.Free;
   inherited TearDown;
+end;
+
+procedure TTestTypeInfo.TestExpressionInt;
+var
+  sym: TDbgSymbol;
+  ImgLoader: TTestLoaderSetupBasic;
+  TmpResVal: TDbgSymbolValue;
+begin
+  InitDwarf(TTestLoaderSetupBasic);
+  ImgLoader := TTestLoaderSetupBasic(FImageLoader);
+  //FMemReader.RegisterValues[5] := TDbgPtr(@ImgLoader.TestStackFrame.EndPoint);
+
+
+  FCurrentContext := FDwarfInfo.FindContext(TTestSetupBasicProcMainAddr);
+  AssertTrue('got ctx', FCurrentContext <> nil);
+
+  sym := FCurrentContext.FindSymbol('VarEnum0');
+  AssertTrue('got sym',  sym <> nil);
+  sym.ReleaseReference();
+
+
+      ImgLoader.GlobalVar.VarInt16 := 22;
+      StartTest('VarInt16', skInteger, [ttHasType]);
+      ExpFlags([svfInteger, svfOrdinal, svfAddress, svfSize], [svfSizeOfPointer, svfDataAddress, svfDataSize]);
+      ExpResult(svfInteger, 22);
+      ExpResult(svfOrdinal, QWord(22));
+      ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImgLoader.GlobalVar.VarInt16)));
+      ExpResult(svfSize, SizeOf(ImgLoader.GlobalVar.VarInt16));
+
+      ImgLoader.GlobalVar.VarSub5 := -10;
+      StartTest('VarSub5', skInteger, [ttHasType]);
+      ExpFlags([svfInteger, svfOrdinal, svfAddress, svfSize], [svfSizeOfPointer, svfDataAddress, svfDataSize]);
+      ExpResult(svfInteger, -10);
+      ExpResult(svfOrdinal, QWord(-10));
+      ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImgLoader.GlobalVar.VarSub5)));
+      ExpResult(svfSize, SizeOf(ImgLoader.GlobalVar.VarSub5));
+
+
+end;
+
+procedure TTestTypeInfo.TestExpressionBool;
+var
+  sym: TDbgSymbol;
+  ImgLoader: TTestLoaderSetupBasic;
+  TmpResVal: TDbgSymbolValue;
+  i: Integer;
+  s: String;
+begin
+  InitDwarf(TTestLoaderSetupBasic);
+  ImgLoader := TTestLoaderSetupBasic(FImageLoader);
+  //FMemReader.RegisterValues[5] := TDbgPtr(@ImgLoader.TestStackFrame.EndPoint);
+
+
+  FCurrentContext := FDwarfInfo.FindContext(TTestSetupBasicProcMainAddr);
+  AssertTrue('got ctx', FCurrentContext <> nil);
+
+  sym := FCurrentContext.FindSymbol('VarEnum0');
+  AssertTrue('got sym',  sym <> nil);
+  sym.ReleaseReference();
+
+    for i := 0 to 3 do begin
+      case i of
+         0: s := 'VarBoolean';
+         1: s := 'Boolean(VarBoolean)';
+         2: s := 'PBoolean(@VarBoolean)^';
+         3: s := '^Boolean(@VarBoolean)^';
+      end;
+
+      ImgLoader.GlobalVar.VarBoolean := True;
+      StartTest(s, skBoolean, [ttHasType]);
+      ExpFlags([svfBoolean, svfOrdinal, svfAddress, svfSize], [svfSizeOfPointer, svfDataAddress, svfDataSize]);
+      ExpResult(svfBoolean, True);
+      ExpResult(svfOrdinal, QWord(True));
+      ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImgLoader.GlobalVar.VarBoolean)));
+      ExpResult(svfSize, SizeOf(ImgLoader.GlobalVar.VarBoolean));
+
+      ImgLoader.GlobalVar.VarBoolean := False;
+      StartTest(s, skBoolean, [ttHasType]);
+      ExpFlags([svfBoolean, svfOrdinal, svfAddress, svfSize], [svfSizeOfPointer, svfDataAddress, svfDataSize]);
+      ExpResult(svfBoolean, False);
+      ExpResult(svfOrdinal, QWord(False));
+
+      ImgLoader.GlobalVar.VarBoolean := boolean(100);
+      StartTest(s, skBoolean, [ttHasType]);
+      ExpFlags([svfBoolean, svfOrdinal, svfAddress, svfSize], [svfSizeOfPointer, svfDataAddress, svfDataSize]);
+      ExpResult(svfBoolean, True);
+      ExpResult(svfOrdinal, QWord(100));
+
+    end;
+
+    StartTest('Boolean(1)', skBoolean, [ttHasType]);
+    ExpFlags([svfBoolean, svfOrdinal, svfSize], [svfAddress, svfSizeOfPointer, svfDataAddress, svfDataSize]);
+    ExpResult(svfBoolean, True);
+    ExpResult(svfOrdinal, QWord(1));
+
+    StartTest('Boolean(0)', skBoolean, [ttHasType]);
+    ExpFlags([svfBoolean, svfOrdinal, svfSize], [svfAddress, svfSizeOfPointer, svfDataAddress, svfDataSize]);
+    ExpResult(svfBoolean, False);
+    ExpResult(svfOrdinal, QWord(0));
+
+    //TODO
+    //StartTest('True', skBoolean, [ttHasType]);
+
 end;
 
 procedure TTestTypeInfo.TestExpressionStructures;
@@ -1091,7 +1196,7 @@ begin
     ExpEnumVal('e3b', 1);
     ExpEnumMemberVal('e3b', 1);
 
-    ImgLoader.GlobalVar.VarRecEnum2.Enum2 := e2e;
+    ImgLoader.GlobalVar.VarRecEnum2.VarEnum2 := e2e;
     StartTest('TEnum2(VarRecEnum2)', skEnum, [ttHasType]);
     ExpEnumVal('e2e', 4);
     ExpEnumMemberVal('e2e', 4);

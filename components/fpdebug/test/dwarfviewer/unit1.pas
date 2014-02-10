@@ -436,6 +436,7 @@ var
     s1, s2, s3, s4, stest: String;
     ValueSize: QWord;
     Value: qword;
+    SValue: int64;
     p2: Pointer;
     addednode: TTreeNode;
   begin
@@ -533,10 +534,10 @@ var
               Format('XX_X_CurInfo992X.Add(%s, %s, [%s]);%s', [s1, s2, stest, LineEnding]);
           end;
           DW_FORM_sdata    : begin
-            Value := SLEB128toOrdinal(p);
-            s3 := IntToStr(Value);
+            SValue := SLEB128toOrdinal(p);
+            s3 := IntToStr(SValue);
             PascalTestCAseCode := PascalTestCAseCode +
-              Format('XX_X_CurInfo992X.AddSLEB(%s, %s, %u);%s', [s1, s2, Value, LineEnding]);
+              Format('XX_X_CurInfo992X.AddSLEB(%s, %s, %d);%s', [s1, s2, SValue, LineEnding]);
           end;
           DW_FORM_udata    : begin
             Value := ULEB128toOrdinal(p);
