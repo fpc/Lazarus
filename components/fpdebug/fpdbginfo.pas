@@ -163,6 +163,8 @@ type
     function GetTypeInfo: TDbgSymbol; virtual;
   public
     constructor Create;
+    property RefCount;
+
     // Kind: determines which types of value are available
     property Kind: TDbgSymbolKind read GetKind;
     property FieldFlags: TDbgSymbolValueFieldFlags read GetFieldFlags;
@@ -205,12 +207,14 @@ type
     FValue: QWord;
     FSigned: Boolean;
   protected
+    property Value: QWord read FValue write FValue;
+    property Signed: Boolean read FSigned write FSigned;
     function GetKind: TDbgSymbolKind; override;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
     function GetAsInteger: Int64; override;
   public
-    constructor Create(AValue: QWord; ASigned: Boolean = False);
+    constructor Create(AValue: QWord; ASigned: Boolean = True);
   end;
 
   { TDbgSymbol }

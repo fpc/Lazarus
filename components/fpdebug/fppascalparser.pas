@@ -1168,7 +1168,7 @@ end;
 
 function TFpPascalExpressionPartConstantNumber.DoGetResultValue: TDbgSymbolValue;
 begin
-  Result := TDbgSymbolValueConstNumber.Create(StrToQWordDef(GetText, 0));
+  Result := TDbgSymbolValueConstNumber.Create(StrToQWordDef(GetText, 0), False);
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 end;
 

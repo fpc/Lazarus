@@ -25,6 +25,8 @@ type
     FImageLoader: TTestDummyImageLoader;
     FMemReader: TTestMemReader;
 
+    procedure AssertEqualsQW(const AMessage: string; Expected, Actual: QWord);
+
     procedure ExpTestFlags(AVal: TDbgSymbolValue; ATestFlags: TTestFlags = []);
     procedure ExpKind(AVal: TDbgSymbolValue; AExpKind: TDbgSymbolKind; TestFlags: TTestFlags = []);
     procedure ExpFlags(AVal: TDbgSymbolValue; AExpFlags: TDbgSymbolValueFieldFlags; ExpNotFlags: TDbgSymbolValueFieldFlags = []);
@@ -58,6 +60,11 @@ type
   end;
 
 implementation
+
+procedure TTestTypeInfo.AssertEqualsQW(const AMessage: string; Expected, Actual: QWord);
+begin
+  AssertTrue(AMessage + ComparisonMsg(IntToStr(Expected), IntToStr(Actual)), Expected = Actual);
+end;
 
 procedure TTestTypeInfo.ExpTestFlags(AVal: TDbgSymbolValue; ATestFlags: TTestFlags);
 var
@@ -146,10 +153,6 @@ end;
 
 procedure TTestTypeInfo.ExpResult(AVal: TDbgSymbolValue; Field: TDbgSymbolValueFieldFlag;
   ExpValue: QWord);
-  procedure AssertEqualsQW(const AMessage: string; Expected, Actual: QWord);
-  begin
-    AssertTrue(AMessage + ComparisonMsg(IntToStr(Expected), IntToStr(Actual)), Expected = Actual);
-  end;
 var
   s: string;
 begin
@@ -939,10 +942,24 @@ procedure TTestTypeInfo.TestExpressionEnumAndSet;
     end;
   end;
 
+  procedure ExpSetOrd(AnIdentList: array of QWord);
+  var
+    i: Integer;
+    m: TDbgSymbolValue;
+  begin
+    for i := low(AnIdentList) to high(AnIdentList) do begin
+      m := FExpression.ResultValue.Member[i];
+      AssertTrue(FCurrentTestName + 'has member at pos (ord)'+IntToStr(i), m <> nil);
+      AssertTrue(FCurrentTestName + 'member at pos fieldflag (ord)'+IntToStr(i), svfOrdinal in m.FieldFlags);
+      AssertEqualsQW(FCurrentTestName + 'member at pos value ord'+IntToStr(i), AnIdentList[i], m.AsCardinal);
+    end;
+  end;
+
 
 var
   sym: TDbgSymbol;
   ImgLoader: TTestLoaderSetupBasic;
+  TmpResVal: TDbgSymbolValue;
 begin
   InitDwarf(TTestLoaderSetupBasic);
   ImgLoader := TTestLoaderSetupBasic(FImageLoader);
@@ -1090,6 +1107,7 @@ begin
     StartTest('VarSet2', skSet, [ttHasType]);
     ExpSetVal(3, QWord(Cardinal(ImgLoader.GlobalVar.VarSet2)), TDbgPtr(@ImgLoader.GlobalVar.VarSet2), SizeOf(ImgLoader.GlobalVar.VarSet2));
     ExpSetIdent(['e2b', 'e2d', 'e2e']);
+    ExpSetOrd([1,3,4]);
 
     ImgLoader.GlobalVar.VarSet2 := [];
     StartTest('VarSet2', skSet, [ttHasType]);
@@ -1111,6 +1129,14 @@ begin
     ImgLoader.GlobalVar.VarSetB2 := [5,80];
     StartTest('VarSetB2', skSet, [ttHasType], '5,80');
     ExpSetVal(2, TDbgPtr(@ImgLoader.GlobalVar.VarSetB2), SizeOf(ImgLoader.GlobalVar.VarSetB2));
+    ExpSetOrd([5,80]);
+
+    TmpResVal := FExpression.ResultValue.Member[0];
+    AssertEqualsQW(FCurrentTestName + 'TmpResVal', 5, TmpResVal.AsCardinal);
+    TmpResVal.AddReference;
+    FExpression.ResultValue.Member[1];
+    AssertEqualsQW(FCurrentTestName + 'TmpResVal', 5, TmpResVal.AsCardinal);
+    TmpResVal.ReleaseReference;
 
     ImgLoader.GlobalVar.VarSetB2 := [5..80];
     StartTest('VarSetB2', skSet, [ttHasType], '5..80');
