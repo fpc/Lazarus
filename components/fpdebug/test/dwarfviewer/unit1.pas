@@ -515,7 +515,7 @@ var
               Format('XX_X_CurInfo992X.Add(%s, %s, [%s]);%s', [s1, s2, stest, LineEnding]);
           end;
           DW_FORM_data2    : begin
-            stest := ToHexCommaList(p,3);
+            stest := ToHexCommaList(p,2);
             s3 := ToHex(p, 2);
             PascalTestCAseCode := PascalTestCAseCode +
               Format('XX_X_CurInfo992X.Add(%s, %s, [%s]);%s', [s1, s2, stest, LineEnding]);
@@ -533,16 +533,16 @@ var
               Format('XX_X_CurInfo992X.Add(%s, %s, [%s]);%s', [s1, s2, stest, LineEnding]);
           end;
           DW_FORM_sdata    : begin
-            Value := ULEB128toOrdinal(p);
+            Value := SLEB128toOrdinal(p);
             s3 := IntToStr(Value);
             PascalTestCAseCode := PascalTestCAseCode +
-              Format('XX_X_CurInfo992X.AddULEB(%s, %s, %u);%s', [s1, s2, Value, LineEnding]);
+              Format('XX_X_CurInfo992X.AddSLEB(%s, %s, %u);%s', [s1, s2, Value, LineEnding]);
           end;
           DW_FORM_udata    : begin
             Value := ULEB128toOrdinal(p);
             s3 := IntToStr(Value);
             PascalTestCAseCode := PascalTestCAseCode +
-              Format('XX_X_CurInfo992X.AddSLEB(%s, %s, %u);%s', [s1, s2, Value, LineEnding]);
+              Format('XX_X_CurInfo992X.AddULEB(%s, %s, %u);%s', [s1, s2, Value, LineEnding]);
           end;
           DW_FORM_flag     : begin
             stest := ToHexCommaList(p,1);

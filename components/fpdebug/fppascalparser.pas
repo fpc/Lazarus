@@ -453,21 +453,6 @@ type
     destructor Destroy; override;
   end;
 
-  { TPasParserConstNumberSymbolValue }
-
-  TPasParserSymbolValueConstNumber = class(TPasParserSymbolValue)
-  private
-    FValue: QWord;
-    FSigned: Boolean;
-  protected
-    function GetKind: TDbgSymbolKind; override;
-    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
-    function GetAsCardinal: QWord; override;
-    function GetAsInteger: Int64; override;
-  public
-    constructor Create(AValue: QWord; ASigned: Boolean = False);
-  end;
-
   { TPasParserSymbolValueMakeReftype }
 
   TPasParserSymbolValueMakeReftype = class(TPasParserSymbolValue)
@@ -811,41 +796,6 @@ begin
   inherited Destroy;
   FValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserAddressOfSymbolValue'){$ENDIF};
   FTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeInfo, 'TPasParserAddressOfSymbolValue'){$ENDIF};
-end;
-
-{ TPasParserConstNumberSymbolValue }
-
-function TPasParserSymbolValueConstNumber.GetKind: TDbgSymbolKind;
-begin
-  if FSigned then
-    Result := skInteger
-  else
-    Result := skCardinal;
-end;
-
-function TPasParserSymbolValueConstNumber.GetFieldFlags: TDbgSymbolValueFieldFlags;
-begin
-  if FSigned then
-    Result := [svfOrdinal, svfInteger]
-  else
-    Result := [svfOrdinal, svfCardinal];
-end;
-
-function TPasParserSymbolValueConstNumber.GetAsCardinal: QWord;
-begin
-  Result := FValue;
-end;
-
-function TPasParserSymbolValueConstNumber.GetAsInteger: Int64;
-begin
-  Result := Int64(FValue);
-end;
-
-constructor TPasParserSymbolValueConstNumber.Create(AValue: QWord; ASigned: Boolean);
-begin
-  inherited Create;
-  FValue := AValue;
-  FSigned := ASigned;
 end;
 
 { TPasParserWrapperSymbolValue }
@@ -1218,7 +1168,7 @@ end;
 
 function TFpPascalExpressionPartConstantNumber.DoGetResultValue: TDbgSymbolValue;
 begin
-  Result := TPasParserSymbolValueConstNumber.Create(StrToQWordDef(GetText, 0));
+  Result := TDbgSymbolValueConstNumber.Create(StrToQWordDef(GetText, 0));
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 end;
 

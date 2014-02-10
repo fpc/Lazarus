@@ -327,11 +327,11 @@ begin
 
     c := False;
     while (ANum <> 0) or c do begin
-      if ANum > $7f then
+      c := (ANum and $40) <> 0; // write extra 0, to prevent sign extend
+      if c or (ANum > $7f) then
         AddByte((ANum and $7f) + $80)
       else
         AddByte((ANum and $7f));
-      c := (ANum and $40) <> 0; // write extra 0, to prevent sign extend
       ANum := ANum shr 7;
     end;
 

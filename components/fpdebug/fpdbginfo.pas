@@ -181,11 +181,13 @@ type
     property DataSize: Integer read GetDataSize;       // Sive of Data, if avail (e.g. String, TObject, ..., BUT NOT record)
     // memdump
   public
-    (* Member:
-       For TypeInfo (skType) it excludes BaseClass
-       For Value (skValue): ???
-    *)
 // base class? Or Member inncludes member from base
+    (* Member:
+       For TypeInfo (skType) it excludes BaseClass     For Value (skValue): ???
+       NOTE: Values returned by Member/MemberByName are volatile.
+             They maybe released or changed when Member is called again.
+             To keep a returned Value a reference can be added (AddReference)
+    *)
     property MemberCount: Integer read GetMemberCount;
     property Member[AIndex: Integer]: TDbgSymbolValue read GetMember;
     property MemberByName[AIndex: String]: TDbgSymbolValue read GetMemberByName; // Includes inheritance
@@ -194,6 +196,21 @@ type
                   Maybe a stType, then there is no Value *)
     property DbgSymbol: TDbgSymbol read GetDbgSymbol;
     property TypeInfo: TDbgSymbol read GetTypeInfo;
+  end;
+
+  { TSymbolValueConstNumber }
+
+  TDbgSymbolValueConstNumber = class(TDbgSymbolValue)
+  private
+    FValue: QWord;
+    FSigned: Boolean;
+  protected
+    function GetKind: TDbgSymbolKind; override;
+    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetAsCardinal: QWord; override;
+    function GetAsInteger: Int64; override;
+  public
+    constructor Create(AValue: QWord; ASigned: Boolean = False);
   end;
 
   { TDbgSymbol }
@@ -544,6 +561,41 @@ end;
 function TDbgSymbolValue.GetAsInteger: Int64;
 begin
   Result := 0;
+end;
+
+{ TPasParserConstNumberSymbolValue }
+
+function TDbgSymbolValueConstNumber.GetKind: TDbgSymbolKind;
+begin
+  if FSigned then
+    Result := skInteger
+  else
+    Result := skCardinal;
+end;
+
+function TDbgSymbolValueConstNumber.GetFieldFlags: TDbgSymbolValueFieldFlags;
+begin
+  if FSigned then
+    Result := [svfOrdinal, svfInteger]
+  else
+    Result := [svfOrdinal, svfCardinal];
+end;
+
+function TDbgSymbolValueConstNumber.GetAsCardinal: QWord;
+begin
+  Result := FValue;
+end;
+
+function TDbgSymbolValueConstNumber.GetAsInteger: Int64;
+begin
+  Result := Int64(FValue);
+end;
+
+constructor TDbgSymbolValueConstNumber.Create(AValue: QWord; ASigned: Boolean);
+begin
+  inherited Create;
+  FValue := AValue;
+  FSigned := ASigned;
 end;
 
 { TDbgInfoAddressContext }

@@ -619,23 +619,33 @@ type
 // SourceValue: TDbgSymbolValue
   end;
 
+  { TDbgDwarfSizedSymbolValue }
+
+  TDbgDwarfSizedSymbolValue = class(TDbgDwarfSymbolValue)
+  private
+    FSize: Integer;
+  protected
+    function ReadMemory(ADest: Pointer): Boolean; // ADest must point to FSize amount of bytes
+    function CanUseTypeCastAddress: Boolean;
+    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetSize: Integer; override;
+  public
+    constructor Create(AOwner: TDbgDwarfIdentifier; ASize: Integer);
+  end;
+
   { TDbgDwarfNumericSymbolValue }
 
-  TDbgDwarfNumericSymbolValue = class(TDbgDwarfSymbolValue)
+  TDbgDwarfNumericSymbolValue = class(TDbgDwarfSizedSymbolValue)
   private
     FValue: QWord;
     FIntValue: Int64;
-    FSize: Integer;
     FEvaluated: set of (doneUInt, doneInt);
   protected
-    function ReadMemory(ADest: PQWord): Boolean; // read to FValue
     function GetCardinalValue: QWord;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
-    function CanUseTypeCastAddress: Boolean;
     function IsValidTypeCast: Boolean; override;
     function GetAsCardinal: QWord; override;
     function GetAsInteger: Int64; override;
-    function GetSize: Integer; override;
   public
     constructor Create(AOwner: TDbgDwarfIdentifier; ASize: Integer);
   end;
@@ -712,6 +722,23 @@ type
     function GetAsCardinal: QWord; override;
     function GetAsString: AnsiString; override;
     function IsValidTypeCast: Boolean; override;
+  end;
+
+  { TDbgDwarfSetSymbolValue }
+
+  TDbgDwarfSetSymbolValue = class(TDbgDwarfSizedSymbolValue)
+  private
+    FMem: array of Byte;
+    FMemberCount: Integer;
+    FMemberMap: array of Integer;
+    procedure InitMap;
+  protected
+    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetMemberCount: Integer; override;
+    function GetMember(AIndex: Integer): TDbgSymbolValue; override;
+    function GetAsCardinal: QWord; override; // only up to qmord
+    //function IsValidTypeCast: Boolean; override;
+  public
   end;
 
   { TDbgDwarfStructSymbolValue }
@@ -966,6 +993,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FCountConst: Int64;
     FCountValue: TDbgDwarfValueIdentifier;
     FCountState: TDbgDwarfSubRangeBoundReadState;
+    FLowEnumIdx, FHighEnumIdx: Integer;
+    FEnumIdxValid: Boolean;
+    procedure InitEnumIdx;
     procedure ReadBounds;
   protected
     function DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier;override;
@@ -976,6 +1006,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure NameNeeded; override;
     procedure KindNeeded; override;
     procedure SizeNeeded; override;
+    function GetMember(AIndex: Integer): TDbgSymbol; override;
+    function GetMemberCount: Integer; override;
     function GetFlags: TDbgSymbolFlags; override;
     procedure Init; override;
   end;
@@ -1042,6 +1074,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TDbgDwarfIdentifierSet = class(TDbgDwarfTypeIdentifier)
   protected
     procedure KindNeeded; override;
+    function GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
+    function GetMemberCount: Integer; override;
+    function GetMember(AIndex: Integer): TDbgSymbol; override;
   end;
 
   (*
@@ -1727,6 +1762,186 @@ begin
   end;
 end;
 
+{ TDbgDwarfSetSymbolValue }
+
+procedure TDbgDwarfSetSymbolValue.InitMap;
+const
+  BitCount: array[0..15] of byte = (0, 1, 1, 2,  1, 2, 2, 3,  1, 2, 2, 3,  2, 3, 3, 4);
+var
+  i, i2, v, MemIdx, Bit, Cnt: Integer;
+
+  t: TDbgSymbol;
+begin
+  if (length(FMem) > 0) or (FSize <= 0) then
+    exit;
+  t := TypeInfo;
+  if t = nil then exit;
+  t := t.TypeInfo;
+  if t = nil then exit;
+
+  SetLength(FMem, FSize);
+  ReadMemory(@FMem[0]);
+  Cnt := 0;
+  for i := 0 to FSize - 1 do
+    Cnt := Cnt + (BitCount[FMem[i] and 15])  + (BitCount[(FMem[i] div 16) and 15]);
+  FMemberCount := Cnt;
+
+  if (Cnt = 0) then exit;
+  SetLength(FMemberMap, Cnt);
+
+  if (t.Kind = skEnum) then begin
+    i2 := 0;
+    for i := 0 to t.MemberCount - 1 do
+    begin
+      v := t.Member[i].OrdinalValue;
+      MemIdx := v shr 3;
+      Bit := 1 shl (v and 7);
+      if (FMem[MemIdx] and Bit) <> 0 then begin
+        assert(i2 < Cnt, 'TDbgDwarfSetSymbolValue.InitMap too many members');
+        if i2 = Cnt then break;
+        FMemberMap[i2] := i;
+        inc(i2);
+      end;
+    end;
+
+    if i2 < Cnt then begin
+      FMemberCount := i2;
+      debugln(['TDbgDwarfSetSymbolValue.InitMap  not enough members']);
+    end;
+  end
+  else begin
+    i2 := 0;
+    MemIdx := 0;
+    Bit := 1;
+    v := t.OrdLowBound;
+    for i := v to t.OrdHighBound do
+    begin
+      if (FMem[MemIdx] and Bit) <> 0 then begin
+        assert(i2 < Cnt, 'TDbgDwarfSetSymbolValue.InitMap too many members');
+        if i2 = Cnt then break;
+        FMemberMap[i2] := i - v; // offset from low-bound
+        inc(i2);
+      end;
+      if Bit = 128 then begin
+        Bit := 1;
+        inc(MemIdx);
+      end
+      else
+        Bit := Bit shl 1;
+    end;
+
+    if i2 < Cnt then begin
+      FMemberCount := i2;
+      debugln(['TDbgDwarfSetSymbolValue.InitMap  not enough members']);
+    end;
+  end;
+
+end;
+
+function TDbgDwarfSetSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
+begin
+  Result := inherited GetFieldFlags;
+  Result := Result + [svfMembers];
+  if FSize <= 8 then
+    Result := Result + [svfOrdinal];
+end;
+
+function TDbgDwarfSetSymbolValue.GetMemberCount: Integer;
+var
+  t: TDbgSymbol;
+begin
+  InitMap;
+  Result := FMemberCount;
+end;
+
+function TDbgDwarfSetSymbolValue.GetMember(AIndex: Integer): TDbgSymbolValue;
+var
+  t: TDbgSymbol;
+begin
+  Result := nil;
+  InitMap;
+  t := TypeInfo;
+  if t = nil then exit;
+  t := t.TypeInfo;
+  if t = nil then exit;
+
+  if t.Kind = skEnum then begin
+    Result := t.Member[FMemberMap[AIndex]].Value;
+  end
+  else begin
+  // typecast TDbgSymbolValueConstNumber
+  end;
+end;
+
+function TDbgDwarfSetSymbolValue.GetAsCardinal: QWord;
+begin
+  Result := 0;
+  if FSize <= SizeOf(Result) then
+    move(FMem[0], Result, FSize);
+end;
+
+{ TDbgDwarfSizedSymbolValue }
+
+function TDbgDwarfSizedSymbolValue.ReadMemory(ADest: Pointer): Boolean;
+var
+  addr: TDbgPtr;
+begin
+  // TODO: memory representation of values is not dwarf, but platform - move
+  Result := False;
+
+  if ( (FValueSymbol <> nil) or
+       (HasTypeCastInfo and CanUseTypeCastAddress)
+     ) and (MemReader <> nil)
+  then begin
+    if FValueSymbol <> nil then
+      addr := FValueSymbol.Address
+    else
+      addr := FTypeCastSourceValue.Address;
+
+    Result := addr <> 0;
+    if not Result then
+      exit;
+
+    MemReader.ReadMemory(addr, FSize, ADest);
+  end;
+end;
+
+function TDbgDwarfSizedSymbolValue.CanUseTypeCastAddress: Boolean;
+begin
+  Result := True;
+  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
+    exit
+  else
+  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) and
+     (FTypeCastSourceValue.Size = FSize) and (FSize > 0)
+  then
+    exit;
+  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer]) and
+     not ( (FTypeCastTargetType.Kind = skPointer) //or
+           //(FSize = AddressSize xxxxxxx)
+         )
+  then
+    exit;
+  Result := False;
+end;
+
+function TDbgDwarfSizedSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
+begin
+  Result := inherited GetFieldFlags;
+  Result := Result + [svfSize];
+end;
+
+function TDbgDwarfSizedSymbolValue.GetSize: Integer;
+begin
+  Result := FSize;
+end;
+
+constructor TDbgDwarfSizedSymbolValue.Create(AOwner: TDbgDwarfIdentifier; ASize: Integer);
+begin
+  inherited Create(AOwner);
+  FSize := ASize;
+end;
+
 { TDbgDwarfEnumMemberSymbolValue }
 
 function TDbgDwarfEnumMemberSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
@@ -1757,6 +1972,7 @@ var
   v: QWord;
   i: Integer;
 begin
+  // TODO: if TypeInfo is a subrange, check against the bounds, then bypass it, and scan all members (avoid subrange scanning members)
   if FMemberValueDone then exit;
   // FTypeCastTargetType (if not nil) must be same as FOwner. It may have wrappers like declaration.
   v := GetAsCardinal;
@@ -2150,32 +2366,6 @@ end;
 
 { TDbgDwarfCardinalSymbolValue }
 
-function TDbgDwarfNumericSymbolValue.ReadMemory(ADest: PQWord): Boolean;
-var
-  addr: TDbgPtr;
-begin
-  // TODO: memory representation of values is not dwarf, but platform - move
-  Result := False;
-
-  if ( (FValueSymbol <> nil) or
-       (HasTypeCastInfo and CanUseTypeCastAddress)
-     ) and (MemReader <> nil)
-  then begin
-    if FValueSymbol <> nil then
-      addr := FValueSymbol.Address
-    else
-      addr := FTypeCastSourceValue.Address;
-
-    Result := addr <> 0;
-    if not Result then
-      exit;
-
-    // TODO endian
-    ADest^ := 0;
-    MemReader.ReadMemory(addr, FSize, ADest);
-  end;
-end;
-
 function TDbgDwarfNumericSymbolValue.GetCardinalValue: QWord;
 begin
   if (FSize <= 0) or (FSize > SizeOf(Result)) then begin
@@ -2188,34 +2378,18 @@ begin
     Result := Result and (QWord(-1) shr ((SizeOf(Result)-FSize) * 8));
   end
 
-  else
-  if not ReadMemory(@Result) then  // ReadMemory stores to FValue
-    Result := inherited GetAsCardinal;
+  else begin
+    // TODO endian
+    Result := 0; // GetMem only reads FSize
+    if not ReadMemory(@Result) then  // ReadMemory stores to FValue
+      Result := inherited GetAsCardinal;
+  end;
 end;
 
 function TDbgDwarfNumericSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
-  Result := Result + [svfSize, svfOrdinal];
-end;
-
-function TDbgDwarfNumericSymbolValue.CanUseTypeCastAddress: Boolean;
-begin
-  Result := True;
-  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
-    exit
-  else
-  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) and
-     (FTypeCastSourceValue.Size = FSize) and (FSize > 0)
-  then
-    exit;
-  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer]) and
-     not ( (FTypeCastTargetType.Kind = skPointer) //or
-           //(FSize = AddressSize xxxxxxx)
-         )
-  then
-    exit;
-  Result := False;
+  Result := Result + [svfOrdinal];
 end;
 
 function TDbgDwarfNumericSymbolValue.IsValidTypeCast: Boolean;
@@ -2225,6 +2399,7 @@ begin
     exit;
   if (svfOrdinal in FTypeCastSourceValue.FieldFlags) or CanUseTypeCastAddress then
     exit;
+  Result := False;
 end;
 
 function TDbgDwarfNumericSymbolValue.GetAsCardinal: QWord;
@@ -2255,15 +2430,9 @@ begin
   FIntValue := Result;
 end;
 
-function TDbgDwarfNumericSymbolValue.GetSize: Integer;
-begin
-  Result := FSize;
-end;
-
 constructor TDbgDwarfNumericSymbolValue.Create(AOwner: TDbgDwarfIdentifier; ASize: Integer);
 begin
-  inherited Create(AOwner);
-  FSize := ASize;
+  inherited Create(AOwner, ASize);
   FEvaluated := [];
 end;
 
@@ -4396,6 +4565,30 @@ end;
 
 { TDbgDwarfIdentifierSubRange }
 
+procedure TDbgDwarfIdentifierSubRange.InitEnumIdx;
+var
+  t: TDbgDwarfTypeIdentifier;
+  i: Integer;
+  h, l: Int64;
+begin
+  if FEnumIdxValid then
+    exit;
+  FEnumIdxValid := True;
+
+  t := NestedTypeInfo;
+  i := t.MemberCount - 1;
+  h := OrdHighBound;
+  l := OrdLowBound;
+
+  while (i >= 0) and (t.Member[i].OrdinalValue > h) do
+    dec(i);
+  FHighEnumIdx := i;
+
+  while (i >= 0) and (t.Member[i].OrdinalValue >= l) do
+    dec(i);
+  FLowEnumIdx := i + 1;
+end;
+
 procedure TDbgDwarfIdentifierSubRange.ReadBounds;
 var
   FwdInfoPtr: Pointer;
@@ -4565,6 +4758,28 @@ begin
     SetSize(t.Size);
 end;
 
+function TDbgDwarfIdentifierSubRange.GetMember(AIndex: Integer): TDbgSymbol;
+begin
+  if Kind = skEnum then begin
+    if not FEnumIdxValid then
+      InitEnumIdx;
+    Result := NestedTypeInfo.Member[AIndex - FLowEnumIdx];
+  end
+  else
+    Result := inherited GetMember(AIndex);
+end;
+
+function TDbgDwarfIdentifierSubRange.GetMemberCount: Integer;
+begin
+  if Kind = skEnum then begin
+    if not FEnumIdxValid then
+      InitEnumIdx;
+    Result := FHighEnumIdx - FLowEnumIdx + 1;
+  end
+  else
+    Result := inherited GetMemberCount;
+end;
+
 function TDbgDwarfIdentifierSubRange.GetFlags: TDbgSymbolFlags;
 begin
   Result := (inherited GetFlags) + [sfSubRange];
@@ -4626,6 +4841,27 @@ end;
 procedure TDbgDwarfIdentifierSet.KindNeeded;
 begin
   SetKind(skSet);
+end;
+
+function TDbgDwarfIdentifierSet.GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue;
+begin
+  Result := TDbgDwarfSetSymbolValue.Create(Self, Size);
+end;
+
+function TDbgDwarfIdentifierSet.GetMemberCount: Integer;
+begin
+  if TypeInfo.Kind = skEnum then
+    Result := TypeInfo.MemberCount
+  else
+    Result := inherited GetMemberCount;
+end;
+
+function TDbgDwarfIdentifierSet.GetMember(AIndex: Integer): TDbgSymbol;
+begin
+  if TypeInfo.Kind = skEnum then
+    Result := TypeInfo.Member[AIndex]
+  else
+    Result := inherited GetMember(AIndex);
 end;
 
 { TDbgDwarfIdentifierEnum }

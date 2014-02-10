@@ -54,7 +54,7 @@ type
     procedure TearDown; override;
   published
     Procedure TestExpressionStructures;
-    Procedure TestExpressionEnum;
+    Procedure TestExpressionEnumAndSet;
   end;
 
 implementation
@@ -879,7 +879,7 @@ begin
   end;
 end;
 
-procedure TTestTypeInfo.TestExpressionEnum;
+procedure TTestTypeInfo.TestExpressionEnumAndSet;
   procedure ExpEnumVal(AnIdent: String; AnOrd: QWord; AnAddr: TDbgPtr = 0; ASize: Integer = -1);
   begin
     if AnAddr <> 0 then
@@ -906,6 +906,39 @@ procedure TTestTypeInfo.TestExpressionEnum;
     ExpResult(Result, svfIdentifier, AnIdent);
     ExpResult(Result, svfOrdinal, AnOrd);
   end;
+
+  procedure ExpSetVal(AMemberCount: Integer; AnAddr: TDbgPtr = 0; ASize: Integer = -1);
+  begin
+    if AnAddr <> 0 then
+      ExpFlags([svfMembers, svfAddress, svfSize], [svfCardinal, svfString, svfIdentifier])
+    else
+      ExpFlags([svfMembers], [svfCardinal, svfString, svfIdentifier {, svfAddress, svfSize}]);
+    if AnAddr <> 0 then
+      ExpResult(svfAddress, AnAddr);
+    if ASize >= 0 then
+      ExpResult(svfSize, ASize);
+    ExpMemberCount(AMemberCount);
+  end;
+
+  procedure ExpSetVal(AMemberCount: Integer; AnOrdinal: QWord; AnAddr: TDbgPtr = 0; ASize: Integer = -1);
+  begin
+    ExpSetVal(AMemberCount, AnAddr, ASize);
+    ExpResult(svfOrdinal, AnOrdinal);
+  end;
+
+  procedure ExpSetIdent(AnIdentList: array of string);
+  var
+    i: Integer;
+    m: TDbgSymbolValue;
+  begin
+    for i := low(AnIdentList) to high(AnIdentList) do begin
+      m := FExpression.ResultValue.Member[i];
+      AssertTrue(FCurrentTestName + 'has member at pos '+IntToStr(i), m <> nil);
+      AssertTrue(FCurrentTestName + 'member at pos fieldflag '+IntToStr(i), svfIdentifier in m.FieldFlags);
+      AssertEquals(FCurrentTestName + 'member at pos value ident '+IntToStr(i), UpperCase(AnIdentList[i]), m.AsString);
+    end;
+  end;
+
 
 var
   sym: TDbgSymbol;
@@ -982,8 +1015,14 @@ begin
     ExpEnumVal('eXc', 3, TDbgPtr(@ImgLoader.GlobalVar.VarEnumX), SizeOf(ImgLoader.GlobalVar.VarEnumX));
     ExpEnumMemberVal('eXc', 3);
 
+    // enum sub range
+    ImgLoader.GlobalVar.VarEnumR3 := e3e;
+    StartTest('VarEnumR3', skEnum, [ttHasType], 'eXc');
+    ExpEnumVal('e3e', 4, TDbgPtr(@ImgLoader.GlobalVar.VarEnumR3), SizeOf(ImgLoader.GlobalVar.VarEnumR3));
+    ExpEnumMemberVal('e3e', 4);
 
 
+    // Typecast
     ImgLoader.GlobalVar.VarEnum3 := e3c;
     StartTest('TEnum3(VarEnum3)', skEnum, [ttHasType], 'e3c');
     ExpEnumVal('e3c', 2, TDbgPtr(@ImgLoader.GlobalVar.VarEnum3), SizeOf(ImgLoader.GlobalVar.VarEnum3));
@@ -999,7 +1038,83 @@ begin
     ExpEnumVal('e3c', 2, TDbgPtr(@ImgLoader.GlobalVar.VarEnum3), SizeOf(ImgLoader.GlobalVar.VarEnum3));
     ExpEnumMemberVal('e3c', 2);
 
+    ImgLoader.GlobalVar.VarEnum3 := e3a;
+    StartTest('TEnum3(2)', skEnum, [ttHasType], '(2)');
+    ExpFlags([], [svfAddress]);
+    ExpEnumVal('e3c', 2);
+    ExpEnumMemberVal('e3c', 2);
 
+    ImgLoader.GlobalVar.VarEnum3 := e3a;
+    StartTest('TEnum3(8)', skEnum, [ttHasType], '(8)');
+    ExpFlags([], [svfAddress]);
+    ExpEnumVal('e3i', 8);
+    ExpEnumMemberVal('e3i', 8);
+
+    ImgLoader.GlobalVar.VarEnum3 := e3a;
+    StartTest('TEnum3(80)', skEnum, [ttHasType]);
+    ExpFlags([], [svfAddress]);
+    ExpEnumVal('', 80);
+
+    ImgLoader.GlobalVar.VarEnum1 := e1b;
+    ImgLoader.GlobalVar.VarEnum3 := e3d;
+    StartTest('TEnum3(VarEnum1)', skEnum, [ttHasType]);
+    ExpEnumVal('e3b', 1);
+    ExpEnumMemberVal('e3b', 1);
+
+    StartTest('TEnum1(VarEnum3)', skEnum, [ttHasType]);
+    ExpEnumVal('', 3);
+
+    ImgLoader.GlobalVar.VarEnum3 := e3c;
+    StartTest('TEnum1(VarEnum3)', skEnum, [ttHasType]);
+    ExpEnumVal('e1c', 2);
+    ExpEnumMemberVal('e1c', 2);
+
+    ImgLoader.GlobalVar.VarByte := 1;
+    StartTest('TEnum3(VarByte)', skEnum, [ttHasType]);
+    ExpEnumVal('e3b', 1);
+    ExpEnumMemberVal('e3b', 1);
+
+    ImgLoader.GlobalVar.VarRecEnum2.Enum2 := e2e;
+    StartTest('TEnum2(VarRecEnum2)', skEnum, [ttHasType]);
+    ExpEnumVal('e2e', 4);
+    ExpEnumMemberVal('e2e', 4);
+
+    StartInvalTest('TEnum2(VarRecSetB1)', 'xxx');
+
+
+    //
+    // SET
+    //
+
+    ImgLoader.GlobalVar.VarSet2 := [e2b, e2d, e2e];
+    StartTest('VarSet2', skSet, [ttHasType]);
+    ExpSetVal(3, QWord(Cardinal(ImgLoader.GlobalVar.VarSet2)), TDbgPtr(@ImgLoader.GlobalVar.VarSet2), SizeOf(ImgLoader.GlobalVar.VarSet2));
+    ExpSetIdent(['e2b', 'e2d', 'e2e']);
+
+    ImgLoader.GlobalVar.VarSet2 := [];
+    StartTest('VarSet2', skSet, [ttHasType]);
+    ExpSetVal(0, QWord(Cardinal(ImgLoader.GlobalVar.VarSet2)), TDbgPtr(@ImgLoader.GlobalVar.VarSet2), SizeOf(ImgLoader.GlobalVar.VarSet2));
+
+    ImgLoader.GlobalVar.VarSet2 := [e2b];
+    StartTest('VarSet2', skSet, [ttHasType]);
+    ExpSetVal(1, QWord(Cardinal(ImgLoader.GlobalVar.VarSet2)), TDbgPtr(@ImgLoader.GlobalVar.VarSet2), SizeOf(ImgLoader.GlobalVar.VarSet2));
+
+    ImgLoader.GlobalVar.VarSet2 := [e2a, e2d, e2e, e2i];
+    StartTest('VarSet2', skSet, [ttHasType]);
+    ExpSetVal(4, QWord(Cardinal(ImgLoader.GlobalVar.VarSet2)), TDbgPtr(@ImgLoader.GlobalVar.VarSet2), SizeOf(ImgLoader.GlobalVar.VarSet2));
+
+
+    ImgLoader.GlobalVar.VarSetB1 := [0,1,200,255];
+    StartTest('VarSetB1', skSet, [ttHasType]);
+    ExpSetVal(4, TDbgPtr(@ImgLoader.GlobalVar.VarSetB1), SizeOf(ImgLoader.GlobalVar.VarSetB1));
+
+    ImgLoader.GlobalVar.VarSetB2 := [5,80];
+    StartTest('VarSetB2', skSet, [ttHasType], '5,80');
+    ExpSetVal(2, TDbgPtr(@ImgLoader.GlobalVar.VarSetB2), SizeOf(ImgLoader.GlobalVar.VarSetB2));
+
+    ImgLoader.GlobalVar.VarSetB2 := [5..80];
+    StartTest('VarSetB2', skSet, [ttHasType], '5..80');
+    ExpSetVal(76, TDbgPtr(@ImgLoader.GlobalVar.VarSetB2), SizeOf(ImgLoader.GlobalVar.VarSetB2));
 
 end;
 
