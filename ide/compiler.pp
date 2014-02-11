@@ -189,7 +189,7 @@ type
     // Hierarchy of options parsed from "fpc -h".
     fRootOptGroup: TCompilerOptGroup;
     fCompilerExecutable: string;  // Compiler path must be set by caller.
-    fCompilerVersion: string;     // Parsed from "fpc -h".
+    //fCompilerVersion: string;     // Parsed from "fpc -h".
     fParsedTarget: String;
     fErrorMsg: String;
     fGenStrings: TStringList;     // Options generated from GUI.
@@ -197,7 +197,7 @@ type
     function AddOptInLowestOrigLine(OutStrings: TStrings): Boolean;
     procedure CopyOptions(aRoot: TCompilerOpt);
     function FindLowestOrigLine(aStrings: TStrings; out aOrigLine: Integer): integer;
-    procedure ReadVersion(s: string);
+    //procedure ReadVersion(s: string);
     procedure CreateNewGroupItem(aGroup: TCompilerOptGroup; aTxt: string);
     procedure AddGroupItems(aGroup: TCompilerOptGroup; aItems: TStrings);
     function ParseI(aLines: TStringList): TModalResult;
@@ -1024,7 +1024,7 @@ begin
     sl.Free;
   end;
 end;
-
+{
 procedure TCompilerOptReader.ReadVersion(s: string);
 const
   VersBegin = 'Free Pascal Compiler version ';
@@ -1040,7 +1040,7 @@ begin
       // ToDo: the rest 2 fields are date and target CPU.
   end;
 end;
-
+}
 procedure TCompilerOptReader.CreateNewGroupItem(aGroup: TCompilerOptGroup; aTxt: string);
 var
   Opt: TCompilerOpt;
@@ -1081,11 +1081,7 @@ begin
     ThisLine := StringReplace(aLines[i],'-Agas-darwinAssemble','-Agas-darwin Assemble',[]);
     ThisInd := CalcIndentation(ThisLine);
     ThisLine := Trim(ThisLine);
-    if ThisInd = 0 then
-    begin
-      ReadVersion(ThisLine);        // Top header lines for compiler version etc.
-      Continue;
-    end;
+    if ThisInd = 0 then Continue; //Call if needed: ReadVersion(ThisLine);// Top header lines for compiler version etc.
     if (ThisLine = '') or (ThisInd > 30)
     or (Pos('-? ', ThisLine) > 0)
     or (Pos('-h ', ThisLine) > 0) then Continue;
