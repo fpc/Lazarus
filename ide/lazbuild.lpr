@@ -804,7 +804,7 @@ begin
               dbgout('* ')
             else
               dbgout('  ');
-            debugln(Project1.BuildModes[i].Name);
+            debugln(Project1.BuildModes[i].Identifier);
           end;
         end else begin
           debugln(lisThisProjectHasOnlyTheDefaultBuildMode);
