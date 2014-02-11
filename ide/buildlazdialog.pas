@@ -157,7 +157,7 @@ type
     UpdateRevisionInc: boolean;
     function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
       Macros: TTransferMacroList; const PackageOptions: string;
-      Flags: TBuildLazarusFlags; var ExtraOptions: string;
+      Flags: TBuildLazarusFlags; out ExtraOptions: string;
       out OutputDirRedirected: boolean;
       out TargetFilename: string): TModalResult;
     function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
@@ -504,7 +504,7 @@ end;
 
 function TLazarusBuilder.CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
   Macros: TTransferMacroList; const PackageOptions: string;
-  Flags: TBuildLazarusFlags; var ExtraOptions: string;
+  Flags: TBuildLazarusFlags; out ExtraOptions: string;
   out OutputDirRedirected: boolean;
   out TargetFilename: string): TModalResult;
 
