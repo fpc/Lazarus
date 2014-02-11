@@ -2,12 +2,16 @@ unit FpGdbmiDebugger;
 
 {$mode objfpc}{$H+}
 
+{$IFdef MSWindows}
+{$DEFINE  WithWinMemReader}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, sysutils, math, FpDbgInfo, FpDbgClasses, GDBMIDebugger, BaseDebugManager, Debugger,
-  GDBMIMiscClasses, GDBTypeInfo, maps, LCLProc, FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst,
-  LazLoggerBase, LazLoggerProfiling, FpPascalParser, FpPascalBuilder;
+  Classes, windows, sysutils, math, FpDbgInfo, FpDbgClasses, GDBMIDebugger, BaseDebugManager,
+  Debugger, GDBMIMiscClasses, GDBTypeInfo, maps, LCLProc, Forms, FpDbgLoader, FpDbgDwarf,
+  FpDbgDwarfConst, LazLoggerBase, LazLoggerProfiling, FpPascalParser, FpPascalBuilder;
 
 type
 
@@ -26,6 +30,19 @@ type
     function ReadMemory(AnAddress: FpDbgInfo.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadMemoryEx(AnAddress, AnAddressSpace: FpDbgInfo.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Integer; out AValue: FpDbgInfo.TDbgPtr): Boolean; override;
+  end;
+
+  { TFpGDBMIAndWin32DbgMemReader }
+
+  TFpGDBMIAndWin32DbgMemReader = class(TFpGDBMIDbgMemReader)
+  private
+    hProcess: THandle;
+  public
+    destructor Destroy; override;
+    function ReadMemory(AnAddress: FpDbgInfo.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    //function ReadRegister(ARegNum: Integer; out AValue: FpDbgInfo.TDbgPtr): Boolean; override;
+    procedure OpenProcess(APid: Cardinal);
+    procedure CloseProcess;
   end;
 
   { TFpGDBPTypeRequestCache }
@@ -69,6 +86,7 @@ type
     function  GetInfoContextForContext(AThreadId, AStackFrame: Integer): TDbgInfoAddressContext;
     function CreateTypeRequestCache: TGDBPTypeRequestCache; override;
     property CurrentCommand;
+    property TargetPID;
   public
     class function Caption: String; override;
   public
@@ -94,7 +112,7 @@ type
   protected
     function  FpDebugger: TFpGDBMIDebugger;
     //procedure DoStateChange(const AOldState: TDBGState); override;
-    //procedure InternalRequestData(AWatchValue: TCurrentWatchValue); override;
+    procedure InternalRequestData(AWatchValue: TCurrentWatchValue); override;
   public
     //constructor Create(const ADebugger: TDebugger);
     //destructor Destroy; override;
@@ -119,6 +137,49 @@ type
     procedure Request(const ASource: String); override;
     procedure Cancel(const ASource: String); override;
   end;
+
+{ TFpGDBMIAndWin32DbgMemReader }
+
+destructor TFpGDBMIAndWin32DbgMemReader.Destroy;
+begin
+  CloseProcess;
+  inherited Destroy;
+end;
+
+function TFpGDBMIAndWin32DbgMemReader.ReadMemory(AnAddress: FpDbgInfo.TDbgPtr;
+  ASize: Cardinal; ADest: Pointer): Boolean;
+var
+  BytesRead: Cardinal;
+begin
+  {$IFdef MSWindows}
+  Result := ReadProcessMemory(
+    hProcess,
+    Pointer(AnAddress),
+    ADest, ASize,
+    BytesRead) and
+  (BytesRead = ASize);
+DebugLn(['*&*&*&*& ReadMem ', dbgs(Result), '  at ', AnAddress, ' Size ',ASize, ' br=',BytesRead, ' b1',PBYTE(ADest)^]);
+  {$ELSE}
+  Result := inherited ReadMemory(AnAddress, ASize, ADest);
+  {$ENDIF}
+end;
+
+procedure TFpGDBMIAndWin32DbgMemReader.OpenProcess(APid: Cardinal);
+begin
+  {$IFdef MSWindows}
+  debugln(['OPEN process ',APid]);
+  if APid <> 0 then
+    hProcess := windows.OpenProcess(PROCESS_CREATE_THREAD or PROCESS_QUERY_INFORMATION or PROCESS_VM_OPERATION or PROCESS_VM_WRITE or PROCESS_VM_READ, False, APid);
+  {$ENDIF}
+end;
+
+procedure TFpGDBMIAndWin32DbgMemReader.CloseProcess;
+begin
+  {$IFdef MSWindows}
+  if hProcess <> 0 then
+    CloseHandle(hProcess);
+  {$ENDIF}
+end;
 
 { TFpGDBMIDbgMemReader }
 
@@ -148,12 +209,14 @@ begin
   if R.State = dsError then exit;
 
   MemDump := TGDBMIMemoryDumpResultList.Create(R);
+  if MemDump.Count <> ASize then exit;
 
   for i := 0 to MemDump.Count - 1 do begin
     PByte(ADest + i)^ := Byte(MemDump.ItemNum[i]);
   end;
 
   MemDump.Free;
+  Result := True;
 
 debugln(['TFpGDBMIDbgMemReader.ReadMemory ', dbgs(AnAddress), '  ', dbgMemRange(ADest, ASize)]);
 end;
@@ -215,8 +278,9 @@ function TFpGDBPTypeRequestCache.IndexOf(AThreadId, AStackFrame: Integer;
 const
   GdbCmdPType = 'ptype ';
   GdbCmdWhatIs = 'whatis ';
+  GdbCmdEval = '-data-evaluate-expression ';
 
-  procedure AddType(ASourceExpr: string; ATypeIdent: TDbgSymbol); forward;
+  procedure AddType(ASourceExpr: string; ATypeIdent: TDbgSymbol; AVal: TDbgSymbolValue = nil); forward;
 
   procedure FindPointerAndBaseType(ASrcType: TDbgSymbol;
     out APointerLevel: Integer; out ADeRefType, ABaseType: TDbgSymbol;
@@ -342,8 +406,14 @@ const
     AReq.ReqType := AType;
     AReq.Request := AQuery;
     if inherited IndexOf(AThreadId, AStackFrame, AReq) < 0 then begin
-      AReq.Result := ParseTypeFromGdb(AAnswer);
+      if AType = gcrtPType then
+        AReq.Result := ParseTypeFromGdb(AAnswer)
+      else begin
+        AReq.Result.GdbDescription := AAnswer;
+        AReq.Result.Kind := ptprkSimple;
+      end;
       Add(AThreadId, AStackFrame, AReq);
+      debugln(['**** AddToGDBMICache ', AReq.Request, ' T:', AThreadId, ' S:',AStackFrame]);
       //debugln(['**** AddToGDBMICache ', AReq.Request, ' T:', AThreadId, ' S:',AStackFrame, ' >>>> ', AAnswer, ' <<<<']);
     end;
   end;
@@ -586,13 +656,15 @@ const
     end;
   end;
 
-  procedure AddType(ASourceExpr: string; ATypeIdent: TDbgSymbol);
+  procedure AddType(ASourceExpr: string; ATypeIdent: TDbgSymbol; AVal: TDbgSymbolValue = nil);
   var
     SrcTypeName,     // The expressions own type name
     DeRefTypeName,   // one levvel of pointer followed
     BaseTypeName: String; // all poiters followed
     DeRefType, BaseType: TDbgSymbol;
     PointerLevel: Integer;
+    s: String;
+    i: Integer;
   begin
     if (ASourceExpr = '') or (ATypeIdent = nil) then exit;
 
@@ -601,7 +673,24 @@ const
                            SrcTypeName, DeRefTypeName, BaseTypeName);
 
     case BaseType.Kind of
-      skInteger, skCardinal, skBoolean, skChar, skFloat:
+      skInteger, skCardinal, skBoolean: begin
+        AddBaseType(ASourceExpr, PointerLevel,
+                    SrcTypeName, DeRefTypeName, BaseTypeName,
+                    ATypeIdent, BaseType);
+        if (AVal <> nil) and (ATypeIdent.Kind = skInteger) then
+          MaybeAdd(gcrtEvalExpr, GdbCmdEval + ASourceExpr, Format(',value="%d"', [AVal.AsInteger]))
+        else
+        if (AVal <> nil) and (ATypeIdent.Kind = skCardinal) then
+          MaybeAdd(gcrtEvalExpr, GdbCmdEval + ASourceExpr, Format(',value="%u"', [AVal.AsCardinal]))
+        else
+        if (AVal <> nil) and (ATypeIdent.Kind = skBoolean) then
+          MaybeAdd(gcrtEvalExpr, GdbCmdEval + ASourceExpr, Format(',value="%s"', [dbgs(AVal.AsBool)]))
+        else
+        if (AVal <> nil) and (ATypeIdent.Kind = FpDbgInfo.skPointer) then
+          MaybeAdd(gcrtEvalExpr, GdbCmdEval + ASourceExpr, Format(',value="%u"', [AVal.AsCardinal]))
+        ;
+      end;
+      skChar, skFloat:
         AddBaseType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
@@ -613,14 +702,28 @@ const
         AddRecordType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
-      FpDbgInfo.skEnum:
+      FpDbgInfo.skEnum: begin
         AddEnumType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
-      FpDbgInfo.skSet:
+        if (AVal <> nil) and (ATypeIdent.Kind = FpDbgInfo.skEnum) then
+          if AVal.AsString = ''
+          then MaybeAdd(gcrtEvalExpr, GdbCmdEval + ASourceExpr, Format(',value="%u"', [AVal.AsCardinal]))
+          else MaybeAdd(gcrtEvalExpr, GdbCmdEval + ASourceExpr, Format(',value="%s"', [AVal.AsString]));
+      end;
+      FpDbgInfo.skSet: begin
         AddSetType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
+        if (AVal <> nil) and (ATypeIdent.Kind = FpDbgInfo.skSet) then begin
+          s := '';
+          for i := 0 to AVal.MemberCount-1 do
+            if i = 0
+            then s := AVal.Member[i].AsString
+            else s := s + ', ' + AVal.Member[i].AsString;
+          MaybeAdd(gcrtEvalExpr, GdbCmdEval + ASourceExpr, Format(',value="[%s]"', [s]))
+        end;
+      end;
       FpDbgInfo.skArray:
         AddArrayType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
@@ -659,10 +762,16 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
 if rt <> nil then  debugln(['@@@@@ ',rt.ClassName, '   ADDR=', rt.Address]);
 DebugLn(['== VAL === ', PasExpr.ResultValue.AsInteger, '  /  ', PasExpr.ResultValue.AsCardinal,  '  /  ', PasExpr.ResultValue.AsBool,  '  /  ', PasExpr.ResultValue.AsString,  '  /  ', PasExpr.ResultValue.MemberCount]);
 
-          if (rt <> nil) and (rt is TDbgDwarfValueIdentifier) then
+          if (rt <> nil) and (rt is TDbgDwarfValueIdentifier) then begin
+            // symbol is value
             rt := rt.TypeInfo;
+            AddType(IdentName, rt, PasExpr.ResultValue);
+            Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
+          end
+          else
           if rt <> nil then begin
-            AddType(IdentName, rt);
+            // symbol is type
+            AddType(IdentName, rt, nil);
             Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
           end;
         end
@@ -699,6 +808,12 @@ end;
 function TFPGDBMIWatches.FpDebugger: TFpGDBMIDebugger;
 begin
   Result := TFpGDBMIDebugger(Debugger);
+end;
+
+procedure TFPGDBMIWatches.InternalRequestData(AWatchValue: TCurrentWatchValue);
+begin
+  inherited InternalRequestData(AWatchValue);
+  Application.ProcessMessages;
 end;
 
 { TFpGDBMILineInfo }
@@ -786,6 +901,11 @@ function TFpGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
 begin
   TFpGDBMIDebugger(FTheDebugger).LoadDwarf;
   Result := inherited DoExecute;
+{$IFdef WithWinMemReader}
+  TFpGDBMIAndWin32DbgMemReader(TFpGDBMIDebugger(FTheDebugger).FMemReader).OpenProcess(
+    TFpGDBMIDebugger(FTheDebugger).TargetPid
+  );
+{$ENDIF}
 end;
 
 { TFpGDBMIDebugger }
@@ -817,7 +937,11 @@ begin
     FreeAndNil(FImageLoader);
     exit;
   end;
+{$IFdef WithWinMemReader}
+  FMemReader := TFpGDBMIAndWin32DbgMemReader.Create(Self);
+{$Else}
   FMemReader := TFpGDBMIDbgMemReader.Create(Self);
+{$ENDIF}
 
   FDwarfInfo := TDbgDwarf.Create(FImageLoader);
   FDwarfInfo.MemReader := FMemReader;
