@@ -15,7 +15,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   OnResize = FormResize
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.3'
+  LCLVersion = '1.1'
   object CBLDBtnPanel: TPanel
     AnchorSideTop.Side = asrBottom
     Left = 0
@@ -359,11 +359,12 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           Height = 15
           Top = 345
           Width = 684
-          Caption = 'CommonsDividerBevel'
+          AutoSize = True
           Anchors = [akLeft, akRight, akBottom]
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
           BorderSpacing.Bottom = 6
+          Caption = 'CommonsDividerBevel'
           Font.Style = [fsBold]
           ParentFont = False
         end

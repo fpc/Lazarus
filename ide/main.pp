@@ -391,7 +391,6 @@ type
     procedure mnuChgBuildModeClicked(Sender: TObject);
     procedure mnuSetBuildModeClick(Sender: TObject); // event for drop down items
   private
-    fBuilder: TLazarusBuilder;
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
     {$IFNDEF EnableNewExtTools}
     function ExternalTools: TExternalToolList;
@@ -4651,20 +4650,19 @@ end;
 
 procedure TMainIDE.mnuToolConfigBuildLazClicked(Sender: TObject);
 var
-  CmdLineDefines, LazSrcTemplate, LazSrcDirTemplate: TDefineTemplate;
+  CmdLineDefines: TDefineTemplate;
+  LazSrcTemplate: TDefineTemplate;
+  LazSrcDirTemplate: TDefineTemplate;
   DlgResult: TModalResult;
 begin
   MainBuildBoss.SetBuildTargetIDE;
-  fBuilder := TLazarusBuilder.Create(Nil); // Build profile is not known yet.
   try
-  try
-    DlgResult:=fBuilder.ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
+    DlgResult:=ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
   finally
     MainBuildBoss.SetBuildTargetProject1(true);
   end;
 
   if DlgResult in [mrOk,mrYes,mrAll] then begin
-    fBuilder.Profile := MiscellaneousOptions.BuildLazProfiles.Current; // Update selected profile.
     MiscellaneousOptions.Save;
     IncreaseCompilerParseStamp;
     if DlgResult=mrAll then
@@ -4685,9 +4683,6 @@ begin
       end;
       DoBuildLazarus([]);
     end;
-  end;
-  finally
-    FreeAndNil(fBuilder);
   end;
 end;
 
@@ -7566,28 +7561,30 @@ end;
 
 function TMainIDE.DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult;
 var
-  InhOptStrs: TInheritedCompOptsStrings;
+  PkgOptions: string;
+  InheritedOptionStrings: TInheritedCompOptsStrings;
   FPCVersion, FPCRelease, FPCPatch: integer;
-  Builder: TLazarusBuilder;
 begin
   // create uses section addition for lazarus.pp
   Result:=PkgBoss.DoSaveAutoInstallConfig;
   if Result<>mrOk then exit;
 
+  // prepare static auto install packages
+  PkgOptions:='';
+  // create inherited compiler options
+  PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(
+              PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
+
   // check ambiguous units
-  CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.GetParsedLazarusDirectory,
-                                         FPCVersion,FPCRelease,FPCPatch);
+  CodeToolBoss.GetFPCVersionForDirectory(
+                             EnvironmentOptions.GetParsedLazarusDirectory,
+                             FPCVersion,FPCRelease,FPCPatch);
   if (FPCVersion=0) or (FPCRelease=0) or (FPCPatch=0) then ;
 
   // save extra options
-  Builder:=TLazarusBuilder.Create(MiscellaneousOptions.BuildLazProfiles.Current);
-  try
-    // create inherited compiler options
-    Builder.PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InhOptStrs);
-    Result:=Builder.SaveIDEMakeOptions(Flags+[blfOnlyIDE]);
-  finally
-    Builder.Free;
-  end;
+  Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles.Current,
+                             GlobalMacroList,PkgOptions,Flags+[blfOnlyIDE]);
+  if Result<>mrOk then exit;
 end;
 
 function TMainIDE.DoExampleManager: TModalResult;
@@ -7597,12 +7594,13 @@ end;
 
 function TMainIDE.DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
 var
+  PkgOptions: string;
   IDEBuildFlags: TBuildLazarusFlags;
-  InhOptStrs: TInheritedCompOptsStrings;
-  CompiledUnitExt, LazDir: String;
+  InheritedOptionStrings: TInheritedCompOptsStrings;
+  CompiledUnitExt: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
   PkgCompileFlags: TPkgCompileFlags;
-  BuilderCreated: Boolean;
+  ProfileChanged: Boolean;
 begin
   if ToolStatus<>itNone then begin
     IDEMessageDialog(lisNotNow,
@@ -7618,13 +7616,10 @@ begin
     exit;
   end;
 
-  BuilderCreated := fBuilder = Nil;
-  if BuilderCreated then
-    fBuilder:=TLazarusBuilder.Create(MiscellaneousOptions.BuildLazProfiles.Current);
   {$IFNDEF EnableNewExtTools}
   MessagesView.BeginBlock;
-  fBuilder.ExtTools:=ExternalTools;
   {$ENDIF}
+  ProfileChanged:=false;
   with MiscellaneousOptions do
   try
     MainBuildBoss.SetBuildTargetIDE;
@@ -7636,8 +7631,12 @@ begin
       PkgCompileFlags:=PkgCompileFlags+[pcfCompileDependenciesClean];
       if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
         SourceEditorManager.ClearErrorLines;
-        fBuilder.PkgOptions:='';
-        Result:=fBuilder.MakeLazarus([blfDontBuild]);
+        Result:=MakeLazarus(BuildLazProfiles.Current,
+                         {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
+                         GlobalMacroList,
+                         '',EnvironmentOptions.GetParsedCompilerFilename,
+                         EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild],
+                         ProfileChanged);
         if Result<>mrOk then begin
           DebugLn('TMainIDE.DoBuildLazarus: Clean all failed.');
           exit;
@@ -7660,15 +7659,18 @@ begin
     end;
 
     // create inherited compiler options
-    fBuilder.PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InhOptStrs);
+    PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(
+                PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
 
     // check ambiguous units
-    LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
-    CodeToolBoss.GetFPCVersionForDirectory(LazDir,FPCVersion,FPCRelease,FPCPatch);
+    CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.GetParsedLazarusDirectory,
+                                           FPCVersion,FPCRelease,FPCPatch);
     if FPCPatch=0 then ;
     CompiledUnitExt:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
     Result:=MainBuildBoss.CheckUnitPathForAmbiguousPascalFiles(
-             LazDir+PathDelim+'ide',InhOptStrs[icoUnitPath],CompiledUnitExt,'IDE');
+                     EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+'ide',
+                     InheritedOptionStrings[icoUnitPath],
+                     CompiledUnitExt,'IDE');
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Check UnitPath for ambiguous pascal files failed.');
       exit;
@@ -7676,7 +7678,8 @@ begin
 
     // save extra options
     IDEBuildFlags:=Flags;
-    Result:=fBuilder.SaveIDEMakeOptions(IDEBuildFlags-[blfUseMakeIDECfg,blfDontClean]+[blfBackupOldExe]);
+    Result:=SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,PkgOptions,
+               IDEBuildFlags-[blfUseMakeIDECfg,blfDontClean]+[blfBackupOldExe]);
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
       exit;
@@ -7685,19 +7688,24 @@ begin
     // make lazarus ide
     SourceEditorManager.ClearErrorLines;
     IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean];
-    Result:=fBuilder.MakeLazarus(IDEBuildFlags);
+    Result:=MakeLazarus(BuildLazProfiles.Current,
+                        {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
+                        GlobalMacroList,
+                        PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
+                        EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags,
+                        ProfileChanged);
     if Result<>mrOk then exit;
 
-    if fBuilder.ProfileChanged then
+    if ProfileChanged then
       MiscellaneousOptions.Save;
   finally
-    if BuilderCreated then
-      FreeAndNil(fBuilder);
     MainBuildBoss.SetBuildTargetProject1(true);
+
     DoCheckFilesOnDisk;
     {$IFNDEF EnableNewExtTools}
     MessagesView.EndBlock;
     {$ENDIF}
+
     if Result in [mrOK, mrIgnore] then
       CompileProgress.Ready(lisinfoBuildSuccess)
     else
