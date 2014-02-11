@@ -59,7 +59,7 @@ uses
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
   SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat, SynHighlighterIni,
-  SynHighlighterPo, SynEditMarkupIfDef,
+  SynHighlighterPo,
   // codetools
   LinkScanner, CodeToolManager,
   // IDEIntf
