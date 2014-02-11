@@ -3988,7 +3988,8 @@ begin
     if not AValue then begin
       FDataset.FreeBookmark(Pointer(Items[Index]));
       {$IFNDEF noautomatedbookmark}
-      SetLength(TBookmark(FList[Index]),0); // decrease reference count
+      Bookmark := FList[Index];
+      SetLength(TBookmark(Bookmark),0); // decrease reference count
       {$ENDIF noautomatedbookmark}
       FList.Delete(Index);
       FGrid.Invalidate;
@@ -4027,12 +4028,14 @@ end;
 procedure TBookmarkList.Clear;
 var
   i: Integer;
+  Bookmark: Pointer;
 begin
   for i:=0 to FList.Count-1 do
   begin
     FDataset.FreeBookmark(Items[i]);
     {$IFNDEF noautomatedbookmark}
-    SetLength(TBookmark(FList[i]),0); // decrease reference count
+    Bookmark := FList[i];
+    SetLength(TBookmark(Bookmark),0); // decrease reference count
     {$ENDIF noautomatedbookmark}
   end;
   FList.Clear;
@@ -4042,12 +4045,14 @@ end;
 procedure TBookmarkList.Delete;
 var
   i: Integer;
+  Bookmark: Pointer;
 begin
   for i := 0 to FList.Count - 1 do begin
     FDataset.GotoBookmark(Items[i]);
     FDataset.Delete;
     {$IFNDEF noautomatedbookmark}
-    SetLength(TBookmark(FList[i]),0); // decrease reference count
+    Bookmark := FList[i];
+    SetLength(TBookmark(Bookmark),0); // decrease reference count
     {$ENDIF noautomatedbookmark}
     FList.Delete(i);
   end;
