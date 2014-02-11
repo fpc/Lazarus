@@ -7179,7 +7179,9 @@ begin
     and (not (pbfDoNotCompileProject in Flags)) then begin
       try
         // change tool status
-        OldToolStatus := ToolStatus;  // It can still be itDebugger, if the debugger is still stopping. Prevent any "Run" command after building, until the debugger is clear
+        //  It can still be itDebugger, if the debugger is still stopping.
+        //  Prevent any "Run" command after building, until the debugger is clear.
+        OldToolStatus := ToolStatus;
         ToolStatus:=itBuilder;
 
         {$IFDEF EnableNewExtTools}
@@ -7614,9 +7616,8 @@ var
   BuilderCreated: Boolean;
 begin
   if ToolStatus<>itNone then begin
-    IDEMessageDialog(lisNotNow,
-      lisYouCanNotBuildLazarusWhileDebuggingOrCompiling,
-      mtError,[mbCancel]);
+    IDEMessageDialog(lisNotNow,lisYouCanNotBuildLazarusWhileDebuggingOrCompiling,
+                     mtError,[mbCancel]);
     Result:=mrCancel;
     exit;
   end;

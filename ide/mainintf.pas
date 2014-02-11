@@ -66,33 +66,30 @@ uses
   PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf,
   CompOptsIntf, LazIDEIntf,
   // IDE
-  LazConf, LazarusIDEStrConsts,
-  ProjectDefs, Project, PublishModule, BuildLazDialog,
-  TransferMacros, IDEDefs, ProgressDlg,
-  EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
-  IDEOptionDefs, PackageDefs;
+  LazConf, LazarusIDEStrConsts, ProjectDefs, Project, PublishModule, BuildLazDialog,
+  TransferMacros, ProgressDlg, EnvironmentOpts, EditorOptions, CompilerOptions,
+  KeyMapping, IDEProcs, IDEDefs, IDEOptionDefs, PackageDefs;
 
 type
   // The IDE is at anytime in a specific state:
   TIDEToolStatus = (
-    itNone,      // The default mode. All editing allowed.
-    itExiting,   // the ide is shutting down
-    itBuilder,   // compiling (the project, a package, an external tool)
-                 //    Loading/Saving/Debugging is not allowed.
-    itDebugger,  // debugging the project.
-                 //    Loading/Saving/Compiling is not allowed.
-    itCodeTools, // the CodeToolBoss is working and has called the progress
-                 //    event.
+    itNone,            // The default mode. All editing allowed.
+    itExiting,         // the ide is shutting down
+    itBuilder,         // compiling (the project, a package, IDE itself, an external tool)
+                       //    Loading/Saving/Debugging is not allowed.
+    itDebugger,        // debugging the project.
+                       //    Loading/Saving/Compiling is not allowed.
+    itCodeTools,       // the CodeToolBoss is working and has called the progress event.
     itCodeToolAborting,// the CodeToolBoss is working and is about to abort
-    itCustom     // this state is not used yet.
+    itCustom           // this state is not used yet.
     );
 
   // window in front
   TDisplayState = (
-    dsSource,     // focussing sourcenotebook
-    dsInspector,  // focussing object inspector after Source
-    dsForm,       // focussing designer form
-    dsInspector2  // focussing object inspector after form
+    dsSource,          // focussing sourcenotebook
+    dsInspector,       // focussing object inspector after Source
+    dsForm,            // focussing designer form
+    dsInspector2       // focussing object inspector after form
     );
 
   // revert file flags
