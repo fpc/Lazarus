@@ -856,6 +856,18 @@ begin
     ExpResult(svfCardinal, 1021);
     ExpFlags([svfCardinal, svfOrdinal, svfAddress]);
 
+    ImgLoader.TestStackFrame.Rec1.FBool := False;
+    StartTest('Rec1.FBool');
+    ExpResult(svfBoolean, False);
+
+    ImgLoader.TestStackFrame.Rec1.FBool := True;
+    StartTest('Rec1.FBool');
+    ExpResult(svfBoolean, True);
+
+    ImgLoader.TestStackFrame.Rec1.FBool := Boolean(100);
+    StartTest('Rec1.FBool');
+    ExpResult(svfBoolean, True);
+    ExpResult(svfOrdinal, 100);
 
     StartInvalTest('TTestSetup1Record3(Rec1)', 'xxx'); // wrong size
     StartInvalTest('TTestSetup1Record3(Rec1).FWord', 'xxx'); // wrong size

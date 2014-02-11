@@ -2081,7 +2081,7 @@ end;
 function TDbgDwarfSetSymbolValue.GetAsCardinal: QWord;
 begin
   Result := 0;
-  if FSize <= SizeOf(Result) then
+  if (FSize <= SizeOf(Result)) and (length(FMem) > 0) then
     move(FMem[0], Result, FSize);
 end;
 
@@ -3807,6 +3807,7 @@ procedure TDwarfLocationExpression.Evaluate;
   procedure SetError;
   begin
     FStack.Push(0, lseError); // Mark as failed
+    debugln(['!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TDwarfLocationExpression ERROR']);
   end;
 
   function AssertAddressOnStack: Boolean;
