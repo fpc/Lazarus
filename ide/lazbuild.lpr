@@ -202,20 +202,12 @@ begin
   end;
 end;
 
-Function ParamCount: Integer;
+Function ToolParamCount: Integer;
 begin
   Result := GetParamsAndCfgFile.Count - 1;
 end;
 
-Function Paramstr(Param : Integer) : Ansistring;
-begin
-  if Param >= GetParamsAndCfgFile.Count then
-    Result := ''
-  else
-    Result := GetParamsAndCfgFile[Param];
-end;
-
-Function ParamStrUTF8(Param : Integer) : Ansistring;
+Function ToolParamStr(Param : Integer) : Ansistring;
 begin
   if Param >= GetParamsAndCfgFile.Count then
     Result := ''
@@ -362,15 +354,12 @@ end;
 
 function TLazBuildApplication.GetParams(Index: Integer): String;
 begin
-  if Index >= GetParamsAndCfgFile.Count then
-    Result := ''
-  else
-    Result := GetParamsAndCfgFile[Index];
+  Result := ToolParamStr(Index);
 end;
 
 function TLazBuildApplication.GetParamCount: Integer;
 begin
-  Result := GetParamsAndCfgFile.Count - 1;
+  Result := ToolParamCount;
 end;
 
 function TLazBuildApplication.BuildFile(Filename: string): boolean;
@@ -1293,9 +1282,9 @@ Var
 begin
   Result:='';
   I:=1;
-  While (I<=ParamCount) and (Result='') do
+  While (I<=ToolParamCount) and (Result='') do
     begin
-    O:=Paramstr(I);
+    O:=ToolParamStr(I);
     If (Length(O)=0) or (O[1]<>OptionChar) then
       begin
       If Assigned(NonOpts) then
@@ -1343,10 +1332,10 @@ begin
           end
         else // Short Option.
           begin
-          HaveArg:=(I<ParamCount) and (Length(ParamStr(I+1))>0)
-                   and (ParamStr(I+1)[i]<>OptionChar);
+          HaveArg:=(I<ToolParamCount) and (Length(ToolParamStr(I+1))>0)
+                   and (ToolParamStr(I+1)[i]<>OptionChar);
           If HaveArg then
-            OV:=Paramstr(I+1);
+            OV:=ToolParamStr(I+1);
           If Not CaseSensitiveOptions then
             O:=LowerCase(O);
           L:=Length(O);
@@ -1468,11 +1457,11 @@ var
   p: String;
 begin
   Result:=false;
-  if (ParamCount<=0)
-   or (CompareText(ParamStr(1),'--help')=0)
-   or (CompareText(ParamStr(1),'-help')=0)
-   or (CompareText(ParamStr(1),'-?')=0)
-   or (CompareText(ParamStr(1),'-h')=0)
+  if (ToolParamCount<=0)
+   or (CompareText(ToolParamStr(1),'--help')=0)
+   or (CompareText(ToolParamStr(1),'-help')=0)
+   or (CompareText(ToolParamStr(1),'-?')=0)
+   or (CompareText(ToolParamStr(1),'-h')=0)
   then begin
     WriteUsage;
     exit;
@@ -1487,8 +1476,8 @@ begin
   end;
 
   // ConsoleVerbosity
-  for i:=1 to ParamCount do begin
-    p:=ParamStr(i);
+  for i:=1 to ToolParamCount do begin
+    p:=ToolParamStr(i);
     if p='--verbose' then
       inc(ConsoleVerbosity)
     else if (p='-q') or (p='--quiet') then
