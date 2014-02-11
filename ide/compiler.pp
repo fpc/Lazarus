@@ -112,7 +112,7 @@ type
     procedure SetValue(aValue: string; aOrigLine: integer);
   protected
     procedure ParseEditKind; virtual;
-    procedure ParseOption(aDescr: string; aIndent: integer);
+    procedure ParseOption(aDescr: string; aIndent: integer); virtual;
   public
     constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
@@ -141,9 +141,11 @@ type
     fOwnerReader: TCompilerOptReader;
     // List of options belonging to this group.
     fCompilerOpts: TCompilerOptList;
+    fIncludeNegativeOpt: Boolean; // Each option has a variation with "NO" appended.
     function OneCharOptions(aOptAndValue: string): TCompilerOpt;
   protected
     procedure ParseEditKind; override;
+    procedure ParseOption(aDescr: string; aIndent: integer); override;
   public
     constructor Create(aOwnerReader: TCompilerOptReader; aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
@@ -194,6 +196,7 @@ type
     procedure CopyOptions(aRoot: TCompilerOpt);
     function FindLowestOrigLine(aStrings: TStrings; out aOrigLine: Integer): integer;
     procedure ReadVersion(s: string);
+    procedure CreateNewGroupItem(aGroup: TCompilerOptGroup; aTxt: string);
     procedure AddGroupItems(aGroup: TCompilerOptGroup; aItems: TStrings);
     function ParseI(aLines: TStringList): TModalResult;
     function ParseH(aLines: TStringList): TModalResult;
@@ -513,9 +516,6 @@ begin
     // Move <x> in the end to Suffix. We need the pure option later.
     fSuffix := Copy(fOption, i-2, i);
     fOption := Copy(fOption, 1, i-3);
-    i := Length(fOption);
-    if Copy(fOption, i-3, 4) = '[NO]' then
-      SetLength(fOption, i-4);
   end;
   if fOwnerGroup.fIgnored or IsIgnoredOption(fOption) then
     fIgnored := True;
@@ -759,6 +759,17 @@ end;
 procedure TCompilerOptGroup.ParseEditKind;
 begin
   fEditKind := oeGroup;
+end;
+
+procedure TCompilerOptGroup.ParseOption(aDescr: string; aIndent: integer);
+var
+  i: Integer;
+begin
+  inherited ParseOption(aDescr, aIndent);
+  i := Length(fOption);
+  fIncludeNegativeOpt := Copy(fOption, i-3, 4) = '[NO]';
+  if fIncludeNegativeOpt then
+    SetLength(fOption, i-4);
 end;
 
 { TCompilerOptSet }
@@ -1013,17 +1024,25 @@ begin
   end;
 end;
 
-procedure TCompilerOptReader.AddGroupItems(aGroup: TCompilerOptGroup; aItems: TStrings);
+procedure TCompilerOptReader.CreateNewGroupItem(aGroup: TCompilerOptGroup; aTxt: string);
 var
   Opt: TCompilerOpt;
+begin
+  Opt := TCompilerOpt.Create(aGroup);  // Add it under a group
+  Opt.fOption := aGroup.Option + aTxt;
+  Opt.fIndentation := aGroup.Indentation+4;
+  Opt.fEditKind := oeBoolean;
+end;
+
+procedure TCompilerOptReader.AddGroupItems(aGroup: TCompilerOptGroup; aItems: TStrings);
+var
   i: Integer;
 begin
   for i := 1 to aItems.Count-1 do        // Skip the first empty item.
   begin
-    Opt := TCompilerOpt.Create(aGroup);  // Add it under a group
-    Opt.fOption := aGroup.Option + aItems[i];
-    Opt.fIndentation := aGroup.Indentation+4;
-    Opt.fEditKind := oeBoolean;
+    CreateNewGroupItem(aGroup, aItems[i]);
+    if aGroup.fIncludeNegativeOpt then
+      CreateNewGroupItem(aGroup, 'NO'+aItems[i]);
   end;
 end;
 
