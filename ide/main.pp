@@ -3384,6 +3384,9 @@ begin
   ecConvertDFM2LFM:
     DoConvertDFMtoLFM;
 
+  ecRescanFPCSrcDir:
+    mnuEnvRescanFPCSrcDirClicked(Self);
+
   ecManageExamples:
     mnuToolManageExamplesClicked(Self);
 
