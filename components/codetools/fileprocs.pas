@@ -26,14 +26,7 @@
 }
 unit FileProcs;
 
-{$ifdef FPC}
-  {$mode objfpc}
-{$else}
-  // delphi? if so then Windows is not defined but instead MSWindows is defined => define Windows in this case
-  {$ifdef MSWindows}
-    {$define Windows}
-  {$endif}
-{$endif}{$H+}
+{$mode objfpc}{$H+}
 
 interface
 

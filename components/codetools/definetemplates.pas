@@ -679,7 +679,7 @@ type
   TFPCTargetConfigCaches = class;
 
   { TFPCTargetConfigCache
-    Storing all information (maros, search paths) of one compiler
+    Storing all information (macros, search paths) of one compiler
     with one specific TargetOS and TargetCPU. }
 
   TFPCTargetConfigCache = class(TComponent)
@@ -7535,8 +7535,8 @@ function TFPCTargetConfigCache.FindRealCompilerInPath(aTargetCPU: string;
 
   function Search(const ShortFileName: string): string;
   begin
-    // fpc.exe first searches in -XP
-    // Maybe: extact -XP from extra options
+    // fpc.exe first searches in -Xp
+    // Maybe: extract -Xp from extra options
 
     // then fpc.exe searches in its own directory
     if Compiler<>'' then begin
