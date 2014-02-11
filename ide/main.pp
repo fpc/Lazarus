@@ -7572,8 +7572,7 @@ begin
   // prepare static auto install packages
   PkgOptions:='';
   // create inherited compiler options
-  PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(
-              PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
+  PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
 
   // check ambiguous units
   CodeToolBoss.GetFPCVersionForDirectory(
@@ -7659,8 +7658,7 @@ begin
     end;
 
     // create inherited compiler options
-    PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(
-                PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
+    PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
 
     // check ambiguous units
     CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.GetParsedLazarusDirectory,

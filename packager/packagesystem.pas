@@ -324,7 +324,7 @@ type
     procedure LoadStaticBasePackages;
     procedure LoadAutoInstallPackages(PkgList: TStringList);
     procedure SortAutoInstallDependencies;
-    function GetIDEInstallPackageOptions(FirstDependency: TPkgDependency;
+    function GetIDEInstallPackageOptions(
                  var InheritedOptionStrings: TInheritedCompOptsStrings): string;
     function SaveAutoInstallConfig: TModalResult;// for the uses section
     function IsStaticBasePackage(PackageName: string): boolean;
@@ -1752,7 +1752,6 @@ begin
 end;
 
 function TLazPackageGraph.GetIDEInstallPackageOptions(
-  FirstDependency: TPkgDependency;
   var InheritedOptionStrings: TInheritedCompOptsStrings): string;
 
   procedure AddOption(const s: string);
@@ -1772,7 +1771,7 @@ begin
   Result:='';
   // get all required packages
   PkgList:=nil;
-  GetAllRequiredPackages(nil,FirstDependency,PkgList,[pirCompileOrder]);
+  GetAllRequiredPackages(nil,FirstAutoInstallDependency,PkgList,[pirCompileOrder]);
   if PkgList=nil then exit;
   // get all usage options
   AddOptionsList:=GetUsageOptionsList(PkgList);
