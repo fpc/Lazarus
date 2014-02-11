@@ -154,10 +154,11 @@ type
 
   TLazarusBuilder = class
   private
+    UpdateRevisionInc: boolean;
     function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
       Macros: TTransferMacroList; const PackageOptions: string;
       Flags: TBuildLazarusFlags; var ExtraOptions: string;
-      out UpdateRevisionInc: boolean; out OutputDirRedirected: boolean;
+      out OutputDirRedirected: boolean;
       out TargetFilename: string): TModalResult;
     function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
   public
@@ -366,7 +367,7 @@ var
 
 var
   ExtraOptions: String;
-  OutputDirRedirected, UpdateRevisionInc: boolean;
+  OutputDirRedirected: boolean;
   IdeBuildMode: TIdeBuildMode;
   Dir: String;
   LazExeFilename: string;
@@ -465,7 +466,7 @@ begin
       // append extra Profile
       ExtraOptions:='';
       Result:=CreateIDEMakeOptions(Profile,Macros,PackageOptions,Flags,
-                               ExtraOptions,UpdateRevisionInc,OutputDirRedirected,
+                               ExtraOptions,OutputDirRedirected,
                                LazExeFilename);
       if Result<>mrOk then exit;
 
@@ -504,7 +505,7 @@ end;
 function TLazarusBuilder.CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
   Macros: TTransferMacroList; const PackageOptions: string;
   Flags: TBuildLazarusFlags; var ExtraOptions: string;
-  out UpdateRevisionInc: boolean; out OutputDirRedirected: boolean;
+  out OutputDirRedirected: boolean;
   out TargetFilename: string): TModalResult;
 
   procedure BackupExe(var ExeFilename: string);
@@ -808,11 +809,10 @@ function TLazarusBuilder.IsWriteProtected(Profile: TBuildLazarusProfile): Boolea
 // Returns True if Lazarus installation directory is write protected. Now uses OutputDirRedirected info.
 var
   ExOptions, LazExeFilename: String;
-  UpdRevInc: Boolean;
   ModRes: TModalResult;
 begin
   ModRes := CreateIDEMakeOptions(Profile, GlobalMacroList, '', [], ExOptions,
-                                 UpdRevInc, Result, LazExeFilename);
+                                 Result, LazExeFilename);
   if not (ModRes in [mrOk,mrIgnore]) then
     Result := True;
 end;
@@ -874,13 +874,12 @@ var
   Filename: String;
   fs: TFileStreamUTF8;
   OptionsAsText: String;
-  UpdateRevisionInc: boolean;
   OutputDirRedirected: boolean;
   LazExeFilename: string;
 begin
   ExOptions:='';
   Result:=CreateIDEMakeOptions(Profile, Macros, PackageOptions,
-      Flags, ExOptions, UpdateRevisionInc, OutputDirRedirected, LazExeFilename);
+      Flags, ExOptions, OutputDirRedirected, LazExeFilename);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
   try
