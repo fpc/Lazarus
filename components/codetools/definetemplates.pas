@@ -7571,11 +7571,17 @@ var
   Postfix: String;
 begin
   Result:='';
+
   CompiledTargetCPU:=GetCompiledTargetCPU;
   if aTargetCPU='' then
     aTargetCPU:=CompiledTargetCPU;
   Cross:=aTargetCPU<>CompiledTargetCPU;
+
+  // The -V<postfix> parameter searches for ppcx64-postfix instead of ppcx64
   Postfix:=GetLastFPCParameter(CompilerOptions,'-V');
+  if Postfix<>'' then
+    Postfix:='-'+Postfix;
+
   Result:=Search(GetDefaultCompilerFilename(aTargetCPU,Cross)+Postfix);
   if (Result='') and Cross then begin
     Result:=Search(GetDefaultCompilerFilename(aTargetCPU,false)+Postfix);
