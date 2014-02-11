@@ -72,6 +72,8 @@ type
     );
   TBuildLazarusFlags = set of TBuildLazarusFlag;
 
+  TLazarusBuilder = class;
+
   { TConfigureBuildLazarusDlg }
 
   TConfigureBuildLazarusDlg = class(TForm)
@@ -129,15 +131,17 @@ type
     procedure SaveSettingsButtonClick(Sender: TObject);
     procedure TargetDirectoryButtonClick(Sender: TObject);
   private
+    fBuilder: TLazarusBuilder;
     // Data is copied by caller before and after opening this dialog.
     fProfiles: TBuildLazarusProfiles;
     fUpdatingProfileCombo: Boolean;
     fImageIndexPackage: Integer;
     fImageIndexRequired: Integer;
     fImageIndexInherited: Integer;
-    procedure PrepareClose;
     procedure SetupInfoPage;
     procedure UpdateInheritedTree;
+    procedure PrepareClose;
+    procedure ShowHideCleanup(aShow: Boolean);
   public
     constructor Create(TheOwner: TComponent); overload; reintroduce;
     destructor Destroy; override;
@@ -155,6 +159,7 @@ type
       Flags: TBuildLazarusFlags; var ExtraOptions: string;
       out UpdateRevisionInc: boolean; out OutputDirRedirected: boolean;
       out TargetFilename: string): TModalResult;
+    function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
   public
     function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
 
@@ -204,6 +209,7 @@ begin
   Result := mrCancel;
   ConfigBuildLazDlg := TConfigureBuildLazarusDlg.Create(nil);
   try
+    ConfigBuildLazDlg.fBuilder := Self;
     ConfigBuildLazDlg.fProfiles.Assign(AProfiles); // Copy profiles to dialog.
     Result := ConfigBuildLazDlg.ShowModal;
     if Result in [mrOk,mrYes,mrAll] then
@@ -798,6 +804,19 @@ begin
   //DebugLn(['CreateBuildLazarusOptions ',MMDef.Name,' ',ExtraOptions]);
 end;
 
+function TLazarusBuilder.IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
+// Returns True if Lazarus installation directory is write protected. Now uses OutputDirRedirected info.
+var
+  ExOptions, LazExeFilename: String;
+  UpdRevInc: Boolean;
+  ModRes: TModalResult;
+begin
+  ModRes := CreateIDEMakeOptions(Profile, GlobalMacroList, '', [], ExOptions,
+                                 UpdRevInc, Result, LazExeFilename);
+  if not (ModRes in [mrOk,mrIgnore]) then
+    Result := True;
+end;
+
 function TLazarusBuilder.SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
   Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
@@ -1115,6 +1134,7 @@ begin
     BuildProfileComboBox.Items.Add(fProfiles[i].Name);
   BuildProfileCombobox.ItemIndex:=fProfiles.CurrentIndex;
   CopyProfileToUI(fProfiles.Current); // Copy current selection to UI.
+  ShowHideCleanup(not fBuilder.IsWriteProtected(fProfiles.Current));
   BuildProfileComboBox.Items.EndUpdate;
   fUpdatingProfileCombo:=False;
   RestartAfterBuildCheckBox.Checked:=fProfiles.RestartAfterBuild;
@@ -1205,6 +1225,12 @@ begin
     Format(lisMenuBuildLazarusProf, [fProfiles.Current.Name]);
 end;
 
+procedure TConfigureBuildLazarusDlg.ShowHideCleanup(aShow: Boolean);
+begin
+  CleanAllRadioButton.Visible:=aShow;
+  CleanOnceCheckBox.Visible:=aShow;
+end;
+
 procedure TConfigureBuildLazarusDlg.CompileAdvancedButtonClick(Sender: TObject);
 // mrOk=change selected profiles. Selected profiels will be saved or discarded
 // depending on the calling dialog
@@ -1277,8 +1303,7 @@ begin
   end;
 end;
 
-procedure TConfigureBuildLazarusDlg.FormClose(Sender: TObject; var CloseAction:
-  TCloseAction);
+procedure TConfigureBuildLazarusDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
@@ -1303,12 +1328,12 @@ end;
 procedure TConfigureBuildLazarusDlg.BuildProfileComboBoxSelect(Sender: TObject);
 begin
   // QT binding calls this also when items are added to list. It shouldn't.
-  if (fProfiles.Count>0) and not fUpdatingProfileCombo then
-    if (Sender as TComboBox).ItemIndex<>-1 then begin
-      CopyUIToProfile(fProfiles.Current);    // Save old selection from UI.
-      fProfiles.CurrentIndex:=(Sender as TComboBox).ItemIndex;
-      CopyProfileToUI(fProfiles.Current);    // Copy new selection to UI.
-    end;
+  if (fProfiles.Count=0) or fUpdatingProfileCombo then Exit;
+  if (Sender as TComboBox).ItemIndex=-1 then Exit;
+  CopyUIToProfile(fProfiles.Current);      // Save old selection from UI.
+  fProfiles.CurrentIndex:=(Sender as TComboBox).ItemIndex;
+  CopyProfileToUI(fProfiles.Current);      // Copy new selection to UI.
+  ShowHideCleanup(not fBuilder.IsWriteProtected(fProfiles.Current));
 end;
 
 end.
