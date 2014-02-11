@@ -817,7 +817,7 @@ type
 
   { TFPCUnitSetCache
     Unit name to FPC source file.
-    Specific to one compiler, targetos, targetcpu and FPC source directory. }
+    Specific to one compiler, compileroptions, targetos, targetcpu and FPC source directory. }
 
   TFPCUnitSetCache = class(TComponent)
   private
@@ -836,7 +836,7 @@ type
     fUnitStampOfFPC: integer;   // FConfigCache.ChangeStamp at creation of fUnitToSourceTree
     fUnitStampOfFiles: integer; // fSourceCache.ChangeStamp at creation of fUnitToSourceTree
     fUnitStampOfRules: integer; // fSourceRules.ChangeStamp at creation of fUnitToSourceTree
-    fSrcDuplicates: TStringToStringTree; // unit to semicolon separated list of files
+    fSrcDuplicates: TStringToStringTree; // unit to list of files (semicolon separated)
     fFlags: TFPCUnitToSrcCacheFlags;
     procedure SetCompilerFilename(const AValue: string);
     procedure SetCompilerOptions(const AValue: string);
@@ -901,7 +901,7 @@ type
     property SourceCaches: TFPCSourceCaches read FSourceCaches write SetSourceCaches;
     property ConfigCaches: TFPCTargetConfigCaches read FConfigCaches write SetConfigCaches;
     property TestFilename: string read FTestFilename write FTestFilename; // an empty file to test the compiler, will be auto created
-    property ExtraOptions: string read FExtraOptions write FExtraOptions; // additional compiler options not used as key
+    property ExtraOptions: string read FExtraOptions write FExtraOptions; // additional compiler options not used as key, e.g. -Fr<language file>
     function GetFPCVersion(const CompilerFilename, TargetOS, TargetCPU: string;
                            UseCompiledVersionAsDefault: boolean): string;
     function FindUnitSet(const CompilerFilename, TargetOS, TargetCPU,
@@ -950,6 +950,7 @@ function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
                       out Infos: TFPCInfoStrings): boolean;
 function RunFPCInfo(const CompilerFilename: string;
                    InfoTypes: TFPCInfoTypes; const Options: string =''): string;
+function ExtractFPCFrontEndParameters(const CmdLine: string): string;
 function SplitFPCVersion(const FPCVersionString: string;
                         out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
 function ParseFPCVerbose(List: TStrings; // fpc -va output
@@ -1356,6 +1357,53 @@ begin
   finally
     List.free;
   end;
+end;
+
+function ExtractFPCFrontEndParameters(const CmdLine: string): string;
+// extract the parameters for the FPC frontend tool fpc.exe
+// The result is normalized:
+//   - only the last value
+//   - order is: -T -P -V -Xp
+
+  procedure Add(const Name, Value: string);
+  begin
+    if Value='' then exit;
+    if Result<>'' then Result+=' ';
+    Result+='-'+Name+StrToCmdLineParam(Value);
+  end;
+
+var
+  Position: Integer;
+  Param, ParamT, ParamP, ParamV, ParamXp: String;
+  StartPos: integer;
+  p: PChar;
+begin
+  Result:='';
+  ParamT:='';
+  ParamP:='';
+  ParamV:='';
+  ParamXp:='';
+  Position:=1;
+  while ReadNextFPCParameter(CmdLine,Position,StartPos) do begin
+    Param:=ExtractFPCParameter(CmdLine,StartPos);
+    if Param='' then continue;
+    p:=PChar(Param);
+    if p^<>'-' then continue;
+    case p[1] of
+    'T': ParamT:=copy(Param,3,255);
+    'P': ParamP:=copy(Param,3,255);
+    'V': ParamV:=copy(Param,3,length(Param));
+    'X':
+      case p[2] of
+      'p': ParamXp:=copy(Param,4,length(Param));
+      end;
+    end;
+  end;
+  // add parameters
+  Add('T',ParamT);
+  Add('P',ParamP);
+  Add('V',ParamV);
+  Add('Xp',ParamXp);
 end;
 
 function SplitFPCVersion(const FPCVersionString: string; out FPCVersion,
