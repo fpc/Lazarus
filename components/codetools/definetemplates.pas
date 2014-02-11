@@ -7568,15 +7568,17 @@ function TFPCTargetConfigCache.FindRealCompilerInPath(aTargetCPU: string;
 var
   CompiledTargetCPU: String;
   Cross: Boolean;
+  Postfix: String;
 begin
   Result:='';
   CompiledTargetCPU:=GetCompiledTargetCPU;
   if aTargetCPU='' then
     aTargetCPU:=CompiledTargetCPU;
   Cross:=aTargetCPU<>CompiledTargetCPU;
-  Result:=Search(GetDefaultCompilerFilename(aTargetCPU,Cross));
+  Postfix:=GetLastFPCParameter(CompilerOptions,'-V');
+  Result:=Search(GetDefaultCompilerFilename(aTargetCPU,Cross)+Postfix);
   if (Result='') and Cross then begin
-    Result:=Search(GetDefaultCompilerFilename(aTargetCPU,false));
+    Result:=Search(GetDefaultCompilerFilename(aTargetCPU,false)+Postfix);
     if Result='' then exit;
   end;
   if ResolveLinks then
