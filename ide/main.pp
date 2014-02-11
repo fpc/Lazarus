@@ -3190,19 +3190,15 @@ var
   s: String;
 begin
   //debugln('TMainIDE.OnProcessIDECommand ',dbgs(Command));
-
   Handled:=true;
 
   case Command of
-
+  ecEditContextHelp: ShowContextHelpEditor(Sender);
   ecContextHelp:
     if Sender=MessagesView then
       HelpBoss.ShowHelpForMessage{$IFDEF EnableNewExtTools}(){$ELSE}(-1){$ENDIF}
     else if Sender is TObjectInspectorDlg then
       HelpBoss.ShowHelpForObjectInspector(Sender);
-  ecEditContextHelp:
-    ShowContextHelpEditor(Sender);
-
   ecSave:
     begin
       if Assigned(ObjectInspector1) then
@@ -3218,16 +3214,9 @@ begin
       else if Sender is TSourceNotebook then
         mnuSaveClicked(Self);
     end;
-
-  ecOpen:
-    mnuOpenClicked(Self);
-
-  ecSaveAll:
-    DoSaveAll([sfCheckAmbiguousFiles]);
-
-  ecQuit:
-    mnuQuitClicked(Self);
-
+  ecOpen:                     mnuOpenClicked(Self);
+  ecSaveAll:                  DoSaveAll([sfCheckAmbiguousFiles]);
+  ecQuit:                     mnuQuitClicked(Self);
   ecCompile:
     begin
       GetCurrentUnit(ASrcEdit,AnUnitInfo);
@@ -3236,12 +3225,6 @@ begin
       else
         DoBuildProject(crCompile, []);
     end;
-
-  ecBuild: DoBuildProject(crBuild, [pbfCleanCompile]);
-  ecCleanUpCompiled: mnuCleanUpCompiledProjectClicked(nil);
-  ecQuickCompile: DoQuickCompile;
-  ecAbortBuild: DoAbortBuild;
-
   ecRun:
     begin
       GetCurrentUnit(ASrcEdit,AnUnitInfo);
@@ -3251,7 +3234,6 @@ begin
       else
         DoRunProject;
     end;
-
   ecAttach:
     if ToolStatus = itNone then begin
       if DebugBoss.InitDebugger([difInitForAttach]) then begin
@@ -3266,172 +3248,66 @@ begin
             ToolStatus := itNone;
       end;
     end;
-  ecDetach:
-    begin
-      DebugBoss.Detach;
-    end;
-
-  ecBuildFile:
-    DoBuildFile(false);
-
-  ecRunFile:
-    DoRunFile;
-
-  ecJumpToPrevError:
-    DoJumpToNextError(false);
-
-  ecJumpToNextError:
-    DoJumpToNextError(true);
-
-  ecFindInFiles:
-    DoFindInFiles;
-
+  ecDetach:                   DebugBoss.Detach;
+  ecBuild:                    DoBuildProject(crBuild, [pbfCleanCompile]);
+  ecCleanUpCompiled:          mnuCleanUpCompiledProjectClicked(nil);
+  ecQuickCompile:             DoQuickCompile;
+  ecAbortBuild:               DoAbortBuild;
+  ecBuildFile:                DoBuildFile(false);
+  ecRunFile:                  DoRunFile;
+  ecJumpToPrevError:          DoJumpToNextError(false);
+  ecJumpToNextError:          DoJumpToNextError(true);
+  ecFindInFiles:              DoFindInFiles;
   ecFindProcedureDefinition,
-  ecFindProcedureMethod:
-    DoJumpToOtherProcedureSection;
-
-  ecFindDeclaration:
-    DoFindDeclarationAtCursor;
-
-  ecFindIdentifierRefs:
-    DoFindRenameIdentifier(false);
-
-  ecFindUsedUnitRefs:
-    DoFindUsedUnitReferences;
-
-  ecRenameIdentifier:
-    DoFindRenameIdentifier(true);
-
-  ecShowAbstractMethods:
-    DoShowAbstractMethods;
-
-  ecRemoveEmptyMethods:
-    DoRemoveEmptyMethods;
-
-  ecRemoveUnusedUnits:
-    DoRemoveUnusedUnits;
-
-  ecUseUnit:
-    DoUseUnit;
-
-  ecFindOverloads:
-    DoFindOverloads;
-
-  ecFindBlockOtherEnd:
-    DoGoToPascalBlockOtherEnd;
-
-  ecFindBlockStart:
-    DoGoToPascalBlockStart;
-
-  ecGotoIncludeDirective:
-    DoGotoIncludeDirective;
-
-  ecCompleteCode:
-    DoCompleteCodeAtCursor;
-
-  ecExtractProc:
-    DoExtractProcFromSelection;
-
-  ecToggleMessages:
-    // user used shortcut/menu item to show the window, so focusing is ok.
-    DoShowMessagesView;
-
-  ecToggleCodeExpl:
-    DoShowCodeExplorer(true);
-
-  ecToggleCodeBrowser:
-    DoShowCodeBrowser(true);
-
-  ecToggleRestrictionBrowser:
-    DoShowRestrictionBrowser(true);
-
-  ecViewComponents:
-    DoShowComponentList(true);
-
-  ecToggleFPDocEditor:
-    DoShowFPDocEditor(true,true);
-
-  ecViewProjectUnits:
-    DoViewUnitsAndForms(false);
-
-  ecViewProjectForms:
-    DoViewUnitsAndForms(true);
-
-  ecProjectInspector:
-    DoShowProjectInspector(true);
-
-  ecConfigCustomComps:
-    PkgBoss.ShowConfigureCustomComponents;
-
-  ecExtToolFirst..ecExtToolLast:
-    DoRunExternalTool(Command-ecExtToolFirst,false);
-
-  ecSyntaxCheck:
-    DoCheckSyntax;
-
-  ecGuessUnclosedBlock:
-    DoJumpToGuessedUnclosedBlock(true);
-
-  ecGuessMisplacedIFDEF:
-    DoJumpToGuessedMisplacedIFDEF(true);
-
-  ecMakeResourceString:
-    DoMakeResourceString;
-
-  ecDiff:
-    DoDiff;
-
-  ecConvertDFM2LFM:
-    DoConvertDFMtoLFM;
-
-  ecRescanFPCSrcDir:
-    mnuEnvRescanFPCSrcDirClicked(Self);
-
-  ecManageExamples:
-    mnuToolManageExamplesClicked(Self);
-
-  ecBuildLazarus:
-    mnuToolBuildLazarusClicked(Self);
-
-  ecBuildAdvancedLazarus:
-    mnuToolBuildAdvancedLazarusClicked(Self);
-
-  ecConfigBuildLazarus:
-    mnuToolConfigBuildLazClicked(Self);
-
-  ecManageSourceEditors:
-    mnuWindowManagerClicked(Self);
-
-  ecToggleFormUnit:
-    mnuToggleFormUnitClicked(Self);
-
-  ecToggleObjectInsp:
-    mnuViewInspectorClicked(Self);
-
-  ecToggleSearchResults:
-    mnuViewSearchResultsClick(Self);
-
-  ecAboutLazarus:
-    MainIDEBar.itmHelpAboutLazarus.OnClick(Self);
-
-  ecToggleBreakPoint:
-    SourceEditorManager.ActiveSourceWindow.ToggleBreakpointClicked(Self);
-
-  ecRemoveBreakPoint:
-    SourceEditorManager.ActiveSourceWindow.DeleteBreakpointClicked(Self);
-
-  ecProcedureList:
-    mnuSearchProcedureList(self);
-
-  ecInsertGUID:
-    mnuSourceInsertGUID(self);
-
-  ecInsertFilename:
-    mnuSourceInsertFilename(self);
-
-  ecViewMacroList:
-    mnuViewMacroListClick(self);
-
+  ecFindProcedureMethod:      DoJumpToOtherProcedureSection;
+  ecFindDeclaration:          DoFindDeclarationAtCursor;
+  ecFindIdentifierRefs:       DoFindRenameIdentifier(false);
+  ecFindUsedUnitRefs:         DoFindUsedUnitReferences;
+  ecRenameIdentifier:         DoFindRenameIdentifier(true);
+  ecShowAbstractMethods:      DoShowAbstractMethods;
+  ecRemoveEmptyMethods:       DoRemoveEmptyMethods;
+  ecRemoveUnusedUnits:        DoRemoveUnusedUnits;
+  ecUseUnit: DoUseUnit;
+  ecFindOverloads:            DoFindOverloads;
+  ecFindBlockOtherEnd:        DoGoToPascalBlockOtherEnd;
+  ecFindBlockStart:           DoGoToPascalBlockStart;
+  ecGotoIncludeDirective:     DoGotoIncludeDirective;
+  ecCompleteCode:             DoCompleteCodeAtCursor;
+  ecExtractProc:              DoExtractProcFromSelection;
+  // user used shortcut/menu item to show the window, so focusing is ok.
+  ecToggleMessages:           DoShowMessagesView;
+  ecToggleCodeExpl:           DoShowCodeExplorer(true);
+  ecToggleCodeBrowser:        DoShowCodeBrowser(true);
+  ecToggleRestrictionBrowser: DoShowRestrictionBrowser(true);
+  ecViewComponents:           DoShowComponentList(true);
+  ecToggleFPDocEditor:        DoShowFPDocEditor(true,true);
+  ecViewProjectUnits:         DoViewUnitsAndForms(false);
+  ecViewProjectForms:         DoViewUnitsAndForms(true);
+  ecProjectInspector:         DoShowProjectInspector(true);
+  ecConfigCustomComps:        PkgBoss.ShowConfigureCustomComponents;
+  ecExtToolFirst..ecExtToolLast: DoRunExternalTool(Command-ecExtToolFirst,false);
+  ecSyntaxCheck:              DoCheckSyntax;
+  ecGuessUnclosedBlock:       DoJumpToGuessedUnclosedBlock(true);
+  ecGuessMisplacedIFDEF:      DoJumpToGuessedMisplacedIFDEF(true);
+  ecMakeResourceString:       DoMakeResourceString;
+  ecDiff:                     DoDiff;
+  ecConvertDFM2LFM:           DoConvertDFMtoLFM;
+  ecRescanFPCSrcDir:          mnuEnvRescanFPCSrcDirClicked(Self);
+  ecManageExamples:           mnuToolManageExamplesClicked(Self);
+  ecBuildLazarus:             mnuToolBuildLazarusClicked(Self);
+  ecBuildAdvancedLazarus:     mnuToolBuildAdvancedLazarusClicked(Self);
+  ecConfigBuildLazarus:       mnuToolConfigBuildLazClicked(Self);
+  ecManageSourceEditors:      mnuWindowManagerClicked(Self);
+  ecToggleFormUnit:           mnuToggleFormUnitClicked(Self);
+  ecToggleObjectInsp:         mnuViewInspectorClicked(Self);
+  ecToggleSearchResults:      mnuViewSearchResultsClick(Self);
+  ecAboutLazarus:             MainIDEBar.itmHelpAboutLazarus.OnClick(Self);
+  ecToggleBreakPoint: SourceEditorManager.ActiveSourceWindow.ToggleBreakpointClicked(Self);
+  ecRemoveBreakPoint: SourceEditorManager.ActiveSourceWindow.DeleteBreakpointClicked(Self);
+  ecProcedureList:            mnuSearchProcedureList(self);
+  ecInsertGUID:               mnuSourceInsertGUID(self);
+  ecInsertFilename:           mnuSourceInsertFilename(self);
+  ecViewMacroList:            mnuViewMacroListClick(self);
   else
     Handled:=false;
     // let the bosses handle it
@@ -3446,7 +3322,6 @@ begin
       Handled:=IDECmd.Execute(IDECmd);
     end;
   end;
-
   //DebugLn('TMainIDE.OnProcessIDECommand Handled=',dbgs(Handled),' Command=',dbgs(Command));
 end;
 
