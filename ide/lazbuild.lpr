@@ -29,7 +29,7 @@ uses
   cthreads,
   {$ENDIF}
   Classes, SysUtils, CustApp, LCLProc, Dialogs, Forms, Controls, FileUtil,
-  Interfaces, InterfaceBase, UTF8Process, LConvEncoding,
+  masks, Interfaces, InterfaceBase, UTF8Process, LConvEncoding,
   // codetools
   CodeCache, CodeToolManager, DefineTemplates, Laz2_XMLCfg, LazUTF8,
   // IDEIntf
@@ -775,11 +775,158 @@ var
   TargetExeDir: String;
   NewBuildMode: TProjectBuildMode;
   CompilePolicy: TPackageUpdatePolicy;
-  i: Integer;
+  i,c: Integer;
   Note: String;
   NeedBuildAllFlag: Boolean;
   SubResult: TModalResult;
   MatrixOption: TBuildMatrixOption;
+  ModeMask: TMask;
+  CurResult: Boolean;
+
+  function StartBuilding : boolean;
+  begin
+    Result := false;
+
+    // then override specific options
+    if (OSOverride<>'') then
+      Project1.CompilerOptions.TargetOS:=OSOverride;
+    if (CPUOverride<>'') then
+      Project1.CompilerOptions.TargetCPU:=CPUOverride;
+    if (WidgetSetOverride<>'') then begin
+      MatrixOption:=Project1.BuildModes.SessionMatrixOptions.Add(bmotIDEMacro);
+      MatrixOption.Modes:=Project1.ActiveBuildMode.Identifier;
+      MatrixOption.MacroName:='LCLWidgetType';
+      MatrixOption.Value:=WidgetSetOverride;
+    end;
+    // apply options
+    MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);
+
+    if not SkipDependencies then begin
+      // compile required packages
+      CheckPackageGraphForCompilation(nil,Project1.FirstRequiredDependency);
+
+      PackageGraph.BeginUpdate(false);
+      try
+        // automatically compile required packages
+        CompilePolicy:=pupAsNeeded;
+        if BuildRecursive and BuildAll then
+          CompilePolicy:=pupOnRebuildingAll;
+        if PackageGraph.CompileRequiredPackages(nil,
+                                  Project1.FirstRequiredDependency,
+                                  not (pfUseDesignTimePackages in Project1.Flags),
+                                  CompilePolicy)<>mrOk
+        then
+          Error(ErrorBuildFailed,'Project dependencies of '+AFilename);
+      finally
+        PackageGraph.EndUpdate;
+      end;
+    end;
+
+    WorkingDir:=Project1.ProjectDirectory;
+    SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
+
+    // create unit output directory
+    UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
+    if not ForceDirectory(UnitOutputDirectory) then
+      Error(ErrorBuildFailed,'Unable to create project unit output directory '+UnitOutputDirectory);
+
+    // create target output directory
+    TargetExeName := Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
+    TargetExeDir := ExtractFilePath(TargetExeName);
+    if not ForceDirectory(TargetExeDir) then
+      Error(ErrorBuildFailed,'Unable to create project target directory '+TargetExeDir);
+
+    // update all lrs files
+    MainBuildBoss.UpdateProjectAutomaticFiles('');
+
+    // create application bundle
+    if Project1.UseAppBundle and (Project1.MainUnitID>=0)
+    and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
+    then begin
+      if not (CreateApplicationBundle(TargetExeName, Project1.Title) in [mrOk,mrIgnore]) then
+        Error(ErrorBuildFailed,'Unable to create application bundle for '+TargetExeName);
+      if not (CreateAppBundleSymbolicLink(TargetExeName) in [mrOk,mrIgnore]) then
+        Error(ErrorBuildFailed,'Unable to create application bundle symbolic link for '+TargetExeName);
+    end;
+
+    // regenerate resources
+    if not Project1.ProjResources.Regenerate(SrcFileName, False, True, '') then
+    begin
+      if ConsoleVerbosity>=-1 then
+        DebugLn('TLazBuildApplication.BuildProject Project1.Resources.Regenerate failed');
+    end;
+
+    // get compiler parameters
+    if CompilerOverride <> '' then
+      CompilerFilename := CompilerOverride
+    else
+      CompilerFilename:=Project1.GetCompilerFilename;
+    //DebugLn(['TLazBuildApplication.BuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
+    // Note: use absolute paths, same as TBuildManager.DoCheckIfProjectNeedsCompilation
+    CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
+                                           +' '+PrepareCmdLineOption(SrcFilename);
+
+    NeedBuildAllFlag:=false;
+    if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
+      // check if project is already uptodate
+      Note:='';
+      SubResult:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
+                                                           NeedBuildAllFlag,Note);
+      if (not BuildAll)
+      and (not (pfAlwaysBuild in Project1.Flags)) then begin
+        if SubResult=mrNo then begin
+          if ConsoleVerbosity>=0 then
+            debugln(['TLazBuildApplication.BuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
+          exit(true);
+        end;
+        if SubResult<>mrYes then
+        begin
+          if ConsoleVerbosity>=0 then
+            debugln(['TLazBuildApplication.BuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
+          exit(false);
+        end;
+      end;
+    end;
+
+    // execute compilation tool 'Before'
+    ToolBefore:=TProjectCompilationToolOptions(
+                                      Project1.CompilerOptions.ExecuteBefore);
+    if (crCompile in ToolBefore.CompileReasons) then begin
+      if ToolBefore.Execute(
+                       Project1.ProjectDirectory,lisExecutingCommandBefore)<>mrOk
+      then
+        Error(ErrorBuildFailed,'failed "tool before" of project '+AFilename);
+    end;
+
+    if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
+      // compile
+      // write state file to avoid building clean every time
+      if Project1.SaveStateFile(CompilerFilename,CompilerParams,false)<>mrOk then
+        Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
+      if TheCompiler.Compile(Project1,
+                              WorkingDir,CompilerFilename,CompilerParams,
+                              BuildAll or NeedBuildAllFlag,false,false)<>mrOk
+      then
+        Error(ErrorBuildFailed,'failed compiling of project '+AFilename);
+      // compilation succeded -> write state file
+      if Project1.SaveStateFile(CompilerFilename,CompilerParams,true)<>mrOk then
+        Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
+    end;
+
+    // execute compilation tool 'After'
+    ToolAfter:=TProjectCompilationToolOptions(
+                                       Project1.CompilerOptions.ExecuteAfter);
+    if (crCompile in ToolAfter.CompileReasons) then begin
+      if ToolAfter.Execute(
+                        Project1.ProjectDirectory,lisExecutingCommandAfter)<>mrOk
+      then
+        Error(ErrorBuildFailed,'failed "tool after" of project '+AFilename);
+    end;
+
+    // no need to check for mrOk, we are exit if it wasn't
+    Result:=true;
+  end;
+
 begin
   Result:=false;
   CloseProject(Project1);
@@ -792,12 +939,29 @@ begin
     Error(ErrorBuildFailed,'project has no main unit');
 
   // first override build mode
-  if (BuildModeOverride<>'') then begin
-    NewBuildMode:=Project1.BuildModes.Find(BuildModeOverride);
-    if NewBuildMode=nil then
+  if (BuildModeOverride<>'') then
+  begin
+    CurResult := true;
+
+    c := 0; // Matches counter
+
+    ModeMask := TMask.Create(BuildModeOverride,false);
+    for i := 0 to Project1.BuildModes.Count-1 do
+    begin
+      if ModeMask.Matches(Project1.BuildModes[i].Identifier) then
+      begin
+        inc(c);
+        Project1.ActiveBuildMode := Project1.BuildModes[i];
+        CurResult := CurResult and StartBuilding;
+      end;
+    end;
+    ModeMask.Free;
+
+    if c=0 then // No matches
     begin
       debugln([Format(lisERRORInvalidBuildMode, [BuildModeOverride])]);
-      if ConsoleVerbosity>=0 then begin
+      if ConsoleVerbosity>=0 then
+      begin
         debugln;
         if Project1.BuildModes.Count>1 then
         begin
@@ -808,7 +972,7 @@ begin
               dbgout('* ')
             else
               dbgout('  ');
-            debugln(Project1.BuildModes[i].Name);
+            debugln(Project1.BuildModes[i].Identifier);
           end;
         end else begin
           debugln(lisThisProjectHasOnlyTheDefaultBuildMode);
@@ -817,146 +981,11 @@ begin
       end;
       Halt(ErrorBuildFailed);
     end;
-    Project1.ActiveBuildMode:=NewBuildMode;
-  end;
-  // then override specific options
-  if (OSOverride<>'') then
-    Project1.CompilerOptions.TargetOS:=OSOverride;
-  if (CPUOverride<>'') then
-    Project1.CompilerOptions.TargetCPU:=CPUOverride;
-  if (WidgetSetOverride<>'') then begin
-    MatrixOption:=Project1.BuildModes.SessionMatrixOptions.Add(bmotIDEMacro);
-    MatrixOption.Modes:=Project1.ActiveBuildMode.Identifier;
-    MatrixOption.MacroName:='LCLWidgetType';
-    MatrixOption.Value:=WidgetSetOverride;
-  end;
-  // apply options
-  MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);
 
-  if not SkipDependencies then begin
-    // compile required packages
-    CheckPackageGraphForCompilation(nil,Project1.FirstRequiredDependency);
-
-    PackageGraph.BeginUpdate(false);
-    try
-      // automatically compile required packages
-      CompilePolicy:=pupAsNeeded;
-      if BuildRecursive and BuildAll then
-        CompilePolicy:=pupOnRebuildingAll;
-      if PackageGraph.CompileRequiredPackages(nil,
-                                Project1.FirstRequiredDependency,
-                                not (pfUseDesignTimePackages in Project1.Flags),
-                                CompilePolicy)<>mrOk
-      then
-        Error(ErrorBuildFailed,'Project dependencies of '+AFilename);
-    finally
-      PackageGraph.EndUpdate;
-    end;
-  end;
-  
-  WorkingDir:=Project1.ProjectDirectory;
-  SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
-
-  // create unit output directory
-  UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
-  if not ForceDirectory(UnitOutputDirectory) then
-    Error(ErrorBuildFailed,'Unable to create project unit output directory '+UnitOutputDirectory);
-
-  // create target output directory
-  TargetExeName := Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
-  TargetExeDir := ExtractFilePath(TargetExeName);
-  if not ForceDirectory(TargetExeDir) then
-    Error(ErrorBuildFailed,'Unable to create project target directory '+TargetExeDir);
-
-  // update all lrs files
-  MainBuildBoss.UpdateProjectAutomaticFiles('');
-
-  // create application bundle
-  if Project1.UseAppBundle and (Project1.MainUnitID>=0)
-  and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
-  then begin
-    if not (CreateApplicationBundle(TargetExeName, Project1.Title) in [mrOk,mrIgnore]) then
-      Error(ErrorBuildFailed,'Unable to create application bundle for '+TargetExeName);
-    if not (CreateAppBundleSymbolicLink(TargetExeName) in [mrOk,mrIgnore]) then
-      Error(ErrorBuildFailed,'Unable to create application bundle symbolic link for '+TargetExeName);
-  end;
-
-  // regenerate resources
-  if not Project1.ProjResources.Regenerate(SrcFileName, False, True, '') then
-  begin
-    if ConsoleVerbosity>=-1 then
-      DebugLn('TLazBuildApplication.BuildProject Project1.Resources.Regenerate failed');
-  end;
-
-  // get compiler parameters
-  if CompilerOverride <> '' then
-    CompilerFilename := CompilerOverride
+    Result := CurResult;
+  end
   else
-    CompilerFilename:=Project1.GetCompilerFilename;
-  //DebugLn(['TLazBuildApplication.BuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
-  // Note: use absolute paths, same as TBuildManager.DoCheckIfProjectNeedsCompilation
-  CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
-                                         +' '+PrepareCmdLineOption(SrcFilename);
-
-  NeedBuildAllFlag:=false;
-  if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
-    // check if project is already uptodate
-    Note:='';
-    SubResult:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
-                                                         NeedBuildAllFlag,Note);
-    if (not BuildAll)
-    and (not (pfAlwaysBuild in Project1.Flags)) then begin
-      if SubResult=mrNo then begin
-        if ConsoleVerbosity>=0 then
-          debugln(['TLazBuildApplication.BuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
-        exit(true);
-      end;
-      if SubResult<>mrYes then
-      begin
-        if ConsoleVerbosity>=0 then
-          debugln(['TLazBuildApplication.BuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
-        exit(false);
-      end;
-    end;
-  end;
-
-  // execute compilation tool 'Before'
-  ToolBefore:=TProjectCompilationToolOptions(
-                                    Project1.CompilerOptions.ExecuteBefore);
-  if (crCompile in ToolBefore.CompileReasons) then begin
-    if ToolBefore.Execute(
-                     Project1.ProjectDirectory,lisExecutingCommandBefore)<>mrOk
-    then
-      Error(ErrorBuildFailed,'failed "tool before" of project '+AFilename);
-  end;
-
-  if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
-    // compile
-    // write state file to avoid building clean every time
-    if Project1.SaveStateFile(CompilerFilename,CompilerParams,false)<>mrOk then
-      Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
-    if TheCompiler.Compile(Project1,
-                            WorkingDir,CompilerFilename,CompilerParams,
-                            BuildAll or NeedBuildAllFlag,false,false)<>mrOk
-    then
-      Error(ErrorBuildFailed,'failed compiling of project '+AFilename);
-    // compilation succeded -> write state file
-    if Project1.SaveStateFile(CompilerFilename,CompilerParams,true)<>mrOk then
-      Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
-  end;
-
-  // execute compilation tool 'After'
-  ToolAfter:=TProjectCompilationToolOptions(
-                                     Project1.CompilerOptions.ExecuteAfter);
-  if (crCompile in ToolAfter.CompileReasons) then begin
-    if ToolAfter.Execute(
-                      Project1.ProjectDirectory,lisExecutingCommandAfter)<>mrOk
-    then
-      Error(ErrorBuildFailed,'failed "tool after" of project '+AFilename);
-  end;
-
-  // no need to check for mrOk, we are exit if it wasn't
-  Result:=true;
+    Result := StartBuilding;
 end;
 
 function TLazBuildApplication.LoadProject(const AFilename: string): TProject;
