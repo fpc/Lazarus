@@ -128,7 +128,7 @@ const
   DW_AT_prototyped           = $27  ;    // flag
   DW_AT_return_addr          = $2a  ;    // block, loclistptr
   DW_AT_start_scope          = $2c  ;    // constant
-  DW_AT_bit_stride           = $2e  ;    // constant
+  DW_AT_bit_stride           = $2e  ;    // constant  // Dwarf 2 refers to it as DW_AT_stride_size
   DW_AT_upper_bound          = $2f  ;    // block, constant, reference
   DW_AT_abstract_origin      = $31  ;    // reference
   DW_AT_accessibility        = $32  ;    // constant

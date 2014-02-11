@@ -247,7 +247,7 @@ type
   // array[1]
   protected
     procedure Init; override;
-    //function DoGetResultType: TDbgSymbol; override;
+    function DoGetResultValue: TDbgSymbolValue; override;
     function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; override;
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
@@ -905,39 +905,38 @@ begin
   inherited Init;
 end;
 
-//function TFpPascalExpressionPartBracketIndex.DoGetResultType: TDbgSymbol;
-//var
-//  tmp: TDbgSymbol;
-//begin
-//  Result := nil;
-//  if Count <> 2 then exit;
-//
-//  tmp := Items[0].ResultType;
-//  if tmp = nil then exit;
-//
-//  if (tmp.Kind = skArray) then begin
-//    // TODO: check type of index
-//    if tmp.MemberCount < 1 then exit; // TODO error
-//    if tmp.MemberCount = 1 then begin
-//      Result := tmp.TypeInfo;
-//      Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultType'){$ENDIF};
-//      exit;
-//    end;
-//
-//    Result := TPasParserSymbolArrayDeIndex.Create(tmp);
-//  end
-//  else
-//  if (tmp.Kind = skPointer) then begin
-//    Result := tmp.TypeInfo;
-//    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultType'){$ENDIF};
-//    exit;
-//  end
-//  else
-//  if (tmp.Kind = skString) then begin
-//    //TODO
-//    exit;
-//  end;
-//end;
+function TFpPascalExpressionPartBracketIndex.DoGetResultValue: TDbgSymbolValue;
+var
+  tmp, tmp2: TDbgSymbolValue;
+begin
+  Result := nil;
+  if Count <> 2 then exit;
+
+  tmp := Items[0].ResultValue;
+  if tmp = nil then exit;
+
+  if (tmp.Kind = skArray) then begin
+    tmp2 := Items[1].ResultValue;
+    if not (svfOrdinal in tmp2.FieldFlags) then
+      exit;
+    Result := tmp.Member[tmp2.AsCardinal]; // todo negative ?
+    if Result <> nil then
+      Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
+    exit;
+    //Result := TPasParserSymbolArrayDeIndex.Create(tmp);
+  end
+  else
+  if (tmp.Kind = skPointer) then begin
+    //Result := tmp.TypeInfo;
+    //Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultType'){$ENDIF};
+    exit;
+  end
+  else
+  if (tmp.Kind = skString) then begin
+    //TODO
+    exit;
+  end;
+end;
 
 function TFpPascalExpressionPartBracketIndex.IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean;
 begin

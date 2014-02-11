@@ -159,6 +159,11 @@ type
     function GetMember(AIndex: Integer): TDbgSymbolValue; virtual;
     function GetMemberByName(AIndex: String): TDbgSymbolValue; virtual;
     function GetMemberCount: Integer; virtual;
+    function GetIndexType(AIndex: Integer): TDbgSymbol; virtual;
+    function GetIndexTypeCount: Integer; virtual;
+    function GetMemberCountEx(AIndex: array of Int64): Integer; virtual;
+    function GetMemberEx(AIndex: Array of Int64): TDbgSymbolValue; virtual;
+
     function GetDbgSymbol: TDbgSymbol; virtual;
     function GetTypeInfo: TDbgSymbol; virtual;
   public
@@ -183,9 +188,16 @@ type
     property DataSize: Integer read GetDataSize;       // Sive of Data, if avail (e.g. String, TObject, ..., BUT NOT record)
     // memdump
   public
-// base class? Or Member inncludes member from base
+// base class? Or Member includes member from base
     (* Member:
-       For TypeInfo (skType) it excludes BaseClass     For Value (skValue): ???
+       * skClass, skStructure:
+           stType: it excludes BaseClass (TODO: decide?)
+           stValue: ???
+       * skSet
+           stType: all members
+           stValue: only members set in value (Only impremented for DbgSymbolValue)
+       * skArray: (differs from TDbgSymbol)
+         The values. The type of each Index-dimension is avail via IndexType
        NOTE: Values returned by Member/MemberByName are volatile.
              They maybe released or changed when Member is called again.
              To keep a returned Value a reference can be added (AddReference)
@@ -193,6 +205,11 @@ type
     property MemberCount: Integer read GetMemberCount;
     property Member[AIndex: Integer]: TDbgSymbolValue read GetMember;
     property MemberByName[AIndex: String]: TDbgSymbolValue read GetMemberByName; // Includes inheritance
+    //  For Arrays (TODO pointers) only, the values stored in the array
+    property MemberCountEx[AIndex: Array of Int64]: Integer read GetMemberCountEx;
+    property MemberEx[AIndex: Array of Int64]: TDbgSymbolValue read GetMemberEx;
+    property IndexTypeCount: Integer read GetIndexTypeCount;
+    property IndexType[AIndex: Integer]: TDbgSymbol read GetIndexType;
 
     (* DbgSymbol: The TDbgSymbol from which this value came, maybe nil.
                   Maybe a stType, then there is no Value *)
@@ -215,6 +232,20 @@ type
     function GetAsInteger: Int64; override;
   public
     constructor Create(AValue: QWord; ASigned: Boolean = True);
+  end;
+
+  { TDbgSymbolValueConstAddress }
+
+  TDbgSymbolValueConstAddress = class(TDbgSymbolValue)
+  private
+    FAddress: TDbgPtr;
+  protected
+    property Address: QWord read FAddress write FAddress;
+    //function GetKind: TDbgSymbolKind; override; // no kind
+    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetAddress: TDbgPtr; override;
+  public
+    constructor Create(AnAddress: TDbgPtr);
   end;
 
   { TDbgSymbol }
@@ -304,8 +335,18 @@ type
     property MemberVisibility: TDbgSymbolMemberVisibility read GetMemberVisibility;
     property MemberCount: Integer read GetMemberCount;
     (* Member:
-       For TypeInfo (skType) it excludes BaseClass
-       For Value (skValue): ???
+       * skClass, skStructure:
+           stType: it excludes BaseClass (TODO: decide?)
+           stValue: ???
+       * skSet
+           stType: all members
+           stValue: only members set in value (Only impremented for DbgSymbolValue)
+       * skArray:
+         The type of each Index-dimension
+         The count is the amount of dimensions
+       NOTE: Values returned by Member/MemberByName are volatile.
+             They maybe released or changed when Member is called again.
+             To keep a returned Value a reference can be added (AddReference)
     *)
     property Member[AIndex: Integer]: TDbgSymbol read GetMember;
     property MemberByName[AIndex: String]: TDbgSymbol read GetMemberByName; // Includes inheritance
@@ -397,6 +438,24 @@ function dbgs(ADbgSymbolKind: TDbgSymbolKind): String;
 begin
   Result := '';
   WriteStr(Result, ADbgSymbolKind);
+end;
+
+{ TDbgSymbolValueConstAddress }
+
+function TDbgSymbolValueConstAddress.GetFieldFlags: TDbgSymbolValueFieldFlags;
+begin
+  Result := [svfAddress, svfSizeOfPointer]
+end;
+
+function TDbgSymbolValueConstAddress.GetAddress: TDbgPtr;
+begin
+  Result := FAddress;
+end;
+
+constructor TDbgSymbolValueConstAddress.Create(AnAddress: TDbgPtr);
+begin
+  inherited Create;
+  FAddress := AnAddress;
 end;
 
 { TFpDbgCircularRefCountedObject }
@@ -510,6 +569,26 @@ end;
 function TDbgSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   Result := [];
+end;
+
+function TDbgSymbolValue.GetIndexType(AIndex: Integer): TDbgSymbol;
+begin
+  Result := nil;;
+end;
+
+function TDbgSymbolValue.GetIndexTypeCount: Integer;
+begin
+  Result := 0;
+end;
+
+function TDbgSymbolValue.GetMemberEx(AIndex: array of Int64): TDbgSymbolValue;
+begin
+  Result := nil;
+end;
+
+function TDbgSymbolValue.GetMemberCountEx(AIndex: array of Int64): Integer;
+begin
+  Result := 0;
 end;
 
 function TDbgSymbolValue.GetKind: TDbgSymbolKind;

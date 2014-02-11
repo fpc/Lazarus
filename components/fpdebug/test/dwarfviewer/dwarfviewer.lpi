@@ -87,7 +87,7 @@
         <UnitName Value="Unit1"/>
       </Unit1>
       <Unit2>
-        <Filename Value="B:\lazarus_latest\debugger\fpgdbmidebugger.pp"/>
+        <Filename Value="..\..\..\..\debugger\fpgdbmidebugger.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="FpGdbmiDebugger"/>
       </Unit2>

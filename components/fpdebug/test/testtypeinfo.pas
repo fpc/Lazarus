@@ -6,7 +6,7 @@ interface
 
 uses
   FpPascalParser, FpDbgDwarf, FpDbgInfo, LazLoggerBase, LazUTF8, sysutils, fpcunit,
-  testregistry, TestHelperClasses, TestDwarfSetup1, TestDwarfSetupBasic;
+  testregistry, TestHelperClasses, TestDwarfSetup1, TestDwarfSetupBasic, TestDwarfSetupArray;
 
 
 type
@@ -58,6 +58,7 @@ type
     Procedure TestExpressionInt;
     Procedure TestExpressionBool;
     Procedure TestExpressionEnumAndSet;
+    Procedure TestExpressionArray;
     Procedure TestExpressionStructures;
   end;
 
@@ -438,6 +439,38 @@ begin
 
     //TODO
     //StartTest('True', skBoolean, [ttHasType]);
+
+end;
+
+procedure TTestTypeInfo.TestExpressionArray;
+var
+  sym: TDbgSymbol;
+  ImgLoader: TTestLoaderSetupArray;
+  TmpResVal: TDbgSymbolValue;
+  i: Integer;
+  s: String;
+begin
+  InitDwarf(TTestLoaderSetupArray);
+  ImgLoader := TTestLoaderSetupArray(FImageLoader);
+  //FMemReader.RegisterValues[5] := TDbgPtr(@ImgLoader.TestStackFrame.EndPoint);
+
+  FCurrentContext := FDwarfInfo.FindContext(TTestSetupArrayProcMainAddr);
+  AssertTrue('got ctx', FCurrentContext <> nil);
+
+  sym := FCurrentContext.FindSymbol('VarDynIntArray');
+  AssertTrue('got sym',  sym <> nil);
+  sym.ReleaseReference();
+
+  StartTest('VarDynIntArray', skArray, [ttHasType]);
+  StartTest('VarStatIntArray1', skArray, [ttHasType]);
+
+  StartInvalTest('VarDynIntArray[0]', 'xxx');
+
+  SetLength(ImgLoader.GlobalVar.VarDynIntArray,33);
+  StartTest('VarDynIntArray[0]', skInteger, [ttHasType]);
+  StartTest('VarDynIntArray[1]', skInteger, [ttHasType]);
+
+  StartTest('VarStatIntArray1[0]', skInteger, [ttHasType]);
 
 end;
 
@@ -1248,7 +1281,6 @@ begin
     ExpSetVal(76, TDbgPtr(@ImgLoader.GlobalVar.VarSetB2), SizeOf(ImgLoader.GlobalVar.VarSetB2));
 
 end;
-
 
 
 initialization

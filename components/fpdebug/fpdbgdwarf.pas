@@ -598,6 +598,7 @@ type
     function MemReader: TFpDbgMemReaderBase; inline;
     function AddressSize: Byte; inline;
   protected
+    function GetDwarfDataAddress(out AnAddress: TDbgPtr; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; reintroduce;
     procedure Reset; virtual;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function HasTypeCastInfo: Boolean;
@@ -785,13 +786,39 @@ type
     function GetSize: Integer; override;
     function GetDataSize: Integer; override;
     function GetDataAddress: TDbgPtr; override;
-    function GetDwarfDataAddress(out AnAddress: TDbgPtr; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; reintroduce;
     function IsValidTypeCast: Boolean; override;
   public
     destructor Destroy; override;
     function GetMemberByName(AIndex: String): TDbgSymbolValue; override;
     function GetMember(AIndex: Integer): TDbgSymbolValue; override;
     function GetMemberCount: Integer; override;
+  end;
+
+  { TDbgDwarfSymbolValueConstAddress }
+
+  TDbgDwarfSymbolValueConstAddress = class(TDbgSymbolValueConstAddress)
+  protected
+    procedure Update(AnAddress: TDbgPtr);
+  end;
+
+  { TDbgDwarfArraySymbolValue }
+
+  TDbgDwarfArraySymbolValue = class(TDbgDwarfSymbolValue)
+  private
+    FResVal: TDbgSymbolValue;
+    FAddrObj: TDbgDwarfSymbolValueConstAddress;
+  protected
+    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetKind: TDbgSymbolKind; override;
+    function GetMember(AIndex: Integer): TDbgSymbolValue; override;
+    function GetMemberEx(AIndex: array of Int64): TDbgSymbolValue; override;
+    function GetMemberCount: Integer; override;
+    function GetMemberCountEx(AIndex: array of Int64): Integer; override;
+    function GetIndexType(AIndex: Integer): TDbgSymbol; override;
+    function GetIndexTypeCount: Integer; override;
+    function IsValidTypeCast: Boolean; override;
+  public
+    destructor Destroy; override;
   end;
 
   { TDbgDwarfIdentifier }
@@ -1166,14 +1193,22 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TDbgDwarfIdentifierArray = class(TDbgDwarfTypeIdentifier)
   private
     FMembers: TFpDbgCircularRefCntObjList;
+    FRowMajor: Boolean;
+    FStrideInBits: Int64;
+    FDwarfArrayReadFlags: set of (didtStrideRead, didtOrdering);
     procedure CreateMembers;
+    procedure ReadStride;
+    procedure ReadOrdering;
   protected
     procedure KindNeeded; override;
+    function GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
 
     function GetFlags: TDbgSymbolFlags; override;
+    // GetMember: returns the TYPE/range of each index. NOT the data
     function GetMember(AIndex: Integer): TDbgSymbol; override;
     function GetMemberByName({%H-}AIndex: String): TDbgSymbol; override;
     function GetMemberCount: Integer; override;
+    function GetMemberAddress(AValObject: TObject; AIndex: Array of Int64): TDbgPtr;
   public
     destructor Destroy; override;
   end;
@@ -1779,6 +1814,127 @@ begin
   end;
 end;
 
+{ TDbgDwarfSymbolValueConstAddress }
+
+procedure TDbgDwarfSymbolValueConstAddress.Update(AnAddress: TDbgPtr);
+begin
+  Address := AnAddress;
+end;
+
+{ TDbgDwarfArraySymbolValue }
+
+function TDbgDwarfArraySymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
+begin
+  Result := inherited GetFieldFlags;
+  Result := Result + [svfMembers];
+end;
+
+function TDbgDwarfArraySymbolValue.GetKind: TDbgSymbolKind;
+begin
+  Result := skArray;
+end;
+
+function TDbgDwarfArraySymbolValue.GetMember(AIndex: Integer): TDbgSymbolValue;
+begin
+  Result := GetMemberEx([AIndex]);
+end;
+
+function TDbgDwarfArraySymbolValue.GetMemberEx(AIndex: array of Int64): TDbgSymbolValue;
+var
+  Addr: TDbgPtr;
+begin
+  Result := nil;
+  assert((FOwner is TDbgDwarfIdentifierArray) and (FOwner.Kind = skArray));
+  Addr := TDbgDwarfIdentifierArray(FOwner).GetMemberAddress(Self, AIndex);
+  if Addr = 0 then exit;
+
+  if (FAddrObj = nil) or (FAddrObj.RefCount > 1) then begin
+    FAddrObj.ReleaseReference;
+    FAddrObj := TDbgDwarfSymbolValueConstAddress.Create(Addr);
+  end
+  else begin
+    FAddrObj.Update(Addr);
+    FAddrObj.AddReference;
+  end;
+
+  if (FResVal = nil) or (FResVal.RefCount > 1) then begin
+    FResVal.ReleaseReference;
+    FResVal := FOwner.TypeInfo.TypeCastValue(FAddrObj);
+  end
+  else begin
+    TDbgDwarfSymbolValue(FResVal).SetTypeCastInfo(TDbgDwarfTypeIdentifier(FOwner), FAddrObj);
+  end;
+
+  FAddrObj.ReleaseReference;
+  Result := FResVal;
+end;
+
+function TDbgDwarfArraySymbolValue.GetMemberCount: Integer;
+var
+  t: TDbgSymbol;
+begin
+  Result := 0;
+  t := TypeInfo;
+  if t.MemberCount < 1 then
+    exit;
+  t := t.Member[0];
+  if not t.HasBounds then
+    exit;
+  Result := t.OrdHighBound - t.OrdLowBound + 1;
+end;
+
+function TDbgDwarfArraySymbolValue.GetMemberCountEx(AIndex: array of Int64): Integer;
+var
+  t: TDbgSymbol;
+begin
+  Result := 0;
+  t := TypeInfo;
+  if length(AIndex) >= t.MemberCount then
+    exit;
+  t := t.Member[length(AIndex)];
+  if not t.HasBounds then
+    exit;
+  Result := t.OrdHighBound - t.OrdLowBound + 1;
+end;
+
+function TDbgDwarfArraySymbolValue.GetIndexType(AIndex: Integer): TDbgSymbol;
+begin
+  Result := TypeInfo.Member[AIndex];
+end;
+
+function TDbgDwarfArraySymbolValue.GetIndexTypeCount: Integer;
+begin
+  Result := TypeInfo.MemberCount;
+end;
+
+function TDbgDwarfArraySymbolValue.IsValidTypeCast: Boolean;
+begin
+  Result := HasTypeCastInfo;
+  If not Result then
+    exit;
+
+  // TODO ordinal
+
+  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
+    exit
+  else
+  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) and
+     (FTypeCastSourceValue.Size = FOwner.FCU.FAddressSize)
+  then
+    exit
+  else
+  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer])
+  then
+    exit;
+  Result := False;
+end;
+
+destructor TDbgDwarfArraySymbolValue.Destroy;
+begin
+  FResVal.ReleaseReference;
+  inherited Destroy;
+end;
+
 { TDbgDwarfSymbolValueConstNumber }
 
 procedure TDbgDwarfSymbolValueConstNumber.Update(AValue: QWord; ASigned: Boolean);
@@ -2264,43 +2420,6 @@ begin
     Result := inherited GetDataAddress;
 end;
 
-function TDbgDwarfStructTypeCastSymbolValue.GetDwarfDataAddress(out AnAddress: TDbgPtr;
-  ATargetType: TDbgDwarfTypeIdentifier): Boolean;
-var
-  fields: TDbgSymbolValueFieldFlags;
-  t: TDbgDwarfTypeIdentifier;
-begin
-  Result := HasTypeCastInfo;
-  if not Result then
-    exit;
-  fields := FTypeCastSourceValue.FieldFlags;
-  AnAddress := 0;
-  if svfOrdinal in fields then begin
-    AnAddress := FTypeCastSourceValue.AsCardinal;
-// MUST store, and provide address of it // for now, skip the pointer
-    t := FTypeCastTargetType;
-    if t is TDbgDwarfTypeIdentifierDeclaration then t := t.NestedTypeInfo;
-    if (t<> nil) and (t is TDbgDwarfTypeIdentifierPointer)  then t := t.NestedTypeInfo;
-    if (t<> nil) then begin
-      Result := t.GetDataAddress(AnAddress, ATargetType);
-      Result := AnAddress <> 0;
-      exit;
-    end;
-    Result := False;
-    exit;
-
-  end
-  else
-  if svfAddress in fields then
-    AnAddress := FTypeCastSourceValue.Address;
-
-  Result := AnAddress <> 0;
-  if not Result then
-    exit;
-
-  Result := FTypeCastTargetType.GetDataAddress(AnAddress, ATargetType);
-end;
-
 function TDbgDwarfStructTypeCastSymbolValue.IsValidTypeCast: Boolean;
 var
   f: TDbgSymbolValueFieldFlags;
@@ -2527,6 +2646,54 @@ function TDbgDwarfSymbolValue.AddressSize: Byte;
 begin
   assert((FOwner <> nil) and (FOwner.FCU <> nil), 'TDbgDwarfSymbolValue.AddressSize');
   Result := FOwner.FCU.FAddressSize;
+end;
+
+function TDbgDwarfSymbolValue.GetDwarfDataAddress(out AnAddress: TDbgPtr;
+  ATargetType: TDbgDwarfTypeIdentifier): Boolean;
+var
+  fields: TDbgSymbolValueFieldFlags;
+  t: TDbgDwarfTypeIdentifier;
+begin
+  if FValueSymbol <> nil then begin
+    Assert(FValueSymbol is TDbgDwarfValueIdentifier, 'TDbgDwarfSymbolValue.GetDwarfDataAddress FValueSymbol');
+    Assert(TypeInfo is TDbgDwarfTypeIdentifier, 'TDbgDwarfSymbolValue.GetDwarfDataAddress TypeInfo');
+    Assert(not HasTypeCastInfo, 'TDbgDwarfSymbolValue.GetDwarfDataAddress not HasTypeCastInfo');
+    Result := FValueSymbol.GetDataAddress(AnAddress, TDbgDwarfTypeIdentifier(FOwner));
+  end
+
+  else
+  begin
+    // try typecast
+    Result := HasTypeCastInfo;
+    if not Result then
+      exit;
+    fields := FTypeCastSourceValue.FieldFlags;
+    AnAddress := 0;
+    if svfOrdinal in fields then begin
+      AnAddress := FTypeCastSourceValue.AsCardinal;
+  // MUST store, and provide address of it // for now, skip the pointer
+      t := FTypeCastTargetType;
+      if t is TDbgDwarfTypeIdentifierDeclaration then t := t.NestedTypeInfo;
+      if (t<> nil) and (t is TDbgDwarfTypeIdentifierPointer)  then t := t.NestedTypeInfo;
+      if (t<> nil) then begin
+        Result := t.GetDataAddress(AnAddress, ATargetType);
+        Result := AnAddress <> 0;
+        exit;
+      end;
+      Result := False;
+      exit;
+
+    end
+    else
+    if svfAddress in fields then
+      AnAddress := FTypeCastSourceValue.Address;
+
+    Result := AnAddress <> 0;
+    if not Result then
+      exit;
+
+    Result := FTypeCastTargetType.GetDataAddress(AnAddress, ATargetType);
+  end;
 end;
 
 procedure TDbgDwarfSymbolValue.Reset;
@@ -5446,9 +5613,43 @@ begin
   Info.ReleaseReference;
 end;
 
+procedure TDbgDwarfIdentifierArray.ReadStride;
+var
+  t: TDbgDwarfTypeIdentifier;
+begin
+  if didtStrideRead in FDwarfArrayReadFlags then
+    exit;
+  Include(FDwarfArrayReadFlags, didtStrideRead);
+  if not FInformationEntry.ReadValue(DW_AT_bit_stride, FStrideInBits) then begin
+    t := NestedTypeInfo;
+    if t = nil then
+      FStrideInBits := 0
+    else
+      FStrideInBits := t.Size * 8;
+  end;
+end;
+
+procedure TDbgDwarfIdentifierArray.ReadOrdering;
+var
+  AVal: Integer;
+begin
+  if didtOrdering in FDwarfArrayReadFlags then
+    exit;
+  Include(FDwarfArrayReadFlags, didtOrdering);
+  if FInformationEntry.ReadValue(DW_AT_ordering, AVal) then
+    FRowMajor := AVal = DW_ORD_row_major
+  else
+    FRowMajor := True; // default (at least in pas)
+end;
+
 procedure TDbgDwarfIdentifierArray.KindNeeded;
 begin
   SetKind(skArray); // Todo: static/dynamic?
+end;
+
+function TDbgDwarfIdentifierArray.GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue;
+begin
+  Result := TDbgDwarfArraySymbolValue.Create(Self);
 end;
 
 function TDbgDwarfIdentifierArray.GetFlags: TDbgSymbolFlags;
@@ -5495,6 +5696,75 @@ function TDbgDwarfIdentifierArray.GetMemberCount: Integer;
 begin
   CreateMembers;
   Result := FMembers.Count;
+end;
+
+function TDbgDwarfIdentifierArray.GetMemberAddress(AValObject: TObject;
+  AIndex: array of Int64): TDbgPtr;
+var
+  Offs, Factor: QWord;
+  i: Integer;
+  bsize: Integer;
+  m: TDbgDwarfIdentifier;
+begin
+  assert((AValObject is TDbgDwarfValueIdentifier) or (AValObject is TDbgDwarfArraySymbolValue), 'TDbgDwarfIdentifierArray.GetMemberAddress AValObject');
+  ReadOrdering;
+  ReadStride;
+  Result := 0;
+  if (FStrideInBits <= 0) or (FStrideInBits mod 8 <> 0) then
+    exit;
+
+  CreateMembers;
+  if Length(AIndex) > FMembers.Count then
+    exit;
+
+  // TODO: reduce index by low-ord
+  if AValObject is TDbgDwarfValueIdentifier then begin
+    if not TDbgDwarfValueIdentifier(AValObject).GetDataAddress(Result, Self) then begin
+      Result := 0;
+      Exit;
+    end;
+  end
+  else
+  if AValObject is TDbgDwarfArraySymbolValue then begin
+    if not TDbgDwarfArraySymbolValue(AValObject).GetDwarfDataAddress(Result, Self) then begin
+      Result := 0;
+      Exit;
+    end;
+  end;
+
+  Offs := 0;
+  Factor := 1;
+
+  bsize := FStrideInBits div 8;
+  if FRowMajor then begin
+    for i := Length(AIndex) - 1 downto 0 do begin
+      Offs := Offs + AIndex[i] * bsize * Factor;
+      if i > 0 then begin
+        m := TDbgDwarfIdentifier(FMembers[i]);
+        if not m.HasBounds then begin
+          Result := 0;
+          exit;
+        end;
+// TODO range check
+        Factor := Factor * (m.OrdHighBound - m.OrdLowBound + 1);
+      end;
+    end;
+  end
+  else begin
+    for i := 0 to Length(AIndex) - 1 do begin
+      Offs := Offs + AIndex[i] * bsize * Factor;
+      if i < Length(AIndex) - 1 then begin
+        m := TDbgDwarfIdentifier(FMembers[i]);
+        if not m.HasBounds then begin
+          Result := 0;
+          exit;
+        end;
+        Factor := Factor * (m.OrdHighBound - m.OrdLowBound + 1);
+      end;
+    end;
+  end;
+
+  Result := Result + Offs;
 end;
 
 destructor TDbgDwarfIdentifierArray.Destroy;
