@@ -392,6 +392,7 @@ type
     procedure mnuSetBuildModeClick(Sender: TObject); // event for drop down items
   private
     fBuilder: TLazarusBuilder;
+    procedure AllowCompilation(aAllow: Boolean);
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
     {$IFNDEF EnableNewExtTools}
     function ExternalTools: TExternalToolList;
@@ -3824,11 +3825,33 @@ begin
   EnvironmentOptions.IDESpeedButtonsVisible:=MainIDEBar.pnlSpeedButtons.Visible;
 end;
 
+procedure TMainIDE.AllowCompilation(aAllow: Boolean);
+// Enables or disables IDE GUI controls associated with compiling and building.
+// Q: Does it interfere with DebugBoss.UpdateButtonsAndMenuItems? Maybe should be refactored and combined.
+begin
+  if MainIDEBar=Nil then Exit;
+  with MainIDEBar do begin
+    Assert(Assigned(RunSpeedButton), 'TMainIDE.AllowCompilation: RunSpeedButton not assigned!');
+    RunSpeedButton.Enabled:=aAllow;
+    itmRunMenuRun.Enabled:=aAllow;
+    itmRunMenuCompile.Enabled:=aAllow;
+    itmRunMenuBuild.Enabled:=aAllow;
+    itmRunMenuQuickCompile.Enabled:=aAllow;
+    itmRunMenuCleanUpCompiled.Enabled:=aAllow;
+    itmPkgEditInstallPkgs.Enabled:=aAllow;
+    itmToolRescanFPCSrcDir.Enabled:=aAllow;
+    itmToolBuildLazarus.Enabled:=aAllow;
+    itmToolConfigureBuildLazarus.Enabled:=aAllow;
+    // ToDo: Enable / disable all external tools
+  end;
+end;
+
 procedure TMainIDE.SetToolStatus(const AValue: TIDEToolStatus);
 begin
   inherited SetToolStatus(AValue);
   if DebugBoss <> nil then
     DebugBoss.UpdateButtonsAndMenuItems;
+  AllowCompilation(ToolStatus <> itBuilder); // Disable some GUI controls while compiling.
   if FWaitForClose and (ToolStatus = itNone) then
   begin
     FWaitForClose := False;
@@ -4614,6 +4637,7 @@ end;
 
 procedure TMainIDE.mnuToolBuildLazarusClicked(Sender: TObject);
 begin
+  if ToolStatus<>itNone then exit;
   with MiscellaneousOptions do
     if BuildLazProfiles.ConfirmBuild then
       if IDEMessageDialog(lisConfirmation, Format(lisConfirmLazarusRebuild, [
@@ -4656,6 +4680,7 @@ var
   LazSrcDirTemplate: TDefineTemplate;
   DlgResult: TModalResult;
 begin
+  if ToolStatus<>itNone then exit;
   MainBuildBoss.SetBuildTargetIDE;
   fBuilder := TLazarusBuilder.Create; // Build profile is not known yet.
   try
@@ -5145,6 +5170,7 @@ end;
 
 procedure TMainIDE.mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 begin
+  if ToolStatus<>itNone then exit;
   IncreaseBuildMacroChangeStamp;
   MainBuildBoss.RescanCompilerDefines(false,true,false,false);
 end;
