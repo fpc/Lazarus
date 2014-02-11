@@ -1914,7 +1914,7 @@ begin
      //debugln('  P = ',dbgs(p));
      //debugln('  S = ',s);
      //debugln('  ClipText = ',ClipText);
-     while (P <= FMaskLength) do
+     while (P <= FMaskLength) and (i <= Utf8Length(ClipText)) do
      begin
        //Skip any literal
        while (P < FMaskLength) and (IsLiteral(FMask[P])) do Inc(P);
