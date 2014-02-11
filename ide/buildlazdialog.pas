@@ -146,23 +146,28 @@ type
     procedure UpdateProfileNamesUI;
   end;
 
-function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
+  { TLazarusBuilder }
 
-function MakeLazarus(Profile: TBuildLazarusProfile;
-  {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
-  Macros: TTransferMacroList;
-  const PackageOptions, CompilerPath, MakePath: string;
-  Flags: TBuildLazarusFlags; var ProfileChanged: boolean): TModalResult;
+  TLazarusBuilder = class
+  private
+    function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
+      Macros: TTransferMacroList; const PackageOptions: string;
+      Flags: TBuildLazarusFlags; var ExtraOptions: string;
+      out UpdateRevisionInc: boolean; out OutputDirRedirected: boolean;
+      out TargetFilename: string): TModalResult;
+  public
+    function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
 
-function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
-  Macros: TTransferMacroList; const PackageOptions: string;
-  Flags: TBuildLazarusFlags; var ExtraOptions: string;
-  out UpdateRevisionInc: boolean; out OutputDirRedirected: boolean;
-  out TargetFilename: string): TModalResult;
+    function MakeLazarus(Profile: TBuildLazarusProfile;
+      {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
+      Macros: TTransferMacroList;
+      const PackageOptions, CompilerPath, MakePath: string;
+      Flags: TBuildLazarusFlags; var ProfileChanged: boolean): TModalResult;
 
-function SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
-  Macros: TTransferMacroList;
-  const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
+    function SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
+      Macros: TTransferMacroList;
+      const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
+  end;
 
 function GetMakeIDEConfigFilename: string;
 function GetBackupExeFilename(Filename: string): string;
@@ -174,7 +179,22 @@ implementation
 const
   DefaultIDEMakeOptionFilename = 'idemake.cfg';
 
-function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
+function GetMakeIDEConfigFilename: string;
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+DefaultIDEMakeOptionFilename;
+end;
+
+function GetBackupExeFilename(Filename: string): string;
+var
+  Ext: String;
+begin
+  Ext:=ExtractFileExt(Filename);
+  Result:=LeftStr(Filename,length(Filename)-length(Ext))+'.old'+Ext;
+end;
+
+{ TLazarusBuilder }
+
+function TLazarusBuilder.ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
 // mrOk=save
 // mrYes=save and compile
 // mrAll=save and compile all selected profiles
@@ -193,7 +213,7 @@ begin
   end;
 end;
 
-function MakeLazarus(Profile: TBuildLazarusProfile;
+function TLazarusBuilder.MakeLazarus(Profile: TBuildLazarusProfile;
   {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
   Macros: TTransferMacroList;
   const PackageOptions, CompilerPath, MakePath: string;
@@ -475,7 +495,7 @@ begin
   end;
 end;
 
-function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
+function TLazarusBuilder.CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
   Macros: TTransferMacroList; const PackageOptions: string;
   Flags: TBuildLazarusFlags; var ExtraOptions: string;
   out UpdateRevisionInc: boolean; out OutputDirRedirected: boolean;
@@ -778,7 +798,7 @@ begin
   //DebugLn(['CreateBuildLazarusOptions ',MMDef.Name,' ',ExtraOptions]);
 end;
 
-function SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
+function TLazarusBuilder.SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
   Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
 
@@ -865,19 +885,6 @@ begin
     end;
   end;
   Result:=mrOk;
-end;
-
-function GetMakeIDEConfigFilename: string;
-begin
-  Result:=AppendPathDelim(GetPrimaryConfigPath)+DefaultIDEMakeOptionFilename;
-end;
-
-function GetBackupExeFilename(Filename: string): string;
-var
-  Ext: String;
-begin
-  Ext:=ExtractFileExt(Filename);
-  Result:=LeftStr(Filename,length(Filename)-length(Ext))+'.old'+Ext;
 end;
 
 { TConfigureBuildLazarusDlg }

@@ -519,6 +519,7 @@ var
   i: Integer;
   s: String;
   ProfileChanged: boolean;
+  Builder: TLazarusBuilder;
 begin
   Result:=false;
   if not Init then exit;
@@ -588,63 +589,67 @@ begin
   end;
 
   // clean
-  ProfileChanged:=false;
-  if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
-    CurResult:=MakeLazarus(BuildLazProfiles.Current,
-                EnvironmentOptions.ExternalTools,GlobalMacroList,
-                '',EnvironmentOptions.GetParsedCompilerFilename,
-                EnvironmentOptions.GetParsedMakeFilename,
-                Flags+[blfDontBuild],
-                ProfileChanged);
+  Builder:=TLazarusBuilder.Create;
+  try
+    ProfileChanged:=false;
+    if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
+      CurResult:=Builder.MakeLazarus(BuildLazProfiles.Current,
+                  EnvironmentOptions.ExternalTools,GlobalMacroList,
+                  '',EnvironmentOptions.GetParsedCompilerFilename,
+                  EnvironmentOptions.GetParsedMakeFilename,
+                  Flags+[blfDontBuild],ProfileChanged);
+      if CurResult<>mrOk then begin
+        if ConsoleVerbosity>=-1 then
+          DebugLn('TLazBuildApplication.BuildLazarusIDE: Clean all failed.');
+        exit;
+      end;
+    end;
+
+    // save configs for 'make'
+    CurResult:=PackageGraph.SaveAutoInstallConfig;
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
-        DebugLn('TLazBuildApplication.BuildLazarusIDE: Clean all failed.');
+        DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving IDE make config files.');
       exit;
     end;
-  end;
 
-  // save configs for 'make'
-  CurResult:=PackageGraph.SaveAutoInstallConfig;
-  if CurResult<>mrOk then begin
-    if ConsoleVerbosity>=-1 then
-      DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving IDE make config files.');
-    exit;
-  end;
+    // compile auto install static packages
+    if not CompileAutoInstallPackages(BuildLazProfiles.Current.IdeBuildMode<>bmBuild)
+    then begin
+      if ConsoleVerbosity>=-1 then
+        DebugLn('TLazBuildApplication.BuildLazarusIDE: Compile AutoInstall Packages failed.');
+      exit;
+    end;
 
-  // compile auto install static packages
-  if not CompileAutoInstallPackages(BuildLazProfiles.Current.IdeBuildMode<>bmBuild)
-  then begin
-    if ConsoleVerbosity>=-1 then
-      DebugLn('TLazBuildApplication.BuildLazarusIDE: Compile AutoInstall Packages failed.');
-    exit;
-  end;
-  
-  // create inherited compiler options
-  PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
+    // create inherited compiler options
+    PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
 
-  // save
-  CurResult:=SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,
-                                PkgOptions,Flags+[blfBackupOldExe]);
-  if CurResult<>mrOk then begin
-    if ConsoleVerbosity>=-1 then
-      DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving idemake.cfg');
-    exit;
-  end;
+    // save
+    CurResult:=Builder.SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,
+                                  PkgOptions,Flags+[blfBackupOldExe]);
+    if CurResult<>mrOk then begin
+      if ConsoleVerbosity>=-1 then
+        DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving idemake.cfg');
+      exit;
+    end;
 
-  // compile IDE
-  CurResult:=MakeLazarus(BuildLazProfiles.Current,
-                         EnvironmentOptions.ExternalTools,GlobalMacroList,
-                         PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
-                         EnvironmentOptions.GetParsedMakeFilename,
-                         Flags+[blfUseMakeIDECfg,blfOnlyIDE],
-                         ProfileChanged);
-  if CurResult<>mrOk then begin
-    if ConsoleVerbosity>=-1 then
-      DebugLn('TLazBuildApplication.BuildLazarusIDE: Building IDE failed.');
-    exit;
-  end;
+    // compile IDE
+    CurResult:=Builder.MakeLazarus(BuildLazProfiles.Current,
+                           EnvironmentOptions.ExternalTools,GlobalMacroList,
+                           PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
+                           EnvironmentOptions.GetParsedMakeFilename,
+                           Flags+[blfUseMakeIDECfg,blfOnlyIDE],
+                           ProfileChanged);
+    if CurResult<>mrOk then begin
+      if ConsoleVerbosity>=-1 then
+        DebugLn('TLazBuildApplication.BuildLazarusIDE: Building IDE failed.');
+      exit;
+    end;
 
-  Result:=true;
+    Result:=true;
+  finally
+    Builder.Free;
+  end;
 end;
 
 function TLazBuildApplication.CompileAutoInstallPackages(Clean: boolean): boolean;
