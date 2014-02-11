@@ -4562,34 +4562,34 @@ begin
   MainBuildBoss.SetBuildTargetIDE;
   fBuilder := TLazarusBuilder.Create; // Build profile is not known yet.
   try
-  try
-    DlgResult:=fBuilder.ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
-  finally
-    MainBuildBoss.SetBuildTargetProject1(true);
-  end;
-
-  if DlgResult in [mrOk,mrYes,mrAll] then begin
-    MiscellaneousOptions.Save;
-    IncreaseCompilerParseStamp;
-    if DlgResult=mrAll then
-      DoBuildAdvancedLazarus(MiscellaneousOptions.BuildLazProfiles.Selected)
-    else if DlgResult=mrYes then begin
-      LazSrcTemplate:=
-        CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true);
-      if Assigned(LazSrcTemplate) then begin
-        LazSrcDirTemplate:=LazSrcTemplate.FindChildByName(StdDefTemplLazarusSrcDir);
-        if Assigned(LazSrcDirTemplate) then begin
-          CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
-                    StdDefTemplLazarusBuildOpts,
-                    MiscellaneousOptions.BuildLazProfiles.Current.ExtraOptions,
-                    true,CodeToolsOpts);
-          CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
-                                               StdDefTemplLazarusBuildOpts);
-        end;
-      end;
-      DoBuildLazarus([]);
+    try
+      DlgResult:=fBuilder.ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
+    finally
+      MainBuildBoss.SetBuildTargetProject1(true);
     end;
-  end;
+
+    if DlgResult in [mrOk,mrYes,mrAll] then begin
+      MiscellaneousOptions.Save;
+      IncreaseCompilerParseStamp;
+      if DlgResult=mrAll then
+        DoBuildAdvancedLazarus(MiscellaneousOptions.BuildLazProfiles.Selected)
+      else if DlgResult=mrYes then begin
+        LazSrcTemplate:=
+          CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true);
+        if Assigned(LazSrcTemplate) then begin
+          LazSrcDirTemplate:=LazSrcTemplate.FindChildByName(StdDefTemplLazarusSrcDir);
+          if Assigned(LazSrcDirTemplate) then begin
+            CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
+                      StdDefTemplLazarusBuildOpts,
+                      MiscellaneousOptions.BuildLazProfiles.Current.ExtraOptions,
+                      true,CodeToolsOpts);
+            CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
+                                                 StdDefTemplLazarusBuildOpts);
+          end;
+        end;
+        DoBuildLazarus([]);
+      end;
+    end;
   finally
     FreeAndNil(fBuilder);
   end;

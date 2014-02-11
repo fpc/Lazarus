@@ -916,7 +916,7 @@ end;
 
 destructor TConfigureBuildLazarusDlg.Destroy;
 begin
-  fProfiles.Free;
+  FreeAndNil(fProfiles);
   inherited Destroy;
 end;
 
