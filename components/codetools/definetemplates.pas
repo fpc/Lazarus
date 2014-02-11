@@ -690,7 +690,7 @@ type
     TargetOS: string; // will be passed lowercase
     TargetCPU: string; // will be passed lowercase
     Compiler: string; // full file name
-    CompilerOptions: string;
+    CompilerOptions: string; // e.g. -V<version> -Xp<path>
     // values
     CompilerDate: longint;
     RealCompiler: string; // when Compiler is fpc, this is the real compiler (e.g. ppc386)
@@ -945,6 +945,7 @@ function RunTool(const Filename: string; Params: TStrings;
                  WorkingDirectory: string = ''): TStringList;
 function RunTool(const Filename, Params: string;
                  WorkingDirectory: string = ''): TStringList;
+
 function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
                       out Infos: TFPCInfoStrings): boolean;
 function RunFPCInfo(const CompilerFilename: string;
@@ -7534,9 +7535,19 @@ function TFPCTargetConfigCache.FindRealCompilerInPath(aTargetCPU: string;
   ResolveLinks: boolean): string;
 
   function Search(const ShortFileName: string): string;
+  var
+    ExtPath: String;
   begin
-    // fpc.exe first searches in -Xp
-    // Maybe: extract -Xp from extra options
+    // fpc.exe first searches in -Xp<path>
+    ExtPath:=GetLastFPCParameter(CompilerOptions,'-Xp');
+    if (ExtPath<>'') and (ExtPath<>'.') then begin
+      if not FilenameIsAbsolute(ExtPath) then
+        // If -Xp is relative then it is relative to the working directory
+        ExtPath:=TrimFilename(AppendPathDelim(GetCurrentDirUTF8)+ExtPath);
+      Result:=AppendPathDelim(ExtPath)+ShortFileName;
+      if FileExistsCached(Result) then
+        exit;
+    end;
 
     // then fpc.exe searches in its own directory
     if Compiler<>'' then begin
@@ -7547,6 +7558,7 @@ function TFPCTargetConfigCache.FindRealCompilerInPath(aTargetCPU: string;
           exit;
       end;
     end;
+
     // finally fpc.exe searches in PATH
     Result:=SearchFileInPath(ShortFileName,GetCurrentDirUTF8,
       GetEnvironmentVariableUTF8('PATH'),PathSeparator,ctsfcDefault);

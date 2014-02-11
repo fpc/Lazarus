@@ -196,6 +196,9 @@ function FindPathInSearchPath(APath: PChar; APathLen: integer;
 // FPC
 function ReadNextFPCParameter(const CmdLine: string; var Position: integer;
     out StartPos: integer): boolean;
+function ExtractFPCParameter(const CmdLine: string; StartPos: integer): string;
+function FindNextFPCParameter(const CmdLine, BeginsWith: string; var Position: integer): integer;
+function GetLastFPCParameter(const CmdLine, BeginsWith: string; CutBegins: boolean = true): string;
 
 type
   TCTPascalExtType = (petNone, petPAS, petPP, petP);
@@ -1281,26 +1284,97 @@ end;
 
 function ReadNextFPCParameter(const CmdLine: string; var Position: integer; out
   StartPos: integer): boolean;
+// reads till start of next FPC command line parameter, parses quotes ' and "
+var
+  c: Char;
 begin
   StartPos:=Position;
   while (StartPos<=length(CmdLine)) and (CmdLine[StartPos] in [' ',#9,#10,#13]) do
     inc(StartPos);
   Position:=StartPos;
   while (Position<=length(CmdLine)) do begin
-    case CmdLine[Position] of
+    c:=CmdLine[Position];
+    case c of
     ' ',#9,#10,#13: break;
-    '''':
+    '''','"':
       repeat
         inc(Position);
-      until (Position>length(CmdLine)) or (CmdLine[Position]='''');
-    '"':
-      repeat
-        inc(Position);
-      until (Position>length(CmdLine)) or (CmdLine[Position]='''');
+      until (Position>length(CmdLine)) or (CmdLine[Position]=c);
     end;
     inc(Position);
   end;
   Result:=StartPos<=length(CmdLine);
+end;
+
+function ExtractFPCParameter(const CmdLine: string; StartPos: integer): string;
+// returns a single FPC command line parameter, resolves quotes ' and "
+var
+  p: Integer;
+  c: Char;
+
+  procedure Add;
+  begin
+    Result:=Result+copy(CmdLine,StartPos,p-StartPos);
+  end;
+
+begin
+  Result:='';
+  p:=StartPos;
+  while (p<=length(CmdLine)) do begin
+    c:=CmdLine[p];
+    case c of
+    ' ',#9,#10,#13: break;
+    '''','"':
+      begin
+        Add;
+        inc(p);
+        StartPos:=p;
+        while (p<=length(CmdLine)) do begin
+          if CmdLine[p]=c then begin
+            Add;
+            inc(p);
+            StartPos:=p;
+            break;
+          end;
+          inc(p);
+        end;
+      end;
+    end;
+    inc(p);
+  end;
+  Add;
+end;
+
+function FindNextFPCParameter(const CmdLine, BeginsWith: string;
+  var Position: integer): integer;
+begin
+  if BeginsWith='' then
+    exit(-1);
+  while ReadNextFPCParameter(CmdLine,Position,Result) do
+    if LeftStr(ExtractFPCParameter(CmdLine,Result),length(BeginsWith))=BeginsWith
+    then
+      exit;
+  Result:=-1;
+end;
+
+function GetLastFPCParameter(const CmdLine, BeginsWith: string;
+  CutBegins: boolean): string;
+var
+  Param: String;
+  p: Integer;
+  StartPos: integer;
+begin
+  if BeginsWith='' then
+    exit('');
+  p:=1;
+  while ReadNextFPCParameter(CmdLine,p,StartPos) do begin
+    Param:=ExtractFPCParameter(CmdLine,StartPos);
+    if LeftStr(Param,length(BeginsWith))=BeginsWith then begin
+      Result:=Param;
+      if CutBegins then
+        System.Delete(Result,1,length(BeginsWith));
+    end;
+  end;
 end;
 
 function SearchFileInDir(const Filename, BaseDirectory: string;
@@ -2093,7 +2167,7 @@ begin
     Result:=p.ClassName;
 end;
 
-function dbgMemRange(P: System.PByte; Count: integer; Width: integer = 0): string;
+function dbgMemRange(P: PByte; Count: integer; Width: integer): string;
 const
   HexChars: array[0..15] of char = '0123456789ABCDEF';
   LineEnd: shortstring = LineEnding;
