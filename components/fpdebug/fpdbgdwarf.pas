@@ -2671,21 +2671,8 @@ begin
       exit;
     fields := FTypeCastSourceValue.FieldFlags;
     AnAddress := InvalidLoc;
-    if svfOrdinal in fields then begin
-      AnAddress := TargetLoc(FTypeCastSourceValue.AsCardinal);
-  // MUST store, and provide address of it // for now, skip the pointer
-      t := FTypeCastTargetType;
-      if t is TDbgDwarfTypeIdentifierDeclaration then t := t.NestedTypeInfo;
-      if (t<> nil) and (t is TDbgDwarfTypeIdentifierPointer)  then t := t.NestedTypeInfo;
-      if (t<> nil) then begin
-        Result := t.GetDataAddress(AnAddress, ATargetType);
-        Result := IsReadableLoc(AnAddress);
-        exit;
-      end;
-      Result := False;
-      exit;
-
-    end
+    if svfOrdinal in fields then
+      AnAddress := ConstLoc(FTypeCastSourceValue.AsCardinal)
     else
     if svfAddress in fields then
       AnAddress := FTypeCastSourceValue.Address;
