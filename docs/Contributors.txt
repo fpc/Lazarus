@@ -163,6 +163,7 @@ Rostislav Okulov
 Salvatore Coppola
 Samuel Herzog
 Samuel Liddicott
+Sandro Cumerlato
 Sean McIlwain
 Sebastian Gasiorek
 Seppo Suutarla - finnish translation
