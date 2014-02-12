@@ -19,7 +19,8 @@ type
     RegisterValues: array[0..30] of TDbgPtr;
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadMemoryEx({%H-}AnAddress, {%H-}AnAddressSpace: TDbgPtr; {%H-}ASize: Cardinal; {%H-}ADest: Pointer): Boolean; override;
-    function ReadRegister(ARegNum: Integer; out AValue: TDbgPtr): Boolean; override;
+    function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean; override;
+    function RegisterSize(ARegNum: Cardinal): Integer; override;
   end;
 
   TTestDwarfAbbrev = class;
@@ -400,10 +401,15 @@ begin
   Result := False;
 end;
 
-function TTestMemReader.ReadRegister(ARegNum: Integer; out AValue: TDbgPtr): Boolean;
+function TTestMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean;
 begin
   Result := True;
   AValue := RegisterValues[ARegNum];
+end;
+
+function TTestMemReader.RegisterSize(ARegNum: Cardinal): Integer;
+begin
+  Result := 4; // TODO
 end;
 
 { TTestDwarfInfoEntry }
