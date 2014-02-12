@@ -9,7 +9,7 @@ unit FpGdbmiDebugger;
 interface
 
 uses
-  Classes, windows, sysutils, math, FpDbgInfo, FpDbgClasses, GDBMIDebugger, BaseDebugManager,
+  Classes, {$IFdef MSWindows}windows,{$ENDIF} sysutils, math, FpdMemoryTools, FpDbgInfo, FpDbgClasses, GDBMIDebugger, BaseDebugManager,
   Debugger, GDBMIMiscClasses, GDBTypeInfo, maps, LCLProc, Forms, FpDbgLoader, FpDbgDwarf,
   FpDbgDwarfConst, LazLoggerBase, LazLoggerProfiling, FpPascalParser, FpPascalBuilder;
 
@@ -27,9 +27,10 @@ type
     FDebugger: TFpGDBMIDebugger;
   public
     constructor Create(ADebugger: TFpGDBMIDebugger);
-    function ReadMemory(AnAddress: FpDbgInfo.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
-    function ReadMemoryEx(AnAddress, AnAddressSpace: FpDbgInfo.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
-    function ReadRegister(ARegNum: Integer; out AValue: FpDbgInfo.TDbgPtr): Boolean; override;
+    function ReadMemory(AnAddress: FpdMemoryTools.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemoryEx(AnAddress, AnAddressSpace: FpdMemoryTools.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadRegister(ARegNum: Cardinal; out AValue: FpdMemoryTools.TDbgPtr): Boolean; override;
+    function RegisterSize(ARegNum: Cardinal): Integer; override;
   end;
 
   { TFpGDBMIAndWin32DbgMemReader }
@@ -39,8 +40,8 @@ type
     hProcess: THandle;
   public
     destructor Destroy; override;
-    function ReadMemory(AnAddress: FpDbgInfo.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
-    //function ReadRegister(ARegNum: Integer; out AValue: FpDbgInfo.TDbgPtr): Boolean; override;
+    function ReadMemory(AnAddress: FpdMemoryTools.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    //function ReadRegister(ARegNum: Integer; out AValue: TDbgPtr): Boolean; override;
     procedure OpenProcess(APid: Cardinal);
     procedure CloseProcess;
   end;
@@ -146,7 +147,7 @@ begin
   inherited Destroy;
 end;
 
-function TFpGDBMIAndWin32DbgMemReader.ReadMemory(AnAddress: FpDbgInfo.TDbgPtr;
+function TFpGDBMIAndWin32DbgMemReader.ReadMemory(AnAddress: FpdMemoryTools.TDbgPtr;
   ASize: Cardinal; ADest: Pointer): Boolean;
 var
   BytesRead: Cardinal;
@@ -190,7 +191,7 @@ end;
 
 type TGDBMIDebuggerCommandHack = class(TGDBMIDebuggerCommand) end;
 
-function TFpGDBMIDbgMemReader.ReadMemory(AnAddress: FpDbgInfo.TDbgPtr; ASize: Cardinal;
+function TFpGDBMIDbgMemReader.ReadMemory(AnAddress: FpdMemoryTools.TDbgPtr; ASize: Cardinal;
   ADest: Pointer): Boolean;
 var
   cmd: TGDBMIDebuggerCommandHack;
@@ -221,14 +222,14 @@ begin
 debugln(['TFpGDBMIDbgMemReader.ReadMemory ', dbgs(AnAddress), '  ', dbgMemRange(ADest, ASize)]);
 end;
 
-function TFpGDBMIDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: FpDbgInfo.TDbgPtr;
+function TFpGDBMIDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: FpdMemoryTools.TDbgPtr;
   ASize: Cardinal; ADest: Pointer): Boolean;
 begin
   Result := False;
 end;
 
-function TFpGDBMIDbgMemReader.ReadRegister(ARegNum: Integer; out
-  AValue: FpDbgInfo.TDbgPtr): Boolean;
+function TFpGDBMIDbgMemReader.ReadRegister(ARegNum: Cardinal; out
+  AValue: FpdMemoryTools.TDbgPtr): Boolean;
 var
   rname: String;
   v: String;
@@ -262,6 +263,11 @@ debugln(['TFpGDBMIDbgMemReader.ReadRegister ',rname, '  ', v]);
         end;
         exit;
       end;
+end;
+
+function TFpGDBMIDbgMemReader.RegisterSize(ARegNum: Cardinal): Integer;
+begin
+  Result := 4; // for the very few supported...
 end;
 
 { TFpGDBPTypeRequestCache }
