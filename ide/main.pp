@@ -9933,6 +9933,7 @@ begin
       if ShowInitialSetupDialog<>mrOk then
         exit(false);
       if OldLazDir<>EnvironmentOptions.LazarusDirectory then begin
+        // fetch new translations
         CollectTranslations(EnvironmentOptions.GetParsedLazarusDirectory);
         TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
                                  EnvironmentOptions.LanguageID);
