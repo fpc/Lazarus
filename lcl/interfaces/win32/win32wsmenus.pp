@@ -441,8 +441,9 @@ begin
   W := UTF8ToUTF16(AMenuItem.Caption);
   GetThemeTextExtent(Theme, DC, MENU_BARITEM, 0, PWideChar(W), Length(W),
     DT_SINGLELINE or DT_LEFT or DT_EXPANDTABS, nil, TextRect);
-  Result.TextSize.cx := TextRect.Right - TextRect.Left;
-  Result.TextSize.cy := TextRect.Bottom - TextRect.Top;
+  // Those rects include the bottom-right, so we need + 1
+  Result.TextSize.cx := TextRect.Right - TextRect.Left + 1;
+  Result.TextSize.cy := TextRect.Bottom - TextRect.Top + 1;
   if OldFont <> 0 then
     DeleteObject(SelectObject(DC, OldFont));
 end;
@@ -623,8 +624,9 @@ begin
   end;
 
   // draw text
-  TextRect.Top := (TextRect.Top + TextRect.Bottom - Metrics.TextSize.cy) div 2;
-  TextRect.Bottom := TextRect.Top + Metrics.TextSize.cy;
+  // Those rects include the bottom-right, so we need + 1
+  TextRect.Top := (TextRect.Top + TextRect.Bottom + 1 - Metrics.TextSize.cy) div 2;
+  TextRect.Bottom := TextRect.Top + Metrics.TextSize.cy - 1;
   TextFlags := DT_SINGLELINE or DT_EXPANDTABS;
   if IsRightToLeft then
     TextFlags := TextFlags or DT_RTLREADING;
