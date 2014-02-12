@@ -36,7 +36,7 @@ unit FPDCommand;
 interface
 
 uses
-  SysUtils, Classes, Windows, LCLProc, FpDbgWinExtra, FpDbgInfo, FpDbgClasses;
+  SysUtils, Classes, Windows, LCLProc, FpDbgWinExtra, FpDbgInfo, FpDbgClasses, FpdMemoryTools;
 
 procedure HandleCommand(ACommand: String);
 

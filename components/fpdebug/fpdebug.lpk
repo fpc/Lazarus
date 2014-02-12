@@ -34,7 +34,7 @@ File(s) with other licenses (see also header in file(s):
 
   (Any modifications/translations of this file are from duby)
 "/>
-    <Files Count="20">
+    <Files Count="21">
       <Item1>
         <Filename Value="fpdbgclasses.pp"/>
         <UnitName Value="FpDbgClasses"/>
@@ -116,6 +116,10 @@ File(s) with other licenses (see also header in file(s):
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpDbgWinClasses"/>
       </Item20>
+      <Item21>
+        <Filename Value="fpdmemorytools.pas"/>
+        <UnitName Value="fpdmemorytools"/>
+      </Item21>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

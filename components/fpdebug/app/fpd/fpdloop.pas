@@ -38,7 +38,7 @@ interface
 
 uses
   Windows, Classes, SysUtils, FileUtil, FpDbgInfo, FpDbgClasses, FpDbgWinExtra, FpDbgDisasX86,
-  FpDbgWinClasses;
+  FpDbgWinClasses, FpdMemoryTools;
 
 procedure DebugLoop;
 

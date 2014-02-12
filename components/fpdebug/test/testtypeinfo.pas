@@ -5,8 +5,9 @@ unit TestTypeInfo;
 interface
 
 uses
-  FpPascalParser, FpDbgDwarf, FpDbgInfo, LazLoggerBase, LazUTF8, sysutils, fpcunit,
-  testregistry, TestHelperClasses, TestDwarfSetup1, TestDwarfSetupBasic, TestDwarfSetupArray;
+  FpPascalParser, FpDbgDwarf, FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazUTF8, sysutils,
+  fpcunit, testregistry, TestHelperClasses, TestDwarfSetup1, TestDwarfSetupBasic,
+  TestDwarfSetupArray;
 
 
 type
@@ -467,10 +468,44 @@ begin
   StartInvalTest('VarDynIntArray[0]', 'xxx');
 
   SetLength(ImgLoader.GlobalVar.VarDynIntArray,33);
+  ImgLoader.GlobalVar.VarDynIntArray[0] := 10;
+  ImgLoader.GlobalVar.VarDynIntArray[1] := 11;
+  ImgLoader.GlobalVar.VarDynIntArray[2] := 12;
+  ImgLoader.GlobalVar.VarDynIntArray[31] := 410;
+  ImgLoader.GlobalVar.VarDynIntArray[32] := 420;
+
   StartTest('VarDynIntArray[0]', skInteger, [ttHasType]);
+  ExpFlags([svfInteger, svfOrdinal, svfAddress, svfSize], [svfSizeOfPointer, svfDataAddress, svfDataSize]);
+  ExpResult(svfInteger, 10);
+  ExpResult(svfOrdinal, QWord(10));
+  ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImgLoader.GlobalVar.VarDynIntArray[0])));
+  ExpResult(svfSize, SizeOf(ImgLoader.GlobalVar.VarDynIntArray[0]));
+
   StartTest('VarDynIntArray[1]', skInteger, [ttHasType]);
+  ExpResult(svfInteger, 11);
+  ExpResult(svfOrdinal, QWord(11));
+  ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImgLoader.GlobalVar.VarDynIntArray[1])));
+
+  StartTest('VarDynIntArray[32]', skInteger, [ttHasType]);
+  ExpResult(svfInteger, 420);
+  ExpResult(svfOrdinal, QWord(420));
+  ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImgLoader.GlobalVar.VarDynIntArray[32])));
+
+
+  ImgLoader.GlobalVar.VarStatIntArray1[0] := 110;
+  ImgLoader.GlobalVar.VarStatIntArray1[1] := 111;
 
   StartTest('VarStatIntArray1[0]', skInteger, [ttHasType]);
+  ExpFlags([svfInteger, svfOrdinal, svfAddress, svfSize], [svfSizeOfPointer, svfDataAddress, svfDataSize]);
+  ExpResult(svfInteger, 110);
+  ExpResult(svfOrdinal, QWord(110));
+  ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImgLoader.GlobalVar.VarStatIntArray1[0])));
+  ExpResult(svfSize, SizeOf(ImgLoader.GlobalVar.VarStatIntArray1[0]));
+
+  StartTest('VarStatIntArray1[1]', skInteger, [ttHasType]);
+  ExpResult(svfInteger, 111);
+  ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImgLoader.GlobalVar.VarStatIntArray1[1])));
+
 
 end;
 

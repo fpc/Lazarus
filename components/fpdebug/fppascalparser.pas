@@ -29,7 +29,7 @@ unit FpPascalParser;
 interface
 
 uses
-  Classes, sysutils, math, FpDbgInfo, LazLoggerBase, LazClasses;
+  Classes, sysutils, math, FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses;
 
 type
 

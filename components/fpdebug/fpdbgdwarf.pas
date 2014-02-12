@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, Types, SysUtils, FpDbgUtil, FpDbgInfo, FpDbgDwarfConst, Maps, Math,
-  FpDbgLoader, FpImgReaderBase, LazLoggerBase, // LazLoggerDummy,
+  FpDbgLoader, FpImgReaderBase, FpdMemoryTools, LazLoggerBase, // LazLoggerDummy,
   LazClasses, LazFileUtils, LazUTF8, contnrs;
 
 type

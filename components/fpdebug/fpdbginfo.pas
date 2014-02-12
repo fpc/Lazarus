@@ -5,11 +5,9 @@ unit FpDbgInfo;
 interface
 
 uses
-  Classes, SysUtils, FpDbgLoader, LazLoggerBase, LazClasses;
+  Classes, SysUtils, FpDbgLoader, FpdMemoryTools, LazLoggerBase, LazClasses;
 
 type
-  TDbgPtr = QWord; // PtrUInt;
-
   { TFpDbgCircularRefCountedObject }
 
   TFpDbgCircularRefCountedObject = class(TRefCountedObject)
@@ -39,14 +37,6 @@ type
   TFpDbgCircularRefCntObjList = class(TRefCntObjList)
   protected
     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
-  end;
-
-
-  TFpDbgMemReaderBase = class
-  public
-    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual; abstract;
-    function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual; abstract;
-    function ReadRegister(ARegNum: Integer; out AValue: TDbgPtr): Boolean; virtual; abstract;
   end;
 
   TDbgSymbolType = (

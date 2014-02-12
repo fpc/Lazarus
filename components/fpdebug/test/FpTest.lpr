@@ -4,7 +4,7 @@ program FpTest;
 
 uses
   Interfaces, Forms, GuiTestRunner, TestPascalParser, TestTypeInfo, TestHelperClasses,
-TestDwarfSetup1;
+TestDwarfSetup1, TestDwarfSetupBasic, TestDwarfVarious, testdwarfsetupArray;
 
 {$R *.res}
 

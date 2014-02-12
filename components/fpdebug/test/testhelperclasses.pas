@@ -5,7 +5,7 @@ unit TestHelperClasses;
 interface
 
 uses
-  Classes, SysUtils, FpImgReaderBase, FpDbgDwarfConst, FpDbgLoader, FpDbgInfo;
+  Classes, SysUtils, FpImgReaderBase, FpDbgDwarfConst, FpDbgLoader, FpDbgInfo, FpdMemoryTools;
 
 const
   TestAddrSize = sizeof(Pointer);
@@ -17,9 +17,9 @@ type
   TTestMemReader = class(TFpDbgMemReaderBase)
   public
     RegisterValues: array[0..30] of TDbgPtr;
-    function ReadMemory(AnAddress: FpDbgInfo.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
-    function ReadMemoryEx({%H-}AnAddress, {%H-}AnAddressSpace: FpDbgInfo.TDbgPtr; {%H-}ASize: Cardinal; {%H-}ADest: Pointer): Boolean; override;
-    function ReadRegister(ARegNum: Integer; out AValue: FpDbgInfo.TDbgPtr): Boolean; override;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemoryEx({%H-}AnAddress, {%H-}AnAddressSpace: TDbgPtr; {%H-}ASize: Cardinal; {%H-}ADest: Pointer): Boolean; override;
+    function ReadRegister(ARegNum: Integer; out AValue: TDbgPtr): Boolean; override;
   end;
 
   TTestDwarfAbbrev = class;
@@ -387,20 +387,20 @@ end;
 
 { TTestMemReader }
 
-function TTestMemReader.ReadMemory(AnAddress: FpDbgInfo.TDbgPtr; ASize: Cardinal;
+function TTestMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
   ADest: Pointer): Boolean;
 begin
   Result := True;
   Move(Pointer(AnAddress)^, ADest^, ASize);
 end;
 
-function TTestMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: FpDbgInfo.TDbgPtr;
+function TTestMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr;
   ASize: Cardinal; ADest: Pointer): Boolean;
 begin
   Result := False;
 end;
 
-function TTestMemReader.ReadRegister(ARegNum: Integer; out AValue: FpDbgInfo.TDbgPtr): Boolean;
+function TTestMemReader.ReadRegister(ARegNum: Integer; out AValue: TDbgPtr): Boolean;
 begin
   Result := True;
   AValue := RegisterValues[ARegNum];

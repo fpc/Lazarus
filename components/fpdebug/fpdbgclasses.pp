@@ -37,7 +37,8 @@ unit FpDbgClasses;
 interface
 
 uses
-  Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgWinExtra, FpDbgLoader, FpDbgInfo, LazLoggerBase, LazClasses;
+  Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgWinExtra, FpDbgLoader,
+  FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses;
 
 type
   TDbgProcess = class;
