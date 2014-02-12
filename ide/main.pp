@@ -1652,6 +1652,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy C ');{$ENDIF}
 
   FreeThenNil(IDEProtocolOpts);
+  FreeThenNil(fBuilder);
   DebugLn('[TMainIDE.Destroy] END');
 end;
 
@@ -4531,6 +4532,7 @@ var
   FoundProfToBuild: Boolean;
   s: String;
 begin
+  if ToolStatus<>itNone then exit;
   with MiscellaneousOptions do begin
     FoundProfToBuild:=False;
     s:=sLineBreak+sLineBreak;
@@ -4559,39 +4561,36 @@ var
   DlgResult: TModalResult;
 begin
   if ToolStatus<>itNone then exit;
+  if fBuilder=Nil then
+    fBuilder:=TLazarusBuilder.Create;    // Will be freed in the very end.
   MainBuildBoss.SetBuildTargetIDE;
-  fBuilder := TLazarusBuilder.Create; // Build profile is not known yet.
   try
-    try
-      DlgResult:=fBuilder.ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
-    finally
-      MainBuildBoss.SetBuildTargetProject1(true);
-    end;
-
-    if DlgResult in [mrOk,mrYes,mrAll] then begin
-      MiscellaneousOptions.Save;
-      IncreaseCompilerParseStamp;
-      if DlgResult=mrAll then
-        DoBuildAdvancedLazarus(MiscellaneousOptions.BuildLazProfiles.Selected)
-      else if DlgResult=mrYes then begin
-        LazSrcTemplate:=
-          CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true);
-        if Assigned(LazSrcTemplate) then begin
-          LazSrcDirTemplate:=LazSrcTemplate.FindChildByName(StdDefTemplLazarusSrcDir);
-          if Assigned(LazSrcDirTemplate) then begin
-            CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
-                      StdDefTemplLazarusBuildOpts,
-                      MiscellaneousOptions.BuildLazProfiles.Current.ExtraOptions,
-                      true,CodeToolsOpts);
-            CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
-                                                 StdDefTemplLazarusBuildOpts);
-          end;
-        end;
-        DoBuildLazarus([]);
-      end;
-    end;
+    DlgResult:=fBuilder.ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
   finally
-    FreeAndNil(fBuilder);
+    MainBuildBoss.SetBuildTargetProject1(true);
+  end;
+
+  if DlgResult in [mrOk,mrYes,mrAll] then begin
+    MiscellaneousOptions.Save;
+    IncreaseCompilerParseStamp;
+    if DlgResult=mrAll then
+      DoBuildAdvancedLazarus(MiscellaneousOptions.BuildLazProfiles.Selected)
+    else if DlgResult=mrYes then begin
+      LazSrcTemplate:=
+        CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true);
+      if Assigned(LazSrcTemplate) then begin
+        LazSrcDirTemplate:=LazSrcTemplate.FindChildByName(StdDefTemplLazarusSrcDir);
+        if Assigned(LazSrcDirTemplate) then begin
+          CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
+                    StdDefTemplLazarusBuildOpts,
+                    MiscellaneousOptions.BuildLazProfiles.Current.ExtraOptions,
+                    true,CodeToolsOpts);
+          CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
+                                               StdDefTemplLazarusBuildOpts);
+        end;
+      end;
+      DoBuildLazarus([]);
+    end;
   end;
 end;
 
@@ -7517,7 +7516,6 @@ var
   FPCVersion, FPCRelease, FPCPatch: integer;
   PkgCompileFlags: TPkgCompileFlags;
   ProfileChanged: Boolean;
-  BuilderCreated: Boolean;
 begin
   if ToolStatus<>itNone then begin
     IDEMessageDialog(lisNotNow,lisYouCanNotBuildLazarusWhileDebuggingOrCompiling,
@@ -7532,8 +7530,7 @@ begin
     exit;
   end;
 
-  BuilderCreated := fBuilder = Nil;
-  if BuilderCreated then
+  if fBuilder=Nil then
     fBuilder:=TLazarusBuilder.Create;
   {$IFNDEF EnableNewExtTools}
   MessagesView.BeginBlock;
@@ -7617,8 +7614,6 @@ begin
     if ProfileChanged then
       MiscellaneousOptions.Save;
   finally
-    if BuilderCreated then
-      FreeAndNil(fBuilder);
     MainBuildBoss.SetBuildTargetProject1(true);
     DoCheckFilesOnDisk;
     {$IFNDEF EnableNewExtTools}
