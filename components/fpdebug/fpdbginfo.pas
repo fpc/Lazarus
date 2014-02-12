@@ -141,9 +141,9 @@ type
     function GetAsString: AnsiString; virtual;
     function GetAsWideString: WideString; virtual;
 
-    function GetAddress: TDbgPtr;  virtual;
+    function GetAddress: TFpDbgMemLocation;  virtual;
     function GetSize: Integer;  virtual;  // returns -1, if not available
-    function GetDataAddress: TDbgPtr;  virtual;
+    function GetDataAddress: TFpDbgMemLocation;  virtual;
     function GetDataSize: Integer;  virtual;
 
     function GetMember(AIndex: Integer): TDbgSymbolValue; virtual;
@@ -172,9 +172,9 @@ type
     // complex
     // double
 
-    property Address: TDbgPtr read GetAddress;     // Address of variable
+    property Address: TFpDbgMemLocation read GetAddress;     // Address of variable
     property Size: Integer read GetSize;           // Size of variable
-    property DataAddress: TDbgPtr read GetDataAddress; // Address of Data, if avail (e.g. String, TObject, ..., BUT NOT record)
+    property DataAddress: TFpDbgMemLocation read GetDataAddress; // Address of Data, if avail (e.g. String, TObject, ..., BUT NOT record)
     property DataSize: Integer read GetDataSize;       // Sive of Data, if avail (e.g. String, TObject, ..., BUT NOT record)
     // memdump
   public
@@ -228,14 +228,14 @@ type
 
   TDbgSymbolValueConstAddress = class(TDbgSymbolValue)
   private
-    FAddress: TDbgPtr;
+    FAddress: TFpDbgMemLocation;
   protected
-    property Address: QWord read FAddress write FAddress;
+    property Address: TFpDbgMemLocation read FAddress write FAddress;
     //function GetKind: TDbgSymbolKind; override; // no kind
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
-    function GetAddress: TDbgPtr; override;
+    function GetAddress: TFpDbgMemLocation; override;
   public
-    constructor Create(AnAddress: TDbgPtr);
+    constructor Create(AnAddress: TFpDbgMemLocation);
   end;
 
   { TDbgSymbol }
@@ -248,7 +248,7 @@ type
     FName: String;
     FKind: TDbgSymbolKind;
     FSymbolType: TDbgSymbolType;
-    FAddress: TDbgPtr;
+    FAddress: TFpDbgMemLocation;
     FSize: Integer;
     FTypeInfo: TDbgSymbol;
     FMemberVisibility: TDbgSymbolMemberVisibility; // Todo: not cached
@@ -257,7 +257,7 @@ type
     function GetKind: TDbgSymbolKind; inline;
     function GetName: String; inline;
     function GetSize: Integer; inline;
-    function GetAddress: TDbgPtr; inline;
+    function GetAddress: TFpDbgMemLocation; inline;
     function GetTypeInfo: TDbgSymbol; inline;
     function GetMemberVisibility: TDbgSymbolMemberVisibility; inline;
   protected
@@ -287,7 +287,7 @@ type
     procedure SetName(AValue: String); inline;
     procedure SetKind(AValue: TDbgSymbolKind); inline;
     procedure SetSymbolType(AValue: TDbgSymbolType); inline;
-    procedure SetAddress(AValue: TDbgPtr); inline;
+    procedure SetAddress(AValue: TFpDbgMemLocation); inline;
     procedure SetSize(AValue: Integer); inline;
     procedure SetTypeInfo(AValue: TDbgSymbol); inline;
     procedure SetMemberVisibility(AValue: TDbgSymbolMemberVisibility); inline;
@@ -302,7 +302,7 @@ type
     //procedure Needed; virtual;
   public
     constructor Create(const AName: String);
-    constructor Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TDbgPtr);
+    constructor Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TFpDbgMemLocation);
     destructor Destroy; override;
     // Basic info
     property Name:       String read GetName;
@@ -310,7 +310,7 @@ type
     property Kind:       TDbgSymbolKind read GetKind;
     // Memory; Size is also part of type (byte vs word vs ...)
     // HasAddress // (register does not have)
-    property Address:    TDbgPtr read GetAddress;
+    property Address:    TFpDbgMemLocation read GetAddress;
     property Size:       Integer read GetSize; // In Bytes
     // TypeInfo used by
     // stValue (Variable): Type
@@ -393,14 +393,14 @@ type
   protected
     function GetAddress: TDbgPtr; virtual; abstract;
     function GetSymbolAtAddress: TDbgSymbol; virtual;
-    function GetMemReader: TFpDbgMemReaderBase; virtual;
+    function GetMemManager: TFpDbgMemManager; virtual;
     function GetSizeOfAddress: Integer; virtual;
   public
     property Address: TDbgPtr read GetAddress;
     property SymbolAtAddress: TDbgSymbol read GetSymbolAtAddress;
     // search this, and all parent context
     function FindSymbol(const {%H-}AName: String): TDbgSymbol; virtual;
-    property MemReader: TFpDbgMemReaderBase read GetMemReader;
+    property MemManager: TFpDbgMemManager read GetMemManager;
     property SizeOfAddress: Integer read GetSizeOfAddress;
   end;
 
@@ -418,6 +418,7 @@ type
     function FindSymbol({%H-}AAddress: TDbgPtr): TDbgSymbol; virtual; deprecated;
     property HasInfo: Boolean read FHasInfo;
     function GetLineAddress(const {%H-}AFileName: String; {%H-}ALine: Cardinal): TDbgPtr; virtual;
+    //property MemManager: TFpDbgMemReaderBase read GetMemManager write SetMemManager;
   end;
 
 function dbgs(ADbgSymbolKind: TDbgSymbolKind): String; overload;
@@ -437,12 +438,12 @@ begin
   Result := [svfAddress, svfSizeOfPointer]
 end;
 
-function TDbgSymbolValueConstAddress.GetAddress: TDbgPtr;
+function TDbgSymbolValueConstAddress.GetAddress: TFpDbgMemLocation;
 begin
   Result := FAddress;
 end;
 
-constructor TDbgSymbolValueConstAddress.Create(AnAddress: TDbgPtr);
+constructor TDbgSymbolValueConstAddress.Create(AnAddress: TFpDbgMemLocation);
 begin
   inherited Create;
   FAddress := AnAddress;
@@ -601,14 +602,14 @@ begin
   Result := 0;
 end;
 
-function TDbgSymbolValue.GetAddress: TDbgPtr;
+function TDbgSymbolValue.GetAddress: TFpDbgMemLocation;
 begin
-  Result := 0;
+  Result := InvalidLoc;
 end;
 
-function TDbgSymbolValue.GetDataAddress: TDbgPtr;
+function TDbgSymbolValue.GetDataAddress: TFpDbgMemLocation;
 begin
-  Result := 0;
+  Result := InvalidLoc;
 end;
 
 function TDbgSymbolValue.GetDataSize: Integer;
@@ -673,7 +674,7 @@ end;
 
 { TDbgInfoAddressContext }
 
-function TDbgInfoAddressContext.GetMemReader: TFpDbgMemReaderBase;
+function TDbgInfoAddressContext.GetMemManager: TFpDbgMemManager;
 begin
   Result := nil;
 end;
@@ -703,7 +704,8 @@ begin
     SetName(AName);
 end;
 
-constructor TDbgSymbol.Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TDbgPtr);
+constructor TDbgSymbol.Create(const AName: String; AKind: TDbgSymbolKind;
+  AAddress: TFpDbgMemLocation);
 begin
   Create(AName);
   SetKind(AKind);
@@ -721,7 +723,7 @@ begin
   Result := nil;
 end;
 
-function TDbgSymbol.GetAddress: TDbgPtr;
+function TDbgSymbol.GetAddress: TFpDbgMemLocation;
 begin
   if not(sfiAddress in FEvaluatedFields) then
     AddressNeeded;
@@ -815,7 +817,7 @@ begin
   Result := 0;
 end;
 
-procedure TDbgSymbol.SetAddress(AValue: TDbgPtr);
+procedure TDbgSymbol.SetAddress(AValue: TFpDbgMemLocation);
 begin
   FAddress := AValue;
   Include(FEvaluatedFields, sfiAddress);
@@ -917,7 +919,7 @@ end;
 
 procedure TDbgSymbol.AddressNeeded;
 begin
-  SetAddress(0);
+  SetAddress(InvalidLoc);
 end;
 
 procedure TDbgSymbol.SizeNeeded;

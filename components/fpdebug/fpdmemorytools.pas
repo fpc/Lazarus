@@ -8,7 +8,7 @@ uses
   Classes, SysUtils;
 
 type
-  TDbgPtr = QWord; // PtrUInt;
+  TDbgPtr = QWord; // TODO, use from IdeDebuggerInterface, once that is done.
 
   TFpDbgMemReaderBase = class
   public
@@ -20,6 +20,7 @@ type
   end;
 
   // Todo, cpu/language specific operations, endianess, sign extend, float .... default int value for bool
+  // TODO: currently it assumes target and own mem are in the same format
   TFpDbgMemConvertor = class
   public
     (* To copy a smaller int/cardinal (e.g. word) into a bigger (e.g. dword),
@@ -62,12 +63,13 @@ type
     * TODO: allow to pre-read and cache Target mem (e.g. before reading all fields of a record
   *)
   TFpDbgMemLocationType = (
+    mlfInvalid,
     mlfTargetMem,            // an address in the target (debuggee) process
-    mlfSelfMem,              // an address in this(the debuggers) process memory
+    mlfSelfMem,              // an address in this(the debuggers) process memory; the data is  in TARGET format (endian, ...)
     // the below will be mapped (and extended) according to endianess
     mlfTargetRegister,       // reads from the register
     mlfTargetRegisterSigned, // reads from the register and sign extends if needed (may be limited to 8 bytes)
-    mlfConstant              // an (up to) SizeOf(TDbgPtr) (=8) Bytes Value
+    mlfConstant              // an (up to) SizeOf(TDbgPtr) (=8) Bytes Value (endian in format of debug process)
   );
 
   TFpDbgMemLocation = record
@@ -88,19 +90,45 @@ type
     function ReadMemoryEx(ALocation: TFpDbgMemLocation; AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean;
 
+    function ReadAddress(ALocation: TFpDbgMemLocation; ASize: Cardinal): TFpDbgMemLocation;
+    function ReadAddressEx(ALocation: TFpDbgMemLocation;  AnAddressSpace: TDbgPtr; ASize: Cardinal): TFpDbgMemLocation;
+
     property MemConvertor: TFpDbgMemConvertor read FMemConvertor;
   end;
 
+function NilLoc: TFpDbgMemLocation; inline;
+function InvalidLoc: TFpDbgMemLocation; inline;
 function TargetLoc(AnAddress: TDbgPtr): TFpDbgMemLocation; inline;
 function RegisterLoc(ARegNum: Cardinal): TFpDbgMemLocation; inline;
 function RegisterSignedLoc(ARegNum: Cardinal): TFpDbgMemLocation; inline;
 function SelfLoc(AnAddress: TDbgPtr): TFpDbgMemLocation; inline;
+function SelfLoc(AnAddress: Pointer): TFpDbgMemLocation; inline;
 function ConstLoc(AValue: QWord): TFpDbgMemLocation; inline;
 
 function IsTargetAddr(ALocation: TFpDbgMemLocation): Boolean; inline;
-function LocToAddr(ALocation: TFpDbgMemLocation): TDbgPtr; inline;
+function IsValidLoc(ALocation: TFpDbgMemLocation): Boolean; inline;     // Valid, Nil allowed
+function IsReadableLoc(ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and not Nil
+function IsTargetNil(ALocation: TFpDbgMemLocation): Boolean; inline;    // valid targed = nil
+function IsTargetNotNil(ALocation: TFpDbgMemLocation): Boolean; inline; // valid targed <> nil
+
+function LocToAddr(ALocation: TFpDbgMemLocation): TDbgPtr; inline;      // does not check valid
+function LocToAddrOrNil(ALocation: TFpDbgMemLocation): TDbgPtr; inline; // save version
+
+function dbgs(ALocation: TFpDbgMemLocation): String; overload;
 
 implementation
+
+function NilLoc: TFpDbgMemLocation;
+begin
+  Result.Address := 0;
+  Result.MType := mlfTargetMem;
+end;
+
+function InvalidLoc: TFpDbgMemLocation;
+begin
+  Result.Address := 0;
+  Result.MType := mlfInvalid;
+end;
 
 function TargetLoc(AnAddress: TDbgPtr): TFpDbgMemLocation;
 begin
@@ -126,6 +154,12 @@ begin
   Result.MType := mlfSelfMem;
 end;
 
+function SelfLoc(AnAddress: Pointer): TFpDbgMemLocation;
+begin
+  Result.Address := TDbgPtr(AnAddress);
+  Result.MType := mlfSelfMem;
+end;
+
 function ConstLoc(AValue: QWord): TFpDbgMemLocation;
 begin
   Result.Address := AValue;
@@ -137,10 +171,50 @@ begin
   Result := ALocation.MType = mlfTargetMem;
 end;
 
+function IsValidLoc(ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := (ALocation.MType <> mlfInvalid);
+end;
+
+function IsReadableLoc(ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := (ALocation.MType <> mlfInvalid) and
+            ( (not(ALocation.MType in [mlfTargetMem, mlfSelfMem])) or
+              (ALocation.Address <> 0)
+            );
+end;
+
+function IsTargetNil(ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := (ALocation.MType = mlfTargetMem) and (ALocation.Address = 0);
+end;
+
+function IsTargetNotNil(ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := (ALocation.MType = mlfTargetMem) and (ALocation.Address <> 0);
+end;
+
 function LocToAddr(ALocation: TFpDbgMemLocation): TDbgPtr;
 begin
   assert(ALocation.MType = mlfTargetMem, 'LocToAddr for other than mlfTargetMem');
   Result := ALocation.Address;
+end;
+
+function LocToAddrOrNil(ALocation: TFpDbgMemLocation): TDbgPtr;
+begin
+  if (ALocation.MType = mlfTargetMem) then
+    Result := ALocation.Address
+  else
+    Result := 0;
+end;
+
+function dbgs(ALocation: TFpDbgMemLocation): String;
+begin
+  Result := '';
+  if not (ALocation.MType in [low(TFpDbgMemLocationType)..high(TFpDbgMemLocationType)]) then
+    Result := 'Location=out-of-range'
+  else
+    WriteStr(Result, 'Location=', ALocation.Address, ',', ALocation.MType)
 end;
 
 { TFpDbgMemConvertorLittleEndian }
@@ -194,6 +268,7 @@ var
 begin
   Result := False;
   case ALocation.MType of
+    mlfInvalid: ;
     mlfTargetMem:
       Result := FMemReader.ReadMemory(ALocation.Address, ASize, ADest);
     mlfSelfMem:
@@ -250,6 +325,46 @@ end;
 function TFpDbgMemManager.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean;
 begin
   Result := FMemReader.ReadRegister(ARegNum, AValue);
+end;
+
+function TFpDbgMemManager.ReadAddress(ALocation: TFpDbgMemLocation;
+  ASize: Cardinal): TFpDbgMemLocation;
+var
+  Dest: PQWord;
+begin
+  Assert(ASize < SizeOf(Result.Address), 'TFpDbgMemManager.ReadAddress');
+  if ASize > SizeOf(Result.Address) then begin
+    Result := InvalidLoc;
+    exit;
+  end;
+
+  Result.Address := 0;
+  Dest := @Result.Address;
+  MemConvertor.AdjustIntPointer(Dest, ASize, SizeOf(Result.Address));
+  if ReadMemory(ALocation, ASize, Dest) then
+    Result.MType := mlfTargetMem
+  else
+    Result := InvalidLoc;
+end;
+
+function TFpDbgMemManager.ReadAddressEx(ALocation: TFpDbgMemLocation; AnAddressSpace: TDbgPtr;
+  ASize: Cardinal): TFpDbgMemLocation;
+var
+  Dest: PQWord;
+begin
+  Assert(ASize < SizeOf(Result.Address), 'TFpDbgMemManager.ReadAddress');
+  if ASize > SizeOf(Result.Address) then begin
+    Result := InvalidLoc;
+    exit;
+  end;
+
+  Result.Address := 0;
+  Dest := @Result.Address;
+  MemConvertor.AdjustIntPointer(Dest, ASize, SizeOf(Result.Address));
+  if ReadMemoryEx(ALocation, AnAddressSpace, ASize, Dest) then
+    Result.MType := mlfTargetMem
+  else
+    Result := InvalidLoc;
 end;
 
 end.

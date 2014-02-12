@@ -25,6 +25,7 @@ type
     FExpression: TFpPascalExpression;
     FImageLoader: TTestDummyImageLoader;
     FMemReader: TTestMemReader;
+    FMemManager: TFpDbgMemManager;
 
     procedure AssertEqualsQW(const AMessage: string; Expected, Actual: QWord);
 
@@ -163,9 +164,9 @@ begin
   ExpFlags([Field]);
   WriteStr(s, FCurrentTestName, Field);
   case Field of
-    svfAddress:           AssertEqualsQW('VAlue for '+s, ExpValue, AVal.Address);
+    svfAddress:           AssertEqualsQW('VAlue for '+s, ExpValue, LocToAddrOrNil(AVal.Address));
     svfSize:              AssertEqualsQW('VAlue for '+s, ExpValue, AVal.Size);
-    svfDataAddress:       AssertEqualsQW('VAlue for '+s, ExpValue, AVal.DataAddress);
+    svfDataAddress:       AssertEqualsQW('VAlue for '+s, ExpValue, LocToAddrOrNil(AVal.DataAddress));
     svfDataSize:          AssertEqualsQW('VAlue for '+s, ExpValue, AVal.DataSize);
     svfInteger:           AssertEqualsQW('VAlue for '+s, ExpValue, AVal.AsInteger);
     svfCardinal:          AssertEqualsQW('VAlue for '+s, ExpValue, AVal.AsCardinal);
@@ -182,9 +183,9 @@ begin
   ExpFlags([Field]);
   WriteStr(s, FCurrentTestName, Field);
   case Field of
-    svfAddress:           AssertEquals('VAlue for '+s, ExpValue, AVal.Address);
+    svfAddress:           AssertEquals('VAlue for '+s, ExpValue, LocToAddrOrNil(AVal.Address));
     svfSize:              AssertEquals('VAlue for '+s, ExpValue, AVal.Size);
-    svfDataAddress:       AssertEquals('VAlue for '+s, ExpValue, AVal.DataAddress);
+    svfDataAddress:       AssertEquals('VAlue for '+s, ExpValue, LocToAddrOrNil(AVal.DataAddress));
     svfDataSize:          AssertEquals('VAlue for '+s, ExpValue, AVal.DataSize);
     svfInteger:           AssertEquals('VAlue for '+s, ExpValue, AVal.AsInteger);
     svfCardinal:          AssertEquals('VAlue for '+s, ExpValue, AVal.AsCardinal);
@@ -314,9 +315,10 @@ procedure TTestTypeInfo.InitDwarf(ALoaderClass: TTestDummyImageLoaderClass);
 begin
   FImageLoader := ALoaderClass.Create;
   FMemReader := TTestMemReader.Create;
+  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
   FDwarfInfo := TDbgDwarf.Create(FImageLoader);
+  FDwarfInfo.MemManager := FMemManager;
   FDwarfInfo.LoadCompilationUnits;
-  FDwarfInfo.MemReader := FMemReader;
 end;
 
 procedure TTestTypeInfo.SetUp;
@@ -324,6 +326,7 @@ begin
   inherited SetUp;
   FImageLoader     := nil;
   FMemReader       := nil;
+  FMemManager      := nil;
   FDwarfInfo       := nil;
   FCurrentTestName := '';
   FCurrentContext  := nil;
@@ -337,6 +340,9 @@ begin
   FDwarfInfo.Free;
   FImageLoader.Free;
   FMemReader.Free;
+  if FMemManager <> nil then
+    FMemManager.MemConvertor.Free;
+  FreeAndNil(FMemManager);
   inherited TearDown;
 end;
 

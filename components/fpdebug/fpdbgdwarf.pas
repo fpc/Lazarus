@@ -266,7 +266,7 @@ type
   );
 
   TDwarfLocationStackEntry = record
-    Value: TDbgPtr; // Address of data, unless lseRegister (in vhich case this holds the data (copy of register)
+    Value: TFpDbgMemLocation; // Address of data, unless lseRegister (in vhich case this holds the data (copy of register)
     Kind:  TDwarfLocationStackEntryKind;
   end;
 
@@ -283,9 +283,11 @@ type
     function  PeekKind: TDwarfLocationStackEntryKind;
     function  Peek(AIndex: Integer): TDwarfLocationStackEntry;
     procedure Push(const AEntry: TDwarfLocationStackEntry);
-    procedure Push(AValue: TDbgPtr; AKind: TDwarfLocationStackEntryKind);
+    procedure Push(AValue: TFpDbgMemLocation; AKind: TDwarfLocationStackEntryKind);
+    procedure Push(AValue: TDbgPtr; AKind: TDwarfLocationStackEntryKind); // mlfTargetMem
     procedure Modify(AIndex: Integer; const AEntry: TDwarfLocationStackEntry);
-    procedure Modify(AIndex: Integer; AValue: TDbgPtr; AKind: TDwarfLocationStackEntryKind);
+    procedure Modify(AIndex: Integer; AValue: TFpDbgMemLocation; AKind: TDwarfLocationStackEntryKind);
+    procedure Modify(AIndex: Integer; AValue: TDbgPtr; AKind: TDwarfLocationStackEntryKind); // mlfTargetMem
   end;
 
   { TDwarfLocationExpression }
@@ -500,7 +502,7 @@ type
     procedure BuildAddressMap;
     procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
     function GetUnitName: String;
-    function  ReadAddressAtPointer(var AData: Pointer; AIncPointer: Boolean = False): QWord;
+    function  ReadAddressAtPointer(var AData: Pointer; AIncPointer: Boolean = False): TFpDbgMemLocation;
   protected
     procedure ScanAllEntries; inline;
     function LocateEntry(ATag: Cardinal; out AResultScope: TDwarfScopeInfo): Boolean;
@@ -595,10 +597,10 @@ type
     FValueSymbol: TDbgDwarfValueIdentifier;
     FTypeCastTargetType: TDbgDwarfTypeIdentifier;
     FTypeCastSourceValue: TDbgSymbolValue;
-    function MemReader: TFpDbgMemReaderBase; inline;
+    function MemManager: TFpDbgMemManager; inline;
     function AddressSize: Byte; inline;
   protected
-    function GetDwarfDataAddress(out AnAddress: TDbgPtr; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; reintroduce;
+    function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean;
     procedure Reset; virtual;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function HasTypeCastInfo: Boolean;
@@ -606,7 +608,7 @@ type
     procedure DoReferenceAdded; override;
     procedure DoReferenceReleased; override;
     function GetKind: TDbgSymbolKind; override;
-    function GetAddress: TDbgPtr; override;
+    function GetAddress: TFpDbgMemLocation; override;
     function GetMemberCount: Integer; override;
     function GetMemberByName(AIndex: String): TDbgSymbolValue; override;
     function GetMember(AIndex: Integer): TDbgSymbolValue; override;
@@ -698,7 +700,7 @@ type
   TDbgDwarfPointerSymbolValue = class(TDbgDwarfNumericSymbolValue)
   protected
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
-    function GetDataAddress: TDbgPtr; override;
+    function GetDataAddress: TFpDbgMemLocation; override;
   end;
 
   { TDbgDwarfEnumSymbolValue }
@@ -760,13 +762,13 @@ type
 
   TDbgDwarfStructSymbolValue = class(TDbgDwarfSymbolValue)
   private
-    FDataAddress: TDbgPtr;
+    FDataAddress: TFpDbgMemLocation;
     FDataAddressDone: Boolean;
   protected
     procedure Reset; override;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
-    function GetDataAddress: TDbgPtr; override;
+    function GetDataAddress: TFpDbgMemLocation; override;
     function GetDataSize: Integer; override;
     function GetSize: Integer; override;
   end;
@@ -776,7 +778,7 @@ type
   TDbgDwarfStructTypeCastSymbolValue = class(TDbgDwarfSymbolValue)
   private
     FMembers: TFpDbgCircularRefCntObjList;
-    FDataAddress: TDbgPtr;
+    FDataAddress: TFpDbgMemLocation;
     FDataAddressDone: Boolean;
   protected
     procedure Reset; override;
@@ -785,7 +787,7 @@ type
     function GetAsCardinal: QWord; override;
     function GetSize: Integer; override;
     function GetDataSize: Integer; override;
-    function GetDataAddress: TDbgPtr; override;
+    function GetDataAddress: TFpDbgMemLocation; override;
     function IsValidTypeCast: Boolean; override;
   public
     destructor Destroy; override;
@@ -798,7 +800,7 @@ type
 
   TDbgDwarfSymbolValueConstAddress = class(TDbgSymbolValueConstAddress)
   protected
-    procedure Update(AnAddress: TDbgPtr);
+    procedure Update(AnAddress: TFpDbgMemLocation);
   end;
 
   { TDbgDwarfArraySymbolValue }
@@ -856,13 +858,13 @@ type
     function DataSize: Integer; virtual;
   protected
 // TODO: InitLocationParser may fail
-    procedure InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression; {%H-}AnObjectDataAddress: TDbgPtr = 0); virtual;
+    procedure InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression; {%H-}AnObjectDataAddress: TFpDbgMemLocation = 0); virtual;
     function  LocationFromTag(ATag: Cardinal; out AnAddress: TDbgPtr;
-                              AnObjectDataAddress: TDbgPtr = 0;
+                              AnObjectDataAddress: TFpDbgMemLocation;
                               AnInformationEntry: TDwarfInformationEntry = nil
                              ): Boolean;
     // GetDataAddress: data of a class, or string
-    function GetDataAddress(var AnAddress: TDbgPtr; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; virtual;
+    function GetDataAddress(var AnAddress: TFpDbgMemLocation; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; virtual;
     function HasAddress: Boolean; virtual;
 
     procedure Init; virtual;
@@ -871,7 +873,7 @@ type
     class function CreateSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfIdentifier;
     constructor Create(AName: String; AnInformationEntry: TDwarfInformationEntry);
     constructor Create(AName: String; AnInformationEntry: TDwarfInformationEntry;
-                       AKind: TDbgSymbolKind; AAddress: TDbgPtr);
+                       AKind: TDbgSymbolKind; AAddress: TFpDbgMemLocation);
     destructor Destroy; override;
     function StartScope: TDbgPtr; // return 0, if none. 0 includes all anyway
   end;
@@ -889,7 +891,7 @@ type
 
     procedure CircleBackRefActiveChanged(ANewActive: Boolean); override;
     procedure SetParentTypeInfo(AValue: TDbgDwarfIdentifier); override;
-    function GetDataAddress(out AnAddress: TDbgPtr; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; reintroduce;
+    function GetDataAddress(out AnAddress: TFpDbgMemLocation; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; reintroduce;
     procedure KindNeeded; override;
     procedure MemberVisibilityNeeded; override;
     function GetMember(AIndex: Integer): TDbgSymbol; override;
@@ -911,7 +913,7 @@ type
     procedure FrameBaseNeeded(ASender: TObject);
   protected
     function GetValueObject: TDbgSymbolValue; override;
-    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TDbgPtr = 0); override;
+    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TFpDbgMemLocation = 0); override;
   end;
 
   { TDbgDwarfTypeIdentifier }
@@ -1007,7 +1009,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TDbgDwarfTypeIdentifierRef = class(TDbgDwarfTypeIdentifierModifier)
   protected
     function GetFlags: TDbgSymbolFlags; override;
-    function GetDataAddress(var AnAddress: TDbgPtr; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; override;
+    function GetDataAddress(var AnAddress: TFpDbgMemLocation; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; override;
   end;
 
   { TDbgDwarfTypeIdentifierDeclaration }
@@ -1068,7 +1070,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure KindNeeded; override;
     procedure SizeNeeded; override;
     procedure ForwardToSymbolNeeded; override;
-    function GetDataAddress(var AnAddress: TDbgPtr; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; override;
+    function GetDataAddress(var AnAddress: TFpDbgMemLocation; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; override;
     function GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
     function DataSize: Integer; override;
   public
@@ -1158,7 +1160,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   TDbgDwarfIdentifierMember = class(TDbgDwarfValueLocationIdentifier)
   protected
-    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TDbgPtr = 0); override;
+    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TFpDbgMemLocation = 0); override;
     procedure AddressNeeded; override;
     function HasAddress: Boolean; override;
   end;
@@ -1182,8 +1184,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetMemberByName(AIndex: String): TDbgSymbol; override;
     function GetMemberCount: Integer; override;
 
-    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TDbgPtr = 0); override;
-    function GetDataAddress(var AnAddress: TDbgPtr; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; override;
+    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TFpDbgMemLocation = 0); override;
+    function GetDataAddress(var AnAddress: TFpDbgMemLocation; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; override;
   public
     destructor Destroy; override;
   end;
@@ -1208,7 +1210,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetMember(AIndex: Integer): TDbgSymbol; override;
     function GetMemberByName({%H-}AIndex: String): TDbgSymbol; override;
     function GetMemberCount: Integer; override;
-    function GetMemberAddress(AValObject: TObject; AIndex: Array of Int64): TDbgPtr;
+    function GetMemberAddress(AValObject: TObject; AIndex: Array of Int64): TFpDbgMemLocation;
   public
     destructor Destroy; override;
   end;
@@ -1298,7 +1300,7 @@ type
   private
     FCompilationUnits: TList;
     FImageBase: QWord;
-    FMemReader: TFpDbgMemReaderBase;
+    FMemManager: TFpDbgMemManager;
     FSections: array[TDwarfSection] of TDwarfSectionInfo;
     function GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
   protected
@@ -1318,7 +1320,7 @@ type
     function PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
     function CompilationUnitsCount: Integer;
     property CompilationUnits[AIndex: Integer]: TDwarfCompilationUnit read GetCompilationUnit;
-    property MemReader: TFpDbgMemReaderBase read FMemReader write FMemReader;
+    property MemManager: TFpDbgMemManager read FMemManager write FMemManager;
   end;
 
   { TDbgVerboseDwarf }
@@ -1341,7 +1343,7 @@ type
     function GetSymbolAtAddress: TDbgSymbol; override;
     function GetAddress: TDbgPtr; override;
     function GetSizeOfAddress: Integer; override;
-    function GetMemReader: TFpDbgMemReaderBase; override;
+    function GetMemManager: TFpDbgMemManager; override;
   public
     constructor Create(AnAddress: TDbgPtr; ASymbol: TDbgSymbol; ADwarf: TDbgDwarf);
     destructor Destroy; override;
@@ -1816,7 +1818,7 @@ end;
 
 { TDbgDwarfSymbolValueConstAddress }
 
-procedure TDbgDwarfSymbolValueConstAddress.Update(AnAddress: TDbgPtr);
+procedure TDbgDwarfSymbolValueConstAddress.Update(AnAddress: TFpDbgMemLocation);
 begin
   Address := AnAddress;
 end;
@@ -1841,12 +1843,12 @@ end;
 
 function TDbgDwarfArraySymbolValue.GetMemberEx(AIndex: array of Int64): TDbgSymbolValue;
 var
-  Addr: TDbgPtr;
+  Addr: TFpDbgMemLocation;
 begin
   Result := nil;
   assert((FOwner is TDbgDwarfIdentifierArray) and (FOwner.Kind = skArray));
   Addr := TDbgDwarfIdentifierArray(FOwner).GetMemberAddress(Self, AIndex);
-  if Addr = 0 then exit;
+  if not IsReadableLoc(Addr) then exit;
 
   if (FAddrObj = nil) or (FAddrObj.RefCount > 1) then begin
     FAddrObj.ReleaseReference;
@@ -2095,25 +2097,25 @@ end;
 
 function TDbgDwarfSizedSymbolValue.ReadMemory(ADest: Pointer): Boolean;
 var
-  addr: TDbgPtr;
+  addr: TFpDbgMemLocation;
 begin
   // TODO: memory representation of values is not dwarf, but platform - move
   Result := False;
 
   if ( (FValueSymbol <> nil) or
        (HasTypeCastInfo and CanUseTypeCastAddress)
-     ) and (MemReader <> nil)
+     ) and (MemManager <> nil)
   then begin
     if FValueSymbol <> nil then
       addr := FValueSymbol.Address
     else
       addr := FTypeCastSourceValue.Address;
 
-    Result := addr <> 0;
+    Result := IsReadableLoc(addr);
     if not Result then
       exit;
 
-    MemReader.ReadMemory(addr, FSize, ADest);
+    Result := MemManager.ReadMemory(addr, FSize, ADest);
   end;
 end;
 
@@ -2244,9 +2246,9 @@ begin
   Result := Result + [svfCardinal, svfOrdinal, svfSizeOfPointer, svfDataAddress] - [svfSize]; // data address
 end;
 
-function TDbgDwarfPointerSymbolValue.GetDataAddress: TDbgPtr;
+function TDbgDwarfPointerSymbolValue.GetDataAddress: TFpDbgMemLocation;
 begin
-  Result := GetAsCardinal;
+  Result := TargetLoc(GetAsCardinal);
 end;
 
 { TDbgDwarfIntegerSymbolValue }
@@ -2296,20 +2298,20 @@ end;
 
 function TDbgDwarfStructSymbolValue.GetAsCardinal: QWord;
 begin
-  Result := QWord(DataAddress);
+  Result := QWord(LocToAddrOrNil(DataAddress));
 end;
 
-function TDbgDwarfStructSymbolValue.GetDataAddress: TDbgPtr;
+function TDbgDwarfStructSymbolValue.GetDataAddress: TFpDbgMemLocation;
 var
-  t: TDbgPtr;
+  t: TFpDbgMemLocation;
 begin
   if FValueSymbol <> nil then begin
     if not FDataAddressDone then begin
-      FDataAddress := 0;
+      FDataAddress := InvalidLoc;
       t := FValueSymbol.Address;
       assert(SizeOf(FDataAddress) >= AddressSize, 'TDbgDwarfStructSymbolValue.GetDataAddress');
-      if (t <> 0) and (MemReader <> nil) then
-        MemReader.ReadMemory(t, AddressSize, @FDataAddress);
+      if (MemManager <> nil) then
+        FDataAddress := MemManager.ReadAddress(t, AddressSize);
       FDataAddressDone := True;
     end;
     Result := FDataAddress;
@@ -2370,7 +2372,7 @@ end;
 
 function TDbgDwarfStructTypeCastSymbolValue.GetAsCardinal: QWord;
 begin
-  Result := QWord(DataAddress);
+  Result := QWord(LocToAddrOrNil(DataAddress));
 end;
 
 function TDbgDwarfStructTypeCastSymbolValue.GetSize: Integer;
@@ -2393,24 +2395,24 @@ begin
     Result := -1;
 end;
 
-function TDbgDwarfStructTypeCastSymbolValue.GetDataAddress: TDbgPtr;
+function TDbgDwarfStructTypeCastSymbolValue.GetDataAddress: TFpDbgMemLocation;
 var
   fields: TDbgSymbolValueFieldFlags;
-  t: TDbgPtr;
+  t: TFpDbgMemLocation;
 begin
   if HasTypeCastInfo then begin
     if not FDataAddressDone then begin
 // TODO: wrong for records // use GetDwarfDataAddress
       fields := FTypeCastSourceValue.FieldFlags;
       if svfOrdinal in fields then
-        FDataAddress := TDbgPtr(FTypeCastSourceValue.AsCardinal)
+        FDataAddress := TargetLoc(TDbgPtr(FTypeCastSourceValue.AsCardinal))
       else
       if svfAddress in fields then begin
-        FDataAddress := 0;
+        FDataAddress := InvalidLoc;
         t := FTypeCastSourceValue.Address;
         assert(SizeOf(FDataAddress) >= AddressSize, 'TDbgDwarfStructSymbolValue.GetDataAddress');
-        if (t <> 0) and (MemReader <> nil) then
-          MemReader.ReadMemory(t, AddressSize, @FDataAddress);
+        if (MemManager <> nil) then
+          FDataAddress := MemManager.ReadAddress(t, AddressSize);
       end;
       FDataAddressDone := True;
     end;
@@ -2636,10 +2638,10 @@ end;
 
 { TDbgDwarfSymbolValue }
 
-function TDbgDwarfSymbolValue.MemReader: TFpDbgMemReaderBase;
+function TDbgDwarfSymbolValue.MemManager: TFpDbgMemManager;
 begin
-  assert((FOwner <> nil) and (FOwner.FCU <> nil) and (FOwner.FCU.FOwner <> nil), 'TDbgDwarfSymbolValue.MemReader');
-  Result := FOwner.FCU.FOwner.MemReader;
+  assert((FOwner <> nil) and (FOwner.FCU <> nil) and (FOwner.FCU.FOwner <> nil), 'TDbgDwarfSymbolValue.MemManager');
+  Result := FOwner.FCU.FOwner.MemManager;
 end;
 
 function TDbgDwarfSymbolValue.AddressSize: Byte;
@@ -2648,7 +2650,7 @@ begin
   Result := FOwner.FCU.FAddressSize;
 end;
 
-function TDbgDwarfSymbolValue.GetDwarfDataAddress(out AnAddress: TDbgPtr;
+function TDbgDwarfSymbolValue.GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
   ATargetType: TDbgDwarfTypeIdentifier): Boolean;
 var
   fields: TDbgSymbolValueFieldFlags;
@@ -2668,16 +2670,16 @@ begin
     if not Result then
       exit;
     fields := FTypeCastSourceValue.FieldFlags;
-    AnAddress := 0;
+    AnAddress := InvalidLoc;
     if svfOrdinal in fields then begin
-      AnAddress := FTypeCastSourceValue.AsCardinal;
+      AnAddress := TargetLoc(FTypeCastSourceValue.AsCardinal);
   // MUST store, and provide address of it // for now, skip the pointer
       t := FTypeCastTargetType;
       if t is TDbgDwarfTypeIdentifierDeclaration then t := t.NestedTypeInfo;
       if (t<> nil) and (t is TDbgDwarfTypeIdentifierPointer)  then t := t.NestedTypeInfo;
       if (t<> nil) then begin
         Result := t.GetDataAddress(AnAddress, ATargetType);
-        Result := AnAddress <> 0;
+        Result := IsReadableLoc(AnAddress);
         exit;
       end;
       Result := False;
@@ -2688,7 +2690,7 @@ begin
     if svfAddress in fields then
       AnAddress := FTypeCastSourceValue.Address;
 
-    Result := AnAddress <> 0;
+    Result := IsReadableLoc(AnAddress);
     if not Result then
       exit;
 
@@ -2748,7 +2750,7 @@ begin
     Result := inherited GetKind;
 end;
 
-function TDbgDwarfSymbolValue.GetAddress: TDbgPtr;
+function TDbgDwarfSymbolValue.GetAddress: TFpDbgMemLocation;
 begin
   if FValueSymbol <> nil then
     Result := FValueSymbol.Address
@@ -2858,10 +2860,10 @@ procedure TDbgDwarfIdentifierParameter.AddressNeeded;
 var
   t: TDbgPtr;
 begin
-  if LocationFromTag(DW_AT_location, t) then
-    SetAddress(t)
+  if LocationFromTag(DW_AT_location, t, InvalidLoc) then
+    SetAddress(TargetLoc(t))
   else
-    SetAddress(0);
+    SetAddress(InvalidLoc);
 end;
 
 function TDbgDwarfIdentifierParameter.HasAddress: Boolean;
@@ -2875,10 +2877,10 @@ procedure TDbgDwarfIdentifierVariable.AddressNeeded;
 var
   t: TDbgPtr;
 begin
-  if LocationFromTag(DW_AT_location, t) then
-    SetAddress(t)
+  if LocationFromTag(DW_AT_location, t, InvalidLoc) then
+    SetAddress(TargetLoc(t))
   else
-    SetAddress(0);
+    SetAddress(InvalidLoc);
 end;
 
 function TDbgDwarfIdentifierVariable.HasAddress: Boolean;
@@ -2889,7 +2891,7 @@ end;
 { TDbgDwarfValueLocationIdentifier }
 
 procedure TDbgDwarfValueLocationIdentifier.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-  AnObjectDataAddress: TDbgPtr);
+  AnObjectDataAddress: TFpDbgMemLocation);
 begin
   inherited InitLocationParser(ALocationParser, AnObjectDataAddress);
   ALocationParser.OnFrameBaseNeeded := @FrameBaseNeeded;
@@ -3764,13 +3766,19 @@ begin
   inc(FCount);
 end;
 
-procedure TDwarfLocationStack.Push(AValue: TDbgPtr; AKind: TDwarfLocationStackEntryKind);
+procedure TDwarfLocationStack.Push(AValue: TFpDbgMemLocation;
+  AKind: TDwarfLocationStackEntryKind);
 begin
   if Length(FList) <= FCount then
     IncCapacity;
   FList[FCount].Value := AValue;
   FList[FCount].Kind  := AKind;
   inc(FCount);
+end;
+
+procedure TDwarfLocationStack.Push(AValue: TDbgPtr; AKind: TDwarfLocationStackEntryKind);
+begin
+  Push(TargetLoc(AValue), AKind);
 end;
 
 procedure TDwarfLocationStack.Modify(AIndex: Integer; const AEntry: TDwarfLocationStackEntry);
@@ -3781,13 +3789,23 @@ begin
   FList[FCount-1-AIndex] := AEntry;
 end;
 
-procedure TDwarfLocationStack.Modify(AIndex: Integer; AValue: TDbgPtr;
+procedure TDwarfLocationStack.Modify(AIndex: Integer; AValue: TFpDbgMemLocation;
   AKind: TDwarfLocationStackEntryKind);
 begin
   Assert(AIndex < FCount);
   if AIndex >= FCount then
     exit;
   FList[FCount-1-AIndex].Value := AValue;
+  FList[FCount-1-AIndex].Kind  := AKind;
+end;
+
+procedure TDwarfLocationStack.Modify(AIndex: Integer; AValue: TDbgPtr;
+  AKind: TDwarfLocationStackEntryKind);
+begin
+  Assert(AIndex < FCount);
+  if AIndex >= FCount then
+    exit;
+  FList[FCount-1-AIndex].Value := TargetLoc(AValue);
   FList[FCount-1-AIndex].Kind  := AKind;
 end;
 
@@ -3806,7 +3824,7 @@ procedure TDwarfLocationExpression.Evaluate;
 
   procedure SetError;
   begin
-    FStack.Push(0, lseError); // Mark as failed
+    FStack.Push(InvalidLoc, lseError); // Mark as failed
     debugln(['!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TDwarfLocationExpression ERROR']);
   end;
 
@@ -3825,25 +3843,23 @@ procedure TDwarfLocationExpression.Evaluate;
   end;
 
 var
-  MemReader: TFpDbgMemReaderBase;
+  MemManager: TFpDbgMemManager;
   AddrSize: Byte;
 
-  function ReadValueFromMemory(AnAddress: TDbgPtr; ASize: Cardinal; out AValue: TDbgPtr): Boolean;
+  function ReadAddressFromMemory(AnAddress: TFpDbgMemLocation; ASize: Cardinal; out AValue: TFpDbgMemLocation): Boolean;
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
-    AValue := 0;
-    Result := MemReader.ReadMemory(AnAddress, ASize, @AValue);
+    AValue := MemManager.ReadAddress(AnAddress, ASize);
     if not Result then
       SetError;
   end;
 
-  function ReadValueFromMemoryEx(AnAddress, AnAddrSpace: TDbgPtr; ASize: Cardinal; out AValue: TDbgPtr): Boolean;
+  function ReadAddressFromMemoryEx(AnAddress: TFpDbgMemLocation; AnAddrSpace: TDbgPtr; ASize: Cardinal; out AValue: TFpDbgMemLocation): Boolean;
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
-    AValue := 0;
-    Result := MemReader.ReadMemoryEx(AnAddress, AnAddrSpace, ASize, @AValue);
+    AValue := MemManager.ReadAddressEx(AnAddress, AnAddrSpace, ASize);
     if not Result then
       SetError;
   end;
@@ -3874,43 +3890,46 @@ var
 
 var
   p: PByte;
+  NewLoc, Loc: TFpDbgMemLocation;
   NewValue: TDbgPtr;
   i: TDbgPtr;
   x : integer;
   Entry, Entry2: TDwarfLocationStackEntry;
 begin
   AddrSize := FCU.FAddressSize;
-  MemReader := FCU.FOwner.MemReader;
+  MemManager := FCU.FOwner.MemManager;
   while FData < FMaxData do begin
     p := FData;
     inc(FData);
-DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Value]);
+DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',dbgs(FStack.Peek(0).Value)]);
     case p^ of
       DW_OP_nop: ;
       DW_OP_addr:  FStack.Push(FCU.ReadAddressAtPointer(FData, True), lseValue);
       DW_OP_deref: begin
           if not AssertAddressOnStack then exit;
-          if not ReadValueFromMemory(FStack.Pop.Value, AddrSize, NewValue) then exit;
-          FStack.Push(NewValue, lseValue);
+          if not ReadAddressFromMemory(FStack.Pop.Value, AddrSize, NewLoc) then exit;
+          FStack.Push(NewLoc, lseValue);
         end;
       DW_OP_xderef: begin
           if not AssertAddressOnStack  then exit;
-          i := FStack.Pop.Value;
+          Loc := FStack.Pop.Value;
           if not AssertAddressOnStack then exit;
-          if not ReadValueFromMemoryEx(i, FStack.Pop.Value, AddrSize, NewValue) then exit;
-          FStack.Push(NewValue, lseValue);
+// TODO check address is valid
+          if not ReadAddressFromMemoryEx(Loc, FStack.Pop.Value.Address, AddrSize, NewLoc) then exit;
+          FStack.Push(NewLoc, lseValue);
         end;
       DW_OP_deref_size: begin
           if not AssertAddressOnStack then exit;
-          if not ReadValueFromMemory(FStack.Pop.Value, ReadUnsignedFromExpression(FData, 1), NewValue) then exit;
-          FStack.Push(NewValue, lseValue);
+          if not ReadAddressFromMemory(FStack.Pop.Value, ReadUnsignedFromExpression(FData, 1), NewLoc) then exit;
+          FStack.Push(NewLoc, lseValue);
         end;
       DW_OP_xderef_size: begin
           if not AssertAddressOnStack  then exit;
-          i := FStack.Pop.Value;
+          Loc := FStack.Pop.Value;
           if not AssertAddressOnStack then exit;
-          if not ReadValueFromMemoryEx(i, FStack.Pop.Value, ReadUnsignedFromExpression(FData, 1), NewValue) then exit;
-          FStack.Push(NewValue, lseValue);
+// TODO check address is valid
+          if not ReadAddressFromMemoryEx(Loc, FStack.Pop.Value.Address, ReadUnsignedFromExpression(FData, 1), NewLoc) then exit;
+          FStack.Push(NewLoc, lseValue);
         end;
 
       DW_OP_const1u: FStack.Push(ReadUnsignedFromExpression(FData, 1), lseValue);
@@ -3926,14 +3945,14 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
       DW_OP_lit0..DW_OP_lit31: FStack.Push(p^-DW_OP_lit0, lseValue);
 
       DW_OP_reg0..DW_OP_reg31: begin
-          if not MemReader.ReadRegister(p^-DW_OP_reg0, NewValue) then begin
+          if not MemManager.ReadRegister(p^-DW_OP_reg0, NewValue) then begin
             SetError;
             exit;
           end;
           FStack.Push(NewValue, lseRegister);
         end;
       DW_OP_regx: begin
-          if not MemReader.ReadRegister(ULEB128toOrdinal(FData), NewValue) then begin
+          if not MemManager.ReadRegister(ULEB128toOrdinal(FData), NewValue) then begin
             SetError;
             exit;
           end;
@@ -3941,7 +3960,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
         end;
 
       DW_OP_breg0..DW_OP_breg31: begin
-          if not MemReader.ReadRegister(p^-DW_OP_breg0, NewValue) then begin
+          if not MemManager.ReadRegister(p^-DW_OP_breg0, NewValue) then begin
             SetError;
             exit;
           end;
@@ -3950,7 +3969,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           {$POP}
         end;
       DW_OP_bregx: begin
-          if not MemReader.ReadRegister(ULEB128toOrdinal(FData), NewValue) then begin
+          if not MemManager.ReadRegister(ULEB128toOrdinal(FData), NewValue) then begin
             SetError;
             exit;
           end;
@@ -4004,12 +4023,12 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
       DW_OP_abs: begin
           if not AssertMinCount(1) then exit;
           Entry := FStack.Peek(0);
-          FStack.Modify(0, abs(int64(Entry.Value)), Entry.Kind); // treat as signed
+          FStack.Modify(0, abs(int64(Entry.Value.Address)), Entry.Kind); // treat as signed
         end;
       DW_OP_neg: begin
           if not AssertMinCount(1) then exit;
           Entry := FStack.Peek(0);
-          FStack.Modify(0, TDbgPtr(-(int64(Entry.Value))), Entry.Kind); // treat as signed
+          FStack.Modify(0, TDbgPtr(-(int64(Entry.Value.Address))), Entry.Kind); // treat as signed
         end;
       DW_OP_plus: begin
           if not AssertMinCount(2) then exit;
@@ -4017,14 +4036,14 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           Entry2 := FStack.Peek(0);
           {$PUSH}{$R-}{$Q-}
           //TODO: 32 bit overflow?
-          FStack.Modify(0, Entry.Value+Entry2.Value, lseValue); // adding signed values works via overflow
+          FStack.Modify(0, Entry.Value.Address+Entry2.Value.Address, lseValue); // adding signed values works via overflow
           {$POP}
         end;
       DW_OP_plus_uconst: begin
           if not AssertMinCount(1) then exit;
           Entry := FStack.Peek(0);
           {$PUSH}{$R-}{$Q-}
-          FStack.Modify(0, Entry.Value+ULEB128toOrdinal(FData), lseValue);
+          FStack.Modify(0, Entry.Value.Address+ULEB128toOrdinal(FData), lseValue);
           {$POP}
         end;
       DW_OP_minus: begin
@@ -4032,7 +4051,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
           {$PUSH}{$R-}{$Q-}
-          FStack.Modify(0, Entry2.Value-Entry.Value, lseValue); // adding signed values works via overflow
+          FStack.Modify(0, Entry2.Value.Address-Entry.Value.Address, lseValue); // adding signed values works via overflow
           {$POP}
         end;
       DW_OP_mul: begin
@@ -4040,7 +4059,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
           //{$PUSH}{$R-}{$Q-}
-          FStack.Modify(0, TDbgPtr(int64(Entry2.Value)*int64(Entry.Value)), lseValue);
+          FStack.Modify(0, TDbgPtr(int64(Entry2.Value.Address)*int64(Entry.Value.Address)), lseValue);
           //{$POP}
         end;
       DW_OP_div: begin
@@ -4048,7 +4067,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
           //{$PUSH}{$R-}{$Q-}
-          FStack.Modify(0, TDbgPtr(int64(Entry2.Value) div int64(Entry.Value)), lseValue);
+          FStack.Modify(0, TDbgPtr(int64(Entry2.Value.Address) div int64(Entry.Value.Address)), lseValue);
           //{$POP}
         end;
       DW_OP_mod: begin
@@ -4056,7 +4075,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
           //{$PUSH}{$R-}{$Q-}
-          FStack.Modify(0, TDbgPtr(int64(Entry2.Value) mod int64(Entry.Value)), lseValue);
+          FStack.Modify(0, TDbgPtr(int64(Entry2.Value.Address) mod int64(Entry.Value.Address)), lseValue);
           //{$POP}
         end;
 
@@ -4064,43 +4083,43 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
-          FStack.Modify(0, Entry2.Value and Entry.Value, lseValue);
+          FStack.Modify(0, Entry2.Value.Address and Entry.Value.Address, lseValue);
         end;
       DW_OP_not: begin
           if not AssertMinCount(1) then exit;
           Entry := FStack.Peek(0);
-          FStack.Modify(0, not Entry2.Value and Entry.Value, Entry.Kind);
+          FStack.Modify(0, not Entry2.Value.Address and Entry.Value.Address, Entry.Kind);
         end;
       DW_OP_or: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
-          FStack.Modify(0, Entry2.Value or Entry.Value, lseValue);
+          FStack.Modify(0, Entry2.Value.Address or Entry.Value.Address, lseValue);
         end;
       DW_OP_xor: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
-          FStack.Modify(0, Entry2.Value xor Entry.Value, lseValue);
+          FStack.Modify(0, Entry2.Value.Address xor Entry.Value.Address, lseValue);
         end;
       DW_OP_shl: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
-          FStack.Modify(0, Entry2.Value shl Entry.Value, lseValue);
+          FStack.Modify(0, Entry2.Value.Address shl Entry.Value.Address, lseValue);
         end;
       DW_OP_shr: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
-          FStack.Modify(0, Entry2.Value shr Entry.Value, lseValue);
+          FStack.Modify(0, Entry2.Value.Address shr Entry.Value.Address, lseValue);
         end;
       DW_OP_shra: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
-          if Entry.Value > 0 then
-            FStack.Modify(0, Entry2.Value div (1 shl (Entry.Value - 1)), lseValue);
+          if Entry.Value.Address > 0 then
+            FStack.Modify(0, Entry2.Value.Address div (1 shl (Entry.Value.Address - 1)), lseValue);
         end;
 
       DW_OP_skip: begin
@@ -4111,7 +4130,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           if not AssertMinCount(1) then exit;
           Entry  := FStack.Pop;
           x := ReadSignedFromExpression(FData, 2);
-          if Entry.Value <> 0 then
+          if Entry.Value.Address <> 0 then
             FData := FData + x;
         end;
 
@@ -4119,7 +4138,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
-          if Entry.Value = Entry2.Value
+          if Entry.Value.Address = Entry2.Value.Address
           then FStack.Modify(0, 1, lseValue)
           else FStack.Modify(0, 0, lseValue);
         end;
@@ -4127,7 +4146,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
-          if int64(Entry.Value) >= int64(Entry2.Value)
+          if int64(Entry.Value.Address) >= int64(Entry2.Value.Address)
           then FStack.Modify(0, 1, lseValue)
           else FStack.Modify(0, 0, lseValue);
         end;
@@ -4135,7 +4154,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
-          if int64(Entry.Value) > int64(Entry2.Value)
+          if int64(Entry.Value.Address) > int64(Entry2.Value.Address)
           then FStack.Modify(0, 1, lseValue)
           else FStack.Modify(0, 0, lseValue);
         end;
@@ -4143,7 +4162,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
-          if int64(Entry.Value) <= int64(Entry2.Value)
+          if int64(Entry.Value.Address) <= int64(Entry2.Value.Address)
           then FStack.Modify(0, 1, lseValue)
           else FStack.Modify(0, 0, lseValue);
         end;
@@ -4151,7 +4170,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
-          if int64(Entry.Value) < int64(Entry2.Value)
+          if int64(Entry.Value.Address) < int64(Entry2.Value.Address)
           then FStack.Modify(0, 1, lseValue)
           else FStack.Modify(0, 0, lseValue);
         end;
@@ -4159,7 +4178,7 @@ DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',FStack.Peek(0).Va
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           Entry2 := FStack.Peek(0);
-          if Entry.Value <> Entry2.Value
+          if Entry.Value.Address <> Entry2.Value.Address
           then FStack.Modify(0, 1, lseValue)
           else FStack.Modify(0, 0, lseValue);
         end;
@@ -4201,7 +4220,7 @@ end;
 function TDwarfLocationExpression.ResultData: TDbgPtr;
 begin
   if FStack.Count > 0 then
-    Result := FStack.Peek.Value
+    Result := FStack.Peek.Value.Address
   else
     Result := 0;
 end;
@@ -5244,32 +5263,32 @@ begin
   Result := (inherited GetFlags) + [sfInternalRef];
 end;
 
-function TDbgDwarfTypeIdentifierRef.GetDataAddress(var AnAddress: TDbgPtr;
+function TDbgDwarfTypeIdentifierRef.GetDataAddress(var AnAddress: TFpDbgMemLocation;
   ATargetType: TDbgDwarfTypeIdentifier): Boolean;
-var
-  Addr4: DWORD;
-  Addr8: QWord;
+//var
+//  Addr4: DWORD;
+//  Addr8: QWord;
 begin
   if ATargetType = Self then begin
     Result := True;
     exit;
   end;
-  Result := FCU.FOwner.MemReader <> nil;
+  Result := FCU.FOwner.MemManager <> nil;
   if not Result then
     exit;
-  //TODO: zero fill / sign extend
-  case FCU.FAddressSize of
-    4: begin
-        FCU.FOwner.MemReader.ReadMemory(AnAddress, 4, @Addr4);
-        AnAddress := Addr4;
-      end;
-    8: begin
-        FCU.FOwner.MemReader.ReadMemory(AnAddress, 8, @Addr8);
-        AnAddress := Addr8;
-      end;
-    else
-      Result := False;
-  end;
+  AnAddress := FCU.FOwner.MemManager.ReadAddress(AnAddress, FCU.FAddressSize);
+  //case FCU.FAddressSize of
+  //  4: begin
+  //      FCU.FOwner.MemManager.ReadMemory(AnAddress, 4, @Addr4);
+  //      AnAddress := Addr4;
+  //    end;
+  //  8: begin
+  //      FCU.FOwner.MemManager.ReadMemory(AnAddress, 8, @Addr8);
+  //      AnAddress := Addr8;
+  //    end;
+  //  else
+  //    Result := False;
+  //end;
   if Result then
     Result := inherited GetDataAddress(AnAddress, ATargetType);
 end;
@@ -5332,32 +5351,32 @@ begin
     SetForwardToSymbol(nil); // inherited ForwardToSymbolNeeded;
 end;
 
-function TDbgDwarfTypeIdentifierPointer.GetDataAddress(var AnAddress: TDbgPtr;
+function TDbgDwarfTypeIdentifierPointer.GetDataAddress(var AnAddress: TFpDbgMemLocation;
   ATargetType: TDbgDwarfTypeIdentifier): Boolean;
-var
-  Addr4: DWORD;
-  Addr8: QWord;
+//var
+//  Addr4: DWORD;
+//  Addr8: QWord;
 begin
   if ATargetType = Self then begin
     Result := True;
     exit;
   end;
-  Result := FCU.FOwner.MemReader <> nil;
+  Result := FCU.FOwner.MemManager <> nil;
   if not Result then
     exit;
-  //TODO: zero fill / sign extend
-  case FCU.FAddressSize of
-    4: begin
-        FCU.FOwner.MemReader.ReadMemory(AnAddress, 4, @Addr4);
-        AnAddress := Addr4;
-      end;
-    8: begin
-        FCU.FOwner.MemReader.ReadMemory(AnAddress, 8, @Addr8);
-        AnAddress := Addr8;
-      end;
-    else
-      Result := False;
-  end;
+  AnAddress := FCU.FOwner.MemManager.ReadAddress(AnAddress, FCU.FAddressSize);
+  //case FCU.FAddressSize of
+  //  4: begin
+  //      FCU.FOwner.MemManager.ReadMemory(AnAddress, 4, @Addr4);
+  //      AnAddress := Addr4;
+  //    end;
+  //  8: begin
+  //      FCU.FOwner.MemManager.ReadMemory(AnAddress, 8, @Addr8);
+  //      AnAddress := Addr8;
+  //    end;
+  //  else
+  //    Result := False;
+  //end;
   if Result then
     Result := inherited GetDataAddress(AnAddress, ATargetType);
 end;
@@ -5453,7 +5472,7 @@ begin
   inherited SetParentTypeInfo(AValue);
 end;
 
-function TDbgDwarfValueIdentifier.GetDataAddress(out AnAddress: TDbgPtr;
+function TDbgDwarfValueIdentifier.GetDataAddress(out AnAddress: TFpDbgMemLocation;
   ATargetType: TDbgDwarfTypeIdentifier): Boolean;
 begin
   Result := TypeInfo <> nil;
@@ -5700,7 +5719,7 @@ begin
 end;
 
 function TDbgDwarfIdentifierArray.GetMemberAddress(AValObject: TObject;
-  AIndex: array of Int64): TDbgPtr;
+  AIndex: array of Int64): TFpDbgMemLocation;
 var
   Offs, Factor: QWord;
   i: Integer;
@@ -5710,7 +5729,7 @@ begin
   assert((AValObject is TDbgDwarfValueIdentifier) or (AValObject is TDbgDwarfArraySymbolValue), 'TDbgDwarfIdentifierArray.GetMemberAddress AValObject');
   ReadOrdering;
   ReadStride;
-  Result := 0;
+  Result := InvalidLoc;
   if (FStrideInBits <= 0) or (FStrideInBits mod 8 <> 0) then
     exit;
 
@@ -5721,14 +5740,14 @@ begin
   // TODO: reduce index by low-ord
   if AValObject is TDbgDwarfValueIdentifier then begin
     if not TDbgDwarfValueIdentifier(AValObject).GetDataAddress(Result, Self) then begin
-      Result := 0;
+      Result := InvalidLoc;
       Exit;
     end;
   end
   else
   if AValObject is TDbgDwarfArraySymbolValue then begin
     if not TDbgDwarfArraySymbolValue(AValObject).GetDwarfDataAddress(Result, Self) then begin
-      Result := 0;
+      Result := InvalidLoc;
       Exit;
     end;
   end;
@@ -5743,7 +5762,7 @@ begin
       if i > 0 then begin
         m := TDbgDwarfIdentifier(FMembers[i]);
         if not m.HasBounds then begin
-          Result := 0;
+          Result := InvalidLoc;
           exit;
         end;
 // TODO range check
@@ -5757,7 +5776,7 @@ begin
       if i < Length(AIndex) - 1 then begin
         m := TDbgDwarfIdentifier(FMembers[i]);
         if not m.HasBounds then begin
-          Result := 0;
+          Result := InvalidLoc;
           exit;
         end;
         Factor := Factor * (m.OrdHighBound - m.OrdLowBound + 1);
@@ -5765,7 +5784,8 @@ begin
     end;
   end;
 
-  Result := Result + Offs;
+  assert(IsTargetAddr(Result), 'DwarfArray MemberAddress');
+  Result.Address := Result.Address + Offs;
 end;
 
 destructor TDbgDwarfIdentifierArray.Destroy;
@@ -5783,9 +5803,9 @@ end;
 { TDbgDwarfIdentifierMember }
 
 procedure TDbgDwarfIdentifierMember.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-  AnObjectDataAddress: TDbgPtr);
+  AnObjectDataAddress: TFpDbgMemLocation);
 var
-  BaseAddr: TDbgPtr;
+  BaseAddr: TFpDbgMemLocation;
 begin
   inherited InitLocationParser(ALocationParser, AnObjectDataAddress);
 
@@ -5814,10 +5834,10 @@ procedure TDbgDwarfIdentifierMember.AddressNeeded;
 var
   t: TDbgPtr;
 begin
-  if LocationFromTag(DW_AT_data_member_location, t) then
-    SetAddress(t)
+  if LocationFromTag(DW_AT_data_member_location, t, InvalidLoc) then
+    SetAddress(TargetLoc(t))
   else
-    SetAddress(0);
+    SetAddress(InvalidLoc);
 end;
 
 function TDbgDwarfIdentifierMember.HasAddress: Boolean;
@@ -5874,13 +5894,13 @@ begin
 end;
 
 procedure TDbgDwarfIdentifierStructure.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-  AnObjectDataAddress: TDbgPtr);
+  AnObjectDataAddress: TFpDbgMemLocation);
 begin
   inherited InitLocationParser(ALocationParser, AnObjectDataAddress);
 
   // CURRENTLY ONLY USED for DW_AT_data_member_location
-  if AnObjectDataAddress <> 0 then begin
-    debugln(['TDbgDwarfIdentifierMember.InitLocationParser ', AnObjectDataAddress]);
+  if IsReadableLoc(AnObjectDataAddress) then begin
+    debugln(['TDbgDwarfIdentifierMember.InitLocationParser ', dbgs(AnObjectDataAddress)]);
     ALocationParser.FStack.Push(AnObjectDataAddress, lseValue);
     exit
   end;
@@ -5889,7 +5909,7 @@ begin
   debugln(['TDbgDwarfIdentifierMember.InitLocationParser FAILED']);
 end;
 
-function TDbgDwarfIdentifierStructure.GetDataAddress(var AnAddress: TDbgPtr;
+function TDbgDwarfIdentifierStructure.GetDataAddress(var AnAddress: TFpDbgMemLocation;
   ATargetType: TDbgDwarfTypeIdentifier): Boolean;
 var
   t: TDbgPtr;
@@ -5906,7 +5926,7 @@ begin
   if not Result then
     exit;
 
-  AnAddress := t;
+  AnAddress := TargetLoc(t);
   Result := inherited GetDataAddress(AnAddress, ATargetType);
 end;
 
@@ -6285,12 +6305,12 @@ begin
 end;
 
 procedure TDbgDwarfIdentifier.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-  AnObjectDataAddress: TDbgPtr);
+  AnObjectDataAddress: TFpDbgMemLocation);
 begin
 end;
 
 function TDbgDwarfIdentifier.LocationFromTag(ATag: Cardinal; out AnAddress: TDbgPtr;
-  AnObjectDataAddress: TDbgPtr; AnInformationEntry: TDwarfInformationEntry): Boolean;
+  AnObjectDataAddress: TFpDbgMemLocation; AnInformationEntry: TDwarfInformationEntry): Boolean;
 var
   Val: TByteDynArray;
   LocationParser: TDwarfLocationExpression;
@@ -6327,7 +6347,7 @@ DebugLnEnter('>>>');
 DebugLnExit('<<<', IntToHex(AnAddress,8));
 end;
 
-function TDbgDwarfIdentifier.GetDataAddress(var AnAddress: TDbgPtr;
+function TDbgDwarfIdentifier.GetDataAddress(var AnAddress: TFpDbgMemLocation;
   ATargetType: TDbgDwarfTypeIdentifier): Boolean;
 var
   ti: TDbgDwarfTypeIdentifier;
@@ -6413,7 +6433,8 @@ begin
 end;
 
 constructor TDbgDwarfIdentifier.Create(AName: String;
-  AnInformationEntry: TDwarfInformationEntry; AKind: TDbgSymbolKind; AAddress: TDbgPtr);
+  AnInformationEntry: TDwarfInformationEntry; AKind: TDbgSymbolKind;
+  AAddress: TFpDbgMemLocation);
 begin
   FCU := AnInformationEntry.CompUnit;
   FInformationEntry := AnInformationEntry;
@@ -6494,7 +6515,7 @@ begin
     InfoEntry
   );
 
-  SetAddress(FAddressInfo^.StartPC);
+  SetAddress(TargetLoc(FAddressInfo^.StartPC));
 
   InfoEntry.ReleaseReference;
 //BuildLineInfo(
@@ -7741,11 +7762,12 @@ begin
 end;
 
 function TDwarfCompilationUnit.ReadAddressAtPointer(var AData: Pointer;
-  AIncPointer: Boolean): QWord;
+  AIncPointer: Boolean): TFpDbgMemLocation;
 begin
-  if FAddressSize = 4 // TODO Dwarf3 depends on FIsDwarf64
-  then Result := PLongWord(AData)^
-  else Result := PQWord(AData)^;
+  Result := FOwner.MemManager.ReadAddress(SelfLoc(AData), FAddressSize); // TODO Dwarf3 depends on FIsDwarf64
+  //if FAddressSize = 4 // TODO Dwarf3 depends on FIsDwarf64
+  //then Result := PLongWord(AData)^
+  //else Result := PQWord(AData)^;
   if AIncPointer then inc(AData, FAddressSize);
 end;
 
@@ -7755,7 +7777,7 @@ begin
   case AForm of
     DW_FORM_addr,
     DW_FORM_ref_addr : begin
-      AValue := ReadAddressAtPointer(AAttribute);
+      AValue := LocToAddrOrNil(ReadAddressAtPointer(AAttribute));
     end;
     DW_FORM_flag,
     DW_FORM_ref1,
@@ -7792,7 +7814,7 @@ begin
   case AForm of
     DW_FORM_addr,
     DW_FORM_ref_addr : begin
-      AValue := ReadAddressAtPointer(AAttribute);
+      AValue := LocToAddrOrNil(ReadAddressAtPointer(AAttribute));
     end;
     DW_FORM_flag,
     DW_FORM_ref1,
@@ -7829,7 +7851,7 @@ begin
   case AForm of
     DW_FORM_addr,
     DW_FORM_ref_addr : begin
-      AValue := ReadAddressAtPointer(AAttribute);
+      AValue := LocToAddrOrNil(ReadAddressAtPointer(AAttribute));
     end;
     DW_FORM_flag,
     DW_FORM_ref1,
@@ -7881,7 +7903,7 @@ begin
   case AForm of
     DW_FORM_addr,
     DW_FORM_ref_addr : begin
-      AValue := ReadAddressAtPointer(AAttribute);
+      AValue := LocToAddrOrNil(ReadAddressAtPointer(AAttribute));
     end;
     DW_FORM_flag,
     DW_FORM_ref1,
@@ -7992,9 +8014,9 @@ begin
   Result := TDbgDwarfIdentifier(FSymbol).FCU.FAddressSize;
 end;
 
-function TDbgDwarfInfoAddressContext.GetMemReader: TFpDbgMemReaderBase;
+function TDbgDwarfInfoAddressContext.GetMemManager: TFpDbgMemManager;
 begin
-  Result := FDwarf.MemReader;
+  Result := FDwarf.MemManager;
 end;
 
 constructor TDbgDwarfInfoAddressContext.Create(AnAddress: TDbgPtr; ASymbol: TDbgSymbol;
@@ -8567,7 +8589,7 @@ p := AData;
         DbgOut(FPDBG_DWARF_VERBOSE, [', value: ']);
         case Form of
           DW_FORM_addr     : begin
-            Value := FCU.ReadAddressAtPointer(AData);
+            Value := LocToAddrOrNil(FCU.ReadAddressAtPointer(AData));
             ValuePtr := {%H-}Pointer(PtrUInt(Value));
             ValueSize := FCU.FAddressSize;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.FAddressSize * 2)]);
@@ -8673,7 +8695,7 @@ p := AData;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, ValueSize * 2)]);
           end;
           DW_FORM_ref_addr : begin
-            Value := FCU.ReadAddressAtPointer(AData);
+            Value := LocToAddrOrNil(FCU.ReadAddressAtPointer(AData));
             ValuePtr := {%H-}Pointer(PtrUInt(Value));
             ValueSize := FCU.FAddressSize;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.FAddressSize * 2)]);
@@ -8685,7 +8707,7 @@ p := AData;
             ValueSize := {%H-}PtrUInt(AData) - {%H-}PtrUInt(ValuePtr);
           end;
           DW_FORM_strp     : begin
-            Value := FCU.ReadAddressAtPointer(AData);
+            Value := LocToAddrOrNil(FCU.ReadAddressAtPointer(AData));
             ValueSize := FCU.FAddressSize;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.FAddressSize * 2)]);
             Inc(AData, FCU.FAddressSize);

@@ -447,7 +447,7 @@ type
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetTypeInfo: TDbgSymbol; override;
     function GetAsCardinal: QWord; override;
-    function GetDataAddress: TDbgPtr; override;
+    function GetDataAddress: TFpDbgMemLocation; override;
   public
     constructor Create(AValue: TDbgSymbolValue; ATypeInfo: TDbgSymbol);
     destructor Destroy; override;
@@ -477,13 +477,13 @@ type
   private
     FValue: TDbgSymbolValue;
     FExpression: TFpPascalExpression; // MemReader / AddrSize
-    FCardinal: QWord;
+    FCardinal: QWord; // todo: TFpDbgMemLocation ?
     FCardinalRead: Boolean;
   protected
     function DebugText(AIndent: String): String; override;
   protected
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
-    function GetAddress: TDbgPtr; override;
+    function GetAddress: TFpDbgMemLocation; override;
     function GetSize: Integer; override;
     function GetAsCardinal: QWord; override; // reads men
     function GetTypeInfo: TDbgSymbol; override;
@@ -509,7 +509,7 @@ type
     function GetAsInteger: Int64; override;
     function GetAsCardinal: QWord; override;
     function GetTypeInfo: TDbgSymbol; override;
-    function GetDataAddress: TDbgPtr; override;
+    function GetDataAddress: TFpDbgMemLocation; override;
   public
     constructor Create(AValue: TDbgSymbolValue);
     destructor Destroy; override;
@@ -574,9 +574,9 @@ begin
     Result := 0;
 end;
 
-function TPasParserSymbolValueCastToPointer.GetDataAddress: TDbgPtr;
+function TPasParserSymbolValueCastToPointer.GetDataAddress: TFpDbgMemLocation;
 begin
-  Result := TDbgPtr(FValue.AsCardinal);
+  Result := TargetLoc(TDbgPtr(FValue.AsCardinal));
 end;
 
 constructor TPasParserSymbolValueCastToPointer.Create(AValue: TDbgSymbolValue;
@@ -656,13 +656,13 @@ begin
   if t <> nil then
     if t.Kind = skPointer then begin
       //Result := Result + [svfSizeOfPointer];
-      Result := Result + [svfSizeOfPointer, svfCardinal, svfOrdinal];
+      Result := Result + [svfSizeOfPointer, svfCardinal, svfOrdinal]; // TODO: svfCardinal ???
     end
     else
       Result := Result + [svfSize];
 end;
 
-function TPasParserSymbolValueDerefPointer.GetAddress: TDbgPtr;
+function TPasParserSymbolValueDerefPointer.GetAddress: TFpDbgMemLocation;
 begin
   Result := FValue.DataAddress;
 end;
@@ -681,8 +681,8 @@ end;
 
 function TPasParserSymbolValueDerefPointer.GetAsCardinal: QWord;
 var
-  m: TFpDbgMemReaderBase;
-  Addr: TDbgPtr;
+  m: TFpDbgMemManager;
+  Addr: TFpDbgMemLocation;
   Ctx: TDbgInfoAddressContext;
   AddrSize: Integer;
 begin
@@ -693,14 +693,14 @@ begin
   if Ctx = nil then exit;
   AddrSize := Ctx.SizeOfAddress;
   if (AddrSize <= 0) or (AddrSize > SizeOf(FCardinal)) then exit;
-  m := Ctx.MemReader;
+  m := Ctx.MemManager;
   if m = nil then exit;
 
   FCardinal := 0;
   FCardinalRead := True;
   Addr := GetAddress;
-  if Addr = 0 then exit;
-  m.ReadMemory(Addr, Ctx.SizeOfAddress, @FCardinal);
+  if not IsReadableLoc(Addr) then exit;
+  FCardinal := LocToAddrOrNil(m.ReadAddress(Addr, Ctx.SizeOfAddress));
 
   Result := FCardinal;
 end;
@@ -758,12 +758,12 @@ end;
 
 function TPasParserSymbolValueAddressOf.GetAsInteger: Int64;
 begin
-  Result := Int64(FValue.Address);
+  Result := Int64(LocToAddrOrNil(FValue.Address));
 end;
 
 function TPasParserSymbolValueAddressOf.GetAsCardinal: QWord;
 begin
-  Result := QWord(FValue.Address);
+  Result := QWord(LocToAddrOrNil(FValue.Address));
 end;
 
 function TPasParserSymbolValueAddressOf.GetTypeInfo: TDbgSymbol;
@@ -779,7 +779,7 @@ begin
   Result := FTypeInfo;
 end;
 
-function TPasParserSymbolValueAddressOf.GetDataAddress: TDbgPtr;
+function TPasParserSymbolValueAddressOf.GetDataAddress: TFpDbgMemLocation;
 begin
   Result := FValue.Address;
 end;
@@ -1878,7 +1878,7 @@ begin
   if Count <> 1 then exit;
 
   tmp := Items[0].ResultValue;
-  if (tmp = nil) or (tmp.Address = 0) then
+  if (tmp = nil) or not IsTargetAddr(tmp.Address) then
     exit;
 
   Result := TPasParserSymbolValueAddressOf.Create(tmp);
@@ -1958,7 +1958,7 @@ begin
   end
   else
   if tmp.Kind = skPointer then begin
-    if (svfDataAddress in tmp.FieldFlags) and (tmp.DataAddress <> 0) and
+    if (svfDataAddress in tmp.FieldFlags) and (IsReadableLoc(tmp.DataAddress)) and
        (tmp.TypeInfo <> nil) //and (tmp.TypeInfo.TypeInfo <> nil)
     then begin
       //TODO: maybe introduce a method TypeCastFromAddress, so we can skip the twp2 object
