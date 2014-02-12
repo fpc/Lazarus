@@ -1261,6 +1261,7 @@ components/fpdebug/fpdbgwinclasses.pas svneol=native#text/pascal
 components/fpdebug/fpdbgwinextra.pp svneol=native#text/pascal
 components/fpdebug/fpdebug.lpk svneol=native#text/pascal
 components/fpdebug/fpdebug.pas svneol=native#text/pascal
+components/fpdebug/fpdmemorytools.pas svneol=native#text/pascal
 components/fpdebug/fpimgreaderbase.pas svneol=native#text/pascal
 components/fpdebug/fpimgreaderelf.pas svneol=native#text/pascal
 components/fpdebug/fpimgreaderelftypes.pas svneol=native#text/pascal
