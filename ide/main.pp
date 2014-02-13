@@ -3706,7 +3706,7 @@ end;
 
 procedure TMainIDE.AllowCompilation(aAllow: Boolean);
 // Enables or disables IDE GUI controls associated with compiling and building.
-// Q: Does it interfere with DebugBoss.UpdateButtonsAndMenuItems? Maybe should be refactored and combined.
+// Does it interfere with DebugBoss.UpdateButtonsAndMenuItems? Maybe should be refactored and combined.
 begin
   if MainIDEBar=Nil then Exit;
   with MainIDEBar do begin
@@ -3720,8 +3720,7 @@ begin
     itmPkgEditInstallPkgs.Enabled:=aAllow;
     itmToolRescanFPCSrcDir.Enabled:=aAllow;
     itmToolBuildLazarus.Enabled:=aAllow;
-    itmToolConfigureBuildLazarus.Enabled:=aAllow;
-    // ToDo: Enable / disable all external tools
+    //itmToolConfigureBuildLazarus.Enabled:=aAllow;
   end;
 end;
 
@@ -3745,8 +3744,7 @@ begin
     itDebugger:
       begin
         if (rfInteractive in AFlags)
-        and (IDEQuestionDialog(lisStopDebugging,
-            lisStopTheDebugging, mtConfirmation,
+        and (IDEQuestionDialog(lisStopDebugging, lisStopTheDebugging, mtConfirmation,
             [mrYes, lisStop, mrCancel, lisContinue]) <> mrYes)
         then exit;
         if (DebugBoss.DoStopProject = mrOK) and (ToolStatus = itDebugger) and (rfCloseOnDone in AFlags) then
@@ -4560,7 +4558,7 @@ var
   LazSrcDirTemplate: TDefineTemplate;
   DlgResult: TModalResult;
 begin
-  if ToolStatus<>itNone then exit;
+  //if ToolStatus<>itNone then exit;
   if fBuilder=Nil then
     fBuilder:=TLazarusBuilder.Create;    // Will be freed in the very end.
   MainBuildBoss.SetBuildTargetIDE;
