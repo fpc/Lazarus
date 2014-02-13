@@ -155,11 +155,11 @@ type
   TLazarusBuilder = class
   private
     fUpdateRevInc: boolean;
+    fOutputDirRedirected: boolean;
     fTargetFilename: string;
     function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
       Macros: TTransferMacroList; const PackageOptions: string;
-      Flags: TBuildLazarusFlags; out ExtraOptions: string;
-      out OutputDirRedirected: boolean): TModalResult;
+      Flags: TBuildLazarusFlags; out ExtraOptions: string): TModalResult;
     function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
   public
     function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
@@ -367,7 +367,6 @@ var
 
 var
   ExtraOptions: String;
-  OutputDirRedirected: boolean;
   IdeBuildMode: TIdeBuildMode;
   Dir: String;
   Cmd: String;
@@ -464,12 +463,10 @@ begin
         Cmd:='cleanide ide';
       // append extra Profile
       ExtraOptions:='';
-      Result:=CreateIDEMakeOptions(Profile,Macros,PackageOptions,Flags,
-                               ExtraOptions,OutputDirRedirected);
+      Result:=CreateIDEMakeOptions(Profile,Macros,PackageOptions,Flags,ExtraOptions);
       if Result<>mrOk then exit;
 
-      if (not OutputDirRedirected)
-      and (not CheckDirectoryWritable(WorkingDirectory)) then
+      if (not fOutputDirRedirected) and (not CheckDirectoryWritable(WorkingDirectory)) then
         exit(mrCancel);
 
       if ExtraOptions<>'' then
@@ -502,8 +499,7 @@ end;
 
 function TLazarusBuilder.CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
   Macros: TTransferMacroList; const PackageOptions: string;
-  Flags: TBuildLazarusFlags; out ExtraOptions: string;
-  out OutputDirRedirected: boolean): TModalResult;
+  Flags: TBuildLazarusFlags; out ExtraOptions: string): TModalResult;
 
   procedure BackupExe(var ExeFilename: string);
   var
@@ -595,7 +591,7 @@ var
   TargetLCLPlatform: String;
 begin
   Result:=mrOk;
-  OutputDirRedirected:=false;
+  fOutputDirRedirected:=false;
   fUpdateRevInc:=Profile.UpdateRevisionInc;
 
   // create extra Profile
@@ -741,7 +737,7 @@ begin
     if Result<>mrOk then exit;
   end;
 
-  OutputDirRedirected:=not NewTargetDirectoryIsDefault;
+  fOutputDirRedirected:=not NewTargetDirectoryIsDefault;
 
   // create apple bundle if needed
   //debugln(['CreateBuildLazarusOptions NewTargetDirectory=',TargetDirectory]);
@@ -808,8 +804,10 @@ var
   ExOptions, LazExeFilename: String;
   ModRes: TModalResult;
 begin
-  ModRes := CreateIDEMakeOptions(Profile, GlobalMacroList, '', [], ExOptions, Result);
-  if not (ModRes in [mrOk,mrIgnore]) then
+  ModRes := CreateIDEMakeOptions(Profile, GlobalMacroList, '', [], ExOptions);
+  if ModRes in [mrOk,mrIgnore] then
+    Result := fOutputDirRedirected
+  else
     Result := True;
 end;
 
@@ -870,11 +868,9 @@ var
   Filename: String;
   fs: TFileStreamUTF8;
   OptionsAsText: String;
-  OutputDirRedirected: boolean;
 begin
   ExOptions:='';
-  Result:=CreateIDEMakeOptions(Profile, Macros, PackageOptions,
-      Flags, ExOptions, OutputDirRedirected);
+  Result:=CreateIDEMakeOptions(Profile, Macros, PackageOptions, Flags, ExOptions);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
   try
