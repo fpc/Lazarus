@@ -646,23 +646,19 @@ end;
 
 function TLazarusBuilder.CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
 var
-  UnitOutDir: string;
-  DefaultTargetOS: string;
-  DefaultTargetCPU: string;
-  TargetOS: string;
-  TargetCPU: string;
+  UnitOutDir, LazDir, s: string;
+  DefaultTargetOS, TargetOS: string;
+  DefaultTargetCPU, TargetCPU: string;
+  DefaultTargetFilename, TargetLCLPlatform: string;
   CrossCompiling: Boolean;
-  s: string;
   NewTargetDirectoryIsDefault: Boolean;
-  DefaultTargetFilename: string;
   NewTargetFilenameIsDefault: Boolean;
-  TargetLCLPlatform: String;
 begin
   Result:=mrOk;
   fOutputDirRedirected:=false;
   fUpdateRevInc:=fProfile.UpdateRevisionInc;
 
-  // create extra Profile
+  // create extra options
   fExtraOptions:=fProfile.ExtraOptions;
 
   // check for special IDE config file
@@ -697,6 +693,7 @@ begin
   if TargetCPU='' then TargetCPU:=DefaultTargetCPU;
   DefaultTargetFilename:='lazarus'+GetExecutableExt(TargetOS);
   CrossCompiling:=(CompareText(TargetOS,DefaultTargetOS)<>0) or (CompareText(TargetCPU,DefaultTargetCPU)<>0);
+  LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
 
   //DebugLn(['CreateBuildLazarusOptions NewTargetOS=',TargetOS,' NewTargetCPU=',TargetCPU]);
   if (fProfile.TargetDirectory<>'') then begin
@@ -729,7 +726,7 @@ begin
       // -> normal compile for this platform
 
       // get lazarus directory
-      fTargetDir:=EnvironmentOptions.GetParsedLazarusDirectory;
+      fTargetDir:=LazDir;
       if (fTargetDir<>'') and DirPathExists(fTargetDir) then
       begin
         if not DirectoryIsWritableCached(fTargetDir) then begin
@@ -757,8 +754,7 @@ begin
 
   // compute TargetFilename
   if not FilenameIsAbsolute(fTargetDir) then
-    fTargetDir:=
-      TrimFilename(AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+fTargetDir);
+    fTargetDir:=TrimFilename(AppendPathDelim(LazDir)+fTargetDir);
   if fTargetFilename='' then
     fTargetFilename:='lazarus'+GetExecutableExt(TargetOS);
   if not FilenameIsAbsolute(fTargetFilename) then
@@ -768,9 +764,8 @@ begin
   BackupExe(Flags);
 
   // check if target file is default
-  NewTargetDirectoryIsDefault:=
-    CompareFilenames(ChompPathDelim(EnvironmentOptions.GetParsedLazarusDirectory),
-                     ChompPathDelim(fTargetDir))=0;
+  NewTargetDirectoryIsDefault:=CompareFilenames(ChompPathDelim(LazDir),
+                                                ChompPathDelim(fTargetDir))=0;
   NewTargetFilenameIsDefault:=NewTargetDirectoryIsDefault;
   if NewTargetFilenameIsDefault then begin
     s:=CreateRelativePath(fTargetFilename,fTargetDir);
@@ -815,7 +810,7 @@ begin
     AppendExtraOption('-o'+fTargetFilename);
   end;
 
-  // add package profile for IDE
+  // add package options for IDE
   //DebugLn(['CreateBuildLazarusOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',fPackageOptions]);
   if not (blfUseMakeIDECfg in Flags) then
     AppendExtraOption(fPackageOptions,false);
