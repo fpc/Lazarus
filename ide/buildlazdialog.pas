@@ -600,15 +600,14 @@ end;
 
 function TLazarusBuilder.CreateAppleBundle: TModalResult;
 var
-  CurTarget, BundleDir: String;
+  BundleDir: String;
 begin
   Result:=mrOk;
-  CurTarget:=fTargetFilename;
-  BundleDir:=ChangeFileExt(CurTarget,'.app');
+  BundleDir:=ChangeFileExt(fTargetFilename,'.app');
   //debugln(['CreateBuildLazarusOptions checking bundle ',BundleDir]);
   if not FileExistsCached(BundleDir) then begin
-    //debugln(['CreateBuildLazarusOptions TargetFile=',CurTarget]);
-    Result:=CreateApplicationBundle(CurTarget, 'Lazarus');
+    //debugln(['CreateBuildLazarusOptions TargetFile=',fTargetFilename]);
+    Result:=CreateApplicationBundle(fTargetFilename, 'Lazarus');
     if not (Result in [mrOk,mrIgnore]) then begin
       debugln(['CreateBuildLazarusOptions CreateApplicationBundle failed']);
       if IDEMessagesWindow<>nil then
@@ -619,14 +618,14 @@ begin
         {$ENDIF}
       exit;
     end;
-    Result:=CreateAppBundleSymbolicLink(CurTarget);
+    Result:=CreateAppBundleSymbolicLink(fTargetFilename);
     if not (Result in [mrOk,mrIgnore]) then begin
       debugln(['CreateBuildLazarusOptions CreateAppBundleSymbolicLink failed']);
       if IDEMessagesWindow<>nil then
         {$IFDEF EnableNewExtTools}
         IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle symlink to '+TargetFile);
         {$ELSE}
-        IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+CurTarget,fTargetDir,-1);
+        IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+fTargetFilename,fTargetDir,-1);
         {$ENDIF}
       exit;
     end;
