@@ -46,8 +46,11 @@ type
   TProjectIcon = class(TAbstractProjectResource)
   private
     FData: TIconData;
+    fFileAge: LongInt;
+    fFileAgeValid: Boolean;
     FIcoFileName: string;
     function GetIsEmpry: Boolean;
+    procedure SetIcoFileName(AValue: String);
     procedure SetIconData(const AValue: TIconData);
     procedure SetFileNames(const MainFilename: string);
     procedure SetIsEmpty(const AValue: Boolean);
@@ -63,11 +66,11 @@ type
     procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; Path: String); override;
     procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; Path: String); override;
 
-    function CreateIconFile: Boolean;
+    function SaveIconFile: Boolean;
 
     property IconData: TIconData read FData write SetIconData;
     property IsEmpty: Boolean read GetIsEmpry write SetIsEmpty;
-    property IcoFileName: String read FIcoFileName write FIcoFileName;
+    property IcoFileName: String read FIcoFileName write SetIcoFileName;
   end;
 
 implementation
@@ -127,7 +130,7 @@ begin
 
   SetFileNames(MainFilename);
   if FilenameIsAbsolute(FIcoFileName) then
-    if not CreateIconFile then begin
+    if not SaveIconFile then begin
       debugln(['TProjectIcon.UpdateResources CreateIconFile "'+FIcoFileName+'" failed']);
       exit(false);
     end;
@@ -171,20 +174,25 @@ begin
   end;
 end;
 
-function TProjectIcon.CreateIconFile: Boolean;
+function TProjectIcon.SaveIconFile: Boolean;
 var
   fs: TFileStreamUTF8;
 begin
   Result := False;
   if IsEmpty then exit;
-  //debugln(['TProjectIcon.CreateIconFile ',FIcoFileName]);
+  if fFileAgeValid and (FileAgeCached(IcoFileName)=fFileAge) then
+    exit(true);
+  // write ico file
   try
     if FileExistsUTF8(FIcoFileName) then
-      fs:=TFileStreamUTF8.Create(FIcoFileName,fmOpenWrite)
+      fs:=TFileStreamUTF8.Create(IcoFileName,fmOpenWrite)
     else
-      fs:=TFileStreamUTF8.Create(FIcoFileName,fmCreate);
+      fs:=TFileStreamUTF8.Create(IcoFileName,fmCreate);
     try
       fs.Write(FData[0],length(FData));
+      InvalidateFileStateCache(IcoFileName);
+      fFileAge:=FileAgeCached(IcoFileName);
+      fFileAgeValid:=true;
       Result:=true;
     finally
       fs.Free;
@@ -200,7 +208,7 @@ end;
 -----------------------------------------------------------------------------}
 procedure TProjectIcon.SetFileNames(const MainFilename: string);
 begin
-  FIcoFileName := ExtractFilePath(MainFilename) +
+  IcoFileName := ExtractFilePath(MainFilename) +
     ExtractFileNameWithoutExt(ExtractFileName(MainFileName)) + '.ico';
 end;
 
@@ -208,32 +216,33 @@ procedure TProjectIcon.SetIsEmpty(const AValue: Boolean);
 var
   NewData: TIconData;
   fs: TFileStreamUTF8;
-  ok: Boolean;
 begin
   if IsEmpty=AValue then exit;
   if AValue then
-    IconData := nil
+  begin
+    IconData := nil;
+    Modified := True;
+    fFileAgeValid := false;
+  end
   else
   begin
     // We need to restore data from the .ico file
-    ok:=false;
     try
-      fs:=TFileStreamUTF8.Create(FIcoFileName,fmOpenRead);
+      fs:=TFileStreamUTF8.Create(IcoFileName,fmOpenRead);
       try
         SetLength(NewData, fs.Size);
         if length(NewData)>0 then
           fs.Read(NewData[0],length(NewData));
         IconData := NewData;
-        ok:=true;
+        fFileAge:=FileAgeCached(IcoFileName);
+        fFileAgeValid:=true;
+        Modified := true;
       finally
         fs.Free
       end;
     except
     end;
-    if not ok then
-      IconData:=nil;
   end;
-  Modified := True;
 end;
 
 constructor TProjectIcon.Create;
@@ -250,12 +259,21 @@ begin
   then
     Exit;
   FData := AValue;
+  fFileAgeValid := false;
   Modified := True;
 end;
 
 function TProjectIcon.GetIsEmpry: Boolean;
 begin
   Result := FData = nil;
+end;
+
+procedure TProjectIcon.SetIcoFileName(AValue: String);
+begin
+  if FIcoFileName=AValue then Exit;
+  FIcoFileName:=AValue;
+  fFileAgeValid:=false;
+  debugln(['TProjectIcon.SetIcoFileName ',AValue]);
 end;
 
 initialization
