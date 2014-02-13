@@ -175,6 +175,7 @@ type
     function BreakExtraOptions: string;
     // Methods used by CreateIDEMakeOptions :
     procedure BackupExe(Flags: TBuildLazarusFlags);
+    function CreateAppleBundle: TModalResult;
     procedure AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean = True);
     // This is used by MakeLazarus, IsWriteProtected and SaveIDEMakeOptions
     function CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
@@ -571,6 +572,41 @@ begin
     fTargetFilename:=AltFilename;  // backup didn't work => use another file name
 end;
 
+function TLazarusBuilder.CreateAppleBundle: TModalResult;
+var
+  CurTarget, BundleDir: String;
+begin
+  Result:=mrOk;
+  CurTarget:=fTargetFilename;
+  BundleDir:=ChangeFileExt(CurTarget,'.app');
+  //debugln(['CreateBuildLazarusOptions checking bundle ',BundleDir]);
+  if not FileExistsCached(BundleDir) then begin
+    //debugln(['CreateBuildLazarusOptions TargetFile=',CurTarget]);
+    Result:=CreateApplicationBundle(CurTarget, 'Lazarus');
+    if not (Result in [mrOk,mrIgnore]) then begin
+      debugln(['CreateBuildLazarusOptions CreateApplicationBundle failed']);
+      if IDEMessagesWindow<>nil then
+        {$IFDEF EnableNewExtTools}
+        IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle '+BundleDir);
+        {$ELSE}
+        IDEMessagesWindow.AddMsg('Error: failed to create application bundle '+BundleDir,fTargetDir,-1);
+        {$ENDIF}
+      exit;
+    end;
+    Result:=CreateAppBundleSymbolicLink(CurTarget);
+    if not (Result in [mrOk,mrIgnore]) then begin
+      debugln(['CreateBuildLazarusOptions CreateAppBundleSymbolicLink failed']);
+      if IDEMessagesWindow<>nil then
+        {$IFDEF EnableNewExtTools}
+        IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle symlink to '+TargetFile);
+        {$ELSE}
+        IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+CurTarget,fTargetDir,-1);
+        {$ENDIF}
+      exit;
+    end;
+  end;
+end;
+
 procedure TLazarusBuilder.AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean);
 begin
   if AddOption='' then exit;
@@ -592,8 +628,7 @@ var
   TargetOS: string;
   TargetCPU: string;
   CrossCompiling: Boolean;
-  CurTargetFilename: string;
-  BundleDir: string;
+  s: string;
   NewTargetDirectoryIsDefault: Boolean;
   DefaultTargetFilename: string;
   NewTargetFilenameIsDefault: Boolean;
@@ -732,8 +767,8 @@ begin
                      ChompPathDelim(fTargetDir))=0;
   NewTargetFilenameIsDefault:=NewTargetDirectoryIsDefault;
   if NewTargetFilenameIsDefault then begin
-    CurTargetFilename:=CreateRelativePath(fTargetFilename,fTargetDir);
-    NewTargetFilenameIsDefault:=CurTargetFilename=DefaultTargetFilename;
+    s:=CreateRelativePath(fTargetFilename,fTargetDir);
+    NewTargetFilenameIsDefault:=s=DefaultTargetFilename;
   end;
 
   // create output directories
@@ -751,36 +786,10 @@ begin
   // create apple bundle if needed
   //debugln(['CreateBuildLazarusOptions NewTargetDirectory=',fTargetDir]);
   if (fProfile.TargetPlatform in [lpCarbon,lpCocoa])
-  and (not NewTargetDirectoryIsDefault)
-  and (DirectoryIsWritableCached(fTargetDir)) then begin
-    CurTargetFilename:=fTargetFilename;
-    BundleDir:=ChangeFileExt(CurTargetFilename,'.app');
-    //debugln(['CreateBuildLazarusOptions checking bundle ',BundleDir]);
-    if not FileExistsCached(BundleDir) then begin
-      //debugln(['CreateBuildLazarusOptions CurTargetFilename=',CurTargetFilename]);
-      Result:=CreateApplicationBundle(CurTargetFilename, 'Lazarus');
-      if not (Result in [mrOk,mrIgnore]) then begin
-        debugln(['CreateBuildLazarusOptions CreateApplicationBundle failed']);
-        if IDEMessagesWindow<>nil then
-          {$IFDEF EnableNewExtTools}
-          IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle '+BundleDir);
-          {$ELSE}
-          IDEMessagesWindow.AddMsg('Error: failed to create application bundle '+BundleDir,fTargetDir,-1);
-          {$ENDIF}
-        exit;
-      end;
-      Result:=CreateAppBundleSymbolicLink(CurTargetFilename);
-      if not (Result in [mrOk,mrIgnore]) then begin
-        debugln(['CreateBuildLazarusOptions CreateAppBundleSymbolicLink failed']);
-        if IDEMessagesWindow<>nil then
-          {$IFDEF EnableNewExtTools}
-          IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle symlink to '+CurTargetFilename);
-          {$ELSE}
-          IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+CurTargetFilename,fTargetDir,-1);
-          {$ENDIF}
-        exit;
-      end;
-    end;
+  and (not NewTargetDirectoryIsDefault) and (DirectoryIsWritableCached(fTargetDir)) then
+  begin
+    Result:=CreateAppleBundle;
+    if not (Result in [mrOk,mrIgnore]) then Exit;
   end;
 
   if UnitOutDir<>'' then
