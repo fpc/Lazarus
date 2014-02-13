@@ -3982,6 +3982,7 @@ begin
   Result := inherited GetFoldConfigInstance(Index);
   Result.Enabled := TPascalCodeFoldBlockType(Index) in [cfbtBeginEnd..cfbtIfThen];
 
+  m := [];
   if TPascalCodeFoldBlockType(Index) in PascalWordTripletRanges then
     m := [fmMarkup];
 
