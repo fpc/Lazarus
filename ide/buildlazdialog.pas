@@ -174,6 +174,7 @@ type
     // Methods used by SaveIDEMakeOptions :
     function BreakExtraOptions: string;
     // Methods used by CreateIDEMakeOptions :
+    procedure SpecialIdeConfig;
     procedure BackupExe(Flags: TBuildLazarusFlags);
     function CreateAppleBundle: TModalResult;
     procedure AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean = True);
@@ -518,6 +519,30 @@ begin
   end;
 end;
 
+procedure TLazarusBuilder.SpecialIdeConfig;
+var
+  MakeIDECfgFilename: string;
+begin
+  MakeIDECfgFilename:=GetMakeIDEConfigFilename;
+  //DebugLn(['CreateBuildLazarusOptions MAKE MakeIDECfgFilename=',MakeIDECfgFilename,' ',FileExistsUTF8(MakeIDECfgFilename)]);
+  if (FileExistsUTF8(MakeIDECfgFilename)) then begin
+    // If a file name contains spaces, a file name whould need to be quoted.
+    // Using a single quote is not possible, it is used already in the
+    // makefile to group all Profile in OPT='bla bla'.
+    // using " implicates that make uses a shell to execute the command of
+    // that line. But using shells (i.e. command.com, cmd.exe, etc) is so
+    // fragile (see bug 11362), that is better to avoid this.
+    // Therefore we use a short 8.3 file and path name, so we don't need to
+    // use quotes at all.
+    // On platforms other than windows, ExtractShortPathName is implemented
+    // too and simply returns the passed file name, so there is no need
+    // for $IFDEF.
+    if pos(' ',MakeIDECfgFilename)>0 then
+      MakeIDECfgFilename:=ExtractShortPathNameUTF8(MakeIDECfgFilename);
+    AppendExtraOption('@'+MakeIDECfgFilename);
+  end;
+end;
+
 procedure TLazarusBuilder.BackupExe(Flags: TBuildLazarusFlags);
 var
   Ext: String;
@@ -621,7 +646,6 @@ end;
 
 function TLazarusBuilder.CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
 var
-  MakeIDECfgFilename: string;
   UnitOutDir: string;
   DefaultTargetOS: string;
   DefaultTargetCPU: string;
@@ -642,26 +666,8 @@ begin
   fExtraOptions:=fProfile.ExtraOptions;
 
   // check for special IDE config file
-  if (blfUseMakeIDECfg in Flags) then begin
-    MakeIDECfgFilename:=GetMakeIDEConfigFilename;
-    //DebugLn(['CreateBuildLazarusOptions MAKE MakeIDECfgFilename=',MakeIDECfgFilename,' ',FileExistsUTF8(MakeIDECfgFilename)]);
-    if (FileExistsUTF8(MakeIDECfgFilename)) then begin
-      // If a file name contains spaces, a file name whould need to be quoted.
-      // Using a single quote is not possible, it is used already in the
-      // makefile to group all Profile in OPT='bla bla'.
-      // using " implicates that make uses a shell to execute the command of
-      // that line. But using shells (i.e. command.com, cmd.exe, etc) is so
-      // fragile (see bug 11362), that is better to avoid this.
-      // Therefore we use a short 8.3 file and path name, so we don't need to
-      // use quotes at all.
-      // On platforms other than windows, ExtractShortPathName is implemented
-      // too and simply returns the passed file name, so there is no need
-      // for $IFDEF.
-      if pos(' ',MakeIDECfgFilename)>0 then
-        MakeIDECfgFilename:=ExtractShortPathNameUTF8(MakeIDECfgFilename);
-      AppendExtraOption('@'+MakeIDECfgFilename);
-    end;
-  end;
+  if (blfUseMakeIDECfg in Flags) then
+    SpecialIdeConfig;
 
   // set target filename and target directory:
   // 1. the user has set a target directory
