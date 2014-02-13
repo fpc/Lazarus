@@ -161,8 +161,16 @@ type
     fOutputDirRedirected: boolean;
     fTargetFilename: string;
     fProfileChanged: boolean;
+    // Methods used by MakeLazarus :
+    procedure ApplyCleanOnce;
+    function CheckDirectoryWritable(Dir: string): boolean;
+    procedure CleanLazarusSrcDir(Dir: string; Recursive: boolean = true);
+    procedure CheckRevisionInc;
+    procedure RestoreBackup;
+    // Method used by SaveIDEMakeOptions :
+    function BreakExtraOptions: string;
+    // This is used by MakeLazarus, IsWriteProtected and SaveIDEMakeOptions
     function CreateIDEMakeOptions(Profile: TBuildLazarusProfile; Flags: TBuildLazarusFlags): TModalResult;
-    function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
   public
     {$IFNDEF EnableNewExtTools}
     ExternalTools: TBaseExternalToolList;
@@ -170,6 +178,7 @@ type
     constructor Create;
     function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
     function MakeLazarus(Profile: TBuildLazarusProfile; Flags: TBuildLazarusFlags): TModalResult;
+    function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
     function SaveIDEMakeOptions(Profile: TBuildLazarusProfile; Flags: TBuildLazarusFlags): TModalResult;
   public
     property PackageOptions: string read fPackageOptions write fPackageOptions;
@@ -226,110 +235,107 @@ begin
   end;
 end;
 
+procedure TLazarusBuilder.ApplyCleanOnce;
+begin
+  if not fProfile.CleanOnce then exit;
+  if fProfile.IdeBuildMode=bmBuild then exit;
+  fProfile.IdeBuildMode:=bmBuild;
+  fProfileChanged:=true;
+end;
+
+function TLazarusBuilder.CheckDirectoryWritable(Dir: string): boolean;
+begin
+  if DirectoryIsWritableCached(Dir) then exit(true);
+  Result:=false;
+  IDEMessageDialog(lisBuildingLazarusFailed,
+             Format(lisThisSetOfOptionsToBuildLazarusIsNotSupportedByThis,
+                    [LineEnding, '"', Dir, '"', LineEnding]),
+             mtError,[mbCancel]);
+end;
+
+procedure TLazarusBuilder.CleanLazarusSrcDir(Dir: string; Recursive: boolean = true);
+var
+  FileInfo: TSearchRec;
+  Ext: String;
+  Filename: TFilename;
+begin
+  Dir:=AppendPathDelim(TrimFilename(Dir));
+  if FindFirstUTF8(Dir+AllFilesMask,faAnyFile,FileInfo)=0 then begin
+    repeat
+      if (FileInfo.Name='') or (FileInfo.Name='.') or (FileInfo.Name='..')
+      or (FileInfo.Name='.svn') or (FileInfo.Name='.git')
+      then
+        continue;
+      Filename:=Dir+FileInfo.Name;
+      if faDirectory and FileInfo.Attr>0 then
+      begin
+        if Recursive then
+          CleanLazarusSrcDir(Filename)
+      end
+      else begin
+        Ext:=LowerCase(ExtractFileExt(FileInfo.Name));
+        if (Ext='.ppu') or (Ext='.o') or (Ext='.rst') or (Ext='.rsj') then begin
+          if not DeleteFileUTF8(Filename) then
+            debugln(['CleanLazarusSrcDir failed to delete file "',Filename,'"']);
+        end;
+      end;
+    until FindNextUTF8(FileInfo)<>0;
+  end;
+  FindCloseUTF8(FileInfo);
+end;
+
+procedure TLazarusBuilder.CheckRevisionInc;
+var
+  RevisionIncFile: String;
+  sl: TStringList;
+begin
+  RevisionIncFile:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+'ide'+PathDelim+'revision.inc';
+  if not FileExistsUTF8(RevisionIncFile) then begin
+    debugln(['Note: revision.inc file missing: ',RevisionIncFile]);
+    sl:=TStringList.Create;
+    sl.Add('// Created by lazbuild');
+    sl.Add('const RevisionStr = '''+LazarusVersionStr+''';');
+    try
+      sl.SaveToFile(RevisionIncFile);
+    except
+      on E: Exception do begin
+        debugln(['Note: can not write ',RevisionIncFile,': ',E.Message]);
+      end;
+    end;
+    sl.Free;
+  end;
+end;
+
+procedure TLazarusBuilder.RestoreBackup;
+var
+  BackupFilename: String;
+begin
+  if FileExistsUTF8(fTargetFilename) then begin
+    if not DeleteFileUTF8(fTargetFilename) then begin
+      debugln(['Building IDE failed. Can not delete "',fTargetFilename,'"']);
+      exit;
+    end;
+  end;
+  BackupFilename:=GetBackupExeFilename(fTargetFilename);
+  if FileExistsUTF8(BackupFilename) then begin
+    if not RenameFileUTF8(BackupFilename,fTargetFilename) then begin
+      debugln(['Building IDE failed. Can not restore backup file "',BackupFilename,'" to "',fTargetFilename,'"']);
+    end;
+  end;
+end;
+
 function TLazarusBuilder.MakeLazarus(Profile: TBuildLazarusProfile;
   Flags: TBuildLazarusFlags): TModalResult;
-
-  procedure ApplyCleanOnce;
-  begin
-    if not Profile.CleanOnce then exit;
-    if Profile.IdeBuildMode=bmBuild then exit;
-    Profile.IdeBuildMode:=bmBuild;
-    fProfileChanged:=true;
-  end;
-
-  function CheckDirectoryWritable(Dir: string): boolean;
-  begin
-    if DirectoryIsWritableCached(Dir) then exit(true);
-    Result:=false;
-    IDEMessageDialog(lisBuildingLazarusFailed,
-               Format(lisThisSetOfOptionsToBuildLazarusIsNotSupportedByThis,
-                      [LineEnding, '"', Dir, '"', LineEnding]),
-               mtError,[mbCancel]);
-  end;
-
-  procedure CleanLazarusSrcDir(Dir: string; Recursive: boolean = true);
-  var
-    FileInfo: TSearchRec;
-    Ext: String;
-    Filename: TFilename;
-  begin
-    Dir:=AppendPathDelim(TrimFilename(Dir));
-    if FindFirstUTF8(Dir+AllFilesMask,faAnyFile,FileInfo)=0 then begin
-      repeat
-        if (FileInfo.Name='') or (FileInfo.Name='.') or (FileInfo.Name='..')
-        or (FileInfo.Name='.svn') or (FileInfo.Name='.git')
-        then
-          continue;
-        Filename:=Dir+FileInfo.Name;
-        if faDirectory and FileInfo.Attr>0 then
-        begin
-          if Recursive then
-            CleanLazarusSrcDir(Filename)
-        end
-        else begin
-          Ext:=LowerCase(ExtractFileExt(FileInfo.Name));
-          if (Ext='.ppu') or (Ext='.o') or (Ext='.rst') or (Ext='.rsj') then begin
-            if not DeleteFileUTF8(Filename) then
-              debugln(['CleanLazarusSrcDir failed to delete file "',Filename,'"']);
-          end;
-        end;
-      until FindNextUTF8(FileInfo)<>0;
-    end;
-    FindCloseUTF8(FileInfo);
-  end;
-
-  procedure CheckRevisionInc;
-  var
-    RevisionIncFile: String;
-    sl: TStringList;
-  begin
-    RevisionIncFile:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+'ide'+PathDelim+'revision.inc';
-    if not FileExistsUTF8(RevisionIncFile) then begin
-      debugln(['Note: revision.inc file missing: ',RevisionIncFile]);
-      sl:=TStringList.Create;
-      sl.Add('// Created by lazbuild');
-      sl.Add('const RevisionStr = '''+LazarusVersionStr+''';');
-      try
-        sl.SaveToFile(RevisionIncFile);
-      except
-        on E: Exception do begin
-          debugln(['Note: can not write ',RevisionIncFile,': ',E.Message]);
-        end;
-      end;
-      sl.Free;
-    end;
-  end;
-
-  procedure RestoreBackup(LazExeFilename: string);
-  var
-    BackupFilename: String;
-  begin
-    if FileExistsUTF8(LazExeFilename) then begin
-      if not DeleteFileUTF8(LazExeFilename) then begin
-        debugln(['Building IDE failed. Can not delete "',LazExeFilename,'"']);
-        exit;
-      end;
-    end;
-    BackupFilename:=GetBackupExeFilename(LazExeFilename);
-    if FileExistsUTF8(BackupFilename) then begin
-      if not RenameFileUTF8(BackupFilename,LazExeFilename) then begin
-        debugln(['Building IDE failed. Can not restore backup file "',BackupFilename,'" to "',LazExeFilename,'"']);
-      end;
-    end;
-  end;
-
 var
   {$IFDEF EnableNewExtTools}
   Tool: TAbstractExternalTool;
   {$ELSE}
   Tool: TExternalToolOptions;
   {$ENDIF}
-  WorkingDirectory: String;
-  Executable: String;
+  WorkingDirectory, Executable, CmdLineParams, Cmd: String;
   EnvironmentOverrides: TStringList;
-  CmdLineParams: String;
 
-  function Run(CurTitle, Cmd: string): TModalResult;
+  function Run(CurTitle: string): TModalResult;
   var
     Params: String;
   begin
@@ -370,8 +376,7 @@ var
 
 var
   IdeBuildMode: TIdeBuildMode;
-  Dir: String;
-  Cmd: String;
+  s: String;
 begin
   Result:=mrCancel;
 
@@ -385,9 +390,9 @@ begin
     // setup external tool
     EnvironmentOverrides.Values['LCL_PLATFORM']:=LCLPlatformDirNames[Profile.TargetPlatform];
     EnvironmentOverrides.Values['LANG']:= 'en_US';
-    Dir:=EnvironmentOptions.GetParsedCompilerFilename;
-    if Dir<>'' then
-      EnvironmentOverrides.Values['PP']:=Dir;
+    s:=EnvironmentOptions.GetParsedCompilerFilename;
+    if s<>'' then
+      EnvironmentOverrides.Values['PP']:=s;
 
     Executable:=EnvironmentOptions.GetParsedMakeFilename;
     if (Executable<>'') and (not FileExistsUTF8(Executable)) then
@@ -437,9 +442,9 @@ begin
 
         // clean custom target directory
         if Profile.TargetDirectory<>'' then begin
-          Dir:=Profile.GetParsedTargetDirectory(fMacros);
-          if (Dir<>'') and DirPathExists(Dir) then
-            CleanLazarusSrcDir(Dir);
+          s:=Profile.GetParsedTargetDirectory(fMacros);
+          if (s<>'') and DirPathExists(s) then
+            CleanLazarusSrcDir(s);
         end;
       end;
 
@@ -448,7 +453,7 @@ begin
         Cmd:='cleanide'
       else
         Cmd:='cleanlaz';
-      Result:=Run(lisCleanLazarusSource,Cmd);
+      Result:=Run(lisCleanLazarusSource);
       if Result<>mrOk then exit;
 
       ApplyCleanOnce;
@@ -478,13 +483,13 @@ begin
         EnvironmentOverrides.Values['USESVN2REVISIONINC'] := '0';
       end;
       // run
-      Result:=Run(lisIDE,Cmd);
+      Result:=Run(lisIDE);
       // clean only once. If building failed the user must first fix the error
       // before a clean build is needed.
       ApplyCleanOnce;
       if Result<>mrOk then begin
         // build failed: restore backup of lazarus.exe
-        RestoreBackup(fTargetFilename);
+        RestoreBackup;
         exit;
       end;
     end;
@@ -812,57 +817,56 @@ begin
     Result:=True;
 end;
 
+function TLazarusBuilder.BreakExtraOptions: string;
+var
+  StartPos: Integer;
+  EndPos: Integer;
+  c: Char;
+  CurLine: String;
+begin
+  Result:='';
+  // write each option into a line of its own
+  StartPos:=1;
+  repeat
+    while (StartPos<=length(fExtraOptions)) and (fExtraOptions[StartPos]=' ') do
+      inc(StartPos);
+    EndPos:=StartPos;
+    while EndPos<=length(fExtraOptions) do begin
+      c:=fExtraOptions[EndPos];
+      case c of
+      ' ': break;
+
+      '''','"','`':
+        begin
+          repeat
+            inc(EndPos);
+            if (fExtraOptions[EndPos]=c) then begin
+              inc(EndPos);
+              break;
+            end;
+          until (EndPos>length(fExtraOptions));
+        end;
+
+      else
+        inc(EndPos);
+      end;
+    end;
+    if (EndPos>StartPos) then begin
+      CurLine:=Trim(copy(fExtraOptions,StartPos,EndPos-StartPos));
+      if (length(CurLine)>2) and (CurLine[1] in ['''','"','`'])
+      and (CurLine[1]=CurLine[length(CurLine)]) then begin
+        // whole line enclosed in quotation marks
+        // in fpc config this is forbidden and gladfully unncessary
+        CurLine:=copy(CurLine,2,length(CurLine)-2);
+      end;
+      Result:=Result+CurLine+LineEnding;
+    end;
+    StartPos:=EndPos;
+  until StartPos>length(fExtraOptions);
+end;
+
 function TLazarusBuilder.SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
   Flags: TBuildLazarusFlags): TModalResult;
-
-  function BreakOptions(const OptionString: string): string;
-  var
-    StartPos: Integer;
-    EndPos: Integer;
-    c: Char;
-    CurLine: String;
-  begin
-    Result:='';
-    // write each option into a line of its own
-    StartPos:=1;
-    repeat
-      while (StartPos<=length(OptionString)) and (OptionString[StartPos]=' ') do
-        inc(StartPos);
-      EndPos:=StartPos;
-      while EndPos<=length(OptionString) do begin
-        c:=OptionString[EndPos];
-        case c of
-        ' ': break;
-
-        '''','"','`':
-          begin
-            repeat
-              inc(EndPos);
-              if (OptionString[EndPos]=c) then begin
-                inc(EndPos);
-                break;
-              end;
-            until (EndPos>length(OptionString));
-          end;
-
-        else
-          inc(EndPos);
-        end;
-      end;
-      if (EndPos>StartPos) then begin
-        CurLine:=Trim(copy(OptionString,StartPos,EndPos-StartPos));
-        if (length(CurLine)>2) and (CurLine[1] in ['''','"','`'])
-        and (CurLine[1]=CurLine[length(CurLine)]) then begin
-          // whole line enclosed in quotation marks
-          // in fpc config this is forbidden and gladfully unncessary
-          CurLine:=copy(CurLine,2,length(CurLine)-2);
-        end;
-        Result:=Result+CurLine+LineEnding;
-      end;
-      StartPos:=EndPos;
-    until StartPos>length(OptionString);
-  end;
-
 var
   Filename: String;
   fs: TFileStreamUTF8;
@@ -877,7 +881,7 @@ begin
     fs:=TFileStreamUTF8.Create(Filename,fmCreate);
     try
       if fExtraOptions<>'' then begin
-        OptionsAsText:=BreakOptions(fExtraOptions);
+        OptionsAsText:=BreakExtraOptions;
         fs.Write(OptionsAsText[1],length(OptionsAsText));
       end;
     finally
