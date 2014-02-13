@@ -7547,8 +7547,7 @@ begin
         fBuilder.PackageOptions:='';
         Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current,
                          {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
-                         EnvironmentOptions.GetParsedCompilerFilename,
-                         EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild]);
+                         [blfDontBuild]);
         if Result<>mrOk then begin
           DebugLn('TMainIDE.DoBuildLazarus: Clean all failed.');
           exit;
@@ -7601,8 +7600,7 @@ begin
     IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean];
     Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current,
                         {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
-                        EnvironmentOptions.GetParsedCompilerFilename,
-                        EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags);
+                        IDEBuildFlags);
     if Result<>mrOk then exit;
 
     if fBuilder.ProfileChanged then

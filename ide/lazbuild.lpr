@@ -583,8 +583,6 @@ begin
       Builder.PackageOptions:='';
       CurResult:=Builder.MakeLazarus(BuildLazProfiles.Current,
                   EnvironmentOptions.ExternalTools,
-                  EnvironmentOptions.GetParsedCompilerFilename,
-                  EnvironmentOptions.GetParsedMakeFilename,
                   Flags+[blfDontBuild]);
       if CurResult<>mrOk then begin
         if ConsoleVerbosity>=-1 then
@@ -623,8 +621,6 @@ begin
     // compile IDE
     CurResult:=Builder.MakeLazarus(BuildLazProfiles.Current,
                            EnvironmentOptions.ExternalTools,
-                           EnvironmentOptions.GetParsedCompilerFilename,
-                           EnvironmentOptions.GetParsedMakeFilename,
                            Flags+[blfUseMakeIDECfg,blfOnlyIDE]);
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then

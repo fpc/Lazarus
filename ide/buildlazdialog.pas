@@ -170,7 +170,7 @@ type
 
     function MakeLazarus(Profile: TBuildLazarusProfile;
       {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
-      const CompilerPath, MakePath: string; Flags: TBuildLazarusFlags): TModalResult;
+      Flags: TBuildLazarusFlags): TModalResult;
 
     function SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
       Flags: TBuildLazarusFlags): TModalResult;
@@ -231,7 +231,7 @@ end;
 
 function TLazarusBuilder.MakeLazarus(Profile: TBuildLazarusProfile;
   {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
-  const CompilerPath, MakePath: string; Flags: TBuildLazarusFlags): TModalResult;
+  Flags: TBuildLazarusFlags): TModalResult;
 
   procedure ApplyCleanOnce;
   begin
@@ -387,13 +387,13 @@ begin
   Tool:=nil;
   try
     // setup external tool
-    EnvironmentOverrides.Values['LCL_PLATFORM']:=
-      LCLPlatformDirNames[Profile.TargetPlatform];
+    EnvironmentOverrides.Values['LCL_PLATFORM']:=LCLPlatformDirNames[Profile.TargetPlatform];
     EnvironmentOverrides.Values['LANG']:= 'en_US';
-    if CompilerPath<>'' then
-      EnvironmentOverrides.Values['PP']:=CompilerPath;
+    Dir:=EnvironmentOptions.GetParsedCompilerFilename;
+    if Dir<>'' then
+      EnvironmentOverrides.Values['PP']:=Dir;
 
-    Executable:=MakePath;
+    Executable:=EnvironmentOptions.GetParsedMakeFilename;
     if (Executable<>'') and (not FileExistsUTF8(Executable)) then
       Executable:=FindDefaultExecutablePath(Executable);
     if (Executable='') or (not FileExistsUTF8(Executable)) then begin
