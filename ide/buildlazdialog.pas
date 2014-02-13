@@ -173,7 +173,7 @@ type
     // Method used by SaveIDEMakeOptions :
     function BreakExtraOptions: string;
     // This is used by MakeLazarus, IsWriteProtected and SaveIDEMakeOptions
-    function CreateIDEMakeOptions(Profile: TBuildLazarusProfile; Flags: TBuildLazarusFlags): TModalResult;
+    function CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
   public
     {$IFNDEF EnableNewExtTools}
     ExternalTools: TBaseExternalToolList;
@@ -479,7 +479,7 @@ begin
         Cmd:='cleanide ide';
       // append extra Profile
       fExtraOptions:='';
-      Result:=CreateIDEMakeOptions(Profile,Flags);
+      Result:=CreateIDEMakeOptions(Flags);
       if Result<>mrOk then exit;
 
       if (not fOutputDirRedirected) and (not CheckDirectoryWritable(fWorkingDir)) then
@@ -513,8 +513,7 @@ begin
   end;
 end;
 
-function TLazarusBuilder.CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
-  Flags: TBuildLazarusFlags): TModalResult;
+function TLazarusBuilder.CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
 
   procedure BackupExe(var ExeFilename: string);
   var
@@ -607,10 +606,10 @@ var
 begin
   Result:=mrOk;
   fOutputDirRedirected:=false;
-  fUpdateRevInc:=Profile.UpdateRevisionInc;
+  fUpdateRevInc:=fProfile.UpdateRevisionInc;
 
   // create extra Profile
-  fExtraOptions:=Profile.ExtraOptions;
+  fExtraOptions:=fProfile.ExtraOptions;
 
   // check for special IDE config file
   if (blfUseMakeIDECfg in Flags) then begin
@@ -655,20 +654,20 @@ begin
     DefaultTargetOS:=GetCompiledTargetOS;
   if DefaultTargetCPU='' then
     DefaultTargetCPU:=GetCompiledTargetCPU;
-  TargetOS:=Profile.FPCTargetOS;
-  TargetCPU:=Profile.FPCTargetCPU;
-  TargetLCLPlatform:=LCLPlatformDirNames[Profile.TargetPlatform];
+  TargetOS:=fProfile.FPCTargetOS;
+  TargetCPU:=fProfile.FPCTargetCPU;
+  TargetLCLPlatform:=LCLPlatformDirNames[fProfile.TargetPlatform];
   if TargetOS='' then TargetOS:=DefaultTargetOS;
   if TargetCPU='' then TargetCPU:=DefaultTargetCPU;
   DefaultTargetFilename:='lazarus'+GetExecutableExt(TargetOS);
   CrossCompiling:=(CompareText(TargetOS,DefaultTargetOS)<>0) or (CompareText(TargetCPU,DefaultTargetCPU)<>0);
 
   //DebugLn(['CreateBuildLazarusOptions NewTargetOS=',TargetOS,' NewTargetCPU=',TargetCPU]);
-  if (Profile.TargetDirectory<>'') then begin
+  if (fProfile.TargetDirectory<>'') then begin
     // Case 1. the user has set a target directory
-    TargetDirectory:=Profile.GetParsedTargetDirectory(fMacros);
+    TargetDirectory:=fProfile.GetParsedTargetDirectory(fMacros);
     if TargetDirectory='' then begin
-      debugln('CreateBuildLazarusOptions macro aborted Options.TargetDirectory=',Profile.TargetDirectory);
+      debugln('CreateBuildLazarusOptions macro aborted Options.TargetDirectory=',fProfile.TargetDirectory);
       Result:=mrAbort;
       exit;
     end;
@@ -688,8 +687,8 @@ begin
       // ppu files to <primary config dir>/units/<TargetCPU>-<TargetOS>/<LCLWidgetType>
       UnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
                   +PathDelim+TargetCPU+'-'+TargetOS+PathDelim+TargetLCLPlatform;
-      debugln('CreateBuildLazarusOptions Options.TargetOS=',Profile.FPCTargetOS,' Options.TargetCPU=',
-              Profile.FPCTargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
+      debugln('CreateBuildLazarusOptions Options.TargetOS=',fProfile.FPCTargetOS,' Options.TargetCPU=',
+              fProfile.FPCTargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
     end else begin
       // -> normal compile for this platform
 
@@ -756,7 +755,7 @@ begin
 
   // create apple bundle if needed
   //debugln(['CreateBuildLazarusOptions NewTargetDirectory=',TargetDirectory]);
-  if (Profile.TargetPlatform in [lpCarbon,lpCocoa])
+  if (fProfile.TargetPlatform in [lpCarbon,lpCocoa])
   and (not NewTargetDirectoryIsDefault)
   and (DirectoryIsWritableCached(TargetDirectory)) then begin
     CurTargetFilename:=fTargetFilename;
@@ -806,7 +805,7 @@ begin
     AppendExtraOption('-o'+fTargetFilename);
   end;
 
-  // add package Profile for IDE
+  // add package profile for IDE
   //DebugLn(['CreateBuildLazarusOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',fPackageOptions]);
   if not (blfUseMakeIDECfg in Flags) then
     AppendExtraOption(fPackageOptions,false);
@@ -818,8 +817,9 @@ function TLazarusBuilder.IsWriteProtected(Profile: TBuildLazarusProfile): Boolea
 var
   ModRes: TModalResult;
 begin
+  fProfile:=Profile;
   fPackageOptions:='';
-  ModRes:=CreateIDEMakeOptions(Profile,[]);
+  ModRes:=CreateIDEMakeOptions([]);
   if ModRes in [mrOk,mrIgnore] then
     Result:=fOutputDirRedirected
   else
@@ -881,8 +881,9 @@ var
   fs: TFileStreamUTF8;
   OptionsAsText: String;
 begin
+  fProfile:=Profile;
   fExtraOptions:='';
-  Result:=CreateIDEMakeOptions(Profile,Flags);
+  Result:=CreateIDEMakeOptions(Flags);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
   try
