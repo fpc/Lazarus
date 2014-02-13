@@ -181,6 +181,7 @@ var
 begin
   Result := False;
   if IsEmpty then exit;
+  //debugln(['TProjectIcon.CreateIconFile ',FIcoFileName]);
   try
     if FileExistsUTF8(FIcoFileName) then
       fs:=TFileStreamUTF8.Create(FIcoFileName,fmOpenWrite)
@@ -211,6 +212,7 @@ procedure TProjectIcon.SetIsEmpty(const AValue: Boolean);
 var
   NewData: TIconData;
   fs: TFileStreamUTF8;
+  ok: Boolean;
 begin
   if IsEmpty=AValue then exit;
   if AValue then
@@ -218,7 +220,7 @@ begin
   else
   begin
     // We need to restore data from the .ico file
-    IconData := nil;
+    ok:=false;
     try
       fs:=TFileStreamUTF8.Create(FIcoFileName,fmOpenRead);
       try
@@ -226,11 +228,14 @@ begin
         if length(NewData)>0 then
           fs.Read(NewData[0],length(NewData));
         IconData := NewData;
+        ok:=true;
       finally
         fs.Free
       end;
     except
     end;
+    if not ok then
+      IconData:=nil;
   end;
   Modified := True;
 end;
