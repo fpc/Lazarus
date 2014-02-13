@@ -160,6 +160,8 @@ type
     fMacros: TTransferMacroList;
     fUpdateRevInc: boolean;
     fOutputDirRedirected: boolean;
+    fTargetOS: string;
+    fTargetCPU: string;
     fTargetFilename: string;
     fTargetDir: string;
     fUnitOutDir: string;
@@ -174,12 +176,15 @@ type
     procedure RestoreBackup;
     // Methods used by SaveIDEMakeOptions :
     function BreakExtraOptions: string;
-    // Methods used by CreateIDEMakeOptions :
+    // Methods used by CalcTargets :
     procedure SpecialIdeConfig;
+    // This is used by CreateIDEMakeOptions and IsWriteProtected
+    function CalcTargets(Flags: TBuildLazarusFlags): TModalResult;
+    // Methods used by CreateIDEMakeOptions :
     procedure BackupExe(Flags: TBuildLazarusFlags);
     function CreateAppleBundle: TModalResult;
     procedure AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean = True);
-    // This is used by MakeLazarus, IsWriteProtected and SaveIDEMakeOptions
+    // This is used by MakeLazarus and SaveIDEMakeOptions
     function CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
   public
     {$IFNDEF EnableNewExtTools}
@@ -544,6 +549,118 @@ begin
   end;
 end;
 
+function TLazarusBuilder.CalcTargets(Flags: TBuildLazarusFlags): TModalResult;
+var
+  DefaultTargetOS, DefaultTargetCPU: string;
+  LazDir, TargetLCLPlatform: string;
+begin
+  Result:=mrOk;
+  fOutputDirRedirected:=False;
+  fUpdateRevInc:=fProfile.UpdateRevisionInc;
+
+  // create extra options
+  fExtraOptions:=fProfile.ExtraOptions;
+
+  // check for special IDE config file
+  if (blfUseMakeIDECfg in Flags) then
+    SpecialIdeConfig;
+
+  // set target filename and target directory:
+  // 1. the user has set a target directory
+  // 2. For crosscompiling the IDE needs a different directory
+  // 3. If lazarus is installed as root/administrator, the lazarus directory
+  //    is readonly and needs a different name and directory
+  //    (e.g. ~/.lazarus/bin/lazarus).
+  // 4. Platforms like windows locks executables, so lazarus can not replace
+  //    itself. The IDE will try to rename the file or fallback to another name
+  //    (e.g. lazarus.new.exe).
+  //    The target directory is writable, the lazarus.o file can be created.
+  // Otherwise: Don't touch the target filename.
+
+  fTargetFilename:='';
+  fUnitOutDir:='';
+  CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
+    EnvironmentOptions.GetParsedCompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
+  if DefaultTargetOS='' then
+    DefaultTargetOS:=GetCompiledTargetOS;
+  if DefaultTargetCPU='' then
+    DefaultTargetCPU:=GetCompiledTargetCPU;
+  fTargetOS:=fProfile.FPCTargetOS;
+  fTargetCPU:=fProfile.FPCTargetCPU;
+  TargetLCLPlatform:=LCLPlatformDirNames[fProfile.TargetPlatform];
+  if fTargetOS='' then fTargetOS:=DefaultTargetOS;
+  if fTargetCPU='' then fTargetCPU:=DefaultTargetCPU;
+  LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
+
+  //DebugLn(['CreateBuildLazarusOptions NewTargetOS=',fTargetOS,' NewTargetCPU=',fTargetCPU]);
+  if (fProfile.TargetDirectory<>'') then begin
+    // Case 1. the user has set a target directory
+    fTargetDir:=fProfile.GetParsedTargetDirectory(fMacros);
+    if fTargetDir='' then begin
+      debugln('CreateBuildLazarusOptions macro aborted Options.TargetDirectory=',fProfile.TargetDirectory);
+      Exit(mrAbort);
+    end;
+    fUnitOutDir:=AppendPathDelim(fTargetDir)+'units';
+    debugln('CreateBuildLazarusOptions TargetDirectory=',fTargetDir);
+    debugln('CreateBuildLazarusOptions UnitsTargetDirectory=',fUnitOutDir);
+  end else begin
+    // no user defined target directory
+    // => find it automatically
+    if (CompareText(fTargetOS,DefaultTargetOS)<>0)
+    or (CompareText(fTargetCPU,DefaultTargetCPU)<>0) then
+    begin
+      // Case 2. crosscompiling the IDE
+      // lazarus.exe to <primary config dir>/bin/<fTargetCPU>-<fTargetOS>
+      fTargetDir:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
+                          +PathDelim+fTargetCPU+'-'+fTargetOS;
+      // ppu files to <primary config dir>/units/<fTargetCPU>-<fTargetOS>/<LCLWidgetType>
+      fUnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
+                  +PathDelim+fTargetCPU+'-'+fTargetOS+PathDelim+TargetLCLPlatform;
+      debugln('CreateBuildLazarusOptions Options.TargetOS=',fProfile.FPCTargetOS,' Options.TargetCPU=',
+              fProfile.FPCTargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
+    end else begin
+      // -> normal compile for this platform
+
+      // get lazarus directory
+      fTargetDir:=LazDir;
+      if (fTargetDir<>'') and DirPathExists(fTargetDir) then
+      begin
+        if not DirectoryIsWritableCached(fTargetDir) then begin
+          // Case 3. the lazarus directory is not writable
+          // lazarus.exe to <primary config dir>/bin/
+          // ppu files to <primary config dir>/units/<fTargetCPU>-<fTargetOS>/<LCLWidgetType>
+          fUpdateRevInc:=false;
+          fTargetDir:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
+          debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',fTargetDir);
+          fUnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
+                  +PathDelim+fTargetCPU+'-'+fTargetOS+PathDelim+TargetLCLPlatform;
+        end else begin
+          // Case 4. the lazarus directory is writable
+          // ppu files to <lazarusdir>/units/<fTargetCPU>-<fTargetOS>/<LCLWidgetType>
+          fUnitOutDir:=AppendPathDelim(fTargetDir)+'units'
+                  +PathDelim+fTargetCPU+'-'+fTargetOS+PathDelim+TargetLCLPlatform;
+        end;
+      end else begin
+        // lazarus dir is not valid (probably someone is experimenting)
+        // -> just compile to current directory
+        fTargetDir:='';
+      end;
+    end;
+  end;
+
+  // compute TargetFilename
+  if not FilenameIsAbsolute(fTargetDir) then
+    fTargetDir:=TrimFilename(AppendPathDelim(LazDir)+fTargetDir);
+  if fTargetFilename='' then
+    fTargetFilename:='lazarus'+GetExecutableExt(fTargetOS);
+  if not FilenameIsAbsolute(fTargetFilename) then
+    fTargetFilename:=TrimFilename(AppendPathDelim(fTargetDir)+fTargetFilename);
+
+  // check if target file is default
+  fOutputDirRedirected:=CompareFilenames(ChompPathDelim(LazDir),
+                                         ChompPathDelim(fTargetDir))<>0;
+end;
+
 procedure TLazarusBuilder.BackupExe(Flags: TBuildLazarusFlags);
 var
   Ext: String;
@@ -646,121 +763,12 @@ end;
 
 function TLazarusBuilder.CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
 var
-  LazDir: string;
-  DefaultTargetOS, TargetOS: string;
-  DefaultTargetCPU, TargetCPU: string;
-  DefaultTargetFilename, TargetLCLPlatform: string;
-  CrossCompiling: Boolean;
+  DefaultTargetFilename: string;
 begin
-  Result:=mrOk;
-  fOutputDirRedirected:=false;
-  fUpdateRevInc:=fProfile.UpdateRevisionInc;
+  // Get target files and directories.
+  Result:=CalcTargets(Flags);
+  if Result<>mrOk then exit;
 
-  // create extra options
-  fExtraOptions:=fProfile.ExtraOptions;
-
-  // check for special IDE config file
-  if (blfUseMakeIDECfg in Flags) then
-    SpecialIdeConfig;
-
-  // set target filename and target directory:
-  // 1. the user has set a target directory
-  // 2. For crosscompiling the IDE needs a different directory
-  // 3. If lazarus is installed as root/administrator, the lazarus directory
-  //    is readonly and needs a different name and directory
-  //    (e.g. ~/.lazarus/bin/lazarus).
-  // 4. Platforms like windows locks executables, so lazarus can not replace
-  //    itself. The IDE will try to rename the file or fallback to another name
-  //    (e.g. lazarus.new.exe).
-  //    The target directory is writable, the lazarus.o file can be created.
-  // Otherwise: Don't touch the target filename.
-
-  fTargetFilename:='';
-  fUnitOutDir:='';
-  CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
-    EnvironmentOptions.GetParsedCompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
-  if DefaultTargetOS='' then
-    DefaultTargetOS:=GetCompiledTargetOS;
-  if DefaultTargetCPU='' then
-    DefaultTargetCPU:=GetCompiledTargetCPU;
-  TargetOS:=fProfile.FPCTargetOS;
-  TargetCPU:=fProfile.FPCTargetCPU;
-  TargetLCLPlatform:=LCLPlatformDirNames[fProfile.TargetPlatform];
-  if TargetOS='' then TargetOS:=DefaultTargetOS;
-  if TargetCPU='' then TargetCPU:=DefaultTargetCPU;
-  DefaultTargetFilename:='lazarus'+GetExecutableExt(TargetOS);
-  CrossCompiling:=(CompareText(TargetOS,DefaultTargetOS)<>0) or (CompareText(TargetCPU,DefaultTargetCPU)<>0);
-  LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
-
-  //DebugLn(['CreateBuildLazarusOptions NewTargetOS=',TargetOS,' NewTargetCPU=',TargetCPU]);
-  if (fProfile.TargetDirectory<>'') then begin
-    // Case 1. the user has set a target directory
-    fTargetDir:=fProfile.GetParsedTargetDirectory(fMacros);
-    if fTargetDir='' then begin
-      debugln('CreateBuildLazarusOptions macro aborted Options.TargetDirectory=',fProfile.TargetDirectory);
-      Result:=mrAbort;
-      exit;
-    end;
-    fUnitOutDir:=AppendPathDelim(fTargetDir)+'units';
-    debugln('CreateBuildLazarusOptions TargetDirectory=',fTargetDir);
-    debugln('CreateBuildLazarusOptions UnitsTargetDirectory=',fUnitOutDir);
-  end else begin
-    // no user defined target directory
-    // => find it automatically
-
-    if CrossCompiling then
-    begin
-      // Case 2. crosscompiling the IDE
-      // lazarus.exe to <primary config dir>/bin/<TargetCPU>-<TargetOS>
-      fTargetDir:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
-                          +PathDelim+TargetCPU+'-'+TargetOS;
-      // ppu files to <primary config dir>/units/<TargetCPU>-<TargetOS>/<LCLWidgetType>
-      fUnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
-                  +PathDelim+TargetCPU+'-'+TargetOS+PathDelim+TargetLCLPlatform;
-      debugln('CreateBuildLazarusOptions Options.TargetOS=',fProfile.FPCTargetOS,' Options.TargetCPU=',
-              fProfile.FPCTargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
-    end else begin
-      // -> normal compile for this platform
-
-      // get lazarus directory
-      fTargetDir:=LazDir;
-      if (fTargetDir<>'') and DirPathExists(fTargetDir) then
-      begin
-        if not DirectoryIsWritableCached(fTargetDir) then begin
-          // Case 3. the lazarus directory is not writable
-          // lazarus.exe to <primary config dir>/bin/
-          // ppu files to <primary config dir>/units/<TargetCPU>-<TargetOS>/<LCLWidgetType>
-          fUpdateRevInc:=false;
-          fTargetDir:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
-          debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',fTargetDir);
-          fUnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
-                  +PathDelim+TargetCPU+'-'+TargetOS+PathDelim+TargetLCLPlatform;
-        end else begin
-          // Case 4. the lazarus directory is writable
-          // ppu files to <lazarusdir>/units/<TargetCPU>-<TargetOS>/<LCLWidgetType>
-          fUnitOutDir:=AppendPathDelim(fTargetDir)+'units'
-                  +PathDelim+TargetCPU+'-'+TargetOS+PathDelim+TargetLCLPlatform;
-        end;
-      end else begin
-        // lazarus dir is not valid (probably someone is experimenting)
-        // -> just compile to current directory
-        fTargetDir:='';
-      end;
-    end;
-  end;
-
-  // compute TargetFilename
-  if not FilenameIsAbsolute(fTargetDir) then
-    fTargetDir:=TrimFilename(AppendPathDelim(LazDir)+fTargetDir);
-  if fTargetFilename='' then
-    fTargetFilename:='lazarus'+GetExecutableExt(TargetOS);
-  if not FilenameIsAbsolute(fTargetFilename) then
-    fTargetFilename:=TrimFilename(AppendPathDelim(fTargetDir)+fTargetFilename);
-
-  // check if target file is default
-  fOutputDirRedirected:=CompareFilenames(ChompPathDelim(LazDir),
-                                         ChompPathDelim(fTargetDir))<>0;
-// ---Cut---
   // backup old exe
   BackupExe(Flags);
 
@@ -797,6 +805,7 @@ begin
     // Note: FPC automatically changes the last extension (append or replace)
     // For example under linux, where executables don't need any extension
     // fpc removes the last extension of the -o option.
+    DefaultTargetFilename:='lazarus'+GetExecutableExt(fTargetOS);
     if CreateRelativePath(fTargetFilename,fTargetDir) <> DefaultTargetFilename then
       AppendExtraOption('-o'+fTargetFilename);
   end;
@@ -810,16 +819,10 @@ end;
 
 function TLazarusBuilder.IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
 // Returns True if Lazarus installation directory is write protected. Now uses OutputDirRedirected info.
-var
-  ModRes: TModalResult;
 begin
   fProfile:=Profile;
-  fPackageOptions:='';
-  ModRes:=CreateIDEMakeOptions([]);
-  if ModRes in [mrOk,mrIgnore] then
-    Result:=fOutputDirRedirected
-  else
-    Result:=True;
+  CalcTargets([]);
+  Result:=fOutputDirRedirected;
 end;
 
 function TLazarusBuilder.BreakExtraOptions: string;
