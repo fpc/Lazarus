@@ -992,6 +992,42 @@ var
   AnUnitInfo: TUnitInfo;
   LFMFilename: String;
   IcoRes: TProjectIcon;
+
+  function EditorFileHasChanged: boolean;
+  begin
+    Result:=false;
+    if AnUnitInfo.IsPartOfProject or AnUnitInfo.IsVirtual then exit;
+    if not FileExistsCached(AnUnitInfo.Filename) then exit;
+    if StateFileAge>=FileAgeCached(AnUnitInfo.Filename) then exit;
+    if FilenameIsPascalUnit(AnUnitInfo.Filename) then
+    begin
+      if (SearchDirectoryInSearchPath(AProject.CompilerOptions.GetUnitPath(false),
+                                ExtractFilePath(AnUnitInfo.Filename))>0)
+      then begin
+        Result:=true;
+        if ConsoleVerbosity>=0 then
+          DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Editor Unit in project''s unit path has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+        Note+='Editor unit "'+AnUnitInfo.Filename+'" in project''s unit search path is newer than state file:'+LineEnding
+          +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
+          +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
+          +'  State file='+StateFilename+LineEnding;
+        exit(true);
+      end;
+    end;
+    if (SearchDirectoryInSearchPath(AProject.CompilerOptions.GetIncludePath(false),
+                              ExtractFilePath(AnUnitInfo.Filename))>0)
+    then begin
+      Result:=true;
+      if ConsoleVerbosity>=0 then
+        DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Editor Src in project''s include path has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+      Note+='Editor file "'+AnUnitInfo.Filename+'" in project''s include search path is newer than state file:'+LineEnding
+        +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
+        +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
+        +'  State file='+StateFilename+LineEnding;
+      exit(true);
+    end;
+  end;
+
 begin
   NeedBuildAllFlag:=false;
 
@@ -1142,21 +1178,12 @@ begin
     AnUnitInfo:=AnUnitInfo.NextPartOfProject;
   end;
 
-  // check all open editor files (maybe the user forgot to add them to the project)
+  // check all open editor files in unit/include path (maybe the user forgot
+  // to add them to the project)
   AnUnitInfo:=AProject.FirstUnitWithEditorIndex;
   while AnUnitInfo<>nil do begin
-    if (not AnUnitInfo.IsPartOfProject)
-    and (not AnUnitInfo.IsVirtual)
-    and FileExistsCached(AnUnitInfo.Filename)
-    and (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
-      if ConsoleVerbosity>=0 then
-        DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Editor Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
-      Note+='Editor file "'+AnUnitInfo.Filename+'" is newer than state file:'+LineEnding
-        +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
-        +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
-        +'  State file='+StateFilename+LineEnding;
+    if EditorFileHasChanged then
       exit(mrYes);
-    end;
     AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
   end;
 
