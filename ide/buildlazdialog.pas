@@ -154,12 +154,13 @@ type
 
   TLazarusBuilder = class
   private
+    fExtraOptions: string;
     fUpdateRevInc: boolean;
     fOutputDirRedirected: boolean;
     fTargetFilename: string;
     function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
       Macros: TTransferMacroList; const PackageOptions: string;
-      Flags: TBuildLazarusFlags; out ExtraOptions: string): TModalResult;
+      Flags: TBuildLazarusFlags): TModalResult;
     function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
   public
     function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
@@ -366,7 +367,6 @@ var
   end;
 
 var
-  ExtraOptions: String;
   IdeBuildMode: TIdeBuildMode;
   Dir: String;
   Cmd: String;
@@ -462,15 +462,15 @@ begin
       else
         Cmd:='cleanide ide';
       // append extra Profile
-      ExtraOptions:='';
-      Result:=CreateIDEMakeOptions(Profile,Macros,PackageOptions,Flags,ExtraOptions);
+      fExtraOptions:='';
+      Result:=CreateIDEMakeOptions(Profile,Macros,PackageOptions,Flags);
       if Result<>mrOk then exit;
 
       if (not fOutputDirRedirected) and (not CheckDirectoryWritable(WorkingDirectory)) then
         exit(mrCancel);
 
-      if ExtraOptions<>'' then
-        EnvironmentOverrides.Values['OPT'] := ExtraOptions;
+      if fExtraOptions<>'' then
+        EnvironmentOverrides.Values['OPT'] := fExtraOptions;
       if not fUpdateRevInc then begin
         CheckRevisionInc;
         EnvironmentOverrides.Values['USESVN2REVISIONINC'] := '0';
@@ -499,7 +499,7 @@ end;
 
 function TLazarusBuilder.CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
   Macros: TTransferMacroList; const PackageOptions: string;
-  Flags: TBuildLazarusFlags; out ExtraOptions: string): TModalResult;
+  Flags: TBuildLazarusFlags): TModalResult;
 
   procedure BackupExe(var ExeFilename: string);
   var
@@ -560,13 +560,13 @@ function TLazarusBuilder.CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
   procedure AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean);
   begin
     if AddOption='' then exit;
-    if ExtraOptions<>'' then
-      ExtraOptions:=ExtraOptions+' ';
+    if fExtraOptions<>'' then
+      fExtraOptions:=fExtraOptions+' ';
     if EncloseIfSpace and (Pos(' ',AddOption)>0) then
-      ExtraOptions:=ExtraOptions+'"'+AddOption+'"'
+      fExtraOptions:=fExtraOptions+'"'+AddOption+'"'
     else
-      ExtraOptions:=ExtraOptions+AddOption;
-    //DebugLn(['AppendExtraOption ',ExtraOptions]);
+      fExtraOptions:=fExtraOptions+AddOption;
+    //DebugLn(['AppendExtraOption ',fExtraOptions]);
   end;
 
   procedure AppendExtraOption(const AddOption: string);
@@ -595,7 +595,7 @@ begin
   fUpdateRevInc:=Profile.UpdateRevisionInc;
 
   // create extra Profile
-  ExtraOptions:=Profile.ExtraOptions;
+  fExtraOptions:=Profile.ExtraOptions;
 
   // check for special IDE config file
   if (blfUseMakeIDECfg in Flags) then begin
@@ -792,19 +792,18 @@ begin
   end;
 
   // add package Profile for IDE
-  //DebugLn(['CreateBuildLazarusOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',ExtraOptions,'" ',PackageOptions]);
+  //DebugLn(['CreateBuildLazarusOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',PackageOptions]);
   if not (blfUseMakeIDECfg in Flags) then
     AppendExtraOption(PackageOptions,false);
-  //DebugLn(['CreateBuildLazarusOptions ',MMDef.Name,' ',ExtraOptions]);
+  //DebugLn(['CreateBuildLazarusOptions ',MMDef.Name,' ',fExtraOptions]);
 end;
 
 function TLazarusBuilder.IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
 // Returns True if Lazarus installation directory is write protected. Now uses OutputDirRedirected info.
 var
-  ExOptions, LazExeFilename: String;
   ModRes: TModalResult;
 begin
-  ModRes := CreateIDEMakeOptions(Profile, GlobalMacroList, '', [], ExOptions);
+  ModRes := CreateIDEMakeOptions(Profile, GlobalMacroList, '', []);
   if ModRes in [mrOk,mrIgnore] then
     Result := fOutputDirRedirected
   else
@@ -864,21 +863,20 @@ function TLazarusBuilder.SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
   end;
 
 var
-  ExOptions: String;
   Filename: String;
   fs: TFileStreamUTF8;
   OptionsAsText: String;
 begin
-  ExOptions:='';
-  Result:=CreateIDEMakeOptions(Profile, Macros, PackageOptions, Flags, ExOptions);
+  fExtraOptions:='';
+  Result:=CreateIDEMakeOptions(Profile, Macros, PackageOptions, Flags);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
   try
     InvalidateFileStateCache;
     fs:=TFileStreamUTF8.Create(Filename,fmCreate);
     try
-      if ExOptions<>'' then begin
-        OptionsAsText:=BreakOptions(ExOptions);
+      if fExtraOptions<>'' then begin
+        OptionsAsText:=BreakOptions(fExtraOptions);
         fs.Write(OptionsAsText[1],length(OptionsAsText));
       end;
     finally
