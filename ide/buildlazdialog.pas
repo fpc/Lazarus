@@ -154,12 +154,12 @@ type
 
   TLazarusBuilder = class
   private
-    UpdateRevisionInc: boolean;
+    fUpdateRevInc: boolean;
+    fTargetFilename: string;
     function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
       Macros: TTransferMacroList; const PackageOptions: string;
       Flags: TBuildLazarusFlags; out ExtraOptions: string;
-      out OutputDirRedirected: boolean;
-      out TargetFilename: string): TModalResult;
+      out OutputDirRedirected: boolean): TModalResult;
     function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
   public
     function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
@@ -370,7 +370,6 @@ var
   OutputDirRedirected: boolean;
   IdeBuildMode: TIdeBuildMode;
   Dir: String;
-  LazExeFilename: string;
   Cmd: String;
 begin
   Result:=mrCancel;
@@ -466,8 +465,7 @@ begin
       // append extra Profile
       ExtraOptions:='';
       Result:=CreateIDEMakeOptions(Profile,Macros,PackageOptions,Flags,
-                               ExtraOptions,OutputDirRedirected,
-                               LazExeFilename);
+                               ExtraOptions,OutputDirRedirected);
       if Result<>mrOk then exit;
 
       if (not OutputDirRedirected)
@@ -476,7 +474,7 @@ begin
 
       if ExtraOptions<>'' then
         EnvironmentOverrides.Values['OPT'] := ExtraOptions;
-      if not UpdateRevisionInc then begin
+      if not fUpdateRevInc then begin
         CheckRevisionInc;
         EnvironmentOverrides.Values['USESVN2REVISIONINC'] := '0';
       end;
@@ -487,7 +485,7 @@ begin
       ApplyCleanOnce;
       if Result<>mrOk then begin
         // build failed: restore backup of lazarus.exe
-        RestoreBackup(LazExeFilename);
+        RestoreBackup(fTargetFilename);
         exit;
       end;
     end;
@@ -505,8 +503,7 @@ end;
 function TLazarusBuilder.CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
   Macros: TTransferMacroList; const PackageOptions: string;
   Flags: TBuildLazarusFlags; out ExtraOptions: string;
-  out OutputDirRedirected: boolean;
-  out TargetFilename: string): TModalResult;
+  out OutputDirRedirected: boolean): TModalResult;
 
   procedure BackupExe(var ExeFilename: string);
   var
@@ -599,7 +596,7 @@ var
 begin
   Result:=mrOk;
   OutputDirRedirected:=false;
-  UpdateRevisionInc:=Profile.UpdateRevisionInc;
+  fUpdateRevInc:=Profile.UpdateRevisionInc;
 
   // create extra Profile
   ExtraOptions:=Profile.ExtraOptions;
@@ -638,7 +635,7 @@ begin
   //    The target directory is writable, the lazarus.o file can be created.
   // Otherwise: Don't touch the target filename.
 
-  TargetFilename:='';
+  fTargetFilename:='';
   UnitOutDir:='';
   TargetDirectory:='';
   CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
@@ -693,7 +690,7 @@ begin
           // Case 3. the lazarus directory is not writable
           // lazarus.exe to <primary config dir>/bin/
           // ppu files to <primary config dir>/units/<TargetCPU>-<TargetOS>/<LCLWidgetType>
-          UpdateRevisionInc:=false;
+          fUpdateRevInc:=false;
           TargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
           debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',TargetDirectory);
           UnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
@@ -712,17 +709,17 @@ begin
     end;
   end;
 
-  // compute targetfilename
+  // compute TargetFilename
   if not FilenameIsAbsolute(TargetDirectory) then
     TargetDirectory:=
       TrimFilename(AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+TargetDirectory);
-  if TargetFilename='' then
-    TargetFilename:='lazarus'+GetExecutableExt(TargetOS);
-  if not FilenameIsAbsolute(TargetFilename) then
-    TargetFilename:=TrimFilename(AppendPathDelim(TargetDirectory)+TargetFilename);
+  if fTargetFilename='' then
+    fTargetFilename:='lazarus'+GetExecutableExt(TargetOS);
+  if not FilenameIsAbsolute(fTargetFilename) then
+    fTargetFilename:=TrimFilename(AppendPathDelim(TargetDirectory)+fTargetFilename);
 
   // backup old exe
-  BackupExe(TargetFilename);
+  BackupExe(fTargetFilename);
 
   // check if target file is default
   NewTargetDirectoryIsDefault:=
@@ -730,7 +727,7 @@ begin
                      ChompPathDelim(TargetDirectory))=0;
   NewTargetFilenameIsDefault:=NewTargetDirectoryIsDefault;
   if NewTargetFilenameIsDefault then begin
-    CurTargetFilename:=CreateRelativePath(TargetFilename,TargetDirectory);
+    CurTargetFilename:=CreateRelativePath(fTargetFilename,TargetDirectory);
     NewTargetFilenameIsDefault:=CurTargetFilename=DefaultTargetFilename;
   end;
 
@@ -751,7 +748,7 @@ begin
   if (Profile.TargetPlatform in [lpCarbon,lpCocoa])
   and (not NewTargetDirectoryIsDefault)
   and (DirectoryIsWritableCached(TargetDirectory)) then begin
-    CurTargetFilename:=TargetFilename;
+    CurTargetFilename:=fTargetFilename;
     BundleDir:=ChangeFileExt(CurTargetFilename,'.app');
     //debugln(['CreateBuildLazarusOptions checking bundle ',BundleDir]);
     if not FileExistsCached(BundleDir) then begin
@@ -795,7 +792,7 @@ begin
     // Note: FPC automatically changes the last extension (append or replace)
     // For example under linux, where executables don't need any extension
     // fpc removes the last extension of the -o option.
-    AppendExtraOption('-o'+TargetFilename);
+    AppendExtraOption('-o'+fTargetFilename);
   end;
 
   // add package Profile for IDE
@@ -811,8 +808,7 @@ var
   ExOptions, LazExeFilename: String;
   ModRes: TModalResult;
 begin
-  ModRes := CreateIDEMakeOptions(Profile, GlobalMacroList, '', [], ExOptions,
-                                 Result, LazExeFilename);
+  ModRes := CreateIDEMakeOptions(Profile, GlobalMacroList, '', [], ExOptions, Result);
   if not (ModRes in [mrOk,mrIgnore]) then
     Result := True;
 end;
@@ -875,11 +871,10 @@ var
   fs: TFileStreamUTF8;
   OptionsAsText: String;
   OutputDirRedirected: boolean;
-  LazExeFilename: string;
 begin
   ExOptions:='';
   Result:=CreateIDEMakeOptions(Profile, Macros, PackageOptions,
-      Flags, ExOptions, OutputDirRedirected, LazExeFilename);
+      Flags, ExOptions, OutputDirRedirected);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
   try
