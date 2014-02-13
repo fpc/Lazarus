@@ -154,17 +154,20 @@ type
 
   TLazarusBuilder = class
   private
+    fProfile: TBuildLazarusProfile;
     fExtraOptions: string;
     fPackageOptions: string;
     fMacros: TTransferMacroList;
     fUpdateRevInc: boolean;
     fOutputDirRedirected: boolean;
     fTargetFilename: string;
+    fWorkingDir: string;
     fProfileChanged: boolean;
     // Methods used by MakeLazarus :
     procedure ApplyCleanOnce;
     function CheckDirectoryWritable(Dir: string): boolean;
     procedure CleanLazarusSrcDir(Dir: string; Recursive: boolean = true);
+    procedure CleanAll;
     procedure CheckRevisionInc;
     procedure RestoreBackup;
     // Method used by SaveIDEMakeOptions :
@@ -284,6 +287,35 @@ begin
   FindCloseUTF8(FileInfo);
 end;
 
+procedure TLazarusBuilder.CleanAll;
+var
+  s: String;
+begin
+  // clean all lazarus source directories
+  // Note: Some installations put the fpc units into the lazarus directory
+  //       => clean only the known directories
+  CleanLazarusSrcDir(fWorkingDir,false);
+  CleanLazarusSrcDir(fWorkingDir+PathDelim+'examples');
+  CleanLazarusSrcDir(fWorkingDir+PathDelim+'components');
+  CleanLazarusSrcDir(fWorkingDir+PathDelim+'units');
+  CleanLazarusSrcDir(fWorkingDir+PathDelim+'ide');
+  CleanLazarusSrcDir(fWorkingDir+PathDelim+'packager');
+  CleanLazarusSrcDir(fWorkingDir+PathDelim+'lcl');
+  CleanLazarusSrcDir(fWorkingDir+PathDelim+'ideintf');
+  CleanLazarusSrcDir(fWorkingDir+PathDelim+'tools');
+  CleanLazarusSrcDir(fWorkingDir+PathDelim+'test');
+
+  // clean config directory
+  CleanLazarusSrcDir(GetPrimaryConfigPath+PathDelim+'units');
+
+  // clean custom target directory
+  if fProfile.TargetDirectory<>'' then begin
+    s:=fProfile.GetParsedTargetDirectory(fMacros);
+    if (s<>'') and DirPathExists(s) then
+      CleanLazarusSrcDir(s);
+  end;
+end;
+
 procedure TLazarusBuilder.CheckRevisionInc;
 var
   RevisionIncFile: String;
@@ -332,7 +364,7 @@ var
   {$ELSE}
   Tool: TExternalToolOptions;
   {$ENDIF}
-  WorkingDirectory, Executable, CmdLineParams, Cmd: String;
+  Executable, CmdLineParams, Cmd: String;
   EnvironmentOverrides: TStringList;
 
   function Run(CurTitle: string): TModalResult;
@@ -351,7 +383,7 @@ var
     Tool.Process.Executable:=Executable;
     Tool.AddParsers(SubToolFPC);
     Tool.AddParsers(SubToolMake);
-    Tool.Process.CurrentDirectory:=WorkingDirectory;
+    Tool.Process.CurrentDirectory:=fWorkingDir;
     Tool.EnvironmentOverrides:=EnvironmentOverrides;
     Tool.CmdLineParams:=Params;
     Tool.Execute;
@@ -365,7 +397,7 @@ var
       Tool:=TExternalToolOptions.Create;
     Tool.Title:=CurTitle;
     Tool.Filename:=Executable;
-    Tool.WorkingDirectory:=WorkingDirectory;
+    Tool.WorkingDirectory:=fWorkingDir;
     Tool.ScanOutputForFPCMessages:=true;
     Tool.ScanOutputForMakeMessages:=true;
     Tool.CmdLineParams:=Params;
@@ -379,6 +411,7 @@ var
   s: String;
 begin
   Result:=mrCancel;
+  fProfile:=Profile;
 
   if LazarusIDE<>nil then
     LazarusIDE.MainBarSubTitle:=Profile.Name;
@@ -417,36 +450,13 @@ begin
     if Profile.TargetCPU<>'' then
       CmdLineParams+=' CPU_TARGET='+Profile.FPCTargetCPU+' CPU_SOURCE='+Profile.FPCTargetCPU;
 
+    fWorkingDir:=EnvironmentOptions.GetParsedLazarusDirectory;
     // clean up
     if (IdeBuildMode<>bmBuild) and (not (blfDontClean in Flags)) then begin
-      WorkingDirectory:=EnvironmentOptions.GetParsedLazarusDirectory;
-      if not CheckDirectoryWritable(WorkingDirectory) then exit(mrCancel);
+      if not CheckDirectoryWritable(fWorkingDir) then exit(mrCancel);
 
-      if (IdeBuildMode=bmCleanAllBuild) and (not (blfOnlyIDE in Flags)) then begin
-        // clean all lazarus source directories
-        // Note: Some installations put the fpc units into the lazarus directory
-        //       => clean only the known directories
-        CleanLazarusSrcDir(WorkingDirectory,false);
-        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'examples');
-        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'components');
-        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'units');
-        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'ide');
-        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'packager');
-        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'lcl');
-        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'ideintf');
-        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'tools');
-        CleanLazarusSrcDir(WorkingDirectory+PathDelim+'test');
-
-        // clean config directory
-        CleanLazarusSrcDir(GetPrimaryConfigPath+PathDelim+'units');
-
-        // clean custom target directory
-        if Profile.TargetDirectory<>'' then begin
-          s:=Profile.GetParsedTargetDirectory(fMacros);
-          if (s<>'') and DirPathExists(s) then
-            CleanLazarusSrcDir(s);
-        end;
-      end;
+      if (IdeBuildMode=bmCleanAllBuild) and (not (blfOnlyIDE in Flags)) then
+        CleanAll;
 
       // call make to clean up
       if (IdeBuildMode=bmCleanBuild) or (blfOnlyIDE in Flags) then
@@ -461,7 +471,6 @@ begin
 
     // build IDE
     if not (blfDontBuild in Flags) then begin
-      WorkingDirectory:=EnvironmentOptions.GetParsedLazarusDirectory;
       if blfDontClean in Flags then
         IdeBuildMode:=bmBuild;
       if IdeBuildMode=bmBuild then
@@ -473,7 +482,7 @@ begin
       Result:=CreateIDEMakeOptions(Profile,Flags);
       if Result<>mrOk then exit;
 
-      if (not fOutputDirRedirected) and (not CheckDirectoryWritable(WorkingDirectory)) then
+      if (not fOutputDirRedirected) and (not CheckDirectoryWritable(fWorkingDir)) then
         exit(mrCancel);
 
       if fExtraOptions<>'' then
