@@ -7495,7 +7495,7 @@ begin
     Builder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
 
     Result:=Builder.SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles.Current,
-                                       GlobalMacroList,Flags+[blfOnlyIDE]);
+                                       Flags+[blfOnlyIDE]);
   finally
     Builder.Free;
   end;
@@ -7548,7 +7548,6 @@ begin
         fBuilder.PackageOptions:='';
         Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current,
                          {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
-                         GlobalMacroList,
                          EnvironmentOptions.GetParsedCompilerFilename,
                          EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild],
                          ProfileChanged);
@@ -7592,7 +7591,7 @@ begin
 
     // save extra options
     IDEBuildFlags:=Flags;
-    Result:=fBuilder.SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,
+    Result:=fBuilder.SaveIDEMakeOptions(BuildLazProfiles.Current,
                IDEBuildFlags-[blfUseMakeIDECfg,blfDontClean]+[blfBackupOldExe]);
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
@@ -7604,7 +7603,6 @@ begin
     IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean];
     Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current,
                         {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
-                        GlobalMacroList,
                         EnvironmentOptions.GetParsedCompilerFilename,
                         EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags,
                         ProfileChanged);

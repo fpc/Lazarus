@@ -156,23 +156,24 @@ type
   private
     fExtraOptions: string;
     fPackageOptions: string;
+    fMacros: TTransferMacroList;
     fUpdateRevInc: boolean;
     fOutputDirRedirected: boolean;
     fTargetFilename: string;
     function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
-      Macros: TTransferMacroList; Flags: TBuildLazarusFlags): TModalResult;
+      Flags: TBuildLazarusFlags): TModalResult;
     function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
   public
+    constructor Create;
     function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
 
     function MakeLazarus(Profile: TBuildLazarusProfile;
       {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
-      Macros: TTransferMacroList;
       const CompilerPath, MakePath: string;
       Flags: TBuildLazarusFlags; var ProfileChanged: boolean): TModalResult;
 
     function SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
-      Macros: TTransferMacroList; Flags: TBuildLazarusFlags): TModalResult;
+      Flags: TBuildLazarusFlags): TModalResult;
   public
     property PackageOptions: string read fPackageOptions write fPackageOptions;
   end;
@@ -202,6 +203,11 @@ end;
 
 { TLazarusBuilder }
 
+constructor TLazarusBuilder.Create;
+begin
+  fMacros:=GlobalMacroList;
+end;
+
 function TLazarusBuilder.ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
 // mrOk=save
 // mrYes=save and compile
@@ -224,7 +230,6 @@ end;
 
 function TLazarusBuilder.MakeLazarus(Profile: TBuildLazarusProfile;
   {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
-  Macros: TTransferMacroList;
   const CompilerPath, MakePath: string;
   Flags: TBuildLazarusFlags; var ProfileChanged: boolean): TModalResult;
 
@@ -333,8 +338,8 @@ var
     Params: String;
   begin
     Params:=UTF8Trim(CmdLineParams,[]);
-    if Macros<>nil then
-      Macros.SubstituteStr(Params);
+    if fMacros<>nil then
+      fMacros.SubstituteStr(Params);
     if Params<>'' then
       Params:=Cmd+' '+Params
     else
@@ -363,7 +368,7 @@ var
     Tool.ScanOutputForMakeMessages:=true;
     Tool.CmdLineParams:=Params;
     Tool.EnvironmentOverrides.Assign(EnvironmentOverrides);
-    Result:=ExternalTools.Run(Tool,Macros,false);
+    Result:=ExternalTools.Run(Tool,fMacros,false);
     {$ENDIF}
   end;
 
@@ -436,7 +441,7 @@ begin
 
         // clean custom target directory
         if Profile.TargetDirectory<>'' then begin
-          Dir:=Profile.GetParsedTargetDirectory(Macros);
+          Dir:=Profile.GetParsedTargetDirectory(fMacros);
           if (Dir<>'') and DirPathExists(Dir) then
             CleanLazarusSrcDir(Dir);
         end;
@@ -464,7 +469,7 @@ begin
         Cmd:='cleanide ide';
       // append extra Profile
       fExtraOptions:='';
-      Result:=CreateIDEMakeOptions(Profile,Macros,Flags);
+      Result:=CreateIDEMakeOptions(Profile,Flags);
       if Result<>mrOk then exit;
 
       if (not fOutputDirRedirected) and (not CheckDirectoryWritable(WorkingDirectory)) then
@@ -499,7 +504,7 @@ begin
 end;
 
 function TLazarusBuilder.CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
-  Macros: TTransferMacroList; Flags: TBuildLazarusFlags): TModalResult;
+  Flags: TBuildLazarusFlags): TModalResult;
 
   procedure BackupExe(var ExeFilename: string);
   var
@@ -651,7 +656,7 @@ begin
   //DebugLn(['CreateBuildLazarusOptions NewTargetOS=',TargetOS,' NewTargetCPU=',TargetCPU]);
   if (Profile.TargetDirectory<>'') then begin
     // Case 1. the user has set a target directory
-    TargetDirectory:=Profile.GetParsedTargetDirectory(Macros);
+    TargetDirectory:=Profile.GetParsedTargetDirectory(fMacros);
     if TargetDirectory='' then begin
       debugln('CreateBuildLazarusOptions macro aborted Options.TargetDirectory=',Profile.TargetDirectory);
       Result:=mrAbort;
@@ -804,7 +809,7 @@ var
   ModRes: TModalResult;
 begin
   fPackageOptions:='';
-  ModRes:=CreateIDEMakeOptions(Profile, GlobalMacroList, []);
+  ModRes:=CreateIDEMakeOptions(Profile,[]);
   if ModRes in [mrOk,mrIgnore] then
     Result:=fOutputDirRedirected
   else
@@ -812,7 +817,7 @@ begin
 end;
 
 function TLazarusBuilder.SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
-  Macros: TTransferMacroList; Flags: TBuildLazarusFlags): TModalResult;
+  Flags: TBuildLazarusFlags): TModalResult;
 
   function BreakOptions(const OptionString: string): string;
   var
@@ -868,7 +873,7 @@ var
   OptionsAsText: String;
 begin
   fExtraOptions:='';
-  Result:=CreateIDEMakeOptions(Profile, Macros, Flags);
+  Result:=CreateIDEMakeOptions(Profile,Flags);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
   try

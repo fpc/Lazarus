@@ -583,7 +583,7 @@ begin
     if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
       Builder.PackageOptions:='';
       CurResult:=Builder.MakeLazarus(BuildLazProfiles.Current,
-                  EnvironmentOptions.ExternalTools,GlobalMacroList,
+                  EnvironmentOptions.ExternalTools,
                   EnvironmentOptions.GetParsedCompilerFilename,
                   EnvironmentOptions.GetParsedMakeFilename,
                   Flags+[blfDontBuild],ProfileChanged);
@@ -614,8 +614,7 @@ begin
     Builder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
 
     // save
-    CurResult:=Builder.SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,
-                                  Flags+[blfBackupOldExe]);
+    CurResult:=Builder.SaveIDEMakeOptions(BuildLazProfiles.Current,Flags+[blfBackupOldExe]);
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
         DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving idemake.cfg');
@@ -624,7 +623,7 @@ begin
 
     // compile IDE
     CurResult:=Builder.MakeLazarus(BuildLazProfiles.Current,
-                           EnvironmentOptions.ExternalTools,GlobalMacroList,
+                           EnvironmentOptions.ExternalTools,
                            EnvironmentOptions.GetParsedCompilerFilename,
                            EnvironmentOptions.GetParsedMakeFilename,
                            Flags+[blfUseMakeIDECfg,blfOnlyIDE],
