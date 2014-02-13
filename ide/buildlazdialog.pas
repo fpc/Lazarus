@@ -170,8 +170,11 @@ type
     procedure CleanAll;
     procedure CheckRevisionInc;
     procedure RestoreBackup;
-    // Method used by SaveIDEMakeOptions :
+    // Methods used by SaveIDEMakeOptions :
     function BreakExtraOptions: string;
+    // Methods used by CreateIDEMakeOptions :
+    procedure BackupExe(Flags: TBuildLazarusFlags);
+    procedure AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean = True);
     // This is used by MakeLazarus, IsWriteProtected and SaveIDEMakeOptions
     function CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
   public
@@ -513,81 +516,73 @@ begin
   end;
 end;
 
-function TLazarusBuilder.CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
+procedure TLazarusBuilder.BackupExe(Flags: TBuildLazarusFlags);
+var
+  Ext: String;
+  BackupFilename: String;
+  Backup2Filename: String;
+  AltFilename: String;
+begin
+  if not FileExistsUTF8(fTargetFilename) then exit;
+  // the exe already exists
+  Ext:=ExtractFileExt(fTargetFilename);
+  AltFilename:=LeftStr(fTargetFilename,length(fTargetFilename)-length(Ext))+'.new'+Ext;
+  if blfBackupOldExe in Flags then begin
+    // always delete the lazarus.new exe, so that users/startlazarus are not
+    // confused which one is the newest
+    if FileExistsUTF8(AltFilename) then begin
+      if DeleteFileUTF8(AltFilename) then
+        debugln(['Note: deleted file "',AltFilename,'"'])
+      else
+        debugln(['WARNING: unable to delete file "',AltFilename,'"']);
+    end;
 
-  procedure BackupExe(var ExeFilename: string);
-  var
-    Ext: String;
-    BackupFilename: String;
-    Backup2Filename: String;
-    AltFilename: String;
-  begin
-    if not FileExistsUTF8(ExeFilename) then exit;
-    // the exe already exists
-    Ext:=ExtractFileExt(ExeFilename);
-    AltFilename:=LeftStr(ExeFilename,length(ExeFilename)-length(Ext))+'.new'+Ext;
-    if blfBackupOldExe in Flags then begin
-      // always delete the lazarus.new exe, so that users/startlazarus are not
-      // confused which one is the newest
-      if FileExistsUTF8(AltFilename) then begin
-        if DeleteFileUTF8(AltFilename) then
-          debugln(['Note: deleted file "',AltFilename,'"'])
-        else
-          debugln(['WARNING: unable to delete file "',AltFilename,'"']);
-      end;
-
-      // try to rename the old exe
-      BackupFilename:=GetBackupExeFilename(ExeFilename);
-      if FileExistsUTF8(BackupFilename) then
-        if DeleteFileUTF8(BackupFilename) then begin
-          debugln(['Note: deleted backup "',BackupFilename,'"']);
-        end else begin
-          // unable to delete old backup file, maybe an old IDE is still running
-          // => try to backup the backup
-          Backup2Filename:=LeftStr(ExeFilename,length(ExeFilename)-length(Ext))+'.old2'+Ext;
-          if FileExistsUTF8(Backup2Filename) then begin
-            if DeleteFileUTF8(Backup2Filename) then
-              debugln(['Note: deleted backup "',Backup2Filename,'"'])
-            else
-              debugln(['WARNING: unable to delete old backup file "'+Backup2Filename+'"']);
-          end;
-          if not FileExistsUTF8(Backup2Filename) then begin
-            if RenameFileUTF8(BackupFilename,Backup2Filename) then
-              debugln(['Note: renamed old backup file "'+BackupFilename+'" to "',Backup2Filename,'"'])
-            else
-              debugln(['WARNING: unable to rename old backup file "'+BackupFilename+'" to "',Backup2Filename,'"']);
+    // try to rename the old exe
+    BackupFilename:=GetBackupExeFilename(fTargetFilename);
+    if FileExistsUTF8(BackupFilename) then
+      if DeleteFileUTF8(BackupFilename) then begin
+        debugln(['Note: deleted backup "',BackupFilename,'"']);
+      end else begin
+        // unable to delete old backup file, maybe an old IDE is still running
+        // => try to backup the backup
+        Backup2Filename:=LeftStr(fTargetFilename,length(fTargetFilename)-length(Ext))+'.old2'+Ext;
+        if FileExistsUTF8(Backup2Filename) then begin
+          if DeleteFileUTF8(Backup2Filename) then
+            debugln(['Note: deleted backup "',Backup2Filename,'"'])
+          else
+            debugln(['WARNING: unable to delete old backup file "'+Backup2Filename+'"']);
         end;
-      end;
-      if not FileExistsUTF8(BackupFilename) then begin
-        if RenameFileUTF8(ExeFilename,BackupFilename) then
-          debugln(['Note: renamed file "'+ExeFilename+'" to "',BackupFilename,'"'])
-        else
-          debugln(['WARNING: unable to rename file "'+ExeFilename+'" to "',BackupFilename,'"']);
+        if not FileExistsUTF8(Backup2Filename) then begin
+          if RenameFileUTF8(BackupFilename,Backup2Filename) then
+            debugln(['Note: renamed old backup file "'+BackupFilename+'" to "',Backup2Filename,'"'])
+          else
+            debugln(['WARNING: unable to rename old backup file "'+BackupFilename+'" to "',Backup2Filename,'"']);
       end;
     end;
-    if (not (blfReplaceExe in Flags)) and FileExistsUTF8(ExeFilename) then begin
-      // backup didn't work => use another file name
-      ExeFilename:=AltFilename;
+    if not FileExistsUTF8(BackupFilename) then begin
+      if RenameFileUTF8(fTargetFilename,BackupFilename) then
+        debugln(['Note: renamed file "'+fTargetFilename+'" to "',BackupFilename,'"'])
+      else
+        debugln(['WARNING: unable to rename file "'+fTargetFilename+'" to "',BackupFilename,'"']);
     end;
   end;
+  if (not (blfReplaceExe in Flags)) and FileExistsUTF8(fTargetFilename) then
+    fTargetFilename:=AltFilename;  // backup didn't work => use another file name
+end;
 
-  procedure AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean);
-  begin
-    if AddOption='' then exit;
-    if fExtraOptions<>'' then
-      fExtraOptions:=fExtraOptions+' ';
-    if EncloseIfSpace and (Pos(' ',AddOption)>0) then
-      fExtraOptions:=fExtraOptions+'"'+AddOption+'"'
-    else
-      fExtraOptions:=fExtraOptions+AddOption;
-    //DebugLn(['AppendExtraOption ',fExtraOptions]);
-  end;
+procedure TLazarusBuilder.AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean);
+begin
+  if AddOption='' then exit;
+  if fExtraOptions<>'' then
+    fExtraOptions:=fExtraOptions+' ';
+  if EncloseIfSpace and (Pos(' ',AddOption)>0) then
+    fExtraOptions:=fExtraOptions+'"'+AddOption+'"'
+  else
+    fExtraOptions:=fExtraOptions+AddOption;
+  //DebugLn(['AppendExtraOption ',fExtraOptions]);
+end;
 
-  procedure AppendExtraOption(const AddOption: string);
-  begin
-    AppendExtraOption(AddOption,true);
-  end;
-
+function TLazarusBuilder.CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
 var
   MakeIDECfgFilename: string;
   TargetDirectory: string;
@@ -729,7 +724,7 @@ begin
     fTargetFilename:=TrimFilename(AppendPathDelim(TargetDirectory)+fTargetFilename);
 
   // backup old exe
-  BackupExe(fTargetFilename);
+  BackupExe(Flags);
 
   // check if target file is default
   NewTargetDirectoryIsDefault:=
