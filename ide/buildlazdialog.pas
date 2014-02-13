@@ -161,6 +161,7 @@ type
     fUpdateRevInc: boolean;
     fOutputDirRedirected: boolean;
     fTargetFilename: string;
+    fTargetDir: string;
     fWorkingDir: string;
     fProfileChanged: boolean;
     // Methods used by MakeLazarus :
@@ -585,7 +586,6 @@ end;
 function TLazarusBuilder.CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
 var
   MakeIDECfgFilename: string;
-  TargetDirectory: string;
   UnitOutDir: string;
   DefaultTargetOS: string;
   DefaultTargetCPU: string;
@@ -642,7 +642,7 @@ begin
 
   fTargetFilename:='';
   UnitOutDir:='';
-  TargetDirectory:='';
+  fTargetDir:='';
   CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
     EnvironmentOptions.GetParsedCompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
   if DefaultTargetOS='' then
@@ -660,14 +660,14 @@ begin
   //DebugLn(['CreateBuildLazarusOptions NewTargetOS=',TargetOS,' NewTargetCPU=',TargetCPU]);
   if (fProfile.TargetDirectory<>'') then begin
     // Case 1. the user has set a target directory
-    TargetDirectory:=fProfile.GetParsedTargetDirectory(fMacros);
-    if TargetDirectory='' then begin
+    fTargetDir:=fProfile.GetParsedTargetDirectory(fMacros);
+    if fTargetDir='' then begin
       debugln('CreateBuildLazarusOptions macro aborted Options.TargetDirectory=',fProfile.TargetDirectory);
       Result:=mrAbort;
       exit;
     end;
-    UnitOutDir:=AppendPathDelim(TargetDirectory)+'units';
-    debugln('CreateBuildLazarusOptions TargetDirectory=',TargetDirectory);
+    UnitOutDir:=AppendPathDelim(fTargetDir)+'units';
+    debugln('CreateBuildLazarusOptions TargetDirectory=',fTargetDir);
     debugln('CreateBuildLazarusOptions UnitsTargetDirectory=',UnitOutDir);
   end else begin
     // no user defined target directory
@@ -677,7 +677,7 @@ begin
     begin
       // Case 2. crosscompiling the IDE
       // lazarus.exe to <primary config dir>/bin/<TargetCPU>-<TargetOS>
-      TargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
+      fTargetDir:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
                           +PathDelim+TargetCPU+'-'+TargetOS;
       // ppu files to <primary config dir>/units/<TargetCPU>-<TargetOS>/<LCLWidgetType>
       UnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
@@ -688,40 +688,40 @@ begin
       // -> normal compile for this platform
 
       // get lazarus directory
-      TargetDirectory:=EnvironmentOptions.GetParsedLazarusDirectory;
-      if (TargetDirectory<>'') and DirPathExists(TargetDirectory) then
+      fTargetDir:=EnvironmentOptions.GetParsedLazarusDirectory;
+      if (fTargetDir<>'') and DirPathExists(fTargetDir) then
       begin
-        if not DirectoryIsWritableCached(TargetDirectory) then begin
+        if not DirectoryIsWritableCached(fTargetDir) then begin
           // Case 3. the lazarus directory is not writable
           // lazarus.exe to <primary config dir>/bin/
           // ppu files to <primary config dir>/units/<TargetCPU>-<TargetOS>/<LCLWidgetType>
           fUpdateRevInc:=false;
-          TargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
-          debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',TargetDirectory);
+          fTargetDir:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
+          debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',fTargetDir);
           UnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
                   +PathDelim+TargetCPU+'-'+TargetOS+PathDelim+TargetLCLPlatform;
         end else begin
           // Case 4. the lazarus directory is writable
           // ppu files to <lazarusdir>/units/<TargetCPU>-<TargetOS>/<LCLWidgetType>
-          UnitOutDir:=AppendPathDelim(TargetDirectory)+'units'
+          UnitOutDir:=AppendPathDelim(fTargetDir)+'units'
                   +PathDelim+TargetCPU+'-'+TargetOS+PathDelim+TargetLCLPlatform;
         end;
       end else begin
         // lazarus dir is not valid (probably someone is experimenting)
         // -> just compile to current directory
-        TargetDirectory:='';
+        fTargetDir:='';
       end;
     end;
   end;
 
   // compute TargetFilename
-  if not FilenameIsAbsolute(TargetDirectory) then
-    TargetDirectory:=
-      TrimFilename(AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+TargetDirectory);
+  if not FilenameIsAbsolute(fTargetDir) then
+    fTargetDir:=
+      TrimFilename(AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+fTargetDir);
   if fTargetFilename='' then
     fTargetFilename:='lazarus'+GetExecutableExt(TargetOS);
   if not FilenameIsAbsolute(fTargetFilename) then
-    fTargetFilename:=TrimFilename(AppendPathDelim(TargetDirectory)+fTargetFilename);
+    fTargetFilename:=TrimFilename(AppendPathDelim(fTargetDir)+fTargetFilename);
 
   // backup old exe
   BackupExe(Flags);
@@ -729,16 +729,16 @@ begin
   // check if target file is default
   NewTargetDirectoryIsDefault:=
     CompareFilenames(ChompPathDelim(EnvironmentOptions.GetParsedLazarusDirectory),
-                     ChompPathDelim(TargetDirectory))=0;
+                     ChompPathDelim(fTargetDir))=0;
   NewTargetFilenameIsDefault:=NewTargetDirectoryIsDefault;
   if NewTargetFilenameIsDefault then begin
-    CurTargetFilename:=CreateRelativePath(fTargetFilename,TargetDirectory);
+    CurTargetFilename:=CreateRelativePath(fTargetFilename,fTargetDir);
     NewTargetFilenameIsDefault:=CurTargetFilename=DefaultTargetFilename;
   end;
 
   // create output directories
   if not NewTargetDirectoryIsDefault then begin
-    Result:=ForceDirectoryInteractive(TargetDirectory,[]);
+    Result:=ForceDirectoryInteractive(fTargetDir,[]);
     if Result<>mrOk then exit;
   end;
   if UnitOutDir<>'' then begin
@@ -749,10 +749,10 @@ begin
   fOutputDirRedirected:=not NewTargetDirectoryIsDefault;
 
   // create apple bundle if needed
-  //debugln(['CreateBuildLazarusOptions NewTargetDirectory=',TargetDirectory]);
+  //debugln(['CreateBuildLazarusOptions NewTargetDirectory=',fTargetDir]);
   if (fProfile.TargetPlatform in [lpCarbon,lpCocoa])
   and (not NewTargetDirectoryIsDefault)
-  and (DirectoryIsWritableCached(TargetDirectory)) then begin
+  and (DirectoryIsWritableCached(fTargetDir)) then begin
     CurTargetFilename:=fTargetFilename;
     BundleDir:=ChangeFileExt(CurTargetFilename,'.app');
     //debugln(['CreateBuildLazarusOptions checking bundle ',BundleDir]);
@@ -765,7 +765,7 @@ begin
           {$IFDEF EnableNewExtTools}
           IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle '+BundleDir);
           {$ELSE}
-          IDEMessagesWindow.AddMsg('Error: failed to create application bundle '+BundleDir,TargetDirectory,-1);
+          IDEMessagesWindow.AddMsg('Error: failed to create application bundle '+BundleDir,fTargetDir,-1);
           {$ENDIF}
         exit;
       end;
@@ -776,7 +776,7 @@ begin
           {$IFDEF EnableNewExtTools}
           IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle symlink to '+CurTargetFilename);
           {$ELSE}
-          IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+CurTargetFilename,TargetDirectory,-1);
+          IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+CurTargetFilename,fTargetDir,-1);
           {$ENDIF}
         exit;
       end;
@@ -788,10 +788,10 @@ begin
     // so make sure the directory doesn't end with the path delimiter.
     AppendExtraOption('-FU'+ChompPathDelim(UnitOutDir));
 
-  if TargetDirectory<>'' then
+  if fTargetDir<>'' then
     // FPC interpretes '\ ' as an escape for a space in a path on Windows,
     // so make sure the directory doesn't end with the path delimiter.
-    AppendExtraOption('-FE'+ChompPathDelim(TargetDirectory));
+    AppendExtraOption('-FE'+ChompPathDelim(fTargetDir));
 
   if not NewTargetFilenameIsDefault then begin
     // Note: FPC automatically changes the last extension (append or replace)
