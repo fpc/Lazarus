@@ -2929,6 +2929,7 @@ resourcestring
   lisKMToggleViewObjectInspector = 'Toggle view Object Inspector';
   lisKMToggleViewSourceEditor = 'Toggle view Source Editor';
   lisKMToggleViewCodeExplorer = 'Toggle view Code Explorer';
+  lisKMToggleViewCodeBrowser = 'Toggle view Code Browser';
   lisKMToggleViewDocumentationEditor = 'Toggle view Documentation Editor';
   lisKMToggleViewMessages = 'Toggle view Messages';
   lisKMToggleViewSearchResults = 'Toggle view Search Results';

@@ -2849,6 +2849,7 @@ begin
   AddDefault(C, 'Toggle view Object Inspector', lisKMToggleViewObjectInspector, ecToggleObjectInsp);
   AddDefault(C, 'Toggle view Source Editor', lisKMToggleViewSourceEditor, ecToggleSourceEditor);
   AddDefault(C, 'Toggle view Code Explorer', lisKMToggleViewCodeExplorer, ecToggleCodeExpl);
+  AddDefault(C, 'Toggle view Code Browser', lisKMToggleViewCodeBrowser, ecToggleCodeBrowser);
   AddDefault(C, 'Toggle view Documentation Editor', lisKMToggleViewDocumentationEditor, ecToggleFPDocEditor);
   AddDefault(C, 'Toggle view Messages', lisKMToggleViewMessages, ecToggleMessages);
   AddDefault(C, 'View Components', srkmecViewComponents, ecViewComponents);
