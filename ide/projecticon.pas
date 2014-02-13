@@ -277,7 +277,6 @@ begin
   if FIcoFileName=AValue then Exit;
   FIcoFileName:=AValue;
   fFileAgeValid:=false;
-  debugln(['TProjectIcon.SetIcoFileName ',AValue]);
 end;
 
 initialization
