@@ -161,19 +161,16 @@ type
     fOutputDirRedirected: boolean;
     fTargetFilename: string;
     fProfileChanged: boolean;
-    function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
-      Flags: TBuildLazarusFlags): TModalResult;
+    function CreateIDEMakeOptions(Profile: TBuildLazarusProfile; Flags: TBuildLazarusFlags): TModalResult;
     function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
   public
+    {$IFNDEF EnableNewExtTools}
+    ExternalTools: TBaseExternalToolList;
+    {$ENDIF}
     constructor Create;
     function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
-
-    function MakeLazarus(Profile: TBuildLazarusProfile;
-      {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
-      Flags: TBuildLazarusFlags): TModalResult;
-
-    function SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
-      Flags: TBuildLazarusFlags): TModalResult;
+    function MakeLazarus(Profile: TBuildLazarusProfile; Flags: TBuildLazarusFlags): TModalResult;
+    function SaveIDEMakeOptions(Profile: TBuildLazarusProfile; Flags: TBuildLazarusFlags): TModalResult;
   public
     property PackageOptions: string read fPackageOptions write fPackageOptions;
     property ProfileChanged: boolean read fProfileChanged write fProfileChanged;
@@ -230,7 +227,6 @@ begin
 end;
 
 function TLazarusBuilder.MakeLazarus(Profile: TBuildLazarusProfile;
-  {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
   Flags: TBuildLazarusFlags): TModalResult;
 
   procedure ApplyCleanOnce;

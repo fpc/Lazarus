@@ -7531,6 +7531,7 @@ begin
     fBuilder:=TLazarusBuilder.Create;
   {$IFNDEF EnableNewExtTools}
   MessagesView.BeginBlock;
+  fBuilder.ExternalTools:=ExternalTools;
   {$ENDIF}
   fBuilder.ProfileChanged:=false;
   with MiscellaneousOptions do
@@ -7545,9 +7546,7 @@ begin
       if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
         SourceEditorManager.ClearErrorLines;
         fBuilder.PackageOptions:='';
-        Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current,
-                         {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
-                         [blfDontBuild]);
+        Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current, [blfDontBuild]);
         if Result<>mrOk then begin
           DebugLn('TMainIDE.DoBuildLazarus: Clean all failed.');
           exit;
@@ -7598,9 +7597,7 @@ begin
     // make lazarus ide
     SourceEditorManager.ClearErrorLines;
     IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean];
-    Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current,
-                        {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
-                        IDEBuildFlags);
+    Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current, IDEBuildFlags);
     if Result<>mrOk then exit;
 
     if fBuilder.ProfileChanged then

@@ -579,10 +579,11 @@ begin
   Builder:=TLazarusBuilder.Create;
   try
     Builder.ProfileChanged:=false;
+    Builder.ExternalTools:=EnvironmentOptions.ExternalTools;
+
     if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
       Builder.PackageOptions:='';
       CurResult:=Builder.MakeLazarus(BuildLazProfiles.Current,
-                  EnvironmentOptions.ExternalTools,
                   Flags+[blfDontBuild]);
       if CurResult<>mrOk then begin
         if ConsoleVerbosity>=-1 then
@@ -620,7 +621,6 @@ begin
 
     // compile IDE
     CurResult:=Builder.MakeLazarus(BuildLazProfiles.Current,
-                           EnvironmentOptions.ExternalTools,
                            Flags+[blfUseMakeIDECfg,blfOnlyIDE]);
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
