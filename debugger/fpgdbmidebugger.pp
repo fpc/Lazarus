@@ -69,6 +69,7 @@ type
     FImageLoader: TDbgImageLoader;
     FDwarfInfo: TDbgDwarf;
     FMemReader: TFpGDBMIDbgMemReader;
+    FMemManager: TFpDbgMemManager;
     // cache last context
     FlastStackFrame, FLastThread: Integer;
     FLastContext: array [0..MAX_CTX_CACHE-1] of TDbgInfoAddressContext;
@@ -765,7 +766,7 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
         rt := nil;
         if PasExpr.Valid and (PasExpr.ResultValue <> nil) then begin
           rt := PasExpr.ResultValue.DbgSymbol; // value or typecast
-if rt <> nil then  debugln(['@@@@@ ',rt.ClassName, '   ADDR=', rt.Address]);
+if rt <> nil then  debugln(['@@@@@ ',rt.ClassName, '   ADDR=', dbgs(rt.Address)]);
 DebugLn(['== VAL === ', PasExpr.ResultValue.AsInteger, '  /  ', PasExpr.ResultValue.AsCardinal,  '  /  ', PasExpr.ResultValue.AsBool,  '  /  ', PasExpr.ResultValue.AsString,  '  /  ', PasExpr.ResultValue.MemberCount]);
 
           if (rt <> nil) and (rt is TDbgDwarfValueIdentifier) then begin
@@ -948,9 +949,10 @@ begin
 {$Else}
   FMemReader := TFpGDBMIDbgMemReader.Create(Self);
 {$ENDIF}
+  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
 
   FDwarfInfo := TDbgDwarf.Create(FImageLoader);
-  FDwarfInfo.MemReader := FMemReader;
+  FDwarfInfo.MemManager := FMemManager;
   FDwarfInfo.LoadCompilationUnits;
 end;
 
@@ -960,6 +962,9 @@ begin
   FreeAndNil(FDwarfInfo);
   FreeAndNil(FImageLoader);
   FreeAndNil(FMemReader);
+  if FMemManager <> nil then
+    FMemManager.TargetMemConvertor.Free;
+  FreeAndNil(FMemManager);
 end;
 
 function TFpGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand;
