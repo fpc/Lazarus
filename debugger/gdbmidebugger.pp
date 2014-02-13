@@ -4859,6 +4859,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       end;
 
       // RUN
+      DefaultTimeOut := 0;
       if not ExecuteCommand(Cmd, R, [cfTryAsync])
       then begin
         SetDebuggerErrorState(Format(gdbmiCommandStartMainRunError, [LineEnding]),
@@ -4893,6 +4894,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
 
       rval := rval + s;
 
+      DefaultTimeOut := DebuggerProperties.TimeoutForEval;   // Getting address for breakpoints may need timeout
       BrkErr := ParseBreakInsertError(s, i);
       if not BrkErr
       then break;
@@ -5115,6 +5117,7 @@ begin
        "main" could map to more than one location, so we try entry point first
     *)
     RunToMain(EntryPoint);
+    DefaultTimeOut := DebuggerProperties.TimeoutForEval;   // Getting address for breakpoints may need timeout
 
     if DebuggerState = dsStop
     then begin
