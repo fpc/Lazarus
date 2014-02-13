@@ -183,7 +183,7 @@ type
     // Methods used by CreateIDEMakeOptions :
     procedure BackupExe(Flags: TBuildLazarusFlags);
     function CreateAppleBundle: TModalResult;
-    procedure AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean = True);
+    procedure AppendExtraOption(const aOption: string; EncloseIfSpace: boolean = True);
     // This is used by MakeLazarus and SaveIDEMakeOptions
     function CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
   public
@@ -530,7 +530,7 @@ var
   MakeIDECfgFilename: string;
 begin
   MakeIDECfgFilename:=GetMakeIDEConfigFilename;
-  //DebugLn(['CreateBuildLazarusOptions MAKE MakeIDECfgFilename=',MakeIDECfgFilename,' ',FileExistsUTF8(MakeIDECfgFilename)]);
+  //DebugLn(['SpecialIdeConfig MAKE MakeIDECfgFilename=',MakeIDECfgFilename,' ',FileExistsUTF8(MakeIDECfgFilename)]);
   if (FileExistsUTF8(MakeIDECfgFilename)) then begin
     // If a file name contains spaces, a file name whould need to be quoted.
     // Using a single quote is not possible, it is used already in the
@@ -592,17 +592,17 @@ begin
   if fTargetCPU='' then fTargetCPU:=DefaultTargetCPU;
   LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
 
-  //DebugLn(['CreateBuildLazarusOptions NewTargetOS=',fTargetOS,' NewTargetCPU=',fTargetCPU]);
+  //DebugLn(['CalcTargets NewTargetOS=',fTargetOS,' NewTargetCPU=',fTargetCPU]);
   if (fProfile.TargetDirectory<>'') then begin
     // Case 1. the user has set a target directory
     fTargetDir:=fProfile.GetParsedTargetDirectory(fMacros);
     if fTargetDir='' then begin
-      debugln('CreateBuildLazarusOptions macro aborted Options.TargetDirectory=',fProfile.TargetDirectory);
+      debugln('CalcTargets macro aborted Options.TargetDirectory=',fProfile.TargetDirectory);
       Exit(mrAbort);
     end;
     fUnitOutDir:=AppendPathDelim(fTargetDir)+'units';
-    debugln('CreateBuildLazarusOptions TargetDirectory=',fTargetDir);
-    debugln('CreateBuildLazarusOptions UnitsTargetDirectory=',fUnitOutDir);
+    debugln('CalcTargets TargetDirectory=',fTargetDir);
+    debugln('CalcTargets UnitsTargetDirectory=',fUnitOutDir);
   end else begin
     // no user defined target directory
     // => find it automatically
@@ -616,7 +616,7 @@ begin
       // ppu files to <primary config dir>/units/<fTargetCPU>-<fTargetOS>/<LCLWidgetType>
       fUnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
                   +PathDelim+fTargetCPU+'-'+fTargetOS+PathDelim+TargetLCLPlatform;
-      debugln('CreateBuildLazarusOptions Options.TargetOS=',fProfile.FPCTargetOS,' Options.TargetCPU=',
+      debugln('CalcTargets Options.TargetOS=',fProfile.FPCTargetOS,' Options.TargetCPU=',
               fProfile.FPCTargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
     end else begin
       // -> normal compile for this platform
@@ -631,7 +631,7 @@ begin
           // ppu files to <primary config dir>/units/<fTargetCPU>-<fTargetOS>/<LCLWidgetType>
           fUpdateRevInc:=false;
           fTargetDir:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
-          debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',fTargetDir);
+          debugln('CalcTargets LazDir readonly NewTargetDirectory=',fTargetDir);
           fUnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
                   +PathDelim+fTargetCPU+'-'+fTargetOS+PathDelim+TargetLCLPlatform;
         end else begin
@@ -721,12 +721,12 @@ var
 begin
   Result:=mrOk;
   BundleDir:=ChangeFileExt(fTargetFilename,'.app');
-  //debugln(['CreateBuildLazarusOptions checking bundle ',BundleDir]);
+  //debugln(['CreateAppleBundle checking bundle ',BundleDir]);
   if not FileExistsCached(BundleDir) then begin
-    //debugln(['CreateBuildLazarusOptions TargetFile=',fTargetFilename]);
+    //debugln(['CreateAppleBundle TargetFile=',fTargetFilename]);
     Result:=CreateApplicationBundle(fTargetFilename, 'Lazarus');
     if not (Result in [mrOk,mrIgnore]) then begin
-      debugln(['CreateBuildLazarusOptions CreateApplicationBundle failed']);
+      debugln(['CreateAppleBundle CreateApplicationBundle failed']);
       if IDEMessagesWindow<>nil then
         {$IFDEF EnableNewExtTools}
         IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle '+BundleDir);
@@ -737,7 +737,7 @@ begin
     end;
     Result:=CreateAppBundleSymbolicLink(fTargetFilename);
     if not (Result in [mrOk,mrIgnore]) then begin
-      debugln(['CreateBuildLazarusOptions CreateAppBundleSymbolicLink failed']);
+      debugln(['CreateAppleBundle CreateAppBundleSymbolicLink failed']);
       if IDEMessagesWindow<>nil then
         {$IFDEF EnableNewExtTools}
         IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle symlink to '+TargetFile);
@@ -749,15 +749,15 @@ begin
   end;
 end;
 
-procedure TLazarusBuilder.AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean);
+procedure TLazarusBuilder.AppendExtraOption(const aOption: string; EncloseIfSpace: boolean);
 begin
-  if AddOption='' then exit;
+  if aOption='' then exit;
   if fExtraOptions<>'' then
     fExtraOptions:=fExtraOptions+' ';
-  if EncloseIfSpace and (Pos(' ',AddOption)>0) then
-    fExtraOptions:=fExtraOptions+'"'+AddOption+'"'
+  if EncloseIfSpace and (Pos(' ',aOption)>0) then
+    fExtraOptions:=fExtraOptions+'"'+aOption+'"'
   else
-    fExtraOptions:=fExtraOptions+AddOption;
+    fExtraOptions:=fExtraOptions+aOption;
   //DebugLn(['AppendExtraOption ',fExtraOptions]);
 end;
 
@@ -783,7 +783,7 @@ begin
   end;
 
   // create apple bundle if needed
-  //debugln(['CreateBuildLazarusOptions NewTargetDirectory=',fTargetDir]);
+  //debugln(['CreateIDEMakeOptions NewTargetDirectory=',fTargetDir]);
   if (fProfile.TargetPlatform in [lpCarbon,lpCocoa])
   and fOutputDirRedirected and DirectoryIsWritableCached(fTargetDir) then
   begin
@@ -811,10 +811,10 @@ begin
   end;
 
   // add package options for IDE
-  //DebugLn(['CreateBuildLazarusOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',fPackageOptions]);
+  //DebugLn(['CreateIDEMakeOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',fPackageOptions]);
   if not (blfUseMakeIDECfg in Flags) then
     AppendExtraOption(fPackageOptions,false);
-  //DebugLn(['CreateBuildLazarusOptions ',MMDef.Name,' ',fExtraOptions]);
+  //DebugLn(['CreateIDEMakeOptions ',MMDef.Name,' ',fExtraOptions]);
 end;
 
 function TLazarusBuilder.IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
