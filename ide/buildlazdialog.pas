@@ -160,6 +160,7 @@ type
     fUpdateRevInc: boolean;
     fOutputDirRedirected: boolean;
     fTargetFilename: string;
+    fProfileChanged: boolean;
     function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
       Flags: TBuildLazarusFlags): TModalResult;
     function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
@@ -169,13 +170,13 @@ type
 
     function MakeLazarus(Profile: TBuildLazarusProfile;
       {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
-      const CompilerPath, MakePath: string;
-      Flags: TBuildLazarusFlags; var ProfileChanged: boolean): TModalResult;
+      const CompilerPath, MakePath: string; Flags: TBuildLazarusFlags): TModalResult;
 
     function SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
       Flags: TBuildLazarusFlags): TModalResult;
   public
     property PackageOptions: string read fPackageOptions write fPackageOptions;
+    property ProfileChanged: boolean read fProfileChanged write fProfileChanged;
   end;
 
 function GetMakeIDEConfigFilename: string;
@@ -230,15 +231,14 @@ end;
 
 function TLazarusBuilder.MakeLazarus(Profile: TBuildLazarusProfile;
   {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
-  const CompilerPath, MakePath: string;
-  Flags: TBuildLazarusFlags; var ProfileChanged: boolean): TModalResult;
+  const CompilerPath, MakePath: string; Flags: TBuildLazarusFlags): TModalResult;
 
   procedure ApplyCleanOnce;
   begin
     if not Profile.CleanOnce then exit;
     if Profile.IdeBuildMode=bmBuild then exit;
     Profile.IdeBuildMode:=bmBuild;
-    ProfileChanged:=true;
+    fProfileChanged:=true;
   end;
 
   function CheckDirectoryWritable(Dir: string): boolean;

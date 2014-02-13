@@ -506,7 +506,6 @@ var
   TargetDir: String;
   i: Integer;
   s: String;
-  ProfileChanged: boolean;
   Builder: TLazarusBuilder;
 begin
   Result:=false;
@@ -579,14 +578,14 @@ begin
   // clean
   Builder:=TLazarusBuilder.Create;
   try
-    ProfileChanged:=false;
+    Builder.ProfileChanged:=false;
     if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
       Builder.PackageOptions:='';
       CurResult:=Builder.MakeLazarus(BuildLazProfiles.Current,
                   EnvironmentOptions.ExternalTools,
                   EnvironmentOptions.GetParsedCompilerFilename,
                   EnvironmentOptions.GetParsedMakeFilename,
-                  Flags+[blfDontBuild],ProfileChanged);
+                  Flags+[blfDontBuild]);
       if CurResult<>mrOk then begin
         if ConsoleVerbosity>=-1 then
           DebugLn('TLazBuildApplication.BuildLazarusIDE: Clean all failed.');
@@ -626,8 +625,7 @@ begin
                            EnvironmentOptions.ExternalTools,
                            EnvironmentOptions.GetParsedCompilerFilename,
                            EnvironmentOptions.GetParsedMakeFilename,
-                           Flags+[blfUseMakeIDECfg,blfOnlyIDE],
-                           ProfileChanged);
+                           Flags+[blfUseMakeIDECfg,blfOnlyIDE]);
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
         DebugLn('TLazBuildApplication.BuildLazarusIDE: Building IDE failed.');

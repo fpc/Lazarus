@@ -7513,7 +7513,6 @@ var
   CompiledUnitExt: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
   PkgCompileFlags: TPkgCompileFlags;
-  ProfileChanged: Boolean;
 begin
   if ToolStatus<>itNone then begin
     IDEMessageDialog(lisNotNow,lisYouCanNotBuildLazarusWhileDebuggingOrCompiling,
@@ -7533,7 +7532,7 @@ begin
   {$IFNDEF EnableNewExtTools}
   MessagesView.BeginBlock;
   {$ENDIF}
-  ProfileChanged:=false;
+  fBuilder.ProfileChanged:=false;
   with MiscellaneousOptions do
   try
     MainBuildBoss.SetBuildTargetIDE;
@@ -7549,8 +7548,7 @@ begin
         Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current,
                          {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
                          EnvironmentOptions.GetParsedCompilerFilename,
-                         EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild],
-                         ProfileChanged);
+                         EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild]);
         if Result<>mrOk then begin
           DebugLn('TMainIDE.DoBuildLazarus: Clean all failed.');
           exit;
@@ -7604,11 +7602,10 @@ begin
     Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current,
                         {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
                         EnvironmentOptions.GetParsedCompilerFilename,
-                        EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags,
-                        ProfileChanged);
+                        EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags);
     if Result<>mrOk then exit;
 
-    if ProfileChanged then
+    if fBuilder.ProfileChanged then
       MiscellaneousOptions.Save;
   finally
     MainBuildBoss.SetBuildTargetProject1(true);
