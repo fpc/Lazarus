@@ -502,7 +502,6 @@ var
   CurResult: TModalResult;
   BuildLazProfiles: TBuildLazarusProfiles;
   CurProf: TBuildLazarusProfile;
-  PkgOptions: String;
   InheritedOptionStrings: TInheritedCompOptsStrings;
   TargetDir: String;
   i: Integer;
@@ -582,9 +581,10 @@ begin
   try
     ProfileChanged:=false;
     if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
+      Builder.PackageOptions:='';
       CurResult:=Builder.MakeLazarus(BuildLazProfiles.Current,
                   EnvironmentOptions.ExternalTools,GlobalMacroList,
-                  '',EnvironmentOptions.GetParsedCompilerFilename,
+                  EnvironmentOptions.GetParsedCompilerFilename,
                   EnvironmentOptions.GetParsedMakeFilename,
                   Flags+[blfDontBuild],ProfileChanged);
       if CurResult<>mrOk then begin
@@ -611,11 +611,11 @@ begin
     end;
 
     // create inherited compiler options
-    PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
+    Builder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
 
     // save
     CurResult:=Builder.SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,
-                                  PkgOptions,Flags+[blfBackupOldExe]);
+                                  Flags+[blfBackupOldExe]);
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
         DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving idemake.cfg');
@@ -625,7 +625,7 @@ begin
     // compile IDE
     CurResult:=Builder.MakeLazarus(BuildLazProfiles.Current,
                            EnvironmentOptions.ExternalTools,GlobalMacroList,
-                           PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
+                           EnvironmentOptions.GetParsedCompilerFilename,
                            EnvironmentOptions.GetParsedMakeFilename,
                            Flags+[blfUseMakeIDECfg,blfOnlyIDE],
                            ProfileChanged);

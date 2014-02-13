@@ -155,12 +155,12 @@ type
   TLazarusBuilder = class
   private
     fExtraOptions: string;
+    fPackageOptions: string;
     fUpdateRevInc: boolean;
     fOutputDirRedirected: boolean;
     fTargetFilename: string;
     function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
-      Macros: TTransferMacroList; const PackageOptions: string;
-      Flags: TBuildLazarusFlags): TModalResult;
+      Macros: TTransferMacroList; Flags: TBuildLazarusFlags): TModalResult;
     function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
   public
     function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
@@ -168,12 +168,13 @@ type
     function MakeLazarus(Profile: TBuildLazarusProfile;
       {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
       Macros: TTransferMacroList;
-      const PackageOptions, CompilerPath, MakePath: string;
+      const CompilerPath, MakePath: string;
       Flags: TBuildLazarusFlags; var ProfileChanged: boolean): TModalResult;
 
     function SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
-      Macros: TTransferMacroList;
-      const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
+      Macros: TTransferMacroList; Flags: TBuildLazarusFlags): TModalResult;
+  public
+    property PackageOptions: string read fPackageOptions write fPackageOptions;
   end;
 
 function GetMakeIDEConfigFilename: string;
@@ -224,7 +225,7 @@ end;
 function TLazarusBuilder.MakeLazarus(Profile: TBuildLazarusProfile;
   {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
   Macros: TTransferMacroList;
-  const PackageOptions, CompilerPath, MakePath: string;
+  const CompilerPath, MakePath: string;
   Flags: TBuildLazarusFlags; var ProfileChanged: boolean): TModalResult;
 
   procedure ApplyCleanOnce;
@@ -463,7 +464,7 @@ begin
         Cmd:='cleanide ide';
       // append extra Profile
       fExtraOptions:='';
-      Result:=CreateIDEMakeOptions(Profile,Macros,PackageOptions,Flags);
+      Result:=CreateIDEMakeOptions(Profile,Macros,Flags);
       if Result<>mrOk then exit;
 
       if (not fOutputDirRedirected) and (not CheckDirectoryWritable(WorkingDirectory)) then
@@ -498,8 +499,7 @@ begin
 end;
 
 function TLazarusBuilder.CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
-  Macros: TTransferMacroList; const PackageOptions: string;
-  Flags: TBuildLazarusFlags): TModalResult;
+  Macros: TTransferMacroList; Flags: TBuildLazarusFlags): TModalResult;
 
   procedure BackupExe(var ExeFilename: string);
   var
@@ -792,9 +792,9 @@ begin
   end;
 
   // add package Profile for IDE
-  //DebugLn(['CreateBuildLazarusOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',PackageOptions]);
+  //DebugLn(['CreateBuildLazarusOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',fPackageOptions]);
   if not (blfUseMakeIDECfg in Flags) then
-    AppendExtraOption(PackageOptions,false);
+    AppendExtraOption(fPackageOptions,false);
   //DebugLn(['CreateBuildLazarusOptions ',MMDef.Name,' ',fExtraOptions]);
 end;
 
@@ -803,16 +803,16 @@ function TLazarusBuilder.IsWriteProtected(Profile: TBuildLazarusProfile): Boolea
 var
   ModRes: TModalResult;
 begin
-  ModRes := CreateIDEMakeOptions(Profile, GlobalMacroList, '', []);
+  fPackageOptions:='';
+  ModRes:=CreateIDEMakeOptions(Profile, GlobalMacroList, []);
   if ModRes in [mrOk,mrIgnore] then
-    Result := fOutputDirRedirected
+    Result:=fOutputDirRedirected
   else
-    Result := True;
+    Result:=True;
 end;
 
 function TLazarusBuilder.SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
-  Macros: TTransferMacroList;
-  const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
+  Macros: TTransferMacroList; Flags: TBuildLazarusFlags): TModalResult;
 
   function BreakOptions(const OptionString: string): string;
   var
@@ -868,7 +868,7 @@ var
   OptionsAsText: String;
 begin
   fExtraOptions:='';
-  Result:=CreateIDEMakeOptions(Profile, Macros, PackageOptions, Flags);
+  Result:=CreateIDEMakeOptions(Profile, Macros, Flags);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
   try

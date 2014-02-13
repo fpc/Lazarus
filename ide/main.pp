@@ -7472,7 +7472,6 @@ end;
 
 function TMainIDE.DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult;
 var
-  PkgOptions: string;
   InheritedOptionStrings: TInheritedCompOptsStrings;
   FPCVersion, FPCRelease, FPCPatch: integer;
   Builder: TLazarusBuilder;
@@ -7480,11 +7479,6 @@ begin
   // create uses section addition for lazarus.pp
   Result:=PkgBoss.DoSaveAutoInstallConfig;
   if Result<>mrOk then exit;
-
-  // prepare static auto install packages
-  PkgOptions:='';
-  // create inherited compiler options
-  PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
 
   // check ambiguous units
   CodeToolBoss.GetFPCVersionForDirectory(
@@ -7495,8 +7489,13 @@ begin
   // save extra options
   Builder:=TLazarusBuilder.Create;
   try
+    // prepare static auto install packages
+    //PkgOptions:='';
+    // create inherited compiler options
+    Builder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
+
     Result:=Builder.SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles.Current,
-                                       GlobalMacroList,PkgOptions,Flags+[blfOnlyIDE]);
+                                       GlobalMacroList,Flags+[blfOnlyIDE]);
   finally
     Builder.Free;
   end;
@@ -7509,7 +7508,6 @@ end;
 
 function TMainIDE.DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
 var
-  PkgOptions: string;
   IDEBuildFlags: TBuildLazarusFlags;
   InheritedOptionStrings: TInheritedCompOptsStrings;
   CompiledUnitExt: String;
@@ -7547,10 +7545,11 @@ begin
       PkgCompileFlags:=PkgCompileFlags+[pcfCompileDependenciesClean];
       if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
         SourceEditorManager.ClearErrorLines;
+        fBuilder.PackageOptions:='';
         Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current,
                          {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
                          GlobalMacroList,
-                         '',EnvironmentOptions.GetParsedCompilerFilename,
+                         EnvironmentOptions.GetParsedCompilerFilename,
                          EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild],
                          ProfileChanged);
         if Result<>mrOk then begin
@@ -7575,7 +7574,7 @@ begin
     end;
 
     // create inherited compiler options
-    PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
+    fBuilder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
 
     // check ambiguous units
     CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.GetParsedLazarusDirectory,
@@ -7593,7 +7592,7 @@ begin
 
     // save extra options
     IDEBuildFlags:=Flags;
-    Result:=fBuilder.SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,PkgOptions,
+    Result:=fBuilder.SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,
                IDEBuildFlags-[blfUseMakeIDECfg,blfDontClean]+[blfBackupOldExe]);
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
@@ -7606,7 +7605,7 @@ begin
     Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current,
                         {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
                         GlobalMacroList,
-                        PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
+                        EnvironmentOptions.GetParsedCompilerFilename,
                         EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags,
                         ProfileChanged);
     if Result<>mrOk then exit;
