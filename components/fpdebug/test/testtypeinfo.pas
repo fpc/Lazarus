@@ -341,7 +341,7 @@ begin
   FImageLoader.Free;
   FMemReader.Free;
   if FMemManager <> nil then
-    FMemManager.MemConvertor.Free;
+    FMemManager.TargetMemConvertor.Free;
   FreeAndNil(FMemManager);
   inherited TearDown;
 end;
@@ -381,6 +381,16 @@ begin
       ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImgLoader.GlobalVar.VarSub5)));
       ExpResult(svfSize, SizeOf(ImgLoader.GlobalVar.VarSub5));
 
+
+
+      StartTest('QWord($1122334455667748)', skCardinal, []);
+      ExpResult(svfCardinal, $1122334455667748);
+
+      StartTest('ShortInt(QWord($1122334455667748))', skInteger, []);
+      ExpResult(svfInteger, integer($48));
+
+      StartTest('ShortInt(QWord($11223344556677F8))', skInteger, []);
+      ExpResult(svfInteger, -8);
 
 end;
 
@@ -471,7 +481,9 @@ begin
   StartTest('VarDynIntArray', skArray, [ttHasType]);
   StartTest('VarStatIntArray1', skArray, [ttHasType]);
 
+  ImgLoader.GlobalVar.VarDynIntArray := nil;
   StartInvalTest('VarDynIntArray[0]', 'xxx');
+  StartInvalTest('VarDynIntArray[1]', 'xxx');
 
   SetLength(ImgLoader.GlobalVar.VarDynIntArray,33);
   ImgLoader.GlobalVar.VarDynIntArray[0] := 10;

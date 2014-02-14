@@ -17,6 +17,8 @@ type
   TTestMemReader = class(TFpDbgMemReaderBase)
   public
     RegisterValues: array[0..30] of TDbgPtr;
+    RegisterSizes: array[0..30] of Integer;
+    constructor Create;
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadMemoryEx({%H-}AnAddress, {%H-}AnAddressSpace: TDbgPtr; {%H-}ASize: Cardinal; {%H-}ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean; override;
@@ -388,6 +390,14 @@ end;
 
 { TTestMemReader }
 
+constructor TTestMemReader.Create;
+var
+  i: Integer;
+begin
+  inherited Create;
+  for i := 0 to length(RegisterSizes) - 1 do RegisterSizes[i] := 4;
+end;
+
 function TTestMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
   ADest: Pointer): Boolean;
 begin
@@ -409,7 +419,7 @@ end;
 
 function TTestMemReader.RegisterSize(ARegNum: Cardinal): Integer;
 begin
-  Result := 4; // TODO
+  Result := RegisterSizes[ARegNum];
 end;
 
 { TTestDwarfInfoEntry }

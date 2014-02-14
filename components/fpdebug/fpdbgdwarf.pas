@@ -629,6 +629,8 @@ type
   private
     FSize: Integer;
   protected
+    function OrdOrDataAddr: TFpDbgMemLocation;
+    function DataAddr: TFpDbgMemLocation;
     function ReadMemory(ADest: Pointer): Boolean; // ADest must point to FSize amount of bytes
     function CanUseTypeCastAddress: Boolean;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
@@ -646,7 +648,6 @@ type
     FEvaluated: set of (doneUInt, doneInt);
   protected
     procedure Reset; override;
-    function GetCardinalValue: QWord;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function IsValidTypeCast: Boolean; override;
     function GetAsCardinal: QWord; override;
@@ -2095,6 +2096,25 @@ end;
 
 { TDbgDwarfSizedSymbolValue }
 
+function TDbgDwarfSizedSymbolValue.OrdOrDataAddr: TFpDbgMemLocation;
+begin
+  if HasTypeCastInfo and (svfOrdinal in FTypeCastSourceValue.FieldFlags) then
+    Result := ConstLoc(FTypeCastSourceValue.AsCardinal)
+  else
+    Result := DataAddr;
+end;
+
+function TDbgDwarfSizedSymbolValue.DataAddr: TFpDbgMemLocation;
+begin
+  if FValueSymbol <> nil then
+    Result := FValueSymbol.Address
+  else
+  if HasTypeCastInfo then
+    Result := FTypeCastSourceValue.Address
+  else
+    Result := InvalidLoc;
+end;
+
 function TDbgDwarfSizedSymbolValue.ReadMemory(ADest: Pointer): Boolean;
 var
   addr: TFpDbgMemLocation;
@@ -2102,15 +2122,8 @@ begin
   // TODO: memory representation of values is not dwarf, but platform - move
   Result := False;
 
-  if ( (FValueSymbol <> nil) or
-       (HasTypeCastInfo and CanUseTypeCastAddress)
-     ) and (MemManager <> nil)
-  then begin
-    if FValueSymbol <> nil then
-      addr := FValueSymbol.Address
-    else
-      addr := FTypeCastSourceValue.Address;
-
+  if (MemManager <> nil) then begin
+    addr := DataAddr;
     Result := IsReadableLoc(addr);
     if not Result then
       exit;
@@ -2566,26 +2579,6 @@ begin
   FEvaluated := [];
 end;
 
-function TDbgDwarfNumericSymbolValue.GetCardinalValue: QWord;
-begin
-  if (FSize <= 0) or (FSize > SizeOf(Result)) then begin
-    Result := inherited GetAsCardinal;
-  end
-
-  else
-  if HasTypeCastInfo and (svfOrdinal in FTypeCastSourceValue.FieldFlags) then begin
-    Result := FTypeCastSourceValue.AsCardinal;
-    Result := Result and (QWord(-1) shr ((SizeOf(Result)-FSize) * 8));
-  end
-
-  else begin
-    // TODO endian
-    Result := 0; // GetMem only reads FSize
-    if not ReadMemory(@Result) then  // ReadMemory stores to FValue
-      Result := inherited GetAsCardinal;
-  end;
-end;
-
 function TDbgDwarfNumericSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
@@ -2610,7 +2603,12 @@ begin
   end;
   Include(FEvaluated, doneUInt);
 
-  Result := GetCardinalValue;
+  if (FSize <= 0) or (FSize > SizeOf(Result)) then
+    Result := inherited GetAsCardinal
+  else
+  if not MemManager.ReadUnsignedInt(OrdOrDataAddr, FSize, Result) then
+    Result := 0; // TODO: error
+
   FValue := Result;
 end;
 
@@ -2622,10 +2620,11 @@ begin
   end;
   Include(FEvaluated, doneInt);
 
-  Result := Int64(GetCardinalValue);
-  // sign extend
-  if Result and (int64(1) shl (FSize * 8 - 1)) <> 0 then
-    Result := Result or (int64(-1) shl (FSize * 8));
+  if (FSize <= 0) or (FSize > SizeOf(Result)) then
+    Result := inherited GetAsInteger
+  else
+  if not MemManager.ReadSignedInt(OrdOrDataAddr, FSize, Result) then
+    Result := 0; // TODO: error
 
   FIntValue := Result;
 end;
@@ -5252,9 +5251,6 @@ end;
 
 function TDbgDwarfTypeIdentifierRef.GetDataAddress(var AnAddress: TFpDbgMemLocation;
   ATargetType: TDbgDwarfTypeIdentifier): Boolean;
-//var
-//  Addr4: DWORD;
-//  Addr8: QWord;
 begin
   if ATargetType = Self then begin
     Result := True;
@@ -5264,18 +5260,6 @@ begin
   if not Result then
     exit;
   AnAddress := FCU.FOwner.MemManager.ReadAddress(AnAddress, FCU.FAddressSize);
-  //case FCU.FAddressSize of
-  //  4: begin
-  //      FCU.FOwner.MemManager.ReadMemory(AnAddress, 4, @Addr4);
-  //      AnAddress := Addr4;
-  //    end;
-  //  8: begin
-  //      FCU.FOwner.MemManager.ReadMemory(AnAddress, 8, @Addr8);
-  //      AnAddress := Addr8;
-  //    end;
-  //  else
-  //    Result := False;
-  //end;
   if Result then
     Result := inherited GetDataAddress(AnAddress, ATargetType);
 end;
@@ -5340,9 +5324,6 @@ end;
 
 function TDbgDwarfTypeIdentifierPointer.GetDataAddress(var AnAddress: TFpDbgMemLocation;
   ATargetType: TDbgDwarfTypeIdentifier): Boolean;
-//var
-//  Addr4: DWORD;
-//  Addr8: QWord;
 begin
   if ATargetType = Self then begin
     Result := True;
@@ -5352,18 +5333,7 @@ begin
   if not Result then
     exit;
   AnAddress := FCU.FOwner.MemManager.ReadAddress(AnAddress, FCU.FAddressSize);
-  //case FCU.FAddressSize of
-  //  4: begin
-  //      FCU.FOwner.MemManager.ReadMemory(AnAddress, 4, @Addr4);
-  //      AnAddress := Addr4;
-  //    end;
-  //  8: begin
-  //      FCU.FOwner.MemManager.ReadMemory(AnAddress, 8, @Addr8);
-  //      AnAddress := Addr8;
-  //    end;
-  //  else
-  //    Result := False;
-  //end;
+  Result := IsTargetNotNil(AnAddress);
   if Result then
     Result := inherited GetDataAddress(AnAddress, ATargetType);
 end;
@@ -5467,7 +5437,9 @@ begin
     exit;
   Assert((TypeInfo is TDbgDwarfIdentifier) and (TypeInfo.SymbolType = stType), 'TDbgDwarfValueIdentifier.GetDataAddress');
   AnAddress := Address;
-  Result := TDbgDwarfTypeIdentifier(TypeInfo).GetDataAddress(AnAddress, ATargetType);
+  Result := IsReadableLoc(AnAddress);
+  if Result then
+    Result := TDbgDwarfTypeIdentifier(TypeInfo).GetDataAddress(AnAddress, ATargetType);
 end;
 
 procedure TDbgDwarfValueIdentifier.KindNeeded;
@@ -7751,10 +7723,10 @@ end;
 function TDwarfCompilationUnit.ReadAddressAtPointer(var AData: Pointer;
   AIncPointer: Boolean): TFpDbgMemLocation;
 begin
-  Result := FOwner.MemManager.ReadAddress(SelfLoc(AData), FAddressSize); // TODO Dwarf3 depends on FIsDwarf64
-  //if FAddressSize = 4 // TODO Dwarf3 depends on FIsDwarf64
-  //then Result := PLongWord(AData)^
-  //else Result := PQWord(AData)^;
+  // do not need mem reader, address is in dwarf. Should be in correct format
+  if FAddressSize = 4 // TODO Dwarf3 depends on FIsDwarf64
+  then Result := TargetLoc(PLongWord(AData)^)
+  else Result := TargetLoc(PQWord(AData)^);
   if AIncPointer then inc(AData, FAddressSize);
 end;
 

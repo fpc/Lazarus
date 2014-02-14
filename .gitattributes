@@ -1291,6 +1291,7 @@ components/fpdebug/test/testdwarfsetuparray.pas svneol=native#text/pascal
 components/fpdebug/test/testdwarfsetupbasic.pas svneol=native#text/pascal
 components/fpdebug/test/testdwarfvarious.pas svneol=native#text/pascal
 components/fpdebug/test/testhelperclasses.pas svneol=native#text/pascal
+components/fpdebug/test/testmemmanager.pas svneol=native#text/pascal
 components/fpdebug/test/testpascalparser.pas svneol=native#text/pascal
 components/fpdebug/test/testtypeinfo.pas svneol=native#text/pascal
 components/fppkg/images/archive.png -text
