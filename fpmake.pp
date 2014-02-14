@@ -32,6 +32,7 @@ begin
       PBuild.Dependencies.Add('codetools');
       PBuild.Dependencies.Add('synedit');
       PBuild.Dependencies.Add('ideintf');
+      PBuild.Dependencies.Add('debuggerintf');
 
 
       pbuild.SourcePath.Add('ide');
