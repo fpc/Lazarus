@@ -114,6 +114,7 @@ type
     FErrorMsg: string;
     FFCLPackage: TLazPackage;
     FIDEIntfPackage: TLazPackage;
+    FDebuggerIntfPackage: TLazPackage;
     FItems: TFPList;   // unsorted list of TLazPackage
     FLazarusBasePackages: TFPList;
     FLazUtilsPackage: TLazPackage;
@@ -374,6 +375,7 @@ type
     property LazUtilsPackage: TLazPackage read FLazUtilsPackage;
     property CodeToolsPackage: TLazPackage read FCodeToolsPackage;
     property IDEIntfPackage: TLazPackage read FIDEIntfPackage;
+    property DebuggerIntfPackage: TLazPackage read FDebuggerIntfPackage;
     property LazarusBasePackages: TFPList read FLazarusBasePackages;
     property DefaultPackage: TLazPackage read FDefaultPackage;// fall back package for buggy/obsoleted stuff
 
@@ -764,6 +766,8 @@ begin
     FLCLPackage:=nil
   else if CurPkg=IDEIntfPackage then
     FIDEIntfPackage:=nil
+  else if CurPkg=DebuggerIntfPackage then
+    FDebuggerIntfPackage:=nil
   else if CurPkg=SynEditPackage then
     FSynEditPackage:=nil
   else if CurPkg=LazControlsPackage then
@@ -1594,6 +1598,8 @@ begin
       SetBasePackage(FIDEIntfPackage);
       APackage.SetAllComponentPriorities(IDEIntfCompPriority);
     end
+    else if SysUtils.CompareText(APackage.Name,'DebuggerIntf')=0 then
+      SetBasePackage(FDebuggerIntfPackage)
     else if SysUtils.CompareText(APackage.Name,'SynEdit')=0 then
       SetBasePackage(FSynEditPackage)
     else if SysUtils.CompareText(APackage.Name,'LazControls')=0 then
@@ -1703,6 +1709,7 @@ begin
   LoadLazarusBasePackage('LCL');
   LoadLazarusBasePackage('SynEdit');
   LoadLazarusBasePackage('IDEIntf');
+  LoadLazarusBasePackage('DebuggerIntf');
   LoadLazarusBasePackage('LazControls');
   LoadLazarusBasePackage('CodeTools');
   // the default package will be added on demand
@@ -1840,6 +1847,7 @@ begin
        or (PackageName='lcl')
        or (PackageName='synedit')
        or (PackageName='ideintf')
+       or (PackageName='debuggerintf')
        or (PackageName='codetools')
        or (PackageName='lazcontrols');
 end;
