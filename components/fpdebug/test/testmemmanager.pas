@@ -62,11 +62,16 @@ var
   i, j: Integer;
   TestBaseName: String;
   Data: QWord;
+  DataExt: Extended;
+  DataDouble: Double;
+  DataSingle: Single;
   MemValue: QWord;
   GotRes: Boolean;
   GotInt: Int64;
   GotUInt: QWord;
-    GotAddr: TFpDbgMemLocation;
+  GotAddr: TFpDbgMemLocation;
+  GotExt: Extended;
+
 
   procedure SetData(Aval:  QWord);
   begin
@@ -240,6 +245,26 @@ begin
   SetData($FF);  DoUnsignedIntTests(1, 255);
   SetData($0108);  DoSignedIntTests(1,   8);
 
+  FCurrentTestName := 'Extended';
+  DataExt := 1.7722;
+  GotRes := FMemManager.ReadFloat(TargetLoc(TDbgPtr(@DataExt)), SizeOf(Extended), GotExt);
+  AssertTrue(FCurrentTestName +  'Read OK', GotRes);
+  AssertEquals(FCurrentTestName + 'target not changed', 1.7722, DataExt);
+  AssertEquals(FCurrentTestName + 'Val', DataExt, GotExt);
+
+  FCurrentTestName := 'Double';
+  DataDouble := 1.7722;
+  GotRes := FMemManager.ReadFloat(TargetLoc(TDbgPtr(@DataDouble)), SizeOf(Double), GotExt);
+  AssertTrue(FCurrentTestName +  'Read OK', GotRes);
+  AssertEquals(FCurrentTestName + 'target not changed', 1.7722, DataDouble);
+  AssertEquals(FCurrentTestName + 'Val', DataDouble, GotExt);
+
+  FCurrentTestName := 'Single';
+  DataSingle := 1.7722;
+  GotRes := FMemManager.ReadFloat(TargetLoc(TDbgPtr(@DataSingle)), SizeOf(Single), GotExt);
+  AssertTrue(FCurrentTestName +  'Read OK', GotRes);
+  AssertEquals(FCurrentTestName + 'target not changed', 1.7722, DataSingle);
+  AssertEquals(FCurrentTestName + 'Val', DataSingle, GotExt);
 
 
 end;

@@ -642,7 +642,7 @@ type
 
   TDbgDwarfNumericSymbolValue = class(TDbgDwarfSizedSymbolValue)
   protected
-    FEvaluated: set of (doneUInt, doneInt, doneAddr);
+    FEvaluated: set of (doneUInt, doneInt, doneAddr, doneFloat);
   protected
     procedure Reset; override;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override; // svfOrdinal
@@ -675,8 +675,12 @@ type
   { TDbgDwarfFloatSymbolValue }
 
   TDbgDwarfFloatSymbolValue = class(TDbgDwarfNumericSymbolValue) // TDbgDwarfSymbolValue
+  // TODO: typecasts to int should convert
+  private
+    FValue: Extended;
   protected
-    //function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetAsFloat: Extended; override;
   end;
 
   { TDbgDwarfBooleanSymbolValue }
@@ -1821,6 +1825,31 @@ begin
   else
     Result := Format('DW_ID_%d', [AValue]);
   end;
+end;
+
+{ TDbgDwarfFloatSymbolValue }
+
+function TDbgDwarfFloatSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
+begin
+  Result := inherited GetFieldFlags;
+  Result := Result + [svfFloat] - [svfOrdinal];
+end;
+
+function TDbgDwarfFloatSymbolValue.GetAsFloat: Extended;
+begin
+  if doneFloat in FEvaluated then begin
+    Result := FValue;
+    exit;
+  end;
+  Include(FEvaluated, doneUInt);
+
+  if (FSize <= 0) or (FSize > SizeOf(Result)) then
+    Result := inherited GetAsCardinal
+  else
+  if not MemManager.ReadFloat(OrdOrDataAddr, FSize, Result) then
+    Result := 0; // TODO: error
+
+  FValue := Result;
 end;
 
 { TDbgDwarfSymbolValueConstAddress }

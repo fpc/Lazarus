@@ -57,7 +57,7 @@ type
 
 
   TFpDbgMemReadDataType = (
-    rdtAddress, rdtSignedInt, rdtUnsignedInt,
+    rdtAddress, rdtSignedInt, rdtUnsignedInt, rdtfloat,
     rdtEnum, rdtSet
   );
 
@@ -228,10 +228,10 @@ type
     //function ReadSet        (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
     //                         out AValue: TBytes;
     //                         AnOpts: TFpDbgMemReadOptions): Boolean;
+    function ReadFloat      (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+                             out AValue: Extended): Boolean; inline;
     //function ReadFloat      (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
-    //                         out AValue: Double): Boolean; inline;
-    //function ReadFloat      (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
-    //                         out AValue: Double;
+    //                         out AValue: Extended;
     //                         AnOpts: TFpDbgMemReadOptions): Boolean;
 
     property TargetMemConvertor: TFpDbgMemConvertor read FTargetMemConvertor;
@@ -365,15 +365,24 @@ function TFpDbgMemConvertorLittleEndian.PrepareTargetRead(AReadDataType: TFpDbgM
   ATargetPointer: TDbgPtr; ADestPointer: Pointer; ATargetSize, ADestSize: Cardinal; out
   AConvertorData: TFpDbgMemConvData): boolean;
 begin
-  Result := False;
+  Result := ATargetSize <= ADestSize;
+  if not Result then
+    exit;
+  // just read to begin of data
+  AConvertorData.NewTargetAddress := ATargetPointer;
+  AConvertorData.NewDestAddress   := ADestPointer;
+  AConvertorData.NewReadSize      := Min(ATargetSize, ADestSize);
   case AReadDataType of
-    rdtAddress, rdtSignedInt, rdtUnsignedInt, rdtEnum, rdtSet: begin
-        Result := ATargetSize <= ADestSize;
-        // just read to begin of data
-        AConvertorData.NewTargetAddress := ATargetPointer;
-        AConvertorData.NewDestAddress   := ADestPointer;
-        AConvertorData.NewReadSize      := Min(ATargetSize, ADestSize);
-      end;
+    rdtAddress, rdtSignedInt, rdtUnsignedInt,
+    rdtEnum, rdtSet: ;
+    rdtfloat:
+      Result := (ATargetSize = AConvertorData.NewReadSize) and
+                (ADestSize = SizeOf(Extended)) and // only can read to extended... TODO (if need more)
+                ( (ATargetSize = SizeOf(Extended)) or
+                  (ATargetSize = SizeOf(Double)) or
+                  (ATargetSize = SizeOf(Single)) or
+                  (ATargetSize = SizeOf(real48))
+                )
     else begin
       Assert(False, 'TFpDbgMemConvertorLittleEndian.PrepareTargetRead');
       Result := False;
@@ -384,6 +393,8 @@ end;
 function TFpDbgMemConvertorLittleEndian.FinishTargetRead(AReadDataType: TFpDbgMemReadDataType;
   ATargetPointer: TDbgPtr; ADestPointer: Pointer; ATargetSize, ADestSize: Cardinal;
   AConvertorData: TFpDbgMemConvData): boolean;
+type
+  Preal48 = ^real48;
 begin
   Result := True;
   case AReadDataType of
@@ -399,6 +410,22 @@ begin
           else
             FillByte((ADestPointer + ATargetSize)^, ADestSize-ATargetSize, $00);
       end;
+    rdtfloat: begin
+      assert((ADestSize = SizeOf(Extended)));
+      if (ATargetSize = SizeOf(Extended)) then
+        //
+      else
+      if (ATargetSize = SizeOf(Double)) then
+        PExtended(ADestPointer)^ := PDouble(ADestPointer)^
+      else
+      if (ATargetSize = SizeOf(real48)) then
+        PExtended(ADestPointer)^ := Preal48(ADestPointer)^
+      else
+      if (ATargetSize = SizeOf(Single)) then
+        PExtended(ADestPointer)^ := PSingle(ADestPointer)^
+      else
+        Result := False;
+    end;
     else begin
       Assert(False, 'TFpDbgMemConvertorLittleEndian.FailedTargetRead');
       Result := False;
@@ -640,6 +667,12 @@ begin
   Result := ASize > 0;
   if Result then
     Result := ReadMemory(rdtSet, ALocation, ASize, @AValue[0], ASize);
+end;
+
+function TFpDbgMemManager.ReadFloat(const ALocation: TFpDbgMemLocation; ASize: Cardinal; out
+  AValue: Extended): Boolean;
+begin
+  Result := ReadMemory(rdtfloat, ALocation, ASize, @AValue, SizeOf(AValue));
 end;
 
 end.

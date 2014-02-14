@@ -117,7 +117,7 @@ type
     // svfAddress, svfDataAddress this symbol does have an address, but it may still be nil
     svfAddress, svfSize, svfSizeOfPointer,
     svfDataAddress, svfDataSize, svfDataSizeOfPointer,
-    svfInteger, svfCardinal,
+    svfInteger, svfCardinal, svfFloat,
     svfString, svfWideString,
     svfBoolean,
     svfIdentifier,   // returned via AsString: a named value (enum, set-member)
@@ -140,6 +140,7 @@ type
     function GetAsInteger: Int64; virtual;
     function GetAsString: AnsiString; virtual;
     function GetAsWideString: WideString; virtual;
+    function GetAsFloat: Extended; virtual;
 
     function GetAddress: TFpDbgMemLocation;  virtual;
     function GetSize: Integer;  virtual;  // returns -1, if not available
@@ -169,8 +170,7 @@ type
     property AsBool: Boolean read GetAsBool;
     property AsString: AnsiString read GetAsString;
     property AsWideString: WideString read GetAsWideString;
-    // complex
-    // double
+    property AsFloat: Extended read GetAsFloat;
 
     property Address: TFpDbgMemLocation read GetAddress;     // Address of variable
     property Size: Integer read GetSize;           // Size of variable
@@ -578,6 +578,11 @@ begin
 end;
 
 function TDbgSymbolValue.GetMemberCountEx(AIndex: array of Int64): Integer;
+begin
+  Result := 0;
+end;
+
+function TDbgSymbolValue.GetAsFloat: Extended;
 begin
   Result := 0;
 end;
