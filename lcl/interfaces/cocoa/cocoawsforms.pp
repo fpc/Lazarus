@@ -35,7 +35,10 @@ type
   { TLCLWindowCallback }
 
   TLCLWindowCallback = class(TLCLCommonCallBack, IWindowCallback)
+  private
+    IsActivating: boolean;
   public
+    constructor Create(AOwner: NSObject; ATarget: TWinControl); override;
     function CanActivate: Boolean; virtual;
     procedure Activate; virtual;
     procedure Deactivate; virtual;
@@ -247,29 +250,41 @@ begin
   Result := Enabled;
 end;
 
+constructor TLCLWindowCallback.Create(AOwner: NSObject; ATarget: TWinControl);
+begin
+  inherited;
+  IsActivating:=false;
+end;
+
 procedure TLCLWindowCallback.Activate;
 var
   ACustForm: TCustomForm;
 begin
-  ACustForm := Target as TCustomForm;
-
-  if (ACustForm.Menu <> nil) and
-     (ACustForm.Menu.HandleAllocated) then
+  if not IsActivating then
     begin
-    if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenuItem) then
+    IsActivating:=True;
+    ACustForm := Target as TCustomForm;
+
+    if (ACustForm.Menu <> nil) and
+       (ACustForm.Menu.HandleAllocated) then
       begin
-      if TCocoaMenuItem(ACustForm.Menu.Handle).hasSubmenu then
-        CocoaWidgetSet.SetMainMenu(HMENU(TCocoaMenuItem(ACustForm.Menu.Handle).submenu))
+      if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenuItem) then
+        begin
+        if TCocoaMenuItem(ACustForm.Menu.Handle).hasSubmenu then
+          CocoaWidgetSet.SetMainMenu(HMENU(TCocoaMenuItem(ACustForm.Menu.Handle).submenu))
+        else
+          debugln('Warning: Menu does not have a valid handle.');
+        end
       else
-        debugln('Warning: Menu does not have a valid handle.');
+        CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle);
       end
     else
-      CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle);
-    end
-  else
-    CocoaWidgetSet.SetMainMenu(0);
-  LCLSendActivateMsg(Target, WA_ACTIVE, false);
-  LCLSendSetFocusMsg(Target);
+      CocoaWidgetSet.SetMainMenu(0);
+
+    LCLSendActivateMsg(Target, WA_ACTIVE, false);
+    LCLSendSetFocusMsg(Target);
+    IsActivating:=False;
+    end;
 end;
 
 procedure TLCLWindowCallback.Deactivate;
