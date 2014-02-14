@@ -48,7 +48,7 @@ uses
 
 const
   EnvOptsVersion: integer = 108;
-  // 107: added Lazarus version
+  // 107 added Lazarus version
   // 108 added LastCalledByLazarusFullPath
 
   {$IFDEF Windows}
@@ -1124,6 +1124,8 @@ begin
       FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
       FOldLazarusVersion:=XMLConfig.GetValue(Path+'Version/Lazarus','');
       if FOldLazarusVersion='' then begin
+        // 108 added LastCalledByLazarusFullPath
+        // 107 added Lazarus version
         // 1.1     r36507  106
         // 0.9.31  r28811  106
         // 0.9.29  r21344  106
@@ -1268,7 +1270,7 @@ begin
         FLastCalledByLazarusFullPath:=XMLConfig.GetValue(
            Path+'LastCalledByLazarusFullPath/Value','');
 
-        // global buid options
+        // global build options, additions and overrides
         Cfg.AppendBasePath('BuildMatrix');
         FBuildMatrixOptions.LoadFromConfig(Cfg);
         Cfg.UndoAppendBasePath;
