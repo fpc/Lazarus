@@ -21,10 +21,11 @@
 
 Provides an interface to add debuggers to the IDE"/>
     <License Value="GPL"/>
+    <Version Minor="1"/>
     <Files Count="3">
       <Item1>
         <Filename Value="dbgintfbasetypes.pas"/>
-        <UnitName Value="dbgintfbasetypes"/>
+        <UnitName Value="DbgIntfBaseTypes"/>
       </Item1>
       <Item2>
         <Filename Value="dbgintfdebuggerbase.pp"/>
