@@ -1447,7 +1447,8 @@ begin
   while i > 0 do begin
     ID := Config.GetValue(Path+'Desktop/FormIdList/a'+IntToStr(i), '');
     //debugln(['TSimpleWindowLayoutList.LoadFromConfig ',i,' ',ID]);
-    if (ID <> '') and (IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(ID) = nil) then
+    if (ID <> '') and IsValidIdent(ID)
+    and (IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(ID) = nil) then
       CreateWindowLayout(ID);
     dec(i);
   end;
@@ -1678,8 +1679,10 @@ function TSimpleWindowLayoutList.CreateWindowLayout(const TheFormID: string
 begin
   if TheFormID='' then
     raise Exception.Create('TEnvironmentOptions.CreateWindowLayout TheFormID empty');
+  if not IsValidIdent(TheFormID) then
+    raise Exception.Create('TEnvironmentOptions.CreateWindowLayout TheFormID "'+TheFormID+'" invalid identifier');
   if ItemByFormID(TheFormID)<>nil then
-    raise Exception.Create('TEnvironmentOptions.CreateWindowLayout TheFormID exists');
+    raise Exception.Create('TEnvironmentOptions.CreateWindowLayout TheFormID "'+TheFormID+'" already exists');
   Result:=TSimpleWindowLayout.Create(TheFormID);
   Add(Result);
 end;
