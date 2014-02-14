@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="DebuggerIntf"/>
+    <Author Value="Lazarus Team"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <MsgFileName Value=""/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="DebuggerIntf
+
+Provides an interface to add debuggers to the IDE"/>
+    <License Value="GPL"/>
+    <Files Count="3">
+      <Item1>
+        <Filename Value="dbgintfbasetypes.pas"/>
+        <UnitName Value="dbgintfbasetypes"/>
+      </Item1>
+      <Item2>
+        <Filename Value="dbgintfdebuggerbase.pp"/>
+        <UnitName Value="DbgIntfDebuggerBase"/>
+      </Item2>
+      <Item3>
+        <Filename Value="dbgintfmiscclasses.pas"/>
+        <UnitName Value="DbgIntfMiscClasses"/>
+      </Item3>
+    </Files>
+    <Type Value="DesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="LazUtils"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>
