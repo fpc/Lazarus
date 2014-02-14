@@ -631,7 +631,6 @@ type
   protected
     function OrdOrDataAddr: TFpDbgMemLocation;
     function DataAddr: TFpDbgMemLocation;
-    function ReadMemory(ADest: Pointer): Boolean; // ADest must point to FSize amount of bytes
     function CanUseTypeCastAddress: Boolean;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetSize: Integer; override;
@@ -642,16 +641,12 @@ type
   { TDbgDwarfNumericSymbolValue }
 
   TDbgDwarfNumericSymbolValue = class(TDbgDwarfSizedSymbolValue)
-  private
-    FValue: QWord;
-    FIntValue: Int64;
-    FEvaluated: set of (doneUInt, doneInt);
+  protected
+    FEvaluated: set of (doneUInt, doneInt, doneAddr);
   protected
     procedure Reset; override;
-    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetFieldFlags: TDbgSymbolValueFieldFlags; override; // svfOrdinal
     function IsValidTypeCast: Boolean; override;
-    function GetAsCardinal: QWord; override;
-    function GetAsInteger: Int64; override;
   public
     constructor Create(AOwner: TDbgDwarfIdentifier; ASize: Integer);
   end;
@@ -659,15 +654,21 @@ type
   { TDbgDwarfIntegerSymbolValue }
 
   TDbgDwarfIntegerSymbolValue = class(TDbgDwarfNumericSymbolValue)
+  private
+    FIntValue: Int64;
   protected
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
+    function GetAsInteger: Int64; override;
   end;
 
   { TDbgDwarfCardinalSymbolValue }
 
   TDbgDwarfCardinalSymbolValue = class(TDbgDwarfNumericSymbolValue)
+  private
+    FValue: QWord;
   protected
+    function GetAsCardinal: QWord; override;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
   end;
 
@@ -680,7 +681,7 @@ type
 
   { TDbgDwarfBooleanSymbolValue }
 
-  TDbgDwarfBooleanSymbolValue = class(TDbgDwarfNumericSymbolValue)
+  TDbgDwarfBooleanSymbolValue = class(TDbgDwarfCardinalSymbolValue)
   protected
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetAsBool: Boolean; override;
@@ -688,7 +689,7 @@ type
 
   { TDbgDwarfCharSymbolValue }
 
-  TDbgDwarfCharSymbolValue = class(TDbgDwarfNumericSymbolValue)
+  TDbgDwarfCharSymbolValue = class(TDbgDwarfCardinalSymbolValue)
   protected
     // returns single char(byte) / widechar
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
@@ -699,7 +700,10 @@ type
   { TDbgDwarfPointerSymbolValue }
 
   TDbgDwarfPointerSymbolValue = class(TDbgDwarfNumericSymbolValue)
+  private
+    FPointetToAddr: TFpDbgMemLocation;
   protected
+    function GetAsCardinal: QWord; override;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetDataAddress: TFpDbgMemLocation; override;
   end;
@@ -708,6 +712,7 @@ type
 
   TDbgDwarfEnumSymbolValue = class(TDbgDwarfNumericSymbolValue)
   private
+    FValue: QWord;
     FMemberIndex: Integer;
     FMemberValueDone: Boolean;
     procedure InitMemberIndex;
@@ -715,6 +720,7 @@ type
     procedure Reset; override;
     //function IsValidTypeCast: Boolean; override;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetAsCardinal: QWord; override;
     function GetAsString: AnsiString; override;
     // Has exactly 0 (if the ordinal value is out of range) or 1 member (the current value's enum)
     function GetMemberCount: Integer; override;
@@ -1963,8 +1969,9 @@ begin
   t := t.TypeInfo;
   if t = nil then exit;
 
-  SetLength(FMem, FSize);
-  ReadMemory(@FMem[0]);
+  if not MemManager.ReadSet(DataAddr, FSize, FMem) then
+    exit; // TODO: error
+
   Cnt := 0;
   for i := 0 to FSize - 1 do
     Cnt := Cnt + (BitCount[FMem[i] and 15])  + (BitCount[(FMem[i] div 16) and 15]);
@@ -2115,23 +2122,6 @@ begin
     Result := InvalidLoc;
 end;
 
-function TDbgDwarfSizedSymbolValue.ReadMemory(ADest: Pointer): Boolean;
-var
-  addr: TFpDbgMemLocation;
-begin
-  // TODO: memory representation of values is not dwarf, but platform - move
-  Result := False;
-
-  if (MemManager <> nil) then begin
-    addr := DataAddr;
-    Result := IsReadableLoc(addr);
-    if not Result then
-      exit;
-
-    Result := MemManager.ReadMemory(addr, FSize, ADest);
-  end;
-end;
-
 function TDbgDwarfSizedSymbolValue.CanUseTypeCastAddress: Boolean;
 begin
   Result := True;
@@ -2223,6 +2213,23 @@ begin
   Result := Result + [svfOrdinal, svfMembers, svfIdentifier];
 end;
 
+function TDbgDwarfEnumSymbolValue.GetAsCardinal: QWord;
+begin
+  if doneUInt in FEvaluated then begin
+    Result := FValue;
+    exit;
+  end;
+  Include(FEvaluated, doneUInt);
+
+  if (FSize <= 0) or (FSize > SizeOf(Result)) then
+    Result := inherited GetAsCardinal
+  else
+  if not MemManager.ReadEnum(OrdOrDataAddr, FSize, Result) then
+    Result := 0; // TODO: error
+
+  FValue := Result;
+end;
+
 function TDbgDwarfEnumSymbolValue.GetAsString: AnsiString;
 begin
   InitMemberIndex;
@@ -2252,6 +2259,17 @@ end;
 
 { TDbgDwarfPointerSymbolValue }
 
+function TDbgDwarfPointerSymbolValue.GetAsCardinal: QWord;
+var
+  a: TFpDbgMemLocation;
+begin
+  a := GetDataAddress;
+  if IsTargetAddr(a) then
+    Result := LocToAddr(a)
+  else
+    Result := 0;
+end;
+
 function TDbgDwarfPointerSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
@@ -2261,7 +2279,18 @@ end;
 
 function TDbgDwarfPointerSymbolValue.GetDataAddress: TFpDbgMemLocation;
 begin
-  Result := TargetLoc(GetAsCardinal);
+  if doneAddr in FEvaluated then begin
+    Result := FPointetToAddr;
+    exit;
+  end;
+  Include(FEvaluated, doneAddr);
+
+  if (FSize <= 0) then
+    Result := InvalidLoc
+  else
+    MemManager.ReadAddress(OrdOrDataAddr, FSize, Result);
+
+  FPointetToAddr := Result;
 end;
 
 { TDbgDwarfIntegerSymbolValue }
@@ -2277,7 +2306,41 @@ begin
   Result := QWord(GetAsInteger);  // include sign extension
 end;
 
+function TDbgDwarfIntegerSymbolValue.GetAsInteger: Int64;
+begin
+  if doneInt in FEvaluated then begin
+    Result := FIntValue;
+    exit;
+  end;
+  Include(FEvaluated, doneInt);
+
+  if (FSize <= 0) or (FSize > SizeOf(Result)) then
+    Result := inherited GetAsInteger
+  else
+  if not MemManager.ReadSignedInt(OrdOrDataAddr, FSize, Result) then
+    Result := 0; // TODO: error
+
+  FIntValue := Result;
+end;
+
 { TDbgDwarfCardinalSymbolValue }
+
+function TDbgDwarfCardinalSymbolValue.GetAsCardinal: QWord;
+begin
+  if doneUInt in FEvaluated then begin
+    Result := FValue;
+    exit;
+  end;
+  Include(FEvaluated, doneUInt);
+
+  if (FSize <= 0) or (FSize > SizeOf(Result)) then
+    Result := inherited GetAsCardinal
+  else
+  if not MemManager.ReadUnsignedInt(OrdOrDataAddr, FSize, Result) then
+    Result := 0; // TODO: error
+
+  FValue := Result;
+end;
 
 function TDbgDwarfCardinalSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
@@ -2541,7 +2604,7 @@ end;
 
 function TDbgDwarfBooleanSymbolValue.GetAsBool: Boolean;
 begin
-  Result := QWord(GetAsInteger) <> 0;
+  Result := QWord(GetAsCardinal) <> 0;
 end;
 
 { TDbgDwarfCharSymbolValue }
@@ -2557,6 +2620,7 @@ end;
 
 function TDbgDwarfCharSymbolValue.GetAsString: AnsiString;
 begin
+  // Can typecast, because of FSize = 1, GetAsCardinal only read one byte
   if FSize <> 1 then
     Result := inherited GetAsString
   else
@@ -2593,40 +2657,6 @@ begin
   if (svfOrdinal in FTypeCastSourceValue.FieldFlags) or CanUseTypeCastAddress then
     exit;
   Result := False;
-end;
-
-function TDbgDwarfNumericSymbolValue.GetAsCardinal: QWord;
-begin
-  if doneUInt in FEvaluated then begin
-    Result := FValue;
-    exit;
-  end;
-  Include(FEvaluated, doneUInt);
-
-  if (FSize <= 0) or (FSize > SizeOf(Result)) then
-    Result := inherited GetAsCardinal
-  else
-  if not MemManager.ReadUnsignedInt(OrdOrDataAddr, FSize, Result) then
-    Result := 0; // TODO: error
-
-  FValue := Result;
-end;
-
-function TDbgDwarfNumericSymbolValue.GetAsInteger: Int64;
-begin
-  if doneInt in FEvaluated then begin
-    Result := FIntValue;
-    exit;
-  end;
-  Include(FEvaluated, doneInt);
-
-  if (FSize <= 0) or (FSize > SizeOf(Result)) then
-    Result := inherited GetAsInteger
-  else
-  if not MemManager.ReadSignedInt(OrdOrDataAddr, FSize, Result) then
-    Result := 0; // TODO: error
-
-  FIntValue := Result;
 end;
 
 constructor TDbgDwarfNumericSymbolValue.Create(AOwner: TDbgDwarfIdentifier; ASize: Integer);

@@ -57,7 +57,8 @@ type
 
 
   TFpDbgMemReadDataType = (
-    rdtAddress, rdtSignedInt, rdtUnsignedInt
+    rdtAddress, rdtSignedInt, rdtUnsignedInt,
+    rdtEnum, rdtSet
   );
 
   TFpDbgMemConvData = record
@@ -217,13 +218,13 @@ type
     //                         out AValue: Int64;
     //                         AnOpts: TFpDbgMemReadOptions): Boolean;
     // //enum/set: may need bitorder swapped
-    //function ReadEnum       (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
-    //                         out AValue: QWord): Boolean; inline;
+    function ReadEnum       (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+                             out AValue: QWord): Boolean; inline;
     //function ReadEnum       (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
     //                         out AValue: QWord;
     //                         AnOpts: TFpDbgMemReadOptions): Boolean;
-    //function ReadSet        (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
-    //                         out AValue: TBytes): Boolean; inline;
+    function ReadSet        (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
+                             out AValue: TBytes): Boolean; inline;
     //function ReadSet        (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
     //                         out AValue: TBytes;
     //                         AnOpts: TFpDbgMemReadOptions): Boolean;
@@ -364,15 +365,19 @@ function TFpDbgMemConvertorLittleEndian.PrepareTargetRead(AReadDataType: TFpDbgM
   ATargetPointer: TDbgPtr; ADestPointer: Pointer; ATargetSize, ADestSize: Cardinal; out
   AConvertorData: TFpDbgMemConvData): boolean;
 begin
-  Result := True;
+  Result := False;
   case AReadDataType of
-    rdtAddress, rdtSignedInt, rdtUnsignedInt: begin
+    rdtAddress, rdtSignedInt, rdtUnsignedInt, rdtEnum, rdtSet: begin
         Result := ATargetSize <= ADestSize;
         // just read to begin of data
         AConvertorData.NewTargetAddress := ATargetPointer;
         AConvertorData.NewDestAddress   := ADestPointer;
         AConvertorData.NewReadSize      := Min(ATargetSize, ADestSize);
       end;
+    else begin
+      Assert(False, 'TFpDbgMemConvertorLittleEndian.PrepareTargetRead');
+      Result := False;
+    end;
   end;
 end;
 
@@ -382,7 +387,7 @@ function TFpDbgMemConvertorLittleEndian.FinishTargetRead(AReadDataType: TFpDbgMe
 begin
   Result := True;
   case AReadDataType of
-    rdtAddress, rdtUnsignedInt: begin
+    rdtAddress, rdtUnsignedInt, rdtEnum, rdtSet: begin
         if ATargetSize < ADestSize then
           FillByte((ADestPointer + ATargetSize)^, ADestSize-ATargetSize, $00)
       end;
@@ -394,6 +399,10 @@ begin
           else
             FillByte((ADestPointer + ATargetSize)^, ADestSize-ATargetSize, $00);
       end;
+    else begin
+      Assert(False, 'TFpDbgMemConvertorLittleEndian.FailedTargetRead');
+      Result := False;
+    end;
   end;
 end;
 
@@ -616,6 +625,21 @@ function TFpDbgMemManager.ReadSignedInt(const ALocation: TFpDbgMemLocation; ASiz
   out AValue: Int64): Boolean;
 begin
   Result := ReadMemory(rdtSignedInt, ALocation, ASize, @AValue, SizeOf(AValue));
+end;
+
+function TFpDbgMemManager.ReadEnum(const ALocation: TFpDbgMemLocation; ASize: Cardinal; out
+  AValue: QWord): Boolean;
+begin
+  Result := ReadMemory(rdtEnum, ALocation, ASize, @AValue, SizeOf(AValue));
+end;
+
+function TFpDbgMemManager.ReadSet(const ALocation: TFpDbgMemLocation; ASize: Cardinal; out
+  AValue: TBytes): Boolean;
+begin
+  SetLength(AValue, ASize);
+  Result := ASize > 0;
+  if Result then
+    Result := ReadMemory(rdtSet, ALocation, ASize, @AValue[0], ASize);
 end;
 
 end.
