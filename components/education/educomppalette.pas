@@ -62,14 +62,16 @@ type
   private
     HideImgID: LongInt;
     ShowImgID: LongInt;
+    fCompNameToImgIndex: TStringToPointerTree; // Component.ClassName to index+1 in TreeViews.Images
     procedure FillComponentTreeView;
     procedure SaveFillComponentTreeView;
     procedure ShowHideAll(aShow: boolean);
     procedure ShowSelected(extended: boolean);
   public
+    destructor Destroy; override;
     function GetTitle: String; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
   end;
@@ -137,9 +139,52 @@ begin
   ShowSelected(false);
 end;
 
-
-
 procedure TEduCompPaletteFrame.FillComponentTreeView;
+
+  function GetIconCopy(ResName: string): TCustomBitMap;
+  var
+    ResHandle: TLResource;
+  begin
+    Result := nil;
+    // prevent raising exception and speedup a bit search/load
+    ResHandle := LazarusResources.Find(ResName);
+    if ResHandle <> nil then
+      Result := CreateBitmapFromLazarusResource(ResHandle)
+    else
+    if FindResource(HInstance, PChar(ResName), PChar(RT_BITMAP)) <> 0 then
+    begin
+      Result := TBitmap.Create;
+      Result.LoadFromResourceName(HInstance, ResName);
+      Result.Transparent := True;
+    end
+    else
+    if FindResource(HInstance, PChar(ResName), PChar(RT_RCDATA)) <> 0 then
+      Result := CreateBitmapFromResourceName(HInstance, ResName);
+  end;
+
+  function GetCompImgIndex(ResName: string): integer;
+  var
+    Img: TCustomBitmap;
+  begin
+    if fCompNameToImgIndex=nil then
+      fCompNameToImgIndex:=TStringToPointerTree.Create(false);
+    if fCompNameToImgIndex.Contains(ResName) then begin
+      Result:=PtrUInt(fCompNameToImgIndex[ResName])-1;
+    end else begin
+      // load
+      Img:=GetIconCopy(ResName);
+      if Img=nil then
+        Img:=GetIconCopy('unregisteredcomponent');
+      if Img<>nil then begin
+        Result:=ComponentsTreeView.Images.Add(Img,nil);
+        Img.Free;
+      end else begin
+        Result:=-1;
+      end;
+      fCompNameToImgIndex[ResName]:=Pointer(PtrUInt(Result+1));
+    end;
+  end;
+
 var
   i: Integer;
   Page: TBaseComponentPage;
@@ -147,8 +192,6 @@ var
   Comp: TRegisteredComponent;
   PageNode: TTreeNode;
   CompNode: TTreeNode;
-  ResHandle: TLResource;
-  Image: TCustomBitmap;
   CompName: String;
 begin
   ComponentsTreeView.BeginUpdate;
@@ -170,15 +213,7 @@ begin
       Comp:=Page[j];
       CompName:=Comp.ComponentClass.ClassName;
       CompNode:=ComponentsTreeView.Items.AddChild(PageNode,CompName);
-      ResHandle := LazarusResources.Find(CompName);
-      if ResHandle <> nil then
-        Image := CreateBitmapFromResourceName(HInstance, ResHandle)
-      else
-        Image := nil;
-      if Image = nil then
-        Image := CreateBitmapFromResourceName(HInstance, 'default');
-      CompNode.ImageIndex:=ComponentsTreeView.Images.Add(Image,nil);
-      Image.Free;
+      CompNode.ImageIndex:=GetCompImgIndex(CompName);
       CompNode.SelectedIndex:=CompNode.ImageIndex;
       if EduComponentPaletteOptions.ComponentVisible[CompName] then
         CompNode.StateIndex:=ShowImgID
@@ -316,6 +351,12 @@ begin
   ComponentsTreeView.EndUpdate;
 end;
 
+destructor TEduCompPaletteFrame.Destroy;
+begin
+  FreeAndNil(fCompNameToImgIndex);
+  inherited Destroy;
+end;
+
 function TEduCompPaletteFrame.GetTitle: String;
 begin
   Result:=ersEduCompPaletteTitle;
@@ -363,7 +404,7 @@ begin
   if AValue then
     fVisible[ComponentName]:='1'
   else
-    fVisible.Delete(ComponentName);
+    fVisible.Remove(ComponentName);
 end;
 
 procedure TEduComponentPaletteOptions.VoteForVisible(

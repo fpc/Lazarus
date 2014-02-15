@@ -56,7 +56,7 @@ type
     procedure ShowAllButtonClick(Sender: TObject);
     procedure ShowSelectionButtonClick(Sender: TObject);
     procedure SpeedButtonsTreeViewMouseDown(Sender: TObject;
-      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+      Button: TMouseButton; {%H-}Shift: TShiftState; X, Y: Integer);
     procedure FrameClick(Sender: TObject);
   private
     HideImgID: LongInt;
@@ -69,7 +69,7 @@ type
   public
     function GetTitle: String; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
   end;
@@ -118,7 +118,7 @@ begin
   if AValue then
     fVisible[ButtonName]:='1'
   else
-    fVisible.Delete(ButtonName);
+    fVisible.Remove(ButtonName);
 end;
 
 function TEduSpeedButtonsOptions.Load(Config: TConfigStorage): TModalResult;

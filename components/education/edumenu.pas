@@ -55,7 +55,7 @@ type
     ShowAllChildsButton: TButton;
     procedure FrameClick(Sender: TObject);
     procedure MenusTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+      {%H-}Shift: TShiftState; X, Y: Integer);
     procedure ShowAllButtonClick(Sender: TObject);
     procedure ShowAllChildsButtonClick(Sender: TObject);
   private
@@ -71,7 +71,7 @@ type
   public
     function GetTitle: String; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
   end;
@@ -328,7 +328,7 @@ begin
   if AValue then
     fHidden[MenuPath]:='1'
   else
-    fHidden.Delete(MenuPath);
+    fHidden.Remove(MenuPath);
 end;
 
 constructor TEduMenuOptions.Create;

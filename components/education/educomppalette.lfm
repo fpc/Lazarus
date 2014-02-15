@@ -1,5 +1,7 @@
-inherited EduCompPaletteFrame: TEduCompPaletteFrame
+object EduCompPaletteFrame: TEduCompPaletteFrame
+  Left = 0
   Height = 409
+  Top = 0
   Width = 480
   ClientHeight = 409
   ClientWidth = 480
@@ -7,39 +9,37 @@ inherited EduCompPaletteFrame: TEduCompPaletteFrame
   TabOrder = 0
   DesignLeft = 286
   DesignTop = 126
-  object ComponentsGroupBox: TGroupBox[0]
-    AnchorSideTop.Control = Owner
-    AnchorSideBottom.Control = Owner
+  object ComponentsGroupBox: TGroupBox
     AnchorSideBottom.Side = asrBottom
-    Left = 169
+    Left = 153
     Height = 397
     Top = 6
-    Width = 305
+    Width = 321
     Align = alClient
     Anchors = [akTop, akBottom]
     BorderSpacing.Around = 6
     Caption = 'ComponentsGroupBox'
-    ClientHeight = 378
-    ClientWidth = 301
+    ClientHeight = 380
+    ClientWidth = 317
     TabOrder = 0
     object ComponentsTreeView: TTreeView
       Left = 0
-      Height = 378
+      Height = 380
       Top = 0
-      Width = 301
+      Width = 317
       Align = alClient
-      DefaultItemHeight = 19
+      DefaultItemHeight = 18
       ReadOnly = True
       TabOrder = 0
       OnMouseDown = ComponentsTreeViewMouseDown
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     end
   end
-  object LeftPanel: TPanel[1]
+  object LeftPanel: TPanel
     Left = 0
     Height = 409
     Top = 0
-    Width = 163
+    Width = 147
     Align = alLeft
     AutoSize = True
     ChildSizing.LeftRightSpacing = 6
@@ -47,13 +47,13 @@ inherited EduCompPaletteFrame: TEduCompPaletteFrame
     ChildSizing.HorizontalSpacing = 6
     ChildSizing.VerticalSpacing = 6
     ClientHeight = 409
-    ClientWidth = 163
+    ClientWidth = 147
     TabOrder = 1
     object ShowAllButton: TButton
       Left = 7
-      Height = 29
-      Top = 77
-      Width = 149
+      Height = 27
+      Top = 73
+      Width = 133
       Align = alTop
       AutoSize = True
       Caption = 'ShowAllButton'
@@ -62,9 +62,9 @@ inherited EduCompPaletteFrame: TEduCompPaletteFrame
     end
     object HideAllButton: TButton
       Left = 7
-      Height = 29
-      Top = 136
-      Width = 149
+      Height = 27
+      Top = 130
+      Width = 133
       Align = alTop
       AutoSize = True
       BorderSpacing.Top = 30
@@ -74,9 +74,9 @@ inherited EduCompPaletteFrame: TEduCompPaletteFrame
     end
     object ShowMinimalButton: TButton
       Left = 7
-      Height = 29
+      Height = 27
       Top = 7
-      Width = 149
+      Width = 133
       Align = alTop
       AutoSize = True
       Caption = 'ShowMinimalButton'
@@ -85,9 +85,9 @@ inherited EduCompPaletteFrame: TEduCompPaletteFrame
     end
     object ShowExtendedButton: TButton
       Left = 7
-      Height = 29
-      Top = 42
-      Width = 149
+      Height = 27
+      Top = 40
+      Width = 133
       Align = alTop
       AutoSize = True
       Caption = 'ShowExtendedButton'

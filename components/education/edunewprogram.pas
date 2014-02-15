@@ -44,8 +44,8 @@ type
   TFileDescSingleFileProgram = class(TProjectFileDescriptor)
   public
     constructor Create; override;
-    function CreateSource(const Filename, SourceName,
-                          ResourceName: string): string; override;
+    function CreateSource(const {%H-}Filename, SourceName,
+                          {%H-}ResourceName: string): string; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
   end;
@@ -95,7 +95,7 @@ type
   public
     function GetTitle: String; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
   end;
@@ -149,7 +149,6 @@ begin
 end;
 
 constructor TEduNewPrgOptions.Create;
-const le = LineEnding;
 begin
   inherited Create;
   Name:='NewProgram';
