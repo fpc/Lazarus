@@ -5,7 +5,7 @@ unit TestWatches;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl,
+  Classes, SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl, DbgIntfBaseTypes,
   TestBase, Debugger, GDBMIDebugger, LCLProc, SynRegExpr, Forms, StdCtrls, Controls;
 
 const
@@ -1311,6 +1311,13 @@ begin
   // maybe typename = "set of TEnum"
   AddFmtDef('VarEnumSetA',     '^\[Three\]$',                skSet,        '', [IgnDwrf2IfNoSet]);
   AddFmtDef('VarSetA',         '^\[s2\]$',                   skSet,        '', [IgnDwrf2IfNoSet]);
+
+  AddFmtDef('GlobSubEnum',        '^Two$',                   skEnum,       '', []);
+
+  AddFmtDef('GlobSubRange1',   '^55$',                   skSimple,        '9..77', []);
+  //some gdb report 248 (stabs <= 7.2.1 // )
+  AddFmtDef('GlobSubRange2',   '.',                   skSimple,        '-9..-7', []);
+
   {%endregion    * Enum/Set * }
 
   {%region    * Variant * }
@@ -2015,11 +2022,9 @@ var
   end;
 
   procedure TestWatch(Name: String; AWatch: TCurrentWatch; Data: TWatchExpectation; WatchValue: String = '');
-  const KindName: array [TDBGSymbolKind] of string =
-     ('skClass', 'skRecord', 'skEnum', 'skSet', 'skProcedure', 'skFunction', 'skSimple', 'skPointer', 'skVariant');
   var
     rx: TRegExpr;
-    s: String;
+    s, s2: String;
     flag, IsValid, HasTpInfo, f2: Boolean;
     WV: TWatchValue;
     Stack: Integer;
@@ -2096,13 +2101,14 @@ var
 
     // Check TypeInfo
     s:='';
-    if HasTpInfo then s := KindName[WV.TypeInfo.Kind];
+    if HasTpInfo then WriteStr(s, WV.TypeInfo.Kind);
+    WriteStr(s2, DataRes.ExpKind);
     IgnoreText := '';    if IgnoreKind then IgnoreText := 'Ignored by flag';
     if IsValid and HasTpInfo then begin
       if (not IgnoreKind) and IgnoreKindPtr and (WV.TypeInfo.Kind = skPointer) then IgnoreText := 'Ignored by flag (Kind may be Ptr)';
-      f2 := TestEquals(Name + ' Kind',  KindName[DataRes.ExpKind], KindName[WV.TypeInfo.Kind], DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+      f2 := TestEquals(Name + ' Kind',  s2, s, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
     end else begin
-      f2 := TestTrue(Name + ' Kind is "'+KindName[DataRes.ExpKind]+'", failed: STATE was <'+dbgs(WV.Validity)+'>, HasTypeInfo='+dbgs(HasTpInfo)+' Val="'+s+'"', False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+      f2 := TestTrue(Name + ' Kind is "'+s2+'", failed: STATE was <'+dbgs(WV.Validity)+'>, HasTypeInfo='+dbgs(HasTpInfo)+' Val="'+s+'"', False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
     end;
 
     if (not f2) and IgnoreAll then exit; // failed Data, do not list others as potential unexpected success
@@ -2112,7 +2118,7 @@ var
     if IsValid and HasTpInfo then begin
       s:='';
       if HasTpInfo then s := WV.TypeInfo.TypeName;
-      CmpNames('TypeName', DataRes.ExpTypeName, s, fTpMtch  in DataRes.Flgs);
+      CmpNames(Name+' TypeName', DataRes.ExpTypeName, s, fTpMtch  in DataRes.Flgs);
       //if fTpMtch  in DataRes.Flgs
       //then begin
       //  rx := TRegExpr.Create;
@@ -2138,8 +2144,11 @@ var
                    DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
           if j >= 0 then begin
             fld := WV.TypeInfo.Fields[j];
+            WriteStr(s, MemberTests[i].ExpKind);
+            WriteStr(s2, fld.DBGType.Kind);
             if fld.DBGType <> nil then begin
-              TestTrue(Name + ' members with name ' +  MemberTests[i].Name + ' type=' + KindName[MemberTests[i].ExpKind] + ' but was ' + KindName[fld.DBGType.Kind],
+              TestTrue(Name + ' members with name ' +  MemberTests[i].Name + ' type='
+              + s + ' but was ' + s2,
                   MemberTests[i].ExpKind = fld.DBGType.Kind, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
               CmpNames(Name + ' members with name ' +  MemberTests[i].Name + 'TypeName',
                        MemberTests[i].ExpTypeName, fld.DBGType.TypeName, fTpMtch  in MemberTests[i].Flgs);

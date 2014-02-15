@@ -5,7 +5,7 @@ unit TestBreakPoint;
 interface
 
 uses
-  SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl,
+  SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl, DbgIntfBaseTypes,
   TestBase, Debugger, GDBMIDebugger, LCLProc, TestWatches;
 
 type

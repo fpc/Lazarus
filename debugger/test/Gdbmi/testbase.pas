@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry,
   EnvironmentOpts, TransferMacros, LCLProc, LazLogger, CompileHelpers, Dialogs, ExtToolDialog,
-  Debugger, GDBMIDebugger;
+  Debugger, GDBMIDebugger, FpGdbmiDebugger;
 
 (*
   fpclist.txt contains lines of format:
@@ -387,6 +387,7 @@ end;
 function TGDBTestCase.GdbClass: TGDBMIDebuggerClass;
 begin
   Result := TGDBMIDebugger;
+  //Result := TFPGDBMIDebugger;
 end;
 
 procedure TGDBTestCase.DoDbgOut(Sender: TObject; S: string; var Handled: Boolean);
@@ -1265,6 +1266,10 @@ initialization
   DebugLogger.FindOrRegisterLogGroup('DBG_DISASSEMBLER', True  )^.Enabled := True;
   DebugLogger.FindOrRegisterLogGroup('DBGMI_TYPE_INFO', True  )^.Enabled := True;
   DebugLogger.FindOrRegisterLogGroup('DBGMI_TIMEOUT_DEBUG', True  )^.Enabled := True;
+
+  DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_SEARCH', True)^.Enabled := True;
+  DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_WARNINGS', True)^.Enabled := True;
+//FPDBG_DWARF_VERBOSE
 
 
   AppDir := AppendPathDelim(ExtractFilePath(Paramstr(0)));
