@@ -7,7 +7,7 @@ interface
 uses
   FpPascalParser, FpDbgDwarf, FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazUTF8, sysutils,
   fpcunit, testregistry, TestHelperClasses, TestDwarfSetup1, TestDwarfSetupBasic,
-  TestDwarfSetupArray;
+  DbgIntfBaseTypes, TestDwarfSetupArray;
 
 
 type

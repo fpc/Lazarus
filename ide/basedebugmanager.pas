@@ -40,7 +40,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Project, SourceMarks, Debugger, ProjectDefs,
+  Classes, SysUtils, Forms, Project, SourceMarks, DbgIntfBaseTypes, Debugger, ProjectDefs,
   IDEOptionsIntf, LazarusIDEStrConsts, Laz2_XMLCfg;
 
 type

@@ -101,7 +101,7 @@ uses
   Translations,
   // debugger
   RunParamsOpts, BaseDebugManager, DebugManager, debugger, DebuggerDlg,
-  DebugAttachDialog,
+  DebugAttachDialog, DbgIntfBaseTypes,
   // packager
   PackageSystem, PkgManager, BasePkgManager, LPKCache,
   // source editing

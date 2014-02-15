@@ -5,7 +5,8 @@ unit TestHelperClasses;
 interface
 
 uses
-  Classes, SysUtils, FpImgReaderBase, FpDbgDwarfConst, FpDbgLoader, FpDbgInfo, FpdMemoryTools;
+  Classes, SysUtils, FpImgReaderBase, FpDbgDwarfConst, FpDbgLoader, FpDbgInfo,
+  DbgIntfBaseTypes, FpdMemoryTools;
 
 const
   TestAddrSize = sizeof(Pointer);

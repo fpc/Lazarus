@@ -38,12 +38,10 @@ unit Debugger;
 interface
 
 uses
-  TypInfo, Classes, SysUtils, Laz2_XMLCfg, math, FileUtil, LazLoggerBase, LazClasses,
+  DbgIntfBaseTypes, DbgIntfMiscClasses, TypInfo, Classes, SysUtils, Laz2_XMLCfg, math, FileUtil, LazLoggerBase, LazClasses,
   LCLProc, LazConfigStorage, DebugUtils, maps, contnrs;
 
 type
-  // datatype pointing to data on the target
-  TDBGPtr = DebugUtils.TDBGPtr;
 
   TDBGLocationRec = record
     Address: TDBGPtr;
@@ -219,21 +217,6 @@ type
     property DebuggerClass: String read FDebuggerClass write FDebuggerClass;
     property DlgWatchesConfig: TDebuggerWatchesDlgConfig read FTDebuggerWatchesDlgConfig;
   published
-  end;
-
-  { TRefCountedColectionItem }
-
-  TRefCountedColectionItem = class(TDelayedUdateItem)
-  public
-    constructor Create(ACollection: TCollection); override;
-    destructor  Destroy; override;
-    procedure AddReference;
-    procedure ReleaseReference;
-  private
-    FRefCount: Integer;
-  protected
-    procedure DoFree; virtual;
-    property  RefCount: Integer read FRefCount;
   end;
 
 procedure ReleaseRefAndNil(var ARefCountedObject);
@@ -919,7 +902,6 @@ type
 (******************************************************************************)
 
   type
-  TDBGSymbolKind = (skClass, skRecord, skEnum, skSet, skProcedure, skFunction, skSimple, skPointer, skVariant);
   TDBGSymbolAttribute = (saRefParam,        // var, const, constref passed by reference
                          saInternalPointer, // PointerToObject
                          saArray, saDynArray
@@ -6189,38 +6171,6 @@ end;
 procedure TDebuggerProperties.Assign(Source: TPersistent);
 begin
   //
-end;
-
-{ =========================================================================== }
-{ TRefCountedColectionItem }
-
-constructor TRefCountedColectionItem.Create(ACollection: TCollection);
-begin
-  FRefCount := 0;
-  inherited Create(ACollection);
-end;
-
-destructor TRefCountedColectionItem.Destroy;
-begin
-  Assert(FRefcount = 0, 'Destroying referenced object');
-  inherited Destroy;
-end;
-
-procedure TRefCountedColectionItem.AddReference;
-begin
-  Inc(FRefcount);
-end;
-
-procedure TRefCountedColectionItem.ReleaseReference;
-begin
-  Assert(FRefCount > 0, 'TRefCountedObject.ReleaseReference  RefCount > 0');
-  Dec(FRefCount);
-  if FRefCount = 0 then DoFree;
-end;
-
-procedure TRefCountedColectionItem.DoFree;
-begin
-  Self.Free;
 end;
 
 (******************************************************************************)

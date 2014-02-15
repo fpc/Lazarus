@@ -46,6 +46,7 @@ uses
   FpDbgWinExtra,
   FpDbgInfo,
   FpDbgLoader, FpdMemoryTools,
+  DbgIntfBaseTypes,
   LazLoggerBase;
 
 type

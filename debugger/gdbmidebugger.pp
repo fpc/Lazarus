@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils, strutils, Controls, Math, Variants, LCLProc, LazClasses, LazLoggerBase,
   Dialogs, DebugUtils, Debugger, FileUtil, LazLoggerProfiling, BaseIDEIntf, CmdLineDebugger,
-  GDBTypeInfo, Maps, GDBMIDebugInstructions, LCLIntf, Forms,
+  DbgIntfBaseTypes, GDBTypeInfo, Maps, GDBMIDebugInstructions, LCLIntf, Forms,
 {$IFdef MSWindows}
   Windows,
 {$ENDIF}

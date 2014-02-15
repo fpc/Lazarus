@@ -24,10 +24,9 @@ unit FpdMemoryTools;
 interface
 
 uses
-  Classes, SysUtils, math;
+  Classes, SysUtils, math, DbgIntfBaseTypes;
 
 type
-  TDbgPtr = QWord; // TODO, use from IdeDebuggerInterface, once that is done.
 
   TFpDbgMemReaderBase = class
   public

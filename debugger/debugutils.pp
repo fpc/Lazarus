@@ -35,30 +35,9 @@ unit DebugUtils;
 interface 
 
 uses
-  Classes, LCLProc;
+  DbgIntfBaseTypes, Classes, LCLProc;
 
 type
-
-  TDBGPtr = type QWord;
-
-  { TDelayedUdateItem }
-
-  TDelayedUdateItem = class(TCollectionItem)
-  private
-    FUpdateCount: Integer;
-    FDoChanged: Boolean;
-  protected
-    procedure Changed;
-    procedure DoChanged; virtual;
-    procedure DoEndUpdate; virtual; // even if not changed
-  public
-    procedure Assign(ASource: TPersistent); override;
-    procedure BeginUpdate;
-    constructor Create(ACollection: TCollection); override;
-    procedure EndUpdate;
-    function IsUpdating: Boolean;
-  end;
-
 
   TPCharWithLen = record
     Ptr: PChar;
@@ -522,66 +501,6 @@ begin
   Result := PCLenToString(AVal);
 end;
 
-
-
-{ TDelayedUdateItem }
-
-procedure TDelayedUdateItem.Assign(ASource: TPersistent);
-begin
-  BeginUpdate;
-  try
-    inherited Assign(ASource);
-  finally
-    EndUpdate;
-  end;
-end;
-
-procedure TDelayedUdateItem.BeginUpdate;
-begin
-  Inc(FUpdateCount);
-  if FUpdateCount = 1 then FDoChanged := False;
-end;
-
-procedure TDelayedUdateItem.Changed;
-begin
-  if FUpdateCount > 0
-  then FDoChanged := True
-  else DoChanged;
-end;
-
-constructor TDelayedUdateItem.Create(ACollection: TCollection);
-begin
-  inherited Create(ACollection);
-  FUpdateCount := 0;
-end;
-
-procedure TDelayedUdateItem.DoChanged;
-begin
-  inherited Changed(False);
-end;
-
-procedure TDelayedUdateItem.DoEndUpdate;
-begin
-  //
-end;
-
-procedure TDelayedUdateItem.EndUpdate;
-begin
-  Dec(FUpdateCount);
-  if FUpdateCount < 0 then raise EInvalidOperation.Create('TDelayedUdateItem.EndUpdate');
-  if (FUpdateCount = 0)
-  then DoEndUpdate;
-  if (FUpdateCount = 0) and FDoChanged
-  then begin
-    DoChanged;
-    FDoChanged := False;
-  end;
-end;
-
-function TDelayedUdateItem.IsUpdating: Boolean;
-begin
-  Result := FUpdateCount > 0;
-end;
 
 initialization
   LastSmartWritelnCount:=0;

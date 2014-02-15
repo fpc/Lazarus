@@ -5,8 +5,8 @@ unit TestMemManager;
 interface
 
 uses
-  FpDbgDwarf, FpDbgUtil, FpdMemoryTools, TestHelperClasses, LazLoggerBase, LazUTF8, sysutils,
-  fpcunit, testregistry;
+  FpDbgDwarf, FpDbgUtil, FpdMemoryTools, TestHelperClasses, LazLoggerBase, LazUTF8,
+  DbgIntfBaseTypes, sysutils, fpcunit, testregistry;
 
 type
 

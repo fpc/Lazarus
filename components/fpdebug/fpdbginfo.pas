@@ -5,7 +5,7 @@ unit FpDbgInfo;
 interface
 
 uses
-  Classes, SysUtils, FpDbgLoader, FpdMemoryTools, LazLoggerBase, LazClasses;
+  Classes, SysUtils, DbgIntfBaseTypes, FpDbgLoader, FpdMemoryTools, LazLoggerBase, LazClasses;
 
 type
   { TFpDbgCircularRefCountedObject }
@@ -43,40 +43,6 @@ type
     stNone,
     stValue,  // The symbol has a value (var, field, function, procedure (value is address of func/proc, so it can be called)
     stType    // The Symbol is a type (including proc/func declaration / without DW_AT_low_pc)
-  );
-
-  TDbgSymbolKind = (
-    skNone,          // undefined type
-//    skUser,          // userdefined type, this sym refers to another sym defined elswhere
-    skInstance,      // the main exe/dll, containing all other syms
-    skUnit,          // contains syms defined in this unit
-    //--------------------------------------------------------------------------
-    skRecord,        // the address member is the relative location within the
-    skObject,        // structure: type TFoo=object end;
-    skClass,
-    skInterface,
-    skProcedure,
-    skFunction,
-    //--------------------------------------------------------------------------
-    skArray,
-    //--------------------------------------------------------------------------
-    skPointer,
-    skInteger,       // Basic types, these cannot have references or children
-    skCardinal,      // only size matters ( char(1) = Char, char(2) = WideChar
-    skBoolean,       // cardinal(1) = Byte etc.
-    skChar,
-    skFloat,
-    skString,
-    skAnsiString,
-    skCurrency,
-    skVariant,
-    skWideString,
-    skEnum,       // Variable holding an enum / enum type
-    skEnumValue,  // a single element from an enum
-    skSet,
-    //--------------------------------------------------------------------------
-    skRegister       // the Address member is the register number
-    //--------------------------------------------------------------------------
   );
 
   TDbgSymbolMemberVisibility =(

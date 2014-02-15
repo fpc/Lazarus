@@ -9,7 +9,8 @@ unit FpGdbmiDebugger;
 interface
 
 uses
-  Classes, {$IFdef MSWindows}windows,{$ENDIF} sysutils, math, FpdMemoryTools, FpDbgInfo, FpDbgClasses, GDBMIDebugger, BaseDebugManager,
+  Classes, {$IFdef MSWindows}windows,{$ENDIF} sysutils, math, FpdMemoryTools,
+  FpDbgInfo, FpDbgClasses, GDBMIDebugger, BaseDebugManager, DbgIntfBaseTypes,
   Debugger, GDBMIMiscClasses, GDBTypeInfo, maps, LCLProc, Forms, FpDbgLoader, FpDbgDwarf,
   FpDbgDwarfConst, LazLoggerBase, LazLoggerProfiling, FpPascalParser, FpPascalBuilder;
 
@@ -27,9 +28,9 @@ type
     FDebugger: TFpGDBMIDebugger;
   public
     constructor Create(ADebugger: TFpGDBMIDebugger);
-    function ReadMemory(AnAddress: FpdMemoryTools.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
-    function ReadMemoryEx(AnAddress, AnAddressSpace: FpdMemoryTools.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
-    function ReadRegister(ARegNum: Cardinal; out AValue: FpdMemoryTools.TDbgPtr): Boolean; override;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean; override;
     function RegisterSize(ARegNum: Cardinal): Integer; override;
   end;
 
@@ -40,7 +41,7 @@ type
     hProcess: THandle;
   public
     destructor Destroy; override;
-    function ReadMemory(AnAddress: FpdMemoryTools.TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     //function ReadRegister(ARegNum: Integer; out AValue: TDbgPtr): Boolean; override;
     procedure OpenProcess(APid: Cardinal);
     procedure CloseProcess;
@@ -148,7 +149,7 @@ begin
   inherited Destroy;
 end;
 
-function TFpGDBMIAndWin32DbgMemReader.ReadMemory(AnAddress: FpdMemoryTools.TDbgPtr;
+function TFpGDBMIAndWin32DbgMemReader.ReadMemory(AnAddress: TDbgPtr;
   ASize: Cardinal; ADest: Pointer): Boolean;
 var
   BytesRead: Cardinal;
@@ -192,7 +193,7 @@ end;
 
 type TGDBMIDebuggerCommandHack = class(TGDBMIDebuggerCommand) end;
 
-function TFpGDBMIDbgMemReader.ReadMemory(AnAddress: FpdMemoryTools.TDbgPtr; ASize: Cardinal;
+function TFpGDBMIDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
   ADest: Pointer): Boolean;
 var
   cmd: TGDBMIDebuggerCommandHack;
@@ -223,14 +224,14 @@ begin
 debugln(['TFpGDBMIDbgMemReader.ReadMemory ', dbgs(AnAddress), '  ', dbgMemRange(ADest, ASize)]);
 end;
 
-function TFpGDBMIDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: FpdMemoryTools.TDbgPtr;
+function TFpGDBMIDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr;
   ASize: Cardinal; ADest: Pointer): Boolean;
 begin
   Result := False;
 end;
 
 function TFpGDBMIDbgMemReader.ReadRegister(ARegNum: Cardinal; out
-  AValue: FpdMemoryTools.TDbgPtr): Boolean;
+  AValue: TDbgPtr): Boolean;
 var
   rname: String;
   v: String;
@@ -301,7 +302,7 @@ const
     ADeRefTypeName := '';
     ABaseTypeName  := ABaseType.Name;
 
-    while (ABaseType.Kind = FpDbgInfo.skPointer) and (ABaseType.TypeInfo <> nil) do begin
+    while (ABaseType.Kind = skPointer) and (ABaseType.TypeInfo <> nil) do begin
       ABaseType := ABaseType.TypeInfo;
       inc(APointerLevel);
 
@@ -345,7 +346,7 @@ const
     begin
 //todo: functions / virtual / array ...
       s2 := '';
-      if AMember.Kind = FpDbgInfo.skProcedure then begin
+      if AMember.Kind = skProcedure then begin
         if sfVirtual in AMember.Flags then s2 := ' virtual;';
         AText := AText + '    procedure ' + AMember.Name + ' ();' + s2 + LineEnding;
         exit
@@ -359,9 +360,9 @@ const
 
       s := ti.Name;
       if s = '' then begin
-        if not( (AMember.Kind = FpDbgInfo.skSet) or (AMember.Kind = FpDbgInfo.skEnum) or
-                (AMember.Kind = FpDbgInfo.skArray) or (AMember.Kind = FpDbgInfo.skPointer) or
-                (AMember.Kind = FpDbgInfo.skRecord)
+        if not( (AMember.Kind = skSet) or (AMember.Kind = skEnum) or
+                (AMember.Kind = skArray) or (AMember.Kind = skPointer) or
+                (AMember.Kind = skRecord)
               )
         then begin
           Result := False;
@@ -373,7 +374,7 @@ const
         end
       end;
 
-      if AMember.Kind = FpDbgInfo.skFunction then begin
+      if AMember.Kind = skFunction then begin
         if sfVirtual in AMember.Flags then s2 := ' virtual;';
         AText := AText + '    function  ' + AMember.Name + ' () : '+s+';' + s2 + LineEnding;
       end
@@ -693,7 +694,7 @@ const
         if (AVal <> nil) and (ATypeIdent.Kind = skBoolean) then
           MaybeAdd(gcrtEvalExpr, GdbCmdEval + ASourceExpr, Format(',value="%s"', [dbgs(AVal.AsBool)]))
         else
-        if (AVal <> nil) and (ATypeIdent.Kind = FpDbgInfo.skPointer) then
+        if (AVal <> nil) and (ATypeIdent.Kind = skPointer) then
           MaybeAdd(gcrtEvalExpr, GdbCmdEval + ASourceExpr, Format(',value="%u"', [AVal.AsCardinal]))
         ;
       end;
@@ -701,28 +702,28 @@ const
         AddBaseType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
-      FpDbgInfo.skClass:
+      skClass:
         AddClassType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
-      FpDbgInfo.skRecord:
+      skRecord:
         AddRecordType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
-      FpDbgInfo.skEnum: begin
+      skEnum: begin
         AddEnumType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
-        if (AVal <> nil) and (ATypeIdent.Kind = FpDbgInfo.skEnum) then
+        if (AVal <> nil) and (ATypeIdent.Kind = skEnum) then
           if AVal.AsString = ''
           then MaybeAdd(gcrtEvalExpr, GdbCmdEval + ASourceExpr, Format(',value="%u"', [AVal.AsCardinal]))
           else MaybeAdd(gcrtEvalExpr, GdbCmdEval + ASourceExpr, Format(',value="%s"', [AVal.AsString]));
       end;
-      FpDbgInfo.skSet: begin
+      skSet: begin
         AddSetType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
-        if (AVal <> nil) and (ATypeIdent.Kind = FpDbgInfo.skSet) then begin
+        if (AVal <> nil) and (ATypeIdent.Kind = skSet) then begin
           s := '';
           for i := 0 to AVal.MemberCount-1 do
             if i = 0
@@ -731,7 +732,7 @@ const
           MaybeAdd(gcrtEvalExpr, GdbCmdEval + ASourceExpr, Format(',value="[%s]"', [s]))
         end;
       end;
-      FpDbgInfo.skArray:
+      skArray:
         AddArrayType(ASourceExpr, PointerLevel,
                     SrcTypeName, DeRefTypeName, BaseTypeName,
                     ATypeIdent, BaseType);
@@ -767,7 +768,7 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
         if PasExpr.Valid and (PasExpr.ResultValue <> nil) then begin
           rt := PasExpr.ResultValue.DbgSymbol; // value or typecast
 if rt <> nil then  debugln(['@@@@@ ',rt.ClassName, '   ADDR=', dbgs(rt.Address)]);
-DebugLn(['== VAL === ', PasExpr.ResultValue.AsInteger, '  /  ', PasExpr.ResultValue.AsCardinal,  '  /  ', PasExpr.ResultValue.AsBool,  '  /  ', PasExpr.ResultValue.AsString,  '  /  ', PasExpr.ResultValue.MemberCount]);
+DebugLn(['== VAL === ', PasExpr.ResultValue.AsInteger, '  /  ', PasExpr.ResultValue.AsCardinal,  '  /  ', PasExpr.ResultValue.AsBool,  '  /  ', PasExpr.ResultValue.AsString,  '  /  ', PasExpr.ResultValue.MemberCount,  '  /  ', PasExpr.ResultValue.AsFloat]);
 
           if (rt <> nil) and (rt is TDbgDwarfValueIdentifier) then begin
             // symbol is value

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics,
-  IDEWindowIntf,
+  IDEWindowIntf, DbgIntfBaseTypes,
   ComCtrls, StdCtrls, ExtCtrls, LclType, LCLIntf, DebuggerDlg, Debugger,
   BaseDebugManager, EditorOptions, Math, types, LCLProc, Menus, Clipbrd, ActnList,
   IDECommands, IDEImagesIntf, CodeToolManager, CodeCache, SourceEditor;

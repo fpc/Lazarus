@@ -57,8 +57,8 @@ uses
   DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
   CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
   InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg, ThreadDlg, HistoryDlg,
-  GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger, GDBMIServerDebugger,
-  BaseDebugManager;
+  GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger, GDBMIServerDebugger, 
+  DbgIntfBaseTypes, BaseDebugManager;
 
 
 type

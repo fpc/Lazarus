@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgWinExtra, FpDbgLoader,
-  FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses;
+  FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses, DbgIntfBaseTypes;
 
 type
   TDbgProcess = class;
