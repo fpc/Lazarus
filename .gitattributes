@@ -1110,6 +1110,7 @@ components/dbexport/tstandardexportformats.xpm svneol=native#text/plain
 components/dbexport/ttexexporter.xpm svneol=native#text/plain
 components/dbexport/txmlxsdexporter.xpm svneol=native#text/plain
 components/debuggerintf/Makefile svneol=native#text/plain
+components/debuggerintf/Makefile.compiled svneol=native#text/plain
 components/debuggerintf/Makefile.fpc svneol=native#text/plain
 components/debuggerintf/dbgintfbasetypes.pas svneol=native#text/pascal
 components/debuggerintf/dbgintfdebuggerbase.pp svneol=native#text/pascal
