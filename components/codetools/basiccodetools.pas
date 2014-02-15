@@ -257,7 +257,7 @@ function FindSourceType(const Source: string;
 function RenameProgramInSource(Source:TSourceLog;
    const NewProgramName:string):boolean;
 function FindProgramNameInSource(const Source:string;
-   var ProgramNameStart,ProgramNameEnd:integer):string;
+   out ProgramNameStart,ProgramNameEnd:integer):string;
 
 // unit name
 function RenameUnitInSource(Source:TSourceLog;const NewUnitName:string):boolean;
@@ -468,8 +468,10 @@ begin
 end;
 
 function FindProgramNameInSource(const Source:string;
-   var ProgramNameStart,ProgramNameEnd:integer):string;
+   out ProgramNameStart,ProgramNameEnd:integer):string;
 begin
+  ProgramNameStart:=0;
+  ProgramNameEnd:=0;
   if uppercasestr(FindSourceType(Source,ProgramNameStart,ProgramNameEnd))=
     'PROGRAM'
   then
