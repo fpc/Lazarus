@@ -53,7 +53,7 @@ type
     LeftPanel: TPanel;
     ShowAllButton: TButton;
     procedure ComponentsTreeViewMouseDown(Sender: TObject;
-      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+      Button: TMouseButton; {%H-}Shift: TShiftState; X, Y: Integer);
     procedure FrameClick(Sender: TObject);
     procedure HideAllButtonClick(Sender: TObject);
     procedure ShowAllButtonClick(Sender: TObject);

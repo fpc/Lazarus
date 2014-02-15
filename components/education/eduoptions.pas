@@ -173,7 +173,7 @@ type
     procedure DoAfterWrite(Restore: boolean); override;
     procedure Apply; virtual;
     function GetFullFilename: string;
-    function OnProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
+    function OnProjectOpened(Sender: TObject; {%H-}AProject: TLazProject): TModalResult;
     property Filename: string read FFilename write SetFilename;
     property Enabled: boolean read FEnabled write SetEnabled;
     property NeedLoad: boolean read FNeedLoad write FNeedLoad;

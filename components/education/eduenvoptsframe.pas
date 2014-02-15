@@ -19,8 +19,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, ComCtrls, ExtCtrls, StdCtrls, AvgLvlTree,
-  LazConfigStorage, IDEOptionsIntf, ComponentReg, IDEImagesIntf, LazIDEIntf,
+  Dialogs, ExtCtrls, StdCtrls,
+  LazConfigStorage, IDEOptionsIntf, IDEImagesIntf, LazIDEIntf,
   EduOptions;
 
 const
@@ -48,7 +48,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
