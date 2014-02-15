@@ -63,6 +63,7 @@ all: bigide
 clean:
 	$(MAKE) -C lazutils clean
 	$(MAKE) -C codetools clean
+	$(MAKE) -C debuggerintf clean
 	$(MAKE) -C lazcontrols clean
 	$(MAKE) -C ideintf clean
 	$(MAKE) -C synedit clean

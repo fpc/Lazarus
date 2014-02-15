@@ -1,12 +1,12 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for DebuggerIntf 0.0
+#   Makefile.fpc for DebuggerIntf 0.1
 #
-#   This file was generated on 14/02/2014
+#   This file was generated on 15.02.2014
 
 [package]
 name=debuggerintf
-version=0.0
+version=0.1
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
