@@ -115,6 +115,7 @@ type
     FFCLPackage: TLazPackage;
     FIDEIntfPackage: TLazPackage;
     FDebuggerIntfPackage: TLazPackage;
+    FLazDebuggerGdbmiPackage: TLazPackage;
     FItems: TFPList;   // unsorted list of TLazPackage
     FLazarusBasePackages: TFPList;
     FLazUtilsPackage: TLazPackage;
@@ -376,6 +377,7 @@ type
     property CodeToolsPackage: TLazPackage read FCodeToolsPackage;
     property IDEIntfPackage: TLazPackage read FIDEIntfPackage;
     property DebuggerIntfPackage: TLazPackage read FDebuggerIntfPackage;
+    property LazDebuggerGdbmiPackage: TLazPackage read FLazDebuggerGdbmiPackage;
     property LazarusBasePackages: TFPList read FLazarusBasePackages;
     property DefaultPackage: TLazPackage read FDefaultPackage;// fall back package for buggy/obsoleted stuff
 
@@ -768,6 +770,8 @@ begin
     FIDEIntfPackage:=nil
   else if CurPkg=DebuggerIntfPackage then
     FDebuggerIntfPackage:=nil
+  else if CurPkg=LazDebuggerGdbmiPackage then
+    FLazDebuggerGdbmiPackage:=nil
   else if CurPkg=SynEditPackage then
     FSynEditPackage:=nil
   else if CurPkg=LazControlsPackage then
@@ -1600,6 +1604,8 @@ begin
     end
     else if SysUtils.CompareText(APackage.Name,'DebuggerIntf')=0 then
       SetBasePackage(FDebuggerIntfPackage)
+    else if SysUtils.CompareText(APackage.Name,'LazDebuggerGdbmi')=0 then
+      SetBasePackage(FLazDebuggerGdbmiPackage)
     else if SysUtils.CompareText(APackage.Name,'SynEdit')=0 then
       SetBasePackage(FSynEditPackage)
     else if SysUtils.CompareText(APackage.Name,'LazControls')=0 then
@@ -1710,6 +1716,7 @@ begin
   LoadLazarusBasePackage('SynEdit');
   LoadLazarusBasePackage('IDEIntf');
   LoadLazarusBasePackage('DebuggerIntf');
+  LoadLazarusBasePackage('LazDebuggerGdbmi');
   LoadLazarusBasePackage('LazControls');
   LoadLazarusBasePackage('CodeTools');
   // the default package will be added on demand
@@ -1848,6 +1855,7 @@ begin
        or (PackageName='synedit')
        or (PackageName='ideintf')
        or (PackageName='debuggerintf')
+       or (PackageName='lazdebuggergdbmi')
        or (PackageName='codetools')
        or (PackageName='lazcontrols');
 end;

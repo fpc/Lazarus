@@ -33,6 +33,7 @@ begin
       PBuild.Dependencies.Add('synedit');
       PBuild.Dependencies.Add('ideintf');
       PBuild.Dependencies.Add('debuggerintf');
+      PBuild.Dependencies.Add('lazdebuggergdbmi');
 
 
       pbuild.SourcePath.Add('ide');

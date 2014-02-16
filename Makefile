@@ -2770,7 +2770,7 @@ help:
 	@$(ECHO) "   codetools      build package CodeTools, requires lazutils"
 	@$(ECHO) "   lcl            build package LCL, requires lazutils"
 	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm, requires LCL with nogui widgetset"
-	@$(ECHO) "   basecomponents build debuggerintf, lazcontrols, synedit, ideintf for the LCL_PLATFORM, requires lcl"
+	@$(ECHO) "   basecomponents build debuggerintf, lazdebuggergdbmi, lazcontrols, synedit, ideintf for the LCL_PLATFORM, requires lcl"
 	@$(ECHO) "   bigidecomponents build many extra packages for the LCL_PLATFORM, requires basecomponents"
 	@$(ECHO) "   lhelp          build lhelp, requires bigidecomponents"
 	@$(ECHO) "   starter        build startlazarus, requires basecomponents"
@@ -2818,6 +2818,7 @@ lcl:
 	$(MAKE) -C lcl
 basecomponents:
 	$(MAKE) -C components/debuggerintf
+	$(MAKE) -C components/lazdebuggergdbmi
 	$(MAKE) -C components/lazcontrols
 	$(MAKE) -C components/synedit
 	$(MAKE) -C components/ideintf
@@ -2841,6 +2842,7 @@ lazbuild: registration lazutils codetools
 	$(MAKE) -C lcl LCL_PLATFORM=nogui
 	$(MAKE) -C tools
 	$(MAKE) -C components/debuggerintf LCL_PLATFORM=nogui
+	$(MAKE) -C components/lazdebuggergdbmi LCL_PLATFORM=nogui
 	$(MAKE) -C components/lazcontrols LCL_PLATFORM=nogui
 	$(MAKE) -C components/synedit LCL_PLATFORM=nogui
 	$(MAKE) -C components/ideintf LCL_PLATFORM=nogui

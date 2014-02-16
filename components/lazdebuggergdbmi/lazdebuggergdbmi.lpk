@@ -3,11 +3,12 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="LazDebuggerGdbmi"/>
+    <Author Value="Lazarus Team / Marc Weustink  / Martin Friebe"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
         <CompilerMessages>
@@ -16,6 +17,11 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Debugger for Lazarus IDE.
+
+This debugger uses gdb and is based on gdb's mi interface."/>
+    <License Value="GPL"/>
+    <Version Minor="1"/>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>
