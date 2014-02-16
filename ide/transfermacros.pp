@@ -311,33 +311,34 @@ begin
             inc(InUse);
             if InUse>MaxUsePerMacro then begin
               // cycle detected
-              MacroStr:='<CYCLE:'+MacroName+'>';
-              Result:=false;
-              exit;
+              Handled:=true;
+              MacroStr:='<MACRO-CYCLE:'+MacroName+'>';
             end;
           end;
         end;
       end;
-      if fBusy=nil then fBusy:=TStringList.Create;
-      try
-        fBusy.Add(MacroName);
-        if MacroParam<>'' then begin
-          // substitute param
-          if not SubstituteStr(MacroParam,Data,Depth+1) then begin
+      if not Handled then begin
+        if fBusy=nil then fBusy:=TStringList.Create;
+        try
+          fBusy.Add(MacroName);
+          if MacroParam<>'' then begin
+            // substitute param
+            if not SubstituteStr(MacroParam,Data,Depth+1) then begin
+              Result:=false;
+              exit;
+            end;
+          end;
+          // find macro and get value
+          ExecuteMacro(MacroName,MacroParam,Data,Handled,Abort,Depth+1);
+          if Abort then begin
             Result:=false;
             exit;
           end;
+        finally
+          fBusy.Delete(fBusy.Count-1);
         end;
-        // find macro and get value
-        ExecuteMacro(MacroName,MacroParam,Data,Handled,Abort,Depth+1);
-        if Abort then begin
-          Result:=false;
-          exit;
-        end;
-      finally
-        fBusy.Delete(fBusy.Count-1);
+        MacroStr:=MacroParam;
       end;
-      MacroStr:=MacroParam;
       // mark unhandled macros
       if not Handled and MarkUnhandledMacros then begin
         MacroStr:=Format(lisTMunknownMacro, [MacroStr]);
