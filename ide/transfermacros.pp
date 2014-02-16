@@ -310,32 +310,32 @@ begin
           if SysUtils.CompareText(fBusy[i],MacroName)=0 then begin
             inc(InUse);
             if InUse>MaxUsePerMacro then begin
-              // circle detected
-              Handled:=true;
+              // cycle detected
               MacroStr:='<CYCLE:'+MacroName+'>';
-              break;
+              Result:=false;
+              exit;
             end;
           end;
         end;
       end;
-      if MacroParam<>'' then begin
-        // substitute param
-        if fBusy=nil then fBusy:=TStringList.Create;
-        try
-          fBusy.Add(MacroName);
+      if fBusy=nil then fBusy:=TStringList.Create;
+      try
+        fBusy.Add(MacroName);
+        if MacroParam<>'' then begin
+          // substitute param
           if not SubstituteStr(MacroParam,Data,Depth+1) then begin
             Result:=false;
             exit;
           end;
-        finally
-          fBusy.Delete(fBusy.Count-1);
         end;
-      end;
-      // find macro and get value
-      ExecuteMacro(MacroName,MacroParam,Data,Handled,Abort,Depth+1);
-      if Abort then begin
-        Result:=false;
-        exit;
+        // find macro and get value
+        ExecuteMacro(MacroName,MacroParam,Data,Handled,Abort,Depth+1);
+        if Abort then begin
+          Result:=false;
+          exit;
+        end;
+      finally
+        fBusy.Delete(fBusy.Count-1);
       end;
       MacroStr:=MacroParam;
       // mark unhandled macros
