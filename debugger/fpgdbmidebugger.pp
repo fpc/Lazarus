@@ -134,7 +134,7 @@ type
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure ClearSources;
   public
-    constructor Create(const ADebugger: TDebugger);
+    constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
     function Count: Integer; override;
     function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; override;
@@ -846,7 +846,7 @@ begin
   FRequestedSources.Clear;
 end;
 
-constructor TFpGDBMILineInfo.Create(const ADebugger: TDebugger);
+constructor TFpGDBMILineInfo.Create(const ADebugger: TDebuggerIntf);
 begin
   FRequestedSources := TStringList.Create;
   inherited Create(ADebugger);

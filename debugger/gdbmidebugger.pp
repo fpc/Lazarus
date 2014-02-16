@@ -1371,7 +1371,7 @@ type
     procedure Clear;
     procedure DoThreadChanged;
   public
-    constructor Create(const ADebugger: TDebugger);
+    constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
     procedure RequestCount(ACallstack: TCallStackBase); override;
     procedure RequestAtLeastCount(ACallstack: TCallStackBase; ARequiredMinCount: Integer); override;
@@ -10285,7 +10285,7 @@ begin
     cs.CurrentIndex := idx;
 end;
 
-constructor TGDBMICallStack.Create(const ADebugger: TDebugger);
+constructor TGDBMICallStack.Create(const ADebugger: TDebuggerIntf);
 begin
   FCommandList := TList.Create;
   FLimitSeen := 11;
