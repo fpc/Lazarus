@@ -39,9 +39,10 @@ unit GDBMIDebugger;
 interface
 
 uses
-  Classes, SysUtils, strutils, Controls, Math, Variants, LCLProc, LazClasses, LazLoggerBase,
-  Dialogs, DebugUtils, Debugger, FileUtil, LazLoggerProfiling, BaseIDEIntf, CmdLineDebugger,
-  DbgIntfBaseTypes, GDBTypeInfo, Maps, GDBMIDebugInstructions, LCLIntf, Forms,
+  Classes, SysUtils, strutils, Controls, Math, Maps, Variants, FileUtil, Dialogs,
+  BaseIDEIntf, LCLProc, LCLIntf, LazClasses, LazLoggerBase,
+  DebugUtils, Debugger, GDBTypeInfo, GDBMIDebugInstructions, GDBMIMiscClasses,
+  BaseDebugManager, DbgIntfBaseTypes, DbgIntfDebuggerBase,
 {$IFdef MSWindows}
   Windows,
 {$ENDIF}
@@ -51,7 +52,7 @@ uses
 {$IFDEF DBG_ENABLE_TERMINAL}
    PseudoTerminalDlg,
 {$ENDIF}
-  BaseDebugManager, GDBMIMiscClasses;
+  Forms;
 
 type
   TGDBMIProgramInfo = record
@@ -624,10 +625,10 @@ type
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure Changed;
     procedure Clear;
-    procedure InternalRequestData(AWatchValue: TCurrentWatchValue); override;
+    procedure InternalRequestData(AWatchValue: TWatchValueBase); override;
     property  ParentFPListChangeStamp: Integer read FParentFPListChangeStamp;
   public
-    constructor Create(const ADebugger: TDebugger);
+    constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
   end;
 
@@ -966,7 +967,7 @@ type
 
   TGDBMIDebuggerCommandLocals = class(TGDBMIDebuggerCommand)
   private
-    FLocals: TCurrentLocals;
+    FLocals: TLocalsBase;
   protected
     procedure DoLockQueueExecute; override;
     procedure DoUnLockQueueExecute; override;
@@ -974,7 +975,7 @@ type
     procedure DoUnLockQueueExecuteForInstr; override;
     function DoExecute: Boolean; override;
   public
-    constructor Create(AOwner: TGDBMIDebugger; ALocals: TCurrentLocals);
+    constructor Create(AOwner: TGDBMIDebugger; ALocals: TLocalsBase);
     destructor Destroy; override;
     function DebugText: String; override;
   end;
@@ -988,11 +989,11 @@ type
     procedure DoEvaluationDestroyed(Sender: TObject);
   protected
     procedure CancelAllCommands;
-    procedure RequestData(ALocals: TCurrentLocals); override;
   public
     procedure Changed;
-    constructor Create(const ADebugger: TDebugger);
+    constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
+    procedure RequestData(ALocals: TLocalsBase); override;
   end;
 
   {%endregion   ^^^^^  Locals  ^^^^^   }
@@ -1033,7 +1034,7 @@ type
     function GetSource(const AIndex: integer): String; override;
     procedure DoStateChange(const AOldState: TDBGState); override;
   public
-    constructor Create(const ADebugger: TDebugger);
+    constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
     function Count: Integer; override;
     function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; override;
@@ -1160,12 +1161,12 @@ type
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
     procedure DoStateChange(const AOldState: TDBGState); override;
-    procedure DoLogExpression(const AnExpression: String); override;
     procedure MakeInvalid;
     procedure SetAddress(const AValue: TDBGPtr); override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
+    procedure DoLogExpression(const AnExpression: String); override;
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
     procedure SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
                        const AKind: TDBGWatchPointKind); override;
@@ -1282,7 +1283,7 @@ type
     FEvalFlags: TDBGEvaluateFlags;
     FExpression: String;
     FDisplayFormat: TWatchDisplayFormat;
-    FWatchValue: TCurrentWatchValue;
+    FWatchValue: TWatchValueBase;
     FTextValue: String;
     FTypeInfo: TGDBType;
     FValidity: TDebuggerDataState;
@@ -1300,7 +1301,7 @@ type
     procedure UnSelectContext;
   public
     constructor Create(AOwner: TGDBMIDebugger; AExpression: String; ADisplayFormat: TWatchDisplayFormat);
-    constructor Create(AOwner: TGDBMIDebugger; AWatchValue: TCurrentWatchValue);
+    constructor Create(AOwner: TGDBMIDebugger; AWatchValue: TWatchValueBase);
     destructor Destroy; override;
     function DebugText: String; override;
     property Expression: String read FExpression;
@@ -1323,15 +1324,15 @@ type
   private
     procedure DoCallstackFreed(Sender: TObject);
   protected
-    FCallstack: TCurrentCallStack;
+    FCallstack: TCallStackBase;
     procedure DoLockQueueExecute; override;
     procedure DoUnLockQueueExecute; override;
     procedure DoLockQueueExecuteForInstr; override;
     procedure DoUnLockQueueExecuteForInstr; override;
   public
-    constructor Create(AOwner: TGDBMIDebugger; ACallstack: TCurrentCallStack);
+    constructor Create(AOwner: TGDBMIDebugger; ACallstack: TCallStackBase);
     destructor Destroy; override;
-    property Callstack: TCurrentCallStack read FCallstack;
+    property Callstack: TCallStackBase read FCallstack;
   end;
 
   { TGDBMIDebuggerCommandStackFrames }
@@ -1350,7 +1351,7 @@ type
   protected
     function DoExecute: Boolean; override;
   public
-    constructor Create(AOwner: TGDBMIDebugger; ACallstack: TCurrentCallStack);
+    constructor Create(AOwner: TGDBMIDebugger; ACallstack: TCallStackBase);
     function DebugText: String; override;
     property Depth: Integer read FDepth;
     property Limit: Integer read FLimit write FLimit;
@@ -1368,15 +1369,15 @@ type
     procedure DoCommandDestroyed(Sender: TObject);
   protected
     procedure Clear;
-    procedure RequestCount(ACallstack: TCurrentCallStack); override;
-    procedure RequestAtLeastCount(ACallstack: TCurrentCallStack; ARequiredMinCount: Integer); override;
-    procedure RequestCurrent(ACallstack: TCurrentCallStack); override;
-    procedure RequestEntries(ACallstack: TCurrentCallStack); override;
-    procedure UpdateCurrentIndex; override;
     procedure DoThreadChanged;
   public
     constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
+    procedure RequestCount(ACallstack: TCallStackBase); override;
+    procedure RequestAtLeastCount(ACallstack: TCallStackBase; ARequiredMinCount: Integer); override;
+    procedure RequestCurrent(ACallstack: TCallStackBase); override;
+    procedure RequestEntries(ACallstack: TCallStackBase); override;
+    procedure UpdateCurrentIndex; override;
   end;
 
   {%endregion   ^^^^^  Stack  ^^^^^   }
@@ -1535,9 +1536,10 @@ type
   TGDBMIDebuggerCommandThreads = class(TGDBMIDebuggerCommand)
   private
     FCurrentThreadId: Integer;
+    FCurrentThreads: TThreadsBase;
     FSuccess: Boolean;
-    FThreads: Array of TThreadEntry;
-    function GetThread(AnIndex: Integer): TThreadEntry;
+    FThreads: Array of TCallStackEntryBase;
+    function GetThread(AnIndex: Integer): TCallStackEntryBase;
   protected
     function DoExecute: Boolean; override;
   public
@@ -1545,9 +1547,10 @@ type
     destructor Destroy; override;
     //function DebugText: String; override;
     function Count: Integer;
-    property Threads[AnIndex: Integer]: TThreadEntry read GetThread;
+    property Threads[AnIndex: Integer]: TCallStackEntryBase read GetThread;
     property CurrentThreadId: Integer read FCurrentThreadId;
     property Success: Boolean read FSuccess;
+    property  CurrentThreads: TThreadsBase read FCurrentThreads write FCurrentThreads;
   end;
 
   { TGDBMIThreads }
@@ -1562,13 +1565,12 @@ type
     procedure DoThreadsDestroyed(Sender: TObject);
     procedure DoThreadsFinished(Sender: TObject);
   protected
-    procedure RequestMasterData; override;
-    procedure ChangeCurrentThread(ANewId: Integer); override;
     property Debugger: TGDBMIDebugger read GetDebugger;
     procedure DoCleanAfterPause; override;
   public
-    constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
+    procedure RequestMasterData; override;
+    procedure ChangeCurrentThread(ANewId: Integer); override;
   end;
 
   {%endregion   ^^^^^  Threads  ^^^^^   }
@@ -1870,17 +1872,16 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
   procedure DoExecAsync(Line: String);
   var
     S: String;
-    ct: TCurrentThreads;
+    ct: TThreadsBase;
     i: Integer;
-    t: TThreadEntry;
+    t: TCallStackEntryBase;
   begin
     S := GetPart(['*'], [','], Line);
     if S = 'running'
     then begin
-      if (FCmd.FTheDebugger.Threads.Monitor <> nil) and
-         (FCmd.FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
+      if (FCmd.FTheDebugger.Threads.CurrentThreads <> nil)
       then begin
-        ct := FCmd.FTheDebugger.Threads.Monitor.CurrentThreads;
+        ct := FCmd.FTheDebugger.Threads.CurrentThreads;
         S := GetPart('thread-id="', '"', Line);
         if s = 'all' then begin
           for i := 0 to  ct.Count - 1 do
@@ -1920,23 +1921,22 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
   var
     S: String;
     i, x: Integer;
-    ct: TCurrentThreads;
-    t: TThreadEntry;
+    ct: TThreadsBase;
+    t: TCallStackEntryBase;
   begin
     S := GetPart('=', ',', Line, False, False);
     x := StringCase(S, ['thread-created', 'thread-exited', 'thread-group-started']);
     case x of // thread-group-exited // thread-group-added,id="i1"
       0,1: begin
           i := StrToIntDef(GetPart(',id="', '"', Line, False, False), -1);
-          if (i > 0) and (FCmd.FTheDebugger.Threads.Monitor <> nil) and
-             (FCmd.FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
+          if (i > 0) and (FCmd.FTheDebugger.Threads.CurrentThreads <> nil)
           then begin
-            ct := FCmd.FTheDebugger.Threads.Monitor.CurrentThreads;
+            ct := FCmd.FTheDebugger.Threads.CurrentThreads;
             t := ct.EntryById[i];
             case x of
               0: begin
                   if t = nil then begin
-                    t := TThreadEntry.Create(0, 0, nil, '', nil, 0, i, '', 'unknown');
+                    t := TThreadEntry.Create(0, 0, nil, '', '', '', 0, i, '', 'unknown');
                     ct.Add(t);
                     t.Free;
                   end
@@ -2303,8 +2303,8 @@ var
   var
     S: String;
     i: Integer;
-    ct: TCurrentThreads;
-    t: TThreadEntry;
+    ct: TThreadsBase;
+    t: TCallStackEntryBase;
   begin
     Result := False;
     S := GetPart('*', ',', Line);
@@ -2316,10 +2316,9 @@ var
       1: ; // Known, but undocumented classes
       2: FGotStopped := True;
       3: begin // running,thread-id="1"  // running,thread-id="all"
-          if (FTheDebugger.Threads.Monitor <> nil) and
-             (FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
+          if (FTheDebugger.Threads.CurrentThreads <> nil)
           then begin
-            ct := FTheDebugger.Threads.Monitor.CurrentThreads;
+            ct := FTheDebugger.Threads.CurrentThreads;
             S := GetPart('thread-id="', '"', Line);
             if s = 'all' then begin
               for i := 0 to  ct.Count - 1 do
@@ -2355,23 +2354,22 @@ var
   var
     S: String;
     i, x: Integer;
-    ct: TCurrentThreads;
-    t: TThreadEntry;
+    ct: TThreadsBase;
+    t: TCallStackEntryBase;
   begin
     S := GetPart('=', ',', Line, False, False);
     x := StringCase(S, ['thread-created', 'thread-exited']);
     case x of // thread-group-exited // thread-group-added,id="i1"
       0,1: begin
           i := StrToIntDef(GetPart(',id="', '"', Line, False, False), -1);
-          if (i > 0) and (FTheDebugger.Threads.Monitor <> nil) and
-             (FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
+          if (i > 0) and (FTheDebugger.Threads.CurrentThreads <> nil)
           then begin
-            ct := FTheDebugger.Threads.Monitor.CurrentThreads;
+            ct := FTheDebugger.Threads.CurrentThreads;
             t := ct.EntryById[i];
             case x of
               0: begin
                   if t = nil then begin
-                    t := TThreadEntry.Create(0, 0, nil, '', nil, 0, i, '', 'unknown');
+                    t := TThreadEntry.Create(0, 0, nil, '', '', '', 0, i, '', 'unknown');
                     ct.Add(t);
                     t.Free;
                   end
@@ -2859,7 +2857,7 @@ begin
 end;
 
 constructor TGDBMIDebuggerCommandStack.Create(AOwner: TGDBMIDebugger;
-  ACallstack: TCurrentCallStack);
+  ACallstack: TCallStackBase);
 begin
   inherited Create(AOwner);
   FCallstack := ACallstack;
@@ -2967,6 +2965,7 @@ begin
     FGetThreadsCmdObj.OnDestroy    := @DoThreadsDestroyed;
     FGetThreadsCmdObj.Properties := [dcpCancelOnRun];
     FGetThreadsCmdObj.Priority := GDCMD_PRIOR_THREAD;
+    FGetThreadsCmdObj.CurrentThreads := CurrentThreads;
     // If a ExecCmd is running, then defer exec until the exec cmd is done
     ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
               and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
@@ -2986,11 +2985,6 @@ begin
     FGetThreadsCmdObj.Cancel;
   end;
   FGetThreadsCmdObj := nil;
-end;
-
-constructor TGDBMIThreads.Create(const ADebugger: TDebugger);
-begin
-  inherited;
 end;
 
 destructor TGDBMIThreads.Destroy;
@@ -3032,7 +3026,7 @@ end;
 
 { TGDBMIDebuggerCommandThreads }
 
-function TGDBMIDebuggerCommandThreads.GetThread(AnIndex: Integer): TThreadEntry;
+function TGDBMIDebuggerCommandThreads.GetThread(AnIndex: Integer): TCallStackEntryBase;
 begin
   Result := FThreads[AnIndex];
 end;
@@ -3101,11 +3095,11 @@ begin
       end;
 
 
-      FThreads[i] := TThreadEntry.Create(
+      FThreads[i] := CurrentThreads.CreateEntry(
         0, addr,
         Arguments,
         func,
-        FTheDebugger.UnitInfoProvider.GetUnitInfoFor(filename, fullname),
+        filename, fullname,
         line,
         ThrId,ThrName, ThrState
       );
@@ -6569,7 +6563,7 @@ begin
 end;
 
 constructor TGDBMIDebuggerCommandStackDepth.Create(AOwner: TGDBMIDebugger;
-  ACallstack: TCurrentCallStack);
+  ACallstack: TCallStackBase);
 begin
   inherited Create(AOwner, ACallstack);
   FLimit := 0;
@@ -6603,7 +6597,6 @@ var
     Arg: PGDBMINameValue;
     addr: TDbgPtr;
     func, filename, fullname, line, cl, fn, fa, un: String;
-    loc: TDebuggerUnitInfo;
   begin
     Arguments := TStringList.Create;
 
@@ -6695,19 +6688,24 @@ func="??"
       fa := AnsiReplaceText(fa, '$', ',');
 
       //debugln([cl,' ## ', fn]);
-      loc := FTheDebugger.UnitInfoProvider.GetUnitInfoByFunction(un, cl, fn, fa);
+      AnEntry.Init(
+        addr,
+        Arguments,
+        func,
+        un, cl, fn, fa,
+        StrToIntDef(line, 0)
+      );
     end
     else begin
-      loc := FTheDebugger.UnitInfoProvider.GetUnitInfoFor(filename, fullname);
+      AnEntry.Init(
+        addr,
+        Arguments,
+        func,
+        filename, fullname,
+        StrToIntDef(line, 0)
+      );
     end;
 
-    AnEntry.Init(
-      addr,
-      Arguments,
-      func,
-      loc,
-      StrToIntDef(line, 0)
-    );
 
     Arguments.Free;
   end;
@@ -6961,7 +6959,7 @@ begin
   then Result := PtrInt(FSourceIndex.Objects[Result]);
 end;
 
-constructor TGDBMILineInfo.Create(const ADebugger: TDebugger);
+constructor TGDBMILineInfo.Create(const ADebugger: TDebuggerIntf);
 begin
   FSourceIndex := TStringList.Create;
   FSourceIndex.Sorted := True;
@@ -9677,7 +9675,7 @@ begin
   FLocals.SetDataValidity(ddsValid);
 end;
 
-constructor TGDBMIDebuggerCommandLocals.Create(AOwner: TGDBMIDebugger; ALocals: TCurrentLocals);
+constructor TGDBMIDebuggerCommandLocals.Create(AOwner: TGDBMIDebugger; ALocals: TLocalsBase);
 begin
   inherited Create(AOwner);
   FLocals := ALocals;
@@ -9701,11 +9699,11 @@ end;
 
 procedure TGDBMILocals.Changed;
 begin
-  if Monitor <> nil
-  then Monitor.Clear;
+  if CurrentLocalsList <> nil
+  then CurrentLocalsList.Clear;
 end;
 
-constructor TGDBMILocals.Create(const ADebugger: TDebugger);
+constructor TGDBMILocals.Create(const ADebugger: TDebuggerIntf);
 begin
   FCommandList := TList.Create;
   inherited;
@@ -9731,7 +9729,7 @@ begin
   FCommandList.Clear;
 end;
 
-procedure TGDBMILocals.RequestData(ALocals: TCurrentLocals);
+procedure TGDBMILocals.RequestData(ALocals: TLocalsBase);
 var
   ForceQueue: Boolean;
   EvaluationCmdObj: TGDBMIDebuggerCommandLocals;
@@ -10075,7 +10073,7 @@ begin
   FCommandList.Clear;
 end;
 
-procedure TGDBMIWatches.InternalRequestData(AWatchValue: TCurrentWatchValue);
+procedure TGDBMIWatches.InternalRequestData(AWatchValue: TWatchValueBase);
 var
   ForceQueue: Boolean;
   EvaluationCmdObj: TGDBMIDebuggerCommandEvaluate;
@@ -10100,7 +10098,7 @@ begin
   (* DoEvaluationFinished may be called immediately at this point *)
 end;
 
-constructor TGDBMIWatches.Create(const ADebugger: TDebugger);
+constructor TGDBMIWatches.Create(const ADebugger: TDebuggerIntf);
 begin
   FCommandList := TList.Create;
   inherited Create(ADebugger);
@@ -10141,7 +10139,7 @@ begin
   end;
 end;
 
-procedure TGDBMICallStack.RequestCount(ACallstack: TCurrentCallStack);
+procedure TGDBMICallStack.RequestCount(ACallstack: TCallStackBase);
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
   then begin
@@ -10163,7 +10161,7 @@ begin
   (* DoDepthCommandExecuted may be called immediately at this point *)
 end;
 
-procedure TGDBMICallStack.RequestAtLeastCount(ACallstack: TCurrentCallStack;
+procedure TGDBMICallStack.RequestAtLeastCount(ACallstack: TCallStackBase;
   ARequiredMinCount: Integer);
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
@@ -10198,7 +10196,7 @@ begin
   (* DoDepthCommandExecuted may be called immediately at this point *)
 end;
 
-procedure TGDBMICallStack.RequestCurrent(ACallstack: TCurrentCallStack);
+procedure TGDBMICallStack.RequestCurrent(ACallstack: TCallStackBase);
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
     ACallstack.SetCurrentValidity(ddsInvalid);
@@ -10211,7 +10209,7 @@ begin
   ACallstack.SetCurrentValidity(ddsValid);
 end;
 
-procedure TGDBMICallStack.RequestEntries(ACallstack: TCurrentCallStack);
+procedure TGDBMICallStack.RequestEntries(ACallstack: TCallStackBase);
 var
   FramesEvalCmdObj: TGDBMIDebuggerCommandStackFrames;
 begin
@@ -10256,7 +10254,7 @@ begin
     exit;
   end;
 
-  tid := Debugger.Threads.Monitor.CurrentThreads.CurrentThreadId;
+  tid := Debugger.Threads.CurrentThreads.CurrentThreadId;
   cs := TCurrentCallStack(CurrentCallStackList.EntriesForThreads[tid]);
   idx := cs.NewCurrentIndex;  // NEW-CURRENT
   if TGDBMIDebugger(Debugger).FCurrentStackFrame = idx then Exit;
@@ -10277,7 +10275,7 @@ begin
   end;
 
   TGDBMIDebugger(Debugger).FCurrentStackFrame := 0;
-  tid := Debugger.Threads.Monitor.CurrentThreads.CurrentThreadId;
+  tid := Debugger.Threads.CurrentThreads.CurrentThreadId;
   cs := TCurrentCallStack(CurrentCallStackList.EntriesForThreads[tid]);
   idx := cs.CurrentIndex;  // CURRENT
   if idx < 0 then idx := 0;
@@ -12961,8 +12959,8 @@ begin
   finally
     UnSelectContext;
     if FWatchValue <> nil then begin
-      FWatchValue.SetValue(FTextValue);
-      FWatchValue.SetTypeInfo(TypeInfo);
+      FWatchValue.Value := FTextValue;
+      FWatchValue.TypeInfo := TypeInfo;
       FWatchValue.Validity := FValidity;
     end;
   end;
@@ -13005,7 +13003,7 @@ begin
 end;
 
 constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebugger;
-  AWatchValue: TCurrentWatchValue);
+  AWatchValue: TWatchValueBase);
 begin
   Create(AOwner, AWatchValue.Watch.Expression, AWatchValue.DisplayFormat);
   EvalFlags := AWatchValue.EvaluateFlags;

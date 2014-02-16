@@ -5,9 +5,9 @@ unit TestBase;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry,
-  EnvironmentOpts, TransferMacros, LCLProc, LazLogger, CompileHelpers, Dialogs, ExtToolDialog,
-  Debugger, GDBMIDebugger, FpGdbmiDebugger;
+  Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry, EnvironmentOpts,
+  TransferMacros, LCLProc, LazLogger, DbgIntfDebuggerBase, CompileHelpers, Dialogs,
+  ExtToolDialog, Debugger, GDBMIDebugger, FpGdbmiDebugger;
 
 (*
   fpclist.txt contains lines of format:

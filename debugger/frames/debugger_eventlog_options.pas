@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Graphics, Forms, StdCtrls, Spin, CheckLst,
   ComCtrls, LCLType, LCLIntf, ColorBox, Debugger, LazarusIDEStrConsts,
-  IDEOptionsIntf, EnvironmentOpts, BaseDebugManager;
+  IDEOptionsIntf, DbgIntfDebuggerBase, EnvironmentOpts, BaseDebugManager;
 
 type
   { TDebuggerEventLogOptionsFrame }

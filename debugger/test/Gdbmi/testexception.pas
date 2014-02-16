@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, fpcunit, testutils, testregistry, TestGDBMIControl,
-  TestBase, Debugger, GDBMIDebugger, LCLProc;
+  TestBase, Debugger, GDBMIDebugger, LCLProc, DbgIntfDebuggerBase;
 
 type
 

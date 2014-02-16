@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Dialogs,
   IDEWindowIntf, DebuggerStrConst, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg, ActnList, MainBase,
-  IDEImagesIntf, SourceEditor, MainIntf;
+  IDEImagesIntf, DbgIntfDebuggerBase, DbgIntfMiscClasses, SourceEditor, MainIntf;
 
 type
   TBreakPointsDlgState = (

@@ -39,7 +39,8 @@ unit CmdLineDebugger;
 interface
 
 uses
-  Classes, Types, Process, FileUtil, Debugger, LCLProc, LazLoggerBase, Forms, DebugUtils;
+  Classes, Types, Process, FileUtil, Debugger, LCLProc, LazLoggerBase, DbgIntfDebuggerBase,
+  Forms, DebugUtils;
 
 type
 

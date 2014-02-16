@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics,
-  IDEWindowIntf, DbgIntfBaseTypes,
+  IDEWindowIntf, DbgIntfBaseTypes, DbgIntfDebuggerBase,
   ComCtrls, StdCtrls, ExtCtrls, LclType, LCLIntf, DebuggerDlg, Debugger,
   BaseDebugManager, EditorOptions, Math, types, LCLProc, Menus, Clipbrd, ActnList,
   IDECommands, IDEImagesIntf, CodeToolManager, CodeCache, SourceEditor;
@@ -85,7 +85,7 @@ type
     procedure Timer1Timer(Sender: TObject);
     procedure ToolButtonPowerClick(Sender: TObject);
   private
-    FDebugger: TDebugger;
+    FDebugger: TDebuggerIntf;
     FDebugManager: TBaseDebugManager;
     FDisassembler: TIDEDisassembler;
     FDisassemblerNotification: TIDEDisassemblerNotification;
@@ -126,7 +126,7 @@ type
     procedure ClearImageIdx;
     procedure DisassemblerChanged(Sender: TObject);
     procedure SetDisassembler(const AValue: TIDEDisassembler);
-    procedure SetDebugger(const AValue: TDebugger);
+    procedure SetDebugger(const AValue: TDebuggerIntf);
     function FormatLine(ALine: TAsmDlgLineEntry; W: Integer): String;
     procedure UpdateView;
     procedure UpdateActionEnabled;
@@ -151,7 +151,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr; const ADispAddr: TDBGPtr = 0);
+    procedure SetLocation(ADebugger: TDebuggerIntf; const AAddr: TDBGPtr; const ADispAddr: TDBGPtr = 0);
     property Disassembler: TIDEDisassembler read FDisassembler write SetDisassembler;
     property DebugManager: TBaseDebugManager read FDebugManager write FDebugManager;
     property BreakPoints;
@@ -221,7 +221,7 @@ begin
   UpdateActionEnabled;
 end;
 
-procedure TAssemblerDlg.SetDebugger(const AValue: TDebugger);
+procedure TAssemblerDlg.SetDebugger(const AValue: TDebuggerIntf);
 begin
   if FDebugger = AValue
   then exit;
@@ -828,7 +828,8 @@ begin
   SetLineCount(pbAsm.Height div FLineHeight);
 end;
 
-procedure TAssemblerDlg.SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr; const ADispAddr: TDBGPtr = 0);
+procedure TAssemblerDlg.SetLocation(ADebugger: TDebuggerIntf; const AAddr: TDBGPtr;
+  const ADispAddr: TDBGPtr);
 var
   i: Integer;
 begin

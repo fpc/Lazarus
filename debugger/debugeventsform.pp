@@ -37,7 +37,7 @@ uses
   BaseDebugManager, IDEWindowIntf,
   StdActns, ClipBrd, Menus, Dialogs, FileUtil, Debugger, DebuggerDlg,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
-  IDEImagesIntf, LazIDEIntf, debugger_eventlog_options;
+  IDEImagesIntf, LazIDEIntf, DbgIntfDebuggerBase, debugger_eventlog_options;
 
 type
   { TDbgEventsForm }

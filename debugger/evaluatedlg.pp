@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Forms,
-  IDEWindowIntf, IDEImagesIntf, LazarusIDEStrConsts,
+  IDEWindowIntf, IDEImagesIntf, DbgIntfDebuggerBase, LazarusIDEStrConsts,
   ComCtrls, StdCtrls, Menus, DebuggerDlg, BaseDebugManager,
   InputHistory, IDEProcs, Debugger, DebuggerStrConst;
 

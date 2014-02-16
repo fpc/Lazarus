@@ -39,7 +39,7 @@ uses
   SysUtils, Classes, Controls, Forms, Clipbrd,
   BaseDebugManager, IDEWindowIntf, DebuggerStrConst,
   ComCtrls, ActnList, Menus, Debugger, DebuggerDlg,
-  LazarusIDEStrConsts, IDEImagesIntf;
+  LazarusIDEStrConsts, IDEImagesIntf, DbgIntfDebuggerBase;
 
 type
 

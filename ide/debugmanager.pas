@@ -57,8 +57,8 @@ uses
   DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
   CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
   InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg, ThreadDlg, HistoryDlg,
-  GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger, GDBMIServerDebugger, 
-  DbgIntfBaseTypes, BaseDebugManager;
+  GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger, GDBMIServerDebugger,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, BaseDebugManager;
 
 
 type
@@ -81,9 +81,9 @@ type
     procedure mnuAddBpDataAtCursor(Sender: TObject);
 
     // Debugger events
-    procedure DebuggerBreakPointHit(ADebugger: TDebugger; ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
-    procedure DebuggerBeforeChangeState(ADebugger: TDebugger; AOldState: TDBGState);
-    procedure DebuggerChangeState(ADebugger: TDebugger; OldState: TDBGState);
+    procedure DebuggerBreakPointHit(ADebugger: TDebuggerIntf; ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
+    procedure DebuggerBeforeChangeState(ADebugger: TDebuggerIntf; AOldState: TDBGState);
+    procedure DebuggerChangeState(ADebugger: TDebuggerIntf; OldState: TDBGState);
     procedure DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
     procedure DebuggerOutput(Sender: TObject; const AText: String);
     procedure DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
@@ -100,7 +100,7 @@ type
     // Dialog events
     procedure DebugDialogDestroy(Sender: TObject);
   private
-    FDebugger: TDebugger;
+    FDebugger: TDebuggerIntf;
     FUnitInfoProvider: TDebuggerUnitInfoProvider;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
     FInStateChange: Boolean;
@@ -124,7 +124,7 @@ type
     FRunTimer: TTimer;
     FAttachToID: String;
 
-    procedure SetDebugger(const ADebugger: TDebugger);
+    procedure SetDebugger(const ADebugger: TDebuggerIntf);
 
     // Breakpoint routines
     procedure CreateSourceMarkForBreakPoint(const ABreakpoint: TIDEBreakPoint;
@@ -158,7 +158,7 @@ type
     function  GetCommands: TDBGCommands; override;
     function GetDebuggerClass: TDebuggerClass;
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
-    function GetDebugger: TDebugger; override;
+    function GetDebugger: TDebuggerIntf; override;
     {$ENDIF}
     function GetCurrentDebuggerClass: TDebuggerClass; override;    (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
     function AttachDebugger: TModalResult;
@@ -872,7 +872,7 @@ begin
     AttachDebugger;
 end;
 
-procedure TDebugManager.DebuggerBreakPointHit(ADebugger: TDebugger;
+procedure TDebugManager.DebuggerBreakPointHit(ADebugger: TDebuggerIntf;
   ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
 begin
   FCurrentBreakPoint := nil;
@@ -1074,7 +1074,8 @@ begin
   end;
 end;
 
-procedure TDebugManager.DebuggerBeforeChangeState(ADebugger: TDebugger; AOldState: TDBGState);
+procedure TDebugManager.DebuggerBeforeChangeState(ADebugger: TDebuggerIntf;
+  AOldState: TDBGState);
 var
   DialogType: TDebugDialogType;
 begin
@@ -1090,8 +1091,7 @@ begin
   if FDebugger.State = dsInternalPause then exit; // set debug windows to ignore / no updating
 end;
 
-procedure TDebugManager.DebuggerChangeState(ADebugger: TDebugger;
-  OldState: TDBGState);
+procedure TDebugManager.DebuggerChangeState(ADebugger: TDebuggerIntf; OldState: TDBGState);
 
   procedure UnlockDialogs;
   var
@@ -1319,7 +1319,7 @@ begin
     end;
   end
   else begin
-    CurrentSourceUnitInfo := FDebugger.UnitInfoProvider.GetUnitInfoFor(ALocation.SrcFile, ALocation.SrcFullName);
+    CurrentSourceUnitInfo := FUnitInfoProvider.GetUnitInfoFor(ALocation.SrcFile, ALocation.SrcFullName);
     CurrentSourceUnitInfo.AddReference;
   end;
 
@@ -1736,8 +1736,6 @@ begin
   FSignals.Reset;
   FUserSourceFiles.Clear;
   FUnitInfoProvider.Clear;
-  if FDebugger <> nil
-  then FDebugger.UnitInfoProvider.Clear;
 end;
 
 procedure TDebugManager.ConnectMainBarEvents;
@@ -2080,7 +2078,7 @@ end;
 
 procedure TDebugManager.FreeDebugger;
 var
-  dbg: TDebugger;
+  dbg: TDebuggerIntf;
 begin
   dbg := FDebugger;
   SetDebugger(nil);
@@ -2478,8 +2476,6 @@ begin
   end;
 
   FUnitInfoProvider.Clear; // Maybe keep locations? But clear "not found"/"not loadable" flags?
-  if FDebugger <> nil
-  then FDebugger.UnitInfoProvider.Clear;
   Result := mrOk;
 end;
 
@@ -2665,8 +2661,6 @@ begin
   end;
 
   FUnitInfoProvider.Clear; // Maybe keep locations? But clear "not found"/"not loadable" flags?
-  if FDebugger <> nil
-  then FDebugger.UnitInfoProvider.Clear;
 end;
 
 function TDebugManager.Evaluate(const AExpression: String;
@@ -2881,7 +2875,7 @@ begin
 end;
 
 {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
-function TDebugManager.GetDebugger: TDebugger;
+function TDebugManager.GetDebugger: TDebuggerIntf;
 begin
   Result := FDebugger;
 end;
@@ -2929,7 +2923,7 @@ begin
   Result := TWatchPropertyDlg.Create(Self, AWatch, AWatchExpression).ShowModal;
 end;
 
-procedure TDebugManager.SetDebugger(const ADebugger: TDebugger);
+procedure TDebugManager.SetDebugger(const ADebugger: TDebuggerIntf);
 begin
   if FDebugger = ADebugger then Exit;
 
@@ -2966,13 +2960,14 @@ begin
     FSnapshots.Debugger := nil;
   end
   else begin
-    FDebugger.UnitInfoProvider := FUnitInfoProvider;
     TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
     FWatches.Supplier := FDebugger.Watches;
     FThreads.Supplier := FDebugger.Threads;
+    FThreads.UnitInfoProvider := FUnitInfoProvider;
     FLocals.Supplier := FDebugger.Locals;
     FLineInfo.Master := FDebugger.LineInfo;
     FCallStack.Supplier := FDebugger.CallStack;
+    FCallStack.UnitInfoProvider := FUnitInfoProvider;
     FDisassembler.Master := FDebugger.Disassembler;
     FSignals.Master := FDebugger.Signals;
     FRegisters.Master := FDebugger.Registers;

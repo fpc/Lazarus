@@ -38,7 +38,7 @@ unit ProcessDebugger;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, UTF8Process, Process, Debugger, LCLProc,
+  Classes, SysUtils, FileUtil, UTF8Process, DbgIntfDebuggerBase, Process, Debugger, LCLProc,
   BaseDebugManager, Dialogs, ProcessList;
 
 type

@@ -40,8 +40,8 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Project, SourceMarks, DbgIntfBaseTypes, Debugger, ProjectDefs,
-  IDEOptionsIntf, LazarusIDEStrConsts, Laz2_XMLCfg;
+  Classes, SysUtils, Forms, Project, SourceMarks, DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  Debugger, ProjectDefs, IDEOptionsIntf, LazarusIDEStrConsts, Laz2_XMLCfg;
 
 type
   TDebugDialogType = (
@@ -126,7 +126,7 @@ type
     function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
-    function GetDebugger: TDebugger; virtual; abstract;
+    function GetDebugger: TDebuggerIntf; virtual; abstract;
     {$ENDIF}
     function GetCurrentDebuggerClass: TDebuggerClass; virtual; abstract;    (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
   public
@@ -232,7 +232,7 @@ type
     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
     property DebuggerClass: TDebuggerClass read GetCurrentDebuggerClass;
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
-    property Debugger: TDebugger read GetDebugger;
+    property Debugger: TDebuggerIntf read GetDebugger;
     {$ENDIF}
   end;
 

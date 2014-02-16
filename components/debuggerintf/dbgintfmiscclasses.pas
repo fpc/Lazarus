@@ -5,7 +5,7 @@ unit DbgIntfMiscClasses;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, LazClasses;
 
 type
 
@@ -42,8 +42,28 @@ type
     property  RefCount: Integer read FRefCount;
   end;
 
+procedure ReleaseRefAndNil(var ARefCountedObject);
 
 implementation
+
+procedure ReleaseRefAndNil(var ARefCountedObject);
+begin
+  Assert( (Pointer(ARefCountedObject) = nil) or
+          (TObject(ARefCountedObject) is TRefCountedObject) or
+          (TObject(ARefCountedObject) is TRefCountedColectionItem),
+         'ReleaseRefAndNil requires TRefCountedObject');
+
+  if Pointer(ARefCountedObject) = nil then
+    exit;
+
+  if (TObject(ARefCountedObject) is TRefCountedObject) then
+    TRefCountedObject(ARefCountedObject).ReleaseReference
+  else
+  if (TObject(ARefCountedObject) is TRefCountedColectionItem) then
+    TRefCountedColectionItem(ARefCountedObject).ReleaseReference;
+
+  Pointer(ARefCountedObject) := nil;
+end;
 
 
 { TDelayedUdateItem }

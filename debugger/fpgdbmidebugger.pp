@@ -9,10 +9,10 @@ unit FpGdbmiDebugger;
 interface
 
 uses
-  Classes, {$IFdef MSWindows}windows,{$ENDIF} sysutils, math, FpdMemoryTools,
-  FpDbgInfo, FpDbgClasses, GDBMIDebugger, BaseDebugManager, DbgIntfBaseTypes,
-  Debugger, GDBMIMiscClasses, GDBTypeInfo, maps, LCLProc, Forms, FpDbgLoader, FpDbgDwarf,
-  FpDbgDwarfConst, LazLoggerBase, LazLoggerProfiling, FpPascalParser, FpPascalBuilder;
+  Classes, windows, sysutils, math, FpdMemoryTools, FpDbgInfo, FpDbgClasses, GDBMIDebugger,
+  BaseDebugManager, DbgIntfBaseTypes, DbgIntfDebuggerBase, Debugger, GDBMIMiscClasses,
+  GDBTypeInfo, maps, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst, LazLoggerBase,
+  LazLoggerProfiling, LazClasses, FpPascalParser, FpPascalBuilder;
 
 type
 
@@ -115,7 +115,7 @@ type
   protected
     function  FpDebugger: TFpGDBMIDebugger;
     //procedure DoStateChange(const AOldState: TDBGState); override;
-    procedure InternalRequestData(AWatchValue: TCurrentWatchValue); override;
+    procedure InternalRequestData(AWatchValue: TWatchValueBase); override;
   public
     //constructor Create(const ADebugger: TDebugger);
     //destructor Destroy; override;
@@ -818,7 +818,7 @@ begin
   Result := TFpGDBMIDebugger(Debugger);
 end;
 
-procedure TFPGDBMIWatches.InternalRequestData(AWatchValue: TCurrentWatchValue);
+procedure TFPGDBMIWatches.InternalRequestData(AWatchValue: TWatchValueBase);
 begin
   inherited InternalRequestData(AWatchValue);
   Application.ProcessMessages;
@@ -1003,9 +1003,9 @@ end;
 
 function TFpGDBMIDebugger.GetLocationForContext(AThreadId, AStackFrame: Integer): TDBGPtr;
 var
-  t: TThreadEntry;
-  s: TCallStack;
-  f: TCallStackEntry;
+  t: TCallStackEntryBase;
+  s: TCallStackBase;
+  f: TCallStackEntryBase;
 begin
   Result := 0;
   if (AThreadId <= 0) then begin

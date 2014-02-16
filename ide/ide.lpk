@@ -1878,16 +1878,19 @@ It should not be used by any other package or project. This package may change i
       </Item415>
     </Files>
     <Type Value="RunTimeOnly"/>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="DebuggerIntf"/>
       </Item1>
       <Item2>
-        <PackageName Value="codetools"/>
+        <PackageName Value="SynEdit"/>
       </Item2>
       <Item3>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="codetools"/>
       </Item3>
+      <Item4>
+        <PackageName Value="IDEIntf"/>
+      </Item4>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, sysutils, GDBMIDebugger, BaseDebugManager, Debugger,
-  GDBMIMiscClasses;
+  GDBMIMiscClasses, DbgIntfDebuggerBase;
   
 type
 

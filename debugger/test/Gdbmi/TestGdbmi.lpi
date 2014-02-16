@@ -28,23 +28,29 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="5">
+    <RequiredPackages Count="7">
       <Item1>
-        <PackageName Value="LCLBase"/>
-        <MinVersion Major="1" Release="1" Valid="True"/>
+        <PackageName Value="fpdebug"/>
       </Item1>
       <Item2>
-        <PackageName Value="ide"/>
+        <PackageName Value="LogProfiler"/>
       </Item2>
       <Item3>
-        <PackageName Value="FPCUnitTestRunner"/>
+        <PackageName Value="LCLBase"/>
+        <MinVersion Major="1" Release="1" Valid="True"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="ide"/>
       </Item4>
       <Item5>
-        <PackageName Value="FCL"/>
+        <PackageName Value="FPCUnitTestRunner"/>
       </Item5>
+      <Item6>
+        <PackageName Value="LCL"/>
+      </Item6>
+      <Item7>
+        <PackageName Value="FCL"/>
+      </Item7>
     </RequiredPackages>
     <Units Count="13">
       <Unit0>
@@ -156,11 +162,10 @@
         <Name Value="EFOpenError"/>
       </Item3>
       <Item4>
-        <Name Value="EAssertionFailedError"/>
-        <Enabled Value="False"/>
+        <Name Value="EReadError"/>
       </Item4>
       <Item5>
-        <Name Value="EReadError"/>
+        <Name Value="EAssertionFailedError"/>
       </Item5>
     </Exceptions>
   </Debugging>

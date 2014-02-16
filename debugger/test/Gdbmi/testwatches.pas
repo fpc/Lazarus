@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl, DbgIntfBaseTypes,
-  TestBase, Debugger, GDBMIDebugger, LCLProc, SynRegExpr, Forms, StdCtrls, Controls;
+  DbgIntfDebuggerBase, TestBase, Debugger, GDBMIDebugger, LCLProc, SynRegExpr, Forms, StdCtrls,
+  Controls;
 
 const
   BREAK_LINE_FOOFUNC_NEST  = 206;

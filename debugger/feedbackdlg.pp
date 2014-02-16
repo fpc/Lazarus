@@ -5,7 +5,8 @@ unit FeedbackDlg;
 interface
 
 uses
-  Forms, Controls, ButtonPanel, StdCtrls, ExtCtrls, Debugger, LazarusIDEStrConsts;
+  Forms, Controls, ButtonPanel, StdCtrls, ExtCtrls, Debugger, LazarusIDEStrConsts,
+  DbgIntfDebuggerBase;
 
 type
 

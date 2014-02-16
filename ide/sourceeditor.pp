@@ -74,7 +74,7 @@ uses
   SortSelectionDlg, EncloseSelectionDlg, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
   FPDocHints, EditorMacroListViewer,
-  DbgIntfBaseTypes, BaseDebugManager, Debugger, MainIntf, GotoFrm;
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, BaseDebugManager, Debugger, MainIntf, GotoFrm;
 
 type
   TSourceNotebook = class;

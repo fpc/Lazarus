@@ -29,8 +29,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, IDEWindowIntf, DebuggerStrConst, ComCtrls,
-  ObjectInspector, PropEdits, IDEImagesIntf, Debugger, DebuggerDlg, DbgIntfBaseTypes, BaseDebugManager,
-  LazarusIDEStrConsts, LCLType, Grids, StdCtrls, Menus, LCLProc, InputHistory, IDEProcs;
+  ObjectInspector, PropEdits, IDEImagesIntf, Debugger, DebuggerDlg, DbgIntfBaseTypes,
+  DbgIntfDebuggerBase, BaseDebugManager, LazarusIDEStrConsts, LCLType, Grids, StdCtrls, Menus,
+  LCLProc, InputHistory, IDEProcs;
 
 type
 

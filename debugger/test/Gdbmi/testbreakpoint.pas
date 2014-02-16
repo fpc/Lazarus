@@ -6,7 +6,8 @@ interface
 
 uses
   SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl, DbgIntfBaseTypes,
-  TestBase, Debugger, GDBMIDebugger, LCLProc, TestWatches;
+  DbgIntfDebuggerBase, DbgIntfMiscClasses, TestBase, Debugger, GDBMIDebugger,
+  LCLProc, TestWatches;
 
 type
 
@@ -24,7 +25,7 @@ type
   private
     FCurLine: Integer;
     FCurFile: string;
-    FBrkErr: TDBGBreakPoint;
+    FBrkErr: TDbgBreakpoint;
   protected
     function DoGetFeedBack(Sender: TObject; const AText, AInfo: String;
       AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;

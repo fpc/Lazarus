@@ -38,7 +38,8 @@ interface
 
 uses
   Classes, Forms, Controls, IDEProcs, FileUtil, LCLProc, LazLoggerBase, Debugger,
-  IDEImagesIntf, MainIntf, EditorOptions, IDECommands, BaseDebugManager;
+  IDEImagesIntf, MainIntf, EditorOptions, IDECommands, DbgIntfDebuggerBase, DbgIntfMiscClasses,
+  BaseDebugManager;
 
 type
 

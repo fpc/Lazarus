@@ -41,7 +41,7 @@ uses
   Classes, Forms, Controls, math, sysutils, LazLoggerBase, Clipbrd,
   IDEWindowIntf, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType, IDEImagesIntf,
   LazarusIDEStrConsts, DebuggerStrConst, Debugger, DebuggerDlg,
-  DbgIntfBaseTypes, BaseDebugManager;
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, BaseDebugManager;
 
 type
 
