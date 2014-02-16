@@ -39,14 +39,14 @@ unit CmdLineDebugger;
 interface
 
 uses
-  Classes, Types, Process, FileUtil, Debugger, LCLProc, LazLoggerBase, DbgIntfDebuggerBase,
+  Classes, Types, Process, FileUtil, LCLProc, LazLoggerBase, DbgIntfDebuggerBase,
   Forms, DebugUtils;
 
 type
 
   { TCmdLineDebugger }
 
-  TCmdLineDebugger = class(TDebugger)
+  TCmdLineDebugger = class(TDebuggerIntf)
   private
     FDbgProcess: TProcess;   // The process used to call the debugger
     FLineEnds: TStringDynArray;  // List of strings considered as lineends

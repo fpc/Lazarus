@@ -104,9 +104,7 @@ type
     class function GetInstance: TAbstractIDEOptions; override;
   end;
 
-  TBaseDebugManager = class(TComponent)
-  private
-    function GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
+  TBaseDebugManager = class(TBaseDebugManagerIntf)
   protected
     FDestroying: boolean;
     FCallStack: TCallStackMonitor;
@@ -122,7 +120,6 @@ type
     FRegisters: TIDERegisters;
     FSnapshots: TSnapshotManager;
     FManagerStates: TDebugManagerStates;
-    function  FindDebuggerClass(const Astring: String): TDebuggerClass;
     function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
@@ -144,7 +141,6 @@ type
     procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig;
                                       Flags: TProjectWriteFlags); virtual; abstract;
 
-    function  DebuggerCount: Integer;
 
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); virtual; abstract;
 
@@ -236,7 +232,6 @@ type
     {$ENDIF}
   end;
 
-procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
 
 var
   DebugBoss: TBaseDebugManager;
@@ -244,41 +239,12 @@ var
 
 implementation
 
-var
-  MDebuggerClasses: TStringList;
-
-procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
-begin
-  MDebuggerClasses.AddObject(ADebuggerClass.ClassName, TObject(Pointer(ADebuggerClass)));
-end;
-
-
 { TBaseDebugManager }
-
-function TBaseDebugManager.DebuggerCount: Integer;
-begin
-  Result := MDebuggerClasses.Count;
-end;
-
-function TBaseDebugManager.FindDebuggerClass(const AString: String): TDebuggerClass;
-var
-  idx: Integer;
-begin
-  idx := MDebuggerClasses.IndexOf(AString);
-  if idx = -1
-  then Result := nil
-  else Result := TDebuggerClass(MDebuggerClasses.Objects[idx]);
-end;
 
 procedure TBaseDebugManager.CreateDebugDialog(Sender: TObject; aFormName: string;
   var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 begin
   //
-end;
-
-function TBaseDebugManager.GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
-begin
-  Result := TDebuggerClass(MDebuggerClasses.Objects[AIndex]);
 end;
 
 { TDebuggerOptions }
@@ -296,13 +262,7 @@ end;
 initialization
   RegisterIDEOptionsGroup(GroupDebugger, TDebuggerOptions);
   DebugBoss := nil;
-  MDebuggerClasses := TStringList.Create;
-  MDebuggerClasses.Sorted := True;
-  MDebuggerClasses.Duplicates := dupError;
-  
-finalization
-  FreeAndNil(MDebuggerClasses);
-  
+
 end.
 
 

@@ -40,9 +40,9 @@ interface
 
 uses
   Classes, SysUtils, strutils, Controls, Math, Maps, Variants, FileUtil, Dialogs,
-  BaseIDEIntf, LCLProc, LCLIntf, LazClasses, LazLoggerBase,
+  BaseIDEIntf, LCLProc, LazClasses, LazLoggerBase,
   DebugUtils, Debugger, GDBTypeInfo, GDBMIDebugInstructions, GDBMIMiscClasses,
-  BaseDebugManager, DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase,
 {$IFdef MSWindows}
   Windows,
 {$ENDIF}

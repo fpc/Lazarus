@@ -1555,6 +1555,16 @@ type
   end;
   TDebuggerClass = class of TDebuggerIntf;
 
+  TBaseDebugManagerIntf = class(TComponent)
+  protected
+    function GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
+    function FindDebuggerClass(const Astring: String): TDebuggerClass;
+  public
+    function DebuggerCount: Integer;
+  end;
+
+procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
+
 function dbgs(AState: TDBGState): String; overload;
 function dbgs(ADataState: TDebuggerDataState): String; overload;
 function dbgs(AKind: TDBGSymbolKind): String; overload;
@@ -1595,6 +1605,12 @@ const
 
 var
   MDebuggerPropertiesList: TStringlist = nil;
+  MDebuggerClasses: TStringList;
+
+procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
+begin
+  MDebuggerClasses.AddObject(ADebuggerClass.ClassName, TObject(Pointer(ADebuggerClass)));
+end;
 
 procedure DoFinalization;
 var
@@ -4375,6 +4391,26 @@ begin
   DebugLn(DBG_WARNINGS, 'TDebuggerIntf.Stop Class=',ClassName,' failed.');
 end;
 
+function TBaseDebugManagerIntf.DebuggerCount: Integer;
+begin
+  Result := MDebuggerClasses.Count;
+end;
+
+function TBaseDebugManagerIntf.FindDebuggerClass(const AString: String): TDebuggerClass;
+var
+  idx: Integer;
+begin
+  idx := MDebuggerClasses.IndexOf(AString);
+  if idx = -1
+  then Result := nil
+  else Result := TDebuggerClass(MDebuggerClasses.Objects[idx]);
+end;
+
+function TBaseDebugManagerIntf.GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
+begin
+  Result := TDebuggerClass(MDebuggerClasses.Objects[AIndex]);
+end;
+
 
 initialization
   MDebuggerPropertiesList := nil;
@@ -4388,7 +4424,12 @@ initialization
   DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );
   DBG_DISASSEMBLER := DebugLogger.FindOrRegisterLogGroup('DBG_DISASSEMBLER' {$IFDEF DBG_DISASSEMBLER} , True {$ENDIF} );
 
+  MDebuggerClasses := TStringList.Create;
+  MDebuggerClasses.Sorted := True;
+  MDebuggerClasses.Duplicates := dupError;
+
 finalization
   DoFinalization;
+  FreeAndNil(MDebuggerClasses);
 
 end.
