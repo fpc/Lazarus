@@ -2001,6 +2001,11 @@ components/lazcontrols/listfilteredit.pas svneol=native#text/plain
 components/lazcontrols/lvlgraphctrl.pas svneol=native#text/plain
 components/lazcontrols/shortpathedit.pas svneol=native#text/plain
 components/lazcontrols/treefilteredit.pas svneol=native#text/plain
+components/lazdebuggergdbmi/Makefile svneol=native#text/plain
+components/lazdebuggergdbmi/Makefile.compiled svneol=native#text/plain
+components/lazdebuggergdbmi/Makefile.fpc svneol=native#text/plain
+components/lazdebuggergdbmi/lazdebuggergdbmi.lpk svneol=native#text/plain
+components/lazdebuggergdbmi/lazdebuggergdbmi.pas svneol=native#text/pascal
 components/lazreport/doc/contributors.txt svneol=native#text/plain
 components/lazreport/doc/fr_eng.odt -text
 components/lazreport/doc/fr_eng.pdf -text
