@@ -2751,7 +2751,7 @@ makefiles: fpc_makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: help registration lazutils codetools debuggerintf tools lcl basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter lhelp all clean purge install
+.PHONY: help registration lazutils codetools tools lcl basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter lhelp all clean purge install
 help:
 	@$(ECHO)
 	@$(ECHO) " Main targets"
@@ -2768,10 +2768,9 @@ help:
 	@$(ECHO) "   registration   build package FCL"
 	@$(ECHO) "   lazutils       build package LazUtils, requires registration"
 	@$(ECHO) "   codetools      build package CodeTools, requires lazutils"
-	@$(ECHO) "   debuggerintf   build package DebuggerIntf, requires lazutils"
 	@$(ECHO) "   lcl            build package LCL, requires lazutils"
 	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm, requires LCL with nogui widgetset"
-	@$(ECHO) "   basecomponents build lazcontrols, synedit, ideintf for the LCL_PLATFORM, requires lcl"
+	@$(ECHO) "   basecomponents build debuggerintf, lazcontrols, synedit, ideintf for the LCL_PLATFORM, requires lcl"
 	@$(ECHO) "   bigidecomponents build many extra packages for the LCL_PLATFORM, requires basecomponents"
 	@$(ECHO) "   lhelp          build lhelp, requires bigidecomponents"
 	@$(ECHO) "   starter        build startlazarus, requires basecomponents"
@@ -2815,11 +2814,10 @@ lazutils:
 	$(MAKE) -C components/lazutils
 codetools:
 	$(MAKE) -C components/codetools
-debuggerintf:
-	$(MAKE) -C components/debuggerintf
 lcl:
 	$(MAKE) -C lcl
 basecomponents:
+	$(MAKE) -C components/debuggerintf
 	$(MAKE) -C components/lazcontrols
 	$(MAKE) -C components/synedit
 	$(MAKE) -C components/ideintf
@@ -2839,9 +2837,10 @@ useride:
 	./lazbuild$(SRCEXEEXT) --lazarusdir=. --build-ide=
 starter:
 	$(MAKE) -C ide starter
-lazbuild: registration lazutils codetools debuggerintf
+lazbuild: registration lazutils codetools
 	$(MAKE) -C lcl LCL_PLATFORM=nogui
 	$(MAKE) -C tools
+	$(MAKE) -C components/debuggerintf LCL_PLATFORM=nogui
 	$(MAKE) -C components/lazcontrols LCL_PLATFORM=nogui
 	$(MAKE) -C components/synedit LCL_PLATFORM=nogui
 	$(MAKE) -C components/ideintf LCL_PLATFORM=nogui
