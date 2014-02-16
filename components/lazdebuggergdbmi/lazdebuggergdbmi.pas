@@ -7,7 +7,7 @@ unit LazDebuggerGdbmi;
 interface
 
 uses
-  LazarusPackageIntf;
+  CmdLineDebugger, DebugUtils, LazarusPackageIntf;
 
 implementation
 

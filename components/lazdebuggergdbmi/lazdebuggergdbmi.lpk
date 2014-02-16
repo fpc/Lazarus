@@ -22,11 +22,30 @@
 This debugger uses gdb and is based on gdb's mi interface."/>
     <License Value="GPL"/>
     <Version Minor="1"/>
-    <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="1">
+    <Files Count="2">
       <Item1>
-        <PackageName Value="FCL"/>
+        <Filename Value="cmdlinedebugger.pp"/>
+        <UnitName Value="CmdLineDebugger"/>
       </Item1>
+      <Item2>
+        <Filename Value="debugutils.pp"/>
+        <UnitName Value="DebugUtils"/>
+      </Item2>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="4">
+      <Item1>
+        <PackageName Value="DebuggerIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCLBase"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LazUtils"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="FCL"/>
+      </Item4>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
@@ -34,5 +53,8 @@ This debugger uses gdb and is based on gdb's mi interface."/>
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>
