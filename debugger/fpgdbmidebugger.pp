@@ -9,7 +9,10 @@ unit FpGdbmiDebugger;
 interface
 
 uses
-  Classes, windows, sysutils, math, FpdMemoryTools, FpDbgInfo, FpDbgClasses, GDBMIDebugger,
+  {$IFdef WithWinMemReader}
+  windows,
+  {$ENDIF}
+  Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, FpDbgClasses, GDBMIDebugger,
   BaseDebugManager, DbgIntfBaseTypes, DbgIntfDebuggerBase, Debugger, GDBMIMiscClasses,
   GDBTypeInfo, maps, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst, LazLoggerBase,
   LazLoggerProfiling, LazClasses, FpPascalParser, FpPascalBuilder;
