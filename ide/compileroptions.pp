@@ -1919,7 +1919,8 @@ var
   OutFilename: String;
 begin
   Result:=TargetFilename;
-  IDEMacros.SubstituteMacros(Result);
+  if not IDEMacros.SubstituteMacros(Result) then
+    exit;
   if (Result<>'') and FilenameIsAbsolute(Result) then begin
     // fully specified target filename
   end else if Result<>'' then begin
