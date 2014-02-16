@@ -66,6 +66,9 @@ function PCLenToInt(const AVal: TPCharWithLen; Def: Integer = 0): Integer;
 function PCLenToQWord(const AVal: TPCharWithLen; Def: QWord = 0): QWord;
 function DbgsPCLen(const AVal: TPCharWithLen): String;
 
+function DPtrMin(const a,b: TDBGPtr): TDBGPtr;
+function DPtrMax(const a,b: TDBGPtr): TDBGPtr;
+
 implementation
 
 uses
@@ -499,6 +502,16 @@ end;
 function DbgsPCLen(const AVal: TPCharWithLen): String;
 begin
   Result := PCLenToString(AVal);
+end;
+
+function DPtrMin(const a, b: TDBGPtr): TDBGPtr;
+begin
+  if a < b then Result := a else Result := b;
+end;
+
+function DPtrMax(const a, b: TDBGPtr): TDBGPtr;
+begin
+  if a > b then Result := a else Result := b;
 end;
 
 

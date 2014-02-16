@@ -31,8 +31,7 @@ unit GDBMIServerDebugger;
 interface
 
 uses
-  Classes, sysutils, GDBMIDebugger, BaseDebugManager, Debugger,
-  GDBMIMiscClasses, DbgIntfDebuggerBase;
+  Classes, sysutils, GDBMIDebugger, GDBMIMiscClasses, DbgIntfDebuggerBase;
   
 type
 

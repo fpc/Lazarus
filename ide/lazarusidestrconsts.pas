@@ -1084,9 +1084,6 @@ resourcestring
   dlgGroupCodetools = 'Codetools';
   dlgGroupCodeExplorer = 'Code Explorer';
   dlgGroupDebugger = 'Debugger';
-  lisUnexpectedResultTheDebuggerWillTerminate = 'Unexpected result:%sThe '
-    +'debugger will terminate';
-  lisResponseContinue = 'Response: %sContinue ?';
 
   // Options dialog
   dlgIDEOptions = 'IDE Options';
@@ -5114,13 +5111,6 @@ resourcestring
 
   //Jump History dialog
   lisJHJumpHistory = 'Jump History';
-  lisNewTheGNUDebuggerThroughSshAllowsToRemoteDebugViaASsh =
-      'The GNU debugger '
-    +'through ssh allows to remote debug via a ssh connection. See docs/'
-    +'RemoteDebugging.txt for details. The path must contain the ssh client.'
-    +'Use SSH_Startup_Options for the hostname and optional username.'
-    +'And Remote_GDB_Exe for the filename of gdb on the remote computer.'
-    +'';
   lisRemoveUnitFromUsesSection = 'Remove unit from uses section';
   lisRemoveLocalVariable = 'Remove local variable %s';
   lisHideMessageViaDirective = 'Hide message via directive';

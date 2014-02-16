@@ -36,7 +36,7 @@ uses
   {$IFDEF DBG_ENABLE_TERMINAL}
   IDEMiniLibC, Classes,
   {$ENDIF}
-  Debugger, DebugUtils, DbgIntfDebuggerBase;
+  DebugUtils, DbgIntfDebuggerBase;
 
 type
 

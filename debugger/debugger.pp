@@ -1183,6 +1183,7 @@ type
     function GetThreadId: Integer; override;
     procedure SetThreadId(AValue: Integer); override;
     function GetRawEntries: TMap; override;
+    function GetNewCurrentIndex: Integer; override;
 
     procedure Clear; virtual;
     function  GetCount: Integer; override;
@@ -1275,6 +1276,7 @@ type
     function GetRawEntries: TMap; override;
     function GetLowestUnknown: Integer; override;
     function GetHighestUnknown: Integer; override;
+    function GetNewCurrentIndex: Integer; override;
   public
     constructor Create(AMonitor: TCallStackMonitor);
     destructor Destroy; override;
@@ -1844,8 +1846,6 @@ const
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
 function DBGStateNameToState(const s: string): TDBGState; deprecated;
 function DBGBreakPointActionNameToAction(const s: string): TIDEBreakPointAction;
-function DPtrMin(const a,b: TDBGPtr): TDBGPtr;
-function DPtrMax(const a,b: TDBGPtr): TDBGPtr;
 
 function dbgs(AFlag: TDebuggerLocationFlag): String; overload;
 function dbgs(AFlags: TDebuggerLocationFlags): String; overload;
@@ -1907,16 +1907,6 @@ begin
   for Result:=Low(TIDEBreakPointAction) to High(TIDEBreakPointAction) do
     if AnsiCompareText(s,DBGBreakPointActionNames[Result])=0 then exit;
   Result:=bpaStop;
-end;
-
-function DPtrMin(const a, b: TDBGPtr): TDBGPtr;
-begin
-  if a < b then Result := a else Result := b;
-end;
-
-function DPtrMax(const a, b: TDBGPtr): TDBGPtr;
-begin
-  if a > b then Result := a else Result := b;
 end;
 
 { TIDEBreakPointGroupList }
@@ -4103,6 +4093,11 @@ end;
 function TCurrentCallStack.GetHighestUnknown: Integer;
 begin
   Result := FHighestUnknown;
+end;
+
+function TCurrentCallStack.GetNewCurrentIndex: Integer;
+begin
+  Result := FNewCurrentIndex;
 end;
 
 procedure TCurrentCallStack.PrepareRange(AIndex, ACount: Integer);
@@ -7091,6 +7086,12 @@ function TCallStack.GetRawEntries: TMap;
 begin
   assert(False, 'TCallStack.GetRawEntries');
   Result := nil;
+end;
+
+function TCallStack.GetNewCurrentIndex: Integer;
+begin
+  assert(False, 'TCallStack.GetNewCurrentIndex');
+  Result := 0;
 end;
 
 

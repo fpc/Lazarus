@@ -895,6 +895,7 @@ type
 
   TCallStackBase = class(TFreeNotifyingObject)
   protected
+    function GetNewCurrentIndex: Integer; virtual; abstract;
     function GetEntryBase(AIndex: Integer): TCallStackEntryBase; virtual; abstract;
     function GetThreadId: Integer; virtual; abstract;
     procedure SetThreadId(AValue: Integer); virtual; abstract;
@@ -917,6 +918,7 @@ type
     property CurrentIndex: Integer read GetCurrent write SetCurrent;
     property Entries[AIndex: Integer]: TCallStackEntryBase read GetEntryBase;
     property ThreadId: Integer read GetThreadId write SetThreadId;
+    property NewCurrentIndex: Integer read GetNewCurrentIndex;
 
     property RawEntries: TMap read GetRawEntries;
     property LowestUnknown: Integer read GetLowestUnknown;
