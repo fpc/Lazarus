@@ -92,6 +92,8 @@ type
     function ReadEntityFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadCircleFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadEllipseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+    function ReadFrameFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+    function ReadFrameTextFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadImageFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     procedure ReadLayerFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     function ReadLineFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
@@ -957,7 +959,7 @@ begin
       i := 0;
       while i < lTokenizer.Tokens.Count-1 do
       begin
-        lFunctionName := lTokenizer.Tokens.Items[i].StrValue;
+        lFunctionName := Trim(lTokenizer.Tokens.Items[i].StrValue);
         lParamStr := lTokenizer.Tokens.Items[i+1].StrValue;
         lMatrixElements := ReadSpaceSeparatedFloats(lParamStr, ',');
 
@@ -1226,6 +1228,7 @@ begin
   case lEntityName of
     'circle': Result := ReadCircleFromNode(ANode, AData, ADoc);
     'ellipse': Result := ReadEllipseFromNode(ANode, AData, ADoc);
+    'frame': Result := ReadFrameFromNode(ANode, AData, ADoc);
     'g': ReadLayerFromNode(ANode, AData, ADoc);
     'image': Result := ReadImageFromNode(ANode, AData, ADoc);
     'line': Result := ReadLineFromNode(ANode, AData, ADoc);
@@ -1340,6 +1343,173 @@ begin
         AData, crx, cry, lEllipse.HorzHalfAxis, lEllipse.VertHalfAxis);
 
   Result := lEllipse;
+end;
+
+{
+<draw:frame draw:style-name="gr5" draw:layer="layout" svg:width="9.024cm" svg:height="0.963cm"
+    draw:transform="rotate (-1.58737695468884) translate (2.3cm 1.197cm)">
+   <draw:text-box>
+      <text:p>Jump opposite arm and leg up</text:p>
+   </draw:text-box>
+</draw:frame>
+
+<draw:frame draw:style-name="gr5" draw:layer="layout" svg:width="15.07cm" svg:height="1.115cm" svg:x="2.6cm" svg:y="26.9cm">
+   <draw:text-box>
+      <text:p>
+         <text:span text:style-name="T1">Back muscle movement</text:span>
+         <text:span text:style-name="T2">opposite</text:span>
+         <text:span text:style-name="T3">arm</text:span>
+         and
+         <text:span text:style-name="T3">leg</text:span>
+         up
+      </text:p>
+   </draw:text-box>
+</draw:frame>
+}
+function TvSVGVectorialReader.ReadFrameFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+var
+  lTextStr: string = '';
+  lx, ly: double;
+  lText: TvText;
+  i: Integer;
+  lNodeName, lNodeValue, lSubNodeName, lSubNodeValue: DOMString;
+  lCurNode, lCurSubNode: TDOMNode;
+begin
+  lx := 0.0;
+  ly := 0.0;
+  Result := nil;
+
+  lText := nil;//TvText.Create(nil);
+
+  // Apply the layer style
+  ApplyLayerStyles(lText);
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
+    if  lNodeName = 'svg:x' then
+      lx := lx + StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'svg:y' then
+      ly := ly + StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'draw:style-name' then
+      ReadSVGStyle(lNodeValue, lText);
+  end;
+
+  // Get the text contents
+  lCurNode := Anode.FirstChild;
+  while lCurNode <> nil do
+  begin
+    lNodeName := LowerCase(lCurNode.NodeName);
+    if lNodeName <> 'draw:text-box' then Continue;
+
+    lCurSubNode := lCurNode.FirstChild;
+    while lCurSubNode <> nil do
+    begin
+      lSubNodeName := LowerCase(lCurSubNode.NodeName);
+      if lSubNodeName <> 'draw:text-box' then Continue;
+
+      lText := ReadFrameTextFromNode(lCurNode, AData, ADoc) as TvText;
+      Break;
+
+      lCurSubNode := lCurSubNode.NextSibling;
+    end;
+    if lText <> nil then Break;
+
+    lCurNode := lCurNode.NextSibling;
+  end;
+
+  if lText = nil then Exit;
+
+  // Set the coordinates
+  ConvertSVGCoordinatesToFPVCoordinates(
+        AData, lx, ly, lText.X, lText.Y);
+
+  // Finalization
+  Result := lText;
+end;
+
+{
+   <text:p>Jump opposite arm and leg up</text:p>
+
+   <text:p>
+      <text:span text:style-name="T1">Back muscle movement</text:span>
+      <text:span text:style-name="T2">opposite</text:span>
+      <text:span text:style-name="T3">arm</text:span>
+      and
+      <text:span text:style-name="T3">leg</text:span>
+      up
+   </text:p>
+}
+function TvSVGVectorialReader.ReadFrameTextFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+var
+  lTextStr: string = '';
+  lx, ly: double;
+  lText: TvText;
+  i: Integer;
+  lNodeName, lNodeValue: DOMString;
+  lCurNode: TDOMNode;
+begin
+  lx := 0.0;
+  ly := 0.0;
+
+  lText := TvText.Create(nil);
+
+  // Apply the layer style
+  {ApplyLayerStyles(lText);
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
+    if  lNodeName = 'x' then
+      lx := lx + StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'y' then
+      ly := ly + StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'id' then
+      lText.Name := lNodeValue
+    else if lNodeName = 'style' then
+      ReadSVGStyle(lNodeValue, lText);
+  end;}
+
+  // The text contents are inside as a child text, not as a attribute
+  // ex:   <text x="0" y="15" fill="red" transform="rotate(30 20,40)">I love SVG</text>
+  if Anode.FirstChild <> nil then
+    lTextStr := Anode.FirstChild.NodeValue;
+  // Add the first line
+  lText.Value.Add(lTextStr);
+
+  // Recover the position if there was a transformation matrix
+  //lx := lx + lText.X;
+  //ly := ly + lText.Y;
+
+  // Set the coordinates
+  ConvertSVGCoordinatesToFPVCoordinates(
+        AData, lx, ly, lText.X, lText.Y);
+
+  // Now add other lines, which appear as <tspan ...>another line</tspan>
+  // Example:
+  // <text x="10" y="20" style="fill:red;">Several lines:
+  //   <tspan x="10" y="45">First line</tspan>
+  //   <tspan x="10" y="70">Second line</tspan>
+  // </text>
+  // These other lines can be positioned, so they need to appear as independent TvText elements
+{  lCurNode := Anode.FirstChild;
+  while lCurNode <> nil do
+  begin
+    lNodeName := LowerCase(lCurNode.NodeName);
+    if lNodeName <> 'tspan' then Continue;
+    ReadTextFromNode(lCurNode, AData, ADoc);
+
+    lCurNode := lCurNode.NextSibling;
+  end;}
+
+  // Finalization
+  Result := lText;
 end;
 
 // <image width="92.5" x="0" y="0" height="76.0429"

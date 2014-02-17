@@ -55,6 +55,8 @@ uses
   fpvectorial, fpvutils, lazutf8;
 
 type
+  TDoubleArray = array of Double;
+
   TSVGTokenType = (
     // moves
     sttMoveTo, sttRelativeMoveTo,
@@ -95,6 +97,7 @@ type
     Destructor Destroy; override;
     procedure AddToken(AStr: string);
     procedure TokenizePathString(AStr: string);
+    procedure TokenizeFunctions(AStr: string);
   end;
 
   TODGStyle = class(TvStyle)
@@ -116,7 +119,7 @@ type
   end;
 
   TCustomShapeInfo = packed record
-    Width, Height: Double; // in milimiters
+    Left, Top, Width, Height: Double; // in milimiters
     ViewBox_Left, ViewBox_Top, ViewBox_Width, ViewBox_Height: Double; // unitless
     VariableNames: array of string;
     VariableValues: array of Double;
@@ -132,6 +135,9 @@ type
     FPageLayouts: TFPList; // of TODGPageLayout;
     FMasterPages: TFPList; // of TODGMasterPage;
     //FSVGPathTokenizer: TSVGPathTokenizer;
+    //
+    function ReadSpaceSeparatedFloats(AInput: string; AOtherSeparators: string): TDoubleArray;
+    function ReadSpaceSeparatedStrings(AInput: string; AOtherSeparators: string): TStringList;
     //
     procedure DeleteStyle(data,arg:pointer);
     procedure ApplyGraphicAttributeToPenAndBrush(ANodeName, ANodeValue: string; var APen: TvPen; var ABrush: TvBrush);
@@ -166,11 +172,14 @@ type
     procedure ConvertODGDeltaToFPVDelta(
       const AData: TvVectorialPage;
       const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
-    procedure ConvertViewBoxCoordinatesToODGCoordinates(
+    procedure ConvertViewBoxCoordinatesToFPVCoordinates(
+      const AData: TvVectorialPage; const AInfo: TCustomShapeInfo;
+      const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
+    procedure ConvertViewBoxDeltaToFPVDelta(
       const AInfo: TCustomShapeInfo;
       const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
-    procedure ConvertViewBoxDeltaToODGDelta(
-      const AInfo: TCustomShapeInfo;
+    procedure ConvertMilimiterCoordinatesToFPVCoordinates(
+      const AData: TvVectorialPage;
       const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
   public
     { General reading methods }
@@ -432,6 +441,106 @@ begin
 
   // If there is a token still to be added, add it now
   if (lState = 0) and (lTmpStr <> '') then AddToken(lTmpStr);
+end;
+
+procedure TSVGPathTokenizer.TokenizeFunctions(AStr: string);
+const
+  Str_Space: Char = ' ';
+  Str_Start_Params: Char = '(';
+  Str_End_Params: Char = ')';
+  ListOfCommandLetters: set of Char = ['a'..'d', 'f'..'z', 'A'..'D', 'F'..'Z'];
+var
+  i: Integer;
+  lTmpStr: string = '';
+  lState: Integer;
+  lFirstTmpStrChar, lCurChar: Char;
+  lToken: TSVGToken;
+begin
+  lState := 0;
+
+  i := 1;
+  while i <= Length(AStr) do
+  begin
+    case lState of
+    0: // Adding to the tmp string
+    begin
+      lCurChar := AStr[i];
+      if lCurChar in [Str_Start_Params, Str_End_Params] then
+      begin
+        lState := 1;
+        // Add the token
+        lToken := TSVGToken.Create;
+        lToken.StrValue := lTmpStr;
+        Tokens.Add(lToken);
+        //
+        lTmpStr := '';
+      end
+      else
+      begin
+        lTmpStr := lTmpStr + lCurChar;
+      end;
+
+      Inc(i);
+    end;
+    1: // Removing spaces
+    begin
+      if AStr[i] <> Str_Space then lState := 0
+      else Inc(i);
+    end;
+    end;
+  end;
+
+  // If there is a token still to be added, add it now
+  if (lState = 0) and (lTmpStr <> '') then AddToken(lTmpStr);
+end;
+
+function TvODGVectorialReader.ReadSpaceSeparatedFloats(AInput: string;
+  AOtherSeparators: string): TDoubleArray;
+var
+  lStrings: TStringList;
+  lInputStr: string;
+  lMatrixElements: array of Double;
+  i: Integer;
+begin
+  lStrings := TStringList.Create;
+  try
+    lStrings.Delimiter := ' ';
+    // now other separator too
+    lInputStr := AInput;
+    for i := 1 to Length(AOtherSeparators) do
+    begin
+      lInputStr := StringReplace(lInputStr, AOtherSeparators[i], ' ', [rfReplaceAll]);
+    end;
+    //
+    lStrings.DelimitedText := lInputStr;
+    SetLength(lMatrixElements, lStrings.Count);
+    for i := 0 to lStrings.Count-1 do
+    begin
+      lMatrixElements[i] := StringWithUnitToFloat(lStrings.Strings[i]);
+    end;
+
+    Result := lMatrixElements;
+  finally
+    lStrings.Free;
+  end;
+end;
+
+function TvODGVectorialReader.ReadSpaceSeparatedStrings(AInput: string;
+  AOtherSeparators: string): TStringList;
+var
+  i: Integer;
+  lInputStr: String;
+begin
+  Result := TStringList.Create;
+  Result.Delimiter := ' ';
+  // now other separator too
+  lInputStr := AInput;
+  for i := 1 to Length(AOtherSeparators) do
+  begin
+    lInputStr := StringReplace(lInputStr, AOtherSeparators[i], ' ', [rfReplaceAll]);
+  end;
+  //
+  Result.DelimitedText := lInputStr;
 end;
 
 procedure TvODGVectorialReader.DeleteStyle(data, arg: pointer);
@@ -869,25 +978,23 @@ begin
       sttEllipticArcTo, sttRelativeEllipticArcTo, sttEllipticArcToWithAngle:
       begin
         CurToken := TSVGToken(lTokenizer.Tokens.Items[j+1]);
-        x1 := CurToken.Value;// + ADeltaX;
+        x1 := CurToken.Value;
         CurToken := TSVGToken(lTokenizer.Tokens.Items[j+2]);
-        y1 := CurToken.Value;// + ADeltaY;
+        y1 := CurToken.Value;
         CurToken := TSVGToken(lTokenizer.Tokens.Items[j+3]);
         x2 := ResolveEnhancedGeometryFormula(CurToken, AInfo) / 2;
         CurToken := TSVGToken(lTokenizer.Tokens.Items[j+4]);
         y2 := ResolveEnhancedGeometryFormula(CurToken, AInfo) / 2;
         CurToken := TSVGToken(lTokenizer.Tokens.Items[j+5]);
         t1 := CurToken.Value;
-        t1 := t1 / Pi;
+        t1 := DegToRad(t1);
         CurToken := TSVGToken(lTokenizer.Tokens.Items[j+6]);
         t2 := CurToken.Value;
-        t2 := t2 / Pi;
+        t2 := DegToRad(t2);
 
-        ConvertViewBoxCoordinatesToODGCoordinates(AInfo, x1, y1, x1, y1);
-        ConvertODGCoordinatesToFPVCoordinates(AData, x1, y1, x1, y1);
+        ConvertViewBoxCoordinatesToFPVCoordinates(AData, AInfo, x1, y1, x1, y1);
 
-        ConvertViewBoxDeltaToODGDelta(AInfo, x2, y2, x2, y2);
-        ConvertODGDeltaToFPVDelta(AData, x2, y2, x2, y2);
+        ConvertViewBoxDeltaToFPVDelta(AInfo, x2, y2, x2, y2);
 
         // Parametrized Ellipse equation
         lSrcX := x2 * Cos(t1) + x1;
@@ -897,7 +1004,7 @@ begin
 
         // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
         ADest.AppendMoveToSegment(lSrcX, lSrcY);
-        ADest.AppendEllipticalArc(x2, y2, 0, lDestX, lDestY, False, False);
+        ADest.AppendEllipticalArcWithCenter(x2, y2, 0, lDestX, lDestY, x1, y1, t2 > t1);
 
         Inc(j, 7);
       end;
@@ -979,6 +1086,12 @@ begin
   lWidth := 0.0;
   lHeight := 0.0;
 
+  lSkewX := 0.0;
+  lSkewY := 0.0;
+  lRotate := 0.0;
+  lTranslateX := 0.0;
+  lTranslateY := 0.0;
+
   lGroup := TvEntityWithSubEntities.Create(AData);
   lPath := TPath.Create(Adata);
   lGroup.AddEntity(lPath);
@@ -1006,10 +1119,7 @@ begin
 //      lEllipse.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
   end;
 
-  ConvertODGCoordinatesToFPVCoordinates(
-        AData, x1, y1, x2, y2);
-  ConvertODGDeltaToFPVDelta(
-        AData, lWidth, lHeight, lWidth, lHeight);
+  ConvertMilimiterCoordinatesToFPVCoordinates(AData, x1, y1, x2, y2);
 
   // Go through sub-nodes
   lCurNode := ANode.FirstChild;
@@ -1030,6 +1140,8 @@ begin
     end;
     'draw:enhanced-geometry':
     begin
+      lInfo.Left := x1 + lTranslateX;
+      lInfo.Top := y1 + lTranslateY;
       lInfo.Width := lWidth;
       lInfo.Height := lHeight;
       ReadEnhancedGeometryNodeToTPath(lCurNode, AData, lPath, x1, y1, lInfo);
@@ -1312,6 +1424,15 @@ end;
 
 procedure TvODGVectorialReader.GetDrawTransforms(AInputStr: string; out ASkewX,
   ASkewY, ARotate, ATranslateX, ATranslateY: Double);
+var
+  // transform
+  MA, MB, MC, MD, ME, MF: Double;
+  lMTranslateX, lMTranslateY, lMScaleX, lMScaleY, lMSkewX, lMSkewY, lMRotate: Double;
+  lTokenizer: TSVGPathTokenizer;
+  i: Integer;
+  lFunctionName, lParamStr: string;
+  lMatrixElements: array of Double;
+  lMatrixStrElements: TStringList;
 begin
   ASkewX := 0.0;
   ASkewY := 0.0;
@@ -1319,7 +1440,60 @@ begin
   ATranslateX := 0.0;
   ATranslateY := 0.0;
 
+  // Examples:
+  // transform="matrix(0.860815 0 -0 1.07602 339.302 489.171)"
+  // transform="scale(0.24) translate(0, 35)"
+  // transform="rotate(90)"
+  lTokenizer := TSVGPathTokenizer.Create;
+  try
+    lTokenizer.TokenizeFunctions(AInputStr);
 
+    i := 0;
+    while i < lTokenizer.Tokens.Count-1 do
+    begin
+      lFunctionName := Trim(lTokenizer.Tokens.Items[i].StrValue);
+      lParamStr := lTokenizer.Tokens.Items[i+1].StrValue;
+      //lMatrixElements := ReadSpaceSeparatedFloats(lParamStr, ',');
+
+      if lFunctionName = 'matrix' then
+      begin
+        {ReadSVGTransformationMatrix(lParamStr, MA, MB, MC, MD, ME, MF);
+
+        ConvertTransformationMatrixToOperations(MA, MB, MC, MD, ME, MF,
+          lMTranslateX, lMTranslateY, lMScaleX, lMScaleY, lMSkewX, lMSkewY, lMRotate);
+
+        ConvertSVGDeltaToFPVDelta(nil,
+          lMTranslateX, lMTranslateY,
+          lMTranslateX, lMTranslateY);
+
+        ADestEntity.Move(lMTranslateX, lMTranslateY);
+        ADestEntity.Scale(lMScaleX, lMScaleY); }
+      end
+      else if lFunctionName = 'scale' then
+      begin
+        ;
+      end
+      else if lFunctionName = 'translate' then
+      begin
+        lMatrixStrElements := ReadSpaceSeparatedStrings(lParamStr, ',');
+        try
+          ATranslateX := StringWithUnitToFloat(lMatrixStrElements.Strings[0]);
+          ATranslateY := StringWithUnitToFloat(lMatrixStrElements.Strings[1]);
+        finally
+          lMatrixStrElements.Free;
+        end;
+        //ADestEntity.Move(lMatrixElements[0], lMatrixElements[1]);
+      end
+      else if lFunctionName = 'rotate' then
+      begin
+        //ADestEntity.Rotate(lMatrixElements[0], Make3DPoint(0, 0, 0));
+      end;
+
+      Inc(i, 2);
+    end;
+  finally
+    lTokenizer.Free;
+  end;
 end;
 
 function TvODGVectorialReader.ReadSVGColor(AValue: string): TFPColor;
@@ -1764,25 +1938,44 @@ end;
 
   We should use these formulas to obtain the X, Y position from something in the drawing:
 
-  Xreal = Xenhanced-path * (draw:custom-shape_svg:width / svg:viewBox_Width) + svg:viewBox_Xo;
+  Xreal = (Xenhanced-path - ViewBox_X0) * (draw:custom-shape_svg:width / svg:viewBox_Width) + svg:viewBox_Xo;
   And the same for Y
 
   For sizes just use without Xo
+
+  <draw:custom-shape draw:style-name="gr6" draw:text-style-name="P1" draw:layer="layout" svg:width="3.783cm" svg:height="3.602cm" draw:transform="skewX (-0.000872664625997166) rotate (-1.62385433605552) translate (19.087cm 20.266cm)">
+     <text:p />
+     <draw:enhanced-geometry svg:viewBox="0 0 21600 21600" draw:glue-points="10800 0 3163 3163 0 10800 3163 18437 10800 21600 18437 18437 21600 10800 18437 3163" draw:text-areas="3163 3163 18437 18437" draw:type="ring" draw:modifiers="647.870425914817"
+         draw:enhanced-path="U 10800 10800 10800 10800 0 360 Z U 10800 10800 ?f1 ?f1 0 360 N">
+        <draw:equation draw:name="f0" draw:formula="$0 " />
+        <draw:equation draw:name="f1" draw:formula="10800-$0 " />
+        <draw:handle draw:handle-position="$0 10800" draw:handle-range-x-minimum="0" draw:handle-range-x-maximum="10800" />
+     </draw:enhanced-geometry>
+  </draw:custom-shape>
 }
-procedure TvODGVectorialReader.ConvertViewBoxCoordinatesToODGCoordinates(
-  const AInfo: TCustomShapeInfo; const ASrcX, ASrcY: Double; var ADestX,
-  ADestY: Double);
+procedure TvODGVectorialReader.ConvertViewBoxCoordinatesToFPVCoordinates(
+  const AData: TvVectorialPage; const AInfo: TCustomShapeInfo;
+  const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
 begin
-  ADestX := ASrcX * (AInfo.Width / AInfo.ViewBox_Width) + AInfo.ViewBox_Left;
-  ADestY := ASrcY * (AInfo.Height / AInfo.ViewBox_Height) + AInfo.ViewBox_Top;
+  ADestX := (ASrcX - AInfo.ViewBox_Left) * (AInfo.Width / AInfo.ViewBox_Width) + AInfo.Left;
+  ADestY := (ASrcY - AInfo.ViewBox_Top) * (AInfo.Height / AInfo.ViewBox_Height) + AInfo.Top;
+  ADestY := AData.Height - ADestY;
 end;
 
-procedure TvODGVectorialReader.ConvertViewBoxDeltaToODGDelta(
+procedure TvODGVectorialReader.ConvertViewBoxDeltaToFPVDelta(
   const AInfo: TCustomShapeInfo; const ASrcX, ASrcY: Double; var ADestX,
   ADestY: Double);
 begin
-  ADestX := ASrcX * (AInfo.Width / AInfo.ViewBox_Width);
-  ADestY := ASrcY * (AInfo.Height / AInfo.ViewBox_Height);
+  ADestX := (ASrcX - AInfo.ViewBox_Left) * (AInfo.Width / AInfo.ViewBox_Width);
+  ADestY := (ASrcY - AInfo.ViewBox_Top) * (AInfo.Height / AInfo.ViewBox_Height);
+end;
+
+procedure TvODGVectorialReader.ConvertMilimiterCoordinatesToFPVCoordinates(
+  const AData: TvVectorialPage; const ASrcX, ASrcY: Double; var ADestX,
+  ADestY: Double);
+begin
+  ADestX := ASrcX;
+  ADestY := AData.Height - ASrcY;
 end;
 
 constructor TvODGVectorialReader.Create;

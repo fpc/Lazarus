@@ -344,11 +344,12 @@ type
   public
     RX, RY, XRotation: Double; // RX and RY are the X and Y half axis sizes
     LeftmostEllipse, ClockwiseArcFlag: Boolean;
-    CX, CY: Double;
+    CX, CY: Double; // Ellipse center
+    CenterSetByUser: Boolean; // defines if we should use LeftmostEllipse to calculate the center, or if CX, CY is set directly
     procedure CalculateCenter;
     procedure CalculateEllipseBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
-
 
   TvFindEntityResult = (vfrNotFound, vfrFound, vfrSubpartFound);
 
@@ -490,6 +491,7 @@ type
     procedure AppendMoveToSegment(AX, AY: Double);
     procedure AppendLineToSegment(AX, AY: Double);
     procedure AppendEllipticalArc(ARadX, ARadY, AXAxisRotation, ADestX, ADestY: Double; ALeftmostEllipse, AClockwiseArcFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
+    procedure AppendEllipticalArcWithCenter(ARadX, ARadY, AXAxisRotation, ADestX, ADestY, ACenterX, ACenterY: Double; AClockwiseArcFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
     procedure Move(ADeltaX, ADeltaY: Double); override;
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); override;
     function  MoveToSubpart(ASubpart: Cardinal): TPathSegment;
@@ -1791,6 +1793,8 @@ var
   CX1, CY1, CX2, CY2, LeftMostX, LeftMostY, RightMostX, RightMostY: Double;
   RotatedCenter: T3DPoint;
 begin
+  if CenterSetByUser then Exit;
+
   // Rotated Ellipse equation:
   // (xcosθ+ysinθ)^2 / RX^2 + (ycosθ−xsinθ)^2 / RY^2 = 1
   //
@@ -1958,6 +1962,21 @@ begin
     ABottom := Max(y1, y2);
     ABottom := Max(ABottom, y3);
   end;
+end;
+
+function T2DEllipticalArcSegment.GenerateDebugTree(
+  ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer;
+var
+  lStr: string;
+  lStrLeftmostEllipse, lStrClockwiseArcFlag: string;
+begin
+  if LeftmostEllipse then lStrLeftmostEllipse := 'true'
+  else lStrLeftmostEllipse := 'false';
+  if ClockwiseArcFlag then lStrClockwiseArcFlag := 'true'
+  else lStrClockwiseArcFlag := 'false';
+  lStr := Format('[%s] X=%f Y=%f RX=%f RY=%f LeftmostEllipse=%s ClockwiseArcFlag=%s CX=%f CY=%f',
+    [Self.ClassName, X, Y, RX, RY, lStrLeftmostEllipse, lStrClockwiseArcFlag, CX, CY]);
+  Result := ADestRoutine(lStr, APageItem);
 end;
 
 { TvVerticalFormulaStack }
@@ -2607,6 +2626,27 @@ begin
   segment.XRotation := AXAxisRotation;
   segment.LeftmostEllipse := ALeftmostEllipse;
   segment.ClockwiseArcFlag := AClockwiseArcFlag;
+
+  AppendSegment(segment);
+end;
+
+procedure TPath.AppendEllipticalArcWithCenter(ARadX, ARadY, AXAxisRotation,
+  ADestX, ADestY, ACenterX, ACenterY: Double; AClockwiseArcFlag: Boolean);
+var
+  segment: T2DEllipticalArcSegment;
+begin
+  segment := T2DEllipticalArcSegment.Create;
+  segment.SegmentType := st2DEllipticalArc;
+  segment.X := ADestX;
+  segment.Y := ADestY;
+  segment.RX := ARadX;
+  segment.RY := ARadY;
+  segment.CX := ACenterX;
+  segment.CY := ACenterY;
+  segment.XRotation := AXAxisRotation;
+  segment.LeftmostEllipse := False; // which value would it have?
+  segment.ClockwiseArcFlag := AClockwiseArcFlag;
+  segment.CenterSetByUser := True;
 
   AppendSegment(segment);
 end;
