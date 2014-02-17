@@ -437,14 +437,15 @@ var
       NSView(APArams.WndParent).addSubView(cnt);
       cnt.window.setAcceptsMouseMovedEvents(True);
       cnt.callback.IsOpaque:=true;
-      NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didBecomeKeyNotification:'), NSWindowDidBecomeKeyNotification, cnt.window);
-      NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didResignKeyNotification:'), NSWindowDidResignKeyNotification, cnt.window);
-
+    //  todo: We have to find a way to remove the following notifications save before cnt will be released
+    //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didBecomeKeyNotification:'), NSWindowDidBecomeKeyNotification, cnt.window);
+    //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didResignKeyNotification:'), NSWindowDidResignKeyNotification, cnt.window);
       end;
   end;
 
   Result := TLCLIntfHandle(cnt);
 end;
+
 
 class function TCocoaWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 var

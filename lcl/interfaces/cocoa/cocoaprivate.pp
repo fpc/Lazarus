@@ -373,6 +373,7 @@ type
     protected
     procedure didBecomeKeyNotification(sender: NSNotification); message 'didBecomeKeyNotification:';
     procedure didResignKeyNotification(sender: NSNotification); message 'didResignKeyNotification:';
+
   public
     isembedded: Boolean; // true - if the content is inside of another control, false - if the content is in its own window;
     ownwin: NSWindow;
