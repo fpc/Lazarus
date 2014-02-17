@@ -2946,7 +2946,7 @@ procedure TDbgDwarfValueLocationIdentifier.FrameBaseNeeded(ASender: TObject);
 var
   p: TDbgDwarfIdentifier;
 begin
-debugln(['TDbgDwarfIdentifierVariable.FrameBaseNeeded ']);
+  debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarfIdentifierVariable.FrameBaseNeeded ']);
   p := ParentTypeInfo;
   // TODO: what if parent is declaration?
   if (p <> nil) and (p is TDbgDwarfProcSymbol) then
@@ -3946,7 +3946,6 @@ begin
   while FData < FMaxData do begin
     p := FData;
     inc(FData);
-DebugLn(['p=',p^, ' , ', FData^, ' Cnt=',FStack.Count, ' top=',dbgs(FStack.Peek(0).Value)]);
     case p^ of
       DW_OP_nop: ;
       DW_OP_addr:  FStack.Push(FCU.ReadAddressAtPointer(FData, True), lseValue);
@@ -4466,7 +4465,7 @@ begin
 
       if CompareUtf8BothCase(@s1[1], @s2[1], EntryName) then begin
       // TODO: check DW_AT_start_scope;
-      DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChild found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', AName]);
+      DebugLn(FPDBG_DWARF_SEARCH, ['GoNamedChild found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', AName]);
       Result := True;
       exit;
     end;
@@ -4502,7 +4501,7 @@ begin
 
       if CompareUtf8BothCase(ANameUpper, AnameLower, EntryName) then begin
         // TODO: check DW_AT_start_scope;
-        DebugLn([FPDBG_DWARF_SEARCH, 'GoNamedChildEX found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', AnameLower]);
+        DebugLn(FPDBG_DWARF_SEARCH, ['GoNamedChildEX found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', AnameLower]);
         Result := True;
         exit;
       end;
@@ -5918,7 +5917,7 @@ begin
 
   // CURRENTLY ONLY USED for DW_AT_data_member_location
   if IsReadableLoc(AnObjectDataAddress) then begin
-    debugln(['TDbgDwarfIdentifierMember.InitLocationParser ', dbgs(AnObjectDataAddress)]);
+    debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarfIdentifierMember.InitLocationParser ', dbgs(AnObjectDataAddress)]);
     ALocationParser.FStack.Push(AnObjectDataAddress, lseValue);
     exit
   end;
@@ -6333,8 +6332,7 @@ var
   Val: TByteDynArray;
   LocationParser: TDwarfLocationExpression;
 begin
-DebugLnEnter('>>>');
-  debugln(['TDbgDwarfIdentifier.LocationFromTag', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
+  //debugln(['TDbgDwarfIdentifier.LocationFromTag', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
 
   Result := False;
   if AnInformationEntry = nil then
@@ -6362,7 +6360,6 @@ DebugLnEnter('>>>');
   end;
 
   LocationParser.Free;
-DebugLnExit('<<<', IntToHex(AnAddress,8));
 end;
 
 function TDbgDwarfIdentifier.GetDataAddress(var AnAddress: TFpDbgMemLocation;
@@ -6634,7 +6631,7 @@ var
   Val: TByteDynArray;
 begin
   Result := 0;
-DebugLnEnter(['>> TDbgDwarfProcSymbol.GetFrameBase ']); try
+//DebugLnEnter(['>> TDbgDwarfProcSymbol.GetFrameBase ']); try
   if FFrameBaseParser = nil then begin
     //TODO: avoid copying data
     if not  FInformationEntry.ReadValue(DW_AT_frame_base, Val) then begin
@@ -6654,7 +6651,7 @@ DebugLnEnter(['>> TDbgDwarfProcSymbol.GetFrameBase ']); try
     if FFrameBaseParser.ResultKind in [lseValue] then
       Result := FFrameBaseParser.ResultData;
   end;
-finally DebugLnExit(['<< TDbgDwarfProcSymbol.GetFrameBase ']); end;
+//finally DebugLnExit(['<< TDbgDwarfProcSymbol.GetFrameBase ']); end;
 end;
 
 procedure TDbgDwarfProcSymbol.KindNeeded;
@@ -6706,7 +6703,7 @@ begin
         FSelfParameter := Result;
         {$IFDEF WITH_REFCOUNT_DEBUG}FSelfParameter.DbgRenameReference(@FSelfParameter, 'FSelfParameter');{$ENDIF}
         //FSelfParameter.ParentTypeInfo := Self;
-        debugln(['TDbgDwarfProcSymbol.GetSelfParameter ', dbgs(InfoEntry.FScope, FCU), DbgSName(Result)]);
+        debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarfProcSymbol.GetSelfParameter ', dbgs(InfoEntry.FScope, FCU), DbgSName(Result)]);
       end;
     end;
   end;
