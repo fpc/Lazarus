@@ -11526,7 +11526,9 @@ end;
 {$ENDIF}
 
 {$ifdef fpc}
-  {$if defined(cpupowerpc) or defined(cpuarm) or defined(cpu64)}
+  {$if defined(cpu86)}         // Has MyAllMethodsHandler
+  {$else}
+  // {$if defined(cpupowerpc) or defined(cpuarm) or defined(cpu64)}
     {$define empty_methods_handler}
   {$ifend}
 {$endif}
