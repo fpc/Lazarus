@@ -435,7 +435,8 @@ var
     if AParams.WndParent <> 0 then
       begin
       NSView(APArams.WndParent).addSubView(cnt);
-      cnt.window.setAcceptsMouseMovedEvents(True);
+      if cnt.window<>nil then
+         cnt.window.setAcceptsMouseMovedEvents(True);
       cnt.callback.IsOpaque:=true;
     //  todo: We have to find a way to remove the following notifications save before cnt will be released
     //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didBecomeKeyNotification:'), NSWindowDidBecomeKeyNotification, cnt.window);

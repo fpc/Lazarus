@@ -374,6 +374,7 @@ type
     procedure didBecomeKeyNotification(sender: NSNotification); message 'didBecomeKeyNotification:';
     procedure didResignKeyNotification(sender: NSNotification); message 'didResignKeyNotification:';
 
+
   public
     isembedded: Boolean; // true - if the content is inside of another control, false - if the content is in its own window;
     ownwin: NSWindow;
@@ -605,6 +606,8 @@ end;
 
 procedure TCocoaWindowContent.viewWillMoveToWindow(newWindow: NSWindow);
 begin
+  if newWindow<>nil then
+     newWindow.setAcceptsMouseMovedEvents(True);
   if not isembedded and (newWindow <> window) then
   begin
     window.close;

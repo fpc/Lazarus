@@ -1042,26 +1042,28 @@ var
   winrect: TRect;
   windows: NSArray;
   win: integer;
-  window: NSWindow;
-
+  window, windowbelowpoint: NSWindow;
+  p:NSPoint;
+  winnr:NSInteger;
 begin
   Result := 0;
   if not assigned(NSApp) then
     Exit;
 
+
   windows := NSApp.windows;
   for win := 0 to windows.count - 1 do
   begin
     window:=windows.objectAtIndex(win);
-    if window.isKeyWindow then
+    p.x:=Point.X;
+    p.y:=window.screen.frame.size.height-Point.Y;
+    winnr:=NSWindow.windowNumberAtPoint_belowWindowWithWindowNumber(p,0);
+    windowbelowpoint:=NSApp.windowWithWindowNumber(winnr);
+    if windowbelowpoint=window then
       begin
-      winrect := window.lclFrame;
-      if PtInRect(winrect, Point) then
-         begin
-         Result:=RecurseSubviews(window.contentView, Point);
-         if Result<>0 then
-            exit;
-        end;
+      Result:=RecurseSubviews(window.contentView, Point);
+      if Result<>0 then
+      exit;
       end;
     end;
 end;
