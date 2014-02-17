@@ -49,9 +49,6 @@ uses
 {$IFDEF UNIX}
    Unix,BaseUnix,termio,
 {$ENDIF}
-{$IFDEF DBG_ENABLE_TERMINAL}
-   PseudoTerminalDlg,
-{$ENDIF}
   Forms;
 
 type
