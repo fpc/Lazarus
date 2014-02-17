@@ -13,7 +13,7 @@ uses
   windows,
   {$ENDIF}
   Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, FpDbgClasses, GDBMIDebugger,
-  BaseDebugManager, DbgIntfBaseTypes, DbgIntfDebuggerBase, Debugger, GDBMIMiscClasses,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, GDBMIMiscClasses,
   GDBTypeInfo, maps, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst, LazLoggerBase,
   LazLoggerProfiling, LazClasses, FpPascalParser, FpPascalBuilder;
 
@@ -99,6 +99,7 @@ type
     destructor Destroy; override;
   end;
 
+procedure Register;
 
 implementation
 
@@ -115,13 +116,15 @@ type
 
   TFPGDBMIWatches = class(TGDBMIWatches)
   private
+    FWatchEvalList: TList;
+    procedure DoWatchFreed(Sender: TObject);
   protected
     function  FpDebugger: TFpGDBMIDebugger;
     //procedure DoStateChange(const AOldState: TDBGState); override;
     procedure InternalRequestData(AWatchValue: TWatchValueBase); override;
   public
-    //constructor Create(const ADebugger: TDebugger);
-    //destructor Destroy; override;
+    constructor Create(const ADebugger: TDebuggerIntf);
+    destructor Destroy; override;
   end;
 
   { TFpGDBMILineInfo }
@@ -796,22 +799,6 @@ else DebugLn(['NOT VALID ', PasExpr.DebugDump(True)])
     FInIndexOf := False;
   end;
 
-
-  (*
-    ptype i
-    ~"type = LONGINT\n"
-    whatis i
-    ~"type = LONGINT\n"
-
-
-    ptype @i
-    ~"type = ^LONGINT\n"
-    ptype (@i)^
-    ~"type = LONGINT\n"
-    whatis @i
-    ~"type = ^LONGINT\n"
-  *)
-
 end;
 
 { TFPGDBMIWatches }
@@ -821,10 +808,143 @@ begin
   Result := TFpGDBMIDebugger(Debugger);
 end;
 
-procedure TFPGDBMIWatches.InternalRequestData(AWatchValue: TWatchValueBase);
+procedure TFPGDBMIWatches.DoWatchFreed(Sender: TObject);
 begin
-  inherited InternalRequestData(AWatchValue);
+  FWatchEvalList.Remove(pointer(Sender));
+end;
+
+procedure TFPGDBMIWatches.InternalRequestData(AWatchValue: TWatchValueBase);
+var
+  PasExpr: TFpPascalExpression;
+  ResValue: TDbgSymbolValue;
+  ResTypeInfo: TDBGType;
+  ResText: String;
+  Ctx: TDbgInfoAddressContext;
+
+  function ResTypeName: String;
+  begin
+    if not((ResValue.TypeInfo<> nil) and
+           GetTypeName(Result, ResValue.TypeInfo, []))
+    then
+      Result := '';
+  end;
+
+  procedure DoPointer;
+  var
+    s: String;
+  begin
+    s := ResTypeName;
+    ResTypeInfo := TDBGType.Create(skSimple, s); // TODO, IDE must learn pointer
+    ResText := '$'+IntToHex(ResValue.AsCardinal, Ctx.SizeOfAddress);
+    if s <> '' then
+      ResText := s + '(' + ResText + ')';
+    ResTypeInfo.Value.AsString := ResText;
+    //ResTypeInfo.Value.AsPointer := ; // ???
+  end;
+
+  procedure DoInt;
+  var
+    s: String;
+  begin
+    s := ResTypeName;
+    ResTypeInfo := TDBGType.Create(skSimple, s); // TODO, IDE must learn skInteger;
+    ResText := IntToStr(ResValue.AsInteger);
+    ResTypeInfo.Value.AsString := ResText;
+  end;
+
+  procedure DoCardinal;
+  var
+    s: String;
+  begin
+    s := ResTypeName;
+    ResTypeInfo := TDBGType.Create(skSimple, s); // TODO, IDE must learn skInteger;
+    ResText := IntToStr(ResValue.AsCardinal);
+    ResTypeInfo.Value.AsString := ResText;
+  end;
+
+begin
+
+  AWatchValue.AddFreeeNotification(@DoWatchFreed); // we may call gdb
+  FWatchEvalList.Add(pointer(AWatchValue));
+  try
+    ResTypeInfo := nil;
+    Ctx := FpDebugger.GetInfoContextForContext(AWatchValue.ThreadId, AWatchValue.StackFrame);
+    PasExpr := TFpPascalExpression.Create(AWatchValue.Expression, Ctx);
+
+    if FWatchEvalList.IndexOf(pointer(AWatchValue)) < 0 then
+      exit;
+
+    if not (PasExpr.Valid and (PasExpr.ResultValue <> nil)) then begin
+      if FWatchEvalList.IndexOf(pointer(AWatchValue)) < 0 then
+        exit;
+      debugln(['TFPGDBMIWatches.InternalRequestData FAILED']);
+      inherited InternalRequestData(AWatchValue);
+      exit;
+    end;
+    if FWatchEvalList.IndexOf(pointer(AWatchValue)) < 0 then
+      exit;
+
+    ResValue := PasExpr.ResultValue;
+
+    case PasExpr.ResultValue.Kind of
+      skUnit: ;
+      skProcedure: ;
+      skFunction: ;
+      skPointer: DoPointer;
+      skInteger: DoInt;
+      skCardinal: DoCardinal;
+      skBoolean: ;
+      skChar: ;
+      skFloat: ;
+      skString: ;
+      skAnsiString: ;
+      skCurrency: ;
+      skVariant: ;
+      skWideString: ;
+      skEnum: ;
+      skEnumValue: ;
+      skSet: ;
+      skRecord: ;
+      skObject: ;
+      skClass: ;
+      skInterface: ;
+      skArray: ;
+    end;
+
+
+    if FWatchEvalList.IndexOf(pointer(AWatchValue)) >= 0 then begin
+      if ResTypeInfo = nil then begin
+        debugln(['TFPGDBMIWatches.InternalRequestData FAILED']);
+        inherited InternalRequestData(AWatchValue);
+        exit;
+      end;
+
+      debugln(['TFPGDBMIWatches.InternalRequestData   GOOOOOOD']);
+      AWatchValue.Value    := ResText;
+      AWatchValue.TypeInfo := ResTypeInfo;
+      AWatchValue.Validity := ddsValid;
+    end;
+
+
+  finally
+    AWatchValue.RemoveFreeeNotification(@DoWatchFreed);
+    FWatchEvalList.Remove(pointer(AWatchValue));
+    PasExpr.Free;
+  end;
+
   Application.ProcessMessages;
+end;
+
+constructor TFPGDBMIWatches.Create(const ADebugger: TDebuggerIntf);
+begin
+  inherited Create(ADebugger);
+  FWatchEvalList := TList.Create;
+end;
+
+destructor TFPGDBMIWatches.Destroy;
+begin
+  inherited Destroy;
+  FWatchEvalList.Free;
 end;
 
 { TFpGDBMILineInfo }
@@ -1117,8 +1237,10 @@ begin
   inherited Destroy;
 end;
 
-initialization
+procedure Register;
+begin
   RegisterDebugger(TFpGDBMIDebugger);
+end;
 
 end.
 
