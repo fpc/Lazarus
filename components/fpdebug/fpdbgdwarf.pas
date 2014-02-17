@@ -1191,6 +1191,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure TypeInfoNeeded; override;                       // nil or inherited
     function GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
 
+    // GetMember, if AIndex > Count then parent
     function GetMember(AIndex: Integer): TDbgSymbol; override;
     function GetMemberByName(AIndex: String): TDbgSymbol; override;
     function GetMemberCount: Integer; override;
@@ -2653,7 +2654,7 @@ begin
   if FSize <> 1 then
     Result := inherited GetAsString
   else
-    Result := char(byte(GetAsCardinal));
+    Result := SysToUTF8(char(byte(GetAsCardinal)));
 end;
 
 function TDbgDwarfCharSymbolValue.GetAsWideString: WideString;
@@ -5575,8 +5576,15 @@ var
   ti: TDbgSymbol;
 begin
   ti := TypeInfo;
-  if ti <> nil then
-    Result := ti.MemberCount
+  if ti <> nil then begin
+    Result := ti.MemberCount;
+    //TODO: cache result
+    if ti.Kind in [skClass, skObject] then
+      while ti.TypeInfo <> nil do begin
+        ti := ti.TypeInfo;
+        Result := Result + ti.MemberCount;
+      end;
+  end
   else
     Result := inherited GetMemberCount;
 end;
@@ -5948,9 +5956,17 @@ begin
 end;
 
 function TDbgDwarfIdentifierStructure.GetMember(AIndex: Integer): TDbgSymbol;
+var
+  ti: TDbgSymbol;
 begin
   CreateMembers;
-  Result := TDbgSymbol(FMembers[AIndex]);
+  if AIndex >= FMembers.Count then begin
+    ti := TypeInfo;
+    if ti <> nil then
+      Result := ti.Member[AIndex - FMembers.Count];
+  end
+  else
+    Result := TDbgSymbol(FMembers[AIndex]);
 end;
 
 destructor TDbgDwarfIdentifierStructure.Destroy;

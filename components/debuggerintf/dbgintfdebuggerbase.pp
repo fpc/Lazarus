@@ -492,6 +492,8 @@ type
   { TDBGType }
 
   TDBGType = class(TObject)
+  private
+    function GetFields: TDBGFields;
   protected
     FAncestor: String;
     FResult: TDBGType;
@@ -515,7 +517,7 @@ type
     destructor Destroy; override;
     property Ancestor: String read FAncestor;
     property Arguments: TDBGTypes read FArguments;
-    property Fields: TDBGFields read FFields;
+    property Fields: TDBGFields read GetFields;
     property Kind: TDBGSymbolKind read FKind;
     property Attributes: TDBGSymbolAttributes read FAttributes;
     property TypeName: String read FTypeName;               // Name/Alias as in type section. One pascal token, or empty
@@ -2481,6 +2483,13 @@ begin
 end;
 
 { TDBGPType }
+
+function TDBGType.GetFields: TDBGFields;
+begin
+  if FFields = nil then
+    FFields := TDBGFields.Create;
+  Result := FFields;
+end;
 
 procedure TDBGType.Init;
 begin

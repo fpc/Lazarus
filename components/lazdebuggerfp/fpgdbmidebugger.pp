@@ -226,7 +226,7 @@ begin
     ADest, ASize,
     BytesRead) and
   (BytesRead = ASize);
-DebugLn(['*&*&*&*& ReadMem ', dbgs(Result), '  at ', AnAddress, ' Size ',ASize, ' br=',BytesRead, ' b1',PBYTE(ADest)^]);
+//DebugLn(['*&*&*&*& ReadMem ', dbgs(Result), '  at ', AnAddress, ' Size ',ASize, ' br=',BytesRead, ' b1',PBYTE(ADest)^]);
   {$ELSE}
   Result := inherited ReadMemory(AnAddress, ASize, ADest);
   {$ENDIF}
@@ -886,10 +886,11 @@ var
     Result := (FWatchEvalList.Count > 0) and (FWatchEvalList[0] = Pointer(WatchValue));
   end;
 
-  function ResTypeName: String;
+  function ResTypeName(v: TDbgSymbolValue = nil): String;
   begin
-    if not((ResValue.TypeInfo<> nil) and
-           GetTypeName(Result, ResValue.TypeInfo, []))
+    if v = nil then v := ResValue;
+    if not((v.TypeInfo<> nil) and
+           GetTypeName(Result, v.TypeInfo, []))
     then
       Result := '';
   end;
@@ -898,7 +899,7 @@ var
   begin
     if not PrintPasValue(ResText, ResValue, ctx.SizeOfAddress, []) then
       exit;
-    ResTypeInfo := TDBGType.Create(skSimple, ResTypeName); // TODO, IDE must learn pointer
+    ResTypeInfo := TDBGType.Create(skPointer, ResTypeName);
     ResTypeInfo.Value.AsString := ResText;
     //ResTypeInfo.Value.AsPointer := ; // ???
   end;
@@ -925,6 +926,57 @@ var
       exit;
     ResTypeInfo := TDBGType.Create(skSet, ResTypeName);
     ResTypeInfo.Value.AsString := ResText;
+  end;
+
+  procedure DoRecord;
+  begin
+    if not PrintPasValue(ResText, ResValue, ctx.SizeOfAddress, []) then
+      exit;
+    ResTypeInfo := TDBGType.Create(skRecord, ResTypeName);
+    ResTypeInfo.Value.AsString := ResText;
+  end;
+
+  procedure DoObject;
+  begin
+    if not PrintPasValue(ResText, ResValue, ctx.SizeOfAddress, []) then
+      exit;
+    ResTypeInfo := TDBGType.Create(skObject, ResTypeName);
+    ResTypeInfo.Value.AsString := ResText;
+  end;
+
+  procedure DoClass;
+  var
+    m: TDbgSymbolValue;
+    s, s2, n: String;
+    DBGType: TGDBType;
+    f: TDBGField;
+    i: Integer;
+  begin
+    if not PrintPasValue(ResText, ResValue, ctx.SizeOfAddress, []) then
+      exit;
+    ResTypeInfo := TDBGType.Create(skClass, ResTypeName);
+    ResTypeInfo.Value.AsString := ResText;
+
+    if not(defFullTypeInfo in WatchValue.EvaluateFlags) then exit;
+    s := ResTypeName;
+    for i := 0 to ResValue.MemberCount - 1 do begin
+      m := ResValue.Member[i];
+      if m = nil then Continue; // Todo: procedures.
+      case m.Kind of
+        skProcedure, skFunction: ; //  DBGType := TGDBType.Create(skProcedure, TGDBTypes.CreateFromCSV(Params))
+        else
+          begin
+            DBGType := TGDBType.Create(skSimple, ResTypeName(m));
+            PrintPasValue(s2, m, ctx.SizeOfAddress, []);
+            DBGType.Value.AsString := s2;
+            n := '';
+            if m.DbgSymbol <> nil then n := m.DbgSymbol.Name;
+// TODO visibility // flags virtual, constructor
+            f := TDBGField.Create(n, DBGType, flPublic, [], s); //todo parent class,, instead of s
+            ResTypeInfo.Fields.Add(f);
+          end;
+      end;
+    end;
   end;
 
 begin
@@ -979,9 +1031,9 @@ begin
           skEnum:      DoEnum;
           skEnumValue: DoSimple;
           skSet:       DoSet;
-          skRecord: ;
-          skObject: ;
-          skClass: ;
+          skRecord:    DoRecord;
+          skObject:    DoObject;
+          skClass:     DoClass;
           skInterface: ;
           skArray: ;
         end;
@@ -1248,7 +1300,27 @@ var
   t: TCallStackEntryBase;
   s: TCallStackBase;
   f: TCallStackEntryBase;
+  //Instr: TGDBMIDebuggerInstruction;
 begin
+(*
+  Instr := TGDBMIDebuggerInstruction.Create(Format('-stack-list-frames %d %d', [AStackFrame, AStackFrame]), AThreadId, [], 0);
+  Instr.AddReference;
+  Instr.Cmd := TGDBMIDebuggerCommand.Create(Self);
+  FTheDebugger.FInstructionQueue.RunInstruction(Instr);
+  ok := Instr.IsSuccess and Instr.FHasResult;
+  AResult := Instr.ResultData;
+  Instr.Cmd.ReleaseReference;
+  Instr.Cmd := nil;
+  Instr.ReleaseReference;
+
+  if ok then begin
+    List := TGDBMINameValueList.Create(R, ['stack']);
+    Result := List.Values['frame'];
+    List.Free;
+  end;
+*)
+
+
   Result := 0;
   if (AThreadId <= 0) then begin
     GetCurrentContext(AThreadId, AStackFrame);

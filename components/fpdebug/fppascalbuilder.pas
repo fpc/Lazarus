@@ -5,7 +5,7 @@ unit FpPascalBuilder;
 interface
 
 uses
-  Classes, SysUtils, DbgIntfBaseTypes, FpDbgInfo;
+  Classes, SysUtils, DbgIntfBaseTypes, FpDbgInfo, LazLoggerBase;
 
 type
   TTypeNameFlag = (
@@ -27,7 +27,9 @@ type
   );
   TTypeDeclarationFlags = set of TTypeDeclarationFlag;
 
-  TPrintPasValFlag = (dummyx1);
+  TPrintPasValFlag = (
+    ppvSkipClassBody, ppvSkipRecordBody
+  );
   TPrintPasValFlags = set of TPrintPasValFlag;
 
 function GetTypeName(out ATypeName: String; ADbgSymbol: TDbgSymbol; AFlags: TTypeNameFlags = []): Boolean;
@@ -474,13 +476,66 @@ function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
   var
     s: String;
     i: Integer;
+    m: TDbgSymbolValue;
   begin
     APrintedValue := '';
-    for i := 0 to AResValue.MemberCount-1 do
-      if i = 0
-      then APrintedValue := AResValue.Member[i].AsString
-      else APrintedValue := APrintedValue + ', ' + AResValue.Member[i].AsString;
+    for i := 0 to AResValue.MemberCount-1 do begin
+      m := AResValue.Member[i];
+      if svfIdentifier in m.FieldFlags then
+        s := m.AsString
+      else
+      if svfOrdinal in m.FieldFlags then // set of byte
+        s := IntToStr(m.AsCardinal)
+      else
+        Continue; // Todo: missing member
+      if APrintedValue = ''
+      then APrintedValue := s
+      else APrintedValue := APrintedValue + ', ' + s;
+    end;
     APrintedValue := '[' + APrintedValue + ']';
+    Result := True;
+  end;
+
+  procedure DoStructure;
+  var
+    s, s2: String;
+    i: Integer;
+    m: TDbgSymbolValue;
+    fl: TPrintPasValFlags;
+  begin
+    if ( (AResValue.Kind in [skClass, skObject]) and (ppvSkipClassBody in AFlags) ) or
+       ( (AResValue.Kind in [skRecord]) and (ppvSkipRecordBody in AFlags) )
+    then begin
+      APrintedValue := ResTypeName;
+      case AResValue.Kind of
+        skRecord: APrintedValue := '{record:}' + APrintedValue;
+        skObject: APrintedValue := '{object:}' + APrintedValue;
+        skClass:  APrintedValue := '{class:}' + APrintedValue + '(' + '$'+IntToHex(AResValue.AsCardinal, AnAddrSize) + ')';
+      end;
+      Result := True;
+      exit;
+    end;
+
+    s2 := LineEnding;
+    if AFlags <> [] then s2 := ' ';;
+    fl := [ppvSkipClassBody];
+    if ppvSkipClassBody in AFlags then
+      fl := [ppvSkipClassBody, ppvSkipRecordBody];
+
+    APrintedValue := '';
+    for i := 0 to AResValue.MemberCount-1 do begin
+      m := AResValue.Member[i];
+      if (m = nil) or (m.Kind in [skProcedure, skFunction]) then
+        continue;
+      s := '';
+      PrintPasValue(s, m, AnAddrSize, fl);
+      if m.DbgSymbol <> nil then
+        s := m.DbgSymbol.Name + ' = ' + s;
+      if APrintedValue = ''
+      then APrintedValue := s
+      else APrintedValue := APrintedValue + '; ' + s2 + s;
+    end;
+    APrintedValue := '(' + APrintedValue + ')';
     Result := True;
   end;
 
@@ -504,9 +559,9 @@ begin
     skEnum:      DoEnum;
     skEnumValue: DoEnumVal;
     skSet:       DoSet;
-    skRecord: ;
-    skObject: ;
-    skClass: ;
+    skRecord:    DoStructure;
+    skObject:    DoStructure;
+    skClass:     DoStructure;
     skInterface: ;
     skArray: ;
   end;

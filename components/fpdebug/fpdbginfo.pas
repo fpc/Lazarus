@@ -148,7 +148,7 @@ type
     (* Member:
        * skClass, skStructure:
            stType: it excludes BaseClass (TODO: decide?)
-           stValue: ???
+           stValue: includes
        * skSet
            stType: all members
            stValue: only members set in value (Only impremented for DbgSymbolValue)
@@ -293,7 +293,7 @@ type
     (* Member:
        * skClass, skStructure:
            stType: it excludes BaseClass (TODO: decide?)
-           stValue: ???
+           includes
        * skSet
            stType: all members
            stValue: only members set in value (Only impremented for DbgSymbolValue)
