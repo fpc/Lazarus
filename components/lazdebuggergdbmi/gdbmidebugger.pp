@@ -622,6 +622,7 @@ type
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure Changed;
     procedure Clear;
+    function  ForceQueuing: Boolean;
     procedure InternalRequestData(AWatchValue: TWatchValueBase); override;
     property  ParentFPListChangeStamp: Integer read FParentFPListChangeStamp;
   public
@@ -714,8 +715,6 @@ type
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICommandFlags; var AResult: TGDBMIExecResult): Boolean; overload;
     function  ExecuteCommandFull(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICommandFlags; const ACallback: TGDBMICallback; const ATag: PtrInt; var AResult: TGDBMIExecResult): Boolean; overload;
     procedure RunQueue;
-    procedure QueueCommand(const ACommand: TGDBMIDebuggerCommand; ForceQueue: Boolean = False);
-    procedure UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
     procedure CancelAllQueued;
     procedure CancelBeforeRun;
     procedure CancelAfterStop;
@@ -737,6 +736,8 @@ type
     {$ENDIF}
     procedure QueueExecuteLock;
     procedure QueueExecuteUnlock;
+    procedure QueueCommand(const ACommand: TGDBMIDebuggerCommand; ForceQueue: Boolean = False);
+    procedure UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
 
     function ConvertToGDBPath(APath: string; ConvType: TConvertToGDBPathType = cgptNone): string;
     function  ChangeFileName: Boolean; override;
@@ -10009,9 +10010,16 @@ begin
   FCommandList.Clear;
 end;
 
+function TGDBMIWatches.ForceQueuing: Boolean;
+begin
+  Result := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
+            and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
+            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued)
+            and (Debugger.State <> dsInternalPause);
+end;
+
 procedure TGDBMIWatches.InternalRequestData(AWatchValue: TWatchValueBase);
 var
-  ForceQueue: Boolean;
   EvaluationCmdObj: TGDBMIDebuggerCommandEvaluate;
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
@@ -10025,12 +10033,8 @@ begin
   EvaluationCmdObj.OnDestroy    := @DoEvaluationDestroyed;
   EvaluationCmdObj.Properties := [dcpCancelOnRun];
   // If a ExecCmd is running, then defer exec until the exec cmd is done
-  ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
-            and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
-            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued)
-            and (Debugger.State <> dsInternalPause);
   FCommandList.Add(EvaluationCmdObj);
-  TGDBMIDebugger(Debugger).QueueCommand(EvaluationCmdObj, ForceQueue);
+  TGDBMIDebugger(Debugger).QueueCommand(EvaluationCmdObj, ForceQueuing);
   (* DoEvaluationFinished may be called immediately at this point *)
 end;
 

@@ -27,9 +27,14 @@ type
   );
   TTypeDeclarationFlags = set of TTypeDeclarationFlag;
 
+  TPrintPasValFlag = (dummyx1);
+  TPrintPasValFlags = set of TPrintPasValFlag;
+
 function GetTypeName(out ATypeName: String; ADbgSymbol: TDbgSymbol; AFlags: TTypeNameFlags = []): Boolean;
 function GetTypeAsDeclaration(out ATypeDeclaration: String; ADbgSymbol: TDbgSymbol;
   AFlags: TTypeDeclarationFlags = []; AnIndent: Integer = 0): Boolean;
+
+function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue; AnAddrSize: Integer; AFlags: TPrintPasValFlags = []): Boolean;
 
 implementation
 
@@ -384,6 +389,128 @@ begin
     ATypeDeclaration := VarName + ': ' + ATypeDeclaration;
   if (AnIndent <> 0) and not(tdfNoFirstLineIndent in AFlags) then
     ATypeDeclaration := GetIndent + ATypeDeclaration;
+end;
+
+function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
+  AnAddrSize: Integer; AFlags: TPrintPasValFlags): Boolean;
+
+  function ResTypeName: String;
+  begin
+    if not((AResValue.TypeInfo<> nil) and
+           GetTypeName(Result, AResValue.TypeInfo, []))
+    then
+      Result := '';
+  end;
+
+  procedure DoPointer;
+  var
+    s: String;
+  begin
+    s := ResTypeName;
+    APrintedValue := '$'+IntToHex(AResValue.AsCardinal, AnAddrSize);
+    if s <> '' then
+      APrintedValue := s + '(' + APrintedValue + ')';
+    Result := True;
+  end;
+
+  procedure DoInt;
+  begin
+    APrintedValue := IntToStr(AResValue.AsInteger);
+    Result := True;
+  end;
+
+  procedure DoCardinal;
+  begin
+    APrintedValue := IntToStr(AResValue.AsCardinal);
+    Result := True;
+  end;
+
+  procedure DoBool;
+  begin
+    if AResValue.AsBool then begin
+      APrintedValue := 'True';
+      if AResValue.AsCardinal <> 1 then
+        APrintedValue := APrintedValue + '(' + IntToStr(AResValue.AsCardinal) + ')';
+    end
+    else
+      APrintedValue := 'False';
+    Result := True;
+  end;
+
+  procedure DoChar;
+  begin
+    APrintedValue := '''' + AResValue.AsString + ''''; // Todo escape
+    Result := True;
+  end;
+
+  procedure DoFloat;
+  begin
+    APrintedValue := FloatToStr(AResValue.AsFloat);
+    Result := True;
+  end;
+
+  procedure DoEnum;
+  var
+    s: String;
+  begin
+    APrintedValue := AResValue.AsString;
+    if APrintedValue = '' then begin
+      s := ResTypeName;
+      APrintedValue := s + '(' + IntToStr(AResValue.AsCardinal) + ')';
+    end;
+    Result := True;
+  end;
+
+  procedure DoEnumVal;
+  begin
+    APrintedValue := AResValue.AsString;
+    if APrintedValue <> '' then
+      APrintedValue := APrintedValue + ':=';
+    APrintedValue := APrintedValue+ IntToStr(AResValue.AsCardinal);
+    Result := True;
+  end;
+
+  procedure DoSet;
+  var
+    s: String;
+    i: Integer;
+  begin
+    APrintedValue := '';
+    for i := 0 to AResValue.MemberCount-1 do
+      if i = 0
+      then APrintedValue := AResValue.Member[i].AsString
+      else APrintedValue := APrintedValue + ', ' + AResValue.Member[i].AsString;
+    APrintedValue := '[' + APrintedValue + ']';
+    Result := True;
+  end;
+
+begin
+  Result := False;
+  case AResValue.Kind of
+    skUnit: ;
+    skProcedure: ;
+    skFunction: ;
+    skPointer:   DoPointer;
+    skInteger:   DoInt;
+    skCardinal:  DoCardinal;
+    skBoolean:   DoBool;
+    skChar:      DoChar;
+    skFloat:     DoFloat;
+    skString: ;
+    skAnsiString: ;
+    skCurrency: ;
+    skVariant: ;
+    skWideString: ;
+    skEnum:      DoEnum;
+    skEnumValue: DoEnumVal;
+    skSet:       DoSet;
+    skRecord: ;
+    skObject: ;
+    skClass: ;
+    skInterface: ;
+    skArray: ;
+  end;
+
 end;
 
 
