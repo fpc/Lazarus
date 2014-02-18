@@ -285,9 +285,7 @@ type
 
 function IndexInStringList(List: TStrings; Cmp: TCmpStrType; s: string): integer;
 procedure SetComboBoxText(AComboBox:TComboBox; const AText: String;
-                          Cmp: TCmpStrType);
-procedure SetComboBoxText(AComboBox:TComboBox; const AText: String;
-                          Cmp: TCmpStrType; MaxCount: integer);
+                          Cmp: TCmpStrType; MaxCount: integer = 1000);
 function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): Boolean;
 
 
@@ -2757,22 +2755,6 @@ begin
     end;
   end;
   Result:=-1;
-end;
-
-procedure SetComboBoxText(AComboBox: TComboBox; const AText: String;
-  Cmp: TCmpStrType);
-var 
-  a: integer;
-begin
-  a:=IndexInStringList(AComboBox.Items,Cmp,AText);
-  if a>=0 then
-    AComboBox.ItemIndex:=a
-  else 
-  begin
-    AComboBox.Items.Add(AText);
-    AComboBox.ItemIndex := IndexInStringList(AComboBox.Items,Cmp,AText);
-  end;
-  AComboBox.Text := AText;
 end;
 
 procedure SetComboBoxText(AComboBox:TComboBox; const AText: String;
