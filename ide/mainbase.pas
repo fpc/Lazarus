@@ -485,6 +485,16 @@ begin
     if AProject.CompilerOptions.LoadFromFile(AFilename)<>mrOk then
       DebugLn(['TMainIDEBase.DoLoadDefaultCompilerOptions failed']);
   end;
+  // change target file name
+  AFilename:=ExtractFileName(AProject.CompilerOptions.TargetFilename);
+  if AFilename='' then
+    exit; // using default -> ok
+  if CompareFilenames(AFilename,ExtractFilename(AProject.ProjectInfoFile))=0
+  then exit; // target file name and project name fit -> ok
+  // change target file to project name
+  AProject.CompilerOptions.TargetFilename:=ExtractFilePath(AProject.CompilerOptions.TargetFilename)
+    +ExtractFileNameOnly(AProject.ProjectInfoFile)+ExtractFileExt(AFilename);
+  AProject.CompilerOptions.Modified:=false;
 end;
 
 procedure TMainIDEBase.DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;
