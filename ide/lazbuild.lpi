@@ -30,25 +30,22 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="6">
+    <RequiredPackages Count="5">
       <Item1>
-        <PackageName Value="LazDebuggerGdbmi"/>
+        <PackageName Value="DebuggerIntf"/>
       </Item1>
       <Item2>
-        <PackageName Value="DebuggerIntf"/>
+        <PackageName Value="LazControls"/>
       </Item2>
       <Item3>
-        <PackageName Value="LazControls"/>
+        <PackageName Value="CodeTools"/>
       </Item3>
       <Item4>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="SynEdit"/>
       </Item4>
       <Item5>
-        <PackageName Value="SynEdit"/>
-      </Item5>
-      <Item6>
         <PackageName Value="IDEIntf"/>
-      </Item6>
+      </Item5>
     </RequiredPackages>
     <Units Count="4">
       <Unit0>

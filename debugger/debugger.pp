@@ -39,7 +39,7 @@ interface
 
 uses
   TypInfo, Classes, SysUtils, Laz2_XMLCfg, math, FileUtil, LazLoggerBase,
-  LCLProc, LazConfigStorage, LazClasses, DebugUtils, maps,
+  LCLProc, LazConfigStorage, LazClasses, maps,
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase;
 
 const
