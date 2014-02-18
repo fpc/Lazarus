@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/InstantFPCLaz.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) instantfpclaz$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*

@@ -2744,14 +2744,13 @@ zipinstall: fpc_zipinstall
 zipsourceinstall: fpc_zipsourceinstall
 zipexampleinstall: fpc_zipexampleinstall
 zipdistinstall: fpc_zipdistinstall
-distclean: fpc_distclean
 info: fpc_info
 makefiles: fpc_makefiles
-.PHONY: debug smart release units shared sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall distclean info makefiles
+.PHONY: debug smart release units shared sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall info makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: help registration lazutils codetools tools lcl basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter lhelp all clean purge install
+.PHONY: help registration lazutils codetools tools lcl basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter lhelp all clean purge distclean install
 help:
 	@$(ECHO)
 	@$(ECHO) " Main targets"
@@ -2868,9 +2867,16 @@ clean: cleanlaz
 	$(MAKE) -C tools clean
 	$(MAKE) -C components/chmhelp/lhelp clean
 cleanbigide: clean
-purge: clean
+purge:
+	$(MAKE) -C ide distclean
+	$(MAKE) -C packager/registration distclean
+	$(MAKE) -C lcl distclean
+	$(MAKE) -C components distclean
+	$(MAKE) -C tools distclean
+	$(MAKE) -C components/chmhelp/lhelp distclean
 	$(MAKE) -C examples clean
 cleanall: purge
+distclean: purge
 installbase:
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 else

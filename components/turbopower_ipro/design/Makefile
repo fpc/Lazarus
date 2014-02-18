@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/TurboPowerIProDsgn.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) turbopoweriprodsgn$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*

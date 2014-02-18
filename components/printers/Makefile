@@ -2912,4 +2912,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/Printer4Lazarus.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) printer4lazarus$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*

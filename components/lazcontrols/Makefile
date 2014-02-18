@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazControls.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazcontrols$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*

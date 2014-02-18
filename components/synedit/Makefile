@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/SynEdit.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) allsynedit$(PPUEXT) compiled
 distclean: clean
-	$(deltree) units/*
+	${DELTREE} units/*

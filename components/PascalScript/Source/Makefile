@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/pascalscript.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) pascalscript$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*

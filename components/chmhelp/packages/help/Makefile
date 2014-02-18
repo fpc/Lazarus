@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lhelpcontrolpkg.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) lhelpcontrolpkg$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*

@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/cairocanvas_pkg.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) cairocanvas_pkg$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*

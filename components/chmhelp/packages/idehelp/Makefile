@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/ChmHelpPkg.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) chmhelppkg$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*

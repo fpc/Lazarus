@@ -168,3 +168,5 @@ cleanall: clean
 	$(MAKE) -C interfaces/win32 clean
 	$(MAKE) -C interfaces/wince clean
 
+distclean: clean
+        ${DELTREE} units/*

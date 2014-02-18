@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazsvnpkg.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazsvnpkg$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*

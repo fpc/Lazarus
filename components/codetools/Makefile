@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/CodeTools.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) codetools$(PPUEXT) compiled
 distclean: clean
-	$(deltree) units/*
+	${DELTREE} units/*

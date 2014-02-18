@@ -3947,7 +3947,7 @@ begin
   if DistCleanDir<>'' then begin
     s:=s+''+e;
     s:=s+'distclean: clean'+e;
-    s:=s+'        $(deltree) '+DistCleanDir+e;
+    s:=s+'        ${DELTREE} '+DistCleanDir+e;
   end;
 
   //DebugLn('TPkgManager.DoWriteMakefile [',s,']');

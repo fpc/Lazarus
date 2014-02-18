@@ -44,7 +44,7 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: help registration lazutils codetools tools lcl basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter lhelp all clean purge install
+.PHONY: help registration lazutils codetools tools lcl basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter lhelp all clean purge distclean install
 
 #-----------------------------------------------------------------------------
 help:
@@ -236,11 +236,20 @@ clean: cleanlaz
 
 cleanbigide: clean
 
-purge: clean
+purge:
+	$(MAKE) -C ide distclean
+	$(MAKE) -C packager/registration distclean
+	$(MAKE) -C lcl distclean
+	$(MAKE) -C components distclean
+	$(MAKE) -C tools distclean
+	$(MAKE) -C components/chmhelp/lhelp distclean
+
 	$(MAKE) -C examples clean
 #	$(MAKE) -C doceditor clean
 
 cleanall: purge
+
+distclean: purge
 
 # create dirs
 installbase:

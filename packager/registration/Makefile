@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/FCL.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) fcllaz$(PPUEXT) compiled
 distclean: clean
-	$(deltree) ../units/*
+	${DELTREE} ../units/*

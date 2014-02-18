@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/FPCUnitTestRunner.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) fpcunittestrunner$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*

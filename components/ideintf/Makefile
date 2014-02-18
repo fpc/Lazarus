@@ -2912,4 +2912,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/IDEIntf.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) ideintf$(PPUEXT) compiled
 distclean: clean
-	$(deltree) units/*
+	${DELTREE} units/*

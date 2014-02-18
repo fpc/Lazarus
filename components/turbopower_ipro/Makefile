@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/TurboPowerIPro.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) turbopoweripro$(PPUEXT) compiled
 distclean: clean
-	$(deltree) units/*
+	${DELTREE} units/*

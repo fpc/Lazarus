@@ -2912,4 +2912,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/jcfidelazarus.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) jcfidelazarus$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*

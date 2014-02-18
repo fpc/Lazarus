@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/RunTimeTypeInfoControls.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) runtimetypeinfocontrols$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*

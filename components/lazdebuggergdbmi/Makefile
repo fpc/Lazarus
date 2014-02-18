@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazDebuggerGdbmi.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazdebuggergdbmi$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*

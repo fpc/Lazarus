@@ -55,4 +55,4 @@ compiled:
 all: cleartarget $(COMPILER_UNITTARGETDIR) allsyneditdsgn$(PPUEXT) compiled
 
 distclean: clean
-        $(deltree) units/*
+        ${DELTREE} units/*

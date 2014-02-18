@@ -2717,4 +2717,4 @@ compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/TAChartLazarusPkg.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) tachartlazaruspkg$(PPUEXT) compiled
 distclean: clean
-	$(deltree) lib/*
+	${DELTREE} lib/*
