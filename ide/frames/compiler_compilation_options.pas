@@ -23,7 +23,7 @@ type
     chkExecBeforeBuild: TCheckBox;
     chkExecBeforeCompile: TCheckBox;
     chkExecBeforeRun: TCheckBox;
-    edtCompiler: TEdit;
+    edtCompiler: TComboBox;
     ExecuteAfterCommandEdit: TEdit;
     ExecuteAfterCommandLabel: TLabel;
     ExecuteAfterGroupBox: TGroupBox;
