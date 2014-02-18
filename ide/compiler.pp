@@ -45,7 +45,7 @@ uses
   {$ELSE}
   OutputFilter,
   {$ENDIF}
-  UTF8Process, InfoBuild, IDEMsgIntf, CompOptsIntf,
+  UTF8Process, InfoBuild, IDEMsgIntf, CompOptsIntf, LazIDEIntf,
   DefineTemplates, TransferMacros, EnvironmentOpts, LazFileUtils;
 
 type
@@ -1368,7 +1368,7 @@ var
 begin
   StartTime := Now;
   try
-    fReader.CompilerExecutable := EnvironmentOptions.GetParsedCompilerFilename;
+    fReader.CompilerExecutable := LazarusIDE.GetFPCompilerFilename;
     fReader.ReadAndParseOptions;
   except
     on E: Exception do

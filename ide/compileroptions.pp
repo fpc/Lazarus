@@ -49,7 +49,8 @@ uses
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
   IDEOptionsIntf,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, IDEMsgIntf, LazConf, TransferMacros,
+  LazarusIDEStrConsts, IDEProcs, IDEMsgIntf, LazIDEIntf, LazConf,
+  TransferMacros,
   {$IFDEF EnableNewExtTools}
   etFPCMsgParser,
   {$ENDIF}
@@ -2830,7 +2831,7 @@ begin
   if (VariablesInRegisters) then
     Switches := Switches + ' -OoREGVAR';
 
-  CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
+  CompilerFilename:=LazarusIDE.GetFPCompilerFilename;
   CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
     CompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
 

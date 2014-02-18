@@ -179,6 +179,7 @@ type
     function GetLCLWidgetType: string; override;
     function GetRunCommandLine: string; override;
 
+    function GetFPCompilerFilename: string; override;
     function GetProjectPublishDir: string; override;
     function GetProjectTargetFilename(aProject: TProject): string; override;
     function GetProjectUsesAppBundle: Boolean; override;
@@ -589,6 +590,22 @@ begin
   end;
 end;
 
+function TBuildManager.GetFPCompilerFilename: string;
+begin
+  Result:='';
+  if (Project1<>nil)
+  and ([crCompile,crBuild]*Project1.CompilerOptions.CompileReasons<>[])
+  and (Project1.CompilerOptions.CompilerPath<>'')
+  then begin
+    Result:=Project1.GetCompilerFilename;
+    //debugln(['TBuildManager.GetFPCompilerFilename project compiler="',Result,'"']);
+  end;
+  if not IsFPCompiler(Result) then begin
+    //if Result<>'' then debugln(['TBuildManager.GetFPCompilerFilename project compiler NOT fpc: "',Result,'"']);
+    Result:=EnvironmentOptions.GetParsedCompilerFilename;
+  end;
+end;
+
 function TBuildManager.GetProjectPublishDir: string;
 begin
   Result:='';
@@ -786,10 +803,10 @@ begin
   // use current TargetOS, TargetCPU, compilerfilename and FPC source dir
   TargetOS:=GetTargetOS;
   TargetCPU:=GetTargetCPU;
-  CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
   FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
+  CompilerFilename:=GetFPCompilerFilename;
 
-  {$IFDEF VerboseFPCSrcScan}
+  { $IFDEF VerboseFPCSrcScan}
   debugln(['TMainIDE.RescanCompilerDefines A ',
     ' CompilerFilename=',CompilerFilename,
     ' TargetOS=',TargetOS,
@@ -798,20 +815,22 @@ begin
     ' FPCSrcDir=',FPCSrcDir,
     ' WaitTillDone=',WaitTillDone,
     ' Quiet=',Quiet,
+    ' ClearCaches=',ClearCaches,
     '']);
-  {$ENDIF}
+  { $ENDIF}
 
-  if CompilerFilename='' then begin
-    UnitSetCache:=nil;
-    exit;
-  end;
-
+  // first check the default targetos, targetcpu of the default compiler
   if FileExistsCached(EnvironmentOptions.GetParsedCompilerFilename) then
   begin
-    // first check the default targetos, targetcpu of the default compiler
     UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
       EnvironmentOptions.GetParsedCompilerFilename,'','','',FPCSrcDir,true);
     UnitSetCache.GetConfigCache(true);
+  end;
+
+  // then check the project's compiler
+  if not IsFPCompiler(CompilerFilename) then begin
+    UnitSetCache:=nil;
+    exit;
   end;
 
   // create a cache for the current project settings
@@ -1951,8 +1970,8 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
     if CodeToolBoss<>nil then begin
       // fetch the FPC version from the current compiler
       // Not from the fpc.exe, but from the real compiler
-      CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
-      if CompilerFilename='' then exit;
+      CompilerFilename:=GetFPCompilerFilename;
+      if not IsFPCompiler(CompilerFilename) then exit;
       TargetOS:=GetTargetOS;
       TargetCPU:=GetTargetCPU;
       ConfigCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(

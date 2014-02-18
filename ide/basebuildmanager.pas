@@ -54,6 +54,7 @@ type
     function GetLCLWidgetType: string; virtual; abstract;
     function GetRunCommandLine: string; virtual; abstract;
 
+    function GetFPCompilerFilename: string; virtual; abstract;
     function GetProjectPublishDir: string; virtual; abstract;
     function GetProjectTargetFilename(aProject: TProject): string; virtual; abstract;
     function GetProjectUsesAppBundle: Boolean; virtual; abstract;

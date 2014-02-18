@@ -263,6 +263,7 @@ type
                           NewOwner: TObject; Flags: TSearchIDEFileFlags;
                           TryWithoutNumber: boolean): string; virtual; abstract;
     function GetTestBuildDirectory: string; virtual; abstract;
+    function GetFPCompilerFilename: string; virtual; abstract;
 
     // codetools
     function BeginCodeTools: boolean; virtual; abstract;

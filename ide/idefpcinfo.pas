@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, AVL_Tree, FileUtil, lazutf8classes, Forms, Controls,
   Graphics, Dialogs, StdCtrls, ComCtrls, FileProcs, DefineTemplates,
   CodeToolManager, BaseBuildManager, Project, EnvironmentOpts,
-  LazarusIDEStrConsts, AboutFrm, IDEWindowIntf;
+  LazarusIDEStrConsts, AboutFrm, IDEWindowIntf, LazIDEIntf;
 
 type
 
@@ -114,7 +114,7 @@ begin
 
     TargetOS:=BuildBoss.GetTargetOS;
     TargetCPU:=BuildBoss.GetTargetCPU;
-    CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
+    CompilerFilename:=LazarusIDE.GetFPCompilerFilename;
     FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
     UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
       CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
@@ -145,7 +145,7 @@ begin
   List:=nil;
   try
     sl.Add('The IDE asks the compiler with the following command for the real OS/CPU:');
-    CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
+    CompilerFilename:=LazarusIDE.GetFPCompilerFilename;
     CompilerOptions:='';
     Cfg:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
                         CompilerFilename,CompilerOptions,'','',true);
@@ -241,8 +241,11 @@ begin
   sl.add('Global IDE options:');
   sl.Add('LazarusDirectory='+EnvironmentOptions.LazarusDirectory);
   sl.Add('Resolved LazarusDirectory='+EnvironmentOptions.GetParsedLazarusDirectory);
-  sl.Add('CompilerFilename='+EnvironmentOptions.CompilerFilename);
-  sl.Add('Resolved CompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
+  if Project1<>nil then
+    sl.Add('Project''s CompilerFilename='+Project1.CompilerOptions.CompilerPath);
+  sl.Add('Resolved Project''s CompilerFilename='+Project1.GetCompilerFilename);
+  sl.Add('Default CompilerFilename='+EnvironmentOptions.CompilerFilename);
+  sl.Add('Resolved default compilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
   sl.Add('CompilerMessagesFilename='+EnvironmentOptions.CompilerMessagesFilename);
   sl.Add('Resolved CompilerMessagesFilename='+EnvironmentOptions.GetParsedCompilerMessagesFilename);
   sl.Add('');

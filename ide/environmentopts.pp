@@ -2040,6 +2040,7 @@ end;
 
 function TEnvironmentOptions.MacroFuncCompPath(const s: string;
   const Data: PtrInt; var Abort: boolean): string;
+// CompPath returns the default compiler file name of the environment options
 begin
   Result:=GetParsedCompilerFilename;
 end;

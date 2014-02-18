@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, LCLProc, LazHelpHTML, LazHelpIntf, DefineTemplates, CodeToolManager,
-  EnvironmentOpts, AboutFrm, LazConf, IDEHelpIntf, IDEWindowIntf,
+  EnvironmentOpts, AboutFrm, LazConf, IDEHelpIntf, IDEWindowIntf, LazIDEIntf,
   LazarusIDEStrConsts, Project, SourceEditor, InitialSetupDlgs, PackageSystem,
   PackageDefs;
 
@@ -241,12 +241,21 @@ begin
   then
     sl.Add('WARNING: '+Note);
 
-  sl.Add('CompilerFilename='+EnvironmentOptions.CompilerFilename);
-  sl.Add('Real CompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
+  sl.Add('Default CompilerFilename='+EnvironmentOptions.CompilerFilename);
+  sl.Add('Real Default CompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
   if CheckCompilerQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
                        CodeToolBoss.FPCDefinesCache.TestFilename)<>sddqCompatible
   then
     sl.Add('WARNING: '+Note);
+
+  if Project1<>nil then begin
+    sl.Add('Project CompilerFilename='+Project1.CompilerOptions.CompilerPath);
+    sl.Add('Real Project CompilerFilename='+LazarusIDE.GetFPCompilerFilename);
+    if CheckCompilerQuality(LazarusIDE.GetFPCompilerFilename,Note,
+                         CodeToolBoss.FPCDefinesCache.TestFilename)<>sddqCompatible
+    then
+      sl.Add('WARNING: '+Note);
+  end;
 
   sl.Add('CompilerMessagesFilename='+EnvironmentOptions.CompilerMessagesFilename);
   sl.Add('Real CompilerMessagesFilename='+EnvironmentOptions.GetParsedCompilerMessagesFilename);
@@ -254,7 +263,7 @@ begin
   sl.Add('FPC source directory='+EnvironmentOptions.FPCSourceDirectory);
   sl.Add('Real FPC source directory='+EnvironmentOptions.GetParsedFPCSourceDirectory);
   CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
-    EnvironmentOptions.GetParsedCompilerFilename,'','','',true);
+    LazarusIDE.GetFPCompilerFilename,'','','',true);
   if CheckFPCSrcDirQuality(EnvironmentOptions.GetParsedFPCSourceDirectory,Note,
     CfgCache.GetFPCVer)<>sddqCompatible
   then

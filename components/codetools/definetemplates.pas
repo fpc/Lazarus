@@ -950,6 +950,7 @@ function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
                       out Infos: TFPCInfoStrings): boolean;
 function RunFPCInfo(const CompilerFilename: string;
                    InfoTypes: TFPCInfoTypes; const Options: string =''): string;
+function IsFPCompiler(AFilename: string): boolean;
 function ExtractFPCFrontEndParameters(const CmdLine: string): string;
 function SplitFPCVersion(const FPCVersionString: string;
                         out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
@@ -1357,6 +1358,35 @@ begin
   finally
     List.free;
   end;
+end;
+
+function IsFPCompiler(aFilename: string): boolean;
+var
+  ShortFilename: String;
+begin
+  Result:=false;
+  AFilename:=ResolveDots(aFilename);
+  //debugln(['IsFPCompiler START ',aFilename]);
+  if aFilename='' then
+    exit;
+  if not FileExistsCached(AFilename) then
+    exit;
+  if DirPathExistsCached(AFilename) then
+    exit;
+  if not FileIsExecutableCached(AFilename) then
+    exit;
+
+  // allow scripts like fpc.sh and fpc.bat
+  ShortFilename:=ExtractFileNameOnly(AFilename);
+  //debugln(['IsFPCompiler Short=',ShortFilename]);
+  if CompareFilenames(ShortFilename,'fpc')=0 then
+    exit(true);
+
+  // allow ppcxxx.exe
+  if (CompareFilenames(copy(ShortFilename,1,3),'ppc')=0)
+  and ((ExeExt='') or (LazFileUtils.CompareFileExt(ShortFilename,ExeExt)=0))
+  then
+    exit(true);
 end;
 
 function ExtractFPCFrontEndParameters(const CmdLine: string): string;
