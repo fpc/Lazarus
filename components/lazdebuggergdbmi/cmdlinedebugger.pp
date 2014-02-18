@@ -39,8 +39,8 @@ unit CmdLineDebugger;
 interface
 
 uses
-  Classes, Types, Process, FileUtil, LCLProc, LazLoggerBase, DbgIntfDebuggerBase,
-  Forms, DebugUtils;
+  Classes, Types, process, FileUtil, LCLProc, LazLoggerBase, UTF8Process,
+  DbgIntfDebuggerBase, Forms, DebugUtils;
 
 type
 
@@ -48,7 +48,7 @@ type
 
   TCmdLineDebugger = class(TDebuggerIntf)
   private
-    FDbgProcess: TProcess;   // The process used to call the debugger
+    FDbgProcess: TProcessUTF8;   // The process used to call the debugger
     FLineEnds: TStringDynArray;  // List of strings considered as lineends
     FOutputBuf: String;
     FReading: Boolean;       // Set if we are in the ReadLine loop
@@ -80,7 +80,7 @@ type
     destructor Destroy; override;
     procedure TestCmd(const ACommand: String); virtual;// For internal debugging purposes
   public
-    property DebugProcess: TProcess read FDbgProcess;
+    property DebugProcess: TProcessUTF8 read FDbgProcess;
     property DebugProcessRunning: Boolean read GetDebugProcessRunning;
   end;
 
@@ -330,13 +330,13 @@ function TCmdLineDebugger.CreateDebugProcess(const AOptions: String): Boolean;
 begin
   if FDbgProcess = nil
   then begin
-    FDbgProcess := TProcess.Create(nil);
-    FDbgProcess.CommandLine := UTF8ToSys(ExternalDebugger + ' ' + AOptions);
+    FDbgProcess := TProcessUTF8.Create(nil);
+    FDbgProcess.CommandLine := ExternalDebugger + ' ' + AOptions;
     // TODO: under win9x and winMe should be created with console,
     // otherwise no break can be sent.
     FDbgProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut, poNewProcessGroup];
     FDbgProcess.ShowWindow := swoNone;
-    AssignUTF8ListToAnsi(DebuggerEnvironment,FDbgProcess.Environment);
+    FDbgProcess.Environment:=DebuggerEnvironment;
   end;
   if not FDbgProcess.Running 
   then begin
