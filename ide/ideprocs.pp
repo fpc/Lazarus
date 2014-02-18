@@ -126,8 +126,8 @@ function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
 procedure MergeSearchPaths(SearchPath: TStrings; const AddSearchPath: string);
 function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
 function RemoveNonExistingPaths(const SearchPath, BaseDirectory: string): string;
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
-function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string; inline;
+function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string; inline;
 function RebaseSearchPath(const SearchPath,
                           OldBaseDirectory, NewBaseDirectory: string;
                           SkipPathsStartingWithMacro: boolean): string;
