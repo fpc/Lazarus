@@ -42,6 +42,8 @@ uses
   FormEditingIntf, NonControlDesigner, DesignerProcs;
 
 type
+  TArrSize = array of array [0 .. 3] of integer;
+
   TControlSelection = class;
   TGrabber = class;
 
@@ -340,6 +342,7 @@ type
     procedure SetRubberbandType(const AValue: TRubberbandType);
     procedure SetSnapping(const AValue: boolean);
     procedure SetVisible(const AValue: Boolean);
+    procedure GetCompSize(var arr: TArrSize);
   protected
     procedure AdjustGrabbers;
     procedure InvalidateGrabbers;
@@ -373,6 +376,8 @@ type
     procedure FindNearestTopGuideLine(var NearestInt: TNearestInt);
     procedure ImproveNearestInt(var NearestInt: TNearestInt; Candidate: integer);
   public
+    arrOldSize, arrNewSize: TArrSize;
+
     constructor Create; reintroduce;
     destructor Destroy; override;
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
@@ -408,8 +413,8 @@ type
 
     // resizing, moving, aligning, mirroring, ...
     function IsResizing: boolean;
-    procedure BeginResizing;
-    procedure EndResizing(ApplyUserBounds: boolean);
+    procedure BeginResizing(IsStartUndo: boolean);
+    procedure EndResizing(ApplyUserBounds, ActionIsProcess: boolean);
     procedure SaveBounds;
     procedure UpdateBounds;
     procedure RestoreBounds;
@@ -512,6 +517,8 @@ var TheControlSelection: TControlSelection;
 
 implementation
 
+uses
+  ComponentEditors;
 
 const
   GRAB_CURSOR: array[TGrabIndex] of TCursor = (
@@ -961,13 +968,61 @@ begin
   end;
 end;
 
-procedure TControlSelection.BeginResizing;
+procedure TControlSelection.BeginResizing(IsStartUndo: boolean);
+var
+  CompEditDesig: TComponentEditorDesigner;
 begin
   if FResizeLockCount=0 then BeginUpdate;
   inc(FResizeLockCount);
+
+  SetLength(arrOldSize, Count);
+  GetCompSize(arrOldSize);
+
+  CompEditDesig := FindRootDesigner(Items[0].Persistent) as TComponentEditorDesigner;
+  if (Count > 0) and (CompEditDesig.FUndoState = ucsNone) and IsStartUndo then
+    CompEditDesig.FUndoState := ucsStartChange;
 end;
 
-procedure TControlSelection.EndResizing(ApplyUserBounds: boolean);
+procedure TControlSelection.EndResizing(ApplyUserBounds, ActionIsProcess: boolean);
+var
+  IsActionsBegin: boolean;
+
+  function SaveAct(AIndex: integer): boolean;
+  var
+    CurrComp: TComponent;
+    RootDesigner: TIDesigner;
+  begin
+    Result := false;
+    RootDesigner := FindRootDesigner(Items[AIndex].Persistent);
+    if ((RootDesigner as TComponentEditorDesigner).FUndoState = ucsStartChange)
+      and Items[AIndex].IsTComponent then
+    begin
+      if SelectionForm.Name = TComponent(Items[AIndex].Persistent).Name then
+        CurrComp := SelectionForm
+      else
+        CurrComp := SelectionForm.FindComponent(TComponent(Items[AIndex].Persistent).Name);
+      Result := (CurrComp <> nil) and (RootDesigner is TComponentEditorDesigner) and
+         ((arrOldSize[AIndex, 0] <> arrNewSize[AIndex, 0]) or
+          (arrOldSize[AIndex, 1] <> arrNewSize[AIndex, 1]) or
+          (arrOldSize[AIndex, 2] <> arrNewSize[AIndex, 2]) or
+          (arrOldSize[AIndex, 3] <> arrNewSize[AIndex, 3]));
+      if Result then
+        with (RootDesigner as TComponentEditorDesigner) do
+        begin
+          AddUndoAction(CurrComp, uopChange, not(IsActionsBegin), 'Top',
+            arrOldSize[AIndex, 0], arrNewSize[AIndex, 0]);
+          AddUndoAction(CurrComp, uopChange, false, 'Left',
+            arrOldSize[AIndex, 1], arrNewSize[AIndex, 1]);
+          AddUndoAction(CurrComp, uopChange, false, 'Height',
+            arrOldSize[AIndex, 2], arrNewSize[AIndex, 2]);
+          AddUndoAction(CurrComp, uopChange, false, 'Width',
+            arrOldSize[AIndex, 3], arrNewSize[AIndex, 3]);
+        end;
+    end;
+  end;
+
+var
+  i: integer;
 begin
   if FResizeLockCount<=0 then begin
     DebugLn('WARNING: TControlSelection.EndResizing FResizeLockCount=',IntToStr(FResizeLockCount));
@@ -975,6 +1030,20 @@ begin
   end;
   if FResizeLockCount=1 then
     if ApplyUserBounds then DoApplyUserBounds;
+
+  IsActionsBegin := false;
+  SetLength(arrNewSize, Count);
+  GetCompSize(arrNewSize);
+  for i := 0 to Count - 1 do
+    IsActionsBegin := SaveAct(i) or IsActionsBegin;
+  if ActionIsProcess then
+  begin
+    if IsActionsBegin then
+      (FindRootDesigner(Items[0].Persistent) as TComponentEditorDesigner).FUndoState := ucsSaveChange
+  end
+  else
+    (FindRootDesigner(Items[0].Persistent) as TComponentEditorDesigner).FUndoState := ucsNone;
+
   dec(FResizeLockCount);
   if FResizeLockCount>0 then exit;
   EndUpdate;
@@ -1949,6 +2018,20 @@ begin
     Exclude(FStates,cssVisible);
 end;
 
+procedure TControlSelection.GetCompSize(var arr: TArrSize);
+var
+  i: integer;
+begin
+  for i := 0 to Count - 1 do
+    if Items[i].IsTComponent then
+     begin
+       arr[i, 0] := Items[i].Top;
+       arr[i, 1] := Items[i].Left;
+       arr[i, 2] := Items[i].Height;
+       arr[i, 3] := Items[i].Width;
+     end;
+end;
+
 function TControlSelection.GetItems(Index:integer):TSelectedControl;
 begin
   Result:=TSelectedControl(FControls[Index]);
@@ -2186,10 +2269,10 @@ begin
   if (NewLeft <> FLeft) or (NewTop <> FTop) then
   begin
     Result := True;
-    BeginResizing;
+    BeginResizing(false);
     FLeft := NewLeft;
     FTop := NewTop;
-    EndResizing(True);
+    EndResizing(True, False);
   end;
 end;
 
@@ -2211,14 +2294,14 @@ begin
   if (NewLeft <> FLeft) or (NewTop <> FTop) then
   begin
     Result := True;
-    BeginResizing;
+    BeginResizing(True);
     FLeft := NewLeft;
     FTop := NewTop;
     {$IFDEF VerboseDesigner}
     DebugLn('[TControlSelection.MoveSelectionWithSnapping] B  ',
       ' Bounds='+dbgs(FLeft)+','+dbgs(FTop)+','+dbgs(FWidth)+','+dbgs(FHeight));
     {$ENDIF}
-    EndResizing(True);
+    EndResizing(True, True);
   end;
 end;
 
@@ -2241,7 +2324,7 @@ begin
   if [gpLeft,gpRight] * GrabberPos = [] then dx:=0;
   if (dx=0) and (dy=0) then exit;
 
-  BeginResizing;
+  BeginResizing(true);
   if gpLeft in GrabberPos then begin
     FLeft:=FLeft+dx;
     FWidth:=FWidth-dx;
@@ -2256,19 +2339,19 @@ begin
   else if gpBottom in GrabberPos then begin
     FHeight:=FHeight+dy;
   end;
-  EndResizing(true);
+  EndResizing(true, true);
 end;
 
 procedure TControlSelection.SetBounds(NewLeft, NewTop,
   NewWidth, NewHeight: integer);
 begin
   if (Count=0) or (IsResizing) then exit;
-  BeginResizing;
+  BeginResizing(false);
   FLeft:=NewLeft;
   FTop:=NewTop;
   FWidth:=NewWidth;
   FHeight:=NewHeight;
-  EndResizing(true);
+  EndResizing(true, false);
 end;
 
 function TControlSelection.GrabberAtPos(X,Y:integer):TGrabber;
@@ -2816,7 +2899,7 @@ begin
   if (Items[0].IsTopLvl)
     or ((HorizAlignment=csaNone) and (VertAlignment=csaNone)) then exit;
 
-  BeginResizing;
+  BeginResizing(true);
 
   // initializing
   ALeft:=Items[0].Left;
@@ -2937,7 +3020,7 @@ begin
       end;
   end;
 
-  EndResizing(false);
+  EndResizing(false, false);
 end;
 
 procedure TControlSelection.MirrorHorizontal;
@@ -2945,7 +3028,7 @@ var
   i, ALeft, ARight, Middle, NewLeft: integer;
 begin
   if (FControls.Count=0) or (Items[0].IsTopLvl) then exit;
-  BeginResizing;
+  BeginResizing(true);
 
   // initializing
   ALeft:=Items[0].Left;
@@ -2966,7 +3049,7 @@ begin
   end;
 
   UpdateBounds;
-  EndResizing(false);
+  EndResizing(false, false);
 end;
 
 procedure TControlSelection.MirrorVertical;
@@ -2974,7 +3057,7 @@ var
   i, ATop, ABottom, Middle, NewTop: integer;
 begin
   if (FControls.Count=0) or (Items[0].IsTopLvl) then exit;
-  BeginResizing;
+  BeginResizing(true);
 
   // initializing
   ATop:=Items[0].Top;
@@ -2995,7 +3078,7 @@ begin
   end;
 
   UpdateBounds;
-  EndResizing(false);
+  EndResizing(false, false);
 end;
 
 procedure TControlSelection.SizeComponents(
@@ -3004,7 +3087,7 @@ procedure TControlSelection.SizeComponents(
 var i: integer;
 begin
   if (FControls.Count=0) or (Items[0].IsTopLvl) then exit;
-  BeginResizing;
+  BeginResizing(true);
 
   // initialize
   case HorizSizing of
@@ -3041,14 +3124,14 @@ begin
     end;
   end;
 
-  EndResizing(false);
+  EndResizing(false, false);
 end;
 
 procedure TControlSelection.ScaleComponents(Percent: integer);
 var i: integer;
 begin
   if (FControls.Count=0) then exit;
-  BeginResizing;
+  BeginResizing(true);
 
   if Percent<1 then Percent:=1;
   if Percent>1000 then Percent:=1000;
@@ -3064,7 +3147,7 @@ begin
     end;
   end;
 
-  EndResizing(false);
+  EndResizing(false, false);
 end;
 
 function TControlSelection.CheckForLCLChanges(Update: boolean): boolean;

@@ -1295,6 +1295,16 @@ var
   NewValue: string;
   OldExpanded: boolean;
   OldChangeStep: integer;
+  RootDesigner: TIDesigner;
+  CurrComp: TComponent;
+  i, j, saveIndex, tmpInt: integer;
+  newVal, tmpStr, newValAsInt: string;
+  oldVal: array of string;
+  isExcept, isIntValInStr: boolean;
+  parRow, tmpRow: TOIPropertyGridRow;
+  CompEditDsg: TComponentEditorDesigner;
+  prpInfo: PPropInfo;
+
 begin
   //debugln(['TOICustomPropertyGrid.SetRowValue A ',dbgs(FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[]),' FItemIndex=',dbgs(FItemIndex),' CanEditRowValue=',CanEditRowValue]);
   if not CanEditRowValue(CheckFocus) or Rows[FItemIndex].IsReadOnly then exit;
@@ -1307,6 +1317,49 @@ begin
 
   //DebugLn(['TOICustomPropertyGrid.SetRowValue Old="',CurRow.Editor.GetVisualValue,'" New="',NewValue,'"']);
   if CurRow.Editor.GetVisualValue=NewValue then exit;
+
+  RootDesigner := FindRootDesigner(FCurrentEditorLookupRoot);
+  if (RootDesigner is TComponentEditorDesigner) and
+    not (RootDesigner as TComponentEditorDesigner).IsUndoNotLock then Exit;
+  CompEditDsg := (RootDesigner as TComponentEditorDesigner);
+
+
+  isExcept := false;
+  saveIndex := FItemIndex;
+  SetLength(oldVal, Selection.Count);
+  for i := 0 to Selection.Count - 1 do
+  begin
+    CurrComp := CompEditDsg.Form.FindComponent(Selection.Items[i].GetNamePath);
+
+    while CurRow.Parent <> nil do
+      CurRow := CurRow.Parent;
+
+    prpInfo := GetPropInfo(TObject(CurrComp), CurRow.Name);
+    if not Assigned(prpInfo) then
+      ShowMessage('error: propInfo = nil')
+    else
+      case prpInfo^.PropType^.Kind of
+        tkInteger, tkInt64:
+          oldVal[i] := IntToStr(GetOrdProp(TObject(CurrComp), prpInfo));
+        tkChar, tkWChar, tkUChar:
+          oldVal[i] := Char(GetOrdProp(TObject(CurrComp), prpInfo));
+        tkEnumeration:
+          oldVal[i] := GetEnumName(prpInfo^.PropType, GetOrdProp(TObject(CurrComp), CurRow.Name));
+        tkFloat:
+          oldVal[i] := FloatToStr(GetFloatProp(TObject(CurrComp), prpInfo));
+        tkBool:
+          oldVal[i] := BoolToStr(Boolean(GetOrdProp(TObject(CurrComp), prpInfo)), 'True', 'False');
+        tkString, tkLString, tkAString, tkUString, tkWString:
+          oldVal[i] := GetStrProp(TObject(CurrComp), prpInfo);
+        tkSet:
+          oldVal[i] := GetSetProp(TObject(CurrComp), CurRow.Name);
+        tkVariant:
+          oldVal[i] := GetVariantProp(TObject(CurrComp), prpInfo);
+      end;
+  end;
+  FItemIndex := saveIndex;
+  CurRow := Rows[FItemIndex];
+
 
   OldChangeStep:=fChangeStep;
   Include(FStates,pgsApplyingValue);
@@ -1321,12 +1374,40 @@ begin
     except
       on E: Exception do begin
         MessageDlg(oisError, E.Message, mtError, [mbOk], 0);
+        isExcept := true;
       end;
     end;
     {$ENDIF}
     if (OldChangeStep<>FChangeStep) then begin
       // the selection has changed => CurRow does not exist any more
       exit;
+    end;
+
+    if not isExcept then
+    begin
+      if Assigned(prpInfo) and (prpInfo^.PropType^.Kind = tkSet) then
+        newVal := GetSetProp(TObject(CurrComp), CurRow.Parent.Name)
+      else if Assigned(prpInfo) and (prpInfo^.PropType^.Kind = tkInteger) and not TryStrToInt(NewValue, i) then
+        newVal := IntToStr(CurRow.Editor.GetOrdValue)
+      else
+        newVal := NewValue;
+
+      for i := 0 to Selection.Count - 1 do
+      begin
+        CurRow := Rows[saveIndex];
+        if CompEditDsg.Form.Name = Selection.Items[i].GetNamePath then
+          CurrComp := CompEditDsg.Form
+        else
+          CurrComp := CompEditDsg.Form.FindComponent(Selection.Items[i].GetNamePath);
+        if CurrComp <> nil then
+        begin
+          while CurRow.Parent <> nil do
+            CurRow := CurRow.Parent;
+
+          CompEditDsg.AddUndoAction(CurrComp, uopChange, i = 0,
+            curRow.Name, oldVal[i], newVal);
+        end;
+      end;
     end;
 
     // set value in edit control

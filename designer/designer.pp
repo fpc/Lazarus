@@ -38,9 +38,10 @@ interface
 
 uses
   // FCL + LCL
-  Types, Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,
-  InterfaceBase, Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus,
-  ClipBrd, TypInfo, contnrs,
+  Types, Classes, Math, SysUtils, contnrs, variants, TypInfo,
+  LCLProc, LCLType, LResources, LCLIntf, LMessages, InterfaceBase,
+  Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus,
+  ClipBrd,
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
   FormEditingIntf, ComponentReg,
@@ -81,6 +82,17 @@ type
     );
   TDesignerFlags = set of TDesignerFlag;
 
+  TUndoList = record
+    obj: string;
+    fieldName: string;
+    propInfo: TPropInfo;
+    oldVal, newVal: Variant;
+    compName, parentName: TComponentName;
+    opType: TUndoOpType;
+    isValid: Boolean;
+    id: int64;
+  end;
+
   { TDesigner }
 
   TDesigner = class(TComponentEditorDesigner)
@@ -117,6 +129,10 @@ type
     FShiftState: TShiftState;
     FTheFormEditor: TCustomFormEditor;
     FPopupMenuComponentEditor: TBaseComponentEditor;
+    FUndoList: array of TUndoList;
+    FUndoCurr: integer;
+    FUndoLock: integer;
+    FUndoActId: int64;
 
     //hint stuff
     FHintTimer: TTimer;
@@ -197,6 +213,12 @@ type
                                            ): boolean;
     function DoInsertFromStream(s: TStream; PasteParent: TWinControl;
                                 PasteFlags: TComponentPasteSelectionFlags): Boolean;
+
+    function DoUndo: Boolean;
+    function DoRedo: Boolean;
+    procedure SetNewVal(IsActUndo: boolean);
+    procedure SetNextUndoActId;
+
     procedure DoShowAnchorEditor;
     procedure DoShowTabOrderEditor;
     procedure DoShowChangeClassDialog;
@@ -275,6 +297,15 @@ type
                                    MenuIndex: integer): boolean; override;
     procedure DoProcessCommand(Sender: TObject; var Command: word;
                                var Handled: boolean);
+
+    function CanUndo: Boolean; override;
+    function CanRedo: Boolean; override;
+    function Undo: Boolean; override;
+    function Redo: Boolean; override;
+    function AddUndoAction(const AComp: TComponent; AOpType: TUndoOpType;
+      IsSetNewId: boolean; AFieldName: string; const AOldVal, ANewVal: variant): boolean; override;
+    function IsUndoNotLock: boolean; override;
+    procedure ClearUndoItem(AIndex: Integer);
 
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(X, Y: integer): TComponent;
@@ -594,6 +625,8 @@ end;
 
 constructor TDesigner.Create(TheDesignerForm: TCustomForm;
   AControlSelection: TControlSelection);
+var
+  i: integer;
 begin
   inherited Create;
   //debugln(['TDesigner.Create Self=',dbgs(Pointer(Self)),' TheDesignerForm=',DbgSName(TheDesignerForm)]);
@@ -627,6 +660,14 @@ begin
   DeletingPersistent:=TList.Create;
   IgnoreDeletingPersistent:=TList.Create;
   FPopupMenuComponentEditor := nil;
+
+  SetLength(FUndoList, 64);
+  for i := Low(FUndoList) to High(FUndoList) do
+    ClearUndoItem(i);
+  FUndoCurr := Low(FUndoList);
+  FUndoLock := 0;
+  FUndoState := ucsNone;
+  SetNextUndoActId;
 end;
 
 procedure TDesigner.PrepareFreeDesigner(AFreeComponent: boolean);
@@ -1192,6 +1233,8 @@ begin
         // finish adding component
         NotifyPersistentAdded(NewComponent);
         Modified;
+        // add action in undo list
+        AddUndoAction(NewComponent, uopAdd, i = 0, 'Name', '', NewComponent.Name);
       end;
 
       if NewSelection.Count>0 then
@@ -1207,6 +1250,154 @@ begin
     NewSelection.Free;
   end;
   Result:=true;
+end;
+
+function TDesigner.DoUndo: Boolean;
+var currId: int64;
+begin
+  repeat
+    Result := CanUndo;
+    if not Result then Exit;
+    Dec(FUndoCurr);
+    currId := FUndoList[FUndoCurr].id;
+    SetNewVal(true);
+  until currId <> FUndoList[FUndoCurr - 1].id;
+end;
+
+function TDesigner.DoRedo: Boolean;
+var currId: int64;
+begin
+  repeat
+    Result := CanRedo;
+    if not Result then Exit;
+    SetNewVal(false);
+    currId := FUndoList[FUndoCurr].id;
+    Inc(FUndoCurr);
+  until currId <> FUndoList[FUndoCurr].id;
+end;
+
+procedure TDesigner.SetNewVal(IsActUndo: boolean);
+
+  procedure SetPropVal(AVal: variant);
+  var
+    tmpStr, str: string;
+    tmpCompName: TComponentName;
+    tmpObj: TObject;
+    tmpInt: integer;
+  begin
+    tmpCompName := FUndoList[FUndoCurr].compName;
+    if FUndoList[FUndoCurr].fieldName = 'Name' then
+    begin
+      if IsActUndo then
+        tmpCompName := FUndoList[FUndoCurr].newVal
+      else
+        tmpCompName := FUndoList[FUndoCurr].oldVal;
+    end;
+
+    if FForm.Name <> tmpCompName then
+      tmpObj := TObject(FForm.FindComponent(tmpCompName))
+    else
+      tmpObj := TObject(FForm);
+
+    if VarIsError(AVal) or VarIsEmpty(AVal) or VarIsNull(AVal) then
+      ShowMessage('error: invalid var type');
+    tmpStr := VarToStr(AVal);
+
+    with FUndoList[FUndoCurr] do
+      case propInfo.propType^.Kind of
+        tkInteger, tkInt64:
+        begin
+          if (propInfo.propType^.Name = 'TColor') or
+             (propInfo.propType^.Name = 'TGraphicsColor') then
+            SetOrdProp(tmpObj, fieldName, StringToColor(tmpStr))
+          else if propInfo.propType^.Name = 'TCursor' then
+            SetOrdProp(tmpObj, fieldName, StringToCursor(tmpStr))
+          else
+            SetOrdProp(tmpObj, fieldName, StrToInt(tmpStr));
+        end;
+        tkChar, tkWChar, tkUChar:
+        begin
+          if Length(tmpStr) = 1 then
+            SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, Ord(tmpStr[1]))
+          else if (tmpStr[1] = '#') then
+          begin
+            str := Copy(tmpStr, 2, Length(tmpStr) - 1);
+            if TryStrToInt(str, tmpInt) and (tmpInt >= 0) and (tmpInt <= High(Byte)) then
+              SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, tmpInt);
+          end;
+        end;
+        tkEnumeration:
+          SetEnumProp(tmpObj, FUndoList[FUndoCurr].fieldName, tmpStr);
+        tkFloat:
+          SetFloatProp(tmpObj, fieldName, StrToFloat(tmpStr));
+        tkBool:
+          SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, Integer(StrToBool(tmpStr)));
+        tkString, tkLString, tkAString, tkUString, tkWString:
+          SetStrProp(tmpObj, fieldName, tmpStr);
+        tkSet:
+          SetSetProp(tmpObj, FUndoList[FUndoCurr].fieldName, tmpStr);
+        tkVariant:
+          SetVariantProp(tmpObj, fieldName, AVal);
+        else
+          ShowMessage(Format('error: unknown TTypeKind(%d)', [Integer(propInfo.propType^.Kind)]));
+      end;
+    PropertyEditorHook.Modified(tmpObj);
+  end;
+
+var
+  CurTextCompStream: TMemoryStream;
+  SaveControlSelection: TControlSelection;
+begin
+  if (IsActUndo and (FUndoList[FUndoCurr].opType in [uopAdd])) or
+    (not IsActUndo and (FUndoList[FUndoCurr].opType in [uopDel])) then
+  begin
+    Inc(FUndoLock);
+    SaveControlSelection := TControlSelection.Create;
+    try
+      SaveControlSelection.Assign(ControlSelection);
+      ControlSelection.Clear;
+      ControlSelection.Add(FForm.FindComponent(FUndoList[FUndoCurr].compName));
+      DeleteSelection;
+    finally
+      ControlSelection.Assign(SaveControlSelection);
+      SaveControlSelection.Free;
+      Dec(FUndoLock);
+    end;
+  end;
+
+  if (IsActUndo and (FUndoList[FUndoCurr].opType in [uopDel])) or
+    (not IsActUndo and (FUndoList[FUndoCurr].opType in [uopAdd])) then
+  begin
+    CurTextCompStream := TMemoryStream.Create;
+    try
+      Inc(FUndoLock);
+      CurTextCompStream.Write(FUndoList[FUndoCurr].obj[1], Length(FUndoList[FUndoCurr].obj));
+      CurTextCompStream.Position := 0;
+      DoInsertFromStream(CurTextCompStream,
+        TWinControl(FForm.FindChildControl(FUndoList[FUndoCurr].parentName)), []);
+    finally
+      CurTextCompStream.Free;
+      Dec(FUndoLock);
+    end;
+  end;
+
+  if FUndoList[FUndoCurr].opType = uopChange then
+  begin
+    Inc(FUndoLock);
+    if IsActUndo then
+      SetPropVal(FUndoList[FUndoCurr].oldVal)
+    else
+      SetPropVal(FUndoList[FUndoCurr].newVal);
+    Dec(FUndoLock);
+  end;
+
+  PropertyEditorHook.RefreshPropertyValues;
+end;
+
+procedure TDesigner.SetNextUndoActId;
+begin
+  Randomize;
+  FUndoActId := Random(High(Int64));
 end;
 
 procedure TDesigner.DoShowAnchorEditor;
@@ -1411,6 +1602,123 @@ begin
   end;
   
   Handled := True;
+end;
+
+function TDesigner.CanUndo: Boolean;
+begin
+  Result := Assigned(Form) and (FUndoCurr > Low(FUndoList)) and
+    (FUndoList[FUndoCurr - 1].isValid) and (FUndoList[FUndoCurr - 1].opType <> uopNone);
+end;
+
+function TDesigner.CanRedo: Boolean;
+begin
+  Result := Assigned(Form) and (FUndoCurr <= High(FUndoList)) and
+    (FUndoList[FUndoCurr].isValid) and (FUndoList[FUndoCurr].opType <> uopNone);
+end;
+
+function TDesigner.Undo: Boolean;
+begin
+  Result := DoUndo;
+end;
+
+function TDesigner.Redo: Boolean;
+begin
+  Result := DoRedo;
+end;
+
+function TDesigner.AddUndoAction(const AComp: TComponent; AOpType: TUndoOpType;
+   IsSetNewId: boolean; AFieldName: string; const AOldVal, ANewVal: variant): boolean;
+
+  procedure ShiftUndoList;
+  var
+    i: integer;
+  begin
+    for i := Low(FUndoList) + 1 to High(FUndoList) do
+      FUndoList[i - 1] := FUndoList[i];
+    Dec(FUndoCurr);
+  end;
+
+var
+  i: integer;
+  SaveControlSelection: TControlSelection;
+  AStream: TStringStream;
+begin
+  Result := (FUndoLock = 0);
+  if not(Result) then Exit;
+  Inc(FUndoLock);
+
+  if FUndoCurr > High(FUndoList) then
+    ShiftUndoList;
+
+  i := FUndoCurr;
+  while (i <= High(FUndoList)) do
+  begin
+    ClearUndoItem(i);
+    Inc(i);
+  end;
+
+  if IsSetNewId then
+    SetNextUndoActId;
+
+  if (AOpType in [uopAdd, uopDel]) and  (FForm.Name <> AComp.Name) then
+  begin
+    SaveControlSelection := TControlSelection.Create;
+    try
+      SaveControlSelection.Assign(ControlSelection);
+      AStream := TStringStream.Create('');
+      try
+        ControlSelection.Clear;
+        ControlSelection.Add(AComp);
+        CopySelectionToStream(AStream);
+        FUndoList[FUndoCurr].obj := AStream.DataString;
+      finally
+        AStream.Free;
+      end;
+    finally
+      ControlSelection.Assign(SaveControlSelection);
+      SaveControlSelection.Free;
+    end;
+  end;
+
+  with FUndoList[FUndoCurr] do
+  begin
+    oldVal := AOldVal;
+    newVal := ANewVal;
+    fieldName := AFieldName;
+    compName := AComp.Name;
+    if not(AComp.Equals(Form)) and AComp.HasParent then
+      parentName := AComp.GetParentComponent.Name
+    else
+      parentName := '';
+    opType := AOpType;
+    isValid := true;
+    id := FUndoActId;
+    propInfo := GetPropInfo(TObject(AComp), AFieldName)^;
+  end;
+  Inc(FUndoCurr);
+  Dec(FUndoLock);
+end;
+
+function TDesigner.IsUndoNotLock: boolean;
+begin
+  Result := FUndoLock = 0;
+end;
+
+procedure TDesigner.ClearUndoItem(AIndex: Integer);
+begin
+  if (AIndex < 0) or (AIndex >= Length(FUndoList)) then Exit;
+  with FUndoList[AIndex] do
+  begin
+    obj := '';
+    fieldName := '';
+    VarClear(oldVal);
+    VarClear(newVal);
+    compName := '';
+    parentName := '';
+    opType := uopNone;
+    isValid := false;
+    id := 0;
+  end;
 end;
 
 function TDesigner.NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
@@ -1976,6 +2284,7 @@ var
     DebugLn('NEW COMPONENT ADDED: Form.ComponentCount=',DbgS(Form.ComponentCount),
        '  NewComponent.Owner.Name=',NewComponent.Owner.Name);
     {$ENDIF}
+    AddUndoAction(NewComponent, uopAdd, true, 'Name', '', NewComponent.Name);
   end;
 
   procedure RubberbandSelect;
@@ -2047,6 +2356,7 @@ var
 
 var
   Handled: Boolean;
+  i, j: Integer;
 begin
   FHintTimer.Enabled := False;
   FHintWindow.Visible := False;
@@ -2103,6 +2413,26 @@ begin
   begin
     if SelectedCompClass = nil then
     begin
+      if (FUndoState = ucsSaveChange) and (FUndoCurr > 4) then
+      begin
+        j := FUndoCurr - ControlSelection.Count * 4;
+        for i := 0 to ControlSelection.Count - 1 do
+        begin
+          if (FUndoList[j].fieldName = 'Top')
+            and (FUndoList[j + 1].fieldName = 'Left')
+            and (FUndoList[j + 2].fieldName = 'Height')
+            and (FUndoList[j + 3].fieldName = 'Width') then
+          begin
+            FUndoList[j].newVal := ControlSelection.Items[i].Top;
+            FUndoList[j + 1].newVal := ControlSelection.Items[i].Left;
+            FUndoList[j + 2].newVal := ControlSelection.Items[i].Height;
+            FUndoList[j + 3].newVal := ControlSelection.Items[i].Width;
+          end;
+          j := j + 4;
+        end;
+      end;
+      FUndoState := ucsNone;
+
       // layout mode (selection, moving and resizing)
       if not (dfHasSized in FFlags) then
       begin
@@ -2471,7 +2801,14 @@ begin
       exit;
     end;
   end;
-  
+
+  for i := 0 to ControlSelection.Count - 1 do
+  begin
+    if not ControlSelection[i].IsTComponent then continue;
+    AComponent := TComponent(ControlSelection[i].Persistent);
+    AddUndoAction(AComponent, uopDel, i = 0, 'Name', AComponent.Name, '');
+  end;
+
   // mark selected components for deletion
   for i:=0 to ControlSelection.Count-1 do
     MarkPersistentForDeletion(ControlSelection[i].Persistent);

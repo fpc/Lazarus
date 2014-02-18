@@ -37,6 +37,9 @@ type
     cedhtModified
     );
 
+  TUndoOpType = (uopNone = 0, uopAdd, uopChange, uopDel);
+  TUndoCompState = (ucsNone = 0, ucsStartChange, ucsSaveChange);
+
   TComponentEditorDesigner = class(TIDesigner)
   private
     FChangeStamp: int64;
@@ -48,6 +51,8 @@ type
     procedure AddHandler(HookType: TComponentEditorDesignerHookType; const Handler: TMethod);
     procedure RemoveHandler(HookType: TComponentEditorDesignerHookType; const Handler: TMethod);
   public
+    FUndoState: TUndoCompState;
+
     destructor Destroy; override;
     procedure Modified; override;
     function CopySelection: boolean; virtual; abstract;
@@ -62,6 +67,14 @@ type
                               ): Boolean; virtual; abstract;
     function InvokeComponentEditor(AComponent: TComponent;
                                    MenuIndex: integer): boolean; virtual; abstract;
+
+    function CanUndo: Boolean; virtual; abstract;
+    function CanRedo: Boolean; virtual; abstract;
+    function Undo: Boolean; virtual; abstract;
+    function Redo: Boolean; virtual; abstract;
+    function AddUndoAction(const AComp: TComponent; AOpType: TUndoOpType;
+      IsSetNewId: boolean; AFieldName: string; const AOldVal, ANewVal: variant): boolean; virtual; abstract;
+    function IsUndoNotLock: boolean; virtual; abstract;
 
     procedure DrawDesignerItems(OnlyIfNeeded: boolean); virtual; abstract;
     function CreateUniqueComponentName(const AClassName: string

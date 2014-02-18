@@ -3783,7 +3783,7 @@ var
   Editable: Boolean;
   SelAvail: Boolean;
   SelEditable: Boolean;
-  SrcEditorActive: Boolean;
+  SrcEditorActive, DsgEditorActive: Boolean;
   ActiveDesigner: TComponentEditorDesigner;
 begin
   GetCurrentUnit(ASrcEdit, AnUnitInfo);
@@ -3791,14 +3791,15 @@ begin
   SelAvail := Assigned(ASrcEdit) and ASrcEdit.SelectionAvailable;
   SelEditable := Editable and SelAvail;
   SrcEditorActive := DisplayState = dsSource;
+  DsgEditorActive := DisplayState = dsForm;
   ActiveDesigner := GetActiveDesignerSkipMainBar;
   with MainIDEBar do
   begin
     if Assigned(ActiveDesigner) then
     begin
       // activate them when Designer start to support Undo/Redo
-      itmEditUndo.Enabled := False;
-      itmEditRedo.Enabled := False;
+      itmEditUndo.Enabled := DsgEditorActive and ActiveDesigner.CanUndo; {and not ActiveDesigner.ReadOnly}
+      itmEditRedo.Enabled := DsgEditorActive and ActiveDesigner.CanRedo; {and not ActiveDesigner.ReadOnly}
       itmEditCut.Enabled := ActiveDesigner.CanCopy;
       itmEditCopy.Enabled := itmEditCut.Enabled;
       itmEditPaste.Enabled := ActiveDesigner.CanPaste;
@@ -13644,13 +13645,25 @@ begin
 end;
 
 procedure TMainIDE.mnuEditRedoClicked(Sender: TObject);
+var
+  ActiveDesigner: TComponentEditorDesigner;
 begin
-  DoSourceEditorCommand(ecRedo);
+  ActiveDesigner := GetActiveDesignerSkipMainBar;
+  if Assigned(ActiveDesigner) then
+    ActiveDesigner.Redo
+  else
+    DoSourceEditorCommand(ecRedo);
 end;
 
 procedure TMainIDE.mnuEditUndoClicked(Sender: TObject);
+var
+  ActiveDesigner: TComponentEditorDesigner;
 begin
-  DoSourceEditorCommand(ecUndo);
+  ActiveDesigner := GetActiveDesignerSkipMainBar;
+  if Assigned(ActiveDesigner) then
+    ActiveDesigner.Undo
+  else
+    DoSourceEditorCommand(ecUndo);
 end;
 
 procedure TMainIDE.mnuEditIndentBlockClicked(Sender: TObject);
