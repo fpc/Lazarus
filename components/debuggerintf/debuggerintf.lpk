@@ -37,13 +37,10 @@ Provides an interface to add debuggers to the IDE"/>
       </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="2">
+    <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="LCLBase"/>
       </Item1>
-      <Item2>
-        <PackageName Value="LazUtils"/>
-      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
