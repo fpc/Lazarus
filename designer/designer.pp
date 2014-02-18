@@ -1261,7 +1261,7 @@ begin
     Dec(FUndoCurr);
     currId := FUndoList[FUndoCurr].id;
     SetNewVal(true);
-  until currId <> FUndoList[FUndoCurr - 1].id;
+  until (FUndoCurr=Low(FUndoList)) or (currId <> FUndoList[FUndoCurr - 1].id);
 end;
 
 function TDesigner.DoRedo: Boolean;
@@ -1273,7 +1273,7 @@ begin
     SetNewVal(false);
     currId := FUndoList[FUndoCurr].id;
     Inc(FUndoCurr);
-  until currId <> FUndoList[FUndoCurr].id;
+  until (FUndoCurr>High(FUndoList)) or (currId <> FUndoList[FUndoCurr].id);
 end;
 
 procedure TDesigner.SetNewVal(IsActUndo: boolean);
