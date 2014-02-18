@@ -6,7 +6,7 @@ interface
 
 uses
   Controls, StdCtrls, IDEOptionsIntf, Project, CompilerOptions, CompOptsIntf,
-  PackageDefs, LazarusIDEStrConsts;
+  PackageDefs, LazarusIDEStrConsts, EnvironmentOpts, LazConf, IDEProcs;
 
 type
 
@@ -23,7 +23,7 @@ type
     chkExecBeforeBuild: TCheckBox;
     chkExecBeforeCompile: TCheckBox;
     chkExecBeforeRun: TCheckBox;
-    edtCompiler: TComboBox;
+    cobCompiler: TComboBox;
     ExecuteAfterCommandEdit: TEdit;
     ExecuteAfterCommandLabel: TLabel;
     ExecuteAfterGroupBox: TGroupBox;
@@ -86,7 +86,7 @@ begin
   chkCompilerCompile.Checked := True;
   chkCompilerRun.Caption := lisRunStage;
   chkCompilerRun.Checked := True;
-  edtCompiler.Text := '';
+  cobCompiler.Text := '';
   lblCompiler.Caption := lisCOCommand;
   lblRunIfCompiler.Caption := lisCOCallOn;
 
@@ -133,7 +133,14 @@ begin
     chkExecBeforeRun.Visible := False;
   end;
 
-  edtCompiler.Text := Options.CompilerPath;
+  with cobCompiler do begin
+    Items.BeginUpdate;
+    Items.Assign(EnvironmentOptions.CompilerFileHistory);
+    AddFilenameToList(Items,'$(CompPath)');
+    SetComboBoxText(cobCompiler,Options.CompilerPath,cstFilename);
+    Items.EndUpdate;
+  end;
+
   if Options is TProjectCompilerOptions then
     with TProjectCompilerOptions(Options) do
     begin
@@ -147,7 +154,7 @@ begin
       chkCompilerCompile.Visible := True;
       chkCompilerBuild.Visible := True;
       chkCompilerRun.Visible := True;
-      edtCompiler.AnchorToNeighbour(akTop, 0, chkCompilerCompile);
+      cobCompiler.AnchorToNeighbour(akTop, 0, chkCompilerCompile);
     end
   else if Options is TPkgCompilerOptions then
   begin
@@ -160,7 +167,7 @@ begin
     chkCompilerCompile.Checked := TPkgCompilerOptions(Options).SkipCompiler;
     chkCompilerBuild.Visible := False;
     chkCompilerRun.Visible := False;
-    edtCompiler.AnchorToNeighbour(akTop, 0, chkCompilerCompile);
+    cobCompiler.AnchorToNeighbour(akTop, 0, chkCompilerCompile);
   end
   else
   begin
@@ -168,7 +175,7 @@ begin
     chkCompilerCompile.Visible := False;
     chkCompilerBuild.Visible := False;
     chkCompilerRun.Visible := False;
-    edtCompiler.AnchorParallel(akTop, 0, lblCompiler.Parent);
+    cobCompiler.AnchorParallel(akTop, 0, lblCompiler.Parent);
   end;
 
   ExecuteAfterCommandEdit.Text := Options.ExecuteAfter.Command;
@@ -220,7 +227,9 @@ begin
       MakeCompileReasons(chkExecBeforeCompile, chkExecBeforeBuild, chkExecBeforeRun);
   end;
 
-  Options.CompilerPath := edtCompiler.Text;
+  Options.CompilerPath := cobCompiler.Text;
+  EnvironmentOptions.CompilerFileHistory.Assign(cobCompiler.Items);
+
   if Options is TProjectCompilerOptions then
   begin
     TProjectCompilerOptions(Options).CompileReasons :=

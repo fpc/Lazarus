@@ -198,10 +198,11 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
     end
     object lblCompiler: TLabel
       AnchorSideLeft.Control = grpCompiler
+      AnchorSideTop.Control = cobCompiler
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 15
-      Top = 38
+      Top = 42
       Width = 62
       BorderSpacing.Around = 6
       Caption = 'lblCompiler'
@@ -246,7 +247,7 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       Caption = 'chkCompilerRun'
       TabOrder = 2
     end
-    object edtCompiler: TComboBox
+    object cobCompiler: TComboBox
       AnchorSideLeft.Control = lblCompiler
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = chkCompilerCompile
@@ -262,7 +263,7 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       BorderSpacing.Around = 6
       ItemHeight = 0
       TabOrder = 3
-      Text = 'edtCompiler'
+      Text = 'cobCompiler'
     end
   end
   object ExecuteBeforeGroupBox: TGroupBox
