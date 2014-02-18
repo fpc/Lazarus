@@ -1,11 +1,11 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="EducationLaz"/>
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -19,7 +19,7 @@
     <Description Value="IDE package for training, courses and education."/>
     <License Value="LGPL-2 or any later"/>
     <Version Major="1" Release="1"/>
-    <Files Count="15">
+    <Files Count="14">
       <Item1>
         <Filename Value="eduenvoptsframe.pas"/>
         <HasRegisterProc Value="True"/>
@@ -72,30 +72,26 @@
         <Type Value="LFM"/>
       </Item11>
       <Item12>
-        <Filename Value="eduoptionsdlg.lrs"/>
-        <Type Value="LRS"/>
-      </Item12>
-      <Item13>
         <Filename Value="eduoptionsdlg.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="EduOptionsDlg"/>
-      </Item13>
-      <Item14>
+      </Item12>
+      <Item13>
         <Filename Value="eduspeedbuttons.lfm"/>
         <Type Value="LFM"/>
-      </Item14>
-      <Item15>
+      </Item13>
+      <Item14>
         <Filename Value="eduspeedbuttons.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="EduSpeedButtons"/>
-      </Item15>
+      </Item14>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="5">
+    <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="CodeTools"/>
       </Item1>
@@ -103,16 +99,8 @@
         <PackageName Value="SynEdit"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
-        <MinVersion Major="1" Valid="True"/>
-      </Item3>
-      <Item4>
         <PackageName Value="IDEIntf"/>
-      </Item4>
-      <Item5>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
-      </Item5>
+      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
