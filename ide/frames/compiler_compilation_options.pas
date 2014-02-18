@@ -5,14 +5,17 @@ unit compiler_compilation_options;
 interface
 
 uses
-  Controls, StdCtrls, IDEOptionsIntf, Project, CompilerOptions, CompOptsIntf,
-  PackageDefs, LazarusIDEStrConsts, EnvironmentOpts, LazConf, IDEProcs;
+  Controls, StdCtrls, Dialogs, IDEOptionsIntf, Project, CompilerOptions,
+  CompOptsIntf, IDEDialogs, FileProcs, DefineTemplates, CodeToolManager,
+  PackageDefs, LazarusIDEStrConsts, EnvironmentOpts, LazConf, IDEProcs,
+  InputHistory, InitialSetupDlgs, Classes, sysutils;
 
 type
 
   { TCompilerCompilationOptionsFrame }
 
   TCompilerCompilationOptionsFrame = class(TAbstractIDEOptionsEditor)
+    BrowseCompilerButton: TButton;
     chkCompilerBuild: TCheckBox;
     chkCompilerCompile: TCheckBox;
     chkCompilerRun: TCheckBox;
@@ -43,6 +46,7 @@ type
     lblRunIfCompiler: TLabel;
     lblRunIfExecAfter: TLabel;
     lblRunIfExecBefore: TLabel;
+    procedure BrowseCompilerButtonClick(Sender: TObject);
   private
   public
     function GetTitle: string; override;
@@ -57,6 +61,52 @@ implementation
 {$R *.lfm}
 
 { TCompilerCompilationOptionsFrame }
+
+procedure TCompilerCompilationOptionsFrame.BrowseCompilerButtonClick(
+  Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  AFilename: string;
+  Quality: TSDFilenameQuality;
+  Note: string;
+begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
+    // set title
+    if Sender=BrowseCompilerButton then
+      OpenDialog.Title:=Format(lisChooseCompilerPath,[GetDefaultCompilerFilename])
+    else
+      exit;
+
+    if OpenDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+
+      if Sender=BrowseCompilerButton then begin
+        // check compiler filename
+        if IsFPCExecutable(AFilename) then begin
+          // check compiler
+          Quality:=CheckCompilerQuality(AFilename,Note,
+                                     CodeToolBoss.FPCDefinesCache.TestFilename);
+          if Quality<>sddqCompatible then begin
+            if IDEMessageDialog(lisCCOWarningCaption, Format(
+              lisTheCompilerFileDoesNotLookCorrect, [AFilename, #13, Note]),
+              mtWarning,[mbIgnore,mbCancel])<>mrIgnore
+            then
+              exit;
+          end;
+        end else begin
+          // maybe a script
+        end;
+        SetComboBoxText(cobCompiler,AFilename,cstFilename);
+      end;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
 
 function TCompilerCompilationOptionsFrame.GetTitle: string;
 begin
@@ -80,15 +130,16 @@ begin
   lblRunIfExecBefore.Caption := lisCOCallOn;
 
   grpCompiler.Caption := lisCompiler;
+  lblRunIfCompiler.Caption := lisCOCallOn;
   chkCompilerBuild.Caption := lisBuildStage;
   chkCompilerBuild.Checked := True;
   chkCompilerCompile.Caption := lisCompileStage;
   chkCompilerCompile.Checked := True;
   chkCompilerRun.Caption := lisRunStage;
   chkCompilerRun.Checked := True;
-  cobCompiler.Text := '';
   lblCompiler.Caption := lisCOCommand;
-  lblRunIfCompiler.Caption := lisCOCallOn;
+  cobCompiler.Text := '';
+  BrowseCompilerButton.Hint:='Browse and select a compiler (e.g. ppcx64'+ExeExt+')';
 
   ExecuteAfterGroupBox.Caption := lisCOExecuteAfter;
   chkExecAfterBuild.Caption := lisBuildStage;

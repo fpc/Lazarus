@@ -252,18 +252,37 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = chkCompilerCompile
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = grpCompiler
-      AnchorSideRight.Side = asrBottom
-      Left = 86
+      AnchorSideRight.Control = BrowseCompilerButton
+      Left = 80
       Height = 27
       Top = 36
-      Width = 503
+      Width = 488
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 12
-      BorderSpacing.Around = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
       ItemHeight = 0
       TabOrder = 3
       Text = 'cobCompiler'
+    end
+    object BrowseCompilerButton: TButton
+      AnchorSideTop.Control = cobCompiler
+      AnchorSideRight.Control = grpCompiler
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = cobCompiler
+      AnchorSideBottom.Side = asrBottom
+      Left = 568
+      Height = 27
+      Top = 36
+      Width = 21
+      Anchors = [akTop, akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Right = 6
+      Caption = '...'
+      OnClick = BrowseCompilerButtonClick
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 4
     end
   end
   object ExecuteBeforeGroupBox: TGroupBox
