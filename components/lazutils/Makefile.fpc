@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for LazUtils 1.0
 #
-#   This file was generated on 27-8-12
+#   This file was generated on 18-2-14
 
 [package]
 name=lazutils
@@ -53,3 +53,6 @@ compiled:
         $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazUtils.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazutils$(PPUEXT) compiled
+
+distclean: clean
+        $(deltree) lib/*

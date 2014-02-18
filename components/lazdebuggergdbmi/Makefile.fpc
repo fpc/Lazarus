@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for LazDebuggerGdbmi 0.1
 #
-#   This file was generated on 16/02/2014
+#   This file was generated on 18-2-14
 
 [package]
 name=lazdebuggergdbmi
@@ -53,3 +53,6 @@ compiled:
         $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazDebuggerGdbmi.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazdebuggergdbmi$(PPUEXT) compiled
+
+distclean: clean
+        $(deltree) lib/*

@@ -3779,7 +3779,7 @@ var
   end;
 
 var
-  s: String;
+  s, Last: String;
   e: string;
   SrcFilename: String;
   MainUnitName: String;
@@ -3800,6 +3800,7 @@ var
   FormUnitPath: String;
   FormIncPath: String;
   Executable: String;
+  DistCleanDir: String;
 begin
   Result:=mrCancel;
   PathDelimNeedsReplace:=PathDelim<>'/';
@@ -3832,6 +3833,27 @@ begin
   // remove path delimiter at the end, or else it will fail on windows
   UnitOutputPath:=ConvertLazarusToMakefileDirectory(
                                                 ChompPathDelim(UnitOutputPath));
+
+  // "make distclean" should delete all variable output directories
+  // For example if output directory is units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+  // distclean should delete units/*
+  // It uses deltree, so make sure, that it does not delete ./* or ../*
+  DistCleanDir:=UnitOutputPath;
+  while Pos('$(',ExtractFilename(DistCleanDir))>0 do begin
+    Last:=DistCleanDir;
+    DistCleanDir:=ChompPathDelim(ExtractFilePath(DistCleanDir));
+    s:=ExtractFileName(DistCleanDir);
+    if (s='') or (s='.') or (s='..') then begin
+      DistCleanDir:=Last;
+      break;
+    end;
+  end;
+  s:=ExtractFileName(DistCleanDir);
+  if (s='') or (s='.') or (s='..') then
+    DistCleanDir:='' // do not delete potential source directories
+  else
+    DistCleanDir+='/*';
+
   MainSrcFile:=CreateRelativePath(SrcFilename,APackage.Directory);
   CustomOptions:=ConvertLazarusOptionsToMakefileOptions(CustomOptions);
   OtherOptions:=ConvertLazarusOptionsToMakefileOptions(OtherOptions);
@@ -3922,6 +3944,11 @@ begin
   s:=s+'        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/'+APackage.Name+'.compiled'+e;
   s:=s+''+e;
   s:=s+'all: cleartarget $(COMPILER_UNITTARGETDIR) '+MainUnitName+'$(PPUEXT) compiled'+e;
+  if DistCleanDir<>'' then begin
+    s:=s+''+e;
+    s:=s+'distclean: clean'+e;
+    s:=s+'        $(deltree) '+DistCleanDir+e;
+  end;
 
   //DebugLn('TPkgManager.DoWriteMakefile [',s,']');
 

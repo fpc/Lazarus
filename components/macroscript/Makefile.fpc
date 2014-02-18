@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for EditorMacroScript 0.0
 #
-#   This file was generated on 2-10-13
+#   This file was generated on 18-2-14
 
 [package]
 name=editormacroscript
@@ -53,3 +53,6 @@ compiled:
         $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/EditorMacroScript.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) editormacroscript$(PPUEXT) compiled
+
+distclean: clean
+        $(deltree) lib/*

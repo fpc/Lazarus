@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for ExternHelp 1.3
 #
-#   This file was generated on 29-4-13
+#   This file was generated on 18-2-14
 
 [package]
 name=externhelp
@@ -53,3 +53,6 @@ compiled:
         $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/ExternHelp.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) externhelp$(PPUEXT) compiled
+
+distclean: clean
+        $(deltree) lib/*
