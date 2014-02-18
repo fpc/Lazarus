@@ -1434,10 +1434,9 @@ zipinstall:
 zipsourceinstall:
 zipexampleinstall:
 zipdistinstall:
-distclean: fpc_distclean
 info: fpc_info
 makefiles: fpc_makefiles
-.PHONY: debug smart release units examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall distclean info makefiles
+.PHONY: debug smart release units examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall info makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
@@ -1480,6 +1479,7 @@ clean:
 	$(MAKE) -C lazutils clean
 	$(MAKE) -C codetools clean
 	$(MAKE) -C debuggerintf clean
+	$(MAKE) -C lazdebuggergdbmi clean
 	$(MAKE) -C lazcontrols clean
 	$(MAKE) -C ideintf clean
 	$(MAKE) -C synedit clean
@@ -1508,3 +1508,35 @@ clean:
 	$(MAKE) -C PascalScript/Source clean
 	$(MAKE) -C macroscript clean
 cleanall: clean
+distclean:
+	$(MAKE) -C lazutils distclean
+	$(MAKE) -C codetools distclean
+	$(MAKE) -C debuggerintf distclean
+	$(MAKE) -C lazdebuggergdbmi distclean
+	$(MAKE) -C lazcontrols distclean
+	$(MAKE) -C ideintf distclean
+	$(MAKE) -C synedit distclean
+	$(MAKE) -C synedit/design distclean
+	$(MAKE) -C rtticontrols distclean
+	$(MAKE) -C cairocanvas distclean
+	$(MAKE) -C printers distclean
+	$(MAKE) -C printers/design distclean
+	$(MAKE) -C turbopower_ipro distclean
+	$(MAKE) -C turbopower_ipro/design distclean
+	$(MAKE) -C fpcunit distclean
+	$(MAKE) -C fpcunit/ide distclean
+	$(MAKE) -C projecttemplates distclean
+	$(MAKE) -C leakview distclean
+	$(MAKE) -C memds distclean
+	$(MAKE) -C sdf distclean
+	$(MAKE) -C tachart distclean
+	$(MAKE) -C todolist distclean
+	$(MAKE) -C jcf2/IdePlugin/lazarus distclean
+	$(MAKE) -C chmhelp/packages/help distclean
+	$(MAKE) -C chmhelp/packages/idehelp distclean
+	$(MAKE) -C instantfpc distclean
+	$(MAKE) -C externhelp distclean
+	$(MAKE) -C tdbf distclean
+	$(MAKE) -C sqldb distclean
+	$(MAKE) -C PascalScript/Source distclean
+	$(MAKE) -C macroscript distclean
