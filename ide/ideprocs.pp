@@ -95,8 +95,6 @@ const
     );
 
 // file names
-function FilenameIsMatching(const Mask, Filename: string;
-  MatchExactly: boolean): boolean;
 function ConvertSpecialFileChars(const Filename: string): string;
 function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
@@ -1138,12 +1136,6 @@ begin
   XMLConfig.SetDeleteValue(Path+'Top',ARect.Top,DefaultRect.Top);
   XMLConfig.SetDeleteValue(Path+'Right',ARect.Right,DefaultRect.Right);
   XMLConfig.SetDeleteValue(Path+'Bottom',ARect.Bottom,DefaultRect.Bottom);
-end;
-
-function FilenameIsMatching(const Mask, Filename: string;
-  MatchExactly: boolean): boolean;
-begin
-  Result:=FileProcs.FilenameIsMatching(Mask,Filename,MatchExactly);
 end;
 
 procedure InvalidateFileStateCache(const AFilename: string);
