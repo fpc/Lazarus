@@ -118,6 +118,8 @@ function FindShortFileNameOnDisk(const Filename: string): string;
 function CreateNonExistingFilename(const BaseFilename: string): string;
 function FindFPCTool(const Executable, CompilerFilename: string): string;
 procedure ResolveLinksInFileList(List: TStrings; RemoveDanglingLinks: Boolean);
+function FindProgram(const Programname, BaseDirectory: string;
+                     WithBaseDirectory: boolean): string;
 
 // search paths
 function TrimSearchPath(const SearchPath, BaseDirectory: string;
@@ -180,6 +182,9 @@ procedure LoadPoint(XMLConfig: TXMLConfig; const Path:string;
                     var APoint:TPoint; const DefaultPoint: TPoint);
 procedure SavePoint(XMLConfig: TXMLConfig; const Path:string;
                     const APoint, DefaultPoint:TPoint);
+function PointToCfgStr(const Point: TPoint): string;
+procedure CfgStrToPoint(const s: string; var Point: TPoint;
+                        const DefaultPoint: TPoint);
 procedure LoadStringList(XMLConfig: TXMLConfig; List: TStrings;
                          const Path: string);
 procedure SaveStringList(XMLConfig: TXMLConfig; List: TStrings;
@@ -191,13 +196,6 @@ procedure SaveStringToStringTree(XMLConfig: TXMLConfig;
 procedure MakeXMLName(var Name: string);
 function LoadXMLConfigViaCodeBuffer(Filename: string): TXMLConfig;
   
-
-function FindProgram(const Programname, BaseDirectory: string;
-                     WithBaseDirectory: boolean): string;
-
-function PointToCfgStr(const Point: TPoint): string;
-procedure CfgStrToPoint(const s: string; var Point: TPoint;
-                        const DefaultPoint: TPoint);
 
 // text conversion
 function TabsToSpaces(const s: string; TabWidth: integer; UseUTF8: boolean
