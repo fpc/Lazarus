@@ -100,6 +100,7 @@ uses
   // LRT stuff
   Translations,
   // debugger
+  LazDebuggerGdbmi,
   RunParamsOpts, BaseDebugManager, DebugManager, debugger, DebuggerDlg,
   DebugAttachDialog, DbgIntfBaseTypes, DbgIntfDebuggerBase,
   // packager

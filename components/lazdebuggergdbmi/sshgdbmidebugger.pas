@@ -87,6 +87,8 @@ type
     property InternalStartBreak;
   end;
 
+procedure Register;
+
 implementation
 
 type
@@ -281,10 +283,11 @@ begin
   end;
 end;
 
-initialization
+procedure Register;
+begin
   RegisterPropertyEditor(TypeInfo(String), TSSHGDBMIDebuggerProperties, 'Note', TSSHGDBMINotePropertyEditor);
-  
   RegisterDebugger(TSSHGDBMIDebugger);
+end;
 
 end.
 

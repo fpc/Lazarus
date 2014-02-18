@@ -15,6 +15,9 @@ implementation
 
 procedure Register;
 begin
+  RegisterUnit('GDBMIDebugger', @GDBMIDebugger.Register);
+  RegisterUnit('GDBMIServerDebugger', @GDBMIServerDebugger.Register);
+  RegisterUnit('SSHGDBMIDebugger', @SSHGDBMIDebugger.Register);
 end;
 
 initialization

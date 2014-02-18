@@ -45,6 +45,7 @@ This debugger uses gdb and is based on gdb's mi interface."/>
       </Item5>
       <Item6>
         <Filename Value="gdbmidebugger.pp"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="GDBMIDebugger"/>
       </Item6>
       <Item7>
@@ -53,10 +54,12 @@ This debugger uses gdb and is based on gdb's mi interface."/>
       </Item7>
       <Item8>
         <Filename Value="gdbmiserverdebugger.pas"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="GDBMIServerDebugger"/>
       </Item8>
       <Item9>
         <Filename Value="sshgdbmidebugger.pas"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="SSHGDBMIDebugger"/>
       </Item9>
       <Item10>

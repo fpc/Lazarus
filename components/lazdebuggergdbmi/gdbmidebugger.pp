@@ -856,6 +856,8 @@ type
 
   {%endregion    *^^^*  TGDBMINameValueList and Parsers  *^^^*   }
 
+procedure Register;
+
 implementation
 
 var
@@ -12969,8 +12971,12 @@ begin
   else Result := Format('%s: %s', [ClassName, FExpression]);
 end;
 
-initialization
+procedure Register;
+begin
   RegisterDebugger(TGDBMIDebugger);
+end;
+
+initialization
   DBGMI_QUEUE_DEBUG := DebugLogger.RegisterLogGroup('DBGMI_QUEUE_DEBUG' {$IFDEF DBGMI_QUEUE_DEBUG} , True {$ENDIF} );
   DBGMI_STRUCT_PARSER := DebugLogger.RegisterLogGroup('DBGMI_STRUCT_PARSER' {$IFDEF DBGMI_STRUCT_PARSER} , True {$ENDIF} );
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );

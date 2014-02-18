@@ -76,6 +76,8 @@ type
     property InternalStartBreak;
   end;
 
+procedure Register;
+
 implementation
 
 resourcestring
@@ -192,9 +194,10 @@ begin
 end;
 
 
-
-initialization
+procedure Register;
+begin
   RegisterDebugger(TGDBMIServerDebugger);
+end;
 
 end.
 
