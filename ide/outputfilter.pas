@@ -28,8 +28,8 @@ interface
 uses
   Classes, Math, SysUtils, Forms, Controls, Dialogs, CompilerOptions,
   AsyncProcess, LCLProc, DynQueue, FileUtil, UTF8Process, LazFileUtils,
-  CodeCache, CodeToolManager,
-  IDEDialogs, IDEMsgIntf, IDEExternToolIntf, IDEProcs, LazConf;
+  LazFileCache, CodeCache, CodeToolManager, IDEDialogs, IDEMsgIntf,
+  IDEExternToolIntf, IDEProcs, LazConf;
 
 type
 

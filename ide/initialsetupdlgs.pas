@@ -43,8 +43,8 @@ interface
 
 uses
   Classes, SysUtils, strutils, contnrs, LCLProc, Forms, Controls, Buttons,
-  Dialogs, FileUtil, Laz2_XMLCfg, lazutf8classes, LazFileUtils, Graphics,
-  ComCtrls, ExtCtrls, StdCtrls, DefineTemplates, CodeToolManager,
+  Dialogs, FileUtil, Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache,
+  Graphics, ComCtrls, ExtCtrls, StdCtrls, DefineTemplates, CodeToolManager,
   TransferMacros, MacroDefIntf, LazarusIDEStrConsts, LazConf, EnvironmentOpts,
   IDEProcs, AboutFrm, IDETranslations;
   

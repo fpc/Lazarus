@@ -50,7 +50,7 @@ uses
   Classes, SysUtils, LCLProc, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, ExtCtrls, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs,
   IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil,
-  Laz2_XMLCfg, ButtonPanel;
+  Laz2_XMLCfg, LazFileCache, ButtonPanel;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old

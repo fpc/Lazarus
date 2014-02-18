@@ -40,9 +40,10 @@ uses
   Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Graphics, Dialogs,
   KeywordFuncLists, BasicCodeTools, StdCtrls, Buttons, FileUtil, ExtCtrls,
   ComCtrls, EditBtn, LCLType, ImgList, AvgLvlTree, Laz2_XMLCfg, LazUTF8,
-  TreeFilterEdit, PackageIntf, IDEImagesIntf, IDEHelpIntf, IDEDialogs,
-  LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
-  PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit, LPKCache;
+  LazFileUtils, TreeFilterEdit, PackageIntf, IDEImagesIntf, IDEHelpIntf,
+  IDEDialogs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf,
+  IDEProcs, PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit,
+  LPKCache;
 
 type
   TOnCheckInstallPackageList =

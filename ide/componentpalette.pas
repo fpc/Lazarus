@@ -37,8 +37,9 @@ unit ComponentPalette;
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms, Graphics, ComCtrls, Buttons, FileUtil, Menus,
-  LResources, AVL_Tree, PropEdits, FormEditingIntf, LazIDEIntf, IDEProcs, LCLProc, ExtCtrls,
+  Classes, SysUtils, Controls, Forms, Graphics, ComCtrls, Buttons, FileUtil,
+  LazFileCache, Menus, LResources, AVL_Tree, PropEdits, FormEditingIntf,
+  LazIDEIntf, IDEProcs, LCLProc, ExtCtrls,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}

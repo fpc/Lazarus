@@ -104,16 +104,6 @@ function CheckPathDelim(const OldPathDelim: string; out Changed: boolean): TPath
 function IsCurrentPathDelim(Switch: TPathDelimSwitch): boolean;
 function ChompEndNumber(const s: string): string;
 
-// file stats
-procedure InvalidateFileStateCache(const AFilename: string = '');
-function FileExistsCached(const Filename: string): boolean;
-function DirPathExistsCached(const Filename: string): boolean;
-function DirectoryIsWritableCached(const DirectoryName: string): boolean;
-function FileIsExecutableCached(const AFilename: string): boolean;
-function FileIsReadableCached(const AFilename: string): boolean;
-function FileIsWritableCached(const AFilename: string): boolean;
-function FileIsTextCached(const AFilename: string): boolean;
-
 // cmd line
 procedure SplitCmdLine(const CmdLine: string;
                        out ProgramFilename, Params: string);
@@ -1136,46 +1126,6 @@ begin
   XMLConfig.SetDeleteValue(Path+'Top',ARect.Top,DefaultRect.Top);
   XMLConfig.SetDeleteValue(Path+'Right',ARect.Right,DefaultRect.Right);
   XMLConfig.SetDeleteValue(Path+'Bottom',ARect.Bottom,DefaultRect.Bottom);
-end;
-
-procedure InvalidateFileStateCache(const AFilename: string);
-begin
-  FileProcs.InvalidateFileStateCache(AFilename);
-end;
-
-function FileExistsCached(const Filename: string): boolean;
-begin
-  Result:=FileProcs.FileExistsCached(Filename);
-end;
-
-function DirPathExistsCached(const Filename: string): boolean;
-begin
-  Result:=FileProcs.DirPathExistsCached(Filename);
-end;
-
-function DirectoryIsWritableCached(const DirectoryName: string): boolean;
-begin
-  Result:=FileProcs.DirectoryIsWritableCached(DirectoryName);
-end;
-
-function FileIsExecutableCached(const AFilename: string): boolean;
-begin
-  Result:=FileProcs.FileIsExecutableCached(AFilename);
-end;
-
-function FileIsReadableCached(const AFilename: string): boolean;
-begin
-  Result:=FileProcs.FileIsReadableCached(AFilename);
-end;
-
-function FileIsWritableCached(const AFilename: string): boolean;
-begin
-  Result:=FileProcs.FileIsWritableCached(AFilename);
-end;
-
-function FileIsTextCached(const AFilename: string): boolean;
-begin
-  Result:=FileProcs.FileIsTextCached(AFilename);
 end;
 
 procedure SplitCmdLine(const CmdLine: string;

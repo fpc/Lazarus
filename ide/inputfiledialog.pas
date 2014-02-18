@@ -23,7 +23,7 @@ interface
 uses
   // LCL
   Classes, SysUtils, Math, Forms, Controls, Dialogs, Buttons, StdCtrls,
-  FileUtil, LResources,
+  FileUtil, LazFileCache, LResources,
   // IDE
   LazarusIDEStrConsts, TransferMacros, InputHistory, IDEProcs, IDEDialogs;
 

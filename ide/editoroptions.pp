@@ -42,8 +42,8 @@ uses
   // RTL, FCL
   Classes, SysUtils, resource,
   // LCL
-  Controls, ExtCtrls, Graphics, LCLProc, FileUtil, Laz2_XMLCfg, lazutf8classes, LazClasses,
-  LResources, Forms, Dialogs, ComCtrls, LCLType,
+  Controls, ExtCtrls, Graphics, LCLProc, FileUtil, Laz2_XMLCfg, lazutf8classes,
+  LazClasses, LazFileUtils, LResources, Forms, Dialogs, ComCtrls, LCLType,
   // Synedit
   SynEdit, SynEditAutoComplete, SynEditKeyCmds, SynEditTypes,
   SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer, SynEditMouseCmds,

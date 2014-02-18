@@ -806,7 +806,7 @@ begin
   FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
   CompilerFilename:=GetFPCompilerFilename;
 
-  { $IFDEF VerboseFPCSrcScan}
+  {$IFDEF VerboseFPCSrcScan}
   debugln(['TMainIDE.RescanCompilerDefines A ',
     ' CompilerFilename=',CompilerFilename,
     ' TargetOS=',TargetOS,
@@ -817,7 +817,7 @@ begin
     ' Quiet=',Quiet,
     ' ClearCaches=',ClearCaches,
     '']);
-  { $ENDIF}
+  {$ENDIF}
 
   // first check the default targetos, targetcpu of the default compiler
   if FileExistsCached(EnvironmentOptions.GetParsedCompilerFilename) then

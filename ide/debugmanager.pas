@@ -42,7 +42,7 @@ uses
   {$ENDIF}
   // LCL
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, ExtCtrls, FileUtil, LCLProc,
-  LCLType, LCLIntf, LazLoggerBase, Laz2_XMLCfg,
+  LCLType, LCLIntf, LazLoggerBase, Laz2_XMLCfg, LazFileCache,
   // SynEdit, codetools
   SynEdit, CodeCache, CodeToolManager, PascalParserTool, CodeTree,
   // IDEIntf

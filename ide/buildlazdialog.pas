@@ -45,9 +45,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, LCLType, StdCtrls, ExtCtrls,
-  Buttons, FileUtil, LazUTF8,
-  LazLogger, lazutf8classes, Dialogs, InterfaceBase, CheckLst, Menus,
-  ComCtrls, DividerBevel, DefineTemplates, CodeToolManager,
+  Buttons, FileUtil, LazUTF8, LazLogger, lazutf8classes, LazFileCache, Dialogs,
+  InterfaceBase, CheckLst, Menus, ComCtrls, DividerBevel, DefineTemplates,
+  CodeToolManager,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
   PackageIntf,

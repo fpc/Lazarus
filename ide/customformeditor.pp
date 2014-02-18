@@ -40,7 +40,7 @@ uses
 {$ENDIF}
   // LCL+FCL
   Classes, SysUtils, TypInfo, Math, LCLIntf, LCLType, LResources,
-  AVL_Tree, LCLMemManager, FileUtil,
+  AVL_Tree, LCLMemManager, FileUtil, LazFileCache,
   LCLProc, Graphics, Controls, Forms, Menus, Dialogs,
   // IDEIntf
   PropEdits, PropEditUtils, ObjectInspector, IDECommands, FormEditingIntf,

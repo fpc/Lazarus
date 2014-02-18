@@ -53,7 +53,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Forms, LCLProc, LCLType, LazConf,
-  StdCtrls, Buttons, FileUtil, Laz2_XMLCfg, ExtCtrls,
+  StdCtrls, Buttons, FileUtil, Laz2_XMLCfg, LazFileCache, ExtCtrls,
   IDEHelpIntf, LazarusIDEStrConsts, IDEProcs;
 
 type

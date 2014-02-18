@@ -32,7 +32,7 @@ interface
 uses
   // LCL FCL
   Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, Graphics,
-  LCLType, LCLProc, Menus, Dialogs, FileUtil,
+  LCLType, LCLProc, Menus, Dialogs, FileUtil, LazFileCache,
   contnrs,
   // IDEIntf CodeTools
   IDEImagesIntf, MenuIntf, ExtCtrls, LazIDEIntf, ProjectIntf,

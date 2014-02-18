@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, ExtCtrls,
-  StdCtrls, ComCtrls, FileUtil, AvgLvlTree, Laz2_XMLCfg,
+  StdCtrls, ComCtrls, FileUtil, AvgLvlTree, Laz2_XMLCfg, LazFileCache,
   // codetools
   CodeToolsStrConsts, CodeCache, CodeToolManager,
   // IDEIntf
