@@ -2757,7 +2757,8 @@ help:
 	@$(ECHO) " Main targets"
 	@$(ECHO) "                  Without any target, target 'all' will be invoked."
 	@$(ECHO) "   all            build minimal IDE, lazbuild, startlazarus."
-	@$(ECHO) "   clean          deletes files that 'all' creates"
+	@$(ECHO) "   clean          deletes files that 'all' creates". It does not clean all possible targets.
+	@$(ECHO) "                  Clean other targets: make clean LCL_PLATFORM=qt
 	@$(ECHO) "   lazbuild       build lazbuild and lcl with nogui widgetset"
 	@$(ECHO) "   bigide         as all, except that the IDE is built with a lot of extra packages"
 	@$(ECHO) "   useride        calls lazbuild to build an IDE with your active profile, requires lazbuild"
