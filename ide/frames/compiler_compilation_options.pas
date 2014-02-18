@@ -6,9 +6,9 @@ interface
 
 uses
   Controls, StdCtrls, Dialogs, IDEOptionsIntf, Project, CompilerOptions,
-  CompOptsIntf, IDEDialogs, FileProcs, DefineTemplates, CodeToolManager,
-  PackageDefs, LazarusIDEStrConsts, EnvironmentOpts, LazConf, IDEProcs,
-  InputHistory, InitialSetupDlgs, Classes, sysutils;
+  CompOptsIntf, IDEDialogs, IDEUtils, FileProcs, DefineTemplates,
+  CodeToolManager, PackageDefs, LazarusIDEStrConsts, EnvironmentOpts, LazConf,
+  IDEProcs, InputHistory, InitialSetupDlgs, Classes, sysutils;
 
 type
 

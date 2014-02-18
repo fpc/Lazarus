@@ -30,7 +30,7 @@ uses
   ComCtrls, Dialogs, Menus, Spin, maskedit, SynEdit, SynEditMiscClasses,
   SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes, SynGutterChanges,
   SynEditMouseCmds, SynEditHighlighter, SynTextDrawer, SynColorAttribEditor,
-  DividerBevel, IDEOptionsIntf, IDEImagesIntf, EditorOptions,
+  DividerBevel, IDEOptionsIntf, IDEImagesIntf, IDEUtils, EditorOptions,
   editor_general_options, LazarusIDEStrConsts, IDEProcs, LazConf, SourceMarks;
 
 type

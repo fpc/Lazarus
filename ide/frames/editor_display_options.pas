@@ -27,8 +27,9 @@ interface
 uses
   Classes, SysUtils, Graphics, Dialogs, StdCtrls, Spin, LCLType, SynEdit,
   SynEditMouseCmds, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf,
-  editor_general_options, editor_color_options, IDEProcs, SynGutterLineNumber,
-  SynGutterLineOverview, SynGutter, SourceSynEditor, SourceMarks;
+  IDEUtils, editor_general_options, editor_color_options, IDEProcs,
+  SynGutterLineNumber, SynGutterLineOverview, SynGutter, SourceSynEditor,
+  SourceMarks;
 
 type
   { TEditorDisplayOptionsFrame }

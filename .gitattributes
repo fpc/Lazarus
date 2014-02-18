@@ -1616,6 +1616,7 @@ components/ideintf/ideintf.pas svneol=native#text/plain
 components/ideintf/idemsgintf.pas svneol=native#text/plain
 components/ideintf/ideoptionsintf.pas svneol=native#text/pascal
 components/ideintf/idetextconverter.pas svneol=native#text/plain
+components/ideintf/ideutils.pas svneol=native#text/plain
 components/ideintf/idewindowintf.pas svneol=native#text/plain
 components/ideintf/imagelisteditor.lfm svneol=native#text/plain
 components/ideintf/imagelisteditor.pp svneol=native#text/pascal

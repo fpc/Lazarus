@@ -19,7 +19,7 @@ uses
   ProjectIntf, ProjectResourcesIntf, PropEdits, PropEditUtils, SrcEditorIntf, 
   StatusBarPropEdit, StringsPropEditDlg, TextTools, TreeViewPropEdit, 
   CompOptsIntf, OIFavoriteProperties, UnitResources, MacroDefIntf, 
-  FileFilterPropEditor, LazarusPackageIntf;
+  FileFilterPropEditor, IDEUtils, LazarusPackageIntf;
 
 implementation
 

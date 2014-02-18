@@ -10,7 +10,7 @@ uses
   BasicCodeTools,
   IDEHelpIntf,
   IDEProcs, InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros,
-  MacroDefIntf;
+  MacroDefIntf, IDEUtils;
 
 type
   TIDEDirective = (

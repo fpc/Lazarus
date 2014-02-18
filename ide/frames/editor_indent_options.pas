@@ -28,7 +28,8 @@ uses
   Classes, SysUtils, LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics,
   Forms, ComCtrls, Spin, EditorOptions, LazarusIDEStrConsts, IDEProcs,
   KeyMapping, editor_keymapping_options, editor_general_options, IDEOptionsIntf,
-  SynEdit, SynBeautifier, SynHighlighterPas, SynEditKeyCmds, DividerBevel;
+  IDEUtils, SynEdit, SynBeautifier, SynHighlighterPas, SynEditKeyCmds,
+  DividerBevel;
 
 type
   TPreviewEditor = TSynEdit;

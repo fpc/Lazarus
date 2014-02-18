@@ -27,9 +27,9 @@ interface
 uses
   Classes, SysUtils, TypInfo, FileUtil, LazFileCache, Forms, Controls, StdCtrls,
   ExtCtrls, Buttons, Dialogs, LCLProc, PropEdits, ObjectInspector,
-  TransferMacros, LazarusIDEStrConsts, IDEOptionsIntf, DbgIntfDebuggerBase,
-  PathEditorDlg, InputHistory, IDEProcs, EnvironmentOpts, BaseDebugManager,
-  Debugger;
+  TransferMacros, LazarusIDEStrConsts, IDEOptionsIntf, IDEUtils,
+  DbgIntfDebuggerBase, PathEditorDlg, InputHistory, IDEProcs, EnvironmentOpts,
+  BaseDebugManager, Debugger;
 
 type
 

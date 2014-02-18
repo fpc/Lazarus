@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, math, types, contnrs, Controls, LCLType, LCLIntf, Grids,
   Graphics, StdCtrls, Menus, LazLogger,
-  FileProcs,
+  FileProcs, IDEUtils,
   IDEProcs, LazarusIDEStrConsts;
 
 const

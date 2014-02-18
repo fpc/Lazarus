@@ -293,28 +293,28 @@
         <UnitName Value="CompOptsIntf"/>
       </Item67>
       <Item68>
-        <Filename Value="images/ideintf_images.lrs"/>
-        <Type Value="LRS"/>
-      </Item68>
-      <Item69>
         <Filename Value="oifavoriteproperties.pas"/>
         <UnitName Value="OIFavoriteProperties"/>
-      </Item69>
-      <Item70>
+      </Item68>
+      <Item69>
         <Filename Value="unitresources.pas"/>
         <UnitName Value="UnitResources"/>
-      </Item70>
-      <Item71>
+      </Item69>
+      <Item70>
         <Filename Value="macrodefintf.pas"/>
         <UnitName Value="MacroDefIntf"/>
-      </Item71>
-      <Item72>
+      </Item70>
+      <Item71>
         <Filename Value="filefilterpropeditor.lfm"/>
         <Type Value="LFM"/>
+      </Item71>
+      <Item72>
+        <Filename Value="filefilterpropeditor.pas"/>
+        <UnitName Value="FileFilterPropEditor"/>
       </Item72>
       <Item73>
-        <Filename Value="filefilterpropeditor.pas"/>
-        <UnitName Value="FileFilterPropEditForm"/>
+        <Filename Value="ideutils.pas"/>
+        <UnitName Value="ideutils"/>
       </Item73>
     </Files>
     <LazDoc Paths="docs"/>
