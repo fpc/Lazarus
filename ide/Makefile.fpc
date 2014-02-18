@@ -205,8 +205,11 @@ ifneq ($(findstring $(OS_TARGET),win32 win64),)
 endif
 
 cleanlaz: clean cleanide
+        ${DELTREE} ../units/*
 
 purge: cleanlaz
+
+distclean: cleanlaz
 
 #install: $(INSTALLTARGET) $(addsuffix _install,$(TARGET_DIRS))
 # end.
