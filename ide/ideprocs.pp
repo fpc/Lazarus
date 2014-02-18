@@ -95,9 +95,6 @@ const
     );
 
 // file names
-function CompareFilenames(const Filename1, Filename2: string): integer;
-function CompareFilenames(const Filename1, Filename2: string;
-  ResolveLinks: boolean): integer;
 function FilenameIsMatching(const Mask, Filename: string;
   MatchExactly: boolean): boolean;
 function ConvertSpecialFileChars(const Filename: string): string;
@@ -1141,17 +1138,6 @@ begin
   XMLConfig.SetDeleteValue(Path+'Top',ARect.Top,DefaultRect.Top);
   XMLConfig.SetDeleteValue(Path+'Right',ARect.Right,DefaultRect.Right);
   XMLConfig.SetDeleteValue(Path+'Bottom',ARect.Bottom,DefaultRect.Bottom);
-end;
-
-function CompareFilenames(const Filename1, Filename2: string): integer;
-begin
-  Result:=FileUtil.CompareFilenames(FileName1,FileName2);
-end;
-
-function CompareFilenames(const Filename1, Filename2: string;
-  ResolveLinks: boolean): integer;
-begin
-  Result:=FileUtil.CompareFilenames(FileName1,FileName2,ResolveLinks);
 end;
 
 function FilenameIsMatching(const Mask, Filename: string;
