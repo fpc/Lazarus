@@ -52,7 +52,10 @@ type
     Values: String;
     Flags: TGDBMIResultFlags
   end;
+const
+  GDBMIExecResultDefault: TGDBMIExecResult = (State: dsNone; Values: ''; Flags: []);
 
+type
   PGDBMINameValue = ^TGDBMINameValue;
   TGDBMINameValue = record
     Name: TPCharWithLen;

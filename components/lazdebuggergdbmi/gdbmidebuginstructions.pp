@@ -88,7 +88,7 @@ type
     function IsCompleted: boolean; virtual;                                        // No more InputFromGdb required
 
     procedure MarkAsSuccess;
-    procedure HandleWriteError(ASender: TGDBInstruction); virtual;
+    procedure HandleWriteError({%H-}ASender: TGDBInstruction); virtual;
     procedure HandleReadError; virtual;
     procedure HandleTimeOut; virtual;
     procedure HandleRecoveredTimeOut; virtual;

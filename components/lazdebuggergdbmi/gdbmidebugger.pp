@@ -298,7 +298,7 @@ type
     property  TargetInfo: PGDBMITargetInfo read GetTargetInfo;
   protected
     procedure SetCommandState(NewState: TGDBMIDebuggerCommandState);
-    procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); virtual;
+    procedure DoStateChanged({%H-}OldState: TGDBMIDebuggerCommandState); virtual;
     procedure DoLockQueueExecute; virtual;
     procedure DoUnLockQueueExecute; virtual;
     procedure DoLockQueueExecuteForInstr; virtual;
@@ -1198,7 +1198,7 @@ type
     procedure DoGetRegModifiedDestroyed(Sender: TObject);
     procedure DoGetRegModifiedFinished(Sender: TObject);
   protected
-    procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure DoStateChange(const {%H-}AOldState: TDBGState); override;
     procedure Invalidate;
     function GetCount: Integer; override;
     function GetModified(const AnIndex: Integer): Boolean; override;
@@ -7566,6 +7566,7 @@ function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
 var
   R: TGDBMIExecResult;
 begin
+  R:=GDBMIExecResultDefault;
   Result := ExecuteCommandFull(ACommand, AValues, AFlags, nil, 0, R);
 end;
 
@@ -9193,6 +9194,7 @@ var
   s: String;
   t: TGDBType;
 begin
+  s:='';
   if TGDBMIDebugger(Debugger).GDBEvaluate(AnExpression, s, t, [defNoTypeInfo])
   then begin
     TGDBMIDebugger(Debugger).DoDbgEvent(ecBreakpoint, etBreakpointEvaluation, s);

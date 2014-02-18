@@ -99,11 +99,11 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: ansistring; override;
-    procedure SetValue(const NewValue: ansistring); override;
-    procedure PropMeasureHeight(const NewValue: ansistring;  ACanvas:TCanvas;
+    procedure SetValue(const {%H-}NewValue: ansistring); override;
+    procedure PropMeasureHeight(const {%H-}NewValue: ansistring;  {%H-}ACanvas:TCanvas;
                                 var AHeight:Integer); override;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
-                  AState: TPropEditDrawState); override;
+                  {%H-}AState: TPropEditDrawState); override;
   end;
 
 { TSSHGDBMIDebuggerProperties }
@@ -150,7 +150,7 @@ procedure TSSHGDBMINotePropertyEditor.PropDrawValue(ACanvas: TCanvas;
 var
   Style : TTextStyle;
 begin
-  FillChar(Style,SizeOf(Style),0);
+  FillChar(Style{%H-},SizeOf(Style),0);
   With Style do begin
     Alignment := taLeftJustify;
     Layout := tlTop;
@@ -195,7 +195,7 @@ end;
 
 function TSSHGDBMIDebugger.ParseInitialization: Boolean;
 
-  function CheckReadLine(var ALine: String): Boolean;
+  function CheckReadLine(out ALine: String): Boolean;
   // does a checked read
   // returns True if we should process it
   // returns False if it is the gdb prompt
