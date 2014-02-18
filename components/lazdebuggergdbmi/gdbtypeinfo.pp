@@ -122,8 +122,8 @@ type
   TGDBExpressionPart = class
   protected
     FText: TPCharWithLen;
-    function GetParts(Index: Integer): TGDBExpressionPart; virtual;
-    function GetTextFixed(AOpts: TGDBExprTextOptions=[]): String; virtual;
+    function GetParts({%H-}Index: Integer): TGDBExpressionPart; virtual;
+    function GetTextFixed({%H-}AOpts: TGDBExprTextOptions=[]): String; virtual;
     function GetText: String;
     function GetTextStrFixed: String;
     function ParseExpression(AText: PChar; ATextLen: Integer): TGDBExpressionPart;
