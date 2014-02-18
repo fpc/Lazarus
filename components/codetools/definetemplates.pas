@@ -5942,6 +5942,8 @@ begin
        +LazarusSrcDir+'/components/lazcontrols;'
        +LazarusSrcDir+'/components/synedit;'
        +LazarusSrcDir+'/components/codetools;'
+       +LazarusSrcDir+'/components/lazdebuggergdbmi;'
+       +LazarusSrcDir+'/components/debuggerintf;'
        +LazarusSrcDir+'/lcl;'
        +LazarusSrcDir+'/lcl/interfaces;'
        +LazarusSrcDir+'/lcl/interfaces/'+WidgetType+';'
