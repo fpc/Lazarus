@@ -783,6 +783,7 @@ type
     function GetDataAddress: TFpDbgMemLocation; override;
     function GetDataSize: Integer; override;
     function GetSize: Integer; override;
+    function GetMemberCount: Integer; override;
   end;
 
   { TDbgDwarfStructTypeCastSymbolValue }
@@ -2447,6 +2448,15 @@ begin
     Result := -1;
 end;
 
+function TDbgDwarfStructSymbolValue.GetMemberCount: Integer;
+begin
+  Result := 0;
+  if (Kind=skClass) and (GetAsCardinal = 0) then
+    exit;
+
+  Result := inherited GetMemberCount;
+end;
+
 { TDbgDwarfStructSymbolValue }
 
 procedure TDbgDwarfStructTypeCastSymbolValue.Reset;
@@ -2620,6 +2630,9 @@ function TDbgDwarfStructTypeCastSymbolValue.GetMemberCount: Integer;
 begin
   Result := 0;
   if not HasTypeCastInfo then
+    exit;
+
+  if (Kind=skClass) and (GetAsCardinal = 0) then
     exit;
 
   Result := FTypeCastTargetType.MemberCount;
@@ -5867,6 +5880,7 @@ begin
 
   end;
 
+  debugln(['TDbgDwarfIdentifierMember.InitLocationParser  FAILED !!!!!!!']);
   //TODO: error
 end;
 
@@ -6404,7 +6418,7 @@ begin
   else begin
     ti := NestedTypeInfo;
     if ti <> nil then
-      Result := NestedTypeInfo.GetDataAddress(AnAddress, ATargetType)
+      Result := ti.GetDataAddress(AnAddress, ATargetType)
     else
       Result := True; // end of type chain
   end;

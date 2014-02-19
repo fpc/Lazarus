@@ -503,6 +503,12 @@ function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
     m: TDbgSymbolValue;
     fl: TPrintPasValFlags;
   begin
+    if (AResValue.Kind = skClass) and (AResValue.AsCardinal = 0) then begin
+      APrintedValue := 'nil';
+      Result := True;
+      exit;
+    end;
+
     if ( (AResValue.Kind in [skClass, skObject]) and (ppvSkipClassBody in AFlags) ) or
        ( (AResValue.Kind in [skRecord]) and (ppvSkipRecordBody in AFlags) )
     then begin

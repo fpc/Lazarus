@@ -821,6 +821,11 @@ begin
         ExpResult(svfCardinal, 1019);
         ExpFlags([svfCardinal, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
 
+        ImgLoader.TestStackFrame.Obj1.FTest := obj1;
+        StartTest(s+'.FTest.FTest.FWord', skCardinal, [ttHasSymbol]);
+        ExpResult(svfCardinal, 1019);
+        ExpFlags([svfCardinal, svfOrdinal, svfAddress], [svfDataAddress]); // svfSize;
+
       end; // not (i in [4,5])
 
     end;
