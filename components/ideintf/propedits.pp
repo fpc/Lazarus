@@ -6630,10 +6630,19 @@ begin
 end;
 
 constructor TCustomShortCutGrabBox.Create(TheOwner: TComponent);
+
+  procedure AddKeyToCombobox(i: integer);
+  var
+    s: String;
+  begin
+    s := KeyAndShiftStateToKeyString(i, []);
+    if not KeyStringIsIrregular(s) then
+      FKeyComboBox.Items.Add(s);
+  end;
+
 var
   i: Integer;
   ShSt: TShiftStateEnum;
-  s: String;
 begin
   inherited Create(TheOwner);
 
@@ -6656,11 +6665,10 @@ begin
     Name:='FKeyComboBox';
     AutoSize:=true;
     Items.BeginUpdate;
-    for i:=0 to 145 do begin
-      s := KeyAndShiftStateToKeyString(i, []);
-      if not KeyStringIsIrregular(s) then
-        Items.Add(s);
-    end;
+    for i:=0 to VK_SCROLL do
+      AddKeyToCombobox(i);
+    for i:=VK_BROWSER_BACK to VK_OEM_8 do
+      AddKeyToCombobox(i);
     Items.EndUpdate;
     OnEditingDone:=@OnKeyComboboxEditingDone;
     Parent:=Self;
