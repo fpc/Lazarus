@@ -181,6 +181,7 @@ function TFpGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 begin
   FOwner.FEvaluationCmdObj := nil;
   FOwner.ProcessEvalList;
+  Result := True;
 end;
 
 procedure TFpGDBMIDebuggerCommandEvaluate.DoFree;
@@ -902,8 +903,8 @@ begin
         if not FpDebugger.EvaluateExpression(WatchValue, WatchValue.Expression, ResText, ResTypeInfo)
         then begin
           debugln(['TFPGDBMIWatches.InternalRequestData FAILED']);
-          inherited InternalRequestData(WatchValue);
-          continue;
+          if IsWatchValueAlive then
+            inherited InternalRequestData(WatchValue);
         end;
       finally
         if IsWatchValueAlive then begin
@@ -1057,8 +1058,10 @@ begin
     for i := 0 to MAX_CTX_CACHE-1 do
       ReleaseRefAndNil(FLastContext[i]);
     if not(State in [dsPause, dsInternalPause]) then begin
-      for i := 0 to FWatchEvalList.Count - 1 do
+      for i := 0 to FWatchEvalList.Count - 1 do begin
         TWatchValueBase(FWatchEvalList[i]).RemoveFreeeNotification(@DoWatchFreed);
+        //TWatchValueBase(FWatchEvalList[i]).Validity := ddsInvalid;
+      end;
       FWatchEvalList.Clear;
     end;
   end;
@@ -1208,6 +1211,10 @@ function TFpGDBMIDebugger.GetInfoContextForContext(AThreadId,
 var
   Addr: TDBGPtr;
 begin
+  Result := nil;
+  if FDwarfInfo = nil then
+    exit;
+
   if (AThreadId <= 0) then begin
     GetCurrentContext(AThreadId, AStackFrame);
   end;
