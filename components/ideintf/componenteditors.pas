@@ -37,8 +37,17 @@ type
     cedhtModified
     );
 
-  TUndoOpType = (uopNone = 0, uopAdd, uopChange, uopDel);
-  TUndoCompState = (ucsNone = 0, ucsStartChange, ucsSaveChange);
+  TUndoOpType = (
+    uopNone,
+    uopAdd,
+    uopChange,
+    uopDelete
+    );
+  TUndoCompState = (
+    ucsNone,
+    ucsStartChange,
+    ucsSaveChange
+    );
 
   TComponentEditorDesigner = class(TIDesigner)
   private
@@ -74,7 +83,7 @@ type
     function Redo: Boolean; virtual; abstract;
     function AddUndoAction(const AComp: TComponent; AOpType: TUndoOpType;
       IsSetNewId: boolean; AFieldName: string; const AOldVal, ANewVal: variant): boolean; virtual; abstract;
-    function IsUndoNotLock: boolean; virtual; abstract;
+    function IsUndoLocked: boolean; virtual; abstract;
 
     procedure DrawDesignerItems(OnlyIfNeeded: boolean); virtual; abstract;
     function CreateUniqueComponentName(const AClassName: string

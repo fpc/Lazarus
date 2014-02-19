@@ -34,7 +34,7 @@ type
     ExecuteAfterScanLabel: TLabel;
     ExecuteAfterScanMakeCheckBox: TCheckBox;
     ExecuteAfterShowAllCheckBox: TCheckBox;
-    ExecuteBeforeCommandEdit: TEdit;
+    ExecuteBeforeCommandEdit: TComboBox;
     ExecuteBeforeCommandLabel: TLabel;
     ExecuteBeforeGroupBox: TGroupBox;
     ExecuteBeforeScanFPCCheckBox: TCheckBox;

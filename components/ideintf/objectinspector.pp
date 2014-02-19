@@ -1304,7 +1304,6 @@ var
   parRow, tmpRow: TOIPropertyGridRow;
   CompEditDsg: TComponentEditorDesigner;
   prpInfo: PPropInfo;
-
 begin
   //debugln(['TOICustomPropertyGrid.SetRowValue A ',dbgs(FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[]),' FItemIndex=',dbgs(FItemIndex),' CanEditRowValue=',CanEditRowValue]);
   if not CanEditRowValue(CheckFocus) or Rows[FItemIndex].IsReadOnly then exit;
@@ -1319,10 +1318,9 @@ begin
   if CurRow.Editor.GetVisualValue=NewValue then exit;
 
   RootDesigner := FindRootDesigner(FCurrentEditorLookupRoot);
-  if (RootDesigner is TComponentEditorDesigner) and
-    not (RootDesigner as TComponentEditorDesigner).IsUndoNotLock then Exit;
-  CompEditDsg := (RootDesigner as TComponentEditorDesigner);
-
+  if not (RootDesigner is TComponentEditorDesigner) then exit;
+  CompEditDsg := TComponentEditorDesigner(RootDesigner);
+  if CompEditDsg.IsUndoLocked then Exit;
 
   isExcept := false;
   saveIndex := FItemIndex;

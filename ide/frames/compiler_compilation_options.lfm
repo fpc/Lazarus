@@ -26,7 +26,7 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 114
-    Top = 242
+    Top = 214
     Width = 599
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -176,7 +176,7 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 86
-    Top = 150
+    Top = 122
     Width = 599
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -292,14 +292,14 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 114
+    Height = 86
     Top = 30
     Width = 599
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'ExecuteBeforeGroupBox'
-    ClientHeight = 97
+    ClientHeight = 69
     ClientWidth = 595
     TabOrder = 1
     object lblRunIfExecBefore: TLabel
@@ -315,7 +315,6 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
     end
     object ExecuteBeforeCommandLabel: TLabel
       AnchorSideLeft.Control = ExecuteBeforeGroupBox
-      AnchorSideTop.Control = ExecuteBeforeCommandEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 15
@@ -364,27 +363,9 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       Caption = 'chkExecBeforeRun'
       TabOrder = 2
     end
-    object ExecuteBeforeCommandEdit: TEdit
-      AnchorSideLeft.Control = ExecuteBeforeCommandLabel
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = chkExecBeforeCompile
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = ExecuteBeforeGroupBox
-      AnchorSideRight.Side = asrBottom
-      Left = 191
-      Height = 25
-      Top = 36
-      Width = 398
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 12
-      BorderSpacing.Around = 6
-      TabOrder = 3
-      Text = 'ExecuteBeforeCommandEdit'
-    end
     object ExecuteBeforeScanFPCCheckBox: TCheckBox
       AnchorSideLeft.Control = ExecuteBeforeScanMakeCheckBox
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = ExecuteBeforeCommandEdit
       AnchorSideTop.Side = asrBottom
       Left = 397
       Height = 24
@@ -393,12 +374,11 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       BorderSpacing.Left = 24
       BorderSpacing.Around = 6
       Caption = 'ExecuteBeforeScanFPCCheckBox'
-      TabOrder = 5
+      TabOrder = 4
     end
     object ExecuteBeforeScanMakeCheckBox: TCheckBox
       AnchorSideLeft.Control = ExecuteBeforeScanLabel
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = ExecuteBeforeCommandEdit
       AnchorSideTop.Side = asrBottom
       Left = 150
       Height = 24
@@ -406,12 +386,11 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       Width = 217
       BorderSpacing.Around = 6
       Caption = 'ExecuteBeforeScanMakeCheckBox'
-      TabOrder = 4
+      TabOrder = 3
     end
     object ExecuteBeforeShowAllCheckBox: TCheckBox
       AnchorSideLeft.Control = ExecuteBeforeScanFPCCheckBox
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = ExecuteBeforeCommandEdit
       AnchorSideTop.Side = asrBottom
       Left = 635
       Height = 24
@@ -420,7 +399,7 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       BorderSpacing.Left = 24
       BorderSpacing.Around = 6
       Caption = 'ExecuteBeforeShowAllCheckBox'
-      TabOrder = 6
+      TabOrder = 5
     end
     object ExecuteBeforeScanLabel: TLabel
       AnchorSideLeft.Control = ExecuteBeforeGroupBox
@@ -433,6 +412,24 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       BorderSpacing.Left = 6
       Caption = 'ExecuteBeforeScanLabel'
       ParentColor = False
+    end
+    object ExecuteBeforeCommandEdit: TComboBox
+      AnchorSideLeft.Control = ExecuteBeforeCommandLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = chkExecBeforeCompile
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = ExecuteBeforeGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 191
+      Height = 27
+      Top = 36
+      Width = 398
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 12
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      TabOrder = 6
+      Text = 'ExecuteBeforeCommandEdit'
     end
   end
 end

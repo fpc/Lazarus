@@ -304,7 +304,7 @@ type
     function Redo: Boolean; override;
     function AddUndoAction(const AComp: TComponent; AOpType: TUndoOpType;
       IsSetNewId: boolean; AFieldName: string; const AOldVal, ANewVal: variant): boolean; override;
-    function IsUndoNotLock: boolean; override;
+    function IsUndoLocked: boolean; override;
     procedure ClearUndoItem(AIndex: Integer);
 
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
@@ -1349,23 +1349,23 @@ var
   SaveControlSelection: TControlSelection;
 begin
   if (IsActUndo and (FUndoList[FUndoCurr].opType in [uopAdd])) or
-    (not IsActUndo and (FUndoList[FUndoCurr].opType in [uopDel])) then
+    (not IsActUndo and (FUndoList[FUndoCurr].opType in [uopDelete])) then
   begin
-    Inc(FUndoLock);
     SaveControlSelection := TControlSelection.Create;
     try
+      Inc(FUndoLock);
       SaveControlSelection.Assign(ControlSelection);
       ControlSelection.Clear;
       ControlSelection.Add(FForm.FindComponent(FUndoList[FUndoCurr].compName));
       DeleteSelection;
     finally
+      Dec(FUndoLock);
       ControlSelection.Assign(SaveControlSelection);
       SaveControlSelection.Free;
-      Dec(FUndoLock);
     end;
   end;
 
-  if (IsActUndo and (FUndoList[FUndoCurr].opType in [uopDel])) or
+  if (IsActUndo and (FUndoList[FUndoCurr].opType in [uopDelete])) or
     (not IsActUndo and (FUndoList[FUndoCurr].opType in [uopAdd])) then
   begin
     CurTextCompStream := TMemoryStream.Create;
@@ -1376,19 +1376,22 @@ begin
       DoInsertFromStream(CurTextCompStream,
         TWinControl(FForm.FindChildControl(FUndoList[FUndoCurr].parentName)), []);
     finally
-      CurTextCompStream.Free;
       Dec(FUndoLock);
+      CurTextCompStream.Free;
     end;
   end;
 
   if FUndoList[FUndoCurr].opType = uopChange then
   begin
     Inc(FUndoLock);
-    if IsActUndo then
-      SetPropVal(FUndoList[FUndoCurr].oldVal)
-    else
-      SetPropVal(FUndoList[FUndoCurr].newVal);
-    Dec(FUndoLock);
+    try
+      if IsActUndo then
+        SetPropVal(FUndoList[FUndoCurr].oldVal)
+      else
+        SetPropVal(FUndoList[FUndoCurr].newVal);
+    finally
+      Dec(FUndoLock);
+    end;
   end;
 
   PropertyEditorHook.RefreshPropertyValues;
@@ -1644,64 +1647,66 @@ var
   AStream: TStringStream;
 begin
   Result := (FUndoLock = 0);
-  if not(Result) then Exit;
+  if not (Result) then Exit;
   Inc(FUndoLock);
+  try
+    if FUndoCurr > High(FUndoList) then
+      ShiftUndoList;
 
-  if FUndoCurr > High(FUndoList) then
-    ShiftUndoList;
-
-  i := FUndoCurr;
-  while (i <= High(FUndoList)) do
-  begin
-    ClearUndoItem(i);
-    Inc(i);
-  end;
-
-  if IsSetNewId then
-    SetNextUndoActId;
-
-  if (AOpType in [uopAdd, uopDel]) and  (FForm.Name <> AComp.Name) then
-  begin
-    SaveControlSelection := TControlSelection.Create;
-    try
-      SaveControlSelection.Assign(ControlSelection);
-      AStream := TStringStream.Create('');
-      try
-        ControlSelection.Clear;
-        ControlSelection.Add(AComp);
-        CopySelectionToStream(AStream);
-        FUndoList[FUndoCurr].obj := AStream.DataString;
-      finally
-        AStream.Free;
-      end;
-    finally
-      ControlSelection.Assign(SaveControlSelection);
-      SaveControlSelection.Free;
+    i := FUndoCurr;
+    while (i <= High(FUndoList)) do
+    begin
+      ClearUndoItem(i);
+      Inc(i);
     end;
-  end;
 
-  with FUndoList[FUndoCurr] do
-  begin
-    oldVal := AOldVal;
-    newVal := ANewVal;
-    fieldName := AFieldName;
-    compName := AComp.Name;
-    if not(AComp.Equals(Form)) and AComp.HasParent then
-      parentName := AComp.GetParentComponent.Name
-    else
-      parentName := '';
-    opType := AOpType;
-    isValid := true;
-    id := FUndoActId;
-    propInfo := GetPropInfo(TObject(AComp), AFieldName)^;
+    if IsSetNewId then
+      SetNextUndoActId;
+
+    if (AOpType in [uopAdd, uopDelete]) and  (FForm.Name <> AComp.Name) then
+    begin
+      SaveControlSelection := TControlSelection.Create;
+      try
+        SaveControlSelection.Assign(ControlSelection);
+        AStream := TStringStream.Create('');
+        try
+          ControlSelection.Clear;
+          ControlSelection.Add(AComp);
+          CopySelectionToStream(AStream);
+          FUndoList[FUndoCurr].obj := AStream.DataString;
+        finally
+          AStream.Free;
+        end;
+      finally
+        ControlSelection.Assign(SaveControlSelection);
+        SaveControlSelection.Free;
+      end;
+    end;
+
+    with FUndoList[FUndoCurr] do
+    begin
+      oldVal := AOldVal;
+      newVal := ANewVal;
+      fieldName := AFieldName;
+      compName := AComp.Name;
+      if not(AComp.Equals(Form)) and AComp.HasParent then
+        parentName := AComp.GetParentComponent.Name
+      else
+        parentName := '';
+      opType := AOpType;
+      isValid := true;
+      id := FUndoActId;
+      propInfo := GetPropInfo(TObject(AComp), AFieldName)^;
+    end;
+    Inc(FUndoCurr);
+  finally
+    Dec(FUndoLock);
   end;
-  Inc(FUndoCurr);
-  Dec(FUndoLock);
 end;
 
-function TDesigner.IsUndoNotLock: boolean;
+function TDesigner.IsUndoLocked: boolean;
 begin
-  Result := FUndoLock = 0;
+  Result := FUndoLock > 0;
 end;
 
 procedure TDesigner.ClearUndoItem(AIndex: Integer);
@@ -2806,7 +2811,7 @@ begin
   begin
     if not ControlSelection[i].IsTComponent then continue;
     AComponent := TComponent(ControlSelection[i].Persistent);
-    AddUndoAction(AComponent, uopDel, i = 0, 'Name', AComponent.Name, '');
+    AddUndoAction(AComponent, uopDelete, i = 0, 'Name', AComponent.Name, '');
   end;
 
   // mark selected components for deletion
