@@ -1385,6 +1385,7 @@ var
 
 begin
   Result := False;
+  ATypeInfo := nil;
   if AWatchValue <> nil then begin
     EvalFlags := AWatchValue.EvaluateFlags;
     AExpression := AWatchValue.Expression;
