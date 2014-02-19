@@ -34,7 +34,7 @@ type
     ExecuteAfterScanLabel: TLabel;
     ExecuteAfterScanMakeCheckBox: TCheckBox;
     ExecuteAfterShowAllCheckBox: TCheckBox;
-    ExecuteBeforeCommandEdit: TComboBox;
+    ExecuteBeforeCommandComboBox: TComboBox;
     ExecuteBeforeCommandLabel: TLabel;
     ExecuteBeforeGroupBox: TGroupBox;
     ExecuteBeforeScanFPCCheckBox: TCheckBox;
@@ -121,7 +121,7 @@ begin
   chkExecBeforeBuild.Caption := lisBuildStage;
   chkExecBeforeCompile.Caption := lisCompileStage;
   chkExecBeforeRun.Caption := lisRunStage;
-  ExecuteBeforeCommandEdit.Text := '';
+  ExecuteBeforeCommandComboBox.Text := '';
   ExecuteBeforeCommandLabel.Caption := lisCOCommand;
   ExecuteBeforeScanLabel.Caption := lisCOScanForMessages;
   ExecuteBeforeScanFPCCheckBox.Caption := 'FPC'; // do not translate name
@@ -160,7 +160,7 @@ var
 begin
   chkCreateMakefile.Checked := Options.CreateMakefileOnBuild;
 
-  ExecuteBeforeCommandEdit.Text := Options.ExecuteBefore.Command;
+  ExecuteBeforeCommandComboBox.Text := Options.ExecuteBefore.Command;
   ExecuteBeforeScanFPCCheckBox.Checked := Options.ExecuteBefore.ScanForFPCMessages;
   ExecuteBeforeScanMakeCheckBox.Checked :=
     Options.ExecuteBefore.ScanForMakeMessages;
@@ -268,7 +268,7 @@ var
 begin
   Options.CreateMakefileOnBuild := chkCreateMakefile.Checked;
 
-  Options.ExecuteBefore.Command := ExecuteBeforeCommandEdit.Text;
+  Options.ExecuteBefore.Command := ExecuteBeforeCommandComboBox.Text;
   Options.ExecuteBefore.ScanForFPCMessages := ExecuteBeforeScanFPCCheckBox.Checked;
   Options.ExecuteBefore.ScanForMakeMessages :=ExecuteBeforeScanMakeCheckBox.Checked;
   Options.ExecuteBefore.ShowAllMessages := ExecuteBeforeShowAllCheckBox.Checked;

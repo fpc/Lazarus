@@ -19,7 +19,7 @@ uses
   Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Menus, Graphics,
   Dialogs, ComCtrls, db, ActnList, StdCtrls, ObjInspStrConsts, ComponentEditors,
   PropEdits, PropEditUtils, LCLType, ExtCtrls, NewField, FieldsList,
-  ComponentReg, types;
+  types;
 
 type
 
@@ -57,14 +57,14 @@ type
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
     PopupMenu1: TPopupMenu;
-    procedure ActionList1Update(AAction: TBasicAction; var Handled: Boolean);
+    procedure ActionList1Update({%H-}AAction: TBasicAction; var {%H-}Handled: Boolean);
     procedure AddFieldsActnExecute(Sender: TObject);
     procedure DeleteFieldsActnExecute(Sender: TObject);
     procedure FieldsEditorFrmClose(Sender: TObject;
       var CloseAction: TCloseAction);
     procedure FieldsEditorFrmDestroy(Sender: TObject);
-    procedure FieldsListBoxDrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
+    procedure FieldsListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
+      ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure FieldsListBoxKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure NewActnExecute(Sender: TObject);

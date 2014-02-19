@@ -19,7 +19,7 @@ interface
 
 uses
   Classes, SysUtils, MaskUtils, Forms, Controls, Graphics, Dialogs,
-  StrUtils, StdCtrls, Buttons, ExtCtrls, FileUtil, MaskEdit, LazIDEIntf,
+  StdCtrls, Buttons, ExtCtrls, FileUtil, MaskEdit, LazIDEIntf,
   PropEdits, ComponentEditors, ObjInspStrConsts, ButtonPanel;
 
 type
@@ -42,7 +42,7 @@ type
     TestInputPanel: TPanel;
     procedure LoadSampleMasksButtonClick(Sender: TObject);
     procedure SampleMasksListBoxDrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
+      ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure SaveLiteralCheckBoxClick(Sender: TObject);
     procedure InputMaskEditChange(Sender: TObject);
     procedure CharactersForBlankEditChange(Sender: TObject);

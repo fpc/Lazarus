@@ -46,8 +46,8 @@ type
   TDBGridComponentEditor = class(TComponentEditor)
   public
     function GetVerbCount: Integer; override;
-    function GetVerb(Index: Integer): string; override;
-    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb({%H-}Index: Integer): string; override;
+    procedure ExecuteVerb({%H-}Index: Integer); override;
   end;
 
 function GetFieldDefsLookupRoot(APersistent: TPersistent): TPersistent;

@@ -413,7 +413,7 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       Caption = 'ExecuteBeforeScanLabel'
       ParentColor = False
     end
-    object ExecuteBeforeCommandEdit: TComboBox
+    object ExecuteBeforeCommandComboBox: TComboBox
       AnchorSideLeft.Control = ExecuteBeforeCommandLabel
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = chkExecBeforeCompile
@@ -429,7 +429,7 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       BorderSpacing.Around = 6
       ItemHeight = 0
       TabOrder = 6
-      Text = 'ExecuteBeforeCommandEdit'
+      Text = 'ExecuteBeforeCommandComboBox'
     end
   end
 end

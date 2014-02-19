@@ -302,8 +302,8 @@ type
     function CanRedo: Boolean; override;
     function Undo: Boolean; override;
     function Redo: Boolean; override;
-    function AddUndoAction(const AComp: TComponent; AOpType: TUndoOpType;
-      IsSetNewId: boolean; AFieldName: string; const AOldVal, ANewVal: variant): boolean; override;
+    function AddUndoAction(const aPersistent: TPersistent; aOpType: TUndoOpType;
+      IsSetNewId: boolean; aFieldName: string; const aOldVal, aNewVal: variant): boolean; override;
     function IsUndoLocked: boolean; override;
     procedure ClearUndoItem(AIndex: Integer);
 
@@ -1629,8 +1629,9 @@ begin
   Result := DoRedo;
 end;
 
-function TDesigner.AddUndoAction(const AComp: TComponent; AOpType: TUndoOpType;
-   IsSetNewId: boolean; AFieldName: string; const AOldVal, ANewVal: variant): boolean;
+function TDesigner.AddUndoAction(const aPersistent: TPersistent;
+  aOpType: TUndoOpType; IsSetNewId: boolean; aFieldName: string; const aOldVal,
+  aNewVal: variant): boolean;
 
   procedure ShiftUndoList;
   var
@@ -1647,7 +1648,7 @@ var
   AStream: TStringStream;
 begin
   Result := (FUndoLock = 0);
-  if not (Result) then Exit;
+  if not Result then Exit;
   Inc(FUndoLock);
   try
     if FUndoCurr > High(FUndoList) then
@@ -1663,7 +1664,7 @@ begin
     if IsSetNewId then
       SetNextUndoActId;
 
-    if (AOpType in [uopAdd, uopDelete]) and  (FForm.Name <> AComp.Name) then
+    if (aOpType in [uopAdd, uopDelete]) and (FForm <> aPersistent) then
     begin
       SaveControlSelection := TControlSelection.Create;
       try
@@ -1671,7 +1672,7 @@ begin
         AStream := TStringStream.Create('');
         try
           ControlSelection.Clear;
-          ControlSelection.Add(AComp);
+          ControlSelection.Add(aPersistent);
           CopySelectionToStream(AStream);
           FUndoList[FUndoCurr].obj := AStream.DataString;
         finally
@@ -1683,20 +1684,23 @@ begin
       end;
     end;
 
+    // add to FUndoList
     with FUndoList[FUndoCurr] do
     begin
-      oldVal := AOldVal;
-      newVal := ANewVal;
-      fieldName := AFieldName;
-      compName := AComp.Name;
-      if not(AComp.Equals(Form)) and AComp.HasParent then
-        parentName := AComp.GetParentComponent.Name
-      else
-        parentName := '';
-      opType := AOpType;
+      oldVal := aOldVal;
+      newVal := aNewVal;
+      fieldName := aFieldName;
+      compName := '';
+      parentName := '';
+      if aPersistent is TComponent then begin
+        compName := TComponent(aPersistent).Name;
+        if TComponent(aPersistent).HasParent then
+          parentName := TComponent(aPersistent).GetParentComponent.Name;
+      end;
+      opType := aOpType;
       isValid := true;
       id := FUndoActId;
-      propInfo := GetPropInfo(TObject(AComp), AFieldName)^;
+      propInfo := GetPropInfo(aPersistent, aFieldName)^;
     end;
     Inc(FUndoCurr);
   finally

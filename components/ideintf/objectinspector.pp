@@ -20,7 +20,7 @@
 }
 unit ObjectInspector;
 
-{$MODE OBJFPC}{$H+}
+{$Mode objfpc}{$H+}
 
 {off $DEFINE DoNotCatchOIExceptions}
 
@@ -30,7 +30,7 @@ uses
   // IMPORTANT: the object inspector is a tool and can be used in other programs
   //            too. Don't put Lazarus IDE specific things here.
   // FCL
-  SysUtils, Types, Classes, TypInfo, contnrs, FPCanvas,
+  SysUtils, Types, Classes, TypInfo, FPCanvas,
   // LCL
   InterfaceBase, Forms, Buttons, Graphics, GraphType, LCLProc, StdCtrls,
   LCLType, LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages, LResources,
@@ -308,7 +308,7 @@ type
     procedure HintTimer(Sender: TObject);
     procedure ResetHintTimer;
     procedure HideHint;
-    procedure OnUserInput(Sender: TObject; Msg: Cardinal);
+    procedure OnUserInput(Sender: TObject; {%H-}Msg: Cardinal);
     procedure HintMouseDown(Sender: TObject; Button: TMouseButton;
                             Shift: TShiftState; X, Y: Integer);
 
@@ -364,16 +364,16 @@ type
     procedure RefreshValueEdit;
     procedure ToggleRow;
     procedure ValueEditDblClick(Sender : TObject);
-    procedure ValueControlMouseDown(Sender: TObject; Button:TMouseButton;
-      Shift: TShiftState; X,Y:integer);
-    procedure ValueControlMouseMove(Sender: TObject; Shift: TShiftState;
-      X,Y:integer);
+    procedure ValueControlMouseDown(Sender: TObject; {%H-}Button:TMouseButton;
+      {%H-}Shift: TShiftState; {%H-}X,{%H-}Y:integer);
+    procedure ValueControlMouseMove(Sender: TObject; {%H-}Shift: TShiftState;
+      {%H-}X,{%H-}Y:integer);
     procedure ValueEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueEditKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueEditExit(Sender: TObject);
     procedure ValueEditChange(Sender: TObject);
     procedure ValueEditMouseUp(Sender: TObject; Button: TMouseButton;
-                               Shift: TShiftState; X, Y: Integer);
+                               Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure ValueCheckBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueCheckBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueCheckBoxExit(Sender: TObject);
@@ -382,15 +382,15 @@ type
     procedure ValueComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueComboBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueComboBoxMouseUp(Sender: TObject; Button: TMouseButton;
-                                   Shift: TShiftState; X, Y: Integer);
+                                   Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure ValueComboBoxCloseUp(Sender: TObject);
     procedure ValueComboBoxGetItems(Sender: TObject);
     procedure ValueButtonClick(Sender: TObject);
-    procedure ValueComboBoxMeasureItem(Control: TWinControl; Index: Integer;
+    procedure ValueComboBoxMeasureItem({%H-}Control: TWinControl; Index: Integer;
           var AHeight: Integer);
-    procedure ValueComboBoxDrawItem(Control: TWinControl; Index: Integer;
+    procedure ValueComboBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
           ARect: TRect; State: TOwnerDrawState);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure SetIdleEvent(Enable: boolean);
 
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
@@ -428,7 +428,7 @@ type
     function CanEditRowValue(CheckFocus: boolean): boolean;
     procedure SaveChanges;
     function ConsistencyCheck: integer;
-    procedure EraseBackground(DC: HDC); override;
+    procedure EraseBackground({%H-}DC: HDC); override;
     function GetActiveRow: TOIPropertyGridRow;
     function GetHintTypeAt(RowIndex: integer; X: integer): TPropEditHint;
 
@@ -1290,20 +1290,49 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.SetRowValue(CheckFocus: boolean);
+
+  function GetPropValue(Editor: TPropertyEditor; Index: integer): string;
+  var
+    PropKind: TTypeKind;
+    PropInfo: PPropInfo;
+  begin
+    Result:='';
+    PropInfo := Editor.GetPropInfo;
+    PropKind := PropInfo^.PropType^.Kind;
+    case PropKind of
+      tkInteger, tkInt64:
+        Result := IntToStr(Editor.GetInt64ValueAt(Index));
+      tkChar, tkWChar, tkUChar:
+        Result := Char(Editor.GetOrdValueAt(Index));
+      tkEnumeration:
+        Result := GetEnumName(PropInfo^.PropType, Editor.GetOrdValueAt(Index));
+      tkFloat:
+        Result := FloatToStr(Editor.GetFloatValueAt(Index));
+      tkBool:
+        Result := BoolToStr(Boolean(Editor.GetOrdValueAt(Index)), 'True', 'False');
+      tkString, tkLString, tkAString, tkUString, tkWString:
+        Result := Editor.GetStrValueAt(Index);
+      tkSet:
+        Result := Editor.GetSetValueAt(Index,true);
+      tkVariant:
+        Result := Editor.GetVarValueAt(Index);
+    end;
+  end;
+
 var
   CurRow: TOIPropertyGridRow;
   NewValue: string;
   OldExpanded: boolean;
   OldChangeStep: integer;
   RootDesigner: TIDesigner;
-  CurrComp: TComponent;
-  i, j, saveIndex, tmpInt: integer;
-  newVal, tmpStr, newValAsInt: string;
+  APersistent: TPersistent;
+  i: integer;
+  NewVal: string;
   oldVal: array of string;
-  isExcept, isIntValInStr: boolean;
-  parRow, tmpRow: TOIPropertyGridRow;
+  isExcept: boolean;
   CompEditDsg: TComponentEditorDesigner;
   prpInfo: PPropInfo;
+  Editor: TPropertyEditor;
 begin
   //debugln(['TOICustomPropertyGrid.SetRowValue A ',dbgs(FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[]),' FItemIndex=',dbgs(FItemIndex),' CanEditRowValue=',CanEditRowValue]);
   if not CanEditRowValue(CheckFocus) or Rows[FItemIndex].IsReadOnly then exit;
@@ -1322,42 +1351,15 @@ begin
   CompEditDsg := TComponentEditorDesigner(RootDesigner);
   if CompEditDsg.IsUndoLocked then Exit;
 
+  // store old values for undo
   isExcept := false;
-  saveIndex := FItemIndex;
-  SetLength(oldVal, Selection.Count);
-  for i := 0 to Selection.Count - 1 do
-  begin
-    CurrComp := CompEditDsg.Form.FindComponent(Selection.Items[i].GetNamePath);
-
-    while CurRow.Parent <> nil do
-      CurRow := CurRow.Parent;
-
-    prpInfo := GetPropInfo(TObject(CurrComp), CurRow.Name);
-    if not Assigned(prpInfo) then
-      ShowMessage('error: propInfo = nil')
-    else
-      case prpInfo^.PropType^.Kind of
-        tkInteger, tkInt64:
-          oldVal[i] := IntToStr(GetOrdProp(TObject(CurrComp), prpInfo));
-        tkChar, tkWChar, tkUChar:
-          oldVal[i] := Char(GetOrdProp(TObject(CurrComp), prpInfo));
-        tkEnumeration:
-          oldVal[i] := GetEnumName(prpInfo^.PropType, GetOrdProp(TObject(CurrComp), CurRow.Name));
-        tkFloat:
-          oldVal[i] := FloatToStr(GetFloatProp(TObject(CurrComp), prpInfo));
-        tkBool:
-          oldVal[i] := BoolToStr(Boolean(GetOrdProp(TObject(CurrComp), prpInfo)), 'True', 'False');
-        tkString, tkLString, tkAString, tkUString, tkWString:
-          oldVal[i] := GetStrProp(TObject(CurrComp), prpInfo);
-        tkSet:
-          oldVal[i] := GetSetProp(TObject(CurrComp), CurRow.Name);
-        tkVariant:
-          oldVal[i] := GetVariantProp(TObject(CurrComp), prpInfo);
-      end;
+  Editor:=CurRow.Editor;
+  SetLength(oldVal, Editor.PropCount);
+  prpInfo := Editor.GetPropInfo;
+  if prpInfo<>nil then begin
+    for i := 0 to Editor.PropCount - 1 do
+      oldVal[i] := GetPropValue(Editor,i);
   end;
-  FItemIndex := saveIndex;
-  CurRow := Rows[FItemIndex];
-
 
   OldChangeStep:=fChangeStep;
   Include(FStates,pgsApplyingValue);
@@ -1381,30 +1383,16 @@ begin
       exit;
     end;
 
+    // add Undo action
     if not isExcept then
     begin
-      if Assigned(prpInfo) and (prpInfo^.PropType^.Kind = tkSet) then
-        newVal := GetSetProp(TObject(CurrComp), CurRow.Parent.Name)
-      else if Assigned(prpInfo) and (prpInfo^.PropType^.Kind = tkInteger) and not TryStrToInt(NewValue, i) then
-        newVal := IntToStr(CurRow.Editor.GetOrdValue)
-      else
-        newVal := NewValue;
-
-      for i := 0 to Selection.Count - 1 do
+      for i := 0 to Editor.PropCount - 1 do
       begin
-        CurRow := Rows[saveIndex];
-        if CompEditDsg.Form.Name = Selection.Items[i].GetNamePath then
-          CurrComp := CompEditDsg.Form
-        else
-          CurrComp := CompEditDsg.Form.FindComponent(Selection.Items[i].GetNamePath);
-        if CurrComp <> nil then
-        begin
-          while CurRow.Parent <> nil do
-            CurRow := CurRow.Parent;
-
-          CompEditDsg.AddUndoAction(CurrComp, uopChange, i = 0,
-            curRow.Name, oldVal[i], newVal);
-        end;
+        APersistent := Editor.GetComponent(i);
+        if APersistent=nil then continue;
+        NewVal := GetPropValue(Editor,i);
+        CompEditDsg.AddUndoAction(APersistent, uopChange, i = 0,
+            Editor.GetName, oldVal[i], NewVal);
       end;
     end;
 
@@ -4883,7 +4871,7 @@ var
 begin
   if (RestrictedProps = nil) or (Selection = nil) then exit;
 
-  FillChar(WidgetSetRestrictions, SizeOf(WidgetSetRestrictions), 0);
+  FillChar(WidgetSetRestrictions{%H-}, SizeOf(WidgetSetRestrictions), 0);
   for I := 0 to RestrictedProps.Count - 1 do
   begin
     if RestrictedProps.Items[I] is TOIRestrictedProperty then
@@ -5210,7 +5198,7 @@ var
     end;
   end;
 
-  procedure AddCollectionEditorMenuItems(ACollection: TCollection);
+  procedure AddCollectionEditorMenuItems({%H-}ACollection: TCollection);
   var
     Item: TMenuItem;
   begin

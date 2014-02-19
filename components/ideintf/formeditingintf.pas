@@ -52,7 +52,7 @@ type
   public
     class function FormClass: TComponentClass; virtual; abstract;
     class function CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator; virtual;
-    class procedure InitFormInstance(aForm: TComponent); virtual; // called after NewInstance, before constructor
+    class procedure InitFormInstance({%H-}aForm: TComponent); virtual; // called after NewInstance, before constructor
   public
     procedure SetBounds(AComponent: TComponent; NewBounds: TRect); virtual;
     procedure GetBounds(AComponent: TComponent; out CurBounds: TRect); virtual;
@@ -61,23 +61,23 @@ type
     procedure GetClientArea(AComponent: TComponent; out CurClientArea: TRect;
                             out ScrollOffset: TPoint); virtual;
     function GetComponentOriginOnForm(AComponent: TComponent): TPoint; virtual;
-    function ComponentIsIcon(AComponent: TComponent): boolean; virtual;
-    function ParentAcceptsChild(Parent: TComponent; Child: TComponentClass): boolean; virtual;
-    function ComponentIsVisible(AComponent: TComponent): Boolean; virtual;
-    function ComponentIsSelectable(AComponent: TComponent): Boolean; virtual;
+    function ComponentIsIcon({%H-}AComponent: TComponent): boolean; virtual;
+    function ParentAcceptsChild({%H-}Parent: TComponent; {%H-}Child: TComponentClass): boolean; virtual;
+    function ComponentIsVisible({%H-}AComponent: TComponent): Boolean; virtual;
+    function ComponentIsSelectable({%H-}AComponent: TComponent): Boolean; virtual;
     function ComponentAtPos(p: TPoint; MinClass: TComponentClass;
                             Flags: TDMCompAtPosFlags): TComponent; virtual;
     procedure GetChildComponents(Parent: TComponent; ChildComponents: TFPList); virtual;
-    function UseRTTIForMethods(aComponent: TComponent): boolean; virtual; // false = use sources
+    function UseRTTIForMethods({%H-}aComponent: TComponent): boolean; virtual; // false = use sources
 
     // events
     procedure InitComponent(AComponent, NewParent: TComponent; NewBounds: TRect); virtual;
     procedure Paint; virtual;
-    procedure KeyDown(Sender: TControl; var Key: word; Shift: TShiftState); virtual;
-    procedure KeyUp(Sender: TControl; var Key: word; Shift: TShiftState); virtual;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; p: TPoint; var Handled: boolean); virtual;
-    procedure MouseMove(Shift: TShiftState; p: TPoint; var Handled: boolean); virtual;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; p: TPoint; var Handled: boolean); virtual;
+    procedure KeyDown(Sender: TControl; var {%H-}Key: word; {%H-}Shift: TShiftState); virtual;
+    procedure KeyUp(Sender: TControl; var {%H-}Key: word; {%H-}Shift: TShiftState); virtual;
+    procedure MouseDown({%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}p: TPoint; var {%H-}Handled: boolean); virtual;
+    procedure MouseMove({%H-}Shift: TShiftState; {%H-}p: TPoint; var {%H-}Handled: boolean); virtual;
+    procedure MouseUp({%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}p: TPoint; var {%H-}Handled: boolean); virtual;
 
     property LCLForm: TForm read FLCLForm write SetLCLForm;
     property Designer: TComponentEditorDesigner read FDesigner write SetDesigner;

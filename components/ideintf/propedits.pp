@@ -281,7 +281,7 @@ type
 
   { TPropertyEditor }
 
-  TPropertyEditor=class
+  TPropertyEditor = class
   private
     FOnSubPropertiesChanged: TNotifyEvent;
     FPropertyHook: TPropertyEditorHook;
@@ -324,6 +324,8 @@ type
     function GetObjectValueAt(Index: Integer): TObject;
     function GetObjectValueAt(Index: Integer; MinClass: TClass): TObject;
     function GetDefaultOrdValue: Longint;
+    function GetSetValue(Brackets: boolean): AnsiString;
+    function GetSetValueAt(Index: Integer; Brackets: boolean): AnsiString;
     function GetStrValue: AnsiString;
     function GetStrValueAt(Index: Integer): AnsiString;
     function GetVarValue: Variant;
@@ -2496,10 +2498,20 @@ var
   APropInfo: PPropInfo;
 begin
   APropInfo:=FPropList^[0].PropInfo;
-  {if HasAncestor then
-    Result:=GetOrdValue(Ancestor,APropInfo)
-  else}
   Result:=APropInfo^.Default;
+end;
+
+function TPropertyEditor.GetSetValue(Brackets: boolean): AnsiString;
+begin
+  with FPropList^[0] do
+    Result:=GetSetProp(Instance,PropInfo,Brackets);
+end;
+
+function TPropertyEditor.GetSetValueAt(Index: Integer; Brackets: boolean
+  ): AnsiString;
+begin
+  with FPropList^[Index] do
+    Result:=GetSetProp(Instance,PropInfo,Brackets);
 end;
 
 function TPropertyEditor.GetPrivateDirectory:ansistring;

@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs,
-  ActnList, ExtCtrls, ComCtrls, Buttons, StdCtrls, ObjInspStrConsts,
+  ActnList, ExtCtrls, Buttons, StdCtrls, ObjInspStrConsts,
   ComponentEditors, PropEdits, PropEditUtils, DBActns, StdActns, LCLIntf,
   LCLType, Graphics, Menus, contnrs;
 
@@ -118,17 +118,17 @@ type
     procedure ActionListEditorClose(Sender: TObject;
       var CloseAction: TCloseAction);
     procedure ActionListEditorKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+      {%H-}Shift: TShiftState);
     procedure ActionListEditorKeyPress(Sender: TObject; var Key: char);
     procedure lstActionNameDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure SBShowMenuNewActionsClick(Sender: TObject);
-    procedure SplitterCanResize(Sender: TObject; var NewSize: Integer;
-      var Accept: Boolean);
+    procedure SplitterCanResize(Sender: TObject; var {%H-}NewSize: Integer;
+      var {%H-}Accept: Boolean);
     procedure lstActionNameKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure lstActionNameMouseDown(Sender: TOBject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+      {%H-}Shift: TShiftState; {%H-}X, Y: Integer);
     procedure lstCategoryClick(Sender: TObject);
     procedure lstActionNameClick(Sender: TObject);
     procedure lstActionNameDblClick(Sender: TObject);
@@ -167,8 +167,8 @@ type
     procedure Edit; override;
     property ActionList: TActionList read FActionList write FActionList;
     function GetVerbCount: Integer; override;
-    function GetVerb(Index: Integer): string; override;
-    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb({%H-}Index: Integer): string; override;
+    procedure ExecuteVerb({%H-}Index: Integer); override;
   end;
 
   { Action Registration }
@@ -239,7 +239,7 @@ var
 procedure RegisterActions(const ACategory: string;
                           const AClasses: array of TBasicActionClass;
                           AResource: TComponentClass);
-procedure UnRegisterActions(const Classes: array of TBasicActionClass);
+procedure UnRegisterActions(const {%H-}Classes: array of TBasicActionClass);
 procedure EnumActions(Proc: TEnumActionProc; Info: Pointer);
 function CreateAction(TheOwner: TComponent;
                       ActionClass: TBasicActionClass): TBasicAction;

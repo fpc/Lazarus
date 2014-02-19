@@ -11,8 +11,6 @@
       </SearchPaths>
       <Other>
         <Verbosity>
-          <ShowNotes Value="False"/>
-          <ShowHints Value="False"/>
           <ShowGenInfo Value="False"/>
         </Verbosity>
         <CustomOptions Value="$(IDEBuildOptions)"/>
@@ -314,7 +312,7 @@
       </Item72>
       <Item73>
         <Filename Value="ideutils.pas"/>
-        <UnitName Value="ideutils"/>
+        <UnitName Value="IDEUtils"/>
       </Item73>
     </Files>
     <LazDoc Paths="docs"/>

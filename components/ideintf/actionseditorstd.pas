@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, Buttons, ActnList, StdActns, DBActns, LCLType, Contnrs,
+  ComCtrls, Buttons, ActnList, StdActns, DBActns, LCLType,
   LCLProc, ActionsEditor, ObjInspStrConsts, ExtCtrls, ButtonPanel;
 
 type

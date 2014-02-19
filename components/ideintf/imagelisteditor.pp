@@ -96,8 +96,8 @@ type
   protected
     procedure DoShowEditor;
   public
-    procedure ExecuteVerb(Index: Integer); override;
-    function GetVerb(Index: Integer): String; override;
+    procedure ExecuteVerb({%H-}Index: Integer); override;
+    function GetVerb({%H-}Index: Integer): String; override;
     function GetVerbCount: Integer; override;
   end;
 

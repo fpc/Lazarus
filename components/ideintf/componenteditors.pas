@@ -20,7 +20,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, TypInfo, Maps, LCLProc, Forms, Controls, Menus,
-  ExtCtrls, CustomTimer, StdCtrls, Graphics, Grids, CheckLst, Buttons, ComCtrls, Dialogs,
+  ExtCtrls, CustomTimer, Graphics, Grids, CheckLst, Buttons, ComCtrls, Dialogs,
   LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg, GraphType,
   PropEdits, PropEditUtils,
   ObjInspStrConsts;
@@ -81,8 +81,8 @@ type
     function CanRedo: Boolean; virtual; abstract;
     function Undo: Boolean; virtual; abstract;
     function Redo: Boolean; virtual; abstract;
-    function AddUndoAction(const AComp: TComponent; AOpType: TUndoOpType;
-      IsSetNewId: boolean; AFieldName: string; const AOldVal, ANewVal: variant): boolean; virtual; abstract;
+    function AddUndoAction(const aPersistent: TPersistent; aOpType: TUndoOpType;
+      IsSetNewId: boolean; aFieldName: string; const aOldVal, aNewVal: variant): boolean; virtual; abstract;
     function IsUndoLocked: boolean; virtual; abstract;
 
     procedure DrawDesignerItems(OnlyIfNeeded: boolean); virtual; abstract;
@@ -180,8 +180,8 @@ type
   TBaseComponentEditor = class
   protected
   public
-    constructor Create(AComponent: TComponent;
-      ADesigner: TComponentEditorDesigner); virtual;
+    constructor Create({%H-}AComponent: TComponent;
+      {%H-}ADesigner: TComponentEditorDesigner); virtual;
     procedure Copy; virtual; abstract;
     procedure Edit; virtual; abstract;
     procedure ExecuteVerb(Index: Integer); virtual; abstract;
@@ -221,7 +221,7 @@ type
     function GetVerbCount: Integer; override;
     function IsInInlined: Boolean; override;
     procedure Copy; override;
-    procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
+    procedure PrepareItem({%H-}Index: Integer; const {%H-}AnItem: TMenuItem); override;
     property Component: TComponent read FComponent;
     property Designer: TComponentEditorDesigner read GetDesigner;
     function GetHook(out Hook: TPropertyEditorHook): boolean; override;
@@ -246,7 +246,7 @@ type
     procedure CheckEdit(Prop: TPropertyEditor);
   protected
     procedure EditProperty(const Prop: TPropertyEditor;
-      var Continue: Boolean); virtual;
+      var {%H-}Continue: Boolean); virtual;
     procedure ClearPropEditorCandidates;
   public
     constructor Create(AComponent: TComponent;
@@ -254,8 +254,8 @@ type
     destructor Destroy; override;
     procedure Edit; override;
     function GetVerbCount: Integer; override;
-    function GetVerb(Index: Integer): string; override;
-    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb({%H-}Index: Integer): string; override;
+    procedure ExecuteVerb({%H-}Index: Integer); override;
     property BestEditEvent: string read FBestEditEvent write FBestEditEvent;
   end;
            
@@ -356,8 +356,8 @@ type
   protected
     procedure DoShowEditor;
   public
-    procedure ExecuteVerb(Index: Integer); override;
-    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb({%H-}Index: Integer); override;
+    function GetVerb({%H-}Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
 
@@ -369,8 +369,8 @@ type
   protected
     procedure DoShowEditor;
   public
-    procedure ExecuteVerb(Index: Integer); override;
-    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb({%H-}Index: Integer); override;
+    function GetVerb({%H-}Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
 

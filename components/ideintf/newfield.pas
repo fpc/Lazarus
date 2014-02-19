@@ -17,7 +17,7 @@ unit newfield;
 interface
 
 uses
-  Classes, Math, SysUtils, DBConst, LCLIntf, Graphics, Controls, Forms, Dialogs,
+  Classes, Math, SysUtils, LCLIntf, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Buttons, DB, ObjInspStrConsts,
   ComponentEditors, PropEdits, PropEditUtils, TypInfo;
 

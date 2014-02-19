@@ -32,7 +32,7 @@ unit fieldslist;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
   Buttons, DB, StdCtrls, ObjInspStrConsts, ComponentEditors, PropEdits;
 
 type
