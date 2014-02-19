@@ -361,7 +361,28 @@ type
 var
   LazarusIDE: TLazIDEInterface = nil; // will be set by the IDE
 
+procedure AddHandlerLazarusIDEStart(const OnStart: TProcedure);
+procedure RunHandlersLazarusIDEStart;
+
 implementation
+
+var
+  OnLazarusIDEStart: array of TProcedure;
+
+procedure AddHandlerLazarusIDEStart(const OnStart: TProcedure);
+begin
+  SetLength(OnLazarusIDEStart,length(OnLazarusIDEStart)+1);
+  OnLazarusIDEStart[length(OnLazarusIDEStart)-1]:=OnStart;
+end;
+
+procedure RunHandlersLazarusIDEStart;
+var
+  i: Integer;
+begin
+  for i:=0 to length(OnLazarusIDEStart)-1 do
+    OnLazarusIDEStart[i]();
+  SetLength(OnLazarusIDEStart,0);
+end;
 
 { TLazIDEInterface }
 
@@ -440,6 +461,7 @@ end;
 constructor TLazIDEInterface.Create(TheOwner: TComponent);
 begin
   LazarusIDE:=Self;
+  RunHandlersLazarusIDEStart;
   inherited Create(TheOwner);
 end;
 
