@@ -1467,7 +1467,7 @@ type
   protected
     procedure Loaded; override;
     procedure RealSetText(const Value: TCaption); override;
-    procedure UpdateShiftButons;
+    procedure UpdateShiftButtons;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function ShiftToStr(s: TShiftStateEnum): string;
   public
@@ -6520,7 +6520,7 @@ procedure TCustomShortCutGrabBox.SetShiftButtons(const AValue: TShiftState);
 begin
   if FShiftButtons=AValue then exit;
   FShiftButtons:=AValue;
-  UpdateShiftButons;
+  UpdateShiftButtons;
 end;
 
 procedure TCustomShortCutGrabBox.SetShiftState(const AValue: TShiftState);
@@ -6537,7 +6537,7 @@ end;
 procedure TCustomShortCutGrabBox.Loaded;
 begin
   inherited Loaded;
-  UpdateShiftButons;
+  UpdateShiftButtons;
 end;
 
 procedure TCustomShortCutGrabBox.RealSetText(const Value: TCaption);
@@ -6545,7 +6545,7 @@ begin
   // do not allow to set caption
 end;
 
-procedure TCustomShortCutGrabBox.UpdateShiftButons;
+procedure TCustomShortCutGrabBox.UpdateShiftButtons;
 var
   s: TShiftStateEnum;
   LastCheckBox: TCheckBox;
