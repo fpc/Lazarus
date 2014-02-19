@@ -1,3 +1,12 @@
+; Files that are no longer present in Lazarus 1.4 (moved after 1.2)
+Name: {app}units\i386-win32\win32\gdbmidebugger.pp; Type: files
+Name: {app}units\i386-win32\win32\gdbmidebuginstructions.pp; Type: files
+Name: {app}units\i386-win32\win32\gdbmimiscclasses.pp; Type: files
+Name: {app}units\i386-win32\win32\gdbmiserverdebugger.pas; Type: files
+Name: {app}units\i386-win32\win32\gdbtypeinfo.pp; Type: files
+Name: {app}units\i386-win32\win32\sshgdbmidebugger.pas; Type: files
+Name: {app}units\i386-win32\win32\cmdlinedebugger.pp; Type: files
+Name: {app}units\i386-win32\win32\debugutils.pp; Type: files
 ; Files that are no longer present in Lazarus 1.0
 ; Either moved to a new location, or removed entirely
 ; This file should be included in the [InstallDelete] section
