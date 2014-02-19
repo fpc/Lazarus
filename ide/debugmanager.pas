@@ -41,23 +41,22 @@ uses
   MemCheck,
   {$ENDIF}
   // LCL
-  Classes, SysUtils, Forms, Controls, Dialogs, Menus, ExtCtrls, FileUtil, LCLProc,
+  Classes, SysUtils, Forms, Controls, Dialogs, ExtCtrls, FileUtil, LCLProc,
   LCLType, LCLIntf, LazLoggerBase, Laz2_XMLCfg, LazFileCache,
-  // SynEdit, codetools
-  SynEdit, CodeCache, CodeToolManager, PascalParserTool, CodeTree,
+  // codetools
+  CodeCache, CodeToolManager, PascalParserTool, CodeTree,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
   CompOptsIntf, IDEDialogs,
   // IDE
-  LazConf, CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping,
+  LazConf, CompilerOptions, EnvironmentOpts,
   SourceEditor, ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
-  CmdLineDebugger, IDEOptionDefs, LazarusIDEStrConsts, TransferMacros,
-  MainBar, MainIntf, MainBase, BaseBuildManager,
-  SourceMarks,
+  LazarusIDEStrConsts, TransferMacros,
+  MainBar, MainIntf, MainBase, BaseBuildManager, SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
   CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
   InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg, ThreadDlg, HistoryDlg,
-  GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger, GDBMIServerDebugger,
+  ProcessDebugger,
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, BaseDebugManager;
 
 
