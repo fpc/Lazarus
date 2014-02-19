@@ -55,15 +55,14 @@ uses
   BasicCodeTools, CodeToolsCfgScript, CodeToolManager, CodeCache, FileProcs,
   // IDEIntf
   PropEdits, CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, UnitResources,
-  LazIDEIntf, PackageIntf, SrcEditorIntf, IDEOptionsIntf,
+  PackageIntf, SrcEditorIntf, IDEOptionsIntf, IDEDialogs, LazIDEIntf,
   // synedit
   SynEdit,
   // IDE
   CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
   LazarusIDEStrConsts, CompilerOptions,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
-  FileReferenceList, EditDefineTree, ModeMatrixOpts, PackageDefs, PackageSystem,
-  IDEDialogs;
+  FileReferenceList, EditDefineTree, ModeMatrixOpts, PackageDefs, PackageSystem;
 
 type
   TUnitInfo = class;

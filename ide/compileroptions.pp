@@ -47,9 +47,9 @@ uses
   CodeToolsCfgScript, CodeToolManager, KeywordFuncLists, BasicCodeTools,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
-  IDEOptionsIntf,
+  IDEOptionsIntf, IDEMsgIntf,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, IDEMsgIntf, LazIDEIntf, LazConf,
+  LazarusIDEStrConsts, IDEProcs, LazConf,
   TransferMacros,
   {$IFDEF EnableNewExtTools}
   etFPCMsgParser,
@@ -2481,6 +2481,7 @@ var
   CompilerFilename: String;
   DefaultTargetOS: string;
   DefaultTargetCPU: string;
+  FPCompilerFilename: String;
 begin
   CurMainSrcFile:=MainSourceFileName;
   if CurMainSrcFile='' then
@@ -2831,9 +2832,13 @@ begin
   if (VariablesInRegisters) then
     Switches := Switches + ' -OoREGVAR';
 
-  CompilerFilename:=LazarusIDE.GetFPCompilerFilename;
+  CompilerFilename:=ParsedOpts.GetParsedValue(pcosCompilerPath);
+  if IsFPCExecutable(CompilerFilename) then
+    FPCompilerFilename:=CompilerFilename
+  else
+    FPCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
   CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
-    CompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
+    FPCompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
 
   { Target OS }
   if (CurTargetOS<>'')

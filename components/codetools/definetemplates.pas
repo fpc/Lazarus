@@ -928,7 +928,7 @@ function GetCompiledTargetCPU: string;
 function GetDefaultCompilerFilename(const TargetCPU: string = ''; Cross: boolean = false): string;
 function GetFPCTargetOS(TargetOS: string): string;
 function GetFPCTargetCPU(TargetCPU: string): string;
-function IsFPCExecutable(const CompilerFilename: string): boolean;
+function IsFPCExecutable(AFilename: string): boolean;
 
 // functions to quickly setup some defines
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
@@ -950,7 +950,6 @@ function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
                       out Infos: TFPCInfoStrings): boolean;
 function RunFPCInfo(const CompilerFilename: string;
                    InfoTypes: TFPCInfoTypes; const Options: string =''): string;
-function IsFPCompiler(AFilename: string): boolean;
 function ExtractFPCFrontEndParameters(const CmdLine: string): string;
 function SplitFPCVersion(const FPCVersionString: string;
                         out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
@@ -1358,35 +1357,6 @@ begin
   finally
     List.free;
   end;
-end;
-
-function IsFPCompiler(aFilename: string): boolean;
-var
-  ShortFilename: String;
-begin
-  Result:=false;
-  AFilename:=ResolveDots(aFilename);
-  //debugln(['IsFPCompiler START ',aFilename]);
-  if aFilename='' then
-    exit;
-  if not FileExistsCached(AFilename) then
-    exit;
-  if DirPathExistsCached(AFilename) then
-    exit;
-  if not FileIsExecutableCached(AFilename) then
-    exit;
-
-  // allow scripts like fpc.sh and fpc.bat
-  ShortFilename:=ExtractFileNameOnly(AFilename);
-  //debugln(['IsFPCompiler Short=',ShortFilename]);
-  if CompareFilenames(ShortFilename,'fpc')=0 then
-    exit(true);
-
-  // allow ppcxxx.exe
-  if (CompareFilenames(copy(ShortFilename,1,3),'ppc')=0)
-  and ((ExeExt='') or (LazFileUtils.CompareFileExt(ShortFilename,ExeExt)=0))
-  then
-    exit(true);
 end;
 
 function ExtractFPCFrontEndParameters(const CmdLine: string): string;
@@ -2750,17 +2720,33 @@ begin
   Result:=LowerCase(TargetCPU);
 end;
 
-function IsFPCExecutable(const CompilerFilename: string): boolean;
+function IsFPCExecutable(AFilename: string): boolean;
 var
   ShortFilename: String;
 begin
   Result:=false;
-  if not FilenameIsAbsolute(CompilerFilename) then exit;
-  if CompareFilenames(ExtractFileExt(CompilerFilename),ExeExt)<>0 then exit;
-  ShortFilename:=ExtractFileNameOnly(CompilerFilename);
-  if (CompareFilenames(ShortFilename,'fpc')<>0)
-  and (CompareFilenames(LeftStr(ShortFilename,3),'ppc')<>0) then exit;
-  Result:=true;
+  AFilename:=ResolveDots(aFilename);
+  //debugln(['IsFPCompiler START ',aFilename]);
+  if aFilename='' then
+    exit;
+  if not FileExistsCached(AFilename) then
+    exit;
+  if DirPathExistsCached(AFilename) then
+    exit;
+  if not FileIsExecutableCached(AFilename) then
+    exit;
+
+  // allow scripts like fpc.sh and fpc.bat
+  ShortFilename:=ExtractFileNameOnly(AFilename);
+  //debugln(['IsFPCompiler Short=',ShortFilename]);
+  if CompareFilenames(ShortFilename,'fpc')=0 then
+    exit(true);
+
+  // allow ppcxxx.exe
+  if (CompareFilenames(copy(ShortFilename,1,3),'ppc')=0)
+  and ((ExeExt='') or (LazFileUtils.CompareFileExt(ShortFilename,ExeExt)=0))
+  then
+    exit(true);
 end;
 
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string

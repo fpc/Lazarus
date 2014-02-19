@@ -602,7 +602,7 @@ begin
     Result:=Project1.GetCompilerFilename;
     //debugln(['TBuildManager.GetFPCompilerFilename project compiler="',Result,'"']);
   end;
-  if not IsFPCompiler(Result) then begin
+  if not IsFPCExecutable(Result) then begin
     //if Result<>'' then debugln(['TBuildManager.GetFPCompilerFilename project compiler NOT fpc: "',Result,'"']);
     Result:=EnvironmentOptions.GetParsedCompilerFilename;
   end;
@@ -830,7 +830,7 @@ begin
   end;
 
   // then check the project's compiler
-  if not IsFPCompiler(CompilerFilename) then begin
+  if not IsFPCExecutable(CompilerFilename) then begin
     UnitSetCache:=nil;
     exit;
   end;
@@ -1973,7 +1973,7 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
       // fetch the FPC version from the current compiler
       // Not from the fpc.exe, but from the real compiler
       CompilerFilename:=GetFPCompilerFilename;
-      if not IsFPCompiler(CompilerFilename) then exit;
+      if not IsFPCExecutable(CompilerFilename) then exit;
       TargetOS:=GetTargetOS;
       TargetCPU:=GetTargetCPU;
       ConfigCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
