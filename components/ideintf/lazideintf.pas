@@ -355,33 +355,42 @@ type
                            const OnQuickSyntaxCheckEvent: TModalHandledFunction;
                            AsLast: boolean = false);
     procedure RemoveHandlerOnQuickSyntaxCheck(
-                           const OnQuickSyntaxCheckEvent: TModalHandledFunction);
+                          const OnQuickSyntaxCheckEvent: TModalHandledFunction);
   end;
   
 var
   LazarusIDE: TLazIDEInterface = nil; // will be set by the IDE
 
-procedure AddHandlerLazarusIDEStart(const OnStart: TProcedure);
-procedure RunHandlersLazarusIDEStart;
+type
+  TLazarusIDEBootHandlerType = (
+    libhTransferMacrosCreated  //
+    );
+
+procedure AddBootHandler(ht: TLazarusIDEBootHandlerType; const OnBoot: TProcedure);
+procedure RunBootHandlers(ht: TLazarusIDEBootHandlerType);
 
 implementation
 
+type
+  TArrayOfProc = array of TProcedure;
 var
-  OnLazarusIDEStart: array of TProcedure;
+  BootHandlers: array[TLazarusIDEBootHandlerType] of TArrayOfProc;
 
-procedure AddHandlerLazarusIDEStart(const OnStart: TProcedure);
+procedure AddBootHandler(ht: TLazarusIDEBootHandlerType; const OnBoot: TProcedure);
+var
+  l: Integer;
 begin
-  SetLength(OnLazarusIDEStart,length(OnLazarusIDEStart)+1);
-  OnLazarusIDEStart[length(OnLazarusIDEStart)-1]:=OnStart;
+  l:=length(BootHandlers);
+  SetLength(BootHandlers[ht],l+1);
+  BootHandlers[ht][l]:=OnBoot;
 end;
 
-procedure RunHandlersLazarusIDEStart;
+procedure RunBootHandlers(ht: TLazarusIDEBootHandlerType);
 var
   i: Integer;
 begin
-  for i:=0 to length(OnLazarusIDEStart)-1 do
-    OnLazarusIDEStart[i]();
-  SetLength(OnLazarusIDEStart,0);
+  for i:=0 to length(BootHandlers[ht])-1 do
+    BootHandlers[ht][i]();
 end;
 
 { TLazIDEInterface }
@@ -461,7 +470,6 @@ end;
 constructor TLazIDEInterface.Create(TheOwner: TComponent);
 begin
   LazarusIDE:=Self;
-  RunHandlersLazarusIDEStart;
   inherited Create(TheOwner);
 end;
 

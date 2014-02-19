@@ -423,6 +423,8 @@ begin
     'PROJECTINCPATH',nil,@CTMacroFuncProjectIncPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PROJECTSRCPATH',nil,@CTMacroFuncProjectSrcPath);
+
+  RunBootHandlers(libhTransferMacrosCreated);
 end;
 
 procedure TBuildManager.TranslateMacros;
