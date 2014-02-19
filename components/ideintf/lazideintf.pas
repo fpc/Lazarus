@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, PropEdits, LazHelpHTML,
-  IDEExternToolIntf, IDEOptionsIntf, CompOptsIntf, ProjectIntf, SrcEditorIntf;
+  IDEOptionsIntf, CompOptsIntf, ProjectIntf, SrcEditorIntf;
 
 type
   // open file flags
@@ -381,7 +381,7 @@ procedure AddBootHandler(ht: TLazarusIDEBootHandlerType; const OnBoot: TProcedur
 var
   l: Integer;
 begin
-  l:=length(BootHandlers);
+  l:=length(BootHandlers[ht]);
   SetLength(BootHandlers[ht],l+1);
   BootHandlers[ht][l]:=OnBoot;
 end;
@@ -401,7 +401,7 @@ procedure TLazIDEInterface.AddHandler(HandlerType: TLazarusIDEHandlerType;
 begin
   if FLazarusIDEHandlers[HandlerType]=nil then
     FLazarusIDEHandlers[HandlerType]:=TMethodList.Create;
-  FLazarusIDEHandlers[HandlerType].Add(AMethod);
+  FLazarusIDEHandlers[HandlerType].Add(AMethod,AsLast);
 end;
 
 procedure TLazIDEInterface.RemoveHandler(HandlerType: TLazarusIDEHandlerType;
