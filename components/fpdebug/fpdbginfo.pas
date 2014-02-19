@@ -123,6 +123,7 @@ type
 
     function GetDbgSymbol: TDbgSymbol; virtual;
     function GetTypeInfo: TDbgSymbol; virtual;
+    function GetContextTypeInfo: TDbgSymbol; virtual;
   public
     constructor Create;
     property RefCount;
@@ -171,6 +172,7 @@ type
                   Maybe a stType, then there is no Value *)
     property DbgSymbol: TDbgSymbol read GetDbgSymbol;
     property TypeInfo: TDbgSymbol read GetTypeInfo;
+    property ContextTypeInfo: TDbgSymbol read GetContextTypeInfo; // For members, the class in which this mebec is declared
   end;
 
   { TSymbolValueConstNumber }
@@ -551,6 +553,11 @@ end;
 function TDbgSymbolValue.GetAsFloat: Extended;
 begin
   Result := 0;
+end;
+
+function TDbgSymbolValue.GetContextTypeInfo: TDbgSymbol;
+begin
+  Result := nil;
 end;
 
 function TDbgSymbolValue.GetKind: TDbgSymbolKind;

@@ -614,6 +614,7 @@ type
     function GetMember(AIndex: Integer): TDbgSymbolValue; override;
     function GetDbgSymbol: TDbgSymbol; override;
     function GetTypeInfo: TDbgSymbol; override;
+    function GetContextTypeInfo: TDbgSymbol; override;
   public
     constructor Create(AOwner: TDbgDwarfIdentifier);
     destructor Destroy; override;
@@ -2850,6 +2851,20 @@ begin
     Result := FTypeCastTargetType
   else
     Result := inherited GetTypeInfo;
+end;
+
+function TDbgDwarfSymbolValue.GetContextTypeInfo: TDbgSymbol;
+begin
+  if (FValueSymbol = nil) or (FValueSymbol.StructureValueInfo = nil) then
+    Result := nil
+  else
+  if FValueSymbol.StructureValueInfo is TDbgDwarfValueIdentifier then
+    Result := TDbgDwarfValueIdentifier(FValueSymbol.StructureValueInfo).TypeInfo
+  else
+  if FValueSymbol.StructureValueInfo is TDbgDwarfStructTypeCastSymbolValue then
+    Result := TDbgDwarfStructTypeCastSymbolValue(FValueSymbol.StructureValueInfo).TypeInfo
+  else
+    Result := nil; // internal error
 end;
 
 constructor TDbgDwarfSymbolValue.Create(AOwner: TDbgDwarfIdentifier);

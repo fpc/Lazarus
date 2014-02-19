@@ -70,6 +70,7 @@ type
 
   TFpGDBMIDebugger = class(TGDBMIDebugger)
   private
+    FWatchEvalList: TList;
     FImageLoader: TDbgImageLoader;
     FDwarfInfo: TDbgDwarf;
     FMemReader: TFpGDBMIDbgMemReader;
@@ -94,9 +95,17 @@ type
     function CreateTypeRequestCache: TGDBPTypeRequestCache; override;
     property CurrentCommand;
     property TargetPID;
+  protected
+    procedure DoWatchFreed(Sender: TObject);
+    function EvaluateExpression(AWatchValue: TWatchValueBase;
+                                AExpression: String;
+                                var AResText: String;
+                                out ATypeInfo: TDBGType;
+                                EvalFlags: TDBGEvaluateFlags = []): Boolean;
   public
     class function Caption: String; override;
   public
+    constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
   end;
 
@@ -134,11 +143,9 @@ type
 
   TFPGDBMIWatches = class(TGDBMIWatches)
   private
-    FWatchEvalList: TList;
     FWatchEvalLock: Integer;
     FNeedRegValues: Boolean;
     FEvaluationCmdObj: TFpGDBMIDebuggerCommandEvaluate;
-    procedure DoWatchFreed(Sender: TObject);
   protected
     function  FpDebugger: TFpGDBMIDebugger;
     //procedure DoStateChange(const AOldState: TDBGState); override;
@@ -146,8 +153,6 @@ type
     procedure QueueCommand;
     procedure InternalRequestData(AWatchValue: TWatchValueBase); override;
   public
-    constructor Create(const ADebugger: TDebuggerIntf);
-    destructor Destroy; override;
   end;
 
   { TFpGDBMILineInfo }
@@ -186,6 +191,7 @@ end;
 
 procedure TFpGDBMIDebuggerCommandEvaluate.DoCancel;
 begin
+  FOwner.FpDebugger.FWatchEvalList.Clear;
   FOwner.FEvaluationCmdObj := nil;
   inherited DoCancel;
 end;
@@ -867,118 +873,16 @@ begin
   Result := TFpGDBMIDebugger(Debugger);
 end;
 
-procedure TFPGDBMIWatches.DoWatchFreed(Sender: TObject);
-begin
-  FWatchEvalList.Remove(pointer(Sender));
-end;
-
 procedure TFPGDBMIWatches.ProcessEvalList;
 var
   WatchValue: TWatchValueBase;
-  PasExpr: TFpPascalExpression;
-  ResValue: TDbgSymbolValue;
   ResTypeInfo: TDBGType;
   ResText: String;
-  Ctx: TDbgInfoAddressContext;
 
   function IsWatchValueAlive: Boolean;
   begin
-    Result := (FWatchEvalList.Count > 0) and (FWatchEvalList[0] = Pointer(WatchValue));
+    Result := (FpDebugger.FWatchEvalList.Count > 0) and (FpDebugger.FWatchEvalList[0] = Pointer(WatchValue));
   end;
-
-  function ResTypeName(v: TDbgSymbolValue = nil): String;
-  begin
-    if v = nil then v := ResValue;
-    if not((v.TypeInfo<> nil) and
-           GetTypeName(Result, v.TypeInfo, []))
-    then
-      Result := '';
-  end;
-
-  procedure DoPointer;
-  begin
-    if not PrintPasValue(ResText, ResValue, ctx.SizeOfAddress, []) then
-      exit;
-    ResTypeInfo := TDBGType.Create(skPointer, ResTypeName);
-    ResTypeInfo.Value.AsString := ResText;
-    //ResTypeInfo.Value.AsPointer := ; // ???
-  end;
-
-  procedure DoSimple;
-  begin
-    if not PrintPasValue(ResText, ResValue, ctx.SizeOfAddress, []) then
-      exit;
-    ResTypeInfo := TDBGType.Create(skSimple, ResTypeName);
-    ResTypeInfo.Value.AsString := ResText;
-  end;
-
-  procedure DoEnum;
-  begin
-    if not PrintPasValue(ResText, ResValue, ctx.SizeOfAddress, []) then
-      exit;
-    ResTypeInfo := TDBGType.Create(skEnum, ResTypeName);
-    ResTypeInfo.Value.AsString := ResText;
-  end;
-
-  procedure DoSet;
-  begin
-    if not PrintPasValue(ResText, ResValue, ctx.SizeOfAddress, []) then
-      exit;
-    ResTypeInfo := TDBGType.Create(skSet, ResTypeName);
-    ResTypeInfo.Value.AsString := ResText;
-  end;
-
-  procedure DoRecord;
-  begin
-    if not PrintPasValue(ResText, ResValue, ctx.SizeOfAddress, []) then
-      exit;
-    ResTypeInfo := TDBGType.Create(skRecord, ResTypeName);
-    ResTypeInfo.Value.AsString := ResText;
-  end;
-
-  procedure DoObject;
-  begin
-    if not PrintPasValue(ResText, ResValue, ctx.SizeOfAddress, []) then
-      exit;
-    ResTypeInfo := TDBGType.Create(skObject, ResTypeName);
-    ResTypeInfo.Value.AsString := ResText;
-  end;
-
-  procedure DoClass;
-  var
-    m: TDbgSymbolValue;
-    s, s2, n: String;
-    DBGType: TGDBType;
-    f: TDBGField;
-    i: Integer;
-  begin
-    if not PrintPasValue(ResText, ResValue, ctx.SizeOfAddress, []) then
-      exit;
-    ResTypeInfo := TDBGType.Create(skClass, ResTypeName);
-    ResTypeInfo.Value.AsString := ResText;
-
-    if not(defFullTypeInfo in WatchValue.EvaluateFlags) then exit;
-    s := ResTypeName;
-    for i := 0 to ResValue.MemberCount - 1 do begin
-      m := ResValue.Member[i];
-      if m = nil then Continue; // Todo: procedures.
-      case m.Kind of
-        skProcedure, skFunction: ; //  DBGType := TGDBType.Create(skProcedure, TGDBTypes.CreateFromCSV(Params))
-        else
-          begin
-            DBGType := TGDBType.Create(skSimple, ResTypeName(m));
-            PrintPasValue(s2, m, ctx.SizeOfAddress, []);
-            DBGType.Value.AsString := s2;
-            n := '';
-            if m.DbgSymbol <> nil then n := m.DbgSymbol.Name;
-// TODO visibility // flags virtual, constructor
-            f := TDBGField.Create(n, DBGType, flPublic, [], s); //todo parent class,, instead of s
-            ResTypeInfo.Fields.Add(f);
-          end;
-      end;
-    end;
-  end;
-
 begin
   if FNeedRegValues then begin
     FNeedRegValues := False;
@@ -991,74 +895,21 @@ begin
     exit;
   inc(FWatchEvalLock);
   try // TODO: if the stack/thread is changed, registers will be wrong
-    while (FWatchEvalList.Count > 0) and (FEvaluationCmdObj = nil) do begin
+    while (FpDebugger.FWatchEvalList.Count > 0) and (FEvaluationCmdObj = nil) do begin
       try
-        WatchValue := TWatchValueBase(FWatchEvalList[0]);
+        WatchValue := TWatchValueBase(FpDebugger.FWatchEvalList[0]);
         ResTypeInfo := nil;
-        Ctx := FpDebugger.GetInfoContextForContext(WatchValue.ThreadId, WatchValue.StackFrame);
-
-        PasExpr := TFpPascalExpression.Create(WatchValue.Expression, Ctx);
-        if not IsWatchValueAlive then
-          continue;
-
-        if not (PasExpr.Valid and (PasExpr.ResultValue <> nil)) then begin
-          if not IsWatchValueAlive then
-            continue;
+        if not FpDebugger.EvaluateExpression(WatchValue, WatchValue.Expression, ResText, ResTypeInfo)
+        then begin
           debugln(['TFPGDBMIWatches.InternalRequestData FAILED']);
           inherited InternalRequestData(WatchValue);
           continue;
         end;
-        if not IsWatchValueAlive then
-          continue;
-
-        ResValue := PasExpr.ResultValue;
-
-        case PasExpr.ResultValue.Kind of
-          skUnit: ;
-          skProcedure: ;
-          skFunction: ;
-          skPointer:  DoPointer;
-          skInteger:  DoSimple;
-          skCardinal: DoSimple;
-          skBoolean:  DoSimple;
-          skChar:     DoSimple;
-          skFloat:    DoSimple;
-          skString: ;
-          skAnsiString: ;
-          skCurrency: ;
-          skVariant: ;
-          skWideString: ;
-          skEnum:      DoEnum;
-          skEnumValue: DoSimple;
-          skSet:       DoSet;
-          skRecord:    DoRecord;
-          skObject:    DoObject;
-          skClass:     DoClass;
-          skInterface: ;
-          skArray: ;
-        end;
-
-
-        if IsWatchValueAlive then begin
-          if ResTypeInfo = nil then begin
-            debugln(['TFPGDBMIWatches.InternalRequestData FAILED']);
-            inherited InternalRequestData(WatchValue);
-            continue;
-          end;
-
-          debugln(['TFPGDBMIWatches.InternalRequestData   GOOOOOOD']);
-          WatchValue.Value    := ResText;
-          WatchValue.TypeInfo := ResTypeInfo;
-          WatchValue.Validity := ddsValid;
-        end;
-
-
       finally
         if IsWatchValueAlive then begin
-          WatchValue.RemoveFreeeNotification(@DoWatchFreed);
-          FWatchEvalList.Remove(pointer(WatchValue));
+          WatchValue.RemoveFreeeNotification(@FpDebugger.DoWatchFreed);
+          FpDebugger.FWatchEvalList.Remove(pointer(WatchValue));
         end;
-        PasExpr.Free;
         Application.ProcessMessages;
       end;
     end;
@@ -1082,8 +933,8 @@ begin
     Exit;
   end;
 
-  AWatchValue.AddFreeeNotification(@DoWatchFreed); // we may call gdb
-  FWatchEvalList.Add(pointer(AWatchValue));
+  AWatchValue.AddFreeeNotification(@FpDebugger.DoWatchFreed); // we may call gdb
+  FpDebugger.FWatchEvalList.Add(pointer(AWatchValue));
 
   if FEvaluationCmdObj <> nil then exit;
 
@@ -1098,18 +949,6 @@ begin
 
   // Join the queue, registers and threads are needed first
   QueueCommand;
-end;
-
-constructor TFPGDBMIWatches.Create(const ADebugger: TDebuggerIntf);
-begin
-  inherited Create(ADebugger);
-  FWatchEvalList := TList.Create;
-end;
-
-destructor TFPGDBMIWatches.Destroy;
-begin
-  inherited Destroy;
-  FWatchEvalList.Free;
 end;
 
 { TFpGDBMILineInfo }
@@ -1214,9 +1053,15 @@ begin
   if State in [dsStop, dsError, dsNone] then
     UnLoadDwarf;
 
-  if OldState in [dsPause, dsInternalPause] then
+  if OldState in [dsPause, dsInternalPause] then begin
     for i := 0 to MAX_CTX_CACHE-1 do
       ReleaseRefAndNil(FLastContext[i]);
+    if not(State in [dsPause, dsInternalPause]) then begin
+      for i := 0 to FWatchEvalList.Count - 1 do
+        TWatchValueBase(FWatchEvalList[i]).RemoveFreeeNotification(@DoWatchFreed);
+      FWatchEvalList.Clear;
+    end;
+  end;
 end;
 
 function TFpGDBMIDebugger.HasDwarf: Boolean;
@@ -1258,16 +1103,17 @@ end;
 
 function TFpGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand;
   const AParams: array of const): Boolean;
+var
+  EvalFlags: TDBGEvaluateFlags;
 begin
   if HasDwarf and (ACommand = dcEvaluate) then begin
-     //  String(AParams[0].VAnsiString)
-//    //EvalFlags := [];
-//    //if high(AParams) >= 3 then
-//    //  EvalFlags := TDBGEvaluateFlags(AParams[3].VInteger);
-//    //Result := GDBEvaluate(String(AParams[0].VAnsiString),
-//    //  String(AParams[1].VPointer^), TGDBType(AParams[2].VPointer^),
-//    //  EvalFlags);
-    Result := inherited RequestCommand(ACommand, AParams);
+    EvalFlags := [];
+    EvalFlags := TDBGEvaluateFlags(AParams[3].VInteger);
+    Result := EvaluateExpression(nil, String(AParams[0].VAnsiString),
+      String(AParams[1].VPointer^), TDBGType(AParams[2].VPointer^),
+      EvalFlags);
+    if not Result then
+      Result := inherited RequestCommand(ACommand, AParams);
   end
   else
     Result := inherited RequestCommand(ACommand, AParams);
@@ -1402,6 +1248,204 @@ begin
   Result := TFpGDBPTypeRequestCache.Create(Self);
 end;
 
+procedure TFpGDBMIDebugger.DoWatchFreed(Sender: TObject);
+begin
+  FWatchEvalList.Remove(pointer(Sender));
+end;
+
+function TFpGDBMIDebugger.EvaluateExpression(AWatchValue: TWatchValueBase;
+  AExpression: String; var AResText: String; out ATypeInfo: TDBGType;
+  EvalFlags: TDBGEvaluateFlags): Boolean;
+var
+  Ctx: TDbgInfoAddressContext;
+  PasExpr: TFpPascalExpression;
+  ResValue: TDbgSymbolValue;
+
+  function IsWatchValueAlive: Boolean;
+  begin
+    Result := (State in [dsPause, dsInternalPause]) and
+              (  (AWatchValue = nil) or
+                 ( (FWatchEvalList.Count > 0) and (FWatchEvalList[0] = Pointer(AWatchValue)) )
+              );
+  end;
+
+  function ResTypeName(v: TDbgSymbolValue = nil): String;
+  begin
+    if v = nil then v := ResValue;
+    if not((v.TypeInfo<> nil) and
+           GetTypeName(Result, v.TypeInfo, []))
+    then
+      Result := '';
+  end;
+
+  procedure DoPointer;
+  begin
+    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+      exit;
+    ATypeInfo := TDBGType.Create(skPointer, ResTypeName);
+    ATypeInfo.Value.AsString := AResText;
+    //ATypeInfo.Value.AsPointer := ; // ???
+  end;
+
+  procedure DoSimple;
+  begin
+    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+      exit;
+    ATypeInfo := TDBGType.Create(skSimple, ResTypeName);
+    ATypeInfo.Value.AsString := AResText;
+  end;
+
+  procedure DoEnum;
+  begin
+    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+      exit;
+    ATypeInfo := TDBGType.Create(skEnum, ResTypeName);
+    ATypeInfo.Value.AsString := AResText;
+  end;
+
+  procedure DoSet;
+  begin
+    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+      exit;
+    ATypeInfo := TDBGType.Create(skSet, ResTypeName);
+    ATypeInfo.Value.AsString := AResText;
+  end;
+
+  procedure DoRecord;
+  var
+    s2, n: String;
+    m: TDbgSymbolValue;
+    i: Integer;
+    DBGType: TGDBType;
+    f: TDBGField;
+  begin
+    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+      exit;
+    ATypeInfo := TDBGType.Create(skRecord, ResTypeName);
+    ATypeInfo.Value.AsString := AResText;
+
+    if not(defFullTypeInfo in EvalFlags) then exit;
+    for i := 0 to ResValue.MemberCount - 1 do begin
+      m := ResValue.Member[i];
+      if m = nil then Continue; // Todo: procedures.
+      case m.Kind of
+        skProcedure, skFunction: ; //  DBGType := TGDBType.Create(skProcedure, TGDBTypes.CreateFromCSV(Params))
+        else
+          begin
+            DBGType := TGDBType.Create(skSimple, ResTypeName(m));
+            PrintPasValue(s2, m, ctx.SizeOfAddress, []);
+            DBGType.Value.AsString := s2;
+            n := '';
+            if m.DbgSymbol <> nil then n := m.DbgSymbol.Name;
+            f := TDBGField.Create(n, DBGType, flPublic);
+            ATypeInfo.Fields.Add(f);
+          end;
+      end;
+    end;
+  end;
+
+  procedure DoClass;
+  var
+    m: TDbgSymbolValue;
+    s, s2, n: String;
+    DBGType: TGDBType;
+    f: TDBGField;
+    i: Integer;
+  begin
+    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+      exit;
+    //if PasExpr.ResultValue.Kind = skObject then
+    //  ATypeInfo := TDBGType.Create(skObject, ResTypeName)
+    //else
+      ATypeInfo := TDBGType.Create(skClass, ResTypeName);
+    ATypeInfo.Value.AsString := AResText;
+
+    if not(defFullTypeInfo in EvalFlags) then exit;
+    for i := 0 to ResValue.MemberCount - 1 do begin
+      m := ResValue.Member[i];
+      if m = nil then Continue; // Todo: procedures.
+      case m.Kind of
+        skProcedure, skFunction: ; //  DBGType := TGDBType.Create(skProcedure, TGDBTypes.CreateFromCSV(Params))
+        else
+          begin
+            DBGType := TGDBType.Create(skSimple, ResTypeName(m));
+            PrintPasValue(s2, m, ctx.SizeOfAddress, []);
+            DBGType.Value.AsString := s2;
+            n := '';
+            if m.DbgSymbol <> nil then n := m.DbgSymbol.Name;
+            s := '';
+            if m.ContextTypeInfo <> nil then s := m.ContextTypeInfo.Name;
+// TODO visibility // flags virtual, constructor
+            f := TDBGField.Create(n, DBGType, flPublic, [], s);
+            ATypeInfo.Fields.Add(f);
+          end;
+      end;
+    end;
+  end;
+
+begin
+  Result := False;
+  if AWatchValue <> nil then begin
+    EvalFlags := AWatchValue.EvaluateFlags;
+    AExpression := AWatchValue.Expression;
+  end;
+  if AWatchValue <> nil then
+    Ctx := GetInfoContextForContext(AWatchValue.ThreadId, AWatchValue.StackFrame)
+  else
+    Ctx := GetInfoContextForContext(CurrentThreadId, CurrentStackFrame);
+  if Ctx = nil then exit;
+
+  PasExpr := TFpPascalExpression.Create(AExpression, Ctx);
+  try
+    if not IsWatchValueAlive then exit;
+
+    if not (PasExpr.Valid and (PasExpr.ResultValue <> nil)) then
+      exit; // TODO handle error
+    if not IsWatchValueAlive then exit;
+
+    ResValue := PasExpr.ResultValue;
+
+    case PasExpr.ResultValue.Kind of
+      skUnit: ;
+      skProcedure: ;
+      skFunction: ;
+      skPointer:  DoPointer;
+      skInteger:  DoSimple;
+      skCardinal: DoSimple;
+      skBoolean:  DoSimple;
+      skChar:     DoSimple;
+      skFloat:    DoSimple;
+      skString: ;
+      skAnsiString: ;
+      skCurrency: ;
+      skVariant: ;
+      skWideString: ;
+      skEnum:      DoEnum;
+      skEnumValue: DoSimple;
+      skSet:       DoSet;
+      skRecord:    DoRecord;
+      skObject:    DoClass;
+      skClass:     DoClass;
+      skInterface: ;
+      skArray: ;
+    end;
+    if not IsWatchValueAlive then exit;
+
+    if ATypeInfo <> nil then begin
+      Result := True;
+      debugln(['TFPGDBMIWatches.InternalRequestData   GOOOOOOD']);
+      if AWatchValue <> nil then begin;
+        AWatchValue.Value    := AResText;
+        AWatchValue.TypeInfo := ATypeInfo;
+        AWatchValue.Validity := ddsValid;
+      end;
+    end;
+
+  finally
+    PasExpr.Free;
+  end;
+end;
+
 function TFpGDBMIDebugger.CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging;
 begin
   Result := TFpGDBMIDebuggerCommandStartDebugging.Create(Self, AContinueCommand);
@@ -1422,9 +1466,16 @@ begin
   Result := 'GNU remote debugger (with fpdebug)';
 end;
 
+constructor TFpGDBMIDebugger.Create(const AExternalDebugger: String);
+begin
+  FWatchEvalList := TList.Create;
+  inherited Create(AExternalDebugger);
+end;
+
 destructor TFpGDBMIDebugger.Destroy;
 begin
   UnLoadDwarf;
+  FWatchEvalList.Free;
   inherited Destroy;
 end;
 
