@@ -783,7 +783,6 @@ type
     function GetDataAddress: TFpDbgMemLocation; override;
     function GetDataSize: Integer; override;
     function GetSize: Integer; override;
-    function GetMemberCount: Integer; override;
   end;
 
   { TDbgDwarfStructTypeCastSymbolValue }
@@ -2029,7 +2028,7 @@ begin
 
     if i2 < Cnt then begin
       FMemberCount := i2;
-      debugln(['TDbgDwarfSetSymbolValue.InitMap  not enough members']);
+      debugln(FPDBG_DWARF_WARNINGS, ['TDbgDwarfSetSymbolValue.InitMap  not enough members']);
     end;
   end
   else begin
@@ -2448,15 +2447,6 @@ begin
     Result := -1;
 end;
 
-function TDbgDwarfStructSymbolValue.GetMemberCount: Integer;
-begin
-  Result := 0;
-  if (Kind=skClass) and (GetAsCardinal = 0) then
-    exit;
-
-  Result := inherited GetMemberCount;
-end;
-
 { TDbgDwarfStructSymbolValue }
 
 procedure TDbgDwarfStructTypeCastSymbolValue.Reset;
@@ -2627,15 +2617,22 @@ begin
 end;
 
 function TDbgDwarfStructTypeCastSymbolValue.GetMemberCount: Integer;
+var
+  ti: TDbgSymbol;
 begin
   Result := 0;
   if not HasTypeCastInfo then
     exit;
 
-  if (Kind=skClass) and (GetAsCardinal = 0) then
-    exit;
-
   Result := FTypeCastTargetType.MemberCount;
+
+  ti := FTypeCastTargetType;
+  //TODO: cache result
+  if ti.Kind in [skClass, skObject] then
+    while ti.TypeInfo <> nil do begin
+      ti := ti.TypeInfo;
+      Result := Result + ti.MemberCount;
+    end;
 end;
 
 { TDbgDwarfBooleanSymbolValue }
@@ -6081,7 +6078,7 @@ begin
      FInheritanceInfo.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint)
   then begin
     ParentInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
-    DebugLn(FPDBG_DWARF_SEARCH, ['Inherited from ', dbgs(ParentInfo.FInformationEntry, FwdCompUint) ]);
+    //DebugLn(FPDBG_DWARF_SEARCH, ['Inherited from ', dbgs(ParentInfo.FInformationEntry, FwdCompUint) ]);
     ti := TDbgDwarfIdentifier.CreateSubClass('', ParentInfo);
     ParentInfo.ReleaseReference;
   end;
@@ -8236,6 +8233,7 @@ else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
       CU2 := FDwarf.CompilationUnits[i];
       if CU2 = CU then
         continue;
+      //DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier search UNIT Name=', CU2.FileName]);
 
       InfoEntry.ReleaseReference;
       InfoEntry := TDwarfInformationEntry.Create(CU2, nil);
@@ -8258,6 +8256,8 @@ else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
           // only variables are marked "external", but types not / so we may need all top level
           Result.ReleaseReference;
           Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
+          //DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier MAYBE FOUND Name=', CU2.FileName]);
+
           // DW_AT_visibility ?
           if InfoEntry.ReadValue(DW_AT_external, ExtVal) then
             if ExtVal <> 0 then
@@ -8271,7 +8271,7 @@ else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
   finally
     if (Result = nil) or (InfoEntry = nil)
     then DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier NOT found  Name=', AName])
-    else DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier found Scope=', dbgs(InfoEntry.FScope, TDbgDwarfIdentifier(Result).FCU), '  Result=', DbgSName(Result), ' ', Result.Name]);
+    else DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier(',AName,') found Scope=', dbgs(TDbgDwarfIdentifier(Result).FInformationEntry.FScope, TDbgDwarfIdentifier(Result).FCU), '  Result=', DbgSName(Result), ' ', Result.Name, ' in ', TDbgDwarfIdentifier(Result).FCU.FileName]);
     ReleaseRefAndNil(InfoEntry);
   end;
 end;

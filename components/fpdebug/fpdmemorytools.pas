@@ -201,6 +201,7 @@ type
     function ReadAddress(const ALocation: TFpDbgMemLocation; ASize: Cardinal): TFpDbgMemLocation;
     function ReadAddressEx(const ALocation: TFpDbgMemLocation;  AnAddressSpace: TDbgPtr; ASize: Cardinal): TFpDbgMemLocation;
 
+    // ALocation and AnAddress MUST NOT be the same variable on the callers side
     function ReadAddress    (const ALocation: TFpDbgMemLocation; ASize: Cardinal;
                              out AnAddress: TFpDbgMemLocation): Boolean; inline;
     //function ReadAddress    (const ALocation: TFpDbgMemLocation; ASize: Cardinal;

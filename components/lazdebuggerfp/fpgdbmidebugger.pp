@@ -1354,13 +1354,50 @@ var
   procedure DoClass;
   var
     m: TDbgSymbolValue;
-    s, s2, n: String;
+    s, s2, n, CastName: String;
     DBGType: TGDBType;
     f: TDBGField;
     i: Integer;
+    ClassAddr, CNameAddr: TFpDbgMemLocation;
+    NameLen: QWord;
+    PasExpr2: TFpPascalExpression;
   begin
+    if (ResValue.Kind = skClass) and (ResValue.AsCardinal = 0) then begin
+      if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+        exit;
+      ATypeInfo := TDBGType.Create(skSimple, ResTypeName);
+      ATypeInfo.Value.AsString := AResText;
+      Result := True;
+      exit;
+    end;
+
+    CastName := '';
+    if (defClassAutoCast in EvalFlags) then begin
+      if FMemManager.ReadAddress(ResValue.DataAddress, Ctx.SizeOfAddress, ClassAddr) then begin
+        ClassAddr.Address := ClassAddr.Address + 3 * Ctx.SizeOfAddress;
+        if FMemManager.ReadAddress(ClassAddr, Ctx.SizeOfAddress, CNameAddr) then begin
+          if (FMemManager.ReadUnsignedInt(CNameAddr, 1, NameLen)) then
+            if NameLen > 0 then begin
+              SetLength(CastName, NameLen);
+              CNameAddr.Address := CNameAddr.Address + 1;
+              FMemManager.ReadMemory(CNameAddr, NameLen, @CastName[1]);
+              PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', Ctx);
+              if PasExpr2.Valid and (PasExpr2.ResultValue <> nil) then begin
+                PasExpr.Free;
+                PasExpr := PasExpr2;
+                ResValue := PasExpr.ResultValue;
+              end
+              else
+                PasExpr2.Free;
+            end;
+        end;
+      end;
+    end;
+
+
     if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
       exit;
+    if CastName <> '' then AResText := CastName + AResText;
     //if PasExpr.ResultValue.Kind = skObject then
     //  ATypeInfo := TDBGType.Create(skObject, ResTypeName)
     //else

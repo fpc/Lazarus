@@ -525,8 +525,8 @@ function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
     s2 := LineEnding;
     if AFlags <> [] then s2 := ' ';;
     fl := [ppvSkipClassBody];
-    if ppvSkipClassBody in AFlags then
-      fl := [ppvSkipClassBody, ppvSkipRecordBody];
+    //if ppvSkipClassBody in AFlags then
+    //  fl := [ppvSkipClassBody, ppvSkipRecordBody];
 
     APrintedValue := '';
     for i := 0 to AResValue.MemberCount-1 do begin
