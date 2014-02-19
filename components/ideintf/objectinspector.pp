@@ -1347,18 +1347,23 @@ begin
   if CurRow.Editor.GetVisualValue=NewValue then exit;
 
   RootDesigner := FindRootDesigner(FCurrentEditorLookupRoot);
-  if not (RootDesigner is TComponentEditorDesigner) then exit;
-  CompEditDsg := TComponentEditorDesigner(RootDesigner);
-  if CompEditDsg.IsUndoLocked then Exit;
+  if (RootDesigner is TComponentEditorDesigner) then begin
+    CompEditDsg := TComponentEditorDesigner(RootDesigner);
+    if CompEditDsg.IsUndoLocked then Exit;
+  end else
+    CompEditDsg := nil;
 
   // store old values for undo
   isExcept := false;
   Editor:=CurRow.Editor;
-  SetLength(oldVal, Editor.PropCount);
-  prpInfo := Editor.GetPropInfo;
-  if prpInfo<>nil then begin
-    for i := 0 to Editor.PropCount - 1 do
-      oldVal[i] := GetPropValue(Editor,i);
+  prpInfo := nil;
+  if CompEditDsg<>nil then begin
+    SetLength(oldVal, Editor.PropCount);
+    prpInfo := Editor.GetPropInfo;
+    if prpInfo<>nil then begin
+      for i := 0 to Editor.PropCount - 1 do
+        oldVal[i] := GetPropValue(Editor,i);
+    end;
   end;
 
   OldChangeStep:=fChangeStep;
@@ -1384,7 +1389,7 @@ begin
     end;
 
     // add Undo action
-    if not isExcept then
+    if (not isExcept) and (CompEditDsg<>nil) then
     begin
       for i := 0 to Editor.PropCount - 1 do
       begin
