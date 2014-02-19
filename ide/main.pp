@@ -671,6 +671,7 @@ type
     // methods for start
     procedure StartProtocol;
     procedure LoadGlobalOptions;
+    procedure SetupInteractive;
     procedure SetupMainMenu; override;
     procedure SetupStandardIDEMenuItems;
     procedure SetupStandardProjectTypes;
@@ -1389,6 +1390,81 @@ begin
   CreateDirUTF8(GetProjectSessionsConfigPath);
 end;
 
+procedure TMainIDE.SetupInteractive;
+var
+  CfgCache: TFPCTargetConfigCache;
+  OldLazDir: String;
+  Note: string;
+begin
+  {$IFDEF DebugSearchFPCSrcThread}
+  ShowSetupDialog:=true;
+  {$ENDIF}
+
+  // check lazarus directory
+  if (not ShowSetupDialog)
+  and (CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note)<>sddqCompatible)
+  then begin
+    debugln(['Warning: incompatible Lazarus directory: ',EnvironmentOptions.GetParsedLazarusDirectory]);
+    ShowSetupDialog:=true;
+  end;
+
+  // check compiler
+  if (not ShowSetupDialog)
+  and (CheckCompilerQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
+                       CodeToolBoss.FPCDefinesCache.TestFilename)=sddqInvalid)
+  then begin
+    debugln(['Warning: invalid compiler: ',EnvironmentOptions.GetParsedCompilerFilename]);
+    ShowSetupDialog:=true;
+  end;
+
+  // check FPC source directory
+  if (not ShowSetupDialog) then
+  begin
+    CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+      EnvironmentOptions.GetParsedCompilerFilename,'','','',true);
+    if CheckFPCSrcDirQuality(EnvironmentOptions.GetParsedFPCSourceDirectory,Note,
+      CfgCache.GetFPCVer)=sddqInvalid
+    then begin
+      debugln(['Warning: invalid fpc source directory: ',EnvironmentOptions.GetParsedFPCSourceDirectory]);
+      ShowSetupDialog:=true;
+    end;
+  end;
+
+  // check debugger
+  if (not ShowSetupDialog)
+  and (CheckDebuggerQuality(EnvironmentOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
+  then begin
+    debugln(['Warning: missing GDB exe',EnvironmentOptions.GetParsedLazarusDirectory]);
+    ShowSetupDialog:=true;
+  end;
+
+  // show setup dialog
+  if ShowSetupDialog then begin
+    OldLazDir:=EnvironmentOptions.LazarusDirectory;
+    if ShowInitialSetupDialog<>mrOk then begin
+      Application.Terminate;
+      exit;
+    end;
+    EnvironmentOptions.Save(true);
+    if OldLazDir<>EnvironmentOptions.LazarusDirectory then begin
+      // fetch new translations
+      CollectTranslations(EnvironmentOptions.GetParsedLazarusDirectory);
+      TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
+                               EnvironmentOptions.LanguageID);
+    end;
+  end;
+
+  // set global macros
+  CodeToolBoss.SetGlobalValue(
+    ExternalMacroStart+'LazarusDir',EnvironmentOptions.GetParsedLazarusDirectory);
+  CodeToolBoss.SetGlobalValue(
+    ExternalMacroStart+'ProjPath',VirtualDirectory);
+  CodeToolBoss.SetGlobalValue(
+    ExternalMacroStart+'LCLWidgetType',LCLPlatformDirNames[GetDefaultLCLWidgetType]);
+  CodeToolBoss.SetGlobalValue(
+    ExternalMacroStart+'FPCSrcDir',EnvironmentOptions.GetParsedFPCSourceDirectory);
+end;
+
 constructor TMainIDE.Create(TheOwner: TComponent);
 var
   Layout: TSimpleWindowLayout;
@@ -1429,9 +1505,6 @@ begin
   if EnvironmentOptions.SingleTaskBarButton then
     Application.TaskBarBehavior := tbSingleButton;
 
-  // set the IDE mode to none (= editing mode)
-  ToolStatus:=itNone;
-
   // setup code templates
   SetupCodeMacros;
 
@@ -1440,6 +1513,11 @@ begin
     Application.Terminate;
     exit;
   end;
+
+  // setup interactive if neccessary
+  SetupInteractive;
+  if Application.Terminated then exit;
+
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create CODETOOLS');{$ENDIF}
 
   {$IFDEF EnableNewExtTools}
@@ -6361,7 +6439,8 @@ begin
   IncreaseCompilerParseStamp;
 
   // switch codetools to virtual project directory
-  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=VirtualDirectory;
+  CodeToolBoss.SetGlobalValue(
+    ExternalMacroStart+'ProjPath',VirtualDirectory);
   EnvironmentOptions.LastSavedProjectFile:='';
 
   // create new project
@@ -9831,13 +9910,8 @@ function TMainIDE.InitCodeToolBoss: boolean;
 //  - sets a basic set of compiler macros
 var
   AFilename: string;
-  InteractiveSetup: boolean;
-  Note: string;
-  CfgCache: TFPCTargetConfigCache;
-  OldLazDir: String;
 begin
   Result:=true;
-  InteractiveSetup:=true;
   OpenEditorsOnCodeToolChange:=false;
 
   // load caches
@@ -9859,83 +9933,9 @@ begin
 
   CodeToolsOpts.AssignTo(CodeToolBoss);
 
-  if not InteractiveSetup then begin
-    if (not FileExistsCached(EnvironmentOptions.GetParsedCompilerFilename)) then begin
-      DebugLn('');
-      DebugLn('NOTE: invalid compiler filename! (see Tools / Options ... / Environment / Files)');
-    end;
-    if not DirPathExists(EnvironmentOptions.GetParsedLazarusDirectory) then begin
-      DebugLn('');
-      DebugLn('NOTE: Lazarus source directory not set!  (see Tools / Options ... / Environment / Files)');
-    end;
-    if (EnvironmentOptions.GetParsedFPCSourceDirectory='') then begin
-      DebugLn('');
-      DebugLn('NOTE: FPC source directory not set! (see Tools / Options ... / Environment / Files)');
-    end;
-  end;
-
   // create a test unit needed to get from the compiler all macros and search paths
   CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
   MainBuildBoss.UpdateEnglishErrorMsgFilename;
-
-  if InteractiveSetup then
-  begin
-    {$IFDEF DebugSearchFPCSrcThread}
-    ShowSetupDialog:=true;
-    {$ENDIF}
-
-    // check lazarus directory
-    if (not ShowSetupDialog)
-    and (CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note)<>sddqCompatible)
-    then begin
-      debugln(['Warning: incompatible Lazarus directory: ',EnvironmentOptions.GetParsedLazarusDirectory]);
-      ShowSetupDialog:=true;
-    end;
-
-    // check compiler
-    if (not ShowSetupDialog)
-    and (CheckCompilerQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
-                         CodeToolBoss.FPCDefinesCache.TestFilename)=sddqInvalid)
-    then begin
-      debugln(['Warning: invalid compiler: ',EnvironmentOptions.GetParsedCompilerFilename]);
-      ShowSetupDialog:=true;
-    end;
-
-    // check FPC source directory
-    if (not ShowSetupDialog) then
-    begin
-      CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
-        EnvironmentOptions.GetParsedCompilerFilename,'','','',true);
-      if CheckFPCSrcDirQuality(EnvironmentOptions.GetParsedFPCSourceDirectory,Note,
-        CfgCache.GetFPCVer)=sddqInvalid
-      then begin
-        debugln(['Warning: invalid fpc source directory: ',EnvironmentOptions.GetParsedFPCSourceDirectory]);
-        ShowSetupDialog:=true;
-      end;
-    end;
-
-    // check debugger
-    if (not ShowSetupDialog)
-    and (CheckDebuggerQuality(EnvironmentOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
-    then begin
-      debugln(['Warning: missing GDB exe',EnvironmentOptions.GetParsedLazarusDirectory]);
-      ShowSetupDialog:=true;
-    end;
-
-    // show setup dialog
-    if ShowSetupDialog then begin
-      OldLazDir:=EnvironmentOptions.LazarusDirectory;
-      if ShowInitialSetupDialog<>mrOk then
-        exit(false);
-      EnvironmentOptions.Save(true);
-      if OldLazDir<>EnvironmentOptions.LazarusDirectory then begin
-        // fetch new translations
-        CollectTranslations(EnvironmentOptions.GetParsedLazarusDirectory);
-        TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
-                                 EnvironmentOptions.LanguageID);
-      end;
-    end;
-  end;
 
   // set global macros
   with CodeToolBoss.GlobalValues do begin

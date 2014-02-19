@@ -465,6 +465,8 @@ type
     property DestPosY: Integer read GetDestPosY;
   end;
 
+  { TIDECodeMacro - templates for sources, invoked by Ctrl-j }
+
   TIDECodeMacroGetValueProc = function(const Parameter: string;
                       InteractiveValue: TPersistent;
                       SrcEdit: TSourceEditorInterface;
@@ -484,8 +486,6 @@ type
                       SrcEdit: TSourceEditorInterface;
                       var Value, ErrorMsg: string;
                       TemplateParser: TIDETemplateParser): boolean of object;
-
-  { TIDECodeMacro }
 
   TIDECodeMacro = class
   private
