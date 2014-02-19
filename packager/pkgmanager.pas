@@ -1058,7 +1058,7 @@ var
     NewUnitName: String;
   begin
     AProject:=Project1;
-    if (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
+    if (pfMainUnitIsPascalSource in AProject.Flags)
     and (AProject.MainUnitInfo<>nil) then begin
       OldUnitName:=OldPkgName;
       NewUnitName:=APackage.Name;
@@ -1545,7 +1545,8 @@ procedure TPkgManager.AddUnitToProjectMainUsesSection(AProject: TProject;
   const AnUnitName, AnUnitInFilename: string);
 begin
   // add unit to project main source file
-  if (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
+  if (pfMainUnitIsPascalSource in AProject.Flags)
+  and (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
   and (AProject.MainUnitInfo<>nil) then begin
     //debugln('TPkgManager.AddUnitToProjectMainUsesSection B ',AnUnitName);
     if (AnUnitName<>'') then begin
@@ -4699,7 +4700,7 @@ begin
   Project1.RemoveRequiredDependency(ADependency);
   //debugln('TPkgManager.OnProjectInspectorRemoveDependency A');
   if (Project1.MainUnitID>=0)
-  and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
+  and (pfMainUnitIsPascalSource in Project1.Flags)
   then begin
     MainIDEInterface.SaveSourceEditorChangesToCodeCache(nil);
     ShortUnitName:=ADependency.PackageName;

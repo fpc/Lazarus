@@ -1388,6 +1388,8 @@ begin
   CompileProgress.SetEnabled(EnvironmentOptions.ShowCompileDialog);
 
   CreateDirUTF8(GetProjectSessionsConfigPath);
+
+  RunBootHandlers(libhEnvironmentOptionsLoaded);
 end;
 
 procedure TMainIDE.SetupInteractive;
@@ -5013,7 +5015,7 @@ var
   begin
     Result := True;
     if (AProject.MainUnitID < 0) or
-      (not (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)) then
+      (not (pfMainUnitHasCreateFormStatements in AProject.Flags)) then
       Exit;
     OldList := AProject.GetAutoCreatedFormsList;
     if (OldList = nil) then
@@ -5021,10 +5023,10 @@ var
     try
       if OldList.Count = AProject.TmpAutoCreatedForms.Count then
       begin
-
         { Just exit if the form list is the same }
         i := OldList.Count - 1;
-        while (i >= 0) and (SysUtils.CompareText(OldList[i], AProject.TmpAutoCreatedForms[i]) = 0) do
+        while (i >= 0)
+        and (SysUtils.CompareText(OldList[i], AProject.TmpAutoCreatedForms[i]) = 0) do
           Dec(i);
         if i < 0 then
           Exit;

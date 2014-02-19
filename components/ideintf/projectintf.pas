@@ -238,7 +238,7 @@ type
     pfSaveClosedUnits,     // save info about closed files (i.e. once closed the cursor position is lost)
     pfSaveOnlyProjectUnits, // save no info about foreign files (not part of project)
     pfMainUnitIsPascalSource,// main unit is pascal, even it does not end in .pas/.pp
-    pfMainUnitHasUsesSectionForAllUnits,// add/remove pascal units to main uses section
+    pfMainUnitHasUsesSectionForAllUnits,// add new units to main uses section
     pfMainUnitHasCreateFormStatements,// add/remove Application.CreateForm statements
     pfMainUnitHasTitleStatement,// add/remove Application.Title:= statements
     pfRunnable, // project can be run

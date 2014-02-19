@@ -363,7 +363,8 @@ var
 
 type
   TLazarusIDEBootHandlerType = (
-    libhTransferMacrosCreated  // called after IDEMacros were created
+    libhTransferMacrosCreated,  // called after IDEMacros were created
+    libhEnvironmentOptionsLoaded  // called after IDE loaded environment options
     );
 
 procedure AddBootHandler(ht: TLazarusIDEBootHandlerType; const OnBoot: TProcedure);

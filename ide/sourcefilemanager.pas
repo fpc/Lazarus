@@ -5557,7 +5557,7 @@ begin
                           ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename)));
         // remove from project's unit section
         if (AProject.MainUnitID>=0)
-        and (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
+        and (pfMainUnitIsPascalSource in AProject.Flags)
         then begin
           ShortUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
           //debugln(['TLazSourceFileManager.RemoveUnitsFromProject UnitName=',ShortUnitName]);
