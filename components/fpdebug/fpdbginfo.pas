@@ -444,6 +444,8 @@ begin
 end;
 
 procedure TFpDbgCircularRefCountedObject.ReleaseCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
+var
+  i: Integer;
 begin
   Assert(FCircleRefCount > 0, 'ReleaseCirclularReference > 0');
   if CircleBackRefsActive then begin
@@ -451,8 +453,10 @@ begin
     ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
   end
   else begin
+    i := RefCount;
     ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
-    dec(FCircleRefCount);
+    if i > 1 then // if i was 1, then self is destroyed
+      dec(FCircleRefCount);
   end;
 end;
 

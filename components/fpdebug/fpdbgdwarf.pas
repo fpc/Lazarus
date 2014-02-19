@@ -871,7 +871,7 @@ type
   protected
 // TODO: InitLocationParser may fail
     procedure InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression; {%H-}AnObjectDataAddress: TFpDbgMemLocation = 0); virtual;
-    function  LocationFromTag(ATag: Cardinal; out AnAddress: TDbgPtr;
+    function  LocationFromTag(ATag: Cardinal; out AnAddress: TFpDbgMemLocation;
                               AnObjectDataAddress: TFpDbgMemLocation;
                               AnInformationEntry: TDwarfInformationEntry = nil
                              ): Boolean;
@@ -2929,10 +2929,10 @@ end;
 
 procedure TDbgDwarfIdentifierParameter.AddressNeeded;
 var
-  t: TDbgPtr;
+  t: TFpDbgMemLocation;
 begin
   if LocationFromTag(DW_AT_location, t, InvalidLoc) then
-    SetAddress(TargetLoc(t))
+    SetAddress(t)
   else
     SetAddress(InvalidLoc);
 end;
@@ -2946,10 +2946,10 @@ end;
 
 procedure TDbgDwarfIdentifierVariable.AddressNeeded;
 var
-  t: TDbgPtr;
+  t: TFpDbgMemLocation;
 begin
   if LocationFromTag(DW_AT_location, t, InvalidLoc) then
-    SetAddress(TargetLoc(t))
+    SetAddress(t)
   else
     SetAddress(InvalidLoc);
 end;
@@ -5883,10 +5883,10 @@ end;
 
 procedure TDbgDwarfIdentifierMember.AddressNeeded;
 var
-  t: TDbgPtr;
+  t: TFpDbgMemLocation;
 begin
   if LocationFromTag(DW_AT_data_member_location, t, InvalidLoc) then
-    SetAddress(TargetLoc(t))
+    SetAddress(t)
   else
     SetAddress(InvalidLoc);
 end;
@@ -5963,7 +5963,7 @@ end;
 function TDbgDwarfIdentifierStructure.GetDataAddress(var AnAddress: TFpDbgMemLocation;
   ATargetType: TDbgDwarfTypeIdentifier): Boolean;
 var
-  t: TDbgPtr;
+  t: TFpDbgMemLocation;
 begin
   if ATargetType = Self then begin
     Result := True;
@@ -5977,7 +5977,7 @@ begin
   if not Result then
     exit;
 
-  AnAddress := TargetLoc(t);
+  AnAddress := t;
   Result := inherited GetDataAddress(AnAddress, ATargetType);
 end;
 
@@ -6368,7 +6368,7 @@ procedure TDbgDwarfIdentifier.InitLocationParser(const ALocationParser: TDwarfLo
 begin
 end;
 
-function TDbgDwarfIdentifier.LocationFromTag(ATag: Cardinal; out AnAddress: TDbgPtr;
+function TDbgDwarfIdentifier.LocationFromTag(ATag: Cardinal; out AnAddress: TFpDbgMemLocation;
   AnObjectDataAddress: TFpDbgMemLocation; AnInformationEntry: TDwarfInformationEntry): Boolean;
 var
   Val: TByteDynArray;
@@ -6377,6 +6377,7 @@ begin
   //debugln(['TDbgDwarfIdentifier.LocationFromTag', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
 
   Result := False;
+  AnAddress := InvalidLoc;
   if AnInformationEntry = nil then
     AnInformationEntry := FInformationEntry;
 
@@ -6397,9 +6398,16 @@ begin
   LocationParser.Evaluate;
 
   if LocationParser.ResultKind in [lseValue] then begin
-    AnAddress := LocationParser.ResultData;
+    AnAddress := TargetLoc(LocationParser.ResultData);
     Result := True;
-  end;
+  end
+  else
+  if LocationParser.ResultKind in [lseRegister] then begin
+    AnAddress := ConstLoc(LocationParser.ResultData);
+    Result := True;
+  end
+  else
+    debugln(['TDbgDwarfIdentifier.LocationFromTag  FAILED']); // TODO
 
   LocationParser.Free;
 end;
