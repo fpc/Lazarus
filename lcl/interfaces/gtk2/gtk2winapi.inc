@@ -6286,6 +6286,23 @@ begin
   begin
     Inc(gdkRect.X, PaintWidget^.Allocation.x);
     Inc(gdkRect.Y, PaintWidget^.Allocation.y);
+    // issue #25572
+    if GTK_IS_FIXED(PaintWidget) and GTK_IS_EVENT_BOX(PaintWidget^.parent) then
+    begin
+      Inc(gdkRect.Width, PaintWidget^.Allocation.x);
+      Inc(gdkRect.Height, PaintWidget^.Allocation.y);
+      // DebugLn('#25572 PATCH FOR ',dbgsName(LCLObject),' GdkRect=',dbgs(gdkRect),' Alloc=',dbgs(TGdkRectangle(PaintWidget^.allocation)));
+      {GtkWidget isn't yet allocated to LCL size, do not call invalid area update - update complete gtkwidget}
+      if (gdkRect.Width > PaintWidget^.allocation.width) or (gdkRect.Height > PaintWidget^.allocation.Height) then
+      begin
+        // DebugLn('*** WARNING: Rect to paint is bigger than widget Width diff=',dbgs(gdkRect.Width - PaintWidget^.allocation.width),
+        //  ' Height diff=',dbgs(gdkRect.Height - PaintWidget^.allocation.height));
+        if bErase then
+          gtk_widget_queue_clear(PaintWidget);
+        gtk_widget_queue_draw(PaintWidget);
+        exit;
+      end;
+    end;
   end;
   if (LCLObject is TScrollingWinControl) and GTK_IS_SCROLLED_WINDOW(Widget) then
   begin
@@ -6306,10 +6323,11 @@ begin
 
   if bErase then
     gtk_widget_queue_clear_area(PaintWidget,
-                              gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
+      gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
 
   gtk_widget_queue_draw_area(PaintWidget,
-                             gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
+    gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
+
   //DebugLn(['TGtk2WidgetSet.InvalidateRect ',GetWidgetDebugReport(Widget),' IsAPI=',GtkWidgetIsA(PGTKWidget(Widget),GTKAPIWidget_GetType)]);
   if GtkWidgetIsA(PGTKWidget(Widget),GTKAPIWidget_GetType) then
     GTKAPIWidget_InvalidateCaret(PGTKAPIWidget(Widget));
