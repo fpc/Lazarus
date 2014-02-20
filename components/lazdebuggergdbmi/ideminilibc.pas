@@ -61,8 +61,6 @@ type
     c_ospeed : speed_t;
   end;
 
-function __errno_location: pcint; cdecl;external clib name '__errno_location';
-function errno : error_t;
 function tcgetattr(__fd:cint; __termios_p: Ptermios):cint;cdecl;external clib name 'tcgetattr';
 function tcsetattr(__fd:cint; __optional_actions:cint; __termios_p: Ptermios):cint;cdecl;external clib name 'tcsetattr';
 function __read(Handle: cint; var Buffer; Count: size_t): ssize_t; cdecl;external clib name 'read';
@@ -75,11 +73,6 @@ function ptsname_r(__fd:cint; __buf:Pchar; __buflen:size_t):cint;cdecl;external 
 function fcntl(Handle: cint; Command: cint; Arg: clong): cint; cdecl;external clib name 'fcntl';
 
 implementation
-
-function errno : error_t;
-begin
-  Result:=__errno_location()^;
-end;
 
 end.
 

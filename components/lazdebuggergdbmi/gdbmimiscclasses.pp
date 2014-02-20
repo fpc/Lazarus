@@ -34,7 +34,7 @@ interface
 uses
   SysUtils,
   {$IFDEF DBG_ENABLE_TERMINAL}
-  IDEMiniLibC, Classes,
+  IDEMiniLibC, BaseUnix, Classes,
   {$ENDIF}
   DebugUtils, DbgIntfDebuggerBase;
 
