@@ -580,9 +580,22 @@ begin
         if Details.Element in [teButton, teComboBox] then
           QPalette_setColor(Palette, ATextPalette, @AQColor); // issue #25253
 
+        if Context.font.Angle <> 0 then
+        begin
+          Context.Translate(R.Left, R.Top);
+          Context.Rotate(-0.1 * Context.Font.Angle);
+          OffsetRect(R, -R.Left, -R.Top);
+        end;
+
         QStyle_drawItemText(Style, Context.Widget, @R,
           DTFlagsToQtFlags(Flags), Palette,
           not IsDisabled(Details), @W, ATextPalette);
+
+        if Context.font.Angle <> 0 then
+        begin
+          Context.Translate(-R.Left, -R.Top);
+          Context.Rotate(0.1 * Context.Font.Angle);
+        end;
         Context.SetBkMode(AOldMode);
       finally
         QPalette_destroy(Palette);
