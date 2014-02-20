@@ -42,11 +42,11 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileUtil, LazUTF8, LCLType,
-  Controls, Forms, Buttons, StdCtrls, Dialogs, ExtCtrls, LCLProc, ButtonPanel,
-  IDEMsgIntf, IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs,
-  IDECommands, FileProcs, TransferMacros, LazarusIDEStrConsts, EnvironmentOpts,
-  KeyMapping, IDEProcs
+  Classes, SysUtils, FileUtil, LazUTF8, LCLType, Controls, Forms, Buttons,
+  StdCtrls, Dialogs, ExtCtrls, LCLProc, ButtonPanel, IDEMsgIntf,
+  IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs, IDECommands, IDEUtils,
+  FileProcs, TransferMacros, LazarusIDEStrConsts, EnvironmentOpts, KeyMapping,
+  IDEProcs
   {$IFDEF EnableNewExtTools}
   ,LazConfigStorage, contnrs
   {$ELSE}
@@ -996,5 +996,10 @@ begin
     ModalResult:=mrCancel;
   end;
 end;
+
+initialization
+  {$IFDEF EnableNewExtTools}
+  ExternalToolMenuItemsClass := TExternalToolMenuItems;
+  {$ENDIF}
 
 end.

@@ -17,7 +17,11 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, PropEdits, LazHelpHTML,
-  IDEOptionsIntf, CompOptsIntf, ProjectIntf, SrcEditorIntf;
+  IDEOptionsIntf, CompOptsIntf, ProjectIntf,
+  {$IFDEF EnableNewExtTools}
+  IDEExternToolIntf,
+  {$ENDIF}
+  SrcEditorIntf;
 
 type
   // open file flags

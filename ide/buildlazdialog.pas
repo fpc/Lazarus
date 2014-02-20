@@ -740,7 +740,7 @@ begin
       debugln(['CreateAppleBundle CreateAppBundleSymbolicLink failed']);
       if IDEMessagesWindow<>nil then
         {$IFDEF EnableNewExtTools}
-        IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle symlink to '+TargetFile);
+        IDEMessagesWindow.AddCustomMessage(mluError,'failed to create application bundle symlink to '+fTargetFilename);
         {$ELSE}
         IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+fTargetFilename,fTargetDir,-1);
         {$ENDIF}

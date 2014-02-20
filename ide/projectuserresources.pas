@@ -35,10 +35,14 @@ unit ProjectUserResources;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Laz2_XMLCfg, Process, LCLProc,
-  Controls, Graphics, Forms, CodeToolManager, FileProcs, LazConf, LResources,
-  ProjectIntf, ProjectResourcesIntf, IDEMsgIntf, MacroIntf, LazarusIDEStrConsts,
-  resource, bitmapresource, groupresource, groupiconresource, groupcursorresource;
+  Classes, SysUtils, FileUtil, Laz2_XMLCfg, Process, LCLProc, Controls,
+  Graphics, Forms, CodeToolManager, FileProcs, LazConf, LResources, ProjectIntf,
+  ProjectResourcesIntf, IDEMsgIntf, MacroIntf,
+  {$IFDEF EnableNewExtTools}
+  IDEExternToolIntf,
+  {$ENDIF}
+  LazarusIDEStrConsts, resource, bitmapresource, groupresource,
+  groupiconresource, groupcursorresource;
    
 type
   TUserResourceType = (

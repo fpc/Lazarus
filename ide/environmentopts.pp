@@ -180,7 +180,7 @@ type
   end;
   TExternalToolMenuItemsClass = class of TBaseExternalToolMenuItems;
 var
-  ExternalToolMenuItemsClass: TExternalToolMenuItemsClass; // set by ExtToolDialog
+  ExternalToolMenuItemsClass: TExternalToolMenuItemsClass; // set by ExtToolEditDlg to TExternalToolMenuItems
 {$ELSE}
 type
   TBaseExternalToolList = class(TList)
@@ -353,7 +353,7 @@ type
     
     // external tools
     {$IFDEF EnableNewExtTools}
-    fExternalToolMenuItems: TBaseExternalToolMenuItems;
+    fExternalToolMenuItems: TBaseExternalToolMenuItems; // see ExtToolEditDlg.TExternalToolMenuItems
     {$ELSE}
     fExternalTools: TBaseExternalToolList;
     {$ENDIF}
@@ -959,6 +959,7 @@ begin
   // external tools
   {$IFDEF EnableNewExtTools}
   fExternalToolMenuItems:=ExternalToolMenuItemsClass.Create;
+  debugln(['TEnvironmentOptions.Create ',DbgSName(fExternalToolMenuItems),' Class=',DbgSName(ExternalToolMenuItemsClass)]);
   {$ELSE}
   fExternalTools:=ExternalToolListClass.Create;
   {$ENDIF}
