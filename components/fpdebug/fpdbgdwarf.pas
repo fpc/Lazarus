@@ -2895,14 +2895,8 @@ end;
 
 function TDbgDwarfSymbolValue.GetContextTypeInfo: TDbgSymbol;
 begin
-  if (FValueSymbol = nil) or (FValueSymbol.StructureValueInfo = nil) then
-    Result := nil
-  else
-  if FValueSymbol.StructureValueInfo is TDbgDwarfValueIdentifier then
-    Result := TDbgDwarfValueIdentifier(FValueSymbol.StructureValueInfo).TypeInfo
-  else
-  if FValueSymbol.StructureValueInfo is TDbgDwarfStructTypeCastSymbolValue then
-    Result := TDbgDwarfStructTypeCastSymbolValue(FValueSymbol.StructureValueInfo).TypeInfo
+  if (FValueSymbol <> nil) and (FValueSymbol.ParentTypeInfo <> nil) then
+    Result := FValueSymbol.ParentTypeInfo
   else
     Result := nil; // internal error
 end;
