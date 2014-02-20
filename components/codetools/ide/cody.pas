@@ -10,7 +10,8 @@ uses
   PPUListDlg, CodyStrConsts, AddAssignMethodDlg, CodyCtrls, CodyFrm, 
   CodyRegistration, DeclareVarDlg, CodyUtils, CodyNodeInfoDlg, 
   CodyCopyDeclaration, AddWithBlockDlg, CodyIdentifiersDlg, CodyMiscOptsFrame, 
-  CodyOpts, TemplateIDEDockableWindow, NewIDEWndDlg, LazarusPackageIntf;
+  CodyOpts, TemplateIDEDockableWindow, NewIDEWndDlg, CodyFindGDBLine, 
+  LazarusPackageIntf;
 
 implementation
 

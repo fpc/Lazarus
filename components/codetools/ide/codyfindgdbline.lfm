@@ -1,0 +1,74 @@
+object CodyFindGDBLineDialog: TCodyFindGDBLineDialog
+  Left = 264
+  Height = 315
+  Top = 229
+  Width = 593
+  Caption = 'CodyFindGDBLineDialog'
+  ClientHeight = 315
+  ClientWidth = 593
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object GDBBacktraceLabel: TLabel
+    Left = 6
+    Height = 16
+    Top = 6
+    Width = 581
+    Align = alTop
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 2
+    Caption = 'GDBBacktraceLabel'
+    ParentColor = False
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 30
+    Top = 279
+    Width = 581
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object FoundLabel: TLabel
+    Left = 6
+    Height = 16
+    Top = 257
+    Width = 581
+    Align = alBottom
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'FoundLabel'
+    ParentColor = False
+  end
+  object BacktraceMemo: TMemo
+    Left = 6
+    Height = 231
+    Top = 24
+    Width = 581
+    Align = alClient
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    Lines.Strings = (
+      'BacktraceMemo'
+    )
+    OnChange = BacktraceMemoChange
+    OnKeyDown = BacktraceMemoKeyDown
+    OnKeyPress = BacktraceMemoKeyPress
+    OnMouseDown = BacktraceMemoMouseDown
+    OnMouseUp = BacktraceMemoMouseUp
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+  end
+end

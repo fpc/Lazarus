@@ -250,6 +250,10 @@ resourcestring
   crsAWindowForTheLazarusIDEItCanBeDockedLikeTheCodeExp = 'A window for the '
     +'Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor'
     +'. This also creates a menu item in the View menu and a short cut.';
+  crsFindGDBBacktraceLine = 'Find GDB backtrace line';
+  crsFindSourceOfGDBBacktrace = 'Find source of GDB backtrace';
+  crsPasteLinesOfAGdbBacktrace = 'Paste lines of a gdb backtrace:';
+  crsJump = 'Jump';
 
 implementation
 

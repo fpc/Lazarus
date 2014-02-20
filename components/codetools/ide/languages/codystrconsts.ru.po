@@ -315,6 +315,14 @@ msgstr "Ошибка чтения файла"
 msgid "(Filter)"
 msgstr "(Фильтр)"
 
+#: codystrconsts.crsfindgdbbacktraceline
+msgid "Find GDB backtrace line"
+msgstr ""
+
+#: codystrconsts.crsfindsourceofgdbbacktrace
+msgid "Find source of GDB backtrace"
+msgstr ""
+
 #: codystrconsts.crsflags
 msgid "Flags"
 msgstr "Флаги"
@@ -385,6 +393,10 @@ msgstr "Вставить вызов унаследованного"
 #| msgid "Insert File at Cursor ..."
 msgid "Insert File Contents at Cursor ..."
 msgstr "Вставить содержимое файла в месте расположения курсора ..."
+
+#: codystrconsts.crsjump
+msgid "Jump"
+msgstr ""
 
 #: codystrconsts.crsjumpto
 #| msgid "Jump to"
@@ -495,6 +507,10 @@ msgstr "Пакетов: %s, Модулей: %s, Идентификаторов: 
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
 msgstr "Пакет с тем же именем"
+
+#: codystrconsts.crspastelinesofagdbbacktrace
+msgid "Paste lines of a gdb backtrace:"
+msgstr ""
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."

@@ -310,6 +310,14 @@ msgstr "Klaida skaitant failą"
 msgid "(Filter)"
 msgstr "(Filtras)"
 
+#: codystrconsts.crsfindgdbbacktraceline
+msgid "Find GDB backtrace line"
+msgstr ""
+
+#: codystrconsts.crsfindsourceofgdbbacktrace
+msgid "Find source of GDB backtrace"
+msgstr ""
+
 #: codystrconsts.crsflags
 msgid "Flags"
 msgstr "Žymės"
@@ -378,6 +386,10 @@ msgstr "Įterpti kreiptį į „inherited“"
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert File Contents at Cursor ..."
 msgstr "Žymekliu įterpti failo turinį…"
+
+#: codystrconsts.crsjump
+msgid "Jump"
+msgstr ""
 
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
@@ -486,6 +498,10 @@ msgstr "Paketai: %s; Moduliai: %s; Identifikatoriai: %s%sDuomenų bazė: %s"
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
 msgstr "Paketas tuo pačiu pavadinimu"
+
+#: codystrconsts.crspastelinesofagdbbacktrace
+msgid "Paste lines of a gdb backtrace:"
+msgstr ""
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."

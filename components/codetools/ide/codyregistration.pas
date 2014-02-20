@@ -35,7 +35,7 @@ uses
   IDECommands, NewIDEWndDlg,
   CodeToolManager,
   CodyStrConsts, CodyUtils, CodyCtrls, CodyOpts,
-  PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg,
+  PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg, CodyFindGDBLine,
   CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration,
   CodyIdentifiersDlg, CodyMiscOptsFrame;
 
@@ -89,6 +89,8 @@ var
   ShowCodeNodeInfoCommand: TIDECommand;
   CmdCatView: TIDECommandCategory;
   ViewCodyWindowCommand: TIDECommand;
+  CmdCatSearchReplace: TIDECommandCategory;
+  FindGDBLineCommand: TIDECommand;
 begin
   CodyOptions:=TCodyMiscOptions.Create;
   CodyOptions.LoadSafe;
@@ -96,6 +98,9 @@ begin
   CmdCatFileMenu:=IDECommandList.FindCategoryByName('FileMenu');
   if CmdCatFileMenu=nil then
     raise Exception.Create('cody: command category FileMenu not found');
+  CmdCatSearchReplace:=IDECommandList.FindCategoryByName('SearchReplace');
+  if CmdCatSearchReplace=nil then
+    raise Exception.Create('cody: command category SearchReplace not found');
   CmdCatProjectMenu:=IDECommandList.FindCategoryByName('ProjectMenu');
   if CmdCatProjectMenu=nil then
     raise Exception.Create('cody: command category ProjectMenu not found');
@@ -106,6 +111,12 @@ begin
   if CmdCatView=nil then
     raise Exception.Create('cody: command category '+CommandCategoryViewName+' not found');
 
+  // Search menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  FindGDBLineCommand:=RegisterIDECommand(CmdCatSearchReplace, 'ShowPPUList',
+    crsFindGDBBacktraceLine,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowFindGDBLineDialog);
+  RegisterIDEMenuCommand(itmCodeToolSearches,'FindGDBBacktraceLine',crsFindGDBBacktraceLine,
+    nil,nil,FindGDBLineCommand);
 
   // Project menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

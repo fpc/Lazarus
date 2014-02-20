@@ -308,6 +308,14 @@ msgstr "Datei-Lesefehler"
 msgid "(Filter)"
 msgstr "(Filter)"
 
+#: codystrconsts.crsfindgdbbacktraceline
+msgid "Find GDB backtrace line"
+msgstr ""
+
+#: codystrconsts.crsfindsourceofgdbbacktrace
+msgid "Find source of GDB backtrace"
+msgstr ""
+
 #: codystrconsts.crsflags
 msgid "Flags"
 msgstr ""
@@ -375,6 +383,10 @@ msgstr ""
 
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert File Contents at Cursor ..."
+msgstr ""
+
+#: codystrconsts.crsjump
+msgid "Jump"
 msgstr ""
 
 #: codystrconsts.crsjumpto
@@ -483,6 +495,10 @@ msgstr "Packages: %s, Units: %s, Bezeichner: %s%sDatenbank: %s"
 
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
+msgstr ""
+
+#: codystrconsts.crspastelinesofagdbbacktrace
+msgid "Paste lines of a gdb backtrace:"
 msgstr ""
 
 #: codystrconsts.crspleaseopenaprojectfirst

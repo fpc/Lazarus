@@ -318,6 +318,14 @@ msgstr ""
 msgid "(Filter)"
 msgstr ""
 
+#: codystrconsts.crsfindgdbbacktraceline
+msgid "Find GDB backtrace line"
+msgstr ""
+
+#: codystrconsts.crsfindsourceofgdbbacktrace
+msgid "Find source of GDB backtrace"
+msgstr ""
+
 #: codystrconsts.crsflags
 msgid "Flags"
 msgstr "Прапорці"
@@ -388,6 +396,10 @@ msgstr ""
 #| msgid "Insert File at Cursor ..."
 msgid "Insert File Contents at Cursor ..."
 msgstr "Вставити файл під курсором ..."
+
+#: codystrconsts.crsjump
+msgid "Jump"
+msgstr ""
 
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
@@ -495,6 +507,10 @@ msgstr ""
 
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
+msgstr ""
+
+#: codystrconsts.crspastelinesofagdbbacktrace
+msgid "Paste lines of a gdb backtrace:"
 msgstr ""
 
 #: codystrconsts.crspleaseopenaprojectfirst
