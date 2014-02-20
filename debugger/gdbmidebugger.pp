@@ -644,6 +644,7 @@ type
     function  GDBEvaluate(const AExpression: String; var AResult: String;
       out ATypeInfo: TGDBType; EvalFlags: TDBGEvaluateFlags): Boolean;
     function  GDBModify(const AExpression, ANewValue: String): Boolean;
+    procedure GDBModifyDone(const AResult: TGDBMIExecResult; const ATag: PtrInt);
     function  GDBRun: Boolean;
     function  GDBPause(const AInternal: Boolean): Boolean;
     function  GDBStop: Boolean;
@@ -4827,6 +4828,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       end;
 
       // RUN
+      DefaultTimeOut := 0;
       if not ExecuteCommand(Cmd, R, [cfTryAsync])
       then begin
         SetDebuggerErrorState(Format(gdbmiCommandStartMainRunError, [LineEnding]),
@@ -4861,6 +4863,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
 
       rval := rval + s;
 
+      DefaultTimeOut := DebuggerProperties.TimeoutForEval;   // Getting address for breakpoints may need timeout
       BrkErr := ParseBreakInsertError(s, i);
       if not BrkErr
       then break;
@@ -5080,6 +5083,7 @@ begin
        "main" could map to more than one location, so we try entry point first
     *)
     RunToMain(EntryPoint);
+    DefaultTimeOut := DebuggerProperties.TimeoutForEval;   // Getting address for breakpoints may need timeout
 
     if DebuggerState = dsStop
     then begin
@@ -7974,12 +7978,18 @@ begin
     if not ConvertPascalExpression(S) then Exit(False);
   end;
 
-  Result := ExecuteCommand('-gdb-set var %s := %s', [AExpression, S], [cfscIgnoreError], R)
+  Result := ExecuteCommandFull('-gdb-set var %s := %s', [AExpression, S], [cfscIgnoreError], @GDBModifyDone, 0, R)
         and (R.State <> dsError);
 
+  FTypeRequestCache.Clear;
+end;
+
+procedure TGDBMIDebugger.GDBModifyDone(const AResult: TGDBMIExecResult;
+  const ATag: PtrInt);
+begin
+  FTypeRequestCache.Clear;
   TGDBMILocals(Locals).Changed;
   TGDBMIWatches(Watches).Changed;
-  FTypeRequestCache.Clear;
 end;
 
 function TGDBMIDebugger.GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
