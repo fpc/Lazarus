@@ -6746,13 +6746,13 @@ begin
         key:=0;
       end;
     VK_C:
-      if not FEditorKey and (ssCtrl in Shift) then
+      if not FEditorKey and (Shift = [ssModifier]) then
         doCopyToClipboard;
     VK_V:
-      if not FEditorKey and (ssCtrl in Shift) then
+      if not FEditorKey and (Shift = [ssModifier]) then
         doPasteFromClipboard;
     VK_X:
-      if not FEditorKey and (ssCtrl in Shift) then
+      if not FEditorKey and (Shift = [ssShift]) then
         doCutToClipboard;
     VK_DELETE:
       if not FEditorKey and EditingAllowed(FCol)
