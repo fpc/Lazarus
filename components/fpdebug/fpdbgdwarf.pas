@@ -711,6 +711,7 @@ type
     function GetAsCardinal: QWord; override;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetDataAddress: TFpDbgMemLocation; override;
+    function GetAsString: AnsiString; override;
   end;
 
   { TDbgDwarfEnumSymbolValue }
@@ -2302,10 +2303,17 @@ begin
 end;
 
 function TDbgDwarfPointerSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
+var
+  t: TDbgSymbol;
 begin
   Result := inherited GetFieldFlags;
   //TODO: svfDataAddress should depend on (hidden) Pointer or Ref in the TypeInfo
   Result := Result + [svfCardinal, svfOrdinal, svfSizeOfPointer, svfDataAddress] - [svfSize]; // data address
+
+  t := TypeInfo;
+  if (t <> nil) then t := t.TypeInfo;
+  if (t <> nil) and (t.Kind = skChar) and IsReadableMem(DataAddress) then // pchar
+    Result := Result + [svfString]; // data address
 end;
 
 function TDbgDwarfPointerSymbolValue.GetDataAddress: TFpDbgMemLocation;
@@ -2322,6 +2330,28 @@ begin
     MemManager.ReadAddress(OrdOrDataAddr, FSize, Result);
 
   FPointetToAddr := Result;
+end;
+
+function TDbgDwarfPointerSymbolValue.GetAsString: AnsiString;
+var
+  t: TDbgSymbol;
+  i: Integer;
+begin
+  t := TypeInfo;
+  if (t <> nil) then t := t.TypeInfo;
+  if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(DataAddress) then begin // pchar
+    SetLength(Result, 2000);
+    i := 2000;
+    while (i > 0) and (not MemManager.ReadMemory(DataAddress, 2000, @Result[1])) do
+      i := i div 2;
+    SetLength(Result,i);
+    i := pos(#0, Result);
+    if i > 0 then
+      SetLength(Result,i-1);
+    exit;
+  end;
+
+  Result := inherited GetAsString;
 end;
 
 { TDbgDwarfIntegerSymbolValue }

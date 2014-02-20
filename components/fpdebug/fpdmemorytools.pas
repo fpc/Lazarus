@@ -248,7 +248,8 @@ function ConstLoc(AValue: QWord): TFpDbgMemLocation; inline;
 
 function IsTargetAddr(ALocation: TFpDbgMemLocation): Boolean; inline;
 function IsValidLoc(ALocation: TFpDbgMemLocation): Boolean; inline;     // Valid, Nil allowed
-function IsReadableLoc(ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and not Nil
+function IsReadableLoc(ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and not Nil // can be const or reg
+function IsReadableMem(ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and target or sel <> nil
 function IsTargetNil(ALocation: TFpDbgMemLocation): Boolean; inline;    // valid targed = nil
 function IsTargetNotNil(ALocation: TFpDbgMemLocation): Boolean; inline; // valid targed <> nil
 
@@ -319,6 +320,12 @@ begin
             ( (not(ALocation.MType in [mlfTargetMem, mlfSelfMem])) or
               (ALocation.Address <> 0)
             );
+end;
+
+function IsReadableMem(ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := (ALocation.MType in [mlfTargetMem, mlfSelfMem]) and
+            (ALocation.Address <> 0);
 end;
 
 function IsTargetNil(ALocation: TFpDbgMemLocation): Boolean;

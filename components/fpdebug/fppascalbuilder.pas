@@ -5,7 +5,7 @@ unit FpPascalBuilder;
 interface
 
 uses
-  Classes, SysUtils, DbgIntfBaseTypes, FpDbgInfo, LazLoggerBase;
+  Classes, SysUtils, DbgIntfBaseTypes, FpDbgInfo, FpdMemoryTools, LazLoggerBase;
 
 type
   TTypeNameFlag = (
@@ -36,7 +36,8 @@ function GetTypeName(out ATypeName: String; ADbgSymbol: TDbgSymbol; AFlags: TTyp
 function GetTypeAsDeclaration(out ATypeDeclaration: String; ADbgSymbol: TDbgSymbol;
   AFlags: TTypeDeclarationFlags = []; AnIndent: Integer = 0): Boolean;
 
-function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue; AnAddrSize: Integer; AFlags: TPrintPasValFlags = []): Boolean;
+function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
+  AnAddrSize: Integer; AFlags: TPrintPasValFlags = []): Boolean;
 
 implementation
 
@@ -407,11 +408,17 @@ function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
   procedure DoPointer;
   var
     s: String;
+    t: TDbgSymbol;
+    i: Integer;
   begin
     s := ResTypeName;
     APrintedValue := '$'+IntToHex(AResValue.AsCardinal, AnAddrSize);
     if s <> '' then
       APrintedValue := s + '(' + APrintedValue + ')';
+
+    if svfString in AResValue.FieldFlags then
+      APrintedValue := APrintedValue + ' ' + AResValue.AsString;
+
     Result := True;
   end;
 
