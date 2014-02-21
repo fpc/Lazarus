@@ -18,7 +18,9 @@ msgid "Error while parsing trace file"
 msgstr "Ошибка разбора файла стека вызовов"
 
 #: heaptrcview.rsleakview
-msgid "Leak View"
+#, fuzzy
+#| msgid "Leak View"
+msgid "Find source lines for leak/stack-traces"
 msgstr "Просмотр утечек памяти"
 
 #: heaptrcview.sbtnclipbrd

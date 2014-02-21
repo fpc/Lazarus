@@ -18,7 +18,9 @@ msgid "Error while parsing trace file"
 msgstr "Erro ao analisar arquivo de rastreamento"
 
 #: heaptrcview.rsleakview
-msgid "Leak View"
+#, fuzzy
+#| msgid "Leak View"
+msgid "Find source lines for leak/stack-traces"
 msgstr "Exibir Vazamentos de Memória"
 
 #: heaptrcview.sbtnclipbrd

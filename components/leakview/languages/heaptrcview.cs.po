@@ -18,7 +18,9 @@ msgid "Error while parsing trace file"
 msgstr "Chyba při rozkládání stopovacího souboru"
 
 #: heaptrcview.rsleakview
-msgid "Leak View"
+#, fuzzy
+#| msgid "Leak View"
+msgid "Find source lines for leak/stack-traces"
 msgstr "Prohlížeč úniků"
 
 #: heaptrcview.sbtnclipbrd
