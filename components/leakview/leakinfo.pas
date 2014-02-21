@@ -418,7 +418,8 @@ begin
     trace.BlockSize := 0;
   end;
 
-  inc(TrcIndex);
+  if not IsTraceLine(Trc[TrcIndex]) then
+    inc(TrcIndex);
   while (TrcIndex < Trc.Count) and (Pos(CallTracePrefix, Trc[TrcIndex]) = 0) and
         (Pos(RawTracePrefix, Trc[TrcIndex]) = 0)
   do begin
