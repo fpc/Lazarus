@@ -253,7 +253,9 @@ begin
 
   // gdb line?
   i := Pos('#', s);
-  if (i > 0) and (i < 5) and (i < Length(s)) and (s[i+1] in ['0'..'9']) then begin
+  if (i < 1) and (copy(s,1,4) = '0000') then i := 4; // mantis mangled line
+  if (i > 0) and (i < 5) and (i < Length(s)) and (s[i+1] in ['0'..'9'])
+  then begin
     inc(i);
     while (i <= Length(s)) and (s[i] in ['0'..'9']) do inc(i);
     while (i <= Length(s)) and (s[i] in [' ', #9]) do inc(i);
@@ -322,6 +324,14 @@ begin
   if (i = 1) or (pos('~"#', s) = 1) then begin
     // gdb
     Result := (i < Length(s)) and (s[i+1] in ['0'..'9']) and
+              ( (pos(' at ', s) > 1) or (pos(' from ', s) > 1) );
+    exit;
+  end;
+  if copy(s,1,4) = '0000' then begin // leave 3 digits for pos
+    // mantis mangled gdb ?
+    i := pos(':', s);
+    Result := (  ((i > 1) and (i < Length(s)) and (s[i+1] in ['0'..'9'])) or
+                 (pos(' in ', s) > 1)  ) and
               ( (pos(' at ', s) > 1) or (pos(' from ', s) > 1) );
     exit;
   end;
