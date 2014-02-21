@@ -78,7 +78,7 @@ resourcestring
   //
   rsErrorParse = 'Error while parsing trace file';
   rsDTimes = ' (%d times)';
-  rsLeakView = 'Leak View';
+  rsLeakView = 'Find source lines for leak/stack-traces';
   //
   slblTrace = '.trc file';
   sbtnUpdate = 'Update';
