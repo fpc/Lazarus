@@ -403,7 +403,7 @@ end;
 
 function TDbgSymbolValueConstAddress.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
-  Result := [svfAddress, svfSizeOfPointer]
+  Result := [svfAddress]
 end;
 
 function TDbgSymbolValueConstAddress.GetAddress: TFpDbgMemLocation;

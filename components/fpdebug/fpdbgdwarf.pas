@@ -600,6 +600,8 @@ type
     function MemManager: TFpDbgMemManager; inline;
     function AddressSize: Byte; inline;
   protected
+    function DataAddr: TFpDbgMemLocation;
+    function OrdOrDataAddr: TFpDbgMemLocation;
     function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean;
     procedure Reset; virtual;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
@@ -630,8 +632,6 @@ type
   private
     FSize: Integer;
   protected
-    function OrdOrDataAddr: TFpDbgMemLocation;
-    function DataAddr: TFpDbgMemLocation;
     function CanUseTypeCastAddress: Boolean;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetSize: Integer; override;
@@ -825,6 +825,8 @@ type
   protected
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function GetKind: TDbgSymbolKind; override;
+    function GetAsCardinal: QWord; override;
+    function GetDataAddress: TFpDbgMemLocation; override;
     function GetMember(AIndex: Integer): TDbgSymbolValue; override;
     function GetMemberEx(AIndex: array of Int64): TDbgSymbolValue; override;
     function GetMemberCount: Integer; override;
@@ -1868,11 +1870,24 @@ function TDbgDwarfArraySymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
   Result := Result + [svfMembers];
+  if (TypeInfo <> nil) and (sfDynArray in TypeInfo.Flags) then
+    Result := Result + [svfOrdinal, svfDataAddress];
 end;
 
 function TDbgDwarfArraySymbolValue.GetKind: TDbgSymbolKind;
 begin
   Result := skArray;
+end;
+
+function TDbgDwarfArraySymbolValue.GetAsCardinal: QWord;
+begin
+  Result := QWord(LocToAddrOrNil(DataAddress));
+end;
+
+function TDbgDwarfArraySymbolValue.GetDataAddress: TFpDbgMemLocation;
+begin
+  //Result := GetDwarfDataAddress;
+  Result := MemManager.ReadAddress(OrdOrDataAddr, AddressSize); // TODO: cache
 end;
 
 function TDbgDwarfArraySymbolValue.GetMember(AIndex: Integer): TDbgSymbolValue;
@@ -1890,12 +1905,12 @@ begin
   if not IsReadableLoc(Addr) then exit;
 
   if (FAddrObj = nil) or (FAddrObj.RefCount > 1) then begin
-    FAddrObj.ReleaseReference;
+    FAddrObj.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FAddrObj, 'TDbgDwarfArraySymbolValue'){$ENDIF};
     FAddrObj := TDbgDwarfSymbolValueConstAddress.Create(Addr);
+    {$IFDEF WITH_REFCOUNT_DEBUG}FAddrObj.DbgRenameReference(@FAddrObj, 'TDbgDwarfArraySymbolValue');{$ENDIF}
   end
   else begin
     FAddrObj.Update(Addr);
-    FAddrObj.AddReference;
   end;
 
   if (FResVal = nil) or (FResVal.RefCount > 1) then begin
@@ -1903,25 +1918,36 @@ begin
     FResVal := FOwner.TypeInfo.TypeCastValue(FAddrObj);
   end
   else begin
-    TDbgDwarfSymbolValue(FResVal).SetTypeCastInfo(TDbgDwarfTypeIdentifier(FOwner), FAddrObj);
+    TDbgDwarfSymbolValue(FResVal).SetTypeCastInfo(TDbgDwarfTypeIdentifier(FOwner.TypeInfo), FAddrObj);
   end;
 
-  FAddrObj.ReleaseReference;
   Result := FResVal;
 end;
 
 function TDbgDwarfArraySymbolValue.GetMemberCount: Integer;
 var
-  t: TDbgSymbol;
+  t, t2: TDbgSymbol;
+  Addr: TFpDbgMemLocation;
+  i: Int64;
 begin
   Result := 0;
   t := TypeInfo;
   if t.MemberCount < 1 then
     exit;
-  t := t.Member[0];
-  if not t.HasBounds then
+  t2 := t.Member[0];
+  if not t2.HasBounds then begin
+    if (sfDynArray in t.Flags) and (AsCardinal <> 0) and
+       GetDwarfDataAddress(Addr, TDbgDwarfTypeIdentifier(FOwner))
+    then begin
+      Addr.Address := Addr.Address - 4;
+      if MemManager.ReadSignedInt(Addr, 4, i) then begin
+        Result := Integer(i);
+        exit;
+      end;
+    end;
     exit;
-  Result := t.OrdHighBound - t.OrdLowBound + 1;
+  end;
+  Result := t2.OrdHighBound - t2.OrdLowBound + 1;
 end;
 
 function TDbgDwarfArraySymbolValue.GetMemberCountEx(AIndex: array of Int64): Integer;
@@ -1972,6 +1998,7 @@ end;
 
 destructor TDbgDwarfArraySymbolValue.Destroy;
 begin
+  FAddrObj.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FAddrObj, 'TDbgDwarfArraySymbolValue'){$ENDIF};
   FResVal.ReleaseReference;
   inherited Destroy;
 end;
@@ -2134,25 +2161,6 @@ begin
 end;
 
 { TDbgDwarfSizedSymbolValue }
-
-function TDbgDwarfSizedSymbolValue.OrdOrDataAddr: TFpDbgMemLocation;
-begin
-  if HasTypeCastInfo and (svfOrdinal in FTypeCastSourceValue.FieldFlags) then
-    Result := ConstLoc(FTypeCastSourceValue.AsCardinal)
-  else
-    Result := DataAddr;
-end;
-
-function TDbgDwarfSizedSymbolValue.DataAddr: TFpDbgMemLocation;
-begin
-  if FValueSymbol <> nil then
-    Result := FValueSymbol.Address
-  else
-  if HasTypeCastInfo then
-    Result := FTypeCastSourceValue.Address
-  else
-    Result := InvalidLoc;
-end;
 
 function TDbgDwarfSizedSymbolValue.CanUseTypeCastAddress: Boolean;
 begin
@@ -2748,6 +2756,25 @@ function TDbgDwarfSymbolValue.AddressSize: Byte;
 begin
   assert((FOwner <> nil) and (FOwner.FCU <> nil), 'TDbgDwarfSymbolValue.AddressSize');
   Result := FOwner.FCU.FAddressSize;
+end;
+
+function TDbgDwarfSymbolValue.DataAddr: TFpDbgMemLocation;
+begin
+  if FValueSymbol <> nil then
+    Result := FValueSymbol.Address
+  else
+  if HasTypeCastInfo then
+    Result := FTypeCastSourceValue.Address
+  else
+    Result := InvalidLoc;
+end;
+
+function TDbgDwarfSymbolValue.OrdOrDataAddr: TFpDbgMemLocation;
+begin
+  if HasTypeCastInfo and (svfOrdinal in FTypeCastSourceValue.FieldFlags) then
+    Result := ConstLoc(FTypeCastSourceValue.AsCardinal)
+  else
+    Result := DataAddr;
 end;
 
 function TDbgDwarfSymbolValue.GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation;

@@ -552,6 +552,33 @@ function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
     Result := True;
   end;
 
+  procedure DoArray;
+  var
+    s: String;
+    i: Integer;
+    m: TDbgSymbolValue;
+    c: Integer;
+  begin
+    APrintedValue := '';
+    c := AResValue.MemberCount;
+    if c > 500 then c := 500;
+// TODO: low-ord to high ord
+    for i := 0 to c - 1 do begin
+      m := AResValue.Member[i];
+      if m <> nil then
+        PrintPasValue(s, m, AnAddrSize, AFlags)
+      else
+        s := '{error}';
+      if APrintedValue = ''
+      then APrintedValue := s
+      else APrintedValue := APrintedValue + ', ' + s;
+    end;
+    if c < AResValue.MemberCount then
+      APrintedValue := APrintedValue + ', ...';
+    APrintedValue := '(' + APrintedValue + ')';
+    Result := True;
+  end;
+
 begin
   Result := False;
   case AResValue.Kind of
@@ -576,7 +603,7 @@ begin
     skObject:    DoStructure;
     skClass:     DoStructure;
     skInterface: ;
-    skArray: ;
+    skArray:     DoArray;
   end;
 
 end;

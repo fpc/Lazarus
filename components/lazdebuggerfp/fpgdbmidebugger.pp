@@ -1290,8 +1290,8 @@ var
     if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
       exit;
     ATypeInfo := TDBGType.Create(skPointer, ResTypeName);
+    ATypeInfo.Value.AsPointer := Pointer(ResValue.AsCardinal); // TODO: no cut off
     ATypeInfo.Value.AsString := AResText;
-    //ATypeInfo.Value.AsPointer := ; // ???
   end;
 
   procedure DoSimple;
@@ -1427,6 +1427,17 @@ var
     end;
   end;
 
+  procedure DoArray;
+  begin
+    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+      exit;
+    ATypeInfo := TDBGType.Create(skArray, ResTypeName);
+    ATypeInfo.Value.AsString := AResText;
+    //ATypeInfo.Len;
+    //ATypeInfo.BoundLow;
+    //ATypeInfo.BoundHigh;
+  end;
+
 begin
   Result := False;
   ATypeInfo := nil;
@@ -1472,7 +1483,7 @@ begin
       skObject:    DoClass;
       skClass:     DoClass;
       skInterface: ;
-      skArray: ;
+      skArray:     DoArray;
     end;
     if not IsWatchValueAlive then exit;
 
