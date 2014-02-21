@@ -17,6 +17,7 @@ type
     RawLineData: string;
     function Equals(ALine: TStackLine): boolean; reintroduce;
     procedure Assign(ALine: TStackLine);
+    procedure AssignLineAndFile(ALine: TStackLine);
   end;
 
   { TStackLines }
@@ -100,7 +101,7 @@ type
     fParsed   : Boolean;
 
     function PosInTrc(const SubStr: string; CaseSensetive: Boolean = false): Boolean;
-    function IsTraceLine(const SubStr: string): Boolean;
+    function IsTraceLine(const SubStr: string; CheckOnlyLineStart: Boolean = False): Boolean;
     function TrcNumberAfter(var Num: Int64; const AfterSub: string): Boolean;
     function TrcNumberAfter(var Num: Integer; const AfterSub: string): Boolean;
     function TrcNumFirstAndAfter(var FirstNum, AfterNum: Int64; const AfterSub: string): Boolean;
@@ -299,6 +300,12 @@ begin
   RawLineData := ALine.RawLineData;
 end;
 
+procedure TStackLine.AssignLineAndFile(ALine: TStackLine);
+begin
+  LineNum     := ALine.LineNum;
+  FileName    := ALine.FileName;
+end;
+
 { THeapTrcInfo }
 
 function THeapTrcInfo.PosInTrc(const SubStr: string; CaseSensetive: Boolean): Boolean;
@@ -312,7 +319,7 @@ begin
     Result := Pos(UpperCase(SubStr), UpperCase(Trc[TrcIndex]))>0;
 end;
 
-function THeapTrcInfo.IsTraceLine(const SubStr: string): Boolean;
+function THeapTrcInfo.IsTraceLine(const SubStr: string; CheckOnlyLineStart: Boolean): Boolean;
 var
   i, l: integer;
   s: String;
@@ -325,6 +332,7 @@ begin
     // gdb
     Result := (i < Length(s)) and (s[i+1] in ['0'..'9']) and
               ( (pos(' at ', s) > 1) or (pos(' from ', s) > 1) );
+    Result := Result or CheckOnlyLineStart;
     exit;
   end;
   if copy(s,1,4) = '0000' then begin // leave 3 digits for pos
@@ -333,9 +341,11 @@ begin
     Result := (  ((i > 1) and (i < Length(s)) and (s[i+1] in ['0'..'9'])) or
                  (pos(' in ', s) > 1)  ) and
               ( (pos(' at ', s) > 1) or (pos(' from ', s) > 1) );
+    Result := Result or CheckOnlyLineStart;
     exit;
   end;
 
+  // heaptrc line?
   i := 1;
   l := length(SubStr);
   while (i <= l) and (SubStr[i] = ' ') do inc(i);
@@ -346,6 +356,7 @@ begin
   do inc(i);
   if (i > l) or (SubStr[i] <> ' ') then exit;
   Result := Pos('line', SubStr) > 0;
+  Result := Result or CheckOnlyLineStart;
 end;
 
 function THeapTrcInfo.TrcNumberAfter(var Num: Int64; const AfterSub: string): Boolean;
@@ -450,6 +461,7 @@ var
   {%H-}err : integer;
   hex : string;
   NewLine: TStackLine;
+  s: String;
 begin
   i := Pos(RawTracePrefix, Trc[TrcIndex]);
   if (i <= 0) and not IsTraceLine(Trc[TrcIndex]) then begin
@@ -476,7 +488,13 @@ begin
   do begin
     NewLine := TStackLine.Create; // No reference
     trace.Add(NewLine);
-    ParseTraceLine(Trc[Trcindex], NewLine);
+    s := Trc[Trcindex];
+    if (TrcIndex < Trc.Count-1) and not IsTraceLine(Trc[Trcindex+1], True) then begin
+      // join next line, as there may be a linewrap
+      while (length(s) > 0) and (s[length(s)] in [#10,#13]) do delete(s, length(s), 1);
+      s := s + Trc[Trcindex+1];
+    end;
+    ParseTraceLine(s, NewLine);
     NewLine.RawLineData := Trc[Trcindex]; // raw stack line data
     inc(Trcindex);
 
@@ -627,10 +645,10 @@ var
 begin
   for i := 0 to Count - 1 do begin
     CurLine := Lines[i];
-    if (CurLine.FileName = '') then begin
+    if (CurLine.FileName = '') and (CurLine.Addr <> 0) then begin
       j := AnOtherLines.IndexOfAddr(CurLine.Addr);
       if J >= 0 then
-        CurLine.Assign(AnOtherLines.Lines[j]);
+        CurLine.AssignLineAndFile(AnOtherLines.Lines[j]);
     end;
   end;
 end;
