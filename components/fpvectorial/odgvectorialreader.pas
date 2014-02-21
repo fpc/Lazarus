@@ -118,11 +118,11 @@ type
     PageWidth, PageHeight: Double;
   end;
 
-  TCustomShapeInfo = packed record
+  TCustomShapeInfo = class
+  public
     Left, Top, Width, Height: Double; // in milimiters
     ViewBox_Left, ViewBox_Top, ViewBox_Width, ViewBox_Height: Double; // unitless
-    VariableNames: array of string;
-    VariableValues: array of Double;
+    Formulas: array of TvFormula;
   end;
 
   { TvODGVectorialReader }
@@ -494,6 +494,7 @@ begin
   if (lState = 0) and (lTmpStr <> '') then AddToken(lTmpStr);
 end;
 
+
 function TvODGVectorialReader.ReadSpaceSeparatedFloats(AInput: string;
   AOtherSeparators: string): TDoubleArray;
 var
@@ -813,6 +814,7 @@ var
   lCurNode: TDOMNode;
 begin
   // Initial values to avoid invalid initial ones
+  if AInfo = nil then AInfo := TCustomShapeInfo.Create;
   AInfo.ViewBox_Left := 0;
   AInfo.ViewBox_Top := 0;
   AInfo.ViewBox_Width := 10000;
@@ -857,19 +859,35 @@ begin
 
         if (lAttrName = 'draw:name') then
         begin
-          Len := Length(AInfo.VariableNames);
-          SetLength(AInfo.VariableNames, Len+1);
-          AInfo.VariableNames[Len] := lAttrValue;
+          Len := Length(AInfo.Formulas);
+          SetLength(AInfo.Formulas, Len+1);
+          AInfo.Formulas[Len] := TvFormula.Create(nil);
+          AInfo.Formulas[Len].Name := lAttrValue;
         end
         else if (lAttrName = 'draw:formula') then
         begin
-          Len := Length(AInfo.VariableValues);
-          SetLength(AInfo.VariableValues, Len+1);
-          // ToDo: Implement a real formula calculation
-          lAttrValue := StringReplace(lAttrValue, '$0', '0', [rfReplaceAll, rfIgnoreCase]);
-          lAttrValue := StringReplace(lAttrValue, '-0', '', [rfReplaceAll, rfIgnoreCase]);
+          Len := Length(AInfo.Formulas);
 
-          AInfo.VariableValues[Len] := StringWithUnitToFloat(lAttrValue);
+          // Replace the formulas and variables
+          lAttrValue := StringReplace(lAttrValue, '$0', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '$1', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '$2', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '$3', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '?f0', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '?f1', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '?f2', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '?f3', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '?f4', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '?f5', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '?f6', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '?f7', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '?f8', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '?f9', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, '?f10', '0', [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, 'right', FloatToStr(AInfo.ViewBox_Left + AInfo.ViewBox_Width, FPointSeparator), [rfReplaceAll, rfIgnoreCase]);
+          lAttrValue := StringReplace(lAttrValue, 'bottom', FloatToStr(AInfo.ViewBox_Top + AInfo.ViewBox_Height, FPointSeparator), [rfReplaceAll, rfIgnoreCase]);
+
+          AInfo.Formulas[Len-1].AddItemsByConvertingInfixStringToRPN(lAttrValue);
         end;
       end;
     end;
@@ -1032,11 +1050,11 @@ begin
   sttFloatValue: Result := AInput.Value;
   sttNamedEquation:
   begin
-    for i := 0 to Length(AInfo.VariableNames)-1 do
+    for i := 0 to Length(AInfo.Formulas)-1 do
     begin
-      lStr := '?' + AInfo.VariableNames[i];
+      lStr := '?' + AInfo.Formulas[i].Name;
       if lStr = AInput.StrValue then
-        Result := AInfo.VariableValues[i];
+        Result := AInfo.Formulas[i].CalculateRPNFormulaValue();
     end;
   end;
   end;
@@ -1140,11 +1158,16 @@ begin
     end;
     'draw:enhanced-geometry':
     begin
-      lInfo.Left := x1 + lTranslateX;
-      lInfo.Top := y1 + lTranslateY;
-      lInfo.Width := lWidth;
-      lInfo.Height := lHeight;
-      ReadEnhancedGeometryNodeToTPath(lCurNode, AData, lPath, x1, y1, lInfo);
+      lInfo := TCustomShapeInfo.Create;
+      try
+        lInfo.Left := x1 + lTranslateX;
+        lInfo.Top := y1 + lTranslateY;
+        lInfo.Width := lWidth;
+        lInfo.Height := lHeight;
+        ReadEnhancedGeometryNodeToTPath(lCurNode, AData, lPath, x1, y1, lInfo);
+      finally
+        lInfo.Free;
+      end;
     end;
     end;
 

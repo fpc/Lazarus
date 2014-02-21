@@ -27,7 +27,7 @@ unit fpvectorial;
 interface
 
 uses
-  Classes, SysUtils, Math, TypInfo,
+  Classes, SysUtils, Math, TypInfo, contnrs,
   // FCL-Image
   fpcanvas, fpimage,
 
@@ -754,13 +754,16 @@ type
     fekGreaterThan, // The > symbol
     fekGreaterOrEqualThan, // The >= symbol
     fekHorizontalLine,
-    // More complex elements
+    // More complex elements, utilized for graphical representation of formula
     fekFraction,  // a division with Formula on the top and AdjacentFormula in the bottom
     fekRoot,      // A root. For example sqrt(something). Number gives the root, usually 2, and inside it goes a Formula
     fekPower,     // A Formula elevated to a AdjacentFormula, example: 2^5
     fekSubscript, // A Formula with a subscripted element AdjacentFormula, example: Xi
     fekSummation, // Sum of a variable given by Text set by Formula in the bottom and going up to AdjacentFormula in the top
-    fekFormula    // A formula, stored in Formula
+    fekFormula,   // A formula, stored in Formula
+    // Elements utilized for formulas for infix to RPN converion, not utilized for graphical representations
+    fekParentesesOpen,
+    freParentesesClose
     );
 
   { TvFormulaElement }
@@ -802,6 +805,10 @@ type
     procedure AddElement(AElement: TvFormulaElement);
     function  AddElementWithKind(AKind: TvFormulaElementKind): TvFormulaElement;
     function  AddElementWithKindAndText(AKind: TvFormulaElementKind; AText: string): TvFormulaElement;
+    procedure AddItemsByConvertingInfixToRPN(AInfix: TFPList {of TvFormulaElement});
+    procedure AddItemsByConvertingInfixStringToRPN(AStr: string);
+    procedure TokenizeInfixString(AStr: string; AOutput: TFPList);
+    function  CalculateRPNFormulaValue: Double;
     procedure Clear; override;
     //
     function CalculateHeight(ADest: TFPCustomCanvas): Double; virtual; // in milimeters
@@ -1383,6 +1390,9 @@ type
 
 var
   GvVectorialFormats: array of TvVectorialFormatData;
+
+const
+  FormulaOperators = [fekSubtraction, fekMultiplication, fekSum, fekFraction];
 
 procedure RegisterVectorialReader(
   AReaderClass: TvVectorialReaderClass;
@@ -4459,6 +4469,196 @@ begin
       Result.Formula := TvFormula.Create(FPage);
     end;
   end;
+end;
+
+// Based on:
+// http://en.wikipedia.org/wiki/Shunting-yard_algorithm
+procedure TvFormula.AddItemsByConvertingInfixToRPN(AInfix: TFPList);
+var
+  OperatorStack: TObjectStack;
+  i: Integer;
+  CurItem: TvFormulaElement;
+
+  procedure PopFromStackIntoList(APopTopOperators: Boolean; APopUntilParenteses: Boolean);
+  var
+    lElement: TvFormulaElement;
+  begin
+    while OperatorStack.Count > 0 do
+    begin
+      lElement := OperatorStack.Pop() as TvFormulaElement;
+      if APopTopOperators and (not (lElement.Kind in FormulaOperators)) then Exit;
+      if APopUntilParenteses and (lElement.Kind = fekParentesesOpen) then Exit;
+      FElements.Add(lElement);
+    end;
+  end;
+
+begin
+  Clear();
+
+  OperatorStack := TObjectStack.Create;
+  try
+    for i := 0 to AInfix.Count-1 do
+    begin
+      CurItem := AInfix.Items[i];
+      case CurItem.Kind of
+      fekVariable:
+      begin
+        FElements.Add(CurItem);
+      end;
+      fekSubtraction, fekMultiplication, fekSum, fekFraction:
+      begin
+        PopFromStackIntoList(True, False);
+        OperatorStack.Push(CurItem);
+      end;
+      fekParentesesOpen:
+      begin
+        OperatorStack.Push(CurItem);
+      end;
+      freParentesesClose:
+      begin
+        PopFromStackIntoList(False, True);
+      end;
+      end;
+    end;
+
+    PopFromStackIntoList(True, False);
+  finally
+    OperatorStack.Free;
+  end;
+end;
+
+procedure TvFormula.AddItemsByConvertingInfixStringToRPN(AStr: string);
+var
+  lInfix: TFPList;
+begin
+  lInfix := TFPList.Create;
+  try
+    TokenizeInfixString(AStr, lInfix);
+    AddItemsByConvertingInfixToRPN(lInfix);
+  finally
+    lInfix.Free;
+  end;
+end;
+
+procedure TvFormula.TokenizeInfixString(AStr: string; AOutput: TFPList);
+const
+  Str_Space: Char = ' ';
+
+  procedure AddToken(AStr: string);
+  var
+    lToken: TvFormulaElement;
+    lStr: string;
+    FPointSeparator, FCommaSeparator: TFormatSettings;
+  begin
+    FPointSeparator := DefaultFormatSettings;
+    FPointSeparator.DecimalSeparator := '.';
+    FPointSeparator.ThousandSeparator := '#';// disable the thousand separator
+
+    lStr := Trim(AStr);
+    if lStr = '' then Exit;
+
+    lToken := TvFormulaElement.Create;
+
+    // Moves
+    case lStr[1] of
+    '*': lToken.Kind := fekMultiplication;
+    '/': lToken.Kind := fekFraction;
+    '+': lToken.Kind := fekSum;
+    '-': lToken.Kind := fekSubtraction;
+    '(': lToken.Kind := fekParentesesOpen;
+    ')': lToken.Kind := freParentesesClose;
+    else
+      lToken.Kind := fekVariable;
+      lToken.Number := StrToFloat(AStr, FPointSeparator);
+    end;
+
+    AOutput.Add(lToken);
+  end;
+
+var
+  i: Integer;
+  lTmpStr: string = '';
+  lState: Integer;
+  lFirstTmpStrChar, lCurChar: Char;
+begin
+  lState := 0;
+
+  i := 1;
+  while i <= Length(AStr) do
+  begin
+    case lState of
+    0: // Adding to the tmp string
+    begin
+      lCurChar := AStr[i];
+      if lCurChar = Str_Space then
+      begin
+        //lState := 1;
+        AddToken(lTmpStr);
+        lTmpStr := '';
+      end
+      else if lCurChar in ['/', '*', '+', '-', '(', ')'] then
+      begin
+        if lTmpStr <> '' then AddToken(lTmpStr);
+        lTmpStr := '';
+        lState := 0;
+        AddToken(lCurChar);
+      end
+      else
+      begin
+        lTmpStr := lTmpStr + lCurChar;
+      end;
+    end;
+    end;
+
+    Inc(i);
+  end;
+
+  // If there is a token still to be added, add it now
+  if (lState = 0) and (lTmpStr <> '') then AddToken(lTmpStr);
+end;
+
+// The formula must be in RPN for this to work
+function TvFormula.CalculateRPNFormulaValue: Double;
+var
+  lOperand_A, lOperand_B, CurElement: TvFormulaElement;
+  i: Integer;
+begin
+  lOperand_A := nil;
+  lOperand_B := nil;
+  Result := 0;
+  for i := 0 to FElements.Count-1 do
+  begin
+    CurElement := TvFormulaElement(FElements.Items[i]);
+    case CurElement.Kind of
+    fekVariable:
+    begin
+      if lOperand_A = nil then lOperand_A := CurElement
+      else lOperand_B := CurElement;
+    end;
+    fekSubtraction:
+    begin
+      lOperand_A.Number := lOperand_A.Number - lOperand_B.Number;
+      lOperand_B := nil;
+    end;
+    fekMultiplication:
+    begin
+      lOperand_A.Number := lOperand_A.Number * lOperand_B.Number;
+      lOperand_B := nil;
+    end;
+    fekSum:
+    begin
+      lOperand_A.Number := lOperand_A.Number + lOperand_B.Number;
+      lOperand_B := nil;
+    end;
+    fekFraction:
+    begin
+      lOperand_A.Number := lOperand_A.Number / lOperand_B.Number;
+      lOperand_B := nil;
+    end;
+    end;
+  end;
+
+  Result := lOperand_A.Number;
 end;
 
 procedure TvFormula.Clear;
