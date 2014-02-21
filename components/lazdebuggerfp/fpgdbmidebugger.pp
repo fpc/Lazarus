@@ -15,7 +15,7 @@ uses
   Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, FpDbgClasses, GDBMIDebugger,
   DbgIntfBaseTypes, DbgIntfDebuggerBase, GDBMIMiscClasses,
   GDBTypeInfo, maps, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst, LazLoggerBase,
-  LazLoggerProfiling, LazClasses, FpPascalParser, FpPascalBuilder;
+  LazLoggerProfiling, LazClasses, FpPascalParser, FpPascalBuilder, FpErrorMessages;
 
 type
 
@@ -1454,6 +1454,21 @@ begin
   PasExpr := TFpPascalExpression.Create(AExpression, Ctx);
   try
     if not IsWatchValueAlive then exit;
+    PasExpr.ResultValue; // trigger evaluate // and check errors
+    if not IsWatchValueAlive then exit;
+
+    if not PasExpr.Valid then begin
+DebugLn(FpErrorHandler.ErrorAsString(PasExpr.Error));
+      if PasExpr.Error.ErrorCode <> fpErrAnyError then begin
+        Result := True;
+        AResText := FpErrorHandler.ErrorAsString(PasExpr.Error);;
+        if AWatchValue <> nil then begin;
+          AWatchValue.Value    := AResText;
+          AWatchValue.Validity := ddsError;
+        end;
+        exit;
+      end;
+    end;
 
     if not (PasExpr.Valid and (PasExpr.ResultValue <> nil)) then
       exit; // TODO handle error

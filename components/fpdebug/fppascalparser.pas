@@ -29,7 +29,8 @@ unit FpPascalParser;
 interface
 
 uses
-  Classes, sysutils, math, DbgIntfBaseTypes, FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses;
+  Classes, sysutils, math, DbgIntfBaseTypes, FpDbgInfo, FpdMemoryTools, FpErrorMessages,
+  LazLoggerBase, LazClasses;
 
 type
 
@@ -46,14 +47,15 @@ type
 
   TFpPascalExpression = class
   private
-    FError: String;
+    FError: TFpError;
     FContext: TDbgInfoAddressContext;
     FTextExpression: String;
     FExpressionPart: TFpPascalExpressionPart;
     FValid: Boolean;
     function GetResultValue: TDbgSymbolValue;
     procedure Parse;
-    procedure SetError(AMsg: String);
+    procedure SetError(AMsg: String);  // deprecated;
+    procedure SetError(AnErrorCode: TFpErrorCode; AData: array of const);
     function PosFromPChar(APChar: PChar): Integer;
   protected
     function GetDbgSymbolForIdentifier({%H-}AnIdent: String): TDbgSymbol;
@@ -63,7 +65,7 @@ type
     constructor Create(ATextExpression: String; AContext: TDbgInfoAddressContext);
     destructor Destroy; override;
     function DebugDump(AWithResults: Boolean = False): String;
-    property Error: String read FError;
+    property Error: TFpError read FError;
     property Valid: Boolean read FValid;
     // ResultValue
     // - May be a type, if expression is a type
@@ -88,8 +90,9 @@ type
     procedure SetEndChar(AValue: PChar);
     procedure SetParent(AValue: TFpPascalExpressionPartContainer);
     procedure SetStartChar(AValue: PChar);
-    procedure SetError(AMsg: String = '');
-    procedure SetError(APart: TFpPascalExpressionPart; AMsg: String = '');
+    procedure SetError(AMsg: String = ''); // deprecated;
+    procedure SetError(APart: TFpPascalExpressionPart; AMsg: String = ''); // deprecated;
+    procedure SetError(AnErrorCode: TFpErrorCode; AData: array of const);
   protected
     function DebugText(AIndent: String; {%H-}AWithResults: Boolean): String; virtual; // Self desc only
     function DebugDump(AIndent: String; AWithResults: Boolean): String; virtual;
@@ -1149,8 +1152,10 @@ var
 begin
   Result := nil;
   DbgSymbol := FExpression.GetDbgSymbolForIdentifier(GetText);
-  if DbgSymbol = nil then
+  if DbgSymbol = nil then begin
+    SetError(fpErrSymbolNotFound, [GetText]);
     exit;
+  end;
 
   Result := DbgSymbol.Value;
   if Result = nil then begin
@@ -1352,9 +1357,19 @@ end;
 
 procedure TFpPascalExpression.SetError(AMsg: String);
 begin
-  FValid := False;
-  FError := AMsg;
+  if FError.ErrorCode <> 0 then begin
+DebugLn(['Skipping error ', AMsg]);
+    FValid := False;
+    exit;
+  end;
+  SetError(fpErrAnyError, [AMsg]);
 DebugLn(['PARSER ERROR ', AMsg]);
+end;
+
+procedure TFpPascalExpression.SetError(AnErrorCode: TFpErrorCode; AData: array of const);
+begin
+  FValid := False;
+  FError := FpErrorHandler.CreateError(AnErrorCode, AData);
 end;
 
 function TFpPascalExpression.PosFromPChar(APChar: PChar): Integer;
@@ -1375,6 +1390,7 @@ constructor TFpPascalExpression.Create(ATextExpression: String;
 begin
   FContext := AContext;
   FTextExpression := ATextExpression;
+  FError := FpErrorNone;
   FValid := True;
   Parse;
 end;
@@ -1388,7 +1404,7 @@ end;
 function TFpPascalExpression.DebugDump(AWithResults: Boolean): String;
 begin
   Result := 'TFpPascalExpression: ' + FTextExpression + LineEnding +
-            'Valid: ' + dbgs(FValid) + '   Error: "' + FError + '"'+ LineEnding
+            'Valid: ' + dbgs(FValid) + '   Error: "' + dbgs(FError.ErrorCode) + '"'+ LineEnding
             ;
   if FExpressionPart <> nil then
     Result := Result + FExpressionPart.DebugDump('  ', AWithResults);
@@ -1474,6 +1490,11 @@ begin
   if APart <> nil
   then APart.SetError(AMsg)
   else Self.SetError(AMsg);
+end;
+
+procedure TFpPascalExpressionPart.SetError(AnErrorCode: TFpErrorCode; AData: array of const);
+begin
+  FExpression.SetError(AnErrorCode, AData);
 end;
 
 procedure TFpPascalExpressionPart.Init;
@@ -2051,9 +2072,12 @@ begin
   // Todo unit
   if (tmp.Kind in [skClass, skRecord, skObject]) then begin
     Result := tmp.MemberByName[Items[1].GetText];
-    if Result <> nil then
-      Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
-    Assert((Result=nil) or (Result.DbgSymbol=nil)or(Result.DbgSymbol.SymbolType=stValue), 'member is value');
+    if Result = nil then begin
+      SetError(fpErrNoMemberWithName, [Items[1].GetText]);
+      exit;
+    end;
+    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
+    Assert((Result.DbgSymbol=nil)or(Result.DbgSymbol.SymbolType=stValue), 'member is value');
   end;
 end;
 

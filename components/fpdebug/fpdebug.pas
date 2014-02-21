@@ -10,7 +10,8 @@ uses
   FpDbgClasses, FpDbgDisasX86, FpDbgDwarf, FpDbgDwarfConst, FpDbgLoader, FpDbgPETypes, 
   FpDbgSymbols, FpDbgUtil, FpDbgWinExtra, FpImgReaderWinPE, FpImgReaderElf, 
   FpImgReaderElfTypes, FpImgReaderBase, FpPascalParser, macho, FpImgReaderMachoFile, 
-  FpImgReaderMacho, FpPascalBuilder, FpDbgInfo, FpdMemoryTools, LazarusPackageIntf;
+  FpImgReaderMacho, FpPascalBuilder, FpDbgInfo, FpdMemoryTools, FpErrorMessages, 
+  LazarusPackageIntf;
 
 implementation
 
