@@ -174,6 +174,8 @@ var
 begin
   Result := '';
   if s[Offset] = '$' then i := Offset + 1
+  else
+  if (Offset < length(s)) and (s[Offset] = '0') and (s[Offset+1] = 'x') then i := Offset + 2
   else i := Offset;
 
   for i := i to length(s) do
@@ -226,25 +228,53 @@ begin
   GetNumberAfter(s, AfterNum, AfterStr);
 end;
 
-procedure ParseTraceLine(const s: string; var line: TStackLine);
+procedure ParseTraceLine(s: string; var line: TStackLine);
 var
   i   : integer;
   {%H-}err : Integer;
   hex : string;
 begin
+  s := TrimLeft(s);
   i := Pos('$', s);
-  if i <= 0 then Exit;
-  hex := ExtractHexNumberStr(s, i);
-  Val(hex, line.Addr, err);
+  if i > 0 then begin
+    hex := ExtractHexNumberStr(s, i);
+    Val(hex, line.Addr, err);
 
-  if not GetNumberAfter(s, line.LineNum, 'line ') then begin
+    if not GetNumberAfter(s, line.LineNum, 'line ') then begin
+      line.LineNum := -1;
+      line.FileName := '';
+    end else begin
+      i := Pos(' of ', s);
+      if i <= 0 then Exit;
+      inc(i, 4);
+      line.FileName := Copy(s, i, length(s) - i + 1);
+    end;
+  end;
+
+  // gdb line?
+  i := Pos('#', s);
+  if (i > 0) and (i < 5) and (i < Length(s)) and (s[i+1] in ['0'..'9']) then begin
+    inc(i);
+    while (i <= Length(s)) and (s[i] in ['0'..'9']) do inc(i);
+    while (i <= Length(s)) and (s[i] in [' ', #9]) do inc(i);
+    if (s[i] = '0') and (i < Length(s)) and (s[i+1] = 'x') then begin
+      hex := ExtractHexNumberStr(s, i);
+      Val(hex, line.Addr, err);
+    end;
     line.LineNum := -1;
-    line.FileName := ''
-  end else begin
-    i := Pos(' of ', s);
-    if i <= 0 then Exit;
-    inc(i, 4);
-    line.FileName := Copy(s, i, length(s) - i + 1);
+    line.FileName := '';
+
+    i := pos (' at ', s);
+    if i < 1 then
+      exit;
+    while i > 0 do begin // find last " at "
+      delete(s,1,i);
+      i := pos (' at ', s);
+    end;
+    i := pos (':', s);
+    line.FileName := Copy(s, 4, i - 4);
+    GetNumberAfter(s, line.LineNum, ':')
+
   end;
 end;
 
@@ -283,8 +313,19 @@ end;
 function THeapTrcInfo.IsTraceLine(const SubStr: string): Boolean;
 var
   i, l: integer;
+  s: String;
 begin
   Result := False;
+
+  s := TrimLeft(SubStr);
+  i := pos('#', s);
+  if (i = 1) or (pos('~"#', s) = 1) then begin
+    // gdb
+    Result := (i < Length(s)) and (s[i+1] in ['0'..'9']) and
+              ( (pos(' at ', s) > 1) or (pos(' from ', s) > 1) );
+    exit;
+  end;
+
   i := 1;
   l := length(SubStr);
   while (i <= l) and (SubStr[i] = ' ') do inc(i);
