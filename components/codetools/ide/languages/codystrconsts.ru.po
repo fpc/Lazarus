@@ -317,11 +317,11 @@ msgstr "(Фильтр)"
 
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
-msgstr ""
+msgstr "Найти строку кода для стека вызовов GDB"
 
 #: codystrconsts.crsfindsourceofgdbbacktrace
 msgid "Find source of GDB backtrace"
-msgstr ""
+msgstr "Поиск строк исходного кода для стека вызовов GDB"
 
 #: codystrconsts.crsflags
 msgid "Flags"
@@ -396,7 +396,7 @@ msgstr "Вставить содержимое файла в месте расп�
 
 #: codystrconsts.crsjump
 msgid "Jump"
-msgstr ""
+msgstr "Перейти"
 
 #: codystrconsts.crsjumpto
 #| msgid "Jump to"
@@ -510,7 +510,7 @@ msgstr "Пакет с тем же именем"
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
-msgstr ""
+msgstr "Вставьте строки стека вызовов GDB:"
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
