@@ -44,16 +44,6 @@ tools\updatepofiles %IDE_RST% languages\lazaruside.po
 tools\updatepofiles %DBGD_RST% languages\debuggerstrconst.po
 @if exist %DBGD_RST% echo RST found
 
-@REM Debugger MI interface
-@set DBG_RST=units\%ArchOsWS%\gdbmidebugger.rst
-tools\updatepofiles %DBG_RST% languages\gdbmidebugger.po
-@if exist %DBG_RST% echo RST found
-
-@REM Debugger MI server interface
-@set DBGS_RST=units\%ArchOsWS%\gdbmiserverdebugger.rst
-tools\updatepofiles %DBGS_RST% languages\gdbmiserverdebugger.po
-@if exist %DBGS_RST% echo RST found
-
 @REM CodeTools
 @set CodeTools_RST=components\codetools\units\%ArchOS%\CodeToolsStrConsts.rst
 tools\updatepofiles %CodeTools_RST% components\codetools\languages\codetoolsstrconsts.po

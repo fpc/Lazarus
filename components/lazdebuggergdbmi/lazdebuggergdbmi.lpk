@@ -67,6 +67,10 @@ This debugger uses gdb and is based on gdb's mi interface."/>
         <UnitName Value="GdbmiStringConstants"/>
       </Item10>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>

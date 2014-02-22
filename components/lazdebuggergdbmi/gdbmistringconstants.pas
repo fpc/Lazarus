@@ -69,10 +69,10 @@ resourcestring
 
   lisNewTheGNUDebuggerThroughSshAllowsToRemoteDebugViaASsh =
       'The GNU debugger '
-    +'through ssh allows to remote debug via a ssh connection. See docs/'
-    +'RemoteDebugging.txt for details. The path must contain the ssh client.'
-    +'Use SSH_Startup_Options for the hostname and optional username.'
-    +'And Remote_GDB_Exe for the filename of gdb on the remote computer.'
+    +'through SSH allows to remote debug via a SSH connection. See docs/'
+    +'RemoteDebugging.txt for details. The path must contain the SSH client. '
+    +'Use SSH_Startup_Options for the hostname and optional username. '
+    +'Use Remote_GDB_Exe for the filename of GDB on the remote computer.'
     +'';
   lisUnexpectedResultTheDebuggerWillTerminate = 'Unexpected result:%sThe '
     +'debugger will terminate';

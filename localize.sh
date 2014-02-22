@@ -30,8 +30,6 @@ fi
 RSTFILES=(
   ". lazarusidestrconsts lazaruside"
   ". debuggerstrconst"
-  ". gdbmidebugger"
-  ". gdbmiserverdebugger"
   "components/codetools codetoolsstrconsts"
   "components/tdbf registerdbf"
   "components/turbopower_ipro ipconst"
