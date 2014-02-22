@@ -72,8 +72,7 @@ resourcestring
     +'through SSH allows to remote debug via a SSH connection. See docs/'
     +'RemoteDebugging.txt for details. The path must contain the SSH client. '
     +'Use SSH_Startup_Options for the hostname and optional username. '
-    +'Use Remote_GDB_Exe for the filename of GDB on the remote computer.'
-    +'';
+    +'Use Remote_GDB_Exe for the filename of GDB on the remote computer.';
   lisUnexpectedResultTheDebuggerWillTerminate = 'Unexpected result:%sThe '
     +'debugger will terminate';
   lisResponseContinue = 'Response: %sContinue ?';
