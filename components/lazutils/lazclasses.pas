@@ -93,6 +93,7 @@ end;
 procedure TRefCountedObject.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
 begin
   {$IFDEF WITH_REFCOUNT_DEBUG}
+  Assert(not FInDestroy, 'Adding reference while destroying');
   DbgAddName(DebugIdAdr, DebugIdTxt);
   {$ENDIF}
   Inc(FRefcount);
