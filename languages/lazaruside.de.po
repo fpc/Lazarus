@@ -9876,6 +9876,10 @@ msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
 msgid "View Call Stack"
 msgstr "Ansicht des Aufrufstacks umschalten"
 
+#: lazarusidestrconsts.liskmtoggleviewcodebrowser
+msgid "Toggle view Code Browser"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
 msgid "Toggle view Code Explorer"
 msgstr "Ansicht des Code-Explorers umschalten"
@@ -11938,10 +11942,6 @@ msgstr "(neues Projekt)"
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
 msgstr "Neu aufgezeichnete Makros, noch nicht gespeichert"
-
-#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
-msgstr ""
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 #| msgid "New units are added to uses sections:"
@@ -14456,10 +14456,6 @@ msgstr "Ressourcen-Schreibfehler"
 msgid "Resource type of project"
 msgstr "Ressourcentyp des Projekts:"
 
-#: lazarusidestrconsts.lisresponsecontinue
-msgid "Response: %sContinue ?"
-msgstr "Antwort: %sWeiter ?"
-
 #: lazarusidestrconsts.lisrestart
 msgctxt "lazarusidestrconsts.lisrestart"
 msgid "Restart"
@@ -16520,10 +16516,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisundo"
 msgid "Undo"
 msgstr "Zurücknehmen"
-
-#: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
-msgid "Unexpected result:%sThe debugger will terminate"
-msgstr "Unerwartetes Ergebnis:%s Der Debugger wird beendet"
 
 #: lazarusidestrconsts.lisuninstall
 msgid "Uninstall %s"

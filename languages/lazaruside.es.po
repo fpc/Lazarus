@@ -10031,6 +10031,10 @@ msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
 msgid "View Call Stack"
 msgstr "Vista Pila(Stack) de llamadas"
 
+#: lazarusidestrconsts.liskmtoggleviewcodebrowser
+msgid "Toggle view Code Browser"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
 msgid "Toggle view Code Explorer"
 msgstr "Cambiar vista a Explorador de código"
@@ -12187,10 +12191,6 @@ msgstr "(nuevo proyecto)"
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
 msgstr "Nuevas macros grabadas. No han sido salvadas"
-
-#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
-msgstr "El depurador de GNU a través de ssh permite depuración remota mediante una conexión ssh. Vea docs/RemoteDebugging.txt para más detalles. La ruta debe contener el cliente ssh. Use SSH_Startup_Options para el hostname y usuario opcional.Y Remote_GDB_Exe para el nombre de archivo de gdb en el equipo remoto."
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 #, fuzzy
@@ -14750,10 +14750,6 @@ msgstr "Error al guardar recurso"
 msgid "Resource type of project"
 msgstr "Tipo de recursos del proyecto"
 
-#: lazarusidestrconsts.lisresponsecontinue
-msgid "Response: %sContinue ?"
-msgstr "Respuesta: %s¿Continuar?"
-
 #: lazarusidestrconsts.lisrestart
 msgctxt "lazarusidestrconsts.lisrestart"
 msgid "Restart"
@@ -16829,10 +16825,6 @@ msgstr "Deschequear Todo"
 msgctxt "lazarusidestrconsts.lisundo"
 msgid "Undo"
 msgstr "Deshacer"
-
-#: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
-msgid "Unexpected result:%sThe debugger will terminate"
-msgstr "Resultado inesperado:%sEl depurador terminará"
 
 #: lazarusidestrconsts.lisuninstall
 msgid "Uninstall %s"

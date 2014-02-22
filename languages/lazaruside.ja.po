@@ -9581,6 +9581,10 @@ msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
 msgid "View Call Stack"
 msgstr "コールスタックを表示"
 
+#: lazarusidestrconsts.liskmtoggleviewcodebrowser
+msgid "Toggle view Code Browser"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
 msgid "Toggle view Code Explorer"
 msgstr "コードエクスプローラの表示の切り替え"
@@ -11483,10 +11487,6 @@ msgstr "(新規プロジェクト)"
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
 msgstr "新しく記録されたマクロ。保存されていません"
-
-#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
-msgstr "sshを通じたGNUデバッガはssh接続を通じたリモートデバッグを可能にします。詳細はdocs/RemoteDebugging.txtを読んでください。パスはsshクライアントを含まなくてはなりません。ホスト名と選択可能なユーザー名にSSH_Startup_Optionsを使用してください。そしてリモートコンピュータへのgdbのファイル名はRemote_GDB_Exeです"
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
@@ -13921,10 +13921,6 @@ msgstr "リソース保存エラー"
 msgid "Resource type of project"
 msgstr "プロジェクトのリソース型"
 
-#: lazarusidestrconsts.lisresponsecontinue
-msgid "Response: %sContinue ?"
-msgstr "応答： %s 続けますか？"
-
 #: lazarusidestrconsts.lisrestart
 msgctxt "lazarusidestrconsts.lisrestart"
 msgid "Restart"
@@ -15925,10 +15921,6 @@ msgstr "すべてチェックを外す"
 msgctxt "lazarusidestrconsts.lisundo"
 msgid "Undo"
 msgstr "元に戻す"
-
-#: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
-msgid "Unexpected result:%sThe debugger will terminate"
-msgstr "予期しない結果：%sデバッガは終了します。"
 
 #: lazarusidestrconsts.lisuninstall
 msgid "Uninstall %s"

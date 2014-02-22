@@ -9863,6 +9863,10 @@ msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
 msgid "View Call Stack"
 msgstr "Exibir chamada de pilha"
 
+#: lazarusidestrconsts.liskmtoggleviewcodebrowser
+msgid "Toggle view Code Browser"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
 msgid "Toggle view Code Explorer"
 msgstr "Alternar exibição explorador de código"
@@ -11909,10 +11913,6 @@ msgstr "(novo projeto)"
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
 msgstr "Novas macros gravadas. Não é para serem salvas"
-
-#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
-msgstr "O depurador GNU através de ssh permite depuração remota via conexão remota. Veja docs/RemoteDebugging.txt para detalhes. O caminho deve conter o cliente ssh. Use SSH_Startup_Options para o servidor e nome de usuário opcional. E Remote_GDB_Exe para o nome de arquivo do gdb no computador remoto."
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 #| msgid "New units are added to uses sections:"
@@ -14425,10 +14425,6 @@ msgstr "Erro ao salvar recurso"
 msgid "Resource type of project"
 msgstr "Tipo de recurso do projeto"
 
-#: lazarusidestrconsts.lisresponsecontinue
-msgid "Response: %sContinue ?"
-msgstr "Resposta: %sContinuar ?"
-
 #: lazarusidestrconsts.lisrestart
 msgctxt "lazarusidestrconsts.lisrestart"
 msgid "Restart"
@@ -16488,10 +16484,6 @@ msgstr "Desmarcar tudo"
 msgctxt "lazarusidestrconsts.lisundo"
 msgid "Undo"
 msgstr "Desfazer"
-
-#: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
-msgid "Unexpected result:%sThe debugger will terminate"
-msgstr "Resultado inesperado:%sO depurador irá encerrar"
 
 #: lazarusidestrconsts.lisuninstall
 msgid "Uninstall %s"

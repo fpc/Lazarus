@@ -9563,6 +9563,10 @@ msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
 msgid "View Call Stack"
 msgstr "Näytä kutsu-pino"
 
+#: lazarusidestrconsts.liskmtoggleviewcodebrowser
+msgid "Toggle view Code Browser"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
 msgid "Toggle view Code Explorer"
 msgstr "Vaihda näkymä koodin tutkijaan"
@@ -11453,10 +11457,6 @@ msgstr "(uusi projekti)"
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
 msgstr "Uudet nauhoitetut makrot. Ei talleteta."
-
-#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
-msgstr ""
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
@@ -13885,10 +13885,6 @@ msgstr "Resurssin talletusvirhe"
 msgid "Resource type of project"
 msgstr "Projektin resurssin tyyppi"
 
-#: lazarusidestrconsts.lisresponsecontinue
-msgid "Response: %sContinue ?"
-msgstr "Vastaus: %sJatka ?"
-
 #: lazarusidestrconsts.lisrestart
 msgctxt "lazarusidestrconsts.lisrestart"
 msgid "Restart"
@@ -15896,10 +15892,6 @@ msgstr "Poista valinta kaikista"
 msgctxt "lazarusidestrconsts.lisundo"
 msgid "Undo"
 msgstr "Kumoa"
-
-#: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
-msgid "Unexpected result:%sThe debugger will terminate"
-msgstr ""
 
 #: lazarusidestrconsts.lisuninstall
 msgid "Uninstall %s"

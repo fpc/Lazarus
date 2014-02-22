@@ -9855,6 +9855,10 @@ msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
 msgid "View Call Stack"
 msgstr "Rodyti „Kreipčių dėklas“"
 
+#: lazarusidestrconsts.liskmtoggleviewcodebrowser
+msgid "Toggle view Code Browser"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
 msgid "Toggle view Code Explorer"
 msgstr "Rodyti „Kodo tyrinėtojas“"
@@ -11890,10 +11894,6 @@ msgstr "(naujas projektas)"
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
 msgstr "Įrašytos naujos makrokomandos. Neišsaugojamos"
-
-#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
-msgstr "Su GNU derintuvę, naudojančia SSH, derinimas vykdomas nuotoliniu būdu naudojant SSH ryšį. Detalės pateiktos žinyne ir faile „RemoteDebugging.txt“. Kelyje turi būti SSH klientas. „SSH_Startup_Options“ naudojamas nustatyti pagrindinio kompiuterio pavadinimui ir nebūtinam naudotojo vardui. Taip pat „Remote_GDB_Exe“ nurodyti nuotoliniame kompiuteryje esančio GDB failo pavadinimą."
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 #| msgid "New units are added to uses sections:"
@@ -14407,10 +14407,6 @@ msgstr "Klaida išsaugojant išteklius"
 msgid "Resource type of project"
 msgstr "Projekto išteklių tipas"
 
-#: lazarusidestrconsts.lisresponsecontinue
-msgid "Response: %sContinue ?"
-msgstr "Atsakas: %Tęsti?"
-
 #: lazarusidestrconsts.lisrestart
 msgctxt "lazarusidestrconsts.lisrestart"
 msgid "Restart"
@@ -16477,10 +16473,6 @@ msgstr "Naikinti visų žymėjimą"
 msgctxt "lazarusidestrconsts.lisundo"
 msgid "Undo"
 msgstr "Grąžinti"
-
-#: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
-msgid "Unexpected result:%sThe debugger will terminate"
-msgstr "Netikėtas rezultatas:%Derintuvė nutraukia darbą"
 
 #: lazarusidestrconsts.lisuninstall
 msgid "Uninstall %s"

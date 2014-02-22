@@ -9955,6 +9955,10 @@ msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
 msgid "View Call Stack"
 msgstr "切换到堆栈查看器视图"
 
+#: lazarusidestrconsts.liskmtoggleviewcodebrowser
+msgid "Toggle view Code Browser"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
 msgid "Toggle view Code Explorer"
 msgstr "切换到代码管理器视图"
@@ -12098,10 +12102,6 @@ msgstr "%s - (新工程)"
 
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
-msgstr ""
-
-#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
 msgstr ""
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
@@ -14641,10 +14641,6 @@ msgstr "资源保存错误"
 msgid "Resource type of project"
 msgstr ""
 
-#: lazarusidestrconsts.lisresponsecontinue
-msgid "Response: %sContinue ?"
-msgstr ""
-
 #: lazarusidestrconsts.lisrestart
 msgctxt "lazarusidestrconsts.lisrestart"
 msgid "Restart"
@@ -16693,10 +16689,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisundo"
 msgid "Undo"
 msgstr "撤销"
-
-#: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
-msgid "Unexpected result:%sThe debugger will terminate"
-msgstr ""
 
 #: lazarusidestrconsts.lisuninstall
 msgid "Uninstall %s"
