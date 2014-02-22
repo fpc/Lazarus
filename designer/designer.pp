@@ -1646,9 +1646,17 @@ var
   i: integer;
   SaveControlSelection: TControlSelection;
   AStream: TStringStream;
+  APropInfo: PPropInfo;
 begin
   Result := (FUndoLock = 0);
   if not Result then Exit;
+  APropInfo := GetPropInfo(aPersistent, aFieldName);
+  {property is not published ?}
+  if APropInfo = nil then
+  begin
+    DebugLn('TDesigner.AddUndoAction: error ',dbgsName(aPersistent),' property "',AFieldName,'". Property is not published ? ');
+    exit;
+  end;
   Inc(FUndoLock);
   try
     if FUndoCurr > High(FUndoList) then
@@ -1700,7 +1708,7 @@ begin
       opType := aOpType;
       isValid := true;
       id := FUndoActId;
-      propInfo := GetPropInfo(aPersistent, aFieldName)^;
+      propInfo := APropInfo^;
     end;
     Inc(FUndoCurr);
   finally
