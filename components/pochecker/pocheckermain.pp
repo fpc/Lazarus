@@ -59,8 +59,8 @@ type
     procedure SelectAllCheckBoxClick(Sender: TObject);
   private
     PoFamily: TPoFamily;
-    FChoosenMasterName: String;
-    FChoosenChildName: String;
+    FChosenMasterName: String;
+    FChosenChildName: String;
     procedure OnTestStart(const ATestName, APoFileName: String);
     procedure OnTestEnd(const ATestName: String; const ErrorCount: Integer);
     procedure FillTestListBox;
@@ -232,33 +232,33 @@ begin
     ShortFn := ExtractFileName(Fn);
     if IsMasterPoName(Fn) then
     begin
-      FChoosenMasterName := Fn;
-      FChoosenChildName := '';
+      FChosenMasterName := Fn;
+      FChosenChildName := '';
     end
     else
     begin //not a mastername, may be a child
-      FChoosenChildName := Fn;
-      FChoosenMasterName := ExtractMasterNameFromChildName(Fn);
-      if (FChoosenMasterName = '') then
+      FChosenChildName := Fn;
+      FChosenMasterName := ExtractMasterNameFromChildName(Fn);
+      if (FChosenMasterName = '') then
       begin
-        FChoosenMasterName := '';
-        FChoosenChildName := '';
+        FChosenMasterName := '';
+        FChosenChildName := '';
         ShowError(Format(sNotAProperFileName,[ShortFn]));
       end
-      else if not FileExistsUtf8(FChoosenMasterName) then
+      else if not FileExistsUtf8(FChosenMasterName) then
       begin
-        FChoosenMasterName := '';
-        FChoosenChildName := '';
+        FChosenMasterName := '';
+        FChosenChildName := '';
         ShowError(Format(sCannotFindMaster,[ShortFn]));
       end;
     end;
-    OK := (FChoosenMasterName <> '');
+    OK := (FChosenMasterName <> '');
     if OK then
     begin
       if Assigned(PoFamily) then
         PoFamily.Free;
       try
-        PoFamily := TPoFamily.Create(FChoosenMasterName, FChoosenChildName);
+        PoFamily := TPoFamily.Create(FChosenMasterName, FChosenChildName);
         PoFamily.OnTestStart := @OnTestStart;
         PoFamily.OnTestEnd := @OnTestEnd;
       except
@@ -302,9 +302,9 @@ begin
   SL := TStringList.Create;
   try
     StatusPanel.Enabled := True;
-    if (not (ptoFindAllChilds in Options)) and Assigned(PoFamily.Child)
-        and (PoFamily.ChildName <> FChoosenChildName) then
-      PoFamily.ChildName := FChoosenChildName;
+    if (not (ptoFindAllChildren in Options)) and Assigned(PoFamily.Child)
+        and (PoFamily.ChildName <> FChosenChildName) then
+      PoFamily.ChildName := FChosenChildName;
     PoFamily.RunTests(Options, ErrorCount, WarningCount, SL);
     debugln('RunSelectedTests: ',Format(sTotalErrors,[ErrorCount]));
     debugln('                  ',Format(sTotalWarnings,[WarningCount]));
