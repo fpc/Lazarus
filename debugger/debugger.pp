@@ -871,7 +871,7 @@ type
 
   { TIDELocals }
 
-  TIDELocals = class(TLocalsBase)
+  TIDELocals = class(TLocals)
   protected
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 APath: string);
@@ -902,7 +902,7 @@ type
 
   { TIDELocalsList }
 
-  TIDELocalsList = class(TLocalsListBase)
+  TIDELocalsList = class(TLocalsList)
   private
     function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TIDELocals;
     function GetEntryByIdx(const AnIndex: Integer): TIDELocals;
@@ -3189,12 +3189,12 @@ end;
 
 function TIDELocalsList.GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TIDELocals;
 begin
-  Result := TIDELocals(inherited Entry[AThreadId, AStackFrame]);
+  Result := TIDELocals(inherited Entries[AThreadId, AStackFrame]);
 end;
 
 function TIDELocalsList.GetEntryByIdx(const AnIndex: Integer): TIDELocals;
 begin
-  Result := TIDELocals(inherited EntryByIdx[AnIndex]);
+  Result := TIDELocals(inherited EntriesByIdx[AnIndex]);
 end;
 
 function TIDELocalsList.CreateEntry(AThreadId, AStackFrame: Integer): TDbgEntityValuesList;

@@ -906,7 +906,7 @@ type
 
   TGDBMIDebuggerCommandLocals = class(TGDBMIDebuggerCommand)
   private
-    FLocals: TLocalsBase;
+    FLocals: TLocals;
   protected
     procedure DoLockQueueExecute; override;
     procedure DoUnLockQueueExecute; override;
@@ -914,7 +914,7 @@ type
     procedure DoUnLockQueueExecuteForInstr; override;
     function DoExecute: Boolean; override;
   public
-    constructor Create(AOwner: TGDBMIDebugger; ALocals: TLocalsBase);
+    constructor Create(AOwner: TGDBMIDebugger; ALocals: TLocals);
     destructor Destroy; override;
     function DebugText: String; override;
   end;
@@ -932,7 +932,7 @@ type
     procedure Changed;
     constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
-    procedure RequestData(ALocals: TLocalsBase); override;
+    procedure RequestData(ALocals: TLocals); override;
   end;
 
   {%endregion   ^^^^^  Locals  ^^^^^   }
@@ -9616,7 +9616,7 @@ begin
   FLocals.SetDataValidity(ddsValid);
 end;
 
-constructor TGDBMIDebuggerCommandLocals.Create(AOwner: TGDBMIDebugger; ALocals: TLocalsBase);
+constructor TGDBMIDebuggerCommandLocals.Create(AOwner: TGDBMIDebugger; ALocals: TLocals);
 begin
   inherited Create(AOwner);
   FLocals := ALocals;
@@ -9670,7 +9670,7 @@ begin
   FCommandList.Clear;
 end;
 
-procedure TGDBMILocals.RequestData(ALocals: TLocalsBase);
+procedure TGDBMILocals.RequestData(ALocals: TLocals);
 var
   ForceQueue: Boolean;
   EvaluationCmdObj: TGDBMIDebuggerCommandLocals;

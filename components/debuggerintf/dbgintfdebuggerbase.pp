@@ -665,7 +665,7 @@ type
 
  { TLocalsBase }
 
-  TLocalsBase = class(TDbgEntityValuesList)
+  TLocals = class(TDbgEntityValuesList)
   private
     function GetEntry(AnIndex: Integer): TLocalsValue;
     function GetName(const AnIndex: Integer): String;
@@ -677,34 +677,34 @@ type
     procedure SetDataValidity(AValidity: TDebuggerDataState); virtual; abstract;
   public
     function Count: Integer;reintroduce; virtual;
-    property Entry[AnIndex: Integer]: TLocalsValue read GetEntry;
+    property Entries[AnIndex: Integer]: TLocalsValue read GetEntry;
     property Names[const AnIndex: Integer]: String read GetName;
     property Values[const AnIndex: Integer]: String read GetValue;
   end;
 
   { TLocalsListBase }
 
-  TLocalsListBase = class(TDbgEntitiesThreadStackList)
+  TLocalsList = class(TDbgEntitiesThreadStackList)
   private
-    function GetEntry(AThreadId, AStackFrame: Integer): TLocalsBase;
-    function GetEntryByIdx(AnIndex: Integer): TLocalsBase;
+    function GetEntry(AThreadId, AStackFrame: Integer): TLocals;
+    function GetEntryByIdx(AnIndex: Integer): TLocals;
   protected
     //function CreateEntry(AThreadId, AStackFrame: Integer): TDbgEntityValuesList; override;
   public
-    property EntriesByIdx[AnIndex: Integer]: TLocalsBase read GetEntryByIdx;
-    property Entries[AThreadId, AStackFrame: Integer]: TLocalsBase read GetEntry; default;
+    property EntriesByIdx[AnIndex: Integer]: TLocals read GetEntryByIdx;
+    property Entries[AThreadId, AStackFrame: Integer]: TLocals read GetEntry; default;
   end;
 
   { TLocalsSupplier }
 
   TLocalsSupplier = class(TDebuggerDataSupplier)
   private
-    FCurrentLocalsList: TLocalsListBase;
+    FCurrentLocalsList: TLocalsList;
   protected
     procedure DoNewMonitor; override;
   public
-    procedure RequestData(ALocals: TLocalsBase); virtual;
-    property  CurrentLocalsList: TLocalsListBase read FCurrentLocalsList write FCurrentLocalsList;
+    procedure RequestData(ALocals: TLocals); virtual;
+    property  CurrentLocalsList: TLocalsList read FCurrentLocalsList write FCurrentLocalsList;
   end;
 
 {%endregion   ^^^^^  Locals  ^^^^^   }
@@ -1735,39 +1735,39 @@ end;
 
 { TLocalsListBase }
 
-function TLocalsListBase.GetEntry(AThreadId, AStackFrame: Integer): TLocalsBase;
+function TLocalsList.GetEntry(AThreadId, AStackFrame: Integer): TLocals;
 begin
-  Result := TLocalsBase(inherited Entry[AThreadId, AStackFrame]);
+  Result := TLocals(inherited Entries[AThreadId, AStackFrame]);
 end;
 
-function TLocalsListBase.GetEntryByIdx(AnIndex: Integer): TLocalsBase;
+function TLocalsList.GetEntryByIdx(AnIndex: Integer): TLocals;
 begin
-  Result := TLocalsBase(inherited EntryByIdx[AnIndex]);
+  Result := TLocals(inherited EntriesByIdx[AnIndex]);
 end;
 
 { TLocalsBase }
 
-function TLocalsBase.GetEntry(AnIndex: Integer): TLocalsValue;
+function TLocals.GetEntry(AnIndex: Integer): TLocalsValue;
 begin
-  Result := TLocalsValue(inherited Entry[AnIndex]);
+  Result := TLocalsValue(inherited Entries[AnIndex]);
 end;
 
-function TLocalsBase.GetName(const AnIndex: Integer): String;
+function TLocals.GetName(const AnIndex: Integer): String;
 begin
-  Result := Entry[AnIndex].Name;
+  Result := Entries[AnIndex].Name;
 end;
 
-function TLocalsBase.GetValue(const AnIndex: Integer): String;
+function TLocals.GetValue(const AnIndex: Integer): String;
 begin
-  Result := Entry[AnIndex].Value;
+  Result := Entries[AnIndex].Value;
 end;
 
-function TLocalsBase.CreateEntry: TDbgEntityValue;
+function TLocals.CreateEntry: TDbgEntityValue;
 begin
   Result := TLocalsValue.Create;
 end;
 
-procedure TLocalsBase.Add(const AName, AValue: String);
+procedure TLocals.Add(const AName, AValue: String);
 var
   v: TLocalsValue;
 begin
@@ -1778,7 +1778,7 @@ begin
   inherited Add(v);
 end;
 
-function TLocalsBase.Count: Integer;
+function TLocals.Count: Integer;
 begin
   Result := inherited Count;
 end;
@@ -2635,7 +2635,7 @@ begin
   FCurrentLocalsList := nil;
 end;
 
-procedure TLocalsSupplier.RequestData(ALocals: TLocalsBase);
+procedure TLocalsSupplier.RequestData(ALocals: TLocals);
 begin
   ALocals.SetDataValidity(ddsInvalid)
 end;

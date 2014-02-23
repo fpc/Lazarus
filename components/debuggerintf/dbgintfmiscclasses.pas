@@ -66,7 +66,7 @@ type
     procedure Add(AnEntry: TDbgEntityValue);
     procedure Clear;
     function Count: Integer;
-    property Entry[AnIndex: Integer]: TDbgEntityValue read GetEntry;
+    property Entries[AnIndex: Integer]: TDbgEntityValue read GetEntry;
 
     property ThreadId: Integer read FThreadId;
     property StackFrame: Integer read FStackFrame;
@@ -102,9 +102,9 @@ type
     procedure Add(AnEntry: TDbgEntityValuesList);
     procedure Clear;
     function Count: Integer;
-    property EntryByIdx[AnIndex: Integer]: TDbgEntityValuesList read GetEntryByIdx;
+    property EntriesByIdx[AnIndex: Integer]: TDbgEntityValuesList read GetEntryByIdx;
     // Entries will automatically be created
-    property Entry[AThreadId, AStackFrame: Integer]: TDbgEntityValuesList read GetEntry; default;
+    property Entries[AThreadId, AStackFrame: Integer]: TDbgEntityValuesList read GetEntry; default;
     property HasEntry[AThreadId, AStackFrame: Integer]: Boolean read GetHasEntry;
     property Immutable: Boolean read GetImmutable write SetImmutable; // used by assert
   end;
