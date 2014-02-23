@@ -39,16 +39,16 @@ unit GDBMIDebugger;
 interface
 
 uses
-  Classes, SysUtils, strutils, Controls, Maps, Variants, FileUtil, Dialogs,
-  BaseIDEIntf, LCLProc, LazClasses, LazLoggerBase,
-  DebugUtils, GDBTypeInfo, GDBMIDebugInstructions, GDBMIMiscClasses,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, GdbmiStringConstants,
 {$IFdef MSWindows}
   Windows,
 {$ENDIF}
 {$IFDEF UNIX}
    Unix,BaseUnix,termio,
 {$ENDIF}
+  Classes, SysUtils, strutils, Controls, Maps, Variants, FileUtil, Dialogs,
+  BaseIDEIntf, LCLProc, LazClasses, LazLoggerBase, math,
+  DebugUtils, GDBTypeInfo, GDBMIDebugInstructions, GDBMIMiscClasses,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, GdbmiStringConstants,
   Forms;
 
 type
