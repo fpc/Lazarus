@@ -649,38 +649,50 @@ type
  ******************************************************************************
  ******************************************************************************}
 
-  { TLocalsBase }
+    // TODO: a more watch-like value object
 
-  TLocalsBase = class(TRefCountedObject)
+   { TLocalsValue }
+
+   TLocalsValue = class(TDbgEntityValue)
+   private
+     FName: String;
+     FValue: String;
+   public
+     procedure DoAssign(AnOther: TDbgEntityValue); override;
+     property Name: String read FName;
+     property Value: String read FValue;
+   end;
+
+ { TLocalsBase }
+
+  TLocalsBase = class(TDbgEntityValuesList)
+  private
+    function GetEntry(AnIndex: Integer): TLocalsValue;
+    function GetName(const AnIndex: Integer): String;
+    function GetValue(const AnIndex: Integer): String;
   protected
-    function GetName(const AnIndex: Integer): String; virtual; abstract;
-    function GetStackFrame: Integer; virtual; abstract;
-    function GetThreadId: Integer; virtual; abstract;
-    function GetValue(const AnIndex: Integer): String; virtual; abstract;
+    function CreateEntry: TDbgEntityValue; override;
   public
-    procedure Add(const AName, AValue: String); virtual; abstract;
-    procedure Clear; virtual; abstract;
+    procedure Add(const AName, AValue: String);
     procedure SetDataValidity(AValidity: TDebuggerDataState); virtual; abstract;
-    function Count: Integer; virtual; abstract;
   public
+    function Count: Integer;reintroduce; virtual;
+    property Entry[AnIndex: Integer]: TLocalsValue read GetEntry;
     property Names[const AnIndex: Integer]: String read GetName;
     property Values[const AnIndex: Integer]: String read GetValue;
-    property ThreadId: Integer read GetThreadId;
-    property StackFrame: Integer read GetStackFrame;
   end;
 
   { TLocalsListBase }
 
-  TLocalsListBase = class
+  TLocalsListBase = class(TDbgEntitiesThreadStackList)
+  private
+    function GetEntry(AThreadId, AStackFrame: Integer): TLocalsBase;
+    function GetEntryByIdx(AnIndex: Integer): TLocalsBase;
   protected
-    function GetEntryBase(const AThreadId: Integer; const AStackFrame: Integer): TLocalsBase;  virtual; abstract;
-    function GetEntryByIdxBase(const AnIndex: Integer): TLocalsBase;  virtual; abstract;
+    //function CreateEntry(AThreadId, AStackFrame: Integer): TDbgEntityValuesList; override;
   public
-    procedure Clear;  virtual; abstract;
-    function Count: Integer;  virtual; abstract;
-    property EntriesByIdx[const AnIndex: Integer]: TLocalsBase read GetEntryByIdxBase;
-    property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TLocalsBase
-             read GetEntryBase; default;
+    property EntriesByIdx[AnIndex: Integer]: TLocalsBase read GetEntryByIdx;
+    property Entries[AThreadId, AStackFrame: Integer]: TLocalsBase read GetEntry; default;
   end;
 
   { TLocalsSupplier }
@@ -1504,7 +1516,7 @@ type
     function  Evaluate(const AExpression: String; var AResult: String;
                        var ATypeInfo: TDBGType;
                        EvalFlags: TDBGEvaluateFlags = []): Boolean;                     // Evaluates the given expression, returns true if valid
-    function GetProcessList(AList: TRunningProcessInfoList): boolean; virtual;
+    function GetProcessList({%H-}AList: TRunningProcessInfoList): boolean; virtual;
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
     function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
                           out ADump, AStatement, AFile: String; out ALine: Integer): Boolean; deprecated;
@@ -1710,6 +1722,65 @@ begin
         [PtrUInt(ADisassRange), Count, Capacity, FirstAddr, RangeStartAddr, LastAddr, RangeEndAddr, LastEntryEndAddr, fo]);
     {$POP}
   end;
+end;
+
+{ TLocalsValue }
+
+procedure TLocalsValue.DoAssign(AnOther: TDbgEntityValue);
+begin
+  inherited DoAssign(AnOther);
+  FName := TLocalsValue(AnOther).FName;
+  FValue := TLocalsValue(AnOther).FValue;
+end;
+
+{ TLocalsListBase }
+
+function TLocalsListBase.GetEntry(AThreadId, AStackFrame: Integer): TLocalsBase;
+begin
+  Result := TLocalsBase(inherited Entry[AThreadId, AStackFrame]);
+end;
+
+function TLocalsListBase.GetEntryByIdx(AnIndex: Integer): TLocalsBase;
+begin
+  Result := TLocalsBase(inherited EntryByIdx[AnIndex]);
+end;
+
+{ TLocalsBase }
+
+function TLocalsBase.GetEntry(AnIndex: Integer): TLocalsValue;
+begin
+  Result := TLocalsValue(inherited Entry[AnIndex]);
+end;
+
+function TLocalsBase.GetName(const AnIndex: Integer): String;
+begin
+  Result := Entry[AnIndex].Name;
+end;
+
+function TLocalsBase.GetValue(const AnIndex: Integer): String;
+begin
+  Result := Entry[AnIndex].Value;
+end;
+
+function TLocalsBase.CreateEntry: TDbgEntityValue;
+begin
+  Result := TLocalsValue.Create;
+end;
+
+procedure TLocalsBase.Add(const AName, AValue: String);
+var
+  v: TLocalsValue;
+begin
+  assert(not Immutable, 'TLocalsBase.Add Immutable');
+  v := TLocalsValue(CreateEntry);
+  v.FName := AName;
+  v.FValue := AValue;
+  inherited Add(v);
+end;
+
+function TLocalsBase.Count: Integer;
+begin
+  Result := inherited Count;
 end;
 
 { TWatchesBase }

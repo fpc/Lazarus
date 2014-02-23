@@ -869,93 +869,72 @@ type
 
   { TLocals }
 
-  TLocals = class(TLocalsBase)
-  private
-    FLocals: TStringList;
-    FStackFrame: Integer;
-    FThreadId: Integer;
+  { TIDELocals }
+
+  TIDELocals = class(TLocalsBase)
   protected
-    function GetThreadId: Integer; override;
-    function GetStackFrame: Integer; override;
-    function GetName(const AnIndex: Integer): String; override;
-    function GetValue(const AnIndex: Integer): String; override;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
                               APath: string);
   public
-    procedure Assign(AnOther: TLocals);
-    constructor Create;
-    constructor Create(AThreadId, AStackFrame: Integer);
-    constructor CreateCopy(const ASource: TLocals);
-    destructor Destroy; override;
-    procedure Add(const AName, AValue: String); override;
-    procedure Clear; override;
+    constructor CreateFromXMLConfig(const AConfig: TXMLConfig; APath: string);
     procedure SetDataValidity(AValidity: TDebuggerDataState); override;
-    function Count: Integer; override;
-  public
-    property Names[const AnIndex: Integer]: String read GetName;
-    property Values[const AnIndex: Integer]: String read GetValue;
-    property ThreadId: Integer read FThreadId;
-    property StackFrame: Integer read FStackFrame;
-  end;
-
-  { TLocalsList }
-
-  TLocalsList = class(TLocalsListBase)
-  private
-    FList: TList;
-    function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals;
-    function GetEntryByIdx(const AnIndex: Integer): TLocals;
-  protected
-    function GetEntryBase(const AThreadId: Integer; const AStackFrame: Integer): TLocalsBase; override;
-    function GetEntryByIdxBase(const AnIndex: Integer): TLocalsBase; override;
-    function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer): TLocals; virtual;
-    procedure Add(AnEntry: TLocals);
-    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
-                                APath: string);
-    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
-                              APath: string);
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Assign(AnOther: TLocalsList);
-    procedure Clear; override;
-    function Count: Integer; override;
-    property EntriesByIdx[const AnIndex: Integer]: TLocals read GetEntryByIdx;
-    property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TLocals
-             read GetEntry; default;
   end;
 
   { TCurrentLocals }
 
-  TCurrentLocals = class(TLocals)
+  TCurrentLocals = class(TIDELocals)
   private
     FMonitor: TLocalsMonitor;
-    FSnapShot: TLocals;
+    FSnapShot: TIDELocals;
     FDataValidity: TDebuggerDataState;
-    procedure SetSnapShot(const AValue: TLocals);
+    procedure SetSnapShot(const AValue: TIDELocals);
   protected
-    property SnapShot: TLocals read FSnapShot write SetSnapShot;
+    property SnapShot: TIDELocals read FSnapShot write SetSnapShot;
   public
     constructor Create(AMonitor: TLocalsMonitor; AThreadId, AStackFrame: Integer);
     function Count: Integer; override;
     procedure SetDataValidity(AValidity: TDebuggerDataState); override;
   end;
 
+  { TLocalsList }
+
+  { TIDELocalsList }
+
+  TIDELocalsList = class(TLocalsListBase)
+  private
+    function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TIDELocals;
+    function GetEntryByIdx(const AnIndex: Integer): TIDELocals;
+  protected
+    function CreateEntry(AThreadId, AStackFrame: Integer): TDbgEntityValuesList; override;
+    procedure DoAssign(AnOther: TDbgEntitiesThreadStackList); override;
+    procedure DoAdded(AnEntry: TDbgEntityValuesList); override;
+
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              APath: string);
+  public
+    property EntriesByIdx[const AnIndex: Integer]: TIDELocals read GetEntryByIdx;
+    property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TIDELocals
+             read GetEntry; default;
+  end;
+
   { TCurrentLocalsList }
 
-  TCurrentLocalsList = class(TLocalsList)
+  TCurrentLocalsList = class(TIDELocalsList)
   private
     FMonitor: TLocalsMonitor;
-    FSnapShot: TLocalsList;
-    procedure SetSnapShot(const AValue: TLocalsList);
+    FSnapShot: TIDELocalsList;
+    procedure SetSnapShot(const AValue: TIDELocalsList);
   protected
-    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals; override;
-    property SnapShot: TLocalsList read FSnapShot write SetSnapShot;
+    procedure DoCleared; override;
+    procedure DoAdded(AnEntry: TDbgEntityValuesList); override;
+    function CreateEntry(AThreadId, AStackFrame: Integer): TIDELocals; override;
+    property SnapShot: TIDELocalsList read FSnapShot write SetSnapShot;
   public
     constructor Create(AMonitor: TLocalsMonitor);
-    procedure Clear; override;
   end;
 
   { TLocalsMonitor }
@@ -964,7 +943,7 @@ type
   private
     FCurrentLocalsList: TCurrentLocalsList;
     FNotificationList: TDebuggerChangeNotificationList;
-    function GetSnapshot(AnID: Pointer): TLocalsList;
+    function GetSnapshot(AnID: Pointer): TIDELocalsList;
     function GetSupplier: TLocalsSupplier;
     procedure SetSupplier(const AValue: TLocalsSupplier);
   protected
@@ -982,7 +961,7 @@ type
     procedure AddNotification(const ANotification: TLocalsNotification);
     procedure RemoveNotification(const ANotification: TLocalsNotification);
     property  CurrentLocalsList: TCurrentLocalsList read FCurrentLocalsList;
-    property  Snapshots[AnID: Pointer]: TLocalsList read GetSnapshot;
+    property  Snapshots[AnID: Pointer]: TIDELocalsList read GetSnapshot;
     property  Supplier: TLocalsSupplier read GetSupplier write SetSupplier;
   end;
 
@@ -3147,13 +3126,17 @@ end;
 
 { TCurrentLocalsList }
 
-procedure TCurrentLocalsList.SetSnapShot(const AValue: TLocalsList);
+procedure TCurrentLocalsList.SetSnapShot(const AValue: TIDELocalsList);
 var
   i: Integer;
-  R: TLocals;
+  E, R: TIDELocals;
 begin
   assert((FSnapShot=nil) or (AValue=nil), 'TCurrentLocalsList already have snapshot');
   if FSnapShot = AValue then exit;
+
+  if FSnapShot <> nil then
+    FSnapShot.Immutable := True;
+
   FSnapShot := AValue;
 
   if FSnapShot = nil then begin
@@ -3163,27 +3146,37 @@ begin
     //FSnapShot.Assign(Self);
     FSnapShot.Clear;
     for i := 0 to Count-1 do begin
-      R := TLocals.Create;
+      E := EntriesByIdx[i];
+      R := TIDELocals.Create(e.ThreadId, e.StackFrame);
       FSnapShot.Add(R);
-      TCurrentLocals(EntriesByIdx[i]).SnapShot := R;
+      TCurrentLocals(E).SnapShot := R;
     end;
 
   end;
 end;
 
-function TCurrentLocalsList.CreateEntry(const AThreadId: Integer;
-  const AStackFrame: Integer): TLocals;
-var
-  R: TLocals;
+procedure TCurrentLocalsList.DoCleared;
 begin
-  Result := TCurrentLocals.Create(FMonitor, AThreadId, AStackFrame);
-  Add(Result);
+  FMonitor.NotifyChange(nil);
+end;
+
+procedure TCurrentLocalsList.DoAdded(AnEntry: TDbgEntityValuesList);
+var
+  R: TIDELocals;
+begin
+  Assert(AnEntry is TCurrentLocals, 'TCurrentLocalsList.DoAdded');
+  inherited DoAdded(AnEntry);
   if FSnapShot <> nil
   then begin
-    R := TLocals.Create(AThreadId, AStackFrame);
+    R := TIDELocals.Create(AnEntry.ThreadId, AnEntry.StackFrame);
     FSnapShot.Add(R);
-    TCurrentLocals(Result).SnapShot := R;
+    TCurrentLocals(AnEntry).SnapShot := R;
   end;
+end;
+
+function TCurrentLocalsList.CreateEntry(AThreadId, AStackFrame: Integer): TIDELocals;
+begin
+  Result := TCurrentLocals.Create(FMonitor, AThreadId, AStackFrame);
 end;
 
 constructor TCurrentLocalsList.Create(AMonitor: TLocalsMonitor);
@@ -3192,73 +3185,50 @@ begin
   inherited Create;
 end;
 
-procedure TCurrentLocalsList.Clear;
-begin
-  inherited Clear;
-  FMonitor.NotifyChange(nil);
-end;
-
 { TLocalsList }
 
-function TLocalsList.GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals;
+function TIDELocalsList.GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TIDELocals;
+begin
+  Result := TIDELocals(inherited Entry[AThreadId, AStackFrame]);
+end;
+
+function TIDELocalsList.GetEntryByIdx(const AnIndex: Integer): TIDELocals;
+begin
+  Result := TIDELocals(inherited EntryByIdx[AnIndex]);
+end;
+
+function TIDELocalsList.CreateEntry(AThreadId, AStackFrame: Integer): TDbgEntityValuesList;
+begin
+  Result := TIDELocals.Create(AThreadId, AStackFrame);
+end;
+
+procedure TIDELocalsList.DoAssign(AnOther: TDbgEntitiesThreadStackList);
+begin
+  inherited DoAssign(AnOther);
+  Immutable := not(Self is TCurrentLocalsList);
+end;
+
+procedure TIDELocalsList.DoAdded(AnEntry: TDbgEntityValuesList);
+begin
+  inherited DoAdded(AnEntry);
+  //AnEntry.Immutable := not(Self is TCurrentLocalsList);
+end;
+
+procedure TIDELocalsList.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
 var
-  i: Integer;
-begin
-  i := FList.Count - 1;
-  while i >= 0 do begin
-    Result := TLocals(FList[i]);
-    if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame)
-    then exit;
-    dec(i);
-  end;
-  Result := CreateEntry(AThreadId, AStackFrame);
-end;
-
-function TLocalsList.GetEntryByIdx(const AnIndex: Integer): TLocals;
-begin
-  Result := TLocals(FList[AnIndex]);
-end;
-
-function TLocalsList.GetEntryBase(const AThreadId: Integer;
-  const AStackFrame: Integer): TLocalsBase;
-begin
-  Result := TLocalsBase(GetEntry(AThreadId, AStackFrame));
-end;
-
-function TLocalsList.GetEntryByIdxBase(const AnIndex: Integer): TLocalsBase;
-begin
-  Result := TLocalsBase(GetEntryByIdx(AnIndex));
-end;
-
-function TLocalsList.CreateEntry(const AThreadId: Integer;
-  const AStackFrame: Integer): TLocals;
-begin
-  Result := nil;
-end;
-
-procedure TLocalsList.Add(AnEntry: TLocals);
-begin
-  assert(((Self is TCurrentLocalsList) and (AnEntry is TCurrentLocals)) or ((not(Self is TCurrentLocalsList)) and not(AnEntry is TCurrentLocals)),
-         'TLocalsList.Add: entry and list differ (current and none current)');
-  FList.add(AnEntry);
-end;
-
-procedure TLocalsList.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
-var
-  e: TLocals;
+  e: TIDELocals;
   c, i: Integer;
 begin
   Clear;
   c := AConfig.GetValue(APath + 'Count', 0);
   APath := APath + 'LocalsEntry';
   for i := 0 to c - 1 do begin
-    e := TLocals.Create;
-    e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/');
+    e := TIDELocals.CreateFromXMLConfig(AConfig, APath + IntToStr(i) + '/');
     Add(e);
   end;
 end;
 
-procedure TLocalsList.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+procedure TIDELocalsList.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
 var
   i: Integer;
 begin
@@ -3268,41 +3238,6 @@ begin
     EntriesByIdx[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
 end;
 
-procedure TLocalsList.Assign(AnOther: TLocalsList);
-var
-  i: Integer;
-begin
-  Clear;
-  for i := 0 to AnOther.FList.Count-1 do
-    FList.Add(TLocals.CreateCopy(TLocals(AnOther.FList[i])));
-end;
-
-constructor TLocalsList.Create;
-begin
-  FList := TList.Create;
-  inherited Create;
-end;
-
-destructor TLocalsList.Destroy;
-begin
-  Clear;
-  inherited Destroy;
-  FList.Free;
-end;
-
-procedure TLocalsList.Clear;
-begin
-  while FList.Count > 0 do begin
-    TRefCountedObject(FList[0]).ReleaseReference;
-    FList.Delete(0);
-  end;
-end;
-
-function TLocalsList.Count: Integer;
-begin
-  Result := FList.Count;
-end;
-
 { TLocalsMonitor }
 
 function TLocalsMonitor.GetSupplier: TLocalsSupplier;
@@ -3310,9 +3245,9 @@ begin
   Result := TLocalsSupplier(inherited Supplier);
 end;
 
-function TLocalsMonitor.GetSnapshot(AnID: Pointer): TLocalsList;
+function TLocalsMonitor.GetSnapshot(AnID: Pointer): TIDELocalsList;
 begin
-  Result := TLocalsList(GetSnapshotObj(AnID));
+  Result := TIDELocalsList(GetSnapshotObj(AnID));
 end;
 
 procedure TLocalsMonitor.SetSupplier(const AValue: TLocalsSupplier);
@@ -3364,9 +3299,9 @@ end;
 
 function TLocalsMonitor.CreateSnapshot(CreateEmpty: Boolean = False): TObject;
 begin
-  Result := TLocalsList.Create;
+  Result := TIDELocalsList.Create;
   if not CreateEmpty
-  then CurrentLocalsList.SnapShot := TLocalsList(Result);
+  then CurrentLocalsList.SnapShot := TIDELocalsList(Result);
 end;
 
 constructor TLocalsMonitor.Create;
@@ -6322,99 +6257,29 @@ end;
 { TLocals }
 { =========================================================================== }
 
-function TLocals.Count: Integer;
-begin
-  Result := FLocals.Count;
-end;
-
-constructor TLocals.Create;
-begin
-  FLocals := TStringList.Create;
-  inherited Create;
-  AddReference;
-end;
-
-constructor TLocals.Create(AThreadId, AStackFrame: Integer);
-begin
-  Create;
-  FThreadId := AThreadId;
-  FStackFrame := AStackFrame;
-end;
-
-constructor TLocals.CreateCopy(const ASource: TLocals);
-begin
-  Create;
-  Assign(ASource);
-end;
-
-destructor TLocals.Destroy;
-begin
-  inherited Destroy;
-  FreeAndNil(FLocals);
-end;
-
-procedure TLocals.Add(const AName, AValue: String);
-begin
-  assert(Self is TCurrentLocals, 'TLocals.Add');
-  FLocals.Add(AName + '=' + AValue);
-end;
-
-procedure TLocals.Clear;
-begin
-  assert(Self is TCurrentLocals, 'TLocals.Clear');
-  FLocals.Clear;
-end;
-
-procedure TLocals.SetDataValidity(AValidity: TDebuggerDataState);
+procedure TIDELocals.SetDataValidity(AValidity: TDebuggerDataState);
 begin
   assert(Self is TCurrentLocals, 'TLocals.SetDataValidity');
 end;
 
-function TLocals.GetThreadId: Integer;
-begin
-  Result := FThreadId;
-end;
-
-function TLocals.GetStackFrame: Integer;
-begin
-  Result := FStackFrame;
-end;
-
-function TLocals.GetName(const AnIndex: Integer): String;
-begin
-  Result := FLocals.Names[AnIndex];
-end;
-
-function TLocals.GetValue(const AnIndex: Integer): String;
-begin
-  Result := FLocals[AnIndex];
-  Result := GetPart('=', '', Result);
-end;
-
-procedure TLocals.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+procedure TIDELocals.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
 var
   c, i: Integer;
 begin
-  FLocals.Clear;
-  FThreadId := AConfig.GetValue(APath + 'ThreadId', -1);
-  FStackFrame := AConfig.GetValue(APath + 'StackFrame', -1);
   c := AConfig.GetValue(APath + 'Count', 0);
   APath := APath + 'Entry';
   for i := 0 to c - 1 do begin
-    FLocals.Add(
-      AConfig.GetValue(APath + IntToStr(i) + '/Expression', '')
-      + '=' +
-      AConfig.GetValue(APath + IntToStr(i) + '/Value', '')
-    );
+    Add(AConfig.GetValue(APath + IntToStr(i) + '/Expression', ''),
+        AConfig.GetValue(APath + IntToStr(i) + '/Value', ''));
   end;
 end;
 
-procedure TLocals.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+procedure TIDELocals.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
 var
   i: Integer;
 begin
-  AConfig.SetValue(APath + 'ThreadId', FThreadId);
-  AConfig.SetValue(APath + 'StackFrame', FStackFrame);
+  AConfig.SetValue(APath + 'ThreadId', ThreadId);
+  AConfig.SetValue(APath + 'StackFrame', StackFrame);
   AConfig.SetDeleteValue(APath + 'Count', Count, 0);
   APath := APath + 'Entry';
   for i := 0 to Count - 1 do begin
@@ -6423,18 +6288,21 @@ begin
   end;
 end;
 
-procedure TLocals.Assign(AnOther: TLocals);
+constructor TIDELocals.CreateFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  LoadThreadId, LoadStackFrame: Integer;
 begin
-  FThreadId := AnOther.FThreadId;
-  FStackFrame := AnOther.FStackFrame;
-  FLocals.Assign(AnOther.FLocals);
+  LoadThreadId := AConfig.GetValue(APath + 'ThreadId', -1);
+  LoadStackFrame := AConfig.GetValue(APath + 'StackFrame', -1);
+  Create(LoadThreadId, LoadStackFrame);
+  LoadDataFromXMLConfig(AConfig, APath);
 end;
 
 { =========================================================================== }
 { TCurrentLocals }
 { =========================================================================== }
 
-procedure TCurrentLocals.SetSnapShot(const AValue: TLocals);
+procedure TCurrentLocals.SetSnapShot(const AValue: TIDELocals);
 begin
   assert((FSnapShot=nil) or (AValue=nil), 'TCurrentLocals already have snapshot');
   if FSnapShot = AValue then exit;
@@ -6447,9 +6315,7 @@ constructor TCurrentLocals.Create(AMonitor: TLocalsMonitor; AThreadId, AStackFra
 begin
   FMonitor := AMonitor;
   FDataValidity := ddsUnknown;
-  FThreadId := AThreadId;
-  FStackFrame := AStackFrame;
-  inherited Create;
+  inherited Create(AThreadId, AStackFrame);
 end;
 
 function TCurrentLocals.Count: Integer;

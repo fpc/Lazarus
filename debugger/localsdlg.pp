@@ -189,7 +189,7 @@ var
   List: TStringList;
   Item: TListItem;
   S: String;
-  Locals: TLocals;
+  Locals: TIDELocals;
   Snap: TSnapshot;
 begin
   if (ThreadsMonitor = nil) or (CallStackMonitor = nil) or (LocalsMonitor=nil) then begin
