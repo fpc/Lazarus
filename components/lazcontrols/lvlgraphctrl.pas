@@ -2616,6 +2616,7 @@ end;
 constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle:=ControlStyle+[csAcceptsControls];
   FOptions:=DefaultLvlGraphCtrlOptions;
   FGraph:=TLvlGraph.Create;
   FGraph.OnInvalidate:=@GraphInvalidate;
