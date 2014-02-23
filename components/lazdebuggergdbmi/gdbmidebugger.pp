@@ -39,7 +39,7 @@ unit GDBMIDebugger;
 interface
 
 uses
-  Classes, SysUtils, strutils, Controls, Math, Maps, Variants, FileUtil, Dialogs,
+  Classes, SysUtils, strutils, Controls, Maps, Variants, FileUtil, Dialogs,
   BaseIDEIntf, LCLProc, LazClasses, LazLoggerBase,
   DebugUtils, GDBTypeInfo, GDBMIDebugInstructions, GDBMIMiscClasses,
   DbgIntfBaseTypes, DbgIntfDebuggerBase, GdbmiStringConstants,
@@ -342,7 +342,7 @@ type
     function  GetWideText(const ALocation: TDBGPtr): String;
     function  GetGDBTypeInfo(const AExpression: String; FullTypeInfo: Boolean = False;
                              AFlags: TGDBTypeCreationFlags = [];
-                             AFormat: TWatchDisplayFormat = wdfDefault;
+                             {%H-}AFormat: TWatchDisplayFormat = wdfDefault;
                              ARepeatCount: Integer = 0): TGDBType;
     function  GetClassName(const AClass: TDBGPtr): String; overload;
     function  GetClassName(const AExpression: String; const AValues: array of const): String; overload;
@@ -352,7 +352,7 @@ type
     function  GetData(const AExpression: String; const AValues: array of const): TDbgPtr; overload;
     function  GetStrValue(const AExpression: String; const AValues: array of const): String;
     function  GetIntValue(const AExpression: String; const AValues: array of const): Integer;
-    function  GetPtrValue(const AExpression: String; const AValues: array of const; ConvertNegative: Boolean = False): TDbgPtr;
+    function  GetPtrValue(const AExpression: String; const AValues: array of const; {%H-}ConvertNegative: Boolean = False): TDbgPtr;
     function  CheckHasType(TypeName: String; TypeFlag: TGDBMITargetFlag): TGDBMIExecResult;
     function  PointerTypeCast: string;
     function  FrameToLocation(const AFrame: String = ''): TDBGLocationRec;
@@ -460,7 +460,7 @@ type
   protected
     function ProcessRunning(var AStoppedParams: String; out AResult: TGDBMIExecResult; ATimeOut: Integer = 0): Boolean;
     function ParseBreakInsertError(var AText: String; out AnId: Integer): Boolean;
-    function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean; virtual;
+    function  ProcessStopped(const {%H-}AParams: String; const {%H-}AIgnoreSigIntState: Boolean): Boolean; virtual;
   public
     constructor Create(AOwner: TGDBMIDebugger);
     function KillNow: Boolean; override;
@@ -698,7 +698,7 @@ type
     function  GDBDisassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
                              out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
               deprecated;
-    function  GDBSourceAdress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr): Boolean;
+    function  GDBSourceAdress(const ASource: String; ALine, {%H-}AColumn: Integer; out AAddr: TDbgPtr): Boolean;
 
     // prevent destruction while nested in any call
     procedure LockRelease;
@@ -1792,8 +1792,8 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
   end;
 
   procedure DoLogStream(const Line: String);
-  const
-    LogWarning = '&"warning:"';
+  //const
+  //  LogWarning = '&"warning:"';
   begin
     DebugLn(DBG_VERBOSE, '[Debugger] Log output: ', Line);
     if Line = '&"kill\n"'
@@ -7629,7 +7629,7 @@ begin
       DebugLnEnter(DBGMI_QUEUE_DEBUG, ['Executing (Recurse-Count=', FInExecuteCount-1, ') queued= ', FCommandQueue.Count, ' CmdPrior=', Cmd.Priority,' CmdMinRunLvl=', Cmd.QueueRunLevel, ' : "', Cmd.DebugText,'" State=',dbgs(State),' PauseWaitState=',ord(FPauseWaitState) ]);
       // cmd may be canceled while executed => don't loose it while working with it
       Cmd.AddReference;
-      NestedCurrentCmdTmp := FCurrentCommand;
+      NestedCurrentCmdTmp := FCurrentCommand; // TODO: needs to be canceled, if there is a cancelation
       FCurrentCommand := Cmd;
       // excute, has it's own try-except block => so we don't have one here
       R := Cmd.Execute;

@@ -199,10 +199,10 @@ type
   protected
     function SendDataToGDB(ASender: TGDBInstruction; AData: String): Boolean;
     function SendDataToGDB(ASender: TGDBInstruction; AData: String; const AValues: array of const): Boolean;
-    procedure HandleGdbDataBeforeInstruction(var AData: String; var SkipData: Boolean;
-                                             const TheInstruction: TGDBInstruction); virtual;
-    procedure HandleGdbDataAfterInstruction(var AData: String; const Handled: Boolean;
-                                             const TheInstruction: TGDBInstruction); virtual;
+    procedure HandleGdbDataBeforeInstruction(var {%H-}AData: String; var {%H-}SkipData: Boolean;
+                                             const {%H-}TheInstruction: TGDBInstruction); virtual;
+    procedure HandleGdbDataAfterInstruction(var {%H-}AData: String; const {%H-}Handled: Boolean;
+                                             const {%H-}TheInstruction: TGDBInstruction); virtual;
     function GetSelectThreadInstruction(AThreadId: Integer): TGDBInstruction; virtual;
     function GetSelectFrameInstruction(AFrame: Integer): TGDBInstruction; virtual;
 
