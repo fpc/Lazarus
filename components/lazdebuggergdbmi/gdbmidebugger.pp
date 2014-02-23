@@ -682,7 +682,7 @@ type
     function  GDBEvaluate(const AExpression: String; var AResult: String;
       out ATypeInfo: TGDBType; EvalFlags: TDBGEvaluateFlags): Boolean;
     function  GDBModify(const AExpression, ANewValue: String): Boolean;
-    procedure GDBModifyDone(const AResult: TGDBMIExecResult; const ATag: PtrInt);
+    procedure GDBModifyDone(const {%H-}AResult: TGDBMIExecResult; const {%H-}ATag: PtrInt);
     function  GDBRun: Boolean;
     function  GDBPause(const AInternal: Boolean): Boolean;
     function  GDBStop: Boolean;
@@ -692,7 +692,7 @@ type
     function  GDBStepIntoInstr: Boolean;
     function  GDBStepOut: Boolean;
     function  GDBRunTo(const ASource: String; const ALine: Integer): Boolean;
-    function  GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
+    function  GDBJumpTo(const {%H-}ASource: String; const {%H-}ALine: Integer): Boolean;
     function  GDBAttach(AProcessID: String): Boolean;
     function  GDBDetach: Boolean;
     function  GDBDisassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
@@ -720,7 +720,7 @@ type
     procedure CancelAfterStop;
     procedure RunQueueASync;
     procedure RemoveRunQueueASync;
-    procedure DoRunQueueFromASync(Data: PtrInt);
+    procedure DoRunQueueFromASync({%H-}Data: PtrInt);
     function  StartDebugging(AContinueCommand: TGDBMIExecCommandType): Boolean;
     function  StartDebugging(AContinueCommand: TGDBMIExecCommandType; AValues: array of const): Boolean;
     function  StartDebugging(AContinueCommand: TGDBMIDebuggerCommand = nil): Boolean;
@@ -780,7 +780,7 @@ type
                                    AReason: TGDBMIBreakpointReason;
                                    AOldVal: String = ''; ANewVal: String = '');
     procedure AddThreadGroup(const S: String);
-    procedure RemoveThreadGroup(const S: String);
+    procedure RemoveThreadGroup(const {%H-}S: String);
     function ParseLibraryLoaded(const S: String): String;
     function ParseLibraryUnLoaded(const S: String): String;
     function ParseThread(const S, EventText: String): String;
@@ -803,7 +803,7 @@ type
     procedure Init; override;         // Initializes external debugger
     procedure Done; override;         // Kills external debugger
     function GetLocation: TDBGLocationRec; override;
-    function GetProcessList(AList: TRunningProcessInfoList): boolean; override;
+    function GetProcessList({%H-}AList: TRunningProcessInfoList): boolean; override;
 
     //LockCommandProcessing is more than just QueueExecuteLock
     //LockCommandProcessing also takes care to run the queue, if unlocked and not already running
@@ -971,13 +971,13 @@ type
     procedure DoGetLineSymbolsFinished(Sender: TObject);
   protected
     function GetSource(const AIndex: integer): String; override;
-    procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure DoStateChange(const {%H-}AOldState: TDBGState); override;
   public
     constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
     function Count: Integer; override;
     function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; override;
-    function GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean; override;
+    function GetInfo({%H-}AAdress: TDbgPtr; out {%H-}ASource, {%H-}ALine, {%H-}AOffset: Integer): Boolean; override;
     function IndexOf(const ASource: String): integer; override;
     procedure Request(const ASource: String); override;
     procedure Cancel(const ASource: String); override;
