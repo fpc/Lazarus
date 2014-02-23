@@ -10,7 +10,7 @@ object AddToProjectDialog: TAddToProjectDialog
   ClientWidth = 598
   OnClose = AddToProjectDialogClose
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object Notebook: TPageControl
     Left = 0
     Height = 289
@@ -46,8 +46,11 @@ object AddToProjectDialog: TAddToProjectDialog
         BorderSpacing.Around = 6
         Columns = <>
         MultiSelect = True
+        ReadOnly = True
+        RowSelect = True
         SortType = stText
         TabOrder = 0
+        ViewStyle = vsReport
         OnSelectItem = AddFileListViewSelectItem
       end
     end
@@ -121,9 +124,12 @@ object AddToProjectDialog: TAddToProjectDialog
         Top = 6
         Width = 582
         Anchors = [akTop, akLeft, akRight, akBottom]
+        AutoWidthLastColumn = True
         BorderSpacing.Around = 6
         Columns = <>
         MultiSelect = True
+        ReadOnly = True
+        RowSelect = True
         SortType = stText
         TabOrder = 0
         ViewStyle = vsReport

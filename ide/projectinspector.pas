@@ -379,17 +379,27 @@ var
 begin
   ItemCnt:=0;
   CurFile:=GetSelectedFile;
+  CurDependency:=GetSelectedDependency;
+
+  // Section headers
+  if (CurFile = nil) and (CurDependency = nil) then begin
+    AddPopupMenuItem(lisBtnDlgAdd, @AddBitBtnClick, AddBitBtn.Enabled);
+    AddPopupMenuItem(lisRemoveNonExistingFiles,@RemoveNonExistingFilesMenuItemClick,
+                     not LazProject.IsVirtual);
+  end;
+
+  // Item under files section
   if CurFile<>nil then begin
     AddPopupMenuItem(lisOpenFile, @OpenButtonClick, true);
     AddPopupMenuItem(lisPckEditRemoveFile, @RemoveBitBtnClick, RemoveBitBtn.Enabled);
     if FilenameIsPascalSource(CurFile.Filename) then begin
-      Item:=AddPopupMenuItem(lisDisableI18NForLFM,
-                             @ToggleI18NForLFMMenuItemClick,true);
+      Item:=AddPopupMenuItem(lisDisableI18NForLFM,@ToggleI18NForLFMMenuItemClick,true);
       Item.Checked:=CurFile.DisableI18NForLFM;
       Item.ShowAlwaysCheckable:=true;
     end;
   end;
-  CurDependency:=GetSelectedDependency;
+
+  // Item under required packages section
   if CurDependency<>nil then begin
     AddPopupMenuItem(lisMenuOpenPackage, @OpenButtonClick, true);
     if CurDependency.Removed then begin
@@ -413,9 +423,6 @@ begin
                        (CurDependency.DefaultFilename<>''));
     end;
   end;
-
-  AddPopupMenuItem(lisRemoveNonExistingFiles,@RemoveNonExistingFilesMenuItemClick,
-          not LazProject.IsVirtual);
 
   while ItemsPopupMenu.Items.Count>ItemCnt do
     ItemsPopupMenu.Items.Delete(ItemsPopupMenu.Items.Count-1);
