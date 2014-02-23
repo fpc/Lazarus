@@ -410,9 +410,14 @@ function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
     s: String;
     t: TDbgSymbol;
     i: Integer;
+    v: QWord;
   begin
     s := ResTypeName;
-    APrintedValue := '$'+IntToHex(AResValue.AsCardinal, AnAddrSize);
+    v := AResValue.AsCardinal;
+    if v = 0 then
+      APrintedValue := 'nil'
+    else
+      APrintedValue := '$'+IntToHex(AResValue.AsCardinal, AnAddrSize);
     if s <> '' then
       APrintedValue := s + '(' + APrintedValue + ')';
 

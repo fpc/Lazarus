@@ -1941,7 +1941,7 @@ begin
     then begin
       Addr.Address := Addr.Address - 4;
       if MemManager.ReadSignedInt(Addr, 4, i) then begin
-        Result := Integer(i);
+        Result := Integer(i)+1;
         exit;
       end;
     end;

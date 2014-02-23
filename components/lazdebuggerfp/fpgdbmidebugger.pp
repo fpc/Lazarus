@@ -1186,7 +1186,7 @@ begin
   end;
   if AStackFrame = 0 then begin
     Result := t.Address;
-    DebugLn(['Returning addr from Threads', dbgs(Result)]);
+    //DebugLn(['Returning addr from Threads', dbgs(Result)]);
     exit;
   end;
 
@@ -1202,7 +1202,7 @@ begin
   end;
 
   Result := f.Address;
-  DebugLn(['Returning addr from frame', dbgs(Result)]);
+  //DebugLn(['Returning addr from frame', dbgs(Result)]);
 
 end;
 
@@ -1231,11 +1231,11 @@ begin
      (FLastContext[AStackFrame - FlastStackFrame] <> nil) and
      (FLastContext[AStackFrame - FlastStackFrame].Address = Addr)
   then begin
-DebugLn('******* cached contex <<<<<<<<<<<');
     Result := FLastContext[AStackFrame - FlastStackFrame];
     exit;
   end;
 
+  DebugLn(['* FDwarfInfo.FindContext ', dbgs(Addr)]);
   Result := FDwarfInfo.FindContext(Addr);
 
   FLastThread := AThreadId;
