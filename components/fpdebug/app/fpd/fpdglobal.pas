@@ -56,8 +56,6 @@ var
   {$endif}
   GBreakOnLibraryLoad: Boolean = False;
   GImageInfo: TFPDImageInfo = iiNone;
-  
-  GCurrentContext: PContext;
 
   GMainProcess: TDbgProcess = nil;
   GCurrentProcess: TDbgProcess = nil;
@@ -82,19 +80,9 @@ begin
   Result := HexValue(AAddress, DBGPTRSIZE[GMode], [hvfIncludeHexchar]);
 end;
 
-
-var
-  _UnAligendContext: record
-    C: TContext;
-    dummy: array[1..16] of byte;
-  end;
-
-
 initialization
   GState := dsStop;
   GProcessMap := TMap.Create(itu4, SizeOf(TDbgProcess));
-  
-  GCurrentContext := Pointer((PtrUInt(@_UnAligendContext) + 15) and not PtrUInt($F));
   
 finalization
   FreeAndNil(GProcessMap)

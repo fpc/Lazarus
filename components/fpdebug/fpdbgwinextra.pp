@@ -47,6 +47,8 @@ uses
 function GetLastErrorText(AErrorCode: Cardinal): String; {$IFNDEF FPC} overload; {$ENDIF}
 function GetLastErrorText: String; {$IFNDEF FPC} overload; {$ENDIF}
 
+var
+  GCurrentContext: PContext;
 
 //function OpenThread(dwDesiredAccess: DWORD; bInheritHandle: BOOL; dwThreadId: DWORD): THandle; stdcall;
 //function Wow64GetThreadContext(hThread: THandle; var lpContext: TContext): BOOL; stdcall;
@@ -99,6 +101,15 @@ begin
 end;
 
 
+var
+  _UnAligendContext: record
+    C: TContext;
+    dummy: array[1..16] of byte;
+  end;
 
+
+initialization
+
+  GCurrentContext := Pointer((PtrUInt(@_UnAligendContext) + 15) and not PtrUInt($F));
 end.
 
