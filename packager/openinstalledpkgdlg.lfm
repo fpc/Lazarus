@@ -10,11 +10,11 @@ object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object HintMemo: TMemo
     Left = 0
     Height = 121
-    Top = 331
+    Top = 327
     Width = 447
     Align = alBottom
     Lines.Strings = (
@@ -26,11 +26,12 @@ object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
   end
   object PkgListView: TListView
     Left = 0
-    Height = 326
+    Height = 322
     Top = 0
     Width = 447
     Align = alClient
     Columns = <>
+    ReadOnly = True
     RowSelect = True
     SortType = stText
     TabOrder = 1
@@ -41,15 +42,15 @@ object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 326
+    Top = 322
     Width = 447
     Align = alBottom
     ResizeAnchor = akBottom
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 458
+    Height = 34
+    Top = 454
     Width = 435
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
