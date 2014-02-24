@@ -5987,16 +5987,18 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl, components']),
     ExternalMacroStart+'SrcPath',
-      d(LazarusSrcDir+'/debugger'
-       +';'+LazarusSrcDir+'/debugger/frames'
-       +';'+LazarusSrcDir+'/ide'
-       +';'+LazarusSrcDir+'/components/ideintf'
-       +';'+LazarusSrcDir+'/components/lazutils'
-       +';'+LazarusSrcDir+'/components/codetools'
-       +';'+LazarusSrcDir+'/lcl'
-       +';'+LazarusSrcDir+'/lcl/interfaces'
-       +';'+LazarusSrcDir+'/lcl/interfaces/'+WidgetType)
-       +';'+SrcPath
+      d(LazarusSrcDir+'/debugger;'
+       +LazarusSrcDir+'/debugger/frames;'
+       +LazarusSrcDir+'/ide;'
+       +LazarusSrcDir+'/components/ideintf;'
+       +LazarusSrcDir+'/components/lazutils;'
+       +LazarusSrcDir+'/components/codetools;'
+       +LazarusSrcDir+'/components/lazdebuggergdbmi;'
+       +LazarusSrcDir+'/components/debuggerintf;'
+       +LazarusSrcDir+'/lcl;'
+       +LazarusSrcDir+'/lcl/interfaces;'
+       +LazarusSrcDir+'/lcl/interfaces/'+WidgetType+';')
+       +SrcPath
     ,da_DefineRecurse));
   MainDir.AddChild(DirTempl);
 
