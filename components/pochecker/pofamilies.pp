@@ -15,12 +15,12 @@ Type
 
   TPoTestOption = (ptoCheckNrOfItems, ptoCheckFormatArgs, ptoCheckMissingIdentifiers,
                    ptoCheckMismatchedOriginals, ptoCheckDuplicateOriginals, ptoCheckStatistics,
-                   ptoFindAllChilds);
+                   ptoFindAllChildren);
   TPoTestOptions = Set of TPoTestOption;
 
 const
     optRunAllTests: TPoTestOptions = [];
-    optRunAllTestsOnAllChilds: TPoTestOptions = [];
+    optRunAllTestsOnAllChildren: TPoTestOptions = [];
 
     PoTestOptionNames: array[TPoTestOption] of String = (
       'Check number of items',
@@ -655,7 +655,7 @@ begin
       Exit;
     end
   end;
-  if not Assigned(FChild) and ([ptoFindAllChilds, ptoCheckDuplicateOriginals] * Options = []) then
+  if not Assigned(FChild) and ([ptoFindAllChildren, ptoCheckDuplicateOriginals] * Options = []) then
   begin
     {$ifdef DebugSimplePoFiles}
     Debugln('TPoFamily.RunTests: no child assigned for ',ShortMasterName);
@@ -663,7 +663,7 @@ begin
     Exit;
   end;
 
-  if (ptoFindAllChilds in Options) then
+  if (ptoFindAllChildren in Options) then
   begin
     SL := FindAllTranslatedPoFiles(FMasterName);
     //We want current Child (if currently assigned) at index 0
@@ -766,8 +766,8 @@ procedure InitTestOptions;
 var
   Index: TPoTestOption;
 begin
-  for Index := Low(TPoTestOption) to High(TPotestOption) do optRunAllTestsOnAllChilds := optRunAllTestsOnAllChilds + [Index];
-  optRunAllTests := optRunAllTestsOnAllChilds - [ptoFindAllChilds];
+  for Index := Low(TPoTestOption) to High(TPotestOption) do optRunAllTestsOnAllChildren := optRunAllTestsOnAllChildren + [Index];
+  optRunAllTests := optRunAllTestsOnAllChildren - [ptoFindAllChildren];
 end;
 
 Initialization
