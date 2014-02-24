@@ -29,6 +29,9 @@ type
     //FThreadId: Integer;
     //FStackFrame: Integer;
     FDebugger: TFpGDBMIDebugger;
+  protected
+    // TODO: needs to be handled by memory manager
+    FThreadId, FStackFrame: Integer;
   public
     constructor Create(ADebugger: TFpGDBMIDebugger);
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
@@ -314,21 +317,44 @@ var
   RegVObj: TRegisterDisplayValue;
 begin
   Result := False;
-  // 32 bit gdb dwarf names
+  // WINDOWS gdb dwarf names
+  {$IFDEF cpu64}
   case ARegNum of
-    0:  rname := 'EAX'; // RAX
-    1:  rname := 'ECX'; // RDX
-    2:  rname := 'EDX'; // RCX
-    3:  rname := 'EBX'; // RBX
-    4:  rname := 'ESP';
-    5:  rname := 'EBP';
-    6:  rname := 'ESI';
-    7:  rname := 'EDI';
-    8:  rname := 'EIP';
+     0:  rname := 'RAX'; // RAX
+     1:  rname := 'RDX'; // RDX
+     2:  rname := 'RCX'; // RCX
+     3:  rname := 'RBX'; // RBX
+     4:  rname := 'RSI';
+     5:  rname := 'RDI';
+     6:  rname := 'PBP';
+     7:  rname := 'RSP';
+     8:  rname := 'R8D';
+     9:  rname := 'R9D';
+    10:  rname := 'R10D';
+    11:  rname := 'R11D';
+    12:  rname := 'R12D';
+    13:  rname := 'R13D';
+    14:  rname := 'R14D';
+    15:  rname := 'R15D';
     else
       exit;
   end;
-  Reg := FDebugger.Registers.CurrentRegistersList[FDebugger.CurrentThreadId, FDebugger.CurrentStackFrame];
+  {$ELSE}
+  case ARegNum of
+     0:  rname := 'EAX'; // RAX
+     1:  rname := 'ECX'; // RDX
+     2:  rname := 'EDX'; // RCX
+     3:  rname := 'EBX'; // RBX
+     4:  rname := 'ESP';
+     5:  rname := 'EBP';
+     6:  rname := 'ESI';
+     7:  rname := 'EDI';
+     8:  rname := 'EIP';
+    else
+      exit;
+  end;
+  {$ENDIF}
+  Reg := FDebugger.Registers.CurrentRegistersList[FThreadId, FStackFrame];
   for i := 0 to Reg.Count - 1 do
     if UpperCase(Reg[i].Name) = rname then
       begin
@@ -350,7 +376,11 @@ end;
 
 function TFpGDBMIDbgMemReader.RegisterSize(ARegNum: Cardinal): Integer;
 begin
+  {$IFDEF cpu64}
+  Result := 8; // for the very few supported...
+  {$ELSE}
   Result := 4; // for the very few supported...
+  {$ENDIF}
 end;
 
 { TFpGDBPTypeRequestCache }
@@ -832,6 +862,8 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
   if (Result >= 0) or FInIndexOf then
     exit;
 
+  FDebugger.FMemReader.FThreadId := AThreadId;
+  FDebugger.FMemReader.FStackFrame := AStackFrame;
   FInIndexOf := True;
   PasExpr := nil;
   try
@@ -1452,7 +1484,14 @@ begin
   if AWatchValue <> nil then begin
     EvalFlags := AWatchValue.EvaluateFlags;
     AExpression := AWatchValue.Expression;
+    FMemReader.FThreadId := AWatchValue.ThreadId;
+    FMemReader.FStackFrame := AWatchValue.StackFrame;
+  end
+  else begin
+    FMemReader.FThreadId := CurrentThreadId;
+    FMemReader.FStackFrame := CurrentStackFrame;
   end;
+
   if AWatchValue <> nil then
     Ctx := GetInfoContextForContext(AWatchValue.ThreadId, AWatchValue.StackFrame)
   else
