@@ -32,9 +32,9 @@ type
   public
     constructor Create(ADebugger: TFpGDBMIDebugger);
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
-    function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemoryEx({%H-}AnAddress, {%H-}AnAddressSpace:{%H-} TDbgPtr; ASize: {%H-}Cardinal; ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean; override;
-    function RegisterSize(ARegNum: Cardinal): Integer; override;
+    function RegisterSize({%H-}ARegNum: Cardinal): Integer; override;
   end;
 
   { TFpGDBMIAndWin32DbgMemReader }
@@ -102,6 +102,8 @@ type
                                 var AResText: String;
                                 out ATypeInfo: TDBGType;
                                 EvalFlags: TDBGEvaluateFlags = []): Boolean;
+    property CurrentThreadId;
+    property CurrentStackFrame;
   public
     class function Caption: String; override;
   public
@@ -162,7 +164,7 @@ type
     FRequestedSources: TStringList;
   protected
     function  FpDebugger: TFpGDBMIDebugger;
-    procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure DoStateChange(const {%H-}AOldState: TDBGState); override;
     procedure ClearSources;
   public
     constructor Create(const ADebugger: TDebuggerIntf);
@@ -308,6 +310,8 @@ var
   rname: String;
   v: String;
   i: Integer;
+  Reg: TRegisters;
+  RegVObj: TRegisterDisplayValue;
 begin
   Result := False;
   // 32 bit gdb dwarf names
@@ -324,10 +328,15 @@ begin
     else
       exit;
   end;
-  for i := 0 to FDebugger.Registers.Count - 1 do
-    if UpperCase(FDebugger.Registers.Names[i]) = rname then
+  Reg := FDebugger.Registers.CurrentRegistersList[FDebugger.CurrentThreadId, FDebugger.CurrentStackFrame];
+  for i := 0 to Reg.Count - 1 do
+    if UpperCase(Reg[i].Name) = rname then
       begin
-        v := FDebugger.Registers.Values[i];
+        RegVObj := Reg[i].ValueObjFormat[rdDefault];
+        if RegVObj <> nil then
+          v := RegVObj.Value[rdDefault]
+        else
+          v := '';
 debugln(['TFpGDBMIDbgMemReader.ReadRegister ',rname, '  ', v]);
         Result := true;
         try
@@ -887,7 +896,7 @@ var
 begin
   if FNeedRegValues then begin
     FNeedRegValues := False;
-    FpDebugger.Registers.Values[0];
+    FpDebugger.Registers.CurrentRegistersList[FpDebugger.CurrentThreadId, FpDebugger.CurrentStackFrame].Count;
     QueueCommand;
     exit;
   end;
@@ -940,12 +949,11 @@ begin
   if FEvaluationCmdObj <> nil then exit;
 
   FpDebugger.Threads.CurrentThreads.Count; // trigger threads, in case
-  if FpDebugger.Registers.Count = 0 then   // trigger register, in case
+  if     FpDebugger.Registers.CurrentRegistersList[FpDebugger.CurrentThreadId, FpDebugger.CurrentStackFrame].Count = 0 then   // trigger register, in case
     FNeedRegValues := True
   else
   begin
     FNeedRegValues := False;
-    FpDebugger.Registers.Values[0];
   end;
 
   // Join the queue, registers and threads are needed first
@@ -1534,7 +1542,7 @@ end;
 
 class function TFpGDBMIDebugger.Caption: String;
 begin
-  Result := 'GNU remote debugger (with fpdebug)';
+  Result := 'GNU debugger (with fpdebug)';
 end;
 
 constructor TFpGDBMIDebugger.Create(const AExternalDebugger: String);

@@ -1583,7 +1583,9 @@ var
   TheDialog: TRegistersDlg;
 begin
   TheDialog := TRegistersDlg(FDialogs[ddtRegisters]);
-  TheDialog.Registers := FRegisters;
+  TheDialog.ThreadsMonitor := FThreads;
+  TheDialog.CallStackMonitor := FCallStack;
+  TheDialog.RegistersMonitor := FRegisters;
 end;
 
 procedure TDebugManager.InitAssemblerDlg;
@@ -1663,7 +1665,7 @@ begin
   FLineInfo := TIDELineInfo.Create;
   FCallStack := TCallStackMonitor.Create;
   FDisassembler := TIDEDisassembler.Create;
-  FRegisters := TIDERegisters.Create;
+  FRegisters := TRegistersMonitor.Create;
 
   FSnapshots := TSnapshotManager.Create;
   FSnapshots.Threads := FThreads;
@@ -2955,7 +2957,7 @@ begin
     FCallStack.Supplier := nil;
     FDisassembler.Master := nil;
     FSignals.Master := nil;
-    FRegisters.Master := nil;
+    FRegisters.Supplier := nil;
     FSnapshots.Debugger := nil;
   end
   else begin
@@ -2969,7 +2971,7 @@ begin
     FCallStack.UnitInfoProvider := FUnitInfoProvider;
     FDisassembler.Master := FDebugger.Disassembler;
     FSignals.Master := FDebugger.Signals;
-    FRegisters.Master := FDebugger.Registers;
+    FRegisters.Supplier := FDebugger.Registers;
     FSnapshots.Debugger := FDebugger;
 
     FDebugger.Exceptions := FExceptions;

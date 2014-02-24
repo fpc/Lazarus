@@ -182,14 +182,20 @@ type
   TDebuggerDataMonitor = class
   private
     FSupplier: TDebuggerDataSupplier;
+    FUpdateCount: Integer;
     procedure SetSupplier(const AValue: TDebuggerDataSupplier);
   protected
     procedure DoModified; virtual;                                              // user-modified / xml-storable data modified
     procedure DoNewSupplier; virtual;
     property  Supplier: TDebuggerDataSupplier read FSupplier write SetSupplier;
     procedure DoStateChange(const {%H-}AOldState, {%H-}ANewState: TDBGState); virtual;
+    procedure DoBeginUpdate; virtual;
+    procedure DoEndUpdate; virtual;
+    function IsUpdating: Boolean;
   public
     destructor Destroy; override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
   end;
 
   { TDebuggerDataSupplier }
@@ -216,6 +222,8 @@ type
   public
     constructor Create(const ADebugger: TDebuggerIntf);
     destructor  Destroy; override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
   end;
 
 {$region Breakpoints **********************************************************}
@@ -657,8 +665,9 @@ type
    private
      FName: String;
      FValue: String;
-   public
+   protected
      procedure DoAssign(AnOther: TDbgEntityValue); override;
+   public
      property Name: String read FName;
      property Value: String read FValue;
    end;
@@ -763,80 +772,106 @@ type
  ******************************************************************************
  ******************************************************************************}
 
-  TRegisterDisplayFormat =
-    (rdDefault, rdHex, rdBinary, rdOctal, rdDecimal, rdRaw
-    );
+  TRegisterDisplayFormat = (rdDefault, rdHex, rdBinary, rdOctal, rdDecimal, rdRaw);
+  TRegisterDisplayFormats = set of TRegisterDisplayFormat;
 
-  TRegistersFormat = record
-    Name: String;
-    Format: TRegisterDisplayFormat;
-  end;
+   { TRegisterDisplayValue }
 
-  { TRegistersFormatList }
+   TRegisterDisplayValue = class // Only created if ddsValid
+   private
+     FStringValue: String; // default, rdRaw is always in FStringValue
+     FNumValue: QWord;
+     FSize: Integer;   // 2, 4 or 8 bytes
+     FFlags: set of (rdvHasNum); // Calculate numeric values.
+     FSupportedDispFormats: TRegisterDisplayFormats;
+     function  GetValue(ADispFormat: TRegisterDisplayFormat): String;
+   public
+     procedure Assign(AnOther: TRegisterDisplayValue);
+     procedure SetAsNum(AValue: QWord; ASize: Integer);
+     procedure SetAsText(AValue: String);
+     procedure AddFormats(AFormats: TRegisterDisplayFormats);
+     property SupportedDispFormats: TRegisterDisplayFormats read FSupportedDispFormats;
+     property Value[ADispFormat: TRegisterDisplayFormat]: String read GetValue;
+   end;
 
-  TRegistersFormatList = class
+   { TRegisterValue }
+
+   TRegisterValue = class(TDbgEntityValue)
+   private
+     FDataValidity: TDebuggerDataState;
+     FDisplayFormat: TRegisterDisplayFormat;
+     FModified: Boolean;
+     FName: String;
+     FValues: Array of TRegisterDisplayValue;
+     function GetHasValue: Boolean;
+     function GetHasValueFormat(ADispFormat: TRegisterDisplayFormat): Boolean;
+     function GetValue: String;
+     function GetValueObj: TRegisterDisplayValue;
+     function GetValueObjFormat(ADispFormat: TRegisterDisplayFormat): TRegisterDisplayValue;
+     procedure SetDisplayFormat(AValue: TRegisterDisplayFormat);
+     procedure SetValue(AValue: String);
+     function GetValueObject(ACreateNew: Boolean = False): TRegisterDisplayValue;
+     function GetValueObject(ADispFormat: TRegisterDisplayFormat; ACreateNew: Boolean = False): TRegisterDisplayValue;
+     procedure SetDataValidity(AValidity: TDebuggerDataState);
+     procedure ClearDispValues;
+   protected
+     procedure DoAssign(AnOther: TDbgEntityValue); override;
+     procedure DoDataValidityChanged({%H-}AnOldValidity: TDebuggerDataState); virtual;
+     procedure DoDisplayFormatChanged({%H-}AnOldFormat: TRegisterDisplayFormat); virtual;
+     procedure DoValueNotEvaluated; virtual;
+   public
+     destructor Destroy; override;
+     property Name: String read FName;
+     property Value: String read GetValue write SetValue;
+     property DisplayFormat: TRegisterDisplayFormat read FDisplayFormat write SetDisplayFormat;
+     property Modified: Boolean read FModified write FModified;
+     property DataValidity: TDebuggerDataState read FDataValidity write SetDataValidity;
+     property ValueObj: TRegisterDisplayValue read GetValueObj; // Will create the object for current DispFormat. Only use for setting data.
+     property HasValue: Boolean read GetHasValue;
+     property ValueObjFormat[ADispFormat: TRegisterDisplayFormat]: TRegisterDisplayValue read GetValueObjFormat; // Will create the object for current DispFormat. Only use for setting data.
+     property HasValueFormat[ADispFormat: TRegisterDisplayFormat]: Boolean read GetHasValueFormat;
+   end;
+
+  { TRegisters }
+
+  TRegisters = class(TDbgEntityValuesList)
   private
-    FCount: integer;
-    FFormats: array of TRegistersFormat;
-    function GetFormat(AName: String): TRegisterDisplayFormat;
-    procedure SetFormat(AName: String; AValue: TRegisterDisplayFormat);
+    FDataValidity: TDebuggerDataState;
+    function GetEntry(AnIndex: Integer): TRegisterValue;
+    function GetEntryByName(const AName: String): TRegisterValue;
+    procedure SetDataValidity(AValue: TDebuggerDataState);
   protected
-    function IndexOf(const AName: String): integer;
-    function Add(const AName: String; AFormat: TRegisterDisplayFormat): integer;
-    property Count: Integer read FCount;
+    function CreateEntry: TDbgEntityValue; override;
+     procedure DoDataValidityChanged({%H-}AnOldValidity: TDebuggerDataState); virtual;
   public
-    constructor Create;
-    procedure Clear;
-    property Format[AName: String]: TRegisterDisplayFormat read GetFormat write SetFormat; default;
+    function Count: Integer; reintroduce; virtual;
+    property Entries[AnIndex: Integer]: TRegisterValue read GetEntry; default;
+    property EntriesByName[const AName: String]: TRegisterValue read GetEntryByName; // autocreate
+    property DataValidity: TDebuggerDataState read FDataValidity write SetDataValidity;
   end;
 
-  { TBaseRegisters }
+  { TRegistersList }
 
-  TBaseRegisters = class(TObject)
-  protected
-    FUpdateCount: Integer;
-    FFormatList: TRegistersFormatList;
-    function GetModified(const {%H-}AnIndex: Integer): Boolean; virtual;
-    function GetName(const {%H-}AnIndex: Integer): String; virtual;
-    function GetValue(const {%H-}AnIndex: Integer): String; virtual;
-    function GetFormat(const AnIndex: Integer): TRegisterDisplayFormat;
-    procedure SetFormat(const AnIndex: Integer; const AValue: TRegisterDisplayFormat); virtual;
-    procedure ChangeUpdating; virtual;
-    function  Updating: Boolean;
-  public
-    property FormatList: TRegistersFormatList read FFormatList write FFormatList;
-  public
-    constructor Create;
-    function Count: Integer; virtual;
-  public
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    property Modified[const AnIndex: Integer]: Boolean read GetModified;
-    property Names[const AnIndex: Integer]: String read GetName;
-    property Values[const AnIndex: Integer]: String read GetValue;
-    property Formats[const AnIndex: Integer]: TRegisterDisplayFormat
-             read GetFormat write SetFormat;
-  end;
-
-  { TDBGRegisters }
-
-  TDBGRegisters = class(TBaseRegisters)
+  TRegistersList = class(TDbgEntitiesThreadStackList)
   private
-    FDebugger: TDebuggerIntf;  // reference to our debugger
-    FOnChange: TNotifyEvent;
-    FChanged: Boolean;
+    function GetEntry(AThreadId, AStackFrame: Integer): TRegisters;
+    function GetEntryByIdx(AnIndex: Integer): TRegisters;
   protected
-    procedure Changed; virtual;
-    procedure DoChange;
-    procedure DoStateChange(const {%H-}AOldState: TDBGState); virtual;
-    function GetCount: Integer; virtual;
-    procedure ChangeUpdating; override;
-    property Debugger: TDebuggerIntf read FDebugger write FDebugger;
   public
-    procedure FormatChanged(const {%H-}AnIndex: Integer); virtual;
-    function Count: Integer; override;
-    constructor Create(const ADebugger: TDebuggerIntf);
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property EntriesByIdx[AnIndex: Integer]: TRegisters read GetEntryByIdx;
+    property Entries[AThreadId, AStackFrame: Integer]: TRegisters read GetEntry; default;
+  end;
+
+  { TRegisterSupplier }
+
+  TRegisterSupplier = class(TDebuggerDataSupplier)
+  private
+    FCurrentRegistersList: TRegistersList;
+  protected
+    procedure DoNewMonitor; override;
+  public
+    procedure RequestData(ARegisters: TRegisters); virtual;
+    property  CurrentRegistersList: TRegistersList read FCurrentRegistersList write FCurrentRegistersList;
   end;
 
 {%endregion   ^^^^^  Register  ^^^^^   }
@@ -1393,6 +1428,8 @@ type
   TDebuggerPropertiesClass= class of TDebuggerProperties;
 
 
+  { TDebuggerIntf }
+
   TDebuggerIntf = class
   private
     FArguments: String;
@@ -1414,7 +1451,7 @@ type
     FOnConsoleOutput: TDBGOutputEvent;
     FOnFeedback: TDBGFeedbackEvent;
     FOnIdle: TNotifyEvent;
-    FRegisters: TDBGRegisters;
+    FRegisters: TRegisterSupplier;
     FShowConsole: Boolean;
     FSignals: TDBGSignals;
     FState: TDBGState;
@@ -1444,7 +1481,7 @@ type
     function  CreateBreakPoints: TDBGBreakPoints; virtual;
     function  CreateLocals: TLocalsSupplier; virtual;
     function  CreateLineInfo: TDBGLineInfo; virtual;
-    function  CreateRegisters: TDBGRegisters; virtual;
+    function  CreateRegisters: TRegisterSupplier; virtual;
     function  CreateCallStack: TCallStackSupplier; virtual;
     function  CreateDisassembler: TDBGDisassembler; virtual;
     function  CreateWatches: TWatchesSupplier; virtual;
@@ -1541,7 +1578,7 @@ type
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
     property Locals: TLocalsSupplier read FLocals;                                    // list of all localvars etc
     property LineInfo: TDBGLineInfo read FLineInfo;                              // list of all source LineInfo
-    property Registers: TDBGRegisters read FRegisters;                           // list of all registers
+    property Registers: TRegisterSupplier read FRegisters;                           // list of all registers
     property Signals: TDBGSignals read FSignals;                                 // A list of actions for signals we know
     property ShowConsole: Boolean read FShowConsole write FShowConsole;          // Indicates if the debugger should create a console for the debuggee
     property State: TDBGState read FState;                                       // The current state of the debugger
@@ -1724,6 +1761,19 @@ begin
   end;
 end;
 
+{ TRegisterSupplier }
+
+procedure TRegisterSupplier.DoNewMonitor;
+begin
+  inherited DoNewMonitor;
+  FCurrentRegistersList := nil;
+end;
+
+procedure TRegisterSupplier.RequestData(ARegisters: TRegisters);
+begin
+  ARegisters.SetDataValidity(ddsInvalid);
+end;
+
 { TLocalsValue }
 
 procedure TLocalsValue.DoAssign(AnOther: TDbgEntityValue);
@@ -1781,6 +1831,272 @@ end;
 function TLocals.Count: Integer;
 begin
   Result := inherited Count;
+end;
+
+{ TRegisterDisplayValue }
+
+function TRegisterDisplayValue.GetValue(ADispFormat: TRegisterDisplayFormat): String;
+const Digits = '01234567';
+  function IntToBase(Val, Base: Integer): String;
+  var
+    M: Integer;
+  begin
+    Result := '';
+    case Base of
+      2: M := 1;
+      8: M := 7;
+    end;
+    while Val > 0 do begin
+      Result := Digits[1 + (Val and m)] + Result;
+      Val := Val div Base;
+    end;
+  end;
+begin
+  Result := '';
+  if not(ADispFormat in FSupportedDispFormats) then exit;
+  if (ADispFormat in [rdDefault, rdRaw]) or not (rdvHasNum in FFlags) then begin
+    Result := FStringValue;
+    exit;
+  end;
+  case ADispFormat of
+    rdHex:    Result := IntToHex(FNumValue, FSize * 2);
+    rdBinary: Result := IntToBase(FNumValue, 2);
+    rdOctal:  Result := IntToBase(FNumValue, 8);
+    rdDecimal: Result := IntToStr(FNumValue);
+  end;
+end;
+
+procedure TRegisterDisplayValue.Assign(AnOther: TRegisterDisplayValue);
+begin
+  FStringValue          := AnOther.FStringValue;
+  FNumValue             := AnOther.FNumValue;
+  FFlags                := AnOther.FFlags;
+  FSize                 := AnOther.FSize;
+  FSupportedDispFormats := AnOther.FSupportedDispFormats;
+end;
+
+procedure TRegisterDisplayValue.SetAsNum(AValue: QWord; ASize: Integer);
+begin
+  if FNumValue = AValue then Exit;
+  FNumValue := AValue;
+  FSize := ASize;
+  Include(FFlags, rdvHasNum);
+end;
+
+procedure TRegisterDisplayValue.SetAsText(AValue: String);
+begin
+  FStringValue := AValue;
+end;
+
+procedure TRegisterDisplayValue.AddFormats(AFormats: TRegisterDisplayFormats);
+begin
+  FSupportedDispFormats := FSupportedDispFormats + AFormats;
+end;
+
+{ TRegisterValue }
+
+function TRegisterValue.GetValue: String;
+var
+  v: TRegisterDisplayValue;
+begin
+  v :=  GetValueObject();
+  if v <> nil then begin
+    Result := v.Value[FDisplayFormat];
+    exit;
+  end;
+
+  Result := '';
+  DoValueNotEvaluated;
+end;
+
+function TRegisterValue.GetHasValue: Boolean;
+begin
+  Result := GetValueObject <> nil;
+end;
+
+function TRegisterValue.GetHasValueFormat(ADispFormat: TRegisterDisplayFormat): Boolean;
+begin
+  Result := GetValueObject(ADispFormat) <> nil;
+end;
+
+function TRegisterValue.GetValueObj: TRegisterDisplayValue;
+begin
+  Result := GetValueObject(True);
+end;
+
+function TRegisterValue.GetValueObjFormat(ADispFormat: TRegisterDisplayFormat): TRegisterDisplayValue;
+begin
+  Result := GetValueObject(ADispFormat, True);
+end;
+
+procedure TRegisterValue.SetDisplayFormat(AValue: TRegisterDisplayFormat);
+var
+  Old: TRegisterDisplayFormat;
+begin
+  assert(not Immutable, 'TRegisterValue.SetDisplayFormat: not Immutable');
+  if FDisplayFormat = AValue then Exit;
+  Old := FDisplayFormat;
+  FDisplayFormat := AValue;
+  DoDisplayFormatChanged(Old);
+end;
+
+procedure TRegisterValue.SetValue(AValue: String);
+var
+  v: TRegisterDisplayValue;
+begin
+  assert(not Immutable, 'TRegisterValue.SetValue: not Immutable');
+  v :=  GetValueObject(True);
+  v.FStringValue := AValue;
+end;
+
+function TRegisterValue.GetValueObject(ACreateNew: Boolean): TRegisterDisplayValue;
+begin
+  Result := GetValueObject(FDisplayFormat, ACreateNew);
+end;
+
+function TRegisterValue.GetValueObject(ADispFormat: TRegisterDisplayFormat;
+  ACreateNew: Boolean): TRegisterDisplayValue;
+var
+  i: Integer;
+begin
+  for i := 0 to length(FValues) - 1 do
+    if ADispFormat in FValues[i].SupportedDispFormats then begin
+      Result := FValues[i];
+      exit;
+    end;
+
+  if not ACreateNew then begin
+    Result := nil;
+    exit;
+  end;
+
+  assert(not Immutable, 'TRegisterValue.GetValueObject: not Immutable');
+  Result := TRegisterDisplayValue.Create;
+  Result.FSupportedDispFormats := [ADispFormat];
+  i := length(FValues);
+  SetLength(FValues, i + 1);
+  FValues[i] := Result;
+end;
+
+procedure TRegisterValue.SetDataValidity(AValidity: TDebuggerDataState);
+var
+  Old: TDebuggerDataState;
+begin
+  assert(not Immutable, 'TRegisterValue.SetDataValidity: not Immutable');
+  if FDataValidity = AValidity then exit;
+  Old := FDataValidity;
+  FDataValidity := AValidity;
+  DoDataValidityChanged(Old);
+end;
+
+procedure TRegisterValue.ClearDispValues;
+var
+  i: Integer;
+begin
+  for i := 0 to Length(FValues) - 1 do
+    FValues[i].Free;
+  FValues := nil;
+end;
+
+procedure TRegisterValue.DoAssign(AnOther: TDbgEntityValue);
+var
+  i: Integer;
+begin
+  inherited DoAssign(AnOther);
+  FDataValidity  :=  TRegisterValue(AnOther).FDataValidity;
+  FDisplayFormat :=  TRegisterValue(AnOther).FDisplayFormat;
+  FName          :=  TRegisterValue(AnOther).FName;
+  SetLength(FValues, length(TRegisterValue(AnOther).FValues));
+  for i := 0 to length(TRegisterValue(AnOther).FValues) - 1 do begin
+    FValues[i] := TRegisterDisplayValue.Create;
+    FValues[i].Assign(TRegisterValue(AnOther).FValues[i]);
+  end;
+end;
+
+procedure TRegisterValue.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
+begin
+  //
+end;
+
+procedure TRegisterValue.DoDisplayFormatChanged(AnOldFormat: TRegisterDisplayFormat);
+begin
+  //
+end;
+
+procedure TRegisterValue.DoValueNotEvaluated;
+begin
+  //
+end;
+
+destructor TRegisterValue.Destroy;
+begin
+  inherited Destroy;
+  ClearDispValues;
+end;
+
+{ TRegisters }
+
+function TRegisters.GetEntry(AnIndex: Integer): TRegisterValue;
+begin
+  Result := TRegisterValue(inherited Entries[AnIndex]);
+end;
+
+function TRegisters.GetEntryByName(const AName: String): TRegisterValue;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do begin
+    Result := Entries[i];
+    if Result.Name = AName then
+      exit;
+  end;
+
+  assert(not Immutable, 'TRegisters.GetEntryByName: not Immutable');
+  Result := TRegisterValue(CreateEntry);
+  Result.FName := AName;
+  Add(Result);
+end;
+
+procedure TRegisters.SetDataValidity(AValue: TDebuggerDataState);
+var
+  Old: TDebuggerDataState;
+begin
+  assert(not Immutable, 'TRegisters.SetDataValidity: not Immutable');
+  if FDataValidity = AValue then Exit;
+  Old := FDataValidity;
+  FDataValidity := AValue;
+  DoDataValidityChanged(Old);
+end;
+
+function TRegisters.CreateEntry: TDbgEntityValue;
+begin
+  assert(not Immutable, 'TRegisters.CreateEntry: not Immutable');
+  Result := TRegisterValue.Create;
+end;
+
+procedure TRegisters.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
+begin
+  //
+end;
+
+function TRegisters.Count: Integer;
+begin
+  if FDataValidity = ddsValid then
+    Result := inherited Count
+  else
+    Result := 0;
+end;
+
+{ TRegistersList }
+
+function TRegistersList.GetEntry(AThreadId, AStackFrame: Integer): TRegisters;
+begin
+  Result := TRegisters(inherited Entries[AThreadId, AStackFrame]);
+end;
+
+function TRegistersList.GetEntryByIdx(AnIndex: Integer): TRegisters;
+begin
+  Result := TRegisters(inherited EntriesByIdx[AnIndex]);
 end;
 
 { TWatchesBase }
@@ -1843,10 +2159,40 @@ begin
   //
 end;
 
+procedure TDebuggerDataMonitor.DoBeginUpdate;
+begin
+  //
+end;
+
+procedure TDebuggerDataMonitor.DoEndUpdate;
+begin
+  //
+end;
+
+function TDebuggerDataMonitor.IsUpdating: Boolean;
+begin
+  Result := FUpdateCount > 0;
+end;
+
 destructor TDebuggerDataMonitor.Destroy;
 begin
   Supplier := nil;
   inherited Destroy;
+end;
+
+procedure TDebuggerDataMonitor.BeginUpdate;
+begin
+  inc(FUpdateCount);
+  if FUpdateCount = 1 then
+    DoBeginUpdate;
+end;
+
+procedure TDebuggerDataMonitor.EndUpdate;
+begin
+  assert(FUpdateCount > 0, 'TDebuggerDataMonitor.EndUpdate: FUpdateCount > 0');
+  dec(FUpdateCount);
+  if FUpdateCount = 0 then
+    DoEndUpdate;
 end;
 
 { TDebuggerDataSupplier }
@@ -1929,6 +2275,16 @@ destructor TDebuggerDataSupplier.Destroy;
 begin
   if FMonitor <> nil then FMonitor.Supplier := nil;
   inherited Destroy;
+end;
+
+procedure TDebuggerDataSupplier.BeginUpdate;
+begin
+  FMonitor.BeginUpdate;
+end;
+
+procedure TDebuggerDataSupplier.EndUpdate;
+begin
+  FMonitor.EndUpdate;
 end;
 
 { ===========================================================================
@@ -2711,185 +3067,6 @@ constructor TDBGLineInfo.Create(const ADebugger: TDebuggerIntf);
 begin
   inherited Create;
   FDebugger := ADebugger;
-end;
-
-{ TRegistersFormatList }
-
-function TRegistersFormatList.GetFormat(AName: String): TRegisterDisplayFormat;
-var
-  i: Integer;
-begin
-  i := IndexOf(AName);
-  if i < 0
-  then Result := rdDefault
-  else Result := FFormats[i].Format;
-end;
-
-procedure TRegistersFormatList.SetFormat(AName: String; AValue: TRegisterDisplayFormat);
-var
-  i: Integer;
-begin
-  i := IndexOf(AName);
-  if i < 0
-  then Add(AName, AValue)
-  else FFormats[i].Format := AValue;
-end;
-
-function TRegistersFormatList.IndexOf(const AName: String): integer;
-begin
-  Result := FCount - 1;
-  while Result >= 0 do begin
-    if FFormats[Result].Name = AName then exit;
-    dec(Result);
-  end;
-end;
-
-function TRegistersFormatList.Add(const AName: String;
-  AFormat: TRegisterDisplayFormat): integer;
-begin
-  if FCount >= length(FFormats) then SetLength(FFormats, Max(Length(FFormats)*2, 16));
-  FFormats[FCount].Name := AName;
-  FFormats[FCount].Format := AFormat;
-  Result := FCount;
-  inc(FCount);
-end;
-
-constructor TRegistersFormatList.Create;
-begin
-  FCount := 0;
-end;
-
-procedure TRegistersFormatList.Clear;
-begin
-  FCount := 0;
-end;
-
-{ =========================================================================== }
-{ TBaseRegisters }
-{ =========================================================================== }
-
-function TBaseRegisters.Count: Integer;
-begin
-  Result := 0;
-end;
-
-procedure TBaseRegisters.BeginUpdate;
-begin
-  inc(FUpdateCount);
-  if FUpdateCount = 1 then ChangeUpdating;
-end;
-
-procedure TBaseRegisters.EndUpdate;
-begin
-  dec(FUpdateCount);
-  if FUpdateCount = 0 then ChangeUpdating;
-end;
-
-constructor TBaseRegisters.Create;
-begin
-  inherited Create;
-  FormatList := nil;
-end;
-
-function TBaseRegisters.GetFormat(const AnIndex: Integer): TRegisterDisplayFormat;
-var
-  s: String;
-begin
-  Result := rdDefault;
-  if FFormatList = nil then exit;
-  s := Names[AnIndex];
-  if s <> '' then
-    Result := FFormatList[s];
-end;
-
-procedure TBaseRegisters.SetFormat(const AnIndex: Integer;
-  const AValue: TRegisterDisplayFormat);
-var
-  s: String;
-begin
-  if FFormatList = nil then exit;
-  s := Names[AnIndex];
-  if s <> '' then
-    FFormatList[s] := AValue;
-end;
-
-procedure TBaseRegisters.ChangeUpdating;
-begin
-  //
-end;
-
-function TBaseRegisters.Updating: Boolean;
-begin
-  Result := FUpdateCount <> 0;
-end;
-
-function TBaseRegisters.GetModified(const AnIndex: Integer): Boolean;
-begin
-  Result := False;
-end;
-
-function TBaseRegisters.GetName(const AnIndex: Integer): String;
-begin
-  Result := '';
-end;
-
-function TBaseRegisters.GetValue(const AnIndex: Integer): String;
-begin
-  Result := '';
-end;
-
-{ =========================================================================== }
-{ TDBGRegisters }
-{ =========================================================================== }
-
-function TDBGRegisters.Count: Integer;
-begin
-  if  (FDebugger <> nil)
-  and (FDebugger.State  in [dsPause, dsInternalPause])
-  then Result := GetCount
-  else Result := 0;
-end;
-
-constructor TDBGRegisters.Create(const ADebugger: TDebuggerIntf);
-begin
-  FChanged := False;
-  inherited Create;
-  FDebugger := ADebugger;
-end;
-
-procedure TDBGRegisters.DoChange;
-begin
-  if Updating then begin
-    FChanged := True;
-    exit;
-  end;
-  FChanged := False;
-  if Assigned(FOnChange) then FOnChange(Self);
-end;
-
-procedure TDBGRegisters.DoStateChange(const AOldState: TDBGState);
-begin
-end;
-
-procedure TDBGRegisters.FormatChanged(const AnIndex: Integer);
-begin
-  //
-end;
-
-procedure TDBGRegisters.Changed;
-begin
-  DoChange;
-end;
-
-function TDBGRegisters.GetCount: Integer;
-begin
-  Result := 0;
-end;
-
-procedure TDBGRegisters.ChangeUpdating;
-begin
-  inherited ChangeUpdating;
-  if (not Updating) and FChanged then DoChange;
 end;
 
 { =========================================================================== }
@@ -3953,9 +4130,9 @@ begin
   Result := TDebuggerProperties.Create;
 end;
 
-function TDebuggerIntf.CreateRegisters: TDBGRegisters;
+function TDebuggerIntf.CreateRegisters: TRegisterSupplier;
 begin
-  Result := TDBGRegisters.Create(Self);
+  Result := TRegisterSupplier.Create(Self);
 end;
 
 function TDebuggerIntf.CreateSignals: TDBGSignals;

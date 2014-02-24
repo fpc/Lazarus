@@ -117,7 +117,7 @@ type
     FLineInfo: TIDELineInfo;
     FWatches: TWatchesMonitor;
     FThreads: TThreadsMonitor;
-    FRegisters: TIDERegisters;
+    FRegisters: TRegistersMonitor;
     FSnapshots: TSnapshotManager;
     FManagerStates: TDebugManagerStates;
     function  GetState: TDBGState; virtual; abstract;
@@ -220,7 +220,7 @@ type
     property Disassembler: TIDEDisassembler read FDisassembler;
     property Locals: TLocalsMonitor read FLocals;
     property LineInfo: TIDELineInfo read FLineInfo;
-    property Registers: TIDERegisters read FRegisters;
+    property Registers: TRegistersMonitor read FRegisters;
     property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
     property Watches: TWatchesMonitor read FWatches;
     property Threads: TThreadsMonitor read FThreads;

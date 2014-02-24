@@ -80,14 +80,13 @@ type
     procedure DispDefaultClick(Sender: TObject);
     procedure lvRegistersSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure ToolButtonDispTypeClick(Sender: TObject);
+    function GetCurrentRegisters: TRegisters;
   private
-    FRegisters: TIDERegisters;
-    FRegistersNotification: TIDERegistersNotification;
+    FNeedUpdateAgain: Boolean;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     procedure RegistersChanged(Sender: TObject);
-    procedure SetRegisters(const AValue: TIDERegisters);
-    function IndexOfName(AName: String): Integer;
   protected
+    procedure DoRegistersChanged; override;
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
     function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
@@ -96,7 +95,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    property Registers: TIDERegisters read FRegisters write SetRegisters;
+    property RegistersMonitor;
+    property ThreadsMonitor;
+    property CallStackMonitor;
+    //property SnapshotManager;
   end;
 
 
@@ -132,9 +134,10 @@ var
   i: Integer;
 begin
   inherited Create(AOwner);
-  FRegistersNotification := TIDERegistersNotification.Create;
-  FRegistersNotification.AddReference;
-  FRegistersNotification.OnChange := @RegistersChanged;
+  ThreadsNotification.OnCurrent   := @RegistersChanged;
+  CallstackNotification.OnCurrent := @RegistersChanged;
+  RegistersNotification.OnChange  := @RegistersChanged;
+
   Caption:= lisRegisters;
   lvRegisters.Columns[0].Caption:= lisName;
   lvRegisters.Columns[1].Caption:= lisValue;
@@ -190,9 +193,6 @@ end;
 
 destructor TRegistersDlg.Destroy;
 begin
-  SetRegisters(nil);
-  FRegistersNotification.OnChange := nil;
-  FRegistersNotification.ReleaseReference;
   inherited Destroy;
 end;
 
@@ -226,23 +226,23 @@ end;
 
 procedure TRegistersDlg.DispDefaultClick(Sender: TObject);
 var
-  n, i: Integer;
+  n: Integer;
   Item: TListItem;
+  Reg: TRegisters;
+  RegVal: TRegisterValue;
 begin
   ToolButtonPower.Down := True;
-  FRegisters.BeginUpdate;
-  try
-    for n := 0 to lvRegisters.Items.Count -1 do
-    begin
-      Item := lvRegisters.Items[n];
-      if Item.Selected then begin
-        i := IndexOfName(Item.Caption);
-        if i >= 0
-        then FRegisters.Formats[i] := TRegisterDisplayFormat(TMenuItem(Sender).Tag);
-      end;
+  Reg := GetCurrentRegisters;
+  if Reg = nil then exit;
+
+  for n := 0 to lvRegisters.Items.Count -1 do
+  begin
+    Item := lvRegisters.Items[n];
+    if Item.Selected then begin
+      RegVal := Reg.EntriesByName[Item.Caption];
+      if RegVal <> nil then
+        RegVal.DisplayFormat := TRegisterDisplayFormat(TMenuItem(Sender).Tag);
     end;
-  finally
-    FRegisters.EndUpdate;
   end;
   lvRegistersSelectItem(nil, nil, True);
 end;
@@ -250,23 +250,28 @@ end;
 procedure TRegistersDlg.lvRegistersSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 var
-  n, i, j: Integer;
+  n, j: Integer;
   SelFormat: TRegisterDisplayFormat;
   MultiFormat: Boolean;
+  Reg: TRegisters;
+  RegVal: TRegisterValue;
 begin
   j := 0;
   MultiFormat := False;
   SelFormat := rdDefault;
+  Reg := GetCurrentRegisters;
+  if Reg = nil then exit;
+
   for n := 0 to lvRegisters.Items.Count -1 do
   begin
     Item := lvRegisters.Items[n];
     if Item.Selected then begin
-      i := IndexOfName(Item.Caption);
-      if i >= 0 then begin
+      RegVal := Reg.EntriesByName[Item.Caption];
+      if RegVal <> nil then begin
         if j = 0
-        then SelFormat := FRegisters.Formats[i];
+        then SelFormat := RegVal.DisplayFormat;
         inc(j);
-        if SelFormat <> FRegisters.Formats[i] then begin
+        if SelFormat <> RegVal.DisplayFormat then begin
           MultiFormat := True;
           break;
         end;
@@ -321,25 +326,53 @@ begin
   ToolButtonDispType.CheckMenuDropdown;
 end;
 
+function TRegistersDlg.GetCurrentRegisters: TRegisters;
+var
+  CurThreadId, CurStackFrame: Integer;
+begin
+  Result := nil;
+  if (ThreadsMonitor = nil) or
+     (ThreadsMonitor.CurrentThreads = nil) or
+     (CallStackMonitor = nil) or
+     (CallStackMonitor.CurrentCallStackList = nil) or
+     (RegistersMonitor = nil)
+  then
+    exit;
+
+  CurThreadId := ThreadsMonitor.CurrentThreads.CurrentThreadId;
+  if (CallStackMonitor.CurrentCallStackList.EntriesForThreads[CurThreadId] = nil) then
+    exit;
+
+  CurStackFrame := CallStackMonitor.CurrentCallStackList.EntriesForThreads[CurThreadId].CurrentIndex;
+  Result := RegistersMonitor.CurrentRegistersList[CurThreadId, CurStackFrame];
+end;
+
 procedure TRegistersDlg.RegistersChanged(Sender: TObject);
 var
-  n, idx: Integer;
+  n, idx, Cnt: Integer;
   List: TStringList;
   Item: TListItem;
   S: String;
+  Reg: TRegisters;
 begin
   if (not ToolButtonPower.Down) then exit;
+
+  if IsUpdating then begin
+    FNeedUpdateAgain := True;
+    exit;
+  end;
+  FNeedUpdateAgain := False;
+
+  Reg := GetCurrentRegisters;
+  if Reg = nil then begin
+    lvRegisters.Items.Clear;
+    exit;
+  end;
 
   List := TStringList.Create;
   try
     BeginUpdate;
     try
-      if FRegisters = nil
-      then begin
-        lvRegisters.Items.Clear;
-        Exit;
-      end;
-    
       //Get existing items
       for n := 0 to lvRegisters.Items.Count - 1 do
       begin
@@ -350,23 +383,26 @@ begin
       end;
 
       // add/update entries
-      for n := 0 to FRegisters.Count - 1 do
+      Cnt := Reg.Count;          // Count may trigger changes
+      FNeedUpdateAgain := False; // changes after this point, and we must update again
+
+      for n := 0 to Cnt - 1 do
       begin
-        idx := List.IndexOf(Uppercase(FRegisters.Names[n]));
+        idx := List.IndexOf(Uppercase(Reg[n].Name));
         if idx = -1
         then begin
           // New entry
           Item := lvRegisters.Items.Add;
-          Item.Caption := FRegisters.Names[n];
-          Item.SubItems.Add(FRegisters.Values[n]);
+          Item.Caption := Reg[n].Name;
+          Item.SubItems.Add(Reg[n].Value);
         end
         else begin
           // Existing entry
           Item := TListItem(List.Objects[idx]);
-          Item.SubItems[0] := FRegisters.Values[n];
+          Item.SubItems[0] := Reg[n].Value;
           List.Delete(idx);
         end;
-        if FRegisters.Modified[n]
+        if Reg[n].Modified
         then Item.ImageIndex := 0
         else Item.ImageIndex := -1;
       end;
@@ -381,37 +417,13 @@ begin
   finally
     List.Free;
   end;
+
   lvRegistersSelectItem(nil, nil, True);
 end;
 
-procedure TRegistersDlg.SetRegisters(const AValue: TIDERegisters);
+procedure TRegistersDlg.DoRegistersChanged;
 begin
-  if FRegisters = AValue then Exit;
-
-  BeginUpdate;
-  try
-    if FRegisters <> nil
-    then begin
-      FRegisters.RemoveNotification(FRegistersNotification);
-    end;
-
-    FRegisters := AValue;
-
-    if FRegisters <> nil
-    then begin
-      FRegisters.AddNotification(FRegistersNotification);
-    end;
-    
-    RegistersChanged(FRegisters);
-  finally
-    EndUpdate;
-  end;
-end;
-
-function TRegistersDlg.IndexOfName(AName: String): Integer;
-begin
-  Result := FRegisters.Count - 1;
-  while (Result >= 0) and (FRegisters.Names[Result] <> AName) do dec(Result);
+  RegistersChanged(nil);
 end;
 
 procedure TRegistersDlg.DoBeginUpdate;
@@ -422,6 +434,7 @@ end;
 procedure TRegistersDlg.DoEndUpdate;
 begin
   lvRegisters.EndUpdate;
+  if FNeedUpdateAgain then RegistersChanged(nil);
 end;
 
 function TRegistersDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;

@@ -867,8 +867,6 @@ type
     property OnChange;
   end;
 
-  { TLocals }
-
   { TIDELocals }
 
   TIDELocals = class(TLocals)
@@ -1019,36 +1017,93 @@ type
  ******************************************************************************
  ******************************************************************************}
 
+  TRegistersMonitor = class;
+
+  TRegistersNotification = class(TDebuggerChangeNotification)
+  public
+    property OnChange;
+  end;
+
+  { TIDERegisterValue }
+
+  TIDERegisterValue = class(TRegisterValue)
+  protected
+    procedure DoDataValidityChanged(AnOldValidity: TDebuggerDataState); override;
+    procedure DoDisplayFormatChanged(AnOldFormat: TRegisterDisplayFormat); override;
+  end;
+
   { TIDERegisters }
 
-  TIDERegistersNotification = class(TDebuggerNotification)
+  TIDERegisters = class(TRegisters)
+  protected
+    function CreateEntry: TDbgEntityValue; override;
+  end;
+
+  { TCurrentIDERegisters }
+
+  TCurrentIDERegisters = class(TIDERegisters)
   private
-    FOnChange: TNotifyEvent;
+    FMonitor: TRegistersMonitor;
+    procedure DoDataValidityChanged(AnOldValidity: TDebuggerDataState); override;
   public
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    constructor Create(AMonitor: TRegistersMonitor; AThreadId, AStackFrame: Integer);
+    function Count: Integer; override;
   end;
 
 
-  TIDERegisters = class(TBaseRegisters)
+  TIDERegistersList = class(TRegistersList)
   private
-    FNotificationList: TList;
-    FMaster: TDBGRegisters;
-    procedure RegistersChanged(Sender: TObject);
-    procedure SetMaster(const AMaster: TDBGRegisters);
+    //function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TIDERegisters;
+    //function GetEntryByIdx(const AnIndex: Integer): TIDERegisters;
   protected
-    function GetModified(const AnIndex: Integer): Boolean; override;
-    function GetName(const AnIndex: Integer): String; override;
-    function GetValue(const AnIndex: Integer): String; override;
-    procedure SetFormat(const AnIndex: Integer; const AValue: TRegisterDisplayFormat); override;
+    //function CreateEntry(AThreadId, AStackFrame: Integer): TDbgEntityValuesList; override; // TIDERegisters
+    //procedure DoAssign(AnOther: TDbgEntitiesThreadStackList); override; // Immutable
+    // XML
+  public
+    //property EntriesByIdx[const AnIndex: Integer]: TIDERegisters read GetEntryByIdx;
+    //property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TIDERegisters
+    //         read GetEntry; default;
+  end;
+
+  { TCurrentIDERegistersList }
+
+  TCurrentIDERegistersList = class(TIDERegistersList)
+  private
+    FMonitor: TRegistersMonitor;
   protected
-    procedure NotifyChange;
+    procedure DoCleared; override;
+    function CreateEntry(AThreadId, AStackFrame: Integer): TRegisters; override; // TIDERegisters
+  public
+    constructor Create(AMonitor: TRegistersMonitor);
+  end;
+
+  { TRegistersMonitor }
+
+  TRegistersMonitor = class(TDebuggerDataMonitorEx)
+  private
+    FCurrentRegistersList: TCurrentIDERegistersList;
+    FNotificationList: TDebuggerChangeNotificationList;
+    FFlags: set of (rmNeedNotifyChange);
+    function GetSupplier: TRegisterSupplier;
+    procedure SetSupplier(const AValue: TRegisterSupplier);
+  protected
+    procedure DoStateEnterPause; override;
+    //procedure DoStateLeavePause; override;
+    procedure DoStateLeavePauseClean; override;
+    procedure DoEndUpdate; override;
+    procedure NotifyChange(ARegisters: TCurrentIDERegisters);
+    procedure DoNewSupplier; override;
+    procedure RequestData(ARegisters: TCurrentIDERegisters);
+    //function CreateSnapshot(CreateEmpty: Boolean = False): TObject; override;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AddNotification(const ANotification: TIDERegistersNotification);
-    procedure RemoveNotification(const ANotification: TIDERegistersNotification);
-    function Count: Integer; override;
-    property Master: TDBGRegisters read FMaster write SetMaster;
+    procedure Clear;
+    procedure AddNotification(const ANotification: TRegistersNotification);
+    procedure RemoveNotification(const ANotification: TRegistersNotification);
+    property  CurrentRegistersList: TCurrentIDERegistersList read FCurrentRegistersList;
+    //property  Snapshots[AnID: Pointer]: TIDERegistersList read GetSnapshot;
+    property  Supplier: TRegisterSupplier read GetSupplier write SetSupplier;
   end;
 
   {%endregion   ^^^^^  Register  ^^^^^   }
@@ -3309,13 +3364,14 @@ begin
   inherited;
   FNotificationList := TDebuggerChangeNotificationList.Create;
   FCurrentLocalsList := TCurrentLocalsList.Create(Self);
+  FCurrentLocalsList.AddReference;
 end;
 
 destructor TLocalsMonitor.Destroy;
 begin
   FNotificationList.Clear;
   inherited Destroy;
-  FreeAndNil(FCurrentLocalsList);
+  ReleaseRefAndNil(FCurrentLocalsList);
   FreeAndNil(FNotificationList);
 end;
 
@@ -6357,124 +6413,179 @@ end;
 (******************************************************************************)
 (******************************************************************************)
 
-{ =========================================================================== }
-{ TIDERegisters }
-{ =========================================================================== }
+{ TIDERegisterValue }
 
-procedure TIDERegisters.AddNotification(const ANotification: TIDERegistersNotification);
+procedure TIDERegisterValue.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
+begin
+  if (Owner <> nil) and (Owner is TCurrentIDERegisters) then
+    TCurrentIDERegisters(Owner).DoDataValidityChanged(AnOldValidity);
+end;
+
+procedure TIDERegisterValue.DoDisplayFormatChanged(AnOldFormat: TRegisterDisplayFormat);
+begin
+  if not HasValueFormat[DisplayFormat] then begin
+    DataValidity := ddsRequested;
+    if (Owner <> nil) and (Owner is TCurrentIDERegisters) then
+      TCurrentIDERegisters(Owner).FMonitor.RequestData(TCurrentIDERegisters(Owner));
+  end
+  else
+  if (Owner <> nil) and (Owner is TCurrentIDERegisters) then
+    TCurrentIDERegisters(Owner).FMonitor.NotifyChange(TCurrentIDERegisters(Owner));
+end;
+
+{ TIDERegisters }
+
+function TIDERegisters.CreateEntry: TDbgEntityValue;
+begin
+  Result := TIDERegisterValue.Create;
+end;
+
+{ TCurrentIDERegisters }
+
+procedure TCurrentIDERegisters.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
+begin
+  inherited DoDataValidityChanged(AnOldValidity);
+  if not( (DataValidity in [ddsRequested, ddsEvaluating]) and
+          (AnOldValidity in [ddsUnknown, ddsRequested, ddsEvaluating]) )
+  then
+    FMonitor.NotifyChange(Self);
+end;
+
+constructor TCurrentIDERegisters.Create(AMonitor: TRegistersMonitor; AThreadId,
+  AStackFrame: Integer);
+begin
+  FMonitor := AMonitor;
+  inherited Create(AThreadId, AStackFrame);
+end;
+
+function TCurrentIDERegisters.Count: Integer;
+begin
+  case DataValidity of
+    ddsUnknown:   begin
+        AddReference;
+        try
+          Result := 0;
+          DataValidity := ddsRequested;
+          FMonitor.RequestData(Self);  // Locals can be cleared, if debugger is "run" again
+          if DataValidity = ddsValid then Result := inherited Count();
+        finally
+          ReleaseReference;
+        end;
+      end;
+    ddsRequested, ddsEvaluating: Result := 0;
+    ddsValid:                    Result := inherited Count;
+    ddsInvalid, ddsError:        Result := 0;
+  end;
+end;
+
+{ TCurrentIDERegistersList }
+
+procedure TCurrentIDERegistersList.DoCleared;
+begin
+  inherited DoCleared;
+  FMonitor.NotifyChange(nil);
+end;
+
+function TCurrentIDERegistersList.CreateEntry(AThreadId, AStackFrame: Integer): TRegisters;
+begin
+  Result := TCurrentIDERegisters.Create(FMonitor, AThreadId, AStackFrame);
+end;
+
+constructor TCurrentIDERegistersList.Create(AMonitor: TRegistersMonitor);
+begin
+  FMonitor := AMonitor;
+  inherited Create;
+end;
+
+{ TRegistersMonitor }
+
+function TRegistersMonitor.GetSupplier: TRegisterSupplier;
+begin
+  Result := TRegisterSupplier(inherited Supplier);
+end;
+
+procedure TRegistersMonitor.SetSupplier(const AValue: TRegisterSupplier);
+begin
+  inherited Supplier := AValue;
+end;
+
+procedure TRegistersMonitor.DoStateEnterPause;
+begin
+  inherited DoStateEnterPause;
+  if CurrentRegistersList = nil then exit;
+  Clear;
+end;
+
+procedure TRegistersMonitor.DoStateLeavePauseClean;
+begin
+  inherited DoStateLeavePauseClean;
+  if CurrentRegistersList = nil then exit;
+  Clear;
+end;
+
+procedure TRegistersMonitor.DoEndUpdate;
+begin
+  inherited DoEndUpdate;
+  if rmNeedNotifyChange in FFlags then
+    NotifyChange(nil);
+end;
+
+procedure TRegistersMonitor.NotifyChange(ARegisters: TCurrentIDERegisters);
+begin
+  if IsUpdating then begin
+    Include(FFlags, rmNeedNotifyChange);
+    exit;
+  end;
+  Exclude(FFlags, rmNeedNotifyChange);
+  FNotificationList.NotifyChange(ARegisters);
+end;
+
+procedure TRegistersMonitor.DoNewSupplier;
+begin
+  inherited DoNewSupplier;
+  NotifyChange(nil);
+  if Supplier <> nil then
+    Supplier.CurrentRegistersList := FCurrentRegistersList;
+end;
+
+procedure TRegistersMonitor.RequestData(ARegisters: TCurrentIDERegisters);
+begin
+  if Supplier <> nil
+  then Supplier.RequestData(ARegisters)
+  else ARegisters.DataValidity := ddsInvalid;
+end;
+
+constructor TRegistersMonitor.Create;
+begin
+  inherited Create;
+  FNotificationList := TDebuggerChangeNotificationList.Create;
+  FCurrentRegistersList := TCurrentIDERegistersList.Create(Self);
+  FCurrentRegistersList.AddReference;
+end;
+
+destructor TRegistersMonitor.Destroy;
+begin
+  FNotificationList.Clear;
+  inherited Destroy;
+  ReleaseRefAndNil(FCurrentRegistersList);
+  FreeAndNil(FNotificationList);
+end;
+
+procedure TRegistersMonitor.Clear;
+begin
+  FCurrentRegistersList.Clear;
+end;
+
+procedure TRegistersMonitor.AddNotification(const ANotification: TRegistersNotification);
 begin
   FNotificationList.Add(ANotification);
-  ANotification.AddReference;
 end;
 
-constructor TIDERegisters.Create;
-begin
-  FNotificationList := TList.Create;
-  inherited Create;
-  FFormatList := TRegistersFormatList.Create;
-end;
-
-destructor TIDERegisters.Destroy;
-var
-  n: Integer;
-begin
-  for n := FNotificationList.Count - 1 downto 0 do
-    TDebuggerNotification(FNotificationList[n]).ReleaseReference;
-
-  inherited;
-
-  FreeAndNil(FNotificationList);
-  FreeAndNil(FFormatList);
-end;
-
-procedure TIDERegisters.RegistersChanged(Sender: TObject);
-begin
-  NotifyChange;
-end;
-
-procedure TIDERegisters.SetMaster(const AMaster: TDBGRegisters);
-var
-  DoNotify: Boolean;
-begin
-  if FMaster = AMaster then Exit;
-
-  if FMaster <> nil
-  then begin
-    FMaster.OnChange := nil;
-    FMaster.FormatList := nil;
-    DoNotify := FMaster.Count <> 0;
-  end
-  else DoNotify := False;
-
-  FMaster := AMaster;
-
-  if FMaster <> nil
-  then begin
-    FMaster.OnChange := @RegistersChanged;
-    FMaster.FormatList := FormatList;
-    DoNotify := DoNotify or (FMaster.Count <> 0);
-  end;
-
-  if DoNotify
-  then NotifyChange;
-end;
-
-function TIDERegisters.GetModified(const AnIndex: Integer): Boolean;
-begin
-  if Master = nil
-  then Result := inherited GetModified(AnIndex)
-  else Result := Master.Modified[AnIndex];
-end;
-
-function TIDERegisters.GetName(const AnIndex: Integer): String;
-begin
-  if Master = nil
-  then Result := inherited GetName(AnIndex)
-  else Result := Master.Names[AnIndex];
-end;
-
-function TIDERegisters.GetValue(const AnIndex: Integer): String;
-begin
-  if Master = nil
-  then Result := inherited GetValue(AnIndex)
-  else Result := Master.Values[AnIndex];
-end;
-
-procedure TIDERegisters.SetFormat(const AnIndex: Integer;
-  const AValue: TRegisterDisplayFormat);
-begin
-  inherited SetFormat(AnIndex, AValue);
-  if Master <> nil
-  then Master.FormatChanged(AnIndex);
-  NotifyChange;
-end;
-
-
-procedure TIDERegisters.NotifyChange;
-var
-  n: Integer;
-  Notification: TIDERegistersNotification;
-begin
-  for n := 0 to FNotificationList.Count - 1 do
-  begin
-    Notification := TIDERegistersNotification(FNotificationList[n]);
-    if Assigned(Notification.FOnChange)
-    then Notification.FOnChange(Self);
-  end;
-end;
-
-procedure TIDERegisters.RemoveNotification(const ANotification: TIDERegistersNotification);
+procedure TRegistersMonitor.RemoveNotification(const ANotification: TRegistersNotification);
 begin
   FNotificationList.Remove(ANotification);
-  ANotification.ReleaseReference;
 end;
 
-function TIDERegisters.Count: Integer;
-begin
-  if Master = nil
-  then Result := 0
-  else Result := Master.Count;
-end;
 
 (******************************************************************************)
 (******************************************************************************)

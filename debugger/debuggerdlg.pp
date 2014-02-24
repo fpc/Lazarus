@@ -69,6 +69,8 @@ type
     FLocalsNotification: TLocalsNotification;
     FWatchesMonitor: TWatchesMonitor;
     FWatchesNotification: TWatchesNotification;
+    FRegistersMonitor: TRegistersMonitor;
+    FRegistersNotification: TRegistersNotification;
     FBreakPoints: TIDEBreakPoints;
     FBreakpointsNotification: TIDEBreakPointsNotification;
     function  GetSnapshotNotification: TSnapshotNotification;
@@ -76,16 +78,19 @@ type
     function  GetCallStackNotification: TCallStackNotification;
     function  GetLocalsNotification: TLocalsNotification;
     function  GetWatchesNotification: TWatchesNotification;
+    function  GetRegistersNotification: TRegistersNotification;
     function  GetBreakpointsNotification: TIDEBreakPointsNotification;
     procedure SetSnapshotManager(const AValue: TSnapshotManager);
     procedure SetThreadsMonitor(const AValue: TThreadsMonitor);
     procedure SetCallStackMonitor(const AValue: TCallStackMonitor);
     procedure SetLocalsMonitor(const AValue: TLocalsMonitor);
     procedure SetWatchesMonitor(const AValue: TWatchesMonitor);
+    procedure SetRegistersMonitor(AValue: TRegistersMonitor);
     procedure SetBreakPoints(const AValue: TIDEBreakPoints);
   protected
     procedure JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer);
     procedure DoWatchesChanged; virtual; // called if the WatchesMonitor object was changed
+    procedure DoRegistersChanged; virtual; // called if the WatchesMonitor object was changed
     procedure DoBreakPointsChanged; virtual; // called if the BreakPoint(Monitor) object was changed
     function GetBreakPointImageIndex(ABreakPoint: TIDEBreakPoint; AIsCurLine: Boolean = False): Integer;
     property SnapshotNotification:    TSnapshotNotification  read GetSnapshotNotification;
@@ -93,6 +98,7 @@ type
     property CallStackNotification:   TCallStackNotification read GetCallStackNotification;
     property LocalsNotification:      TLocalsNotification    read GetLocalsNotification;
     property WatchesNotification:     TWatchesNotification   read GetWatchesNotification;
+    property RegistersNotification:   TRegistersNotification read GetRegistersNotification;
     property BreakpointsNotification: TIDEBreakPointsNotification read GetBreakpointsNotification;
   protected
     // publish as needed
@@ -101,6 +107,7 @@ type
     property CallStackMonitor: TCallStackMonitor read FCallStackMonitor write SetCallStackMonitor;
     property LocalsMonitor:    TLocalsMonitor    read FLocalsMonitor    write SetLocalsMonitor;
     property WatchesMonitor:   TWatchesMonitor   read FWatchesMonitor   write SetWatchesMonitor;
+    property RegistersMonitor: TRegistersMonitor read FRegistersMonitor write SetRegistersMonitor;
     property BreakPoints:      TIDEBreakPoints   read FBreakPoints      write SetBreakPoints;
   public
     destructor  Destroy; override;
@@ -162,6 +169,17 @@ begin
   Result := FSnapshotNotification;
 end;
 
+function TDebuggerDlg.GetRegistersNotification: TRegistersNotification;
+begin
+  If FRegistersNotification = nil then begin
+    FRegistersNotification := TRegistersNotification.Create;
+    FRegistersNotification.AddReference;
+    if (FRegistersMonitor <> nil)
+    then FRegistersMonitor.AddNotification(FRegistersNotification);
+  end;
+  Result := FRegistersNotification;
+end;
+
 function TDebuggerDlg.GetThreadsNotification: TThreadsNotification;
 begin
   if FThreadsNotification = nil then begin
@@ -215,6 +233,22 @@ begin
     then FBreakPoints.AddNotification(FBreakpointsNotification);
   end;
   Result := FBreakpointsNotification;
+end;
+
+procedure TDebuggerDlg.SetRegistersMonitor(AValue: TRegistersMonitor);
+begin
+  if FRegistersMonitor = AValue then exit;
+  BeginUpdate;
+  try
+    if (FRegistersMonitor <> nil) and (FRegistersNotification <> nil)
+    then FRegistersMonitor.RemoveNotification(FRegistersNotification);
+    FRegistersMonitor := AValue;
+    if (FRegistersMonitor <> nil) and (FRegistersNotification <> nil)
+    then FRegistersMonitor.AddNotification(FRegistersNotification);
+    DoRegistersChanged;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TDebuggerDlg.SetSnapshotManager(const AValue: TSnapshotManager);
@@ -350,6 +384,11 @@ begin
   //
 end;
 
+procedure TDebuggerDlg.DoRegistersChanged;
+begin
+  //
+end;
+
 procedure TDebuggerDlg.DoBreakPointsChanged;
 begin
   //
@@ -437,6 +476,12 @@ begin
   end;
   SetWatchesMonitor(nil);
   ReleaseRefAndNil(FWatchesNotification);
+
+  if FRegistersNotification <> nil then begin;
+    FRegistersNotification.OnChange := nil;
+  end;
+  SetRegistersMonitor(nil);
+  ReleaseRefAndNil(FRegistersNotification);
 
   if FBreakpointsNotification <> nil then begin;
     FBreakpointsNotification.OnAdd := nil;

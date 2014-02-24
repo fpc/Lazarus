@@ -286,8 +286,14 @@ begin
 end;
 
 procedure TDbgEntityValuesList.Clear;
+var
+  i: Integer;
 begin
   Assert(not Immutable, 'TDbgEntityValuesList.Clear Immutable');
+  if FList.Count = 0 then
+    exit;
+  for i := 0 to FList.Count - 1 do
+    TDbgEntityValue(FList[i]).FOwner := nil;
   FList.Clear;
   DoCleared;
 end;
@@ -443,11 +449,16 @@ end;
 
 procedure TDbgEntitiesThreadStackList.Clear;
 var
-  i: Integer;
+  i, j: Integer;
 begin
   Assert(not Immutable, 'TDbgEntitiesThreadStackList.Clear Immutable');
-  for i := 0 to Length(FList) - 1 do
+  if Length(FList) = 0 then
+    exit;
+  for i := 0 to Length(FList) - 1 do begin
+    for j := 0 to FList[i].List.Count - 1 do
+      TDbgEntityValuesList(FList[i].List[j]).FOwner := nil;
     FList[i].List.Free;
+  end;
   SetLength(FList, 0);
   DoCleared;
 end;
