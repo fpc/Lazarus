@@ -1578,7 +1578,6 @@ var
   ChangedRegList: TGDBMINameValueList;
 begin
   Result := True;
-DebugLn(['|||||||||||||| ', dbgs(FRegisters.DataValidity), ' ', FRegisters.StackFrame]);
   if FRegisters.DataValidity = ddsEvaluating then // in process
     exit;
 
