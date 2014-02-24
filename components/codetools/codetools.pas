@@ -19,7 +19,7 @@ uses
   SourceChanger, SourceLog, StdCodeTools, OtherIdentifierTree, 
   CodeToolsCfgScript, CTXMLFixFragment, CTUnitGraph, ChangeDeclarationTool, 
   CodeToolsFPCMsgs, UnitDictionary, ctloadlaz, CTUnitGroupGraph, 
-  CodeCompletionTemplater, LazarusPackageIntf;
+  CodeCompletionTemplater, CodetoolGDBTracer, LazarusPackageIntf;
 
 implementation
 

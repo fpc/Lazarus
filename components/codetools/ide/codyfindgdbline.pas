@@ -216,6 +216,45 @@ procedure TCodyFindGDBLineDialog.ParseGDBBacktraceLine(Line: string; out
   #10 0x0002f416 in SYSTEM_FPC_SYSTEMMAIN$LONGINT$PPCHAR$PPCHAR ()
   #11 0x00010eaa in _start ()
   #12 0x00010dd8 in start ()
+
+  ~"#0 DOHANDLEMOUSEACTION (this=0x14afae00, ANACTIONLIST=0x14a96af8,
+  ANINFO=...) at synedit.pp:3000\n"
+  ~"#1 0x00aea3e9 in FINDANDHANDLEMOUSEACTION (this=0x14afae00,
+  ABUTTON=MBLEFT, ASHIFT=..., X=233, Y=241, ACCOUNT=CCSINGLE, ADIR=CDDOWN,
+  ANAC
+  TIONRESULT=..., AWHEELDELTA=0) at synedit.pp:3307\n"
+  ~"#2 0x00aea914 in MOUSEDOWN (this=0x14afae00, BUTTON=MBLEFT,
+  SHIFT=..., X=233, Y=241) at synedit.pp:3374\n"
+  ~"#3 0x005e083b in DOMOUSEDOWN (this=0x14afae00, MESSAGE=...,
+  BUTTON=MBLEFT, SHIFT=...) at include/control.inc:2135\n"
+  ~"#4 0x005e0e8f in WMLBUTTONDOWN (this=0x14afae00, MESSAGE=...) at
+  include/control.inc:2269\n"
+  ~"#5 0x0040d096 in DISPATCH (this=0xeebf6d4, MESSAGE=0) at
+  ../inc/objpas.inc:592\n"
+  ~"#6 0x005e06e3 in WNDPROC (this=0x14afae00, THEMESSAGE=...) at
+  include/control.inc:2099\n"
+  ~"#7 0x005d1b88 in WNDPROC (this=0x14afae00, MESSAGE=...) at
+  include/wincontrol.inc:5327\n"
+  ~"#8 0x00af3b76 in WNDPROC (this=0x14afae00, MSG=...) at synedit.pp:5740\n"
+  ~"#9 0x006666a0 in DELIVERMESSAGE (TARGET=0x14afae00, AMESSAGE=0) at
+  lclmessageglue.pas:112\n"
+  ~"#10 0x0057ad0e in WINDOWPROC (WINDOW=3934144, MSG=513, WPARAM=1,
+  LPARAM=15794409) at win32/win32callback.inc:2478\n"
+  ~"#11 0x7673fd72 in ?? () from C:\\Windows\\system32\\user32.dll\n"
+  ~"#12 0x7673fe4a in ?? () from C:\\Windows\\system32\\user32.dll\n"
+  ~"#13 0x7674018d in ?? () from C:\\Windows\\system32\\user32.dll\n"
+  ~"#14 0x7674022b in ?? () from C:\\Windows\\system32\\user32.dll\n"
+  ~"#15 0x0057e0b8 in APPPROCESSMESSAGES (this=0x183d58) at
+  win32/win32object.inc:367\n"
+  ~"#16 0x0043d9e1 in HANDLEMESSAGE (this=0x12bf68) at
+  include/application.inc:1257\n"
+  ~"#17 0x0043df56 in RUNLOOP (this=0x12bf68) at
+  include/application.inc:1390\n"
+  ~"#18 0x00490481 in APPRUN (this=0x183d58, ALOOP=...) at
+  include/interfacebase.inc:54\n"
+  ~"#19 0x0043defb in RUN (this=0x12bf68) at include/application.inc:1378\n"
+  ~"#20 0x0040358f in main () at lazarus.pp:128\n"
+
 }
 var
   p: PChar;
@@ -311,44 +350,6 @@ procedure TCodyFindGDBLineDialog.FindGDBIdentifier(GDBIdentifier: string; out
   MAIN_TMAINIDE_$__CREATE$TCOMPONENT$$TMAINIDE
   PASCALMAIN
   SYSTEM_FPC_SYSTEMMAIN$LONGINT$PPCHAR$PPCHAR
-
-  ~"#0 DOHANDLEMOUSEACTION (this=0x14afae00, ANACTIONLIST=0x14a96af8,
-  ANINFO=...) at synedit.pp:3000\n"
-  ~"#1 0x00aea3e9 in FINDANDHANDLEMOUSEACTION (this=0x14afae00,
-  ABUTTON=MBLEFT, ASHIFT=..., X=233, Y=241, ACCOUNT=CCSINGLE, ADIR=CDDOWN,
-  ANAC
-  TIONRESULT=..., AWHEELDELTA=0) at synedit.pp:3307\n"
-  ~"#2 0x00aea914 in MOUSEDOWN (this=0x14afae00, BUTTON=MBLEFT,
-  SHIFT=..., X=233, Y=241) at synedit.pp:3374\n"
-  ~"#3 0x005e083b in DOMOUSEDOWN (this=0x14afae00, MESSAGE=...,
-  BUTTON=MBLEFT, SHIFT=...) at include/control.inc:2135\n"
-  ~"#4 0x005e0e8f in WMLBUTTONDOWN (this=0x14afae00, MESSAGE=...) at
-  include/control.inc:2269\n"
-  ~"#5 0x0040d096 in DISPATCH (this=0xeebf6d4, MESSAGE=0) at
-  ../inc/objpas.inc:592\n"
-  ~"#6 0x005e06e3 in WNDPROC (this=0x14afae00, THEMESSAGE=...) at
-  include/control.inc:2099\n"
-  ~"#7 0x005d1b88 in WNDPROC (this=0x14afae00, MESSAGE=...) at
-  include/wincontrol.inc:5327\n"
-  ~"#8 0x00af3b76 in WNDPROC (this=0x14afae00, MSG=...) at synedit.pp:5740\n"
-  ~"#9 0x006666a0 in DELIVERMESSAGE (TARGET=0x14afae00, AMESSAGE=0) at
-  lclmessageglue.pas:112\n"
-  ~"#10 0x0057ad0e in WINDOWPROC (WINDOW=3934144, MSG=513, WPARAM=1,
-  LPARAM=15794409) at win32/win32callback.inc:2478\n"
-  ~"#11 0x7673fd72 in ?? () from C:\\Windows\\system32\\user32.dll\n"
-  ~"#12 0x7673fe4a in ?? () from C:\\Windows\\system32\\user32.dll\n"
-  ~"#13 0x7674018d in ?? () from C:\\Windows\\system32\\user32.dll\n"
-  ~"#14 0x7674022b in ?? () from C:\\Windows\\system32\\user32.dll\n"
-  ~"#15 0x0057e0b8 in APPPROCESSMESSAGES (this=0x183d58) at
-  win32/win32object.inc:367\n"
-  ~"#16 0x0043d9e1 in HANDLEMESSAGE (this=0x12bf68) at
-  include/application.inc:1257\n"
-  ~"#17 0x0043df56 in RUNLOOP (this=0x12bf68) at
-  include/application.inc:1390\n"
-  ~"#18 0x00490481 in APPRUN (this=0x183d58, ALOOP=...) at
-  include/interfacebase.inc:54\n"
-  ~"#19 0x0043defb in RUN (this=0x12bf68) at include/application.inc:1378\n"
-  ~"#20 0x0040358f in main () at lazarus.pp:128\n"
 }
 var
   p: PChar;

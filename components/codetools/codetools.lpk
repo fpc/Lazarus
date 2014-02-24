@@ -29,7 +29,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="61">
+    <Files Count="62">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -273,8 +273,12 @@
       </Item60>
       <Item61>
         <Filename Value="codecompletiontemplater.pas"/>
-        <UnitName Value="codecompletiontemplater"/>
+        <UnitName Value="CodeCompletionTemplater"/>
       </Item61>
+      <Item62>
+        <Filename Value="codetoolgdbtracer.pas"/>
+        <UnitName Value="codetoolgdbtracer"/>
+      </Item62>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>
