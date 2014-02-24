@@ -1044,6 +1044,7 @@ type
   TCurrentIDERegisters = class(TIDERegisters)
   private
     FMonitor: TRegistersMonitor;
+  protected
     procedure DoDataValidityChanged(AnOldValidity: TDebuggerDataState); override;
   public
     constructor Create(AMonitor: TRegistersMonitor; AThreadId, AStackFrame: Integer);
