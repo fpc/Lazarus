@@ -326,16 +326,16 @@ begin
      3:  rname := 'RBX'; // RBX
      4:  rname := 'RSI';
      5:  rname := 'RDI';
-     6:  rname := 'PBP';
+     6:  rname := 'RBP';
      7:  rname := 'RSP';
-     8:  rname := 'R8D';
-     9:  rname := 'R9D';
-    10:  rname := 'R10D';
-    11:  rname := 'R11D';
-    12:  rname := 'R12D';
-    13:  rname := 'R13D';
-    14:  rname := 'R14D';
-    15:  rname := 'R15D';
+     8:  rname := 'R8'; // R8D , but gdb uses R8
+     9:  rname := 'R9';
+    10:  rname := 'R10';
+    11:  rname := 'R11';
+    12:  rname := 'R12';
+    13:  rname := 'R13';
+    14:  rname := 'R14';
+    15:  rname := 'R15';
     else
       exit;
   end;
