@@ -1,14 +1,14 @@
 object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
   Left = 0
-  Height = 377
+  Height = 371
   Top = 0
-  Width = 572
-  ClientHeight = 377
-  ClientWidth = 572
+  Width = 566
+  ClientHeight = 371
+  ClientWidth = 566
   TabOrder = 0
   Visible = False
-  DesignLeft = 313
-  DesignTop = 275
+  DesignLeft = 211
+  DesignTop = 209
   object ForwardProcsInsertPolicyRadioGroup: TRadioGroup
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -17,7 +17,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     Left = 6
     Height = 100
     Top = 6
-    Width = 560
+    Width = 554
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     BorderSpacing.Around = 6
@@ -37,9 +37,9 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     AnchorSideTop.Control = ForwardProcsInsertPolicyRadioGroup
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 24
+    Height = 18
     Top = 112
-    Width = 217
+    Width = 233
     BorderSpacing.Around = 6
     Caption = 'ForwardProcsKeepOrderCheckBox'
     TabOrder = 1
@@ -52,8 +52,8 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 100
-    Top = 148
-    Width = 560
+    Top = 142
+    Width = 554
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
@@ -76,9 +76,9 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     AnchorSideTop.Control = UsesInsertPolicyRadioGroup
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 24
-    Top = 254
-    Width = 231
+    Height = 18
+    Top = 248
+    Width = 251
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'UpdateMultiProcSignaturesCheckBox'
@@ -89,9 +89,9 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     AnchorSideTop.Control = UpdateMultiProcSignaturesCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 24
-    Top = 278
-    Width = 261
+    Height = 18
+    Top = 266
+    Width = 284
     BorderSpacing.Left = 6
     Caption = 'UpdateOtherProcSignaturesCaseCheckBox'
     TabOrder = 4
@@ -101,9 +101,9 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     AnchorSideTop.Control = TemplateFileEdit
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 15
-    Top = 307
-    Width = 100
+    Height = 16
+    Top = 293
+    Width = 114
     Caption = 'TemplateFileLabel'
     ParentColor = False
   end
@@ -113,11 +113,12 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     AnchorSideTop.Control = UpdateOtherProcSignaturesCaseCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = TemplateFileBrowseButton
-    Left = 106
-    Height = 25
-    Top = 302
-    Width = 439
+    Left = 120
+    Height = 22
+    Top = 290
+    Width = 370
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
     TabOrder = 5
     Text = 'TemplateFileEdit'
   end
@@ -127,10 +128,10 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = TemplateFileEdit
     AnchorSideBottom.Side = asrBottom
-    Left = 545
-    Height = 25
-    Top = 302
-    Width = 21
+    Left = 490
+    Height = 22
+    Top = 290
+    Width = 70
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6

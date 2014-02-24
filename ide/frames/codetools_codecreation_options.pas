@@ -117,9 +117,8 @@ begin
   UpdateOtherProcSignaturesCaseCheckBox.Caption:=
     lisUpdateOtherProcedureSignaturesWhenOnlyLetterCaseHa;
 
-  {$IFDEF EnableCodeCompleteTemplates}
   TemplateFileLabel.Caption:=lisTemplateFile;
-  {$ELSE}
+  {$IFNDEF EnableCodeCompleteTemplates}
   TemplateFileLabel.Enabled:=false;
   TemplateFileEdit.Enabled:=false;
   TemplateFileBrowseButton.Enabled:=false;
