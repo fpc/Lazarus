@@ -210,7 +210,7 @@ type
     FLineInfo: TIDELineInfo;
     FWatches: TWatchesMonitor;
     FThreads: TThreadsMonitor;
-    FRegisters: TIDERegisters;
+    FRegisters: TRegistersMonitor;
   private
     FParent: TGDBTestsuite;
     FTestBaseName: String;
@@ -283,7 +283,7 @@ type
     property Disassembler: TIDEDisassembler read FDisassembler;
     property Locals: TLocalsMonitor read FLocals;
     property LineInfo: TIDELineInfo read FLineInfo;
-    property Registers: TIDERegisters read FRegisters;
+    property Registers: TRegistersMonitor read FRegisters;
     property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
     property Watches: TWatchesMonitor read FWatches;
     property Threads: TThreadsMonitor read FThreads;
@@ -534,7 +534,7 @@ begin
   FLineInfo := TIDELineInfo.Create;
   FCallStack := TCallStackMonitor.Create;
   FDisassembler := TIDEDisassembler.Create;
-  FRegisters := TIDERegisters.Create;
+  FRegisters := TRegistersMonitor.Create;
 
   Result := GdbClass.Create(DebuggerInfo.ExeName);
   Result.OnDbgOutput  := @InternalDbgOutPut;
@@ -549,7 +549,7 @@ begin
   FDisassembler.Master := Result.Disassembler;
   Result.Exceptions := FExceptions;
   FSignals.Master := Result.Signals;
-  FRegisters.Master := Result.Registers;
+  FRegisters.Supplier := Result.Registers;
 
   Result.Init;
   if Result.State = dsError then
