@@ -6886,7 +6886,7 @@ begin
     else h := m - 1;
   end;
 
-  Result := TDwarfCompilationUnit(FCompilationUnits[m]);
+  Result := TDwarfCompilationUnit(FCompilationUnits[h]);
   if (p < Result.FInfoData) or (p > Result.FInfoData + Result.FLength) then
     Result := nil;
 end;
