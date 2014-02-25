@@ -171,7 +171,8 @@ ln -s /Developer/lazarus/lazarus.app $ROOTDIR/Applications/Lazarus.app
 # everyone can read, group can write
 find $BUILDDIR -exec chmod a+r,g+w {} \;
 # what is executable should be executable by everyone
-find $BUILDDIR -perm /o+x -exec chmod a+x {} \;
+# Note: OS X does not understand /o+x
+find $BUILDDIR -perm +0001 -exec chmod a+x {} \;
 # everyone can access directories
 find $BUILDDIR -type d -exec chmod a+x {} \;
 
