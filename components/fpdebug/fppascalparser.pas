@@ -1357,7 +1357,7 @@ end;
 
 procedure TFpPascalExpression.SetError(AMsg: String);
 begin
-  if FError.ErrorCode <> 0 then begin
+  if IsFpError(FError) then begin
 DebugLn(['Skipping error ', AMsg]);
     FValid := False;
     exit;
@@ -1404,7 +1404,7 @@ end;
 function TFpPascalExpression.DebugDump(AWithResults: Boolean): String;
 begin
   Result := 'TFpPascalExpression: ' + FTextExpression + LineEnding +
-            'Valid: ' + dbgs(FValid) + '   Error: "' + dbgs(FError.ErrorCode) + '"'+ LineEnding
+            'Valid: ' + dbgs(FValid) + '   Error: "' + dbgs(FpErrorCode(FError)) + '"'+ LineEnding
             ;
   if FExpressionPart <> nil then
     Result := Result + FExpressionPart.DebugDump('  ', AWithResults);

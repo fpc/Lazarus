@@ -5,7 +5,8 @@ unit FpPascalBuilder;
 interface
 
 uses
-  Classes, SysUtils, DbgIntfBaseTypes, FpDbgInfo, FpdMemoryTools, LazLoggerBase;
+  Classes, SysUtils, DbgIntfBaseTypes, FpDbgInfo, FpdMemoryTools, FpErrorMessages,
+  LazLoggerBase;
 
 type
   TTypeNameFlag = (
@@ -408,8 +409,6 @@ function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
   procedure DoPointer;
   var
     s: String;
-    t: TDbgSymbol;
-    i: Integer;
     v: QWord;
   begin
     s := ResTypeName;
@@ -610,6 +609,9 @@ begin
     skInterface: ;
     skArray:     DoArray;
   end;
+
+  if IsFpError(AResValue.LastError) then
+    APrintedValue := FpErrorHandler.ErrorAsString(AResValue.LastError) + ' ' + APrintedValue;
 
 end;
 

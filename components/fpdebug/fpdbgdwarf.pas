@@ -41,8 +41,8 @@ unit FpDbgDwarf;
 interface
 
 uses
-  Classes, Types, SysUtils, FpDbgUtil, FpDbgInfo, FpDbgDwarfConst, Maps, Math,
-  FpDbgLoader, FpImgReaderBase, FpdMemoryTools, LazLoggerBase, // LazLoggerDummy,
+  Classes, Types, SysUtils, FpDbgUtil, FpDbgInfo, FpDbgDwarfConst, Maps, Math, FpDbgLoader,
+  FpImgReaderBase, FpdMemoryTools, FpErrorMessages, LazLoggerBase, // LazLoggerDummy,
   LazClasses, LazFileUtils, LazUTF8, contnrs, DbgIntfBaseTypes;
 
 type
@@ -295,6 +295,7 @@ type
   TDwarfLocationExpression = class
   private
     FFrameBase: TDbgPtr;
+    FLastError: TFpError;
     FOnFrameBaseNeeded: TNotifyEvent;
     FStack: TDwarfLocationStack;
     FCU: TDwarfCompilationUnit;
@@ -308,6 +309,7 @@ type
     function  ResultData: TDbgPtr;
     property  FrameBase: TDbgPtr read FFrameBase write FFrameBase;
     property  OnFrameBaseNeeded: TNotifyEvent read FOnFrameBaseNeeded write FOnFrameBaseNeeded;
+    property LastError: TFpError read FLastError;
   end;
 
   { TDwarfInformationEntry }
@@ -597,9 +599,11 @@ type
     FValueSymbol: TDbgDwarfValueIdentifier;
     FTypeCastTargetType: TDbgDwarfTypeIdentifier;
     FTypeCastSourceValue: TDbgSymbolValue;
+    FLastError: TFpError;
     function MemManager: TFpDbgMemManager; inline;
     function AddressSize: Byte; inline;
   protected
+    function GetLastError: TFpError; override;
     function DataAddr: TFpDbgMemLocation;
     function OrdOrDataAddr: TFpDbgMemLocation;
     function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean;
@@ -1135,7 +1139,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TDbgDwarfIdentifierSet = class(TDbgDwarfTypeIdentifier)
   protected
     procedure KindNeeded; override;
-    function GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
+    function GetTypedValueObject({%H-}ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
     function GetMemberCount: Integer; override;
     function GetMember(AIndex: Integer): TDbgSymbol; override;
   end;
@@ -1219,7 +1223,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure ReadOrdering;
   protected
     procedure KindNeeded; override;
-    function GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
+    function GetTypedValueObject({%H-}ATypeCast: Boolean): TDbgDwarfSymbolValue; override;
 
     function GetFlags: TDbgSymbolFlags; override;
     // GetMember: returns the TYPE/range of each index. NOT the data
@@ -1382,7 +1386,8 @@ function DbgsDump(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): St
 implementation
 
 var
-  FPDBG_DWARF_WARNINGS, FPDBG_DWARF_SEARCH, FPDBG_DWARF_VERBOSE: PLazLoggerLogGroup;
+  FPDBG_DWARF_ERRORS, FPDBG_DWARF_WARNINGS, FPDBG_DWARF_SEARCH, FPDBG_DWARF_VERBOSE,
+  FPDBG_DWARF_DATA_WARNINGS: PLazLoggerLogGroup;
 
 const
   SCOPE_ALLOC_BLOCK_SIZE = 4096; // Increase scopelist in steps of
@@ -2056,7 +2061,7 @@ begin
 
     if i2 < Cnt then begin
       FMemberCount := i2;
-      debugln(FPDBG_DWARF_WARNINGS, ['TDbgDwarfSetSymbolValue.InitMap  not enough members']);
+      debugln(FPDBG_DWARF_DATA_WARNINGS, ['TDbgDwarfSetSymbolValue.InitMap  not enough members']);
     end;
   end
   else begin
@@ -2082,7 +2087,7 @@ begin
 
     if i2 < Cnt then begin
       FMemberCount := i2;
-      debugln(['TDbgDwarfSetSymbolValue.InitMap  not enough members']);
+      debugln(FPDBG_DWARF_DATA_WARNINGS, ['TDbgDwarfSetSymbolValue.InitMap  not enough members']);
     end;
   end;
 
@@ -2103,8 +2108,6 @@ begin
 end;
 
 function TDbgDwarfSetSymbolValue.GetMemberCount: Integer;
-var
-  t: TDbgSymbol;
 begin
   InitMap;
   Result := FMemberCount;
@@ -2219,6 +2222,7 @@ end;
 function TDbgDwarfEnumMemberSymbolValue.IsValidTypeCast: Boolean;
 begin
   assert(False, 'TDbgDwarfEnumMemberSymbolValue.IsValidTypeCast can not be returned for typecast');
+  Result := False;
 end;
 
 { TDbgDwarfEnumSymbolValue }
@@ -2758,13 +2762,24 @@ begin
   Result := FOwner.FCU.FAddressSize;
 end;
 
+function TDbgDwarfSymbolValue.GetLastError: TFpError;
+begin
+  Result := FLastError;
+end;
+
 function TDbgDwarfSymbolValue.DataAddr: TFpDbgMemLocation;
 begin
-  if FValueSymbol <> nil then
-    Result := FValueSymbol.Address
+  if FValueSymbol <> nil then begin
+    Result := FValueSymbol.Address;
+    if IsFpError(FValueSymbol.LastError) then
+      FLastError := FValueSymbol.LastError;
+  end
   else
-  if HasTypeCastInfo then
-    Result := FTypeCastSourceValue.Address
+  if HasTypeCastInfo then begin
+    Result := FTypeCastSourceValue.Address;
+    if IsFpError(FTypeCastSourceValue.LastError) then
+      FLastError := FTypeCastSourceValue.LastError;
+  end
   else
     Result := InvalidLoc;
 end;
@@ -2781,13 +2796,14 @@ function TDbgDwarfSymbolValue.GetDwarfDataAddress(out AnAddress: TFpDbgMemLocati
   ATargetType: TDbgDwarfTypeIdentifier): Boolean;
 var
   fields: TDbgSymbolValueFieldFlags;
-  t: TDbgDwarfTypeIdentifier;
 begin
   if FValueSymbol <> nil then begin
     Assert(FValueSymbol is TDbgDwarfValueIdentifier, 'TDbgDwarfSymbolValue.GetDwarfDataAddress FValueSymbol');
     Assert(TypeInfo is TDbgDwarfTypeIdentifier, 'TDbgDwarfSymbolValue.GetDwarfDataAddress TypeInfo');
     Assert(not HasTypeCastInfo, 'TDbgDwarfSymbolValue.GetDwarfDataAddress not HasTypeCastInfo');
     Result := FValueSymbol.GetDataAddress(AnAddress, TDbgDwarfTypeIdentifier(FOwner));
+    if IsFpError(FValueSymbol.LastError) then
+      FLastError := FValueSymbol.LastError;
   end
 
   else
@@ -2809,6 +2825,8 @@ begin
       exit;
 
     Result := FTypeCastTargetType.GetDataAddress(AnAddress, ATargetType);
+    if IsFpError(FTypeCastTargetType.LastError) then
+      FLastError := FTypeCastTargetType.LastError;
   end;
 end;
 
@@ -3943,30 +3961,38 @@ begin
 end;
 
 procedure TDwarfLocationExpression.Evaluate;
+var
+  CurInstr, CurData: PByte;
+  MemManager: TFpDbgMemManager;
+  AddrSize: Byte;
 
-  procedure SetError;
+  procedure SetError(AnInternalErrorCode: TFpErrorCode = fpErrNoError);
   begin
     FStack.Push(InvalidLoc, lseError); // Mark as failed
-    debugln(['!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TDwarfLocationExpression ERROR']);
+    if IsFpError(MemManager.LastError)
+    then FLastError := CreateError(fpErrLocationParserMemRead, MemManager.LastError, [])
+    else FLastError := CreateError(fpErrLocationParser, []);
+    debugln(FPDBG_DWARF_ERRORS,
+            ['DWARF ERROR in TDwarfLocationExpression: Failed at Pos=', CurInstr-FData,
+             ' OpCode=', IntToHex(CurInstr^, 2), ' Depth=', FStack.Count,
+             ' Data: ', dbgMemRange(FData, FMaxData-FData),
+             ' MemReader.LastError: ', FpErrorHandler.ErrorAsString(MemManager.LastError),
+             ' Extra: ', FpErrorHandler.ErrorAsString(AnInternalErrorCode, []) ]);
   end;
 
   function AssertAddressOnStack: Boolean;
   begin
     Result := FStack.PeekKind in [lseValue, lseRegister]; // todo: allow register?
     if not Result then
-      SetError;
+      SetError(fpErrLocationParserNoAddressOnStack);
   end;
 
   function AssertMinCount(ACnt: Integer): Boolean;
   begin
     Result := FStack.Count >= ACnt;
     if not Result then
-      SetError;
+      SetError(fpErrLocationParserMinStack);
   end;
-
-var
-  MemManager: TFpDbgMemManager;
-  AddrSize: Byte;
 
   function ReadAddressFromMemory(AnAddress: TFpDbgMemLocation; ASize: Cardinal; out AValue: TFpDbgMemLocation): Boolean;
   begin
@@ -3986,32 +4012,31 @@ var
       SetError;
   end;
 
-  function ReadUnsignedFromExpression(var p: Pointer; ASize: Integer): TDbgPtr;
+  function ReadUnsignedFromExpression(var CurInstr: Pointer; ASize: Integer): TDbgPtr;
   begin
     case ASize of
-      1: Result := PByte(p)^;
-      2: Result := PWord(p)^;
-      4: Result := PLongWord(p)^;
-      8: Result := PQWord(p)^;
-      0: Result := ULEB128toOrdinal(p);
+      1: Result := PByte(CurInstr)^;
+      2: Result := PWord(CurInstr)^;
+      4: Result := PLongWord(CurInstr)^;
+      8: Result := PQWord(CurInstr)^;
+      0: Result := ULEB128toOrdinal(CurInstr);
     end;
-    inc(p, ASize);
+    inc(CurInstr, ASize);
   end;
 
-  function ReadSignedFromExpression(var p: Pointer; ASize: Integer): TDbgPtr;
+  function ReadSignedFromExpression(var CurInstr: Pointer; ASize: Integer): TDbgPtr;
   begin
     case ASize of
-      1: Int64(Result) := PShortInt(p)^;
-      2: Int64(Result) := PSmallInt(p)^;
-      4: Int64(Result) := PLongint(p)^;
-      8: Int64(Result) := PInt64(p)^;
-      0: Int64(Result) := SLEB128toOrdinal(p);
+      1: Int64(Result) := PShortInt(CurInstr)^;
+      2: Int64(Result) := PSmallInt(CurInstr)^;
+      4: Int64(Result) := PLongint(CurInstr)^;
+      8: Int64(Result) := PInt64(CurInstr)^;
+      0: Int64(Result) := SLEB128toOrdinal(CurInstr);
     end;
-    inc(p, ASize);
+    inc(CurInstr, ASize);
   end;
 
 var
-  p: PByte;
   NewLoc, Loc: TFpDbgMemLocation;
   NewValue: TDbgPtr;
   i: TDbgPtr;
@@ -4020,12 +4045,15 @@ var
 begin
   AddrSize := FCU.FAddressSize;
   MemManager := FCU.FOwner.MemManager;
-  while FData < FMaxData do begin
-    p := FData;
-    inc(FData);
-    case p^ of
+  MemManager.ClearLastError;
+  FLastError := FpErrorNone;
+  CurData := FData;
+  while CurData < FMaxData do begin
+    CurInstr := CurData;
+    inc(CurData);
+    case CurInstr^ of
       DW_OP_nop: ;
-      DW_OP_addr:  FStack.Push(FCU.ReadAddressAtPointer(FData, True), lseValue);
+      DW_OP_addr:  FStack.Push(FCU.ReadAddressAtPointer(CurData, True), lseValue);
       DW_OP_deref: begin
           if not AssertAddressOnStack then exit;
           if not ReadAddressFromMemory(FStack.Pop.Value, AddrSize, NewLoc) then exit;
@@ -4041,7 +4069,7 @@ begin
         end;
       DW_OP_deref_size: begin
           if not AssertAddressOnStack then exit;
-          if not ReadAddressFromMemory(FStack.Pop.Value, ReadUnsignedFromExpression(FData, 1), NewLoc) then exit;
+          if not ReadAddressFromMemory(FStack.Pop.Value, ReadUnsignedFromExpression(CurData, 1), NewLoc) then exit;
           FStack.Push(NewLoc, lseValue);
         end;
       DW_OP_xderef_size: begin
@@ -4049,31 +4077,31 @@ begin
           Loc := FStack.Pop.Value;
           if not AssertAddressOnStack then exit;
 // TODO check address is valid
-          if not ReadAddressFromMemoryEx(Loc, FStack.Pop.Value.Address, ReadUnsignedFromExpression(FData, 1), NewLoc) then exit;
+          if not ReadAddressFromMemoryEx(Loc, FStack.Pop.Value.Address, ReadUnsignedFromExpression(CurData, 1), NewLoc) then exit;
           FStack.Push(NewLoc, lseValue);
         end;
 
-      DW_OP_const1u: FStack.Push(ReadUnsignedFromExpression(FData, 1), lseValue);
-      DW_OP_const2u: FStack.Push(ReadUnsignedFromExpression(FData, 2), lseValue);
-      DW_OP_const4u: FStack.Push(ReadUnsignedFromExpression(FData, 4), lseValue);
-      DW_OP_const8u: FStack.Push(ReadUnsignedFromExpression(FData, 8), lseValue);
-      DW_OP_constu:  FStack.Push(ReadUnsignedFromExpression(FData, 0), lseValue);
-      DW_OP_const1s: FStack.Push(ReadSignedFromExpression(FData, 1), lseValue);
-      DW_OP_const2s: FStack.Push(ReadSignedFromExpression(FData, 2), lseValue);
-      DW_OP_const4s: FStack.Push(ReadSignedFromExpression(FData, 4), lseValue);
-      DW_OP_const8s: FStack.Push(ReadSignedFromExpression(FData, 8), lseValue);
-      DW_OP_consts:  FStack.Push(ReadSignedFromExpression(FData, 0), lseValue);
-      DW_OP_lit0..DW_OP_lit31: FStack.Push(p^-DW_OP_lit0, lseValue);
+      DW_OP_const1u: FStack.Push(ReadUnsignedFromExpression(CurData, 1), lseValue);
+      DW_OP_const2u: FStack.Push(ReadUnsignedFromExpression(CurData, 2), lseValue);
+      DW_OP_const4u: FStack.Push(ReadUnsignedFromExpression(CurData, 4), lseValue);
+      DW_OP_const8u: FStack.Push(ReadUnsignedFromExpression(CurData, 8), lseValue);
+      DW_OP_constu:  FStack.Push(ReadUnsignedFromExpression(CurData, 0), lseValue);
+      DW_OP_const1s: FStack.Push(ReadSignedFromExpression(CurData, 1), lseValue);
+      DW_OP_const2s: FStack.Push(ReadSignedFromExpression(CurData, 2), lseValue);
+      DW_OP_const4s: FStack.Push(ReadSignedFromExpression(CurData, 4), lseValue);
+      DW_OP_const8s: FStack.Push(ReadSignedFromExpression(CurData, 8), lseValue);
+      DW_OP_consts:  FStack.Push(ReadSignedFromExpression(CurData, 0), lseValue);
+      DW_OP_lit0..DW_OP_lit31: FStack.Push(CurInstr^-DW_OP_lit0, lseValue);
 
       DW_OP_reg0..DW_OP_reg31: begin
-          if not MemManager.ReadRegister(p^-DW_OP_reg0, NewValue) then begin
+          if not MemManager.ReadRegister(CurInstr^-DW_OP_reg0, NewValue) then begin
             SetError;
             exit;
           end;
           FStack.Push(NewValue, lseRegister);
         end;
       DW_OP_regx: begin
-          if not MemManager.ReadRegister(ULEB128toOrdinal(FData), NewValue) then begin
+          if not MemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue) then begin
             SetError;
             exit;
           end;
@@ -4081,21 +4109,21 @@ begin
         end;
 
       DW_OP_breg0..DW_OP_breg31: begin
-          if not MemManager.ReadRegister(p^-DW_OP_breg0, NewValue) then begin
+          if not MemManager.ReadRegister(CurInstr^-DW_OP_breg0, NewValue) then begin
             SetError;
             exit;
           end;
           {$PUSH}{$R-}{$Q-}
-          FStack.Push(NewValue+SLEB128toOrdinal(FData), lseValue);
+          FStack.Push(NewValue+SLEB128toOrdinal(CurData), lseValue);
           {$POP}
         end;
       DW_OP_bregx: begin
-          if not MemManager.ReadRegister(ULEB128toOrdinal(FData), NewValue) then begin
+          if not MemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue) then begin
             SetError;
             exit;
           end;
           {$PUSH}{$R-}{$Q-}
-          FStack.Push(NewValue+SLEB128toOrdinal(FData), lseValue);
+          FStack.Push(NewValue+SLEB128toOrdinal(CurData), lseValue);
           {$POP}
         end;
 
@@ -4106,7 +4134,7 @@ begin
             exit;
           end;
           {$PUSH}{$R-}{$Q-}
-          FStack.Push(FFrameBase+SLEB128toOrdinal(FData), lseValue);
+          FStack.Push(FFrameBase+SLEB128toOrdinal(CurData), lseValue);
           {$POP}
         end;
 
@@ -4123,7 +4151,7 @@ begin
           FStack.Push(FStack.Peek(1));
         end;
       DW_OP_pick: begin
-          i := ReadUnsignedFromExpression(FData, 1);
+          i := ReadUnsignedFromExpression(CurData, 1);
           if not AssertMinCount(i) then exit;
           FStack.Push(FStack.Peek(i));
         end;
@@ -4164,7 +4192,7 @@ begin
           if not AssertMinCount(1) then exit;
           Entry := FStack.Peek(0);
           {$PUSH}{$R-}{$Q-}
-          FStack.Modify(0, Entry.Value.Address+ULEB128toOrdinal(FData), lseValue);
+          FStack.Modify(0, Entry.Value.Address+ULEB128toOrdinal(CurData), lseValue);
           {$POP}
         end;
       DW_OP_minus: begin
@@ -4244,15 +4272,15 @@ begin
         end;
 
       DW_OP_skip: begin
-          x := ReadSignedFromExpression(FData, 2);
-          FData := FData + x;
+          x := ReadSignedFromExpression(CurData, 2);
+          CurData := CurData + x;
         end;
       DW_OP_bra: begin
           if not AssertMinCount(1) then exit;
           Entry  := FStack.Pop;
-          x := ReadSignedFromExpression(FData, 2);
+          x := ReadSignedFromExpression(CurData, 2);
           if Entry.Value.Address <> 0 then
-            FData := FData + x;
+            CurData := CurData + x;
         end;
 
       DW_OP_eq: begin
@@ -4322,7 +4350,7 @@ begin
 *)
       else
         begin
-          debugln(['TDwarfLocationExpression.Evaluate UNKNOWN ', p^]);
+          debugln(FPDBG_DWARF_ERRORS, ['TDwarfLocationExpression.Evaluate UNKNOWN ', CurInstr^]);
           SetError;
           exit;
         end;
@@ -4847,7 +4875,7 @@ begin
     AValue := FCompUnit.FOwner.FSections[dsInfo].RawData + Offs;
   end
   else begin
-    DebugLn(FPDBG_DWARF_WARNINGS, ['FORM for DW_AT_type not expected ', DwarfAttributeFormToString(Form)]);
+    DebugLn(FPDBG_DWARF_VERBOSE, ['FORM for DW_AT_type not expected ', DwarfAttributeFormToString(Form)]);
   end;
 end;
 
@@ -5928,7 +5956,7 @@ begin
 
   end;
 
-  debugln(['TDbgDwarfIdentifierMember.InitLocationParser  FAILED !!!!!!!']);
+  debugln([FPDBG_DWARF_ERRORS, 'TDbgDwarfIdentifierMember.InitLocationParser  FAILED !!!!!!!']);
   //TODO: error
 end;
 
@@ -6008,7 +6036,7 @@ begin
   end;
 
   //TODO: error
-  debugln(['TDbgDwarfIdentifierMember.InitLocationParser FAILED']);
+  debugln(FPDBG_DWARF_ERRORS, ['TDbgDwarfIdentifierMember.InitLocationParser FAILED']);
 end;
 
 function TDbgDwarfIdentifierStructure.GetDataAddress(var AnAddress: TFpDbgMemLocation;
@@ -6448,6 +6476,9 @@ begin
   InitLocationParser(LocationParser, AnObjectDataAddress);
   LocationParser.Evaluate;
 
+  if IsFpError(LocationParser.FLastError) then
+    SetLastError(LocationParser.FLastError);
+
   if LocationParser.ResultKind in [lseValue] then begin
     AnAddress := TargetLoc(LocationParser.ResultData);
     Result := True;
@@ -6749,6 +6780,9 @@ begin
     FFrameBaseParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), FCU);
     FFrameBaseParser.Evaluate;
 
+    if IsFpError(FFrameBaseParser.FLastError) then
+      SetLastError(FFrameBaseParser.FLastError);
+
     if FFrameBaseParser.ResultKind in [lseValue] then
       Result := FFrameBaseParser.ResultData;
   end;
@@ -6781,9 +6815,12 @@ function TDbgDwarfProcSymbol.GetSelfParameter(AnAddress: TDbgPtr): TDbgDwarfValu
 const
   this1: string = 'THIS';
   this2: string = 'this';
+  self1: string = '$SELF';
+  self2: string = '$self';
 var
   InfoEntry: TDwarfInformationEntry;
   tg: Cardinal;
+  found: Boolean;
 begin
   // special: search "self"
   // Todo nested procs
@@ -6796,7 +6833,12 @@ begin
   tg := InfoEntry.AbbrevTag;
   if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
     InfoEntry.ScopeIndex := InformationEntry.ScopeIndex;
-    if InfoEntry.GoNamedChildEx(@this1[1], @this2[1]) then begin
+    found := InfoEntry.GoNamedChildEx(@this1[1], @this2[1]);
+    if not found then begin
+      InfoEntry.ScopeIndex := InformationEntry.ScopeIndex;
+      found := InfoEntry.GoNamedChildEx(@self1[1], @self2[1]);
+    end;
+    if found then begin
       if ((AnAddress = 0) or InfoEntry.IsAddressInStartScope(AnAddress)) and
          InfoEntry.IsArtificial
       then begin
@@ -8226,7 +8268,8 @@ begin
               // TODO: only valid, as long as context is valid, because if comnext is freed, then self is lost too
               Result := SelfParam.MemberByName[AName];
               assert(Result <> nil, 'FindSymbol: SelfParam.MemberByName[AName]');
-              Result.AddReference;
+              if Result <> nil then
+                Result.AddReference;
               if Result= nil then debugln(['TDbgDwarfInfoAddressContext.FindSymbol   NOT IN SELF !!!!!!!!!!!!!']);
             end;
           end;
@@ -8262,7 +8305,8 @@ begin
                 // TODO: only valid, as long as context is valid, because if comnext is freed, then self is lost too
                 Result := SelfParam.MemberByName[AName];
                 assert(Result <> nil, 'FindSymbol: SelfParam.MemberByName[AName]');
-                Result.AddReference;
+                if Result <> nil then
+                  Result.AddReference;
                 if Result<> nil then debugln(['TDbgDwarfInfoAddressContext.FindSymbol  NOT IN SELF !!!!!!!!!!!!!']);
               end
 else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
@@ -9438,9 +9482,12 @@ begin
 end;
 
 initialization
+  FPDBG_DWARF_ERRORS   := DebugLogger.RegisterLogGroup('FPDBG_DWARF_ERRORS' {$IFDEF FPDBG_DWARF_ERRORS} , True {$ENDIF} );
   FPDBG_DWARF_WARNINGS := DebugLogger.RegisterLogGroup('FPDBG_DWARF_WARNINGS' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );
   FPDBG_DWARF_VERBOSE  := DebugLogger.RegisterLogGroup('FPDBG_DWARF_VERBOSE' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );
   FPDBG_DWARF_SEARCH   := DebugLogger.RegisterLogGroup('FPDBG_DWARF_SEARCH' {$IFDEF FPDBG_DWARF_SEARCH} , True {$ENDIF} );
+  // Target data anormalities
+  FPDBG_DWARF_DATA_WARNINGS := DebugLogger.RegisterLogGroup('FPDBG_DWARF_DATA_WARNINGS' {$IFDEF FPDBG_DWARF_DATA_WARNINGS} , True {$ENDIF} );
 
 end.
 

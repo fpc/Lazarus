@@ -24,7 +24,7 @@ unit FpdMemoryTools;
 interface
 
 uses
-  Classes, SysUtils, math, DbgIntfBaseTypes;
+  Classes, SysUtils, math, DbgIntfBaseTypes, FpErrorMessages;
 
 type
 
@@ -182,6 +182,7 @@ type
 
   TFpDbgMemManager = class
   private
+    FLastError: TFpError;
     FMemReader: TFpDbgMemReaderBase;
     FTargetMemConvertor: TFpDbgMemConvertor;
     FSelfMemConvertor: TFpDbgMemConvertor; // used when resizing constants (or register values, which are already in self format)
@@ -192,6 +193,7 @@ type
   public
     constructor Create(AMemReader: TFpDbgMemReaderBase; AMemConvertor: TFpDbgMemConvertor);
     constructor Create(AMemReader: TFpDbgMemReaderBase; ATargenMemConvertor, ASelfMemConvertor: TFpDbgMemConvertor);
+    procedure ClearLastError;
 
     function ReadMemory(const ALocation: TFpDbgMemLocation; ASize: Cardinal; ADest: Pointer): Boolean;
     function ReadMemoryEx(const ALocation: TFpDbgMemLocation; AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
@@ -236,6 +238,7 @@ type
 
     property TargetMemConvertor: TFpDbgMemConvertor read FTargetMemConvertor;
     property SelfMemConvertor: TFpDbgMemConvertor read FSelfMemConvertor;
+    property LastError: TFpError read FLastError;
   end;
 
 function NilLoc: TFpDbgMemLocation; inline;
@@ -486,20 +489,29 @@ var
   TmpVal: TDbgPtr;
   ConvData: TFpDbgMemConvData;
 begin
+  FLastError := FpErrorNone;
   Result := False;
   case ALocation.MType of
-    mlfInvalid: ;
+    mlfInvalid:
+      FLastError := CreateError(fpErrCanNotReadInvalidMem);
     mlfTargetMem, mlfSelfMem: begin
       Result := TargetMemConvertor.PrepareTargetRead(AReadDataType, ALocation.Address,
         ADest, ATargetSize, ADestSize, ConvData);
       if not Result then exit;
 
-      if ALocation.MType = mlfTargetMem then
-        Result := FMemReader.ReadMemory(ConvData.NewTargetAddress, ConvData.NewReadSize, ConvData.NewDestAddress)
+      if ALocation.MType = mlfTargetMem then begin
+        Result := FMemReader.ReadMemory(ConvData.NewTargetAddress, ConvData.NewReadSize, ConvData.NewDestAddress);
+        if not Result then
+          FLastError := CreateError(fpErrCanNotReadMemAtAddr, [ALocation.Address]);
+      end
       else
       begin
-        move(Pointer(ConvData.NewTargetAddress)^, ConvData.NewDestAddress^, ConvData.NewReadSize);
-        Result := True;
+        try
+          move(Pointer(ConvData.NewTargetAddress)^, ConvData.NewDestAddress^, ConvData.NewReadSize);
+          Result := True;
+        except
+          Result := False;
+        end;
       end;
 
       if Result then
@@ -541,6 +553,8 @@ begin
         Result := True;
       end;
   end;
+  if (not Result) and (not IsFpError(FLastError)) then
+    FLastError := CreateError(fpErrFailedReadMem);
 end;
 
 constructor TFpDbgMemManager.Create(AMemReader: TFpDbgMemReaderBase;
@@ -559,6 +573,11 @@ begin
   FSelfMemConvertor := ASelfMemConvertor;
 end;
 
+procedure TFpDbgMemManager.ClearLastError;
+begin
+  FLastError := FpErrorNone;
+end;
+
 function TFpDbgMemManager.ReadMemory(const ALocation: TFpDbgMemLocation; ASize: Cardinal;
   ADest: Pointer): Boolean;
 var
@@ -567,11 +586,16 @@ var
   TmpVal: TDbgPtr;
   ConvData: TFpDbgMemConvData;
 begin
+  FLastError := FpErrorNone;
   Result := False;
   case ALocation.MType of
     mlfInvalid: ;
     mlfTargetMem:
-      Result := FMemReader.ReadMemory(ALocation.Address, ASize, ADest);
+      begin
+        Result := FMemReader.ReadMemory(ALocation.Address, ASize, ADest);
+        if not Result then
+          FLastError := CreateError(fpErrCanNotReadMemAtAddr, [ALocation.Address]);
+      end;
     mlfSelfMem:
       begin
         move(Pointer(ALocation.Address)^, ADest^, ASize);
@@ -608,21 +632,27 @@ begin
         Result := True;
       end;
   end;
+  if (not Result) and (not IsFpError(FLastError)) then
+    FLastError := CreateError(fpErrFailedReadMem);
 end;
 
 function TFpDbgMemManager.ReadMemoryEx(const ALocation: TFpDbgMemLocation;
   AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
 begin
+  FLastError := FpErrorNone;
   // AnAddressSpace is ignored, when not actually reading from target address
   case ALocation.MType of
     mlfTargetMem: Result := FMemReader.ReadMemoryEx(ALocation.Address, AnAddressSpace, ASize, ADest);
     else
       Result := ReadMemory(ALocation, ASize, ADest);
   end;
+  if (not Result) and (not IsFpError(FLastError)) then
+    FLastError := CreateError(fpErrFailedReadMem);
 end;
 
 function TFpDbgMemManager.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean;
 begin
+  FLastError := FpErrorNone;
   Result := FMemReader.ReadRegister(ARegNum, AValue);
 end;
 

@@ -943,7 +943,7 @@ begin
         ResTypeInfo := nil;
         if not FpDebugger.EvaluateExpression(WatchValue, WatchValue.Expression, ResText, ResTypeInfo)
         then begin
-          debugln(['TFPGDBMIWatches.InternalRequestData FAILED']);
+          if IsWatchValueAlive then    debugln(['TFPGDBMIWatches.InternalRequestData FAILED ', WatchValue.Expression]);
           if IsWatchValueAlive then
             inherited InternalRequestData(WatchValue);
         end;
@@ -1506,7 +1506,7 @@ begin
 
     if not PasExpr.Valid then begin
 DebugLn(FpErrorHandler.ErrorAsString(PasExpr.Error));
-      if PasExpr.Error.ErrorCode <> fpErrAnyError then begin
+      if FpErrorCode(PasExpr.Error) <> fpErrAnyError then begin
         Result := True;
         AResText := FpErrorHandler.ErrorAsString(PasExpr.Error);;
         if AWatchValue <> nil then begin;
@@ -1551,7 +1551,7 @@ DebugLn(FpErrorHandler.ErrorAsString(PasExpr.Error));
 
     if ATypeInfo <> nil then begin
       Result := True;
-      debugln(['TFPGDBMIWatches.InternalRequestData   GOOOOOOD']);
+      debugln(['TFPGDBMIWatches.InternalRequestData   GOOOOOOD ', AExpression]);
       if AWatchValue <> nil then begin;
         AWatchValue.Value    := AResText;
         AWatchValue.TypeInfo := ATypeInfo;

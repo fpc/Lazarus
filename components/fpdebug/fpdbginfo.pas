@@ -5,7 +5,8 @@ unit FpDbgInfo;
 interface
 
 uses
-  Classes, SysUtils, DbgIntfBaseTypes, FpDbgLoader, FpdMemoryTools, LazLoggerBase, LazClasses;
+  Classes, SysUtils, DbgIntfBaseTypes, FpDbgLoader, FpdMemoryTools, FpErrorMessages,
+  LazLoggerBase, LazClasses;
 
 type
   { TFpDbgCircularRefCountedObject }
@@ -29,7 +30,7 @@ type
     procedure MakeCirclularRefToPlain;
 
     function  CircleBackRefsActive: Boolean; inline;
-    procedure CircleBackRefActiveChanged(NewActive: Boolean); virtual;
+    procedure CircleBackRefActiveChanged({%H-}NewActive: Boolean); virtual;
   end;
 
   { TFpDbgCircularRefCntObjList }
@@ -113,17 +114,19 @@ type
     function GetDataAddress: TFpDbgMemLocation;  virtual;
     function GetDataSize: Integer;  virtual;
 
-    function GetMember(AIndex: Integer): TDbgSymbolValue; virtual;
-    function GetMemberByName(AIndex: String): TDbgSymbolValue; virtual;
+    function GetMember({%H-}AIndex: Integer): TDbgSymbolValue; virtual;
+    function GetMemberByName({%H-}AIndex: String): TDbgSymbolValue; virtual;
     function GetMemberCount: Integer; virtual;
-    function GetIndexType(AIndex: Integer): TDbgSymbol; virtual;
+    function GetIndexType({%H-}AIndex: Integer): TDbgSymbol; virtual;
     function GetIndexTypeCount: Integer; virtual;
-    function GetMemberCountEx(AIndex: array of Int64): Integer; virtual;
-    function GetMemberEx(AIndex: Array of Int64): TDbgSymbolValue; virtual;
+    function GetMemberCountEx({%H-}AIndex: array of Int64): Integer; virtual;
+    function GetMemberEx({%H-}AIndex: Array of Int64): TDbgSymbolValue; virtual;
 
     function GetDbgSymbol: TDbgSymbol; virtual;
     function GetTypeInfo: TDbgSymbol; virtual;
     function GetContextTypeInfo: TDbgSymbol; virtual;
+
+    function GetLastError: TFpError; virtual;
   public
     constructor Create;
     property RefCount;
@@ -172,7 +175,9 @@ type
                   Maybe a stType, then there is no Value *)
     property DbgSymbol: TDbgSymbol read GetDbgSymbol;
     property TypeInfo: TDbgSymbol read GetTypeInfo;
-    property ContextTypeInfo: TDbgSymbol read GetContextTypeInfo; // For members, the class in which this mebec is declared
+    property ContextTypeInfo: TDbgSymbol read GetContextTypeInfo; // For members, the class in which this meber is declared
+
+    property LastError: TFpError read GetLastError;
   end;
 
   { TSymbolValueConstNumber }
@@ -211,6 +216,7 @@ type
   TDbgSymbol = class(TDbgSymbolBase)
   private
     FEvaluatedFields: TDbgSymbolFields;
+    FLastError: TFpError;
 
     // Cached fields
     FName: String;
@@ -229,6 +235,8 @@ type
     function GetTypeInfo: TDbgSymbol; inline;
     function GetMemberVisibility: TDbgSymbolMemberVisibility; inline;
   protected
+    function  GetLastError: TFpError; virtual;
+    procedure SetLastError(AnError: TFpError);
     // NOT cached fields
     function GetChild({%H-}AIndex: Integer): TDbgSymbol; virtual;
     function GetColumn: Cardinal; virtual;
@@ -323,7 +331,9 @@ type
 
     // TypeCastValue| only fon stType symbols, may return nil
     // Returns a reference to caller / caller must release
-    function TypeCastValue(AValue: TDbgSymbolValue): TDbgSymbolValue; virtual;
+    function TypeCastValue({%H-}AValue: TDbgSymbolValue): TDbgSymbolValue; virtual;
+
+    property LastError: TFpError read GetLastError;
   end;
 
   { TDbgSymbolForwarder }
@@ -336,6 +346,7 @@ type
     procedure ForwardToSymbolNeeded; virtual;
     function  GetForwardToSymbol: TDbgSymbol; inline;
   protected
+    function GetLastError: TFpError; override;
     procedure KindNeeded; override;
     procedure NameNeeded; override;
     procedure SymbolTypeNeeded; override;
@@ -564,6 +575,11 @@ begin
   Result := nil;
 end;
 
+function TDbgSymbolValue.GetLastError: TFpError;
+begin
+  Result := FpErrorNone;
+end;
+
 function TDbgSymbolValue.GetKind: TDbgSymbolKind;
 begin
   Result := skNone;
@@ -759,6 +775,16 @@ begin
   Result := FSymbolType;
 end;
 
+function TDbgSymbol.GetLastError: TFpError;
+begin
+  Result := FLastError;
+end;
+
+procedure TDbgSymbol.SetLastError(AnError: TFpError);
+begin
+  FLastError := AnError;
+end;
+
 function TDbgSymbol.GetHasBounds: Boolean;
 begin
   Result := False;
@@ -940,6 +966,18 @@ begin
   if not(sfiForwardToSymbol in EvaluatedFields) then
     ForwardToSymbolNeeded;
   Result := FForwardToSymbol;
+end;
+
+function TDbgSymbolForwarder.GetLastError: TFpError;
+var
+  p: TDbgSymbol;
+begin
+  Result := inherited GetLastError;
+  if IsFpError(Result) then
+    exit;
+  p := GetForwardToSymbol;
+  if p <> nil then
+    Result := p.LastError;
 end;
 
 procedure TDbgSymbolForwarder.KindNeeded;
