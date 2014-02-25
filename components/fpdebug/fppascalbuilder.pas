@@ -610,8 +610,8 @@ begin
     skArray:     DoArray;
   end;
 
-  if IsFpError(AResValue.LastError) then
-    APrintedValue := FpErrorHandler.ErrorAsString(AResValue.LastError) + ' ' + APrintedValue;
+  if IsError(AResValue.LastError) then
+    APrintedValue := ErrorHandler.ErrorAsString(AResValue.LastError);
 
 end;
 

@@ -5,7 +5,7 @@ unit FpErrorMessages;
 interface
 
 uses
-  SysUtils, LazLoggerBase;
+  SysUtils, variants, LazLoggerBase;
 
 type
    TFpErrorCode = Integer;
@@ -22,6 +22,7 @@ resourcestring
   // 200 LocationParser
   MsgfpErrLocationParser = 'Internal Error: Can not calculate location.';
   MsgfpErrLocationParserMemRead = '%1:s (while calculating location)';          // Pass on nested error
+  MsgfpErrLocationParserInit = 'Internal Error: Can not calculate location. (Init)';
   MsgfpErrLocationParserMinStack = 'Not enough elements on stack.';             // internally used
   MsgfpErrLocationParserNoAddressOnStack = 'Not an address on stack';           // internally used
 
@@ -38,16 +39,29 @@ const
   fpErrCanNotReadMemAtAddr  = TFpErrorCode(102);
 
   // 200 LocationParser
-  fpErrLocationParser         = TFpErrorCode(200);
-  fpErrLocationParserMemRead  = TFpErrorCode(201);
-  fpErrLocationParserMinStack = TFpErrorCode(202);
-  fpErrLocationParserNoAddressOnStack = TFpErrorCode(203);
+  fpErrLocationParser                 = TFpErrorCode(200);
+  fpErrLocationParserMemRead          = TFpErrorCode(201);
+  fpErrLocationParserInit             = TFpErrorCode(202);
+  fpErrLocationParserMinStack         = TFpErrorCode(203);
+  fpErrLocationParserNoAddressOnStack = TFpErrorCode(204);
 type
 
   TFpError = array of record
     ErrorCode: TFpErrorCode;
     ErrorData: Array of TVarRec;
-    ErrorData2: Array of String;
+    ErrorData2: Array of
+      record
+        ansi: Ansistring;
+        wide: widestring;
+        uni: unicodestring;
+        vari: variant;
+        case integer of
+          1: (ext: Extended);
+          2: (cur: Currency);
+          3: (short: shortstring);
+          4: (i64: int64);
+          5: (qw: QWord);
+      end;
   end;
 
   { TFpErrorHandler }
@@ -65,11 +79,11 @@ type
 function GetFpErrorHandler: TFpErrorHandler;
 procedure SetFpErrorHandler(AHandler: TFpErrorHandler);
 
-property FpErrorHandler: TFpErrorHandler read GetFpErrorHandler write SetFpErrorHandler;
+property ErrorHandler: TFpErrorHandler read GetFpErrorHandler write SetFpErrorHandler;
 
-function IsFpError(AnError: TFpError): Boolean; inline;
-function FpErrorCode(AnError: TFpError): TFpErrorCode;  inline;
-function FpErrorNone: TFpError;  inline;
+function IsError(AnError: TFpError): Boolean; inline;
+function ErrorCode(AnError: TFpError): TFpErrorCode;  inline;
+function NoError: TFpError;  inline;
 function CreateError(AnErrorCode: TFpErrorCode): TFpError; inline;
 function CreateError(AnErrorCode: TFpErrorCode; AData: array of const): TFpError; inline;
 function CreateError(AnErrorCode: TFpErrorCode; AnError: TFpError; AData: array of const): TFpError; inline;
@@ -91,12 +105,12 @@ begin
   TheErrorHandler := AHandler;
 end;
 
-function IsFpError(AnError: TFpError): Boolean;
+function IsError(AnError: TFpError): Boolean;
 begin
   Result := (length(AnError) > 0) and (AnError[0].ErrorCode <> 0);
 end;
 
-function FpErrorCode(AnError: TFpError): TFpErrorCode;
+function ErrorCode(AnError: TFpError): TFpErrorCode;
 begin
   if length(AnError) > 0 then
     Result := AnError[0].ErrorCode
@@ -104,25 +118,25 @@ begin
     Result := fpErrNoError; // 0
 end;
 
-function FpErrorNone: TFpError;
+function NoError: TFpError;
 begin
   Result:= nil;
 end;
 
 function CreateError(AnErrorCode: TFpErrorCode): TFpError;
 begin
-  Result := FpErrorHandler.CreateError(AnErrorCode, []);
+  Result := ErrorHandler.CreateError(AnErrorCode, []);
 end;
 
 function CreateError(AnErrorCode: TFpErrorCode; AData: array of const): TFpError;
 begin
-  Result := FpErrorHandler.CreateError(AnErrorCode, AData);
+  Result := ErrorHandler.CreateError(AnErrorCode, AData);
 end;
 
 function CreateError(AnErrorCode: TFpErrorCode; AnError: TFpError;
   AData: array of const): TFpError;
 begin
-  Result := FpErrorHandler.CreateError(AnErrorCode, AnError, AData);
+  Result := ErrorHandler.CreateError(AnErrorCode, AnError, AData);
 end;
 
 { TFpErrorHandler }
@@ -140,6 +154,7 @@ begin
 
     fpErrLocationParser: Result := MsgfpErrLocationParser;
     fpErrLocationParserMemRead: Result := MsgfpErrLocationParserMemRead;
+    fpErrLocationParserInit: Result := MsgfpErrLocationParserInit;
     fpErrLocationParserMinStack: Result := MsgfpErrLocationParserMinStack;
     fpErrLocationParserNoAddressOnStack: Result := MsgfpErrLocationParserNoAddressOnStack;
   end;
@@ -156,9 +171,43 @@ begin
   SetLength(Result[0].ErrorData2, Length(AData));
   for i := low(AData) to high(AData) do begin
     Result[0].ErrorData[i] := AData[i];
-    if AData[i].VType = vtAnsiString then begin
-      Result[0].ErrorData2[i] := AnsiString(AData[i].VAnsiString);
-      Result[0].ErrorData[i].VAnsiString := Pointer(Result[0].ErrorData2[i]);
+    case  AData[i].VType of
+       vtExtended      : begin
+           Result[0].ErrorData2[i].ext := AData[i].VExtended^;
+           Result[0].ErrorData[i].VExtended := @Result[0].ErrorData2[i].ext;
+         end;
+       vtString        : begin
+           Result[0].ErrorData2[i].short := AData[i].VString^;
+           Result[0].ErrorData[i].VString := @Result[0].ErrorData2[i].short;
+         end;
+       vtAnsiString    : begin
+           Result[0].ErrorData2[i].ansi := Ansistring(AData[i].VAnsiString);
+           Result[0].ErrorData[i].VAnsiString := Pointer(Result[0].ErrorData2[i].ansi);
+         end;
+       vtCurrency      : begin
+           Result[0].ErrorData2[i].cur := AData[i].VCurrency^;
+           Result[0].ErrorData[i].VCurrency := @Result[0].ErrorData2[i].cur;
+         end;
+       vtVariant       : begin
+           Result[0].ErrorData2[i].vari := AData[i].VVariant^;
+           Result[0].ErrorData[i].VVariant := @Result[0].ErrorData2[i].vari;
+         end;
+       vtWideString    : begin
+           Result[0].ErrorData2[i].wide := WideString(AData[i].VWideString);
+           Result[0].ErrorData[i].VWideString := Pointer(Result[0].ErrorData2[i].wide);
+         end;
+       vtInt64         : begin
+           Result[0].ErrorData2[i].i64 := AData[i].VInt64^;
+           Result[0].ErrorData[i].VInt64 := @Result[0].ErrorData2[i].i64;
+         end;
+       vtUnicodeString : begin
+           Result[0].ErrorData2[i].uni := unicodestring(AData[i].VUnicodeString);
+           Result[0].ErrorData[i].VUnicodeString := pointer(Result[0].ErrorData2[i].uni);
+         end;
+       vtQWord         : begin
+           Result[0].ErrorData2[i].qw := AData[i].VQWord^;
+           Result[0].ErrorData[i].VQWord := @Result[0].ErrorData2[i].qw;
+         end;
     end;
   end;
 end;

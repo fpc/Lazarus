@@ -14,7 +14,7 @@ uses
   {$ENDIF}
   Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, FpDbgClasses, GDBMIDebugger,
   DbgIntfBaseTypes, DbgIntfDebuggerBase, GDBMIMiscClasses,
-  GDBTypeInfo, maps, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst, LazLoggerBase,
+  GDBTypeInfo, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase,
   LazLoggerProfiling, LazClasses, FpPascalParser, FpPascalBuilder, FpErrorMessages;
 
 type
@@ -1505,10 +1505,10 @@ begin
     if not IsWatchValueAlive then exit;
 
     if not PasExpr.Valid then begin
-DebugLn(FpErrorHandler.ErrorAsString(PasExpr.Error));
-      if FpErrorCode(PasExpr.Error) <> fpErrAnyError then begin
+DebugLn(ErrorHandler.ErrorAsString(PasExpr.Error));
+      if ErrorCode(PasExpr.Error) <> fpErrAnyError then begin
         Result := True;
-        AResText := FpErrorHandler.ErrorAsString(PasExpr.Error);;
+        AResText := ErrorHandler.ErrorAsString(PasExpr.Error);;
         if AWatchValue <> nil then begin;
           AWatchValue.Value    := AResText;
           AWatchValue.Validity := ddsError;
@@ -1555,7 +1555,10 @@ DebugLn(FpErrorHandler.ErrorAsString(PasExpr.Error));
       if AWatchValue <> nil then begin;
         AWatchValue.Value    := AResText;
         AWatchValue.TypeInfo := ATypeInfo;
-        AWatchValue.Validity := ddsValid;
+        if IsError(ResValue.LastError) then
+          AWatchValue.Validity := ddsError
+        else
+          AWatchValue.Validity := ddsValid;
       end;
     end;
 

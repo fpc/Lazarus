@@ -876,8 +876,8 @@ type
 
     function DataSize: Integer; virtual;
   protected
-// TODO: InitLocationParser may fail
-    procedure InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression; {%H-}AnObjectDataAddress: TFpDbgMemLocation = 0); virtual;
+    function InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression;
+                                {%H-}AnObjectDataAddress: TFpDbgMemLocation = 0): Boolean; virtual;
     function  LocationFromTag(ATag: Cardinal; out AnAddress: TFpDbgMemLocation;
                               AnObjectDataAddress: TFpDbgMemLocation;
                               AnInformationEntry: TDwarfInformationEntry = nil
@@ -932,7 +932,8 @@ type
     procedure FrameBaseNeeded(ASender: TObject);
   protected
     function GetValueObject: TDbgSymbolValue; override;
-    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TFpDbgMemLocation = 0); override;
+    function InitLocationParser(const ALocationParser: TDwarfLocationExpression;
+                                AnObjectDataAddress: TFpDbgMemLocation = 0): Boolean; override;
   end;
 
   { TDbgDwarfTypeIdentifier }
@@ -1179,7 +1180,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   TDbgDwarfIdentifierMember = class(TDbgDwarfValueLocationIdentifier)
   protected
-    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TFpDbgMemLocation = 0); override;
+    function InitLocationParser(const ALocationParser: TDwarfLocationExpression;
+                                AnObjectDataAddress: TFpDbgMemLocation = 0): Boolean; override;
     procedure AddressNeeded; override;
     function HasAddress: Boolean; override;
   end;
@@ -1204,7 +1206,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetMemberByName(AIndex: String): TDbgSymbol; override;
     function GetMemberCount: Integer; override;
 
-    procedure InitLocationParser(const ALocationParser: TDwarfLocationExpression; AnObjectDataAddress: TFpDbgMemLocation = 0); override;
+    function InitLocationParser(const ALocationParser: TDwarfLocationExpression;
+                                AnObjectDataAddress: TFpDbgMemLocation = 0): Boolean; override;
     function GetDataAddress(var AnAddress: TFpDbgMemLocation; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; override;
   public
     destructor Destroy; override;
@@ -1856,8 +1859,10 @@ begin
   if (FSize <= 0) or (FSize > SizeOf(Result)) then
     Result := inherited GetAsCardinal
   else
-  if not MemManager.ReadFloat(OrdOrDataAddr, FSize, Result) then
+  if not MemManager.ReadFloat(OrdOrDataAddr, FSize, Result) then begin
     Result := 0; // TODO: error
+    FLastError := MemManager.LastError;
+  end;
 
   FValue := Result;
 end;
@@ -1893,6 +1898,8 @@ function TDbgDwarfArraySymbolValue.GetDataAddress: TFpDbgMemLocation;
 begin
   //Result := GetDwarfDataAddress;
   Result := MemManager.ReadAddress(OrdOrDataAddr, AddressSize); // TODO: cache
+  if not IsValidLoc(Result) then
+    FLastError := MemManager.LastError;
 end;
 
 function TDbgDwarfArraySymbolValue.GetMember(AIndex: Integer): TDbgSymbolValue;
@@ -1944,11 +1951,15 @@ begin
     if (sfDynArray in t.Flags) and (AsCardinal <> 0) and
        GetDwarfDataAddress(Addr, TDbgDwarfTypeIdentifier(FOwner))
     then begin
+      if not IsReadableMem(Addr) then
+        exit;
       Addr.Address := Addr.Address - 4;
       if MemManager.ReadSignedInt(Addr, 4, i) then begin
         Result := Integer(i)+1;
         exit;
-      end;
+      end
+      else
+        FLastError := MemManager.LastError;
     end;
     exit;
   end;
@@ -2033,8 +2044,10 @@ begin
   t := t.TypeInfo;
   if t = nil then exit;
 
-  if not MemManager.ReadSet(DataAddr, FSize, FMem) then
+  if not MemManager.ReadSet(DataAddr, FSize, FMem) then begin
+    FLastError := MemManager.LastError;
     exit; // TODO: error
+  end;
 
   Cnt := 0;
   for i := 0 to FSize - 1 do
@@ -2268,8 +2281,10 @@ begin
   if (FSize <= 0) or (FSize > SizeOf(Result)) then
     Result := inherited GetAsCardinal
   else
-  if not MemManager.ReadEnum(OrdOrDataAddr, FSize, Result) then
+  if not MemManager.ReadEnum(OrdOrDataAddr, FSize, Result) then begin
+    FLastError := MemManager.LastError;
     Result := 0; // TODO: error
+  end;
 
   FValue := Result;
 end;
@@ -2339,7 +2354,10 @@ begin
   if (FSize <= 0) then
     Result := InvalidLoc
   else
-    MemManager.ReadAddress(OrdOrDataAddr, FSize, Result);
+  begin
+    if not MemManager.ReadAddress(OrdOrDataAddr, FSize, Result) then
+      FLastError := MemManager.LastError;
+  end;
 
   FPointetToAddr := Result;
 end;
@@ -2390,8 +2408,10 @@ begin
   if (FSize <= 0) or (FSize > SizeOf(Result)) then
     Result := inherited GetAsInteger
   else
-  if not MemManager.ReadSignedInt(OrdOrDataAddr, FSize, Result) then
+  if not MemManager.ReadSignedInt(OrdOrDataAddr, FSize, Result) then begin
     Result := 0; // TODO: error
+    FLastError := MemManager.LastError;
+  end;
 
   FIntValue := Result;
 end;
@@ -2409,8 +2429,10 @@ begin
   if (FSize <= 0) or (FSize > SizeOf(Result)) then
     Result := inherited GetAsCardinal
   else
-  if not MemManager.ReadUnsignedInt(OrdOrDataAddr, FSize, Result) then
+  if not MemManager.ReadUnsignedInt(OrdOrDataAddr, FSize, Result) then begin
     Result := 0; // TODO: error
+    FLastError := MemManager.LastError;
+  end;
 
   FValue := Result;
 end;
@@ -2459,8 +2481,11 @@ begin
       FDataAddress := InvalidLoc;
       t := FValueSymbol.Address;
       assert(SizeOf(FDataAddress) >= AddressSize, 'TDbgDwarfStructSymbolValue.GetDataAddress');
-      if (MemManager <> nil) then
+      if (MemManager <> nil) then begin
         FDataAddress := MemManager.ReadAddress(t, AddressSize);
+        if not IsValidLoc(FDataAddress) then
+          FLastError := MemManager.LastError;
+      end;
       FDataAddressDone := True;
     end;
     Result := FDataAddress;
@@ -2560,8 +2585,11 @@ begin
         FDataAddress := InvalidLoc;
         t := FTypeCastSourceValue.Address;
         assert(SizeOf(FDataAddress) >= AddressSize, 'TDbgDwarfStructSymbolValue.GetDataAddress');
-        if (MemManager <> nil) then
+        if (MemManager <> nil) then begin
           FDataAddress := MemManager.ReadAddress(t, AddressSize);
+          if not IsValidLoc(FDataAddress) then
+            FLastError := MemManager.LastError;
+        end;
       end;
       FDataAddressDone := True;
     end;
@@ -2771,13 +2799,13 @@ function TDbgDwarfSymbolValue.DataAddr: TFpDbgMemLocation;
 begin
   if FValueSymbol <> nil then begin
     Result := FValueSymbol.Address;
-    if IsFpError(FValueSymbol.LastError) then
+    if IsError(FValueSymbol.LastError) then
       FLastError := FValueSymbol.LastError;
   end
   else
   if HasTypeCastInfo then begin
     Result := FTypeCastSourceValue.Address;
-    if IsFpError(FTypeCastSourceValue.LastError) then
+    if IsError(FTypeCastSourceValue.LastError) then
       FLastError := FTypeCastSourceValue.LastError;
   end
   else
@@ -2802,7 +2830,7 @@ begin
     Assert(TypeInfo is TDbgDwarfTypeIdentifier, 'TDbgDwarfSymbolValue.GetDwarfDataAddress TypeInfo');
     Assert(not HasTypeCastInfo, 'TDbgDwarfSymbolValue.GetDwarfDataAddress not HasTypeCastInfo');
     Result := FValueSymbol.GetDataAddress(AnAddress, TDbgDwarfTypeIdentifier(FOwner));
-    if IsFpError(FValueSymbol.LastError) then
+    if IsError(FValueSymbol.LastError) then
       FLastError := FValueSymbol.LastError;
   end
 
@@ -2825,7 +2853,7 @@ begin
       exit;
 
     Result := FTypeCastTargetType.GetDataAddress(AnAddress, ATargetType);
-    if IsFpError(FTypeCastTargetType.LastError) then
+    if IsError(FTypeCastTargetType.LastError) then
       FLastError := FTypeCastTargetType.LastError;
   end;
 end;
@@ -3030,28 +3058,37 @@ end;
 
 { TDbgDwarfValueLocationIdentifier }
 
-procedure TDbgDwarfValueLocationIdentifier.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-  AnObjectDataAddress: TFpDbgMemLocation);
+function TDbgDwarfValueLocationIdentifier.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
+  AnObjectDataAddress: TFpDbgMemLocation): Boolean;
 begin
-  inherited InitLocationParser(ALocationParser, AnObjectDataAddress);
+  Result := inherited InitLocationParser(ALocationParser, AnObjectDataAddress);
   ALocationParser.OnFrameBaseNeeded := @FrameBaseNeeded;
 end;
 
 procedure TDbgDwarfValueLocationIdentifier.FrameBaseNeeded(ASender: TObject);
 var
   p: TDbgDwarfIdentifier;
+  fb: TDBGPtr;
 begin
   debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarfIdentifierVariable.FrameBaseNeeded ']);
   p := ParentTypeInfo;
   // TODO: what if parent is declaration?
-  if (p <> nil) and (p is TDbgDwarfProcSymbol) then
-    (ASender as TDwarfLocationExpression).FFrameBase := TDbgDwarfProcSymbol(p).GetFrameBase
-;
+  if (p <> nil) and (p is TDbgDwarfProcSymbol) then begin
+    fb := TDbgDwarfProcSymbol(p).GetFrameBase;
+    (ASender as TDwarfLocationExpression).FFrameBase := fb;
+    if fb = 0 then begin
+      debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TDbgDwarfValueLocationIdentifier.FrameBaseNeeded result is 0']);
+    end;
+    exit;
+  end;
+
 {$warning TODO}
   //else
   //if OwnerTypeInfo <> nil then
   //  OwnerTypeInfo.fr;
   // TODO: check owner
+  debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TDbgDwarfValueLocationIdentifier.FrameBaseNeeded no parent type info']);
+  (ASender as TDwarfLocationExpression).FFrameBase := 0;
 end;
 
 function TDbgDwarfValueLocationIdentifier.GetValueObject: TDbgSymbolValue;
@@ -3969,15 +4006,15 @@ var
   procedure SetError(AnInternalErrorCode: TFpErrorCode = fpErrNoError);
   begin
     FStack.Push(InvalidLoc, lseError); // Mark as failed
-    if IsFpError(MemManager.LastError)
+    if IsError(MemManager.LastError)
     then FLastError := CreateError(fpErrLocationParserMemRead, MemManager.LastError, [])
     else FLastError := CreateError(fpErrLocationParser, []);
     debugln(FPDBG_DWARF_ERRORS,
             ['DWARF ERROR in TDwarfLocationExpression: Failed at Pos=', CurInstr-FData,
              ' OpCode=', IntToHex(CurInstr^, 2), ' Depth=', FStack.Count,
              ' Data: ', dbgMemRange(FData, FMaxData-FData),
-             ' MemReader.LastError: ', FpErrorHandler.ErrorAsString(MemManager.LastError),
-             ' Extra: ', FpErrorHandler.ErrorAsString(AnInternalErrorCode, []) ]);
+             ' MemReader.LastError: ', ErrorHandler.ErrorAsString(MemManager.LastError),
+             ' Extra: ', ErrorHandler.ErrorAsString(AnInternalErrorCode, []) ]);
   end;
 
   function AssertAddressOnStack: Boolean;
@@ -4046,7 +4083,7 @@ begin
   AddrSize := FCU.FAddressSize;
   MemManager := FCU.FOwner.MemManager;
   MemManager.ClearLastError;
-  FLastError := FpErrorNone;
+  FLastError := NoError;
   CurData := FData;
   while CurData < FMaxData do begin
     CurInstr := CurData;
@@ -4350,7 +4387,7 @@ begin
 *)
       else
         begin
-          debugln(FPDBG_DWARF_ERRORS, ['TDwarfLocationExpression.Evaluate UNKNOWN ', CurInstr^]);
+          debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TDwarfLocationExpression.Evaluate UNKNOWN ', CurInstr^]);
           SetError;
           exit;
         end;
@@ -5496,9 +5533,12 @@ begin
   if not Result then
     exit;
   AnAddress := FCU.FOwner.MemManager.ReadAddress(AnAddress, FCU.FAddressSize);
-  Result := IsTargetNotNil(AnAddress);
+  Result := IsValidLoc(AnAddress);
   if Result then
-    Result := inherited GetDataAddress(AnAddress, ATargetType);
+    Result := inherited GetDataAddress(AnAddress, ATargetType)
+  else
+  if IsError(FCU.FOwner.MemManager.LastError) then
+    SetLastError(FCU.FOwner.MemManager.LastError);
 end;
 
 function TDbgDwarfTypeIdentifierPointer.GetTypedValueObject(ATypeCast: Boolean): TDbgDwarfSymbolValue;
@@ -5931,12 +5971,14 @@ end;
 
 { TDbgDwarfIdentifierMember }
 
-procedure TDbgDwarfIdentifierMember.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-  AnObjectDataAddress: TFpDbgMemLocation);
+function TDbgDwarfIdentifierMember.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
+  AnObjectDataAddress: TFpDbgMemLocation): Boolean;
 var
   BaseAddr: TFpDbgMemLocation;
 begin
-  inherited InitLocationParser(ALocationParser, AnObjectDataAddress);
+  Result := inherited InitLocationParser(ALocationParser, AnObjectDataAddress);
+  if not Result then
+    exit;
 
   if (StructureValueInfo <> nil) and (ParentTypeInfo <> nil) then begin
     Assert((ParentTypeInfo is TDbgDwarfIdentifier) and (ParentTypeInfo.SymbolType = stType), '');
@@ -5946,18 +5988,20 @@ begin
         ALocationParser.FStack.Push(BaseAddr, lseValue);
         exit
       end;
-    end;
+    end
+    else
     if StructureValueInfo is TDbgDwarfStructTypeCastSymbolValue then begin
       if TDbgDwarfStructTypeCastSymbolValue(StructureValueInfo).GetDwarfDataAddress(BaseAddr, TDbgDwarfTypeIdentifier(ParentTypeInfo)) then begin
         ALocationParser.FStack.Push(BaseAddr, lseValue);
         exit
       end;
     end;
-
   end;
 
-  debugln([FPDBG_DWARF_ERRORS, 'TDbgDwarfIdentifierMember.InitLocationParser  FAILED !!!!!!!']);
-  //TODO: error
+  debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TDbgDwarfIdentifierMember.InitLocationParser Error: ',ErrorCode(LastError),' ValueObject=', DbgSName(FValueObject)]);
+  if not IsError(LastError) then
+    SetLastError(CreateError(fpErrLocationParserInit));
+  Result := False;
 end;
 
 procedure TDbgDwarfIdentifierMember.AddressNeeded;
@@ -6023,20 +6067,25 @@ begin
   Result := FMembers.Count;
 end;
 
-procedure TDbgDwarfIdentifierStructure.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-  AnObjectDataAddress: TFpDbgMemLocation);
+function TDbgDwarfIdentifierStructure.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
+  AnObjectDataAddress: TFpDbgMemLocation): Boolean;
 begin
-  inherited InitLocationParser(ALocationParser, AnObjectDataAddress);
+  Result := inherited InitLocationParser(ALocationParser, AnObjectDataAddress);
+  if not Result then
+    exit;
 
   // CURRENTLY ONLY USED for DW_AT_data_member_location
   if IsReadableLoc(AnObjectDataAddress) then begin
-    debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarfIdentifierMember.InitLocationParser ', dbgs(AnObjectDataAddress)]);
+    debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarfIdentifierStructure.InitLocationParser ', dbgs(AnObjectDataAddress)]);
     ALocationParser.FStack.Push(AnObjectDataAddress, lseValue);
-    exit
+    exit;
   end;
 
   //TODO: error
-  debugln(FPDBG_DWARF_ERRORS, ['TDbgDwarfIdentifierMember.InitLocationParser FAILED']);
+  debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TDbgDwarfIdentifierStructure.InitLocationParser no ObjectDataAddress ', dbgs(AnObjectDataAddress)]);
+  if not IsError(LastError) then
+    SetLastError(CreateError(fpErrLocationParserInit));
+  Result := False;
 end;
 
 function TDbgDwarfIdentifierStructure.GetDataAddress(var AnAddress: TFpDbgMemLocation;
@@ -6442,9 +6491,10 @@ begin
     Result := 0;
 end;
 
-procedure TDbgDwarfIdentifier.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-  AnObjectDataAddress: TFpDbgMemLocation);
+function TDbgDwarfIdentifier.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
+  AnObjectDataAddress: TFpDbgMemLocation): Boolean;
 begin
+  Result := True;
 end;
 
 function TDbgDwarfIdentifier.LocationFromTag(ATag: Cardinal; out AnAddress: TFpDbgMemLocation;
@@ -6476,7 +6526,7 @@ begin
   InitLocationParser(LocationParser, AnObjectDataAddress);
   LocationParser.Evaluate;
 
-  if IsFpError(LocationParser.FLastError) then
+  if IsError(LocationParser.FLastError) then
     SetLastError(LocationParser.FLastError);
 
   if LocationParser.ResultKind in [lseValue] then begin
@@ -6763,30 +6813,35 @@ var
   Val: TByteDynArray;
 begin
   Result := 0;
-//DebugLnEnter(['>> TDbgDwarfProcSymbol.GetFrameBase ']); try
   if FFrameBaseParser = nil then begin
     //TODO: avoid copying data
     if not  FInformationEntry.ReadValue(DW_AT_frame_base, Val) then begin
       // error
-      DebugLn('failed to read DW_AT_frame_base');
+      debugln(FPDBG_DWARF_ERRORS, ['TDbgDwarfProcSymbol.GetFrameBase failed to read DW_AT_frame_base']);
       exit;
     end;
     if Length(Val) = 0 then begin
       // error
-      DebugLn('failed to read DW_AT_location');
+      debugln(FPDBG_DWARF_ERRORS, ['TDbgDwarfProcSymbol.GetFrameBase failed to read DW_AT_location']);
       exit;
     end;
 
     FFrameBaseParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), FCU);
     FFrameBaseParser.Evaluate;
 
-    if IsFpError(FFrameBaseParser.FLastError) then
-      SetLastError(FFrameBaseParser.FLastError);
-
     if FFrameBaseParser.ResultKind in [lseValue] then
       Result := FFrameBaseParser.ResultData;
+
+    if IsError(FFrameBaseParser.FLastError) then begin
+      SetLastError(FFrameBaseParser.FLastError);
+      debugln(FPDBG_DWARF_ERRORS, ['TDbgDwarfProcSymbol.GetFrameBase location parser failed ', ErrorHandler.ErrorAsString(LastError)]);
+    end
+    else
+    if Result = 0 then begin
+      debugln(FPDBG_DWARF_ERRORS, ['TDbgDwarfProcSymbol.GetFrameBase location parser failed. result is 0']);
+    end;
+
   end;
-//finally DebugLnExit(['<< TDbgDwarfProcSymbol.GetFrameBase ']); end;
 end;
 
 procedure TDbgDwarfProcSymbol.KindNeeded;

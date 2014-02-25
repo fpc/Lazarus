@@ -1357,7 +1357,7 @@ end;
 
 procedure TFpPascalExpression.SetError(AMsg: String);
 begin
-  if IsFpError(FError) then begin
+  if IsError(FError) then begin
 DebugLn(['Skipping error ', AMsg]);
     FValid := False;
     exit;
@@ -1369,7 +1369,7 @@ end;
 procedure TFpPascalExpression.SetError(AnErrorCode: TFpErrorCode; AData: array of const);
 begin
   FValid := False;
-  FError := FpErrorHandler.CreateError(AnErrorCode, AData);
+  FError := ErrorHandler.CreateError(AnErrorCode, AData);
 end;
 
 function TFpPascalExpression.PosFromPChar(APChar: PChar): Integer;
@@ -1390,7 +1390,7 @@ constructor TFpPascalExpression.Create(ATextExpression: String;
 begin
   FContext := AContext;
   FTextExpression := ATextExpression;
-  FError := FpErrorNone;
+  FError := NoError;
   FValid := True;
   Parse;
 end;
@@ -1404,7 +1404,7 @@ end;
 function TFpPascalExpression.DebugDump(AWithResults: Boolean): String;
 begin
   Result := 'TFpPascalExpression: ' + FTextExpression + LineEnding +
-            'Valid: ' + dbgs(FValid) + '   Error: "' + dbgs(FpErrorCode(FError)) + '"'+ LineEnding
+            'Valid: ' + dbgs(FValid) + '   Error: "' + dbgs(ErrorCode(FError)) + '"'+ LineEnding
             ;
   if FExpressionPart <> nil then
     Result := Result + FExpressionPart.DebugDump('  ', AWithResults);

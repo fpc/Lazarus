@@ -577,7 +577,7 @@ end;
 
 function TDbgSymbolValue.GetLastError: TFpError;
 begin
-  Result := FpErrorNone;
+  Result := NoError;
 end;
 
 function TDbgSymbolValue.GetKind: TDbgSymbolKind;
@@ -973,7 +973,7 @@ var
   p: TDbgSymbol;
 begin
   Result := inherited GetLastError;
-  if IsFpError(Result) then
+  if IsError(Result) then
     exit;
   p := GetForwardToSymbol;
   if p <> nil then
