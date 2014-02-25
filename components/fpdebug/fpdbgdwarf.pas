@@ -1916,13 +1916,19 @@ end;
 function TDbgDwarfArraySymbolValue.GetMemberEx(AIndex: array of Int64): TDbgSymbolValue;
 var
   Addr: TFpDbgMemLocation;
+  i: Integer;
 begin
   Result := nil;
   assert((FOwner is TDbgDwarfIdentifierArray) and (FOwner.Kind = skArray));
   Addr := TDbgDwarfIdentifierArray(FOwner).GetMemberAddress(Self, AIndex);
   if not IsReadableLoc(Addr) then exit;
 
-  if (FAddrObj = nil) or (FAddrObj.RefCount > 1) then begin
+  // FAddrObj.RefCount: hold by self
+  i := 1;
+  // FAddrObj.RefCount: hold by FResVal (ignore only, if FResVAl is not hold by others)
+  if (FResVal <> nil) and (FResVal.RefCount = 1) then
+    i := 2;
+  if (FAddrObj = nil) or (FAddrObj.RefCount > i) then begin
     FAddrObj.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FAddrObj, 'TDbgDwarfArraySymbolValue'){$ENDIF};
     FAddrObj := TDbgDwarfSymbolValueConstAddress.Create(Addr);
     {$IFDEF WITH_REFCOUNT_DEBUG}FAddrObj.DbgRenameReference(@FAddrObj, 'TDbgDwarfArraySymbolValue');{$ENDIF}
