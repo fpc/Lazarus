@@ -331,6 +331,7 @@ type
   // Unary + -
   protected
     procedure Init; override;
+    function DoGetResultValue: TDbgSymbolValue; override;
   end;
 
   { TFpPascalExpressionPartOperatorPlusMinus }
@@ -339,6 +340,7 @@ type
   // Binary + -
   protected
     procedure Init; override;
+    function DoGetResultValue: TDbgSymbolValue; override;
   end;
 
   { TFpPascalExpressionPartOperatorMulDiv }
@@ -1174,14 +1176,6 @@ function TFpPascalExpressionPartConstantNumber.DoGetResultValue: TDbgSymbolValue
 begin
   Result := TDbgSymbolValueConstNumber.Create(StrToQWordDef(GetText, 0), False);
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
-end;
-
-{ TFpPascalExpressionPartOperatorUnaryPlusMinus }
-
-procedure TFpPascalExpressionPartOperatorUnaryPlusMinus.Init;
-begin
-  FPrecedence := PRECEDENCE_UNARY_SIGN;
-  inherited Init;
 end;
 
 { TFpPascalExpression }
@@ -2029,12 +2023,105 @@ begin
     Result := False;
 end;
 
+{ TFpPascalExpressionPartOperatorUnaryPlusMinus }
+
+procedure TFpPascalExpressionPartOperatorUnaryPlusMinus.Init;
+begin
+  FPrecedence := PRECEDENCE_UNARY_SIGN;
+  inherited Init;
+end;
+
+function TFpPascalExpressionPartOperatorUnaryPlusMinus.DoGetResultValue: TDbgSymbolValue;
+var
+  tmp1: TDbgSymbolValue;
+  IsAdd: Boolean;
+begin
+  Result := nil;
+  if Count <> 1 then exit;
+  assert((GetText = '+') or (GetText = '-'), 'TFpPascalExpressionPartOperatorUnaryPlusMinus.DoGetResultValue: (GetText = +) or (GetText = -)');
+
+  tmp1 := Items[0].ResultValue;
+  IsAdd := GetText = '+';
+  if (tmp1 = nil) then exit;
+
+  {$PUSH}{$R-}{$Q-}
+  if IsAdd then begin
+    case tmp1.Kind of
+      skPointer: ;
+      skInteger: Result := tmp1;
+      skCardinal: Result := tmp1;
+    end;
+  end
+  else begin
+    case tmp1.Kind of
+      skPointer: ;
+      skInteger: Result := TDbgSymbolValueConstNumber.Create(-tmp1.AsInteger, True);
+      skCardinal: Result := TDbgSymbolValueConstNumber.Create(-tmp1.AsCardinal, True);
+    end;
+  end;
+  {$POP}
+
+ if Result <> nil then
+   Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
+end;
+
 { TFpPascalExpressionPartOperatorPlusMinus }
 
 procedure TFpPascalExpressionPartOperatorPlusMinus.Init;
 begin
   FPrecedence := PRECEDENCE_PLUS_MINUS;
   inherited Init;
+end;
+
+function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TDbgSymbolValue;
+var
+  tmp1, tmp2: TDbgSymbolValue;
+  IsAdd: Boolean;
+begin
+  Result := nil;
+  if Count <> 2 then exit;
+  assert((GetText = '+') or (GetText = '-'), 'TFpPascalExpressionPartOperatorUnaryPlusMinus.DoGetResultValue: (GetText = +) or (GetText = -)');
+
+  tmp1 := Items[0].ResultValue;
+  tmp2 := Items[1].ResultValue;
+  IsAdd := GetText = '+';
+  if (tmp1 = nil) or (tmp2 = nil) then exit;
+
+  {$PUSH}{$R-}{$Q-}
+  if IsAdd then begin
+    case tmp1.Kind of
+      skPointer: ;
+      skInteger: case tmp2.Kind of
+        skPointer: ;
+        skInteger:  Result := TDbgSymbolValueConstNumber.Create(tmp1.AsInteger + tmp2.AsInteger, True);
+        skCardinal: Result := TDbgSymbolValueConstNumber.Create(tmp1.AsInteger + tmp2.AsCardinal, True);
+      end;
+      skCardinal: case tmp2.Kind of
+        skPointer: ;
+        skInteger:  Result := TDbgSymbolValueConstNumber.Create(tmp1.AsCardinal + tmp2.AsInteger, True);
+        skCardinal: Result := TDbgSymbolValueConstNumber.Create(tmp1.AsCardinal + tmp2.AsCardinal, False);
+      end;
+    end;
+  end
+  else begin
+    case tmp1.Kind of
+      skPointer: ;
+      skInteger: case tmp2.Kind of
+        skPointer: ;
+        skInteger:  Result := TDbgSymbolValueConstNumber.Create(tmp1.AsInteger - tmp2.AsInteger, True);
+        skCardinal: Result := TDbgSymbolValueConstNumber.Create(tmp1.AsInteger - tmp2.AsCardinal, True);
+      end;
+      skCardinal: case tmp2.Kind of
+        skPointer: ;
+        skInteger:  Result := TDbgSymbolValueConstNumber.Create(tmp1.AsCardinal - tmp2.AsInteger, True);
+        skCardinal: Result := TDbgSymbolValueConstNumber.Create(tmp1.AsCardinal - tmp2.AsCardinal, True);
+      end;
+    end;
+  end;
+  {$POP}
+
+ if Result <> nil then
+   Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
 { TFpPascalExpressionPartOperatorMulDiv }
