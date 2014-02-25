@@ -5,9 +5,9 @@ unit TestTypeInfo;
 interface
 
 uses
-  FpPascalParser, FpDbgDwarf, FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazUTF8, sysutils,
-  fpcunit, testregistry, TestHelperClasses, TestDwarfSetup1, TestDwarfSetupBasic,
-  DbgIntfBaseTypes, TestDwarfSetupArray;
+  FpPascalParser, FpDbgDwarf, FpDbgInfo, FpdMemoryTools, FpErrorMessages, LazLoggerBase,
+  LazUTF8, sysutils, fpcunit, testregistry, TestHelperClasses, TestDwarfSetup1,
+  TestDwarfSetupBasic, DbgIntfBaseTypes, TestDwarfSetupArray;
 
 
 type
@@ -305,8 +305,14 @@ end;
 procedure TTestTypeInfo.StartInvalTest(Expr: String; ExpError: String; ExtraName: String);
 begin
   InitTest(Expr, ExtraName);
-  FExpression.ResultValue;
-  AssertTrue(FCurrentTestName + 'invalid', (not FExpression.Valid) or (FExpression.ResultValue = nil));
+  if FExpression.ResultValue <> nil then begin // some value are only invalid after accessing the data
+    FExpression.ResultValue.AsInteger;
+    FExpression.ResultValue.AsCardinal;
+  end;
+  AssertTrue(FCurrentTestName + 'invalid',
+             (not FExpression.Valid) or (FExpression.ResultValue = nil) or
+             (IsError(FExpression.ResultValue.LastError))
+            );
   //AssertTrue(CurrentTestName + 'invalid', (not Expression.Valid));
   //ExpError
 end;

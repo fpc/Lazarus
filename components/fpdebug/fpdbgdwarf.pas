@@ -994,6 +994,12 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   TDbgDwarfTypeIdentifier = class(TDbgDwarfIdentifier)
   protected
+    // FCachedDataAddress is used by
+    // TDbgDwarfSymbolValue.GetDwarfDataAddress
+    // TDbgDwarfValueIdentifier.GetDataAddress
+    //TODO: maybe introduce a lightweight wrapper, so types can be re-used.
+    FCachedDataAddress: TFpDbgMemLocation;
+
     procedure Init; override;
     procedure MemberVisibilityNeeded; override;
     procedure SizeNeeded; override;
@@ -2825,6 +2831,13 @@ function TDbgDwarfSymbolValue.GetDwarfDataAddress(out AnAddress: TFpDbgMemLocati
 var
   fields: TDbgSymbolValueFieldFlags;
 begin
+  // TODO: also cache none valid address
+  Result := IsValidLoc(ATargetType.FCachedDataAddress);
+  if Result then begin
+    AnAddress := ATargetType.FCachedDataAddress;
+    exit;
+  end;
+
   if FValueSymbol <> nil then begin
     Assert(FValueSymbol is TDbgDwarfValueIdentifier, 'TDbgDwarfSymbolValue.GetDwarfDataAddress FValueSymbol');
     Assert(TypeInfo is TDbgDwarfTypeIdentifier, 'TDbgDwarfSymbolValue.GetDwarfDataAddress TypeInfo');
@@ -2856,6 +2869,8 @@ begin
     if IsError(FTypeCastTargetType.LastError) then
       FLastError := FTypeCastTargetType.LastError;
   end;
+
+  ATargetType.FCachedDataAddress := AnAddress;
 end;
 
 procedure TDbgDwarfSymbolValue.Reset;
@@ -5638,11 +5653,19 @@ begin
   Result := TypeInfo <> nil;
   if not Result then
     exit;
+  // TODO: also cache none valid address
+  Result := IsValidLoc(ATargetType.FCachedDataAddress);
+  if Result then begin
+    AnAddress := ATargetType.FCachedDataAddress;
+    exit;
+  end;
+
   Assert((TypeInfo is TDbgDwarfIdentifier) and (TypeInfo.SymbolType = stType), 'TDbgDwarfValueIdentifier.GetDataAddress');
   AnAddress := Address;
   Result := IsReadableLoc(AnAddress);
   if Result then
     Result := TDbgDwarfTypeIdentifier(TypeInfo).GetDataAddress(AnAddress, ATargetType);
+  ATargetType.FCachedDataAddress := AnAddress;
 end;
 
 procedure TDbgDwarfValueIdentifier.KindNeeded;

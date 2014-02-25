@@ -924,6 +924,7 @@ begin
     tmp2 := Items[1].ResultValue;
     if not (svfOrdinal in tmp2.FieldFlags) then
       exit;
+    if tmp2.AsCardinal > high(Integer) then exit; // TODO max member range
     Result := tmp.Member[tmp2.AsCardinal]; // todo negative ?
     if Result <> nil then
       Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};

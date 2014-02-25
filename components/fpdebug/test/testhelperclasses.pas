@@ -402,7 +402,8 @@ end;
 function TTestMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
   ADest: Pointer): Boolean;
 begin
-  Result := True;
+  Result := AnAddress > 1000; // avoid reading at 0x0000
+  if not Result then exit;
   Move(Pointer(AnAddress)^, ADest^, ASize);
 end;
 

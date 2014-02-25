@@ -164,6 +164,7 @@ type
     * TODO: allow to pre-read and cache Target mem (e.g. before reading all fields of a record
   *)
   TFpDbgMemLocationType = (
+    mflUninitialized := 0,   // like invalid, but not known // 0 means objet fields will start wint this
     mlfInvalid,
     mlfTargetMem,            // an address in the target (debuggee) process
     mlfSelfMem,              // an address in this(the debuggers) process memory; the data is  in TARGET format (endian, ...)
@@ -314,12 +315,12 @@ end;
 
 function IsValidLoc(ALocation: TFpDbgMemLocation): Boolean;
 begin
-  Result := (ALocation.MType <> mlfInvalid);
+  Result := not(ALocation.MType in [mlfInvalid, mflUninitialized]);
 end;
 
 function IsReadableLoc(ALocation: TFpDbgMemLocation): Boolean;
 begin
-  Result := (ALocation.MType <> mlfInvalid) and
+  Result := (not(ALocation.MType in [mlfInvalid, mflUninitialized])) and
             ( (not(ALocation.MType in [mlfTargetMem, mlfSelfMem])) or
               (ALocation.Address <> 0)
             );
@@ -492,7 +493,7 @@ begin
   FLastError := NoError;
   Result := False;
   case ALocation.MType of
-    mlfInvalid:
+    mlfInvalid, mflUninitialized:
       FLastError := CreateError(fpErrCanNotReadInvalidMem);
     mlfTargetMem, mlfSelfMem: begin
       Result := TargetMemConvertor.PrepareTargetRead(AReadDataType, ALocation.Address,
@@ -589,7 +590,7 @@ begin
   FLastError := NoError;
   Result := False;
   case ALocation.MType of
-    mlfInvalid: ;
+    mlfInvalid, mflUninitialized: ;
     mlfTargetMem:
       begin
         Result := FMemReader.ReadMemory(ALocation.Address, ASize, ADest);
