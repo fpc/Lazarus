@@ -86,7 +86,7 @@ function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: C
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure EnterCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure EnterCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ELSE}overload;{$ENDIF}
 function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function EnumFontFamilies(DC: HDC; Family: Pchar; EnumFontFamProc: FontEnumProc; LParam:Lparam):longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function EnumFontFamiliesEx(DC: HDC; lpLogFont:PLogFont; Callback: FontEnumExProc; Lparam:LParam; Flags: dword): longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -181,7 +181,7 @@ function IsZoomed(handle: HWND): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF
 
 //function KillTimer --> independent
 
-procedure LeaveCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure LeaveCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ELSE}overload;{$ENDIF}
 function LineTo(DC: HDC; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function LoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function LoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
