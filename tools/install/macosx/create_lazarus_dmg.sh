@@ -115,8 +115,11 @@ DATESTAMP=$(date +%Y%m%d)
 TEMPLATEDIR=$LAZSOURCEDIR/tools/install/macosx
 PACKPROJTEMPLATE=$TEMPLATEDIR/lazarus.packproj.template
 PACKPROJ=$BUILDDIR/lazarus.packproj
-#MACOSX104LINKEROPTS="-k-macosx_version_min -k10.4 -XR/Developer/SDKs/MacOSX10.4u.sdk/"
-MACOSX105LINKEROPTS="-WM10.5"
+if [ "$ARCH" = "i386" ]; then
+    LINKEROPTS="-WM10.5"
+else
+    LINKEROPTS="-k-macosx_version_min -k10.4 -XR/Developer/SDKs/MacOSX10.4u.sdk/"
+fi
 
 # copy sources
 rm -rf $BUILDDIR
@@ -138,7 +141,7 @@ fi
 #cp -R $LAZSOURCEDIR/images $LAZBUILDDIR/
 
 cd $LAZBUILDDIR
-make bigide PP=$COMPILER USESVN2REVISIONINC=1 OPT="$MACOSX105LINKEROPTS"
+make bigide PP=$COMPILER USESVN2REVISIONINC=1 OPT="$LINKEROPTS"
 
 # clean up
 strip lazarus
