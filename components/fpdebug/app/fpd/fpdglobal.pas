@@ -36,7 +36,7 @@ unit FPDGlobal;
 interface
 
 uses
-  SysUtils, Windows, FPDType, Maps, FpDbgUtil, FpDbgClasses, FpDbgWinExtra;
+  SysUtils, FPDType, Maps, FpDbgUtil, FpDbgClasses, FpDbgWinExtra;
 
 type
   TFPDState = (dsStop, dsRun, dsPause, dsQuit, dsEvent);
