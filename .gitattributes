@@ -4922,6 +4922,11 @@ examples/postscript/usamplepostscriptcanvas.lfm svneol=native#text/plain
 examples/postscript/usamplepostscriptcanvas.pas svneol=native#text/pascal
 examples/progressbar.lpi svneol=native#text/plain
 examples/progressbar.pp svneol=native#text/pascal
+examples/propstorage/project1.lpi svneol=native#text/plain
+examples/propstorage/project1.lpr svneol=native#text/plain
+examples/propstorage/project1.res -text
+examples/propstorage/unit1.lfm svneol=native#text/plain
+examples/propstorage/unit1.pas svneol=native#text/plain
 examples/scanline/bitmapscanline1.lpi svneol=native#text/plain
 examples/scanline/bitmapscanline1.lpr svneol=native#text/plain
 examples/scanline/unit1.lfm svneol=native#text/plain
