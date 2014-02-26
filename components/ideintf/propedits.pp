@@ -30,8 +30,8 @@ uses
   Classes, TypInfo, SysUtils, types, Forms, Controls, LCLProc, GraphType,
   FPCAdds, // for StrToQWord in older fpc versions
   StringHashList, ButtonPanel, Graphics, StdCtrls, Buttons, Menus, LCLType,
-  ExtCtrls, ComCtrls, LCLIntf, Dialogs, Grids, EditBtn, PropertyStorage,
-  TextTools, FileUtil, FileCtrl, ObjInspStrConsts, ColumnDlg, PropEditUtils,
+  ExtCtrls, ComCtrls, LCLIntf, Dialogs, EditBtn, PropertyStorage,
+  FileUtil, FileCtrl, ObjInspStrConsts, PropEditUtils,
   // Forms with .lfm files
   FrmSelectProps, StringsPropEditDlg, CollectionPropEditForm, FileFilterPropEditor;
 
@@ -305,7 +305,7 @@ type
     function GetPropertyPath(Index: integer = 0): string;// e.g. 'TForm1.Color'
     function GetEditLimit: Integer; virtual;
     function GetName: shortstring; virtual;
-    procedure GetProperties(Proc: TGetPropEditProc); virtual;
+    procedure GetProperties({%H-}Proc: TGetPropEditProc); virtual;
     function GetPropType: PTypeInfo;
     function GetPropInfo: PPropInfo;
     function GetInstProp: PInstProp;
@@ -333,13 +333,13 @@ type
     function GetWideStrValue: WideString;
     function GetWideStrValueAt(Index: Integer): WideString;
     function GetValue: ansistring; virtual;
-    function GetHint(HintType: TPropEditHint; x, y: integer): string; virtual;
+    function GetHint({%H-}HintType: TPropEditHint; {%H-}x, {%H-}y: integer): string; virtual;
     function GetDefaultValue: ansistring; virtual;
     function GetVisualValue: ansistring;
-    procedure GetValues(Proc: TGetStrProc); virtual;
+    procedure GetValues({%H-}Proc: TGetStrProc); virtual;
     procedure Initialize; virtual;
     procedure Revert; virtual;
-    procedure SetValue(const NewValue: ansistring); virtual;
+    procedure SetValue(const {%H-}NewValue: ansistring); virtual;
     procedure SetPropEntry(Index: Integer; AnInstance: TPersistent;
                            APropInfo: PPropInfo);
     procedure SetFloatValue(const NewValue: Extended);
@@ -353,28 +353,28 @@ type
     procedure SetVarValue(const NewValue: Variant);
     procedure Modified;
     function ValueAvailable: Boolean;
-    procedure ListMeasureWidth(const AValue: ansistring; Index:integer;
-                               ACanvas:TCanvas; var AWidth: Integer); virtual;
-    procedure ListMeasureHeight(const AValue: ansistring; Index:integer;
+    procedure ListMeasureWidth(const {%H-}AValue: ansistring; {%H-}Index:integer;
+                               {%H-}ACanvas:TCanvas; var {%H-}AWidth: Integer); virtual;
+    procedure ListMeasureHeight(const AValue: ansistring; {%H-}Index:integer;
                                 ACanvas:TCanvas; var AHeight: Integer); virtual;
-    procedure ListDrawValue(const AValue: ansistring; Index:integer;
+    procedure ListDrawValue(const AValue: ansistring; {%H-}Index:integer;
                             ACanvas:TCanvas; const ARect: TRect;
                             AState: TPropEditDrawState); virtual;
-    procedure PropMeasureHeight(const NewValue: ansistring;  ACanvas: TCanvas;
-                                var AHeight:Integer); virtual;
+    procedure PropMeasureHeight(const {%H-}NewValue: ansistring;  {%H-}ACanvas: TCanvas;
+                                var {%H-}AHeight:Integer); virtual;
     procedure PropDrawName(ACanvas: TCanvas; const ARect:TRect;
-                           AState: TPropEditDrawState); virtual;
+                           {%H-}AState: TPropEditDrawState); virtual;
     procedure PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
-                            AState:TPropEditDrawState); virtual;
+                            {%H-}AState:TPropEditDrawState); virtual;
     procedure UpdateSubProperties; virtual;
     function SubPropertiesNeedsUpdate: boolean; virtual;
     function IsDefaultValue: boolean; virtual;
     function IsNotDefaultValue: boolean; virtual;
     // These are used for the popup menu in OI
     function GetVerbCount: Integer; virtual;
-    function GetVerb(Index: Integer): string; virtual;
-    procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); virtual;
-    procedure ExecuteVerb(Index: Integer); virtual;
+    function GetVerb({%H-}Index: Integer): string; virtual;
+    procedure PrepareItem({%H-}Index: Integer; const {%H-}AnItem: TMenuItem); virtual;
+    procedure ExecuteVerb({%H-}Index: Integer); virtual;
   public
     property PropertyHook: TPropertyEditorHook read FPropertyHook;
     property PrivateDirectory: ansistring read GetPrivateDirectory;
@@ -611,7 +611,7 @@ type
     function FilterFunc(const ATestEditor: TPropertyEditor): Boolean;
     function GetPersistentReference: TPersistent; virtual;
     function GetSelections: TPersistentSelectionList; override;
-    function CheckNewValue(APersistent: TPersistent): boolean; virtual;
+    function CheckNewValue({%H-}APersistent: TPersistent): boolean; virtual;
   public
     function AllEqual: Boolean; override;
     procedure Edit; override;
@@ -698,6 +698,7 @@ type
   Property editor for date portion of TDateTime type. }
 
   TDatePropertyEditor = class(TPropertyEditor)
+  public
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
@@ -707,6 +708,7 @@ type
   Property editor for time portion of TDateTime type. }
 
   TTimePropertyEditor = class(TPropertyEditor)
+  public
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
@@ -716,6 +718,7 @@ type
   Edits both date and time data simultaneously  }
 
   TDateTimePropertyEditor = class(TPropertyEditor)
+  public
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
@@ -724,10 +727,11 @@ type
 { TVariantPropertyEditor }
 
   TVariantPropertyEditor = class(TPropertyEditor)
+  public
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
-    procedure SetValue(const Value: string); override;
-    procedure GetProperties(Proc:TGetPropEditProc); override;
+    procedure SetValue(const {%H-}Value: string); override;
+    procedure GetProperties({%H-}Proc:TGetPropEditProc); override;
   end;
 
 { TModalResultPropertyEditor }
@@ -1258,7 +1262,7 @@ type
     function MethodExists(const Name: String; TypeData: PTypeData;
       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
     function CompatibleMethodExists(const Name: String; InstProp: PInstProp;
-      var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
+      out MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
     procedure RenameMethod(const CurName, NewName: String);
     procedure ShowMethod(const Name: String);
     function MethodFromAncestor(const Method: TMethod): boolean;
@@ -1468,7 +1472,7 @@ type
     procedure OnKeyComboboxEditingDone(Sender: TObject);
   protected
     procedure Loaded; override;
-    procedure RealSetText(const Value: TCaption); override;
+    procedure RealSetText(const {%H-}Value: TCaption); override;
     procedure UpdateShiftButtons;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function ShiftToStr(s: TShiftStateEnum): string;
@@ -1582,9 +1586,6 @@ const
 
 implementation
 
-type
-  TPersistentAccess = class(TPersistent);
-
 var
   ListPropertyEditors: TList = nil;
   VirtualKeyStrings: TStringHashList = nil;
@@ -1692,14 +1693,14 @@ var
 begin
   case (PropInfo^.PropProcs shr 2) and 3 of
     ptfield:
-      PMethod(Pointer(Instance)+PtrUInt(PropInfo^.SetProc))^ := Value;
+      PMethod(Pointer(Instance)+{%H-}PtrUInt(PropInfo^.SetProc))^ := Value;
     ptstatic,
     ptvirtual :
       begin
         if ((PropInfo^.PropProcs shr 2) and 3)=ptStatic then
           AMethod.Code:=PropInfo^.SetProc
         else
-          AMethod.Code:=PPointer(Pointer(Instance.ClassType)+PtrUInt(PropInfo^.SetProc))^;
+          AMethod.Code:=PPointer(Pointer(Instance.ClassType)+{%H-}PtrUInt(PropInfo^.SetProc))^;
         AMethod.Data:=Instance;
         if (Value.Code=nil) and (Value.Data<>nil) then begin
           // this is a fake method
@@ -2425,7 +2426,7 @@ begin
   case (PropInfo^.PropProcs) and 3 of
     ptfield:
       begin
-        Value:=PMethod(Pointer(Instance)+PtrUInt(PropInfo^.GetProc));
+        Value:=PMethod(Pointer(Instance)+{%H-}PtrUInt(PropInfo^.GetProc));
         if Value<>nil then
           Result:=Value^;
       end;
@@ -2436,7 +2437,7 @@ begin
           AMethod.Code:=PropInfo^.GetProc
         else
           AMethod.Code:=PPointer(Pointer(Instance.ClassType)
-                        +PtrUInt(PropInfo^.GetProc))^;
+                        +{%H-}PtrUInt(PropInfo^.GetProc))^;
         AMethod.Data:=Instance;
         if ((PropInfo^.PropProcs shr 6) and 1)<>0 then
           Result:=TGetMethodProcIndex(AMethod)(PropInfo^.Index)
@@ -2743,11 +2744,11 @@ begin
   Changed := False;
   for I := 0 to FPropCount - 1 do
     with FPropList^[I] do
-      Changed := Changed or (GetOrdProp(Instance, PropInfo) <> PtrInt(PtrUInt(NewValue)));
+      Changed := Changed or (GetOrdProp(Instance, PropInfo) <> PtrInt({%H-}PtrUInt(NewValue)));
   if Changed then
   begin
     for I := 0 to FPropCount - 1 do
-      with FPropList^[I] do SetOrdProp(Instance, PropInfo, PtrInt(PtrUInt(NewValue)));
+      with FPropList^[I] do SetOrdProp(Instance, PropInfo, PtrInt({%H-}PtrUInt(NewValue)));
     Modified;
   end;
 end;
@@ -2875,7 +2876,7 @@ var
   Style : TTextStyle;
   OldColor : TColor;
 begin
-  FillChar(Style,SizeOf(Style),0);
+  FillChar(Style{%H-},SizeOf(Style),0);
   With Style do begin
     Alignment := taLeftJustify;
     Layout := tlCenter;
@@ -2917,7 +2918,7 @@ procedure TPropertyEditor.PropDrawName(ACanvas: TCanvas; const ARect: TRect;
 var
   Style : TTextStyle;
 begin
-  FillChar(Style,SizeOf(Style),0);
+  FillChar(Style{%H-},SizeOf(Style),0);
   With Style do begin
     Alignment := taLeftJustify;
     Layout := tlCenter;
@@ -2937,7 +2938,7 @@ procedure TPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect: TRect;
 var
   Style : TTextStyle;
 begin
-  FillChar(Style,SizeOf(Style),0);
+  FillChar(Style{%H-},SizeOf(Style),0);
   With Style do begin
     Alignment := taLeftJustify;
     Layout := tlCenter;
@@ -4160,7 +4161,7 @@ begin
       [mbCancel, mbIgnore], 0);
     exit;
   end;
-  
+
   NewMethodExists := (not IsNil) and
     PropertyHook.CompatibleMethodExists(NewValue, GetInstProp,
                    NewMethodIsCompatible, NewMethodIsPublished, NewIdentIsMethod);
@@ -5034,6 +5035,7 @@ procedure TCursorPropertyEditor.SetValue(const NewValue: ansistring);
 var
   CValue: Longint;
 begin
+  CValue:=0;
   if IdentToCursor(NewValue, CValue) then
     SetOrdValue(CValue)
   else
@@ -5240,9 +5242,9 @@ end;
 
 { TPropertyEditorHook }
 
-function TPropertyEditorHook.CreateMethod(const Name: Shortstring;
-  ATypeInfo: PTypeInfo;
-  APersistent: TPersistent; const APropertyPath: string): TMethod;
+function TPropertyEditorHook.CreateMethod(const Name: ShortString;
+  ATypeInfo: PTypeInfo; APersistent: TPersistent; const APropertyPath: string
+  ): TMethod;
 var
   i: Integer;
   Handler: TPropHookCreateMethod;
@@ -5329,12 +5331,15 @@ begin
 end;
 
 function TPropertyEditorHook.CompatibleMethodExists(const Name: String;
-  InstProp: PInstProp; var MethodIsCompatible, MethodIsPublished,
+  InstProp: PInstProp; out MethodIsCompatible, MethodIsPublished,
   IdentIsMethod: boolean): boolean;
 var
   i: Integer;
   Handler: TPropHookCompatibleMethodExists;
 begin
+  MethodIsCompatible:=false;
+  MethodIsPublished:=false;
+  IdentIsMethod:=false;
   // check if a published method with given name exists in LookupRoot
   Result:=IsValidIdent(Name) and Assigned(FLookupRoot);
   if not Result then exit;
@@ -5399,7 +5404,7 @@ begin
 end;
 
 procedure TPropertyEditorHook.ChainCall(const AMethodName, InstanceName,
-  InstanceMethod:Shortstring;  TypeData:PTypeData);
+  InstanceMethod: ShortString; TypeData: PTypeData);
 var
   i: Integer;
   Handler: TPropHookChainCall;
@@ -5428,8 +5433,8 @@ begin
     Result := TComponent(LookupRoot).FindComponent(ComponentPath);
 end;
 
-function TPropertyEditorHook.GetComponentName(
-  AComponent: TComponent): Shortstring;
+function TPropertyEditorHook.GetComponentName(AComponent: TComponent
+  ): ShortString;
 var
   i: Integer;
   Handler: TPropHookGetComponentName;
@@ -5482,7 +5487,7 @@ begin
     TraverseComponents(TComponent(LookupRoot));
 end;
 
-function TPropertyEditorHook.GetRootClassName: Shortstring;
+function TPropertyEditorHook.GetRootClassName: ShortString;
 var
   i: Integer;
   Handler: TPropHookGetRootClassName;
@@ -5653,7 +5658,7 @@ begin
     TPropHookAddDependency(FHandlers[htAddDependency][i])(AClass,AnUnitName);
 end;
 
-function TPropertyEditorHook.GetObject(const Name: Shortstring): TPersistent;
+function TPropertyEditorHook.GetObject(const Name: ShortString): TPersistent;
 var
   i: Integer;
 begin
@@ -5663,7 +5668,7 @@ begin
     Result:=TPropHookGetObject(FHandlers[htGetObject][i])(Name);
 end;
 
-function TPropertyEditorHook.GetObjectName(Instance: TPersistent): Shortstring;
+function TPropertyEditorHook.GetObjectName(Instance: TPersistent): ShortString;
 var
   i: Integer;
 begin
