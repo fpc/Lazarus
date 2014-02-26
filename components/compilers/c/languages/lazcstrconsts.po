@@ -1,0 +1,7 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: lazcstrconsts.lcgnuprojectcandccompiler
+msgid "GNU project C and C++ compiler"
+msgstr ""
+
