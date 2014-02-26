@@ -308,7 +308,7 @@ begin
     PoFamily.RunTests(Options, ErrorCount, WarningCount, SL);
     debugln('RunSelectedTests: ',Format(sTotalErrors,[ErrorCount]));
     debugln('                  ',Format(sTotalWarnings,[WarningCount]));
-    if (ErrorCount > 0) or (WarningCount > 0) then
+    if (ErrorCount > 0) or (WarningCount > 0) or (ptoCheckStatistics in Options) then
     begin
       SL.Add(Format(sTotalErrors,[ErrorCount]));
       SL.Add(Format(sTotalWarnings,[WarningCount]));
