@@ -1403,12 +1403,18 @@ var
   var
     i: Integer;
     PkgFile: TPkgFile;
+    aFilename: String;
   begin
     if APackage=nil then exit;
     for i:=0 to APackage.FileCount-1 do begin
       PkgFile:=APackage.Files[i];
-      if (PkgFile.FileType in PkgFileUnitTypes) then
-        AddFile(PkgFile.GetFullFilename,true);
+      if (PkgFile.FileType in PkgFileUnitTypes) then begin
+        aFilename:=PkgFile.GetFullFilename;
+        if not FilenameIsPascalUnit(aFilename) then begin
+          debugln(['WARNING: AddFilesOfPackage: package ',APackage.Filename,' has a unit with a non unit extension: ',aFilename]);
+        end;
+        AddFile(aFilename,true);
+      end;
     end;
     if APackage.Name='FCL' then begin
       AddFilesOfPackageFCL;
