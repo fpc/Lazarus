@@ -211,7 +211,7 @@ end;
 
 uses
   Classes, SysUtils, Forms, LCLProc,
-  TextTools, IDECommands, IDEExternToolIntf;
+  TextTools, IDECommands;
   
 type
 

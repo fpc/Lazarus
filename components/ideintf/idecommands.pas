@@ -30,7 +30,7 @@ unit IDECommands;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, LCLType, Menus, PropEdits, TextTools;
+  Classes, SysUtils, LCLProc, Forms, LCLType, Menus, PropEdits;
   
 const
   { editor commands constants. see syneditkeycmds.pp for more
@@ -1571,15 +1571,11 @@ const
   );
 
 function IdentToIDECommand(const Ident: string; var Cmd: longint): boolean;
-var
-  IDECommand: TIDECommand;
 begin
   Result := IdentToInt(Ident, Cmd, IDEEditorCommandStrs);
 end;
 
 function IDECommandToIdent(Cmd: longint; var Ident: string): boolean;
-var
-  IDECommand: TIDECommand;
 begin
   Result := IntToIdent(Cmd, Ident, IDEEditorCommandStrs);
 end;

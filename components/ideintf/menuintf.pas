@@ -18,7 +18,7 @@ unit MenuIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLType, LCLProc, Menus, ImgList, Graphics, LazHelpIntf,
+  Classes, SysUtils, LCLType, LCLProc, Menus, ImgList, Graphics,
   IDECommands, IDEImagesIntf;
   
 type
@@ -1509,7 +1509,7 @@ end;
 procedure TIDEMenuSection.AddHandlerOnShow(const OnShowEvent: TNotifyEvent;
   AsLast: boolean);
 begin
-  AddHandler(imshtOnShow,TMethod(OnShowEvent));
+  AddHandler(imshtOnShow,TMethod(OnShowEvent),AsLast);
 end;
 
 procedure TIDEMenuSection.RemoveHandlerOnShow(const OnShowEvent: TNotifyEvent);
@@ -1585,7 +1585,7 @@ procedure TIDEMenuSection.AddHandler(HandlerType: TIDEMenuSectionHandlerType;
 begin
   if FSectionHandlers[HandlerType]=nil then
     FSectionHandlers[HandlerType]:=TMethodList.Create;
-  FSectionHandlers[HandlerType].Add(AMethod);
+  FSectionHandlers[HandlerType].Add(AMethod,AsLast);
 end;
 
 procedure TIDEMenuSection.RemoveHandler(

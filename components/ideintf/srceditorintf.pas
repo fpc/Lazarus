@@ -190,10 +190,10 @@ type
     procedure CompletePrefix(var Prefix: string); virtual; abstract;
 
     function HasCustomPaint: boolean; virtual;
-    procedure PaintItem(const AKey: string; ACanvas: TCanvas;
-                 X, Y: integer; ItemSelected: boolean; Index: integer); virtual;
-    function MeasureItem(const AKey: string; ACanvas: TCanvas;
-                         ItemSelected: boolean; Index: integer): TPoint; virtual;
+    procedure PaintItem(const {%H-}AKey: string; {%H-}ACanvas: TCanvas;
+                 {%H-}X, {%H-}Y: integer; {%H-}ItemSelected: boolean; {%H-}Index: integer); virtual;
+    function MeasureItem(const {%H-}AKey: string; {%H-}ACanvas: TCanvas;
+                         {%H-}ItemSelected: boolean; {%H-}Index: integer): TPoint; virtual;
   end;
 
   { TSourceEditorWindowInterface }
