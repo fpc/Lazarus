@@ -2856,6 +2856,7 @@ begin
   // ToDo: ppu, dcu
 
   Result:=false;
+  if PropNode.Desc<>ctnProperty then exit;
   if not MoveCursorToPropName(PropNode) then exit;
   ReadNextAtom; // read colon, skip parameters
   if CurPos.Flag=cafEdgedBracketOpen then begin

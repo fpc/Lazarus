@@ -2862,7 +2862,7 @@ var
           ctnVarDefinition, ctnConstDefinition:
             with Params do
               AddOperandPart(GetIdentifier(@NewCodeTool.Src[NewNode.StartPos]));
-          ctnProperty:
+          ctnProperty,ctnGlobalProperty:
             begin
               if fdfPropertyResolving in Params.Flags then begin
                 if not PropNodeIsTypeLess(Params.NewNode)
@@ -3121,6 +3121,7 @@ var
   end;
 
   function SearchInProperty: boolean;
+  // search in ctnProperty, not ctnGlobalProperty
   // returns: true if ok to exit
   //          false if search should continue
   begin
@@ -3128,10 +3129,8 @@ var
     if (fdfCollect in Params.Flags)
     or (Params.Identifier[0]<>'[') then begin
       MoveCursorToNodeStart(ContextNode);
-      if (ContextNode.Desc=ctnProperty) then begin
-        ReadNextAtom; // read keyword 'property'
-        if UpAtomIs('CLASS') then ReadNextAtom;
-      end;
+      ReadNextAtom; // read keyword 'property'
+      if UpAtomIs('CLASS') then ReadNextAtom;
       ReadNextAtom; // read name
       if (fdfCollect in Params.Flags)
       or CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then begin

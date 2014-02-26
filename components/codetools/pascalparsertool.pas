@@ -3781,7 +3781,7 @@ begin
 end;
 
 function TPascalParserTool.KeyWordFuncProperty: boolean;
-{
+{ global properties
   examples:
    property
      errno : cint read fpgeterrno write fpseterrno;
