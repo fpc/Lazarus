@@ -601,7 +601,6 @@ begin
   NrTotal := NrTranslated + NrUntranslated + NrFuzzy;
   if (NrTotal > 0) then
   begin
-    WarningCount := 1; //else it will not show up...
     ErrorLog.Add(Divider);
     ErrorLog.Add(sTranslationStatistics);
     ErrorLog.Add(ShortChildName);
