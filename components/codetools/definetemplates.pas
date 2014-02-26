@@ -2026,12 +2026,13 @@ var
   FCLBaseSrcDir: TDefineTemplate;
   PackagesFCLAsyncDir: TDefineTemplate;
   PackagesExtraDir: TDefineTemplate;
+  PackagesFCLExtraDir: TDefineTemplate;
+  PackagesSubDir: TDefineTemplate;
   PkgExtraGraphDir: TDefineTemplate;
   PkgExtraAMunitsDir: TDefineTemplate;
   FCLSubSrcDir: TDefineTemplate;
   FCLSubDir: TDefineTemplate;
   Ok: Boolean;
-  PackagesFCLExtraDir: TDefineTemplate;
 begin
   {$IFDEF VerboseFPCSrcScan}
   DebugLn('CreateFPCSrcTemplate FPCSrcDir="',FPCSrcDir,'"');
@@ -2054,8 +2055,8 @@ begin
        Format(ctsFreePascalSourcesPlusDesc,['RTL, FCL, Packages, Compiler']),
        '','',da_Block);
 
-    // The free pascal sources build a world of their own,
-    // reset search paths
+    // The Free Pascal sources build a world of their own
+    // => reset all search paths
     MainDir:=TDefineTemplate.Create('Free Pascal Source Directory',
       ctsFreePascalSourceDir,'',FPCSrcDir,da_Directory);
     Result.AddChild(MainDir);
@@ -2064,6 +2065,9 @@ begin
     MainDir.AddChild(DefTempl);
     DefTempl:=TDefineTemplate.Create('Reset UnitPath',
       ctsUnitPathInitialization,UnitPathMacroName,'',da_DefineRecurse);
+    MainDir.AddChild(DefTempl);
+    DefTempl:=TDefineTemplate.Create('Reset IncPath',
+      ctsUnitPathInitialization,IncludePathMacroName,'',da_DefineRecurse);
     MainDir.AddChild(DefTempl);
 
     // rtl
@@ -2259,6 +2263,16 @@ begin
       IncludePathMacroName,
       d(   DefinePathMacro+'/inc/'
       +';'+IncPathMacro)
+      ,da_DefineRecurse));
+
+    // packages/graph
+    PackagesSubDir:=TDefineTemplate.Create('graph','graph','','graph',da_Directory);
+    PackagesDir.AddChild(PackagesSubDir);
+    PackagesSubDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['packages/graph/src/inc']),
+      IncludePathMacroName,
+      d(DefinePathMacro+'/src/inc;'
+       +IncPathMacro)
       ,da_DefineRecurse));
 
     // utils
