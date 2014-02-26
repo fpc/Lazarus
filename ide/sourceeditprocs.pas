@@ -300,7 +300,7 @@ begin
           AColor:=clRed;
       end;
       
-    ctnProperty:
+    ctnProperty,ctnGlobalProperty:
       begin
         AColor:=clPurple;
         s:='property';
@@ -308,7 +308,7 @@ begin
         if IsReadOnly then
           ImageIndex:=IDEImages.LoadImage(16,'ce_property_readonly');
       end;
-      
+
     ctnEnumIdentifier:
       begin
         AColor:=clOlive;
