@@ -1,0 +1,48 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: frmselectdataset.scancelbtn
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: frmselectdataset.scaption
+msgid "Select dataset to copy from"
+msgstr "Válasszon dataset-et ahonnan másol"
+
+#: frmselectdataset.scopymeta
+msgid "Copy only metadata"
+msgstr "Csak metaadatok másolása"
+
+#: frmselectdataset.sdataset
+msgid "&Dataset to copy from:"
+msgstr "Dataset másolása innen:"
+
+#: frmselectdataset.serrcomponentnotfound
+msgid "Error: Component \"%s\" not found"
+msgstr "Hiba: A(z) \"%s\" komponens nincs meg"
+
+#: frmselectdataset.serrselectdataset
+msgid "Please select a dataset first"
+msgstr "Előbb dataset-et kell választani"
+
+#: frmselectdataset.smenucopydataset
+msgid "Copy data from Dataset"
+msgstr "Adat másolása Dataset-ből"
+
+#: frmselectdataset.smenucreatedataset
+msgid "Create dataset"
+msgstr "Dataset létrehozása"
+
+#: frmselectdataset.sokbtn
+msgid "OK"
+msgstr "OK"
+

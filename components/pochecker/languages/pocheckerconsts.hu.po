@@ -1,0 +1,222 @@
+#
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: pocheckerconsts.rspochecker
+msgid "PO File Checker"
+msgstr "PO Fájl Ellenőrző"
+
+#: pocheckerconsts.scannotfindmaster
+msgid ""
+"Cannot find master po file:\n"
+"%s\n"
+"for selected file\n"
+"%s\n"
+msgstr ""
+"Nem található a mester po-fájl:\n"
+"%s\n"
+"a kiválasztott fájlhoz:\n"
+"%s\n"
+
+#: pocheckerconsts.scheckforduplicateuntranslatedvalues
+msgid "Check for duplicate untranslated values"
+msgstr "Lefordítatlan szövegek ismétlődésének ellenőrzése"
+
+#: pocheckerconsts.scheckforincompatibleformatarguments
+msgid "Check for incompatible format arguments"
+msgstr "Nem megfelelő format() paraméterek ellenőrzése"
+
+#: pocheckerconsts.scheckformismatchesinuntranslatedstrings
+msgid "Check for mismatches in untranslated strings"
+msgstr "Eltérések keresése a lefordítatlan szövegekben"
+
+#: pocheckerconsts.scheckmissingidentifiers
+msgid "Check missing identifiers"
+msgstr "Hiányzó azonosítók elenőrzése"
+
+#: pocheckerconsts.schecknumberofitems
+msgid "Check number of items"
+msgstr "Elemek számának ellenőrzése"
+
+#: pocheckerconsts.scheckstatistics
+msgid "Check percentage of (un)translated and fuzzy strings"
+msgstr "A lefordított és lefordítatlan szövegek százalékának ellenőrzése"
+
+#: pocheckerconsts.scopycaption
+msgid "Copy to clipboard"
+msgstr "Másolás vágólapra"
+
+#: pocheckerconsts.scurrentpofile
+msgid "Current po-file:"
+msgstr "Jelenlegi po-fájl:"
+
+#: pocheckerconsts.scurrenttest
+msgid "Current Test:"
+msgstr "Jelenlegi teszt:"
+
+#: pocheckerconsts.sduplicatelinenrwithvalue
+msgid "[Line %d] %s"
+msgstr "[Sor: %d] %s"
+
+#: pocheckerconsts.sduplicateoriginals
+msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgstr "A lefordítatlan \"%s\" érték egynél többször van bejegyezve:"
+
+#: pocheckerconsts.serroroncleanup
+msgid ""
+"An unrecoverable error occurred\n"
+"%s\n"
+"Please close the program\n"
+msgstr ""
+"Helyrehozhatatlan hiba történt\n"
+"%s\n"
+"Zárja be a programot!\n"
+
+#: pocheckerconsts.serroroncreate
+msgid ""
+"Error creating an instance of TPoFamily:\n"
+"%s\n"
+msgstr ""
+"Nem sikerült létrehozni egy TPoFamily példányt:\n"
+"%s\n"
+
+#: pocheckerconsts.serrorsbytest
+msgid "Errors / warnings reported by %s for:"
+msgstr "A(z) %s hibákat / figyelmeztetéseket jelzett ezzel kapcsolatban:"
+
+#: pocheckerconsts.sfindalltranslatedpofiles
+msgid "Find all translated po-files"
+msgstr "Az összes lefordított po-fájl megkeresése"
+
+#: pocheckerconsts.sguipofilecheckingtool
+msgid "GUI Po-file checking tool"
+msgstr "GUI Po-fájl ellenőrző eszköz"
+
+#: pocheckerconsts.sidentifiernotfoundin
+msgid "Identifier [%s] not found in %s"
+msgstr "A(z) %s azonosító nem található ebben: %s"
+
+#: pocheckerconsts.sincompatibleformatargs
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
+msgstr ""
+"[Sor: %d] Nem megfelelő és/vagy érvénytelen format() paraméterek a "
+"következőben:"
+
+#: pocheckerconsts.slineinfilename
+msgid "[Line %d] in %s:"
+msgstr "[Sor %d] ebben: %s:"
+
+#: pocheckerconsts.slinenr
+msgid "[Line: %d]"
+msgstr "[Sor: %d]"
+
+#: pocheckerconsts.smissingmasteridentifier
+msgid "Identifier [%s] found in %s, but it does not exist in %s"
+msgstr "A(z) [%s] azonosító megtalálható itt: %s, de nem található meg itt: %s"
+
+#: pocheckerconsts.snoerrorsfound
+msgid "No errors found"
+msgstr "Nincsenek hibák"
+
+#: pocheckerconsts.snotaproperfilename
+msgid ""
+"Selected filename\n"
+"%s\n"
+"does not seem to be a proper name for a po-file\n"
+msgstr ""
+"A választott fájlnév\n"
+"%s\n"
+"nem tűnik megfelelő névnek egy po-fájl számára\n"
+
+#: pocheckerconsts.snotestselected
+msgid "There are no tests selected."
+msgstr "Egy teszt sincs teszt kiválasztva."
+
+#: pocheckerconsts.snrerrorsfound
+msgid "Found %d errors."
+msgstr "%d hiba."
+
+#: pocheckerconsts.snrofitemsmismatch
+msgid "Mismatch in number of items for master and child"
+msgstr "Az használt elemek száma nem egyezik meg az eredetivel"
+
+#: pocheckerconsts.snrofitemsmismatchd
+msgid "%s: %d items"
+msgstr "%s: %d elem"
+
+#: pocheckerconsts.snrwarningsfound
+msgid "Found %d warnings."
+msgstr "%d figyelmeztetés."
+
+#: pocheckerconsts.sopenapofile
+msgid "&Open a po-file"
+msgstr "PO fájl megnyitása"
+
+#: pocheckerconsts.soriginal
+msgid "Original"
+msgstr "Eredeti"
+
+#: pocheckerconsts.spercfuzzy
+msgid "Fuzzy strings: %2.0f%%."
+msgstr "Bizonytalan szövegek: %2.0f%%."
+
+#: pocheckerconsts.sperctranslated
+msgid "Translated strings: %2.0f%%."
+msgstr "Lefordított szövegek: %2.0f%%."
+
+#: pocheckerconsts.spercuntranslated
+msgid "Untranslated strings: %2.0f%%."
+msgstr "Lefordítatlan szövegek: %2.0f%%."
+
+#: pocheckerconsts.sresults
+msgid "Results"
+msgstr "Eredmények"
+
+#: pocheckerconsts.srunselectedtests
+msgid "&Run Selected Tests"
+msgstr "Kijelölt tesztek futtatása"
+
+#: pocheckerconsts.ssavecaption
+msgid "Save to file"
+msgstr "Mentés fájlba"
+
+#: pocheckerconsts.ssaveerror
+msgid ""
+"Error saving file:\n"
+"%s\n"
+msgstr ""
+"Hiba a fájl mentésekor:\n"
+"%s\n"
+
+#: pocheckerconsts.sselectbasictests
+msgid "Select basic tests"
+msgstr "Alapvető tesztek kijelölése"
+
+#: pocheckerconsts.sselecttesttypes
+msgid "Select test types"
+msgstr "Teszt típusok kiválasztása"
+
+#: pocheckerconsts.stotalerrors
+msgid "Total errors / warnings found: %d"
+msgstr "Összes hiba / figyelmeztetés: %d"
+
+#: pocheckerconsts.stotalwarnings
+msgid "Total warnings found: %d"
+msgstr "Összes figyelmeztetés: %d"
+
+#: pocheckerconsts.stranslation
+msgid "Translation"
+msgstr "Fordítás"
+
+#: pocheckerconsts.stranslationstatistics
+msgid "Translation statistics for:"
+msgstr "Fordítási statisztika ehhez:"

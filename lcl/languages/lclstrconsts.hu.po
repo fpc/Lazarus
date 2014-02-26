@@ -1,41 +1,44 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: Lazarus\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian) <lazarus-hun@primlista.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Fehér Dávid <dfeher@gmx.com>\n"
-"Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: hu_HU\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
-msgstr "A(z) %s%s%s böngésző nem futtatható."
+msgstr "A böngésző nem végrehajtható: %s%s%s"
 
 #: lclstrconsts.hhshelpbrowsernotfound
 msgid "Browser %s%s%s not found."
-msgstr "A(z) %s%s%s böngésző nem található."
+msgstr "A böngésző nem található: %s%s%s"
 
 #: lclstrconsts.hhshelperrorwhileexecuting
 msgid "Error while executing %s%s%s:%s%s"
-msgstr "Hiba %s%s%s futtatása közben:%s%s"
+msgstr "Hiba a végrehajtás közben: %s%s%s:%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
-msgstr "HTML böngésző nem található."
+msgstr "Nem található HTML böngésző."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
-msgstr ""
+msgstr "Nincs HTML böngésző. %s Meg kell adni egyet: Eszközök -> Beállítások -> Súgó -> Súgó beállítások"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
-msgstr "A(z) %s%s%s súgó adatbázis nem találja a(z) %s%s%s fájlt."
+msgstr "A(z) %s%s%s súgóadatbázishoz hiányzik a %s%s%s fájl."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
-msgstr "A(z) %s makró a böngésző paraméterekben ki lesz cserélve az URL-re."
+msgstr "A(z) %s makrót az URL helyettesíti a BrowserParams-ban."
 
 #: lclstrconsts.ifsalt
 msgid "Alt"
@@ -50,8 +53,9 @@ msgid "Accept"
 msgstr "Elfogadás"
 
 #: lclstrconsts.ifsvk_apps
+#, fuzzy
 msgid "application key"
-msgstr ""
+msgstr "Alkalmazás gomb"
 
 #: lclstrconsts.ifsvk_back
 msgid "Backspace"
@@ -64,11 +68,11 @@ msgstr "Mégsem"
 
 #: lclstrconsts.ifsvk_capital
 msgid "Capital"
-msgstr "Capital"
+msgstr "Nagy betűk"
 
 #: lclstrconsts.ifsvk_clear
 msgid "Clear"
-msgstr "Clear"
+msgstr "Törlés"
 
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
@@ -76,11 +80,11 @@ msgstr ""
 
 #: lclstrconsts.ifsvk_control
 msgid "Control"
-msgstr "Control"
+msgstr ""
 
 #: lclstrconsts.ifsvk_convert
 msgid "Convert"
-msgstr "Convert"
+msgstr "Átalakítás"
 
 #: lclstrconsts.ifsvk_delete
 msgctxt "lclstrconsts.ifsvk_delete"
@@ -103,11 +107,11 @@ msgstr "Escape"
 
 #: lclstrconsts.ifsvk_execute
 msgid "Execute"
-msgstr "Futtatás"
+msgstr "Végrehajtás"
 
 #: lclstrconsts.ifsvk_final
 msgid "Final"
-msgstr "Végleges"
+msgstr "Végső"
 
 #: lclstrconsts.ifsvk_hanja
 msgid "Hanja"
@@ -159,11 +163,11 @@ msgstr "Menü"
 
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "Meta"
 
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
-msgstr ""
+msgstr "Módváltás"
 
 #: lclstrconsts.ifsvk_next
 msgctxt "lclstrconsts.ifsvk_next"
@@ -172,7 +176,7 @@ msgstr "Következő"
 
 #: lclstrconsts.ifsvk_nonconvert
 msgid "Nonconvert"
-msgstr "Nonconvert"
+msgstr ""
 
 #: lclstrconsts.ifsvk_numlock
 msgid "Numlock"
@@ -226,7 +230,7 @@ msgstr "Shift"
 
 #: lclstrconsts.ifsvk_snapshot
 msgid "Snapshot"
-msgstr "Snapshot"
+msgstr "Pillanatkép"
 
 #: lclstrconsts.ifsvk_space
 msgid "Space key"
@@ -234,7 +238,7 @@ msgstr "Szóköz"
 
 #: lclstrconsts.ifsvk_super
 msgid "Super"
-msgstr ""
+msgstr "Super"
 
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"
@@ -253,7 +257,7 @@ msgstr "Fel"
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
-msgstr "A(z) %s forrás nem található"
+msgstr "Az erőforrás nem található: %s"
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"
@@ -264,10 +268,8 @@ msgid "3D Light"
 msgstr "3D megvilágítás"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
-#, fuzzy
-#| msgid "A control can't have itself as parent"
 msgid "A control can't have itself as a parent"
-msgstr "Egy vezérlő szülője nem lehet saját maga"
+msgstr "A vezérlő nem lehet saját szülője"
 
 #: lclstrconsts.rsactivebordercolorcaption
 msgid "Active Border"
@@ -275,7 +277,7 @@ msgstr "Aktív keret"
 
 #: lclstrconsts.rsactivecaptioncolorcaption
 msgid "Active Caption"
-msgstr "Aktív címsor"
+msgstr "Aktív cím"
 
 #: lclstrconsts.rsallfiles
 msgid "All files (%s)|%s|%s"
@@ -283,11 +285,11 @@ msgstr "Minden fájl (%s)|%s|%s"
 
 #: lclstrconsts.rsappworkspacecolorcaption
 msgid "Application Workspace"
-msgstr "Alkalmazás munkaterület"
+msgstr "Alkalmazás munkaterülete"
 
 #: lclstrconsts.rsaquacolorcaption
 msgid "Aqua"
-msgstr "Aqua"
+msgstr "Világoskék"
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -295,7 +297,7 @@ msgstr "Asztal"
 
 #: lclstrconsts.rsbackward
 msgid "Backward"
-msgstr "Hátra"
+msgstr "Vissza"
 
 #: lclstrconsts.rsbitmaps
 msgid "Bitmaps"
@@ -315,19 +317,19 @@ msgstr "Kék"
 
 #: lclstrconsts.rsbtnfacecolorcaption
 msgid "Button Face"
-msgstr "Gomb felszín"
+msgstr "Gomb felszíne"
 
 #: lclstrconsts.rsbtnhighlightcolorcaption
 msgid "Button Highlight"
-msgstr "Gomb kiemelés"
+msgstr "Gomg megvilágítva"
 
 #: lclstrconsts.rsbtnshadowcolorcaption
 msgid "Button Shadow"
-msgstr "Gomb árnyék"
+msgstr "Gomb árnyéka"
 
 #: lclstrconsts.rsbtntextcolorcaption
 msgid "Button Text"
-msgstr "Gomb szöveg"
+msgstr "Gomb felirata"
 
 #: lclstrconsts.rscalculator
 msgid "Calculator"
@@ -344,11 +346,11 @@ msgstr "Nem lehet fókuszálni"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
 msgid "Canvas does not allow drawing"
-msgstr "A canvas nem engedélyezi a rajzolást"
+msgstr "A vászonra nem lehet rajzolni"
 
 #: lclstrconsts.rscaptiontextcolorcaption
 msgid "Caption Text"
-msgstr "Címsor szöveg"
+msgstr "Felirat szövege"
 
 #: lclstrconsts.rscasesensitive
 msgid "Case sensitive"
@@ -356,15 +358,15 @@ msgstr "Kis-/nagybetűre érzékeny"
 
 #: lclstrconsts.rscontrolclasscantcontainchildclass
 msgid "Control of class '%s' can't have control of class '%s' as a child"
-msgstr ""
+msgstr "'%s' osztályú vezérlőnek nem lehet gyermeke egy '%s' osztályú vezérlő"
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
-msgstr ""
+msgstr "A(z) '%s' vezérlőnek nincs szülő ablaka"
 
 #: lclstrconsts.rscontrolisnotaparent
 msgid "'%s' is not a parent of '%s'"
-msgstr ""
+msgstr "'%s' nem szülője ennek: '%s'"
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
@@ -372,7 +374,7 @@ msgstr "Krém"
 
 #: lclstrconsts.rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
-msgstr "gdb által feldolgozható hiba készítése:"
+msgstr "GDB által feldolgozható hiba készítése:"
 
 #: lclstrconsts.rscursor
 msgid "Cursor"
@@ -388,16 +390,16 @@ msgstr "Alapértelmezett"
 
 #: lclstrconsts.rsdefaultfileinfovalue
 msgid "permissions user group size date time"
-msgstr "endegélyek felhasználó csoport méret dátum idő"
+msgstr "engedélyek felhasználó csoport méret dátum idő"
 
 #: lclstrconsts.rsdeleterecord
 msgid "Delete record?"
-msgstr "Törli a rekordot?"
+msgstr "Rekord törlése?"
 
 #: lclstrconsts.rsdeleterecordhint
 msgctxt "lclstrconsts.rsdeleterecordhint"
 msgid "Delete"
-msgstr "Delete"
+msgstr "Törlés"
 
 #: lclstrconsts.rsdirection
 msgid "Direction"
@@ -405,7 +407,7 @@ msgstr "Irány"
 
 #: lclstrconsts.rsdirectory
 msgid "&Directory"
-msgstr "Könyvtár"
+msgstr "&Könyvtár"
 
 #: lclstrconsts.rsdocking
 msgid "Docking"
@@ -413,7 +415,7 @@ msgstr "Dokkolás"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
-msgstr "Többszörös ikon formátum."
+msgstr "Kettős ikonformátum"
 
 #: lclstrconsts.rseditrecordhint
 msgid "Edit"
@@ -421,7 +423,7 @@ msgstr "Szerkesztés"
 
 #: lclstrconsts.rsentirescope
 msgid "Search entire file"
-msgstr "Keresés a teljes fájlban"
+msgstr "Keresés az egész fájlban"
 
 #: lclstrconsts.rserror
 msgctxt "lclstrconsts.rserror"
@@ -430,7 +432,7 @@ msgstr "Hiba"
 
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
-msgstr "Hiba a(z) %s eszközhöz rendelése közben.%s"
+msgstr "Hiba az eszköz-környezet létrhozásakor a(z) %s.%s számára"
 
 #: lclstrconsts.rserrorinlcl
 msgid "ERROR in LCL: "
@@ -442,7 +444,7 @@ msgstr "Hiba történt ebben: %s%sCím: %s%s Keret: %s"
 
 #: lclstrconsts.rserrorreadingproperty
 msgid "Error reading %s%s%s: %s"
-msgstr "Hiba %s%s%s olvasása közben: %s"
+msgstr "Hiba %s%s%s olvasásakor : %s"
 
 #: lclstrconsts.rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
@@ -462,7 +464,7 @@ msgstr "A(z) \"%s\" könyvtár nem létezik."
 
 #: lclstrconsts.rsfdfilealreadyexists
 msgid "The file \"%s\" already exists. Overwrite ?"
-msgstr "A(z) \"%s\" fájl már létezik. Felülírja?"
+msgstr "A(z) \"%s\" fájl már létezik. Felülírható?"
 
 #: lclstrconsts.rsfdfilemustexist
 msgid "File must exist"
@@ -486,11 +488,11 @@ msgstr "Fájl mentése másként"
 
 #: lclstrconsts.rsfdopenfile
 msgid "Open existing file"
-msgstr "Létező fájl megnyitása"
+msgstr "Látező fájl megnyitása"
 
 #: lclstrconsts.rsfdoverwritefile
 msgid "Overwrite file ?"
-msgstr "Felülírja a fájlt?"
+msgstr "Felülírható a fájl?"
 
 #: lclstrconsts.rsfdpathmustexist
 msgid "Path must exist"
@@ -498,23 +500,24 @@ msgstr "Az útvonalnak léteznie kell"
 
 #: lclstrconsts.rsfdpathnoexist
 msgid "The path \"%s\" does not exist."
-msgstr "A(z) \"%s\" útvonal nem létezik."
+msgstr "A(z) \"%s\" útvonal nem tezik."
 
 #: lclstrconsts.rsfdselectdirectory
 msgid "Select Directory"
-msgstr "Válasszon könyvtárat"
+msgstr "Könyvtár kiválasztása"
 
 #: lclstrconsts.rsfileinfofilenotfound
 msgid "(file not found: \"%s\")"
-msgstr "(fájl nem található: \"%s\")"
+msgstr "(a fájl nem található: \"%s\")"
 
 #: lclstrconsts.rsfileinformation
 msgid "File information"
-msgstr "Fájl információ"
+msgstr "Fájlinformáció"
 
 #: lclstrconsts.rsfilter
+msgctxt "lclstrconsts.rsfilter"
 msgid "(filter)"
-msgstr ""
+msgstr "(szűrő)"
 
 #: lclstrconsts.rsfind
 msgid "Find"
@@ -522,7 +525,7 @@ msgstr "Keresés"
 
 #: lclstrconsts.rsfindmore
 msgid "Find more"
-msgstr "Következő keresése"
+msgstr "További keresés"
 
 #: lclstrconsts.rsfirstrecordhint
 msgid "First"
@@ -538,11 +541,11 @@ msgstr "FixedRows nem lehet >= RowCount"
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
-msgstr "Form"
+msgstr ""
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
-msgstr ""
+msgstr "Az űrlap forrása (%s) nem található. Forrásfájl nélküli űrlapok létrehozásához a CreateNew constructor használata szükséges. Lásd a globális RequireDerivedFormResource változót."
 
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
@@ -566,7 +569,7 @@ msgstr ""
 
 #: lclstrconsts.rsgif
 msgid "Graphics Interchange Format"
-msgstr ""
+msgstr "Graphics Interchange Format"
 
 #: lclstrconsts.rsgoptionfatalwarnings
 msgid "--g-fatal-warnings    Warnings and errors generated by Gtk+/GDK will halt the application."
@@ -574,11 +577,11 @@ msgstr ""
 
 #: lclstrconsts.rsgradientactivecaptioncolorcaption
 msgid "Gradient Active Caption"
-msgstr "Színátmenetes aktív címsor"
+msgstr "Aktív gradiens cím"
 
 #: lclstrconsts.rsgradientinactivecaptioncolorcaption
 msgid "Gradient Inactive Caption"
-msgstr "Színátmenetes inaktív címsor"
+msgstr "Inaktív gradiens cím"
 
 #: lclstrconsts.rsgraphic
 msgid "Graphic"
@@ -598,11 +601,11 @@ msgstr "Zöld"
 
 #: lclstrconsts.rsgridfiledoesnotexists
 msgid "Grid file doesn't exists"
-msgstr "Táblázat fájl nem létezik"
+msgstr "A táblafájl nem létezik"
 
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
-msgstr "Táblázat index a tartományon kívül esik."
+msgstr "A táblaindex kilóg a lehetséges tartományból"
 
 #: lclstrconsts.rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
@@ -657,16 +660,12 @@ msgid "%s: Already registered"
 msgstr "%s: Már regisztrálva van"
 
 #: lclstrconsts.rshelpcontextnotfound
-#, fuzzy
-#| msgid "Help Context not found"
 msgid "A help database was found for this topic, but this topic was not found"
-msgstr "Súgó témakör nem található"
+msgstr "Van súgóadatbázis ehhez a témakörhöz, de ez a témakör nem található."
 
 #: lclstrconsts.rshelpdatabasenotfound
-#, fuzzy
-#| msgid "Help Database not found"
 msgid "There is no help database installed for this topic"
-msgstr "Súgó adatbázis nem található"
+msgstr "Nincs súgóadatbázis telepítve ehhez a témakörhöz"
 
 #: lclstrconsts.rshelperror
 msgid "Help Error"
@@ -682,7 +681,7 @@ msgstr "A(z) %s súgó témakör nem található a(z) %s%s%s adatbázisban."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr "A(z) %s%s%s súgó adatbázis nem talált megjelenítót a(z) %s típusú súgó oldalhoz"
+msgstr "A(z) %s%s%s súgó adatbázis nem talált megjelenítőt a(z) %s típusú súgó oldalhoz"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
@@ -690,11 +689,11 @@ msgstr "A(z) %s%s%s súgó adatbázis nem található"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
 msgid "Help for directive %s%s%s not found."
-msgstr ""
+msgstr "Nem található súgó a(z) %s%s%s direktívához."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
 msgid "Help for directive %s%s%s not found in Database %s%s%s."
-msgstr ""
+msgstr "Nem található súgó a(z) %s%s%s direktívához a(z) %s%s%s adatbázisban."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
@@ -702,7 +701,7 @@ msgstr "A(z) %s%s%s súgó kulcsszó nem található"
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr "A(z) %s%s%s súgó témakör nem található a(z) %s%s%s adatbázisban."
+msgstr "A(z) %s%s%s súgó kulcsszó nem található a(z) %s%s%s adatbázisban."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 msgid "Help node %s%s%s has no Help Database"
@@ -713,16 +712,12 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Nem található súgó a %d. sorhoz, %d. oszlophoz ebben: %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-#, fuzzy
-#| msgid "No help nodes available"
 msgid "No help entries available for this topic"
-msgstr "Nincsenek elérhető súgó elemek"
+msgstr "Nincs elérhető súgóbejegyzés ehhez a témához"
 
 #: lclstrconsts.rshelpnotfound
-#, fuzzy
-#| msgid "Help not found"
 msgid "No help found for this topic"
-msgstr "Súgó nem található"
+msgstr "Nincs súgó ehhez a témához"
 
 #: lclstrconsts.rshelpnotregistered
 msgid "%s: Not registered"
@@ -741,10 +736,8 @@ msgid "Help Viewer Error"
 msgstr "Súgó megjelenítő hiba"
 
 #: lclstrconsts.rshelpviewernotfound
-#, fuzzy
-#| msgid "Help Viewer not found"
 msgid "No viewer was found for this type of help content"
-msgstr "Súgó megjelenítő nem található"
+msgstr "Nincs megjelenítő az ilyen típusú súgótartalomhoz"
 
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
@@ -756,13 +749,11 @@ msgstr "Szöveg kiemelése"
 
 #: lclstrconsts.rshotlightcolorcaption
 msgid "Hot Light"
-msgstr ""
+msgstr "Meleg Fény"
 
 #: lclstrconsts.rsicns
-#, fuzzy
-#| msgid "OSX Icon Resource"
 msgid "Mac OS X Icon"
-msgstr "OSX ikon forrás"
+msgstr "Mac OS X ikon"
 
 #: lclstrconsts.rsicon
 msgid "Icon"
@@ -770,23 +761,23 @@ msgstr "Ikon"
 
 #: lclstrconsts.rsiconimageempty
 msgid "Icon image cannot be empty"
-msgstr "Az ikon nem lehet üres"
+msgstr "Az ikon képe nem lehet üres"
 
 #: lclstrconsts.rsiconimageformat
 msgid "Icon image must have the same format"
-msgstr "Az ikonnak azonos formátumúnak kell lennie"
+msgstr "Az ikon képének azonos formátumúnak kell lennie"
 
 #: lclstrconsts.rsiconimageformatchange
 msgid "Cannot change format of icon image"
-msgstr "Az ikon formátumának megváltoztatása nem lehetséges"
+msgstr "Az ikon képének formátumát nem lehet meváltoztatni"
 
 #: lclstrconsts.rsiconimagesize
 msgid "Icon image must have the same size"
-msgstr "Az ikonnak azonos méretűnek kell lennie"
+msgstr "Az ikon képének azonos méretűnek kell lennie"
 
 #: lclstrconsts.rsiconimagesizechange
 msgid "Cannot change size of icon image"
-msgstr "Az ikon méretének megváltoztatása nem lehetséges"
+msgstr "Az ikon képének méretét nem lehet megváltoztatni"
 
 #: lclstrconsts.rsiconnocurrent
 msgid "Icon has no current image"
@@ -799,12 +790,12 @@ msgstr "Inaktív keret"
 #: lclstrconsts.rsinactivecaptioncolorcaption
 msgctxt "lclstrconsts.rsinactivecaptioncolorcaption"
 msgid "Inactive Caption"
-msgstr "Inaktív címsor"
+msgstr "Inaktív cím"
 
 #: lclstrconsts.rsinactivecaptiontext
 msgctxt "lclstrconsts.rsinactivecaptiontext"
 msgid "Inactive Caption"
-msgstr "Inaktív címsor"
+msgstr "Inaktív cím"
 
 #: lclstrconsts.rsindexoutofbounds
 msgid "%s Index %d out of bounds 0 .. %d"
@@ -816,28 +807,28 @@ msgstr "Az index a tartományon kívül esik Cella[Oszlop=%d Sor=%d]"
 
 #: lclstrconsts.rsinfobkcolorcaption
 msgid "Info Background"
-msgstr "Info háttér"
+msgstr "Infó háttér"
 
 #: lclstrconsts.rsinfotextcolorcaption
 msgid "Info Text"
-msgstr "Info szöveg"
+msgstr "Infó szöveg"
 
 #: lclstrconsts.rsinsertrecordhint
 msgctxt "lclstrconsts.rsinsertrecordhint"
 msgid "Insert"
-msgstr "Beillesztés"
+msgstr "Beszúrás"
 
 #: lclstrconsts.rsinvaliddate
 msgid "Invalid Date : %s"
-msgstr "Érvénytelen dátum: %s"
+msgstr "Hibás dátum: %s"
 
 #: lclstrconsts.rsinvaliddaterangehint
 msgid "Invalid Date: %s. Must be between %s and %s"
-msgstr "Érvénytelen dátum: %s. %s és %s között kell lennie"
+msgstr "Hibás dátum: %s. %s és %s között kell lennie."
 
 #: lclstrconsts.rsinvalidformobjectstream
 msgid "invalid Form object stream"
-msgstr "érvénytelen Form objektum stream"
+msgstr ""
 
 #: lclstrconsts.rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -853,7 +844,7 @@ msgstr "%s már hozzá van rendelve ehhez: %s"
 
 #: lclstrconsts.rsjpeg
 msgid "Joint Picture Expert Group"
-msgstr ""
+msgstr "Joint Picture Expert Group"
 
 #: lclstrconsts.rslastrecordhint
 msgid "Last"
@@ -861,11 +852,11 @@ msgstr "Utolsó"
 
 #: lclstrconsts.rslimecolorcaption
 msgid "Lime"
-msgstr "Lime"
+msgstr "Élénkzöld"
 
 #: lclstrconsts.rslistindexexceedsbounds
 msgid "List index exceeds bounds (%d)"
-msgstr "Lista index a határon kívül esik (%d)"
+msgstr "A lista indexe a határon kívül esik (%d)"
 
 #: lclstrconsts.rslistmustbeempty
 msgid "List must be empty"
@@ -873,7 +864,7 @@ msgstr "A listának üresnek kell lennie"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
-msgstr "Maroon"
+msgstr "Gesztenyebarna"
 
 #: lclstrconsts.rsmbabort
 msgid "Abort"
@@ -881,7 +872,7 @@ msgstr "Megszakítás"
 
 #: lclstrconsts.rsmball
 msgid "&All"
-msgstr "Mind"
+msgstr "&Mind"
 
 #: lclstrconsts.rsmbcancel
 msgctxt "lclstrconsts.rsmbcancel"
@@ -890,27 +881,27 @@ msgstr "Mégsem"
 
 #: lclstrconsts.rsmbclose
 msgid "&Close"
-msgstr "Bezárás"
+msgstr "Be&zár"
 
 #: lclstrconsts.rsmbhelp
 msgid "&Help"
-msgstr "Súgó"
+msgstr "&Súgó"
 
 #: lclstrconsts.rsmbignore
 msgid "&Ignore"
-msgstr "Kihagyás"
+msgstr "M&ellőz"
 
 #: lclstrconsts.rsmbno
 msgid "&No"
-msgstr "Nem"
+msgstr "&Nem"
 
 #: lclstrconsts.rsmbnotoall
 msgid "No to all"
-msgstr "Egyiket sem"
+msgstr "Nem, mindre"
 
 #: lclstrconsts.rsmbok
 msgid "&OK"
-msgstr "&OK"
+msgstr "&Ok"
 
 #: lclstrconsts.rsmbopen
 msgid "&Open"
@@ -926,15 +917,15 @@ msgstr "Menté&s"
 
 #: lclstrconsts.rsmbunlock
 msgid "&Unlock"
-msgstr "Feloldás"
+msgstr "&Feloldás"
 
 #: lclstrconsts.rsmbyes
 msgid "&Yes"
-msgstr "Igen"
+msgstr "&Igen"
 
 #: lclstrconsts.rsmbyestoall
 msgid "Yes to &All"
-msgstr "Igen, mindet"
+msgstr "Igen, mindre"
 
 #: lclstrconsts.rsmedgraycolorcaption
 msgid "Medium Gray"
@@ -951,15 +942,15 @@ msgstr "Menü"
 
 #: lclstrconsts.rsmenuhighlightcolorcaption
 msgid "Menu Highlight"
-msgstr "Menü kiemelés"
+msgstr "Menü kiemelése"
 
 #: lclstrconsts.rsmenutextcolorcaption
 msgid "Menu Text"
-msgstr "Menü szöveg"
+msgstr "Menü szövege"
 
 #: lclstrconsts.rsmodified
 msgid "  modified "
-msgstr "  módosítva"
+msgstr " módosítva"
 
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
@@ -967,15 +958,15 @@ msgstr "Pénzzöld"
 
 #: lclstrconsts.rsmtauthentication
 msgid "Authentication"
-msgstr "Érvényesítés"
+msgstr "Hitelesítés"
 
 #: lclstrconsts.rsmtconfirmation
 msgid "Confirmation"
-msgstr "Megerősítés"
+msgstr "Jóváhagyás"
 
 #: lclstrconsts.rsmtcustom
 msgid "Custom"
-msgstr "Saját"
+msgstr "Egyedi"
 
 #: lclstrconsts.rsmterror
 msgctxt "lclstrconsts.rsmterror"
@@ -1005,19 +996,19 @@ msgstr "Semmi"
 
 #: lclstrconsts.rsnotavalidgridfile
 msgid "Not a valid grid file"
-msgstr "Érvénytelen táblázat fájl"
+msgstr "Érvénytelen táblafájl"
 
 #: lclstrconsts.rsnowidgetset
 msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr "Nincs widgetset objektum. Kérem ellenőrizze, hogy az \"interfaces\" unit hozzá lett-e adva a program uses szekciójához."
+msgstr "Nincs widgetset objektum. Ellenőrizze, hogy az \"interfaces\" unit hozzá lett-e adva a program uses részéhez."
 
 #: lclstrconsts.rsolivecolorcaption
 msgid "Olive"
-msgstr "Oliva"
+msgstr "Olívazöld"
 
 #: lclstrconsts.rspickdate
 msgid "Select a date"
-msgstr "Válasszon dátumot"
+msgstr "Dátum kiválasztása"
 
 #: lclstrconsts.rspixmap
 msgid "Pixmap"
@@ -1040,12 +1031,13 @@ msgid "Portable PixMap"
 msgstr "Portable PixMap"
 
 #: lclstrconsts.rspostrecordhint
+#, fuzzy
 msgid "Post"
-msgstr "Elküldés"
+msgstr "Küldés"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr "%s%sKlikkeljen az OK-ra a figyelmen kívül hagyáshoz és az adatsérülés kockázatának elfogadásához.%sKlikkeljen a Mégsem-re a program befejezéséhez."
+msgstr "%s%sAz OK-t választva figyelmen kívül hagyja és adatsérülést kockáztat. %sA Mégsem gombbal bezárja a programot."
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
@@ -1054,11 +1046,11 @@ msgstr "Előző"
 
 #: lclstrconsts.rspromptonreplace
 msgid "Prompt on replace"
-msgstr ""
+msgstr "Kérdés felülírásnál"
 
 #: lclstrconsts.rspropertydoesnotexist
 msgid "Property %s does not exist"
-msgstr "A(z) %s tulajdonság nem létezik"
+msgstr "A tulajdonság nem létezik: %s"
 
 #: lclstrconsts.rspurplecolorcaption
 msgid "Purple"
@@ -1166,7 +1158,7 @@ msgstr ""
 
 #: lclstrconsts.rsredcolorcaption
 msgid "Red"
-msgstr "Vörös"
+msgstr "Piros"
 
 #: lclstrconsts.rsrefreshrecordshint
 msgid "Refresh"
@@ -1183,11 +1175,11 @@ msgstr "Mindet cseréli"
 #: lclstrconsts.rsresourcenotfound
 msgctxt "lclstrconsts.rsresourcenotfound"
 msgid "Resource %s not found"
-msgstr "A(z) %s forrás nem található"
+msgstr "Az erőforrás nincs meg: %s"
 
 #: lclstrconsts.rsscrollbarcolorcaption
 msgid "ScrollBar"
-msgstr "Gördítősáv"
+msgstr "Görgetősáv"
 
 #: lclstrconsts.rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
@@ -1195,11 +1187,11 @@ msgstr "ScrollBar tulajdonság a tartományon kívül esik"
 
 #: lclstrconsts.rsselectcolortitle
 msgid "Select color"
-msgstr "Válasszon színt"
+msgstr "Szín kiválasztása"
 
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
-msgstr "Válasszon betűtípust"
+msgstr "Betűtípus kiválasztása"
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"
@@ -1207,15 +1199,15 @@ msgstr "Ezüst"
 
 #: lclstrconsts.rssize
 msgid "  size "
-msgstr "  méret"
+msgstr " méret "
 
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
-msgstr "Égkék"
+msgstr "Égszín kék"
 
 #: lclstrconsts.rstcustomtabcontrolaccessibilitydescription
 msgid "A control with tabs"
-msgstr ""
+msgstr "Egy vezérlő fülekkel"
 
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
@@ -1227,23 +1219,26 @@ msgstr "Szöveg"
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
-msgstr ""
+msgstr "Tagged Image File Format"
 
 #: lclstrconsts.rstpanelaccessibilitydescription
+msgctxt "lclstrconsts.rstpanelaccessibilitydescription"
 msgid "Panel"
-msgstr ""
+msgstr "Panel"
 
 #: lclstrconsts.rstsplitteraccessibilitydescription
+msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
 msgid "A grip to control how much size to give two parts of an area"
-msgstr ""
+msgstr "Egy fogantyú, amivel egy terület két részre osztásának arányát lehet állítani"
 
 #: lclstrconsts.rsttreeviewaccessibilitydescription
+msgctxt "lclstrconsts.rsttreeviewaccessibilitydescription"
 msgid "A tree of items"
-msgstr ""
+msgstr "Egy fa elemekkel"
 
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"
-msgstr "Az alapértelmezett betűtípus betöltése nem lehetséges"
+msgstr "Nem lehet betölteni az alapértelmezett betűtípust"
 
 #: lclstrconsts.rsunknownerrorpleasereportthisbug
 msgid "Unknown Error, please report this bug"
@@ -1255,15 +1250,15 @@ msgstr "Ismeretlen kép kiterjesztés"
 
 #: lclstrconsts.rsunknownpictureformat
 msgid "Unknown picture format"
-msgstr ""
+msgstr "Ismeretlen képformátum"
 
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
-msgstr "Nem támogatott képformátum."
+msgstr "Nem támogatott bitkép-formátum"
 
 #: lclstrconsts.rsunsupportedclipboardformat
 msgid "Unsupported clipboard format: %s"
-msgstr "Nem támogatott vágólap formátum: %s"
+msgstr "Nem támogatott vágólap-formátum: %s"
 
 #: lclstrconsts.rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
@@ -1307,7 +1302,7 @@ msgstr "Ablak"
 
 #: lclstrconsts.rswindowframecolorcaption
 msgid "Window Frame"
-msgstr "Ablak keret"
+msgstr "Ablakkeret"
 
 #: lclstrconsts.rswindowtextcolorcaption
 msgid "Window Text"
@@ -1326,18 +1321,22 @@ msgid "Duplicate menus"
 msgstr "Többszörös menük"
 
 #: lclstrconsts.sinvalidactioncreation
+#, fuzzy
 msgid "Invalid action creation"
 msgstr "Érvénytelen művelet létrehozás"
 
 #: lclstrconsts.sinvalidactionenumeration
+#, fuzzy
 msgid "Invalid action enumeration"
 msgstr "Érvénytelen művelet felsorolás"
 
 #: lclstrconsts.sinvalidactionregistration
+#, fuzzy
 msgid "Invalid action registration"
 msgstr "Érvénytelen művelet regisztrálás"
 
 #: lclstrconsts.sinvalidactionunregistration
+#, fuzzy
 msgid "Invalid action unregistration"
 msgstr "Érvénytelen művelet kiregisztrálás"
 
@@ -1355,7 +1354,7 @@ msgstr "Érvénytelen ImageList index"
 
 #: lclstrconsts.smaskeditnomatch
 msgid "The current text does not match the specified mask."
-msgstr ""
+msgstr "A jelenlegi szöveg nem illeszkedik a megadott mintára."
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
@@ -1363,7 +1362,7 @@ msgstr "Menü index a tartományon kívül esik"
 
 #: lclstrconsts.smenuitemisnil
 msgid "MenuItem is nil"
-msgstr "A MenuItem értéke nil"
+msgstr "MenuItem értéke nil"
 
 #: lclstrconsts.smenunotfound
 msgid "Sub-menu is not in menu"
@@ -1371,19 +1370,19 @@ msgstr "Az almenü nincs a menüben"
 
 #: lclstrconsts.smkcalt
 msgid "Alt+"
-msgstr ""
+msgstr "Alt+"
 
 #: lclstrconsts.smkcbksp
 msgid "BkSp"
-msgstr ""
+msgstr "BkSp"
 
 #: lclstrconsts.smkcctrl
 msgid "Ctrl+"
-msgstr ""
+msgstr "Ctrl+"
 
 #: lclstrconsts.smkcdel
 msgid "Del"
-msgstr ""
+msgstr "Del"
 
 #: lclstrconsts.smkcdown
 msgctxt "lclstrconsts.smkcdown"
@@ -1397,11 +1396,11 @@ msgstr "End"
 
 #: lclstrconsts.smkcenter
 msgid "Enter"
-msgstr ""
+msgstr "Enter"
 
 #: lclstrconsts.smkcesc
 msgid "Esc"
-msgstr ""
+msgstr "Esc"
 
 #: lclstrconsts.smkchome
 msgctxt "lclstrconsts.smkchome"
@@ -1410,7 +1409,7 @@ msgstr "Home"
 
 #: lclstrconsts.smkcins
 msgid "Ins"
-msgstr ""
+msgstr "Ins"
 
 #: lclstrconsts.smkcleft
 msgctxt "lclstrconsts.smkcleft"
@@ -1419,15 +1418,15 @@ msgstr "Balra"
 
 #: lclstrconsts.smkcmeta
 msgid "Meta+"
-msgstr ""
+msgstr "Meta+"
 
 #: lclstrconsts.smkcpgdn
 msgid "PgDn"
-msgstr ""
+msgstr "PgDn"
 
 #: lclstrconsts.smkcpgup
 msgid "PgUp"
-msgstr ""
+msgstr "PgUp"
 
 #: lclstrconsts.smkcright
 msgctxt "lclstrconsts.smkcright"
@@ -1436,11 +1435,11 @@ msgstr "Jobbra"
 
 #: lclstrconsts.smkcshift
 msgid "Shift+"
-msgstr ""
+msgstr "Shift+"
 
 #: lclstrconsts.smkcspace
 msgid "Space"
-msgstr ""
+msgstr "Szóköz"
 
 #: lclstrconsts.smkctab
 msgctxt "lclstrconsts.smkctab"
@@ -1462,7 +1461,7 @@ msgstr "Nincsenek elérhető időzítők"
 
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
-msgstr "Rossz érték típus: %s szükséges"
+msgstr "Rossz token típus: %s az elvárt"
 
 #: lclstrconsts.sparinvalidfloat
 msgid "Invalid floating point number: %s"
@@ -1473,24 +1472,22 @@ msgid "Invalid integer number: %s"
 msgstr "Érvénytelen egész szám: %s"
 
 #: lclstrconsts.sparlocinfo
-#, fuzzy
-#| msgid " (at %d,%d, stream offset %.8x)"
 msgid " (at %d,%d, stream offset %d)"
-msgstr " (%d,%d helyen, %.8x stream pozíciónál)"
+msgstr "(itt: %d,%d, az adatfolyamban itt: %d)"
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"
-msgstr "Lezáratlan bájt érték"
+msgstr "Lezáratlan byte érték"
 
 #: lclstrconsts.sparunterminatedstring
 msgid "Unterminated string"
-msgstr "Lezáratlan string"
+msgstr "Lezáratlan karakterlánc"
 
 #: lclstrconsts.sparwrongtokensymbol
 msgid "Wrong token symbol: %s expected but %s found"
-msgstr "Hibás érték szimbólum: %s szükséges, de %s található"
+msgstr "Rossz token szimbólum: %s az elvárt, de %s található"
 
 #: lclstrconsts.sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
-msgstr "Rossz érték típus: %s szükséges, de %s található"
+msgstr "Rossz token típus: %s az elvárt, de %s található"
 

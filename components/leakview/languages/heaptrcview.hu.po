@@ -1,0 +1,85 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: heaptrcview.rsdtimes
+msgid " (%d times)"
+msgstr " (%d alkalommal)"
+
+#: heaptrcview.rserrorparse
+msgid "Error while parsing trace file"
+msgstr "Hiba a nyomkövetési fájl kiértékelésekor"
+
+#: heaptrcview.rsleakview
+msgid "Find source lines for leak/stack-traces"
+msgstr ""
+
+#: heaptrcview.sbtnclipbrd
+msgid "Paste Clipboard"
+msgstr "Vágólap beillesztése"
+
+#: heaptrcview.sbtnresolve
+#, fuzzy
+msgid "Resolve"
+msgstr "Megoldás"
+
+#: heaptrcview.sbtnupdate
+msgid "Update"
+msgstr "Frissítés"
+
+#: heaptrcview.schkraw
+msgid "Raw leak data"
+msgstr "Nyers szivárgási adatok"
+
+#: heaptrcview.schktop
+msgid "Stay on top"
+msgstr "Maradjon mindig legfelül"
+
+#: heaptrcview.sfrmcap
+msgid "LeakView - HeapTrc output viewer"
+msgstr "LeakView - HeapTrc kimenet megjelenítő"
+
+#: heaptrcview.sfrmselectfilewithdebuginfo
+msgid "Select File with debug info"
+msgstr "Hibakeresési infókkal rendelkező fájl választása"
+
+#: heaptrcview.slbltrace
+msgid ".trc file"
+msgstr ".trc fájl"
+
+#: heaptrcview.stacklineformat
+msgid "%s"
+msgstr "%s"
+
+#: heaptrcview.stacklineformatwithfile
+msgid "%s file: %s : %d; "
+msgstr "%s fájl: %s : %d;"
+
+#: heaptrcview.stacktraceformat
+msgid "Leak: %d bytes x %d times"
+msgstr "Szivárgás: %d bájt x %d alkalommal"
+
+#: heaptrcview.stacktraceformatsingle
+msgid "Leak: %d bytes"
+msgstr "Szivárgás: %d bájt"
+
+#: heaptrcview.strleakingblockscount
+msgid "Leaking Blocks Count: %d"
+msgstr "Szivárgó blokkok száma: %d"
+
+#: heaptrcview.strleakingmemsize
+msgid "Leaking Mem Size: %d"
+msgstr "Szivárgó memória mérete: %d"
+
+#: heaptrcview.strtotalmemalloc
+msgid "Total Mem alloced: %d"
+msgstr "Teljes lefoglalt memória: %d"
+

@@ -1,13 +1,17 @@
+#
 msgid ""
 msgstr ""
+"Project-Id-Version: Lazarus\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian) <lazarus-hun@primlista.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Fehér Dávid <dfeher@gmx.com>\n"
-"Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: hu_HU\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -27,8 +31,9 @@ msgid "Delete Action"
 msgstr "Művelet törlése"
 
 #: objinspstrconsts.cactionlisteditordialogcategory
+msgctxt "objinspstrconsts.cactionlisteditordialogcategory"
 msgid "Dialog"
-msgstr "Ablak"
+msgstr "Párbeszéd"
 
 #: objinspstrconsts.cactionlisteditoreditcategory
 msgctxt "objinspstrconsts.cactionlisteditoreditcategory"
@@ -129,8 +134,9 @@ msgid "Up"
 msgstr "Fel"
 
 #: objinspstrconsts.fescalculated
+#, fuzzy
 msgid "&Calculated"
-msgstr ""
+msgstr "Számított"
 
 #: objinspstrconsts.fescancelbtn
 msgctxt "objinspstrconsts.fescancelbtn"
@@ -139,61 +145,61 @@ msgstr "Mégsem"
 
 #: objinspstrconsts.fescheckdset
 msgid "Check dataset settings"
-msgstr ""
+msgstr "Dataset beállítások ellenőrzése"
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
-msgstr ""
+msgstr "A&datok"
 
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
 msgstr ""
 
 #: objinspstrconsts.fesfetitle
-#, fuzzy
-#| msgid "Edit Fields"
 msgid "Edit Fields ..."
 msgstr "Mezők szerkesztése"
 
 #: objinspstrconsts.fesfieldcantbec
 msgid "Field %s cannot be created!"
-msgstr ""
+msgstr "A(z) %s mező nem hozható létre!"
 
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"
-msgstr ""
+msgstr "Mező tulajdonságai"
 
 #: objinspstrconsts.fesfieldtype
 msgid "Field Type"
-msgstr ""
+msgstr "Mező típusa"
 
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
 msgstr "Meződefiníciók"
 
 #: objinspstrconsts.fesformcaption
+msgctxt "objinspstrconsts.fesformcaption"
 msgid "New field"
-msgstr ""
+msgstr "Új mező"
 
 #: objinspstrconsts.feskeyfield
 msgid "&Key fields:"
-msgstr ""
+msgstr "&Kulcs mezők:"
 
 #: objinspstrconsts.feslookup
 msgid "&Lookup"
-msgstr ""
+msgstr "Keresés"
 
 #: objinspstrconsts.feslookupdef
 msgid "Lookup definition"
-msgstr ""
+msgstr "Definíció keresése"
 
 #: objinspstrconsts.feslookupkeys
+#, fuzzy
 msgid "L&ookup keys:"
-msgstr ""
+msgstr "Keresési kulcsok:"
 
 #: objinspstrconsts.fesname
 msgid "&Name:"
-msgstr ""
+msgstr "Név:"
 
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -202,6 +208,7 @@ msgstr "Nem sikerült összegyűjteni a Dataset mezőinek listáját"
 #: objinspstrconsts.fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
 msgstr ""
+"A mezők listája nem érhető el, nem lehet többszörös előfordulásokat keresni"
 
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
@@ -210,19 +217,20 @@ msgstr "OK"
 
 #: objinspstrconsts.fespersistentcompname
 msgid "Co&mponent Name:"
-msgstr ""
+msgstr "Komponens neve:"
 
 #: objinspstrconsts.fesresultfield
+#, fuzzy
 msgid "&Result Fields:"
-msgstr ""
+msgstr "Visszaadott mezők:"
 
 #: objinspstrconsts.fessize
 msgid "&Size:"
-msgstr ""
+msgstr "Méret:"
 
 #: objinspstrconsts.festype
 msgid "&Type:"
-msgstr ""
+msgstr "Típus:"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -258,40 +266,28 @@ msgid "Set value"
 msgstr "Érték megadása"
 
 #: objinspstrconsts.nbcesaddpage
-#, fuzzy
-#| msgid "Add page"
 msgid "Add Page"
 msgstr "Lap hozzáadása"
 
 #: objinspstrconsts.nbcesdeletepage
-#, fuzzy
-#| msgid "Delete page"
 msgid "Delete Page"
 msgstr "Lap törlése"
 
 #: objinspstrconsts.nbcesinsertpage
-#, fuzzy
-#| msgid "Insert page"
 msgid "Insert Page"
 msgstr "Lap beszúrása"
 
 #: objinspstrconsts.nbcesmovepageleft
-#, fuzzy
-#| msgid "Move page left"
 msgid "Move Page Left"
-msgstr "Lap mozgatása eggyel balra"
+msgstr "Mozgatás eggyel balra"
 
 #: objinspstrconsts.nbcesmovepageright
-#, fuzzy
-#| msgid "Move page right"
 msgid "Move Page Right"
-msgstr "Lap mozgatása eggyel jobbra"
+msgstr "Mozgatás eggyel jobbra"
 
 #: objinspstrconsts.nbcesshowpage
-#, fuzzy
-#| msgid "Show page ..."
 msgid "Show Page"
-msgstr "Oldal megjelenítése ..."
+msgstr "Oldal megjelenítése"
 
 #: objinspstrconsts.oicoleditadd
 msgctxt "objinspstrconsts.oicoleditadd"
@@ -331,25 +327,23 @@ msgstr "Művelet"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
 msgid "Action&List Editor ..."
-msgstr ""
+msgstr "Műveletlista szerkesztő ..."
 
 #: objinspstrconsts.oisactionlisteditor
-#, fuzzy
-#| msgid "Action List Editor"
 msgid "ActionList Editor"
 msgstr "Műveletlista szerkesztő"
 
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
-msgstr ""
+msgstr "Elem hozzáadása"
 
 #: objinspstrconsts.oisaddfields
 msgid "&Add fields"
-msgstr ""
+msgstr "Mezők hozzá&adása"
 
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
-msgstr ""
+msgstr "Mezők hozzáadása FieldDefs-ből"
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -369,19 +363,17 @@ msgstr "Boolean"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
-msgstr ""
+msgstr "Ko&mponensek"
 
 #: objinspstrconsts.oisbtnproperties
 msgid "&Properties"
-msgstr ""
+msgstr "Tulajdonságok"
 
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr "Hozzá&adás"
 
 #: objinspstrconsts.oiscancel
-#, fuzzy
-#| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
 msgid "Cancel"
 msgstr "Mégsem"
@@ -391,11 +383,8 @@ msgid "Category"
 msgstr "Kategória"
 
 #: objinspstrconsts.oiscdelete
-#, fuzzy
-#| msgid "&Delete"
-msgctxt "objinspstrconsts.oiscdelete"
 msgid "Delete?"
-msgstr "Törlés"
+msgstr "Törlés?"
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -430,10 +419,9 @@ msgid "Confirm delete"
 msgstr "Törlés megerősítése"
 
 #: objinspstrconsts.oiscopycomponents
-#, fuzzy
-#| msgid "Copy components"
+msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
-msgstr "Komponensek másolása"
+msgstr "&Másolás"
 
 #: objinspstrconsts.oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -445,13 +433,12 @@ msgstr "Alapértelmezett esemény létrehozása"
 
 #: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
 msgid "Create new field and add it at current position"
-msgstr ""
+msgstr "Mező létrehozása és a jelenlegi helyhez adása"
 
 #: objinspstrconsts.oiscutcomponents
-#, fuzzy
-#| msgid "Cut components"
+msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
-msgstr "Komponensek kivágása"
+msgstr "&Kivágás"
 
 #: objinspstrconsts.oisdelete
 msgctxt "objinspstrconsts.oisdelete"
@@ -459,10 +446,9 @@ msgid "Delete"
 msgstr "Törlés"
 
 #: objinspstrconsts.oisdeletecomponents
-#, fuzzy
-#| msgid "Delete components"
+msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
-msgstr "Komponensek törlése"
+msgstr "&Törlés"
 
 #: objinspstrconsts.oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -470,7 +456,7 @@ msgstr "Törli a(z) %s%s%s elemet?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
-msgstr ""
+msgstr "Kijelölt mező(k) törlése"
 
 #: objinspstrconsts.oisdlinesdchars
 msgid "%d lines, %d chars"
@@ -486,7 +472,7 @@ msgstr "Hiba"
 
 #: objinspstrconsts.oiserrordeletingaction
 msgid "Error deleting action"
-msgstr ""
+msgstr "Hiba a művelet törlése közben"
 
 #: objinspstrconsts.oiserrorloadingimage
 msgid "Error loading image"
@@ -498,7 +484,7 @@ msgstr "Hiba a(z) %s%s%s kép betöltése közben:%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
-msgstr ""
+msgstr "Hiba a művelet törlése közben:%s%s"
 
 #: objinspstrconsts.oisevents
 msgid "Events"
@@ -518,11 +504,11 @@ msgstr "Float"
 
 #: objinspstrconsts.oishelp
 msgid "&Help"
-msgstr ""
+msgstr "&Súgó"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor ..."
-msgstr ""
+msgstr "Képlista szerkesztő ..."
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
@@ -554,7 +540,7 @@ msgstr "Érvénytelen tulajdonság érték"
 
 #: objinspstrconsts.oisisnotavalidmethodname
 msgid "%s%s%s is not a valid method name."
-msgstr ""
+msgstr "A(z) %s%s%s nem egy érvényes metódusnév."
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
@@ -562,7 +548,7 @@ msgstr "%u elem kijelölve"
 
 #: objinspstrconsts.oisjumptodeclarationof
 msgid "Jump to declaration of %s"
-msgstr ""
+msgstr "Ugrás a deklarációra: %s"
 
 #: objinspstrconsts.oisload
 msgid "&Load"
@@ -577,10 +563,8 @@ msgid "Load picture"
 msgstr "Kép betöltése"
 
 #: objinspstrconsts.oismasks
-#, fuzzy
-#| msgid "Masks..."
 msgid "Masks ..."
-msgstr "Maszkok..."
+msgstr "Maszkok ..."
 
 #: objinspstrconsts.oismethod
 msgid "Method"
@@ -588,23 +572,24 @@ msgstr "Metódus"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
-msgstr ""
+msgstr "&Mozgatás le"
 
 #: objinspstrconsts.oismovedownhint
 msgid "Move field down"
-msgstr ""
+msgstr "Mező mozgatása le"
 
 #: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
-msgstr ""
+msgstr "Mozgatás &fel"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
-msgstr ""
+msgstr "Mező mozgatása fel"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
-msgstr ""
+msgstr "&Új"
 
 #: objinspstrconsts.oisnone
 msgid "(none)"
@@ -636,25 +621,24 @@ msgstr "Opciók"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
-msgstr ""
+msgstr "Egyet hátra"
 
 #: objinspstrconsts.oisorderforwardone
 msgid "Forward One"
-msgstr ""
+msgstr "Egyet előre"
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
-msgstr ""
+msgstr "Háttérbe visz"
 
 #: objinspstrconsts.oisordermovetofront
 msgid "Move to Front"
-msgstr ""
+msgstr "Előtérbe hoz"
 
 #: objinspstrconsts.oispastecomponents
-#, fuzzy
-#| msgid "Paste components"
+msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
-msgstr "Komponensek beillesztése"
+msgstr "&Beillesztés"
 
 #: objinspstrconsts.oispeopenimagefile
 msgid "Open image file"
@@ -710,15 +694,15 @@ msgstr "Válasszon egy fájlt"
 
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
-msgstr ""
+msgstr "Ö&sszes kijelölése"
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
-msgstr ""
+msgstr "Minden mező kijelölése"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
-msgstr ""
+msgstr "Kijelölt tulajdonságok"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -726,23 +710,25 @@ msgstr "Válasszon gyorsbillentyűt"
 
 #: objinspstrconsts.oisset
 msgid "Set"
-msgstr ""
+msgstr "Beállítás"
 
 #: objinspstrconsts.oissetmaxconstraints
 msgid "Set MaxHeight=%d, MaxWidth=%d"
-msgstr ""
+msgstr "Legyen MaxHeight=%d, MaxWidth=%d"
 
 #: objinspstrconsts.oissetmaxconstraintshint
+#, fuzzy
 msgid "Use current size as Max Constraints"
-msgstr ""
+msgstr "Az aktuális méret használata legnagyobb méretként"
 
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
-msgstr ""
+msgstr "Legyen MinHeight=%d, MinWidth=%d"
 
 #: objinspstrconsts.oissetminconstraintshint
+#, fuzzy
 msgid "Use current size as Min Constraints"
-msgstr ""
+msgstr "Az aktuális méret használata legkisebb méretként"
 
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
@@ -750,11 +736,11 @@ msgstr "Beállítás alapértelmezettre: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
+msgstr "A tulajdonság értéke legyen Alapértelmezett"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
-msgstr "Komponens fa megjelenítése"
+msgstr "Komponensek fájának megjelenítése"
 
 #: objinspstrconsts.oisshowhints
 msgid "Show Hints"
@@ -762,11 +748,11 @@ msgstr "Buboréktippek megjelenítése"
 
 #: objinspstrconsts.oisshowinfobox
 msgid "Show Information Box"
-msgstr ""
+msgstr "Információs ablak megjelenítése"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
-msgstr ""
+msgstr "Állapotsáv megjelenítése"
 
 #: objinspstrconsts.oissort
 msgid "Sort"
@@ -789,10 +775,8 @@ msgid "Strings Editor Dialog"
 msgstr "String szerkesztő ablak"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-#, fuzzy
-#| msgid "Select &Color..."
 msgid "Select &Color ..."
-msgstr "Válasszon színt..."
+msgstr "Szín választása ..."
 
 #: objinspstrconsts.oistdactcolorselecthint
 msgid "Color Select"
@@ -887,8 +871,9 @@ msgid "Refresh"
 msgstr "Frissítés"
 
 #: objinspstrconsts.oistdacteditcopyheadline
+msgctxt "objinspstrconsts.oistdacteditcopyheadline"
 msgid "&Copy"
-msgstr "Másolás"
+msgstr "&Másolás"
 
 #: objinspstrconsts.oistdacteditcopyshortcut
 msgid "Ctrl+C"
@@ -899,8 +884,9 @@ msgid "Copy"
 msgstr "Másolás"
 
 #: objinspstrconsts.oistdacteditcutheadline
+msgctxt "objinspstrconsts.oistdacteditcutheadline"
 msgid "Cu&t"
-msgstr "Kivágás"
+msgstr "&Kivágás"
 
 #: objinspstrconsts.oistdacteditcutshortcut
 msgid "Ctrl+X"
@@ -925,8 +911,9 @@ msgid "Delete"
 msgstr "Törlés"
 
 #: objinspstrconsts.oistdacteditpasteheadline
+msgctxt "objinspstrconsts.oistdacteditpasteheadline"
 msgid "&Paste"
-msgstr "Beillesztés"
+msgstr "&Beillesztés"
 
 #: objinspstrconsts.oistdacteditpasteshortcut
 msgid "Ctrl+V"
@@ -970,10 +957,8 @@ msgid "Exit"
 msgstr "Kilépés"
 
 #: objinspstrconsts.oistdactfileopenheadline
-#, fuzzy
-#| msgid "&Open..."
 msgid "&Open ..."
-msgstr "Megnyitás..."
+msgstr "Megnyitás ..."
 
 #: objinspstrconsts.oistdactfileopenhint
 msgctxt "objinspstrconsts.oistdactfileopenhint"
@@ -985,30 +970,24 @@ msgid "Ctrl+O"
 msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-#, fuzzy
-#| msgid "Open with..."
 msgid "Open with ..."
-msgstr "Megnyitás mással..."
+msgstr "Megnyitás mással ..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
 msgid "Open with"
 msgstr "Megnyitás mással"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-#, fuzzy
-#| msgid "Save &As..."
 msgid "Save &As ..."
-msgstr "Mentés másként..."
+msgstr "Mentés másként ..."
 
 #: objinspstrconsts.oistdactfilesaveashint
 msgid "Save As"
 msgstr "Mentés másként"
 
 #: objinspstrconsts.oistdactfonteditheadline
-#, fuzzy
-#| msgid "Select &Font..."
 msgid "Select &Font ..."
-msgstr "Válasszon betűtípust..."
+msgstr "Betűtípust választása ..."
 
 #: objinspstrconsts.oistdactfontedithint
 msgid "Font Select"
@@ -1047,10 +1026,8 @@ msgid "Find first"
 msgstr "Első keresése"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-#, fuzzy
-#| msgid "&Find..."
 msgid "&Find ..."
-msgstr "Keresés..."
+msgstr "Keresés ..."
 
 #: objinspstrconsts.oistdactsearchfindhint
 msgid "Find"
@@ -1081,30 +1058,42 @@ msgid "Replace"
 msgstr "Csere"
 
 #: objinspstrconsts.oistestdialog
-#, fuzzy
-#| msgid "Test dialog..."
 msgid "Test dialog ..."
-msgstr "Teszt ablak..."
+msgstr "Teszt ablak ..."
 
 #: objinspstrconsts.oistestinput
 msgid "Test Input"
 msgstr "Teszt bemenet"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "A(z) %s%s%s azonosító nem metódus.%sKlikkeljen a Mégsé-re a visszavonáshoz,%svagy a Kihagyás-ra az erőltetéshez."
+msgid ""
+"The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore "
+"to force it."
+msgstr ""
+"A(z) %s%s%s azonosító nem metódus.%sKlikkeljen a Mégsé-re a visszavonáshoz,"
+"%svagy a Kihagyás-ra az erőltetéshez."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "A(z) %s%s%s metódus nem kompatibilis ezzel az eseménnyel (%s).%sKlikkeljen a Mégsé-re a visszavonáshoz,%svagy a Kihagyás-ra az erőltetéshez."
+msgid ""
+"The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,"
+"%spress Ignore to force it."
+msgstr ""
+"A(z) %s%s%s metódus nem kompatibilis ezzel az eseménnyel (%s).%sKlikkeljen a "
+"Mégsé-re a visszavonáshoz,%svagy a Kihagyás-ra az erőltetéshez."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "A(z) %s%s%s metódus nincs publikálva.%sKlikkeljen a Mégsé-re a visszavonáshoz,%svagy a Kihagyás-ra az erőltetéshez."
+msgid ""
+"The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to "
+"force it."
+msgstr ""
+"A(z) %s%s%s metódus nincs publikálva.%sKlikkeljen a Mégsé-re a "
+"visszavonáshoz,%svagy a Kihagyás-ra az erőltetéshez."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
 msgstr ""
+"A(z) %s%s%s vezérlő szülőjét nem lehet megváltoztatni az új szülőre: %s%s%s."
+"%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1118,11 +1107,11 @@ msgstr "Ismeretlen"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
-msgstr ""
+msgstr "Kijelölések megszüntetése"
 
 #: objinspstrconsts.oisunselectallhint
 msgid "Unselect All"
-msgstr ""
+msgstr "Kijelölések megszüntetése"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
@@ -1146,7 +1135,7 @@ msgstr "Word"
 
 #: objinspstrconsts.oiszorder
 msgid "Z-order"
-msgstr ""
+msgstr "Z-sorrend"
 
 #: objinspstrconsts.pefilter
 msgid "Filter"
@@ -1161,10 +1150,8 @@ msgid "Filter name"
 msgstr "Szűrő név"
 
 #: objinspstrconsts.pirsunit
-#, fuzzy
-#| msgid "Unit"
 msgid "Pascal unit"
-msgstr "Unit"
+msgstr "Pascal unit"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"
@@ -1222,21 +1209,17 @@ msgid "Sections Editor ..."
 msgstr "Szakasz szerkesztő ..."
 
 #: objinspstrconsts.sccsiledtadd
-#, fuzzy
-#| msgid "Add..."
 msgid "&Add ..."
-msgstr "Hozzáadás..."
+msgstr "Hozzá&adás ..."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "Méretezés"
 
 #: objinspstrconsts.sccsiledtapply
-#, fuzzy
-#| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
-msgstr "Alkalmaz"
+msgstr "&Alkalmazás"
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1247,22 +1230,18 @@ msgid "Center"
 msgstr "Középre"
 
 #: objinspstrconsts.sccsiledtclear
-#, fuzzy
-#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear"
-msgstr "Clear"
+msgstr "&Törlés"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
 msgstr "Levágás"
 
 #: objinspstrconsts.sccsiledtdelete
-#, fuzzy
-#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
-msgstr "Törlés"
+msgstr "&Törlés"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1273,18 +1252,14 @@ msgid "Selected Image"
 msgstr "Kijelölt kép"
 
 #: objinspstrconsts.sccsiledtmovedown
-#, fuzzy
-#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move D&own"
-msgstr "Mozgatás lefelé"
+msgstr "Mozgatás &le"
 
 #: objinspstrconsts.sccsiledtmoveup
-#, fuzzy
-#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move &Up"
-msgstr "Mozgatás felfelé"
+msgstr "Mozgatás &fel"
 
 #: objinspstrconsts.sccsiledtnone
 msgid "None"
@@ -1299,17 +1274,13 @@ msgid "Transparent Color:"
 msgstr "Átlátszó szín:"
 
 #: objinspstrconsts.sccsiledtsave
-#, fuzzy
-#| msgid "Save..."
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save ..."
-msgstr "Mentés..."
+msgstr "Menté&s ..."
 
 #: objinspstrconsts.sccsiledtsaveall
-#, fuzzy
-#| msgid "Save All..."
 msgid "Save All ..."
-msgstr "Minden mentése..."
+msgstr "Minden mentése ..."
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"
@@ -1324,10 +1295,9 @@ msgid "Edit Columns ..."
 msgstr "Oszlopok szerkesztése ..."
 
 #: objinspstrconsts.sccslvedt
-#, fuzzy
-#| msgid "Edit ListView Items..."
+msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items ..."
-msgstr "ListView elemek szerkesztése..."
+msgstr "Elemek szerkesztése ..."
 
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
@@ -1383,20 +1353,16 @@ msgid "New SubItem"
 msgstr "Új alelem"
 
 #: objinspstrconsts.sccsmaskeditor
-#, fuzzy
-#| msgid "Edit Mask Editor..."
 msgid "Edit Mask Editor ..."
-msgstr "Beviteli maszk szerkesztő"
+msgstr "Beviteli maszk szerkesztő ..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
 msgstr "Panel szerkesztő ..."
 
 #: objinspstrconsts.sccssgedt
-#, fuzzy
-#| msgid "Edit StringGrid..."
 msgid "Edit StringGrid ..."
-msgstr "StringGrid szerkesztése..."
+msgstr "StringGrid szerkesztése ..."
 
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
@@ -1416,16 +1382,14 @@ msgid "String Grid"
 msgstr "String Grid"
 
 #: objinspstrconsts.sccssgedtload
-#, fuzzy
-#| msgid "Load..."
 msgid "Load ..."
-msgstr "Betöltés..."
+msgstr "Betöltés ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
 msgid "Move Rows/Cols"
 msgstr ""
 "Sorok/Oszlopok\n"
-"mozgatása\n"
+"mozgatása"
 
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
@@ -1433,11 +1397,9 @@ msgid "Open"
 msgstr "Megnyitás"
 
 #: objinspstrconsts.sccssgedtsave
-#, fuzzy
-#| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save ..."
-msgstr "Mentés..."
+msgstr "Mentés ..."
 
 #: objinspstrconsts.sccssgedtsavedialog
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
@@ -1445,10 +1407,9 @@ msgid "Save"
 msgstr "Mentés"
 
 #: objinspstrconsts.sccstredt
-#, fuzzy
-#| msgid "Edit TreeView Items..."
+msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items ..."
-msgstr "TreeView elemeinek szerkesztése..."
+msgstr "Elemek szerkesztése ..."
 
 #: objinspstrconsts.sccstredtapply
 msgctxt "objinspstrconsts.sccstredtapply"
@@ -1532,7 +1493,7 @@ msgstr "Bekérés"
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
-msgstr ""
+msgstr "Hozzáadás single-ként"
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"
@@ -1544,7 +1505,7 @@ msgstr "Szét szeretné vágni a képet?"
 
 #: objinspstrconsts.tbcenewbutton
 msgid "New Button"
-msgstr ""
+msgstr "Új gomb"
 
 #: objinspstrconsts.tbcenewcheckbutton
 msgid "New CheckButton"
@@ -1552,11 +1513,11 @@ msgstr ""
 
 #: objinspstrconsts.tbcenewdivider
 msgid "New Divider"
-msgstr ""
+msgstr "Új osztó"
 
 #: objinspstrconsts.tbcenewseparator
 msgid "New Separator"
-msgstr ""
+msgstr "Új elválasztó"
 
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"
@@ -1578,3 +1539,274 @@ msgstr "Fül mozgatása eggyel balra"
 msgid "Move tab right"
 msgstr "Fül mozgatása eggyel jobbra"
 
+#~ msgid "OEM 1"
+#~ msgstr "OEM 1"
+
+#~ msgid "OEM 2"
+#~ msgstr "OEM 2"
+
+#~ msgid "OEM 3"
+#~ msgstr "OEM 3"
+
+#~ msgid "OEM 4"
+#~ msgstr "OEM 4"
+
+#~ msgid "OEM 5"
+#~ msgstr "OEM 5"
+
+#~ msgid "OEM 6"
+#~ msgstr "OEM 6"
+
+#~ msgid "OEM 7"
+#~ msgstr "OEM 7"
+
+#~ msgid "OEM 8"
+#~ msgstr "OEM 8"
+
+#~ msgid "OEM comma"
+#~ msgstr "OEM vessző"
+
+#~ msgid "OEM minus"
+#~ msgstr "OEM minusz"
+
+#~ msgid "OEM period"
+#~ msgstr "OEM pont"
+
+#~ msgid "OEM plus"
+#~ msgstr "OEM plusz"
+
+#~ msgid "All"
+#~ msgstr "Mind"
+
+#~ msgctxt "objinspstrconsts.oiscancel"
+#~ msgid "&Cancel"
+#~ msgstr "Mégsem"
+
+#~ msgid "Copy components"
+#~ msgstr "Komponensek másolása"
+
+#~ msgid "Cut components"
+#~ msgstr "Komponensek kivágása"
+
+#~ msgid "Delete components"
+#~ msgstr "Komponensek törlése"
+
+#~ msgid "Edit action list..."
+#~ msgstr "Műveletlista szerkesztése..."
+
+#~ msgid "Index out of bounds"
+#~ msgstr "Az index kívül esik a határokon"
+
+#~ msgid "not supported"
+#~ msgstr "nem támogatott"
+
+#~ msgid "Paste components"
+#~ msgstr "Komponensek beillesztése"
+
+#~ msgid "Set to default value"
+#~ msgstr "Beállítás alapértelmezett értékre"
+
+#~ msgid "Custom options"
+#~ msgstr "Saját beállítások"
+
+#~ msgid "Debug search path"
+#~ msgstr "Hibakereső keresési útvonala"
+
+#~ msgid "Include search path"
+#~ msgstr "Include fájlok keresési útvonala"
+
+#~ msgid "Library search path"
+#~ msgstr "Függvénytár keresési útvonal"
+
+#~ msgid "Linker options"
+#~ msgstr "Linker opciók"
+
+#~ msgid "Object search path"
+#~ msgstr "Objektum keresési útvonal"
+
+#~ msgid "Result"
+#~ msgstr "Eredmény"
+
+#~ msgid "Unit"
+#~ msgstr "Unit"
+
+#~ msgid "Unit search path"
+#~ msgstr "Unit keresési útvonal"
+
+#~ msgid "Unit source search path"
+#~ msgstr "Unit forrás keresési útvonal"
+
+#~ msgid "Add..."
+#~ msgstr "Hozzáadás..."
+
+#~ msgctxt "objinspstrconsts.sccsiledtdelete"
+#~ msgid "Delete"
+#~ msgstr "Törlés"
+
+#~ msgid "Edit ListView Items..."
+#~ msgstr "ListView elemek szerkesztése..."
+
+#~ msgid "Edit TreeView Items..."
+#~ msgstr "TreeView elemeinek szerkesztése..."
+
+#~ msgid "Alt"
+#~ msgstr "Alt"
+
+#~ msgid "Ctrl"
+#~ msgstr "Ctrl"
+
+#~ msgid "Accept"
+#~ msgstr "Elfogadás"
+
+#~ msgid "Application Key"
+#~ msgstr "Alkalmazás gomb"
+
+#~ msgid "Backspace"
+#~ msgstr "Backspace"
+
+#~ msgctxt "objinspstrconsts.srvk_cancel"
+#~ msgid "Cancel"
+#~ msgstr "Mégsem"
+
+#~ msgid "Capital"
+#~ msgstr "Capital"
+
+#~ msgctxt "objinspstrconsts.srvk_clear"
+#~ msgid "Clear"
+#~ msgstr "Clear"
+
+#~ msgid "Cmd"
+#~ msgstr "Cmd"
+
+#~ msgid "Control"
+#~ msgstr "Control"
+
+#~ msgid "Convert"
+#~ msgstr "Convert"
+
+#~ msgctxt "objinspstrconsts.srvk_delete"
+#~ msgid "Delete"
+#~ msgstr "Törlés"
+
+#~ msgctxt "objinspstrconsts.srvk_down"
+#~ msgid "Down"
+#~ msgstr "Le"
+
+#~ msgid "End"
+#~ msgstr "End"
+
+#~ msgid "Escape"
+#~ msgstr "Escape"
+
+#~ msgid "Execute"
+#~ msgstr "Execute"
+
+#~ msgid "Hanja"
+#~ msgstr "Hanja"
+
+#~ msgctxt "objinspstrconsts.srvk_help"
+#~ msgid "Help"
+#~ msgstr "Súgó"
+
+#~ msgid "Home"
+#~ msgstr "Home"
+
+#~ msgctxt "objinspstrconsts.srvk_insert"
+#~ msgid "Insert"
+#~ msgstr "Insert"
+
+#~ msgid "Junja"
+#~ msgstr "Junja"
+
+#~ msgid "Kana"
+#~ msgstr "Kana"
+
+#~ msgid "Mouse Button Left"
+#~ msgstr "Bal egérgomb"
+
+#~ msgctxt "objinspstrconsts.srvk_left"
+#~ msgid "Left"
+#~ msgstr "Balra"
+
+#~ msgid "Left Windows Key"
+#~ msgstr "Bal Windows gomb"
+
+#~ msgid "Mouse Button Middle"
+#~ msgstr "Középső egérgomb"
+
+#~ msgid "Menu"
+#~ msgstr "Menü"
+
+#~ msgid "Meta"
+#~ msgstr "Meta"
+
+#~ msgid "Mode Change"
+#~ msgstr "Mód váltása"
+
+#~ msgctxt "objinspstrconsts.srvk_next"
+#~ msgid "Next"
+#~ msgstr "Következő"
+
+#~ msgid "Nonconvert"
+#~ msgstr "Nonconvert"
+
+#~ msgid "none"
+#~ msgstr "semmi"
+
+#~ msgid "Numlock"
+#~ msgstr "Num Lock"
+
+#~ msgid "Numpad %d"
+#~ msgstr "Numpad %d"
+
+#~ msgid "Pause key"
+#~ msgstr "Pause gomb"
+
+#~ msgid "Print"
+#~ msgstr "Nyomtatás"
+
+#~ msgctxt "objinspstrconsts.srvk_prior"
+#~ msgid "Prior"
+#~ msgstr "Előző"
+
+#~ msgid "Mouse Button Right"
+#~ msgstr "Jobb egérgomb"
+
+#~ msgid "Return"
+#~ msgstr "Enter"
+
+#~ msgctxt "objinspstrconsts.srvk_right"
+#~ msgid "Right"
+#~ msgstr "Jobbra"
+
+#~ msgid "Right Windows Key"
+#~ msgstr "Jobb Windows gomb"
+
+#~ msgid "Scroll"
+#~ msgstr "Görgetés"
+
+#~ msgid "Select"
+#~ msgstr "Kijelölés"
+
+#~ msgid "Shift"
+#~ msgstr "Shift"
+
+#~ msgid "Snapshot"
+#~ msgstr "Snapshot"
+
+#~ msgid "Space key"
+#~ msgstr "Szóköz"
+
+#~ msgid "Super"
+#~ msgstr "Super"
+
+#~ msgid "Tab"
+#~ msgstr "Tab"
+
+#~ msgctxt "objinspstrconsts.srvk_unknown"
+#~ msgid "Unknown"
+#~ msgstr "Ismeretlen"
+
+#~ msgctxt "objinspstrconsts.srvk_up"
+#~ msgid "Up"
+#~ msgstr "Fel"

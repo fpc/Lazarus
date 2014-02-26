@@ -1,0 +1,96 @@
+#
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: todoliststrconsts.dlgfropts
+msgid "Options"
+msgstr "Beállítások"
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Frissítés"
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Makró beszúrása"
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Szöveg"
+
+#: todoliststrconsts.lisprint
+msgid "Print"
+msgstr "Nyomtatás"
+
+#: todoliststrconsts.listddinserttodo
+msgid "Insert ToDo"
+msgstr "ToDo beszúrása"
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr "Exportálás"
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr "Ugrás"
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr "Leírás"
+
+#: todoliststrconsts.listodoldone
+msgid "Done"
+msgstr "Kész"
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr "Modul"
+
+#: todoliststrconsts.listodolist
+msgid "ToDo List"
+msgstr "ToDo lista"
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr "Ugrás a forrás kiválasztott sorára"
+
+#: todoliststrconsts.listodolistoptions
+msgid "ToDo options ..."
+msgstr "ToDo beállítások ..."
+
+#: todoliststrconsts.listodolistprintlist
+msgid "Print todo items"
+msgstr "ToDo elemek nyomtatása"
+
+#: todoliststrconsts.listodolistrefresh
+msgid "Refresh todo items"
+msgstr "ToDo elemek frissítése"
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr "Sor"
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr "Tulajdonos"
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr "Prioritás"
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr "Kategória"
+
+#: todoliststrconsts.lisviewtodolist
+msgid "View ToDo List"
+msgstr "ToDo lista megjelenítése"
