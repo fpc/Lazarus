@@ -1479,6 +1479,7 @@ begin
       end;
     end;
     {$ENDIF}
+    // CurRow is now invalid, do not access CurRow
 
     if (OldChangeStep<>FChangeStep) then begin
       // the selection has changed => CurRow does not exist any more
@@ -1628,8 +1629,10 @@ var
   NewValue: string;
   EditorAttributes: TPropertyAttributes;
 begin
-  //if FRows.Count=0 then
-  //  debugln(['TOICustomPropertyGrid.SetItemIndex ',DbgSName(Self),' ',dbgsname(FCurrentEdit),' ',dbgs(FStates),' GridIsUpdating=',GridIsUpdating,' FItemIndex=',FItemIndex,' NewIndex=',NewIndex]);
+  {if pgsCallingEdit in FStates then begin
+    DumpStack;
+    debugln(['TOICustomPropertyGrid.SetItemIndex ',DbgSName(Self),' ',dbgsname(FCurrentEdit),' ',dbgs(FStates),' GridIsUpdating=',GridIsUpdating,' FItemIndex=',FItemIndex,' NewIndex=',NewIndex]);
+  end;}
   if GridIsUpdating or (FItemIndex = NewIndex) then
     exit;
   // save old edit value
