@@ -6265,7 +6265,10 @@ begin
   // Because of TWriter, you can not put a control onto an
   // csInline,csAncestor control (e.g. on a frame).
   if (aControl<>aLookupRoot)
-  and ([csInline,csAncestor]*aControl.ComponentState<>[]) then
+  and ((aControl.Owner<>aLookupRoot)
+       and ([csInline,csAncestor]*aControl.ComponentState<>[]))
+  or  ([csInline]*aControl.ComponentState<>[])
+  then
   begin
     {$IFDEF VerboseAddDesigner}
     debugln(['ControlAcceptsStreamableChildComponent aControl=',DbgSName(aControl),' csInline=',csInline in aControl.ComponentState,' csAncestor=',csAncestor in aControl.ComponentState]);
