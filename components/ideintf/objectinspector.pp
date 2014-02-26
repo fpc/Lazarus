@@ -220,7 +220,8 @@ type
     pgsUpdatingEditControl,
     pgsBuildPropertyListNeeded,
     pgsGetComboItemsCalled,
-    pgsIdleEnabled
+    pgsIdleEnabled,
+    pgsCallingEdit   // calling property editor Edit
     );
   TOIPropertyGridStates = set of TOIPropertyGridState;
 
@@ -789,7 +790,10 @@ type
 const
   DefaultObjectInspectorName: string = 'ObjectInspectorDlg';
 
-// the ObjectInspector of the IDE can be found in FormEditingIntf
+// the ObjectInspector descendant of the IDE can be found in FormEditingIntf
+
+function dbgs(s: TOIPropertyGridState): string; overload;
+function dbgs(States: TOIPropertyGridStates): string; overload;
 
 implementation
 
@@ -822,6 +826,25 @@ function SortGridRows(Item1, Item2 : pointer) : integer;
 begin
   Result:=SysUtils.CompareText(TOIPropertyGridRow(Item1).Name,
                                TOIPropertyGridRow(Item2).Name);
+end;
+
+function dbgs(s: TOIPropertyGridState): string;
+begin
+  Result:=GetEnumName(TypeInfo(s),ord(s));
+end;
+
+function dbgs(States: TOIPropertyGridStates): string;
+var
+  s: TOIPropertyGridState;
+begin
+  Result:='';
+  for s in States do
+  begin
+    if not (s in States) then continue;
+    if Result<>'' then Result+=',';
+    Result+=dbgs(s);
+  end;
+  Result:='['+Result+']';
 end;
 
 { TOICustomPropertyGrid }
@@ -1329,10 +1352,10 @@ begin
     end;
 
     // set value in edit control
-    SetCurrentEditValue(CurRow.Editor.GetVisualValue);
+    SetCurrentEditValue(Editor.GetVisualValue);
 
     // update volatile sub properties
-    if (paVolatileSubProperties in CurRow.Editor.GetAttributes)
+    if (paVolatileSubProperties in Editor.GetAttributes)
     and ((CurRow.Expanded) or (CurRow.ChildCount>0)) then begin
       OldExpanded:=CurRow.Expanded;
       ShrinkRow(FItemIndex);
@@ -1367,14 +1390,14 @@ begin
     {$ENDIF}
       DebugLn(['#################### TOICustomPropertyGrid.DoCallEdit for ',
                CurRow.Editor.ClassName,' Edit=',Edit=oiqeEdit]);
-      Include(FStates,pgsApplyingValue);
+      Include(FStates,pgsCallingEdit);
       try
         if Edit=oiqeShowValue then
           CurRow.Editor.ShowValue
         else
           CurRow.Editor.Edit;
       finally
-        Exclude(FStates,pgsApplyingValue);
+        Exclude(FStates,pgsCallingEdit);
       end;
     {$IFNDEF DoNotCatchOIExceptions}
     except
@@ -1532,9 +1555,10 @@ var
   NewValue: string;
   EditorAttributes: TPropertyAttributes;
 begin
+  //if FRows.Count=0 then
+  //  debugln(['TOICustomPropertyGrid.SetItemIndex ',DbgSName(Self),' ',dbgsname(FCurrentEdit),' ',dbgs(FStates),' GridIsUpdating=',GridIsUpdating,' FItemIndex=',FItemIndex,' NewIndex=',NewIndex]);
   if GridIsUpdating or (FItemIndex = NewIndex) then
     exit;
-
   // save old edit value
   SetRowValue(true);
 
@@ -1957,6 +1981,7 @@ var
 begin
   Result:=
     not GridIsUpdating and IsCurrentEditorAvailable
+    and (not (pgsCallingEdit in FStates))
     and ((FCurrentEditorLookupRoot = nil)
       or (FPropertyEditorHook = nil)
       or (FPropertyEditorHook.LookupRoot = FCurrentEditorLookupRoot));
