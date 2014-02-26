@@ -59,7 +59,8 @@ type
 
   {state is setted up only when LCL is doing changes.}
   TQtWidgetState = (qtwsColorUpdating, qtwsFontUpdating, qtwsSizeUpdating,
-    qtwsPositionUpdating);
+    qtwsPositionUpdating, qtwsInsideRightMouseButtonPressEvent,
+    qtwsHiddenInsideRightMouseButtonPressEvent);
 
   TQtWidgetStates = set of TQtWidgetState;
 
@@ -2338,6 +2339,9 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
+  {$IFDEF MSWINDOWS}
+  AContextEvent: QContextMenuEventH;
+  {$ENDIF}
   QColor, OldColor: TQColor;
   ColorRef: TColorRef;
   QtEdit: IQtEdit;
@@ -2386,12 +2390,33 @@ begin
               QtWidgetSet.InvalidateWidgetAtCache;
           end;
         end;
-      QEventShow: SlotShow(True);
+      QEventShow:
+        begin
+          SlotShow(True);
+          {$IFDEF MSWINDOWS}
+          if (qtwsInsideRightMouseButtonPressEvent in FWidgetState) and
+             (qtwsHiddenInsideRightMouseButtonPressEvent in FWidgetState) then
+          begin
+            Exclude(FWidgetState, qtwsHiddenInsideRightMouseButtonPressEvent);
+            Exclude(FWidgetState, qtwsInsideRightMouseButtonPressEvent);
+            if (LastMouse.Widget = Sender) and
+              (QApplication_mouseButtons and QtRightButton <> 0) then
+            begin
+              AContextEvent := QContextMenuEvent_create(QContextMenuEventMouse, @LastMouse.MousePos);
+              QCoreApplication_postEvent(Sender, AContextEvent);
+            end;
+          end;
+          {$ENDIF}
+        end;
       QEventHide:
         begin
           if QWidget_mouseGrabber() = Widget then
             ReleaseCapture;
           SlotShow(False);
+          {$IFDEF MSWINDOWS}
+          if qtwsInsideRightMouseButtonPressEvent in FWidgetState then
+            Include(FWidgetState, qtwsHiddenInsideRightMouseButtonPressEvent);
+          {$ENDIF}
         end;
       QEventClose:
         if not SlotClose then
@@ -3329,12 +3354,32 @@ begin
         QtRightButton: Msg.Msg := CheckMouseButtonDown(1);
         QtMidButton: Msg.Msg := CheckMouseButtonDown(2);
       end;
+
+      {$IFDEF MSWINDOWS}
+      if (QEvent_type(Event) = QEventMouseButtonPress) and
+          (MButton = QtRightButton) then
+        Include(FWidgetState, qtwsInsideRightMouseButtonPressEvent);
+      try
+      {$ENDIF}
+
       NotifyApplicationUserInput(LCLObject, Msg.Msg);
 
       if not CanSendLCLMessage or (Sender = nil) then
         exit(True);
 
       DeliverMessage(Msg, True);
+
+      {$IFDEF MSWINDOWS}
+      finally
+        if (QEvent_type(Event) = QEventMouseButtonPress) and
+          (MButton = QtRightButton) then
+        begin
+          Exclude(FWidgetState, qtwsInsideRightMouseButtonPressEvent);
+          Exclude(FWidgetState, qtwsHiddenInsideRightMouseButtonPressEvent);
+        end;
+      end;
+      {$ENDIF}
+
       // Check if our objects exists since LCL can destroy object during
       // mouse events...
       if CanSendLCLMessage and (Sender <> nil) then
