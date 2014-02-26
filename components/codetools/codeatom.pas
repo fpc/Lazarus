@@ -49,6 +49,7 @@ type
     cafEdgedBracketOpen, cafEdgedBracketClose,
     cafWord, cafEnd
     );
+  TCommonAtomFlags = set of TCommonAtomFlag;
     
 const
   AllCommonAtomWords = [cafWord, cafEnd];

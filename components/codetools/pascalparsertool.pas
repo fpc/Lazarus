@@ -219,7 +219,7 @@ type
     function ReadWithStatement(ExceptionOnError, CreateNodes: boolean): boolean;
     function ReadOnStatement(ExceptionOnError, CreateNodes: boolean): boolean;
     procedure ReadVariableType;
-    procedure ReadHintModifiers;
+    procedure ReadHintModifiers(const AllowedAtomsBehind: TCommonAtomFlags = [cafSemicolon]);
     function ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode): boolean;
     function ReadTilGetterOfProperty(PropertyNode: TCodeTreeNode): boolean;
     procedure ReadGUID;
@@ -3288,16 +3288,18 @@ begin
         ReadConstant(true,false,[]);
       end;
     end;
+  end;
 
+  // optional: hint modifier
+  ReadHintModifiers([cafSemicolon,cafEqual]);
+
+  if (ParentNode.Desc=ctnVarSection) then begin
     // optional: initial value
     if CurPos.Flag=cafEqual then
       if ParentNode.Parent.Desc in AllCodeSections+[ctnProcedure] then begin
         ReadConstExpr; // read constant
     end;
   end;
-
-  // optional: hint modifier
-  ReadHintModifiers;
 
   HasSemicolon:=false;
   if CurPos.Flag=cafSemicolon then begin
@@ -3376,8 +3378,9 @@ begin
   EndChildNode;
 end;
 
-procedure TPascalParserTool.ReadHintModifiers;
-// after reading cursor is at next atom
+procedure TPascalParserTool.ReadHintModifiers(
+  const AllowedAtomsBehind: TCommonAtomFlags);
+// after reading the cursor is at next atom, e.g. the semicolon
 
   function IsModifier: boolean;
   var
@@ -3417,7 +3420,7 @@ begin
       ReadConstant(true,false,[]);
       CurNode.EndPos:=CurPos.StartPos;
     end;
-    if not (CurPos.Flag in [cafSemicolon,cafRoundBracketClose]) then
+    if not (CurPos.Flag in AllowedAtomsBehind) then
       SaveRaiseCharExpectedButAtomFound(';');
     EndChildNode;
     if CurPos.Flag<>cafSemicolon then
@@ -4588,7 +4591,8 @@ function TPascalParserTool.KeyWordFuncTypeDefault: boolean;
     Low(integer)..High(integer)
     'a'..'z'
 }
-var SubRangeOperatorFound: boolean;
+var
+  SubRangeOperatorFound: boolean;
 
   procedure ReadTillTypeEnd;
   begin
@@ -4699,7 +4703,6 @@ begin
         SaveRaiseException(ctsInvalidType);
     end;
   end;
-  ReadHintModifiers;
   EndChildNode;
   Result:=true;
 end;
@@ -4877,7 +4880,7 @@ begin
         {$IFDEF VerboseRecordCase}
         debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase Hint modifier: "',GetAtom,'"']);
         {$ENDIF}
-        ReadHintModifiers;
+        ReadHintModifiers([cafSemicolon,cafRoundBracketClose]);
         CurNode.EndPos:=CurPos.EndPos;
         EndChildNode; // close variable definition
       end;
