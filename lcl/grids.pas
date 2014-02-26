@@ -3446,7 +3446,9 @@ begin
   R := Canvas.ClipRect;
   DebugLn('TCustomGrid.Paint %s Row=%d Clip=%s',[DbgSName(Self),Row,Dbgs(R)]);
   {$endif}
-  if [gfVisualChange,gfClientRectChange]*fGridFlags<>[] then begin
+  if ([gfVisualChange,gfClientRectChange]*fGridFlags<>[]) or
+     (ClientWidth<>FGCache.ClientWidth) or
+     (ClientHeight<>FGCache.ClientHeight) then begin
     {$ifdef DbgVisualChange}
     DebugLnEnter('Resetting Sizes in Paint INIT');
     {$endif}
