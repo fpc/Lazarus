@@ -1688,17 +1688,17 @@ end;"/>
       </Item334>
       <Item335>
         <Filename Value="customdrawn/customdrawnwsforms_win.inc"/>
-        <AddToUsesPkgSection Value="False"/>
+        <Type Value="Include"/>
         <UnitName Value="customdrawnwsforms_win"/>
       </Item335>
       <Item336>
         <Filename Value="customdrawn/customdrawnwsforms_x11.inc"/>
-        <AddToUsesPkgSection Value="False"/>
+        <Type Value="Include"/>
         <UnitName Value="customdrawnwsforms_x11"/>
       </Item336>
       <Item337>
         <Filename Value="customdrawn/customdrawnobject_x11.inc"/>
-        <AddToUsesPkgSection Value="False"/>
+        <Type Value="Include"/>
         <UnitName Value="customdrawnobject_x11"/>
       </Item337>
       <Item338>
