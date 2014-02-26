@@ -2779,8 +2779,7 @@ begin
       
     if (CurPos.Flag=cafEND) then begin
       // end
-      if (BlockType<>ebtAsm) or (CurPos.StartPos=1) or (Src[CurPos.StartPos-1]<>'@')
-      then begin
+      if (BlockType<>ebtAsm) or (Src[CurPos.StartPos-1]<>'@') then begin
         if AutomaticallyEnded then break;
         if BlockType=ebtRepeat then
           RaiseStrExpectedWithBlockStartHint('"until"');
@@ -2802,11 +2801,13 @@ begin
       end;
     end else if CurPos.Flag<>cafWord then begin
       continue;
+    end else if (BlockType=ebtAsm) and (Src[CurPos.StartPos-1]='@') then begin
+      // allow anything behind @
     end else if BlockStatementStartKeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos])
     then begin
-      if BlockType=ebtAsm then
+      if BlockType=ebtAsm then begin
         SaveRaiseUnexpectedKeyWordInAsmBlock;
-      if (BlockType<>ebtRecord) then begin
+      end else if (BlockType<>ebtRecord) then begin
         ReadTilBlockEnd(false,CreateNodes);
         if (BlockType=ebtIf) and (CurPos.Flag in [cafSemicolon]) then
           break;
@@ -3452,6 +3453,7 @@ function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
 
 var
   ChildNodeCreated: boolean;
+  IsAsm, IsBegin: Boolean;
 begin
   //DebugLn('TPascalParserTool.KeyWordFuncBeginEnd CurNode=',CurNode.DescAsString);
   if (CurNode<>nil)
@@ -3459,10 +3461,12 @@ begin
     [ctnProcedure,ctnProgram,ctnLibrary,ctnImplementation]))
   then
     SaveRaiseStringExpectedButAtomFound('end');
-  ChildNodeCreated:=UpAtomIs('BEGIN') or UpAtomIs('ASM');
+  IsAsm:=UpAtomIs('ASM');
+  IsBegin:=UpAtomIs('BEGIN');
+  ChildNodeCreated:=IsBegin or IsAsm;
   if ChildNodeCreated then begin
     CreateChildNode;
-    if UpAtomIs('BEGIN') then
+    if IsBegin then
       CurNode.Desc:=ctnBeginBlock
     else
       CurNode.Desc:=ctnAsmBlock;
