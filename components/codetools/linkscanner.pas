@@ -2815,7 +2815,10 @@ var
 begin
   if FHiddenUsedUnits='' then begin
     // see fpc/compiler/pmodules.pp loaddefaultunits
-    FHiddenUsedUnits:='system';
+    if PascalCompiler=pcDelphi then
+      FHiddenUsedUnits:='System'
+    else
+      FHiddenUsedUnits:='system';
     if InitialValues.IsDefined('VER1_0')
     then begin
       if InitialValues.IsDefined('LINUX') then
