@@ -2012,7 +2012,7 @@ begin
           Exclude(Params.Flags, fdfSearchInAncestors);
       end else exit
     end;
-  ctnProperty:
+  ctnProperty,ctnGlobalProperty:
     begin
       if (CurrentIdentifierContexts.ProcName='') then exit;
       FoundContext.Tool.MoveCursorToPropName(FoundContext.Node);
