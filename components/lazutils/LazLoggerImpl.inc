@@ -438,7 +438,7 @@ begin
   Result:='';
   for i := low(TComponentState) to high(TComponentState) do
     if i in s then
-      Result := Result + DbgSJoin(Result, dbgsComponentStateEnum(i));
+      Result := DbgSJoin(Result, dbgsComponentStateEnum(i));
   Result:='['+Result+']';
   {$ELSE}
   Result := '';
@@ -510,7 +510,7 @@ begin
   Result:='';
   for i := low(TShiftStateEnum) to high(TShiftStateEnum) do
     if i in Shift then
-      Result := Result + DbgSJoin(Result, DbgS(i));
+      Result := DbgSJoin(Result, DbgS(i));
   Result:='['+Result+']';
   {$ELSE}
   Result := '';
