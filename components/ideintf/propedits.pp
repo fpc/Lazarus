@@ -6252,26 +6252,14 @@ end;
 function ControlAcceptsStreamableChildComponent(aControl: TWinControl;
   aComponentClass: TComponentClass; aLookupRoot: TPersistent): boolean;
 {off $DEFINE VerboseAddDesigner}
+var
+  Parent: TWinControl;
 begin
   Result:=false;
   if not (csAcceptsControls in aControl.ControlStyle) then
   begin
     {$IFDEF VerboseAddDesigner}
     debugln(['ControlAcceptsStreamableChildComponent missing csAcceptsControls in ',DbgSName(aControl)]);
-    {$ENDIF}
-    exit;
-  end;
-
-  // Because of TWriter, you can not put a control onto an
-  // csInline,csAncestor control (e.g. on a frame).
-  if (aControl<>aLookupRoot)
-  and ((aControl.Owner<>aLookupRoot)
-       and ([csInline,csAncestor]*aControl.ComponentState<>[]))
-  or  ([csInline]*aControl.ComponentState<>[])
-  then
-  begin
-    {$IFDEF VerboseAddDesigner}
-    debugln(['ControlAcceptsStreamableChildComponent aControl=',DbgSName(aControl),' csInline=',csInline in aControl.ComponentState,' csAncestor=',csAncestor in aControl.ComponentState]);
     {$ENDIF}
     exit;
   end;
@@ -6285,6 +6273,10 @@ begin
     exit;
   end;
 
+  // the LookupRoot allows children
+  if aControl=aLookupRoot then
+    exit(true);
+
   // TWriter only supports children of LookupRoot and LookupRoot.Components
   if (aControl.Owner <> aLookupRoot) and (aControl <> aLookupRoot) then
   begin
@@ -6292,6 +6284,19 @@ begin
     debugln(['ControlAcceptsStreamableChildComponent wrong lookuproot aControl=',DbgSName(aControl),' aLookupRoot=',DbgSName(aLookupRoot),' aControl.Owner=',DbgSName(aControl.Owner)]);
     {$ENDIF}
     exit;
+  end;
+
+  // TWriter does not support children on nested components
+  // (i.e. csInline , e.g. on a frame) nor any of its components
+  Parent:=aControl;
+  while (Parent<>nil) and (Parent<>aLookupRoot) do begin
+    if csInline in Parent.ComponentState then begin
+      {$IFDEF VerboseAddDesigner}
+      debugln(['ControlAcceptsStreamableChildComponent aControl=',DbgSName(aControl),' Parent=',DbgSName(Parent),' csInline']);
+      {$ENDIF}
+      exit;
+    end;
+    Parent:=Parent.Parent;
   end;
 
   Result:=true;
