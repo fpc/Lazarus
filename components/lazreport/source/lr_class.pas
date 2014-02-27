@@ -935,7 +935,7 @@ type
     Stream: TStream;
     Lines: TFpList;
     procedure ClearLines;
-    procedure Setup; virtual;
+    function Setup:boolean; virtual;
     function  AddData({%H-}x, {%H-}y: Integer; view: TfrView): pointer; virtual;
     procedure NewRec(View: TfrView; const AText:string; var P:Pointer); virtual;
     procedure AddRec(ALineIndex: Integer; ARec: Pointer); virtual;
@@ -1298,9 +1298,7 @@ const
   frSpecCount = 9;
   frSpecFuncs: Array[0..frSpecCount - 1] of String = ('PAGE#', '',
     'DATE', 'TIME', 'LINE#', 'LINETHROUGH#', 'COLUMN#', 'CURRENT#', 'TOTALPAGES');
-  frColors: Array[0..15] of TColor =
-    (clWhite, clBlack, clMaroon, clGreen, clOlive, clNavy, clPurple, clTeal,
-     clGray, clSilver, clRed, clLime, clYellow, clBlue, clFuchsia, clAqua);
+
   frAllFrames=[frbLeft, frbTop, frbRight, frbBottom];
 
   frUnwrapRead: boolean = false; // TODO: remove this for 0.9.28
@@ -1446,12 +1444,12 @@ const
   PropCount = 6;
   PropNames: Array[0..PropCount - 1] of String =
       ('Text','FontName', 'FontSize', 'FontStyle', 'FontColor', 'Adjust');
-
+{
   ColNames: Array[0..16] of String =
       ('clWhite', 'clBlack', 'clMaroon', 'clGreen', 'clOlive', 'clNavy',
        'clPurple', 'clTeal', 'clGray', 'clSilver', 'clRed', 'clLime',
        'clYellow', 'clBlue', 'clFuchsia', 'clAqua', 'clTransparent');
-
+}
 {$IFDEF DebugLR}
 function Bandtyp2str(typ: TfrBandType): string;
 begin
@@ -9917,28 +9915,30 @@ begin
 
   FCurrentFilter.OnSetup:=CurReport.OnExportFilterSetup;
 
-  FCurrentFilter.Setup;
-  FCurrentFilter.OnBeginDoc;
-
-  SavedAllPages := EMFPages.Count;
-
-  if FCurrentFilter.UseProgressbar then
-  with frProgressForm do
+  if FCurrentFilter.Setup then
   begin
-    s := sReportPreparing;
-    if Title = '' then
-      Caption := s
-    else
-      Caption := s + ' - ' + Title;
-    FirstCaption := sPagePreparing;
-    Label1.Caption := FirstCaption + '  1';
-    OnBeforeModal := @ExportBeforeModal;
-    Show_Modal(Self);
-  end else
-    ExportBeforeModal(nil);
+    FCurrentFilter.OnBeginDoc;
 
-  fDefExportFilterClass := FCurrentFilter.ClassName;
-  fDefExportFileName := aFileName;
+    SavedAllPages := EMFPages.Count;
+
+    if FCurrentFilter.UseProgressbar then
+    with frProgressForm do
+    begin
+      s := sReportPreparing;
+      if Title = '' then
+        Caption := s
+      else
+        Caption := s + ' - ' + Title;
+      FirstCaption := sPagePreparing;
+      Label1.Caption := FirstCaption + '  1';
+      OnBeforeModal := @ExportBeforeModal;
+      Show_Modal(Self);
+    end else
+      ExportBeforeModal(nil);
+
+    fDefExportFilterClass := FCurrentFilter.ClassName;
+    fDefExportFileName := aFileName;
+  end;
 
   FreeAndNil(FCurrentFilter);
   ExportStream.Free;
@@ -10678,6 +10678,7 @@ var
   PropInfo:PPropInfo;
   St:string;
   i:integer;
+  FColorVal:TColor;
 begin
 
   t := CurView;
@@ -10746,18 +10747,6 @@ begin
     end
     else
     begin
-      // it's not a property of t, try with known color names first
-      for i := 0 to 16 do
-        if AnsiCompareText(ColNames[i], Prop) = 0 then
-        begin
-            // color constant found.
-          if i <> 16 then
-            AValue := frColors[i]
-          else
-            AValue := clNone;
-          exit;
-        end;
-
         // it's not a color name, try with customized properties
         // not included directly in t
       if not (t is TfrBandView) then
@@ -10787,6 +10776,27 @@ begin
     {$IFDEF DebugLR}
     DebugLn('TInterpretator.GetValue(',Name,') No Propinfo for Prop=',Prop,' Value=',dbgs(AValue));
     {$ENDIF}
+  end
+  else
+  begin
+    // it's not a property of t, try with known color names first
+    if IdentToColor(AName, FColorVal) then
+    begin
+      AValue := FColorVal;
+      exit;
+    end
+    else
+    if UpperCase(AName) = 'MROK' then //try std ModalResult values
+    begin
+      AValue := mrOk;
+      exit;
+    end
+    else
+    if UpperCase(AName) = 'MRCANCEL' then //try std ModalResult values
+    begin
+      AValue := mrCancel;
+      exit;
+    end
   end;
 end;
 
@@ -10926,8 +10936,9 @@ begin
   FLineIndex := -1;
 end;
 
-procedure TfrExportFilter.Setup;
+function TfrExportFilter.Setup: boolean;
 begin
+  Result:=true;
   if assigned(FOnSetup) then
     FOnSetup(Self);
 end;
@@ -10956,7 +10967,7 @@ begin
 end;
 
 procedure TfrExportFilter.NewRec(View: TfrView; const AText: string;
-  var p:pointer);
+  var P: Pointer);
 begin
   GetMem(p, SizeOf(TfrTextRec));
   FillChar(p^, SizeOf(TfrTextRec), 0);
@@ -10985,7 +10996,7 @@ begin
   end;
 end;
 
-procedure TfrExportFilter.AddRec(ALineIndex: Integer; ARec: pointer);
+procedure TfrExportFilter.AddRec(ALineIndex: Integer; ARec: Pointer);
 var
   p, p1, p2: PfrTextRec;
 begin
@@ -11510,8 +11521,8 @@ begin
     {$IFDEF DebugLR}
     DebugLn('Trying to find RT Object "',St,'"');
     {$ENDIF}
-    if Assigned(CurPage) then
-      t := CurPage.FindRTObject(St);
+    if Assigned(CurReport.FCurPage) then
+      t := CurReport.FCurPage.FindRTObject(St);
     if not Assigned(t) then
        t:=CurReport.FindObject(Copy(Name, 1, Pos('.', Name) - 1));
     Prop := Copy(Name, Pos('.', Name) + 1, 255);

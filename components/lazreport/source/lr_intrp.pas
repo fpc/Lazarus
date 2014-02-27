@@ -80,7 +80,8 @@ type
 
   PVariable = ^TVariable;
   TVariable = record
-    Name : PString;
+    //Name : PString;
+    Name : String;
     Value: Variant;
   end;
 
@@ -119,14 +120,14 @@ var
   p: PVariable;
 begin
   for i := 0 to FList.Count - 1 do
-    if AnsiCompareText(PVariable(FList[i])^.Name^, aName) = 0 then
+    if AnsiCompareText(PVariable(FList[i])^.Name, aName) = 0 then
     begin
       PVariable(FList[i])^.Value := AValue;
       Exit;
     end;
   GetMem(p, SizeOf(TVariable));
   FillChar(p^, SizeOf(TVariable), 0);
-  p^.Name := NewStr(aName);
+  p^.Name := aName; //NewStr(aName);
   p^.Value := AValue;
   FList.Add(p);
 end;
@@ -137,7 +138,7 @@ var
 begin
   Result := Null;
   for i := 0 to FList.Count - 1 do
-    if AnsiCompareText(PVariable(FList[i])^.Name^, aName) = 0 then
+    if AnsiCompareText(PVariable(FList[i])^.Name, aName) = 0 then
     begin
       Result := PVariable(FList[i])^.Value;
       break;
@@ -163,7 +164,7 @@ var
 begin
   Result := -1;
   for i := 0 to FList.Count - 1 do
-    if AnsiCompareText(PVariable(FList[i])^.Name^, AName) = 0 then
+    if AnsiCompareText(PVariable(FList[i])^.Name, AName) = 0 then
     begin
       Result := i;
       break;
@@ -179,7 +180,7 @@ function TfrVariables.GetName(Index: Integer): String;
 begin
   Result := '';
   if (Index < 0) or (Index >= FList.Count) then Exit;
-  Result := PVariable(FList[Index])^.Name^;
+  Result := PVariable(FList[Index])^.Name;
 end;
 
 procedure TfrVariables.Delete(Index: Integer);
@@ -188,7 +189,8 @@ var
 begin
   if (Index < 0) or (Index >= FList.Count) then Exit;
   p := FList[Index];
-  DisposeStr(p^.Name);
+  //DisposeStr(p^.Name);
+  p^.Name:='';
   p^.Value := 0;
   FreeMem(p, SizeOf(TVariable));
   FList.Delete(Index);

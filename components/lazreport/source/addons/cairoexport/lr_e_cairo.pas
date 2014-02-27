@@ -56,7 +56,7 @@ type
     procedure SaveClipping(NewClipRect: PRect);
     procedure RestoreClipping;
   protected
-    procedure Setup; override;
+    function Setup:boolean; override;
   public
     constructor Create(AStream: TStream); override;
     destructor Destroy; override;
@@ -234,9 +234,9 @@ begin
   fCairoPrinter.Canvas.Clipping := fClipState.Clipping;
 end;
 
-procedure TlrCairoExportFilter.Setup;
+function TlrCairoExportFilter.Setup: boolean;
 begin
-  inherited Setup;
+  Result:=inherited Setup;
 
   case Backend of
     cePS:

@@ -39,6 +39,11 @@ implementation
 
 uses LR_Class;
 
+var
+  frColors: Array[0..15] of TColor =
+   (clWhite, clBlack, clMaroon, clGreen, clOlive, clNavy, clPurple, clTeal,
+     clGray, clSilver, clRed, clLime, clYellow, clBlue, clFuchsia, clAqua);
+
 constructor TColorSelector.Create(AOwner: TComponent);
 var
   b  : TSpeedButton;

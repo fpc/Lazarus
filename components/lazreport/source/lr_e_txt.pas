@@ -35,7 +35,7 @@ type
     FUsedFont: Integer;
   protected
     procedure GetUsedFont; virtual;
-    procedure Setup; override;
+    function Setup:boolean; override;
     procedure NewRec(View: TfrView; const AText:string; var p:pointer); override;
     procedure CalcXCoords(var {%H-}x,{%H-}w: integer); virtual;
     function  CheckView(View: TfrView): boolean; override;
@@ -67,9 +67,9 @@ begin
     FUsedFont := 10;
 end;
 
-procedure TfrTextExportFilter.Setup;
+function TfrTextExportFilter.Setup: boolean;
 begin
-  inherited Setup;
+  Result:=inherited Setup;
   if FUsedFont<=0 then
     GetUsedFont;
 end;
