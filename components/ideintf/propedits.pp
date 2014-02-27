@@ -954,17 +954,17 @@ type
     procedure DoSaveElements; virtual;
     procedure FreeElementPropertyEditors; virtual;
     function GetElementAttributes(
-      Element: TListElementPropertyEditor): TPropertyAttributes; virtual;
+      {%H-}Element: TListElementPropertyEditor): TPropertyAttributes; virtual;
     function GetElementName(
-      Element: TListElementPropertyEditor):shortstring; virtual;
-    procedure GetElementProperties(Element: TListElementPropertyEditor;
-      Proc: TGetPropEditProc); virtual;
+      {%H-}Element: TListElementPropertyEditor):shortstring; virtual;
+    procedure GetElementProperties({%H-}Element: TListElementPropertyEditor;
+      {%H-}Proc: TGetPropEditProc); virtual;
     function GetElementValue(
-      Element: TListElementPropertyEditor): ansistring; virtual;
-    procedure GetElementValues(Element: TListElementPropertyEditor;
-      Proc: TGetStrProc); virtual;
-    procedure SetElementValue(Element: TListElementPropertyEditor;
-      NewValue: ansistring); virtual;
+      {%H-}Element: TListElementPropertyEditor): ansistring; virtual;
+    procedure GetElementValues({%H-}Element: TListElementPropertyEditor;
+      {%H-}Proc: TGetStrProc); virtual;
+    procedure SetElementValue({%H-}Element: TListElementPropertyEditor;
+      {%H-}NewValue: ansistring); virtual;
   public
     constructor Create(Hook:TPropertyEditorHook; APropCount:Integer); override;
     destructor Destroy; override;
@@ -990,7 +990,7 @@ type
     function ReadElementCount: integer; override;
     function ReadElement(Index: integer): TPersistent; override;
     function GetElementAttributes(
-      Element: TListElementPropertyEditor): TPropertyAttributes; override;
+      {%H-}Element: TListElementPropertyEditor): TPropertyAttributes; override;
     function GetElementName(
       Element: TListElementPropertyEditor):shortstring; override;
     procedure GetElementProperties(Element: TListElementPropertyEditor;
@@ -6205,13 +6205,13 @@ begin
     if VirtualKeyStrings=nil then begin
       VirtualKeyStrings:=TStringHashList.Create(true);
       for i:=1 to 255 do
-        VirtualKeyStrings.Add(KeyAndShiftStateToKeyString(word(i),[]), Pointer(i));
+        VirtualKeyStrings.Add(KeyAndShiftStateToKeyString(word(i),[]), {%H-}Pointer(i));
     end;
   end else
     exit;
   Data:=VirtualKeyStrings.Data[s];
   if Data<>nil then
-    Result:=word(PtrUInt(Data));
+    Result:=word({%H-}PtrUInt(Data));
 end;
 
 function GetClassUnitName(Value: TClass): string;
@@ -6269,26 +6269,14 @@ end;
 function ControlAcceptsStreamableChildComponent(aControl: TWinControl;
   aComponentClass: TComponentClass; aLookupRoot: TPersistent): boolean;
 {off $DEFINE VerboseAddDesigner}
+var
+  Parent: TWinControl;
 begin
   Result:=false;
   if not (csAcceptsControls in aControl.ControlStyle) then
   begin
     {$IFDEF VerboseAddDesigner}
     debugln(['ControlAcceptsStreamableChildComponent missing csAcceptsControls in ',DbgSName(aControl)]);
-    {$ENDIF}
-    exit;
-  end;
-
-  // Because of TWriter, you can not put a control onto an
-  // csInline,csAncestor control (e.g. on a frame).
-  if (aControl<>aLookupRoot)
-  and ((aControl.Owner<>aLookupRoot)
-       and ([csInline,csAncestor]*aControl.ComponentState<>[]))
-  or  ([csInline]*aControl.ComponentState<>[])
-  then
-  begin
-    {$IFDEF VerboseAddDesigner}
-    debugln(['ControlAcceptsStreamableChildComponent aControl=',DbgSName(aControl),' csInline=',csInline in aControl.ComponentState,' csAncestor=',csAncestor in aControl.ComponentState]);
     {$ENDIF}
     exit;
   end;
@@ -6302,6 +6290,10 @@ begin
     exit;
   end;
 
+  // the LookupRoot allows children
+  if aControl=aLookupRoot then
+    exit(true);
+
   // TWriter only supports children of LookupRoot and LookupRoot.Components
   if (aControl.Owner <> aLookupRoot) and (aControl <> aLookupRoot) then
   begin
@@ -6309,6 +6301,19 @@ begin
     debugln(['ControlAcceptsStreamableChildComponent wrong lookuproot aControl=',DbgSName(aControl),' aLookupRoot=',DbgSName(aLookupRoot),' aControl.Owner=',DbgSName(aControl.Owner)]);
     {$ENDIF}
     exit;
+  end;
+
+  // TWriter does not support children on nested components
+  // (i.e. csInline , e.g. on a frame) nor any of its components
+  Parent:=aControl;
+  while (Parent<>nil) and (Parent<>aLookupRoot) do begin
+    if csInline in Parent.ComponentState then begin
+      {$IFDEF VerboseAddDesigner}
+      debugln(['ControlAcceptsStreamableChildComponent aControl=',DbgSName(aControl),' Parent=',DbgSName(Parent),' csInline']);
+      {$ENDIF}
+      exit;
+    end;
+    Parent:=Parent.Parent;
   end;
 
   Result:=true;
