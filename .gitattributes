@@ -5342,6 +5342,7 @@ ide/include/haiku/lazconf.inc svneol=native#text/plain
 ide/include/ide.inc svneol=native#text/pascal
 ide/include/linux/lazconf.inc svneol=native#text/pascal
 ide/include/netbsd/lazconf.inc svneol=native#text/pascal
+ide/include/openbsd/lazconf.inc svneol=native#text/plain
 ide/include/solaris/lazconf.inc svneol=native#text/plain
 ide/include/unix/lazbaseconf.inc svneol=native#text/pascal
 ide/include/win/lazbaseconf.inc svneol=native#text/plain
