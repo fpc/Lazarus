@@ -45,7 +45,7 @@ uses
   Classes, SysUtils, AvgLvlTree, BasicCodeTools, TypInfo, LCLProc, LResources,
   Forms, Controls, LCLMemManager, LCLIntf, Dialogs,
   PropEditUtils, PropEdits, UnitResources, IDEDialogs,
-  IDEProcs, PackageDefs, BasePkgManager;
+  IDEProcs, PackageDefs, BasePkgManager, DesignerProcs;
 
 type
   //----------------------------------------------------------------------------
@@ -959,6 +959,9 @@ begin
       end;
     end;
   end;
+  {$IFDEF VerboseJITForms}
+  WriteComponentStates(FCurReadJITComponent,true);
+  {$ENDIF}
   FCurReadStreamClass:=nil;
   FCurReadJITComponent:=nil;
   FContextObject:=nil;
