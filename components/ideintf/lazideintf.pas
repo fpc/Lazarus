@@ -25,10 +25,11 @@ uses
 
 type
   // open file flags
+  // Normally you don't need to pass any flags.
   TOpenFlag = (
     ofProjectLoading,// this open is part of opening a whole project
     ofOnlyIfExists,  // do not auto create non existing files
-    ofRevert,        // reload file if already open
+    ofRevert,        // reload file if already open, any user changes are lost without question
     ofQuiet,         // less messages
     ofAddToRecent,   // add file to recent files
     ofRegularFile,   // open as regular file (e.g. do not open projects/packages)
@@ -48,6 +49,7 @@ const
   OpnFlagsPlainFile = [ofOnlyIfExists,ofQuiet,ofRegularFile,ofVirtualFile,ofDoNotLoadResource];
 type
   // new file flags
+  // Normally you don't need to pass any flags.
   TNewFlag = (
     nfIsPartOfProject, // force IsPartOfProject,
                        //   default is to use a heuristic
@@ -64,6 +66,7 @@ type
   TNewFlags = set of TNewFlag;
 
   // save file flags
+  // Normally you don't need to pass any flags.
   TSaveFlag = (
     sfSaveAs,
     sfSaveToTestDir,
@@ -78,6 +81,7 @@ type
   TSaveFlags = set of TSaveFlag;
   
   // close file flags
+  // Normally you don't need to pass any flags.
   TCloseFlag = (
     cfSaveFirst, // check if modified and save
     cfQuiet,
@@ -88,6 +92,7 @@ type
   TCloseFlags = set of TCloseFlag;
 
   // build project flags
+  // Normally you don't need to pass any flags.
   TProjectBuildFlag = (
     pbfCleanCompile,  // append -B to the compiler options
     pbfDoNotCompileDependencies,
@@ -109,6 +114,7 @@ type
     );
 
   // new filename flags
+  // Normally you don't need to pass any flags.
   TSearchIDEFileFlag = (
     siffDoNotCheckAllPackages, // do not search filename in unrelated packages (e.g. installed but not used by project)
     siffCheckAllProjects, // search filename in all loaded projects
@@ -119,12 +125,14 @@ type
   TSearchIDEFileFlags = set of TSearchIDEFileFlag;
 
   // find unit flags
+  // Normally you don't need to pass any flags.
   TFindUnitFileFlag = (
     fuffIgnoreUninstallPackages
     );
   TFindUnitFileFlags = set of TFindUnitFileFlag;
 
   // find source flags
+  // Normally you don't need to pass any flags.
   TFindSourceFlag = (
     fsfSearchForProject,
     fsfUseIncludePaths,
