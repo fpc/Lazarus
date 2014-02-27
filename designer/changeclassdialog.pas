@@ -39,7 +39,8 @@ uses
   StdCtrls, Buttons, AVGLvlTree, LFMTrees, CodeCache, CodeToolManager, LCLType,
   // IDE
   SrcEditorIntf, PropEdits, LazarusIDEStrConsts, ComponentReg, ComponentEditors,
-  FormEditingIntf, CheckLFMDlg, Project, MainIntf, ExtCtrls, ButtonPanel;
+  FormEditingIntf, IDEDialogs, CheckLFMDlg, Project, MainIntf, ExtCtrls,
+  ButtonPanel;
 
 type
 
@@ -122,10 +123,10 @@ var
 
   procedure ShowAbortMessage(const Msg: string);
   begin
-    MessageDlg('Error',
+    IDEMessageDialog('Error',
       Format(lisUnableToChangeClassOfTo, [Msg, LineEnding, PersistentName,
         NewClass.ClassName]),
-      mtError,[mbCancel],0);
+      mtError,[mbCancel]);
   end;
 
   function StreamSelection: boolean;

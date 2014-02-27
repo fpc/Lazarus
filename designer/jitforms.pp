@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, AvgLvlTree, BasicCodeTools, TypInfo, LCLProc, LResources,
   Forms, Controls, LCLMemManager, LCLIntf, Dialogs,
-  PropEditUtils, PropEdits, UnitResources,
+  PropEditUtils, PropEdits, UnitResources, IDEDialogs,
   IDEProcs, PackageDefs, BasePkgManager;
 
 type
@@ -917,7 +917,7 @@ begin
   NewClassName:=UnitResourcefileFormat.GetClassNameFromStream(BinStream,IsInherited);
   if IsInherited then ;
   if NewClassName='' then begin
-    MessageDlg('No classname in stream found.',mtError,[mbOK],0);
+    IDEMessageDialog('Error','No classname in stream found.',mtError,[mbOK]);
     FContextObject:=nil;
     exit;
   end;
@@ -1201,9 +1201,9 @@ begin
     OnException(Self,E,Action)
   else begin
     // then try to give a visible warning
-    MessageDlg('Read error',
+    IDEMessageDialog('Read error',
       Context+LineEnding
-       +'Error: '+FCurReadErrorMsg,mtError,[mbCancel],0);
+       +'Error: '+FCurReadErrorMsg,mtError,[mbCancel]);
   end;
 end;
 

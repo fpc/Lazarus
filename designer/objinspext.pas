@@ -21,7 +21,7 @@ uses
   ExtCtrls, Dialogs, Menus, ComCtrls, Grids, CustomTimer,
   DirectoryCacher, CodeToolManager, CodeCache, PropEdits,
   LazIDEIntf, ProjectIntf, ObjectInspector, OIFavoriteProperties,
-  DialogProcs, FileUtil, LazConf, BaseIDEIntf, LazConfigStorage,
+  DialogProcs, FileUtil, LazConf, BaseIDEIntf, IDEDialogs, LazConfigStorage,
   LazarusIDEStrConsts;
   
 type
@@ -331,9 +331,9 @@ begin
       CurClass:=CurClass.ClassParent;
     end;
   end;
-  MessageDlg(lisClassNotFound, Format(lisOIFClassNotFound, ['"', NewClassName,
+  IDEMessageDialog(lisClassNotFound, Format(lisOIFClassNotFound, ['"', NewClassName,
     '"']), mtError,
-             [mbOk],0);
+             [mbOk]);
 end;
 
 procedure TOIAddRemoveFavoriteDlg.SetObjectInspector(const AValue: TObjectInspectorDlg);

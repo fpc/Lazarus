@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, StdCtrls, Buttons, Spin,
-  IDECommands, PropEdits, LazarusIDEStrConsts, IDEOptionDefs;
+  IDECommands, PropEdits, IDEDialogs, LazarusIDEStrConsts, IDEOptionDefs;
 
 type
 
@@ -314,8 +314,8 @@ begin
         CurControl.AnchorSide[Kind].Side,
         ReferenceControl,ReferenceSide,CheckPosition))
       then begin
-        if MessageDlg(lisCCOWarningCaption,
-          lisThisWillCreateACircularDependency, mtWarning, [mbIgnore, mbCancel], 0)<>
+        if IDEMessageDialog(lisCCOWarningCaption,
+          lisThisWillCreateACircularDependency, mtWarning, [mbIgnore, mbCancel])<>
             mrIgnore
         then begin
           Refresh(false);
@@ -541,8 +541,8 @@ begin
         CurControl.AnchorSide[Kind].Side,
         ReferenceControl,ReferenceSide,CheckPosition))
       then begin
-        if MessageDlg(lisCCOWarningCaption,
-          lisThisWillCreateACircularDependency, mtWarning, [mbIgnore, mbCancel], 0)<>
+        if IDEMessageDialog(lisCCOWarningCaption,
+          lisThisWillCreateACircularDependency, mtWarning, [mbIgnore, mbCancel])<>
             mrIgnore
         then begin
           Refresh(false);
@@ -562,8 +562,9 @@ begin
         CurControl.AnchorSide[Kind].Control:=NewSibling;
       except
         on E: Exception do begin
-          MessageDlg('Error', lisUnableToSetAnchorSideControl+LineEnding+E.Message,
-            mtError,[mbCancel],0);
+          IDEMessageDialog(lisCCOErrorCaption, lisUnableToSetAnchorSideControl+
+            LineEnding+E.Message,
+            mtError,[mbCancel]);
         end;
       end;
     end;
@@ -652,8 +653,8 @@ begin
         CurControl.AnchorSide[Kind].Control,Side,
         ReferenceControl,ReferenceSide,CheckPosition))
       then begin
-        if MessageDlg(lisCCOWarningCaption,
-          lisThisWillCreateACircularDependency, mtWarning, [mbIgnore, mbCancel], 0)<>
+        if IDEMessageDialog(lisCCOWarningCaption,
+          lisThisWillCreateACircularDependency, mtWarning, [mbIgnore, mbCancel])<>
             mrIgnore
         then begin
           Refresh(false);

@@ -964,9 +964,9 @@ function TDesigner.CopySelectionToStream(AllComponentsStream: TStream): boolean;
         // check if not the top level component is selected
         CurParent:=TControl(ControlSelection[i].Persistent).Parent;
         if CurParent=nil then begin
-          MessageDlg(lisCanNotCopyTopLevelComponent,
+          IDEMessageDialog(lisCanNotCopyTopLevelComponent,
             lisCopyingAWholeFormIsNotImplemented,
-            mtError,[mbOk],0);
+            mtError,[mbOk]);
           exit;
         end;
 
@@ -1020,10 +1020,10 @@ begin
         end;
       except
         on E: Exception do begin
-          MessageDlg(lisUnableToStreamSelectedComponents,
+          IDEMessageDialog(lisUnableToStreamSelectedComponents,
             Format(lisThereWasAnErrorDuringWritingTheSelectedComponent, [
               CurComponent.Name, CurComponent.ClassName, LineEnding, E.Message]),
-            mtError,[mbOk],0);
+            mtError,[mbOk]);
           exit;
         end;
       end;
@@ -1033,10 +1033,10 @@ begin
         LRSObjectBinaryToText(BinCompStream,TxtCompStream);
       except
         on E: Exception do begin
-          MessageDlg(lisUnableConvertBinaryStreamToText,
+          IDEMessageDialog(lisUnableConvertBinaryStreamToText,
             Format(lisThereWasAnErrorWhileConvertingTheBinaryStreamOfThe, [
               CurComponent.Name, CurComponent.ClassName, LineEnding, E.Message]),
-            mtError,[mbOk],0);
+            mtError,[mbOk]);
           exit;
         end;
       end;
@@ -1081,10 +1081,10 @@ begin
       ClipBoard.AsText:=AllComponentText;
     except
       on E: Exception do begin
-        MessageDlg(lisUnableCopyComponentsToClipboard,
+        IDEMessageDialog(lisUnableCopyComponentsToClipboard,
           Format(lisThereWasAnErrorWhileCopyingTheComponentStreamToCli,
                  [LineEnding, E.Message]),
-          mtError,[mbOk],0);
+          mtError,[mbOk]);
         exit;
       end;
     end;
@@ -1499,7 +1499,7 @@ begin
     GlobalDesignHook.PersistentAdded(APersistent,false);
   except
     on E: Exception do
-      MessageDlg('Error:',E.Message,mtError,[mbOk],0);
+      IDEMessageDialog('Error:',E.Message,mtError,[mbOk]);
   end;
 end;
 
@@ -1565,10 +1565,10 @@ begin
   except
     on E: Exception do begin
       DebugLn('TDesigner.InvokeComponentEditor ERROR: ',E.Message);
-      MessageDlg(Format(lisErrorIn, [CompEditor.ClassName]),
+      IDEMessageDialog(Format(lisErrorIn, [CompEditor.ClassName]),
         Format(lisTheComponentEditorOfClassHasCreatedTheError, ['"',
           CompEditor.ClassName, '"', LineEnding, '"', E.Message, '"']),
-        mtError,[mbOk],0);
+        mtError,[mbOk]);
     end;
   end;
   try
@@ -2113,9 +2113,9 @@ begin
             if (ControlSelection.SelectionForm<>nil)
             and (ControlSelection.SelectionForm<>Form)
             then begin
-              MessageDlg(lisInvalidMultiselection,
+              IDEMessageDialog(lisInvalidMultiselection,
                 fdInvalidMultiselectionText,
-                mtInformation,[mbOk],0);
+                mtInformation,[mbOk]);
             end else begin
               ControlSelection.Add(MouseDownComponent);
             end;
@@ -2312,9 +2312,9 @@ var
     and (ControlSelection.SelectionForm<>nil)
     and (ControlSelection.SelectionForm<>Form)
     then begin
-      MessageDlg(lisInvalidMultiselection,
+      IDEMessageDialog(lisInvalidMultiselection,
         fdInvalidMultiselectionText,
-        mtInformation,[mbOk],0);
+        mtInformation,[mbOk]);
       exit;
     end;
 
@@ -2788,9 +2788,9 @@ begin
   // check if a component is the lookup root (can not be deleted)
   if (ControlSelection.LookupRootSelected) then begin
     if ControlSelection.Count>1 then
-      MessageDlg(lisInvalidDelete,
+      IDEMessageDialog(lisInvalidDelete,
        lisTheRootComponentCanNotBeDeleted, mtInformation,
-       [mbOk],0);
+       [mbOk]);
     exit;
   end;
   // check if a selected component is inherited (can not be deleted)
@@ -2799,10 +2799,10 @@ begin
     AncestorRoot:=TheFormEditor.GetAncestorLookupRoot(
                                     TComponent(ControlSelection[i].Persistent));
     if AncestorRoot<>nil then begin
-      MessageDlg(lisInvalidDelete,
+      IDEMessageDialog(lisInvalidDelete,
        Format(lisTheComponentIsInheritedFromToDeleteAnInheritedComp, [dbgsName(
          ControlSelection[i].Persistent), dbgsName(AncestorRoot), LineEnding]),
-       mtInformation, [mbOk],0);
+       mtInformation, [mbOk]);
       exit;
     end;
   end;
@@ -2811,10 +2811,10 @@ begin
     if not ControlSelection[i].IsTComponent then continue;
     AComponent:=TComponent(ControlSelection[i].Persistent);
     if AComponent.Owner<>FLookupRoot then begin
-      MessageDlg(lisInvalidDelete,
+      IDEMessageDialog(lisInvalidDelete,
        Format(lisTheComponentCanNotBeDeletedBecauseItIsNotOwnedBy, [dbgsName(
          ControlSelection[i].Persistent), dbgsName(FLookupRoot)]),
-       mtInformation, [mbOk],0);
+       mtInformation, [mbOk]);
       exit;
     end;
   end;
@@ -3162,11 +3162,11 @@ begin
   except
     on E: Exception do begin
       DebugLn('TDesigner.OnComponentEditorVerbMenuItemClick ERROR: ',E.Message);
-      MessageDlg(Format(lisErrorIn, [PopupMenuComponentEditor.ClassName]),
+      IDEMessageDialog(Format(lisErrorIn, [PopupMenuComponentEditor.ClassName]),
         Format(lisTheComponentEditorOfClassInvokedWithVerbHasCreated, ['"',
           PopupMenuComponentEditor.ClassName, '"', LineEnding, IntToStr(Verb), '"',
           VerbCaption, '"', LineEnding, LineEnding, '"', E.Message, '"']),
-        mtError,[mbOk],0);
+        mtError,[mbOk]);
     end;
   end;
 end;

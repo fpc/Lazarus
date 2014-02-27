@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, Buttons, ComCtrls,
-  LCLType, PropEdits, LazarusIDEStrConsts;
+  LCLType, PropEdits, IDEDialogs, LazarusIDEStrConsts;
 
 type
 
@@ -162,8 +162,8 @@ begin
     FirstItem := ItemTreeview.Selected.Parent.GetFirstChild
   else
     FirstItem := ItemTreeview.Items.GetFirstNode;
-  if MessageDlg('', Format(lisTabOrderConfirmSort, [TControl(FirstItem.Data).Parent.Name]),
-    mtConfirmation, mbOKCancel, 0) <> mrOK then
+  if IDEMessageDialog('', Format(lisTabOrderConfirmSort, [TControl(FirstItem.Data).Parent.Name]),
+    mtConfirmation, mbOKCancel) <> mrOK then
   begin
     Exit;
   end;
