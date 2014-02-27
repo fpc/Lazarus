@@ -2211,6 +2211,7 @@ var
       do
         NewParentControl := NewParentControl.Parent;
       NewParent := NewParentControl;
+      //debugln(['AddComponent NewParent=',DbgSName(NewParent)]);
     end;
     if not Assigned(NewParent) then exit;
 
