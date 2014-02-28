@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, AVL_Tree, FileUtil, lazutf8classes, Forms, Controls,
   Graphics, Dialogs, StdCtrls, ComCtrls, FileProcs, DefineTemplates,
   CodeToolManager, BaseBuildManager, Project, EnvironmentOpts,
-  LazarusIDEStrConsts, AboutFrm, IDEWindowIntf, LazIDEIntf;
+  LazarusIDEStrConsts, AboutFrm, TransferMacros, IDEWindowIntf, LazIDEIntf;
 
 type
 
@@ -147,6 +147,14 @@ begin
     sl.Add('The IDE asks the compiler with the following command for the real OS/CPU:');
     CompilerFilename:=LazarusIDE.GetFPCompilerFilename;
     CompilerOptions:='';
+    if Project1<>nil then
+    begin
+      CompilerOptions:=ExtractFPCFrontEndParameters(Project1.CompilerOptions.CustomOptions);
+      if not GlobalMacroList.SubstituteStr(CompilerOptions) then begin
+        sl.Add('invalid macros in project''s compiler options: '+Project1.CompilerOptions.CustomOptions);
+        CompilerOptions:='';
+      end;
+    end;
     Cfg:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
                         CompilerFilename,CompilerOptions,'','',true);
     // fpc -i
@@ -260,6 +268,7 @@ begin
     sl.Add('TargetOS='+Project1.CompilerOptions.TargetOS);
     sl.Add('TargetCPU='+Project1.CompilerOptions.TargetCPU);
     sl.Add('CompilerFilename='+Project1.CompilerOptions.CompilerPath);
+    sl.Add('CompilerOptions='+ExtractFPCFrontEndParameters(Project1.CompilerOptions.CompilerPath));
   end else begin
     sl.Add('no project');
   end;
