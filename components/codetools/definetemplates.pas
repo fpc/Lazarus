@@ -946,11 +946,24 @@ function RunTool(const Filename: string; Params: TStrings;
 function RunTool(const Filename, Params: string;
                  WorkingDirectory: string = ''): TStringList;
 
+type
+  // fpc parameter effecting search for compiler
+  TFPCFrontEndParam = (
+    fpcpT, // -T<targetos>
+    fpcpP, // -P<targetprocessor>
+    fpcpV, // -V<postfix>
+    fpcpXp // -Xp<directory>
+    );
+  TFPCFrontEndParams = set of TFPCFrontEndParam;
+const
+  AllFPCFrontEndParams = [low(TFPCFrontEndParam)..high(TFPCFrontEndParam)];
+
 function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
                       out Infos: TFPCInfoStrings): boolean;
 function RunFPCInfo(const CompilerFilename: string;
                    InfoTypes: TFPCInfoTypes; const Options: string =''): string;
-function ExtractFPCFrontEndParameters(const CmdLine: string): string;
+function ExtractFPCFrontEndParameters(const CmdLineParams: string;
+  const Kinds: TFPCFrontEndParams = AllFPCFrontEndParams): string;
 function SplitFPCVersion(const FPCVersionString: string;
                         out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
 function ParseFPCVerbose(List: TStrings; // fpc -va output
@@ -1359,7 +1372,8 @@ begin
   end;
 end;
 
-function ExtractFPCFrontEndParameters(const CmdLine: string): string;
+function ExtractFPCFrontEndParameters(const CmdLineParams: string;
+  const Kinds: TFPCFrontEndParams): string;
 // extract the parameters for the FPC frontend tool fpc.exe
 // The result is normalized:
 //   - only the last value
@@ -1384,26 +1398,26 @@ begin
   ParamV:='';
   ParamXp:='';
   Position:=1;
-  while ReadNextFPCParameter(CmdLine,Position,StartPos) do begin
-    Param:=ExtractFPCParameter(CmdLine,StartPos);
+  while ReadNextFPCParameter(CmdLineParams,Position,StartPos) do begin
+    Param:=ExtractFPCParameter(CmdLineParams,StartPos);
     if Param='' then continue;
     p:=PChar(Param);
     if p^<>'-' then continue;
     case p[1] of
-    'T': ParamT:=copy(Param,3,255);
-    'P': ParamP:=copy(Param,3,255);
-    'V': ParamV:=copy(Param,3,length(Param));
+    'T': if fpcpT in Kinds then ParamT:=copy(Param,3,255);
+    'P': if fpcpP in Kinds then ParamP:=copy(Param,3,255);
+    'V': if fpcpV in Kinds then ParamV:=copy(Param,3,length(Param));
     'X':
       case p[2] of
-      'p': ParamXp:=copy(Param,4,length(Param));
+      'p': if fpcpXp in Kinds then ParamXp:=copy(Param,4,length(Param));
       end;
     end;
   end;
   // add parameters
+  Add('Xp',ParamXp);
   Add('T',ParamT);
   Add('P',ParamP);
   Add('V',ParamV);
-  Add('Xp',ParamXp);
 end;
 
 function SplitFPCVersion(const FPCVersionString: string; out FPCVersion,
@@ -2584,6 +2598,8 @@ begin
   Result:=CompareStr(Item1.TargetCPU,Item2.TargetCPU);
   if Result<>0 then exit;
   Result:=CompareFilenames(Item1.Compiler,Item2.Compiler);
+  if Result<>0 then exit;
+  Result:=CompareFilenames(Item1.CompilerOptions,Item2.CompilerOptions);
 end;
 
 function CompareFPCSourceCacheItems(CacheItem1, CacheItem2: Pointer): integer;
@@ -7114,8 +7130,8 @@ end;
 
 procedure TFPCTargetConfigCache.Clear;
 begin
+  // keep keys
   CompilerDate:=0;
-  CompilerOptions:='';
   RealCompiler:='';
   RealCompilerDate:=0;
   RealTargetCPU:='';
@@ -7499,37 +7515,38 @@ var
 begin
   Result:=true;
   if (not FileExistsCached(Compiler)) then begin
-    debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" compiler file missing "',Compiler,'"']);
+    debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" compiler file missing "',Compiler,'"']);
     exit;
   end;
   if (FileAgeCached(Compiler)<>CompilerDate) then begin
-    debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" compiler file changed "',Compiler,'" FileAge=',FileAgeCached(Compiler),' StoredAge=',CompilerDate]);
+    debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" compiler file changed "',Compiler,'" FileAge=',FileAgeCached(Compiler),' StoredAge=',CompilerDate]);
     exit;
   end;
   if (RealCompiler<>'') and (CompareFilenames(RealCompiler,Compiler)<>0)
   then begin
     if (not FileExistsCached(RealCompiler))
     or (FileAgeCached(RealCompiler)<>RealCompilerDate) then begin
-      debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" real compiler file changed "',RealCompiler,'"']);
+      debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" real compiler file changed "',RealCompiler,'"']);
       exit;
     end;
   end;
   // fpc searches via PATH for the real compiler, resolves any symlink
   // and that is the RealCompiler
+  // ToDo: -Xp -V
   AFilename:=FindRealCompilerInPath(TargetCPU,true);
   if RealCompilerInPath<>AFilename then begin
-    debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" real compiler in PATH changed from "',RealCompilerInPath,'" to "',AFilename,'"']);
+    debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" real compiler in PATH changed from "',RealCompilerInPath,'" to "',AFilename,'"']);
     exit;
   end;
   for i:=0 to ConfigFiles.Count-1 do begin
     Cfg:=ConfigFiles[i];
     if (Cfg.Filename='') or (not FilenameIsAbsolute(Cfg.Filename)) then continue;
     if FileExistsCached(Cfg.Filename)<>Cfg.FileExists then begin
-      debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" config fileexists changed "',Cfg.Filename,'"']);
+      debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" config fileexists changed "',Cfg.Filename,'"']);
       exit;
     end;
     if Cfg.FileExists and (FileAgeCached(Cfg.Filename)<>Cfg.FileDate) then begin
-      debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" config file changed "',Cfg.Filename,'"']);
+      debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" config file changed "',Cfg.Filename,'"']);
       exit;
     end;
   end;
@@ -8742,6 +8759,7 @@ begin
                                            TargetOS,TargetCPU,true);
     FConfigCache.FreeNotification(Self);
   end;
+  //debugln(['TFPCUnitSetCache.GetConfigCache CompilerOptions="',CompilerOptions,'" FConfigCache.CompilerOptions="',FConfigCache.CompilerOptions,'"']);
   if AutoUpdate and FConfigCache.NeedsUpdate then
     FConfigCache.Update(Caches.TestFilename,Caches.ExtraOptions);
   Result:=FConfigCache;
@@ -8793,7 +8811,7 @@ var
 begin
   Src:=GetSourceCache(AutoUpdate);
   SrcRules:=GetSourceRules(AutoUpdate);
-  ConfigCache:=GetConfigCache(false);
+  ConfigCache:=GetConfigCache(false); // Note: update already done by GetSourceRules(AutoUpdate)
 
   if (fuscfUnitTreeNeedsUpdate in fFlags)
   or (fUnitStampOfFPC<>ConfigCache.ChangeStamp)

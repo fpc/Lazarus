@@ -29,6 +29,8 @@ unit BuildManager;
 
 {$mode objfpc}{$H+}
 
+{off $DEFINE VerboseFPCSrcScan}
+
 interface
 
 uses
@@ -138,6 +140,7 @@ type
     fTargetOS: string;
     fTargetCPU: string;
     fLCLWidgetType: string;
+    fBuildLazExtraOptions: string; // last build lazarus extra options
     OverrideTargetOS: string;
     OverrideTargetCPU: string;
     OverrideLCLWidgetType: string;
@@ -718,16 +721,6 @@ end;
 
 procedure TBuildManager.RescanCompilerDefines(ResetBuildTarget,
   ClearCaches, WaitTillDone, Quiet: boolean);
-var
-  TargetOS, TargetCPU: string;
-  CompilerFilename: String;
-  FPCSrcDir: string;
-  ADefTempl: TDefineTemplate;
-  FPCSrcCache: TFPCSourceCache;
-  NeedUpdateFPCSrcCache: Boolean;
-  IgnorePath: String;
-  MsgResult: TModalResult;
-  AsyncScanFPCSrcDir: String;
 
   procedure AddTemplate(ADefTempl: TDefineTemplate; AddToPool: boolean;
     const ErrorMsg: string);
@@ -787,6 +780,18 @@ var
     Result:=true;
   end;
 
+var
+  TargetOS, TargetCPU, FPCOptions: string;
+  CompilerFilename: String;
+  FPCSrcDir: string;
+  ADefTempl: TDefineTemplate;
+  FPCSrcCache: TFPCSourceCache;
+  NeedUpdateFPCSrcCache: Boolean;
+  IgnorePath: String;
+  MsgResult: TModalResult;
+  AsyncScanFPCSrcDir: String;
+  UnitSetChanged: Boolean;
+  HasTemplate: Boolean;
 begin
   if ClearCaches then begin
     {$IFDEF VerboseFPCSrcScan}
@@ -807,12 +812,22 @@ begin
   TargetCPU:=GetTargetCPU;
   FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
   CompilerFilename:=GetFPCompilerFilename;
+  FPCOptions:='';
+  if Project1<>nil then
+  begin
+    FPCOptions:=ExtractFPCFrontEndParameters(Project1.CompilerOptions.CustomOptions);
+    if not GlobalMacroList.SubstituteStr(FPCOptions) then begin
+      debugln(['WARNING: TBuildManager.RescanCompilerDefines ignoring invalid macros in custom options for fpc frontend: "',ExtractFPCFrontEndParameters(Project1.CompilerOptions.CustomOptions),'"']);
+      FPCOptions:='';
+    end;
+  end;
 
   {$IFDEF VerboseFPCSrcScan}
-  debugln(['TMainIDE.RescanCompilerDefines A ',
+  debugln(['TMainIDE.RescanCompilerDefines START ',
     ' CompilerFilename=',CompilerFilename,
     ' TargetOS=',TargetOS,
     ' TargetCPU=',TargetCPU,
+    ' FPCOptions="',FPCOptions,'"',
     ' EnvFPCSrcDir=',EnvironmentOptions.FPCSourceDirectory,
     ' FPCSrcDir=',FPCSrcDir,
     ' WaitTillDone=',WaitTillDone,
@@ -824,6 +839,9 @@ begin
   // first check the default targetos, targetcpu of the default compiler
   if FileExistsCached(EnvironmentOptions.GetParsedCompilerFilename) then
   begin
+    {$IFDEF VerboseFPCSrcScan}
+    debugln(['TBuildManager.RescanCompilerDefines reading default compiler settings']);
+    {$ENDIF}
     UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
       EnvironmentOptions.GetParsedCompilerFilename,'','','',FPCSrcDir,true);
     UnitSetCache.GetConfigCache(true);
@@ -836,8 +854,11 @@ begin
   end;
 
   // create a cache for the current project settings
+  {$IFDEF VerboseFPCSrcScan}
+  debugln(['TBuildManager.RescanCompilerDefines reading active compiler settings']);
+  {$ENDIF}
   UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
-    CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
+    CompilerFilename,TargetOS,TargetCPU,FPCOptions,FPCSrcDir,true);
 
   NeedUpdateFPCSrcCache:=false;
   //debugln(['TBuildManager.RescanCompilerDefines ',DirectoryExistsUTF8(FPCSrcDir),' ',(not WaitTillDone),' ',(not HasGUI)]);
@@ -854,7 +875,7 @@ begin
       if NeedUpdateFPCSrcCache then
       begin
         // start background scan of fpc source directory
-        //debugln(['TBuildManager.RescanCompilerDefines background scan '+FPCSrcCache.Directory]);
+        //debugln(['TBuildManager.RescanCompilerDefines background scan: '+FPCSrcCache.Directory]);
         AsyncScanFPCSrcDir:=FPCSrcDir;
       end;
     end;
@@ -863,47 +884,70 @@ begin
   // scan compiler, fpc sources and create indices for quick lookup
   UnitSetCache.Init;
 
-  if (FUnitSetChangeStamp=TFPCUnitSetCache.GetInvalidChangeStamp)
-  or (FUnitSetChangeStamp<>UnitSetCache.ChangeStamp) then begin
-    {$IFDEF VerboseFPCSrcScan}
-    debugln(['TBuildManager.RescanCompilerDefines nothing changed']);
-    {$ENDIF}
-    // save caches
-    SaveFPCDefinesCaches;
-  end;
-  FUnitSetChangeStamp:=UnitSetCache.ChangeStamp;
+  UnitSetChanged:=(FUnitSetChangeStamp=TFPCUnitSetCache.GetInvalidChangeStamp)
+               or (FUnitSetChangeStamp<>UnitSetCache.ChangeStamp);
 
   {$IFDEF VerboseFPCSrcScan}
-  debugln(['TBuildManager.RescanCompilerDefines UnitSet changed => rebuilding defines',
+  debugln(['TBuildManager.RescanCompilerDefines UnitSet changed=',UnitSetChanged,
     ' ClearCaches=',ClearCaches,
     ' CompilerFilename=',CompilerFilename,
     ' TargetOS=',TargetOS,
     ' TargetCPU=',TargetCPU,
+    ' FPCOptions="',FPCOptions,'"',
     ' RealCompiler=',UnitSetCache.GetConfigCache(false).RealCompiler,
     ' EnvFPCSrcDir=',EnvironmentOptions.FPCSourceDirectory,
     ' FPCSrcDir=',FPCSrcDir,
     '']);
   {$ENDIF}
 
+  if UnitSetChanged then begin
+    {$IFDEF VerboseFPCSrcScan}
+    debugln(['TBuildManager.RescanCompilerDefines UnitSet changed => save scan results']);
+    {$ENDIF}
+    // save caches
+    SaveFPCDefinesCaches;
+    FUnitSetChangeStamp:=UnitSetCache.ChangeStamp;
+  end;
+
   // rebuild the define templates
-  // create template for FPC settings
-  ADefTempl:=CreateFPCTemplate(UnitSetCache,nil);
-  AddTemplate(ADefTempl,false,
-             'NOTE: Could not create Define Template for Free Pascal Compiler');
+  HasTemplate:=CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplFPC,true)<>nil;
+  if UnitSetChanged or not HasTemplate then
+  begin
+    {$IFDEF VerboseFPCSrcScan}
+    debugln(['TBuildManager.RescanCompilerDefines updating FPC template UnitSetChanged=',UnitSetChanged,' OldTemplateExists=',HasTemplate]);
+    {$ENDIF}
+    // create template for FPC settings
+    ADefTempl:=CreateFPCTemplate(UnitSetCache,nil);
+    AddTemplate(ADefTempl,false,
+               'NOTE: Could not create Define Template for Free Pascal Compiler');
+  end;
+
   // create template for FPC source directory
   if HasGUI then
   begin
-    ADefTempl:=CreateFPCSourceTemplate(UnitSetCache,nil);
-    AddTemplate(ADefTempl,false,lisNOTECouldNotCreateDefineTemplateForFreePascal);
+    HasTemplate:=CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplFPCSrc,true)<>nil;
+    if UnitSetChanged or not HasTemplate then
+    begin
+      {$IFDEF VerboseFPCSrcScan}
+      debugln(['TBuildManager.RescanCompilerDefines updating FPC SRC template UnitSetChanged=',UnitSetChanged,' OldTemplateExists=',HasTemplate]);
+      {$ENDIF}
+      ADefTempl:=CreateFPCSourceTemplate(UnitSetCache,nil);
+      AddTemplate(ADefTempl,false,lisNOTECouldNotCreateDefineTemplateForFreePascal);
+    end;
 
     // create compiler macros for the lazarus sources
-    if CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSrcDir,
-      true)=nil
+    HasTemplate:=CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true)<>nil;
+    if (not HasTemplate)
+    or (fBuildLazExtraOptions<>MiscellaneousOptions.BuildLazOpts.ExtraOptions)
     then begin
+      {$IFDEF VerboseFPCSrcScan}
+      debugln(['TBuildManager.RescanCompilerDefines updating Lazarus source template OldTemplateExists=',HasTemplate,' OldExtraOptions="',fBuildLazExtraOptions,'" NewExtraOptions="',MiscellaneousOptions.BuildLazOpts.ExtraOptions,'"']);
+      {$ENDIF}
+      fBuildLazExtraOptions:=MiscellaneousOptions.BuildLazOpts.ExtraOptions;
       ADefTempl:=CreateLazarusSourceTemplate(
         '$('+ExternalMacroStart+'LazarusDir)',
         '$('+ExternalMacroStart+'LCLWidgetType)',
-        MiscellaneousOptions.BuildLazOpts.ExtraOptions,nil);
+        fBuildLazExtraOptions,nil);
       AddTemplate(ADefTempl,true,
         lisNOTECouldNotCreateDefineTemplateForLazarusSources);
     end;
@@ -913,6 +957,9 @@ begin
 
   if AsyncScanFPCSrcDir<>'' then begin
     // start scanning the fpc source directory in the background
+    {$IFDEF VerboseFPCSrcScan}
+    debugln(['TBuildManager.RescanCompilerDefines scanning fpc sources:',AsyncScanFPCSrcDir]);
+    {$ENDIF}
     if FPCSrcScans=nil then
       FFPCSrcScans:=TFPCSrcScans.Create(Self);
     FPCSrcScans.Scan(AsyncScanFPCSrcDir);
@@ -2579,7 +2626,8 @@ begin
   //debugln(['TBuildManager.BuildTargetIDEIsDefault NewTargetOS=',NewTargetOS,' Default=',GetDefaultTargetOS,' NewTargetCPU=',NewTargetCPU,' default=',GetDefaultTargetCPU,' ws=',LCLPlatformDisplayNames[NewLCLWidgetSet],' default=',LCLPlatformDisplayNames[GetDefaultLCLWidgetType]]);
   Result:=((NewTargetOS='') or (NewTargetOS=GetCompiledTargetOS))
       and ((NewTargetCPU='') or (NewTargetCPU=GetCompiledTargetCPU))
-      and (NewLCLWidgetSet<>lpNoGUI);
+      and (NewLCLWidgetSet<>lpNoGUI)
+      and (GetFPCompilerFilename=EnvironmentOptions.GetParsedCompilerFilename);
 end;
 
 end.
