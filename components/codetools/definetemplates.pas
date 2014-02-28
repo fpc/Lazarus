@@ -2819,7 +2819,7 @@ begin
 
   // allow ppcxxx.exe
   if (CompareFilenames(copy(ShortFilename,1,3),'ppc')=0)
-  and ((ExeExt='') or (LazFileUtils.CompareFileExt(ShortFilename,ExeExt)=0))
+  and ((ExeExt='') or (LazFileUtils.CompareFileExt(AFilename,ExeExt)=0))
   then
     exit(true);
 
