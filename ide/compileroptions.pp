@@ -2482,6 +2482,7 @@ var
   DefaultTargetOS: string;
   DefaultTargetCPU: string;
   FPCompilerFilename: String;
+  s: string;
 begin
   CurMainSrcFile:=MainSourceFileName;
   if CurMainSrcFile='' then
@@ -2833,7 +2834,7 @@ begin
     Switches := Switches + ' -OoREGVAR';
 
   CompilerFilename:=ParsedOpts.GetParsedValue(pcosCompilerPath);
-  if IsFPCExecutable(CompilerFilename) then
+  if IsFPCExecutable(CompilerFilename,s) then
     FPCompilerFilename:=CompilerFilename
   else
     FPCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;

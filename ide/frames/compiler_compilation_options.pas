@@ -69,6 +69,7 @@ var
   AFilename: string;
   Quality: TSDFilenameQuality;
   Note: string;
+  s: string;
 begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
@@ -85,7 +86,7 @@ begin
 
       if Sender=BrowseCompilerButton then begin
         // check compiler filename
-        if IsFPCExecutable(AFilename) then begin
+        if IsFPCExecutable(AFilename,s) then begin
           // check compiler
           Quality:=CheckCompilerQuality(AFilename,Note,
                                      CodeToolBoss.FPCDefinesCache.TestFilename);

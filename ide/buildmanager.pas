@@ -596,6 +596,8 @@ begin
 end;
 
 function TBuildManager.GetFPCompilerFilename: string;
+var
+  s: string;
 begin
   Result:='';
   if (Project1<>nil)
@@ -605,7 +607,7 @@ begin
     Result:=Project1.GetCompilerFilename;
     //debugln(['TBuildManager.GetFPCompilerFilename project compiler="',Result,'"']);
   end;
-  if not IsFPCExecutable(Result) then begin
+  if not IsFPCExecutable(Result,s) then begin
     //if Result<>'' then debugln(['TBuildManager.GetFPCompilerFilename project compiler NOT fpc: "',Result,'"']);
     Result:=EnvironmentOptions.GetParsedCompilerFilename;
   end;
@@ -792,6 +794,8 @@ var
   AsyncScanFPCSrcDir: String;
   UnitSetChanged: Boolean;
   HasTemplate: Boolean;
+  FPCExecMsg: string;
+  Msg: String;
 begin
   if ClearCaches then begin
     {$IFDEF VerboseFPCSrcScan}
@@ -848,10 +852,28 @@ begin
   end;
 
   // then check the project's compiler
-  if not IsFPCExecutable(CompilerFilename) then begin
-    debugln(['WARNING: TBuildManager.RescanCompilerDefines: it is not fpc: ',CompilerFilename]);
+  if not IsFPCExecutable(CompilerFilename,FPCExecMsg) then begin
+    Msg:='';
+    if (Project1<>nil)
+    and ([crCompile,crBuild]*Project1.CompilerOptions.CompileReasons<>[])
+    and (Project1.CompilerOptions.CompilerPath<>'')
+    then begin
+      CompilerFilename:=Project1.GetCompilerFilename;
+      if not IsFPCExecutable(CompilerFilename,FPCExecMsg) then begin
+        Msg+='Project''s compiler: "'+CompilerFilename+'": '+FPCExecMsg+#13;
+      end;
+    end;
+    CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
+    if not IsFPCExecutable(CompilerFilename,FPCExecMsg) then begin
+      Msg+='Environment compiler: "'+CompilerFilename+'": '+FPCExecMsg+#13;
+    end;
+    debugln('WARNING: TBuildManager.RescanCompilerDefines: invalid compiler:');
+    debugln(Msg);
     if not Quiet then begin
-      IDEMessageDialog('Error','There is no Free Pascal Compiler (e.g. fpc'+ExeExt+' or ppc<cpu>'+ExeExt+') configured in the environment options. Codetools will not work properly.',mtError,[mbCancel]);
+      IDEMessageDialog('Error','There is no Free Pascal Compiler'
+        +' (e.g. fpc'+ExeExt+' or ppc<cpu>'+ExeExt+') configured in the'
+        +' environment options. Codetools will not work properly.'#13
+        +Msg,mtError,[mbCancel]);
     end;
     UnitSetCache:=nil;
     exit;
@@ -2016,6 +2038,7 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
     TargetCPU: String;
     CompilerFilename: String;
     ConfigCache: TFPCTargetConfigCache;
+    s: string;
   begin
     if OverrideFPCVer<>'' then
       exit(OverrideFPCVer);
@@ -2024,7 +2047,7 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
       // fetch the FPC version from the current compiler
       // Not from the fpc.exe, but from the real compiler
       CompilerFilename:=GetFPCompilerFilename;
-      if not IsFPCExecutable(CompilerFilename) then exit;
+      if not IsFPCExecutable(CompilerFilename,s) then exit;
       TargetOS:=GetTargetOS;
       TargetCPU:=GetTargetCPU;
       ConfigCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(

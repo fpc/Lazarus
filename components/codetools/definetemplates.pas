@@ -928,7 +928,7 @@ function GetCompiledTargetCPU: string;
 function GetDefaultCompilerFilename(const TargetCPU: string = ''; Cross: boolean = false): string;
 function GetFPCTargetOS(TargetOS: string): string;
 function GetFPCTargetCPU(TargetCPU: string): string;
-function IsFPCExecutable(AFilename: string): boolean;
+function IsFPCExecutable(AFilename: string; out ErrorMsg: string): boolean;
 
 // functions to quickly setup some defines
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
@@ -2781,21 +2781,35 @@ begin
   Result:=LowerCase(TargetCPU);
 end;
 
-function IsFPCExecutable(AFilename: string): boolean;
+function IsFPCExecutable(AFilename: string; out ErrorMsg: string): boolean;
 var
   ShortFilename: String;
 begin
   Result:=false;
   AFilename:=ResolveDots(aFilename);
+  //debugln(['IsFPCExecutable ',AFilename]);
   //debugln(['IsFPCompiler START ',aFilename]);
-  if aFilename='' then
+  if aFilename='' then begin
+    ErrorMsg:='missing file name';
     exit;
-  if not FileExistsCached(AFilename) then
+  end;
+  if not FilenameIsAbsolute(AFilename) then begin
+    ErrorMsg:='file missing path';
     exit;
-  if DirPathExistsCached(AFilename) then
+  end;
+  if not FileExistsCached(AFilename) then begin
+    ErrorMsg:='file not found';
     exit;
-  if not FileIsExecutableCached(AFilename) then
+  end;
+  if DirPathExistsCached(AFilename) then begin
+    ErrorMsg:='file is a directory';
     exit;
+  end;
+  if not FileIsExecutableCached(AFilename) then begin
+    ErrorMsg:='file is not executable';
+    exit;
+  end;
+  ErrorMsg:='';
 
   // allow scripts like fpc.sh and fpc.bat
   ShortFilename:=ExtractFileNameOnly(AFilename);
@@ -2808,6 +2822,8 @@ begin
   and ((ExeExt='') or (LazFileUtils.CompareFileExt(ShortFilename,ExeExt)=0))
   then
     exit(true);
+
+  ErrorMsg:='unknown file name';
 end;
 
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
@@ -8510,12 +8526,13 @@ function TFPCDefinesCache.GetFPCVersion(const CompilerFilename, TargetOS,
   TargetCPU: string; UseCompiledVersionAsDefault: boolean): string;
 var
   CfgCache: TFPCTargetConfigCache;
+  ErrorMsg: string;
 begin
   if UseCompiledVersionAsDefault then
     Result:={$I %FPCVersion%}
   else
     Result:='';
-  if not IsFPCExecutable(CompilerFilename) then exit;
+  if not IsFPCExecutable(CompilerFilename,ErrorMsg) then exit;
   CfgCache:=ConfigCaches.Find(CompilerFilename,ExtraOptions,TargetOS,TargetCPU,true);
   if not CfgCache.Update(TestFilename,ExtraOptions) then exit;
   if CfgCache.FullVersion='' then exit;
