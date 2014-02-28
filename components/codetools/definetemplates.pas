@@ -7532,7 +7532,6 @@ begin
   end;
   // fpc searches via PATH for the real compiler, resolves any symlink
   // and that is the RealCompiler
-  // ToDo: -Xp -V
   AFilename:=FindRealCompilerInPath(TargetCPU,true);
   if RealCompilerInPath<>AFilename then begin
     debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" real compiler in PATH changed from "',RealCompilerInPath,'" to "',AFilename,'"']);
