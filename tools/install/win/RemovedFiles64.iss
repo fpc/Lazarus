@@ -7,6 +7,16 @@ Name: {app}units\x86_64-win64\win32\gdbtypeinfo.pp; Type: files
 Name: {app}units\x86_64-win64\win32\sshgdbmidebugger.pas; Type: files
 Name: {app}units\x86_64-win64\win32\cmdlinedebugger.pp; Type: files
 Name: {app}units\x86_64-win64\win32\debugutils.pp; Type: files
+Name: {app}debugger\fpgdbmidebugger.pp
+Name: {app}debugger\gdbmidebugger.pp
+Name: {app}debugger\gdbmidebuginstructions.pp
+Name: {app}debugger\gdbmimiscclasses.pp
+Name: {app}debugger\gdbmiserverdebugger.pas
+Name: {app}debugger\gdbtypeinfo.pp
+Name: {app}debugger\sshgdbmidebugger.pas
+Name: {app}ide\ideminilibc.pas
+Name: {app}debugger\cmdlinedebugger.pp
+Name: {app}debugger\debugutils.pp
 ; Files that are now longer present in Lazarus 1.0
 ; Either moved to a new location, or removed entirely
 ; This file should be included in the [InstallDelete] section
