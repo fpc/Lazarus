@@ -849,6 +849,10 @@ begin
 
   // then check the project's compiler
   if not IsFPCExecutable(CompilerFilename) then begin
+    debugln(['WARNING: TBuildManager.RescanCompilerDefines: it is not fpc: ',CompilerFilename]);
+    if not Quiet then begin
+      IDEMessageDialog('Error','There is no Free Pascal Compiler (e.g. fpc'+ExeExt+' or ppc<cpu>'+ExeExt+') configured in the environment options. Codetools will not work properly.',mtError,[mbCancel]);
+    end;
     UnitSetCache:=nil;
     exit;
   end;
