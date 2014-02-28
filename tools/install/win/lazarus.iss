@@ -37,6 +37,7 @@ AppUpdatesURL=http://www.lazarus.freepascal.org/
 ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={code:GetDefDir|{sd}\lazarus}
 DefaultGroupName={#AppName}
+AppendDefaultDirName=no
 DirExistsWarning=no
 OutputBaseFilename={#OutputFileName}
 InternalCompressLevel=ultra
