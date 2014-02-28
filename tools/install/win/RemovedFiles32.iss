@@ -1,3 +1,29 @@
+; Files that are no longer present in Lazarus 1.2 (moved after 1.0)
+Name: {app}lcl\utf8process.pp; Type: files
+Name: {app}lcl\units\i386-win32\utf8process.o; Type: files
+Name: {app}lcl\units\i386-win32\utf8process.ppu; Type: files
+Name: {app}lcl\lazconfigstorage.pas; Type: files
+Name: {app}lcl\units\i386-win32\lazconfigstorage.o; Type: files
+Name: {app}lcl\units\i386-win32\lazconfigstorage.ppu; Type: files
+Name: {app}components\synedit\syndesignstringconstants.pas; Type: files
+Name: {app}components\synedit\units\i386-win32\syndesignstringconstants.o; Type: files
+Name: {app}components\synedit\units\i386-win32\syndesignstringconstants.ppu; Type: files
+Name: {app}components\synedit\syneditlazdsgn.lrs; Type: files
+Name: {app}components\synedit\units\i386-win32\syneditlazdsgn.o; Type: files
+Name: {app}components\synedit\units\i386-win32\syneditlazdsgn.ppu; Type: files
+Name: {app}components\synedit\syneditlazdsgn.pas; Type: files
+Name: {app}components\synedit\units\i386-win32\syneditlazdsgn.o; Type: files
+Name: {app}components\synedit\units\i386-win32\syneditlazdsgn.ppu; Type: files
+Name: {app}components\synedit\synpropertyeditobjectlist.lfm; Type: files
+Name: {app}components\synedit\units\i386-win32\synpropertyeditobjectlist.o; Type: files
+Name: {app}components\synedit\units\i386-win32\synpropertyeditobjectlist.ppu; Type: files
+Name: {app}components\synedit\synpropertyeditobjectlist.pas; Type: files
+Name: {app}components\synedit\units\i386-win32\synpropertyeditobjectlist.o; Type: files
+Name: {app}components\synedit\units\i386-win32\synpropertyeditobjectlist.ppu; Type: files
+Name: {app}units\i386-win32\win32\filesystem.o; Type: files
+Name: {app}units\i386-win32\win32\filesystem.ppu; Type: files
+Name: {app}units\i386-win32\win32\abstracteditor.o; Type: files
+Name: {app}units\i386-win32\win32\abstracteditor.ppu; Type: files
 ; Files that are no longer present in Lazarus 1.0
 ; Either moved to a new location, or removed entirely
 ; This file should be included in the [InstallDelete] section
