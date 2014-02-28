@@ -208,7 +208,8 @@ begin
   end;
 
   SetLength(Result, len);
-  Move(Item^.Name.Ptr^, Result[1], len);
+  if len > 0 then
+    Move(Item^.Name.Ptr^, Result[1], len);
 end;
 
 function TGDBMINameValueList.GetValue(const AName: string): string;
@@ -221,7 +222,8 @@ begin
   if item = nil then Exit;
 
   SetLength(Result, Item^.Value.Len);
-  Move(Item^.Value.Ptr^, Result[1], Item^.Value.Len);
+  if Item^.Value.Len > 0 then
+    Move(Item^.Value.Ptr^, Result[1], Item^.Value.Len);
 end;
 
 function TGDBMINameValueList.GetValuePtr(const AName: string): TPCharWithLen;
