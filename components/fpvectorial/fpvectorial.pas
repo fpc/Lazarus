@@ -5089,7 +5089,7 @@ end;
 function TvParagraph.AddText(AText: string): TvText;
 begin
   Result := TvText.Create(FPage);
-  Result.Value.Text := AText;;
+  Result.Value.Text := AText;
   AddEntity(Result);
 end;
 

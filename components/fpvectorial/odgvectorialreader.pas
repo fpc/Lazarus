@@ -157,6 +157,8 @@ type
     procedure ReadFrameNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadLineNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadPathNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    function  ReadTextPSequenceNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvRichText;
+    function  ReadTextPNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvParagraph;
     //
     procedure ReadStylesMasterPage(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadStylesPageLayout(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -1240,13 +1242,90 @@ end;
 
 {
 <draw:frame draw:style-name="gr12" draw:text-style-name="P2" draw:layer="layout" svg:width="4.5cm" svg:height="1.25cm" svg:x="4cm" svg:y="20cm">
-  <draw:text-box><text:p text:style-name="P2"><text:span text:style-name="T1">Kesäyö</text:span></text:p></draw:text-box>
+  <draw:text-box>
+    <text:p text:style-name="P2">
+      <text:span text:style-name="T1">Kesäyö</text:span>
+    </text:p>
+  </draw:text-box>
 </draw:frame>
 }
 procedure TvODGVectorialReader.ReadFrameNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  x1, y1, x2, y2, lWidth, lHeight: double;
+  i: Integer;
+  lNodeName, lNodeValue, lSubNodeName, lSubNodeValue: string;
+  lCurNode, lCurSubNode: TDOMNode;
+  lSkewX, lSkewY, lRotate, lTranslateX, lTranslateY: Double;
+  // various possible frame types contents
+  lGroup: TvEntityWithSubEntities;
+  lBorder: TvRectangle;
+  lRichText: TvRichText;
 begin
+  x1 := 0.0;
+  y1 := 0.0;
+  x2 := 0.0;
+  y2 := 0.0;
+  lWidth := 0.0;
+  lHeight := 0.0;
 
+  lSkewX := 0.0;
+  lSkewY := 0.0;
+  lRotate := 0.0;
+  lTranslateX := 0.0;
+  lTranslateY := 0.0;
+
+  lGroup := TvEntityWithSubEntities.Create(AData);
+  lBorder := TvRectangle.Create(Adata);
+  lGroup.AddEntity(lBorder);
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
+    if lNodeName = 'svg:width' then
+      lWidth := StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'svg:height' then
+      lHeight := StringWithUnitToFloat(lNodeValue)
+    //else if lNodeName = 'draw:transform' then
+      //GetDrawTransforms(ANode.Attributes.Item[i].NodeValue, lSkewX, lSkewY, lRotate, lTranslateX, lTranslateY)
+    else if lNodeName = 'svg:x' then
+      x1 := StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'svg:y' then
+      y1 := StringWithUnitToFloat(lNodeValue)
+    //else if lNodeName = 'draw:style-name' then
+      //ApplyStyleByNameToEntity(lNodeValue, lPath)
+    //else if lNodeName = 'draw:text-style-name' then
+      //ApplyTextStyleByNameToEntity(lNodeValue, lPath);
+//    else if lNodeName = 'id' then
+//      lEllipse.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+  end;
+
+  ConvertMilimiterCoordinatesToFPVCoordinates(AData, x1, y1, x2, y2);
+  lGroup.X := x2;
+  lGroup.Y := y2;
+
+  // Go through sub-nodes
+  lCurNode := ANode.FirstChild;
+  while lCurNode <> nil do
+  begin
+    lNodeName := lCurNode.NodeName;
+
+    case lNodeName of
+    'draw:text-box':
+    begin
+      lRichText := ReadTextPSequenceNode(lCurNode, AData, ADoc);
+      lRichText.X := x2;
+      lRichText.Y := y2;
+      lGroup.AddEntity(lRichText);
+    end;
+    end;
+
+    lCurNode := lCurNode.NextSibling;
+  end;
+
+  AData.AddEntity(lGroup);
 end;
 
 {
@@ -1358,6 +1437,71 @@ begin
         AData, lWidth, lHeight, lWidth, lHeight);
 
   AData.AddEntity(lPath);
+end;
+
+function TvODGVectorialReader.ReadTextPSequenceNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvRichText;
+var
+  lNodeName, lNodeValue: string;
+  lCurNode: TDOMNode;
+  lParagraph: TvParagraph;
+begin
+  Result := TvRichText.Create(AData);
+
+  lCurNode := ANode.FirstChild;
+  while lCurNode <> nil do
+  begin
+    lNodeName := lCurNode.NodeName;
+    lNodeValue := lCurNode.NodeValue;
+
+    case lNodeName of
+    'text:p':
+    begin
+      lParagraph := ReadTextPNode(lCurNode, AData, ADoc);
+      Result.AddEntity(lParagraph);
+    end;
+    end;
+
+    lCurNode := lCurNode.NextSibling;
+  end;
+end;
+
+{
+Examples:
+
+<text:p text:style-name="P2">
+  <text:span text:style-name="T1">Kesäyö</text:span>
+</text:p>
+
+<text:p>Jump opposite arm and leg up</text:p>
+
+<text:p>
+  <text:span text:style-name="T1">Back muscle movement</text:span>
+  <text:span text:style-name="T2">opposite</text:span>
+  <text:span text:style-name="T3">arm</text:span>
+  and
+  <text:span text:style-name="T3">leg</text:span>
+  up
+</text:p>
+}
+function TvODGVectorialReader.ReadTextPNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvParagraph;
+var
+  lNodeName, lNodeValue: string;
+  lCurNode: TDOMNode;
+begin
+  Result := TvParagraph.Create(AData);
+
+  lCurNode := ANode.FirstChild;
+  while lCurNode <> nil do
+  begin
+    lNodeName := lCurNode.NodeName;
+    lNodeValue := lCurNode.NodeValue;
+
+    Result.AddText(lNodeValue);
+
+    lCurNode := lCurNode.NextSibling;
+  end;
 end;
 
 {
