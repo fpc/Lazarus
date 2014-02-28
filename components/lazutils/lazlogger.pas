@@ -253,7 +253,7 @@ begin
   if FLogName = AValue then Exit;
   DoCloseFile;
 
-  FLogName := CreateAbsolutePath(AValue, GetCurrentDirUTF8);
+  FLogName := CleanAndExpandFilename(AValue);
 
   FLogTextFailed := False;
 end;
