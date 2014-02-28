@@ -33,7 +33,7 @@ Name: {app}components\synedit\units\x86_64-win64\syneditlazdsgn.ppu; Type: files
 Name: {app}components\synedit\syneditlazdsgn.pas; Type: files
 Name: {app}components\synedit\units\x86_64-win64\syneditlazdsgn.o; Type: files
 Name: {app}components\synedit\units\x86_64-win64\syneditlazdsgn.ppu; Type: files
-Name: {app}components\synedit\synpropertyeditobjectlist.lfm
+Name: {app}components\synedit\synpropertyeditobjectlist.lfm; Type: files
 Name: {app}components\synedit\units\x86_64-win64\synpropertyeditobjectlist.o; Type: files
 Name: {app}components\synedit\units\x86_64-win64\synpropertyeditobjectlist.ppu; Type: files
 Name: {app}components\synedit\synpropertyeditobjectlist.pas; Type: files
