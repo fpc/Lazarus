@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <EnvironmentOptions>
-    <Version Value="108" Lazarus="1.2.0"/>
+    <Version Value="108" Lazarus="1.2.1"/>
     <LazarusDirectory Value="%LazDir%">
     </LazarusDirectory>
     <CompilerFilename Value="%FpcBinDir%\fpc.exe">
