@@ -2858,10 +2858,11 @@ begin
     begin
       if i < ControlSelection.Count then 
       begin
-        if ControlSelection[i].IsTControl then 
+        if ControlSelection[i].IsTControl then
         begin
           CurControl := TControl(ControlSelection[i].Persistent);
-          CurControl.Parent := NewParent;
+          if CurControl.Owner = LookupRoot then
+            CurControl.Parent := NewParent;
         end;
       end;
       dec(i);
@@ -3485,56 +3486,81 @@ var
   OneControlSelected: Boolean;
   SelectionVisible: Boolean;
 
+  function GetChangeParentCandidates: TFPList;
+  var
+    i,j: Integer;
+    CurSelected: TSelectedControl;
+    Candidate: TWinControl;
+  begin
+    Result:=TFPList.Create;
+    if ControlSelection.Count=0 then exit;
+    if LookupRootIsSelected then
+      exit; // if the LookupRoot is selected, do not show "change parent"
+    if not (LookupRoot is TWinControl) then
+      exit; // only LCL controls are supported at the moment
+
+    // check if any selected control can be moved
+    i:=ControlSelection.Count-1;
+    while i>=0 do
+    begin
+      CurSelected:=ControlSelection[i];
+      if CurSelected.IsTWinControl
+      and (TWinControl(CurSelected.Persistent).Owner=LookupRoot)
+      then
+        // this one can be moved
+        break;
+      dec(i);
+    end;
+    if i<0 then exit;
+
+    // find possible new parents
+    for i := 0 to LookupRoot.ComponentCount - 1 do
+    begin
+      Candidate:=TWinControl(LookupRoot.Components[i]);
+      if not (Candidate is TWinControl) then continue;
+
+      j:=ControlSelection.Count-1;
+      while j>=0 do
+      begin
+        CurSelected:=ControlSelection[j];
+        if CurSelected.IsTControl then begin
+          if CurSelected.Persistent=Candidate then break;
+          if CurSelected.IsTWinControl and
+             TWinControl(CurSelected.Persistent).IsParentOf(Candidate) then
+            break;
+          if not ControlAcceptsStreamableChildComponent(Candidate,
+                            TComponentClass(CurSelected.ClassType),LookupRoot)
+          then
+            break;
+        end;
+        dec(j);
+      end;
+      if j<0 then
+        Result.Add(Candidate);
+    end;
+    Result.Add(LookupRoot);
+  end;
+
   procedure UpdateChangeParentMenu;
   var
     Candidates: TFPList;
     i: Integer;
-    Candidate: TWinControl;
-    j: Integer;
-    CurSelected: TSelectedControl;
     Item: TIDEMenuItem;
   begin
-    Candidates:=TFPList.Create;
-    if ControlSelIsNotEmpty and 
-       (not OnlyNonVisualsAreSelected) and
-       (not LookupRootIsSelected) and 
-       (LookupRoot is TWinControl) then 
-    begin
-      for i := 0 to LookupRoot.ComponentCount - 1 do 
+    Candidates:=GetChangeParentCandidates;
+    try
+      DesignerMenuChangeParent.Visible:=Candidates.Count>0;
+      DesignerMenuChangeParent.Clear;
+      for i:=0 to Candidates.Count-1 do
       begin
-        if not (LookupRoot.Components[i] is TWinControl) then continue;
-
-        Candidate:=TWinControl(LookupRoot.Components[i]);
-        if not (csAcceptsControls in Candidate.ControlStyle) then continue;
-        j:=ControlSelection.Count-1;
-        while j>=0 do 
-        begin
-          CurSelected:=ControlSelection[j];
-          if CurSelected.IsTControl then 
-          begin
-            if CurSelected.Persistent=Candidate then break;
-            if CurSelected.IsTWinControl and 
-               TWinControl(CurSelected.Persistent).IsParentOf(Candidate) then
-              break;
-          end;
-          dec(j);
-        end;
-        if j<0 then
-          Candidates.Add(Candidate);
+        Item:=TIDEMenuCommand.Create(DesignerMenuChangeParent.Name+'_'+IntToStr(i));
+        DesignerMenuChangeParent.AddLast(Item);
+        Item.Caption:=TWinControl(Candidates[i]).Name;
+        Item.OnClick:=@OnChangeParentMenuClick;
       end;
-      Candidates.Add(LookupRoot);
+    finally
+      Candidates.Free;
     end;
-    
-    DesignerMenuChangeParent.Visible:=Candidates.Count>0;
-    DesignerMenuChangeParent.Clear;
-    for i:=0 to Candidates.Count-1 do 
-    begin
-      Item:=TIDEMenuCommand.Create(DesignerMenuChangeParent.Name+'_'+IntToStr(i));
-      DesignerMenuChangeParent.AddLast(Item);
-      Item.Caption:=TWinControl(Candidates[i]).Name;
-      Item.OnClick:=@OnChangeParentMenuClick;
-    end;
-    Candidates.Free;
   end;
   
 begin
