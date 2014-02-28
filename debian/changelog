@@ -1,8 +1,20 @@
-lazarus (1.2RC3-0) unstable; urgency=low
+lazarus (1.2.0-3) stable; urgency=low
 
-  * New candidate release RC3.
+  * Release 1.2.
 
- -- Abou Al Montacir <abou.almontacir@sfr.fr>  Wed, 05 Feb 2014 22:27:58 +0100
+ -- Mattias Gaertner <mattias@freepascal.org>  Fri, 28 Feb 2014 20:10:00 +0100
+
+lazarus (1.2.0-2) unstable; urgency=low
+
+  * Release candidate 2
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sun, 10 Jan 2013 12:30:00 +0100
+
+lazarus (1.2.0-1) unstable; urgency=low
+
+  * Release candidate 1
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sun, 3 Nov 2013 10:11:12 +0100
 
 lazarus (1.1.99+dfsg-1) unstable; urgency=low
 
