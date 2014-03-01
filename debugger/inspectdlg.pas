@@ -899,7 +899,10 @@ begin
       skSet: InspectSet;
       skProcedure: InspectSimple;
       skFunction: InspectSimple;
-      skSimple: InspectSimple();
+      skSimple,
+      skInteger,
+      skCardinal, skBoolean, skChar, skFloat: InspectSimple();
+      skArray: InspectSimple();
       skPointer: InspectPointer();
     //  skDecomposable: ;
     end;
