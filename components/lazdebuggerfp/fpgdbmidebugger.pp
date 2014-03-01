@@ -859,7 +859,7 @@ begin
   Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
 DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
 
-  if (Result >= 0) or FInIndexOf then
+  if (Result >= 0) or FInIndexOf or (not FDebugger.HasDwarf) then
     exit;
 
   FDebugger.FMemReader.FThreadId := AThreadId;
