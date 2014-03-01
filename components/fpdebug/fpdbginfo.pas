@@ -23,6 +23,8 @@ type
     procedure DoPlainReferenceAdded; inline;
     procedure DoPlainReferenceReleased; inline;
 
+    // Receive the *strong* reference (always set)
+    // The circle back ref will only be set, if this is also referenced by others
     procedure AddCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
     procedure ReleaseCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
 

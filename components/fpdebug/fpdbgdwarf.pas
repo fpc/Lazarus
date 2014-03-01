@@ -607,6 +607,7 @@ type
     function DataAddr: TFpDbgMemLocation;
     function OrdOrDataAddr: TFpDbgMemLocation;
     function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean;
+    function HasDwarfDataAddress: Boolean;
     procedure Reset; virtual;
     function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
     function HasTypeCastInfo: Boolean;
@@ -998,7 +999,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     // TDbgDwarfSymbolValue.GetDwarfDataAddress
     // TDbgDwarfValueIdentifier.GetDataAddress
     //TODO: maybe introduce a lightweight wrapper, so types can be re-used.
-    FCachedDataAddress: TFpDbgMemLocation;
+    //FCachedDataAddress: TFpDbgMemLocation;
 
     procedure Init; override;
     procedure MemberVisibilityNeeded; override;
@@ -2838,11 +2839,11 @@ var
   fields: TDbgSymbolValueFieldFlags;
 begin
   // TODO: also cache none valid address
-  Result := IsValidLoc(ATargetType.FCachedDataAddress);
-  if Result then begin
-    AnAddress := ATargetType.FCachedDataAddress;
-    exit;
-  end;
+  //Result := IsValidLoc(ATargetType.FCachedDataAddress);
+  //if Result then begin
+  //  AnAddress := ATargetType.FCachedDataAddress;
+  //  exit;
+  //end;
 
   if FValueSymbol <> nil then begin
     Assert(FValueSymbol is TDbgDwarfValueIdentifier, 'TDbgDwarfSymbolValue.GetDwarfDataAddress FValueSymbol');
@@ -2876,7 +2877,25 @@ begin
       FLastError := FTypeCastTargetType.LastError;
   end;
 
-  ATargetType.FCachedDataAddress := AnAddress;
+  //ATargetType.FCachedDataAddress := AnAddress;
+end;
+
+function TDbgDwarfSymbolValue.HasDwarfDataAddress: Boolean;
+begin
+  if FValueSymbol <> nil then begin
+    Assert(FValueSymbol is TDbgDwarfValueIdentifier, 'TDbgDwarfSymbolValue.GetDwarfDataAddress FValueSymbol');
+    Assert(TypeInfo is TDbgDwarfTypeIdentifier, 'TDbgDwarfSymbolValue.GetDwarfDataAddress TypeInfo');
+    Assert(not HasTypeCastInfo, 'TDbgDwarfSymbolValue.GetDwarfDataAddress not HasTypeCastInfo');
+    Result := FValueSymbol.HasAddress;
+  end
+  else
+  begin
+    // try typecast
+    Result := HasTypeCastInfo;
+    if not Result then
+      exit;
+    Result := FTypeCastSourceValue.FieldFlags * [svfAddress, svfOrdinal] <> [];
+  end;
 end;
 
 procedure TDbgDwarfSymbolValue.Reset;
@@ -2917,7 +2936,7 @@ procedure TDbgDwarfSymbolValue.DoReferenceReleased;
 begin
   inherited DoReferenceReleased;
   if (FValueSymbol <> nil) and (RefCount = 1) then
-    FValueSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValueSymbol, 'TDbgDwarfSymbolValue'){$ENDIF};
+    NilThenReleaseRef(FValueSymbol {$IFDEF WITH_REFCOUNT_DEBUG}, @FValueSymbol, 'TDbgDwarfSymbolValue'{$ENDIF});
 end;
 
 function TDbgDwarfSymbolValue.GetKind: TDbgSymbolKind;
@@ -4927,10 +4946,13 @@ begin
     Result := FCompUnit.ReadValue(InfoData, Form, Offs);
     if not Result then
       exit;
-    ACompUnit := FCompUnit.FOwner.FindCompilationUnitByOffs(Offs);
+    AValue := FCompUnit.FOwner.FSections[dsInfo].RawData + Offs;
+    if (AValue >= FCompUnit.FInfoData) and (AValue < FCompUnit.FInfoData + FCompUnit.FLength) then
+      ACompUnit := FCompUnit
+    else
+      ACompUnit := FCompUnit.FOwner.FindCompilationUnitByOffs(Offs);
     Result := ACompUnit <> nil;
     if not Result then DebugLn(FPDBG_DWARF_WARNINGS, ['Comp unit not found DW_FORM_ref_addr']);
-    AValue := FCompUnit.FOwner.FSections[dsInfo].RawData + Offs;
   end
   else begin
     DebugLn(FPDBG_DWARF_VERBOSE, ['FORM for DW_AT_type not expected ', DwarfAttributeFormToString(Form)]);
@@ -5649,7 +5671,7 @@ end;
 procedure TDbgDwarfValueIdentifier.SetParentTypeInfo(AValue: TDbgDwarfIdentifier);
 begin
   if AValue <> ParentTypeInfo then
-    SetStructureValueInfo(nil);
+    StructureValueInfo := nil;
   inherited SetParentTypeInfo(AValue);
 end;
 
@@ -5660,18 +5682,18 @@ begin
   if not Result then
     exit;
   // TODO: also cache none valid address
-  Result := IsValidLoc(ATargetType.FCachedDataAddress);
-  if Result then begin
-    AnAddress := ATargetType.FCachedDataAddress;
-    exit;
-  end;
+  //Result := IsValidLoc(ATargetType.FCachedDataAddress);
+  //if Result then begin
+  //  AnAddress := ATargetType.FCachedDataAddress;
+  //  exit;
+  //end;
 
   Assert((TypeInfo is TDbgDwarfIdentifier) and (TypeInfo.SymbolType = stType), 'TDbgDwarfValueIdentifier.GetDataAddress');
   AnAddress := Address;
   Result := IsReadableLoc(AnAddress);
   if Result then
     Result := TDbgDwarfTypeIdentifier(TypeInfo).GetDataAddress(AnAddress, ATargetType);
-  ATargetType.FCachedDataAddress := AnAddress;
+  //ATargetType.FCachedDataAddress := AnAddress;
 end;
 
 procedure TDbgDwarfValueIdentifier.KindNeeded;
@@ -5773,7 +5795,6 @@ var
   i: Integer;
 begin
   Assert(not CircleBackRefsActive, 'CircleBackRefsActive can not be is ddestructor');
-  // FStructureValueInfo := nil;
 
   if FMembers <> nil then
     for i := 0 to FMembers.Count - 1 do
@@ -6021,10 +6042,10 @@ begin
     else
     if StructureValueInfo is TDbgDwarfStructTypeCastSymbolValue then begin
       if TDbgDwarfStructTypeCastSymbolValue(StructureValueInfo).GetDwarfDataAddress(BaseAddr, TDbgDwarfTypeIdentifier(ParentTypeInfo)) then begin
-        ALocationParser.FStack.Push(BaseAddr, lseValue);
-        exit
-      end;
+      ALocationParser.FStack.Push(BaseAddr, lseValue);
+      exit
     end;
+  end;
   end;
 
   debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TDbgDwarfIdentifierMember.InitLocationParser Error: ',ErrorCode(LastError),' ValueObject=', DbgSName(FValueObject)]);
@@ -6054,7 +6075,7 @@ begin
   if FStructureValueInfo is TDbgSymbolValue then begin
     Assert(FStructureValueInfo is TDbgDwarfStructTypeCastSymbolValue);
     // Todo: move check to TDbgDwarfStructTypeCastSymbolValue
-    Result := (TDbgSymbolValue(FStructureValueInfo).FieldFlags * [svfAddress, svfOrdinal] <> []);
+    Result := TDbgDwarfSymbolValue(FStructureValueInfo).HasDwarfDataAddress;
   end;
 end;
 
