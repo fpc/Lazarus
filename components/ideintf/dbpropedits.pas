@@ -51,10 +51,11 @@ type
   end;
 
 function GetFieldDefsLookupRoot(APersistent: TPersistent): TPersistent;
+procedure ListDataSourceFields(DataSource: TDataSource; List: TStrings);
 
 implementation
 
-procedure LoadDataSourceFields(DataSource: TDataSource; List: TStrings);
+procedure ListDataSourceFields(DataSource: TDataSource; List: TStrings);
 var
   DataSet: TDataSet;
   i: Integer;
@@ -114,7 +115,7 @@ var
   DataSource: TDataSource;
 begin
   DataSource := GetObjectProp(GetComponent(0), 'DataSource') as TDataSource;
-  LoadDataSourceFields(DataSource, Values);
+  ListDataSourceFields(DataSource, Values);
 end;
 
 { TDBGridFieldProperty }
@@ -128,7 +129,7 @@ begin
   if not (Column is TColumn) then exit;
   Grid:=TdbGrid(Column.Grid);
   if not (Grid is TdbGrid) then exit;
-  LoadDataSourceFields(Grid.DataSource, Values);
+  ListDataSourceFields(Grid.DataSource, Values);
 end;
 
 { TDBGridComponentEditor }
@@ -161,7 +162,7 @@ var
   DataSource: TDataSource;
 begin
   DataSource := GetObjectProp(GetComponent(0), 'ListSource') as TDataSource;
-  LoadDataSourceFields(DataSource, Values);
+  ListDataSourceFields(DataSource, Values);
 end;
 
 initialization
