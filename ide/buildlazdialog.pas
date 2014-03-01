@@ -162,7 +162,7 @@ type
     fOutputDirRedirected: boolean;
     fTargetOS: string;
     fTargetCPU: string;
-    fTargetFilename: string;
+    fTargetFilename: string; // = fTargetDir + 'lazarus'+GetExecutableExt(fTargetOS)
     fTargetDir: string;
     fUnitOutDir: string;
     fWorkingDir: string;
@@ -796,19 +796,18 @@ begin
     // so make sure the directory doesn't end with the path delimiter.
     AppendExtraOption('-FU'+ChompPathDelim(fUnitOutDir));
 
-  if fTargetDir<>'' then
+  //debugln(['TLazarusBuilder.CreateIDEMakeOptions fTargetDir=',fTargetDir,' fOutputDirRedirected=',fOutputDirRedirected,' fTargetFilename=',fTargetFilename]);
+  if fOutputDirRedirected then
     // FPC interpretes '\ ' as an escape for a space in a path on Windows,
     // so make sure the directory doesn't end with the path delimiter.
     AppendExtraOption('-FE'+ChompPathDelim(fTargetDir));
 
-  if fOutputDirRedirected then begin
-    // Note: FPC automatically changes the last extension (append or replace)
-    // For example under linux, where executables don't need any extension
-    // fpc removes the last extension of the -o option.
-    DefaultTargetFilename:='lazarus'+GetExecutableExt(fTargetOS);
-    if CreateRelativePath(fTargetFilename,fTargetDir) <> DefaultTargetFilename then
-      AppendExtraOption('-o'+fTargetFilename);
-  end;
+  // Note: FPC automatically changes the last extension (append or replace)
+  // For example under linux, where executables don't need any extension
+  // fpc removes the last extension of the -o option.
+  DefaultTargetFilename:='lazarus'+GetExecutableExt(fTargetOS);
+  if CreateRelativePath(fTargetFilename,fTargetDir) <> DefaultTargetFilename then
+    AppendExtraOption('-o'+fTargetFilename);
 
   // add package options for IDE
   //DebugLn(['CreateIDEMakeOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',fPackageOptions]);
