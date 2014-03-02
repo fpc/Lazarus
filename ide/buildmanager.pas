@@ -61,7 +61,6 @@ type
 
   TBuildManager = class(TBaseBuildManager)
   private
-    CurrentParsedCompilerOption: TParsedCompilerOptions;
     FUnitSetCache: TFPCUnitSetCache;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro;
                                const MacroName: string; var s: string;
@@ -137,13 +136,15 @@ type
     {$ENDIF}
     procedure SetUnitSetCache(const AValue: TFPCUnitSetCache);
   protected
+    // current target
     fTargetOS: string;
     fTargetCPU: string;
     fLCLWidgetType: string;
-    fBuildLazExtraOptions: string; // last build lazarus extra options
+    // command line overrides
     OverrideTargetOS: string;
     OverrideTargetCPU: string;
     OverrideLCLWidgetType: string;
+    fBuildLazExtraOptions: string; // last build lazarus extra options
     FUnitSetChangeStamp: integer;
     FFPCSrcScans: TFPCSrcScans;
     DefaultCfgVars: TCTCfgScriptVariables;
@@ -287,7 +288,6 @@ function TBuildManager.OnSubstituteCompilerOption(
   Options: TParsedCompilerOptions; const UnparsedValue: string;
   PlatformIndependent: boolean): string;
 begin
-  CurrentParsedCompilerOption:=Options;
   Result:=UnparsedValue;
   if PlatformIndependent then
     GlobalMacroList.SubstituteStr(Result,CompilerOptionMacroPlatformIndependent)
