@@ -18,6 +18,10 @@ interface
 // defines
 {$I carbondefines.inc}
 
+{$if (FPC_FULLVERSION>=20701) OR (FPC_FULLVERSION>=20603)}
+{$define HAS_INHERITED_INSERTITEM}
+{$endif}
+
 uses
  // rtl+ftl
   Classes, SysUtils,
@@ -34,7 +38,7 @@ type
     FOwner: TCarbonComboBox;  // Carbon combo box control owning strings
   protected
     procedure Put(Index: Integer; const S: string); override;
-    {$IF FPC_FULLVERSION<20701}
+    {$IFNDEF HAS_INHERITED_INSERTITEM}
     // before fpc 2.7.1 InsertItem(Index,S) did not call InsertItem(Index,S,nil)
     procedure InsertItem(Index: Integer; const S: string); override;
     {$ENDIF}
@@ -113,7 +117,7 @@ begin
   FOwner.Insert(Index, S);
 end;
 
-{$IF FPC_FULLVERSION<20701}
+{$IFNDEF HAS_INHERITED_INSERTITEM}
 {------------------------------------------------------------------------------
   Method:  TCarbonComboBoxStrings.InsertItem
   Params:  Index - Line index
