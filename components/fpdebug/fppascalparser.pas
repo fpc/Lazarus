@@ -52,13 +52,13 @@ type
     FTextExpression: String;
     FExpressionPart: TFpPascalExpressionPart;
     FValid: Boolean;
-    function GetResultValue: TDbgSymbolValue;
+    function GetResultValue: TFpDbgValue;
     procedure Parse;
     procedure SetError(AMsg: String);  // deprecated;
     procedure SetError(AnErrorCode: TFpErrorCode; AData: array of const);
     function PosFromPChar(APChar: PChar): Integer;
   protected
-    function GetDbgSymbolForIdentifier({%H-}AnIdent: String): TDbgSymbol;
+    function GetDbgSymbolForIdentifier({%H-}AnIdent: String): TFpDbgSymbol;
     property ExpressionPart: TFpPascalExpressionPart read FExpressionPart;
     property Context: TDbgInfoAddressContext read FContext;
   public
@@ -70,7 +70,7 @@ type
     // ResultValue
     // - May be a type, if expression is a type
     // - Only valid, as long as the expression is not destroyed
-    property ResultValue: TDbgSymbolValue read GetResultValue;
+    property ResultValue: TFpDbgValue read GetResultValue;
   end;
 
 
@@ -82,9 +82,9 @@ type
     FParent: TFpPascalExpressionPartContainer;
     FStartChar: PChar;
     FExpression: TFpPascalExpression;
-    FResultValue: TDbgSymbolValue;
+    FResultValue: TFpDbgValue;
     FResultValDone: Boolean;
-    function GetResultValue: TDbgSymbolValue;
+    function GetResultValue: TFpDbgValue;
     function GetSurroundingOpenBracket: TFpPascalExpressionPartBracket;
     function GetTopParent: TFpPascalExpressionPart;
     procedure SetEndChar(AValue: PChar);
@@ -99,7 +99,7 @@ type
   protected
     procedure Init; virtual;
     function  DoGetIsTypeCast: Boolean; virtual; deprecated;
-    function  DoGetResultValue: TDbgSymbolValue; virtual;
+    function  DoGetResultValue: TFpDbgValue; virtual;
 
     Procedure ReplaceInParent(AReplacement: TFpPascalExpressionPart);
     procedure DoHandleEndOfExpression; virtual;
@@ -126,7 +126,7 @@ type
     property Parent: TFpPascalExpressionPartContainer read FParent write SetParent;
     property TopParent: TFpPascalExpressionPart read GetTopParent; // or self
     property SurroundingBracket: TFpPascalExpressionPartBracket read GetSurroundingOpenBracket; // incl self
-    property ResultValue: TDbgSymbolValue read GetResultValue;
+    property ResultValue: TFpDbgValue read GetResultValue;
   end;
 
   { TFpPascalExpressionPartContainer }
@@ -157,7 +157,7 @@ type
   TFpPascalExpressionPartIdentifer = class(TFpPascalExpressionPartContainer)
   protected
     function DoGetIsTypeCast: Boolean; override;
-    function DoGetResultValue: TDbgSymbolValue; override;
+    function DoGetResultValue: TFpDbgValue; override;
   end;
 
   TFpPascalExpressionPartConstant = class(TFpPascalExpressionPartContainer)
@@ -167,7 +167,7 @@ type
 
   TFpPascalExpressionPartConstantNumber = class(TFpPascalExpressionPartConstant)
   protected
-    function DoGetResultValue: TDbgSymbolValue; override;
+    function DoGetResultValue: TFpDbgValue; override;
   end;
 
   TFpPascalExpressionPartConstantText = class(TFpPascalExpressionPartConstant)
@@ -214,7 +214,7 @@ type
   TFpPascalExpressionPartBracketSubExpression = class(TFpPascalExpressionPartRoundBracket)
   protected
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
-    function DoGetResultValue: TDbgSymbolValue; override;
+    function DoGetResultValue: TFpDbgValue; override;
   end;
 
   { TFpPascalExpressionPartBracketArgumentList }
@@ -223,7 +223,7 @@ type
   // function arguments or type cast // this acts a operator: first element is the function/type
   protected
     procedure Init; override;
-    function DoGetResultValue: TDbgSymbolValue; override;
+    function DoGetResultValue: TFpDbgValue; override;
     function DoGetIsTypeCast: Boolean; override;
     function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; override;
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
@@ -250,7 +250,7 @@ type
   // array[1]
   protected
     procedure Init; override;
-    function DoGetResultValue: TDbgSymbolValue; override;
+    function DoGetResultValue: TFpDbgValue; override;
     function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; override;
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
@@ -297,7 +297,7 @@ type
   TFpPascalExpressionPartOperatorAddressOf = class(TFpPascalExpressionPartUnaryOperator)  // @
   protected
     procedure Init; override;
-    function DoGetResultValue: TDbgSymbolValue; override;
+    function DoGetResultValue: TFpDbgValue; override;
   end;
 
   { TFpPascalExpressionPartOperatorMakeRef }
@@ -306,7 +306,7 @@ type
   protected
     procedure Init; override;
     function IsValidNextPart(APart: TFpPascalExpressionPart): Boolean; override;
-    function DoGetResultValue: TDbgSymbolValue; override;
+    function DoGetResultValue: TFpDbgValue; override;
     function DoGetIsTypeCast: Boolean; override;
   end;
 
@@ -315,7 +315,7 @@ type
   TFpPascalExpressionPartOperatorDeRef = class(TFpPascalExpressionPartUnaryOperator)  // ptrval^
   protected
     procedure Init; override;
-    function DoGetResultValue: TDbgSymbolValue; override;
+    function DoGetResultValue: TFpDbgValue; override;
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean; override;
     function FindLeftSideOperandByPrecedence({%H-}AnOperator: TFpPascalExpressionPartWithPrecedence):
@@ -331,7 +331,7 @@ type
   // Unary + -
   protected
     procedure Init; override;
-    function DoGetResultValue: TDbgSymbolValue; override;
+    function DoGetResultValue: TFpDbgValue; override;
   end;
 
   { TFpPascalExpressionPartOperatorPlusMinus }
@@ -340,7 +340,7 @@ type
   // Binary + -
   protected
     procedure Init; override;
-    function DoGetResultValue: TDbgSymbolValue; override;
+    function DoGetResultValue: TFpDbgValue; override;
   end;
 
   { TFpPascalExpressionPartOperatorMulDiv }
@@ -356,7 +356,7 @@ type
   protected
     procedure Init; override;
     function IsValidNextPart(APart: TFpPascalExpressionPart): Boolean; override;
-    function DoGetResultValue: TDbgSymbolValue; override;
+    function DoGetResultValue: TFpDbgValue; override;
   end;
 
 implementation
@@ -382,31 +382,31 @@ type
     used by TPasParserSymbolValueMakeReftype.GetDbgSymbol
   }
 
-  TPasParserSymbolPointer = class(TDbgSymbol)
+  TPasParserSymbolPointer = class(TFpDbgSymbol)
   private
     FPointerLevels: Integer;
-    FPointedTo: TDbgSymbol;
+    FPointedTo: TFpDbgSymbol;
   protected
     // NameNeeded //  "^TPointedTo"
     procedure TypeInfoNeeded; override;
   public
-    constructor Create(const APointedTo: TDbgSymbol; APointerLevels: Integer);
-    constructor Create(const APointedTo: TDbgSymbol);
+    constructor Create(const APointedTo: TFpDbgSymbol; APointerLevels: Integer);
+    constructor Create(const APointedTo: TFpDbgSymbol);
     destructor Destroy; override;
-    function TypeCastValue(AValue: TDbgSymbolValue): TDbgSymbolValue; override;
+    function TypeCastValue(AValue: TFpDbgValue): TFpDbgValue; override;
   end;
 
   { TPasParserSymbolArrayDeIndex }
 
   TPasParserSymbolArrayDeIndex = class(TDbgSymbolForwarder) // 1 index level off
   private
-    FArray: TDbgSymbol;
+    FArray: TFpDbgSymbol;
   protected
     //procedure ForwardToSymbolNeeded; override;
     function GetMemberCount: Integer; override;
-    function GetMember(AIndex: Integer): TDbgSymbol; override;
+    function GetMember(AIndex: Integer): TFpDbgSymbol; override;
   public
-    constructor Create(const AnArray: TDbgSymbol);
+    constructor Create(const AnArray: TFpDbgSymbol);
     destructor Destroy; override;
   end;
 
@@ -414,119 +414,115 @@ type
 
   {%region  DebugSymbolValue }
 
-  { TPasParserSymbolValue }
+  { TFpPasParserValue }
 
-  TPasParserSymbolValue = class(TDbgSymbolValue)
+  TFpPasParserValue = class(TFpDbgValue)
   protected
     function DebugText(AIndent: String): String; virtual;
   end;
 
-  { TPasParserSymbolValueWrapper }
+  { TFpPasParserValueWrapper }
 
-  TPasParserSymbolValueWrapper = class(TPasParserSymbolValue)
+  TFpPasParserValueWrapper = class(TFpPasParserValue)
   private
-    FSymbol: TDbgSymbol;
-    //FTypeSymbol: TDbgSymbol;
+    FSymbol: TFpDbgSymbol;
+    //FTypeSymbol: TFpDbgSymbol;
   protected
     function DebugText(AIndent: String): String; override;
   protected
     function GetKind: TDbgSymbolKind; override;
-    function GetDbgSymbol: TDbgSymbol; override;
+    function GetDbgSymbol: TFpDbgSymbol; override;
   public
-    constructor Create(ASymbol: TDbgSymbol); // Only for stType
+    constructor Create(ASymbol: TFpDbgSymbol); // Only for stType
     destructor Destroy; override;
   end;
 
-  { TPasParserSymbolValueCastToPointer
+  { TFpPasParserValueCastToPointer
     used by TPasParserSymbolPointer.TypeCastValue (which is used by TPasParserSymbolValueMakeReftype.GetDbgSymbol)
   }
 
-  TPasParserSymbolValueCastToPointer = class(TPasParserSymbolValue)
+  TFpPasParserValueCastToPointer = class(TFpPasParserValue)
   private
-    FValue: TDbgSymbolValue;
-    FTypeSymbol: TDbgSymbol;
+    FValue: TFpDbgValue;
+    FTypeSymbol: TFpDbgSymbol;
   protected
     function DebugText(AIndent: String): String; override;
   protected
     function GetKind: TDbgSymbolKind; override;
-    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
-    function GetTypeInfo: TDbgSymbol; override;
+    function GetFieldFlags: TFpDbgValueFieldFlags; override;
+    function GetTypeInfo: TFpDbgSymbol; override;
     function GetAsCardinal: QWord; override;
     function GetDataAddress: TFpDbgMemLocation; override;
   public
-    constructor Create(AValue: TDbgSymbolValue; ATypeInfo: TDbgSymbol);
+    constructor Create(AValue: TFpDbgValue; ATypeInfo: TFpDbgSymbol);
     destructor Destroy; override;
   end;
 
-  { TPasParserSymbolValueMakeReftype }
+  { TFpPasParserValueMakeReftype }
 
-  TPasParserSymbolValueMakeReftype = class(TPasParserSymbolValue)
+  TFpPasParserValueMakeReftype = class(TFpPasParserValue)
   private
-    FSourceTypeSymbol, FTypeSymbol: TDbgSymbol;
+    FSourceTypeSymbol, FTypeSymbol: TFpDbgSymbol;
     FRefLevel: Integer;
   protected
     function DebugText(AIndent: String): String; override;
   protected
-    function GetDbgSymbol: TDbgSymbol; override; // returns a TPasParserSymbolPointer
+    function GetDbgSymbol: TFpDbgSymbol; override; // returns a TPasParserSymbolPointer
   public
-    constructor Create(ATypeInfo: TDbgSymbol);
+    constructor Create(ATypeInfo: TFpDbgSymbol);
     destructor Destroy; override;
     procedure IncRefLevel;
   end;
 
-  { TPasParserDerefPointerSymbolValue }
+  { TFpPasParserValueDerefPointer }
 
-  { TPasParserSymbolValueDerefPointer }
-
-  TPasParserSymbolValueDerefPointer = class(TPasParserSymbolValue)
+  TFpPasParserValueDerefPointer = class(TFpPasParserValue)
   private
-    FValue: TDbgSymbolValue;
+    FValue: TFpDbgValue;
     FExpression: TFpPascalExpression; // MemReader / AddrSize
     FCardinal: QWord; // todo: TFpDbgMemLocation ?
     FCardinalRead: Boolean;
   protected
     function DebugText(AIndent: String): String; override;
   protected
-    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function GetAddress: TFpDbgMemLocation; override;
     function GetSize: Integer; override;
     function GetAsCardinal: QWord; override; // reads men
-    function GetTypeInfo: TDbgSymbol; override;
+    function GetTypeInfo: TFpDbgSymbol; override;
   public
-    constructor Create(AValue: TDbgSymbolValue; AExpression: TFpPascalExpression);
+    constructor Create(AValue: TFpDbgValue; AExpression: TFpPascalExpression);
     destructor Destroy; override;
   end;
 
-  { TPasParserAddressOfSymbolValue }
+  { TFpPasParserValueAddressOf }
 
-  { TPasParserSymbolValueAddressOf }
-
-  TPasParserSymbolValueAddressOf = class(TPasParserSymbolValue)
+  TFpPasParserValueAddressOf = class(TFpPasParserValue)
   private
-    FValue: TDbgSymbolValue;
-    FTypeInfo: TDbgSymbol;
-    function GetPointedToValue: TDbgSymbolValue;
+    FValue: TFpDbgValue;
+    FTypeInfo: TFpDbgSymbol;
+    function GetPointedToValue: TFpDbgValue;
   protected
     function DebugText(AIndent: String): String; override;
   protected
     function GetKind: TDbgSymbolKind; override;
-    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function GetAsInteger: Int64; override;
     function GetAsCardinal: QWord; override;
-    function GetTypeInfo: TDbgSymbol; override;
+    function GetTypeInfo: TFpDbgSymbol; override;
     function GetDataAddress: TFpDbgMemLocation; override;
   public
-    constructor Create(AValue: TDbgSymbolValue);
+    constructor Create(AValue: TFpDbgValue);
     destructor Destroy; override;
-    property PointedToValue: TDbgSymbolValue read GetPointedToValue;
+    property PointedToValue: TFpDbgValue read GetPointedToValue;
   end;
 
   {%endregion  DebugSymbolValue }
 
-function DbgsResultValue(AVal: TDbgSymbolValue; AIndent: String): String;
+function DbgsResultValue(AVal: TFpDbgValue; AIndent: String): String;
 begin
-  if (AVal <> nil) and (AVal is TPasParserSymbolValue) then
-    Result := LineEnding + TPasParserSymbolValue(AVal).DebugText(AIndent)
+  if (AVal <> nil) and (AVal is TFpPasParserValue) then
+    Result := LineEnding + TFpPasParserValue(AVal).DebugText(AIndent)
   else
   if AVal <> nil then
     Result := DbgSName(AVal) + '  DbsSym='+DbgSName(AVal.DbgSymbol)+' Type='+DbgSName(AVal.TypeInfo)
@@ -534,31 +530,31 @@ begin
     Result := DbgSName(AVal);
 end;
 
-function DbgsSymbol(AVal: TDbgSymbol; {%H-}AIndent: String): String;
+function DbgsSymbol(AVal: TFpDbgSymbol; {%H-}AIndent: String): String;
 begin
   Result := DbgSName(AVal);
 end;
 
-function TPasParserSymbolValue.DebugText(AIndent: String): String;
+function TFpPasParserValue.DebugText(AIndent: String): String;
 begin
   Result := AIndent + DbgSName(Self)  + '  DbsSym='+DbgSName(DbgSymbol)+' Type='+DbgSName(TypeInfo) + LineEnding;
 end;
 
 { TPasParserSymbolValueCastToPointer }
 
-function TPasParserSymbolValueCastToPointer.DebugText(AIndent: String): String;
+function TFpPasParserValueCastToPointer.DebugText(AIndent: String): String;
 begin
   Result := inherited DebugText(AIndent)
           + AIndent + '-Value= ' + DbgsResultValue(FValue, AIndent + '  ') + LineEnding
           + AIndent + '-Symbol = ' + DbgsSymbol(FTypeSymbol, AIndent + '  ') + LineEnding;
 end;
 
-function TPasParserSymbolValueCastToPointer.GetKind: TDbgSymbolKind;
+function TFpPasParserValueCastToPointer.GetKind: TDbgSymbolKind;
 begin
   Result := skPointer;
 end;
 
-function TPasParserSymbolValueCastToPointer.GetFieldFlags: TDbgSymbolValueFieldFlags;
+function TFpPasParserValueCastToPointer.GetFieldFlags: TFpDbgValueFieldFlags;
 begin
   if svfCardinal in FValue.FieldFlags then
     Result := [svfOrdinal, svfCardinal, svfSizeOfPointer, svfDataAddress]
@@ -566,12 +562,12 @@ begin
     Result := [];
 end;
 
-function TPasParserSymbolValueCastToPointer.GetTypeInfo: TDbgSymbol;
+function TFpPasParserValueCastToPointer.GetTypeInfo: TFpDbgSymbol;
 begin
   Result := FTypeSymbol;
 end;
 
-function TPasParserSymbolValueCastToPointer.GetAsCardinal: QWord;
+function TFpPasParserValueCastToPointer.GetAsCardinal: QWord;
 begin
   if svfCardinal in FValue.FieldFlags then
     Result := FValue.AsCardinal
@@ -579,13 +575,13 @@ begin
     Result := 0;
 end;
 
-function TPasParserSymbolValueCastToPointer.GetDataAddress: TFpDbgMemLocation;
+function TFpPasParserValueCastToPointer.GetDataAddress: TFpDbgMemLocation;
 begin
   Result := TargetLoc(TDbgPtr(FValue.AsCardinal));
 end;
 
-constructor TPasParserSymbolValueCastToPointer.Create(AValue: TDbgSymbolValue;
-  ATypeInfo: TDbgSymbol);
+constructor TFpPasParserValueCastToPointer.Create(AValue: TFpDbgValue;
+  ATypeInfo: TFpDbgSymbol);
 begin
   inherited Create;
   FValue := AValue;
@@ -595,7 +591,7 @@ begin
   Assert((FTypeSymbol=nil) or (FTypeSymbol.Kind = skPointer), 'TPasParserSymbolValueCastToPointer.Create');
 end;
 
-destructor TPasParserSymbolValueCastToPointer.Destroy;
+destructor TFpPasParserValueCastToPointer.Destroy;
 begin
   FValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserSymbolValueCastToPointer'){$ENDIF};
   FTypeSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeSymbol, 'TPasParserSymbolValueCastToPointer'){$ENDIF};
@@ -604,7 +600,7 @@ end;
 
 { TPasParserSymbolValueMakeReftype }
 
-function TPasParserSymbolValueMakeReftype.DebugText(AIndent: String): String;
+function TFpPasParserValueMakeReftype.DebugText(AIndent: String): String;
 begin
   Result := inherited DebugText(AIndent)
           + AIndent + '-RefLevel = ' + dbgs(FRefLevel) + LineEnding
@@ -612,7 +608,7 @@ begin
           + AIndent + '-Symbol = ' + DbgsSymbol(FTypeSymbol, AIndent + '  ') + LineEnding;
 end;
 
-function TPasParserSymbolValueMakeReftype.GetDbgSymbol: TDbgSymbol;
+function TFpPasParserValueMakeReftype.GetDbgSymbol: TFpDbgSymbol;
 begin
   if FTypeSymbol = nil then begin
     FTypeSymbol := TPasParserSymbolPointer.Create(FSourceTypeSymbol, FRefLevel);
@@ -621,7 +617,7 @@ begin
   Result := FTypeSymbol;
 end;
 
-constructor TPasParserSymbolValueMakeReftype.Create(ATypeInfo: TDbgSymbol);
+constructor TFpPasParserValueMakeReftype.Create(ATypeInfo: TFpDbgSymbol);
 begin
   inherited Create;
   FSourceTypeSymbol := ATypeInfo;
@@ -629,14 +625,14 @@ begin
   FRefLevel := 1;
 end;
 
-destructor TPasParserSymbolValueMakeReftype.Destroy;
+destructor TFpPasParserValueMakeReftype.Destroy;
 begin
   FSourceTypeSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSourceTypeSymbol, 'TPasParserSymbolValueMakeReftype'){$ENDIF};
   FTypeSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSourceTypeSymbol, 'TPasParserSymbolValueMakeReftype'){$ENDIF};
   inherited Destroy;
 end;
 
-procedure TPasParserSymbolValueMakeReftype.IncRefLevel;
+procedure TFpPasParserValueMakeReftype.IncRefLevel;
 begin
   inc(FRefLevel);
 end;
@@ -644,15 +640,15 @@ end;
 
 { TPasParserDerefPointerSymbolValue }
 
-function TPasParserSymbolValueDerefPointer.DebugText(AIndent: String): String;
+function TFpPasParserValueDerefPointer.DebugText(AIndent: String): String;
 begin
   Result := inherited DebugText(AIndent)
           + AIndent + '-Value= ' + DbgsResultValue(FValue, AIndent + '  ') + LineEnding;
 end;
 
-function TPasParserSymbolValueDerefPointer.GetFieldFlags: TDbgSymbolValueFieldFlags;
+function TFpPasParserValueDerefPointer.GetFieldFlags: TFpDbgValueFieldFlags;
 var
-  t: TDbgSymbol;
+  t: TFpDbgSymbol;
 begin
   // MUST *NOT* have ordinal
   Result := [svfAddress];
@@ -667,14 +663,14 @@ begin
       Result := Result + [svfSize];
 end;
 
-function TPasParserSymbolValueDerefPointer.GetAddress: TFpDbgMemLocation;
+function TFpPasParserValueDerefPointer.GetAddress: TFpDbgMemLocation;
 begin
   Result := FValue.DataAddress;
 end;
 
-function TPasParserSymbolValueDerefPointer.GetSize: Integer;
+function TFpPasParserValueDerefPointer.GetSize: Integer;
 var
-  t: TDbgSymbol;
+  t: TFpDbgSymbol;
 begin
   t := FValue.TypeInfo;
   if t <> nil then t := t.TypeInfo;
@@ -684,7 +680,7 @@ begin
     Result := inherited GetSize;
 end;
 
-function TPasParserSymbolValueDerefPointer.GetAsCardinal: QWord;
+function TFpPasParserValueDerefPointer.GetAsCardinal: QWord;
 var
   m: TFpDbgMemManager;
   Addr: TFpDbgMemLocation;
@@ -710,9 +706,9 @@ begin
   Result := FCardinal;
 end;
 
-function TPasParserSymbolValueDerefPointer.GetTypeInfo: TDbgSymbol;
+function TFpPasParserValueDerefPointer.GetTypeInfo: TFpDbgSymbol;
 var
-  t: TDbgSymbol;
+  t: TFpDbgSymbol;
 begin
   t := FValue.TypeInfo;
   if t <> nil then t := t.TypeInfo;
@@ -722,7 +718,7 @@ begin
     Result := inherited GetTypeInfo;
 end;
 
-constructor TPasParserSymbolValueDerefPointer.Create(AValue: TDbgSymbolValue;
+constructor TFpPasParserValueDerefPointer.Create(AValue: TFpDbgValue;
   AExpression: TFpPascalExpression);
 begin
   inherited Create;
@@ -731,7 +727,7 @@ begin
   FExpression := AExpression;
 end;
 
-destructor TPasParserSymbolValueDerefPointer.Destroy;
+destructor TFpPasParserValueDerefPointer.Destroy;
 begin
   inherited Destroy;
   FValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserDerefPointerSymbolValue'){$ENDIF};
@@ -739,39 +735,39 @@ end;
 
 { TPasParserAddressOfSymbolValue }
 
-function TPasParserSymbolValueAddressOf.GetPointedToValue: TDbgSymbolValue;
+function TFpPasParserValueAddressOf.GetPointedToValue: TFpDbgValue;
 begin
   Result := FValue;
 end;
 
-function TPasParserSymbolValueAddressOf.DebugText(AIndent: String): String;
+function TFpPasParserValueAddressOf.DebugText(AIndent: String): String;
 begin
   Result := inherited DebugText(AIndent)
           + AIndent + '-Value= ' + DbgsResultValue(FValue, AIndent + '  ') + LineEnding
           + AIndent + '-Symbol = ' + DbgsSymbol(FTypeInfo, AIndent + '  ') + LineEnding;
 end;
 
-function TPasParserSymbolValueAddressOf.GetKind: TDbgSymbolKind;
+function TFpPasParserValueAddressOf.GetKind: TDbgSymbolKind;
 begin
   Result := skPointer;
 end;
 
-function TPasParserSymbolValueAddressOf.GetFieldFlags: TDbgSymbolValueFieldFlags;
+function TFpPasParserValueAddressOf.GetFieldFlags: TFpDbgValueFieldFlags;
 begin
     Result := [svfOrdinal, svfCardinal, svfSizeOfPointer, svfDataAddress];
 end;
 
-function TPasParserSymbolValueAddressOf.GetAsInteger: Int64;
+function TFpPasParserValueAddressOf.GetAsInteger: Int64;
 begin
   Result := Int64(LocToAddrOrNil(FValue.Address));
 end;
 
-function TPasParserSymbolValueAddressOf.GetAsCardinal: QWord;
+function TFpPasParserValueAddressOf.GetAsCardinal: QWord;
 begin
   Result := QWord(LocToAddrOrNil(FValue.Address));
 end;
 
-function TPasParserSymbolValueAddressOf.GetTypeInfo: TDbgSymbol;
+function TFpPasParserValueAddressOf.GetTypeInfo: TFpDbgSymbol;
 begin
   Result := FTypeInfo;
   if Result <> nil then
@@ -784,19 +780,19 @@ begin
   Result := FTypeInfo;
 end;
 
-function TPasParserSymbolValueAddressOf.GetDataAddress: TFpDbgMemLocation;
+function TFpPasParserValueAddressOf.GetDataAddress: TFpDbgMemLocation;
 begin
   Result := FValue.Address;
 end;
 
-constructor TPasParserSymbolValueAddressOf.Create(AValue: TDbgSymbolValue);
+constructor TFpPasParserValueAddressOf.Create(AValue: TFpDbgValue);
 begin
   inherited Create;
   FValue := AValue;
   FValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserAddressOfSymbolValue'){$ENDIF};
 end;
 
-destructor TPasParserSymbolValueAddressOf.Destroy;
+destructor TFpPasParserValueAddressOf.Destroy;
 begin
   inherited Destroy;
   FValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserAddressOfSymbolValue'){$ENDIF};
@@ -805,30 +801,30 @@ end;
 
 { TPasParserWrapperSymbolValue }
 
-function TPasParserSymbolValueWrapper.DebugText(AIndent: String): String;
+function TFpPasParserValueWrapper.DebugText(AIndent: String): String;
 begin
   Result := inherited DebugText(AIndent)
           + AIndent + '-Symbol = ' + DbgsSymbol(FSymbol, AIndent + '  ') + LineEnding;
 end;
 
-function TPasParserSymbolValueWrapper.GetKind: TDbgSymbolKind;
+function TFpPasParserValueWrapper.GetKind: TDbgSymbolKind;
 begin
     Result := skNone;
 end;
 
-function TPasParserSymbolValueWrapper.GetDbgSymbol: TDbgSymbol;
+function TFpPasParserValueWrapper.GetDbgSymbol: TFpDbgSymbol;
 begin
   Result := FSymbol;
 end;
 
-constructor TPasParserSymbolValueWrapper.Create(ASymbol: TDbgSymbol);
+constructor TFpPasParserValueWrapper.Create(ASymbol: TFpDbgSymbol);
 begin
   inherited Create;
   FSymbol := ASymbol;
   FSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'TPasParserWrapperSymbolValue'){$ENDIF};
 end;
 
-destructor TPasParserSymbolValueWrapper.Destroy;
+destructor TFpPasParserValueWrapper.Destroy;
 begin
   inherited Destroy;
   FSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'TPasParserWrapperSymbolValue'){$ENDIF};
@@ -841,12 +837,12 @@ begin
   Result := (inherited GetMemberCount) - 1;
 end;
 
-function TPasParserSymbolArrayDeIndex.GetMember(AIndex: Integer): TDbgSymbol;
+function TPasParserSymbolArrayDeIndex.GetMember(AIndex: Integer): TFpDbgSymbol;
 begin
   Result := inherited GetMember(AIndex + 1);
 end;
 
-constructor TPasParserSymbolArrayDeIndex.Create(const AnArray: TDbgSymbol);
+constructor TPasParserSymbolArrayDeIndex.Create(const AnArray: TFpDbgSymbol);
 begin
   FArray := AnArray;
   FArray.AddReference;
@@ -872,7 +868,7 @@ begin
   t.ReleaseReference;
 end;
 
-constructor TPasParserSymbolPointer.Create(const APointedTo: TDbgSymbol;
+constructor TPasParserSymbolPointer.Create(const APointedTo: TFpDbgSymbol;
   APointerLevels: Integer);
 begin
   inherited Create('');
@@ -885,7 +881,7 @@ begin
   SetSymbolType(stType);
 end;
 
-constructor TPasParserSymbolPointer.Create(const APointedTo: TDbgSymbol);
+constructor TPasParserSymbolPointer.Create(const APointedTo: TFpDbgSymbol);
 begin
   Create(APointedTo, 1);
 end;
@@ -896,9 +892,9 @@ begin
   inherited Destroy;
 end;
 
-function TPasParserSymbolPointer.TypeCastValue(AValue: TDbgSymbolValue): TDbgSymbolValue;
+function TPasParserSymbolPointer.TypeCastValue(AValue: TFpDbgValue): TFpDbgValue;
 begin
-  Result := TPasParserSymbolValueCastToPointer.Create(AValue, Self);
+  Result := TFpPasParserValueCastToPointer.Create(AValue, Self);
 end;
 
 
@@ -910,9 +906,9 @@ begin
   inherited Init;
 end;
 
-function TFpPascalExpressionPartBracketIndex.DoGetResultValue: TDbgSymbolValue;
+function TFpPascalExpressionPartBracketIndex.DoGetResultValue: TFpDbgValue;
 var
-  tmp, tmp2: TDbgSymbolValue;
+  tmp, tmp2: TFpDbgValue;
 begin
   Result := nil;
   if Count <> 2 then exit;
@@ -1031,9 +1027,9 @@ begin
   inherited Init;
 end;
 
-function TFpPascalExpressionPartBracketArgumentList.DoGetResultValue: TDbgSymbolValue;
+function TFpPascalExpressionPartBracketArgumentList.DoGetResultValue: TFpDbgValue;
 var
-  tmp, tmp2: TDbgSymbolValue;
+  tmp, tmp2: TFpDbgValue;
 begin
   Result := nil;
 
@@ -1132,7 +1128,7 @@ begin
   Add(APart);
 end;
 
-function TFpPascalExpressionPartBracketSubExpression.DoGetResultValue: TDbgSymbolValue;
+function TFpPascalExpressionPartBracketSubExpression.DoGetResultValue: TFpDbgValue;
 begin
   if Count <> 1 then
     Result := nil
@@ -1149,9 +1145,9 @@ begin
   Result := (ResultValue <> nil) and (ResultValue.DbgSymbol <> nil) and (ResultValue.DbgSymbol.SymbolType = stType);
 end;
 
-function TFpPascalExpressionPartIdentifer.DoGetResultValue: TDbgSymbolValue;
+function TFpPascalExpressionPartIdentifer.DoGetResultValue: TFpDbgValue;
 var
-  DbgSymbol: TDbgSymbol;
+  DbgSymbol: TFpDbgSymbol;
 begin
   Result := nil;
   DbgSymbol := FExpression.GetDbgSymbolForIdentifier(GetText);
@@ -1162,7 +1158,7 @@ begin
 
   Result := DbgSymbol.Value;
   if Result = nil then begin
-    Result := TPasParserSymbolValueWrapper.Create(DbgSymbol);
+    Result := TFpPasParserValueWrapper.Create(DbgSymbol);
     {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
   end
   else
@@ -1173,9 +1169,9 @@ end;
 
 { TFpPascalExpressionPartConstantNumber }
 
-function TFpPascalExpressionPartConstantNumber.DoGetResultValue: TDbgSymbolValue;
+function TFpPascalExpressionPartConstantNumber.DoGetResultValue: TFpDbgValue;
 begin
-  Result := TDbgSymbolValueConstNumber.Create(StrToQWordDef(GetText, 0), False);
+  Result := TFpDbgValueConstNumber.Create(StrToQWordDef(GetText, 0), False);
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
@@ -1342,7 +1338,7 @@ begin
   FExpressionPart := CurPart;
 end;
 
-function TFpPascalExpression.GetResultValue: TDbgSymbolValue;
+function TFpPascalExpression.GetResultValue: TFpDbgValue;
 begin
   if (FExpressionPart = nil) or (not Valid) then
     Result := nil
@@ -1372,7 +1368,7 @@ begin
   Result := APChar - @FTextExpression[1] + 1;
 end;
 
-function TFpPascalExpression.GetDbgSymbolForIdentifier(AnIdent: String): TDbgSymbol;
+function TFpPascalExpression.GetDbgSymbolForIdentifier(AnIdent: String): TFpDbgSymbol;
 begin
   if FContext <> nil then
     Result := FContext.FindSymbol(AnIdent)
@@ -1404,8 +1400,8 @@ begin
   if FExpressionPart <> nil then
     Result := Result + FExpressionPart.DebugDump('  ', AWithResults);
   if AWithResults and (ResultValue <> nil) then
-    if (ResultValue is TPasParserSymbolValue) then
-      Result := Result + 'ResultValue = ' + LineEnding + TPasParserSymbolValue(ResultValue).DebugText('  ')
+    if (ResultValue is TFpPasParserValue) then
+      Result := Result + 'ResultValue = ' + LineEnding + TFpPasParserValue(ResultValue).DebugText('  ')
     else
       Result := Result + 'ResultValue = ' + LineEnding + DbgSName(ResultValue) + LineEnding ;
 end;
@@ -1439,7 +1435,7 @@ begin
     Result := TFpPascalExpressionPartBracket(tmp);
 end;
 
-function TFpPascalExpressionPart.GetResultValue: TDbgSymbolValue;
+function TFpPascalExpressionPart.GetResultValue: TFpDbgValue;
 begin
   Result := FResultValue;
   if FResultValDone then
@@ -1502,7 +1498,7 @@ begin
   Result := False;
 end;
 
-function TFpPascalExpressionPart.DoGetResultValue: TDbgSymbolValue;
+function TFpPascalExpressionPart.DoGetResultValue: TFpDbgValue;
 begin
   Result := nil;
 end;
@@ -1565,8 +1561,8 @@ function TFpPascalExpressionPart.DebugDump(AIndent: String; AWithResults: Boolea
 begin
   Result := DebugText(AIndent, AWithResults);
   if AWithResults and (FResultValue <> nil) then
-    if (FResultValue is TPasParserSymbolValue) then
-      Result := Result + TPasParserSymbolValue(FResultValue).DebugText(AIndent+'    //  ')
+    if (FResultValue is TFpPasParserValue) then
+      Result := Result + TFpPasParserValue(FResultValue).DebugText(AIndent+'    //  ')
     else
       Result := Result + AIndent+'    //  FResultValue = ' + DbgSName(FResultValue) + LineEnding;
 end;
@@ -1886,9 +1882,9 @@ begin
   inherited Init;
 end;
 
-function TFpPascalExpressionPartOperatorAddressOf.DoGetResultValue: TDbgSymbolValue;
+function TFpPascalExpressionPartOperatorAddressOf.DoGetResultValue: TFpDbgValue;
 var
-  tmp: TDbgSymbolValue;
+  tmp: TFpDbgValue;
 begin
   Result := nil;
   if Count <> 1 then exit;
@@ -1897,7 +1893,7 @@ begin
   if (tmp = nil) or not IsTargetAddr(tmp.Address) then
     exit;
 
-  Result := TPasParserSymbolValueAddressOf.Create(tmp);
+  Result := TFpPasParserValueAddressOf.Create(tmp);
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
 end;
 
@@ -1920,9 +1916,9 @@ begin
               );
 end;
 
-function TFpPascalExpressionPartOperatorMakeRef.DoGetResultValue: TDbgSymbolValue;
+function TFpPascalExpressionPartOperatorMakeRef.DoGetResultValue: TFpDbgValue;
 var
-  tmp: TDbgSymbolValue;
+  tmp: TFpDbgValue;
 begin
   Result := nil;
   if Count <> 1 then exit;
@@ -1930,8 +1926,8 @@ begin
   tmp := Items[0].ResultValue;
   if tmp = nil then
     exit;
-  if tmp is TPasParserSymbolValueMakeReftype then begin
-    TPasParserSymbolValueMakeReftype(tmp).IncRefLevel;
+  if tmp is TFpPasParserValueMakeReftype then begin
+    TFpPasParserValueMakeReftype(tmp).IncRefLevel;
     Result := tmp;
     Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
     exit;
@@ -1940,7 +1936,7 @@ begin
   if (tmp.DbgSymbol = nil) or (tmp.DbgSymbol.SymbolType <> stType) then
     exit;
 
-  Result := TPasParserSymbolValueMakeReftype.Create(tmp.DbgSymbol);
+  Result := TFpPasParserValueMakeReftype.Create(tmp.DbgSymbol);
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
@@ -1957,9 +1953,9 @@ begin
   inherited Init;
 end;
 
-function TFpPascalExpressionPartOperatorDeRef.DoGetResultValue: TDbgSymbolValue;
+function TFpPascalExpressionPartOperatorDeRef.DoGetResultValue: TFpDbgValue;
 var
-  tmp, tmp2: TDbgSymbolValue;
+  tmp, tmp2: TFpDbgValue;
 begin
   Result := nil;
   if Count <> 1 then exit;
@@ -1968,8 +1964,8 @@ begin
   if tmp = nil then
     exit;
 
-  if tmp is TPasParserSymbolValueAddressOf then begin
-    Result := TPasParserSymbolValueAddressOf(tmp).PointedToValue;
+  if tmp is TFpPasParserValueAddressOf then begin
+    Result := TFpPasParserValueAddressOf(tmp).PointedToValue;
     Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
   end
   else
@@ -1979,7 +1975,7 @@ begin
     then begin
       //TODO: maybe introduce a method TypeCastFromAddress, so we can skip the twp2 object
 //todo, if tmp2 is a TPasParserAddressOfSymbolValue, then no new object is neede....
-      tmp2 := TPasParserSymbolValueDerefPointer.Create(tmp, Expression);
+      tmp2 := TFpPasParserValueDerefPointer.Create(tmp, Expression);
       if (tmp.TypeInfo.TypeInfo <> nil) then
         Result := tmp.TypeInfo.TypeInfo.TypeCastValue(tmp2)
       else
@@ -2032,9 +2028,9 @@ begin
   inherited Init;
 end;
 
-function TFpPascalExpressionPartOperatorUnaryPlusMinus.DoGetResultValue: TDbgSymbolValue;
+function TFpPascalExpressionPartOperatorUnaryPlusMinus.DoGetResultValue: TFpDbgValue;
 var
-  tmp1: TDbgSymbolValue;
+  tmp1: TFpDbgValue;
   IsAdd: Boolean;
 begin
   Result := nil;
@@ -2056,8 +2052,8 @@ begin
   else begin
     case tmp1.Kind of
       skPointer: ;
-      skInteger: Result := TDbgSymbolValueConstNumber.Create(-tmp1.AsInteger, True);
-      skCardinal: Result := TDbgSymbolValueConstNumber.Create(-tmp1.AsCardinal, True);
+      skInteger: Result := TFpDbgValueConstNumber.Create(-tmp1.AsInteger, True);
+      skCardinal: Result := TFpDbgValueConstNumber.Create(-tmp1.AsCardinal, True);
     end;
   end;
   {$POP}
@@ -2074,9 +2070,9 @@ begin
   inherited Init;
 end;
 
-function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TDbgSymbolValue;
+function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpDbgValue;
 var
-  tmp1, tmp2: TDbgSymbolValue;
+  tmp1, tmp2: TFpDbgValue;
   IsAdd: Boolean;
 begin
   Result := nil;
@@ -2094,13 +2090,13 @@ begin
       skPointer: ;
       skInteger: case tmp2.Kind of
         skPointer: ;
-        skInteger:  Result := TDbgSymbolValueConstNumber.Create(tmp1.AsInteger + tmp2.AsInteger, True);
-        skCardinal: Result := TDbgSymbolValueConstNumber.Create(tmp1.AsInteger + tmp2.AsCardinal, True);
+        skInteger:  Result := TFpDbgValueConstNumber.Create(tmp1.AsInteger + tmp2.AsInteger, True);
+        skCardinal: Result := TFpDbgValueConstNumber.Create(tmp1.AsInteger + tmp2.AsCardinal, True);
       end;
       skCardinal: case tmp2.Kind of
         skPointer: ;
-        skInteger:  Result := TDbgSymbolValueConstNumber.Create(tmp1.AsCardinal + tmp2.AsInteger, True);
-        skCardinal: Result := TDbgSymbolValueConstNumber.Create(tmp1.AsCardinal + tmp2.AsCardinal, False);
+        skInteger:  Result := TFpDbgValueConstNumber.Create(tmp1.AsCardinal + tmp2.AsInteger, True);
+        skCardinal: Result := TFpDbgValueConstNumber.Create(tmp1.AsCardinal + tmp2.AsCardinal, False);
       end;
     end;
   end
@@ -2109,13 +2105,13 @@ begin
       skPointer: ;
       skInteger: case tmp2.Kind of
         skPointer: ;
-        skInteger:  Result := TDbgSymbolValueConstNumber.Create(tmp1.AsInteger - tmp2.AsInteger, True);
-        skCardinal: Result := TDbgSymbolValueConstNumber.Create(tmp1.AsInteger - tmp2.AsCardinal, True);
+        skInteger:  Result := TFpDbgValueConstNumber.Create(tmp1.AsInteger - tmp2.AsInteger, True);
+        skCardinal: Result := TFpDbgValueConstNumber.Create(tmp1.AsInteger - tmp2.AsCardinal, True);
       end;
       skCardinal: case tmp2.Kind of
         skPointer: ;
-        skInteger:  Result := TDbgSymbolValueConstNumber.Create(tmp1.AsCardinal - tmp2.AsInteger, True);
-        skCardinal: Result := TDbgSymbolValueConstNumber.Create(tmp1.AsCardinal - tmp2.AsCardinal, True);
+        skInteger:  Result := TFpDbgValueConstNumber.Create(tmp1.AsCardinal - tmp2.AsInteger, True);
+        skCardinal: Result := TFpDbgValueConstNumber.Create(tmp1.AsCardinal - tmp2.AsCardinal, True);
       end;
     end;
   end;
@@ -2148,9 +2144,9 @@ begin
     Result := Result and (APart is TFpPascalExpressionPartIdentifer);
 end;
 
-function TFpPascalExpressionPartOperatorMemberOf.DoGetResultValue: TDbgSymbolValue;
+function TFpPascalExpressionPartOperatorMemberOf.DoGetResultValue: TFpDbgValue;
 var
-  tmp: TDbgSymbolValue;
+  tmp: TFpDbgValue;
 begin
   Result := nil;
   if Count <> 2 then exit;

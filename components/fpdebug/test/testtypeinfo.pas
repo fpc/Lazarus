@@ -29,22 +29,22 @@ type
 
     procedure AssertEqualsQW(const AMessage: string; Expected, Actual: QWord);
 
-    procedure ExpTestFlags(AVal: TDbgSymbolValue; ATestFlags: TTestFlags = []);
-    procedure ExpKind(AVal: TDbgSymbolValue; AExpKind: TDbgSymbolKind; TestFlags: TTestFlags = []);
-    procedure ExpFlags(AVal: TDbgSymbolValue; AExpFlags: TDbgSymbolValueFieldFlags; ExpNotFlags: TDbgSymbolValueFieldFlags = []);
-    procedure ExpResult(AVal: TDbgSymbolValue; Field: TDbgSymbolValueFieldFlag; ExpValue: QWord);
-    procedure ExpResult(AVal: TDbgSymbolValue; Field: TDbgSymbolValueFieldFlag; ExpValue: Int64);
-    procedure ExpResult(AVal: TDbgSymbolValue; Field: TDbgSymbolValueFieldFlag; ExpValue: Boolean);
-    procedure ExpResult(AVal: TDbgSymbolValue; Field: TDbgSymbolValueFieldFlag; ExpValue: String);
-    procedure ExpResult(AVal: TDbgSymbolValue; Field: TDbgSymbolValueFieldFlag; ExpValue: WideString);
-    procedure ExpMemberCount(AVal: TDbgSymbolValue; ExpValue: Integer);
+    procedure ExpTestFlags(AVal: TFpDbgValue; ATestFlags: TTestFlags = []);
+    procedure ExpKind(AVal: TFpDbgValue; AExpKind: TDbgSymbolKind; TestFlags: TTestFlags = []);
+    procedure ExpFlags(AVal: TFpDbgValue; AExpFlags: TFpDbgValueFieldFlags; ExpNotFlags: TFpDbgValueFieldFlags = []);
+    procedure ExpResult(AVal: TFpDbgValue; Field: TFpDbgValueFieldFlag; ExpValue: QWord);
+    procedure ExpResult(AVal: TFpDbgValue; Field: TFpDbgValueFieldFlag; ExpValue: Int64);
+    procedure ExpResult(AVal: TFpDbgValue; Field: TFpDbgValueFieldFlag; ExpValue: Boolean);
+    procedure ExpResult(AVal: TFpDbgValue; Field: TFpDbgValueFieldFlag; ExpValue: String);
+    procedure ExpResult(AVal: TFpDbgValue; Field: TFpDbgValueFieldFlag; ExpValue: WideString);
+    procedure ExpMemberCount(AVal: TFpDbgValue; ExpValue: Integer);
 
-    procedure ExpFlags(AExpFlags: TDbgSymbolValueFieldFlags; ExpNotFlags: TDbgSymbolValueFieldFlags = []);
-    procedure ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: QWord);
-    procedure ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: Int64);
-    procedure ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: Boolean);
-    procedure ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: String);
-    procedure ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: WideString);
+    procedure ExpFlags(AExpFlags: TFpDbgValueFieldFlags; ExpNotFlags: TFpDbgValueFieldFlags = []);
+    procedure ExpResult(Field: TFpDbgValueFieldFlag; ExpValue: QWord);
+    procedure ExpResult(Field: TFpDbgValueFieldFlag; ExpValue: Int64);
+    procedure ExpResult(Field: TFpDbgValueFieldFlag; ExpValue: Boolean);
+    procedure ExpResult(Field: TFpDbgValueFieldFlag; ExpValue: String);
+    procedure ExpResult(Field: TFpDbgValueFieldFlag; ExpValue: WideString);
     procedure ExpMemberCount(ExpValue: Integer);
 
     procedure InitTest(Expr: String; ExtraName: String = '');
@@ -71,7 +71,7 @@ begin
   AssertTrue(AMessage + ComparisonMsg(IntToStr(Expected), IntToStr(Actual)), Expected = Actual);
 end;
 
-procedure TTestTypeInfo.ExpTestFlags(AVal: TDbgSymbolValue; ATestFlags: TTestFlags);
+procedure TTestTypeInfo.ExpTestFlags(AVal: TFpDbgValue; ATestFlags: TTestFlags);
 var
   i: TTestFlag;
 begin
@@ -88,7 +88,7 @@ begin
       end;
 end;
 
-procedure TTestTypeInfo.ExpKind(AVal: TDbgSymbolValue; AExpKind: TDbgSymbolKind;
+procedure TTestTypeInfo.ExpKind(AVal: TFpDbgValue; AExpKind: TDbgSymbolKind;
   TestFlags: TTestFlags);
 var
   s: String;
@@ -135,28 +135,28 @@ begin
   FCurrentTestName := s;
 end;
 
-procedure TTestTypeInfo.ExpFlags(AVal: TDbgSymbolValue; AExpFlags: TDbgSymbolValueFieldFlags;
-  ExpNotFlags: TDbgSymbolValueFieldFlags);
+procedure TTestTypeInfo.ExpFlags(AVal: TFpDbgValue; AExpFlags: TFpDbgValueFieldFlags;
+  ExpNotFlags: TFpDbgValueFieldFlags);
 var
-  i: TDbgSymbolValueFieldFlag;
+  i: TFpDbgValueFieldFlag;
   s: string;
-  f: TDbgSymbolValueFieldFlags;
+  f: TFpDbgValueFieldFlags;
 begin
   AssertTrue(FCurrentTestName + 'has ResVal', AVal <> nil);
   f := AVal.FieldFlags;
-  For i := low(TDbgSymbolValueFieldFlag) to High(TDbgSymbolValueFieldFlag) do
+  For i := low(TFpDbgValueFieldFlag) to High(TFpDbgValueFieldFlag) do
     if i in AExpFlags then begin
       WriteStr(s, i);
       AssertTrue(FCurrentTestName + 'Has flag' + s, i in f);
     end;
-  For i := low(TDbgSymbolValueFieldFlag) to High(TDbgSymbolValueFieldFlag) do
+  For i := low(TFpDbgValueFieldFlag) to High(TFpDbgValueFieldFlag) do
     if i in ExpNotFlags then begin
       WriteStr(s, i);
       AssertTrue(FCurrentTestName + 'Has NOT flag' + s, not (i in f));
     end;
 end;
 
-procedure TTestTypeInfo.ExpResult(AVal: TDbgSymbolValue; Field: TDbgSymbolValueFieldFlag;
+procedure TTestTypeInfo.ExpResult(AVal: TFpDbgValue; Field: TFpDbgValueFieldFlag;
   ExpValue: QWord);
 var
   s: string;
@@ -175,7 +175,7 @@ begin
   end;
 end;
 
-procedure TTestTypeInfo.ExpResult(AVal: TDbgSymbolValue; Field: TDbgSymbolValueFieldFlag;
+procedure TTestTypeInfo.ExpResult(AVal: TFpDbgValue; Field: TFpDbgValueFieldFlag;
   ExpValue: Int64);
 var
   s: string;
@@ -194,7 +194,7 @@ begin
   end;
 end;
 
-procedure TTestTypeInfo.ExpResult(AVal: TDbgSymbolValue; Field: TDbgSymbolValueFieldFlag;
+procedure TTestTypeInfo.ExpResult(AVal: TFpDbgValue; Field: TFpDbgValueFieldFlag;
   ExpValue: Boolean);
 var
   s: string;
@@ -207,7 +207,7 @@ begin
   end;
 end;
 
-procedure TTestTypeInfo.ExpResult(AVal: TDbgSymbolValue; Field: TDbgSymbolValueFieldFlag;
+procedure TTestTypeInfo.ExpResult(AVal: TFpDbgValue; Field: TFpDbgValueFieldFlag;
   ExpValue: String);
 var
   s: string;
@@ -221,7 +221,7 @@ begin
   end;
 end;
 
-procedure TTestTypeInfo.ExpResult(AVal: TDbgSymbolValue; Field: TDbgSymbolValueFieldFlag;
+procedure TTestTypeInfo.ExpResult(AVal: TFpDbgValue; Field: TFpDbgValueFieldFlag;
   ExpValue: WideString);
 var
   s: string;
@@ -234,39 +234,39 @@ begin
   end;
 end;
 
-procedure TTestTypeInfo.ExpMemberCount(AVal: TDbgSymbolValue; ExpValue: Integer);
+procedure TTestTypeInfo.ExpMemberCount(AVal: TFpDbgValue; ExpValue: Integer);
 begin
   ExpFlags([svfMembers]);
   AssertEquals(FCurrentTestName+'MemberCount', ExpValue, AVal.MemberCount);
 end;
 
-procedure TTestTypeInfo.ExpFlags(AExpFlags: TDbgSymbolValueFieldFlags;
-  ExpNotFlags: TDbgSymbolValueFieldFlags);
+procedure TTestTypeInfo.ExpFlags(AExpFlags: TFpDbgValueFieldFlags;
+  ExpNotFlags: TFpDbgValueFieldFlags);
 begin
   ExpFlags(FExpression.ResultValue, AExpFlags, ExpNotFlags);
 end;
 
-procedure TTestTypeInfo.ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: QWord);
+procedure TTestTypeInfo.ExpResult(Field: TFpDbgValueFieldFlag; ExpValue: QWord);
 begin
   ExpResult(FExpression.ResultValue, Field, ExpValue);
 end;
 
-procedure TTestTypeInfo.ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: Int64);
+procedure TTestTypeInfo.ExpResult(Field: TFpDbgValueFieldFlag; ExpValue: Int64);
 begin
   ExpResult(FExpression.ResultValue, Field, ExpValue);
 end;
 
-procedure TTestTypeInfo.ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: Boolean);
+procedure TTestTypeInfo.ExpResult(Field: TFpDbgValueFieldFlag; ExpValue: Boolean);
 begin
   ExpResult(FExpression.ResultValue, Field, ExpValue);
 end;
 
-procedure TTestTypeInfo.ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: String);
+procedure TTestTypeInfo.ExpResult(Field: TFpDbgValueFieldFlag; ExpValue: String);
 begin
   ExpResult(FExpression.ResultValue, Field, ExpValue);
 end;
 
-procedure TTestTypeInfo.ExpResult(Field: TDbgSymbolValueFieldFlag; ExpValue: WideString);
+procedure TTestTypeInfo.ExpResult(Field: TFpDbgValueFieldFlag; ExpValue: WideString);
 begin
   ExpResult(FExpression.ResultValue, Field, ExpValue);
 end;
@@ -354,9 +354,9 @@ end;
 
 procedure TTestTypeInfo.TestExpressionInt;
 var
-  sym: TDbgSymbol;
+  sym: TFpDbgSymbol;
   ImgLoader: TTestLoaderSetupBasic;
-  TmpResVal: TDbgSymbolValue;
+  TmpResVal: TFpDbgValue;
 begin
   InitDwarf(TTestLoaderSetupBasic);
   ImgLoader := TTestLoaderSetupBasic(FImageLoader);
@@ -402,9 +402,9 @@ end;
 
 procedure TTestTypeInfo.TestExpressionBool;
 var
-  sym: TDbgSymbol;
+  sym: TFpDbgSymbol;
   ImgLoader: TTestLoaderSetupBasic;
-  TmpResVal: TDbgSymbolValue;
+  TmpResVal: TFpDbgValue;
   i: Integer;
   s: String;
 begin
@@ -467,9 +467,9 @@ end;
 
 procedure TTestTypeInfo.TestExpressionArray;
 var
-  sym: TDbgSymbol;
+  sym: TFpDbgSymbol;
   ImgLoader: TTestLoaderSetupArray;
-  TmpResVal: TDbgSymbolValue;
+  TmpResVal: TFpDbgValue;
   i: Integer;
   s: String;
 begin
@@ -535,12 +535,12 @@ end;
 
 procedure TTestTypeInfo.TestExpressionStructures;
 var
-  sym: TDbgSymbol;
+  sym: TFpDbgSymbol;
 
   obj1: TTestSetup1Class;
   vobj1: TTestSetup1Object;
   i, j: Integer;
-  FieldsExp: TDbgSymbolValueFieldFlags;
+  FieldsExp: TFpDbgValueFieldFlags;
   AddrExp: TDbgPtr;
   s, s2: String;
   ImgLoader: TTestLoaderSetup1;
@@ -1114,7 +1114,7 @@ procedure TTestTypeInfo.TestExpressionEnumAndSet;
     else
       ExpMemberCount(0);
   end;
-  function ExpEnumMemberVal(AnIdent: String; AnOrd: QWord): TDbgSymbolValue;
+  function ExpEnumMemberVal(AnIdent: String; AnOrd: QWord): TFpDbgValue;
   begin
     FCurrentTestName := FCurrentTestName + ' (enum-val)';
     Result := FExpression.ResultValue.Member[0];
@@ -1146,7 +1146,7 @@ procedure TTestTypeInfo.TestExpressionEnumAndSet;
   procedure ExpSetIdent(AnIdentList: array of string);
   var
     i: Integer;
-    m: TDbgSymbolValue;
+    m: TFpDbgValue;
   begin
     for i := low(AnIdentList) to high(AnIdentList) do begin
       m := FExpression.ResultValue.Member[i];
@@ -1159,7 +1159,7 @@ procedure TTestTypeInfo.TestExpressionEnumAndSet;
   procedure ExpSetOrd(AnIdentList: array of QWord);
   var
     i: Integer;
-    m: TDbgSymbolValue;
+    m: TFpDbgValue;
   begin
     for i := low(AnIdentList) to high(AnIdentList) do begin
       m := FExpression.ResultValue.Member[i];
@@ -1171,9 +1171,9 @@ procedure TTestTypeInfo.TestExpressionEnumAndSet;
 
 
 var
-  sym: TDbgSymbol;
+  sym: TFpDbgSymbol;
   ImgLoader: TTestLoaderSetupBasic;
-  TmpResVal: TDbgSymbolValue;
+  TmpResVal: TFpDbgValue;
 begin
   InitDwarf(TTestLoaderSetupBasic);
   ImgLoader := TTestLoaderSetupBasic(FImageLoader);

@@ -399,10 +399,10 @@ const
   GdbCmdWhatIs = 'whatis ';
   GdbCmdEval = '-data-evaluate-expression ';
 
-  procedure AddType(ASourceExpr: string; ATypeIdent: TDbgSymbol; AVal: TDbgSymbolValue = nil); forward;
+  procedure AddType(ASourceExpr: string; ATypeIdent: TFpDbgSymbol; AVal: TFpDbgValue = nil); forward;
 
-  procedure FindPointerAndBaseType(ASrcType: TDbgSymbol;
-    out APointerLevel: Integer; out ADeRefType, ABaseType: TDbgSymbol;
+  procedure FindPointerAndBaseType(ASrcType: TFpDbgSymbol;
+    out APointerLevel: Integer; out ADeRefType, ABaseType: TFpDbgSymbol;
     out ASrcTypeName, ADeRefTypeName, ABaseTypeName: String);
   begin
     APointerLevel := 0;
@@ -433,7 +433,7 @@ const
     ABaseTypeName  := ABaseType.Name;
   end;
 
-  Function MembersAsGdbText(AStructType: TDbgSymbol; WithVisibilty: Boolean; out AText: String): Boolean;
+  Function MembersAsGdbText(AStructType: TFpDbgSymbol; WithVisibilty: Boolean; out AText: String): Boolean;
   var
     CurVis: TDbgSymbolMemberVisibility;
 
@@ -450,9 +450,9 @@ const
       end;
     end;
 
-    procedure AddMember(AMember: TDbgSymbol);
+    procedure AddMember(AMember: TFpDbgSymbol);
     var
-      ti: TDbgSymbol;
+      ti: TFpDbgSymbol;
       s, s2: String;
     begin
 //todo: functions / virtual / array ...
@@ -498,7 +498,7 @@ const
   var
     c: Integer;
     i: Integer;
-    m: TDbgSymbol;
+    m: TFpDbgSymbol;
   begin
     Result := True;
     AText := '';
@@ -539,7 +539,7 @@ const
 
   procedure AddBaseType(ASourceExpr: string; APointerLevel: Integer;
     ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
-    ASrcType, ABaseType: TDbgSymbol);
+    ASrcType, ABaseType: TFpDbgSymbol);
   var
     s, s2, RefToken: String;
   begin
@@ -590,7 +590,7 @@ const
 
   procedure AddClassType(ASourceExpr: string; APointerLevel: Integer;
     ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
-    ASrcType, ABaseType: TDbgSymbol);
+    ASrcType, ABaseType: TFpDbgSymbol);
   var
     s, ParentName, RefToken: String;
     s2: String;
@@ -628,7 +628,7 @@ const
 
   procedure AddRecordType(ASourceExpr: string; APointerLevel: Integer;
     ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
-    ASrcType, ABaseType: TDbgSymbol);
+    ASrcType, ABaseType: TFpDbgSymbol);
   var
     s, RefToken: String;
     s2: String;
@@ -650,7 +650,7 @@ const
 
   procedure AddEnumType(ASourceExpr: string; APointerLevel: Integer;
     ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
-    ASrcType, ABaseType: TDbgSymbol);
+    ASrcType, ABaseType: TFpDbgSymbol);
   var
     s, s2, RefToken: String;
   begin
@@ -667,7 +667,7 @@ const
 
   procedure AddSetType(ASourceExpr: string; APointerLevel: Integer;
     ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
-    ASrcType, ABaseType: TDbgSymbol);
+    ASrcType, ABaseType: TFpDbgSymbol);
   var
     s, s2, RefToken: String;
   begin
@@ -688,11 +688,11 @@ const
 
   procedure AddArrayType(ASourceExpr: string; APointerLevel: Integer;
     ASrcTypeName, ADeRefTypeName, ABaseTypeName: String;
-    ASrcType, ABaseType: TDbgSymbol);
+    ASrcType, ABaseType: TFpDbgSymbol);
   var
     s: String;
     ElemPointerLevel: Integer;
-    ElemDeRefType, ElemBaseType: TDbgSymbol;
+    ElemDeRefType, ElemBaseType: TFpDbgSymbol;
     ElemSrcTypeName, ElemDeRefTypeName, ElemBaseTypeName: String;
   begin
     if sfDynArray in ABaseType.Flags then begin
@@ -775,12 +775,12 @@ const
     end;
   end;
 
-  procedure AddType(ASourceExpr: string; ATypeIdent: TDbgSymbol; AVal: TDbgSymbolValue = nil);
+  procedure AddType(ASourceExpr: string; ATypeIdent: TFpDbgSymbol; AVal: TFpDbgValue = nil);
   var
     SrcTypeName,     // The expressions own type name
     DeRefTypeName,   // one levvel of pointer followed
     BaseTypeName: String; // all poiters followed
-    DeRefType, BaseType: TDbgSymbol;
+    DeRefType, BaseType: TFpDbgSymbol;
     PointerLevel: Integer;
     s: String;
     i: Integer;
@@ -854,7 +854,7 @@ const
 var
   IdentName: String;
   PasExpr: TFpPascalExpression;
-  rt: TDbgSymbol;
+  rt: TFpDbgSymbol;
 begin
   Result := inherited IndexOf(AThreadId, AStackFrame, ARequest);
 DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
@@ -1306,7 +1306,7 @@ function TFpGDBMIDebugger.EvaluateExpression(AWatchValue: TWatchValueBase;
 var
   Ctx: TDbgInfoAddressContext;
   PasExpr: TFpPascalExpression;
-  ResValue: TDbgSymbolValue;
+  ResValue: TFpDbgValue;
 
   function IsWatchValueAlive: Boolean;
   begin
@@ -1316,7 +1316,7 @@ var
               );
   end;
 
-  function ResTypeName(v: TDbgSymbolValue = nil): String;
+  function ResTypeName(v: TFpDbgValue = nil): String;
   begin
     if v = nil then v := ResValue;
     if not((v.TypeInfo<> nil) and
@@ -1361,7 +1361,7 @@ var
   procedure DoRecord;
   var
     s2, n: String;
-    m: TDbgSymbolValue;
+    m: TFpDbgValue;
     i: Integer;
     DBGType: TGDBType;
     f: TDBGField;
@@ -1393,7 +1393,7 @@ var
 
   procedure DoClass;
   var
-    m: TDbgSymbolValue;
+    m: TFpDbgValue;
     s, s2, n, CastName: String;
     DBGType: TGDBType;
     f: TDBGField;

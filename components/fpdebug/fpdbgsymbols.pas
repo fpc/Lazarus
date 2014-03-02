@@ -45,13 +45,13 @@ uses
   
 
 {$ifdef windows}
-procedure AddSymbols(AParent: TDbgSymbol; AModule: THandle);
+procedure AddSymbols(AParent: TFpDbgSymbol; AModule: THandle);
 {$endif}
 
 implementation
 
 {$ifdef windows}
-procedure AddSymbols(AParent: TDbgSymbol; AModule: THandle);
+procedure AddSymbols(AParent: TFpDbgSymbol; AModule: THandle);
 var
   ModulePtr: Pointer;
   Is64: Boolean;

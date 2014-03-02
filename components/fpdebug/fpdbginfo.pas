@@ -1,29 +1,29 @@
 unit FpDbgInfo;
 (*
-  About TDbgSymbolValue and TDbgSymbol
+  About TFpDbgValue and TFpDbgSymbol
 
-  * TDbgSymbol
+  * TFpDbgSymbol
     Represents a Symbol or Identifier (stType or stValue)
 
-  * TDbgSymbolValue
+  * TFpDbgValue
     Holds the Value of a Symbol according to its type.
 
-  TDbgSymbol should not hold any Data, except for information that is in the
+  TFpDbgSymbol should not hold any Data, except for information that is in the
   debug info (dwarf/stabs).
-  All Data read from the target must be in TDbgSymbolValue.
+  All Data read from the target must be in TFpDbgValue.
   Target adta includes Address (can be indirect via ref or pointer, Size and
   Boundaries (Sub range / Array).
 
-  This means that TDbgSymbol (stType or stValue) should be re-usable. There can
-  be multiple TDbgSymbolValue for each TDbgSymbol. (even for stValue, as in an
+  This means that TFpDbgSymbol (stType or stValue) should be re-usable. There can
+  be multiple TFpDbgValue for each TFpDbgSymbol. (even for stValue, as in an
   Array the Symbol itself is repeated / Array of record: the same member occurs
   over and over)
 
   ---
   A Variable value in the target typically consists of:
-  - TDbgSymbol (stValue)
-  - TDbgSymbol (stType)
-  - TDbgSymbolValue
+  - TFpDbgSymbol (stValue)
+  - TFpDbgSymbol (stType)
+  - TFpDbgValue
 
 *)
 {$mode objfpc}{$H+}
@@ -96,19 +96,19 @@ type
   );
   TDbgSymbolFlags = set of TDbgSymbolFlag;
 
-  TDbgSymbolField = (
+  TFpDbgSymbolField = (
     sfiName, sfiKind, sfiSymType, sfiAddress, sfiSize,
     sfiTypeInfo, sfiMemberVisibility,
     sfiForwardToSymbol
   );
-  TDbgSymbolFields = set of TDbgSymbolField;
+  TFpDbgSymbolFields = set of TFpDbgSymbolField;
 
-  TDbgSymbol = class;
+  TFpDbgSymbol = class;
 
-  TDbgSymbolBase = class(TFpDbgCircularRefCountedObject)
+  TFpDbgSymbolBase = class(TFpDbgCircularRefCountedObject)
   end;
 
-  TDbgSymbolValueFieldFlag = (
+  TFpDbgValueFieldFlag = (
     // svfAddress, svfDataAddress this symbol does have an address, but it may still be nil
     svfAddress, svfSize, svfSizeOfPointer,
     svfDataAddress, svfDataSize, svfDataSizeOfPointer,
@@ -121,14 +121,14 @@ type
     svfOrdinal       // AsCardinal ruturns an ordinal value, but the value is not represented as cardinal (e.g. bool, enum)
                      // if size > 8, then ordinal (if present) is based on a part only
   );
-  TDbgSymbolValueFieldFlags = set of TDbgSymbolValueFieldFlag;
+  TFpDbgValueFieldFlags = set of TFpDbgValueFieldFlag;
 
-  { TDbgSymbolValue }
+  { TFpDbgValue }
 
-  TDbgSymbolValue = class(TDbgSymbolBase)
+  TFpDbgValue = class(TFpDbgSymbolBase)
   protected
     function GetKind: TDbgSymbolKind; virtual;
-    function GetFieldFlags: TDbgSymbolValueFieldFlags; virtual;
+    function GetFieldFlags: TFpDbgValueFieldFlags; virtual;
 
     function GetAsBool: Boolean;  virtual;
     function GetAsCardinal: QWord; virtual;
@@ -146,17 +146,17 @@ type
     function GetOrdHighBound: Int64; virtual;
     function GetOrdLowBound: Int64; virtual;
 
-    function GetMember({%H-}AIndex: Integer): TDbgSymbolValue; virtual;
-    function GetMemberByName({%H-}AIndex: String): TDbgSymbolValue; virtual;
+    function GetMember({%H-}AIndex: Integer): TFpDbgValue; virtual;
+    function GetMemberByName({%H-}AIndex: String): TFpDbgValue; virtual;
     function GetMemberCount: Integer; virtual;
-    function GetIndexType({%H-}AIndex: Integer): TDbgSymbol; virtual;
+    function GetIndexType({%H-}AIndex: Integer): TFpDbgSymbol; virtual;
     function GetIndexTypeCount: Integer; virtual;
     function GetMemberCountEx({%H-}AIndex: array of Int64): Integer; virtual;
-    function GetMemberEx({%H-}AIndex: Array of Int64): TDbgSymbolValue; virtual;
+    function GetMemberEx({%H-}AIndex: Array of Int64): TFpDbgValue; virtual;
 
-    function GetDbgSymbol: TDbgSymbol; virtual;
-    function GetTypeInfo: TDbgSymbol; virtual;
-    function GetContextTypeInfo: TDbgSymbol; virtual;
+    function GetDbgSymbol: TFpDbgSymbol; virtual;
+    function GetTypeInfo: TFpDbgSymbol; virtual;
+    function GetContextTypeInfo: TFpDbgSymbol; virtual;
 
     function GetLastError: TFpError; virtual;
   public
@@ -165,7 +165,7 @@ type
 
     // Kind: determines which types of value are available
     property Kind: TDbgSymbolKind read GetKind;
-    property FieldFlags: TDbgSymbolValueFieldFlags read GetFieldFlags;
+    property FieldFlags: TFpDbgValueFieldFlags read GetFieldFlags;
 
     property AsInteger: Int64 read GetAsInteger;
     property AsCardinal: QWord read GetAsCardinal;
@@ -192,33 +192,33 @@ type
        * skSet
            stType: all members
            stValue: only members set in value (Only impremented for DbgSymbolValue)
-       * skArray: (differs from TDbgSymbol)
+       * skArray: (differs from TFpDbgSymbol)
          The values. The type of each Index-dimension is avail via IndexType
        NOTE: Values returned by Member/MemberByName are volatile.
              They maybe released or changed when Member is called again.
              To keep a returned Value a reference can be added (AddReference)
     *)
     property MemberCount: Integer read GetMemberCount;
-    property Member[AIndex: Integer]: TDbgSymbolValue read GetMember;
-    property MemberByName[AIndex: String]: TDbgSymbolValue read GetMemberByName; // Includes inheritance
+    property Member[AIndex: Integer]: TFpDbgValue read GetMember;
+    property MemberByName[AIndex: String]: TFpDbgValue read GetMemberByName; // Includes inheritance
     //  For Arrays (TODO pointers) only, the values stored in the array
     property MemberCountEx[AIndex: Array of Int64]: Integer read GetMemberCountEx;
-    property MemberEx[AIndex: Array of Int64]: TDbgSymbolValue read GetMemberEx;
+    property MemberEx[AIndex: Array of Int64]: TFpDbgValue read GetMemberEx;
     property IndexTypeCount: Integer read GetIndexTypeCount;
-    property IndexType[AIndex: Integer]: TDbgSymbol read GetIndexType;
+    property IndexType[AIndex: Integer]: TFpDbgSymbol read GetIndexType;
 
-    (* DbgSymbol: The TDbgSymbol from which this value came, maybe nil.
+    (* DbgSymbol: The TFpDbgSymbol from which this value came, maybe nil.
                   Maybe a stType, then there is no Value *)
-    property DbgSymbol: TDbgSymbol read GetDbgSymbol;
-    property TypeInfo: TDbgSymbol read GetTypeInfo;
-    property ContextTypeInfo: TDbgSymbol read GetContextTypeInfo; // For members, the class in which this member is declared
+    property DbgSymbol: TFpDbgSymbol read GetDbgSymbol;
+    property TypeInfo: TFpDbgSymbol read GetTypeInfo;
+    property ContextTypeInfo: TFpDbgSymbol read GetContextTypeInfo; // For members, the class in which this member is declared
 
     property LastError: TFpError read GetLastError;
   end;
 
-  { TSymbolValueConstNumber }
+  { TFpDbgValueConstNumber }
 
-  TDbgSymbolValueConstNumber = class(TDbgSymbolValue)
+  TFpDbgValueConstNumber = class(TFpDbgValue)
   private
     FValue: QWord;
     FSigned: Boolean;
@@ -226,32 +226,32 @@ type
     property Value: QWord read FValue write FValue;
     property Signed: Boolean read FSigned write FSigned;
     function GetKind: TDbgSymbolKind; override;
-    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
     function GetAsInteger: Int64; override;
   public
     constructor Create(AValue: QWord; ASigned: Boolean = True);
   end;
 
-  { TDbgSymbolValueConstAddress }
+  { TFpDbgValueConstAddress }
 
-  TDbgSymbolValueConstAddress = class(TDbgSymbolValue)
+  TFpDbgValueConstAddress = class(TFpDbgValue)
   private
     FAddress: TFpDbgMemLocation;
   protected
     property Address: TFpDbgMemLocation read FAddress write FAddress;
     //function GetKind: TDbgSymbolKind; override; // no kind
-    function GetFieldFlags: TDbgSymbolValueFieldFlags; override;
+    function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function GetAddress: TFpDbgMemLocation; override;
   public
     constructor Create(AnAddress: TFpDbgMemLocation);
   end;
 
-  { TDbgSymbol }
+  { TFpDbgSymbol }
 
-  TDbgSymbol = class(TDbgSymbolBase)
+  TFpDbgSymbol = class(TFpDbgSymbolBase)
   private
-    FEvaluatedFields: TDbgSymbolFields;
+    FEvaluatedFields: TFpDbgSymbolFields;
     FLastError: TFpError;
 
     // Cached fields
@@ -260,7 +260,7 @@ type
     FSymbolType: TDbgSymbolType;
     FAddress: TFpDbgMemLocation;
     FSize: Integer;
-    FTypeInfo: TDbgSymbol;
+    FTypeInfo: TFpDbgSymbol;
     FMemberVisibility: TDbgSymbolMemberVisibility; // Todo: not cached
 
     function GetSymbolType: TDbgSymbolType; inline;
@@ -268,21 +268,21 @@ type
     function GetName: String; inline;
     function GetSize: Integer; inline;
     function GetAddress: TFpDbgMemLocation; inline;
-    function GetTypeInfo: TDbgSymbol; inline;
+    function GetTypeInfo: TFpDbgSymbol; inline;
     function GetMemberVisibility: TDbgSymbolMemberVisibility; inline;
   protected
     function  GetLastError: TFpError; virtual;
     procedure SetLastError(AnError: TFpError);
     // NOT cached fields
-    function GetChild({%H-}AIndex: Integer): TDbgSymbol; virtual;
+    function GetChild({%H-}AIndex: Integer): TFpDbgSymbol; virtual;
     function GetColumn: Cardinal; virtual;
     function GetCount: Integer; virtual;
     function GetFile: String; virtual;
     function GetFlags: TDbgSymbolFlags; virtual;
     function GetLine: Cardinal; virtual;
-    function GetParent: TDbgSymbol; virtual;
+    function GetParent: TFpDbgSymbol; virtual;
 
-    function GetValueObject: TDbgSymbolValue; virtual;
+    function GetValueObject: TFpDbgValue; virtual;
     function GetHasOrdinalValue: Boolean; virtual;
     function GetOrdinalValue: Int64; virtual;
 
@@ -290,18 +290,18 @@ type
     function GetOrdHighBound: Int64; virtual;
     function GetOrdLowBound: Int64; virtual;
 
-    function GetMember({%H-}AIndex: Integer): TDbgSymbol; virtual;
-    function GetMemberByName({%H-}AIndex: String): TDbgSymbol; virtual;
+    function GetMember({%H-}AIndex: Integer): TFpDbgSymbol; virtual;
+    function GetMemberByName({%H-}AIndex: String): TFpDbgSymbol; virtual;
     function GetMemberCount: Integer; virtual;
   protected
-    property EvaluatedFields: TDbgSymbolFields read FEvaluatedFields write FEvaluatedFields;
+    property EvaluatedFields: TFpDbgSymbolFields read FEvaluatedFields write FEvaluatedFields;
     // Cached fields
     procedure SetName(AValue: String); inline;
     procedure SetKind(AValue: TDbgSymbolKind); inline;
     procedure SetSymbolType(AValue: TDbgSymbolType); inline;
     procedure SetAddress(AValue: TFpDbgMemLocation); inline;
     procedure SetSize(AValue: Integer); inline;
-    procedure SetTypeInfo(AValue: TDbgSymbol); inline;
+    procedure SetTypeInfo(AValue: TFpDbgSymbol); inline;
     procedure SetMemberVisibility(AValue: TDbgSymbolMemberVisibility); inline;
 
     procedure KindNeeded; virtual;
@@ -327,7 +327,7 @@ type
     // TypeInfo used by
     // stValue (Variable): Type
     // stType: Pointer: type pointed to / Array: Element Type / Func: Result / Class: itheritance
-    property TypeInfo: TDbgSymbol read GetTypeInfo;
+    property TypeInfo: TFpDbgSymbol read GetTypeInfo;
     // Location
     property FileName: String read GetFile;
     property Line: Cardinal read GetLine;
@@ -350,37 +350,37 @@ type
              They maybe released or changed when Member is called again.
              To keep a returned Value a reference can be added (AddReference)
     *)
-    property Member[AIndex: Integer]: TDbgSymbol read GetMember;
-    property MemberByName[AIndex: String]: TDbgSymbol read GetMemberByName; // Includes inheritance
+    property Member[AIndex: Integer]: TFpDbgSymbol read GetMember;
+    property MemberByName[AIndex: String]: TFpDbgSymbol read GetMemberByName; // Includes inheritance
     //
     property Flags: TDbgSymbolFlags read GetFlags;
     property Count: Integer read GetCount; deprecated;
-    property Parent: TDbgSymbol read GetParent; deprecated;
+    property Parent: TFpDbgSymbol read GetParent; deprecated;
     // for Subranges
     property HasBounds: Boolean read GetHasBounds;
     property OrdLowBound: Int64 read GetOrdLowBound;  //deprecated 'xxxx'; // need typecast for QuadWord
     property OrdHighBound: Int64 read GetOrdHighBound;  //deprecated 'xxxx'; // need typecast for QuadWord
     // VALUE
-    property Value: TDbgSymbolValue read GetValueObject; //deprecated 'rename / create';
+    property Value: TFpDbgValue read GetValueObject; //deprecated 'rename / create';
     property HasOrdinalValue: Boolean read GetHasOrdinalValue;
     property OrdinalValue: Int64 read GetOrdinalValue;   //deprecated 'xxxx'; // need typecast for QuadWord
 
     // TypeCastValue| only fon stType symbols, may return nil
     // Returns a reference to caller / caller must release
-    function TypeCastValue({%H-}AValue: TDbgSymbolValue): TDbgSymbolValue; virtual;
+    function TypeCastValue({%H-}AValue: TFpDbgValue): TFpDbgValue; virtual;
 
     property LastError: TFpError read GetLastError; experimental;
   end;
 
   { TDbgSymbolForwarder }
 
-  TDbgSymbolForwarder = class(TDbgSymbol)
+  TDbgSymbolForwarder = class(TFpDbgSymbol)
   private
-    FForwardToSymbol: TDbgSymbol;
+    FForwardToSymbol: TFpDbgSymbol;
   protected
-    procedure SetForwardToSymbol(AValue: TDbgSymbol); inline;
+    procedure SetForwardToSymbol(AValue: TFpDbgSymbol); inline;
     procedure ForwardToSymbolNeeded; virtual;
-    function  GetForwardToSymbol: TDbgSymbol; inline;
+    function  GetForwardToSymbol: TFpDbgSymbol; inline;
   protected
     function GetLastError: TFpError; override;
     procedure KindNeeded; override;
@@ -391,14 +391,14 @@ type
     procedure MemberVisibilityNeeded; override;
 
     function GetFlags: TDbgSymbolFlags; override;
-    function GetValueObject: TDbgSymbolValue; override;
+    function GetValueObject: TFpDbgValue; override;
     function GetHasOrdinalValue: Boolean; override;
     function GetOrdinalValue: Int64; override;
     function GetHasBounds: Boolean; override;
     function GetOrdLowBound: Int64; override;
     function GetOrdHighBound: Int64; override;
-    function GetMember(AIndex: Integer): TDbgSymbol; override;
-    function GetMemberByName(AIndex: String): TDbgSymbol; override;
+    function GetMember(AIndex: Integer): TFpDbgSymbol; override;
+    function GetMemberByName(AIndex: String): TFpDbgSymbol; override;
     function GetMemberCount: Integer; override;
   end;
 
@@ -407,14 +407,14 @@ type
   TDbgInfoAddressContext = class(TRefCountedObject)
   protected
     function GetAddress: TDbgPtr; virtual; abstract;
-    function GetSymbolAtAddress: TDbgSymbol; virtual;
+    function GetSymbolAtAddress: TFpDbgSymbol; virtual;
     function GetMemManager: TFpDbgMemManager; virtual;
     function GetSizeOfAddress: Integer; virtual;
   public
     property Address: TDbgPtr read GetAddress;
-    property SymbolAtAddress: TDbgSymbol read GetSymbolAtAddress;
+    property SymbolAtAddress: TFpDbgSymbol read GetSymbolAtAddress;
     // search this, and all parent context
-    function FindSymbol(const {%H-}AName: String): TDbgSymbol; virtual;
+    function FindSymbol(const {%H-}AName: String): TFpDbgSymbol; virtual;
     property MemManager: TFpDbgMemManager read GetMemManager;
     property SizeOfAddress: Integer read GetSizeOfAddress;
   end;
@@ -429,8 +429,8 @@ type
   public
     constructor Create({%H-}ALoader: TDbgImageLoader); virtual;
     function FindContext({%H-}AAddress: TDbgPtr): TDbgInfoAddressContext; virtual;
-    function FindSymbol(const {%H-}AName: String): TDbgSymbol; virtual; deprecated;
-    function FindSymbol({%H-}AAddress: TDbgPtr): TDbgSymbol; virtual; deprecated;
+    function FindSymbol(const {%H-}AName: String): TFpDbgSymbol; virtual; deprecated;
+    function FindSymbol({%H-}AAddress: TDbgPtr): TFpDbgSymbol; virtual; deprecated;
     property HasInfo: Boolean read FHasInfo;
     function GetLineAddress(const {%H-}AFileName: String; {%H-}ALine: Cardinal): TDbgPtr; virtual;
     //property MemManager: TFpDbgMemReaderBase read GetMemManager write SetMemManager;
@@ -448,17 +448,17 @@ end;
 
 { TDbgSymbolValueConstAddress }
 
-function TDbgSymbolValueConstAddress.GetFieldFlags: TDbgSymbolValueFieldFlags;
+function TFpDbgValueConstAddress.GetFieldFlags: TFpDbgValueFieldFlags;
 begin
   Result := [svfAddress]
 end;
 
-function TDbgSymbolValueConstAddress.GetAddress: TFpDbgMemLocation;
+function TFpDbgValueConstAddress.GetAddress: TFpDbgMemLocation;
 begin
   Result := FAddress;
 end;
 
-constructor TDbgSymbolValueConstAddress.Create(AnAddress: TFpDbgMemLocation);
+constructor TFpDbgValueConstAddress.Create(AnAddress: TFpDbgMemLocation);
 begin
   inherited Create;
   FAddress := AnAddress;
@@ -547,28 +547,28 @@ end;
 
 { TDbgSymbolValue }
 
-function TDbgSymbolValue.GetAsString: AnsiString;
+function TFpDbgValue.GetAsString: AnsiString;
 begin
   Result := '';
 end;
 
-function TDbgSymbolValue.GetAsWideString: WideString;
+function TFpDbgValue.GetAsWideString: WideString;
 begin
   Result := '';
 end;
 
-function TDbgSymbolValue.GetDbgSymbol: TDbgSymbol;
+function TFpDbgValue.GetDbgSymbol: TFpDbgSymbol;
 begin
   Result := nil;
 end;
 
-constructor TDbgSymbolValue.Create;
+constructor TFpDbgValue.Create;
 begin
   inherited Create;
   AddReference;
 end;
 
-function TDbgSymbolValue.GetTypeInfo: TDbgSymbol;
+function TFpDbgValue.GetTypeInfo: TFpDbgSymbol;
 begin
   if (DbgSymbol <> nil) and (DbgSymbol.SymbolType = stValue) then
     Result := DbgSymbol.TypeInfo
@@ -576,119 +576,119 @@ begin
     Result := nil;
 end;
 
-function TDbgSymbolValue.GetFieldFlags: TDbgSymbolValueFieldFlags;
+function TFpDbgValue.GetFieldFlags: TFpDbgValueFieldFlags;
 begin
   Result := [];
 end;
 
-function TDbgSymbolValue.GetIndexType(AIndex: Integer): TDbgSymbol;
+function TFpDbgValue.GetIndexType(AIndex: Integer): TFpDbgSymbol;
 begin
   Result := nil;;
 end;
 
-function TDbgSymbolValue.GetIndexTypeCount: Integer;
+function TFpDbgValue.GetIndexTypeCount: Integer;
 begin
   Result := 0;
 end;
 
-function TDbgSymbolValue.GetMemberEx(AIndex: array of Int64): TDbgSymbolValue;
+function TFpDbgValue.GetMemberEx(AIndex: array of Int64): TFpDbgValue;
 begin
   Result := nil;
 end;
 
-function TDbgSymbolValue.GetMemberCountEx(AIndex: array of Int64): Integer;
+function TFpDbgValue.GetMemberCountEx(AIndex: array of Int64): Integer;
 begin
   Result := 0;
 end;
 
-function TDbgSymbolValue.GetAsFloat: Extended;
+function TFpDbgValue.GetAsFloat: Extended;
 begin
   Result := 0;
 end;
 
-function TDbgSymbolValue.GetContextTypeInfo: TDbgSymbol;
+function TFpDbgValue.GetContextTypeInfo: TFpDbgSymbol;
 begin
   Result := nil;
 end;
 
-function TDbgSymbolValue.GetLastError: TFpError;
+function TFpDbgValue.GetLastError: TFpError;
 begin
   Result := NoError;
 end;
 
-function TDbgSymbolValue.GetHasBounds: Boolean;
+function TFpDbgValue.GetHasBounds: Boolean;
 begin
   Result := False;
 end;
 
-function TDbgSymbolValue.GetOrdHighBound: Int64;
+function TFpDbgValue.GetOrdHighBound: Int64;
 begin
   Result := 0;
 end;
 
-function TDbgSymbolValue.GetOrdLowBound: Int64;
+function TFpDbgValue.GetOrdLowBound: Int64;
 begin
   Result := 0;
 end;
 
-function TDbgSymbolValue.GetKind: TDbgSymbolKind;
+function TFpDbgValue.GetKind: TDbgSymbolKind;
 begin
   Result := skNone;
 end;
 
-function TDbgSymbolValue.GetMember(AIndex: Integer): TDbgSymbolValue;
+function TFpDbgValue.GetMember(AIndex: Integer): TFpDbgValue;
 begin
   Result := nil;
 end;
 
-function TDbgSymbolValue.GetMemberByName(AIndex: String): TDbgSymbolValue;
+function TFpDbgValue.GetMemberByName(AIndex: String): TFpDbgValue;
 begin
   Result := nil;
 end;
 
-function TDbgSymbolValue.GetMemberCount: Integer;
+function TFpDbgValue.GetMemberCount: Integer;
 begin
   Result := 0;
 end;
 
-function TDbgSymbolValue.GetAddress: TFpDbgMemLocation;
+function TFpDbgValue.GetAddress: TFpDbgMemLocation;
 begin
   Result := InvalidLoc;
 end;
 
-function TDbgSymbolValue.GetDataAddress: TFpDbgMemLocation;
+function TFpDbgValue.GetDataAddress: TFpDbgMemLocation;
 begin
   Result := InvalidLoc;
 end;
 
-function TDbgSymbolValue.GetDataSize: Integer;
+function TFpDbgValue.GetDataSize: Integer;
 begin
   Result := 0;
 end;
 
-function TDbgSymbolValue.GetSize: Integer;
+function TFpDbgValue.GetSize: Integer;
 begin
   Result := -1;
 end;
 
-function TDbgSymbolValue.GetAsBool: Boolean;
+function TFpDbgValue.GetAsBool: Boolean;
 begin
   Result := False;
 end;
 
-function TDbgSymbolValue.GetAsCardinal: QWord;
+function TFpDbgValue.GetAsCardinal: QWord;
 begin
   Result := 0;
 end;
 
-function TDbgSymbolValue.GetAsInteger: Int64;
+function TFpDbgValue.GetAsInteger: Int64;
 begin
   Result := 0;
 end;
 
 { TPasParserConstNumberSymbolValue }
 
-function TDbgSymbolValueConstNumber.GetKind: TDbgSymbolKind;
+function TFpDbgValueConstNumber.GetKind: TDbgSymbolKind;
 begin
   if FSigned then
     Result := skInteger
@@ -696,7 +696,7 @@ begin
     Result := skCardinal;
 end;
 
-function TDbgSymbolValueConstNumber.GetFieldFlags: TDbgSymbolValueFieldFlags;
+function TFpDbgValueConstNumber.GetFieldFlags: TFpDbgValueFieldFlags;
 begin
   if FSigned then
     Result := [svfOrdinal, svfInteger]
@@ -704,17 +704,17 @@ begin
     Result := [svfOrdinal, svfCardinal];
 end;
 
-function TDbgSymbolValueConstNumber.GetAsCardinal: QWord;
+function TFpDbgValueConstNumber.GetAsCardinal: QWord;
 begin
   Result := FValue;
 end;
 
-function TDbgSymbolValueConstNumber.GetAsInteger: Int64;
+function TFpDbgValueConstNumber.GetAsInteger: Int64;
 begin
   Result := Int64(FValue);
 end;
 
-constructor TDbgSymbolValueConstNumber.Create(AValue: QWord; ASigned: Boolean);
+constructor TFpDbgValueConstNumber.Create(AValue: QWord; ASigned: Boolean);
 begin
   inherited Create;
   FValue := AValue;
@@ -733,19 +733,19 @@ begin
   Result := -1;
 end;
 
-function TDbgInfoAddressContext.GetSymbolAtAddress: TDbgSymbol;
+function TDbgInfoAddressContext.GetSymbolAtAddress: TFpDbgSymbol;
 begin
   Result := nil;
 end;
 
-function TDbgInfoAddressContext.FindSymbol(const AName: String): TDbgSymbol;
+function TDbgInfoAddressContext.FindSymbol(const AName: String): TFpDbgSymbol;
 begin
   Result := nil;
 end;
 
-{ TDbgSymbol }
+{ TFpDbgSymbol }
 
-constructor TDbgSymbol.Create(const AName: String);
+constructor TFpDbgSymbol.Create(const AName: String);
 begin
   inherited Create;
   AddReference;
@@ -753,7 +753,7 @@ begin
     SetName(AName);
 end;
 
-constructor TDbgSymbol.Create(const AName: String; AKind: TDbgSymbolKind;
+constructor TFpDbgSymbol.Create(const AName: String; AKind: TDbgSymbolKind;
   AAddress: TFpDbgMemLocation);
 begin
   Create(AName);
@@ -761,146 +761,146 @@ begin
   FAddress := AAddress;
 end;
 
-destructor TDbgSymbol.Destroy;
+destructor TFpDbgSymbol.Destroy;
 begin
   SetTypeInfo(nil);
   inherited Destroy;
 end;
 
-function TDbgSymbol.TypeCastValue(AValue: TDbgSymbolValue): TDbgSymbolValue;
+function TFpDbgSymbol.TypeCastValue(AValue: TFpDbgValue): TFpDbgValue;
 begin
   Result := nil;
 end;
 
-function TDbgSymbol.GetAddress: TFpDbgMemLocation;
+function TFpDbgSymbol.GetAddress: TFpDbgMemLocation;
 begin
   if not(sfiAddress in FEvaluatedFields) then
     AddressNeeded;
   Result := FAddress;
 end;
 
-function TDbgSymbol.GetTypeInfo: TDbgSymbol;
+function TFpDbgSymbol.GetTypeInfo: TFpDbgSymbol;
 begin
   if not(sfiTypeInfo in FEvaluatedFields) then
     TypeInfoNeeded;
   Result := FTypeInfo;
 end;
 
-function TDbgSymbol.GetMemberVisibility: TDbgSymbolMemberVisibility;
+function TFpDbgSymbol.GetMemberVisibility: TDbgSymbolMemberVisibility;
 begin
   if not(sfiMemberVisibility in FEvaluatedFields) then
     MemberVisibilityNeeded;
   Result := FMemberVisibility;
 end;
 
-function TDbgSymbol.GetValueObject: TDbgSymbolValue;
+function TFpDbgSymbol.GetValueObject: TFpDbgValue;
 begin
   Result := nil;
 end;
 
-function TDbgSymbol.GetKind: TDbgSymbolKind;
+function TFpDbgSymbol.GetKind: TDbgSymbolKind;
 begin
   if not(sfiKind in FEvaluatedFields) then
     KindNeeded;
   Result := FKind;
 end;
 
-function TDbgSymbol.GetName: String;
+function TFpDbgSymbol.GetName: String;
 begin
   if not(sfiName in FEvaluatedFields) then
     NameNeeded;
   Result := FName;
 end;
 
-function TDbgSymbol.GetSize: Integer;
+function TFpDbgSymbol.GetSize: Integer;
 begin
   if not(sfiSize in FEvaluatedFields) then
     SizeNeeded;
   Result := FSize;
 end;
 
-function TDbgSymbol.GetSymbolType: TDbgSymbolType;
+function TFpDbgSymbol.GetSymbolType: TDbgSymbolType;
 begin
   if not(sfiSymType in FEvaluatedFields) then
     SymbolTypeNeeded;
   Result := FSymbolType;
 end;
 
-function TDbgSymbol.GetLastError: TFpError;
+function TFpDbgSymbol.GetLastError: TFpError;
 begin
   Result := FLastError;
 end;
 
-procedure TDbgSymbol.SetLastError(AnError: TFpError);
+procedure TFpDbgSymbol.SetLastError(AnError: TFpError);
 begin
   FLastError := AnError;
 end;
 
-function TDbgSymbol.GetHasBounds: Boolean;
+function TFpDbgSymbol.GetHasBounds: Boolean;
 begin
   Result := False;
 end;
 
-function TDbgSymbol.GetOrdHighBound: Int64;
+function TFpDbgSymbol.GetOrdHighBound: Int64;
 begin
   Result := 0;
 end;
 
-function TDbgSymbol.GetOrdLowBound: Int64;
+function TFpDbgSymbol.GetOrdLowBound: Int64;
 begin
   Result := 0;
 end;
 
-function TDbgSymbol.GetHasOrdinalValue: Boolean;
+function TFpDbgSymbol.GetHasOrdinalValue: Boolean;
 begin
   Result := False;
 end;
 
-function TDbgSymbol.GetOrdinalValue: Int64;
+function TFpDbgSymbol.GetOrdinalValue: Int64;
 begin
   Result := 0;
 end;
 
-function TDbgSymbol.GetMember(AIndex: Integer): TDbgSymbol;
+function TFpDbgSymbol.GetMember(AIndex: Integer): TFpDbgSymbol;
 begin
   Result := nil;
 end;
 
-function TDbgSymbol.GetMemberByName(AIndex: String): TDbgSymbol;
+function TFpDbgSymbol.GetMemberByName(AIndex: String): TFpDbgSymbol;
 begin
   Result := nil;
 end;
 
-function TDbgSymbol.GetMemberCount: Integer;
+function TFpDbgSymbol.GetMemberCount: Integer;
 begin
   Result := 0;
 end;
 
-procedure TDbgSymbol.SetAddress(AValue: TFpDbgMemLocation);
+procedure TFpDbgSymbol.SetAddress(AValue: TFpDbgMemLocation);
 begin
   FAddress := AValue;
   Include(FEvaluatedFields, sfiAddress);
 end;
 
-procedure TDbgSymbol.SetKind(AValue: TDbgSymbolKind);
+procedure TFpDbgSymbol.SetKind(AValue: TDbgSymbolKind);
 begin
   FKind := AValue;
   Include(FEvaluatedFields, sfiKind);
 end;
 
-procedure TDbgSymbol.SetSymbolType(AValue: TDbgSymbolType);
+procedure TFpDbgSymbol.SetSymbolType(AValue: TDbgSymbolType);
 begin
   FSymbolType := AValue;
   Include(FEvaluatedFields, sfiSymType);
 end;
 
-procedure TDbgSymbol.SetSize(AValue: Integer);
+procedure TFpDbgSymbol.SetSize(AValue: Integer);
 begin
   FSize := AValue;
   Include(FEvaluatedFields, sfiSize);
 end;
 
-procedure TDbgSymbol.SetTypeInfo(AValue: TDbgSymbol);
+procedure TFpDbgSymbol.SetTypeInfo(AValue: TFpDbgSymbol);
 begin
   if FTypeInfo <> nil then begin
     //Assert((FTypeInfo.Reference = self) or (FTypeInfo.Reference = nil), 'FTypeInfo.Reference = self|nil');
@@ -914,91 +914,91 @@ begin
   end;
 end;
 
-procedure TDbgSymbol.SetMemberVisibility(AValue: TDbgSymbolMemberVisibility);
+procedure TFpDbgSymbol.SetMemberVisibility(AValue: TDbgSymbolMemberVisibility);
 begin
   FMemberVisibility := AValue;
   Include(FEvaluatedFields, sfiMemberVisibility);
 end;
 
-procedure TDbgSymbol.SetName(AValue: String);
+procedure TFpDbgSymbol.SetName(AValue: String);
 begin
   FName := AValue;
   Include(FEvaluatedFields, sfiName);
 end;
 
-function TDbgSymbol.GetChild(AIndex: Integer): TDbgSymbol;
+function TFpDbgSymbol.GetChild(AIndex: Integer): TFpDbgSymbol;
 begin
   result := nil;
 end;
 
-function TDbgSymbol.GetColumn: Cardinal;
+function TFpDbgSymbol.GetColumn: Cardinal;
 begin
   Result := 0;
 end;
 
-function TDbgSymbol.GetCount: Integer;
+function TFpDbgSymbol.GetCount: Integer;
 begin
   Result := 0;
 end;
 
-function TDbgSymbol.GetFile: String;
+function TFpDbgSymbol.GetFile: String;
 begin
   Result := '';
 end;
 
-function TDbgSymbol.GetFlags: TDbgSymbolFlags;
+function TFpDbgSymbol.GetFlags: TDbgSymbolFlags;
 begin
   Result := [];
 end;
 
-function TDbgSymbol.GetLine: Cardinal;
+function TFpDbgSymbol.GetLine: Cardinal;
 begin
   Result := 0;
 end;
 
-function TDbgSymbol.GetParent: TDbgSymbol;
+function TFpDbgSymbol.GetParent: TFpDbgSymbol;
 begin
   Result := nil;
 end;
 
-procedure TDbgSymbol.KindNeeded;
+procedure TFpDbgSymbol.KindNeeded;
 begin
   SetKind(skNone);
 end;
 
-procedure TDbgSymbol.NameNeeded;
+procedure TFpDbgSymbol.NameNeeded;
 begin
   SetName('');
 end;
 
-procedure TDbgSymbol.SymbolTypeNeeded;
+procedure TFpDbgSymbol.SymbolTypeNeeded;
 begin
   SetSymbolType(stNone);
 end;
 
-procedure TDbgSymbol.AddressNeeded;
+procedure TFpDbgSymbol.AddressNeeded;
 begin
   SetAddress(InvalidLoc);
 end;
 
-procedure TDbgSymbol.SizeNeeded;
+procedure TFpDbgSymbol.SizeNeeded;
 begin
   SetSize(0);
 end;
 
-procedure TDbgSymbol.TypeInfoNeeded;
+procedure TFpDbgSymbol.TypeInfoNeeded;
 begin
   SetTypeInfo(nil);
 end;
 
-procedure TDbgSymbol.MemberVisibilityNeeded;
+procedure TFpDbgSymbol.MemberVisibilityNeeded;
 begin
   SetMemberVisibility(svPrivate);
 end;
 
 { TDbgSymbolForwarder }
 
-procedure TDbgSymbolForwarder.SetForwardToSymbol(AValue: TDbgSymbol);
+procedure TDbgSymbolForwarder.SetForwardToSymbol(AValue: TFpDbgSymbol);
 begin
   FForwardToSymbol := AValue;
   EvaluatedFields :=  EvaluatedFields + [sfiForwardToSymbol];
@@ -1009,7 +1009,7 @@ begin
   SetForwardToSymbol(nil);
 end;
 
-function TDbgSymbolForwarder.GetForwardToSymbol: TDbgSymbol;
+function TDbgSymbolForwarder.GetForwardToSymbol: TFpDbgSymbol;
 begin
   if TMethod(@ForwardToSymbolNeeded).Code = Pointer(@TDbgSymbolForwarder.ForwardToSymbolNeeded) then
     exit(nil);
@@ -1021,7 +1021,7 @@ end;
 
 function TDbgSymbolForwarder.GetLastError: TFpError;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   Result := inherited GetLastError;
   if IsError(Result) then
@@ -1033,7 +1033,7 @@ end;
 
 procedure TDbgSymbolForwarder.KindNeeded;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1044,7 +1044,7 @@ end;
 
 procedure TDbgSymbolForwarder.NameNeeded;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1055,7 +1055,7 @@ end;
 
 procedure TDbgSymbolForwarder.SymbolTypeNeeded;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1066,7 +1066,7 @@ end;
 
 procedure TDbgSymbolForwarder.SizeNeeded;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1077,7 +1077,7 @@ end;
 
 procedure TDbgSymbolForwarder.TypeInfoNeeded;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1088,7 +1088,7 @@ end;
 
 procedure TDbgSymbolForwarder.MemberVisibilityNeeded;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1099,7 +1099,7 @@ end;
 
 function TDbgSymbolForwarder.GetFlags: TDbgSymbolFlags;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1108,9 +1108,9 @@ begin
     Result := [];  //  Result := inherited GetFlags;
 end;
 
-function TDbgSymbolForwarder.GetValueObject: TDbgSymbolValue;
+function TDbgSymbolForwarder.GetValueObject: TFpDbgValue;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1121,7 +1121,7 @@ end;
 
 function TDbgSymbolForwarder.GetHasOrdinalValue: Boolean;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1132,7 +1132,7 @@ end;
 
 function TDbgSymbolForwarder.GetOrdinalValue: Int64;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1143,7 +1143,7 @@ end;
 
 function TDbgSymbolForwarder.GetHasBounds: Boolean;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1154,7 +1154,7 @@ end;
 
 function TDbgSymbolForwarder.GetOrdLowBound: Int64;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1165,7 +1165,7 @@ end;
 
 function TDbgSymbolForwarder.GetOrdHighBound: Int64;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1174,9 +1174,9 @@ begin
     Result := 0;  //  Result := inherited GetOrdHighBound;
 end;
 
-function TDbgSymbolForwarder.GetMember(AIndex: Integer): TDbgSymbol;
+function TDbgSymbolForwarder.GetMember(AIndex: Integer): TFpDbgSymbol;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1185,9 +1185,9 @@ begin
     Result := nil;  //  Result := inherited GetMember(AIndex);
 end;
 
-function TDbgSymbolForwarder.GetMemberByName(AIndex: String): TDbgSymbol;
+function TDbgSymbolForwarder.GetMemberByName(AIndex: String): TFpDbgSymbol;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1198,7 +1198,7 @@ end;
 
 function TDbgSymbolForwarder.GetMemberCount: Integer;
 var
-  p: TDbgSymbol;
+  p: TFpDbgSymbol;
 begin
   p := GetForwardToSymbol;
   if p <> nil then
@@ -1219,12 +1219,12 @@ begin
   Result := nil;
 end;
 
-function TDbgInfo.FindSymbol(const AName: String): TDbgSymbol;
+function TDbgInfo.FindSymbol(const AName: String): TFpDbgSymbol;
 begin
   Result := nil;
 end;
 
-function TDbgInfo.FindSymbol(AAddress: TDbgPtr): TDbgSymbol;
+function TDbgInfo.FindSymbol(AAddress: TDbgPtr): TFpDbgSymbol;
 begin
   Result := nil;
 end;

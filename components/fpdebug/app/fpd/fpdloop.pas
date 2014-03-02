@@ -398,7 +398,7 @@ procedure DebugLoop;
   procedure ShowCode;
   var
     a: TDbgPtr;
-    sym, symproc: TDbgSymbol;
+    sym, symproc: TFpDbgSymbol;
     S: TStringList;
     Name: String;
   begin

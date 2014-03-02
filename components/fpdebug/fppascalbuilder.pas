@@ -33,16 +33,16 @@ type
   );
   TPrintPasValFlags = set of TPrintPasValFlag;
 
-function GetTypeName(out ATypeName: String; ADbgSymbol: TDbgSymbol; AFlags: TTypeNameFlags = []): Boolean;
-function GetTypeAsDeclaration(out ATypeDeclaration: String; ADbgSymbol: TDbgSymbol;
+function GetTypeName(out ATypeName: String; ADbgSymbol: TFpDbgSymbol; AFlags: TTypeNameFlags = []): Boolean;
+function GetTypeAsDeclaration(out ATypeDeclaration: String; ADbgSymbol: TFpDbgSymbol;
   AFlags: TTypeDeclarationFlags = []; AnIndent: Integer = 0): Boolean;
 
-function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
+function PrintPasValue(out APrintedValue: String; AResValue: TFpDbgValue;
   AnAddrSize: Integer; AFlags: TPrintPasValFlags = []): Boolean;
 
 implementation
 
-function GetTypeName(out ATypeName: String; ADbgSymbol: TDbgSymbol;
+function GetTypeName(out ATypeName: String; ADbgSymbol: TFpDbgSymbol;
   AFlags: TTypeNameFlags): Boolean;
 var
   s: String;
@@ -85,7 +85,7 @@ begin
 
 end;
 
-function GetTypeAsDeclaration(out ATypeDeclaration: String; ADbgSymbol: TDbgSymbol;
+function GetTypeAsDeclaration(out ATypeDeclaration: String; ADbgSymbol: TFpDbgSymbol;
   AFlags: TTypeDeclarationFlags; AnIndent: Integer): Boolean;
 var
   IndentString: String;
@@ -134,7 +134,7 @@ var
 
   var
     c, i: Integer;
-    m: TDbgSymbol;
+    m: TFpDbgSymbol;
     s: String;
   begin
     Result := True;
@@ -265,7 +265,7 @@ var
   function GetEnumType(out ADeclaration: String): Boolean;
   var
     i, j, val: Integer;
-    m: TDbgSymbol;
+    m: TFpDbgSymbol;
   begin
     // TODO assigned value (a,b:=3,...)
     Result := True;
@@ -290,7 +290,7 @@ var
 
   function GetSetType(out ADeclaration: String): Boolean;
   var
-    t: TDbgSymbol;
+    t: TFpDbgSymbol;
     s: String;
   begin
     // TODO assigned value (a,b:=3,...)
@@ -323,7 +323,7 @@ var
 
   function GetArrayType(out ADeclaration: String): Boolean;
   var
-    t: TDbgSymbol;
+    t: TFpDbgSymbol;
     s: String;
     i: Integer;
   begin
@@ -395,7 +395,7 @@ begin
     ATypeDeclaration := GetIndent + ATypeDeclaration;
 end;
 
-function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
+function PrintPasValue(out APrintedValue: String; AResValue: TFpDbgValue;
   AnAddrSize: Integer; AFlags: TPrintPasValFlags): Boolean;
 
   function ResTypeName: String;
@@ -487,7 +487,7 @@ function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
   var
     s: String;
     i: Integer;
-    m: TDbgSymbolValue;
+    m: TFpDbgValue;
   begin
     APrintedValue := '';
     for i := 0 to AResValue.MemberCount-1 do begin
@@ -511,7 +511,7 @@ function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
   var
     s, s2: String;
     i: Integer;
-    m: TDbgSymbolValue;
+    m: TFpDbgValue;
     fl: TPrintPasValFlags;
   begin
     if (AResValue.Kind = skClass) and (AResValue.AsCardinal = 0) then begin
@@ -560,7 +560,7 @@ function PrintPasValue(out APrintedValue: String; AResValue: TDbgSymbolValue;
   var
     s: String;
     i: Integer;
-    m: TDbgSymbolValue;
+    m: TFpDbgValue;
     c: Integer;
   begin
     APrintedValue := '';

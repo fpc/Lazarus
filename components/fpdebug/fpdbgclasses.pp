@@ -104,7 +104,7 @@ type
 
     function AddBreak(const AFileName: String; ALine: Cardinal): TDbgBreakpoint;
     function AddrOffset: Int64;  // gives the offset between  the loaded addresses and the compiled addresses
-    function FindSymbol(AAdress: TDbgPtr): TDbgSymbol;
+    function FindSymbol(AAdress: TDbgPtr): TFpDbgSymbol;
     function RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;
 
     property Process: TDbgProcess read FProcess;
@@ -149,8 +149,8 @@ type
     constructor Create(const ADefaultName: String; const AProcessID, AThreadID: Integer; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: boolean);
     destructor Destroy; override;
     function  AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
-    function  FindSymbol(const AName: String): TDbgSymbol;
-    function  FindSymbol(AAdress: TDbgPtr): TDbgSymbol;
+    function  FindSymbol(const AName: String): TFpDbgSymbol;
+    function  FindSymbol(AAdress: TDbgPtr): TFpDbgSymbol;
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
     function  RemoveBreak(const ALocation: TDbgPtr): Boolean;
@@ -281,7 +281,7 @@ begin
   inherited;
 end;
 
-function TDbgInstance.FindSymbol(AAdress: TDbgPtr): TDbgSymbol;
+function TDbgInstance.FindSymbol(AAdress: TDbgPtr): TFpDbgSymbol;
 begin
   Result := FDbgInfo.FindSymbol(AAdress + AddrOffset);
 end;
@@ -372,12 +372,12 @@ begin
   inherited;
 end;
 
-function TDbgProcess.FindSymbol(const AName: String): TDbgSymbol;
+function TDbgProcess.FindSymbol(const AName: String): TFpDbgSymbol;
 begin
   Result := FDbgInfo.FindSymbol(AName);
 end;
 
-function TDbgProcess.FindSymbol(AAdress: TDbgPtr): TDbgSymbol;
+function TDbgProcess.FindSymbol(AAdress: TDbgPtr): TFpDbgSymbol;
 var
   n: Integer;
   Inst: TDbgInstance;
