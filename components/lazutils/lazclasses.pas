@@ -56,7 +56,8 @@ type
   end;
 
 
-procedure ReleaseRefAndNil(var ARefCountedObject);
+procedure ReleaseRefAndNil(var ARefCountedObject {$IFDEF WITH_REFCOUNT_DEBUG}; DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''{$ENDIF});
+procedure NilThenReleaseRef(var ARefCountedObject {$IFDEF WITH_REFCOUNT_DEBUG}; DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''{$ENDIF});
 
 implementation
 {$IFDEF WITH_REFCOUNT_DEBUG}
@@ -227,7 +228,7 @@ begin
   end;
 end;
 
-procedure ReleaseRefAndNil(var ARefCountedObject);
+procedure ReleaseRefAndNil(var ARefCountedObject {$IFDEF WITH_REFCOUNT_DEBUG}; DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''{$ENDIF});
 begin
   Assert( (Pointer(ARefCountedObject) = nil) or
           (TObject(ARefCountedObject) is TRefCountedObject),
@@ -237,8 +238,28 @@ begin
     exit;
 
   if (TObject(ARefCountedObject) is TRefCountedObject) then
-    TRefCountedObject(ARefCountedObject).ReleaseReference;
+    TRefCountedObject(ARefCountedObject).ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
   Pointer(ARefCountedObject) := nil;
+end;
+
+procedure NilThenReleaseRef(var ARefCountedObject {$IFDEF WITH_REFCOUNT_DEBUG}; DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''{$ENDIF});
+var
+  RefObj: TRefCountedObject;
+begin
+  Assert( (Pointer(ARefCountedObject) = nil) or
+          (TObject(ARefCountedObject) is TRefCountedObject),
+         'ReleaseRefAndNil requires TRefCountedObject');
+
+  if Pointer(ARefCountedObject) = nil then
+    exit;
+
+  if (TObject(ARefCountedObject) is TRefCountedObject) then
+    RefObj := TRefCountedObject(ARefCountedObject)
+  else RefObj := nil;
+  Pointer(ARefCountedObject) := nil;
+
+  if RefObj <> nil then
+    RefObj.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
 end;
 
 end .
