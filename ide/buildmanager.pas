@@ -62,11 +62,20 @@ type
   TBuildManager = class(TBaseBuildManager)
   private
     FUnitSetCache: TFPCUnitSetCache;
+    fBuildLazExtraOptions: string; // last build lazarus extra options
+    FUnitSetChangeStamp: integer;
+    FFPCSrcScans: TFPCSrcScans;
+    // Macro FPCVer
+    FFPCVer: string;
+    FFPCVerChangeStamp: integer;
+    // Macro InstantFPCCache
+    FMacroInstantFPCCache: string;
+    FMacroInstantFPCCacheValid: boolean;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro;
                                const MacroName: string; var s: string;
                                const {%H-}Data: PtrInt; var Handled, {%H-}Abort: boolean;
                                {%H-}Depth: integer);
-    function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
+    function OnSubstituteCompilerOption({%H-}Options: TParsedCompilerOptions;
                                         const UnparsedValue: string;
                                         PlatformIndependent: boolean): string;
     function MacroFuncBuildMode(const {%H-}Param: string; const {%H-}Data: PtrInt;
@@ -144,17 +153,8 @@ type
     OverrideTargetOS: string;
     OverrideTargetCPU: string;
     OverrideLCLWidgetType: string;
-    fBuildLazExtraOptions: string; // last build lazarus extra options
-    FUnitSetChangeStamp: integer;
-    FFPCSrcScans: TFPCSrcScans;
     DefaultCfgVars: TCTCfgScriptVariables;
     DefaultCfgVarsBuildMacroStamp: integer;
-    // Macro FPCVer
-    FFPCVer: string;
-    FFPCVerChangeStamp: integer;
-    // Macro InstantFPCCache
-    FMacroInstantFPCCache: string;
-    FMacroInstantFPCCacheValid: boolean;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
     function OnGetBuildMacroValues(Options: TBaseCompilerOptions;

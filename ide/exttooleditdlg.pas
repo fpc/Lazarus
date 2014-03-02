@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileUtil, LazUTF8, LCLType, Controls, Forms, Buttons,
   StdCtrls, Dialogs, ExtCtrls, LCLProc, ButtonPanel, IDEMsgIntf,
-  IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs, IDECommands, IDEUtils,
+  IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs, IDECommands,
   FileProcs, TransferMacros, LazarusIDEStrConsts, EnvironmentOpts, KeyMapping,
   IDEProcs
   {$IFDEF EnableNewExtTools}
