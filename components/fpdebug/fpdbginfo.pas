@@ -1,5 +1,31 @@
 unit FpDbgInfo;
+(*
+  About TDbgSymbolValue and TDbgSymbol
 
+  * TDbgSymbol
+    Represents a Symbol or Identifier (stType or stValue)
+
+  * TDbgSymbolValue
+    Holds the Value of a Symbol according to its type.
+
+  TDbgSymbol should not hold any Data, except for information that is in the
+  debug info (dwarf/stabs).
+  All Data read from the target must be in TDbgSymbolValue.
+  Target adta includes Address (can be indirect via ref or pointer, Size and
+  Boundaries (Sub range / Array).
+
+  This means that TDbgSymbol (stType or stValue) should be re-usable. There can
+  be multiple TDbgSymbolValue for each TDbgSymbol. (even for stValue, as in an
+  Array the Symbol itself is repeated / Array of record: the same member occurs
+  over and over)
+
+  ---
+  A Variable value in the target typically consists of:
+  - TDbgSymbol (stValue)
+  - TDbgSymbol (stType)
+  - TDbgSymbolValue
+
+*)
 {$mode objfpc}{$H+}
 
 interface
@@ -116,6 +142,10 @@ type
     function GetDataAddress: TFpDbgMemLocation;  virtual;
     function GetDataSize: Integer;  virtual;
 
+    function GetHasBounds: Boolean; virtual;
+    function GetOrdHighBound: Int64; virtual;
+    function GetOrdLowBound: Int64; virtual;
+
     function GetMember({%H-}AIndex: Integer): TDbgSymbolValue; virtual;
     function GetMemberByName({%H-}AIndex: String): TDbgSymbolValue; virtual;
     function GetMemberCount: Integer; virtual;
@@ -148,6 +178,10 @@ type
     property Size: Integer read GetSize;           // Size of variable
     property DataAddress: TFpDbgMemLocation read GetDataAddress; // Address of Data, if avail (e.g. String, TObject, ..., BUT NOT record)
     property DataSize: Integer read GetDataSize;       // Sive of Data, if avail (e.g. String, TObject, ..., BUT NOT record)
+
+    property HasBounds: Boolean  read GetHasBounds;
+    property OrdLowBound: Int64  read GetOrdLowBound;   // need typecast for QuadWord
+    property OrdHighBound: Int64 read GetOrdHighBound;  // need typecast for QuadWord
     // memdump
   public
 // base class? Or Member includes member from base
@@ -177,7 +211,7 @@ type
                   Maybe a stType, then there is no Value *)
     property DbgSymbol: TDbgSymbol read GetDbgSymbol;
     property TypeInfo: TDbgSymbol read GetTypeInfo;
-    property ContextTypeInfo: TDbgSymbol read GetContextTypeInfo; // For members, the class in which this meber is declared
+    property ContextTypeInfo: TDbgSymbol read GetContextTypeInfo; // For members, the class in which this member is declared
 
     property LastError: TFpError read GetLastError;
   end;
@@ -288,7 +322,7 @@ type
     property Kind:       TDbgSymbolKind read GetKind;
     // Memory; Size is also part of type (byte vs word vs ...)
     // HasAddress // (register does not have)
-    property Address:    TFpDbgMemLocation read GetAddress;
+    property Address:    TFpDbgMemLocation read GetAddress;    // used by Proc/func
     property Size:       Integer read GetSize; // In Bytes
     // TypeInfo used by
     // stValue (Variable): Type
@@ -324,18 +358,18 @@ type
     property Parent: TDbgSymbol read GetParent; deprecated;
     // for Subranges
     property HasBounds: Boolean read GetHasBounds;
-    property OrdLowBound: Int64 read GetOrdLowBound; // need typecast for QuadWord
-    property OrdHighBound: Int64 read GetOrdHighBound; // need typecast for QuadWord
+    property OrdLowBound: Int64 read GetOrdLowBound;  //deprecated 'xxxx'; // need typecast for QuadWord
+    property OrdHighBound: Int64 read GetOrdHighBound;  //deprecated 'xxxx'; // need typecast for QuadWord
     // VALUE
-    property Value: TDbgSymbolValue read GetValueObject;
+    property Value: TDbgSymbolValue read GetValueObject; //deprecated 'rename / create';
     property HasOrdinalValue: Boolean read GetHasOrdinalValue;
-    property OrdinalValue: Int64 read GetOrdinalValue; // need typecast for QuadWord
+    property OrdinalValue: Int64 read GetOrdinalValue;   //deprecated 'xxxx'; // need typecast for QuadWord
 
     // TypeCastValue| only fon stType symbols, may return nil
     // Returns a reference to caller / caller must release
     function TypeCastValue({%H-}AValue: TDbgSymbolValue): TDbgSymbolValue; virtual;
 
-    property LastError: TFpError read GetLastError;
+    property LastError: TFpError read GetLastError; experimental;
   end;
 
   { TDbgSymbolForwarder }
@@ -580,6 +614,21 @@ end;
 function TDbgSymbolValue.GetLastError: TFpError;
 begin
   Result := NoError;
+end;
+
+function TDbgSymbolValue.GetHasBounds: Boolean;
+begin
+  Result := False;
+end;
+
+function TDbgSymbolValue.GetOrdHighBound: Int64;
+begin
+  Result := 0;
+end;
+
+function TDbgSymbolValue.GetOrdLowBound: Int64;
+begin
+  Result := 0;
 end;
 
 function TDbgSymbolValue.GetKind: TDbgSymbolKind;

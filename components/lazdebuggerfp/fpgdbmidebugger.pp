@@ -880,7 +880,7 @@ DebugLn(['######## '+ARequest.Request, ' ## FOUND: ', dbgs(Result)]);
         rt := nil;
         if PasExpr.Valid and (PasExpr.ResultValue <> nil) then begin
           rt := PasExpr.ResultValue.DbgSymbol; // value or typecast
-if rt <> nil then  debugln(['@@@@@ ',rt.ClassName, '   ADDR=', dbgs(rt.Address)]);
+if rt <> nil then  debugln(['@@@@@ ',rt.ClassName]);
 DebugLn(['== VAL === ', PasExpr.ResultValue.AsInteger, '  /  ', PasExpr.ResultValue.AsCardinal,  '  /  ', PasExpr.ResultValue.AsBool,  '  /  ', PasExpr.ResultValue.AsString,  '  /  ', PasExpr.ResultValue.MemberCount,  '  /  ', PasExpr.ResultValue.AsFloat]);
 
           if (rt <> nil) and (rt is TDbgDwarfValueIdentifier) then begin
