@@ -429,7 +429,7 @@ begin
           if not (Quiet and WriteCommands) then
             writeln('Version mismatch link ',ExtractFileNameOnly(Link.LPLFilename),' <> ',Pkg.VersionAsString,' in ',CreateRelativePath(Pkg.Filename,PkgDir));
           if WriteCommands then
-            writeln('svn mv ',CreateRelativePath(Link.LPLFilename,LazarusDir),' ',CreateRelativePath(LinksDir,LazarusDir)+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl');
+            writeln('svn mv ',CreateRelativePath(Link.LPLFilename,LazarusDir),' ',AppendPathDelim(CreateRelativePath(LinksDir,LazarusDir))+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl');
         end;
         break;
       end;
