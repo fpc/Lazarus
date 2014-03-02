@@ -47,8 +47,10 @@ uses
 function GetLastErrorText(AErrorCode: Cardinal): String; {$IFNDEF FPC} overload; {$ENDIF}
 function GetLastErrorText: String; {$IFNDEF FPC} overload; {$ENDIF}
 
+{$ifdef windows}
 var
   GCurrentContext: PContext;
+{$endif}
 
 //function OpenThread(dwDesiredAccess: DWORD; bInheritHandle: BOOL; dwThreadId: DWORD): THandle; stdcall;
 //function Wow64GetThreadContext(hThread: THandle; var lpContext: TContext): BOOL; stdcall;
@@ -100,7 +102,7 @@ begin
 {$endif}
 end;
 
-
+{$ifdef windows}
 var
   _UnAligendContext: record
     C: TContext;
@@ -111,5 +113,6 @@ var
 initialization
 
   GCurrentContext := Pointer((PtrUInt(@_UnAligendContext) + 15) and not PtrUInt($F));
+{$endif}
 end.
 
