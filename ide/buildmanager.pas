@@ -71,6 +71,10 @@ type
     // Macro InstantFPCCache
     FMacroInstantFPCCache: string;
     FMacroInstantFPCCacheValid: boolean;
+    // current target
+    fTargetOS: string;
+    fTargetCPU: string;
+    fLCLWidgetType: string;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro;
                                const MacroName: string; var s: string;
                                const {%H-}Data: PtrInt; var Handled, {%H-}Abort: boolean;
@@ -145,10 +149,6 @@ type
     {$ENDIF}
     procedure SetUnitSetCache(const AValue: TFPCUnitSetCache);
   protected
-    // current target
-    fTargetOS: string;
-    fTargetCPU: string;
-    fLCLWidgetType: string;
     // command line overrides
     OverrideTargetOS: string;
     OverrideTargetCPU: string;
