@@ -23,7 +23,7 @@ interface
 
 // todo: check if build macros can handle this and define it
 // in package LCL instead (it's needed for several widgetsets)
-{$if (FPC_FULLVERSION>=20701)}
+{$if (FPC_FULLVERSION>=20701) OR (FPC_FULLVERSION>=20603)}
 {$define HAS_INHERITED_INSERTITEM}
 {$endif}
 
