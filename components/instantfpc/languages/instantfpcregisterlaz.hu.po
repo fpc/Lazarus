@@ -1,0 +1,30 @@
+#
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: instantfpcregisterlaz.rsinstantfpcpr
+msgid "InstantFPC program"
+msgstr "InstantFPC program"
+
+#: instantfpcregisterlaz.rsinstantfpcsc
+msgid "InstantFPC script"
+msgstr "InstantFPC szkript"
+
+#: instantfpcregisterlaz.rssinglefilefr
+msgid "%s%sSingle file Free Pascal program executed by InstantFPC"
+msgstr "%s%sEgy fájlból álló Free Pascal program az InstantFPC által futtatva"
+
+#: instantfpcregisterlaz.rssinglefilepr
+msgid "%s%sSingle file program using InstantFPC to compile and execute"
+msgstr ""
+"%s%sEgy fájlból álló program, mely az InstantFPC által lesz lefordítva és "
+"futtatva"

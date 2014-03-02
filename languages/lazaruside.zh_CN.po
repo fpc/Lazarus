@@ -17293,6 +17293,10 @@ msgstr "德语"
 msgid "Hebrew"
 msgstr "希伯来语"
 
+#: lazarusidestrconsts.rslanguagehungarian
+msgid "Hungarian"
+msgstr ""
+
 #: lazarusidestrconsts.rslanguageindonesian
 msgid "Indonesian"
 msgstr "印度尼西亚语"

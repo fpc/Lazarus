@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-12-28 22:00+0400\n"
+"PO-Revision-Date: 2014-03-02 17:27+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -17072,6 +17072,10 @@ msgstr "Немецкий"
 #: lazarusidestrconsts.rslanguagehebrew
 msgid "Hebrew"
 msgstr "Иврит"
+
+#: lazarusidestrconsts.rslanguagehungarian
+msgid "Hungarian"
+msgstr "Венгерский"
 
 #: lazarusidestrconsts.rslanguageindonesian
 msgid "Indonesian"

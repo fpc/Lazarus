@@ -144,6 +144,8 @@ begin
     Result:=rsLanguageTurkish
   else if CompareText(ID,'cs')=0 then
     Result:=rsLanguageCzech
+  else if CompareText(ID,'hu')=0 then
+    Result:=rsLanguageHungarian
   else
     Result:=ID;
 end;
@@ -183,8 +185,7 @@ begin
   FindCloseUTF8(FileInfo);
 end;
 
-function ConvertRSTFiles(RSTDirectory, PODirectory: string;
-  POFilename: string): Boolean;
+function ConvertRSTFiles(RSTDirectory, PODirectory: string; POFilename: string): Boolean;
 type
   TItem = record
     NeedUpdate: boolean;

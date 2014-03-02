@@ -1,59 +1,59 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2012-08-06 20:46+0300\n"
-"Project-Id-Version: \n"
-"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
-"Language: lt\n"
-"Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: heaptrcview.rsdtimes
 msgid " (%d times)"
-msgstr " (kartai: %d)"
+msgstr " (%d alkalommal)"
 
 #: heaptrcview.rserrorparse
 msgid "Error while parsing trace file"
-msgstr "Analizuojant pėdsako failą įvyko klaida"
+msgstr "Hiba a nyomkövetési fájl kiértékelésekor"
 
 #: heaptrcview.rsleakview
 msgid "Leak View"
-msgstr "Nuotėkio rodymas"
+msgstr ""
 
 #: heaptrcview.sbtnclipbrd
 msgid "Paste Clipboard"
-msgstr "Įdėti iš iškarpinės"
+msgstr "Vágólap beillesztése"
 
 #: heaptrcview.sbtnresolve
+#, fuzzy
 msgid "Resolve"
-msgstr "Išspręsti"
+msgstr "Megoldás"
 
 #: heaptrcview.sbtnupdate
 msgid "Update"
-msgstr "Naujinti"
+msgstr "Frissítés"
 
 #: heaptrcview.schkraw
 msgid "Raw leak data"
-msgstr "Neapdoroti nuotėkio duomenys"
+msgstr "Nyers szivárgási adatok"
 
 #: heaptrcview.schktop
 msgid "Stay on top"
-msgstr "Laikyti viršuje"
+msgstr "Maradjon mindig legfelül"
 
 #: heaptrcview.sfrmcap
 msgid "LeakView - HeapTrc output viewer"
-msgstr "LeakView - HeapTrc išvesties žiūryklė"
+msgstr "LeakView - HeapTrc kimenet megjelenítő"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
 msgid "Select File with debug info"
-msgstr "Parinkite failą su derinimo informacija"
+msgstr "Hibakeresési infókkal rendelkező fájl választása"
 
 #: heaptrcview.slbltrace
 msgid ".trc file"
-msgstr "failas „.trc“"
+msgstr ".trc fájl"
 
 #: heaptrcview.stacklineformat
 msgid "%s"
@@ -61,25 +61,25 @@ msgstr "%s"
 
 #: heaptrcview.stacklineformatwithfile
 msgid "%s file: %s : %d; "
-msgstr "failas „%s“: %s : %d; "
+msgstr "%s fájl: %s : %d;"
 
 #: heaptrcview.stacktraceformat
 msgid "Leak: %d bytes x %d times"
-msgstr "Nuotėkis: baitų - %d x kartų %d"
+msgstr "Szivárgás: %d bájt x %d alkalommal"
 
 #: heaptrcview.stacktraceformatsingle
 msgid "Leak: %d bytes"
-msgstr "Nuotėkis: baitų - %d"
+msgstr "Szivárgás: %d bájt"
 
 #: heaptrcview.strleakingblockscount
 msgid "Leaking Blocks Count: %d"
-msgstr "Nutekėjusių blokų kiekis: %d"
+msgstr "Szivárgó blokkok száma: %d"
 
 #: heaptrcview.strleakingmemsize
 msgid "Leaking Mem Size: %d"
-msgstr "Nutekėjusios atminties dydis: %d"
+msgstr "Szivárgó memória mérete: %d"
 
 #: heaptrcview.strtotalmemalloc
 msgid "Total Mem alloced: %d"
-msgstr "Viso paskirta atminties: %d"
+msgstr "Teljes lefoglalt memória: %d"
 

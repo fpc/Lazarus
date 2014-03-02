@@ -1,0 +1,125 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: gdbmidebugger.gdbmibreakpointerroronruncommand
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "A hibakereső hibát észlelt amikor megpróbálta futtatni/léptetni az alkalmazást:%0:s%0:s%1:s%0:s%0:sAz \"Ok\"-ra nyomva eltávolítja a töréspontot és folytatja a hibakeresés (szünetel) valamint javíthatja a hibát vagy válasszon másik futtatóparancsot.%0:sA \"Stop\"-ra nyomva befejeződik a hibakeresés."
+
+#: gdbmidebugger.gdbmicommandstartmainbreakerror
+msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
+msgstr "A hibakereső nem tud töréspontot beállítani az alkalmazás belépési pontjára.%0:sEzt hiányzó hibakeresési infók okozhatják."
+
+#: gdbmidebugger.gdbmicommandstartmainrunerror
+msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
+msgstr "A hibakereső nem tudja futtatni az alkalmazást.%0:sEzt hiányzó hibakeresési infók okozhatják."
+
+#: gdbmidebugger.gdbmicommandstartmainrunnopiderror
+msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
+msgstr "A hibakereső nem tudta megszerezni az alkalmazás folyamatazonosítóját (PID).%0:sEzt hiányzó hibakeresési infók okozhatják."
+
+#: gdbmidebugger.gdbmicommandstartmainruntostoperror
+msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgstr "A hibakereső nem tudta inicializálni magát.%0:sAz alkalmazás nem tudott futni (vagy véget ért) mielőtt a hibakereső töréspontokat állított volna be.%0:sEzt hiányzó hibakeresési infók okozhatják."
+
+#: gdbmidebugger.gdbmierroronruncommand
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "A hibakereső hibát észlelt amikor megpróbálta futtatni/léptetni az alkalmazást:%0:s%0:s%1:s%0:s%0:sAz \"Ok\"-ra nyomva folytatható a hibakeresés (szünetel) és javítsa a hibát vagy válasszon másik futtatóparancsot.%0:sA \"Stop\"-ra nyomva befejeződik a hibakeresés."
+
+#: gdbmidebugger.gdbmierroronruncommandwithwarning
+msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
+msgstr "%0:s%0:sA hiba mellett a következő figyelmeztetés jelent meg:%0:s%0:s%1:s"
+
+#: gdbmidebugger.gdbmierrorstategenericinfo
+msgid "Error in: %1:s %0:s"
+msgstr "Hiba itt: %1:s %0:s"
+
+#: gdbmidebugger.gdbmierrorstateinfocommanderror
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
+msgstr "%0:sEz a GDB parancs:%0:s\"%1:s\"%0:sa következő hibát eredményezte:%0:s\"%2:s\"%0:s"
+
+#: gdbmidebugger.gdbmierrorstateinfocommandnoresult
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
+msgstr "%0:sEz GDB parancs:%0:s\"%1:s\"%0:snem adott eredményt.%0:s"
+
+#: gdbmidebugger.gdbmierrorstateinfofailedread
+msgid "%0:sCould not read output from GDB.%0:s"
+msgstr "%0:sNem olvasható a GDB kimenete.%0:s"
+
+#: gdbmidebugger.gdbmierrorstateinfofailedwrite
+msgid "%0:sCould not send a command to GDB.%0:s"
+msgstr "%0:sNem lehet parancsot küldeni a GDB-nek.%0:s"
+
+#: gdbmidebugger.gdbmierrorstateinfogdbgone
+msgid "%0:sThe GDB process is no longer running.%0:s"
+msgstr "%0:sA GDB folyamat már nem fut.%0:s"
+
+#: gdbmidebugger.gdbmieventlogdebugoutput
+msgid "Debug Output: %s"
+msgstr "Hibakeresési kimenet: %s"
+
+#: gdbmidebugger.gdbmieventloggdbinternalerror
+msgid "GDB has encountered an internal error: %s"
+msgstr "A GDB belső hibát észlelt: %s"
+
+#: gdbmidebugger.gdbmieventlognosymbols
+msgid "File '%s' has no debug symbols"
+msgstr "Nincsenek hibakeresési infók a fájlban: %s"
+
+#: gdbmidebugger.gdbmieventlogprocessexitcode
+msgid "Process Exit: %s"
+msgstr "Folyamat kilépése: %s"
+
+#: gdbmidebugger.gdbmieventlogprocessexitnormally
+msgid "Process Exit: normally"
+msgstr "Folyamat kilépése: normál"
+
+#: gdbmidebugger.gdbmieventlogprocessstart
+msgid "Process Start: %s"
+msgstr "Folyamat indítása: %s"
+
+#: gdbmidebugger.gdbmifailedtoterminategdb
+msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
+msgstr "Az ide nem tudta leállítani a GDB folyamatot. Lehetséges, hogy a folyamat az ide irányítása nélkül fut tovább.%0:sHogy a folyamat biztosan ne legyen hatással a rendszerre, meg kell találni és kézzel leállítani."
+
+#: gdbmidebugger.gdbmifailedtoterminategdbtitle
+msgid "GDB did not terminate"
+msgstr "A GDB nem állt le"
+
+#: gdbmidebugger.gdbmifatalerroroccured
+msgctxt "gdbmidebugger.gdbmifatalerroroccured"
+msgid "Unrecoverable error: \"%s\""
+msgstr "Helyrehozhatatlan hiba: \"%s\""
+
+#: gdbmidebugger.gdbmigdbinternalerror
+msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
+msgstr "A GDB belső hibát észlelt:%0:sAz \"Ok\"-ra nyomva folytatható a hibakeresés, Ez NEM biztonságos.%0:sA \"Stop\"-ra nyomva befejeződik a hibakeresés."
+
+#: gdbmidebugger.gdbmigdbinternalerrorinfo
+msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
+msgstr "A következő parancs végrehajtása közben: %0:s\"%2:s\"%0:sa GDB üzenete:%0:s\"%1:s\"%0:s"
+
+#: gdbmidebugger.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
+msgstr "A \"Kihagyás\"-ra nyomva folytatható a hibakeresés, Ez NEM biztonságos. A \"Megszakítás\"-ra nyomva befejeződik a hibakeresés.%0:sKivétel: %1:s a következő üzenettel: \"%2:s\"%0:sHely: %4:s. Állapot: %5:s %0:s%0:s%3:s"
+
+#: gdbmidebugger.gdbmithedebuggerexperiencedanunknowncondition
+msgid "The debugger experienced an unknown condition"
+msgstr "A hibakereső ismeretlen helyzetet észlelt"
+
+#: gdbmidebugger.gdbmitimeoutforcmd
+msgid "Time-out for command: \"%s\""
+msgstr "A parancs túllépte az időt: \"%s\""
+
+#: gdbmidebugger.gdbmiwarningunknowbreakpoint
+msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
+msgstr "A hibakereső váratlan helyzetbe került: %1:s%0:s%0:sAz \"Ok\"-ra nyomva folytatható a hibakeresés (szünetel).%0:sA \"Stop\"-ra nyomva befejeződik a hibakeresés."
+

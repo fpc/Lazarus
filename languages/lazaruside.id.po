@@ -17160,6 +17160,10 @@ msgstr "Jerman"
 msgid "Hebrew"
 msgstr "Hebrew"
 
+#: lazarusidestrconsts.rslanguagehungarian
+msgid "Hungarian"
+msgstr ""
+
 #: lazarusidestrconsts.rslanguageindonesian
 msgid "Indonesian"
 msgstr "Indonesian"
