@@ -49,7 +49,8 @@ type
     iohBeforeRead,
     iohAfterRead,
     iohBeforeWrite,
-    iohAfterWrite
+    iohAfterWrite,
+    iohDestroy
     );
   TIDEOptionsHandlers = set of TIDEOptionsHandler;
 
@@ -72,6 +73,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure BeforeDestruction; override;
 
     class function GetGroupCaption: string; virtual; abstract;
     class function GetInstance: TAbstractIDEOptions; virtual; abstract;
@@ -89,6 +91,8 @@ type
     procedure RemoveHandlerBeforeWrite(const Handler: TIDEOptionsWriteEvent);
     procedure AddHandlerAfterWrite(const Handler: TIDEOptionsWriteEvent; const AsFirst: boolean = true); // AsFirst means: first to call
     procedure RemoveHandlerAfterWrite(const Handler: TIDEOptionsWriteEvent);
+    procedure AddHandlerDestroy(const Handler: TNotifyEvent; const AsFirst: boolean = true); // AsFirst means: first to call
+    procedure RemoveHandlerDestroy(const Handler: TNotifyEvent);
 
     property OnBeforeRead: TNotifyEvent read FOnBeforeRead write FOnBeforeRead;
     property OnAfterRead: TNotifyEvent read FOnAfterRead write FOnAfterRead;
@@ -765,6 +769,12 @@ begin
   inherited Destroy;
 end;
 
+procedure TAbstractIDEOptions.BeforeDestruction;
+begin
+  inherited BeforeDestruction;
+  fHandlers[iohDestroy].CallNotifyEvents(Self);
+end;
+
 procedure TAbstractIDEOptions.DoBeforeRead;
 begin
   if Assigned(FOnBeforeRead) then
@@ -845,6 +855,17 @@ procedure TAbstractIDEOptions.RemoveHandlerAfterWrite(
   const Handler: TIDEOptionsWriteEvent);
 begin
   fHandlers[iohAfterWrite].Remove(TMethod(Handler));
+end;
+
+procedure TAbstractIDEOptions.AddHandlerDestroy(const Handler: TNotifyEvent;
+  const AsFirst: boolean);
+begin
+  fHandlers[iohDestroy].Add(TMethod(Handler),AsFirst);
+end;
+
+procedure TAbstractIDEOptions.RemoveHandlerDestroy(const Handler: TNotifyEvent);
+begin
+  fHandlers[iohDestroy].Remove(TMethod(Handler));
 end;
 
 initialization
