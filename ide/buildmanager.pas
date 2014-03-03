@@ -61,6 +61,7 @@ type
 
   TBuildManager = class(TBaseBuildManager)
   private
+    FBuildTarget: TObject;
     FUnitSetCache: TFPCUnitSetCache;
     fBuildLazExtraOptions: string; // last build lazarus extra options
     FUnitSetChangeStamp: integer;
@@ -147,6 +148,7 @@ type
     function OnRunCompilerWithOptions(ExtTool: TIDEExternalToolOptions;
                            CompOptions: TBaseCompilerOptions): TModalResult;
     {$ENDIF}
+    procedure OnProjectDestroy(Sender: TObject);
     procedure SetUnitSetCache(const AValue: TFPCUnitSetCache);
   protected
     // command line overrides
@@ -229,6 +231,7 @@ type
     function BuildTargetIDEIsDefault: boolean;
 
     property FPCSrcScans: TFPCSrcScans read FFPCSrcScans;
+    property BuildTarget: TObject read FBuildTarget; // TProject or nil
   end;
   
 var
@@ -266,6 +269,15 @@ begin
 end;
 
 { TBuildManager }
+
+procedure TBuildManager.OnProjectDestroy(Sender: TObject);
+var
+  aProject: TProject;
+begin
+  aProject:=TProject(Sender);
+  if FBuildTarget=aProject then
+    FBuildTarget:=nil;
+end;
 
 procedure TBuildManager.OnMacroSubstitution(TheMacro: TTransferMacro;
   const MacroName: string; var s: string; const Data: PtrInt; var Handled,
@@ -598,14 +610,18 @@ end;
 function TBuildManager.GetFPCompilerFilename: string;
 var
   s: string;
+  AProject: TProject;
 begin
   Result:='';
-  if (Project1<>nil)
-  and ([crCompile,crBuild]*Project1.CompilerOptions.CompileReasons<>[])
-  and (Project1.CompilerOptions.CompilerPath<>'')
-  then begin
-    Result:=Project1.GetCompilerFilename;
-    //debugln(['TBuildManager.GetFPCompilerFilename project compiler="',Result,'"']);
+  if (FBuildTarget is TProject) then
+  begin
+    AProject:=TProject(FBuildTarget);
+    if ([crCompile,crBuild]*AProject.CompilerOptions.CompileReasons<>[])
+    and (AProject.CompilerOptions.CompilerPath<>'')
+    then begin
+      Result:=AProject.GetCompilerFilename;
+      //debugln(['TBuildManager.GetFPCompilerFilename project compiler="',Result,'"']);
+    end;
   end;
   if not IsFPCExecutable(Result,s) then begin
     //if Result<>'' then debugln(['TBuildManager.GetFPCompilerFilename project compiler NOT fpc: "',Result,'"']);
@@ -2573,8 +2589,8 @@ begin
   // compute new TargetOS
   if OverrideTargetOS<>'' then
     fTargetOS:=OverrideTargetOS
-  else if Project1<>nil then
-    fTargetOS:=Project1.CompilerOptions.TargetOS
+  else if FBuildTarget is TProject then
+    fTargetOS:=TProject(FBuildTarget).CompilerOptions.TargetOS
   else
     fTargetOS:='';
   if (fTargetOS='') or (SysUtils.CompareText(fTargetOS,'default')=0) then
@@ -2584,8 +2600,8 @@ begin
   // compute new TargetCPU
   if OverrideTargetCPU<>'' then
     fTargetCPU:=OverrideTargetCPU
-  else if Project1<>nil then
-    fTargetCPU:=Project1.CompilerOptions.TargetCPU
+  else if FBuildTarget is TProject then
+    fTargetCPU:=TProject(FBuildTarget).CompilerOptions.TargetCPU
   else
     fTargetCPU:='';
   if (fTargetCPU='') or (SysUtils.CompareText(fTargetCPU,'default')=0) then
@@ -2616,6 +2632,9 @@ end;
 procedure TBuildManager.SetBuildTargetProject1(Quiet: boolean;
   ScanFPCSrc: TScanModeFPCSources);
 begin
+  FBuildTarget:=Project1;
+  if FBuildTarget<>nil then
+    TProject(FBuildTarget).AddHandlerDestroy(@OnProjectDestroy);
   SetBuildTarget('','','',ScanFPCSrc,Quiet);
 end;
 
@@ -2625,6 +2644,7 @@ var
   NewTargetCPU: String;
   NewLCLWidgetSet: String;
 begin
+  FBuildTarget:=nil;
   with MiscellaneousOptions do begin
     NewTargetOS:=BuildLazOpts.TargetOS;
     NewTargetCPU:=BuildLazOpts.TargetCPU;
