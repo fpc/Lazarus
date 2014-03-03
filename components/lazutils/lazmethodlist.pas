@@ -5,17 +5,21 @@ unit LazMethodList;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, RtlConsts; 
 
 type
   { TMethodList - array of TMethod }
 
   TMethodList = class
   private
+    FAllowDuplicates: boolean;
     FItems: ^TMethod;
     FCount: integer;
     function GetItems(Index: integer): TMethod;
+    procedure SetAllowDuplicates(AValue: boolean);
     procedure SetItems(Index: integer; const AValue: TMethod);
+    procedure InternalInsert(Index: integer; const AMethod: TMethod);
+    procedure RaiseIndexOutOfBounds(Index: integer);
   public
     destructor Destroy; override;
     function Count: integer;
@@ -28,9 +32,10 @@ type
     procedure Insert(Index: integer; const AMethod: TMethod);
     procedure Move(OldIndex, NewIndex: integer);
     procedure RemoveAllMethodsOfObject(const AnObject: TObject);
-    procedure CallNotifyEvents(Sender: TObject);
+    procedure CallNotifyEvents(Sender: TObject); // calls from Count-1 downto 0, all methods must be TNotifyEvent
   public
     property Items[Index: integer]: TMethod read GetItems write SetItems; default;
+    property AllowDuplicates: boolean read FAllowDuplicates write SetAllowDuplicates; // default false, changed in Lazarus 1.3
   end;
 
 implementation
@@ -42,9 +47,56 @@ begin
   Result:=FItems[Index];
 end;
 
-procedure TMethodList.SetItems(Index: integer; const AValue: TMethod);
+procedure TMethodList.SetAllowDuplicates(AValue: boolean);
+var
+  i, j: Integer;
 begin
+  if FAllowDuplicates=AValue then Exit;
+  FAllowDuplicates:=AValue;
+  if not AllowDuplicates then
+  begin
+    i:=0;
+    while i<FCount do
+    begin
+      j:=i+1;
+      while j<FCount do
+      begin
+        if (FItems[i].Code=FItems[j].Code)
+        and (FItems[i].Data=FItems[j].Data) then
+          Delete(j)
+        else
+          inc(j);
+      end;
+      inc(i);
+    end;
+  end;
+end;
+
+procedure TMethodList.SetItems(Index: integer; const AValue: TMethod);
+
+  procedure RaiseDuplicate;
+  begin
+    raise EListError.CreateFmt(SDuplicateItem,[AValue.Code]);
+  end;
+
+begin
+  if (not AllowDuplicates) and (IndexOf(AValue)<>Index) then
+    RaiseDuplicate;
   FItems[Index]:=AValue;
+end;
+
+procedure TMethodList.InternalInsert(Index: integer; const AMethod: TMethod);
+begin
+  inc(FCount);
+  ReAllocMem(FItems,FCount*SizeOf(TMethod));
+  if Index<FCount then
+    System.Move(FItems[Index],FItems[Index+1],(FCount-Index-1)*SizeOf(TMethod));
+  FItems[Index]:=AMethod;
+end;
+
+procedure TMethodList.RaiseIndexOutOfBounds(Index: integer);
+begin
+  raise EListError.CreateFmt(SListIndexError,[Index]);
 end;
 
 destructor TMethodList.Destroy;
@@ -104,9 +156,21 @@ begin
 end;
 
 procedure TMethodList.Add(const AMethod: TMethod);
+var
+  i: Integer;
 begin
-  inc(FCount);
-  ReAllocMem(FItems,FCount*SizeOf(TMethod));
+  if AllowDuplicates then
+    i:=-1
+  else
+    i:=IndexOf(AMethod);
+  if (i<0) then
+  begin
+    inc(FCount);
+    ReAllocMem(FItems,FCount*SizeOf(TMethod));
+  end else begin
+    if i=FCount-1 then exit;
+    System.Move(FItems[i+1],FItems[i],SizeOf(TMethod)*(FCount-i-1));
+  end;
   FItems[FCount-1]:=AMethod;
 end;
 
@@ -119,12 +183,20 @@ begin
 end;
 
 procedure TMethodList.Insert(Index: integer; const AMethod: TMethod);
+var
+  i: Integer;
 begin
-  inc(FCount);
-  ReAllocMem(FItems,FCount*SizeOf(TMethod));
-  if Index<FCount then
-    System.Move(FItems[Index],FItems[Index+1],(FCount-Index-1)*SizeOf(TMethod));
-  FItems[Index]:=AMethod;
+  if AllowDuplicates then
+    i:=-1
+  else
+    i:=IndexOf(AMethod);
+  if i<0 then
+  begin
+    if (Index<0) or (Index>FCount) then
+      RaiseIndexOutOfBounds(Index);
+    InternalInsert(Index,AMethod)
+  end else
+    Move(i,Index);
 end;
 
 procedure TMethodList.Move(OldIndex, NewIndex: integer);
@@ -132,6 +204,8 @@ var
   MovingMethod: TMethod;
 begin
   if OldIndex=NewIndex then exit;
+  if (NewIndex<0) or (NewIndex>=FCount) then
+    RaiseIndexOutOfBounds(NewIndex);
   MovingMethod:=FItems[OldIndex];
   if OldIndex>NewIndex then
     System.Move(FItems[NewIndex],FItems[NewIndex+1],
