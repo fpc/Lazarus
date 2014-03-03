@@ -1165,6 +1165,11 @@ type
   TPropHookGetComponentNames = procedure(TypeData: PTypeData;
                                          Proc: TGetStrProc) of object;
   TPropHookGetRootClassName = function:ShortString of object;
+  TPropHookAddClicked = function(ADesigner: TIDesigner;
+                            MouseDownComponent: TComponent; Button: TMouseButton;
+                            Shift: TShiftState; X, Y: Integer;
+                            var AComponentClass: TComponentClass;
+                            var NewParent: TComponent): boolean of object;
   TPropHookBeforeAddPersistent = function(Sender: TObject;
                                          APersistentClass: TPersistentClass;
                                          Parent: TPersistent): boolean of object;
@@ -1210,6 +1215,7 @@ type
     htGetComponentName,
     htGetComponentNames,
     htGetRootClassName,
+    htAddClicked, // user selected a component class and clicked on a form to add a component
     htComponentRenamed,
     // persistent selection
     htBeforeAddPersistent,
@@ -1273,6 +1279,11 @@ type
     function GetComponentName(AComponent: TComponent): ShortString;
     procedure GetComponentNames(TypeData: PTypeData; const Proc: TGetStrProc);
     function GetRootClassName: ShortString;
+    function AddClicked(ADesigner: TIDesigner;
+                        MouseDownComponent: TComponent; Button: TMouseButton;
+                        Shift: TShiftState; X, Y: Integer;
+                        var AComponentClass: TComponentClass;
+                        var NewParent: TComponent): boolean;
     function BeforeAddPersistent(Sender: TObject;
                                  APersistentClass: TPersistentClass;
                                  Parent: TPersistent): boolean;
@@ -1354,6 +1365,8 @@ type
                          const OnGetComponentNames: TPropHookGetComponentNames);
     procedure RemoveHandlerGetComponentNames(
                          const OnGetComponentNames: TPropHookGetComponentNames);
+    procedure AddHandlerAddClicked(const Handler: TPropHookAddClicked);
+    procedure RemoveHandlerAddClicked(const Handler: TPropHookAddClicked);
     procedure AddHandlerGetRootClassName(
                            const OnGetRootClassName: TPropHookGetRootClassName);
     procedure RemoveHandlerGetRootClassName(
@@ -5503,6 +5516,27 @@ begin
     Result := LookupRoot.ClassName;
 end;
 
+function TPropertyEditorHook.AddClicked(ADesigner: TIDesigner;
+  MouseDownComponent: TComponent; Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer; var AComponentClass: TComponentClass; var NewParent: TComponent
+  ): boolean;
+var
+  i: Integer;
+  Handler: TPropHookAddClicked;
+begin
+  i := GetHandlerCount(htAddClicked);
+  while GetNextHandlerIndex(htAddClicked, i) do
+  begin
+    Handler := TPropHookAddClicked(FHandlers[htAddClicked][i]);
+    Result := Handler(ADesigner,MouseDownComponent,Button,Shift,X,Y,
+                      AComponentClass,NewParent);
+    if not Result then exit;
+    if AComponentClass=nil then
+      exit(false);
+  end;
+  Result := True;
+end;
+
 function TPropertyEditorHook.BeforeAddPersistent(Sender: TObject;
   APersistentClass: TPersistentClass; Parent: TPersistent): boolean;
 var
@@ -5948,6 +5982,18 @@ procedure TPropertyEditorHook.RemoveHandlerGetComponentNames(
   const OnGetComponentNames: TPropHookGetComponentNames);
 begin
   RemoveHandler(htGetComponentNames,TMethod(OnGetComponentNames));
+end;
+
+procedure TPropertyEditorHook.AddHandlerAddClicked(
+  const Handler: TPropHookAddClicked);
+begin
+  AddHandler(htAddClicked,TMethod(Handler));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerAddClicked(
+  const Handler: TPropHookAddClicked);
+begin
+  RemoveHandler(htAddClicked,TMethod(Handler));
 end;
 
 procedure TPropertyEditorHook.AddHandlerGetRootClassName(

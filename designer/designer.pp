@@ -2190,9 +2190,13 @@ var
     //debugln(['AddComponent NewComponentClass=',DbgSName(NewComponentClass)]);
 
     // find a parent for the new component
-    NewParent := FLookupRoot;
+    NewParent:=nil;
+    PropertyEditorHook.AddClicked(Self,MouseDownComponent,Button,Shift,
+      MouseUpPos.X,MouseUpPos.Y,NewComponentClass,NewParent);
     if Mediator<>nil then begin
-      NewParent:=MouseDownComponent;
+      // mediator, non LCL components
+      if NewParent=nil then
+        NewParent:=MouseDownComponent;
       while (NewParent<>nil)
       and (not Mediator.ParentAcceptsChild(NewParent,NewComponentClass)) do
         NewParent:=NewParent.GetParentComponent;
@@ -2200,7 +2204,14 @@ var
         NewParent:=FLookupRoot;
     end else if (FLookupRoot is TCustomForm) or (FLookupRoot is TCustomFrame)
     then begin
-      if MouseDownComponent is TWinControl then
+      // LCL controls
+      if NewParent<>nil then begin
+        if not (NewParent is TWinControl) then begin
+          debugln(['ERROR: AddComponent failed: AddClicked returned not a TWinControl: ',DbgSName(NewParent)]);
+          exit;
+        end;
+        NewParentControl := TWinControl(NewParent);
+      end else if MouseDownComponent is TWinControl then
         NewParentControl := TWinControl(MouseDownComponent)
       else
         NewParentControl := WinControlAtPos(MouseUpPos.X, MouseUpPos.Y, true, true);
@@ -2212,14 +2223,17 @@ var
         NewParentControl := NewParentControl.Parent;
       NewParent := NewParentControl;
       //debugln(['AddComponent NewParent=',DbgSName(NewParent)]);
+    end else begin
+      // TDataModule
+      NewParent := FLookupRoot;
     end;
     if not Assigned(NewParent) then exit;
 
     if not PropertyEditorHook.BeforeAddPersistent(Self,
-                                     SelectedCompClass.ComponentClass,NewParent)
+                                     NewComponentClass,NewParent)
     then begin
-      DebugLn('TDesigner.AddComponent ',
-              SelectedCompClass.ComponentClass.ClassName,' not possible');
+      DebugLn('Note: TDesigner.AddComponent BeforeAddPersistent failed: ComponentClass=',
+              NewComponentClass.ClassName,' NewParent=',DbgSName(NewParent));
       exit;
     end;
 
@@ -2232,7 +2246,7 @@ var
       // adjust left,top to parent origin
       dec(NewLeft,ParentClientOrigin.X);
       dec(NewTop,ParentClientOrigin.Y);
-    end else if SelectedCompClass.ComponentClass.InheritsFrom(TControl) then
+    end else if NewComponentClass.InheritsFrom(TControl) then
     begin
       ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
       // adjust left,top to parent origin
