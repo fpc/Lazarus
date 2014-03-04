@@ -371,9 +371,9 @@ type
                            AsLast: boolean = false);
     procedure RemoveHandlerOnQuickSyntaxCheck(
                           const OnQuickSyntaxCheckEvent: TModalHandledFunction);
-    procedure AddHandlerOnGetFPCFrontEndParams(
+    procedure AddHandlerGetFPCFrontEndParams(
                  const Handler: TGetFPCFrontEndParams; AsLast: boolean = false);
-    procedure RemoveHandlerOnGetFPCFrontEndParams(
+    procedure RemoveHandlerGetFPCFrontEndParams(
                                           const Handler: TGetFPCFrontEndParams);
     function CallHandlerGetFPCFrontEndParams(Sender: TObject; var Params: string): boolean;
   end;
@@ -649,13 +649,13 @@ begin
   RemoveHandler(lihtQuickSyntaxCheck,TMethod(OnQuickSyntaxCheckEvent));
 end;
 
-procedure TLazIDEInterface.AddHandlerOnGetFPCFrontEndParams(
+procedure TLazIDEInterface.AddHandlerGetFPCFrontEndParams(
   const Handler: TGetFPCFrontEndParams; AsLast: boolean);
 begin
   AddHandler(lihtGetFPCFrontEndParams,TMethod(Handler),AsLast);
 end;
 
-procedure TLazIDEInterface.RemoveHandlerOnGetFPCFrontEndParams(
+procedure TLazIDEInterface.RemoveHandlerGetFPCFrontEndParams(
   const Handler: TGetFPCFrontEndParams);
 begin
   RemoveHandler(lihtGetFPCFrontEndParams,TMethod(Handler));
