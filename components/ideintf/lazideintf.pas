@@ -147,6 +147,7 @@ type
                                  AProject: TLazProject): TModalResult of object;
   TModalHandledFunction = function(Sender: TObject; var Handled: boolean
                               ): TModalResult of object;
+  TGetFPCFrontEndParams = function(Sender: TObject; var Params: string): boolean of object;
 
   TLazarusIDEHandlerType = (
     lihtSavingAll, // called before IDE saves everything
@@ -158,7 +159,8 @@ type
     lihtProjectBuilding, // called before IDE builds the project
     lihtProjectDependenciesCompiling, // called before IDE compiles dependencies of project
     lihtProjectDependenciesCompiled, // called after IDE compiled dependencies of project
-    lihtQuickSyntaxCheck  // called when quick syntax check is clicked (menu item or shortcut)
+    lihtQuickSyntaxCheck,  // called when quick syntax check is clicked (menu item or shortcut)
+    lihtGetFPCFrontEndParams // called when the IDE gets the parameters of the 'fpc' front end tool
     );
     
   { TLazIDEInterface }
@@ -276,6 +278,7 @@ type
                           TryWithoutNumber: boolean): string; virtual; abstract;
     function GetTestBuildDirectory: string; virtual; abstract;
     function GetFPCompilerFilename: string; virtual; abstract;
+    function GetFPCFrontEndOptions: string; virtual; abstract;
 
     // codetools
     function BeginCodeTools: boolean; virtual; abstract;
@@ -368,6 +371,11 @@ type
                            AsLast: boolean = false);
     procedure RemoveHandlerOnQuickSyntaxCheck(
                           const OnQuickSyntaxCheckEvent: TModalHandledFunction);
+    procedure AddHandlerOnGetFPCFrontEndParams(
+                 const Handler: TGetFPCFrontEndParams; AsLast: boolean = false);
+    procedure RemoveHandlerOnGetFPCFrontEndParams(
+                                          const Handler: TGetFPCFrontEndParams);
+    function CallHandlerGetFPCFrontEndParams(Sender: TObject; var Params: string): boolean;
   end;
   
 var
@@ -639,6 +647,32 @@ procedure TLazIDEInterface.RemoveHandlerOnQuickSyntaxCheck(
   const OnQuickSyntaxCheckEvent: TModalHandledFunction);
 begin
   RemoveHandler(lihtQuickSyntaxCheck,TMethod(OnQuickSyntaxCheckEvent));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnGetFPCFrontEndParams(
+  const Handler: TGetFPCFrontEndParams; AsLast: boolean);
+begin
+  AddHandler(lihtGetFPCFrontEndParams,TMethod(Handler),AsLast);
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnGetFPCFrontEndParams(
+  const Handler: TGetFPCFrontEndParams);
+begin
+  RemoveHandler(lihtGetFPCFrontEndParams,TMethod(Handler));
+end;
+
+function TLazIDEInterface.CallHandlerGetFPCFrontEndParams(Sender: TObject;
+  var Params: string): boolean;
+var
+  i: longint;
+begin
+  i:=FLazarusIDEHandlers[lihtGetFPCFrontEndParams].Count;
+  while FLazarusIDEHandlers[lihtGetFPCFrontEndParams].NextDownIndex(i) do
+  begin
+    if not TGetFPCFrontEndParams(FLazarusIDEHandlers[lihtGetFPCFrontEndParams][i])(Self,Params)
+    then exit(false);
+  end;
+  Result:=true;
 end;
 
 initialization

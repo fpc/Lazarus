@@ -186,6 +186,7 @@ type
     function GetRunCommandLine: string; override;
 
     function GetFPCompilerFilename: string; override;
+    function GetFPCFrontEndOptions: string; override;
     function GetProjectPublishDir: string; override;
     function GetProjectTargetFilename(aProject: TProject): string; override;
     function GetProjectUsesAppBundle: Boolean; override;
@@ -629,6 +630,28 @@ begin
   end;
 end;
 
+function TBuildManager.GetFPCFrontEndOptions: string;
+var
+  s: String;
+begin
+  Result:='';
+  if FBuildTarget is TProject then
+  begin
+    s:=ExtractFPCFrontEndParameters(TProject(FBuildTarget).CompilerOptions.CustomOptions);
+    if GlobalMacroList.SubstituteStr(s) then
+    begin
+      if s<>'' then
+        Result:=s;
+    end else begin
+      debugln(['WARNING: [GetFPCFrontEndOptions] ignoring invalid macros in custom options for fpc frontend: "',ExtractFPCFrontEndParameters(TProject(FBuildTarget).CompilerOptions.CustomOptions),'"']);
+    end;
+  end;
+  if LazarusIDE<>nil then
+    if not LazarusIDE.CallHandlerGetFPCFrontEndParams(Self,Result) then begin
+      debugln(['WARNING: TBuildManager.GetFPCFrontEndOptions: LazarusIDE.CallHandlerGetFPCFrontEndParams failed Result="',Result,'"']);
+    end;
+end;
+
 function TBuildManager.GetProjectPublishDir: string;
 begin
   Result:='';
@@ -832,15 +855,7 @@ begin
   TargetCPU:=GetTargetCPU;
   FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
   CompilerFilename:=GetFPCompilerFilename;
-  FPCOptions:='';
-  if FBuildTarget is TProject then
-  begin
-    FPCOptions:=ExtractFPCFrontEndParameters(TProject(FBuildTarget).CompilerOptions.CustomOptions);
-    if not GlobalMacroList.SubstituteStr(FPCOptions) then begin
-      debugln(['WARNING: TBuildManager.RescanCompilerDefines ignoring invalid macros in custom options for fpc frontend: "',ExtractFPCFrontEndParameters(TProject(FBuildTarget).CompilerOptions.CustomOptions),'"']);
-      FPCOptions:='';
-    end;
-  end;
+  FPCOptions:=GetFPCFrontEndOptions;
 
   {$IFDEF VerboseFPCSrcScan}
   debugln(['TMainIDE.RescanCompilerDefines START ',

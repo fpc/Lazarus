@@ -150,10 +150,15 @@ begin
     if Project1<>nil then
     begin
       CompilerOptions:=ExtractFPCFrontEndParameters(Project1.CompilerOptions.CustomOptions);
-      if not GlobalMacroList.SubstituteStr(CompilerOptions) then begin
+      if not GlobalMacroList.SubstituteStr(CompilerOptions) then
+      begin
         sl.Add('invalid macros in project''s compiler options: '+Project1.CompilerOptions.CustomOptions);
         CompilerOptions:='';
       end;
+    end;
+    if not LazarusIDE.CallHandlerGetFPCFrontEndParams(Self,CompilerOptions) then
+    begin
+      sl.Add('ERROR: design time event (lihtGetFPCFrontEndParams) failed to extend fpc front end parameters: "'+CompilerOptions+'"');
     end;
     Cfg:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
                         CompilerFilename,CompilerOptions,'','',true);
@@ -165,7 +170,7 @@ begin
     sl.Add('Working directory: '+WorkDir);
     List:=RunTool(CompilerFilename,Params);
     if (List=nil) or (List.Count<1) then begin
-      sl.Add('Error: unable to run compiler.');
+      sl.Add('ERROR: unable to run compiler.');
     end else begin
       sl.Add('Output:');
       sl.AddStrings(List);
@@ -191,17 +196,17 @@ begin
       fs:=TFileStreamUTF8.Create(TestFilename,fmCreate);
       fs.Free;
     except
-      sl.Add('Error: unable to create test file '+TestFilename);
+      sl.Add('ERROR: unable to create test file '+TestFilename);
       exit;
     end;
     List:=RunTool(CompilerFilename,Params,WorkDir);
     if (List=nil) or (List.Count<1) then begin
-      sl.Add('Error: unable to run compiler.');
+      sl.Add('ERROR: unable to run compiler.');
     end else begin
       sl.Add('Output:');
       sl.AddStrings(List);
       sl.Add('');
-      sl.Add('Note: The '+Filename+' is empty, so compilation fails. This is what we want.');
+      sl.Add('NOTE: The '+Filename+' is empty, so compilation fails. This is what we want.');
     end;
 
   finally

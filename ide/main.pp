@@ -981,6 +981,7 @@ type
     // methods for debugging, compiling and external tools
     function GetTestBuildDirectory: string; override;
     function GetFPCompilerFilename: string; override;
+    function GetFPCFrontEndOptions: string; override;
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
       NeededFlags: TIDEFileStateFlags; out ResultFlags: TIDEFileStateFlags); override;
 
@@ -9298,6 +9299,11 @@ end;
 function TMainIDE.GetFPCompilerFilename: string;
 begin
   Result:=MainBuildBoss.GetFPCompilerFilename;
+end;
+
+function TMainIDE.GetFPCFrontEndOptions: string;
+begin
+  Result:=MainBuildBoss.GetFPCFrontEndOptions;
 end;
 
 function TMainIDE.FindUnitFile(const AFilename: string; TheOwner: TObject;
