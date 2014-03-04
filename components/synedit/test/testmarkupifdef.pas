@@ -58,6 +58,8 @@ type
     function TestText9: TStringArray;
     function TestText10: TStringArray;
     function TestText11: TStringArray;
+    function TestText11a: TStringArray;
+    function TestText12: TStringArray;
 
     procedure CheckOpenCloseCount(AName: String; ALine: Integer;
       AExpOpenCnt, AExpCloseCnt: Integer);
@@ -703,6 +705,83 @@ begin
   AddLine(''                                                      );
   AddLine(''                                                      );
 
+end;
+
+function TTestMarkupIfDef.TestText11a: TStringArray;
+  procedure AddLine(s: String);
+  begin
+    SetLength(Result, Length(Result)+1);
+    Result[Length(Result)-1] := s;
+  end;
+begin
+  // 1
+  AddLine('{$if defined(cpu86)}'      );         // level 0
+  AddLine('  {$if defined(cpu86)}  ');           // level 1
+  AddLine('  // a');
+  AddLine('  {$elseif defined(cpupowerpc)}  ');  // level 1
+  //5
+  AddLine('    // disabled  ');
+  AddLine('  {$elseif defined(cpupowerpc)}  ');  // level 1
+  AddLine('    // enabled (invalid)  ');
+  AddLine('  {$elseif defined(cpuarm)}  ');      // level 1
+  AddLine('    {$if defined(cpu86)}// enabled (invalid)  ');
+  // 10
+  AddLine('    {$ifend}{$if defined(cpu86)}'      );     // level 2
+  AddLine('  {$ifend}{$elseif defined(CPUX86_64)}  ');   // level 1  (close lvl 2)
+  AddLine('    // enabled (invalid)  ');
+  AddLine('    {$if defined(cpu86)}'      );       // level 2
+  AddLine('    {$ifend}{$if defined(cpu86)}'      );  // level 2 <> 2
+  // 15
+  AddLine('      // nested  ');
+  AddLine('    {$elseif defined(cpuarm)}  ');       // level 2
+  AddLine('      // nested  ');
+  AddLine('    {$else}  ');                          // level 2
+  AddLine('      // nested  ');
+  // 20
+  AddLine('    {$ifend}  ');                        // level 2
+  AddLine('  {$else}  ');                         // level 1
+  AddLine('    // enabled (invalid)  ');
+  AddLine('    {$if defined(cpu86)}'      );
+  AddLine('      // nested  ');
+  // 25
+  AddLine('    {$ifend}{$if defined(cpu86)}'      );
+  AddLine('      // nested  ');
+  AddLine('    {$elseif defined(cpuarm)}  ');
+  AddLine('      // nested  ');
+  AddLine('    {$else}  ');
+  // 30
+  AddLine('      // nested  ');
+  AddLine('    {$ifend}  ');
+  AddLine('  {$ifend}  ');
+  AddLine(''                                                      );
+  AddLine('  {$ifend}  ');
+  // 35
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+end;
+
+function TTestMarkupIfDef.TestText12: TStringArray;
+  procedure AddLine(s: String);
+  begin
+    SetLength(Result, Length(Result)+1);
+    Result[Length(Result)-1] := s;
+  end;
+begin
+  // 1
+  AddLine('program project1;');
+  AddLine('');
+  AddLine('{$mode objfpc}{$H+}');
+  AddLine('');
+  // 5
+  AddLine('uses {$IFDEF UNIX} {$IFDEF UseCThreads}');
+  AddLine('  cthreads, {$ENDIF} {$ENDIF} {$ifdef LCLWinCE}');
+  AddLine('  WinCEInt, {$endif}');
+  AddLine('  Interfaces, // this includes the LCL widgetset');
+  AddLine('  Windows,');
+  AddLine('  SysUtils,');
+  AddLine('  Forms;');
+  AddLine('');
 end;
 
 procedure TTestMarkupIfDef.CheckOpenCloseCount(AName: String; ALine: Integer; AExpOpenCnt,
@@ -2030,6 +2109,62 @@ procedure TTestMarkupIfDef.TestIfDefTreePeerConnect;
 
       {%endregion  }
 
+      {%region }
+        for i := 1 to 34 do begin
+          n := 'TestText11a elseif ' + IntToStr(i);
+          ReCreateEditForTreeTest(TestText11a);
+          FTestTree.ValidateRange(i, 35, FOpenings);
+
+          n := 'TestText11a elseif ' + IntToStr(i);
+          ReCreateEditForTreeTest(TestText11a);
+          FTestTree.ValidateRange(i, i+1, FOpenings);
+
+          n := 'TestText11a elseif ' + IntToStr(i);
+          ReCreateEditForTreeTest(TestText11a);
+          FTestTree.ValidateRange(i, i+2, FOpenings);
+        end;
+
+        n := 'TestText11a elseif 12-30';
+        ReCreateEditForTreeTest(TestText11a);
+        FTestTree.ValidateRange(11, 30, FOpenings);
+        CheckNodes(n, 1, [ ExpN( 1,21, idnIfdef)]);
+        //CheckNodes(n, 2, [ ExpN( 1,21, idnIfdef)]);
+        CheckNodes(n, 11, [ ExpN( 3,11, idnEndIf,  EpIf(10,13), EpNil),
+                            ExpN(11,39, idnElseIf, EpElseIf(8, 3), EpElse(21,3))   ]);
+      {%endregion  }
+
+      {%region  issue 0025811 }
+
+        n := 'issue 0025811';
+        ReCreateEditForTreeTest(TestText12);
+        FTestTree.ValidateRange( 7, 10, FOpenings);
+        CheckNodes(n, 6, [ ExpN( 13,21, idnSkipTest), ExpN(22,30, idnSkipTest),
+                           ExpN(31, 48, idnIfdef, EpNil, EpEnd(7, 13)) ]);
+        CheckNodes(n, 7, [ ExpN( 13,21, idnEndIf, EpIf(6, 31), EpNil) ]);
+
+        ReCreateEditForTreeTest(TestText12);
+        FTestTree.ValidateRange( 5, 10, FOpenings);
+        CheckNodes(n, 5, [ ExpN( 6,19, idnIfdef, EpNil, EpEnd(6,22)),
+                           ExpN(20,40, idnIfdef, EpNil, EpEnd(6,13)) ]);
+        CheckNodes(n, 6, [ ExpN(13,21, idnEndIf, EpIf(5,20), EpNil),
+                           ExpN(22,30, idnEndIf, EpIf(5, 6), EpNil),
+                           ExpN(31, 48, idnIfdef, EpNil, EpEnd(7, 13)) ]);
+        CheckNodes(n, 7, [ ExpN( 13,21, idnEndIf, EpIf(6, 31), EpNil) ]);
+
+        ReCreateEditForTreeTest(TestText12);
+        FTestTree.ValidateRange( 6, 10, FOpenings);
+        CheckNodes(n, 5, [ ExpN( 6,19, idnIfdef, EpNil, EpEnd(6,22)),
+                           ExpN(20,40, idnIfdef, EpNil, EpEnd(6,13)) ]);
+        CheckNodes(n, 6, [ ExpN(13,21, idnEndIf, EpIf(5,20), EpNil),
+                           ExpN(22,30, idnEndIf, EpIf(5, 6), EpNil),
+                           ExpN(31, 48, idnIfdef, EpNil, EpEnd(7, 13)) ]);
+        CheckNodes(n, 7, [ ExpN( 13,21, idnEndIf, EpIf(6, 31), EpNil) ]);
+
+        ReCreateEditForTreeTest(TestText12);
+        FTestTree.ValidateRange( 8, 10, FOpenings);
+
+      {%endregion   }
+
 
 
     FTestTree.DiscardOpeningList(FOpenings);
@@ -2059,7 +2194,7 @@ begin
   else
     Result := TSynMarkupIfdefNodeState(StrToIntDef(v, 0));
 
-  DebugLn('# TesTNodeStateHandler ', n, ' # ', v, ' ', dbgs(Result));
+  //DebugLn('# TesTNodeStateHandler ', n, ' # ', v, ' ', dbgs(Result));
 end;
 
 procedure TTestMarkupIfDef.TestIfDefTreeNodeState;
@@ -2258,8 +2393,8 @@ FTestTree.DebugPrint(true);DebugLn('-----');
 
     //SynEdit.TextBetweenPoints[point( 7,3),point( 1,4)] := ''; // JOIN LINES
     SynEdit.TestTypeText(1, 4, #8, true);
-    
-    
+
+
     FTestTree.ValidateRange( 1, 16, FOpenings);
     FTestTree.SetNodeState( 2, 3, idnEnabled);
     //FTestTree.SetNodeState( 4, 3, idnDisabled);
@@ -2288,7 +2423,6 @@ DebugLn('----- disabled');FTestTree.DebugPrint(true);DebugLn('-----');
 
 
   {%endregion   }
-
 
 
 
