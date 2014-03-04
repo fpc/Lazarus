@@ -650,6 +650,7 @@ begin
     if not LazarusIDE.CallHandlerGetFPCFrontEndParams(Self,Result) then begin
       debugln(['WARNING: TBuildManager.GetFPCFrontEndOptions: LazarusIDE.CallHandlerGetFPCFrontEndParams failed Result="',Result,'"']);
     end;
+  Result:=UTF8Trim(Result);
 end;
 
 function TBuildManager.GetProjectPublishDir: string;
