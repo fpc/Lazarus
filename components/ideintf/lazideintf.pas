@@ -147,7 +147,9 @@ type
                                  AProject: TLazProject): TModalResult of object;
   TModalHandledFunction = function(Sender: TObject; var Handled: boolean
                               ): TModalResult of object;
-  TGetFPCFrontEndParams = function(Sender: TObject; var Params: string): boolean of object;
+  TGetFPCFrontEndParams = function(Sender: TObject;
+    var Params: string // these parameters are passed to fpc
+    ): boolean of object;
 
   TLazarusIDEHandlerType = (
     lihtSavingAll, // called before IDE saves everything
