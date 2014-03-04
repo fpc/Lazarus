@@ -833,11 +833,11 @@ begin
   FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
   CompilerFilename:=GetFPCompilerFilename;
   FPCOptions:='';
-  if Project1<>nil then
+  if FBuildTarget is TProject then
   begin
-    FPCOptions:=ExtractFPCFrontEndParameters(Project1.CompilerOptions.CustomOptions);
+    FPCOptions:=ExtractFPCFrontEndParameters(TProject(FBuildTarget).CompilerOptions.CustomOptions);
     if not GlobalMacroList.SubstituteStr(FPCOptions) then begin
-      debugln(['WARNING: TBuildManager.RescanCompilerDefines ignoring invalid macros in custom options for fpc frontend: "',ExtractFPCFrontEndParameters(Project1.CompilerOptions.CustomOptions),'"']);
+      debugln(['WARNING: TBuildManager.RescanCompilerDefines ignoring invalid macros in custom options for fpc frontend: "',ExtractFPCFrontEndParameters(TProject(FBuildTarget).CompilerOptions.CustomOptions),'"']);
       FPCOptions:='';
     end;
   end;
@@ -870,11 +870,11 @@ begin
   // then check the project's compiler
   if not IsFPCExecutable(CompilerFilename,FPCExecMsg) then begin
     Msg:='';
-    if (Project1<>nil)
-    and ([crCompile,crBuild]*Project1.CompilerOptions.CompileReasons<>[])
-    and (Project1.CompilerOptions.CompilerPath<>'')
+    if (FBuildTarget is TProject)
+    and ([crCompile,crBuild]*TProject(FBuildTarget).CompilerOptions.CompileReasons<>[])
+    and (TProject(FBuildTarget).CompilerOptions.CompilerPath<>'')
     then begin
-      CompilerFilename:=Project1.GetCompilerFilename;
+      CompilerFilename:=TProject(FBuildTarget).GetCompilerFilename;
       if not IsFPCExecutable(CompilerFilename,FPCExecMsg) then begin
         Msg+='Project''s compiler: "'+CompilerFilename+'": '+FPCExecMsg+#13;
       end;
