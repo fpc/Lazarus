@@ -60,6 +60,9 @@ type
     function GetArrayPos(pgSize: Integer): Integer;
     function DefaultPaperIndex: Integer;
     function DefaultPageSize: Integer;
+    {$IFDEF DbgPrinter}
+    procedure DumpPrinterInfo;
+    {$ENDIF}
     
     property PaperNames: TStringList read GetPaperNames;
     property Printer: TPrinter read FPrinter write SetPrinter;
@@ -663,7 +666,7 @@ begin
     if CompareText(aPaperName, Name)=0 then
     begin
       // perfect name match, no need to look anymore
-      {$ifdef DbgPrinter}DebugLn('i=%d Perfect Name Match %s',[i, Name]);{$Endif}
+      {$ifdef DbgPrinter_detail}DebugLn('i=%d Perfect Name Match %s',[i, Name]);{$Endif}
       BIndex := i;
       Break;
     end else
@@ -675,20 +678,20 @@ begin
       if (Cw=0) and (Ch=0) then
       begin
         // no need to look more, perfect match
-        {$ifdef DbgPrinter}DebugLn('i=%d Perfect Size Match w=%d h=%d "%s"->%s',[i,X,Y,aPaperName,Name]);{$Endif}
+        {$ifdef DbgPrinter_detail}DebugLn('i=%d Perfect Size Match w=%d h=%d "%s"->%s',[i,X,Y,aPaperName,Name]);{$Endif}
         BIndex := i;
         break;
       end else
       if (Cw<6) and (Ch<6) and (Cw<=BDeltaW) and (Cw<=BDeltaH) then
       begin
-        {$ifdef DbgPrinter}DebugLn('i=%d Close Size cw=%d ch=%d  "%s"->%s',[i,cw,ch,aPaperName,Name]);{$endif}
+        {$ifdef DbgPrinter_detail}DebugLn('i=%d Close Size cw=%d ch=%d  "%s"->%s',[i,cw,ch,aPaperName,Name]);{$endif}
         // we are interested only on differences with searched paper of
         // about 2 mm or less (1 mm is aprox 3 points)
         BIndex := i;
         BDeltaW := Cw;
         BDeltaH := CH;
       end
-      {$ifdef DbgPrinter}
+      {$ifdef DbgPrinter_detail}
       //else
       //  DebugLn('i=%d Missed cw=%d ch=%d %s',[i, cw, ch, Name])
       {$endif}
@@ -700,7 +703,7 @@ begin
   begin
     result := PPDPaperInfo[bIndex].Typ
   end
-  {$ifdef DbgPrinter}
+  {$ifdef DbgPrinter_detail}
   else
     DebugLn(['Matching Paper ',aPaperName,' failed'])
   {$endif}
@@ -723,6 +726,9 @@ begin
       fPaperNames.Assign(fPrinter.PaperSize.SupportedPapers);
       PaperSizesNum:=FPaperNames.Count;
     end;
+    {$ifdef DbgPrinter}
+    DebugLn(['Filling windows paper numbers for ', PaperSizesNum,' papers ....']);
+    {$endif}
     {$IFNDEF MSWINDOWS}
     // Under no windows platforms, there is no unique number that indentify
     // papers, so we have to fill here our own numbers, this should be based
@@ -753,7 +759,9 @@ begin
       PaperSizes[i] := PtrInt(FPaperNames.Objects[i]);
     {$ENDIF}
     
-    {$IFDEF DbgPrinter}
+    {$IFDEF DbgPrinter_detail}
+    DebugLn(['Dump printer List of papers:']);
+
     n := FPapernames.IndexOf(FPrinter.PaperSize.PaperName);
     if n<0 then
       // try to get the PaperIndex of the default paper
@@ -774,9 +782,11 @@ begin
         DbgOut(' ');
       DebugLn(' WinNum=%5d Paper=%s', [PaperSizes[i], FPaperNames[i]]);
     end;
-    DebugLn('PaperSize is %d',[PaperSize]);
     {$Endif}
-    
+    {$IFDEF DbgPrinter}
+    DebugLn('Current PaperSize is %d',[PaperSize]);
+    {$ENDIF}
+
     try
       // update paper size in std pt units
       PaperWidth := round(fPrinter.PaperSize.Width * 72 / fPrinter.XDPI);
@@ -796,13 +806,17 @@ end;
 procedure TfrPrinter.SetSettings;
 var
   i, n: Integer;
-  
+  {$ifdef DbgPrinter}
+  s: string;
+  {$endif}
 begin
   {$ifdef DbgPrinter}
+  WriteStr(s, Orientation);
   DebugLnEnter(['TfrPrinter.SetSettings INIT: PrinterIndex=',FPrinterIndex]);
   DebugLn(['PaperSize  =', PaperSize]);
   DebugLn(['PaperWidth =', PaperWidth]);
   DebugLn(['PaperHeight=', PaperHeight]);
+  DebugLn(['Orientation=', s]);
   {$Endif}
   // if selected printer is default printer, ie our virtual printer
   // then select our own set of papers
@@ -953,6 +967,10 @@ procedure TfrPrinter.FillPrnInfo(var p: TfrPrnInfo);
 var
   kx, ky: Double;
 begin
+  {$ifdef DbgPrinter}
+  DebugLnEnter(['TfrPrinter.FillPrnInfo INIT']);
+  {$endif}
+
   kx := 93 / 1.022;
   ky := 93 / 1.015;
   
@@ -1003,6 +1021,9 @@ begin
       {$ENDIF}
     end;
   end;
+  {$ifdef DbgPrinter}
+  DebugLnExit('TfrPrinter.FillPrnInfo END');
+  {$endif}
 end;
 
 function TfrPrinter.IsEqual(pgSize, pgWidth, pgHeight: Integer;
@@ -1018,12 +1039,25 @@ end;
 procedure TfrPrinter.SetPrinterInfo(pgSize, pgWidth, pgHeight: Integer;
   pgOr: TPrinterOrientation);
 begin
-  if IsEqual(pgSize, pgWidth, pgHeight, pgOr) then Exit;
+  {$ifdef DbgPrinter}
+  DebugLnEnter('TfrPrinter.SetPrinterInfo INIT pgSize=%d pgWidth=%d pgHeight=%d pgOr=%d',
+    [pgSize, pgWidth, pgHeight, ord(pgOr)]);
+  {$endif}
+  if IsEqual(pgSize, pgWidth, pgHeight, pgOr) then
+  begin
+    {$ifdef DbgPrinter}
+    DebugLnExit('TfrPrinter.SetPrinterInfo EXIT: same properties');
+    {$endif}
+    Exit;
+  end;
   PaperSize:=PgSize;
   PaperWidth:= pgWidth;
   PaperHeight:=pgHeight;
   Orientation:=pgOr;
   SetSettings;
+  {$ifdef DbgPrinter}
+  DebugLnExit('TfrPrinter.SetPrinterInfo END');
+  {$endif}
 end;
 
 function TfrPrinter.GetArrayPos(pgSize: Integer): Integer;
@@ -1060,8 +1094,29 @@ begin
     result := 9;
 end;
 
+{$IFDEF DbgPrinter}
+procedure TfrPrinter.DumpPrinterInfo;
+begin
+
+  DbgOut(['PrinterIndex=',FPrinterIndex]);
+  if (FPrinters<>nil)and(FPrinters.Count>0) then begin
+    if FPrinterIndex>=0 then
+      DbgOut([' (',FPrinters[FPrinterIndex],')'])
+  end else
+    DbgOut(' (no defined internal list of printers)');
+  DebugLn([' Is Default(Virtual) printer=',FPrinterIndex=FDefaultPrinter]);
+  if FPrinter=nil then
+    DebugLn('SysPrinter is nil')
+  else
+    DebugLn(['Sys Printer: Index = ', FPrinter.PrinterIndex,' Name=',FPrinter.PrinterName]);
+end;
+{$ENDIF}
+
 procedure TfrPrinter.SetPrinterIndex(Value: Integer);
 begin
+  {$IFDEF DbgPrinter}
+  DebugLnEnter(['TfrPrinter.SetPrinterIndex INIT: Value=',Value,' IsDefaultPrinter=',Value=FDefaultPrinter]);
+  {$ENDIF}
   FPrinterIndex := Value;
   if Value = FDefaultPrinter then
     SetSettings
@@ -1071,6 +1126,9 @@ begin
       FPrinter.PrinterIndex := Value;
       GetSettings;
     end;
+  {$IFDEF DbgPrinter}
+  DebugLnExit(['TfrPrinter.SetPrinterIndex DONE']);
+  {$ENDIF}
 end;
 
 function TfrPrinter.GetPaperNames: TStringList;
@@ -1106,6 +1164,10 @@ end;
 
 procedure TfrPrinter.SetPrinter(Value: TPrinter);
 begin
+  {$ifdef DbgPrinter}
+  DebugLnEnter('TfrPrinter.SetPrinter: INIT',[]);
+  DumpPrinterInfo;
+  {$endif}
   FPrinters.Clear;
   FPrinterIndex := 0;
   FPrinter:=Value;
@@ -1120,6 +1182,10 @@ begin
     FPrinters.Add(sDefaultPrinter);
     FDefaultPrinter := FPrinters.Count - 1;
   end;
+  {$ifdef DbgPrinter}
+  DumpPrinterInfo;
+  DebugLnExit('TfrPrinter.SetPrinter: DONE',[]);
+  {$endif}
 end;
 
 {

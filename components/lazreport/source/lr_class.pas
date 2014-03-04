@@ -6418,11 +6418,18 @@ const
 constructor TfrPage.Create(ASize, AWidth, AHeight: Integer;
   AOr: TPrinterOrientation);
 begin
+  {$ifdef DbgPrinter}
+  DebugLnEnter('TfrPage.Create INIT');
+  {$endif}
+
   Self.Create(nil);
   
   ChangePaper(ASize, AWidth, AHeight, AOr);
   PrintToPrevPage := False;
   UseMargins := True;
+  {$ifdef DbgPrinter}
+  DebugLnExit('TfrPage.Create END');
+  {$endif}
 end;
 
 constructor TfrPage.CreatePage;
@@ -6444,12 +6451,18 @@ end;
 procedure TfrPage.ChangePaper(ASize, AWidth, AHeight: Integer;
   AOr: TPrinterOrientation);
 begin
+  {$ifdef DbgPrinter}
+  DebugLnEnter('TfrPage.ChangePaper INIT');
+  {$endif}
   try
     Prn.SetPrinterInfo(ASize, AWidth, AHeight, AOr);
     Prn.FillPrnInfo(PrnInfo);
   except
     on E:exception do
     begin
+      {$ifdef DbgPrinter}
+      Debugln(['Exception: selecting custom paper ']);
+      {$endif}
       Prn.SetPrinterInfo($100, AWidth, AHeight, AOr);
       Prn.FillPrnInfo(PrnInfo);
     end;
@@ -6458,6 +6471,10 @@ begin
   Width := Prn.PaperWidth;
   Height := Prn.PaperHeight;
   Orientation:= Prn.Orientation;
+  {$ifdef DbgPrinter}
+  DebugLnExit('TfrPage.ChangePaper END pgSize=%d Width=%d Height=%d Orientation=%d',
+    [pgSize,Width,Height,ord(Orientation)]);
+  {$endif}
 end;
 
 procedure TfrPage.Clear;
@@ -8303,6 +8320,9 @@ var
   end;
 
 begin
+  {$ifdef DebugLR}
+  DebugLnEnter('TfrEMFPages.LoadFromStream: INIT',[]);
+  {$endif}
   Clear;
   compr := 0;
   AStream.Read(compr, 1);
@@ -8313,6 +8333,9 @@ begin
     Exit;
   end;
   AddPagesFromStream(AStream, false);
+  {$ifdef DebugLR}
+  DebugLnExit('TfrEMFPages.LoadFromStream: DONE',[]);
+  {$endif}
 end;
 
 procedure TfrEMFPages.AddPagesFromStream(AStream: TStream;
@@ -8324,6 +8347,9 @@ var
   s: TMemoryStream;
 
 begin
+  {$ifdef DebugLR}
+  DebugLnEnter('TfrEMFPages.AddPagesFromStream: INIT',[]);
+  {$endif}
   Compr := 0;
   if AReadHeader then begin
     AStream.Read(compr, 1);
@@ -8371,6 +8397,9 @@ begin
     AStream.Seek(o, soFromBeginning);
     Inc(i);
   until i >= c;
+  {$ifdef DebugLR}
+  DebugLnExit('TfrEMFPages.AddPagesFromStream: DONE',[]);
+  {$endif}
 end;
 
 procedure TfrEMFPages.LoadFromXML(XML: TLrXMLConfig; const Path: String);
@@ -10243,6 +10272,9 @@ var
 
   procedure PrintPage(n: Integer);
   begin
+    {$ifdef DebugLR}
+    DebugLnEnter('PrintPage: INIT ',[]);
+    {$endif}
     with Printer, EMFPages[n]^ do
     begin
       if not Prn.IsEqual(pgSize, pgWidth, pgHeight, pgOr) then
@@ -10271,6 +10303,9 @@ var
     InternalOnProgress(n + 1);
     Application.ProcessMessages;
     f := False;
+    {$ifdef DebugLR}
+    DebugLnExit('PrintPage: DONE',[]);
+    {$endif}
   end;
   {$IFDEF DebugLR}
   procedure DebugPrnInfo(msg: string);
@@ -10317,10 +10352,10 @@ var
   end;
 
 begin
-  {$IFDEF DebugLR}
-  DebugLn('DoPrintReport INIT');
+  {$ifdef DebugLR}
+  DebugLnEnter('TfrReport.DoPrintReport: INIT ',[]);
   DebugPrnInfo('=== INIT');
-  {$ENDIF}
+  {$endif}
   Prn.Printer := Printer;
   pgList := TStringList.Create;
 
@@ -10358,9 +10393,10 @@ begin
 
   Printer.EndDoc;
   pgList.Free;
-  {$IFDEF DebugLR}
+  {$ifdef DebugLR}
   DebugPrnInfo('=== END');
-  {$ENDIF}
+  DebugLnExit('TfrReport.DoPrintReport: DONE',[]);
+  {$endif}
 end;
 
 procedure TfrReport.SetComments(const AValue: TStringList);
@@ -10389,7 +10425,7 @@ begin
                             // own virtual default printer
   end;
   {$ifdef dbgPrinter}
-  DebugLnExit('TfrReport.SetPrinterTo DONE Printer="%s"',[Prn.Printer.PrinterName]);
+  DebugLnExit('TfrReport.SetPrinterTo DONE CurPrinter="%s"',[Prn.Printer.PrinterName]);
   {$endif}
 end;
 
@@ -11942,6 +11978,9 @@ procedure TfrPageReport.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 var
   Rc   : TRect;
 begin
+  {$ifdef DbgPrinter}
+  DebugLnEnter('TfrPageReport.LoadFromXML INIT');
+  {$endif}
   inherited LoadFromXML(XML, Path);
 
 
@@ -11959,6 +11998,9 @@ begin
   ColGap := XML.GetValue(Path+'ColGap/Value'{%H-}, 0);
   RestoreProperty('LayoutOrder',XML.GetValue(Path+'LayoutOrder/Value','loColumns'));
   ChangePaper(pgSize, Width, Height, Orientation);
+  {$ifdef DbgPrinter}
+  DebugLnExit('TfrPageReport.LoadFromXML END');
+  {$endif}
 end;
 
 procedure TfrPageReport.SavetoXML(XML: TLrXMLConfig; const Path: String);
