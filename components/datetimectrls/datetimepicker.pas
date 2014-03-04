@@ -372,7 +372,7 @@ type
     property AutoButtonSize: Boolean
              read FAutoButtonSize write SetAutoButtonSize default False;
     property AutoAdvance: Boolean
-             read FAutoAdvance write FAutoAdvance default False;
+             read FAutoAdvance write FAutoAdvance default True;
     property HideDateTimeParts: TDateTimeParts
              read FHideDateTimeParts write SetHideDateTimeParts;
     property CalendarWrapperClass: TCalendarControlWrapperClass
@@ -3678,7 +3678,7 @@ begin
   FDoNotArrangeControls := True;
   FCascade := False;
   FAutoButtonSize := False;
-  FAutoAdvance := False;
+  FAutoAdvance := True;
   FCalendarWrapperClass := nil;
   FEffectiveHideDateTimeParts := [];
 
