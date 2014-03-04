@@ -881,7 +881,6 @@ procedure TCustomDateTimePicker.SetKind(const AValue: TDateTimeKind);
 begin
   if FKind <> AValue then begin
     FKind := AValue;
-    UpdateShowArrowButton(FDateMode, AValue);
     AdjustEffectiveHideDateTimeParts;
   end;
 end;
@@ -1767,6 +1766,7 @@ begin
       MoveSelectionLR(False);
 
     FRecalculatingTextSizesNeeded := True;
+    UpdateShowArrowButton(FDateMode, FKind);
     UpdateDate;
   end;
 end;
@@ -3549,7 +3549,8 @@ begin
     DestroyUpDown;
 
   end else begin
-    ReallyShowArrowButton := (NewDateMode = dmComboBox) and (NewKind <> dtkTime);
+    ReallyShowArrowButton := (NewDateMode = dmComboBox) and
+                          not (dtpDay in FEffectiveHideDateTimeParts);
 
     if (ReallyShowArrowButton <> Assigned(FArrowButton)) or
                        (Assigned(FArrowButton) = Assigned(FUpDown)) then begin
