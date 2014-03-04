@@ -1854,6 +1854,7 @@ var
   i, j, OtherDepth: Integer;
   OtherLine: TSynMarkupHighIfDefLinesNodeInfo;
   PeerChanged: Boolean;
+  CurEntry: TSynMarkupHighIfDefEntry;
 
   function OpenIdx(AIdx: Integer): Integer; // correct negative idx
   begin
@@ -1876,10 +1877,11 @@ begin
   SetLength(PeerList, MaxListIdx);
 
   for i := 0 to ANode.EntryCount - 1 do begin
-    case ANode.Entry[i].NodeType of
+    CurEntry := ANode.Entry[i];
+    case CurEntry.NodeType of
       idnIfdef: begin
           inc(CurDepth);
-          OpenList[OpenIdx(CurDepth)] := ANode.Entry[i]; // Store IfDef, with Index at end of IfDef (inside block)
+          OpenList[OpenIdx(CurDepth)] := CurEntry; // Store IfDef, with Index at end of IfDef (inside block)
           if CurDepth < MinOpenDepth then MinOpenDepth := CurDepth;
           if CurDepth > MaxOpenDepth then MaxOpenDepth := CurDepth;
         end;
@@ -1893,9 +1895,9 @@ begin
             assert(CurDepth = MaxOpenDepth, 'ConnectPeers: Same line peer skips opening node(s)');
             case OpenList[OpenIdx(CurDepth)].NodeType of
               idnIfdef, idnElseIf:
-                if OpenList[OpenIdx(CurDepth)].ClosingPeer <> ANode.Entry[i] then begin
+                if OpenList[OpenIdx(CurDepth)].ClosingPeer <> CurEntry then begin
                   //Debugln(['New Peer for ',dbgs(OpenList[OpenIdx(CurDepth)].NodeType), ' to else same line']);
-                  OpenList[OpenIdx(CurDepth)].ClosingPeer := ANode.Entry[i];
+                  OpenList[OpenIdx(CurDepth)].ClosingPeer := CurEntry;
                   PeerChanged := True;
                   //dec(MaxOpenDepth); // Will be set with the current entry
                 end;
@@ -1905,13 +1907,13 @@ begin
           else
           If CurDepth >= 0 then begin
             // Opening Node in previous line
-            PeerList[CurDepth] := ANode.Entry[i];
+            PeerList[CurDepth] := CurEntry;
             assert((MaxPeerDepth=-1) or ((MinPeerDepth <= MaxPeerDepth) and (CurDepth = MinPeerDepth-1)), 'ConnectPeers: skipped noeds during line scan');
             if CurDepth < MinPeerDepth then MinPeerDepth := CurDepth;
             if CurDepth > MaxPeerDepth then MaxPeerDepth := CurDepth;
           end;
 
-          OpenList[OpenIdx(CurDepth)] := ANode.Entry[i]; // Store IfDef, with Index at end of IfDef (inside block)
+          OpenList[OpenIdx(CurDepth)] := CurEntry; // Store IfDef, with Index at end of IfDef (inside block)
           if CurDepth < MinOpenDepth then MinOpenDepth := CurDepth;
           if CurDepth > MaxOpenDepth then MaxOpenDepth := CurDepth;
         end;
@@ -1925,16 +1927,16 @@ begin
           if (CurDepth >= MinOpenDepth) and (CurDepth <= MaxOpenDepth) then begin
             // Opening Node on this line
             assert(CurDepth = MaxOpenDepth, 'ConnectPeers: Same line peer skips opening node(s)');
-            if OpenList[OpenIdx(CurDepth)].ClosingPeer <> ANode.Entry[i] then begin
+            if OpenList[OpenIdx(CurDepth)].ClosingPeer <> CurEntry then begin
               //Debugln(['New Peer for ',dbgs(OpenList[OpenIdx(CurDepth)].NodeType), ' to endif same line']);
-              OpenList[OpenIdx(CurDepth)].ClosingPeer := ANode.Entry[i];
+              OpenList[OpenIdx(CurDepth)].ClosingPeer := CurEntry;
               PeerChanged := True;
             end;
             dec(MaxOpenDepth);
           end
           else begin
             // Opening Node in previous line
-            PeerList[CurDepth] := ANode.Entry[i];
+            PeerList[CurDepth] := CurEntry;
             assert((MaxPeerDepth=-1) or ((MinPeerDepth <= MaxPeerDepth) and (CurDepth = MinPeerDepth-1)), 'ConnectPeers: skipped noeds during line scan');
             if CurDepth < MinPeerDepth then MinPeerDepth := CurDepth;
             if CurDepth > MaxPeerDepth then MaxPeerDepth := CurDepth;
@@ -1957,18 +1959,22 @@ begin
     //end;
 
     assert(not (PeerList[i].NodeType in [idnIfdef, idnCommentedNode]), 'multi-line peer valid');
-    //if (PeerList[i].NodeType = idnElse) and (AOuterLines <> nil) then begin
+
+    // AOuterLines is only set while scanning opening lines in front of the 1st visible screenline
+    //   (at the start of ValidateRange)
     if (AOuterLines <> nil) then begin
-    // todo: find multiply elseif
-      assert((PeerList[i].NodeType in [idnElse, idnElseIf]), 'multi-line (opening) peer valid');
-      // scanning outer lines
-      j := ToPos(AOuterLines.NodeLineEx[i-1, 1]);
-      if j < 0 then begin
-        //debugln(['Skipping peer for ELSE with NO IFDEF at depth ', i-1, ' before line ', ANode.StartLine]);
-        continue;
-      end;
-      OtherLine := GetOrInsertNodeAtLine(j);
-      MaybeValidateNode(OtherLine);
+      if PeerList[i].NodeType in [idnElse, idnElseIf] then begin
+        // todo: find multiply elseif
+        j := ToPos(AOuterLines.NodeLineEx[i-1, 1]);
+        if j < 0 then begin
+          //debugln(['Skipping peer for ELSE with NO IFDEF at depth ', i-1, ' before line ', ANode.StartLine]);
+          continue;
+        end;
+        OtherLine := GetOrInsertNodeAtLine(j);
+        MaybeValidateNode(OtherLine);
+      end
+      else
+        continue; // while scanning outerlines, any EndIf can be ignored
     end
     else
       OtherLine := ANestList.Node[i]; // Todo: keep if same al last loop, and continue at OtherDepth / j
