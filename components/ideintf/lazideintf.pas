@@ -148,7 +148,8 @@ type
   TModalHandledFunction = function(Sender: TObject; var Handled: boolean
                               ): TModalResult of object;
   TGetFPCFrontEndParams = function(Sender: TObject;
-    var Params: string // these parameters are passed to fpc
+    var Params: string // these parameters are passed to fpc.
+      // Global options should be prependended, project options should be appended.
     ): boolean of object;
 
   TLazarusIDEHandlerType = (
