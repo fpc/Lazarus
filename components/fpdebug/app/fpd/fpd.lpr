@@ -38,15 +38,17 @@ program fpd;
 {$APPTYPE CONSOLE}
 uses
   SysUtils,
+{$ifdef windows}
   Windows,
+{$endif}
   FPDCommand,
   FPDGlobal,
   FPDLoop,
   FPDPEImage,
   FPDType,
-  FpDbgClasses, FpDbgWinExtra, FpDbgPETypes, FpDbgDwarfConst, FpDbgDwarf,
-  FpDbgWinClasses;
+  FpDbgClasses, FpDbgPETypes, FpDbgDwarfConst, FpDbgDwarf;
 
+{$ifdef windows}
 function CtrlCHandler(CtrlType: Cardinal): BOOL; stdcall;
 begin
   Result := False;
@@ -66,6 +68,7 @@ begin
     end;
   end;
 end;
+{$endif}
 
 var
   S, Last: String;
@@ -81,7 +84,9 @@ begin
     WriteLN('Using file: ', GFileName);
   end;
 
+{$ifdef windows}
   SetConsoleCtrlHandler(@CtrlCHandler, True);
+{$endif}
   repeat
     Write('FPD>');
     ReadLn(S);
@@ -90,6 +95,8 @@ begin
     if Last = '' then Continue;
     HandleCommand(Last);
   until GState = dsQuit;
+{$ifdef windows}
   SetConsoleCtrlHandler(@CtrlCHandler, False);
+{$endif}
 end.
 
