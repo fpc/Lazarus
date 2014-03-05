@@ -10356,6 +10356,8 @@ begin
   DebugLnEnter('TfrReport.DoPrintReport: INIT ',[]);
   DebugPrnInfo('=== INIT');
   {$endif}
+  if Prn.UseVirtualPrinter then
+    ChangePrinter(Prn.PrinterIndex, Printer.PrinterIndex);
   Prn.Printer := Printer;
   pgList := TStringList.Create;
 
