@@ -799,7 +799,8 @@ begin
       Result:=CodeNode.DescAsString;
     end;
   except
-    on E: ECodeToolError do ; // ignore syntax errors
+    on E: ECodeToolError do
+      Result:=''; // ignore syntax errors
   end;
 end;
 
@@ -2580,31 +2581,36 @@ var
   CurName: String;
 begin
   Result:='';
-  while CodeNode<>nil do begin
-    CurName:='';
-    case CodeNode.Desc of
+  try
+    while CodeNode<>nil do begin
+      CurName:='';
+      case CodeNode.Desc of
 
-    ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
-      CurName:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
+      ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
+        CurName:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
 
-    ctnGenericType:
-      CurName:=ACodeTool.ExtractDefinitionName(CodeNode);
+      ctnGenericType:
+        CurName:=ACodeTool.ExtractDefinitionName(CodeNode);
 
-    ctnEnumIdentifier:
-      CurName:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
+      ctnEnumIdentifier:
+        CurName:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
 
-    ctnProcedure:
-      CurName:=ACodeTool.ExtractProcName(CodeNode,[]);
+      ctnProcedure:
+        CurName:=ACodeTool.ExtractProcName(CodeNode,[]);
 
-    ctnProperty:
-      CurName:=ACodeTool.ExtractPropName(CodeNode,false); // property keyword is not needed because there are icons
+      ctnProperty:
+        CurName:=ACodeTool.ExtractPropName(CodeNode,false); // property keyword is not needed because there are icons
 
+      end;
+      if CurName<>'' then begin
+        if Result<>'' then Result:='.'+Result;
+        Result:=CurName+Result;
+      end;
+      CodeNode:=CodeNode.Parent;
     end;
-    if CurName<>'' then begin
-      if Result<>'' then Result:='.'+Result;
-      Result:=CurName+Result;
-    end;
-    CodeNode:=CodeNode.Parent;
+  except
+    on E: ECodeToolError do
+      Result:=''; // ignore syntax errors
   end;
 end;
 
