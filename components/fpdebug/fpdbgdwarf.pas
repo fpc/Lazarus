@@ -879,7 +879,7 @@ type
   protected
     function InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression;
                                 AValueObj: TFpDbgDwarfValue;
-                                {%H-}AnObjectDataAddress: TFpDbgMemLocation = 0): Boolean; virtual;
+                                {%H-}AnObjectDataAddress: TFpDbgMemLocation): Boolean; virtual;
     function  LocationFromTag(ATag: Cardinal; AValueObj: TFpDbgDwarfValue;
                               out AnAddress: TFpDbgMemLocation;
                               AnObjectDataAddress: TFpDbgMemLocation;
@@ -940,7 +940,7 @@ type
     function GetValueObject: TFpDbgValue; override;
     function InitLocationParser(const ALocationParser: TDwarfLocationExpression;
                                 AValueObj: TFpDbgDwarfValue;
-                                AnObjectDataAddress: TFpDbgMemLocation = 0): Boolean; override;
+                                AnObjectDataAddress: TFpDbgMemLocation): Boolean; override;
   end;
 
   { TDbgDwarfTypeIdentifier }
@@ -1195,7 +1195,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     function InitLocationParser(const ALocationParser: TDwarfLocationExpression;
                                 AValueObj: TFpDbgDwarfValue;
-                                AnObjectDataAddress: TFpDbgMemLocation = 0): Boolean; override;
+                                AnObjectDataAddress: TFpDbgMemLocation): Boolean; override;
     function GetValueAddress(AValueObj: TFpDbgDwarfValue; out AnAddress: TFpDbgMemLocation): Boolean; override;
     function HasAddress: Boolean; override;
   end;
@@ -1222,7 +1222,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
     function InitLocationParser(const ALocationParser: TDwarfLocationExpression;
                                 AValueObj: TFpDbgDwarfValue;
-                                AnObjectDataAddress: TFpDbgMemLocation = 0): Boolean; override;
+                                AnObjectDataAddress: TFpDbgMemLocation): Boolean; override;
     function GetDataAddress(AValueObj: TFpDbgDwarfValue; var AnAddress: TFpDbgMemLocation;
                             ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean; override;
   public
