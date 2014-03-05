@@ -3081,13 +3081,17 @@ begin
     // Note: if you implement param lists for other than ctnProcedure, check
     //       CompareParamList
     ANode:=Node;
+    FParamTypeList:='';
     if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
-      FParamTypeList:=Tool.ExtractProcHead(ANode,
-         [phpWithoutClassKeyword,phpWithoutClassName,
-          phpWithoutName,phpInUpperCase]);
-      //debugln('TIdentifierListItem.GetParamTypeList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(CurNode.StartPos));
-    end else
-      FParamTypeList:='';
+      try
+        FParamTypeList:=Tool.ExtractProcHead(ANode,
+           [phpWithoutClassKeyword,phpWithoutClassName,
+            phpWithoutName,phpInUpperCase]);
+        //debugln('TIdentifierListItem.GetParamTypeList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(CurNode.StartPos));
+      except
+        on E: ECodeToolError do ; // ignore syntax errors
+      end;
+    end;
     Include(Flags,iliParamTypeListValid);
   end;
   Result:=FParamTypeList;
@@ -3101,13 +3105,17 @@ begin
     // Note: if you implement param lists for other than ctnProcedure, check
     //       CompareParamList
     ANode:=Node;
+    FParamNameList:='';
     if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
-      FParamNameList:=Tool.ExtractProcHead(ANode,
-         [phpWithoutClassKeyword,phpWithoutClassName,
-          phpWithoutName,phpInUpperCase,phpWithParameterNames]);
-      //debugln('TIdentifierListItem.GetParamNameList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(CurNode.StartPos));
-    end else
-      FParamNameList:='';
+      try
+        FParamNameList:=Tool.ExtractProcHead(ANode,
+           [phpWithoutClassKeyword,phpWithoutClassName,
+            phpWithoutName,phpInUpperCase,phpWithParameterNames]);
+        //debugln('TIdentifierListItem.GetParamNameList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(CurNode.StartPos));
+      except
+        on E: ECodeToolError do ; // ignore syntax errors
+      end;
+    end;
     Include(Flags,iliParamNameListValid);
   end;
   Result:=FParamNameList;
