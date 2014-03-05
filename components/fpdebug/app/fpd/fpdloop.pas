@@ -48,12 +48,8 @@ implementation
 uses
   FPDGlobal, FPDPEImage, FPDType;
 
-var
-  MDebugEvent: TDebugEvent;
-
 procedure HandleCreateProcess(const AEvent: TDebugEvent);
 var
-  Proc: TDbgProcess;
   S: String;
 begin
   WriteLN(Format('hFile: 0x%x', [AEvent.CreateProcessInfo.hFile]));
@@ -66,15 +62,14 @@ begin
   if AEvent.CreateProcessInfo.lpBaseOfImage <> nil
   then DumpPEImage(AEvent.CreateProcessInfo.hProcess, TDbgPtr(AEvent.CreateProcessInfo.lpBaseOfImage));
 
-  if GMainProcess = nil
-  then S := GFileName;
-  Proc := TDbgWinProcess.Create(S, AEvent.dwProcessId, AEvent.dwThreadId, AEvent.CreateProcessInfo);
-  if GMainProcess = nil
-  then GMainProcess := Proc;
-  GProcessMap.Add(AEvent.dwProcessId, Proc);
+  if not assigned(GCurrentProcess) then
+    GCurrentProcess := GMainProcess;
+
+  (GCurrentProcess as TDbgWinProcess).StartProcess(GFileName, AEvent.CreateProcessInfo);
+
+  GProcessMap.Add(AEvent.dwProcessId, GCurrentProcess);
   if GBreakOnLibraryLoad
   then GState := dsPause;
-  GCurrentProcess := proc;
 end;
 
 procedure HandleCreateThread(const AEvent: TDebugEvent);
@@ -462,29 +457,29 @@ procedure DebugLoop;
     S.Free;
   end;
 
+var
+  AFirstLoop: boolean;
+
 begin
   repeat
-    if (GCurrentProcess <> nil) and (GState = dsPause)
+    if (GState in [dsStop, dsPause, dsEvent])
     then begin
-      (GCurrentProcess as TDbgWinProcess).ContinueDebugEvent(GCurrentThread, MDebugEvent);
-    end;
-
-    if GState in [dsStop, dsPause, dsEvent]
-    then begin
-      case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
-       EXCEPTION_BREAKPOINT,
-       EXCEPTION_SINGLE_STEP: ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
-      else
-        ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
-      end;
+      GCurrentProcess.Continue(GCurrentProcess, GCurrentThread, GState);
       GState := dsRun;
     end;
 
     if not WaitForDebugEvent(MDebugEvent, 10) then Continue;
 
+    if assigned(GCurrentProcess) and not assigned(GMainProcess) then
+      begin
+      GMainProcess:=GCurrentProcess;
+      AFirstLoop:=true;
+      end
+    else
+      AFirstLoop:=false;
     GCurrentProcess := nil;
     GCurrentThread := nil;
-    if not GetProcess(MDebugEvent.dwProcessId, GCurrentPRocess) and (GMainProcess <> nil) then Continue;
+    if not GetProcess(MDebugEvent.dwProcessId, GCurrentPRocess) and not AFirstLoop then Continue;
 
     GState := dsEvent;
     if GCurrentProcess <> nil

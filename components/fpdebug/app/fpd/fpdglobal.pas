@@ -39,7 +39,6 @@ uses
   SysUtils, FPDType, Maps, FpDbgUtil, FpDbgClasses, FpDbgWinExtra;
 
 type
-  TFPDState = (dsStop, dsRun, dsPause, dsQuit, dsEvent);
   TFPDMode = (dm32, dm64);
   TFPDImageInfo = (iiNone, iiName, iiDetail);
   

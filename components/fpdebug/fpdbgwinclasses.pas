@@ -80,7 +80,6 @@ type
     function GetHandle: THandle; override;
     function InitializeLoader: TDbgImageLoader; override;
   public
-    constructor Create(const ADefaultName: String; const AProcessID, AThreadID: Integer; const AInfo: TCreateProcessDebugInfo);
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
@@ -92,9 +91,26 @@ type
     procedure ContinueDebugEvent(const AThread: TDbgThread; const ADebugEvent: TDebugEvent);
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
+    class function StartInstance(AFileName: string; AParams: string): TDbgProcess; override;
+    function Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean; override;
+    procedure StartProcess(const ADefaultName: String; const AInfo: TCreateProcessDebugInfo);
+
+    function AddrOffset: Int64; override;
     function  AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
     procedure AddThread(const AID: Integer; const AInfo: TCreateThreadDebugInfo);
     procedure RemoveLib(const AInfo: TUnloadDLLDebugInfo);
+  end;
+
+  { tDbgWinLibrary }
+
+  tDbgWinLibrary = class(TDbgLibrary)
+  private
+    FInfo: TLoadDLLDebugInfo;
+  protected
+    function InitializeLoader: TDbgImageLoader; override;
+  public
+    constructor Create(const AProcess: TDbgProcess; const ADefaultName: String;
+      const AModuleHandle: THandle; const ABaseAddr: TDbgPtr; AInfo: TLoadDLLDebugInfo);
   end;
 
 
@@ -112,6 +128,52 @@ end;
 procedure LogLastError;
 begin
   DebugLn('FpDbg-ERROR: ', GetLastErrorText);
+end;
+
+{ tDbgWinLibrary }
+
+function tDbgWinLibrary.InitializeLoader: TDbgImageLoader;
+begin
+  result := TDbgImageLoader.Create(FInfo.hFile);
+end;
+
+constructor tDbgWinLibrary.Create(const AProcess: TDbgProcess;
+  const ADefaultName: String; const AModuleHandle: THandle;
+  const ABaseAddr: TDbgPtr; AInfo: TLoadDLLDebugInfo);
+var
+  NamePtr: TDbgPtr;
+  S: String;
+  W: WideString;
+begin
+  inherited Create(AProcess, ADefaultName, AModuleHandle, ABaseAddr);
+  FInfo := AInfo;
+
+  W := '';
+  if Process.ReadOrdinal(TDbgPtr(FInfo.lpImageName), NamePtr)
+  then begin
+    if FInfo.fUnicode<>0
+    then begin
+      Process.ReadWString(NamePtr, MAX_PATH, W);
+    end
+    else begin
+      if Process.ReadString(NamePtr, MAX_PATH, S)
+      then W := S;
+    end;
+  end;
+
+  if W = ''
+  then begin
+    W := GetModuleFileName(AModuleHandle);
+  end;
+
+  if W = ''
+  then W := ADefaultName;
+
+  SetName(W);
+  LoadInfo;
+
+
+
 end;
 
 { TDbgWinProcess }
@@ -139,14 +201,7 @@ end;
 
 function TDbgWinProcess.InitializeLoader: TDbgImageLoader;
 begin
-  result := TDbgImageLoader.Create(ModuleHandle);
-end;
-
-constructor TDbgWinProcess.Create(const ADefaultName: String; const AProcessID, AThreadID: Integer; const AInfo: TCreateProcessDebugInfo);
-begin
-  FInfo := AInfo;
-  inherited Create(ADefaultName, AProcessID, AThreadID, AInfo.hFile, TDbgPtr(AInfo.lpBaseOfImage), TDbgPtr(AInfo.lpImageName), AInfo.fUnicode <> 0);
-  FMainThread := OSDbgClasses.DbgThreadClass.Create(Self, AThreadID, AInfo.hThread, AInfo.lpThreadLocalBase, AInfo.lpStartAddress);
+  result := TDbgImageLoader.Create(FInfo.hFile);
 end;
 
 destructor TDbgWinProcess.Destroy;
@@ -352,11 +407,97 @@ begin
   end;
 end;
 
+class function TDbgWinProcess.StartInstance(AFileName: string; AParams: string): TDbgProcess;
+var
+  StartupInfo: TStartupInfo;
+  ProcessInformation: TProcessInformation;
+  ThreadAttributes: TSecurityAttributes;
+begin
+  ZeroMemory(@StartUpInfo, SizeOf(StartupInfo));
+  StartUpInfo.cb := SizeOf(StartupInfo);
+  StartUpInfo.dwFlags := {STARTF_USESTDHANDLES or} STARTF_USESHOWWINDOW;
+  StartUpInfo.wShowWindow := SW_SHOWNORMAL or SW_SHOW;
+
+//  ZeroMemory(@ThreadAttributes, SizeOf(ThreadAttributes));
+//  ThreadAttributes.nLength := SizeOf(ThreadAttributes);
+//  ThreadAttributes.lpSecurityDescriptor
+
+  ZeroMemory(@ProcessInformation, SizeOf(ProcessInformation));
+  if CreateProcess(nil, PChar(AFileName), nil, nil, True, DETACHED_PROCESS or DEBUG_PROCESS or CREATE_NEW_PROCESS_GROUP, nil, nil, StartUpInfo, ProcessInformation)
+  then begin
+    result := TDbgWinProcess.Create(ProcessInformation.dwProcessId,ProcessInformation.dwThreadId);
+  end else begin
+    WriteLN('Create process failed: ', GetLastErrorText);
+    result := nil;
+  end;
+end;
+
+
+function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean;
+begin
+  if (AState = dsPause)
+  then begin
+    TDbgWinProcess(AProcess).ContinueDebugEvent(AThread, MDebugEvent);
+  end;
+
+  case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
+   EXCEPTION_BREAKPOINT,
+   EXCEPTION_SINGLE_STEP: Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
+  else
+    Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
+  end;
+  result := true;
+end;
+
+procedure TDbgWinProcess.StartProcess(const ADefaultName: String; const AInfo: TCreateProcessDebugInfo);
+var
+  NamePtr: TDbgPtr;
+  S: String;
+  W: WideString;
+begin
+  FInfo := AInfo;
+
+  W := '';
+  if Process.ReadOrdinal(TDbgPtr(AInfo.lpImageName), NamePtr)
+  then begin
+    if AInfo.fUnicode <> 0
+    then begin
+      Process.ReadWString(NamePtr, MAX_PATH, W);
+    end
+    else begin
+      if Process.ReadString(NamePtr, MAX_PATH, S)
+      then W := S;
+    end;
+  end;
+
+  if W = ''
+  then begin
+    W := GetModuleFileName(AInfo.hFile);
+  end;
+
+  if W = ''
+  then W := ADefaultName;
+
+  SetName(W);
+
+  LoadInfo;
+
+  if DbgInfo.HasInfo
+  then FSymInstances.Add(Self);
+
+  FMainThread := OSDbgClasses.DbgThreadClass.Create(Self, ThreadID, AInfo.hThread, AInfo.lpThreadLocalBase, AInfo.lpStartAddress);
+end;
+
+function TDbgWinProcess.AddrOffset: Int64;
+begin
+  Result:=inherited AddrOffset - TDbgPtr(FInfo.lpBaseOfImage);
+end;
+
 function TDbgWinProcess.AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
 var
   ID: TDbgPtr;
 begin
-  Result := TDbgLibrary.Create(Self, HexValue(AInfo.lpBaseOfDll, SizeOf(Pointer), [hvfIncludeHexchar]), AInfo.hFile, TDbgPtr(AInfo.lpBaseOfDll), TDbgPtr(AInfo.lpImageName), AInfo.fUnicode <> 0);
+  Result := TDbgWinLibrary.Create(Self, HexValue(AInfo.lpBaseOfDll, SizeOf(Pointer), [hvfIncludeHexchar]), AInfo.hFile, TDbgPtr(AInfo.lpBaseOfDll), AInfo);
   ID := TDbgPtr(AInfo.lpBaseOfDll);
   FLibMap.Add(ID, Result);
   if Result.DbgInfo.HasInfo

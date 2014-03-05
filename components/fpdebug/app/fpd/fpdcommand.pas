@@ -141,10 +141,6 @@ end;
 
 
 procedure HandleRun(AParams: String);
-var
-  StartupInfo: TStartupInfo;
-  ProcessInformation: TProcessInformation;
-  ThreadAttributes: TSecurityAttributes;
 begin
   if GState <> dsStop
   then begin
@@ -158,26 +154,14 @@ begin
     Exit;
   end;
 
-  ZeroMemory(@StartUpInfo, SizeOf(StartupInfo));
-  StartUpInfo.cb := SizeOf(StartupInfo);
-  StartUpInfo.dwFlags := {STARTF_USESTDHANDLES or} STARTF_USESHOWWINDOW;
-  StartUpInfo.wShowWindow := SW_SHOWNORMAL or SW_SHOW;
+  GCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(GFileName, AParams);
+  if assigned(GCurrentProcess) then
+    begin
+    WriteLN('Got PID:', GCurrentProcess.Handle, ', TID: ', GCurrentProcess.Handle);
 
-//  ZeroMemory(@ThreadAttributes, SizeOf(ThreadAttributes));
-//  ThreadAttributes.nLength := SizeOf(ThreadAttributes);
-//  ThreadAttributes.lpSecurityDescriptor
-
-  ZeroMemory(@ProcessInformation, SizeOf(ProcessInformation));
-  if not CreateProcess(nil, PChar(GFileName), nil, nil, True, DETACHED_PROCESS or DEBUG_PROCESS or CREATE_NEW_PROCESS_GROUP, nil, nil, StartUpInfo, ProcessInformation)
-  then begin
-    WriteLN('Create process failed: ', GetLastErrorText);
-    Exit;
-  end;
-
-  WriteLN('Got PID:', ProcessInformation.dwProcessId, ', TID: ',ProcessInformation.dwThreadId);
-
-  GState := dsRun;
-  DebugLoop;
+    GState := dsRun;
+    DebugLoop;
+    end;
 end;
 
 procedure HandleBreak(AParams: String);

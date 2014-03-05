@@ -41,6 +41,8 @@ uses
   FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses, DbgIntfBaseTypes;
 
 type
+  TFPDState = (dsStop, dsRun, dsPause, dsQuit, dsEvent);
+
   TDbgProcess = class;
 
   TDbgThread = class(TObject)
@@ -86,39 +88,39 @@ type
   private
     FName: String;
     FProcess: TDbgProcess;
-    FModuleHandle: THandle;
-    FBaseAddr: TDbgPtr;
     FBreakList: TList;
     FDbgInfo: TDbgInfo;
     FLoader: TDbgImageLoader;
 
-    procedure LoadInfo; virtual;
-    procedure CheckName;
-    procedure SetName(const AValue: String);
   protected
+    procedure LoadInfo; virtual;
     function InitializeLoader: TDbgImageLoader; virtual;
     function GetModuleFileName(AModuleHandle: THandle): string; virtual;
+    procedure SetName(const AValue: String);
   public
-    constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: Boolean); virtual;
+    constructor Create(const AProcess: TDbgProcess); virtual;
     destructor Destroy; override;
 
     function AddBreak(const AFileName: String; ALine: Cardinal): TDbgBreakpoint;
-    function AddrOffset: Int64;  // gives the offset between  the loaded addresses and the compiled addresses
+    function AddrOffset: Int64; virtual;  // gives the offset between  the loaded addresses and the compiled addresses
     function FindSymbol(AAdress: TDbgPtr): TFpDbgSymbol;
     function RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;
 
     property Process: TDbgProcess read FProcess;
-    property ModuleHandle: THandle read FModuleHandle;
-    property BaseAddr: TDbgPtr read FBaseAddr;
     property DbgInfo: TDbgInfo read FDbgInfo;
   end;
 
   { TDbgLibrary }
 
   TDbgLibrary = class(TDbgInstance)
+  private
+    FModuleHandle: THandle;
+    FBaseAddr: TDBGPtr;
   public
-    constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: Boolean);
+    constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr: TDbgPtr);
     property Name: String read FName;
+    property ModuleHandle: THandle read FModuleHandle;
+    property BaseAddr: TDBGPtr read FBaseAddr;
   end;
 
   { TDbgProcess }
@@ -128,7 +130,6 @@ type
     FProcessID: Integer;
     FThreadID: Integer;
 
-    procedure SetName(const AValue: String);
     procedure ThreadDestroyed(const AThread: TDbgThread);
   protected
     FCurrentBreakpoint: TDbgBreakpoint;  // set if we are executing the code at the break
@@ -143,10 +144,10 @@ type
     FBreakMap: TMap;  // map BreakAddr -> BreakObject
 
     FMainThread: TDbgThread;
-    property ProcessID: integer read FProcessID;
     function GetHandle: THandle; virtual;
   public
-    constructor Create(const ADefaultName: String; const AProcessID, AThreadID: Integer; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: boolean);
+    class function StartInstance(AFileName: string; AParams: string): TDbgProcess; virtual;
+    constructor Create(const AProcessID, AThreadID: Integer);
     destructor Destroy; override;
     function  AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
     function  FindSymbol(const AName: String): TFpDbgSymbol;
@@ -161,10 +162,14 @@ type
     function ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean; virtual;
     function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean; virtual;
 
+    function Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean; virtual;
+
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
 
     property Handle: THandle read GetHandle;
     property Name: String read FName write SetName;
+    property ProcessID: integer read FProcessID;
+    property ThreadID: integer read FThreadID;
   end;
   TDbgProcessClass = class of TDbgProcess;
 
@@ -217,52 +222,15 @@ end;
 
 function TDbgInstance.AddrOffset: Int64;
 begin
-  Result := FLoader.ImageBase - BaseAddr;
+  Result := FLoader.ImageBase;
 end;
 
-procedure TDbgInstance.CheckName;
+constructor TDbgInstance.Create(const AProcess: TDbgProcess);
 begin
-  if FName = ''
-  then FName := Format('@%p', [Pointer(PtrUInt(FBaseAddr))]);
-end;
-
-constructor TDbgInstance.Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: Boolean);
-var
-  NamePtr: TDbgPtr;
-  S: String;
-  W: WideString;
-begin
-  FBaseAddr := ABaseAddr;
-  FModuleHandle := AModuleHandle;
   FBreakList := TList.Create;
   FProcess := AProcess;
 
   inherited Create;
-
-  W := '';
-  if AProcess.ReadOrdinal(ANameAddr, NamePtr)
-  then begin
-    if AUnicode
-    then begin
-      AProcess.ReadWString(NamePtr, MAX_PATH, W);
-    end
-    else begin
-      if AProcess.ReadString(NamePtr, MAX_PATH, S)
-      then W := S;
-    end;
-  end;
-
-  if W = ''
-  then begin
-    W := GetModuleFileName(FModuleHandle);
-  end;
-
-  if W = ''
-  then W := ADefaultName;
-
-  SetName(W);
-  
-  LoadInfo;
 end;
 
 destructor TDbgInstance.Destroy;
@@ -308,7 +276,6 @@ end;
 procedure TDbgInstance.SetName(const AValue: String);
 begin
   FName := AValue;
-  CheckName;
 end;
 
 function TDbgInstance.InitializeLoader: TDbgImageLoader;
@@ -323,9 +290,12 @@ end;
 
 { TDbgLibrary }
 
-constructor TDbgLibrary.Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: Boolean);
+constructor TDbgLibrary.Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr: TDbgPtr);
+
 begin
-  inherited Create(AProcess, ADefaultName, AModuleHandle, ABaseAddr, ANameAddr, AUnicode);
+  inherited Create(AProcess);
+  FModuleHandle:=AModuleHandle;
+  FBaseAddr:=ABaseAddr;
 end;
 
 { TDbgProcess }
@@ -336,7 +306,7 @@ begin
   FBreakMap.Add(ALocation, Result);
 end;
 
-constructor TDbgProcess.Create(const ADefaultName: String; const AProcessID, AThreadID: Integer; const AModuleHandle: THandle; const ABaseAddr, ANameAddr: TDbgPtr; const AUnicode: boolean);
+constructor TDbgProcess.Create(const AProcessID, AThreadID: Integer);
 const
   {.$IFDEF CPU64}
   MAP_ID_SIZE = itu8;
@@ -354,17 +324,13 @@ begin
 
   FSymInstances := TList.Create;
 
-  inherited Create(Self, ADefaultName, AModuleHandle, ABaseAddr, ANameAddr, AUnicode);
+  inherited Create(Self);
 
   FThreadMap.Add(AThreadID, FMainThread);
-  
-  if FDbgInfo.HasInfo
-  then FSymInstances.Add(Self);
 end;
 
 destructor TDbgProcess.Destroy;
 begin
-//  CloseHandle(FInfo.hThread);
   FreeAndNil(FBreakMap);
   FreeAndNil(FThreadMap);
   FreeAndNil(FLibMap);
@@ -442,6 +408,11 @@ begin
   result := false;
 end;
 
+function TDbgProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean;
+begin
+  result := false;
+end;
+
 function TDbgProcess.RemoveBreak(const ALocation: TDbgPtr): Boolean;
 begin
   if FBreakMap = nil
@@ -455,14 +426,15 @@ begin
   FThreadMap.Delete(AID);
 end;
 
-procedure TDbgProcess.SetName(const AValue: String);
-begin
-  FName := AValue;
-end;
-
 function TDbgProcess.GetHandle: THandle;
 begin
   result := 0;
+end;
+
+class function TDbgProcess.StartInstance(AFileName: string; AParams: string): TDbgProcess;
+begin
+  Log('Debug support for this platform is not available.');
+  result := nil;
 end;
 
 procedure TDbgProcess.ThreadDestroyed(const AThread: TDbgThread);

@@ -50,6 +50,7 @@ function GetLastErrorText: String; {$IFNDEF FPC} overload; {$ENDIF}
 {$ifdef windows}
 var
   GCurrentContext: PContext;
+  MDebugEvent: TDebugEvent;
 {$endif}
 
 //function OpenThread(dwDesiredAccess: DWORD; bInheritHandle: BOOL; dwThreadId: DWORD): THandle; stdcall;
