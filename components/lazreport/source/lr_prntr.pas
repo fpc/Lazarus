@@ -60,6 +60,7 @@ type
     function GetArrayPos(pgSize: Integer): Integer;
     function DefaultPaperIndex: Integer;
     function DefaultPageSize: Integer;
+    function UseVirtualPrinter: boolean;
     {$IFDEF DbgPrinter}
     procedure DumpPrinterInfo;
     {$ENDIF}
@@ -820,7 +821,7 @@ begin
   {$Endif}
   // if selected printer is default printer, ie our virtual printer
   // then select our own set of papers
-  if FPrinterIndex = FDefaultPrinter then
+  if UseVirtualPrinter then
   begin
     (*
     // a papersize has been selected, maybe from a page recently loaded
@@ -968,13 +969,13 @@ var
   kx, ky: Double;
 begin
   {$ifdef DbgPrinter}
-  DebugLnEnter(['TfrPrinter.FillPrnInfo INIT']);
+  DebugLnEnter(['TfrPrinter.FillPrnInfo INIT IsDefaultPrinter=',UseVirtualPrinter]);
   {$endif}
 
   kx := 93 / 1.022;
   ky := 93 / 1.015;
   
-  if (FPrinterIndex = FDefaultPrinter) then
+  if UseVirtualPrinter then
   begin
     with p do
     begin
@@ -1094,6 +1095,11 @@ begin
     result := 9;
 end;
 
+function TfrPrinter.UseVirtualPrinter: boolean;
+begin
+  result := FPrinterIndex = FDefaultPrinter;
+end;
+
 {$IFDEF DbgPrinter}
 procedure TfrPrinter.DumpPrinterInfo;
 begin
@@ -1104,7 +1110,7 @@ begin
       DbgOut([' (',FPrinters[FPrinterIndex],')'])
   end else
     DbgOut(' (no defined internal list of printers)');
-  DebugLn([' Is Default(Virtual) printer=',FPrinterIndex=FDefaultPrinter]);
+  DebugLn([' Is Default(Virtual) printer=',UseVirtualPrinter]);
   if FPrinter=nil then
     DebugLn('SysPrinter is nil')
   else
@@ -1118,7 +1124,7 @@ begin
   DebugLnEnter(['TfrPrinter.SetPrinterIndex INIT: Value=',Value,' IsDefaultPrinter=',Value=FDefaultPrinter]);
   {$ENDIF}
   FPrinterIndex := Value;
-  if Value = FDefaultPrinter then
+  if UseVirtualPrinter then
     SetSettings
   else
     if FPrinter.Printers.Count > 0 then

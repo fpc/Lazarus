@@ -747,7 +747,7 @@ begin
   begin
     if ShowModal = mrOk then
     begin
-      if Printer.PrinterIndex <> ind then
+      if (Printer.PrinterIndex <> ind) or Prn.UseVirtualPrinter then
       begin
         if not RebuildReport then
           exit;
