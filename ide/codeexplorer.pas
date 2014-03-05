@@ -441,9 +441,14 @@ end;
 procedure TViewNodeData.CreateParams(ACodeTool: TCodeTool);
 begin
   if Params<>'' then exit;
-  if CTNode.Desc=ctnProcedure then
-    Params:=ACodeTool.ExtractProcHead(CTNode,
-      [phpWithoutClassKeyword,phpWithoutClassName,phpWithoutName,phpWithoutSemicolon]);
+  if CTNode.Desc=ctnProcedure then begin
+    try
+      Params:=ACodeTool.ExtractProcHead(CTNode,
+        [phpWithoutClassKeyword,phpWithoutClassName,phpWithoutName,phpWithoutSemicolon]);
+    except
+      on E: ECodeToolError do ; // ignore syntax errors
+    end;
+  end;
   if Params='' then
     Params:=' ';
 end;
