@@ -60,8 +60,6 @@ type
   TCocoaWidgetSet = class(TWidgetSet)
   private
     FTerminating: Boolean;
-
-    pool: NSAutoreleasePool;
     FNSApp: NSApplication;
     FCurrentCursor: HCursor;
     FCaptureControl: HWND;

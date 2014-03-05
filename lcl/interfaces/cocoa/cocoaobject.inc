@@ -25,6 +25,7 @@
   Initialize Carbon Widget Set
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
+var pool: NSAutoreleasePool;
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppInit');
@@ -34,7 +35,9 @@ begin
 
   { Creates the application NSApp object }
   FNsApp := NSApplication.sharedApplication;
+  pool := NSAutoreleasePool.alloc.init;
   FNSApp.setDelegate(delegate);
+  pool.release;
 end;
 
 {------------------------------------------------------------------------------
@@ -56,10 +59,13 @@ end;
 procedure TCocoaWidgetSet.AppProcessMessages;
 var
   event: NSEvent;
+  pool:NSAutoReleasePool;
 begin
+  pool := NSAutoreleasePool.alloc.init;
   event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, nil, NSDefaultRunLoopMode, true);
   NSApp.sendEvent(event);
   NSApp.updateWindows;
+  pool.release;
 end;
 
 {------------------------------------------------------------------------------
@@ -70,10 +76,13 @@ end;
 procedure TCocoaWidgetSet.AppWaitMessage;
 var
   event : NSEvent;
+  pool:NSAutoReleasePool;
 begin
+  pool := NSAutoreleasePool.alloc.init;
   event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, true);
   NSApp.sendEvent(event);
   NSApp.updateWindows;
+  pool.release;
 end;
 
 {------------------------------------------------------------------------------
@@ -88,9 +97,6 @@ begin
   FTerminating := False;
   FCurrentCursor:= 0;
   FCaptureControl:= 0;
-
-  {  Creates the AutoreleasePool }
-  pool := NSAutoreleasePool.alloc.init;
 
   NSMessageWnd := NSStringUTF8('HWND');
   NSMessageMsg := NSStringUTF8('MSG');
@@ -119,21 +125,20 @@ destructor TCocoaWidgetSet.Destroy;
 begin
   inherited Destroy;
 
+  FreeStockItems;
+
   ScreenContext.Free;
   DefaultContext.Free;
-
-  DefaultBrush.Free;
-  DefaultPen.Free;
-  DefaultFont.Free;
   DefaultBitmap.Free;
+  DefaultFont.Free;
+  DefaultPen.Free;
+  DefaultBrush.Free;
 
   FreeSysColorBrushes;
-  FreeStockItems;
+
 
   CocoaWidgetSet := nil;
 
-  {  Releases the AutoreleasePool }
-  pool.release;
 end;
 
 {------------------------------------------------------------------------------
@@ -319,6 +324,7 @@ procedure TCocoaWidgetSet.InitStockItems;
 var
   LogBrush: TLogBrush;
   logPen: TLogPen;
+  pool: NSAutoreleasePool;
 begin
   FillChar(LogBrush, SizeOf(TLogBrush),0);
   LogBrush.lbStyle := BS_NULL;
@@ -352,7 +358,9 @@ begin
   FStockBlackPen := HPen(TCocoaPen.Create(LogPen, True));
 
   FStockSystemFont := HFont(TCocoaFont.CreateDefault(True));
+  pool := NSAutoreleasePool.alloc.init;
   FStockFixedFont := HFont(TCocoaFont.Create(NSFont.userFixedPitchFontOfSize(0), True));
+  pool.release;
 end;
 
 procedure TCocoaWidgetSet.FreeStockItems;
@@ -377,8 +385,9 @@ begin
   DeleteAndNilObject(FStockBlackPen);
   DeleteAndNilObject(FStockWhitePen);
 
-  DeleteAndNilObject(FStockSystemFont);
   DeleteAndNilObject(FStockFixedFont);
+  DeleteAndNilObject(FStockSystemFont);
+
 end;
 
 procedure TCocoaWidgetSet.FreeSysColorBrushes;

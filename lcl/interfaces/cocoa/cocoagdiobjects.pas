@@ -506,8 +506,11 @@ type
 { TCocoaFont }
 
 constructor TCocoaFont.CreateDefault(AGlobal: Boolean = False);
+var Pool: NSAutoreleasePool;
 begin
+  Pool := NSAutoreleasePool.alloc.init;
   Create(NSFont.systemFontOfSize(0));
+  Pool.release;
 end;
 
 constructor TCocoaFont.Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean);
@@ -587,13 +590,17 @@ begin
 end;
 
 constructor TCocoaFont.Create(const AFont: NSFont; AGlobal: Boolean);
+var  Pool: NSAutoreleasePool;
 begin
   inherited Create(AGlobal);
+  Pool := NSAutoreleasePool.alloc.init;
   FFont := AFont;
+  FFont.retain;
   FName := NSStringToString(FFont.familyName);
   FSize := Round(FFont.pointSize);
   FStyle := [];
   FAntialiased := True;
+  Pool.release;
 end;
 
 class function TCocoaFont.CocoaFontWeightToWin32FontWeight(const CocoaFontWeight: Integer): Integer; static;
@@ -710,6 +717,7 @@ constructor TCocoaBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
 var
   HasAlpha: Boolean;
   BitmapFormat: NSBitmapFormat;
+  pool:NSAutoReleasePool;
 begin
   inherited Create(False);
   {$ifdef VerboseBitmaps}
@@ -761,7 +769,9 @@ begin
 
   // Create the associated NSImage
   FImage := NSImage.alloc.initWithSize(NSMakeSize(AWidth, AHeight));
+  pool := NSAutoreleasePool.alloc.init;
   Image.addRepresentation(Imagerep);
+  pool.release;
 end;
 
 constructor TCocoaBitmap.CreateDefault;
@@ -1162,6 +1172,7 @@ begin
 end;
 
 procedure TCocoaBitmapContext.SetBitmap(const AValue: TCocoaBitmap);
+var pool:NSAutoReleasePool;
 begin
   if Assigned(ctx) then
   begin
@@ -1172,9 +1183,11 @@ begin
   if FBitmap <> nil then
   begin
     FBitmap := AValue;
+    pool:=NSAutoreleasePool.alloc.init;
     ctx := NSGraphicsContext.graphicsContextWithBitmapImageRep(Bitmap.ImageRep);
     ctx.retain; // extend live beyond NSAutoreleasePool
     InitDraw(Bitmap.Width, Bitmap.Height);
+    pool.release;
   end;
 end;
 

@@ -1045,12 +1045,13 @@ var
   window, windowbelowpoint: NSWindow;
   p:NSPoint;
   winnr:NSInteger;
+  pool:NSAutoReleasePool;
 begin
   Result := 0;
   if not assigned(NSApp) then
     Exit;
 
-
+  pool := NSAutoreleasePool.alloc.init;
   windows := NSApp.windows;
   for win := 0 to windows.count - 1 do
   begin
@@ -1066,6 +1067,7 @@ begin
       exit;
       end;
     end;
+  pool.release;
 end;
 
 
@@ -1810,10 +1812,12 @@ end;
 function TCocoaWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
 var
   Obj: NSObject;
+  pool: NSAutoreleasePool;
 begin
   Result := HWnd <> 0;
   if Result then
   begin
+    pool := NSAutoreleasePool.alloc.init;
     NSApp.activateIgnoringOtherApps(True);
     Obj := NSObject(HWnd);
     if Obj.isKindOfClass(NSWindow) then
@@ -1823,6 +1827,7 @@ begin
       NSView(Obj).window.makeKeyAndOrderFront(NSApp)
     else
       Result := False;
+    pool.release;
   end;
 end;
 

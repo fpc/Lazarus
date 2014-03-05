@@ -1272,9 +1272,14 @@ begin
 end;
 
 class procedure TCocoaWSWinControl.ShowHide(const AWinControl: TWinControl);
+var pool: NSAutoreleasePool;   // called outside apploop on startup - therefore has to be enframed by pool
 begin
   if AWinControl.HandleAllocated then
+    begin
+    pool := NSAutoreleasePool.alloc.init;
     NSObject(AWinControl.Handle).lclSetVisible(AWinControl.HandleObjectShouldBeVisible);
+    pool.release;
+    end;
 end;
 
 class procedure TCocoaWSWinControl.Invalidate(const AWinControl: TWinControl);

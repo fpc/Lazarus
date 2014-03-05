@@ -1906,7 +1906,6 @@ begin
   h:=lclGetTopBarHeight;
   ns.size.height:=ns.size.height+h;
   ns.origin.y:=ns.origin.y-h;
-
   setFrame_display(ns, isVisible);
 end;
 
