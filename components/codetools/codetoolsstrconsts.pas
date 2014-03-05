@@ -54,7 +54,7 @@ ResourceString
   // customcodetool
   ctsIdentExpectedButAtomFound = 'identifier expected, but %s found';
   ctsIdentExpectedButKeyWordFound = 'identifier expected, but keyword %s found';
-  ctsStrExpectedButAtomFound = '%s expected, but %s found';
+  ctsStrExpectedButAtomFound = 'expected %s, but %s found';
   ctsEndOfFile = 'end of file';
   ctsPositionNotInSource = 'Position not in source';
   ctsInvalidClassName = 'invalid class name=%s%s%s';
