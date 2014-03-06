@@ -3440,7 +3440,7 @@ var
     R := getClipRegion.getBoundingRect;
 
     TgtW := LocalRect.Right - LocalRect.Left;
-    TgtH := LocalRect.Right - LocalRect.Left;
+    TgtH := LocalRect.Bottom - LocalRect.Top;
     ClpW := R.Right - R.Left;
     ClpH := R.Bottom - R.Top;
 
