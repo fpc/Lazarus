@@ -2061,8 +2061,9 @@ msgid "Left:"
 msgstr "שמאל:"
 
 #: lazarusidestrconsts.dlglefttopclr
-#| msgid "color for left, top"
-msgid "Guid lines Left,Top"
+#, fuzzy
+#| msgid "Guid lines Left,Top"
+msgid "Guide lines Left,Top"
 msgstr "קוים מנחים שמאל, למעלה"
 
 #: lazarusidestrconsts.dlglevel1opt

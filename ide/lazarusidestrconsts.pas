@@ -1219,7 +1219,7 @@ resourcestring
   dlgGridYHint = 'Vertical grid step size';
   dlgGuideLines = 'Show Guide Lines';
   dlgSnapGuideLines = 'Snap to Guide Lines';
-  dlgLeftTopClr = 'Guid lines Left,Top';
+  dlgLeftTopClr = 'Guide lines Left,Top';
   dlgRightBottomClr = 'Guide lines Right,Bottom';
   dlgShowCaps = 'Show component captions';
   dlgShowEdrHints = 'Show editor hints';

@@ -830,7 +830,9 @@ msgid "SrcPath Initialization"
 msgstr "Inicialización SrcPath"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-msgid "%s expected, but %s found"
+#, fuzzy
+#| msgid "%s expected, but %s found"
+msgid "expected %s, but %s found"
 msgstr "se esperaba %s, pero se encontró %s"
 
 #: codetoolsstrconsts.ctsstringconstant

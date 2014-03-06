@@ -1969,7 +1969,9 @@ msgid "Left:"
 msgstr "左："
 
 #: lazarusidestrconsts.dlglefttopclr
-msgid "Guid lines Left,Top"
+#, fuzzy
+#| msgid "Guid lines Left,Top"
+msgid "Guide lines Left,Top"
 msgstr "グリッドライン 左、上"
 
 #: lazarusidestrconsts.dlglevel1opt

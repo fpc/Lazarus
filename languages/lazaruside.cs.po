@@ -1991,7 +1991,9 @@ msgid "Left:"
 msgstr "Vlevo:"
 
 #: lazarusidestrconsts.dlglefttopclr
-msgid "Guid lines Left,Top"
+#, fuzzy
+#| msgid "Guid lines Left,Top"
+msgid "Guide lines Left,Top"
 msgstr "Vodící čáry Vlevo, Nahoře"
 
 #: lazarusidestrconsts.dlglevel1opt

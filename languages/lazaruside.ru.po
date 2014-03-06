@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-03-02 20:38+0400\n"
+"PO-Revision-Date: 2014-03-07 00:53+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2048,8 +2048,8 @@ msgid "Left:"
 msgstr "Слева:"
 
 #: lazarusidestrconsts.dlglefttopclr
-#| msgid "color for left, top"
-msgid "Guid lines Left,Top"
+#| msgid "Guid lines Left,Top"
+msgid "Guide lines Left,Top"
 msgstr "Левая и верхняя линии позиционирования"
 
 #: lazarusidestrconsts.dlglevel1opt

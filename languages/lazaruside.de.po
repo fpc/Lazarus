@@ -2040,8 +2040,8 @@ msgstr "Links:"
 
 #: lazarusidestrconsts.dlglefttopclr
 #, fuzzy
-#| msgid "color for left, top"
-msgid "Guid lines Left,Top"
+#| msgid "Guid lines Left,Top"
+msgid "Guide lines Left,Top"
 msgstr "Farbe für links, oben"
 
 #: lazarusidestrconsts.dlglevel1opt

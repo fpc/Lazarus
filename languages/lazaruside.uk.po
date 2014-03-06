@@ -2025,7 +2025,9 @@ msgid "Left:"
 msgstr "Зліва:"
 
 #: lazarusidestrconsts.dlglefttopclr
-msgid "Guid lines Left,Top"
+#, fuzzy
+#| msgid "Guid lines Left,Top"
+msgid "Guide lines Left,Top"
 msgstr "Орієнтирні лінії Ліва,Верхня"
 
 #: lazarusidestrconsts.dlglevel1opt

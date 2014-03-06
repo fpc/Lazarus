@@ -2031,8 +2031,9 @@ msgid "Left:"
 msgstr "Kairė:"
 
 #: lazarusidestrconsts.dlglefttopclr
-#| msgid "color for left, top"
-msgid "Guid lines Left,Top"
+#, fuzzy
+#| msgid "Guid lines Left,Top"
+msgid "Guide lines Left,Top"
 msgstr "Apatinė bei viršutinė orientavimo linija"
 
 #: lazarusidestrconsts.dlglevel1opt

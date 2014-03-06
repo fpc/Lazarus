@@ -1973,7 +1973,7 @@ msgid "Left:"
 msgstr "Bal:"
 
 #: lazarusidestrconsts.dlglefttopclr
-msgid "Guid lines Left,Top"
+msgid "Guide lines Left,Top"
 msgstr ""
 
 #: lazarusidestrconsts.dlglevel1opt

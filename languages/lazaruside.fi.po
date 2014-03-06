@@ -1962,7 +1962,9 @@ msgid "Left:"
 msgstr "Vasemmalta:"
 
 #: lazarusidestrconsts.dlglefttopclr
-msgid "Guid lines Left,Top"
+#, fuzzy
+#| msgid "Guid lines Left,Top"
+msgid "Guide lines Left,Top"
 msgstr "Ohjausviivat vasemmalla ja ylhäällä"
 
 #: lazarusidestrconsts.dlglevel1opt

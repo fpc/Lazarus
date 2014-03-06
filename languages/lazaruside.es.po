@@ -2065,8 +2065,9 @@ msgid "Left:"
 msgstr "Izquierda:"
 
 #: lazarusidestrconsts.dlglefttopclr
-#| msgid "color for left, top"
-msgid "Guid lines Left,Top"
+#, fuzzy
+#| msgid "Guid lines Left,Top"
+msgid "Guide lines Left,Top"
 msgstr "Líneas guía Izquierda,Arriba"
 
 #: lazarusidestrconsts.dlglevel1opt
