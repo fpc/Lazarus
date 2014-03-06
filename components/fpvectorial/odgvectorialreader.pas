@@ -1498,6 +1498,12 @@ begin
     lNodeName := lCurNode.NodeName;
     lNodeValue := lCurNode.NodeValue;
 
+    // Check if this is a text:span
+    if (lNodeValue = '') and (lCurNode.FirstChild <> nil) then
+    begin
+      lNodeValue := lCurNode.FirstChild.NodeValue;
+    end;
+
     Result.AddText(lNodeValue);
 
     lCurNode := lCurNode.NextSibling;

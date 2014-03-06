@@ -27,7 +27,7 @@ unit fpvectorial;
 interface
 
 uses
-  Classes, SysUtils, Math, TypInfo, contnrs,
+  Classes, SysUtils, Math, TypInfo, contnrs, types,
   // FCL-Image
   fpcanvas, fpimage,
 
@@ -521,6 +521,7 @@ type
     constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -932,6 +933,7 @@ type
     destructor Destroy; override;
     function AddText(AText: string): TvText;
     function AddField(AKind : TvFieldKind): TvField;
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -3128,6 +3130,37 @@ begin
   else Result := vfrNotFound;
 end;
 
+procedure TvText.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop,
+  ARight, ABottom: Double);
+var
+  i: Integer;
+  lSize: TSize;
+  lWidth, lHeight: Integer;
+  {$ifdef USE_LCL_CANVAS}
+  ACanvas: TCanvas absolute ADest;
+  {$endif}
+begin
+  ALeft := X;
+  ATop := Y;
+  lWidth := 0;
+  lHeight := 0;
+  ARight := ALeft;
+  ABottom := ATop;
+  if (ADest = nil) or (not (ADest is TCanvas)) then Exit;
+
+  for i := 0 to Value.Count-1 do
+  begin
+    lSize := ACanvas.TextExtent(Value.Strings[i]);
+    lHeight := lHeight + lSize.cy + 2;
+    lWidth := Max(lWidth, lSize.cx);
+  end;
+
+  ALeft := X;
+  ATop := Y - lHeight;
+  ARight := ALeft + lWidth;
+  ABottom := Y;
+end;
+
 procedure TvText.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
@@ -5100,16 +5133,68 @@ begin
   AddEntity(Result);
 end;
 
-function TvParagraph.TryToSelect(APos: TPoint; var ASubpart: Cardinal
-  ): TvFindEntityResult;
+procedure TvParagraph.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft,
+  ATop, ARight, ABottom: Double);
+var
+  lEntity: TvEntity;
+  lCurWidth: Double = 0.0;
+  lCurHeight: Double = 0.0;
+  lLeft, lTop, lRight, lBottom: Double;
+  lText: TvText absolute lEntity;
+  {$ifdef USE_LCL_CANVAS}
+  ACanvas: TCanvas absolute ADest;
+  {$endif}
+begin
+  ALeft := X;
+  ATop := Y;
+  ARight := X;
+  ABottom := Y;
+
+  lEntity := GetFirstEntity();
+  while lEntity <> nil do
+  begin
+    if lEntity is TvText then
+    begin
+      lText.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
+      lCurWidth := lCurWidth + (lRight - lLeft);
+      lCurHeight := Max(lCurHeight, Abs(lTop - lBottom));
+    end;
+    lEntity := GetNextEntity();
+  end;
+
+  ALeft := X;
+  ATop := Y - lCurHeight;
+  ARight := X + lCurWidth;
+  ABottom := Y;
+end;
+
+function TvParagraph.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
 begin
   Result:=inherited TryToSelect(APos, ASubpart);
 end;
 
 procedure TvParagraph.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+var
+  lCurWidth: Double = 0.0;
+  lLeft, lTop, lRight, lBottom: Double;
+  lEntity: TvEntity;
+  lText: TvText absolute lEntity;
 begin
-  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+  // Don't call inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+  lEntity := GetFirstEntity();
+  while lEntity <> nil do
+  begin
+    if lEntity is TvText then
+    begin
+      lText.X := X + lCurWidth;
+      lText.Y := Y;
+      lText.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
+      lText.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
+      lCurWidth := lCurWidth + Abs(lRight - lLeft);
+    end;
+    lEntity := GetNextEntity();
+  end;
 end;
 
 function TvParagraph.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -5215,8 +5300,26 @@ end;
 
 procedure TvRichText.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+var
+  lCurHeight: Double = 0.0;
+  lLeft, lTop, lRight, lBottom: Double;
+  lEntity: TvEntity;
+  lParagraph: TvParagraph absolute lEntity;
 begin
-  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+  // Don't call inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+  lEntity := GetFirstEntity();
+  while lEntity <> nil do
+  begin
+    if lEntity is TvParagraph then
+    begin
+      lParagraph.X := X;
+      lParagraph.Y := Y + lCurHeight;
+      lParagraph.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
+      lParagraph.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
+      lCurHeight := lCurHeight + (lBottom - lTop);
+    end;
+    lEntity := GetNextEntity();
+  end;
 end;
 
 function TvRichText.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
