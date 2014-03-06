@@ -6792,6 +6792,7 @@ begin
   inherited KeyPress(Key);
   if not EditorMode and EditingAllowed(FCol) then begin
     if (Key=#13) then begin
+      SelectEditor;
       EditorShow(True);
       Key := #0;
     end else
