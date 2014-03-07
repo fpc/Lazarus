@@ -610,7 +610,8 @@ begin
      newWindow.setAcceptsMouseMovedEvents(True);
   if not isembedded and (newWindow <> window) then
   begin
-    window.close;
+    if Assigned(window) then
+       window.close;
     ownwin := nil;
     isembedded := false;
   end;
