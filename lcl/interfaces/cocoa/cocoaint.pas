@@ -49,11 +49,6 @@ type
     class function initWithFunc(afunc: TWSTimerProc): TCocoaTimerObject; message 'initWithFunc:';
   end;
 
-  { TCocoaAppDelegate }
-
-  TCocoaAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
-    function applicationShouldTerminate(sender: NSApplication): NSApplicationTerminateReply; message 'applicationShouldTerminate:';
-  end;
 
   { TCocoaWidgetSet }
 
@@ -63,7 +58,7 @@ type
     FNSApp: NSApplication;
     FCurrentCursor: HCursor;
     FCaptureControl: HWND;
-    delegate: TCocoaAppDelegate;
+
   protected
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;

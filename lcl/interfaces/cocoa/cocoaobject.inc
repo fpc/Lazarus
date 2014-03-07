@@ -25,19 +25,15 @@
   Initialize Carbon Widget Set
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
-var pool: NSAutoreleasePool;
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppInit');
   {$ENDIF}
 
-  delegate := TCocoaAppDelegate.alloc.init;
 
   { Creates the application NSApp object }
   FNsApp := NSApplication.sharedApplication;
-  pool := NSAutoreleasePool.alloc.init;
-  FNSApp.setDelegate(delegate);
-  pool.release;
+
 end;
 
 {------------------------------------------------------------------------------
@@ -473,13 +469,6 @@ procedure InternalFinal;
 begin
 end;
 
-
-{ TCocoaAppDelegate }
-
-function TCocoaAppDelegate.applicationShouldTerminate(sender: NSApplication): NSApplicationTerminateReply;
-begin
-  Result := NSTerminateNow;
-end;
 
 { TCocoaTimerObject }
 

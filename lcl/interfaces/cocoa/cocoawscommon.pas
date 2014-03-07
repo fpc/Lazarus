@@ -1090,15 +1090,18 @@ var
   obj: NSObject;
   Callback: ICommonCallback;
   CallbackObject: TObject;
+  pool: NSAutoreleasePool;
 begin
   if not AWinControl.HandleAllocated then
     Exit;
+  pool := NSAutoreleasePool.alloc.init;
   obj := NSObject(AWinControl.Handle);
   if obj.isKindOfClass_(NSView) then
     NSView(obj).removeFromSuperview
   else
   if obj.isKindOfClass_(NSWindow) then
     NSWindow(obj).close;
+  pool.release;
   // destroy the callback
   Callback := obj.lclGetCallback;
   if Assigned(Callback) then
