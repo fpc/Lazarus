@@ -2514,7 +2514,7 @@ begin
     Index := OrgIndex;
     ColRowToOffset(true, true, Index, OffIni, OffEnd);
 
-    if (OffEnd-FGCache.ClickMouse.X) <  (FGCache.ClickMouse.X-OffIni) then begin
+    if (Min(OffEnd, FGCache.ClientRect.Right)-FGCache.ClickMouse.X) <  (FGCache.ClickMouse.X-OffIni) then begin
       if X>FGCache.ClickMouse.X then
         ACase := 4  // dragging right side to the right
       else
