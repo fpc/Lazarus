@@ -39,7 +39,7 @@ begin
   Bmp.Height := 50;
   Bmp.Canvas.Brush.Color := clBlue;
   Bmp.Canvas.Rectangle(0, 0, 50, 50);
-
+  Canvas.CopyMode := cmSrcCopy;
   // BrushCopy
 
   Canvas.TextOut(50, 30, 'CopyBrush simple');
