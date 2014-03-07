@@ -632,6 +632,7 @@ begin
 
   if not (csDesigning in TfrReport(Doc).ComponentState) then
   begin
+    FindBtn.Visible := pbFind in TfrReport(Doc).PreviewButtons;
     ZoomBtn.Visible := pbZoom in TfrReport(Doc).PreviewButtons;
     SaveBtn.Visible := (pbSave in TfrReport(Doc).PreviewButtons) and not
       ((frFiltersCount = 0) and (roHideDefaultFilter in TfrReport(Doc).Options));
