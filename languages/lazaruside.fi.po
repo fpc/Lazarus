@@ -8509,7 +8509,7 @@ msgstr "IDEn asetukset:"
 
 #: lazarusidestrconsts.lisideprojectdirinidetitle
 msgid "Show project directory in IDE title"
-msgstr ""
+msgstr "Näytä projektihakemisto IDEn otsikossa"
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
