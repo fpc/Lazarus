@@ -599,10 +599,18 @@ type
     FValueSymbol: TDbgDwarfValueIdentifier;
     FTypeCastTargetType: TDbgDwarfTypeIdentifier;
     FTypeCastSourceValue: TFpDbgValue;
+    FStructureValue: TFpDbgDwarfValue;
+    FLastMember: TFpDbgDwarfValue;
     FLastError: TFpError;
     function MemManager: TFpDbgMemManager; inline;
     function AddressSize: Byte; inline;
+    procedure SetStructureValue(AValue: TFpDbgDwarfValue);
   protected
+    procedure DoReferenceAdded; override;
+    procedure DoReferenceReleased; override;
+    procedure CircleBackRefActiveChanged(NewActive: Boolean); override;
+    procedure SetLastMember(ALastMember: TFpDbgDwarfValue);
+
     function GetLastError: TFpError; override;
     function DataAddr: TFpDbgMemLocation;
     function OrdOrDataAddr: TFpDbgMemLocation;
@@ -612,8 +620,6 @@ type
     function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function HasTypeCastInfo: Boolean;
     function IsValidTypeCast: Boolean; virtual;
-    procedure DoReferenceAdded; override;
-    procedure DoReferenceReleased; override;
     function GetKind: TDbgSymbolKind; override;
     function GetAddress: TFpDbgMemLocation; override;
     function GetMemberCount: Integer; override;
@@ -628,7 +634,8 @@ type
     procedure SetValueSymbol(AValueSymbol: TDbgDwarfValueIdentifier);
     function  SetTypeCastInfo(AStructure: TDbgDwarfTypeIdentifier;
                               ASource: TFpDbgValue): Boolean; // Used for Typecast
-// SourceValue: TFpDbgValue
+    // StructureValue: Any Value returned via GetMember points to its structure
+    property StructureValue: TFpDbgDwarfValue read FStructureValue write SetStructureValue;
   end;
 
   { TFpDbgDwarfValueSized }
@@ -825,7 +832,6 @@ type
 
   TFpDbgDwarfValueArray = class(TFpDbgDwarfValue)
   private
-    FResVal: TFpDbgValue;
     FAddrObj: TFpDbgDwarfValueConstAddress;
   protected
     function GetFieldFlags: TFpDbgValueFieldFlags; override;
@@ -906,15 +912,15 @@ type
   TDbgDwarfValueIdentifier = class(TDbgDwarfIdentifier) // var, const, member, ...
   private
     // StructureValueInfo, Member and subproc may need containing class
-    FStructureValueInfo: TFpDbgSymbolBase;
-    procedure SetStructureValueInfo(AValue: TFpDbgSymbolBase);
+    FStructureValueInfo: TDbgDwarfIdentifier;
+    procedure SetStructureValueInfo(AValue: TDbgDwarfIdentifier);
   protected
     FValueObject: TFpDbgDwarfValue;
     FMembers: TFpDbgCircularRefCntObjList;
 
     procedure CircleBackRefActiveChanged(ANewActive: Boolean); override;
     procedure SetParentTypeInfo(AValue: TDbgDwarfIdentifier); override;
-    function GetValueAddress(AValueObj: TFpDbgDwarfValue; out AnAddress: TFpDbgMemLocation): Boolean; virtual;
+    function GetValueAddress({%H-}AValueObj: TFpDbgDwarfValue;{%H-} out AnAddress: TFpDbgMemLocation): Boolean; virtual;
     function GetValueDataAddress(AValueObj: TFpDbgDwarfValue; out AnAddress: TFpDbgMemLocation;
                                  ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean;
     procedure KindNeeded; override;
@@ -928,7 +934,7 @@ type
     destructor Destroy; override;
     class function CreateValueSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfValueIdentifier;
 
-    property StructureValueInfo: TFpDbgSymbolBase read FStructureValueInfo write SetStructureValueInfo;
+    property StructureValueInfo: TDbgDwarfIdentifier read FStructureValueInfo write SetStructureValueInfo;
   end;
 
   { TDbgDwarfValueLocationIdentifier }
@@ -1164,7 +1170,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
          .ParentTypeInfo --> nil
 
     ParentTypeInfo:     has a weak RefCount (only AddRef, if self has other refs)
-    StructureValueInfo: weak Ref (Struct has a ref to member, via parent)
 
 
     AnObject = TDbgDwarfIdentifierVariable
@@ -1184,7 +1189,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FField = TDbgDwarfIdentifierMember (declared in TBarBase)
      |-- .TypeInfo       --> Integer = TDbgDwarfBaseIdentifierBase [*1]
      |-- .ParentTypeInfo --> TBarBase
-     |-- .StructureValueInfo --> AnObject
 
     [*1] May have TDbgDwarfTypeIdentifierDeclaration or others
   *)
@@ -1935,8 +1939,8 @@ begin
 
   // FAddrObj.RefCount: hold by self
   i := 1;
-  // FAddrObj.RefCount: hold by FResVal (ignore only, if FResVAl is not hold by others)
-  if (FResVal <> nil) and (FResVal.RefCount = 1) then
+  // FAddrObj.RefCount: hold by FLastMember (ignore only, if FLastMember is not hold by others)
+  if (FLastMember <> nil) and (FLastMember.RefCount = 1) then
     i := 2;
   if (FAddrObj = nil) or (FAddrObj.RefCount > i) then begin
     FAddrObj.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FAddrObj, 'TDbgDwarfArraySymbolValue'){$ENDIF};
@@ -1947,15 +1951,15 @@ begin
     FAddrObj.Update(Addr);
   end;
 
-  if (FResVal = nil) or (FResVal.RefCount > 1) then begin
-    FResVal.ReleaseReference;
-    FResVal := FOwner.TypeInfo.TypeCastValue(FAddrObj);
+  if (FLastMember = nil) or (FLastMember.RefCount > 1) then begin
+    SetLastMember(TFpDbgDwarfValue(FOwner.TypeInfo.TypeCastValue(FAddrObj)));
+    FLastMember.ReleaseReference;
   end
   else begin
-    TFpDbgDwarfValue(FResVal).SetTypeCastInfo(TDbgDwarfTypeIdentifier(FOwner.TypeInfo), FAddrObj);
+    TFpDbgDwarfValue(FLastMember).SetTypeCastInfo(TDbgDwarfTypeIdentifier(FOwner.TypeInfo), FAddrObj);
   end;
 
-  Result := FResVal;
+  Result := FLastMember;
 end;
 
 function TFpDbgDwarfValueArray.GetMemberCount: Integer;
@@ -2037,7 +2041,6 @@ end;
 destructor TFpDbgDwarfValueArray.Destroy;
 begin
   FAddrObj.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FAddrObj, 'TDbgDwarfArraySymbolValue'){$ENDIF};
-  FResVal.ReleaseReference;
   inherited Destroy;
 end;
 
@@ -2681,10 +2684,9 @@ begin
       FMembers := TFpDbgCircularRefCntObjList.Create;
     FMembers.Add(tmp);
 
-    TDbgDwarfValueIdentifier(tmp).StructureValueInfo := Self;
-
     Result := tmp.Value;
   end;
+  SetLastMember(TFpDbgDwarfValue(Result));
 end;
 
 function TFpDbgDwarfValueStructTypeCast.GetMember(AIndex: Integer): TFpDbgValue;
@@ -2702,10 +2704,9 @@ begin
       FMembers := TFpDbgCircularRefCntObjList.Create;
     FMembers.Add(tmp);
 
-    TDbgDwarfValueIdentifier(tmp).StructureValueInfo := Self;
-
     Result := tmp.Value;
   end;
+  SetLastMember(TFpDbgDwarfValue(Result));
 end;
 
 function TFpDbgDwarfValueStructTypeCast.GetMemberCount: Integer;
@@ -2810,6 +2811,18 @@ function TFpDbgDwarfValue.AddressSize: Byte;
 begin
   assert((FOwner <> nil) and (FOwner.FCU <> nil), 'TDbgDwarfSymbolValue.AddressSize');
   Result := FOwner.FCU.FAddressSize;
+end;
+
+procedure TFpDbgDwarfValue.SetStructureValue(AValue: TFpDbgDwarfValue);
+begin
+  if FStructureValue = AValue then
+    exit;
+
+  if CircleBackRefsActive and (FStructureValue <> nil) then
+    FStructureValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValue, 'TDbgDwarfSymbolValue'){$ENDIF};
+  FStructureValue := AValue;
+  if CircleBackRefsActive and (FStructureValue <> nil) then
+    FStructureValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValue, 'TDbgDwarfSymbolValue'){$ENDIF};
 end;
 
 function TFpDbgDwarfValue.GetLastError: TFpError;
@@ -2937,15 +2950,42 @@ end;
 procedure TFpDbgDwarfValue.DoReferenceAdded;
 begin
   inherited DoReferenceAdded;
-  if (FValueSymbol <> nil) and (RefCount = 2) then
-    FValueSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValueSymbol, 'TDbgDwarfSymbolValue'){$ENDIF};
+  DoPlainReferenceAdded;
 end;
 
 procedure TFpDbgDwarfValue.DoReferenceReleased;
 begin
   inherited DoReferenceReleased;
-  if (FValueSymbol <> nil) and (RefCount = 1) then
-    NilThenReleaseRef(FValueSymbol {$IFDEF WITH_REFCOUNT_DEBUG}, @FValueSymbol, 'TDbgDwarfSymbolValue'{$ENDIF});
+  DoPlainReferenceReleased;
+end;
+
+procedure TFpDbgDwarfValue.CircleBackRefActiveChanged(NewActive: Boolean);
+begin
+  inherited CircleBackRefActiveChanged(NewActive);
+  if NewActive then;
+  if CircleBackRefsActive then begin
+    if FValueSymbol <> nil then
+      FValueSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValueSymbol, 'TDbgDwarfSymbolValue'){$ENDIF};
+    if FStructureValue <> nil then
+      FStructureValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValue, 'TDbgDwarfSymbolValue'){$ENDIF};
+  end
+  else begin
+    if FValueSymbol <> nil then
+      FValueSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValueSymbol, 'TDbgDwarfSymbolValue'){$ENDIF};
+    if FStructureValue <> nil then
+      FStructureValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValue, 'TDbgDwarfSymbolValue'){$ENDIF};
+  end;
+end;
+
+procedure TFpDbgDwarfValue.SetLastMember(ALastMember: TFpDbgDwarfValue);
+begin
+  if FLastMember <> nil then
+    FLastMember.ReleaseCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLastMember, 'TDbgDwarfSymbolValue'){$ENDIF};
+  FLastMember := ALastMember;
+  if FLastMember <> nil then begin
+    FLastMember.SetStructureValue(Self);
+    FLastMember.AddCirclularReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLastMember, 'TDbgDwarfSymbolValue'){$ENDIF};
+  end;
 end;
 
 function TFpDbgDwarfValue.GetKind: TDbgSymbolKind;
@@ -2988,6 +3028,7 @@ begin
     if m <> nil then
       Result := m.Value;
   end;
+  SetLastMember(TFpDbgDwarfValue(Result));
 end;
 
 function TFpDbgDwarfValue.GetMember(AIndex: Integer): TFpDbgValue;
@@ -3000,6 +3041,7 @@ begin
     if m <> nil then
       Result := m.Value;
   end;
+  SetLastMember(TFpDbgDwarfValue(Result));
 end;
 
 function TFpDbgDwarfValue.GetDbgSymbol: TFpDbgSymbol;
@@ -3033,6 +3075,7 @@ destructor TFpDbgDwarfValue.Destroy;
 begin
   ReleaseRefAndNil(FTypeCastTargetType);
   ReleaseRefAndNil(FTypeCastSourceValue);
+  SetLastMember(nil);
   inherited Destroy;
 end;
 
@@ -3040,10 +3083,11 @@ procedure TFpDbgDwarfValue.SetValueSymbol(AValueSymbol: TDbgDwarfValueIdentifier
 begin
   if FValueSymbol = AValueSymbol then
     exit;
-  if (FValueSymbol <> nil) and (RefCount >= 2) then
+
+  if CircleBackRefsActive and (FValueSymbol <> nil) then
     FValueSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValueSymbol, 'TDbgDwarfSymbolValue'){$ENDIF};
   FValueSymbol := AValueSymbol;
-  if (FValueSymbol <> nil) and (RefCount >= 2) then
+  if CircleBackRefsActive and (FValueSymbol <> nil) then
     FValueSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValueSymbol, 'TDbgDwarfSymbolValue'){$ENDIF};
 end;
 
@@ -3143,8 +3187,13 @@ begin
   if (ti = nil) or not (ti.SymbolType = stType) then exit;
 
   FValueObject := TDbgDwarfTypeIdentifier(ti).GetTypedValueObject(False);
+  FValueObject.MakePlainRefToCirclular;
   if FValueObject <> nil then
     FValueObject.SetValueSymbol(self);
+
+  // Used as reference to "self"
+  if StructureValueInfo <> nil then
+    FValueObject.SetStructureValue(TFpDbgDwarfValue(StructureValueInfo.Value)); // TODO: on request only
 
   Result := FValueObject;
 end;
@@ -5345,6 +5394,7 @@ begin
   if Result <> nil then exit;
 
   FValueObject := TFpDbgDwarfValueEnumMember.Create(Self);
+  FValueObject.MakePlainRefToCirclular;
   FValueObject.SetValueSymbol(self);
 
   Result := FValueObject;
@@ -5645,7 +5695,7 @@ end;
 
 { TDbgDwarfValueIdentifier }
 
-procedure TDbgDwarfValueIdentifier.SetStructureValueInfo(AValue: TFpDbgSymbolBase);
+procedure TDbgDwarfValueIdentifier.SetStructureValueInfo(AValue: TDbgDwarfIdentifier);
 begin
   if FStructureValueInfo = AValue then Exit;
 
@@ -5809,7 +5859,8 @@ begin
   FreeAndNil(FMembers);
   if FValueObject <> nil then begin
     FValueObject.SetValueSymbol(nil);
-    ReleaseRefAndNil(FValueObject);
+    FValueObject.ReleaseCirclularReference;
+    FValueObject := nil;
   end;
   ParentTypeInfo := nil;
   inherited Destroy;
@@ -6032,22 +6083,12 @@ begin
   if not Result then
     exit;
 
-  if (StructureValueInfo <> nil) and (ParentTypeInfo <> nil) then begin
+  if (AValueObj <> nil) and (AValueObj.StructureValue <> nil) and (ParentTypeInfo <> nil) then begin
     Assert((ParentTypeInfo is TDbgDwarfIdentifier) and (ParentTypeInfo.SymbolType = stType), '');
-
-    if StructureValueInfo is TDbgDwarfValueIdentifier then begin
-      if TDbgDwarfValueIdentifier(StructureValueInfo).GetValueDataAddress(AValueObj, BaseAddr, TDbgDwarfTypeIdentifier(ParentTypeInfo)) then begin
-        ALocationParser.FStack.Push(BaseAddr, lseValue);
-        exit
-      end;
-    end
-    else
-    if StructureValueInfo is TFpDbgDwarfValueStructTypeCast then begin
-      if TFpDbgDwarfValueStructTypeCast(StructureValueInfo).GetDwarfDataAddress(BaseAddr, TDbgDwarfTypeIdentifier(ParentTypeInfo)) then begin
+    if AValueObj.StructureValue.GetDwarfDataAddress(BaseAddr, TDbgDwarfTypeIdentifier(ParentTypeInfo)) then begin
       ALocationParser.FStack.Push(BaseAddr, lseValue);
       exit
     end;
-  end;
   end;
 
   debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TDbgDwarfIdentifierMember.InitLocationParser Error: ',ErrorCode(LastError),' ValueObject=', DbgSName(FValueObject)]);
@@ -6064,17 +6105,7 @@ end;
 
 function TDbgDwarfIdentifierMember.HasAddress: Boolean;
 begin
-  Result := (FStructureValueInfo <> nil) and (FInformationEntry.HasAttrib(DW_AT_data_member_location));
-  if not Result then
-    exit;
-  if FStructureValueInfo is TDbgDwarfIdentifier then
-    Result := (TDbgDwarfIdentifier(FStructureValueInfo).HasAddress)
-  else
-  if FStructureValueInfo is TFpDbgValue then begin
-    Assert(FStructureValueInfo is TFpDbgDwarfValueStructTypeCast);
-    // Todo: move check to TDbgDwarfStructTypeCastSymbolValue
-    Result := TFpDbgDwarfValue(FStructureValueInfo).HasDwarfDataAddress;
-  end;
+  Result := (FInformationEntry.HasAttrib(DW_AT_data_member_location));
 end;
 
 { TDbgDwarfIdentifierStructure }
@@ -6949,7 +6980,7 @@ begin
         Result := TDbgDwarfValueIdentifier.CreateValueSubClass('self', InfoEntry);
         FSelfParameter := Result;
         {$IFDEF WITH_REFCOUNT_DEBUG}FSelfParameter.DbgRenameReference(@FSelfParameter, 'FSelfParameter');{$ENDIF}
-        //FSelfParameter.ParentTypeInfo := Self;
+        //FSelfParameter.DbgSymbol.ParentTypeInfo := Self;
         debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarfProcSymbol.GetSelfParameter ', dbgs(InfoEntry.FScope, FCU), DbgSName(Result)]);
       end;
     end;
