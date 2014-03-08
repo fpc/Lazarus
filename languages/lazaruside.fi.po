@@ -8509,7 +8509,7 @@ msgstr "IDEn asetukset:"
 
 #: lazarusidestrconsts.lisideprojectdirinidetitle
 msgid "Show project directory in IDE title"
-msgstr "Näytä projektihakemisto IDEn otsikossa"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
@@ -8565,7 +8565,7 @@ msgstr "Tallenna äskeisiin"
 
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
-msgstr ""
+msgstr "Haluttaessa kaksi eri Lazarus versiota, pitää toinen käynnistää parametrin primary-config-path tai pcp kanssa.%s%sEsimerkiksi:%s"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -8831,7 +8831,7 @@ msgstr "Asennus epäonnistui"
 
 #: lazarusidestrconsts.lisinstalled
 msgid "installed"
-msgstr ""
+msgstr "asennettu"
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -8883,11 +8883,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmacrothenameisakeyword
 msgid "Invalid macro name \"%s\". The name is a keyword."
-msgstr ""
+msgstr "Kelvoton makron nimi \"%s\". Nimi on avainsana."
 
 #: lazarusidestrconsts.lisinvalidmask
 msgid "Invalid Mask"
-msgstr ""
+msgstr "Kelvoton maski"
 
 #: lazarusidestrconsts.lisinvalidmode
 msgid "Invalid mode %s"
@@ -8910,7 +8910,6 @@ msgid "Invalid Pascal Identifier"
 msgstr "Kelvoton Pascal-tunniste"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiertext
-#| msgid "The name \"%s\" is not a valid pascal identifier."
 msgid "The name \"%s\" is not a valid Pascal identifier."
 msgstr "Nimi \"%s\" ei ole kelvollinen Pascalin tunniste."
 
@@ -9534,11 +9533,11 @@ msgstr "Näytä käännösyksikön tietoja"
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
-msgstr ""
+msgstr "Käynnistävä ohjelma on kelvoton"
 
 #: lazarusidestrconsts.lislaunchingcmdline
 msgid "Launching target command line"
-msgstr ""
+msgstr "Käynnistävä kohteen komentorivi"
 
 #: lazarusidestrconsts.lislazarus
 msgctxt "lazarusidestrconsts.lislazarus"
@@ -9579,11 +9578,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
-msgstr ""
+msgstr "Lazarus kieli-ID (esim. en, de, br, fi)"
 
 #: lazarusidestrconsts.lislazaruslanguagename
 msgid "Lazarus language name (e.g. english, deutsch)"
-msgstr ""
+msgstr "Lazarus kieli-nimi (esim. english, deutsch)"
 
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
@@ -9591,7 +9590,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazarusotherfile
 msgid "Lazarus other file"
-msgstr ""
+msgstr "Lazarus muu tiedosto"
 
 #: lazarusidestrconsts.lislazaruspackage
 msgid "Lazarus package"
@@ -9670,7 +9669,7 @@ msgstr "Virhe kirjoitettaessa tiedostoa"
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
-msgstr ""
+msgstr "%s%s%s%slazbuild ei ole interaktiivinen, poistutaan."
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -9782,7 +9781,7 @@ msgstr "Kopioi peritystä"
 
 #: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
 msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
-msgstr ""
+msgstr "%s:lla ei ole kelvollista FPDoc polkua.%sEi voida luoda fpdoc tiedostoa %s:lle"
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
@@ -9790,11 +9789,11 @@ msgstr "Siirrä kohdat perittyyn"
 
 #: lazarusidestrconsts.lisldnovalidfpdocpath
 msgid "No valid FPDoc path"
-msgstr ""
+msgstr "Ei kelvollista FPDoc polkua"
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
-msgstr ""
+msgstr "Käännösyksikkö %s ei kuulu mihinkään pakettiin tai projektiin.%sLisää se johonkin.%sfpdoc tiedoston luonti ei onnistu."
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -9836,15 +9835,15 @@ msgstr "LFM-tiedosto"
 
 #: lazarusidestrconsts.lislfmfilecontainsinvalidproperties
 msgid "The LFM file contains unknown properties/classes which do not exist in the LCL. They can be replaced or removed."
-msgstr ""
+msgstr "LFM tiedostossa on tuntemattomia ominaisuuksia/luokkia, mitä ei ole LCL:ssä. Ne voidaan korvata tai poistaa."
 
 #: lazarusidestrconsts.lislfmfilecorrupt
 msgid "LFM file corrupt"
-msgstr ""
+msgstr "LFM tiedosto on rikki"
 
 #: lazarusidestrconsts.lislfmisok
 msgid "LFM is ok"
-msgstr ""
+msgstr "LFM on kunnossa"
 
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -9856,7 +9855,7 @@ msgstr "kirjastopolku"
 
 #: lazarusidestrconsts.lislibraryprogramdescriptor
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
-msgstr ""
+msgstr "Free Pascal jaettu kirjasto (.dll Windowsissa, .so Linuxissa, .dylib MacOS X:ssä)."
 
 #: lazarusidestrconsts.lisline
 msgid "Line:"
@@ -9880,7 +9879,7 @@ msgstr "Linkityskohde"
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
-msgstr ""
+msgstr "luettelo kaikista case-arvoista"
 
 #: lazarusidestrconsts.lisloadedsuccessfully
 msgid "Loaded successfully"
@@ -14717,7 +14716,7 @@ msgstr "Tiedosto %s%s%s%s näyttää olevan Pascal-ohjelma. Suljetaanko nykyinen
 
 #: lazarusidestrconsts.listhefileseemstobetheprogramfileofanexistinglazarusp
 msgid "The file %s seems to be the program file of an existing Lazarus Project."
-msgstr "Tiedosto %s vaikuttaa Lazarus-projektissa olvalta ohjelmatiedostolta."
+msgstr "Tiedosto %s vaikuttaa Lazarus-projektin ohjelmatiedostolta."
 
 #: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
