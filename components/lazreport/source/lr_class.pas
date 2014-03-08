@@ -9210,7 +9210,7 @@ begin
 
   if not DoInterpFunction(aName, p1, p2, p3, val) then
   begin
-    if Assigned(AggrBand) and AggrBand.Visible then
+    if Assigned(AggrBand){ and AggrBand.Visible } then
       DoUserFunction(aName, p1, p2, p3, val);
   end;
 end;
