@@ -496,6 +496,8 @@ begin
   if TCustomEdit(AWinControl).PasswordChar=#0
     then field:=NSTextField(AllocTextField(AWinControl, AParams))
     else field:=NSTextField(AllocSecureTextField(AWinControl, AParams));
+  NSCell(field.cell).setWraps(false);
+  NSCell(field.cell).setScrollable(true);
   Result:=TLCLIntfHandle(field);
 end;
 
