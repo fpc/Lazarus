@@ -1152,10 +1152,11 @@ begin
   begin
     setTarget(Self);
     setAction(objcselector('actionButtonClick:'));
-    NSNotificationCenter.defaultCenter.addObserver_selector_name_object(Self, objcselector('boundsDidChange:'), NSViewBoundsDidChangeNotification, Result);
-    NSNotificationCenter.defaultCenter.addObserver_selector_name_object(Self, objcselector('frameDidChange:'), NSViewFrameDidChangeNotification, Result);
-    Result.setPostsBoundsChangedNotifications(True);
-    Result.setPostsFrameChangedNotifications(True);
+  //  todo: find a way to release notifications below
+  //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(Self, objcselector('boundsDidChange:'), NSViewBoundsDidChangeNotification, Result);
+  //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(Self, objcselector('frameDidChange:'), NSViewFrameDidChangeNotification, Result);
+  //  Result.setPostsBoundsChangedNotifications(True);
+  //  Result.setPostsFrameChangedNotifications(True);
   end;
 end;
 
