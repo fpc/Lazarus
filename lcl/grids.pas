@@ -1184,6 +1184,7 @@ type
     procedure SetFocus; override;
 
     property SortOrder: TSortOrder read FSortOrder write FSortOrder;
+    property SortColumn: Integer read FSortColumn;
     property TabStop default true;
   end;
 
