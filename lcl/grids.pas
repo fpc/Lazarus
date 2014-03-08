@@ -4260,7 +4260,7 @@ end;
 
 procedure TCustomGrid.WMGetDlgCode(var Msg: TLMNoParams);
 begin
-  Msg.Result := DLGC_WANTARROWS or DLGC_WANTCHARS or DLGC_WANTALLKEYS;
+  Msg.Result := DLGC_WANTARROWS or DLGC_WANTCHARS;
   if goTabs in Options then Msg.Result:= Msg.Result or DLGC_WANTTAB;
 end;
 
