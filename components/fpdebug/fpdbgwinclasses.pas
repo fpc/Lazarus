@@ -76,7 +76,6 @@ type
   private
     FInfo: TCreateProcessDebugInfo;
   protected
-    function GetModuleFileName(AModuleHandle: THandle): string; override;
     function GetHandle: THandle; override;
     function GetLastEventProcessIdentifier: THandle; override;
     function InitializeLoader: TDbgImageLoader; override;
@@ -133,55 +132,7 @@ begin
   DebugLn('FpDbg-ERROR: ', GetLastErrorText);
 end;
 
-{ tDbgWinLibrary }
-
-function tDbgWinLibrary.InitializeLoader: TDbgImageLoader;
-begin
-  result := TDbgImageLoader.Create(FInfo.hFile);
-end;
-
-constructor tDbgWinLibrary.Create(const AProcess: TDbgProcess;
-  const ADefaultName: String; const AModuleHandle: THandle;
-  const ABaseAddr: TDbgPtr; AInfo: TLoadDLLDebugInfo);
-var
-  NamePtr: TDbgPtr;
-  S: String;
-  W: WideString;
-begin
-  inherited Create(AProcess, ADefaultName, AModuleHandle, ABaseAddr);
-  FInfo := AInfo;
-
-  W := '';
-  if Process.ReadOrdinal(TDbgPtr(FInfo.lpImageName), NamePtr)
-  then begin
-    if FInfo.fUnicode<>0
-    then begin
-      Process.ReadWString(NamePtr, MAX_PATH, W);
-    end
-    else begin
-      if Process.ReadString(NamePtr, MAX_PATH, S)
-      then W := S;
-    end;
-  end;
-
-  if W = ''
-  then begin
-    W := GetModuleFileName(AModuleHandle);
-  end;
-
-  if W = ''
-  then W := ADefaultName;
-
-  SetName(W);
-  LoadInfo;
-
-
-
-end;
-
-{ TDbgWinProcess }
-
-function TDbgWinProcess.GetModuleFileName(AModuleHandle: THandle): string;
+function GetModuleFileName(AModuleHandle: THandle): string;
 var
   s: string;
   len: Integer;
@@ -196,6 +147,57 @@ begin
   end;
   result := s;
 end;
+
+function GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
+var
+  NamePtr: TDbgPtr;
+  S: String;
+  W: WideString;
+begin
+  W := '';
+  if (lpImageName<>nil) and AProcess.ReadOrdinal(TDbgPtr(lpImageName), NamePtr)
+  then begin
+    if fUnicode <> 0
+    then begin
+      AProcess.ReadWString(NamePtr, MAX_PATH, W);
+    end
+    else begin
+      if AProcess.ReadString(NamePtr, MAX_PATH, S)
+      then W := S;
+    end;
+  end;
+
+  if W = ''
+  then begin
+    W := GetModuleFileName(hFile);
+  end;
+  result := W;
+end;
+
+{ tDbgWinLibrary }
+
+function tDbgWinLibrary.InitializeLoader: TDbgImageLoader;
+begin
+  result := TDbgImageLoader.Create(FInfo.hFile);
+end;
+
+constructor tDbgWinLibrary.Create(const AProcess: TDbgProcess;
+  const ADefaultName: String; const AModuleHandle: THandle;
+  const ABaseAddr: TDbgPtr; AInfo: TLoadDLLDebugInfo);
+var
+  S: String;
+begin
+  inherited Create(AProcess, ADefaultName, AModuleHandle, ABaseAddr);
+  FInfo := AInfo;
+
+  s := GetProcFilename(AProcess, AInfo.lpImageName, AInfo.fUnicode, AInfo.hFile);
+  if s <> ''
+  then SetName(s);
+
+  LoadInfo;
+end;
+
+{ TDbgWinProcess }
 
 function TDbgWinProcess.GetHandle: THandle;
 begin
@@ -813,34 +815,13 @@ end;
 
 procedure TDbgWinProcess.StartProcess(const AInfo: TCreateProcessDebugInfo);
 var
-  NamePtr: TDbgPtr;
-  S: String;
-  W: WideString;
+  s: string;
 begin
   FInfo := AInfo;
 
-  W := '';
-  if Process.ReadOrdinal(TDbgPtr(AInfo.lpImageName), NamePtr)
-  then begin
-    if AInfo.fUnicode <> 0
-    then begin
-      Process.ReadWString(NamePtr, MAX_PATH, W);
-    end
-    else begin
-      if Process.ReadString(NamePtr, MAX_PATH, S)
-      then W := S;
-    end;
-  end;
-
-  if W = ''
-  then begin
-    W := GetModuleFileName(AInfo.hFile);
-  end;
-
-  if W = ''
-  then W := ADefaultName;
-
-  SetName(W);
+  s := GetProcFilename(Self, AInfo.lpImageName, AInfo.fUnicode, AInfo.hFile);
+  if s <> ''
+  then SetName(s);
 
   LoadInfo;
 

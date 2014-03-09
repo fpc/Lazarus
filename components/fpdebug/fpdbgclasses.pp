@@ -97,7 +97,6 @@ type
   protected
     procedure LoadInfo; virtual;
     function InitializeLoader: TDbgImageLoader; virtual;
-    function GetModuleFileName(AModuleHandle: THandle): string; virtual;
     procedure SetName(const AValue: String);
   public
     constructor Create(const AProcess: TDbgProcess); virtual;
@@ -300,11 +299,6 @@ end;
 function TDbgInstance.InitializeLoader: TDbgImageLoader;
 begin
   result := nil;
-end;
-
-function TDbgInstance.GetModuleFileName(AModuleHandle: THandle): string;
-begin
-  result := '';
 end;
 
 { TDbgLibrary }
