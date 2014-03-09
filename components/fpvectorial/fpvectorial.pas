@@ -148,8 +148,10 @@ type
     spbfBrushColor, spbfBrushStyle, spbfBrushGradient,
     spbfFontColor, spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic,
     spbfFontUnderline, spbfFontStrikeThrough, spbfAlignment,
-    //
-    sseMarginTop, sseMarginBottom, sseMarginLeft, sseMarginRight
+    // Page style
+    sseMarginTop, sseMarginBottom, sseMarginLeft, sseMarginRight,
+    // Positioning
+    ssePosition
     );
 
   TvSetStyleElements = set of TvSetStyleElement;
@@ -177,9 +179,11 @@ type
     Pen: TvPen;
     Brush: TvBrush;
     Font: TvFont;
-    //
+    // Page style
     MarginTop, MarginBottom, MarginLeft, MarginRight: Double; // in mm
     SuppressSpacingBetweenSameParagraphs : Boolean;
+    // Positioning
+    X, Y: Double;
     //
     SetElements: TvSetStyleElements;
     //
@@ -190,6 +194,7 @@ type
     procedure CopyFrom(AFrom: TvStyle);
     procedure ApplyOver(AFrom: TvStyle);
     function CreateStyleCombinedWithParent: TvStyle;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
   end;
 
   TvListStyleKind = (vlskBullet, vlskNumeric);
@@ -392,7 +397,7 @@ type
     function AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
     function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
-    function GenerateDebugStrForFPColor(AColor: TFPColor): string;
+    class function GenerateDebugStrForFPColor(AColor: TFPColor): string;
   end;
 
   TvEntityClass = class of TvEntity;
@@ -1740,6 +1745,41 @@ begin
   if Parent <> nil then Result.ApplyOver(Parent);
 end;
 
+function TvStyle.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr, lParentName: string;
+begin
+  if Parent <> nil then lParentName := Parent.Name
+  else lParentName := '<No Parent>';
+
+  lStr := Format('[%s] Name=%s Parent=%s',
+    [Self.ClassName, Name, lParentName]);
+
+  if spbfPenColor in SetElements then
+  begin
+    lStr := lStr + Format('Pen.Color==%s', [TvEntity.GenerateDebugStrForFPColor(Pen.Color)]);
+  end;
+{    // Pen, Brush and Font
+    spbfPenColor, spbfPenStyle, spbfPenWidth,
+    spbfBrushColor, spbfBrushStyle, spbfBrushGradient,
+    spbfFontColor, spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic,
+    spbfFontUnderline, spbfFontStrikeThrough, spbfAlignment,
+    // Page style
+    sseMarginTop, sseMarginBottom, sseMarginLeft, sseMarginRight,
+    // Positioning
+    ssePosition
+    );
+{    ,
+    Font.Size, Font.Name, Font.Orientation,
+    BoolToStr(Font.Bold),
+    BoolToStr(Font.Italic),
+    BoolToStr(Font.Underline),
+    BoolToStr(Font.StrikeThrough),
+    GetEnumName(TypeInfo(TvTextAnchor), integer(TextAnchor))}
+  Result := ADestRoutine(lStr, APageItem);
+end;
+
 { TvTableRow }
 
 constructor TvTableRow.create(APage: TvPage);
@@ -2273,7 +2313,7 @@ begin
   Result := ADestRoutine(lStr, APageItem);
 end;
 
-function TvEntity.GenerateDebugStrForFPColor(AColor: TFPColor): string;
+class function TvEntity.GenerateDebugStrForFPColor(AColor: TFPColor): string;
 begin
   Result := IntToHex(AColor.Red div $100, 2) + IntToHex(AColor.Green div $100, 2) + IntToHex(AColor.Blue div $100, 2) + IntToHex(AColor.Alpha div $100, 2);
 end;
@@ -3238,6 +3278,11 @@ begin
     GetEnumName(TypeInfo(TvTextAnchor), integer(TextAnchor))
   ]);
   Result := ADestRoutine(lStr, APageItem);
+  // Add the style as a sub-item
+  if Style <> nil then
+  begin
+    Style.GenerateDebugTree(ADestRoutine, Result);
+  end;
 end;
 
 { TvCircle }
@@ -4959,7 +5004,8 @@ var
   lStr: string;
   lCurEntity: TvEntity;
 begin
-  lStr := Format('[%s] Name="%s"' + FExtraDebugStr, [Self.ClassName, Self.Name]);
+  lStr := Format('[%s] Name="%s" X=%f Y=%f' + FExtraDebugStr,
+    [Self.ClassName, Self.Name, X, Y]);
 
   // Add styles
   // Pen

@@ -14,7 +14,7 @@ unit svgvectorialreader;
 interface
 
 uses
-  Classes, SysUtils, math,
+  Classes, SysUtils, math, contnrs,
   fpimage, fpcanvas, laz2_xmlread, laz2_dom, fgl,
   // image data formats
   fpreadpng,
@@ -47,6 +47,13 @@ type
   end;
 
   TSVGTokenList = specialize TFPGList<TSVGToken>;
+
+  { TSVGObjectStack }
+
+  TSVGObjectStack = class(TObjectStack)
+  public
+    function GetList: TList;
+  end;
 
   { TSVGPathTokenizer }
 
@@ -137,6 +144,13 @@ const
 
   FLOAT_MILIMETERS_PER_PIXEL = 5*0.2822; // DPI 90 = 1 / 90 inches per pixel => Actually I changed the value by this factor! Because otherwise it looks ugly!
   FLOAT_PIXELS_PER_MILIMETER = 1 / FLOAT_MILIMETERS_PER_PIXEL; // DPI 90 = 1 / 90 inches per pixel
+
+{ TSVGObjectStack }
+
+function TSVGObjectStack.GetList: TList;
+begin
+  Result := List;
+end;
 
 { TSVGPathTokenizer }
 
@@ -2283,23 +2297,119 @@ begin
   Result := lRect;
 end;
 
+{
+ <text x="0" y="15" fill="red" transform="rotate(30 20,40)">I love SVG</text>
+
+ Example with nested tspan:
+
+ <text class="TextShape">
+   <tspan class="TextParagraph" font-family="Times New Roman, serif" font-size="917px" font-weight="400">
+     <tspan class="TextPosition" x="3650" y="11251">
+       <tspan fill="rgb(0,0,0)" stroke="none">This </tspan>
+       <tspan fill="rgb(197,0,11)" stroke="none">size</tspan>
+       <tspan fill="rgb(0,0,0)" stroke="none"> is bigger.</tspan>
+     </tspan>
+   </tspan>
+ </text>
+}
 function TvSVGVectorialReader.ReadTextFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
 var
   lTextStr: string = '';
   lx, ly: double;
   lText: TvText;
+  lParagraph: TvParagraph;
+  lTextSpanStack: TSVGObjectStack;
+  lCurStyle: TvStyle;
   i: Integer;
   lNodeName, lNodeValue: DOMString;
-  lCurNode: TDOMNode;
+
+  procedure ApplyStackStylesToText(ADest: TvText);
+  var
+    j: Integer;
+  begin
+    for j := 0 to lTextSpanStack.GetList().Count-1 do
+    begin
+      lCurStyle := TvStyle(lTextSpanStack.GetList().Items[j]);
+      if ADest.Style = nil then ADest.Style := TvStyle.Create;
+      ADest.Style.ApplyOver(lCurStyle);
+    end;
+  end;
+
+  procedure ReadTextSpans(ACurNode: TDOMNode);
+  var
+    j: Integer;
+    lCurNode: TDOMNode;
+    lCurObject: TObject;
+  begin
+    lCurNode := ACurNode.FirstChild;
+    while lCurNode <> nil do
+    begin
+      lNodeName := LowerCase(lCurNode.NodeName);
+      lNodeValue := LowerCase(lCurNode.NodeValue);
+
+      if lNodeName = 'tspan' then
+      begin
+        lCurStyle := TvStyle.Create;
+        lTextSpanStack.Push(lCurStyle);
+
+        // read the attributes
+        for j := 0 to lCurNode.Attributes.Length - 1 do
+        begin
+          lNodeName := lCurNode.Attributes.Item[j].NodeName;
+          lNodeValue := lCurNode.Attributes.Item[j].NodeValue;
+          if  lNodeName = 'x' then
+          begin
+            Include(lCurStyle.SetElements, ssePosition);
+            lCurStyle.X := StringWithUnitToFloat(lNodeValue)
+          end
+          else if lNodeName = 'y' then
+          begin
+            Include(lCurStyle.SetElements, ssePosition);
+            lCurStyle.Y := StringWithUnitToFloat(lNodeValue)
+          end
+          //else if lNodeName = 'id' then
+          //  lText.Name := lNodeValue
+          //else if lNodeName = 'style' then
+          //  ReadSVGStyle(lNodeValue, lParagraph)
+          else if IsAttributeFromStyle(lNodeName) then
+          begin
+            //ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
+            //ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
+          end;
+        end;
+
+        // Recursion
+        ReadTextSpans(lCurNode);
+
+        // Get rid of the current style
+        lCurObject := lTextSpanStack.Pop();
+        if lCurObject <> nil then lCurObject.Free;
+      end
+      else
+      begin
+        lText := lParagraph.AddText(lNodeValue);
+
+        // Apply the layer style
+        ApplyStackStylesToText(lText);
+      end;
+
+
+      lCurNode := lCurNode.NextSibling;
+    end;
+  end;
+
 begin
   lx := 0.0;
   ly := 0.0;
 
-  lText := TvText.Create(nil);
+  // The text contents are inside as a child text, not as a attribute
+  // ex:   <text x="0" y="15" fill="red" transform="rotate(30 20,40)">I love SVG</text>
+  // For simple text, but much more complex structures appear if there are
+  // text spans
 
-  // Apply the layer style
-  ApplyLayerStyles(lText);
+  lParagraph := TvParagraph.Create(AData);
+  lTextSpanStack := TSVGObjectStack.Create;
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -2313,28 +2423,21 @@ begin
     else if lNodeName = 'id' then
       lText.Name := lNodeValue
     else if lNodeName = 'style' then
-      ReadSVGStyle(lNodeValue, lText)
+      ReadSVGStyle(lNodeValue, lParagraph)
     else if IsAttributeFromStyle(lNodeName) then
     begin
-      ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
-      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
+      ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, lParagraph);
+      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lParagraph);
     end;
   end;
 
-  // The text contents are inside as a child text, not as a attribute
-  // ex:   <text x="0" y="15" fill="red" transform="rotate(30 20,40)">I love SVG</text>
-  if Anode.FirstChild <> nil then
-    lTextStr := Anode.FirstChild.NodeValue;
-  // Add the first line
-  lText.Value.Add(lTextStr);
-
   // Recover the position if there was a transformation matrix
-  lx := lx + lText.X;
-  ly := ly + lText.Y;
+  lx := lx + lParagraph.X;
+  ly := ly + lParagraph.Y;
 
   // Set the coordinates
   ConvertSVGCoordinatesToFPVCoordinates(
-        AData, lx, ly, lText.X, lText.Y);
+        AData, lx, ly, lParagraph.X, lParagraph.Y);
 
   // Now add other lines, which appear as <tspan ...>another line</tspan>
   // Example:
@@ -2343,18 +2446,11 @@ begin
   //   <tspan x="10" y="70">Second line</tspan>
   // </text>
   // These other lines can be positioned, so they need to appear as independent TvText elements
-{  lCurNode := Anode.FirstChild;
-  while lCurNode <> nil do
-  begin
-    lNodeName := LowerCase(lCurNode.NodeName);
-    if lNodeName <> 'tspan' then Continue;
-    ReadTextFromNode(lCurNode, AData, ADoc);
-
-    lCurNode := lCurNode.NextSibling;
-  end;}
+  ReadTextSpans(ANode);
 
   // Finalization
-  Result := lText;
+  lTextSpanStack.Free;
+  Result := lParagraph;
 end;
 
 // <use xlink:href="#svgbar" transform="rotate(45)"/>
