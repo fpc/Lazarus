@@ -42,6 +42,8 @@ uses
 
 type
   TFPDState = (dsStop, dsRun, dsPause, dsQuit, dsEvent);
+  TFPDEvent = (deExitProcess, deBreakpoint, deException, deCreateProcess, deLoadLibrary);
+  TFPDMode = (dm32, dm64);
 
   TDbgProcess = class;
 
@@ -127,6 +129,7 @@ type
 
   TDbgProcess = class(TDbgInstance)
   private
+    FExitCode: DWord;
     FProcessID: Integer;
     FThreadID: Integer;
 
@@ -145,9 +148,11 @@ type
 
     FMainThread: TDbgThread;
     function GetHandle: THandle; virtual;
+    procedure SetExitCode(AValue: DWord);
+    function GetLastEventProcessIdentifier: THandle; virtual;
   public
     class function StartInstance(AFileName: string; AParams: string): TDbgProcess; virtual;
-    constructor Create(const AProcessID, AThreadID: Integer);
+    constructor Create(const AName: string; const AProcessID, AThreadID: Integer);
     destructor Destroy; override;
     function  AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
     function  FindSymbol(const AName: String): TFpDbgSymbol;
@@ -163,6 +168,8 @@ type
     function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean; virtual;
 
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean; virtual;
+    function WaitForDebugEvent(out ProcessIdentifier: THandle): boolean; virtual; abstract;
+    function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; virtual; abstract;
 
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
 
@@ -170,6 +177,8 @@ type
     property Name: String read FName write SetName;
     property ProcessID: integer read FProcessID;
     property ThreadID: integer read FThreadID;
+    property ExitCode: DWord read FExitCode;
+    property LastEventProcessIdentifier: THandle read GetLastEventProcessIdentifier;
   end;
   TDbgProcessClass = class of TDbgProcess;
 
@@ -179,6 +188,16 @@ type
     DbgBreakpointClass : TDbgBreakpointClass;
     DbgProcessClass : TDbgProcessClass;
   end;
+
+var
+  {$ifdef cpui386}
+  GMode: TFPDMode = dm32;
+  {$else}
+  GMode: TFPDMode = dm64;
+  {$endif}
+
+const
+  DBGPTRSIZE: array[TFPDMode] of Integer = (4, 8);
 
 function OSDbgClasses: TOSDbgClasses;
 
@@ -306,7 +325,7 @@ begin
   FBreakMap.Add(ALocation, Result);
 end;
 
-constructor TDbgProcess.Create(const AProcessID, AThreadID: Integer);
+constructor TDbgProcess.Create(const AName: string; const AProcessID, AThreadID: Integer);
 const
   {.$IFDEF CPU64}
   MAP_ID_SIZE = itu8;
@@ -323,6 +342,8 @@ begin
   FCurrentBreakpoint := nil;
 
   FSymInstances := TList.Create;
+
+  SetName(AName);
 
   inherited Create(Self);
 
@@ -431,6 +452,11 @@ begin
   result := 0;
 end;
 
+procedure TDbgProcess.SetExitCode(AValue: DWord);
+begin
+  FExitCode:=AValue;
+end;
+
 class function TDbgProcess.StartInstance(AFileName: string; AParams: string): TDbgProcess;
 begin
   Log('Debug support for this platform is not available.');
@@ -441,6 +467,11 @@ procedure TDbgProcess.ThreadDestroyed(const AThread: TDbgThread);
 begin
   if AThread = FMainThread
   then FMainThread := nil;
+end;
+
+function TDbgProcess.GetLastEventProcessIdentifier: THandle;
+begin
+  result := 0;
 end;
 
 function TDbgProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;

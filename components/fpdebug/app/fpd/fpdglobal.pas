@@ -36,23 +36,14 @@ unit FPDGlobal;
 interface
 
 uses
-  SysUtils, FPDType, Maps, FpDbgUtil, FpDbgClasses, FpDbgWinExtra;
+  SysUtils, FPDType, Maps, FpDbgUtil, FpDbgClasses;
 
 type
-  TFPDMode = (dm32, dm64);
   TFPDImageInfo = (iiNone, iiName, iiDetail);
-  
-const
-  DBGPTRSIZE: array[TFPDMode] of Integer = (4, 8);
 
 var
   GState: TFPDState;
   GFileName: String;
-  {$ifdef cpui386}
-  GMode: TFPDMode = dm32;
-  {$else}
-  GMode: TFPDMode = dm64;
-  {$endif}
   GBreakOnLibraryLoad: Boolean = False;
   GImageInfo: TFPDImageInfo = iiNone;
 
@@ -62,21 +53,15 @@ var
   GProcessMap: TMap;
   
 
-function GetProcess(const AID: Integer; out AProcess: TDbgProcess): Boolean;
-function FormatAddress(const AAddress): String;
+function GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
 
 implementation
 
-function GetProcess(const AID: Integer; out AProcess: TDbgProcess): Boolean;
+function GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
 begin
-  Result := GProcessMap.GetData(AID, AProcess) and (AProcess <> nil);
+  Result := GProcessMap.GetData(AProcessIdentifier, AProcess) and (AProcess <> nil);
 //  if not Result
 //  then Log('Unknown Process ID %u', [AID]);
-end;
-
-function FormatAddress(const AAddress): String;
-begin
-  Result := HexValue(AAddress, DBGPTRSIZE[GMode], [hvfIncludeHexchar]);
 end;
 
 initialization

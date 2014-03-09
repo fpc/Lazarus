@@ -42,7 +42,23 @@ uses
   Windows;
 {$endif}
 
+const
+  FACILITY_DEBUGGER                                  = $001;
+  FACILITY_RPC_RUNTIME                               = $002;
+  FACILITY_RPC_STUBS                                 = $003;
+  FACILITY_IO_ERROR_CODE                             = $004;
+  FACILITY_TERMINAL_SERVER                           = $00A;
+  FACILITY_USB_ERROR_CODE                            = $010;
+  FACILITY_HID_ERROR_CODE                            = $011;
+  FACILITY_FIREWIRE_ERROR_CODE                       = $012;
+  FACILITY_CLUSTER_ERROR_CODE                        = $013;
+  FACILITY_ACPI_ERROR_CODE                           = $014;
+  FACILITY_SXS_ERROR_CODE                            = $015;
 
+  STATUS_SEVERITY_SUCCESS                            = $0;
+  STATUS_SEVERITY_INFORMATIONAL                      = $1;
+  STATUS_SEVERITY_WARNING                            = $2;
+  STATUS_SEVERITY_ERROR                              = $3;
 
 function GetLastErrorText(AErrorCode: Cardinal): String; {$IFNDEF FPC} overload; {$ENDIF}
 function GetLastErrorText: String; {$IFNDEF FPC} overload; {$ENDIF}

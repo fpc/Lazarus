@@ -50,9 +50,13 @@ function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
 function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
 procedure Log(const AText: String; const AParams: array of const); overload;
 procedure Log(const AText: String); overload;
+function FormatAddress(const AAddress): String;
 
 
 implementation
+
+uses
+  FpDbgClasses;
 
 function CompareUtf8BothCase(AnUpper, AnLower, AnUnknown: PChar): Boolean;
 var
@@ -113,6 +117,11 @@ end;
 function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
 begin
   Result := Pointer(((PtrUInt(Src) + Alignment - 1) and not PtrUInt(Alignment - 1)));
+end;
+
+function FormatAddress(const AAddress): String;
+begin
+  Result := HexValue(AAddress, DBGPTRSIZE[GMode], [hvfIncludeHexchar]);
 end;
 
 function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
