@@ -149,9 +149,7 @@ type
     spbfFontColor, spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic,
     spbfFontUnderline, spbfFontStrikeThrough, spbfAlignment,
     // Page style
-    sseMarginTop, sseMarginBottom, sseMarginLeft, sseMarginRight,
-    // Positioning
-    ssePosition
+    sseMarginTop, sseMarginBottom, sseMarginLeft, sseMarginRight
     );
 
   TvSetStyleElements = set of TvSetStyleElement;
@@ -170,6 +168,9 @@ type
   { TvStyle }
 
   TvStyle = class
+  protected
+    FExtraDebugStr: string;
+  public
     Name: string;
     Parent: TvStyle; // Can be nil
     Kind: TvStyleKind;
@@ -182,17 +183,15 @@ type
     // Page style
     MarginTop, MarginBottom, MarginLeft, MarginRight: Double; // in mm
     SuppressSpacingBetweenSameParagraphs : Boolean;
-    // Positioning
-    X, Y: Double;
     //
     SetElements: TvSetStyleElements;
     //
     Constructor Create;
 
     function GetKind: TvStyleKind; // takes care of parenting
-    procedure Clear();
+    procedure Clear(); virtual;
     procedure CopyFrom(AFrom: TvStyle);
-    procedure ApplyOver(AFrom: TvStyle);
+    procedure ApplyOver(AFrom: TvStyle); virtual;
     function CreateStyleCombinedWithParent: TvStyle;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
   end;
@@ -1757,9 +1756,7 @@ begin
     [Self.ClassName, Name, lParentName]);
 
   if spbfPenColor in SetElements then
-  begin
     lStr := lStr + Format('Pen.Color==%s', [TvEntity.GenerateDebugStrForFPColor(Pen.Color)]);
-  end;
 {    // Pen, Brush and Font
     spbfPenColor, spbfPenStyle, spbfPenWidth,
     spbfBrushColor, spbfBrushStyle, spbfBrushGradient,
@@ -1777,6 +1774,7 @@ begin
     BoolToStr(Font.Underline),
     BoolToStr(Font.StrikeThrough),
     GetEnumName(TypeInfo(TvTextAnchor), integer(TextAnchor))}
+  lStr := lStr + FExtraDebugStr;
   Result := ADestRoutine(lStr, APageItem);
 end;
 

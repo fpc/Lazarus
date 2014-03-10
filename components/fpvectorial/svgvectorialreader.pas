@@ -55,6 +55,15 @@ type
     function GetList: TList;
   end;
 
+  { TSVGTextSpanStyle }
+
+  TSVGTextSpanStyle = class(TvStyle)
+  public
+    PositionSet: Boolean;
+    X, Y: Double;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+  end;
+
   { TSVGPathTokenizer }
 
   TSVGPathTokenizer = class
@@ -70,6 +79,8 @@ type
     function DebugOutTokensAsString: string;
   end;
 
+  TSVGCoordinateKind = (sckUnknown, sckX, sckY);
+
   { TvSVGVectorialReader }
 
   TvSVGVectorialReader = class(TvCustomVectorialReader)
@@ -77,6 +88,9 @@ type
     FPointSeparator, FCommaSeparator: TFormatSettings;
     FSVGPathTokenizer: TSVGPathTokenizer;
     FLayerStylesKeys, FLayerStylesValues: TFPList; // of TStringList;
+    // View box adjustment
+    ViewBoxAdjustment: Boolean;
+    ViewBox_Width, ViewBox_Height, Page_Width, Page_Height: Double;
     // Defs section
     FBrushDefs: TFPList; // of TvEntityWithPenAndBrush;
     // debug symbols
@@ -113,7 +127,7 @@ type
     function ReadTextFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadUseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     //
-    function  StringWithUnitToFloat(AStr: string): Double;
+    function  StringWithUnitToFloat(AStr: string; ACoordKind: TSVGCoordinateKind = sckUnknown): Double;
     function  StringFloatZeroToOneToWord(AStr: string): Word;
     procedure ConvertSVGCoordinatesToFPVCoordinates(
       const AData: TvVectorialPage;
@@ -144,6 +158,17 @@ const
 
   FLOAT_MILIMETERS_PER_PIXEL = 5*0.2822; // DPI 90 = 1 / 90 inches per pixel => Actually I changed the value by this factor! Because otherwise it looks ugly!
   FLOAT_PIXELS_PER_MILIMETER = 1 / FLOAT_MILIMETERS_PER_PIXEL; // DPI 90 = 1 / 90 inches per pixel
+
+{ TSVGTextSpanStyle }
+
+function TSVGTextSpanStyle.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+begin
+  FExtraDebugStr := '';
+  if PositionSet then
+    FExtraDebugStr := FExtraDebugStr + Format(' X=%f Y=%f', [X, Y]);
+  Result:=inherited GenerateDebugTree(ADestRoutine, APageItem);
+end;
 
 { TSVGObjectStack }
 
@@ -2319,8 +2344,8 @@ var
   lx, ly: double;
   lText: TvText;
   lParagraph: TvParagraph;
-  lTextSpanStack: TSVGObjectStack;
-  lCurStyle: TvStyle;
+  lTextSpanStack: TSVGObjectStack; // of TSVGTextSpanStyle
+  lCurStyle: TSVGTextSpanStyle;
   i: Integer;
   lNodeName, lNodeValue: DOMString;
 
@@ -2330,9 +2355,14 @@ var
   begin
     for j := 0 to lTextSpanStack.GetList().Count-1 do
     begin
-      lCurStyle := TvStyle(lTextSpanStack.GetList().Items[j]);
+      lCurStyle := TSVGTextSpanStyle(lTextSpanStack.GetList().Items[j]);
       if ADest.Style = nil then ADest.Style := TvStyle.Create;
       ADest.Style.ApplyOver(lCurStyle);
+      if lCurStyle.PositionSet then
+      begin
+        ADest.X := ADest.X + lCurStyle.X; // or substitute completely ?
+        ADest.Y := ADest.Y + lCurStyle.Y;
+      end;
     end;
   end;
 
@@ -2350,7 +2380,7 @@ var
 
       if lNodeName = 'tspan' then
       begin
-        lCurStyle := TvStyle.Create;
+        lCurStyle := TSVGTextSpanStyle.Create;
         lTextSpanStack.Push(lCurStyle);
 
         // read the attributes
@@ -2360,13 +2390,13 @@ var
           lNodeValue := lCurNode.Attributes.Item[j].NodeValue;
           if  lNodeName = 'x' then
           begin
-            Include(lCurStyle.SetElements, ssePosition);
-            lCurStyle.X := StringWithUnitToFloat(lNodeValue)
+            lCurStyle.PositionSet := True;
+            lCurStyle.X := StringWithUnitToFloat(lNodeValue, sckX)
           end
           else if lNodeName = 'y' then
           begin
-            Include(lCurStyle.SetElements, ssePosition);
-            lCurStyle.Y := StringWithUnitToFloat(lNodeValue)
+            lCurStyle.PositionSet := True;
+            lCurStyle.Y := StringWithUnitToFloat(lNodeValue, sckY)
           end
           //else if lNodeName = 'id' then
           //  lText.Name := lNodeValue
@@ -2417,9 +2447,9 @@ begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
     lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if  lNodeName = 'x' then
-      lx := lx + StringWithUnitToFloat(lNodeValue)
+      lx := lx + StringWithUnitToFloat(lNodeValue, sckX)
     else if lNodeName = 'y' then
-      ly := ly + StringWithUnitToFloat(lNodeValue)
+      ly := ly + StringWithUnitToFloat(lNodeValue, sckY)
     else if lNodeName = 'id' then
       lText.Name := lNodeValue
     else if lNodeName = 'style' then
@@ -2512,7 +2542,7 @@ begin
   Result := lInsert;
 end;
 
-function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string): Double;
+function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string; ACoordKind: TSVGCoordinateKind = sckUnknown): Double;
 var
   UnitStr, ValueStr: string;
   Len: Integer;
@@ -2552,6 +2582,10 @@ begin
   else // If there is no unit, just use StrToFloat
   begin
     Result := StrToFloat(AStr, FPointSeparator);
+    if ViewBoxAdjustment and (ACoordKind = sckX) then
+      Result := Result * Page_Width / ViewBox_Width;
+    if ViewBoxAdjustment and (ACoordKind = sckY) then
+      Result := Result * Page_Height / ViewBox_Height;
   end;
 end;
 
@@ -2693,6 +2727,7 @@ var
   lx, ly, lx2, ly2: Double;
 begin
   FPathNumber := 0;
+  ViewBoxAdjustment := False;
 
   // ----------------
   // Read the properties of the <svg> tag
@@ -2704,6 +2739,8 @@ begin
     lDocNeedsSizeAutoDetection := False;
     AData.Height := StringWithUnitToFloat(lStr);
   end;
+  Page_Width := AData.Width;
+  Page_Height := AData.Height;
 
   {$ifdef SVG_MERGE_LAYER_STYLES}
   FLayerStylesKeys.Clear;
@@ -2721,9 +2758,20 @@ begin
     if lNodeName = 'viewBox' then
     begin
       lViewBox := ReadSpaceSeparatedFloats(lNodeValue, '');
-      lDocNeedsSizeAutoDetection := False;
-      AData.Width := lViewBox[2] - lViewBox[0];
-      AData.Height := lViewBox[3] - lViewBox[1];
+      if lDocNeedsSizeAutoDetection then // Has only ViewBox
+      begin
+        lDocNeedsSizeAutoDetection := False;
+        AData.Width := lViewBox[2] - lViewBox[0];
+        AData.Height := lViewBox[3] - lViewBox[1];
+        ViewBox_Width := 0;
+        ViewBox_Height := 0;
+      end
+      else // Has both viewBox and width/height!
+      begin
+        ViewBox_Width := lViewBox[2] - lViewBox[0];
+        ViewBox_Height := lViewBox[3] - lViewBox[1];
+        ViewBoxAdjustment := True;
+      end;
     end
     else if lNodeName = 'style' then
     begin
