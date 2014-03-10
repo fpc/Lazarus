@@ -1316,6 +1316,8 @@ type
     { Drawing methods }
     procedure PositionEntitySubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double);
     procedure DrawBackground(ADest: TFPCustomCanvas);
+    procedure RenderPageBorder(ADest: TFPCustomCanvas;
+      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
     procedure Render(ADest: TFPCustomCanvas;
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
     { Debug methods }
@@ -5330,7 +5332,7 @@ begin
 
       OldTextX := lText.X;
       OldTextY := lText.Y;
-      lText.X := lText.Y + X + lCurWidth;
+      lText.X := lText.X + X + lCurWidth;
       lText.Y := lText.Y + Y;
 
       lText.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
@@ -6165,6 +6167,37 @@ begin
   ADest.Pen.Style := psSolid;
 end;
 
+procedure TvVectorialPage.RenderPageBorder(ADest: TFPCustomCanvas;
+  ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  lLeft, lTop, lRight, lBottom: Integer;
+begin
+  // Fix the min/max values
+  if MinX = MaxX then MaxX := MinX + Width;
+  if MinY = MaxY then MaxY := MinY + Height;
+
+  lLeft := CoordToCanvasX(MinX);
+  lTop := CoordToCanvasY(MinY);
+  lRight := CoordToCanvasX(MaxX);
+  lBottom := CoordToCanvasY(MaxY);
+
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.FPColor := colBlack;
+  ADest.Pen.Style := psSolid;
+  ADest.Rectangle(lLeft, lTop, lRight, lBottom);
+end;
+
 {@@
   This function draws a FPVectorial vectorial page to a TFPCustomCanvas
   descendent, such as TCanvas from the LCL.
@@ -6913,7 +6946,8 @@ begin
   for i:=0 to FPages.Count-1 do
   begin
     p := TvPage(FPages[i]);
-    lPageItem := ADestRoutine(Format('Page %d', [i]), nil);
+    lPageItem := ADestRoutine(Format('Page %d Width=%f Height=%f MinX=%f MaxX=%f MinY=%f MaxY=%f',
+      [i, p.Width, p.Height, p.MinX, p.MaxX, p.MinY, p.MaxY]), nil);
     p.GenerateDebugTree(ADestRoutine, lPageItem);
   end;
 end;

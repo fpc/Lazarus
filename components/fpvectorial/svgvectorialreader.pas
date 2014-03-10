@@ -2413,7 +2413,7 @@ var
       lCurStyle.ApplyIntoEntity(ADest);
       if lCurStyle.PositionSet then
       begin
-        ADest.X := ADest.X + lCurStyle.X; // or substitute completely ?
+        ADest.X := ADest.X + lCurStyle.X;
         ADest.Y := ADest.Y + lCurStyle.Y;
       end;
     end;
@@ -2441,7 +2441,8 @@ var
         begin
           lNodeName := lCurNode.Attributes.Item[j].NodeName;
           lNodeValue := lCurNode.Attributes.Item[j].NodeValue;
-          if  lNodeName = 'x' then
+          lNodeName := LowerCase(lNodeName);
+          if lNodeName = 'x' then
           begin
             lCurStyle.PositionSet := True;
             lCurStyle.X := StringWithUnitToFloat(lNodeValue, sckX);
@@ -2449,7 +2450,7 @@ var
           else if lNodeName = 'y' then
           begin
             lCurStyle.PositionSet := True;
-            lCurStyle.Y := StringWithUnitToFloat(lNodeValue, sckY);
+            lCurStyle.Y := StringWithUnitToFloat(lNodeValue, sckY) - lParagraph.Y;
           end
           //else if lNodeName = 'id' then
           //  lText.Name := lNodeValue
