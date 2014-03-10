@@ -5780,6 +5780,7 @@ end;
 function TDbgDwarfValueIdentifier.GetMember(AIndex: Integer): TFpDbgSymbol;
 var
   ti: TFpDbgSymbol;
+  k: TDbgSymbolKind;
 begin
   ti := TypeInfo;
   if ti = nil then begin
@@ -5787,10 +5788,12 @@ begin
     exit;
   end;
 
+  k := ti.Kind;
+  // while holding result, until refcount added, do not call any function
   Result := ti.Member[AIndex];
   assert((Result = nil) or (Result is TDbgDwarfValueIdentifier), 'TDbgDwarfValueIdentifier.GetMember is Value');
 
-  if (ti.Kind in [skClass, skObject, skRecord {, skArray}]) and
+  if (k in [skClass, skObject, skRecord {, skArray}]) and
      (Result <> nil) and (Result is TDbgDwarfValueIdentifier)
   then begin
     if FMembers = nil then
@@ -5803,6 +5806,7 @@ end;
 function TDbgDwarfValueIdentifier.GetMemberByName(AIndex: String): TFpDbgSymbol;
 var
   ti: TFpDbgSymbol;
+  k: TDbgSymbolKind;
 begin
   ti := TypeInfo;
   if ti = nil then begin
@@ -5810,10 +5814,13 @@ begin
     exit;
   end;
 
+  k := ti.Kind;
+
+  // while holding result, until refcount added, do not call any function
   Result := ti.MemberByName[AIndex];
   assert((Result = nil) or (Result is TDbgDwarfValueIdentifier), 'TDbgDwarfValueIdentifier.GetMember is Value');
 
-  if (ti.Kind in [skClass, skObject, skRecord {, skArray}]) and
+  if (k in [skClass, skObject, skRecord {, skArray}]) and
      (Result <> nil) and (Result is TDbgDwarfValueIdentifier)
   then begin
     if FMembers = nil then
