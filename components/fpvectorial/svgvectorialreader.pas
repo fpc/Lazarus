@@ -959,7 +959,7 @@ begin
   else if AKey = 'font-weight' then
   begin
     case lLowerValue of
-    'bold': ADestEntity.Font.Bold := True;
+    'bold', '700', '800', '900': ADestEntity.Font.Bold := True;
     end;
   end
   // Other text attributes, non-font ones
@@ -1009,7 +1009,7 @@ begin
   else if AKey = 'font-weight' then
   begin
     case lLowerValue of
-    'bold': ADest.Font.Bold := True;
+    'bold', '700', '800', '900': ADest.Font.Bold := True;
     else
       ADest.Font.Bold := False;
     end;
