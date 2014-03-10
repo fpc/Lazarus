@@ -789,6 +789,8 @@ type
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual;
+    class function GetPrecedenceFromKind(AKind: TvFormulaElementKind): Byte; // 0 is the smallest precedence
+    class function IsLeftAssociativeFromKind(AKind: TvFormulaElementKind): Boolean;
   end;
 
   { TvFormula }
@@ -1398,7 +1400,7 @@ var
   GvVectorialFormats: array of TvVectorialFormatData;
 
 const
-  FormulaOperators = [fekSubtraction, fekMultiplication, fekSum, fekFraction];
+  FormulaOperators = [fekSubtraction, fekMultiplication, fekSum, fekFraction, fekRoot, fekPower];
 
 procedure RegisterVectorialReader(
   AReaderClass: TvVectorialReaderClass;
@@ -4485,6 +4487,29 @@ begin
   end;
 end;
 
+// http://en.wikipedia.org/wiki/Shunting-yard_algorithm
+class function TvFormulaElement.GetPrecedenceFromKind(
+  AKind: TvFormulaElementKind): Byte;
+begin
+  Result := 0;
+  case AKind of
+  fekSubtraction, fekSum: Result := 2;
+  fekMultiplication, fekFraction: Result := 3;
+  //fekRoot,   // A root. For example sqrt(something). Number gives the root, usually 2, and inside it goes a Formula
+  fekPower: Result := 4;
+  end;
+end;
+
+// See http://en.wikipedia.org/wiki/Shunting-yard_algorithm
+class function TvFormulaElement.IsLeftAssociativeFromKind(
+  AKind: TvFormulaElementKind): Boolean;
+begin
+  Result := True;
+  case AKind of
+  fekPower: Result := False;
+  end;
+end;
+
 { TvFormula }
 
 procedure TvFormula.CallbackDeleteElement(data, arg: pointer);
@@ -4562,12 +4587,30 @@ var
   procedure PopFromStackIntoList(APopTopOperators: Boolean; APopUntilParenteses: Boolean);
   var
     lElement: TvFormulaElement;
+    lAllowContinue: Boolean;
   begin
     while OperatorStack.Count > 0 do
     begin
       lElement := OperatorStack.Pop() as TvFormulaElement;
-      if APopTopOperators and (not (lElement.Kind in FormulaOperators)) then Exit;
+
+      // while there is an operator token, o2, at the top of the stack, and
+      // either o1 is left-associative and its precedence is equal to that of o2,
+      // or o1 has precedence less than that of o2,
+      if APopTopOperators then
+      begin
+        if not (lElement.Kind in FormulaOperators) then Exit;
+
+        lAllowContinue := TvFormulaElement.IsLeftAssociativeFromKind(lElement.Kind)
+         and (TvFormulaElement.GetPrecedenceFromKind(lElement.Kind) =
+              TvFormulaElement.GetPrecedenceFromKind(CurItem.Kind));
+        lAllowContinue := lAllowContinue or
+          (TvFormulaElement.GetPrecedenceFromKind(lElement.Kind) >
+          TvFormulaElement.GetPrecedenceFromKind(CurItem.Kind));
+        if not lAllowContinue then Exit;
+      end;
+
       if APopUntilParenteses and (lElement.Kind = fekParentesesOpen) then Exit;
+
       FElements.Add(lElement);
     end;
   end;
