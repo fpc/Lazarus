@@ -280,11 +280,11 @@ procedure TSynEditTrimSpaceList.Delete(AEntryIdx: Integer);
 begin
   Assert((AEntryIdx >= 0) and (AEntryIdx < FCount), 'TSynEditTrimSpaceList.Delete index');
   Entries[AEntryIdx].TrimmedSpaces := '';
+  dec(FCount);
   if AEntryIdx < FCount then begin
     Move(Entries[AEntryIdx+1], Entries[AEntryIdx], (FCount-AEntryIdx)*SizeOf(Entries[0]));
-    Pointer(Entries[FCount-1].TrimmedSpaces) := nil;
+    Pointer(Entries[FCount].TrimmedSpaces) := nil;
   end;
-  dec(FCount);
 end;
 
 function TSynEditTrimSpaceList.IndexOf(ALineIdx: Integer): Integer;
