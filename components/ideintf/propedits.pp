@@ -603,8 +603,8 @@ type
 { TPersistentPropertyEditor
   A base editor for TPersistent. It does allow editing of the properties.
   It allows the user to set the value of this property to point to a component
-  in the same form that is type compatible with the property being edited
-  (e.g. the ActiveControl property). }
+  in any form or datamodule that is type compatible with the property being
+  edited (e.g. the DataSource property). }
 
   TPersistentPropertyEditor = class(TClassPropertyEditor)
   protected
