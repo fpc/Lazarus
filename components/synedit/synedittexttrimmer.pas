@@ -282,7 +282,7 @@ begin
   Entries[AEntryIdx].TrimmedSpaces := '';
   if AEntryIdx < FCount then begin
     Move(Entries[AEntryIdx+1], Entries[AEntryIdx], (FCount-AEntryIdx)*SizeOf(Entries[0]));
-    Pointer(Entries[FCount].TrimmedSpaces) := nil;
+    Pointer(Entries[FCount-1].TrimmedSpaces) := nil;
   end;
   dec(FCount);
 end;
