@@ -991,14 +991,17 @@ begin
   // But sometimes SVG also uses stroke! Oh no...
   else if AKey = 'stroke' then
   begin
-    ADest.Font.Color := ReadSVGColor(AValue);
-    Result := Result + [spbfFontColor];
+    if lLowerValue <> 'none' then // sometimes we get a fill value, but a stroke=none after it...
+    begin
+      ADest.Font.Color := ReadSVGColor(AValue);
+      Result := Result + [spbfFontColor];
+    end;
   end
   else if AKey = 'fill-opacity' then
     ADest.Font.Color.Alpha := StrToInt(AValue)*$101
   else if AKey = 'font-size' then
   begin
-    ADest.Font.Size := Round(StringWithUnitToFloat(AValue));
+    ADest.Font.Size := Round(StringWithUnitToFloat(AValue, sckX));
     Result := Result + [spbfFontSize];
   end
   else if AKey = 'font-family' then
@@ -1007,7 +1010,10 @@ begin
   begin
     case lLowerValue of
     'bold': ADest.Font.Bold := True;
+    else
+      ADest.Font.Bold := False;
     end;
+    Result := Result + [spbfFontBold];
   end
   // Other text attributes, non-font ones
   else if AKey = 'text-anchor' then
@@ -2389,7 +2395,6 @@ end;
 function TvSVGVectorialReader.ReadTextFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
 var
-  lTextStr: string = '';
   lx, ly: double;
   lText: TvText;
   lParagraph: TvParagraph;
@@ -2405,8 +2410,7 @@ var
     for j := 0 to lTextSpanStack.GetList().Count-1 do
     begin
       lCurStyle := TSVGTextSpanStyle(lTextSpanStack.GetList().Items[j]);
-      if ADest.Style = nil then ADest.Style := TvStyle.Create;
-      ADest.Style.ApplyOver(lCurStyle);
+      lCurStyle.ApplyIntoEntity(ADest);
       if lCurStyle.PositionSet then
       begin
         ADest.X := ADest.X + lCurStyle.X; // or substitute completely ?
@@ -2617,6 +2621,10 @@ begin
   begin
     ValueStr := Copy(AStr, 1, Len-2);
     Result := StrToFloat(ValueStr, FPointSeparator);
+    if ViewBoxAdjustment and (ACoordKind = sckX) then
+      Result := Result * Page_Width / ViewBox_Width;
+    if ViewBoxAdjustment and (ACoordKind = sckY) then
+      Result := Page_Height - Result * Page_Height / ViewBox_Height;
   end
   else if LastChar = '%' then
   begin

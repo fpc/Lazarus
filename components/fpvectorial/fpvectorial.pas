@@ -104,6 +104,7 @@ type
   TvPage = class;
   TvVectorialPage = class;
   TvTextPageSequence = class;
+  TvEntityWithPenBrushAndFont = class;
 
   { Pen, Brush and Font }
 
@@ -192,6 +193,7 @@ type
     procedure Clear(); virtual;
     procedure CopyFrom(AFrom: TvStyle);
     procedure ApplyOver(AFrom: TvStyle); virtual;
+    procedure ApplyIntoEntity(ADest: TvEntityWithPenBrushAndFont); virtual;
     function CreateStyleCombinedWithParent: TvStyle;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
   end;
@@ -1739,6 +1741,48 @@ begin
   SetElements := AFrom.SetElements + SetElements;
 end;
 
+procedure TvStyle.ApplyIntoEntity(ADest: TvEntityWithPenBrushAndFont);
+begin
+  if ADest = nil then Exit;
+
+  // Pen
+
+  if spbfPenColor in SetElements then
+    ADest.Pen.Color := Pen.Color;
+  if spbfPenStyle in SetElements then
+    ADest.Pen.Style := Pen.Style;
+  if spbfPenWidth in SetElements then
+    ADest.Pen.Width := Pen.Width;
+
+  // Brush
+
+  if spbfBrushColor in SetElements then
+    ADest.Brush.Color := Brush.Color;
+  if spbfBrushStyle in SetElements then
+    ADest.Brush.Style := Brush.Style;
+  {if spbfBrushGradient in SetElements then
+    Brush.Gra := AFrom.Brush.Style;}
+
+  // Font
+
+  if spbfFontColor in SetElements then
+    ADest.Font.Color := Font.Color;
+  if spbfFontSize in SetElements then
+    ADest.Font.Size := Font.Size;
+  if spbfFontName in SetElements then
+    ADest.Font.Name := Font.Name;
+  if spbfFontBold in SetElements then
+    ADest.Font.Bold := Font.Bold;
+  if spbfFontItalic in SetElements then
+    ADest.Font.Italic := Font.Italic;
+  If spbfFontUnderline in SetElements then
+    ADest.Font.Underline := Font.Underline;
+  If spbfFontStrikeThrough in SetElements then
+    ADest.Font.StrikeThrough := Font.StrikeThrough;
+  {If spbfAlignment in SetElements then
+    ADest.Alignment := Alignment; }
+end;
+
 function TvStyle.CreateStyleCombinedWithParent: TvStyle;
 begin
   Result := TvStyle.Create;
@@ -3270,7 +3314,7 @@ function TvText.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
 var
   lStr: string;
 begin
-  lStr := Format('[%s] Name=%s X=%f Y=%f Text="%s" Color=%s Size=%d Name=%s Orientation=%f Bold=%s Italic=%s Underline=%s StrikeThrough=%s TextAnchor=%s',
+  lStr := Format('[%s] Name=%s X=%f Y=%f Text="%s" [.Font=>] Color=%s Size=%d Name=%s Orientation=%f Bold=%s Italic=%s Underline=%s StrikeThrough=%s TextAnchor=%s',
     [
     Self.ClassName, Name, X, Y, Value.Text,
     GenerateDebugStrForFPColor(Font.Color),
