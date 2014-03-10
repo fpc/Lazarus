@@ -1756,21 +1756,25 @@ begin
     [Self.ClassName, Name, lParentName]);
 
   if spbfPenColor in SetElements then
-    lStr := lStr + Format('Pen.Color==%s', [TvEntity.GenerateDebugStrForFPColor(Pen.Color)]);
-{    // Pen, Brush and Font
-    spbfPenColor, spbfPenStyle, spbfPenWidth,
-    spbfBrushColor, spbfBrushStyle, spbfBrushGradient,
-    spbfFontColor, spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic,
+    lStr := lStr + Format(' Pen.Color=%s', [TvEntity.GenerateDebugStrForFPColor(Pen.Color)]);
+{    spbfPenStyle, spbfPenWidth,
+    spbfBrushColor, spbfBrushStyle, spbfBrushGradient,}
+  if spbfFontColor in SetElements then
+    lStr := lStr + Format(' Font.Color=%s', [TvEntity.GenerateDebugStrForFPColor(Pen.Color)]);
+  if spbfFontSize in SetElements then
+    lStr := lStr + Format(' Font.Size=%d', [Font.Size]);
+  if spbfFontName in SetElements then
+    lStr := lStr + ' Font.Name=' + Font.Name;
+  if spbfFontBold in SetElements then
+    if Font.Bold then lStr := lStr + Format(' Font.Bold=%s', [BoolToStr(Font.Bold)]);
+  if spbfFontItalic in SetElements then
+    if Font.Italic then lStr := lStr + Format(' Font.Bold=%s', [BoolToStr(Font.Italic)]);
+{
     spbfFontUnderline, spbfFontStrikeThrough, spbfAlignment,
     // Page style
-    sseMarginTop, sseMarginBottom, sseMarginLeft, sseMarginRight,
-    // Positioning
-    ssePosition
+    sseMarginTop, sseMarginBottom, sseMarginLeft, sseMarginRight
     );
-{    ,
-    Font.Size, Font.Name, Font.Orientation,
-    BoolToStr(Font.Bold),
-    BoolToStr(Font.Italic),
+{   Font.Size, Font.Name, Font.Orientation,
     BoolToStr(Font.Underline),
     BoolToStr(Font.StrikeThrough),
     GetEnumName(TypeInfo(TvTextAnchor), integer(TextAnchor))}
@@ -5222,6 +5226,8 @@ procedure TvParagraph.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo;
 var
   lCurWidth: Double = 0.0;
   lLeft, lTop, lRight, lBottom: Double;
+  OldTextX: Double = 0.0;
+  OldTextY: Double = 0.0;
   lEntity: TvEntity;
   lText: TvText absolute lEntity;
 begin
@@ -5231,11 +5237,21 @@ begin
   begin
     if lEntity is TvText then
     begin
-      lText.X := X + lCurWidth;
-      lText.Y := Y;
+      // Direct text position setting resets the auto-positioning
+      if (OldTextX <> lText.X) or (OldTextY <> lText.Y) then
+        lCurWidth := 0;
+
+      OldTextX := lText.X;
+      OldTextY := lText.Y;
+      lText.X := lText.Y + X + lCurWidth;
+      lText.Y := lText.Y + Y;
+
       lText.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
       lText.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
       lCurWidth := lCurWidth + Abs(lRight - lLeft);
+
+      lText.X := OldTextX;
+      lText.Y := OldTextY;
     end;
     lEntity := GetNextEntity();
   end;

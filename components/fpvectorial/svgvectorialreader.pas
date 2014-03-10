@@ -101,6 +101,7 @@ type
     function ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
     function ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush): TvSetPenBrushAndFontElements;
     function ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenBrushAndFont): TvSetPenBrushAndFontElements;
+    function ReadSVGFontStyleWithKeyAndValue_ToStyle(AKey, AValue: string; ADest: TvStyle): TvSetPenBrushAndFontElements;
     function ReadSVGGeneralStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntity): TvSetPenBrushAndFontElements;
     function IsAttributeFromStyle(AStr: string): Boolean;
     procedure ApplyLayerStyles(ADestEntity: TvEntity);
@@ -971,6 +972,54 @@ begin
     'end': ADestEntity.TextAnchor := vtaEnd;
     end;
   end;
+end;
+
+function TvSVGVectorialReader.ReadSVGFontStyleWithKeyAndValue_ToStyle(AKey,
+  AValue: string; ADest: TvStyle): TvSetPenBrushAndFontElements;
+var
+  lLowerValue: String;
+begin
+  Result := [];
+  lLowerValue := LowerCase(AValue);
+  // SVG text uses "fill" to indicate the pen color of the text, very unintuitive as
+  // "fill" is usually for brush in other elements
+  if AKey = 'fill' then
+  begin
+    ADest.Font.Color := ReadSVGColor(AValue);
+    Result := Result + [spbfFontColor];
+  end
+  // But sometimes SVG also uses stroke! Oh no...
+  else if AKey = 'stroke' then
+  begin
+    ADest.Font.Color := ReadSVGColor(AValue);
+    Result := Result + [spbfFontColor];
+  end
+  else if AKey = 'fill-opacity' then
+    ADest.Font.Color.Alpha := StrToInt(AValue)*$101
+  else if AKey = 'font-size' then
+  begin
+    ADest.Font.Size := Round(StringWithUnitToFloat(AValue));
+    Result := Result + [spbfFontSize];
+  end
+  else if AKey = 'font-family' then
+    ADest.Font.Name := AValue
+  else if AKey = 'font-weight' then
+  begin
+    case lLowerValue of
+    'bold': ADest.Font.Bold := True;
+    end;
+  end
+  // Other text attributes, non-font ones
+  else if AKey = 'text-anchor' then
+  begin
+    // Adjust according to the text-anchor, if necessary
+    {case lLowerValue of
+    'start': ADest.TextAnchor := vtaStart;
+    'middle': ADest.TextAnchor := vtaMiddle;
+    'end': ADest.TextAnchor := vtaEnd;
+    end;}
+  end;
+  ADest.SetElements := ADest.SetElements + Result;
 end;
 
 function TvSVGVectorialReader.ReadSVGGeneralStyleWithKeyAndValue(AKey,
@@ -2391,12 +2440,12 @@ var
           if  lNodeName = 'x' then
           begin
             lCurStyle.PositionSet := True;
-            lCurStyle.X := StringWithUnitToFloat(lNodeValue, sckX)
+            lCurStyle.X := StringWithUnitToFloat(lNodeValue, sckX);
           end
           else if lNodeName = 'y' then
           begin
             lCurStyle.PositionSet := True;
-            lCurStyle.Y := StringWithUnitToFloat(lNodeValue, sckY)
+            lCurStyle.Y := StringWithUnitToFloat(lNodeValue, sckY);
           end
           //else if lNodeName = 'id' then
           //  lText.Name := lNodeValue
@@ -2404,7 +2453,7 @@ var
           //  ReadSVGStyle(lNodeValue, lParagraph)
           else if IsAttributeFromStyle(lNodeName) then
           begin
-            //ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
+            ReadSVGFontStyleWithKeyAndValue_ToStyle(lNodeName, lNodeValue, lCurStyle);
             //ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
           end;
         end;
@@ -2585,7 +2634,7 @@ begin
     if ViewBoxAdjustment and (ACoordKind = sckX) then
       Result := Result * Page_Width / ViewBox_Width;
     if ViewBoxAdjustment and (ACoordKind = sckY) then
-      Result := Result * Page_Height / ViewBox_Height;
+      Result := Page_Height - Result * Page_Height / ViewBox_Height;
   end;
 end;
 
