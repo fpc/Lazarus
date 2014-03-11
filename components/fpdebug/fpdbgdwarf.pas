@@ -1219,8 +1219,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure CreateMembers;
     procedure InitInheritanceInfo; inline;
   protected
+    function DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier; override;
     procedure KindNeeded; override;
-    procedure TypeInfoNeeded; override;                       // nil or inherited
     function GetTypedValueObject(ATypeCast: Boolean): TFpDbgDwarfValue; override;
 
     // GetMember, if AIndex > Count then parent
@@ -2886,18 +2886,11 @@ function TFpDbgDwarfValue.GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
 var
   fields: TFpDbgValueFieldFlags;
 begin
-  // TODO: also cache none valid address
-  //Result := IsValidLoc(ATargetType.FCachedDataAddress);
-  //if Result then begin
-  //  AnAddress := ATargetType.FCachedDataAddress;
-  //  exit;
-  //end;
-
   if FValueSymbol <> nil then begin
     Assert(FValueSymbol is TDbgDwarfValueIdentifier, 'TDbgDwarfSymbolValue.GetDwarfDataAddress FValueSymbol');
     Assert(TypeInfo is TDbgDwarfTypeIdentifier, 'TDbgDwarfSymbolValue.GetDwarfDataAddress TypeInfo');
     Assert(not HasTypeCastInfo, 'TDbgDwarfSymbolValue.GetDwarfDataAddress not HasTypeCastInfo');
-    Result := FValueSymbol.GetValueDataAddress(Self, AnAddress, TDbgDwarfTypeIdentifier(FOwner));
+    Result := FValueSymbol.GetValueDataAddress(Self, AnAddress, ATargetType);
     if IsError(FValueSymbol.LastError) then
       FLastError := FValueSymbol.LastError;
   end
@@ -2925,8 +2918,6 @@ begin
     if IsError(FTypeCastTargetType.LastError) then
       FLastError := FTypeCastTargetType.LastError;
   end;
-
-  //ATargetType.FCachedDataAddress := AnAddress;
 end;
 
 function TFpDbgDwarfValue.GetStructureDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
@@ -6349,6 +6340,24 @@ begin
     FInheritanceInfo := FInformationEntry.FindChildByTag(DW_TAG_inheritance);
 end;
 
+function TDbgDwarfIdentifierStructure.DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier;
+var
+  FwdInfoPtr: Pointer;
+  FwdCompUint: TDwarfCompilationUnit;
+  ParentInfo: TDwarfInformationEntry;
+begin
+  Result:= nil;
+  InitInheritanceInfo;
+  if (FInheritanceInfo <> nil) and
+     FInheritanceInfo.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint)
+  then begin
+    ParentInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+    //DebugLn(FPDBG_DWARF_SEARCH, ['Inherited from ', dbgs(ParentInfo.FInformationEntry, FwdCompUint) ]);
+    Result := TDbgDwarfTypeIdentifier.CreateTypeSubClass('', ParentInfo);
+    ParentInfo.ReleaseReference;
+  end;
+end;
+
 procedure TDbgDwarfIdentifierStructure.KindNeeded;
 begin
   if (FInformationEntry.AbbrevTag = DW_TAG_class_type) then
@@ -6366,27 +6375,6 @@ begin
     else
       SetKind(skRecord);
   end;
-end;
-
-procedure TDbgDwarfIdentifierStructure.TypeInfoNeeded;
-var
-  FwdInfoPtr: Pointer;
-  FwdCompUint: TDwarfCompilationUnit;
-  ti: TDbgDwarfIdentifier;
-  ParentInfo: TDwarfInformationEntry;
-begin
-  ti:= nil;
-  InitInheritanceInfo;
-  if (FInheritanceInfo <> nil) and
-     FInheritanceInfo.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint)
-  then begin
-    ParentInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
-    //DebugLn(FPDBG_DWARF_SEARCH, ['Inherited from ', dbgs(ParentInfo.FInformationEntry, FwdCompUint) ]);
-    ti := TDbgDwarfIdentifier.CreateSubClass('', ParentInfo);
-    ParentInfo.ReleaseReference;
-  end;
-  SetTypeInfo(ti);
-  ti.ReleaseReference;
 end;
 
 function TDbgDwarfIdentifierStructure.GetTypedValueObject(ATypeCast: Boolean): TFpDbgDwarfValue;
@@ -6734,7 +6722,7 @@ begin
     if ti <> nil then
       Result := ti.GetDataAddress(AValueObj, AnAddress, ATargetType, ATargetCacheIndex+1)
     else
-      Result := True; // TODO: False; // Result := ATargetType = nil; // end of type chain
+      Result := False; // Result := ATargetType = nil; // end of type chain
   end;
 end;
 

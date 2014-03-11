@@ -864,6 +864,7 @@ begin
     // Class/Object // typecast, and inherhited
     obj1c := TTestSetup1ClassChild.Create;
     ImgLoader.GlobTestSetup1.VarClass := Obj1c;
+    ImgLoader.GlobTestSetup1.VarClassChild := Obj1c;
     Obj1c.FWord := 1019;
     Obj1c.FBool := Boolean($9aa99aa9); // Make sure there is data, if other fields read to much
     Obj1c.FWordL := QWord($9aa99aa97bb7b77b); // Make sure there is data, if other fields read to much
@@ -871,10 +872,11 @@ begin
     StartTest('GlobTestSetup1Class.FWord', skCardinal, [ttHasType]);
     ExpResult(svfCardinal, 1019);
 
-    StartTest('TTestSetup1ClassChild(GlobTestSetup1Class).FWord', skCardinal, [ttHasType]);
+    StartTest('GlobTestSetup1ClassChild.FWord', skCardinal, [ttHasType]);
     ExpResult(svfCardinal, 1019);
 
-///////////////////-------------
+    StartTest('TTestSetup1ClassChild(GlobTestSetup1Class).FWord', skCardinal, [ttHasType]);
+    ExpResult(svfCardinal, 1019);
 
     // Record
     // VParamTestRecord mis-named
