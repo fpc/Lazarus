@@ -164,7 +164,7 @@ type
     * TODO: allow to pre-read and cache Target mem (e.g. before reading all fields of a record
   *)
   TFpDbgMemLocationType = (
-    mflUninitialized := 0,   // like invalid, but not known // 0 means objet fields will start wint this
+    mlfUninitialized := 0,   // like invalid, but not known // 0 means objet fields will start wint this
     mlfInvalid,
     mlfTargetMem,            // an address in the target (debuggee) process
     mlfSelfMem,              // an address in this(the debuggers) process memory; the data is  in TARGET format (endian, ...)
@@ -244,6 +244,7 @@ type
 
 function NilLoc: TFpDbgMemLocation; inline;
 function InvalidLoc: TFpDbgMemLocation; inline;
+function UnInitializedLoc: TFpDbgMemLocation; inline;
 function TargetLoc(AnAddress: TDbgPtr): TFpDbgMemLocation; inline;
 function RegisterLoc(ARegNum: Cardinal): TFpDbgMemLocation; inline;
 function SelfLoc(AnAddress: TDbgPtr): TFpDbgMemLocation; inline;
@@ -251,6 +252,7 @@ function SelfLoc(AnAddress: Pointer): TFpDbgMemLocation; inline;
 function ConstLoc(AValue: QWord): TFpDbgMemLocation; inline;
 
 function IsTargetAddr(ALocation: TFpDbgMemLocation): Boolean; inline;
+function IsInitializedLoc(ALocation: TFpDbgMemLocation): Boolean; inline;
 function IsValidLoc(ALocation: TFpDbgMemLocation): Boolean; inline;     // Valid, Nil allowed
 function IsReadableLoc(ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and not Nil // can be const or reg
 function IsReadableMem(ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and target or sel <> nil
@@ -276,6 +278,12 @@ function InvalidLoc: TFpDbgMemLocation;
 begin
   Result.Address := 0;
   Result.MType := mlfInvalid;
+end;
+
+function UnInitializedLoc: TFpDbgMemLocation;
+begin
+  Result.Address := 0;
+  Result.MType := mlfUninitialized;
 end;
 
 function TargetLoc(AnAddress: TDbgPtr): TFpDbgMemLocation;
@@ -313,14 +321,19 @@ begin
   Result := ALocation.MType = mlfTargetMem;
 end;
 
+function IsInitializedLoc(ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := ALocation.MType <> mlfUninitialized;
+end;
+
 function IsValidLoc(ALocation: TFpDbgMemLocation): Boolean;
 begin
-  Result := not(ALocation.MType in [mlfInvalid, mflUninitialized]);
+  Result := not(ALocation.MType in [mlfInvalid, mlfUninitialized]);
 end;
 
 function IsReadableLoc(ALocation: TFpDbgMemLocation): Boolean;
 begin
-  Result := (not(ALocation.MType in [mlfInvalid, mflUninitialized])) and
+  Result := (not(ALocation.MType in [mlfInvalid, mlfUninitialized])) and
             ( (not(ALocation.MType in [mlfTargetMem, mlfSelfMem])) or
               (ALocation.Address <> 0)
             );
@@ -493,7 +506,7 @@ begin
   FLastError := NoError;
   Result := False;
   case ALocation.MType of
-    mlfInvalid, mflUninitialized:
+    mlfInvalid, mlfUninitialized:
       FLastError := CreateError(fpErrCanNotReadInvalidMem);
     mlfTargetMem, mlfSelfMem: begin
       Result := TargetMemConvertor.PrepareTargetRead(AReadDataType, ALocation.Address,
@@ -590,7 +603,7 @@ begin
   FLastError := NoError;
   Result := False;
   case ALocation.MType of
-    mlfInvalid, mflUninitialized: ;
+    mlfInvalid, mlfUninitialized: ;
     mlfTargetMem:
       begin
         Result := FMemReader.ReadMemory(ALocation.Address, ASize, ADest);
