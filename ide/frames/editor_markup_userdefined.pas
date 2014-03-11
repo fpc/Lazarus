@@ -112,8 +112,6 @@ type
     procedure UpdateListDropDownFull;
     procedure UpdateListDropDownCaption;
     procedure UpdateListDisplay(KeepDuplicates: Boolean = False);
-  protected
-    procedure SetVisible(Value: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -634,24 +632,6 @@ begin
   WordListSelection(nil, 0, 0);
 end;
 
-procedure TEditorMarkupUserDefinedFrame.SetVisible(Value: Boolean);
-begin
-  if FGlobalColors <> nil then begin
-    // Finish ReadSettings - Now TEditorKeymappingOptionsFrame should be ready
-    FUserWordsList.Assign(FGlobalColors);
-    FSelectedListIdx := 0;
-    UpdateListDropDownFull;
-    UpdateListDisplay;
-    tbDeleteList.Enabled := FUserWordsList.Count > 0;
-    FGlobalColors := nil;
-    UpdateKeys;
-  end
-  else
-    UpdateKeys;
-
-  inherited SetVisible(Value);
-end;
-
 constructor TEditorMarkupUserDefinedFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -705,6 +685,16 @@ procedure TEditorMarkupUserDefinedFrame.ReadSettings(AOptions: TAbstractIDEOptio
 begin
   FGlobalColors := TEditorOptions(AOptions).UserDefinedColors;
   FSelectedListIdx := 0;
+
+  FKeyOptFrame.ReadSettings(AOptions);
+
+  FUserWordsList.Assign(FGlobalColors);
+  FSelectedListIdx := 0;
+  UpdateListDropDownFull;
+  UpdateListDisplay;
+  tbDeleteList.Enabled := FUserWordsList.Count > 0;
+  FGlobalColors := nil;
+  UpdateKeys;
 end;
 
 procedure TEditorMarkupUserDefinedFrame.WriteSettings(AOptions: TAbstractIDEOptions);
