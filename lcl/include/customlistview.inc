@@ -637,7 +637,6 @@ begin
   //DebugLn('TCustomListView.ItemDeleted ',dbgs(AItem),' FSelected=',dbgs(FSelected));
   if FSelected = AItem then InvalidateSelected;
   if FFocused = AItem then FFocused := nil;
-  if csDestroying in Componentstate then Exit;
   DoDeletion(AItem);
 end;
 
