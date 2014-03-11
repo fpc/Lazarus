@@ -3237,11 +3237,11 @@ begin
   if FValueObject <> nil then begin
     FValueObject.MakePlainRefToCirclular;
     FValueObject.SetValueSymbol(self);
-  end;
 
-  // Used as reference to "self"
-  if StructureValueInfo <> nil then
-    FValueObject.SetStructureValue(TFpDbgDwarfValue(StructureValueInfo.Value)); // TODO: on request only
+    // Used as reference to "self"
+    if StructureValueInfo <> nil then
+      FValueObject.SetStructureValue(TFpDbgDwarfValue(StructureValueInfo.Value)); // TODO: on request only
+  end;
 
   Result := FValueObject;
 end;
