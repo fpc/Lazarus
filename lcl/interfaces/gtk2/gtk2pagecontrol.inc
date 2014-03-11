@@ -518,6 +518,8 @@ var
   TabWidget: PGtkWidget;
   PageWidget: PGtkWidget;
   Count: guint;
+  X: gint;
+  Y: gint;
 begin
   Result := inherited;
   if (ATabControl is TTabControl) then
@@ -532,7 +534,19 @@ begin
   begin
     TabWidget := gtk_notebook_get_tab_label(NoteBookWidget, PageWidget);
     if TabWidget <> nil then
+    begin
       Result := RectFromGdkRect(TabWidget^.allocation);
+      Y := PGtkWidget(NoteBookWidget)^.allocation.y;
+      X := PGtkWidget(NoteBookWidget)^.allocation.x;
+      if Y <= 0 then
+        exit;
+      case ATabControl.TabPosition of
+        tpTop, tpBottom:
+            OffsetRect(Result, 0, -Y);
+        tpLeft, tpRight:
+          OffsetRect(Result, -X, -Y);
+      end;
+    end;
   end;
 end;
 
