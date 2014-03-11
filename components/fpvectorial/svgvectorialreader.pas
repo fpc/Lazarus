@@ -885,7 +885,7 @@ begin
   end
   else if AKey = 'stroke-width' then
   begin
-    ADestEntity.Pen.Width := Round(StringWithUnitToFloat(AValue));
+    ADestEntity.Pen.Width := Round(StringWithUnitToFloat(AValue, sckX));
     Result := Result + [spbfPenWidth];
   end
   else if AKey = 'stroke-opacity' then
@@ -951,7 +951,7 @@ begin
     ADestEntity.Font.Color.Alpha := StrToInt(AValue)*$101
   else if AKey = 'font-size' then
   begin
-    ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue));
+    ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue, sckX));
     Result := Result + [spbfFontSize];
   end
   else if AKey = 'font-family' then
@@ -2658,6 +2658,11 @@ procedure TvSVGVectorialReader.ConvertSVGCoordinatesToFPVCoordinates(
 begin
   ADestX := ASrcX * FLOAT_MILIMETERS_PER_PIXEL;
   ADestY := AData.Height - ASrcY * FLOAT_MILIMETERS_PER_PIXEL;
+  if ViewBoxAdjustment then
+  begin
+    ADestX := ASrcX * Page_Width / ViewBox_Width;
+    ADestY := AData.Height - ASrcY * Page_Height / ViewBox_Height;
+  end;
 end;
 
 procedure TvSVGVectorialReader.ConvertSVGDeltaToFPVDelta(
@@ -2666,6 +2671,11 @@ procedure TvSVGVectorialReader.ConvertSVGDeltaToFPVDelta(
 begin
   ADestX := ASrcX * FLOAT_MILIMETERS_PER_PIXEL;
   ADestY := - ASrcY * FLOAT_MILIMETERS_PER_PIXEL;
+  if ViewBoxAdjustment then
+  begin
+    ADestX := ASrcX * Page_Width / ViewBox_Width;
+    ADestY := - ASrcY * Page_Height / ViewBox_Height;
+  end;
 end;
 
 procedure TvSVGVectorialReader.AutoDetectDocSize(var ALeft, ATop, ARight, ABottom: Double;
