@@ -457,6 +457,13 @@ begin
       end;
 
       Owner := FindGlobalComponent(s1);
+      if Owner=nil then begin
+        // try screen registered containers
+        // which at design time are not in FindGlobalComponentList
+        Owner := Screen.FindDataModule(s1);
+        if Owner=nil then
+          Owner := Screen.FindForm(s1);
+      end;
       if Owner <> nil then
       begin
         if s3<>'' then
