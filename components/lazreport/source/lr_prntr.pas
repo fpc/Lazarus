@@ -985,6 +985,10 @@ begin
       Ofy := Round(50 * ky / 254);
       Pw := Pgw - Ofx * 2;
       Ph := Pgh - Ofy * 2;
+
+      //fix DPI for virtual printer
+      ResX := 300;
+      ResY := 300;
     end
   end
   else
