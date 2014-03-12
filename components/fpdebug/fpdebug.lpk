@@ -34,7 +34,7 @@ File(s) with other licenses (see also header in file(s):
 
   (Any modifications/translations of this file are from duby)
 "/>
-    <Files Count="22">
+    <Files Count="23">
       <Item1>
         <Filename Value="fpdbgclasses.pp"/>
         <UnitName Value="FpDbgClasses"/>
@@ -69,6 +69,7 @@ File(s) with other licenses (see also header in file(s):
       </Item8>
       <Item9>
         <Filename Value="fpdbgwinextra.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpDbgWinExtra"/>
       </Item9>
       <Item10>
@@ -117,13 +118,18 @@ File(s) with other licenses (see also header in file(s):
         <UnitName Value="FpDbgWinClasses"/>
       </Item20>
       <Item21>
-        <Filename Value="fpdmemorytools.pas"/>
-        <UnitName Value="FpdMemoryTools"/>
+        <Filename Value="fpdbgdarwinclasses.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpdbgdarwinclasses"/>
       </Item21>
       <Item22>
-        <Filename Value="fperrormessages.pas"/>
-        <UnitName Value="fperrormessages"/>
+        <Filename Value="fpdmemorytools.pas"/>
+        <UnitName Value="FpdMemoryTools"/>
       </Item22>
+      <Item23>
+        <Filename Value="fperrormessages.pas"/>
+        <UnitName Value="FpErrorMessages"/>
+      </Item23>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

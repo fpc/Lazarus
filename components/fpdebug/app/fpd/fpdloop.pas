@@ -58,6 +58,7 @@ procedure DebugLoop;
     Code, CodeBytes: String;
   begin
     WriteLN('===');
+    {$ifdef windows}
     {$ifdef cpui386}
       a := GCurrentContext^.EIP;
       Write('  [', FormatAddress(a), ']');
@@ -66,6 +67,9 @@ procedure DebugLoop;
       a := GCurrentContext^.RIP;
       Write('  [', FormatAddress(a), ']');
       Disassemble(GCurrentProcess.Handle, True, a, CodeBytes, Code);
+    {$endif}
+    {$else}
+    a := 0;
     {$endif}
     WriteLN(' ', CodeBytes, '    ', Code);
   end;
@@ -78,10 +82,14 @@ procedure DebugLoop;
     Name: String;
   begin
     WriteLN('===');
+    {$ifdef windows}
     {$ifdef cpui386}
       a := GCurrentContext^.EIP;
     {$else}
       a := GCurrentContext^.RIP;
+    {$endif}
+    {$else}
+    a := 0;
     {$endif}
     sym := GCurrentProcess.FindSymbol(a);
     if sym = nil
@@ -203,6 +211,10 @@ begin
             if GBreakOnLibraryLoad
             then GState := dsPause;
 
+          end;
+        deBreakpoint :
+          begin
+            GState:=dsPause;
           end;
       end; {case}
     end;

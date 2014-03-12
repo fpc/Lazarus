@@ -151,7 +151,7 @@ type
     function GetLastEventProcessIdentifier: THandle; virtual;
   public
     class function StartInstance(AFileName: string; AParams: string): TDbgProcess; virtual;
-    constructor Create(const AName: string; const AProcessID, AThreadID: Integer);
+    constructor Create(const AName: string; const AProcessID, AThreadID: Integer); virtual;
     destructor Destroy; override;
     function  AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
     function  FindSymbol(const AName: String): TFpDbgSymbol;
@@ -206,6 +206,10 @@ implementation
 uses
   FpDbgWinClasses;
 {$endif}
+{$ifdef darwin}
+uses
+  FpDbgDarwinClasses;
+{$endif}
 
 var
   GOSDbgClasses : TOSDbgClasses;
@@ -221,6 +225,9 @@ begin
     {$ifdef windows}
     RegisterDbgClasses;
     {$endif windows}
+    {$ifdef darwin}
+    RegisterDbgClasses;
+    {$endif darwin}
     end;
   result := GOSDbgClasses;
 end;
@@ -535,7 +542,7 @@ const
 begin
   if not FProcess.ReadData(FLocation, 1, FOrgValue)
   then begin
-    Log('Unable to read breakpoint at $%p', [FLocation]);
+    Log('Unable to read breakpoint at '+FormatAddress(FLocation));
     Exit;
   end;
 

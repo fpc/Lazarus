@@ -63,6 +63,12 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
+    <Linking>
+      <Options>
+        <PassLinkerOptions Value="True"/>
+        <LinkerOptions Value="-sectcreate __TEXT __info_plist Info.plist"/>
+      </Options>
+    </Linking>
     <Other>
       <CompilerMessages>
         <MsgFileName Value=""/>
