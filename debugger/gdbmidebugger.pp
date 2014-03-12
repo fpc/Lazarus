@@ -5738,6 +5738,8 @@ var
   Reason: String;
   BreakID: Integer;
   CanContinue: Boolean;
+  i: Integer;
+  s: String;
 begin
   (* The Queue is not locked / This code can be interupted
      Therefore all calls to ExecuteCommand (gdb cmd) must be wrapped in QueueExecuteLock
@@ -5797,14 +5799,24 @@ begin
       Exit;
     end;
 
-    if Reason = 'watchpoint-trigger'
+    if (Reason = 'watchpoint-trigger') or (Reason = 'access-watchpoint-trigger') or
+       (Reason = 'read-watchpoint-trigger')
     then begin
-      List2 := TGDBMINameValueList.Create(List.Values['wpt']);
-      BreakID := StrToIntDef(List2.Values['number'], -1);
-      // Use List2.Values['exp'] ? It may contain globalized expression
-      List2.Init(List.Values['value']);
-      ProcessBreakPoint(BreakID, List, gbrWatchTrigger, List2.Values['old'], List2.Values['new']);
-      exit;
+      i := 0;
+      List2 := nil;
+      while i < List.Count do begin
+        s := PCLenToString(List.Items[i]^.Name);
+        if copy(s, Length(s) - 2, 3) = 'wpt' then
+          List2 := TGDBMINameValueList.Create(List.Values[s]);
+        inc(i);
+      end;
+      if List2 <> nil then begin
+        BreakID := StrToIntDef(List2.Values['number'], -1);
+        // Use List2.Values['exp'] ? It may contain globalized expression
+        List2.Init(List.Values['value']);
+        ProcessBreakPoint(BreakID, List, gbrWatchTrigger, List2.Values['old'], List2.Values['new']);
+        exit;
+      end;
     end;
 
     if Reason = 'watchpoint-scope'
@@ -8850,13 +8862,11 @@ var
   R: TGDBMIExecResult;
   ResultList: TGDBMINameValueList;
   WatchExpr, WatchDecl, WatchAddr: String;
-  GdbRes: String;
 begin
   Result := False;
   ABreakId := 0;
   AHitCnt := 0;
   AnAddr := 0;
-  GdbRes := 'bkpt';
   case FKind of
     bpkSource:
       begin
@@ -8896,11 +8906,40 @@ begin
           wpkReadWrite: Result := ExecuteCommand('-break-watch -a %s', [WatchExpr], R);
         end;
         Result := Result and (R.State <> dsError);
-        GdbRes := 'wpt';
       end;
   end;
 
-  ResultList := TGDBMINameValueList.Create(R, [GdbRes]);
+  ResultList := TGDBMINameValueList.Create(R);
+  case FKind of
+    bpkSource, bpkAddress:
+      ResultList.SetPath('bkpt');
+    bpkData:
+      case FWatchKind of
+        wpkWrite: begin
+            if ResultList.IndexOf('hw-wpt') >= 0 then ResultList.SetPath('hw-wpt')
+            else
+            if ResultList.IndexOf('wpt') >= 0 then ResultList.SetPath('wpt');
+          end;
+        wpkRead: begin
+            if ResultList.IndexOf('hw-rwpt') >= 0 then ResultList.SetPath('hw-rwpt')
+            else
+            if ResultList.IndexOf('rwpt') >= 0 then ResultList.SetPath('rwpt')
+            else
+            if ResultList.IndexOf('hw-wpt') >= 0 then ResultList.SetPath('hw-wpt')
+            else
+            if ResultList.IndexOf('wpt') >= 0 then ResultList.SetPath('wpt');
+          end;
+        wpkReadWrite: begin
+            if ResultList.IndexOf('hw-awpt') >= 0 then ResultList.SetPath('hw-awpt')
+            else
+            if ResultList.IndexOf('awpt') >= 0 then ResultList.SetPath('awpt')
+            else
+            if ResultList.IndexOf('hw-wpt') >= 0 then ResultList.SetPath('hw-wpt')
+            else
+            if ResultList.IndexOf('wpt') >= 0 then ResultList.SetPath('wpt');
+          end;
+      end;
+  end;
   ABreakID := StrToIntDef(ResultList.Values['number'], 0);
   AHitCnt  := StrToIntDef(ResultList.Values['times'], 0);
   AnAddr   := StrToQWordDef(ResultList.Values['addr'], 0);
