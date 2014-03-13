@@ -8561,6 +8561,7 @@ begin
   FModifyPrepared := True;
   FPreviewButtons := [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit];
   FInitialZoom := pzDefault;
+  FDefaultCopies := 1;
   FileName := sUntitled;
   FComments:=TStringList.Create;
   FScript:=TfrScriptStrings.Create;

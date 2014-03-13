@@ -742,7 +742,7 @@ begin
   end;
   {$ELSE}
   frPrintForm := TfrPrintForm.Create(nil);
-  frPrintForm.E1.Text:=IntToStr(TfrReport(Doc).DefaultCopies);
+  frPrintForm.E1.Value:= TfrReport(Doc).DefaultCopies;
   with frPrintForm do
   begin
     if ShowModal = mrOk then

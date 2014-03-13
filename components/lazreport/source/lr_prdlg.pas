@@ -17,7 +17,7 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,LCLIntf,ExtCtrls,
+  Buttons, StdCtrls,LCLIntf,ExtCtrls, Spin,
   PrintersDlgs;
 
 type
@@ -26,15 +26,11 @@ type
 
   TfrPrintForm = class(TForm)
     Label1: TLabel;
-    E1: TEdit;
     GroupBox2: TGroupBox;
     RB1: TRadioButton;
     RB2: TRadioButton;
     RB3: TRadioButton;
     E2: TEdit;
-    Panel1: TPanel;
-    frSpeedButton1: TSpeedButton;
-    frSpeedButton2: TSpeedButton;
     Label2: TLabel;
     OkButton: TButton;
     CancelButton: TButton;
@@ -43,14 +39,13 @@ type
     PropButton: TButton;
     PrinterSetupDialog1: TPrinterSetupDialog;
     Image1: TImage;
+    E1: TSpinEdit;
     procedure CB1DrawItem({%H-}Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure FormCreate(Sender: TObject);
     procedure PropButtonClick(Sender: TObject);
     procedure CB1Click(Sender: TObject);
     procedure E2Click(Sender: TObject);
-    procedure frSpeedButton1Click(Sender: TObject);
-    procedure frSpeedButton2Click(Sender: TObject);
     procedure RB3Click(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
   private
@@ -129,25 +124,6 @@ end;
 procedure TfrPrintForm.E2Click(Sender: TObject);
 begin
   RB3.Checked := True;
-end;
-
-procedure TfrPrintForm.frSpeedButton1Click(Sender: TObject);
-var
-  i: Integer;
-begin
-  i := StrToInt(E1.Text);
-  Inc(i);
-  E1.Text := IntToStr(i);
-end;
-
-procedure TfrPrintForm.frSpeedButton2Click(Sender: TObject);
-var
-  i: Integer;
-begin
-  i := StrToInt(E1.Text);
-  Dec(i);
-  if i <= 0 then i := 1;
-  E1.Text := IntToStr(i);
 end;
 
 procedure TfrPrintForm.RB3Click(Sender: TObject);
