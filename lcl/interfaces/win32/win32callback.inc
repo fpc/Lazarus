@@ -2542,7 +2542,7 @@ begin
   if WinProcess then
   begin
 
-    if (Msg=WM_CHAR) and (WParam=VK_RETURN) and
+    if (Msg=WM_CHAR) and ((WParam=VK_RETURN) or (WPARAM=VK_ESCAPE)) and
        ((lWinControl is TCustomCombobox) or
         ((lWinControl is TCustomEdit) and not (lWinControl is TCustomMemo ))
        )
