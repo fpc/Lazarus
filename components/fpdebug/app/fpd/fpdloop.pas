@@ -48,7 +48,7 @@ procedure DebugLoop;
 implementation
 
 uses
-  FPDGlobal, FPDType, FpDbgUtil, FpdMemoryTools;
+  FPDGlobal, FpDbgUtil, FpdMemoryTools;
 
 procedure DebugLoop;
 
