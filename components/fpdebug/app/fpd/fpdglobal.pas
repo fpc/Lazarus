@@ -36,7 +36,7 @@ unit FPDGlobal;
 interface
 
 uses
-  SysUtils, FPDType, Maps, FpDbgUtil, FpDbgClasses;
+  SysUtils, Maps, FpDbgUtil, FpDbgClasses;
 
 type
   TFPDImageInfo = (iiNone, iiName, iiDetail);

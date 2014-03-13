@@ -40,13 +40,14 @@ uses
   SysUtils,
 {$ifdef windows}
   Windows,
+  FpDbgWinClasses,
 {$endif}
   FPDCommand,
   FPDGlobal,
   FPDLoop,
-  FPDPEImage,
-  FPDType,
-  FpDbgClasses, FpDbgPETypes, FpDbgDwarfConst, FpDbgDwarf;
+  FpDbgClasses,
+  FpDbgDwarfConst,
+  FpDbgDwarf;
 
 {$ifdef windows}
 function CtrlCHandler(CtrlType: Cardinal): BOOL; stdcall;
