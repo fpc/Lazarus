@@ -6438,7 +6438,13 @@ begin
   FContext.ThreadContext := ccNotRequired;
   FContext.StackContext := ccNotRequired;
 
-  ExecuteCommand('-symbol-list-lines %s', [FSource], FResult);
+  Src := StringReplace(FSource, '\', '/', [rfReplaceAll]);
+  Src := StringReplace(Src, '"', '\"', [rfReplaceAll]);
+  ExecuteCommand('-symbol-list-lines "%s"', [Src], FResult);
+
+  if (FResult.State = dsError) and not(dcsCanceled in SeenStates)
+  then
+    ExecuteCommand('-symbol-list-lines %s', [FSource], FResult);
 
   if (FResult.State = dsError) and not(dcsCanceled in SeenStates)
   then begin
@@ -8893,6 +8899,7 @@ var
   R: TGDBMIExecResult;
   ResultList: TGDBMINameValueList;
   WatchExpr, WatchDecl, WatchAddr: String;
+  s1, s2: String;
 begin
   Result := False;
   ABreakId := 0;
@@ -8905,9 +8912,14 @@ begin
         Result := ExecCheckLineInUnit(FSource, FLine);
         if not Result then exit;
 
-        if dfForceBreak in FTheDebugger.FDebuggerFlags
-        then Result := ExecuteCommand('-break-insert -f %s:%d', [ExtractFileName(FSource), FLine], R)
-        else Result := ExecuteCommand('-break-insert %s:%d',    [ExtractFileName(FSource), FLine], R);
+        s1 := '';
+        if dfForceBreak in FTheDebugger.FDebuggerFlags then s1 := '-f';
+        s2 := StringReplace(FSource, '\', '/', [rfReplaceAll]);
+        //s2 := StringReplace(s2, '"', '\"', [rfReplaceAll]);
+        Result := ExecuteCommand('-break-insert %s "\"%s\":%d"',    [s1, s2, FLine], R);
+
+        if (not Result) or (R.State = dsError) then
+          Result := ExecuteCommand('-break-insert %s %s:%d',    [s1, ExtractFileName(FSource), FLine], R);
       end;
     bpkAddress:
       begin
