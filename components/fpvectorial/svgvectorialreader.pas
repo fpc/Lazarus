@@ -1553,9 +1553,9 @@ begin
   lText := TvText.Create(nil);
 
   // Apply the layer style
-  {ApplyLayerStyles(lText);
+  ApplyLayerStyles(lText);
 
-  // read the attributes
+  {// read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
@@ -1715,7 +1715,7 @@ end;
 procedure TvSVGVectorialReader.ReadLayerFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
-  lNodeName: DOMString;
+  lNodeName, lNodeValue: DOMString;
   lLayerName: string = '';
   lCurNode, lLayerNameNode: TDOMNode;
   lLayer: TvLayer;
@@ -1749,23 +1749,24 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if lNodeName = 'style' then
     begin
       {$ifdef SVG_MERGE_LAYER_STYLES}
-      ReadSVGStyleToStyleLists(ANode.Attributes.Item[i].NodeValue, lLayerStyleKeys, lLayerStyleValues);
+      ReadSVGStyleToStyleLists(lNodeValue, lLayerStyleKeys, lLayerStyleValues);
       {$else}
-      lLayer.SetPenBrushAndFontElements += ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lLayer)
+      lLayer.SetPenBrushAndFontElements += ReadSVGStyle(lNodeValue, lLayer)
       {$endif}
     end
     else if IsAttributeFromStyle(lNodeName) then
     begin
       {$ifdef SVG_MERGE_LAYER_STYLES}
       lLayerStyleKeys.Add(lNodeName);
-      lLayerStyleValues.Add(ANode.Attributes.Item[i].NodeValue);
+      lLayerStyleValues.Add(lNodeValue);
       {$else}
-      lLayer.SetPenBrushAndFontElements += ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lLayer);
-      lLayer.SetPenBrushAndFontElements += ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lLayer);
-      lLayer.SetPenBrushAndFontElements += ReadSVGFontStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lLayer);
+      lLayer.SetPenBrushAndFontElements += ReadSVGPenStyleWithKeyAndValue(lNodeName, lNodeValue, lLayer);
+      lLayer.SetPenBrushAndFontElements += ReadSVGBrushStyleWithKeyAndValue(lNodeName, lNodeValue, lLayer);
+      lLayer.SetPenBrushAndFontElements += ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, lLayer);
       {$endif}
     end;
   end;
@@ -2429,7 +2430,7 @@ var
     while lCurNode <> nil do
     begin
       lNodeName := LowerCase(lCurNode.NodeName);
-      lNodeValue := LowerCase(lCurNode.NodeValue);
+      lNodeValue := lCurNode.NodeValue;
 
       if lNodeName = 'tspan' then
       begin
@@ -2473,6 +2474,10 @@ var
       else
       begin
         lText := lParagraph.AddText(lNodeValue);
+
+        lText.Font.Size := 10;
+        // Apply the layer style
+        ApplyLayerStyles(lText);
 
         // Apply the layer style
         ApplyStackStylesToText(lText);
