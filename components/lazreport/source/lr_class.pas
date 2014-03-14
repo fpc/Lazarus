@@ -1287,6 +1287,7 @@ function GetDefaultDataSet: TfrTDataSet;
 procedure SetBit(var w: Word; e: Boolean; m: Integer);
 function frGetBandName(BandType: TfrBandType): string;
 procedure frSelectHyphenDictionary(ADict: string);
+function FindObjectProps(AObjStr:string; out frObj:TfrObject; out PropName:string):PPropInfo;
 
 const
   lrTemplatePath = 'LazReportTemplate/';
@@ -1489,6 +1490,54 @@ begin
 end;
 
 {$ENDIF}
+
+function FindObjectProps(AObjStr:string; out frObj:TfrObject; out PropName:string):PPropInfo;
+var
+  FPageName:string;
+  FObjName:string;
+
+  P:integer;
+  FPage:TfrPage;
+begin
+  Result:=nil;
+  frObj:=nil;
+  PropName:='';
+
+  P:=Pos('.', AObjStr);
+  if P = 0 then exit;
+  FPageName:='';
+  FObjName:='';
+
+  FObjName:=Copy2SymbDel(AObjStr, '.');
+
+  P:=Pos('.', AObjStr);
+  if P <> 0 then
+  begin
+    FPageName:=FObjName;
+    FObjName:=Copy2SymbDel(AObjStr, '.');
+  end;
+  PropName:=AObjStr;
+
+
+  if FPageName<>'' then
+  begin
+    FPage:=CurReport.Pages.PageByName(FPageName);
+    if not Assigned(FPage) then
+      exit;
+  end
+  else
+  begin
+    FPage:=CurPage;
+  end;
+
+  if Assigned(FPage) then
+    frObj := FPage.FindRTObject(FObjName);
+  if not Assigned(frObj) then
+    frObj := CurReport.FindObject(FObjName);
+
+  if Assigned(frObj) then
+    Result:=GetPropInfo(frObj, PropName); //Retreive property informations
+end;
 
 function DoFindObjMetod(S: string; out AObjProp: string
   ): TfrObject;

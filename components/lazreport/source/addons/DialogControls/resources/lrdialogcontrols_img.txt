@@ -11,3 +11,4 @@ tlrmemo.bmp
 tlrradiobutton.bmp
 tlrradiogroup.bmp
 tlrchecklistbox.bmp
+tlrformstorage.bmp

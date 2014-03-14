@@ -2190,6 +2190,14 @@ components/lazreport/samples/enduser_reports/sql_demo/sql_demo.lpi svneol=native
 components/lazreport/samples/enduser_reports/sql_demo/sql_demo.lpr svneol=native#text/plain
 components/lazreport/samples/enduser_reports/sql_demo/unit1.lfm svneol=native#text/plain
 components/lazreport/samples/enduser_reports/sql_demo/unit1.pas svneol=native#text/plain
+components/lazreport/samples/enduser_reports/test_lr_formstorage/demo_form_storage.lrf svneol=LF#text/xml eol=lf
+components/lazreport/samples/enduser_reports/test_lr_formstorage/project1.ico -text
+components/lazreport/samples/enduser_reports/test_lr_formstorage/project1.lpi svneol=native#text/plain
+components/lazreport/samples/enduser_reports/test_lr_formstorage/project1.lpr svneol=native#text/pascal
+components/lazreport/samples/enduser_reports/test_lr_formstorage/project1.lps svneol=native#text/xml
+components/lazreport/samples/enduser_reports/test_lr_formstorage/project1.res -text
+components/lazreport/samples/enduser_reports/test_lr_formstorage/unit1.lfm svneol=native#text/plain
+components/lazreport/samples/enduser_reports/test_lr_formstorage/unit1.pas svneol=native#text/pascal
 components/lazreport/samples/index.txt svneol=native#text/plain
 components/lazreport/samples/report_url/report_url.lpi svneol=native#text/plain
 components/lazreport/samples/report_url/report_url.lpr svneol=native#text/pascal
@@ -2215,6 +2223,9 @@ components/lazreport/source/addons/DialogControls/lrdbdialogcontrols.pas svneol=
 components/lazreport/source/addons/DialogControls/lrdbdialogcontrols_img.res -text
 components/lazreport/source/addons/DialogControls/lrdialogcontrols.pas svneol=native#text/plain
 components/lazreport/source/addons/DialogControls/lrdialogcontrols_img.res -text
+components/lazreport/source/addons/DialogControls/lrformstorage.pas svneol=native#text/pascal
+components/lazreport/source/addons/DialogControls/lrformstorageeditor.lfm svneol=native#text/plain
+components/lazreport/source/addons/DialogControls/lrformstorageeditor.pas svneol=native#text/pascal
 components/lazreport/source/addons/DialogControls/resources/lrdialogcontrols_img.txt svneol=native#text/plain
 components/lazreport/source/addons/DialogControls/resources/mk_res.bat svneol=native#text/plain
 components/lazreport/source/addons/DialogControls/resources/mk_res.sh svneol=native#text/plain
@@ -2226,6 +2237,7 @@ components/lazreport/source/addons/DialogControls/resources/tlrcombobox.bmp -tex
 components/lazreport/source/addons/DialogControls/resources/tlrdateedit.bmp -text
 components/lazreport/source/addons/DialogControls/resources/tlrdblookupcombobox.bmp -text
 components/lazreport/source/addons/DialogControls/resources/tlredit.bmp -text
+components/lazreport/source/addons/DialogControls/resources/tlrformstorage.bmp -text
 components/lazreport/source/addons/DialogControls/resources/tlrimage.bmp -text
 components/lazreport/source/addons/DialogControls/resources/tlrlabel.bmp -text
 components/lazreport/source/addons/DialogControls/resources/tlrlistbox.bmp -text

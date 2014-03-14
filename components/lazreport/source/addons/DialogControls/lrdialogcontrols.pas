@@ -338,7 +338,7 @@ procedure Register;
 procedure DoRegsiterControl(var cmpBMP:TBitmap; lrClass:TlrVisualControlClass);
 implementation
 
-uses typinfo, types, lrDBDialogControls, math;
+uses typinfo, types, lrDBDialogControls, math, lrFormStorage;
 
 {$R lrdialogcontrols_img.res}
 

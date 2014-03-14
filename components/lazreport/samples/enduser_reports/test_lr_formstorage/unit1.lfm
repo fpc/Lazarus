@@ -1,0 +1,56 @@
+object Form1: TForm1
+  Left = 592
+  Height = 240
+  Top = 209
+  Width = 320
+  Caption = 'Test form storage'
+  ClientHeight = 240
+  ClientWidth = 320
+  LCLVersion = '1.3'
+  object Button1: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    AnchorSideTop.Side = asrCenter
+    Left = 113
+    Height = 31
+    Top = 105
+    Width = 94
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Design report'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Button2: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Button1
+    AnchorSideTop.Side = asrBottom
+    Left = 116
+    Height = 31
+    Top = 142
+    Width = 89
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Show report'
+    OnClick = Button2Click
+    TabOrder = 1
+  end
+  object frReport1: TfrReport
+    InitialZoom = pzDefault
+    Options = []
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
+    left = 128
+    top = 16
+  end
+  object frDesigner1: TfrDesigner
+    left = 168
+    top = 16
+  end
+  object LRDialogControls1: TLRDialogControls
+    left = 208
+    top = 16
+  end
+end

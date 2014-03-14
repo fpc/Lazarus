@@ -1,0 +1,89 @@
+object lrFormStorageEditorForm: TlrFormStorageEditorForm
+  Left = 696
+  Height = 412
+  Top = 316
+  Width = 570
+  Caption = 'Storage editor'
+  ClientHeight = 412
+  ClientWidth = 570
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.3'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 364
+    Width = 558
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object ListBoxSaved: TListBox
+    Left = 0
+    Height = 113
+    Top = 245
+    Width = 570
+    Align = alClient
+    ItemHeight = 0
+    OnDblClick = ListBoxSavedDblClick
+    ScrollWidth = 568
+    TabOrder = 1
+    TopIndex = -1
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 240
+    Top = 0
+    Width = 570
+    Align = alTop
+    ClientHeight = 240
+    ClientWidth = 570
+    TabOrder = 2
+    object ListBoxObjects: TListBox
+      Left = 1
+      Height = 238
+      Top = 1
+      Width = 311
+      Align = alLeft
+      ItemHeight = 0
+      OnClick = ListBoxObjectsClick
+      ScrollWidth = 309
+      TabOrder = 0
+      TopIndex = -1
+    end
+    object Splitter2: TSplitter
+      Left = 312
+      Height = 238
+      Top = 1
+      Width = 5
+    end
+    object ListBoxProps: TListBox
+      Left = 317
+      Height = 238
+      Top = 1
+      Width = 252
+      Align = alClient
+      ItemHeight = 0
+      OnDblClick = ListBoxPropsDblClick
+      ScrollWidth = 250
+      TabOrder = 2
+      TopIndex = -1
+    end
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 240
+    Width = 570
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+end

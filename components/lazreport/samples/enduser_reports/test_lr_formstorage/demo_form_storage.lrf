@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CONFIG>
+  <LazReport>
+    <Version Value="26"/>
+    <Title Value="Test work with lrFormStorage"/>
+    <Subject Value=""/>
+    <KeyWords Value=""/>
+    <Comments Value=""/>
+    <ReportCreateDate Value="1899-12-30 00:00:00"/>
+    <ReportLastChange Value="2014-03-14 10:50:43"/>
+    <ReportVersionBuild Value=""/>
+    <ReportVersionMajor Value="1"/>
+    <ReportVersionMinor Value="0"/>
+    <ReportVersionRelease Value=""/>
+    <ReportAutor Value="Lagunov A.A."/>
+    <Script Value=""/>
+    <Pages>
+      <PrintToDefault Value="False"/>
+      <DoublePass Value="False"/>
+      <SelectedPrinter Value="Default printer"/>
+      <PageCount Value="2"/>
+      <Page1>
+        <Name Value="Page1"/>
+        <ClassName Value="TfrPageReport"/>
+        <Visible Value="True"/>
+        <Width Value="2100"/>
+        <Height Value="2970"/>
+        <Script Value=""/>
+        <PgSize Value="9"/>
+        <Margins>
+          <left Value="36"/>
+          <Top Value="36"/>
+          <Right Value="36"/>
+          <Bottom Value="36"/>
+        </Margins>
+        <Orientation Value="poPortrait"/>
+        <UseMargins Value="True"/>
+        <PrintToPrevPage Value="False"/>
+        <ColCount Value="0"/>
+        <ColGap Value="0"/>
+        <LayoutOrder Value="loColumns"/>
+        <ObjectCount Value="4"/>
+        <Object1>
+          <Name Value="Memo1"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="76"/>
+            <Top Value="64"/>
+            <Width Value="572"/>
+            <Height Value="20"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight"/>
+          </Frames>
+          <Data>
+            <Format Value="556"/>
+            <FormatStr Value=""/>
+            <Memo Value="You are enter in first line:&#xA;"/>
+            <Script Value=""/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+          <Justify Value="False"/>
+        </Object1>
+        <Object2>
+          <Name Value="Memo2"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="76"/>
+            <Top Value="124"/>
+            <Width Value="572"/>
+            <Height Value="20"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight"/>
+          </Frames>
+          <Data>
+            <Format Value="556"/>
+            <FormatStr Value=""/>
+            <Memo Value="You are enter in second line:&#xA;"/>
+            <Script Value=""/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+          <Justify Value="False"/>
+        </Object2>
+        <Object3>
+          <Name Value="Memo3"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="76"/>
+            <Top Value="84"/>
+            <Width Value="572"/>
+            <Height Value="20"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbRight,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="556"/>
+            <FormatStr Value=""/>
+            <Memo Value="[lrEdit1.Text]&#xA;"/>
+            <Script Value=""/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value="fsBold"/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+          <Justify Value="False"/>
+        </Object3>
+        <Object4>
+          <Name Value="Memo4"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="76"/>
+            <Top Value="144"/>
+            <Width Value="572"/>
+            <Height Value="40"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbRight,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="556"/>
+            <FormatStr Value=""/>
+            <Memo Value="[lrEdit2.Text]&#xA;"/>
+            <Script Value=""/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value="fsBold"/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+          <Justify Value="False"/>
+        </Object4>
+      </Page1>
+      <Page2>
+        <Name Value="Dialog1"/>
+        <ClassName Value="TfrPageDialog"/>
+        <Visible Value="True"/>
+        <Width Value="400"/>
+        <Height Value="250"/>
+        <Script Value="begin&#xA;  lrFormStorage1.LoadProps;&#xA;end&#xA;"/>
+        <Caption Value="Dialog1"/>
+        <ObjectCount Value="6"/>
+        <Object1 ButtonOrder="boDefault" ShowButtons="pbOK,pbCancel">
+          <Name Value="lrButtonPanel1"/>
+          <ClassName Value="TlrButtonPanel"/>
+          <Visible Value="True"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="2"/>
+            <Top Value="196"/>
+            <Width Value="392"/>
+            <Height Value="50"/>
+          </Size>
+          <Flags Value="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Enabled Value="True"/>
+          <Font>
+            <Name Value="default"/>
+            <Size Value="0"/>
+            <Color Value="clDefault"/>
+            <Charset Value="1"/>
+            <Style Value=""/>
+          </Font>
+          <Caption Value=""/>
+          <AutoSize Value="True"/>
+          <Color Value="clDefault"/>
+          <Event>
+            <OnClick Value="begin&#xA;  lrFormStorage1.StoreProps;&#xA;end&#xA;"/>
+          </Event>
+        </Object1>
+        <Object2>
+          <Name Value="lrLabel1"/>
+          <ClassName Value="TlrLabel"/>
+          <Visible Value="True"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="16"/>
+            <Top Value="28"/>
+            <Width Value="96"/>
+            <Height Value="18"/>
+          </Size>
+          <Flags Value="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Enabled Value="True"/>
+          <Font>
+            <Name Value="default"/>
+            <Size Value="0"/>
+            <Color Value="clDefault"/>
+            <Charset Value="1"/>
+            <Style Value=""/>
+          </Font>
+          <Caption Value="Input text line 1"/>
+          <AutoSize Value="True"/>
+          <Color Value="clNone"/>
+          <Event>
+            <OnClick Value=""/>
+          </Event>
+          <WordWrap Value="False"/>
+          <Alignment Value="taLeftJustify"/>
+        </Object2>
+        <Object3>
+          <Name Value="lrEdit1"/>
+          <ClassName Value="TlrEdit"/>
+          <Visible Value="True"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="28"/>
+            <Top Value="52"/>
+            <Width Value="348"/>
+            <Height Value="18"/>
+          </Size>
+          <Flags Value="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Enabled Value="True"/>
+          <Font>
+            <Name Value="default"/>
+            <Size Value="0"/>
+            <Color Value="clDefault"/>
+            <Charset Value="1"/>
+            <Style Value=""/>
+          </Font>
+          <Caption Value=""/>
+          <AutoSize Value="True"/>
+          <Color Value="clDefault"/>
+          <Event>
+            <OnClick Value=""/>
+          </Event>
+          <Text Value=""/>
+        </Object3>
+        <Object4>
+          <Name Value="lrLabel2"/>
+          <ClassName Value="TlrLabel"/>
+          <Visible Value="True"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="16"/>
+            <Top Value="88"/>
+            <Width Value="96"/>
+            <Height Value="18"/>
+          </Size>
+          <Flags Value="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Enabled Value="True"/>
+          <Font>
+            <Name Value="default"/>
+            <Size Value="0"/>
+            <Color Value="clDefault"/>
+            <Charset Value="1"/>
+            <Style Value=""/>
+          </Font>
+          <Caption Value="Input text line 2"/>
+          <AutoSize Value="True"/>
+          <Color Value="clNone"/>
+          <Event>
+            <OnClick Value=""/>
+          </Event>
+          <WordWrap Value="False"/>
+          <Alignment Value="taLeftJustify"/>
+        </Object4>
+        <Object5>
+          <Name Value="lrEdit2"/>
+          <ClassName Value="TlrEdit"/>
+          <Visible Value="True"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="28"/>
+            <Top Value="112"/>
+            <Width Value="348"/>
+            <Height Value="18"/>
+          </Size>
+          <Flags Value="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Enabled Value="True"/>
+          <Font>
+            <Name Value="default"/>
+            <Size Value="0"/>
+            <Color Value="clDefault"/>
+            <Charset Value="1"/>
+            <Style Value=""/>
+          </Font>
+          <Caption Value=""/>
+          <AutoSize Value="True"/>
+          <Color Value="clDefault"/>
+          <Event>
+            <OnClick Value=""/>
+          </Event>
+          <Text Value=""/>
+        </Object5>
+        <Object6>
+          <Name Value="lrFormStorage1"/>
+          <ClassName Value="TLRFormStorage"/>
+          <Visible Value="True"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="260"/>
+            <Top Value="32"/>
+            <Width Value="28"/>
+            <Height Value="28"/>
+          </Size>
+          <Flags Value="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <StoredProperties Value="lrEdit1.Text&#xA;lrEdit2.Text&#xA;"/>
+          <Version Value="0"/>
+          <ConfigFileName Value=""/>
+          <Active Value="False"/>
+        </Object6>
+      </Page2>
+      <FVal>
+        <Count Value="0"/>
+      </FVal>
+      <ParentVars Value=""/>
+    </Pages>
+  </LazReport>
+</CONFIG>
