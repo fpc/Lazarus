@@ -71,6 +71,14 @@ type
     function Print: boolean;
     procedure Edit;
     procedure Find;
+
+    procedure SmallScrollUp;
+    procedure SmallScrollDown;
+    procedure SmallScrollLeft;
+    procedure SmallScrollRight;
+    procedure SmallScrollNext;
+    procedure SmallScrollPrior;
+
     function ExportTo(AFileName: string): boolean;
     property AllPages: Integer read GetAllPages;
     property Page: Integer read GetPage write SetPage;
@@ -380,6 +388,42 @@ end;
 procedure TfrPreview.Find;
 begin
   FWindow.FindBtnClick(nil);
+end;
+
+procedure TfrPreview.SmallScrollUp;
+begin
+  if FWindow.VScrollBar.Enabled then FWindow.VScrollBar.SetFocus;
+  FWindow.ScrollBarDelta(-FWindow.VScrollBar.SmallChange, 0)
+end;
+
+procedure TfrPreview.SmallScrollDown;
+begin
+  if FWindow.VScrollBar.Enabled then FWindow.VScrollBar.SetFocus;
+  FWindow.ScrollBarDelta(FWindow.VScrollBar.SmallChange, 0)
+end;
+
+procedure TfrPreview.SmallScrollLeft;
+begin
+  if FWindow.HScrollBar.Enabled then FWindow.HScrollBar.SetFocus;
+  FWindow.ScrollBarDelta(-FWindow.HScrollBar.SmallChange, 0)
+end;
+
+procedure TfrPreview.SmallScrollRight;
+begin
+  if FWindow.HScrollBar.Enabled then FWindow.HScrollBar.SetFocus;
+  FWindow.ScrollBarDelta(FWindow.HScrollBar.SmallChange, 0)
+end;
+
+procedure TfrPreview.SmallScrollNext;
+begin
+  if FWindow.VScrollBar.Enabled then FWindow.VScrollBar.SetFocus;
+  FWindow.ScrollBarDelta(FWindow.VScrollBar.LargeChange, 0)
+end;
+
+procedure TfrPreview.SmallScrollPrior;
+begin
+  if FWindow.VScrollBar.Enabled then FWindow.VScrollBar.SetFocus;
+  FWindow.ScrollBarDelta(-FWindow.VScrollBar.LargeChange, 0)
 end;
 
 function TfrPreview.ExportTo(AFileName: string): boolean;
