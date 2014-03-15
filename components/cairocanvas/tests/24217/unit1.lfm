@@ -1,13 +1,13 @@
 object Form1: TForm1
-  Left = 226
+  Left = 100
   Height = 552
-  Top = 148
+  Top = 77
   Width = 628
   Caption = 'Form1'
   ClientHeight = 552
   ClientWidth = 628
   OnPaint = FormPaint
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object Button1: TButton
     Left = 548
     Height = 25
@@ -50,7 +50,7 @@ object Form1: TForm1
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 62
+    ClientHeight = 57
     ClientWidth = 93
     Items.Strings = (
       '24217'
@@ -69,6 +69,7 @@ object Form1: TForm1
     Top = 236
     Width = 75
     Caption = 'btnPrintAll'
+    OnClick = btnPrintAllClick
     TabOrder = 4
   end
   object btnOther: TButton
@@ -95,7 +96,7 @@ object Form1: TForm1
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 58
+    ClientHeight = 53
     ClientWidth = 64
     Columns = 3
     ItemIndex = 0
@@ -127,7 +128,7 @@ object Form1: TForm1
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 82
+    ClientHeight = 77
     ClientWidth = 64
     ItemIndex = 0
     Items.Strings = (

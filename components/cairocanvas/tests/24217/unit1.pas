@@ -24,6 +24,7 @@ type
     radOtherAngle: TRadioGroup;
     procedure btn19435Click(Sender: TObject);
     procedure btnOtherClick(Sender: TObject);
+    procedure btnPrintAllClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure btn24217Click(Sender: TObject);
     procedure chkTestsItemClick(Sender: TObject; Index: integer);
@@ -32,6 +33,10 @@ type
     procedure Draw19435(cnv: TCanvas; XDPI,YDPI: Integer);
     procedure Draw24217(cnv: TCanvas; XDPI,YDPI: Integer);
     procedure DrawOther(cnv: TCanvas; XDPI,YDPI: Integer);
+    function GetOtherAlignment:TAlignment;
+    function GetOtherLayout:TTextLayout;
+    procedure GetReferencePoint(const r: TRect; cnv:TCanvas; out x, y: Integer);
+    procedure PrintOther(aFileName: string = 'other'; aBackend: TCairoBackend = cbPDF);
   public
     { public declarations }
   end;
@@ -79,18 +84,51 @@ begin
 end;
 
 procedure TForm1.btnOtherClick(Sender: TObject);
-var
-  CairoPrinter: TCairoFilePrinter;
 begin
-  CairoPrinter := TCairoFilePrinter.create;
-  //CairoPrinter.CairoBackend:=cbPS;
-  CairoPrinter.CairoBackend:=cbPDF;
-  CairoPrinter.FileName:='other';
-  CairoPrinter.BeginDoc;
-  with CairoPrinter do
-    DrawOther(Canvas, XDPI, YDPI);
-  CairoPrinter.EndDoc;
-  CairoPrinter.Free;
+  PrintOther;
+end;
+
+procedure TForm1.btnPrintAllClick(Sender: TObject);
+
+  procedure PrintBackend(aBackend: TCairoBackend);
+  var
+    angle: Integer;
+    angleIndex: Integer;
+    alignIndex: Integer;
+    aFileName, lstr,astr: string;
+    CairoPrinter: TCairoFilePrinter;
+  begin
+    CairoPrinter := TCairoFilePrinter.create;
+    CairoPrinter.CairoBackend:=aBackend;
+    CairoPrinter.FileName:='testing other';
+    CairoPrinter.BeginDoc;
+    for angleIndex:=0 to 3 do begin
+      radOtherAngle.ItemIndex := angleIndex;
+      for alignIndex := 0 to 8 do begin
+        radOtherAlign.ItemIndex := alignIndex;
+        //angle := StrToInt(radOtherAngle.Items[angleIndex]);
+        //WriteStr(lstr, GetOtherLayout);
+        //WriteStr(astr, GetOtherAlignment);
+        //aFileName := format('other_angle(%.3d)_alignment(%s)_layout(%s)',
+        //  [angle, lstr, astr]);
+
+        with CairoPrinter do
+          DrawOther(Canvas, XDPI, YDPI);
+
+        if not ((angleIndex=3) and (alignIndex=8)) then
+          CairoPrinter.NewPage;
+      end;
+    end;
+    CairoPrinter.EndDoc;
+    CairoPrinter.Free;
+  end;
+
+begin
+
+  if chkTests.Checked[2] then begin
+    PrintBackend(cbPDF);
+    PrintBackend(cbPS);
+  end;
 end;
 
 procedure TForm1.btn24217Click(Sender: TObject);
@@ -248,11 +286,17 @@ const
     '01.' + LineEnding+
     '1.0' + LineEnding+
     '.01';
+  BRKTEXT = 'Si tu gusto gustara del gusto que gusta mi gusto, '+
+            'mi gusto gustara del gusto que gusta tu gusto, '+
+            'PERO COMO TU GUSTO NO GUSTA DEL GUSTO QUE GUSTA MI GUSTO, '+
+            'MI GUSTO NO GUSTA DEL GUSTO QUE GUSTA TU GUSTO';
+
 var
   x,y: Integer;
   R: TRect;
   sz: TSize;
   style: TTextStyle;
+  sL,sA: string;
 begin
 
   R := Rect(XDPI, YDPI*2, XDPI*3, round(YDPI*2.5));
@@ -261,6 +305,7 @@ begin
   cnv.Font.Size := 40;
   cnv.Font.Color := clBlue;
   cnv.Pen.Color := RGBToColor($AA, $CC, $FF);
+  cnv.Font.Orientation:=0;
   cnv.Brush.Style := bsClear;
   cnv.TextRect(R, R.Left, R.Top, CTEXT);
   cnv.Rectangle(R);
@@ -272,6 +317,7 @@ begin
   cnv.Rectangle(R);
 
   OffsetRect(R, -5, Round(YDPI*0.5));
+  Cnv.Font.Size:=16;
   sz := cnv.TextExtent('Line1');
   cnv.Font.color := clDefault;
   cnv.TextOut(R.Left, R.Top, 'Line1'); OffsetRect(R, 0, sz.cy);
@@ -279,42 +325,78 @@ begin
   cnv.TextOut(R.Left, R.Top, 'Line3'); OffsetRect(R, 0, sz.cy);
 
   R := Rect(XDPI*4, YDPI*2, Round(XDPI*6), round(YDPI*6));
+
   cnv.Font.Name := 'Sans';
   cnv.Font.Size := 20;
   cnv.Font.Color := clGreen;
-  cnv.Font.Orientation:=1800;
+  cnv.Font.Orientation := radOtherAngle.ItemIndex * 90 * 10;
   cnv.Brush.Style := bsClear;
   cnv.Pen.Color := clSilver;
+
   style := cnv.TextStyle;
   style.SingleLine := false;
-  style.Alignment := taRightJustify;
+  with style do begin
+    Alignment := GetOtherAlignment;
+    Layout := GetOtherLayout;
+  end;
   cnv.TextStyle := style;
+  GetReferencePoint(R, cnv, x, y);
+
   //cnv.TextRect(R, R.Left, R.Top,  Par);
-  cnv.TextRect(R, R.Right, R.Bottom,  Par);
+  cnv.TextRect(R, x, y,  Par);
   cnv.Rectangle(R);
+
 
   R := Rect(XDPI, YDPI*7, XDPI*7, YDPI*9);
   cnv.Font.Size := 30;
   cnv.Font.Color := clFuchsia;
   cnv.Pen.Color := clSilver;
-  // style
-  style := cnv.TextStyle;
-  style.SingleLine := false;
-  with style do begin
-    case radOtherAlign.ItemIndex of
-      0,3,6: Alignment := taLeftJustify;
-      1,4,7: Alignment := taCenter;
-      else   Alignment := taRightJustify;
-    end;
-    case radOtherAlign.ItemIndex of
-      0,1,2: Layout := tlTop;
-      3,4,5: Layout := tlCenter;
-      else   Layout := tlBottom;
-    end;
+  GetReferencePoint(r, Cnv, x, y);
+  cnv.TextRect(R, x, y, Par);
+  cnv.Rectangle(R);
+
+  R := Rect(XDPI, Round(YDPI*3.5), XDPI*3, round(YDPI*6));
+  cnv.Font.Color := clBlue;
+  cnv.Font.Size  := 16;
+  cnv.Pen.Color := clRed;
+  Style.Wordbreak:=true;
+  cnv.TextStyle := Style;
+  GetReferencePoint(R, cnv, x, y);
+  cnv.TextRect(R, x, y, BRKTEXT);
+  cnv.Rectangle(R);
+
+
+  WriteStr(sA, cnv.TextStyle.Alignment);
+  WriteStr(sL, cnv.TextStyle.Layout);
+  cnv.Font.Size := 14;
+  cnv.Font.Color := clMaroon;
+  cnv.Font.Orientation:=0;
+  cnv.TextOut(XDPI, YDPI*7 - Round(YDPI*0.5),
+    format('Alignment: "%s" Layout: "%s" Orientation: %d° ',[sA, sL, radOtherAngle.ItemIndex * 90]));
+end;
+
+function TForm1.GetOtherAlignment: TAlignment;
+begin
+  case radOtherAlign.ItemIndex of
+    0,3,6: Result := taLeftJustify;
+    1,4,7: Result := taCenter;
+    else   Result := taRightJustify;
   end;
-  cnv.TextStyle := style;
+end;
+
+function TForm1.GetOtherLayout: TTextLayout;
+begin
+  case radOtherAlign.ItemIndex of
+    0,1,2: Result := tlTop;
+    3,4,5: Result := tlCenter;
+    else   Result := tlBottom;
+  end;
+end;
+
+procedure TForm1.GetReferencePoint(const r: TRect; cnv: TCanvas; out x,
+  y: Integer);
+begin
   // orientation
-  cnv.Font.Orientation := radOtherAngle.ItemIndex * 90 * 10;
   x := r.Left;
   y := r.Top;
   case cnv.Font.Orientation of
@@ -339,8 +421,21 @@ begin
         y := r.Top;
       end;
   end;
-  cnv.TextRect(R, x, y, Par);
-  cnv.Rectangle(R);
+end;
+
+procedure TForm1.PrintOther(aFileName: string = 'other'; aBackend: TCairoBackend = cbPDF);
+var
+  CairoPrinter: TCairoFilePrinter;
+begin
+  CairoPrinter := TCairoFilePrinter.create;
+  //CairoPrinter.CairoBackend:=cbPS;
+  CairoPrinter.CairoBackend:=aBackend;
+  CairoPrinter.FileName:=aFileName;
+  CairoPrinter.BeginDoc;
+  with CairoPrinter do
+    DrawOther(Canvas, XDPI, YDPI);
+  CairoPrinter.EndDoc;
+  CairoPrinter.Free;
 end;
 
 end.
