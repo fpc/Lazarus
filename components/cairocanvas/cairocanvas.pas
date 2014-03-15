@@ -1180,7 +1180,16 @@ begin
     {$endif}
 
     {$ifdef pangocairo}
-    // TODO: missing breaklines
+    if Style.Wordbreak then begin
+      pango_layout_set_width(layout, Round(BoxWidth*PANGO_SCALE));
+      pango_layout_set_wrap(layout, PANGO_WRAP_WORD);
+      case Style.Alignment of //Works only with pango_layout_set_width
+        taLeftJustify:  pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
+        taCenter:       pango_layout_set_alignment(layout, PANGO_ALIGN_CENTER);
+        taRightJustify: pango_layout_set_alignment(layout, PANGO_ALIGN_RIGHT);
+      end;
+    end;
+
     pango_layout_set_text(layout, pchar(s), -1);
     pango_layout_get_extents(Layout, @ink, @logical);
     //Calc start 'box' relative positions
@@ -1217,10 +1226,12 @@ begin
       {$ifdef pangocairo}
       pango_layout_set_text(layout, pchar(s1), -1);
       pango_layout_get_extents(Layout, @ink, @logical);
-      case Style.Alignment of
-        taLeftJustify:  x := 0;
-        taCenter:       x := BoxWidth/2 - logical.width/PANGO_SCALE/2;
-        taRightJustify: x := BoxWidth - logical.Width/PANGO_SCALE;
+      x := 0;
+      if not Style.Wordbreak then begin
+        case Style.Alignment of
+          taCenter:       x := BoxWidth/2 - logical.width/PANGO_SCALE/2;
+          taRightJustify: x := BoxWidth - logical.Width/PANGO_SCALE;
+        end;
       end;
       cairo_move_to(cr, x, y);
       //DebugLn('TextRect ',S1);
