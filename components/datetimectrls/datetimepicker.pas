@@ -47,7 +47,6 @@ uses
   {$endif}
   Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls, Buttons,
   ExtCtrls, Forms, ComCtrls, Types, LMessages, LCLProc, CalControlWrapper
-  {$ifdef LCLGtk2}, LCLVersion{$endif}
   ;
 
 const
@@ -3341,22 +3340,7 @@ begin
     AutoResizeButton;
 end;
 
-{$ifdef LCLGtk2}
-// On Gtk2, it seems that if a non-modal form is shown on top
-// of a modal one, it can't get user interaction. So it is useless then.
-// Therefore, if our parent is shown modally, we must show the calendar
-// on a modal form too.
-  {$if lcl_fullversion < 00093100}
-  // This seems to be fixed, so this is not needed in recent Lazarus versions.
-    {$define show_modally_on_modal_form}
-  {$endif}
-{$endif}
-
 procedure TCustomDateTimePicker.DropDownCalendarForm;
-{$ifdef show_modally_on_modal_form}
-var
-  F: TCustomForm;
-{$endif}
 begin
   SetFocusIfPossible;
 
@@ -3364,14 +3348,7 @@ begin
     if not (FReadOnly or Assigned(FCalendarForm)
                           or (csDesigning in ComponentState)) then begin
       FCalendarForm := TDTCalendarForm.CreateNewDTCalendarForm(nil, Self);
-
-    {$ifdef show_modally_on_modal_form}
-      F := GetParentForm(Self);
-      if Assigned(F) and (fsModal in F.FormState) then
-        FCalendarForm.ShowModal
-      else
-    {$endif}
-        FCalendarForm.Show;
+      FCalendarForm.Show;
     end;
 
   end else begin
