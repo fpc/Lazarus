@@ -61,6 +61,7 @@ type
     procedure DebugSys;
   protected
     ScaleX, ScaleY, FontScale: Double;
+    procedure SetLazClipRect(r: TRect);
     procedure DoLineTo(X1,Y1: Integer); override;
     function CreateCairoHandle: HDC; virtual; abstract;
     procedure DestroyCairoHandle; virtual;
@@ -411,6 +412,7 @@ end;
 
 procedure TCairoPrinterCanvas.SetClipRect(const ARect: TRect);
 begin
+  RequiredState([csHandleValid]);
   if FUserClipRect=nil then
     New(FUserClipRect);
 
@@ -442,6 +444,7 @@ end;
 
 procedure TCairoPrinterCanvas.SetClipping(const AValue: boolean);
 begin
+  RequiredState([csHandleValid]);
   cairo_reset_clip(cr);
 
   if not AValue then begin
@@ -498,6 +501,11 @@ begin
   DebugLn('CurPoint:  x=%f y=%f',[x, y]);
   with matrix do
     DebugLn('CurMatrix: xx=%f yx=%f xy=%f yy=%f x0=%f y0=%f',[xx,yx,xy,yy,x0,y0]);
+end;
+
+procedure TCairoPrinterCanvas.SetLazClipRect(r: TRect);
+begin
+  FLazClipRect := r;
 end;
 
 constructor TCairoPrinterCanvas.Create(APrinter: TPrinter);

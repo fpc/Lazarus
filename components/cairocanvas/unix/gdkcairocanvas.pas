@@ -18,6 +18,10 @@ type
 
 implementation
 
+uses
+  Classes;
+
+
 { TGdkCairoCanvas }
 
 function TGdkCairoCanvas.CreateCairoHandle: HDC;
@@ -27,8 +31,10 @@ end;
 
 procedure TGdkCairoCanvas.SetHandle(NewHandle: HDC);
 begin
-  if NewHandle <> 0 then
-    NewHandle := {%H-}HDC(gdk_cairo_create(TGtk2DeviceContext(NewHandle).Drawable));
+  if NewHandle <> 0 then begin
+    NewHandle := {%H-}HDC(gdk_cairo_create(TGtkDeviceContext(NewHandle).Drawable));
+    SetLazClipRect(Rect(Control.Left, Control.Top, Control.Left + Control.Width, Control.Top + Control.Height));
+  end;
   inherited SetHandle(NewHandle);
 end;
 
