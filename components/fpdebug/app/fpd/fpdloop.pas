@@ -58,14 +58,12 @@ procedure DebugLoop;
     Code, CodeBytes: String;
   begin
     WriteLN('===');
+    a := GCurrentProcess.GetInstructionPointerRegisterValue;
+    Write('  [', FormatAddress(a), ']');
     {$ifdef windows}
     {$ifdef cpui386}
-      a := GCurrentContext^.EIP;
-      Write('  [', FormatAddress(a), ']');
       Disassemble(GCurrentProcess.Handle, False, a, CodeBytes, Code);
     {$else}
-      a := GCurrentContext^.RIP;
-      Write('  [', FormatAddress(a), ']');
       Disassemble(GCurrentProcess.Handle, True, a, CodeBytes, Code);
     {$endif}
     {$else}
@@ -82,15 +80,7 @@ procedure DebugLoop;
     Name: String;
   begin
     WriteLN('===');
-    {$ifdef windows}
-    {$ifdef cpui386}
-      a := GCurrentContext^.EIP;
-    {$else}
-      a := GCurrentContext^.RIP;
-    {$endif}
-    {$else}
-    a := 0;
-    {$endif}
+    a := GCurrentProcess.GetInstructionPointerRegisterValue;
     sym := GCurrentProcess.FindSymbol(a);
     if sym = nil
     then begin
