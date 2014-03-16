@@ -202,8 +202,8 @@ type
     // stuff for the debugger
     FCallStack: TCallStackMonitor;
     FDisassembler: TIDEDisassembler;
-    FExceptions: TIDEExceptions;
-    FSignals: TIDESignals;
+    FExceptions: TBaseExceptions;
+    //FSignals: TBaseSignals;
     //FBreakPoints: TIDEBreakPoints;
     //FBreakPointGroups: TIDEBreakPointGroups;
     FLocals: TLocalsMonitor;
@@ -278,13 +278,13 @@ type
   public
     //property BreakPoints: TIDEBreakPoints read FBreakpoints;   // A list of breakpoints for the current project
     //property BreakPointGroups: TIDEBreakPointGroups read FBreakPointGroups;
-    property Exceptions: TIDEExceptions read FExceptions;      // A list of exceptions we should ignore
+    property Exceptions: TBaseExceptions read FExceptions;      // A list of exceptions we should ignore
     property CallStack: TCallStackMonitor read FCallStack;
     property Disassembler: TIDEDisassembler read FDisassembler;
     property Locals: TLocalsMonitor read FLocals;
     property LineInfo: TIDELineInfo read FLineInfo;
     property Registers: TRegistersMonitor read FRegisters;
-    property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
+    //property Signals: TBaseSignals read FSignals;               // A list of actions for signals we know of
     property Watches: TWatchesMonitor read FWatches;
     property Threads: TThreadsMonitor read FThreads;
   end;
@@ -528,8 +528,8 @@ begin
   //FBreakPointGroups := TIDEBreakPointGroups.Create;
   FWatches := TWatchesMonitor.Create;
   FThreads := TThreadsMonitor.Create;
-  FExceptions := TIDEExceptions.Create;
-  FSignals := TIDESignals.Create;
+  FExceptions := TBaseExceptions.Create(TBaseException);
+  //FSignals := TBaseSignals.Create(TBaseSignal);
   FLocals := TLocalsMonitor.Create;
   FLineInfo := TIDELineInfo.Create;
   FCallStack := TCallStackMonitor.Create;
@@ -548,7 +548,7 @@ begin
   FCallStack.Supplier := Result.CallStack;
   FDisassembler.Master := Result.Disassembler;
   Result.Exceptions := FExceptions;
-  FSignals.Master := Result.Signals;
+  //FSignals.Master := Result.Signals;
   FRegisters.Supplier := Result.Registers;
 
   Result.Init;
@@ -571,7 +571,7 @@ begin
   FCallStack.Supplier := nil;
   FDisassembler.Master := nil;
   //FExceptions.Master := nil;
-  FSignals.Master := nil;
+  //FSignals.Master := nil;
 //  FRegisters.Master := nil;
 
   FreeAndNil(FWatches);
@@ -581,7 +581,7 @@ begin
   FreeAndNil(FCallStack);
   FreeAndNil(FDisassembler);
   FreeAndNil(FExceptions);
-  FreeAndNil(FSignals);
+  //FreeAndNil(FSignals);
   FreeAndNil(FLocals);
   FreeAndNil(FLineInfo);
   FreeAndNil(FRegisters);

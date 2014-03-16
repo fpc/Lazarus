@@ -177,32 +177,49 @@ type
   TDebuggerIntf = class;
   TDebuggerDataSupplier = class;
 
+  { TDebuggerDataHandler }
+
+  TDebuggerDataHandler = class
+  private
+    FNotifiedState: TDBGState;
+    FOldState: TDBGState;
+    FUpdateCount: Integer;
+  protected
+    //procedure DoModified; virtual;                                              // user-modified / xml-storable data modified
+    procedure DoStateEnterPause; virtual;
+    procedure DoStateLeavePause; virtual;
+    procedure DoStateLeavePauseClean; virtual;
+    procedure DoStateChangeEx(const AOldState, ANewState: TDBGState); virtual;
+    property  NotifiedState: TDBGState read FNotifiedState;                     // The last state seen by DoStateChange
+    property  OldState: TDBGState read FOldState;                               // The state before last DoStateChange
+
+    procedure DoBeginUpdate; virtual;
+    procedure DoEndUpdate; virtual;
+  public
+    //destructor Destroy; override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function  IsUpdating: Boolean;
+  end;
+
   { TDebuggerDataMonitor }
 
-  TDebuggerDataMonitor = class
+  TDebuggerDataMonitor = class(TDebuggerDataHandler)
   private
     FSupplier: TDebuggerDataSupplier;
-    FUpdateCount: Integer;
     procedure SetSupplier(const AValue: TDebuggerDataSupplier);
   protected
     procedure DoModified; virtual;                                              // user-modified / xml-storable data modified
     procedure DoNewSupplier; virtual;
     property  Supplier: TDebuggerDataSupplier read FSupplier write SetSupplier;
-    procedure DoStateChange(const {%H-}AOldState, {%H-}ANewState: TDBGState); virtual;
-    procedure DoBeginUpdate; virtual;
-    procedure DoEndUpdate; virtual;
-    function IsUpdating: Boolean;
   public
     destructor Destroy; override;
-    procedure BeginUpdate;
-    procedure EndUpdate;
   end;
 
   { TDebuggerDataSupplier }
 
-  TDebuggerDataSupplier = class
+  TDebuggerDataSupplier = class(TDebuggerDataHandler)
   private
-    FNotifiedState, FOldState: TDBGState;
     FDebugger: TDebuggerIntf;
     FMonitor: TDebuggerDataMonitor;
     procedure SetMonitor(const AValue: TDebuggerDataMonitor);
@@ -212,18 +229,16 @@ type
   protected
     property  Monitor: TDebuggerDataMonitor read FMonitor write SetMonitor;
 
-    procedure DoStateEnterPause; virtual;
-    procedure DoStateLeavePause; virtual;
-    procedure DoStateLeavePauseClean; virtual;
+    procedure DoStateLeavePauseClean; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
 
     property  NotifiedState: TDBGState read FNotifiedState;                     // The last state seen by DoStateChange
     property  OldState: TDBGState read FOldState;                               // The state before last DoStateChange
+    procedure DoBeginUpdate; override;
+    procedure DoEndUpdate; override;
   public
     constructor Create(const ADebugger: TDebuggerIntf);
     destructor  Destroy; override;
-    procedure BeginUpdate;
-    procedure EndUpdate;
   end;
 
 {$region Breakpoints **********************************************************}
@@ -561,21 +576,29 @@ type
   { TWatchValueBase }
 
   TWatchValueBase = class(TFreeNotifyingObject)
+  private
+    FTypeInfo: TDBGType;
+    FValue: String;
+    FValidity: TDebuggerDataState;
+
+    procedure SetValidity(AValue: TDebuggerDataState); virtual;
+    procedure SetValue(AValue: String);
+    procedure SetTypeInfo(AValue: TDBGType);
   protected
+    procedure DoDataValidityChanged({%H-}AnOldValidity: TDebuggerDataState); virtual;
+
     function GetDisplayFormat: TWatchDisplayFormat; virtual; abstract;
     function GetEvaluateFlags: TDBGEvaluateFlags; virtual; abstract;
     function GetExpression: String; virtual; abstract;
     function GetRepeatCount: Integer; virtual; abstract;
     function GetStackFrame: Integer; virtual; abstract;
     function GetThreadId: Integer; virtual; abstract;
-    function GetTypeInfo: TDBGType; virtual; abstract;
-    function GetValidity: TDebuggerDataState; virtual; abstract;
-    function GetValue: String; virtual; abstract;
+    function GetTypeInfo: TDBGType; virtual;
+    function GetValue: String; virtual;
     function GetWatchBase: TWatchBase; virtual; abstract;
-    procedure SetTypeInfo(AValue: TDBGType); virtual; abstract;
-    procedure SetValidity(AValue: TDebuggerDataState); virtual; abstract;
-    procedure SetValue(AValue: String); virtual; abstract;
   public
+    destructor Destroy; override;
+    procedure Assign(AnOther: TWatchValueBase); virtual;
     property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat;
     property EvaluateFlags: TDBGEvaluateFlags read GetEvaluateFlags;
     property RepeatCount: Integer read GetRepeatCount;
@@ -584,7 +607,7 @@ type
     property Expression: String read GetExpression;
     property Watch: TWatchBase read GetWatchBase;
   public
-    property Validity: TDebuggerDataState read GetValidity write SetValidity;
+    property Validity: TDebuggerDataState read FValidity write SetValidity;
     property Value: String read GetValue write SetValue;
     property TypeInfo: TDBGType read GetTypeInfo write SetTypeInfo;
   end;
@@ -1761,6 +1784,146 @@ begin
   end;
 end;
 
+{ TDebuggerDataHandler }
+
+procedure TDebuggerDataHandler.DoStateEnterPause;
+begin
+  //
+end;
+
+procedure TDebuggerDataHandler.DoStateLeavePause;
+begin
+  //
+end;
+
+procedure TDebuggerDataHandler.DoStateLeavePauseClean;
+begin
+  //
+end;
+
+procedure TDebuggerDataHandler.DoStateChangeEx(const AOldState, ANewState: TDBGState);
+begin
+  FNotifiedState := ANewState;
+  FOldState := AOldState;
+  DebugLnEnter(DBG_DATA_MONITORS, [ClassName, ': >>ENTER: ', ClassName, '.DoStateChange  New-State=', dbgs(FNotifiedState)]);
+
+  if FNotifiedState in [dsPause, dsInternalPause]
+  then begin
+    // typical: Clear and reload data
+    if not(AOldState  in [dsPause, dsInternalPause] )
+    then DoStateEnterPause;
+  end
+  else
+  if (AOldState  in [dsPause, dsInternalPause, dsNone] )
+  then begin
+    // dsIdle happens after dsStop
+    if (FNotifiedState  in [dsRun, dsInit, dsIdle]) or (AOldState = dsNone)
+    then begin
+      // typical: finalize snapshot and clear data.
+      DoStateLeavePauseClean;
+    end
+    else begin
+      // typical: finalize snapshot
+      //          Do *not* clear data. Objects may be in use (e.g. dsError)
+      DoStateLeavePause;
+    end;
+  end
+  else
+  if (AOldState  in [dsStop]) and (FNotifiedState = dsIdle)
+  then begin
+    // stopped // typical: finalize snapshot and clear data.
+    DoStateLeavePauseClean;
+  end;
+  DebugLnExit(DBG_DATA_MONITORS, [ClassName, ': <<EXIT: ', ClassName, '.DoStateChange']);
+end;
+
+procedure TDebuggerDataHandler.DoBeginUpdate;
+begin
+  //
+end;
+
+procedure TDebuggerDataHandler.DoEndUpdate;
+begin
+  //
+end;
+
+procedure TDebuggerDataHandler.BeginUpdate;
+begin
+  inc(FUpdateCount);
+  if FUpdateCount = 1 then
+    DoBeginUpdate;
+end;
+
+procedure TDebuggerDataHandler.EndUpdate;
+begin
+  assert(FUpdateCount > 0, 'TDebuggerDataMonitor.EndUpdate: FUpdateCount > 0');
+  dec(FUpdateCount);
+  if FUpdateCount = 0 then
+    DoEndUpdate;
+end;
+
+function TDebuggerDataHandler.IsUpdating: Boolean;
+begin
+  Result := FUpdateCount > 0;
+end;
+
+{ TWatchValueBase }
+
+procedure TWatchValueBase.SetValidity(AValue: TDebuggerDataState);
+var
+  OldValidity: TDebuggerDataState;
+begin
+  if FValidity = AValue then exit;
+  //DebugLn(DBG_DATA_MONITORS, ['DebugDataMonitor: TWatchValueBase.SetValidity: FThreadId=', FThreadId, '  FStackFrame=',FStackFrame, ' Expr=', Expression, ' AValidity=',dbgs(AValue)]);
+  DebugLn(DBG_DATA_MONITORS, ['DebugDataMonitor: TWatchValueBase.SetValidity:  Expr=', Expression, ' AValidity=',dbgs(AValue)]);
+  OldValidity := FValidity;
+  FValidity := AValue;
+  DoDataValidityChanged(OldValidity);
+end;
+
+procedure TWatchValueBase.SetValue(AValue: String);
+begin
+  if FValue = AValue then exit;
+  //asser not immutable
+  FValue := AValue;
+end;
+
+procedure TWatchValueBase.SetTypeInfo(AValue: TDBGType);
+begin
+  //assert(Self is TCurrentWatchValue, 'TWatchValue.SetTypeInfo');
+  FreeAndNil(FTypeInfo);
+  FTypeInfo := AValue;
+end;
+
+procedure TWatchValueBase.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
+begin
+
+end;
+
+function TWatchValueBase.GetTypeInfo: TDBGType;
+begin
+  Result := FTypeInfo;
+end;
+
+function TWatchValueBase.GetValue: String;
+begin
+  Result := FValue;
+end;
+
+destructor TWatchValueBase.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FTypeInfo);
+end;
+
+procedure TWatchValueBase.Assign(AnOther: TWatchValueBase);
+begin
+  FreeAndNil(FTypeInfo);
+  //FTypeInfo    := TWatchValue(AnOther).FTypeInfo.cre;
+  FValue         := AnOther.FValue;
+  FValidity      := AnOther.FValidity;
+end;
+
 { TRegisterSupplier }
 
 procedure TRegisterSupplier.DoNewMonitor;
@@ -2154,45 +2317,10 @@ begin
   //
 end;
 
-procedure TDebuggerDataMonitor.DoStateChange(const AOldState, ANewState: TDBGState);
-begin
-  //
-end;
-
-procedure TDebuggerDataMonitor.DoBeginUpdate;
-begin
-  //
-end;
-
-procedure TDebuggerDataMonitor.DoEndUpdate;
-begin
-  //
-end;
-
-function TDebuggerDataMonitor.IsUpdating: Boolean;
-begin
-  Result := FUpdateCount > 0;
-end;
-
 destructor TDebuggerDataMonitor.Destroy;
 begin
   Supplier := nil;
   inherited Destroy;
-end;
-
-procedure TDebuggerDataMonitor.BeginUpdate;
-begin
-  inc(FUpdateCount);
-  if FUpdateCount = 1 then
-    DoBeginUpdate;
-end;
-
-procedure TDebuggerDataMonitor.EndUpdate;
-begin
-  assert(FUpdateCount > 0, 'TDebuggerDataMonitor.EndUpdate: FUpdateCount > 0');
-  dec(FUpdateCount);
-  if FUpdateCount = 0 then
-    DoEndUpdate;
 end;
 
 { TDebuggerDataSupplier }
@@ -2210,16 +2338,6 @@ begin
   //
 end;
 
-procedure TDebuggerDataSupplier.DoStateEnterPause;
-begin
-  //
-end;
-
-procedure TDebuggerDataSupplier.DoStateLeavePause;
-begin
-  //
-end;
-
 procedure TDebuggerDataSupplier.DoStateLeavePauseClean;
 begin
   DoStateLeavePause;
@@ -2228,41 +2346,9 @@ end;
 procedure TDebuggerDataSupplier.DoStateChange(const AOldState: TDBGState);
 begin
   if (Debugger = nil) then Exit;
-  FNotifiedState := Debugger.State;
-  FOldState := AOldState;
-  DebugLnEnter(DBG_DATA_MONITORS, ['TDebuggerDataSupplier: >>ENTER: ', ClassName, '.DoStateChange  New-State=', dbgs(FNotifiedState)]);
-
-  if FNotifiedState in [dsPause, dsInternalPause]
-  then begin
-    // typical: Clear and reload data
-    if not(AOldState  in [dsPause, dsInternalPause] )
-    then DoStateEnterPause;
-  end
-  else
-  if (AOldState  in [dsPause, dsInternalPause, dsNone] )
-  then begin
-    // dsIdle happens after dsStop
-    if (FNotifiedState  in [dsRun, dsInit, dsIdle]) or (AOldState = dsNone)
-    then begin
-      // typical: finalize snapshot and clear data.
-      DoStateLeavePauseClean;
-    end
-    else begin
-      // typical: finalize snapshot
-      //          Do *not* clear data. Objects may be in use (e.g. dsError)
-      DoStateLeavePause;
-    end;
-  end
-  else
-  if (AOldState  in [dsStop]) and (FNotifiedState = dsIdle)
-  then begin
-    // stopped // typical: finalize snapshot and clear data.
-    DoStateLeavePauseClean;
-  end;
-
+  DoStateChangeEx(AOldState, Debugger.State);
   if Monitor <> nil then
-    Monitor.DoStateChange(AOldState, FNotifiedState);
-  DebugLnExit(DBG_DATA_MONITORS, ['TDebuggerDataSupplier: <<EXIT: ', ClassName, '.DoStateChange']);
+    Monitor.DoStateChangeEx(AOldState, FDebugger.State);
 end;
 
 constructor TDebuggerDataSupplier.Create(const ADebugger: TDebuggerIntf);
@@ -2277,12 +2363,12 @@ begin
   inherited Destroy;
 end;
 
-procedure TDebuggerDataSupplier.BeginUpdate;
+procedure TDebuggerDataSupplier.DoBeginUpdate;
 begin
   FMonitor.BeginUpdate;
 end;
 
-procedure TDebuggerDataSupplier.EndUpdate;
+procedure TDebuggerDataSupplier.DoEndUpdate;
 begin
   FMonitor.EndUpdate;
 end;

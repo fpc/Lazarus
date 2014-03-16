@@ -281,16 +281,11 @@ type
 
   TDebuggerDataMonitorEx = class(TDebuggerDataMonitor)
   private
-    FNotifiedState, FOldState: TDBGState;
     FOnModified: TNotifyEvent;
     FIgnoreModified: Integer;
     FSnapshots: TDebuggerDataSnapShotList;
   protected
     procedure DoModified; override;
-    procedure DoStateEnterPause; virtual;
-    procedure DoStateLeavePause; virtual;
-    procedure DoStateLeavePauseClean; virtual;
-    procedure DoStateChange(const AOldState, ANewState: TDBGState); override;
     function CreateSnapshot({%H-}CreateEmpty: Boolean = False): TObject; virtual;
     function GetSnapshotObj(AnID: Pointer): TObject; virtual;
   public
@@ -604,9 +599,6 @@ type
     FStackFrame: Integer;
     FThreadId: Integer;
 
-    FTypeInfo: TDBGType;
-    FValue: String;
-    FValidity: TDebuggerDataState;
   protected
     function GetDisplayFormat: TWatchDisplayFormat; override;
     function GetEvaluateFlags: TDBGEvaluateFlags; override;
@@ -615,15 +607,9 @@ type
     function GetStackFrame: Integer; override;
     function GetThreadId: Integer; override;
     function GetTypeInfo: TDBGType; override;
-    function GetValidity: TDebuggerDataState; override;
     function GetValue: String; override;
     function GetWatchBase: TWatchBase; override;
-    procedure SetTypeInfo(AValue: TDBGType); override;
-    procedure SetValidity(AValue: TDebuggerDataState); override;
-    procedure SetValue(AValue: String); override;
 
-
-    procedure ValidityChanged; virtual;
     procedure RequestData; virtual;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 const APath: string);
@@ -636,8 +622,7 @@ type
                        const AThreadId: Integer;
                        const AStackFrame: Integer
                       );  overload;
-    destructor Destroy; override;
-    procedure Assign(AnOther: TWatchValue);
+    procedure Assign(AnOther: TWatchValueBase); override;
 
     property Watch: TWatch read FWatch;
   end;
@@ -747,7 +732,7 @@ type
     procedure SetSnapShot(const AValue: TWatchValue);
   protected
     procedure RequestData; override;
-    procedure ValidityChanged; override;
+    procedure DoDataValidityChanged(AnOldValidity: TDebuggerDataState); override;
   public
     property SnapShot: TWatchValue read FSnapShot write SetSnapShot;
   end;
@@ -3017,57 +3002,6 @@ begin
     FOnModified(Self);
 end;
 
-procedure TDebuggerDataMonitorEx.DoStateEnterPause;
-begin
-  //
-end;
-
-procedure TDebuggerDataMonitorEx.DoStateLeavePause;
-begin
-  //
-end;
-
-procedure TDebuggerDataMonitorEx.DoStateLeavePauseClean;
-begin
-  //
-end;
-
-procedure TDebuggerDataMonitorEx.DoStateChange(const AOldState, ANewState: TDBGState);
-begin
-  FNotifiedState := ANewState;
-  FOldState := AOldState;
-  DebugLnEnter(DBG_DATA_MONITORS, ['DebugDataMonitor: >>ENTER: ', ClassName, '.DoStateChange  New-State=', dbgs(FNotifiedState)]);
-
-  if FNotifiedState in [dsPause, dsInternalPause]
-  then begin
-    // typical: Clear and reload data
-    if not(AOldState  in [dsPause, dsInternalPause] )
-    then DoStateEnterPause;
-  end
-  else
-  if (AOldState  in [dsPause, dsInternalPause, dsNone] )
-  then begin
-    // dsIdle happens after dsStop
-    if (FNotifiedState  in [dsRun, dsInit, dsIdle]) or (AOldState = dsNone)
-    then begin
-      // typical: finalize snapshot and clear data.
-      DoStateLeavePauseClean;
-    end
-    else begin
-      // typical: finalize snapshot
-      //          Do *not* clear data. Objects may be in use (e.g. dsError)
-      DoStateLeavePause;
-    end;
-  end
-  else
-  if (AOldState  in [dsStop]) and (FNotifiedState = dsIdle)
-  then begin
-    // stopped // typical: finalize snapshot and clear data.
-    DoStateLeavePauseClean;
-  end;
-  DebugLnExit(DBG_DATA_MONITORS, ['DebugDataMonitor: <<EXIT: ', ClassName, '.DoStateChange']);
-end;
-
 function TDebuggerDataMonitorEx.CreateSnapshot(CreateEmpty: Boolean = False): TObject;
 begin
   Result := nil;
@@ -3407,8 +3341,9 @@ begin
   TCurrentWatch(FWatch).RequestData(self);
 end;
 
-procedure TCurrentWatchValue.ValidityChanged;
+procedure TCurrentWatchValue.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
 begin
+  if Validity = ddsRequested then exit;
   TCurrentWatches(TCurrentWatch(FWatch).Collection).Update(FWatch);
   if FSnapShot <> nil
   then FSnapShot.Assign(self);
@@ -3576,18 +3511,18 @@ begin
     exit;
   end;
   i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
-  if FValidity = ddsUnknown then begin
+  if Validity = ddsUnknown then begin
     Result := '<evaluating>';
-    FValidity := ddsRequested;
+    Validity := ddsRequested;
     RequestData;
     if i <> DbgStateChangeCounter then exit; // in case the debugger did run.
     // TODO: The watch can also be deleted by the user
   end;
-  case FValidity of
+  case Validity of
     ddsRequested, ddsEvaluating: Result := '<evaluating>';
-    ddsValid:                    Result := FValue;
+    ddsValid:                    Result := inherited GetValue;
     ddsInvalid:                  Result := '<invalid>';
-    ddsError:                    Result := '<Error: '+FValue+'>';
+    ddsError:                    Result := '<Error: '+ (inherited GetValue) +'>';
   end;
 
 end;
@@ -3595,32 +3530,6 @@ end;
 function TWatchValue.GetWatchBase: TWatchBase;
 begin
   Result := FWatch;
-end;
-
-procedure TWatchValue.ValidityChanged;
-begin
-
-end;
-
-procedure TWatchValue.SetValidity(AValue: TDebuggerDataState);
-begin
-  if FValidity = AValue then exit;
-  DebugLn(DBG_DATA_MONITORS, ['DebugDataMonitor: TWatchValueBase.SetValidity: FThreadId=', FThreadId, '  FStackFrame=',FStackFrame, ' Expr=', Expression, ' AValidity=',dbgs(AValue)]);
-  FValidity := AValue;
-  ValidityChanged;
-end;
-
-procedure TWatchValue.SetTypeInfo(AValue: TDBGType);
-begin
-  assert(Self is TCurrentWatchValue, 'TWatchValue.SetTypeInfo');
-  FreeAndNil(FTypeInfo);
-  FTypeInfo := AValue;
-end;
-
-procedure TWatchValue.SetValue(AValue: String);
-begin
-  assert(Self is TCurrentWatchValue, 'TWatchValue.SetValue()');
-  FValue := AValue;
 end;
 
 function TWatchValue.GetDisplayFormat: TWatchDisplayFormat;
@@ -3661,44 +3570,45 @@ begin
   if not FWatch.Enabled then
     exit;
   i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
-  if FValidity = ddsUnknown then begin
-    FValidity := ddsRequested;
+  if Validity = ddsUnknown then begin
+    Validity := ddsRequested;
     RequestData;
     if i <> DbgStateChangeCounter then exit;
   end;
-  case FValidity of
+  case Validity of
     ddsRequested,
     ddsEvaluating: Result := nil;
-    ddsValid:      Result := FTypeInfo;
+    ddsValid:      Result := inherited GetTypeInfo;
     ddsInvalid,
     ddsError:      Result := nil;
   end;
 end;
 
-function TWatchValue.GetValidity: TDebuggerDataState;
-begin
-  Result := FValidity;
-end;
-
 procedure TWatchValue.RequestData;
 begin
-  FValidity := ddsInvalid;
+  Validity := ddsInvalid;
 end;
 
 procedure TWatchValue.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
   const APath: string);
+var
+  NewValidity: TDebuggerDataState;
 begin
   FThreadId   := AConfig.GetValue(APath + 'ThreadId', -1);
   FStackFrame := AConfig.GetValue(APath + 'StackFrame', -1);
-  FValue      := AConfig.GetValue(APath + 'Value', '');
+  Value      := AConfig.GetValue(APath + 'Value', '');
   if AConfig.GetValue(APath + 'ClassAutoCast', False)
   then Include(FEvaluateFlags, defClassAutoCast)
   else Exclude(FEvaluateFlags, defClassAutoCast);
   FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
   try    ReadStr(AConfig.GetValue(APath + 'DisplayFormat', 'wdfDefault'), FDisplayFormat);
   except FDisplayFormat := wdfDefault; end;
-  try    ReadStr(AConfig.GetValue(APath + 'Validity', 'ddsValid'), FValidity);
-  except FValidity := ddsUnknown; end;
+  try
+    ReadStr(AConfig.GetValue(APath + 'Validity', 'ddsValid'), NewValidity);
+    Validity := NewValidity;
+  except
+    Validity := ddsUnknown;
+  end;
 end;
 
 procedure TWatchValue.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
@@ -3707,10 +3617,10 @@ var
 begin
   AConfig.SetValue(APath + 'ThreadId', FThreadId);
   AConfig.SetValue(APath + 'StackFrame', FStackFrame);
-  AConfig.SetValue(APath + 'Value', FValue);
+  AConfig.SetValue(APath + 'Value', Value);
   WriteStr(s{%H-}, FDisplayFormat);
   AConfig.SetDeleteValue(APath + 'DisplayFormat', s, 'wdfDefault');
-  WriteStr(s, FValidity);
+  WriteStr(s, Validity);
   AConfig.SetDeleteValue(APath + 'Validity', s, 'ddsValid');
   AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
@@ -3726,7 +3636,7 @@ end;
 
 constructor TWatchValue.Create(AOwnerWatch: TWatch);
 begin
-  FValidity := ddsUnknown;
+  Validity := ddsUnknown;
   FWatch := AOwnerWatch;
   FDisplayFormat := FWatch.DisplayFormat;
   FEvaluateFlags := FWatch.EvaluateFlags;
@@ -3742,21 +3652,12 @@ begin
   FStackFrame := AStackFrame;
 end;
 
-destructor TWatchValue.Destroy;
+procedure TWatchValue.Assign(AnOther: TWatchValueBase);
 begin
-  inherited Destroy;
-  FreeAndNil(FTypeInfo);
-end;
-
-procedure TWatchValue.Assign(AnOther: TWatchValue);
-begin
-  FreeAndNil(FTypeInfo);
-  FValue := AnOther.FValue;
-  FValidity := AnOther.FValidity;
-  //FTypeInfo := AnOther.FTypeInfo.cre;
-  FThreadId := AnOther.FThreadId;
-  FStackFrame := AnOther.FStackFrame;
-  FDisplayFormat := AnOther.FDisplayFormat;
+  inherited Assign(AnOther);
+  FThreadId      := TWatchValue(AnOther).FThreadId;
+  FStackFrame    := TWatchValue(AnOther).FStackFrame;
+  FDisplayFormat := TWatchValue(AnOther).FDisplayFormat;
 end;
 
 { TWatchesMonitor }

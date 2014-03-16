@@ -43,8 +43,8 @@ type
   TTestDisAss = class(TTestCase)
   protected
     FCallStack: TCallStackMonitor;
-    FExceptions: TIDEExceptions;
-    FSignals: TIDESignals;
+    FExceptions: TBaseExceptions;
+    //FSignals: TBaseSignals;
     //FBreakPoints: TIDEBreakPoints;
     //FBreakPointGroups: TIDEBreakPointGroups;
     FLocals: TLocalsMonitor;
@@ -337,8 +337,8 @@ var
 
     FWatches := TWatchesMonitor.Create;
     FThreads := TThreadsMonitor.Create;
-    FExceptions := TIDEExceptions.Create;
-    FSignals := TIDESignals.Create;
+    FExceptions := TBaseExceptions.Create(TBaseException);
+    //FSignals := TBaseSignals.Create(TBaseSignal);
     FLocals := TLocalsMonitor.Create;
     FLineInfo := TIDELineInfo.Create;
     FCallStack := TCallStackMonitor.Create;
@@ -351,7 +351,7 @@ var
     FLineInfo.Master := Gdb.LineInfo;
     FCallStack.Supplier := Gdb.CallStack;
     Gdb.Exceptions := FExceptions;
-    FSignals.Master := Gdb.Signals;
+    //FSignals.Master := Gdb.Signals;
     FRegisters.Supplier := Gdb.Registers;
 
     Gdb.TestSetState(dsPause);
@@ -377,7 +377,7 @@ var
     //FreeAndNil(FBreakPointGroups);
     FreeAndNil(FCallStack);
     FreeAndNil(FExceptions);
-    FreeAndNil(FSignals);
+    //FreeAndNil(FSignals);
     FreeAndNil(FLocals);
     FreeAndNil(FLineInfo);
     FreeAndNil(FRegisters);
