@@ -2058,8 +2058,7 @@ begin
   end;
   {$POP}
 
- if Result <> nil then
-   Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
+ {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
 end;
 
 { TFpPascalExpressionPartOperatorPlusMinus }
