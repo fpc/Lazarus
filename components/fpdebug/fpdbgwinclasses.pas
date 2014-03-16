@@ -100,6 +100,8 @@ type
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
 
+    procedure TerminateProcess; override;
+
     function AddrOffset: Int64; override;
     function  AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
     procedure AddThread(const AID: Integer; const AInfo: TCreateThreadDebugInfo);
@@ -850,6 +852,11 @@ begin
 {$else}
   Result := GCurrentContext^.Rdi;
 {$endif}
+end;
+
+procedure TDbgWinProcess.TerminateProcess;
+begin
+  Windows.TerminateProcess(Handle, 0);
 end;
 
 function TDbgWinProcess.AddrOffset: Int64;

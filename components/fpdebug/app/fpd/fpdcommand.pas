@@ -269,7 +269,7 @@ begin
   end;
 
   WriteLN('Terminating ...');
-  TerminateProcess(GMainProcess.Handle, 0);
+  GMainProcess.TerminateProcess;
   if GState = dsPause
   then DebugLoop; // continue runnig so we can terminate
 end;

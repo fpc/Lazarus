@@ -175,6 +175,8 @@ type
     function GetInstructionPointerRegisterValue: TDbgPtr; virtual; abstract;
     function GetStackBasePointerRegisterValue: TDbgPtr; virtual; abstract;
 
+    procedure TerminateProcess; virtual; abstract;
+
     property Handle: THandle read GetHandle;
     property Name: String read FName write SetName;
     property ProcessID: integer read FProcessID;
