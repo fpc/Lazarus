@@ -47,7 +47,11 @@ procedure HandleCommand(ACommand: String);
 implementation
 
 uses
-  FPDGlobal, FPDLoop, FPDPEImage;
+  FPDGlobal, FPDLoop
+{$ifdef windows}
+  , FPDPEImage
+{$endif windows}
+  ;
 
 type
   TFPDCommandHandler = procedure(AParams: String);
