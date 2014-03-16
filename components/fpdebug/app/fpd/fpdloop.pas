@@ -37,9 +37,6 @@ unit FPDLoop;
 interface
 
 uses
-{$IFDEF WINDOWS}
-  FpDbgWinExtra,
-{$ENDIF}
   Classes, SysUtils, FileUtil, FpDbgInfo, FpDbgClasses, FpDbgDisasX86, DbgIntfBaseTypes;
 
 procedure DebugLoop;
