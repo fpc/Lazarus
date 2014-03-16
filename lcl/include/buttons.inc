@@ -341,14 +341,3 @@ begin
     TWSButtonClass(WidgetSetClass).SetDefault(Self, FActive);
 end;
 
-
-{ TButton }
-
-procedure TButton.Click;
-begin
-  inherited Click;
-end;
-
-
-
-
