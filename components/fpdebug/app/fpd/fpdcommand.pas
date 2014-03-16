@@ -393,6 +393,64 @@ begin
   then WriteLn;
 end;
 
+procedure HandleWriteMemory(AParams: String);
+// memory [<adress> <value>]
+var
+  P: array[1..2] of String;
+  Size, Count: Integer;
+  Address: QWord;
+  Value: QWord;
+  e, idx: Integer;
+  buf: array[0..256*16 - 1] of Byte;
+  BytesRead: Cardinal;
+begin
+  if GMainProcess = nil
+  then begin
+    WriteLN('No process');
+    Exit;
+  end;
+
+  P[1] := GetPart([], [' ', #9], AParams);
+  P[2] := GetPart([' ', #9], [' ', #9], AParams);
+
+  idx := 1;
+  Count := 1;
+  Size := 4;
+
+  if P[idx] <> ''
+  then begin
+    if P[idx] <> ''
+    then begin
+      Val(P[idx], Address, e);
+      if e <> 0
+      then begin
+        WriteLN('Location "',P[idx],'": Symbol resolving not implemented');
+        Exit;
+      end;
+      Inc(idx);
+    end;
+
+    if P[idx] <> ''
+    then begin
+      Val(P[idx], Value, e);
+      if e <> 0
+      then begin
+        WriteLN('Value "',P[idx],'": Symbol resolving not implemented');
+        Exit;
+      end;
+      Inc(idx);
+    end;
+  end;
+
+
+  if not GMainProcess.WriteData(Address, 4, Value)
+  then begin
+    WriteLN('Could not write memory at: ', FormatAddress(Address));
+    Exit;
+  end;
+end;
+
+
 procedure HandleDisas(AParams: String);
 begin
   WriteLN('not implemented: disassemble');
@@ -662,6 +720,7 @@ begin
   MCommands.AddCommand(['next', 'n'], @HandleNext,  'next: Steps one instruction');
   MCommands.AddCommand(['list', 'l'], @HandleList,  'list [<adress>|<location>]: Lists the source for <adress> or <location>');
   MCommands.AddCommand(['memory', 'mem', 'm'], @HandleMemory,  'memory [-<size>] [<adress> <count>|<location> <count>]: Dump <count> (default: 1) from memory <adress> or <location> (default: current) of <size> (default: 4) bytes, where size is 1,2,4,8 or 16.');
+  MCommands.AddCommand(['writememory', 'w'], @HandleWriteMemory,  'writememory [<adress> <value>]: Write <value> (with a length of 4 bytes) into memory at address <adress>.');
   MCommands.AddCommand(['disassemble', 'dis', 'd'], @HandleDisas,  'disassemble [<adress>|<location>] [<count>]: Disassemble <count> instructions from <adress> or <location> or current IP if none given');
   MCommands.AddCommand(['evaluate', 'eval', 'e'], @HandleEval,  'evaluate <symbol>: Evaluate <symbol>');
 
