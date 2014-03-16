@@ -45,6 +45,8 @@ type
   TDbgDarwinThread = class(TDbgThread)
   private
     FThreadState: x86_thread_state32_t;
+  protected
+    function ReadThreadState: boolean;
   public
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
   end;
@@ -56,7 +58,6 @@ type
     FStatus: cint;
     FProcessStarted: boolean;
     FTaskPort: mach_port_name_t;
-    FThreadState: x86_thread_state32_t;
     function GetDebugAccessRights: boolean;
   protected
     function InitializeLoader: TDbgImageLoader; override;
@@ -118,25 +119,32 @@ end;
 
 { TDbgDarwinThread }
 
-function TDbgDarwinThread.ResetInstructionPointerAfterBreakpoint: boolean;
+function TDbgDarwinThread.ReadThreadState: boolean;
 var
   aKernResult: kern_return_t;
   old_StateCnt: mach_msg_Type_number_t;
 begin
   old_StateCnt:=x86_THREAD_STATE32_COUNT;
-  aKernResult:=thread_get_state(ID,x86_THREAD_STATE32, @FThreadState, old_StateCnt);
+  aKernResult:=thread_get_state(Id,x86_THREAD_STATE32, @FThreadState,old_StateCnt);
   if aKernResult <> KERN_SUCCESS then
     begin
     Log('Failed to call thread_get_state for thread %d. Mach error: '+mach_error_string(aKernResult),[Id]);
     end;
+end;
 
+function TDbgDarwinThread.ResetInstructionPointerAfterBreakpoint: boolean;
+var
+  aKernResult: kern_return_t;
+  new_StateCnt: mach_msg_Type_number_t;
+begin
   {$ifdef cpui386}
   Dec(FThreadState.__eip);
   {$else}
   Dec(FThreadState.__rip);
   {$endif}
 
-  aKernResult:=thread_set_state(ID,x86_THREAD_STATE32, @FThreadState, old_StateCnt);
+  new_StateCnt := x86_THREAD_STATE32_COUNT;
+  aKernResult:=thread_set_state(ID,x86_THREAD_STATE32, @FThreadState, new_StateCnt);
   if aKernResult <> KERN_SUCCESS then
     begin
     Log('Failed to call thread_set_state for thread %d. Mach error: '+mach_error_string(aKernResult),[Id]);
@@ -267,12 +275,12 @@ end;
 
 function TDbgDarwinProcess.GetInstructionPointerRegisterValue: TDbgPtr;
 begin
-  result := FThreadState.__eip;
+  result := TDbgDarwinThread(FMainThread).FThreadState.__eip;
 end;
 
 function TDbgDarwinProcess.GetStackBasePointerRegisterValue: TDbgPtr;
 begin
-  result := FThreadState.__ebp;
+  result := TDbgDarwinThread(FMainThread).FThreadState.__ebp;
 
 end;
 
@@ -304,7 +312,6 @@ var
   aKernResult: kern_return_t;
   act_list: thread_act_array_t;
   act_listCtn: mach_msg_type_number_t;
-  old_StateCnt: mach_msg_Type_number_t;
   i: Integer;
   AThread: TDbgThread;
 begin
@@ -333,13 +340,7 @@ begin
         end;
       end;
 
-    old_StateCnt:=x86_THREAD_STATE32_COUNT;
-    aKernResult:=thread_get_state(act_list^[0],x86_THREAD_STATE32, @FThreadState,old_StateCnt);
-    if aKernResult <> KERN_SUCCESS then
-      begin
-      Log('Failed to call thread_get_state. Mach error: '+mach_error_string(aKernResult));
-      end;
-    writeln(Format('eip: %s, eax: %s, ebx: %s, ecx: %s, edx: %s',[FormatAddress(FThreadState.__eip), FormatAddress(FThreadState.__eax),FormatAddress(FThreadState.__ebx),FormatAddress(FThreadState.__ecx), FormatAddress(FThreadState.__edx)]));
+    TDbgDarwinThread(FMainThread).ReadThreadState;
     end
 end;
 
@@ -371,8 +372,7 @@ begin
         else
           begin
           result := deBreakpoint;
-          DoBreak(FThreadState.__eip-1, FMainThread.ID);
-          writeln('Breakpoint');
+          DoBreak(TDbgDarwinThread(FMainThread).FThreadState.__eip-1, FMainThread.ID);
           end;
         end;
       SIGBUS:
