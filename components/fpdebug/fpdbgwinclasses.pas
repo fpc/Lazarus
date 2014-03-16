@@ -56,6 +56,7 @@ type
   TDbgWinThread = class(TDbgThread)
   public
     function SingleStep: Boolean; virtual;
+    function ResetInstructionPointerAfterBreakpoint: boolean; override;
   end;
 
 
@@ -66,8 +67,6 @@ type
   protected
     procedure SetBreak; override;
     procedure ResetBreak; override;
-  public
-    function Hit(const AThreadID: Integer): Boolean; override;
   end;
 
   { TDbgWinProcess }
@@ -339,20 +338,6 @@ end;
   ------------------------------------------------------------------ }
 function TDbgWinProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
-  function DoBreak: Boolean;
-  var
-    ID: TDbgPtr;
-  begin
-    Result := False;
-    ID := TDbgPtr(ADebugEvent.Exception.ExceptionRecord.ExceptionAddress);
-    if not FBreakMap.GetData(ID, FCurrentBreakpoint) then Exit;
-    if FCurrentBreakpoint = nil then Exit;
-
-    Result := True;
-    if not FCurrentBreakpoint.Hit(ADebugEvent.dwThreadId)
-    then FCurrentBreakpoint := nil; // no need for a singlestep if we continue
-  end;
-
   function DoSingleStep: Boolean;
   var
     _UC: record
@@ -403,7 +388,7 @@ begin
   case ADebugEvent.dwDebugEventCode of
     EXCEPTION_DEBUG_EVENT: begin
       case ADebugEvent.Exception.ExceptionRecord.ExceptionCode of
-        EXCEPTION_BREAKPOINT:  {Result :=} DoBreak; // we never set a break ourself, let the callee pause!
+        EXCEPTION_BREAKPOINT:  {Result :=} DoBreak(TDbgPtr(ADebugEvent.Exception.ExceptionRecord.ExceptionAddress), ADebugEvent.dwThreadId); // we never set a break ourself, let the callee pause!
         EXCEPTION_SINGLE_STEP: Result := DoSingleStep;
       end;
     end;
@@ -834,6 +819,7 @@ begin
   then FSymInstances.Add(Self);
 
   FMainThread := OSDbgClasses.DbgThreadClass.Create(Self, ThreadID, AInfo.hThread, AInfo.lpThreadLocalBase, AInfo.lpStartAddress);
+  FThreadMap.Add(ThreadID, FMainThread);
 end;
 
 function TDbgWinProcess.GetInstructionPointerRegisterValue: TDbgPtr;
@@ -861,7 +847,7 @@ end;
 
 function TDbgWinProcess.AddrOffset: Int64;
 begin
-  Result:=inherited AddrOffset - TDbgPtr(FInfo.lpBaseOfImage);
+  Result:=0;//inherited AddrOffset - TDbgPtr(FInfo.lpBaseOfImage);
 end;
 
 function TDbgWinProcess.AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
@@ -911,46 +897,6 @@ begin
   FlushInstructionCache(Process.Handle, Pointer(PtrUInt(Location)), 1);
 end;
 
-function TDbgWinBreakpoint.Hit(const AThreadID: Integer): Boolean;
-var
-  Thread: TDbgThread;
-  _UC: record
-    C: TContext;
-    D: array[1..16] of Byte;
-  end;
-  Context: PContext;
-begin
-  Result := False;
-  if FOrgValue = $CC then Exit; // breakpoint on a hardcoded breakpoint
-                                // no need to jum back and restore instruction
-  ResetBreak;
-
-  if not Process.GetThread(AThreadId, Thread) then Exit;
-
-  Context := AlignPtr(@_UC, $10);
-
-  Context^.ContextFlags := CONTEXT_CONTROL;
-  if not GetThreadContext(Thread.Handle, Context^)
-  then begin
-    Log('Break $s: Unable to get context', [HexValue(Location, SizeOf(Pointer), [hvfIncludeHexchar])]);
-    Exit;
-  end;
-
-  Context^.ContextFlags := CONTEXT_CONTROL;
-  {$ifdef cpui386}
-  Dec(Context^.Eip);
-  {$else}
-  Dec(Context^.Rip);
-  {$endif}
-
-  if not SetThreadContext(Thread.Handle, Context^)
-  then begin
-    Log('Break %s: Unable to set context', [HexValue(Location, SizeOf(Pointer), [hvfIncludeHexchar])]);
-    Exit;
-  end;
-  Result := True;
-end;
-
 { TDbgWinThread }
 
 function TDbgWinThread.SingleStep: Boolean;
@@ -979,6 +925,39 @@ begin
   end;
 
   Inherited;
+end;
+
+function TDbgWinThread.ResetInstructionPointerAfterBreakpoint: boolean;
+var
+  _UC: record
+    C: TContext;
+    D: array[1..16] of Byte;
+  end;
+  Context: PContext;
+begin
+  Result := False;
+  Context := AlignPtr(@_UC, $10);
+
+  Context^.ContextFlags := CONTEXT_CONTROL;
+  if not GetThreadContext(Handle, Context^)
+  then begin
+    Log('Unable to get context');
+    Exit;
+  end;
+
+  Context^.ContextFlags := CONTEXT_CONTROL;
+  {$ifdef cpui386}
+  Dec(Context^.Eip);
+  {$else}
+  Dec(Context^.Rip);
+  {$endif}
+
+  if not SetThreadContext(Handle, Context^)
+  then begin
+    Log('Unable to set context');
+    Exit;
+  end;
+  Result := True;
 end;
 
 end.

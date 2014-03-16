@@ -58,6 +58,7 @@ type
   protected
   public
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle; const ABase, AStart: Pointer); virtual;
+    function ResetInstructionPointerAfterBreakpoint: boolean; virtual; abstract;
     destructor Destroy; override;
     function SingleStep: Boolean; virtual;
     property ID: Integer read FID;
@@ -149,6 +150,7 @@ type
     function GetHandle: THandle; virtual;
     procedure SetExitCode(AValue: DWord);
     function GetLastEventProcessIdentifier: THandle; virtual;
+    function DoBreak(BreakpointAddress: TDBGPtr; AThreadID: integer): Boolean;
   public
     class function StartInstance(AFileName: string; AParams: string): TDbgProcess; virtual;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer); virtual;
@@ -352,8 +354,6 @@ begin
   SetName(AName);
 
   inherited Create(Self);
-
-  FThreadMap.Add(AThreadID, FMainThread);
 end;
 
 destructor TDbgProcess.Destroy;
@@ -480,6 +480,17 @@ begin
   result := 0;
 end;
 
+function TDbgProcess.DoBreak(BreakpointAddress: TDBGPtr; AThreadID: integer): Boolean;
+begin
+  Result := False;
+  if not FBreakMap.GetData(BreakpointAddress, FCurrentBreakpoint) then Exit;
+  if FCurrentBreakpoint = nil then Exit;
+
+  Result := True;
+  if not FCurrentBreakpoint.Hit(AThreadId)
+  then FCurrentBreakpoint := nil; // no need for a singlestep if we continue
+end;
+
 function TDbgProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;
 begin
   result := false;
@@ -526,8 +537,17 @@ begin
 end;
 
 function TDbgBreakpoint.Hit(const AThreadID: Integer): Boolean;
+var
+  Thread: TDbgThread;
 begin
-  result := false;
+  Result := False;
+  if FOrgValue = $CC then Exit; // breakpoint on a hardcoded breakpoint
+                                // no need to jum back and restore instruction
+  ResetBreak;
+
+  if not Process.GetThread(AThreadId, Thread) then Exit;
+
+  Result := Thread.ResetInstructionPointerAfterBreakpoint;
 end;
 
 procedure TDbgBreakpoint.ResetBreak;
