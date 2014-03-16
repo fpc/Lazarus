@@ -1,7 +1,7 @@
 object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
-  Left = 349
+  Left = 378
   Height = 480
-  Top = 200
+  Top = 195
   Width = 700
   VertScrollBar.Visible = False
   BorderIcons = [biSystemMenu]
@@ -488,6 +488,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
             Width = 189
             Caption = 'CleanAutoRadioButton'
             Checked = True
+            OnClick = CleanRadioButtonClick
             TabOrder = 0
             TabStop = True
           end
@@ -497,6 +498,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
             Top = 27
             Width = 189
             Caption = 'CleanCommonRadioButton'
+            OnClick = CleanRadioButtonClick
             TabOrder = 1
           end
           object CleanAllRadioButton: TRadioButton
@@ -505,6 +507,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
             Top = 48
             Width = 189
             Caption = 'CleanAllRadioButton'
+            OnClick = CleanRadioButtonClick
             TabOrder = 2
           end
           object CleanOnceCheckBox: TCheckBox
@@ -515,6 +518,18 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
             BorderSpacing.Top = 6
             Caption = 'CleanOnceCheckBox'
             TabOrder = 3
+          end
+          object CleanCommonCheckBox: TCheckBox
+            AnchorSideTop.Control = CleanAutoRadioButton
+            Left = 6
+            Height = 21
+            Top = 12
+            Width = 173
+            BorderSpacing.Top = 6
+            Caption = 'CleanCommonCheckBox'
+            OnClick = CleanCommonCheckBoxClick
+            TabOrder = 4
+            Visible = False
           end
         end
       end

@@ -81,6 +81,7 @@ type
     CleanAutoRadioButton: TRadioButton;
     CleanCommonRadioButton: TRadioButton;
     CleanOnceCheckBox: TCheckBox;
+    CleanCommonCheckBox: TCheckBox;
     CommonsDividerBevel: TDividerBevel;
     ConfirmBuildCheckBox: TCheckBox;
     DefinesButton: TButton;
@@ -119,6 +120,8 @@ type
     UpdateRevisionIncCheckBox: TCheckBox;
     procedure BuildProfileButtonClick(Sender: TObject);
     procedure BuildProfileComboBoxSelect(Sender: TObject);
+    procedure CleanRadioButtonClick(Sender: TObject);
+    procedure CleanCommonCheckBoxClick(Sender: TObject);
     procedure CompileAdvancedButtonClick(Sender: TObject);
     procedure CompileButtonClick(Sender: TObject);
     procedure DefinesButtonClick(Sender: TObject);
@@ -956,6 +959,7 @@ begin
   CleanAllRadioButton.Caption:=lisCleanAll;
   CleanOnceCheckBox.Caption:=lisCleanOnlyOnce;
   CleanOnceCheckBox.Hint:=lisAfterCleaningUpSwitchToAutomaticClean;
+  CleanCommonCheckBox.Caption:=lisCleanCommonFiles;
 
   UpdateRevisionIncCheckBox.Caption := lisLazBuildUpdateRevInc;
   UpdateRevisionIncCheckBox.Hint := lisLazBuildUpdateRevisionInfoInAboutLazarusDialog;
@@ -1080,20 +1084,32 @@ procedure TConfigureBuildLazarusDlg.CopyProfileToUI(AProfile: TBuildLazarusProfi
 var
   i: Integer;
 begin
-  LCLWidgetTypeComboBox.ItemIndex   :=ord(AProfile.TargetPlatform);
-  UpdateRevisionIncCheckBox.Checked :=AProfile.UpdateRevisionInc;
-  TargetOSComboBox.Text             :=AProfile.TargetOS;
-  TargetDirectoryComboBox.Text      :=AProfile.TargetDirectory;
-  TargetCPUComboBox.Text            :=AProfile.TargetCPU;
-  case AProfile.IdeBuildMode of
-  bmBuild: CleanAutoRadioButton.Checked:=true;
-  bmCleanBuild: CleanCommonRadioButton.Checked:=true;
-  bmCleanAllBuild: CleanAllRadioButton.Checked:=true;
+  CleanAutoRadioButton.OnClick:=Nil;
+  CleanCommonRadioButton.OnClick:=Nil;
+  CleanAllRadioButton.OnClick:=Nil;
+  CleanCommonCheckBox.OnClick:=Nil;
+  try
+    LCLWidgetTypeComboBox.ItemIndex   :=ord(AProfile.TargetPlatform);
+    UpdateRevisionIncCheckBox.Checked :=AProfile.UpdateRevisionInc;
+    TargetOSComboBox.Text             :=AProfile.TargetOS;
+    TargetDirectoryComboBox.Text      :=AProfile.TargetDirectory;
+    TargetCPUComboBox.Text            :=AProfile.TargetCPU;
+    case AProfile.IdeBuildMode of
+    bmBuild: CleanAutoRadioButton.Checked:=true;
+    bmCleanBuild: CleanCommonRadioButton.Checked:=true;
+    bmCleanAllBuild: CleanAllRadioButton.Checked:=true;
+    end;
+    CleanCommonCheckBox.Checked := AProfile.IdeBuildMode=bmCleanBuild;
+    CleanOnceCheckBox.Checked:=AProfile.CleanOnce;
+    OptionsMemo.Lines.Assign(AProfile.OptionsLines);
+    for i:=0 to DefinesListBox.Items.Count-1 do
+      DefinesListBox.Checked[i]:=AProfile.Defines.IndexOf(DefinesListBox.Items[i]) > -1;
+  finally
+    CleanAutoRadioButton.OnClick:=@CleanRadioButtonClick;
+    CleanCommonRadioButton.OnClick:=@CleanRadioButtonClick;
+    CleanAllRadioButton.OnClick:=@CleanRadioButtonClick;
+    CleanCommonCheckBox.OnClick:=@CleanCommonCheckBoxClick;
   end;
-  CleanOnceCheckBox.Checked:=AProfile.CleanOnce;
-  OptionsMemo.Lines.Assign(AProfile.OptionsLines);
-  for i:=0 to DefinesListBox.Items.Count-1 do
-    DefinesListBox.Checked[i]:=AProfile.Defines.IndexOf(DefinesListBox.Items[i]) > -1;
 end;
 
 procedure TConfigureBuildLazarusDlg.CopyUIToProfile(AProfile: TBuildLazarusProfile);
@@ -1227,13 +1243,17 @@ begin
 end;
 
 procedure TConfigureBuildLazarusDlg.ShowHideCleanup(aShow: Boolean);
+// When target directory is read-only, hide Radiobuttons and show a single checkbox.
 begin
+  CleanAutoRadioButton.Visible:=aShow;
+  CleanCommonRadioButton.Visible:=aShow;
   CleanAllRadioButton.Visible:=aShow;
   CleanOnceCheckBox.Visible:=aShow;
+  CleanCommonCheckBox.Visible:=not aShow;
 end;
 
 procedure TConfigureBuildLazarusDlg.CompileAdvancedButtonClick(Sender: TObject);
-// mrOk=change selected profiles. Selected profiels will be saved or discarded
+// mrOk=change selected profiles. Selected profiles will be saved or discarded
 // depending on the calling dialog
 // mrYes=save and compile
 // mrCancel=do nothing
@@ -1335,6 +1355,21 @@ begin
   fProfiles.CurrentIndex:=(Sender as TComboBox).ItemIndex;
   CopyProfileToUI(fProfiles.Current);      // Copy new selection to UI.
   ShowHideCleanup(not fBuilder.IsWriteProtected(fProfiles.Current));
+end;
+
+procedure TConfigureBuildLazarusDlg.CleanRadioButtonClick(Sender: TObject);
+begin
+  CleanCommonCheckBox.Checked:=CleanCommonRadioButton.Checked;
+  DebugLn(['TConfigureBuildLazarusDlg.CleanRadioButtonClick: set CleanCommonCheckBox to ', CleanCommonRadioButton.Checked]);
+end;
+
+procedure TConfigureBuildLazarusDlg.CleanCommonCheckBoxClick(Sender: TObject);
+begin
+  if CleanCommonCheckBox.Checked then
+    CleanCommonRadioButton.Checked:=True
+  else
+    CleanAutoRadioButton.Checked:=True;
+  DebugLn(['TConfigureBuildLazarusDlg.CleanCommonCheckBoxClick: set CleanCommonRadioButton to ', CleanCommonCheckBox.Checked]);
 end;
 
 end.
