@@ -172,6 +172,9 @@ type
 
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
 
+    function GetInstructionPointerRegisterValue: TDbgPtr; virtual; abstract;
+    function GetStackBasePointerRegisterValue: TDbgPtr; virtual; abstract;
+
     property Handle: THandle read GetHandle;
     property Name: String read FName write SetName;
     property ProcessID: integer read FProcessID;

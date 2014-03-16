@@ -97,6 +97,9 @@ type
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     procedure StartProcess(const AInfo: TCreateProcessDebugInfo);
 
+    function GetInstructionPointerRegisterValue: TDbgPtr; override;
+    function GetStackBasePointerRegisterValue: TDbgPtr; override;
+
     function AddrOffset: Int64; override;
     function  AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
     procedure AddThread(const AID: Integer; const AInfo: TCreateThreadDebugInfo);
@@ -829,6 +832,24 @@ begin
   then FSymInstances.Add(Self);
 
   FMainThread := OSDbgClasses.DbgThreadClass.Create(Self, ThreadID, AInfo.hThread, AInfo.lpThreadLocalBase, AInfo.lpStartAddress);
+end;
+
+function TDbgWinProcess.GetInstructionPointerRegisterValue: TDbgPtr;
+begin
+{$ifdef cpui386}
+  Result := GCurrentContext^.Eip;
+{$else}
+  Result := GCurrentContext^.Rip;
+{$endif}
+end;
+
+function TDbgWinProcess.GetStackBasePointerRegisterValue: TDbgPtr;
+begin
+{$ifdef cpui386}
+  Result := GCurrentContext^.Ebp;
+{$else}
+  Result := GCurrentContext^.Rdi;
+{$endif}
 end;
 
 function TDbgWinProcess.AddrOffset: Int64;

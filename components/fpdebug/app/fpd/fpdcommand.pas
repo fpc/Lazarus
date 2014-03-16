@@ -36,7 +36,11 @@ unit FPDCommand;
 interface
 
 uses
-  SysUtils, Classes, Windows, LCLProc, FpDbgWinExtra, FpDbgInfo, FpDbgClasses, DbgIntfBaseTypes;
+  SysUtils, Classes,
+{$ifdef windows}
+  Windows,
+{$endif}
+  LCLProc, FpDbgInfo, FpDbgClasses, DbgIntfBaseTypes, FpDbgUtil;
 
 procedure HandleCommand(ACommand: String);
 
@@ -189,11 +193,7 @@ begin
   then begin
     // current addr
     P := '';
-    {$ifdef cpui386}
-    Address := GCurrentContext^.Eip;
-    {$else}
-    Address := GCurrentContext^.Rip;
-    {$endif}
+    Address := GCurrentProcess.GetInstructionPointerRegisterValue;
   end
   else begin
     P := GetPart([], [':'], S);
@@ -318,12 +318,8 @@ begin
   idx := 1;
   Count := 1;
   Size := 4;
-  
-  {$ifdef cpui386}
-  Address := GCurrentContext^.Eip;
-  {$else}
-  Address := GCurrentContext^.Rip;
-  {$endif}
+
+  Address := GCurrentProcess.GetInstructionPointerRegisterValue;
 
   if P[idx] <> ''
   then begin
@@ -485,15 +481,9 @@ begin
     Exit;
   end;
 
-  {$ifdef cpui386}
-  Address := GCurrentContext^.Eip;
-  Frame := GCurrentContext^.Ebp;
-  Size := 4;
-  {$else}
-  Address := GCurrentContext^.Rip;
-  Frame := GCurrentContext^.Rdi;
-  Size := 8;
-  {$endif}
+  Address := GCurrentProcess.GetInstructionPointerRegisterValue;
+  Frame := GCurrentProcess.GetStackBasePointerRegisterValue;;
+  Size := sizeof(pointer);
 
   WriteLN('Callstack:');
   WriteLn(' ', FormatAddress(Address));
