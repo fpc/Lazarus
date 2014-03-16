@@ -40,6 +40,15 @@ type
 
 type
 
+  { TDbgDarwinThread }
+
+  TDbgDarwinThread = class(TDbgThread)
+  private
+    FThreadState: x86_thread_state32_t;
+  public
+    function ResetInstructionPointerAfterBreakpoint: boolean; override;
+  end;
+
   { TDbgDarwinProcess }
 
   TDbgDarwinProcess = class(TDbgProcess)
@@ -100,10 +109,38 @@ function mach_vm_read(target_task: vm_map_t; address: mach_vm_address_t; size: m
 
 function task_threads(target_task: task_t; var act_list: thread_act_array_t; var act_listCnt: mach_msg_type_number_t): kern_return_t; cdecl external name 'task_threads';
 function thread_get_state(target_act: thread_act_t; flavor: thread_state_flavor_t; old_state: thread_state_t; var old_stateCnt: mach_msg_Type_number_t): kern_return_t; cdecl external name 'thread_get_state';
+function thread_set_state(target_act: thread_act_t; flavor: thread_state_flavor_t; new_state: thread_state_t; old_stateCnt: mach_msg_Type_number_t): kern_return_t; cdecl external name 'thread_set_state';
 
 procedure RegisterDbgClasses;
 begin
   OSDbgClasses.DbgProcessClass:=TDbgDarwinProcess;
+end;
+
+{ TDbgDarwinThread }
+
+function TDbgDarwinThread.ResetInstructionPointerAfterBreakpoint: boolean;
+var
+  aKernResult: kern_return_t;
+  old_StateCnt: mach_msg_Type_number_t;
+begin
+  old_StateCnt:=x86_THREAD_STATE32_COUNT;
+  aKernResult:=thread_get_state(ID,x86_THREAD_STATE32, @FThreadState, old_StateCnt);
+  if aKernResult <> KERN_SUCCESS then
+    begin
+    Log('Failed to call thread_get_state for thread %d. Mach error: '+mach_error_string(aKernResult),[Id]);
+    end;
+
+  {$ifdef cpui386}
+  Dec(FThreadState.__eip);
+  {$else}
+  Dec(FThreadState.__rip);
+  {$endif}
+
+  aKernResult:=thread_set_state(ID,x86_THREAD_STATE32, @FThreadState, old_StateCnt);
+  if aKernResult <> KERN_SUCCESS then
+    begin
+    Log('Failed to call thread_set_state for thread %d. Mach error: '+mach_error_string(aKernResult),[Id]);
+    end;
 end;
 
 { TDbgDarwinProcess }
@@ -268,6 +305,8 @@ var
   act_list: thread_act_array_t;
   act_listCtn: mach_msg_type_number_t;
   old_StateCnt: mach_msg_Type_number_t;
+  i: Integer;
+  AThread: TDbgThread;
 begin
   ProcessIdentifier:=FpWaitPid(-1, FStatus, 0);
 
@@ -281,6 +320,17 @@ begin
     if aKernResult <> KERN_SUCCESS then
       begin
       Log('Failed to call task_threads. Mach error: '+mach_error_string(aKernResult));
+      end;
+
+    for i := 0 to act_listCtn-1 do
+      begin
+      if not GetThread(act_list^[i], AThread) then
+        begin
+        AThread := TDbgDarwinThread.Create(Self, act_list^[i], act_list^[i], nil, nil);
+        FThreadMap.Add(act_list^[i], AThread);
+        if FMainThread=nil then
+          FMainThread := AThread;
+        end;
       end;
 
     old_StateCnt:=x86_THREAD_STATE32_COUNT;
@@ -321,6 +371,7 @@ begin
         else
           begin
           result := deBreakpoint;
+          DoBreak(FThreadState.__eip-1, FMainThread.ID);
           writeln('Breakpoint');
           end;
         end;
