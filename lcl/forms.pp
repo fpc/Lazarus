@@ -162,6 +162,7 @@ type
     function GetClientScrollOffset: TPoint; override;
     function GetLogicalClientRect: TRect; override;// logical size of client area
     procedure DoOnResize; override;
+    procedure WMSize(var Message: TLMSize); message LM_Size;
     procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     function ComputeScrollbars: Boolean; virtual;
@@ -169,6 +170,7 @@ type
                                OldPosition: Integer); virtual;
     procedure SetAutoScroll(Value: Boolean); virtual;
     procedure Loaded; override;
+    procedure Resizing(State: TWindowState); virtual;
     property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default False;// auto show/hide scrollbars
     procedure SetAutoSize(Value: Boolean); override;
   public
@@ -531,7 +533,7 @@ type
     procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure PaintWindow(dc : Hdc); override;
     procedure RequestAlign; override;
-    procedure Resizing(State: TWindowState); virtual;
+    procedure Resizing(State: TWindowState); override;
     procedure CalculatePreferredSize(var PreferredWidth,
            PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure SetZOrder(Topmost: Boolean); override;

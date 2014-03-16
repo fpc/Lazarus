@@ -111,6 +111,31 @@ begin
   FVertScrollbar.Assign(Value);
 end;
 
+procedure TScrollingWinControl.WMSize(var Message: TLMSize);
+var
+  NewState: TWindowState;
+begin
+  inherited;
+  if (Message.SizeType and SIZE_SourceIsInterface) <> 0 then
+  begin
+    NewState := wsNormal;
+    case (Message.SizeType xor SIZE_SourceIsInterface) of
+      SIZE_MINIMIZED:
+        NewState := wsMinimized;
+      SIZE_MAXIMIZED:
+        NewState := wsMaximized;
+      SIZE_FULLSCREEN:
+        NewState := wsFullScreen;
+    end;
+    Resizing(NewState);
+  end;
+end;
+
+procedure TScrollingWinControl.Resizing(State: TWindowState);
+begin
+  //
+end;
+
 function TScrollingWinControl.ComputeScrollbars: Boolean;
 // true if something changed
 // update Page, AutoRange, IsScrollBarVisible
