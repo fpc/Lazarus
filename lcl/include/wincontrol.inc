@@ -5450,6 +5450,33 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TWinControl.GetParentHandle: HWND;
+ ------------------------------------------------------------------------------}
+function TWinControl.GetParentHandle: HWND;
+begin
+  if Parent <> nil then
+    Result := Parent.Handle
+  else
+    Result := ParentWindow;
+end;
+
+{------------------------------------------------------------------------------
+  function TWinControl.GetTopParentHandle: HWND;
+ ------------------------------------------------------------------------------}
+function TWinControl.GetTopParentHandle: HWND;
+var
+  AWinControl: TWinControl;
+begin
+  AWinControl := Self;
+  while AWinControl.Parent <> nil do
+    AWinControl := AWinControl.Parent;
+  if AWinControl.ParentWindow = 0 then
+    Result := AWinControl.Handle
+  else
+    Result := AWinControl.ParentWindow;
+end;
+
+{------------------------------------------------------------------------------
   procedure TWinControl.ReloadDockedControl(const AControlName: string;
     var AControl: TControl);
  ------------------------------------------------------------------------------}

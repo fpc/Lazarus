@@ -2011,6 +2011,8 @@ type
                        KeepDockSiteSize: Boolean = true): Boolean; virtual;
     procedure GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
                           MousePos: TPoint; var CanDock: Boolean); virtual;
+    function GetParentHandle: HWND;
+    function GetTopParentHandle: HWND;
     procedure ReloadDockedControl(const AControlName: string;
                                   var AControl: TControl); virtual;
     function CreateDockManager: TDockManager; virtual;
