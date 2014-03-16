@@ -165,7 +165,7 @@ begin
   GCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(GFileName, AParams);
   if assigned(GCurrentProcess) then
     begin
-    WriteLN('Got PID:', GCurrentProcess.Handle, ', TID: ', GCurrentProcess.Handle);
+    WriteLN('Got PID:', GCurrentProcess.ProcessID, ', TID: ', GCurrentProcess.ThreadID);
 
     GState := dsRun;
     DebugLoop;
