@@ -438,7 +438,7 @@ begin
     WriteLN('No filename set');
     Exit;
   end;
-
+{$ifdef windows}
   hFile := CreateFile(PChar(GFileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, 0);
   if hFile = INVALID_HANDLE_VALUE
   then begin
@@ -463,6 +463,7 @@ begin
     CloseHandle(hMap);
     CloseHandle(hFile);
   end;
+{$endif windows}
 end;
 
 procedure HandleShowCallStack(AParams: String);
