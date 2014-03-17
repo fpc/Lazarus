@@ -43,8 +43,8 @@ type
     procedure BtnLoadClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure StringGridPrepareCanvas(sender: TObject; Col, Row: Integer;
-      aState: TGridDrawState);
+    procedure StringGridPrepareCanvas({%H-}sender: TObject; Col, Row: Integer;
+      {%H-}aState: TGridDrawState);
     procedure SwapRowCol(Sender:TObject);
   private
     FModified: Boolean;

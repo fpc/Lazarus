@@ -892,7 +892,7 @@ end;
 procedure TComponentPalette.RegisterCustomIDEComponents(
   const RegisterProc: RegisterUnitComponentProc);
 begin
-  inherited RegisterCustomIDEComponents(RegisterProc);
+  //inherited RegisterCustomIDEComponents(RegisterProc);
   {$IFDEF CustomIDEComps}
   CustomIDEComps.RegisterCustomComponents(RegisterProc);
   {$ENDIF}

@@ -42,10 +42,10 @@ type
     procedure BAddClick(Sender: TObject);
     procedure BClearClick(Sender: TObject);
     procedure BDeleteClick(Sender: TObject);
-    procedure LBComponentsSelectionChange(Sender: TObject; User: boolean);
+    procedure LBComponentsSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure LBPropertiesDblClick(Sender: TObject);
     procedure SelectPropertiesFormClose(Sender: TObject;
-      var CloseAction: TCloseAction);
+      var {%H-}CloseAction: TCloseAction);
     procedure SelectPropertiesFormCreate(Sender: TObject);
   private
     FSelectedComponent : TComponent;

@@ -37,7 +37,7 @@ type
   public
     constructor Create(TheNode: THelpNode; const RegularExpression,
                        TheModifierStr: string);
-    function MessageMatches(const TheMessage: string; MessageParts: TStrings
+    function MessageMatches(const TheMessage: string; {%H-}MessageParts: TStrings
                             ): boolean; override;
     property Expression: string read FExpression write FExpression;
     property ModifierStr: string read FModifierStr write FModifierStr;

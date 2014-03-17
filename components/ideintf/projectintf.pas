@@ -115,15 +115,15 @@ type
     constructor Create; virtual;
     function GetLocalizedName: string; virtual;
     function GetLocalizedDescription: string; virtual;
-    function GetResourceSource(const ResourceName: string): string; virtual;
+    function GetResourceSource(const {%H-}ResourceName: string): string; virtual;
     procedure Release;
     procedure Reference;
-    function CheckOwner(Quiet: boolean): TModalResult; virtual;
-    function CreateSource(const Filename, SourceName,
-                          ResourceName: string): string; virtual;
+    function CheckOwner({%H-}Quiet: boolean): TModalResult; virtual;
+    function CreateSource(const {%H-}aFilename, {%H-}aSourceName,
+                          {%H-}aResourceName: string): string; virtual;
     procedure UpdateDefaultPascalFileExtension(const DefPasExt: string); virtual;
-    function Init(var NewFilename: string; NewOwner: TObject;
-                  var NewSource: string; Quiet: boolean): TModalResult; virtual;
+    function Init(var {%H-}NewFilename: string; {%H-}NewOwner: TObject;
+                  var {%H-}NewSource: string; {%H-}Quiet: boolean): TModalResult; virtual;
   public
     property Owner: TObject read FOwner write SetOwner; // project, package or nil
     property Name: string read FName write SetName;
@@ -164,16 +164,16 @@ type
   TFileDescPascalUnit = class(TProjectFileDescriptor)
   public
     constructor Create; override;
-    function CreateSource(const Filename, SourceName,
-                          ResourceName: string): string; override;
+    function CreateSource(const aFilename, aSourceName,
+                          aResourceName: string): string; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function GetUnitDirectives: string; virtual;
     function GetInterfaceUsesSection: string; virtual;
-    function GetInterfaceSource(const Filename, SourceName,
-                                ResourceName: string): string; virtual;
-    function GetImplementationSource(const Filename, SourceName,
-                                     ResourceName: string): string; virtual;
+    function GetInterfaceSource(const {%H-}aFilename, {%H-}aSourceName,
+                                {%H-}aResourceName: string): string; virtual;
+    function GetImplementationSource(const {%H-}aFilename, {%H-}aSourceName,
+                                     {%H-}aResourceName: string): string; virtual;
     function CheckOwner(Quiet: boolean): TModalResult; override;
     class function CompilerOptionsToUnitDirectives(CompOpts: TLazCompilerOptions): string;
   end;
@@ -190,10 +190,10 @@ type
     constructor Create; override;
 
     function GetInterfaceUsesSection: string; override;
-    function GetInterfaceSource(const Filename, SourceName,
+    function GetInterfaceSource(const {%H-}Filename, {%H-}SourceName,
                                 ResourceName: string): string; override;
-    function GetImplementationSource(const Filename, SourceName,
-                                     ResourceName: string): string; override;
+    function GetImplementationSource(const Filename, {%H-}SourceName,
+                                     {%H-}ResourceName: string): string; override;
 
     property DeclareClassVariable: Boolean read FDeclareClassVariable write FDeclareClassVariable;
   end;
@@ -293,7 +293,7 @@ type
     procedure Reference;
     function InitDescriptor: TModalResult; // called while old project is still there, you can start a dialog to ask for settings
     function InitProject(AProject: TLazProject): TModalResult; virtual; // called after old project was closed and new was created, you must now setup global flags and compiler options
-    function CreateStartFiles(AProject: TLazProject): TModalResult; virtual; // called after all global settings are done, you can now create and open files
+    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; virtual; // called after all global settings are done, you can now create and open files
   public
     property Name: string read FName write SetName;
     property VisibleInNewDialog: boolean read FVisibleInNewDialog
@@ -414,7 +414,7 @@ type
     procedure SetTitle(const AValue: String); virtual;
     procedure SetUseManifest(AValue: boolean); virtual; abstract;
   public
-    constructor Create(ProjectDescription: TProjectDescriptor); virtual;
+    constructor Create({%H-}ProjectDescription: TProjectDescriptor); virtual;
     destructor Destroy; override;
     procedure Clear; virtual;
     function IsVirtual: boolean; virtual; abstract;
@@ -784,8 +784,8 @@ begin
   Result:=mrOk;
 end;
 
-function TProjectFileDescriptor.CreateSource(const Filename, SourceName,
-  ResourceName: string): string;
+function TProjectFileDescriptor.CreateSource(const aFilename, aSourceName,
+  aResourceName: string): string;
 begin
   Result:='';
 end;
@@ -817,14 +817,14 @@ begin
   IsPascalUnit:=true;
 end;
 
-function TFileDescPascalUnit.CreateSource(const Filename, SourceName,
-  ResourceName: string): string;
+function TFileDescPascalUnit.CreateSource(const aFilename, aSourceName,
+  aResourceName: string): string;
 var
   LE: string;
 begin
   LE:=LineEnding;
   Result:=
-     'unit '+SourceName+';'+LE
+     'unit '+aSourceName+';'+LE
     +LE
     +GetUnitDirectives+LE
     +LE
@@ -833,10 +833,10 @@ begin
     +'uses'+LE
     +'  '+GetInterfaceUsesSection+';'+LE
     +LE
-    +GetInterfaceSource(Filename,SourceName,ResourceName)
+    +GetInterfaceSource(aFilename,aSourceName,aResourceName)
     +'implementation'+LE
     +LE
-    +GetImplementationSource(Filename,SourceName,ResourceName)
+    +GetImplementationSource(aFilename,aSourceName,aResourceName)
     +'end.'+LE
     +LE;
 end;
@@ -863,14 +863,14 @@ begin
   Result:='Classes, SysUtils';
 end;
 
-function TFileDescPascalUnit.GetInterfaceSource(const Filename, SourceName,
-  ResourceName: string): string;
+function TFileDescPascalUnit.GetInterfaceSource(const aFilename, aSourceName,
+  aResourceName: string): string;
 begin
   Result:='';
 end;
 
-function TFileDescPascalUnit.GetImplementationSource(const Filename,
-  SourceName, ResourceName: string): string;
+function TFileDescPascalUnit.GetImplementationSource(const aFilename,
+  aSourceName, aResourceName: string): string;
 begin
   Result:='';
 end;

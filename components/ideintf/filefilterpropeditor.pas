@@ -20,7 +20,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
     procedure MoveDownBtnClick(Sender: TObject);
-    procedure StringGrid1ButtonClick(Sender: TObject; aCol, aRow: Integer);
+    procedure StringGrid1ButtonClick(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer);
     procedure StringGrid1Click(Sender: TObject);
     procedure StringGrid1EditingDone(Sender: TObject);
   private

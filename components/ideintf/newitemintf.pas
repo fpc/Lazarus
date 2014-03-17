@@ -16,7 +16,7 @@ unit NewItemIntf;
 interface
 
 uses
-  Classes, SysUtils, ObjInspStrConsts;
+  Classes, SysUtils;
 
 type
   // Flags/Options for the items
@@ -49,7 +49,7 @@ type
     function Description: string;  virtual;
     function IndexOfTemplate(const TemplateName: string): integer; virtual;
     function FindTemplateByName(const TemplateName: string): TNewIDEItemTemplate; virtual;
-    function IndexOfCategory(const CategoryName: string): integer; virtual;
+    function IndexOfCategory(const {%H-}CategoryName: string): integer; virtual;
     function FindCategoryByName(const CategoryName: string): TNewIDEItemCategory; virtual;
   public
     property Count: integer read GetCount;

@@ -82,6 +82,7 @@ procedure TCheckListBoxEditorDlg.actAddExecute(Sender: TObject);
 var
   strItem: string;
 begin
+  strItem:='';
   if InputQuery(clbCheckListBoxEditor, clbAdd, strItem) then
   begin
     FCheck.Items.Add(strItem);

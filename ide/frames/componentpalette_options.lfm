@@ -1,24 +1,24 @@
 object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
   Left = 0
-  Height = 458
+  Height = 411
   Top = 0
-  Width = 814
-  ClientHeight = 458
-  ClientWidth = 814
+  Width = 511
+  ClientHeight = 411
+  ClientWidth = 511
   TabOrder = 0
   Visible = False
-  DesignLeft = 309
-  DesignTop = 530
+  DesignLeft = 520
+  DesignTop = 374
   object PagesGroupBox: TGroupBox
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 458
+    Height = 411
     Top = 0
     Width = 227
     Align = alLeft
     Anchors = []
     Caption = 'PagesGroupBox'
-    ClientHeight = 439
+    ClientHeight = 394
     ClientWidth = 223
     TabOrder = 0
     object PagesListBox: TListBox
@@ -27,7 +27,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideRight.Control = PageMoveUpBtn
       AnchorSideBottom.Control = AddPageButton
       Left = 1
-      Height = 400
+      Height = 354
       Top = 1
       Width = 188
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -39,7 +39,9 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       OnDragOver = PagesListBoxDragOver
       OnKeyDown = PagesListBoxKeyDown
       OnSelectionChange = PagesListBoxSelectionChange
+      ScrollWidth = 186
       TabOrder = 0
+      TopIndex = -1
     end
     object AddPageButton: TBitBtn
       AnchorSideLeft.Control = PagesListBox
@@ -47,9 +49,9 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideBottom.Control = PagesGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 1
-      Height = 26
-      Top = 407
-      Width = 54
+      Height = 27
+      Top = 361
+      Width = 46
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Top = 6
@@ -63,10 +65,10 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = AddPageButton
       AnchorSideBottom.Side = asrBottom
-      Left = 64
-      Height = 26
-      Top = 407
-      Width = 110
+      Left = 56
+      Height = 27
+      Top = 361
+      Width = 99
       AutoSize = True
       BorderSpacing.Left = 9
       BorderSpacing.Bottom = 6
@@ -107,14 +109,14 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
   end
   object ComponentsGroupBox: TGroupBox
     Left = 232
-    Height = 458
+    Height = 411
     Top = 0
-    Width = 582
+    Width = 279
     Align = alClient
     Anchors = []
     Caption = 'ComponentsGroupBox'
-    ClientHeight = 439
-    ClientWidth = 578
+    ClientHeight = 394
+    ClientWidth = 275
     TabOrder = 1
     object ComponentsListView: TListView
       AnchorSideLeft.Control = ComponentsGroupBox
@@ -123,9 +125,9 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideBottom.Control = ComponentsGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 1
-      Height = 437
+      Height = 392
       Top = 1
-      Width = 543
+      Width = 240
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Right = 5
       BorderSpacing.Around = 1
@@ -171,7 +173,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = ComponentsGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 550
+      Left = 247
       Height = 26
       Top = 102
       Width = 22
@@ -186,7 +188,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideLeft.Control = CompMoveUpBtn
       AnchorSideTop.Control = CompMoveUpBtn
       AnchorSideTop.Side = asrBottom
-      Left = 550
+      Left = 247
       Height = 26
       Top = 135
       Width = 22
@@ -199,7 +201,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
   end
   object Splitter1: TSplitter
     Left = 227
-    Height = 458
+    Height = 411
     Top = 0
     Width = 5
     Anchors = [akLeft]

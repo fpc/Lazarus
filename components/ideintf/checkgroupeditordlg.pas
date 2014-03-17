@@ -89,6 +89,7 @@ var
   strItem: string;
   canAdd: boolean;
 begin
+  strItem:='';
   if not InputQuery(cgCheckGroupEditor, clbAdd, strItem) then
     Exit;
   canAdd := True;

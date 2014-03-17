@@ -38,7 +38,7 @@ type
   protected
     procedure UpdateCaption;
     procedure UpdateButtons;
-    procedure PersistentAdded(APersistent: TPersistent; Select: boolean);
+    procedure PersistentAdded({%H-}APersistent: TPersistent; {%H-}Select: boolean);
     procedure ComponentRenamed(AComponent: TComponent);
     procedure PersistentDeleting(APersistent: TPersistent);
     procedure RefreshPropertyValues;

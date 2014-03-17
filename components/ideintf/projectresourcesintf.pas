@@ -25,8 +25,8 @@ type
   public
     constructor Create; virtual;
 
-    procedure DoAfterBuild(AResources: TAbstractProjectResources; AReason: TCompileReason; SaveToTestDir: boolean); virtual;
-    procedure DoBeforeBuild(AResources: TAbstractProjectResources; AReason: TCompileReason; SaveToTestDir: boolean); virtual;
+    procedure DoAfterBuild({%H-}AResources: TAbstractProjectResources; {%H-}AReason: TCompileReason; {%H-}SaveToTestDir: boolean); virtual;
+    procedure DoBeforeBuild({%H-}AResources: TAbstractProjectResources; {%H-}AReason: TCompileReason; {%H-}SaveToTestDir: boolean); virtual;
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; virtual; abstract;
     procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; Path: String); virtual; abstract;
     procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; Path: String); virtual; abstract;

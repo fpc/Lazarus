@@ -16,7 +16,7 @@ unit PackageIntf;
 interface
 
 uses
-  Classes, SysUtils, contnrs, LCLProc, Forms, LazConfigStorage, AvgLvlTree,
+  Classes, SysUtils, contnrs, LCLProc, Forms, LazConfigStorage,
   NewItemIntf, CompOptsIntf, IDEOptionsIntf;
   
 const
@@ -732,7 +732,7 @@ procedure TPackageEditingInterface.AddHandler(HandlerType: TPkgIntfHandlerType;
 begin
   if FHandlers[HandlerType]=nil then
     FHandlers[HandlerType]:=TMethodList.Create;
-  FHandlers[HandlerType].Add(AMethod);
+  FHandlers[HandlerType].Add(AMethod,AsLast);
 end;
 
 procedure TPackageEditingInterface.RemoveHandler(
@@ -767,7 +767,7 @@ end;
 procedure TPackageEditingInterface.AddHandlerOnGraphChanged(
   const OnGraphChanged: TNotifyEvent; AsLast: boolean);
 begin
-  AddHandler(pihtGraphChanged,TMethod(OnGraphChanged));
+  AddHandler(pihtGraphChanged,TMethod(OnGraphChanged),AsLast);
 end;
 
 procedure TPackageEditingInterface.RemoveHandlerOnGraphChanged(
@@ -779,7 +779,7 @@ end;
 procedure TPackageEditingInterface.AddHandlerOnPackageFileLoaded(
   const OnPkgLoaded: TNotifyEvent; AsLast: boolean);
 begin
-  AddHandler(pihtPackageFileLoaded,TMethod(OnPkgLoaded));
+  AddHandler(pihtPackageFileLoaded,TMethod(OnPkgLoaded),AsLast);
 end;
 
 procedure TPackageEditingInterface.RemoveHandlerOnPackageFileLoaded(

@@ -17,8 +17,8 @@ interface
 
 uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, LCLType, GraphType,
-  FileUtil, Graphics, StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs,
-  LCLIntf, ExtDlgs, PropEdits, PropEditUtils, ImgList, Math,
+  FileUtil, Graphics, Buttons, Menus, ExtCtrls, Dialogs,
+  LCLIntf, PropEdits, PropEditUtils, ImgList, Math,
   GraphicPropEdit; // defines TGraphicPropertyEditorForm
 
 type
@@ -59,7 +59,7 @@ type
     function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
-    procedure ListMeasureWidth(const CurValue: ansistring; Index: integer;
+    procedure ListMeasureWidth(const {%H-}CurValue: ansistring; {%H-}Index: integer;
       ACanvas: TCanvas; var AWidth: Integer);  override;
     procedure ListDrawValue(const CurValue: ansistring; Index: integer;
       ACanvas: TCanvas; const ARect:TRect; AState: TPropEditDrawState); override;
@@ -73,8 +73,8 @@ type
   TBrushStylePropertyEditor = class(TEnumPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
-    procedure ListMeasureWidth(const CurValue: ansistring; Index:integer;
-      ACanvas: TCanvas;  var AWidth: Integer); override;
+    procedure ListMeasureWidth(const {%H-}CurValue: ansistring; {%H-}Index:integer;
+      {%H-}ACanvas: TCanvas;  var AWidth: Integer); override;
     procedure ListDrawValue(const CurValue: ansistring; Index:integer;
       ACanvas: TCanvas;  const ARect: TRect; AState: TPropEditDrawState); override;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
@@ -87,9 +87,9 @@ type
   TPenStylePropertyEditor = class(TEnumPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
-    procedure ListMeasureWidth(const CurValue: ansistring; Index:integer;
-      ACanvas: TCanvas;  var AWidth: Integer); override;
-    procedure ListDrawValue(const CurValue: ansistring; Index:integer;
+    procedure ListMeasureWidth(const {%H-}CurValue: ansistring; {%H-}Index:integer;
+      {%H-}ACanvas: TCanvas;  var AWidth: Integer); override;
+    procedure ListDrawValue(const CurValue: ansistring; {%H-}Index:integer;
       ACanvas: TCanvas;  const ARect: TRect; AState: TPropEditDrawState); override;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       AState:TPropEditDrawState); override;
@@ -136,7 +136,7 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
-    procedure ListMeasureHeight(const AValue: ansistring; Index:integer;
+    procedure ListMeasureHeight(const {%H-}AValue: ansistring; {%H-}Index:integer;
       ACanvas:TCanvas; var AHeight: Integer); override;
     procedure ListDrawValue(const CurValue: ansistring; Index:integer;
       ACanvas: TCanvas;  const ARect: TRect; AState: TPropEditDrawState); override;

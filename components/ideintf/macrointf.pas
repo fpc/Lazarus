@@ -29,13 +29,13 @@ type
     property GraphTimeStamp: integer read FGraphTimeStamp;
     procedure IncreaseBaseStamp;
     procedure IncreaseGraphStamp;
-    function StrHasMacros(const s: string): boolean; virtual;
-    function SubstituteMacros(var s: string): boolean; virtual;
-    function IsMacro(const Name: string): boolean; virtual;
+    function StrHasMacros(const s: string): boolean; virtual; abstract;
+    function SubstituteMacros(var s: string): boolean; virtual; abstract;
+    function IsMacro(const Name: string): boolean; virtual; abstract;
     // file utility functions
     function CreateAbsoluteSearchPath(var SearchPath: string;
                                       const BaseDirectory: string): boolean;
-    procedure Add(NewMacro: TTransferMacro);virtual;
+    procedure Add(NewMacro: TTransferMacro); virtual; abstract;
   end;
   
 var
@@ -49,7 +49,6 @@ implementation
 const
   MaxStamp = $7fffffff;
   MinStamp = -$7fffffff;
-  InvalidStamp = MinStamp-1;
 
 procedure RenameIDEMacroInString(var s: string; const OldName, NewName: string);
 var
@@ -103,22 +102,6 @@ begin
     FGraphTimeStamp:=MinStamp;
 end;
 
-function TIDEMacros.StrHasMacros(const s: string): boolean;
-begin
-  Result:=false;
-end;
-
-function TIDEMacros.SubstituteMacros(var s: string): boolean;
-begin
-  Result:=true;
-end;
-
-function TIDEMacros.IsMacro(const Name: string): boolean;
-begin
-  if Name='' then ;
-  Result:=true;
-end;
-
 function TIDEMacros.CreateAbsoluteSearchPath(var SearchPath: string;
   const BaseDirectory: string): boolean;
 var
@@ -129,10 +112,6 @@ begin
   if not SubstituteMacros(BaseDir) then exit(false);
   Result:=SubstituteMacros(SearchPath);
   SearchPath:=MinimizeSearchPath(LazFileUtils.CreateAbsoluteSearchPath(SearchPath,BaseDir));
-end;
-
-procedure TIDEMacros.Add(NewMacro: TTransferMacro);
-Begin
 end;
 
 end.

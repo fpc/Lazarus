@@ -85,6 +85,7 @@ begin
     OldText := Memo.Lines.Text;
   end;
 
+  NewSortedText:='';
   if ShowSortSelectionDialogFunc(OldText, nil, NewSortedText) <> mrOk then Exit;
   if SortOnlySelection then
     Memo.SelText := NewSortedText

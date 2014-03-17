@@ -17,7 +17,7 @@ unit IDEWindowIntf;
 interface
 
 uses
-  Math, types, Classes, SysUtils, LCLProc, LazConfigStorage, Forms, Controls;
+  Math, Classes, SysUtils, LCLProc, LazConfigStorage, Forms, Controls;
 
   //----------------------------------------------------------------------------
   // layout settings of modal forms (dialogs) in the IDE
@@ -89,7 +89,7 @@ type
   TIDEDialogLayoutStorage = class(TComponent)
   protected
     procedure OnCreateForm(Sender: TObject);
-    procedure OnCloseForm(Sender: TObject; var CloseAction: TCloseAction);
+    procedure OnCloseForm(Sender: TObject; var {%H-}CloseAction: TCloseAction);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -209,7 +209,7 @@ type
     function GetFormCaption: string;
     function GetFormID: string;
     procedure SetForm(const AValue: TCustomForm);
-    procedure OnFormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure OnFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
@@ -436,7 +436,7 @@ type
     procedure MakeIDEWindowDockable(AControl: TWinControl); virtual; abstract; // make AControl dockable, it can be docked and other dockable windows can be docked to it, this does not make it visible
     procedure MakeIDEWindowDockSite(AForm: TCustomForm; ASides: TDockSides = [alBottom]); virtual; abstract; // make AForm a dock site, AForm can not be docked, its Parent must be kept nil, this does not make it visible
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); virtual; abstract; // make a form visible, set BringToFront=true if form should be shown on active screen and on front of other windows, normally this focus the form
-    function AddableInWindowMenu(AForm: TCustomForm): boolean; virtual;
+    function AddableInWindowMenu({%H-}AForm: TCustomForm): boolean; virtual;
     procedure CloseAll; virtual; // close all forms, called after IDE has saved all and shuts down
     property HideSimpleLayoutOptions: boolean read FHideSimpleLayoutOptions;
   end;
@@ -1315,11 +1315,13 @@ begin
       iwpdUseWindowSetting:
         f := WindowPlacement in [iwpRestoreWindowGeometry, iwpRestoreWindowSize];
     end;
-    if f then
+    if f then begin
+      j:=-1;
       if Creator.OnGetDividerSize(fForm, FDividers[i].Id, j) then
         FDividers[i].Size := j
       else
         FDividers[i].Size := -1; // Default / Not Changed / Unavailable
+    end;
   end;
 end;
 

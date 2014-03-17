@@ -37,12 +37,12 @@ type
     procedure DisplayColumn(Value : Integer);
     procedure SetColumns(const AValue: TListColumns);
   protected
-    procedure AddButtonOnClick(sender : TObject);
-    procedure DeleteButtonOnClick(sender : TObject);
-    procedure MoveUpButtonOnClick(sender : TObject);
-    procedure MoveDownButtonOnClick(sender : TObject);
-    procedure AlignmentRadioGroupOnClick(sender : TObject);
-    procedure ColumnsListBoxOnClick(sender : TObject);
+    procedure AddButtonOnClick({%H-}sender : TObject);
+    procedure DeleteButtonOnClick({%H-}sender : TObject);
+    procedure MoveUpButtonOnClick({%H-}sender : TObject);
+    procedure MoveDownButtonOnClick({%H-}sender : TObject);
+    procedure AlignmentRadioGroupOnClick({%H-}sender : TObject);
+    procedure ColumnsListBoxOnClick({%H-}sender : TObject);
     Procedure CaptionEditOnChange(Sender : TObject);
     Procedure WidthEditOnChange(Sender : TObject);
     Procedure cbVisibleOnClick(Sender : TObject);

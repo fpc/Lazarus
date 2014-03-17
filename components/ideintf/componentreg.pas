@@ -195,17 +195,17 @@ type
     procedure DoChange; virtual;
     procedure DoBeginUpdate; virtual;
     procedure DoEndUpdate(Changed: boolean); virtual;
-    procedure OnPageAddedComponent(Component: TRegisteredComponent); virtual;
-    procedure OnPageRemovedComponent(Page: TBaseComponentPage;
-                                Component: TRegisteredComponent); virtual;
-    procedure OnComponentVisibleChanged(AComponent: TRegisteredComponent); virtual;
-    procedure OnPageVisibleChanged(APage: TBaseComponentPage); virtual;
+    procedure OnPageAddedComponent({%H-}Component: TRegisteredComponent); virtual;
+    procedure OnPageRemovedComponent({%H-}Page: TBaseComponentPage;
+                                {%H-}Component: TRegisteredComponent); virtual;
+    procedure OnComponentVisibleChanged({%H-}AComponent: TRegisteredComponent); virtual;
+    procedure OnPageVisibleChanged({%H-}APage: TBaseComponentPage); virtual;
     procedure Update; virtual;
     procedure UpdateVisible(AComponent: TRegisteredComponent); virtual;
     function GetSelected: TRegisteredComponent; virtual;
     procedure SetBaseComponentPageClass(const AValue: TBaseComponentPageClass); virtual;
     procedure SetRegisteredComponentClass(const AValue: TRegisteredComponentClass); virtual;
-    procedure SetSelected(const AValue: TRegisteredComponent); virtual;
+    procedure SetSelected(const AValue: TRegisteredComponent); virtual; abstract;
     function SortPagesDefaultOrder: Boolean;
   public
     constructor Create;
@@ -231,7 +231,7 @@ type
     procedure UpdateVisible; virtual;
     procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
     procedure RegisterCustomIDEComponents(
-                        const RegisterProc: RegisterUnitComponentProc); virtual;
+                        const RegisterProc: RegisterUnitComponentProc); virtual; abstract;
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
     procedure AddHandlerUpdateVisible(
                         const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent;
@@ -324,8 +324,6 @@ begin
 end;
 
 destructor TCompPaletteOptions.Destroy;
-var
-  i: Integer;
 begin
   ClearComponentPages;
   FComponentPages.Free;
@@ -408,8 +406,7 @@ end;
 function TCompPaletteOptions.Save: boolean;
 var
   CompList: TStringList;
-  Path, SubPath, CompPath, ss: String;
-  PageCount, CompCount: Integer;
+  Path, SubPath, CompPath: String;
   i, j: Integer;
 begin
   Result:=False;
@@ -668,7 +665,7 @@ procedure TBaseComponentPalette.AddHandler(HandlerType: TComponentPaletteHandler
 begin
   if FHandlers[HandlerType]=nil then
     FHandlers[HandlerType]:=TMethodList.Create;
-  FHandlers[HandlerType].Add(AMethod);
+  FHandlers[HandlerType].Add(AMethod,AsLast);
 end;
 
 function TBaseComponentPalette.GetSelected: TRegisteredComponent;
@@ -687,11 +684,6 @@ begin
   if FHideControls=AValue then exit;
   FHideControls:=AValue;
   UpdateVisible;
-end;
-
-procedure TBaseComponentPalette.SetSelected(const AValue: TRegisteredComponent);
-begin
-  // ignore
 end;
 
 procedure TBaseComponentPalette.DoChange;
@@ -993,12 +985,6 @@ begin
   end;
 end;
 
-procedure TBaseComponentPalette.RegisterCustomIDEComponents(
-  const RegisterProc: RegisterUnitComponentProc);
-begin
-
-end;
-
 procedure TBaseComponentPalette.RemoveAllHandlersOfObject(AnObject: TObject);
 var
   HandlerType: TComponentPaletteHandlerType;
@@ -1010,7 +996,7 @@ end;
 procedure TBaseComponentPalette.AddHandlerUpdateVisible(
   const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent; AsLast: boolean);
 begin
-  AddHandler(cphtUpdateVisible,TMethod(OnUpdateCompVisibleEvent));
+  AddHandler(cphtUpdateVisible,TMethod(OnUpdateCompVisibleEvent),AsLast);
 end;
 
 procedure TBaseComponentPalette.RemoveHandlerUpdateVisible(

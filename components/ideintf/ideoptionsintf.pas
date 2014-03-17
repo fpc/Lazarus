@@ -134,7 +134,7 @@ type
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); virtual; abstract;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); virtual; abstract;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); virtual; abstract;
-    procedure RestoreSettings(AOptions: TAbstractIDEOptions); virtual;
+    procedure RestoreSettings({%H-}AOptions: TAbstractIDEOptions); virtual;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; virtual; abstract;
     class function DefaultCollapseChildNodes: Boolean; virtual;
     function FindOptionControl(AClass: TControlClass): TControl;
@@ -544,7 +544,7 @@ var
     Result:=False;  // ToDo...
   end;
 
-  function SearchMemo(AControl: TCustomMemo): Boolean;
+  function SearchMemo({%H-}AControl: TCustomMemo): Boolean;
   begin
     Result:=False;  // Memo.Caption returns all the lines, skip.
   end;
