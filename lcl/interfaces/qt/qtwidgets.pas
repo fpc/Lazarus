@@ -1418,12 +1418,12 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     procedure OwnerDataNeeded(ARect: TRect); override;
-    procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
   public
     destructor Destroy; override;
     procedure DestroyNotify(AWidget: TQtWidget); override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
     procedure ClearItems;
     procedure clearSelection; override;
     procedure DeleteItem(const AIndex: integer);
