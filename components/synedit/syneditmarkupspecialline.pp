@@ -125,7 +125,9 @@ end;
 function TSynEditMarkupSpecialLine.RealEnabled: Boolean;
 begin
   Result := Enabled and
-    (Assigned(FOnSpecialLineMarkup) or Assigned(FOnSpecialLineColors));
+    (Assigned(FOnSpecialLineMarkup) or Assigned(FOnSpecialLineColors) or
+     HasLineHighlight
+    );
 end;
 
 constructor TSynEditMarkupSpecialLine.Create(ASynEdit: TSynEditBase);
