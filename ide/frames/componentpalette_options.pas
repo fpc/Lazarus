@@ -179,7 +179,7 @@ begin
       PgName := IDEComponentPalette.PagesUserOrder[i];
       Pg := IDEComponentPalette.GetPage(PgName, True);
       Assert(Assigned(Pg), 'TCompPaletteOptionsFrame.WritePages: PageName "'+PgName+'" not found.');
-      if Pg.Visible then
+      if (Pg<>nil) and Pg.Visible then
         OrigPages.Add(Pg.PageName);
     end;
     // Collect user defined page names
@@ -249,7 +249,7 @@ begin
       PgName := IDEComponentPalette.PagesUserOrder[i];
       Pg := IDEComponentPalette.GetPage(PgName, True);
       Assert(Assigned(Pg), 'TCompPaletteOptionsFrame.FillPages: PageName "'+PgName+'" not found.');
-      if Pg.Visible then
+      if (Pg<>nil) and Pg.Visible then
       begin                     // StringList will hold components for this page.
         CompList := TStringList.Create;
         InitialComps(Pg.PageName, CompList);
@@ -269,14 +269,17 @@ var
 begin
   PgInd := IDEComponentPalette.PagesUserOrder.IndexOf(aPageName);
   Assert(PgInd > -1, 'TCompPaletteOptionsFrame.InitialComps: PageName "'+aPageName+'" not found');
-  OrderedComps := IDEComponentPalette.PagesUserOrder.Objects[PgInd] as TStringList;
-  for i := 0 to OrderedComps.Count-1 do
+  if PgInd>=0 then
   begin
-    CompName := OrderedComps[i];
-    Comp := IDEComponentPalette.FindComponent(CompName);
-    Assert(Assigned(Comp), 'TCompPaletteOptionsFrame.InitialComps: Component "'+CompName+'" not found');
-    if Comp.Visible and (Comp.PageName<>'') then
-      aCompList.AddObject(Comp.ComponentClass.ClassName, Comp);
+    OrderedComps := IDEComponentPalette.PagesUserOrder.Objects[PgInd] as TStringList;
+    for i := 0 to OrderedComps.Count-1 do
+    begin
+      CompName := OrderedComps[i];
+      Comp := IDEComponentPalette.FindComponent(CompName);
+      Assert(Assigned(Comp), 'TCompPaletteOptionsFrame.InitialComps: Component "'+CompName+'" not found');
+      if Comp.Visible and (Comp.PageName<>'') then
+        aCompList.AddObject(Comp.ComponentClass.ClassName, Comp);
+    end;
   end;
 end;
 
