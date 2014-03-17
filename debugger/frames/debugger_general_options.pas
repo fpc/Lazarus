@@ -257,7 +257,7 @@ constructor TDebuggerGeneralOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   // create the PropertyEditorHook (the interface to the properties)
-  FPropertyEditorHook:=TPropertyEditorHook.Create;
+  FPropertyEditorHook:=TPropertyEditorHook.Create(Self);
   FCurrentDebPropertiesList := TStringList.Create;
   // create the PropertyGrid
   PropertyGrid:=TOIPropertyGrid.CreateWithParams(Self,FPropertyEditorHook

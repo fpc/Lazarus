@@ -818,7 +818,7 @@ end;
 constructor TTICustomGrid.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FHeaderPropHook:=TPropertyEditorHook.Create;
+  FHeaderPropHook:=TPropertyEditorHook.Create(Self);
   FFilter:=[{tkUnknown,}tkInteger,tkChar,tkEnumeration,
             tkFloat,{tkSet,tkMethod,}tkSString,tkLString,tkAString,
             tkWString,tkVariant,{tkArray,tkRecord,tkInterface,}

@@ -1746,7 +1746,7 @@ end;
 
 procedure TCustomPropertyLink.CreateHook;
 begin
-  if FHook=nil then FHook:=TPropertyEditorHook.Create;
+  if FHook=nil then FHook:=TPropertyEditorHook.Create(nil);
   FHook.LookupRoot:=TIObject;
 end;
 
