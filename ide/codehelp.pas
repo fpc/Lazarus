@@ -2690,11 +2690,32 @@ function TCodeHelpManager.GetPasDocCommentsAsHTML(Tool: TFindDeclarationTool;
 var
   ListOfPCodeXYPosition: TFPList;
   i: Integer;
-  CodeXYPos: PCodeXYPosition;
+  CodeXYPos, LastCodeXYPos: PCodeXYPosition;
   CommentCode: TCodeBuffer;
   CommentStart: integer;
   NestedComments: Boolean;
-  CommentStr: String;
+  CommentStr, LastComment: String;
+
+  procedure AddComment;
+  begin
+    if (CodeXYPos=nil) or (LastCodeXYPos=nil)
+    or (CodeXYPos^.Code<>LastCodeXYPos^.Code)
+    or (CodeXYPos^.Y-LastCodeXYPos^.Y>10) then begin
+      // the last comment is at a different position => add a source link
+      if LastComment<>'' then
+        Result:=Result+'<span class="comment">'+TextToHTML(LastComment)
+          +' ('+SourcePosToFPDocHint(LastCodeXYPos^,'Source')+')'
+          +'</span><br>'+LineEnding;
+      LastComment:=CommentStr;
+    end else begin
+      // these two comments are very near together => combine them
+      if LastComment<>'' then
+        LastComment+=LineEnding;
+      LastComment+=CommentStr;
+    end;
+    LastCodeXYPos:=CodeXYPos;
+  end;
+
 begin
   Result:='';
   if (Tool=nil) or (Node=nil) then exit;
@@ -2703,6 +2724,8 @@ begin
     if not Tool.GetPasDocComments(Node,ListOfPCodeXYPosition) then exit;
     if ListOfPCodeXYPosition=nil then exit;
     NestedComments := Tool.Scanner.NestedComments;
+    LastCodeXYPos := nil;
+    LastComment := '';
     for i := 0 to ListOfPCodeXYPosition.Count - 1 do
     begin
       CodeXYPos := PCodeXYPosition(ListOfPCodeXYPosition[i]);
@@ -2713,11 +2736,11 @@ begin
         continue;
       CommentStr:=ExtractCommentContent(CommentCode.Source,CommentStart,
                                         NestedComments,true,true,true);
-      if CommentStr <> '' then
-        Result:=Result+'<span class="comment">'+TextToHTML(CommentStr)
-          +' ('+SourcePosToFPDocHint(CodeXYPos^,'Source')+')'
-          +'</span><br>'+LineEnding;
+      AddComment;
     end;
+    CommentStr:='';
+    CodeXYPos:=nil;
+    AddComment;
 
   finally
     FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
