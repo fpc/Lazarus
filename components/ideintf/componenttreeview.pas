@@ -205,6 +205,8 @@ begin
   {$IFDEF VerboseComponentTVWalker}
   debugln(['TComponentWalker.AddOwnedPersistent APersistent=',DbgSName(APersistent),' PropName=',PropName,' FLookupRoot=',DbgSName(FLookupRoot),' GetLookupRootForComponent(APersistent)=',DbgSName(GetLookupRootForComponent(APersistent))]);
   {$ENDIF}
+  if (APersistent is TComponent)
+  and (csDestroying in TComponent(APersistent).ComponentState) then Exit;
   if GetLookupRootForComponent(APersistent) <> FLookupRoot then Exit;
 
   for i:=0 to FNode.Count-1 do
@@ -618,6 +620,7 @@ var
     for i := 0 to OwnerComponent.ComponentCount - 1 do
     begin
       AComponent := OwnerComponent.Components[i];
+      if csDestroying in AComponent.ComponentState then continue;
       Candidate := TComponentCandidate.Create;
       Candidate.APersistent := AComponent;
       if Candidates.Find(Candidate)<>nil then

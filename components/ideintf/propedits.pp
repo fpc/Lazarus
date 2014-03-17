@@ -1227,7 +1227,7 @@ type
 
   { TPropertyEditorHook }
 
-  TPropertyEditorHook = class
+  TPropertyEditorHook = class(TComponent)
   private
     FHandlers: array[TPropHookType] of TMethodList;
     // lookup root
@@ -1239,26 +1239,29 @@ type
     function GetHandlerCount(HookType: TPropHookType): integer;
     function GetNextHandlerIndex(HookType: TPropHookType;
                                  var i: integer): boolean;
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
     GetPrivateDirectory: AnsiString;
-    constructor Create;
+    constructor Create; overload; deprecated; // use Create(TComponent) instead
     destructor Destroy; override;
 
     // lookup root
     property LookupRoot: TPersistent read FLookupRoot write SetLookupRoot;
     // methods
-    function CreateMethod(const Name: ShortString; ATypeInfo:PTypeInfo;
+    function CreateMethod(const aName: ShortString; ATypeInfo:PTypeInfo;
                           APersistent: TPersistent;
                           const APropertyPath: string): TMethod;
     function GetMethodName(const Method: TMethod; PropOwner: TObject): String;
     procedure GetMethods(TypeData: PTypeData; const Proc: TGetStrProc);
     procedure GetCompatibleMethods(InstProp: PInstProp; const Proc: TGetStrProc);
-    function MethodExists(const Name: String; TypeData: PTypeData;
+    function MethodExists(const aName: String; TypeData: PTypeData;
       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
-    function CompatibleMethodExists(const Name: String; InstProp: PInstProp;
+    function CompatibleMethodExists(const aName: String; InstProp: PInstProp;
       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
     procedure RenameMethod(const CurName, NewName: String);
-    procedure ShowMethod(const Name: String);
+    procedure ShowMethod(const aName: String);
     function MethodFromAncestor(const Method: TMethod): boolean;
     procedure ChainCall(const AMethodName, InstanceName,
                         InstanceMethod: ShortString;  TypeData: PTypeData);
@@ -1280,7 +1283,7 @@ type
     function IsSelected(const APersistent: TPersistent): boolean;
     procedure SelectOnlyThis(const APersistent: TPersistent);
     // persistent objects
-    function GetObject(const Name: ShortString): TPersistent;
+    function GetObject(const aName: ShortString): TPersistent;
     function GetObjectName(Instance: TPersistent): ShortString;
     procedure GetObjectNames(TypeData: PTypeData; const Proc: TGetStrProc);
     procedure ObjectReferenceChanged(Sender: TObject; NewObject: TPersistent);
@@ -5228,22 +5231,22 @@ end;
 
 { TPropertyEditorHook }
 
-function TPropertyEditorHook.CreateMethod(const Name: Shortstring;
-  ATypeInfo: PTypeInfo;
-  APersistent: TPersistent; const APropertyPath: string): TMethod;
+function TPropertyEditorHook.CreateMethod(const aName: ShortString;
+  ATypeInfo: PTypeInfo; APersistent: TPersistent; const APropertyPath: string
+  ): TMethod;
 var
   i: Integer;
   Handler: TPropHookCreateMethod;
 begin
   Result.Code := nil;
   Result.Data := nil;
-  if IsValidIdent(Name) and Assigned(ATypeInfo) then
+  if IsValidIdent(aName) and Assigned(ATypeInfo) then
   begin
     i := GetHandlerCount(htCreateMethod);
     while GetNextHandlerIndex(htCreateMethod, i) do
     begin
       Handler := TPropHookCreateMethod(FHandlers[htCreateMethod][i]);
-      Result := Handler(Name, ATypeInfo, APersistent, APropertyPath);
+      Result := Handler(aName, ATypeInfo, APersistent, APropertyPath);
       if Assigned(Result.Data) or Assigned(Result.Code) then exit;
     end;
   end;
@@ -5291,50 +5294,50 @@ begin
     TPropHookGetCompatibleMethods(FHandlers[htGetCompatibleMethods][i])(InstProp,Proc);
 end;
 
-function TPropertyEditorHook.MethodExists(const Name: String;
+function TPropertyEditorHook.MethodExists(const aName: String;
   TypeData: PTypeData;
   var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean):boolean;
 var
   i: Integer;
   Handler: TPropHookMethodExists;
 begin
-  // check if a published method with given name exists in LookupRoot
-  Result:=IsValidIdent(Name) and Assigned(FLookupRoot);
+  // check if a published method with given aName exists in LookupRoot
+  Result:=IsValidIdent(aName) and Assigned(FLookupRoot);
   if not Result then exit;
   i:=GetHandlerCount(htMethodExists);
   if i>=0 then begin
     while GetNextHandlerIndex(htMethodExists,i) do begin
       Handler:=TPropHookMethodExists(FHandlers[htMethodExists][i]);
-      Result:=Handler(Name,TypeData,
+      Result:=Handler(aName,TypeData,
                             MethodIsCompatible,MethodIsPublished,IdentIsMethod);
     end;
   end else begin
-    Result:=(LookupRoot.MethodAddress(Name)<>nil);
+    Result:=(LookupRoot.MethodAddress(aName)<>nil);
     MethodIsCompatible:=Result;
     MethodIsPublished:=Result;
     IdentIsMethod:=Result;
   end;
 end;
 
-function TPropertyEditorHook.CompatibleMethodExists(const Name: String;
+function TPropertyEditorHook.CompatibleMethodExists(const aName: String;
   InstProp: PInstProp; var MethodIsCompatible, MethodIsPublished,
   IdentIsMethod: boolean): boolean;
 var
   i: Integer;
   Handler: TPropHookCompatibleMethodExists;
 begin
-  // check if a published method with given name exists in LookupRoot
-  Result:=IsValidIdent(Name) and Assigned(FLookupRoot);
+  // check if a published method with given aName exists in LookupRoot
+  Result:=IsValidIdent(aName) and Assigned(FLookupRoot);
   if not Result then exit;
   i:=GetHandlerCount(htCompatibleMethodExists);
   if i>=0 then begin
     while GetNextHandlerIndex(htCompatibleMethodExists,i) do begin
       Handler:=TPropHookCompatibleMethodExists(FHandlers[htCompatibleMethodExists][i]);
-      Result:=Handler(Name,InstProp,
+      Result:=Handler(aName,InstProp,
                             MethodIsCompatible,MethodIsPublished,IdentIsMethod);
     end;
   end else begin
-    Result:=(LookupRoot.MethodAddress(Name)<>nil);
+    Result:=(LookupRoot.MethodAddress(aName)<>nil);
     MethodIsCompatible:=Result;
     MethodIsPublished:=Result;
     IdentIsMethod:=Result;
@@ -5351,14 +5354,14 @@ begin
     TPropHookRenameMethod(FHandlers[htRenameMethod][i])(CurName,NewName);
 end;
 
-procedure TPropertyEditorHook.ShowMethod(const Name:String);
+procedure TPropertyEditorHook.ShowMethod(const aName:String);
 // jump cursor to published method body
 var
   i: Integer;
 begin
   i:=GetHandlerCount(htShowMethod);
   while GetNextHandlerIndex(htShowMethod,i) do
-    TPropHookShowMethod(FHandlers[htShowMethod][i])(Name);
+    TPropHookShowMethod(FHandlers[htShowMethod][i])(aName);
 end;
 
 function TPropertyEditorHook.MethodFromAncestor(const Method: TMethod): boolean;
@@ -5641,14 +5644,14 @@ begin
     TPropHookAddDependency(FHandlers[htAddDependency][i])(AClass,AnUnitName);
 end;
 
-function TPropertyEditorHook.GetObject(const Name: Shortstring): TPersistent;
+function TPropertyEditorHook.GetObject(const aName: ShortString): TPersistent;
 var
   i: Integer;
 begin
   Result:=nil;
   i:=GetHandlerCount(htGetObject);
   while GetNextHandlerIndex(htGetObject,i) and (Result=nil) do
-    Result:=TPropHookGetObject(FHandlers[htGetObject][i])(Name);
+    Result:=TPropHookGetObject(FHandlers[htGetObject][i])(aName);
 end;
 
 function TPropertyEditorHook.GetObjectName(Instance: TPersistent): Shortstring;
@@ -6128,7 +6131,11 @@ var
   i: Integer;
 begin
   if FLookupRoot=APersistent then exit;
+  if FLookupRoot is TComponent then
+    RemoveFreeNotification(TComponent(FLookupRoot));
   FLookupRoot:=APersistent;
+  if FLookupRoot is TComponent then
+    FreeNotification(TComponent(FLookupRoot));
   i:=GetHandlerCount(htChangeLookupRoot);
   while GetNextHandlerIndex(htChangeLookupRoot,i) do
     TPropHookChangeLookupRoot(FHandlers[htChangeLookupRoot][i])();
@@ -6160,9 +6167,17 @@ begin
   Result:=FHandlers[HookType].NextDownIndex(i);
 end;
 
+procedure TPropertyEditorHook.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation=opRemove) and (AComponent=FLookupRoot) then
+    LookupRoot:=nil;
+end;
+
 constructor TPropertyEditorHook.Create;
 begin
-  inherited Create;
+  Create(nil);
 end;
 
 destructor TPropertyEditorHook.Destroy;

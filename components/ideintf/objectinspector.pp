@@ -5457,7 +5457,10 @@ begin
   if SaveOnChangeTIObject then
     SaveChanges;
   if PropertyEditorHook=nil then
-    PropertyEditorHook:=TPropertyEditorHook.Create;
+  begin
+    fAutoFreeHook:=true;
+    PropertyEditorHook:=TPropertyEditorHook.Create(Self);
+  end;
   PropertyEditorHook.LookupRoot:=AValue;
   if (AValue=nil) or (Selection.Count<>1) or (Selection[0]<>AValue) then
   begin
@@ -5476,16 +5479,16 @@ constructor TCustomPropertiesGrid.Create(TheOwner: TComponent);
 var
   Hook: TPropertyEditorHook;
 begin
-  Hook:=TPropertyEditorHook.Create;
-  FSaveOnChangeTIObject:=true;
+  Hook:=TPropertyEditorHook.Create(Self);
   FAutoFreeHook:=true;
+  FSaveOnChangeTIObject:=true;
   CreateWithParams(TheOwner,Hook,AllTypeKinds,25);
 end;
 
 destructor TCustomPropertiesGrid.Destroy;
 begin
   if FAutoFreeHook then
-    FPropertyEditorHook.Free;
+    FreeAndNil(FPropertyEditorHook);
   inherited Destroy;
 end;
 

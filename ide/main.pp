@@ -2096,7 +2096,7 @@ end;
 
 procedure TMainIDE.SetupObjectInspector;
 begin
-  GlobalDesignHook:=TPropertyEditorHook.Create;
+  GlobalDesignHook:=TPropertyEditorHook.Create(nil);
   GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);
   GlobalDesignHook.AddHandlerGetMethodName(@OnPropHookGetMethodName);
   GlobalDesignHook.AddHandlerGetCompatibleMethods(@OnPropHookGetCompatibleMethods);
