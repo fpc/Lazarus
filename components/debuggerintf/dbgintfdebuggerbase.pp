@@ -612,8 +612,6 @@ type
     property TypeInfo: TDBGType read GetTypeInfo write SetTypeInfo;
   end;
 
-  { TWatch }
-
   { TWatchBase }
 
   TWatchBase = class(TDelayedUdateItem)
@@ -640,16 +638,17 @@ type
     property Values[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValueBase
              read GetValueBase;
   end;
+  TBaseWatchClass = class of TWatchBase;
 
   { TWatches }
 
-  { TWatchesBase }
-
-  TWatchesBase = class(TCollection)
+  TWatches = class(TCollection)
   protected
     function GetItemBase(const AnIndex: Integer): TWatchBase;
     procedure SetItemBase(const AnIndex: Integer; const AValue: TWatchBase);
+    function WatchClass: TBaseWatchClass; virtual;
   public
+    constructor Create;
     procedure ClearValues; virtual; abstract;
     function Find(const AExpression: String): TWatchBase; virtual; abstract;
     property Items[const AnIndex: Integer]: TWatchBase read GetItemBase write SetItemBase; default;
@@ -659,7 +658,7 @@ type
 
   TWatchesSupplier = class(TDebuggerDataSupplier)
   private
-    FCurrentWatches: TWatchesBase;
+    FCurrentWatches: TWatches;
   protected
     procedure DoNewMonitor; override;
     procedure DoStateChange(const AOldState: TDBGState); override; // workaround for state changes during TWatchValue.GetValue
@@ -667,10 +666,20 @@ type
   public
     constructor Create(const ADebugger: TDebuggerIntf);
     procedure RequestData(AWatchValue: TWatchValueBase);
-    property CurrentWatches: TWatchesBase read FCurrentWatches write FCurrentWatches;
+    property CurrentWatches: TWatches read FCurrentWatches write FCurrentWatches;
   end;
 
+  { TWatchesMonitor }
+
   TWatchesMonitor = class(TDebuggerDataMonitor)
+  private
+    FWatches: TWatches;
+  protected
+    function CreateWatches: TWatches; virtual;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Watches: TWatches read FWatches;
   end;
 
 {%endregion   ^^^^^  Watches  ^^^^^   }
@@ -742,7 +751,17 @@ type
     property  CurrentLocalsList: TLocalsList read FCurrentLocalsList write FCurrentLocalsList;
   end;
 
+  { TLocalsMonitor }
+
   TLocalsMonitor = class(TDebuggerDataMonitor)
+  private
+    FLocalsList: TLocalsList;
+  protected
+    function CreateLocalsList: TLocalsList; virtual;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property LocalsList: TLocalsList read FLocalsList;
   end;
 
 {%endregion   ^^^^^  Locals  ^^^^^   }
@@ -903,7 +922,17 @@ type
     property  CurrentRegistersList: TRegistersList read FCurrentRegistersList write FCurrentRegistersList;
   end;
 
+  { TRegistersMonitor }
+
   TRegistersMonitor = class(TDebuggerDataMonitor)
+  private
+    FRegistersList: TRegistersList;
+  protected
+    function CreateRegistersList: TRegistersList; virtual;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property RegistersList: TRegistersList read FRegistersList;
   end;
 
 {%endregion   ^^^^^  Register  ^^^^^   }
@@ -1008,7 +1037,7 @@ type
 
   { TCallStackListBase }
 
-  TCallStackListBase = class
+  TCallStackList = class
   protected
     function GetEntryBase(const AIndex: Integer): TCallStackBase; virtual; abstract;
     function GetEntryForThreadBase(const AThreadId: Integer): TCallStackBase; virtual; abstract;
@@ -1023,7 +1052,7 @@ type
 
   TCallStackSupplier = class(TDebuggerDataSupplier)
   private
-    FCurrentCallStackList: TCallStackListBase;
+    FCurrentCallStackList: TCallStackList;
   protected
     procedure DoNewMonitor; override;
     //procedure CurrentChanged;
@@ -1034,10 +1063,20 @@ type
     procedure RequestCurrent(ACallstack: TCallStackBase); virtual;
     procedure RequestEntries(ACallstack: TCallStackBase); virtual;
     procedure UpdateCurrentIndex; virtual;
-    property CurrentCallStackList: TCallStackListBase read FCurrentCallStackList write FCurrentCallStackList;
+    property CurrentCallStackList: TCallStackList read FCurrentCallStackList write FCurrentCallStackList;
   end;
 
+  { TCallStackMonitor }
+
   TCallStackMonitor = class(TDebuggerDataMonitor)
+  private
+    FCallStackList: TCallStackList;
+  protected
+    function CreateCallStackList: TCallStackList; virtual;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property CallStackList: TCallStackList read FCallStackList;
   end;
 
 {%endregion   ^^^^^  Callstack  ^^^^^   }
@@ -1215,7 +1254,7 @@ type
 
   { TThreadsBase }
 
-  TThreadsBase = class(TObject)
+  TThreads = class(TObject)
   protected
     function GetEntryBase(const AnIndex: Integer): TCallStackEntryBase; virtual; abstract;
     function GetEntryByIdBase(const AnID: Integer): TCallStackEntryBase; virtual; abstract;
@@ -1243,7 +1282,7 @@ type
 
   TThreadsSupplier = class(TDebuggerDataSupplier)
   private
-    FCurrentThreads: TThreadsBase;
+    FCurrentThreads: TThreads;
   protected
     procedure DoNewMonitor; override;
     procedure DoStateChange(const AOldState: TDBGState); override;
@@ -1253,10 +1292,20 @@ type
     procedure RequestMasterData; virtual;
     procedure ChangeCurrentThread({%H-}ANewId: Integer); virtual;
     procedure Changed; // TODO: needed because entries can not notify the monitor
-    property  CurrentThreads: TThreadsBase read FCurrentThreads write FCurrentThreads;
+    property  CurrentThreads: TThreads read FCurrentThreads write FCurrentThreads;
   end;
 
+  { TThreadsMonitor }
+
   TThreadsMonitor = class(TDebuggerDataMonitor)
+  private
+    FThreads: TThreads;
+  protected
+    function CreateThreads: TThreads; virtual;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Threads: TThreads read FThreads;
   end;
 
 {%endregion   ^^^^^  Threads  ^^^^^   }
@@ -1799,6 +1848,45 @@ begin
   end;
 end;
 
+{ TThreadsMonitor }
+
+function TThreadsMonitor.CreateThreads: TThreads;
+begin
+  Result := TThreads.Create;
+end;
+
+constructor TThreadsMonitor.Create;
+begin
+  FThreads := CreateThreads;
+  inherited Create;
+end;
+
+destructor TThreadsMonitor.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FThreads);
+end;
+
+{ TRegistersMonitor }
+
+function TRegistersMonitor.CreateRegistersList: TRegistersList;
+begin
+  Result := TRegistersList.Create;
+end;
+
+constructor TRegistersMonitor.Create;
+begin
+  inherited Create;
+  FRegistersList := CreateRegistersList;
+  FRegistersList.AddReference;
+end;
+
+destructor TRegistersMonitor.Destroy;
+begin
+  inherited Destroy;
+  ReleaseRefAndNil(FRegistersList);
+end;
+
 { TDebuggerDataHandler }
 
 procedure TDebuggerDataHandler.DoStateEnterPause;
@@ -2279,14 +2367,24 @@ end;
 
 { TWatchesBase }
 
-function TWatchesBase.GetItemBase(const AnIndex: Integer): TWatchBase;
+function TWatches.GetItemBase(const AnIndex: Integer): TWatchBase;
 begin
   Result := TWatchBase(inherited Items[AnIndex]);
 end;
 
-procedure TWatchesBase.SetItemBase(const AnIndex: Integer; const AValue: TWatchBase);
+procedure TWatches.SetItemBase(const AnIndex: Integer; const AValue: TWatchBase);
 begin
   inherited Items[AnIndex] := AValue;
+end;
+
+function TWatches.WatchClass: TBaseWatchClass;
+begin
+  Result := TWatchBase;
+end;
+
+constructor TWatches.Create;
+begin
+  inherited Create(WatchClass);
 end;
 
 { TCallStackBase }
@@ -3084,6 +3182,25 @@ begin
   FNotifiedState := dsNone;
 end;
 
+{ TWatchesMonitor }
+
+function TWatchesMonitor.CreateWatches: TWatches;
+begin
+  Result := TWatches.Create;
+end;
+
+constructor TWatchesMonitor.Create;
+begin
+  FWatches := CreateWatches;
+  inherited Create;
+end;
+
+destructor TWatchesMonitor.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FWatches);
+end;
+
 { TLocalsSupplier }
 
 procedure TLocalsSupplier.DoNewMonitor;
@@ -3095,6 +3212,26 @@ end;
 procedure TLocalsSupplier.RequestData(ALocals: TLocals);
 begin
   ALocals.SetDataValidity(ddsInvalid)
+end;
+
+{ TLocalsMonitor }
+
+function TLocalsMonitor.CreateLocalsList: TLocalsList;
+begin
+  Result := TLocalsList.Create;
+end;
+
+constructor TLocalsMonitor.Create;
+begin
+  FLocalsList := CreateLocalsList;
+  FLocalsList.AddReference;
+  inherited Create;
+end;
+
+destructor TLocalsMonitor.Destroy;
+begin
+  inherited Destroy;
+  ReleaseRefAndNil(FLocalsList);
 end;
 
 { TBaseLineInfo }
@@ -3236,6 +3373,25 @@ end;
 procedure TCallStackSupplier.UpdateCurrentIndex;
 begin
   //
+end;
+
+{ TCallStackMonitor }
+
+function TCallStackMonitor.CreateCallStackList: TCallStackList;
+begin
+  Result := TCallStackList.Create;
+end;
+
+constructor TCallStackMonitor.Create;
+begin
+  FCallStackList := CreateCallStackList;
+  inherited Create;
+end;
+
+destructor TCallStackMonitor.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FCallStackList);
 end;
 
 { TThreadsSupplier }

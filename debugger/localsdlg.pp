@@ -69,7 +69,7 @@ type
     FUpdateFlags: set of (ufNeedUpdating);
     procedure LocalsChanged(Sender: TObject);
     function  GetThreadId: Integer;
-    function  GetSelectedThreads(Snap: TSnapshot): TThreads;
+    function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
     function GetStackframe: Integer;
     function  GetSelectedSnapshot: TSnapshot;
   protected
@@ -276,7 +276,7 @@ end;
 
 function TLocalsDlg.GetThreadId: Integer;
 var
-  Threads: TThreads;
+  Threads: TIdeThreads;
 begin
   Result := -1;
   if (ThreadsMonitor = nil) then exit;
@@ -286,7 +286,7 @@ begin
   else Result := 1;
 end;
 
-function TLocalsDlg.GetSelectedThreads(Snap: TSnapshot): TThreads;
+function TLocalsDlg.GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
 begin
   if ThreadsMonitor = nil then exit(nil);
   if Snap = nil
@@ -297,7 +297,7 @@ end;
 function TLocalsDlg.GetStackframe: Integer;
 var
   Snap: TSnapshot;
-  Threads: TThreads;
+  Threads: TIdeThreads;
   tid: LongInt;
   Stack: TCallStack;
 begin

@@ -1417,7 +1417,7 @@ type
   TGDBMIDebuggerCommandThreads = class(TGDBMIDebuggerCommand)
   private
     FCurrentThreadId: Integer;
-    FCurrentThreads: TThreadsBase;
+    FCurrentThreads: TThreads;
     FSuccess: Boolean;
     FThreads: Array of TCallStackEntryBase;
     function GetThread(AnIndex: Integer): TCallStackEntryBase;
@@ -1431,7 +1431,7 @@ type
     property Threads[AnIndex: Integer]: TCallStackEntryBase read GetThread;
     property CurrentThreadId: Integer read FCurrentThreadId;
     property Success: Boolean read FSuccess;
-    property  CurrentThreads: TThreadsBase read FCurrentThreads write FCurrentThreads;
+    property  CurrentThreads: TThreads read FCurrentThreads write FCurrentThreads;
   end;
 
   { TGDBMIThreads }
@@ -1936,7 +1936,7 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
   procedure DoExecAsync(Line: String);
   var
     S: String;
-    ct: TThreadsBase;
+    ct: TThreads;
     i: Integer;
     t: TCallStackEntryBase;
   begin
@@ -1985,7 +1985,7 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
   var
     S: String;
     i, x: Integer;
-    ct: TThreadsBase;
+    ct: TThreads;
     t: TCallStackEntryBase;
   begin
     S := GetPart('=', ',', Line, False, False);
@@ -2367,7 +2367,7 @@ var
   var
     S: String;
     i: Integer;
-    ct: TThreadsBase;
+    ct: TThreads;
     t: TCallStackEntryBase;
   begin
     Result := False;
@@ -2418,7 +2418,7 @@ var
   var
     S: String;
     i, x: Integer;
-    ct: TThreadsBase;
+    ct: TThreads;
     t: TCallStackEntryBase;
   begin
     S := GetPart('=', ',', Line, False, False);

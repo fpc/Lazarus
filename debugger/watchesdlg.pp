@@ -130,28 +130,28 @@ type
     procedure popEnableAllClick(Sender: TObject);
     procedure popDeleteAllClick(Sender: TObject);
   private
-    function GetWatches: TWatches;
+    function GetWatches: TIdeWatches;
     procedure ContextChanged(Sender: TObject);
     procedure SnapshotChanged(Sender: TObject);
   private
-    FWatchesInView: TWatches;
+    FWatchesInView: TIdeWatches;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FUpdateAllNeeded, FUpdatingAll: Boolean;
     FStateFlags: TWatchesDlgStateFlags;
     function GetSelected: TCurrentWatch;
     function  GetThreadId: Integer;
-    function  GetSelectedThreads(Snap: TSnapshot): TThreads;
+    function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
     function GetStackframe: Integer;
-    procedure WatchAdd(const ASender: TWatches; const AWatch: TWatch);
-    procedure WatchUpdate(const ASender: TWatches; const AWatch: TWatch);
-    procedure WatchRemove(const ASender: TWatches; const AWatch: TWatch);
+    procedure WatchAdd(const ASender: TIdeWatches; const AWatch: TWatch);
+    procedure WatchUpdate(const ASender: TIdeWatches; const AWatch: TWatch);
+    procedure WatchRemove(const ASender: TIdeWatches; const AWatch: TWatch);
 
     procedure UpdateInspectPane;
     procedure UpdateItem(const AItem: TListItem; const AWatch: TWatch);
     procedure UpdateAll;
     procedure DisableAllActions;
     function  GetSelectedSnapshot: TSnapshot;
-    property Watches: TWatches read GetWatches;
+    property Watches: TIdeWatches read GetWatches;
   protected
     procedure DoEndUpdate; override;
     procedure DoWatchesChanged; override;
@@ -283,7 +283,7 @@ end;
 
 function TWatchesDlg.GetThreadId: Integer;
 var
-  Threads: TThreads;
+  Threads: TIdeThreads;
 begin
   Result := -1;
   if (ThreadsMonitor = nil) then exit;
@@ -293,7 +293,7 @@ begin
   else Result := 1;
 end;
 
-function TWatchesDlg.GetSelectedThreads(Snap: TSnapshot): TThreads;
+function TWatchesDlg.GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
 begin
   if ThreadsMonitor = nil then exit(nil);
   if Snap = nil
@@ -304,7 +304,7 @@ end;
 function TWatchesDlg.GetStackframe: Integer;
 var
   Snap: TSnapshot;
-  Threads: TThreads;
+  Threads: TIdeThreads;
   tid: LongInt;
   Stack: TCallStack;
 begin
@@ -574,7 +574,7 @@ end;
 
 procedure TWatchesDlg.SnapshotChanged(Sender: TObject);
 var
-  NewWatches: TWatches;
+  NewWatches: TIdeWatches;
 begin
   DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.SnapshotChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]);
   lvWatches.BeginUpdate;
@@ -592,7 +592,7 @@ begin
   end;
 end;
 
-function TWatchesDlg.GetWatches: TWatches;
+function TWatchesDlg.GetWatches: TIdeWatches;
 var
   Snap: TSnapshot;
 begin
@@ -911,7 +911,7 @@ begin
   then Result := SnapshotManager.SelectedEntry;
 end;
 
-procedure TWatchesDlg.WatchAdd(const ASender: TWatches; const AWatch: TWatch);
+procedure TWatchesDlg.WatchAdd(const ASender: TIdeWatches; const AWatch: TWatch);
 var
   Item: TListItem;
 begin
@@ -928,7 +928,7 @@ begin
   lvWatchesSelectItem(nil, nil, False);
 end;
 
-procedure TWatchesDlg.WatchUpdate(const ASender: TWatches; const AWatch: TWatch);
+procedure TWatchesDlg.WatchUpdate(const ASender: TIdeWatches; const AWatch: TWatch);
 var
   Item: TListItem;
 begin
@@ -948,7 +948,7 @@ begin
   finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.WatchUpdate']); end;
 end;
 
-procedure TWatchesDlg.WatchRemove(const ASender: TWatches; const AWatch: TWatch);
+procedure TWatchesDlg.WatchRemove(const ASender: TIdeWatches; const AWatch: TWatch);
 begin
   lvWatches.Items.FindData(AWatch).Free;
   lvWatchesSelectItem(nil, nil, False);

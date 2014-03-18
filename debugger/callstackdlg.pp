@@ -125,7 +125,7 @@ type
     procedure DisableAllActions;
     procedure EnableAllActions;
     function  GetSelectedSnapshot: TSnapshot;
-    function  GetSelectedThreads(Snap: TSnapshot): TThreads;
+    function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
     function  GetSelectedCallstack: TCallStack;
     procedure DoBreakPointsChanged; override;
     procedure BreakPointChanged(const ASender: TIDEBreakPoints; const ABreakpoint: TIDEBreakPoint);
@@ -428,7 +428,7 @@ begin
   then Result := SnapshotManager.SelectedEntry;
 end;
 
-function TCallStackDlg.GetSelectedThreads(Snap: TSnapshot): TThreads;
+function TCallStackDlg.GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
 begin
   if ThreadsMonitor = nil then exit(nil);
   if Snap = nil
@@ -439,7 +439,7 @@ end;
 function TCallStackDlg.GetSelectedCallstack: TCallStack;
 var
   Snap: TSnapshot;
-  Threads: TThreads;
+  Threads: TIdeThreads;
   tid: LongInt;
 begin
   if (CallStackMonitor = nil) or (ThreadsMonitor = nil)

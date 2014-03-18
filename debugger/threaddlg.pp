@@ -25,7 +25,7 @@ type
     FUpdateFlags: set of (ufThreadChanged);
     procedure JumpToSource;
     function  GetSelectedSnapshot: TSnapshot;
-    function GetSelectedThreads(Snap: TSnapshot): TThreads;
+    function GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
   protected
     procedure DoEndUpdate; override;
     procedure ThreadsChanged(Sender: TObject);
@@ -76,7 +76,7 @@ var
   i: Integer;
   s: String;
   Item: TListItem;
-  Threads: TThreads;
+  Threads: TIdeThreads;
   Snap: TSnapshot;
 begin
   if IsUpdating then begin
@@ -179,7 +179,7 @@ procedure TThreadsDlg.tbCurrentClick(Sender: TObject);
 var
   Item: TListItem;
   id: LongInt;
-  Threads: TThreads;
+  Threads: TIdeThreads;
 begin
   Item := lvThreads.Selected;
   if Item = nil then exit;
@@ -220,7 +220,7 @@ begin
   then Result := SnapshotManager.SelectedEntry;
 end;
 
-function TThreadsDlg.GetSelectedThreads(Snap: TSnapshot): TThreads;
+function TThreadsDlg.GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
 begin
   if Snap = nil
   then Result := ThreadsMonitor.CurrentThreads
