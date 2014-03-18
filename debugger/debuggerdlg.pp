@@ -61,15 +61,15 @@ type
   private (* provide some common properties *)
     FSnapshotManager: TSnapshotManager;
     FSnapshotNotification: TSnapshotNotification;
-    FThreadsMonitor: TThreadsMonitor;
+    FThreadsMonitor: TIdeThreadsMonitor;
     FThreadsNotification: TThreadsNotification;
-    FCallStackMonitor: TCallStackMonitor;
+    FCallStackMonitor: TIdeCallStackMonitor;
     FCallStackNotification: TCallStackNotification;
-    FLocalsMonitor: TLocalsMonitor;
+    FLocalsMonitor: TIdeLocalsMonitor;
     FLocalsNotification: TLocalsNotification;
-    FWatchesMonitor: TWatchesMonitor;
+    FWatchesMonitor: TIdeWatchesMonitor;
     FWatchesNotification: TWatchesNotification;
-    FRegistersMonitor: TRegistersMonitor;
+    FRegistersMonitor: TIdeRegistersMonitor;
     FRegistersNotification: TRegistersNotification;
     FBreakPoints: TIDEBreakPoints;
     FBreakpointsNotification: TIDEBreakPointsNotification;
@@ -81,11 +81,11 @@ type
     function  GetRegistersNotification: TRegistersNotification;
     function  GetBreakpointsNotification: TIDEBreakPointsNotification;
     procedure SetSnapshotManager(const AValue: TSnapshotManager);
-    procedure SetThreadsMonitor(const AValue: TThreadsMonitor);
-    procedure SetCallStackMonitor(const AValue: TCallStackMonitor);
-    procedure SetLocalsMonitor(const AValue: TLocalsMonitor);
-    procedure SetWatchesMonitor(const AValue: TWatchesMonitor);
-    procedure SetRegistersMonitor(AValue: TRegistersMonitor);
+    procedure SetThreadsMonitor(const AValue: TIdeThreadsMonitor);
+    procedure SetCallStackMonitor(const AValue: TIdeCallStackMonitor);
+    procedure SetLocalsMonitor(const AValue: TIdeLocalsMonitor);
+    procedure SetWatchesMonitor(const AValue: TIdeWatchesMonitor);
+    procedure SetRegistersMonitor(AValue: TIdeRegistersMonitor);
     procedure SetBreakPoints(const AValue: TIDEBreakPoints);
   protected
     procedure JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer);
@@ -103,11 +103,11 @@ type
   protected
     // publish as needed
     property SnapshotManager:  TSnapshotManager  read FSnapshotManager  write SetSnapshotManager;
-    property ThreadsMonitor:   TThreadsMonitor   read FThreadsMonitor   write SetThreadsMonitor;
-    property CallStackMonitor: TCallStackMonitor read FCallStackMonitor write SetCallStackMonitor;
-    property LocalsMonitor:    TLocalsMonitor    read FLocalsMonitor    write SetLocalsMonitor;
-    property WatchesMonitor:   TWatchesMonitor   read FWatchesMonitor   write SetWatchesMonitor;
-    property RegistersMonitor: TRegistersMonitor read FRegistersMonitor write SetRegistersMonitor;
+    property ThreadsMonitor:   TIdeThreadsMonitor   read FThreadsMonitor   write SetThreadsMonitor;
+    property CallStackMonitor: TIdeCallStackMonitor read FCallStackMonitor write SetCallStackMonitor;
+    property LocalsMonitor:    TIdeLocalsMonitor    read FLocalsMonitor    write SetLocalsMonitor;
+    property WatchesMonitor:   TIdeWatchesMonitor   read FWatchesMonitor   write SetWatchesMonitor;
+    property RegistersMonitor: TIdeRegistersMonitor read FRegistersMonitor write SetRegistersMonitor;
     property BreakPoints:      TIDEBreakPoints   read FBreakPoints      write SetBreakPoints;
   public
     destructor  Destroy; override;
@@ -235,7 +235,7 @@ begin
   Result := FBreakpointsNotification;
 end;
 
-procedure TDebuggerDlg.SetRegistersMonitor(AValue: TRegistersMonitor);
+procedure TDebuggerDlg.SetRegistersMonitor(AValue: TIdeRegistersMonitor);
 begin
   if FRegistersMonitor = AValue then exit;
   BeginUpdate;
@@ -268,7 +268,7 @@ begin
   end;
 end;
 
-procedure TDebuggerDlg.SetThreadsMonitor(const AValue: TThreadsMonitor);
+procedure TDebuggerDlg.SetThreadsMonitor(const AValue: TIdeThreadsMonitor);
 begin
   if FThreadsMonitor = AValue then exit;
   BeginUpdate;
@@ -285,7 +285,7 @@ begin
   end;
 end;
 
-procedure TDebuggerDlg.SetCallStackMonitor(const AValue: TCallStackMonitor);
+procedure TDebuggerDlg.SetCallStackMonitor(const AValue: TIdeCallStackMonitor);
 begin
   if FCallStackMonitor = AValue then exit;
   BeginUpdate;
@@ -302,7 +302,7 @@ begin
   end;
 end;
 
-procedure TDebuggerDlg.SetLocalsMonitor(const AValue: TLocalsMonitor);
+procedure TDebuggerDlg.SetLocalsMonitor(const AValue: TIdeLocalsMonitor);
 begin
   if FLocalsMonitor = AValue then exit;
   BeginUpdate;
@@ -318,7 +318,7 @@ begin
   end;
 end;
 
-procedure TDebuggerDlg.SetWatchesMonitor(const AValue: TWatchesMonitor);
+procedure TDebuggerDlg.SetWatchesMonitor(const AValue: TIdeWatchesMonitor);
 begin
   if FWatchesMonitor = AValue then exit;
   BeginUpdate;

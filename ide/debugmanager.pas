@@ -1657,15 +1657,15 @@ begin
   FUnitInfoProvider := TDebuggerUnitInfoProvider.Create;
   FBreakPoints := TManagedBreakPoints.Create(Self);
   FBreakPointGroups := TIDEBreakPointGroups.Create;
-  FWatches := TWatchesMonitor.Create;
-  FThreads := TThreadsMonitor.Create;
+  FWatches := TIdeWatchesMonitor.Create;
+  FThreads := TIdeThreadsMonitor.Create;
   FExceptions := TProjectExceptions.Create;
   FSignals := TIDESignals.Create;
-  FLocals := TLocalsMonitor.Create;
+  FLocals := TIdeLocalsMonitor.Create;
   FLineInfo := TIDELineInfo.Create;
-  FCallStack := TCallStackMonitor.Create;
+  FCallStack := TIdeCallStackMonitor.Create;
   FDisassembler := TIDEDisassembler.Create;
-  FRegisters := TRegistersMonitor.Create;
+  FRegisters := TIdeRegistersMonitor.Create;
 
   FSnapshots := TSnapshotManager.Create;
   FSnapshots.Threads := FThreads;

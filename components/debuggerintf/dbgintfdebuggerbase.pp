@@ -670,6 +670,9 @@ type
     property CurrentWatches: TWatchesBase read FCurrentWatches write FCurrentWatches;
   end;
 
+  TWatchesMonitor = class(TDebuggerDataMonitor)
+  end;
+
 {%endregion   ^^^^^  Watches  ^^^^^   }
 
 {%region Locals ***************************************************************
@@ -737,6 +740,9 @@ type
   public
     procedure RequestData(ALocals: TLocals); virtual;
     property  CurrentLocalsList: TLocalsList read FCurrentLocalsList write FCurrentLocalsList;
+  end;
+
+  TLocalsMonitor = class(TDebuggerDataMonitor)
   end;
 
 {%endregion   ^^^^^  Locals  ^^^^^   }
@@ -897,6 +903,9 @@ type
     property  CurrentRegistersList: TRegistersList read FCurrentRegistersList write FCurrentRegistersList;
   end;
 
+  TRegistersMonitor = class(TDebuggerDataMonitor)
+  end;
+
 {%endregion   ^^^^^  Register  ^^^^^   }
 
 {%region Callstack ************************************************************
@@ -1026,6 +1035,9 @@ type
     procedure RequestEntries(ACallstack: TCallStackBase); virtual;
     procedure UpdateCurrentIndex; virtual;
     property CurrentCallStackList: TCallStackListBase read FCurrentCallStackList write FCurrentCallStackList;
+  end;
+
+  TCallStackMonitor = class(TDebuggerDataMonitor)
   end;
 
 {%endregion   ^^^^^  Callstack  ^^^^^   }
@@ -1242,6 +1254,9 @@ type
     procedure ChangeCurrentThread({%H-}ANewId: Integer); virtual;
     procedure Changed; // TODO: needed because entries can not notify the monitor
     property  CurrentThreads: TThreadsBase read FCurrentThreads write FCurrentThreads;
+  end;
+
+  TThreadsMonitor = class(TDebuggerDataMonitor)
   end;
 
 {%endregion   ^^^^^  Threads  ^^^^^   }

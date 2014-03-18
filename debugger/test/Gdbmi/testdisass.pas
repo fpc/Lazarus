@@ -42,16 +42,16 @@ type
 
   TTestDisAss = class(TTestCase)
   protected
-    FCallStack: TCallStackMonitor;
+    FCallStack: TIdeCallStackMonitor;
     FExceptions: TBaseExceptions;
     //FSignals: TBaseSignals;
     //FBreakPoints: TIDEBreakPoints;
     //FBreakPointGroups: TIDEBreakPointGroups;
-    FLocals: TLocalsMonitor;
+    FLocals: TIdeLocalsMonitor;
     FLineInfo: TIDELineInfo;
-    FWatches: TWatchesMonitor;
-    FThreads: TThreadsMonitor;
-    FRegisters: TRegistersMonitor;
+    FWatches: TIdeWatchesMonitor;
+    FThreads: TIdeThreadsMonitor;
+    FRegisters: TIdeRegistersMonitor;
   published
     procedure RangeMap;
     procedure Disassemble;
@@ -335,14 +335,14 @@ var
     IdeDisAss := TIDEDisassembler.Create;
     IdeDisAss.Master := Gdb.Disassembler;
 
-    FWatches := TWatchesMonitor.Create;
-    FThreads := TThreadsMonitor.Create;
+    FWatches := TIdeWatchesMonitor.Create;
+    FThreads := TIdeThreadsMonitor.Create;
     FExceptions := TBaseExceptions.Create(TBaseException);
     //FSignals := TBaseSignals.Create(TBaseSignal);
-    FLocals := TLocalsMonitor.Create;
+    FLocals := TIdeLocalsMonitor.Create;
     FLineInfo := TIDELineInfo.Create;
-    FCallStack := TCallStackMonitor.Create;
-    FRegisters := TRegistersMonitor.Create;
+    FCallStack := TIdeCallStackMonitor.Create;
+    FRegisters := TIdeRegistersMonitor.Create;
 
     //TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
     FWatches.Supplier := Gdb.Watches;

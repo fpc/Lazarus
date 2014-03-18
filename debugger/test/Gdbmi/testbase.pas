@@ -200,17 +200,17 @@ type
   TGDBTestCase = class(TTestCase)
   private
     // stuff for the debugger
-    FCallStack: TCallStackMonitor;
+    FCallStack: TIdeCallStackMonitor;
     FDisassembler: TIDEDisassembler;
     FExceptions: TBaseExceptions;
     //FSignals: TBaseSignals;
     //FBreakPoints: TIDEBreakPoints;
     //FBreakPointGroups: TIDEBreakPointGroups;
-    FLocals: TLocalsMonitor;
+    FLocals: TIdeLocalsMonitor;
     FLineInfo: TIDELineInfo;
-    FWatches: TWatchesMonitor;
-    FThreads: TThreadsMonitor;
-    FRegisters: TRegistersMonitor;
+    FWatches: TIdeWatchesMonitor;
+    FThreads: TIdeThreadsMonitor;
+    FRegisters: TIdeRegistersMonitor;
   private
     FParent: TGDBTestsuite;
     FTestBaseName: String;
@@ -279,14 +279,14 @@ type
     //property BreakPoints: TIDEBreakPoints read FBreakpoints;   // A list of breakpoints for the current project
     //property BreakPointGroups: TIDEBreakPointGroups read FBreakPointGroups;
     property Exceptions: TBaseExceptions read FExceptions;      // A list of exceptions we should ignore
-    property CallStack: TCallStackMonitor read FCallStack;
+    property CallStack: TIdeCallStackMonitor read FCallStack;
     property Disassembler: TIDEDisassembler read FDisassembler;
-    property Locals: TLocalsMonitor read FLocals;
+    property Locals: TIdeLocalsMonitor read FLocals;
     property LineInfo: TIDELineInfo read FLineInfo;
-    property Registers: TRegistersMonitor read FRegisters;
+    property Registers: TIdeRegistersMonitor read FRegisters;
     //property Signals: TBaseSignals read FSignals;               // A list of actions for signals we know of
-    property Watches: TWatchesMonitor read FWatches;
-    property Threads: TThreadsMonitor read FThreads;
+    property Watches: TIdeWatchesMonitor read FWatches;
+    property Threads: TIdeThreadsMonitor read FThreads;
   end;
 
 
@@ -526,15 +526,15 @@ function TGDBTestCase.StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
 begin
   //FBreakPoints := TManagedBreakPoints.Create(Self);
   //FBreakPointGroups := TIDEBreakPointGroups.Create;
-  FWatches := TWatchesMonitor.Create;
-  FThreads := TThreadsMonitor.Create;
+  FWatches := TIdeWatchesMonitor.Create;
+  FThreads := TIdeThreadsMonitor.Create;
   FExceptions := TBaseExceptions.Create(TBaseException);
   //FSignals := TBaseSignals.Create(TBaseSignal);
-  FLocals := TLocalsMonitor.Create;
+  FLocals := TIdeLocalsMonitor.Create;
   FLineInfo := TIDELineInfo.Create;
-  FCallStack := TCallStackMonitor.Create;
+  FCallStack := TIdeCallStackMonitor.Create;
   FDisassembler := TIDEDisassembler.Create;
-  FRegisters := TRegistersMonitor.Create;
+  FRegisters := TIdeRegistersMonitor.Create;
 
   Result := GdbClass.Create(DebuggerInfo.ExeName);
   Result.OnDbgOutput  := @InternalDbgOutPut;

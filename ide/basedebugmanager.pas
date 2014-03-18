@@ -107,17 +107,17 @@ type
   TBaseDebugManager = class(TBaseDebugManagerIntf)
   protected
     FDestroying: boolean;
-    FCallStack: TCallStackMonitor;
+    FCallStack: TIdeCallStackMonitor;
     FDisassembler: TIDEDisassembler;
     FExceptions: TIDEExceptions;
     FSignals: TIDESignals;
     FBreakPoints: TIDEBreakPoints;
     FBreakPointGroups: TIDEBreakPointGroups;
-    FLocals: TLocalsMonitor;
+    FLocals: TIdeLocalsMonitor;
     FLineInfo: TIDELineInfo;
-    FWatches: TWatchesMonitor;
-    FThreads: TThreadsMonitor;
-    FRegisters: TRegistersMonitor;
+    FWatches: TIdeWatchesMonitor;
+    FThreads: TIdeThreadsMonitor;
+    FRegisters: TIdeRegistersMonitor;
     FSnapshots: TSnapshotManager;
     FManagerStates: TDebugManagerStates;
     function  GetState: TDBGState; virtual; abstract;
@@ -216,14 +216,14 @@ type
     property BreakPoints: TIDEBreakPoints read FBreakpoints;   // A list of breakpoints for the current project
     property BreakPointGroups: TIDEBreakPointGroups read FBreakPointGroups;
     property Exceptions: TIDEExceptions read FExceptions;      // A list of exceptions we should ignore
-    property CallStack: TCallStackMonitor read FCallStack;
+    property CallStack: TIdeCallStackMonitor read FCallStack;
     property Disassembler: TIDEDisassembler read FDisassembler;
-    property Locals: TLocalsMonitor read FLocals;
+    property Locals: TIdeLocalsMonitor read FLocals;
     property LineInfo: TIDELineInfo read FLineInfo;
-    property Registers: TRegistersMonitor read FRegisters;
+    property Registers: TIdeRegistersMonitor read FRegisters;
     property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
-    property Watches: TWatchesMonitor read FWatches;
-    property Threads: TThreadsMonitor read FThreads;
+    property Watches: TIdeWatchesMonitor read FWatches;
+    property Threads: TIdeThreadsMonitor read FThreads;
     property Snapshots: TSnapshotManager read FSnapshots;
     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
     property DebuggerClass: TDebuggerClass read GetCurrentDebuggerClass;
