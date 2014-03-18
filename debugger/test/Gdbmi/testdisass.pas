@@ -51,7 +51,7 @@ type
     FLineInfo: TIDELineInfo;
     FWatches: TIdeWatchesMonitor;
     FThreads: TIdeThreadsMonitor;
-    FRegisters: TIdeRegistersMonitor;
+    FRegisters: TRegistersMonitor;
   published
     procedure RangeMap;
     procedure Disassemble;
@@ -342,7 +342,7 @@ var
     FLocals := TIdeLocalsMonitor.Create;
     FLineInfo := TIDELineInfo.Create;
     FCallStack := TIdeCallStackMonitor.Create;
-    FRegisters := TIdeRegistersMonitor.Create;
+    FRegisters := TRegistersMonitor.Create;
 
     //TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
     FWatches.Supplier := Gdb.Watches;

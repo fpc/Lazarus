@@ -25,7 +25,7 @@
 {%region GLOBAL}
   {$IFDEF Global_Type}
   //type
-    TEnum = (One, Two, Three);
+    TEnum = (One, Two, Three, Four, Five, Six);
     TEnumSet = set of TEnum;
     TSet = Set of (Alpha, Beta, Gamma);
   {$ENDIF}
@@ -35,6 +35,9 @@
     GlobEnum: TEnum;
     GlobEnumSet: TEnumSet;
     GlobSet: TSet;
+    GlobSubEnum: Two..Four;
+    GlobSubRange1: 9..77;
+    GlobSubRange2: -9..-7;
   {$ENDIF}
 
   {$IFDEF Global_Body}
@@ -42,6 +45,9 @@
     GlobEnum := Two;
     GlobEnumSet := [Two, Three];
     GlobSet := [Alpha, Beta];
+    GlobSubEnum := Two;
+    GlobSubRange1 := 55;
+    GlobSubRange2 := -8;
   {$ENDIF}
 
   {$IFDEF Global_Body_NIL}

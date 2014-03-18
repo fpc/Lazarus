@@ -790,13 +790,10 @@ type
     FNotificationList: TWatchesNotificationList;
     function GetCurrentWatches: TCurrentWatches;
     function GetSnapshot(AnID: Pointer): TIdeWatches;
-    function  GetSupplier: TWatchesSupplier;
-    procedure SetSupplier(const AValue: TWatchesSupplier);
   protected
     procedure DoStateEnterPause; override;
     procedure DoStateLeavePause; override;
     procedure DoStateLeavePauseClean; override;
-    procedure DoNewSupplier; override;
     procedure DoModified; override;
     //procedure NotifyChange
     procedure NotifyAdd(const AWatches: TCurrentWatches; const AWatch: TCurrentWatch);
@@ -814,7 +811,6 @@ type
     procedure RemoveSnapshot(AnID: Pointer);
     property CurrentWatches: TCurrentWatches read GetCurrentWatches;// FCurrentWatches;
     property Snapshots[AnID: Pointer]: TIdeWatches read GetSnapshot;
-    property Supplier: TWatchesSupplier read GetSupplier write SetSupplier;
   public
     procedure Clear;
     procedure LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
@@ -916,8 +912,6 @@ type
     FNotificationList: TDebuggerChangeNotificationList;
     function GetCurrentLocalsList: TCurrentLocalsList;
     function GetSnapshot(AnID: Pointer): TIDELocalsList;
-    function GetSupplier: TLocalsSupplier;
-    procedure SetSupplier(const AValue: TLocalsSupplier);
   protected
     procedure DoStateEnterPause; override;
     procedure DoStateLeavePause; override;
@@ -937,7 +931,6 @@ type
     procedure RemoveSnapshot(AnID: Pointer);
     property  CurrentLocalsList: TCurrentLocalsList read GetCurrentLocalsList;
     property  Snapshots[AnID: Pointer]: TIDELocalsList read GetSnapshot;
-    property  Supplier: TLocalsSupplier read GetSupplier write SetSupplier;
   end;
 
   {%endregion   ^^^^^  Locals  ^^^^^   }
@@ -1062,8 +1055,6 @@ type
     FNotificationList: TDebuggerChangeNotificationList;
     FFlags: set of (rmNeedNotifyChange);
     function GetCurrentRegistersList: TCurrentIDERegistersList;
-    function GetSupplier: TRegisterSupplier;
-    procedure SetSupplier(const AValue: TRegisterSupplier);
   protected
     procedure DoStateEnterPause; override;
     //procedure DoStateLeavePause; override;
@@ -1082,7 +1073,6 @@ type
     procedure RemoveNotification(const ANotification: TRegistersNotification);
     property  CurrentRegistersList: TCurrentIDERegistersList read GetCurrentRegistersList;
     //property  Snapshots[AnID: Pointer]: TIDERegistersList read GetSnapshot;
-    property  Supplier: TRegisterSupplier read GetSupplier write SetSupplier;
   end;
 
   {%endregion   ^^^^^  Register  ^^^^^   }
@@ -1331,8 +1321,6 @@ type
     procedure CallStackClear(Sender: TObject);
     function GetCurrentCallStackList: TCurrentCallStackList;
     function GetSnapshot(AnID: Pointer): TIdeCallStackList;
-    function  GetSupplier: TCallStackSupplier;
-    procedure SetSupplier(const AValue: TCallStackSupplier);
   protected
     procedure DoStateEnterPause; override;
     procedure DoStateLeavePause; override;
@@ -1357,7 +1345,6 @@ type
     procedure NotifyCurrent;
     property CurrentCallStackList: TCurrentCallStackList read GetCurrentCallStackList;
     property Snapshots[AnID: Pointer]: TIdeCallStackList read GetSnapshot;
-    property Supplier: TCallStackSupplier read GetSupplier write SetSupplier;
     property UnitInfoProvider: TDebuggerUnitInfoProvider                        // Provided by DebugBoss, to map files to packages or project
              read FUnitInfoProvider write FUnitInfoProvider;
   end;
@@ -1532,8 +1519,6 @@ type
     FNotificationList: TDebuggerChangeNotificationList;
     function GetCurrentThreads: TCurrentThreads;
     function GetSnapshot(AnID: Pointer): TIdeThreads;
-    function GetSupplier: TThreadsSupplier;
-    procedure SetSupplier(const AValue: TThreadsSupplier);
   protected
     procedure DoModified; override;
     procedure DoStateEnterPause; override;
@@ -1556,7 +1541,6 @@ type
     procedure CurrentChanged;
     property  CurrentThreads: TCurrentThreads read GetCurrentThreads;
     property  Snapshots[AnID: Pointer]: TIdeThreads read GetSnapshot;
-    property  Supplier: TThreadsSupplier read GetSupplier write SetSupplier;
     property UnitInfoProvider: TDebuggerUnitInfoProvider                        // Provided by DebugBoss, to map files to packages or project
              read FUnitInfoProvider write FUnitInfoProvider;
   end;
@@ -3176,11 +3160,6 @@ end;
 
 { TIdeLocalsMonitor }
 
-function TIdeLocalsMonitor.GetSupplier: TLocalsSupplier;
-begin
-  Result := TLocalsSupplier(inherited Supplier);
-end;
-
 function TIdeLocalsMonitor.GetSnapshot(AnID: Pointer): TIDELocalsList;
 begin
   Result := TIDELocalsList(FSnapshots.SnapShot[AnID]);
@@ -3189,11 +3168,6 @@ end;
 function TIdeLocalsMonitor.GetCurrentLocalsList: TCurrentLocalsList;
 begin
   Result := TCurrentLocalsList(LocalsList);;
-end;
-
-procedure TIdeLocalsMonitor.SetSupplier(const AValue: TLocalsSupplier);
-begin
-  inherited Supplier := AValue;
 end;
 
 procedure TIdeLocalsMonitor.DoStateEnterPause;
@@ -3227,8 +3201,6 @@ procedure TIdeLocalsMonitor.DoNewSupplier;
 begin
   inherited DoNewSupplier;
   NotifyChange(nil);
-  if Supplier <> nil then
-    Supplier.CurrentLocalsList := CurrentLocalsList;
 end;
 
 procedure TIdeLocalsMonitor.RequestData(ALocals: TCurrentLocals);
@@ -3631,11 +3603,6 @@ end;
 
 { TIdeWatchesMonitor }
 
-function TIdeWatchesMonitor.GetSupplier: TWatchesSupplier;
-begin
-  Result := TWatchesSupplier(inherited Supplier);
-end;
-
 function TIdeWatchesMonitor.GetSnapshot(AnID: Pointer): TIdeWatches;
 begin
   Result := TIdeWatches(FSnapshots.SnapShot[AnID]);
@@ -3644,11 +3611,6 @@ end;
 function TIdeWatchesMonitor.GetCurrentWatches: TCurrentWatches;
 begin
   Result := TCurrentWatches(Watches);
-end;
-
-procedure TIdeWatchesMonitor.SetSupplier(const AValue: TWatchesSupplier);
-begin
-  inherited Supplier := AValue;
 end;
 
 procedure TIdeWatchesMonitor.DoStateEnterPause;
@@ -3673,13 +3635,6 @@ begin
   CurrentWatches.SnapShot := nil;
   CurrentWatches.ClearValues;  // TODO: block the update calls, update will be done for all on next line
   NotifyUpdate(CurrentWatches, nil);
-end;
-
-procedure TIdeWatchesMonitor.DoNewSupplier;
-begin
-  inherited DoNewSupplier;
-  if Supplier <> nil then
-    Supplier.CurrentWatches := CurrentWatches;
 end;
 
 procedure TIdeWatchesMonitor.DoModified;
@@ -4366,11 +4321,6 @@ end;
 
 { TIdeThreadsMonitor }
 
-function TIdeThreadsMonitor.GetSupplier: TThreadsSupplier;
-begin
-  Result := TThreadsSupplier(inherited Supplier);
-end;
-
 function TIdeThreadsMonitor.GetSnapshot(AnID: Pointer): TIdeThreads;
 begin
   Result := TIdeThreads(FSnapshots.SnapShot[AnID]);
@@ -4379,11 +4329,6 @@ end;
 function TIdeThreadsMonitor.GetCurrentThreads: TCurrentThreads;
 begin
   Result :=TCurrentThreads(Threads);
-end;
-
-procedure TIdeThreadsMonitor.SetSupplier(const AValue: TThreadsSupplier);
-begin
-  inherited Supplier := AValue;
 end;
 
 procedure TIdeThreadsMonitor.DoModified;
@@ -4418,8 +4363,6 @@ begin
   inherited DoNewSupplier;
   if CurrentThreads <> nil then
     CurrentThreads.SetValidity(ddsUnknown);
-  if Supplier <> nil then
-    Supplier.CurrentThreads := CurrentThreads;
 end;
 
 procedure TIdeThreadsMonitor.RequestData;
@@ -6435,19 +6378,9 @@ end;
 
 { TIdeRegistersMonitor }
 
-function TIdeRegistersMonitor.GetSupplier: TRegisterSupplier;
-begin
-  Result := TRegisterSupplier(inherited Supplier);
-end;
-
 function TIdeRegistersMonitor.GetCurrentRegistersList: TCurrentIDERegistersList;
 begin
   Result := TCurrentIDERegistersList(RegistersList);
-end;
-
-procedure TIdeRegistersMonitor.SetSupplier(const AValue: TRegisterSupplier);
-begin
-  inherited Supplier := AValue;
 end;
 
 procedure TIdeRegistersMonitor.DoStateEnterPause;
@@ -6485,8 +6418,6 @@ procedure TIdeRegistersMonitor.DoNewSupplier;
 begin
   inherited DoNewSupplier;
   NotifyChange(nil);
-  if Supplier <> nil then
-    Supplier.CurrentRegistersList := CurrentRegistersList;
 end;
 
 procedure TIdeRegistersMonitor.RequestData(ARegisters: TCurrentIDERegisters);
@@ -7040,11 +6971,6 @@ begin
   FreeAndNil(FSnapshots);
 end;
 
-procedure TIdeCallStackMonitor.SetSupplier(const AValue: TCallStackSupplier);
-begin
-  inherited Supplier := AValue;
-end;
-
 procedure TIdeCallStackMonitor.DoStateEnterPause;
 begin
   inherited DoStateEnterPause;
@@ -7110,8 +7036,6 @@ procedure TIdeCallStackMonitor.DoNewSupplier;
 begin
   inherited DoNewSupplier;
   NotifyChange;
-  if Supplier <> nil then
-    Supplier.CurrentCallStackList := CurrentCallStackList;
 end;
 
 procedure TIdeCallStackMonitor.CallStackClear(Sender: TObject);
@@ -7130,11 +7054,6 @@ end;
 function TIdeCallStackMonitor.GetSnapshot(AnID: Pointer): TIdeCallStackList;
 begin
   Result := TIdeCallStackList(FSnapshots.SnapShot[AnID]);
-end;
-
-function TIdeCallStackMonitor.GetSupplier: TCallStackSupplier;
-begin
-  Result := TCallStackSupplier(inherited Supplier);
 end;
 
 procedure TIdeCallStackMonitor.NotifyChange;
