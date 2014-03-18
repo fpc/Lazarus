@@ -36,6 +36,7 @@ type
   TEditorCodetoolsOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoCompleteBlockCheckBox: TCheckBox;
     AutoDelayLabel: TLabel;
+    AutoDisplayFuncProtoCheckBox: TCheckBox;
     DbgToolTipAutoCastClass: TCheckBox;
     CompletionDropDownHintLabel: TLabel;
     CompletionDropDownHint: TComboBox;
@@ -83,6 +84,7 @@ begin
   AutoToolTipExprEvalCheckBox.Caption := lisShowValueHintsWhileDebugging;
   DbgToolTipAutoCastClass.Caption := lisDebugHintAutoTypeCastClass;
   AutoCompleteBlockCheckBox.Caption := dlgEdCompleteBlocks;
+  AutoDisplayFuncProtoCheckBox.Caption := dlgAutoDisplayFuncProto;
 
   AutoHintAndCompletionDelayLabel.Caption:=lisDelayForHintsAndCompletionBox;
   CompletionDropDownLabel.Caption := lisDelayForCompletionLongLineHint;
@@ -104,6 +106,7 @@ begin
     DbgToolTipAutoCastClass.Checked := DbgHintAutoTypeCastClass;
     AutoDelayTrackBar.Position := AutoDelayInMSec;
     AutoRemoveEmptyMethodsOnSave.Checked := AutoRemoveEmptyMethods;
+    AutoDisplayFuncProtoCheckBox.Checked := AutoDisplayFunctionPrototypes;
 
     CompletionDropDownHintTrackBar.Position := CompletionLongLineHintInMSec;
     CompletionDropDownHint.ItemIndex := ord(CompletionLongLineHintType);
@@ -122,6 +125,7 @@ begin
     DbgHintAutoTypeCastClass := DbgToolTipAutoCastClass.Checked;
     AutoDelayInMSec := AutoDelayTrackBar.Position;
     AutoRemoveEmptyMethods := AutoRemoveEmptyMethodsOnSave.Checked;
+    AutoDisplayFunctionPrototypes := AutoDisplayFuncProtoCheckBox.Checked;
 
     CompletionLongLineHintInMSec := CompletionDropDownHintTrackBar.Position;
     CompletionLongLineHintType :=  TSynCompletionLongHintType(CompletionDropDownHint.ItemIndex);

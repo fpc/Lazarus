@@ -1652,6 +1652,7 @@ resourcestring
   dlgMarkupWordTrim = 'Trim spaces (when highlighting current selection)';
   dlgMarkupWordNoTimer = 'Disable timer for markup current word';
   dlgAutoRemoveEmptyMethods = 'Auto remove empty methods';
+  dlgAutoDisplayFuncProto = 'Auto Display Function Prototypes';
   lisShowDeclarationHints = 'Show declaration hints';
   dlgEdDelayInSec = '(%s sec delay)';
   lisDelayForHintsAndCompletionBox = 'Delay for hints and completion box';

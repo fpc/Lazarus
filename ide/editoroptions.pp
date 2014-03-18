@@ -1357,6 +1357,7 @@ type
     FDbgHintAutoTypeCastClass: Boolean;
     fCodeTemplateFileName: String;
     fCTemplIndentToTokenStart: Boolean;
+    fAutoDisplayFuncPrototypes: Boolean;
 
     // Code Folding
     FUseCodeFolding: Boolean;
@@ -1536,6 +1537,9 @@ type
       read fAutoToolTipExprEval write fAutoToolTipExprEval default True; // debugger hints
     property AutoToolTipSymbTools: Boolean
       read fAutoToolTipSymbTools write fAutoToolTipSymbTools default True; // declaration hints
+    property AutoDisplayFunctionPrototypes: Boolean
+      read fAutoDisplayFuncPrototypes write fAutoDisplayFuncPrototypes default True;
+
   published
     property DbgHintAutoTypeCastClass: Boolean
       read FDbgHintAutoTypeCastClass write FDbgHintAutoTypeCastClass default True; // declaration hints
@@ -4414,6 +4418,7 @@ begin
 
   // Code Tools options
   FCompletionLongLineHintType := DefaultCompletionLongLineHintType;
+  FAutoDisplayFuncPrototypes := True;
 
   // Code folding
   FReverseFoldPopUpOrder := True;
@@ -4646,6 +4651,9 @@ begin
     fAutoBlockCompletion :=
       XMLConfig.GetValue(
       'EditorOptions/CodeTools/AutoBlockCompletion', True);
+    fAutoDisplayFuncPrototypes :=
+      XMLConfig.GetValue(
+      'EditorOptions/CodeTools/AutoDisplayFuncPrototypes', True);
     fAutoCodeParameters :=
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoCodeParameters', True);
     fAutoToolTipExprEval :=
@@ -4829,6 +4837,8 @@ begin
     // Code Tools options
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoBlockCompletion'
       , fAutoBlockCompletion, True);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoDisplayFuncPrototypes'
+      , fAutoDisplayFuncPrototypes, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoCodeParameters'
       , fAutoCodeParameters, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoToolTipExprEval'
