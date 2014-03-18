@@ -306,6 +306,13 @@ begin
   end;
 end;
 
+procedure TCustomTabControl.Loaded;
+begin
+  inherited Loaded;
+  if HandleAllocated then
+    DoSendPageIndex;
+end;
+
 procedure TCustomTabControl.DoChange;
 begin
   if Assigned(OnChange) then
