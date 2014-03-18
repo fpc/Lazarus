@@ -108,13 +108,13 @@ type
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FInUpdateView: Boolean;
     FUpdateFlags: set of (ufNeedUpdating);
-    function GetImageIndex(Entry: TCallStackEntry): Integer;
+    function GetImageIndex(Entry: TIdeCallStackEntry): Integer;
     procedure SetViewLimit(const AValue: Integer);
     procedure SetViewStart(AStart: Integer);
     procedure SetViewMax;
     procedure GotoIndex(AIndex: Integer);
-    function  GetCurrentEntry: TCallStackEntry;
-    function  GetFunction(const Entry: TCallStackEntry): string;
+    function  GetCurrentEntry: TIdeCallStackEntry;
+    function  GetFunction(const Entry: TIdeCallStackEntry): string;
     procedure UpdateView;
     procedure JumpToSource;
     procedure CopyToClipBoard;
@@ -126,7 +126,7 @@ type
     procedure EnableAllActions;
     function  GetSelectedSnapshot: TSnapshot;
     function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
-    function  GetSelectedCallstack: TCallStack;
+    function  GetSelectedCallstack: TIdeCallStack;
     procedure DoBreakPointsChanged; override;
     procedure BreakPointChanged(const ASender: TIDEBreakPoints; const ABreakpoint: TIDEBreakPoint);
     procedure CallStackChanged(Sender: TObject);
@@ -245,9 +245,9 @@ begin
   end;
 end;
 
-function TCallStackDlg.GetImageIndex(Entry: TCallStackEntry): Integer;
+function TCallStackDlg.GetImageIndex(Entry: TIdeCallStackEntry): Integer;
 
-  function GetBreakPoint(Entry: TCallStackEntry): TIDEBreakPoint; inline;
+  function GetBreakPoint(Entry: TIdeCallStackEntry): TIDEBreakPoint; inline;
   var
     FileName: String;
   begin
@@ -271,11 +271,11 @@ procedure TCallStackDlg.UpdateView;
 var
   n: Integer;
   Item: TListItem;
-  Entry: TCallStackEntry;
+  Entry: TIdeCallStackEntry;
   First, Count, MaxCnt: Integer;
   Source: String;
   Snap: TSnapshot;
-  CStack: TCallStack;
+  CStack: TIdeCallStack;
 begin
   if (not ToolButtonPower.Down) or FInUpdateView then exit;
   if IsUpdating then begin
@@ -436,7 +436,7 @@ begin
   else Result := ThreadsMonitor.Snapshots[Snap];
 end;
 
-function TCallStackDlg.GetSelectedCallstack: TCallStack;
+function TCallStackDlg.GetSelectedCallstack: TIdeCallStack;
 var
   Snap: TSnapshot;
   Threads: TIdeThreads;
@@ -461,7 +461,7 @@ begin
   else Result := CallStackMonitor.CurrentCallStackList.EntriesForThreads[tid];
 end;
 
-function TCallStackDlg.GetCurrentEntry: TCallStackEntry;
+function TCallStackDlg.GetCurrentEntry: TIdeCallStackEntry;
 var
   CurItem: TListItem;
   idx: Integer;
@@ -480,7 +480,7 @@ end;
 
 procedure TCallStackDlg.JumpToSource;
 var
-  Entry: TCallStackEntry;
+  Entry: TIdeCallStackEntry;
 begin
   Entry := GetCurrentEntry;
   if Entry = nil then Exit;
@@ -491,7 +491,7 @@ end;
 procedure TCallStackDlg.CopyToClipBoard;
 var
   n: integer;
-  Entry: TCallStackEntry;
+  Entry: TIdeCallStackEntry;
   S: String;
 begin
   Clipboard.Clear;
@@ -514,7 +514,7 @@ end;
 procedure TCallStackDlg.ToggleBreakpoint(Item: TListItem);
 var
   idx: Integer;
-  Entry: TCallStackEntry;
+  Entry: TIdeCallStackEntry;
   BreakPoint: TIDEBreakPoint;
   FileName: String;
   Ctrl: Boolean;
@@ -597,7 +597,7 @@ end;
 
 procedure TCallStackDlg.actSetAsCurrentClick(Sender : TObject);
 var
-  Entry: TCallStackEntry;
+  Entry: TIdeCallStackEntry;
 begin
   try
   DisableAllActions;
@@ -636,7 +636,7 @@ end;
 
 procedure TCallStackDlg.actShowDisassExecute(Sender: TObject);
 var
-  Entry: TCallStackEntry;
+  Entry: TIdeCallStackEntry;
 begin
   Entry := GetCurrentEntry;
   if (Entry = nil) or (Entry.Address = 0) then Exit;
@@ -681,8 +681,8 @@ procedure TCallStackDlg.BreakPointChanged(const ASender: TIDEBreakPoints;
   const ABreakpoint: TIDEBreakPoint);
 var
   i, idx: Integer;
-  Entry: TCallStackEntry;
-  Stack: TCallStack;
+  Entry: TIdeCallStackEntry;
+  Stack: TIdeCallStack;
 begin
   DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TCallStackDlg.BreakPointChanged ',  DbgSName(ASender), '  Upd:', IsUpdating]);
   Stack := GetSelectedCallstack;
@@ -808,7 +808,7 @@ begin
   UpdateView;
 end;
 
-function TCallStackDlg.GetFunction(const Entry: TCallStackEntry): string;
+function TCallStackDlg.GetFunction(const Entry: TIdeCallStackEntry): string;
 begin
   Result := Entry.GetFunctionWithArg;
 end;

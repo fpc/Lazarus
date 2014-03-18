@@ -61,6 +61,20 @@ type
     ExtraOpts, NamePostFix: string;
   end;
 
+  { TTestCallStackList }
+
+  TTestCallStackList = class(TCallStackList)
+  protected
+    function NewEntryForThread(const AThreadId: Integer): TCallStackBase; override;
+  end;
+
+  { TTestCallStackMonitor }
+
+  TTestCallStackMonitor = class(TCallStackMonitor)
+  protected
+    function CreateCallStackList: TCallStackList; override;
+  end;
+
   { TBaseList }
 
   TBaseList = class
@@ -200,8 +214,8 @@ type
   TGDBTestCase = class(TTestCase)
   private
     // stuff for the debugger
-    FCallStack: TIdeCallStackMonitor;
-    FDisassembler: TIDEDisassembler;
+    FCallStack: TTestCallStackMonitor;
+    FDisassembler: TBaseDisassembler;
     FExceptions: TBaseExceptions;
     //FSignals: TBaseSignals;
     //FBreakPoints: TIDEBreakPoints;
@@ -279,8 +293,8 @@ type
     //property BreakPoints: TIDEBreakPoints read FBreakpoints;   // A list of breakpoints for the current project
     //property BreakPointGroups: TIDEBreakPointGroups read FBreakPointGroups;
     property Exceptions: TBaseExceptions read FExceptions;      // A list of exceptions we should ignore
-    property CallStack: TIdeCallStackMonitor read FCallStack;
-    property Disassembler: TIDEDisassembler read FDisassembler;
+    property CallStack: TTestCallStackMonitor read FCallStack;
+    property Disassembler: TBaseDisassembler read FDisassembler;
     property Locals: TIdeLocalsMonitor read FLocals;
     property LineInfo: TIDELineInfo read FLineInfo;
     property Registers: TRegistersMonitor read FRegisters;
@@ -288,7 +302,6 @@ type
     property Watches: TIdeWatchesMonitor read FWatches;
     property Threads: TIdeThreadsMonitor read FThreads;
   end;
-
 
 function GetCompilers: TCompilerList;
 function GetDebuggers: TDebuggerList;
@@ -369,6 +382,21 @@ begin
   if (Result.Count = 0) and (EnvironmentOptions.GetParsedDebuggerFilename <> '') then
     Result.Add('gdb from conf', EnvironmentOptions.GetParsedDebuggerFilename);
   Debuggers := Result;
+end;
+
+{ TTestCallStackMonitor }
+
+function TTestCallStackMonitor.CreateCallStackList: TCallStackList;
+begin
+  Result := TTestCallStackList.Create;
+end;
+
+{ TTestCallStackList }
+
+function TTestCallStackList.NewEntryForThread(const AThreadId: Integer): TCallStackBase;
+begin
+  Result := TCallStackBase.Create;
+  Result.ThreadId := AThreadId;
 end;
 
 { TGDBTestCase }
@@ -532,8 +560,8 @@ begin
   //FSignals := TBaseSignals.Create(TBaseSignal);
   FLocals := TIdeLocalsMonitor.Create;
   FLineInfo := TIDELineInfo.Create;
-  FCallStack := TIdeCallStackMonitor.Create;
-  FDisassembler := TIDEDisassembler.Create;
+  FCallStack := TTestCallStackMonitor.Create;
+  FDisassembler := TBaseDisassembler.Create;
   FRegisters := TRegistersMonitor.Create;
 
   Result := GdbClass.Create(DebuggerInfo.ExeName);
@@ -546,7 +574,7 @@ begin
   FLocals.Supplier := Result.Locals;
   FLineInfo.Master := Result.LineInfo;
   FCallStack.Supplier := Result.CallStack;
-  FDisassembler.Master := Result.Disassembler;
+  //FDisassembler.Master := Result.Disassembler;
   Result.Exceptions := FExceptions;
   //FSignals.Master := Result.Signals;
   FRegisters.Supplier := Result.Registers;
@@ -569,7 +597,7 @@ begin
   FLocals.Supplier := nil;
   FLineInfo.Master := nil;
   FCallStack.Supplier := nil;
-  FDisassembler.Master := nil;
+  //FDisassembler.Master := nil;
   //FExceptions.Master := nil;
   //FSignals.Master := nil;
 //  FRegisters.Master := nil;

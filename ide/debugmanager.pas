@@ -1284,7 +1284,7 @@ var
   Editor: TSourceEditor;
   SrcLine: Integer;
   c, i, TId: Integer;
-  StackEntry: TCallStackEntry;
+  StackEntry: TIdeCallStackEntry;
   Flags: TJumpToCodePosFlags;
   CurrentSourceUnitInfo: TDebuggerUnitInfo;
 begin

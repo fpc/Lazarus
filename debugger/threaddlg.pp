@@ -202,12 +202,12 @@ end;
 
 procedure TThreadsDlg.JumpToSource;
 var
-  Entry: TThreadEntry;
+  Entry: TIdeThreadEntry;
   Item: TListItem;
 begin
   Item := lvThreads.Selected;
   if Item = nil then exit;
-  Entry := TThreadEntry(Item.Data);
+  Entry := TIdeThreadEntry(Item.Data);
   if Entry = nil then Exit;
 
   JumpToUnitSource(Entry.UnitInfo, Entry.Line);

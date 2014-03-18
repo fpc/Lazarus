@@ -240,7 +240,7 @@ type
   TIdeLocalsMonitor = class;
   TCurrentLocals = class;
   TIDELineInfo = class;
-  TCallStack = class;
+  TIdeCallStack = class;
   TIdeCallStackMonitor = class;
   TIdeThreadsMonitor = class;
   TSnapshotManager = class;
@@ -1100,16 +1100,10 @@ type
 
   { TCallStackEntry }
 
-  TCallStackEntry = class(TCallStackEntryBase)
+  TIdeCallStackEntry = class(TCallStackEntry)
   private
-    FOwner: TCallStack;
-    FIndex: Integer;
-    FAdress: TDbgPtr;
-    FFunctionName: String;
-    FLine: Integer;
-    FArguments: TStrings;
+    FOwner: TIdeCallStack;
     FUnitInfo: TDebuggerUnitInfo;
-    FState: TDebuggerDataState;
     procedure SetUnitInfo(AUnitInfo: TDebuggerUnitInfo);
   protected
     // for use in TThreadEntry ONLY
@@ -1119,16 +1113,8 @@ type
     procedure SetThreadState(AValue: String); override;
     function GetUnitInfoProvider: TDebuggerUnitInfoProvider; virtual;
   protected
-    function GetAddress: TDbgPtr; override;
-    function GetArgumentCount: Integer; override;
-    function GetArgumentName(const AnIndex: Integer): String; override;
-    function GetArgumentValue(const AnIndex: Integer): String; override;
     function GetFunctionName: String; override;
-    function GetIndex: Integer; override;
-    function GetLine: Integer; override;
     function GetSource: String; override;
-    function GetState: TDebuggerDataState; override;
-    procedure SetState(AValue: TDebuggerDataState); override;
 
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                     const APath: string;
@@ -1140,12 +1126,11 @@ type
                                  );
     procedure ClearLocation; // TODO need a way to call Changed on TCallStack or TThreads // corrently done in SetThreadState
   public
-    constructor Create;
     constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
                        const AUnitInfo: TDebuggerUnitInfo;
-                       const ALine: Integer; AState: TDebuggerDataState = ddsValid);
-    constructor CreateCopy(const ASource: TCallStackEntry);
+                       const ALine: Integer; AState: TDebuggerDataState = ddsValid); overload;
+    constructor CreateCopy(const ASource: TIdeCallStackEntry);
     destructor Destroy; override;
     procedure Init(const AnAdress: TDbgPtr;
                    const AnArguments: TStrings; const AFunctionName: String;
@@ -1155,45 +1140,29 @@ type
                    const AnArguments: TStrings; const AFunctionName: String;
                    const FileName, FullName: String;
                    const ALine: Integer; AState: TDebuggerDataState = ddsValid); override;
-    function GetFunctionWithArg: String; override;
     function IsCurrent: Boolean;
     procedure MakeCurrent;
-    property Address: TDbgPtr read FAdress;
-    property ArgumentCount: Integer read GetArgumentCount;
-    property ArgumentNames[const AnIndex: Integer]: String read GetArgumentName;
-    property ArgumentValues[const AnIndex: Integer]: String read GetArgumentValue;
-    property FunctionName: String read GetFunctionName;
-    property Index: Integer read FIndex;
-    property Line: Integer read FLine;
-    property Source: String read GetSource;
     property UnitInfo: TDebuggerUnitInfo read FUnitInfo;
-    property State: TDebuggerDataState read FState write FState;
   end;
 
-  { TCallStack }
+  { TIdeCallStack }
 
-  TCallStack = class(TCallStackBase)
+  TIdeCallStack = class(TCallStackBase)
   private
-    FThreadId: Integer;
-    FCurrent: Integer;
     FList: TList;
   protected
-    function IndexError(AIndex: Integer): TCallStackEntry;
+    function IndexError(AIndex: Integer): TIdeCallStackEntry;
 
-    function GetEntryBase(AIndex: Integer): TCallStackEntryBase; override;
-    function  GetCurrent: Integer; override;
-    procedure SetCurrent(AValue: Integer); override;
-    function GetThreadId: Integer; override;
-    procedure SetThreadId(AValue: Integer); override;
+    function GetEntryBase(AIndex: Integer): TCallStackEntry; override;
     function GetRawEntries: TMap; override;
     function GetNewCurrentIndex: Integer; override;
 
     procedure Clear; virtual;
     function  GetCount: Integer; override;
     procedure SetCount({%H-}ACount: Integer); override;
-    function  GetEntry(AIndex: Integer): TCallStackEntry; virtual;
-    procedure AddEntry(AnEntry: TCallStackEntry); virtual; // must be added in correct order
-    procedure AssignEntriesTo(AnOther: TCallStack); virtual;
+    function  GetEntry(AIndex: Integer): TIdeCallStackEntry; virtual;
+    procedure AddEntry(AnEntry: TIdeCallStackEntry); virtual; // must be added in correct order
+    procedure AssignEntriesTo(AnOther: TIdeCallStack); virtual;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                     APath: string;
                                     AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
@@ -1211,29 +1180,22 @@ type
     procedure SetCurrentValidity(AValidity: TDebuggerDataState); override;
   public
     constructor Create;
-    constructor CreateCopy(const ASource: TCallStack);
     destructor Destroy; override;
-    procedure Assign(AnOther: TCallStack);
+    procedure Assign(AnOther: TCallStackBase);
     procedure PrepareRange({%H-}AIndex, {%H-}ACount: Integer); override;
     procedure ChangeCurrentIndex(ANewIndex: Integer); virtual;
     function HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool; virtual; // Can be faster than getting the full count
     function CountLimited(ALimit: Integer): Integer; override;
-    property Count: Integer read GetCount write SetCount;
-    property CurrentIndex: Integer read GetCurrent write SetCurrent;
-    property Entries[AIndex: Integer]: TCallStackEntry read GetEntry;
+    property Entries[AIndex: Integer]: TIdeCallStackEntry read GetEntry;
   end;
 
   { TCallStackList }
 
   TIdeCallStackList = class(TCallStackList)
   private
-    FList: TList;
-    function GetEntry(const AIndex: Integer): TCallStack;
+    function GetEntry(const AIndex: Integer): TIdeCallStack;
+    function GetEntryForThread(const AThreadId: Integer): TIdeCallStack;
   protected
-    function  GetEntryForThread(const AThreadId: Integer): TCallStack; virtual;
-    function GetEntryBase(const AIndex: Integer): TCallStackBase; override;
-    function GetEntryForThreadBase(const AThreadId: Integer): TCallStackBase; override;
-    procedure Add(ACallStack: TCallStack);
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                     APath: string;
                                     AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
@@ -1243,29 +1205,24 @@ type
                                   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
                                  );
   public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Assign(AnOther: TIdeCallStackList);
-    procedure Clear; override;
-    function Count: Integer; override; // Count of already requested CallStacks (via ThreadId)
-    property Entries[const AIndex: Integer]: TCallStack read GetEntry; default;
-    property EntriesForThreads[const AThreadId: Integer]: TCallStack read GetEntryForThread;
+    property Entries[const AIndex: Integer]: TIdeCallStack read GetEntry; default;
+    property EntriesForThreads[const AThreadId: Integer]: TIdeCallStack read GetEntryForThread;
   end;
 
   { TCurrentCallStack }
 
-  TCurrentCallStack = class(TCallStack)
+  TCurrentCallStack = class(TIdeCallStack)
   private
     FMonitor: TIdeCallStackMonitor;
     FCountValidity, FAtLeastCountValidity: TDebuggerDataState;
     FCurrentValidity: TDebuggerDataState;
     FNewCurrentIndex: Integer;
     FPreparing: Boolean;
-    FSnapShot: TCallStack;
+    FSnapShot: TIdeCallStack;
     FEntries: TMap;        // list of created entries
     FCount, FAtLeastCount, FAtLeastCountOld: Integer;
     FLowestUnknown, FHighestUnknown: Integer;
-    procedure SetSnapShot(const AValue: TCallStack);
+    procedure SetSnapShot(const AValue: TIdeCallStack);
   protected
     function  GetCurrent: Integer; override;
     procedure SetCurrent(AValue: Integer); override;
@@ -1273,9 +1230,9 @@ type
     procedure Clear; override;
     function  GetCount: Integer; override;
     procedure SetCount(ACount: Integer); override;
-    function GetEntry(AIndex: Integer): TCallStackEntry; override;
-    procedure AddEntry(AnEntry: TCallStackEntry); override;
-    procedure AssignEntriesTo(AnOther: TCallStack); override;
+    function GetEntry(AIndex: Integer): TIdeCallStackEntry; override;
+    procedure AddEntry(AnEntry: TIdeCallStackEntry); override;
+    procedure AssignEntriesTo(AnOther: TIdeCallStack); override;
     function GetRawEntries: TMap; override;
     function GetLowestUnknown: Integer; override;
     function GetHighestUnknown: Integer; override;
@@ -1283,14 +1240,14 @@ type
   public
     constructor Create(AMonitor: TIdeCallStackMonitor);
     destructor Destroy; override;
-    procedure Assign(AnOther: TCallStack);
+    procedure Assign(AnOther: TIdeCallStack);
     procedure PrepareRange(AIndex, ACount: Integer); override;
     procedure ChangeCurrentIndex(ANewIndex: Integer); override;
     procedure DoEntriesCreated; override;
     procedure DoEntriesUpdated; override;
     function HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool; override;
     property NewCurrentIndex: Integer read FNewCurrentIndex;
-    property SnapShot: TCallStack read FSnapShot write SetSnapShot;
+    property SnapShot: TIdeCallStack read FSnapShot write SetSnapShot;
   public
     procedure SetCountValidity(AValidity: TDebuggerDataState); override;
     procedure SetHasAtLeastCountInfo(AValidity: TDebuggerDataState; AMinCount: Integer = -1); override;
@@ -1305,7 +1262,7 @@ type
     FSnapShot: TIdeCallStackList;
     procedure SetSnapShot(const AValue: TIdeCallStackList);
   protected
-    function GetEntryForThread(const AThreadId: Integer): TCallStack; override;
+    function NewEntryForThread(const AThreadId: Integer): TCallStackBase; override;
     property SnapShot: TIdeCallStackList read FSnapShot write SetSnapShot;
   public
     constructor Create(AMonitor: TIdeCallStackMonitor);
@@ -1326,10 +1283,10 @@ type
     procedure DoStateLeavePause; override;
     procedure DoStateLeavePauseClean; override;
     procedure DoModified; override;
-    procedure RequestCount(ACallstack: TCallStack);
-    procedure RequestAtLeastCount(ACallstack: TCallStack; ARequiredMinCount: Integer);
-    procedure RequestCurrent(ACallstack: TCallStack);
-    procedure RequestEntries(ACallstack: TCallStack);
+    procedure RequestCount(ACallstack: TIdeCallStack);
+    procedure RequestAtLeastCount(ACallstack: TIdeCallStack; ARequiredMinCount: Integer);
+    procedure RequestCurrent(ACallstack: TIdeCallStack);
+    procedure RequestEntries(ACallstack: TIdeCallStack);
     procedure UpdateCurrentIndex;
     procedure DoNewSupplier; override;
     function  CreateSnapshot(CreateEmpty: Boolean = False): TObject;
@@ -1411,7 +1368,7 @@ type
 
   { TThreadEntry }
 
-  TThreadEntry = class(TCallStackEntry)
+  TIdeThreadEntry = class(TIdeCallStackEntry)
   private
     FThreadOwner: TIdeThreads;
     FThreadId: Integer;
@@ -1440,7 +1397,7 @@ type
                        const AThreadId: Integer; const AThreadName: String;
                        const AThreadState: String;
                        AState: TDebuggerDataState = ddsValid); overload;
-    constructor CreateCopy(const ASource: TThreadEntry);
+    constructor CreateCopy(const ASource: TIdeThreadEntry);
   end;
 
   { TIdeThreads }
@@ -1449,13 +1406,13 @@ type
   private
     FCurrentThreadId: Integer;
     FList: TList;
-    function GetEntry(const AnIndex: Integer): TThreadEntry;
-    function GetEntryById(const AnID: Integer): TThreadEntry;
+    function GetEntry(const AnIndex: Integer): TIdeThreadEntry;
+    function GetEntryById(const AnID: Integer): TIdeThreadEntry;
   protected
     procedure SetCurrentThreadId(AValue: Integer); override;
     function GetCurrentThreadId: Integer; override;
-    function GetEntryBase(const AnIndex: Integer): TCallStackEntryBase; override;
-    function GetEntryByIdBase(const AnID: Integer): TCallStackEntryBase; override;
+    function GetEntryBase(const AnIndex: Integer): TCallStackEntry; override;
+    function GetEntryByIdBase(const AnID: Integer): TCallStackEntry; override;
     procedure Assign(AOther: TIdeThreads);
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                     APath: string;
@@ -1470,18 +1427,18 @@ type
     destructor Destroy; override;
     function Count: Integer; override;
     procedure Clear; override;
-    procedure Add(AThread: TCallStackEntryBase); override;
-    procedure Remove(AThread: TCallStackEntryBase); override;
+    procedure Add(AThread: TCallStackEntry); override;
+    procedure Remove(AThread: TCallStackEntry); override;
     function CreateEntry(const AIndex:Integer; const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
                        const FileName, FullName: String;
                        const ALine: Integer;
                        const AThreadId: Integer; const AThreadName: String;
                        const AThreadState: String;
-                       AState: TDebuggerDataState = ddsValid): TCallStackEntryBase; override;
+                       AState: TDebuggerDataState = ddsValid): TCallStackEntry; override;
     procedure SetValidity(AValidity: TDebuggerDataState); override;
-    property Entries[const AnIndex: Integer]: TThreadEntry read GetEntry; default;
-    property EntryById[const AnID: Integer]: TThreadEntry read GetEntryById;
+    property Entries[const AnIndex: Integer]: TIdeThreadEntry read GetEntry; default;
+    property EntryById[const AnID: Integer]: TIdeThreadEntry read GetEntryById;
   end;
 
   { TCurrentThreads }
@@ -1506,7 +1463,7 @@ type
                        const ALine: Integer;
                        const AThreadId: Integer; const AThreadName: String;
                        const AThreadState: String;
-                       AState: TDebuggerDataState = ddsValid): TCallStackEntryBase; override;
+                       AState: TDebuggerDataState = ddsValid): TCallStackEntry; override;
     procedure SetValidity(AValidity: TDebuggerDataState); override;
   end;
 
@@ -3827,7 +3784,7 @@ begin
   FCount := 0;
   FAtLeastCount := 0;
   FAtLeastCountOld := -1;
-  FEntries:= TMap.Create(its4, SizeOf(TCallStackEntry));
+  FEntries:= TMap.Create(its4, SizeOf(TIdeCallStackEntry));
   FMonitor := AMonitor;
   FPreparing := False;
   FCountValidity := ddsUnknown;
@@ -3845,7 +3802,7 @@ begin
   FreeAndNil(FEntries);
 end;
 
-procedure TCurrentCallStack.Assign(AnOther: TCallStack);
+procedure TCurrentCallStack.Assign(AnOther: TIdeCallStack);
 begin
   inherited Assign(AnOther);
   if AnOther is TCurrentCallStack then begin
@@ -3861,7 +3818,7 @@ begin
   end;
 end;
 
-procedure TCurrentCallStack.SetSnapShot(const AValue: TCallStack);
+procedure TCurrentCallStack.SetSnapShot(const AValue: TIdeCallStack);
 begin
   assert((FSnapShot=nil) or (AValue=nil), 'TCurrentCallStack already have snapshot');
   if FSnapShot = AValue then exit;
@@ -3897,7 +3854,7 @@ begin
     FMonitor.NotifyChange;
 end;
 
-function TCurrentCallStack.GetEntry(AIndex: Integer): TCallStackEntry;
+function TCurrentCallStack.GetEntry(AIndex: Integer): TIdeCallStackEntry;
 begin
   if (AIndex < 0)
   or (AIndex >= CountLimited(AIndex+1)) then IndexError(Aindex);
@@ -3905,7 +3862,7 @@ begin
   Result := nil;
   if FEntries.GetData(AIndex, Result) then Exit;
 
-  Result := TCallStackEntry.Create(AIndex, 0, nil, '', nil, 0, ddsRequested);
+  Result := TIdeCallStackEntry.Create(AIndex, 0, nil, '', nil, 0, ddsRequested);
   if Result = nil then Exit;
   FEntries.Add(AIndex, Result);
   Result.FOwner := Self;
@@ -3918,13 +3875,13 @@ begin
   DoEntriesCreated;
 end;
 
-procedure TCurrentCallStack.AddEntry(AnEntry: TCallStackEntry);
+procedure TCurrentCallStack.AddEntry(AnEntry: TIdeCallStackEntry);
 begin
   FEntries.Add(AnEntry.Index, AnEntry);
   AnEntry.FOwner := Self;
 end;
 
-procedure TCurrentCallStack.AssignEntriesTo(AnOther: TCallStack);
+procedure TCurrentCallStack.AssignEntriesTo(AnOther: TIdeCallStack);
 var
   It: TMapIterator;
 begin
@@ -3932,7 +3889,7 @@ begin
   It.First;
   while (not IT.EOM)
   do begin
-    AnOther.AddEntry(TCallStackEntry.CreateCopy(TCallStackEntry(It.DataPtr^)));
+    AnOther.AddEntry(TIdeCallStackEntry.CreateCopy(TIdeCallStackEntry(It.DataPtr^)));
     It.Next;
   end;
   It.Free;
@@ -3970,7 +3927,7 @@ begin
     Inc(AIndex);
     Dec(ACount);
     It.Next;
-  until It.EOM or (ACount <= 0) or (TCallStackEntry(It.DataPtr^).Index <> AIndex);
+  until It.EOM or (ACount <= 0) or (TIdeCallStackEntry(It.DataPtr^).Index <> AIndex);
 
   if ACount > 1
   then begin
@@ -3981,7 +3938,7 @@ begin
       Dec(EndIndex);
       Dec(ACount);
       It.Previous;
-    until It.BOM or (ACount <= 0) or (TCallStackEntry(It.DataPtr^).Index <> EndIndex);
+    until It.BOM or (ACount <= 0) or (TIdeCallStackEntry(It.DataPtr^).Index <> EndIndex);
   end;
   It.Free;
   if ACount <= 0 then Exit;
@@ -4100,7 +4057,7 @@ end;
 
 procedure TCurrentCallStackList.SetSnapShot(const AValue: TIdeCallStackList);
 var
-  R: TCallStack;
+  R: TIdeCallStack;
   i: Integer;
 begin
   assert((FSnapShot=nil) or (AValue=nil), 'Callstack already have snapshot');
@@ -4115,7 +4072,7 @@ begin
     // Assign
     FSnapShot.Clear;
     for i := 0 to Count - 1 do begin
-      R := TCallStack.Create;
+      R := TIdeCallStack.Create;
       R.ThreadId := Entries[i].ThreadId;
       FSnapShot.Add(R);
       TCurrentCallStack(Entries[i]).SnapShot := R;
@@ -4123,72 +4080,46 @@ begin
   end;
 end;
 
-function TCurrentCallStackList.GetEntryForThread(const AThreadId: Integer): TCallStack;
+function TCurrentCallStackList.NewEntryForThread(const AThreadId: Integer): TCallStackBase;
 var
-  R: TCallStack;
+  R: TIdeCallStack;
 begin
-  Result := inherited GetEntryForThread(AThreadId);
-  if Result = nil then begin
-    try DebugLnEnter(DBG_DATA_MONITORS, ['DebugDataMonitor: >>ENTER: TCurrentCallStackList.GetEntryForThread: ThreadId=', AThreadId]);
-    Result := TCurrentCallStack.Create(FMonitor);
-    Result.ThreadId := AThreadId;
-    Add(Result);
-    if FSnapShot <> nil then begin
-      R := TCallStack.Create;
-      R.ThreadId := AThreadId;
-      FSnapShot.Add(R);
-      TCurrentCallStack(Result).SnapShot := R;
-    end;
-    finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataMonitor: <<EXIT: TCurrentCallStackList.GetEntryForThread' ]) end;
+  try DebugLnEnter(DBG_DATA_MONITORS, ['DebugDataMonitor: >>ENTER: TCurrentCallStackList.GetEntryForThread: ThreadId=', AThreadId]);
+  Result := TCurrentCallStack.Create(FMonitor);
+  Result.ThreadId := AThreadId;
+  Add(Result);
+  if FSnapShot <> nil then begin
+    R := TIdeCallStack.Create;
+    R.ThreadId := AThreadId;
+    FSnapShot.Add(R);
+    TCurrentCallStack(Result).SnapShot := R;
   end;
+  finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataMonitor: <<EXIT: TCurrentCallStackList.GetEntryForThread' ]) end;
 end;
 
 { TCallStackList }
 
-function TIdeCallStackList.GetEntry(const AIndex: Integer): TCallStack;
+function TIdeCallStackList.GetEntry(const AIndex: Integer): TIdeCallStack;
 begin
-  Result := TCallStack(FList[AIndex]);
+  Result := TIdeCallStack(inherited Entries[AIndex]);
 end;
 
-function TIdeCallStackList.GetEntryForThread(const AThreadId: Integer): TCallStack;
-var
-  i: Integer;
+function TIdeCallStackList.GetEntryForThread(const AThreadId: Integer): TIdeCallStack;
 begin
-  i := Count - 1;
-  while (i >= 0) and (TCallStack(FList[i]).ThreadId <> AThreadId) do dec(i);
-  if i >= 0
-  then Result := TCallStack(FList[i])
-  else Result := nil;
-end;
-
-function TIdeCallStackList.GetEntryBase(const AIndex: Integer): TCallStackBase;
-begin
-  Result := TCallStackBase(GetEntry(AIndex));
-end;
-
-function TIdeCallStackList.GetEntryForThreadBase(const AThreadId: Integer): TCallStackBase;
-begin
-  Result := TCallStackBase(GetEntryForThread(AThreadId));
-end;
-
-procedure TIdeCallStackList.Add(ACallStack: TCallStack);
-begin
-  assert(((Self is TCurrentCallStackList) and (ACallStack is TCurrentCallStack)) or ((not(Self is TCurrentCallStackList)) and not(ACallStack is TCurrentCallStack)),
-         'TCallStackList.Add: entry and list differ (current and none current)');
-  FList.Add(ACallStack);
+  Result := TIdeCallStack(inherited EntriesForThreads[AThreadId]);
 end;
 
 procedure TIdeCallStackList.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
   APath: string; AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 var
   c, i: Integer;
-  e: TCallStack;
+  e: TIdeCallStack;
 begin
   Clear;
   c := AConfig.GetValue(APath + 'Count', 0);
   APath := APath + 'Entry';
   for i := 0 to c - 1 do begin
-    e := TCallStack.Create;
+    e := TIdeCallStack.Create;
     e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
     Add(e);
   end;
@@ -4203,40 +4134,6 @@ begin
   APath := APath + 'Entry';
   for i := 0 to Count - 1 do
     Entries[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
-end;
-
-procedure TIdeCallStackList.Assign(AnOther: TIdeCallStackList);
-var
-  i: Integer;
-begin
-  Clear;
-  for i := 0 to AnOther.FList.Count-1 do
-    FList.Add(TCallStack.CreateCopy(TCallStack(AnOther.FList[i])));
-end;
-
-constructor TIdeCallStackList.Create;
-begin
-  FList := TList.Create;
-end;
-
-destructor TIdeCallStackList.Destroy;
-begin
-  inherited Destroy;
-  Clear;
-  FreeAndNil(FList);
-end;
-
-procedure TIdeCallStackList.Clear;
-begin
-  while FList.Count > 0 do begin
-    TObject(FList[0]).Free;
-    FList.Delete(0);
-  end;
-end;
-
-function TIdeCallStackList.Count: Integer;
-begin
-  Result := FList.Count;
 end;
 
 { TCurrentThreads }
@@ -4312,11 +4209,11 @@ end;
 function TCurrentThreads.CreateEntry(const AIndex: Integer; const AnAdress: TDbgPtr;
   const AnArguments: TStrings; const AFunctionName: String; const FileName, FullName: String;
   const ALine: Integer; const AThreadId: Integer; const AThreadName: String;
-  const AThreadState: String; AState: TDebuggerDataState): TCallStackEntryBase;
+  const AThreadState: String; AState: TDebuggerDataState): TCallStackEntry;
 begin
   Result := inherited CreateEntry(AIndex, AnAdress, AnArguments, AFunctionName, FileName,
     FullName, ALine, AThreadId, AThreadName, AThreadState, AState);
-  TThreadEntry(Result).FThreadOwner := self;
+  TIdeThreadEntry(Result).FThreadOwner := self;
 end;
 
 { TIdeThreadsMonitor }
@@ -4525,7 +4422,7 @@ end;
 
 { TThreadEntry }
 
-function TThreadEntry.GetUnitInfoProvider: TDebuggerUnitInfoProvider;
+function TIdeThreadEntry.GetUnitInfoProvider: TDebuggerUnitInfoProvider;
 begin
   if FThreadOwner = nil then
     Result := nil
@@ -4533,29 +4430,29 @@ begin
     Result := (FThreadOwner as TCurrentThreads).FMonitor.UnitInfoProvider;
 end;
 
-function TThreadEntry.GetThreadId: Integer;
+function TIdeThreadEntry.GetThreadId: Integer;
 begin
   Result := FThreadId;
 end;
 
-function TThreadEntry.GetThreadName: String;
+function TIdeThreadEntry.GetThreadName: String;
 begin
   Result := FThreadName;
 end;
 
-function TThreadEntry.GetThreadState: String;
+function TIdeThreadEntry.GetThreadState: String;
 begin
   Result := FThreadState;
 end;
 
-procedure TThreadEntry.SetThreadState(AValue: String);
+procedure TIdeThreadEntry.SetThreadState(AValue: String);
 begin
   if FThreadState = AValue then Exit;
   FThreadState := AValue;
   ClearLocation;
 end;
 
-procedure TThreadEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
+procedure TIdeThreadEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 begin
   inherited LoadDataFromXMLConfig(AConfig, APath, AUnitInvoPrv);
@@ -4564,7 +4461,7 @@ begin
   FThreadState := AConfig.GetValue(APath + 'ThreadState', '');
 end;
 
-procedure TThreadEntry.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string;
+procedure TIdeThreadEntry.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string;
   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 begin
   inherited SaveDataToXMLConfig(AConfig, APath, AUnitInvoPrv);
@@ -4573,7 +4470,7 @@ begin
   AConfig.SetValue(APath + 'ThreadState', FThreadState);
 end;
 
-constructor TThreadEntry.Create(const AIndex: Integer; const AnAdress: TDbgPtr;
+constructor TIdeThreadEntry.Create(const AIndex: Integer; const AnAdress: TDbgPtr;
   const AnArguments: TStrings; const AFunctionName: String; const FileName, FullName: String;
   const ALine: Integer; const AThreadId: Integer; const AThreadName: String;
   const AThreadState: String; AState: TDebuggerDataState);
@@ -4591,7 +4488,7 @@ begin
   FThreadState := AThreadState;
 end;
 
-constructor TThreadEntry.CreateCopy(const ASource: TThreadEntry);
+constructor TIdeThreadEntry.CreateCopy(const ASource: TIdeThreadEntry);
 begin
   inherited CreateCopy(ASource);
   FThreadId    := ASource.FThreadId;
@@ -4601,13 +4498,13 @@ end;
 
 { TIdeThreads }
 
-function TIdeThreads.GetEntry(const AnIndex: Integer): TThreadEntry;
+function TIdeThreads.GetEntry(const AnIndex: Integer): TIdeThreadEntry;
 begin
   if (AnIndex < 0) or (AnIndex >= Count) then exit(nil);
-  Result := TThreadEntry(FList[AnIndex]);
+  Result := TIdeThreadEntry(FList[AnIndex]);
 end;
 
-function TIdeThreads.GetEntryById(const AnID: Integer): TThreadEntry;
+function TIdeThreads.GetEntryById(const AnID: Integer): TIdeThreadEntry;
 var
   i: Integer;
 begin
@@ -4632,14 +4529,14 @@ begin
   Result := FCurrentThreadId;
 end;
 
-function TIdeThreads.GetEntryBase(const AnIndex: Integer): TCallStackEntryBase;
+function TIdeThreads.GetEntryBase(const AnIndex: Integer): TCallStackEntry;
 begin
-  Result := TCallStackEntryBase(GetEntry(AnIndex));
+  Result := TCallStackEntry(GetEntry(AnIndex));
 end;
 
-function TIdeThreads.GetEntryByIdBase(const AnID: Integer): TCallStackEntryBase;
+function TIdeThreads.GetEntryByIdBase(const AnID: Integer): TCallStackEntry;
 begin
-  Result := TCallStackEntryBase(GetEntryById(AnID));
+  Result := TCallStackEntry(GetEntryById(AnID));
 end;
 
 procedure TIdeThreads.Assign(AOther: TIdeThreads);
@@ -4649,21 +4546,21 @@ begin
   Clear;
   FCurrentThreadId := AOther.FCurrentThreadId;
   for i := 0 to AOther.FList.Count-1 do
-    FList.Add(TThreadEntry.CreateCopy(TThreadEntry(AOther.FList[i])));
+    FList.Add(TIdeThreadEntry.CreateCopy(TIdeThreadEntry(AOther.FList[i])));
 end;
 
 procedure TIdeThreads.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string;
   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 var
   c, i: Integer;
-  e: TThreadEntry;
+  e: TIdeThreadEntry;
 begin
   Clear;
   FCurrentThreadId   := AConfig.GetValue(APath + 'CurrentThreadId', -1);
   c := AConfig.GetValue(APath + 'Count', 0);
   APath := APath + 'Entry';
   for i := 0 to c - 1 do begin
-    e := TThreadEntry.Create;
+    e := TIdeThreadEntry.Create;
     e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
     FList.Add(e);
   end;
@@ -4701,22 +4598,22 @@ end;
 procedure TIdeThreads.Clear;
 begin
   while FList.Count > 0 do begin
-    TThreadEntry(Flist[0]).Free;
+    TIdeThreadEntry(Flist[0]).Free;
     FList.Delete(0);
   end;
 end;
 
-procedure TIdeThreads.Add(AThread: TCallStackEntryBase);
+procedure TIdeThreads.Add(AThread: TCallStackEntry);
 begin
-  FList.Add(TThreadEntry.CreateCopy(AThread as TThreadEntry));
+  FList.Add(TIdeThreadEntry.CreateCopy(AThread as TIdeThreadEntry));
   if FList.Count = 1 then
-    FCurrentThreadId := (AThread as TThreadEntry).ThreadId;
+    FCurrentThreadId := (AThread as TIdeThreadEntry).ThreadId;
 end;
 
-procedure TIdeThreads.Remove(AThread: TCallStackEntryBase);
+procedure TIdeThreads.Remove(AThread: TCallStackEntry);
 begin
   FList.Remove(AThread);
-  if FCurrentThreadId = (AThread as TThreadEntry).ThreadId then begin
+  if FCurrentThreadId = (AThread as TIdeThreadEntry).ThreadId then begin
     if FList.Count > 0 then
       FCurrentThreadId := Entries[0].ThreadId
     else
@@ -4728,11 +4625,11 @@ end;
 function TIdeThreads.CreateEntry(const AIndex: Integer; const AnAdress: TDbgPtr;
   const AnArguments: TStrings; const AFunctionName: String; const FileName, FullName: String;
   const ALine: Integer; const AThreadId: Integer; const AThreadName: String;
-  const AThreadState: String; AState: TDebuggerDataState): TCallStackEntryBase;
+  const AThreadState: String; AState: TDebuggerDataState): TCallStackEntry;
 begin
-  Result := TThreadEntry.Create(AIndex, AnAdress, AnArguments, AFunctionName, FileName,
+  Result := TIdeThreadEntry.Create(AIndex, AnAdress, AnArguments, AFunctionName, FileName,
     FullName, ALine, AThreadId, AThreadName, AThreadState, AState);
-  TThreadEntry(Result).FThreadOwner := self;
+  TIdeThreadEntry(Result).FThreadOwner := self;
 end;
 
 procedure TIdeThreads.SetValidity(AValidity: TDebuggerDataState);
@@ -6473,214 +6370,147 @@ end;
 { TDBGCallStackEntry }
 { =========================================================================== }
 
-constructor TCallStackEntry.Create(const AIndex: Integer;
+constructor TIdeCallStackEntry.Create(const AIndex: Integer;
   const AnAdress: TDbgPtr; const AnArguments: TStrings;
   const AFunctionName: String; const AUnitInfo: TDebuggerUnitInfo;
   const ALine: Integer; AState: TDebuggerDataState = ddsValid);
 begin
   inherited Create;
-  FIndex := AIndex;
-  FAdress := AnAdress;
-  FArguments := TStringlist.Create;
-  if AnArguments <> nil
-  then FArguments.Assign(AnArguments);
-  FFunctionName := AFunctionName;
   SetUnitInfo(AUnitInfo);
-  FLine := ALine;
-  FState := AState;
+  InitFields(AIndex, AnAdress, AnArguments, AFunctionName, ALine, AState);
 end;
 
-constructor TCallStackEntry.CreateCopy(const ASource: TCallStackEntry);
+constructor TIdeCallStackEntry.CreateCopy(const ASource: TIdeCallStackEntry);
 begin
-  Create(ASource.FIndex, ASource.FAdress, ASource.FArguments,
-         ASource.FFunctionName, ASource.FUnitInfo,
-         ASource.FLine, ASource.FState);
+  Create(ASource.Index, ASource.Address, ASource.Arguments,
+         ASource.FunctionName, ASource.FUnitInfo,
+         ASource.Line, ASource.Validity);
 end;
 
-destructor TCallStackEntry.Destroy;
+destructor TIdeCallStackEntry.Destroy;
 begin
   inherited;
   if FUnitInfo <> nil then FUnitInfo.ReleaseReference;
-  FreeAndNil(FArguments);
 end;
 
-procedure TCallStackEntry.Init(const AnAdress: TDbgPtr; const AnArguments: TStrings;
+procedure TIdeCallStackEntry.Init(const AnAdress: TDbgPtr; const AnArguments: TStrings;
   const AFunctionName: String; const AUnitName, AClassName, AProcName, AFunctionArgs: String;
   const ALine: Integer; AState: TDebuggerDataState);
 var
   loc: TDebuggerUnitInfo;
 begin
   assert(FOwner is TCurrentCallStack, 'FOwner is TCurrentCallStack');
+  inherited Init(AnAdress, AnArguments, AFunctionName, AUnitName, AClassName, AProcName,
+      AFunctionArgs, ALine, AState);
+
   if GetUnitInfoProvider = nil then
     loc := nil
   else
     loc := GetUnitInfoProvider.GetUnitInfoByFunction(AUnitName, AClassName, AProcName, AFunctionArgs);
-  FAdress := AnAdress;
-  if AnArguments <> nil
-  then FArguments.Assign(AnArguments);
-  FFunctionName := AFunctionName;
 
   SetUnitInfo(loc);
-  FLine := ALine;
-  FState := AState;
 end;
 
-procedure TCallStackEntry.Init(const AnAdress: TDbgPtr; const AnArguments: TStrings;
+procedure TIdeCallStackEntry.Init(const AnAdress: TDbgPtr; const AnArguments: TStrings;
   const AFunctionName: String; const FileName, FullName: String; const ALine: Integer;
   AState: TDebuggerDataState);
 var
   loc: TDebuggerUnitInfo;
 begin
   assert(FOwner is TCurrentCallStack, 'FOwner is TCurrentCallStack');
+  inherited Init(AnAdress, AnArguments, AFunctionName, FileName, FullName, ALine, AState);
+
   if GetUnitInfoProvider = nil then
     loc := nil
   else
     loc := GetUnitInfoProvider.GetUnitInfoFor(FileName, FullName);
-  FAdress := AnAdress;
-  if AnArguments <> nil
-  then FArguments.Assign(AnArguments);
-  FFunctionName := AFunctionName;
 
   SetUnitInfo(loc);
-  FLine := ALine;
-  FState := AState;
 end;
 
-function TCallStackEntry.GetFunctionWithArg: String;
-var
-  S: String;
-  m: Integer;
-begin
-  S := '';
-  for m := 0 to ArgumentCount - 1 do
-  begin
-    if S <> '' then
-      S := S + ', ';
-    S := S + ArgumentValues[m];
-  end;
-  if S <> '' then
-    S := '(' + S + ')';
-  Result := FunctionName + S;
-end;
-
-function TCallStackEntry.IsCurrent: Boolean;
+function TIdeCallStackEntry.IsCurrent: Boolean;
 begin
   Result := (FOwner <> nil) and (FOwner.CurrentIndex = Self.Index);
   //TODO: check current thread
 end;
 
-procedure TCallStackEntry.MakeCurrent;
+procedure TIdeCallStackEntry.MakeCurrent;
 begin
   if FOwner = nil then Exit;
   if IsCurrent then exit;
   FOwner.ChangeCurrentIndex(Self.Index);
 end;
 
-function TCallStackEntry.GetArgumentCount: Integer;
+function TIdeCallStackEntry.GetFunctionName: String;
 begin
-  Result := FArguments.Count;
-end;
-
-function TCallStackEntry.GetArgumentName(const AnIndex: Integer): String;
-begin
-  Result := FArguments.Names[AnIndex];
-end;
-
-function TCallStackEntry.GetArgumentValue(const AnIndex: Integer): String;
-begin
-  Result := FArguments[AnIndex];
-  Result := GetPart('=', '', Result);
-end;
-
-function TCallStackEntry.GetFunctionName: String;
-begin
-  case FState of
-    ddsValid:     Result := FFunctionName;
-    ddsError:     Result := '<Error: '+FFunctionName+'>';
+  case Validity of
+    ddsValid:     Result := inherited GetFunctionName;
+    ddsError:     Result := '<Error: '+(inherited GetFunctionName)+'>';
     ddsInvalid:   Result := '<invalid>';
     ddsRequested, ddsEvaluating: Result := '<evaluating>';
     ddsUnknown:                  Result := '<unknown>';
   end;
 end;
 
-function TCallStackEntry.GetIndex: Integer;
+function TIdeCallStackEntry.GetSource: String;
 begin
-  Result := FIndex;
-end;
-
-function TCallStackEntry.GetLine: Integer;
-begin
-  Result := FLine;
-end;
-
-function TCallStackEntry.GetSource: String;
-begin
-  if (FState = ddsValid)  and (FUnitInfo <> nil)
+  if (Validity = ddsValid)  and (FUnitInfo <> nil)
   then Result := FUnitInfo.FileName
   else Result := '';
 end;
 
-function TCallStackEntry.GetState: TDebuggerDataState;
-begin
-  Result := FState;
-end;
-
-procedure TCallStackEntry.SetState(AValue: TDebuggerDataState);
-begin
-  FState := AValue;
-end;
-
-procedure TCallStackEntry.SetUnitInfo(AUnitInfo: TDebuggerUnitInfo);
+procedure TIdeCallStackEntry.SetUnitInfo(AUnitInfo: TDebuggerUnitInfo);
 begin
   if FUnitInfo <> nil then FUnitInfo.ReleaseReference;
   FUnitInfo := AUnitInfo;
   if FUnitInfo <> nil then FUnitInfo.AddReference;
 end;
 
-function TCallStackEntry.GetThreadId: Integer;
+function TIdeCallStackEntry.GetThreadId: Integer;
 begin
   Assert(false, 'thread only');
   Result := 0;
 end;
 
-function TCallStackEntry.GetThreadName: String;
+function TIdeCallStackEntry.GetThreadName: String;
 begin
   Assert(false, 'thread only');
   Result := '';
 end;
 
-function TCallStackEntry.GetThreadState: String;
+function TIdeCallStackEntry.GetThreadState: String;
 begin
   Assert(false, 'thread only');
   Result := '';
 end;
 
-procedure TCallStackEntry.SetThreadState(AValue: String);
+procedure TIdeCallStackEntry.SetThreadState(AValue: String);
 begin
   Assert(false, 'thread only');
 end;
 
-function TCallStackEntry.GetUnitInfoProvider: TDebuggerUnitInfoProvider;
+function TIdeCallStackEntry.GetUnitInfoProvider: TDebuggerUnitInfoProvider;
 begin
   Result := (FOwner as TCurrentCallStack).FMonitor.UnitInfoProvider;
 end;
 
-function TCallStackEntry.GetAddress: TDbgPtr;
-begin
-  Result := FAdress;
-end;
-
-procedure TCallStackEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
+procedure TIdeCallStackEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 var
   UInfo: TDebuggerUnitInfo;
   i: Integer;
+  AState: TDebuggerDataState;
+  NewIndex, NewLine: Integer;
+  NewAddress: QWord;
+  NewFunctionName: String;
 begin
-  FIndex          := AConfig.GetValue(APath + 'Index', 0);
-  FAdress         := StrToQWordDef(AConfig.GetValue(APath + 'Address', '0'), 0);
-  FFunctionName   := AConfig.GetValue(APath + 'FunctionName', '');
-  FLine           := AConfig.GetValue(APath + 'Line', 0);
-  FArguments.Text := AConfig.GetValue(APath + 'Arguments', '');
+  NewIndex          := AConfig.GetValue(APath + 'Index', 0);
+  NewAddress        := StrToQWordDef(AConfig.GetValue(APath + 'Address', '0'), 0);
+  NewFunctionName   := AConfig.GetValue(APath + 'FunctionName', '');
+  NewLine           := AConfig.GetValue(APath + 'Line', 0);
+  InitFields(NewIndex, NewAddress, nil, NewFunctionName, NewLine, ddsUnknown);
+
+  Arguments.Text  := AConfig.GetValue(APath + 'Arguments', '');
 
   i := AConfig.GetValue(APath + 'UnitInfoRef', -1);
   UInfo := nil;
@@ -6694,23 +6524,24 @@ begin
   end;
   SetUnitInfo(UInfo);
   try
-    ReadStr(AConfig.GetValue(APath + 'State', 'ddsUnknown'), FState);
+    ReadStr(AConfig.GetValue(APath + 'State', 'ddsUnknown'), AState);
+    Validity := AState;
   except
-    FState := ddsUnknown;
+    Validity := ddsUnknown;
   end;
 end;
 
-procedure TCallStackEntry.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string;
+procedure TIdeCallStackEntry.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string;
   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 var
   s: string;
   i: Integer;
 begin
-  AConfig.SetValue(APath + 'Index', FIndex);
-  AConfig.SetValue(APath + 'Address', IntToStr(FAdress));
-  AConfig.SetValue(APath + 'FunctionName', FFunctionName);
-  AConfig.SetValue(APath + 'Line', FLine);
-  AConfig.SetValue(APath + 'Arguments', FArguments.Text);
+  AConfig.SetValue(APath + 'Index', Index);
+  AConfig.SetValue(APath + 'Address', IntToStr(Address));
+  AConfig.SetValue(APath + 'FunctionName', FunctionName);
+  AConfig.SetValue(APath + 'Line', Line);
+  AConfig.SetValue(APath + 'Arguments', Arguments.Text);
   if FUnitInfo <> nil then begin
     if AUnitInvoPrv <> nil
     then begin
@@ -6720,31 +6551,23 @@ begin
     else
       FUnitInfo.SaveDataToXMLConfig(AConfig, APath + 'UnitInfo/');
   end;
-  WriteStr(s{%H-}, FState);
+  WriteStr(s{%H-}, Validity);
   AConfig.SetValue(APath + 'State', s);
 end;
 
-procedure TCallStackEntry.ClearLocation;
+procedure TIdeCallStackEntry.ClearLocation;
 begin
-  FIndex := 0;
-  FAdress := 0;
-  FFunctionName := '';
-  FLine := 0;
-  if FArguments <> nil then
-    FArguments.Clear;
+  InitFields(0, 0, nil, '', 0, Validity);
+  if Arguments <> nil then
+    Arguments.Clear;
   SetUnitInfo(TDebuggerUnitInfo.Create('',''));
-end;
-
-constructor TCallStackEntry.Create;
-begin
-  FArguments := TStringlist.Create;
 end;
 
 { =========================================================================== }
 { TCallStack }
 { =========================================================================== }
 
-procedure TCallStack.Clear;
+procedure TIdeCallStack.Clear;
 var
   i: Integer;
 begin
@@ -6753,52 +6576,47 @@ begin
   FList.Clear;
 end;
 
-function TCallStack.GetCount: Integer;
+function TIdeCallStack.GetCount: Integer;
 begin
   Result := FList.Count;
 end;
 
-destructor TCallStack.Destroy;
+destructor TIdeCallStack.Destroy;
 begin
   Clear;
   inherited Destroy;
   FreeAndNil(FList);
 end;
 
-function TCallStack.GetCurrent: Integer;
-begin
-  Result := FCurrent;
-end;
-
-function TCallStack.GetEntry(AIndex: Integer): TCallStackEntry;
+function TIdeCallStack.GetEntry(AIndex: Integer): TIdeCallStackEntry;
 begin
   if (AIndex < 0)
   or (AIndex >= CountLimited(AIndex+1)) then IndexError(Aindex);
 
-  Result := TCallStackEntry(FList[AIndex]);
+  Result := TIdeCallStackEntry(FList[AIndex]);
 end;
 
-procedure TCallStack.AddEntry(AnEntry: TCallStackEntry);
+procedure TIdeCallStack.AddEntry(AnEntry: TIdeCallStackEntry);
 begin
   // must be added in correct order
   Flist.Add(AnEntry);
   AnEntry.FOwner := Self;
 end;
 
-procedure TCallStack.AssignEntriesTo(AnOther: TCallStack);
+procedure TIdeCallStack.AssignEntriesTo(AnOther: TIdeCallStack);
 var
   i: Integer;
 begin
   for i := 0 to FList.Count-1 do begin
-    AnOther.AddEntry(TCallStackEntry.CreateCopy(TCallStackEntry(FList[i])));
+    AnOther.AddEntry(TIdeCallStackEntry.CreateCopy(TIdeCallStackEntry(FList[i])));
   end;
 end;
 
-procedure TCallStack.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string;
+procedure TIdeCallStack.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string;
   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 var
   c, i: Integer;
-  e: TCallStackEntry;
+  e: TIdeCallStackEntry;
 begin
   Clear;
   FThreadId := AConfig.GetValue(APath + 'ThreadId', -1);
@@ -6807,14 +6625,14 @@ begin
   c := AConfig.GetValue(APath + 'Count', 0);
   APath := APath + 'Entry';
   for i := 0 to c - 1 do begin
-    e := TCallStackEntry.Create();
+    e := TIdeCallStackEntry.Create();
     e.FOwner := self;
     e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
     FList.Add(e);
   end;
 end;
 
-procedure TCallStack.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string;
+procedure TIdeCallStack.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string;
   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 var
   i: Integer;
@@ -6825,55 +6643,55 @@ begin
   AConfig.SetDeleteValue(APath + 'Count', FList.Count, 0);
   APath := APath + 'Entry';
   for i := 0 to FList.Count - 1 do
-    TCallStackEntry(FList[i]).SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
+    TIdeCallStackEntry(FList[i]).SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
 end;
 
-procedure TCallStack.DoEntriesCreated;
+procedure TIdeCallStack.DoEntriesCreated;
 begin
   assert(False, 'TCallStack.DoEntriesCreated');
 end;
 
-procedure TCallStack.DoEntriesUpdated;
+procedure TIdeCallStack.DoEntriesUpdated;
 begin
   assert(False, 'TCallStack.DoEntriesUpdated');
 end;
 
-procedure TCallStack.SetCountValidity(AValidity: TDebuggerDataState);
+procedure TIdeCallStack.SetCountValidity(AValidity: TDebuggerDataState);
 begin
   assert(False, 'TCallStack.SetCountValidity');
 end;
 
-procedure TCallStack.SetHasAtLeastCountInfo(AValidity: TDebuggerDataState; AMinCount: Integer);
+procedure TIdeCallStack.SetHasAtLeastCountInfo(AValidity: TDebuggerDataState; AMinCount: Integer);
 begin
   assert(False, 'TCallStack.SetHasAtLeastCountInfo');
 end;
 
-procedure TCallStack.SetCurrentValidity(AValidity: TDebuggerDataState);
+procedure TIdeCallStack.SetCurrentValidity(AValidity: TDebuggerDataState);
 begin
   assert(False, 'TCallStack.SetCurrentValidity');
 end;
 
-function TCallStack.IndexError(AIndex: Integer): TCallStackEntry;
+function TIdeCallStack.IndexError(AIndex: Integer): TIdeCallStackEntry;
 begin
   Result:=nil;
   raise EInvalidOperation.CreateFmt('Index out of range (%d)', [AIndex]);
 end;
 
-function TCallStack.GetEntryBase(AIndex: Integer): TCallStackEntryBase;
+function TIdeCallStack.GetEntryBase(AIndex: Integer): TCallStackEntry;
 begin
-  Result := TCallStackEntryBase(GetEntry(AIndex));
+  Result := TCallStackEntry(GetEntry(AIndex));
 end;
 
-procedure TCallStack.PrepareRange(AIndex, ACount: Integer);
+procedure TIdeCallStack.PrepareRange(AIndex, ACount: Integer);
 begin
 end;
 
-procedure TCallStack.ChangeCurrentIndex(ANewIndex: Integer);
+procedure TIdeCallStack.ChangeCurrentIndex(ANewIndex: Integer);
 begin
   CurrentIndex := ANewIndex;
 end;
 
-function TCallStack.HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool;
+function TIdeCallStack.HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool;
 begin
   if ARequiredMinCount <= Count then
     Result := nbTrue
@@ -6881,7 +6699,7 @@ begin
     Result := nbFalse;
 end;
 
-function TCallStack.CountLimited(ALimit: Integer): Integer;
+function TIdeCallStack.CountLimited(ALimit: Integer): Integer;
 begin
   case HasAtLeastCount(ALimit) of
     nbUnknown: Result := 0;
@@ -6890,59 +6708,35 @@ begin
   end;
 end;
 
-procedure TCallStack.SetCount(ACount: Integer);
+procedure TIdeCallStack.SetCount(ACount: Integer);
 begin
   // can not set count
   assert(False, 'TCallStack.SetCount should not be called')
 end;
 
-procedure TCallStack.Assign(AnOther: TCallStack);
+procedure TIdeCallStack.Assign(AnOther: TCallStackBase);
 begin
   Clear;
-  ThreadId := AnOther.ThreadId;
-  FCurrent := AnOther.FCurrent;
-  AnOther.AssignEntriesTo(Self);
+  inherited Assign(AnOther);
+  TIdeCallStack(AnOther).AssignEntriesTo(Self);
 end;
 
-constructor TCallStack.Create;
+constructor TIdeCallStack.Create;
 begin
-  FThreadId := -1;
-  FCurrent := -1;
   FList := TList.Create;
   inherited;
 end;
 
-constructor TCallStack.CreateCopy(const ASource: TCallStack);
-begin
-  Create;
-  Assign(ASource);
-end;
-
-procedure TCallStack.SetCurrent(AValue: Integer);
-begin
-  FCurrent := AValue;
-end;
-
-function TCallStack.GetThreadId: Integer;
-begin
-  Result := FThreadId;
-end;
-
-procedure TCallStack.SetThreadId(AValue: Integer);
-begin
-  FThreadId := AValue;
-end;
-
-function TCallStack.GetRawEntries: TMap;
+function TIdeCallStack.GetRawEntries: TMap;
 begin
   assert(False, 'TCallStack.GetRawEntries');
   Result := nil;
 end;
 
-function TCallStack.GetNewCurrentIndex: Integer;
+function TIdeCallStack.GetNewCurrentIndex: Integer;
 begin
   assert(False, 'TCallStack.GetNewCurrentIndex');
-  Result := 0;
+  Result := inherited GetNewCurrentIndex;
 end;
 
 
@@ -7000,26 +6794,26 @@ begin
   NotifyChange;
 end;
 
-procedure TIdeCallStackMonitor.RequestCount(ACallstack: TCallStack);
+procedure TIdeCallStackMonitor.RequestCount(ACallstack: TIdeCallStack);
 begin
   if (Supplier <> nil) and (ACallstack is TCurrentCallStack)
   then Supplier.RequestCount(TCurrentCallStack(ACallstack));
 end;
 
-procedure TIdeCallStackMonitor.RequestAtLeastCount(ACallstack: TCallStack;
+procedure TIdeCallStackMonitor.RequestAtLeastCount(ACallstack: TIdeCallStack;
   ARequiredMinCount: Integer);
 begin
   if (Supplier <> nil) and (ACallstack is TCurrentCallStack)
   then Supplier.RequestAtLeastCount(TCurrentCallStack(ACallstack), ARequiredMinCount);
 end;
 
-procedure TIdeCallStackMonitor.RequestCurrent(ACallstack: TCallStack);
+procedure TIdeCallStackMonitor.RequestCurrent(ACallstack: TIdeCallStack);
 begin
   if (Supplier <> nil) and (ACallstack is TCurrentCallStack)
   then Supplier.RequestCurrent(TCurrentCallStack(ACallstack));
 end;
 
-procedure TIdeCallStackMonitor.RequestEntries(ACallstack: TCallStack);
+procedure TIdeCallStackMonitor.RequestEntries(ACallstack: TIdeCallStack);
 begin
   if (Supplier <> nil) and (ACallstack is TCurrentCallStack)
   then Supplier.RequestEntries(TCurrentCallStack(ACallstack));

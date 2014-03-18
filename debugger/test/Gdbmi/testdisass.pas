@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testutils, testregistry, LCLProc,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, GDBMIDebugger, Debugger, DebugManager, maps;
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, GDBMIDebugger, Debugger, TestBase, DebugManager, maps;
 
 type
   TTestDisAssRegion = record
@@ -42,7 +42,7 @@ type
 
   TTestDisAss = class(TTestCase)
   protected
-    FCallStack: TIdeCallStackMonitor;
+    FCallStack: TTestCallStackMonitor;
     FExceptions: TBaseExceptions;
     //FSignals: TBaseSignals;
     //FBreakPoints: TIDEBreakPoints;
@@ -324,7 +324,7 @@ end;
 
 procedure TTestDisAss.Disassemble;
 var
-  IdeDisAss: TIDEDisassembler;
+  IdeDisAss: TBaseDisassembler;
   Gdb: TTestBrkGDBMIDebugger;
 
   procedure Init;
@@ -332,8 +332,9 @@ var
     FreeAndNil(IdeDisAss);
     FreeAndNil(Gdb);
     Gdb := TTestBrkGDBMIDebugger.Create('');
-    IdeDisAss := TIDEDisassembler.Create;
-    IdeDisAss.Master := Gdb.Disassembler;
+    //IdeDisAss := TBaseDisassembler.Create;
+    //IdeDisAss.Master := Gdb.Disassembler;
+    IdeDisAss := Gdb.Disassembler;
 
     FWatches := TIdeWatchesMonitor.Create;
     FThreads := TIdeThreadsMonitor.Create;
@@ -341,7 +342,7 @@ var
     //FSignals := TBaseSignals.Create(TBaseSignal);
     FLocals := TIdeLocalsMonitor.Create;
     FLineInfo := TIDELineInfo.Create;
-    FCallStack := TIdeCallStackMonitor.Create;
+    FCallStack := TTestCallStackMonitor.Create;
     FRegisters := TRegistersMonitor.Create;
 
     //TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
@@ -515,7 +516,7 @@ begin
   CleanGdb;
   {%endregion}
 end;//xxxxxxxxxxxx
-  FreeAndNil(IdeDisAss);
+  //FreeAndNil(IdeDisAss);
   FreeAndNil(Gdb);
 end;
 

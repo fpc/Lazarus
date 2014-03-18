@@ -306,7 +306,7 @@ var
   Snap: TSnapshot;
   Threads: TIdeThreads;
   tid: LongInt;
-  Stack: TCallStack;
+  Stack: TIdeCallStack;
 begin
   if (CallStackMonitor = nil) or (ThreadsMonitor = nil)
   then begin

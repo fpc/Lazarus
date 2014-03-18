@@ -1186,9 +1186,9 @@ end;
 
 function TFpGDBMIDebugger.GetLocationForContext(AThreadId, AStackFrame: Integer): TDBGPtr;
 var
-  t: TCallStackEntryBase;
+  t: TCallStackEntry;
   s: TCallStackBase;
-  f: TCallStackEntryBase;
+  f: TCallStackEntry;
   //Instr: TGDBMIDebuggerInstruction;
 begin
 (*

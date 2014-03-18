@@ -1419,8 +1419,8 @@ type
     FCurrentThreadId: Integer;
     FCurrentThreads: TThreads;
     FSuccess: Boolean;
-    FThreads: Array of TCallStackEntryBase;
-    function GetThread(AnIndex: Integer): TCallStackEntryBase;
+    FThreads: Array of TCallStackEntry;
+    function GetThread(AnIndex: Integer): TCallStackEntry;
   protected
     function DoExecute: Boolean; override;
   public
@@ -1428,7 +1428,7 @@ type
     destructor Destroy; override;
     //function DebugText: String; override;
     function Count: Integer;
-    property Threads[AnIndex: Integer]: TCallStackEntryBase read GetThread;
+    property Threads[AnIndex: Integer]: TCallStackEntry read GetThread;
     property CurrentThreadId: Integer read FCurrentThreadId;
     property Success: Boolean read FSuccess;
     property  CurrentThreads: TThreads read FCurrentThreads write FCurrentThreads;
@@ -1938,7 +1938,7 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
     S: String;
     ct: TThreads;
     i: Integer;
-    t: TCallStackEntryBase;
+    t: TCallStackEntry;
   begin
     S := GetPart(['*'], [','], Line);
     if S = 'running'
@@ -1986,7 +1986,7 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
     S: String;
     i, x: Integer;
     ct: TThreads;
-    t: TCallStackEntryBase;
+    t: TCallStackEntry;
   begin
     S := GetPart('=', ',', Line, False, False);
     x := StringCase(S, ['thread-created', 'thread-exited', 'thread-group-started']);
@@ -2368,7 +2368,7 @@ var
     S: String;
     i: Integer;
     ct: TThreads;
-    t: TCallStackEntryBase;
+    t: TCallStackEntry;
   begin
     Result := False;
     S := GetPart('*', ',', Line);
@@ -2419,7 +2419,7 @@ var
     S: String;
     i, x: Integer;
     ct: TThreads;
-    t: TCallStackEntryBase;
+    t: TCallStackEntry;
   begin
     S := GetPart('=', ',', Line, False, False);
     x := StringCase(S, ['thread-created', 'thread-exited']);
@@ -3090,7 +3090,7 @@ end;
 
 { TGDBMIDebuggerCommandThreads }
 
-function TGDBMIDebuggerCommandThreads.GetThread(AnIndex: Integer): TCallStackEntryBase;
+function TGDBMIDebuggerCommandThreads.GetThread(AnIndex: Integer): TCallStackEntry;
 begin
   Result := FThreads[AnIndex];
 end;
@@ -6541,7 +6541,7 @@ var
       AList[i].Free;
   end;
 
-  procedure UpdateEntry(AnEntry: TCallStackEntryBase; AArgInfo, AFrameInfo : TGDBMINameValueList);
+  procedure UpdateEntry(AnEntry: TCallStackEntry; AArgInfo, AFrameInfo : TGDBMINameValueList);
   var
     i, j, n, e, NameEnd: Integer;
     Arguments: TStringList;
@@ -6710,7 +6710,7 @@ func="??"
   var
     Args: TGDBMINameValueListArray;
     Frames: TGDBMINameValueListArray;
-    e: TCallStackEntryBase;
+    e: TCallStackEntry;
   begin
     try
       CurStartIdx := AStartIdx;
@@ -6726,7 +6726,7 @@ func="??"
       then if not It.EOM
       then IT.Next;
       while it.Valid and (not It.EOM) do begin
-        e := TCallStackEntryBase(It.DataPtr^);
+        e := TCallStackEntry(It.DataPtr^);
         if e.Index > AEndIdx then break;
         UpdateEntry(e, Args[e.Index-AStartIdx], Frames[e.Index-AStartIdx]);
         It.Next;
@@ -6761,10 +6761,10 @@ begin
       if not It.Locate(StartIdx)
       then if not It.EOM
       then IT.Next;
-      StartIdx := TCallStackEntryBase(It.DataPtr^).Index;
+      StartIdx := TCallStackEntry(It.DataPtr^).Index;
       EndIdx := StartIdx;
       It.Next;
-      while (not It.EOM) and (TCallStackEntryBase(It.DataPtr^).Index = EndIdx+1) do begin
+      while (not It.EOM) and (TCallStackEntry(It.DataPtr^).Index = EndIdx+1) do begin
         inc(EndIdx);
         if EndIdx = FCallstack.HighestUnknown then
           Break;
