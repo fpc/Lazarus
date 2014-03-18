@@ -46,3 +46,13 @@ tutorial
 topics:
 - TColorMapSeries
 - Zooming/Panning (TZoomDragTool, TPanDragTool, TChartExtentHistory)
+
+--------------------------------------------------------------------------------
+folder "bar_series"
+--------------------------------------------------------------------------------
+tutorial
+  http://wiki.lazarus.freepascal.org/TAChart_Tutorial:_BarSeries
+  
+topics
+- multiple bar series arranged side-by-side
+- TRandomChartSource

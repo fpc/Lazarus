@@ -1,0 +1,106 @@
+object Form1: TForm1
+  Left = 381
+  Height = 272
+  Top = 444
+  Width = 429
+  Caption = 'Form1'
+  ClientHeight = 272
+  ClientWidth = 429
+  LCLVersion = '1.3'
+  object Chart1: TChart
+    Left = 0
+    Height = 272
+    Top = 0
+    Width = 384
+    AxisList = <    
+      item
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Grid.Visible = False
+        TickLength = 0
+        Alignment = calBottom
+        Marks.Format = '%2:s'
+        Marks.Source = LabelsChartSource
+        Marks.Style = smsLabel
+        Minors = <        
+          item
+            Intervals.Count = 1
+            Intervals.MinLength = 5
+            Intervals.Options = [aipUseCount, aipUseMinLength]
+            TickLength = 4
+          end>
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Legend.Visible = True
+    Margins.Bottom = 0
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    ParentColor = False
+    object RedBarSeries: TBarSeries
+      Title = 'red'
+      BarBrush.Color = clRed
+      BarOffsetPercent = -25
+      BarWidthPercent = 25
+      Source = RedChartSource
+    end
+    object BlueBarSeries: TBarSeries
+      Title = 'blue'
+      BarBrush.Color = clBlue
+      BarWidthPercent = 25
+      Source = BlueChartSource
+    end
+    object YellowBarSeries: TBarSeries
+      Title = 'yellow'
+      BarBrush.Color = clYellow
+      BarOffsetPercent = 25
+      BarWidthPercent = 25
+      Source = YellowChartSource
+    end
+  end
+  object RedChartSource: TRandomChartSource
+    PointsNumber = 4
+    RandSeed = 1
+    XMax = 4
+    XMin = 1
+    YMax = 100
+    YMin = 0
+    left = 360
+    top = 72
+  end
+  object BlueChartSource: TRandomChartSource
+    PointsNumber = 4
+    RandSeed = 2
+    XMax = 4
+    XMin = 1
+    YMax = 100
+    YMin = 0
+    left = 360
+    top = 120
+  end
+  object YellowChartSource: TRandomChartSource
+    PointsNumber = 4
+    RandSeed = 3
+    XMax = 4
+    XMin = 1
+    YMax = 100
+    YMin = 0
+    left = 360
+    top = 168
+  end
+  object LabelsChartSource: TListChartSource
+    DataPoints.Strings = (
+      '1|1|?|Q1'
+      '2|2|?|Q2'
+      '3|3|?|Q3'
+      '4|4|?|Q4'
+    )
+    left = 361
+    top = 220
+  end
+end
