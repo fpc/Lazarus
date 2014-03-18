@@ -8913,11 +8913,11 @@ begin
         if not Result then exit;
 
         s1 := '';
-        if dfForceBreak in FTheDebugger.FDebuggerFlags then s1 := '-f';
         s2 := StringReplace(FSource, '\', '/', [rfReplaceAll]);
         //s2 := StringReplace(s2, '"', '\"', [rfReplaceAll]);
         Result := ExecuteCommand('-break-insert %s "\"%s\":%d"',    [s1, s2, FLine], R);
 
+        if dfForceBreak in FTheDebugger.FDebuggerFlags then s1 := '-f';
         if (not Result) or (R.State = dsError) then
           Result := ExecuteCommand('-break-insert %s %s:%d',    [s1, ExtractFileName(FSource), FLine], R);
       end;
