@@ -725,7 +725,7 @@ type
     function CreateEntry: TDbgEntityValue; override;
   public
     procedure Add(const AName, AValue: String);
-    procedure SetDataValidity(AValidity: TDebuggerDataState); virtual; abstract;
+    procedure SetDataValidity(AValidity: TDebuggerDataState); virtual;
   public
     function Count: Integer;reintroduce; virtual;
     property Entries[AnIndex: Integer]: TLocalsValue read GetEntry;
@@ -2360,6 +2360,11 @@ begin
   v.FName := AName;
   v.FValue := AValue;
   inherited Add(v);
+end;
+
+procedure TLocals.SetDataValidity(AValidity: TDebuggerDataState);
+begin
+  //
 end;
 
 function TLocals.Count: Integer;

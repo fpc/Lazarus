@@ -47,8 +47,8 @@ type
     //FSignals: TBaseSignals;
     //FBreakPoints: TIDEBreakPoints;
     //FBreakPointGroups: TIDEBreakPointGroups;
-    FLocals: TIdeLocalsMonitor;
-    FLineInfo: TIDELineInfo;
+    FLocals: TLocalsMonitor;
+    FLineInfo: TBaseLineInfo;
     FWatches: TIdeWatchesMonitor;
     FThreads: TThreadsMonitor;
     FRegisters: TRegistersMonitor;
@@ -340,8 +340,8 @@ var
     FThreads := TThreadsMonitor.Create;
     FExceptions := TBaseExceptions.Create(TBaseException);
     //FSignals := TBaseSignals.Create(TBaseSignal);
-    FLocals := TIdeLocalsMonitor.Create;
-    FLineInfo := TIDELineInfo.Create;
+    FLocals := TLocalsMonitor.Create;
+    FLineInfo := TBaseLineInfo.Create;
     FCallStack := TTestCallStackMonitor.Create;
     FRegisters := TRegistersMonitor.Create;
 
@@ -349,7 +349,7 @@ var
     FWatches.Supplier := Gdb.Watches;
     FThreads.Supplier := Gdb.Threads;
     FLocals.Supplier := Gdb.Locals;
-    FLineInfo.Master := Gdb.LineInfo;
+    //FLineInfo.Master := Gdb.LineInfo;
     FCallStack.Supplier := Gdb.CallStack;
     Gdb.Exceptions := FExceptions;
     //FSignals.Master := Gdb.Signals;

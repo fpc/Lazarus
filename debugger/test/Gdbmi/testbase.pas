@@ -220,8 +220,8 @@ type
     //FSignals: TBaseSignals;
     //FBreakPoints: TIDEBreakPoints;
     //FBreakPointGroups: TIDEBreakPointGroups;
-    FLocals: TIdeLocalsMonitor;
-    FLineInfo: TIDELineInfo;
+    FLocals: TLocalsMonitor;
+    FLineInfo: TBaseLineInfo;
     FWatches: TIdeWatchesMonitor;
     FThreads: TThreadsMonitor;
     FRegisters: TRegistersMonitor;
@@ -295,8 +295,8 @@ type
     property Exceptions: TBaseExceptions read FExceptions;      // A list of exceptions we should ignore
     property CallStack: TTestCallStackMonitor read FCallStack;
     property Disassembler: TBaseDisassembler read FDisassembler;
-    property Locals: TIdeLocalsMonitor read FLocals;
-    property LineInfo: TIDELineInfo read FLineInfo;
+    property Locals: TLocalsMonitor read FLocals;
+    property LineInfo: TBaseLineInfo read FLineInfo;
     property Registers: TRegistersMonitor read FRegisters;
     //property Signals: TBaseSignals read FSignals;               // A list of actions for signals we know of
     property Watches: TIdeWatchesMonitor read FWatches;
@@ -558,8 +558,8 @@ begin
   FThreads := TThreadsMonitor.Create;
   FExceptions := TBaseExceptions.Create(TBaseException);
   //FSignals := TBaseSignals.Create(TBaseSignal);
-  FLocals := TIdeLocalsMonitor.Create;
-  FLineInfo := TIDELineInfo.Create;
+  FLocals := TLocalsMonitor.Create;
+  FLineInfo := TBaseLineInfo.Create;
   FCallStack := TTestCallStackMonitor.Create;
   FDisassembler := TBaseDisassembler.Create;
   FRegisters := TRegistersMonitor.Create;
@@ -572,7 +572,7 @@ begin
   FWatches.Supplier := Result.Watches;
   FThreads.Supplier := Result.Threads;
   FLocals.Supplier := Result.Locals;
-  FLineInfo.Master := Result.LineInfo;
+  //FLineInfo.Master := Result.LineInfo;
   FCallStack.Supplier := Result.CallStack;
   //FDisassembler.Master := Result.Disassembler;
   Result.Exceptions := FExceptions;
@@ -595,7 +595,7 @@ begin
   FWatches.Supplier := nil;
   FThreads.Supplier := nil;
   FLocals.Supplier := nil;
-  FLineInfo.Master := nil;
+  //FLineInfo.Master := nil;
   FCallStack.Supplier := nil;
   //FDisassembler.Master := nil;
   //FExceptions.Master := nil;
