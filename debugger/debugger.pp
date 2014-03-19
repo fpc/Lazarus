@@ -1397,13 +1397,6 @@ type
                                   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
                                  ); reintroduce;
   public
-    constructor Create(const AnAdress: TDbgPtr;
-                       const AnArguments: TStrings; const AFunctionName: String;
-                       const FileName, FullName: String;
-                       const ALine: Integer;
-                       const AThreadId: Integer; const AThreadName: String;
-                       const AThreadState: String;
-                       AState: TDebuggerDataState = ddsValid); overload;
     function CreateCopy: TThreadEntry; override;
     property TopFrame: TIdeThreadFrameEntry read GetTopFrame;
   end;
@@ -1412,16 +1405,9 @@ type
 
   TIdeThreads = class(TThreads)
   private
-    FCurrentThreadId: Integer;
-    FList: TList;
     function GetEntry(const AnIndex: Integer): TIdeThreadEntry;
     function GetEntryById(const AnID: Integer): TIdeThreadEntry;
   protected
-    procedure SetCurrentThreadId(AValue: Integer); override;
-    function GetCurrentThreadId: Integer; override;
-    function GetEntryBase(const AnIndex: Integer): TThreadEntry; override;
-    function GetEntryByIdBase(const AnID: Integer): TThreadEntry; override;
-    procedure Assign(AOther: TIdeThreads);
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                     APath: string;
                                     AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
@@ -1431,12 +1417,6 @@ type
                                   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
                                  );
   public
-    constructor Create;
-    destructor Destroy; override;
-    function Count: Integer; override;
-    procedure Clear; override;
-    procedure Add(AThread: TThreadEntry); override;
-    procedure Remove(AThread: TThreadEntry); override;
     function CreateEntry(const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
                        const FileName, FullName: String;
@@ -4170,7 +4150,7 @@ end;
 
 procedure TCurrentThreads.SetCurrentThreadId(AValue: Integer);
 begin
-  if FCurrentThreadId = AValue then exit;
+  if CurrentThreadId = AValue then exit;
   DebugLn(DBG_DATA_MONITORS, ['DebugDataMonitor: TCurrentThreads.SetCurrentThreadId ', AValue]);
   inherited SetCurrentThreadId(AValue);
   FMonitor.CurrentChanged; // TODO ChangedSelection
@@ -4481,18 +4461,6 @@ begin
   AConfig.SetValue(APath + 'ThreadState', ThreadState);
 end;
 
-constructor TIdeThreadEntry.Create(const AnAdress: TDbgPtr; const AnArguments: TStrings;
-  const AFunctionName: String; const FileName, FullName: String; const ALine: Integer;
-  const AThreadId: Integer; const AThreadName: String; const AThreadState: String;
-  AState: TDebuggerDataState);
-begin
-  inherited Create;
-  TopFrame.Init(AnAdress, AnArguments, AFunctionName, FileName, FullName, ALine, AState);
-  FThreadId    := AThreadId;
-  FThreadName  := AThreadName;
-  FThreadState := AThreadState;
-end;
-
 function TIdeThreadEntry.CreateCopy: TThreadEntry;
 begin
   Result := TIdeThreadEntry.Create;
@@ -4503,53 +4471,12 @@ end;
 
 function TIdeThreads.GetEntry(const AnIndex: Integer): TIdeThreadEntry;
 begin
-  if (AnIndex < 0) or (AnIndex >= Count) then exit(nil);
-  Result := TIdeThreadEntry(FList[AnIndex]);
+  Result := TIdeThreadEntry(inherited Entries[AnIndex]);
 end;
 
 function TIdeThreads.GetEntryById(const AnID: Integer): TIdeThreadEntry;
-var
-  i: Integer;
 begin
-  i := Count - 1;
-  while i >= 0 do begin
-    Result := Entries[i];
-    if Result.ThreadId = AnID then
-      exit;
-    dec(i);
-  end;
-  Result := nil;
-end;
-
-procedure TIdeThreads.SetCurrentThreadId(AValue: Integer);
-begin
-  if FCurrentThreadId = AValue then exit;
-  FCurrentThreadId := AValue;
-end;
-
-function TIdeThreads.GetCurrentThreadId: Integer;
-begin
-  Result := FCurrentThreadId;
-end;
-
-function TIdeThreads.GetEntryBase(const AnIndex: Integer): TThreadEntry;
-begin
-  Result := TThreadEntry(GetEntry(AnIndex));
-end;
-
-function TIdeThreads.GetEntryByIdBase(const AnID: Integer): TThreadEntry;
-begin
-  Result := TThreadEntry(GetEntryById(AnID));
-end;
-
-procedure TIdeThreads.Assign(AOther: TIdeThreads);
-var
-  i: Integer;
-begin
-  Clear;
-  FCurrentThreadId := AOther.FCurrentThreadId;
-  for i := 0 to AOther.FList.Count-1 do
-    FList.Add(TIdeThreadEntry(AOther.FList[i]).CreateCopy);
+  Result := TIdeThreadEntry(inherited EntryById[AnID]);
 end;
 
 procedure TIdeThreads.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string;
@@ -4557,15 +4484,17 @@ procedure TIdeThreads.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: st
 var
   c, i: Integer;
   e: TIdeThreadEntry;
+  NewCurrentThreadId: Integer;
 begin
   Clear;
-  FCurrentThreadId   := AConfig.GetValue(APath + 'CurrentThreadId', -1);
+  NewCurrentThreadId  := AConfig.GetValue(APath + 'CurrentThreadId', -1);
+  inherited SetCurrentThreadId(NewCurrentThreadId);
   c := AConfig.GetValue(APath + 'Count', 0);
   APath := APath + 'Entry';
   for i := 0 to c - 1 do begin
     e := TIdeThreadEntry.Create;
     e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
-    FList.Add(e);
+    List.Add(e);
   end;
 end;
 
@@ -4574,55 +4503,11 @@ procedure TIdeThreads.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: stri
 var
   i: Integer;
 begin
-  AConfig.SetValue(APath + 'CurrentThreadId', FCurrentThreadId);
+  AConfig.SetValue(APath + 'CurrentThreadId', CurrentThreadId);
   AConfig.SetDeleteValue(APath + 'Count', Count, 0);
   APath := APath + 'Entry';
   for i := 0 to Count - 1 do
     Entries[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
-end;
-
-constructor TIdeThreads.Create;
-begin
-  FList := TList.Create;
-end;
-
-destructor TIdeThreads.Destroy;
-begin
-  Clear;
-  FreeAndNil(FList);
-  inherited Destroy;
-end;
-
-function TIdeThreads.Count: Integer;
-begin
-  Result := FList.Count;
-end;
-
-procedure TIdeThreads.Clear;
-begin
-  while FList.Count > 0 do begin
-    TIdeThreadEntry(Flist[0]).Free;
-    FList.Delete(0);
-  end;
-end;
-
-procedure TIdeThreads.Add(AThread: TThreadEntry);
-begin
-  FList.Add((AThread as TIdeThreadEntry).CreateCopy);
-  if FList.Count = 1 then
-    FCurrentThreadId := (AThread as TIdeThreadEntry).ThreadId;
-end;
-
-procedure TIdeThreads.Remove(AThread: TThreadEntry);
-begin
-  FList.Remove(AThread);
-  if FCurrentThreadId = (AThread as TIdeThreadEntry).ThreadId then begin
-    if FList.Count > 0 then
-      FCurrentThreadId := Entries[0].ThreadId
-    else
-      FCurrentThreadId := 0;
-  end;
-  AThread.Free;
 end;
 
 function TIdeThreads.CreateEntry(const AnAdress: TDbgPtr; const AnArguments: TStrings;

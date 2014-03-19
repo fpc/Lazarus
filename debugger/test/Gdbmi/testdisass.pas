@@ -50,7 +50,7 @@ type
     FLocals: TIdeLocalsMonitor;
     FLineInfo: TIDELineInfo;
     FWatches: TIdeWatchesMonitor;
-    FThreads: TIdeThreadsMonitor;
+    FThreads: TThreadsMonitor;
     FRegisters: TRegistersMonitor;
   published
     procedure RangeMap;
@@ -337,7 +337,7 @@ var
     IdeDisAss := Gdb.Disassembler;
 
     FWatches := TIdeWatchesMonitor.Create;
-    FThreads := TIdeThreadsMonitor.Create;
+    FThreads := TThreadsMonitor.Create;
     FExceptions := TBaseExceptions.Create(TBaseException);
     //FSignals := TBaseSignals.Create(TBaseSignal);
     FLocals := TIdeLocalsMonitor.Create;

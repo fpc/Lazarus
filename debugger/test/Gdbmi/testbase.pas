@@ -223,7 +223,7 @@ type
     FLocals: TIdeLocalsMonitor;
     FLineInfo: TIDELineInfo;
     FWatches: TIdeWatchesMonitor;
-    FThreads: TIdeThreadsMonitor;
+    FThreads: TThreadsMonitor;
     FRegisters: TRegistersMonitor;
   private
     FParent: TGDBTestsuite;
@@ -300,7 +300,7 @@ type
     property Registers: TRegistersMonitor read FRegisters;
     //property Signals: TBaseSignals read FSignals;               // A list of actions for signals we know of
     property Watches: TIdeWatchesMonitor read FWatches;
-    property Threads: TIdeThreadsMonitor read FThreads;
+    property Threads: TThreadsMonitor read FThreads;
   end;
 
 function GetCompilers: TCompilerList;
@@ -555,7 +555,7 @@ begin
   //FBreakPoints := TManagedBreakPoints.Create(Self);
   //FBreakPointGroups := TIDEBreakPointGroups.Create;
   FWatches := TIdeWatchesMonitor.Create;
-  FThreads := TIdeThreadsMonitor.Create;
+  FThreads := TThreadsMonitor.Create;
   FExceptions := TBaseExceptions.Create(TBaseException);
   //FSignals := TBaseSignals.Create(TBaseSignal);
   FLocals := TIdeLocalsMonitor.Create;

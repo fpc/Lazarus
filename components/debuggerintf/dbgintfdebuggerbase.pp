@@ -1313,6 +1313,13 @@ type
     function CreateStackEntry: TCallStackEntry; virtual;
   public
     constructor Create;
+    constructor Create(const AnAdress: TDbgPtr;
+                       const AnArguments: TStrings; const AFunctionName: String;
+                       const FileName, FullName: String;
+                       const ALine: Integer;
+                       const AThreadId: Integer; const AThreadName: String;
+                       const AThreadState: String;
+                       AState: TDebuggerDataState = ddsValid);
     function CreateCopy: TThreadEntry; virtual;
     destructor Destroy; override;
     procedure Assign(AnOther: TThreadEntry); virtual;
@@ -1326,27 +1333,33 @@ type
   { TThreadsBase }
 
   TThreads = class(TObject)
+  private
+    FCurrentThreadId: Integer;
+    FList: TList;
+    function GetEntry(const AnIndex: Integer): TThreadEntry;
+    function GetEntryById(const AnID: Integer): TThreadEntry;
   protected
-    function GetEntryBase(const AnIndex: Integer): TThreadEntry; virtual; abstract;
-    function GetEntryByIdBase(const AnID: Integer): TThreadEntry; virtual; abstract;
-    function GetCurrentThreadId: Integer; virtual; abstract;
-    procedure SetCurrentThreadId(AValue: Integer); virtual; abstract;
+    procedure SetCurrentThreadId(AValue: Integer); virtual;
+    property List: TList read FList;
   public
-    function Count: Integer; virtual; abstract;
-    procedure Clear; virtual; abstract;
-    procedure Add(AThread: TThreadEntry); virtual; abstract;
-    procedure Remove(AThread: TThreadEntry); virtual; abstract;
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(AnOther: TThreads); virtual;
+    function Count: Integer; virtual;
+    procedure Clear; virtual;
+    procedure Add(AThread: TThreadEntry); virtual;
+    procedure Remove(AThread: TThreadEntry); virtual;
     function  CreateEntry(const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
                        const FileName, FullName: String;
                        const ALine: Integer;
                        const AThreadId: Integer; const AThreadName: String;
                        const AThreadState: String;
-                       AState: TDebuggerDataState = ddsValid): TThreadEntry; virtual; abstract;
-    procedure SetValidity(AValidity: TDebuggerDataState); virtual; abstract;
-    property Entries[const AnIndex: Integer]: TThreadEntry read GetEntryBase; default;
-    property EntryById[const AnID: Integer]: TThreadEntry read GetEntryByIdBase;
-    property CurrentThreadId: Integer read GetCurrentThreadId write SetCurrentThreadId;
+                       AState: TDebuggerDataState = ddsValid): TThreadEntry; virtual;
+    procedure SetValidity(AValidity: TDebuggerDataState); virtual;
+    property Entries[const AnIndex: Integer]: TThreadEntry read GetEntry; default;
+    property EntryById[const AnID: Integer]: TThreadEntry read GetEntryById;
+    property CurrentThreadId: Integer read FCurrentThreadId write SetCurrentThreadId;
   end;
 
   { TThreadsSupplier }
@@ -1943,6 +1956,18 @@ begin
   inherited Create;
 end;
 
+constructor TThreadEntry.Create(const AnAdress: TDbgPtr; const AnArguments: TStrings;
+  const AFunctionName: String; const FileName, FullName: String; const ALine: Integer;
+  const AThreadId: Integer; const AThreadName: String; const AThreadState: String;
+  AState: TDebuggerDataState);
+begin
+  Create;
+  TopFrame.Init(AnAdress, AnArguments, AFunctionName, FileName, FullName, ALine, AState);
+  FThreadId    := AThreadId;
+  FThreadName  := AThreadName;
+  FThreadState := AThreadState;
+end;
+
 function TThreadEntry.CreateCopy: TThreadEntry;
 begin
   Result := TThreadEntry.Create;
@@ -1962,6 +1987,102 @@ begin
   FThreadId    := AnOther.FThreadId;
   FThreadName  := AnOther.FThreadName;
   FThreadState := AnOther.FThreadState;
+end;
+
+{ TThreads }
+
+function TThreads.GetEntry(const AnIndex: Integer): TThreadEntry;
+begin
+  if (AnIndex < 0) or (AnIndex >= Count) then exit(nil);
+  Result := TThreadEntry(FList[AnIndex]);
+end;
+
+function TThreads.GetEntryById(const AnID: Integer): TThreadEntry;
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  while i >= 0 do begin
+    Result := Entries[i];
+    if Result.ThreadId = AnID then
+      exit;
+    dec(i);
+  end;
+  Result := nil;
+end;
+
+procedure TThreads.SetCurrentThreadId(AValue: Integer);
+begin
+  if FCurrentThreadId = AValue then exit;
+  FCurrentThreadId := AValue;
+end;
+
+constructor TThreads.Create;
+begin
+  FList := TList.Create;
+end;
+
+destructor TThreads.Destroy;
+begin
+  Clear;
+  FreeAndNil(FList);
+  inherited Destroy;
+end;
+
+procedure TThreads.Assign(AnOther: TThreads);
+var
+  i: Integer;
+begin
+  Clear;
+  FCurrentThreadId := AnOther.FCurrentThreadId;
+  for i := 0 to AnOther.FList.Count-1 do
+    FList.Add(TThreadEntry(AnOther.FList[i]).CreateCopy);
+end;
+
+function TThreads.Count: Integer;
+begin
+  Result := FList.Count;
+end;
+
+procedure TThreads.Clear;
+begin
+  while FList.Count > 0 do begin
+    TThreadEntry(Flist[0]).Free;
+    FList.Delete(0);
+  end;
+end;
+
+procedure TThreads.Add(AThread: TThreadEntry);
+begin
+  FList.Add(AThread.CreateCopy);
+  if FList.Count = 1 then
+    FCurrentThreadId := AThread.ThreadId;
+end;
+
+procedure TThreads.Remove(AThread: TThreadEntry);
+begin
+  FList.Remove(AThread);
+  if FCurrentThreadId = AThread.ThreadId then begin
+    if FList.Count > 0 then
+      FCurrentThreadId := Entries[0].ThreadId
+    else
+      FCurrentThreadId := 0;
+  end;
+  AThread.Free;
+end;
+
+function TThreads.CreateEntry(const AnAdress: TDbgPtr; const AnArguments: TStrings;
+  const AFunctionName: String; const FileName, FullName: String; const ALine: Integer;
+  const AThreadId: Integer; const AThreadName: String; const AThreadState: String;
+  AState: TDebuggerDataState): TThreadEntry;
+begin
+  Result := TThreadEntry.Create(AnAdress, AnArguments, AFunctionName, FileName,
+    FullName, ALine, AThreadId, AThreadName, AThreadState, AState);
+end;
+
+procedure TThreads.SetValidity(AValidity: TDebuggerDataState);
+begin
+  //
 end;
 
 { TThreadsMonitor }
