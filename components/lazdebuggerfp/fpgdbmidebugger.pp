@@ -1186,7 +1186,7 @@ end;
 
 function TFpGDBMIDebugger.GetLocationForContext(AThreadId, AStackFrame: Integer): TDBGPtr;
 var
-  t: TCallStackEntry;
+  t: TThreadEntry;
   s: TCallStackBase;
   f: TCallStackEntry;
   //Instr: TGDBMIDebuggerInstruction;
@@ -1225,7 +1225,7 @@ begin
     exit;
   end;
   if AStackFrame = 0 then begin
-    Result := t.Address;
+    Result := t.TopFrame.Address;
     //DebugLn(['Returning addr from Threads', dbgs(Result)]);
     exit;
   end;

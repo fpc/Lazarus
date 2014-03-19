@@ -138,11 +138,11 @@ begin
       lvThreads.Items[i].SubItems[0] := IntToStr(Threads[i].ThreadId);
       lvThreads.Items[i].SubItems[1] := Threads[i].ThreadName;
       lvThreads.Items[i].SubItems[2] := Threads[i].ThreadState;
-      s := Threads[i].Source;
-      if s = '' then s := ':' + IntToHex(Threads[i].Address, 8);
+      s := Threads[i].TopFrame.Source;
+      if s = '' then s := ':' + IntToHex(Threads[i].TopFrame.Address, 8);
       lvThreads.Items[i].SubItems[3] := s;
-      lvThreads.Items[i].SubItems[4] := IntToStr(Threads[i].Line);
-      lvThreads.Items[i].SubItems[5] := Threads[i].GetFunctionWithArg;
+      lvThreads.Items[i].SubItems[4] := IntToStr(Threads[i].TopFrame.Line);
+      lvThreads.Items[i].SubItems[5] := Threads[i].TopFrame.GetFunctionWithArg;
       lvThreads.Items[i].Data := Threads[i];
     end;
   finally
@@ -210,7 +210,7 @@ begin
   Entry := TIdeThreadEntry(Item.Data);
   if Entry = nil then Exit;
 
-  JumpToUnitSource(Entry.UnitInfo, Entry.Line);
+  JumpToUnitSource(Entry.TopFrame.UnitInfo, Entry.TopFrame.Line);
 end;
 
 function TThreadsDlg.GetSelectedSnapshot: TSnapshot;

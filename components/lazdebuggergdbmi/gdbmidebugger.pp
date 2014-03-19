@@ -1419,8 +1419,8 @@ type
     FCurrentThreadId: Integer;
     FCurrentThreads: TThreads;
     FSuccess: Boolean;
-    FThreads: Array of TCallStackEntry;
-    function GetThread(AnIndex: Integer): TCallStackEntry;
+    FThreads: Array of TThreadEntry;
+    function GetThread(AnIndex: Integer): TThreadEntry;
   protected
     function DoExecute: Boolean; override;
   public
@@ -1428,7 +1428,7 @@ type
     destructor Destroy; override;
     //function DebugText: String; override;
     function Count: Integer;
-    property Threads[AnIndex: Integer]: TCallStackEntry read GetThread;
+    property Threads[AnIndex: Integer]: TThreadEntry read GetThread;
     property CurrentThreadId: Integer read FCurrentThreadId;
     property Success: Boolean read FSuccess;
     property  CurrentThreads: TThreads read FCurrentThreads write FCurrentThreads;
@@ -1938,7 +1938,7 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
     S: String;
     ct: TThreads;
     i: Integer;
-    t: TCallStackEntry;
+    t: TThreadEntry;
   begin
     S := GetPart(['*'], [','], Line);
     if S = 'running'
@@ -1986,7 +1986,7 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
     S: String;
     i, x: Integer;
     ct: TThreads;
-    t: TCallStackEntry;
+    t: TThreadEntry;
   begin
     S := GetPart('=', ',', Line, False, False);
     x := StringCase(S, ['thread-created', 'thread-exited', 'thread-group-started']);
@@ -2000,7 +2000,7 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
             case x of
               0: begin
                   if t = nil then begin
-                    t := ct.CreateEntry(0, 0, nil, '', '', '', 0, i, '', 'unknown');
+                    t := ct.CreateEntry(0, nil, '', '', '', 0, i, '', 'unknown');
                     ct.Add(t);
                     t.Free;
                   end
@@ -2368,7 +2368,7 @@ var
     S: String;
     i: Integer;
     ct: TThreads;
-    t: TCallStackEntry;
+    t: TThreadEntry;
   begin
     Result := False;
     S := GetPart('*', ',', Line);
@@ -2419,7 +2419,7 @@ var
     S: String;
     i, x: Integer;
     ct: TThreads;
-    t: TCallStackEntry;
+    t: TThreadEntry;
   begin
     S := GetPart('=', ',', Line, False, False);
     x := StringCase(S, ['thread-created', 'thread-exited']);
@@ -2433,7 +2433,7 @@ var
             case x of
               0: begin
                   if t = nil then begin
-                    t := FTheDebugger.Threads.CurrentThreads.CreateEntry(0, 0, nil, '', '', '', 0, i, '', 'unknown');
+                    t := FTheDebugger.Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, i, '', 'unknown');
                     ct.Add(t);
                     t.Free;
                   end
@@ -3090,7 +3090,7 @@ end;
 
 { TGDBMIDebuggerCommandThreads }
 
-function TGDBMIDebuggerCommandThreads.GetThread(AnIndex: Integer): TCallStackEntry;
+function TGDBMIDebuggerCommandThreads.GetThread(AnIndex: Integer): TThreadEntry;
 begin
   Result := FThreads[AnIndex];
 end;
@@ -3160,7 +3160,7 @@ begin
 
 
       FThreads[i] := CurrentThreads.CreateEntry(
-        0, addr,
+        addr,
         Arguments,
         func,
         filename, fullname,

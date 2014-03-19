@@ -981,11 +981,11 @@ type
     FLine: Integer;
     FArguments: TStrings;
   protected
-    // for use in TThreadEntry ONLY
-    function GetThreadId: Integer; virtual; abstract;
-    function GetThreadName: String; virtual; abstract;
-    function GetThreadState: String; virtual; abstract;
-    procedure SetThreadState(AValue: String); virtual; abstract;
+    //// for use in TThreadEntry ONLY
+    //function GetThreadId: Integer; virtual; abstract;
+    //function GetThreadName: String; virtual; abstract;
+    //function GetThreadState: String; virtual; abstract;
+    //procedure SetThreadState(AValue: String); virtual; abstract;
     function GetArgumentCount: Integer;
     function GetArgumentName(const AnIndex: Integer): String;
     function GetArgumentValue(const AnIndex: Integer): String;
@@ -995,13 +995,14 @@ type
     function GetSource: String; virtual;
     function GetValidity: TDebuggerDataState; virtual;
     procedure SetValidity(AValue: TDebuggerDataState); virtual;
-    //procedure ClearLocation; // TODO need a way to call Changed on TCallStack or TThreads // corrently done in SetThreadState
     procedure InitFields(const AIndex:Integer; const AnAddress: TDbgPtr;
                          const AnArguments: TStrings; const AFunctionName: String;
                          const ALine: Integer; AValidity: TDebuggerDataState);
   public
     constructor Create;
+    function CreateCopy: TCallStackEntry; virtual;
     destructor Destroy; override;
+    procedure Assign(AnOther: TCallStackEntry); virtual;
     procedure Init(const AnAddress: TDbgPtr;
                    const AnArguments: TStrings; const AFunctionName: String;
                    const AUnitName, AClassName, AProcName, AFunctionArgs: String;
@@ -1010,6 +1011,7 @@ type
                    const AnArguments: TStrings; const AFunctionName: String;
                    const FileName, FullName: String;
                    const ALine: Integer; AState: TDebuggerDataState = ddsValid); virtual;
+    procedure ClearLocation; virtual; // TODO need a way to call Changed on TCallStack or TThreads // corrently done in SetThreadState
     function GetFunctionWithArg: String;
     //function IsCurrent: Boolean;
     //procedure MakeCurrent;
@@ -1023,10 +1025,10 @@ type
     property Source: String read GetSource;
     property Validity: TDebuggerDataState read GetValidity write SetValidity;
   public
-    // for use in TThreadEntry ONLY
-    property ThreadId: Integer read GetThreadId;
-    property ThreadName: String read GetThreadName;
-    property ThreadState: String read GetThreadState write SetThreadState;
+    //// for use in TThreadEntry ONLY
+    //property ThreadId: Integer read GetThreadId;
+    //property ThreadName: String read GetThreadName;
+    //property ThreadState: String read GetThreadState write SetThreadState;
   end;
 
   { TCallStackBase }
@@ -1046,7 +1048,7 @@ type
     function GetRawEntries: TMap; virtual; abstract;
   public
     constructor Create;
-    constructor CreateCopy(const ASource: TCallStackBase);
+    function CreateCopy: TCallStackBase; virtual;
     procedure Assign(AnOther: TCallStackBase); virtual;
 
     procedure PrepareRange({%H-}AIndex, {%H-}ACount: Integer); virtual; abstract;
@@ -1298,29 +1300,52 @@ type
 
  TThreadsMonitor = class;
 
+  { TThreadEntry }
+
+  TThreadEntry = class(TObject)
+  private
+    FTopFrame: TCallStackEntry;
+  protected
+    FThreadId: Integer;
+    FThreadName: String;
+    FThreadState: String;
+    procedure SetThreadState(AValue: String); virtual;
+    function CreateStackEntry: TCallStackEntry; virtual;
+  public
+    constructor Create;
+    function CreateCopy: TThreadEntry; virtual;
+    destructor Destroy; override;
+    procedure Assign(AnOther: TThreadEntry); virtual;
+  published
+    property ThreadId: Integer read FThreadId;
+    property ThreadName: String read FThreadName;
+    property ThreadState: String read FThreadState write SetThreadState;
+    property TopFrame: TCallStackEntry read FTopFrame;
+ end;
+
   { TThreadsBase }
 
   TThreads = class(TObject)
   protected
-    function GetEntryBase(const AnIndex: Integer): TCallStackEntry; virtual; abstract;
-    function GetEntryByIdBase(const AnID: Integer): TCallStackEntry; virtual; abstract;
+    function GetEntryBase(const AnIndex: Integer): TThreadEntry; virtual; abstract;
+    function GetEntryByIdBase(const AnID: Integer): TThreadEntry; virtual; abstract;
     function GetCurrentThreadId: Integer; virtual; abstract;
     procedure SetCurrentThreadId(AValue: Integer); virtual; abstract;
   public
     function Count: Integer; virtual; abstract;
     procedure Clear; virtual; abstract;
-    procedure Add(AThread: TCallStackEntry); virtual; abstract;
-    procedure Remove(AThread: TCallStackEntry); virtual; abstract;
-    function  CreateEntry(const AIndex:Integer; const AnAdress: TDbgPtr;
+    procedure Add(AThread: TThreadEntry); virtual; abstract;
+    procedure Remove(AThread: TThreadEntry); virtual; abstract;
+    function  CreateEntry(const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
                        const FileName, FullName: String;
                        const ALine: Integer;
                        const AThreadId: Integer; const AThreadName: String;
                        const AThreadState: String;
-                       AState: TDebuggerDataState = ddsValid): TCallStackEntry; virtual; abstract;
+                       AState: TDebuggerDataState = ddsValid): TThreadEntry; virtual; abstract;
     procedure SetValidity(AValidity: TDebuggerDataState); virtual; abstract;
-    property Entries[const AnIndex: Integer]: TCallStackEntry read GetEntryBase; default;
-    property EntryById[const AnID: Integer]: TCallStackEntry read GetEntryByIdBase;
+    property Entries[const AnIndex: Integer]: TThreadEntry read GetEntryBase; default;
+    property EntryById[const AnID: Integer]: TThreadEntry read GetEntryByIdBase;
     property CurrentThreadId: Integer read GetCurrentThreadId write SetCurrentThreadId;
   end;
 
@@ -1897,6 +1922,46 @@ begin
         [PtrUInt(ADisassRange), Count, Capacity, FirstAddr, RangeStartAddr, LastAddr, RangeEndAddr, LastEntryEndAddr, fo]);
     {$POP}
   end;
+end;
+
+{ TThreadEntry }
+
+procedure TThreadEntry.SetThreadState(AValue: String);
+begin
+  if FThreadState = AValue then Exit;
+  FThreadState := AValue;
+end;
+
+function TThreadEntry.CreateStackEntry: TCallStackEntry;
+begin
+  Result := TCallStackEntry.Create;
+end;
+
+constructor TThreadEntry.Create;
+begin
+  FTopFrame := CreateStackEntry;
+  inherited Create;
+end;
+
+function TThreadEntry.CreateCopy: TThreadEntry;
+begin
+  Result := TThreadEntry.Create;
+  Result.Assign(Self);
+end;
+
+destructor TThreadEntry.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FTopFrame);
+end;
+
+procedure TThreadEntry.Assign(AnOther: TThreadEntry);
+begin
+  FTopFrame.Free;
+  FTopFrame    := AnOther.TopFrame.CreateCopy;
+  FThreadId    := AnOther.FThreadId;
+  FThreadName  := AnOther.FThreadName;
+  FThreadState := AnOther.FThreadState;
 end;
 
 { TThreadsMonitor }
@@ -2508,10 +2573,10 @@ begin
   inherited;
 end;
 
-constructor TCallStackBase.CreateCopy(const ASource: TCallStackBase);
+function TCallStackBase.CreateCopy: TCallStackBase;
 begin
-  Create;
-  Assign(ASource);
+  Result := TCallStackBase.Create;
+  Result.Assign(Self);
 end;
 
 procedure TCallStackBase.Assign(AnOther: TCallStackBase);
@@ -3524,6 +3589,13 @@ begin
   FValidity := AValue;
 end;
 
+procedure TCallStackEntry.ClearLocation;
+begin
+  InitFields(0, 0, nil, '', 0, Validity);
+  if Arguments <> nil then
+    Arguments.Clear;
+end;
+
 procedure TCallStackEntry.InitFields(const AIndex: Integer; const AnAddress: TDbgPtr;
   const AnArguments: TStrings; const AFunctionName: String; const ALine: Integer;
   AValidity: TDebuggerDataState);
@@ -3543,10 +3615,26 @@ begin
   FArguments := TStringlist.Create;
 end;
 
+function TCallStackEntry.CreateCopy: TCallStackEntry;
+begin
+  Result := TCallStackEntry.Create;
+  Result.Assign(Self);
+end;
+
 destructor TCallStackEntry.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(FArguments);
+end;
+
+procedure TCallStackEntry.Assign(AnOther: TCallStackEntry);
+begin
+  FValidity     := AnOther.FValidity;
+  FIndex        := AnOther.FIndex;
+  FAddress      := AnOther.FAddress;
+  FFunctionName := AnOther.FFunctionName;
+  FLine         := AnOther.FLine;
+  FArguments.Assign(AnOther.FArguments);
 end;
 
 procedure TCallStackEntry.Init(const AnAddress: TDbgPtr; const AnArguments: TStrings;
@@ -3621,7 +3709,7 @@ var
 begin
   Clear;
   for i := 0 to AnOther.FList.Count-1 do
-    FList.Add(TCallStackBase.CreateCopy(TCallStackBase(AnOther.FList[i])));
+    FList.Add(TCallStackBase(AnOther.FList[i]).CreateCopy);
 end;
 
 procedure TCallStackList.Add(ACallStack: TCallStackBase);
