@@ -1047,11 +1047,14 @@ begin
   begin
     FText := NewText;
     S := NSStringUTF8(NewText);
+    try
     FTextStorage.beginEditing;
     FTextStorage.replaceCharactersInRange_withString(GetTextRange, S);
     updateFont;
     updateColor;
     FTextStorage.endEditing;
+    except
+    end;
     S.release;
   end;
 end;
