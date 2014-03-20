@@ -299,8 +299,6 @@ debugger/*.bak
 debugger/fpdebug/*.bak
 debugger/fpdebug/units
 debugger/test/*.bak
-debugger/test/examples/*.bak
-debugger/test/examples/units
 debugger/test/units
 debugger/units
 designer/*.bak
