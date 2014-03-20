@@ -142,12 +142,12 @@ type
     function  GetThreadId: Integer;
     function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
     function GetStackframe: Integer;
-    procedure WatchAdd(const ASender: TIdeWatches; const AWatch: TWatch);
-    procedure WatchUpdate(const ASender: TIdeWatches; const AWatch: TWatch);
-    procedure WatchRemove(const ASender: TIdeWatches; const AWatch: TWatch);
+    procedure WatchAdd(const ASender: TIdeWatches; const AWatch: TIdeWatch);
+    procedure WatchUpdate(const ASender: TIdeWatches; const AWatch: TIdeWatch);
+    procedure WatchRemove(const ASender: TIdeWatches; const AWatch: TIdeWatch);
 
     procedure UpdateInspectPane;
-    procedure UpdateItem(const AItem: TListItem; const AWatch: TWatch);
+    procedure UpdateItem(const AItem: TListItem; const AWatch: TIdeWatch);
     procedure UpdateAll;
     procedure DisableAllActions;
     function  GetSelectedSnapshot: TSnapshot;
@@ -728,7 +728,7 @@ procedure TWatchesDlg.UpdateInspectPane;
 var
   Watch: TCurrentWatch;
   i: integer;
-  d: TWatchValue;
+  d: TIdeWatchValue;
   t: TDBGType;
 begin
   if not nbInspect.Visible then exit;
@@ -789,7 +789,7 @@ begin
   end;
 end;
 
-procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TWatch);
+procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TIdeWatch);
   function ClearMultiline(const AValue: ansistring): ansistring;
   var
     j: SizeInt;
@@ -821,7 +821,7 @@ procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TWatch);
     end;
   end;
 var
-  WatchValue: TWatchValue;
+  WatchValue: TIdeWatchValue;
 begin
   DebugBoss.LockCommandProcessing;
   try
@@ -911,7 +911,7 @@ begin
   then Result := SnapshotManager.SelectedEntry;
 end;
 
-procedure TWatchesDlg.WatchAdd(const ASender: TIdeWatches; const AWatch: TWatch);
+procedure TWatchesDlg.WatchAdd(const ASender: TIdeWatches; const AWatch: TIdeWatch);
 var
   Item: TListItem;
 begin
@@ -928,7 +928,7 @@ begin
   lvWatchesSelectItem(nil, nil, False);
 end;
 
-procedure TWatchesDlg.WatchUpdate(const ASender: TIdeWatches; const AWatch: TWatch);
+procedure TWatchesDlg.WatchUpdate(const ASender: TIdeWatches; const AWatch: TIdeWatch);
 var
   Item: TListItem;
 begin
@@ -948,7 +948,7 @@ begin
   finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.WatchUpdate']); end;
 end;
 
-procedure TWatchesDlg.WatchRemove(const ASender: TIdeWatches; const AWatch: TWatch);
+procedure TWatchesDlg.WatchRemove(const ASender: TIdeWatches; const AWatch: TIdeWatch);
 begin
   lvWatches.Items.FindData(AWatch).Free;
   lvWatchesSelectItem(nil, nil, False);

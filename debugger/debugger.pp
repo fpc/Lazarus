@@ -232,7 +232,7 @@ type
   TIDEBreakPoints = class;
   TIDEBreakPointGroup = class;
   TIDEBreakPointGroups = class;
-  TWatch = class;
+  TIdeWatch = class;
   TIdeWatches = class;
   TCurrentWatch = class;
   TCurrentWatches = class;
@@ -541,7 +541,7 @@ const
 type
 
   TWatchesEvent =
-       procedure(const ASender: TIdeWatches; const AWatch: TWatch) of object;
+       procedure(const ASender: TIdeWatches; const AWatch: TIdeWatch) of object;
 
   TWatchesNotification = class(TDebuggerNotification)
   private
@@ -568,25 +568,15 @@ type
 
   { TWatchValue }
 
-  TWatchValue = class(TWatchValueBase)
-  private
-    FWatch: TWatch;
-    FDisplayFormat: TWatchDisplayFormat;
-    FEvaluateFlags: TDBGEvaluateFlags;
-    FRepeatCount: Integer;
-    FStackFrame: Integer;
-    FThreadId: Integer;
+  { TIdeWatchValue }
 
+  TIdeWatchValue = class(TWatchValue)
+  private
+    function GetWatch: TIdeWatch;
   protected
-    function GetDisplayFormat: TWatchDisplayFormat; override;
-    function GetEvaluateFlags: TDBGEvaluateFlags; override;
     function GetExpression: String; override;
-    function GetRepeatCount: Integer; override;
-    function GetStackFrame: Integer; override;
-    function GetThreadId: Integer; override;
     function GetTypeInfo: TDBGType; override;
     function GetValue: String; override;
-    function GetWatchBase: TWatchBase; override;
 
     procedure RequestData; virtual;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
@@ -594,73 +584,47 @@ type
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
                               const APath: string);
   public
-    constructor Create; virtual;  overload;
-    constructor Create(AOwnerWatch: TWatch);  overload;
-    constructor Create(AOwnerWatch: TWatch;
+    constructor Create(AOwnerWatch: TIdeWatch);
+    constructor Create(AOwnerWatch: TIdeWatch;
                        const AThreadId: Integer;
                        const AStackFrame: Integer
-                      );  overload;
-    procedure Assign(AnOther: TWatchValueBase); override;
+                      );
+    procedure Assign(AnOther: TWatchValue); override;
 
-    property Watch: TWatch read FWatch;
+    property Watch: TIdeWatch read GetWatch;
   end;
 
-  { TWatchValueList }
+  { TIdeWatchValueList }
 
-  TWatchValueList = class
+  TIdeWatchValueList = class(TWatchValueList)
   private
-    FList: TList;
-    FWatch: TWatch;
-    function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
-    function GetEntryByIdx(AnIndex: integer): TWatchValue;
+    function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TIdeWatchValue;
+    function GetEntryByIdx(AnIndex: integer): TIdeWatchValue;
+    function GetWatch: TIdeWatch;
   protected
-    function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer): TWatchValue; virtual;
+    function CopyEntry(AnEntry: TWatchValue): TWatchValue; override;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
                               APath: string);
   public
-    procedure Assign(AnOther: TWatchValueList);
-    constructor Create(AOwnerWatch: TWatch);
-    destructor Destroy; override;
-    procedure Add(AnEntry: TWatchValue);
-    procedure Clear;
-    function Count: Integer;
-    property EntriesByIdx[AnIndex: integer]: TWatchValue read GetEntryByIdx;
-    property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
+    constructor Create(AOwnerWatch: TIdeWatch);
+    property EntriesByIdx[AnIndex: integer]: TIdeWatchValue read GetEntryByIdx;
+    property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TIdeWatchValue
              read GetEntry; default;
-    property Watch: TWatch read FWatch;
+    property Watch: TIdeWatch read GetWatch;
   end;
 
-  { TWatch }
+  { TIdeWatch }
 
-  TWatch = class(TWatchBase)
+  TIdeWatch = class(TWatchBase)
   private
-    FEnabled: Boolean;
-    FEvaluateFlags: TDBGEvaluateFlags;
-    FExpression: String;
-    FDisplayFormat: TWatchDisplayFormat;
-    FRepeatCount: Integer;
-    FValueList: TWatchValueList;
+    function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TIdeWatchValue;
   protected
-    function GetDisplayFormat: TWatchDisplayFormat; override;
-    function GetEnabled: Boolean; override;
-    function GetEvaluateFlags: TDBGEvaluateFlags; override;
-    function GetExpression: String; override;
-    function GetRepeatCount: Integer; override;
-    function GetValueBase(const AThreadId: Integer; const AStackFrame: Integer): TWatchValueBase; override;
-    procedure SetDisplayFormat(AValue: TWatchDisplayFormat); override;
-    procedure SetEnabled(AValue: Boolean); override;
-    procedure SetEvaluateFlags(AValue: TDBGEvaluateFlags); override;
-    procedure SetExpression(AValue: String); override;
-    procedure SetRepeatCount(AValue: Integer); override;
-    function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
-    procedure AssignTo(Dest: TPersistent); override;
-    function CreateValueList: TWatchValueList; virtual;
-    procedure DoModified; virtual;  // user-storable data: expression, enabled, display-format
-    procedure DoEnableChange; virtual;
-    procedure DoExpressionChange; virtual;
-    procedure DoDisplayFormatChanged; virtual;
+    function CreateValueList: TWatchValueList; override;
+    procedure DoEnableChange; override;
+    procedure DoExpressionChange; override;
+    procedure DoDisplayFormatChanged; override;
   protected
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 const APath: string);
@@ -668,16 +632,9 @@ type
                               const APath: string);
   public
     constructor Create(ACollection: TCollection); override;
-    destructor Destroy; override;
     procedure ClearValues; override;
   public
-    property Enabled: Boolean read GetEnabled write SetEnabled;
-    property Expression: String read GetExpression write SetExpression;
-    property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat write SetDisplayFormat;
-    property EvaluateFlags: TDBGEvaluateFlags read FEvaluateFlags write SetEvaluateFlags;
-    property RepeatCount: Integer read FRepeatCount write SetRepeatCount;
-  public
-    property Values[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
+    property Values[const AThreadId: Integer; const AStackFrame: Integer]: TIdeWatchValue
              read GetValue;
   end;
 
@@ -685,8 +642,8 @@ type
 
   TIdeWatches = class(TWatches)
   private
-    function GetItem(const AnIndex: Integer): TWatch;
-    procedure SetItem(const AnIndex: Integer; const AValue: TWatch);
+    function GetItem(const AnIndex: Integer): TIdeWatch;
+    procedure SetItem(const AnIndex: Integer; const AValue: TIdeWatch);
   protected
     function WatchClass: TBaseWatchClass; override;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
@@ -694,48 +651,48 @@ type
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
                               APath: string);
   public
-    function Add(const AExpression: String): TWatch;
-    function Find(const AExpression: String): TWatch; override;
-    property Items[const AnIndex: Integer]: TWatch read GetItem write SetItem; default;
+    function Add(const AExpression: String): TIdeWatch;
+    function Find(const AExpression: String): TIdeWatch; override;
+    property Items[const AnIndex: Integer]: TIdeWatch read GetItem write SetItem; default;
     procedure ClearValues; override;
   end;
 
   { TCurrentWatchValue }
 
-  TCurrentWatchValue = class(TWatchValue)
+  TCurrentWatchValue = class(TIdeWatchValue)
   private
-    FSnapShot: TWatchValue;
-    procedure SetSnapShot(const AValue: TWatchValue);
+    FSnapShot: TIdeWatchValue;
+    procedure SetSnapShot(const AValue: TIdeWatchValue);
   protected
     procedure RequestData; override;
     procedure DoDataValidityChanged(AnOldValidity: TDebuggerDataState); override;
   public
-    property SnapShot: TWatchValue read FSnapShot write SetSnapShot;
+    property SnapShot: TIdeWatchValue read FSnapShot write SetSnapShot;
   end;
 
   { TCurrentWatchValueList }
 
-  TCurrentWatchValueList = class(TWatchValueList)
+  TCurrentWatchValueList = class(TIdeWatchValueList)
   private
-    FSnapShot: TWatchValueList;
-    procedure SetSnapShot(const AValue: TWatchValueList);
+    FSnapShot: TIdeWatchValueList;
+    procedure SetSnapShot(const AValue: TIdeWatchValueList);
   protected
-    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue; override;
-    property SnapShot: TWatchValueList read FSnapShot write SetSnapShot;
+    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TIdeWatchValue; override;
+    property SnapShot: TIdeWatchValueList read FSnapShot write SetSnapShot;
   end;
 
   { TCurrentWatch }
 
-  TCurrentWatch = class(TWatch)
+  TCurrentWatch = class(TIdeWatch)
   private
-    FSnapShot: TWatch;
-    procedure SetSnapShot(const AValue: TWatch);
+    FSnapShot: TIdeWatch;
+    procedure SetSnapShot(const AValue: TIdeWatch);
   protected
-    function CreateValueList: TWatchValueList; override;
+    function CreateValueList: TIdeWatchValueList; override;
     procedure DoChanged; override;
     procedure DoModified; override;
     procedure RequestData(AWatchValue: TCurrentWatchValue);
-    property SnapShot: TWatch read FSnapShot write SetSnapShot;
+    property SnapShot: TIdeWatch read FSnapShot write SetSnapShot;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -1180,7 +1137,7 @@ type
     constructor Create;
     function CreateCopy: TCallStackBase; override;
     destructor Destroy; override;
-    procedure Assign(AnOther: TCallStackBase);
+    procedure Assign(AnOther: TCallStackBase); override;
     procedure PrepareRange({%H-}AIndex, {%H-}ACount: Integer); override;
     procedure ChangeCurrentIndex(ANewIndex: Integer); virtual;
     function HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool; virtual; // Can be faster than getting the full count
@@ -1239,7 +1196,7 @@ type
   public
     constructor Create(AMonitor: TIdeCallStackMonitor);
     destructor Destroy; override;
-    procedure Assign(AnOther: TIdeCallStack);
+    procedure Assign(AnOther: TCallStackBase); override;
     procedure PrepareRange(AIndex, ACount: Integer); override;
     procedure ChangeCurrentIndex(ANewIndex: Integer); override;
     procedure DoEntriesCreated; override;
@@ -3220,7 +3177,7 @@ end;
 
 { TCurrentWatchValue }
 
-procedure TCurrentWatchValue.SetSnapShot(const AValue: TWatchValue);
+procedure TCurrentWatchValue.SetSnapShot(const AValue: TIdeWatchValue);
 begin
   assert((FSnapShot=nil) or (AValue=nil), 'TCurrentWatchValue already have snapshot');
   if FSnapShot = AValue then exit;
@@ -3231,22 +3188,22 @@ end;
 
 procedure TCurrentWatchValue.RequestData;
 begin
-  TCurrentWatch(FWatch).RequestData(self);
+  TCurrentWatch(Watch).RequestData(self);
 end;
 
 procedure TCurrentWatchValue.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
 begin
   if Validity = ddsRequested then exit;
-  TCurrentWatches(TCurrentWatch(FWatch).Collection).Update(FWatch);
+  TCurrentWatches(TCurrentWatch(Watch).Collection).Update(Watch);
   if FSnapShot <> nil
   then FSnapShot.Assign(self);
 end;
 
 { TCurrentWatchValueList }
 
-procedure TCurrentWatchValueList.SetSnapShot(const AValue: TWatchValueList);
+procedure TCurrentWatchValueList.SetSnapShot(const AValue: TIdeWatchValueList);
 var
-  R: TWatchValue;
+  R: TIdeWatchValue;
   i: Integer;
 begin
   assert((FSnapShot=nil) or (AValue=nil), 'TCurrentWatchValueList already have snapshot');
@@ -3261,7 +3218,7 @@ begin
     // Assign
     FSnapShot.Clear;
     for i := 0 to Count - 1 do begin
-      R := TWatchValue.Create(FSnapShot.FWatch);
+      R := TIdeWatchValue.Create(FSnapShot.Watch);
       R.Assign(EntriesByIdx[i]);
       FSnapShot.Add(R);
       TCurrentWatchValue(EntriesByIdx[i]).SnapShot := R;
@@ -3271,15 +3228,15 @@ begin
 end;
 
 function TCurrentWatchValueList.CreateEntry(const AThreadId: Integer;
-  const AStackFrame: Integer): TWatchValue;
+  const AStackFrame: Integer): TIdeWatchValue;
 var
-  R: TWatchValue;
+  R: TIdeWatchValue;
 begin
-  try DebugLnEnter(DBG_DATA_MONITORS, ['DebugDataMonitor: >>ENTER: TCurrentWatchValueList.CreateEntry  AThreadId=', AThreadId, '  AStackFrame=',AStackFrame, ' Expr=', FWatch.Expression]);
-  Result := TCurrentWatchValue.Create(FWatch, AThreadId, AStackFrame);
+  try DebugLnEnter(DBG_DATA_MONITORS, ['DebugDataMonitor: >>ENTER: TCurrentWatchValueList.CreateEntry  AThreadId=', AThreadId, '  AStackFrame=',AStackFrame, ' Expr=', Watch.Expression]);
+  Result := TCurrentWatchValue.Create(Watch, AThreadId, AStackFrame);
   Add(Result);
   if FSnapShot <> nil then begin
-    R := TWatchValue.Create(FSnapShot.FWatch);
+    R := TIdeWatchValue.Create(FSnapShot.Watch);
     FSnapShot.Add(R);
     TCurrentWatchValue(Result).SnapShot := R;
   end;
@@ -3288,53 +3245,45 @@ end;
 
 { TWatchValueList }
 
-function TWatchValueList.GetEntry(const AThreadId: Integer;
-  const AStackFrame: Integer): TWatchValue;
-var
-  i: Integer;
+function TIdeWatchValueList.GetEntry(const AThreadId: Integer;
+  const AStackFrame: Integer): TIdeWatchValue;
 begin
-  i := FList.Count - 1;
-  while i >= 0 do begin
-    Result := TWatchValue(FList[i]);
-    if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame) and
-       (Result.DisplayFormat = FWatch.DisplayFormat) and
-       (Result.RepeatCount = FWatch.RepeatCount) and
-       (Result.EvaluateFlags = FWatch.EvaluateFlags)
-    then
-      exit;
-    dec(i);
-  end;
-  Result := CreateEntry(AThreadId, AStackFrame);
+  Result := TIdeWatchValue(inherited Entries[AThreadId, AStackFrame]);
 end;
 
-function TWatchValueList.GetEntryByIdx(AnIndex: integer): TWatchValue;
+function TIdeWatchValueList.GetEntryByIdx(AnIndex: integer): TIdeWatchValue;
 begin
-  Result := TWatchValue(FList[AnIndex]);
+  Result := TIdeWatchValue(inherited EntriesByIdx[AnIndex]);
 end;
 
-function TWatchValueList.CreateEntry(const AThreadId: Integer;
-  const AStackFrame: Integer): TWatchValue;
+function TIdeWatchValueList.GetWatch: TIdeWatch;
 begin
-  Result := nil;
+  Result := TIdeWatch(inherited Watch);
 end;
 
-procedure TWatchValueList.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+function TIdeWatchValueList.CopyEntry(AnEntry: TWatchValue): TWatchValue;
+begin
+  Result := TIdeWatchValue.Create(Watch);
+  Result.Assign(AnEntry);
+end;
+
+procedure TIdeWatchValueList.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
   APath: string);
 var
-  e: TWatchValue;
+  e: TIdeWatchValue;
   c, i: Integer;
 begin
   Clear;
   c := AConfig.GetValue(APath + 'Count', 0);
   APath := APath + 'Entry';
   for i := 0 to c - 1 do begin
-    e := TWatchValue.Create(FWatch);
+    e := TIdeWatchValue.Create(Watch);
     e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/');
     Add(e);
   end;
 end;
 
-procedure TWatchValueList.SaveDataToXMLConfig(const AConfig: TXMLConfig;
+procedure TIdeWatchValueList.SaveDataToXMLConfig(const AConfig: TXMLConfig;
   APath: string);
 var
   i: Integer;
@@ -3345,61 +3294,20 @@ begin
     EntriesByIdx[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
 end;
 
-procedure TWatchValueList.Assign(AnOther: TWatchValueList);
-var
-  i: Integer;
-  v: TWatchValue;
+constructor TIdeWatchValueList.Create(AOwnerWatch: TIdeWatch);
 begin
-  Clear;
-  for i := 0 to AnOther.FList.Count - 1 do begin
-    v := TWatchValue.Create(FWatch);
-    v.Assign(TWatchValue(AnOther.FList[i]));
-    FList.Add(v);
-  end;
-end;
-
-constructor TWatchValueList.Create(AOwnerWatch: TWatch);
-begin
-  assert(AOwnerWatch <> nil, 'TWatchValueList.Create without owner');
   assert(((Self is TCurrentWatchValueList) and (AOwnerWatch is TCurrentWatch)) or ((not(Self is TCurrentWatchValueList)) and not(AOwnerWatch is TCurrentWatch)),
          'TWatchValueList.Create: Watch and list differ (current and none current)');
-  FList := TList.Create;
-  FWatch := AOwnerWatch;
-  inherited Create;
-end;
-
-destructor TWatchValueList.Destroy;
-begin
-  Clear;
-  inherited Destroy;
-  FreeAndNil(FList);
-end;
-
-procedure TWatchValueList.Add(AnEntry: TWatchValue);
-begin
-  Flist.Add(AnEntry);
-end;
-
-procedure TWatchValueList.Clear;
-begin
-  while FList.Count > 0 do begin
-    TObject(FList[0]).Free;
-    FList.Delete(0);
-  end;
-end;
-
-function TWatchValueList.Count: Integer;
-begin
-  Result := FList.Count;
+  inherited Create(AOwnerWatch);
 end;
 
 { TWatchValue }
 
-function TWatchValue.GetValue: String;
+function TIdeWatchValue.GetValue: String;
 var
   i: Integer;
 begin
-  if not FWatch.Enabled then begin
+  if not Watch.Enabled then begin
     Result := '<disabled>';
     exit;
   end;
@@ -3420,47 +3328,22 @@ begin
 
 end;
 
-function TWatchValue.GetWatchBase: TWatchBase;
+function TIdeWatchValue.GetWatch: TIdeWatch;
 begin
-  Result := FWatch;
+  Result := TIdeWatch(inherited Watch);
 end;
 
-function TWatchValue.GetDisplayFormat: TWatchDisplayFormat;
+function TIdeWatchValue.GetExpression: String;
 begin
-  Result := FDisplayFormat;
+  Result := inherited GetExpression;
 end;
 
-function TWatchValue.GetEvaluateFlags: TDBGEvaluateFlags;
-begin
-  Result := FEvaluateFlags;
-end;
-
-function TWatchValue.GetExpression: String;
-begin
-  Result := FWatch.Expression;
-end;
-
-function TWatchValue.GetRepeatCount: Integer;
-begin
-  Result := FRepeatCount;
-end;
-
-function TWatchValue.GetStackFrame: Integer;
-begin
-  Result := FStackFrame;
-end;
-
-function TWatchValue.GetThreadId: Integer;
-begin
-  Result := FThreadId;
-end;
-
-function TWatchValue.GetTypeInfo: TDBGType;
+function TIdeWatchValue.GetTypeInfo: TDBGType;
 var
   i: Integer;
 begin
   Result := nil;
-  if not FWatch.Enabled then
+  if not Watch.Enabled then
     exit;
   i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
   if Validity = ddsUnknown then begin
@@ -3477,12 +3360,12 @@ begin
   end;
 end;
 
-procedure TWatchValue.RequestData;
+procedure TIdeWatchValue.RequestData;
 begin
   Validity := ddsInvalid;
 end;
 
-procedure TWatchValue.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+procedure TIdeWatchValue.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
   const APath: string);
 var
   NewValidity: TDebuggerDataState;
@@ -3504,40 +3387,31 @@ begin
   end;
 end;
 
-procedure TWatchValue.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+procedure TIdeWatchValue.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
 var
   s: String;
 begin
-  AConfig.SetValue(APath + 'ThreadId', FThreadId);
-  AConfig.SetValue(APath + 'StackFrame', FStackFrame);
+  AConfig.SetValue(APath + 'ThreadId', ThreadId);
+  AConfig.SetValue(APath + 'StackFrame', StackFrame);
   AConfig.SetValue(APath + 'Value', Value);
-  WriteStr(s{%H-}, FDisplayFormat);
+  WriteStr(s{%H-}, DisplayFormat);
   AConfig.SetDeleteValue(APath + 'DisplayFormat', s, 'wdfDefault');
   WriteStr(s, Validity);
   AConfig.SetDeleteValue(APath + 'Validity', s, 'ddsValid');
-  AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
-  AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
+  AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in EvaluateFlags, False);
+  AConfig.SetDeleteValue(APath + 'RepeatCount', RepeatCount, 0);
 end;
 
-constructor TWatchValue.Create;
+constructor TIdeWatchValue.Create(AOwnerWatch: TIdeWatch);
 begin
-  assert(FWatch <> nil, 'TwatchValue without owner');
-  assert(((Self is TCurrentWatchValue) and (FWatch is TCurrentWatch)) or ((not(Self is TCurrentWatchValue)) and not(FWatch is TCurrentWatch)),
-         'TWatchValue.Create: Watch and self differ (current and none current)');
-  inherited Create;
-end;
-
-constructor TWatchValue.Create(AOwnerWatch: TWatch);
-begin
+  inherited Create(AOwnerWatch);
   Validity := ddsUnknown;
-  FWatch := AOwnerWatch;
-  FDisplayFormat := FWatch.DisplayFormat;
-  FEvaluateFlags := FWatch.EvaluateFlags;
-  FRepeatCount   := FWatch.RepeatCount;
-  Create;
+  FDisplayFormat := Watch.DisplayFormat;
+  FEvaluateFlags := Watch.EvaluateFlags;
+  FRepeatCount   := Watch.RepeatCount;
 end;
 
-constructor TWatchValue.Create(AOwnerWatch: TWatch; const AThreadId: Integer;
+constructor TIdeWatchValue.Create(AOwnerWatch: TIdeWatch; const AThreadId: Integer;
   const AStackFrame: Integer);
 begin
   Create(AOwnerWatch);
@@ -3545,12 +3419,12 @@ begin
   FStackFrame := AStackFrame;
 end;
 
-procedure TWatchValue.Assign(AnOther: TWatchValueBase);
+procedure TIdeWatchValue.Assign(AnOther: TWatchValue);
 begin
   inherited Assign(AnOther);
-  FThreadId      := TWatchValue(AnOther).FThreadId;
-  FStackFrame    := TWatchValue(AnOther).FStackFrame;
-  FDisplayFormat := TWatchValue(AnOther).FDisplayFormat;
+  FThreadId      := TIdeWatchValue(AnOther).FThreadId;
+  FStackFrame    := TIdeWatchValue(AnOther).FStackFrame;
+  FDisplayFormat := TIdeWatchValue(AnOther).FDisplayFormat;
 end;
 
 { TIdeWatchesMonitor }
@@ -3797,7 +3671,7 @@ begin
   FreeAndNil(FEntries);
 end;
 
-procedure TCurrentCallStack.Assign(AnOther: TIdeCallStack);
+procedure TCurrentCallStack.Assign(AnOther: TCallStackBase);
 begin
   inherited Assign(AnOther);
   if AnOther is TCurrentCallStack then begin
@@ -5474,116 +5348,52 @@ end;
 (******************************************************************************)
 
 { =========================================================================== }
-{ TWatch }
+{ TIdeWatch }
 { =========================================================================== }
 
-procedure TWatch.AssignTo(Dest: TPersistent);
+function TIdeWatch.CreateValueList: TWatchValueList;
 begin
-  if Dest is TWatch
-  then begin
-    TWatch(Dest).FExpression := FExpression;
-    TWatch(Dest).FEnabled := FEnabled;
-    TWatch(Dest).FDisplayFormat := FDisplayFormat;
-    TWatch(Dest).FValueList.Assign(FValueList);
-  end
-  else inherited;
+  Result := TIdeWatchValueList.Create(Self);
 end;
 
-function TWatch.CreateValueList: TWatchValueList;
-begin
-  Result := TWatchValueList.Create(Self);
-end;
-
-procedure TWatch.DoModified;
-begin
-  //
-end;
-
-constructor TWatch.Create(ACollection: TCollection);
+constructor TIdeWatch.Create(ACollection: TCollection);
 begin
   assert(((Self is TCurrentWatch) and (ACollection is TCurrentWatches)) or ((not(Self is TCurrentWatch)) and not(ACollection is TCurrentWatches)),
-         'Twatch.Create: Watch and collection differ (current and none current)');
-  FEnabled := False;
-  FValueList := CreateValueList;
+         'TIdewatch.Create: Watch and collection differ (current and none current)');
   inherited Create(ACollection);
 end;
 
-destructor TWatch.Destroy;
+procedure TIdeWatch.ClearValues;
 begin
-  FValueList.Clear;
-  inherited Destroy;
-  FreeAndNil(FValueList);
-end;
-
-procedure TWatch.ClearValues;
-begin
-  FValueList.Clear;
+  inherited ClearValues;
   TCurrentWatches(Collection).Update(Self);
 end;
 
 
-procedure TWatch.DoEnableChange;
+procedure TIdeWatch.DoEnableChange;
 begin
   Changed;
   DoModified;
 end;
 
-procedure TWatch.DoExpressionChange;
+procedure TIdeWatch.DoExpressionChange;
 begin
   Changed;
   DoModified;
 end;
 
-procedure TWatch.DoDisplayFormatChanged;
+procedure TIdeWatch.DoDisplayFormatChanged;
 begin
   Changed;
   DoModified;
 end;
 
-function TWatch.GetEnabled: Boolean;
+function TIdeWatch.GetValue(const AThreadId: Integer; const AStackFrame: Integer): TIdeWatchValue;
 begin
-  Result := FEnabled;
+  Result := TIdeWatchValue(inherited Values[AThreadId, AStackFrame]);
 end;
 
-function TWatch.GetEvaluateFlags: TDBGEvaluateFlags;
-begin
-  Result := FEvaluateFlags;
-end;
-
-function TWatch.GetValue(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
-begin
-  Result := FValueList[AThreadId, AStackFrame];
-end;
-
-procedure TWatch.SetEvaluateFlags(AValue: TDBGEvaluateFlags);
-begin
-  if FEvaluateFlags = AValue then Exit;
-  FEvaluateFlags := AValue;
-  Changed;
-  DoModified;
-end;
-
-procedure TWatch.SetRepeatCount(AValue: Integer);
-begin
-  if FRepeatCount = AValue then Exit;
-  FRepeatCount := AValue;
-  Changed;
-  DoModified;
-end;
-
-function TWatch.GetDisplayFormat: TWatchDisplayFormat;
-begin
-  Result := FDisplayFormat;
-end;
-
-procedure TWatch.SetDisplayFormat(AValue: TWatchDisplayFormat);
-begin
-  if AValue = FDisplayFormat then exit;
-  FDisplayFormat := AValue;
-  DoDisplayFormatChanged;
-end;
-
-procedure TWatch.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+procedure TIdeWatch.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
 begin
   FEnabled    := AConfig.GetValue(APath + 'Enabled', True);
   FExpression := AConfig.GetValue(APath + 'Expression', '');
@@ -5594,10 +5404,10 @@ begin
   except FDisplayFormat := wdfDefault; end;
   FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
 
-  FValueList.LoadDataFromXMLConfig(AConfig, APath + 'ValueList/');
+  TIdeWatchValueList(FValueList).LoadDataFromXMLConfig(AConfig, APath + 'ValueList/');
 end;
 
-procedure TWatch.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+procedure TIdeWatch.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
 var
   s: String;
 begin
@@ -5608,49 +5418,14 @@ begin
   AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
 
-  FValueList.SaveDataToXMLConfig(AConfig, APath + 'ValueList/');
-end;
-
-function TWatch.GetExpression: String;
-begin
-  Result := FExpression;
-end;
-
-function TWatch.GetRepeatCount: Integer;
-begin
-  Result := FRepeatCount;
-end;
-
-function TWatch.GetValueBase(const AThreadId: Integer;
-  const AStackFrame: Integer): TWatchValueBase;
-begin
-  Result := TWatchValueBase(FValueList[AThreadId, AStackFrame]);
-end;
-
-procedure TWatch.SetEnabled(AValue: Boolean);
-begin
-  if FEnabled <> AValue
-  then begin
-    FEnabled := AValue;
-    DoEnableChange;
-  end;
-end;
-
-procedure TWatch.SetExpression(AValue: String);
-begin
-  if AValue <> FExpression
-  then begin
-    FExpression := AValue;
-    FValueList.Clear;
-    DoExpressionChange;
-  end;
+  TIdeWatchValueList(FValueList).SaveDataToXMLConfig(AConfig, APath + 'ValueList/');
 end;
 
 { =========================================================================== }
 { TCurrentWatch }
 { =========================================================================== }
 
-procedure TCurrentWatch.SetSnapShot(const AValue: TWatch);
+procedure TCurrentWatch.SetSnapShot(const AValue: TIdeWatch);
 begin
   assert((FSnapShot=nil) or (AValue=nil), 'TCurrentWatch already have snapshot');
   if FSnapShot = AValue then exit;
@@ -5661,11 +5436,11 @@ begin
     // TODO: FValueList is copied twice ?
     FSnapShot.Assign(self);
     FSnapShot.Enabled := True; // Snapshots are always enabled
-    TCurrentWatchValueList(FValueList).SnapShot := FSnapShot.FValueList;
+    TCurrentWatchValueList(FValueList).SnapShot := TIdeWatchValueList(FSnapShot.FValueList);
   end;
 end;
 
-function TCurrentWatch.CreateValueList: TWatchValueList;
+function TCurrentWatch.CreateValueList: TIdeWatchValueList;
 begin
   Result := TCurrentWatchValueList.Create(Self);
 end;
@@ -5737,27 +5512,27 @@ end;
 { TIdeWatches }
 { =========================================================================== }
 
-function TIdeWatches.Add(const AExpression: String): TWatch;
+function TIdeWatches.Add(const AExpression: String): TIdeWatch;
 begin
   BeginUpdate;
-  Result := TWatch(inherited Add);
+  Result := TIdeWatch(inherited Add);
   Result.Expression := AExpression;
   EndUpdate;
 end;
 
-function TIdeWatches.GetItem(const AnIndex: Integer): TWatch;
+function TIdeWatches.GetItem(const AnIndex: Integer): TIdeWatch;
 begin
-  Result := TWatch(inherited Items[AnIndex]);
+  Result := TIdeWatch(inherited Items[AnIndex]);
 end;
 
-procedure TIdeWatches.SetItem(const AnIndex: Integer; const AValue: TWatch);
+procedure TIdeWatches.SetItem(const AnIndex: Integer; const AValue: TIdeWatch);
 begin
   inherited Items[AnIndex] := AValue;
 end;
 
 function TIdeWatches.WatchClass: TBaseWatchClass;
 begin
-  Result := TWatch;
+  Result := TIdeWatch;
 end;
 
 procedure TIdeWatches.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
@@ -5781,7 +5556,7 @@ begin
     Items[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
 end;
 
-function TIdeWatches.Find(const AExpression: String): TWatch;
+function TIdeWatches.Find(const AExpression: String): TIdeWatch;
 var
   n: Integer;
   S: String;
@@ -5789,7 +5564,7 @@ begin
   S := UpperCase(AExpression);
   for n := 0 to Count - 1 do
   begin
-    Result := TWatch(GetItem(n));
+    Result := TIdeWatch(GetItem(n));
     if UpperCase(Result.Expression) = S
     then Exit;
   end;
@@ -5801,7 +5576,7 @@ var
   n: Integer;
 begin
   for n := 0 to Count - 1 do
-    TWatch(GetItem(n)).ClearValues;
+    TIdeWatch(GetItem(n)).ClearValues;
 end;
 
 { =========================================================================== }
@@ -5810,7 +5585,7 @@ end;
 
 function TCurrentWatches.Add(const AExpression: String): TCurrentWatch;
 var
-  R: TWatch;
+  R: TIdeWatch;
 begin
   // if this is modified, then also update LoadFromXMLConfig
   Result := TCurrentWatch(inherited Add(AExpression));
@@ -5847,7 +5622,7 @@ end;
 
 procedure TCurrentWatches.SetSnapShot(const AValue: TIdeWatches);
 var
-  R: TWatch;
+  R: TIdeWatch;
   i: Integer;
 begin
   assert((FSnapShot=nil) or (AValue=nil), 'TCurrentWatches already have snapshot');

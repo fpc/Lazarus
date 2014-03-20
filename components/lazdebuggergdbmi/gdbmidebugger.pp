@@ -623,7 +623,7 @@ type
     procedure Changed;
     procedure Clear;
     function  ForceQueuing: Boolean;
-    procedure InternalRequestData(AWatchValue: TWatchValueBase); override;
+    procedure InternalRequestData(AWatchValue: TWatchValue); override;
     property  ParentFPListChangeStamp: Integer read FParentFPListChangeStamp;
   public
     constructor Create(const ADebugger: TDebuggerIntf);
@@ -1164,7 +1164,7 @@ type
     FEvalFlags: TDBGEvaluateFlags;
     FExpression: String;
     FDisplayFormat: TWatchDisplayFormat;
-    FWatchValue: TWatchValueBase;
+    FWatchValue: TWatchValue;
     FTextValue: String;
     FTypeInfo: TGDBType;
     FValidity: TDebuggerDataState;
@@ -1182,7 +1182,7 @@ type
     procedure UnSelectContext;
   public
     constructor Create(AOwner: TGDBMIDebugger; AExpression: String; ADisplayFormat: TWatchDisplayFormat);
-    constructor Create(AOwner: TGDBMIDebugger; AWatchValue: TWatchValueBase);
+    constructor Create(AOwner: TGDBMIDebugger; AWatchValue: TWatchValue);
     destructor Destroy; override;
     function DebugText: String; override;
     property Expression: String read FExpression;
@@ -9808,7 +9808,7 @@ begin
             and (Debugger.State <> dsInternalPause);
 end;
 
-procedure TGDBMIWatches.InternalRequestData(AWatchValue: TWatchValueBase);
+procedure TGDBMIWatches.InternalRequestData(AWatchValue: TWatchValue);
 var
   EvaluationCmdObj: TGDBMIDebuggerCommandEvaluate;
 begin
@@ -12732,7 +12732,7 @@ begin
 end;
 
 constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebugger;
-  AWatchValue: TWatchValueBase);
+  AWatchValue: TWatchValue);
 begin
   Create(AOwner, AWatchValue.Watch.Expression, AWatchValue.DisplayFormat);
   EvalFlags := AWatchValue.EvaluateFlags;

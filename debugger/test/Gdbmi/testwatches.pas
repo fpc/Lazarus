@@ -2027,7 +2027,7 @@ var
     rx: TRegExpr;
     s, s2: String;
     flag, IsValid, HasTpInfo, f2: Boolean;
-    WV: TWatchValue;
+    WV: TIdeWatchValue;
     Stack: Integer;
     n: String;
     DataRes: TWatchExpectationResult;

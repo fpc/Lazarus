@@ -100,7 +100,7 @@ type
     property TargetPID;
   protected
     procedure DoWatchFreed(Sender: TObject);
-    function EvaluateExpression(AWatchValue: TWatchValueBase;
+    function EvaluateExpression(AWatchValue: TWatchValue;
                                 AExpression: String;
                                 var AResText: String;
                                 out ATypeInfo: TDBGType;
@@ -156,7 +156,7 @@ type
     //procedure DoStateChange(const AOldState: TDBGState); override;
     procedure ProcessEvalList;
     procedure QueueCommand;
-    procedure InternalRequestData(AWatchValue: TWatchValueBase); override;
+    procedure InternalRequestData(AWatchValue: TWatchValue); override;
   public
   end;
 
@@ -917,7 +917,7 @@ end;
 
 procedure TFPGDBMIWatches.ProcessEvalList;
 var
-  WatchValue: TWatchValueBase;
+  WatchValue: TWatchValue;
   ResTypeInfo: TDBGType;
   ResText: String;
 
@@ -939,7 +939,7 @@ begin
   try // TODO: if the stack/thread is changed, registers will be wrong
     while (FpDebugger.FWatchEvalList.Count > 0) and (FEvaluationCmdObj = nil) do begin
       try
-        WatchValue := TWatchValueBase(FpDebugger.FWatchEvalList[0]);
+        WatchValue := TWatchValue(FpDebugger.FWatchEvalList[0]);
         ResTypeInfo := nil;
         if not FpDebugger.EvaluateExpression(WatchValue, WatchValue.Expression, ResText, ResTypeInfo)
         then begin
@@ -968,7 +968,7 @@ begin
   FpDebugger.QueueCommand(FEvaluationCmdObj, ForceQueuing);
 end;
 
-procedure TFPGDBMIWatches.InternalRequestData(AWatchValue: TWatchValueBase);
+procedure TFPGDBMIWatches.InternalRequestData(AWatchValue: TWatchValue);
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
     AWatchValue.Validity := ddsInvalid;
@@ -1099,7 +1099,7 @@ begin
       ReleaseRefAndNil(FLastContext[i]);
     if not(State in [dsPause, dsInternalPause]) then begin
       for i := 0 to FWatchEvalList.Count - 1 do begin
-        TWatchValueBase(FWatchEvalList[i]).RemoveFreeeNotification(@DoWatchFreed);
+        TWatchValue(FWatchEvalList[i]).RemoveFreeeNotification(@DoWatchFreed);
         //TWatchValueBase(FWatchEvalList[i]).Validity := ddsInvalid;
       end;
       FWatchEvalList.Clear;
@@ -1300,7 +1300,7 @@ begin
   FWatchEvalList.Remove(pointer(Sender));
 end;
 
-function TFpGDBMIDebugger.EvaluateExpression(AWatchValue: TWatchValueBase;
+function TFpGDBMIDebugger.EvaluateExpression(AWatchValue: TWatchValue;
   AExpression: String; var AResText: String; out ATypeInfo: TDBGType;
   EvalFlags: TDBGEvaluateFlags): Boolean;
 var
