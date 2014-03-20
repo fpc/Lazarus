@@ -426,9 +426,12 @@ var
       for i := SrcEditStartPos.Y to SrcEditStartPos.Y + aLineCount do
         Lines := Lines + SrcEdit.Lines[i-1] + LineEnding;
       Lines:=ChompOneLineEndAtEnd(Lines);
-      Progress.OnAddMatch(TheFileName,
-        Point(FoundStartPos.x, FoundStartPos.y + ReplaceLineOffset),
-        SrcEdit.CursorTextXY,Lines);
+      if (Progress<>nil)
+      and (Progress.OnAddMatch<>nil) then begin
+        Progress.OnAddMatch(TheFileName,
+          Point(FoundStartPos.x, FoundStartPos.y + ReplaceLineOffset),
+          SrcEdit.CursorTextXY,Lines);
+      end;
 
       inc(ReplaceLineOffset,aLineCount-(FoundEndPos.Y-FoundStartPos.Y));
       //DebugLn(['DoReplaceLine FoundStartPos=',dbgs(FoundStartPos),' FoundEndPos=',dbgs(FoundEndPos),' aLastLineLength=',aLastLineLength,' LastReplaceLine=',LastReplaceLine,' LastReplaceColOffset=',LastReplaceColOffset,' ReplaceLineOffset=',ReplaceLineOffset]);
@@ -460,10 +463,13 @@ var
       Lines:=ChompOneLineEndAtEnd(Lines);
       aLineCount:=LineEndCount(AReplace,aLastLineLength);
       if aLineCount = 0 then aLastLineLength := aLastLineLength + FoundStartPos.X;
-      Progress.OnAddMatch(TheFileName,
-        Point(FoundStartPos.x, FoundStartPos.y + ReplaceLineOffset),
-        Point(aLastLineLength, FoundStartPos.Y + aLineCount + ReplaceLineOffset),
-        Lines);
+      if (Progress<>nil)
+      and (Progress.OnAddMatch<>nil) then begin
+        Progress.OnAddMatch(TheFileName,
+          Point(FoundStartPos.x, FoundStartPos.y + ReplaceLineOffset),
+          Point(aLastLineLength, FoundStartPos.Y + aLineCount + ReplaceLineOffset),
+          Lines);
+      end;
 
       inc(ReplaceLineOffset,aLineCount-(FoundEndPos.Y-FoundStartPos.Y));
     end;
@@ -612,7 +618,10 @@ begin
           and (Progress.OnAddMatch<>nil) then begin
             Lines:=OriginalFile.GetLines(FoundStartPos.Y,FoundEndPos.Y);
             Lines:=ChompOneLineEndAtEnd(Lines);
-            Progress.OnAddMatch(TheFileName,FoundStartPos,FoundEndPos,Lines);
+            if (Progress<>nil)
+            and (Progress.OnAddMatch<>nil) then begin
+              Progress.OnAddMatch(TheFileName,FoundStartPos,FoundEndPos,Lines);
+            end;
           end;
         end;
       end else begin
