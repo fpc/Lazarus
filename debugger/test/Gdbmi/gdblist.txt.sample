@@ -1,5 +1,11 @@
-// Comment
-// Version is 3 pairs of 2 digits
+//This is a sample config for the test
+//
+//This file contains the list of all gdb that should be tested
+//Entries start with a line in [] brackets, giving a name that is
+//displayed by the test.
+//There must be an entry starting with exe=
+//The version is specified as one integer, made up from 3 pairs of 2 digits.
+//The symbols= line specifies, with which debug info this gdb should be tested.
 
 [gdb 6.7.50]
 exe=C:\GDB\6.7.50\gdb.exe

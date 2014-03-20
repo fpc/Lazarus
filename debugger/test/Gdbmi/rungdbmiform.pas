@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls, EditBtn, StdCtrls,
-  Buttons, CompileHelpers, TestBase, testregistry, fpcunit, GDBMIDebugger, Debugger, LCLIntf,
+  Buttons, CompileHelpers, TestBase, testregistry, fpcunit, GDBMIDebugger, LCLIntf, DbgIntfDebuggerBase,
   CheckLst, Spin, CmdLineDebugger, strutils, math;
 
 type
@@ -69,7 +69,7 @@ type
   TRunner = class(TGDBTestCase)
   private
     FTesting: Boolean;
-    procedure dobrk(ADebugger: TDebugger; ABreakPoint: TBaseBreakPoint;
+    procedure dobrk(ADebugger: TDebuggerIntf; ABreakPoint: TBaseBreakPoint;
       var ACanContinue: Boolean);
   published
     procedure DoDbgOut(Sender: TObject; const AText: String);
@@ -83,7 +83,7 @@ end;
 
 { TRunner }
 
-procedure TRunner.dobrk(ADebugger: TDebugger; ABreakPoint: TBaseBreakPoint;
+procedure TRunner.dobrk(ADebugger: TDebuggerIntf; ABreakPoint: TBaseBreakPoint;
   var ACanContinue: Boolean);
 begin
   ACanContinue := False;

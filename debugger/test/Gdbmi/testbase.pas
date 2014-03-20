@@ -5,9 +5,10 @@ unit TestBase;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry, EnvironmentOpts,
-  TransferMacros, LCLProc, LazLogger, DbgIntfDebuggerBase, CompileHelpers, Dialogs,
-  ExtToolDialog, GDBMIDebugger, FpGdbmiDebugger;
+  Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry,
+  LCLProc, LazLogger, DbgIntfDebuggerBase, CompileHelpers, Dialogs,
+  GDBMIDebugger; // , FpGdbmiDebugger;
+  // EnvironmentOpts, ExtToolDialog, TransferMacros,
 
 (*
   fpclist.txt contains lines of format:
@@ -124,8 +125,6 @@ type
     function WatchClass: TWatchClass; override;
     procedure RequestData(AWatchValue: TWatchValue);
   end;
-
-  { TIdeWatchesMonitor }
 
   { TTestWatchesMonitor }
 
@@ -426,10 +425,10 @@ begin
   Result := TCompilerList.Create;
   if FileExists(ConfDir + 'fpclist.txt') then
     Result.LoadFromFile(ConfDir + 'fpclist.txt');
-  if (Result.Count = 0) and (EnvironmentOptions.GetParsedCompilerFilename <> '') then begin
-    Result.Add('fpc from conf', EnvironmentOptions.GetParsedCompilerFilename);
-    Result.Add('fpc from conf -Xe', EnvironmentOptions.GetParsedCompilerFilename, '-Xe');
-  end;
+  //if (Result.Count = 0) and (EnvironmentOptions.GetParsedCompilerFilename <> '') then begin
+  //  Result.Add('fpc from conf', EnvironmentOptions.GetParsedCompilerFilename);
+  //  Result.Add('fpc from conf -Xe', EnvironmentOptions.GetParsedCompilerFilename, '-Xe');
+  //end;
   Compilers := Result;
 end;
 
@@ -440,8 +439,8 @@ begin
   Result := TDebuggerList.Create;
   if FileExists(ConfDir + 'gdblist.txt') then
     Result.LoadFromFile(ConfDir + 'gdblist.txt');
-  if (Result.Count = 0) and (EnvironmentOptions.GetParsedDebuggerFilename <> '') then
-    Result.Add('gdb from conf', EnvironmentOptions.GetParsedDebuggerFilename);
+  //if (Result.Count = 0) and (EnvironmentOptions.GetParsedDebuggerFilename <> '') then
+  //  Result.Add('gdb from conf', EnvironmentOptions.GetParsedDebuggerFilename);
   Debuggers := Result;
 end;
 
@@ -1514,20 +1513,20 @@ initialization
   AppDir := AppendPathDelim(AppDir + 'TestApps');
 
 
-  EnvironmentOptions := TEnvironmentOptions.Create;
-  with EnvironmentOptions do
-  begin
-    CreateConfig;
-    Load(false);
-  end;
-  GlobalMacroList:=TTransferMacroList.Create;
+  //EnvironmentOptions := TEnvironmentOptions.Create;
+  //with EnvironmentOptions do
+  //begin
+  //  CreateConfig;
+  //  Load(false);
+  //end;
+  //GlobalMacroList:=TTransferMacroList.Create;
 
   BuildTestSuites;
 
 finalization
   FreeAndNil(Compilers);
   FreeAndNil(Debuggers);
-  FreeAndNil(EnvironmentOptions);
+  //FreeAndNil(EnvironmentOptions);
 
 end.
 

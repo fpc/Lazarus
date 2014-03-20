@@ -28,29 +28,23 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="7">
+    <RequiredPackages Count="5">
       <Item1>
-        <PackageName Value="fpdebug"/>
+        <PackageName Value="LazDebuggerGdbmi"/>
       </Item1>
       <Item2>
-        <PackageName Value="LogProfiler"/>
-      </Item2>
-      <Item3>
         <PackageName Value="LCLBase"/>
         <MinVersion Major="1" Release="1" Valid="True"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FPCUnitTestRunner"/>
       </Item3>
       <Item4>
-        <PackageName Value="ide"/>
+        <PackageName Value="LCL"/>
       </Item4>
       <Item5>
-        <PackageName Value="FPCUnitTestRunner"/>
-      </Item5>
-      <Item6>
-        <PackageName Value="LCL"/>
-      </Item6>
-      <Item7>
         <PackageName Value="FCL"/>
-      </Item7>
+      </Item5>
     </RequiredPackages>
     <Units Count="13">
       <Unit0>
