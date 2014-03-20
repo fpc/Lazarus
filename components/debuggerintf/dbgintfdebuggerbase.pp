@@ -571,22 +571,22 @@ type
      wdfMemDump
     );
 
-  TWatchBase = class;
+  TWatch = class;
   TWatchesMonitor = class;
 
-  { TWatchValueBase }
+  { TWatchValue }
 
   TWatchValue = class(TFreeNotifyingObject)
   private
     FTypeInfo: TDBGType;
     FValue: String;
     FValidity: TDebuggerDataState;
-    FWatch: TWatchBase;
+    FWatch: TWatch;
 
     procedure SetValidity(AValue: TDebuggerDataState); virtual;
     procedure SetValue(AValue: String);
     procedure SetTypeInfo(AValue: TDBGType);
-    function GetWatch: TWatchBase;
+    function GetWatch: TWatch;
   protected
     FDisplayFormat: TWatchDisplayFormat;
     FEvaluateFlags: TDBGEvaluateFlags;
@@ -599,7 +599,7 @@ type
     function GetTypeInfo: TDBGType; virtual;
     function GetValue: String; virtual;
   public
-    constructor Create(AOwnerWatch: TWatchBase);
+    constructor Create(AOwnerWatch: TWatch);
     destructor Destroy; override;
     procedure Assign(AnOther: TWatchValue); virtual;
     property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
@@ -608,7 +608,7 @@ type
     property ThreadId: Integer read FThreadId;
     property StackFrame: Integer read FStackFrame;
     property Expression: String read GetExpression;
-    property Watch: TWatchBase read GetWatch;
+    property Watch: TWatch read GetWatch;
   public
     property Validity: TDebuggerDataState read FValidity write SetValidity;
     property Value: String read GetValue write SetValue;
@@ -620,7 +620,7 @@ type
   TWatchValueList = class
   private
     FList: TList;
-    FWatch: TWatchBase;
+    FWatch: TWatch;
     function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
     function GetEntryByIdx(AnIndex: integer): TWatchValue;
   protected
@@ -628,7 +628,7 @@ type
     function CopyEntry(AnEntry: TWatchValue): TWatchValue; virtual;
   public
     procedure Assign(AnOther: TWatchValueList);
-    constructor Create(AOwnerWatch: TWatchBase);
+    constructor Create(AOwnerWatch: TWatch);
     destructor Destroy; override;
     procedure Add(AnEntry: TWatchValue);
     procedure Clear;
@@ -636,12 +636,12 @@ type
     property EntriesByIdx[AnIndex: integer]: TWatchValue read GetEntryByIdx;
     property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
              read GetEntry; default;
-    property Watch: TWatchBase read FWatch;
+    property Watch: TWatch read FWatch;
   end;
 
-  { TWatchBase }
+  { TWatch }
 
-  TWatchBase = class(TDelayedUdateItem)
+  TWatch = class(TDelayedUdateItem)
   private
 
     procedure SetDisplayFormat(AValue: TWatchDisplayFormat);
@@ -677,20 +677,20 @@ type
     property Values[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
              read GetValue;
   end;
-  TBaseWatchClass = class of TWatchBase;
+  TWatchClass = class of TWatch;
 
   { TWatches }
 
   TWatches = class(TCollection)
   protected
-    function GetItemBase(const AnIndex: Integer): TWatchBase;
-    procedure SetItemBase(const AnIndex: Integer; const AValue: TWatchBase);
-    function WatchClass: TBaseWatchClass; virtual;
+    function GetItemBase(const AnIndex: Integer): TWatch;
+    procedure SetItemBase(const AnIndex: Integer; const AValue: TWatch);
+    function WatchClass: TWatchClass; virtual;
   public
     constructor Create;
-    procedure ClearValues; virtual; abstract;
-    function Find(const AExpression: String): TWatchBase; virtual; abstract;
-    property Items[const AnIndex: Integer]: TWatchBase read GetItemBase write SetItemBase; default;
+    procedure ClearValues;
+    function Find(const AExpression: String): TWatch;
+    property Items[const AnIndex: Integer]: TWatch read GetItemBase write SetItemBase; default;
   end;
 
   { TWatchesSupplier }
@@ -752,7 +752,7 @@ type
      property Value: String read FValue;
    end;
 
- { TLocalsBase }
+ { TLocals }
 
   TLocals = class(TDbgEntityValuesList)
   private
@@ -771,7 +771,7 @@ type
     property Values[const AnIndex: Integer]: String read GetValue;
   end;
 
-  { TLocalsListBase }
+  { TLocalsList }
 
   TLocalsList = class(TDbgEntitiesThreadStackList)
   private
@@ -2313,13 +2313,13 @@ begin
   Result := FValue;
 end;
 
-constructor TWatchValue.Create(AOwnerWatch: TWatchBase);
+constructor TWatchValue.Create(AOwnerWatch: TWatch);
 begin
   FWatch := AOwnerWatch;
   inherited Create;
 end;
 
-function TWatchValue.GetWatch: TWatchBase;
+function TWatchValue.GetWatch: TWatch;
 begin
   Result := FWatch;
 end;
@@ -2338,16 +2338,16 @@ begin
   FValidity      := AnOther.FValidity;
 end;
 
-{ TWatchBase }
+{ TWatch }
 
-procedure TWatchBase.SetDisplayFormat(AValue: TWatchDisplayFormat);
+procedure TWatch.SetDisplayFormat(AValue: TWatchDisplayFormat);
 begin
   if AValue = FDisplayFormat then exit;
   FDisplayFormat := AValue;
   DoDisplayFormatChanged;
 end;
 
-procedure TWatchBase.SetEnabled(AValue: Boolean);
+procedure TWatch.SetEnabled(AValue: Boolean);
 begin
   if FEnabled <> AValue
   then begin
@@ -2356,7 +2356,7 @@ begin
   end;
 end;
 
-procedure TWatchBase.SetEvaluateFlags(AValue: TDBGEvaluateFlags);
+procedure TWatch.SetEvaluateFlags(AValue: TDBGEvaluateFlags);
 begin
   if FEvaluateFlags = AValue then Exit;
   FEvaluateFlags := AValue;
@@ -2364,7 +2364,7 @@ begin
   DoModified;
 end;
 
-procedure TWatchBase.SetExpression(AValue: String);
+procedure TWatch.SetExpression(AValue: String);
 begin
   if AValue <> FExpression
   then begin
@@ -2374,7 +2374,7 @@ begin
   end;
 end;
 
-procedure TWatchBase.SetRepeatCount(AValue: Integer);
+procedure TWatch.SetRepeatCount(AValue: Integer);
 begin
   if FRepeatCount = AValue then Exit;
   FRepeatCount := AValue;
@@ -2382,66 +2382,66 @@ begin
   DoModified;
 end;
 
-function TWatchBase.GetValue(const AThreadId: Integer;
+function TWatch.GetValue(const AThreadId: Integer;
   const AStackFrame: Integer): TWatchValue;
 begin
   Result := FValueList[AThreadId, AStackFrame];
 end;
 
-procedure TWatchBase.DoModified;
+procedure TWatch.DoModified;
 begin
   //
 end;
 
-procedure TWatchBase.DoEnableChange;
+procedure TWatch.DoEnableChange;
 begin
   //
 end;
 
-procedure TWatchBase.DoExpressionChange;
+procedure TWatch.DoExpressionChange;
 begin
   //
 end;
 
-procedure TWatchBase.DoDisplayFormatChanged;
+procedure TWatch.DoDisplayFormatChanged;
 begin
   //
 end;
 
-procedure TWatchBase.AssignTo(Dest: TPersistent);
+procedure TWatch.AssignTo(Dest: TPersistent);
 begin
-  if Dest is TWatchBase
+  if Dest is TWatch
   then begin
-    TWatchBase(Dest).FExpression    := FExpression;
-    TWatchBase(Dest).FEnabled       := FEnabled;
-    TWatchBase(Dest).FDisplayFormat := FDisplayFormat;
-    TWatchBase(Dest).FRepeatCount   := FRepeatCount;
-    TWatchBase(Dest).FEvaluateFlags := FEvaluateFlags;
-    TWatchBase(Dest).FValueList.Assign(FValueList);
+    TWatch(Dest).FExpression    := FExpression;
+    TWatch(Dest).FEnabled       := FEnabled;
+    TWatch(Dest).FDisplayFormat := FDisplayFormat;
+    TWatch(Dest).FRepeatCount   := FRepeatCount;
+    TWatch(Dest).FEvaluateFlags := FEvaluateFlags;
+    TWatch(Dest).FValueList.Assign(FValueList);
   end
   else inherited;
 end;
 
-function TWatchBase.CreateValueList: TWatchValueList;
+function TWatch.CreateValueList: TWatchValueList;
 begin
   Result := TWatchValueList.Create(Self);
 end;
 
-constructor TWatchBase.Create(ACollection: TCollection);
+constructor TWatch.Create(ACollection: TCollection);
 begin
   FEnabled := False;
   FValueList := CreateValueList;
   inherited Create(ACollection);
 end;
 
-destructor TWatchBase.Destroy;
+destructor TWatch.Destroy;
 begin
   FValueList.Clear;
   inherited Destroy;
   FreeAndNil(FValueList);
 end;
 
-procedure TWatchBase.ClearValues;
+procedure TWatch.ClearValues;
 begin
   FValueList.Clear;
 end;
@@ -2494,7 +2494,7 @@ begin
   end;
 end;
 
-constructor TWatchValueList.Create(AOwnerWatch: TWatchBase);
+constructor TWatchValueList.Create(AOwnerWatch: TWatch);
 begin
   assert(AOwnerWatch <> nil, 'TWatchValueList.Create without owner');
   FList := TList.Create;
@@ -2883,24 +2883,47 @@ end;
 
 { TWatchesBase }
 
-function TWatches.GetItemBase(const AnIndex: Integer): TWatchBase;
+function TWatches.GetItemBase(const AnIndex: Integer): TWatch;
 begin
-  Result := TWatchBase(inherited Items[AnIndex]);
+  Result := TWatch(inherited Items[AnIndex]);
 end;
 
-procedure TWatches.SetItemBase(const AnIndex: Integer; const AValue: TWatchBase);
+procedure TWatches.SetItemBase(const AnIndex: Integer; const AValue: TWatch);
 begin
   inherited Items[AnIndex] := AValue;
 end;
 
-function TWatches.WatchClass: TBaseWatchClass;
+function TWatches.WatchClass: TWatchClass;
 begin
-  Result := TWatchBase;
+  Result := TWatch;
 end;
 
 constructor TWatches.Create;
 begin
   inherited Create(WatchClass);
+end;
+
+procedure TWatches.ClearValues;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+    Items[n].ClearValues;
+end;
+
+function TWatches.Find(const AExpression: String): TWatch;
+var
+  n: Integer;
+  S: String;
+begin
+  S := UpperCase(AExpression);
+  for n := 0 to Count - 1 do
+  begin
+    Result := TWatch(GetItem(n));
+    if UpperCase(Result.Expression) = S
+    then Exit;
+  end;
+  Result := nil;
 end;
 
 { TCallStackBase }

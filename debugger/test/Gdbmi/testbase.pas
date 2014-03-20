@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry, EnvironmentOpts,
   TransferMacros, LCLProc, LazLogger, DbgIntfDebuggerBase, CompileHelpers, Dialogs,
-  ExtToolDialog, Debugger, GDBMIDebugger, FpGdbmiDebugger;
+  ExtToolDialog, GDBMIDebugger, FpGdbmiDebugger;
 
 (*
   fpclist.txt contains lines of format:
@@ -35,6 +35,15 @@ const
   stDwarf2All = [stDwarf, stDwarfSet];
   stDwarfAll  = [stDwarf, stDwarfSet, stDwarf3];
   stSymAll = [stStabs, stDwarf, stDwarfSet, stDwarf3];
+
+  TWatchDisplayFormatNames: array [TWatchDisplayFormat] of string =
+    ('wdfDefault',
+     'wdfStructure',
+     'wdfChar', 'wdfString',
+     'wdfDecimal', 'wdfUnsigned', 'wdfFloat', 'wdfHex',
+     'wdfPointer',
+     'wdfMemDump'
+    );
 
 type
 
@@ -73,6 +82,58 @@ type
   TTestCallStackMonitor = class(TCallStackMonitor)
   protected
     function CreateCallStackList: TCallStackList; override;
+  end;
+
+  { TTestWatchValue }
+
+  TTestWatchValue = class(TWatchValue)
+  protected
+    procedure RequestData;
+    function GetTypeInfo: TDBGType; override;
+    function GetValue: String; override;
+  public
+    constructor Create(AOwnerWatch: TWatch;
+                       const AThreadId: Integer;
+                       const AStackFrame: Integer
+                      );
+    constructor Create(AOwnerWatch: TWatch);
+  end;
+
+  { TTestWatchValueList }
+
+  TTestWatchValueList = class(TWatchValueList)
+  protected
+    function CopyEntry(AnEntry: TWatchValue): TWatchValue; override;
+    function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer): TWatchValue; override;
+  end;
+
+  { TTestWatch }
+
+  TTestWatch = class(TWatch)
+    function CreateValueList: TWatchValueList; override;
+    procedure RequestData(AWatchValue: TTestWatchValue);
+  public
+  end;
+
+  TTestWatchesMonitor = class;
+  { TTestWatches }
+
+  TTestWatches = class(TWatches)
+  protected
+    FMonitor: TTestWatchesMonitor;
+    function WatchClass: TWatchClass; override;
+    procedure RequestData(AWatchValue: TWatchValue);
+  end;
+
+  { TIdeWatchesMonitor }
+
+  { TTestWatchesMonitor }
+
+  TTestWatchesMonitor = class(TWatchesMonitor)
+  protected
+    procedure DoStateChangeEx(const AOldState, ANewState: TDBGState); override;
+    procedure RequestData(AWatchValue: TWatchValue);
+    function CreateWatches: TWatches; override;
   end;
 
   { TBaseList }
@@ -222,7 +283,7 @@ type
     //FBreakPointGroups: TIDEBreakPointGroups;
     FLocals: TLocalsMonitor;
     FLineInfo: TBaseLineInfo;
-    FWatches: TIdeWatchesMonitor;
+    FWatches: TTestWatchesMonitor;
     FThreads: TThreadsMonitor;
     FRegisters: TRegistersMonitor;
   private
@@ -299,7 +360,7 @@ type
     property LineInfo: TBaseLineInfo read FLineInfo;
     property Registers: TRegistersMonitor read FRegisters;
     //property Signals: TBaseSignals read FSignals;               // A list of actions for signals we know of
-    property Watches: TIdeWatchesMonitor read FWatches;
+    property Watches: TTestWatchesMonitor read FWatches;
     property Threads: TThreadsMonitor read FThreads;
   end;
 
@@ -382,6 +443,142 @@ begin
   if (Result.Count = 0) and (EnvironmentOptions.GetParsedDebuggerFilename <> '') then
     Result.Add('gdb from conf', EnvironmentOptions.GetParsedDebuggerFilename);
   Debuggers := Result;
+end;
+
+{ TTestWatches }
+
+function TTestWatches.WatchClass: TWatchClass;
+begin
+  Result := TTestWatch;
+end;
+
+procedure TTestWatches.RequestData(AWatchValue: TWatchValue);
+begin
+  TTestWatchesMonitor(FMonitor).RequestData(AWatchValue);
+end;
+
+{ TTestWatchesMonitor }
+
+procedure TTestWatchesMonitor.DoStateChangeEx(const AOldState, ANewState: TDBGState);
+begin
+  inherited DoStateChangeEx(AOldState, ANewState);
+  Watches.ClearValues;
+end;
+
+procedure TTestWatchesMonitor.RequestData(AWatchValue: TWatchValue);
+begin
+  if Supplier <> nil
+  then Supplier.RequestData(AWatchValue)
+  else AWatchValue.Validity := ddsInvalid;
+end;
+
+function TTestWatchesMonitor.CreateWatches: TWatches;
+begin
+  Result := TTestWatches.Create;
+  TTestWatches(Result).FMonitor := Self;
+end;
+
+{ TTestWatchValue }
+
+procedure TTestWatchValue.RequestData;
+begin
+  TTestWatch(Watch).RequestData(self);
+end;
+
+function TTestWatchValue.GetTypeInfo: TDBGType;
+var
+  i: Integer;
+begin
+  Result := nil;
+  if not Watch.Enabled then
+    exit;
+  i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
+  if Validity = ddsUnknown then begin
+    Validity := ddsRequested;
+    RequestData;
+    if i <> DbgStateChangeCounter then exit;
+  end;
+  case Validity of
+    ddsRequested,
+    ddsEvaluating: Result := nil;
+    ddsValid:      Result := inherited GetTypeInfo;
+    ddsInvalid,
+    ddsError:      Result := nil;
+  end;
+end;
+
+function TTestWatchValue.GetValue: String;
+var
+  i: Integer;
+begin
+  if not Watch.Enabled then begin
+    Result := '<disabled>';
+    exit;
+  end;
+  i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
+  if Validity = ddsUnknown then begin
+    Result := '<evaluating>';
+    Validity := ddsRequested;
+    RequestData;
+    if i <> DbgStateChangeCounter then exit; // in case the debugger did run.
+    // TODO: The watch can also be deleted by the user
+  end;
+  case Validity of
+    ddsRequested, ddsEvaluating: Result := '<evaluating>';
+    ddsValid:                    Result := inherited GetValue;
+    ddsInvalid:                  Result := '<invalid>';
+    ddsError:                    Result := '<Error: '+ (inherited GetValue) +'>';
+  end;
+end;
+
+constructor TTestWatchValue.Create(AOwnerWatch: TWatch; const AThreadId: Integer;
+  const AStackFrame: Integer);
+begin
+  inherited Create(AOwnerWatch);
+  Validity := ddsUnknown;
+  FDisplayFormat := Watch.DisplayFormat;
+  FEvaluateFlags := Watch.EvaluateFlags;
+  FRepeatCount   := Watch.RepeatCount;
+  FThreadId := AThreadId;
+  FStackFrame := AStackFrame;
+end;
+
+constructor TTestWatchValue.Create(AOwnerWatch: TWatch);
+begin
+  inherited Create(AOwnerWatch);
+  Validity := ddsUnknown;
+  FDisplayFormat := Watch.DisplayFormat;
+  FEvaluateFlags := Watch.EvaluateFlags;
+  FRepeatCount   := Watch.RepeatCount;
+end;
+
+{ TTestWatchValueList }
+
+function TTestWatchValueList.CopyEntry(AnEntry: TWatchValue): TWatchValue;
+begin
+  Result := TTestWatchValue.Create(Watch);
+  Result.Assign(AnEntry);
+end;
+
+function TTestWatchValueList.CreateEntry(const AThreadId: Integer;
+  const AStackFrame: Integer): TWatchValue;
+begin
+  Result := TTestWatchValue.Create(Watch, AThreadId, AStackFrame);
+  Add(Result);
+end;
+
+{ TTestWatch }
+
+function TTestWatch.CreateValueList: TWatchValueList;
+begin
+  Result := TTestWatchValueList.Create(Self);
+end;
+
+procedure TTestWatch.RequestData(AWatchValue: TTestWatchValue);
+begin
+  if Collection <> nil
+  then TTestWatches(Collection).RequestData(AWatchValue)
+  else AWatchValue.Validity := ddsInvalid;
 end;
 
 { TTestCallStackMonitor }
@@ -554,7 +751,7 @@ function TGDBTestCase.StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
 begin
   //FBreakPoints := TManagedBreakPoints.Create(Self);
   //FBreakPointGroups := TIDEBreakPointGroups.Create;
-  FWatches := TIdeWatchesMonitor.Create;
+  FWatches := TTestWatchesMonitor.Create;
   FThreads := TThreadsMonitor.Create;
   FExceptions := TBaseExceptions.Create(TBaseException);
   //FSignals := TBaseSignals.Create(TBaseSignal);

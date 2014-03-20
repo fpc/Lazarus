@@ -574,7 +574,6 @@ type
   private
     function GetWatch: TIdeWatch;
   protected
-    function GetExpression: String; override;
     function GetTypeInfo: TDBGType; override;
     function GetValue: String; override;
 
@@ -617,7 +616,7 @@ type
 
   { TIdeWatch }
 
-  TIdeWatch = class(TWatchBase)
+  TIdeWatch = class(TWatch)
   private
     function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TIdeWatchValue;
   protected
@@ -645,16 +644,15 @@ type
     function GetItem(const AnIndex: Integer): TIdeWatch;
     procedure SetItem(const AnIndex: Integer; const AValue: TIdeWatch);
   protected
-    function WatchClass: TBaseWatchClass; override;
+    function WatchClass: TWatchClass; override;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
                               APath: string);
   public
     function Add(const AExpression: String): TIdeWatch;
-    function Find(const AExpression: String): TIdeWatch; override;
+    function Find(const AExpression: String): TIdeWatch; reintroduce;
     property Items[const AnIndex: Integer]: TIdeWatch read GetItem write SetItem; default;
-    procedure ClearValues; override;
   end;
 
   { TCurrentWatchValue }
@@ -688,13 +686,12 @@ type
     FSnapShot: TIdeWatch;
     procedure SetSnapShot(const AValue: TIdeWatch);
   protected
-    function CreateValueList: TIdeWatchValueList; override;
+    function CreateValueList: TWatchValueList; override;
     procedure DoChanged; override;
     procedure DoModified; override;
     procedure RequestData(AWatchValue: TCurrentWatchValue);
     property SnapShot: TIdeWatch read FSnapShot write SetSnapShot;
   public
-    constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure LoadFromXMLConfig(const AConfig: TXMLConfig;
                                 const APath: string); virtual;
@@ -716,7 +713,7 @@ type
     function GetItem(const AnIndex: Integer): TCurrentWatch;
     procedure SetItem(const AnIndex: Integer; const AValue: TCurrentWatch);
   protected
-    function WatchClass: TBaseWatchClass; override;
+    function WatchClass: TWatchClass; override;
     procedure NotifyAdd(const AWatch: TCurrentWatch); virtual;    // called when a watch is added
     procedure NotifyRemove(const AWatch: TCurrentWatch); virtual; // called by watch when destructed
     procedure DoModified;
@@ -728,7 +725,7 @@ type
     destructor Destroy; override;
     // Watch
     function Add(const AExpression: String): TCurrentWatch;
-    function Find(const AExpression: String): TCurrentWatch; override;
+    function Find(const AExpression: String): TCurrentWatch; reintroduce;
     // IDE
     procedure LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
     procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
@@ -3333,11 +3330,6 @@ begin
   Result := TIdeWatch(inherited Watch);
 end;
 
-function TIdeWatchValue.GetExpression: String;
-begin
-  Result := inherited GetExpression;
-end;
-
 function TIdeWatchValue.GetTypeInfo: TDBGType;
 var
   i: Integer;
@@ -5440,7 +5432,7 @@ begin
   end;
 end;
 
-function TCurrentWatch.CreateValueList: TIdeWatchValueList;
+function TCurrentWatch.CreateValueList: TWatchValueList;
 begin
   Result := TCurrentWatchValueList.Create(Self);
 end;
@@ -5463,11 +5455,6 @@ begin
   if Collection <> nil
   then TCurrentWatches(Collection).RequestData(AWatchValue)
   else AWatchValue.Validity := ddsInvalid;
-end;
-
-constructor TCurrentWatch.Create(ACollection: TCollection);
-begin
-  inherited Create(ACollection);
 end;
 
 destructor TCurrentWatch.Destroy;
@@ -5530,7 +5517,7 @@ begin
   inherited Items[AnIndex] := AValue;
 end;
 
-function TIdeWatches.WatchClass: TBaseWatchClass;
+function TIdeWatches.WatchClass: TWatchClass;
 begin
   Result := TIdeWatch;
 end;
@@ -5557,26 +5544,8 @@ begin
 end;
 
 function TIdeWatches.Find(const AExpression: String): TIdeWatch;
-var
-  n: Integer;
-  S: String;
 begin
-  S := UpperCase(AExpression);
-  for n := 0 to Count - 1 do
-  begin
-    Result := TIdeWatch(GetItem(n));
-    if UpperCase(Result.Expression) = S
-    then Exit;
-  end;
-  Result := nil;
-end;
-
-procedure TIdeWatches.ClearValues;
-var
-  n: Integer;
-begin
-  for n := 0 to Count - 1 do
-    TIdeWatch(GetItem(n)).ClearValues;
+  Result := TIdeWatch(inherited Find(AExpression));
 end;
 
 { =========================================================================== }
@@ -5709,7 +5678,7 @@ begin
   inherited SetItem(AnIndex, AValue);
 end;
 
-function TCurrentWatches.WatchClass: TBaseWatchClass;
+function TCurrentWatches.WatchClass: TWatchClass;
 begin
   Result := TCurrentWatch;
 end;

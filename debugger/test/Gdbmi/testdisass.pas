@@ -49,7 +49,7 @@ type
     //FBreakPointGroups: TIDEBreakPointGroups;
     FLocals: TLocalsMonitor;
     FLineInfo: TBaseLineInfo;
-    FWatches: TIdeWatchesMonitor;
+    FWatches: TTestWatchesMonitor;
     FThreads: TThreadsMonitor;
     FRegisters: TRegistersMonitor;
   published
@@ -336,7 +336,7 @@ var
     //IdeDisAss.Master := Gdb.Disassembler;
     IdeDisAss := Gdb.Disassembler;
 
-    FWatches := TIdeWatchesMonitor.Create;
+    FWatches := TTestWatchesMonitor.Create;
     FThreads := TThreadsMonitor.Create;
     FExceptions := TBaseExceptions.Create(TBaseException);
     //FSignals := TBaseSignals.Create(TBaseSignal);

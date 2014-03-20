@@ -6,8 +6,7 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl, DbgIntfBaseTypes,
-  DbgIntfDebuggerBase, TestBase, Debugger, GDBMIDebugger, LCLProc, SynRegExpr, Forms, StdCtrls,
-  Controls;
+  DbgIntfDebuggerBase, TestBase, GDBMIDebugger, LCLProc, SynRegExpr;
 
 const
   BREAK_LINE_FOOFUNC_NEST  = 206;
@@ -138,7 +137,7 @@ type
 
   TTestWatches = class(TGDBTestCase)
   private
-    FWatches: TcurrentWatches;
+    FWatches: TWatches;
     Frx: TRegExpr;
 
 
@@ -2022,12 +2021,12 @@ var
     then Result := False;
   end;
 
-  procedure TestWatch(Name: String; AWatch: TCurrentWatch; Data: TWatchExpectation; WatchValue: String = '');
+  procedure TestWatch(Name: String; AWatch: TTestWatch; Data: TWatchExpectation; WatchValue: String = '');
   var
     rx: TRegExpr;
     s, s2: String;
     flag, IsValid, HasTpInfo, f2: Boolean;
-    WV: TIdeWatchValue;
+    WV: TWatchValue;
     Stack: Integer;
     n: String;
     DataRes: TWatchExpectationResult;
@@ -2167,7 +2166,7 @@ var
 
 var
   i: Integer;
-  WList, WListSub, WListArray: Array of TCurrentWatch;
+  WList, WListSub, WListArray: Array of TTestWatch;
 
 begin
   TestBaseName := NamePreFix;
@@ -2195,7 +2194,7 @@ begin
 
   try
     dbg := StartGDB(AppDir, TestExeName);
-    FWatches := Watches.CurrentWatches;
+    FWatches := Watches.Watches;
 
     with dbg.BreakPoints.Add('WatchesPrg.pas', BREAK_LINE_FOOFUNC) do begin
       InitialEnabled := True;
@@ -2218,7 +2217,7 @@ begin
     for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
       if not MatchOnly(ExpectBreakFoo[i], i) then continue;
       if not SkipTest(ExpectBreakFoo[i]) then begin
-        WList[i] := TCurrentWatch.Create(FWatches);
+        WList[i] := TTestWatch.Create(FWatches);
         WList[i].Expression := ExpectBreakFoo[i].Expression;
         WList[i].DisplayFormat := ExpectBreakFoo[i].DspFormat;
         WList[i].EvaluateFlags:= ExpectBreakFoo[i].EvaluateFlags;
@@ -2230,7 +2229,7 @@ begin
     for i := low(ExpectBreakSubFoo) to high(ExpectBreakSubFoo) do begin
       if not MatchOnly(ExpectBreakSubFoo[i], i) then continue;
       if not SkipTest(ExpectBreakSubFoo[i]) then begin
-        WListSub[i] := TCurrentWatch.Create(FWatches);
+        WListSub[i] := TTestWatch.Create(FWatches);
         WListSub[i].Expression := ExpectBreakSubFoo[i].Expression;
         WListSub[i].DisplayFormat := ExpectBreakSubFoo[i].DspFormat;
         WListSub[i].EvaluateFlags:= ExpectBreakSubFoo[i].EvaluateFlags;
@@ -2242,7 +2241,7 @@ begin
     for i := low(ExpectBreakFooArray) to high(ExpectBreakFooArray) do begin
       if not MatchOnly(ExpectBreakFooArray[i], i) then continue;
       if not SkipTest(ExpectBreakFooArray[i]) then begin
-        WListArray[i] := TCurrentWatch.Create(FWatches);
+        WListArray[i] := TTestWatch.Create(FWatches);
         WListArray[i].Expression := ExpectBreakFooArray[i].Expression;
         WListArray[i].DisplayFormat := ExpectBreakFooArray[i].DspFormat;
         WListArray[i].EvaluateFlags:= ExpectBreakFooArray[i].EvaluateFlags;
