@@ -30,21 +30,24 @@
         <CommandLineParams Value="--debug-log=-"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="5">
       <Item1>
-        <PackageName Value="LazDebuggerGdbmi"/>
+        <PackageName Value="GdbmiTestUtils"/>
       </Item1>
       <Item2>
-        <PackageName Value="DebuggerIntf"/>
+        <PackageName Value="LazDebuggerGdbmi"/>
       </Item2>
       <Item3>
-        <PackageName Value="FPCUnitTestRunner"/>
+        <PackageName Value="DebuggerIntf"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FPCUnitTestRunner"/>
       </Item4>
+      <Item5>
+        <PackageName Value="LCL"/>
+      </Item5>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="RunGdbmi.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -57,10 +60,6 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="RunGdbmiForm"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="C:\dbg_var_ptype_text2.txt"/>
-        <IsPartOfProject Value="True"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

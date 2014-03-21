@@ -28,25 +28,28 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="5">
+    <RequiredPackages Count="6">
       <Item1>
-        <PackageName Value="LazDebuggerGdbmi"/>
+        <PackageName Value="GdbmiTestUtils"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCLBase"/>
-        <MinVersion Major="1" Release="1" Valid="True"/>
+        <PackageName Value="LazDebuggerGdbmi"/>
       </Item2>
       <Item3>
-        <PackageName Value="FPCUnitTestRunner"/>
+        <PackageName Value="LCLBase"/>
+        <MinVersion Major="1" Release="1" Valid="True"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FPCUnitTestRunner"/>
       </Item4>
       <Item5>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LCL"/>
       </Item5>
+      <Item6>
+        <PackageName Value="FCL"/>
+      </Item6>
     </RequiredPackages>
-    <Units Count="13">
+    <Units Count="12">
       <Unit0>
         <Filename Value="TestGdbmi.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -81,38 +84,30 @@
         <UnitName Value="TestGdbType"/>
       </Unit6>
       <Unit7>
-        <Filename Value="testgdbmicontrol.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="TestControlForm"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="TestGDBMIControl"/>
-      </Unit7>
-      <Unit8>
         <Filename Value="testbreakpoint.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestBreakPoint"/>
-      </Unit8>
-      <Unit9>
+      </Unit7>
+      <Unit8>
         <Filename Value="testdisass.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestDisAss"/>
-      </Unit9>
-      <Unit10>
+      </Unit8>
+      <Unit9>
         <Filename Value="testenvironment.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestEnvironment"/>
-      </Unit10>
-      <Unit11>
+      </Unit9>
+      <Unit10>
         <Filename Value="testargv.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestArgV"/>
-      </Unit11>
-      <Unit12>
+      </Unit10>
+      <Unit11>
         <Filename Value="testinstructionqueue.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestInstructionQueue"/>
-      </Unit12>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
