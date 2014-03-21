@@ -24,15 +24,19 @@ type
   private
     FBrush: TBrush;
     FPen: TPen;
+    FFont: TFont;
     FRepeatCount: Cardinal;
     FText: String;
     FUseBrush: Boolean;
     FUsePen: Boolean;
+    FUseFont: Boolean;
     procedure SetBrush(AValue: TBrush);
+    procedure SetFont(AValue: TFont);
     procedure SetPen(AValue: TPen);
     procedure SetRepeatCount(AValue: Cardinal);
     procedure SetText(AValue: String);
     procedure SetUseBrush(AValue: Boolean);
+    procedure SetUseFont(AValue: Boolean);
     procedure SetUsePen(AValue: Boolean);
     procedure StyleChanged(ASender: TObject);
   protected
@@ -45,11 +49,13 @@ type
     procedure Assign(Source: TPersistent); override;
   published
     property Brush: TBrush read FBrush write SetBrush;
+    property Font: TFont read FFont write SetFont;
     property Pen: TPen read FPen write SetPen;
     property RepeatCount: Cardinal
       read FRepeatCount write SetRepeatCount default 1;
     property Text: String read FText write SetText;
     property UseBrush: Boolean read FUseBrush write SetUseBrush default true;
+    property UseFont: Boolean read FUseFont write SetUseFont default true;
     property UsePen: Boolean read FUsePen write SetUsePen default true;
   end;
 
@@ -83,12 +89,12 @@ type
     FBroadcaster: TBroadcaster;
     FStyles: TChartStyleList;
     procedure SetStyles(AValue: TChartStyleList);
-    function StyleByIndex(AIndex: Cardinal): TChartStyle;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
     procedure Apply(ADrawer: IChartDrawer; AIndex: Cardinal); overload;
+    function StyleByIndex(AIndex: Cardinal): TChartStyle;
     property Broadcaster: TBroadcaster read FBroadcaster;
   published
     property Styles: TChartStyleList read FStyles write SetStyles;
@@ -116,6 +122,8 @@ procedure TChartStyle.Apply(ADrawer: IChartDrawer);
 begin
   if UseBrush then
     ADrawer.Brush := Brush;
+  if UseFont then
+    ADrawer.Font := Font;
   if UsePen then
     ADrawer.Pen := Pen;
 end;
@@ -125,6 +133,7 @@ begin
   if Source is TChartStyle then
     with Source as TChartStyle do begin
       Self.Brush := Brush;
+      Self.Font := Font;
       Self.Pen := Pen;
     end;
   inherited Assign(Source);
@@ -135,16 +144,20 @@ begin
   inherited Create(ACollection);
   FBrush := TBrush.Create;
   FBrush.OnChange := @StyleChanged;
+  FFont := TFont.Create;
+  FFont.OnChange := @StyleChanged;
   FPen := TPen.Create;
   FPen.OnChange := @StyleChanged;
   FRepeatCount := 1;
   FUseBrush := true;
+  FUseFont := true;
   FUsePen := true;
 end;
 
 destructor TChartStyle.Destroy;
 begin
   FreeAndNil(FBrush);
+  FreeAndNil(FFont);
   FreeAndNil(FPen);
   inherited Destroy;
 end;
@@ -158,6 +171,12 @@ procedure TChartStyle.SetBrush(AValue: TBrush);
 begin
   if FBrush = AValue then exit;
   FBrush := AValue;
+end;
+
+procedure TChartStyle.SetFont(AValue: TFont);
+begin
+  if FFont = AValue then exit;
+  FFont := AValue;
 end;
 
 procedure TChartStyle.SetPen(AValue: TPen);
@@ -184,6 +203,13 @@ procedure TChartStyle.SetUseBrush(AValue: Boolean);
 begin
   if FUseBrush = AValue then exit;
   FUseBrush := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartStyle.SetUseFont(AValue: Boolean);
+begin
+  if FUseFont = AValue then exit;
+  FUseFont := AValue;
   StyleChanged(Self);
 end;
 
