@@ -177,7 +177,7 @@ begin
         if Assigned(Hook) then Hook.Modified(Self);
       end;
     else
-      inherited GetVerb(Index);
+      inherited ExecuteVerb(Index);
   end;
 end;
 
