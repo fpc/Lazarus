@@ -1199,6 +1199,7 @@ type
     property InsertMode;
     property Keystrokes;
     property MouseActions;
+    property MouseTextActions;
     property MouseSelActions;
     property Lines;
     property MaxLeftChar;
