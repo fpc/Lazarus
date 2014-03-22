@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  CheckLst, testregistry, fpcunit;
+  CheckLst, testregistry, fpcunit, GuiTestRunner;
 
 type
 
@@ -38,8 +38,22 @@ procedure WriteLogsOnErrChange(Sender: TObject);
 var
   TestControlForm: TTestControlForm;
 
+procedure RegisterTestSelectors(ANames: array of string);
+
 implementation
-uses GuiTestRunner, TestBase;
+uses TestBase;
+
+var
+  TestSelectors: TStringList = nil;
+
+procedure RegisterTestSelectors(ANames: array of string);
+var
+  i: Integer;
+begin
+  if TestSelectors = nil then TestSelectors := TStringList.Create;
+  for i := low(ANames) to high(ANames) do
+    TestSelectors.Add(ANames[i]);
+end;
 
 {$R *.lfm}
 
@@ -50,6 +64,8 @@ var
   i, j: Integer;
   d: TDebuggerList;
   c: TCompilerList;
+  s: String;
+  f: Boolean;
 begin
   OnShow := nil;
   Top := TestRunner.Top;
@@ -62,36 +78,13 @@ begin
   else
     EditLogDir.Text := ConfDir;
 
-  j := CheckListBox1.Items.Add('TTestExceptionOne');
-  CheckListBox1.Checked[j] := True;
-  j := CheckListBox1.Items.Add('TTestWatch');
-  CheckListBox1.Checked[j] := True;
-  j := CheckListBox1.Items.Add('  TTestWatch.Unstable');
-  CheckListBox1.Checked[j] := False;
-  j := CheckListBox1.Items.Add('  TTestWatch.Gdb');
-  CheckListBox1.Checked[j] := True;
-  j := CheckListBox1.Items.Add('  TTestWatch.All');
-  CheckListBox1.Checked[j] := True;
-  j := CheckListBox1.Items.Add('  TTestWatch.Mix');
-  CheckListBox1.Checked[j] := True;
-  j := CheckListBox1.Items.Add('    TTestWatch.Mix.All');
-  CheckListBox1.Checked[j] := True;
-  j := CheckListBox1.Items.Add('  TTestWatch.Cache');
-  CheckListBox1.Checked[j] := True;
-  j := CheckListBox1.Items.Add('TTestBreakPoint');
-  CheckListBox1.Checked[j] := True;
-  j := CheckListBox1.Items.Add('  TTestBreakPoint.StartMethod');
-  CheckListBox1.Checked[j] := True;
-  j := CheckListBox1.Items.Add('  TTestBreakPoint.BadAddr');
-  CheckListBox1.Checked[j] := True;
-  j := CheckListBox1.Items.Add('  TTestBreakPoint.BadInterrupt');
-  CheckListBox1.Checked[j] := True;
-  j := CheckListBox1.Items.Add('    TTestBreakPoint.BadInterrupt.All');
-  CheckListBox1.Checked[j] := False;
-  j := CheckListBox1.Items.Add('TTestEnvironment');
-  CheckListBox1.Checked[j] := True;
-  j := CheckListBox1.Items.Add('TTestArgV');
-  CheckListBox1.Checked[j] := True;
+  for i := 0 to TestSelectors.Count - 1 do begin
+    s := TestSelectors[i];
+    f := (s<>'') and (s[1] = '-');
+    if f then delete(s,1,1);
+    j := CheckListBox1.Items.Add(s);
+    CheckListBox1.Checked[j] := not f;
+  end;
 
   d := GetDebuggers;
   for i := 0 to d.Count - 1 do begin
@@ -123,5 +116,7 @@ begin
   WriteLog := CheckWriteLogs.Checked;
 end;
 
+finalization
+  TestSelectors.Free;
 end.
 

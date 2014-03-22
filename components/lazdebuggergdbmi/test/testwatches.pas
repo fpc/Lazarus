@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl, DbgIntfBaseTypes,
-  DbgIntfDebuggerBase, TestBase, GDBMIDebugger, LCLProc, SynRegExpr;
+  DbgIntfDebuggerBase, TestBase, GDBMIDebugger, LCLProc, SynRegExpr, TestWatchUtils;
 
 const
   BREAK_LINE_FOOFUNC_NEST  = 206;
@@ -26,119 +26,14 @@ const
   - FooObject = BarObject (dwarf 3)
 *)
 
-type
-
-  TWatchExpectationFlag =
-    (IgnDwrf,            // ignore error for dwarf at all
-     IgnDwrf2,           // ignore error for dwarf 2
-     IgnDwrf2IfNoSet,    // ignore error for dwarf2 (-gw) without set
-     IgnDwrf3,           // ignore error for dwarf 3
-     IgnStabs,
-     //IgnDwrfSet,   // no dwarf2 with set // no dwarf3
-
-     IgnData,           // Ignore the data part
-     IgnDataDw,         // Ignore the data part, if dwarf
-     IgnDataDw2,        // Ignore the data part, if dwarf 2
-     IgnDataDw3,        // Ignore the data part, if dwarf 3
-     IgnDataSt,         // Ignore the data part, if Stabs
-
-     IgnKind,           // Ignore skSimple, ....
-     IgnKindDw,
-     IgnKindDw2,
-     IgnKindDw3,
-     IgnKindSt,
-
-     IgnKindPtr,           // Ignore skSimple, ONLY if got kind=skPointer
-     IgnKindPtrDw,
-     IgnKindPtrDw2,
-     IgnKindPtrDw3,
-     IgnKindPtrSt,
-
-     IgnTpName,           // Ignore the typename
-     IgnTpNameDw,
-     IgnTpNameDw2,
-     IgnTpNameDw3,
-     IgnTpNameSt,
-
-     fTstSkip,       // Do not run test
-     fTstSkipDwarf3,
-     fTpMtch,
-     fTExpectNotFound
-    );
-  TWatchExpectationFlags = set of TWatchExpectationFlag;
-
-const
-  WatchExpFlagMask: array[TSymbolType] of TWatchExpectationFlags
-  = ( {stNone}     [],
-      {stStabs}    [IgnStabs,
-                    IgnData,    IgnDataSt,
-                    IgnKind,    IgnKindSt,
-                    IgnKindPtr, IgnKindPtrSt,
-                    IgnTpName,  IgnTpNameSt
-                   ],
-      {stDwarf}    [IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet,
-                    IgnData,    IgnDataDw, IgnDataDw2,
-                    IgnKind,    IgnKindDw, IgnKindDw2,
-                    IgnKindPtr, IgnKindPtrDw, IgnKindPtrDw2,
-                    IgnTpName,  IgnTpNameDw, IgnTpNameDw2
-                   ],
-      {stDwarfSet} [IgnDwrf, IgnDwrf2,
-                    IgnData,    IgnDataDw, IgnDataDw2,
-                    IgnKind,    IgnKindDw, IgnKindDw2,
-                    IgnKindPtr, IgnKindPtrDw, IgnKindPtrDw2,
-                    IgnTpName,  IgnTpNameDw, IgnTpNameDw2
-                   ],
-      {stDwarf3}   [IgnDwrf, IgnDwrf3,
-                    IgnData,    IgnDataDw, IgnDataDw3,
-                    IgnKind,    IgnKindDw, IgnKindDw3,
-                    IgnKindPtr, IgnKindPtrDw, IgnKindPtrDw3,
-                    IgnTpName,  IgnTpNameDw, IgnTpNameDw3
-                   ]
-    );
-
-  WatchExpFlagSIgnAll     = [IgnStabs, IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet, IgnDwrf3];
-  WatchExpFlagSIgnData    = [IgnStabs, IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet, IgnDwrf3,  IgnData,    IgnDataDw, IgnDataDw2, IgnDataDw3, IgnDataSt];
-  WatchExpFlagSIgnKind    = [IgnStabs, IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet, IgnDwrf3,  IgnKind,    IgnKindDw, IgnKindDw2, IgnKindDw3, IgnKindSt];
-  WatchExpFlagSIgnKindPtr = [IgnStabs, IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet, IgnDwrf3,  IgnKindPtr, IgnKindPtrDw, IgnKindPtrDw2, IgnKindPtrDw3, IgnKindPtrSt];
-  WatchExpFlagSIgnTpName  = [IgnStabs, IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet, IgnDwrf3,  IgnTpName,  IgnTpNameDw, IgnTpNameDw2, IgnTpNameDw3, IgnTpNameSt];
 
 type
-
-  TFullTypeMemberExpectationResult = record
-    Name: string;
-    ExpTypeName: string;
-    ExpKind: TDBGSymbolKind;
-    Flgs: TWatchExpectationFlags;
-  end;
-  TFullTypeMemberExpectationResultArray = array of TFullTypeMemberExpectationResult;
-
-  PWatchExpectation= ^TWatchExpectation;
-  TWatchExpectationResult = record
-    ExpMatch: string;
-    ExpKind: TDBGSymbolKind;
-    ExpTypeName: string;
-    Flgs: TWatchExpectationFlags;
-    MinGdb, MinFpc: Integer;
-    FullTypesExpect: TFullTypeMemberExpectationResultArray;
-  end;
-
-  TWatchExpectation = record
-    TestName: String;
-    Expression:  string;
-    DspFormat: TWatchDisplayFormat;
-    EvaluateFlags: TDBGEvaluateFlags;
-    StackFrame: Integer;
-    Result: Array [TSymbolType] of TWatchExpectationResult;
-  end;
-  TWatchExpectationArray = array of TWatchExpectation;
-
 
   { TTestWatches }
 
-  TTestWatches = class(TGDBTestCase)
+  TTestWatches = class(TTestWatchesBase)
   private
     FWatches: TWatches;
-    Frx: TRegExpr;
 
 
     ExpectBreakFooGdb: TWatchExpectationArray;    // direct commands to gdb, to check assumptions  // only Exp and Mtch
@@ -155,35 +50,6 @@ type
     procedure DoDbgOutput(Sender: TObject; const AText: String); override;
     procedure ClearAllTestArrays;
     function  HasTestArraysData: Boolean;
-    function AddTo(var ExpArray: TWatchExpectationArray;
-      AnExpr:  string; AFmt: TWatchDisplayFormat;
-      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
-      AFlgs: TWatchExpectationFlags = [];
-      AStackFrame: Integer = 0;
-      AMinGdb: Integer = 0; AMinFpc: Integer = 0
-    ): PWatchExpectation;
-    function AddTo(var ExpArray: TWatchExpectationArray;
-      AnExpr:  string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TDBGEvaluateFlags;
-      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
-      AFlgs: TWatchExpectationFlags = [];
-      AStackFrame: Integer = 0;
-      AMinGdb: Integer = 0; AMinFpc: Integer = 0
-    ): PWatchExpectation;
-    function AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
-      AnExpr:  string; AFmt: TWatchDisplayFormat;
-      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
-      AFlgs: TWatchExpectationFlags = [];
-      AStackFrame: Integer = 0;
-      AMinGdb: Integer = 0; AMinFpc: Integer = 0
-    ): PWatchExpectation;
-    function AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
-      AnExpr:  string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TDBGEvaluateFlags;
-      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
-      AFlgs: TWatchExpectationFlags = [];
-      AStackFrame: Integer = 0;
-      AMinGdb: Integer = 0; AMinFpc: Integer = 0
-    ): PWatchExpectation;
-
     // using FCurrentExpArray
     function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AMtch: string;
                  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
@@ -199,35 +65,6 @@ type
     function AddPointerFmtDefRaw(AnExpr, AMtch, ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
 
 
-    procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags;
-      AMinGdb: Integer; AMinFpc: Integer
-    );
-    procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags = []
-    );
-    procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-      AMtch: string; AKind: TDBGSymbolKind
-    );
-    procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-      AKind: TDBGSymbolKind
-    );
-    procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-      ATpNm: string; AFlgs: TWatchExpectationFlags
-    );
-    procedure UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType; AMinGdb: Integer);
-    procedure UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType; AMinFpc: Integer);
-
-    procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes;
-      ATpNm: string; AFlgs: TWatchExpectationFlags
-    );
-    procedure UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes; AMinGdb: Integer);
-    procedure UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes; AMinFpc: Integer);
-
-    procedure AddMemberExpect(AWatchExp: PWatchExpectation;
-      AName, ATpNm: string; AFlgs: TWatchExpectationFlags; AnExpKind: TDBGSymbolKind;
-      ASymbolTypes: TSymbolTypes = stSymAll
-    );
 
     procedure AddExpectBreakFooGdb;
     procedure AddExpectBreakFooAll;
@@ -306,74 +143,17 @@ begin
 
 end;
 
-function TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; AnExpr: string;
-  AFmt: TWatchDisplayFormat; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
-  AFlgs: TWatchExpectationFlags; AStackFrame: Integer = 0; AMinGdb: Integer = 0;
-  AMinFpc: Integer = 0): PWatchExpectation;
-begin
-  Result := AddTo(ExpArray,
-    AnExpr + ' (' + TWatchDisplayFormatNames[AFmt] + ', []',
-    AnExpr, AFmt, [], AMtch, AKind, ATpNm, AFlgs, AStackFrame, AMinGdb, AMinFpc);
-end;
-
-function TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; AnExpr: string;
-  AFmt: TWatchDisplayFormat; AEvaluateFlags: TDBGEvaluateFlags; AMtch: string;
-  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer;
-  AMinGdb: Integer; AMinFpc: Integer): PWatchExpectation;
-begin
-  Result := AddTo(ExpArray,
-    AnExpr + ' (' + TWatchDisplayFormatNames[AFmt] + ', ' + dbgs(AEvaluateFlags) + ')',
-    AnExpr, AFmt, AEvaluateFlags, AMtch, AKind, ATpNm, AFlgs, AStackFrame, AMinGdb, AMinFpc);
-end;
-
-function TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
-  AnExpr: string; AFmt: TWatchDisplayFormat; AMtch: string; AKind: TDBGSymbolKind;
-  ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer; AMinGdb: Integer = 0;
-  AMinFpc: Integer = 0): PWatchExpectation;
-var
-  i: TSymbolType;
-begin
-  Result := AddTo(ExpArray, ATestName, AnExpr, AFmt, [], AMtch, AKind, ATpNm,
-    AFlgs, AStackFrame, AMinGdb, AMinFpc);
-end;
-
-function TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
-  AnExpr: string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TDBGEvaluateFlags; AMtch: string;
-  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer;
-  AMinGdb: Integer; AMinFpc: Integer): PWatchExpectation;
-var
-  i: TSymbolType;
-begin
-  SetLength(ExpArray, Length(ExpArray)+1);
-  with ExpArray[Length(ExpArray)-1] do begin
-    TestName     := ATestName;
-    Expression   := AnExpr;
-    DspFormat    := AFmt;
-    EvaluateFlags := AEvaluateFlags;
-    for i := low(TSymbolType) to high(TSymbolType) do begin
-      Result[i].ExpMatch     := AMtch;
-      Result[i].ExpKind      := AKind;
-      Result[i].ExpTypeName  := ATpNm;
-      Result[i].Flgs         := AFlgs;
-      Result[i].MinGdb := AMinGdb;
-      Result[i].MinFpc := AMinFpc;
-    end;
-    StackFrame   := AStackFrame;
-  end;
-  Result := @ExpArray[Length(ExpArray)-1];
-end;
-
 function TTestWatches.Add(AnExpr: string; AFmt: TWatchDisplayFormat; AMtch: string;
   AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
-  Result := AddTo(FCurrentExpArray^, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs );
+  Result := AddWatchExp(FCurrentExpArray^, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs );
 end;
 
 function TTestWatches.Add(AnExpr: string; AFmt: TWatchDisplayFormat;
   AEvalFlags: TDBGEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
   AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
-  Result := AddTo(FCurrentExpArray^, AnExpr, AFmt, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
+  Result := AddWatchExp(FCurrentExpArray^, AnExpr, AFmt, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
 end;
 
 function TTestWatches.AddFmtDef(AnExpr, AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
@@ -396,7 +176,7 @@ begin
   // but the IDE only gets that with Dwarf-3
   // might be prefixed, with address
   Result := AddFmtDef(AnExpr, '''' + AMtch + '''$', skPOINTER, ATpNm, AFlgs );
-  UpdRes(Result, stDwarf3,           skSimple);
+  UpdExpRes(Result, stDwarf3,           skSimple);
 end;
 
 function TTestWatches.AddShortStrFmtDef(AnExpr, AMtch: string; ATpNm: string;
@@ -432,120 +212,6 @@ function TTestWatches.AddPointerFmtDefRaw(AnExpr, AMtch, ATpNm: string;
   AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
   Result := AddFmtDef(AnExpr, AMtch, skPointer, ATpNm, AFlgs );
-end;
-
-procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags;
-  AMinGdb: Integer; AMinFpc: Integer);
-begin
-  with AWatchExp^ do begin
-    Result[ASymbolType].ExpMatch     := AMtch;
-    Result[ASymbolType].ExpKind      := AKind;
-    Result[ASymbolType].ExpTypeName  := ATpNm;
-    Result[ASymbolType].Flgs         := AFlgs;
-    Result[ASymbolType].MinGdb := AMinGdb;
-    Result[ASymbolType].MinFpc := AMinFpc;
-  end;
-end;
-
-procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags);
-begin
-  with AWatchExp^ do begin
-    Result[ASymbolType].ExpMatch     := AMtch;
-    Result[ASymbolType].ExpKind      := AKind;
-    Result[ASymbolType].ExpTypeName  := ATpNm;
-    Result[ASymbolType].Flgs         := AFlgs;
-  end;
-end;
-
-procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  AMtch: string; AKind: TDBGSymbolKind);
-begin
-  with AWatchExp^ do begin
-    Result[ASymbolType].ExpMatch     := AMtch;
-    Result[ASymbolType].ExpKind      := AKind;
-  end;
-end;
-
-procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  AKind: TDBGSymbolKind);
-begin
-  with AWatchExp^ do begin
-    Result[ASymbolType].ExpKind      := AKind;
-  end;
-end;
-
-procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  ATpNm: string; AFlgs: TWatchExpectationFlags);
-begin
-  with AWatchExp^ do begin
-    Result[ASymbolType].ExpTypeName  := ATpNm;
-    Result[ASymbolType].Flgs         := AFlgs;
-  end;
-end;
-
-procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes;
-  ATpNm: string; AFlgs: TWatchExpectationFlags);
-var
-  i: TSymbolType;
-begin
-  for i := low(TSymbolType) to high(TSymbolType) do
-    if i in ASymbolTypes then
-      UpdRes(AWatchExp, i, ATpNm, AFlgs);
-end;
-
-procedure TTestWatches.UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes;
-  AMinGdb: Integer);
-var
-  i: TSymbolType;
-begin
-  for i := low(TSymbolType) to high(TSymbolType) do
-    if i in ASymbolTypes then
-      UpdResMinGdb(AWatchExp, i, AMinGdb);
-end;
-
-procedure TTestWatches.UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes;
-  AMinFpc: Integer);
-var
-  i: TSymbolType;
-begin
-  for i := low(TSymbolType) to high(TSymbolType) do
-    if i in ASymbolTypes then
-      UpdResMinFpc(AWatchExp, i, AMinFpc);
-end;
-
-procedure TTestWatches.AddMemberExpect(AWatchExp: PWatchExpectation; AName, ATpNm: string;
-  AFlgs: TWatchExpectationFlags; AnExpKind: TDBGSymbolKind; ASymbolTypes: TSymbolTypes);
-var
-  i: TSymbolType;
-  l: Integer;
-begin
-  for i := low(TSymbolType) to high(TSymbolType) do
-    if i in ASymbolTypes then begin
-      l := length(AWatchExp^.Result[i].FullTypesExpect);
-      SetLength(AWatchExp^.Result[i].FullTypesExpect, l + 1);
-      AWatchExp^.Result[i].FullTypesExpect[l].Name := AName;
-      AWatchExp^.Result[i].FullTypesExpect[l].ExpTypeName := ATpNm;
-      AWatchExp^.Result[i].FullTypesExpect[l].ExpKind := AnExpKind;
-      AWatchExp^.Result[i].FullTypesExpect[l].Flgs := AFlgs;
-    end;
-end;
-
-procedure TTestWatches.UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  AMinGdb: Integer);
-begin
-  with AWatchExp^ do begin
-    Result[ASymbolType].MinGdb := AMinGdb;
-  end;
-end;
-
-procedure TTestWatches.UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  AMinFpc: Integer);
-begin
-  with AWatchExp^ do begin
-    Result[ASymbolType].MinFpc := AMinFpc;
-  end;
 end;
 
 procedure TTestWatches.AddExpectBreakFooGdb;
@@ -873,58 +539,58 @@ begin
   { gdb below 6.7.50 with stabs may fail }
   r := AddFmtDef('VarOTestTCast2', [defFullTypeInfo],
                MatchClass('TObject'),          skClass,      'TObject', []);
-  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
   r := AddFmtDef('VarOTestTCast2', [],
                MatchClass('TObject'),          skClass,      'TObject', []);
-  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
   r := AddFmtDef('TObject(VarOTestTCast2)', [defFullTypeInfo],
                MatchClass('TObject'),          skClass,      'TObject', []);
-  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
   r := AddFmtDef('TObject(VarOTestTCast2)', [],
                MatchClass('TObject'),          skClass,      'TObject', []);
-  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
   r := AddFmtDef('TClassTCast(VarOTestTCast2)', [defFullTypeInfo],
                  MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
-  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
   r := AddFmtDef('TClassTCast(VarOTestTCast2)', [],
                MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
-  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
 
   { UseInstanceClass }
   { gdb below 6.7.50 with stabs may fail }
   r := AddFmtDef('VarOTestTCast2', [defFullTypeInfo, defClassAutoCast],
                  MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
-  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
   r := AddFmtDef('VarOTestTCast2', [defClassAutoCast],
                MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
-  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
   r := AddFmtDef('TObject(VarOTestTCast2)', [defFullTypeInfo, defClassAutoCast],
                  MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
   //if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then
-  UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
   r := AddFmtDef('TObject(VarOTestTCast2)', [defClassAutoCast],
                MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
   //if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then
-  UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
   r := AddFmtDef('TClassTCast(VarOTestTCast2)', [defFullTypeInfo, defClassAutoCast],
                  MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
   //if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then
-  UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
   r := AddFmtDef('TClassTCast(VarOTestTCast2)', [defClassAutoCast],
                MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
   //if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then
-  UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
   // access dyn array in casted object
 
   {%endregion * Classes * typecasts}
   r := AddFmtDef('TClassTCastObject(VarOTestTCastObj).l[1]', [], '1144', skSimple, 'Integer|LongInt', [fTpMtch]);
-//  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+//  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
 
   // Full type info
@@ -947,9 +613,9 @@ begin
   r:=AddStringFmtDef('VArgTMyAnsiString',      'MyAnsi 2',     '^(TMy)?AnsiString$', [fTpMtch]);
 
   r:=AddFmtDef('ArgPMyAnsiString',     MatchPointer, skPointer,     'PMyAnsiString', []);
-     UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+     UpdExpRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
   r:=AddFmtDef('VArgPMyAnsiString',    MatchPointer,  skPointer,    'PMyAnsiString', []);
-     UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+     UpdExpRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
   r:=AddStringFmtDef('ArgPMyAnsiString^',      'MyAnsi P',     '^(TMy)?AnsiString$', [fTpMtch]);
   r:=AddStringFmtDef('VArgPMyAnsiString^',     'MyAnsi P2',    '^(TMy)?AnsiString$', [fTpMtch]);
      UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
@@ -957,9 +623,9 @@ begin
   r:=AddFmtDef('ArgPPMyAnsiString',    MatchPointer,  skPointer,    'PPMyAnsiString', []);
   r:=AddFmtDef('VArgPPMyAnsiString',   MatchPointer,  skPointer,    'PPMyAnsiString', []);
   r:=AddFmtDef('ArgPPMyAnsiString^',   MatchPointer,  skPointer,    'PMyAnsiString', []);
-     UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+     UpdExpRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
   r:=AddFmtDef('VArgPPMyAnsiString^',  MatchPointer,  skPointer,    'PMyAnsiString', []);
-     UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+     UpdExpRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
      UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
   r:=AddStringFmtDef('ArgPPMyAnsiString^^',    'MyAnsi P',     '^(TMy)?AnsiString$', [fTpMtch]);
   r:=AddStringFmtDef('VArgPPMyAnsiString^^',   'MyAnsi P2',    '^(TMy)?AnsiString$', [fTpMtch]);
@@ -967,36 +633,36 @@ begin
 
 
   r:=AddStringFmtDef('ArgTNewAnsiString',      'NewAnsi',      'TNewAnsiString', []);
-     UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
+     UpdExpRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
   r:=AddStringFmtDef('VArgTNewAnsiString',     'NewAnsi 2',    'TNewAnsiString', []);
-     UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
+     UpdExpRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
 
   r:=AddFmtDef('ArgPNewAnsiString',    MatchPointer,  skPointer,    'PNewAnsiString', []);
-                    UpdRes(r, stStabs,                              '(\^|PNew|P)AnsiString|PPChar', [fTpMtch]);
+                    UpdExpRes(r, stStabs,                              '(\^|PNew|P)AnsiString|PPChar', [fTpMtch]);
   r:=AddFmtDef('VArgPNewAnsiString',   MatchPointer,  skPointer,    'PNewAnsiString', []);
-                    UpdRes(r, stStabs,                              '(\^|PNew|P)AnsiString|PPChar', [fTpMtch]);
+                    UpdExpRes(r, stStabs,                              '(\^|PNew|P)AnsiString|PPChar', [fTpMtch]);
   r:=AddStringFmtDef('ArgPNewAnsiString^',      'NewAnsi P',   'TNewAnsiString', []);
-     UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
+     UpdExpRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
   r:=AddStringFmtDef('VArgPNewAnsiString^',     'NewAnsi P2',  'TNewAnsiString', []);
      UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
-     UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
+     UpdExpRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
 
 
   // typecasts
   r:=AddStringFmtDef('AnsiString(ArgTMyAnsiString)',   'MyAnsi',      'AnsiString|\^char', [fTpMtch]);
-     UpdRes(r, stDwarf3,                                                   'AnsiString', []);
+     UpdExpRes(r, stDwarf3,                                                   'AnsiString', []);
   r:=AddStringFmtDef('AnsiString(VArgTMyAnsiString)',  'MyAnsi 2',    'AnsiString|\^char', [fTpMtch]);
-     UpdRes(r, stDwarf3,                                                   'AnsiString', []);
+     UpdExpRes(r, stDwarf3,                                                   'AnsiString', []);
 
   r:=AddFmtDef('PMyAnsiString(ArgPMyAnsiString)',     MatchPointer, skPointer,   '^(\^|PMy)AnsiString$', [fTpMtch]);
-     UpdRes(r, stStabs,                                                          '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+     UpdExpRes(r, stStabs,                                                          '^(PMyAnsiString|PPChar)$', [fTpMtch]);
   r:=AddFmtDef('PMyAnsiString(VArgPMyAnsiString)',    MatchPointer,  skPointer,  '^(\^|PMy)AnsiString$', [fTpMtch]);
-     UpdRes(r, stStabs,                                                          '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+     UpdExpRes(r, stStabs,                                                          '^(PMyAnsiString|PPChar)$', [fTpMtch]);
 // TODO,, IDE derefs with dwarf3
   r:=AddFmtDef('^AnsiString(ArgPMyAnsiString)',       MatchPointer, skPointer,   '^(\^AnsiString|\^\^char)', [fTpMtch]);
-     UpdRes(r, stStabs,                                                          '^(\^AnsiString|PPChar)$', [fTpMtch]);
+     UpdExpRes(r, stStabs,                                                          '^(\^AnsiString|PPChar)$', [fTpMtch]);
   r:=AddFmtDef('^AnsiString(VArgPMyAnsiString)',      MatchPointer,  skPointer,  '^(\^AnsiString|\^\^char)', [fTpMtch]);
-     UpdRes(r, stStabs,                                                          '^(\^AnsiString|PPChar)$', [fTpMtch]);
+     UpdExpRes(r, stStabs,                                                          '^(\^AnsiString|PPChar)$', [fTpMtch]);
 
   r:=AddStringFmtDef('AnsiString(ArgPMyAnsiString^)',  'MyAnsi P',     '^((TMy)?AnsiString|\^char)$', [fTpMtch]);
   r:=AddStringFmtDef('AnsiString(VArgPMyAnsiString^)', 'MyAnsi P2',    '^((TMy)?AnsiString|\^char)$', [fTpMtch]);
@@ -1008,8 +674,8 @@ begin
 
   r:=AddFmtDef('PChar(ArgTMyAnsiString)',
                                                '''MyAnsi''$',      skPOINTER,   '(\^|p)char', [fTpMtch]);
-                    UpdRes(r, stStabs,    '''MyAnsi''$',      skPOINTER,   'pchar|AnsiString', [fTpMtch]);
-                         //UpdRes(r, stDwarf3,   '''MyAnsi''$',      skSimple,    'AnsiString', []);
+                    UpdExpRes(r, stStabs,    '''MyAnsi''$',      skPOINTER,   'pchar|AnsiString', [fTpMtch]);
+                         //UpdExpRes(r, stDwarf3,   '''MyAnsi''$',      skSimple,    'AnsiString', []);
 
   // accessing len/refcount
   r:=AddFmtDef('^^longint(ArgTMyAnsiString)[-1]',
@@ -1020,31 +686,31 @@ begin
   // accessing char
   // TODO: only works with dwarf 3
   r:=AddFmtDef('ArgTMyAnsiString[1]',      '.',      skSimple,   'char', []);
-                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+                    UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
   r:=AddFmtDef('VArgTMyAnsiString[1]',     '.',      skSimple,   'char', []);
-                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+                    UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
   r:=AddFmtDef('ArgPMyAnsiString^[1]',     '.',      skSimple,   'char', []);
-                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+                    UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
   r:=AddFmtDef('VArgPMyAnsiString^[1]',    '.',      skSimple,   'char', []);
      UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
-     UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+     UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
   r:=AddFmtDef('AnsiString(ArgTMyAnsiString)[1]',      '.',      skSimple,   'char', []);
-                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+                    UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
   r:=AddFmtDef('AnsiString(VArgTMyAnsiString)[1]',     '.',      skSimple,   'char', []);
-                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+                    UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
 
   // accessing char, after typecast
   r:=AddFmtDef('AnsiString(ArgTMyAnsiString)[1]',      '.',      skSimple,   'char', []);
-                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+                    UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
 
 
   // string in array
   r:=AddStringFmtDef('ArgTMyAnsiStringDArray[0]',   'DArray1 Str0',         'AnsiString', []);
   r:=AddStringFmtDef('ArgTMyAnsiStringDArray[1]',   'DArray1 Str1',         'AnsiString', []);
   r:=AddStringFmtDef('VArgTMyAnsiStringDArray[0]',  'DArray2 Str0',         'AnsiString', []);
-  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdRes(r, stDwarf2All, '^(\^Char|AnsiString)$', [fTpMtch]);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdExpRes(r, stDwarf2All, '^(\^Char|AnsiString)$', [fTpMtch]);
   r:=AddStringFmtDef('VArgTMyAnsiStringDArray[1]',  'DArray2 Str1',         'AnsiString', []);
-  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdRes(r, stDwarf2All, '^(\^Char|AnsiString)$', [fTpMtch]);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdExpRes(r, stDwarf2All, '^(\^Char|AnsiString)$', [fTpMtch]);
 
 
   r:=AddCharFmtDef('ArgTMyAnsiStringDArray[0][1]',  'D', 'char', [IgnDwrf2, IgnStabs]);
@@ -1111,30 +777,30 @@ begin
   r:=AddStringFmtDef('VArgTStringHolderObj.FTMyAnsiString',  'Obj2 MyAnsi',         'AnsiString', []);
 
   r:=AddFmtDef('ArgTStringHolderObj.FTMyAnsiString[1]',   '.$',  skSimple,    'char', []);
-     UpdRes(r, stDwarf3,                         '''O''$', skSimple);
+     UpdExpRes(r, stDwarf3,                         '''O''$', skSimple);
   r:=AddFmtDef('VArgTStringHolderObj.FTMyAnsiString[1]',   '.$',  skSimple,    'char', []);
-     UpdRes(r, stDwarf3,                         '''O''$', skSimple);
+     UpdExpRes(r, stDwarf3,                         '''O''$', skSimple);
 
   // string in rec
   r:=AddStringFmtDef('ArgTStringHolderRec.FTMyAnsiString',   'Rec1 MyAnsi',         'AnsiString', [fTstSkipDwarf3]);
   r:=AddStringFmtDef('VArgTStringHolderRec.FTMyAnsiString',  'Rec2 MyAnsi',         'AnsiString', [fTstSkipDwarf3]);
 
   r:=AddFmtDef('ArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skSimple,    'char', [fTstSkipDwarf3]);
-     UpdRes(r, stDwarf3,                         '''R''$', skSimple);
+     UpdExpRes(r, stDwarf3,                         '''R''$', skSimple);
   r:=AddFmtDef('VArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skSimple,    'char', [fTstSkipDwarf3]);
-     UpdRes(r, stDwarf3,                         '''R''$', skSimple);
+     UpdExpRes(r, stDwarf3,                         '''R''$', skSimple);
 
 
   //r:=AddFmtDef('ArgTNewAnsiString',       '''NewAnsi''$',     skPOINTER,   '(TNew)?AnsiString', []);
-  //                  UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    '(TNew)?AnsiString', [fTpMtch]);
+  //                  UpdExpRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    '(TNew)?AnsiString', [fTpMtch]);
   //r:=AddFmtDef('VArgTNewAnsiString',      '''NewAnsi 2''$',   skPOINTER,   '(TNew)?AnsiString', []);
-  //                  UpdRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    '(TNew)?AnsiString', [fTpMtch]);
+  //                  UpdExpRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    '(TNew)?AnsiString', [fTpMtch]);
   //r:=AddFmtDef('ArgPNewAnsiString',       MatchPointer,       skPointer,   '(\^|PNew|P)AnsiString', []);
   //r:=AddFmtDef('VArgPNewAnsiString',      MatchPointer,       skPointer,   '(\^|PNew|P)AnsiString', []);
   //r:=AddFmtDef('ArgPNewAnsiString^',      '''NewAnsi P''',    skPOINTER,   '(TNew)?AnsiString', []);
-  //                  UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    '(TNew)?AnsiString', [fTpMtch]);
+  //                  UpdExpRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    '(TNew)?AnsiString', [fTpMtch]);
   //r:=AddFmtDef('VArgPNewAnsiString^',     '''NewAnsi P2''',   skPOINTER,   '(TNew)?AnsiString', []);
-  //                  UpdRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    '(TNew)?AnsiString', [fTpMtch]);
+  //                  UpdExpRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    '(TNew)?AnsiString', [fTpMtch]);
 
 
 
@@ -1957,14 +1623,14 @@ procedure TTestWatches.AddExpectBreakFooAndSubFoo;
     AStackFrame: Integer=0);
   begin
     FCurrentExpArray := @ExpectBreakFoo;
-    AddTo(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs, AStackFrame)
+    AddWatchExp(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs, AStackFrame)
   end;
   procedure AddS(AnExpr:  string; AFmt: TWatchDisplayFormat;
     AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags;
     AStackFrame: Integer=0);
   begin
     FCurrentExpArray := @ExpectBreakSubFoo;
-    AddTo(ExpectBreakSubFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs, AStackFrame)
+    AddWatchExp(ExpectBreakSubFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs, AStackFrame)
   end;
 begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.Cache')] then exit;
@@ -2003,7 +1669,6 @@ var
   dbg: TGDBMIDebugger;
   Only: Integer;
   OnlyName, OnlyNamePart: String;
-  MemberTests: TFullTypeMemberExpectationResultArray;
 
   function SkipTest(const Data: TWatchExpectation): Boolean;
   begin
@@ -2019,149 +1684,6 @@ var
        ((OnlyName<>'') and (OnlyName <> Data.TestName)) or
        ((OnlyNamePart<>'') and (pos(OnlyNamePart, Data.TestName)<1))
     then Result := False;
-  end;
-
-  procedure TestWatch(Name: String; AWatch: TTestWatch; Data: TWatchExpectation; WatchValue: String = '');
-  var
-    rx: TRegExpr;
-    s, s2: String;
-    flag, IsValid, HasTpInfo, f2: Boolean;
-    WV: TWatchValue;
-    Stack: Integer;
-    n: String;
-    DataRes: TWatchExpectationResult;
-    IgnoreFlags: TWatchExpectationFlags;
-    IgnoreAll, IgnoreData, IgnoreKind, IgnoreKindPtr, IgnoreTpName: boolean;
-    IgnoreText: String;
-    i, j: Integer;
-    fld: TDBGField;
-
-    function CmpNames(TestName, Exp, Got: String; Match: Boolean): Boolean;
-    begin
-      if Match then begin
-        if Frx = nil then Frx := TRegExpr.Create;
-        Frx.ModifierI := true;
-        Frx.Expression := Exp;
-        TestTrue(TestName + ' matches '+Exp+' but was '+Got,  Frx.Exec(Got), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-       end
-       else TestEquals(TestName + ' equals ',  LowerCase(Exp), LowerCase(Got), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-    end;
-
-  begin
-    if not TestTrue('Dbg did NOT enter dsError', dbg.State <> dsError) then exit;
-    rx := nil;
-    Stack := Data.StackFrame;
-    DataRes := Data.Result[SymbolType];
-    IgnoreFlags := DataRes.Flgs * WatchExpFlagMask[SymbolType];
-    IgnoreAll     := IgnoreFlags * WatchExpFlagSIgnAll <> [];
-    IgnoreData    := IgnoreFlags * WatchExpFlagSIgnData <> [];
-    IgnoreKind    := IgnoreFlags * WatchExpFlagSIgnKind <> [];
-    IgnoreKindPtr := IgnoreFlags * WatchExpFlagSIgnKindPtr <> [];
-    IgnoreTpName  := IgnoreFlags * WatchExpFlagSIgnTpName <> [];
-
-    // Get Value
-    n := Data.TestName;
-    LogToFile('###### ' + n + '######' +LineEnding);
-    if n = '' then n := Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ', ' + dbgs(Data.EvaluateFlags) + ')';
-    Name := Name + ' ' + n;
-    flag := AWatch <> nil; // test for typeinfo/kind  // Awatch=nil > direct gdb command
-    IsValid := True;
-    HasTpInfo := True;
-    if flag then begin;
-      WV := AWatch.Values[1, Stack];// trigger read
-      s := WV.Value;
-      IsValid := WV.Validity = ddsValid;
-      HasTpInfo := IsValid and (WV.TypeInfo <> nil);
-//      flag := flag and IsValid;
-    end
-    else
-      s := WatchValue;
-
-    if not TestTrue('Dbg did NOT enter dsError', dbg.State <> dsError) then exit;
-
-    // Check Data
-    f2 := True;
-    IgnoreText := '';    if IgnoreData then IgnoreText := 'Ignored by flag';
-    if IsValid then begin
-      rx := TRegExpr.Create;
-      rx.ModifierI := true;
-      rx.Expression := DataRes.ExpMatch;
-      if DataRes.ExpMatch <> ''
-      then f2 := TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but was "' + s + '"', rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-      FreeAndNil(rx);
-    end else begin
-       f2 := TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but STATE was <'+dbgs(WV.Validity)+'> Val="'+s+'"', False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-       //exit; // failed Data, do not list others as potential unexpected success
-    end;
-
-    if (not f2) and IgnoreAll then exit; // failed Data, do not list others as potential unexpected success
-
-    // TypeInfo checks ?
-    if (not flag) or (DataRes.ExpTypeName = '') then exit;
-
-    // Check TypeInfo
-    s:='';
-    if HasTpInfo then WriteStr(s, WV.TypeInfo.Kind);
-    WriteStr(s2, DataRes.ExpKind);
-    IgnoreText := '';    if IgnoreKind then IgnoreText := 'Ignored by flag';
-    if IsValid and HasTpInfo then begin
-      if (not IgnoreKind) and IgnoreKindPtr and (WV.TypeInfo.Kind = skPointer) then IgnoreText := 'Ignored by flag (Kind may be Ptr)';
-      f2 := TestEquals(Name + ' Kind',  s2, s, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-    end else begin
-      f2 := TestTrue(Name + ' Kind is "'+s2+'", failed: STATE was <'+dbgs(WV.Validity)+'>, HasTypeInfo='+dbgs(HasTpInfo)+' Val="'+s+'"', False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-    end;
-
-    if (not f2) and IgnoreAll then exit; // failed Data, do not list others as potential unexpected success
-
-    // Check TypeName
-    IgnoreText := '';    if IgnoreTpName then IgnoreText := 'Ignored by flag';
-    if IsValid and HasTpInfo then begin
-      s:='';
-      if HasTpInfo then s := WV.TypeInfo.TypeName;
-      CmpNames(Name+' TypeName', DataRes.ExpTypeName, s, fTpMtch  in DataRes.Flgs);
-      //if fTpMtch  in DataRes.Flgs
-      //then begin
-      //  rx := TRegExpr.Create;
-      //  rx.ModifierI := true;
-      //  rx.Expression := DataRes.ExpTypeName;
-      //  TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but was '+s,  rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-      //  FreeAndNil(rx);
-      // end
-      // else TestEquals(Name + ' TypeName',  LowerCase(DataRes.ExpTypeName), LowerCase(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-    end else begin
-        TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but STATE was <'+dbgs(WV.Validity)+'> HasTypeInfo='+dbgs(HasTpInfo)+' Val="'+s+'"',  False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-    end;
-
-
-    MemberTests := DataRes.FullTypesExpect;
-    if Length(MemberTests) > 0 then begin
-      if HasTpInfo then begin
-        for i := 0 to Length(MemberTests) - 1 do begin
-          j := WV.TypeInfo.Fields.Count - 1;
-          while (j >= 0) and (uppercase(WV.TypeInfo.Fields[j].Name) <> UpperCase(MemberTests[i].Name)) do dec(j);
-          TestTrue(Name + ' no members with name ' +  MemberTests[i].Name,
-                   (fTExpectNotFOund  in MemberTests[i].Flgs) <> (j >= 0),
-                   DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
-          if j >= 0 then begin
-            fld := WV.TypeInfo.Fields[j];
-            WriteStr(s, MemberTests[i].ExpKind);
-            WriteStr(s2, fld.DBGType.Kind);
-            if fld.DBGType <> nil then begin
-              TestTrue(Name + ' members with name ' +  MemberTests[i].Name + ' type='
-              + s + ' but was ' + s2,
-                  MemberTests[i].ExpKind = fld.DBGType.Kind, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
-              CmpNames(Name + ' members with name ' +  MemberTests[i].Name + 'TypeName',
-                       MemberTests[i].ExpTypeName, fld.DBGType.TypeName, fTpMtch  in MemberTests[i].Flgs);
-            end
-            else
-              TestTrue(Name + ' no dbgtype for members with name' +  MemberTests[i].Name, False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
-          end;
-        end;
-      end
-      else
-        TestTrue(Name + ' no typeinfo for members' , False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
-    end;
-
   end;
 
 var
@@ -2213,41 +1735,9 @@ begin
       Fail(' Failed Init');
 
     (* Create all watches *)
-    SetLength(WList, length(ExpectBreakFoo));
-    for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
-      if not MatchOnly(ExpectBreakFoo[i], i) then continue;
-      if not SkipTest(ExpectBreakFoo[i]) then begin
-        WList[i] := TTestWatch.Create(FWatches);
-        WList[i].Expression := ExpectBreakFoo[i].Expression;
-        WList[i].DisplayFormat := ExpectBreakFoo[i].DspFormat;
-        WList[i].EvaluateFlags:= ExpectBreakFoo[i].EvaluateFlags;
-        WList[i].enabled := True;
-      end;
-    end;
-
-    SetLength(WListSub, length(ExpectBreakSubFoo));
-    for i := low(ExpectBreakSubFoo) to high(ExpectBreakSubFoo) do begin
-      if not MatchOnly(ExpectBreakSubFoo[i], i) then continue;
-      if not SkipTest(ExpectBreakSubFoo[i]) then begin
-        WListSub[i] := TTestWatch.Create(FWatches);
-        WListSub[i].Expression := ExpectBreakSubFoo[i].Expression;
-        WListSub[i].DisplayFormat := ExpectBreakSubFoo[i].DspFormat;
-        WListSub[i].EvaluateFlags:= ExpectBreakSubFoo[i].EvaluateFlags;
-        WListSub[i].enabled := True;
-      end;
-    end;
-
-    SetLength(WListArray, length(ExpectBreakFooArray));
-    for i := low(ExpectBreakFooArray) to high(ExpectBreakFooArray) do begin
-      if not MatchOnly(ExpectBreakFooArray[i], i) then continue;
-      if not SkipTest(ExpectBreakFooArray[i]) then begin
-        WListArray[i] := TTestWatch.Create(FWatches);
-        WListArray[i].Expression := ExpectBreakFooArray[i].Expression;
-        WListArray[i].DisplayFormat := ExpectBreakFooArray[i].DspFormat;
-        WListArray[i].EvaluateFlags:= ExpectBreakFooArray[i].EvaluateFlags;
-        WListArray[i].enabled := True;
-      end;
-    end;
+    AddWatches(ExpectBreakFoo, WList, FWatches, Only, OnlyName, OnlyNamePart);
+    AddWatches(ExpectBreakSubFoo, WListSub, FWatches, Only, OnlyName, OnlyNamePart);
+    AddWatches(ExpectBreakFooArray, WListArray, FWatches, Only, OnlyName, OnlyNamePart);
 
     (* Start debugging *)
     dbg.ShowConsole := True;
@@ -2257,11 +1747,7 @@ begin
     then begin
       (* Hit first breakpoint: BREAK_LINE_FOOFUNC_NEST SubFoo -- (1st loop) Called with none nil data *)
 
-      for i := low(ExpectBreakSubFoo) to high(ExpectBreakSubFoo) do begin
-        if not MatchOnly(ExpectBreakSubFoo[i], i) then continue;
-        if not SkipTest(ExpectBreakSubFoo[i]) then
-          TestWatch('Brk1 '+IntToStr(i)+' ', WListSub[i], ExpectBreakSubFoo[i]);
-      end;
+      TestWatchList('Brk1', ExpectBreakSubFoo, WListSub, dbg, Only, OnlyName, OnlyNamePart);
 
       dbg.Run;
     end
@@ -2277,7 +1763,7 @@ begin
         if not SkipTest(ExpectBreakFooGdb[i]) then begin
           FDbgOutPut := '';
           dbg.TestCmd(ExpectBreakFooGdb[i].Expression);
-          TestWatch('Brk1 Direct Gdb '+IntToStr(i)+' ', nil, ExpectBreakFooGdb[i], FDbgOutPut);
+          TestWatch('Brk2 Direct Gdb '+IntToStr(i)+' ', dbg, nil, ExpectBreakFooGdb[i], FDbgOutPut);
         end;
       end;
       FDbgOutPutEnable := False;
@@ -2285,7 +1771,7 @@ begin
       for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
         if not MatchOnly(ExpectBreakFoo[i], i) then continue;
         if not SkipTest(ExpectBreakFoo[i]) then
-          TestWatch('Brk1 '+IntToStr(i)+' ', WList[i], ExpectBreakFoo[i]);
+          TestWatch('Brk2 '+IntToStr(i)+' ', dbg, WList[i], ExpectBreakFoo[i]);
       end;
 
       dbg.Run;
@@ -2296,11 +1782,7 @@ begin
     then begin
       (* Hit 2nd breakpoint: BREAK_LINE_FOOFUNC_ARRAY SubFoo_Watches -- (1st loop) Called with none nil data *)
 
-      for i := low(ExpectBreakFooArray) to high(ExpectBreakFooArray) do begin
-        if not MatchOnly(ExpectBreakFooArray[i], i) then continue;
-        if not SkipTest(ExpectBreakFooArray[i]) then
-          TestWatch('Brk1 '+IntToStr(i)+' ', WListArray[i], ExpectBreakFooArray[i]);
-      end;
+      TestWatchList('Brk3', ExpectBreakFooArray, WListArray, dbg, Only, OnlyName, OnlyNamePart);
 
       dbg.Run;
     end
@@ -2406,7 +1888,6 @@ begin
 
   end;
 
-  FreeAndNil(Frx);
   AssertTestErrors;
 end;
 
@@ -2415,5 +1896,13 @@ end;
 initialization
 
   RegisterDbgTest(TTestWatches);
+  RegisterTestSelectors(['TTestWatch',
+                         '-  TTestWatch.Unstable',
+                         '  TTestWatch.Gdb',
+                         '  TTestWatch.All',
+                         '  TTestWatch.Mix',
+                         '    TTestWatch.Mix.All',
+                         '  TTestWatch.Cache'
+                        ]);
 end.
 

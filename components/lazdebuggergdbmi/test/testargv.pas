@@ -77,6 +77,8 @@ end;
 
 initialization
   RegisterDbgTest(TTestArgV);
+  RegisterTestSelectors(['TTestArgV'
+                        ]);
 
 end.
 

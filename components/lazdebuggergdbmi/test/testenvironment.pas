@@ -108,6 +108,8 @@ end;
 
 initialization
   RegisterDbgTest(TTestEnvironment);
+  RegisterTestSelectors(['TTestEnvironment'
+                        ]);
 
 end.
 

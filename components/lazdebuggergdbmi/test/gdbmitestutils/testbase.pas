@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry,
-  LCLProc, LazLogger, DbgIntfDebuggerBase, CompileHelpers, Dialogs,
+  LCLProc, LazLogger, DbgIntfDebuggerBase, CompileHelpers, Dialogs, TestGDBMIControl,
   GDBMIDebugger; // , FpGdbmiDebugger;
   // EnvironmentOpts, ExtToolDialog, TransferMacros,
 
@@ -374,9 +374,11 @@ var
   Logdir: String;
   WriteLog, WriteLogOnErr: Boolean;
 
-implementation
+  TestGdbClass: TGDBMIDebuggerClass = TGDBMIDebugger;
+  // TestGdbClass: TGDBMIDebuggerClass = TFPGDBMIDebugger;
 
-uses TestGDBMIControl;
+
+implementation
 
 var
   Compilers: TCompilerList = nil;
@@ -610,8 +612,7 @@ end;
 
 function TGDBTestCase.GdbClass: TGDBMIDebuggerClass;
 begin
-  Result := TGDBMIDebugger;
-  //Result := TFPGDBMIDebugger;
+  Result := TestGdbClass;
 end;
 
 procedure TGDBTestCase.DoDbgOut(Sender: TObject; S: string; var Handled: Boolean);

@@ -220,6 +220,8 @@ end;
 
 initialization
   RegisterDbgTest(TTestExceptionOne);
+  RegisterTestSelectors(['TTestExceptionOne'
+                        ]);
 
 end.
 

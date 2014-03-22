@@ -481,5 +481,12 @@ end;
 initialization
 
   RegisterDbgTest(TTestBreakPoint);
+  RegisterTestSelectors(['TTestBreakPoint',
+                         '  TTestBreakPoint.StartMethod',
+                         '  TTestBreakPoint.BadAddr',
+                         '  TTestBreakPoint.BadInterrupt',
+                         '    TTestBreakPoint.BadInterrupt.All'
+                        ]);
+
 end.
 
