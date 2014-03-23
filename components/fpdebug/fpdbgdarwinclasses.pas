@@ -189,8 +189,24 @@ begin
 end;
 
 function TDbgDarwinProcess.InitializeLoader: TDbgImageLoader;
+var
+  FObjFileName: string;
+  dSYMFilename: string;
 begin
-  result := TDbgImageLoader.Create(Name);
+  // JvdS: Mach-O binaries do not contain DWARF-debug info. Instead this info
+  // is stored inside the .o files, and the executable contains a map (in stabs-
+  // format) of all these .o files. An alternative to parsing this map and reading
+  // those .o files a dSYM-bundle could be used, which could be generated
+  // with dsymutil.
+  dSYMFilename:=ChangeFileExt(Name, '.dSYM');
+  dSYMFilename:=dSYMFilename+'/Contents/Resources/DWARF/'+ExtractFileName(Name);
+  if FileExists(dSYMFilename) then
+    result := TDbgImageLoader.Create(dSYMFilename)
+  else
+    begin
+    log('No dSYM bundle ('+dSYMFilename+') found.');
+    result := TDbgImageLoader.Create(Name);
+    end;
 end;
 
 constructor TDbgDarwinProcess.Create(const AName: string; const AProcessID, AThreadID: Integer);
