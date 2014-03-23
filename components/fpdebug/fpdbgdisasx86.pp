@@ -40,9 +40,6 @@ interface
 
 uses
   SysUtils,
-{$ifdef windows}
-  Windows,
-{$endif}
   FpDbgUtil, FpDbgInfo, DbgIntfBaseTypes, FpdMemoryTools;
 
 {                   
@@ -58,11 +55,7 @@ uses
 }  
 
 
-{$ifdef windows}
 procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
-procedure Disassemble(const AProcess: Handle; const A64Bit: Boolean; var AAddress: TDbgPtr; out ACodeBytes: String; out ACode: String);
-function Disassemble(const AProcess: Handle; const A64Bit: Boolean; var AAddress: TDbgPtr): String;
-{$endif}
 
 implementation
 
@@ -87,36 +80,6 @@ const
 type
   TOperandFlag = (ofMemory);
   TOperandFlags = set of TOperandFlag;
-
-{$ifdef windows}
-function Disassemble(const AProcess: Handle; const A64Bit: Boolean; var AAddress: TDbgPtr): String;
-var
-  S: String;
-begin
-  Disassemble(AProcess, A64bit, AAddress, S, Result);
-end;
-
-procedure Disassemble(const AProcess: Handle; const A64Bit: Boolean; var AAddress: TDbgPtr; out ACodeBytes: String; out ACode: String);
-const
-  PTRSIZE: array[Boolean] of Byte = (4, 8);
-var
-  BytesRead: Cardinal;
-  Code: array[0..20] of Byte;
-  p: Pointer;
-begin
-  BytesRead := 0;
-  if not ReadProcessMemory(AProcess, Pointer(PtrUInt(AAddress)), @Code, SizeOf(Code), BytesRead) and (BytesRead = SizeOf(Code))
-  then begin
-    Log('Disassemble: Failed to read memory at %s, got %u bytes', [HexValue(AAddress, PTRSIZE[A64Bit], [hvfIncludeHexchar]), BytesRead]);
-    ACode := '??';
-    ACodeBytes := '??';
-    Inc(AAddress);
-    Exit;
-  end;
-  p := @Code;
-  Disassemble(p, A64Bit, ACodeBytes, ACode);
-  Inc(AAddress, PtrUInt(p) - PtrUInt(@Code));
-end;
 
 procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
 var
@@ -3131,7 +3094,6 @@ begin
   ACodeBytes := S;
   Inc(AAddress, CodeIdx);
 end;
-{$endif}
 
 
 end.

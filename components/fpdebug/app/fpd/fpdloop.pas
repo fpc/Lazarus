@@ -53,20 +53,31 @@ procedure DebugLoop;
   var
     a: TDbgPtr;
     Code, CodeBytes: String;
+    CodeBin: array[0..20] of Byte;
+    p: pointer;
+    i: integer;
   begin
     WriteLN('===');
     a := GCurrentProcess.GetInstructionPointerRegisterValue;
-    Write('  [', FormatAddress(a), ']');
-    {$ifdef windows}
-    {$ifdef cpui386}
-      Disassemble(GCurrentProcess.Handle, False, a, CodeBytes, Code);
-    {$else}
-      Disassemble(GCurrentProcess.Handle, True, a, CodeBytes, Code);
-    {$endif}
-    {$else}
-    a := 0;
-    {$endif}
-    WriteLN(' ', CodeBytes, '    ', Code);
+    for i := 0 to 5 do
+    begin
+      Write('  [', FormatAddress(a), ']');
+
+      if not GCurrentProcess.ReadData(a,sizeof(CodeBin),CodeBin)
+      then begin
+        Log('Disassemble: Failed to read memory at %s.', [FormatAddress(a)]);
+        Code := '??';
+        CodeBytes := '??';
+        Inc(a);
+        Exit;
+      end;
+      p := @CodeBin;
+
+      Disassemble(p, GMode=dm64, CodeBytes, Code);
+
+      WriteLN(' ', CodeBytes:20, '    ', Code);
+      Inc(a, PtrUInt(p) - PtrUInt(@CodeBin));
+    end;
   end;
   
   procedure ShowCode;
