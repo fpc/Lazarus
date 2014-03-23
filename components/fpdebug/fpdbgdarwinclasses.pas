@@ -296,7 +296,6 @@ begin
 {$ifdef darwin}
   fpPTrace(PTRACE_CONT, ProcessID, pointer(1), nil);
 {$endif darwin}
-  writeln('Cont');
   e := fpgeterrno;
   if e <> 0 then
     begin
@@ -320,7 +319,7 @@ begin
   result := ProcessIdentifier<>-1;
   if not result then
     writeln('Failed to wait for debug event. Errcode: ', fpgeterrno)
-  else
+  else if not wifexited(FStatus) then
     begin
     // Read thread-information
     aKernResult := task_threads(FTaskPort, act_list, act_listCtn);
