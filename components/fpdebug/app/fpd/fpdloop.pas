@@ -212,6 +212,7 @@ begin
           end;
         deBreakpoint :
           begin
+            writeln(Format('Reached breakpoint at %s.',[FormatAddress(GCurrentProcess.GetInstructionPointerRegisterValue)]));
             GState:=dsPause;
           end;
       end; {case}
