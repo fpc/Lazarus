@@ -129,6 +129,7 @@ var
   i: Int64;
   p: PByte;
 begin
+  Result := '';
   if ASize > 8
   then begin
     Result := 'HexValue: size to large';
@@ -136,7 +137,6 @@ begin
   end;
   if ASize = 0
   then begin
-    Result := '';
     Exit;
   end;
 
