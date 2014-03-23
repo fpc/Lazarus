@@ -228,8 +228,8 @@ type
     procedure ReadTillCommentEnd;
     
     // read atoms
-    function AtomIs(const AnAtom: shortstring): boolean;
-    function UpAtomIs(const AnAtom: shortstring): boolean;
+    function AtomIs(const AnAtom: shortstring): boolean; // case sensitive
+    function UpAtomIs(const AnAtom: shortstring): boolean; // compare to uppercase
     function UpAtomIs(const AtomPos: TAtomPosition; const AnAtom: shortstring): boolean; overload;
     function ReadNextAtomIs(const AnAtom: shortstring): boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function ReadNextAtomIsIdentifier(Identifier: PChar): boolean; {$IFDEF UseInline}inline;{$ENDIF}

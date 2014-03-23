@@ -112,7 +112,7 @@ type
     function PropertyNodeHasParamList(PropNode: TCodeTreeNode): boolean;
     function PropNodeIsTypeLess(PropNode: TCodeTreeNode): boolean;
     function PropertyHasSpecifier(PropNode: TCodeTreeNode;
-                 const s: string; ExceptionOnNotFound: boolean = true): boolean;
+                 s: string; ExceptionOnNotFound: boolean = true): boolean;
 
     // procs
     function ExtractProcName(ProcNode: TCodeTreeNode;
@@ -2866,7 +2866,7 @@ begin
 end;
 
 function TPascalReaderTool.PropertyHasSpecifier(PropNode: TCodeTreeNode;
-  const s: string; ExceptionOnNotFound: boolean): boolean;
+  s: string; ExceptionOnNotFound: boolean): boolean;
 begin
 
   // ToDo: ppu, dcu
@@ -2890,11 +2890,13 @@ begin
       ReadNextAtom;
     end;
   end;
+
+  s:=UpperCaseStr(s);
   // read specifiers
   while not (CurPos.Flag in [cafSemicolon,cafNone]) do begin
     if WordIsPropertySpecifier.DoIdentifier(@Src[CurPos.StartPos])
     then begin
-      if AtomIs(s) then exit(true);
+      if UpAtomIs(s) then exit(true);
     end else if CurPos.Flag=cafEdgedBracketOpen then begin
       if not ReadTilBracketClose(ExceptionOnNotFound) then exit;
       ReadNextAtom;
