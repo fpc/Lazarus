@@ -10,7 +10,7 @@ uses
   GDBMIDebugger;
 
 const
-  BREAK_LINE_TestWatchesUnitSimple = 13;
+  BREAK_LINE_TestWatchesUnitSimple = 82;
 
 type
 
@@ -37,6 +37,7 @@ type
     function AddFmtDef        (AnExpr, AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
     function AddFmtDef        (AnExpr: String; AEvalFlags: TDBGEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
 
+    function AddSimpleInt(AnExpr, AMtch: string; ATpNm: string): PWatchExpectation;
 
     procedure AddExpectSimple;
     procedure RunTestWatches(NamePreFix: String;
@@ -142,11 +143,23 @@ begin
   Result := Add(AnExpr, wdfDefault, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
 end;
 
+function TTestWatches.AddSimpleInt(AnExpr, AMtch: string; ATpNm: string): PWatchExpectation;
+begin
+  AddFmtDef(AnExpr, AMtch, skSimple, ATpNm, [fTpMtch]);
+end;
+
 procedure TTestWatches.AddExpectSimple;
 begin
   FCurrentExpArray := @ExpectBreakSimple1;
   //
-  AddFmtDef('i', '121', skSimple, M_Int, [fTpMtch]);
+  AddSimpleInt('SimpleArg_Int1',    '^-1902', M_Int);
+  AddSimpleInt('SimpleVArg_Int1',   '^-1901', M_Int);
+  AddSimpleInt('SimpleLocal_Int1',  '^3901', M_Int);
+  AddSimpleInt('SimpleGlob_Int1',   '^2901', M_Int);
+  AddSimpleInt('SimpleGlob_Int2',   '^0', M_Int);
+  AddSimpleInt('SimpleGlob_Int3',   '^-1', M_Int);
+  AddSimpleInt('SimpleGlob_Int4',   '^2147483647', M_Int);
+  AddSimpleInt('SimpleGlob_Int5',   '^-2147483648', M_Int);
 end;
 
 procedure TTestWatches.RunTestWatches(NamePreFix: String; TestExeName, ExtraOpts: String;

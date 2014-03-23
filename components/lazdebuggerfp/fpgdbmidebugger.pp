@@ -946,6 +946,8 @@ begin
           if IsWatchValueAlive then    debugln(['TFPGDBMIWatches.InternalRequestData FAILED ', WatchValue.Expression]);
           if IsWatchValueAlive then
             inherited InternalRequestData(WatchValue);
+          if IsWatchValueAlive then
+            WatchValue.Value := '{GDB:}'+WatchValue.Value;
         end;
       finally
         if IsWatchValueAlive then begin

@@ -85,6 +85,29 @@ type
     function CreateCallStackList: TCallStackList; override;
   end;
 
+  TTestThreadsMonitor = class;
+  { TTestThreads }
+
+  TTestThreads = class(TThreads)
+  private
+    FMonitor: TTestThreadsMonitor;
+    FDataValidity: TDebuggerDataState;
+  public
+    constructor Create;
+    function  Count: Integer; override;
+    procedure Clear; override;
+    procedure SetValidity(AValidity: TDebuggerDataState); override;
+  end;
+
+  { TTestThreadsMonitor }
+
+  TTestThreadsMonitor = class(TThreadsMonitor)
+  protected
+    procedure DoStateEnterPause; override;
+    function CreateThreads: TThreads; override;
+    procedure RequestData;
+  end;
+
   { TTestWatchValue }
 
   TTestWatchValue = class(TWatchValue)
@@ -133,6 +156,35 @@ type
     procedure DoStateChangeEx(const AOldState, ANewState: TDBGState); override;
     procedure RequestData(AWatchValue: TWatchValue);
     function CreateWatches: TWatches; override;
+  end;
+
+  TTestRegistersMonitor = class;
+  { TTestRegisters }
+
+  TTestRegisters = class(TRegisters)
+  private
+    FMonitor: TTestRegistersMonitor;
+  protected
+    procedure DoDataValidityChanged(AnOldValidity: TDebuggerDataState); override;
+  public
+    function Count: Integer; reintroduce; override;
+  end;
+
+  { TTEstRegistersList }
+
+  TTestRegistersList = class(TRegistersList)
+  private
+    FMonitor: TTestRegistersMonitor;
+  protected
+    function CreateEntry(AThreadId, AStackFrame: Integer): TRegisters; override;
+  end;
+
+  { TTestRegistersMonitor }
+
+  TTestRegistersMonitor = class(TRegistersMonitor)
+  protected
+    function CreateRegistersList: TRegistersList; override;
+    procedure RequestData(ARegisters: TRegisters);
   end;
 
   { TBaseList }
@@ -283,8 +335,8 @@ type
     FLocals: TLocalsMonitor;
     FLineInfo: TBaseLineInfo;
     FWatches: TTestWatchesMonitor;
-    FThreads: TThreadsMonitor;
-    FRegisters: TRegistersMonitor;
+    FThreads: TTestThreadsMonitor;
+    FRegisters: TTestRegistersMonitor;
   private
     FParent: TGDBTestsuite;
     FTestBaseName: String;
@@ -357,10 +409,10 @@ type
     property Disassembler: TBaseDisassembler read FDisassembler;
     property Locals: TLocalsMonitor read FLocals;
     property LineInfo: TBaseLineInfo read FLineInfo;
-    property Registers: TRegistersMonitor read FRegisters;
+    property Registers: TTestRegistersMonitor read FRegisters;
     //property Signals: TBaseSignals read FSignals;               // A list of actions for signals we know of
     property Watches: TTestWatchesMonitor read FWatches;
-    property Threads: TThreadsMonitor read FThreads;
+    property Threads: TTestThreadsMonitor read FThreads;
   end;
 
 function GetCompilers: TCompilerList;
@@ -444,6 +496,107 @@ begin
   //if (Result.Count = 0) and (EnvironmentOptions.GetParsedDebuggerFilename <> '') then
   //  Result.Add('gdb from conf', EnvironmentOptions.GetParsedDebuggerFilename);
   Debuggers := Result;
+end;
+
+{ TTestThreads }
+
+constructor TTestThreads.Create;
+begin
+  inherited Create;
+  FDataValidity := ddsUnknown;
+end;
+
+function TTestThreads.Count: Integer;
+begin
+  if (FDataValidity = ddsUnknown) then begin
+    FDataValidity := ddsRequested;
+    FMonitor.RequestData;
+  end;
+
+  Result := inherited Count;
+end;
+
+procedure TTestThreads.Clear;
+begin
+  FDataValidity := ddsUnknown;
+  inherited Clear;
+end;
+
+procedure TTestThreads.SetValidity(AValidity: TDebuggerDataState);
+begin
+  if FDataValidity = AValidity then exit;
+  FDataValidity := AValidity;
+  if FDataValidity = ddsUnknown then Clear;
+end;
+
+{ TTestThreadsMonitor }
+
+procedure TTestThreadsMonitor.DoStateEnterPause;
+begin
+  inherited DoStateEnterPause;
+  TTestThreads(Threads).SetValidity(ddsUnknown);
+end;
+
+function TTestThreadsMonitor.CreateThreads: TThreads;
+begin
+  Result := TTestThreads.Create;
+  TTestThreads(Result).FMonitor := Self;
+end;
+
+procedure TTestThreadsMonitor.RequestData;
+begin
+  if Supplier <> nil
+  then Supplier.RequestMasterData;
+end;
+
+{ TTestRegistersMonitor }
+
+function TTestRegistersMonitor.CreateRegistersList: TRegistersList;
+begin
+  Result := TTestRegistersList.Create;
+  TTestRegistersList(Result).FMonitor := Self;
+end;
+
+procedure TTestRegistersMonitor.RequestData(ARegisters: TRegisters);
+begin
+  if Supplier <> nil
+  then Supplier.RequestData(ARegisters)
+  else ARegisters.DataValidity := ddsInvalid;
+end;
+
+{ TTEstRegistersList }
+
+function TTestRegistersList.CreateEntry(AThreadId, AStackFrame: Integer): TRegisters;
+begin
+  Result := TTestRegisters.Create(AThreadId, AStackFrame);
+  TTestRegisters(Result).FMonitor := FMonitor;
+end;
+
+{ TTestRegisters }
+
+procedure TTestRegisters.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
+begin
+  inherited DoDataValidityChanged(AnOldValidity);
+end;
+
+function TTestRegisters.Count: Integer;
+begin
+  case DataValidity of
+    ddsUnknown:   begin
+        AddReference;
+        try
+          Result := 0;
+          DataValidity := ddsRequested;
+          FMonitor.RequestData(Self);  // Locals can be cleared, if debugger is "run" again
+          if DataValidity = ddsValid then Result := inherited Count();
+        finally
+          ReleaseReference;
+        end;
+      end;
+    ddsRequested, ddsEvaluating: Result := 0;
+    ddsValid:                    Result := inherited Count;
+    ddsInvalid, ddsError:        Result := 0;
+  end;
 end;
 
 { TTestWatches }
@@ -595,6 +748,7 @@ function TTestCallStackList.NewEntryForThread(const AThreadId: Integer): TCallSt
 begin
   Result := TCallStackBase.Create;
   Result.ThreadId := AThreadId;
+  add(Result);
 end;
 
 { TGDBTestCase }
@@ -752,14 +906,14 @@ begin
   //FBreakPoints := TManagedBreakPoints.Create(Self);
   //FBreakPointGroups := TIDEBreakPointGroups.Create;
   FWatches := TTestWatchesMonitor.Create;
-  FThreads := TThreadsMonitor.Create;
+  FThreads := TTestThreadsMonitor.Create;
   FExceptions := TBaseExceptions.Create(TBaseException);
   //FSignals := TBaseSignals.Create(TBaseSignal);
   FLocals := TLocalsMonitor.Create;
   FLineInfo := TBaseLineInfo.Create;
   FCallStack := TTestCallStackMonitor.Create;
   FDisassembler := TBaseDisassembler.Create;
-  FRegisters := TRegistersMonitor.Create;
+  FRegisters := TTestRegistersMonitor.Create;
 
   Result := GdbClass.Create(DebuggerInfo.ExeName);
   Result.OnDbgOutput  := @InternalDbgOutPut;
