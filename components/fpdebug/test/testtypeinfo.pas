@@ -550,6 +550,7 @@ begin
   ImgLoader := TTestLoaderSetup1(FImageLoader);
   FMemReader.RegisterValues[5] := TDbgPtr(@ImgLoader.TestStackFrame.EndPoint);
 
+  Obj1c := nil;
   obj1 := TTestSetup1Class.Create;
   ImgLoader.TestStackFrame.Int1 := -299;
   ImgLoader.TestStackFrame.Obj1 := obj1;
@@ -897,7 +898,7 @@ begin
          4: s := 'VParamTestSetup1Record';
          5: s := 'VParamTestRecord^';
          6: s := 'TTestSetup1Record(Rec1)';
-         7: s := 'TTestSetup1Record2(Rec1)'; // TTestSetup1Record2 is a sdistinct type, but same sive (actually identical)
+         7: s := 'TTestSetup1Record2(Rec1)'; // TTestSetup1Record2 is a distinct type, but same sive (actually identical)
       end;
 
       StartTest(s, skRecord, [ttHasType]);
@@ -1111,6 +1112,7 @@ begin
     ExpFlags([svfCardinal, svfOrdinal, svfAddress]); // svfSize; //
   finally
     obj1.Free;
+    Obj1c.Free;
   end;
 end;
 

@@ -595,7 +595,7 @@ type
 
   TFpDbgDwarfValue = class(TFpDbgValue)
   private
-    FOwner: TDbgDwarfIdentifier;        // the creator, usually the type
+    FOwner: TDbgDwarfTypeIdentifier;        // the creator, usually the type
     FValueSymbol: TDbgDwarfValueIdentifier;
     FTypeCastTargetType: TDbgDwarfTypeIdentifier;
     FTypeCastSourceValue: TFpDbgValue;
@@ -635,7 +635,7 @@ type
     function GetTypeInfo: TFpDbgSymbol; override;
     function GetContextTypeInfo: TFpDbgSymbol; override;
   public
-    constructor Create(AOwner: TDbgDwarfIdentifier);
+    constructor Create(AOwner: TDbgDwarfTypeIdentifier);
     destructor Destroy; override;
     procedure SetValueSymbol(AValueSymbol: TDbgDwarfValueIdentifier);
     function  SetTypeCastInfo(AStructure: TDbgDwarfTypeIdentifier;
@@ -656,7 +656,7 @@ type
     function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function GetSize: Integer; override;
   public
-    constructor Create(AOwner: TDbgDwarfIdentifier; ASize: Integer);
+    constructor Create(AOwner: TDbgDwarfTypeIdentifier; ASize: Integer);
   end;
 
   { TFpDbgDwarfValueNumeric }
@@ -669,7 +669,7 @@ type
     function GetFieldFlags: TFpDbgValueFieldFlags; override; // svfOrdinal
     function IsValidTypeCast: Boolean; override;
   public
-    constructor Create(AOwner: TDbgDwarfIdentifier; ASize: Integer);
+    constructor Create(AOwner: TDbgDwarfTypeIdentifier; ASize: Integer);
   end;
 
   { TFpDbgDwarfValueInteger }
@@ -756,11 +756,15 @@ type
   { TFpDbgDwarfValueEnumMember }
 
   TFpDbgDwarfValueEnumMember = class(TFpDbgDwarfValue)
+  private
+    FOwnerVal: TDbgDwarfValueIdentifier;
   protected
     function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
     function GetAsString: AnsiString; override;
     function IsValidTypeCast: Boolean; override;
+  public
+    constructor Create(AOwner: TDbgDwarfValueIdentifier);
   end;
 
   { TFpDbgDwarfValueConstNumber }
@@ -1043,6 +1047,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     procedure TypeInfoNeeded; override;
     procedure ForwardToSymbolNeeded; override;
+    function GetTypedValueObject(ATypeCast: Boolean): TFpDbgDwarfValue; override;
   end;
 
   { TDbgDwarfTypeIdentifierRef }
@@ -1062,7 +1067,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     // typedef > pointer > srtuct
     // while a pointer to class/object: pointer > typedef > ....
     function DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier; override;
-    function GetTypedValueObject(ATypeCast: Boolean): TFpDbgDwarfValue; override;
   end;
 
   { TDbgDwarfIdentifierSubRange }
@@ -1085,7 +1089,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure InitEnumIdx;
     procedure ReadBounds;
   protected
-    function GetTypedValueObject(ATypeCast: Boolean): TFpDbgDwarfValue; override;
     function DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier;override;
     function GetHasBounds: Boolean; override;
     function GetOrdHighBound: Int64; override;
@@ -2237,7 +2240,7 @@ begin
   Result := FSize;
 end;
 
-constructor TFpDbgDwarfValueSized.Create(AOwner: TDbgDwarfIdentifier; ASize: Integer);
+constructor TFpDbgDwarfValueSized.Create(AOwner: TDbgDwarfTypeIdentifier; ASize: Integer);
 begin
   inherited Create(AOwner);
   FSize := ASize;
@@ -2253,18 +2256,24 @@ end;
 
 function TFpDbgDwarfValueEnumMember.GetAsCardinal: QWord;
 begin
-  Result := FOwner.OrdinalValue;
+  Result := FOwnerVal.OrdinalValue;
 end;
 
 function TFpDbgDwarfValueEnumMember.GetAsString: AnsiString;
 begin
-  Result := FOwner.Name;
+  Result := FOwnerVal.Name;
 end;
 
 function TFpDbgDwarfValueEnumMember.IsValidTypeCast: Boolean;
 begin
   assert(False, 'TDbgDwarfEnumMemberSymbolValue.IsValidTypeCast can not be returned for typecast');
   Result := False;
+end;
+
+constructor TFpDbgDwarfValueEnumMember.Create(AOwner: TDbgDwarfValueIdentifier);
+begin
+  FOwnerVal := AOwner;
+  inherited Create(nil);
 end;
 
 { TDbgDwarfEnumSymbolValue }
@@ -2797,7 +2806,7 @@ begin
   Result := False;
 end;
 
-constructor TFpDbgDwarfValueNumeric.Create(AOwner: TDbgDwarfIdentifier; ASize: Integer);
+constructor TFpDbgDwarfValueNumeric.Create(AOwner: TDbgDwarfTypeIdentifier; ASize: Integer);
 begin
   inherited Create(AOwner, ASize);
   FEvaluated := [];
@@ -2858,8 +2867,10 @@ end;
 
 function TFpDbgDwarfValue.DataAddr: TFpDbgMemLocation;
 begin
+  // GetDwarfDataAddress(???); What about FTypeCastSourceValue.AsCardinal ?
   if FValueSymbol <> nil then begin
-    FValueSymbol.GetValueAddress(Self, Result);
+    //FValueSymbol.GetValueAddress(Self, Result);
+    FValueSymbol.GetValueDataAddress(Self, Result, FOwner);
     if IsError(FValueSymbol.LastError) then
       FLastError := FValueSymbol.LastError;
   end
@@ -2868,6 +2879,13 @@ begin
     Result := FTypeCastSourceValue.Address;
     if IsError(FTypeCastSourceValue.LastError) then
       FLastError := FTypeCastSourceValue.LastError;
+
+    if IsReadableLoc(Result) then begin
+      if not FTypeCastTargetType.GetDataAddress(Self, Result, FOwner, 1) then
+        Result := InvalidLoc;
+      if IsError(FTypeCastTargetType.LastError) then
+        FLastError := FTypeCastTargetType.LastError;
+    end;
   end
   else
     Result := InvalidLoc;
@@ -3093,7 +3111,7 @@ begin
     Result := nil; // internal error
 end;
 
-constructor TFpDbgDwarfValue.Create(AOwner: TDbgDwarfIdentifier);
+constructor TFpDbgDwarfValue.Create(AOwner: TDbgDwarfTypeIdentifier);
 begin
   FOwner := AOwner;
   inherited Create;
@@ -5252,17 +5270,6 @@ begin
   end;
 end;
 
-function TDbgDwarfIdentifierSubRange.GetTypedValueObject(ATypeCast: Boolean): TFpDbgDwarfValue;
-var
-  t: TDbgDwarfTypeIdentifier;
-begin
-  t := NestedTypeInfo;
-  if t <> nil then
-    Result := t.GetTypedValueObject(ATypeCast)
-  else
-    Result := inherited GetTypedValueObject(ATypeCast);
-end;
-
 function TDbgDwarfIdentifierSubRange.DoGetNestedTypeInfo: TDbgDwarfTypeIdentifier;
 begin
   Result := inherited DoGetNestedTypeInfo;
@@ -5749,17 +5756,6 @@ begin
     TDbgDwarfTypeIdentifierPointer(ti).IsInternalPointer := True;
     // TODO: Flag the structure as class (save teme in KindNeeded)
   end;
-end;
-
-function TDbgDwarfTypeIdentifierDeclaration.GetTypedValueObject(ATypeCast: Boolean): TFpDbgDwarfValue;
-var
-  ti: TDbgDwarfTypeIdentifier;
-begin
-  ti := NestedTypeInfo;
-  if ti <> nil then
-    Result := ti.GetTypedValueObject(ATypeCast)
-  else
-    Result := inherited;
 end;
 
 { TDbgDwarfValueIdentifier }
@@ -6403,6 +6399,17 @@ begin
   SetForwardToSymbol(NestedTypeInfo)
 end;
 
+function TDbgDwarfTypeIdentifierModifier.GetTypedValueObject(ATypeCast: Boolean): TFpDbgDwarfValue;
+var
+  ti: TDbgDwarfTypeIdentifier;
+begin
+  ti := NestedTypeInfo;
+  if ti <> nil then
+    Result := ti.GetTypedValueObject(ATypeCast)
+  else
+    Result := inherited;
+end;
+
 { TDbgDwarfBaseTypeIdentifier }
 
 procedure TDbgDwarfBaseIdentifierBase.KindNeeded;
@@ -6722,7 +6729,7 @@ begin
     if ti <> nil then
       Result := ti.GetDataAddress(AValueObj, AnAddress, ATargetType, ATargetCacheIndex+1)
     else
-      Result := False; // Result := ATargetType = nil; // end of type chain
+      Result := ATargetType = nil; // end of type chain
   end;
 end;
 

@@ -1525,7 +1525,7 @@ DebugLn(ErrorHandler.ErrorAsString(PasExpr.Error));
 
     ResValue := PasExpr.ResultValue;
 
-    case PasExpr.ResultValue.Kind of
+    case ResValue.Kind of
       skUnit: ;
       skProcedure: ;
       skFunction: ;
