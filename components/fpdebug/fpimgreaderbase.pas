@@ -14,7 +14,7 @@ type
   TDbgImageSection = record
     RawData: Pointer;
     Size: QWord;
-    VirtualAdress: QWord;
+    VirtualAddress: QWord;
   end;
   PDbgImageSection = ^TDbgImageSection;
 

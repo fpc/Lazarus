@@ -460,7 +460,7 @@ type
     FLength: QWord;  // length of info
     FVersion: Word;
     FAbbrevOffset: QWord;
-    FAddressSize: Byte;  // the adress size of the target in bytes
+    FAddressSize: Byte;  // the address size of the target in bytes
     FIsDwarf64: Boolean; // Set if the dwarf info in this unit is 64bit
     // ------
     
@@ -600,14 +600,14 @@ type
     FTypeCastTargetType: TDbgDwarfTypeIdentifier;
     FTypeCastSourceValue: TFpDbgValue;
 
-    FDataAdressCache: array of TFpDbgMemLocation;
+    FDataAddressCache: array of TFpDbgMemLocation;
     FStructureValue: TFpDbgDwarfValue;
     FLastMember: TFpDbgDwarfValue;
     FLastError: TFpError;
-    function GetDataAdressCache(AIndex: Integer): TFpDbgMemLocation;
+    function GetDataAddressCache(AIndex: Integer): TFpDbgMemLocation;
     function MemManager: TFpDbgMemManager; inline;
     function AddressSize: Byte; inline;
-    procedure SetDataAdressCache(AIndex: Integer; AValue: TFpDbgMemLocation);
+    procedure SetDataAddressCache(AIndex: Integer; AValue: TFpDbgMemLocation);
     procedure SetStructureValue(AValue: TFpDbgDwarfValue);
   protected
     procedure DoReferenceAdded; override;
@@ -642,8 +642,8 @@ type
                               ASource: TFpDbgValue): Boolean; // Used for Typecast
     // StructureValue: Any Value returned via GetMember points to its structure
     property StructureValue: TFpDbgDwarfValue read FStructureValue write SetStructureValue;
-    // DataAdressCache[0]: ValueAddress // DataAdressCache[1..n]: DataAddress
-    property DataAdressCache[AIndex: Integer]: TFpDbgMemLocation read GetDataAdressCache write SetDataAdressCache;
+    // DataAddressCache[0]: ValueAddress // DataAddressCache[1..n]: DataAddress
+    property DataAddressCache[AIndex: Integer]: TFpDbgMemLocation read GetDataAddressCache write SetDataAddressCache;
   end;
 
   { TFpDbgDwarfValueSized }
@@ -1326,7 +1326,7 @@ type
 
   TDwarfSectionInfo = record
     Section: TDwarfSection;
-    VirtualAdress: QWord;
+    VirtualAddress: QWord;
     Size: QWord; // the virtual size
     RawData: Pointer;
   end;
@@ -2811,10 +2811,10 @@ begin
   Result := FOwner.FCU.FOwner.MemManager;
 end;
 
-function TFpDbgDwarfValue.GetDataAdressCache(AIndex: Integer): TFpDbgMemLocation;
+function TFpDbgDwarfValue.GetDataAddressCache(AIndex: Integer): TFpDbgMemLocation;
 begin
-  if AIndex < Length(FDataAdressCache) then
-    Result := FDataAdressCache[AIndex]
+  if AIndex < Length(FDataAddressCache) then
+    Result := FDataAddressCache[AIndex]
   else
     Result := UnInitializedLoc;
 end;
@@ -2825,18 +2825,18 @@ begin
   Result := FOwner.FCU.FAddressSize;
 end;
 
-procedure TFpDbgDwarfValue.SetDataAdressCache(AIndex: Integer; AValue: TFpDbgMemLocation);
+procedure TFpDbgDwarfValue.SetDataAddressCache(AIndex: Integer; AValue: TFpDbgMemLocation);
 var
   i, j: Integer;
 begin
-  i := length(FDataAdressCache);
+  i := length(FDataAddressCache);
   if AIndex >= i then begin
-    SetLength(FDataAdressCache, AIndex + 1 + 8);
+    SetLength(FDataAddressCache, AIndex + 1 + 8);
     // todo: Fillbyte 0
-    for j := i to Length(FDataAdressCache) - 1 do
-      FDataAdressCache[j] := UnInitializedLoc;
+    for j := i to Length(FDataAddressCache) - 1 do
+      FDataAddressCache[j] := UnInitializedLoc;
   end;
-  FDataAdressCache[AIndex] := AValue;
+  FDataAddressCache[AIndex] := AValue;
 end;
 
 procedure TFpDbgDwarfValue.SetStructureValue(AValue: TFpDbgDwarfValue);
@@ -2949,7 +2949,7 @@ end;
 
 procedure TFpDbgDwarfValue.Reset;
 begin
-  FDataAdressCache := nil;
+  FDataAddressCache := nil;
   FLastError := NoError;
 end;
 
@@ -3148,12 +3148,12 @@ end;
 function TDbgDwarfIdentifierParameter.GetValueAddress(AValueObj: TFpDbgDwarfValue; out
   AnAddress: TFpDbgMemLocation): Boolean;
 begin
-  AnAddress := AValueObj.DataAdressCache[0];
+  AnAddress := AValueObj.DataAddressCache[0];
   Result := IsValidLoc(AnAddress);
   if IsInitializedLoc(AnAddress) then
     exit;
   Result := LocationFromTag(DW_AT_location, AValueObj, AnAddress, InvalidLoc);
-  AValueObj.DataAdressCache[0] := AnAddress;
+  AValueObj.DataAddressCache[0] := AnAddress;
 end;
 
 function TDbgDwarfIdentifierParameter.HasAddress: Boolean;
@@ -3166,12 +3166,12 @@ end;
 function TDbgDwarfIdentifierVariable.GetValueAddress(AValueObj: TFpDbgDwarfValue; out
   AnAddress: TFpDbgMemLocation): Boolean;
 begin
-  AnAddress := AValueObj.DataAdressCache[0];
+  AnAddress := AValueObj.DataAddressCache[0];
   Result := IsValidLoc(AnAddress);
   if IsInitializedLoc(AnAddress) then
     exit;
   Result := LocationFromTag(DW_AT_location, AValueObj, AnAddress, InvalidLoc);
-  AValueObj.DataAdressCache[0] := AnAddress;
+  AValueObj.DataAddressCache[0] := AnAddress;
 end;
 
 function TDbgDwarfIdentifierVariable.HasAddress: Boolean;
@@ -5593,7 +5593,7 @@ begin
     exit;
   end;
 
-  t := AValueObj.DataAdressCache[ATargetCacheIndex];
+  t := AValueObj.DataAddressCache[ATargetCacheIndex];
   if IsInitializedLoc(t) then begin
     AnAddress := t;
   end
@@ -5602,7 +5602,7 @@ begin
     if not Result then
       exit;
     AnAddress := FCU.FOwner.MemManager.ReadAddress(AnAddress, FCU.FAddressSize);
-    AValueObj.DataAdressCache[ATargetCacheIndex] := AnAddress;
+    AValueObj.DataAddressCache[ATargetCacheIndex] := AnAddress;
   end;
   Result := IsValidLoc(AnAddress);
 
@@ -5649,11 +5649,11 @@ var
   k: TDbgSymbolKind;
 begin
   if IsInternalPointer then begin
-    k := NestedTypeInfo.Kind;
-    if k = skObject then
-      SetKind(skClass)
-    else
-      SetKind(k);
+      k := NestedTypeInfo.Kind;
+      if k = skObject then
+        SetKind(skClass)
+      else
+        SetKind(k);
   end
   else
     SetKind(skPointer);
@@ -5683,7 +5683,7 @@ begin
     exit;
   end;
 
-  t := AValueObj.DataAdressCache[ATargetCacheIndex];
+  t := AValueObj.DataAddressCache[ATargetCacheIndex];
   if IsInitializedLoc(t) then begin
     AnAddress := t;
   end
@@ -5692,7 +5692,7 @@ begin
     if not Result then
       exit;
     AnAddress := FCU.FOwner.MemManager.ReadAddress(AnAddress, FCU.FAddressSize);
-    AValueObj.DataAdressCache[ATargetCacheIndex] := AnAddress;
+    AValueObj.DataAddressCache[ATargetCacheIndex] := AnAddress;
   end;
   Result := IsValidLoc(AnAddress);
 
@@ -5809,8 +5809,8 @@ begin
     exit;
 
   Assert((TypeInfo is TDbgDwarfIdentifier) and (TypeInfo.SymbolType = stType), 'TDbgDwarfValueIdentifier.GetDataAddress');
-  GetValueAddress(AValueObj, AnAddress);
-  Result := IsReadableLoc(AnAddress);
+  Result := GetValueAddress(AValueObj, AnAddress);
+  Result := Result and IsReadableLoc(AnAddress);
   if Result then begin
     Result := TDbgDwarfTypeIdentifier(TypeInfo).GetDataAddress(AValueObj, AnAddress, ATargetType, 1);
     if not Result then SetLastError(TypeInfo.LastError);
@@ -6174,12 +6174,12 @@ end;
 function TDbgDwarfIdentifierMember.GetValueAddress(AValueObj: TFpDbgDwarfValue; out
   AnAddress: TFpDbgMemLocation): Boolean;
 begin
-  AnAddress := AValueObj.DataAdressCache[0];
+  AnAddress := AValueObj.DataAddressCache[0];
   Result := IsValidLoc(AnAddress);
   if IsInitializedLoc(AnAddress) then
     exit;
   Result := LocationFromTag(DW_AT_data_member_location, AValueObj, AnAddress, InvalidLoc);
-  AValueObj.DataAdressCache[0] := AnAddress;
+  AValueObj.DataAddressCache[0] := AnAddress;
 end;
 
 function TDbgDwarfIdentifierMember.HasAddress: Boolean;
@@ -6257,7 +6257,7 @@ begin
     exit;
   end;
 
-  t := AValueObj.DataAdressCache[ATargetCacheIndex];
+  t := AValueObj.DataAddressCache[ATargetCacheIndex];
   if IsInitializedLoc(t) then begin
     AnAddress := t;
     Result := IsValidLoc(AnAddress);
@@ -6269,7 +6269,7 @@ begin
     if not Result then
       exit;
     AnAddress := t;
-    AValueObj.DataAdressCache[ATargetCacheIndex] := AnAddress;
+    AValueObj.DataAddressCache[ATargetCacheIndex] := AnAddress;
   end;
 
   Result := inherited GetDataAddress(AValueObj, AnAddress, ATargetType, ATargetCacheIndex);
@@ -6365,10 +6365,10 @@ begin
   else
   begin
     if TypeInfo <> nil then // inheritance
-      SetKind(skObject)
+      SetKind(skObject) // skClass
     else
     if MemberByName['_vptr$TOBJECT'] <> nil then
-      SetKind(skObject)
+      SetKind(skObject) // skClass
     else
     if MemberByName['_vptr$'+Name] <> nil then
       SetKind(skObject)
@@ -7090,7 +7090,7 @@ begin
     FSections[Section].Section := Section;
     FSections[Section].RawData := p^.RawData;
     FSections[Section].Size := p^.Size;
-    FSections[Section].VirtualAdress := p^.VirtualAdress;
+    FSections[Section].VirtualAddress := p^.VirtualAddress;
   end;
 end;
 
@@ -7194,7 +7194,7 @@ begin
         end;
       end;
 
-      // iter is at the closest defined adress before AAddress
+      // iter is at the closest defined address before AAddress
       Info := Iter.DataPtr;
       if AAddress > Info^.EndPC
       then begin
@@ -7293,7 +7293,7 @@ end;
 
 function TDbgDwarf.PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
 begin
-  Result := FSections[ASection].RawData + AVA - FImageBase - FSections[ASection].VirtualAdress;
+  Result := FSections[ASection].RawData + AVA - FImageBase - FSections[ASection].VirtualAddress;
 end;
 
 function TDbgDwarf.CompilationUnitsCount: Integer;
@@ -7637,7 +7637,7 @@ begin
           if Info.StartPC <> 0
           then begin
             if FAddressMap.HasId(Info.StartPC)
-            then DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING duplicate start adress: ', IntToHex(Info.StartPC, FAddressSize * 2)])
+            then DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING duplicate start address: ', IntToHex(Info.StartPC, FAddressSize * 2)])
             else FAddressMap.Add(Info.StartPC, Info);
           end;
         end;
@@ -7755,7 +7755,7 @@ begin
   // check for address as offset
   if FAbbrevOffset > FOwner.FSections[dsAbbrev].Size
   then begin
-    Offs := FAbbrevOffset - FOwner.FImageBase - FOwner.FSections[dsAbbrev].VirtualAdress;
+    Offs := FAbbrevOffset - FOwner.FImageBase - FOwner.FSections[dsAbbrev].VirtualAddress;
     if (Offs >= 0) and (Offs < FOwner.FSections[dsAbbrev].Size)
     then begin
       DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING: Got Abbrev offset as address, adjusting..']);
@@ -7808,7 +7808,7 @@ begin
       FillLineInfo(FOwner.FSections[dsLine].RawData + StatementListOffs);
     end
     else begin
-      Offs := StatementListOffs - FOwner.FImageBase - FOwner.FSections[dsLine].VirtualAdress;
+      Offs := StatementListOffs - FOwner.FImageBase - FOwner.FSections[dsLine].VirtualAddress;
       if (Offs >= 0) and (Offs < FOwner.FSections[dsLine].Size)
       then begin
         DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING: Got Lineinfo offset as address, adjusting..']);
@@ -9138,7 +9138,7 @@ p := AData;
         DW_AT_type: begin
           DebugLn(FPDBG_DWARF_VERBOSE, ['-->']);
           try
-            p := FCU.FOwner.FSections[dsInfo].RawData + Value - FCU.FOwner.FImageBase - FCU.FOwner.FSections[dsInfo].VirtualAdress;
+            p := FCU.FOwner.FSections[dsInfo].RawData + Value - FCU.FOwner.FImageBase - FCU.FOwner.FSections[dsInfo].VirtualAddress;
             InternalDecode(p, p, Indent + '  ');
           except
             on E: Exception do DebugLn(FPDBG_DWARF_WARNINGS, [AIndent, '  ', E.Message]);
@@ -9474,7 +9474,7 @@ var
 begin
   Section := FLoader.Section[DWARF_SECTION_NAME[dsFrame]];
   if Section <> nil
-  then InternalDecode(Section^.RawData, Section^.Size, Section^.VirtualAdress);
+  then InternalDecode(Section^.RawData, Section^.Size, Section^.VirtualAddress);
 end;
 
 procedure TVerboseDwarfCallframeDecoder.InternalDecode(AData: Pointer; ASize: QWord; AStart: QWord);
@@ -9686,7 +9686,7 @@ begin
     end
     else begin
       if pc^ > ASize
-      then DebugLn(FPDBG_DWARF_VERBOSE, ['CIE: $', IntToHex(pc^, 8), ' (=adress ?) -> offset: ', pc^ - AStart - FLoader.ImageBase])
+      then DebugLn(FPDBG_DWARF_VERBOSE, ['CIE: $', IntToHex(pc^, 8), ' (=address ?) -> offset: ', pc^ - AStart - FLoader.ImageBase])
       else DebugLn(FPDBG_DWARF_VERBOSE, ['CIE: ', pc^]);
       Inc(pc);
       DebugLn(FPDBG_DWARF_VERBOSE, ['InitialLocation: $', IntToHex(pc^, 8)]);
@@ -9702,12 +9702,12 @@ begin
 end;
 
 initialization
-  FPDBG_DWARF_ERRORS   := DebugLogger.RegisterLogGroup('FPDBG_DWARF_ERRORS' {$IFDEF FPDBG_DWARF_ERRORS} , True {$ENDIF} );
-  FPDBG_DWARF_WARNINGS := DebugLogger.RegisterLogGroup('FPDBG_DWARF_WARNINGS' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );
-  FPDBG_DWARF_VERBOSE  := DebugLogger.RegisterLogGroup('FPDBG_DWARF_VERBOSE' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );
-  FPDBG_DWARF_SEARCH   := DebugLogger.RegisterLogGroup('FPDBG_DWARF_SEARCH' {$IFDEF FPDBG_DWARF_SEARCH} , True {$ENDIF} );
+  FPDBG_DWARF_ERRORS   := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_ERRORS' {$IFDEF FPDBG_DWARF_ERRORS} , True {$ENDIF} );
+  FPDBG_DWARF_WARNINGS := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_WARNINGS' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );
+  FPDBG_DWARF_VERBOSE  := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );
+  FPDBG_DWARF_SEARCH   := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_SEARCH' {$IFDEF FPDBG_DWARF_SEARCH} , True {$ENDIF} );
   // Target data anormalities
-  FPDBG_DWARF_DATA_WARNINGS := DebugLogger.RegisterLogGroup('FPDBG_DWARF_DATA_WARNINGS' {$IFDEF FPDBG_DWARF_DATA_WARNINGS} , True {$ENDIF} );
+  FPDBG_DWARF_DATA_WARNINGS := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_DATA_WARNINGS' {$IFDEF FPDBG_DWARF_DATA_WARNINGS} , True {$ENDIF} );
 
 end.
 

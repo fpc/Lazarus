@@ -132,7 +132,7 @@ procedure TPEFileSource.LoadSections;
     New(p);
     P^.Offs := ARawData;
     p^.Sect.Size := ASize;
-    p^.Sect.VirtualAdress := AVirtualAdress;
+    p^.Sect.VirtualAddress := AVirtualAdress;
     p^.Loaded := False;
     FSections.Objects[idx] := TObject(p);
   end;

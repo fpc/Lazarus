@@ -184,7 +184,7 @@ begin
     end;
 DebugLn(Name);
 
-    p^.Sect.VirtualAdress := 0; // Todo?
+    p^.Sect.VirtualAddress := 0; // Todo?
     p^.Loaded := False;
     FSections.AddObject(Name, TObject(p));
   end;
