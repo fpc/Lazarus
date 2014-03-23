@@ -64,6 +64,8 @@ function ColorToNSColor(const Color: TColorRef): NSColor; inline;
 
 procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: string; out shiftKeyMask: NSUInteger);
 
+function CFStringToString(AString: CFStringRef): String;
+
 implementation
 
 const
@@ -178,6 +180,8 @@ begin
     ShiftKeyMask := ShiftKeyMask + NSCommandKeyMask;
 end;
 
+
+
 function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;
 var
   Str: Pointer;
@@ -208,6 +212,11 @@ begin
       CFStringGetBytes(AString, StrRange, Encoding,
         Ord('?'), False, @Result[1], StrSize, StrSize);
   end;
+end;
+
+function CFStringToString(AString: CFStringRef): String;
+begin
+  result:=CFStringToStr(AString);
 end;
 
 function GetNSObjectView(obj: NSObject): NSView;
