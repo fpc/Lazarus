@@ -169,7 +169,7 @@ type
     function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean; virtual;
 
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean; virtual;
-    function WaitForDebugEvent(out ProcessIdentifier: THandle): boolean; virtual; abstract;
+    function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; virtual; abstract;
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; virtual; abstract;
 
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;

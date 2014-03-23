@@ -72,7 +72,7 @@ type
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
 
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean; override;
-    function WaitForDebugEvent(out ProcessIdentifier: THandle): boolean; override;
+    function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; override;
   end;
 
@@ -310,7 +310,10 @@ begin
   fpPTrace(PTRACE_CONT, ProcessID, nil, nil);
 {$endif linux}
 {$ifdef darwin}
-  fpPTrace(PTRACE_CONT, ProcessID, pointer(1), nil);
+  if AThread.SingleStepping then
+    fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), nil)
+  else
+    fpPTrace(PTRACE_CONT, ProcessID, pointer(1), nil);
 {$endif darwin}
   e := fpgeterrno;
   if e <> 0 then
@@ -322,7 +325,7 @@ begin
     result := true;
 end;
 
-function TDbgDarwinProcess.WaitForDebugEvent(out ProcessIdentifier: THandle): boolean;
+function TDbgDarwinProcess.WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean;
 var
   aKernResult: kern_return_t;
   act_list: thread_act_array_t;
@@ -354,7 +357,7 @@ begin
           FMainThread := AThread;
         end;
       end;
-
+    ThreadIdentifier:=act_list^[0];
     TDbgDarwinThread(FMainThread).ReadThreadState;
     end
 end;

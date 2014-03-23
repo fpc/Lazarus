@@ -92,7 +92,7 @@ type
 
     class function StartInstance(AFileName: string; AParams: string): TDbgProcess; override;
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean; override;
-    function WaitForDebugEvent(out ProcessIdentifier: THandle): boolean; override;
+    function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     procedure StartProcess(const AInfo: TCreateProcessDebugInfo);
 
@@ -449,10 +449,11 @@ begin
   result := true;
 end;
 
-function TDbgWinProcess.WaitForDebugEvent(out ProcessIdentifier: THandle): boolean;
+function TDbgWinProcess.WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean;
 begin
   result := Windows.WaitForDebugEvent(MDebugEvent, 10);
   ProcessIdentifier:=MDebugEvent.dwProcessId;
+  ThreadIdentifier:=MDebugEvent.dwThreadId;
 end;
 
 function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;

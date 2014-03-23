@@ -146,6 +146,7 @@ procedure DebugLoop;
 var
   AFirstLoop: boolean;
   AProcessIdentifier: THandle;
+  AThreadIdentifier: THandle;
   ALib: TDbgLibrary;
 
 begin
@@ -156,7 +157,7 @@ begin
       GState := dsRun;
     end;
 
-    if not GCurrentProcess.WaitForDebugEvent(AProcessIdentifier) then Continue;
+    if not GCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then Continue;
 
     if assigned(GCurrentProcess) and not assigned(GMainProcess) then
       begin
@@ -172,8 +173,8 @@ begin
     if AFirstLoop then
       GCurrentProcess := GMainProcess;
 
-    //if not GetThread(MDebugEvent.dwTHreadID, GCurrentThread)
-    //then WriteLN('LOOP: Unable to retrieve current thread');
+    if not GCurrentProcess.GetThread(AThreadIdentifier, GCurrentThread)
+    then WriteLN('LOOP: Unable to retrieve current thread');
 
     GState := dsEvent;
     begin
