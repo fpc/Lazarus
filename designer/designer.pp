@@ -3504,8 +3504,8 @@ var
     while i>=0 do
     begin
       CurSelected:=ControlSelection[i];
-      if CurSelected.IsTWinControl
-      and (TWinControl(CurSelected.Persistent).Owner=LookupRoot)
+      if CurSelected.IsTControl
+      and (TControl(CurSelected.Persistent).Owner=LookupRoot)
       then
         // this one can be moved
         break;
