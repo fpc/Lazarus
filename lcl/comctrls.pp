@@ -410,6 +410,7 @@ type
     procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     class procedure WSRegisterClass; override;
     procedure CreateWnd; override;
+    procedure Loaded; override;
     procedure DoChange; virtual;
     procedure InitializeWnd; override;
     procedure Change; virtual;

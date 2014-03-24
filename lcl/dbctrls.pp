@@ -52,6 +52,7 @@ Type
     FEditing: Boolean;
     IsModified: Boolean;
     function FieldCanModify: boolean;
+    function IsKeyField(aField: TField): Boolean;
     function GetCanModify: Boolean;
     // set current field
     procedure SetFieldName(const Value: string);
@@ -1390,6 +1391,25 @@ begin
     result := FField.CanModify;
 end;
 
+function TFieldDataLink.IsKeyField(aField: TField): Boolean;
+var
+  KeyFieldName, KeyFields: String;
+  StrPos: Integer;
+begin
+  KeyFields := FField.KeyFields;
+  StrPos := 1;
+  while StrPos <= Length(KeyFields) do
+  begin
+    KeyFieldName := ExtractFieldName(KeyFields, StrPos);
+    if SameText(aField.FieldName, KeyFieldName) then
+    begin
+      Result := True;
+      Exit;
+    end;
+  end;
+  Result := False;
+end;
+
 {TFieldDataLink  Private Methods}
 {
   If the field exists and can be modified, then
@@ -1540,7 +1560,8 @@ end;
 }
 procedure TFieldDataLink.RecordChanged(aField: TField);
 begin
-  if (aField = nil) or (aField = FField) then
+  if (aField = nil) or (aField = FField) or
+   ((FField <> nil) and (FField.FieldKind = fkLookup) and IsKeyField(aField)) then
     Reset;
 end;
 

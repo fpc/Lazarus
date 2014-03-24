@@ -1484,7 +1484,9 @@ begin
           end;
         end else
         if (lWinControl <> nil) and (lWinControl is TListView) and
-          (TListView(lWinControl).ViewStyle = vsReport) then
+          (TListView(lWinControl).ViewStyle = vsReport) and
+          (PDrawItemStruct(LParam)^.ctlType = ODT_LISTVIEW) and
+          (TListView(lWinControl).OwnerDraw) then
         begin
           if PDrawItemStruct(LParam)^.itemID <> dword(-1) then
           begin

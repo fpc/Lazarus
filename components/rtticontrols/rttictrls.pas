@@ -835,10 +835,10 @@ Type
     procedure SetLink(const AValue: TPropertyLink);
   protected
     function LinkTestEditor(const ATestEditor: TPropertyEditor): Boolean; virtual;
-    procedure Click; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Click; override;
     property Link: TPropertyLink read FLink write SetLink;
   end;
 

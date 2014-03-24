@@ -1099,7 +1099,6 @@ type
     procedure UpdateFocus(AFocused: Boolean);
   protected
     class procedure WSRegisterClass; override;
-    procedure Click; override;
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
@@ -1115,6 +1114,7 @@ type
     procedure UpdateDefaultCancel;
   public
     constructor Create(TheOwner: TComponent); override;
+    procedure Click; override;
     procedure ExecuteDefaultAction; override;
     procedure ExecuteCancelAction; override;
     procedure ActiveDefaultControlChanged(NewControl: TControl); override;
@@ -1135,8 +1135,6 @@ type
   { TButton }
 
   TButton = class(TCustomButton)
-  public
-    procedure Click; override;
   published
     property Action;
     property Align;
