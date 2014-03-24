@@ -871,6 +871,12 @@ begin
                      TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
     g_signal_connect(Scrolled^.vscrollbar, 'change-value',
                      TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+
+    g_signal_connect(Scrolled^.hscrollbar, 'value-changed',
+      TGCallback(@Gtk2RangeValueChanged), WidgetInfo);
+    g_signal_connect(Scrolled^.vscrollbar, 'value-changed',
+      TGCallback(@Gtk2RangeValueChanged), WidgetInfo);
+
     g_signal_connect(Scrolled^.hscrollbar, 'button-press-event',
                      TGCallback(@Gtk2RangeScrollPressCB), WidgetInfo);
     g_signal_connect(Scrolled^.hscrollbar, 'button-release-event',

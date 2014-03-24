@@ -3153,7 +3153,7 @@ var
   Widget: PGTKWidget;
   AValue: gDouble;
 begin
-  // used only by TCustomForm ! #issue #25479
+  // used only by TScrollingWinControl ! #issue #25479
   Widget := PGTKWidget(ARange);
   if G_OBJECT_TYPE(ARange) = gtk_hscrollbar_get_type then
     Msg.Msg := LM_HSCROLL
@@ -3186,11 +3186,11 @@ begin
 
   // do not send messages to LCL if we are already synced.
   if (Msg.Msg = LM_VSCROLL) and
-    (TCustomForm(PWidgetInfo(Data)^.LCLObject).VertScrollBar.Position = Msg.Pos) then
+    (TScrollingWinControl(PWidgetInfo(Data)^.LCLObject).VertScrollBar.Position = Msg.Pos) then
     exit
   else
   if (Msg.Msg = LM_HSCROLL) and
-    (TCustomForm(PWidgetInfo(Data)^.LCLObject).HorzScrollBar.Position = Msg.Pos) then
+    (TScrollingWinControl(PWidgetInfo(Data)^.LCLObject).HorzScrollBar.Position = Msg.Pos) then
     exit;
 
   DeliverMessage(PWidgetInfo(Data)^.LCLObject, Msg);
