@@ -8076,7 +8076,7 @@ begin
       if (QEvent_type(Event) = QEventKeyRelease) and not
         (QKeyEvent_isAutoRepeat(QKeyEventH(event))) then
         begin
-          Case QKeyEvent_key(QKeyEventH(Event)) of
+          case QKeyEvent_key(QKeyEventH(Event)) of
             QtKey_Left, QtKey_Up, QtKey_Right, QtKey_Down,
             QtKey_PageUp, QtKey_PageDown, QtKey_Home, QtKey_End:
               QAbstractSlider_triggerAction(QAbstractSliderH(Widget),

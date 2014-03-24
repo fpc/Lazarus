@@ -266,6 +266,7 @@ class procedure TQtWSCustomForm.ScrollBy(
 {$IFDEF QTSCROLLABLEFORMS}
 var
   Widget: TQtMainWindow;
+  X, Y: Integer;
 {$ENDIF}
 begin
   {$IFDEF QTSCROLLABLEFORMS}
@@ -273,7 +274,15 @@ begin
     Exit;
   Widget := TQtMainWindow(AWinControl.Handle);
   if Assigned(Widget.ScrollArea) then
-    Widget.ScrollArea.scroll(DeltaX, DeltaY);
+  begin
+    X := DeltaX;
+    Y := DeltaY;
+    if (X <> 0) and not Widget.ScrollArea.horizontalScrollBar.getVisible then
+      X := 0;
+    if (Y <> 0) and not Widget.ScrollArea.verticalScrollBar.getVisible then
+      Y := 0;
+    Widget.ScrollArea.scroll(X, Y);
+  end;
   {$ENDIF}
 end;
 
