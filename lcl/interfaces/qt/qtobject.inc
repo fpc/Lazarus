@@ -102,7 +102,8 @@ begin
       QtX11InitializePalettes;
   FWindowManagerName := LowerCase(GetWindowManager);
   // metacity wm forks. marco = mint mate wm, gnome shell = gnome 3 wm
-  if (FWindowManagerName = 'marco') or (FWindowManagerName = 'gnome shell') then
+  if (FWindowManagerName = 'marco') or (FWindowManagerName = 'gnome shell') or
+    (UTF8Pos('mutter', FWindowManagerName) > 0) then
     FWindowManagerName := 'metacity';
   {$ENDIF}
   {$IFDEF DARWIN}

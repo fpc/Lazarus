@@ -1419,12 +1419,12 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     procedure OwnerDataNeeded(ARect: TRect); override;
-    procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
   public
     destructor Destroy; override;
     procedure DestroyNotify(AWidget: TQtWidget); override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
     procedure ClearItems;
     procedure clearSelection; override;
     procedure DeleteItem(const AIndex: integer);
@@ -8091,7 +8091,7 @@ begin
       if (QEvent_type(Event) = QEventKeyRelease) and not
         (QKeyEvent_isAutoRepeat(QKeyEventH(event))) then
         begin
-          Case QKeyEvent_key(QKeyEventH(Event)) of
+          case QKeyEvent_key(QKeyEventH(Event)) of
             QtKey_Left, QtKey_Up, QtKey_Right, QtKey_Down,
             QtKey_PageUp, QtKey_PageDown, QtKey_Home, QtKey_End:
               QAbstractSlider_triggerAction(QAbstractSliderH(Widget),
