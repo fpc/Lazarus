@@ -182,7 +182,8 @@ type
     cmsFinalFields,        { allows declaring fields as "final", which means they must be initialised
                              in the (class) constructor and are constant from then on (same as final
                              fields in Java) }
-    cmsDefault_unicodestring { ? see http://wiki.freepascal.org/FPC_JVM/Language }
+    cmsDefault_unicodestring, { ? see http://wiki.freepascal.org/FPC_JVM/Language }
+    cmsTypeHelpers
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
@@ -717,7 +718,8 @@ const
     'ISOUNARYMINUS',
     'SYSTEMCODEPAGE',
     'FINALFIELDS',
-    'UNICODESTRINGS');
+    'UNICODESTRINGS',
+    'TYPEHELPERS');
 
   // upper case
   PascalCompilerNames: array[TPascalCompiler] of shortstring=(
