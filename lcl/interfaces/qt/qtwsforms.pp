@@ -38,22 +38,20 @@ type
 
   TQtWSScrollingWinControl = class(TWSScrollingWinControl)
   published
+    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
+      const DeltaX, DeltaY: integer); override;
   end;
 
   { TQtWSScrollBox }
 
   TQtWSScrollBox = class(TWSScrollBox)
   published
-    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
-      const DeltaX, DeltaY: integer); override;
   end;
 
   { TQtWSCustomFrame }
 
   TQtWSCustomFrame = class(TWSCustomFrame)
   published
-    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
-      const DeltaX, DeltaY: integer); override;
   end;
 
   { TQtWSFrame }
@@ -77,10 +75,8 @@ type
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
-    {$IFDEF QTSCROLLABLEFORMS}
     class procedure ScrollBy(const AWinControl: TScrollingWinControl;
       const DeltaX, DeltaY: integer); override;
-    {$ENDIF}
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); override;
@@ -135,6 +131,19 @@ type
 implementation
 
 uses qtint, QtWSControls, LCLIntf;
+
+{ TQtWSScrollingWinControl }
+
+class procedure TQtWSScrollingWinControl.ScrollBy(
+  const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
+var
+  Widget: TQtCustomControl;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
+    Exit;
+  Widget := TQtCustomControl(AWinControl.Handle);
+  Widget.viewport.scroll(DeltaX, DeltaY);
+end;
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomForm.CreateHandle
@@ -252,19 +261,21 @@ begin
   w.Release;
 end;
 
-{$IFDEF QTSCROLLABLEFORMS}
 class procedure TQtWSCustomForm.ScrollBy(
   const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
+{$IFDEF QTSCROLLABLEFORMS}
 var
   Widget: TQtMainWindow;
+{$ENDIF}
 begin
+  {$IFDEF QTSCROLLABLEFORMS}
   if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
     Exit;
   Widget := TQtMainWindow(AWinControl.Handle);
   if Assigned(Widget.ScrollArea) then
     Widget.ScrollArea.scroll(DeltaX, DeltaY);
+  {$ENDIF}
 end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomForm.SetAllowDropFiles
@@ -924,32 +935,6 @@ begin
   // Sets Various Events
   QtMainWindow.AttachEvents;
   Result := TLCLIntfHandle(QtMainWindow);
-end;
-
-{ TQtWSScrollBox }
-
-class procedure TQtWSScrollBox.ScrollBy(
-  const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
-var
-  Widget: TQtCustomControl;
-begin
-  if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
-    Exit;
-  Widget := TQtCustomControl(AWinControl.Handle);
-  Widget.viewport.scroll(DeltaX, DeltaY);
-end;
-
-{ TQtWSCustomFrame }
-
-class procedure TQtWSCustomFrame.ScrollBy(
-  const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
-var
-  Widget: TQtCustomControl;
-begin
-  if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
-    Exit;
-  Widget := TQtCustomControl(AWinControl.Handle);
-  Widget.viewport.scroll(DeltaX, DeltaY);
 end;
 
 end.
