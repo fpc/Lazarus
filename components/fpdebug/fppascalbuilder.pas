@@ -561,13 +561,16 @@ function PrintPasValue(out APrintedValue: String; AResValue: TFpDbgValue;
     s: String;
     i: Integer;
     m: TFpDbgValue;
-    c: Integer;
+    c, d: Integer;
   begin
     APrintedValue := '';
     c := AResValue.MemberCount;
     if c > 500 then c := 500;
-// TODO: low-ord to high ord
-    for i := 0 to c - 1 do begin
+    d := 0;
+    // TODO: use valueobject for bounds
+    if (AResValue.IndexTypeCount > 0) and AResValue.IndexType[0].HasBounds then
+      d := AResValue.IndexType[0].OrdLowBound;
+    for i := d to d + c - 1 do begin
       m := AResValue.Member[i];
       if m <> nil then
         PrintPasValue(s, m, AnAddrSize, AFlags)

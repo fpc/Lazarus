@@ -404,7 +404,7 @@ type
   protected
     //procedure ForwardToSymbolNeeded; override;
     function GetMemberCount: Integer; override;
-    function GetMember(AIndex: Integer): TFpDbgSymbol; override;
+    function GetMember(AIndex: Int64): TFpDbgSymbol; override;
   public
     constructor Create(const AnArray: TFpDbgSymbol);
     destructor Destroy; override;
@@ -837,7 +837,7 @@ begin
   Result := (inherited GetMemberCount) - 1;
 end;
 
-function TPasParserSymbolArrayDeIndex.GetMember(AIndex: Integer): TFpDbgSymbol;
+function TPasParserSymbolArrayDeIndex.GetMember(AIndex: Int64): TFpDbgSymbol;
 begin
   Result := inherited GetMember(AIndex + 1);
 end;
@@ -918,10 +918,16 @@ begin
 
   if (tmp.Kind = skArray) then begin
     tmp2 := Items[1].ResultValue;
-    if not (svfOrdinal in tmp2.FieldFlags) then
+    if (svfInteger in tmp2.FieldFlags) then begin
+      Result := tmp.Member[tmp2.AsInteger];
+    end
+    else
+    if (svfOrdinal in tmp2.FieldFlags) then begin
+      if tmp2.AsCardinal > high(Integer) then exit; // TODO max member range
+      Result := tmp.Member[tmp2.AsCardinal]; // todo negative ?
+    end
+    else
       exit;
-    if tmp2.AsCardinal > high(Integer) then exit; // TODO max member range
-    Result := tmp.Member[tmp2.AsCardinal]; // todo negative ?
     if Result <> nil then
       Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
     exit;

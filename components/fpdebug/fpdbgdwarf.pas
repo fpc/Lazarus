@@ -630,7 +630,7 @@ type
     function GetAddress: TFpDbgMemLocation; override;
     function GetMemberCount: Integer; override;
     function GetMemberByName(AIndex: String): TFpDbgValue; override;
-    function GetMember(AIndex: Integer): TFpDbgValue; override;
+    function GetMember(AIndex: Int64): TFpDbgValue; override;
     function GetDbgSymbol: TFpDbgSymbol; override;
     function GetTypeInfo: TFpDbgSymbol; override;
     function GetContextTypeInfo: TFpDbgSymbol; override;
@@ -750,7 +750,7 @@ type
     function GetAsString: AnsiString; override;
     // Has exactly 0 (if the ordinal value is out of range) or 1 member (the current value's enum)
     function GetMemberCount: Integer; override;
-    function GetMember({%H-}AIndex: Integer): TFpDbgValue; override;
+    function GetMember({%H-}AIndex: Int64): TFpDbgValue; override;
   end;
 
   { TFpDbgDwarfValueEnumMember }
@@ -788,7 +788,7 @@ type
     procedure Reset; override;
     function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function GetMemberCount: Integer; override;
-    function GetMember(AIndex: Integer): TFpDbgValue; override;
+    function GetMember(AIndex: Int64): TFpDbgValue; override;
     function GetAsCardinal: QWord; override; // only up to qmord
     //function IsValidTypeCast: Boolean; override;
   public
@@ -829,7 +829,7 @@ type
   public
     destructor Destroy; override;
     function GetMemberByName(AIndex: String): TFpDbgValue; override;
-    function GetMember(AIndex: Integer): TFpDbgValue; override;
+    function GetMember(AIndex: Int64): TFpDbgValue; override;
     function GetMemberCount: Integer; override;
   end;
 
@@ -850,7 +850,7 @@ type
     function GetKind: TDbgSymbolKind; override;
     function GetAsCardinal: QWord; override;
     function GetDataAddress: TFpDbgMemLocation; override;
-    function GetMember(AIndex: Integer): TFpDbgValue; override;
+    function GetMember(AIndex: Int64): TFpDbgValue; override;
     function GetMemberEx(AIndex: array of Int64): TFpDbgValue; override;
     function GetMemberCount: Integer; override;
     function GetMemberCountEx(AIndex: array of Int64): Integer; override;
@@ -937,7 +937,7 @@ type
                                  ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean;
     procedure KindNeeded; override;
     procedure MemberVisibilityNeeded; override;
-    function GetMember(AIndex: Integer): TFpDbgSymbol; override;
+    function GetMember(AIndex: Int64): TFpDbgSymbol; override;
     function GetMemberByName(AIndex: String): TFpDbgSymbol; override;
     function GetMemberCount: Integer; override;
 
@@ -1023,6 +1023,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure MemberVisibilityNeeded; override;
     procedure SizeNeeded; override;
     function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpDbgDwarfValue; virtual; // returns refcount=1 for caller, no cached copy kept
+    // TODO: flag bounds as cardinal if needed
+    function GetValueBounds(AValueObj: TFpDbgDwarfValue; out ALowBound, AHighBound: Int64): Boolean; virtual;
   public
     class function CreateTypeSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfTypeIdentifier;
     function TypeCastValue(AValue: TFpDbgValue): TFpDbgValue; override;
@@ -1097,9 +1099,11 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure NameNeeded; override;
     procedure KindNeeded; override;
     procedure SizeNeeded; override;
-    function GetMember(AIndex: Integer): TFpDbgSymbol; override;
+    function GetMember(AIndex: Int64): TFpDbgSymbol; override;
     function GetMemberCount: Integer; override;
     function GetFlags: TDbgSymbolFlags; override;
+    function GetValueBounds(AValueObj: TFpDbgDwarfValue; out ALowBound,
+      AHighBound: Int64): Boolean; override;
     procedure Init; override;
   end;
 
@@ -1122,8 +1126,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   public
     property IsInternalPointer: Boolean read GetIsInternalPointer write FIsInternalPointer; // Class (also DynArray, but DynArray is handled without this)
   end;
-
-  { TDbgDwarfIdentifierEnumElement }
 
   { TDbgDwarfIdentifierEnumMember }
 
@@ -1149,7 +1151,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpDbgDwarfValue; override;
     procedure KindNeeded; override;
-    function GetMember(AIndex: Integer): TFpDbgSymbol; override;
+    function GetMember(AIndex: Int64): TFpDbgSymbol; override;
     function GetMemberByName(AIndex: String): TFpDbgSymbol; override;
     function GetMemberCount: Integer; override;
 
@@ -1168,7 +1170,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure KindNeeded; override;
     function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpDbgDwarfValue; override;
     function GetMemberCount: Integer; override;
-    function GetMember(AIndex: Integer): TFpDbgSymbol; override;
+    function GetMember(AIndex: Int64): TFpDbgSymbol; override;
   end;
 
   (*
@@ -1227,7 +1229,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetTypedValueObject(ATypeCast: Boolean): TFpDbgDwarfValue; override;
 
     // GetMember, if AIndex > Count then parent
-    function GetMember(AIndex: Integer): TFpDbgSymbol; override;
+    function GetMember(AIndex: Int64): TFpDbgSymbol; override;
     function GetMemberByName(AIndex: String): TFpDbgSymbol; override;
     function GetMemberCount: Integer; override;
 
@@ -1257,7 +1259,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
     function GetFlags: TDbgSymbolFlags; override;
     // GetMember: returns the TYPE/range of each index. NOT the data
-    function GetMember(AIndex: Integer): TFpDbgSymbol; override;
+    function GetMember(AIndex: Int64): TFpDbgSymbol; override;
     function GetMemberByName({%H-}AIndex: String): TFpDbgSymbol; override;
     function GetMemberCount: Integer; override;
     function GetMemberAddress(AValObject: TFpDbgDwarfValue; AIndex: Array of Int64): TFpDbgMemLocation;
@@ -1929,7 +1931,7 @@ begin
     FLastError := MemManager.LastError;
 end;
 
-function TFpDbgDwarfValueArray.GetMember(AIndex: Integer): TFpDbgValue;
+function TFpDbgDwarfValueArray.GetMember(AIndex: Int64): TFpDbgValue;
 begin
   Result := GetMemberEx([AIndex]);
 end;
@@ -1977,9 +1979,9 @@ var
 begin
   Result := 0;
   t := TypeInfo;
-  if t.MemberCount < 1 then
+  if t.MemberCount < 1 then // IndexTypeCount;
     exit;
-  t2 := t.Member[0];
+  t2 := t.Member[0]; // IndexType[0];
   if not t2.HasBounds then begin
     if (sfDynArray in t.Flags) and (AsCardinal <> 0) and
        GetDwarfDataAddress(Addr, TDbgDwarfTypeIdentifier(FOwner))
@@ -2158,7 +2160,7 @@ begin
   Result := FMemberCount;
 end;
 
-function TFpDbgDwarfValueSet.GetMember(AIndex: Integer): TFpDbgValue;
+function TFpDbgDwarfValueSet.GetMember(AIndex: Int64): TFpDbgValue;
 var
   t: TFpDbgSymbol;
 begin
@@ -2345,7 +2347,7 @@ begin
     Result := 1;
 end;
 
-function TFpDbgDwarfValueEnum.GetMember(AIndex: Integer): TFpDbgValue;
+function TFpDbgDwarfValueEnum.GetMember(AIndex: Int64): TFpDbgValue;
 begin
   InitMemberIndex;
   if (FMemberIndex >= 0) and (AIndex = 0) then
@@ -2702,7 +2704,7 @@ begin
   SetLastMember(TFpDbgDwarfValue(Result));
 end;
 
-function TFpDbgDwarfValueStructTypeCast.GetMember(AIndex: Integer): TFpDbgValue;
+function TFpDbgDwarfValueStructTypeCast.GetMember(AIndex: Int64): TFpDbgValue;
 var
   tmp: TFpDbgSymbol;
 begin
@@ -3077,7 +3079,7 @@ begin
   SetLastMember(TFpDbgDwarfValue(Result));
 end;
 
-function TFpDbgDwarfValue.GetMember(AIndex: Integer): TFpDbgValue;
+function TFpDbgDwarfValue.GetMember(AIndex: Int64): TFpDbgValue;
 var
   m: TFpDbgSymbol;
 begin
@@ -5367,7 +5369,7 @@ begin
     SetSize(t.Size);
 end;
 
-function TDbgDwarfIdentifierSubRange.GetMember(AIndex: Integer): TFpDbgSymbol;
+function TDbgDwarfIdentifierSubRange.GetMember(AIndex: Int64): TFpDbgSymbol;
 begin
   if Kind = skEnum then begin
     if not FEnumIdxValid then
@@ -5392,6 +5394,13 @@ end;
 function TDbgDwarfIdentifierSubRange.GetFlags: TDbgSymbolFlags;
 begin
   Result := (inherited GetFlags) + [sfSubRange];
+end;
+
+function TDbgDwarfIdentifierSubRange.GetValueBounds(AValueObj: TFpDbgDwarfValue; out
+  ALowBound, AHighBound: Int64): Boolean;
+begin
+  ReadBounds;
+  Result := inherited GetValueBounds(AValueObj, ALowBound, AHighBound);
 end;
 
 procedure TDbgDwarfIdentifierSubRange.Init;
@@ -5466,7 +5475,7 @@ begin
     Result := inherited GetMemberCount;
 end;
 
-function TDbgDwarfIdentifierSet.GetMember(AIndex: Integer): TFpDbgSymbol;
+function TDbgDwarfIdentifierSet.GetMember(AIndex: Int64): TFpDbgSymbol;
 begin
   if TypeInfo.Kind = skEnum then
     Result := TypeInfo.Member[AIndex]
@@ -5512,7 +5521,7 @@ begin
   SetKind(skEnum);
 end;
 
-function TDbgDwarfIdentifierEnum.GetMember(AIndex: Integer): TFpDbgSymbol;
+function TDbgDwarfIdentifierEnum.GetMember(AIndex: Int64): TFpDbgSymbol;
 begin
   CreateMembers;
   Result := TFpDbgSymbol(FMembers[AIndex]);
@@ -5837,7 +5846,7 @@ begin
     inherited MemberVisibilityNeeded;
 end;
 
-function TDbgDwarfValueIdentifier.GetMember(AIndex: Integer): TFpDbgSymbol;
+function TDbgDwarfValueIdentifier.GetMember(AIndex: Int64): TFpDbgSymbol;
 var
   ti: TFpDbgSymbol;
   k: TDbgSymbolKind;
@@ -6045,7 +6054,7 @@ begin
     Result := Result + [sfStatArray];
 end;
 
-function TDbgDwarfIdentifierArray.GetMember(AIndex: Integer): TFpDbgSymbol;
+function TDbgDwarfIdentifierArray.GetMember(AIndex: Int64): TFpDbgSymbol;
 begin
   CreateMembers;
   Result := TFpDbgSymbol(FMembers[AIndex]);
@@ -6065,7 +6074,7 @@ end;
 function TDbgDwarfIdentifierArray.GetMemberAddress(AValObject: TFpDbgDwarfValue;
   AIndex: array of Int64): TFpDbgMemLocation;
 var
-  Offs, Factor: QWord;
+  Idx, Offs, Factor: Int64;
   i: Integer;
   bsize: Integer;
   m: TDbgDwarfIdentifier;
@@ -6081,7 +6090,6 @@ begin
   if Length(AIndex) > FMembers.Count then
     exit;
 
-  // TODO: reduce index by low-ord
   if AValObject is TFpDbgDwarfValueArray then begin
     if not TFpDbgDwarfValueArray(AValObject).GetDwarfDataAddress(Result, Self) then begin
       Result := InvalidLoc;
@@ -6097,9 +6105,13 @@ begin
   bsize := FStrideInBits div 8;
   if FRowMajor then begin
     for i := Length(AIndex) - 1 downto 0 do begin
-      Offs := Offs + AIndex[i] * bsize * Factor;
+      Idx := AIndex[i];
+      m := TDbgDwarfIdentifier(FMembers[i]);
+      if m.HasBounds then begin
+        Idx := Idx - m.OrdLowBound;
+      end;
+      Offs := Offs + Idx * bsize * Factor;
       if i > 0 then begin
-        m := TDbgDwarfIdentifier(FMembers[i]);
         if not m.HasBounds then begin
           Result := InvalidLoc;
           exit;
@@ -6111,9 +6123,13 @@ begin
   end
   else begin
     for i := 0 to Length(AIndex) - 1 do begin
-      Offs := Offs + AIndex[i] * bsize * Factor;
+      Idx := AIndex[i];
+      m := TDbgDwarfIdentifier(FMembers[i]);
+      if m.HasBounds then begin
+        Idx := Idx - m.OrdLowBound;
+      end;
+      Offs := Offs + Idx * bsize * Factor;
       if i < Length(AIndex) - 1 then begin
-        m := TDbgDwarfIdentifier(FMembers[i]);
         if not m.HasBounds then begin
           Result := InvalidLoc;
           exit;
@@ -6271,7 +6287,7 @@ begin
   Result := inherited GetDataAddress(AValueObj, AnAddress, ATargetType, ATargetCacheIndex);
 end;
 
-function TDbgDwarfIdentifierStructure.GetMember(AIndex: Integer): TFpDbgSymbol;
+function TDbgDwarfIdentifierStructure.GetMember(AIndex: Int64): TFpDbgSymbol;
 var
   ti: TFpDbgSymbol;
 begin
@@ -6515,6 +6531,14 @@ end;
 function TDbgDwarfTypeIdentifier.GetTypedValueObject(ATypeCast: Boolean): TFpDbgDwarfValue;
 begin
   Result := nil;
+end;
+
+function TDbgDwarfTypeIdentifier.GetValueBounds(AValueObj: TFpDbgDwarfValue; out ALowBound,
+  AHighBound: Int64): Boolean;
+begin
+  Result := HasBounds;
+  ALowBound := OrdLowBound;
+  AHighBound := OrdLowBound;
 end;
 
 class function TDbgDwarfTypeIdentifier.CreateTypeSubClass(AName: String;

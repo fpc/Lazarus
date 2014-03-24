@@ -11,6 +11,7 @@ uses
 
 const
   BREAK_LINE_TestWatchesUnitSimple = 82;
+  BREAK_LINE_TestWatchesUnitArray = 38;
 
 type
 
@@ -21,6 +22,7 @@ type
     FWatches: TWatches;
 
     ExpectBreakSimple1: TWatchExpectationArray;
+    ExpectBreakArray1: TWatchExpectationArray;
     FCurrentExpArray: ^TWatchExpectationArray; // currently added to
 
     FDbgOutPut: String;
@@ -40,6 +42,7 @@ type
     function AddSimpleInt(AnExpr, AMtch: string; ATpNm: string): PWatchExpectation;
 
     procedure AddExpectSimple;
+    procedure AddExpectArray;
     procedure RunTestWatches(NamePreFix: String;
                              TestExeName, ExtraOpts: String;
                              UsedUnits: array of TUsesDir
@@ -162,6 +165,27 @@ begin
   AddSimpleInt('SimpleGlob_Int5',   '^-2147483648', M_Int);
 end;
 
+procedure TTestWatches.AddExpectArray;
+begin
+  FCurrentExpArray := @ExpectBreakArray1;
+
+  AddFmtDef('ArrayGlob_DynInt1', '^[\(L].*5511, 5512, 5513, 5514, -5511',
+            skArray, '', [fTpMtch]);
+  AddSimpleInt('ArrayGlob_DynInt1[0]',    '^5511', M_Int);
+  AddSimpleInt('ArrayGlob_DynInt1[19]',    '^5500', M_Int);
+
+  AddFmtDef('ArrayGlob_StatInt1', '^[\(L].*6600, 6601, 6602',
+            skArray, '', [fTpMtch]);
+  AddSimpleInt('ArrayGlob_StatInt1[4]',    '^6600', M_Int);
+  AddSimpleInt('ArrayGlob_StatInt1[9]',    '^6699', M_Int);
+  AddSimpleInt('ArrayGlob_StatInt1[-1]',    '', M_Int); // Just do not crash
+
+  AddFmtDef('ArrayGlob_StatInt2', '^[\(L].*3300, 3301, 3302',
+            skArray, '', [fTpMtch]);
+  AddSimpleInt('ArrayGlob_StatInt2[-4]',    '^3300', M_Int);
+  AddSimpleInt('ArrayGlob_StatInt2[0]',    '^3304', M_Int);
+end;
+
 procedure TTestWatches.RunTestWatches(NamePreFix: String; TestExeName, ExtraOpts: String;
   UsedUnits: array of TUsesDir);
 var
@@ -172,7 +196,7 @@ var
 
 var
   i: Integer;
-  WListSimple1: TTestWatchArray;
+  WListSimple1, WListArray1: TTestWatchArray;
 
 begin
   TestBaseName := NamePreFix;
@@ -206,11 +230,16 @@ begin
       InitialEnabled := True;
       Enabled := True;
     end;
+    with dbg.BreakPoints.Add('TestWatchesUnitArray.pas', BREAK_LINE_TestWatchesUnitArray) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
 
     if dbg.State = dsError then
       Fail(' Failed Init');
 
     AddWatches(ExpectBreakSimple1, WListSimple1, FWatches, Only, OnlyName, OnlyNamePart);
+    AddWatches(ExpectBreakArray1, WListArray1, FWatches, Only, OnlyName, OnlyNamePart);
 
     (* Start debugging *)
     dbg.ShowConsole := True;
@@ -218,15 +247,25 @@ begin
 
 
 
-    if TestTrue('State=Pause', dbg.State = dsPause)
-    then begin
-      (* Hit first breakpoint: BREAK_LINE_FOOFUNC_NEST SubFoo -- (1st loop) Called with none nil data *)
+    if not TestTrue('State=Pause', dbg.State = dsPause) then begin
+      TestTrue('Hit BREAK_LINE_TestWatchesUnitSimple', False);
+      exit;
+    end;
 
-      TestWatchList('Simple1',ExpectBreakSimple1, WListSimple1, dbg, Only, OnlyName, OnlyNamePart);
+    (* Hit first breakpoint:  *)
+    TestWatchList('Simple1',ExpectBreakSimple1, WListSimple1, dbg, Only, OnlyName, OnlyNamePart);
 
-      dbg.Run;
-    end
-    else TestTrue('Hit BREAK_LINE_FOOFUNC_NEST', False);
+    dbg.Run;
+
+   if not TestTrue('State=Pause', dbg.State = dsPause) then begin
+      TestTrue('Hit BREAK_LINE_TestWatchesUnitArray', False);
+      exit;
+    end;
+
+    (* Hit 2nd breakpoint: *)
+    TestWatchList('Array1',ExpectBreakArray1, WListArray1, dbg, Only, OnlyName, OnlyNamePart);
+
+    dbg.Run;
 
 
 
@@ -255,6 +294,7 @@ begin
 
   ClearAllTestArrays;
   AddExpectSimple;
+  AddExpectArray;
 
   RunTestWatches('', TestExeName,  '', []);
 

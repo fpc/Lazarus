@@ -146,7 +146,7 @@ type
     function GetOrdHighBound: Int64; virtual;
     function GetOrdLowBound: Int64; virtual;
 
-    function GetMember({%H-}AIndex: Integer): TFpDbgValue; virtual;
+    function GetMember({%H-}AIndex: Int64): TFpDbgValue; virtual;
     function GetMemberByName({%H-}AIndex: String): TFpDbgValue; virtual;
     function GetMemberCount: Integer; virtual;
     function GetIndexType({%H-}AIndex: Integer): TFpDbgSymbol; virtual;
@@ -199,7 +199,7 @@ type
              To keep a returned Value a reference can be added (AddReference)
     *)
     property MemberCount: Integer read GetMemberCount;
-    property Member[AIndex: Integer]: TFpDbgValue read GetMember;
+    property Member[AIndex: Int64]: TFpDbgValue read GetMember;
     property MemberByName[AIndex: String]: TFpDbgValue read GetMemberByName; // Includes inheritance
     //  For Arrays (TODO pointers) only, the values stored in the array
     property MemberCountEx[AIndex: Array of Int64]: Integer read GetMemberCountEx;
@@ -290,7 +290,7 @@ type
     function GetOrdHighBound: Int64; virtual;
     function GetOrdLowBound: Int64; virtual;
 
-    function GetMember({%H-}AIndex: Integer): TFpDbgSymbol; virtual;
+    function GetMember({%H-}AIndex: Int64): TFpDbgSymbol; virtual;
     function GetMemberByName({%H-}AIndex: String): TFpDbgSymbol; virtual;
     function GetMemberCount: Integer; virtual;
   protected
@@ -350,7 +350,7 @@ type
              They maybe released or changed when Member is called again.
              To keep a returned Value a reference can be added (AddReference)
     *)
-    property Member[AIndex: Integer]: TFpDbgSymbol read GetMember;
+    property Member[AIndex: Int64]: TFpDbgSymbol read GetMember;
     property MemberByName[AIndex: String]: TFpDbgSymbol read GetMemberByName; // Includes inheritance
     //
     property Flags: TDbgSymbolFlags read GetFlags;
@@ -397,7 +397,7 @@ type
     function GetHasBounds: Boolean; override;
     function GetOrdLowBound: Int64; override;
     function GetOrdHighBound: Int64; override;
-    function GetMember(AIndex: Integer): TFpDbgSymbol; override;
+    function GetMember(AIndex: Int64): TFpDbgSymbol; override;
     function GetMemberByName(AIndex: String): TFpDbgSymbol; override;
     function GetMemberCount: Integer; override;
   end;
@@ -636,7 +636,7 @@ begin
   Result := skNone;
 end;
 
-function TFpDbgValue.GetMember(AIndex: Integer): TFpDbgValue;
+function TFpDbgValue.GetMember(AIndex: Int64): TFpDbgValue;
 begin
   Result := nil;
 end;
@@ -861,7 +861,7 @@ begin
   Result := 0;
 end;
 
-function TFpDbgSymbol.GetMember(AIndex: Integer): TFpDbgSymbol;
+function TFpDbgSymbol.GetMember(AIndex: Int64): TFpDbgSymbol;
 begin
   Result := nil;
 end;
@@ -1174,7 +1174,7 @@ begin
     Result := 0;  //  Result := inherited GetOrdHighBound;
 end;
 
-function TDbgSymbolForwarder.GetMember(AIndex: Integer): TFpDbgSymbol;
+function TDbgSymbolForwarder.GetMember(AIndex: Int64): TFpDbgSymbol;
 var
   p: TFpDbgSymbol;
 begin
