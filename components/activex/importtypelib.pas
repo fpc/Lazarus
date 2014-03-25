@@ -46,6 +46,7 @@ type
     procedure CBxTLPackageChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormResize(Sender: TObject);
     procedure lstControlsClick(Sender: TObject);
     procedure lstFilteredClick(Sender: TObject);
     procedure lstRefsClick(Sender: TObject);
@@ -180,9 +181,8 @@ begin
   end;
 end;
 
-function ReadDefaultVal(path: string; reg: TRegistry): string;
+function ReadDefaultVal(path: string; var reg: TRegistry): string;
 begin
-  reg.RootKey := HKEY_CLASSES_ROOT;
   if reg.OpenKeyReadOnly(path) then
   begin
     Result := reg.ReadString('');
@@ -190,7 +190,7 @@ begin
   end;
 end;
 
-function EnumKeys(path: string; reg: TRegistry; lst: TStringList): boolean;
+function EnumKeys(path: string; var reg: TRegistry; var lst: TStringList): boolean;
 begin
   Result := False;
   if reg.OpenKeyReadOnly(path) then
@@ -209,6 +209,7 @@ var
   key: string;
   Name: string;
 begin
+  if length(tlbid) = 0 then exit;
   reg := Tregistry.Create;
   subkeys := TStringList.Create;
   try
@@ -250,7 +251,7 @@ var
   reg: TRegistry;
   clsids: TStringList;
   e: TEntry;
-  clsid: string;
+  clsid, clsidPath: string;
   map: TStringList;
 const
   catid_control = '\Implemented Categories\{40FC6ED4-2438-11cf-A3DB-080036F12502}';
@@ -261,43 +262,39 @@ begin
   map := TStringList.Create;
   try
     reg.RootKey := HKEY_CLASSES_ROOT;
-    if reg.OpenKeyReadOnly('\CLSID') then
+    if EnumKeys('\CLSID',reg, clsids) then
     begin
-      reg.GetKeyNames(clsids);
-      reg.CloseKey;
 
       for clsid in clsids do
       begin
         e := TEntry.Create;
         e.clsID := clsid;
-        clsid := '\CLSID\' + clsid;
+        clsidPath := '\CLSID\' + clsid;
 
-        e.typeLib := ReadDefaultVal(clsid + '\TypeLib', reg);
-        e.isControl := reg.KeyExists(clsID + '\Control');
+        e.typeLib := ReadDefaultVal(clsidPath + '\TypeLib', reg);
+        e.isControl := reg.KeyExists(clsidPath + '\Control');
         if not e.isControl then
-          e.isControl := reg.KeyExists(clsID + catid_control);
+          e.isControl := reg.KeyExists(clsidPath + catid_control);
 
-        if e.isControl and (length(e.typeLib) > 0) and
-          (map.IndexOf(e.typeLib) = -1) then
+        e.Name := GetTlbName(e.typeLib);
+
+        if e.isControl and (length(e.typeLib) > 0)
+        and (map.IndexOf(e.typeLib) = -1) and (length(e.Name) > 0) then
         begin
-          e.Name := GetTlbName(e.typeLib);
-          if length(e.Name) > 0 then
-          begin
-            e.path := ReadDefaultVal(clsid + '\InprocServer32', reg);
-            e.progID := ReadDefaultVal(clsid + '\ProgID', reg);
-            e.version := ReadDefaultVal(clsid + '\Version', reg);
-            map.Add(e.typeLib);
-            lst.AddItem(e.Name, e);
-          end;
+          e.path := ReadDefaultVal(clsidPath + '\InprocServer32', reg);
+          e.progID := ReadDefaultVal(clsidPath + '\ProgID', reg);
+          e.version := ReadDefaultVal(clsidPath + '\Version', reg);
+          map.Add(e.typeLib);
+          lst.AddItem(e.Name, e);
         end
         else
-          e.Free;
+          FreeAndNil(e);
       end;
     end;
   finally
-    reg.Free;
-    clsids.Free;
-    map.Free;
+    FreeAndNil(reg);
+    FreeAndNil(clsids);
+    FreeAndNil(map);
   end;
 end;
 
@@ -328,16 +325,16 @@ begin
         vers := TStringList.Create;
         if not EnumKeys('\TypeLib\' + clsid, reg, vers) then
         begin
-          vers.Free;
-          e.Free;
+          FreeAndNil(vers);
+          FreeAndNil(e);
           continue;
         end;
         ver := vers[vers.Count - 1];
         revs := TStringList.Create;
         if not EnumKeys('\TypeLib\' + clsid + '\' + ver, reg, revs) then
         begin
-          revs.Free;
-          e.Free;
+          FreeAndNil(revs);
+          FreeAndNil(e);
           continue;
         end;
 
@@ -354,14 +351,16 @@ begin
         else
           e.Free;
 
-        vers.Free;
-        revs.Free;
+        FreeAndNil(vers);
+        FreeAndNil(revs);
       end;
     end;
   finally
     reg.Free;
     clsids.Free;
     map.Free;
+    FreeAndNil(vers);
+    FreeAndNil(revs);
   end;
 end;
 
@@ -388,9 +387,6 @@ begin
   CBxTLRecurse.Caption := axConvertDependantTypelibs;
   FNETL.Filter := axTypeLibraryFilesTlbDllExeOcxOlbTlbDllExeOcxOlbAllF;
   pagecontrol1.TabIndex := 0;
-  lstcontrols.SetBounds(lstrefs.Left, lstrefs.Top, lstrefs.Width, lstrefs.Height);
-  lstFiltered.SetBounds(lstrefs.Left + pagecontrol1.Left + 4, lstrefs.Top +
-    pagecontrol1.Top + 4, lstrefs.Width, lstrefs.Height);
   LoadVisualControls(lstControls);
 end;
 
@@ -398,6 +394,20 @@ procedure TFrmTL.FormDestroy(Sender: TObject);
 begin
   FreeObjects(lstControls.items);
   FreeObjects(lstrefs.items);
+end;
+
+procedure TFrmTL.FormResize(Sender: TObject);
+begin
+  { not anchored and handled dynamically so you can see
+    it exists seperate from others and still access/click others in IDE
+    lstFiltered is not a child of pagecontrol and floats over other controls
+    same as the groupbox with the search edit control does. (multiuse) }
+   try
+     lstFiltered.SetBounds(lstrefs.Left + pagecontrol1.Left + 4,
+                           lstrefs.Top + pagecontrol1.Top + 4,
+                           lstrefs.Width, lstrefs.Height);
+   finally
+   end;
 end;
 
 procedure TFrmTL.ListClickHandler(lst: TListBox);
@@ -445,7 +455,7 @@ end;
 
 procedure TFrmTL.PageControl1Change(Sender: TObject);
 begin
-  //loaded on depand to reduce startup time..
+  //loaded on demand to reduce startup time..
   if (PageControl1.TabIndex = 1) and (lstrefs.Items.Count = 0) then
     LoadActiveXLibs(lstRefs);
   txtsearch.Text := '';
