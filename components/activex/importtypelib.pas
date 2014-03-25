@@ -71,7 +71,6 @@ implementation
 uses typelib;
 
 procedure ImpTypeLib(Sender: TObject);
-
 var
   TLI: TTypeLibImporter;
   bPackage, bActiveX, bRecurse: boolean;
@@ -178,7 +177,7 @@ begin
   end;
 end;
 
-function ReadDefaultVal(path: string; var reg: TRegistry): string;
+function ReadDefaultVal(path: string; reg: TRegistry): string;
 begin
   if reg.OpenKeyReadOnly(path) then
   begin
@@ -187,7 +186,7 @@ begin
   end;
 end;
 
-function EnumKeys(path: string; var reg: TRegistry; var lst: TStringList): boolean;
+function EnumKeys(path: string; reg: TRegistry; lst: TStringList): boolean;
 begin
   Result := False;
   if reg.OpenKeyReadOnly(path) then
