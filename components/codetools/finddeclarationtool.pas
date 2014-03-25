@@ -5769,13 +5769,6 @@ begin
     AtomIsIdentifierE;
     AncestorStartPos:=CurPos.StartPos;
   end;
-  if (ClassIdentNode<>nil)
-  and (ClassIdentNode.Desc=ctnTypeDefinition)
-  and (CompareIdentifiers(@Src[AncestorStartPos],@Src[ClassIdentNode.StartPos])=0)
-  then begin
-    MoveCursorToCleanPos(AncestorStartPos);
-    RaiseException('ancestor has same name as class');
-  end;
   {$IFDEF ShowTriedContexts}
   DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
   ' search ancestor class = ',GetIdentifier(@Src[AncestorStartPos]));
