@@ -2298,26 +2298,30 @@ begin
     // ssAlt + a key pressed is always a syskey
     // ssAltGr + a key is only a syskey when the key pressed has no levelshift or when ssHift is pressed to0
     SysKey := (ssAlt in ShiftState);
-    if not SysKey
-    then begin
+    if not SysKey then
+    begin
       // Check ssAltGr
-      if (KCInfo.Flags and KCINFO_FLAG_ALTGR) = 0
-      then begin
+      if (KCInfo.Flags and KCINFO_FLAG_ALTGR) = 0 then
         // VKey has no levelshift char so AltGr is syskey
-        SysKey := ssAltGr in ShiftState;
-      end
-      else begin
-        // VKey has levelshift char so AltGr + Shift is syskey
-        SysKey := ShiftState * [ssShift, ssAltGr] = [ssShift, ssAltGr]
+        SysKey := ssAltGr in ShiftState
+      else
+      begin
+        // VKey has levelshift char so AltGr + Shift is syskey.
+        SysKey := (ShiftState * [ssShift, ssAltGr] = [ssShift, ssAltGr]);
+
+        // This is not true for TCustomControl, issues 22703,25874.
+        if Assigned(LCLObject) and (LCLObject is TCustomControl) then
+          SysKey := False;
       end;
     end;
-    if SysKey
-    then Flags := Flags or KF_ALTDOWN;
+
+    if SysKey then
+      Flags := Flags or KF_ALTDOWN;
 
     CommonKeyData := KeyCode shl 16; // Not really scancode, but will do
 
-    if AHandleDown
-    then begin
+    if AHandleDown then
+    begin
       {$IFDEF VerboseKeyboard}
       DebugLn('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',dbgs(VKey),' SysKey=',dbgs(SysKey));
       {$ENDIF}
@@ -7474,6 +7478,10 @@ begin
         TGCallback(@Gtk2RangeScrollCB), AWidgetInfo);
       g_signal_connect(PGTKScrolledWindow(ScrolledWidget)^.vscrollbar, 'change-value',
         TGCallback(@Gtk2RangeScrollCB), AWidgetInfo);
+      g_signal_connect(PGTKScrolledWindow(ScrolledWidget)^.hscrollbar, 'value-changed',
+        TGCallback(@Gtk2RangeValueChanged), AWidgetInfo);
+      g_signal_connect(PGTKScrolledWindow(ScrolledWidget)^.vscrollbar, 'value-changed',
+        TGCallback(@Gtk2RangeValueChanged), AWidgetInfo);
       g_signal_connect(PGTKScrolledWindow(ScrolledWidget)^.hscrollbar, 'button-press-event',
         TGCallback(@Gtk2RangeScrollPressCB), AWidgetInfo);
       g_signal_connect(PGTKScrolledWindow(ScrolledWidget)^.hscrollbar, 'button-release-event',

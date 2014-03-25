@@ -3214,6 +3214,68 @@ begin
   Result:=True;
 end;
 
+procedure Gtk2RangeValueChanged(ARange: PGTKRange; data: GPointer); cdecl;
+var
+  Msg: TLMVScroll;
+  MaxValue: gdouble;
+  Widget: PGTKWidget;
+  AValue: gDouble;
+begin
+  // used only by TScrollingWinControl ! #issue #25479
+  Widget := PGTKWidget(ARange);
+  if G_OBJECT_TYPE(ARange) = gtk_hscrollbar_get_type then
+    Msg.Msg := LM_HSCROLL
+  else
+    Msg.Msg := LM_VSCROLL;
+
+  AValue := gtk_range_get_value(ARange);
+
+  if ARange^.adjustment^.page_size > 0 then
+    MaxValue := ARange^.adjustment^.upper - ARange^.adjustment^.page_size
+  else
+    MaxValue := ARange^.adjustment^.upper;
+
+  if (AValue > MaxValue) then
+    AValue := MaxValue
+  else if (AValue < ARange^.adjustment^.lower) then
+    AValue := ARange^.adjustment^.lower;
+
+  with Msg do
+  begin
+    Pos := Round(AValue);
+    if Pos < High(SmallPos) then
+      SmallPos := Pos
+    else
+      SmallPos := High(SmallPos);
+
+    ScrollBar := HWND({%H-}PtrUInt(ARange));
+    ScrollCode := SB_THUMBTRACK;
+  end;
+
+  // do not send messages to LCL if we are already synced.
+  if (Msg.Msg = LM_VSCROLL) and
+    (TScrollingWinControl(PWidgetInfo(Data)^.LCLObject).VertScrollBar.Position = Msg.Pos) then
+    exit
+  else
+  if (Msg.Msg = LM_HSCROLL) and
+    (TScrollingWinControl(PWidgetInfo(Data)^.LCLObject).HorzScrollBar.Position = Msg.Pos) then
+    exit;
+
+  DeliverMessage(PWidgetInfo(Data)^.LCLObject, Msg);
+
+  if Msg.Scrollcode=SB_THUMBTRACK then
+  begin
+    if Widget^.state = 0 then
+    begin
+      Msg.ScrollCode := SB_THUMBPOSITION;
+      DeliverMessage(PWidgetInfo(Data)^.LCLObject, Msg);
+      Msg.ScrollCode:=SB_ENDSCROLL;
+      DeliverMessage(PWidgetInfo(Data)^.LCLObject, Msg);
+    end;
+  end
+  else Widget^.state := 1;
+end;
+
 function Gtk2RangeScrollPressCB(Widget: PGtkWidget;
   Event: PGdkEventButton; Data: gPointer): gboolean; cdecl;
 begin
