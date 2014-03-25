@@ -597,6 +597,10 @@ msgstr "Ajouter les nouvelles fiches à celles créées automatiquement"
 msgid "Auto delete file"
 msgstr "Supprimer le fichier automatiquement"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr "Cacher la souris pendant la frappe"

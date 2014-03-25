@@ -589,6 +589,10 @@ msgstr "ketika pembuatan form baru, tambahkan ke otomatis-buat form"
 msgid "Auto delete file"
 msgstr "Otomatis menghapus file"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr ""

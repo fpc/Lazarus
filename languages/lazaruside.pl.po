@@ -603,6 +603,10 @@ msgstr "Nowe formularze dodawaj do tworzonych automatycznie"
 msgid "Auto delete file"
 msgstr "Automatycznie usuń plik"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgctxt "lazarusidestrconsts.dlgautohidecursor"
 msgid "Hide mouse when typing"

@@ -589,6 +589,10 @@ msgstr "Quan es creen noves formes, afegeix-les a les formes creades automàtica
 msgid "Auto delete file"
 msgstr "Elimina el fitxer automàticament"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr ""

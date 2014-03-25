@@ -599,6 +599,10 @@ msgstr "בזמן יצירת טפסים חדשים הוסף אותם לטפסים
 msgid "Auto delete file"
 msgstr "מחק קובץ אוטומטית"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr "הסתר סמן עכבר בזמן הקלדה"

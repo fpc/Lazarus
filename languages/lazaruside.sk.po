@@ -592,6 +592,10 @@ msgstr "Nový formulár pridať k automaticky vytváraným formulárom"
 msgid "Auto delete file"
 msgstr "Auto zmazanie súboru"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr ""

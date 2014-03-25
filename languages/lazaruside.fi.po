@@ -585,6 +585,10 @@ msgstr "Kun tehdään uusi lomake, niin se laitetaan automaattisesti luotaviin l
 msgid "Auto delete file"
 msgstr "Poista tiedosto automaattisesti"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr "Piilota hiiri kirjoitettaessa"

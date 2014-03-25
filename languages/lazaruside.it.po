@@ -597,6 +597,10 @@ msgstr "Alla creazione di nuove form, aggiungile a quelle auto-create"
 msgid "Auto delete file"
 msgstr "Autocancellazione file"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr "Nascondi il mouse durante la scrittura"

@@ -587,6 +587,10 @@ msgstr ""
 msgid "Auto delete file"
 msgstr "Dosyayı otomatik olarak sil"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr ""

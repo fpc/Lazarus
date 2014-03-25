@@ -598,6 +598,10 @@ msgstr "Kuriant nauja formą, ją įdėti į automatiškai kuriamų formų sąra
 msgid "Auto delete file"
 msgstr "Failą ištrinti automatiškai"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr "Rašymo metu slėpti pelės žymeklį"

@@ -595,6 +595,10 @@ msgstr "При створенні нових форм додати їх до а�
 msgid "Auto delete file"
 msgstr "Автом. видалити файл"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr "Сховати мишку при наборі тексту"

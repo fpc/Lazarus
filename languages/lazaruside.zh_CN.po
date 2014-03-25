@@ -592,6 +592,10 @@ msgstr "创建一个新的窗体时,添加到自动创建的窗体"
 msgid "Auto delete file"
 msgstr "自动删除文件"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr ""

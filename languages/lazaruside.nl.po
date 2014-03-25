@@ -589,6 +589,10 @@ msgstr "Nieuwe forms toevoegen aan de \"auto-created forms\""
 msgid "Auto delete file"
 msgstr "Verwijder bestand automatisch"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr ""

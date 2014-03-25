@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-03-07 00:53+0400\n"
+"PO-Revision-Date: 2014-03-26 00:16+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -610,6 +610,10 @@ msgstr "При создании новых форм добавить их к а�
 #: lazarusidestrconsts.dlgautodel
 msgid "Auto delete file"
 msgstr "Автоматически удалить файл"
+
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr "Автоматически отображать прототипы функций"
 
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"

@@ -593,6 +593,10 @@ msgstr "Při vytváření nových forem je přidej do automaticky vytvářených
 msgid "Auto delete file"
 msgstr "Automaticky smazat soubor"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr "Skrýt myš při psaní"

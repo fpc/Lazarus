@@ -585,6 +585,10 @@ msgstr "新しいフォームを作成した時、自動生成フォームに追
 msgid "Auto delete file"
 msgstr "自動的にファイル削除"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr "タイプ時にマウスを隠す"

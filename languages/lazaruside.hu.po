@@ -587,6 +587,10 @@ msgstr "Új form-ok létrehozásakor adja őket hozzá az automatikusan létreho
 msgid "Auto delete file"
 msgstr "Fájl automatikus törlése"
 
+#: lazarusidestrconsts.dlgautodisplayfuncproto
+msgid "Auto Display Function Prototypes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr "Egérkurzor elrejtése gépelés közben"
