@@ -116,10 +116,10 @@ object FrmTL: TFrmTL
     Height = 318
     Top = 5
     Width = 464
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 5
     TabPosition = tpBottom
     OnChange = PageControl1Change

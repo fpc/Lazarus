@@ -172,11 +172,8 @@ begin
   begin
     if Assigned(strings.Objects[i]) then
     begin
-      try
-        strings.Objects[i].Free;
-      finally
-        strings.Objects[i] := nil;
-      end;
+      strings.Objects[i].Free;
+      strings.Objects[i] := nil;
     end;
   end;
 end;
@@ -260,14 +257,15 @@ begin
   reg := TRegistry.Create;
   clsids := TStringList.Create;
   map := TStringList.Create;
+  e := Nil;
   try
     reg.RootKey := HKEY_CLASSES_ROOT;
     if EnumKeys('\CLSID',reg, clsids) then
     begin
-
       for clsid in clsids do
       begin
-        e := TEntry.Create;
+        if e = Nil then
+          e := TEntry.Create;
         e.clsID := clsid;
         clsidPath := '\CLSID\' + clsid;
 
@@ -286,15 +284,15 @@ begin
           e.version := ReadDefaultVal(clsidPath + '\Version', reg);
           map.Add(e.typeLib);
           lst.AddItem(e.Name, e);
-        end
-        else
-          FreeAndNil(e);
+          e := Nil;
+        end;
       end;
     end;
   finally
-    FreeAndNil(reg);
-    FreeAndNil(clsids);
-    FreeAndNil(map);
+    e.Free;
+    reg.Free;
+    clsids.Free;
+    map.Free;
   end;
 end;
 
@@ -313,30 +311,26 @@ begin
   reg := TRegistry.Create;
   clsids := TStringList.Create;
   map := TStringList.Create;
+  vers := TStringList.Create;
+  revs := TStringList.Create;
+  e := Nil;
   try
     reg.RootKey := HKEY_CLASSES_ROOT;
     if EnumKeys('\TypeLib', reg, clsids) then
     begin
       for clsid in clsids do
       begin
-        e := TEntry.Create;
+        if e = Nil then
+          e := TEntry.Create;
         e.clsID := clsid;
 
-        vers := TStringList.Create;
+        vers.Clear;
         if not EnumKeys('\TypeLib\' + clsid, reg, vers) then
-        begin
-          FreeAndNil(vers);
-          FreeAndNil(e);
           continue;
-        end;
         ver := vers[vers.Count - 1];
-        revs := TStringList.Create;
+        revs.Clear;
         if not EnumKeys('\TypeLib\' + clsid + '\' + ver, reg, revs) then
-        begin
-          FreeAndNil(revs);
-          FreeAndNil(e);
           continue;
-        end;
 
         e.Name := ReadDefaultVal('\TypeLib\' + clsID + '\' + ver, reg);
         e.path := ReadDefaultVal('\TypeLib\' + clsID + '\' + ver + '\' + revs[0] + '\win32', reg);
@@ -347,20 +341,17 @@ begin
         begin
           lst.AddItem(e.Name, e);
           map.Add(e.Name);
-        end
-        else
-          e.Free;
-
-        FreeAndNil(vers);
-        FreeAndNil(revs);
+          e := Nil;
+        end;
       end;
     end;
   finally
+    e.Free;
+    revs.Free;
+    vers.Free;
     reg.Free;
     clsids.Free;
     map.Free;
-    FreeAndNil(vers);
-    FreeAndNil(revs);
   end;
 end;
 
@@ -414,11 +405,8 @@ procedure TFrmTL.ListClickHandler(lst: TListBox);
 var
   e: TEntry;
 begin
-  try
-    e := lst.Items.Objects[lst.ItemIndex] as TEntry;
-    FNETL.Text := e.path;
-  finally
-  end;
+  e := lst.Items.Objects[lst.ItemIndex] as TEntry;
+  FNETL.Text := e.path;
 end;
 
 procedure TFrmTL.lstControlsClick(Sender: TObject);
@@ -446,11 +434,8 @@ begin
   i := lst.Items.IndexOf(s);
   if i < 0 then
     exit;
-  try
-    e := lst.Items.Objects[i] as TEntry;
-    FNETL.Text := e.path;
-  finally
-  end;
+  e := lst.Items.Objects[i] as TEntry;
+  FNETL.Text := e.path;
 end;
 
 procedure TFrmTL.PageControl1Change(Sender: TObject);
