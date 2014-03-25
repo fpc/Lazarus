@@ -178,7 +178,7 @@ procedure TMyWidgetMediator.Paint;
       Pen.Color:=clRed;
       Rectangle(0,0,AWidget.Width,AWidget.Height);
       // inner frame
-      if AWidget.AcceptChildsAtDesignTime then begin
+      if AWidget.AcceptChildrenAtDesignTime then begin
         Pen.Color:=clMaroon;
         Rectangle(AWidget.BorderLeft-1,AWidget.BorderTop-1,
                   AWidget.Width-AWidget.BorderRight+1,
@@ -223,7 +223,7 @@ function TMyWidgetMediator.ParentAcceptsChild(Parent: TComponent;
   Child: TComponentClass): boolean;
 begin
   Result:=(Parent is TMyWidget) and (Child.InheritsFrom(TMyWidget))
-    and (TMyWidget(Parent).AcceptChildsAtDesignTime);
+    and (TMyWidget(Parent).AcceptChildrenAtDesignTime);
 end;
 
 { TFileDescPascalUnitWithMyForm }

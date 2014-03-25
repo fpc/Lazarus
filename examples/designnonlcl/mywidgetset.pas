@@ -51,7 +51,7 @@ type
 
   TMyWidget = class(TComponent)
   private
-    FAcceptChildsAtDesignTime: boolean;
+    FAcceptChildrenAtDesignTime: boolean;
     FBorderBottom: integer;
     FBorderLeft: integer;
     FBorderRight: integer;
@@ -92,7 +92,7 @@ type
     procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); virtual;
     procedure InvalidateRect(ARect: TRect; Erase: boolean);
     procedure Invalidate;
-    property AcceptChildsAtDesignTime: boolean read FAcceptChildsAtDesignTime;
+    property AcceptChildrenAtDesignTime: boolean read FAcceptChildrenAtDesignTime;
   published
     property Left: integer read FLeft write SetLeft;
     property Top: integer read FTop write SetTop;
@@ -262,7 +262,7 @@ begin
   FBorderRight:=5;
   FBorderBottom:=5;
   FBorderTop:=20;
-  FAcceptChildsAtDesignTime:=true;
+  FAcceptChildrenAtDesignTime:=true;
 end;
 
 destructor TMyWidget.Destroy;
@@ -327,7 +327,7 @@ end;
 constructor TMyButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FAcceptChildsAtDesignTime:=false;
+  FAcceptChildrenAtDesignTime:=false;
 end;
 
 end.
