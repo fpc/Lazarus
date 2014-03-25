@@ -70,93 +70,98 @@ implementation
 
 uses typelib;
 
+function ImpPackage(TLI: TTypeLibImporter; aUnitName: string): string;
+var
+  F: Text;
+begin
+  with FrmTL.SelectDirectoryDialog1 do
+  begin
+    Title := Format(axSelectDirectoryToStorePackagePLpk, [aUnitName]);
+    Execute;
+    Result := Filename;
+  end;
+  if (Result <> '') and (Result[length(Result)] <> '\') then
+    Result := Result + '\';
+  AssignFile(F, UTF8ToSys(Result + aUnitName + 'P.lpk'));
+  Rewrite(F);
+  Write(F, TLI.PackageSource.Text);
+  CloseFile(F);
+  AssignFile(F, UTF8ToSys(Result + aUnitName + 'Preg.pas'));
+  Rewrite(F);
+  Write(F, TLI.PackageRegUnitSource.Text);
+  CloseFile(F);
+  if PackageEditingInterface.FindPackageWithName(aUnitName + 'P') <> nil then
+  begin
+    PackageEditingInterface.DoOpenPackageFile(Result+aUnitName+'P.lpk', [pofRevert], False);
+    PackageEditingInterface.DoOpenPackageWithName(aUnitName + 'P', [], False);
+  end
+  else
+    PackageEditingInterface.DoOpenPackageFile(Result+aUnitName+'P.lpk', [pofAddToRecent], False);
+end;
+
+procedure ImpFile(TLI: TTypeLibImporter; aFileName: string);
+var
+  F: Text;
+begin
+  AssignFile(F, UTF8ToSys(aFileName));
+  Rewrite(F);
+  Write(F, TLI.UnitSource.Text);
+  CloseFile(F);
+end;
+
 procedure ImpTypeLib(Sender: TObject);
 var
   TLI: TTypeLibImporter;
   bPackage, bActiveX, bRecurse: boolean;
   slTypelibs: TStringList; //sys charset
+  sDir, sUnitName: string;
   i, j: integer;
-  F: Text;
-  sDir, sUnitName: string; //utf8
 begin
   FrmTL := TFrmTL.Create(nil);
+  slTypelibs := TStringList.Create;
   try
-    if (FrmTL.ShowModal = mrOk) and (FrmTL.FNETL.Filename <> '') then
-    begin
-      slTypelibs := TStringList.Create;
-      slTypelibs.add(UTF8ToSys(FrmTL.FNETL.Filename));
-      bActiveX := FrmTL.CBxTLActiveX.Checked;
-      bPackage := FrmTL.CBxTLPackage.Checked;
-      bRecurse := FrmTL.CBxTLRecurse.Checked;
-      i := 0;
-      sDir := '';
-      repeat
-        TLI := TTypeLibImporter.Create(nil);
+    if (FrmTL.ShowModal <> mrOk) or (FrmTL.FNETL.Filename = '') then Exit;
+    slTypelibs.add(UTF8ToSys(FrmTL.FNETL.Filename));
+    bActiveX := FrmTL.CBxTLActiveX.Checked;
+    bPackage := FrmTL.CBxTLPackage.Checked;
+    bRecurse := FrmTL.CBxTLRecurse.Checked;
+    i := 0;
+    sDir := '';
+    repeat
+      TLI := TTypeLibImporter.Create(nil);
+      try
+        TLI.InputFileName := slTypelibs[i];
+        TLI.ActiveX := bActiveX;
+        TLI.CreatePackage := bPackage;
         try
-          TLI.InputFileName := slTypelibs[i];
-          TLI.ActiveX := bActiveX;
-          TLI.CreatePackage := bPackage;
-          try
-            TLI.Execute;
-            sUnitName := SysToUTF8(TLI.UnitName);
-            if bPackage then
-            begin
-              with FrmTL.SelectDirectoryDialog1 do
-              begin
-                Title := Format(axSelectDirectoryToStorePackagePLpk, [sUnitName]);
-                Execute;
-                sDir := Filename;
-              end;
+          TLI.Execute;
+          sUnitName := SysToUTF8(TLI.UnitName);
+          if bPackage then
+            sDir := ImpPackage(TLI, sUnitName);
+          if sDir = '' then           // no package, open file in editor
+            LazarusIDE.DoNewEditorFile(FileDescriptorUnit, sUnitName + '.pas',
+              TLI.UnitSource.Text, [nfIsPartOfProject, nfOpenInEditor])
+          else
+            ImpFile(TLI, sDir + sUnitName + '.pas');  // save in same dir as package
 
-              if (sDir <> '') and (sDir[length(sdir)] <> '\') then
-                sDir := sDir + '\';
-              AssignFile(F, UTF8ToSys(sDir + sUnitName + 'P.lpk'));
-              Rewrite(F);
-              Write(F, TLI.PackageSource.Text);
-              CloseFile(F);
-              AssignFile(F, UTF8ToSys(sDir + sUnitName + 'Preg.pas'));
-              Rewrite(F);
-              Write(F, TLI.PackageRegUnitSource.Text);
-              CloseFile(F);
+          // don't create package or ActiveX container for dependencies
+          bPackage := False;
+          bActiveX := False;
+          for j := 0 to TLI.Dependencies.Count - 1 do
+            if slTypelibs.IndexOf(TLI.Dependencies[j]) = -1 then
+              slTypelibs.Add(TLI.Dependencies[j]);
 
-              if PackageEditingInterface.FindPackageWithName(sUnitName + 'P') <> nil then
-              begin
-                PackageEditingInterface.DoOpenPackageFile(sDir+sUnitName+'P.lpk', [pofRevert], False);
-                PackageEditingInterface.DoOpenPackageWithName(sUnitName + 'P', [], False);
-              end
-              else
-                PackageEditingInterface.DoOpenPackageFile(sDir+sUnitName+'P.lpk', [pofAddToRecent], False);
-            end;
-
-            if sDir = '' then  // no package, open file in editor
-              LazarusIDE.DoNewEditorFile(FileDescriptorUnit, sUnitName + '.pas',
-                TLI.UnitSource.Text, [nfIsPartOfProject, nfOpenInEditor])
-            else
-            begin //save in same dir as package
-              AssignFile(F, UTF8ToSys(sDir + sUnitName + '.pas'));
-              Rewrite(F);
-              Write(F, TLI.UnitSource.Text);
-              CloseFile(F);
-            end;
-
-            // don't create package or ActiveX container for dependencies
-            bPackage := False;
-            bActiveX := False;
-            for j := 0 to TLI.Dependencies.Count - 1 do
-              if slTypelibs.IndexOf(TLI.Dependencies[j]) = -1 then
-                slTypelibs.Add(TLI.Dependencies[j]);
-
-          except
-            on E: Exception do
-              ShowMessage(UTF16ToUTF8(E.Message));
-          end;
-        finally
-          TLI.Destroy;
+        except
+          on E: Exception do
+            ShowMessage(UTF16ToUTF8(E.Message));
         end;
-        i := i + 1;
-      until not bRecurse or (i = slTypelibs.Count);
-    end;
+      finally
+        TLI.Destroy;
+      end;
+      Inc(i);
+    until not bRecurse or (i = slTypelibs.Count);
   finally
+    slTypelibs.Free;
     FrmTL.Destroy;
   end;
 end;
