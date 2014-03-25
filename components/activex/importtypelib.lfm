@@ -1,88 +1,88 @@
 object FrmTL: TFrmTL
-  Left = 251
-  Height = 153
-  Top = 189
-  Width = 341
-  AutoSize = True
+  Left = 580
+  Height = 509
+  Top = 139
+  Width = 484
+  Anchors = []
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsDialog
   Caption = 'Import Type Library'
-  ClientHeight = 153
-  ClientWidth = 341
+  ClientHeight = 509
+  ClientWidth = 484
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
   LCLVersion = '1.3'
   object FNETL: TFileNameEdit
-    AnchorSideLeft.Control = Label1
-    AnchorSideTop.Control = Label1
+    AnchorSideLeft.Control = CBxTLActiveX
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
-    Left = 6
-    Height = 21
-    Top = 19
-    Width = 294
+    AnchorSideBottom.Control = CBxTLActiveX
+    Left = 10
+    Height = 28
+    Top = 350
+    Width = 443
     DialogOptions = []
     Filter = 'Type library files (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|All Files (*.*)|*.*'
     FilterIndex = 0
     HideDirectories = False
     ButtonWidth = 23
     NumGlyphs = 1
-    Anchors = [akTop, akLeft, akRight]
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 3
     MaxLength = 0
     TabOrder = 0
   end
   object Label1: TLabel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    Left = 6
-    Height = 13
-    Top = 6
-    Width = 130
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
+    AnchorSideLeft.Control = FNETL
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = FNETL
+    Left = 10
+    Height = 20
+    Top = 329
+    Width = 179
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 1
     Caption = 'File containing type library:'
     ParentColor = False
   end
   object CBxTLActiveX: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = FNETL
+    AnchorSideLeft.Control = CBxTLPackage
     AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 17
+    AnchorSideBottom.Control = CBxTLPackage
+    Left = 10
+    Height = 24
     Hint = 'CBxTLActiveX'
-    Top = 46
-    Width = 296
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    BorderSpacing.Right = 6
+    Top = 381
+    Width = 404
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 3
     Caption = 'Create visual component (TActiveXContainer descendant)'
     OnChange = CBxTLActiveXChange
     TabOrder = 1
   end
   object CBxTLPackage: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = CBxTLActiveX
+    AnchorSideLeft.Control = CBxTLRecurse
     AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 17
-    Top = 69
-    Width = 94
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    BorderSpacing.Right = 6
+    AnchorSideBottom.Control = CBxTLRecurse
+    Left = 10
+    Height = 24
+    Top = 408
+    Width = 127
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 3
     Caption = 'Create package'
     OnChange = CBxTLPackageChange
     TabOrder = 2
   end
   object CBxTLRecurse: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = CBxTLPackage
     AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 17
-    Top = 92
-    Width = 152
+    AnchorSideBottom.Control = ButtonPanel
+    Left = 10
+    Height = 24
+    Top = 435
+    Width = 207
+    Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     Caption = 'Convert dependant typelibs'
@@ -93,10 +93,10 @@ object FrmTL: TFrmTL
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 32
-    Top = 115
-    Width = 329
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Height = 38
+    Top = 465
+    Width = 472
+    Anchors = []
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -108,7 +108,93 @@ object FrmTL: TFrmTL
     TabOrder = 4
     ShowButtons = [pbOK, pbCancel]
   end
+  object PageControl1: TPageControl
+    AnchorSideLeft.Control = Label1
+    AnchorSideBottom.Control = Label1
+    Left = 10
+    Height = 318
+    Top = 5
+    Width = 464
+    ActivePage = TabSheet1
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 6
+    TabIndex = 0
+    TabOrder = 5
+    TabPosition = tpBottom
+    OnChange = PageControl1Change
+    object TabSheet1: TTabSheet
+      Caption = 'Visual Controls'
+      ClientHeight = 285
+      ClientWidth = 456
+      object lstControls: TListBox
+        Left = 17
+        Height = 209
+        Top = 14
+        Width = 374
+        ItemHeight = 0
+        OnClick = lstControlsClick
+        Sorted = True
+        TabOrder = 0
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'ActiveX References'
+      ClientHeight = 281
+      ClientWidth = 442
+      object lstRefs: TListBox
+        Left = 20
+        Height = 201
+        Top = 13
+        Width = 376
+        ItemHeight = 0
+        OnClick = lstRefsClick
+        Sorted = True
+        TabOrder = 0
+      end
+    end
+  end
+  object lstFiltered: TListBox
+    Left = 70
+    Height = 90
+    Top = 48
+    Width = 120
+    ItemHeight = 0
+    OnClick = lstFilteredClick
+    Sorted = True
+    TabOrder = 6
+    Visible = False
+  end
+  object GroupBox1: TGroupBox
+    Left = 30
+    Height = 48
+    Top = 232
+    Width = 375
+    ClientHeight = 26
+    ClientWidth = 371
+    TabOrder = 7
+    object Label2: TLabel
+      Left = 7
+      Height = 20
+      Top = 2
+      Width = 44
+      Caption = 'Search'
+      ParentColor = False
+    end
+    object txtSearch: TEdit
+      AnchorSideLeft.Control = Label2
+      AnchorSideLeft.Side = asrBottom
+      Left = 57
+      Height = 28
+      Top = -4
+      Width = 315
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      OnChange = txtSearchChange
+      TabOrder = 0
+    end
+  end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
-    left = 240
+    left = 344
+    top = 416
   end
 end

@@ -6,8 +6,7 @@ interface
 
 resourcestring
   axImportTypeLibrary = 'Import Type Library';
-  axSelectDirectoryToStorePackagePLpk = 'Select directory to store package %sP'
-    +'.lpk';
+  axSelectDirectoryToStorePackagePLpk = 'Select directory to store package %sP.lpk';
   axFileContainingTypeLibrary = 'File containing type library:';
   axCreateVisualComponentTActiveXContainerDescendant = 'Create visual '
     +'component (TActiveXContainer descendant)';
