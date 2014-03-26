@@ -90,18 +90,17 @@ type
     FLayerStylesKeys, FLayerStylesValues: TFPList; // of TStringList;
     // View box adjustment
     ViewBoxAdjustment: Boolean;
-    ViewBox_Width, ViewBox_Height, Page_Width, Page_Height: Double;
+    ViewBox_Left, ViewBox_Top, ViewBox_Width, ViewBox_Height, Page_Width, Page_Height: Double;
     // Defs section
     FBrushDefs: TFPList; // of TvEntityWithPenAndBrush;
     // debug symbols
     FPathNumber: Integer;
     function ReadSVGColor(AValue: string): TFPColor;
-    function ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen; AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
+    function ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen; ADestStyle: TvStyle = nil; AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
     function ReadSVGStyleToStyleLists(AValue: string; AStyleKeys, AStyleValues: TStringList): TvSetPenBrushAndFontElements;
     function ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
     function ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush): TvSetPenBrushAndFontElements;
-    function ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenBrushAndFont): TvSetPenBrushAndFontElements;
-    function ReadSVGFontStyleWithKeyAndValue_ToStyle(AKey, AValue: string; ADest: TvStyle): TvSetPenBrushAndFontElements;
+    function ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenBrushAndFont; ADestStyle: TvStyle = nil): TvSetPenBrushAndFontElements;
     function ReadSVGGeneralStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntity): TvSetPenBrushAndFontElements;
     function IsAttributeFromStyle(AStr: string): Boolean;
     procedure ApplyLayerStyles(ADestEntity: TvEntity);
@@ -128,7 +127,7 @@ type
     function ReadTextFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadUseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     //
-    function  StringWithUnitToFloat(AStr: string; ACoordKind: TSVGCoordinateKind = sckUnknown): Double;
+    function  StringWithUnitToFloat(AStr: string; ACoordKind: TSVGCoordinateKind = sckUnknown; ADefaultToPixel: Boolean = False): Double;
     function  StringFloatZeroToOneToWord(AStr: string): Word;
     procedure ConvertSVGCoordinatesToFPVCoordinates(
       const AData: TvVectorialPage;
@@ -796,7 +795,8 @@ end;
 
 // style="fill:none;stroke:black;stroke-width:3"
 function TvSVGVectorialReader.ReadSVGStyle(AValue: string;
-  ADestEntity: TvEntityWithPen; AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
+  ADestEntity: TvEntityWithPen; ADestStyle: TvStyle = nil;
+  AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
 var
   lStr, lStyleKeyStr, lStyleValueStr: String;
   lStrings: TStringList;
@@ -819,14 +819,25 @@ begin
       lStyleKeyStr := Trim(lStyleKeyStr);
       lStyleValueStr := Copy(lStr, lPosEqual+1, Length(lStr));
       lStyleValueStr := Trim(lStyleValueStr);
-      ReadSVGPenStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
-      ReadSVGGeneralStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
-      if AUseFillAsPen and (lStyleKeyStr = 'fill') then
-        Result := Result + ReadSVGPenStyleWithKeyAndValue('stroke', lStyleValueStr, ADestEntity)
-      else if ADestEntity is TvText then
-        Result := Result + ReadSVGFontStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvText)
-      else if ADestEntity is TvEntityWithPenAndBrush then
-        Result := Result + ReadSVGBrushStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvEntityWithPenAndBrush);
+      if ADestEntity <> nil then
+      begin
+        ReadSVGPenStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
+        ReadSVGGeneralStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
+        if AUseFillAsPen and (lStyleKeyStr = 'fill') then
+          Result := Result + ReadSVGPenStyleWithKeyAndValue('stroke', lStyleValueStr, ADestEntity)
+        else if ADestEntity is TvText then
+          Result := Result + ReadSVGFontStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvText)
+        else if ADestEntity is TvEntityWithPenAndBrush then
+          Result := Result + ReadSVGBrushStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvEntityWithPenAndBrush);
+      end;
+      if ADestStyle <> nil then
+      begin
+        {ReadSVGPenStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
+        ReadSVGGeneralStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
+        Result := Result + ReadSVGPenStyleWithKeyAndValue('stroke', lStyleValueStr, ADestEntity)}
+        Result := Result + ReadSVGFontStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, nil, ADestStyle);
+        //Result := Result + ReadSVGBrushStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvEntityWithPenAndBrush);
+      end;
     end;
   finally
     lStrings.Free;
@@ -928,7 +939,7 @@ begin
 end;
 
 function TvSVGVectorialReader.ReadSVGFontStyleWithKeyAndValue(AKey,
-  AValue: string; ADestEntity: TvEntityWithPenBrushAndFont): TvSetPenBrushAndFontElements;
+  AValue: string; ADestEntity: TvEntityWithPenBrushAndFont; ADestStyle: TvStyle = nil): TvSetPenBrushAndFontElements;
 var
   lLowerValue: String;
 begin
@@ -938,80 +949,50 @@ begin
   // "fill" is usually for brush in other elements
   if AKey = 'fill' then
   begin
-    ADestEntity.Font.Color := ReadSVGColor(AValue);
+    if ADestEntity <> nil then ADestEntity.Font.Color := ReadSVGColor(AValue);
+    if ADestStyle <> nil then ADestStyle.Font.Color := ReadSVGColor(AValue);
     Result := Result + [spbfFontColor];
   end
   // But sometimes SVG also uses stroke! Oh no...
   else if AKey = 'stroke' then
   begin
-    ADestEntity.Font.Color := ReadSVGColor(AValue);
-    Result := Result + [spbfFontColor];
-  end
-  else if AKey = 'fill-opacity' then
-    ADestEntity.Font.Color.Alpha := StrToInt(AValue)*$101
-  else if AKey = 'font-size' then
-  begin
-    ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue, sckX));
-    Result := Result + [spbfFontSize];
-  end
-  else if AKey = 'font-family' then
-    ADestEntity.Font.Name := AValue
-  else if AKey = 'font-weight' then
-  begin
-    case lLowerValue of
-    'bold', '700', '800', '900': ADestEntity.Font.Bold := True;
-    end;
-  end
-  // Other text attributes, non-font ones
-  else if AKey = 'text-anchor' then
-  begin
-    // Adjust according to the text-anchor, if necessary
-    case lLowerValue of
-    'start': ADestEntity.TextAnchor := vtaStart;
-    'middle': ADestEntity.TextAnchor := vtaMiddle;
-    'end': ADestEntity.TextAnchor := vtaEnd;
-    end;
-  end;
-end;
-
-function TvSVGVectorialReader.ReadSVGFontStyleWithKeyAndValue_ToStyle(AKey,
-  AValue: string; ADest: TvStyle): TvSetPenBrushAndFontElements;
-var
-  lLowerValue: String;
-begin
-  Result := [];
-  lLowerValue := LowerCase(AValue);
-  // SVG text uses "fill" to indicate the pen color of the text, very unintuitive as
-  // "fill" is usually for brush in other elements
-  if AKey = 'fill' then
-  begin
-    ADest.Font.Color := ReadSVGColor(AValue);
-    Result := Result + [spbfFontColor];
-  end
-  // But sometimes SVG also uses stroke! Oh no...
-  else if AKey = 'stroke' then
-  begin
+    if ADestEntity <> nil then ADestEntity.Font.Color := ReadSVGColor(AValue);
     if lLowerValue <> 'none' then // sometimes we get a fill value, but a stroke=none after it...
     begin
-      ADest.Font.Color := ReadSVGColor(AValue);
+      if ADestStyle <> nil then ADestStyle.Font.Color := ReadSVGColor(AValue);
       Result := Result + [spbfFontColor];
     end;
+    Result := Result + [spbfFontColor];
   end
   else if AKey = 'fill-opacity' then
-    ADest.Font.Color.Alpha := StrToInt(AValue)*$101
+  begin
+    if ADestEntity <> nil then ADestEntity.Font.Color.Alpha := StrToInt(AValue)*$101;
+    if ADestStyle <> nil then ADestStyle.Font.Color.Alpha := StrToInt(AValue)*$101;
+    Result := Result + [spbfFontColor];
+  end
   else if AKey = 'font-size' then
   begin
-    ADest.Font.Size := Round(StringWithUnitToFloat(AValue, sckX));
+    if ADestEntity <> nil then ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue, sckX, True));
+    if ADestStyle <> nil then ADestStyle.Font.Size := Round(StringWithUnitToFloat(AValue, sckX, True));
     Result := Result + [spbfFontSize];
   end
   else if AKey = 'font-family' then
-    ADest.Font.Name := AValue
+  begin
+    if ADestEntity <> nil then ADestEntity.Font.Name := AValue;
+    if ADestStyle <> nil then ADestStyle.Font.Name := AValue;
+    Result := Result + [spbfFontName];
+  end
   else if AKey = 'font-weight' then
   begin
     case lLowerValue of
-    'bold', '700', '800', '900': ADest.Font.Bold := True;
+    'bold', '700', '800', '900':
+    begin
+      if ADestEntity <> nil then ADestEntity.Font.Bold := True;
+      if ADestStyle <> nil then ADestStyle.Font.Bold := True;
+    end;
     else
-      ADest.Font.Bold := False;
+      if ADestEntity <> nil then ADestEntity.Font.Bold := False;
+      if ADestStyle <> nil then ADestStyle.Font.Bold := False;
     end;
     Result := Result + [spbfFontBold];
   end
@@ -1019,13 +1000,27 @@ begin
   else if AKey = 'text-anchor' then
   begin
     // Adjust according to the text-anchor, if necessary
-    {case lLowerValue of
-    'start': ADest.TextAnchor := vtaStart;
-    'middle': ADest.TextAnchor := vtaMiddle;
-    'end': ADest.TextAnchor := vtaEnd;
-    end;}
+    case lLowerValue of
+    'start':
+    begin
+      if ADestEntity <> nil then ADestEntity.TextAnchor := vtaStart;
+      if ADestStyle <> nil then ADestStyle.TextAnchor := vtaStart;
+    end;
+    'middle':
+    begin
+      if ADestEntity <> nil then ADestEntity.TextAnchor := vtaMiddle;
+      if ADestStyle <> nil then ADestStyle.TextAnchor := vtaMiddle;
+    end;
+    'end':
+    begin
+      if ADestEntity <> nil then ADestEntity.TextAnchor := vtaEnd;
+      if ADestStyle <> nil then ADestStyle.TextAnchor := vtaEnd;
+    end;
+    end;
+    Result := Result + [spbfTextAnchor];
   end;
-  ADest.SetElements := ADest.SetElements + Result;
+  if ADestStyle <> nil then
+    ADestStyle.SetElements := ADestStyle.SetElements + Result;
 end;
 
 function TvSVGVectorialReader.ReadSVGGeneralStyleWithKeyAndValue(AKey,
@@ -2403,6 +2398,7 @@ var
   lCurStyle: TSVGTextSpanStyle;
   i: Integer;
   lNodeName, lNodeValue: DOMString;
+  lCurObject: TObject;
 
   procedure ApplyStackStylesToText(ADest: TvText);
   var
@@ -2424,7 +2420,6 @@ var
   var
     j: Integer;
     lCurNode: TDOMNode;
-    lCurObject: TObject;
   begin
     lCurNode := ACurNode.FirstChild;
     while lCurNode <> nil do
@@ -2459,7 +2454,7 @@ var
           //  ReadSVGStyle(lNodeValue, lParagraph)
           else if IsAttributeFromStyle(lNodeName) then
           begin
-            ReadSVGFontStyleWithKeyAndValue_ToStyle(lNodeName, lNodeValue, lCurStyle);
+            ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, nil, lCurStyle);
             //ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
           end;
         end;
@@ -2499,6 +2494,8 @@ begin
 
   lParagraph := TvParagraph.Create(AData);
   lTextSpanStack := TSVGObjectStack.Create;
+  lCurStyle := TSVGTextSpanStyle.Create;
+  lTextSpanStack.Push(lCurStyle);
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -2506,16 +2503,16 @@ begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
     lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if  lNodeName = 'x' then
-      lx := lx + StringWithUnitToFloat(lNodeValue, sckX)
+      lx := lx + StringWithUnitToFloat(lNodeValue, sckX, False)
     else if lNodeName = 'y' then
-      ly := ly + StringWithUnitToFloat(lNodeValue, sckY)
+      ly := ly + StringWithUnitToFloat(lNodeValue, sckY, False)
     else if lNodeName = 'id' then
       lText.Name := lNodeValue
     else if lNodeName = 'style' then
-      ReadSVGStyle(lNodeValue, lParagraph)
+      ReadSVGStyle(lNodeValue, nil, lCurStyle)
     else if IsAttributeFromStyle(lNodeName) then
     begin
-      ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, lParagraph);
+      ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, nil, lCurStyle);
       ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lParagraph);
     end;
   end;
@@ -2538,6 +2535,8 @@ begin
   ReadTextSpans(ANode);
 
   // Finalization
+  lCurObject := lTextSpanStack.Pop();
+  if lCurObject <> nil then lCurObject.Free;
   lTextSpanStack.Free;
   Result := lParagraph;
 end;
@@ -2601,7 +2600,9 @@ begin
   Result := lInsert;
 end;
 
-function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string; ACoordKind: TSVGCoordinateKind = sckUnknown): Double;
+// ADefaultToPixel - if false the default unit is mm
+function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string;
+  ACoordKind: TSVGCoordinateKind = sckUnknown; ADefaultToPixel: Boolean = False): Double;
 var
   UnitStr, ValueStr: string;
   Len: Integer;
@@ -2628,9 +2629,9 @@ begin
     ValueStr := Copy(AStr, 1, Len-2);
     Result := StrToFloat(ValueStr, FPointSeparator);
     if ViewBoxAdjustment and (ACoordKind = sckX) then
-      Result := Result * Page_Width / ViewBox_Width;
+      Result := (Result - ViewBox_Left) * Page_Width / ViewBox_Width;
     if ViewBoxAdjustment and (ACoordKind = sckY) then
-      Result := Page_Height - Result * Page_Height / ViewBox_Height;
+      Result := Page_Height - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
   end
   else if LastChar = '%' then
   begin
@@ -2642,13 +2643,17 @@ begin
     ValueStr := Copy(AStr, 1, Len-2);
     Result := StrToFloat(ValueStr, FPointSeparator);
   end
+  else if not ADefaultToPixel then
+  begin
+    Result := StringWithUnitToFloat(AStr+'mm', ACoordKind);
+  end
   else // If there is no unit, just use StrToFloat
   begin
     Result := StrToFloat(AStr, FPointSeparator);
     if ViewBoxAdjustment and (ACoordKind = sckX) then
-      Result := Result * Page_Width / ViewBox_Width;
+      Result := (Result - ViewBox_Left) * Page_Width / ViewBox_Width;
     if ViewBoxAdjustment and (ACoordKind = sckY) then
-      Result := Page_Height - Result * Page_Height / ViewBox_Height;
+      Result := Page_Height - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
   end;
 end;
 
@@ -2836,13 +2841,17 @@ begin
         lDocNeedsSizeAutoDetection := False;
         AData.Width := lViewBox[2] - lViewBox[0];
         AData.Height := lViewBox[3] - lViewBox[1];
+        ViewBox_Left := 0;
+        ViewBox_Top := 0;
         ViewBox_Width := 0;
         ViewBox_Height := 0;
       end
       else // Has both viewBox and width/height!
       begin
-        ViewBox_Width := lViewBox[2] - lViewBox[0];
-        ViewBox_Height := lViewBox[3] - lViewBox[1];
+        ViewBox_Left := lViewBox[0];
+        ViewBox_Top := lViewBox[1];
+        ViewBox_Width := lViewBox[2];
+        ViewBox_Height := lViewBox[3];
         ViewBoxAdjustment := True;
       end;
     end

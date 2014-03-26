@@ -149,6 +149,8 @@ type
     spbfBrushColor, spbfBrushStyle, spbfBrushGradient,
     spbfFontColor, spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic,
     spbfFontUnderline, spbfFontStrikeThrough, spbfAlignment,
+    // TextAnchor
+    spbfTextAnchor,
     // Page style
     sseMarginTop, sseMarginBottom, sseMarginLeft, sseMarginRight
     );
@@ -166,6 +168,8 @@ type
 
   TvStyleAlignment = (vsaLeft, vsaRight, vsaJustifed, vsaCenter);
 
+  TvTextAnchor = (vtaStart, vtaMiddle, vtaEnd);
+
   { TvStyle }
 
   TvStyle = class
@@ -181,6 +185,7 @@ type
     Pen: TvPen;
     Brush: TvBrush;
     Font: TvFont;
+    TextAnchor: TvTextAnchor;
     // Page style
     MarginTop, MarginBottom, MarginLeft, MarginRight: Double; // in mm
     SuppressSpacingBetweenSameParagraphs : Boolean;
@@ -445,8 +450,6 @@ type
   end;
 
   { TvEntityWithPenBrushAndFont }
-
-  TvTextAnchor = (vtaStart, vtaMiddle, vtaEnd);
 
   TvEntityWithPenBrushAndFont = class(TvEntityWithPenAndBrush)
   public
@@ -1726,6 +1729,10 @@ begin
   If spbfAlignment in AFrom.SetElements then
     Alignment := AFrom.Alignment;
 
+  // TextAnchor
+  if spbfTextAnchor in AFrom.SetElements then
+    TextAnchor := AFrom.TextAnchor;
+
   // Style
 
   if sseMarginTop in AFrom.SetElements then
@@ -1783,6 +1790,10 @@ begin
     ADest.Font.StrikeThrough := Font.StrikeThrough;
   {If spbfAlignment in SetElements then
     ADest.Alignment := Alignment; }
+
+  // TextAnchor
+  if spbfTextAnchor in SetElements then
+    ADest.TextAnchor := TextAnchor;
 end;
 
 function TvStyle.CreateStyleCombinedWithParent: TvStyle;
