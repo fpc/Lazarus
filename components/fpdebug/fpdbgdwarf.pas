@@ -614,20 +614,24 @@ type
     procedure DoReferenceReleased; override;
     procedure CircleBackRefActiveChanged(NewActive: Boolean); override;
     procedure SetLastMember(ALastMember: TFpDbgDwarfValue);
-
     function GetLastError: TFpError; override;
+
+    // Address of the symbol (not followed any type deref, or location)
+    function GetAddress: TFpDbgMemLocation; override;
+    function OrdOrAddress: TFpDbgMemLocation;
+    // Address of the data (followed type deref, location, ...)
     function DataAddr: TFpDbgMemLocation;
     function OrdOrDataAddr: TFpDbgMemLocation;
     function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation; ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean;
     function GetStructureDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
                                           ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean;
-    function HasDwarfDataAddress: Boolean;
+    function HasDwarfDataAddress: Boolean; // TODO: is this just HasAddress?
+
     procedure Reset; virtual; // keeps lastmember and structureninfo
     function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function HasTypeCastInfo: Boolean;
     function IsValidTypeCast: Boolean; virtual;
     function GetKind: TDbgSymbolKind; override;
-    function GetAddress: TFpDbgMemLocation; override;
     function GetMemberCount: Integer; override;
     function GetMemberByName(AIndex: String): TFpDbgValue; override;
     function GetMember(AIndex: Int64): TFpDbgValue; override;
@@ -1419,7 +1423,7 @@ implementation
 
 var
   FPDBG_DWARF_ERRORS, FPDBG_DWARF_WARNINGS, FPDBG_DWARF_SEARCH, FPDBG_DWARF_VERBOSE,
-  FPDBG_DWARF_DATA_WARNINGS: PLazLoggerLogGroup;
+  FPDBG_DWARF_VERBOSE_LOAD, FPDBG_DWARF_DATA_WARNINGS: PLazLoggerLogGroup;
 
 const
   SCOPE_ALLOC_BLOCK_SIZE = 4096; // Increase scopelist in steps of
@@ -1925,10 +1929,11 @@ end;
 
 function TFpDbgDwarfValueArray.GetDataAddress: TFpDbgMemLocation;
 begin
-  //Result := GetDwarfDataAddress;
-  Result := MemManager.ReadAddress(OrdOrDataAddr, AddressSize); // TODO: cache
-  if not IsValidLoc(Result) then
-    FLastError := MemManager.LastError;
+  // TODO:
+  Result := OrdOrDataAddr;
+  //Result := MemManager.ReadAddress(OrdOrAddress, AddressSize); // TODO: cache
+  //if not IsValidLoc(Result) then
+  //  FLastError := MemManager.LastError;
 end;
 
 function TFpDbgDwarfValueArray.GetMember(AIndex: Int64): TFpDbgValue;
@@ -3058,6 +3063,14 @@ begin
     Result := inherited GetAddress;
 end;
 
+function TFpDbgDwarfValue.OrdOrAddress: TFpDbgMemLocation;
+begin
+  if HasTypeCastInfo and (svfOrdinal in FTypeCastSourceValue.FieldFlags) then
+    Result := ConstLoc(FTypeCastSourceValue.AsCardinal)
+  else
+    Result := Address;
+end;
+
 function TFpDbgDwarfValue.GetMemberCount: Integer;
 begin
   if FValueSymbol <> nil then
@@ -3721,7 +3734,7 @@ var
 begin
   abbrev := 0;
   CurAbbrevIndex := 0;
-  DbgVerbose := (FPDBG_DWARF_VERBOSE <> nil) and (FPDBG_DWARF_VERBOSE^.Enabled);
+  DbgVerbose := (FPDBG_DWARF_VERBOSE_LOAD <> nil) and (FPDBG_DWARF_VERBOSE_LOAD^.Enabled);
 
   while (pbyte(AnAbbrevDataPtr) < FAbbrDataEnd) and (pbyte(AnAbbrevDataPtr)^ <> 0) do
   begin
@@ -3743,9 +3756,9 @@ begin
 
     if DbgVerbose
     then begin
-      DebugLn(FPDBG_DWARF_VERBOSE, ['  abbrev:  ', abbrev]);
-      DebugLn(FPDBG_DWARF_VERBOSE, ['  tag:     ', Def.tag, '=', DwarfTagToString(Def.tag)]);
-      DebugLn(FPDBG_DWARF_VERBOSE, ['  children:', pbyte(AnAbbrevDataPtr)^, '=', DwarfChildrenToString(pbyte(AnAbbrevDataPtr)^)]);
+      DebugLn(FPDBG_DWARF_VERBOSE_LOAD, ['  abbrev:  ', abbrev]);
+      DebugLn(FPDBG_DWARF_VERBOSE_LOAD, ['  tag:     ', Def.tag, '=', DwarfTagToString(Def.tag)]);
+      DebugLn(FPDBG_DWARF_VERBOSE_LOAD, ['  children:', pbyte(AnAbbrevDataPtr)^, '=', DwarfChildrenToString(pbyte(AnAbbrevDataPtr)^)]);
     end;
     if pbyte(AnAbbrevDataPtr)^ = DW_CHILDREN_yes then
       f := [dafHasChildren]
@@ -3779,7 +3792,7 @@ begin
       Inc(CurAbbrevIndex);
 
       if DbgVerbose
-      then DebugLn(FPDBG_DWARF_VERBOSE, ['   [', n, '] attrib: ', attrib, '=', DwarfAttributeToString(attrib), ', form: ', form, '=', DwarfAttributeFormToString(form)]);
+      then DebugLn(FPDBG_DWARF_VERBOSE_LOAD, ['   [', n, '] attrib: ', attrib, '=', DwarfAttributeToString(attrib), ', form: ', form, '=', DwarfAttributeFormToString(form)]);
       Inc(n);
     end;
     Def.Count := n;
@@ -9733,10 +9746,11 @@ begin
 end;
 
 initialization
-  FPDBG_DWARF_ERRORS   := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_ERRORS' {$IFDEF FPDBG_DWARF_ERRORS} , True {$ENDIF} );
-  FPDBG_DWARF_WARNINGS := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_WARNINGS' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );
-  FPDBG_DWARF_VERBOSE  := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );
-  FPDBG_DWARF_SEARCH   := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_SEARCH' {$IFDEF FPDBG_DWARF_SEARCH} , True {$ENDIF} );
+  FPDBG_DWARF_ERRORS        := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_ERRORS' {$IFDEF FPDBG_DWARF_ERRORS} , True {$ENDIF} );
+  FPDBG_DWARF_WARNINGS      := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_WARNINGS' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );
+  FPDBG_DWARF_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );
+  FPDBG_DWARF_VERBOSE_LOAD  := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE_LOAD' {$IFDEF FPDBG_DWARF_VERBOSE_LOAD} , True {$ENDIF} );
+  FPDBG_DWARF_SEARCH        := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_SEARCH' {$IFDEF FPDBG_DWARF_SEARCH} , True {$ENDIF} );
   // Target data anormalities
   FPDBG_DWARF_DATA_WARNINGS := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_DATA_WARNINGS' {$IFDEF FPDBG_DWARF_DATA_WARNINGS} , True {$ENDIF} );
 

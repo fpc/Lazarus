@@ -185,6 +185,8 @@ type
   protected
     function CreateRegistersList: TRegistersList; override;
     procedure RequestData(ARegisters: TRegisters);
+    procedure DoStateEnterPause; override;
+    procedure DoStateLeavePause; override;
   end;
 
   { TBaseList }
@@ -562,6 +564,18 @@ begin
   if Supplier <> nil
   then Supplier.RequestData(ARegisters)
   else ARegisters.DataValidity := ddsInvalid;
+end;
+
+procedure TTestRegistersMonitor.DoStateEnterPause;
+begin
+  inherited DoStateEnterPause;
+  RegistersList.Clear;
+end;
+
+procedure TTestRegistersMonitor.DoStateLeavePause;
+begin
+  inherited DoStateLeavePause;
+  RegistersList.Clear;
 end;
 
 { TTEstRegistersList }
@@ -1646,9 +1660,11 @@ initialization
   DebugLogger.FindOrRegisterLogGroup('DBGMI_TYPE_INFO', True  )^.Enabled := True;
   DebugLogger.FindOrRegisterLogGroup('DBGMI_TIMEOUT_DEBUG', True  )^.Enabled := True;
 
+  DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_ERRORS', True);
   DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_SEARCH', True)^.Enabled := True;
   DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_WARNINGS', True)^.Enabled := True;
-//FPDBG_DWARF_VERBOSE
+  DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE', True);
+  DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_DATA_WARNINGS', True);
 
 
   AppDir := AppendPathDelim(ExtractFilePath(Paramstr(0)));

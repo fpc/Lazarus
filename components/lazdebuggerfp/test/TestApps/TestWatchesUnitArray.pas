@@ -8,12 +8,14 @@ procedure Test1;
 implementation
 
 var
-  ArrayGlob_DynInt1: array of Integer;
+  ArrayGlob_DynInt1, ArrayGlob_DynInt2: array of Integer;
   ArrayGlob_StatInt1: array [4..9] of Integer;
   ArrayGlob_StatInt2: array [-4..9] of Integer;
 
 procedure Test1;
 begin
+  ArrayGlob_DynInt2 := nil;
+
   SetLength(ArrayGlob_DynInt1,20);
   ArrayGlob_DynInt1[0] := 5511;
   ArrayGlob_DynInt1[1] := 5512;

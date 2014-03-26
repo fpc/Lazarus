@@ -111,6 +111,7 @@ type
     EvaluateFlags: TDBGEvaluateFlags;
     StackFrame: Integer;
     Result: Array [TSymbolType] of TWatchExpectationResult;
+    TheWatch: TTestWatch;
   end;
   TWatchExpectationArray = array of TWatchExpectation;
 
@@ -543,6 +544,7 @@ begin
       WatchList[i].DisplayFormat := ExpectList[i].DspFormat;
       WatchList[i].EvaluateFlags:= ExpectList[i].EvaluateFlags;
       WatchList[i].enabled := True;
+      ExpectList[i].TheWatch := WatchList[i];
     end;
   end;
 end;

@@ -565,6 +565,11 @@ function PrintPasValue(out APrintedValue: String; AResValue: TFpDbgValue;
   begin
     APrintedValue := '';
     c := AResValue.MemberCount;
+    if (c = 0) and (svfOrdinal in AResValue.FieldFlags) then begin  // dyn array
+      APrintedValue := 'nil';
+      Result := True;
+      exit;
+    end;
     if c > 500 then c := 500;
     d := 0;
     // TODO: use valueobject for bounds
