@@ -430,6 +430,8 @@ var
   i: integer;
   e: TEntry;
 begin
+  if (lstfiltered.ItemIndex < 0) then
+    exit;
   if PageControl1.TabIndex = 1 then
     lst := lstRefs
   else
