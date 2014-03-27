@@ -2222,6 +2222,7 @@ begin
   TargetObj := AData;
   FocusedWinControl := nil;
   FocusedWidget := nil;
+  LCLObject := nil;
 
   // The gtk sends keys first to the gtkwindow and then to the focused control.
   // The LCL expects only once to the focused control.
