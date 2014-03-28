@@ -81,6 +81,8 @@ type
 
   TSVGCoordinateKind = (sckUnknown, sckX, sckY);
 
+  TSVGUnit = (suPX, suMM);
+
   { TvSVGVectorialReader }
 
   TvSVGVectorialReader = class(TvCustomVectorialReader)
@@ -127,7 +129,8 @@ type
     function ReadTextFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadUseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     //
-    function  StringWithUnitToFloat(AStr: string; ACoordKind: TSVGCoordinateKind = sckUnknown; ADefaultToPixel: Boolean = False): Double;
+    function  StringWithUnitToFloat(AStr: string; ACoordKind: TSVGCoordinateKind = sckUnknown;
+      ADefaultUnit: TSVGUnit = suPX): Double;
     function  StringFloatZeroToOneToWord(AStr: string): Word;
     procedure ConvertSVGCoordinatesToFPVCoordinates(
       const AData: TvVectorialPage;
@@ -972,8 +975,8 @@ begin
   end
   else if AKey = 'font-size' then
   begin
-    if ADestEntity <> nil then ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue, sckX, True));
-    if ADestStyle <> nil then ADestStyle.Font.Size := Round(StringWithUnitToFloat(AValue, sckX, True));
+    if ADestEntity <> nil then ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue, sckX, suPX));
+    if ADestStyle <> nil then ADestStyle.Font.Size := Round(StringWithUnitToFloat(AValue, sckX, suPX));
     Result := Result + [spbfFontSize];
   end
   else if AKey = 'font-family' then
@@ -2503,9 +2506,9 @@ begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
     lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if  lNodeName = 'x' then
-      lx := lx + StringWithUnitToFloat(lNodeValue, sckX, False)
+      lx := lx + StringWithUnitToFloat(lNodeValue, sckX, suPX)
     else if lNodeName = 'y' then
-      ly := ly + StringWithUnitToFloat(lNodeValue, sckY, False)
+      ly := ly + StringWithUnitToFloat(lNodeValue, sckY, suPX)
     else if lNodeName = 'id' then
       lText.Name := lNodeValue
     else if lNodeName = 'style' then
@@ -2600,9 +2603,8 @@ begin
   Result := lInsert;
 end;
 
-// ADefaultToPixel - if false the default unit is mm
 function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string;
-  ACoordKind: TSVGCoordinateKind = sckUnknown; ADefaultToPixel: Boolean = False): Double;
+  ACoordKind: TSVGCoordinateKind = sckUnknown; ADefaultUnit: TSVGUnit = suPX): Double;
 var
   UnitStr, ValueStr: string;
   Len: Integer;
@@ -2643,7 +2645,7 @@ begin
     ValueStr := Copy(AStr, 1, Len-2);
     Result := StrToFloat(ValueStr, FPointSeparator);
   end
-  else if not ADefaultToPixel then
+  else if ADefaultUnit = suMM then
   begin
     Result := StringWithUnitToFloat(AStr+'mm', ACoordKind);
   end
