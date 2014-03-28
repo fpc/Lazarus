@@ -49,7 +49,7 @@ type
     function AddSimpleInt(AnExpr: string; AMtch: Int64; ATpNm: string): PWatchExpectation;
     function AddSimpleUInt(AnExpr: string; AMtch: QWord; ATpNm: string): PWatchExpectation;
 
-    procedure AdjustExpectToAddress(AWatchExp: PWatchExpectation);
+    procedure AdjustExpectToAddress(AWatchExp: PWatchExpectation); // only ExpectBreakSimple_1
 
     procedure AddExpectSimple_1;
     procedure AddExpectSimple_2;
@@ -110,13 +110,12 @@ end;
 
 procedure TTestWatches.AdjustExpectToAddress(AWatchExp: PWatchExpectation);
 var
-  OtherWatchExp: PWatchExpectation;
+  OtherWatchExp: TWatchExpectation;
   s: String;
   st: TSymbolType;
 begin
-  OtherWatchExp := PWatchExpectation(AWatchExp^.UserData);
-  if OtherWatchExp = nil then exit;;
-  s := OtherWatchExp^.TheWatch.Values[1,0].Value;
+  OtherWatchExp := ExpectBreakSimple_1[PtrUInt(AWatchExp^.UserData)];
+  s := OtherWatchExp.TheWatch.Values[1,0].Value;
   delete(s, 1, pos('$', s) - 1); delete(s, pos(')', s), 99);
   for st := low(TSymbolType) to high(TSymbolType) do
     AWatchExp^.Result[st].ExpMatch := '\'+s;
@@ -137,12 +136,11 @@ end;
 
 function TTestWatches.HasTestArraysData: Boolean;
 begin
-  //Result := (Length(ExpectBreakFooGdb) > 0) or
-  //          (Length(ExpectBreakSubFoo) > 0) or
-  //          (Length(ExpectBreakFoo) > 0) or
-  //          (Length(ExpectBreakFooArray) >0 );
-  //
-
+  Result :=
+    (Length(ExpectBreakSimple_1) > 0) or
+    (Length(ExpectBreakSimple_2) > 0) or
+    (Length(ExpectBreakSimple_3) > 0) or
+    (Length(ExpectBreakArray_1) > 0);
 end;
 
 function TTestWatches.Add(AnExpr: string; AFmt: TWatchDisplayFormat; AMtch: string;
@@ -362,20 +360,24 @@ begin
     //SimplePArg_Int1, SimplePVArg_Int1, SimplePLocal_Int1, SimplePGlob_Int1: PLongInt;
     r := AddFmtDef('@SimpleArg_Int1',    'replaceme', skPointer, '');
     r^.OnBeforeTest := @AdjustExpectToAddress;
-    r^.UserData := AddFmtDef('SimplePArg_Int1',    '\$[0-9A-F]', skPointer, '');
+    r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+    AddFmtDef('SimplePArg_Int1',    '\$[0-9A-F]', skPointer, '');
 
     r := AddFmtDef('@SimpleVArg_Int1',    'replaceme', skPointer, '');
-    r^.OnBeforeTest := @AdjustExpectToAddress;
-    r^.UserData := AddFmtDef('SimplePVArg_Int1',    '\$[0-9A-F]', skPointer, '');
     UpdResMinFpc(r, stSymAll, 020600);
+    r^.OnBeforeTest := @AdjustExpectToAddress;
+    r^.UserData := pointer(PtrUInt(Length(FCurrentExpect^)));
+    AddFmtDef('SimplePVArg_Int1',    '\$[0-9A-F]', skPointer, '');
 
     r := AddFmtDef('@SimpleLocal_Int1',    'replaceme', skPointer, '');
     r^.OnBeforeTest := @AdjustExpectToAddress;
-    r^.UserData := AddFmtDef('SimplePLocal_Int1',    '\$[0-9A-F]', skPointer, '');
+    r^.UserData := pointer(PtrUInt(Length(FCurrentExpect^)));
+    AddFmtDef('SimplePLocal_Int1',    '\$[0-9A-F]', skPointer, '');
 
     r := AddFmtDef('@SimpleGlob_Int1',    'replaceme', skPointer, '');
     r^.OnBeforeTest := @AdjustExpectToAddress;
-    r^.UserData := AddFmtDef('SimplePGlob_Int1',    '\$[0-9A-F]', skPointer, '');
+    r^.UserData := pointer(PtrUInt(Length(FCurrentExpect^)));
+    AddFmtDef('SimplePGlob_Int1',    '\$[0-9A-F]', skPointer, '');
 
   {%region}
 

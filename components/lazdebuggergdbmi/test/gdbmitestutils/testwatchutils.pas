@@ -237,6 +237,9 @@ begin
     Expression   := AnExpr;
     DspFormat    := AFmt;
     EvaluateFlags := AEvaluateFlags;
+    TheWatch := nil;
+    OnBeforeTest := nil;
+    UserData := nil;
     for i := low(TSymbolType) to high(TSymbolType) do begin
       Result[i].ExpMatch     := AMtch;
       Result[i].ExpKind      := AKind;
@@ -539,6 +542,7 @@ var
   i: Integer;
 begin
   for i := low(ExpectList) to high(ExpectList) do begin
+    ExpectList[i].TheWatch := nil;
     if not MatchOnly(ExpectList[i], i) then continue;
     if not SkipTest(ExpectList[i]) then begin
       ExpectList[i].TheWatch := TTestWatch.Create(AWatches);
@@ -574,6 +578,7 @@ var
 begin
   for i := low(ExpectList) to high(ExpectList) do begin
     if not MatchOnly(ExpectList[i], i) then continue;
+    if ExpectList[i].TheWatch = nil then continue;
     if not SkipTest(ExpectList[i]) then
       TestWatch(AName + ' '+IntToStr(i)+' ', ADbg, ExpectList[i].TheWatch, ExpectList[i]);
   end;
