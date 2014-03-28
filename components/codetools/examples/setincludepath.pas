@@ -54,6 +54,6 @@ begin
   CodeToolBoss.DefineTree.Add(DirectoryTemplate);
 
   writeln('Directory="',Directory,'"',
-    ' IncPath="',CodeToolBoss.GetIncludePathForDirectory(Directory,true),'"');
+    ' IncPath="',CodeToolBoss.GetIncludePathForDirectory(Directory),'"');
 end.
 
