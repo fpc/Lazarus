@@ -36,7 +36,7 @@ var
   IncPathTemplate: TDefineTemplate;
 begin
   // create a template for the current directory
-  // all child nodes of this templates are only valid for this directory.
+  // all child nodes of this template are only valid for this directory.
   Directory:=ExpandFileNameUTF8(GetCurrentDirUTF8);
   DirectoryTemplate:=TDefineTemplate.Create('Current working directory',
     'Example template for current working directory','',Directory,da_Directory);

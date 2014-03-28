@@ -114,10 +114,6 @@ implementation
 
 {$R *.lfm}
 
-
-
-
-
 const
   MaxLevel = 10; // prevent cycling
 
