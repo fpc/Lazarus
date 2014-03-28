@@ -1688,7 +1688,6 @@ var
 
 var
   i: Integer;
-  WList, WListSub, WListArray: Array of TTestWatch;
 
 begin
   TestBaseName := NamePreFix;
@@ -1735,9 +1734,9 @@ begin
       Fail(' Failed Init');
 
     (* Create all watches *)
-    AddWatches(ExpectBreakFoo, WList, FWatches, Only, OnlyName, OnlyNamePart);
-    AddWatches(ExpectBreakSubFoo, WListSub, FWatches, Only, OnlyName, OnlyNamePart);
-    AddWatches(ExpectBreakFooArray, WListArray, FWatches, Only, OnlyName, OnlyNamePart);
+    AddWatches(ExpectBreakFoo, FWatches, Only, OnlyName, OnlyNamePart);
+    AddWatches(ExpectBreakSubFoo, FWatches, Only, OnlyName, OnlyNamePart);
+    AddWatches(ExpectBreakFooArray, FWatches, Only, OnlyName, OnlyNamePart);
 
     (* Start debugging *)
     dbg.ShowConsole := True;
@@ -1747,7 +1746,7 @@ begin
     then begin
       (* Hit first breakpoint: BREAK_LINE_FOOFUNC_NEST SubFoo -- (1st loop) Called with none nil data *)
 
-      TestWatchList('Brk1', ExpectBreakSubFoo, WListSub, dbg, Only, OnlyName, OnlyNamePart);
+      TestWatchList('Brk1', ExpectBreakSubFoo, dbg, Only, OnlyName, OnlyNamePart);
 
       dbg.Run;
     end
@@ -1771,7 +1770,7 @@ begin
       for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
         if not MatchOnly(ExpectBreakFoo[i], i) then continue;
         if not SkipTest(ExpectBreakFoo[i]) then
-          TestWatch('Brk2 '+IntToStr(i)+' ', dbg, WList[i], ExpectBreakFoo[i]);
+          TestWatch('Brk2 '+IntToStr(i)+' ', dbg, ExpectBreakFoo[i].TheWatch, ExpectBreakFoo[i]);
       end;
 
       dbg.Run;
@@ -1782,7 +1781,7 @@ begin
     then begin
       (* Hit 2nd breakpoint: BREAK_LINE_FOOFUNC_ARRAY SubFoo_Watches -- (1st loop) Called with none nil data *)
 
-      TestWatchList('Brk3', ExpectBreakFooArray, WListArray, dbg, Only, OnlyName, OnlyNamePart);
+      TestWatchList('Brk3', ExpectBreakFooArray, dbg, Only, OnlyName, OnlyNamePart);
 
       dbg.Run;
     end

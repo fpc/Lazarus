@@ -85,6 +85,8 @@ const
   WatchExpFlagSIgnTpName  = [IgnStabs, IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet, IgnDwrf3,  IgnTpName,  IgnTpNameDw, IgnTpNameDw2, IgnTpNameDw3, IgnTpNameSt];
 
 type
+  PWatchExpectation= ^TWatchExpectation;
+  TWatchExpectOnBeforeTest = procedure(AWatchExp: PWatchExpectation) of object;
 
   TFullTypeMemberExpectationResult = record
     Name: string;
@@ -94,7 +96,6 @@ type
   end;
   TFullTypeMemberExpectationResultArray = array of TFullTypeMemberExpectationResult;
 
-  PWatchExpectation= ^TWatchExpectation;
   TWatchExpectationResult = record
     ExpMatch: string;
     ExpKind: TDBGSymbolKind;
@@ -111,11 +112,12 @@ type
     EvaluateFlags: TDBGEvaluateFlags;
     StackFrame: Integer;
     Result: Array [TSymbolType] of TWatchExpectationResult;
+
     TheWatch: TTestWatch;
+    UserData: Pointer;
+    OnBeforeTest: TWatchExpectOnBeforeTest;
   end;
   TWatchExpectationArray = array of TWatchExpectation;
-
-  TTestWatchArray = Array of TTestWatch;
 
   { TTestWatchesBase }
 
@@ -123,10 +125,10 @@ type
   protected
     procedure TestWatch(Name: String; ADbg: TDebuggerIntf;
                         AWatch: TTestWatch; Data: TWatchExpectation; WatchValue: String = '');
-    procedure AddWatches(ExpectList: TWatchExpectationArray; var WatchList: TTestWatchArray;
+    procedure AddWatches(ExpectList: TWatchExpectationArray;
                          AWatches: TWatches;
                          Only: Integer; OnlyName, OnlyNamePart: String);
-    procedure TestWatchList(AName: String; ExpectList: TWatchExpectationArray; WatchList: TTestWatchArray;
+    procedure TestWatchList(AName: String; ExpectList: TWatchExpectationArray;
                           ADbg: TDebuggerIntf;
                           Only: Integer; OnlyName, OnlyNamePart: String);
   end;
@@ -398,6 +400,8 @@ var
 
 begin
   if not TestTrue('Dbg did NOT enter dsError', ADbg.State <> dsError) then exit;
+  if Data.OnBeforeTest <> nil then Data.OnBeforeTest(@Data);
+
   rx := nil;
   Stack := Data.StackFrame;
   DataRes := Data.Result[SymbolType];
@@ -513,9 +517,8 @@ begin
 
 end;
 
-procedure TTestWatchesBase.AddWatches(ExpectList: TWatchExpectationArray;
-  var WatchList: TTestWatchArray; AWatches: TWatches; Only: Integer; OnlyName,
-  OnlyNamePart: String);
+procedure TTestWatchesBase.AddWatches(ExpectList: TWatchExpectationArray; AWatches: TWatches;
+  Only: Integer; OnlyName, OnlyNamePart: String);
 
   function SkipTest(const Data: TWatchExpectation): Boolean;
   begin
@@ -535,22 +538,20 @@ procedure TTestWatchesBase.AddWatches(ExpectList: TWatchExpectationArray;
 var
   i: Integer;
 begin
-  SetLength(WatchList, length(ExpectList));
   for i := low(ExpectList) to high(ExpectList) do begin
     if not MatchOnly(ExpectList[i], i) then continue;
     if not SkipTest(ExpectList[i]) then begin
-      WatchList[i] := TTestWatch.Create(AWatches);
-      WatchList[i].Expression := ExpectList[i].Expression;
-      WatchList[i].DisplayFormat := ExpectList[i].DspFormat;
-      WatchList[i].EvaluateFlags:= ExpectList[i].EvaluateFlags;
-      WatchList[i].enabled := True;
-      ExpectList[i].TheWatch := WatchList[i];
+      ExpectList[i].TheWatch := TTestWatch.Create(AWatches);
+      ExpectList[i].TheWatch.Expression := ExpectList[i].Expression;
+      ExpectList[i].TheWatch.DisplayFormat := ExpectList[i].DspFormat;
+      ExpectList[i].TheWatch.EvaluateFlags:= ExpectList[i].EvaluateFlags;
+      ExpectList[i].TheWatch.enabled := True;
     end;
   end;
 end;
 
 procedure TTestWatchesBase.TestWatchList(AName: String; ExpectList: TWatchExpectationArray;
-  WatchList: TTestWatchArray; ADbg: TDebuggerIntf; Only: Integer; OnlyName,
+  ADbg: TDebuggerIntf; Only: Integer; OnlyName,
   OnlyNamePart: String);
 
   function SkipTest(const Data: TWatchExpectation): Boolean;
@@ -574,7 +575,7 @@ begin
   for i := low(ExpectList) to high(ExpectList) do begin
     if not MatchOnly(ExpectList[i], i) then continue;
     if not SkipTest(ExpectList[i]) then
-      TestWatch(AName + ' '+IntToStr(i)+' ', ADbg, WatchList[i], ExpectList[i]);
+      TestWatch(AName + ' '+IntToStr(i)+' ', ADbg, ExpectList[i].TheWatch, ExpectList[i]);
   end;
 
 end;

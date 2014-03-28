@@ -1,4 +1,5 @@
 unit TestWatchesUnitSimple;
+{$mode objfpc}{$H+}{$NOTES off}
 
 interface
 uses sysutils, types;
@@ -167,7 +168,10 @@ begin
   SimpleGlob_QWord4 := high(QWord);
   SimpleGlob_QWord5 := low(QWord);
 
-
+  SimpleGlob_Single1 := 99.2;
+  SimpleGlob_Double1 := 199.3;
+  SimpleGlob_Ext1    := 299.4;
+  SimpleGlob_Comp1   := -2;
 
 
   SimplePArg_Int1   := @SimpleArg_Int1;

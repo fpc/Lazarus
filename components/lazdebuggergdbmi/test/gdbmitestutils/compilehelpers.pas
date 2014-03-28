@@ -94,7 +94,7 @@ begin
     {$ENDIF}
     FpcBuild.ShowWindow := swoHIDE;
 
-    CmdLine := FpcExe + ' -MObjFPC  -FUlib -o'+ ExeName + ' ' + FpcOpts + ' ' + PrgName;
+    CmdLine := FpcExe + ' -B -MObjFPC  -FUlib -o'+ ExeName + ' ' + FpcOpts + ' ' + PrgName;
     debugln(['**** running compiler: ', CmdLine]);
     FpcBuild.CommandLine := CmdLine;
     FCommandLine := CmdLine;

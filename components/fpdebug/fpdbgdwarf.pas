@@ -823,6 +823,7 @@ type
     FDataAddressDone: Boolean;
   protected
     procedure Reset; override;
+    procedure ClearMembers;
     function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function GetKind: TDbgSymbolKind; override;
     function GetAsCardinal: QWord; override;
@@ -2565,6 +2566,16 @@ procedure TFpDbgDwarfValueStructTypeCast.Reset;
 begin
   inherited Reset;
   FDataAddressDone := False;
+  ClearMembers;
+end;
+
+procedure TFpDbgDwarfValueStructTypeCast.ClearMembers;
+var
+  i: Integer;
+begin
+  if FMembers <> nil then
+    for i := 0 to FMembers.Count - 1 do
+      TDbgDwarfValueIdentifier(FMembers[i]).StructureValueInfo := nil;
 end;
 
 function TFpDbgDwarfValueStructTypeCast.GetFieldFlags: TFpDbgValueFieldFlags;
@@ -2679,12 +2690,8 @@ begin
 end;
 
 destructor TFpDbgDwarfValueStructTypeCast.Destroy;
-var
-  i: Integer;
 begin
-  if FMembers <> nil then
-    for i := 0 to FMembers.Count - 1 do
-      TDbgDwarfValueIdentifier(FMembers[i]).StructureValueInfo := nil;
+  ClearMembers;
   FreeAndNil(FMembers);
   inherited Destroy;
 end;
@@ -2717,6 +2724,7 @@ begin
   if not HasTypeCastInfo then
     exit;
 
+  // TODO: Why store them all in list? They are hold by the type
   tmp := FTypeCastTargetType.Member[AIndex];
   if (tmp <> nil) then begin
     assert((tmp is TDbgDwarfValueIdentifier), 'TDbgDwarfStructTypeCastSymbolValue.GetMemberByName'+DbgSName(tmp));
@@ -2857,6 +2865,9 @@ end;
 
 procedure TFpDbgDwarfValue.SetStructureValue(AValue: TFpDbgDwarfValue);
 begin
+  if FStructureValue <> nil then
+    Reset;
+
   if FStructureValue = AValue then
     exit;
 

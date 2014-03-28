@@ -10,11 +10,11 @@ uses
   GDBMIDebugger;
 
 const
-  BREAK_LINE_TestWatchesUnitSimple_1 = 178;
-  BREAK_LINE_TestWatchesUnitSimple_2 = 185;
-  BREAK_LINE_TestWatchesUnitSimple_3 = 192;
+  BREAK_LINE_TestWatchesUnitSimple_1 = 182;
+  BREAK_LINE_TestWatchesUnitSimple_2 = 189;
+  BREAK_LINE_TestWatchesUnitSimple_3 = 196;
 
-  BREAK_LINE_TestWatchesUnitArray = 38;
+  BREAK_LINE_TestWatchesUnitArray = 176;
 
 type
 
@@ -25,11 +25,6 @@ type
     FWatches: TWatches;
 
     ExpectBreakSimple_1: TWatchExpectationArray;
-    FSimplePArg_Int1, FAddrSimpleArg_Int1,
-    FSimplePVArg_Int1, FAddrSimpleVArg_Int1,
-    FSimplePLocal_Int1, FAddrSimpleLocal_Int1,
-    FSimplePGlob_Int1, FAddrSimpleGlob_Int1: PWatchExpectation;
-
     ExpectBreakSimple_2: TWatchExpectationArray;
     ExpectBreakSimple_3: TWatchExpectationArray;
 
@@ -53,6 +48,8 @@ type
 
     function AddSimpleInt(AnExpr: string; AMtch: Int64; ATpNm: string): PWatchExpectation;
     function AddSimpleUInt(AnExpr: string; AMtch: QWord; ATpNm: string): PWatchExpectation;
+
+    procedure AdjustExpectToAddress(AWatchExp: PWatchExpectation);
 
     procedure AddExpectSimple_1;
     procedure AddExpectSimple_2;
@@ -109,9 +106,21 @@ begin
 end;
 
 
-
-
 { TTestWatches }
+
+procedure TTestWatches.AdjustExpectToAddress(AWatchExp: PWatchExpectation);
+var
+  OtherWatchExp: PWatchExpectation;
+  s: String;
+  st: TSymbolType;
+begin
+  OtherWatchExp := PWatchExpectation(AWatchExp^.UserData);
+  if OtherWatchExp = nil then exit;;
+  s := OtherWatchExp^.TheWatch.Values[1,0].Value;
+  delete(s, 1, pos('$', s) - 1); delete(s, pos(')', s), 99);
+  for st := low(TSymbolType) to high(TSymbolType) do
+    AWatchExp^.Result[st].ExpMatch := '\'+s;
+end;
 
 procedure TTestWatches.DoDbgOutput(Sender: TObject; const AText: String);
 begin
@@ -178,9 +187,11 @@ var
   i: Integer;
   s, s2, s2def: String;
   j: Integer;
+  r: PWatchExpectation;
 begin
   FCurrentExpect := @ExpectBreakSimple_1;
 
+  {%region Int?Cardinal types}
   for i := 0 to 3 do begin
     s2def := '';
     case i of
@@ -338,26 +349,34 @@ begin
     AddSimpleInt(Format(s, ['SimpleField_Word1']),     j+16, 'Word');
     AddSimpleInt(Format(s, ['SimpleField_DWord1']),    j+17, 'LongWord');
     AddSimpleInt(Format(s, ['SimpleField_QWord1']),    j+18, 'QWord');
-
-    //AddSimpleInt(Format(s, ['SimpleField_Single1']),   15, 'Byte');
-    //AddSimpleInt(Format(s, ['SimpleField_Double1']),   15, 'Byte');
-    //AddSimpleInt(Format(s, ['SimpleField_Ext1']),      15, 'Byte');
   end;
+  {%region}
+
+  s := '%s';
+  AddFmtDef(Format(s, ['SimpleGlob_Single1']),   '^99\.(2|19)',  skSimple, '', [fTpMtch]);
+  AddFmtDef(Format(s, ['SimpleGlob_Double1']),   '^199\.(3|29)', skSimple, '', [fTpMtch]);
+  AddFmtDef(Format(s, ['SimpleGlob_Ext1']),      '^299\.(4|39)', skSimple, '', [fTpMtch]);
+  AddSimpleInt(Format(s, ['SimpleGlob_Comp1']),    -2, '');
 
   {%region AddressOf / Var param, hidden pointer}
     //SimplePArg_Int1, SimplePVArg_Int1, SimplePLocal_Int1, SimplePGlob_Int1: PLongInt;
-    FSimplePArg_Int1    := AddFmtDef('SimplePArg_Int1',    '\$[0-9A-F]', skPointer, '');
-    FAddrSimpleArg_Int1 := AddFmtDef('@SimpleArg_Int1',    'replaceme', skPointer, '');
+    r := AddFmtDef('@SimpleArg_Int1',    'replaceme', skPointer, '');
+    r^.OnBeforeTest := @AdjustExpectToAddress;
+    r^.UserData := AddFmtDef('SimplePArg_Int1',    '\$[0-9A-F]', skPointer, '');
 
-    FSimplePVArg_Int1   := AddFmtDef('SimplePVArg_Int1',    '\$[0-9A-F]', skPointer, '');
-    FAddrSimpleVArg_Int1    := AddFmtDef('@SimpleVArg_Int1',    'replaceme', skPointer, '');
-    UpdResMinFpc(FAddrSimpleVArg_Int1, stSymAll, 020600);
+    r := AddFmtDef('@SimpleVArg_Int1',    'replaceme', skPointer, '');
+    r^.OnBeforeTest := @AdjustExpectToAddress;
+    r^.UserData := AddFmtDef('SimplePVArg_Int1',    '\$[0-9A-F]', skPointer, '');
+    UpdResMinFpc(r, stSymAll, 020600);
 
-    FSimplePLocal_Int1  := AddFmtDef('SimplePLocal_Int1',    '\$[0-9A-F]', skPointer, '');
-    FAddrSimpleLocal_Int1   := AddFmtDef('@SimpleLocal_Int1',    'replaceme', skPointer, '');
+    r := AddFmtDef('@SimpleLocal_Int1',    'replaceme', skPointer, '');
+    r^.OnBeforeTest := @AdjustExpectToAddress;
+    r^.UserData := AddFmtDef('SimplePLocal_Int1',    '\$[0-9A-F]', skPointer, '');
 
-    FSimplePGlob_Int1   := AddFmtDef('SimplePGlob_Int1',    '\$[0-9A-F]', skPointer, '');
-    FAddrSimpleGlob_Int1    := AddFmtDef('@SimpleGlob_Int1',    'replaceme', skPointer, '');
+    r := AddFmtDef('@SimpleGlob_Int1',    'replaceme', skPointer, '');
+    r^.OnBeforeTest := @AdjustExpectToAddress;
+    r^.UserData := AddFmtDef('SimplePGlob_Int1',    '\$[0-9A-F]', skPointer, '');
+
   {%region}
 
 end;
@@ -437,6 +456,7 @@ begin
   AddSimpleInt('ArrayGlob_DynInt1[0]',    5511, M_Int);
   AddSimpleInt('ArrayGlob_DynInt1[19]',    5500, M_Int);
 
+
   AddFmtDef('ArrayGlob_StatInt1', '^[\(L].*6600, 6601, 6602',
             skArray, '', [fTpMtch]);
   AddSimpleInt('ArrayGlob_StatInt1[4]',    6600, M_Int);
@@ -445,27 +465,43 @@ begin
   AddFmtDef('ArrayGlob_StatInt1[10]', '', skSimple, M_Int, [fTpMtch]); // Just do not crash
   AddFmtDef('ArrayGlob_StatInt1[-1]', '', skSimple, M_Int, [fTpMtch]); // Just do not crash
 
+
   AddFmtDef('ArrayGlob_StatInt2', '^[\(L].*3300, 3301, 3302',
             skArray, '', [fTpMtch]);
   AddSimpleInt('ArrayGlob_StatInt2[-4]',    3300, M_Int);
   AddSimpleInt('ArrayGlob_StatInt2[0]',    3304, M_Int);
 
 
-  // EMPTY  dyn array = nil
+  AddFmtDef('FieldDynInt1', '^[\(L].*100, 101, 102', skArray, '', [fTpMtch]);
+
+
+  AddFmtDef('FieldDynClass1', '^[\(L].*?'+
+    '\(.*FIELDINT1 = 98700;.*FIELDINT2 = 98701;.*FIELDDYNAINT1 = \(9900, 9901\);.*\), ' +
+    '\(.*FIELDINT1 = 88700;.*FIELDINT2 = 88701;.*FIELDDYNAINT1 = \(8900, 8901\);.*\), ' +
+    '\(.*FIELDINT1 = 78700;.*FIELDINT2 = 78701;.*FIELDDYNAINT1 = \(7900, 7901, 7902\);.*\)',
+  skArray, '', [fTpMtch]);
+
+
 end;
 
 procedure TTestWatches.RunTestWatches(NamePreFix: String; TestExeName, ExtraOpts: String;
   UsedUnits: array of TUsesDir);
+
 var
   dbg: TGDBMIDebugger;
   Only: Integer;
   OnlyName, OnlyNamePart: String;
 
+  procedure SetBreak(AFileName: String; ALineNum: Integer);
+  begin
+    with dbg.BreakPoints.Add(AFileName, ALineNum) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
+  end;
 
 var
   i: Integer;
-  WListSimple1, WListSimple2, WListSimple3,
-  WListArray1: TTestWatchArray;
   st: TSymbolType;
   s: String;
 
@@ -497,30 +533,18 @@ begin
     dbg := StartGDB(AppDir, TestExeName);
     FWatches := Watches.Watches;
 
-    with dbg.BreakPoints.Add('TestWatchesUnitSimple.pas', BREAK_LINE_TestWatchesUnitSimple_1) do begin
-      InitialEnabled := True;
-      Enabled := True;
-    end;
-    with dbg.BreakPoints.Add('TestWatchesUnitSimple.pas', BREAK_LINE_TestWatchesUnitSimple_2) do begin
-      InitialEnabled := True;
-      Enabled := True;
-    end;
-    with dbg.BreakPoints.Add('TestWatchesUnitSimple.pas', BREAK_LINE_TestWatchesUnitSimple_3) do begin
-      InitialEnabled := True;
-      Enabled := True;
-    end;
-    with dbg.BreakPoints.Add('TestWatchesUnitArray.pas', BREAK_LINE_TestWatchesUnitArray) do begin
-      InitialEnabled := True;
-      Enabled := True;
-    end;
+    SetBreak('TestWatchesUnitSimple.pas', BREAK_LINE_TestWatchesUnitSimple_1);
+    SetBreak('TestWatchesUnitSimple.pas', BREAK_LINE_TestWatchesUnitSimple_2);
+    SetBreak('TestWatchesUnitSimple.pas', BREAK_LINE_TestWatchesUnitSimple_3);
+    SetBreak('TestWatchesUnitArray.pas', BREAK_LINE_TestWatchesUnitArray);
 
     if dbg.State = dsError then
       Fail(' Failed Init');
 
-    AddWatches(ExpectBreakSimple_1, WListSimple1, FWatches, Only, OnlyName, OnlyNamePart);
-    AddWatches(ExpectBreakSimple_2, WListSimple2, FWatches, Only, OnlyName, OnlyNamePart);
-    AddWatches(ExpectBreakSimple_3, WListSimple3, FWatches, Only, OnlyName, OnlyNamePart);
-    AddWatches(ExpectBreakArray_1, WListArray1, FWatches, Only, OnlyName, OnlyNamePart);
+    AddWatches(ExpectBreakSimple_1, FWatches, Only, OnlyName, OnlyNamePart);
+    AddWatches(ExpectBreakSimple_2, FWatches, Only, OnlyName, OnlyNamePart);
+    AddWatches(ExpectBreakSimple_3, FWatches, Only, OnlyName, OnlyNamePart);
+    AddWatches(ExpectBreakArray_1,  FWatches, Only, OnlyName, OnlyNamePart);
 
     (* Start debugging *)
     dbg.ShowConsole := True;
@@ -531,45 +555,25 @@ begin
       TestTrue('Hit BREAK_LINE_TestWatchesUnitSimple_1', False);
       exit;
     end;
-
     (* Hit first breakpoint:  *)
-    for st := low(TSymbolType) to high(TSymbolType) do begin
-      s := FSimplePArg_Int1^.TheWatch.Values[1,0].Value;
-      delete(s, 1, pos('$', s) - 1); delete(s, pos(')', s), 99);
-      FAddrSimpleArg_Int1^.Result[st].ExpMatch := '\'+s;
-
-      s := FSimplePVArg_Int1^.TheWatch.Values[1,0].Value;
-      delete(s, 1, pos('$', s) - 1); delete(s, pos(')', s), 99);
-      FAddrSimpleVArg_Int1^.Result[st].ExpMatch := '\'+s;
-
-      s := FSimplePGlob_Int1^.TheWatch.Values[1,0].Value;
-      delete(s, 1, pos('$', s) - 1); delete(s, pos(')', s), 99);
-      FAddrSimpleGlob_Int1^.Result[st].ExpMatch := '\'+s;
-
-      s := FSimplePLocal_Int1^.TheWatch.Values[1,0].Value;
-      delete(s, 1, pos('$', s) - 1); delete(s, pos(')', s), 99);
-      FAddrSimpleLocal_Int1^.Result[st].ExpMatch := '\'+s;
-    end;
-    TestWatchList('Simple1',ExpectBreakSimple_1, WListSimple1, dbg, Only, OnlyName, OnlyNamePart);
+    TestWatchList('Simple1',ExpectBreakSimple_1, dbg, Only, OnlyName, OnlyNamePart);
 
 
     dbg.Run;
-   if not TestTrue('State=Pause', dbg.State = dsPause) then begin
+    if not TestTrue('State=Pause', dbg.State = dsPause) then begin
       TestTrue('Hit BREAK_LINE_TestWatchesUnitSimple', False);
       exit;
     end;
-
     (* Hit 2nd Simple breakpoint: *)
-    TestWatchList('Simple2',ExpectBreakSimple_2, WListSimple2, dbg, Only, OnlyName, OnlyNamePart);
+    TestWatchList('Simple2',ExpectBreakSimple_2, dbg, Only, OnlyName, OnlyNamePart);
 
     dbg.Run;
-   if not TestTrue('State=Pause', dbg.State = dsPause) then begin
+    if not TestTrue('State=Pause', dbg.State = dsPause) then begin
       TestTrue('Hit BREAK_LINE_TestWatchesUnitSimple', False);
       exit;
     end;
-
     (* Hit 3rd Simlpe breakpoint: *)
-    TestWatchList('Simple3',ExpectBreakSimple_3, WListSimple3, dbg, Only, OnlyName, OnlyNamePart);
+    TestWatchList('Simple3',ExpectBreakSimple_3, dbg, Only, OnlyName, OnlyNamePart);
 
 
     // array
@@ -582,7 +586,7 @@ begin
     end;
 
     (* Hit 11st Array breakpoint: *)
-    TestWatchList('Array1',ExpectBreakArray_1, WListArray1, dbg, Only, OnlyName, OnlyNamePart);
+    TestWatchList('Array1',ExpectBreakArray_1, dbg, Only, OnlyName, OnlyNamePart);
 
     dbg.Run;
 

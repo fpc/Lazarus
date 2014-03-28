@@ -1,4 +1,5 @@
 unit TestWatchesUnitStruct;
+{$mode objfpc}{$H+}{$NOTES off}
 
 interface
 uses sysutils, types;
