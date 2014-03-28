@@ -72,8 +72,7 @@ begin
     Filename:=Options.ProjectDir+'simpleunit1.pas';
 
     // init the codetools
-    if not Options.UnitLinkListValid then
-      writeln('Scanning FPC sources may take a while ...');
+    writeln('Scanning FPC sources may take a while ...');
     CodeToolBoss.Init(Options);
 
     // save the options and the FPC unit links results.
