@@ -34,6 +34,7 @@ var
   Directory: String;
   DirectoryTemplate: TDefineTemplate;
   IncPathTemplate: TDefineTemplate;
+  SubDirectory: String;
 begin
   // create a template for the current directory
   // all child nodes of this template are only valid for this directory.
@@ -41,19 +42,47 @@ begin
   DirectoryTemplate:=TDefineTemplate.Create('Current working directory',
     'Example template for current working directory','',Directory,da_Directory);
 
-  // add a sub template to extend the include search path #IncPath.
+  // Example 1:
+  //  Add a sub template to extend the include search path #IncPath
+  //  only for the current directory, not its sub directories.
+  // Note: 'myincludes' is a relative path, so it won't work for sub directories.
   IncPathTemplate:=TDefineTemplate.Create('Add myincludes to the IncPath',
     'Add myincludes to the include search path',
     IncludePathMacroName,  // variable name: #IncPath
     IncludePathMacro+';myincludes' // new value: $(#IncPath);myincludes
-    ,da_Define
+    ,da_Define // da_Define extends the IncPath only for this directory
     );
   DirectoryTemplate.AddChild(IncPathTemplate);
-  
+
+  // Example 2:
+  //  Add a sub template to extend the include search path #IncPath
+  //  with an absolute path for the current directory and all its sub directories.
+  // Note: '/tmp/myincludes' is an absolute path, so works for sub directories.
+  IncPathTemplate:=TDefineTemplate.Create('Add /tmp/myincludes to the IncPath',
+    'Add /tmp/myincludes to the include search path',
+    IncludePathMacroName,  // variable name: #IncPath
+    IncludePathMacro+';'+SetDirSeparators('/tmp/myincludes') // new value: $(#IncPath);/tmp/myincludes
+    ,da_DefineRecurse // da_DefineRecuse extends the IncPath for this directory and all sub directories
+    );
+  DirectoryTemplate.AddChild(IncPathTemplate);
+
+  // Example 3:
+  //  Using the #DefinePath macro you can use the current directory to create absolute paths.
+  IncPathTemplate:=TDefineTemplate.Create('Add ./myincludes to the IncPath',
+    'Add ./myincludes to the include search path',
+    IncludePathMacroName,  // variable name: #IncPath
+    IncludePathMacro+';'+DefinePathMacro+'/myincludes' // new value: $(#IncPath);$(#DefinePath)/myincludes
+    ,da_DefineRecurse // da_DefineRecuse extends the IncPath for this directory and all sub directories
+    );
+  DirectoryTemplate.AddChild(IncPathTemplate);
+
   // add the directory template to the tree
   CodeToolBoss.DefineTree.Add(DirectoryTemplate);
 
   writeln('Directory="',Directory,'"',
     ' IncPath="',CodeToolBoss.GetIncludePathForDirectory(Directory),'"');
+  SubDirectory:=AppendPathDelim(Directory)+'sub';
+  writeln('SubDirectory="',SubDirectory,'"',
+    ' IncPath="',CodeToolBoss.GetIncludePathForDirectory(SubDirectory),'"');
 end.
 
