@@ -422,6 +422,7 @@ var
   AQColor, AOldColor: TQColor;
   B: Boolean;
   OldCanvasFontColor: TColor;
+  APalette: QPaletteH;
 begin
   B := False;
 
@@ -431,10 +432,25 @@ begin
     B := True;
     AOldColor := TQtDeviceContext(TCanvas(ACanvas).Handle).pen.getColor;
     OldCanvasFontColor := TCanvas(ACanvas).Font.Color;
-    if TCanvas(ACanvas).Font.Color = clDefault then
-      TCanvas(ACanvas).Font.Color := clBtnText;
-    ColorRefToTQColor(ColorToRGB(TCanvas(ACanvas).Font.Color), AQColor);
-    TQtDeviceContext(TCanvas(ACanvas).Handle).pen.setColor(AQColor);
+
+    // issue #25922
+    if IsDisabled(Details) then
+    begin
+      APalette := QPalette_create;
+      try
+        QApplication_palette(APalette,'QPushButton');
+        AQColor := QPalette_color(APalette, QPaletteDisabled, QPaletteButtonText)^;
+        TQtDeviceContext(TCanvas(ACanvas).Handle).pen.setColor(AQColor);
+      finally
+        QPalette_destroy(APalette);
+      end;
+    end else
+    begin
+      if TCanvas(ACanvas).Font.Color = clDefault then
+        TCanvas(ACanvas).Font.Color := clBtnText;
+      ColorRefToTQColor(ColorToRGB(TCanvas(ACanvas).Font.Color), AQColor);
+      TQtDeviceContext(TCanvas(ACanvas).Handle).pen.setColor(AQColor);
+    end;
   end;
 
   DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2);
