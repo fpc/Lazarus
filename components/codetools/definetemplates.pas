@@ -4001,9 +4001,7 @@ begin
   //DebugLn('[TDefineTree.GetDirDefinesForDirectory] "',Path,'"');
   if (Path<>'') or (not WithVirtualDir) then begin
     DoPrepareTree;
-    ExpPath:=TrimFilename(Path);
-    if (ExpPath<>'') and (ExpPath[length(ExpPath)]<>PathDelim) then
-      ExpPath:=ExpPath+PathDelim;
+    ExpPath:=AppendPathDelim(TrimFilename(Path));
     Result:=FindDirectoryInCache(ExpPath);
     if Result=nil then begin
       Result:=TDirectoryDefines.Create;
@@ -4493,6 +4491,7 @@ var
 
   // procedure CalculateTemplate(DefTempl: TDefineTemplate; const CurPath: string);
   var SubPath, TempValue: string;
+    VarName: string;
   begin
     while DefTempl<>nil do begin
       //DebugLn('  [CalculateTemplate] CurPath="',CurPath,'" DefTempl.Name="',DefTempl.Name,'"');
@@ -4512,7 +4511,8 @@ var
             ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
             if Assigned(OnCalculate) then
               OnCalculate(Self,DefTempl,true,TempValue,false,'',true);
-            DirDef.Values.Variables[DefTempl.Variable]:=TempValue;
+            ReadValue(DirDef,DefTempl.Variable,CurPath,VarName);
+            DirDef.Values.Variables[VarName]:=TempValue;
           end else begin
             if Assigned(OnCalculate) then
               OnCalculate(Self,DefTempl,false,'',false,'',false);
@@ -4525,7 +4525,8 @@ var
           ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
           if Assigned(OnCalculate) then
             OnCalculate(Self,DefTempl,true,TempValue,false,'',true);
-          DirDef.Values.Variables[DefTempl.Variable]:=TempValue;
+          ReadValue(DirDef,DefTempl.Variable,CurPath,VarName);
+          DirDef.Values.Variables[VarName]:=TempValue;
         end;
 
       da_Undefine:
@@ -4533,7 +4534,8 @@ var
         if FilenameIsMatching(CurPath,ExpandedDirectory,true) then begin
           if Assigned(OnCalculate) then
             OnCalculate(Self,DefTempl,false,'',false,'',true);
-          DirDef.Values.Undefine(DefTempl.Variable);
+          ReadValue(DirDef,DefTempl.Variable,CurPath,VarName);
+          DirDef.Values.Undefine(VarName);
         end else begin
           if Assigned(OnCalculate) then
             OnCalculate(Self,DefTempl,false,'',false,'',false);
@@ -4544,7 +4546,8 @@ var
         begin
           if Assigned(OnCalculate) then
             OnCalculate(Self,DefTempl,false,'',false,'',true);
-          DirDef.Values.Undefine(DefTempl.Variable);
+          ReadValue(DirDef,DefTempl.Variable,CurPath,VarName);
+          DirDef.Values.Undefine(VarName);
         end;
 
       da_UndefineAll:
@@ -4570,7 +4573,7 @@ var
           end else if EvalResult='1' then
             CalculateIfChildren;
         end;
-      da_IfDef:
+      da_IfDef,da_IfNDef:
         // test if variable is defined
         begin
           //DebugLn('da_IfDef A Name=',DefTempl.Name,
@@ -4578,7 +4581,8 @@ var
           //  ' Is=',dbgs(DirDef.Values.IsDefined(DefTempl.Variable)),
           //  ' CurPath="',CurPath,'"',
           //  ' Values.Count=',dbgs(DirDef.Values.Count));
-          if DirDef.Values.IsDefined(DefTempl.Variable) then begin
+          ReadValue(DirDef,DefTempl.Variable,CurPath,VarName);
+          if DirDef.Values.IsDefined(VarName)=(DefTempl.Action=da_IfDef) then begin
             if Assigned(OnCalculate) then
               OnCalculate(Self,DefTempl,false,'',false,'',true);
             CalculateIfChildren;
@@ -4586,17 +4590,6 @@ var
             if Assigned(OnCalculate) then
               OnCalculate(Self,DefTempl,false,'',false,'',false);
           end;
-        end;
-
-      da_IfNDef:
-        // test if variable is not defined
-        if not DirDef.Values.IsDefined(DefTempl.Variable) then begin
-          if Assigned(OnCalculate) then
-            OnCalculate(Self,DefTempl,false,'',false,'',true);
-          CalculateIfChildren;
-        end else begin
-          if Assigned(OnCalculate) then
-            OnCalculate(Self,DefTempl,false,'',false,'',false);
         end;
 
       da_Else:
@@ -5927,16 +5920,13 @@ var
   CurCPU, CurOS, CurWidgetSet: string;
   ToolsInstallDirTempl: TDefineTemplate;
   AllWidgetSets: String;
-  p: Integer;
 begin
   Result:=nil;
   if (LazarusSrcDir='') or (WidgetType='') then exit;
-  //TargetCPU:='$('+ExternalMacroStart+'TargetCPU)';
   TargetOS:='$('+ExternalMacroStart+'TargetOS)';
   SrcOS:='$('+ExternalMacroStart+'SrcOS)';
   SrcPath:='$('+ExternalMacroStart+'SrcPath)';
-  //IncPath:='$('+ExternalMacroStart+'IncPath)';
-  
+
   AllWidgetSets:='';
   for i:=Low(Lazarus_CPU_OS_Widget_Combinations)
       to High(Lazarus_CPU_OS_Widget_Combinations) do
@@ -5970,20 +5960,9 @@ begin
   MainDir.AddChild(TDefineTemplate.Create('define LCL',
     ctsDefineLCL,'LCL',WidgetType,da_DefineRecurse));
   // define LCLwidgetset, e.g. LCLcarbon, LCLgtk, LCLgtk2
-  p:=1;
-  repeat
-    CurWidgetSet:=GetNextDelimitedItem(AllWidgetSets,';',p);
-    if CurWidgetSet='' then break;
-    IfTemplate:=TDefineTemplate.Create('IF '''+WidgetType+'''='''+CurWidgetSet+'''',
-      ctsDefineLCLWidgetset,'',''''+WidgetType+'''='''+CurWidgetSet+'''',da_If);
-      // then define LCLgtk, LCLgtk2, LCLcarbon, ...
-      IfTemplate.AddChild(TDefineTemplate.Create('Define LCL'+CurWidgetSet,
-        ctsDefineLCLWidgetset,'LCL'+CurWidgetSet,'',da_DefineRecurse));
-    MainDir.AddChild(IfTemplate);
-  until false;
-
-  // <LazarusSrcDir>/include
-  // (does not need special setup)
+  MainDir.AddChild(TDefineTemplate.Create('Define LCLwidgettype',
+    ctsDefineLCLWidgetset,
+    'LCL$(#LCLWidgetType)','',da_DefineRecurse));
 
   // <LazarusSrcDir>/ide
   DirTempl:=TDefineTemplate.Create('ide',ctsIDEDirectory,

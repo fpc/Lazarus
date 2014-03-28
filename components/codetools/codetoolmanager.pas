@@ -1071,6 +1071,10 @@ begin
   //if CfgCache.TargetCPU<>CfgCache.RealTargetCPU then
   //  debugln(['TCodeToolManager.Init TargetCPU=',CfgCache.TargetCPU,' RealTargetCPU=',CfgCache.RealTargetCPU]);
 
+  // save
+  Config.ConfigCaches.Assign(FPCDefinesCache.ConfigCaches);
+  Config.SourceCaches.Assign(FPCDefinesCache.SourceCaches);
+
   // create template for FPC settings
   FPCDefines:=CreateFPCTemplate(UnitSetCache,nil);
   DefineTree.Add(FPCDefines);
@@ -1090,10 +1094,6 @@ begin
 
   //debugln(['TCodeToolManager.Init defines: ',DefineTree.GetDefinesForVirtualDirectory.AsString]);
   //debugln(['TCodeToolManager.Init inc path rtl/system: ',GetIncludePathForDirectory(UnitSetCache.FPCSourceDirectory+'/rtl/bsd')]);
-
-  // save
-  Config.ConfigCaches.Assign(FPCDefinesCache.ConfigCaches);
-  Config.SourceCaches.Assign(FPCDefinesCache.SourceCaches);
 end;
 
 procedure TCodeToolManager.SimpleInit(const ConfigFilename: string);
