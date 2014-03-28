@@ -45,7 +45,8 @@ type
      fTstSkip,       // Do not run test
      fTstSkipDwarf3,
      fTpMtch,
-     fTExpectNotFound
+     fTExpectNotFound,
+     fTExpectError
     );
   TWatchExpectationFlags = set of TWatchExpectationFlag;
 
@@ -438,7 +439,7 @@ begin
   // Check Data
   f2 := True;
   IgnoreText := '';    if IgnoreData then IgnoreText := 'Ignored by flag';
-  if IsValid then begin
+  if IsValid = not(fTExpectError in DataRes.Flgs) then begin
     rx := TRegExpr.Create;
     rx.ModifierI := true;
     rx.Expression := DataRes.ExpMatch;

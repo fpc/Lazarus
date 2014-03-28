@@ -13,6 +13,9 @@ type
     FieldStatInt1: array [4..9] of Integer;
     FieldByte1: Byte;
   end;
+  TArrayRec2 = packed record
+    FieldByte1, FieldByte2, FieldByte3: Byte;
+  end;
 
   TArrayDynInt        = array of Integer;
   TArrayDynClass      = array of TArrayClass1;
@@ -30,9 +33,9 @@ type
   TArrayStatClass     = array [-2..5] of TArrayClass1;
   TArrayStatRec       = array [-2..5] of TArrayRec;
 
-  TArrayStatStatInt   = array [-9..-5] of array [1..5] of Integer;
-  TArrayStatStatClass = array [-9..-5] of array [1..5] of TArrayClass1;
-  TArrayStatStatRec   = array [-9..-5] of array [1..5] of TArrayRec;
+  TArrayStatStatInt   = array [-9..-5] of array [1..3] of Integer;
+  TArrayStatStatClass = array [-9..-5] of array [1..3] of TArrayClass1;
+  TArrayStatStatRec   = array [-9..-5] of array [1..3] of TArrayRec;
 
   TArrayStatDynInt    = array [-9..-5] of array of Integer;
   TArrayStatDynClass  = array [-9..-5] of array of TArrayClass1;
@@ -50,6 +53,7 @@ type
     FieldDynInt1: TArrayDynInt;
     FieldDynClass1: TArrayDynClass;
     FieldDynRec1: TArrayDynRec;
+    FieldDynRec2: array of TArrayRec2;
 
     FieldDynDynInt1: TArrayDynDynInt;
     FieldDynDynClass1: TArrayDynDynClass;
@@ -144,15 +148,40 @@ begin
     FieldDynRec1[2].FieldInt1 := 220;
     FieldDynRec1[2].FieldInt2 := 221;
 
+  SetLength(FieldDynRec2,   7);
+    FieldDynRec2[0].FieldByte1 := 200;
+    FieldDynRec2[0].FieldByte2 := 201;
+    FieldDynRec2[1].FieldByte1 := 210;
+    FieldDynRec2[1].FieldByte2 := 211;
+    FieldDynRec2[2].FieldByte1 := 220;
+    FieldDynRec2[2].FieldByte2 := 221;
+
   SetLength(FieldDynDynInt1,   5,3);
     FieldDynDynInt1[0][0] := 1000;
     FieldDynDynInt1[0][1] := 1001;
     FieldDynDynInt1[0][2] := 1002;
-    FieldDynDynInt1[0][3] := 1003;
     FieldDynDynInt1[1][0] := 1010;
     FieldDynDynInt1[1][1] := 1011;
+    FieldDynDynInt1[1][2] := 1012;
+    FieldDynDynInt1[2][0] := 1020;
+    FieldDynDynInt1[2][1] := 1021;
+    FieldDynDynInt1[2][2] := 1022;
+    FieldDynDynInt1[3][0] := 1;
+    FieldDynDynInt1[3][1] := 2;
+    FieldDynDynInt1[3][2] := 1;
 
-  SetLength(FieldDynDynClass1, 5,4);
+  SetLength(FieldDynDynClass1, 5,2);
+    FieldDynDynClass1[0,0] := TArrayClass1.Create;
+      FieldDynDynClass1[0][0].FieldInt1 := 5000;
+    FieldDynDynClass1[0,1] := TArrayClass1.Create;
+      FieldDynDynClass1[0][1].FieldInt1 := 5001;
+    FieldDynDynClass1[1,0] := nil;
+    FieldDynDynClass1[1,1] := TArrayClass1.Create;
+      FieldDynDynClass1[1][1].FieldInt1 := 5011;
+    FieldDynDynClass1[2,0] := nil;
+    FieldDynDynClass1[2,1] := nil;
+
+
   SetLength(FieldDynDynRec1,   5,6);
 
   SetLength(FieldDynStatInt1,   3);
@@ -164,6 +193,15 @@ begin
   //SetLength(FieldStatRec1, );
 
   //SetLength(FieldStatStatInt1, );
+    FieldStatStatInt1[-9, 1] := 4091;
+    FieldStatStatInt1[-9, 2] := 4092;
+    FieldStatStatInt1[-9, 3] := 4093;
+    FieldStatStatInt1[-8, 1] := 4081;
+    FieldStatStatInt1[-8, 2] := 4082;
+    FieldStatStatInt1[-8, 3] := 4083;
+    FieldStatStatInt1[-7, 1] := 4071;
+    FieldStatStatInt1[-7, 2] := 4072;
+    FieldStatStatInt1[-7, 3] := 4073;
   //SetLength(FieldStatStatClass1, );
   //SetLength(FieldStatStatRec1, );
 

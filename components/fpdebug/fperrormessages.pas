@@ -12,26 +12,36 @@ type
 
 resourcestring
   // %0:s is always linebreak
-  MsgfpErrAnyError         = '%1:s';
-  MsgfpErrSymbolNotFound   = 'Identifier not found: "%1:s"';
-  MsgfpErrNoMemberWithName = 'Member not found: %1:s';
+  MsgfpErrAnyError                        = '%1:s';
+  MsgfpErrSymbolNotFound                  = 'Identifier not found: "%1:s"';
+  MsgfpErrNoMemberWithName                = 'Member not found: %1:s';
+  MsgfpErrPasParserUnexpectedToken        = 'Unexpected token ''%1:s'' at pos %2:d';
+  MsgfpErrPasParserMissingExprAfterComma  = 'Expected Expression after Comma, but found closing bracket %1:s';
+  MsgfpErrPasParserMissingIndexExpression = 'Expected Expression but found closing bracket: %1:s';
+  MsgfpErrInvalidNumber                   = 'Can''t parse number: %1:s';
+  MsgfpErrCannotDereferenceType           = 'Can not dereference Expression "%1:s"';
   // 100 memreader error
-  MsgfpErrfpErrFailedReadMem   = 'Failed to read data from target mem';
-  MsgfpErrCanNotReadInvalidMem = 'Failed to read data from invalid location';
-  MsgfpErrCanNotReadMemAtAddr  = 'Failed to read Mem at Address %1:u';
+  MsgfpErrfpErrFailedReadMem              = 'Failed to read data from target mem';
+  MsgfpErrCanNotReadInvalidMem            = 'Failed to read data from invalid location';
+  MsgfpErrCanNotReadMemAtAddr             = 'Failed to read Mem at Address $%1:x';
   // 200 LocationParser
-  MsgfpErrLocationParser = 'Internal Error: Can not calculate location.';
-  MsgfpErrLocationParserMemRead = '%1:s (while calculating location)';          // Pass on nested error
-  MsgfpErrLocationParserInit = 'Internal Error: Can not calculate location. (Init)';
-  MsgfpErrLocationParserMinStack = 'Not enough elements on stack.';             // internally used
-  MsgfpErrLocationParserNoAddressOnStack = 'Not an address on stack';           // internally used
+  MsgfpErrLocationParser                  = 'Internal Error: Can not calculate location.';
+  MsgfpErrLocationParserMemRead           = '%1:s (while calculating location)';          // Pass on nested error
+  MsgfpErrLocationParserInit              = 'Internal Error: Can not calculate location. (Init)';
+  MsgfpErrLocationParserMinStack          = 'Not enough elements on stack.';             // internally used
+  MsgfpErrLocationParserNoAddressOnStack  = 'Not an address on stack';           // internally used
 
 const
   fpErrNoError        = TFpErrorCode(0); // not an error
   fpErrAnyError       = TFpErrorCode(1);
 
-  fpErrSymbolNotFound   = TFpErrorCode(2);
-  fpErrNoMemberWithName = TFpErrorCode(3);
+  fpErrSymbolNotFound                  = TFpErrorCode(2);
+  fpErrNoMemberWithName                = TFpErrorCode(3);
+  fpErrPasParserUnexpectedToken        = TFpErrorCode(4);
+  fpErrPasParserMissingExprAfterComma  = TFpErrorCode(5);
+  fpErrPasParserMissingIndexExpression = TFpErrorCode(6);
+  fpErrInvalidNumber                   = TFpErrorCode(7);
+  fpErrCannotDereferenceType           = TFpErrorCode(8);
 
   // 100 memreader error
   fpErrFailedReadMem        = TFpErrorCode(100);
@@ -147,6 +157,11 @@ begin
     fpErrAnyError:         Result := MsgfpErrAnyError;
     fpErrSymbolNotFound:   Result := MsgfpErrSymbolNotFound;
     fpErrNoMemberWithName: Result := MsgfpErrNoMemberWithName;
+    fpErrPasParserUnexpectedToken: Result := MsgfpErrPasParserUnexpectedToken;
+    fpErrPasParserMissingExprAfterComma: Result := MsgfpErrPasParserMissingExprAfterComma;
+    fpErrPasParserMissingIndexExpression: Result := MsgfpErrPasParserMissingIndexExpression;
+    fpErrInvalidNumber:    Result := MsgfpErrInvalidNumber;
+    fpErrCannotDereferenceType: Result := MsgfpErrCannotDereferenceType;
 
     fpErrCanNotReadInvalidMem: Result := MsgfpErrCanNotReadInvalidMem;
     fpErrCanNotReadMemAtAddr: Result := MsgfpErrCanNotReadMemAtAddr;

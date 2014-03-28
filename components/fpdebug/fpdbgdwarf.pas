@@ -6232,7 +6232,6 @@ var
 begin
   // Todo, maybe create all children?
   if FLastChildByName <> nil then begin
-    FLastChildByName.ParentTypeInfo := nil;
     FLastChildByName.ReleaseCirclularReference;
     FLastChildByName := nil;
   end;

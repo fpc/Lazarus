@@ -43,6 +43,8 @@ type
   TFpPascalExpressionPartClass = class of TFpPascalExpressionPart;
   TFpPascalExpressionPartBracketClass = class of TFpPascalExpressionPartBracket;
 
+  TSeparatorType = (ppstComma);
+
   { TFpPascalExpression }
 
   TFpPascalExpression = class
@@ -113,6 +115,7 @@ type
     function FindLeftSideOperandByPrecedence({%H-}AnOperator: TFpPascalExpressionPartWithPrecedence):
                                              TFpPascalExpressionPart; virtual;
     function CanHaveOperatorAsNext: Boolean; virtual; // True
+    function HandleSeparator(ASeparatorType: TSeparatorType): Boolean; virtual; // False
     property Expression: TFpPascalExpression read FExpression;
   public
     constructor Create(AExpression: TFpPascalExpression; AStartChar: PChar; AnEndChar: PChar = nil);
@@ -190,12 +193,16 @@ type
   private
     FIsClosed: boolean;
     FIsClosing: boolean;
+    FAfterComma: Integer;
+    function GetAfterComma: Boolean;
   protected
     procedure Init; override;
     function HasPrecedence: Boolean; override;
     procedure DoHandleEndOfExpression; override;
     function CanHaveOperatorAsNext: Boolean; override;
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; virtual;
+    procedure SetAfterCommaFlag;
+    property AfterComma: Boolean read GetAfterComma;
   public
     procedure CloseBracket;
     function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
@@ -229,11 +236,13 @@ type
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean; override;
+    function HandleSeparator(ASeparatorType: TSeparatorType): Boolean; override;
   end;
 
 
+  { TFpPascalExpressionPartSquareBracket }
+
   TFpPascalExpressionPartSquareBracket = class(TFpPascalExpressionPartBracket)
-  protected
   end;
 
   { TFpPascalExpressionPartBracketSet }
@@ -242,6 +251,7 @@ type
   // a in [x, y, z]
   protected
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
+    function HandleSeparator(ASeparatorType: TSeparatorType): Boolean; override;
   end;
 
   { TFpPascalExpressionPartBracketIndex }
@@ -255,6 +265,8 @@ type
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean; override;
+    procedure DoHandleEndOfExpression; override;
+    function HandleSeparator(ASeparatorType: TSeparatorType): Boolean; override;
   end;
 
   { TFpPascalExpressionPartOperator }
@@ -269,6 +281,7 @@ type
     function MaybeAddLeftOperand(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean;
     procedure DoHandleEndOfExpression; override;
+    function HandleSeparator(ASeparatorType: TSeparatorType): Boolean; override;
   public
     function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
   end;
@@ -908,42 +921,68 @@ end;
 
 function TFpPascalExpressionPartBracketIndex.DoGetResultValue: TFpDbgValue;
 var
-  tmp, tmp2: TFpDbgValue;
+  TmpVal, TmpVal2, TmpIndex: TFpDbgValue;
+  i: Integer;
 begin
   Result := nil;
-  if Count <> 2 then exit;
+  assert(Count >= 2, 'TFpPascalExpressionPartBracketIndex.DoGetResultValue: Count >= 2');
+  if Count < 2 then exit;
 
-  tmp := Items[0].ResultValue;
-  if tmp = nil then exit;
+  TmpVal := Items[0].ResultValue;
+  if TmpVal = nil then exit;
 
-  if (tmp.Kind = skArray) then begin
-    tmp2 := Items[1].ResultValue;
-    if (svfInteger in tmp2.FieldFlags) then begin
-      Result := tmp.Member[tmp2.AsInteger];
-    end
+  TmpVal.AddReference;
+  for i := 1 to Count - 1 do begin;
+    TmpVal2 := nil;
+    TmpIndex := Items[i].ResultValue;
+    if (TmpVal.Kind = skArray) then begin
+      if (svfInteger in TmpIndex.FieldFlags) then
+        TmpVal2 := TmpVal.Member[TmpIndex.AsInteger]
+      else
+      if (svfOrdinal in TmpIndex.FieldFlags) and
+         (TmpIndex.AsCardinal <= high(Integer))
+      then
+        TmpVal2 := TmpVal.Member[TmpIndex.AsCardinal]
+      else
+      begin
+        SetError('Can not calculate Index');
+        TmpVal.ReleaseReference;
+        exit;
+      end;
+    end // Kind = skArray
     else
-    if (svfOrdinal in tmp2.FieldFlags) then begin
-      if tmp2.AsCardinal > high(Integer) then exit; // TODO max member range
-      Result := tmp.Member[tmp2.AsCardinal]; // todo negative ?
-    end
-    else
+    if (TmpVal.Kind = skPointer) then begin
+      //Result := TmpVal.TypeInfo;
+      SetError('Not implemented');
+      TmpVal.ReleaseReference;
       exit;
-    if Result <> nil then
-      Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
-    exit;
-    //Result := TPasParserSymbolArrayDeIndex.Create(tmp);
-  end
-  else
-  if (tmp.Kind = skPointer) then begin
-    //Result := tmp.TypeInfo;
-    //Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultType'){$ENDIF};
-    exit;
-  end
-  else
-  if (tmp.Kind = skString) then begin
-    //TODO
-    exit;
+    end
+    else
+    if (TmpVal.Kind = skString) then begin
+      //TODO
+      SetError('Not implemented');
+      TmpVal.ReleaseReference;
+      exit;
+    end
+    else
+    begin
+      SetError(fpErrCannotDereferenceType, [GetText]);
+      TmpVal.ReleaseReference;
+      exit;
+    end;
+
+    if TmpVal2 = nil then begin
+      SetError('Internal Error, attempting to read array element');
+      TmpVal.ReleaseReference;
+      exit;
+    end;
+    TmpVal2.AddReference;
+    TmpVal.ReleaseReference;
+    TmpVal := TmpVal2;
   end;
+
+  Result := TmpVal;
+  {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
 function TFpPascalExpressionPartBracketIndex.IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean;
@@ -957,8 +996,13 @@ end;
 function TFpPascalExpressionPartBracketIndex.HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;
 begin
   Result := Self;
-  if Count <> 1 then begin // Todo a,b,c
-    SetError(APart, 'Too many operands in [] '+GetText+': ');
+  if Count < 1 then begin // Todo a,b,c
+    SetError(APart, 'Internal error handling [] '+GetText+': '); // Missing the array on which this index works
+    APart.Free;
+    exit;
+  end;
+  if (Count > 1) and (not AfterComma) then begin
+    SetError(APart, 'Comma or closing "]" expected '+GetText+': ');
     APart.Free;
     exit;
   end;
@@ -1002,12 +1046,31 @@ begin
   Add(ALeftSide);
 end;
 
+procedure TFpPascalExpressionPartBracketIndex.DoHandleEndOfExpression;
+begin
+  inherited DoHandleEndOfExpression;
+  if (Count < 2) then
+    SetError(fpErrPasParserMissingIndexExpression, [GetText]);
+end;
+
+function TFpPascalExpressionPartBracketIndex.HandleSeparator(ASeparatorType: TSeparatorType): Boolean;
+begin
+  if (not (ASeparatorType = ppstComma)) or IsClosed then begin
+    Result := inherited HandleSeparator(ASeparatorType);
+    exit;
+  end;
+
+  Result := (Count > FAfterComma) and (Count > 1); // First element is name of array (in front of "[")
+  if Result then
+    SetAfterCommaFlag;
+end;
+
 { TFpPascalExpressionPartBracketSet }
 
 function TFpPascalExpressionPartBracketSet.HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;
 begin
   Result := Self;
-  if Count > 0 then begin
+  if (Count > 0) and (not AfterComma) then begin
     SetError('To many expressions'); // TODO comma
     APart.Free;
     exit;
@@ -1015,6 +1078,18 @@ begin
 
   Result := APart;
   Add(APart);
+end;
+
+function TFpPascalExpressionPartBracketSet.HandleSeparator(ASeparatorType: TSeparatorType): Boolean;
+begin
+  if (not (ASeparatorType = ppstComma)) or IsClosed then begin
+    Result := inherited HandleSeparator(ASeparatorType);
+    exit;
+  end;
+
+  Result := (Count > FAfterComma) and (Count > 0);
+  if Result then
+    SetAfterCommaFlag;
 end;
 
 { TFpPascalExpressionPartWithPrecedence }
@@ -1074,8 +1149,13 @@ end;
 function TFpPascalExpressionPartBracketArgumentList.HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;
 begin
   Result := Self;
-  if Count <> 1 then begin // Todo a,b,c
-    SetError(APart, 'Too many operands in () '+GetText+': ');
+  if Count < 1 then begin // Todo a,b,c
+    SetError(APart, 'Internal error handling () '+GetText+': '); // Missing the functionname on which this index works
+    APart.Free;
+    exit;
+  end;
+  if (Count > 1) and (not AfterComma) then begin // Todo a,b,c
+    SetError(APart, 'Comma or closing ")" expected: '+GetText+': ');
     APart.Free;
     exit;
   end;
@@ -1117,6 +1197,18 @@ begin
 
   ALeftSide.ReplaceInParent(Self);
   Add(ALeftSide);
+end;
+
+function TFpPascalExpressionPartBracketArgumentList.HandleSeparator(ASeparatorType: TSeparatorType): Boolean;
+begin
+  if (not (ASeparatorType = ppstComma)) or IsClosed then begin
+    Result := inherited HandleSeparator(ASeparatorType);
+    exit;
+  end;
+
+  Result := (Count > FAfterComma) and (Count > 1); // First element is name of function (in front of "(")
+  if Result then
+    SetAfterCommaFlag;
 end;
 
 { TFpPascalExpressionPartBracketSubExpression }
@@ -1173,11 +1265,41 @@ begin
   DbgSymbol.ReleaseReference; // hold via value
 end;
 
+function GetFirstToken(AText: PChar): String;
+begin
+  Result := AText[0];
+  if AText^ in ['a'..'z', 'A'..'Z', '_', '0'..'9'] then begin
+    inc(AText);
+    while (AText^ in ['a'..'z', 'A'..'Z', '_', '0'..'9']) and (Length(Result) < 200) do begin
+      Result := Result + AText[0];
+      inc(AText);
+    end;
+  end
+  else
+  begin
+    inc(AText);
+    while not (AText^ in [#0..#32, 'a'..'z', 'A'..'Z', '_', '0'..'9']) and (Length(Result) < 100) do begin
+      Result := Result + AText[0];
+      inc(AText);
+    end;
+  end;
+end;
+
 { TFpPascalExpressionPartConstantNumber }
 
 function TFpPascalExpressionPartConstantNumber.DoGetResultValue: TFpDbgValue;
+var
+  i: QWord;
+  e: word;
 begin
-  Result := TFpDbgValueConstNumber.Create(StrToQWordDef(GetText, 0), False);
+  Val(GetText, i, e);
+  if e <> 0 then begin
+    Result := nil;
+    SetError(fpErrInvalidNumber, [GetText]);
+    exit;
+  end;
+
+  Result := TFpDbgValueConstNumber.Create(i, False);
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
@@ -1277,6 +1399,12 @@ var
     AddPart(TFpPascalExpressionPartConstantNumber);
   end;
 
+  procedure HandleComma;
+  begin
+    if not CurPart.HandleSeparator(ppstComma) then
+      SetError(fpErrPasParserUnexpectedToken, [GetFirstToken(CurPtr), PosFromPChar(CurPtr)]);
+  end;
+
   procedure AddConstChar;
   begin
     SetError(Format('Unexpected char ''%0:s'' at pos %1:d', [CurPtr^, PosFromPChar(CurPtr)])); // error
@@ -1308,14 +1436,15 @@ begin
       ')':       CloseBracket(TFpPascalExpressionPartRoundBracket);
       '[':       HandleSqareBracket;
       ']':       CloseBracket(TFpPascalExpressionPartSquareBracket);
-      //',': ;
+      ',':       HandleComma;
       '''', '#': AddConstChar;
       '0'..'9',
       '$', '%', '&':  AddConstNumber;
       'a'..'z',
       'A'..'Z', '_': AddIdentifier;
       else begin
-          SetError(Format('Unexpected char ''%0:s'' at pos %1:d', [CurPtr^, PosFromPChar(CurPtr)])); // error
+          //SetError(fpErrPasParserUnexpectedToken, [GetFirstToken(CurPtr), PosFromPChar(CurPtr)])
+          SetError(Format('Unexpected token ''%0:s'' at pos %1:d', [CurPtr^, PosFromPChar(CurPtr)])); // error
           break;
         end;
     end;
@@ -1333,13 +1462,17 @@ begin
 
 
 
-  if CurPart <> nil then begin
-    CurPart.HandleEndOfExpression;
-    CurPart := CurPart.TopParent;
+  if Valid then begin
+    if CurPart <> nil then begin
+      CurPart.HandleEndOfExpression;
+      CurPart := CurPart.TopParent;
+    end
+    else
+      SetError('No Expression');
   end
   else
-  if Valid then
-    SetError('No Expression');
+  if CurPart <> nil then
+    CurPart := CurPart.TopParent;
 
   FExpressionPart := CurPart;
 end;
@@ -1556,6 +1689,11 @@ begin
   Result := True;
 end;
 
+function TFpPascalExpressionPart.HandleSeparator(ASeparatorType: TSeparatorType): Boolean;
+begin
+  Result := (Parent <> nil) and Parent.HandleSeparator(ASeparatorType);
+end;
+
 function TFpPascalExpressionPart.DebugText(AIndent: String; AWithResults: Boolean): String;
 begin
   Result := Format('%s%s at %d: "%s"',
@@ -1693,11 +1831,17 @@ end;
 
 { TFpPascalExpressionPartBracket }
 
+function TFpPascalExpressionPartBracket.GetAfterComma: Boolean;
+begin
+  Result := (FAfterComma = Count);
+end;
+
 procedure TFpPascalExpressionPartBracket.Init;
 begin
   inherited Init;
   FIsClosed := False;
   FIsClosing := False;
+  FAfterComma := -1;
 end;
 
 function TFpPascalExpressionPartBracket.HasPrecedence: Boolean;
@@ -1726,8 +1870,17 @@ begin
   SetError('Error in ()');
 end;
 
+procedure TFpPascalExpressionPartBracket.SetAfterCommaFlag;
+begin
+  FAfterComma := Count;
+end;
+
 procedure TFpPascalExpressionPartBracket.CloseBracket;
 begin
+  if AfterComma then begin
+    SetError(fpErrPasParserMissingExprAfterComma, [GetText]);
+    exit;
+  end;
   FIsClosing := True;
   if LastItem <> nil then
     LastItem.HandleEndOfExpression;
@@ -1823,6 +1976,11 @@ begin
     SetError(Self, 'Not enough operands')
   else
     inherited DoHandleEndOfExpression;
+end;
+
+function TFpPascalExpressionPartOperator.HandleSeparator(ASeparatorType: TSeparatorType): Boolean;
+begin
+  Result := HasAllOperands and (inherited HandleSeparator(ASeparatorType));
 end;
 
 function TFpPascalExpressionPartOperator.HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;

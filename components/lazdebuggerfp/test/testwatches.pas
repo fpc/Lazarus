@@ -14,7 +14,7 @@ const
   BREAK_LINE_TestWatchesUnitSimple_2 = 189;
   BREAK_LINE_TestWatchesUnitSimple_3 = 196;
 
-  BREAK_LINE_TestWatchesUnitArray = 176;
+  BREAK_LINE_TestWatchesUnitArray = 205;
 
 type
 
@@ -475,6 +475,9 @@ begin
 
 
   AddFmtDef('FieldDynInt1', '^[\(L].*100, 101, 102', skArray, '', [fTpMtch]);
+  AddSimpleInt('FieldDynInt1[0]',    100, M_Int);
+  AddSimpleInt('FieldDynInt1[1]',    101, M_Int);
+  AddFmtDef('FieldDynInt1[0][0]', 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
 
 
   AddFmtDef('FieldDynClass1', '^[\(L].*?'+
@@ -482,7 +485,48 @@ begin
     '\(.*FIELDINT1 = 88700;.*FIELDINT2 = 88701;.*FIELDDYNAINT1 = \(8900, 8901\);.*\), ' +
     '\(.*FIELDINT1 = 78700;.*FIELDINT2 = 78701;.*FIELDDYNAINT1 = \(7900, 7901, 7902\);.*\)',
   skArray, '', [fTpMtch]);
+  AddFmtDef('FieldDynClass1[0]',
+    '\(.*FIELDINT1 = 98700;.*FIELDINT2 = 98701;.*FIELDDYNAINT1 = \(9900, 9901\);.*\), ',
+  skClass, 'TArrayClass1', [fTpMtch]);
+  AddFmtDef('FieldDynClass1[1]',
+    '\(.*FIELDINT1 = 88700;.*FIELDINT2 = 88701;.*FIELDDYNAINT1 = \(8900, 8901\);.*\), ',
+  skClass, 'TArrayClass1', [fTpMtch]);
+  AddSimpleInt('FieldDynClass1[0].FIELDINT1',  98700, M_Int);
 
+
+  AddFmtDef('FieldDynRec1', '^[\(L].*?'+
+    '\(.*FIELDINT1 = 200;.*FIELDINT2 = 201;.*\), ' +
+    '\(.*FIELDINT1 = 210;.*FIELDINT2 = 211;.*\), ' +
+    '\(.*FIELDINT1 = 220;.*FIELDINT2 = 221;.*\)',
+  skArray, '', [fTpMtch]);
+
+  AddFmtDef('FieldDynRec2', '^[\(L].*?'+
+    '\(.*FieldByte1 = 200;.*FieldByte2 = 201;.*\), ' +
+    '\(.*FieldByte1 = 210;.*FieldByte2 = 211;.*\), ' +
+    '\(.*FieldByte1 = 220;.*FieldByte2 = 221;.*\)',
+  skArray, '', [fTpMtch]);
+
+
+  AddFmtDef('FieldDynDynInt1', '^[\(L].*?'+
+    '\(1000, 1001, 1002\), ' +    '\(1010, 1011, 1012\), ' +    '\(1020, 1021, 1022\)',
+  skArray, '', [fTpMtch]);
+  AddSimpleInt('FieldDynDynInt1[0][0]',    1000, M_Int);
+  AddSimpleInt('FieldDynDynInt1[0,0]',    1000, M_Int);
+  AddSimpleInt('FieldDynDynInt1[FieldDynDynInt1[3,0], FieldDynDynInt1[3,1]]',    1012, M_Int);
+  AddSimpleInt('FieldDynDynInt1[FieldDynDynInt1[3,0]][FieldDynDynInt1[3,1]]',    1012, M_Int);
+
+
+  AddFmtDef('FieldDynDynClass1', '^[^\(G]*?\('+ // not GDB:
+    '\(\(.*FIELDINT1 = 5000;.*\), \(.*FIELDINT1 = 5001;.*\)\), ' +
+    '\(nil, \(.*FIELDINT1 = 5011;.*\)\), ' +
+    '\(nil, nil\)',
+  skArray, '', [fTpMtch]);
+
+
+  ////
+  AddFmtDef('FieldStatStatInt1', '^[\(L].*?'+
+    '\(4091, 4092, 4093\), ' +    '\(4081, 4082, 4083\), ' +    '\(4071, 4072, 4073\), ',
+  skArray, '', [fTpMtch]);
 
 end;
 
