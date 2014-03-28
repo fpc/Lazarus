@@ -68,10 +68,10 @@ const
   StdDefTemplLCLProject     = 'LCL project';
 
   // Standard macros
-  DefinePathMacroName      = ExternalMacroStart+'DefinePath';
-  UnitPathMacroName        = ExternalMacroStart+'UnitPath';
-  IncludePathMacroName     = ExternalMacroStart+'IncPath';
-  SrcPathMacroName         = ExternalMacroStart+'SrcPath';
+  DefinePathMacroName      = ExternalMacroStart+'DefinePath'; // the current directory
+  UnitPathMacroName        = ExternalMacroStart+'UnitPath'; // unit search path separated by semicolon (same as given to FPC)
+  IncludePathMacroName     = ExternalMacroStart+'IncPath'; // include file search path separated by semicolon (same as given to FPC)
+  SrcPathMacroName         = ExternalMacroStart+'SrcPath'; // unit source search path separated by semicolon (not given to FPC)
   PPUSrcPathMacroName      = ExternalMacroStart+'PPUSrcPath';
   DCUSrcPathMacroName      = ExternalMacroStart+'DCUSrcPath';
   CompiledSrcPathMacroName = ExternalMacroStart+'CompiledSrcPath';
@@ -4477,7 +4477,7 @@ var
 
   procedure CalculateTemplate(DefTempl: TDefineTemplate; const CurPath: string);
   
-    procedure CalculateIfChilds;
+    procedure CalculateIfChildren;
     begin
       // execute children
       CalculateTemplate(DefTempl.FirstChild,CurPath);
@@ -4568,7 +4568,7 @@ var
             FErrorTemplate:=DefTempl;
             //debugln(['CalculateTemplate "',FErrorDescription,'"']);
           end else if EvalResult='1' then
-            CalculateIfChilds;
+            CalculateIfChildren;
         end;
       da_IfDef:
         // test if variable is defined
@@ -4581,7 +4581,7 @@ var
           if DirDef.Values.IsDefined(DefTempl.Variable) then begin
             if Assigned(OnCalculate) then
               OnCalculate(Self,DefTempl,false,'',false,'',true);
-            CalculateIfChilds;
+            CalculateIfChildren;
           end else begin
             if Assigned(OnCalculate) then
               OnCalculate(Self,DefTempl,false,'',false,'',false);
@@ -4593,7 +4593,7 @@ var
         if not DirDef.Values.IsDefined(DefTempl.Variable) then begin
           if Assigned(OnCalculate) then
             OnCalculate(Self,DefTempl,false,'',false,'',true);
-          CalculateIfChilds;
+          CalculateIfChildren;
         end else begin
           if Assigned(OnCalculate) then
             OnCalculate(Self,DefTempl,false,'',false,'',false);

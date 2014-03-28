@@ -45,7 +45,7 @@ begin
   IncPathTemplate:=TDefineTemplate.Create('Add myincludes to the IncPath',
     'Add myincludes to the include search path',
     IncludePathMacroName,  // variable name: #IncPath
-    '$('+IncludePathMacroName+');myincludes' // new value: $(#IncPath);myincludes
+    IncludePathMacro+';myincludes' // new value: $(#IncPath);myincludes
     ,da_Define
     );
   DirectoryTemplate.AddChild(IncPathTemplate);
