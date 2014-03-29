@@ -44,6 +44,7 @@ type
   TFPDState = (dsStop, dsRun, dsPause, dsQuit, dsEvent);
   TFPDEvent = (deExitProcess, deBreakpoint, deException, deCreateProcess, deLoadLibrary);
   TFPDMode = (dm32, dm64);
+  TOnLog = procedure(AString: string) of object;
 
   TDbgProcess = class;
 
@@ -130,6 +131,7 @@ type
   TDbgProcess = class(TDbgInstance)
   private
     FExitCode: DWord;
+    FOnLog: TOnLog;
     FProcessID: Integer;
     FThreadID: Integer;
 
@@ -162,6 +164,8 @@ type
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
     function  RemoveBreak(const ALocation: TDbgPtr): Boolean;
     procedure RemoveThread(const AID: DWord);
+    procedure Log(AString: string);
+    procedure Log(AString: string; Options: array of const);
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; virtual;
     function ReadOrdinal(const AAdress: TDbgPtr; out AData): Boolean; virtual;
@@ -185,6 +189,7 @@ type
     property ThreadID: integer read FThreadID;
     property ExitCode: DWord read FExitCode;
     property LastEventProcessIdentifier: THandle read GetLastEventProcessIdentifier;
+    property OnLog: TOnLog read FOnLog write FOnLog;
   end;
   TDbgProcessClass = class of TDbgProcess;
 
@@ -453,6 +458,17 @@ begin
   FThreadMap.Delete(AID);
 end;
 
+procedure TDbgProcess.Log(AString: string);
+begin
+  if assigned(FOnLog) then
+    FOnLog(AString);
+end;
+
+procedure TDbgProcess.Log(AString: string; Options: array of const);
+begin
+  Log(Format(AString, Options));
+end;
+
 function TDbgProcess.GetHandle: THandle;
 begin
   result := 0;
@@ -465,7 +481,7 @@ end;
 
 class function TDbgProcess.StartInstance(AFileName: string; AParams: string): TDbgProcess;
 begin
-  Log('Debug support for this platform is not available.');
+  DebugLn('Debug support for this platform is not available.');
   result := nil;
 end;
 
