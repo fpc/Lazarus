@@ -152,7 +152,7 @@ begin
       #10,#13: Include(HasChars,ccoscNewLine);
       #0..#9,#11,#12,#14..#31: Include(HasChars,ccoscSpecialChars);
       '/','\': if Path[i]<>PathDelim then Include(HasChars,ccoscWrongPathDelim);
-      '@','#','$','&','*','(',')','[',']','+','~','<','>','?','|': Include(HasChars,ccoscUnusualChars);
+      '@','#','$','&','*','(',')','[',']','+','<','>','?','|': Include(HasChars,ccoscUnusualChars);
       #128..#255: Include(HasChars,ccoscNonASCII);
     end;
   end;
