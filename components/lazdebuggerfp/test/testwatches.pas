@@ -74,8 +74,8 @@ const
 
   {%region    * Classes * }
   // _vptr$TOBJECt on older gdb e.g. mac 6.3.50
-  Match_ArgTFoo = '<TFoo> = \{.*(<|vptr\$)TObject>?.+ValueInt = -11';
-  Match_ArgTFoo1 = '<TFoo> = \{.*(<|vptr\$)TObject>?.+ValueInt = 31';
+  Match_ArgTFoo = '<TFoo> = \{.*?(<|vptr\$)TObject>?.+ValueInt = -11';
+  Match_ArgTFoo1 = '<TFoo> = \{.*?(<|vptr\$)TObject>?.+ValueInt = 31';
   {%ebdregion    * Classes * }
   // Todo: Dwarf fails with dereferenced var pointer types
 
@@ -93,12 +93,12 @@ end;
 function MatchRecord(TypeName: String; AValInt: integer; AValFoo: String = ''): String;
 begin
   Result := 'record '+TypeName+' .+ valint = '+IntToStr(AValInt);
-  If AValFoo <> '' then Result := Result + ',.* valfoo = '+AValFoo;
+  If AValFoo <> '' then Result := Result + ',.*? valfoo = '+AValFoo;
 end;
 
 function MatchClass(TypeName: String; AContent: String = ''): String;
 begin
-  Result := '<'+TypeName+'> = \{.*(vptr\$|<TObject>).+'+AContent;
+  Result := '<'+TypeName+'> = \{.*?(vptr\$|<TObject>).+'+AContent;
 end;
 
 function MatchClassNil(TypeName: String): String;
@@ -482,14 +482,14 @@ begin
     if i >= 5 then s2 := '^';
 
 if i <> 2 then begin // open array / TODO
-    AddFmtDef(Format('%sDynAInt1%1:s', [s,s2]), '^[\(L].*100, 101, 102', skArray, '', [fTpMtch]);
+    AddFmtDef(Format('%sDynAInt1%1:s', [s,s2]), '^[\(L].*?100, 101, 102', skArray, '', [fTpMtch]);
     AddSimpleInt(Format('%sDynAInt1%1:s[0]', [s,s2]),    100, M_Int);
     AddSimpleInt(Format('%sDynAInt1%1:s[1]', [s,s2]),    101, M_Int);
     AddFmtDef(Format('%sDynAInt1%1:s[0][0]', [s,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
 end;
 
 
-    AddFmtDef(Format('%sStatAInt1%1:s', [s,s2]), '^[\(L].*6600, 6601, 6602',
+    AddFmtDef(Format('%sStatAInt1%1:s', [s,s2]), '^[\(L].*?6600, 6601, 6602',
               skArray, '', [fTpMtch]);
     AddSimpleInt(Format('%sStatAInt1%1:s[4]', [s,s2]),    6600, M_Int);
     AddSimpleInt(Format('%sStatAInt1%1:s[9]', [s,s2]),    6699, M_Int);
@@ -498,7 +498,7 @@ end;
     AddFmtDef(Format('%sStatAInt1%1:s[-1]', [s,s2]), '', skSimple, M_Int, [fTpMtch]); // Just do not crash
 
 
-    AddFmtDef(Format('%sStatAInt2%1:s', [s,s2]), '^[\(L].*3300, 3301, 3302',
+    AddFmtDef(Format('%sStatAInt2%1:s', [s,s2]), '^[\(L].*?3300, 3301, 3302',
               skArray, '', [fTpMtch]);
     AddSimpleInt(Format('%sStatAInt2%1:s[-4]', [s,s2]),    3300, M_Int);
     AddSimpleInt(Format('%sStatAInt2%1:s[0]', [s,s2]),    3304, M_Int);
@@ -511,11 +511,11 @@ end;
     if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
 
 
-    AddFmtDef(Format('%sDynInt1%1:s', [s,s2]), '^[\(L].*5511, 5512, 5513, 5514, -5511',
+    AddFmtDef(Format('%sDynInt1%1:s', [s,s2]), '^[\(L].*?5511, 5512, 5513, 5514, -5511',
               skArray, '', [fTpMtch]);
     AddSimpleInt(Format('%sDynInt1%1:s[0]', [s,s2]),    5511, M_Int);
     AddSimpleInt(Format('%sDynInt1%1:s[19]', [s,s2]),    5500, M_Int);
-    r := AddFmtDef(Format('TArrayDynInt(%sDynInt1%1:s)', [s,s2]), '^[\(L].*5511, 5512, 5513, 5514, -5511',
+    r := AddFmtDef(Format('TArrayDynInt(%sDynInt1%1:s)', [s,s2]), '^[\(L].*?5511, 5512, 5513, 5514, -5511',
               skArray, '', [fTpMtch]);
     if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
     r := AddSimpleInt(Format('TArrayDynInt(%sDynInt1%1:s)[0]', [s,s2]),    5511, M_Int);
@@ -523,30 +523,30 @@ end;
 
 
     AddFmtDef(Format('%sDynClass1%1:s', [s,s2]), '^[\(L].*?'+
-      '\(.*Field_INT1 = 98700;.*Field_INT2 = 98701;.*Field_DYNAINT1 = \(9900, 9901\);.*\), ' +
-      '\(.*Field_INT1 = 88700;.*Field_INT2 = 88701;.*Field_DYNAINT1 = \(8900, 8901\);.*\), ' +
-      '\(.*Field_INT1 = 78700;.*Field_INT2 = 78701;.*Field_DYNAINT1 = \(7900, 7901, 7902\);.*\)',
+      '\(.*?Field_INT1 = 98700;.*?Field_INT2 = 98701;.*?Field_DYNAINT1 = \(9900, 9901\);.*?\), ' +
+      '\(.*?Field_INT1 = 88700;.*?Field_INT2 = 88701;.*?Field_DYNAINT1 = \(8900, 8901\);.*?\), ' +
+      '\(.*?Field_INT1 = 78700;.*?Field_INT2 = 78701;.*?Field_DYNAINT1 = \(7900, 7901, 7902\);.*?\)',
     skArray, '', [fTpMtch]);
     AddFmtDef(Format('%sDynClass1%1:s[0]', [s,s2]),
-      '\(.*Field_INT1 = 98700;.*Field_INT2 = 98701;.*Field_DYNAINT1 = \(9900, 9901\);.*\), ',
+      '\(.*?Field_INT1 = 98700;.*?Field_INT2 = 98701;.*?Field_DYNAINT1 = \(9900, 9901\);.*?\), ',
     skClass, 'TArrayClass1', [fTpMtch]);
     AddFmtDef(Format('%sDynClass1%1:s[1]', [s,s2]),
-      '\(.*Field_INT1 = 88700;.*Field_INT2 = 88701;.*Field_DYNAINT1 = \(8900, 8901\);.*\), ',
+      '\(.*?Field_INT1 = 88700;.*?Field_INT2 = 88701;.*?Field_DYNAINT1 = \(8900, 8901\);.*?\), ',
     skClass, 'TArrayClass1', [fTpMtch]);
     AddSimpleInt(Format('%sDynClass1%1:s[0].Field_INT1', [s,s2]),  98700, M_Int);
 
 
     AddFmtDef(Format('%sDynRec1%1:s', [s,s2]), '^[\(L].*?'+
-      '\(.*FieldINT1 = 200;.*FieldINT2 = 201;.*\), ' +
-      '\(.*FieldINT1 = 210;.*FieldINT2 = 211;.*\), ' +
-      '\(.*FieldINT1 = 220;.*FieldINT2 = 221;.*\)',
+      '\(.*?FieldINT1 = 200;.*?FieldINT2 = 201;.*?\), ' +
+      '\(.*?FieldINT1 = 210;.*?FieldINT2 = 211;.*?\), ' +
+      '\(.*?FieldINT1 = 220;.*?FieldINT2 = 221;.*?\)',
     skArray, '', [fTpMtch]);
 
 if i <> 2 then // open array / TODO
     AddFmtDef(Format('%sDynRec2%1:s', [s,s2]), '^[\(L].*?'+
-      '\(.*FieldByte1 = 200;.*FieldByte2 = 201;.*\), ' +
-      '\(.*FieldByte1 = 210;.*FieldByte2 = 211;.*\), ' +
-      '\(.*FieldByte1 = 220;.*FieldByte2 = 221;.*\)',
+      '\(.*?FieldByte1 = 200;.*?FieldByte2 = 201;.*?\), ' +
+      '\(.*?FieldByte1 = 210;.*?FieldByte2 = 211;.*?\), ' +
+      '\(.*?FieldByte1 = 220;.*?FieldByte2 = 221;.*?\)',
     skArray, '', [fTpMtch]);
 
 
@@ -562,8 +562,8 @@ if i <> 2 then // open array / TODO
 
 
     AddFmtDef(Format('%sDynDynClass1%1:s', [s,s2]), '^[^\(G]*?\('+ // not GDB:
-      '\(\(.*Field_INT1 = 5000;.*\), \(.*Field_INT1 = 5001;.*\)\), ' +
-      '\(nil, \(.*Field_INT1 = 5011;.*\)\), ' +
+      '\(\(.*?Field_INT1 = 5000;.*?\), \(.*?Field_INT1 = 5001;.*?\)\), ' +
+      '\(nil, \(.*?Field_INT1 = 5011;.*?\)\), ' +
       '\(nil, nil\)',
     skArray, '', [fTpMtch]);
 
