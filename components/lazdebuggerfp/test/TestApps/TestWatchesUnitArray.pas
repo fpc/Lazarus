@@ -20,6 +20,7 @@ type
   TArrayDynInt        = array of Integer;
   TArrayDynClass      = array of TArrayClass1;
   TArrayDynRec        = array of TArrayRec;
+  TArrayDynRec2       = array of TArrayRec2;
 
   TArrayDynDynInt     = array of array of Integer;
   TArrayDynDynClass   = array of array of TArrayClass1;
@@ -41,9 +42,39 @@ type
   TArrayStatDynClass  = array [-9..-5] of array of TArrayClass1;
   TArrayStatDynRec    = array [-9..-5] of array of TArrayRec;
 
+
+  PArrayDynInt        = ^TArrayDynInt;
+  PArrayDynClass      = ^TArrayDynClass;
+  PArrayDynRec        = ^TArrayDynRec;
+  PArrayDynRec2       = ^TArrayDynRec2;
+
+  PArrayDynDynInt     = ^TArrayDynDynInt;
+  PArrayDynDynClass   = ^TArrayDynDynClass;
+  PArrayDynDynRec     = ^TArrayDynDynRec;
+
+  PArrayDynStatInt    = ^TArrayDynStatInt;
+  PArrayDynStatClass  = ^TArrayDynStatClass;
+  PArrayDynStatRec    = ^TArrayDynStatRec;
+
+  PArrayStatInt       = ^TArrayStatInt;
+  PArrayStatClass     = ^TArrayStatClass;
+  PArrayStatRec       = ^TArrayStatRec;
+
+  PArrayStatStatInt   = ^TArrayStatStatInt;
+  PArrayStatStatClass = ^TArrayStatStatClass;
+  PArrayStatStatRec   = ^TArrayStatStatRec;
+
+  PArrayStatDynInt    = ^TArrayStatDynInt;
+  PArrayStatDynClass  = ^TArrayStatDynClass;
+  PArrayStatDynRec    = ^TArrayStatDynRec;
+
+
   // TYPES fol param
   TArrayStatIntParam1 = array [4..9] of Integer;
   TArrayStatIntParam2 = array [-4..9] of Integer;
+
+  PArrayStatIntParam1 = ^TArrayStatIntParam1;
+  PArrayStatIntParam2 = ^TArrayStatIntParam2;
 
   { TArrayClass1 }
 
@@ -79,6 +110,37 @@ type
     Field_StatDynClass1: TArrayStatDynClass;
     Field_StatDynRec1: TArrayStatDynRec;
 
+    // Pointer
+    Field_PDynAInt1: PArrayDynInt;
+    Field_PStatAInt1: PArrayStatIntParam1;
+    Field_PStatAInt2: PArrayStatIntParam2;
+
+    Field_PDynInt1, Field_PDynInt2: PArrayDynInt;
+    Field_PDynClass1: PArrayDynClass;
+    Field_PDynRec1: PArrayDynRec;
+    Field_PDynRec2: PArrayDynRec2;
+
+    Field_PDynDynInt1: PArrayDynDynInt;
+    Field_PDynDynClass1: PArrayDynDynClass;
+    Field_PDynDynRec1: PArrayDynDynRec;
+
+    Field_PDynStatInt1: PArrayDynStatInt;
+    Field_PDynStatClass1: PArrayDynStatClass;
+    Field_PDynStatRec1: PArrayDynStatRec;
+
+    Field_PStatInt1: PArrayStatInt;
+    Field_PStatClass1: PArrayStatClass;
+    Field_PStatRec1: PArrayStatRec;
+
+    Field_PStatStatInt1: PArrayStatStatInt;
+    Field_PStatStatClass1: PArrayStatStatClass;
+    Field_PStatStatRec1: PArrayStatStatRec;
+
+    Field_PStatDynInt1: PArrayStatDynInt;
+    Field_PStatDynClass1: PArrayStatDynClass;
+    Field_PStatDynRec1: PArrayStatDynRec;
+
+
     procedure Test1Method(
       Arg_DynAInt1: array of Integer;
       Arg_StatAInt1: TArrayStatIntParam1;
@@ -109,6 +171,36 @@ type
       Arg_StatDynClass1: TArrayStatDynClass;
       Arg_StatDynRec1: TArrayStatDynRec;
 
+      // Pointer
+      Arg_PDynAInt1: PArrayDynInt;
+      Arg_PStatAInt1: PArrayStatIntParam1;
+      Arg_PStatAInt2: PArrayStatIntParam2;
+
+      Arg_PDynInt1, Arg_PDynInt2: PArrayDynInt;
+      Arg_PDynClass1: PArrayDynClass;
+      Arg_PDynRec1: PArrayDynRec;
+      Arg_PDynRec2: PArrayDynRec2;
+
+      Arg_PDynDynInt1: PArrayDynDynInt;
+      Arg_PDynDynClass1: PArrayDynDynClass;
+      Arg_PDynDynRec1: PArrayDynDynRec;
+
+      Arg_PDynStatInt1: PArrayDynStatInt;
+      Arg_PDynStatClass1: PArrayDynStatClass;
+      Arg_PDynStatRec1: PArrayDynStatRec;
+
+      Arg_PStatInt1: PArrayStatInt;
+      Arg_PStatClass1: PArrayStatClass;
+      Arg_PStatRec1: PArrayStatRec;
+
+      Arg_PStatStatInt1: PArrayStatStatInt;
+      Arg_PStatStatClass1: PArrayStatStatClass;
+      Arg_PStatStatRec1: PArrayStatStatRec;
+
+      Arg_PStatDynInt1: PArrayStatDynInt;
+      Arg_PStatDynClass1: PArrayStatDynClass;
+      Arg_PStatDynRec1: PArrayStatDynRec;
+
 
       var VArg_DynAInt1: array of Integer;
       var VArg_StatAInt1: TArrayStatIntParam1;
@@ -137,7 +229,37 @@ type
 
       var VArg_StatDynInt1: TArrayStatDynInt;
       var VArg_StatDynClass1: TArrayStatDynClass;
-      var VArg_StatDynRec1: TArrayStatDynRec
+      var VArg_StatDynRec1: TArrayStatDynRec;
+
+      // Pointer
+      var VArg_PDynAInt1: PArrayDynInt;
+      var VArg_PStatAInt1: PArrayStatIntParam1;
+      var VArg_PStatAInt2: PArrayStatIntParam2;
+
+      var VArg_PDynInt1, VArg_PDynInt2: PArrayDynInt;
+      var VArg_PDynClass1: PArrayDynClass;
+      var VArg_PDynRec1: PArrayDynRec;
+      var VArg_PDynRec2: PArrayDynRec2;
+
+      var VArg_PDynDynInt1: PArrayDynDynInt;
+      var VArg_PDynDynClass1: PArrayDynDynClass;
+      var VArg_PDynDynRec1: PArrayDynDynRec;
+
+      var VArg_PDynStatInt1: PArrayDynStatInt;
+      var VArg_PDynStatClass1: PArrayDynStatClass;
+      var VArg_PDynStatRec1: PArrayDynStatRec;
+
+      var VArg_PStatInt1: PArrayStatInt;
+      var VArg_PStatClass1: PArrayStatClass;
+      var VArg_PStatRec1: PArrayStatRec;
+
+      var VArg_PStatStatInt1: PArrayStatStatInt;
+      var VArg_PStatStatClass1: PArrayStatStatClass;
+      var VArg_PStatStatRec1: PArrayStatStatRec;
+
+      var VArg_PStatDynInt1: PArrayStatDynInt;
+      var VArg_PStatDynClass1: PArrayStatDynClass;
+      var VArg_PStatDynRec1: PArrayStatDynRec
     );
   end;
 
@@ -171,6 +293,36 @@ var
   ArrayGlob_StatDynClass1: TArrayStatDynClass;
   ArrayGlob_StatDynRec1: TArrayStatDynRec;
 
+  // Pointer
+  ArrayGlob_PDynAInt1: PArrayDynInt;
+  ArrayGlob_PStatAInt1: PArrayStatIntParam1;
+  ArrayGlob_PStatAInt2: PArrayStatIntParam2;
+
+  ArrayGlob_PDynInt1, ArrayGlob_PDynInt2: PArrayDynInt;
+  ArrayGlob_PDynClass1: PArrayDynClass;
+  ArrayGlob_PDynRec1: PArrayDynRec;
+  ArrayGlob_PDynRec2: PArrayDynRec2;
+
+  ArrayGlob_PDynDynInt1: PArrayDynDynInt;
+  ArrayGlob_PDynDynClass1: PArrayDynDynClass;
+  ArrayGlob_PDynDynRec1: PArrayDynDynRec;
+
+  ArrayGlob_PDynStatInt1: PArrayDynStatInt;
+  ArrayGlob_PDynStatClass1: PArrayDynStatClass;
+  ArrayGlob_PDynStatRec1: PArrayDynStatRec;
+
+  ArrayGlob_PStatInt1: PArrayStatInt;
+  ArrayGlob_PStatClass1: PArrayStatClass;
+  ArrayGlob_PStatRec1: PArrayStatRec;
+
+  ArrayGlob_PStatStatInt1: PArrayStatStatInt;
+  ArrayGlob_PStatStatClass1: PArrayStatStatClass;
+  ArrayGlob_PStatStatRec1: PArrayStatStatRec;
+
+  ArrayGlob_PStatDynInt1: PArrayStatDynInt;
+  ArrayGlob_PStatDynClass1: PArrayStatDynClass;
+  ArrayGlob_PStatDynRec1: PArrayStatDynRec;
+
 procedure Test1;
 
 implementation
@@ -188,17 +340,39 @@ procedure TArrayClass1.Test1Method(Arg_DynAInt1: array of Integer;
   Arg_StatStatInt1: TArrayStatStatInt; Arg_StatStatClass1: TArrayStatStatClass;
   Arg_StatStatRec1: TArrayStatStatRec; Arg_StatDynInt1: TArrayStatDynInt;
   Arg_StatDynClass1: TArrayStatDynClass; Arg_StatDynRec1: TArrayStatDynRec;
-  var VArg_DynAInt1: array of Integer; var VArg_StatAInt1: TArrayStatIntParam1;
-  var VArg_StatAInt2: TArrayStatIntParam2; var VArg_DynInt1, VArg_DynInt2: TArrayDynInt;
-  var VArg_DynClass1: TArrayDynClass; var VArg_DynRec1: TArrayDynRec;
-  var VArg_DynRec2: array of TArrayRec2; var VArg_DynDynInt1: TArrayDynDynInt;
-  var VArg_DynDynClass1: TArrayDynDynClass; var VArg_DynDynRec1: TArrayDynDynRec;
-  var VArg_DynStatInt1: TArrayDynStatInt; var VArg_DynStatClass1: TArrayDynStatClass;
-  var VArg_DynStatRec1: TArrayDynStatRec; var VArg_StatInt1: TArrayStatInt;
-  var VArg_StatClass1: TArrayStatClass; var VArg_StatRec1: TArrayStatRec;
-  var VArg_StatStatInt1: TArrayStatStatInt; var VArg_StatStatClass1: TArrayStatStatClass;
-  var VArg_StatStatRec1: TArrayStatStatRec; var VArg_StatDynInt1: TArrayStatDynInt;
-  var VArg_StatDynClass1: TArrayStatDynClass; var VArg_StatDynRec1: TArrayStatDynRec);
+  Arg_PDynAInt1: PArrayDynInt; Arg_PStatAInt1: PArrayStatIntParam1;
+  Arg_PStatAInt2: PArrayStatIntParam2; Arg_PDynInt1, Arg_PDynInt2: PArrayDynInt;
+  Arg_PDynClass1: PArrayDynClass; Arg_PDynRec1: PArrayDynRec; Arg_PDynRec2: PArrayDynRec2;
+  Arg_PDynDynInt1: PArrayDynDynInt; Arg_PDynDynClass1: PArrayDynDynClass;
+  Arg_PDynDynRec1: PArrayDynDynRec; Arg_PDynStatInt1: PArrayDynStatInt;
+  Arg_PDynStatClass1: PArrayDynStatClass; Arg_PDynStatRec1: PArrayDynStatRec;
+  Arg_PStatInt1: PArrayStatInt; Arg_PStatClass1: PArrayStatClass;
+  Arg_PStatRec1: PArrayStatRec; Arg_PStatStatInt1: PArrayStatStatInt;
+  Arg_PStatStatClass1: PArrayStatStatClass; Arg_PStatStatRec1: PArrayStatStatRec;
+  Arg_PStatDynInt1: PArrayStatDynInt; Arg_PStatDynClass1: PArrayStatDynClass;
+  Arg_PStatDynRec1: PArrayStatDynRec; var VArg_DynAInt1: array of Integer;
+  var VArg_StatAInt1: TArrayStatIntParam1; var VArg_StatAInt2: TArrayStatIntParam2;
+  var VArg_DynInt1, VArg_DynInt2: TArrayDynInt; var VArg_DynClass1: TArrayDynClass;
+  var VArg_DynRec1: TArrayDynRec; var VArg_DynRec2: array of TArrayRec2;
+  var VArg_DynDynInt1: TArrayDynDynInt; var VArg_DynDynClass1: TArrayDynDynClass;
+  var VArg_DynDynRec1: TArrayDynDynRec; var VArg_DynStatInt1: TArrayDynStatInt;
+  var VArg_DynStatClass1: TArrayDynStatClass; var VArg_DynStatRec1: TArrayDynStatRec;
+  var VArg_StatInt1: TArrayStatInt; var VArg_StatClass1: TArrayStatClass;
+  var VArg_StatRec1: TArrayStatRec; var VArg_StatStatInt1: TArrayStatStatInt;
+  var VArg_StatStatClass1: TArrayStatStatClass; var VArg_StatStatRec1: TArrayStatStatRec;
+  var VArg_StatDynInt1: TArrayStatDynInt; var VArg_StatDynClass1: TArrayStatDynClass;
+  var VArg_StatDynRec1: TArrayStatDynRec; var VArg_PDynAInt1: PArrayDynInt;
+  var VArg_PStatAInt1: PArrayStatIntParam1; var VArg_PStatAInt2: PArrayStatIntParam2;
+  var VArg_PDynInt1, VArg_PDynInt2: PArrayDynInt; var VArg_PDynClass1: PArrayDynClass;
+  var VArg_PDynRec1: PArrayDynRec; var VArg_PDynRec2: PArrayDynRec2;
+  var VArg_PDynDynInt1: PArrayDynDynInt; var VArg_PDynDynClass1: PArrayDynDynClass;
+  var VArg_PDynDynRec1: PArrayDynDynRec; var VArg_PDynStatInt1: PArrayDynStatInt;
+  var VArg_PDynStatClass1: PArrayDynStatClass; var VArg_PDynStatRec1: PArrayDynStatRec;
+  var VArg_PStatInt1: PArrayStatInt; var VArg_PStatClass1: PArrayStatClass;
+  var VArg_PStatRec1: PArrayStatRec; var VArg_PStatStatInt1: PArrayStatStatInt;
+  var VArg_PStatStatClass1: PArrayStatStatClass; var VArg_PStatStatRec1: PArrayStatStatRec;
+  var VArg_PStatDynInt1: PArrayStatDynInt; var VArg_PStatDynClass1: PArrayStatDynClass;
+  var VArg_PStatDynRec1: PArrayStatDynRec);
 var
   Local_DynAInt1: array of Integer;
   Local_StatAInt1: array [4..9] of Integer;
@@ -228,6 +402,37 @@ var
   Local_StatDynInt1: TArrayStatDynInt;
   Local_StatDynClass1: TArrayStatDynClass;
   Local_StatDynRec1: TArrayStatDynRec;
+
+  // Pointer
+  Local_PDynAInt1: PArrayDynInt;
+  Local_PStatAInt1: PArrayStatIntParam1;
+  Local_PStatAInt2: PArrayStatIntParam2;
+
+  Local_PDynInt1, Local_PDynInt2: PArrayDynInt;
+  Local_PDynClass1: PArrayDynClass;
+  Local_PDynRec1: PArrayDynRec;
+  Local_PDynRec2: PArrayDynRec2;
+
+  Local_PDynDynInt1: PArrayDynDynInt;
+  Local_PDynDynClass1: PArrayDynDynClass;
+  Local_PDynDynRec1: PArrayDynDynRec;
+
+  Local_PDynStatInt1: PArrayDynStatInt;
+  Local_PDynStatClass1: PArrayDynStatClass;
+  Local_PDynStatRec1: PArrayDynStatRec;
+
+  Local_PStatInt1: PArrayStatInt;
+  Local_PStatClass1: PArrayStatClass;
+  Local_PStatRec1: PArrayStatRec;
+
+  Local_PStatStatInt1: PArrayStatStatInt;
+  Local_PStatStatClass1: PArrayStatStatClass;
+  Local_PStatStatRec1: PArrayStatStatRec;
+
+  Local_PStatDynInt1: PArrayStatDynInt;
+  Local_PStatDynClass1: PArrayStatDynClass;
+  Local_PStatDynRec1: PArrayStatDynRec;
+
 begin
 
   {%region  Fields }
@@ -347,6 +552,37 @@ begin
   SetLength(Field_StatDynInt1[-9],   3);
   SetLength(Field_StatDynClass1[-9], 3);
   SetLength(Field_StatDynRec1[-9],   3);
+
+  // Pointer
+  Field_PDynAInt1        := @Field_DynAInt1;
+  Field_PStatAInt1       := @Field_StatAInt1;
+  Field_PStatAInt2       := @Field_StatAInt2;
+
+  Field_PDynInt1         := @Field_DynInt1;
+  Field_PDynInt2         := @Field_DynInt2;
+  Field_PDynClass1       := @Field_DynClass1;
+  Field_PDynRec1         := @Field_DynRec1;
+  Field_PDynRec2         := @Field_DynRec2;
+
+  Field_PDynDynInt1      := @Field_DynDynInt1;
+  Field_PDynDynClass1    := @Field_DynDynClass1;
+  Field_PDynDynRec1      := @Field_DynDynRec1;
+
+  Field_PDynStatInt1     := @Field_DynStatInt1;
+  Field_PDynStatClass1   := @Field_DynStatClass1;
+  Field_PDynStatRec1     := @Field_DynStatRec1;
+
+  Field_PStatInt1        := @Field_StatInt1;
+  Field_PStatClass1      := @Field_StatClass1;
+  Field_PStatRec1        := @Field_StatRec1;
+
+  Field_PStatStatInt1    := @Field_StatStatInt1;
+  Field_PStatStatClass1  := @Field_StatStatClass1;
+  Field_PStatStatRec1    := @Field_StatStatRec1;
+
+  Field_PStatDynInt1     := @Field_StatDynInt1;
+  Field_PStatDynClass1   := @Field_StatDynClass1;
+  Field_PStatDynRec1     := @Field_StatDynRec1;
 
   {%endregion  Fields }
 
@@ -469,7 +705,105 @@ begin
   SetLength(Local_StatDynClass1[-9], 3);
   SetLength(Local_StatDynRec1[-9],   3);
 
+  // Pointer
+  Local_PDynAInt1        := @Local_DynAInt1;
+  Local_PStatAInt1       := @Local_StatAInt1;
+  Local_PStatAInt2       := @Local_StatAInt2;
+
+  Local_PDynInt1         := @Local_DynInt1;
+  Local_PDynInt2         := @Local_DynInt2;
+  Local_PDynClass1       := @Local_DynClass1;
+  Local_PDynRec1         := @Local_DynRec1;
+  Local_PDynRec2         := @Local_DynRec2;
+
+  Local_PDynDynInt1      := @Local_DynDynInt1;
+  Local_PDynDynClass1    := @Local_DynDynClass1;
+  Local_PDynDynRec1      := @Local_DynDynRec1;
+
+  Local_PDynStatInt1     := @Local_DynStatInt1;
+  Local_PDynStatClass1   := @Local_DynStatClass1;
+  Local_PDynStatRec1     := @Local_DynStatRec1;
+
+  Local_PStatInt1        := @Local_StatInt1;
+  Local_PStatClass1      := @Local_StatClass1;
+  Local_PStatRec1        := @Local_StatRec1;
+
+  Local_PStatStatInt1    := @Local_StatStatInt1;
+  Local_PStatStatClass1  := @Local_StatStatClass1;
+  Local_PStatStatRec1    := @Local_StatStatRec1;
+
+  Local_PStatDynInt1     := @Local_StatDynInt1;
+  Local_PStatDynClass1   := @Local_StatDynClass1;
+  Local_PStatDynRec1     := @Local_StatDynRec1;
+
   {%endregion  Local }
+
+
+  {%region  ARG }
+  // Pointer
+  Arg_PDynAInt1        := @Arg_DynAInt1;
+  Arg_PStatAInt1       := @Arg_StatAInt1;
+  Arg_PStatAInt2       := @Arg_StatAInt2;
+
+  Arg_PDynInt1         := @Arg_DynInt1;
+  Arg_PDynInt2         := @Arg_DynInt2;
+  Arg_PDynClass1       := @Arg_DynClass1;
+  Arg_PDynRec1         := @Arg_DynRec1;
+  Arg_PDynRec2         := @Arg_DynRec2;
+
+  Arg_PDynDynInt1      := @Arg_DynDynInt1;
+  Arg_PDynDynClass1    := @Arg_DynDynClass1;
+  Arg_PDynDynRec1      := @Arg_DynDynRec1;
+
+  Arg_PDynStatInt1     := @Arg_DynStatInt1;
+  Arg_PDynStatClass1   := @Arg_DynStatClass1;
+  Arg_PDynStatRec1     := @Arg_DynStatRec1;
+
+  Arg_PStatInt1        := @Arg_StatInt1;
+  Arg_PStatClass1      := @Arg_StatClass1;
+  Arg_PStatRec1        := @Arg_StatRec1;
+
+  Arg_PStatStatInt1    := @Arg_StatStatInt1;
+  Arg_PStatStatClass1  := @Arg_StatStatClass1;
+  Arg_PStatStatRec1    := @Arg_StatStatRec1;
+
+  Arg_PStatDynInt1     := @Arg_StatDynInt1;
+  Arg_PStatDynClass1   := @Arg_StatDynClass1;
+  Arg_PStatDynRec1     := @Arg_StatDynRec1;
+  {%endregion  ARG}
+
+  {%region  ARG }
+  // Pointer
+  VArg_PDynAInt1        := @VArg_DynAInt1;
+  VArg_PStatAInt1       := @VArg_StatAInt1;
+  VArg_PStatAInt2       := @VArg_StatAInt2;
+
+  VArg_PDynInt1         := @VArg_DynInt1;
+  VArg_PDynInt2         := @VArg_DynInt2;
+  VArg_PDynClass1       := @VArg_DynClass1;
+  VArg_PDynRec1         := @VArg_DynRec1;
+  VArg_PDynRec2         := @VArg_DynRec2;
+
+  VArg_PDynDynInt1      := @VArg_DynDynInt1;
+  VArg_PDynDynClass1    := @VArg_DynDynClass1;
+  VArg_PDynDynRec1      := @VArg_DynDynRec1;
+
+  VArg_PDynStatInt1     := @VArg_DynStatInt1;
+  VArg_PDynStatClass1   := @VArg_DynStatClass1;
+  VArg_PDynStatRec1     := @VArg_DynStatRec1;
+
+  VArg_PStatInt1        := @VArg_StatInt1;
+  VArg_PStatClass1      := @VArg_StatClass1;
+  VArg_PStatRec1        := @VArg_StatRec1;
+
+  VArg_PStatStatInt1    := @VArg_StatStatInt1;
+  VArg_PStatStatClass1  := @VArg_StatStatClass1;
+  VArg_PStatStatRec1    := @VArg_StatStatRec1;
+
+  VArg_PStatDynInt1     := @VArg_StatDynInt1;
+  VArg_PStatDynClass1   := @VArg_StatDynClass1;
+  VArg_PStatDynRec1     := @VArg_StatDynRec1;
+  {%endregion  ARG}
 
   ArrayGlob_DynInt1[9] := -5511; // BREAK
 end;
@@ -596,6 +930,37 @@ begin
   SetLength(ArrayGlob_StatDynClass1[-9], 3);
   SetLength(ArrayGlob_StatDynRec1[-9],   3);
 
+  // Pointer
+  ArrayGlob_PDynAInt1        := @ArrayGlob_DynAInt1;
+  ArrayGlob_PStatAInt1       := @ArrayGlob_StatAInt1;
+  ArrayGlob_PStatAInt2       := @ArrayGlob_StatAInt2;
+
+  ArrayGlob_PDynInt1         := @ArrayGlob_DynInt1;
+  ArrayGlob_PDynInt2         := @ArrayGlob_DynInt2;
+  ArrayGlob_PDynClass1       := @ArrayGlob_DynClass1;
+  ArrayGlob_PDynRec1         := @ArrayGlob_DynRec1;
+  ArrayGlob_PDynRec2         := @ArrayGlob_DynRec2;
+
+  ArrayGlob_PDynDynInt1      := @ArrayGlob_DynDynInt1;
+  ArrayGlob_PDynDynClass1    := @ArrayGlob_DynDynClass1;
+  ArrayGlob_PDynDynRec1      := @ArrayGlob_DynDynRec1;
+
+  ArrayGlob_PDynStatInt1     := @ArrayGlob_DynStatInt1;
+  ArrayGlob_PDynStatClass1   := @ArrayGlob_DynStatClass1;
+  ArrayGlob_PDynStatRec1     := @ArrayGlob_DynStatRec1;
+
+  ArrayGlob_PStatInt1        := @ArrayGlob_StatInt1;
+  ArrayGlob_PStatClass1      := @ArrayGlob_StatClass1;
+  ArrayGlob_PStatRec1        := @ArrayGlob_StatRec1;
+
+  ArrayGlob_PStatStatInt1    := @ArrayGlob_StatStatInt1;
+  ArrayGlob_PStatStatClass1  := @ArrayGlob_StatStatClass1;
+  ArrayGlob_PStatStatRec1    := @ArrayGlob_StatStatRec1;
+
+  ArrayGlob_PStatDynInt1     := @ArrayGlob_StatDynInt1;
+  ArrayGlob_PStatDynClass1   := @ArrayGlob_StatDynClass1;
+  ArrayGlob_PStatDynRec1     := @ArrayGlob_StatDynRec1;
+
   {%endregion  ArrayGlob }
 
   ArrayClass1 := TArrayClass1.Create;
@@ -629,7 +994,38 @@ begin
     ArrayGlob_StatDynClass1,
     ArrayGlob_StatDynRec1,
 
+    // Pointer
+    ArrayGlob_PDynAInt1,
+    ArrayGlob_PStatAInt1,
+    ArrayGlob_PStatAInt2,
 
+    ArrayGlob_PDynInt1,
+    ArrayGlob_PDynInt2,
+    ArrayGlob_PDynClass1,
+    ArrayGlob_PDynRec1,
+    ArrayGlob_PDynRec2,
+
+    ArrayGlob_PDynDynInt1,
+    ArrayGlob_PDynDynClass1,
+    ArrayGlob_PDynDynRec1,
+
+    ArrayGlob_PDynStatInt1,
+    ArrayGlob_PDynStatClass1,
+    ArrayGlob_PDynStatRec1,
+
+    ArrayGlob_PStatInt1,
+    ArrayGlob_PStatClass1,
+    ArrayGlob_PStatRec1,
+
+    ArrayGlob_PStatStatInt1,
+    ArrayGlob_PStatStatClass1,
+    ArrayGlob_PStatStatRec1,
+
+    ArrayGlob_PStatDynInt1,
+    ArrayGlob_PStatDynClass1,
+    ArrayGlob_PStatDynRec1,
+
+    // VAR
     ArrayGlob_DynAInt1,
     ArrayGlob_StatAInt1,
     ArrayGlob_StatAInt2,
@@ -657,7 +1053,39 @@ begin
 
     ArrayGlob_StatDynInt1,
     ArrayGlob_StatDynClass1,
-    ArrayGlob_StatDynRec1
+    ArrayGlob_StatDynRec1,
+
+    // Pointer
+    ArrayGlob_PDynAInt1,
+    ArrayGlob_PStatAInt1,
+    ArrayGlob_PStatAInt2,
+
+    ArrayGlob_PDynInt1,
+    ArrayGlob_PDynInt2,
+    ArrayGlob_PDynClass1,
+    ArrayGlob_PDynRec1,
+    ArrayGlob_PDynRec2,
+
+    ArrayGlob_PDynDynInt1,
+    ArrayGlob_PDynDynClass1,
+    ArrayGlob_PDynDynRec1,
+
+    ArrayGlob_PDynStatInt1,
+    ArrayGlob_PDynStatClass1,
+    ArrayGlob_PDynStatRec1,
+
+    ArrayGlob_PStatInt1,
+    ArrayGlob_PStatClass1,
+    ArrayGlob_PStatRec1,
+
+    ArrayGlob_PStatStatInt1,
+    ArrayGlob_PStatStatClass1,
+    ArrayGlob_PStatStatRec1,
+
+    ArrayGlob_PStatDynInt1,
+    ArrayGlob_PStatDynClass1,
+    ArrayGlob_PStatDynRec1
+
   );
 end;
 

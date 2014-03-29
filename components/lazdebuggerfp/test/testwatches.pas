@@ -14,7 +14,7 @@ const
   BREAK_LINE_TestWatchesUnitSimple_2 = 189;
   BREAK_LINE_TestWatchesUnitSimple_3 = 196;
 
-  BREAK_LINE_TestWatchesUnitArray = 474;
+  BREAK_LINE_TestWatchesUnitArray = 808;
 
 type
 
@@ -50,6 +50,7 @@ type
     function AddSimpleUInt(AnExpr: string; AMtch: QWord; ATpNm: string): PWatchExpectation;
 
     procedure AdjustExpectToAddress(AWatchExp: PWatchExpectation); // only ExpectBreakSimple_1
+    procedure AdjustArrayExpectToAddress(AWatchExp: PWatchExpectation); // only ExpectBreakSimple_1
 
     procedure AddExpectSimple_1;
     procedure AddExpectSimple_2;
@@ -121,6 +122,19 @@ begin
     AWatchExp^.Result[st].ExpMatch := '\'+s;
 end;
 
+procedure TTestWatches.AdjustArrayExpectToAddress(AWatchExp: PWatchExpectation);
+var
+  OtherWatchExp: TWatchExpectation;
+  s: String;
+  st: TSymbolType;
+begin
+  OtherWatchExp := ExpectBreakArray_1[PtrUInt(AWatchExp^.UserData)];
+  s := OtherWatchExp.TheWatch.Values[1,0].Value;
+  delete(s, 1, pos('$', s) - 1); delete(s, pos(')', s), 99);
+  for st := low(TSymbolType) to high(TSymbolType) do
+    AWatchExp^.Result[st].ExpMatch := '\'+s;
+end;
+
 procedure TTestWatches.DoDbgOutput(Sender: TObject; const AText: String);
 begin
   inherited DoDbgOutput(Sender, AText);
@@ -171,13 +185,13 @@ end;
 function TTestWatches.AddSimpleInt(AnExpr: string; AMtch: Int64;
   ATpNm: string): PWatchExpectation;
 begin
-  AddFmtDef(AnExpr, '^'+IntToStr(AMtch), skSimple, ATpNm, [fTpMtch]);
+  Result := AddFmtDef(AnExpr, '^'+IntToStr(AMtch), skSimple, ATpNm, [fTpMtch]);
 end;
 
 function TTestWatches.AddSimpleUInt(AnExpr: string; AMtch: QWord;
   ATpNm: string): PWatchExpectation;
 begin
-  AddFmtDef(AnExpr, '^'+IntToStr(AMtch), skSimple, ATpNm, [fTpMtch]);
+  Result := AddFmtDef(AnExpr, '^'+IntToStr(AMtch), skSimple, ATpNm, [fTpMtch]);
 end;
 
 procedure TTestWatches.AddExpectSimple_1;
@@ -446,7 +460,8 @@ end;
 procedure TTestWatches.AddExpectArray_1;
 var
   i: Integer;
-  s: String;
+  s,s2: String;
+  r: PWatchExpectation;
 begin
   FCurrentExpect := @ExpectBreakArray_1;
 
@@ -457,88 +472,96 @@ begin
   {%region  Fields / Glob / ... }
   for i := 0 to 4 do begin
     case i of
-      0: s := 'Field';
-      1: s := 'ArrayGlob';
-      2: s := 'Arg';
-      3: s := 'VArg';
-      4: s := 'Local';
+      0,5: s := 'Field_';
+      1,6: s := 'ArrayGlob_';
+      2,7: s := 'Arg_';
+      3,8: s := 'VArg_';
+      4,9: s := 'Local_';
     end;
+    s2 := '';
+    if i >= 5 then s2 := '^';
 
-    AddFmtDef(Format('%s_DynAInt1', [s]), '^[\(L].*100, 101, 102', skArray, '', [fTpMtch]);
-    AddSimpleInt(Format('%s_DynAInt1[0]', [s]),    100, M_Int);
-    AddSimpleInt(Format('%s_DynAInt1[1]', [s]),    101, M_Int);
-    AddFmtDef(Format('%s_DynAInt1[0][0]', [s]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+if i <> 2 then begin // open array / TODO
+    AddFmtDef(Format('%sDynAInt1%1:s', [s,s2]), '^[\(L].*100, 101, 102', skArray, '', [fTpMtch]);
+    AddSimpleInt(Format('%sDynAInt1%1:s[0]', [s,s2]),    100, M_Int);
+    AddSimpleInt(Format('%sDynAInt1%1:s[1]', [s,s2]),    101, M_Int);
+    AddFmtDef(Format('%sDynAInt1%1:s[0][0]', [s,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+end;
 
 
-    AddFmtDef(Format('%s_StatAInt1', [s]), '^[\(L].*6600, 6601, 6602',
+    AddFmtDef(Format('%sStatAInt1%1:s', [s,s2]), '^[\(L].*6600, 6601, 6602',
               skArray, '', [fTpMtch]);
-    AddSimpleInt(Format('%s_StatAInt1[4]', [s]),    6600, M_Int);
-    AddSimpleInt(Format('%s_StatAInt1[9]', [s]),    6699, M_Int);
-    AddFmtDef(Format('%s_StatAInt1[3]', [s]), '', skSimple, M_Int, [fTpMtch]); // Just do not crash
-    AddFmtDef(Format('%s_StatAInt1[10]', [s]), '', skSimple, M_Int, [fTpMtch]); // Just do not crash
-    AddFmtDef(Format('%s_StatAInt1[-1]', [s]), '', skSimple, M_Int, [fTpMtch]); // Just do not crash
+    AddSimpleInt(Format('%sStatAInt1%1:s[4]', [s,s2]),    6600, M_Int);
+    AddSimpleInt(Format('%sStatAInt1%1:s[9]', [s,s2]),    6699, M_Int);
+    AddFmtDef(Format('%sStatAInt1%1:s[3]', [s,s2]), '', skSimple, M_Int, [fTpMtch]); // Just do not crash
+    AddFmtDef(Format('%sStatAInt1%1:s[10]', [s,s2]), '', skSimple, M_Int, [fTpMtch]); // Just do not crash
+    AddFmtDef(Format('%sStatAInt1%1:s[-1]', [s,s2]), '', skSimple, M_Int, [fTpMtch]); // Just do not crash
 
 
-    AddFmtDef(Format('%s_StatAInt2', [s]), '^[\(L].*3300, 3301, 3302',
+    AddFmtDef(Format('%sStatAInt2%1:s', [s,s2]), '^[\(L].*3300, 3301, 3302',
               skArray, '', [fTpMtch]);
-    AddSimpleInt(Format('%s_StatAInt2[-4]', [s]),    3300, M_Int);
-    AddSimpleInt(Format('%s_StatAInt2[0]', [s]),    3304, M_Int);
+    AddSimpleInt(Format('%sStatAInt2%1:s[-4]', [s,s2]),    3300, M_Int);
+    AddSimpleInt(Format('%sStatAInt2%1:s[0]', [s,s2]),    3304, M_Int);
 
 
-    AddFmtDef(Format('%s_DynInt2', [s]), '^nil', skArray, '', [fTpMtch]);
-    AddFmtDef(Format('TArrayDynInt(%s_DynInt2)', [s]), '^nil', skArray, '', [fTpMtch]);
-    AddSimpleInt(Format('QWord(%s_DynInt2)', [s]),   0, 'QWord');
+    AddFmtDef(Format('%sDynInt2%1:s', [s,s2]), '^nil', skArray, '', [fTpMtch]);
+    r := AddFmtDef(Format('TArrayDynInt(%sDynInt2%1:s)', [s,s2]), '^nil', skArray, '', [fTpMtch]);
+    if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+    r := AddSimpleInt(Format('QWord(%sDynInt2%1:s)', [s,s2]),   0, 'QWord');
+    if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
 
 
-    AddFmtDef(Format('%s_DynInt1', [s]), '^[\(L].*5511, 5512, 5513, 5514, -5511',
+    AddFmtDef(Format('%sDynInt1%1:s', [s,s2]), '^[\(L].*5511, 5512, 5513, 5514, -5511',
               skArray, '', [fTpMtch]);
-    AddSimpleInt(Format('%s_DynInt1[0]', [s]),    5511, M_Int);
-    AddSimpleInt(Format('%s_DynInt1[19]', [s]),    5500, M_Int);
-    AddFmtDef(Format('TArrayDynInt(%s_DynInt1)', [s]), '^[\(L].*5511, 5512, 5513, 5514, -5511',
+    AddSimpleInt(Format('%sDynInt1%1:s[0]', [s,s2]),    5511, M_Int);
+    AddSimpleInt(Format('%sDynInt1%1:s[19]', [s,s2]),    5500, M_Int);
+    r := AddFmtDef(Format('TArrayDynInt(%sDynInt1%1:s)', [s,s2]), '^[\(L].*5511, 5512, 5513, 5514, -5511',
               skArray, '', [fTpMtch]);
-    AddSimpleInt(Format('TArrayDynInt(%s_DynInt1)[0]', [s]),    5511, M_Int);
+    if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+    r := AddSimpleInt(Format('TArrayDynInt(%sDynInt1%1:s)[0]', [s,s2]),    5511, M_Int);
+    if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
 
 
-    AddFmtDef(Format('%s_DynClass1', [s]), '^[\(L].*?'+
+    AddFmtDef(Format('%sDynClass1%1:s', [s,s2]), '^[\(L].*?'+
       '\(.*Field_INT1 = 98700;.*Field_INT2 = 98701;.*Field_DYNAINT1 = \(9900, 9901\);.*\), ' +
       '\(.*Field_INT1 = 88700;.*Field_INT2 = 88701;.*Field_DYNAINT1 = \(8900, 8901\);.*\), ' +
       '\(.*Field_INT1 = 78700;.*Field_INT2 = 78701;.*Field_DYNAINT1 = \(7900, 7901, 7902\);.*\)',
     skArray, '', [fTpMtch]);
-    AddFmtDef(Format('%s_DynClass1[0]', [s]),
+    AddFmtDef(Format('%sDynClass1%1:s[0]', [s,s2]),
       '\(.*Field_INT1 = 98700;.*Field_INT2 = 98701;.*Field_DYNAINT1 = \(9900, 9901\);.*\), ',
     skClass, 'TArrayClass1', [fTpMtch]);
-    AddFmtDef(Format('%s_DynClass1[1]', [s]),
+    AddFmtDef(Format('%sDynClass1%1:s[1]', [s,s2]),
       '\(.*Field_INT1 = 88700;.*Field_INT2 = 88701;.*Field_DYNAINT1 = \(8900, 8901\);.*\), ',
     skClass, 'TArrayClass1', [fTpMtch]);
-    AddSimpleInt(Format('%s_DynClass1[0].Field_INT1', [s]),  98700, M_Int);
+    AddSimpleInt(Format('%sDynClass1%1:s[0].Field_INT1', [s,s2]),  98700, M_Int);
 
 
-    AddFmtDef(Format('%s_DynRec1', [s]), '^[\(L].*?'+
+    AddFmtDef(Format('%sDynRec1%1:s', [s,s2]), '^[\(L].*?'+
       '\(.*FieldINT1 = 200;.*FieldINT2 = 201;.*\), ' +
       '\(.*FieldINT1 = 210;.*FieldINT2 = 211;.*\), ' +
       '\(.*FieldINT1 = 220;.*FieldINT2 = 221;.*\)',
     skArray, '', [fTpMtch]);
 
 if i <> 2 then // open array / TODO
-    AddFmtDef(Format('%s_DynRec2', [s]), '^[\(L].*?'+
+    AddFmtDef(Format('%sDynRec2%1:s', [s,s2]), '^[\(L].*?'+
       '\(.*FieldByte1 = 200;.*FieldByte2 = 201;.*\), ' +
       '\(.*FieldByte1 = 210;.*FieldByte2 = 211;.*\), ' +
       '\(.*FieldByte1 = 220;.*FieldByte2 = 221;.*\)',
     skArray, '', [fTpMtch]);
 
 
-    AddFmtDef(Format('%s_DynDynInt1', [s]), '^[\(L].*?'+
+    AddFmtDef(Format('%sDynDynInt1%1:s', [s,s2]), '^[\(L].*?'+
       '\(1000, 1001, 1002\), ' +    '\(1010, 1011, 1012\), ' +    '\(1020, 1021, 1022\)',
     skArray, '', [fTpMtch]);
-    AddSimpleInt(Format('%s_DynDynInt1[0][0]', [s]),    1000, M_Int);
-    AddSimpleInt(Format('%s_DynDynInt1[0,0]', [s]),    1000, M_Int);
-    AddSimpleInt(Format('%0:s_DynDynInt1[%0:s_DynDynInt1[3,0], %0:s_DynDynInt1[3,1]]', [s]),    1012, M_Int);
-    AddSimpleInt(Format('%0:s_DynDynInt1[%0:s_DynDynInt1[3,0]][%0:s_DynDynInt1[3,1]]', [s]),    1012, M_Int);
+    AddSimpleInt(Format('%sDynDynInt1%1:s[0][0]', [s,s2]),    1000, M_Int);
+    AddSimpleInt(Format('%sDynDynInt1%1:s[0,0]', [s,s2]),    1000, M_Int);
+    AddSimpleInt(Format('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0], %0:sDynDynInt1%1:s[3,1]]', [s,s2]),    1012, M_Int);
+    AddSimpleInt(Format('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0]][%0:sDynDynInt1%1:s[3,1]]', [s,s2]),    1012, M_Int);
 
-    //AddFmtDef(Format('%0:s_DynDynInt1[%0:s_DynDynInt1[3,0].NoMember, %0:s_DynDynInt1[3,1]]', [s]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+    //AddFmtDef(Format('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0].NoMember, %0:sDynDynInt1%1:s[3,1]]', [s,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
 
 
-    AddFmtDef(Format('%s_DynDynClass1', [s]), '^[^\(G]*?\('+ // not GDB:
+    AddFmtDef(Format('%sDynDynClass1%1:s', [s,s2]), '^[^\(G]*?\('+ // not GDB:
       '\(\(.*Field_INT1 = 5000;.*\), \(.*Field_INT1 = 5001;.*\)\), ' +
       '\(nil, \(.*Field_INT1 = 5011;.*\)\), ' +
       '\(nil, nil\)',
@@ -546,14 +569,32 @@ if i <> 2 then // open array / TODO
 
 
     ////
-    AddFmtDef(Format('%s_StatStatInt1', [s]), '^[\(L].*?'+
+    AddFmtDef(Format('%sStatStatInt1%1:s', [s,s2]), '^[\(L].*?'+
       '\(4091, 4092, 4093\), ' +    '\(4081, 4082, 4083\), ' +    '\(4071, 4072, 4073\), ',
     skArray, '', [fTpMtch]);
-    AddSimpleInt(Format('%s_StatStatInt1[-9,1]', [s]),    4091, M_Int);
-    AddFmtDef(Format('TArrayStatStatInt(%s_StatStatInt1)', [s]), '^[\(L].*?'+
+    AddSimpleInt(Format('%sStatStatInt1%1:s[-9,1]', [s,s2]),    4091, M_Int);
+    r := AddFmtDef(Format('TArrayStatStatInt(%sStatStatInt1%1:s)', [s,s2]), '^[\(L].*?'+
       '\(4091, 4092, 4093\), ' +    '\(4081, 4082, 4083\), ' +    '\(4071, 4072, 4073\), ',
     skArray, '', [fTpMtch]);
-    AddSimpleInt(Format('TArrayStatStatInt(%s_StatStatInt1)[-9,1]', [s]),    4091, M_Int);
+    if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+    r := AddSimpleInt(Format('TArrayStatStatInt(%sStatStatInt1%1:s)[-9,1]', [s,s2]),    4091, M_Int);
+    if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+
+
+    if i in [0..4] then begin
+      r := AddFmtDef(Format('@%sDynInt1', [s]), 'replaceme', skPointer, '', [fTpMtch]);
+      if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
+      r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+      r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+      AddFmtDef(Format('%sPDynInt1', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+
+      r := AddFmtDef(Format('@%sStatInt1', [s]), 'replaceme', skPointer, '', [fTpMtch]);
+      if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
+      r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+      r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+      AddFmtDef(Format('%sPStatInt1', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+
+    end;
 
   end;
   {%endregion  Fields }
