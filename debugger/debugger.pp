@@ -1081,7 +1081,7 @@ type
                        const AUnitInfo: TDebuggerUnitInfo;
                        const ALine: Integer; AState: TDebuggerDataState = ddsValid); overload;
     function CreateCopy: TCallStackEntry; override;
-    //procedure Assign(AnOther: TCallStackEntry); override; // FunitInfo is not assigned
+    procedure Assign(AnOther: TCallStackEntry); override;
     destructor Destroy; override;
     procedure Init(const AnAdress: TDbgPtr;
                    const AnArguments: TStrings; const AFunctionName: String;
@@ -6016,6 +6016,17 @@ function TIdeCallStackEntry.CreateCopy: TCallStackEntry;
 begin
   Result := TIdeCallStackEntry.Create;
   Result.Assign(Self);
+end;
+
+procedure TIdeCallStackEntry.Assign(AnOther: TCallStackEntry);
+begin
+  FUnitInfo.ReleaseReference;
+  inherited Assign(AnOther);
+  if AnOther is TIdeCallStackEntry then begin
+    FUnitInfo := TIdeCallStackEntry(AnOther).FUnitInfo;
+    if FUnitInfo <> nil then
+      FUnitInfo.AddReference;
+  end;
 end;
 
 destructor TIdeCallStackEntry.Destroy;

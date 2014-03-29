@@ -355,6 +355,7 @@ var
   Filename: String;
   ok: Boolean;
 begin
+  if AnUnitInfo = nil then exit;
   debugln(DBG_LOCATION_INFO, ['JumpToUnitSource AnUnitInfo=', AnUnitInfo.DebugText ]);
   // avoid any process-messages, so this proc can not be re-entered (avoid opening one files many times)
   DebugBoss.LockCommandProcessing;
