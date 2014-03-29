@@ -233,6 +233,25 @@ var
   PID: TPid;
   stat: longint;
 begin
+  result := nil;
+
+  AFileName:=ExcludeTrailingPathDelimiter(AFileName);
+  if DirectoryExists(AFileName) then
+    begin
+    if not (ExtractFileExt(AFileName)='.app') then
+      begin
+      DebugLn(format('Can not debug %s, because it''s a directory',[AFileName]));
+      Exit;
+      end;
+
+    AFileName := AFileName + '/Contents/MacOS/' + ChangeFileExt(ExtractFileName(AFileName),'');
+    if not FileExists(AFileName) then
+      begin
+      DebugLn(format('Can not find  %s.',[AFileName]));
+      Exit;
+      end;
+    end;
+
   pid := FpFork;
   if PID=0 then
     begin
