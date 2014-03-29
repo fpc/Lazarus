@@ -11765,12 +11765,12 @@ var
            end;
         end;
         '}': begin
-           if (i > 0) and (AInput[i-1] <> '{') and
+           if (i > 1) and (AInput[i-1] <> '{') and
               ((not IsArray) or (InRounds = 0))
            then Delete(Indent, 1, Length(INDENTSTRING));
         end;
         ' ': begin
-           if ((i > 0) and (AInput[i-1] = ',')) and
+           if ((i > 1) and (AInput[i-1] = ',')) and
               ( (not IsArray) or
                 ((Indent = '') and (InRounds <= 1)) or
                 ((Indent = INDENTSTRING) and (InRounds = 0))
