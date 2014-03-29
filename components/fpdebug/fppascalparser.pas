@@ -932,9 +932,14 @@ begin
   if TmpVal = nil then exit;
 
   TmpVal.AddReference;
-  for i := 1 to Count - 1 do begin;
+  for i := 1 to Count - 1 do begin
     TmpVal2 := nil;
     TmpIndex := Items[i].ResultValue;
+    if TmpIndex = nil then begin
+      // error should be set by Items[i]
+      TmpVal.ReleaseReference;
+      exit;
+    end;
     if (TmpVal.Kind = skArray) then begin
       if (svfInteger in TmpIndex.FieldFlags) then
         TmpVal2 := TmpVal.Member[TmpIndex.AsInteger]

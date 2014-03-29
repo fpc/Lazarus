@@ -498,6 +498,21 @@ begin
   ImgLoader.GlobalVar.VarDynIntArray[31] := 410;
   ImgLoader.GlobalVar.VarDynIntArray[32] := 420;
 
+  StartTest('VarDynIntArray', skArray, [ttHasType]);
+  ExpResult(svfOrdinal, QWord(PtrUInt(ImgLoader.GlobalVar.VarDynIntArray)));
+  AssertEquals(FExpression.ResultValue.MemberCount, 33);
+
+  StartTest('TDynIntArray(VarDynIntArray)', skArray, [ttHasType]);
+  ExpResult(svfOrdinal, QWord(PtrUInt(ImgLoader.GlobalVar.VarDynIntArray)));
+  AssertEquals(FExpression.ResultValue.MemberCount, 33);
+
+  StartTest('VarStatIntArray1', skArray, [ttHasType]);
+  AssertEquals(FExpression.ResultValue.MemberCount, 11);
+
+  StartTest('TStatIntArray1(VarStatIntArray1)', skArray, [ttHasType]);
+  AssertEquals(FExpression.ResultValue.MemberCount, 11);
+
+
   StartTest('VarDynIntArray[0]', skInteger, [ttHasType]);
   ExpFlags([svfInteger, svfOrdinal, svfAddress, svfSize], [svfSizeOfPointer, svfDataAddress, svfDataSize]);
   ExpResult(svfInteger, 10);
@@ -515,6 +530,11 @@ begin
   ExpResult(svfOrdinal, QWord(420));
   ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImgLoader.GlobalVar.VarDynIntArray[32])));
 
+  StartTest('TDynIntArray(VarDynIntArray)[1]', skInteger, [ttHasType]);
+  ExpResult(svfInteger, 11);
+  ExpResult(svfOrdinal, QWord(11));
+  ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImgLoader.GlobalVar.VarDynIntArray[1])));
+
 
   ImgLoader.GlobalVar.VarStatIntArray1[0] := 110;
   ImgLoader.GlobalVar.VarStatIntArray1[1] := 111;
@@ -529,6 +549,13 @@ begin
   StartTest('VarStatIntArray1[1]', skInteger, [ttHasType]);
   ExpResult(svfInteger, 111);
   ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImgLoader.GlobalVar.VarStatIntArray1[1])));
+
+  StartTest('TStatIntArray1(VarStatIntArray1)[0]', skInteger, [ttHasType]);
+  ExpFlags([svfInteger, svfOrdinal, svfAddress, svfSize], [svfSizeOfPointer, svfDataAddress, svfDataSize]);
+  ExpResult(svfInteger, 110);
+  ExpResult(svfOrdinal, QWord(110));
+  ExpResult(svfAddress, TDbgPtr(PtrUInt(@ImgLoader.GlobalVar.VarStatIntArray1[0])));
+  ExpResult(svfSize, SizeOf(ImgLoader.GlobalVar.VarStatIntArray1[0]));
 
 
 end;

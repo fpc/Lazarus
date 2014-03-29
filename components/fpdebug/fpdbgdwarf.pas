@@ -1925,16 +1925,15 @@ end;
 
 function TFpDbgDwarfValueArray.GetAsCardinal: QWord;
 begin
-  Result := QWord(LocToAddrOrNil(DataAddress));
+  if not MemManager.ReadUnsignedInt(OrdOrAddress, AddressSize, Result) then begin
+    FLastError := MemManager.LastError;
+    Result := 0;
+  end;
 end;
 
 function TFpDbgDwarfValueArray.GetDataAddress: TFpDbgMemLocation;
 begin
-  // TODO:
   Result := OrdOrDataAddr;
-  //Result := MemManager.ReadAddress(OrdOrAddress, AddressSize); // TODO: cache
-  //if not IsValidLoc(Result) then
-  //  FLastError := MemManager.LastError;
 end;
 
 function TFpDbgDwarfValueArray.GetMember(AIndex: Int64): TFpDbgValue;
