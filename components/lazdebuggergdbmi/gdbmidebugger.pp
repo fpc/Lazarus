@@ -11560,7 +11560,7 @@ var
            end;
         end;
         '}': begin
-           if (i > 0) and (AInput[i-1] <> '{') and
+           if (i > 1) and (AInput[i-1] <> '{') and
               ((not IsArray) or (InRounds = 0))
            then Delete(Indent, 1, Length(INDENTSTRING));
         end;
