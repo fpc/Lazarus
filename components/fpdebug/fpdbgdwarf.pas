@@ -1925,6 +1925,7 @@ end;
 
 function TFpDbgDwarfValueArray.GetAsCardinal: QWord;
 begin
+  // TODO cache
   if not MemManager.ReadUnsignedInt(OrdOrAddress, AddressSize, Result) then begin
     FLastError := MemManager.LastError;
     Result := 0;
@@ -1991,7 +1992,7 @@ begin
     if (sfDynArray in t.Flags) and (AsCardinal <> 0) and
        GetDwarfDataAddress(Addr, TDbgDwarfTypeIdentifier(FOwner))
     then begin
-      if not IsReadableMem(Addr) then
+      if not (IsReadableMem(Addr) and (LocToAddr(Addr) > 4)) then
         exit;
       Addr.Address := Addr.Address - 4;
       if MemManager.ReadSignedInt(Addr, 4, i) then begin
@@ -2036,19 +2037,30 @@ begin
   If not Result then
     exit;
 
-  // TODO ordinal
-
+  assert(FTypeCastTargetType.Kind = skArray, 'TFpDbgDwarfValueArray.IsValidTypeCast: FTypeCastTargetType.Kind = skArray');
+//TODO: shortcut, if FTypeCastTargetType = FTypeCastSourceValue.TypeInfo ?
   if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
-    exit
-  else
-  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) and
-     (FTypeCastSourceValue.Size = FOwner.FCU.FAddressSize)
-  then
-    exit
-  else
-  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer])
-  then
     exit;
+
+  if sfDynArray in FTypeCastTargetType.Flags then begin
+    // dyn array
+    // TODO ordinal
+    if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) and
+       (FTypeCastSourceValue.Size = FOwner.FCU.FAddressSize)
+    then
+      exit
+    else
+    if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer])
+    then
+      exit;
+  end
+  else begin
+    // stat array
+    if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) and
+       (FTypeCastSourceValue.Size = FTypeCastTargetType.Size)
+    then
+      exit;
+  end;
   Result := False;
 end;
 

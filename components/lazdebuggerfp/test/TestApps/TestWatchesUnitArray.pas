@@ -323,6 +323,36 @@ var
   ArrayGlob_PStatDynClass1: PArrayStatDynClass;
   ArrayGlob_PStatDynRec1: PArrayStatDynRec;
 
+  // copy of Pointers, to be used as Var Param
+  ArrayGlob_P2DynAInt1: PArrayDynInt;
+  ArrayGlob_P2StatAInt1: PArrayStatIntParam1;
+  ArrayGlob_P2StatAInt2: PArrayStatIntParam2;
+
+  ArrayGlob_P2DynInt1, ArrayGlob_P2DynInt2: PArrayDynInt;
+  ArrayGlob_P2DynClass1: PArrayDynClass;
+  ArrayGlob_P2DynRec1: PArrayDynRec;
+  ArrayGlob_P2DynRec2: PArrayDynRec2;
+
+  ArrayGlob_P2DynDynInt1: PArrayDynDynInt;
+  ArrayGlob_P2DynDynClass1: PArrayDynDynClass;
+  ArrayGlob_P2DynDynRec1: PArrayDynDynRec;
+
+  ArrayGlob_P2DynStatInt1: PArrayDynStatInt;
+  ArrayGlob_P2DynStatClass1: PArrayDynStatClass;
+  ArrayGlob_P2DynStatRec1: PArrayDynStatRec;
+
+  ArrayGlob_P2StatInt1: PArrayStatInt;
+  ArrayGlob_P2StatClass1: PArrayStatClass;
+  ArrayGlob_P2StatRec1: PArrayStatRec;
+
+  ArrayGlob_P2StatStatInt1: PArrayStatStatInt;
+  ArrayGlob_P2StatStatClass1: PArrayStatStatClass;
+  ArrayGlob_P2StatStatRec1: PArrayStatStatRec;
+
+  ArrayGlob_P2StatDynInt1: PArrayStatDynInt;
+  ArrayGlob_P2StatDynClass1: PArrayStatDynClass;
+  ArrayGlob_P2StatDynRec1: PArrayStatDynRec;
+
 procedure Test1;
 
 implementation
@@ -963,6 +993,38 @@ begin
 
   {%endregion  ArrayGlob }
 
+  // copy for var param
+  ArrayGlob_P2DynAInt1       := ArrayGlob_PDynAInt1;
+  ArrayGlob_P2StatAInt1      := ArrayGlob_PStatAInt1;
+  ArrayGlob_P2StatAInt2      := ArrayGlob_PStatAInt2;
+
+  ArrayGlob_P2DynInt1        := ArrayGlob_PDynInt1;
+  ArrayGlob_P2DynInt2        := ArrayGlob_PDynInt2;
+  ArrayGlob_P2DynClass1      := ArrayGlob_PDynClass1;
+  ArrayGlob_P2DynRec1        := ArrayGlob_PDynRec1;
+  ArrayGlob_P2DynRec2        := ArrayGlob_PDynRec2;
+
+  ArrayGlob_P2DynDynInt1     := ArrayGlob_PDynDynInt1;
+  ArrayGlob_P2DynDynClass1   := ArrayGlob_PDynDynClass1;
+  ArrayGlob_P2DynDynRec1     := ArrayGlob_PDynDynRec1;
+
+  ArrayGlob_P2DynStatInt1    := ArrayGlob_PDynStatInt1;
+  ArrayGlob_P2DynStatClass1  := ArrayGlob_PDynStatClass1;
+  ArrayGlob_P2DynStatRec1    := ArrayGlob_PDynStatRec1;
+
+  ArrayGlob_P2StatInt1       := ArrayGlob_PStatInt1;
+  ArrayGlob_P2StatClass1     := ArrayGlob_PStatClass1;
+  ArrayGlob_P2StatRec1       := ArrayGlob_PStatRec1;
+
+  ArrayGlob_P2StatStatInt1   := ArrayGlob_PStatStatInt1;
+  ArrayGlob_P2StatStatClass1 := ArrayGlob_PStatStatClass1;
+  ArrayGlob_P2StatStatRec1   := ArrayGlob_PStatStatRec1;
+
+  ArrayGlob_P2StatDynInt1    := ArrayGlob_PStatDynInt1;
+  ArrayGlob_P2StatDynClass1  := ArrayGlob_PStatDynClass1;
+  ArrayGlob_P2StatDynRec1    := ArrayGlob_PStatDynRec1;
+
+
   ArrayClass1 := TArrayClass1.Create;
   ArrayClass1.Test1Method(
     ArrayGlob_DynAInt1,
@@ -1056,35 +1118,35 @@ begin
     ArrayGlob_StatDynRec1,
 
     // Pointer
-    ArrayGlob_PDynAInt1,
-    ArrayGlob_PStatAInt1,
-    ArrayGlob_PStatAInt2,
+    ArrayGlob_P2DynAInt1,
+    ArrayGlob_P2StatAInt1,
+    ArrayGlob_P2StatAInt2,
 
-    ArrayGlob_PDynInt1,
-    ArrayGlob_PDynInt2,
-    ArrayGlob_PDynClass1,
-    ArrayGlob_PDynRec1,
-    ArrayGlob_PDynRec2,
+    ArrayGlob_P2DynInt1,
+    ArrayGlob_P2DynInt2,
+    ArrayGlob_P2DynClass1,
+    ArrayGlob_P2DynRec1,
+    ArrayGlob_P2DynRec2,
 
-    ArrayGlob_PDynDynInt1,
-    ArrayGlob_PDynDynClass1,
-    ArrayGlob_PDynDynRec1,
+    ArrayGlob_P2DynDynInt1,
+    ArrayGlob_P2DynDynClass1,
+    ArrayGlob_P2DynDynRec1,
 
-    ArrayGlob_PDynStatInt1,
-    ArrayGlob_PDynStatClass1,
-    ArrayGlob_PDynStatRec1,
+    ArrayGlob_P2DynStatInt1,
+    ArrayGlob_P2DynStatClass1,
+    ArrayGlob_P2DynStatRec1,
 
-    ArrayGlob_PStatInt1,
-    ArrayGlob_PStatClass1,
-    ArrayGlob_PStatRec1,
+    ArrayGlob_P2StatInt1,
+    ArrayGlob_P2StatClass1,
+    ArrayGlob_P2StatRec1,
 
-    ArrayGlob_PStatStatInt1,
-    ArrayGlob_PStatStatClass1,
-    ArrayGlob_PStatStatRec1,
+    ArrayGlob_P2StatStatInt1,
+    ArrayGlob_P2StatStatClass1,
+    ArrayGlob_P2StatStatRec1,
 
-    ArrayGlob_PStatDynInt1,
-    ArrayGlob_PStatDynClass1,
-    ArrayGlob_PStatDynRec1
+    ArrayGlob_P2StatDynInt1,
+    ArrayGlob_P2StatDynClass1,
+    ArrayGlob_P2StatDynRec1
 
   );
 end;

@@ -174,10 +174,17 @@ type
     property AsWideString: WideString read GetAsWideString;
     property AsFloat: Extended read GetAsFloat;
 
-    property Address: TFpDbgMemLocation read GetAddress;     // Address of variable
-    property Size: Integer read GetSize;           // Size of variable
-    property DataAddress: TFpDbgMemLocation read GetDataAddress; // Address of Data, if avail (e.g. String, TObject, ..., BUT NOT record)
-    property DataSize: Integer read GetDataSize;       // Sive of Data, if avail (e.g. String, TObject, ..., BUT NOT record)
+    (* * Address/Size
+         Address of the variable (as returned by the "@" address of operator
+       * DataAddress/DataSize
+         Address of Data, if avail and diff from Address (e.g. String, TObject, DynArray, ..., BUT NOT record)
+         Otherwise same as Address/Size
+         For pointers, this is the address of the pointed-to data
+    *)
+    property Address: TFpDbgMemLocation read GetAddress;
+    property Size: Integer read GetSize;
+    property DataAddress: TFpDbgMemLocation read GetDataAddress; //
+    property DataSize: Integer read GetDataSize;
 
     property HasBounds: Boolean  read GetHasBounds;
     property OrdLowBound: Int64  read GetOrdLowBound;   // need typecast for QuadWord
@@ -658,12 +665,12 @@ end;
 
 function TFpDbgValue.GetDataAddress: TFpDbgMemLocation;
 begin
-  Result := InvalidLoc;
+  Result := Address;
 end;
 
 function TFpDbgValue.GetDataSize: Integer;
 begin
-  Result := 0;
+  Result := Size;
 end;
 
 function TFpDbgValue.GetSize: Integer;

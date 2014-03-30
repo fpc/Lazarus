@@ -2139,7 +2139,7 @@ begin
   end
   else
   if tmp.Kind = skPointer then begin
-    if (svfDataAddress in tmp.FieldFlags) and (IsReadableLoc(tmp.DataAddress)) and
+    if (svfDataAddress in tmp.FieldFlags) and (IsReadableLoc(tmp.DataAddress)) and // TODO, what if Not readable addr
        (tmp.TypeInfo <> nil) //and (tmp.TypeInfo.TypeInfo <> nil)
     then begin
       //TODO: maybe introduce a method TypeCastFromAddress, so we can skip the twp2 object
