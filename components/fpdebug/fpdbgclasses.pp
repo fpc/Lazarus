@@ -42,7 +42,7 @@ uses
 
 type
   TFPDState = (dsStop, dsRun, dsPause, dsQuit, dsEvent);
-  TFPDEvent = (deExitProcess, deBreakpoint, deException, deCreateProcess, deLoadLibrary);
+  TFPDEvent = (deExitProcess, deBreakpoint, deException, deCreateProcess, deLoadLibrary, deInternalContinue);
   TFPDMode = (dm32, dm64);
   TOnLog = procedure(AString: string) of object;
 

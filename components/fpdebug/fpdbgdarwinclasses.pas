@@ -9,6 +9,7 @@ uses
   Classes,
   SysUtils,
   BaseUnix,
+  process,
   FpDbgClasses,
   FpDbgLoader,
   DbgIntfBaseTypes,
@@ -58,18 +59,22 @@ type
     FStatus: cint;
     FProcessStarted: boolean;
     FTaskPort: mach_port_name_t;
+    FProcProcess: TProcess;
+    FIsTerminating: boolean;
     function GetDebugAccessRights: boolean;
   protected
     function InitializeLoader: TDbgImageLoader; override;
   public
     class function StartInstance(AFileName: string; AParams: string): TDbgProcess; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer); override;
+    destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; override;
 
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
+    procedure TerminateProcess; override;
 
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
@@ -117,7 +122,17 @@ begin
   OSDbgClasses.DbgProcessClass:=TDbgDarwinProcess;
 end;
 
+Function WIFSTOPPED(Status: Integer): Boolean;
+begin
+  WIFSTOPPED:=((Status and $FF)=$7F);
+end;
+
 { TDbgDarwinThread }
+
+procedure OnForkEvent;
+begin
+  fpPTrace(PTRACE_TRACEME, 0, nil, nil);
+end;
 
 function TDbgDarwinThread.ReadThreadState: boolean;
 var
@@ -200,6 +215,10 @@ begin
   // with dsymutil.
   dSYMFilename:=ChangeFileExt(Name, '.dSYM');
   dSYMFilename:=dSYMFilename+'/Contents/Resources/DWARF/'+ExtractFileName(Name);
+
+  if ExtractFileExt(dSYMFilename)='.app' then
+    dSYMFilename := ChangeFileExt(dSYMFilename,'');
+
   if FileExists(dSYMFilename) then
     result := TDbgImageLoader.Create(dSYMFilename)
   else
@@ -228,42 +247,53 @@ begin
     end;
 end;
 
+destructor TDbgDarwinProcess.Destroy;
+begin
+  FProcProcess.Free;
+  inherited Destroy;
+end;
+
 class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams: string): TDbgProcess;
 var
   PID: TPid;
   stat: longint;
+  AProcess: TProcess;
+  AnExecutabeFilename: string;
 begin
   result := nil;
 
-  AFileName:=ExcludeTrailingPathDelimiter(AFileName);
-  if DirectoryExists(AFileName) then
+  AnExecutabeFilename:=ExcludeTrailingPathDelimiter(AFileName);
+  if DirectoryExists(AnExecutabeFilename) then
     begin
-    if not (ExtractFileExt(AFileName)='.app') then
+    if not (ExtractFileExt(AnExecutabeFilename)='.app') then
       begin
-      DebugLn(format('Can not debug %s, because it''s a directory',[AFileName]));
+      DebugLn(format('Can not debug %s, because it''s a directory',[AnExecutabeFilename]));
       Exit;
       end;
 
-    AFileName := AFileName + '/Contents/MacOS/' + ChangeFileExt(ExtractFileName(AFileName),'');
+    AnExecutabeFilename := AnExecutabeFilename + '/Contents/MacOS/' + ChangeFileExt(ExtractFileName(AnExecutabeFilename),'');
     if not FileExists(AFileName) then
       begin
-      DebugLn(format('Can not find  %s.',[AFileName]));
+      DebugLn(format('Can not find  %s.',[AnExecutabeFilename]));
       Exit;
       end;
     end;
 
-  pid := FpFork;
-  if PID=0 then
-    begin
-    // We are in the child-process
-    fpPTrace(PTRACE_TRACEME, 0, nil, nil);
-    FpExecve(AFileName, nil, nil);
-    end
-  else if PID<>-1 then
-    begin
+  AProcess := TProcess.Create(nil);
+  try
+    AProcess.OnForkEvent:=@OnForkEvent;
+    AProcess.Executable:=AnExecutabeFilename;
+    AProcess.Execute;
+    PID:=AProcess.ProcessID;
+
     sleep(100);
     result := TDbgDarwinProcess.Create(AFileName, Pid,-1);
-    end;
+  except
+    AProcess.Free;
+    raise;
+  end;
+
+  TDbgDarwinProcess(result).FProcProcess := AProcess;
 end;
 
 function TDbgDarwinProcess.ReadData(const AAdress: TDbgPtr;
@@ -319,6 +349,16 @@ begin
 
 end;
 
+procedure TDbgDarwinProcess.TerminateProcess;
+begin
+  FIsTerminating:=true;
+  if fpkill(ProcessID,SIGKILL)<>0 then
+    begin
+    log('Failed to send SIGKILL to process %d. Errno: %d',[ProcessID, errno]);
+    FIsTerminating:=false;
+    end;
+end;
+
 function TDbgDarwinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
   AState: TFPDState): boolean;
 var
@@ -331,6 +371,8 @@ begin
 {$ifdef darwin}
   if AThread.SingleStepping then
     fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), nil)
+  else if FIsTerminating then
+    fpPTrace(PTRACE_KILL, ProcessID, pointer(1), nil)
   else
     fpPTrace(PTRACE_CONT, ProcessID, pointer(1), nil);
 {$endif darwin}
@@ -357,7 +399,7 @@ begin
   result := ProcessIdentifier<>-1;
   if not result then
     writeln('Failed to wait for debug event. Errcode: ', fpgeterrno)
-  else if not wifexited(FStatus) then
+  else if WIFSTOPPED(FStatus) then
     begin
     // Read thread-information
     aKernResult := task_threads(FTaskPort, act_list, act_listCtn);
@@ -382,11 +424,6 @@ begin
 end;
 
 function TDbgDarwinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
-
-  Function WIFSTOPPED(Status: Integer): Boolean;
-  begin
-    WIFSTOPPED:=((Status and $FF)=$7F);
-  end;
 
 begin
   if wifexited(FStatus) then
@@ -427,10 +464,22 @@ begin
         writeln('Received SIGSEGV');
         result := deException;
         end;
+      SIGKILL:
+        begin
+        writeln('Received SIGKILL');
+        if FIsTerminating then
+          result := deInternalContinue
+        else
+          result := deException;
+        end;
     end; {case}
     end
   else if wifsignaled(FStatus) then
-    writeln('ERROR: ', wtermsig(FStatus));
+    begin
+    writeln('Exit signal');
+    SetExitCode(wstopsig(FStatus));
+    result := deExitProcess
+    end;
 end;
 
 end.
