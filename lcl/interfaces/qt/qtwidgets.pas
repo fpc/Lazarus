@@ -2389,6 +2389,15 @@ begin
             if PtInRect(R, QtWidgetSet.GetWidgetAtCachePoint) then
               QtWidgetSet.InvalidateWidgetAtCache;
           end;
+          // issue #25922
+          if Assigned(FPalette) and Assigned(LCLObject) then
+          begin
+            // DebugLn('QEventEnabledChange: ',dbgsName(LCLObject),' enabled ',dbgs(getEnabled));
+            if not getEnabled then
+              Palette.setTextColor(@Palette.DisabledTextColor)
+            else
+              setInitialFontColor(LCLObject);
+          end;
         end;
       QEventShow:
         begin
