@@ -86,13 +86,13 @@ type
   strict private
     FFileName: String;
     FMetafile: TMetafile;
-    FMetafileCanvas: TMetafileCanvas;
   public
     constructor Create(const AFileName: String); reintroduce;
     destructor Destroy; override;
   public
     procedure DrawingBegin(const ABoundingBox: TRect); override;
     procedure DrawingEnd; override;
+    function GetCanvas: TCanvas; override;
   end;
 
 implementation
@@ -119,13 +119,21 @@ end;
 procedure TWindowsMetafileDrawer.DrawingBegin(const ABoundingBox: TRect);
 begin
   inherited DrawingBegin(ABoundingBox);
-  FCanvas := TMetafileCanvas.Create(FMetafile, 0);
+  if FCanvas = nil then
+    FCanvas := TMetafileCanvas.Create(FMetafile, 0);
 end;
 
 procedure TWindowsMetafileDrawer.DrawingEnd;
 begin
   FreeAndNil(FCanvas);
   FMetafile.SaveToFile(FFileName);
+end;
+
+function TWindowsMetafileDrawer.GetCanvas: TCanvas;
+begin
+  if FCanvas = nil then
+    FCanvas := TMetafileCanvas.Create(FMetafile, 0);
+  Result := FCanvas;
 end;
 
 { TMetafile }
