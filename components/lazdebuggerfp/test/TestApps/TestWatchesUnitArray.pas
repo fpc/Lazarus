@@ -353,6 +353,8 @@ var
   ArrayGlob_P2StatDynClass1: PArrayStatDynClass;
   ArrayGlob_P2StatDynRec1: PArrayStatDynRec;
 
+  // dummy, ensure "pointer" is in debug info
+  ArrayGlob_DummyPointer: Pointer;
 procedure Test1;
 
 implementation

@@ -5,16 +5,16 @@ unit TestWatches;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl, DbgIntfBaseTypes,
-  DbgIntfDebuggerBase, TestBase, FpGdbmiDebugger, LCLProc, SynRegExpr, TestWatchUtils,
-  GDBMIDebugger;
+  Classes, SysUtils, strutils, fpcunit, testutils, testregistry, TestGDBMIControl,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, TestBase, FpGdbmiDebugger, LCLProc, SynRegExpr,
+  TestWatchUtils, GDBMIDebugger;
 
 const
   BREAK_LINE_TestWatchesUnitSimple_1 = 182;
   BREAK_LINE_TestWatchesUnitSimple_2 = 189;
   BREAK_LINE_TestWatchesUnitSimple_3 = 196;
 
-  BREAK_LINE_TestWatchesUnitArray = 838;
+  BREAK_LINE_TestWatchesUnitArray = 840;
 
 type
 
@@ -116,6 +116,10 @@ var
   st: TSymbolType;
 begin
   OtherWatchExp := ExpectBreakSimple_1[PtrUInt(AWatchExp^.UserData)];
+  if OtherWatchExp.TheWatch = nil then begin
+    debugln(['SKIPPING watch update']);
+    exit;
+  end;
   s := OtherWatchExp.TheWatch.Values[1,0].Value;
   delete(s, 1, pos('$', s) - 1); delete(s, pos(')', s), 99);
   for st := low(TSymbolType) to high(TSymbolType) do
@@ -129,10 +133,18 @@ var
   st: TSymbolType;
 begin
   OtherWatchExp := ExpectBreakArray_1[PtrUInt(AWatchExp^.UserData)];
+  if OtherWatchExp.TheWatch = nil then begin
+    debugln(['SKIPPING watch update']);
+    exit;
+  end;
   s := OtherWatchExp.TheWatch.Values[1,0].Value;
   delete(s, 1, pos('$', s) - 1); delete(s, pos(')', s), 99);
-  for st := low(TSymbolType) to high(TSymbolType) do
-    AWatchExp^.Result[st].ExpMatch := '\'+s;
+  for st := low(TSymbolType) to high(TSymbolType) do begin
+    AWatchExp^.Result[st].ExpMatch := AnsiReplaceText(AWatchExp^.Result[st].ExpMatch, 'REPLACEME', s);
+  end;
+  AWatchExp^.TestName := AnsiReplaceText(AWatchExp^.TestName, 'REPLACEME', 'REPLACEME='+s);
+  AWatchExp^.Expression := AnsiReplaceText(AWatchExp^.Expression, 'REPLACEME', s);
+  AWatchExp^.TheWatch.Expression := AWatchExp^.Expression;
 end;
 
 procedure TTestWatches.DoDbgOutput(Sender: TObject; const AText: String);
@@ -479,17 +491,19 @@ begin
       4: s := 'Local_';
     end;
 
-    r := AddFmtDef(Format('@%sDynInt1', [s]), 'replaceme', skPointer, '', [fTpMtch]);
+    {%region  address of }
+    r := AddFmtDef(Format('@%sDynInt1', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
     if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
     r^.OnBeforeTest := @AdjustArrayExpectToAddress;
     r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
     AddFmtDef(Format('%sPDynInt1', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
 
-    r := AddFmtDef(Format('@%sStatInt1', [s]), 'replaceme', skPointer, '', [fTpMtch]);
+    r := AddFmtDef(Format('@%sStatInt1', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
     if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
     r^.OnBeforeTest := @AdjustArrayExpectToAddress;
     r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
     AddFmtDef(Format('%sPStatInt1', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+    {%endregion  address of }
 
 
     for i2 := 0 to 1 do begin
@@ -499,8 +513,9 @@ begin
         s2 := '^';
       end;
 
-if not (i in [2,3]) then begin // open array / TODO
+if not (i in [2,3]) then
       AddFmtDef(Format('%sDynAInt1%1:s', [s,s2]), '^[\(L].*?100, 101, 102', skArray, '', [fTpMtch]);
+if (not (i in [2,3])) or (i2=0) then begin // open array / not valid, pointer is pointer to dyn array
       AddSimpleInt(Format('%sDynAInt1%1:s[0]', [s,s2]),    100, M_Int);
       AddSimpleInt(Format('%sDynAInt1%1:s[1]', [s,s2]),    101, M_Int);
       AddFmtDef(Format('%sDynAInt1%1:s[0][0]', [s,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
@@ -522,21 +537,48 @@ end;
       AddSimpleInt(Format('%sStatAInt2%1:s[0]', [s,s2]),    3304, M_Int);
 
 
-      AddFmtDef(Format('%sDynInt2%1:s', [s,s2]), '^nil', skArray, '', [fTpMtch]);
-      r := AddFmtDef(Format('TArrayDynInt(%sDynInt2%1:s)', [s,s2]), '^nil', skArray, '', [fTpMtch]);
-      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
-      r := AddSimpleInt(Format('QWord(%sDynInt2%1:s)', [s,s2]),   0, 'QWord');
-      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
-
-
       AddFmtDef(Format('%sDynInt1%1:s', [s,s2]), '^[\(L].*?5511, 5512, 5513, 5514, -5511',
                 skArray, '', [fTpMtch]);
       AddSimpleInt(Format('%sDynInt1%1:s[0]', [s,s2]),    5511, M_Int);
       AddSimpleInt(Format('%sDynInt1%1:s[19]', [s,s2]),    5500, M_Int);
+      // typecast for dynarray
       r := AddFmtDef(Format('TArrayDynInt(%sDynInt1%1:s)', [s,s2]), '^[\(L].*?5511, 5512, 5513, 5514, -5511',
                 skArray, '', [fTpMtch]);
       if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
       r := AddSimpleInt(Format('TArrayDynInt(%sDynInt1%1:s)[0]', [s,s2]),    5511, M_Int);
+      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+      // typecast for dynarray
+      r := AddFmtDef(Format('TArrayDynInt(Pointer(%sDynInt1%1:s))', [s,s2]), '^[\(L].*?5511, 5512, 5513, 5514, -5511',
+                skArray, '', [fTpMtch]);
+      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+      r := AddSimpleInt(Format('TArrayDynInt(Pointer(%sDynInt1%1:s))[0]', [s,s2]),    5511, M_Int);
+      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+      // typecast for dynarray
+      r := AddFmtDef(Format('TArrayDynInt(QWord(%sDynInt1%1:s))', [s,s2]), '^[\(L].*?5511, 5512, 5513, 5514, -5511',
+                skArray, '', [fTpMtch]);
+      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+      r := AddSimpleInt(Format('TArrayDynInt(QWord(%sDynInt1%1:s))[0]', [s,s2]),    5511, M_Int);
+      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+      // typecast for dynarray
+      if (i2 = 0) and (i <> 3) then begin
+        r := AddFmtDef(Format('TArrayDynInt(REPLACEME)', [s,s2]), '^[\(L].*?5511, 5512, 5513, 5514, -5511',
+                  skArray, '', [fTpMtch]);
+        //      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+        AddFmtDef(Format('Pointer(%sDynInt1%1:s)', [s,s2]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+        r := AddSimpleInt(Format('TArrayDynInt(REPLACEME)[0]', [s,s2]),    5511, M_Int);
+        //if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+        AddFmtDef(Format('Pointer(%sDynInt1%1:s)', [s,s2]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+      end;
+
+
+      AddFmtDef(Format('%sDynInt2%1:s', [s,s2]), '^nil', skArray, '', [fTpMtch]);
+      r := AddFmtDef(Format('TArrayDynInt(%sDynInt2%1:s)', [s,s2]), '^nil', skArray, '', [fTpMtch]);
+      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+      r := AddSimpleInt(Format('QWord(%sDynInt2%1:s)', [s,s2]),   0, 'QWord');
       if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
 
 

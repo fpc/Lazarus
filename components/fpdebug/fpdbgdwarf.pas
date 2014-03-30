@@ -2032,6 +2032,8 @@ begin
 end;
 
 function TFpDbgDwarfValueArray.IsValidTypeCast: Boolean;
+var
+  f: TFpDbgValueFieldFlags;
 begin
   Result := HasTypeCastInfo;
   If not Result then
@@ -2039,24 +2041,25 @@ begin
 
   assert(FTypeCastTargetType.Kind = skArray, 'TFpDbgDwarfValueArray.IsValidTypeCast: FTypeCastTargetType.Kind = skArray');
 //TODO: shortcut, if FTypeCastTargetType = FTypeCastSourceValue.TypeInfo ?
-  if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
+
+  f := FTypeCastSourceValue.FieldFlags;
+  if (f * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
     exit;
 
   if sfDynArray in FTypeCastTargetType.Flags then begin
     // dyn array
-    // TODO ordinal
-    if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) and
+    if (svfOrdinal in f)then
+      exit;
+    if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) and
        (FTypeCastSourceValue.Size = FOwner.FCU.FAddressSize)
     then
-      exit
-    else
-    if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer])
-    then
+      exit;
+    if (f * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer]) then
       exit;
   end
   else begin
     // stat array
-    if (FTypeCastSourceValue.FieldFlags * [svfAddress, svfSize] = [svfAddress, svfSize]) and
+    if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) and
        (FTypeCastSourceValue.Size = FTypeCastTargetType.Size)
     then
       exit;
