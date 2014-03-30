@@ -422,6 +422,19 @@ end;
 
 procedure TCanvasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
 
+  procedure DrawSimpleText(ACanvas: TCanvas; x, y: Integer; const txt: String);
+  // add right-to-left mode. Cannot use TextOut since it does not respect TextStyle
+  var
+    r: TRect;
+    ts: TTextStyle;
+  begin
+    ts := ACanvas.TextStyle;
+    ts.RightToLeft := FRightToLeft;
+    ts.Clipping := false;
+    r := Bounds(x, y, 1, 1);
+    ACanvas.TextRect(r, x, y, txt, ts);
+  end;
+
   procedure DrawXorText;
   var
     bmp: TBitmap;
@@ -439,7 +452,7 @@ procedure TCanvasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
       bmp.Canvas.Brush.Style := bsClear;
       bmp.Canvas.Font := GetCanvas.Font;
       bmp.Canvas.Font.Color := clWhite;
-      bmp.Canvas.TextOut(p.X, p.Y, AText);
+      DrawSimpleText(bmp.Canvas, p.X, p.Y, AText);
       bmp.Canvas.Pen.Color := clWhite;
       BitBlt(
         GetCanvas.Handle, AX - p.X, AY - p.Y, bmpSize.X, bmpSize.Y,
@@ -453,7 +466,7 @@ begin
   if FXor then
     DrawXorText
   else
-    GetCanvas.TextOut(AX, AY, AText);
+    DrawSimpleText(GetCanvas, AX, AY, AText);
 end;
 
 initialization

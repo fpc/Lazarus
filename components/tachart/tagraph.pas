@@ -283,6 +283,7 @@ type
     procedure PrepareAxis(ADrawer: IChartDrawer);
     function PrepareLegend(
       ADrawer: IChartDrawer; var AClipRect: TRect): TChartLegendDrawingData;
+    procedure SetBiDiMode(AValue: TBiDiMode); override;
     procedure SetName(const AValue: TComponentName); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -403,6 +404,7 @@ type
   published
     property Align;
     property Anchors;
+    property BiDiMode;
     property BorderSpacing;
     property Color default clBtnFace;
     property DoubleBuffered;
@@ -792,6 +794,8 @@ var
   s: TBasicChartSeries;
 begin
   Prepare;
+
+  ADrawer.SetRightToLeft(BiDiMode <> bdLeftToRight);
 
   FClipRect := ARect;
   with MarginsExternal do begin
@@ -1366,6 +1370,19 @@ procedure TChart.SetBackColor(AValue: TColor);
 begin
   FBackColor:= AValue;
   StyleChanged(Self);
+end;
+
+procedure TChart.SetBiDiMode(AValue: TBiDiMode);
+begin
+  if AValue = BidiMode then
+    exit;
+  inherited SetBiDiMode(AValue);
+  if not (csLoading in ComponentState) then begin
+    AxisList.UpdateBidiMode;
+    Legend.UpdateBidiMode;
+    Title.UpdateBidiMode;
+    Foot.UpdateBidiMode;
+  end;
 end;
 
 procedure TChart.SetChildOrder(Child: TComponent; Order: Integer);

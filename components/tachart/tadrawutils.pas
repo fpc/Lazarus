@@ -99,6 +99,8 @@ type
     procedure SetMonochromeColor(AColor: TChartColor);
     procedure SetPen(APen: TFPCustomPen);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+    function GetRightToLeft: Boolean;
+    procedure SetRightToLeft(AValue: Boolean);
     procedure SetTransparency(ATransparency: TChartTransparency);
     procedure SetXor(AXor: Boolean);
     function TextExtent(const AText: String): TPoint;
@@ -122,6 +124,7 @@ type
     FChartColorToFPColorFunc: TChartColorToFPColorFunc;
     FGetFontOrientationFunc: TGetFontOrientationFunc;
     FMonochromeColor: TChartColor;
+    FRightToLeft: Boolean;
     FTransparency: TChartTransparency;
     FXor: Boolean;
     function ColorOrMono(AColor: TChartColor): TChartColor; inline;
@@ -135,6 +138,7 @@ type
     procedure DrawingEnd; virtual;
     procedure DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
     procedure DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
+    function GetRightToLeft: Boolean;
     procedure LineTo(AX, AY: Integer); virtual; abstract;
     procedure LineTo(const AP: TPoint);
     procedure MoveTo(AX, AY: Integer); virtual; abstract;
@@ -147,6 +151,7 @@ type
     procedure SetDoChartColorToFPColorFunc(AValue: TChartColorToFPColorFunc);
     procedure SetGetFontOrientationFunc(AValue: TGetFontOrientationFunc);
     procedure SetMonochromeColor(AColor: TChartColor);
+    procedure SetRightToLeft(AValue: Boolean);
     procedure SetTransparency(ATransparency: TChartTransparency);
     procedure SetXor(AXor: Boolean);
     function TextExtent(const AText: String): TPoint;
@@ -330,6 +335,11 @@ begin
     Result := FChartColorToFPColorFunc(FMonochromeColor);
 end;
 
+function TBasicDrawer.GetRightToLeft: Boolean;
+begin
+  Result := FRightToLeft;
+end;
+
 procedure TBasicDrawer.LineTo(const AP: TPoint);
 begin
   LineTo(AP.X, AP.Y)
@@ -371,6 +381,11 @@ end;
 procedure TBasicDrawer.SetMonochromeColor(AColor: TChartColor);
 begin
   FMonochromeColor := AColor;
+end;
+
+procedure TBasicDrawer.SetRightToLeft(AValue: Boolean);
+begin
+  FRightToLeft := AValue;
 end;
 
 procedure TBasicDrawer.SetTransparency(ATransparency: TChartTransparency);

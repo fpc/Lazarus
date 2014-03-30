@@ -136,6 +136,7 @@ type
     procedure Draw(ADrawer: IChartDrawer);
     procedure Measure(
       ADrawer: IChartDrawer; ADir, ALeft, ARight: Integer; var AY: Integer);
+    procedure UpdateBidiMode;
   published
     property Alignment default taCenter;
     property Brush: TBrush read FBrush write SetBrush;
@@ -578,6 +579,14 @@ procedure TChartTitle.SetText(AValue: TStrings);
 begin
   FText.Assign(AValue);
   StyleChanged(Self);
+end;
+
+procedure TChartTitle.UpdateBidiMode;
+begin
+  case Alignment of
+    taLeftJustify  : Alignment := taRightJustify;
+    taRightJustify : Alignment := taLeftJustify;
+  end;
 end;
 
 { TGenericChartMarks }

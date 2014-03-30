@@ -198,13 +198,13 @@ type
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
-
   public
     procedure AddGroups(AItems: TChartLegendItems);
     procedure Assign(Source: TPersistent); override;
     procedure Draw(var AData: TChartLegendDrawingData);
     procedure Prepare(var AData: TChartLegendDrawingData; var AClipRect: TRect);
     procedure SortItemsByOrder(AItems: TChartLegendItems);
+    procedure UpdateBidiMode;
   published
     property Alignment: TLegendAlignment
       read FAlignment write SetAlignment default laTopRight;
@@ -341,8 +341,13 @@ end;
 
 procedure TLegendItem.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 begin
-  ADrawer.TextOut.
-    Pos(ARect.Right + SYMBOL_TEXT_SPACING, ARect.Top).Text(FText).Done;
+  if ADrawer.GetRightToLeft then
+    ADrawer.TextOut.
+      Pos(ARect.Left - SYMBOL_TEXT_SPACING - ADrawer.TextExtent(FText).X, ARect.Top).
+      Text(FText).Done
+  else
+    ADrawer.TextOut.
+      Pos(ARect.Right + SYMBOL_TEXT_SPACING, ARect.Top).Text(FText).Done;
 end;
 
 function TLegendItem.HasSymbol: Boolean;
@@ -361,7 +366,12 @@ end;
 
 procedure TLegendItemGroupTitle.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 begin
-  ADrawer.TextOut.Pos(ARect.Left, ARect.Top).Text(Text).Done;
+  if ADrawer.GetRightToLeft then
+    ADrawer.TextOut.
+      Pos(ARect.Right - ADrawer.TextExtent(Text).X, ARect.Top).Text(Text).Done
+  else
+    ADrawer.TextOut.
+      Pos(ARect.Left, ARect.Top).Text(Text).Done;
 end;
 
 function TLegendItemGroupTitle.HasSymbol: Boolean;
@@ -545,7 +555,9 @@ var
     i, x, y: Integer;
     prevFont: TFont = nil;
     r: TRect;
+    isRTL: Boolean;
   begin
+    isRTL := drawer.GetRightToLeft;
     with AData do begin
       for i := 0 to FItems.Count - 1 do begin
         FItems[i].UpdateFont(drawer, prevFont);
@@ -560,10 +572,16 @@ var
           lfoColRow: DivMod(i, FRowCount, x, y);
           lfoRowCol: DivMod(i, FColCount, y, x);
         end;
-        r := Bounds(
-          FBounds.Left + Spacing + x * (FItemSize.X + Spacing),
-          FBounds.Top + Spacing + y * (FItemSize.Y + Spacing),
-          SymbolWidth, FItemSize.Y);
+        if isRTL then
+          r := Bounds(
+            FBounds.Right - Spacing - x * (FItemSize.X + Spacing) - SymbolWidth,
+            FBounds.Top + Spacing + y * (FItemSize.Y + Spacing),
+            SymbolWidth, FItemSize.Y)
+        else
+          r := Bounds(
+            FBounds.Left + Spacing + x * (FItemSize.X + Spacing),
+            FBounds.Top + Spacing + y * (FItemSize.Y + Spacing),
+            SymbolWidth, FItemSize.Y);
         FItems[i].Draw(drawer, r);
         OffsetRect(r, 0, FItemSize.Y + Spacing);
       end;
@@ -828,6 +846,18 @@ begin
       j -= 1;
     end;
   AItems.Sort(@LegendItemCompare);
+end;
+
+procedure TChartLegend.UpdateBidiMode;
+begin
+  case Alignment of
+    laTopLeft     : Alignment := laTopRight;
+    laCenterLeft  : Alignment := laCenterRight;
+    laBottomLeft  : Alignment := laBottomRight;
+    laTopRight    : Alignment := laTopLeft;
+    laCenterRight : Alignment := laCenterLeft;
+    laBottomRight : Alignment := laBottomLeft;
+  end;
 end;
 
 { TChartSeriesLegend }
