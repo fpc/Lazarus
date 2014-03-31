@@ -10,9 +10,9 @@ uses
   TestWatchUtils, GDBMIDebugger;
 
 const
-  BREAK_LINE_TestWatchesUnitSimple_1 = 182;
-  BREAK_LINE_TestWatchesUnitSimple_2 = 189;
-  BREAK_LINE_TestWatchesUnitSimple_3 = 196;
+  BREAK_LINE_TestWatchesUnitSimple_1 = 355;
+  BREAK_LINE_TestWatchesUnitSimple_2 = 570;
+  BREAK_LINE_TestWatchesUnitSimple_3 = 578;
 
   BREAK_LINE_TestWatchesUnitArray = 840;
 
@@ -53,7 +53,7 @@ type
     procedure AdjustArrayExpectToAddress(AWatchExp: PWatchExpectation); // only ExpectBreakSimple_1
 
     procedure AddExpectSimple_1;
-    procedure AddExpectSimple_2;
+    procedure AddExpectSimple_2(DoAddExp_3: Boolean = False);
     procedure AddExpectSimple_3;
     procedure AddExpectArray_1;
     procedure RunTestWatches(NamePreFix: String;
@@ -239,7 +239,7 @@ begin
       AddSimpleUInt(Format(s, ['SimpleArg_Short1']),   QWord(-92), s2);
       AddSimpleUInt(Format(s, ['SimpleVArg_Short1']),  QWord(-91), s2);
     end;
-    AddSimpleInt(Format(s, ['SimpleLocal_Short1']), 39, s2);
+    AddSimpleInt(Format(s, ['Local_Short1']), 39, s2);
     AddSimpleInt(Format(s, ['SimpleGlob_Short1 ']), 29, s2);
     AddSimpleInt(Format(s, ['SimpleGlob_Short2']),  0, s2);
     if not(i in [3]) then begin
@@ -256,7 +256,7 @@ begin
       AddSimpleInt(Format(s, ['SimpleArg_Small1']),    -192, s2);
       AddSimpleInt(Format(s, ['SimpleVArg_Small1']),   -191, s2);
     end;
-    AddSimpleInt(Format(s, ['SimpleLocal_Small1']), 391, s2);
+    AddSimpleInt(Format(s, ['Local_Small1']), 391, s2);
     AddSimpleInt(Format(s, ['SimpleGlob_Small1 ']), 291, s2);
     AddSimpleInt(Format(s, ['SimpleGlob_Small2']), 0, s2);
     if not(i in [3]) then begin
@@ -273,7 +273,7 @@ begin
       AddSimpleInt(Format(s, ['SimpleArg_Int1']),    -1902, s2);
       AddSimpleInt(Format(s, ['SimpleVArg_Int1']),   -1901, s2);
     end;
-    AddSimpleInt(Format(s, ['SimpleLocal_Int1']),  3901, s2);
+    AddSimpleInt(Format(s, ['Local_Int1']),  3901, s2);
     AddSimpleInt(Format(s, ['SimpleGlob_Int1']),   2901, s2);
     AddSimpleInt(Format(s, ['SimpleGlob_Int2']),   0, s2);
     if not(i in [3]) then begin
@@ -290,7 +290,7 @@ begin
       AddSimpleInt(Format(s, ['SimpleArg_QInt1']),    -190000000000002, s2);
       AddSimpleInt(Format(s, ['SimpleVArg_QInt1']),   -190000000000001, s2);
     end;
-    AddSimpleInt(Format(s, ['SimpleLocal_QInt1']), 39001, s2);
+    AddSimpleInt(Format(s, ['Local_QInt1']), 39001, s2);
     AddSimpleInt(Format(s, ['SimpleGlob_QInt1 ']), 29001, s2);
     AddSimpleInt(Format(s, ['SimpleGlob_QInt2']), 0, s2);
     if not(i in [3]) then begin
@@ -303,7 +303,7 @@ begin
 
     s2 := s2def;
     if s2 = '' then s2 := 'Byte';
-    AddSimpleUInt(Format(s, ['SimpleLocal_Byte1']), 59, s2);
+    AddSimpleUInt(Format(s, ['Local_Byte1']), 59, s2);
     AddSimpleUInt(Format(s, ['SimpleGlob_Byte1 ']), 49, s2);
     AddSimpleUInt(Format(s, ['SimpleGlob_Byte2']), $7f, s2);
     AddSimpleUInt(Format(s, ['SimpleGlob_Byte3']), $80, s2);
@@ -312,7 +312,7 @@ begin
 
     s2 := s2def;
     if s2 = '' then s2 := 'Word';
-    AddSimpleUInt(Format(s, ['SimpleLocal_Word1']), 591, s2);
+    AddSimpleUInt(Format(s, ['Local_Word1']), 591, s2);
     AddSimpleUInt(Format(s, ['SimpleGlob_Word1 ']), 491, s2);
     AddSimpleUInt(Format(s, ['SimpleGlob_Word2']), $7fff, s2);
     AddSimpleUInt(Format(s, ['SimpleGlob_Word3']), $8000, s2);
@@ -321,7 +321,7 @@ begin
 
     s2 := s2def;
     if s2 = '' then s2 := 'LongWord';
-    AddSimpleUInt(Format(s, ['SimpleLocal_DWord1']), 5901, s2);
+    AddSimpleUInt(Format(s, ['Local_DWord1']), 5901, s2);
     AddSimpleUInt(Format(s, ['SimpleGlob_DWord1 ']), 4901, s2);
     AddSimpleUInt(Format(s, ['SimpleGlob_DWord2']), $7fffffff, s2);
     AddSimpleUInt(Format(s, ['SimpleGlob_DWord3']), $80000000, s2);
@@ -331,7 +331,7 @@ begin
     s2 := s2def;
     if s2 = '' then s2 := 'QWord';
     if not(i in [2]) then begin
-      AddSimpleUInt(Format(s, ['SimpleLocal_QWord1']), 59001, s2);
+      AddSimpleUInt(Format(s, ['Local_QWord1']), 59001, s2);
       AddSimpleUInt(Format(s, ['SimpleGlob_QWord1 ']), 49001, s2);
       AddSimpleUInt(Format(s, ['SimpleGlob_QWord2']), $7fffffffffffffff, s2);
       AddSimpleUInt(Format(s, ['SimpleGlob_QWord3']), qword($8000000000000000), s2);
@@ -346,7 +346,7 @@ begin
   s := 'Byte(%s)';
   AddSimpleInt(Format(s, ['SimpleArg_Int1']),    Byte(-1902), s2);
   AddSimpleInt(Format(s, ['SimpleVArg_Int1']),   Byte(-1901), s2);
-  AddSimpleInt(Format(s, ['SimpleLocal_Int1']),  Byte(3901), s2);
+  AddSimpleInt(Format(s, ['Local_Int1']),  Byte(3901), s2);
   AddSimpleInt(Format(s, ['SimpleGlob_Int1']),   Byte(2901), s2);
   AddSimpleInt(Format(s, ['SimpleGlob_Int2']),   Byte(0), s2);
   AddSimpleInt(Format(s, ['SimpleGlob_Int3']),   Byte(-1), s2);
@@ -364,15 +364,15 @@ begin
     j := 0;
     if i in [2,3] then j := 100;
 
-    AddSimpleInt(Format(s, ['SimpleField_Short1']),   j+11, 'ShortInt');
-    AddSimpleInt(Format(s, ['SimpleField_Small1']),   j+12, 'SmallInt');
-    AddSimpleInt(Format(s, ['SimpleField_Int1']),     j+13, 'LongInt');
-    AddSimpleInt(Format(s, ['SimpleField_QInt1']),    j+14, 'Int64');
+    AddSimpleInt(Format(s, ['Field_Short1']),   j+11, 'ShortInt');
+    AddSimpleInt(Format(s, ['Field_Small1']),   j+12, 'SmallInt');
+    AddSimpleInt(Format(s, ['Field_Int1']),     j+13, 'LongInt');
+    AddSimpleInt(Format(s, ['Field_QInt1']),    j+14, 'Int64');
 
-    AddSimpleInt(Format(s, ['SimpleField_Byte1']),     j+15, 'Byte');
-    AddSimpleInt(Format(s, ['SimpleField_Word1']),     j+16, 'Word');
-    AddSimpleInt(Format(s, ['SimpleField_DWord1']),    j+17, 'LongWord');
-    AddSimpleInt(Format(s, ['SimpleField_QWord1']),    j+18, 'QWord');
+    AddSimpleInt(Format(s, ['Field_Byte1']),     j+15, 'Byte');
+    AddSimpleInt(Format(s, ['Field_Word1']),     j+16, 'Word');
+    AddSimpleInt(Format(s, ['Field_DWord1']),    j+17, 'LongWord');
+    AddSimpleInt(Format(s, ['Field_QWord1']),    j+18, 'QWord');
   end;
   {%region}
 
@@ -395,7 +395,7 @@ begin
     r^.UserData := pointer(PtrUInt(Length(FCurrentExpect^)));
     AddFmtDef('SimplePVArg_Int1',    '\$[0-9A-F]', skPointer, '');
 
-    r := AddFmtDef('@SimpleLocal_Int1',    'replaceme', skPointer, '');
+    r := AddFmtDef('@Local_Int1',    'replaceme', skPointer, '');
     r^.OnBeforeTest := @AdjustExpectToAddress;
     r^.UserData := pointer(PtrUInt(Length(FCurrentExpect^)));
     AddFmtDef('SimplePLocal_Int1',    '\$[0-9A-F]', skPointer, '');
@@ -409,34 +409,75 @@ begin
 
 end;
 
-procedure TTestWatches.AddExpectSimple_2;
+procedure TTestWatches.AddExpectSimple_2(DoAddExp_3: Boolean);
 var
-  s: String;
+  i, i2: Integer;
+  s,s2: String;
+  r: PWatchExpectation;
 begin
   FCurrentExpect := @ExpectBreakSimple_2;
+  if DoAddExp_3 then
+    FCurrentExpect := @ExpectBreakSimple_3;
 
-  s := '%s';
-    AddSimpleInt(Format(s, ['SimpleField_Short1']),   11, 'ShortInt');
-    AddSimpleInt(Format(s, ['SimpleField_Small1']),   12, 'SmallInt');
-    AddSimpleInt(Format(s, ['SimpleField_Int1']),     13, 'LongInt');
-    AddSimpleInt(Format(s, ['SimpleField_QInt1']),    14, 'Int64');
+  {%region  Fields / Glob / ... }
+  for i := 0 to 5 do begin
+    if DoAddExp_3 and not(i in [1,5]) then continue;
+    case i of
+      0: s := 'Field_';
+      1: s := 'SimpleGlob_';
+      2: s := 'Arg_';
+      3: s := 'VArg_';
+      4: s := 'Local_';
+      5: s := 'self.Field_';
+      // 6: passed in object / var arg object
+      // unit.glob
+    end;
 
-    AddSimpleInt(Format(s, ['SimpleField_Byte1']),     15, 'Byte');
-    AddSimpleInt(Format(s, ['SimpleField_Word1']),     16, 'Word');
-    AddSimpleInt(Format(s, ['SimpleField_DWord1']),    17, 'LongWord');
-    AddSimpleInt(Format(s, ['SimpleField_QWord1']),    18, 'QWord');
+    {%region  address of }
+    //r := AddFmtDef(Format('@%sDynInt1', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
+    //if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
+    //r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+    //r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+    //AddFmtDef(Format('%sPDynInt1', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
 
-  s := 'self.%s';
-    AddSimpleInt(Format(s, ['SimpleField_Short1']),   11, 'ShortInt');
-    AddSimpleInt(Format(s, ['SimpleField_Small1']),   12, 'SmallInt');
-    AddSimpleInt(Format(s, ['SimpleField_Int1']),     13, 'LongInt');
-    AddSimpleInt(Format(s, ['SimpleField_QInt1']),    14, 'Int64');
+    {%endregion  address of }
 
-    AddSimpleInt(Format(s, ['SimpleField_Byte1']),     15, 'Byte');
-    AddSimpleInt(Format(s, ['SimpleField_Word1']),     16, 'Word');
-    AddSimpleInt(Format(s, ['SimpleField_DWord1']),    17, 'LongWord');
-    AddSimpleInt(Format(s, ['SimpleField_QWord1']),    18, 'QWord');
 
+    for i2 := 0 to 1 do begin
+      s2 := '';
+      if i2 = 1 then begin
+        s := s + 'P';
+        s2 := '^';
+      end;
+
+      AddSimpleInt(Format('%sShort1%1:s', [s,s2]),   11, 'ShortInt');
+      AddSimpleInt(Format('%sSmall1%1:s', [s,s2]),   112, 'SmallInt');
+      AddSimpleInt(Format('%sInt1%1:s', [s,s2]),     1123, 'LongInt');
+      AddSimpleInt(Format('%sQInt1%1:s', [s,s2]),    11234, 'Int64');
+
+      AddSimpleInt(Format('%sByte1%1:s', [s,s2]),    22, 'Byte');
+      AddSimpleInt(Format('%sWord1%1:s', [s,s2]),    223, 'Word');
+      AddSimpleInt(Format('%sDWord1%1:s', [s,s2]),   2234, 'LongWord');
+      AddSimpleInt(Format('%sQWord1%1:s', [s,s2]),   22345, 'QWord');
+
+      AddFmtDef(Format('%sSingle1%1:s', [s,s2]),  '^0.(5|49)',  skSimple, '', [fTpMtch]);
+      AddFmtDef(Format('%sDouble1%1:s', [s,s2]),  '^0.2(5|49)',  skSimple, '', [fTpMtch]);
+      AddFmtDef(Format('%sExt1%1:s', [s,s2]),     '^0.7(5|49)',  skSimple, '', [fTpMtch]);
+      AddFmtDef(Format('%sComp1%1:s', [s,s2]),    '^-9',  skSimple, '', [fTpMtch]);
+
+      AddFmtDef(Format('%sBool1%1:s', [s,s2]),     '^True', skSimple, '', [fTpMtch]);
+      AddFmtDef(Format('%sBool2%1:s', [s,s2]),     '^False', skSimple, '', [fTpMtch]);
+      AddFmtDef(Format('%sEnum1%1:s', [s,s2]),    '^eval2', skSimple, '', [fTpMtch]);
+      AddFmtDef(Format('%sEnum2%1:s', [s,s2]),    '^eval1', skSimple, '', [fTpMtch]);
+      r := AddFmtDef(Format('%sSet1%1:s', [s,s2]),     '^\[eval2\]', skSimple, '', [fTpMtch]);
+      UpdExpRes(r, stDwarf, '', skSimple); // no sets in dwarf2
+      r := AddFmtDef(Format('%sSet2%1:s', [s,s2]),     '^\[\]', skSimple, '', [fTpMtch]);
+      UpdExpRes(r, stDwarf, '', skSimple); // no sets in dwarf2
+
+    end; // i2
+
+  end; // i
+  {%endregion  Fields }
 end;
 
 procedure TTestWatches.AddExpectSimple_3;
@@ -444,29 +485,7 @@ var
   s: String;
 begin
   FCurrentExpect := @ExpectBreakSimple_3;
-
-  s := '%s';
-    AddSimpleInt(Format(s, ['SimpleField_Short1']),   111, 'ShortInt');
-    AddSimpleInt(Format(s, ['SimpleField_Small1']),   112, 'SmallInt');
-    AddSimpleInt(Format(s, ['SimpleField_Int1']),     113, 'LongInt');
-    AddSimpleInt(Format(s, ['SimpleField_QInt1']),    114, 'Int64');
-
-    AddSimpleInt(Format(s, ['SimpleField_Byte1']),     115, 'Byte');
-    AddSimpleInt(Format(s, ['SimpleField_Word1']),     116, 'Word');
-    AddSimpleInt(Format(s, ['SimpleField_DWord1']),    117, 'LongWord');
-    AddSimpleInt(Format(s, ['SimpleField_QWord1']),    118, 'QWord');
-
-  s := 'self.%s';
-    AddSimpleInt(Format(s, ['SimpleField_Short1']),   111, 'ShortInt');
-    AddSimpleInt(Format(s, ['SimpleField_Small1']),   112, 'SmallInt');
-    AddSimpleInt(Format(s, ['SimpleField_Int1']),     113, 'LongInt');
-    AddSimpleInt(Format(s, ['SimpleField_QInt1']),    114, 'Int64');
-
-    AddSimpleInt(Format(s, ['SimpleField_Byte1']),     115, 'Byte');
-    AddSimpleInt(Format(s, ['SimpleField_Word1']),     116, 'Word');
-    AddSimpleInt(Format(s, ['SimpleField_DWord1']),    117, 'LongWord');
-    AddSimpleInt(Format(s, ['SimpleField_QWord1']),    118, 'QWord');
-
+  AddExpectSimple_2(True);
 end;
 
 procedure TTestWatches.AddExpectArray_1;
@@ -478,17 +497,16 @@ begin
   FCurrentExpect := @ExpectBreakArray_1;
 
 
-  // TODO var param
-  //UpdResMinFpc(r, stSymAll, 020600);
-
   {%region  Fields / Glob / ... }
-  for i := 0 to 4 do begin
+  for i := 0 to 5 do begin
     case i of
       0: s := 'Field_';
       1: s := 'ArrayGlob_';
       2: s := 'Arg_';
       3: s := 'VArg_';
       4: s := 'Local_';
+      5: s := 'self.Field_';
+      // 6: passed in object / var arg object
     end;
 
     {%region  address of }

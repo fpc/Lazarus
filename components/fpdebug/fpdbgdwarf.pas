@@ -794,7 +794,7 @@ type
     function GetMemberCount: Integer; override;
     function GetMember(AIndex: Int64): TFpDbgValue; override;
     function GetAsCardinal: QWord; override; // only up to qmord
-    //function IsValidTypeCast: Boolean; override;
+    function IsValidTypeCast: Boolean; override;
   public
     destructor Destroy; override;
   end;
@@ -2222,6 +2222,32 @@ begin
   Result := 0;
   if (FSize <= SizeOf(Result)) and (length(FMem) > 0) then
     move(FMem[0], Result, FSize);
+end;
+
+function TFpDbgDwarfValueSet.IsValidTypeCast: Boolean;
+var
+  f: TFpDbgValueFieldFlags;
+begin
+  Result := HasTypeCastInfo;
+  If not Result then
+    exit;
+
+  assert(FTypeCastTargetType.Kind = skSet, 'TFpDbgDwarfValueSet.IsValidTypeCast: FTypeCastTargetType.Kind = skSet');
+
+  if (FTypeCastSourceValue.TypeInfo = FTypeCastTargetType)
+  then
+    exit; // pointer deref
+
+  f := FTypeCastSourceValue.FieldFlags;
+  if (f * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
+    exit;
+
+  //if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) and
+  //   (FTypeCastSourceValue.Size = FTypeCastTargetType.Size)
+  //then
+  //  exit;
+
+  Result := False;
 end;
 
 destructor TFpDbgDwarfValueSet.Destroy;
