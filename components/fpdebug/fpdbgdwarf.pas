@@ -1994,7 +1994,7 @@ begin
     then begin
       if not (IsReadableMem(Addr) and (LocToAddr(Addr) > 4)) then
         exit;
-      Addr.Address := Addr.Address - 4;
+      Addr.Address := Addr.Address - AddressSize;
       if MemManager.ReadSignedInt(Addr, 4, i) then begin
         Result := Integer(i)+1;
         exit;
