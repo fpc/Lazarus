@@ -350,7 +350,10 @@ begin
   if APen.Visible then
     LineZ(AStart, AEnd);
   if FAxis.Arrow.Visible then
-    FAxis.Arrow.Draw(FDrawer, AEnd + FZOffset, AAngle, APen);
+    if FAxis.Arrow.Inverted then
+      FAxis.Arrow.Draw(FDrawer, AStart - FZOffset, AAngle, APen)
+    else
+      FAxis.Arrow.Draw(FDrawer, AEnd + FZOffset, AAngle, APen);
 end;
 
 function TAxisDrawHelper.IsInClipRange(ACoord: Integer): Boolean;
@@ -383,10 +386,17 @@ procedure TAxisDrawHelperX.DrawAxisLine(APen: TChartPen; AFixedCoord: Integer);
 var
   p: TPoint;
 begin
-  p := Point(FClipRect^.Right, AFixedCoord);
-  if FAxis.Arrow.Visible then
-    p.X += FDrawer.Scale(FAxis.Arrow.Length);
-  InternalAxisLine(APen, Point(FClipRect^.Left, AFixedCoord), p, 0);
+  if FAxis.Arrow.Inverted then begin
+    p := Point(FClipRect^.Left, AFixedCoord);
+    if FAxis.Arrow.Visible then
+      p.X -= FDrawer.Scale(FAxis.Arrow.Length);
+    InternalAxisLine(APen, p, Point(FClipRect^.Right, AFixedCoord), 0);
+  end else begin
+    p := Point(FClipRect^.Right, AFixedCoord);
+    if FAxis.Arrow.Visible then
+      p.X += FDrawer.Scale(FAxis.Arrow.Length);
+    InternalAxisLine(APen, Point(FClipRect^.Left, AFixedCoord), p, 0);
+  end;
 end;
 
 procedure TAxisDrawHelperX.DrawLabelAndTick(
@@ -441,10 +451,17 @@ procedure TAxisDrawHelperY.DrawAxisLine(APen: TChartPen; AFixedCoord: Integer);
 var
   p: TPoint;
 begin
-  p := Point(AFixedCoord, FClipRect^.Top);
-  if FAxis.Arrow.Visible then
-    p.Y -= FDrawer.Scale(FAxis.Arrow.Length);
-  InternalAxisLine(APen, Point(AFixedCoord, FClipRect^.Bottom), p, -Pi / 2);
+  if FAxis.Arrow.Inverted then begin
+    p := Point(AFixedCoord, FClipRect^.Bottom);
+    if FAxis.Arrow.Visible then
+      p.Y += FDrawer.Scale(FAxis.Arrow.Length);
+    InternalAxisLine(APen, p, Point(AFixedCoord, FClipRect^.Top), -Pi / 2);
+  end else begin
+    p := Point(AFixedCoord, FClipRect^.Top);
+    if FAxis.Arrow.Visible then
+      p.Y -= FDrawer.Scale(FAxis.Arrow.Length);
+    InternalAxisLine(APen, Point(AFixedCoord, FClipRect^.Bottom), p, -Pi / 2);
+  end;
 end;
 
 procedure TAxisDrawHelperY.DrawLabelAndTick(

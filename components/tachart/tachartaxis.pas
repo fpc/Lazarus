@@ -736,7 +736,10 @@ begin
   if Arrow.Visible then
     with AMeasureData do begin
       FSize := Max(d.Scale(Arrow.Width), FSize);
-      FLastMark := Max(d.Scale(Arrow.Length), FLastMark);
+      if Arrow.Inverted then
+        FFirstMark := Max(d.Scale(Arrow.Length), FFirstMark)
+      else
+        FLastMark := Max(d.Scale(Arrow.Length), FLastMark);
     end;
 end;
 
@@ -918,7 +921,11 @@ begin
         Title.Font.Orientation := -Title.Font.Orientation;
       end;
     calBottom,
-    calTop: Inverted := not Inverted;
+    calTop:
+      begin
+        Inverted := not Inverted;
+        if Arrow <> nil then Arrow.Inverted := not Arrow.Inverted;
+      end;
   end;
 end;
 

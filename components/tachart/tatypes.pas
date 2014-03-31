@@ -210,9 +210,11 @@ type
   TChartArrow = class(TChartElement)
   strict private
     FBaseLength: TChartDistance;
+    FInverted: Boolean;
     FLength: TChartDistance;
     FWidth: TChartDistance;
     procedure SetBaseLength(AValue: TChartDistance);
+    procedure SetInverted(AValue: Boolean);
     procedure SetLength(AValue: TChartDistance);
     procedure SetWidth(AValue: TChartDistance);
   public
@@ -222,6 +224,7 @@ type
     procedure Draw(
       ADrawer: IChartDrawer; const AEndPos: TPoint; AAngle: Double;
       APen: TFPCustomPen);
+    property Inverted: Boolean read FInverted write SetInverted;
   published
     property BaseLength: TChartDistance
       read FBaseLength write SetBaseLength default 0;
@@ -653,15 +656,17 @@ var
   da: Double;
   diag: Integer;
   pt1, pt2, ptBase: TPoint;
+  sgn: Integer;
 begin
   if not Visible then exit;
   da := ArcTan2(Width, Length);
 
+  sgn := IfThen(FInverted, -1, +1);
   diag := -ADrawer.Scale(Round(Sqrt(Sqr(Length) + Sqr(Width))));
-  pt1 := AEndPos + RotatePointX(diag, AAngle - da);
-  pt2 := AEndPos + RotatePointX(diag, AAngle + da);
+  pt1 := AEndPos + RotatePointX(diag, AAngle - da)*sgn;
+  pt2 := AEndPos + RotatePointX(diag, AAngle + da)*sgn;
   if BaseLength > 0 then begin
-    ptBase := AEndPos + RotatePointX(-ADrawer.Scale(BaseLength), AAngle);
+    ptBase := AEndPos + RotatePointX(-ADrawer.Scale(BaseLength), AAngle)*sgn;
     ADrawer.SetBrushParams(bsSolid, FPColorToChartColor(APen.FPColor));
     ADrawer.Polygon([pt1, AEndPos, pt2, ptBase], 0, 4);
   end
@@ -673,6 +678,13 @@ procedure TChartArrow.SetBaseLength(AValue: TChartDistance);
 begin
   if FBaseLength = AValue then exit;
   FBaseLength := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartArrow.SetInverted(AValue: Boolean);
+begin
+  if FInverted = AValue then exit;
+  FInverted := AValue;
   StyleChanged(Self);
 end;
 
