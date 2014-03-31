@@ -800,10 +800,10 @@ end;
 
 function TValueListEditor.InsertRow(const KeyName, Value: string; Append: Boolean): Integer;
 var
-  NewInd, NewCol: Integer;
+  NewInd, NewRow: Integer;
   Line: String;
 begin
-  if (KeyName <> '') and (Value <> '') then
+  if not ((KeyName = '') and (Value = '')) then
     Line := KeyName + Strings.NameValueSeparator + Value
   else
     Line := '';
@@ -832,8 +832,8 @@ begin
     NewInd := Row - FixedRows;
   end;
   Result := NewInd;
-  NewCol := NewInd + FixedRows;
-  if (NewCol <> Col) then Col := NewCol;
+  NewRow := NewInd + FixedRows;
+  if (NewRow <> Row) then Row := NewRow;
 end;
 
 procedure TValueListEditor.InsertRowWithValues(Index: Integer;
