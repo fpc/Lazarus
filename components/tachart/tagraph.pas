@@ -411,6 +411,7 @@ type
     property DragCursor;
     property DragMode;
     property Enabled;
+    property ParentBiDiMode;
     property ParentColor;
     property ParentShowHint;
     property PopupMenu;
