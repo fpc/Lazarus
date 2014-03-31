@@ -10,7 +10,6 @@ object FrmTL: TFrmTL
   ClientWidth = 484
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnResize = FormResize
   Position = poScreenCenter
   LCLVersion = '1.3'
   object FNETL: TFileNameEdit
@@ -125,7 +124,7 @@ object FrmTL: TFrmTL
     OnChange = PageControl1Change
     object TabSheet1: TTabSheet
       Caption = 'Visual Controls'
-      ClientHeight = 331
+      ClientHeight = 285
       ClientWidth = 456
       object lstControls: TListBox
         AnchorSideLeft.Control = TabSheet1
@@ -135,7 +134,7 @@ object FrmTL: TFrmTL
         AnchorSideBottom.Control = TabSheet1
         AnchorSideBottom.Side = asrBottom
         Left = 10
-        Height = 261
+        Height = 215
         Top = 10
         Width = 436
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -177,10 +176,21 @@ object FrmTL: TFrmTL
     end
   end
   object lstFiltered: TListBox
-    Left = 70
-    Height = 90
-    Top = 48
-    Width = 120
+    AnchorSideLeft.Control = PageControl1
+    AnchorSideTop.Control = PageControl1
+    AnchorSideRight.Control = PageControl1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = PageControl1
+    AnchorSideBottom.Side = asrBottom
+    Left = 24
+    Height = 224
+    Top = 19
+    Width = 436
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 14
+    BorderSpacing.Top = 14
+    BorderSpacing.Right = 14
+    BorderSpacing.Bottom = 80
     ItemHeight = 0
     OnClick = lstFilteredClick
     Sorted = True

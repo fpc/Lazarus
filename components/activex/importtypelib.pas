@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, EditBtn,
   StdCtrls, ButtonPanel, ComCtrls, registry, strutils, activexstrconsts, LazUTF8,
-  lazideintf, projectintf, PackageIntf;
+  lazideintf, projectintf, PackageIntf, Windows;
 
 type
 
@@ -46,7 +46,6 @@ type
     procedure CBxTLPackageChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure FormResize(Sender: TObject);
     procedure lstControlsClick(Sender: TObject);
     procedure lstFilteredClick(Sender: TObject);
     procedure lstRefsClick(Sender: TObject);
@@ -247,6 +246,28 @@ begin
     Result := MidStr(path, 0, b - 1);
 end;
 
+//safe for use on strings with or without env vars
+//embedded unmatched % ok too
+function ExpandEnvStr(const szInput: string): string;
+var
+  ret: string;
+  sz: integer;
+begin
+  Result := szInput;
+  if pos('%',szInput) = 0 then exit; //nothing to do
+
+  //get size required
+  sz := ExpandEnvironmentStrings(pchar(szInput), @ret[1], 0);
+  if sz = 0 then exit;
+
+  SetLength(ret, sz);
+  sz := ExpandEnvironmentStrings(pchar(szInput), @ret[1], sz);
+  if sz = 0 then exit;
+
+  SetLength(ret, sz-1);
+  Result := ret;
+end;
+
 procedure LoadVisualControls(lst: TListBox);
 var
   reg: TRegistry;
@@ -284,6 +305,7 @@ begin
         and (map.IndexOf(e.typeLib) = -1) and (length(e.Name) > 0) then
         begin
           e.path := ReadDefaultVal(clsidPath + '\InprocServer32', reg);
+          e.path := ExpandEnvStr(e.path);
           e.progID := ReadDefaultVal(clsidPath + '\ProgID', reg);
           e.version := ReadDefaultVal(clsidPath + '\Version', reg);
           map.Add(e.typeLib);
@@ -338,6 +360,7 @@ begin
 
         e.Name := ReadDefaultVal('\TypeLib\' + clsID + '\' + ver, reg);
         e.path := ReadDefaultVal('\TypeLib\' + clsID + '\' + ver + '\' + revs[0] + '\win32', reg);
+        e.path := ExpandEnvStr(e.path);
         e.version := ver + '.' + revs[0];
         e.path := ValidatePath(e.path);
 
@@ -391,24 +414,12 @@ begin
   FreeObjects(lstrefs.items);
 end;
 
-procedure TFrmTL.FormResize(Sender: TObject);
-begin
-  { not anchored and handled dynamically so you can see
-    it exists seperate from others and still access/click others in IDE
-    lstFiltered is not a child of pagecontrol and floats over other controls
-    same as the groupbox with the search edit control does. (multiuse) }
-   try
-     lstFiltered.SetBounds(lstrefs.Left + pagecontrol1.Left + 4,
-                           lstrefs.Top + pagecontrol1.Top + 4,
-                           lstrefs.Width, lstrefs.Height);
-   finally
-   end;
-end;
-
 procedure TFrmTL.ListClickHandler(lst: TListBox);
 var
   e: TEntry;
 begin
+  if (lst.ItemIndex < 0) then
+    exit;
   e := lst.Items.Objects[lst.ItemIndex] as TEntry;
   FNETL.Text := e.path;
 end;
@@ -424,24 +435,8 @@ begin
 end;
 
 procedure TFrmTL.lstFilteredClick(Sender: TObject);
-var
-  lst: TListBox;
-  s: string;
-  i: integer;
-  e: TEntry;
 begin
-  if (lstfiltered.ItemIndex < 0) then
-    exit;
-  if PageControl1.TabIndex = 1 then
-    lst := lstRefs
-  else
-    lst := lstControls;
-  s := lstFiltered.Items.Strings[lstfiltered.ItemIndex];
-  i := lst.Items.IndexOf(s);
-  if i < 0 then
-    exit;
-  e := lst.Items.Objects[i] as TEntry;
-  FNETL.Text := e.path;
+   ListClickHandler(lstFiltered);
 end;
 
 procedure TFrmTL.PageControl1Change(Sender: TObject);
@@ -453,6 +448,7 @@ begin
   lstfiltered.Visible := False;
 end;
 
+//note: txtSearch and lstfiltered float over PageControl1
 procedure TFrmTL.txtSearchChange(Sender: TObject);
 var
   i: integer;
@@ -477,7 +473,7 @@ begin
   begin
     item := lst.Items.Strings[i];
     if AnsiContainsText(item, txtsearch.Text) then
-      lstfiltered.items.Add(item);
+      lstfiltered.AddItem(item, lst.Items.Objects[i]);
   end;
 end;
 
