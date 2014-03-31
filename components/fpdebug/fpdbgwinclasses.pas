@@ -917,7 +917,11 @@ begin
   end;
 
   Context^.ContextFlags := CONTEXT_CONTROL;
+{$ifdef cpui386}
   Context^.EFlags := Context^.EFlags or FLAG_TRACE_BIT;
+{$else}
+  {$warning singlestep not ready for 64 bit}
+{$endif}
 
   if not SetThreadContext(Handle, Context^)
   then begin
