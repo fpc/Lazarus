@@ -6166,6 +6166,7 @@ begin
   Offs := 0;
   Factor := 1;
 
+  {$PUSH}{$R-}{$Q-} // TODO: check range of index
   bsize := FStrideInBits div 8;
   if FRowMajor then begin
     for i := Length(AIndex) - 1 downto 0 do begin
@@ -6205,6 +6206,7 @@ begin
 
   assert(IsTargetAddr(Result), 'DwarfArray MemberAddress');
   Result.Address := Result.Address + Offs;
+  {$POP}
 end;
 
 destructor TDbgDwarfIdentifierArray.Destroy;

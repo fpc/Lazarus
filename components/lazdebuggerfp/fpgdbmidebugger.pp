@@ -76,6 +76,7 @@ type
     FWatchEvalList: TList;
     FImageLoader: TDbgImageLoader;
     FDwarfInfo: TDbgDwarf;
+    FPrettyPrinter: TFpPascalPrettyPrinter;
     FMemReader: TFpGDBMIDbgMemReader;
     FMemManager: TFpDbgMemManager;
     // cache last context
@@ -1133,6 +1134,7 @@ begin
   FDwarfInfo := TDbgDwarf.Create(FImageLoader);
   FDwarfInfo.MemManager := FMemManager;
   FDwarfInfo.LoadCompilationUnits;
+  FPrettyPrinter := TFpPascalPrettyPrinter.Create(SizeOf(Pointer));
 end;
 
 procedure TFpGDBMIDebugger.UnLoadDwarf;
@@ -1144,6 +1146,7 @@ begin
   if FMemManager <> nil then
     FMemManager.TargetMemConvertor.Free;
   FreeAndNil(FMemManager);
+  FreeAndNil(FPrettyPrinter);
 end;
 
 function TFpGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand;
@@ -1329,7 +1332,7 @@ var
 
   procedure DoPointer;
   begin
-    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
       exit;
     ATypeInfo := TDBGType.Create(skPointer, ResTypeName);
     ATypeInfo.Value.AsPointer := Pointer(ResValue.AsCardinal); // TODO: no cut off
@@ -1338,7 +1341,7 @@ var
 
   procedure DoSimple;
   begin
-    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
       exit;
     ATypeInfo := TDBGType.Create(skSimple, ResTypeName);
     ATypeInfo.Value.AsString := AResText;
@@ -1346,7 +1349,7 @@ var
 
   procedure DoEnum;
   begin
-    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
       exit;
     ATypeInfo := TDBGType.Create(skEnum, ResTypeName);
     ATypeInfo.Value.AsString := AResText;
@@ -1354,7 +1357,7 @@ var
 
   procedure DoSet;
   begin
-    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
       exit;
     ATypeInfo := TDBGType.Create(skSet, ResTypeName);
     ATypeInfo.Value.AsString := AResText;
@@ -1368,7 +1371,7 @@ var
     DBGType: TGDBType;
     f: TDBGField;
   begin
-    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
       exit;
     ATypeInfo := TDBGType.Create(skRecord, ResTypeName);
     ATypeInfo.Value.AsString := AResText;
@@ -1382,7 +1385,7 @@ var
         else
           begin
             DBGType := TGDBType.Create(skSimple, ResTypeName(m));
-            PrintPasValue(s2, m, ctx.SizeOfAddress, []);
+            FPrettyPrinter.PrintValue(s2, m, []);
             DBGType.Value.AsString := s2;
             n := '';
             if m.DbgSymbol <> nil then n := m.DbgSymbol.Name;
@@ -1405,7 +1408,7 @@ var
     PasExpr2: TFpPascalExpression;
   begin
     if (ResValue.Kind = skClass) and (ResValue.AsCardinal = 0) then begin
-      if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+      if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
         exit;
       ATypeInfo := TDBGType.Create(skSimple, ResTypeName);
       ATypeInfo.Value.AsString := AResText;
@@ -1437,7 +1440,7 @@ var
     end;
 
 
-    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
       exit;
     if CastName <> '' then AResText := CastName + AResText;
     //if PasExpr.ResultValue.Kind = skObject then
@@ -1455,7 +1458,7 @@ var
         else
           begin
             DBGType := TGDBType.Create(skSimple, ResTypeName(m));
-            PrintPasValue(s2, m, ctx.SizeOfAddress, []);
+            FPrettyPrinter.PrintValue(s2, m, []);
             DBGType.Value.AsString := s2;
             n := '';
             if m.DbgSymbol <> nil then n := m.DbgSymbol.Name;
@@ -1471,7 +1474,7 @@ var
 
   procedure DoArray;
   begin
-    if not PrintPasValue(AResText, ResValue, ctx.SizeOfAddress, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
       exit;
     ATypeInfo := TDBGType.Create(skArray, ResTypeName);
     ATypeInfo.Value.AsString := AResText;
@@ -1499,6 +1502,7 @@ begin
   else
     Ctx := GetInfoContextForContext(CurrentThreadId, CurrentStackFrame);
   if Ctx = nil then exit;
+  FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
 
   PasExpr := TFpPascalExpression.Create(AExpression, Ctx);
   try

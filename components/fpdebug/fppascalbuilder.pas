@@ -28,17 +28,36 @@ type
   );
   TTypeDeclarationFlags = set of TTypeDeclarationFlag;
 
-  TPrintPasValFlag = (
+  TFpPrettyPrintValueFlag = (
     ppvSkipClassBody, ppvSkipRecordBody
   );
-  TPrintPasValFlags = set of TPrintPasValFlag;
+  TFpPrettyPrintValueFlags = set of TFpPrettyPrintValueFlag;
+
+
+  { TFpPascalPrettyPrinter }
+
+  TFpPascalPrettyPrinter = class
+  private
+    FAddressSize: Integer;
+    function InternalPrintValue(out APrintedValue: String;
+                                AValue: TFpDbgValue;
+                                AnAddressSize: Integer;
+                                AFlags: TFpPrettyPrintValueFlags;
+                                ANestLevel: Integer; AnIndent: String
+                               ): Boolean;
+  public
+    constructor Create(AnAddressSize: Integer);
+    function PrintValue(out APrintedValue: String;
+                        AValue: TFpDbgValue;
+                        AFlags: TFpPrettyPrintValueFlags = []): Boolean;
+    property AddressSize: Integer read FAddressSize write FAddressSize;
+  end;
+
+
 
 function GetTypeName(out ATypeName: String; ADbgSymbol: TFpDbgSymbol; AFlags: TTypeNameFlags = []): Boolean;
 function GetTypeAsDeclaration(out ATypeDeclaration: String; ADbgSymbol: TFpDbgSymbol;
   AFlags: TTypeDeclarationFlags = []; AnIndent: Integer = 0): Boolean;
-
-function PrintPasValue(out APrintedValue: String; AResValue: TFpDbgValue;
-  AnAddrSize: Integer; AFlags: TPrintPasValFlags = []): Boolean;
 
 implementation
 
@@ -395,13 +414,17 @@ begin
     ATypeDeclaration := GetIndent + ATypeDeclaration;
 end;
 
-function PrintPasValue(out APrintedValue: String; AResValue: TFpDbgValue;
-  AnAddrSize: Integer; AFlags: TPrintPasValFlags): Boolean;
+{ TFpPascalPrettyPrinter }
+
+function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
+  AValue: TFpDbgValue; AnAddressSize: Integer; AFlags: TFpPrettyPrintValueFlags;
+  ANestLevel: Integer; AnIndent: String): Boolean;
+
 
   function ResTypeName: String;
   begin
-    if not((AResValue.TypeInfo<> nil) and
-           GetTypeName(Result, AResValue.TypeInfo, []))
+    if not((AValue.TypeInfo<> nil) and
+           GetTypeName(Result, AValue.TypeInfo, []))
     then
       Result := '';
   end;
@@ -412,38 +435,38 @@ function PrintPasValue(out APrintedValue: String; AResValue: TFpDbgValue;
     v: QWord;
   begin
     s := ResTypeName;
-    v := AResValue.AsCardinal;
+    v := AValue.AsCardinal;
     if v = 0 then
       APrintedValue := 'nil'
     else
-      APrintedValue := '$'+IntToHex(AResValue.AsCardinal, AnAddrSize);
+      APrintedValue := '$'+IntToHex(AValue.AsCardinal, AnAddressSize);
     if s <> '' then
       APrintedValue := s + '(' + APrintedValue + ')';
 
-    if svfString in AResValue.FieldFlags then
-      APrintedValue := APrintedValue + ' ' + AResValue.AsString;
+    if svfString in AValue.FieldFlags then
+      APrintedValue := APrintedValue + ' ' + AValue.AsString;
 
     Result := True;
   end;
 
   procedure DoInt;
   begin
-    APrintedValue := IntToStr(AResValue.AsInteger);
+    APrintedValue := IntToStr(AValue.AsInteger);
     Result := True;
   end;
 
   procedure DoCardinal;
   begin
-    APrintedValue := IntToStr(AResValue.AsCardinal);
+    APrintedValue := IntToStr(AValue.AsCardinal);
     Result := True;
   end;
 
   procedure DoBool;
   begin
-    if AResValue.AsBool then begin
+    if AValue.AsBool then begin
       APrintedValue := 'True';
-      if AResValue.AsCardinal <> 1 then
-        APrintedValue := APrintedValue + '(' + IntToStr(AResValue.AsCardinal) + ')';
+      if AValue.AsCardinal <> 1 then
+        APrintedValue := APrintedValue + '(' + IntToStr(AValue.AsCardinal) + ')';
     end
     else
       APrintedValue := 'False';
@@ -452,13 +475,13 @@ function PrintPasValue(out APrintedValue: String; AResValue: TFpDbgValue;
 
   procedure DoChar;
   begin
-    APrintedValue := '''' + AResValue.AsString + ''''; // Todo escape
+    APrintedValue := '''' + AValue.AsString + ''''; // Todo escape
     Result := True;
   end;
 
   procedure DoFloat;
   begin
-    APrintedValue := FloatToStr(AResValue.AsFloat);
+    APrintedValue := FloatToStr(AValue.AsFloat);
     Result := True;
   end;
 
@@ -466,20 +489,20 @@ function PrintPasValue(out APrintedValue: String; AResValue: TFpDbgValue;
   var
     s: String;
   begin
-    APrintedValue := AResValue.AsString;
+    APrintedValue := AValue.AsString;
     if APrintedValue = '' then begin
       s := ResTypeName;
-      APrintedValue := s + '(' + IntToStr(AResValue.AsCardinal) + ')';
+      APrintedValue := s + '(' + IntToStr(AValue.AsCardinal) + ')';
     end;
     Result := True;
   end;
 
   procedure DoEnumVal;
   begin
-    APrintedValue := AResValue.AsString;
+    APrintedValue := AValue.AsString;
     if APrintedValue <> '' then
       APrintedValue := APrintedValue + ':=';
-    APrintedValue := APrintedValue+ IntToStr(AResValue.AsCardinal);
+    APrintedValue := APrintedValue+ IntToStr(AValue.AsCardinal);
     Result := True;
   end;
 
@@ -490,8 +513,8 @@ function PrintPasValue(out APrintedValue: String; AResValue: TFpDbgValue;
     m: TFpDbgValue;
   begin
     APrintedValue := '';
-    for i := 0 to AResValue.MemberCount-1 do begin
-      m := AResValue.Member[i];
+    for i := 0 to AValue.MemberCount-1 do begin
+      m := AValue.Member[i];
       if svfIdentifier in m.FieldFlags then
         s := m.AsString
       else
@@ -512,22 +535,22 @@ function PrintPasValue(out APrintedValue: String; AResValue: TFpDbgValue;
     s, s2: String;
     i: Integer;
     m: TFpDbgValue;
-    fl: TPrintPasValFlags;
+    fl: TFpPrettyPrintValueFlags;
   begin
-    if (AResValue.Kind = skClass) and (AResValue.AsCardinal = 0) then begin
+    if (AValue.Kind = skClass) and (AValue.AsCardinal = 0) then begin
       APrintedValue := 'nil';
       Result := True;
       exit;
     end;
 
-    if ( (AResValue.Kind in [skClass, skObject]) and (ppvSkipClassBody in AFlags) ) or
-       ( (AResValue.Kind in [skRecord]) and (ppvSkipRecordBody in AFlags) )
+    if ( (AValue.Kind in [skClass, skObject]) and (ppvSkipClassBody in AFlags) ) or
+       ( (AValue.Kind in [skRecord]) and (ppvSkipRecordBody in AFlags) )
     then begin
       APrintedValue := ResTypeName;
-      case AResValue.Kind of
+      case AValue.Kind of
         skRecord: APrintedValue := '{record:}' + APrintedValue;
         skObject: APrintedValue := '{object:}' + APrintedValue;
-        skClass:  APrintedValue := '{class:}' + APrintedValue + '(' + '$'+IntToHex(AResValue.AsCardinal, AnAddrSize) + ')';
+        skClass:  APrintedValue := '{class:}' + APrintedValue + '(' + '$'+IntToHex(AValue.AsCardinal, AnAddressSize) + ')';
       end;
       Result := True;
       exit;
@@ -540,12 +563,12 @@ function PrintPasValue(out APrintedValue: String; AResValue: TFpDbgValue;
     //  fl := [ppvSkipClassBody, ppvSkipRecordBody];
 
     APrintedValue := '';
-    for i := 0 to AResValue.MemberCount-1 do begin
-      m := AResValue.Member[i];
+    for i := 0 to AValue.MemberCount-1 do begin
+      m := AValue.Member[i];
       if (m = nil) or (m.Kind in [skProcedure, skFunction]) then
         continue;
       s := '';
-      PrintPasValue(s, m, AnAddrSize, fl);
+      InternalPrintValue(s, m, AnAddressSize, fl, ANestLevel+1, AnIndent);
       if m.DbgSymbol <> nil then
         s := m.DbgSymbol.Name + ' = ' + s;
       if APrintedValue = ''
@@ -564,36 +587,47 @@ function PrintPasValue(out APrintedValue: String; AResValue: TFpDbgValue;
     c, d: Integer;
   begin
     APrintedValue := '';
-    c := AResValue.MemberCount;
-    if (c = 0) and (svfOrdinal in AResValue.FieldFlags) then begin  // dyn array
+    c := AValue.MemberCount;
+    if (c = 0) and (svfOrdinal in AValue.FieldFlags) then begin  // dyn array
       APrintedValue := 'nil';
       Result := True;
       exit;
     end;
-    if c > 500 then c := 500;
+    if (ANestLevel > 2) then begin
+      s := ResTypeName;
+      APrintedValue := s+'(...)'; // TODO len and addr (dyn array)
+      Result := True;
+      exit;
+    end;
+    if      (ANestLevel > 1) and (c > 5) then c := 5
+    else if (ANestLevel > 0) and (c > 15) then c := 15
+    else if (c > 500) then c := 500;
     d := 0;
     // TODO: use valueobject for bounds
-    if (AResValue.IndexTypeCount > 0) and AResValue.IndexType[0].HasBounds then
-      d := AResValue.IndexType[0].OrdLowBound;
+    if (AValue.IndexTypeCount > 0) and AValue.IndexType[0].HasBounds then
+      d := AValue.IndexType[0].OrdLowBound;
     for i := d to d + c - 1 do begin
-      m := AResValue.Member[i];
+      m := AValue.Member[i];
       if m <> nil then
-        PrintPasValue(s, m, AnAddrSize, AFlags)
+        InternalPrintValue(s, m, AnAddressSize, AFlags, ANestLevel+1, AnIndent)
       else
         s := '{error}';
       if APrintedValue = ''
       then APrintedValue := s
       else APrintedValue := APrintedValue + ', ' + s;
     end;
-    if c < AResValue.MemberCount then
+    if c < AValue.MemberCount then
       APrintedValue := APrintedValue + ', ...';
     APrintedValue := '(' + APrintedValue + ')';
     Result := True;
   end;
-
 begin
+  if ANestLevel > 0 then begin
+    AnIndent := AnIndent + '  ';
+  end;
+
   Result := False;
-  case AResValue.Kind of
+  case AValue.Kind of
     skUnit: ;
     skProcedure: ;
     skFunction: ;
@@ -618,11 +652,20 @@ begin
     skArray:     DoArray;
   end;
 
-  if IsError(AResValue.LastError) then
-    APrintedValue := ErrorHandler.ErrorAsString(AResValue.LastError);
-
+  if IsError(AValue.LastError) then
+    APrintedValue := ErrorHandler.ErrorAsString(AValue.LastError);
 end;
 
+constructor TFpPascalPrettyPrinter.Create(AnAddressSize: Integer);
+begin
+  FAddressSize := AnAddressSize;
+end;
+
+function TFpPascalPrettyPrinter.PrintValue(out APrintedValue: String; AValue: TFpDbgValue;
+  AFlags: TFpPrettyPrintValueFlags): Boolean;
+begin
+  InternalPrintValue(APrintedValue, AValue, AddressSize, AFlags, 0, '');
+end;
 
 end.
 
