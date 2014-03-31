@@ -1491,7 +1491,7 @@ begin
   n := 0;
   repeat
     Stop := (p^ and $80) = 0;
-    Result := Result + (p^ and $7F) shl n;
+    Result := Result + QWord(p^ and $7F) shl n;
     Inc(n, 7);
     Inc(p);
   until Stop or (n > 128);
@@ -1506,7 +1506,7 @@ begin
   n := 0;
   repeat
     Stop := (p^ and $80) = 0;
-    Result := Result + (p^ and $7F) shl n;
+    Result := Result + Int64(p^ and $7F) shl n;
     Inc(n, 7);
     Inc(p);
   until Stop or (n > 128);
@@ -4248,7 +4248,7 @@ var
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
-    AValue := MemManager.ReadAddress(AnAddress, ASize);
+    Result := MemManager.ReadAddress(AnAddress, ASize, AValue);
     if not Result then
       SetError;
   end;
@@ -4258,6 +4258,7 @@ var
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
     AValue := MemManager.ReadAddressEx(AnAddress, AnAddrSpace, ASize);
+    Result := IsValidLoc(AValue);
     if not Result then
       SetError;
   end;
