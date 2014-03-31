@@ -163,7 +163,10 @@ var
     while (i < c) and Result do begin
       m := ADbgSymbol.Member[i];
       AddVisibility(m.MemberVisibility, i= 0);
-      Result := GetTypeAsDeclaration(s, m, [tdfIncludeVarName] + AFlags, AnIndent + 4);
+      if tdfStopAfterPointer in AFlags then
+        Result := GetTypeName(s, m)
+      else
+        Result := GetTypeAsDeclaration(s, m, [tdfIncludeVarName, tdfStopAfterPointer] + AFlags, AnIndent + 4);
       if Result then
         AText := AText + GetIndent + s + ';' + LineEnding;
       inc(i);
@@ -179,15 +182,13 @@ var
       ADbgSymbol := ADbgSymbol.TypeInfo;
       s := s + '^';
     end;
-    if not(tdfStopAfterPointer in AFlags) then begin
-      Result := GetTypeAsDeclaration(ADeclaration, ADbgSymbol, AFlags);
-      if not Result then
-        Result := GetTypeName(ADeclaration, ADbgSymbol, []);
+    if (tdfStopAfterPointer in AFlags) then begin
+      Result := GetTypeName(ADeclaration, ADbgSymbol, []);
     end
     else begin
-      Result := GetTypeName(ADeclaration, ADbgSymbol, []);
+      Result := GetTypeAsDeclaration(ADeclaration, ADbgSymbol, AFlags + [tdfStopAfterPointer]);
       if not Result then
-        Result := GetTypeAsDeclaration(ADeclaration, ADbgSymbol, AFlags);
+        Result := GetTypeName(ADeclaration, ADbgSymbol, []);
     end;
     if NeedBracket(ADeclaration)
     then ADeclaration := s + '(' + ADeclaration + ')'
@@ -353,7 +354,10 @@ var
 
     s := t.Name;
     if s = '' then begin
-      Result := GetTypeAsDeclaration(s, t, [tdfNoFirstLineIndent, tdfStopAfterPointer] + AFlags, AnIndent + 4); // no class ?
+      if tdfStopAfterPointer in AFlags then
+        Result := GetTypeName(s, t)
+      else
+        Result := GetTypeAsDeclaration(s, t, [tdfNoFirstLineIndent, tdfStopAfterPointer] + AFlags, AnIndent + 4); // no class ?
       if not Result then exit;
     end;
 
