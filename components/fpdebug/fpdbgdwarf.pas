@@ -2242,10 +2242,10 @@ begin
   if (f * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
     exit;
 
-  //if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) and
-  //   (FTypeCastSourceValue.Size = FTypeCastTargetType.Size)
-  //then
-  //  exit;
+  if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) and
+     (FTypeCastSourceValue.Size = FTypeCastTargetType.Size)
+  then
+    exit;
 
   Result := False;
 end;

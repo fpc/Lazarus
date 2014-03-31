@@ -355,6 +355,8 @@ var
 
   // dummy, ensure "pointer" is in debug info
   ArrayGlob_DummyPointer: Pointer;
+  ArrayGlob_DummyPInteger: PInteger;
+
 procedure Test1;
 
 implementation

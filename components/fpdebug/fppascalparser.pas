@@ -487,12 +487,15 @@ type
     procedure IncRefLevel;
   end;
 
-  { TFpPasParserValueDerefPointer }
+  { TFpPasParserValueDerefPointer
+    Used as address source in typecast
+  }
 
   TFpPasParserValueDerefPointer = class(TFpPasParserValue)
   private
     FValue: TFpDbgValue;
     FExpression: TFpPascalExpression; // MemReader / AddrSize
+    FAddressOffset: Int64; // Add to address
     FCardinal: QWord; // todo: TFpDbgMemLocation ?
     FCardinalRead: Boolean;
   protected
@@ -502,9 +505,10 @@ type
     function GetAddress: TFpDbgMemLocation; override;
     function GetSize: Integer; override;
     function GetAsCardinal: QWord; override; // reads men
-    function GetTypeInfo: TFpDbgSymbol; override;
+    function GetTypeInfo: TFpDbgSymbol; override; // TODO: Cardinal? Why? // TODO: does not handle AOffset
   public
     constructor Create(AValue: TFpDbgValue; AExpression: TFpPascalExpression);
+    constructor Create(AValue: TFpDbgValue; AExpression: TFpPascalExpression; AOffset: Int64);
     destructor Destroy; override;
   end;
 
@@ -679,6 +683,13 @@ end;
 function TFpPasParserValueDerefPointer.GetAddress: TFpDbgMemLocation;
 begin
   Result := FValue.DataAddress;
+  if FAddressOffset <> 0 then begin
+    assert(IsTargetAddr(Result ), 'TFpPasParserValueDerefPointer.GetAddress: TargetLoc(Result)');
+    if IsTargetAddr(Result) then
+      Result.Address := Result.Address + FAddressOffset
+    else
+      Result := InvalidLoc;
+  end;
 end;
 
 function TFpPasParserValueDerefPointer.GetSize: Integer;
@@ -734,10 +745,17 @@ end;
 constructor TFpPasParserValueDerefPointer.Create(AValue: TFpDbgValue;
   AExpression: TFpPascalExpression);
 begin
+  Create(AValue, AExpression, 0);
+end;
+
+constructor TFpPasParserValueDerefPointer.Create(AValue: TFpDbgValue;
+  AExpression: TFpPascalExpression; AOffset: Int64);
+begin
   inherited Create;
   FValue := AValue;
   FValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserDerefPointerSymbolValue'){$ENDIF};
   FExpression := AExpression;
+  FAddressOffset := AOffset;
 end;
 
 destructor TFpPasParserValueDerefPointer.Destroy;
@@ -921,8 +939,10 @@ end;
 
 function TFpPascalExpressionPartBracketIndex.DoGetResultValue: TFpDbgValue;
 var
-  TmpVal, TmpVal2, TmpIndex: TFpDbgValue;
+  TmpVal, TmpVal2, TmpIndex, TmpDeref: TFpDbgValue;
   i: Integer;
+  Offs: Int64;
+  ti: TFpDbgSymbol;
 begin
   Result := nil;
   assert(Count >= 2, 'TFpPascalExpressionPartBracketIndex.DoGetResultValue: Count >= 2');
@@ -945,7 +965,7 @@ begin
         TmpVal2 := TmpVal.Member[TmpIndex.AsInteger]
       else
       if (svfOrdinal in TmpIndex.FieldFlags) and
-         (TmpIndex.AsCardinal <= high(Integer))
+         (TmpIndex.AsCardinal <= high(Int64))
       then
         TmpVal2 := TmpVal.Member[TmpIndex.AsCardinal]
       else
@@ -954,13 +974,37 @@ begin
         TmpVal.ReleaseReference;
         exit;
       end;
+      if TmpVal2 <> nil then TmpVal2.AddReference;
     end // Kind = skArray
     else
     if (TmpVal.Kind = skPointer) then begin
-      //Result := TmpVal.TypeInfo;
-      SetError('Not implemented');
-      TmpVal.ReleaseReference;
-      exit;
+      if (TmpVal.TypeInfo = nil) or (TmpVal.TypeInfo.TypeInfo = nil) or
+         (TmpVal.TypeInfo.TypeInfo.Size <= 0)
+      then begin
+        SetError('Can not dereference an untyped pointer');
+        TmpVal.ReleaseReference;
+        exit;
+      end;
+      // TODO: check svfDataAddress / readable ? (see normal pointer deref);
+      ti := TmpVal.TypeInfo.TypeInfo;
+      if (svfInteger in TmpIndex.FieldFlags) then
+        Offs := TmpIndex.AsInteger
+      else
+      if (svfOrdinal in TmpIndex.FieldFlags) and (TmpIndex.AsCardinal <= high(Int64))
+      then
+        Offs := Int64(TmpIndex.AsCardinal)
+      else
+      begin
+        SetError('Can not calculate Index');
+        TmpVal.ReleaseReference;
+        exit;
+      end;
+      {$PUSH}{$R-}{$Q-} // TODO: check overflow
+      Offs := Offs * ti.Size;
+      {$POP}
+      TmpDeref := TFpPasParserValueDerefPointer.Create(TmpVal, Expression, Offs);
+      TmpVal2 := ti.TypeCastValue(TmpDeref);
+      TmpDeref.ReleaseReference;
     end
     else
     if (TmpVal.Kind = skString) then begin
@@ -981,7 +1025,6 @@ begin
       TmpVal.ReleaseReference;
       exit;
     end;
-    TmpVal2.AddReference;
     TmpVal.ReleaseReference;
     TmpVal := TmpVal2;
   end;

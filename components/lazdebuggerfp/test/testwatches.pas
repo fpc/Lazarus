@@ -14,7 +14,7 @@ const
   BREAK_LINE_TestWatchesUnitSimple_2 = 570;
   BREAK_LINE_TestWatchesUnitSimple_3 = 578;
 
-  BREAK_LINE_TestWatchesUnitArray = 840;
+  BREAK_LINE_TestWatchesUnitArray = 842;
 
 type
 
@@ -662,6 +662,16 @@ if not (i in [2,3]) then // open array / TODO
 
   end; // i
   {%endregion  Fields }
+
+//TODO
+  AddSimpleInt('PInteger(Field_DynInt1)[0]',  5511, M_Int);
+  AddSimpleInt('PInteger(Field_DynInt1)[1]',  5512, M_Int);
+  AddSimpleInt('PInteger(Field_DynInt1)[2]',  5513, M_Int);
+
+  AddSimpleInt('^LongInt(Field_DynInt1)[0]',  5511, M_Int);
+  AddSimpleInt('^LongInt(Field_DynInt1)[1]',  5512, M_Int);
+  AddSimpleInt('^LongInt(Field_DynInt1)[2]',  5513, M_Int);
+
 end;
 
 procedure TTestWatches.RunTestWatches(NamePreFix: String; TestExeName, ExtraOpts: String;
