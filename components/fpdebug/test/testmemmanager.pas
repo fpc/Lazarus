@@ -10,8 +10,6 @@ uses
 
 type
 
-  { TestDwarfVarious }
-
   { TTestMemManager }
 
   TTestMemManager = class(TTestCase)

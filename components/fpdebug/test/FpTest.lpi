@@ -45,7 +45,7 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="10">
       <Unit0>
         <Filename Value="FpTest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -91,6 +91,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestPascalParser"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="testerrorhandler.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestErrorHandler"/>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

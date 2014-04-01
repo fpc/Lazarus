@@ -253,6 +253,7 @@ begin
     s := Result;
     UniqueString(s);
     RealData[l].VAnsiString := pointer(s);
+    RealData[l].VType := vtAnsiString;
     // to do : Errorcode may be mapped, if required by outer error
     Result := ErrorAsString(AnError[i].ErrorCode, RealData);
     dec(i);
@@ -271,11 +272,16 @@ begin
   SetLength(RealData, Length(AData) + 1);
   s := LineEnding;
   RealData[0].VAnsiString := Pointer(s); // first arg is always line end
+  RealData[0].VType := vtAnsiString;
   for i := 0 to Length(AData) - 1 do
     RealData[i + 1] := AData[i];
   s := GetErrorRawString(AnErrorCode);
   if s = '' then s := 'Internal Error: ' + IntToStr(AnErrorCode);
-  Result := Format(s, RealData);
+  try
+    Result := Format(s, RealData);
+  except
+    Result := 'Internal Error(2): ' + IntToStr(AnErrorCode);
+  end;
 end;
 
 finalization
