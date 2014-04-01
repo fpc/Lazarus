@@ -21,6 +21,9 @@ type
 
   TFpGDBMIDebugger = class;
 
+  TGDBMIDebuggerCommandMemReader = class(TGDBMIDebuggerCommand)
+  end;
+
   { TFpGDBMIDbgMemReader }
 
   TFpGDBMIDbgMemReader = class(TFpDbgMemReaderBase)
@@ -29,11 +32,13 @@ type
     //FThreadId: Integer;
     //FStackFrame: Integer;
     FDebugger: TFpGDBMIDebugger;
+    FCmd: TGDBMIDebuggerCommandMemReader;
   protected
     // TODO: needs to be handled by memory manager
     FThreadId, FStackFrame: Integer;
   public
     constructor Create(ADebugger: TFpGDBMIDebugger);
+    destructor Destroy; override;
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadMemoryEx({%H-}AnAddress, {%H-}AnAddressSpace:{%H-} TDbgPtr; ASize: {%H-}Cardinal; ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean; override;
@@ -273,24 +278,25 @@ end;
 constructor TFpGDBMIDbgMemReader.Create(ADebugger: TFpGDBMIDebugger);
 begin
   FDebugger := ADebugger;
+  FCmd := TGDBMIDebuggerCommandMemReader.Create(ADebugger);
 end;
 
-type TGDBMIDebuggerCommandHack = class(TGDBMIDebuggerCommand) end;
+destructor TFpGDBMIDbgMemReader.Destroy;
+begin
+  FCmd.ReleaseReference;
+  inherited Destroy;
+end;
 
 function TFpGDBMIDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
   ADest: Pointer): Boolean;
 var
-  cmd: TGDBMIDebuggerCommandHack;
   R: TGDBMIExecResult;
   MemDump: TGDBMIMemoryDumpResultList;
   i: Integer;
 begin
   Result := False;
 
-  cmd := TGDBMIDebuggerCommandHack(TFpGDBMIDebugger(FDebugger).CurrentCommand);
-  if cmd = nil then exit;
-
-  if not cmd.ExecuteCommand('-data-read-memory %u x 1 1 %u', [AnAddress, ASize], R, [cfNoThreadContext, cfNoStackContext])
+  if not FCmd.ExecuteCommand('-data-read-memory %u x 1 1 %u', [AnAddress, ASize], R, [cfNoThreadContext, cfNoStackContext])
   then
     exit;
   if R.State = dsError then exit;
