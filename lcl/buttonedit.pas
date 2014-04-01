@@ -1,20 +1,23 @@
 {
- /***************************************************************************
-                               editbtn.pas
-                               -----------
-                Component Library Extended dialogs Controls
 
-
- ***************************************************************************/
+ TButtonEdit Component
+ (Relacement for TEditButton component)
 
  *****************************************************************************
-  This file is part of the Lazarus Component Library (LCL)
-
-  See the file COPYING.modifiedLGPL.txt, included in this distribution,
-  for details about the license.
+ *                                                                           *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
  *****************************************************************************
+
+ Original Author of TCustomButtonEdit: Derit Agustin
+
 }
-unit EditBtn;
+unit ButtonEdit;
 
 {$mode objfpc}{$H+}
 
@@ -22,130 +25,228 @@ unit EditBtn;
 
 interface
 
-{$IFDEF USEBUTTONEDIT}
 uses
-  ButtonEdit;
-
-type
-  TCustomEditButton = ButtonEdit.TCustomEditButton;
-  TEditButton = ButtonEdit.TEditButton;
-  TCheckItemEvent = ButtonEdit.TCheckEventItem;
-  TCustomControlFilterEdit = ButtonEdit.TCustomControlFilterEdit;
-  TAcceptFileNameEvent = ButtonEdit.TAcceptFileNameEvent;
-  TDialogKind = ButtonEdit.TDialogKind;
-  TFileNameEdit = ButtonEdit.TFileNameEdit;
-  TDirectoryEdit = ButtonEdit.TDirectoryEdit;
-  TAcceptDateEvent = ButtonEdit.TAcceptDateEvent;
-  TCustomDateEvent = ButtonEdit.TCustomDateEvent;
-  TDateOrder = ButtonEdit.TDateOrder;
-  TDateEdit = ButtonEdit.TDateEdit;
-  TAcceptValueEvent = ButtonEdit.TAcceptValueEvent;
-  TCalcEdit = ButtonEdit.CalcEdit;
-
-{$ELSE}
-
-uses
-  Classes, SysUtils, LCLProc, LResources, LCLStrConsts, LCLType, LMessages,
+  Classes, SysUtils, LCLProc, LResources, LCLStrConsts, Types, LCLType, LMessages,
   Graphics, Controls, Forms, FileUtil, Dialogs, StdCtrls, Buttons, Calendar,
   ExtDlgs, CalendarPopup, MaskEdit, Menus;
-
 
 const
   NullDate: TDateTime = 0;
 
 type
 
-  { TCustomEditButton }
+  
+  TButtonAlign = (BaLeft, BaRight);
 
-  TCustomEditButton = class(TCustomMaskEdit)
+  { TBEEdit }
+
+  TBeEdit = class(TCustomMaskedit)
+  protected
+    procedure DoEnter; override;
+    procedure DoExit; override;
+  end;
+
+  { TCustomButtonEdit }
+
+  TCustomButtonEdit = class(TCustomControl)
   private
     FButton: TSpeedButton;
-    FButtonNeedsFocus: Boolean;
+    FButtonAlign: TButtonAlign;
+    FButtonOnlyWhenFocused: Boolean;
     FDirectInput: Boolean;
-    FIsReadOnly: boolean;
-    FOnButtonClick : TNotifyEvent;
+    FEdit: TBeEdit;
+    FFlat: Boolean;
+    //Forwarded events from FButton
+    FOnButtonClick: TNotifyEvent;
+    //Forwarded events from FEdit
+    FOnEditClick: TNotifyEvent;
+    FOnEditChange: TNotifyEvent;
+    FOnEditDblClick: TNotifyEvent;
+    FOnEditDragDrop: TDragDropEvent;
+    FOnEditDragOver: TDragOverEvent;
+    FOnEditEditingDone: TNotifyEvent;
+    FOnEditEndDrag: TEndDragEvent;
+    FOnEditExit: TNotifyEvent;
+    FOnEditKeyDown: TKeyEvent;
+    FOnEditKeyPress: TKeyPressEvent;
+    FOnEditEnter: TNotifyEvent;
+    FOnEditKeyUp: TKeyEvent;
+    FOnEditMouseDown: TMouseEvent;
+    FOnEditMouseUp: TMouseEvent;
+    FOnEditMouseEnter: TNotifyEvent;
+    FOnEditMouseLeave: TNotifyEvent;
+    FOnEditMouseMove: TMouseMoveEvent;
+    FOnEditStartDrag: TStartDragEvent;
+    FOnEditUtf8KeyPress: TUtf8KeyPressEvent;
+
+    function GetAlignment: TAlignment;
+    function GetAutoSelect: Boolean;
+    function GetBtnCaption: TCaption;
     function GetButtonHint: TTranslateString;
     function GetButtonWidth: Integer;
+    function GetCharCase: TEditCharCase;
+    function GetColor: TColor;
     function GetDirectInput: Boolean;
-    function GetFlat: Boolean;
-    procedure SetButtonHint(const AValue: TTranslateString);
-    procedure SetButtonNeedsFocus(const AValue: Boolean);
-    procedure SetButtonWidth(const AValue: Integer);
-    procedure SetDirectInput(const AValue: Boolean);
-    procedure SetFlat(const AValue: Boolean);
-    procedure SetGlyph(Pic: TBitmap);
-    function GetGlyph : TBitmap;
-    procedure SetNumGlyphs(ANumber: Integer);
-    function GetNumGlyphs:Integer;
-    function GetMinHeight: Integer;
-    procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
-    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    function GetEchoMode: TEchoMode;
+    function GetEditMask: String;
+    function GetGlyph: TBitmap;
+    function GetHideSelection: Boolean;
+    function GetMaxLength: Integer;
+    function GetNumbersOnly: Boolean;
+    function GetNumGlyps: Integer;
+    function GetPasswordChar: char;
+    function GetReadOnly: Boolean;
+    function GetText: TCaption;
     function IsCustomGlyph : Boolean;
+
+    procedure DoEditClick(Sender: TObject);
+    procedure DoEditDragDrop(Sender, Source: TObject; X,Y: Integer);
+    procedure DoEditDragOver(Sender, Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean);
+    procedure DoEditEditingDone(Sender: TObject);
+    procedure DoEditEndDrag(Sender, Target: TObject; X,Y: Integer);
+    procedure DoEditKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+    procedure DoEditKeyPress(Sender: TObject; var Key: char);
+    procedure DoEditKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
+    procedure DoEditMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure DoEditMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure DoEditMouseEnter(Sender: TObject);
+    procedure DoEditMouseLeave(Sender: TObject);
+    procedure DoEditMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure DoEditUtf8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure DoEditStartDrag(Sender: TObject; var DragObject: TDragObject);
+
+    procedure SetAlignment(AValue: TAlignment);
+    procedure SetAutoSelect(AValue: Boolean);
+    procedure SetButtonAlign(AValue: TButtonAlign);
+    procedure SetBtnCaption(AValue: TCaption);
+    procedure SetButtonHint(AValue: TTranslateString);
+    procedure SetButtonOnlyWhenFocused(AValue: Boolean);
+    procedure SetButtonWidth(AValue: Integer);
+    procedure SetCharCase(AValue: TEditCharCase);
+    procedure SetDirectInput(AValue: Boolean);
+    procedure SetEchoMode(AValue: TEchoMode);
+    procedure SetEditMask(AValue: String);
+    procedure SetFlat(AValue: Boolean);
+    procedure SetGlyph(AValue: TBitmap);
+    procedure SetHideSelection(AValue: Boolean);
+    procedure SetMaxLength(AValue: Integer);
+    procedure SetNumbersOnly(AValue: Boolean);
+    procedure SetNumGlyphs(AValue: Integer);
+    procedure SetPasswordChar(AValue: char);
+    procedure SetPopupMenu(AValue: TPopupMenu);
+    procedure SetReadOnly(AValue: Boolean);
+    procedure SetText(AValue: TCaption);
   protected
-    procedure CheckButtonVisible;
-    function CalcButtonVisible: boolean; virtual;
-    function CalcButtonEnabled: Boolean; virtual;
-    function GetReadOnly: Boolean; override;
+    class function GetControlClassDefaultSize: TSize; override;
+    function CalcButtonVisible: Boolean; virtual;
     function GetDefaultGlyph: TBitmap; virtual;
     function GetDefaultGlyphName: String; virtual;
-    procedure SetParent(AParent: TWinControl); override;
-    procedure SetReadOnly(AValue: Boolean); override;
-    procedure DoPositionButton; virtual;
-    procedure DoButtonClick (Sender: TObject); virtual;
+    function GetPopupMenu: TPopupMenu; override;
+    procedure CheckButtonVisible;
+
+    procedure DoButtonClick(Sender: TObject);  virtual;
+
+    procedure DoEditDblClick(Sender: TObject); virtual;
+    procedure DoEditEnter(Sender: TObject); virtual;
+    procedure DoEditExit(Sender: TObject); virtual;
+    procedure DoEditTextChange(Sender: TObject); virtual;
+
+
     procedure Loaded; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure CMVisibleChanged(var Msg: TLMessage); message CM_VISIBLECHANGED;
-    procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
-    procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
-    // New properties.
-    property ButtonWidth : Integer read GetButtonWidth write SetButtonWidth;
-    property DirectInput : Boolean read GetDirectInput write SetDirectInput default True;
-    property Glyph : TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
-    property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs;
-    property OnButtonClick : TNotifyEvent read FOnButtonClick write FOnButtonClick;
+    procedure SetAutoSize(AValue: Boolean); override;
+    procedure SetColor(AValue: TColor); override;
+    procedure SetCursor(AValue: TCursor); override;
+
+    property AutoSelect: Boolean read GetAutoSelect write SetAutoSelect default True;
+    property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
     property Button: TSpeedButton read FButton;
+    property ButtonAlign: TButtonAlign read FButtonAlign write SetButtonAlign default BaRight;
+    property ButtonCaption: TCaption read GetBtnCaption write SetBtnCaption;
     property ButtonHint: TTranslateString read GetButtonHint write SetButtonHint;
+    property ButtonOnlyWhenFocused: Boolean read FButtonOnlyWhenFocused write SetButtonOnlyWhenFocused default False;
+    property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth;
+    property CharCase: TEditCharCase read GetCharCase write SetCharCase default ecNormal;
+    property Color: TColor read GetColor write SetColor stored True default {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
+    property DirectInput : Boolean read GetDirectInput write SetDirectInput default True;
+    property EchoMode: TEchoMode read GetEchoMode write SetEchoMode default emNormal;
+    property EditMask: String read GetEditMask write SetEditMask;
+    property Flat: Boolean read FFlat write SetFlat default False;
+    property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
+    property HideSelection: Boolean read GetHideSelection write SetHideSelection default False;
+    property MaxLength: Integer read GetMaxLength write SetMaxLength;
+    property NumbersOnly: Boolean read GetNumbersOnly write SetNumbersOnly default False;
+    property NumGlyphs: Integer read GetNumGlyps write SetNumGlyphs;
+    property PasswordChar: char read GetPasswordChar write SetPasswordChar;
+    property PopupMenu: TPopupMenu read GetPopupMenu write SetPopupMenu;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property Text: TCaption read GetText write SetText;
+
+    property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
+    property OnChange: TNotifyEvent read FOnEditChange write FOnEditChange;
+    property OnClick: TNotifyEvent read FOnEditClick write FOnEditClick;
+    property OnDblClick: TNotifyEvent read FOnEditDblClick write FOnEditDblClick;
+    property OnDragDrop: TDragDropEvent read FOnEditDragDrop write FOnEditDragDrop;
+    property OnDragOver: TDragOverEvent read FOnEditDragOver write FOnEditDragOver;
+    property OnEditingDone: TNotifyEvent read FOnEditEditingDone write FOnEditEditingDone;
+    property OnEndDrag: TEndDragEvent read FOnEditEndDrag write FOnEditEndDrag;
+    property OnEnter: TNotifyEvent read FOnEditEnter write FOnEditEnter;
+    property OnExit: TNotifyEvent read FOnEditExit write FOnEditExit;
+    property OnMouseDown: TMouseEvent read FOnEditMouseDown write FOnEditMouseDown;
+    property OnKeyPress: TKeyPressEvent read FOnEditKeyPress write FOnEditKeyPress;
+    property OnKeyUp: TKeyEvent read FOnEditKeyUp write FOnEditKeyUp;
+    property OnMouseEnter: TNotifyEvent read FOnEditMouseEnter write FOnEditMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnEditMouseLeave write FOnEditMouseLeave;
+    property OnMouseMove: TMouseMoveEvent read FOnEditMouseMove write FOnEditMouseMove;
+    property OnMouseUp: TMouseEvent read FOnEditMouseUp write FOnEditMouseUp;
+    property OnStartDrag: TStartDragEvent read FOnEditStartDrag write FOnEditStartDrag;
+    property OnUtf8KeyPress: TUtf8KeyPressEvent read FOnEditUtf8KeyPress write FOnEditUtf8KeyPress;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Flat: Boolean read GetFlat write SetFlat default False;
-    property ButtonOnlyWhenFocused: Boolean read FButtonNeedsFocus write SetButtonNeedsFocus default False;
+
   end;
 
-  { TEditButton }
+ { TButtonEdit }
 
-  TEditButton = class(TCustomEditButton)
-  Public
-    property Button;
+  TButtonEdit = class(TCustomButtonEdit)
   published
-    property AutoSize;
+    property NumbersOnly;
+    property Action;
     property AutoSelect;
+    property AutoSize default False;
     property Align;
+    property Alignment;
     property Anchors;
-    property BidiMode;
+    property BiDiMode;
     property BorderSpacing;
-    property BorderStyle;
+    property BorderStyle default bsNone;
+    property ButtonAlign;
+    property ButtonCaption;
+    property ButtonHint;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
-    property ButtonHint;
     property CharCase;
     property Color;
+    property Constraints;
+    property Cursor;
     property DirectInput;
-    property DragCursor;
-    property DragMode;
     property EchoMode;
     property Enabled;
     property Flat;
     property Font;
     property Glyph;
+    property HideSelection;
+    property Hint;
     property MaxLength;
     property NumGlyphs;
     property OnButtonClick;
     property OnChange;
     property OnClick;
-    property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnContextPopup;
     property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
@@ -154,14 +255,15 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBidiMode;
+    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
-    property ParentShowHint;
     property PasswordChar;
     property PopupMenu;
     property ReadOnly;
@@ -170,7 +272,7 @@ type
     property TabStop;
     property Text;
     property Visible;
-  end;
+  end;                          
 
   // Called when an item is filtered. Returns true if the item passes the filter.
   // Done=False means the data should also be filtered by its title string.
@@ -184,7 +286,7 @@ type
 
   // An abstract base class for edit controls which filter data in
   // visual controls like TListView and TTreeView.
-  TCustomControlFilterEdit = class(TCustomEditButton)
+  TCustomControlFilterEdit = class(TCustomButtonEdit)
   private
     fFilter: string;
     fIdleConnected: Boolean;
@@ -207,9 +309,9 @@ type
     fOnFilterItem: TFilterItemEvent;
     fOnCheckItem: TCheckItemEvent;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure Change; override;
-    procedure DoEnter; override;
-    procedure DoExit; override;
+    procedure DoEditTextChange(Sender: TObject); override;
+    procedure DoEditEnter(Sender: TObject); override;
+    procedure DoEditExit(Sender: TObject); override;
     procedure DoButtonClick (Sender: TObject); override;
     procedure SortAndFilter; virtual; abstract;
     procedure ApplyFilter(Immediately: Boolean = False);
@@ -288,8 +390,8 @@ type
 
   TAcceptFileNameEvent = procedure (Sender : TObject; Var Value : String) of Object;
   TDialogKind = (dkOpen,dkSave,dkPictureOpen,dkPictureSave);
-  
-  TFileNameEdit = class(TCustomEditButton)
+
+  TFileNameEdit = class(TCustomButtonEdit)
   private
     FDialogOptions: TOpenOptions;
     FFileName : String;
@@ -381,11 +483,11 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
   end;
-  
-  
+
+
   { TDirectoryEdit }
-  
-  TDirectoryEdit = class(TCustomEditButton)
+
+  TDirectoryEdit = class(TCustomButtonEdit)
   private
     FDialogTitle: String;
     FRootDir: String;
@@ -457,8 +559,8 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
   end;
-  
-  
+
+
   { TDateEdit }
 
   TAcceptDateEvent = procedure (Sender : TObject; var ADate : TDateTime;
@@ -468,7 +570,7 @@ type
 
   { TDateEdit }
 
-  TDateEdit = class(TCustomEditButton)
+  TDateEdit = class(TCustomButtonEdit)
   private
     FDateOrder: TDateOrder;
     FDefaultToday: Boolean;
@@ -490,7 +592,7 @@ type
     function GetDefaultGlyph: TBitmap; override;
     function GetDefaultGlyphName: String; override;
     procedure DoButtonClick(Sender: TObject); override;
-    procedure DblClick; override;
+    procedure DoEditDblClick(Sender: TObject); override;
     procedure SetDateMask; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -554,11 +656,11 @@ type
     property Visible;
   end;
 
-  
+
   { TCalcEdit }
-  
+
   TAcceptValueEvent = procedure(Sender: TObject; var AValue: Double; var Accept: Boolean) of object;
-  TCalcEdit = class(TCustomEditButton)
+  TCalcEdit = class(TCustomButtonEdit)
   private
     FDialogTitle: String;
     FLayout: TCalculatorLayout;
@@ -646,195 +748,162 @@ const
   ResBtnCalendar   = 'btncalendar';
   ResBtnCalculator = 'btncalculator';
 
+{$IFDEF USEBUTTONEDIT}
 procedure Register;
-
 {$ENDIF}
 
 implementation
 
 {$IFDEF USEBUTTONEDIT}
-
-{$ELSE}
-
 {$R lcl_edbtnimg.res}
+{$ENDIF}
 
-{ TCustomEditButton }
+{ TBEEdit }
 
-constructor TCustomEditButton.Create(AOwner: TComponent);
-var
-  B: TBitmap;
+procedure TBeEdit.DoEnter;
 begin
-  inherited Create(AOwner);
-  FDirectInput := True;
-  FButton := TSpeedButton.Create(Self);
-  FButton.Width := Self.Height;
-  FButton.Height := Self.Height;
-  FButton.FreeNotification(Self);
-  CheckButtonVisible;
-  FButton.OnClick := @DoButtonClick;
-  FButton.Cursor := crArrow;
-  FButton.ControlStyle := FButton.ControlStyle + [csNoDesignSelectable];
-  B := GetDefaultGlyph;
-  if B = nil
-  then FButton.LoadGlyphFromResourceName(hInstance, GetDefaultGlyphName)
-  else FButton.Glyph := B;
-  ControlStyle := ControlStyle - [csSetCaption];
+  if (Owner is TCustomButtonEdit) then TCustomButtonEdit(Owner).CheckButtonVisible;
+  inherited DoEnter;
 end;
 
-destructor TCustomEditButton.Destroy;
+procedure TBeEdit.DoExit;
 begin
-  FreeAndNil(FButton);
-  inherited Destroy;
+  if (Owner is TCustomButtonEdit) then TCustomButtonEdit(Owner).CheckButtonVisible;
+  inherited DoExit;
 end;
 
-procedure TCustomEditButton.SetGlyph(Pic: TBitmap);
-Begin
-  FButton.Glyph:=Pic;
-end;
+{ TCustomButtonEdit }
 
-function TCustomEditButton.GetButtonWidth: Integer;
+procedure TCustomButtonEdit.DoButtonClick(Sender: TObject);
 begin
-  Result:=FButton.Width;
+  if ReadOnly then
+    Exit;
+  if Assigned(FOnButtonClick) then
+    FOnButtonClick(Self);
 end;
 
-function TCustomEditButton.GetDefaultGlyph: TBitmap;
+procedure TCustomButtonEdit.DoEditTextChange(Sender: TObject);
 begin
-  Result := nil;
+  if Assigned(FOnEditChange) then FOnEditChange(Self);
 end;
 
-function TCustomEditButton.GetDefaultGlyphName: String;
+procedure TCustomButtonEdit.DoEditClick(Sender: TObject);
 begin
-  Result := '';
+  if Assigned(FOnEditClick) then FOnEditClick(Self);
 end;
 
-function TCustomEditButton.GetButtonHint: TTranslateString;
+procedure TCustomButtonEdit.DoEditDblClick(Sender: TObject);
 begin
-  Result:=FButton.Hint;
+  if Assigned(FOnEditDblClick) then FOnEditDblClick(Self);
 end;
 
-function TCustomEditButton.GetDirectInput: Boolean;
+procedure TCustomButtonEdit.DoEditDragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
-  Result := FDirectInput;
+  if Assigned(FOnEditDragDrop) then FOnEditDragDrop(Self, Source, X, Y);
 end;
 
-function TCustomEditButton.GetFlat: Boolean;
+procedure TCustomButtonEdit.DoEditDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-  if Assigned(FButton) then
-    Result := FButton.Flat
-  else
-    Result := False;
+  if Assigned(FOnEditDragOver) then FOnEditDragOver(Self, Source, X, Y, State, Accept);
 end;
 
-function TCustomEditButton.CalcButtonVisible: boolean;
+procedure TCustomButtonEdit.DoEditEditingDone(Sender: TObject);
 begin
-  Result := (csdesigning in ComponentState) or
-            (Visible and (Focused or not FButtonNeedsFocus));
+  if Assigned(FOnEditEditingDone) then FOnEditEditingDone(Self);
 end;
 
-procedure TCustomEditButton.CheckButtonVisible;
+procedure TCustomButtonEdit.DoEditEndDrag(Sender, Target: TObject; X, Y: Integer);
 begin
-  If Assigned(FButton) then
-    FButton.Visible:=CalcButtonVisible;
+  if Assigned(FOnEditEndDrag) then FOnEditEndDrag(Self, Target, X, Y);
 end;
 
-procedure TCustomEditButton.SetButtonHint(const AValue: TTranslateString);
+procedure TCustomButtonEdit.DoEditEnter(Sender: TObject);
 begin
-  FButton.Hint:=AValue;
+  if Assigned(FOnEditEnter) then FOnEditEnter(Self);
 end;
 
-procedure TCustomEditButton.SetButtonNeedsFocus(const AValue: Boolean);
+procedure TCustomButtonEdit.DoEditExit(Sender: TObject);
 begin
-  if FButtonNeedsFocus<>AValue then
-  begin
-    FButtonNeedsFocus:=AValue;
-    CheckButtonVisible;
-  end;
+  if Assigned(FOnEditExit) then FOnEditExit(Self);
 end;
 
-procedure TCustomEditButton.SetButtonWidth(const AValue: Integer);
+procedure TCustomButtonEdit.DoEditKeyDown(Sender: TObject; var Key: word;
+  Shift: TShiftState);
 begin
-  FButton.Width:=AValue;
+  if Assigned(FOnEditKeyDown) then FOnEditKeyDown(Self, Key, Shift);
 end;
 
-procedure TCustomEditButton.SetDirectInput(const AValue: Boolean);
+procedure TCustomButtonEdit.DoEditKeyPress(Sender: TObject; var Key: char);
 begin
-  FDirectInput := AValue;
-  inherited SetReadOnly((not FDirectInput) or (FIsReadOnly))
+  if Assigned(FOnEditKeyPress) then FOnEditKeyPress(Self, Key);
 end;
 
-procedure TCustomEditButton.SetFlat(const AValue: Boolean);
+procedure TCustomButtonEdit.DoEditKeyUp(Sender: TObject; var Key: word;
+  Shift: TShiftState);
 begin
-  if Assigned(FButton) then
-    FButton.Flat:=AValue;
+  if Assigned(FOnEditKeyUp) then FOnEditKeyUp(Self, Key, Shift);
 end;
 
-function TCustomEditButton.GetGlyph : TBitmap;
+procedure TCustomButtonEdit.DoEditMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  Result:=FButton.Glyph;
+  if Assigned(FOnEditMouseDown) then FOnEditMouseDown(Self, Button, Shift, X, Y);
 end;
 
-procedure TCustomEditButton.SetNumGlyphs(ANumber: Integer);
+procedure TCustomButtonEdit.DoEditMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  FButton.NumGlyphs:=ANumber;
+  if Assigned(FOnEditMouseUp) then FOnEditMouseUp(Self, Button, Shift, X, Y);
 end;
 
-function TCustomEditButton.GetNumGlyphs:Integer;
+procedure TCustomButtonEdit.DoEditMouseEnter(Sender: TObject);
 begin
-  Result:=FButton.NumGlyphs;
+  if Assigned(FOnEditMouseEnter) then FOnEditMouseEnter(Self);
 end;
 
-procedure TCustomEditButton.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TCustomButtonEdit.DoEditMouseLeave(Sender: TObject);
 begin
-  inherited Notification(AComponent, Operation);
-  if (AComponent = FButton) and (Operation = opRemove) then
-    FButton := nil;
+  if Assigned(FOnEditMouseLeave) then FOnEditMouseLeave(Self);
 end;
 
-procedure TCustomEditButton.CMVisibleChanged(var Msg: TLMessage);
+procedure TCustomButtonEdit.DoEditMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
 begin
-  inherited CMVisibleChanged(Msg);
-  CheckButtonVisible;
+  if Assigned(FOnEditMouseMove) then FOnEditMouseMove(Self, Shift, X, Y);
 end;
 
-procedure TCustomEditButton.CMEnabledChanged(var Msg: TLMessage);
+procedure TCustomButtonEdit.DoEditUtf8KeyPress(Sender: TObject;
+  var UTF8Key: TUTF8Char);
 begin
-  inherited CMEnabledChanged(Msg);
-  if (FButton<>nil) then
-    FButton.Enabled:=CalcButtonEnabled;
+  if Assigned(FOnEditUtf8KeyPress) then FOnEditUtf8KeyPress(Self, Utf8Key);
 end;
 
-procedure TCustomEditButton.CMBiDiModeChanged(var Message: TLMessage);
+procedure TCustomButtonEdit.DoEditStartDrag(Sender: TObject; var DragObject: TDragObject);
 begin
-  inherited;
-  DoPositionButton;
+  if Assigned(FOnEditStartDrag) then FOnEditStartDrag(Self, DragObject);
 end;
 
-function TCustomEditButton.GetMinHeight: Integer;
+function TCustomButtonEdit.GetButtonWidth: Integer;
 begin
-  Result:=23;
+  Result := FButton.Width;
 end;
 
-procedure TCustomEditButton.DoButtonClick (Sender: TObject);
+function TCustomButtonEdit.GetPopupMenu: TPopupMenu;
 begin
-  if not ReadOnly then
-    if Assigned(FOnButtonClick) then
-      FOnButtonClick(Self);
+  Result := FEdit.PopupMenu;
 end;
 
-procedure TCustomEditButton.Loaded;
+function TCustomButtonEdit.GetReadOnly: Boolean;
 begin
-  inherited Loaded;
-  DoPositionButton;
-  CheckButtonVisible;
+  Result := FEdit.ReadOnly;
 end;
 
-procedure TCustomEditButton.WMKillFocus(var Message: TLMKillFocus);
+function TCustomButtonEdit.GetText: TCaption;
 begin
-  CheckButtonVisible;
-  inherited;
+  Result := FEdit.Text;
 end;
 
-function TCustomEditButton.IsCustomGlyph : Boolean;
+function TCustomButtonEdit.IsCustomGlyph: Boolean;
 
   function _LoadRes: TBitmap;
   var
@@ -888,49 +957,326 @@ begin
   end;
 end;
 
-function TCustomEditButton.GetReadOnly: Boolean;
+function TCustomButtonEdit.GetAlignment: TAlignment;
 begin
-  Result := FIsReadOnly;
+  Result := FEdit.Alignment;
 end;
 
-procedure TCustomEditButton.SetParent(AParent: TWinControl);
+
+function TCustomButtonEdit.GetAutoSelect: Boolean;
 begin
-  inherited SetParent(AParent);
-  if FButton <> nil then
+  Result := FEdit.AutoSelect;
+end;
+
+function TCustomButtonEdit.GetButtonHint: TTranslateString;
+begin
+  Result := FButton.Hint;
+end;
+
+function TCustomButtonEdit.GetBtnCaption: TCaption;
+begin
+  Result := FButton.Caption;
+end;
+
+procedure TCustomButtonEdit.SetButtonAlign(AValue: TButtonAlign);
+begin
+  if FButtonAlign = AValue then
+    exit;
+  FButtonAlign := AValue;
+  case FButtonAlign of
+    BaRight:
+      FButton.Align := alRight;
+    BaLeft:
+      FButton.Align := alLeft;
+  end;
+end;
+
+procedure TCustomButtonEdit.SetButtonHint(AValue: TTranslateString);
+begin
+  FButton.Hint := AValue;
+end;
+
+procedure TCustomButtonEdit.SetButtonOnlyWhenFocused(AValue: Boolean);
+begin
+  if FButtonOnlyWhenFocused <> AValue then
   begin
-    DoPositionButton;
+    FButtonOnlyWhenFocused := AValue;
     CheckButtonVisible;
   end;
 end;
 
-function TCustomEditButton.CalcButtonEnabled: Boolean;
+procedure TCustomButtonEdit.SetButtonWidth(AValue: Integer);
 begin
-  Result := not FIsReadOnly and Enabled;
+  FButton.Width := AValue;
 end;
 
-procedure TCustomEditButton.SetReadOnly(AValue: Boolean);
+function TCustomButtonEdit.GetCharCase: TEditCharCase;
 begin
-  FIsReadOnly := AValue;
-  if Assigned(FButton) then
-    FButton.Enabled := CalcButtonEnabled;
-  inherited SetReadOnly(FIsReadOnly or (not DirectInput));
+  Result := FEdit.CharCase;
 end;
 
-procedure TCustomEditButton.DoPositionButton;
+function TCustomButtonEdit.GetDirectInput: Boolean;
 begin
-  if FButton = nil then exit;
-  FButton.Parent := Parent;
-  if BiDiMode = bdLeftToRight then
-    FButton.AnchorToCompanion(akLeft,0,Self)
-  else
-    FButton.AnchorToCompanion(akRight,0,Self);
+  Result := FDirectInput;
 end;
 
-procedure TCustomEditButton.WMSetFocus(var Message: TLMSetFocus);
+function TCustomButtonEdit.GetEchoMode: TEchoMode;
 begin
+  Result := FEdit.EchoMode;
+end;
+
+function TCustomButtonEdit.GetEditMask: String;
+begin
+  Result := FEdit.EditMask
+end;
+
+function TCustomButtonEdit.GetColor: TColor;
+begin
+  Result := FEdit.Color;
+end;
+
+
+function TCustomButtonEdit.GetGlyph: TBitmap;
+begin
+  Result := FButton.Glyph;
+end;
+
+function TCustomButtonEdit.GetHideSelection: Boolean;
+begin
+  Result := FEdit.HideSelection;
+end;
+
+
+function TCustomButtonEdit.GetMaxLength: Integer;
+begin
+  Result := FEdit.MaxLength;
+end;
+
+function TCustomButtonEdit.GetNumbersOnly: Boolean;
+begin
+  Result := FEdit.NumbersOnly;
+end;
+
+function TCustomButtonEdit.GetNumGlyps: Integer;
+begin
+  Result := FButton.NumGlyphs;
+end;
+
+function TCustomButtonEdit.GetPasswordChar: char;
+begin
+  Result := FEdit.PasswordChar;
+end;
+
+procedure TCustomButtonEdit.SetAlignment(AValue: TAlignment);
+begin
+  FEdit.Alignment := AValue;
+end;
+
+procedure TCustomButtonEdit.SetAutoSelect(AValue: Boolean);
+begin
+  FEdit.AutoSelect := AValue;
+end;
+
+procedure TCustomButtonEdit.SetAutoSize(AValue: Boolean);
+begin
+  if AutoSize = AValue then
+    Exit;
+  inherited SetAutosize(AValue);
+  //FButton.AutoSize := AValue;
+  FEdit.AutoSize := AValue;
+end;
+
+procedure TCustomButtonEdit.SetBtnCaption(AValue: TCaption);
+begin
+  FButton.Caption := AValue;
+end;
+
+class function TCustomButtonEdit.GetControlClassDefaultSize: TSize;
+begin
+  Result.CX := 100;
+  Result.CY := 23;
+end;
+
+function TCustomButtonEdit.GetDefaultGlyph: TBitmap;
+begin
+  Result := nil;
+end;
+
+function TCustomButtonEdit.GetDefaultGlyphName: String;
+begin
+  Result := '';
+end;
+
+
+procedure TCustomButtonEdit.SetCharCase(AValue: TEditCharCase);
+begin
+  FEdit.CharCase := AValue;
+end;
+
+procedure TCustomButtonEdit.SetDirectInput(AValue: Boolean);
+begin
+  FDirectInput := AValue;
+  FEdit.ReadOnly := ((not FDirectInput) or (FEdit.ReadOnly));
+end;
+
+procedure TCustomButtonEdit.SetEchoMode(AValue: TEchoMode);
+begin
+  FEdit.EchoMode := AValue;
+end;
+
+procedure TCustomButtonEdit.SetEditMask(AValue: String);
+begin
+  FEdit.EditMask := AValue;
+end;
+
+procedure TCustomButtonEdit.SetColor(AValue: TColor);
+begin
+  FEdit.Color := AValue;
+end;
+
+procedure TCustomButtonEdit.SetCursor(AValue: TCursor);
+begin
+  if Cursor = AValue then
+    Exit;
+  inherited SetCursor(AValue);
+  FButton.Cursor := AValue;
+  FEdit.Cursor := AValue;
+end;
+
+procedure TCustomButtonEdit.SetFlat(AValue: Boolean);
+begin
+  if FFlat = AValue then
+    Exit;
+  FFlat := AValue;
+  FButton.Flat := AValue;
+end;
+
+procedure TCustomButtonEdit.SetHideSelection(AValue: Boolean);
+begin
+  FEdit.HideSelection := AValue;
+end;
+
+procedure TCustomButtonEdit.SetMaxLength(AValue: Integer);
+begin
+  FEdit.MaxLength := AValue;
+end;
+
+procedure TCustomButtonEdit.SetNumbersOnly(AValue: Boolean);
+begin
+  FEdit.NumbersOnly := AValue;
+end;
+
+procedure TCustomButtonEdit.SetNumGlyphs(AValue: Integer);
+begin
+  FButton.NumGlyphs := AValue;
+end;
+
+procedure TCustomButtonEdit.SetPasswordChar(AValue: char);
+begin
+  FEdit.PasswordChar := AValue;
+end;
+
+
+procedure TCustomButtonEdit.SetPopupMenu(AValue: TPopupMenu);
+begin
+  FEdit.PopupMenu := AValue;
+end;
+
+procedure TCustomButtonEdit.SetText(AValue: TCaption);
+begin
+  FEdit.Text := AValue;
+end;
+
+
+function TCustomButtonEdit.CalcButtonVisible: Boolean;
+begin
+  Result := (csdesigning in ComponentState) or
+            (Visible and (FEdit.Focused or not FButtonOnlyWhenFocused));
+end;
+
+procedure TCustomButtonEdit.CheckButtonVisible;
+begin
+  If Assigned(FButton) then
+    FButton.Visible := CalcButtonVisible;
+end;
+
+procedure TCustomButtonEdit.Loaded;
+begin
+  inherited Loaded;
   CheckButtonVisible;
-  inherited;
 end;
+
+
+procedure TCustomButtonEdit.SetGlyph(AValue: TBitmap);
+begin
+  FButton.Glyph := AValue;
+  Invalidate;
+end;
+
+
+procedure TCustomButtonEdit.SetReadOnly(AValue: Boolean);
+begin
+  FEdit.ReadOnly := AValue;
+end;
+
+
+constructor TCustomButtonEdit.Create(AOwner: TComponent);
+begin
+  FButton := TSpeedButton.Create(Self);
+  FEdit := TBeEdit.Create(Self);
+  inherited Create(AOwner);
+  BorderStyle := bsNone;
+  FButtonAlign := BaRight;
+  FButtonOnlyWhenFocused := False;
+  FDirectInput := False;
+
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
+
+
+  with FButton do
+  begin
+    Align := alRight;
+    OnClick := @DoButtonClick;
+    Parent := Self;
+  end;
+  with FEdit do
+  begin
+    Align := alClient;
+    ParentColor := False;
+    ParentFont := True;
+
+    AutoSelect := True;
+    Alignment := taLeftJustify;
+    ReadOnly := False;
+
+    OnChange := @DoEditTextChange;
+    OnClick := @DoEditClick;
+    OnDblClick := @DoEditDblClick;
+    OnDragDrop := @DoEditDragDrop;
+    OnDragOver := @DoEditDragOver;
+    OnEndDrag := @DoEditEndDrag;
+    OnExit := @DoEditExit;
+    OnEnter := @DoEditEnter;
+    OnKeyDown := @DoEditKeyDown;
+    OnKeyPress := @DoEditKeyPress;
+    OnKeyUp := @DoEditKeyUp;
+    OnMouseDown := @DoEditMouseDown;
+    OnMouseUp := @DoEditMouseUp;
+    OnMouseEnter := @DoEditEnter;
+    OnMouseLeave := @DoEditMouseLeave;
+    OnMouseMove := @DoEditMouseMove;
+    OnStartDrag := @DoEditStartDrag;
+    OnUtf8KeyPress := @DoEditUtf8KeyPress;
+
+    Parent := Self;
+  end;
+end;
+
+destructor TCustomButtonEdit.Destroy;
+begin
+  inherited Destroy;
+end;             
 
 { TCustomControlFilterEdit }
 
@@ -1051,13 +1397,13 @@ begin
     inherited KeyDown(Key, Shift);
 end;
 
-procedure TCustomControlFilterEdit.Change;
+procedure TCustomControlFilterEdit.DoEditTextChange(Sender: TObject);
 begin
   Filter:=Text;
   inherited;
 end;
 
-procedure TCustomControlFilterEdit.DoEnter;
+procedure TCustomControlFilterEdit.DoEditEnter(Sender: TObject);
 begin
 //  inherited;
   fJustActivated:=False;
@@ -1065,7 +1411,7 @@ begin
     Text:='';
 end;
 
-procedure TCustomControlFilterEdit.DoExit;
+procedure TCustomControlFilterEdit.DoEditExit(Sender: TObject);
 begin
   fJustActivated:=False;
   Filter:=Text;
@@ -1405,9 +1751,9 @@ begin
                     @CalendarPopupReturnDate, @CalendarPopupShowHide)
 end;
 
-procedure TDateEdit.DblClick;
+procedure TDateEdit.DoEditDblClick(Sender: TObject);
 begin
-  inherited DblClick;
+  inherited DoEditDblClick(Sender);
   if not ReadOnly then
     DoButtonClick(nil);
 end;
@@ -1626,13 +1972,12 @@ begin
 end;
 
 
-
+{$IFDEF USEBUTTONEDIT}
 procedure Register;
 begin
-  RegisterComponents('Misc', [TEditButton,TFileNameEdit,TDirectoryEdit,
+  RegisterComponents('Misc', [TButtonEdit,TFileNameEdit,TDirectoryEdit,
                               TDateEdit,TCalcEdit]);
 end;
-
 {$ENDIF}
 
 end.

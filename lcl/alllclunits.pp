@@ -15,7 +15,7 @@ uses
   IniPropStorage, InterfaceBase, IntfGraphics, LazHelpHTML, LazHelpIntf, 
   LazLinkedList, LCLClasses, LCLIntf, LCLMemManager, LCLMessageGlue, LCLProc, 
   LCLResCache, LCLStrConsts, LCLType, Menus, LCLUnicodeData, LCLVersion, 
-  LMessages, LResources, maps, maskedit, PairSplitter, PopupNotifier, 
+  LMessages, LResources, maps, MaskEdit, PairSplitter, PopupNotifier, 
   PostScriptCanvas, PostScriptPrinter, postscriptunicode, Printers, 
   PropertyStorage, RubberBand, ShellCtrls, Spin, StdActns, StdCtrls, 
   StringHashList, TextStrings, Themes, TmSchema, Toolwin, Translations, 
@@ -27,7 +27,7 @@ uses
   ValEdit, lazcanvas, lazdialogs, lazregions, customdrawn_common, 
   customdrawncontrols, customdrawndrawers, lazdeviceapis, LDockTree, 
   LazFreeTypeIntfDrawer, customdrawn_winxp, customdrawn_android, Arrow, 
-  LazarusPackageIntf;
+  ButtonEdit, LazarusPackageIntf;
 
 implementation
 

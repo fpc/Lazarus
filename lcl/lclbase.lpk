@@ -30,7 +30,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="3"/>
-    <Files Count="290">
+    <Files Count="291">
       <Item1>
         <Filename Value="barchart.pp"/>
         <UnitName Value="BarChart"/>
@@ -277,7 +277,7 @@
       </Item61>
       <Item62>
         <Filename Value="maskedit.pp"/>
-        <UnitName Value="maskedit"/>
+        <UnitName Value="MaskEdit"/>
       </Item62>
       <Item63>
         <Filename Value="pairsplitter.pas"/>
@@ -1196,6 +1196,10 @@
         <Filename Value="arrow.pp"/>
         <UnitName Value="Arrow"/>
       </Item290>
+      <Item291>
+        <Filename Value="buttonedit.pas"/>
+        <UnitName Value="ButtonEdit"/>
+      </Item291>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
