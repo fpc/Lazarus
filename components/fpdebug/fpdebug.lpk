@@ -34,7 +34,7 @@ File(s) with other licenses (see also header in file(s):
 
   (Any modifications/translations of this file are from duby)
 "/>
-    <Files Count="23">
+    <Files Count="24">
       <Item1>
         <Filename Value="fpdbgclasses.pp"/>
         <UnitName Value="FpDbgClasses"/>
@@ -130,6 +130,10 @@ File(s) with other licenses (see also header in file(s):
         <Filename Value="fperrormessages.pas"/>
         <UnitName Value="FpErrorMessages"/>
       </Item23>
+      <Item24>
+        <Filename Value="fpdbgdwarfverboseprinter.pas"/>
+        <UnitName Value="fpdbgdwarfverboseprinter"/>
+      </Item24>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

@@ -25,7 +25,11 @@ unit FpDbgDwarfConst;
 
 interface
 
+uses sysutils;
+
 const
+
+  DWARF_HEADER64_SIGNATURE = $FFFFFFFF;
 
   { tag encodings }
   
@@ -586,8 +590,317 @@ const
   DW_CFA_lo_user              = $1c;
   DW_CFA_hi_user              = $3f;
   
+function DwarfTagToString(AValue: Integer): String;
+function DwarfChildrenToString(AValue: Integer): String;
+function DwarfAttributeToString(AValue: Integer): String;
+function DwarfAttributeFormToString(AValue: Integer): String;
+function DwarfLanguageToString(AValue: Integer): String;
+function DwarfBaseTypeEncodingToString(AValue: Integer): String;
+function DwarfAccessibilityToString(AValue: Integer): String;
+function DwarfVisibilityToString(AValue: Integer): String;
+function DwarfVirtualityToString(AValue: Integer): String;
+function DwarfIdentifierCaseToString(AValue: Integer): String;
 
 implementation
+
+function DwarfTagToString(AValue: Integer): String;
+begin
+  case AValue of
+    DW_TAG_array_type              : Result := 'DW_TAG_array_type';
+    DW_TAG_class_type              : Result := 'DW_TAG_class_type';
+    DW_TAG_entry_point             : Result := 'DW_TAG_entry_point';
+    DW_TAG_enumeration_type        : Result := 'DW_TAG_enumeration_type';
+    DW_TAG_formal_parameter        : Result := 'DW_TAG_formal_parameter';
+    DW_TAG_imported_declaration    : Result := 'DW_TAG_imported_declaration';
+    DW_TAG_label                   : Result := 'DW_TAG_label';
+    DW_TAG_lexical_block           : Result := 'DW_TAG_lexical_block';
+    DW_TAG_member                  : Result := 'DW_TAG_member';
+    DW_TAG_pointer_type            : Result := 'DW_TAG_pointer_type';
+    DW_TAG_reference_type          : Result := 'DW_TAG_reference_type';
+    DW_TAG_compile_unit            : Result := 'DW_TAG_compile_unit';
+    DW_TAG_string_type             : Result := 'DW_TAG_string_type';
+    DW_TAG_structure_type          : Result := 'DW_TAG_structure_type';
+    DW_TAG_subroutine_type         : Result := 'DW_TAG_subroutine_type';
+    DW_TAG_typedef                 : Result := 'DW_TAG_typedef';
+    DW_TAG_union_type              : Result := 'DW_TAG_union_type';
+    DW_TAG_unspecified_parameters  : Result := 'DW_TAG_unspecified_parameters';
+    DW_TAG_variant                 : Result := 'DW_TAG_variant';
+    DW_TAG_common_block            : Result := 'DW_TAG_common_block';
+    DW_TAG_common_inclusion        : Result := 'DW_TAG_common_inclusion';
+    DW_TAG_inheritance             : Result := 'DW_TAG_inheritance';
+    DW_TAG_inlined_subroutine      : Result := 'DW_TAG_inlined_subroutine';
+    DW_TAG_module                  : Result := 'DW_TAG_module';
+    DW_TAG_ptr_to_member_type      : Result := 'DW_TAG_ptr_to_member_type';
+    DW_TAG_set_type                : Result := 'DW_TAG_set_type';
+    DW_TAG_subrange_type           : Result := 'DW_TAG_subrange_type';
+    DW_TAG_with_stmt               : Result := 'DW_TAG_with_stmt';
+    DW_TAG_access_declaration      : Result := 'DW_TAG_access_declaration';
+    DW_TAG_base_type               : Result := 'DW_TAG_base_type';
+    DW_TAG_catch_block             : Result := 'DW_TAG_catch_block';
+    DW_TAG_const_type              : Result := 'DW_TAG_const_type';
+    DW_TAG_constant                : Result := 'DW_TAG_constant';
+    DW_TAG_enumerator              : Result := 'DW_TAG_enumerator';
+    DW_TAG_file_type               : Result := 'DW_TAG_file_type';
+    DW_TAG_friend                  : Result := 'DW_TAG_friend';
+    DW_TAG_namelist                : Result := 'DW_TAG_namelist';
+    DW_TAG_namelist_item           : Result := 'DW_TAG_namelist_item';
+    DW_TAG_packed_type             : Result := 'DW_TAG_packed_type';
+    DW_TAG_subprogram              : Result := 'DW_TAG_subprogram';
+    DW_TAG_template_type_parameter : Result := 'DW_TAG_template_type_parameter';
+    DW_TAG_template_value_parameter: Result := 'DW_TAG_template_value_parameter';
+    DW_TAG_thrown_type             : Result := 'DW_TAG_thrown_type';
+    DW_TAG_try_block               : Result := 'DW_TAG_try_block';
+    DW_TAG_variant_part            : Result := 'DW_TAG_variant_part';
+    DW_TAG_variable                : Result := 'DW_TAG_variable';
+    DW_TAG_volatile_type           : Result := 'DW_TAG_volatile_type';
+    DW_TAG_dwarf_procedure         : Result := 'DW_TAG_dwarf_procedure';
+    DW_TAG_restrict_type           : Result := 'DW_TAG_restrict_type';
+    DW_TAG_interface_type          : Result := 'DW_TAG_interface_type';
+    DW_TAG_namespace               : Result := 'DW_TAG_namespace';
+    DW_TAG_imported_module         : Result := 'DW_TAG_imported_module';
+    DW_TAG_unspecified_type        : Result := 'DW_TAG_unspecified_type';
+    DW_TAG_partial_unit            : Result := 'DW_TAG_partial_unit';
+    DW_TAG_imported_unit           : Result := 'DW_TAG_imported_unit';
+    DW_TAG_condition               : Result := 'DW_TAG_condition';
+    DW_TAG_shared_type             : Result := 'DW_TAG_shared_type';
+    DW_TAG_lo_user                 : Result := 'DW_TAG_lo_user';
+    DW_TAG_hi_user                 : Result := 'DW_TAG_hi_user';
+  else
+    Result := Format('DW_TAG_%d', [AValue]);
+  end;
+end;
+
+function DwarfChildrenToString(AValue: Integer): String;
+begin
+  case AValue of
+    DW_CHILDREN_no  : Result := 'DW_CHILDREN_no';
+    DW_CHILDREN_yes : Result := 'DW_CHILDREN_yes';
+  else
+    Result := Format('DW_CHILDREN_%d', [AValue]);
+  end;
+end;
+
+function DwarfAttributeToString(AValue: Integer): String;
+begin
+  case AValue of
+    DW_AT_sibling             : Result := 'DW_AT_sibling';
+    DW_AT_location            : Result := 'DW_AT_location';
+    DW_AT_name                : Result := 'DW_AT_name';
+    DW_AT_ordering            : Result := 'DW_AT_ordering';
+    DW_AT_byte_size           : Result := 'DW_AT_byte_size';
+    DW_AT_bit_offset          : Result := 'DW_AT_bit_offset';
+    DW_AT_bit_size            : Result := 'DW_AT_bit_size';
+    DW_AT_stmt_list           : Result := 'DW_AT_stmt_list';
+    DW_AT_low_pc              : Result := 'DW_AT_low_pc';
+    DW_AT_high_pc             : Result := 'DW_AT_high_pc';
+    DW_AT_language            : Result := 'DW_AT_language';
+    DW_AT_discr               : Result := 'DW_AT_discr';
+    DW_AT_discr_value         : Result := 'DW_AT_discr_value';
+    DW_AT_visibility          : Result := 'DW_AT_visibility';
+    DW_AT_import              : Result := 'DW_AT_import';
+    DW_AT_string_length       : Result := 'DW_AT_string_length';
+    DW_AT_common_reference    : Result := 'DW_AT_common_reference';
+    DW_AT_comp_dir            : Result := 'DW_AT_comp_dir';
+    DW_AT_const_value         : Result := 'DW_AT_const_value';
+    DW_AT_containing_type     : Result := 'DW_AT_containing_type';
+    DW_AT_default_value       : Result := 'DW_AT_default_value';
+    DW_AT_inline              : Result := 'DW_AT_inline';
+    DW_AT_is_optional         : Result := 'DW_AT_is_optional';
+    DW_AT_lower_bound         : Result := 'DW_AT_lower_bound';
+    DW_AT_producer            : Result := 'DW_AT_producer';
+    DW_AT_prototyped          : Result := 'DW_AT_prototyped';
+    DW_AT_return_addr         : Result := 'DW_AT_return_addr';
+    DW_AT_start_scope         : Result := 'DW_AT_start_scope';
+    DW_AT_bit_stride          : Result := 'DW_AT_bit_stride';
+    DW_AT_upper_bound         : Result := 'DW_AT_upper_bound';
+    DW_AT_abstract_origin     : Result := 'DW_AT_abstract_origin';
+    DW_AT_accessibility       : Result := 'DW_AT_accessibility';
+    DW_AT_address_class       : Result := 'DW_AT_address_class';
+    DW_AT_artificial          : Result := 'DW_AT_artificial';
+    DW_AT_base_types          : Result := 'DW_AT_base_types';
+    DW_AT_calling_convention  : Result := 'DW_AT_calling_convention';
+    DW_AT_count               : Result := 'DW_AT_count';
+    DW_AT_data_member_location: Result := 'DW_AT_data_member_location';
+    DW_AT_decl_column         : Result := 'DW_AT_decl_column';
+    DW_AT_decl_file           : Result := 'DW_AT_decl_file';
+    DW_AT_decl_line           : Result := 'DW_AT_decl_line';
+    DW_AT_declaration         : Result := 'DW_AT_declaration';
+    DW_AT_discr_list          : Result := 'DW_AT_discr_list';
+    DW_AT_encoding            : Result := 'DW_AT_encoding';
+    DW_AT_external            : Result := 'DW_AT_external';
+    DW_AT_frame_base          : Result := 'DW_AT_frame_base';
+    DW_AT_friend              : Result := 'DW_AT_friend';
+    DW_AT_identifier_case     : Result := 'DW_AT_identifier_case';
+    DW_AT_macro_info          : Result := 'DW_AT_macro_info';
+    DW_AT_namelist_item       : Result := 'DW_AT_namelist_item';
+    DW_AT_priority            : Result := 'DW_AT_priority';
+    DW_AT_segment             : Result := 'DW_AT_segment';
+    DW_AT_specification       : Result := 'DW_AT_specification';
+    DW_AT_static_link         : Result := 'DW_AT_static_link';
+    DW_AT_type                : Result := 'DW_AT_type';
+    DW_AT_use_location        : Result := 'DW_AT_use_location';
+    DW_AT_variable_parameter  : Result := 'DW_AT_variable_parameter';
+    DW_AT_virtuality          : Result := 'DW_AT_virtuality';
+    DW_AT_vtable_elem_location: Result := 'DW_AT_vtable_elem_location';
+    DW_AT_allocated           : Result := 'DW_AT_allocated';
+    DW_AT_associated          : Result := 'DW_AT_associated';
+    DW_AT_data_location       : Result := 'DW_AT_data_location';
+    DW_AT_byte_stride         : Result := 'DW_AT_byte_stride';
+    DW_AT_entry_pc            : Result := 'DW_AT_entry_pc';
+    DW_AT_use_UTF8            : Result := 'DW_AT_use_UTF8';
+    DW_AT_extension           : Result := 'DW_AT_extension';
+    DW_AT_ranges              : Result := 'DW_AT_ranges';
+    DW_AT_trampoline          : Result := 'DW_AT_trampoline';
+    DW_AT_call_column         : Result := 'DW_AT_call_column';
+    DW_AT_call_file           : Result := 'DW_AT_call_file';
+    DW_AT_call_line           : Result := 'DW_AT_call_line';
+    DW_AT_description         : Result := 'DW_AT_description';
+    DW_AT_binary_scale        : Result := 'DW_AT_binary_scale';
+    DW_AT_decimal_scale       : Result := 'DW_AT_decimal_scale';
+    DW_AT_small               : Result := 'DW_AT_small';
+    DW_AT_decimal_sign        : Result := 'DW_AT_decimal_sign';
+    DW_AT_digit_count         : Result := 'DW_AT_digit_count';
+    DW_AT_picture_string      : Result := 'DW_AT_picture_string';
+    DW_AT_mutable             : Result := 'DW_AT_mutable';
+    DW_AT_threads_scaled      : Result := 'DW_AT_threads_scaled';
+    DW_AT_explicit            : Result := 'DW_AT_explicit';
+    DW_AT_object_pointer      : Result := 'DW_AT_object_pointer';
+    DW_AT_endianity           : Result := 'DW_AT_endianity';
+    DW_AT_elemental           : Result := 'DW_AT_elemental';
+    DW_AT_pure                : Result := 'DW_AT_pure';
+    DW_AT_recursive           : Result := 'DW_AT_recursive';
+    DW_AT_lo_user             : Result := 'DW_AT_lo_user';
+    DW_AT_hi_user             : Result := 'DW_AT_hi_user';
+  else
+    Result := Format('DW_AT_%d', [AValue]);
+  end;
+end;
+
+function DwarfAttributeFormToString(AValue: Integer): String;
+begin
+  case AValue of
+    DW_FORM_addr     : Result := 'DW_FORM_addr';
+    DW_FORM_block2   : Result := 'DW_FORM_block2';
+    DW_FORM_block4   : Result := 'DW_FORM_block4';
+    DW_FORM_data2    : Result := 'DW_FORM_data2';
+    DW_FORM_data4    : Result := 'DW_FORM_data4';
+    DW_FORM_data8    : Result := 'DW_FORM_data8';
+    DW_FORM_string   : Result := 'DW_FORM_string';
+    DW_FORM_block    : Result := 'DW_FORM_block';
+    DW_FORM_block1   : Result := 'DW_FORM_block1';
+    DW_FORM_data1    : Result := 'DW_FORM_data1';
+    DW_FORM_flag     : Result := 'DW_FORM_flag';
+    DW_FORM_sdata    : Result := 'DW_FORM_sdata';
+    DW_FORM_strp     : Result := 'DW_FORM_strp';
+    DW_FORM_udata    : Result := 'DW_FORM_udata';
+    DW_FORM_ref_addr : Result := 'DW_FORM_ref_addr';
+    DW_FORM_ref1     : Result := 'DW_FORM_ref1';
+    DW_FORM_ref2     : Result := 'DW_FORM_ref2';
+    DW_FORM_ref4     : Result := 'DW_FORM_ref4';
+    DW_FORM_ref8     : Result := 'DW_FORM_ref8';
+    DW_FORM_ref_udata: Result := 'DW_FORM_ref_udata';
+    DW_FORM_indirect : Result := 'DW_FORM_indirect';
+  else
+    Result := Format('DW_FORM_%d', [AValue]);
+  end;
+end;
+
+function DwarfLanguageToString(AValue: Integer): String;
+begin
+  case AValue of
+    DW_LANG_C89              : Result := 'DW_LANG_C89';
+    DW_LANG_C                : Result := 'DW_LANG_C';
+    DW_LANG_Ada83            : Result := 'DW_LANG_Ada83 (reserved)';
+    DW_LANG_C_plus_plus      : Result := 'DW_LANG_C_plus_plus';
+    DW_LANG_Cobol74          : Result := 'DW_LANG_Cobol74 (reserved)';
+    DW_LANG_Cobol85          : Result := 'DW_LANG_Cobol85 (reserved)';
+    DW_LANG_Fortran77        : Result := 'DW_LANG_Fortran77';
+    DW_LANG_Fortran90        : Result := 'DW_LANG_Fortran90';
+    DW_LANG_Pascal83         : Result := 'DW_LANG_Pascal83';
+    DW_LANG_Modula2          : Result := 'DW_LANG_Modula2';
+    DW_LANG_Java             : Result := 'DW_LANG_Java';
+    DW_LANG_C99              : Result := 'DW_LANG_C99';
+    DW_LANG_Ada95            : Result := 'DW_LANG_Ada95 (reserved)';
+    DW_LANG_Fortran95        : Result := 'DW_LANG_Fortran95';
+    DW_LANG_PLI              : Result := 'DW_LANG_PLI (reserved)';
+    DW_LANG_ObjC             : Result := 'DW_LANG_ObjC';
+    DW_LANG_ObjC_plus_plus   : Result := 'DW_LANG_ObjC_plus_plus';
+    DW_LANG_UPC              : Result := 'DW_LANG_UPC';
+    DW_LANG_D                : Result := 'DW_LANG_D';
+    DW_LANG_lo_user..DW_LANG_hi_user: Result := Format('DW_LANG_user_%d', [AValue]);
+  else
+    Result := Format('DW_LANG_%d', [AValue]);
+  end;
+end;
+
+function DwarfBaseTypeEncodingToString(AValue: Integer): String;
+begin
+  case AValue of
+    DW_ATE_address           : Result := 'DW_ATE_address';
+    DW_ATE_boolean           : Result := 'DW_ATE_boolean';
+    DW_ATE_complex_float     : Result := 'DW_ATE_complex_float';
+    DW_ATE_float             : Result := 'DW_ATE_float';
+    DW_ATE_signed            : Result := 'DW_ATE_signed';
+    DW_ATE_signed_char       : Result := 'DW_ATE_signed_char';
+    DW_ATE_unsigned          : Result := 'DW_ATE_unsigned';
+    DW_ATE_unsigned_char     : Result := 'DW_ATE_unsigned_char';
+    DW_ATE_imaginary_float   : Result := 'DW_ATE_imaginary_float';
+    DW_ATE_packed_decimal    : Result := 'DW_ATE_packed_decimal';
+    DW_ATE_numeric_string    : Result := 'DW_ATE_numeric_string';
+    DW_ATE_edited            : Result := 'DW_ATE_edited';
+    DW_ATE_signed_fixed      : Result := 'DW_ATE_signed_fixed';
+    DW_ATE_unsigned_fixed    : Result := 'DW_ATE_unsigned_fixed';
+    DW_ATE_decimal_float     : Result := 'DW_ATE_decimal_float';
+    DW_ATE_lo_user..DW_ATE_hi_user : Result := Format('DW_ATE_user_%d', [AValue]);
+  else
+    Result := Format('DW_ATE_%d', [AValue]);
+  end;
+end;
+
+function DwarfAccessibilityToString(AValue: Integer): String;
+begin
+  case AValue of
+    DW_ACCESS_public    : Result := 'DW_ACCESS_public';
+    DW_ACCESS_protected : Result := 'DW_ACCESS_protected';
+    DW_ACCESS_private   : Result := 'DW_ACCESS_private';
+  else
+    Result := Format('DW_ACCESS_%d', [AValue]);
+  end;
+end;
+
+function DwarfVisibilityToString(AValue: Integer): String;
+begin
+  case AValue of
+    DW_VIS_local     : Result := 'DW_VIS_local';
+    DW_VIS_exported  : Result := 'DW_VIS_exported';
+    DW_VIS_qualified : Result := 'DW_VIS_qualified';
+  else
+    Result := Format('DW_FORM_%d', [AValue]);
+  end;
+end;
+
+function DwarfVirtualityToString(AValue: Integer): String;
+begin
+  case AValue of
+    DW_VIRTUALITY_none         : Result := 'DW_VIRTUALITY_none';
+    DW_VIRTUALITY_virtual      : Result := 'DW_VIRTUALITY_virtual';
+    DW_VIRTUALITY_pure_virtual : Result := 'DW_VIRTUALITY_pure_virtual';
+  else
+    Result := Format('DW_VIRTUALITY_%d', [AValue]);
+  end;
+end;
+
+function DwarfIdentifierCaseToString(AValue: Integer): String;
+begin
+  case AValue of
+    DW_ID_case_sensitive   : Result := 'DW_ID_case_sensitive';
+    DW_ID_up_case          : Result := 'DW_ID_up_case';
+    DW_ID_down_case        : Result := 'DW_ID_down_case';
+    DW_ID_case_insensitive : Result := 'DW_ID_case_insensitive';
+  else
+    Result := Format('DW_ID_%d', [AValue]);
+  end;
+end;
 
 end.
 
