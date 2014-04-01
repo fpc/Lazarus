@@ -139,6 +139,13 @@ begin
   Result := _GetAppConfigFileUTF8(Global, SubDir, CreateDir);
 end;
 
+function ReadAllLinks(const Filename: string;
+                      ExceptionOnError: boolean): string;
+begin
+  // not supported under Windows
+  Result:=Filename;
+end;
+
 // ******** Start of AnsiString specific implementations ************
 
 {$ifndef WinCE}
@@ -734,14 +741,10 @@ end;
 // ******** End of WideString specific implementations ************
 
 
-
-
 function FilenameIsAbsolute(const TheFilename: string):boolean;
 begin
   Result:=FilenameIsWinAbsolute(TheFilename);
 end;
-
-
 
 
 function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
@@ -1029,8 +1032,6 @@ begin
     Result:=Result+'?';
   end;
 end;
-
-
 
 
 procedure InitLazFileUtils;

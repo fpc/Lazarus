@@ -390,11 +390,15 @@ begin
   Result := LazFileUtils.FileIsWritable(AFilename);
 end;
 
+function ReadAllLinks(const Filename: string; ExceptionOnError: boolean
+  ): string;
+begin
+  Result:=LazFileUtils.ReadAllLinks(Filename,ExceptionOnError);
+end;
+
 function TryReadAllLinks(const Filename: string): string;
 begin
-  Result:=ReadAllLinks(Filename,false);
-  if Result='' then
-    Result:=Filename;
+  Result:=LazFileUtils.TryReadAllLinks(Filename);
 end;
 
 {------------------------------------------------------------------------------

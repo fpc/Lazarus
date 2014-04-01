@@ -1,20 +1,5 @@
 {%MainUnit fileutil.pas}
 
-
-
-
-{------------------------------------------------------------------------------
-  function ReadAllLinks(const Filename: string;
-    ExceptionOnError: boolean): string;
- ------------------------------------------------------------------------------}
-function ReadAllLinks(const Filename: string;
-  ExceptionOnError: boolean): string;
-begin
-  Result:=Filename;
-end;
-
-
-
 function ExtractShortPathNameUTF8(const FileName: String): String;
 var
   lPathSize: DWORD;
