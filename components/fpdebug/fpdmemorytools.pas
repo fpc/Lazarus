@@ -687,7 +687,7 @@ end;
 function TFpDbgMemManager.ReadAddress(const ALocation: TFpDbgMemLocation; ASize: Cardinal; out
   AnAddress: TFpDbgMemLocation): Boolean;
 begin
-  Result := ReadMemory(rdtAddress, ALocation, ASize, @AnAddress, SizeOf(AnAddress));
+  Result := ReadMemory(rdtAddress, ALocation, ASize, @AnAddress.Address, SizeOf(AnAddress.Address));
   if Result
   then AnAddress.MType := mlfTargetMem
   else AnAddress.MType := mlfInvalid;
