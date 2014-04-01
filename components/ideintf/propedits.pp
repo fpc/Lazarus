@@ -30,10 +30,11 @@ uses
   Classes, TypInfo, SysUtils, types, Forms, Controls, LCLProc, GraphType,
   FPCAdds, // for StrToQWord in older fpc versions
   StringHashList, ButtonPanel, Graphics, StdCtrls, Buttons, Menus, LCLType,
-  ExtCtrls, ComCtrls, LCLIntf, Dialogs, EditBtn, PropertyStorage,
+  ExtCtrls, ComCtrls, LCLIntf, Dialogs, EditBtn, PropertyStorage, ValEdit,
   FileUtil, FileCtrl, ObjInspStrConsts, PropEditUtils,
   // Forms with .lfm files
-  FrmSelectProps, StringsPropEditDlg, CollectionPropEditForm, FileFilterPropEditor;
+  FrmSelectProps, StringsPropEditDlg, KeyValPropEditDlg, CollectionPropEditForm,
+  FileFilterPropEditor;
 
 const
   MaxIdentLength: Byte = 63;
@@ -791,7 +792,7 @@ type
 
 { TStringsPropertyEditor
   PropertyEditor editor for the TStrings properties.
-  Brings up the dialog for entering text. }
+  Brings up a dialog with a Memo for entering text. }
   
   TStringsPropEditorDlg = class;
 
@@ -799,6 +800,20 @@ type
   public
     procedure Edit; override;
     function CreateDlg(s: TStrings): TStringsPropEditorDlg; virtual;
+    function GetAttributes: TPropertyAttributes; override;
+  end;
+
+
+{ TValueListPropertyEditor
+  PropertyEditor editor for the TStrings property of TValueListEditor.
+  Brings up a dialog with a ValueListEditor for entering keys and values. }
+
+  TKeyValPropEditorDlg = class;
+
+  TValueListPropertyEditor = class(TClassPropertyEditor)
+  public
+    procedure Edit; override;
+    function CreateDlg(s: TStrings): TKeyValPropEditorDlg; virtual;
     function GetAttributes: TPropertyAttributes; override;
   end;
 
@@ -1460,6 +1475,11 @@ type
 
 type
   TStringsPropEditorDlg = class(TStringsPropEditorFrm)
+  public
+    Editor: TPropertyEditor;
+  end;
+
+  TKeyValPropEditorDlg = class(TKeyValPropEditorFrm)
   public
     Editor: TPropertyEditor;
   end;
@@ -4997,6 +5017,34 @@ begin
   Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
 end;
 
+{ TValueListPropertyEditor }
+
+procedure TValueListPropertyEditor.Edit;
+var
+  TheDialog: TKeyValPropEditorDlg;
+begin
+  TheDialog := CreateDlg(TStrings(GetObjectValue));
+  try
+    if (TheDialog.ShowModal = mrOK) then
+      SetPtrValue(TheDialog.ValueListEdit.Strings);
+  finally
+    TheDialog.Free;
+  end;
+end;
+
+function TValueListPropertyEditor.CreateDlg(s: TStrings): TKeyValPropEditorDlg;
+begin
+  Result := TKeyValPropEditorDlg.Create(Application);
+  Result.Editor := Self;
+  Result.ValueListEdit.Strings.Assign(s);
+  Result.ValueListEdit.Invalidate;
+end;
+
+function TValueListPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
+end;
+
 { TStringMultilinePropertyEditor }
 
 procedure TStringMultilinePropertyEditor.Edit;
@@ -6821,6 +6869,7 @@ begin
   RegisterPropertyEditor(TypeInfo(AnsiString), TFilterComboBox, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFileNameEdit, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TStrings), TValueListEditor, '', TValueListPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideLeft', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideTop', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideRight', THiddenPropertyEditor);

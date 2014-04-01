@@ -9,17 +9,17 @@ interface
 uses
   ActionsEditor, ActionsEditorStd, BaseIDEIntf, CheckGroupEditorDlg, 
   CheckListboxEditorDlg, CollectionPropEditForm, ColumnDlg, ComponentEditors, 
-  ComponentReg, ComponentTreeView, DBPropEdits, fieldseditor, fieldslist, 
-  FormEditingIntf, frmSelectProps, GraphicPropEdit, GraphPropEdits, 
-  HeaderControlPropEdit, HelpFPDoc, IDECommands, IDEDialogs, 
-  IDEExternToolIntf, IDEHelpIntf, IDEImagesIntf, IDEMsgIntf, IDEOptionsIntf, 
-  IDETextConverter, IDEWindowIntf, ImageListEditor, LazIDEIntf, 
-  LazStringGridEdit, ListViewPropEdit, MacroIntf, MaskPropEdit, MenuIntf, 
-  newfield, NewItemIntf, ObjectInspector, ObjInspStrConsts, PackageIntf, 
-  ProjectIntf, ProjectResourcesIntf, PropEdits, PropEditUtils, SrcEditorIntf, 
-  StatusBarPropEdit, StringsPropEditDlg, TextTools, TreeViewPropEdit, 
-  CompOptsIntf, OIFavoriteProperties, UnitResources, MacroDefIntf, 
-  FileFilterPropEditor, IDEUtils, LazarusPackageIntf;
+  ComponentReg, ComponentTreeView, CompOptsIntf, DBPropEdits, fieldseditor, 
+  fieldslist, FileFilterPropEditor, FormEditingIntf, frmSelectProps, 
+  GraphicPropEdit, GraphPropEdits, HeaderControlPropEdit, HelpFPDoc, 
+  IDECommands, IDEDialogs, IDEExternToolIntf, IDEHelpIntf, IDEImagesIntf, 
+  IDEMsgIntf, IDEOptionsIntf, IDETextConverter, IDEUtils, IDEWindowIntf, 
+  ImageListEditor, KeyValPropEditDlg, LazIDEIntf, LazStringGridEdit, 
+  ListViewPropEdit, MacroDefIntf, MacroIntf, MaskPropEdit, MenuIntf, newfield, 
+  NewItemIntf, ObjectInspector, ObjInspStrConsts, OIFavoriteProperties, 
+  PackageIntf, ProjectIntf, ProjectResourcesIntf, PropEdits, PropEditUtils, 
+  SrcEditorIntf, StatusBarPropEdit, StringsPropEditDlg, TextTools, 
+  TreeViewPropEdit, UnitResources, LazarusPackageIntf;
 
 implementation
 
