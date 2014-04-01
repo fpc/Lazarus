@@ -35,6 +35,11 @@ type
     ASender: TChart; ASeriesIndex, AIndex: Integer;
     const AData: TDoublePoint) of object;
 
+  TChartDrawLegendEvent = procedure(
+    ASender: TChart; ADrawer: IChartDrawer; ALegendItems: TChartLegendItems;
+    ALegendItemSize: TPoint; const ALegendRect: TRect;
+    AColCount, ARowCount: Integer) of object;
+
   { TBasicChartSeries }
 
   TBasicChartSeries = class(TIndexedComponent)
@@ -189,6 +194,7 @@ type
     FOnBeforeDrawBackWall: TChartBeforeDrawEvent;
     FOnChartPaint: TChartPaintEvent;
     FOnDrawReticule: TDrawReticuleEvent;
+    FOnDrawLegend: TChartDrawLegendEvent;
     FProportional: Boolean;
     FSeries: TChartSeriesList;
     FTitle: TChartTitle;
@@ -248,6 +254,7 @@ type
     procedure SetOnBeforeDrawBackground(AValue: TChartBeforeDrawEvent);
     procedure SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
     procedure SetOnChartPaint(AValue: TChartPaintEvent);
+    procedure SetOnDrawLegend(AValue: TChartDrawLegendEvent);
     procedure SetOnDrawReticule(AValue: TDrawReticuleEvent);
     procedure SetProportional(AValue: Boolean);
     procedure SetRenderingParams(AValue: TChartRenderingParams);
@@ -394,6 +401,8 @@ type
       read FOnBeforeDrawBackground write SetOnBeforeDrawBackground;
     property OnBeforeDrawBackWall: TChartBeforeDrawEvent
       read FOnBeforeDrawBackWall write SetOnBeforeDrawBackWall;
+    property OnDrawLegend: TChartDrawLegendEvent
+      read FOnDrawLegend write SetOnDrawLegend;
     property OnDrawReticule: TDrawReticuleEvent
       read FOnDrawReticule write SetOnDrawReticule;
     property OnExtentChanged: TChartEvent
@@ -814,6 +823,7 @@ begin
   ldd.FItems := nil;
   if Legend.Visible then
     ldd := PrepareLegend(ADrawer, FClipRect);
+
   try
     PrepareAxis(ADrawer);
     if (FPrevLogicalExtent <> FLogicalExtent) and Assigned(OnExtentChanging) then
@@ -826,8 +836,13 @@ begin
     FFoot.Draw(ADrawer);
     DrawBackWall(ADrawer);
     DisplaySeries(ADrawer);
-    if Legend.Visible then
-      Legend.Draw(ldd);
+    if Legend.Visible then begin
+      if Assigned(FOnDrawLegend) then
+        FOnDrawlegend(Self, ldd.FDrawer, ldd.FItems, ldd.FItemSize, ldd.FBounds,
+          ldd.FColCount, ldd.FRowCount)
+      else
+        Legend.Draw(ldd);
+    end;
   finally
     ldd.FItems.Free;
   end;
@@ -1539,6 +1554,13 @@ begin
   if TMethod(FOnChartPaint) = TMethod(AValue) then exit;
   FOnChartPaint := AValue;
   StyleChanged(Self);
+end;
+
+procedure TChart.SetOnDrawLegend(AValue: TChartDrawLegendEvent);
+begin
+  if TMethod(FOnDrawLegend) = TMethod(AValue) then exit;
+  FOnDrawLegend := AValue;
+  StyleChanged(self);
 end;
 
 procedure TChart.SetOnDrawReticule(AValue: TDrawReticuleEvent);
