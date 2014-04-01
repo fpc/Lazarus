@@ -69,7 +69,8 @@ object KeyValPropEditorFrm: TKeyValPropEditorFrm
       FixedCols = 0
       RowCount = 2
       TabOrder = 1
-      KeyOptions = [keyEdit, keyDelete]
+      KeyOptions = [keyEdit, keyAdd, keyDelete]
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAutoAddRows, goAlwaysShowEditor, goThumbTracking]
       Strings.Strings = (
         ''
       )

@@ -44,8 +44,6 @@ begin
   Caption := oisStringsEditorDialog;
   StatusLabel.Caption := ois0Lines0Chars;
   //SortButton.Caption := oisSort;
-  // This does not work :(
-  ValueListEdit.Options := ValueListEdit.Options + [goAutoAddRows];
 end;
 
 procedure TKeyValPropEditorFrm.SortButtonClick(Sender: TObject);
