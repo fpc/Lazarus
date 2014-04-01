@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="lazutils">
 
@@ -1092,7 +1092,14 @@ if ReadBackslash=true then \" is replaced to " and not treated as quote.
 #0 is always end.
 </descr>
       </element>
-</module> <!-- LazFileUtils -->
+<element name="ReadAllLinks"><short>Resolves a symlink to the real file. It does not resolve symlinks in parent directories.</short><descr>If a symlink can not be resolved the function returns the empty string if ExceptionOnError is false. If ExceptionOnError is true it raises an EFOpenError with a message, containing more details.
+On Windows it simply returns Filename.</descr>
+      </element><element name="GetUnixPhysicalFilename"><short>Resolves all symlinks in Filename, including all directories.</short><descr>If a symlink can not be resolved the function returns the empty string if ExceptionOnError is false. If ExceptionOnError is true it raises an EFOpenError with a message, containing more details.
+</descr>
+      </element><element name="TryReadAllLinks"><short>Resolves a symlink to the real file. It does not resolve symlinks in parent directories.</short><descr>If a symlink can not be resolved it returns Filename.
+It uses ReadAllLinks.</descr>
+      </element>
+    </module> <!-- LazFileUtils -->
 
 </package>
 </fpdoc-descriptions>

@@ -5,22 +5,23 @@ begin
   Result:=FilenameIsUnixAbsolute(TheFilename);
 end;
 
-function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle;
+function FileOpenUTF8(const FileName: string; Mode: Integer): THandle;
 begin
   Result := SysUtils.FileOpen(UTF8ToSys(FileName), Mode);
 end;
 
-function FileCreateUTF8(Const FileName : string) : THandle;
+function FileCreateUTF8(const FileName: string): THandle;
 begin
   Result := SysUtils.FileCreate(UTF8ToSys(FileName));
 end;
 
-function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
+function FileCreateUTF8(const FileName: string; Rights: Cardinal): THandle;
 begin
   Result := SysUtils.FileCreate(UTF8ToSys(FileName), Rights);
 end;
 
-Function FileCreateUtf8(Const FileName : String; ShareMode : Integer; Rights : Cardinal) : THandle;
+function FileCreateUtf8(const FileName: String; ShareMode: Integer;
+  Rights: Cardinal): THandle;
 begin
   Result := SysUtils.FileCreate(UTF8ToSys(FileName), ShareMode, Rights);
 end;
@@ -46,7 +47,7 @@ begin
   Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));
 end;
 
-function FileAgeUTF8(const FileName: String): Longint;
+function FileAgeUTF8(const FileName: string): Longint;
 begin
   Result:=SysUtils.FileAge(UTF8ToSys(Filename));
 end;
@@ -121,6 +122,36 @@ begin
     Result:='';
 end;
 
+function GetUnixPhysicalFilename(const Filename: string;
+  ExceptionOnError: boolean): string;
+var
+  OldPath: String;
+  NewPath: String;
+  p: PChar;
+begin
+  Result:=Filename;
+  p:=PChar(Result);
+  repeat
+    while p^='/' do
+      inc(p);
+    if p^=#0 then exit;
+    if p^<>'/' then
+    begin
+      repeat
+        inc(p);
+      until p^ in [#0,'/'];
+      OldPath:=LeftStr(Result,p-PChar(Result));
+      NewPath:=ReadAllLinks(OldPath,ExceptionOnError);
+      if NewPath='' then exit('');
+      if OldPath<>NewPath then
+      begin
+        Result:=NewPath+copy(Result,length(OldPath)+1,length(Result));
+        p:=PChar(Result)+length(NewPath);
+      end;
+    end;
+  until false;
+end;
+
 function CreateDirUTF8(const NewDir: String): Boolean;
 begin
   Result:=SysUtils.CreateDir(UTF8ToSys(NewDir));
@@ -165,7 +196,7 @@ begin
 end;
 
 
-function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
+function ExpandFileNameUTF8(const FileName: string; BaseDir: string): string;
 var
   IsAbs: Boolean;
   CurDir, HomeDir, Fn: String;

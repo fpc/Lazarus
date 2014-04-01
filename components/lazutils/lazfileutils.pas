@@ -106,6 +106,10 @@ function GetFileDescription(const AFilename: string): string;
 function ReadAllLinks(const Filename: string;
                       ExceptionOnError: boolean): string; // if a link is broken returns ''
 function TryReadAllLinks(const Filename: string): string; // if a link is broken returns Filename
+{$IFDEF Unix}
+function GetUnixPhysicalFilename(const Filename: string;
+                      ExceptionOnError: boolean): string; // if a link is broken returns ''
+{$ENDIF}
 
 function GetAppConfigDirUTF8(Global: Boolean; Create: boolean = false): string;
 function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean = false;
