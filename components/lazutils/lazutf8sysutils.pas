@@ -14,9 +14,12 @@ implementation
 
 uses
   {$ifdef Windows}
-  Windows,
+    Windows,
   {$else}
-  Unix, BaseUnix,
+    Unix, BaseUnix,
+    {$IfDef Linux}
+    Linux,
+    {$EndIf}
   {$endif}
   Classes;
 
@@ -66,8 +69,6 @@ Begin
   Year:=YYear+(JulianDN*100);
 end;
 
-
-
 Procedure EpochToLocal(epoch:longint;out year,month,day,hour,minute,second:Word);
 {
   Transforms Epoch time into local time (hour, minute,seconds)
@@ -95,6 +96,15 @@ begin
   result := systemTimeToDateTime(SystemTime);
 end;
 
+{$IF defined(Linux) and not defined(GetTickCountTimeOfDay)}
+function GetTickCount64: QWord;
+var
+  tp: timespec;
+begin
+  clock_gettime(CLOCK_MONOTONIC, @tp); // exists since Linux Kernel 2.6
+  Result := (Int64(tp.tv_sec) * 1000) + (tp.tv_nsec div 1000000);
+end;
+{$ELSE}
 function GetTickCount64: QWord;
 var
   tp: TTimeVal;
@@ -102,6 +112,8 @@ begin
   fpgettimeofday(@tp, nil);
   Result := (Int64(tp.tv_sec) * 1000) + (tp.tv_usec div 1000);
 end;
+{$ENDIF}
+
 {$else}
 // Not Windows and not UNIX, so just write the most trivial code until we have something besser:
 function NowUTC: TDateTime;
