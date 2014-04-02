@@ -24,12 +24,12 @@ interface
 
 {$IFDEF USEBUTTONEDIT}
 uses
-  ButtonEdit;
+  Classes, ButtonEdit;
 
 type
-  TCustomEditButton = ButtonEdit.TCustomEditButton;
-  TEditButton = ButtonEdit.TEditButton;
-  TCheckItemEvent = ButtonEdit.TCheckEventItem;
+  TCustomEditButton = class(TCustomButtonEdit);
+  TEditButton = class(TButtonEdit);
+  TCheckItemEvent = ButtonEdit.TCheckItemEvent;
   TCustomControlFilterEdit = ButtonEdit.TCustomControlFilterEdit;
   TAcceptFileNameEvent = ButtonEdit.TAcceptFileNameEvent;
   TDialogKind = ButtonEdit.TDialogKind;
@@ -40,7 +40,14 @@ type
   TDateOrder = ButtonEdit.TDateOrder;
   TDateEdit = ButtonEdit.TDateEdit;
   TAcceptValueEvent = ButtonEdit.TAcceptValueEvent;
-  TCalcEdit = ButtonEdit.CalcEdit;
+  TCalcEdit = ButtonEdit.TCalcEdit;
+
+const
+  ResBtnListFilter = ButtonEdit.ResBtnListFilter; //'btnfiltercancel';
+  ResBtnFileOpen   = ButtonEdit.ResBtnFileOpen;   //'btnselfile';
+  ResBtnSelDir     = ButtonEdit.ResBtnSelDir;     //'btnseldir';
+  ResBtnCalendar   = ButtonEdit.ResBtnCalendar;   //'btncalendar';
+  ResBtnCalculator = ButtonEdit.ResBtnCalculator; //'btncalculator';
 
 {$ELSE}
 
@@ -646,9 +653,10 @@ const
   ResBtnCalendar   = 'btncalendar';
   ResBtnCalculator = 'btncalculator';
 
+  {$ENDIF}
+
 procedure Register;
 
-{$ENDIF}
 
 implementation
 
@@ -1626,13 +1634,17 @@ begin
 end;
 
 
+{$ENDIF}
 
 procedure Register;
 begin
+{$IFnDEF USEBUTTONEDIT}
   RegisterComponents('Misc', [TEditButton,TFileNameEdit,TDirectoryEdit,
                               TDateEdit,TCalcEdit]);
+{$ELSE}
+RegisterComponents('Misc', [TEditButton]); // still need to be able to load this
+{$ENDIF}
 end;
 
-{$ENDIF}
 
 end.

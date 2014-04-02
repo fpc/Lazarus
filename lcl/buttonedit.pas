@@ -181,7 +181,6 @@ type
     property PasswordChar: char read GetPasswordChar write SetPasswordChar;
     property PopupMenu: TPopupMenu read GetPopupMenu write SetPopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
-    property Text: TCaption read GetText write SetText;
 
     property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
     property OnChange: TNotifyEvent read FOnEditChange write FOnEditChange;
@@ -205,12 +204,15 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property Text: TCaption read GetText write SetText;
 
   end;
 
  { TButtonEdit }
 
   TButtonEdit = class(TCustomButtonEdit)
+  public
+    property Button;
   published
     property NumbersOnly;
     property Action;
@@ -237,7 +239,7 @@ type
     property Flat;
     property Font;
     property Glyph;
-    property HideSelection;
+//    property HideSelection;
     property Hint;
     property MaxLength;
     property NumGlyphs;
@@ -384,6 +386,7 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property Text;
   end;
 
   { TFileNameEdit }
@@ -482,6 +485,7 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property Text;
   end;
 
 
@@ -558,6 +562,7 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property Text;
   end;
 
 
@@ -654,6 +659,7 @@ type
     property TabStop;
     property TabOrder;
     property Visible;
+    property Text;
   end;
 
 
@@ -733,6 +739,7 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property Text;
   end;
 
 
@@ -748,9 +755,7 @@ const
   ResBtnCalendar   = 'btncalendar';
   ResBtnCalculator = 'btncalculator';
 
-{$IFDEF USEBUTTONEDIT}
 procedure Register;
-{$ENDIF}
 
 implementation
 
@@ -1221,6 +1226,8 @@ end;
 
 
 constructor TCustomButtonEdit.Create(AOwner: TComponent);
+var
+  B: TBitmap;
 begin
   FButton := TSpeedButton.Create(Self);
   FEdit := TBeEdit.Create(Self);
@@ -1240,6 +1247,13 @@ begin
     OnClick := @DoButtonClick;
     Parent := Self;
   end;
+  B := GetDefaultGlyph;
+  if B = nil
+  then
+   FButton.LoadGlyphFromResourceName(hInstance, GetDefaultGlyphName)
+  else
+    FButton.Glyph := B;
+
   with FEdit do
   begin
     Align := alClient;
@@ -1972,12 +1986,12 @@ begin
 end;
 
 
-{$IFDEF USEBUTTONEDIT}
 procedure Register;
 begin
+  {$IFDEF USEBUTTONEDIT}
   RegisterComponents('Misc', [TButtonEdit,TFileNameEdit,TDirectoryEdit,
                               TDateEdit,TCalcEdit]);
+  {$ENDIF}
 end;
-{$ENDIF}
 
 end.

@@ -1198,6 +1198,7 @@
       </Item290>
       <Item291>
         <Filename Value="buttonedit.pas"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="ButtonEdit"/>
       </Item291>
     </Files>
