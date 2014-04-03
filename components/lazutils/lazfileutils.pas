@@ -564,9 +564,9 @@ begin
     Start := 1;
     while (Start <= Len) and (AFilename[Start] = #32) do Inc(Start);
     System.Delete(Result,1,Start-1);
-    Len := Length(AFileName);
+    Len := Length(Result);
   end;
-  while (Len > 0) and (AFileName[Len] = #32) do Dec(Len);
+  while (Len > 0) and (Result[Len] = #32) do Dec(Len);
   SetLength(Result, Len);
   Result := ResolveDots(Result);
 end;
