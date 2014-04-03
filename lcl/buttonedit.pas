@@ -144,6 +144,10 @@ type
     function GetDefaultGlyph: TBitmap; virtual;
     function GetDefaultGlyphName: String; virtual;
     function GetPopupMenu: TPopupMenu; override;
+
+    procedure CalculatePreferredSize(var PreferredWidth,
+                                     PreferredHeight: integer;
+                                     WithThemeSpace: Boolean); override;
     procedure CheckButtonVisible;
 
     procedure DoButtonClick(Sender: TObject);  virtual;
@@ -898,6 +902,13 @@ begin
   Result := FEdit.PopupMenu;
 end;
 
+procedure TCustomButtonEdit.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight, WithThemeSpace);
+  PreferredWidth := 0;
+end;
+
 function TCustomButtonEdit.GetReadOnly: Boolean;
 begin
   Result := FEdit.ReadOnly;
@@ -1098,8 +1109,8 @@ end;
 
 class function TCustomButtonEdit.GetControlClassDefaultSize: TSize;
 begin
-  Result.CX := 100;
-  Result.CY := 23;
+  Result.CX := 80 + 23; //as TCustomEdit + TCustomSpeedButton
+  Result.CY := 23;  //as TCustomEdit
 end;
 
 function TCustomButtonEdit.GetDefaultGlyph: TBitmap;
