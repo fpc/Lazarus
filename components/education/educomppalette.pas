@@ -21,7 +21,7 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, ComCtrls, ExtCtrls, StdCtrls, AvgLvlTree,
   FormEditingIntf, LazConfigStorage, IDEOptionsIntf, ComponentReg,
-  IDEImagesIntf, LazIDEIntf,
+  IDEImagesIntf, LazIDEIntf, LCLType,
   EduOptions;
 
 type

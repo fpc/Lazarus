@@ -38,7 +38,7 @@ type
     procedure FormDeactivate(Sender: TObject);
     procedure FormEnter(Sender: TObject);
     procedure FormExit(Sender: TObject);
-    function FormHelp(Command: Word; Data: Longint; var CallHelp: Boolean
+    function FormHelp(Command: Word; Data: PtrInt; var CallHelp: Boolean
       ): Boolean;
     procedure FormHide(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -118,7 +118,7 @@ begin
   debugln('TForm1And2.FormExit ',DbgSName(Sender));
 end;
 
-function TForm1And2.FormHelp(Command: Word; Data: Longint; var CallHelp: Boolean
+function TForm1And2.FormHelp(Command: Word; Data: PtrInt; var CallHelp: Boolean
   ): Boolean;
 begin
   debugln('TForm1And2.FormHelp Command=',dbgs(Command),' Data=',HexStr(Cardinal(Data),8),' CallHelp=',dbgs(CallHelp));

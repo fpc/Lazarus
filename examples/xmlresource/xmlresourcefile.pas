@@ -5,7 +5,7 @@ unit xmlresourcefile;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, Controls, SysUtils,
   LCLMemManager, forms,
   dom, XMLRead,XMLWrite,
   ProjectIntf,
