@@ -297,6 +297,7 @@ type
     destructor Destroy; override;
     procedure AddEditor(aEditor: TWinControl; aAlign: TAlign; ActiveCtrl:boolean);
     procedure SetFocus; override;
+    function  Focused: Boolean; override;
     property MaxLength: Integer read GetMaxLength write SetMaxLength;
     property ActiveControl: TWinControl read GetActiveControl;
   end;
@@ -12079,6 +12080,19 @@ begin
     end;
   end;
   inherited SetFocus;
+end;
+
+function TCompositeCellEditor.Focused: Boolean;
+var
+  i: Integer;
+begin
+  Result:=inherited Focused;
+  if not result then
+    for i:=0 to Length(Feditors)-1 do
+      if (FEditors[i].Editor<>nil) and (FEditors[i].Editor.Focused) then begin
+        result := true;
+        break;
+      end;
 end;
 
 procedure TCompositeCellEditor.WndProc(var TheMessage: TLMessage);
