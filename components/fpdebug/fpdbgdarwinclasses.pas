@@ -426,10 +426,15 @@ end;
 function TDbgDarwinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
 
 begin
-  if wifexited(FStatus) then
+  if wifexited(FStatus) or wifsignaled(FStatus) then
     begin
     SetExitCode(wexitStatus(FStatus));
     writeln('Exit');
+    // Clear all pending signals
+    repeat
+    c := FpWaitPid(-1, FStatus, WNOHANG);
+    until c<1;
+
     result := deExitProcess
     end
   else if WIFSTOPPED(FStatus) then
@@ -474,12 +479,8 @@ begin
         end;
     end; {case}
     end
-  else if wifsignaled(FStatus) then
-    begin
-    writeln('Exit signal');
-    SetExitCode(wstopsig(FStatus));
-    result := deExitProcess
-    end;
+  else
+    raise exception.CreateFmt('Received unknown status %d from process with pid=%d',[FStatus, ProcessID]);
 end;
 
 end.
