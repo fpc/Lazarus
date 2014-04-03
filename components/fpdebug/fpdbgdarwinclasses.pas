@@ -432,8 +432,7 @@ begin
     writeln('Exit');
     // Clear all pending signals
     repeat
-    c := FpWaitPid(-1, FStatus, WNOHANG);
-    until c<1;
+    until FpWaitPid(-1, FStatus, WNOHANG)<1;
 
     result := deExitProcess
     end
