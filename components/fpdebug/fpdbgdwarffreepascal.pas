@@ -72,7 +72,7 @@ begin
 end;
 
 initialization
-  DwarfSymbolClassMapList.AddMap(TFpDwarfDefaultSymbolClassMap);
+  DwarfSymbolClassMapList.AddMap(TFpDwarfFreePascalSymbolClassMap);
 
 end.
 
