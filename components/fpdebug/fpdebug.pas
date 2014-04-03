@@ -11,7 +11,7 @@ uses
   FpDbgSymbols, FpDbgUtil, FpImgReaderWinPE, FpImgReaderElf, FpImgReaderElfTypes, 
   FpImgReaderBase, FpPascalParser, macho, FpImgReaderMachoFile, FpImgReaderMacho, 
   FpPascalBuilder, FpDbgInfo, FpdMemoryTools, FpErrorMessages, FpDbgDwarfVerbosePrinter, 
-  LazarusPackageIntf;
+  FpDbgDwarfDataClasses, LazarusPackageIntf;
 
 implementation
 

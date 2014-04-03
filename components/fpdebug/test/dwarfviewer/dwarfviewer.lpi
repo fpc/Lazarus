@@ -61,16 +61,13 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="3">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="ide"/>
+        <PackageName Value="fpdebug"/>
       </Item1>
       <Item2>
-        <PackageName Value="fpdebug"/>
-      </Item2>
-      <Item3>
         <PackageName Value="LCL"/>
-      </Item3>
+      </Item2>
     </RequiredPackages>
     <Units Count="3">
       <Unit0>

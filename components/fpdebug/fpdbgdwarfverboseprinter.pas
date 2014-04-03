@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, windows, SysUtils, FpDbgDwarf, FpDbgLoader, FpDbgDwarfConst, FpdMemoryTools,
-  FpImgReaderBase, LazLoggerBase, maps;
+  FpImgReaderBase, FpDbgDwarfDataClasses, LazLoggerBase, maps;
 
 type
 

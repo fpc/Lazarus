@@ -36,8 +36,8 @@ program FPDumpDwarf;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, Windows, SysUtils, maps, LazLogger,
-  FpDbgPETypes, FpDbgDwarfConst, FpDbgSymbols, FpDbgLoader, FpDbgDwarf;
+  Classes, Windows, SysUtils, maps, LazLogger, FpDbgPETypes, FpDbgDwarfConst, FpDbgSymbols,
+  FpDbgLoader, FpDbgDwarf, FpDbgDwarfVerbosePrinter;
 
 var
   n, idx: Integer;
@@ -58,7 +58,7 @@ begin
   
   Loader := TDbgImageLoader.Create(ParamStr(1));
 
-  Dwarf := TDbgVerboseDwarf.Create(Loader);
+  Dwarf := TDbgDwarf.Create(Loader);
   n := Dwarf.LoadCompilationUnits;
   for idx := 0 to n - 1 do
   begin
