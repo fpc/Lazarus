@@ -420,7 +420,6 @@ type
     constructor Create(AName: String; AnInformationEntry: TDwarfInformationEntry);
     constructor Create(AName: String; AnInformationEntry: TDwarfInformationEntry;
                        AKind: TDbgSymbolKind; AAddress: TFpDbgMemLocation);
-    constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr); virtual; // TODO: onsly for PRoc symbol
     destructor Destroy; override;
 
     property CompilationUnit: TDwarfCompilationUnit read FCU;
@@ -438,6 +437,8 @@ type
     class function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; virtual; abstract;
     class function CreateContext(AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol;
                                  ADwarf: TDbgDwarf): TDbgInfoAddressContext; virtual; abstract;
+    class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
+                                    AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; virtual; abstract;
   end;
   TFpDwarfSymbolClassMapClass = class of TFpDwarfSymbolClassMap;
 
@@ -2898,7 +2899,7 @@ begin
       end;
 
       // TDbgDwarfProcSymbol
-      Result := Cu.DwarfSymbolClassMap.GetDwarfSymbolClass(DW_TAG_subprogram).Create(CU, Iter.DataPtr, AAddress);
+      Result := Cu.DwarfSymbolClassMap.CreateProcSymbol(CU, Iter.DataPtr, AAddress);
     finally
       Iter.Free;
     end;
@@ -3024,12 +3025,6 @@ begin
 
   inherited Create(AName, AKind, AAddress);
   Init;
-end;
-
-constructor TDbgDwarfSymbolBase.Create(ACompilationUnit: TDwarfCompilationUnit;
-  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr);
-begin
-  assert(False, 'TDbgDwarfSymbolBase.Create: False');
 end;
 
 destructor TDbgDwarfSymbolBase.Destroy;

@@ -230,7 +230,7 @@ end;
 function TFpErrorHandler.CreateError(AnErrorCode: TFpErrorCode; AnError: TFpError;
   AData: array of const): TFpError;
 var
-  i, j: Integer;
+  i: Integer;
 begin
   Result := CreateError(AnErrorCode, AData);
   SetLength(Result, Length(AnError) + 1);

@@ -53,6 +53,8 @@ type
     class function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     class function CreateContext(AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol;
       ADwarf: TDbgDwarf): TDbgInfoAddressContext; override;
+    class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
+      AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
   end;
 
   { TDbgDwarfInfoAddressContext }
@@ -67,6 +69,17 @@ type
     function GetAddress: TDbgPtr; override;
     function GetSizeOfAddress: Integer; override;
     function GetMemManager: TFpDbgMemManager; override;
+
+    property Symbol: TFpDbgSymbol read FSymbol;
+    property Address: TDBGPtr read FAddress;
+    property Dwarf: TDbgDwarf read FDwarf;
+    function FindExportedSymbolInUnits(const AName: String; PNameUpper, PNameLower: PChar;
+      SkipCompUnit: TDwarfCompilationUnit): TFpDbgSymbol; inline;
+    function FindSymbolInStructure(const AName: String; PNameUpper, PNameLower: PChar;
+      InfoEntry: TDwarfInformationEntry): TFpDbgSymbol; inline;
+    // FindLocalSymbol: for the subroutine itself
+    function FindLocalSymbol(const AName: String; PNameUpper, PNameLower: PChar;
+      InfoEntry: TDwarfInformationEntry): TFpDbgSymbol; virtual;
   public
     constructor Create(AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol; ADwarf: TDbgDwarf);
     destructor Destroy; override;
@@ -781,7 +794,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 //    function GetFlags: TDbgSymbolFlags; override;
     function GetLine: Cardinal; override;
   public
-    constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr); override;
+    constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr); overload;
     destructor Destroy; override;
     // TODO members = locals ?
   end;
@@ -876,6 +889,12 @@ begin
   Result := TDbgDwarfInfoAddressContext.Create(AnAddress, ASymbol, ADwarf);
 end;
 
+class function TFpDwarfDefaultSymbolClassMap.CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
+  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase;
+begin
+  Result := TDbgDwarfProcSymbol.Create(ACompilationUnit, AInfo, AAddress);
+end;
+
 { TDbgDwarfInfoAddressContext }
 
 function TDbgDwarfInfoAddressContext.GetSymbolAtAddress: TFpDbgSymbol;
@@ -899,6 +918,123 @@ begin
   Result := FDwarf.MemManager;
 end;
 
+function TDbgDwarfInfoAddressContext.FindExportedSymbolInUnits(const AName: String; PNameUpper,
+  PNameLower: PChar; SkipCompUnit: TDwarfCompilationUnit): TFpDbgSymbol;
+var
+  i, ExtVal: Integer;
+  CU: TDwarfCompilationUnit;
+  InfoEntry: TDwarfInformationEntry;
+  s: String;
+begin
+  Result := nil;
+  InfoEntry := nil;
+  i := FDwarf.CompilationUnitsCount;
+  while i > 0 do begin
+    dec(i);
+    CU := FDwarf.CompilationUnits[i];
+    if CU = SkipCompUnit then
+      continue;
+    //DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier search UNIT Name=', CU.FileName]);
+
+    InfoEntry.ReleaseReference;
+    InfoEntry := TDwarfInformationEntry.Create(CU, nil);
+    InfoEntry.ScopeIndex := CU.FirstScope.Index;
+
+    if not InfoEntry.AbbrevTag = DW_TAG_compile_unit then
+      continue;
+    // compile_unit can not have startscope
+
+    s := CU.UnitName;
+    if (s <> '') and (CompareUtf8BothCase(PNameUpper, PNameLower, @s[1])) then begin
+      Result.ReleaseReference;
+      Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
+      break;
+    end;
+
+    CU.ScanAllEntries;
+    if InfoEntry.GoNamedChildEx(PNameUpper, PNameLower) then begin
+      if InfoEntry.IsAddressInStartScope(FAddress) then begin
+        // only variables are marked "external", but types not / so we may need all top level
+        Result.ReleaseReference;
+        Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
+        //DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier MAYBE FOUND Name=', CU.FileName]);
+
+        // DW_AT_visibility ?
+        if InfoEntry.ReadValue(DW_AT_external, ExtVal) then
+          if ExtVal <> 0 then
+            break;
+          // Search for better result
+      end;
+    end;
+  end;
+
+  InfoEntry.ReleaseReference;
+end;
+
+function TDbgDwarfInfoAddressContext.FindSymbolInStructure(const AName: String; PNameUpper,
+  PNameLower: PChar; InfoEntry: TDwarfInformationEntry): TFpDbgSymbol;
+var
+  InfoEntryInheritance: TDwarfInformationEntry;
+  FwdInfoPtr: Pointer;
+  FwdCompUint: TDwarfCompilationUnit;
+  SelfParam: TDbgDwarfValueIdentifier;
+begin
+  Result := nil;
+  InfoEntry.AddReference;
+
+  while True do begin
+    if not InfoEntry.IsAddressInStartScope(FAddress) then
+      break;
+
+    InfoEntryInheritance := InfoEntry.FindChildByTag(DW_TAG_inheritance);
+
+    if InfoEntry.GoNamedChildEx(PNameUpper, PNameLower) then begin
+      if InfoEntry.IsAddressInStartScope(FAddress) then begin
+        SelfParam := TDbgDwarfProcSymbol(FSymbol).GetSelfParameter(FAddress);
+        if (SelfParam <> nil) then begin
+          // TODO: only valid, as long as context is valid, because if comnext is freed, then self is lost too
+          Result := SelfParam.MemberByName[AName];
+          assert(Result <> nil, 'FindSymbol: SelfParam.MemberByName[AName]');
+          if Result <> nil then
+            Result.AddReference;
+          if Result = nil then debugln(['TDbgDwarfInfoAddressContext.FindSymbol  NOT IN SELF !!!!!!!!!!!!!']);
+        end
+else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
+        ;
+        if Result = nil then  // Todo: abort the searh /SetError
+          Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
+        InfoEntry.ReleaseReference;
+        InfoEntryInheritance.ReleaseReference;
+        exit;
+      end;
+    end;
+
+
+    if not( (InfoEntryInheritance <> nil) and
+            (InfoEntryInheritance.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint)) )
+    then
+      break;
+    InfoEntry.ReleaseReference;
+    InfoEntry := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+    InfoEntryInheritance.ReleaseReference;
+    DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier  PARENT ', dbgs(InfoEntry, FwdCompUint) ]);
+  end;
+
+  InfoEntry.ReleaseReference;
+end;
+
+function TDbgDwarfInfoAddressContext.FindLocalSymbol(const AName: String; PNameUpper,
+  PNameLower: PChar; InfoEntry: TDwarfInformationEntry): TFpDbgSymbol;
+begin
+  Result := nil;
+  if not InfoEntry.GoNamedChildEx(PNameUpper, PNameLower) then
+    exit;
+  if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
+    Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
+    TDbgDwarfIdentifier(Result).ParentTypeInfo := TDbgDwarfProcSymbol(FSymbol);
+  end;
+end;
+
 constructor TDbgDwarfInfoAddressContext.Create(AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol;
   ADwarf: TDbgDwarf);
 begin
@@ -919,36 +1055,32 @@ end;
 function TDbgDwarfInfoAddressContext.FindSymbol(const AName: String): TFpDbgSymbol;
 var
   SubRoutine: TDbgDwarfProcSymbol; // TDbgSymbol;
-  CU, CU2, FwdCompUint: TDwarfCompilationUnit;
+  CU: TDwarfCompilationUnit;
   //Scope,
-  StartScopeIdx, ExtVal, i: Integer;
-  InfoEntry, InfoEntryTmp, InfoEntryParent: TDwarfInformationEntry;
-  s, s1, s2: String;
+  StartScopeIdx: Integer;
+  InfoEntry: TDwarfInformationEntry;
+  NameUpper, NameLower: String;
   InfoName: PChar;
-  FwdInfoPtr: Pointer;
   tg: Cardinal;
-  p1, p2: PChar;
-  SelfParam: TDbgDwarfValueIdentifier;
+  PNameUpper, PNameLower: PChar;
 begin
   Result := nil;
   if (FSymbol = nil) or not(FSymbol is TDbgDwarfProcSymbol) or (AName = '') then
     exit;
 
   SubRoutine := TDbgDwarfProcSymbol(FSymbol);
-  s1 := UTF8UpperCase(AName);
-  s2 := UTF8LowerCase(AName);
-  p1 := @s1[1];
-  p2 := @s2[1];
+  NameUpper := UTF8UpperCase(AName);
+  NameLower := UTF8LowerCase(AName);
+  PNameUpper := @NameUpper[1];
+  PNameLower := @NameLower[1];
 
   try
     CU := SubRoutine.CompilationUnit;
     InfoEntry := SubRoutine.InformationEntry.Clone;
-    //InfoEntry := TDwarfInformationEntry.Create(CU, nil);
-    //InfoEntry.ScopeIndex := SubRoutine.FAddressInfo^.ScopeIndex;
 
-    // special: search "self"
+    // special: search "self" // depends on dwarf version
     // Todo nested procs
-    if s2 = 'self' then begin
+    if NameLower = 'self' then begin
       Result := SubRoutine.GetSelfParameter(FAddress);
       if Result <> nil then begin
         Result.AddReference;
@@ -966,84 +1098,44 @@ begin
       if not InfoEntry.IsAddressInStartScope(FAddress) // StartScope = first valid address
       then begin
         // CONTINUE: Search parent(s)
-        InfoEntry.ScopeIndex := StartScopeIdx;
+        //InfoEntry.ScopeIndex := StartScopeIdx;
         InfoEntry.GoParent;
         Continue;
       end;
 
       if InfoEntry.ReadName(InfoName) and not InfoEntry.IsArtificial
       then begin
-        if (CompareUtf8BothCase(p1, p2, InfoName)) then begin
+        if (CompareUtf8BothCase(PNameUpper, PNameLower, InfoName)) then begin
           Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
           exit;
         end;
       end;
 
       tg := InfoEntry.AbbrevTag;
+      if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
+        Result := FindSymbolInStructure(AName,PNameUpper, PNameLower, InfoEntry);
+        // TODO: check error
+        if Result <> nil then
+          exit;
+        //InfoEntry.ScopeIndex := StartScopeIdx;
+      end
 
-      if InfoEntry.GoNamedChildEx(p1, p2) then begin
+      else
+      if (StartScopeIdx = SubRoutine.InformationEntry.ScopeIndex) then begin // searching in subroutine
+        Result := FindLocalSymbol(AName,PNameUpper, PNameLower, InfoEntry);
+        // TODO: check error
+        if Result <> nil then
+          exit;
+        //InfoEntry.ScopeIndex := StartScopeIdx;
+      end
+          // TODO: nested subroutine
+
+      else
+      if InfoEntry.GoNamedChildEx(PNameUpper, PNameLower) then begin
         if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
-          if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
-            // access via self
-            SelfParam := SubRoutine.GetSelfParameter(FAddress);
-            if (SelfParam <> nil) then begin
-              // TODO: only valid, as long as context is valid, because if comnext is freed, then self is lost too
-              Result := SelfParam.MemberByName[AName];
-              assert(Result <> nil, 'FindSymbol: SelfParam.MemberByName[AName]');
-              if Result <> nil then
-                Result.AddReference;
-              if Result= nil then debugLn(['TDbgDwarfInfoAddressContext.FindSymbol   NOT IN SELF !!!!!!!!!!!!!']);
-            end;
-          end;
-          if Result = nil then
-            Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
-
-          // TODO: nested
-          if (StartScopeIdx = SubRoutine.InformationEntry.ScopeIndex) then // searching in subroutine
-            TDbgDwarfIdentifier(Result).ParentTypeInfo := SubRoutine;
+          Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
           exit;
         end;
-      end;
-
-      if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
-        // TODO: only search most inner class (if classes can be nested.
-        // outer classes static data may be available.
-        // search parent class
-        InfoEntry.ScopeIndex := StartScopeIdx;
-        InfoEntryParent := InfoEntry.FindChildByTag(DW_TAG_inheritance);
-        while (InfoEntryParent <> nil) and (InfoEntryParent.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint)) do begin
-          InfoEntryParent.ReleaseReference;
-          InfoEntryParent := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
-          DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier  PARENT ', dbgs(InfoEntryParent, FwdCompUint) ]);
-
-          if not InfoEntry.IsAddressInStartScope(FAddress) then
-            break;
-
-          InfoEntryTmp := InfoEntryParent.FindChildByTag(DW_TAG_inheritance);
-          if InfoEntryParent.GoNamedChildEx(p1, p2) then begin
-            if InfoEntry.IsAddressInStartScope(FAddress) then begin
-              SelfParam := SubRoutine.GetSelfParameter(FAddress);
-              if (SelfParam <> nil) then begin
-                // TODO: only valid, as long as context is valid, because if comnext is freed, then self is lost too
-                Result := SelfParam.MemberByName[AName];
-                assert(Result <> nil, 'FindSymbol: SelfParam.MemberByName[AName]');
-                if Result <> nil then
-                  Result.AddReference;
-                if Result<> nil then debugln(['TDbgDwarfInfoAddressContext.FindSymbol  NOT IN SELF !!!!!!!!!!!!!']);
-              end
-else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
-              ;
-              if Result = nil then
-                Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntryParent);
-              InfoEntryParent.ReleaseReference;
-              InfoEntryTmp.ReleaseReference;
-              exit;
-            end;
-          end;
-          InfoEntryParent.ReleaseReference;
-          InfoEntryParent := InfoEntryTmp;
-        end;
-        InfoEntryParent.ReleaseReference;
       end;
 
       // Search parent(s)
@@ -1051,47 +1143,7 @@ else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
       InfoEntry.GoParent;
     end;
 
-    // other units
-    i := FDwarf.CompilationUnitsCount;
-    while i > 0 do begin
-      dec(i);
-      CU2 := FDwarf.CompilationUnits[i];
-      if CU2 = CU then
-        continue;
-      //DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier search UNIT Name=', CU2.FileName]);
-
-      InfoEntry.ReleaseReference;
-      InfoEntry := TDwarfInformationEntry.Create(CU2, nil);
-      InfoEntry.ScopeIndex := CU2.FirstScope.Index;
-
-      if not InfoEntry.AbbrevTag = DW_TAG_compile_unit then
-        continue;
-      // compile_unit can not have startscope
-
-      s := CU2.UnitName;
-      if (s <> '') and (CompareUtf8BothCase(p1, p2, @s[1])) then begin
-        Result.ReleaseReference;
-        Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
-        break;
-      end;
-
-      CU2.ScanAllEntries;
-      if InfoEntry.GoNamedChildEx(p1, p2) then begin
-        if InfoEntry.IsAddressInStartScope(FAddress) then begin
-          // only variables are marked "external", but types not / so we may need all top level
-          Result.ReleaseReference;
-          Result := TDbgDwarfIdentifier.CreateSubClass(AName, InfoEntry);
-          //DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier MAYBE FOUND Name=', CU2.FileName]);
-
-          // DW_AT_visibility ?
-          if InfoEntry.ReadValue(DW_AT_external, ExtVal) then
-            if ExtVal <> 0 then
-              break;
-            // Search for better result
-        end;
-      end;
-
-    end;
+    Result := FindExportedSymbolInUnits(AName, PNameUpper, PNameLower, CU);
 
   finally
     if (Result = nil) or (InfoEntry = nil)

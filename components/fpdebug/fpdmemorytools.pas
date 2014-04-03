@@ -136,13 +136,13 @@ type
                               ): boolean; override;
 
     function FinishTargetRead(AReadDataType: TFpDbgMemReadDataType;
-                              ATargetPointer: TDbgPtr; ADestPointer: Pointer;
+                              {%H-}ATargetPointer: TDbgPtr; ADestPointer: Pointer;
                               ATargetSize, ADestSize: Cardinal;
-                              AConvertorData: TFpDbgMemConvData
+                              {%H-}AConvertorData: TFpDbgMemConvData
                              ): boolean; override;
-    procedure FailedTargetRead(AConvertorData: TFpDbgMemConvData); override;
+    procedure FailedTargetRead({%H-}AConvertorData: TFpDbgMemConvData); override;
 
-    procedure AdjustIntPointer(var ADataPointer: Pointer; ADataSize, ANewSize: Cardinal); override;
+    procedure AdjustIntPointer(var {%H-}ADataPointer: Pointer; ADataSize, ANewSize: Cardinal); override;
 
 
     //procedure SignExtend(ADataPointer: Pointer; ASourceSize, ADestSize: Cardinal); override;
