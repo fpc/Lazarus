@@ -76,6 +76,7 @@ type
     property Dwarf: TDbgDwarf read FDwarf;
 
     function SymbolToValue(ASym: TFpDbgSymbol): TFpDbgValue; inline;
+    procedure AddRefToVal(AVal: TFpDbgValue); inline;
 
     function FindExportedSymbolInUnits(const AName: String; PNameUpper, PNameLower: PChar;
       SkipCompUnit: TDwarfCompilationUnit): TFpDbgValue; inline;
@@ -791,7 +792,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure KindNeeded; override;
     procedure SizeNeeded; override;
     function GetFlags: TDbgSymbolFlags; override;
-    function GetSelfParameter(AnAddress: TDbgPtr = 0): TFpDbgDwarfValue;
 
     function GetColumn: Cardinal; override;
     function GetFile: String; override;
@@ -801,6 +801,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr); overload;
     destructor Destroy; override;
     // TODO members = locals ?
+    function GetSelfParameter(AnAddress: TDbgPtr = 0): TFpDbgDwarfValue;
   end;
 
   { TDbgDwarfIdentifierVariable }
@@ -938,6 +939,11 @@ begin
     {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(@FlastResult, 'FindSymbol'){$ENDIF};
   end;
   ASym.ReleaseReference;
+end;
+
+procedure TDbgDwarfInfoAddressContext.AddRefToVal(AVal: TFpDbgValue);
+begin
+  AVal.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FlastResult, 'FindSymbol'){$ENDIF};
 end;
 
 function TDbgDwarfInfoAddressContext.FindExportedSymbolInUnits(const AName: String;
@@ -1106,17 +1112,6 @@ begin
   try
     CU := SubRoutine.CompilationUnit;
     InfoEntry := SubRoutine.InformationEntry.Clone;
-
-    // special: search "self" // depends on dwarf version
-    // Todo nested procs
-    // TODO: Move to FindLocal
-    if NameLower = 'self' then begin
-      Result := SubRoutine.GetSelfParameter(FAddress);
-      if Result <> nil then begin
-        Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FlastResult, 'FindSymbol'){$ENDIF};
-        exit;
-      end;
-    end;
 
     while InfoEntry.HasValidScope do begin
       //debugln(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier Searching ', dbgs(InfoEntry.FScope, CU)]);

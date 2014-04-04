@@ -5,7 +5,7 @@ unit FpDbgDwarfFreePascal;
 interface
 
 uses
-  Classes, SysUtils, FpDbgDwarfDataClasses, FpDbgDwarf, FpDbgInfo, DbgIntfBaseTypes;
+  Classes, SysUtils, FpDbgDwarfDataClasses, FpDbgDwarf, FpDbgInfo, FpDbgUtil, DbgIntfBaseTypes;
 
 type
 
@@ -54,9 +54,18 @@ function TFpDwarfFreePascalAddressContext.FindLocalSymbol(const AName: String; P
   PNameLower: PChar; InfoEntry: TDwarfInformationEntry): TFpDbgValue;
 const
   parentfp: string = 'parentfp';
+  selfname: string = 'self';
 var
   StartScopeIdx: Integer;
 begin
+  if (Length(AName) = length(selfname)) and (CompareUtf8BothCase(PNameUpper, PNameLower, @selfname[1])) then begin
+    Result := TDbgDwarfProcSymbol(Symbol).GetSelfParameter(Address);
+    if Result <> nil then begin
+      AddRefToVal(Result);
+      exit;
+    end;
+  end;
+
   StartScopeIdx := InfoEntry.ScopeIndex;
   Result := inherited FindLocalSymbol(AName, PNameUpper, PNameLower, InfoEntry);
   if Result <> nil then
