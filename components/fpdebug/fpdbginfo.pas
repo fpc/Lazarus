@@ -254,6 +254,20 @@ type
     constructor Create(AnAddress: TFpDbgMemLocation);
   end;
 
+  { TFpDbgValueTypeDeclaration }
+
+  TFpDbgValueTypeDeclaration = class(TFpDbgValue)
+  private
+    FSymbol: TFpDbgSymbol; // stType
+  protected
+    function GetKind: TDbgSymbolKind; override;
+    function GetDbgSymbol: TFpDbgSymbol; override;
+  public
+    constructor Create(ASymbol: TFpDbgSymbol); // Only for stType
+    destructor Destroy; override;
+  end;
+
+
   { TFpDbgSymbol }
 
   TFpDbgSymbol = class(TFpDbgSymbolBase)
@@ -421,7 +435,7 @@ type
     property Address: TDbgPtr read GetAddress;
     property SymbolAtAddress: TFpDbgSymbol read GetSymbolAtAddress;
     // search this, and all parent context
-    function FindSymbol(const {%H-}AName: String): TFpDbgSymbol; virtual;
+    function FindSymbol(const {%H-}AName: String): TFpDbgValue; virtual;
     property MemManager: TFpDbgMemManager read GetMemManager;
     property SizeOfAddress: Integer read GetSizeOfAddress;
   end;
@@ -451,24 +465,6 @@ function dbgs(ADbgSymbolKind: TDbgSymbolKind): String;
 begin
   Result := '';
   WriteStr(Result, ADbgSymbolKind);
-end;
-
-{ TDbgSymbolValueConstAddress }
-
-function TFpDbgValueConstAddress.GetFieldFlags: TFpDbgValueFieldFlags;
-begin
-  Result := [svfAddress]
-end;
-
-function TFpDbgValueConstAddress.GetAddress: TFpDbgMemLocation;
-begin
-  Result := FAddress;
-end;
-
-constructor TFpDbgValueConstAddress.Create(AnAddress: TFpDbgMemLocation);
-begin
-  inherited Create;
-  FAddress := AnAddress;
 end;
 
 { TFpDbgCircularRefCountedObject }
@@ -728,6 +724,49 @@ begin
   FSigned := ASigned;
 end;
 
+{ TDbgSymbolValueConstAddress }
+
+function TFpDbgValueConstAddress.GetFieldFlags: TFpDbgValueFieldFlags;
+begin
+  Result := [svfAddress]
+end;
+
+function TFpDbgValueConstAddress.GetAddress: TFpDbgMemLocation;
+begin
+  Result := FAddress;
+end;
+
+constructor TFpDbgValueConstAddress.Create(AnAddress: TFpDbgMemLocation);
+begin
+  inherited Create;
+  FAddress := AnAddress;
+end;
+
+{ TFpDbgValueTypeDeclaration }
+
+function TFpDbgValueTypeDeclaration.GetKind: TDbgSymbolKind;
+begin
+  Result := skNone;
+end;
+
+function TFpDbgValueTypeDeclaration.GetDbgSymbol: TFpDbgSymbol;
+begin
+  Result := FSymbol;
+end;
+
+constructor TFpDbgValueTypeDeclaration.Create(ASymbol: TFpDbgSymbol);
+begin
+  inherited Create;
+  FSymbol := ASymbol;
+  FSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'TFpDbgValueTypeDeclaration'){$ENDIF};
+end;
+
+destructor TFpDbgValueTypeDeclaration.Destroy;
+begin
+  inherited Destroy;
+  FSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'TFpDbgValueTypeDeclaration'){$ENDIF};
+end;
+
 { TDbgInfoAddressContext }
 
 function TDbgInfoAddressContext.GetMemManager: TFpDbgMemManager;
@@ -745,7 +784,7 @@ begin
   Result := nil;
 end;
 
-function TDbgInfoAddressContext.FindSymbol(const AName: String): TFpDbgSymbol;
+function TDbgInfoAddressContext.FindSymbol(const AName: String): TFpDbgValue;
 begin
   Result := nil;
 end;

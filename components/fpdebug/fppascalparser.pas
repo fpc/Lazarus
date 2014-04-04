@@ -60,7 +60,7 @@ type
     procedure SetError(AnErrorCode: TFpErrorCode; AData: array of const);
     function PosFromPChar(APChar: PChar): Integer;
   protected
-    function GetDbgSymbolForIdentifier({%H-}AnIdent: String): TFpDbgSymbol;
+    function GetDbgSymbolForIdentifier({%H-}AnIdent: String): TFpDbgValue;
     property ExpressionPart: TFpPascalExpressionPart read FExpressionPart;
     property Context: TDbgInfoAddressContext read FContext;
   public
@@ -432,22 +432,6 @@ type
   TFpPasParserValue = class(TFpDbgValue)
   protected
     function DebugText(AIndent: String): String; virtual;
-  end;
-
-  { TFpPasParserValueWrapper }
-
-  TFpPasParserValueWrapper = class(TFpPasParserValue)
-  private
-    FSymbol: TFpDbgSymbol;
-    //FTypeSymbol: TFpDbgSymbol;
-  protected
-    function DebugText(AIndent: String): String; override;
-  protected
-    function GetKind: TDbgSymbolKind; override;
-    function GetDbgSymbol: TFpDbgSymbol; override;
-  public
-    constructor Create(ASymbol: TFpDbgSymbol); // Only for stType
-    destructor Destroy; override;
   end;
 
   { TFpPasParserValueCastToPointer
@@ -828,37 +812,6 @@ begin
   inherited Destroy;
   FValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserAddressOfSymbolValue'){$ENDIF};
   FTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeInfo, 'TPasParserAddressOfSymbolValue'){$ENDIF};
-end;
-
-{ TPasParserWrapperSymbolValue }
-
-function TFpPasParserValueWrapper.DebugText(AIndent: String): String;
-begin
-  Result := inherited DebugText(AIndent)
-          + AIndent + '-Symbol = ' + DbgsSymbol(FSymbol, AIndent + '  ') + LineEnding;
-end;
-
-function TFpPasParserValueWrapper.GetKind: TDbgSymbolKind;
-begin
-    Result := skNone;
-end;
-
-function TFpPasParserValueWrapper.GetDbgSymbol: TFpDbgSymbol;
-begin
-  Result := FSymbol;
-end;
-
-constructor TFpPasParserValueWrapper.Create(ASymbol: TFpDbgSymbol);
-begin
-  inherited Create;
-  FSymbol := ASymbol;
-  FSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'TPasParserWrapperSymbolValue'){$ENDIF};
-end;
-
-destructor TFpPasParserValueWrapper.Destroy;
-begin
-  inherited Destroy;
-  FSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'TPasParserWrapperSymbolValue'){$ENDIF};
 end;
 
 { TPasParserSymbolArrayDeIndex }
@@ -1292,25 +1245,14 @@ begin
 end;
 
 function TFpPascalExpressionPartIdentifer.DoGetResultValue: TFpDbgValue;
-var
-  DbgSymbol: TFpDbgSymbol;
 begin
-  Result := nil;
-  DbgSymbol := FExpression.GetDbgSymbolForIdentifier(GetText);
-  if DbgSymbol = nil then begin
+  Result := FExpression.GetDbgSymbolForIdentifier(GetText);
+  if Result = nil then begin
     SetError(fpErrSymbolNotFound, [GetText]);
     exit;
   end;
 
-  Result := DbgSymbol.Value;
-  if Result = nil then begin
-    Result := TFpPasParserValueWrapper.Create(DbgSymbol);
-    {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
-  end
-  else
-    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
-
-  DbgSymbol.ReleaseReference; // hold via value
+  Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
 function GetFirstToken(AText: PChar): String;
@@ -1555,7 +1497,7 @@ begin
   Result := APChar - @FTextExpression[1] + 1;
 end;
 
-function TFpPascalExpression.GetDbgSymbolForIdentifier(AnIdent: String): TFpDbgSymbol;
+function TFpPascalExpression.GetDbgSymbolForIdentifier(AnIdent: String): TFpDbgValue;
 begin
   if FContext <> nil then
     Result := FContext.FindSymbol(AnIdent)

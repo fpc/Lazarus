@@ -354,7 +354,7 @@ end;
 
 procedure TTestTypeInfo.TestExpressionInt;
 var
-  sym: TFpDbgSymbol;
+  sym: TFpDbgValue;
   ImgLoader: TTestLoaderSetupBasic;
   TmpResVal: TFpDbgValue;
 begin
@@ -368,7 +368,6 @@ begin
 
   sym := FCurrentContext.FindSymbol('VarEnum0');
   AssertTrue('got sym',  sym <> nil);
-  sym.ReleaseReference();
 
 
       ImgLoader.GlobalVar.VarInt16 := 22;
@@ -402,7 +401,7 @@ end;
 
 procedure TTestTypeInfo.TestExpressionBool;
 var
-  sym: TFpDbgSymbol;
+  sym: TFpDbgValue;
   ImgLoader: TTestLoaderSetupBasic;
   TmpResVal: TFpDbgValue;
   i: Integer;
@@ -418,7 +417,6 @@ begin
 
   sym := FCurrentContext.FindSymbol('VarEnum0');
   AssertTrue('got sym',  sym <> nil);
-  sym.ReleaseReference();
 
     for i := 0 to 3 do begin
       case i of
@@ -467,7 +465,7 @@ end;
 
 procedure TTestTypeInfo.TestExpressionArray;
 var
-  sym: TFpDbgSymbol;
+  sym: TFpDbgValue;
   ImgLoader: TTestLoaderSetupArray;
   TmpResVal: TFpDbgValue;
   i: Integer;
@@ -482,7 +480,6 @@ begin
 
   sym := FCurrentContext.FindSymbol('VarDynIntArray');
   AssertTrue('got sym',  sym <> nil);
-  sym.ReleaseReference();
 
   StartTest('VarDynIntArray', skArray, [ttHasType]);
   StartTest('VarStatIntArray1', skArray, [ttHasType]);
@@ -562,7 +559,7 @@ end;
 
 procedure TTestTypeInfo.TestExpressionStructures;
 var
-  sym: TFpDbgSymbol;
+  sym: TFpDbgValue;
 
   obj1: TTestSetup1Class;
   obj1c: TTestSetup1ClassChild;
@@ -587,7 +584,6 @@ begin
 
     sym := FCurrentContext.FindSymbol('Int1');
     AssertTrue('got sym',  sym <> nil);
-    sym.ReleaseReference();
 
     // Not existing
     StartInvalTest('NotExisting1399', 'xxx');
@@ -1218,7 +1214,7 @@ procedure TTestTypeInfo.TestExpressionEnumAndSet;
 
 
 var
-  sym: TFpDbgSymbol;
+  sym: TFpDbgValue;
   ImgLoader: TTestLoaderSetupBasic;
   TmpResVal: TFpDbgValue;
 begin
@@ -1232,7 +1228,6 @@ begin
 
   sym := FCurrentContext.FindSymbol('VarEnum0');
   AssertTrue('got sym',  sym <> nil);
-  sym.ReleaseReference();
 
 
     ImgLoader.GlobalVar.VarEnum0 := e0a;

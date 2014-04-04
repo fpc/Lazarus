@@ -15,7 +15,7 @@ uses
   Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, FpDbgClasses, GDBMIDebugger,
   DbgIntfBaseTypes, DbgIntfDebuggerBase, GDBMIMiscClasses, GDBTypeInfo, LCLProc, Forms,
   FpDbgLoader, FpDbgDwarf, LazLoggerBase, LazLoggerProfiling, LazClasses, FpPascalParser,
-  FpPascalBuilder, FpErrorMessages, FpDbgDwarfDataClasses, MenuIntf;
+  FpPascalBuilder, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, MenuIntf;
 
 type
 

@@ -26,7 +26,7 @@ type
   TFpDwarfFreePascalAddressContext = class(TDbgDwarfInfoAddressContext)
   protected
     function FindLocalSymbol(const AName: String; PNameUpper, PNameLower: PChar;
-      InfoEntry: TDwarfInformationEntry): TFpDbgSymbol; override;
+      InfoEntry: TDwarfInformationEntry): TFpDbgValue; override;
   public
   end;
 
@@ -51,7 +51,7 @@ end;
 { TFpDwarfFreePascalAddressContext }
 
 function TFpDwarfFreePascalAddressContext.FindLocalSymbol(const AName: String; PNameUpper,
-  PNameLower: PChar; InfoEntry: TDwarfInformationEntry): TFpDbgSymbol;
+  PNameLower: PChar; InfoEntry: TDwarfInformationEntry): TFpDbgValue;
 const
   parentfp: string = 'parentfp';
 var
