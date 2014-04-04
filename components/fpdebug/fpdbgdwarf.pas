@@ -332,7 +332,6 @@ type
     FDataAddressDone: Boolean;
   protected
     procedure Reset; override;
-    procedure ClearMembers;
     function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function GetKind: TDbgSymbolKind; override;
     function GetAsCardinal: QWord; override;
@@ -430,16 +429,10 @@ type
   { TDbgDwarfValueIdentifier }
 
   TDbgDwarfValueIdentifier = class(TDbgDwarfIdentifier) // var, const, member, ...
-  private
-    // StructureValueInfo, Member and subproc may need containing class
-    FStructureValueInfo: TDbgDwarfIdentifier;
-    procedure SetStructureValueInfo(AValue: TDbgDwarfIdentifier);
   protected
     FValueObject: TFpDbgDwarfValue;
     FMembers: TFpDbgCircularRefCntObjList;
 
-    procedure CircleBackRefActiveChanged(ANewActive: Boolean); override;
-    procedure SetParentTypeInfo(AValue: TDbgDwarfIdentifier); override;
     function GetValueAddress({%H-}AValueObj: TFpDbgDwarfValue;{%H-} out AnAddress: TFpDbgMemLocation): Boolean; virtual;
     function GetValueDataAddress(AValueObj: TFpDbgDwarfValue; out AnAddress: TFpDbgMemLocation;
                                  ATargetType: TDbgDwarfTypeIdentifier = nil): Boolean;
@@ -453,8 +446,6 @@ type
   public
     destructor Destroy; override;
     class function CreateValueSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TDbgDwarfValueIdentifier;
-
-    property StructureValueInfo: TDbgDwarfIdentifier read FStructureValueInfo write SetStructureValueInfo;
   end;
 
   { TDbgDwarfValueLocationIdentifier }
@@ -2172,16 +2163,6 @@ procedure TFpDbgDwarfValueStructTypeCast.Reset;
 begin
   inherited Reset;
   FDataAddressDone := False;
-  ClearMembers;
-end;
-
-procedure TFpDbgDwarfValueStructTypeCast.ClearMembers;
-var
-  i: Integer;
-begin
-  if FMembers <> nil then
-    for i := 0 to FMembers.Count - 1 do
-      TDbgDwarfValueIdentifier(FMembers[i]).StructureValueInfo := nil;
 end;
 
 function TFpDbgDwarfValueStructTypeCast.GetFieldFlags: TFpDbgValueFieldFlags;
@@ -2297,7 +2278,6 @@ end;
 
 destructor TFpDbgDwarfValueStructTypeCast.Destroy;
 begin
-  ClearMembers;
   FreeAndNil(FMembers);
   inherited Destroy;
 end;
@@ -2762,37 +2742,6 @@ end;
 
 { TDbgDwarfValueIdentifier }
 
-procedure TDbgDwarfValueIdentifier.SetStructureValueInfo(AValue: TDbgDwarfIdentifier);
-begin
-  if FStructureValueInfo = AValue then Exit;
-
-  if (FStructureValueInfo <> nil) and CircleBackRefsActive then
-    FStructureValueInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValueInfo, 'FStructureValueInfo'){$ENDIF};
-
-  FStructureValueInfo := AValue;
-
-  if (FStructureValueInfo <> nil) and CircleBackRefsActive then
-    FStructureValueInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValueInfo, 'FStructureValueInfo'){$ENDIF};
-end;
-
-procedure TDbgDwarfValueIdentifier.CircleBackRefActiveChanged(ANewActive: Boolean);
-begin
-  inherited;
-  if (FStructureValueInfo = nil) then
-    exit;
-  if ANewActive then
-    FStructureValueInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValueInfo, 'FStructureValueInfo'){$ENDIF}
-  else
-    FStructureValueInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValueInfo, 'FStructureValueInfo'){$ENDIF};
-end;
-
-procedure TDbgDwarfValueIdentifier.SetParentTypeInfo(AValue: TDbgDwarfIdentifier);
-begin
-  if AValue <> ParentTypeInfo then
-    StructureValueInfo := nil;
-  inherited SetParentTypeInfo(AValue);
-end;
-
 function TDbgDwarfValueIdentifier.GetValueAddress(AValueObj: TFpDbgDwarfValue; out
   AnAddress: TFpDbgMemLocation): Boolean;
 begin
@@ -2861,7 +2810,6 @@ begin
     if FMembers = nil then
       FMembers := TFpDbgCircularRefCntObjList.Create;
     FMembers.Add(Result);
-    TDbgDwarfValueIdentifier(Result).StructureValueInfo := Self;
   end;
 end;
 
@@ -2888,7 +2836,6 @@ begin
     if FMembers = nil then
       FMembers := TFpDbgCircularRefCntObjList.Create;
     FMembers.Add(Result);
-    TDbgDwarfValueIdentifier(Result).StructureValueInfo := Self;
   end;
 end;
 
@@ -2922,9 +2869,6 @@ var
 begin
   Assert(not CircleBackRefsActive, 'CircleBackRefsActive can not be is ddestructor');
 
-  if FMembers <> nil then
-    for i := 0 to FMembers.Count - 1 do
-      TDbgDwarfValueIdentifier(FMembers[i]).StructureValueInfo := nil;
   FreeAndNil(FMembers);
   if FValueObject <> nil then begin
     FValueObject.SetValueSymbol(nil);
@@ -2997,10 +2941,6 @@ begin
   if FValueObject <> nil then begin
     FValueObject.MakePlainRefToCirclular;
     FValueObject.SetValueSymbol(self);
-
-    // Used as reference to "self"
-    if StructureValueInfo <> nil then
-      FValueObject.SetStructureValue(TFpDbgDwarfValue(StructureValueInfo.Value)); // TODO: on request only
   end;
 
   Result := FValueObject;
