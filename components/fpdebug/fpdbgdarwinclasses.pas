@@ -164,6 +164,7 @@ begin
     begin
     Log('Failed to call thread_set_state for thread %d. Mach error: '+mach_error_string(aKernResult),[Id]);
     end;
+  result := true;
 end;
 
 { TDbgDarwinProcess }
@@ -369,7 +370,7 @@ begin
   fpPTrace(PTRACE_CONT, ProcessID, nil, nil);
 {$endif linux}
 {$ifdef darwin}
-  if AThread.SingleStepping then
+  if (AThread.SingleStepping) or assigned(FCurrentBreakpoint) then
     fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), nil)
   else if FIsTerminating then
     fpPTrace(PTRACE_KILL, ProcessID, pointer(1), nil)
@@ -446,6 +447,12 @@ begin
           begin
           result := deCreateProcess;
           FProcessStarted:=true;
+          end
+        else if assigned(FCurrentBreakpoint) then
+          begin
+          FCurrentBreakpoint.SetBreak;
+          FCurrentBreakpoint:=nil;
+          result := deInternalContinue;
           end
         else
           begin
