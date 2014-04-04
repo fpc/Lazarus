@@ -5574,6 +5574,7 @@ images/components/tbevel.png -text svneol=unset#image/png
 images/components/tbitbtn.png -text svneol=unset#image/png
 images/components/tbufdataset.png -text svneol=unset#image/png
 images/components/tbutton.png -text svneol=unset#image/png
+images/components/tbuttonedit.png -text svneol=unset#image/png
 images/components/tbuttonpanel.png -text svneol=unset#image/png
 images/components/tcalcedit.png -text svneol=unset#image/png
 images/components/tcalculatordialog.png -text svneol=unset#image/png
