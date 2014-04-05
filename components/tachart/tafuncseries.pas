@@ -449,6 +449,7 @@ end;
 
 procedure TFitSeriesRange.StyleChanged(ASender: TObject);
 begin
+  FSeries.SourceChanged(nil); // reset FState to fpsUnknown
   FSeries.ExecFit;
   inherited;
 end;
