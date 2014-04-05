@@ -64,10 +64,16 @@
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
     </SearchPaths>
+    <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf2Set"/>
+      </Debugging>
+    </Linking>
     <Other>
       <CompilerMessages>
         <MsgFileName Value=""/>
       </CompilerMessages>
+      <CustomOptions Value="-Xe"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

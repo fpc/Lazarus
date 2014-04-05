@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit LazDebuggerFp;
+unit LazDebuggerFpGdbmi;
 
 interface
 
@@ -17,5 +17,5 @@ begin
 end;
 
 initialization
-  RegisterPackage('LazDebuggerFp', @Register);
+  RegisterPackage('LazDebuggerFpGdbmi', @Register);
 end.
