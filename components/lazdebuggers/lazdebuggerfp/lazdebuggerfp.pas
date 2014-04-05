@@ -17,5 +17,5 @@ begin
 end;
 
 initialization
-  RegisterPackage('LazFpDebug', @Register);
+  RegisterPackage('LazDebuggerFp', @Register);
 end.
