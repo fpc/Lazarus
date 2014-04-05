@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
-    <Name Value="LazFpDebug"/>
+    <Name Value="LazDebuggerFp"/>
     <Author Value="Joost van der Sluis"/>
     <CompilerOptions>
       <Version Value="11"/>
