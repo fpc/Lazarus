@@ -648,9 +648,11 @@ type
     FCU: TDwarfCompilationUnit;
     FData: PByte;
     FMaxData: PByte;
+    FMemManager: TFpDbgMemManager;
   public
   //TODO: caller keeps data, and determines livetime of data
-    constructor Create(AExpressionData: Pointer; AMaxCount: Integer; ACU: TDwarfCompilationUnit);
+    constructor Create(AExpressionData: Pointer; AMaxCount: Integer; ACU: TDwarfCompilationUnit;
+      AMemManager: TFpDbgMemManager);
     procedure Evaluate;
     function  ResultKind: TDwarfLocationStackEntryKind;
     function  ResultData: TDbgPtr;
@@ -658,6 +660,7 @@ type
     property  FrameBase: TDbgPtr read FFrameBase write FFrameBase;
     property  OnFrameBaseNeeded: TNotifyEvent read FOnFrameBaseNeeded write FOnFrameBaseNeeded;
     property LastError: TFpError read FLastError;
+    property MemManager: TFpDbgMemManager read FMemManager;
   end;
 
 function ULEB128toOrdinal(var p: PByte): QWord;
@@ -1710,31 +1713,30 @@ end;
 { TDwarfLocationExpression }
 
 constructor TDwarfLocationExpression.Create(AExpressionData: Pointer; AMaxCount: Integer;
-  ACU: TDwarfCompilationUnit);
+  ACU: TDwarfCompilationUnit; AMemManager: TFpDbgMemManager);
 begin
   FStack.Clear;
   FCU := ACU;
   FData := AExpressionData;
-  FMaxData := FData + AMaxCount;
+  FMaxData := FData + AMaxCount;FMemManager := AMemManager;
 end;
 
 procedure TDwarfLocationExpression.Evaluate;
 var
   CurInstr, CurData: PByte;
-  MemManager: TFpDbgMemManager;
   AddrSize: Byte;
 
   procedure SetError(AnInternalErrorCode: TFpErrorCode = fpErrNoError);
   begin
     FStack.Push(InvalidLoc, lseError); // Mark as failed
-    if IsError(MemManager.LastError)
-    then FLastError := CreateError(fpErrLocationParserMemRead, MemManager.LastError, [])
+    if IsError(FMemManager.LastError)
+    then FLastError := CreateError(fpErrLocationParserMemRead, FMemManager.LastError, [])
     else FLastError := CreateError(fpErrLocationParser, []);
     debugln(FPDBG_DWARF_ERRORS,
             ['DWARF ERROR in TDwarfLocationExpression: Failed at Pos=', CurInstr-FData,
              ' OpCode=', IntToHex(CurInstr^, 2), ' Depth=', FStack.Count,
              ' Data: ', dbgMemRange(FData, FMaxData-FData),
-             ' MemReader.LastError: ', ErrorHandler.ErrorAsString(MemManager.LastError),
+             ' MemReader.LastError: ', ErrorHandler.ErrorAsString(FMemManager.LastError),
              ' Extra: ', ErrorHandler.ErrorAsString(AnInternalErrorCode, []) ]);
   end;
 
@@ -1756,7 +1758,7 @@ var
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
-    Result := MemManager.ReadAddress(AnAddress, ASize, AValue);
+    Result := FMemManager.ReadAddress(AnAddress, ASize, AValue);
     if not Result then
       SetError;
   end;
@@ -1765,7 +1767,7 @@ var
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
-    AValue := MemManager.ReadAddressEx(AnAddress, AnAddrSpace, ASize);
+    AValue := FMemManager.ReadAddressEx(AnAddress, AnAddrSpace, ASize);
     Result := IsValidLoc(AValue);
     if not Result then
       SetError;
@@ -1803,8 +1805,8 @@ var
   Entry, Entry2: TDwarfLocationStackEntry;
 begin
   AddrSize := FCU.FAddressSize;
-  MemManager := FCU.FOwner.MemManager;
-  MemManager.ClearLastError;
+  FMemManager := FCU.FOwner.FMemManager;
+  FMemManager.ClearLastError;
   FLastError := NoError;
   CurData := FData;
   while CurData < FMaxData do begin
@@ -1853,14 +1855,14 @@ begin
       DW_OP_lit0..DW_OP_lit31: FStack.Push(CurInstr^-DW_OP_lit0, lseValue);
 
       DW_OP_reg0..DW_OP_reg31: begin
-          if not MemManager.ReadRegister(CurInstr^-DW_OP_reg0, NewValue) then begin
+          if not FMemManager.ReadRegister(CurInstr^-DW_OP_reg0, NewValue) then begin
             SetError;
             exit;
           end;
           FStack.Push(NewValue, lseRegister);
         end;
       DW_OP_regx: begin
-          if not MemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue) then begin
+          if not FMemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue) then begin
             SetError;
             exit;
           end;
@@ -1868,7 +1870,7 @@ begin
         end;
 
       DW_OP_breg0..DW_OP_breg31: begin
-          if not MemManager.ReadRegister(CurInstr^-DW_OP_breg0, NewValue) then begin
+          if not FMemManager.ReadRegister(CurInstr^-DW_OP_breg0, NewValue) then begin
             SetError;
             exit;
           end;
@@ -1877,7 +1879,7 @@ begin
           {$POP}
         end;
       DW_OP_bregx: begin
-          if not MemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue) then begin
+          if not FMemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue) then begin
             SetError;
             exit;
           end;
@@ -2417,6 +2419,7 @@ end;
 constructor TDwarfInformationEntry.Create(ACompUnit: TDwarfCompilationUnit;
   AnInformationEntry: Pointer);
 begin
+  inherited Create;
   AddReference;
   FCompUnit := ACompUnit;
   FInformationEntry := AnInformationEntry;
@@ -2426,6 +2429,7 @@ end;
 constructor TDwarfInformationEntry.Create(ACompUnit: TDwarfCompilationUnit;
   AScope: TDwarfScopeInfo);
 begin
+  inherited Create;
   AddReference;
   FCompUnit := ACompUnit;
   FScope := AScope;

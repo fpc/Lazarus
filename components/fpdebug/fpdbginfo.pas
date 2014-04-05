@@ -191,6 +191,7 @@ type
     property OrdHighBound: Int64 read GetOrdHighBound;  // need typecast for QuadWord
     // memdump
   public
+    function GetTypeCastedValue(ADataVal: TFpDbgValue): TFpDbgValue; virtual; // only if Symbol is a type
 // base class? Or Member includes member from base
     (* Member:
        * skClass, skStructure:
@@ -201,6 +202,7 @@ type
            stValue: only members set in value (Only impremented for DbgSymbolValue)
        * skArray: (differs from TFpDbgSymbol)
          The values. The type of each Index-dimension is avail via IndexType
+       * skPointer: deref the pointer, with index (0 = normal deref)
        NOTE: Values returned by Member/MemberByName are volatile.
              They maybe released or changed when Member is called again.
              To keep a returned Value a reference can be added (AddReference)
@@ -254,9 +256,9 @@ type
     constructor Create(AnAddress: TFpDbgMemLocation);
   end;
 
-  { TFpDbgValueTypeDeclaration }
+  { TFpDbgValueTypeDefinition }
 
-  TFpDbgValueTypeDeclaration = class(TFpDbgValue)
+  TFpDbgValueTypeDefinition = class(TFpDbgValue)
   private
     FSymbol: TFpDbgSymbol; // stType
   protected
@@ -266,7 +268,6 @@ type
     constructor Create(ASymbol: TFpDbgSymbol); // Only for stType
     destructor Destroy; override;
   end;
-
 
   { TFpDbgSymbol }
 
@@ -571,6 +572,12 @@ begin
   AddReference;
 end;
 
+function TFpDbgValue.GetTypeCastedValue(ADataVal: TFpDbgValue): TFpDbgValue;
+begin
+  assert(False, 'TFpDbgValue.GetTypeCastedValue: False');
+  Result := nil;
+end;
+
 function TFpDbgValue.GetTypeInfo: TFpDbgSymbol;
 begin
   if (DbgSymbol <> nil) and (DbgSymbol.SymbolType = stValue) then
@@ -744,24 +751,24 @@ end;
 
 { TFpDbgValueTypeDeclaration }
 
-function TFpDbgValueTypeDeclaration.GetKind: TDbgSymbolKind;
+function TFpDbgValueTypeDefinition.GetKind: TDbgSymbolKind;
 begin
   Result := skNone;
 end;
 
-function TFpDbgValueTypeDeclaration.GetDbgSymbol: TFpDbgSymbol;
+function TFpDbgValueTypeDefinition.GetDbgSymbol: TFpDbgSymbol;
 begin
   Result := FSymbol;
 end;
 
-constructor TFpDbgValueTypeDeclaration.Create(ASymbol: TFpDbgSymbol);
+constructor TFpDbgValueTypeDefinition.Create(ASymbol: TFpDbgSymbol);
 begin
   inherited Create;
   FSymbol := ASymbol;
   FSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'TFpDbgValueTypeDeclaration'){$ENDIF};
 end;
 
-destructor TFpDbgValueTypeDeclaration.Destroy;
+destructor TFpDbgValueTypeDefinition.Destroy;
 begin
   inherited Destroy;
   FSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'TFpDbgValueTypeDeclaration'){$ENDIF};

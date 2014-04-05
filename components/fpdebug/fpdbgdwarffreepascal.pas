@@ -59,7 +59,7 @@ var
   StartScopeIdx: Integer;
 begin
   if (Length(AName) = length(selfname)) and (CompareUtf8BothCase(PNameUpper, PNameLower, @selfname[1])) then begin
-    Result := TDbgDwarfProcSymbol(Symbol).GetSelfParameter(Address);
+    Result := GetSelfParameter;
     if Result <> nil then begin
       AddRefToVal(Result);
       exit;

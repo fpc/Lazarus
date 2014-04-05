@@ -392,19 +392,20 @@ type
   {%region  DebugSymbol }
 
   { TPasParserSymbolPointer
-    used by TPasParserSymbolValueMakeReftype.GetDbgSymbol
+    used by TFpPasParserValueMakeReftype.GetDbgSymbol
   }
 
   TPasParserSymbolPointer = class(TFpDbgSymbol)
   private
     FPointerLevels: Integer;
     FPointedTo: TFpDbgSymbol;
+    FContext: TDbgInfoAddressContext;
   protected
     // NameNeeded //  "^TPointedTo"
     procedure TypeInfoNeeded; override;
   public
-    constructor Create(const APointedTo: TFpDbgSymbol; APointerLevels: Integer);
-    constructor Create(const APointedTo: TFpDbgSymbol);
+    constructor Create(const APointedTo: TFpDbgSymbol; AContext: TDbgInfoAddressContext; APointerLevels: Integer);
+    constructor Create(const APointedTo: TFpDbgSymbol; AContext: TDbgInfoAddressContext);
     destructor Destroy; override;
     function TypeCastValue(AValue: TFpDbgValue): TFpDbgValue; override;
   end;
@@ -430,18 +431,24 @@ type
   { TFpPasParserValue }
 
   TFpPasParserValue = class(TFpDbgValue)
+  private
+    FContext: TDbgInfoAddressContext;
   protected
     function DebugText(AIndent: String): String; virtual;
+  public
+    constructor Create(AContext: TDbgInfoAddressContext);
+    property Context: TDbgInfoAddressContext read FContext;
   end;
 
   { TFpPasParserValueCastToPointer
-    used by TPasParserSymbolPointer.TypeCastValue (which is used by TPasParserSymbolValueMakeReftype.GetDbgSymbol)
+    used by TPasParserSymbolPointer.TypeCastValue (which is used by TFpPasParserValueMakeReftype.GetDbgSymbol)
   }
 
   TFpPasParserValueCastToPointer = class(TFpPasParserValue)
   private
     FValue: TFpDbgValue;
     FTypeSymbol: TFpDbgSymbol;
+    FLastMember: TFpDbgValue;
   protected
     function DebugText(AIndent: String): String; override;
   protected
@@ -450,8 +457,9 @@ type
     function GetTypeInfo: TFpDbgSymbol; override;
     function GetAsCardinal: QWord; override;
     function GetDataAddress: TFpDbgMemLocation; override;
+    function GetMember(AIndex: Int64): TFpDbgValue; override;
   public
-    constructor Create(AValue: TFpDbgValue; ATypeInfo: TFpDbgSymbol);
+    constructor Create(AValue: TFpDbgValue; ATypeInfo: TFpDbgSymbol; AContext: TDbgInfoAddressContext);
     destructor Destroy; override;
   end;
 
@@ -466,9 +474,10 @@ type
   protected
     function GetDbgSymbol: TFpDbgSymbol; override; // returns a TPasParserSymbolPointer
   public
-    constructor Create(ATypeInfo: TFpDbgSymbol);
+    constructor Create(ATypeInfo: TFpDbgSymbol; AContext: TDbgInfoAddressContext);
     destructor Destroy; override;
     procedure IncRefLevel;
+    function GetTypeCastedValue(ADataVal: TFpDbgValue): TFpDbgValue; override;
   end;
 
   { TFpPasParserValueDerefPointer
@@ -478,7 +487,6 @@ type
   TFpPasParserValueDerefPointer = class(TFpPasParserValue)
   private
     FValue: TFpDbgValue;
-    FExpression: TFpPascalExpression; // MemReader / AddrSize
     FAddressOffset: Int64; // Add to address
     FCardinal: QWord; // todo: TFpDbgMemLocation ?
     FCardinalRead: Boolean;
@@ -491,8 +499,8 @@ type
     function GetAsCardinal: QWord; override; // reads men
     function GetTypeInfo: TFpDbgSymbol; override; // TODO: Cardinal? Why? // TODO: does not handle AOffset
   public
-    constructor Create(AValue: TFpDbgValue; AExpression: TFpPascalExpression);
-    constructor Create(AValue: TFpDbgValue; AExpression: TFpPascalExpression; AOffset: Int64);
+    constructor Create(AValue: TFpDbgValue; AContext: TDbgInfoAddressContext);
+    constructor Create(AValue: TFpDbgValue; AContext: TDbgInfoAddressContext; AOffset: Int64);
     destructor Destroy; override;
   end;
 
@@ -502,6 +510,7 @@ type
   private
     FValue: TFpDbgValue;
     FTypeInfo: TFpDbgSymbol;
+    FLastMember: TFpDbgValue;
     function GetPointedToValue: TFpDbgValue;
   protected
     function DebugText(AIndent: String): String; override;
@@ -512,8 +521,9 @@ type
     function GetAsCardinal: QWord; override;
     function GetTypeInfo: TFpDbgSymbol; override;
     function GetDataAddress: TFpDbgMemLocation; override;
+    function GetMember(AIndex: Int64): TFpDbgValue; override;
   public
-    constructor Create(AValue: TFpDbgValue);
+    constructor Create(AValue: TFpDbgValue; AContext: TDbgInfoAddressContext);
     destructor Destroy; override;
     property PointedToValue: TFpDbgValue read GetPointedToValue;
   end;
@@ -541,6 +551,12 @@ begin
   Result := AIndent + DbgSName(Self)  + '  DbsSym='+DbgSName(DbgSymbol)+' Type='+DbgSName(TypeInfo) + LineEnding;
 end;
 
+constructor TFpPasParserValue.Create(AContext: TDbgInfoAddressContext);
+begin
+  FContext := AContext;
+  inherited Create;
+end;
+
 { TPasParserSymbolValueCastToPointer }
 
 function TFpPasParserValueCastToPointer.DebugText(AIndent: String): String;
@@ -557,7 +573,8 @@ end;
 
 function TFpPasParserValueCastToPointer.GetFieldFlags: TFpDbgValueFieldFlags;
 begin
-  if svfCardinal in FValue.FieldFlags then
+  if (FValue.FieldFlags * [svfAddress, svfCardinal] <> [])
+  then
     Result := [svfOrdinal, svfCardinal, svfSizeOfPointer, svfDataAddress]
   else
     Result := [];
@@ -569,22 +586,61 @@ begin
 end;
 
 function TFpPasParserValueCastToPointer.GetAsCardinal: QWord;
+var
+  f: TFpDbgValueFieldFlags;
 begin
-  if svfCardinal in FValue.FieldFlags then
+  Result := 0;
+  f := FValue.FieldFlags;
+  if svfCardinal in f then
     Result := FValue.AsCardinal
+  else
+  if svfAddress in f then begin
+    if not FContext.MemManager.ReadUnsignedInt(FValue.Address, FContext.SizeOfAddress, Result) then
+      Result := 0;
+  end
   else
     Result := 0;
 end;
 
 function TFpPasParserValueCastToPointer.GetDataAddress: TFpDbgMemLocation;
 begin
-  Result := TargetLoc(TDbgPtr(FValue.AsCardinal));
+  Result := TargetLoc(TDbgPtr(AsCardinal));
+end;
+
+function TFpPasParserValueCastToPointer.GetMember(AIndex: Int64): TFpDbgValue;
+var
+  ti: TFpDbgSymbol;
+  addr: TFpDbgMemLocation;
+  Tmp: TFpDbgValueConstAddress;
+begin
+  Result := nil;
+
+  ti := FTypeSymbol.TypeInfo;
+  addr := DataAddress;
+  if not IsTargetAddr(addr) then begin
+    //LastError := CreateError(fpErrAnyError, ['Internal dereference error']);
+    exit;
+  end;
+  {$PUSH}{$R-}{$Q-} // TODO: check overflow
+  if ti <> nil then
+    AIndex := AIndex * ti.Size;
+  addr.Address := addr.Address + AIndex;
+  {$POP}
+
+  Tmp := TFpDbgValueConstAddress.Create(addr);
+  if ti <> nil then begin
+    Result := ti.TypeCastValue(Tmp);
+    Tmp.ReleaseReference;
+  end
+  else
+    Result := Tmp;
+  FLastMember := Result;
 end;
 
 constructor TFpPasParserValueCastToPointer.Create(AValue: TFpDbgValue;
-  ATypeInfo: TFpDbgSymbol);
+  ATypeInfo: TFpDbgSymbol; AContext: TDbgInfoAddressContext);
 begin
-  inherited Create;
+  inherited Create(AContext);
   FValue := AValue;
   FValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserSymbolValueCastToPointer'){$ENDIF};
   FTypeSymbol := ATypeInfo;
@@ -594,6 +650,7 @@ end;
 
 destructor TFpPasParserValueCastToPointer.Destroy;
 begin
+  FLastMember.ReleaseReference;
   FValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserSymbolValueCastToPointer'){$ENDIF};
   FTypeSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeSymbol, 'TPasParserSymbolValueCastToPointer'){$ENDIF};
   inherited Destroy;
@@ -612,15 +669,16 @@ end;
 function TFpPasParserValueMakeReftype.GetDbgSymbol: TFpDbgSymbol;
 begin
   if FTypeSymbol = nil then begin
-    FTypeSymbol := TPasParserSymbolPointer.Create(FSourceTypeSymbol, FRefLevel);
+    FTypeSymbol := TPasParserSymbolPointer.Create(FSourceTypeSymbol, FContext, FRefLevel);
     {$IFDEF WITH_REFCOUNT_DEBUG}FTypeSymbol.DbgRenameReference(@FSourceTypeSymbol, 'TPasParserSymbolValueMakeReftype'){$ENDIF};
   end;
   Result := FTypeSymbol;
 end;
 
-constructor TFpPasParserValueMakeReftype.Create(ATypeInfo: TFpDbgSymbol);
+constructor TFpPasParserValueMakeReftype.Create(ATypeInfo: TFpDbgSymbol;
+  AContext: TDbgInfoAddressContext);
 begin
-  inherited Create;
+  inherited Create(AContext);
   FSourceTypeSymbol := ATypeInfo;
   FSourceTypeSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSourceTypeSymbol, 'TPasParserSymbolValueMakeReftype'){$ENDIF};
   FRefLevel := 1;
@@ -636,6 +694,11 @@ end;
 procedure TFpPasParserValueMakeReftype.IncRefLevel;
 begin
   inc(FRefLevel);
+end;
+
+function TFpPasParserValueMakeReftype.GetTypeCastedValue(ADataVal: TFpDbgValue): TFpDbgValue;
+begin
+  Result := DbgSymbol.TypeCastValue(ADataVal);
 end;
 
 
@@ -698,7 +761,7 @@ begin
   Result := FCardinal;
   if FCardinalRead then exit;
 
-  Ctx := FExpression.Context;
+  Ctx := Context;
   if Ctx = nil then exit;
   AddrSize := Ctx.SizeOfAddress;
   if (AddrSize <= 0) or (AddrSize > SizeOf(FCardinal)) then exit;
@@ -727,18 +790,17 @@ begin
 end;
 
 constructor TFpPasParserValueDerefPointer.Create(AValue: TFpDbgValue;
-  AExpression: TFpPascalExpression);
+  AContext: TDbgInfoAddressContext);
 begin
-  Create(AValue, AExpression, 0);
+  Create(AValue, AContext, 0);
 end;
 
 constructor TFpPasParserValueDerefPointer.Create(AValue: TFpDbgValue;
-  AExpression: TFpPascalExpression; AOffset: Int64);
+  AContext: TDbgInfoAddressContext; AOffset: Int64);
 begin
-  inherited Create;
+  inherited Create(AContext);
   FValue := AValue;
   FValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserDerefPointerSymbolValue'){$ENDIF};
-  FExpression := AExpression;
   FAddressOffset := AOffset;
 end;
 
@@ -790,7 +852,7 @@ begin
   if FValue.TypeInfo = nil then
     exit;
 
-  FTypeInfo := TPasParserSymbolPointer.Create(FValue.TypeInfo);
+  FTypeInfo := TPasParserSymbolPointer.Create(FValue.TypeInfo, FContext);
   {$IFDEF WITH_REFCOUNT_DEBUG}FTypeInfo.DbgRenameReference(@FTypeInfo, 'TPasParserAddressOfSymbolValue');{$ENDIF}
   Result := FTypeInfo;
 end;
@@ -800,9 +862,44 @@ begin
   Result := FValue.Address;
 end;
 
-constructor TFpPasParserValueAddressOf.Create(AValue: TFpDbgValue);
+function TFpPasParserValueAddressOf.GetMember(AIndex: Int64): TFpDbgValue;
+var
+  ti: TFpDbgSymbol;
+  addr: TFpDbgMemLocation;
+  Tmp: TFpDbgValueConstAddress;
 begin
-  inherited Create;
+  if (AIndex = 0) or (FValue = nil) then begin
+    Result := FValue;
+    exit;
+  end;
+
+  Result := nil;
+  ti := FValue.TypeInfo;
+  addr := FValue.Address;
+  if not IsTargetAddr(addr) then begin
+    //LastError := CreateError(fpErrAnyError, ['Internal dereference error']);
+    exit;
+  end;
+  {$PUSH}{$R-}{$Q-} // TODO: check overflow
+  if ti <> nil then
+    AIndex := AIndex * ti.Size;
+  addr.Address := addr.Address + AIndex;
+  {$POP}
+
+  Tmp := TFpDbgValueConstAddress.Create(addr);
+  if ti <> nil then begin
+    Result := ti.TypeCastValue(Tmp);
+    Tmp.ReleaseReference;
+  end
+  else
+    Result := Tmp;
+  FLastMember := Result;
+end;
+
+constructor TFpPasParserValueAddressOf.Create(AValue: TFpDbgValue;
+  AContext: TDbgInfoAddressContext);
+begin
+  inherited Create(AContext);
   FValue := AValue;
   FValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserAddressOfSymbolValue'){$ENDIF};
 end;
@@ -810,6 +907,7 @@ end;
 destructor TFpPasParserValueAddressOf.Destroy;
 begin
   inherited Destroy;
+  FLastMember.ReleaseReference;
   FValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserAddressOfSymbolValue'){$ENDIF};
   FTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeInfo, 'TPasParserAddressOfSymbolValue'){$ENDIF};
 end;
@@ -847,15 +945,17 @@ procedure TPasParserSymbolPointer.TypeInfoNeeded;
 var
   t: TPasParserSymbolPointer;
 begin
-  t := TPasParserSymbolPointer.Create(FPointedTo, FPointerLevels-1);
+  assert(FPointerLevels > 1, 'TPasParserSymbolPointer.TypeInfoNeeded: FPointerLevels > 1');
+  t := TPasParserSymbolPointer.Create(FPointedTo, FContext, FPointerLevels-1);
   SetTypeInfo(t);
   t.ReleaseReference;
 end;
 
 constructor TPasParserSymbolPointer.Create(const APointedTo: TFpDbgSymbol;
-  APointerLevels: Integer);
+  AContext: TDbgInfoAddressContext; APointerLevels: Integer);
 begin
   inherited Create('');
+  FContext := AContext;
   FPointerLevels := APointerLevels;
   FPointedTo := APointedTo;
   FPointedTo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(FPointedTo, 'TPasParserSymbolPointer'){$ENDIF};
@@ -865,9 +965,10 @@ begin
   SetSymbolType(stType);
 end;
 
-constructor TPasParserSymbolPointer.Create(const APointedTo: TFpDbgSymbol);
+constructor TPasParserSymbolPointer.Create(const APointedTo: TFpDbgSymbol;
+  AContext: TDbgInfoAddressContext);
 begin
-  Create(APointedTo, 1);
+  Create(APointedTo, AContext, 1);
 end;
 
 destructor TPasParserSymbolPointer.Destroy;
@@ -878,7 +979,7 @@ end;
 
 function TPasParserSymbolPointer.TypeCastValue(AValue: TFpDbgValue): TFpDbgValue;
 begin
-  Result := TFpPasParserValueCastToPointer.Create(AValue, Self);
+  Result := TFpPasParserValueCastToPointer.Create(AValue, Self, FContext);
 end;
 
 
@@ -931,15 +1032,15 @@ begin
     end // Kind = skArray
     else
     if (TmpVal.Kind = skPointer) then begin
-      if (TmpVal.TypeInfo = nil) or (TmpVal.TypeInfo.TypeInfo = nil) or
-         (TmpVal.TypeInfo.TypeInfo.Size <= 0)
-      then begin
-        SetError('Can not dereference an untyped pointer');
-        TmpVal.ReleaseReference;
-        exit;
-      end;
+      //if (TmpVal.TypeInfo = nil) or (TmpVal.TypeInfo.TypeInfo = nil) or
+      //   (TmpVal.TypeInfo.TypeInfo.Size <= 0)
+      //then begin
+      //  SetError('Can not dereference an untyped pointer');
+      //  TmpVal.ReleaseReference;
+      //  exit;
+      //end;
       // TODO: check svfDataAddress / readable ? (see normal pointer deref);
-      ti := TmpVal.TypeInfo.TypeInfo;
+      //ti := TmpVal.TypeInfo.TypeInfo;
       if (svfInteger in TmpIndex.FieldFlags) then
         Offs := TmpIndex.AsInteger
       else
@@ -952,12 +1053,17 @@ begin
         TmpVal.ReleaseReference;
         exit;
       end;
-      {$PUSH}{$R-}{$Q-} // TODO: check overflow
-      Offs := Offs * ti.Size;
-      {$POP}
-      TmpDeref := TFpPasParserValueDerefPointer.Create(TmpVal, Expression, Offs);
-      TmpVal2 := ti.TypeCastValue(TmpDeref);
-      TmpDeref.ReleaseReference;
+
+      TmpVal2 := TmpVal.Member[Offs];
+      if IsError(TmpVal.LastError) then
+        SetError('Error dereferencing'); // TODO: set correct error
+      if TmpVal2 <> nil then TmpVal2.AddReference;
+      //{$PUSH}{$R-}{$Q-} // TODO: check overflow
+      //Offs := Offs * ti.Size;
+      //{$POP}
+      //TmpDeref := TFpPasParserValueDerefPointer.Create(TmpVal, Expression, Offs);
+      //TmpVal2 := ti.TypeCastValue(TmpDeref);
+      //TmpDeref.ReleaseReference;
     end
     else
     if (TmpVal.Kind = skString) then begin
@@ -1126,7 +1232,8 @@ begin
       // This is a typecast
       tmp2 := Items[1].ResultValue;
       if tmp2 <> nil then
-        Result := tmp.DbgSymbol.TypeCastValue(tmp2);
+        Result := tmp.GetTypeCastedValue(tmp2);
+        //Result := tmp.DbgSymbol.TypeCastValue(tmp2);
       if Result <> nil then
         {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
       exit;
@@ -2047,7 +2154,7 @@ begin
   if (tmp = nil) or not IsTargetAddr(tmp.Address) then
     exit;
 
-  Result := TFpPasParserValueAddressOf.Create(tmp);
+  Result := TFpPasParserValueAddressOf.Create(tmp, Expression.Context);
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
 end;
 
@@ -2090,7 +2197,7 @@ begin
   if (tmp.DbgSymbol = nil) or (tmp.DbgSymbol.SymbolType <> stType) then
     exit;
 
-  Result := TFpPasParserValueMakeReftype.Create(tmp.DbgSymbol);
+  Result := TFpPasParserValueMakeReftype.Create(tmp.DbgSymbol, Expression.Context);
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
@@ -2109,7 +2216,7 @@ end;
 
 function TFpPascalExpressionPartOperatorDeRef.DoGetResultValue: TFpDbgValue;
 var
-  tmp, tmp2: TFpDbgValue;
+  tmp: TFpDbgValue;
 begin
   Result := nil;
   if Count <> 1 then exit;
@@ -2118,7 +2225,7 @@ begin
   if tmp = nil then
     exit;
 
-  if tmp is TFpPasParserValueAddressOf then begin
+  if tmp is TFpPasParserValueAddressOf then begin // TODO: remove IF, handled in GetMember
     Result := TFpPasParserValueAddressOf(tmp).PointedToValue;
     Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
   end
@@ -2127,16 +2234,18 @@ begin
     if (svfDataAddress in tmp.FieldFlags) and (IsReadableLoc(tmp.DataAddress)) and // TODO, what if Not readable addr
        (tmp.TypeInfo <> nil) //and (tmp.TypeInfo.TypeInfo <> nil)
     then begin
-      //TODO: maybe introduce a method TypeCastFromAddress, so we can skip the twp2 object
-//todo, if tmp2 is a TPasParserAddressOfSymbolValue, then no new object is neede....
-      tmp2 := TFpPasParserValueDerefPointer.Create(tmp, Expression);
-      if (tmp.TypeInfo.TypeInfo <> nil) then
-        Result := tmp.TypeInfo.TypeInfo.TypeCastValue(tmp2)
-      else
-        Result := tmp2;
-      {$IFDEF WITH_REFCOUNT_DEBUG} if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
-      if (tmp.TypeInfo.TypeInfo <> nil) then
-        tmp2.ReleaseReference;
+      Result := tmp.Member[0];
+      if Result <> nil then
+        Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
+
+      //tmp2 := TFpPasParserValueDerefPointer.Create(tmp, Expression);
+      //if (tmp.TypeInfo.TypeInfo <> nil) then
+      //  Result := tmp.TypeInfo.TypeInfo.TypeCastValue(tmp2)
+      //else
+      //  Result := tmp2;
+      //{$IFDEF WITH_REFCOUNT_DEBUG} if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
+      //if (tmp.TypeInfo.TypeInfo <> nil) then
+      //  tmp2.ReleaseReference;
     end;
   end
   //if tmp.Kind = skArray then // dynarray
