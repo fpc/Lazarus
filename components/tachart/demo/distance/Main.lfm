@@ -2,37 +2,37 @@ object Form1: TForm1
   Left = 495
   Height = 590
   Top = 225
-  Width = 803
+  Width = 786
   Caption = 'Form1'
   ClientHeight = 590
-  ClientWidth = 803
+  ClientWidth = 786
   OnCreate = FormCreate
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object PageControl1: TPageControl
     Left = 0
     Height = 590
     Top = 0
-    Width = 803
+    Width = 786
     ActivePage = tsMain
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object tsMain: TTabSheet
       Caption = 'Main'
-      ClientHeight = 564
-      ClientWidth = 795
+      ClientHeight = 562
+      ClientWidth = 778
       object StatusBar1: TStatusBar
         Left = 0
-        Height = 20
-        Top = 544
-        Width = 795
+        Height = 23
+        Top = 539
+        Width = 778
         Panels = <>
       end
       object Panel2: TPanel
         Left = 0
         Height = 36
-        Top = 508
-        Width = 795
+        Top = 503
+        Width = 778
         Align = alBottom
         BevelOuter = bvNone
         Caption = 'Left-drag --> measure 1st distance, Shift to zoom while dragging         Ctrl+left-drag --> measure 2nd distance          Right-drag --> show values'
@@ -45,12 +45,12 @@ object Form1: TForm1
       object Panel1: TPanel
         Left = 0
         Height = 108
-        Top = 400
-        Width = 795
+        Top = 395
+        Width = 778
         Align = alBottom
         BevelOuter = bvNone
         ClientHeight = 108
-        ClientWidth = 795
+        ClientWidth = 778
         TabOrder = 2
         object rgSnapMode: TRadioGroup
           Left = 8
@@ -105,10 +105,10 @@ object Form1: TForm1
           TabOrder = 1
         end
         object cbRotateLabel: TCheckBox
-          Left = 428
-          Height = 17
+          Left = 420
+          Height = 19
           Top = 29
-          Width = 78
+          Width = 82
           Caption = 'Rotate label'
           Checked = True
           OnClick = cbRotateLabelClick
@@ -116,10 +116,10 @@ object Form1: TForm1
           TabOrder = 2
         end
         object cbShowLabel: TCheckBox
-          Left = 428
-          Height = 17
+          Left = 420
+          Height = 19
           Top = 5
-          Width = 71
+          Width = 77
           Caption = 'Show label'
           Checked = True
           OnClick = cbShowLabelClick
@@ -127,7 +127,7 @@ object Form1: TForm1
           TabOrder = 3
         end
         object clrPenColor: TColorButton
-          Left = 708
+          Left = 692
           Height = 25
           Top = 41
           Width = 78
@@ -140,7 +140,7 @@ object Form1: TForm1
           OnColorChanged = clrPenColorColorChanged
         end
         object clrFontColor: TColorButton
-          Left = 708
+          Left = 692
           Height = 25
           Top = 70
           Width = 78
@@ -153,7 +153,7 @@ object Form1: TForm1
           OnColorChanged = clrFontColorColorChanged
         end
         object clrBackgroundColor: TColorButton
-          Left = 708
+          Left = 692
           Height = 25
           Top = 8
           Width = 78
@@ -167,7 +167,7 @@ object Form1: TForm1
         end
         object edEndbarLength: TSpinEdit
           Left = 628
-          Height = 21
+          Height = 23
           Top = 5
           Width = 50
           MaxValue = 1000
@@ -177,17 +177,17 @@ object Form1: TForm1
         end
         object lblEndBarLength: TLabel
           Left = 548
-          Height = 13
+          Height = 15
           Top = 8
-          Width = 67
+          Width = 74
           Caption = 'Endbar length'
           ParentColor = False
         end
         object cbHide: TCheckBox
-          Left = 428
-          Height = 17
+          Left = 420
+          Height = 19
           Top = 81
-          Width = 103
+          Width = 114
           Caption = 'Hide at mouse up'
           OnClick = cbHideClick
           TabOrder = 5
@@ -219,10 +219,10 @@ object Form1: TForm1
           TabOrder = 6
         end
         object mDistanceText: TMemo
-          Left = 536
+          Left = 548
           Height = 53
           Top = 42
-          Width = 138
+          Width = 126
           Lines.Strings = (
             'axis dist = %0:.4g'
             'graph dist = %1:.4g'
@@ -257,10 +257,10 @@ object Form1: TForm1
           TabOrder = 8
         end
         object cbFlipLabel: TCheckBox
-          Left = 428
-          Height = 17
+          Left = 420
+          Height = 19
           Top = 53
-          Width = 61
+          Width = 67
           Caption = 'Flip label'
           OnClick = cbFlipLabelClick
           TabOrder = 9
@@ -268,9 +268,9 @@ object Form1: TForm1
       end
       object Chart1: TChart
         Left = 0
-        Height = 400
+        Height = 395
         Top = 0
-        Width = 795
+        Width = 778
         AutoFocus = True
         AxisList = <        
           item
