@@ -826,6 +826,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetFile: String; override;
 //    function GetFlags: TDbgSymbolFlags; override;
     function GetLine: Cardinal; override;
+    function GetValueObject: TFpDbgValue; override;
   public
     constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr); overload;
     destructor Destroy; override;
@@ -4346,6 +4347,19 @@ begin
   if StateMachineValid
   then Result := FStateMachine.Line
   else Result := inherited GetLine;
+end;
+
+function TDbgDwarfProcSymbol.GetValueObject: TFpDbgValue;
+begin
+  Result := FValueObject;
+  if Result <> nil then exit;
+
+  FValueObject := TFpDbgDwarfValue.Create(nil);
+  {$IFDEF WITH_REFCOUNT_DEBUG}FValueObject.DbgRenameReference(@FValueObject, ClassName+'.FValueObject');{$ENDIF}
+  FValueObject.MakePlainRefToCirclular;
+  FValueObject.SetValueSymbol(self);
+
+  Result := FValueObject;
 end;
 
 function TDbgDwarfProcSymbol.StateMachineValid: Boolean;
