@@ -104,6 +104,7 @@ type
 
     function PosInTrc(const SubStr: string; CaseSensetive: Boolean = false): Boolean;
     function IsTraceLine(const SubStr: string; CheckOnlyLineStart: Boolean = False): Boolean;
+    function IsHeaderLine(const SubStr: string): Boolean;
     function TrcNumberAfter(var Num: Int64; const AfterSub: string): Boolean;
     function TrcNumberAfter(var Num: Integer; const AfterSub: string): Boolean;
     function TrcNumFirstAndAfter(var FirstNum, AfterNum: Int64; const AfterSub: string): Boolean;
@@ -361,6 +362,16 @@ begin
   Result := Result or CheckOnlyLineStart;
 end;
 
+function THeapTrcInfo.IsHeaderLine(const SubStr: string): Boolean;
+var
+  i: Integer;
+begin
+  i := 1;
+  while (i < length(SubStr)) and (SubStr[i] in [' ', #9, '#', '~', '"', '''']) do inc(i);
+  Result := (pos(UpperCase(CallTracePrefix), UpperCase(SubStr)) = i) or
+            (pos(UpperCase(RawTracePrefix), UpperCase(SubStr)) = i);
+end;
+
 function THeapTrcInfo.TrcNumberAfter(var Num: Int64; const AfterSub: string): Boolean;
 begin
   Result := TrcIndex<Trc.Count;
@@ -491,7 +502,9 @@ begin
     NewLine := TStackLine.Create; // No reference
     trace.Add(NewLine);
     s := Trc[Trcindex];
-    if (TrcIndex < Trc.Count-1) and not IsTraceLine(Trc[Trcindex+1], True) then begin
+    if (TrcIndex < Trc.Count-1) and (not IsTraceLine(Trc[Trcindex+1], True)) and
+       (not IsHeaderLine(Trc[Trcindex+1]))
+    then begin
       // join next line, as there may be a linewrap
       while (length(s) > 0) and (s[length(s)] in [#10,#13]) do delete(s, length(s), 1);
       s := s + Trc[Trcindex+1];
