@@ -34,7 +34,7 @@ File(s) with other licenses (see also header in file(s):
 
   (Any modifications/translations of this file are from duby)
 "/>
-    <Files Count="26">
+    <Files Count="27">
       <Item1>
         <Filename Value="fpdbgclasses.pp"/>
         <UnitName Value="FpDbgClasses"/>
@@ -131,17 +131,21 @@ File(s) with other licenses (see also header in file(s):
         <UnitName Value="FpErrorMessages"/>
       </Item23>
       <Item24>
-        <Filename Value="fpdbgdwarfverboseprinter.pas"/>
-        <UnitName Value="FpDbgDwarfVerbosePrinter"/>
+        <Filename Value="fpdbgcontroller.pas"/>
+        <UnitName Value="FPDbgController"/>
       </Item24>
       <Item25>
-        <Filename Value="fpdbgdwarfdataclasses.pas"/>
-        <UnitName Value="FpDbgDwarfDataClasses"/>
+        <Filename Value="fpdbgdwarfverboseprinter.pas"/>
+        <UnitName Value="FpDbgDwarfVerbosePrinter"/>
       </Item25>
       <Item26>
+        <Filename Value="fpdbgdwarfdataclasses.pas"/>
+        <UnitName Value="FpDbgDwarfDataClasses"/>
+      </Item26>
+      <Item27>
         <Filename Value="fpdbgdwarffreepascal.pas"/>
         <UnitName Value="fpdbgdwarffreepascal"/>
-      </Item26>
+      </Item27>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
