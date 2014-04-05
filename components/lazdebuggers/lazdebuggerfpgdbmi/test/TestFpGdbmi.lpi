@@ -30,7 +30,7 @@
     </RunParams>
     <RequiredPackages Count="5">
       <Item1>
-        <PackageName Value="LazDebuggerFp"/>
+        <PackageName Value="LazDebuggerFpGdbmi"/>
       </Item1>
       <Item2>
         <PackageName Value="GdbmiTestUtils"/>
