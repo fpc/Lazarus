@@ -41,6 +41,7 @@ type
     procedure FDbgControllerProcessExitEvent(AExitCode: DWord);
     procedure FDbgControllerExceptionEvent(var continue: boolean);
   protected
+    function CreateWatches: TWatchesSupplier; override;
     function  RequestCommand(const ACommand: TDBGCommand;
                              const AParams: array of const): Boolean; override;
     function ChangeFileName: Boolean; override;
@@ -57,6 +58,17 @@ type
     function  GetSupportedCommands: TDBGCommands; override;
   end;
 
+  { TFPWatches }
+
+  TFPWatches = class(TWatchesSupplier)
+  private
+  protected
+    function  FpDebugger: TFpDebugDebugger;
+    //procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure InternalRequestData(AWatchValue: TWatchValue); override;
+  public
+  end;
+
 procedure Register;
 
 implementation
@@ -64,6 +76,18 @@ implementation
 procedure Register;
 begin
   RegisterDebugger(TFpDebugDebugger);
+end;
+
+{ TFPWatches }
+
+function TFPWatches.FpDebugger: TFpDebugDebugger;
+begin
+  Result := TFpDebugDebugger(Debugger);
+end;
+
+procedure TFPWatches.InternalRequestData(AWatchValue: TWatchValue);
+begin
+  AWatchValue.Validity := ddsInvalid;
 end;
 
 { TFpDebugThread }
@@ -107,6 +131,11 @@ begin
     SetState(dsPause);
     DoCurrent(GetLocation);
     end;
+end;
+
+function TFpDebugDebugger.CreateWatches: TWatchesSupplier;
+begin
+  Result := TFPWatches.Create(Self);
 end;
 
 procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(var continue: boolean);
