@@ -5,7 +5,7 @@ unit FpDbgDwarfVerbosePrinter;
 interface
 
 uses
-  Classes, windows, SysUtils, FpDbgDwarf, FpDbgLoader, FpDbgDwarfConst, FpdMemoryTools,
+  Classes, Math, SysUtils, FpDbgDwarf, FpDbgLoader, FpDbgDwarfConst, FpdMemoryTools,
   FpImgReaderBase, FpDbgDwarfDataClasses, LazLoggerBase, maps;
 
 type
