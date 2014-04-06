@@ -56,6 +56,7 @@ function FormatAddress(const AAddress): String;
 implementation
 
 uses
+  LazLogger,
   FpDbgClasses;
 
 function CompareUtf8BothCase(AnUpper, AnLower, AnUnknown: PChar): Boolean;
@@ -166,12 +167,12 @@ end;
 
 procedure Log(const AText: String; const AParams: array of const); overload;
 begin
-  WriteLN(Format(AText, AParams));
+  DebugLn(Format(AText, AParams));
 end;
 
 procedure Log(const AText: String); overload;
 begin
-  WriteLN(AText);
+  DebugLn(AText);
 end;
 
 end.

@@ -427,7 +427,7 @@ begin
   then begin
     result := TDbgWinProcess.Create(AFileName, ProcessInformation.dwProcessId,ProcessInformation.dwThreadId);
   end else begin
-    WriteLN('Create process failed: ', GetLastErrorText);
+    DebugLn('Create process failed: ', GetLastErrorText);
     result := nil;
   end;
 end;
@@ -460,7 +460,7 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
 
   procedure HandleCreateThread(const AEvent: TDebugEvent);
   begin
-    WriteLN(Format('Start adress: 0x%p', [AEvent.CreateThread.lpStartAddress]));
+    DebugLn(Format('Start adress: 0x%p', [AEvent.CreateThread.lpStartAddress]));
   end;
 
   procedure HandleException(const AEvent: TDebugEvent);
@@ -476,88 +476,88 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
     ExInfo64: TExceptionDebugInfo64 absolute AEvent.Exception;
   begin
     if AEvent.Exception.dwFirstChance = 0
-    then Write('Exception: ')
-    else Write('First chance exception: ');
+    then DebugLn('Exception: ')
+    else DebugLn('First chance exception: ');
 
     // in both 32 and 64 case is the exceptioncode the first, so no difference
     case AEvent.Exception.ExceptionRecord.ExceptionCode of
-      EXCEPTION_ACCESS_VIOLATION         : Write('ACCESS_VIOLATION');
-      EXCEPTION_ARRAY_BOUNDS_EXCEEDED    : Write('ARRAY_BOUNDS_EXCEEDED');
-      EXCEPTION_BREAKPOINT               : Write('BREAKPOINT');
-      EXCEPTION_DATATYPE_MISALIGNMENT    : Write('DATATYPE_MISALIGNMENT');
-      EXCEPTION_FLT_DENORMAL_OPERAND     : Write('FLT_DENORMAL_OPERAND');
-      EXCEPTION_FLT_DIVIDE_BY_ZERO       : Write('FLT_DIVIDE_BY_ZERO');
-      EXCEPTION_FLT_INEXACT_RESULT       : Write('FLT_INEXACT_RESULT');
-      EXCEPTION_FLT_INVALID_OPERATION    : Write('FLT_INVALID_OPERATION');
-      EXCEPTION_FLT_OVERFLOW             : Write('FLT_OVERFLOW');
-      EXCEPTION_FLT_STACK_CHECK          : Write('FLT_STACK_CHECK');
-      EXCEPTION_FLT_UNDERFLOW            : Write('FLT_UNDERFLOW');
-      EXCEPTION_ILLEGAL_INSTRUCTION      : Write('ILLEGAL_INSTRUCTION');
-      EXCEPTION_IN_PAGE_ERROR            : Write('IN_PAGE_ERROR');
-      EXCEPTION_INT_DIVIDE_BY_ZERO       : Write('INT_DIVIDE_BY_ZERO');
-      EXCEPTION_INT_OVERFLOW             : Write('INT_OVERFLOW');
-      EXCEPTION_INVALID_DISPOSITION      : Write('INVALID_DISPOSITION');
-      EXCEPTION_INVALID_HANDLE           : Write('EXCEPTION_INVALID_HANDLE');
-      EXCEPTION_NONCONTINUABLE_EXCEPTION : Write('NONCONTINUABLE_EXCEPTION');
-      EXCEPTION_POSSIBLE_DEADLOCK        : Write('EXCEPTION_POSSIBLE_DEADLOCK');
-      EXCEPTION_PRIV_INSTRUCTION         : Write('PRIV_INSTRUCTION');
-      EXCEPTION_SINGLE_STEP              : Write('SINGLE_STEP');
-      EXCEPTION_STACK_OVERFLOW           : Write('STACK_OVERFLOW');
+      EXCEPTION_ACCESS_VIOLATION         : DebugLn('ACCESS_VIOLATION');
+      EXCEPTION_ARRAY_BOUNDS_EXCEEDED    : DebugLn('ARRAY_BOUNDS_EXCEEDED');
+      EXCEPTION_BREAKPOINT               : DebugLn('BREAKPOINT');
+      EXCEPTION_DATATYPE_MISALIGNMENT    : DebugLn('DATATYPE_MISALIGNMENT');
+      EXCEPTION_FLT_DENORMAL_OPERAND     : DebugLn('FLT_DENORMAL_OPERAND');
+      EXCEPTION_FLT_DIVIDE_BY_ZERO       : DebugLn('FLT_DIVIDE_BY_ZERO');
+      EXCEPTION_FLT_INEXACT_RESULT       : DebugLn('FLT_INEXACT_RESULT');
+      EXCEPTION_FLT_INVALID_OPERATION    : DebugLn('FLT_INVALID_OPERATION');
+      EXCEPTION_FLT_OVERFLOW             : DebugLn('FLT_OVERFLOW');
+      EXCEPTION_FLT_STACK_CHECK          : DebugLn('FLT_STACK_CHECK');
+      EXCEPTION_FLT_UNDERFLOW            : DebugLn('FLT_UNDERFLOW');
+      EXCEPTION_ILLEGAL_INSTRUCTION      : DebugLn('ILLEGAL_INSTRUCTION');
+      EXCEPTION_IN_PAGE_ERROR            : DebugLn('IN_PAGE_ERROR');
+      EXCEPTION_INT_DIVIDE_BY_ZERO       : DebugLn('INT_DIVIDE_BY_ZERO');
+      EXCEPTION_INT_OVERFLOW             : DebugLn('INT_OVERFLOW');
+      EXCEPTION_INVALID_DISPOSITION      : DebugLn('INVALID_DISPOSITION');
+      EXCEPTION_INVALID_HANDLE           : DebugLn('EXCEPTION_INVALID_HANDLE');
+      EXCEPTION_NONCONTINUABLE_EXCEPTION : DebugLn('NONCONTINUABLE_EXCEPTION');
+      EXCEPTION_POSSIBLE_DEADLOCK        : DebugLn('EXCEPTION_POSSIBLE_DEADLOCK');
+      EXCEPTION_PRIV_INSTRUCTION         : DebugLn('PRIV_INSTRUCTION');
+      EXCEPTION_SINGLE_STEP              : DebugLn('SINGLE_STEP');
+      EXCEPTION_STACK_OVERFLOW           : DebugLn('STACK_OVERFLOW');
 
       // add some status - don't know if we can get them here
-      DBG_EXCEPTION_NOT_HANDLED          : Write('DBG_EXCEPTION_NOT_HANDLED');
-      STATUS_GUARD_PAGE_VIOLATION        : Write('STATUS_GUARD_PAGE_VIOLATION');
-      STATUS_NO_MEMORY                   : Write('STATUS_NO_MEMORY');
-      STATUS_CONTROL_C_EXIT              : Write('STATUS_CONTROL_C_EXIT');
-      STATUS_FLOAT_MULTIPLE_FAULTS       : Write('STATUS_FLOAT_MULTIPLE_FAULTS');
-      STATUS_FLOAT_MULTIPLE_TRAPS        : Write('STATUS_FLOAT_MULTIPLE_TRAPS');
-      STATUS_REG_NAT_CONSUMPTION         : Write('STATUS_REG_NAT_CONSUMPTION');
-      STATUS_SXS_EARLY_DEACTIVATION      : Write('STATUS_SXS_EARLY_DEACTIVATION');
-      STATUS_SXS_INVALID_DEACTIVATION    : Write('STATUS_SXS_INVALID_DEACTIVATION');
+      DBG_EXCEPTION_NOT_HANDLED          : DebugLn('DBG_EXCEPTION_NOT_HANDLED');
+      STATUS_GUARD_PAGE_VIOLATION        : DebugLn('STATUS_GUARD_PAGE_VIOLATION');
+      STATUS_NO_MEMORY                   : DebugLn('STATUS_NO_MEMORY');
+      STATUS_CONTROL_C_EXIT              : DebugLn('STATUS_CONTROL_C_EXIT');
+      STATUS_FLOAT_MULTIPLE_FAULTS       : DebugLn('STATUS_FLOAT_MULTIPLE_FAULTS');
+      STATUS_FLOAT_MULTIPLE_TRAPS        : DebugLn('STATUS_FLOAT_MULTIPLE_TRAPS');
+      STATUS_REG_NAT_CONSUMPTION         : DebugLn('STATUS_REG_NAT_CONSUMPTION');
+      STATUS_SXS_EARLY_DEACTIVATION      : DebugLn('STATUS_SXS_EARLY_DEACTIVATION');
+      STATUS_SXS_INVALID_DEACTIVATION    : DebugLn('STATUS_SXS_INVALID_DEACTIVATION');
     else
-      Write(' Unknown code: $', IntToHex(ExInfo32.ExceptionRecord.ExceptionCode, 8));
-      Write(' [');
+      DebugLn(' Unknown code: $', IntToHex(ExInfo32.ExceptionRecord.ExceptionCode, 8));
+      DebugLn(' [');
       case ExInfo32.ExceptionRecord.ExceptionCode and $C0000000 of
-        STATUS_SEVERITY_SUCCESS       : Write('SEVERITY_ERROR');
-        STATUS_SEVERITY_INFORMATIONAL : Write('SEVERITY_ERROR');
-        STATUS_SEVERITY_WARNING       : Write('SEVERITY_WARNING');
-        STATUS_SEVERITY_ERROR         : Write('SEVERITY_ERROR');
+        STATUS_SEVERITY_SUCCESS       : DebugLn('SEVERITY_ERROR');
+        STATUS_SEVERITY_INFORMATIONAL : DebugLn('SEVERITY_ERROR');
+        STATUS_SEVERITY_WARNING       : DebugLn('SEVERITY_WARNING');
+        STATUS_SEVERITY_ERROR         : DebugLn('SEVERITY_ERROR');
       end;
       if ExInfo32.ExceptionRecord.ExceptionCode and $20000000 <> 0
-      then Write (' Customer');
+      then DebugLn (' Customer');
       if ExInfo32.ExceptionRecord.ExceptionCode and $10000000 <> 0
-      then Write (' Reserved');
+      then DebugLn (' Reserved');
       case (ExInfo32.ExceptionRecord.ExceptionCode and $0FFF0000) shr 16 of
-        FACILITY_DEBUGGER            : Write('FACILITY_DEBUGGER');
-        FACILITY_RPC_RUNTIME         : Write('FACILITY_RPC_RUNTIME');
-        FACILITY_RPC_STUBS           : Write('FACILITY_RPC_STUBS');
-        FACILITY_IO_ERROR_CODE       : Write('FACILITY_IO_ERROR_CODE');
-        FACILITY_TERMINAL_SERVER     : Write('FACILITY_TERMINAL_SERVER');
-        FACILITY_USB_ERROR_CODE      : Write('FACILITY_USB_ERROR_CODE');
-        FACILITY_HID_ERROR_CODE      : Write('FACILITY_HID_ERROR_CODE');
-        FACILITY_FIREWIRE_ERROR_CODE : Write('FACILITY_FIREWIRE_ERROR_CODE');
-        FACILITY_CLUSTER_ERROR_CODE  : Write('FACILITY_CLUSTER_ERROR_CODE');
-        FACILITY_ACPI_ERROR_CODE     : Write('FACILITY_ACPI_ERROR_CODE');
-        FACILITY_SXS_ERROR_CODE      : Write('FACILITY_SXS_ERROR_CODE');
+        FACILITY_DEBUGGER            : DebugLn('FACILITY_DEBUGGER');
+        FACILITY_RPC_RUNTIME         : DebugLn('FACILITY_RPC_RUNTIME');
+        FACILITY_RPC_STUBS           : DebugLn('FACILITY_RPC_STUBS');
+        FACILITY_IO_ERROR_CODE       : DebugLn('FACILITY_IO_ERROR_CODE');
+        FACILITY_TERMINAL_SERVER     : DebugLn('FACILITY_TERMINAL_SERVER');
+        FACILITY_USB_ERROR_CODE      : DebugLn('FACILITY_USB_ERROR_CODE');
+        FACILITY_HID_ERROR_CODE      : DebugLn('FACILITY_HID_ERROR_CODE');
+        FACILITY_FIREWIRE_ERROR_CODE : DebugLn('FACILITY_FIREWIRE_ERROR_CODE');
+        FACILITY_CLUSTER_ERROR_CODE  : DebugLn('FACILITY_CLUSTER_ERROR_CODE');
+        FACILITY_ACPI_ERROR_CODE     : DebugLn('FACILITY_ACPI_ERROR_CODE');
+        FACILITY_SXS_ERROR_CODE      : DebugLn('FACILITY_SXS_ERROR_CODE');
       else
-        Write(' Facility: $', IntToHex((ExInfo32.ExceptionRecord.ExceptionCode and $0FFF0000) shr 16, 3));
+        DebugLn(' Facility: $', IntToHex((ExInfo32.ExceptionRecord.ExceptionCode and $0FFF0000) shr 16, 3));
       end;
-      Write(' Code: $', IntToHex((ExInfo32.ExceptionRecord.ExceptionCode and $0000FFFF), 4));
+      DebugLn(' Code: $', IntToHex((ExInfo32.ExceptionRecord.ExceptionCode and $0000FFFF), 4));
 
     end;
     if GMode = dm32
     then Info0 := PtrUInt(ExInfo32.ExceptionRecord.ExceptionAddress)
     else Info0 := PtrUInt(ExInfo64.ExceptionRecord.ExceptionAddress);
-    Write(' at: ', FormatAddress(Info0));
-    Write(' Flags:', Format('%x', [AEvent.Exception.ExceptionRecord.ExceptionFlags]), ' [');
+    DebugLn(' at: ', FormatAddress(Info0));
+    DebugLn(' Flags:', Format('%x', [AEvent.Exception.ExceptionRecord.ExceptionFlags]), ' [');
 
     if AEvent.Exception.ExceptionRecord.ExceptionFlags = 0
-    then Write('Continuable')
-    else Write('Not continuable');
-    Write(']');
+    then DebugLn('Continuable')
+    else DebugLn('Not continuable');
+    DebugLn(']');
     if GMode = dm32
-    then Write(' ParamCount:', ExInfo32.ExceptionRecord.NumberParameters)
-    else Write(' ParamCount:', ExInfo64.ExceptionRecord.NumberParameters);
+    then DebugLn(' ParamCount:', IntToStr(ExInfo32.ExceptionRecord.NumberParameters))
+    else DebugLn(' ParamCount:', IntToStr(ExInfo64.ExceptionRecord.NumberParameters));
 
     case AEvent.Exception.ExceptionRecord.ExceptionCode of
       EXCEPTION_ACCESS_VIOLATION: begin
@@ -574,52 +574,52 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
 
         case Info0 of
           EXCEPTION_READ_FAULT: begin
-            Write(' Read of address: ', Info1Str);
+            DebugLn(' Read of address: ', Info1Str);
           end;
           EXCEPTION_WRITE_FAULT: begin
-            Write(' Write of address: ', Info1Str);
+            DebugLn(' Write of address: ', Info1Str);
           end;
           EXCEPTION_EXECUTE_FAULT: begin
-            Write(' Execute of address: ', Info1Str);
+            DebugLn(' Execute of address: ', Info1Str);
           end;
         end;
       end;
     end;
-    WriteLN;
+    Debugln('');
 
-    Write(' Info: ');
+    DebugLn(' Info: ');
     for n := 0 to EXCEPTION_MAXIMUM_PARAMETERS - 1 do
     begin
       if GMode = dm32
       then Info0 := ExInfo32.ExceptionRecord.ExceptionInformation[n]
       else Info0 := ExInfo64.ExceptionRecord.ExceptionInformation[n];
-      Write(IntToHex(Info0, DBGPTRSIZE[GMode] * 2), ' ');
+      DebugLn(IntToHex(Info0, DBGPTRSIZE[GMode] * 2), ' ');
       if n and (PARAMCOLS - 1) = (PARAMCOLS - 1)
       then begin
-        WriteLN;
-        Write('       ');
+        DebugLn;
+        DebugLn('       ');
       end;
     end;
-    WriteLn;
+    DebugLn('');
   end;
 
   procedure HandleCreateProcess(const AEvent: TDebugEvent);
   var
     S: String;
   begin
-    WriteLN(Format('hFile: 0x%x', [AEvent.CreateProcessInfo.hFile]));
-    WriteLN(Format('hProcess: 0x%x', [AEvent.CreateProcessInfo.hProcess]));
-    WriteLN(Format('hThread: 0x%x', [AEvent.CreateProcessInfo.hThread]));
-    WriteLN('Base adress: ', FormatAddress(AEvent.CreateProcessInfo.lpBaseOfImage));
-    WriteLN(Format('Debugsize: %d', [AEvent.CreateProcessInfo.nDebugInfoSize]));
-    WriteLN(Format('Debugoffset: %d', [AEvent.CreateProcessInfo.dwDebugInfoFileOffset]));
+    DebugLn(Format('hFile: 0x%x', [AEvent.CreateProcessInfo.hFile]));
+    DebugLn(Format('hProcess: 0x%x', [AEvent.CreateProcessInfo.hProcess]));
+    DebugLn(Format('hThread: 0x%x', [AEvent.CreateProcessInfo.hThread]));
+    DebugLn('Base adress: ', FormatAddress(AEvent.CreateProcessInfo.lpBaseOfImage));
+    DebugLn(Format('Debugsize: %d', [AEvent.CreateProcessInfo.nDebugInfoSize]));
+    DebugLn(Format('Debugoffset: %d', [AEvent.CreateProcessInfo.dwDebugInfoFileOffset]));
 
     StartProcess(AEvent.CreateProcessInfo);
   end;
 
   procedure HandleExitThread(const AEvent: TDebugEvent);
   begin
-    WriteLN('Exitcode: ', AEvent.ExitThread.dwExitCode);
+    DebugLn('Exitcode: ' + IntToStr(AEvent.ExitThread.dwExitCode));
   end;
 
   procedure DumpEvent(const AEvent: String);
@@ -627,83 +627,83 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
     f: Cardinal;
     n: integer;
   begin
-    WriteLN('===');
-    WriteLN(AEvent);
-    WriteLN('---');
-    WriteLN('Process ID: ', MDebugEvent.dwProcessId);
-    WriteLN('Thread ID: ', MDebugEvent.dwThreadId);
+    DebugLn('===');
+    DebugLn(AEvent);
+    DebugLn('---');
+    DebugLn('Process ID: '+ IntToSTr(MDebugEvent.dwProcessId));
+    DebugLn('Thread ID: '+ IntToStr(MDebugEvent.dwThreadId));
 
     if AThread = nil then Exit;
 
     {$ifdef cpui386}
-    with GCurrentContext^ do WriteLN(Format('DS: 0x%x, ES: 0x%x, FS: 0x%x, GS: 0x%x', [SegDs, SegEs, SegFs, SegGs]));
-    with GCurrentContext^ do WriteLN(Format('EAX: 0x%x, EBX: 0x%x, ECX: 0x%x, EDX: 0x%x, EDI: 0x%x, ESI: 0x%x', [Eax, Ebx, Ecx, Edx, Edi, Esi]));
-    with GCurrentContext^ do Write(Format('CS: 0x%x, SS: 0x%x, EBP: 0x%x, EIP: 0x%x, ESP: 0x%x, EFlags: 0x%x [', [SegCs, SegSs, Ebp, Eip, Esp, EFlags]));
+    with GCurrentContext^ do DebugLn(Format('DS: 0x%x, ES: 0x%x, FS: 0x%x, GS: 0x%x', [SegDs, SegEs, SegFs, SegGs]));
+    with GCurrentContext^ do DebugLn(Format('EAX: 0x%x, EBX: 0x%x, ECX: 0x%x, EDX: 0x%x, EDI: 0x%x, ESI: 0x%x', [Eax, Ebx, Ecx, Edx, Edi, Esi]));
+    with GCurrentContext^ do DebugLn(Format('CS: 0x%x, SS: 0x%x, EBP: 0x%x, EIP: 0x%x, ESP: 0x%x, EFlags: 0x%x [', [SegCs, SegSs, Ebp, Eip, Esp, EFlags]));
     {$else}
-    with GCurrentContext^ do WriteLN(Format('SegDS: 0x%4.4x, SegES: 0x%4.4x, SegFS: 0x%4.4x, SegGS: 0x%4.4x', [SegDs, SegEs, SegFs, SegGs]));
-    with GCurrentContext^ do WriteLN(Format('RAX: 0x%16.16x, RBX: 0x%16.16x, RCX: 0x%16.16x, RDX: 0x%16.16x, RDI: 0x%16.16x, RSI: 0x%16.16x, R9: 0x%16.16x, R10: 0x%16.16x, R11: 0x%16.16x, R12: 0x%16.16x, R13: 0x%16.16x, R14: 0x%16.16x, R15: 0x%16.16x', [Rax, Rbx, Rcx, Rdx, Rdi, Rsi, R9, R10, R11, R12, R13, R14, R15]));
-    with GCurrentContext^ do Write(Format('SegCS: 0x%4.4x, SegSS: 0x%4.4x, RBP: 0x%16.16x, RIP: 0x%16.16x, RSP: 0x%16.16x, EFlags: 0x%8.8x [', [SegCs, SegSs, Rbp, Rip, Rsp, EFlags]));
+    with GCurrentContext^ do DebugLn(Format('SegDS: 0x%4.4x, SegES: 0x%4.4x, SegFS: 0x%4.4x, SegGS: 0x%4.4x', [SegDs, SegEs, SegFs, SegGs]));
+    with GCurrentContext^ do DebugLn(Format('RAX: 0x%16.16x, RBX: 0x%16.16x, RCX: 0x%16.16x, RDX: 0x%16.16x, RDI: 0x%16.16x, RSI: 0x%16.16x, R9: 0x%16.16x, R10: 0x%16.16x, R11: 0x%16.16x, R12: 0x%16.16x, R13: 0x%16.16x, R14: 0x%16.16x, R15: 0x%16.16x', [Rax, Rbx, Rcx, Rdx, Rdi, Rsi, R9, R10, R11, R12, R13, R14, R15]));
+    with GCurrentContext^ do DebugLn(Format('SegCS: 0x%4.4x, SegSS: 0x%4.4x, RBP: 0x%16.16x, RIP: 0x%16.16x, RSP: 0x%16.16x, EFlags: 0x%8.8x [', [SegCs, SegSs, Rbp, Rip, Rsp, EFlags]));
     {$endif}
     // luckely flag and debug registers are named the same
     with GCurrentContext^ do
     begin
-      if EFlags and (1 shl 0) <> 0 then Write('CF ');
-      if EFlags and (1 shl 2) <> 0 then Write('PF ');
-      if EFlags and (1 shl 4) <> 0 then Write('AF ');
-      if EFlags and (1 shl 6) <> 0 then Write('ZF ');
-      if EFlags and (1 shl 7) <> 0 then Write('SF ');
-      if EFlags and (1 shl 8) <> 0 then Write('TF ');
-      if EFlags and (1 shl 9) <> 0 then Write('IF ');
-      if EFlags and (1 shl 10) <> 0 then Write('DF ');
-      if EFlags and (1 shl 11) <> 0 then Write('OF ');
-      if (EFlags shr 12) and 3 <> 0 then Write('IOPL=', (EFlags shr 12) and 3);
-      if EFlags and (1 shl 14) <> 0 then Write('NT ');
-      if EFlags and (1 shl 16) <> 0 then Write('RF ');
-      if EFlags and (1 shl 17) <> 0 then Write('VM ');
-      if EFlags and (1 shl 18) <> 0 then Write('AC ');
-      if EFlags and (1 shl 19) <> 0 then Write('VIF ');
-      if EFlags and (1 shl 20) <> 0 then Write('VIP ');
-      if EFlags and (1 shl 21) <> 0 then Write('ID ');
-      WriteLn(']');
+      if EFlags and (1 shl 0) <> 0 then DebugLn('CF ');
+      if EFlags and (1 shl 2) <> 0 then DebugLn('PF ');
+      if EFlags and (1 shl 4) <> 0 then DebugLn('AF ');
+      if EFlags and (1 shl 6) <> 0 then DebugLn('ZF ');
+      if EFlags and (1 shl 7) <> 0 then DebugLn('SF ');
+      if EFlags and (1 shl 8) <> 0 then DebugLn('TF ');
+      if EFlags and (1 shl 9) <> 0 then DebugLn('IF ');
+      if EFlags and (1 shl 10) <> 0 then DebugLn('DF ');
+      if EFlags and (1 shl 11) <> 0 then DebugLn('OF ');
+      if (EFlags shr 12) and 3 <> 0 then DebugLn('IOPL=', IntToSTr((EFlags shr 12) and 3));
+      if EFlags and (1 shl 14) <> 0 then DebugLn('NT ');
+      if EFlags and (1 shl 16) <> 0 then DebugLn('RF ');
+      if EFlags and (1 shl 17) <> 0 then DebugLn('VM ');
+      if EFlags and (1 shl 18) <> 0 then DebugLn('AC ');
+      if EFlags and (1 shl 19) <> 0 then DebugLn('VIF ');
+      if EFlags and (1 shl 20) <> 0 then DebugLn('VIP ');
+      if EFlags and (1 shl 21) <> 0 then DebugLn('ID ');
+      DebugLn(']');
 
-      Write(Format('DR0: 0x%x, DR1: 0x%x, DR2: 0x%x, DR3: 0x%x', [Dr0, Dr1, Dr2, Dr3]));
-      Write(' DR6: 0x', IntToHex(Dr6, SizeOf(Pointer) * 2), ' [');
-      if Dr6 and $0001 <> 0 then Write('B0 ');
-      if Dr6 and $0002 <> 0 then Write('B1 ');
-      if Dr6 and $0004 <> 0 then Write('B2 ');
-      if Dr6 and $0008 <> 0 then Write('B3 ');
-      if Dr6 and $2000 <> 0 then Write('BD ');
-      if Dr6 and $4000 <> 0 then Write('BS ');
-      if Dr6 and $8000 <> 0 then Write('BT ');
-      Write('] DR7: 0x', IntToHex(Dr7, SizeOf(Pointer) * 2), ' [');
-      if Dr7 and $01 <> 0 then Write('L0 ');
-      if Dr7 and $02 <> 0 then Write('G0 ');
-      if Dr7 and $04 <> 0 then Write('L1 ');
-      if Dr7 and $08 <> 0 then Write('G1 ');
-      if Dr7 and $10 <> 0 then Write('L2 ');
-      if Dr7 and $20 <> 0 then Write('G2 ');
-      if Dr7 and $40 <> 0 then Write('L3 ');
-      if Dr7 and $80 <> 0 then Write('G3 ');
-      if Dr7 and $100 <> 0 then Write('LE ');
-      if Dr7 and $200 <> 0 then Write('GE ');
-      if Dr7 and $2000 <> 0 then Write('GD ');
+      DebugLn(Format('DR0: 0x%x, DR1: 0x%x, DR2: 0x%x, DR3: 0x%x', [Dr0, Dr1, Dr2, Dr3]));
+      DebugLn(' DR6: 0x', IntToHex(Dr6, SizeOf(Pointer) * 2), ' [');
+      if Dr6 and $0001 <> 0 then DebugLn('B0 ');
+      if Dr6 and $0002 <> 0 then DebugLn('B1 ');
+      if Dr6 and $0004 <> 0 then DebugLn('B2 ');
+      if Dr6 and $0008 <> 0 then DebugLn('B3 ');
+      if Dr6 and $2000 <> 0 then DebugLn('BD ');
+      if Dr6 and $4000 <> 0 then DebugLn('BS ');
+      if Dr6 and $8000 <> 0 then DebugLn('BT ');
+      DebugLn('] DR7: 0x', IntToHex(Dr7, SizeOf(Pointer) * 2), ' [');
+      if Dr7 and $01 <> 0 then DebugLn('L0 ');
+      if Dr7 and $02 <> 0 then DebugLn('G0 ');
+      if Dr7 and $04 <> 0 then DebugLn('L1 ');
+      if Dr7 and $08 <> 0 then DebugLn('G1 ');
+      if Dr7 and $10 <> 0 then DebugLn('L2 ');
+      if Dr7 and $20 <> 0 then DebugLn('G2 ');
+      if Dr7 and $40 <> 0 then DebugLn('L3 ');
+      if Dr7 and $80 <> 0 then DebugLn('G3 ');
+      if Dr7 and $100 <> 0 then DebugLn('LE ');
+      if Dr7 and $200 <> 0 then DebugLn('GE ');
+      if Dr7 and $2000 <> 0 then DebugLn('GD ');
       f := Dr7 shr 16;
       for n := 0 to 3 do
       begin
-        Write('R/W', n,':');
+        DebugLn('R/W', IntToSTr(n),':');
         case f and 3 of
-          0: Write('ex');
-          1: Write('wo');
-          2: Write('IO');
-          3: Write('rw');
+          0: DebugLn('ex');
+          1: DebugLn('wo');
+          2: DebugLn('IO');
+          3: DebugLn('rw');
         end;
         f := f shr 2;
-        Write(' LEN', n,':', f and 3 + 1, ' ');
+        DebugLn(' LEN', IntToSTr(n),':', IntToSTr(f and 3 + 1), ' ');
         f := f shr 2;
       end;
-      WriteLN(']');
+      DebugLn(']');
     end;
-    WriteLN('---');
+    DebugLn('---');
   end;
 
   procedure HandleLoadDll(const AEvent: TDebugEvent);
@@ -711,7 +711,7 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
     Proc: TDbgProcess;
     Lib: TDbgLibrary;
   begin
-    WriteLN('Base adress: ', FormatAddress(AEvent.LoadDll.lpBaseOfDll));
+    DebugLn('Base adress: ', FormatAddress(AEvent.LoadDll.lpBaseOfDll));
   end;
 
   procedure HandleOutputDebug(const AEvent: TDebugEvent);
@@ -729,18 +729,18 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
       if not ReadString(TDbgPtr(AEvent.DebugString.lpDebugStringData), AEvent.DebugString.nDebugStringLength, S)
       then Exit;
     end;
-    WriteLN('[', AEvent.dwProcessId, ':', AEvent.dwThreadId, '] ', S);
+    DebugLn('[', IntToStr(AEvent.dwProcessId), ':', IntToSTr(AEvent.dwThreadId), '] ', S);
   end;
 
   procedure HandleRipEvent(const AEvent: TDebugEvent);
   begin
-    WriteLN('Error: ', AEvent.RipInfo.dwError);
-    WriteLN('Type: ', AEvent.RipInfo.dwType);
+    DebugLn('Error: ', IntToStr(AEvent.RipInfo.dwError));
+    DebugLn('Type: ', IntToStr(AEvent.RipInfo.dwType));
   end;
 
   procedure HandleUnloadDll(const AEvent: TDebugEvent);
   begin
-    WriteLN('Base adress: ', FormatAddress(AEvent.UnloadDll.lpBaseOfDll));
+    DebugLn('Base adress: ', FormatAddress(AEvent.UnloadDll.lpBaseOfDll));
   end;
 
 begin
@@ -755,7 +755,7 @@ begin
       GCurrentContext^.ContextFlags := CONTEXT_SEGMENTS or CONTEXT_INTEGER or CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
       SetLastError(0);
       if not GetThreadContext(AThread.Handle, GCurrentContext^)
-      then WriteLN('LOOP: Unable to retrieve thread context');
+      then DebugLn('LOOP: Unable to retrieve thread context');
     end;
 
     case MDebugEvent.dwDebugEventCode of

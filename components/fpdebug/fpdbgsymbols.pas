@@ -42,7 +42,7 @@ uses
   Windows,
 {$endif}
   Classes, SysUtils, FpDbgInfo, FpDbgWinExtra, FpDbgPETypes, FpDbgDwarf, FpDbgUtil,
-  FpDbgDwarfConst;
+  FpDbgDwarfConst, LazLogger;
   
 
 {$ifdef windows}
@@ -66,13 +66,13 @@ var
       for n := 1 to count do
       begin
         case p^ of
-          #32..#127: Write(p^, ' ');
+          #32..#127: DebugLn(p^, ' ');
         else
-          Write('#', Ord(p^), ' ');
+          DebugLn('#', Char(p^), ' ');
         end;
         Inc(p);
       end;
-      WriteLN;
+      DebugLn('');
     end;
     
     function ULEB128toOrdinal(var p: PByte): Integer;
@@ -105,36 +105,36 @@ var
     SH := Pointer(Sections.Objects[idx4]);
     Data4 := ModulePtr + SH^.PointerToRawData;
     p := Data4;
-    WriteLN('.debug_info');
-    WriteLn('  length: ', PCardinal(p)^);
+    DebugLn('.debug_info');
+    DebugLn('  length: ', IntToStr(PCardinal(p)^));
     Inc(p, 4);
-    WriteLn('  version: ', PWord(p)^);
+    DebugLn('  version: ', IntToStr(PWord(p)^));
     Inc(p, 2);
-    WriteLn('  abbrev offset: ', PCardinal(p)^);
+    DebugLn('  abbrev offset: ', IntToStr(PCardinal(p)^));
     Inc(p, 4);
-    WriteLn('  address size: ', PByte(p)^);
+    DebugLn('  address size: ', IntToStr(PByte(p)^));
     Inc(p, 1);
 
-    Write(HexValue(SH^.PointerToRawData, 8, []), ': ');
+    DebugLn(HexValue(SH^.PointerToRawData, 8, []), ': ');
     Dump(p, 80);
 
     SH := Pointer(Sections.Objects[idx16]);
     Data16 := ModulePtr + SH^.PointerToRawData;
     p := Data16;
-    WriteLN('.debug_abbrev');
+    DebugLn('.debug_abbrev');
     while pb^ <> 0 do
     begin
-      WriteLN('  abbrev:  ', Cardinal(ULEB128toOrdinal(pb)));
+      DebugLn('  abbrev:  ', IntToStr(Cardinal(ULEB128toOrdinal(pb))));
       Value := Cardinal(ULEB128toOrdinal(pb));
-      WriteLN('  tag:     ', Value, '=', DwarfTagToString(Value));
-      WriteLN('  children:', pb^);
+      DebugLn('  tag:     ', IntToStr(Value), '=', DwarfTagToString(Value));
+      DebugLn('  children:', IntToStr(pb^));
       inc(pb);
       for n := 0 to 15 do
       begin
         Name := Cardinal(ULEB128toOrdinal(pb));
         Value := Cardinal(ULEB128toOrdinal(pb));
         if (name = 0) and (value = 0) then Break;
-        WriteLN('   [', n:4, '] name: ', Name, '=', DwarfAttributeToString(Name), ', value:', Value, '=', DwarfAttributeFormToString(Value));
+        DebugLn('   [', IntToStr(n), '] name: ', IntToStr(Name), '=', DwarfAttributeToString(Name), ', value:', IntToStr(Value), '=', DwarfAttributeFormToString(Value));
       end;
       if (name = 0) and (value = 0) then Continue;
       while pw^ <> 0 do Inc(pw);
