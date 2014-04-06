@@ -763,7 +763,7 @@ procedure Register;
 
 implementation
 
-{$IFDEF USEBUTTONEDIT}
+{$IFnDEF USEOLDEDITBUTTON}
 {$R lcl_edbtnimg.res}
 {$ENDIF}
 
@@ -1999,7 +1999,7 @@ end;
 
 procedure Register;
 begin
-  {$IFDEF USEBUTTONEDIT}
+  {$IFnDEF USEOLDEDITBUTTON}
   RegisterComponents('Misc', [TButtonEdit,TFileNameEdit,TDirectoryEdit,
                               TDateEdit,TCalcEdit]);
   {$ENDIF}

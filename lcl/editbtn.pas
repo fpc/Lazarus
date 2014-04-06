@@ -22,7 +22,7 @@ unit EditBtn;
 
 interface
 
-{$IFDEF USEBUTTONEDIT}
+{$IFnDEF USEOLDEDITBUTTON}
 uses
   Classes, ButtonEdit;
 
@@ -660,7 +660,7 @@ procedure Register;
 
 implementation
 
-{$IFDEF USEBUTTONEDIT}
+{$IFnDEF USEOLDEDITBUTTON}
 
 {$ELSE}
 
@@ -1638,7 +1638,7 @@ end;
 
 procedure Register;
 begin
-{$IFnDEF USEBUTTONEDIT}
+{$IFDEF USEOLDEDITBUTTON}
   RegisterComponents('Misc', [TEditButton,TFileNameEdit,TDirectoryEdit,
                               TDateEdit,TCalcEdit]);
 {$ELSE}
