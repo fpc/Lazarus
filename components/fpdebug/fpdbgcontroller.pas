@@ -224,7 +224,7 @@ begin
     deLoadLibrary:
       begin
         debugln('LoadLibrary');
-        continue:=false;
+        continue:=true;
       end;
     deInternalContinue:
       begin
