@@ -54,9 +54,12 @@ type
   { TDbgWinThread }
 
   TDbgWinThread = class(TDbgThread)
+  protected
+    procedure LoadRegisterValues; override;
   public
     function SingleStep: Boolean; virtual;
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
+    function ReadThreadState: boolean;
   end;
 
 
@@ -752,9 +755,8 @@ begin
     if AThread <> nil
     then begin
       // TODO: move to TDbgThread
-      GCurrentContext^.ContextFlags := CONTEXT_SEGMENTS or CONTEXT_INTEGER or CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
-      SetLastError(0);
-      if not GetThreadContext(AThread.Handle, GCurrentContext^)
+
+      if not TDbgWinThread(AThread).ReadThreadState
       then DebugLn('LOOP: Unable to retrieve thread context');
     end;
 
@@ -908,6 +910,52 @@ end;
 
 { TDbgWinThread }
 
+procedure TDbgWinThread.LoadRegisterValues;
+var
+  FlagS: string;
+begin
+  with GCurrentContext^ do
+  begin
+    FRegisterValueList.DbgRegisterAutoCreate['eax'].SetValue(Eax, IntToStr(Eax));
+    FRegisterValueList.DbgRegisterAutoCreate['ecx'].SetValue(Ecx, IntToStr(Ecx));
+    FRegisterValueList.DbgRegisterAutoCreate['edx'].SetValue(Edx, IntToStr(Edx));
+    FRegisterValueList.DbgRegisterAutoCreate['ebx'].SetValue(Ebx, IntToStr(Ebx));
+    FRegisterValueList.DbgRegisterAutoCreate['esp'].SetValue(Esp, IntToStr(Esp));
+    FRegisterValueList.DbgRegisterAutoCreate['ebp'].SetValue(Ebp, IntToStr(Ebp));
+    FRegisterValueList.DbgRegisterAutoCreate['esi'].SetValue(Esi, IntToStr(Esi));
+    FRegisterValueList.DbgRegisterAutoCreate['edi'].SetValue(Edi, IntToStr(Edi));
+    FRegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(Eip, IntToStr(Eip));
+
+    FlagS := '';
+    if EFlags and (1 shl 0) <> 0 then FlagS := FlagS + 'CF ';
+    if EFlags and (1 shl 2) <> 0 then FlagS := FlagS + 'PF ';
+    if EFlags and (1 shl 4) <> 0 then FlagS := FlagS + 'AF ';
+    if EFlags and (1 shl 6) <> 0 then FlagS := FlagS + 'ZF ';
+    if EFlags and (1 shl 7) <> 0 then FlagS := FlagS + 'SF ';
+    if EFlags and (1 shl 8) <> 0 then FlagS := FlagS + 'TF ';
+    if EFlags and (1 shl 9) <> 0 then FlagS := FlagS + 'IF ';
+    if EFlags and (1 shl 10) <> 0 then FlagS := FlagS + 'DF ';
+    if EFlags and (1 shl 11) <> 0 then FlagS := FlagS + 'OF ';
+    if (EFlags shr 12) and 3 <> 0 then FlagS := FlagS + 'IOPL=' + IntToStr((EFlags shr 12) and 3);
+    if EFlags and (1 shl 14) <> 0 then FlagS := FlagS + 'NT ';
+    if EFlags and (1 shl 16) <> 0 then FlagS := FlagS + 'RF ';
+    if EFlags and (1 shl 17) <> 0 then FlagS := FlagS + 'VM ';
+    if EFlags and (1 shl 18) <> 0 then FlagS := FlagS + 'AC ';
+    if EFlags and (1 shl 19) <> 0 then FlagS := FlagS + 'VIF ';
+    if EFlags and (1 shl 20) <> 0 then FlagS := FlagS + 'VIP ';
+    if EFlags and (1 shl 21) <> 0 then FlagS := FlagS + 'ID ';
+
+    FRegisterValueList.DbgRegisterAutoCreate['eflags'].SetValue(EFlags, trim(FlagS));
+    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(SegCs, IntToStr(SegCs));
+    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(SegSs, IntToStr(SegSs));
+    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(SegDs, IntToStr(SegDs));
+    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(SegEs, IntToStr(SegEs));
+    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(SegFs, IntToStr(SegFs));
+    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(SegGs, IntToStr(SegGs));
+  end;
+  FRegisterValueListValid:=true;
+end;
+
 function TDbgWinThread.SingleStep: Boolean;
 var
   _UC: record
@@ -971,6 +1019,14 @@ begin
     Exit;
   end;
   Result := True;
+end;
+
+function TDbgWinThread.ReadThreadState: boolean;
+begin
+  GCurrentContext^.ContextFlags := CONTEXT_SEGMENTS or CONTEXT_INTEGER or CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
+  SetLastError(0);
+  result := GetThreadContext(Handle, GCurrentContext^);
+  FRegisterValueListValid:=False;
 end;
 
 end.

@@ -48,6 +48,7 @@ type
     procedure FDbgControllerExceptionEvent(var continue: boolean);
   protected
     function CreateWatches: TWatchesSupplier; override;
+    function  CreateRegisters: TRegisterSupplier; override;
     function  RequestCommand(const ACommand: TDBGCommand;
                              const AParams: array of const): Boolean; override;
     function ChangeFileName: Boolean; override;
@@ -75,6 +76,13 @@ type
   public
   end;
 
+  { TFPRegisters }
+
+  TFPRegisters = class(TRegisterSupplier)
+  public
+    procedure RequestData(ARegisters: TRegisters); override;
+  end;
+
 procedure Register;
 
 implementation
@@ -82,6 +90,28 @@ implementation
 procedure Register;
 begin
   RegisterDebugger(TFpDebugDebugger);
+end;
+
+{ TFPRegisters }
+
+procedure TFPRegisters.RequestData(ARegisters: TRegisters);
+var
+  ARegisterList: TDbgRegisterValueList;
+  i: Integer;
+  ARegisterValue: TRegisterValue;
+begin
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsStop]) then
+    exit;
+
+  ARegisterList := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.RegisterValueList;
+  for i := 0 to ARegisterList.Count-1 do
+    begin
+    ARegisterValue := ARegisters.EntriesByName[ARegisterList[i].Name];
+    ARegisterValue.ValueObj.SetAsNum(ARegisterList[i].NumValue, SizeOf(ARegisterList[i].NumValue));
+    ARegisterValue.ValueObj.SetAsText(ARegisterList[i].StrValue);
+    ARegisterValue.DataValidity:=ddsValid;
+    end;
+  ARegisters.DataValidity:=ddsValid;
 end;
 
 { TFPWatches }
@@ -162,6 +192,11 @@ end;
 function TFpDebugDebugger.CreateWatches: TWatchesSupplier;
 begin
   Result := TFPWatches.Create(Self);
+end;
+
+function TFpDebugDebugger.CreateRegisters: TRegisterSupplier;
+begin
+  Result := TFPRegisters.Create(Self);
 end;
 
 procedure TFpDebugDebugger.FreeDebugThread;

@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgWinExtra, FpDbgLoader,
-  FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses, DbgIntfBaseTypes;
+  FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses, DbgIntfBaseTypes, fgl;
 
 type
   TFPDState = (dsStop, dsRun, dsPause, dsQuit, dsEvent);
@@ -46,7 +46,37 @@ type
   TFPDMode = (dm32, dm64);
   TOnLog = procedure(AString: string) of object;
 
+  { TDbgRegisterValue }
+
+  TDbgRegisterValue = class
+  private
+    FName: string;
+    FNuwValue: TDBGPtr;
+    FStrValue: string;
+    FValue: TDBGPtr;
+  public
+    constructor Create(AName: String);
+    procedure SetValue(ANumValue: TDBGPtr; AStrValue: string);
+    property Name: string read FName;
+    property NumValue: TDBGPtr read FValue;
+    property StrValue: string read FStrValue;
+  end;
+
+  TGDbgRegisterValueList = specialize TFPGList<TDbgRegisterValue>;
+
+  { TDbgRegisterValueList }
+
+  TDbgRegisterValueList = class(TGDbgRegisterValueList)
+  private
+    function GetDbgRegister(AName: string): TDbgRegisterValue;
+    function GetDbgRegisterAutoCreate(AName: string): TDbgRegisterValue;
+  public
+    property DbgRegisterAutoCreate[AName: string]: TDbgRegisterValue read GetDbgRegisterAutoCreate;
+  end;
+
   TDbgProcess = class;
+
+  { TDbgThread }
 
   TDbgThread = class(TObject)
   private
@@ -54,7 +84,11 @@ type
     FID: Integer;
     FHandle: THandle;
     FSingleStepping: Boolean;
+    function GetRegisterValueList: TDbgRegisterValueList;
   protected
+    FRegisterValueListValid: boolean;
+    FRegisterValueList: TDbgRegisterValueList;
+    procedure LoadRegisterValues; virtual;
   public
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); virtual;
     function ResetInstructionPointerAfterBreakpoint: boolean; virtual; abstract;
@@ -63,6 +97,7 @@ type
     property ID: Integer read FID;
     property Handle: THandle read FHandle;
     property SingleStepping: boolean read FSingleStepping;
+    property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
   end;
   TDbgThreadClass = class of TDbgThread;
 
@@ -188,6 +223,7 @@ type
     property ExitCode: DWord read FExitCode;
     property LastEventProcessIdentifier: THandle read GetLastEventProcessIdentifier;
     property OnLog: TOnLog read FOnLog write FOnLog;
+    property MainThread: TDbgThread read FMainThread;
   end;
   TDbgProcessClass = class of TDbgProcess;
 
@@ -240,6 +276,44 @@ begin
     {$endif darwin}
     end;
   result := GOSDbgClasses;
+end;
+
+{ TDbgRegisterValueList }
+
+function TDbgRegisterValueList.GetDbgRegister(AName: string): TDbgRegisterValue;
+var
+  i: integer;
+begin
+  for i := 0 to Count -1 do
+    if Items[i].Name=AName then
+      begin
+      result := items[i];
+      exit;
+      end;
+  result := nil;
+end;
+
+function TDbgRegisterValueList.GetDbgRegisterAutoCreate(AName: string): TDbgRegisterValue;
+begin
+  result := GetDbgRegister(AName);
+  if not Assigned(result) then
+    begin
+    result := TDbgRegisterValue.Create(AName);
+    add(result);
+    end;
+end;
+
+{ TDbgRegisterValue }
+
+constructor TDbgRegisterValue.Create(AName: String);
+begin
+  FName:=AName;
+end;
+
+procedure TDbgRegisterValue.SetValue(ANumValue: TDBGPtr; AStrValue: string);
+begin
+  FStrValue:=AStrValue;
+  FNuwValue:=ANumValue;
 end;
 
 { TDbgInstance }
@@ -512,11 +586,24 @@ end;
 
 { TDbgThread }
 
+function TDbgThread.GetRegisterValueList: TDbgRegisterValueList;
+begin
+  if not FRegisterValueListValid then
+    LoadRegisterValues;
+  result := FRegisterValueList;
+end;
+
+procedure TDbgThread.LoadRegisterValues;
+begin
+  // Do nothing
+end;
+
 constructor TDbgThread.Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle);
 begin
   FID := AID;
   FHandle := AHandle;
   FProcess := AProcess;
+  FRegisterValueList:=TDbgRegisterValueList.Create;
 
   inherited Create;
 end;
@@ -524,6 +611,7 @@ end;
 destructor TDbgThread.Destroy;
 begin
   FProcess.ThreadDestroyed(Self);
+  FRegisterValueList.Free;
   inherited;
 end;
 
