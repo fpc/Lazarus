@@ -21,12 +21,18 @@ type
   TFpDebugDebugger = class;
   TFpDebugThread = class(TThread)
   private
+    FDebugLoopStoppedEvent: PRTLEvent;
     FFpDebugDebugger: TFpDebugDebugger;
+    FStartDebugLoopEvent: PRTLEvent;
+    FStartSuccesfull: boolean;
     procedure DoDebugLoopFinishedASync({%H-}Data: PtrInt);
   public
     constructor Create(AFpDebugDebugger: TFpDebugDebugger);
     destructor Destroy; override;
     procedure Execute; override;
+    property StartSuccesfull: boolean read FStartSuccesfull;
+    property StartDebugLoopEvent: PRTLEvent read FStartDebugLoopEvent;
+    property DebugLoopStoppedEvent: PRTLEvent read FDebugLoopStoppedEvent;
   end;
 
   { TFpDebugDebugger }
@@ -35,7 +41,7 @@ type
   private
     FDbgController: TDbgController;
     FFpDebugThread: TFpDebugThread;
-    FDebugLoopRunning: boolean;
+    procedure FreeDebugThread;
     procedure FDbgControllerHitBreakpointEvent(var continue: boolean);
     procedure FDbgControllerCreateProcessEvent(var continue: boolean);
     procedure FDbgControllerProcessExitEvent(AExitCode: DWord);
@@ -99,19 +105,38 @@ end;
 
 constructor TFpDebugThread.Create(AFpDebugDebugger: TFpDebugDebugger);
 begin
+  FDebugLoopStoppedEvent := RTLEventCreate;
+  FStartDebugLoopEvent := RTLEventCreate;
   FFpDebugDebugger := AFpDebugDebugger;
   inherited Create(false);
 end;
 
 destructor TFpDebugThread.Destroy;
 begin
+  RTLeventdestroy(FStartDebugLoopEvent);
+  RTLeventdestroy(FDebugLoopStoppedEvent);
   inherited Destroy;
 end;
 
 procedure TFpDebugThread.Execute;
 begin
-  FFpDebugDebugger.FDbgController.ProcessLoop;
-  Application.QueueAsyncCall(@DoDebugLoopFinishedASync, 0);
+  if FFpDebugDebugger.FDbgController.Run then
+    FStartSuccesfull:=true;
+
+  RTLeventSetEvent(FDebugLoopStoppedEvent);
+
+  if FStartSuccesfull then
+    begin
+    repeat
+    RTLeventWaitFor(FStartDebugLoopEvent);
+    RTLeventResetEvent(FStartDebugLoopEvent);
+    if not terminated then
+      begin
+      FFpDebugDebugger.FDbgController.ProcessLoop;
+      Application.QueueAsyncCall(@DoDebugLoopFinishedASync, 0);
+      end;
+    until Terminated;
+    end
 end;
 
 { TFpDebugDebugger }
@@ -120,6 +145,7 @@ procedure TFpDebugDebugger.FDbgControllerProcessExitEvent(AExitCode: DWord);
 begin
   SetExitCode(AExitCode);
   DoDbgEvent(ecProcess, etProcessExit, Format('Process exited with exit-code %d',[AExitCode]));
+  FreeDebugThread;
   SetState(dsStop);
 end;
 
@@ -136,6 +162,15 @@ end;
 function TFpDebugDebugger.CreateWatches: TWatchesSupplier;
 begin
   Result := TFPWatches.Create(Self);
+end;
+
+procedure TFpDebugDebugger.FreeDebugThread;
+begin
+  FFpDebugThread.Terminate;
+  RTLeventSetEvent(FFpDebugThread.StartDebugLoopEvent);
+  FFpDebugThread.WaitFor;
+  FFpDebugThread.Free;
+  FFpDebugThread := nil;
 end;
 
 procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(var continue: boolean);
@@ -185,9 +220,15 @@ begin
       if not assigned(FDbgController.MainProcess) then
         begin
         FDbgController.ExecutableFilename:=FileName;
-        Result := FDbgController.Run;
-        if not Result then
+        FFpDebugThread := TFpDebugThread.Create(Self);
+        RTLeventWaitFor(FFpDebugThread.DebugLoopStoppedEvent);
+        RTLeventResetEvent(FFpDebugThread.DebugLoopStoppedEvent);
+        result := FFpDebugThread.StartSuccesfull;
+        if not result then
+          begin
+          FreeDebugThread;
           Exit;
+          end;
         SetState(dsInit);
         end
       else
@@ -217,17 +258,13 @@ end;
 procedure TFpDebugDebugger.StartDebugLoop;
 begin
   DebugLn('StartDebugLoop');
-  FDebugLoopRunning:=true;
-  FFpDebugThread := TFpDebugThread.Create(Self);
+  RTLeventSetEvent(FFpDebugThread.StartDebugLoopEvent);
 end;
 
 procedure TFpDebugDebugger.DebugLoopFinished;
 var
   Cont: boolean;
 begin
-  FFpDebugThread.WaitFor;
-  FFpDebugThread.Free;
-  FDebugLoopRunning:=false;
   DebugLn('DebugLoopFinished');
 
   FDbgController.SendEvents(Cont);
@@ -252,6 +289,8 @@ end;
 
 destructor TFpDebugDebugger.Destroy;
 begin
+  if assigned(FDbgController) then
+    FreeDebugThread;
   FDbgController.Free;
   inherited Destroy;
 end;
