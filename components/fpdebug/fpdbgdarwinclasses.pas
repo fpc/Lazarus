@@ -413,7 +413,7 @@ begin
       begin
       if not GetThread(act_list^[i], AThread) then
         begin
-        AThread := TDbgDarwinThread.Create(Self, act_list^[i], act_list^[i], nil, nil);
+        AThread := TDbgDarwinThread.Create(Self, act_list^[i], act_list^[i]);
         FThreadMap.Add(act_list^[i], AThread);
         if FMainThread=nil then
           FMainThread := AThread;

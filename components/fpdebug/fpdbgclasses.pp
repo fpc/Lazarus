@@ -53,12 +53,10 @@ type
     FProcess: TDbgProcess;
     FID: Integer;
     FHandle: THandle;
-    FBaseAddr: Pointer;
-    FStartAddr: Pointer;
     FSingleStepping: Boolean;
   protected
   public
-    constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle; const ABase, AStart: Pointer); virtual;
+    constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); virtual;
     function ResetInstructionPointerAfterBreakpoint: boolean; virtual; abstract;
     destructor Destroy; override;
     function SingleStep: Boolean; virtual;
@@ -514,12 +512,10 @@ end;
 
 { TDbgThread }
 
-constructor TDbgThread.Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle; const ABase, AStart: Pointer);
+constructor TDbgThread.Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle);
 begin
   FID := AID;
   FHandle := AHandle;
-  FBaseAddr := ABase;
-  FStartAddr := AStart;
   FProcess := AProcess;
 
   inherited Create;

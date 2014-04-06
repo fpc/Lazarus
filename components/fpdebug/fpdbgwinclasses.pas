@@ -827,7 +827,7 @@ begin
   if DbgInfo.HasInfo
   then FSymInstances.Add(Self);
 
-  FMainThread := OSDbgClasses.DbgThreadClass.Create(Self, ThreadID, AInfo.hThread, AInfo.lpThreadLocalBase, AInfo.lpStartAddress);
+  FMainThread := OSDbgClasses.DbgThreadClass.Create(Self, ThreadID, AInfo.hThread);
   FThreadMap.Add(ThreadID, FMainThread);
 end;
 
@@ -874,7 +874,7 @@ procedure TDbgWinProcess.AddThread(const AID: Integer; const AInfo: TCreateThrea
 var
   Thread: TDbgThread;
 begin
-  Thread := OSDbgClasses.DbgThreadClass.Create(Self, AID, AInfo.hThread, AInfo.lpThreadLocalBase, AInfo.lpStartAddress);
+  Thread := OSDbgClasses.DbgThreadClass.Create(Self, AID, AInfo.hThread);
   FThreadMap.Add(AID, Thread);
 end;
 
