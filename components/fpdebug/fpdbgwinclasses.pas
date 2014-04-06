@@ -767,6 +767,7 @@ begin
       CREATE_THREAD_DEBUG_EVENT: begin
         DumpEvent('CREATE_THREAD_DEBUG_EVENT');
         HandleCreateThread(MDebugEvent);
+        result := deInternalContinue;
       end;
       CREATE_PROCESS_DEBUG_EVENT: begin
         DumpEvent('CREATE_PROCESS_DEBUG_EVENT');
@@ -776,6 +777,7 @@ begin
       EXIT_THREAD_DEBUG_EVENT: begin
         DumpEvent('EXIT_THREAD_DEBUG_EVENT');
         HandleExitThread(MDebugEvent);
+        result := deInternalContinue;
       end;
       EXIT_PROCESS_DEBUG_EVENT: begin
         DumpEvent('EXIT_PROCESS_DEBUG_EVENT');
@@ -790,14 +792,20 @@ begin
       UNLOAD_DLL_DEBUG_EVENT: begin
         DumpEvent('UNLOAD_DLL_DEBUG_EVENT');
         HandleUnloadDll(MDebugEvent);
+        result := deInternalContinue;
       end;
       OUTPUT_DEBUG_STRING_EVENT: begin
         DumpEvent('OUTPUT_DEBUG_STRING_EVENT');
         HandleOutputDebug(MDebugEvent);
+        result := deInternalContinue;
       end;
       RIP_EVENT: begin
         DumpEvent('RIP_EVENT');
         HandleRipEvent(MDebugEvent);
+        result := deInternalContinue;
+      end
+      else begin
+        raise Exception.CreateFmt('Unknown dwDebugEventCode value %d',[MDebugEvent.dwDebugEventCode]);
       end;
     end;
 
