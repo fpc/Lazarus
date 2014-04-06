@@ -56,7 +56,7 @@ const
   );
 
 type
-  TDbgDwarf = class;
+  TFpDwarfInfo = class;
   TDwarfCompilationUnit = class;
 
 {%region Dwarf Header Structures }
@@ -436,7 +436,7 @@ type
     class function HandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; virtual; abstract;
     class function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; virtual; abstract;
     class function CreateContext(AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol;
-                                 ADwarf: TDbgDwarf): TDbgInfoAddressContext; virtual; abstract;
+                                 ADwarf: TFpDwarfInfo): TDbgInfoAddressContext; virtual; abstract;
     class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
                                     AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; virtual; abstract;
   end;
@@ -460,7 +460,7 @@ type
   TDwarfCompilationUnitClass = class of TDwarfCompilationUnit;
   TDwarfCompilationUnit = class
   private
-    FOwner: TDbgDwarf;
+    FOwner: TFpDwarfInfo;
     FDwarfSymbolClassMap: TFpDwarfSymbolClassMapClass;
     FValid: Boolean; // set if the compilationunit has compile unit tag.
   
@@ -531,7 +531,7 @@ type
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: TByteDynArray): Boolean;
 
   public
-    constructor Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); virtual;
+    constructor Create(AOwner: TFpDwarfInfo; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); virtual;
     destructor Destroy; override;
     procedure ScanAllEntries; inline;
     function GetDefinition(AAbbrevPtr: Pointer; out ADefinition: TDwarfAbbrev): Boolean; inline;
@@ -549,7 +549,7 @@ type
     //property AbbrevOffset: QWord read FAbbrevOffset;
     property AddressSize: Byte read FAddressSize;  // the address size of the target in bytes
     property IsDwarf64: Boolean read FIsDwarf64; // Set if the dwarf info in this unit is 64bit
-    property Owner: TDbgDwarf read FOwner;
+    property Owner: TFpDwarfInfo read FOwner;
 
     property DwarfSymbolClassMap: TFpDwarfSymbolClassMapClass read FDwarfSymbolClassMap;
     property FirstScope: TDwarfScopeInfo read FScope;
@@ -562,7 +562,7 @@ type
 
   end;
   
-  { TDbgDwarf }
+  { TFpDwarfInfo }
 
   TDwarfSectionInfo = record
     Section: TDwarfSection;
@@ -572,7 +572,7 @@ type
   end;
   PDwarfSectionInfo = ^TDwarfSectionInfo;
 
-  TDbgDwarf = class(TDbgInfo)
+  TFpDwarfInfo = class(TDbgInfo)
   private
     FCompilationUnits: TList;
     FImageBase: QWord;
@@ -2767,9 +2767,9 @@ begin
 //DebugLn(['#### ',NextAFterHighestLine, ' / ',Count]);
 end;
 
-{ TDbgDwarf }
+{ TFpDwarfInfo }
 
-constructor TDbgDwarf.Create(ALoader: TDbgImageLoader);
+constructor TFpDwarfInfo.Create(ALoader: TDbgImageLoader);
 var
   Section: TDwarfSection;
   p: PDbgImageSection;
@@ -2788,7 +2788,7 @@ begin
   end;
 end;
 
-destructor TDbgDwarf.Destroy;
+destructor TFpDwarfInfo.Destroy;
 var
   n: integer;
 begin
@@ -2798,7 +2798,7 @@ begin
   inherited Destroy;
 end;
 
-function TDbgDwarf.FindContext(AAddress: TDbgPtr): TDbgInfoAddressContext;
+function TFpDwarfInfo.FindContext(AAddress: TDbgPtr): TDbgInfoAddressContext;
 var
   Proc: TDbgDwarfSymbolBase;
 begin
@@ -2811,27 +2811,27 @@ begin
   Proc.ReleaseReference;
 end;
 
-function TDbgDwarf.FindSymbol(AAddress: TDbgPtr): TFpDbgSymbol;
+function TFpDwarfInfo.FindSymbol(AAddress: TDbgPtr): TFpDbgSymbol;
 begin
   Result := FindProcSymbol(AAddress);
 end;
 
-function TDbgDwarf.GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
+function TFpDwarfInfo.GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
 begin
   Result := TDwarfCompilationUnit(FCompilationUnits[Aindex]);
 end;
 
-function TDbgDwarf.GetSections(AIndex: TDwarfSection): TDwarfSectionInfo;
+function TFpDwarfInfo.GetSections(AIndex: TDwarfSection): TDwarfSectionInfo;
 begin
   Result := FSections[AIndex];
 end;
 
-function TDbgDwarf.GetCompilationUnitClass: TDwarfCompilationUnitClass;
+function TFpDwarfInfo.GetCompilationUnitClass: TDwarfCompilationUnitClass;
 begin
   Result := TDwarfCompilationUnit;
 end;
 
-function TDbgDwarf.FindCompilationUnitByOffs(AOffs: QWord): TDwarfCompilationUnit;
+function TFpDwarfInfo.FindCompilationUnitByOffs(AOffs: QWord): TDwarfCompilationUnit;
 var
   l, h, m: Integer;
   p: Pointer;
@@ -2852,7 +2852,7 @@ begin
     Result := nil;
 end;
 
-function TDbgDwarf.FindProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase;
+function TFpDwarfInfo.FindProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase;
 var
   n: Integer;
   CU: TDwarfCompilationUnit;
@@ -2910,7 +2910,7 @@ begin
   end;
 end;
 
-function TDbgDwarf.GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
+function TFpDwarfInfo.GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
 var
   n: Integer;
   CU: TDwarfCompilationUnit;
@@ -2924,7 +2924,7 @@ begin
   Result := 0;
 end;
 
-function TDbgDwarf.GetLineAddressMap(const AFileName: String): PDWarfLineMap;
+function TFpDwarfInfo.GetLineAddressMap(const AFileName: String): PDWarfLineMap;
 var
   n: Integer;
   CU: TDwarfCompilationUnit;
@@ -2939,7 +2939,7 @@ begin
   Result := nil;
 end;
 
-function TDbgDwarf.LoadCompilationUnits: Integer;
+function TFpDwarfInfo.LoadCompilationUnits: Integer;
 var
   p, pe: Pointer;
   CU32: PDwarfCUHeader32 absolute p;
@@ -2986,17 +2986,17 @@ begin
   Result := FCompilationUnits.Count;
 end;
 
-function TDbgDwarf.PointerFromRVA(ARVA: QWord): Pointer;
+function TFpDwarfInfo.PointerFromRVA(ARVA: QWord): Pointer;
 begin
   Result := Pointer(PtrUInt(FImageBase + ARVA));
 end;
 
-function TDbgDwarf.PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
+function TFpDwarfInfo.PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
 begin
   Result := FSections[ASection].RawData + AVA - FImageBase - FSections[ASection].VirtualAddress;
 end;
 
-function TDbgDwarf.CompilationUnitsCount: Integer;
+function TFpDwarfInfo.CompilationUnitsCount: Integer;
 begin
   Result := FCompilationUnits.Count;
 end;
@@ -3414,7 +3414,7 @@ begin
   FAddressMapBuild := True;
 end;
 
-constructor TDwarfCompilationUnit.Create(AOwner: TDbgDwarf; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean);
+constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean);
   procedure FillLineInfo(AData: Pointer);
   var
     LNP32: PDwarfLNPHeader32 absolute AData;

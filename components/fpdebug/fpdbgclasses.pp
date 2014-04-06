@@ -293,8 +293,8 @@ procedure TDbgInstance.LoadInfo;
 begin
   FLoader := InitializeLoader;
   assert(false, 'fpc will not compile this');
-  FDbgInfo := TDbgDwarf.Create(FLoader);
-  TDbgDwarf(FDbgInfo).LoadCompilationUnits;
+  FDbgInfo := TFpDwarfInfo.Create(FLoader);
+  TFpDwarfInfo(FDbgInfo).LoadCompilationUnits;
 end;
 
 function TDbgInstance.RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;

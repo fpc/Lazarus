@@ -68,7 +68,7 @@ type
   private
     FWatchEvalList: TList;
     FImageLoader: TDbgImageLoader;
-    FDwarfInfo: TDbgDwarf;
+    FDwarfInfo: TFpDwarfInfo;
     FPrettyPrinter: TFpPascalPrettyPrinter;
     FMemReader: TFpGDBMIDbgMemReader;
     FMemManager: TFpDbgMemManager;
@@ -624,7 +624,7 @@ begin
 {$ENDIF}
   FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
 
-  FDwarfInfo := TDbgDwarf.Create(FImageLoader);
+  FDwarfInfo := TFpDwarfInfo.Create(FImageLoader);
   FDwarfInfo.MemManager := FMemManager;
   FDwarfInfo.LoadCompilationUnits;
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(SizeOf(Pointer));
@@ -788,7 +788,7 @@ begin
 end;
 
 type
-  TGDBMIDwarfTypeIdentifier = class(TDbgDwarfTypeIdentifier)
+  TGDBMIDwarfTypeIdentifier = class(TFpDwarfSymbolType)
   public
     property InformationEntry;
   end;
