@@ -221,7 +221,7 @@ type
     property NumbersOnly;
     property Action;
     property AutoSelect;
-    property AutoSize default False;
+    property AutoSize default True;
     property Align;
     property Alignment;
     property Anchors;
