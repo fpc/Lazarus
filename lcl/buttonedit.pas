@@ -157,7 +157,6 @@ type
     procedure DoEditExit(Sender: TObject); virtual;
     procedure DoEditTextChange(Sender: TObject); virtual;
 
-
     procedure Loaded; override;
     procedure SetAutoSize(AValue: Boolean); override;
     procedure SetColor(AValue: TColor); override;
@@ -1123,7 +1122,6 @@ begin
   Result := '';
 end;
 
-
 procedure TCustomButtonEdit.SetCharCase(AValue: TEditCharCase);
 begin
   FEdit.CharCase := AValue;
@@ -1192,7 +1190,6 @@ begin
   FEdit.PasswordChar := AValue;
 end;
 
-
 procedure TCustomButtonEdit.SetPopupMenu(AValue: TPopupMenu);
 begin
   FEdit.PopupMenu := AValue;
@@ -1202,7 +1199,6 @@ procedure TCustomButtonEdit.SetText(AValue: TCaption);
 begin
   FEdit.Text := AValue;
 end;
-
 
 function TCustomButtonEdit.CalcButtonVisible: Boolean;
 begin
@@ -1222,19 +1218,16 @@ begin
   CheckButtonVisible;
 end;
 
-
 procedure TCustomButtonEdit.SetGlyph(AValue: TBitmap);
 begin
   FButton.Glyph := AValue;
   Invalidate;
 end;
 
-
 procedure TCustomButtonEdit.SetReadOnly(AValue: Boolean);
 begin
   FEdit.ReadOnly := AValue;
 end;
-
 
 constructor TCustomButtonEdit.Create(AOwner: TComponent);
 var
@@ -1250,7 +1243,6 @@ begin
 
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
-
 
   with FButton do
   begin
