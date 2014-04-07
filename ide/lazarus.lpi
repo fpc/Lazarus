@@ -42,29 +42,26 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="7">
+    <RequiredPackages Count="6">
       <Item1>
-        <PackageName Value="ide"/>
-      </Item1>
-      <Item2>
         <PackageName Value="LCLBase"/>
         <MinVersion Major="1" Release="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LazControls"/>
       </Item2>
       <Item3>
-        <PackageName Value="LazControls"/>
+        <PackageName Value="CodeTools"/>
       </Item3>
       <Item4>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="IDEIntf"/>
       </Item4>
       <Item5>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="LCL"/>
       </Item5>
       <Item6>
-        <PackageName Value="LCL"/>
-      </Item6>
-      <Item7>
         <PackageName Value="SynEdit"/>
-      </Item7>
+      </Item6>
     </RequiredPackages>
     <Units Count="110">
       <Unit0>
