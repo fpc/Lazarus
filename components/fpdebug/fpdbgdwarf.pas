@@ -60,23 +60,26 @@ type
   public
     class function HandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
     class function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
-    class function CreateContext(AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol;
-      ADwarf: TFpDwarfInfo): TDbgInfoAddressContext; override;
+    class function CreateContext(AThreadId, AStackFrame: Integer; AnAddress:
+      TDbgPtr; ASymbol: TFpDbgSymbol; ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
     class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
       AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
   end;
 
   { TFpDwarfInfoAddressContext }
 
-  TFpDwarfInfoAddressContext = class(TDbgInfoAddressContext)
+  TFpDwarfInfoAddressContext = class(TFpDbgInfoContext)
   private
     FSymbol: TFpDbgSymbol;
     FAddress: TDBGPtr;
+    FThreadId, FStackFrame: Integer;
     FDwarf: TFpDwarfInfo;
     FlastResult: TFpDbgValue;
   protected
     function GetSymbolAtAddress: TFpDbgSymbol; override;
     function GetAddress: TDbgPtr; override;
+    function GetThreadId: Integer; override;
+    function GetStackFrame: Integer; override;
     function GetSizeOfAddress: Integer; override;
     function GetMemManager: TFpDbgMemManager; override;
 
@@ -96,7 +99,7 @@ type
     function FindLocalSymbol(const AName: String; PNameUpper, PNameLower: PChar;
       InfoEntry: TDwarfInformationEntry): TFpDbgValue; virtual;
   public
-    constructor Create(AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol; ADwarf: TFpDwarfInfo);
+    constructor Create(AThreadId, AStackFrame: Integer; AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol; ADwarf: TFpDwarfInfo);
     destructor Destroy; override;
     function FindSymbol(const AName: String): TFpDbgValue; override;
   end;
@@ -104,8 +107,6 @@ type
   TFpDwarfSymbol = class;
   TFpDwarfSymbolType = class;
   TFpDwarfSymbolValue = class;
-  TFpDwarfSymbolTypeStructure = class;
-  //TDbgDwarfIdentifierClass = class of TDbgDwarfIdentifier;
   TFpDwarfSymbolValueClass = class of TFpDwarfSymbolValue;
   TFpDwarfSymbolTypeClass = class of TFpDwarfSymbolType;
 
@@ -115,9 +116,9 @@ type
 
   TFpDwarfValueBase = class(TFpDbgValue)
   private
-    FContext: TDbgInfoAddressContext;
+    FContext: TFpDbgInfoContext;
   public
-    property Context: TDbgInfoAddressContext read FContext;
+    property Context: TFpDbgInfoContext read FContext;
   end;
 
   { TFpDwarfValueTypeDefinition }
@@ -918,10 +919,10 @@ begin
   end;
 end;
 
-class function TFpDwarfDefaultSymbolClassMap.CreateContext(AnAddress: TDbgPtr;
-  ASymbol: TFpDbgSymbol; ADwarf: TFpDwarfInfo): TDbgInfoAddressContext;
+class function TFpDwarfDefaultSymbolClassMap.CreateContext(AThreadId, AStackFrame: Integer;
+  AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol; ADwarf: TFpDwarfInfo): TFpDbgInfoContext;
 begin
-  Result := TFpDwarfInfoAddressContext.Create(AnAddress, ASymbol, ADwarf);
+  Result := TFpDwarfInfoAddressContext.Create(AThreadId, AStackFrame, AnAddress, ASymbol, ADwarf);
 end;
 
 class function TFpDwarfDefaultSymbolClassMap.CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
@@ -940,6 +941,16 @@ end;
 function TFpDwarfInfoAddressContext.GetAddress: TDbgPtr;
 begin
   Result := FAddress;
+end;
+
+function TFpDwarfInfoAddressContext.GetThreadId: Integer;
+begin
+  Result := FThreadId;
+end;
+
+function TFpDwarfInfoAddressContext.GetStackFrame: Integer;
+begin
+  Result := FStackFrame;
 end;
 
 function TFpDwarfInfoAddressContext.GetSizeOfAddress: Integer;
@@ -1106,12 +1117,14 @@ begin
   end;
 end;
 
-constructor TFpDwarfInfoAddressContext.Create(AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol;
-  ADwarf: TFpDwarfInfo);
+constructor TFpDwarfInfoAddressContext.Create(AThreadId, AStackFrame: Integer;
+  AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol; ADwarf: TFpDwarfInfo);
 begin
   inherited Create;
   AddReference;
   FAddress := AnAddress;
+  FThreadId := AThreadId;
+  FStackFrame := AStackFrame;
   FDwarf   := ADwarf;
   FSymbol  := ASymbol;
   FSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'Context to Symbol'){$ENDIF};
@@ -2808,7 +2821,8 @@ begin
     //exit;
   end;
 
-  LocationParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), CompilationUnit, AValueObj.MemManager);
+  LocationParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), CompilationUnit,
+    AValueObj.MemManager, AValueObj.Context);
   InitLocationParser(LocationParser, AValueObj, AnObjectDataAddress);
   LocationParser.Evaluate;
 
@@ -3079,8 +3093,8 @@ begin
   if (ti = nil) or not (ti.SymbolType = stType) then exit;
 
   FValueObject := TFpDwarfSymbolType(ti).GetTypedValueObject(False);
-  {$IFDEF WITH_REFCOUNT_DEBUG}FValueObject.DbgRenameReference(@FValueObject, ClassName+'.FValueObject');{$ENDIF}
   if FValueObject <> nil then begin
+    {$IFDEF WITH_REFCOUNT_DEBUG}FValueObject.DbgRenameReference(@FValueObject, ClassName+'.FValueObject');{$ENDIF}
     FValueObject.MakePlainRefToCirclular;
     FValueObject.SetValueSymbol(self);
   end;
@@ -4437,7 +4451,8 @@ begin
       exit;
     end;
 
-    FFrameBaseParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), CompilationUnit, ASender.MemManager);
+    FFrameBaseParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), CompilationUnit,
+      ASender.MemManager, ASender.Context);
     FFrameBaseParser.Evaluate;
   end;
 

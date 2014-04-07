@@ -424,21 +424,17 @@ type
     function GetMemberCount: Integer; override;
   end;
 
-  { TDbgInfoAddressContext }
+  { TFpDbgInfoContext }
 
-  TDbgInfoAddressContext = class(TRefCountedObject)
+  TFpDbgInfoContext = class(TFpDbgAddressContext)
   protected
-    function GetAddress: TDbgPtr; virtual; abstract;
     function GetSymbolAtAddress: TFpDbgSymbol; virtual;
     function GetMemManager: TFpDbgMemManager; virtual;
-    function GetSizeOfAddress: Integer; virtual;
   public
-    property Address: TDbgPtr read GetAddress;
     property SymbolAtAddress: TFpDbgSymbol read GetSymbolAtAddress;
     // search this, and all parent context
     function FindSymbol(const {%H-}AName: String): TFpDbgValue; virtual;
     property MemManager: TFpDbgMemManager read GetMemManager;
-    property SizeOfAddress: Integer read GetSizeOfAddress;
   end;
 
   { TDbgInfo }
@@ -450,7 +446,13 @@ type
     procedure SetHasInfo;
   public
     constructor Create({%H-}ALoader: TDbgImageLoader); virtual;
-    function FindContext({%H-}AAddress: TDbgPtr): TDbgInfoAddressContext; virtual;
+    (* Context should be searched by Thread, and StackFrame. The Address can be
+       derived from this.
+       However a different Address may be froced.
+       TODO: for now address may be needed, as stack decoding is not done yet
+    *)
+    function FindContext(AThreadId, AStackFrame: Integer; {%H-}AAddress: TDbgPtr = 0): TFpDbgInfoContext; virtual;
+    function FindContext({%H-}AAddress: TDbgPtr): TFpDbgInfoContext; virtual; deprecated 'use FindContextFindContext(thread,stack,address)';
     function FindSymbol(const {%H-}AName: String): TFpDbgSymbol; virtual; deprecated;
     function FindSymbol({%H-}AAddress: TDbgPtr): TFpDbgSymbol; virtual; deprecated;
     property HasInfo: Boolean read FHasInfo;
@@ -776,22 +778,17 @@ end;
 
 { TDbgInfoAddressContext }
 
-function TDbgInfoAddressContext.GetMemManager: TFpDbgMemManager;
+function TFpDbgInfoContext.GetMemManager: TFpDbgMemManager;
 begin
   Result := nil;
 end;
 
-function TDbgInfoAddressContext.GetSizeOfAddress: Integer;
-begin
-  Result := -1;
-end;
-
-function TDbgInfoAddressContext.GetSymbolAtAddress: TFpDbgSymbol;
+function TFpDbgInfoContext.GetSymbolAtAddress: TFpDbgSymbol;
 begin
   Result := nil;
 end;
 
-function TDbgInfoAddressContext.FindSymbol(const AName: String): TFpDbgValue;
+function TFpDbgInfoContext.FindSymbol(const AName: String): TFpDbgValue;
 begin
   Result := nil;
 end;
@@ -1267,7 +1264,13 @@ begin
   inherited Create;
 end;
 
-function TDbgInfo.FindContext(AAddress: TDbgPtr): TDbgInfoAddressContext;
+function TDbgInfo.FindContext(AThreadId, AStackFrame: Integer;
+  AAddress: TDbgPtr): TFpDbgInfoContext;
+begin
+  Result := nil;;
+end;
+
+function TDbgInfo.FindContext(AAddress: TDbgPtr): TFpDbgInfoContext;
 begin
   Result := nil;
 end;

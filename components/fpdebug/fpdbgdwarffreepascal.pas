@@ -15,8 +15,8 @@ type
   public
     class function HandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
     //class function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
-    class function CreateContext(AnAddress: TDBGPtr; ASymbol: TFpDbgSymbol;
-      ADwarf: TFpDwarfInfo): TDbgInfoAddressContext; override;
+    class function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpDbgSymbol;
+      ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
     //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
     //  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
   end;
@@ -42,10 +42,10 @@ begin
   Result := pos('free pascal', s) > 0;
 end;
 
-class function TFpDwarfFreePascalSymbolClassMap.CreateContext(AnAddress: TDbgPtr;
-  ASymbol: TFpDbgSymbol; ADwarf: TFpDwarfInfo): TDbgInfoAddressContext;
+class function TFpDwarfFreePascalSymbolClassMap.CreateContext(AThreadId, AStackFrame: Integer;
+  AnAddress: TDBGPtr; ASymbol: TFpDbgSymbol; ADwarf: TFpDwarfInfo): TFpDbgInfoContext;
 begin
-  Result := TFpDwarfFreePascalAddressContext.Create(AnAddress, ASymbol, ADwarf);
+  Result := TFpDwarfFreePascalAddressContext.Create(AThreadId, AStackFrame, AnAddress, ASymbol, ADwarf);
 end;
 
 { TFpDwarfFreePascalAddressContext }

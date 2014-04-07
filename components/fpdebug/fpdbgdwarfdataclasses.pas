@@ -435,8 +435,8 @@ type
   public
     class function HandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; virtual; abstract;
     class function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; virtual; abstract;
-    class function CreateContext(AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol;
-                                 ADwarf: TFpDwarfInfo): TDbgInfoAddressContext; virtual; abstract;
+    class function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol;
+                                 ADwarf: TFpDwarfInfo): TFpDbgInfoContext; virtual; abstract;
     class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
                                     AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; virtual; abstract;
   end;
@@ -587,7 +587,8 @@ type
   public
     constructor Create(ALoader: TDbgImageLoader); override;
     destructor Destroy; override;
-    function FindContext(AAddress: TDbgPtr): TDbgInfoAddressContext; override;
+    function FindContext(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgInfoContext; override;
+    function FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; override;
     function FindSymbol(AAddress: TDbgPtr): TFpDbgSymbol; override;
     //function FindSymbol(const AName: String): TDbgSymbol; override;
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr; override;
@@ -641,6 +642,7 @@ type
 
   TDwarfLocationExpression = class
   private
+    FContext: TFpDbgAddressContext;
     FFrameBase: TDbgPtr;
     FLastError: TFpError;
     FOnFrameBaseNeeded: TNotifyEvent;
@@ -652,7 +654,7 @@ type
   public
   //TODO: caller keeps data, and determines livetime of data
     constructor Create(AExpressionData: Pointer; AMaxCount: Integer; ACU: TDwarfCompilationUnit;
-      AMemManager: TFpDbgMemManager);
+      AMemManager: TFpDbgMemManager; AContext: TFpDbgAddressContext);
     procedure Evaluate;
     function  ResultKind: TDwarfLocationStackEntryKind;
     function  ResultData: TDbgPtr;
@@ -661,6 +663,7 @@ type
     property  OnFrameBaseNeeded: TNotifyEvent read FOnFrameBaseNeeded write FOnFrameBaseNeeded;
     property LastError: TFpError read FLastError;
     property MemManager: TFpDbgMemManager read FMemManager;
+    property Context: TFpDbgAddressContext read FContext write FContext;
   end;
 
 function ULEB128toOrdinal(var p: PByte): QWord;
@@ -1713,12 +1716,14 @@ end;
 { TDwarfLocationExpression }
 
 constructor TDwarfLocationExpression.Create(AExpressionData: Pointer; AMaxCount: Integer;
-  ACU: TDwarfCompilationUnit; AMemManager: TFpDbgMemManager);
+  ACU: TDwarfCompilationUnit; AMemManager: TFpDbgMemManager; AContext: TFpDbgAddressContext);
 begin
   FStack.Clear;
   FCU := ACU;
   FData := AExpressionData;
-  FMaxData := FData + AMaxCount;FMemManager := AMemManager;
+  FMaxData := FData + AMaxCount;
+  FMemManager := AMemManager;
+  FContext := AContext;
 end;
 
 procedure TDwarfLocationExpression.Evaluate;
@@ -1758,7 +1763,7 @@ var
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
-    Result := FMemManager.ReadAddress(AnAddress, ASize, AValue);
+    Result := FMemManager.ReadAddress(AnAddress, ASize, AValue, FContext);
     if not Result then
       SetError;
   end;
@@ -1767,7 +1772,7 @@ var
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
-    AValue := FMemManager.ReadAddressEx(AnAddress, AnAddrSpace, ASize);
+    AValue := FMemManager.ReadAddressEx(AnAddress, AnAddrSpace, ASize, FContext);
     Result := IsValidLoc(AValue);
     if not Result then
       SetError;
@@ -1805,7 +1810,6 @@ var
   Entry, Entry2: TDwarfLocationStackEntry;
 begin
   AddrSize := FCU.FAddressSize;
-  FMemManager := FCU.FOwner.FMemManager;
   FMemManager.ClearLastError;
   FLastError := NoError;
   CurData := FData;
@@ -1855,14 +1859,14 @@ begin
       DW_OP_lit0..DW_OP_lit31: FStack.Push(CurInstr^-DW_OP_lit0, lseValue);
 
       DW_OP_reg0..DW_OP_reg31: begin
-          if not FMemManager.ReadRegister(CurInstr^-DW_OP_reg0, NewValue) then begin
+          if not FMemManager.ReadRegister(CurInstr^-DW_OP_reg0, NewValue, FContext) then begin
             SetError;
             exit;
           end;
           FStack.Push(NewValue, lseRegister);
         end;
       DW_OP_regx: begin
-          if not FMemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue) then begin
+          if not FMemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue, FContext) then begin
             SetError;
             exit;
           end;
@@ -1870,7 +1874,7 @@ begin
         end;
 
       DW_OP_breg0..DW_OP_breg31: begin
-          if not FMemManager.ReadRegister(CurInstr^-DW_OP_breg0, NewValue) then begin
+          if not FMemManager.ReadRegister(CurInstr^-DW_OP_breg0, NewValue, FContext) then begin
             SetError;
             exit;
           end;
@@ -1879,7 +1883,7 @@ begin
           {$POP}
         end;
       DW_OP_bregx: begin
-          if not FMemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue) then begin
+          if not FMemManager.ReadRegister(ULEB128toOrdinal(CurData), NewValue, FContext) then begin
             SetError;
             exit;
           end;
@@ -2798,7 +2802,8 @@ begin
   inherited Destroy;
 end;
 
-function TFpDwarfInfo.FindContext(AAddress: TDbgPtr): TDbgInfoAddressContext;
+function TFpDwarfInfo.FindContext(AThreadId, AStackFrame: Integer;
+  AAddress: TDbgPtr): TFpDbgInfoContext;
 var
   Proc: TDbgDwarfSymbolBase;
 begin
@@ -2807,8 +2812,14 @@ begin
   if Proc = nil then
     exit;
 
-  Result := Proc.CompilationUnit.DwarfSymbolClassMap.CreateContext(AAddress, Proc, Self);
+  Result := Proc.CompilationUnit.DwarfSymbolClassMap.CreateContext
+    (AThreadId, AStackFrame, AAddress, Proc, Self);
   Proc.ReleaseReference;
+end;
+
+function TFpDwarfInfo.FindContext(AAddress: TDbgPtr): TFpDbgInfoContext;
+begin
+  FindContext(1, 0, AAddress);
 end;
 
 function TFpDwarfInfo.FindSymbol(AAddress: TDbgPtr): TFpDbgSymbol;

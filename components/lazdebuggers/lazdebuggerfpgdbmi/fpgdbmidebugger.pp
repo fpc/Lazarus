@@ -35,13 +35,13 @@ type
     FCmd: TGDBMIDebuggerCommandMemReader;
   protected
     // TODO: needs to be handled by memory manager
-    FThreadId, FStackFrame: Integer;
+    //FThreadId, FStackFrame: Integer;
   public
     constructor Create(ADebugger: TFpGDBMIDebugger);
     destructor Destroy; override;
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadMemoryEx({%H-}AnAddress, {%H-}AnAddressSpace:{%H-} TDbgPtr; ASize: {%H-}Cardinal; ADest: Pointer): Boolean; override;
-    function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean; override;
+    function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean; override;
     function RegisterSize({%H-}ARegNum: Cardinal): Integer; override;
   end;
 
@@ -74,7 +74,7 @@ type
     FMemManager: TFpDbgMemManager;
     // cache last context
     FlastStackFrame, FLastThread: Integer;
-    FLastContext: array [0..MAX_CTX_CACHE-1] of TDbgInfoAddressContext;
+    FLastContext: array [0..MAX_CTX_CACHE-1] of TFpDbgInfoContext;
   protected
     function CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; override;
     function CreateLineInfo: TDBGLineInfo; override;
@@ -88,7 +88,7 @@ type
 
     procedure GetCurrentContext(out AThreadId, AStackFrame: Integer);
     function  GetLocationForContext(AThreadId, AStackFrame: Integer): TDBGPtr;
-    function  GetInfoContextForContext(AThreadId, AStackFrame: Integer): TDbgInfoAddressContext;
+    function  GetInfoContextForContext(AThreadId, AStackFrame: Integer): TFpDbgInfoContext;
     property CurrentCommand;
     property TargetPID;
   protected
@@ -320,8 +320,8 @@ begin
   Result := False;
 end;
 
-function TFpGDBMIDbgMemReader.ReadRegister(ARegNum: Cardinal; out
-  AValue: TDbgPtr): Boolean;
+function TFpGDBMIDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
+  AContext: TFpDbgAddressContext): Boolean;
 var
   rname: String;
   v: String;
@@ -367,7 +367,7 @@ begin
       exit;
   end;
   {$ENDIF}
-  Reg := FDebugger.Registers.CurrentRegistersList[FThreadId, FStackFrame];
+  Reg := FDebugger.Registers.CurrentRegistersList[AContext.ThreadId, AContext.StackFrame];
   for i := 0 to Reg.Count - 1 do
     if UpperCase(Reg[i].Name) = rname then
       begin
@@ -750,9 +750,10 @@ begin
 end;
 
 function TFpGDBMIDebugger.GetInfoContextForContext(AThreadId,
-  AStackFrame: Integer): TDbgInfoAddressContext;
+  AStackFrame: Integer): TFpDbgInfoContext;
 var
   Addr: TDBGPtr;
+  i: Integer;
 begin
   Result := nil;
   if FDwarfInfo = nil then
@@ -769,17 +770,20 @@ begin
     exit;
   end;
 
-  if (AStackFrame >= FlastStackFrame) and
-     (AStackFrame - FlastStackFrame < MAX_CTX_CACHE) and
-     (FLastContext[AStackFrame - FlastStackFrame] <> nil) and
-     (FLastContext[AStackFrame - FlastStackFrame].Address = Addr)
+  i := AStackFrame - FlastStackFrame;
+  if (i >= 0) and
+     (i < MAX_CTX_CACHE) and
+     (FLastContext[i] <> nil) and
+     (FLastContext[i].Address = Addr) and
+     (FLastContext[i].ThreadId = AThreadId) and
+     (FLastContext[i].StackFrame = AStackFrame)
   then begin
     Result := FLastContext[AStackFrame - FlastStackFrame];
     exit;
   end;
 
   DebugLn(['* FDwarfInfo.FindContext ', dbgs(Addr)]);
-  Result := FDwarfInfo.FindContext(Addr);
+  Result := FDwarfInfo.FindContext(AThreadId, AStackFrame, Addr);
 
   FLastThread := AThreadId;
   FlastStackFrame := AStackFrame;
@@ -802,7 +806,7 @@ function TFpGDBMIDebugger.EvaluateExpression(AWatchValue: TWatchValue;
   AExpression: String; var AResText: String; out ATypeInfo: TDBGType;
   EvalFlags: TDBGEvaluateFlags): Boolean;
 var
-  Ctx: TDbgInfoAddressContext;
+  Ctx: TFpDbgInfoContext;
   PasExpr: TFpPascalExpression;
   ResValue: TFpDbgValue;
 
@@ -982,12 +986,12 @@ begin
   if AWatchValue <> nil then begin
     EvalFlags := AWatchValue.EvaluateFlags;
     AExpression := AWatchValue.Expression;
-    FMemReader.FThreadId := AWatchValue.ThreadId;
-    FMemReader.FStackFrame := AWatchValue.StackFrame;
-  end
-  else begin
-    FMemReader.FThreadId := CurrentThreadId;
-    FMemReader.FStackFrame := CurrentStackFrame;
+    //FMemReader.FThreadId := AWatchValue.ThreadId;
+    //FMemReader.FStackFrame := AWatchValue.StackFrame;
+  //end
+  //else begin
+  //  FMemReader.FThreadId := CurrentThreadId;
+  //  FMemReader.FStackFrame := CurrentStackFrame;
   end;
 
   if AWatchValue <> nil then
@@ -995,6 +999,8 @@ begin
   else
     Ctx := GetInfoContextForContext(CurrentThreadId, CurrentStackFrame);
   if Ctx = nil then exit;
+
+  FMemManager.DefaultContext := Ctx;
   FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
 
   PasExpr := TFpPascalExpression.Create(AExpression, Ctx);
@@ -1063,6 +1069,7 @@ DebugLn(ErrorHandler.ErrorAsString(PasExpr.Error));
 
   finally
     PasExpr.Free;
+    FMemManager.DefaultContext := nil;
   end;
 end;
 

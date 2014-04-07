@@ -19,9 +19,9 @@ type
 
   TTestTypeInfo = class(TTestCase)
   protected
-    FDwarfInfo: TDbgDwarf;
+    FDwarfInfo: TFpDwarfInfo;
     FCurrentTestName: String;
-    FCurrentContext: TDbgInfoAddressContext;
+    FCurrentContext: TFpDbgInfoContext;
     FExpression: TFpPascalExpression;
     FImageLoader: TTestDummyImageLoader;
     FMemReader: TTestMemReader;
@@ -322,7 +322,7 @@ begin
   FImageLoader := ALoaderClass.Create;
   FMemReader := TTestMemReader.Create;
   FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
-  FDwarfInfo := TDbgDwarf.Create(FImageLoader);
+  FDwarfInfo := TFpDwarfInfo.Create(FImageLoader);
   FDwarfInfo.MemManager := FMemManager;
   FDwarfInfo.LoadCompilationUnits;
 end;

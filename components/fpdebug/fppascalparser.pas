@@ -50,7 +50,7 @@ type
   TFpPascalExpression = class
   private
     FError: TFpError;
-    FContext: TDbgInfoAddressContext;
+    FContext: TFpDbgInfoContext;
     FTextExpression: String;
     FExpressionPart: TFpPascalExpressionPart;
     FValid: Boolean;
@@ -62,9 +62,9 @@ type
   protected
     function GetDbgSymbolForIdentifier({%H-}AnIdent: String): TFpDbgValue;
     property ExpressionPart: TFpPascalExpressionPart read FExpressionPart;
-    property Context: TDbgInfoAddressContext read FContext;
+    property Context: TFpDbgInfoContext read FContext;
   public
-    constructor Create(ATextExpression: String; AContext: TDbgInfoAddressContext);
+    constructor Create(ATextExpression: String; AContext: TFpDbgInfoContext);
     destructor Destroy; override;
     function DebugDump(AWithResults: Boolean = False): String;
     property Error: TFpError read FError;
@@ -399,13 +399,13 @@ type
   private
     FPointerLevels: Integer;
     FPointedTo: TFpDbgSymbol;
-    FContext: TDbgInfoAddressContext;
+    FContext: TFpDbgInfoContext;
   protected
     // NameNeeded //  "^TPointedTo"
     procedure TypeInfoNeeded; override;
   public
-    constructor Create(const APointedTo: TFpDbgSymbol; AContext: TDbgInfoAddressContext; APointerLevels: Integer);
-    constructor Create(const APointedTo: TFpDbgSymbol; AContext: TDbgInfoAddressContext);
+    constructor Create(const APointedTo: TFpDbgSymbol; AContext: TFpDbgInfoContext; APointerLevels: Integer);
+    constructor Create(const APointedTo: TFpDbgSymbol; AContext: TFpDbgInfoContext);
     destructor Destroy; override;
     function TypeCastValue(AValue: TFpDbgValue): TFpDbgValue; override;
   end;
@@ -432,12 +432,12 @@ type
 
   TFpPasParserValue = class(TFpDbgValue)
   private
-    FContext: TDbgInfoAddressContext;
+    FContext: TFpDbgInfoContext;
   protected
     function DebugText(AIndent: String): String; virtual;
   public
-    constructor Create(AContext: TDbgInfoAddressContext);
-    property Context: TDbgInfoAddressContext read FContext;
+    constructor Create(AContext: TFpDbgInfoContext);
+    property Context: TFpDbgInfoContext read FContext;
   end;
 
   { TFpPasParserValueCastToPointer
@@ -459,7 +459,7 @@ type
     function GetDataAddress: TFpDbgMemLocation; override;
     function GetMember(AIndex: Int64): TFpDbgValue; override;
   public
-    constructor Create(AValue: TFpDbgValue; ATypeInfo: TFpDbgSymbol; AContext: TDbgInfoAddressContext);
+    constructor Create(AValue: TFpDbgValue; ATypeInfo: TFpDbgSymbol; AContext: TFpDbgInfoContext);
     destructor Destroy; override;
   end;
 
@@ -474,7 +474,7 @@ type
   protected
     function GetDbgSymbol: TFpDbgSymbol; override; // returns a TPasParserSymbolPointer
   public
-    constructor Create(ATypeInfo: TFpDbgSymbol; AContext: TDbgInfoAddressContext);
+    constructor Create(ATypeInfo: TFpDbgSymbol; AContext: TFpDbgInfoContext);
     destructor Destroy; override;
     procedure IncRefLevel;
     function GetTypeCastedValue(ADataVal: TFpDbgValue): TFpDbgValue; override;
@@ -499,8 +499,8 @@ type
     function GetAsCardinal: QWord; override; // reads men
     function GetTypeInfo: TFpDbgSymbol; override; // TODO: Cardinal? Why? // TODO: does not handle AOffset
   public
-    constructor Create(AValue: TFpDbgValue; AContext: TDbgInfoAddressContext);
-    constructor Create(AValue: TFpDbgValue; AContext: TDbgInfoAddressContext; AOffset: Int64);
+    constructor Create(AValue: TFpDbgValue; AContext: TFpDbgInfoContext);
+    constructor Create(AValue: TFpDbgValue; AContext: TFpDbgInfoContext; AOffset: Int64);
     destructor Destroy; override;
   end;
 
@@ -523,7 +523,7 @@ type
     function GetDataAddress: TFpDbgMemLocation; override;
     function GetMember(AIndex: Int64): TFpDbgValue; override;
   public
-    constructor Create(AValue: TFpDbgValue; AContext: TDbgInfoAddressContext);
+    constructor Create(AValue: TFpDbgValue; AContext: TFpDbgInfoContext);
     destructor Destroy; override;
     property PointedToValue: TFpDbgValue read GetPointedToValue;
   end;
@@ -551,7 +551,7 @@ begin
   Result := AIndent + DbgSName(Self)  + '  DbsSym='+DbgSName(DbgSymbol)+' Type='+DbgSName(TypeInfo) + LineEnding;
 end;
 
-constructor TFpPasParserValue.Create(AContext: TDbgInfoAddressContext);
+constructor TFpPasParserValue.Create(AContext: TFpDbgInfoContext);
 begin
   FContext := AContext;
   inherited Create;
@@ -638,7 +638,7 @@ begin
 end;
 
 constructor TFpPasParserValueCastToPointer.Create(AValue: TFpDbgValue;
-  ATypeInfo: TFpDbgSymbol; AContext: TDbgInfoAddressContext);
+  ATypeInfo: TFpDbgSymbol; AContext: TFpDbgInfoContext);
 begin
   inherited Create(AContext);
   FValue := AValue;
@@ -676,7 +676,7 @@ begin
 end;
 
 constructor TFpPasParserValueMakeReftype.Create(ATypeInfo: TFpDbgSymbol;
-  AContext: TDbgInfoAddressContext);
+  AContext: TFpDbgInfoContext);
 begin
   inherited Create(AContext);
   FSourceTypeSymbol := ATypeInfo;
@@ -755,7 +755,7 @@ function TFpPasParserValueDerefPointer.GetAsCardinal: QWord;
 var
   m: TFpDbgMemManager;
   Addr: TFpDbgMemLocation;
-  Ctx: TDbgInfoAddressContext;
+  Ctx: TFpDbgInfoContext;
   AddrSize: Integer;
 begin
   Result := FCardinal;
@@ -790,13 +790,13 @@ begin
 end;
 
 constructor TFpPasParserValueDerefPointer.Create(AValue: TFpDbgValue;
-  AContext: TDbgInfoAddressContext);
+  AContext: TFpDbgInfoContext);
 begin
   Create(AValue, AContext, 0);
 end;
 
 constructor TFpPasParserValueDerefPointer.Create(AValue: TFpDbgValue;
-  AContext: TDbgInfoAddressContext; AOffset: Int64);
+  AContext: TFpDbgInfoContext; AOffset: Int64);
 begin
   inherited Create(AContext);
   FValue := AValue;
@@ -897,7 +897,7 @@ begin
 end;
 
 constructor TFpPasParserValueAddressOf.Create(AValue: TFpDbgValue;
-  AContext: TDbgInfoAddressContext);
+  AContext: TFpDbgInfoContext);
 begin
   inherited Create(AContext);
   FValue := AValue;
@@ -952,7 +952,7 @@ begin
 end;
 
 constructor TPasParserSymbolPointer.Create(const APointedTo: TFpDbgSymbol;
-  AContext: TDbgInfoAddressContext; APointerLevels: Integer);
+  AContext: TFpDbgInfoContext; APointerLevels: Integer);
 begin
   inherited Create('');
   FContext := AContext;
@@ -966,7 +966,7 @@ begin
 end;
 
 constructor TPasParserSymbolPointer.Create(const APointedTo: TFpDbgSymbol;
-  AContext: TDbgInfoAddressContext);
+  AContext: TFpDbgInfoContext);
 begin
   Create(APointedTo, AContext, 1);
 end;
@@ -1613,7 +1613,7 @@ begin
 end;
 
 constructor TFpPascalExpression.Create(ATextExpression: String;
-  AContext: TDbgInfoAddressContext);
+  AContext: TFpDbgInfoContext);
 begin
   FContext := AContext;
   FTextExpression := ATextExpression;
