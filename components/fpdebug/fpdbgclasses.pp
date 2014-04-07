@@ -536,6 +536,7 @@ function TDbgProcess.GetThread(const AID: Integer; out AThread: TDbgThread): Boo
 var
   Thread: TDbgThread;
 begin
+  AThread := nil;
   Result := FThreadMap.GetData(AID, Thread) and (Thread <> nil);
   if Result
   then AThread := Thread
