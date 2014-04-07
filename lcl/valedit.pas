@@ -128,6 +128,7 @@ type
     FOnValidate: TOnValidateEvent;
     FRowTextOnEnter: TKeyValuePair;
     FLastEditedRow: Integer;
+    FUpdatingKeyOptions: Boolean;
     function GetFixedRows: Integer;
     function GetItemProp(const AKeyOrIndex: Variant): TItemProp;
     procedure SetFixedRows(AValue: Integer);
@@ -139,10 +140,10 @@ type
     function GetValue(const Key: string): string;
     procedure SetDisplayOptions(const AValue: TDisplayOptions);
     procedure SetDropDownRows(const AValue: Integer);
-    procedure SetKeyOptions({const} AValue: TKeyOptions);
+    procedure SetKeyOptions(AValue: TKeyOptions);
     procedure SetKey(Index: Integer; const Value: string);
     procedure SetValue(const Key: string; AValue: string);
-    procedure SetOptions({const} AValue: TGridOptions);
+    procedure SetOptions(AValue: TGridOptions);
     procedure SetStrings(const AValue: TValueListStrings);
     procedure SetTitleCaptions(const AValue: TStrings);
   protected
@@ -1004,26 +1005,33 @@ begin
   // ToDo: If edit list for inplace editing is implemented, set its handler, too.
 end;
 
-procedure TValueListEditor.SetKeyOptions({const} AValue: TKeyOptions);
+procedure TValueListEditor.SetKeyOptions(AValue: TKeyOptions);
 begin
+  FUpdatingKeyOptions := True;
   // KeyAdd requires KeyEdit, KeyAdd oddly enough does not according to Delphi specs
-  if (KeyAdd in AValue) and not (KeyEdit in AValue) then AValue := AValue - [KeyAdd];
+  if KeyAdd in AValue then
+    Include(AValue, keyEdit);
   FKeyOptions := AValue;
   if (KeyAdd in FKeyOptions) then
     Options := Options + [goAutoAddRows]
   else
     Options := Options - [goAutoAddRows];
+  FUpdatingKeyOptions := False;
 end;
 
-
-procedure TValueListEditor.SetOptions({const} AValue: TGridOptions);
+procedure TValueListEditor.SetOptions(AValue: TGridOptions);
 begin
   //cannot allow goColMoving
-  if (goColMoving in AValue) then AValue := AValue - [goColMoving];
-  if (goAutoAddRows in AValue) and not (KeyAdd in KeyOptions) then AValue := AValue - [goAutoAddRows];
+  if goColMoving in AValue then
+    Exclude(AValue, goColMoving);
   //temporarily disable this, it causes crashes
-  if (goAutoAddRowsSkipContentCheck in AValue) then AValue := AValue - [goAutoAddRowsSkipContentCheck];
+  if (goAutoAddRowsSkipContentCheck in AValue) then
+    Exclude(AValue, goAutoAddRowsSkipContentCheck);
   inherited Options := AValue;
+  // Enable also the required KeyOptions for goAutoAddRows
+  if not FUpdatingKeyOptions and not (csLoading in ComponentState)
+  and (goAutoAddRows in AValue) then
+    KeyOptions := KeyOptions + [keyEdit, keyAdd];
 end;
 
 procedure TValueListEditor.SetStrings(const AValue: TValueListStrings);
