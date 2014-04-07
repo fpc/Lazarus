@@ -638,6 +638,7 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
 
     if AThread = nil then Exit;
 
+{$PUSH}{$R-}
     {$ifdef cpui386}
     with GCurrentContext^ do DebugLn(Format('DS: 0x%x, ES: 0x%x, FS: 0x%x, GS: 0x%x', [SegDs, SegEs, SegFs, SegGs]));
     with GCurrentContext^ do DebugLn(Format('EAX: 0x%x, EBX: 0x%x, ECX: 0x%x, EDX: 0x%x, EDI: 0x%x, ESI: 0x%x', [Eax, Ebx, Ecx, Edx, Edi, Esi]));
@@ -707,6 +708,7 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
       DebugLn(']');
     end;
     DebugLn('---');
+  {$POP}
   end;
 
   procedure HandleLoadDll(const AEvent: TDebugEvent);
