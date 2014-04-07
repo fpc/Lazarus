@@ -576,8 +576,6 @@ type
   TCustomDateEvent = procedure (Sender : TObject; var ADate : string) of object;
   TDateOrder = (doNone,doMDY,doDMY,doYMd);
 
-  { TDateEdit }
-
   TDateEdit = class(TCustomButtonEdit)
   private
     FDateOrder: TDateOrder;
@@ -669,6 +667,7 @@ type
   { TCalcEdit }
 
   TAcceptValueEvent = procedure(Sender: TObject; var AValue: Double; var Accept: Boolean) of object;
+
   TCalcEdit = class(TCustomButtonEdit)
   private
     FDialogTitle: String;
@@ -1503,9 +1502,9 @@ begin
   Inc(FFileNameChangeLock);
   try
     if FHideDirectories then
-      inherited RealSetText(ExtractFileName(AValue))
+      Text:=ExtractFileName(AValue) //Originally used inherited RealSetText()
     else
-      inherited RealSetText(AValue)
+      Text:=AValue
   finally
     Dec(FFileNameChangeLock);
   end;
