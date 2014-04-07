@@ -1238,7 +1238,7 @@ begin
   BorderStyle := bsNone;
   FButtonAlign := BaRight;
   FButtonOnlyWhenFocused := False;
-  FDirectInput := False;
+  FDirectInput := True;
 
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
