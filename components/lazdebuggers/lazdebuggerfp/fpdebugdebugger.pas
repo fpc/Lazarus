@@ -11,8 +11,10 @@ uses
   LazLogger,
   FpDbgClasses,
   FpDbgInfo,
+  FpErrorMessages,
   DbgIntfBaseTypes,
   DbgIntfDebuggerBase,
+  FpPascalParser,
   FPDbgController;
 
 type
@@ -122,8 +124,31 @@ begin
 end;
 
 procedure TFPWatches.InternalRequestData(AWatchValue: TWatchValue);
+var
+  AContext: TDbgInfoAddressContext;
+  AController: TDbgController;
+  APasExpr: TFpPascalExpression;
+
 begin
-  AWatchValue.Validity := ddsInvalid;
+  AController := FpDebugger.FDbgController;
+
+  AContext := AController.CurrentProcess.DbgInfo.FindContext(AController.CurrentProcess.GetInstructionPointerRegisterValue);
+
+  APasExpr := TFpPascalExpression.Create(AWatchValue.Expression, AContext);
+  try
+    if not APasExpr.Valid then
+      begin
+      AWatchValue.Value := ErrorHandler.ErrorAsString(APasExpr.Error);
+      AWatchValue.Validity := ddsError;
+      end
+    else
+      begin
+      AWatchValue.Value := IntToStr(APasExpr.ResultValue.AsInteger);
+      AWatchValue.Validity := ddsValid;
+      end;
+  finally
+    APasExpr.Free;
+  end;
 end;
 
 { TFpDebugThread }

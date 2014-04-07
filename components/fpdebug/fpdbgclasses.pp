@@ -76,6 +76,19 @@ type
 
   TDbgProcess = class;
 
+  { TDbgMemReader }
+
+  TDbgMemReader = class(TFpDbgMemReaderBase)
+  private
+    FDbgProcess: TDbgProcess;
+  public
+    constructor Create(ADbgProcess: TDbgProcess);
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean; override;
+    function RegisterSize(ARegNum: Cardinal): Integer; override;
+  end;
+
   { TDbgThread }
 
   TDbgThread = class(TObject)
@@ -167,6 +180,8 @@ type
     FOnLog: TOnLog;
     FProcessID: Integer;
     FThreadID: Integer;
+    FMemReader: TDbgMemReader;
+    FMemManager: TFpDbgMemManager;
 
     procedure ThreadDestroyed(const AThread: TDbgThread);
   protected
@@ -182,6 +197,7 @@ type
     FBreakMap: TMap;  // map BreakAddr -> BreakObject
 
     FMainThread: TDbgThread;
+    procedure LoadInfo; override;
     function GetHandle: THandle; virtual;
     procedure SetExitCode(AValue: DWord);
     function GetLastEventProcessIdentifier: THandle; virtual;
@@ -276,6 +292,40 @@ begin
     {$endif darwin}
     end;
   result := GOSDbgClasses;
+end;
+
+{ TDbgMemReader }
+
+constructor TDbgMemReader.Create(ADbgProcess: TDbgProcess);
+begin
+  FDbgProcess := ADbgProcess;
+end;
+
+function TDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  FDbgProcess.ReadData(AnAddress, ASize, ADest^);
+end;
+
+function TDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr;
+  ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  FDbgProcess.ReadData(AnAddress, ASize, ADest^);
+end;
+
+function TDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean;
+begin
+  result := true;
+  case ARegNum of
+    // ToDo: Link the Dwarf-register-numbers to the actual registers.
+    // 0: AValue:=FDbgProcess.MainThread.RegisterValueList.GetDbgRegister('eax').NumValue;
+  else
+    result := false;
+  end
+end;
+
+function TDbgMemReader.RegisterSize(ARegNum: Cardinal): Integer;
+begin
+  result := 8;
 end;
 
 { TDbgRegisterValueList }
@@ -426,6 +476,9 @@ begin
   FBreakMap := TMap.Create(MAP_ID_SIZE, SizeOf(TDbgBreakpoint));
   FCurrentBreakpoint := nil;
 
+  FMemReader := TDbgMemReader.Create(Self);
+  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
+
   FSymInstances := TList.Create;
 
   SetName(AName);
@@ -439,6 +492,8 @@ begin
   FreeAndNil(FThreadMap);
   FreeAndNil(FLibMap);
   FreeAndNil(FSymInstances);
+  FreeAndNil(FMemManager);
+  FreeAndNil(FMemReader);
   inherited;
 end;
 
@@ -561,6 +616,12 @@ procedure TDbgProcess.ThreadDestroyed(const AThread: TDbgThread);
 begin
   if AThread = FMainThread
   then FMainThread := nil;
+end;
+
+procedure TDbgProcess.LoadInfo;
+begin
+  inherited LoadInfo;
+  TFpDwarfInfo(FDbgInfo).MemManager := FMemManager;
 end;
 
 function TDbgProcess.GetLastEventProcessIdentifier: THandle;
