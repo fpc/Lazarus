@@ -199,7 +199,9 @@ end;
 procedure TFpDebugDebugger.FDbgControllerProcessExitEvent(AExitCode: DWord);
 begin
   SetExitCode(Integer(AExitCode));
+  {$PUSH}{$R-}
   DoDbgEvent(ecProcess, etProcessExit, Format('Process exited with exit-code %d',[AExitCode]));
+  {$POP}
   FreeDebugThread;
   SetState(dsStop);
 end;
