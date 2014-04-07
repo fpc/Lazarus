@@ -143,7 +143,7 @@ type
     function CalcButtonVisible: Boolean; virtual;
     function GetDefaultGlyph: TBitmap; virtual;
     function GetDefaultGlyphName: String; virtual;
-    function GetPopupMenu: TPopupMenu; override;
+    function GetEditPopupMenu: TPopupMenu;
 
     procedure CalculatePreferredSize(var PreferredWidth,
                                      PreferredHeight: integer;
@@ -182,7 +182,7 @@ type
     property NumbersOnly: Boolean read GetNumbersOnly write SetNumbersOnly default False;
     property NumGlyphs: Integer read GetNumGlyps write SetNumGlyphs;
     property PasswordChar: char read GetPasswordChar write SetPasswordChar;
-    property PopupMenu: TPopupMenu read GetPopupMenu write SetPopupMenu;
+    property PopupMenu: TPopupMenu read GetEditPopupMenu write SetPopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
 
     property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
@@ -896,7 +896,7 @@ begin
   Result := FButton.Width;
 end;
 
-function TCustomButtonEdit.GetPopupMenu: TPopupMenu;
+function TCustomButtonEdit.GetEditPopupMenu: TPopupMenu;
 begin
   Result := FEdit.PopupMenu;
 end;
