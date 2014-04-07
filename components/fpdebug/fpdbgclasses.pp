@@ -85,7 +85,7 @@ type
     constructor Create(ADbgProcess: TDbgProcess);
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
-    function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean; override;
+    function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean; override;
     function RegisterSize(ARegNum: Cardinal): Integer; override;
   end;
 
@@ -312,15 +312,11 @@ begin
   FDbgProcess.ReadData(AnAddress, ASize, ADest^);
 end;
 
-function TDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean;
+function TDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean;
 begin
-  result := true;
-  case ARegNum of
-    // ToDo: Link the Dwarf-register-numbers to the actual registers.
-    // 0: AValue:=FDbgProcess.MainThread.RegisterValueList.GetDbgRegister('eax').NumValue;
-  else
-    result := false;
-  end
+  result := false;
+  // ToDo: Link the Dwarf-register-numbers to the actual registers.
+  // AValue:=FDbgProcess.MainThread.RegisterValueList.GetDbgRegister('eax').NumValue;
 end;
 
 function TDbgMemReader.RegisterSize(ARegNum: Cardinal): Integer;

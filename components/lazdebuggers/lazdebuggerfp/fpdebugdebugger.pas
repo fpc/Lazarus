@@ -125,7 +125,7 @@ end;
 
 procedure TFPWatches.InternalRequestData(AWatchValue: TWatchValue);
 var
-  AContext: TDbgInfoAddressContext;
+  AContext: TFpDbgInfoContext;
   AController: TDbgController;
   APasExpr: TFpPascalExpression;
 
