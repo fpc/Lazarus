@@ -96,6 +96,8 @@ begin
 
   if FOuterNestContext <> nil then begin
     ADbgValue := FOuterNestContext.FindSymbol(AName); // TODO: pass upper/lower
+    if ADbgValue <> nil then
+      AddRefToVal(ADbgValue);
     Result := True; // self, global was done by outer
     exit;
   end;
@@ -154,6 +156,8 @@ begin
   FOuterNestContext := Dwarf.FindContext(ThreadId, i, pc);
 
   ADbgValue := FOuterNestContext.FindSymbol(AName); // TODO: pass upper/lower
+  if ADbgValue <> nil then
+    AddRefToVal(ADbgValue);
   Result := True; // self, global was done by outer
 end;
 
