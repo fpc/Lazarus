@@ -351,7 +351,7 @@ end;
 
 destructor TFpDebugDebugger.Destroy;
 begin
-  if assigned(FDbgController) then
+  if assigned(FFpDebugThread) then
     FreeDebugThread;
   FDbgController.Free;
   inherited Destroy;
