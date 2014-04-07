@@ -36,8 +36,8 @@ type
     function GetSizeOfAddress: Integer; virtual; abstract;
   public
     property Address: TDbgPtr read GetAddress;
-    property ThreadId: Integer read GetThreadId;  // experimental
-    property StackFrame: Integer read GetStackFrame;  // experimental
+    property ThreadId: Integer read GetThreadId;
+    property StackFrame: Integer read GetStackFrame;
     property SizeOfAddress: Integer read GetSizeOfAddress;
   end;
 

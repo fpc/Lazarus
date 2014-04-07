@@ -367,6 +367,7 @@ begin
       exit;
   end;
   {$ENDIF}
+  assert(AContext <> nil, 'TFpGDBMIDbgMemReader.ReadRegister: AContext <> nil');
   Reg := FDebugger.Registers.CurrentRegistersList[AContext.ThreadId, AContext.StackFrame];
   for i := 0 to Reg.Count - 1 do
     if UpperCase(Reg[i].Name) = rname then
@@ -376,6 +377,7 @@ begin
           v := RegVObj.Value[rdDefault]
         else
           v := '';
+        if pos(' ', v) > 1 then v := copy(v, 1, pos(' ', v)-1);
 debugln(['TFpGDBMIDbgMemReader.ReadRegister ',rname, '  ', v]);
         Result := true;
         try

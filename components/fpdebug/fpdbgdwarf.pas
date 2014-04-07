@@ -84,20 +84,22 @@ type
     function GetMemManager: TFpDbgMemManager; override;
 
     property Symbol: TFpDbgSymbol read FSymbol;
-    property Address: TDBGPtr read FAddress;
     property Dwarf: TFpDwarfInfo read FDwarf;
+    property Address: TDBGPtr read FAddress write FAddress;
+    property ThreadId: Integer read FThreadId write FThreadId;
+    property StackFrame: Integer read FStackFrame write FStackFrame;
 
     function SymbolToValue(ASym: TFpDbgSymbol): TFpDbgValue; inline;
     procedure AddRefToVal(AVal: TFpDbgValue); inline;
     function GetSelfParameter: TFpDbgValue; virtual;
 
     function FindExportedSymbolInUnits(const AName: String; PNameUpper, PNameLower: PChar;
-      SkipCompUnit: TDwarfCompilationUnit): TFpDbgValue; inline;
+      SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpDbgValue): Boolean; inline;
     function FindSymbolInStructure(const AName: String; PNameUpper, PNameLower: PChar;
-      InfoEntry: TDwarfInformationEntry): TFpDbgValue; inline;
+      InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpDbgValue): Boolean; inline;
     // FindLocalSymbol: for the subroutine itself
     function FindLocalSymbol(const AName: String; PNameUpper, PNameLower: PChar;
-      InfoEntry: TDwarfInformationEntry): TFpDbgValue; virtual;
+      InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpDbgValue): Boolean; virtual;
   public
     constructor Create(AThreadId, AStackFrame: Integer; AnAddress: TDbgPtr; ASymbol: TFpDbgSymbol; ADwarf: TFpDwarfInfo);
     destructor Destroy; override;
@@ -994,15 +996,16 @@ begin
     TFpDwarfValueBase(Result).FContext := Self;
 end;
 
-function TFpDwarfInfoAddressContext.FindExportedSymbolInUnits(const AName: String;
-  PNameUpper, PNameLower: PChar; SkipCompUnit: TDwarfCompilationUnit): TFpDbgValue;
+function TFpDwarfInfoAddressContext.FindExportedSymbolInUnits(const AName: String; PNameUpper,
+  PNameLower: PChar; SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpDbgValue): Boolean;
 var
   i, ExtVal: Integer;
   CU: TDwarfCompilationUnit;
   InfoEntry, FoundInfoEntry: TDwarfInformationEntry;
   s: String;
 begin
-  Result := nil;
+  Result := False;
+  ADbgValue := nil;
   InfoEntry := nil;
   FoundInfoEntry := nil;
   i := FDwarf.CompilationUnitsCount;
@@ -1024,7 +1027,7 @@ begin
     s := CU.UnitName;
     if (s <> '') and (CompareUtf8BothCase(PNameUpper, PNameLower, @s[1])) then begin
       ReleaseRefAndNil(FoundInfoEntry);
-      Result := SymbolToValue(TFpDwarfSymbol.CreateSubClass(AName, InfoEntry));
+      ADbgValue := SymbolToValue(TFpDwarfSymbol.CreateSubClass(AName, InfoEntry));
       break;
     end;
 
@@ -1040,28 +1043,30 @@ begin
         if InfoEntry.ReadValue(DW_AT_external, ExtVal) then
           if ExtVal <> 0 then
             break;
-        // Search for better result
+        // Search for better ADbgValue
       end;
     end;
   end;
 
   if FoundInfoEntry <> nil then begin;
-    Result := SymbolToValue(TFpDwarfSymbol.CreateSubClass(AName, FoundInfoEntry));
+    ADbgValue := SymbolToValue(TFpDwarfSymbol.CreateSubClass(AName, FoundInfoEntry));
     FoundInfoEntry.ReleaseReference;
   end;
 
   InfoEntry.ReleaseReference;
+  Result := ADbgValue <> nil;
 end;
 
 function TFpDwarfInfoAddressContext.FindSymbolInStructure(const AName: String; PNameUpper,
-  PNameLower: PChar; InfoEntry: TDwarfInformationEntry): TFpDbgValue;
+  PNameLower: PChar; InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpDbgValue): Boolean;
 var
   InfoEntryInheritance: TDwarfInformationEntry;
   FwdInfoPtr: Pointer;
   FwdCompUint: TDwarfCompilationUnit;
   SelfParam: TFpDbgValue;
 begin
-  Result := nil;
+  Result := False;
+  ADbgValue := nil;
   InfoEntry.AddReference;
 
   while True do begin
@@ -1075,18 +1080,19 @@ begin
         SelfParam := GetSelfParameter;
         if (SelfParam <> nil) then begin
           // TODO: only valid, as long as context is valid, because if context is freed, then self is lost too
-          Result := SelfParam.MemberByName[AName];
-          assert(Result <> nil, 'FindSymbol: SelfParam.MemberByName[AName]');
-          if Result <> nil then
-            Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FlastResult, 'FindSymbol'){$ENDIF};
+          ADbgValue := SelfParam.MemberByName[AName];
+          assert(ADbgValue <> nil, 'FindSymbol: SelfParam.MemberByName[AName]');
+          if ADbgValue <> nil then
+            ADbgValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FlastResult, 'FindSymbol'){$ENDIF};
         end
 else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
         ;
-        if Result = nil then begin // Todo: abort the searh /SetError
-          Result := SymbolToValue(TFpDwarfSymbol.CreateSubClass(AName, InfoEntry));
+        if ADbgValue = nil then begin // Todo: abort the searh /SetError
+          ADbgValue := SymbolToValue(TFpDwarfSymbol.CreateSubClass(AName, InfoEntry));
         end;
         InfoEntry.ReleaseReference;
         InfoEntryInheritance.ReleaseReference;
+        Result := True;
         exit;
       end;
     end;
@@ -1103,18 +1109,21 @@ else debugln(['TDbgDwarfInfoAddressContext.FindSymbol XXXXXXXXXXXXX no self']);
   end;
 
   InfoEntry.ReleaseReference;
+  Result := ADbgValue <> nil;
 end;
 
 function TFpDwarfInfoAddressContext.FindLocalSymbol(const AName: String; PNameUpper,
-  PNameLower: PChar; InfoEntry: TDwarfInformationEntry): TFpDbgValue;
+  PNameLower: PChar; InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpDbgValue): Boolean;
 begin
-  Result := nil;
+  Result := False;
+  ADbgValue := nil;
   if not InfoEntry.GoNamedChildEx(PNameUpper, PNameLower) then
     exit;
   if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
-    Result := SymbolToValue(TFpDwarfSymbol.CreateSubClass(AName, InfoEntry));
-    TFpDwarfSymbol(Result.DbgSymbol).ParentTypeInfo := TFpDwarfSymbolValueProc(FSymbol);
+    ADbgValue := SymbolToValue(TFpDwarfSymbol.CreateSubClass(AName, InfoEntry));
+    TFpDwarfSymbol(ADbgValue.DbgSymbol).ParentTypeInfo := TFpDwarfSymbolValueProc(FSymbol);
   end;
+  Result := ADbgValue <> nil;
 end;
 
 constructor TFpDwarfInfoAddressContext.Create(AThreadId, AStackFrame: Integer;
@@ -1188,19 +1197,15 @@ begin
 
       tg := InfoEntry.AbbrevTag;
       if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
-        Result := FindSymbolInStructure(AName,PNameUpper, PNameLower, InfoEntry);
-        // TODO: check error
-        if Result <> nil then
-          exit;
+        if FindSymbolInStructure(AName,PNameUpper, PNameLower, InfoEntry, Result) then
+          exit; // TODO: check error
         //InfoEntry.ScopeIndex := StartScopeIdx;
       end
 
       else
       if (StartScopeIdx = SubRoutine.InformationEntry.ScopeIndex) then begin // searching in subroutine
-        Result := FindLocalSymbol(AName,PNameUpper, PNameLower, InfoEntry);
-        // TODO: check error
-        if Result <> nil then
-          exit;
+        if FindLocalSymbol(AName,PNameUpper, PNameLower, InfoEntry, Result) then
+          exit;        // TODO: check error
         //InfoEntry.ScopeIndex := StartScopeIdx;
       end
           // TODO: nested subroutine
@@ -1218,7 +1223,7 @@ begin
       InfoEntry.GoParent;
     end;
 
-    Result := FindExportedSymbolInUnits(AName, PNameUpper, PNameLower, CU);
+    FindExportedSymbolInUnits(AName, PNameUpper, PNameLower, CU, Result);
 
   finally
     if (Result = nil) or (InfoEntry = nil)
