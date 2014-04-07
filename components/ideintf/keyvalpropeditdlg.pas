@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Dialogs, StdCtrls,
-  TextTools, ObjInspStrConsts, ExtCtrls, ButtonPanel, ValEdit, Grids;
+  TextTools, ObjInspStrConsts, ExtCtrls, ButtonPanel, ValEdit;
   
 type
 
