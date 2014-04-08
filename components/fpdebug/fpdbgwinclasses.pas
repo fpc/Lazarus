@@ -391,7 +391,6 @@ begin
   case ADebugEvent.dwDebugEventCode of
     EXCEPTION_DEBUG_EVENT: begin
       case ADebugEvent.Exception.ExceptionRecord.ExceptionCode of
-        EXCEPTION_BREAKPOINT:  {Result :=} DoBreak(TDbgPtr(ADebugEvent.Exception.ExceptionRecord.ExceptionAddress), ADebugEvent.dwThreadId); // we never set a break ourself, let the callee pause!
         EXCEPTION_SINGLE_STEP: Result := DoSingleStep;
       end;
     end;
@@ -765,8 +764,28 @@ begin
     case MDebugEvent.dwDebugEventCode of
       EXCEPTION_DEBUG_EVENT: begin
         DumpEvent('EXCEPTION_DEBUG_EVENT');
-        HandleException(MDebugEvent);
-        result := deException;
+        case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
+          EXCEPTION_BREAKPOINT: begin
+            if DoBreak(TDbgPtr(MDebugEvent.Exception.ExceptionRecord.ExceptionAddress), MDebugEvent.dwThreadId)
+            then
+              result := deBreakpoint
+            else begin
+              // Unknown breakpoint.
+              if (MDebugEvent.Exception.dwFirstChance <> 0) and (MDebugEvent.Exception.ExceptionRecord.ExceptionFlags = 0)
+              then begin
+                // First chance and breakpoint is continuable -> silently ignore.
+                result := deInternalContinue
+              end else begin
+                // Or else, show an exception
+                result := deException;
+              end;
+            end;
+          end
+        else begin
+          HandleException(MDebugEvent);
+          result := deException;
+        end;
+        end;
       end;
       CREATE_THREAD_DEBUG_EVENT: begin
         DumpEvent('CREATE_THREAD_DEBUG_EVENT');
