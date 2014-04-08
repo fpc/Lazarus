@@ -209,8 +209,14 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    procedure Clear;
+    procedure ClearSelection; virtual;
+    procedure CopyToClipboard; virtual;
+    procedure CutToClipboard; virtual;
+    procedure PasteFromClipboard; virtual;
     procedure SelectAll;
     procedure SetFocus; override;
+    procedure Undo; virtual;
 
     property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
     property CanUndo: Boolean read GetCanUndo;
@@ -1371,6 +1377,31 @@ begin
   inherited Destroy;
 end;
 
+procedure TCustomButtonEdit.Clear;
+begin
+  FEdit.Clear;
+end;
+
+procedure TCustomButtonEdit.ClearSelection;
+begin
+  FEdit.ClearSelection;
+end;
+
+procedure TCustomButtonEdit.CopyToClipboard;
+begin
+  FEdit.CopyToClipboard;
+end;
+
+procedure TCustomButtonEdit.CutToClipboard;
+begin
+  FEdit.CutToClipBoard;
+end;
+
+procedure TCustomButtonEdit.PasteFromClipboard;
+begin
+  FEdit.PasteFromClipBoard;
+end;
+
 procedure TCustomButtonEdit.SelectAll;
 begin
   FEdit.SelectAll;
@@ -1380,6 +1411,11 @@ procedure TCustomButtonEdit.SetFocus;
 begin
   inherited SetFocus;
   FEdit.SetFocus;
+end;
+
+procedure TCustomButtonEdit.Undo;
+begin
+  FEdit.Undo;
 end;
 
 { TCustomControlFilterEdit }
