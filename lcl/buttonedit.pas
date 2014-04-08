@@ -210,6 +210,7 @@ type
     destructor Destroy; override;
 
     procedure SelectAll;
+    procedure SetFocus; override;
 
     property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
     property CanUndo: Boolean read GetCanUndo;
@@ -1373,6 +1374,12 @@ end;
 procedure TCustomButtonEdit.SelectAll;
 begin
   FEdit.SelectAll;
+end;
+
+procedure TCustomButtonEdit.SetFocus;
+begin
+  inherited SetFocus;
+  FEdit.SetFocus;
 end;
 
 { TCustomControlFilterEdit }
