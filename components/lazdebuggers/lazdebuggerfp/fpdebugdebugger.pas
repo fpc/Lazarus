@@ -12,6 +12,7 @@ uses
   FpDbgClasses,
   FpDbgInfo,
   FpErrorMessages,
+  FpPascalBuilder,
   DbgIntfBaseTypes,
   DbgIntfDebuggerBase,
   FpPascalParser,
@@ -71,11 +72,14 @@ type
 
   TFPWatches = class(TWatchesSupplier)
   private
+    FPrettyPrinter: TFpPascalPrettyPrinter;
   protected
     function  FpDebugger: TFpDebugDebugger;
     //procedure DoStateChange(const AOldState: TDBGState); override;
     procedure InternalRequestData(AWatchValue: TWatchValue); override;
   public
+    constructor Create(const ADebugger: TDebuggerIntf);
+    destructor Destroy; override;
   end;
 
   { TFPRegisters }
@@ -128,7 +132,7 @@ var
   AContext: TFpDbgInfoContext;
   AController: TDbgController;
   APasExpr: TFpPascalExpression;
-
+  AVal: string;
 begin
   AController := FpDebugger.FDbgController;
 
@@ -143,12 +147,30 @@ begin
       end
     else
       begin
-      AWatchValue.Value := IntToStr(APasExpr.ResultValue.AsInteger);
-      AWatchValue.Validity := ddsValid;
+      FPrettyPrinter.AddressSize:=AContext.SizeOfAddress;
+      if FPrettyPrinter.PrintValue(AVal, APasExpr.ResultValue, []) then
+        begin
+        AWatchValue.Value := IntToStr(APasExpr.ResultValue.AsInteger);
+        AWatchValue.Validity := ddsValid;
+        end
+      else
+        AWatchValue.Validity := ddsInvalid;
       end;
   finally
     APasExpr.Free;
   end;
+end;
+
+constructor TFPWatches.Create(const ADebugger: TDebuggerIntf);
+begin
+  inherited Create(ADebugger);
+  FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
+end;
+
+destructor TFPWatches.Destroy;
+begin
+  FPrettyPrinter.Free;
+  inherited Destroy;
 end;
 
 { TFpDebugThread }
