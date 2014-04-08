@@ -137,6 +137,7 @@ type
   TDbgInstance = class(TObject)
   private
     FName: String;
+    FOnDebugInfoLoaded: TNotifyEvent;
     FProcess: TDbgProcess;
     FBreakList: TList;
     FDbgInfo: TDbgInfo;
@@ -157,6 +158,7 @@ type
 
     property Process: TDbgProcess read FProcess;
     property DbgInfo: TDbgInfo read FDbgInfo;
+    property OnDebugInfoLoaded: TNotifyEvent read FOnDebugInfoLoaded write FOnDebugInfoLoaded;
   end;
 
   { TDbgLibrary }
@@ -414,6 +416,8 @@ begin
   FLoader := InitializeLoader;
   FDbgInfo := TFpDwarfInfo.Create(FLoader);
   TFpDwarfInfo(FDbgInfo).LoadCompilationUnits;
+  if Assigned(FOnDebugInfoLoaded) then
+    FOnDebugInfoLoaded(Self);
 end;
 
 function TDbgInstance.RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;

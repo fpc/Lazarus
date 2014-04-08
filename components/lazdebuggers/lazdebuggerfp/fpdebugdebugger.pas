@@ -16,7 +16,7 @@ uses
   DbgIntfBaseTypes,
   DbgIntfDebuggerBase,
   FpPascalParser,
-  FPDbgController;
+  FPDbgController, FpDbgDwarfDataClasses;
 
 type
 
@@ -49,7 +49,10 @@ type
     procedure FDbgControllerCreateProcessEvent(var continue: boolean);
     procedure FDbgControllerProcessExitEvent(AExitCode: DWord);
     procedure FDbgControllerExceptionEvent(var continue: boolean);
+    procedure FDbgControllerDebugInfoLoaded(Sender: TObject);
+    function GetDebugInfo: TDbgInfo;
   protected
+    function CreateLineInfo: TDBGLineInfo; override;
     function CreateWatches: TWatchesSupplier; override;
     function  CreateRegisters: TRegisterSupplier; override;
     function  RequestCommand(const ACommand: TDBGCommand;
@@ -59,6 +62,8 @@ type
     procedure OnLog(AString: String);
     procedure StartDebugLoop;
     procedure DebugLoopFinished;
+
+    property DebugInfo: TDbgInfo read GetDebugInfo;
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -66,6 +71,27 @@ type
     class function Caption: String; override;
     class function HasExePath: boolean; override;
     function  GetSupportedCommands: TDBGCommands; override;
+  end;
+
+  { TFpLineInfo }
+
+  TFpLineInfo = class(TDBGLineInfo) //class(TGDBMILineInfo)
+  private
+    FRequestedSources: TStringList;
+  protected
+    function  FpDebugger: TFpDebugDebugger;
+    procedure DoStateChange(const {%H-}AOldState: TDBGState); override;
+    procedure ClearSources;
+    procedure DebugInfoChanged;
+  public
+    constructor Create(const ADebugger: TDebuggerIntf);
+    destructor Destroy; override;
+    function Count: Integer; override;
+    function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; override;
+    function GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean; override;
+    function IndexOf(const ASource: String): integer; override;
+    procedure Request(const ASource: String); override;
+    procedure Cancel(const ASource: String); override;
   end;
 
   { TFPWatches }
@@ -118,6 +144,101 @@ begin
     ARegisterValue.DataValidity:=ddsValid;
     end;
   ARegisters.DataValidity:=ddsValid;
+end;
+
+{ TFpLineInfo }
+
+function TFpLineInfo.FpDebugger: TFpDebugDebugger;
+begin
+  Result := TFpDebugDebugger(Debugger);
+end;
+
+procedure TFpLineInfo.DoStateChange(const AOldState: TDBGState);
+begin
+  //inherited DoStateChange(AOldState);
+  if not (Debugger.State in [dsPause, dsInternalPause, dsRun]) then
+    ClearSources;
+end;
+
+procedure TFpLineInfo.ClearSources;
+begin
+  FRequestedSources.Clear;
+end;
+
+procedure TFpLineInfo.DebugInfoChanged;
+var
+  i: Integer;
+  Src: String;
+begin
+  if (FpDebugger.DebugInfo = nil) or not(FpDebugger.DebugInfo is TFpDwarfInfo) then
+    exit;
+
+  for i := 0 to FRequestedSources.Count - 1 do begin
+    if FRequestedSources.Objects[i] = nil then begin
+      Src := FRequestedSources[i];
+      FRequestedSources.Objects[i] := TObject(TFpDwarfInfo(FpDebugger.DebugInfo).GetLineAddressMap(Src));
+      if FRequestedSources.Objects[i] <> nil then
+        DoChange(Src);
+    end;
+  end;
+end;
+
+constructor TFpLineInfo.Create(const ADebugger: TDebuggerIntf);
+begin
+  FRequestedSources := TStringList.Create;
+  inherited Create(ADebugger);
+end;
+
+destructor TFpLineInfo.Destroy;
+begin
+  FreeAndNil(FRequestedSources);
+  inherited Destroy;
+end;
+
+function TFpLineInfo.Count: Integer;
+begin
+  Result := FRequestedSources.Count;
+end;
+
+function TFpLineInfo.GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr;
+var
+  Map: PDWarfLineMap;
+begin
+  Result := 0;
+  if not((FpDebugger.DebugInfo <> nil) and (FpDebugger.DebugInfo is TFpDwarfInfo)) then
+    exit;
+  Map := PDWarfLineMap(FRequestedSources.Objects[AIndex]);
+  if Map <> nil then
+    Result := Map^.GetAddressForLine(ALine);
+end;
+
+function TFpLineInfo.GetInfo(AAdress: TDbgPtr; out ASource, ALine,
+  AOffset: Integer): Boolean;
+begin
+  Result := False;
+end;
+
+function TFpLineInfo.IndexOf(const ASource: String): integer;
+begin
+  Result := FRequestedSources.IndexOf(ASource);
+end;
+
+procedure TFpLineInfo.Request(const ASource: String);
+var
+  i: Integer;
+begin
+  if (FpDebugger.DebugInfo = nil) or not(FpDebugger.DebugInfo is TFpDwarfInfo) then begin
+    FRequestedSources.AddObject(ASource, nil);
+    exit;
+  end;
+  i := FRequestedSources.AddObject(ASource, TObject(TFpDwarfInfo(FpDebugger.DebugInfo).GetLineAddressMap(ASource)));
+  if FRequestedSources.Objects[i] <> nil then
+    DoChange(ASource);
+end;
+
+procedure TFpLineInfo.Cancel(const ASource: String);
+begin
+  //
 end;
 
 { TFPWatches }
@@ -238,6 +359,18 @@ begin
     end;
 end;
 
+function TFpDebugDebugger.GetDebugInfo: TDbgInfo;
+begin
+  Result := nil;
+  if (FDbgController <> nil) and (FDbgController.CurrentProcess<> nil) then
+    Result := FDbgController.CurrentProcess.DbgInfo;
+end;
+
+function TFpDebugDebugger.CreateLineInfo: TDBGLineInfo;
+begin
+  Result := TFpLineInfo.Create(Self);
+end;
+
 function TFpDebugDebugger.CreateWatches: TWatchesSupplier;
 begin
   Result := TFPWatches.Create(Self);
@@ -248,8 +381,17 @@ begin
   Result := TFPRegisters.Create(Self);
 end;
 
+procedure TFpDebugDebugger.FDbgControllerDebugInfoLoaded(Sender: TObject);
+begin
+  if LineInfo <> nil then begin
+    TFpLineInfo(LineInfo).DebugInfoChanged;
+  end;
+end;
+
 procedure TFpDebugDebugger.FreeDebugThread;
 begin
+  if FFpDebugThread = nil then
+    exit;
   FFpDebugThread.Terminate;
   RTLeventSetEvent(FFpDebugThread.StartDebugLoopEvent);
   FFpDebugThread.WaitFor;
@@ -369,6 +511,7 @@ begin
   FDbgController.OnHitBreakpointEvent:=@FDbgControllerHitBreakpointEvent;
   FDbgController.OnProcessExitEvent:=@FDbgControllerProcessExitEvent;
   FDbgController.OnExceptionEvent:=@FDbgControllerExceptionEvent;
+  FDbgController.OnDebugInfoLoaded := @FDbgControllerDebugInfoLoaded;
 end;
 
 destructor TFpDebugDebugger.Destroy;

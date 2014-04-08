@@ -25,6 +25,7 @@ type
   private
     FExecutableFilename: string;
     FOnCreateProcessEvent: TOnCreateProcessEvent;
+    FOnDebugInfoLoaded: TNotifyEvent;
     FOnExceptionEvent: TOnExceptionEvent;
     FOnHitBreakpointEvent: TOnHitBreakpointEvent;
     FOnLog: TOnLog;
@@ -34,6 +35,7 @@ type
     FPDEvent: TFPDEvent;
     procedure SetExecutableFilename(AValue: string);
     procedure SetOnLog(AValue: TOnLog);
+    procedure DoOnDebugInfoLoaded(Sender: TObject);
   protected
     FMainProcess: TDbgProcess;
     FCurrentProcess: TDbgProcess;
@@ -58,11 +60,18 @@ type
     property OnHitBreakpointEvent: TOnHitBreakpointEvent read FOnHitBreakpointEvent write FOnHitBreakpointEvent;
     property OnProcessExitEvent: TOnProcessExitEvent read FOnProcessExitEvent write FOnProcessExitEvent;
     property OnExceptionEvent: TOnExceptionEvent read FOnExceptionEvent write FOnExceptionEvent;
+    property OnDebugInfoLoaded: TNotifyEvent read FOnDebugInfoLoaded write FOnDebugInfoLoaded;
   end;
 
 implementation
 
 { TDbgController }
+
+procedure TDbgController.DoOnDebugInfoLoaded(Sender: TObject);
+begin
+  if Assigned(FOnDebugInfoLoaded) then
+    FOnDebugInfoLoaded(Self);
+end;
 
 procedure TDbgController.SetExecutableFilename(AValue: string);
 begin
@@ -106,9 +115,10 @@ begin
     end;
 
   FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, '');
-  FCurrentProcess.OnLog:=OnLog;
   if assigned(FCurrentProcess) then
     begin
+    FCurrentProcess.OnDebugInfoLoaded := @DoOnDebugInfoLoaded;
+    FCurrentProcess.OnLog:=OnLog;
     Log('Got PID: %d, TID: %d', [FCurrentProcess.ProcessID, FCurrentProcess.ThreadID]);
     result := true;
     end;
