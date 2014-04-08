@@ -177,6 +177,7 @@ begin
 
           FProcessMap.Delete(AProcessIdentifier);
           FCurrentProcess.Free;
+          FCurrentProcess := nil;
         end;
       deLoadLibrary :
         begin
