@@ -92,10 +92,13 @@ type
     function GetGlyph: TBitmap;
     function GetHideSelection: Boolean;
     function GetMaxLength: Integer;
+    function GetModified: Boolean;
     function GetNumbersOnly: Boolean;
     function GetNumGlyps: Integer;
     function GetPasswordChar: char;
     function GetReadOnly: Boolean;
+    function GetSelLength: Integer;
+    function GetSelStart: Integer;
     function GetText: TCaption;
     function IsCustomGlyph : Boolean;
 
@@ -132,11 +135,14 @@ type
     procedure SetGlyph(AValue: TBitmap);
     procedure SetHideSelection(AValue: Boolean);
     procedure SetMaxLength(AValue: Integer);
+    procedure SetModified(AValue: Boolean);
     procedure SetNumbersOnly(AValue: Boolean);
     procedure SetNumGlyphs(AValue: Integer);
     procedure SetPasswordChar(AValue: char);
     procedure SetPopupMenu(AValue: TPopupMenu);
     procedure SetReadOnly(AValue: Boolean);
+    procedure SetSelLength(AValue: Integer);
+    procedure SetSelStart(AValue: Integer);
     procedure SetText(AValue: TCaption);
   protected
     class function GetControlClassDefaultSize: TSize; override;
@@ -207,6 +213,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure SelectAll;
+
+    property Modified: Boolean read GetModified write SetModified;
+    property SelLength: Integer read GetSelLength write SetSelLength;
+    property SelStart: Integer read GetSelStart write SetSelStart;
     property Text: TCaption read GetText write SetText;
 
   end;
@@ -912,6 +924,16 @@ begin
   Result := FEdit.ReadOnly;
 end;
 
+function TCustomButtonEdit.GetSelLength: Integer;
+begin
+  Result := FEdit.SelLength;
+end;
+
+function TCustomButtonEdit.GetSelStart: Integer;
+begin
+  Result := FEdit.SelStart;
+end;
+
 function TCustomButtonEdit.GetText: TCaption;
 begin
   Result := FEdit.Text;
@@ -1066,6 +1088,11 @@ begin
   Result := FEdit.MaxLength;
 end;
 
+function TCustomButtonEdit.GetModified: Boolean;
+begin
+  Result := FEdit.Modified;
+end;
+
 function TCustomButtonEdit.GetNumbersOnly: Boolean;
 begin
   Result := FEdit.NumbersOnly;
@@ -1174,6 +1201,11 @@ begin
   FEdit.MaxLength := AValue;
 end;
 
+procedure TCustomButtonEdit.SetModified(AValue: Boolean);
+begin
+  FEdit.Modified := AValue;
+end;
+
 procedure TCustomButtonEdit.SetNumbersOnly(AValue: Boolean);
 begin
   FEdit.NumbersOnly := AValue;
@@ -1226,6 +1258,16 @@ end;
 procedure TCustomButtonEdit.SetReadOnly(AValue: Boolean);
 begin
   FEdit.ReadOnly := AValue;
+end;
+
+procedure TCustomButtonEdit.SetSelLength(AValue: Integer);
+begin
+  FEdit.SelLength := AValue;
+end;
+
+procedure TCustomButtonEdit.SetSelStart(AValue: Integer);
+begin
+  FEdit.SelStart := AValue;
 end;
 
 constructor TCustomButtonEdit.Create(AOwner: TComponent);
@@ -1292,7 +1334,12 @@ end;
 destructor TCustomButtonEdit.Destroy;
 begin
   inherited Destroy;
-end;             
+end;
+
+procedure TCustomButtonEdit.SelectAll;
+begin
+  FEdit.SelectAll;
+end;
 
 { TCustomControlFilterEdit }
 
