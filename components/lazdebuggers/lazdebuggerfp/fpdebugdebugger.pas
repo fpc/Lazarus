@@ -55,6 +55,7 @@ type
     function CreateLineInfo: TDBGLineInfo; override;
     function CreateWatches: TWatchesSupplier; override;
     function  CreateRegisters: TRegisterSupplier; override;
+    function CreateDisassembler: TDBGDisassembler; override;
     function  RequestCommand(const ACommand: TDBGCommand;
                              const AParams: array of const): Boolean; override;
     function ChangeFileName: Boolean; override;
@@ -115,13 +116,92 @@ type
     procedure RequestData(ARegisters: TRegisters); override;
   end;
 
+  { TFPDBGDisassembler }
+
+  TFPDBGDisassembler = class(TDBGDisassembler)
+  protected
+    function PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean; override;
+  end;
+
 procedure Register;
 
 implementation
 
+uses
+  FpDbgUtil,
+  FpDbgDisasX86;
+
 procedure Register;
 begin
   RegisterDebugger(TFpDebugDebugger);
+end;
+
+{ TFPDBGDisassembler }
+
+function TFPDBGDisassembler.PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean;
+var
+  ARange: TDBGDisassemblerEntryRange;
+  AnEntry: PDisassemblerEntry;
+  CodeBin: array[0..20] of byte;
+  p: pointer;
+  ADump,
+  AStatement,
+  ASrcFileName: string;
+  ASrcFileLine: integer;
+  i: Integer;
+  Sym: TFpDbgSymbol;
+
+begin
+  AnEntry:=nil;
+  ARange := TDBGDisassemblerEntryRange.Create;
+  ARange.RangeStartAddr:=AnAddr;
+
+  for i := 0 to ALinesAfter-1 do
+    begin
+    if not TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.ReadData(AnAddr,sizeof(CodeBin),CodeBin) then
+      begin
+      DebugLn(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]));
+      inc(AnAddr);
+      end
+    else
+      begin
+      p := @CodeBin;
+      FpDbgDisasX86.Disassemble(p, GMode=dm64, ADump, AStatement);
+
+      sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindSymbol(AnAddr);
+      if assigned(sym) then
+        begin
+        ASrcFileName:=sym.FileName;
+        ASrcFileLine:=sym.Line;
+        end
+      else
+        begin
+        ASrcFileName:='';
+        ASrcFileLine:=0;
+        end;
+      new(AnEntry);
+      AnEntry^.Addr := AnAddr;
+      AnEntry^.Dump := ADump;
+      AnEntry^.Statement := AStatement;
+      AnEntry^.SrcFileLine:=ASrcFileLine;
+      AnEntry^.SrcFileName:=ASrcFileName;
+      ARange.Append(AnEntry);
+      Inc(AnAddr, PtrUInt(p) - PtrUInt(@CodeBin));
+      end;
+    end;
+
+  if assigned(AnEntry) then
+    begin
+    ARange.RangeEndAddr:=AnEntry^.Addr;
+    ARange.LastEntryEndAddr:=TDBGPtr(p);
+    EntryRanges.AddRange(ARange);
+    result := true;
+    end
+  else
+    begin
+    result := false;
+    ARange.Free;
+    end;
 end;
 
 { TFPRegisters }
@@ -379,6 +459,11 @@ end;
 function TFpDebugDebugger.CreateRegisters: TRegisterSupplier;
 begin
   Result := TFPRegisters.Create(Self);
+end;
+
+function TFpDebugDebugger.CreateDisassembler: TDBGDisassembler;
+begin
+  Result:=TFPDBGDisassembler.Create(Self);
 end;
 
 procedure TFpDebugDebugger.FDbgControllerDebugInfoLoaded(Sender: TObject);
