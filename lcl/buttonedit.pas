@@ -420,7 +420,7 @@ type
     procedure SaveDialogResult(AKind: TDialogKind; D: TCommonDialog); virtual;
     procedure DoButtonClick (Sender: TObject); override;
     procedure RunDialog; virtual;
-    procedure TextChanged; override;
+    procedure DoEditTextChange(Sender: TObject); override;
     procedure DoFolderChange(Sender:TObject); virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1608,7 +1608,7 @@ begin
   end
 end;
 
-procedure TFileNameEdit.TextChanged;
+procedure TFileNameEdit.DoEditTextChange(Sender: TObject);
 begin
   if FFileNameChangeLock <= 0 then
   begin
@@ -1622,7 +1622,7 @@ begin
       Dec(FFileNameChangeLock);
     end;
   end;
-  inherited TextChanged; //do this _after_ we have updated FFileName
+  inherited DoEditTextChange(Self); //do this _after_ we have updated FFileName
 end;
 
 procedure TFileNameEdit.DoFolderChange(Sender: TObject);
