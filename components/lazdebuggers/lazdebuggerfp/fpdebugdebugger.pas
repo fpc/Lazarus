@@ -271,7 +271,7 @@ begin
       FPrettyPrinter.AddressSize:=AContext.SizeOfAddress;
       if FPrettyPrinter.PrintValue(AVal, APasExpr.ResultValue, []) then
         begin
-        AWatchValue.Value := IntToStr(APasExpr.ResultValue.AsInteger);
+        AWatchValue.Value := AVal; //IntToStr(APasExpr.ResultValue.AsInteger);
         AWatchValue.Validity := ddsValid;
         end
       else
