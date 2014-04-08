@@ -84,6 +84,8 @@ type
     function GetBtnCaption: TCaption;
     function GetButtonHint: TTranslateString;
     function GetButtonWidth: Integer;
+    function GetCanUndo: Boolean;
+    function GetCaretPos: TPoint;
     function GetCharCase: TEditCharCase;
     function GetColor: TColor;
     function GetDirectInput: Boolean;
@@ -99,6 +101,7 @@ type
     function GetReadOnly: Boolean;
     function GetSelLength: Integer;
     function GetSelStart: Integer;
+    function GetSelText: String;
     function GetText: TCaption;
     function IsCustomGlyph : Boolean;
 
@@ -127,6 +130,7 @@ type
     procedure SetButtonHint(AValue: TTranslateString);
     procedure SetButtonOnlyWhenFocused(AValue: Boolean);
     procedure SetButtonWidth(AValue: Integer);
+    procedure SetCaretPos(AValue: TPoint);
     procedure SetCharCase(AValue: TEditCharCase);
     procedure SetDirectInput(AValue: Boolean);
     procedure SetEchoMode(AValue: TEchoMode);
@@ -143,6 +147,7 @@ type
     procedure SetReadOnly(AValue: Boolean);
     procedure SetSelLength(AValue: Integer);
     procedure SetSelStart(AValue: Integer);
+    procedure SetSelText(AValue: String);
     procedure SetText(AValue: TCaption);
   protected
     class function GetControlClassDefaultSize: TSize; override;
@@ -207,6 +212,8 @@ type
     procedure SelectAll;
 
     property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
+    property CanUndo: Boolean read GetCanUndo;
+    property CaretPos: TPoint read GetCaretPos write SetCaretPos;
     property CharCase: TEditCharCase read GetCharCase write SetCharCase default ecNormal;
     property EchoMode: TEchoMode read GetEchoMode write SetEchoMode default emNormal;
     property HideSelection: Boolean read GetHideSelection write SetHideSelection default False;
@@ -218,6 +225,7 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property SelLength: Integer read GetSelLength write SetSelLength;
     property SelStart: Integer read GetSelStart write SetSelStart;
+    property SelText: String read GetSelText write SetSelText;
     property Text: TCaption read GetText write SetText;
 
     property OnChange: TNotifyEvent read FOnEditChange write FOnEditChange;
@@ -908,6 +916,16 @@ begin
   Result := FButton.Width;
 end;
 
+function TCustomButtonEdit.GetCanUndo: Boolean;
+begin
+  Result := FEdit.CanUndo;
+end;
+
+function TCustomButtonEdit.GetCaretPos: TPoint;
+begin
+  Result := FEdit.CaretPos;
+end;
+
 function TCustomButtonEdit.GetEditPopupMenu: TPopupMenu;
 begin
   Result := FEdit.PopupMenu;
@@ -933,6 +951,11 @@ end;
 function TCustomButtonEdit.GetSelStart: Integer;
 begin
   Result := FEdit.SelStart;
+end;
+
+function TCustomButtonEdit.GetSelText: String;
+begin
+  Result := FEdit.SelText;
 end;
 
 function TCustomButtonEdit.GetText: TCaption;
@@ -1045,6 +1068,11 @@ end;
 procedure TCustomButtonEdit.SetButtonWidth(AValue: Integer);
 begin
   FButton.Width := AValue;
+end;
+
+procedure TCustomButtonEdit.SetCaretPos(AValue: TPoint);
+begin
+  FEdit.CaretPos := AValue;
 end;
 
 function TCustomButtonEdit.GetCharCase: TEditCharCase;
@@ -1269,6 +1297,11 @@ end;
 procedure TCustomButtonEdit.SetSelStart(AValue: Integer);
 begin
   FEdit.SelStart := AValue;
+end;
+
+procedure TCustomButtonEdit.SetSelText(AValue: String);
+begin
+  FEdit.SelText := AValue;
 end;
 
 constructor TCustomButtonEdit.Create(AOwner: TComponent);
