@@ -169,30 +169,20 @@ type
     procedure SetCursor(AValue: TCursor); override;
 
     property AutoSelect: Boolean read GetAutoSelect write SetAutoSelect default True;
-    property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
     property Button: TSpeedButton read FButton;
     property ButtonAlign: TButtonAlign read FButtonAlign write SetButtonAlign default BaRight;
     property ButtonCaption: TCaption read GetBtnCaption write SetBtnCaption;
     property ButtonHint: TTranslateString read GetButtonHint write SetButtonHint;
     property ButtonOnlyWhenFocused: Boolean read FButtonOnlyWhenFocused write SetButtonOnlyWhenFocused default False;
     property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth;
-    property CharCase: TEditCharCase read GetCharCase write SetCharCase default ecNormal;
     property Color: TColor read GetColor write SetColor stored True default {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
     property DirectInput : Boolean read GetDirectInput write SetDirectInput default True;
-    property EchoMode: TEchoMode read GetEchoMode write SetEchoMode default emNormal;
     property EditMask: String read GetEditMask write SetEditMask;
     property Flat: Boolean read FFlat write SetFlat default False;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
-    property HideSelection: Boolean read GetHideSelection write SetHideSelection default False;
-    property MaxLength: Integer read GetMaxLength write SetMaxLength;
-    property NumbersOnly: Boolean read GetNumbersOnly write SetNumbersOnly default False;
     property NumGlyphs: Integer read GetNumGlyps write SetNumGlyphs;
-    property PasswordChar: char read GetPasswordChar write SetPasswordChar;
-    property PopupMenu: TPopupMenu read GetEditPopupMenu write SetPopupMenu;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
 
     property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
-    property OnChange: TNotifyEvent read FOnEditChange write FOnEditChange;
     property OnClick: TNotifyEvent read FOnEditClick write FOnEditClick;
     property OnDblClick: TNotifyEvent read FOnEditDblClick write FOnEditDblClick;
     property OnDragDrop: TDragDropEvent read FOnEditDragDrop write FOnEditDragDrop;
@@ -216,10 +206,21 @@ type
 
     procedure SelectAll;
 
+    property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
+    property CharCase: TEditCharCase read GetCharCase write SetCharCase default ecNormal;
+    property EchoMode: TEchoMode read GetEchoMode write SetEchoMode default emNormal;
+    property HideSelection: Boolean read GetHideSelection write SetHideSelection default False;
+    property MaxLength: Integer read GetMaxLength write SetMaxLength;
     property Modified: Boolean read GetModified write SetModified;
+    property NumbersOnly: Boolean read GetNumbersOnly write SetNumbersOnly default False;
+    property PasswordChar: char read GetPasswordChar write SetPasswordChar;
+    property PopupMenu: TPopupMenu read GetEditPopupMenu write SetPopupMenu;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property SelLength: Integer read GetSelLength write SetSelLength;
     property SelStart: Integer read GetSelStart write SetSelStart;
     property Text: TCaption read GetText write SetText;
+
+    property OnChange: TNotifyEvent read FOnEditChange write FOnEditChange;
 
   end;
 
