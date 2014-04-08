@@ -81,6 +81,7 @@ type
 
     function GetAlignment: TAlignment;
     function GetAutoSelect: Boolean;
+    function GetAutoSelected: Boolean;
     function GetBtnCaption: TCaption;
     function GetButtonHint: TTranslateString;
     function GetButtonWidth: Integer;
@@ -125,6 +126,7 @@ type
 
     procedure SetAlignment(AValue: TAlignment);
     procedure SetAutoSelect(AValue: Boolean);
+    procedure SetAutoSelected(AValue: Boolean);
     procedure SetButtonAlign(AValue: TButtonAlign);
     procedure SetBtnCaption(AValue: TCaption);
     procedure SetButtonHint(AValue: TTranslateString);
@@ -174,6 +176,7 @@ type
     procedure SetCursor(AValue: TCursor); override;
 
     property AutoSelect: Boolean read GetAutoSelect write SetAutoSelect default True;
+    property AutoSelected: Boolean read GetAutoSelected write SetAutoSelected;
     property Button: TSpeedButton read FButton;
     property ButtonAlign: TButtonAlign read FButtonAlign write SetButtonAlign default BaRight;
     property ButtonCaption: TCaption read GetBtnCaption write SetBtnCaption;
@@ -243,6 +246,7 @@ type
 
   TButtonEdit = class(TCustomButtonEdit)
   public
+    property AutoSelected;
     property Button;
   published
     property NumbersOnly;
@@ -453,6 +457,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property AutoSelected;
     property DialogFiles: TStrings read FDialogFiles;
   published
     // TFileName properties.
@@ -538,6 +543,7 @@ type
     procedure DoButtonClick (Sender: TObject); override;
     procedure RunDialog; virtual;
   public
+    property AutoSelected;
   published
     // TDirectory properties.
     property Directory: String read GetDirectory write SetDirectory;
@@ -632,6 +638,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure DateFormatChanged; virtual;
     function GetDateFormat: string;
+    property AutoSelected;
     property Date: TDateTime read GetDate write SetDate;
     property Button;
     property DroppedDown: Boolean read FDroppedDown;
@@ -714,6 +721,7 @@ type
     procedure RunDialog; virtual;
   public
     constructor Create(AOwner: TComponent); override;
+    property AutoSelected;
   published
     // CalcEdit properties
     property CalculatorLayout : TCalculatorLayout read FLayout write Flayout;
@@ -1035,6 +1043,11 @@ begin
   Result := FEdit.AutoSelect;
 end;
 
+function TCustomButtonEdit.GetAutoSelected: Boolean;
+begin
+  Result := FEdit.AutoSelected;
+end;
+
 function TCustomButtonEdit.GetButtonHint: TTranslateString;
 begin
   Result := FButton.Hint;
@@ -1152,6 +1165,11 @@ end;
 procedure TCustomButtonEdit.SetAutoSelect(AValue: Boolean);
 begin
   FEdit.AutoSelect := AValue;
+end;
+
+procedure TCustomButtonEdit.SetAutoSelected(AValue: Boolean);
+begin
+  FEdit.AutoSelected := AValue;
 end;
 
 procedure TCustomButtonEdit.SetAutoSize(AValue: Boolean);
