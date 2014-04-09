@@ -55,6 +55,7 @@ type
     FButtonOnlyWhenFocused: Boolean;
     FDirectInput: Boolean;
     FEdit: TBeEdit;
+    FIsReadOnly: Boolean;
     FFlat: Boolean;
     //Forwarded events from FButton
     FOnButtonClick: TNotifyEvent;
@@ -976,7 +977,7 @@ end;
 
 function TCustomButtonEdit.GetReadOnly: Boolean;
 begin
-  Result := FEdit.ReadOnly;
+  Result := FIsReadOnly;
 end;
 
 function TCustomButtonEdit.GetSelLength: Integer;
@@ -1231,7 +1232,7 @@ end;
 procedure TCustomButtonEdit.SetDirectInput(AValue: Boolean);
 begin
   FDirectInput := AValue;
-  FEdit.ReadOnly := ((not FDirectInput) or (FEdit.ReadOnly));
+  FEdit.ReadOnly := ((not FDirectInput) or (FIsReadOnly));
 end;
 
 procedure TCustomButtonEdit.SetEchoMode(AValue: TEchoMode);
@@ -1438,7 +1439,9 @@ end;
 
 procedure TCustomButtonEdit.SetReadOnly(AValue: Boolean);
 begin
-  FEdit.ReadOnly := AValue;
+  FIsReadOnly := AValue;
+  FEdit.ReadOnly := AValue or (not DirectInput);
+  FButton.Enabled := not FIsReadOnly and Enabled;
 end;
 
 procedure TCustomButtonEdit.SetSelLength(AValue: Integer);
@@ -1467,6 +1470,7 @@ begin
   FButtonAlign := BaRight;
   FButtonOnlyWhenFocused := False;
   FDirectInput := True;
+  FIsReadOnly := False;
 
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
