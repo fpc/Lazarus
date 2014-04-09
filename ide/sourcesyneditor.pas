@@ -217,7 +217,7 @@ type
     FMarkupIfDef: TSourceSynEditMarkupIfDef;
     FTopInfoDisplay: TSourceLazSynTopInfoView;
     FTopInfoLastTopLine: Integer;
-    FSrcSynCaretChangedLock: boolean;
+    FSrcSynCaretChangedLock, FSrcSynCaretChangedNeeded: boolean;
     FExtraMarkupLine: TSynEditMarkupSpecialLine;
     FExtraMarkupMgr: TSynEditMarkupManager;
     FTopInfoMarkup: TSynSelectedColor;
@@ -233,6 +233,7 @@ type
     procedure SetHighlightUserWordCount(AValue: Integer);
     procedure SetShowTopInfo(AValue: boolean);
     procedure SetTopInfoMarkup(AValue: TSynSelectedColor);
+    procedure DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure SrcSynCaretChanged(Sender: TObject);
   protected
     procedure DoOnStatusChange(Changes: TSynStatusChanges); override;
@@ -1346,6 +1347,12 @@ end;
 
 { TIDESynEditor }
 
+procedure TIDESynEditor.DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
+begin
+  if FSrcSynCaretChangedNeeded then
+    SrcSynCaretChanged(nil);
+end;
+
 procedure TIDESynEditor.SrcSynCaretChanged(Sender: TObject);
   function RealTopLine: Integer;
   begin
@@ -1363,6 +1370,12 @@ var
 begin
   if (not FShowTopInfo) or (not HandleAllocated) or (TextView.HighLighter = nil) then exit;
   if FSrcSynCaretChangedLock or not(TextView.HighLighter is TSynPasSyn) then exit;
+
+  if TextView.HighLighter.NeedScan then begin
+    FSrcSynCaretChangedNeeded := True;
+    exit;
+  end;
+  FSrcSynCaretChangedNeeded := False;
 
   FSrcSynCaretChangedLock := True;
   try
@@ -1611,6 +1624,8 @@ begin
 
   FTopInfoMarkup := TSynSelectedColor.Create;
   FTopInfoMarkup.Clear;
+
+  ViewedTextBuffer.AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
 
   // Markup for top info hint
   FExtraMarkupLine := TSynEditMarkupSpecialLine.Create(Self);
