@@ -227,6 +227,7 @@ type
     property OnExit: TNotifyEvent read FOnEditExit write FOnEditExit;
     property OnMouseDown: TMouseEvent read FOnEditMouseDown write FOnEditMouseDown;
     property OnKeyPress: TKeyPressEvent read FOnEditKeyPress write FOnEditKeyPress;
+    property OnKeyDown: TKeyEvent read FOnEditKeyDown write FOnEditKeyDown;
     property OnKeyUp: TKeyEvent read FOnEditKeyUp write FOnEditKeyUp;
     property OnMouseEnter: TNotifyEvent read FOnEditMouseEnter write FOnEditMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnEditMouseLeave write FOnEditMouseLeave;
