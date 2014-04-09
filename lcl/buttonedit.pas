@@ -242,6 +242,7 @@ type
     procedure SetFocus; override;
     procedure Undo; virtual;
 
+    property Autosize default True;
     property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
     property CanUndo: Boolean read GetCanUndo;
     property CaretPos: TPoint read GetCaretPos write SetCaretPos;
@@ -1514,6 +1515,7 @@ begin
 
     Parent := Self;
   end;
+  AutoSize := True;
 end;
 
 destructor TCustomButtonEdit.Destroy;
