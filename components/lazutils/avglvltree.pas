@@ -1592,7 +1592,7 @@ var List: PPointer;
   i, OldCount: integer;
 begin
   if (FOnCompare=NewCompare) and (FOnObjectCompare=NewObjectCompare) then exit;
-  if Count<1 then begin
+  if Count<=1 then begin
     FOnCompare:=NewCompare;
     FOnObjectCompare:=NewObjectCompare;
     exit;
