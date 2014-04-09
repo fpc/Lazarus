@@ -43,7 +43,6 @@ components/tdirectoryedit.png
 components/tdrawgrid.png
 components/tedit.png
 components/teditbutton.png
-components/tbuttonedit.png
 components/teventlog.png
 components/tfilelistbox.png
 components/tfilenameedit.png

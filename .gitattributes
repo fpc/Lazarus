@@ -5578,7 +5578,6 @@ images/components/tbevel.png -text svneol=unset#image/png
 images/components/tbitbtn.png -text svneol=unset#image/png
 images/components/tbufdataset.png -text svneol=unset#image/png
 images/components/tbutton.png -text svneol=unset#image/png
-images/components/tbuttonedit.png -text svneol=unset#image/png
 images/components/tbuttonpanel.png -text svneol=unset#image/png
 images/components/tcalcedit.png -text svneol=unset#image/png
 images/components/tcalculatordialog.png -text svneol=unset#image/png
@@ -6027,7 +6026,6 @@ lcl/arrow.pp svneol=native#text/pascal
 lcl/asyncprocess.pp svneol=native#text/plain
 lcl/barchart.pp svneol=native#text/pascal
 lcl/btn_icons.res -text
-lcl/buttonedit.pas svneol=native#text/pascal
 lcl/buttonpanel.pas svneol=native#text/pascal
 lcl/buttons.pp svneol=native#text/pascal
 lcl/calendar.pp svneol=native#text/pascal
