@@ -1949,13 +1949,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TControl.GetChildsRect(Scrolled: boolean): TRect;
+  function TControl.GetChildrenRect(Scrolled: boolean): TRect;
 
   Returns the Client rectangle relative to the controls left, top.
   If Scrolled is true, the rectangle is moved by the current scrolling values
   (for an example see TScrollingWincontrol).
 ------------------------------------------------------------------------------}
-function TControl.GetChildsRect(Scrolled: boolean): TRect;
+function TControl.GetChildrenRect(Scrolled: boolean): TRect;
 var
   ScrolledOffset: TPoint;
 begin

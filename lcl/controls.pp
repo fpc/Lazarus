@@ -1532,7 +1532,7 @@ type
     function  ControlToScreen(const APoint: TPoint): TPoint;
     function  ClientToParent(const Point: TPoint; AParent: TWinControl = nil): TPoint;
     function  ParentToClient(const Point: TPoint; AParent: TWinControl = nil): TPoint;
-    function GetChildsRect(Scrolled: boolean): TRect; virtual;
+    function GetChildrenRect(Scrolled: boolean): TRect; virtual;
     procedure Show;
     procedure Update; virtual;
     function HandleObjectShouldBeVisible: boolean; virtual;
@@ -2141,7 +2141,7 @@ type
     procedure InvalidateClientRectCache(WithChildControls: boolean);
     function ClientRectNeedsInterfaceUpdate: boolean;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
-    function  GetChildsRect(Scrolled: boolean): TRect; override;
+    function  GetChildrenRect(Scrolled: boolean): TRect; override;
     procedure DisableAlign;
     procedure EnableAlign;
     procedure ReAlign; // realign all children

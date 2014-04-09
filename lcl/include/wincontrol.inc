@@ -4060,13 +4060,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TWinControl.GetChildsRect(Scrolled: boolean): TRect;
+  function TWinControl.GetChildrenRect(Scrolled: boolean): TRect;
 
   Returns the Client rectangle relative to the controls left, top.
   If Scrolled is true, the rectangle is moved by the current scrolling values
   (for an example see TScrollingWincontrol).
 ------------------------------------------------------------------------------}
-function TWinControl.GetChildsRect(Scrolled: boolean): TRect;
+function TWinControl.GetChildrenRect(Scrolled: boolean): TRect;
 var
   ScrolledOffset: TPoint;
 begin
@@ -4080,7 +4080,7 @@ begin
       inc(Result.Bottom,ScrolledOffset.Y);
     end;
   end else
-    Result:=inherited GetChildsRect(Scrolled);
+    Result:=inherited GetChildrenRect(Scrolled);
 end;
 
 {------------------------------------------------------------------------------
@@ -5056,7 +5056,7 @@ var
                 (ControlPos.X < Width) and (ControlPos.Y < Height);
       if Result and (capfOnlyClientAreas in Flags) then
       begin
-        ControlClientBounds := GetChildsRect(false);
+        ControlClientBounds := GetChildrenRect(false);
         Result:=PtInRect(ControlClientBounds, ControlPos);
       end;
 

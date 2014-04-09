@@ -260,7 +260,7 @@ begin
   Result := -1;
   if Panels.Count = 0 then
     Exit;
-  R := GetChildsRect(False);
+  R := GetChildrenRect(False);
   P := Point(X, Y);
   if not PtInRect(R, P) then
     Exit;
