@@ -932,8 +932,6 @@ end;
 { TDbgWinThread }
 
 procedure TDbgWinThread.LoadRegisterValues;
-var
-  FlagS: string;
 begin
   with GCurrentContext^ do
   begin
@@ -947,26 +945,8 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['edi'].SetValue(Edi, IntToStr(Edi));
     FRegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(Eip, IntToStr(Eip));
 
-    FlagS := '';
-    if EFlags and (1 shl 0) <> 0 then FlagS := FlagS + 'CF ';
-    if EFlags and (1 shl 2) <> 0 then FlagS := FlagS + 'PF ';
-    if EFlags and (1 shl 4) <> 0 then FlagS := FlagS + 'AF ';
-    if EFlags and (1 shl 6) <> 0 then FlagS := FlagS + 'ZF ';
-    if EFlags and (1 shl 7) <> 0 then FlagS := FlagS + 'SF ';
-    if EFlags and (1 shl 8) <> 0 then FlagS := FlagS + 'TF ';
-    if EFlags and (1 shl 9) <> 0 then FlagS := FlagS + 'IF ';
-    if EFlags and (1 shl 10) <> 0 then FlagS := FlagS + 'DF ';
-    if EFlags and (1 shl 11) <> 0 then FlagS := FlagS + 'OF ';
-    if (EFlags shr 12) and 3 <> 0 then FlagS := FlagS + 'IOPL=' + IntToStr((EFlags shr 12) and 3);
-    if EFlags and (1 shl 14) <> 0 then FlagS := FlagS + 'NT ';
-    if EFlags and (1 shl 16) <> 0 then FlagS := FlagS + 'RF ';
-    if EFlags and (1 shl 17) <> 0 then FlagS := FlagS + 'VM ';
-    if EFlags and (1 shl 18) <> 0 then FlagS := FlagS + 'AC ';
-    if EFlags and (1 shl 19) <> 0 then FlagS := FlagS + 'VIF ';
-    if EFlags and (1 shl 20) <> 0 then FlagS := FlagS + 'VIP ';
-    if EFlags and (1 shl 21) <> 0 then FlagS := FlagS + 'ID ';
+    FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(EFlags);
 
-    FRegisterValueList.DbgRegisterAutoCreate['eflags'].SetValue(EFlags, trim(FlagS));
     FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(SegCs, IntToStr(SegCs));
     FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(SegSs, IntToStr(SegSs));
     FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(SegDs, IntToStr(SegDs));

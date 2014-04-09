@@ -57,6 +57,7 @@ type
   public
     constructor Create(AName: String);
     procedure SetValue(ANumValue: TDBGPtr; AStrValue: string);
+    procedure Setx86EFlagsValue(ANumValue: TDBGPtr);
     property Name: string read FName;
     property NumValue: TDBGPtr read FValue;
     property StrValue: string read FStrValue;
@@ -362,6 +363,32 @@ procedure TDbgRegisterValue.SetValue(ANumValue: TDBGPtr; AStrValue: string);
 begin
   FStrValue:=AStrValue;
   FNuwValue:=ANumValue;
+end;
+
+procedure TDbgRegisterValue.Setx86EFlagsValue(ANumValue: TDBGPtr);
+var
+  FlagS: string;
+begin
+  FlagS := '';
+  if ANumValue and (1 shl 0) <> 0 then FlagS := FlagS + 'CF ';
+  if ANumValue and (1 shl 2) <> 0 then FlagS := FlagS + 'PF ';
+  if ANumValue and (1 shl 4) <> 0 then FlagS := FlagS + 'AF ';
+  if ANumValue and (1 shl 6) <> 0 then FlagS := FlagS + 'ZF ';
+  if ANumValue and (1 shl 7) <> 0 then FlagS := FlagS + 'SF ';
+  if ANumValue and (1 shl 8) <> 0 then FlagS := FlagS + 'TF ';
+  if ANumValue and (1 shl 9) <> 0 then FlagS := FlagS + 'IF ';
+  if ANumValue and (1 shl 10) <> 0 then FlagS := FlagS + 'DF ';
+  if ANumValue and (1 shl 11) <> 0 then FlagS := FlagS + 'OF ';
+  if (ANumValue shr 12) and 3 <> 0 then FlagS := FlagS + 'IOPL=' + IntToStr((ANumValue shr 12) and 3);
+  if ANumValue and (1 shl 14) <> 0 then FlagS := FlagS + 'NT ';
+  if ANumValue and (1 shl 16) <> 0 then FlagS := FlagS + 'RF ';
+  if ANumValue and (1 shl 17) <> 0 then FlagS := FlagS + 'VM ';
+  if ANumValue and (1 shl 18) <> 0 then FlagS := FlagS + 'AC ';
+  if ANumValue and (1 shl 19) <> 0 then FlagS := FlagS + 'VIF ';
+  if ANumValue and (1 shl 20) <> 0 then FlagS := FlagS + 'VIP ';
+  if ANumValue and (1 shl 21) <> 0 then FlagS := FlagS + 'ID ';
+
+  SetValue(ANumValue, trim(FlagS));
 end;
 
 { TDbgInstance }

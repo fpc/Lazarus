@@ -50,6 +50,7 @@ type
     function ReadThreadState: boolean;
   public
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
+    procedure LoadRegisterValues; override;
   end;
 
   { TDbgDarwinProcess }
@@ -145,6 +146,7 @@ begin
     begin
     Log('Failed to call thread_get_state for thread %d. Mach error: '+mach_error_string(aKernResult),[Id]);
     end;
+  FRegisterValueListValid:=false;
 end;
 
 function TDbgDarwinThread.ResetInstructionPointerAfterBreakpoint: boolean;
@@ -165,6 +167,32 @@ begin
     Log('Failed to call thread_set_state for thread %d. Mach error: '+mach_error_string(aKernResult),[Id]);
     end;
   result := true;
+end;
+
+procedure TDbgDarwinThread.LoadRegisterValues;
+begin
+  with FThreadState do
+    begin
+    FRegisterValueList.DbgRegisterAutoCreate['eax'].SetValue(__eax, IntToStr(__eax));
+    FRegisterValueList.DbgRegisterAutoCreate['ecx'].SetValue(__ecx, IntToStr(__ecx));
+    FRegisterValueList.DbgRegisterAutoCreate['edx'].SetValue(__edx, IntToStr(__edx));
+    FRegisterValueList.DbgRegisterAutoCreate['ebx'].SetValue(__ebx, IntToStr(__ebx));
+    FRegisterValueList.DbgRegisterAutoCreate['esp'].SetValue(__esp, IntToStr(__esp));
+    FRegisterValueList.DbgRegisterAutoCreate['ebp'].SetValue(__ebp, IntToStr(__ebp));
+    FRegisterValueList.DbgRegisterAutoCreate['esi'].SetValue(__esi, IntToStr(__esi));
+    FRegisterValueList.DbgRegisterAutoCreate['edi'].SetValue(__edi, IntToStr(__edi));
+    FRegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(__eip, IntToStr(__eip));
+
+    FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(__eflags);
+
+    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(__cs, IntToStr(__cs));
+    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(__ss, IntToStr(__ss));
+    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(__ds, IntToStr(__ds));
+    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(__es, IntToStr(__es));
+    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(__fs, IntToStr(__fs));
+    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(__gs, IntToStr(__gs));
+  end;
+  FRegisterValueListValid:=true;
 end;
 
 { TDbgDarwinProcess }
