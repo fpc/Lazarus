@@ -106,23 +106,28 @@ type
     function GetText: TCaption;
     function IsCustomGlyph : Boolean;
 
-    procedure DoEditClick(Sender: TObject);
-    procedure DoEditDragDrop(Sender, Source: TObject; X,Y: Integer);
-    procedure DoEditDragOver(Sender, Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean);
-    procedure DoEditEditingDone(Sender: TObject);
-    procedure DoEditEndDrag(Sender, Target: TObject; X,Y: Integer);
-    procedure DoEditKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
-    procedure DoEditKeyPress(Sender: TObject; var Key: char);
-    procedure DoEditKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
-    procedure DoEditMouseDown(Sender: TObject; Button: TMouseButton;
+    procedure InternalOnButtonClick(Sender: TObject);
+    procedure InternalOnEditClick(Sender: TObject);
+    procedure InternalOnEditDblClick(Sender: TObject);
+    procedure InternalOnEditChange(Sender: TObject);
+    procedure InternalOnEditDragDrop(Sender, Source: TObject; X,Y: Integer);
+    procedure InternalOnEditDragOver(Sender, Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean);
+    procedure InternalOnEditEditingDone(Sender: TObject);
+    procedure InternalOnEditEnter(Sender: TObject);
+    procedure InternalOnEditExit(Sender: TObject);
+    procedure InternalOnEditEndDrag(Sender, Target: TObject; X,Y: Integer);
+    procedure InternalOnEditKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+    procedure InternalOnEditKeyPress(Sender: TObject; var Key: char);
+    procedure InternalOnEditKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
+    procedure InternalOnEditMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure DoEditMouseUp(Sender: TObject; Button: TMouseButton;
+    procedure InternalOnEditMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure DoEditMouseEnter(Sender: TObject);
-    procedure DoEditMouseLeave(Sender: TObject);
-    procedure DoEditMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure DoEditUtf8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
-    procedure DoEditStartDrag(Sender: TObject; var DragObject: TDragObject);
+    procedure InternalOnEditMouseEnter(Sender: TObject);
+    procedure InternalOnEditMouseLeave(Sender: TObject);
+    procedure InternalOnEditMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure InternalOnEditUtf8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure InternalOnEditStartDrag(Sender: TObject; var DragObject: TDragObject);
 
     procedure SetAlignment(AValue: TAlignment);
     procedure SetAutoSelect(AValue: Boolean);
@@ -162,13 +167,29 @@ type
                                      PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
     procedure CheckButtonVisible;
+    procedure ButtonClick; virtual;
+    procedure EditChange; virtual;
+    procedure EditClick;
+    procedure EditDblClick; virtual;
+    procedure EditDragDrop(Source: TObject; X,Y: Integer);
+    procedure EditDragOver(Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean);
+    procedure EditEditingDone;
+    procedure EditEndDrag(Target: TObject; X,Y: Integer);
+    procedure EditEnter; virtual;
+    procedure EditExit; virtual;
+    procedure EditKeyDown(var Key: word; Shift: TShiftState);
+    procedure EditKeyPress( var Key: char);
+    procedure EditKeyUp(var Key: word; Shift: TShiftState);
+    procedure EditMouseDown(Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure EditMouseUp(Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure EditMouseEnter;
+    procedure EditMouseLeave;
+    procedure EditMouseMove(Shift: TShiftState; X, Y: Integer);
+    procedure EditUtf8KeyPress(var UTF8Key: TUTF8Char);
+    procedure EditStartDrag(var DragObject: TDragObject);
 
-    procedure DoButtonClick(Sender: TObject);  virtual;
-
-    procedure DoEditDblClick(Sender: TObject); virtual;
-    procedure DoEditEnter(Sender: TObject); virtual;
-    procedure DoEditExit(Sender: TObject); virtual;
-    procedure DoEditTextChange(Sender: TObject); virtual;
 
     procedure Loaded; override;
     procedure SetAutoSize(AValue: Boolean); override;
@@ -281,6 +302,7 @@ type
     property OnButtonClick;
     property OnChange;
     property OnClick;
+    property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
     property OnContextPopup;
@@ -346,10 +368,10 @@ type
     fOnFilterItem: TFilterItemEvent;
     fOnCheckItem: TCheckItemEvent;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure DoEditTextChange(Sender: TObject); override;
-    procedure DoEditEnter(Sender: TObject); override;
-    procedure DoEditExit(Sender: TObject); override;
-    procedure DoButtonClick (Sender: TObject); override;
+    procedure EditChange; override;
+    procedure EditEnter; override;
+    procedure EditExit; override;
+    procedure ButtonClick; override;
     procedure SortAndFilter; virtual; abstract;
     procedure ApplyFilter(Immediately: Boolean = False);
     procedure ApplyFilterCore; virtual; abstract;
@@ -450,9 +472,9 @@ type
     function GetDefaultGlyphName: String; override;
     function CreateDialog(AKind: TDialogKind): TCommonDialog; virtual;
     procedure SaveDialogResult(AKind: TDialogKind; D: TCommonDialog); virtual;
-    procedure DoButtonClick (Sender: TObject); override;
+    procedure ButtonClick; override;
     procedure RunDialog; virtual;
-    procedure DoEditTextChange(Sender: TObject); override;
+    procedure EditChange; override;
     procedure DoFolderChange(Sender:TObject); virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -540,7 +562,7 @@ type
     function GetDefaultGlyphName: String; override;
     function CreateDialog: TCommonDialog; virtual;
     function GetDialogResult(D : TCommonDialog) : String; virtual;
-    procedure DoButtonClick (Sender: TObject); override;
+    procedure ButtonClick; override;
     procedure RunDialog; virtual;
   public
     property AutoSelected;
@@ -631,8 +653,8 @@ type
   protected
     function GetDefaultGlyph: TBitmap; override;
     function GetDefaultGlyphName: String; override;
-    procedure DoButtonClick(Sender: TObject); override;
-    procedure DoEditDblClick(Sender: TObject); override;
+    procedure ButtonClick; override;
+    procedure EditDblClick; override;
     procedure SetDateMask; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -676,6 +698,7 @@ type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnDblClick;
     property OnEditingDone;
     property OnEnter;
     property OnExit;
@@ -717,7 +740,7 @@ type
     FCalcDialog : TForm;
     function GetDefaultGlyph: TBitmap; override;
     function GetDefaultGlyphName: String; override;
-    procedure DoButtonClick (Sender: TObject); override;
+    procedure ButtonClick; override;
     procedure RunDialog; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -817,113 +840,110 @@ end;
 
 { TCustomButtonEdit }
 
-procedure TCustomButtonEdit.DoButtonClick(Sender: TObject);
+procedure TCustomButtonEdit.InternalOnButtonClick(Sender: TObject);
 begin
-  if ReadOnly then
-    Exit;
-  if Assigned(FOnButtonClick) then
-    FOnButtonClick(Self);
+  ButtonClick;
 end;
 
-procedure TCustomButtonEdit.DoEditTextChange(Sender: TObject);
+procedure TCustomButtonEdit.InternalOnEditChange(Sender: TObject);
 begin
-  if Assigned(FOnEditChange) then FOnEditChange(Self);
+  EditChange;
 end;
 
-procedure TCustomButtonEdit.DoEditClick(Sender: TObject);
+procedure TCustomButtonEdit.InternalOnEditClick(Sender: TObject);
 begin
-  if Assigned(FOnEditClick) then FOnEditClick(Self);
+  EditClick;
 end;
 
-procedure TCustomButtonEdit.DoEditDblClick(Sender: TObject);
+procedure TCustomButtonEdit.InternalOnEditDblClick(Sender: TObject);
 begin
-  if Assigned(FOnEditDblClick) then FOnEditDblClick(Self);
+  EditDblClick;
 end;
 
-procedure TCustomButtonEdit.DoEditDragDrop(Sender, Source: TObject; X, Y: Integer);
+procedure TCustomButtonEdit.InternalOnEditDragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
-  if Assigned(FOnEditDragDrop) then FOnEditDragDrop(Self, Source, X, Y);
+  EditDragDrop(Source, X, Y);
 end;
 
-procedure TCustomButtonEdit.DoEditDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+procedure TCustomButtonEdit.InternalOnEditDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-  if Assigned(FOnEditDragOver) then FOnEditDragOver(Self, Source, X, Y, State, Accept);
+  EditDragOver(Source, X, Y, State, Accept);
 end;
 
-procedure TCustomButtonEdit.DoEditEditingDone(Sender: TObject);
+procedure TCustomButtonEdit.InternalOnEditEditingDone(Sender: TObject);
 begin
-  if Assigned(FOnEditEditingDone) then FOnEditEditingDone(Self);
+  EditEditingDone;
 end;
 
-procedure TCustomButtonEdit.DoEditEndDrag(Sender, Target: TObject; X, Y: Integer);
+procedure TCustomButtonEdit.InternalOnEditEndDrag(Sender, Target: TObject; X, Y: Integer);
 begin
-  if Assigned(FOnEditEndDrag) then FOnEditEndDrag(Self, Target, X, Y);
+  EditEndDrag(Target, X, Y);
 end;
 
-procedure TCustomButtonEdit.DoEditEnter(Sender: TObject);
+procedure TCustomButtonEdit.InternalOnEditEnter(Sender: TObject);
 begin
-  if Assigned(FOnEditEnter) then FOnEditEnter(Self);
+  EditEnter;
 end;
 
-procedure TCustomButtonEdit.DoEditExit(Sender: TObject);
+procedure TCustomButtonEdit.InternalOnEditExit(Sender: TObject);
 begin
-  if Assigned(FOnEditExit) then FOnEditExit(Self);
+  EditExit;
 end;
 
-procedure TCustomButtonEdit.DoEditKeyDown(Sender: TObject; var Key: word;
+procedure TCustomButtonEdit.InternalOnEditKeyDown(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
-  if Assigned(FOnEditKeyDown) then FOnEditKeyDown(Self, Key, Shift);
+  EditKeyDown(Key, Shift);
 end;
 
-procedure TCustomButtonEdit.DoEditKeyPress(Sender: TObject; var Key: char);
+procedure TCustomButtonEdit.InternalOnEditKeyPress(Sender: TObject; var Key: char);
 begin
-  if Assigned(FOnEditKeyPress) then FOnEditKeyPress(Self, Key);
+  EditKeyPress(Key);
 end;
 
-procedure TCustomButtonEdit.DoEditKeyUp(Sender: TObject; var Key: word;
+procedure TCustomButtonEdit.InternalOnEditKeyUp(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
-  if Assigned(FOnEditKeyUp) then FOnEditKeyUp(Self, Key, Shift);
+  EditKeyUp(Key, Shift);
 end;
 
-procedure TCustomButtonEdit.DoEditMouseDown(Sender: TObject;
+procedure TCustomButtonEdit.InternalOnEditMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if Assigned(FOnEditMouseDown) then FOnEditMouseDown(Self, Button, Shift, X, Y);
+  EditMouseDown(Button, Shift, X, Y);
 end;
 
-procedure TCustomButtonEdit.DoEditMouseUp(Sender: TObject;
+procedure TCustomButtonEdit.InternalOnEditMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if Assigned(FOnEditMouseUp) then FOnEditMouseUp(Self, Button, Shift, X, Y);
+  EditMouseUp(Button, Shift, X, Y);
 end;
 
-procedure TCustomButtonEdit.DoEditMouseEnter(Sender: TObject);
+procedure TCustomButtonEdit.InternalOnEditMouseEnter(Sender: TObject);
 begin
-  if Assigned(FOnEditMouseEnter) then FOnEditMouseEnter(Self);
+  EditMouseEnter;
 end;
 
-procedure TCustomButtonEdit.DoEditMouseLeave(Sender: TObject);
+procedure TCustomButtonEdit.InternalOnEditMouseLeave(Sender: TObject);
 begin
-  if Assigned(FOnEditMouseLeave) then FOnEditMouseLeave(Self);
+  EditMouseLeave;
 end;
 
-procedure TCustomButtonEdit.DoEditMouseMove(Sender: TObject;
+procedure TCustomButtonEdit.InternalOnEditMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if Assigned(FOnEditMouseMove) then FOnEditMouseMove(Self, Shift, X, Y);
+  EditMouseMove(Shift, X, Y);
 end;
 
-procedure TCustomButtonEdit.DoEditUtf8KeyPress(Sender: TObject;
+procedure TCustomButtonEdit.InternalOnEditUtf8KeyPress(Sender: TObject;
   var UTF8Key: TUTF8Char);
 begin
-  if Assigned(FOnEditUtf8KeyPress) then FOnEditUtf8KeyPress(Self, Utf8Key);
+  EditUtf8KeyPress(UTF8Key);
 end;
 
-procedure TCustomButtonEdit.DoEditStartDrag(Sender: TObject; var DragObject: TDragObject);
+procedure TCustomButtonEdit.InternalOnEditStartDrag(Sender: TObject; var DragObject: TDragObject);
 begin
-  if Assigned(FOnEditStartDrag) then FOnEditStartDrag(Self, DragObject);
+  EditStartDrag(DragObject);
 end;
 
 function TCustomButtonEdit.GetButtonWidth: Integer;
@@ -1297,6 +1317,112 @@ begin
     FButton.Visible := CalcButtonVisible;
 end;
 
+procedure TCustomButtonEdit.ButtonClick;
+begin
+  if ReadOnly then
+    Exit;
+  if Assigned(FOnButtonClick) then
+    FOnButtonClick(Self);
+end;
+
+procedure TCustomButtonEdit.EditChange;
+begin
+  if Assigned(FOnEditChange) then FOnEditChange(Self);
+end;
+
+procedure TCustomButtonEdit.EditClick;
+begin
+  if Assigned(FOnEditClick) then FOnEditClick(Self);
+end;
+
+procedure TCustomButtonEdit.EditDblClick;
+begin
+  if Assigned(FOnEditDblClick) then FOnEditDblClick(Self);
+end;
+
+procedure TCustomButtonEdit.EditDragDrop(Source: TObject; X, Y: Integer);
+begin
+  if Assigned(FOnEditDragDrop) then FOnEditDragDrop(Self, Source, X, Y);
+end;
+
+procedure TCustomButtonEdit.EditDragOver(Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  if Assigned(FOnEditDragOver) then FOnEditDragOver(Self, Source, X, Y, State, Accept);
+end;
+
+procedure TCustomButtonEdit.EditEditingDone;
+begin
+  if Assigned(FOnEditEditingDone) then FOnEditEditingDone(Self);
+end;
+
+procedure TCustomButtonEdit.EditEndDrag(Target: TObject; X, Y: Integer);
+begin
+  if Assigned(FOnEditEndDrag) then FOnEditEndDrag(Self, Target, X, Y);
+end;
+
+procedure TCustomButtonEdit.EditEnter;
+begin
+  if Assigned(FOnEditEnter) then FOnEditEnter(Self);
+end;
+
+procedure TCustomButtonEdit.EditExit;
+begin
+  if Assigned(FOnEditExit) then FOnEditExit(Self);
+end;
+
+procedure TCustomButtonEdit.EditKeyDown(var Key: word; Shift: TShiftState);
+begin
+  if Assigned(FOnEditKeyDown) then FOnEditKeyDown(Self, Key, Shift);
+end;
+
+procedure TCustomButtonEdit.EditKeyPress(var Key: char);
+begin
+  if Assigned(FOnEditKeyPress) then FOnEditKeyPress(Self, Key);
+end;
+
+procedure TCustomButtonEdit.EditKeyUp(var Key: word; Shift: TShiftState);
+begin
+  if Assigned(FOnEditKeyUp) then FOnEditKeyUp(Self, Key, Shift);
+end;
+
+procedure TCustomButtonEdit.EditMouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Assigned(FOnEditMouseDown) then FOnEditMouseDown(Self, Button, Shift, X, Y);
+end;
+
+procedure TCustomButtonEdit.EditMouseUp(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Assigned(FOnEditMouseUp) then FOnEditMouseUp(Self, Button, Shift, X, Y);
+end;
+
+procedure TCustomButtonEdit.EditMouseEnter;
+begin
+  if Assigned(FOnEditMouseEnter) then FOnEditMouseEnter(Self);
+end;
+
+procedure TCustomButtonEdit.EditMouseLeave;
+begin
+  if Assigned(FOnEditMouseLeave) then FOnEditMouseLeave(Self);
+end;
+
+procedure TCustomButtonEdit.EditMouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  if Assigned(FOnEditMouseMove) then FOnEditMouseMove(Self, Shift, X, Y);
+end;
+
+procedure TCustomButtonEdit.EditUtf8KeyPress(var UTF8Key: TUTF8Char);
+begin
+  if Assigned(FOnEditUtf8KeyPress) then FOnEditUtf8KeyPress(Self, Utf8Key);
+end;
+
+procedure TCustomButtonEdit.EditStartDrag(var DragObject: TDragObject);
+begin
+  if Assigned(FOnEditStartDrag) then FOnEditStartDrag(Self, DragObject);
+end;
+
 procedure TCustomButtonEdit.Loaded;
 begin
   inherited Loaded;
@@ -1347,7 +1473,7 @@ begin
   with FButton do
   begin
     Align := alRight;
-    OnClick := @DoButtonClick;
+    OnClick := @InternalOnButtonClick;
     Parent := Self;
   end;
   B := GetDefaultGlyph;
@@ -1367,24 +1493,24 @@ begin
     Alignment := taLeftJustify;
     ReadOnly := False;
 
-    OnChange := @DoEditTextChange;
-    OnClick := @DoEditClick;
-    OnDblClick := @DoEditDblClick;
-    OnDragDrop := @DoEditDragDrop;
-    OnDragOver := @DoEditDragOver;
-    OnEndDrag := @DoEditEndDrag;
-    OnExit := @DoEditExit;
-    OnEnter := @DoEditEnter;
-    OnKeyDown := @DoEditKeyDown;
-    OnKeyPress := @DoEditKeyPress;
-    OnKeyUp := @DoEditKeyUp;
-    OnMouseDown := @DoEditMouseDown;
-    OnMouseUp := @DoEditMouseUp;
-    OnMouseEnter := @DoEditEnter;
-    OnMouseLeave := @DoEditMouseLeave;
-    OnMouseMove := @DoEditMouseMove;
-    OnStartDrag := @DoEditStartDrag;
-    OnUtf8KeyPress := @DoEditUtf8KeyPress;
+    OnChange := @InternalOnEditChange;
+    OnClick := @InternalOnEditClick;
+    OnDblClick := @InternalOnEditDblClick;
+    OnDragDrop := @InternalOnEditDragDrop;
+    OnDragOver := @InternalOnEditDragOver;
+    OnEndDrag := @InternalOnEditEndDrag;
+    OnExit := @InternalOnEditExit;
+    OnEnter := @InternalOnEditEnter;
+    OnKeyDown := @InternalOnEditKeyDown;
+    OnKeyPress := @InternalOnEditKeyPress;
+    OnKeyUp := @InternalOnEditKeyUp;
+    OnMouseDown := @InternalOnEditMouseDown;
+    OnMouseUp := @InternalOnEditMouseUp;
+    OnMouseEnter := @InternalOnEditEnter;
+    OnMouseLeave := @InternalOnEditMouseLeave;
+    OnMouseMove := @InternalOnEditMouseMove;
+    OnStartDrag := @InternalOnEditStartDrag;
+    OnUtf8KeyPress := @InternalOnEditUtf8KeyPress;
 
     Parent := Self;
   end;
@@ -1555,13 +1681,13 @@ begin
     inherited KeyDown(Key, Shift);
 end;
 
-procedure TCustomControlFilterEdit.DoEditTextChange(Sender: TObject);
+procedure TCustomControlFilterEdit.EditChange;
 begin
   Filter:=Text;
   inherited;
 end;
 
-procedure TCustomControlFilterEdit.DoEditEnter(Sender: TObject);
+procedure TCustomControlFilterEdit.EditEnter;
 begin
 //  inherited;
   fJustActivated:=False;
@@ -1569,14 +1695,14 @@ begin
     Text:='';
 end;
 
-procedure TCustomControlFilterEdit.DoEditExit(Sender: TObject);
+procedure TCustomControlFilterEdit.EditExit;
 begin
   fJustActivated:=False;
   Filter:=Text;
 //  inherited;
 end;
 
-procedure TCustomControlFilterEdit.DoButtonClick(Sender: TObject);
+procedure TCustomControlFilterEdit.ButtonClick;
 begin
   fJustActivated:=False;
   Filter:='';
@@ -1721,9 +1847,9 @@ begin
   end;
 end;
 
-procedure TFileNameEdit.DoButtonClick(Sender: TObject);
+procedure TFileNameEdit.ButtonClick;
 begin
-  inherited DoButtonClick(Sender);
+  inherited ButtonClick;
   RunDialog;
 end;
 
@@ -1750,7 +1876,7 @@ begin
   end
 end;
 
-procedure TFileNameEdit.DoEditTextChange(Sender: TObject);
+procedure TFileNameEdit.EditChange;
 begin
   if FFileNameChangeLock <= 0 then
   begin
@@ -1764,7 +1890,7 @@ begin
       Dec(FFileNameChangeLock);
     end;
   end;
-  inherited DoEditTextChange(Self); //do this _after_ we have updated FFileName
+  inherited EditChange; //do this _after_ we have updated FFileName
 end;
 
 procedure TFileNameEdit.DoFolderChange(Sender: TObject);
@@ -1804,9 +1930,9 @@ begin
 end;
 
 
-procedure TDirectoryEdit.DoButtonClick(Sender: TObject);
+procedure TDirectoryEdit.ButtonClick;
 begin
-  inherited DoButtonClick(Sender);
+  inherited ButtonClick;
   RunDialog;
 end;
 
@@ -1894,12 +2020,12 @@ begin
   Result := ResBtnCalendar;
 end;
 
-procedure TDateEdit.DoButtonClick(Sender: TObject);//or onClick
+procedure TDateEdit.ButtonClick;//or onClick
 var
   PopupOrigin: TPoint;
   ADate: TDateTime;
 begin
-  inherited DoButtonClick(Sender);
+  inherited ButtonClick;
 
   PopupOrigin := ControlToScreen(Point(0, Height));
   ADate := GetDate;
@@ -1909,11 +2035,11 @@ begin
                     @CalendarPopupReturnDate, @CalendarPopupShowHide)
 end;
 
-procedure TDateEdit.DoEditDblClick(Sender: TObject);
+procedure TDateEdit.EditDblClick;
 begin
-  inherited DoEditDblClick(Sender);
+  inherited EditDblClick;
   if not ReadOnly then
-    DoButtonClick(nil);
+    ButtonClick;
 end;
 
 procedure TDateEdit.SetDateMask;
@@ -2093,9 +2219,9 @@ begin
   Result:=FDialogTitle<>rsCalculator;
 end;
 
-procedure TCalcEdit.DoButtonClick(Sender: TObject);
+procedure TCalcEdit.ButtonClick;
 begin
-  inherited DoButtonClick(Sender);
+  inherited ButtonClick;
   RunDialog;
 end;
 
