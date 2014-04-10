@@ -548,6 +548,7 @@ begin
         end
       else
         begin
+        Result := True;
         SetState(dsRun);
         end;
       StartDebugLoop;
