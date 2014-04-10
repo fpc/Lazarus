@@ -1523,6 +1523,7 @@ begin
     Parent := Self;
   end;
   AutoSize := True;
+  Color := {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
 end;
 
 destructor TCustomEditButton.Destroy;
