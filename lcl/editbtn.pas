@@ -59,6 +59,7 @@ type
     FButtonOnlyWhenFocused: Boolean;
     FDirectInput: Boolean;
     FEdit: TBeEdit;
+    FInitialColor: TColor;
     FIsReadOnly: Boolean;
     FFlat: Boolean;
     //Forwarded events from FButton
@@ -1250,7 +1251,10 @@ end;
 
 procedure TCustomEditButton.SetColor(AValue: TColor);
 begin
-  FEdit.Color := AValue;
+  if (csLoading in ComponentState) then
+    FInitialColor := AValue
+  else
+    FEdit.Color := AValue;
 end;
 
 procedure TCustomEditButton.SetCursor(AValue: TCursor);
@@ -1431,6 +1435,11 @@ end;
 procedure TCustomEditButton.Loaded;
 begin
   inherited Loaded;
+  {
+    inherited Loaded sends a CM_PARENTFONTCHANGED message, which then
+    also sets FEdit's color, which is undesired.
+  }
+  if GetColor <> FInitialColor then SetColor(FInitialColor);
   CheckButtonVisible;
 end;
 
@@ -1469,6 +1478,7 @@ begin
   FButton := TSpeedButton.Create(Self);
   FEdit := TBeEdit.Create(Self);
   inherited Create(AOwner);
+  FInitialColor := {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
   BorderStyle := bsNone;
   FButtonAlign := BaRight;
   FButtonOnlyWhenFocused := False;
