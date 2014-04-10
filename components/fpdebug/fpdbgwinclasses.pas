@@ -57,7 +57,7 @@ type
   protected
     procedure LoadRegisterValues; override;
   public
-    function SingleStep: Boolean; virtual;
+    procedure SetSingleStep;
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     function ReadThreadState: boolean;
   end;
@@ -90,7 +90,6 @@ type
     function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean; override;
 
     procedure Interrupt;
-    procedure ContinueDebugEvent(const AThread: TDbgThread; const ADebugEvent: TDebugEvent);
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
     class function StartInstance(AFileName: string; AParams: string): TDbgProcess; override;
@@ -316,23 +315,6 @@ begin
   end;
 end;
 
-procedure TDbgWinProcess.ContinueDebugEvent(const AThread: TDbgThread; const ADebugEvent: TDebugEvent);
-begin
-  case ADebugEvent.dwDebugEventCode of
-    EXCEPTION_DEBUG_EVENT: begin
-      case ADebugEvent.Exception.ExceptionRecord.ExceptionCode of
-        EXCEPTION_BREAKPOINT: begin
-          if AThread = nil then Exit;
-          if FCurrentBreakpoint = nil then Exit;
-          if AThread.SingleStepping then Exit;
-          AThread.SingleStep;
-          FReEnableBreakStep := True;
-        end;
-      end;
-    end;
-  end;
-end;
-
 { ------------------------------------------------------------------
   HandleDebugEvent
 
@@ -389,11 +371,6 @@ function TDbgWinProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolea
 begin
   Result := False;
   case ADebugEvent.dwDebugEventCode of
-    EXCEPTION_DEBUG_EVENT: begin
-      case ADebugEvent.Exception.ExceptionRecord.ExceptionCode of
-        EXCEPTION_SINGLE_STEP: Result := DoSingleStep;
-      end;
-    end;
     CREATE_THREAD_DEBUG_EVENT: begin
       AddThread(ADebugEvent.dwThreadId, ADebugEvent.CreateThread)
     end;
@@ -437,14 +414,13 @@ end;
 
 function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean;
 begin
-  if (AState = dsPause)
-  then begin
-    TDbgWinProcess(AProcess).ContinueDebugEvent(AThread, MDebugEvent);
-  end;
-
   case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
    EXCEPTION_BREAKPOINT,
-   EXCEPTION_SINGLE_STEP: Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
+   EXCEPTION_SINGLE_STEP: begin
+     if (AThread.SingleStepping) or assigned(FCurrentBreakpoint) then
+       TDbgWinThread(AThread).SetSingleStep;
+     Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
+   end
   else
     Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
   end;
@@ -453,7 +429,7 @@ end;
 
 function TDbgWinProcess.WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean;
 begin
-  result := Windows.WaitForDebugEvent(MDebugEvent, 10);
+  result := Windows.WaitForDebugEvent(MDebugEvent, INFINITE);
   ProcessIdentifier:=MDebugEvent.dwProcessId;
   ThreadIdentifier:=MDebugEvent.dwThreadId;
 end;
@@ -780,6 +756,20 @@ begin
                 result := deException;
               end;
             end;
+          end;
+          EXCEPTION_SINGLE_STEP: begin
+            if assigned(FCurrentBreakpoint) then
+            begin
+              FCurrentBreakpoint.SetBreak;
+              FCurrentBreakpoint:=nil;
+              if FMainThread.SingleStepping then
+                result := deBreakpoint
+              else
+                result := deInternalContinue;
+            end
+            else
+              result := deBreakpoint;
+            FMainThread.SingleStepping := False;
           end
         else begin
           HandleException(MDebugEvent);
@@ -957,7 +947,7 @@ begin
   FRegisterValueListValid:=true;
 end;
 
-function TDbgWinThread.SingleStep: Boolean;
+procedure TDbgWinThread.SetSingleStep;
 var
   _UC: record
     C: TContext;
@@ -985,8 +975,6 @@ begin
     Log('Thread %u: Unable to set context', [ID]);
     Exit;
   end;
-
-  Inherited;
 end;
 
 function TDbgWinThread.ResetInstructionPointerAfterBreakpoint: boolean;

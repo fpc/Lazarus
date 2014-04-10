@@ -152,6 +152,10 @@ var
   Sym: TFpDbgSymbol;
 
 begin
+  Result := False;
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then
+    exit;
+
   AnEntry:=nil;
   ARange := TDBGDisassemblerEntryRange.Create;
   ARange.RangeStartAddr:=AnAddr;
@@ -553,6 +557,13 @@ begin
         FDbgController.Stop;
         result := true;
       end;
+    dcStepIntoInstr:
+      begin
+        FDbgController.StepIntoStr;
+        SetState(dsRun);
+        StartDebugLoop;
+        result := true;
+      end;
   end; {case}
 end;
 
@@ -653,7 +664,7 @@ end;
 
 function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;
 begin
-  Result:=[dcRun, dcStop];
+  Result:=[dcRun, dcStop, dcStepIntoInstr];
 end;
 
 end.

@@ -110,7 +110,7 @@ type
     function SingleStep: Boolean; virtual;
     property ID: Integer read FID;
     property Handle: THandle read FHandle;
-    property SingleStepping: boolean read FSingleStepping;
+    property SingleStepping: boolean read FSingleStepping write FSingleStepping;
     property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
   end;
   TDbgThreadClass = class of TDbgThread;
@@ -706,6 +706,7 @@ end;
 function TDbgThread.SingleStep: Boolean;
 begin
   FSingleStepping := True;
+  Result := true;
 end;
 
 { TDbgBreak }
