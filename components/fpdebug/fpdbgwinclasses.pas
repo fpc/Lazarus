@@ -1017,6 +1017,7 @@ begin
   Context^.ContextFlags := CONTEXT_CONTROL;
   {$ifdef cpui386}
   Dec(Context^.Eip);
+  dec(GCurrentContext^.Eip);
   {$else}
   Dec(Context^.Rip);
   {$endif}
