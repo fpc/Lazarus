@@ -181,7 +181,7 @@ var
 procedure IDEMenuClicked(Sender: TObject);
 begin
   UseGDB := (MenuCmd.MenuItem <> nil) and MenuCmd.MenuItem.Checked;
-  if CurrentDebugger <> nil then
+  if (CurrentDebugger <> nil) and (CurrentDebugger.Watches <> nil) then
     CurrentDebugger.Watches.CurrentWatches.ClearValues;
 end;
 
@@ -1102,7 +1102,6 @@ begin
   FWatchEvalList := TList.Create;
   inherited Create(AExternalDebugger);
   CurrentDebugger := self;
-  IDEMenuClicked(nil);
 end;
 
 destructor TFpGDBMIDebugger.Destroy;
