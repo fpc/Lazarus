@@ -49,17 +49,20 @@ type
 
   TDbgRegisterValue = class
   private
+    FDwarfIdx: cardinal;
     FName: string;
-    FNuwValue: TDBGPtr;
+    FNumValue: TDBGPtr;
+    FSize: byte;
     FStrValue: string;
-    FValue: TDBGPtr;
   public
     constructor Create(AName: String);
-    procedure SetValue(ANumValue: TDBGPtr; AStrValue: string);
+    procedure SetValue(ANumValue: TDBGPtr; AStrValue: string; ASize: byte; ADwarfIdx: cardinal);
     procedure Setx86EFlagsValue(ANumValue: TDBGPtr);
     property Name: string read FName;
-    property NumValue: TDBGPtr read FValue;
+    property NumValue: TDBGPtr read FNumValue;
     property StrValue: string read FStrValue;
+    property Size: byte read FSize;
+    property DwarfIdx: cardinal read FDwarfIdx;
   end;
 
   TGDbgRegisterValueList = specialize TFPGList<TDbgRegisterValue>;
@@ -72,6 +75,7 @@ type
     function GetDbgRegisterAutoCreate(AName: string): TDbgRegisterValue;
   public
     property DbgRegisterAutoCreate[AName: string]: TDbgRegisterValue read GetDbgRegisterAutoCreate;
+    function FindRegisterByDwarfIndex(AnIdx: cardinal): TDbgRegisterValue;
   end;
 
   TDbgProcess = class;
@@ -305,25 +309,38 @@ end;
 
 function TDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
 begin
-  FDbgProcess.ReadData(AnAddress, ASize, ADest^);
+  result := FDbgProcess.ReadData(AnAddress, ASize, ADest^);
 end;
 
 function TDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr;
   ASize: Cardinal; ADest: Pointer): Boolean;
 begin
-  FDbgProcess.ReadData(AnAddress, ASize, ADest^);
+  result := FDbgProcess.ReadData(AnAddress, ASize, ADest^);
 end;
 
 function TDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean;
+var
+  ARegister: TDbgRegisterValue;
 begin
-  result := false;
-  // ToDo: Link the Dwarf-register-numbers to the actual registers.
-  // AValue:=FDbgProcess.MainThread.RegisterValueList.GetDbgRegister('eax').NumValue;
+  ARegister:=FDbgProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
+  if assigned(ARegister) then
+    begin
+    AValue := ARegister.NumValue;
+    result := true;
+    end
+  else
+    result := false;
 end;
 
 function TDbgMemReader.RegisterSize(ARegNum: Cardinal): Integer;
+var
+  ARegister: TDbgRegisterValue;
 begin
-  result := 8;
+  ARegister:=FDbgProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
+  if assigned(ARegister) then
+    result := ARegister.Size
+  else
+    result := sizeof(pointer);
 end;
 
 { TDbgRegisterValueList }
@@ -351,6 +368,19 @@ begin
     end;
 end;
 
+function TDbgRegisterValueList.FindRegisterByDwarfIndex(AnIdx: cardinal): TDbgRegisterValue;
+var
+  i: Integer;
+begin
+  for i := 0 to Count-1 do
+    if Items[i].DwarfIdx=AnIdx then
+    begin
+      result := Items[i];
+      exit;
+    end;
+  result := nil;
+end;
+
 { TDbgRegisterValue }
 
 constructor TDbgRegisterValue.Create(AName: String);
@@ -358,10 +388,13 @@ begin
   FName:=AName;
 end;
 
-procedure TDbgRegisterValue.SetValue(ANumValue: TDBGPtr; AStrValue: string);
+procedure TDbgRegisterValue.SetValue(ANumValue: TDBGPtr; AStrValue: string;
+  ASize: byte; ADwarfIdx: Cardinal);
 begin
   FStrValue:=AStrValue;
-  FNuwValue:=ANumValue;
+  FNumValue:=ANumValue;
+  FSize:=ASize;
+  FDwarfIdx:=ADwarfIdx;
 end;
 
 procedure TDbgRegisterValue.Setx86EFlagsValue(ANumValue: TDBGPtr);
@@ -387,7 +420,7 @@ begin
   if ANumValue and (1 shl 20) <> 0 then FlagS := FlagS + 'VIP ';
   if ANumValue and (1 shl 21) <> 0 then FlagS := FlagS + 'ID ';
 
-  SetValue(ANumValue, trim(FlagS));
+  SetValue(ANumValue, trim(FlagS),4,-1);
 end;
 
 { TDbgInstance }

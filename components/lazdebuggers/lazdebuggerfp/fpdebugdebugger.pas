@@ -223,7 +223,7 @@ begin
   for i := 0 to ARegisterList.Count-1 do
     begin
     ARegisterValue := ARegisters.EntriesByName[ARegisterList[i].Name];
-    ARegisterValue.ValueObj.SetAsNum(ARegisterList[i].NumValue, SizeOf(ARegisterList[i].NumValue));
+    ARegisterValue.ValueObj.SetAsNum(ARegisterList[i].NumValue, ARegisterList[i].Size);
     ARegisterValue.ValueObj.SetAsText(ARegisterList[i].StrValue);
     ARegisterValue.DataValidity:=ddsValid;
     end;
