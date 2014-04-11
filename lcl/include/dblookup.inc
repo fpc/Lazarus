@@ -242,6 +242,7 @@ begin
     Exit;
   Bookmark := ListLinkDataSet.GetBookmark;
   ListLinkDataSet.BlockReadSize := 1;
+  FControlItems.BeginUpdate;
   try
     //needed to handle sqldb.TSQLQuery that does not has a reliable recordcount after Open
     ListLinkDataSet.Last;
@@ -263,6 +264,7 @@ begin
     end;
     SetLength(FListKeys, KeyListCount);
   finally
+    FControlItems.EndUpdate;
     ListLinkDataSet.GotoBookmark(Bookmark);
     ListLinkDataSet.FreeBookmark(Bookmark);
     ListLinkDataSet.BlockReadSize := 0;
