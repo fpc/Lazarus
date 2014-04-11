@@ -6264,7 +6264,7 @@ begin
     Result:=true;
     if Tool<>nil then Tool.Differ:=true;
   end;
-  //if Tool<>nil then debugln(['TProjectCompilerOptions.CreateDiff AAA1 ',Result]);
+  //if Tool<>nil then debugln(['TProjectCompilerOptions.CreateDiff Before inherited ',Result]);
   if (Tool=nil) and Result then exit;
   if (inherited CreateDiff(CompOpts, Tool)) then
     Result:=true;
