@@ -2801,7 +2801,6 @@ var
   AChar: Char;
   AKeyEvent: QKeyEventH;
   GlobalAction: Integer;
-  QtEdit: IQtEdit;
   {$IFDEF VerboseQtKeys}
   s: String;
   s1: String;
@@ -2833,8 +2832,6 @@ var
     AQtKey := QKeyEvent_key(QKeyEventH(Event));
     Result := not ProcessArrowKeys and ((AQtKey = QtKey_Left) or (AQtKey = QtKey_Right)
       or (AQtKey = QtKey_Up) or (AQtKey = QtKey_Down));
-      // and
-      // Supports(Self, IQtEdit, QtEdit);
   end;
 
 begin
@@ -5512,7 +5509,7 @@ var
 begin
   // qt doesn't return proper autosize for us.QSizePolicy class is missing.
   QPushButton_sizeHint(QPushButtonH(Widget), @Size);
-  {$note qtlcl implementation of buttons autosizing, replace if/when we
+  {qtlcl implementation of buttons autosizing, replace if/when we
    get QSizePolicy class into bindings}
   if Assigned(LCLObject) and LCLObject.AutoSize then
     Size := AutoSizeButtonFromStyle(Size);
