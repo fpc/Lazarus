@@ -13,7 +13,5 @@
     <TestBuildDirectory Value="%Temp%">
     </TestBuildDirectory>
     <Debugger Class="TGDBMIDebugger"/>
-    <DebuggerFilename Value="%LazDir%\mingw\$(TargetCPU)-$(TargetOS)\bin\gdb.exe">
-    </DebuggerFilename>
   </EnvironmentOptions>
 </CONFIG>
