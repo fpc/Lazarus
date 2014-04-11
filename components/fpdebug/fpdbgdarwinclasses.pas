@@ -337,7 +337,7 @@ begin
   aKernResult := mach_vm_read(FTaskPort, AAdress, ASize, PtrUInt(b), cnt);
   if aKernResult <> KERN_SUCCESS then
     begin
-    DebugLn('Failed to read data at address '+FormatAddress(ProcessID)+'. Mach error: '+mach_error_string(aKernResult));
+    DebugLn('Failed to read data at address '+FormatAddress(AAdress)+'. Mach error: '+mach_error_string(aKernResult));
     Exit;
     end;
   System.Move(b^, AData, Cnt);
