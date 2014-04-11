@@ -63,6 +63,7 @@ type
     FProcProcess: TProcess;
     FIsTerminating: boolean;
     function GetDebugAccessRights: boolean;
+    procedure OnForkEvent(Sender : TObject);
   protected
     function InitializeLoader: TDbgImageLoader; override;
   public
@@ -130,7 +131,7 @@ end;
 
 { TDbgDarwinThread }
 
-procedure OnForkEvent;
+procedure TDbgDarwinProcess.OnForkEvent(Sender: TObject);
 begin
   fpPTrace(PTRACE_TRACEME, 0, nil, nil);
 end;
