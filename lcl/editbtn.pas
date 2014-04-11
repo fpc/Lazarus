@@ -174,6 +174,9 @@ type
                                      WithThemeSpace: Boolean); override;
     procedure CheckButtonVisible;
     procedure ButtonClick; virtual;
+
+    procedure DoEnter; override;
+
     procedure EditChange; virtual;
     procedure EditClick;
     procedure EditDblClick; virtual;
@@ -1335,6 +1338,12 @@ begin
     Exit;
   if Assigned(FOnButtonClick) then
     FOnButtonClick(Self);
+end;
+
+procedure TCustomEditButton.DoEnter;
+begin
+  inherited DoEnter;
+  FEdit.SetFocus;
 end;
 
 procedure TCustomEditButton.EditChange;
