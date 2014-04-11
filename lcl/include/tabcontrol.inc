@@ -700,6 +700,8 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
   FTabs := CreateTabNoteBookStrings;
+  //Set FTab's internal NoteBook.TabStop to False, otherwise TTabControl can always be tabbed into (Issue #0021332)
+  TTabControlNoteBookStrings(FTabs).NoteBook.TabStop := False;
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
   BorderWidth:=0;
