@@ -181,7 +181,8 @@ var
 procedure IDEMenuClicked(Sender: TObject);
 begin
   UseGDB := (MenuCmd.MenuItem <> nil) and MenuCmd.MenuItem.Checked;
-  CurrentDebugger.Watches.CurrentWatches.ClearValues;
+  if CurrentDebugger <> nil then
+    CurrentDebugger.Watches.CurrentWatches.ClearValues;
 end;
 
 // This Accessor hack is temporarilly needed / the final version will not show gdb data
@@ -349,6 +350,7 @@ begin
     13:  rname := 'R13';
     14:  rname := 'R14';
     15:  rname := 'R15';
+    16:  rname := 'RIP';
     else
       exit;
   end;
@@ -1100,6 +1102,7 @@ begin
   FWatchEvalList := TList.Create;
   inherited Create(AExternalDebugger);
   CurrentDebugger := self;
+  IDEMenuClicked(nil);
 end;
 
 destructor TFpGDBMIDebugger.Destroy;
