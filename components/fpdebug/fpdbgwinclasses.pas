@@ -769,6 +769,16 @@ begin
             end
             else
               result := deBreakpoint;
+
+            // If there is a breakpoint on this location, handle the breakpoint.
+            // Or else the int3-interrupt instruction won't be cleared and the
+            // breakpoint will be triggered again. (Notice that the location of
+            // the eip-register does not have to be decremented in this case,
+            // see TDbgWinThread.ResetInstructionPointerAfterBreakpoint)
+            if DoBreak(TDbgPtr(MDebugEvent.Exception.ExceptionRecord.ExceptionAddress), MDebugEvent.dwThreadId)
+            then
+              result := deBreakpoint;
+
             FMainThread.SingleStepping := False;
           end
         else begin
@@ -986,6 +996,15 @@ var
   Context: PContext;
 begin
   Result := False;
+
+  // If the location of the breakpoint is reached by single-stepping, there is
+  // no need to decrement the instruction pointer.
+  if MDebugEvent.Exception.ExceptionRecord.ExceptionCode = EXCEPTION_SINGLE_STEP
+  then begin
+    result := true;
+    Exit;
+  end;
+
   Context := AlignPtr(@_UC, $10);
 
   Context^.ContextFlags := CONTEXT_CONTROL;
