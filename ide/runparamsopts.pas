@@ -57,7 +57,7 @@ uses
     files and are able to convert them.
 }
 const
-  RunParamsOptionsVersion = '1';
+  RunParamsOptionsVersion = 1;
 
 type
   {
