@@ -198,6 +198,7 @@ type
 
 
     procedure Loaded; override;
+    procedure Reset; virtual;
     procedure SetAutoSize(AValue: Boolean); override;
     procedure SetColor(AValue: TColor); override;
     procedure SetCursor(AValue: TCursor); override;
@@ -249,6 +250,7 @@ type
     procedure SelectAll;
     procedure SetFocus; override;
     procedure Undo; virtual;
+    procedure ValidateEdit; virtual;
 
     property Autosize default True;
     property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
@@ -1444,6 +1446,11 @@ begin
   CheckButtonVisible;
 end;
 
+procedure TCustomEditButton.Reset;
+begin
+  FEdit.Reset;
+end;
+
 procedure TCustomEditButton.SetGlyph(AValue: TBitmap);
 begin
   FButton.Glyph := AValue;
@@ -1586,6 +1593,11 @@ end;
 procedure TCustomEditButton.Undo;
 begin
   FEdit.Undo;
+end;
+
+procedure TCustomEditButton.ValidateEdit;
+begin
+  FEdit.ValidateEdit;
 end;
 
 { TCustomControlFilterEdit }
