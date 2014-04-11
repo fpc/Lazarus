@@ -46,6 +46,7 @@ type
   TDbgDarwinThread = class(TDbgThread)
   private
     FThreadState: x86_thread_state32_t;
+    FNeedIPDecrement: boolean;
   protected
     function ReadThreadState: boolean;
   public
@@ -155,6 +156,12 @@ var
   aKernResult: kern_return_t;
   new_StateCnt: mach_msg_Type_number_t;
 begin
+  result := true;
+  // If the breakpoint is reached by single-stepping, decrementing the
+  // instruction pointer is not necessary.
+  if not FNeedIPDecrement then
+    Exit;
+
   {$ifdef cpui386}
   Dec(FThreadState.__eip);
   {$else}
@@ -167,7 +174,6 @@ begin
     begin
     Log('Failed to call thread_set_state for thread %d. Mach error: '+mach_error_string(aKernResult),[Id]);
     end;
-  result := true;
 end;
 
 procedure TDbgDarwinThread.LoadRegisterValues;
@@ -454,6 +460,9 @@ end;
 
 function TDbgDarwinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
 
+var
+  ExceptionAddr: TDBGPtr;
+
 begin
   if wifexited(FStatus) or wifsignaled(FStatus) then
     begin
@@ -480,13 +489,25 @@ begin
           begin
           FCurrentBreakpoint.SetBreak;
           FCurrentBreakpoint:=nil;
-          result := deInternalContinue;
+          if FMainThread.SingleStepping then
+            result := deBreakpoint
+          else
+            result := deInternalContinue;
           end
         else
-          begin
           result := deBreakpoint;
-          DoBreak(TDbgDarwinThread(FMainThread).FThreadState.__eip-1, FMainThread.ID);
-          end;
+
+        // Handle the breakpoint also if it is reached by single-stepping.
+        ExceptionAddr:=TDbgDarwinThread(FMainThread).FThreadState.__eip;
+        if not (FMainThread.SingleStepping or assigned(FCurrentBreakpoint)) then
+          begin
+          TDbgDarwinThread(FMainThread).FNeedIPDecrement:=true;
+          dec(ExceptionAddr);
+          end
+        else
+          TDbgDarwinThread(FMainThread).FNeedIPDecrement:=false;
+        if DoBreak(ExceptionAddr, FMainThread.ID) then
+          result := deBreakpoint;
         end;
       SIGBUS:
         begin

@@ -778,8 +778,6 @@ begin
             if DoBreak(TDbgPtr(MDebugEvent.Exception.ExceptionRecord.ExceptionAddress), MDebugEvent.dwThreadId)
             then
               result := deBreakpoint;
-
-            FMainThread.SingleStepping := False;
           end
         else begin
           HandleException(MDebugEvent);
