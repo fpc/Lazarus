@@ -183,7 +183,7 @@ type
     procedure EditEndDrag(Target: TObject; X,Y: Integer);
     procedure EditEnter; virtual;
     procedure EditExit; virtual;
-    procedure EditKeyDown(var Key: word; Shift: TShiftState);
+    procedure EditKeyDown(var Key: word; Shift: TShiftState); virtual;
     procedure EditKeyPress( var Key: char);
     procedure EditKeyUp(var Key: word; Shift: TShiftState);
     procedure EditMouseDown(Button: TMouseButton;
@@ -240,6 +240,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    function Focused: Boolean; virtual;
     procedure Clear;
     procedure ClearSelection; virtual;
     procedure CopyToClipboard; virtual;
@@ -375,7 +376,7 @@ type
     fSelectedPart: TObject;         // Select this node on next update
     fOnFilterItem: TFilterItemEvent;
     fOnCheckItem: TCheckItemEvent;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure EditChange; override;
     procedure EditEnter; override;
     procedure EditExit; override;
@@ -1541,6 +1542,11 @@ begin
   inherited Destroy;
 end;
 
+function TCustomEditButton.Focused: Boolean;
+begin
+  Result := FEdit.Focused;
+end;
+
 procedure TCustomEditButton.Clear;
 begin
   FEdit.Clear;
@@ -1642,8 +1648,8 @@ end;
 
 procedure TCustomControlFilterEdit.FormActivate(Sender: TObject);
 begin
-  fJustActivated:=fParentForm.ActiveControl=Self;
-  if fParentForm.ActiveControl=Self then
+  fJustActivated:=fParentForm.ActiveControl=Self.FEdit;
+  if fParentForm.ActiveControl=Self.FEdit then
     Filter:=Text;
 end;
 
@@ -1684,7 +1690,7 @@ begin
     Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
-procedure TCustomControlFilterEdit.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TCustomControlFilterEdit.EditKeyDown(var Key: Word; Shift: TShiftState);
 var
   Handled: Boolean;
 begin
@@ -1698,7 +1704,7 @@ begin
   if Handled then
     Key:=VK_UNKNOWN
   else
-    inherited KeyDown(Key, Shift);
+    inherited EditKeyDown(Key, Shift);
 end;
 
 procedure TCustomControlFilterEdit.EditChange;
