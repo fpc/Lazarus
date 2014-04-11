@@ -142,7 +142,6 @@ var
   AProcessIdentifier: THandle;
   AThreadIdentifier: THandle;
   AExit: boolean;
-  AState: TFPDState;
 
 begin
   AExit:=false;
@@ -155,7 +154,7 @@ begin
     else
       begin
       AFirstLoop:=false;
-      FCurrentProcess.Continue(FCurrentProcess, FCurrentThread, AState);
+      FCurrentProcess.Continue(FCurrentProcess, FCurrentThread);
       end;
 
     if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then Continue;

@@ -77,7 +77,7 @@ type
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
     procedure TerminateProcess; override;
 
-    function Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean; override;
+    function Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; override;
   end;
@@ -388,8 +388,7 @@ begin
     end;
 end;
 
-function TDbgDarwinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
-  AState: TFPDState): boolean;
+function TDbgDarwinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean;
 var
   e: integer;
 begin

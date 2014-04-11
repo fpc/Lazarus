@@ -93,7 +93,7 @@ type
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
     class function StartInstance(AFileName: string; AParams: string): TDbgProcess; override;
-    function Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean; override;
+    function Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     procedure StartProcess(const AInfo: TCreateProcessDebugInfo);
@@ -412,7 +412,7 @@ begin
 end;
 
 
-function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean;
+function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean;
 begin
   case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
    EXCEPTION_BREAKPOINT,

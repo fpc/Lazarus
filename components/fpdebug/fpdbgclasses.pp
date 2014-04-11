@@ -41,7 +41,6 @@ uses
   FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses, DbgIntfBaseTypes, fgl;
 
 type
-  TFPDState = (dsStop, dsRun, dsPause, dsQuit, dsEvent);
   TFPDEvent = (deExitProcess, deBreakpoint, deException, deCreateProcess, deLoadLibrary, deInternalContinue);
   TFPDMode = (dm32, dm64);
   TOnLog = procedure(AString: string) of object;
@@ -224,7 +223,7 @@ type
     function ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean; virtual;
     function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean; virtual;
 
-    function Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean; virtual;
+    function Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean; virtual;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; virtual; abstract;
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; virtual; abstract;
 
@@ -594,7 +593,7 @@ begin
   result := false;
 end;
 
-function TDbgProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; AState: TFPDState): boolean;
+function TDbgProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean;
 begin
   result := false;
 end;
