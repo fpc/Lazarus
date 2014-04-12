@@ -167,11 +167,11 @@ begin
       FCurrentProcess := FMainProcess;
 
     if not FCurrentProcess.GetThread(AThreadIdentifier, FCurrentThread)
-    then Log('LOOP: Unable to retrieve current thread')
-    else
-      FCurrentThread.SingleStepping:=false;
+    then Log('LOOP: Unable to retrieve current thread');
 
     FPDEvent:=FCurrentProcess.ResolveDebugEvent(FCurrentThread);
+    if assigned(FCurrentThread) then
+      FCurrentThread.SingleStepping:=false;
     case FPDEvent of
       deCreateProcess :
         begin
