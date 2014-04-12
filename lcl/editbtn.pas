@@ -42,9 +42,9 @@ type
 
   TButtonAlign = (BaLeft, BaRight);
 
-  { TBEEdit }
+  { TEbEdit }
 
-  TBeEdit = class(TCustomMaskedit)
+  TEbEdit = class(TCustomMaskedit)
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -58,7 +58,7 @@ type
     FButtonAlign: TButtonAlign;
     FButtonOnlyWhenFocused: Boolean;
     FDirectInput: Boolean;
-    FEdit: TBeEdit;
+    FEdit: TEbEdit;
     FInitialColor: TColor;
     FIsReadOnly: Boolean;
     FFlat: Boolean;
@@ -219,7 +219,7 @@ type
     property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth;
     property Color: TColor read GetColor write SetColor stored True default {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
     property DirectInput : Boolean read GetDirectInput write SetDirectInput default True;
-    property Edit: TBeEdit read FEdit;
+    property Edit: TEbEdit read FEdit;
     property EditMask: String read GetEditMask write SetEditMask;
     property EditText: string read GetEditText write SetEditText;
     property Flat: Boolean read FFlat write SetFlat default False;
@@ -842,15 +842,15 @@ implementation
 
 {$R lcl_edbtnimg.res}
 
-{ TBEEdit }
+{ TEbEdit }
 
-procedure TBeEdit.DoEnter;
+procedure TEbEdit.DoEnter;
 begin
   if (Owner is TCustomEditButton) then TCustomEditButton(Owner).CheckButtonVisible;
   inherited DoEnter;
 end;
 
-procedure TBeEdit.DoExit;
+procedure TEbEdit.DoExit;
 begin
   if (Owner is TCustomEditButton) then TCustomEditButton(Owner).CheckButtonVisible;
   inherited DoExit;
@@ -1514,7 +1514,7 @@ var
   B: TBitmap;
 begin
   FButton := TSpeedButton.Create(Self);
-  FEdit := TBeEdit.Create(Self);
+  FEdit := TEbEdit.Create(Self);
   inherited Create(AOwner);
   FInitialColor := {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
   BorderStyle := bsNone;
