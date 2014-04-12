@@ -5234,6 +5234,8 @@ begin
       Result:=InNodeIdentifier(CurPos.StartPos);
     end;
 
+  ctnUnit:
+    Result:=PositionInSourceName(CleanPos);
   end;
 end;
 

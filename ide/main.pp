@@ -10026,7 +10026,7 @@ begin
   // the first template is the "use default" flag
   CreateUseDefaultsFlagTemplate;
 
-  MainBuildBoss.SetBuildTargetProject1(false);
+  MainBuildBoss.SetBuildTargetProject1(true);
 
   // load include file relationships
   AFilename:=AppendPathDelim(GetPrimaryConfigPath)+CodeToolsIncludeLinkFile;
