@@ -1334,7 +1334,6 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetImage')
   then Exit;
-
   GetCommonTreeViewWidgets({%H-}PGtkWidget(ALV.Handle), Widgets);
   with Widgets^ do
   begin
@@ -1349,7 +1348,6 @@ begin
     else
       ItemRect.height := 1; // force redraw
     gtk_tree_path_free(Path);
-
     if ItemRect.height <> 0 then // item is visible
     begin
       ImgList := TImageList.Create(nil);
@@ -1407,6 +1405,8 @@ begin
                   end;
               end;
               Widgets^.Images.Items[AImageIndex] := pixbuf;
+              if GTK_IS_TREE_VIEW(MainView) then
+                gtk_tree_view_column_queue_resize(gtk_tree_view_get_column(PGtkTreeView(MainView), ASubIndex));
             finally
               BitImage.Free;
             end;
