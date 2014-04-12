@@ -6462,6 +6462,7 @@ var
   dx, dy: integer;
   OldRop: Integer;
   OldBkColor: TColorRef;
+  RestoreClip: Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI StretchMaskBlt]',
@@ -6601,7 +6602,16 @@ begin
       if Rop <> SRCCOPY then
         DstQDC.Rop2 := Integer(Rop);
       try
+        RestoreClip := False;
+        if (SrcRect.Left < DstRect.Left) or (SrcRect.Top < DstRect.Top) and
+          DstQDC.getClipping and DstQDC.getClipRegion.containsRect(SrcRect) then
+        begin
+          RestoreClip := True;
+          DstQDC.setClipping(False);
+        end;
         DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
+        if RestoreClip then
+          DstQDC.setClipping(True);
       finally
         if Rop <> SRCCOPY then
           DstQDC.Rop2 := OldRop;
