@@ -556,6 +556,11 @@ begin
     dcStop:
       begin
         FDbgController.Stop;
+        if state=dsPause then
+          begin
+          SetState(dsRun);
+          StartDebugLoop;
+          end;
         result := true;
       end;
     dcStepIntoInstr:
