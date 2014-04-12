@@ -348,6 +348,7 @@ begin
     Exit;
     end;
   System.Move(b^, AData, Cnt);
+  MaskBreakpointsInReadData(AAdress, ASize, AData);
   result := true;
 end;
 

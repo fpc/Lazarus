@@ -208,6 +208,7 @@ type
     procedure SetExitCode(AValue: DWord);
     function GetLastEventProcessIdentifier: THandle; virtual;
     function DoBreak(BreakpointAddress: TDBGPtr; AThreadID: integer): Boolean;
+    procedure MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData);
   public
     class function StartInstance(AFileName: string; AParams: string): TDbgProcess; virtual;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer); virtual;
@@ -697,6 +698,29 @@ begin
   Result := True;
   if not FCurrentBreakpoint.Hit(AThreadId)
   then FCurrentBreakpoint := nil; // no need for a singlestep if we continue
+end;
+
+procedure TDbgProcess.MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData);
+var
+  BreakLocation: TDBGPtr;
+  Bp: TDbgBreakpoint;
+  DataArr: PByteArray;
+  Iterator: TMapIterator;
+begin
+  iterator := TMapIterator.Create(FBreakMap);
+  try
+    Iterator.First;
+    while not Iterator.EOM do
+    begin
+      Iterator.GetData(bp);
+      BreakLocation := Bp.FLocation;
+      if (BreakLocation >= AAdress) and (BreakLocation < (AAdress+ASize)) then
+        TByteArray(AData)[BreakLocation-AAdress] := Bp.FOrgValue;
+      iterator.Next;
+    end;
+  finally
+    Iterator.Free;
+  end;
 end;
 
 function TDbgProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;

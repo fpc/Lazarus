@@ -233,6 +233,7 @@ begin
   Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @AData, ASize, BytesRead) and (BytesRead = ASize);
 
   if not Result then LogLastError;
+  MaskBreakpointsInReadData(AAdress, ASize, AData);
 end;
 
 function TDbgWinProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;
