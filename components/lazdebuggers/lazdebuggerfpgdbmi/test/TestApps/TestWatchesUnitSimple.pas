@@ -19,10 +19,18 @@ type
   PSimpleEnum1 = ^TSimpleEnum1;
   PSimpleSet1 = ^TSimpleSet1;
 
+  { TSimpleClass0 }
+
+  TSimpleClass0 = class
+    // NO fields // NO param
+    procedure Test0Method;
+  end;
+
   { TSimpleClass1 }
 
-  TSimpleClass1 = class
+  TSimpleClass1 = class(TSimpleClass0)
   public
+    {%region Fields}
     Field_Short1: ShortInt;
     Field_Small1: Smallint;
     Field_Int1: LongInt;
@@ -61,9 +69,11 @@ type
     Field_PBool1, Field_PBool2: PBoolean;
     Field_PEnum1, Field_PEnum2: PSimpleEnum1;
     Field_PSet1, Field_PSet2: PSimpleSet1;
+    {%endregion Fields}
 
     procedure InitFields;
     procedure Test1Method(
+      {%region Param}
       Arg_Short1: ShortInt;
       Arg_Small1: Smallint;
       Arg_Int1: LongInt;
@@ -142,6 +152,7 @@ type
       var VArg_PBool1, VArg_PBool2: PBoolean;
       var VArg_PEnum1, VArg_PEnum2: PSimpleEnum1;
       var VArg_PSet1, VArg_PSet2: PSimpleSet1
+      {%endregion Param}
     );
   end;
 
@@ -152,6 +163,7 @@ type
   end;
 
 var
+  {%region Global}
   SimpleGlob_Short1: ShortInt;
   SimpleGlob_Small1: Smallint;
   SimpleGlob_Int1: LongInt;
@@ -210,6 +222,7 @@ var
   SimpleGlob_P2Bool1, SimpleGlob_P2Bool2: PBoolean;
   SimpleGlob_P2Enum1, SimpleGlob_P2Enum2: PSimpleEnum1;
   SimpleGlob_P2Set1, SimpleGlob_P2Set2: PSimpleSet1;
+  {%endregion Global}
 
 
   // Additional Globals
@@ -229,10 +242,14 @@ var
 
   SimpleGlob_Comp2, SimpleGlob_Comp3: Comp;
 
+  SimpleGlob_Class0: TSimpleClass0;
   SimpleGlob_Class1: TSimpleClass1;
   SimpleGlob_Class2: TSimpleClass2;
 
+  SimpleGlob_Dummy: Integer;
+
 procedure Test1Sub(
+  {%region Param}
   SimpleArg_Short1: ShortInt;
   SimpleArg_Small1: Smallint;
   SimpleArg_Int1: LongInt;
@@ -265,9 +282,10 @@ procedure Test1Sub(
   SimpleArg_Class2: TSimpleClass2;
   var SimpleVArg_Class1: TSimpleClass1;
   var SimpleVArg_Class2: TSimpleClass2
-
+  {%endregion Param}
   );
 var
+  {%region Local}
   Local_Short1: ShortInt;
   Local_Small1: Smallint;
   Local_Int1 : LongInt;
@@ -283,7 +301,7 @@ var
   Local_Ext1: Extended;
 
   SimplePArg_Int1, SimplePVArg_Int1, SimplePLocal_Int1, SimplePGlob_Int1: PLongInt;
-
+  {%endregion Local}
 begin
   Local_Short1 := 39;
   SimpleGlob_Short1  := 29;
@@ -352,7 +370,24 @@ begin
   SimplePLocal_Int1 := @Local_Int1;
   SimplePGlob_Int1  := @SimpleGlob_Int1;
 
-  inc(SimpleVArg_Int1); // BREAK Single 1
+  inc(SimpleGlob_Dummy); // BREAK Single 1
+end;
+
+  procedure Simple_NoneNested;
+  begin
+    inc(SimpleGlob_Dummy); // BREAK Single 2
+  end;
+
+{ TSimpleClass0 }
+
+procedure TSimpleClass0.Test0Method;
+  procedure Nested0;
+  begin
+    inc(SimpleGlob_Dummy); // BREAK Single 10
+  end;
+begin
+    inc(SimpleGlob_Dummy); // BREAK Single 9
+    Nested0;
 end;
 
 { TSimpleClass1 }
@@ -466,6 +501,12 @@ var
   Local_PBool1, Local_PBool2: PBoolean;
   Local_PEnum1, Local_PEnum2: PSimpleEnum1;
   Local_PSet1, Local_PSet2: PSimpleSet1;
+
+  procedure Nested1;
+  begin
+    inc(SimpleGlob_Dummy); // BREAK Single 4
+    Simple_NoneNested;
+  end;
 begin
   InitFields;
 
@@ -567,15 +608,39 @@ begin
   {%endregion VARG}
 
 
-  inc(SimpleGlob_Byte2); // BREAK Single 2
+  inc(SimpleGlob_Dummy); // BREAK Single 3
+  Nested1;
+  Simple_NoneNested;
+  Test0Method;
 end;
 
 { TSimpleClass2 }
 
 procedure TSimpleClass2.Test2Method;
+  procedure Nested2a;
+  begin
+    inc(SimpleGlob_Dummy); // BREAK Single 6
+  end;
+
+  procedure Nested2b(x: Boolean = False);
+    procedure Nested2c;
+    begin
+      inc(SimpleGlob_Dummy); // BREAK Single 7
+      Nested2a;
+    end;
+  begin
+    inc(SimpleGlob_Dummy); // BREAK Single 8
+    if x then
+      Nested2c
+    else
+      Nested2b(True);
+  end;
+
 begin
   InitFields;
-  inc(SimpleGlob_Byte1); // BREAK Single 3
+  inc(SimpleGlob_Dummy); // BREAK Single 5
+  Nested2a;
+  Nested2b;
 end;
 
 procedure Test1;
@@ -604,6 +669,7 @@ begin
   d2 := -2345;
   d3 := -3456;
 
+  SimpleGlob_Class0 := TSimpleClass0.Create;
   SimpleGlob_Class1 := TSimpleClass1.Create;
   SimpleGlob_Class2 := TSimpleClass2.Create;
 
@@ -648,7 +714,6 @@ begin
     i1, i2, i3, i4,   u1, u2, u3, u4,  d1, d2, d3,
     SimpleGlob_Class1, SimpleGlob_Class2, SimpleGlob_Class1, SimpleGlob_Class2
   );
-
 
   {%region global }
   SimpleGlob_Short1    := 11;
@@ -719,9 +784,6 @@ begin
   SimpleGlob_P2Enum2    := @SimpleGlob_Enum2;
   SimpleGlob_P2Set1     := @SimpleGlob_Set1;
   SimpleGlob_P2Set2     := @SimpleGlob_Set2;
-
-
-
 
   SimpleGlob_Class1.Test1Method(
     SimpleGlob_Short1,
@@ -804,7 +866,12 @@ begin
     SimpleGlob_P2Set1, SimpleGlob_P2Set2
 
   );
+
   SimpleGlob_Class2.Test2Method;
+  SimpleGlob_Class2.Test0Method;
+
+  SimpleGlob_Class0.Test0Method;
+
 end;
 
 end.

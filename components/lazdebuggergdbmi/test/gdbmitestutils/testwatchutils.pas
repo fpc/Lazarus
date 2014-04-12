@@ -115,10 +115,11 @@ type
     Result: Array [TSymbolType] of TWatchExpectationResult;
 
     TheWatch: TTestWatch;
-    UserData: Pointer;
+    UserData, UserData2: Pointer;
     OnBeforeTest: TWatchExpectOnBeforeTest;
   end;
   TWatchExpectationArray = array of TWatchExpectation;
+  PWatchExpectationArray = ^TWatchExpectationArray;
 
   { TTestWatchesBase }
 
@@ -418,9 +419,9 @@ begin
 
   // Get Value
   n := Data.TestName;
-  LogToFile('###### ' + n + '######' +LineEnding);
+  LogToFile('###### ' + n + '###### '+adbg.GetLocation.SrcFile+' '+IntToStr(ADbg.GetLocation.SrcLine) +LineEnding);
   if n = '' then n := Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ', ' + dbgs(Data.EvaluateFlags) + ')';
-  Name := Name + ' ' + n;
+  Name := Name + ' ' + n + ' ::: '+adbg.GetLocation.SrcFile+' '+IntToStr(ADbg.GetLocation.SrcLine);
   flag := AWatch <> nil; // test for typeinfo/kind  // Awatch=nil > direct gdb command
   IsValid := True;
   HasTpInfo := True;

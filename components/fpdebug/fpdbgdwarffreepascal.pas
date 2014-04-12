@@ -112,6 +112,7 @@ begin
 
   ParentFpSym := TFpDwarfSymbol.CreateSubClass(AName, InfoEntry);
   ParentFpVal := ParentFpSym.Value;
+  ApplyContext(ParentFpVal);
   //TFpDwarfSymbol(ADbgValue.DbgSymbol).ParentTypeInfo := TFpDwarfSymbolValueProc(FSymbol);
   if not (svfOrdinal in ParentFpVal.FieldFlags) then begin
     DebugLn('no ordinal for parentfp');

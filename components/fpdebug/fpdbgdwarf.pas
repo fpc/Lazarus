@@ -89,6 +89,7 @@ type
     property ThreadId: Integer read FThreadId write FThreadId;
     property StackFrame: Integer read FStackFrame write FStackFrame;
 
+    function ApplyContext(AVal: TFpDbgValue): TFpDbgValue; inline;
     function SymbolToValue(ASym: TFpDbgSymbol): TFpDbgValue; inline;
     procedure AddRefToVal(AVal: TFpDbgValue); inline;
     function GetSelfParameter: TFpDbgValue; virtual;
@@ -966,6 +967,12 @@ begin
   Result := FDwarf.MemManager;
 end;
 
+function TFpDwarfInfoAddressContext.ApplyContext(AVal: TFpDbgValue): TFpDbgValue;
+begin
+  if (AVal <> nil) and (TFpDwarfValueBase(AVal).FContext = nil) then
+    TFpDwarfValueBase(AVal).FContext := Self;
+end;
+
 function TFpDwarfInfoAddressContext.SymbolToValue(ASym: TFpDbgSymbol): TFpDbgValue;
 begin
   if ASym = nil then begin
@@ -992,7 +999,7 @@ end;
 function TFpDwarfInfoAddressContext.GetSelfParameter: TFpDbgValue;
 begin
   Result := TFpDwarfSymbolValueProc(FSymbol).GetSelfParameter(FAddress);
-  if TFpDwarfValueBase(Result).FContext = nil then
+  if (Result <> nil) and (TFpDwarfValueBase(Result).FContext = nil) then
     TFpDwarfValueBase(Result).FContext := Self;
 end;
 
@@ -1235,8 +1242,7 @@ begin
     FlastResult := Result;
 
     assert((Result = nil) or (Result is TFpDwarfValueBase), 'TDbgDwarfInfoAddressContext.FindSymbol: (Result = nil) or (Result is TFpDwarfValueBase)');
-    if (Result <> nil) and (TFpDwarfValueBase(Result).FContext = nil) then
-      TFpDwarfValueBase(Result).FContext := Self;
+    ApplyContext(Result);
   end;
 end;
 
