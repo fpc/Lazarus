@@ -98,8 +98,10 @@ type
     function GetDirectInput: Boolean;
     function GetEchoMode: TEchoMode;
     function GetEditMask: String;
+    function GetEditText: string;
     function GetGlyph: TBitmap;
     function GetHideSelection: Boolean;
+    function GetIsMasked: Boolean;
     function GetMaxLength: Integer;
     function GetModified: Boolean;
     function GetNumbersOnly: Boolean;
@@ -148,6 +150,7 @@ type
     procedure SetDirectInput(AValue: Boolean);
     procedure SetEchoMode(AValue: TEchoMode);
     procedure SetEditMask(AValue: String);
+    procedure SetEditText(AValue: string);
     procedure SetFlat(AValue: Boolean);
     procedure SetGlyph(AValue: TBitmap);
     procedure SetHideSelection(AValue: Boolean);
@@ -218,8 +221,10 @@ type
     property DirectInput : Boolean read GetDirectInput write SetDirectInput default True;
     property Edit: TBeEdit read FEdit;
     property EditMask: String read GetEditMask write SetEditMask;
+    property EditText: string read GetEditText write SetEditText;
     property Flat: Boolean read FFlat write SetFlat default False;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
+    property IsMasked: Boolean read GetIsMasked;
     property NumGlyphs: Integer read GetNumGlyps write SetNumGlyphs;
 
     property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
@@ -1148,6 +1153,11 @@ begin
   Result := FEdit.EditMask
 end;
 
+function TCustomEditButton.GetEditText: string;
+begin
+  Result := FEdit.EditText;
+end;
+
 function TCustomEditButton.GetColor: TColor;
 begin
   Result := FEdit.Color;
@@ -1162,6 +1172,11 @@ end;
 function TCustomEditButton.GetHideSelection: Boolean;
 begin
   Result := FEdit.HideSelection;
+end;
+
+function TCustomEditButton.GetIsMasked: Boolean;
+begin
+  Result := FEdit.IsMasked;
 end;
 
 
@@ -1254,6 +1269,11 @@ end;
 procedure TCustomEditButton.SetEditMask(AValue: String);
 begin
   FEdit.EditMask := AValue;
+end;
+
+procedure TCustomEditButton.SetEditText(AValue: string);
+begin
+  FEdit.EditText := AValue;
 end;
 
 procedure TCustomEditButton.SetColor(AValue: TColor);
