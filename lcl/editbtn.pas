@@ -203,6 +203,9 @@ type
     procedure EditStartDrag(var DragObject: TDragObject);
 
 
+    function  EditCanModify: Boolean; virtual;
+    procedure GetSel(out _SelStart: Integer; out _SelStop: Integer);
+    procedure SetSel(const _SelStart: Integer; _SelStop: Integer);
     procedure Loaded; override;
     procedure Reset; virtual;
     procedure SetAutoSize(AValue: Boolean); override;
@@ -1463,6 +1466,21 @@ end;
 procedure TCustomEditButton.EditStartDrag(var DragObject: TDragObject);
 begin
   if Assigned(FOnEditStartDrag) then FOnEditStartDrag(Self, DragObject);
+end;
+
+function TCustomEditButton.EditCanModify: Boolean;
+begin
+  Result := FEdit.EditCanModify;
+end;
+
+procedure TCustomEditButton.GetSel(out _SelStart: Integer; out _SelStop: Integer);
+begin
+  FEdit.GetSel(_SelStart, _SelStop);
+end;
+
+procedure TCustomEditButton.SetSel(const _SelStart: Integer; _SelStop: Integer);
+begin
+  FEdit.SetSel(_SelStart, _SelStop);
 end;
 
 procedure TCustomEditButton.Loaded;
