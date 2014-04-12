@@ -1562,7 +1562,7 @@ begin
     OnKeyUp := @InternalOnEditKeyUp;
     OnMouseDown := @InternalOnEditMouseDown;
     OnMouseUp := @InternalOnEditMouseUp;
-    OnMouseEnter := @InternalOnEditEnter;
+    OnMouseEnter := @InternalOnEditMouseEnter;
     OnMouseLeave := @InternalOnEditMouseLeave;
     OnMouseMove := @InternalOnEditMouseMove;
     OnStartDrag := @InternalOnEditStartDrag;
