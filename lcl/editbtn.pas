@@ -253,7 +253,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    function Focused: Boolean; virtual;
+    function Focused: Boolean; override;
     procedure Clear;
     procedure ClearSelection; virtual;
     procedure CopyToClipboard; virtual;
