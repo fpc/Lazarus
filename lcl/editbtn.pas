@@ -216,6 +216,7 @@ type
     property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth;
     property Color: TColor read GetColor write SetColor stored True default {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
     property DirectInput : Boolean read GetDirectInput write SetDirectInput default True;
+    property Edit: TBeEdit read FEdit;
     property EditMask: String read GetEditMask write SetEditMask;
     property Flat: Boolean read FFlat write SetFlat default False;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
@@ -283,6 +284,7 @@ type
   public
     property AutoSelected;
     property Button;
+    property Edit;
   published
     property NumbersOnly;
     property Action;
