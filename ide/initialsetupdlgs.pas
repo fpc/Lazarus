@@ -45,9 +45,9 @@ uses
   Classes, SysUtils, strutils, contnrs, LCLProc, Forms, Controls, Buttons,
   Dialogs, FileUtil, Laz2_XMLCfg, lazutf8classes, LazFileUtils, Graphics,
   ComCtrls, ExtCtrls, StdCtrls, DefineTemplates, CodeToolManager,
-  TransferMacros, MacroDefIntf, LazarusIDEStrConsts, LazConf, EnvironmentOpts,
-  IDEProcs, AboutFrm, IDETranslations;
-  
+  TransferMacros, MacroDefIntf, GDBMIDebugger, Debugger, LazarusIDEStrConsts,
+  LazConf, EnvironmentOpts, IDEProcs, AboutFrm, IDETranslations;
+
 type
   TSDFilenameQuality = (
     sddqInvalid,
@@ -259,6 +259,9 @@ function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
 function GetValueFromIDEConfig(OptionFilename, Path: string): string;
 
 implementation
+
+const
+  DefaultDebuggerClass: TDebuggerClass = TGDBMIDebugger;
 
 type
 
@@ -954,7 +957,7 @@ const
   DebuggerFileName='gdb'; //For Windows, .exe will be appended
 var
   OldDebuggerFilename: String;
-  AFilename: String;
+  s, AFilename: String;
   Files: TStringList;
   i: Integer;
 begin
@@ -975,19 +978,14 @@ begin
                                     'EnvironmentOptions/DebuggerFilename/Value');
     if CheckFile(AFilename,Result) then exit;
 
-    // The next 2 locations are locations used by older and newer versions of the Windows installers
-    // If other platform installers follow the same strategy, this can be useful.
-    // Chances of this are low (gdb is generally installed in the path on Unixy systems), but it can't hurt...
-    // and it can be useful for cross compiling/custom setups.
+    // Check locations proposed by debugger class
+    s := DefaultDebuggerClass.ExePaths;
+    while s <> '' do begin
+      AFilename := GetPart([], [';'], s);
+      if CheckFile(AFilename, Result) then exit;
+      if s <> '' then delete(s, 1, 1);
+    end;
 
-    // Check new installation location: $(LazarusDir)\mingw\$(TargetCPU)-$(TargetOS)\bin\gdb.exe
-    if CheckFile(SetDirSeparators('$(LazarusDir)/mingw/$(TargetCPU)-$(TargetOS)/bin/'+DebuggerFileName+GetExecutableExt),Result)
-      then exit;
-
-    // Older Lazarus installers did not use macros for their debuggers: there was only one debugger
-    // Check old installation location: $(LazarusDir)\mingw\bin\gdb.exe
-    if CheckFile(SetDirSeparators('$(LazarusDir)/mingw/bin/'+DebuggerFileName+GetExecutableExt),Result)
-      then exit;
 
     // Windows-only locations:
     if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
