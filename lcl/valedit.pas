@@ -695,9 +695,12 @@ begin
       if i = -1 then
         raise Exception.Create('TValueListStrings.GetItemProp: Key not found: '+s);
     end;
-    Result := FItemProps.Items[i];
-    if not Assigned(Result) then
-      Raise Exception.Create(Format('TValueListStrings.GetItemProp: Index=%d Result=Nil',[i]));
+    if i < FItemProps.Count then
+    begin
+      Result := FItemProps.Items[i];
+      if not Assigned(Result) then
+        Raise Exception.Create(Format('TValueListStrings.GetItemProp: Index=%d Result=Nil',[i]));
+    end;
   end;
 end;
 
