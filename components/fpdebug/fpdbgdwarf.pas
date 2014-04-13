@@ -1197,10 +1197,24 @@ begin
       if InfoEntry.ReadName(InfoName) and not InfoEntry.IsArtificial
       then begin
         if (CompareUtf8BothCase(PNameUpper, PNameLower, InfoName)) then begin
+          // TODO: this is a pascal sperific search order? Or not?
+          // If this is a type with a pointer or ref, need to find the pointer or ref.
+          InfoEntry.GoParent;
+          if InfoEntry.HasValidScope and
+             InfoEntry.GoNamedChildEx(PNameUpper, PNameLower)
+          then begin
+            if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
+              Result := SymbolToValue(TFpDwarfSymbol.CreateSubClass(AName, InfoEntry));
+              exit;
+            end;
+          end;
+
+          InfoEntry.ScopeIndex := StartScopeIdx;
           Result := SymbolToValue(TFpDwarfSymbol.CreateSubClass(AName, InfoEntry));
           exit;
         end;
       end;
+
 
       tg := InfoEntry.AbbrevTag;
       if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin

@@ -456,16 +456,21 @@ begin
     end;
 
     {%region  Fields / Glob / ... }
-    for i := 0 to 5 do begin
+    for i := 0 to 7 do begin
       case BrkIdx of
-        // Simple_NoneNested
-        4, 5: if not (i in [1]) then continue; // Only Global /// TODO: test for error
-        // Test2Method
-        8..13:  if not (i in [0, 1, 5, 6]) then continue;
-        // Class[12].Test0Method
-        6..7, 14..15: if not (i in [1]) then continue; // Only Global /// TODO: test for error
-        // Class0.Test0Method
-        16..17: if not (i in [1]) then continue; // Only Global /// TODO: test for error
+      //Class1
+        4, 5:  // Simple_NoneNested
+          if not (i in [1]) then continue;
+        6..7:  // Class1.Test0Method
+          if not (i in [1, 6]) then continue;
+      //Class2
+        8..13:  // Class2.Test2Method
+          if not (i in [0..1, 5..8]) then continue;
+        14..15:  // Class2.Test0Method
+          if not (i in [1, 6..7]) then continue;
+      //Class0
+        16..17:  // Class0.Test0Method
+          if not (i in [1]) then continue;
       end;
 
       case i of
@@ -475,8 +480,8 @@ begin
         3: s := 'VArg_';
         4: s := 'Local_';
         5: s := 'self.Field_';
-        //6: s := 'TSimpleClass1(self).Field_';
-        //7: s := 'TSimpleClass2(self).Field_';
+        6: s := 'TSimpleClass1(self).Field_';
+        7: s := 'TSimpleClass2(self).Field_';
         //8: s := 'TSimpleClass0(self).Field_';
         // 6: passed in object / var arg object
         // unit.glob

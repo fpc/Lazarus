@@ -72,8 +72,8 @@ var
   StartScopeIdx: Integer;
   ParentFpVal: TFpDbgValue;
   SearchCtx: TFpDwarfFreePascalAddressContext;
-  pfp, fp, pc: TDbgPtr;
-  i: Integer;
+  par_fp, cur_fp, prev_fp, pc: TDbgPtr;
+  d, i: Integer;
   ParentFpSym: TFpDwarfSymbol;
 begin
   Result := False;
@@ -104,7 +104,6 @@ begin
 
 
   InfoEntry.ScopeIndex := StartScopeIdx;
-  // TODO: cache
   if not InfoEntry.GoNamedChildEx(@parentfp[1], @parentfp[1]) then begin
     FOuterNotFound := True;
     exit;
@@ -121,10 +120,10 @@ begin
     exit;
   end;
 
-  pfp := ParentFpVal.AsCardinal;
+  par_fp := ParentFpVal.AsCardinal;
   ParentFpSym.ReleaseReference;
-    DebugLn(['pfp=',pfp]);
-  if pfp = 0 then begin
+    DebugLn(['par_fp=',par_fp]);
+  if par_fp = 0 then begin
     DebugLn('no ordinal for parentfp');
     FOuterNotFound := True;
     exit;
@@ -133,18 +132,27 @@ begin
   i := StackFrame + 1;
   SearchCtx := TFpDwarfFreePascalAddressContext.Create(ThreadId, i, 0, Symbol, Dwarf);
 
-  fp := 0;
-  while not (fp = pfp) do begin
-    SearchCtx.StackFrame := i;
-    // TODO: get reg num via memreader name-to-num
-    if not MemManager.ReadRegister(RegFp, fp, SearchCtx) then
-      break;
-    inc(i);
-    if i > StackFrame + 100 then break; // something wrong? // TODO better check
+  cur_fp := 0;
+  if MemManager.ReadRegister(RegFp, cur_fp, Self) then begin
+    if cur_fp > par_fp then
+      d := -1  // cur_fp must go down
+    else
+      d := 1;  // cur_fp must go up
+    while not (cur_fp = par_fp) do begin
+      SearchCtx.StackFrame := i;
+      // TODO: get reg num via memreader name-to-num
+      prev_fp := cur_fp;
+      if not MemManager.ReadRegister(RegFp, cur_fp, SearchCtx) then
+        break;
+      inc(i);
+      if (cur_fp = prev_fp) or ((cur_fp < prev_fp) xor (d = -1)) then
+        break;  // wrong direction
+      if i > StackFrame + 200 then break; // something wrong? // TODO better check
+    end;
+    dec(i);
   end;
-  dec(i);
 
-  if (pfp <> fp) or
+  if (par_fp <> cur_fp) or (cur_fp = 0) or
       not MemManager.ReadRegister(RegPc, pc, SearchCtx)
   then begin
     FOuterNotFound := True;
