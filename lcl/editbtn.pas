@@ -203,6 +203,7 @@ type
     procedure EditStartDrag(var DragObject: TDragObject);
 
 
+    procedure CheckCursor;
     function  EditCanModify: Boolean; virtual;
     procedure GetSel(out _SelStart: Integer; out _SelStop: Integer);
     procedure SetSel(const _SelStart: Integer; _SelStop: Integer);
@@ -1466,6 +1467,11 @@ end;
 procedure TCustomEditButton.EditStartDrag(var DragObject: TDragObject);
 begin
   if Assigned(FOnEditStartDrag) then FOnEditStartDrag(Self, DragObject);
+end;
+
+procedure TCustomEditButton.CheckCursor;
+begin
+  FEdit.CheckCursor;
 end;
 
 function TCustomEditButton.EditCanModify: Boolean;
