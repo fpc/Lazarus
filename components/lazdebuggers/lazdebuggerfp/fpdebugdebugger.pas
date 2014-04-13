@@ -146,10 +146,14 @@ var
   p: pointer;
   ADump,
   AStatement,
-  ASrcFileName: string;
-  ASrcFileLine: integer;
-  i: Integer;
-  Sym: TFpDbgSymbol;
+  ASrcFileName,
+  APriorFileName: string;
+  ASrcFileLine,
+  APriorFileLine: integer;
+  i,j: Integer;
+  NextSym,Sym: TFpDbgSymbol;
+  StatIndex: integer;
+  FirstIndex: integer;
 
 begin
   Result := False;
@@ -157,6 +161,11 @@ begin
     exit;
 
   AnEntry:=nil;
+  Sym:=nil;
+  ASrcFileLine:=0;
+  ASrcFileName:='';
+  StatIndex:=0;
+  FirstIndex:=0;
   ARange := TDBGDisassemblerEntryRange.Create;
   ARange.RangeStartAddr:=AnAddr;
 
@@ -172,7 +181,19 @@ begin
       p := @CodeBin;
       FpDbgDisasX86.Disassemble(p, GMode=dm64, ADump, AStatement);
 
-      sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindSymbol(AnAddr);
+      Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindSymbol(AnAddr);
+
+      // If this is the last statement for this source-code-line, fill the
+      // SrcStatementCount from the prior statements.
+      if (assigned(sym) and ((ASrcFileName<>sym.FileName) or (ASrcFileLine<>sym.Line))) or
+        (not assigned(sym) and ((ASrcFileLine<>0) or (ASrcFileName<>''))) then
+        begin
+        for j := 0 to StatIndex-1 do
+          ARange.EntriesPtr[FirstIndex+j]^.SrcStatementCount:=StatIndex;
+        StatIndex:=0;
+        FirstIndex:=i;
+        end;
+
       if assigned(sym) then
         begin
         ASrcFileName:=sym.FileName;
@@ -189,7 +210,9 @@ begin
       AnEntry^.Statement := AStatement;
       AnEntry^.SrcFileLine:=ASrcFileLine;
       AnEntry^.SrcFileName:=ASrcFileName;
+      AnEntry^.SrcStatementIndex:=StatIndex;
       ARange.Append(AnEntry);
+      inc(StatIndex);
       Inc(AnAddr, PtrUInt(p) - PtrUInt(@CodeBin));
       end;
     end;
