@@ -23,8 +23,12 @@ EnableISX=true
 #define SetupDate GetEnv('DateStamp')
 #define BuildDir GetEnv('BuildDir')
 #define OutputFileName GetEnv('OutputFileName')
+#define CrossTargetCPU GetEnv('TARGETCPU')
+#define CrossTagetOs GetEnv('TARGETOS')
 [Setup]
-AppName={#AppName}
+AppName={#AppName} - Addon for target {#CrossTagetOs}-{#CrossTargetCPU}
+UpdateUninstallLogAppName=no
+;UninstallDisplayName={#AppName} {#AppVersion}
 ; AddId: registry/uninstall info: Max 127 char
 AppId={code:GetAppId}
 AppVersion={#AppVersion}
