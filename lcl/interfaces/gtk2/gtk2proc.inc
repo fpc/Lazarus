@@ -2186,11 +2186,22 @@ var
       DeliverKeyMessage(TargetObj, Msg);
     end;
   end;
-  
+
+  function BlackListIMModule: boolean;
+  begin
+    {$IFDEF UNIX}
+    Result := g_getenv('GTK_IM_MODULE') = 'scim-bridge';
+    {$ELSE}
+    Result := False;
+    {$ENDIF}
+  end;
+
   procedure CheckDeadKey;
   begin
-    if ABeforeEvent then begin
-      if im_context_widget<>TargetWidget then begin
+    if ABeforeEvent then
+    begin
+      if im_context_widget<>TargetWidget then
+      begin
         //DebugLn(['CheckDeadKey init im_context ',GetWidgetDebugReport(TargetWidget)]);
         ResetDefaultIMContext;
         im_context_widget:=TargetWidget;
@@ -2198,7 +2209,12 @@ var
         //DebugLn(['CheckDeadKey im_context initialized']);
       end;
       // Note: gtk_im_context_filter_keypress understands keypress and keyrelease
-      gtk_im_context_filter_keypress (im_context, AEvent);
+
+      {do not pass double chars if we use scim-bridge or other blacklisted im_module.
+       issues #15185, #23140}
+      if not BlackListIMModule then
+        gtk_im_context_filter_keypress (im_context, AEvent);
+
       //DebugLn(['CheckDeadKey DeadKey=',DeadKey,' str="',im_context_string,'"']);
     end;
   end;
