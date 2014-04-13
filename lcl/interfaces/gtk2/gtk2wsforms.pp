@@ -140,11 +140,12 @@ var
   ACtl: TWinControl;
   Mess : TLMessage;
   WInfo: PWidgetInfo;
-  X,Y: Integer;
+  X,Y: integer;
   {$IFDEF HASX}
   XDisplay: PDisplay;
   Window: TWindow;
   RevertStatus: Integer;
+  winX, winY, winW, winH: gint;
   {$ENDIF}
 
 begin
@@ -164,6 +165,23 @@ begin
         // see http://bugs.freepascal.org/view.php?id=17523
         if Gtk2WidgetSet.compositeManagerRunning then
         begin
+          // issue #25473, compositing manager eg. Mutter (Mint 16) makes
+          // complete mess with lcl<->gtk2<->x11 when our form is designed.
+          if (csDesigning in ACtl.ComponentState) then
+          begin
+            gdk_window_get_geometry(event^.configure.window, @winX, @winY, @winW, @winH, nil);
+            if (winW <> event^.configure.width) or (winH <> event^.configure.height) then
+            begin
+              // goto hell
+              {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseGetClientRect)}
+              DebugLn('Warning: GDK_CONFIGURE: Designed form is misconfigured because of bad compositing manager (see issue #25473).');
+              DebugLn('Warning: GDK_CONFIGURE: Fixing problem by setting current LCL values ',dbgs(ACtl.BoundsRect));
+              {$ENDIF}
+              Result := True;
+              gdk_window_move_resize(event^.configure.window, ACtl.Left, ACtl.Top, ACtl.Width, ACtl.Height);
+              exit;
+            end;
+          end;
           if (X <> ACtl.Left) or (Y <> ACtl.Top) then
             Result := gtkconfigureevent(widget, PGdkEventConfigure(event),
               Data)
