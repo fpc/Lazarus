@@ -416,14 +416,11 @@ end;
 procedure TQtMemoStrings.Insert(Index: integer; const S: string);
 var
   W: WideString;
-  QtCursor: QTextCursorH;
-
 
   function WorkaroundNeeded: Boolean;
   var
     HaveLt: Boolean;
     HaveGt: Boolean;
-    S1: String;
   begin
     HaveLt := System.Pos('<', S) > 0;
     HaveGt := System.Pos('>', S) > 0;

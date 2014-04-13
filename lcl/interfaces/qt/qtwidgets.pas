@@ -416,6 +416,7 @@ type
     FHScrollbar: TQtScrollBar;
     FVScrollbar: TQtScrollbar;
   public
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure grabMouse; override;
     function GetContainerWidget: QWidgetH; override;
     function getClientOffset: TPoint; override;
@@ -2801,7 +2802,6 @@ var
   AChar: Char;
   AKeyEvent: QKeyEventH;
   GlobalAction: Integer;
-  QtEdit: IQtEdit;
   {$IFDEF VerboseQtKeys}
   s: String;
   s1: String;
@@ -2833,8 +2833,6 @@ var
     AQtKey := QKeyEvent_key(QKeyEventH(Event));
     Result := not ProcessArrowKeys and ((AQtKey = QtKey_Left) or (AQtKey = QtKey_Right)
       or (AQtKey = QtKey_Up) or (AQtKey = QtKey_Down));
-      // and
-      // Supports(Self, IQtEdit, QtEdit);
   end;
 
 begin
@@ -5524,7 +5522,7 @@ var
 begin
   // qt doesn't return proper autosize for us.QSizePolicy class is missing.
   QPushButton_sizeHint(QPushButtonH(Widget), @Size);
-  {$note qtlcl implementation of buttons autosizing, replace if/when we
+  {qtlcl implementation of buttons autosizing, replace if/when we
    get QSizePolicy class into bindings}
   if Assigned(LCLObject) and LCLObject.AutoSize then
     Size := AutoSizeButtonFromStyle(Size);
@@ -6564,8 +6562,8 @@ begin
   {$IFDEF QTSCROLLABLEFORMS}
   if Assigned(ScrollArea) and not IsMDIChild then
   begin
-    if QEvent_type(Event) in [QEventPaint,
-                              QEventContextMenu] then
+    if QEvent_type(Event) in
+      [QEventPaint, QEventContextMenu, QEventWheel] then
       exit;
   end;
   {$ENDIF}
@@ -8085,16 +8083,29 @@ begin
       else
       if (QEvent_type(Event) = QEventWheel) and Assigned(FOwner) and
         (
-        {$IFDEF QTSCROLLABLEFORMS}
-        (FOwner is TQtWindowArea) or
-        {$ENDIF}
-        (FOwner is TQtCustomControl)
+        (FOwner is TQtAbstractScrollArea)
         ) then
       begin
-        Result := inherited EventFilter(Sender, Event);
-        // do not scroll when disabled
+
+        // issue #25992
+        if not getVisible then
+          Result := FOwner.SlotMouseWheel(FOwner.Widget, Event)
+        else
+          Result := inherited EventFilter(Sender, Event);
+
+        // DebugLn('TQtScrollBar.EventFilter: QEventWheel ',dbgsName(LCLObject),' Result=',dbgs(Result));
+
+        // do not scroll when disabled or issue #25992
         if not getEnabled then
-          Result := True;
+          Result := True
+        else
+        if not getVisible then
+        begin
+          if {$IFDEF QTSCROLLABLEFORMS}(FOwner is TQtWindowArea) or {$ENDIF}
+           (FOwner.ChildOfComplexWidget in
+           [ccwScrollingWinControl, ccwScrollingWindow]) then
+            Result := True;
+        end;
       end else
         Result := False;
       if (QEvent_type(Event) = QEventKeyRelease) and not
@@ -15291,6 +15302,18 @@ begin
     else
       QAbstractScrollArea_setHorizontalScrollBarPolicy(Area, AValue);
   end;
+end;
+
+function TQtAbstractScrollArea.EventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+begin
+  Result := False;
+  if (QEvent_type(Event) = QEventWheel) and
+    not (FChildOfComplexWidget in
+      [ccwCustomControl, ccwScrollingWinControl, ccwScrollingWindow]) then
+    // issue #25992.Do not propagate wheel event to lcl, it is done via TQtScrollBar.EventFilter.
+  else
+    Result:=inherited EventFilter(Sender, Event);
 end;
 
 procedure TQtAbstractScrollArea.grabMouse;
