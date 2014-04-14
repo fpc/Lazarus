@@ -563,7 +563,7 @@ begin
         (TCustomForm(AWinControl).PopupParent = nil) then
       begin
         W := QApplication_activeWindow;
-        if (W <> nil) and (W <> QApplication_activeModalWidget) then
+        if (W <> nil) and not QWidget_isModal(W) then
         begin
           Flags := QWidget_windowFlags(W);
           if (Flags and QtWindowStaysOnTopHint <> QtWindowStaysOnTopHint) and
