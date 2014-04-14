@@ -4459,6 +4459,55 @@ begin
   if Valid then Result := {%H-}HWND(gdk_window_foreign_new(ResultWindow));
 end;
 
+function TGtk2WidgetSet.GetAlwaysOnTopX11(AWindow: PGdkWindow): boolean;
+var
+  Display: PDisplay;
+  X11Window: TWindow;
+  WMAtom: TAtom;
+  typeReturned: TAtom;
+  formatReturned: Integer;
+  nitemsReturned: PtrInt;
+  unused: PtrInt;
+  data: Pointer;
+begin
+  Result := False;
+  Display := gdk_x11_get_default_xdisplay;
+  if Display = nil then
+    exit;
+  X11Window := gdk_x11_drawable_get_xid(PGdkDrawable(AWindow));
+  if X11Window = 0 then
+    exit;
+  WMAtom := XInternAtom(Display,'_NET_WM_STATE', False);
+  if WMAtom > 0 then
+  begin
+    data := nil;
+    if XGetWindowProperty(Display, X11Window, WMAtom, 0, 1024, False, XA_ATOM,
+      @typeReturned, @formatReturned, @nitemsReturned,
+      @unused, @data) = Success then
+    begin
+      if (typeReturned = XA_ATOM) and (formatReturned = 32) and
+        (Data <> nil) then
+      begin
+        while nitemsReturned > 0 do
+        begin
+          // make happy ancient x11 or old kde ?
+          if XInternAtom(Display,'_NET_WM_STATE_STAYS_ON_TOP', False) = TAtom(Data^) then
+            Result := True
+          else
+          if XInternAtom(Display,'_NET_WM_STATE_ABOVE', False) = TAtom(Data^) then
+            Result := True;
+          dec(nItemsReturned);
+          if Result or (nItemsReturned = 0) then
+            break;
+          inc(Data);
+        end;
+        XFree(Data);
+        Data := nil;
+      end;
+    end;
+  end;
+end;
+
 procedure TGtk2WidgetSet.HideAllHints;
 var
   TopList, List: PGList;

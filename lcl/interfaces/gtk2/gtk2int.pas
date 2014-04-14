@@ -298,7 +298,7 @@ type
     function GetWindowManager: String;
     function IsCurrentDesktop(AWindow: PGdkWindow): Boolean;
     function X11GetActiveWindow: HWND;
-
+    function GetAlwaysOnTopX11(AWindow: PGdkWindow): boolean;
     procedure HideAllHints;
     procedure RestoreAllHints;
     {$ENDIF}
