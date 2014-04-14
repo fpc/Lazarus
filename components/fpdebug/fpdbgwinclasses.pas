@@ -746,6 +746,10 @@ begin
             if DoBreak(TDbgPtr(MDebugEvent.Exception.ExceptionRecord.ExceptionAddress), MDebugEvent.dwThreadId)
             then
               result := deBreakpoint
+            else if assigned(AThread) and assigned(AThread.HiddenBreakpoint) then begin
+              AThread.HiddenBreakpoint.Hit(AThread.ID);
+              result := deBreakpoint;
+            end
             else begin
               // Unknown breakpoint.
               if (MDebugEvent.Exception.dwFirstChance <> 0) and (MDebugEvent.Exception.ExceptionRecord.ExceptionFlags = 0)

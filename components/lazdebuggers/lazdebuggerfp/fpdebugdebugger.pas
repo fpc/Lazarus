@@ -593,6 +593,13 @@ begin
         StartDebugLoop;
         result := true;
       end;
+    dcStepOverInstr:
+      begin
+        FDbgController.StepOverInstr;
+        SetState(dsRun);
+        StartDebugLoop;
+        result := true;
+      end;
   end; {case}
 end;
 
@@ -693,7 +700,7 @@ end;
 
 function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;
 begin
-  Result:=[dcRun, dcStop, dcStepIntoInstr];
+  Result:=[dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr];
 end;
 
 end.

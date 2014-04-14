@@ -49,6 +49,7 @@ type
     function Run: boolean;
     procedure Stop;
     procedure StepIntoStr;
+    procedure StepOverInstr;
     procedure ProcessLoop;
     procedure SendEvents(out continue: boolean);
 
@@ -135,6 +136,11 @@ begin
   FCurrentThread.SingleStep;
 end;
 
+procedure TDbgController.StepOverInstr;
+begin
+  FCurrentThread.StepOver;
+end;
+
 procedure TDbgController.ProcessLoop;
 
 var
@@ -171,7 +177,11 @@ begin
 
     FPDEvent:=FCurrentProcess.ResolveDebugEvent(FCurrentThread);
     if assigned(FCurrentThread) then
+      begin
       FCurrentThread.SingleStepping:=false;
+      if assigned(FCurrentThread.HiddenBreakpoint) then
+        FCurrentThread.ClearHiddenBreakpoint;
+      end;
     case FPDEvent of
       deCreateProcess :
         begin

@@ -38,7 +38,8 @@ interface
 
 uses
   Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgWinExtra, FpDbgLoader,
-  FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses, DbgIntfBaseTypes, fgl;
+  FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses, DbgIntfBaseTypes, fgl,
+  FpDbgDisasX86;
 
 type
   TFPDEvent = (deExitProcess, deBreakpoint, deException, deCreateProcess, deLoadLibrary, deInternalContinue);
@@ -94,6 +95,7 @@ type
   end;
 
   { TDbgThread }
+  TDbgBreakpoint = class;
 
   TDbgThread = class(TObject)
   private
@@ -105,16 +107,20 @@ type
   protected
     FRegisterValueListValid: boolean;
     FRegisterValueList: TDbgRegisterValueList;
+    FHiddenBreakpoint: TDbgBreakpoint;
     procedure LoadRegisterValues; virtual;
   public
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); virtual;
     function ResetInstructionPointerAfterBreakpoint: boolean; virtual; abstract;
+    procedure ClearHiddenBreakpoint;
     destructor Destroy; override;
     function SingleStep: Boolean; virtual;
+    function StepOver: Boolean; virtual;
     property ID: Integer read FID;
     property Handle: THandle read FHandle;
     property SingleStepping: boolean read FSingleStepping write FSingleStepping;
     property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
+    property HiddenBreakpoint: TDbgBreakpoint read FHiddenBreakpoint;
   end;
   TDbgThreadClass = class of TDbgThread;
 
@@ -752,6 +758,11 @@ begin
   inherited Create;
 end;
 
+procedure TDbgThread.ClearHiddenBreakpoint;
+begin
+  FreeAndNil(FHiddenBreakpoint);
+end;
+
 destructor TDbgThread.Destroy;
 begin
   FProcess.ThreadDestroyed(Self);
@@ -763,6 +774,35 @@ function TDbgThread.SingleStep: Boolean;
 begin
   FSingleStepping := True;
   Result := true;
+end;
+
+function TDbgThread.StepOver: Boolean;
+
+var
+  CodeBin: array[0..20] of byte;
+  p: pointer;
+  ADump,
+  AStatement: string;
+  CallInstr: boolean;
+
+begin
+  Result := False;
+
+  CallInstr:=false;
+  if FProcess.ReadData(FProcess.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
+  begin
+    p := @CodeBin;
+    Disassemble(p, GMode=dm64, ADump, AStatement);
+    if copy(AStatement,1,4)='call' then
+      CallInstr:=true;
+  end;
+
+  if CallInstr then
+  begin
+    FHiddenBreakpoint := TDbgBreakpoint.Create(FProcess, FProcess.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin)));
+  end
+  else
+    SingleStep;
 end;
 
 { TDbgBreak }
