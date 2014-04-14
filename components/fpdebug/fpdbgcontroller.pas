@@ -48,7 +48,7 @@ type
     destructor Destroy; override;
     function Run: boolean;
     procedure Stop;
-    procedure StepIntoStr;
+    procedure StepIntoInstr;
     procedure StepOverInstr;
     procedure ProcessLoop;
     procedure SendEvents(out continue: boolean);
@@ -131,7 +131,7 @@ begin
   FMainProcess.TerminateProcess;
 end;
 
-procedure TDbgController.StepIntoStr;
+procedure TDbgController.StepIntoInstr;
 begin
   FCurrentThread.SingleStep;
 end;

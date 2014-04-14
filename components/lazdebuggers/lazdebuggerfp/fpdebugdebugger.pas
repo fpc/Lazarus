@@ -588,7 +588,7 @@ begin
       end;
     dcStepIntoInstr:
       begin
-        FDbgController.StepIntoStr;
+        FDbgController.StepIntoInstr;
         SetState(dsRun);
         StartDebugLoop;
         result := true;
