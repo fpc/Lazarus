@@ -192,12 +192,12 @@ begin
 
     FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(__eflags);
 
-    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(__cs, IntToStr(__cs),4,-1);
-    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(__ss, IntToStr(__ss),4,-1);
-    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(__ds, IntToStr(__ds),4,-1);
-    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(__es, IntToStr(__es),4,-1);
-    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(__fs, IntToStr(__fs),4,-1);
-    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(__gs, IntToStr(__gs),4,-1);
+    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(__cs, IntToStr(__cs),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(__ss, IntToStr(__ss),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(__ds, IntToStr(__ds),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(__es, IntToStr(__es),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(__fs, IntToStr(__fs),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(__gs, IntToStr(__gs),4,0);
   end;
   FRegisterValueListValid:=true;
 end;
