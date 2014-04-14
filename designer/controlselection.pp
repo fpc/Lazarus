@@ -37,7 +37,7 @@ interface
 { $DEFINE VerboseDesigner}
 
 uses
-  Classes, SysUtils, Math, LCLIntf, LCLType, LCLProc, Controls, Forms,
+  Classes, SysUtils, Math, types, LCLIntf, LCLType, LCLProc, Controls, Forms,
   GraphType, Graphics, Menus, EnvironmentOpts, PropEditUtils,
   FormEditingIntf, NonControlDesigner, DesignerProcs;
 
@@ -206,8 +206,8 @@ type
   TOnSelectionUpdate = procedure(Sender: TObject; ForceUpdate: Boolean) of object;
 
   TNearestInt = record
-    Level: integer;
-    Nearest: integer;
+    OldValue: integer;
+    NewValue: integer;
     Valid: boolean;
   end;
 
@@ -242,6 +242,8 @@ type
     cssBoundsNeedsUpdate,
     cssBoundsNeedsSaving,
     cssParentLevelNeedsUpdate,
+    cssGridParentNeedsUpdate,
+    cssGridRectNeedsUpdate,
     cssDoNotSaveBounds,
     cssSnapping,
     cssChangedDuringLock,
@@ -259,7 +261,8 @@ const
   cssSelectionChangeFlags =
    [cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
     cssOnlyInvisibleNeedsUpdate,cssOnlyBoundLessNeedsUpdate,
-    cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate];
+    cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate,
+    cssGridParentNeedsUpdate,cssGridRectNeedsUpdate];
 
 type
 
@@ -293,6 +296,8 @@ type
     // caches
     FGuideLinesCache: array[TGuideLineType] of TGuideLineCache;
     FParentLevel: integer;
+    FGridParent: TComponent;
+    FGridRect: TRect;
 
     FActiveGrabber: TGrabber;
     FForm: TCustomForm;// form to draw on (not necessarily the root)
@@ -375,6 +380,8 @@ type
     procedure FindNearestRightGuideLine(var NearestInt: TNearestInt);
     procedure FindNearestTopGuideLine(var NearestInt: TNearestInt);
     procedure ImproveNearestInt(var NearestInt: TNearestInt; Candidate: integer);
+    function GetFirstGridParent: TComponent;
+    function GetFirstGridRect: TRect;
   public
     arrOldSize, arrNewSize: TArrSize;
 
@@ -532,6 +539,15 @@ const
     [gpLeft          ],             [          gpRight],
     [gpLeft, gpBottom], [gpBottom], [gpBottom, gpRight]
   );
+
+function RoundToGrid(p, GridOrigin, GridStep: integer): integer;
+begin
+  if GridStep<=1 then
+    exit(p);
+  GridOrigin:=GridOrigin mod GridStep;
+  Result:=p - GridOrigin + GridStep div 2;
+  Result:=Result - Result mod GridStep + GridOrigin;
+end;
 
 { TGrabber }
 
@@ -1471,20 +1487,67 @@ procedure TControlSelection.ImproveNearestInt(var NearestInt: TNearestInt;
   Candidate: integer);
 begin
   if (not NearestInt.Valid)
-  or (Abs(NearestInt.Level-NearestInt.Nearest)>Abs(NearestInt.Level-Candidate))
+  or (Abs(NearestInt.OldValue-NearestInt.NewValue)>Abs(NearestInt.OldValue-Candidate))
   then begin
     NearestInt.Valid:=true;
-    NearestInt.Nearest:=Candidate;
+    NearestInt.NewValue:=Candidate;
   end;
+end;
+
+function TControlSelection.GetFirstGridParent: TComponent;
+var
+  aControl: TControl;
+  i: Integer;
+begin
+  if cssGridParentNeedsUpdate in FStates then begin
+    if LookupRootSelected or OnlyNonVisualPersistentsSelected then
+      FGridParent:=LookupRoot
+    else begin
+      FGridParent:=nil;
+      for i:=0 to Count-1 do
+      begin
+        if not Items[i].IsTControl then continue;
+        aControl:=TControl(Items[i].Persistent);
+        if aControl.Parent<>nil then
+          aControl:=aControl.Parent;
+        if (FGridParent=nil) or aControl.IsParentOf(TControl(FGridParent)) then
+          FGridParent:=aControl;
+      end;
+    end;
+    Exclude(FStates,cssGridParentNeedsUpdate);
+  end;
+  Result:=FGridParent;
+end;
+
+function TControlSelection.GetFirstGridRect: TRect;
+var
+  GridParent: TComponent;
+  p: types.TPoint;
+begin
+  if cssGridRectNeedsUpdate in FStates then begin
+    GridParent:=GetFirstGridParent;
+    if GridParent is TWinControl then begin
+      FGridRect:=TWinControl(GridParent).ClientRect;
+      p:=GetParentFormRelativeClientOrigin(GridParent);
+      FGridRect.Left+=p.x;
+      FGridRect.Top+=p.y;
+      FGridRect.Right+=p.x;
+      FGridRect.Bottom+=p.y;
+    end else begin
+      FGridRect:=FForm.ClientRect;
+    end;
+    Exclude(FStates,cssGridRectNeedsUpdate);
+  end;
+  Result:=FGridRect;
 end;
 
 procedure TControlSelection.FindNearestClientLeftRight(var NearestInt: TNearestInt);
 var MaxDist: integer;
 begin
   MaxDist:=(CleanGridSizeX+1) div 2;
-  if NearestInt.Level<MaxDist then
+  if NearestInt.OldValue<MaxDist then
     ImproveNearestInt(NearestInt,0);
-  if (FForm<>nil) and (Abs(NearestInt.Level-FForm.ClientWidth)<MaxDist) then
+  if (FForm<>nil) and (Abs(NearestInt.OldValue-FForm.ClientWidth)<MaxDist) then
     ImproveNearestInt(NearestInt,FForm.ClientWidth);
 end;
 
@@ -1492,9 +1555,9 @@ procedure TControlSelection.FindNearestClientTopBottom(var NearestInt: TNearestI
 var MaxDist: integer;
 begin
   MaxDist:=(CleanGridSizeY+1) div 2;
-  if NearestInt.Level<MaxDist then
+  if NearestInt.OldValue<MaxDist then
     ImproveNearestInt(NearestInt,0);
-  if (FForm<>nil) and (Abs(NearestInt.Level-FForm.ClientHeight)<MaxDist) then
+  if (FForm<>nil) and (Abs(NearestInt.OldValue-FForm.ClientHeight)<MaxDist) then
     ImproveNearestInt(NearestInt,FForm.ClientHeight);
 end;
 
@@ -1502,7 +1565,7 @@ procedure TControlSelection.FindNearestOldLeft(var NearestInt: TNearestInt);
 var MaxDist: integer;
 begin
   MaxDist:=(CleanGridSizeX+1) div 2;
-  if Abs(NearestInt.Level-FOldLeft)<MaxDist then
+  if Abs(NearestInt.OldValue-FOldLeft)<MaxDist then
     ImproveNearestInt(NearestInt,FOldLeft);
 end;
 
@@ -1511,7 +1574,7 @@ var MaxDist, FOldRight: integer;
 begin
   MaxDist:=(CleanGridSizeX+1) div 2;
   FOldRight:=FOldLeft+FOldWidth;
-  if Abs(NearestInt.Level-FOldRight)<MaxDist then
+  if Abs(NearestInt.OldValue-FOldRight)<MaxDist then
     ImproveNearestInt(NearestInt,FOldRight);
 end;
 
@@ -1519,7 +1582,7 @@ procedure TControlSelection.FindNearestOldTop(var NearestInt: TNearestInt);
 var MaxDist: integer;
 begin
   MaxDist:=(CleanGridSizeY+1) div 2;
-  if Abs(NearestInt.Level-FOldTop)<MaxDist then
+  if Abs(NearestInt.OldValue-FOldTop)<MaxDist then
     ImproveNearestInt(NearestInt,FOldTop);
 end;
 
@@ -1528,7 +1591,7 @@ var MaxDist, FOldBottom: integer;
 begin
   MaxDist:=(CleanGridSizeY+1) div 2;
   FOldBottom:=FOldTop+FOldHeight;
-  if Abs(NearestInt.Level-FOldBottom)<MaxDist then
+  if Abs(NearestInt.OldValue-FOldBottom)<MaxDist then
     ImproveNearestInt(NearestInt,FOldBottom);
 end;
 
@@ -1546,7 +1609,7 @@ begin
     if not PersistentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurLeft:=GetParentFormRelativeTopLeft(AComponent).X;
-    CurDist:=Abs(CurLeft-NearestInt.Level);
+    CurDist:=Abs(CurLeft-NearestInt.OldValue);
     if CurDist>MaxDist then continue; // skip components far away
     ImproveNearestInt(NearestInt,CurLeft);
   end;
@@ -1566,7 +1629,7 @@ begin
     if IsSelected(AComponent) then continue;
     CurRight:=GetParentFormRelativeTopLeft(AComponent).X
               +GetComponentWidth(AComponent);
-    CurDist:=Abs(CurRight-NearestInt.Level);
+    CurDist:=Abs(CurRight-NearestInt.OldValue);
     if CurDist>MaxDist then continue; // skip components far away
     ImproveNearestInt(NearestInt,CurRight);
   end;
@@ -1584,7 +1647,7 @@ begin
     if not PersistentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurTop:=GetParentFormRelativeTopLeft(AComponent).Y;
-    CurDist:=Abs(CurTop-NearestInt.Level);
+    CurDist:=Abs(CurTop-NearestInt.OldValue);
     if CurDist>MaxDist then continue; // skip components far away
     ImproveNearestInt(NearestInt,CurTop);
   end;
@@ -1604,7 +1667,7 @@ begin
     if IsSelected(AComponent) then continue;
     CurBottom:=GetParentFormRelativeTopLeft(AComponent).Y
               +GetComponentHeight(AComponent);
-    CurDist:=Abs(CurBottom-NearestInt.Level);
+    CurDist:=Abs(CurBottom-NearestInt.OldValue);
     if CurDist>MaxDist then continue; // skip components far away
     ImproveNearestInt(NearestInt,CurBottom);
   end;
@@ -1615,24 +1678,24 @@ var
   NearestLeft, NearestRight: TNearestInt;
 begin
   // snap left
-  NearestLeft.Level:=ALeft;
+  NearestLeft.OldValue:=ALeft;
   NearestLeft.Valid:=false;
   FindNearestGridX(NearestLeft);
   FindNearestLeftGuideLine(NearestLeft);
   FindNearestClientLeftRight(NearestLeft);
   FindNearestOldLeft(NearestLeft);
   // snap right
-  NearestRight.Level:=ALeft+AWidth;
+  NearestRight.OldValue:=ALeft+AWidth;
   NearestRight.Valid:=false;
   FindNearestRightGuideLine(NearestRight);
   FindNearestClientLeftRight(NearestRight);
   FindNearestOldRight(NearestRight);
   // combine left and right snap
   if NearestRight.Valid then
-    ImproveNearestInt(NearestLeft,NearestRight.Nearest-AWidth);
+    ImproveNearestInt(NearestLeft,NearestRight.NewValue-AWidth);
   // return best snap
   if NearestLeft.Valid then
-    Result:=NearestLeft.Nearest
+    Result:=NearestLeft.NewValue
   else
     Result:=ALeft;
 end;
@@ -1642,7 +1705,7 @@ var
   NearestLeft: TNearestInt;
 begin
   // snap left
-  NearestLeft.Level:=ALeft;
+  NearestLeft.OldValue:=ALeft;
   NearestLeft.Valid:=false;
   FindNearestGridX(NearestLeft);
   FindNearestLeftGuideLine(NearestLeft);
@@ -1650,7 +1713,7 @@ begin
   FindNearestOldLeft(NearestLeft);
   // return best snap
   if NearestLeft.Valid then
-    Result:=NearestLeft.Nearest
+    Result:=NearestLeft.NewValue
   else
     Result:=ALeft;
 end;
@@ -1660,7 +1723,7 @@ var
   NearestRight: TNearestInt;
 begin
   // snap right
-  NearestRight.Level:=ARight;
+  NearestRight.OldValue:=ARight;
   NearestRight.Valid:=false;
   FindNearestGridX(NearestRight);
   FindNearestRightGuideLine(NearestRight);
@@ -1668,7 +1731,7 @@ begin
   FindNearestOldRight(NearestRight);
   // return best snap
   if NearestRight.Valid then
-    Result:=NearestRight.Nearest
+    Result:=NearestRight.NewValue
   else
     Result:=ARight;
 end;
@@ -1678,24 +1741,24 @@ var
   NearestTop, NearestBottom: TNearestInt;
 begin
   // snap top
-  NearestTop.Level:=ATop;
+  NearestTop.OldValue:=ATop;
   NearestTop.Valid:=false;
   FindNearestGridY(NearestTop);
   FindNearestTopGuideLine(NearestTop);
   FindNearestClientTopBottom(NearestTop);
   FindNearestOldTop(NearestTop);
   // snap bottom
-  NearestBottom.Level:=ATop+AHeight;
+  NearestBottom.OldValue:=ATop+AHeight;
   NearestBottom.Valid:=false;
   FindNearestBottomGuideLine(NearestBottom);
   FindNearestClientTopBottom(NearestBottom);
   FindNearestOldBottom(NearestBottom);
   // combine top and bottom snap
   if NearestBottom.Valid then
-    ImproveNearestInt(NearestTop,NearestBottom.Nearest-AHeight);
+    ImproveNearestInt(NearestTop,NearestBottom.NewValue-AHeight);
   // return best snap
   if NearestTop.Valid then
-    Result:=NearestTop.Nearest
+    Result:=NearestTop.NewValue
   else
     Result:=ATop;
 end;
@@ -1705,7 +1768,7 @@ var
   NearestTop: TNearestInt;
 begin
   // snap top
-  NearestTop.Level:=ATop;
+  NearestTop.OldValue:=ATop;
   NearestTop.Valid:=false;
   FindNearestGridY(NearestTop);
   FindNearestTopGuideLine(NearestTop);
@@ -1713,7 +1776,7 @@ begin
   FindNearestOldTop(NearestTop);
   // return best snap
   if NearestTop.Valid then
-    Result:=NearestTop.Nearest
+    Result:=NearestTop.NewValue
   else
     Result:=ATop;
 end;
@@ -1723,7 +1786,7 @@ var
   NearestBottom: TNearestInt;
 begin
   // snap bottom
-  NearestBottom.Level:=ABottom;
+  NearestBottom.OldValue:=ABottom;
   NearestBottom.Valid:=false;
   FindNearestGridY(NearestBottom);
   FindNearestBottomGuideLine(NearestBottom);
@@ -1731,7 +1794,7 @@ begin
   FindNearestOldBottom(NearestBottom);
   // return best snap
   if NearestBottom.Valid then
-    Result:=NearestBottom.Nearest
+    Result:=NearestBottom.NewValue
   else
     Result:=ABottom;
 end;
@@ -1951,20 +2014,26 @@ begin
 end;
 
 procedure TControlSelection.FindNearestGridX(var NearestInt: TNearestInt);
-var GridSizeX, NearestGridX: integer;
+var
+  GridSizeX, NearestGridX: integer;
+  GridRect: TRect;
 begin
   if not EnvironmentOptions.SnapToGrid then exit;
+  GridRect:=GetFirstGridRect;
   GridSizeX:=CleanGridSizeX;
-  NearestGridX := ((NearestInt.Level + GridSizeX div 2) div GridSizeX) * GridSizeX;
+  NearestGridX := RoundToGrid(NearestInt.OldValue,GridRect.Left,GridSizeX);
   ImproveNearestInt(NearestInt,NearestGridX);
 end;
 
 procedure TControlSelection.FindNearestGridY(var NearestInt: TNearestInt);
-var GridSizeY, NearestGridY: integer;
+var
+  GridSizeY, NearestGridY: integer;
+  GridRect: TRect;
 begin
   if not EnvironmentOptions.SnapToGrid then exit;
+  GridRect:=GetFirstGridRect;
   GridSizeY:=CleanGridSizeY;
-  NearestGridY := ((NearestInt.Level + GridSizeY div 2) div GridSizeY) * GridSizeY;
+  NearestGridY := RoundToGrid(NearestInt.OldValue,GridRect.Top,GridSizeY);
   ImproveNearestInt(NearestInt,NearestGridY);
 end;
 
@@ -2276,7 +2345,8 @@ begin
   end;
 end;
 
-function TControlSelection.MoveSelectionWithSnapping(TotalDx, TotalDy: integer): boolean;
+function TControlSelection.MoveSelectionWithSnapping(TotalDx, TotalDy: integer
+  ): Boolean;
 var
   NewLeft, NewTop: integer;
 begin
