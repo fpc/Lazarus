@@ -61,7 +61,10 @@ type
     FWinControl: TWinControl;
   protected
     procedure Put(Index: Integer; const S: string); override;
+    {$IFNDEF HAS_INHERITED_INSERTITEM}
+    // before fpc 2.7.1 InsertItem(Index,S) did not call InsertItem(Index,S,nil)
     procedure InsertItem(Index: Integer; const S: string); override;
+    {$ENDIF}
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     constructor Create(AOwner: TCarbonListBox; AWinControl: TWinControl);
@@ -232,6 +235,7 @@ begin
   FOwner.UpdateItem(Index);
 end;
 
+{$IFNDEF HAS_INHERITED_INSERTITEM}
 {------------------------------------------------------------------------------
   Method:  TCarbonListBoxStrings.InsertItem
   Params:  Index - Line index
@@ -245,6 +249,7 @@ begin
 
   FOwner.InsertItem(Index);
 end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method:  TCarbonListBoxStrings.InsertItem
