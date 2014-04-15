@@ -748,7 +748,10 @@ begin
               result := deBreakpoint
             else if assigned(AThread) and assigned(AThread.HiddenBreakpoint) then begin
               AThread.HiddenBreakpoint.Hit(AThread.ID);
-              result := deBreakpoint;
+              if AThread.Stepping and AThread.CompareStepInfo then
+                result := deInternalContinue
+              else
+                result := deBreakpoint;
             end
             else begin
               // Unknown breakpoint.
@@ -774,6 +777,14 @@ begin
             end
             else
               result := deBreakpoint;
+
+            if AThread.Stepping then
+            begin
+              if AThread.CompareStepInfo then
+                result := deInternalContinue
+              else
+                result := deBreakpoint;
+            end;
 
             // If there is a breakpoint on this location, handle the breakpoint.
             // Or else the int3-interrupt instruction won't be cleared and the

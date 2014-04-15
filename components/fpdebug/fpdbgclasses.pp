@@ -103,11 +103,17 @@ type
     FID: Integer;
     FHandle: THandle;
     FSingleStepping: Boolean;
+    FStepping: Boolean;
     function GetRegisterValueList: TDbgRegisterValueList;
   protected
     FRegisterValueListValid: boolean;
     FRegisterValueList: TDbgRegisterValueList;
+    FStoreStepSrcFilename: string;
+    FStoreStepSrcLineNo: integer;
+    FStoreStepStackFrame: TDBGPtr;
+    FStoreStepFuncAddr: TDBGPtr;
     FHiddenBreakpoint: TDbgBreakpoint;
+    procedure StoreStepInfo;
     procedure LoadRegisterValues; virtual;
   public
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); virtual;
@@ -116,9 +122,12 @@ type
     destructor Destroy; override;
     function SingleStep: Boolean; virtual;
     function StepOver: Boolean; virtual;
+    function Next: Boolean; virtual;
+    function CompareStepInfo: boolean;
     property ID: Integer read FID;
     property Handle: THandle read FHandle;
     property SingleStepping: boolean read FSingleStepping write FSingleStepping;
+    property Stepping: boolean read FStepping write FStepping;
     property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
     property HiddenBreakpoint: TDbgBreakpoint read FHiddenBreakpoint;
   end;
@@ -743,6 +752,40 @@ begin
   result := FRegisterValueList;
 end;
 
+function TDbgThread.CompareStepInfo: boolean;
+var
+  AnAddr: TDBGPtr;
+  Sym: TFpDbgSymbol;
+begin
+  AnAddr := FProcess.GetInstructionPointerRegisterValue;
+  sym := FProcess.FindSymbol(AnAddr);
+  if assigned(sym) then
+  begin
+    result := (FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=sym.Line) and
+              (FStoreStepFuncAddr=sym.Address.Address);
+  end
+  else
+    result := true;
+end;
+
+procedure TDbgThread.StoreStepInfo;
+var
+  AnAddr: TDBGPtr;
+  Sym: TFpDbgSymbol;
+begin
+  FStoreStepStackFrame := FProcess.GetStackBasePointerRegisterValue;
+  AnAddr := FProcess.GetInstructionPointerRegisterValue;
+  sym := FProcess.FindSymbol(AnAddr);
+  if assigned(sym) then
+  begin
+    FStoreStepSrcFilename:=sym.FileName;
+    FStoreStepSrcLineNo:=sym.Line;
+    FStoreStepFuncAddr:=sym.Address.Address;
+  end
+  else
+    FStoreStepSrcLineNo:=-1;
+end;
+
 procedure TDbgThread.LoadRegisterValues;
 begin
   // Do nothing
@@ -786,8 +829,6 @@ var
   CallInstr: boolean;
 
 begin
-  Result := False;
-
   CallInstr:=false;
   if FProcess.ReadData(FProcess.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
   begin
@@ -803,6 +844,15 @@ begin
   end
   else
     SingleStep;
+
+  Result := True;
+end;
+
+function TDbgThread.Next: Boolean;
+begin
+  result := StepOver;
+  StoreStepInfo;
+  FStepping:=result;
 end;
 
 { TDbgBreak }

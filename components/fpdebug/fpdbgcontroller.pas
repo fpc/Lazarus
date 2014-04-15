@@ -50,6 +50,7 @@ type
     procedure Stop;
     procedure StepIntoInstr;
     procedure StepOverInstr;
+    procedure Next;
     procedure ProcessLoop;
     procedure SendEvents(out continue: boolean);
 
@@ -141,6 +142,11 @@ begin
   FCurrentThread.StepOver;
 end;
 
+procedure TDbgController.Next;
+begin
+  FCurrentThread.Next;
+end;
+
 procedure TDbgController.ProcessLoop;
 
 var
@@ -179,6 +185,8 @@ begin
     if assigned(FCurrentThread) then
       begin
       FCurrentThread.SingleStepping:=false;
+      if FPDEvent<>deInternalContinue then
+        FCurrentThread.Stepping := False;
       if assigned(FCurrentThread.HiddenBreakpoint) then
         FCurrentThread.ClearHiddenBreakpoint;
       end;
@@ -212,6 +220,11 @@ begin
       deBreakpoint :
         begin
           debugln('Reached breakpoint at %s.',[FormatAddress(FCurrentProcess.GetInstructionPointerRegisterValue)]);
+        end;
+      deInternalContinue :
+        begin
+          if FCurrentThread.Stepping then
+            FCurrentThread.Next;
         end;
     end; {case}
     AExit:=true;
