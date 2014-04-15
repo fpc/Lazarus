@@ -3572,7 +3572,7 @@ begin
         Handled:=true;
       if EditorOpts.AutoDisplayFunctionPrototypes then
          if (aChar = '(') or (aChar = ',') then
-            SourceNotebook.StartShowCodeContext(true);
+            SourceNotebook.StartShowCodeContext(False);
     end;
 
   else
