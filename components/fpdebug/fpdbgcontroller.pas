@@ -15,7 +15,7 @@ uses
 type
 
   TOnCreateProcessEvent = procedure(var continue: boolean) of object;
-  TOnHitBreakpointEvent = procedure(var continue: boolean) of object;
+  TOnHitBreakpointEvent = procedure(var continue: boolean; const Breakpoint: TDbgBreakpoint) of object;
   TOnExceptionEvent = procedure(var continue: boolean) of object;
   TOnProcessExitEvent = procedure(ExitCode: DWord) of object;
 
@@ -246,7 +246,7 @@ begin
         debugln('Breakpoint');
         continue:=false;
         if assigned(OnHitBreakpointEvent) then
-          OnHitBreakpointEvent(continue);
+          OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
       end;
     deExitProcess:
       begin

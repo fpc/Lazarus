@@ -45,7 +45,7 @@ type
     FDbgController: TDbgController;
     FFpDebugThread: TFpDebugThread;
     procedure FreeDebugThread;
-    procedure FDbgControllerHitBreakpointEvent(var continue: boolean);
+    procedure FDbgControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: FpDbgClasses.TDbgBreakpoint);
     procedure FDbgControllerCreateProcessEvent(var continue: boolean);
     procedure FDbgControllerProcessExitEvent(AExitCode: DWord);
     procedure FDbgControllerExceptionEvent(var continue: boolean);
@@ -141,6 +141,13 @@ type
   public
   end;
 
+  { TFPBreakpoints }
+
+  TFPBreakpoints = class(TDBGBreakPoints)
+  public
+    function Find(AIntBReakpoint: FpDbgClasses.TDbgBreakpoint): TDBGBreakPoint;
+  end;
+
 procedure Register;
 
 implementation
@@ -152,6 +159,21 @@ uses
 procedure Register;
 begin
   RegisterDebugger(TFpDebugDebugger);
+end;
+
+{ TFPBreakpoints }
+
+function TFPBreakpoints.Find(AIntBReakpoint: FpDbgClasses.TDbgBreakpoint): TDBGBreakPoint;
+var
+  i: integer;
+begin
+  for i := 0 to count-1 do
+    if TFPBreakpoint(Items[i]).FInternalBreakpoint=AIntBReakpoint then
+      begin
+      result := TFPBreakpoint(Items[i]);
+      Exit;
+      end;
+  result := nil;
 end;
 
 { TFPBreakpoint }
@@ -173,8 +195,13 @@ end;
 
 procedure TFPBreakpoint.ResetBreak;
 begin
-  TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint.Location);
-  FreeAndNil(FInternalBreakpoint);
+  // If Debugger is not assigned, the Controller's currentprocess is already
+  // freed. And so are the corresponding InternalBreakpoint's.
+  if assigned(Debugger) and assigned(FInternalBreakpoint) then
+    begin
+    TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint.Location);
+    FreeAndNil(FInternalBreakpoint);
+    end;
 end;
 
 destructor TFPBreakpoint.Destroy;
@@ -582,7 +609,7 @@ end;
 
 function TFpDebugDebugger.CreateBreakPoints: TDBGBreakPoints;
 begin
-  Result := TDBGBreakPoints.Create(Self, TFPBreakpoint);
+  Result := TFPBreakPoints.Create(Self, TFPBreakpoint);
 end;
 
 procedure TFpDebugDebugger.FDbgControllerDebugInfoLoaded(Sender: TObject);
@@ -603,9 +630,13 @@ begin
   FFpDebugThread := nil;
 end;
 
-procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(var continue: boolean);
+procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: FpDbgClasses.TDbgBreakpoint);
+var
+  ABreakPoint: TDBGBreakPoint;
 begin
-  BreakPoints[0].Hit(continue);
+  ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
+  if assigned(ABreakPoint) then
+    ABreakPoint.Hit(continue);
   SetState(dsPause);
   DoCurrent(GetLocation);
 end;

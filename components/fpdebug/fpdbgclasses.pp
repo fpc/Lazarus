@@ -259,6 +259,7 @@ type
     property ProcessID: integer read FProcessID;
     property ThreadID: integer read FThreadID;
     property ExitCode: DWord read FExitCode;
+    property CurrentBreakpoint: TDbgBreakpoint read FCurrentBreakpoint;
     property LastEventProcessIdentifier: THandle read GetLastEventProcessIdentifier;
     property OnLog: TOnLog read FOnLog write FOnLog;
     property MainThread: TDbgThread read FMainThread;
