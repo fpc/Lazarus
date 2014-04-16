@@ -5511,6 +5511,8 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     ErrorNo: Integer;
     CanContinue: Boolean;
     Location: TDBGLocationRec;
+    ExceptName: String;
+    ExceptItem: TBaseException;
   begin
     FTheDebugger.QueueExecuteLock;
     try
@@ -5524,8 +5526,15 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       FTheDebugger.QueueExecuteUnlock;
     end;
 
+    ExceptName := Format('RunError(%d)', [ErrorNo]);
+    ExceptItem := FTheDebugger.Exceptions.Find(ExceptName);
+    if (ExceptItem <> nil) and (ExceptItem.Enabled)
+    then begin
+      Result := True; //ExecuteCommand('-exec-continue')
+      exit;
+    end;
 
-    FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), Location, '', CanContinue);
+    FTheDebugger.DoException(deRunError, ExceptName, Location, '', CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')
@@ -5542,6 +5551,8 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     ErrorNo: Integer;
     CanContinue: Boolean;
     Location: TDBGLocationRec;
+    ExceptName: String;
+    ExceptItem: TBaseException;
   begin
     FTheDebugger.QueueExecuteLock;
     try
@@ -5555,7 +5566,15 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       FTheDebugger.QueueExecuteUnlock;
     end;
 
-    FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), Location, '', CanContinue);
+    ExceptName := Format('RunError(%d)', [ErrorNo]);
+    ExceptItem := FTheDebugger.Exceptions.Find(ExceptName);
+    if (ExceptItem <> nil) and (ExceptItem.Enabled)
+    then begin
+      Result := True; //ExecuteCommand('-exec-continue')
+      exit;
+    end;
+
+    FTheDebugger.DoException(deRunError, ExceptName, Location, '', CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')
