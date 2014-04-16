@@ -675,6 +675,9 @@ end;
 
 class procedure TGtk2WSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
+  {$IFDEF HASX}
+  TempGdkWindow: PGdkWindow;
+  {$ENDIF}
   AForm: TCustomForm;
   GtkWindow: PGtkWindow;
   Geometry: TGdkGeometry;
@@ -741,6 +744,27 @@ begin
       gtk_window_set_transient_for(GtkWindow, nil); //untransient
       gtk_window_set_modal(GtkWindow, False);
     end;
+
+    {$IFDEF HASX}
+    // issue #26018
+    if AWinControl.HandleObjectShouldBeVisible and
+      not (csDesigning in AForm.ComponentState) and
+      not (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop) and
+      not (fsModal in TCustomForm(AWinControl).FormState) and
+      (TCustomForm(AWinControl).PopupMode = pmAuto) and
+      (TCustomForm(AWinControl).BorderStyle = bsNone) and
+      (TCustomForm(AWinControl).PopupParent = nil) then
+    begin
+      TempGdkWindow := PGdkWindow(Gtk2WidgetSet.GetForegroundWindow);
+      if (TempGdkWindow <> nil) and (GdkWindowObject_modal_hint(GDK_WINDOW_OBJECT(TempGdkWindow)^) = 0) then
+      begin
+        if ((gdk_window_get_state(TempGdkWindow) and GDK_WINDOW_STATE_ABOVE) = GDK_WINDOW_STATE_ABOVE) or
+          GTK2WidgetSet.GetAlwaysOnTopX11(TempGdkWindow) then
+            gtk_window_set_keep_above(GtkWindow, True);
+      end;
+    end;
+    {$ENDIF}
+
     Gtk2WidgetSet.SetVisible(AWinControl, AForm.HandleObjectShouldBeVisible);
   end;
 

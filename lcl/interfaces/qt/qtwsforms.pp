@@ -524,7 +524,6 @@ begin
   Widget.BeginUpdate;
   if not (csDesigning in AWinControl.ComponentState) then
   begin
-
     if ShowNonModalOverModal then
     // issue #12459
     else
@@ -545,13 +544,37 @@ begin
             QApplication_activeModalWidget());
     end else
     begin
-      if (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop)
-      and not (csDestroying in AWinControl.ComponentState) then
+      if (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop) then
       begin
-        Flags := Widget.windowFlags;
-        Flags := Flags and not QtWindowStaysOnTopHint;
-        Widget.setWindowFlags(Flags);
+        if not (csDestroying in AWinControl.ComponentState) then
+        begin
+          Flags := Widget.windowFlags;
+          Flags := Flags and not QtWindowStaysOnTopHint;
+          Widget.setWindowFlags(Flags);
+        end;
       end;
+      {$IFDEF HASX11}
+      // issue #26018
+      if AWinControl.HandleObjectShouldBeVisible and
+        not (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop) and
+        not (fsModal in TCustomForm(AWinControl).FormState) and
+        (TCustomForm(AWinControl).PopupMode = pmAuto) and
+        (TCustomForm(AWinControl).BorderStyle = bsNone) and
+        (TCustomForm(AWinControl).PopupParent = nil) then
+      begin
+        W := QApplication_activeWindow;
+        if (W <> nil) and not QWidget_isModal(W) then
+        begin
+          Flags := QWidget_windowFlags(W);
+          if (Flags and QtWindowStaysOnTopHint <> QtWindowStaysOnTopHint) and
+            GetAlwaysOnTopX11(W) then
+          begin
+            Flags := Widget.windowFlags;
+            Widget.setWindowFlags(Flags or QtWindowStaysOnTopHint);
+          end;
+        end;
+      end;
+      {$ENDIF}
     end;
   end;
 
