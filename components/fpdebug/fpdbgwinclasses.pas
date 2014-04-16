@@ -77,6 +77,7 @@ type
   TDbgWinProcess = class(TDbgProcess)
   private
     FInfo: TCreateProcessDebugInfo;
+    FPauseRequested: boolean;
   protected
     function GetHandle: THandle; override;
     function GetLastEventProcessIdentifier: THandle; override;
@@ -100,6 +101,7 @@ type
 
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
+    function Pause: boolean; override;
 
     procedure TerminateProcess; override;
 
@@ -752,6 +754,10 @@ begin
                 result := deInternalContinue
               else
                 result := deBreakpoint;
+            end else if FPauseRequested
+            then begin
+              result := deBreakpoint;
+              FPauseRequested:=false;
             end
             else begin
               // Unknown breakpoint.
@@ -884,6 +890,18 @@ begin
 {$else}
   Result := GCurrentContext^.Rdi;
 {$endif}
+end;
+
+function DebugBreakProcess(Process:HANDLE): WINBOOL; external 'kernel32' name 'DebugBreakProcess';
+
+function TDbgWinProcess.Pause: boolean;
+var
+  hndl: Handle;
+begin
+  hndl := OpenProcess(PROCESS_ALL_ACCESS, false, ProcessID);
+  FPauseRequested:=true;
+  result := DebugBreakProcess(hndl);
+  CloseHandle(hndl);
 end;
 
 procedure TDbgWinProcess.TerminateProcess;

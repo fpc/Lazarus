@@ -237,6 +237,7 @@ type
     procedure RemoveThread(const AID: DWord);
     procedure Log(AString: string);
     procedure Log(AString: string; Options: array of const);
+    function  Pause: boolean; virtual;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; virtual;
     function ReadOrdinal(const AAdress: TDbgPtr; out AData): Boolean; virtual;
@@ -679,6 +680,11 @@ end;
 procedure TDbgProcess.Log(AString: string; Options: array of const);
 begin
   Log(Format(AString, Options));
+end;
+
+function TDbgProcess.Pause: boolean;
+begin
+  result := false;
 end;
 
 function TDbgProcess.GetHandle: THandle;

@@ -51,6 +51,7 @@ type
     procedure StepIntoInstr;
     procedure StepOverInstr;
     procedure Next;
+    procedure Pause;
     procedure ProcessLoop;
     procedure SendEvents(out continue: boolean);
 
@@ -147,6 +148,11 @@ begin
   FCurrentThread.Next;
 end;
 
+procedure TDbgController.Pause;
+begin
+  FCurrentProcess.Pause;
+end;
+
 procedure TDbgController.ProcessLoop;
 
 var
@@ -223,7 +229,7 @@ begin
         end;
       deInternalContinue :
         begin
-          if FCurrentThread.Stepping then
+          if assigned(FCurrentThread) and FCurrentThread.Stepping then
             FCurrentThread.Next;
         end;
     end; {case}
