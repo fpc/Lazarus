@@ -166,7 +166,7 @@ begin
     Raise Exception.Create('Breakpoints of this kind are not suported.');
   end;
   if not assigned(FInternalBreakpoint) then
-    FValid:=vsInvalid;
+    FValid:=vsInvalid
   else
     FValid:=vsValid;
 end;
