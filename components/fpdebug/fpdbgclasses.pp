@@ -648,10 +648,19 @@ begin
 end;
 
 function TDbgProcess.RemoveBreak(const ALocation: TDbgPtr): Boolean;
+var
+  ABreakPoint: TDbgBreakpoint;
 begin
   if FBreakMap = nil
   then Result := False
-  else Result := FBreakMap.Delete(ALocation);
+  else begin
+    result := FBreakMap.GetData(ALocation, ABreakPoint);
+    if result then begin
+      if ABreakPoint=FCurrentBreakpoint then
+        FCurrentBreakpoint := nil;
+      Result := FBreakMap.Delete(ALocation);
+    end;
+  end;
 end;
 
 procedure TDbgProcess.RemoveThread(const AID: DWord);

@@ -56,6 +56,7 @@ type
     function CreateWatches: TWatchesSupplier; override;
     function  CreateRegisters: TRegisterSupplier; override;
     function CreateDisassembler: TDBGDisassembler; override;
+    function CreateBreakPoints: TDBGBreakPoints; override;
     function  RequestCommand(const ACommand: TDBGCommand;
                              const AParams: array of const): Boolean; override;
     function ChangeFileName: Boolean; override;
@@ -123,6 +124,23 @@ type
     function PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean; override;
   end;
 
+  { TFPBreakpoint }
+
+  TFPBreakpoint = class(TDBGBreakPoint)
+  private
+    FSetBreakFlag: boolean;
+    FResetBreakFlag: boolean;
+    FInternalBreakpoint: FpDbgClasses.TDbgBreakpoint;
+    procedure SetBreak;
+    procedure ResetBreak;
+  protected
+    destructor Destroy; override;
+    procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure DoEnableChange; override;
+    procedure DoChanged; override;
+  public
+  end;
+
 procedure Register;
 
 implementation
@@ -134,6 +152,75 @@ uses
 procedure Register;
 begin
   RegisterDebugger(TFpDebugDebugger);
+end;
+
+{ TFPBreakpoint }
+
+procedure TFPBreakpoint.SetBreak;
+begin
+  assert(FInternalBreakpoint=nil);
+  case Kind of
+    bpkAddress:   FInternalBreakpoint := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.AddBreak(Address);
+    bpkSource:    FInternalBreakpoint := TDbgInstance(TFpDebugDebugger(Debugger).FDbgController.CurrentProcess).AddBreak(Source, cardinal(Line));
+  else
+    Raise Exception.Create('Breakpoints of this kind are not suported.');
+  end;
+  if not assigned(FInternalBreakpoint) then
+    FValid:=vsInvalid;
+  else
+    FValid:=vsValid;
+end;
+
+procedure TFPBreakpoint.ResetBreak;
+begin
+  TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint.Location);
+  FreeAndNil(FInternalBreakpoint);
+end;
+
+destructor TFPBreakpoint.Destroy;
+begin
+  ResetBreak;
+  inherited Destroy;
+end;
+
+procedure TFPBreakpoint.DoStateChange(const AOldState: TDBGState);
+begin
+  if (Debugger.State = dsPause) and (AOldState = dsInit) then
+    begin
+    if Enabled then
+      begin
+      FSetBreakFlag:=true;
+      Changed;
+      end;
+    end;
+  inherited DoStateChange(AOldState);
+end;
+
+procedure TFPBreakpoint.DoEnableChange;
+begin
+  if FEnabled then
+    begin
+    if (TFpDebugDebugger(Debugger).State in [dsPause, dsInit]) then
+      FSetBreakFlag := True
+    else
+      debugln('FixMe: unable to set breakpoint at this moment.');
+    end
+  else
+    FResetBreakFlag := True;
+  inherited;
+end;
+
+procedure TFPBreakpoint.DoChanged;
+begin
+  if FResetBreakFlag and not FSetBreakFlag then
+    ResetBreak
+  else if FSetBreakFlag then
+    SetBreak;
+
+  FSetBreakFlag := false;
+  FResetBreakFlag := false;
+
+  inherited DoChanged;
 end;
 
 { TFPDBGDisassembler }
@@ -493,6 +580,11 @@ begin
   Result:=TFPDBGDisassembler.Create(Self);
 end;
 
+function TFpDebugDebugger.CreateBreakPoints: TDBGBreakPoints;
+begin
+  Result := TDBGBreakPoints.Create(Self, TFPBreakpoint);
+end;
+
 procedure TFpDebugDebugger.FDbgControllerDebugInfoLoaded(Sender: TObject);
 begin
   if LineInfo <> nil then begin
@@ -519,33 +611,9 @@ begin
 end;
 
 procedure TFpDebugDebugger.FDbgControllerCreateProcessEvent(var continue: boolean);
-var
-  i: integer;
-  bp: TDBGBreakPoint;
-  ibp: FpDbgClasses.TDbgBreakpoint;
 begin
-  SetState(dsInit);
-  for i := 0 to BreakPoints.Count-1 do
-    begin
-    bp := BreakPoints.Items[i];
-    if bp.Enabled then
-      begin
-      case bp.Kind of
-        bpkAddress:   ibp := FDbgController.CurrentProcess.AddBreak(bp.Address);
-        bpkSource:    ibp := TDbgInstance(FDbgController.CurrentProcess).AddBreak(bp.Source, cardinal(bp.Line));
-      else
-        Raise Exception.Create('Breakpoints of this kind are not suported.');
-      end;
-      if not assigned(ibp) then
-        begin
-        DoDbgOutput('Failed to set breakpoint '+inttostr(bp.ID));
-        DoOutput('Failed to set breakpoint '+inttostr(bp.ID));
-        //bp.Valid:=vsInvalid;
-        end
-      //else
-        //bp.Valid:=vsValid;
-      end;
-    end;
+  // This will trigger setting the breakpoints
+  SetState(dsPause);
 end;
 
 function TFpDebugDebugger.RequestCommand(const ACommand: TDBGCommand;
