@@ -1995,15 +1995,21 @@ begin
   // Sets it's initial properties
 
   // set focus policy
-  if (LCLObject <> nil) and not (Self is TQtMainWindow) then
+  if (LCLObject <> nil) then
   begin
-    if csNoFocus in LCLObject.ControlStyle then
-      setFocusPolicy(QtNoFocus)
-    else
-    if (Self is TQtTabWidget) then
-      setFocusPolicy(QtTabFocus)
-    else
-      setFocusPolicy(QtClickFocus);
+    if (Self is TQtMainWindow) and (csNoFocus in LCLObject.ControlStyle) then
+    begin
+      setFocusPolicy(QtNoFocus);
+    end else
+    begin
+      if csNoFocus in LCLObject.ControlStyle then
+        setFocusPolicy(QtNoFocus)
+      else
+      if (Self is TQtTabWidget) then
+        setFocusPolicy(QtTabFocus)
+      else
+        setFocusPolicy(QtClickFocus);
+    end;
   end;
 
   if (csDesigning in LCLObject.ComponentState) and not
