@@ -1020,7 +1020,7 @@ begin
   end;
 
   if (AExceptionType in [deInternal, deRunError]) then begin
-    AContinue := ExecuteExceptionDialog(msg, Ignore, AExceptionType = deInternal) = mrCancel;
+    AContinue := ExecuteExceptionDialog(msg, Ignore, AExceptionType in [deInternal, deRunError]) = mrCancel;
     if Ignore then begin
       Exceptions.AddIfNeeded(AExceptionClass);
       Exceptions.Find(AExceptionClass).Enabled := True;
