@@ -487,9 +487,7 @@ begin
 end;
 
 
-
 { TValueListStrings }
-
 
 procedure TValueListStrings.InsertItem(Index: Integer; const S: string; AObject: TObject);
 var
@@ -577,19 +575,15 @@ begin
 
   vL := L;
   vR := R;
-
   Pivot := L + Random(R - L); // they say random is best
-
   while vL < vR do
   begin
     while (vL < Pivot) and (CompareFn(Self, vL, Pivot) <= 0) do
       Inc(vL);
-
     while (vR > Pivot) and (CompareFn(Self, vR, Pivot) > 0) do
       Dec(vR);
     //Exchange also exchanges FItemProps
     Exchange(vL, vR);
-
     if Pivot = vL then // swap pivot if we just hit it from one side
       Pivot := vR
     else if Pivot = vR then
@@ -688,7 +682,6 @@ function TValueListStrings.GetItemProp(const AKeyOrIndex: Variant): TItemProp;
 var
   i: Integer;
   s: string;
-
 begin
   Result := Nil;
   if (Count > 0) and (UpdateCount = 0) then
@@ -701,12 +694,14 @@ begin
       if i = -1 then
         raise Exception.Create('TValueListStrings.GetItemProp: Key not found: '+s);
     end;
-    Result := FItemProps.Items[i];
-    if not Assigned(Result) then
-      Raise Exception.Create(Format('TValueListStrings.GetItemProp: Index=%d Result=Nil',[i]));
+    if i < FItemProps.Count then
+    begin
+      Result := FItemProps.Items[i];
+      if not Assigned(Result) then
+        Raise Exception.Create(Format('TValueListStrings.GetItemProp: Index=%d Result=Nil',[i]));
+    end;
   end;
 end;
-
 
 
 { TValueListEditor }
@@ -836,8 +831,7 @@ begin
   if (NewRow <> Row) then Row := NewRow;
 end;
 
-procedure TValueListEditor.InsertRowWithValues(Index: Integer;
-  Values: array of String);
+procedure TValueListEditor.InsertRowWithValues(Index: Integer; Values: array of String);
 var
   AKey, AValue: String;
 begin
@@ -853,14 +847,14 @@ begin
   Strings.InsertItem(Index, AKey + Strings.NameValueSeparator + AValue);
 end;
 
-procedure TValueListEditor.ExchangeColRow(IsColumn: Boolean; index,
-  WithIndex: Integer);
+procedure TValueListEditor.ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
 begin
   if not IsColumn then
     Strings.Exchange(Index - FixedRows, WithIndex - FixedRows)
   else
     Raise EGridException.CreateFmt(rsVLEInvalidRowColOperation,['ExchangeColRow',' on columns']);
 end;
+
 function TValueListEditor.IsEmptyRow: Boolean;
 {As per help text on Embarcadero: the function does not have a parameter for row, so assume current one?}
 begin
@@ -870,18 +864,12 @@ end;
 function TValueListEditor.IsEmptyRow(aRow: Integer): Boolean;
 begin
   if (Strings.Count = 0) and (aRow - FixedRows = 0) then
-  //special case: we have just one row, and it is empty
-  begin
-    Result := True;
-  end
+    //special case: we have just one row, and it is empty
+    Result := True
   else if (aRow = 0) and (FixedRows = 0) then
-  begin
-    Result := ((inherited GetCells(0,0)) = EmptyStr)  and ((inherited GetCells(1,0)) = EmptyStr);
-  end
+    Result := ((inherited GetCells(0,0)) = EmptyStr)  and ((inherited GetCells(1,0)) = EmptyStr)
   else
-  begin
     Result := Strings.Strings[aRow - FixedRows] = EmptyStr;
-  end;
 end;
 
 procedure TValueListEditor.MoveColRow(IsColumn: Boolean; FromIndex,
@@ -1139,7 +1127,6 @@ begin
   end;
 end;
 
-
 function TValueListEditor.GetCells(ACol, ARow: Integer): string;
 var
   I: Integer;
@@ -1163,20 +1150,19 @@ begin
   end;
 end;
 
+procedure SetGridEditorReadOnly(Ed: TwinControl; RO: Boolean);
+begin
+  //debugln('SetEditorReadOnly: Ed is ',DbgSName(Ed),' ReadOnly=',DbgS(RO));
+  if (Ed is TCustomEdit) then
+    TCustomEdit(Ed).ReadOnly := RO
+  else if (Ed is TCustomComboBox) then
+    if RO then
+      TCustomComboBox(Ed).Style := csDropDownList
+    else
+      TCustomComboBox(Ed).Style := csDropDown;
+end;
 
 function TValueListEditor.GetDefaultEditor(Column: Integer): TWinControl;
-  procedure SetGridEditorReadOnly(Ed: TwinControl; RO: Boolean);
-  begin
-    //debugln('SetEditorReadOnly: Ed is ',DbgSName(Ed),' ReadOnly=',DbgS(RO));
-    if (Ed is TCustomEdit) then TCustomEdit(Ed).ReadOnly := RO
-    else if (Ed is TCustomComboBox) then
-    begin
-      if RO then
-        TCustomComboBox(Ed).Style := csDropDownList
-      else
-        TCustomComboBox(Ed).Style := csDropDown;
-    end
-  end;
 var
   ItemProp: TItemProp;
 begin
@@ -1257,7 +1243,6 @@ begin
   end;
   if (Key = VK_ESCAPE) and (Shift = []) then
     if RestoreCurrentRow then Key := 0;
-
 end;
 
 procedure TValueListEditor.ResetDefaultColWidths;
