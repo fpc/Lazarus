@@ -183,6 +183,7 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
     TextFlags: DWord;
     OldColor: COLORREF;
     OldBkMode: Integer;
+    sz: TSize;
   {$ifdef WindowsUnicodeSupport}
     AnsiBuffer: string;
     WideBuffer: widestring;
@@ -214,6 +215,10 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
       ARect.Right := ARect.Left + ARect.Bottom - ARect.Top;
 
     Details := ThemeServices.GetElementDetails(ThemeStateMap[CheckListBox.State[Data^.ItemID], Enabled]);
+    sz := ThemeServices.GetDetailSize(Details);
+    ARect := Bounds((ARect.Left + ARect.Right - sz.cx) div 2, (ARect.Top + ARect.Bottom - sz.cy) div 2,
+      sz.cx, sz.cy);
+    InflateRect(ARect, 1, 1);
     ThemeServices.DrawElement(Data^._HDC, Details, ARect);
 
     // draw text
