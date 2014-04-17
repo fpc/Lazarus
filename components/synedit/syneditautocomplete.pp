@@ -373,7 +373,7 @@ begin
           AEditor.SelText := '';
           AEditor.SetTextBetweenPoints(p2, p2, s, [], scamEnd);
           if NewCaretPos then
-            AEditor.CaretXY := p;
+            AEditor.LogicalCaretXY := p;
           AEditor.EnsureCursorPosVisible;
         finally
           AEditor.EndUpdate;
