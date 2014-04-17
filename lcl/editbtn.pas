@@ -450,6 +450,7 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
+    property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -550,6 +551,7 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
+    property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -628,6 +630,7 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
+    property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -719,6 +722,7 @@ type
     property Enabled;
     property Font;
     property MaxLength;
+    property OnButtonClick;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -807,6 +811,7 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
+    property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnDblClick;
