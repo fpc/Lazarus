@@ -74,7 +74,7 @@ type
     class function ConvertCommandToBase(Command: TSynEditorCommand): TSynEditorCommand;
     class function ConvertBaseToCommand(Command: TSynEditorCommand): TSynEditorCommand;
 
-    procedure SetTemplate(aTmpl: String; aCaretPos: TPoint); // Replaces current selection
+    procedure SetTemplate(aTmpl: String; aLogCaretPos: TPoint); // Replaces current selection
     // Coords relativ to the template. base (1, 1)
     procedure AddEditCells(aCellList: TSynPluginSyncronizedEditList);
 
@@ -296,7 +296,7 @@ begin
   Active := False;
 end;
 
-procedure TSynPluginTemplateEdit.SetTemplate(aTmpl: String; aCaretPos: TPoint);
+procedure TSynPluginTemplateEdit.SetTemplate(aTmpl: String; aLogCaretPos: TPoint);
 var
   Temp: TStringList;
   CellStart, StartPos: TPoint;
@@ -383,8 +383,8 @@ begin
   Editor.SelText := aTmpl;
   with Cells.AddNew do begin
     Group := -2;
-    LogStart := aCaretPos;
-    LogEnd := aCaretPos;
+    LogStart := aLogCaretPos;
+    LogEnd := aLogCaretPos;
   end;
   if (Cells.Count > 1) then begin
     Active := True;
@@ -394,7 +394,7 @@ begin
     SetUndoStart;
   end
   else
-    Editor.MoveCaretIgnoreEOL(aCaretPos);
+    Editor.MoveCaretIgnoreEOL(Editor.LogicalToPhysicalPos(aLogCaretPos));
 end;
 
 procedure TSynPluginTemplateEdit.AddEditCells(aCellList: TSynPluginSyncronizedEditList);

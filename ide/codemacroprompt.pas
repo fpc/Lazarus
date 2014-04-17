@@ -457,7 +457,7 @@ var
   p: TPoint;
   TokenStartX: LongInt;
   s: string;
-  BaseIndent: Integer;
+  BaseIndent, LogBaseIndent: Integer;
   i: Integer;
   j: LongInt;
   Pattern: String;
@@ -491,13 +491,14 @@ begin
         and ((BaseIndent>length(s)) or (s[BaseIndent] in [#9,' '])) do
           inc(BaseIndent);
       end;
+      LogBaseIndent := BaseIndent - 1;
       BaseIndent:=AEditor.LogicalToPhysicalCol(s, p.y - 1, BaseIndent);// consider tabs
       dec(BaseIndent);
     end;
 
     Parser.EnableMacros := Attributes.IndexOfName(CodeTemplateEnableMacros)>=0;
     Parser.KeepSubIndent := Attributes.IndexOfName(CodeTemplateKeepSubIndent)>=0;
-    Parser.Indent := BaseIndent;
+    Parser.Indent := LogBaseIndent;
     CodeToolBossOriginalIndent := CodeToolBoss.IndentSize;
     if Parser.KeepSubIndent then
       CodeToolBoss.IndentSize := BaseIndent // Use additional indentation
@@ -522,11 +523,12 @@ begin
     AEditor.BlockEnd := p;
 
     // New Caret
-    p := Parser.DestCaret;
+    p := Parser.DestCaret; // Logical
     if p.y >= 0 then begin
       if p.y = 1 then
         p.x := p.x + TokenStartX - 1;
-      p.y := p.y + AEditor.BlockBegin.y - 1; // Todo: logicalToPhysical
+      p.y := p.y + AEditor.BlockBegin.y - 1;
+      // p must be logical, until template text is inserted
     end;
 
     // delete double end separator (e.g. avoid creating two semicolons 'begin end;;')
@@ -560,7 +562,7 @@ begin
       // replace the selected text and position the caret
       AEditor.SetTextBetweenPoints(AEditor.BlockBegin, AEditor.BlockEnd, Parser.DestTemplate, [], scamEnd);
       if p.y > 0 then
-        AEditor.MoveCaretIgnoreEOL(p);
+        AEditor.MoveCaretIgnoreEOL(AEditor.LogicalToPhysicalPos(p));
     end;
   finally
     AEditor.EndUpdate;
