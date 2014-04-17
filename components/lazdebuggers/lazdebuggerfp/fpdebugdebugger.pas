@@ -44,6 +44,7 @@ type
   private
     FDbgController: TDbgController;
     FFpDebugThread: TFpDebugThread;
+    FQuickPause: boolean;
     procedure FreeDebugThread;
     procedure FDbgControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: FpDbgClasses.TDbgBreakpoint);
     procedure FDbgControllerCreateProcessEvent(var continue: boolean);
@@ -64,6 +65,7 @@ type
     procedure OnLog(AString: String);
     procedure StartDebugLoop;
     procedure DebugLoopFinished;
+    procedure QuickPause;
 
     property DebugInfo: TDbgInfo read GetDebugInfo;
   public
@@ -131,6 +133,7 @@ type
     FSetBreakFlag: boolean;
     FResetBreakFlag: boolean;
     FInternalBreakpoint: FpDbgClasses.TDbgBreakpoint;
+    FIsSet: boolean;
     procedure SetBreak;
     procedure ResetBreak;
   protected
@@ -187,6 +190,7 @@ begin
   else
     Raise Exception.Create('Breakpoints of this kind are not suported.');
   end;
+  FIsSet:=true;
   if not assigned(FInternalBreakpoint) then
     FValid:=vsInvalid
   else
@@ -201,6 +205,7 @@ begin
     begin
     TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint.Location);
     FreeAndNil(FInternalBreakpoint);
+    FIsSet:=false;
     end;
 end;
 
@@ -212,11 +217,16 @@ end;
 
 procedure TFPBreakpoint.DoStateChange(const AOldState: TDBGState);
 begin
-  if (Debugger.State = dsPause) and (AOldState = dsInit) then
+  if (Debugger.State = dsPause) then
     begin
-    if Enabled then
+    if Enabled and not FIsSet then
       begin
       FSetBreakFlag:=true;
+      Changed;
+      end
+    else if not enabled and FIsSet then
+      begin
+      FResetBreakFlag:=true;
       Changed;
       end;
     end;
@@ -224,16 +234,19 @@ begin
 end;
 
 procedure TFPBreakpoint.DoEnableChange;
+var
+  ADebugger: TFpDebugDebugger;
 begin
-  if FEnabled then
+  ADebugger := TFpDebugDebugger(Debugger);
+  if (ADebugger.State in [dsPause, dsInit]) then
     begin
-    if (TFpDebugDebugger(Debugger).State in [dsPause, dsInit]) then
+    if FEnabled and not FIsSet then
       FSetBreakFlag := True
-    else
-      debugln('FixMe: unable to set breakpoint at this moment.');
+    else if not FEnabled and FIsSet then
+      FResetBreakFlag := True;
     end
-  else
-    FResetBreakFlag := True;
+  else if (ADebugger.State = dsRun) and ((FEnabled and not FIsSet) or (not FEnabled and FIsSet)) then
+    ADebugger.QuickPause;
   inherited;
 end;
 
@@ -634,9 +647,18 @@ procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(var continue: boolea
 var
   ABreakPoint: TDBGBreakPoint;
 begin
-  ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
-  if assigned(ABreakPoint) then
-    ABreakPoint.Hit(continue);
+  if assigned(Breakpoint) then
+    begin
+    ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
+    if assigned(ABreakPoint) then
+      ABreakPoint.Hit(continue);
+    end
+  else if FQuickPause then
+    begin
+      SetState(dsPause);
+      continue:=true;
+      exit;
+    end;
   SetState(dsPause);
   DoCurrent(GetLocation);
 end;
@@ -742,6 +764,12 @@ begin
     SetState(dsRun);
     StartDebugLoop;
     end
+end;
+
+procedure TFpDebugDebugger.QuickPause;
+begin
+  FQuickPause:=true;
+  FDbgController.Pause;
 end;
 
 constructor TFpDebugDebugger.Create(const AExternalDebugger: String);
