@@ -213,7 +213,7 @@ begin
   BrowserProcess := TProcessUTF8.Create(nil);
   try
     BrowserProcess.InheritHandles:=false;
-    // Encloses the executable with "" if it's name has spaces
+    // Encloses the executable with "" if its name has spaces
     if Pos(' ',ProgramFilename)>0 then
       ProgramFilename:='"'+ProgramFilename+'"';
 
