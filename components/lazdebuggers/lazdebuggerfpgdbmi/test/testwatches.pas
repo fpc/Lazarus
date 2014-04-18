@@ -444,7 +444,7 @@ procedure TTestWatches.AddExpectSimple;
   end;
 var
   BrkIdx, i, i2, j: Integer;
-  s, s2, s2def: String;
+  s, s1, s2, s2def: String;
   r: PWatchExpectation;
 begin
   for BrkIdx := 1 to BREAK_COUNT_TestWatchesUnitSimple do begin
@@ -457,21 +457,6 @@ begin
 
     {%region  Fields / Glob / ... }
     for i := 0 to 7 do begin
-      case BrkIdx of
-      //Class1
-        4, 5:  // Simple_NoneNested
-          if not (i in [1]) then continue;
-        6..7:  // Class1.Test0Method
-          if not (i in [1, 6]) then continue;
-      //Class2
-        8..13:  // Class2.Test2Method
-          if not (i in [0..1, 5..8]) then continue;
-        14..15:  // Class2.Test0Method
-          if not (i in [1, 6..7]) then continue;
-      //Class0
-        16..17:  // Class0.Test0Method
-          if not (i in [1]) then continue;
-      end;
 
       case i of
         0: s := 'Field_';
@@ -486,6 +471,69 @@ begin
         // 6: passed in object / var arg object
         // unit.glob
       end;
+
+      if i in [0, 5] then begin
+        // Some Expressions that will always fail
+        s1 := s;
+        s2 := '';
+        for j := 0 to 9 do begin
+          case j of
+            0: s1 := s;
+            1: s2 := '[1]';
+            2: s2 := '[-1]';
+            3: s2 := '[0]';
+            4: s2 := '[$7fffffff]';
+            5: s2 := '^';
+            6: s1 := '@' + s;
+            7: s2 := '()';
+            8: s2 := '(1)';
+            9: begin s1 := 'TSimpleClass1(' + s; s2 := ')'; end;
+          end;
+
+          AddFmtDef(Format('%sIDoNotExist%1:s', [s1,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+          // procedures
+          AddFmtDef(Format('%sInitFields%1:s', [s1,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+          AddFmtDef(Format('%sSimple_NoneNested%1:s', [s1,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+          // type
+          AddFmtDef(Format('%sTSimpleClass1%1:s', [s1,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+          // unit
+          AddFmtDef(Format('%sTestWatchesUnitSimple%1:s', [s1,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+        end;
+      end;
+
+      if ( (BrkIdx in [6, 7]) and (i in [7]) ) or          // Class1.Test0Method
+         ( (BrkIdx in [16,17]) and (i in [6,7]) )          // Class0.Test0Method
+      then
+        continue; // typecast to unrelated class. May fail or succeed
+        // TODO check there is no crash
+
+      if
+        ( (BrkIdx in [4, 5]) and             // Class1:Simple_NoneNested
+          ( not (i in [1]) ) ) or
+        ( (BrkIdx in [6..7]) and             // Class1.Test0Method
+          ( not (i in [1, 6]) ) ) or
+        ( (BrkIdx in [8..13]) and            // Class2.Test2Method
+          ( not (i in [0..1, 5..8]) ) ) or
+        ( (BrkIdx in [14..15]) and           // Class2.Test0Method
+          ( not (i in [1, 6..7]) ) ) or
+        ( (BrkIdx in [16..17]) and           // Class0.Test0Method
+          ( not (i in [1]) ) )
+      then begin
+        // Not Found
+        for i2 := 0 to 1 do begin
+          s2 := '';
+          if i2 = 1 then begin
+            s := s + 'P';
+            s2 := '^';
+          end;
+
+          AddFmtDef(Format('%sShort1%1:s', [s,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+          AddFmtDef(Format('%sInt1%1:s', [s,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+        end;
+
+        continue;
+      end;
+
 
       {%region  address of }
       //r := AddFmtDef(Format('@%sDynInt1', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
