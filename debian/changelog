@@ -1,3 +1,9 @@
+lazarus (1.2.2-0) stable; urgency=low
+
+  * Snapshot 1.2.2
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Fri, 18 Apr 2014 10:18:00 +0100
+
 lazarus (1.2.1-0) unstable; urgency=low
 
   * Snapshot 1.2.1
