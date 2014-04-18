@@ -124,6 +124,7 @@ type
 
   TGDBMIDebuggerPropertiesBase = class(TDebuggerProperties)
   private
+    FDisableLoadSymbolsForLibraries: Boolean;
     FEncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding;
     FEncodeExeFileName: TGDBMIDebuggerFilenameEncoding;
     {$IFDEF UNIX}
@@ -158,6 +159,8 @@ type
     property InternalStartBreak: TGDBMIDebuggerStartBreak
              read FInternalStartBreak write FInternalStartBreak default gdsbDefault;
     property UseAsyncCommandMode: Boolean read FUseAsyncCommandMode write FUseAsyncCommandMode;
+    property DisableLoadSymbolsForLibraries: Boolean read FDisableLoadSymbolsForLibraries
+             write FDisableLoadSymbolsForLibraries default False;
   end;
 
   TGDBMIDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
@@ -174,6 +177,7 @@ type
     property EncodeExeFileName;
     property InternalStartBreak;
     property UseAsyncCommandMode;
+    property DisableLoadSymbolsForLibraries;
   end;
 
   TGDBMIDebugger = class;
@@ -618,6 +622,7 @@ type
     FCommandAsyncState: Array [TGDBMIExecCommandType] of Boolean;
     FCurrentCmdIsAsync: Boolean;
     FAsyncModeEnabled: Boolean;
+    FWasDisableLoadSymbolsForLibraries: Boolean;
 
     // Internal Current values
     FCurrentStackFrame, FCurrentThreadId: Integer; // User set values
@@ -2209,6 +2214,17 @@ begin
   ExecuteCommand('set print elements %d',
                  [TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).MaxDisplayLengthForString],
                  []);
+
+  if DebuggerProperties.DisableLoadSymbolsForLibraries then begin
+    ExecuteCommand('set auto-solib-add off', [cfscIgnoreState, cfscIgnoreError]);
+    FTheDebugger.FWasDisableLoadSymbolsForLibraries := True;
+  end
+  else begin
+    // Only unset, if it was set due to this property
+    if FTheDebugger.FWasDisableLoadSymbolsForLibraries then
+      ExecuteCommand('set auto-solib-add on', [cfscIgnoreState, cfscIgnoreError]);
+    FTheDebugger.FWasDisableLoadSymbolsForLibraries := False;
+  end;
 end;
 
 { TGDBMIDebuggerCommandExecuteBase }
@@ -7085,6 +7101,7 @@ begin
   FEncodeExeFileName := gdfeDefault;
   FInternalStartBreak := gdsbDefault;
   FUseAsyncCommandMode := False;
+  FDisableLoadSymbolsForLibraries := False;
   inherited;
 end;
 
@@ -7102,6 +7119,7 @@ begin
   FEncodeExeFileName := TGDBMIDebuggerPropertiesBase(Source).FEncodeExeFileName;
   FInternalStartBreak := TGDBMIDebuggerPropertiesBase(Source).FInternalStartBreak;
   FUseAsyncCommandMode := TGDBMIDebuggerPropertiesBase(Source).FUseAsyncCommandMode;
+  FDisableLoadSymbolsForLibraries := TGDBMIDebuggerPropertiesBase(Source).FDisableLoadSymbolsForLibraries;
 end;
 
 
