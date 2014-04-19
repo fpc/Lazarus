@@ -74,6 +74,7 @@ type
     property EncodeCurrentDirPath;
     property EncodeExeFileName;
     property InternalStartBreak;
+    property UseNoneMiRunCommands;
     property DisableLoadSymbolsForLibraries;
   end;
 

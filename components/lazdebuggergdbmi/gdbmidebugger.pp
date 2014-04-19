@@ -117,6 +117,9 @@ type
   TGDBMIDebuggerStartBreak = (
     gdsbDefault, gdsbEntry, gdsbMainAddr, gdsbMain, gdsbAddZero
   );
+  TGDBMIUseNoneMiRunCmdsState = (
+    gdnmNever, gdnmAlways, gdnmFallback
+  );
 
   { TGDBMIDebuggerPropertiesBase }
 
@@ -133,6 +136,7 @@ type
     FMaxDisplayLengthForString: Integer;
     FTimeoutForEval: Integer;
     FUseAsyncCommandMode: Boolean;
+    FUseNoneMiRunCommands: TGDBMIUseNoneMiRunCmdsState;
     FWarnOnInternalError: Boolean;
     FWarnOnTimeOut: Boolean;
     procedure SetMaxDisplayLengthForString(AValue: Integer);
@@ -157,6 +161,8 @@ type
     property InternalStartBreak: TGDBMIDebuggerStartBreak
              read FInternalStartBreak write FInternalStartBreak default gdsbDefault;
     property UseAsyncCommandMode: Boolean read FUseAsyncCommandMode write FUseAsyncCommandMode;
+    property UseNoneMiRunCommands: TGDBMIUseNoneMiRunCmdsState
+             read FUseNoneMiRunCommands write FUseNoneMiRunCommands default gdnmFallback;
     property DisableLoadSymbolsForLibraries: Boolean read FDisableLoadSymbolsForLibraries
              write FDisableLoadSymbolsForLibraries default False;
   end;
@@ -175,6 +181,7 @@ type
     property EncodeExeFileName;
     property InternalStartBreak;
     property UseAsyncCommandMode;
+    property UseNoneMiRunCommands;
     property DisableLoadSymbolsForLibraries;
   end;
 
@@ -657,6 +664,7 @@ type
     FSourceNames: TStringList; // Objects[] -> TMap[Integer|Integer] -> TDbgPtr
     FReleaseLock: Integer;
     FInProcessStopped: Boolean; // paused, but maybe state run
+    FCommandNoneMiState: Array [TGDBMIExecCommandType] of Boolean;
     FCommandAsyncState: Array [TGDBMIExecCommandType] of Boolean;
     FCurrentCmdIsAsync: Boolean;
     FAsyncModeEnabled: Boolean;
@@ -885,6 +893,18 @@ const
       '-exec-next-instruction',   // ectStepOverInstruction,
       '-exec-step-instruction',   // ectStepIntoInstruction,
       '-exec-return'              // ectReturn      // (step out immediately, skip execution)
+    );
+  GDBMIExecCommandMapNoneMI: array [TGDBMIExecCommandType] of string =
+    ( '',                        // ectNone
+      'continue',           // ectContinue,
+      'run',                // ectRun,
+      'until',              // ectRunTo,  // [Source, Line]
+      'next',               // ectStepOver,
+      'finish',             // ectStepOut,
+      'step',               // ectStepInto,
+      'nexti',   // ectStepOverInstruction,
+      'stepi',   // ectStepIntoInstruction,
+      'return'              // ectReturn      // (step out immediately, skip execution)
     );
 
 type
@@ -2353,8 +2373,10 @@ procedure TGDBMIDebuggerCommandStartBase.CommonInit;
 var
   i: TGDBMIExecCommandType;
 begin
-  for i := low(TGDBMIExecCommandType) to high(TGDBMIExecCommandType) do
+  for i := low(TGDBMIExecCommandType) to high(TGDBMIExecCommandType) do begin
     FTheDebugger.FCommandAsyncState[i] := True;
+    FTheDebugger.FCommandNoneMiState[i] := DebuggerProperties.UseNoneMiRunCommands = gdnmAlways;
+  end;
   FTheDebugger.FCurrentCmdIsAsync := False;
   ExecuteCommand('set print elements %d',
                  [TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).MaxDisplayLengthForString],
@@ -2623,8 +2645,13 @@ begin
       Break;
     end;
 
-    if FTheDebugger.FAsyncModeEnabled and FGotStopped then
+    if FTheDebugger.FAsyncModeEnabled and FGotStopped then begin
+      // There should not be a "(gdb) ",
+      // but some versions print it, as they run none async, after accepting "run &"
+      S := FTheDebugger.ReadLine(50);
+      if (S <> '(gdb) ') then continue; // since no command was sent, we can loop
       break;
+    end;
 
   end;
 end;
@@ -6319,7 +6346,7 @@ var
 
 var
   StoppedParams, RunWarnings: String;
-  ContinueExecution, ContinueStep: Boolean;
+  ContinueExecution, ContinueStep, UseMI: Boolean;
   NextExecCmdObj: TGDBMIDebuggerCommandExecute;
   R: TGDBMIExecResult;
   s: String;
@@ -6352,12 +6379,34 @@ begin
         FTheDebugger.FCurrentStackFrameValid := False;
         FTheDebugger.FCurrentThreadIdValid   := False;
         FTheDebugger.FCurrentCmdIsAsync := False;
-        s := GDBMIExecCommandMap[FCurrentExecCmd] + FCurrentExecArg;
+
+        UseMI := not FTheDebugger.FCommandNoneMiState[FCurrentExecCmd];
+        if UseMI then
+          s := GDBMIExecCommandMap[FCurrentExecCmd] + FCurrentExecArg
+        else
+          s := GDBMIExecCommandMapNoneMI[FCurrentExecCmd] + FCurrentExecArg;
+
         AFlags := [];
         if FTheDebugger.FAsyncModeEnabled and FTheDebugger.FCommandAsyncState[FCurrentExecCmd] then
           AFlags := [cfTryAsync];
-        if not ExecuteCommand(s, FResult, AFlags) then
-          exit;
+
+        if (UseMI) and (cfTryAsync in AFlags) and (DebuggerProperties.UseNoneMiRunCommands = gdnmFallback)
+        then begin
+          if not ExecuteCommand(s + ' &', FResult, []) then // Try MI in asynic
+            exit;
+          if (FResult.State = dsError) then begin
+            // Retry none MI
+            FTheDebugger.FCommandNoneMiState[FCurrentExecCmd] := True;
+            s := GDBMIExecCommandMapNoneMI[FCurrentExecCmd] + FCurrentExecArg;
+            if not ExecuteCommand(s, FResult, AFlags) then
+              exit;
+          end;
+        end
+        else begin
+          if not ExecuteCommand(s, FResult, AFlags) then
+            exit;
+        end;
+
         if (cfTryAsync in AFlags) and (FResult.State <> dsError) then begin
           if (rfAsyncFailed in FResult.Flags) then
             FTheDebugger.FCommandAsyncState[FCurrentExecCmd] := False
@@ -7081,6 +7130,7 @@ begin
   FInternalStartBreak := gdsbDefault;
   FUseAsyncCommandMode := False;
   FDisableLoadSymbolsForLibraries := False;
+  FUseNoneMiRunCommands := gdnmFallback;
   inherited;
 end;
 
@@ -7099,6 +7149,7 @@ begin
   FInternalStartBreak := TGDBMIDebuggerPropertiesBase(Source).FInternalStartBreak;
   FUseAsyncCommandMode := TGDBMIDebuggerPropertiesBase(Source).FUseAsyncCommandMode;
   FDisableLoadSymbolsForLibraries := TGDBMIDebuggerPropertiesBase(Source).FDisableLoadSymbolsForLibraries;
+  FUseNoneMiRunCommands := TGDBMIDebuggerPropertiesBase(Source).FUseNoneMiRunCommands;
 end;
 
 
