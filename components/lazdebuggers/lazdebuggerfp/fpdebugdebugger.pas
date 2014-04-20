@@ -205,8 +205,8 @@ begin
     begin
     TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint.Location);
     FreeAndNil(FInternalBreakpoint);
-    FIsSet:=false;
     end;
+  FIsSet:=false;
 end;
 
 destructor TFPBreakpoint.Destroy;
@@ -229,6 +229,11 @@ begin
       FResetBreakFlag:=true;
       Changed;
       end;
+    end
+  else if Debugger.State = dsStop then
+    begin
+    FInternalBreakpoint := nil;
+    FIsSet:=false;
     end;
   inherited DoStateChange(AOldState);
 end;
@@ -579,8 +584,8 @@ begin
   {$PUSH}{$R-}
   DoDbgEvent(ecProcess, etProcessExit, Format('Process exited with exit-code %d',[AExitCode]));
   {$POP}
-  FreeDebugThread;
   SetState(dsStop);
+  FreeDebugThread;
 end;
 
 procedure TFpDebugDebugger.FDbgControllerExceptionEvent(var continue: boolean);

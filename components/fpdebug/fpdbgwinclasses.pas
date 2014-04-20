@@ -225,6 +225,7 @@ end;
 destructor TDbgWinProcess.Destroy;
 begin
   CloseHandle(FInfo.hProcess);
+  FInfo.hProcess:=0;
   inherited Destroy;
 end;
 

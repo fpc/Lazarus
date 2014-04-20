@@ -557,7 +557,23 @@ begin
 end;
 
 destructor TDbgProcess.Destroy;
+var
+  Bp: TDbgBreakpoint;
+  Iterator: TMapIterator;
 begin
+  iterator := TMapIterator.Create(FBreakMap);
+  try
+    Iterator.First;
+    while not Iterator.EOM do
+    begin
+      Iterator.GetData(bp);
+      Bp.Free;
+      iterator.Next;
+    end;
+  finally
+    Iterator.Free;
+  end;
+
   FreeAndNil(FBreakMap);
   FreeAndNil(FThreadMap);
   FreeAndNil(FLibMap);
@@ -917,6 +933,10 @@ end;
 
 procedure TDbgBreakpoint.ResetBreak;
 begin
+  if FProcess.Handle=0 then
+    // The process is already exited.
+    Exit;
+
   if FOrgValue = $CC then Exit; // breakpoint on a hardcoded breakpoint
 
   if not FProcess.WriteData(FLocation, 1, FOrgValue)
