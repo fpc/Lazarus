@@ -158,7 +158,6 @@ type
     FName: String;
     FOnDebugInfoLoaded: TNotifyEvent;
     FProcess: TDbgProcess;
-    FBreakList: TList;
     FDbgInfo: TDbgInfo;
     FLoader: TDbgImageLoader;
 
@@ -466,23 +465,13 @@ end;
 
 constructor TDbgInstance.Create(const AProcess: TDbgProcess);
 begin
-  FBreakList := TList.Create;
   FProcess := AProcess;
 
   inherited Create;
 end;
 
 destructor TDbgInstance.Destroy;
-var
-  n: integer;
 begin
-  for n := 0 to FBreakList.Count - 1 do
-  begin
-    Process.RemoveBreak(TDbgBreakpoint(FBreakList[n]).FLocation);
-  end;
-  FBreakList.Clear;
-
-  FreeAndNil(FBreakList);
   FreeAndNil(FDbgInfo);
   FreeAndNil(FLoader);
   inherited;
