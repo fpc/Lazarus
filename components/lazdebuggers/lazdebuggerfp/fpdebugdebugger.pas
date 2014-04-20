@@ -217,7 +217,7 @@ end;
 
 procedure TFPBreakpoint.DoStateChange(const AOldState: TDBGState);
 begin
-  if (Debugger.State in [dsPause, dsInit]) then
+  if (Debugger.State = dsPause) then
     begin
     if Enabled and not FIsSet then
       begin
@@ -666,7 +666,7 @@ end;
 procedure TFpDebugDebugger.FDbgControllerCreateProcessEvent(var continue: boolean);
 begin
   // This will trigger setting the breakpoints
-  SetState(dsInit);
+  SetState(dsPause);
 end;
 
 function TFpDebugDebugger.RequestCommand(const ACommand: TDBGCommand;
