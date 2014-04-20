@@ -725,6 +725,15 @@ begin
       begin
         FDbgController.Pause;
       end;
+    dcRunTo:
+      begin
+        result := FDbgController.CurrentProcess.RunTo(AnsiString(AParams[0].VAnsiString), AParams[1].VInteger);
+        if result then
+          begin
+          SetState(dsRun);
+          StartDebugLoop;
+          end;
+      end;
     dcStepOver:
       begin
         FDbgController.Next;
@@ -838,7 +847,7 @@ end;
 
 function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;
 begin
-  Result:=[dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr, dcStepOver, dcPause];
+  Result:=[dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr, dcStepOver, dcRunTo, dcPause];
 end;
 
 end.

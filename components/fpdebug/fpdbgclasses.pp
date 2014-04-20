@@ -170,7 +170,7 @@ type
     constructor Create(const AProcess: TDbgProcess); virtual;
     destructor Destroy; override;
 
-    function AddBreak(const AFileName: String; ALine: Cardinal): TDbgBreakpoint;
+    function AddBreak(const AFileName: String; ALine: Cardinal): TDbgBreakpoint; overload;
     function AddrOffset: Int64; virtual;  // gives the offset between  the loaded addresses and the compiled addresses
     function FindSymbol(AAdress: TDbgPtr): TFpDbgSymbol;
     function RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;
@@ -217,6 +217,7 @@ type
     FLibMap: TMap;    // map LibAddr -> LibObject
     FBreakMap: TMap;  // map BreakAddr -> BreakObject
 
+    FRunToBreakpoint: TDbgBreakpoint;
     FMainThread: TDbgThread;
     procedure LoadInfo; override;
     function GetHandle: THandle; virtual;
@@ -228,7 +229,7 @@ type
     class function StartInstance(AFileName: string; AParams: string): TDbgProcess; virtual;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer); virtual;
     destructor Destroy; override;
-    function  AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
+    function  AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint; overload;
     function  FindSymbol(const AName: String): TFpDbgSymbol;
     function  FindSymbol(AAdress: TDbgPtr): TFpDbgSymbol;
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
@@ -238,6 +239,7 @@ type
     procedure Log(AString: string);
     procedure Log(AString: string; Options: array of const);
     function  Pause: boolean; virtual;
+    function  RunTo(ASourceFile: string; ALineNr: integer): boolean;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; virtual;
     function ReadOrdinal(const AAdress: TDbgPtr; out AData): Boolean; virtual;
@@ -254,6 +256,7 @@ type
     function GetStackBasePointerRegisterValue: TDbgPtr; virtual; abstract;
 
     procedure TerminateProcess; virtual; abstract;
+    procedure ClearRunToBreakpoint;
 
     property Handle: THandle read GetHandle;
     property Name: String read FName write SetName;
@@ -261,6 +264,8 @@ type
     property ThreadID: integer read FThreadID;
     property ExitCode: DWord read FExitCode;
     property CurrentBreakpoint: TDbgBreakpoint read FCurrentBreakpoint;
+    property RunToBreakpoint: TDbgBreakpoint read FRunToBreakpoint;
+
     property LastEventProcessIdentifier: THandle read GetLastEventProcessIdentifier;
     property OnLog: TOnLog read FOnLog write FOnLog;
     property MainThread: TDbgThread read FMainThread;
@@ -687,6 +692,20 @@ begin
   result := false;
 end;
 
+function TDbgProcess.RunTo(ASourceFile: string; ALineNr: integer): boolean;
+var
+  addr: TDBGPtr;
+begin
+  result := false;
+  if not FDbgInfo.HasInfo then Exit;
+  addr := FDbgInfo.GetLineAddress(ASourceFile, ALineNr);
+  if addr = 0 then Exit;
+  result := true;
+  // If there is already a breakpoint on that location, nothing has to be done.
+  if not FBreakMap.HasId(addr) then
+    FRunToBreakpoint := AddBreak(addr);
+end;
+
 function TDbgProcess.GetHandle: THandle;
 begin
   result := 0;
@@ -757,6 +776,12 @@ end;
 function TDbgProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;
 begin
   result := false;
+end;
+
+procedure TDbgProcess.ClearRunToBreakpoint;
+begin
+  RemoveBreak(FRunToBreakpoint.Location);
+  FreeAndNil(FRunToBreakpoint);
 end;
 
 { TDbgThread }

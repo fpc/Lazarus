@@ -188,6 +188,9 @@ begin
     then Log('LOOP: Unable to retrieve current thread');
 
     FPDEvent:=FCurrentProcess.ResolveDebugEvent(FCurrentThread);
+    if (FPDEvent<>deInternalContinue) and assigned(FCurrentProcess.RunToBreakpoint) then begin
+      FCurrentProcess.ClearRunToBreakpoint;
+    end;
     if assigned(FCurrentThread) then
       begin
       FCurrentThread.SingleStepping:=false;
