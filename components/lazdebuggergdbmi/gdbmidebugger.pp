@@ -469,7 +469,7 @@ type
   private
     FCanKillNow, FDidKillNow: Boolean;
   protected
-    function ProcessRunning(var AStoppedParams: String; out AResult: TGDBMIExecResult; ATimeOut: Integer = 0): Boolean;
+    function ProcessRunning(out AStoppedParams: String; out AResult: TGDBMIExecResult; ATimeOut: Integer = 0): Boolean;
     function ParseBreakInsertError(var AText: String; out AnId: Integer): Boolean;
     function  ProcessStopped(const {%H-}AParams: String; const {%H-}AIgnoreSigIntState: Boolean): Boolean; virtual;
   public
@@ -568,6 +568,7 @@ type
 
   TGDBMIInternalBreakPoint = class
   private
+    FEnabled: Boolean;
     FLineOffsFunction: string;
     // -break-insert name
     FNameBreakID: Integer;
@@ -605,10 +606,14 @@ type
     function  ClearId(ACmd: TGDBMIDebuggerCommand; AnId: Integer): Boolean;
     function  MatchAddr(AnAddr: TDBGPtr): boolean;
     function  MatchId(AnId: Integer): boolean;
-    function  Enabled: boolean;
+    function  IsBreakSet: boolean;
+    procedure EnableOrSetByAddr(ACmd: TGDBMIDebuggerCommand; SetNamedOnFail: Boolean = False);
+    procedure Enable(ACmd: TGDBMIDebuggerCommand);
+    procedure Disable(ACmd: TGDBMIDebuggerCommand);
     property  MainAddrFound: TDBGPtr read FMainAddrFound;
     property  LineOffsFunction: string read FLineOffsFunction;
     property  UseForceFlag: Boolean read FUseForceFlag write FUseForceFlag;
+    property  Enabled: Boolean read FEnabled;
   end;
 
   { TGDBMIWatches }
@@ -656,7 +661,9 @@ type
     FBreakErrorBreak: TGDBMIInternalBreakPoint;
     FRunErrorBreak: TGDBMIInternalBreakPoint;
     FExceptionBreak: TGDBMIInternalBreakPoint;
+    FPopExceptStack, FCatchesBreak, FReRaiseBreak: TGDBMIInternalBreakPoint;
     FPauseWaitState: TGDBMIPauseWaitState;
+    FStoppedReason: (srNone, srRaiseExcept, srReRaiseExcept, srPopExceptStack, srCatches);
     FInExecuteCount: Integer;
     FInIdle: Boolean;
     FRunQueueOnUnlock: Boolean;
@@ -1737,6 +1744,9 @@ begin
   FTheDebugger.FExceptionBreak.Clear(Self);
   FTheDebugger.FBreakErrorBreak.Clear(Self);
   FTheDebugger.FRunErrorBreak.Clear(Self);
+  FTheDebugger.FPopExceptStack.Clear(Self);
+  FTheDebugger.FCatchesBreak.Clear(Self);
+  FTheDebugger.FReRaiseBreak.Clear(Self);
   if DebuggerState = dsError then Exit;
 
   S := FTheDebugger.ConvertToGDBPath(UTF8ToSys(FTheDebugger.FileName), cgptExeName);
@@ -2396,7 +2406,7 @@ end;
 
 { TGDBMIDebuggerCommandExecuteBase }
 
-function TGDBMIDebuggerCommandExecuteBase.ProcessRunning(var AStoppedParams: String; out
+function TGDBMIDebuggerCommandExecuteBase.ProcessRunning(out AStoppedParams: String; out
   AResult: TGDBMIExecResult; ATimeOut: Integer): Boolean;
 var
   InLogWarning: Boolean;
@@ -2597,6 +2607,7 @@ begin
   InLogWarning := False;
   FGotStopped := False;
   FLogWarnings := '';
+  AStoppedParams := '';
   while FTheDebugger.DebugProcessRunning and not(FTheDebugger.State in [dsError, dsDestroying]) do
   begin
     if ATimeOut > 0 then begin
@@ -4814,7 +4825,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
           mtEntry:    FTheDebugger.FMainAddrBreak.SetAtCustomAddr(Self, StrToQWordDef(EntryPoint, 0));
           mtAddZero:  FTheDebugger.FMainAddrBreak.SetAtLineOffs(Self, 0);
         end;
-        Result := FTheDebugger.FMainAddrBreak.Enabled;
+        Result := FTheDebugger.FMainAddrBreak.IsBreakSet;
       end;
     begin
       case RunToMainState of
@@ -4905,7 +4916,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     FTheDebugger.FMainAddrBreak.Clear(Self);
     while true do begin
       SetMainBrk;
-      if not FTheDebugger.FMainAddrBreak.Enabled
+      if not FTheDebugger.FMainAddrBreak.IsBreakSet
       then begin
         (* TODO:
            If no main break can be set, it may still be possible (desirable) to run
@@ -5556,6 +5567,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     ExceptInfo: TGDBMIExceptionInfo;
     ExceptItem: TBaseException;
   begin
+    FTheDebugger.FStoppedReason := srRaiseExcept;
     if (FTheDebugger.Exceptions = nil) or FTheDebugger.Exceptions.IgnoreAll
     then begin
       Result := True; //ExecuteCommand('-exec-continue')
@@ -5863,6 +5875,7 @@ begin
   *)
   Result := False;
   FTheDebugger.FInProcessStopped := True;  // paused, but maybe state run
+  FTheDebugger.FStoppedReason := srNone;
 
   List := TGDBMINameValueList.Create(AParams);
   List2 := nil;
@@ -5971,6 +5984,27 @@ begin
         Exit;
       end;
 
+      if FTheDebugger.FPopExceptStack.MatchId(BreakID)
+      then begin
+        FTheDebugger.FStoppedReason := srPopExceptStack;
+        Result := True;
+        Exit;
+      end;
+
+      if FTheDebugger.FCatchesBreak.MatchId(BreakID)
+      then begin
+        FTheDebugger.FStoppedReason := srCatches;
+        Result := True;
+        Exit;
+      end;
+
+      if FTheDebugger.FReRaiseBreak.MatchId(BreakID)
+      then begin
+        FTheDebugger.FStoppedReason := srReRaiseExcept;
+        Result := True;
+        Exit;
+      end;
+
       if (FStepBreakPoint > 0) and (BreakID = FStepBreakPoint)
       then begin
         SetDebuggerState(dsPause);
@@ -6054,6 +6088,8 @@ end;
 {$ENDIF}
 
 function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
+var
+  RunMode: (rmNormal, rmStepToFinally);
 const
   BreaKErrMsg = 'not insert breakpoint ';
   WatchErrMsg = 'not insert hardware watchpoint ';
@@ -6238,6 +6274,7 @@ const
 
 var
   FP: TDBGPtr;
+  CurThreadId: Integer;
 
   function DoContinueStepping: Boolean;
     procedure DoEndStepping;
@@ -6258,6 +6295,33 @@ var
     // TODO: the "break" breakpoint can stop on the current, instead of the next instruction
 
     Result := False;
+
+    if RunMode = rmStepToFinally then begin
+      Result := FTheDebugger.FStoppedReason in [srPopExceptStack, srCatches];
+      if Result then
+        FCurrentExecCmd := ectStepOut;
+      exit;
+    end;
+
+    if FTheDebugger.FStoppedReason = srReRaiseExcept then begin
+      FTheDebugger.FPopExceptStack.EnableOrSetByAddr(Self, True);
+      FTheDebugger.FCatchesBreak.EnableOrSetByAddr(Self, True);
+      FCurrentExecCmd := ectContinue;
+      Result := True;
+      exit;
+    end;
+    if FTheDebugger.FStoppedReason in [srPopExceptStack, srCatches] then begin
+      FTheDebugger.FPopExceptStack.Disable(Self);
+      FTheDebugger.FCatchesBreak.Disable(Self);
+      i := FindStackFrame(Fp, 0, 1);
+      if (i in [0, 1]) or (i = -2)  // -2 already stepped out of the desired frame, enter dsPause
+      then begin
+        FCurrentExecCmd := ectStepOut; // ecStepOut will not offer a change to ContinueStepping
+        Result := True;
+        exit;
+      end;
+    end;
+
     case FExecType of
       ectContinue, ectRun:
         begin
@@ -6278,8 +6342,8 @@ var
       ectStepOver, ectStepOverInstruction, ectStepOut, ectStepInto:
         begin
           Result := FStepBreakPoint > 0;
-          if Result
-          then exit;
+          if Result then
+            exit;
 
           i := -1;
           if FP <> 0 then begin
@@ -6304,6 +6368,8 @@ var
             FContext.ThreadContext := ccUseGlobal;
             FTheDebugger.QueueExecuteLock; // force queue
             try
+              // This messes up the Stack context of the queue.
+              FTheDebugger.FInstructionQueue.InvalidateThredAndFrame;
               if (not ExecuteCommand('frame %d', [i], R, [cfNoStackContext])) or (R.State = dsError)
               then i := -3; // error to user
               if (i < 0) or (not ExecuteCommand('break', [i], R, [cfNoStackContext])) or (R.State = dsError)
@@ -6344,75 +6410,117 @@ var
     end;
   end;
 
+  function GetCurrentFp: TDBGPtr;
+  begin
+    FContext.ThreadContext := ccUseLocal;
+    FContext.StackContext := ccUseLocal;
+    FContext.StackFrame := 0;
+    FContext.ThreadId := CurThreadId;
+    Result := GetPtrValue('$fp', []);
+    FContext.ThreadContext := ccNotRequired;
+    FContext.StackContext := ccNotRequired;
+  end;
+
+  function DoExecCommand(AnExecCmd:  TGDBMIExecCommandType; AnExecArg: String): Boolean;
+  var
+    UseMI: Boolean;
+    AFlags: TGDBMICommandFlags;
+    s: String;
+  begin
+    Result := False;
+    if AnExecCmd in [ectStepOut, ectReturn {, ectRunTo}] then begin
+      FContext.ThreadContext := ccUseLocal;
+      FContext.StackContext := ccUseLocal;
+      FContext.StackFrame := 0;
+      FContext.ThreadId := CurThreadId;
+    end
+    else begin
+      FContext.ThreadContext := ccNotRequired;
+      FContext.StackContext := ccNotRequired;
+    end;
+
+    UseMI := not FTheDebugger.FCommandNoneMiState[AnExecCmd];
+    if UseMI then
+      s := GDBMIExecCommandMap[AnExecCmd] + AnExecArg
+    else
+      s := GDBMIExecCommandMapNoneMI[AnExecCmd] + AnExecArg;
+
+    AFlags := [];
+    if FTheDebugger.FAsyncModeEnabled and FTheDebugger.FCommandAsyncState[AnExecCmd] then
+      AFlags := [cfTryAsync];
+
+    if (UseMI) and (cfTryAsync in AFlags) and (DebuggerProperties.UseNoneMiRunCommands = gdnmFallback)
+    then begin
+      if not ExecuteCommand(s + ' &', FResult, []) then // Try MI in async
+        exit;
+      if (FResult.State = dsError) then begin
+        // Retry none MI
+        FTheDebugger.FCommandNoneMiState[AnExecCmd] := True;
+        s := GDBMIExecCommandMapNoneMI[AnExecCmd] + AnExecArg;
+        if not ExecuteCommand(s, FResult, AFlags) then
+          exit;
+      end;
+    end
+    else begin
+      if not ExecuteCommand(s, FResult, AFlags) then
+        exit;
+    end;
+
+    if (cfTryAsync in AFlags) and (FResult.State <> dsError) then begin
+      if (rfAsyncFailed in FResult.Flags) then
+        FTheDebugger.FCommandAsyncState[AnExecCmd] := False
+      else
+        FTheDebugger.FCurrentCmdIsAsync := True;
+    end;
+
+    Result := True;
+  end;
+
 var
   StoppedParams, RunWarnings: String;
-  ContinueExecution, ContinueStep, UseMI: Boolean;
+  ContinueExecution, ContinueStep: Boolean;
   NextExecCmdObj: TGDBMIDebuggerCommandExecute;
   R: TGDBMIExecResult;
-  s: String;
-  AFlags: TGDBMICommandFlags;
 begin
   Result := True;
   FCanKillNow := False;
   FDidKillNow := False;
   FNextExecQueued := False;
   FP := 0;
+  CurThreadId := FTheDebugger.FCurrentThreadId;
+  if not FTheDebugger.FCurrentThreadIdValid then CurThreadId := 1; // TODO, but we need something
   ContinueStep := False; // A step command was interupted, and is continued on breakpoint
   FStepBreakPoint := -1;
+  RunMode := rmNormal;
+  if (FExecType in [ectStepOver, ectStepInto, ectStepOut]) and
+     (FTheDebugger.FStoppedReason = srRaiseExcept)
+  then begin
+    RunMode := rmStepToFinally;
+    FCurrentExecCmd := ectContinue;
+    FTheDebugger.FPopExceptStack.EnableOrSetByAddr(Self, True);
+    FTheDebugger.FCatchesBreak.EnableOrSetByAddr(Self, True);
+  end;
+  if (FExecType in [ectRunTo, ectStepOver{, ectStepInto}, ectStepOut, ectStepOverInstruction {, ectStepIntoInstruction}]) then
+    FTheDebugger.FReRaiseBreak.EnableOrSetByAddr(Self, True)
+  else
+    FTheDebugger.FReRaiseBreak.Disable(Self);
 
   try
     repeat
       FTheDebugger.CancelBeforeRun; // TODO: see comment on top of TGDBMIDebugger.QueueCommand
       FTheDebugger.QueueExecuteLock; // prevent other commands from executing
       try
-        if (not ContinueStep) and
+        if (not ContinueStep) and (not (RunMode in [rmStepToFinally])) and
            (FExecType in [ectStepOver, ectStepInto, ectStepOut, ectStepOverInstruction, ectStepIntoInstruction])
-        then begin
-          FContext.ThreadContext := ccUseGlobal;
-          FContext.StackContext := ccUseLocal;
-          FContext.StackFrame := 0;
-          FP := GetPtrValue('$fp', []);
-          FContext.ThreadContext := ccNotRequired;
-          FContext.StackContext := ccNotRequired;
-        end;
+        then
+          FP := GetCurrentFp;
 
         FTheDebugger.FCurrentStackFrameValid := False;
         FTheDebugger.FCurrentThreadIdValid   := False;
         FTheDebugger.FCurrentCmdIsAsync := False;
 
-        UseMI := not FTheDebugger.FCommandNoneMiState[FCurrentExecCmd];
-        if UseMI then
-          s := GDBMIExecCommandMap[FCurrentExecCmd] + FCurrentExecArg
-        else
-          s := GDBMIExecCommandMapNoneMI[FCurrentExecCmd] + FCurrentExecArg;
-
-        AFlags := [];
-        if FTheDebugger.FAsyncModeEnabled and FTheDebugger.FCommandAsyncState[FCurrentExecCmd] then
-          AFlags := [cfTryAsync];
-
-        if (UseMI) and (cfTryAsync in AFlags) and (DebuggerProperties.UseNoneMiRunCommands = gdnmFallback)
-        then begin
-          if not ExecuteCommand(s + ' &', FResult, []) then // Try MI in asynic
-            exit;
-          if (FResult.State = dsError) then begin
-            // Retry none MI
-            FTheDebugger.FCommandNoneMiState[FCurrentExecCmd] := True;
-            s := GDBMIExecCommandMapNoneMI[FCurrentExecCmd] + FCurrentExecArg;
-            if not ExecuteCommand(s, FResult, AFlags) then
-              exit;
-          end;
-        end
-        else begin
-          if not ExecuteCommand(s, FResult, AFlags) then
-            exit;
-        end;
-
-        if (cfTryAsync in AFlags) and (FResult.State <> dsError) then begin
-          if (rfAsyncFailed in FResult.Flags) then
-            FTheDebugger.FCommandAsyncState[FCurrentExecCmd] := False
-          else
-            FTheDebugger.FCurrentCmdIsAsync := True;
-        end;
+        if not DoExecCommand(FCurrentExecCmd, FCurrentExecArg) then
+          exit;
 
         if CheckResultForError(FResult)
         then exit;
@@ -6446,6 +6554,7 @@ begin
       ContinueStep := False;
       if StoppedParams <> ''
       then ContinueExecution := ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
+
       if ContinueExecution
       then begin
         ContinueStep := DoContinueStepping; // will set dsPause, if step has finished
@@ -6470,6 +6579,8 @@ begin
     if FStepBreakPoint > 0
     then ExecuteCommand('-break-delete %d', [FStepBreakPoint], [cfNoThreadContext]);
     FStepBreakPoint := -1;
+    FTheDebugger.FPopExceptStack.Disable(Self);
+    FTheDebugger.FCatchesBreak.Disable(Self);
   end;
 
   if (not ContinueExecution) and (DebuggerState = dsRun) and
@@ -7203,6 +7314,9 @@ begin
   FBreakErrorBreak := TGDBMIInternalBreakPoint.Create('FPC_BREAK_ERROR');
   FRunErrorBreak   := TGDBMIInternalBreakPoint.Create('FPC_RUNERROR');
   FExceptionBreak  := TGDBMIInternalBreakPoint.Create('FPC_RAISEEXCEPTION');
+  FPopExceptStack  := TGDBMIInternalBreakPoint.Create('FPC_POPADDRSTACK');
+  FCatchesBreak    := TGDBMIInternalBreakPoint.Create('FPC_CATCHES');
+  FReRaiseBreak    := TGDBMIInternalBreakPoint.Create('FPC_RERAISE');
 {$IFdef WITH_GDB_FORCE_EXCEPTBREAK}
   FBreakErrorBreak.UseForceFlag := True;
   FRunErrorBreak.UseForceFlag := True;
@@ -7315,6 +7429,9 @@ begin
   FreeAndNil(FBreakErrorBreak);
   FreeAndNil(FRunErrorBreak);
   FreeAndNil(FExceptionBreak);
+  FreeAndNil(FPopExceptStack);
+  FreeAndNil(FCatchesBreak);
+  FreeAndNil(FReRaiseBreak);
 end;
 
 procedure TGDBMIDebugger.Done;
@@ -7418,6 +7535,9 @@ begin
   FTypeRequestCache.Clear;
   if not (State in [dsRun, dsPause, dsInit, dsInternalPause])
   then FMaxLineForUnitCache.Clear;
+
+  if not (State in [dsPause, dsInternalPause]) then
+    FStoppedReason := srNone;;
 
   if State in [dsStop, dsError]
   then begin
@@ -11341,8 +11461,9 @@ var
   R: TGDBMIExecResult;
   S: String;
 begin
-  Result := 0;
-  FMainAddrFound := 0;
+  Result := FMainAddrFound;
+  if Result <> 0 then
+    exit;
   if (not ACmd.ExecuteCommand('info address ' + FName, R)) or
      (R.State = dsError)
   then exit;
@@ -11373,6 +11494,7 @@ end;
 
 constructor TGDBMIInternalBreakPoint.Create(AName: string);
 begin
+  FMainAddrFound := 0;
   FNameBreakID := -1;
   FNameBreakAddr := 0;
   FAddrBreakID := -1;
@@ -11383,6 +11505,7 @@ begin
   FLineOffsAddr := 0;
   FUseForceFlag := False;
   FName := AName;
+  FEnabled := True;
 end;
 
 (* Using -insert-break with a function name allows GDB to adjust the address
@@ -11423,6 +11546,7 @@ var
   A: TDBGPtr;
 begin
   if ACmd.DebuggerState = dsError then Exit;
+  if FAddrBreakID >= 0 then exit; // already set
 
   A := GetInfoAddr(ACmd);
   InternalSetAddr(ACmd, A);
@@ -11494,9 +11618,52 @@ begin
              (AnId = FCustomID) or (AnId = FLineOffsID));
 end;
 
-function TGDBMIInternalBreakPoint.Enabled: boolean;
+function TGDBMIInternalBreakPoint.IsBreakSet: boolean;
 begin
   Result := (FNameBreakID >= 0)  or (FAddrBreakID >= 0) or (FCustomID > 0) or (FLineOffsID > 0);
+end;
+
+procedure TGDBMIInternalBreakPoint.EnableOrSetByAddr(ACmd: TGDBMIDebuggerCommand;
+  SetNamedOnFail: Boolean);
+begin
+  if IsBreakSet then
+    Enable(ACmd)
+  else
+    SetByAddr(ACmd, SetNamedOnFail);
+end;
+
+procedure TGDBMIInternalBreakPoint.Enable(ACmd: TGDBMIDebuggerCommand);
+var
+  R: TGDBMIExecResult;
+begin
+  if FEnabled then exit;
+  FEnabled := True;
+
+  if FNameBreakID >= 0 then
+    ACmd.ExecuteCommand('-break-enable %d', [FNameBreakID], R);
+  if FAddrBreakID >= 0 then
+    ACmd.ExecuteCommand('-break-enable %d', [FAddrBreakID], R);
+  if FCustomID >= 0 then
+    ACmd.ExecuteCommand('-break-enable %d', [FCustomID], R);
+  if FLineOffsID >= 0 then
+    ACmd.ExecuteCommand('-break-enable %d', [FLineOffsID], R);
+end;
+
+procedure TGDBMIInternalBreakPoint.Disable(ACmd: TGDBMIDebuggerCommand);
+var
+  R: TGDBMIExecResult;
+begin
+  if not FEnabled then exit;
+  FEnabled := False;
+
+  if FNameBreakID >= 0 then
+    ACmd.ExecuteCommand('-break-disable %d', [FNameBreakID], R);
+  if FAddrBreakID >= 0 then
+    ACmd.ExecuteCommand('-break-disable %d', [FAddrBreakID], R);
+  if FCustomID >= 0 then
+    ACmd.ExecuteCommand('-break-disable %d', [FCustomID], R);
+  if FLineOffsID >= 0 then
+    ACmd.ExecuteCommand('-break-disable %d', [FLineOffsID], R);
 end;
 
 { TGDBMIDebuggerSimpleCommand }
