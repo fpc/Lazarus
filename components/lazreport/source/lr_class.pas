@@ -3910,7 +3910,7 @@ begin
     end;
     if frVersion>23 then
     begin
-      if LRE_OLDV25_FRF_READ then
+      if LRE_OLDV25_FRF_READ and (frVersion=25) then
       begin
         Read(i, 4);
         tmpAngle := byte(i);
