@@ -920,18 +920,27 @@ end;
 function TCocoaWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
 var
   r: TRect;
+  lView: NSView;
 begin
   Result := Handle <> 0;
-  if Result then
+  if not Result then Exit;
+
+  // Call on a window
+  lView := NSView(Handle);
+  if lView.isKindOfClass(objc_getClass('TCocoaWindowContent')) then
   begin
     if TCocoaWindowContent(handle).isembedded then
       r := TCocoaWindowContent(handle).lclFrame
     else
       r:=TCocoaWindowContent(handle).window.lclFrame;
-
-    Width := R.Right - R.Left;
-    Height := R.Bottom - R.Top;
+  end
+  // Call on any other control
+  else
+  begin
+    r := lView.lclFrame;
   end;
+  Width := R.Right - R.Left;
+  Height := R.Bottom - R.Top;
 end;
 
 function TCocoaWidgetSet.HideCaret(Handle: HWND): Boolean;

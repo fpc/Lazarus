@@ -282,12 +282,12 @@ var
   lTabControl: TCocoaTabControl;
   lTabCount: NSInteger;
 begin
-  WriteLn('[TCocoaWSCustomTabControl.SetPageIndex]');
+  //WriteLn('[TCocoaWSCustomTabControl.SetPageIndex]');
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
-  WriteLn(Format('[TCocoaWSCustomTabControl.SetPageIndex] lTabControl=%d', [PtrUInt(lTabControl)]));
+  //WriteLn(Format('[TCocoaWSCustomTabControl.SetPageIndex] lTabControl=%d', [PtrUInt(lTabControl)]));
   lTabCount := lTabControl.numberOfTabViewItems();
-  WriteLn(Format('[TCocoaWSCustomTabControl.SetPageIndex] lTabCount=%d', [lTabCount]));
+  //WriteLn(Format('[TCocoaWSCustomTabControl.SetPageIndex] lTabCount=%d', [lTabCount]));
   if (AIndex < 0) or (AIndex >= lTabCount) then Exit;
 
   lTabControl.selectTabViewItemAtIndex(AIndex);
