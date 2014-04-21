@@ -828,15 +828,15 @@ begin
     end;
 
   if assigned(targetControl) and not FIsEventRouting then
-     begin
-       FIsEventRouting:=true;
-       // debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(mp)+' Rect'+dbgs(rect));
-       obj:=NSView(targetControl.Handle);
-       callback:=obj.lclGetCallback;
-       result:=callback.MouseMove(Event);
-       FIsEventRouting:=false;
-       exit;
-     end;
+  begin
+    FIsEventRouting:=true;
+    // debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(mp)+' Rect'+dbgs(rect));
+    obj := GetNSObjectView(NSObject(targetControl.Handle));
+    callback:=obj.lclGetCallback;
+    result:=callback.MouseMove(Event);
+    FIsEventRouting:=false;
+    exit;
+  end;
 
   // debugln('Send to: '+Target.name+' Point: '+dbgs(mp));
 
@@ -1046,13 +1046,8 @@ var
   View: NSView;
 begin
   Result := False;
-  if Owner.isKindOfClass_(NSWindow) then
-    View := NSwindow(Owner).contentView
-  else
-  if Owner.isKindOfClass_(NSView) then
-    View := NSView(Owner)
-  else
-    Exit;
+  View := CocoaUtils.GetNSObjectView(Owner);
+  if View = nil then Exit;
   if not (csDesigning in Target.ComponentState) then
   begin
     ACursor := Screen.Cursor;

@@ -1691,11 +1691,8 @@ begin
   p := nil;
   if (AParams.WndParent <> 0) then
   begin
+    p := CocoaUtils.GetNSObjectView(NSObject(AParams.WndParent));
     if (NSObject(AParams.WndParent).isKindOfClass_(NSView)) then
-      p := NSView(AParams.WndParent)
-    else
-    if (NSObject(AParams.WndParent).isKindOfClass_(NSWindow)) then
-      p := NSWindow(AParams.WndParent).contentView;
   end;
   with AParams do
     if Assigned(p) then

@@ -5,6 +5,8 @@ interface
 {$mode delphi}
 {$modeswitch objectivec1}
 
+{.$DEFINE COCOA_DEBUG_TABCONTROL}
+
 uses
   // RTL, FCL, LCL
   CocoaAll,
@@ -40,6 +42,7 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
+    class procedure SetProperties(const ACustomPage: TCustomPage; ACocoaControl: NSTabViewItem);
   end;
 
   { TCocoaWSCustomTabControl }
@@ -196,17 +199,43 @@ class function TCocoaWSCustomPage.CreateHandle(const AWinControl: TWinControl; c
 var
   lControl: TCocoaTabPage;
 begin
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn('[TCocoaWSCustomPage.CreateHandle]');
+  {$ENDIF}
   lControl := TCocoaTabPage.alloc().init();
   Result := TLCLIntfHandle(lControl);
   if Result <> 0 then
   begin
-    //lControl.callback := TLCLCommonCallback.Create(Result, ATarget);
+    //lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
     lControl.LCLPage := TCustomPage(AWinControl);
+    SetProperties(TCustomPage(AWinControl), lControl);
   end;
 end;
 
 class procedure TCocoaWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
+var
+  lTabPage: TCocoaTabPage;
 begin
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn('[TCocoaWSCustomTabControl.UpdateProperties] ACustomPage='+IntToStr(PtrInt(ACustomPage)));
+  {$ENDIF}
+  if not Assigned(ACustomPage) or not ACustomPage.HandleAllocated then Exit;
+  lTabPage := TCocoaTabPage(ACustomPage.Handle);
+  SetProperties(ACustomPage, lTabPage);
+end;
+
+class procedure TCocoaWSCustomPage.SetProperties(
+  const ACustomPage: TCustomPage; ACocoaControl: NSTabViewItem);
+var
+  lHintStr: string;
+begin
+  // title
+  ACocoaControl.setLabel(NSStringUTF8(ACustomPage.Caption));
+
+  // hint
+  if ACustomPage.ShowHint then lHintStr := ACustomPage.Hint
+  else lHintStr := '';
+  ACocoaControl.setToolTip(NSStringUTF8(lHintStr));
 end;
 
 { TCocoaWSCustomTabControl }
@@ -219,7 +248,7 @@ begin
   Result := TLCLIntfHandle(lControl);
   if Result <> 0 then
   begin
-    //Result.callback := TLCLCommonCallback.Create(Result, ATarget);
+    //lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
   end;
 end;
 
@@ -228,12 +257,19 @@ var
   lTabControl: TCocoaTabControl;
   lTabPage: TCocoaTabPage;
 begin
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn('[TCocoaWSCustomTabControl.AddPage] AChild='+IntToStr(PtrInt(AChild)));
+  {$ENDIF}
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
+  AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
   lTabPage := TCocoaTabPage(AChild.Handle);
 
   lTabControl.insertTabViewItem_atIndex(lTabPage, AIndex);
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn('[TCocoaWSCustomTabControl.AddPage] END');
+  {$ENDIF}
 end;
 
 class procedure TCocoaWSCustomTabControl.MovePage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const NewIndex: integer);
@@ -243,6 +279,7 @@ var
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
+  AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
   lTabPage := TCocoaTabPage(AChild.Handle);
 
@@ -282,12 +319,18 @@ var
   lTabControl: TCocoaTabControl;
   lTabCount: NSInteger;
 begin
-  //WriteLn('[TCocoaWSCustomTabControl.SetPageIndex]');
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn('[TCocoaWSCustomTabControl.SetPageIndex]');
+  {$ENDIF}
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
-  //WriteLn(Format('[TCocoaWSCustomTabControl.SetPageIndex] lTabControl=%d', [PtrUInt(lTabControl)]));
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaWSCustomTabControl.SetPageIndex] lTabControl=%d', [PtrUInt(lTabControl)]));
+  {$ENDIF}
   lTabCount := lTabControl.numberOfTabViewItems();
-  //WriteLn(Format('[TCocoaWSCustomTabControl.SetPageIndex] lTabCount=%d', [lTabCount]));
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaWSCustomTabControl.SetPageIndex] lTabCount=%d', [lTabCount]));
+  {$ENDIF}
   if (AIndex < 0) or (AIndex >= lTabCount) then Exit;
 
   lTabControl.selectTabViewItemAtIndex(AIndex);

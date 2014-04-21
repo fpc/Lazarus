@@ -223,8 +223,12 @@ function GetNSObjectView(obj: NSObject): NSView;
 begin
   Result := nil;
   if not Assigned(obj) then Exit;
-  if obj.isKindOfClass_(NSView) then Result:=NSView(obj)
-  else if obj.isKindOfClass_(NSWindow) then Result:=NSWindow(obj).contentView;
+  if obj.isKindOfClass_(NSView) then
+    Result:=NSView(obj)
+  else if obj.isKindOfClass_(NSWindow) then
+    Result:=NSWindow(obj).contentView
+  else if obj.isKindOfClass_(NSTabViewItem) then
+    Result := NSTabViewItem(obj).view;
 end;
 
 function GetNSPoint(x, y: single): NSPoint;

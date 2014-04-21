@@ -927,7 +927,7 @@ begin
 
   // Call on a window
   lView := NSView(Handle);
-  if lView.isKindOfClass(objc_getClass('TCocoaWindowContent')) then
+  if lView.isKindOfClass_(TCocoaWindowContent) then
   begin
     if TCocoaWindowContent(handle).isembedded then
       r := TCocoaWindowContent(handle).lclFrame
