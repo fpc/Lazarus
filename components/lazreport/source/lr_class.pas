@@ -107,6 +107,7 @@ type
   TManualBuildEvent = procedure(Page: TfrPage) of object;
   TObjectClickEvent = procedure(View: TfrView) of object;
   TMouseOverObjectEvent = procedure(View: TfrView; var ACursor: TCursor) of object;
+  TPrintReportEvent = procedure(sender: TfrReport) of object;
 
   TfrHighlightAttr = packed record
     FontStyle: Word;
@@ -967,6 +968,8 @@ type
   private
     FDataType: TfrDataType;
     FDefaultCollate: boolean;
+    FOnAfterPrint: TPrintReportEvent;
+    FOnBeforePrint: TPrintReportEvent;
     FOnDBImageRead: TOnDBImageRead;
     FDefaultCopies: Integer;
     FMouseOverObject: TMouseOverObjectEvent;
@@ -1176,6 +1179,8 @@ type
     property OnPrintColumn: TPrintColumnEvent read FOnPrintColumn write FOnPrintColumn;
     property OnManualBuild: TManualBuildEvent read FOnManualBuild write FOnManualBuild;
     property OnExportFilterSetup: TExportFilterSetup read FOnExportFilterSetup write FOnExportFilterSetup;
+    property OnBeforePrint: TPrintReportEvent read FOnBeforePrint write FOnBeforePrint;
+    property OnAfterPrint: TPrintReportEvent read FOnAfterPrint write FOnAfterPrint;
     // If wanted, you can use your own handler to determine the graphic class of the image
     property OnDBImageRead: TOnDBImageRead read FOnDBImageRead write FOnDBImageRead;
     property OnObjectClick: TObjectClickEvent read FObjectClick write FObjectClick;
@@ -10409,6 +10414,10 @@ begin
   {$endif}
   if Prn.UseVirtualPrinter then
     ChangePrinter(Prn.PrinterIndex, Printer.PrinterIndex);
+
+  if Assigned(FOnBeforePrint) then
+    OnBeforePrint(Self);
+
   Prn.Printer := Printer;
   pgList := TStringList.Create;
 
@@ -10446,6 +10455,10 @@ begin
 
   Printer.EndDoc;
   pgList.Free;
+
+  if Assigned(FOnAfterPrint) then
+    OnAfterPrint(Self);
+
   {$ifdef DebugLR}
   DebugPrnInfo('=== END');
   DebugLnExit('TfrReport.DoPrintReport: DONE',[]);
