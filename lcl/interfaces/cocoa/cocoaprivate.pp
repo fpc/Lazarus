@@ -461,7 +461,7 @@ type
     function lclIsHandle: Boolean; override;
   end;
 
-  TCocoaListView = objcclass;
+  TCocoaListBox = objcclass;
 
   { TCocoaStringList }
 
@@ -469,8 +469,52 @@ type
   protected
     procedure Changed; override;
   public
-    Owner: TCocoaListView;
-    constructor Create(AOwner: TCocoaListView);
+    Owner: TCocoaListBox;
+    constructor Create(AOwner: TCocoaListBox);
+  end;
+
+  { TCocoaListBox }
+
+  TCocoaListBox = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol )
+  public
+    callback: IListBoxCallback;
+    list: TCocoaStringList;
+    resultNS: NSString;  //use to return values to combo
+    function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
+    function numberOfRowsInTableView(aTableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
+
+    function tableView_shouldEditTableColumn_row(tableView: NSTableView;
+      tableColumn: NSTableColumn; row: NSInteger): Boolean;
+      message 'tableView:shouldEditTableColumn:row:';
+
+    function tableView_objectValueForTableColumn_row(tableView: NSTableView;
+      objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
+      message 'tableView:objectValueForTableColumn:row:';
+
+    procedure tableViewSelectionDidChange(notification: NSNotification); message 'tableViewSelectionDidChange:';
+
+    procedure dealloc; override;
+    procedure resetCursorRects; override;
+
+    // mouse
+    procedure mouseDown(event: NSEvent); override;
+    // procedure mouseUp(event: NSEvent); override;   This is eaten by NSTableView - worked around with NSTableViewDelegateProtocol
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseEntered(event: NSEvent); override;
+    procedure mouseExited(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+    // key
+    procedure keyDown(event: NSEvent); override;
+    procedure keyUp(event: NSEvent); override;
+    function lclIsHandle: Boolean; override;
   end;
 
   { TCocoaListView }
@@ -515,7 +559,6 @@ type
     procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
     function lclIsHandle: Boolean; override;
-
   end;
 
   { TCocoaGroupBox }
@@ -1926,6 +1969,152 @@ begin
   end;
 end;
 
+{ TCocoaListBox }
+
+function TCocoaListBox.lclIsHandle: Boolean;
+begin
+  Result:=true;
+end;
+
+function TCocoaListBox.acceptsFirstResponder: Boolean;
+begin
+  Result := True;
+end;
+
+function TCocoaListBox.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaListBox.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
+end;
+
+function TCocoaListBox.lclGetCallback: ICommonCallback;
+begin
+  Result := callback;
+end;
+
+procedure TCocoaListBox.lclClearCallback;
+begin
+  callback := nil;
+end;
+
+function TCocoaListBox.numberOfRowsInTableView(aTableView:NSTableView): NSInteger;
+begin
+  if Assigned(list) then
+    Result := list.Count
+  else
+    Result := 0;
+end;
+
+
+function TCocoaListBox.tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean;
+begin
+result:=false;  // disable cell editing by default
+end;
+
+function TCocoaListBox.tableView_objectValueForTableColumn_row(tableView: NSTableView;
+  objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
+begin
+  if not Assigned(list) then
+    Result:=nil
+  else begin
+    if row>=list.count then Result:=nil
+    else
+    begin
+      resultNS.release;  //so we can reuse it
+      resultNS := NSStringUtf8(list[row]);
+      Result:= ResultNS;
+    end;
+  end;
+end;
+
+procedure TCocoaListBox.dealloc;
+begin
+  FreeAndNil(list);
+  resultNS.release;
+  inherited dealloc;
+end;
+
+procedure TCocoaListBox.resetCursorRects;
+begin
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
+end;
+
+procedure TCocoaListBox.tableViewSelectionDidChange(notification: NSNotification);
+begin
+   if Assigned(callback) then
+      callback.SelectionChanged;
+end;
+
+procedure TCocoaListBox.mouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseDown(event);
+end;
+
+procedure TCocoaListBox.rightMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaListBox.rightMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaListBox.otherMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaListBox.otherMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaListBox.mouseDragged(event: NSEvent);
+begin
+if not Assigned(callback) or not callback.MouseMove(event) then
+  inherited mouseDragged(event);
+end;
+
+procedure TCocoaListBox.mouseEntered(event: NSEvent);
+begin
+  inherited mouseEntered(event);
+end;
+
+procedure TCocoaListBox.mouseExited(event: NSEvent);
+begin
+  inherited mouseExited(event);
+end;
+
+procedure TCocoaListBox.mouseMoved(event: NSEvent);
+begin
+  inherited mouseMoved(event);
+end;
+
+procedure TCocoaListBox.keyDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    inherited keyDown(event);
+end;
+
+procedure TCocoaListBox.keyUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    inherited keyUp(event);
+end;
+
 { TCocoaListView }
 
 function TCocoaListView.lclIsHandle: Boolean;
@@ -2080,7 +2269,7 @@ begin
   Owner.reloadData;
 end;
 
-constructor TCocoaStringList.Create(AOwner:TCocoaListView);
+constructor TCocoaStringList.Create(AOwner:TCocoaListBox);
 begin
   Owner:=AOwner;
   inherited Create;

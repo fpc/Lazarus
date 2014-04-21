@@ -911,21 +911,21 @@ end;
 
 { TCocoaWSCustomListBox }
 
-function GetListView(AWinControl: TWinControl): TCocoaListView;
+function GetListBox(AWinControl: TWinControl): TCocoaListBox;
 begin
   if not Assigned(AWinControl) or (AWinControl.Handle=0) then
     Result := nil
   else
-    Result := TCocoaListView(TCocoaScrollView(AWinControl.Handle).documentView);
+    Result := TCocoaListBox(TCocoaScrollView(AWinControl.Handle).documentView);
 end;
 
 class function TCocoaWSCustomListBox.CreateHandle(const AWinControl:TWinControl;
   const AParams:TCreateParams):TLCLIntfHandle;
 var
-  list    : TCocoaListView;
+  list    : TCocoaListBox;
   scroll  : TCocoaScrollView;
 begin
-  list := NSView(TCocoaListView.alloc).lclInitWithCreateParams(AParams);
+  list := NSView(TCocoaListBox.alloc).lclInitWithCreateParams(AParams);
   if not Assigned(list) then
   begin
     Result := 0;
@@ -954,9 +954,9 @@ end;
 
 class function TCocoaWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox):TStrings;
 var
-  view : TCocoaListView;
+  view : TCocoaListBox;
 begin
-  view:=GetListView(ACustomListBox);
+  view:=GetListBox(ACustomListBox);
   if not Assigned(view) then
     Result:=nil
   else
@@ -964,12 +964,12 @@ begin
 end;
 
 class function TCocoaWSCustomListBox.GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean;
-var view : TCocoaListView;
+var view : TCocoaListBox;
     r:NSRect;
 begin
   Result := False;
 
-  view:=GetListView(ACustomListBox);
+  view:=GetListBox(ACustomListBox);
   if not Assigned(view) then
     begin
     Result:=false;
@@ -984,11 +984,11 @@ end;
 
 class function TCocoaWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 var
-  view : TCocoaListView;
+  view : TCocoaListBox;
   indexset: NSIndexSet;
 begin
 
-  view:=GetListView(ACustomListBox);
+  view:=GetListBox(ACustomListBox);
   if not Assigned(view) then
     begin
     Result:=-1;

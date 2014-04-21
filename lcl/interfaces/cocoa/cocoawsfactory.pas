@@ -165,7 +165,8 @@ end;
 
 function RegisterPageControl: Boolean; alias : 'WSRegisterPageControl';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomTabControl, TCocoaWSCustomTabControl);
+  Result := True;
 end;
 
 function RegisterCustomListView: Boolean; alias : 'WSRegisterCustomListView';
@@ -331,7 +332,8 @@ end;
 // extctrls
 function RegisterCustomPage: Boolean; alias : 'WSRegisterCustomPage';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomPage, TCocoaWSCustomPage);
+  Result := True;
 end;
 
 function RegisterCustomNotebook: Boolean; alias : 'WSRegisterCustomNotebook';
