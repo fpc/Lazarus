@@ -5019,6 +5019,9 @@ inherited frDesignerForm: TfrDesignerForm
           GroupIndex = 1
           OnClick = Pan2Click
         end
+        object MenuItem2: TMenuItem
+          Action = tlsDBFields
+        end
       end
       object MastMenu: TMenuItem
         Caption = 'Tools'
@@ -5339,8 +5342,13 @@ inherited frDesignerForm: TfrDesignerForm
       Caption = 'Before print script...'
       OnExecute = FileBeforePrintScriptExecute
     end
+    object tlsDBFields: TAction
+      Category = 'Tools'
+      Caption = 'Data inspector'
+      OnExecute = tlsDBFieldsExecute
+    end
   end
-  object ActionsImageList: TImageList[15]
+  object ActionsImageList: TImageList
     left = 328
     top = 156
     Bitmap = {

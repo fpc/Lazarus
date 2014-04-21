@@ -30,7 +30,7 @@ Lazarus Port: Olivier Guilbaud, Jesus Reyes A.
 See license.txt and license-lazreport.txt for details.
 "/>
     <Version Minor="9" Release="9"/>
-    <Files Count="64">
+    <Files Count="66">
       <Item1>
         <Filename Value="lr_about.pas"/>
         <UnitName Value="LR_About"/>
@@ -288,6 +288,14 @@ See license.txt and license-lazreport.txt for details.
         <Filename Value="fr3tolrf.pas"/>
         <UnitName Value="fr3tolrf"/>
       </Item64>
+      <Item65>
+        <Filename Value="lr_design_ins_filed.lfm"/>
+        <Type Value="LFM"/>
+      </Item65>
+      <Item66>
+        <Filename Value="lr_design_ins_filed.pas"/>
+        <UnitName Value="lr_design_ins_filed"/>
+      </Item66>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

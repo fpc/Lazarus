@@ -835,6 +835,10 @@ msgstr "Formularz FastReport"
 msgid "Force new page"
 msgstr "Wymuś nową stronę"
 
+#: lr_const.sfrdesignerdatainsp
+msgid "Data inspector"
+msgstr ""
+
 #: lr_const.sfrdesignerexists
 msgid "You already have one TfrDesigner component"
 msgstr ""

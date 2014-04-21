@@ -244,6 +244,8 @@ type
 
   TfrDesignerForm = class(TfrReportDesigner)
     acDuplicate: TAction;
+    MenuItem2: TMenuItem;
+    tlsDBFields: TAction;
     FileBeforePrintScript: TAction;
     FileOpen: TAction;
     FilePreview: TAction;
@@ -440,6 +442,10 @@ type
     procedure DoClick(Sender: TObject);
     procedure ClB1Click(Sender: TObject);
     procedure GB1Click(Sender: TObject);
+    procedure ScrollBox1DragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure ScrollBox1DragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure tlsDBFieldsExecute(Sender: TObject);
     procedure ZB1Click(Sender: TObject);
     procedure ZB2Click(Sender: TObject);
     procedure PgB1Click(Sender: TObject);
@@ -614,6 +620,7 @@ type
     procedure ToggleFrames(View: TfrView; Data: PtrInt);
     procedure DuplicateView(View: TfrView; Data: PtrInt);
     procedure ResetDuplicateCount;
+    function lrDesignAcceptDrag(const Source: TObject): TControl;
   protected
     procedure SetModified(AValue: Boolean);override;
   public
@@ -662,7 +669,7 @@ uses
   LR_Pgopt, LR_GEdit, LR_Templ, LR_Newrp, LR_DsOpt, LR_Const,
   LR_Prntr, LR_Hilit, LR_Flds, LR_Dopt, LR_Ev_ed, LR_BndEd, LR_VBnd,
   LR_BTyp, LR_Utils, LR_GrpEd, LR_About, LR_IFlds, LR_DBRel,LR_DBSet,
-  DB;
+  DB, lr_design_ins_filed;
 
 type
   THackView = class(TfrView)
@@ -2971,6 +2978,9 @@ begin
   PageView.PopupMenu := Popup1;
   PageView.ShowHint := True;
 
+  PageView.OnDragDrop:=@ScrollBox1DragDrop;
+  PageView.OnDragOver:=@ScrollBox1DragOver;
+
   ColorSelector := TColorSelector.Create(Self);
   ColorSelector.OnColorSelected := @ColorSelected;
   ColorSelector.Hide;
@@ -4639,6 +4649,17 @@ begin
   FreeThenNil(FDuplicateList);
 end;
 
+function TfrDesignerForm.lrDesignAcceptDrag(const Source: TObject): TControl;
+begin
+  if Source is TControl then
+    Result:=Source as TControl
+  else
+  if Source is TDragControlObject then
+    Result:=(Source as TDragControlObject).Control
+  else
+    Result:=nil;
+end;
+
 {$endif}
 
 procedure TfrDesignerForm.SetModified(AValue: Boolean);
@@ -6115,6 +6136,89 @@ end;
 procedure TfrDesignerForm.GB1Click(Sender: TObject);
 begin
   ShowGrid := GB1.Down;
+end;
+
+procedure TfrDesignerForm.ScrollBox1DragDrop(Sender, Source: TObject; X,
+  Y: Integer);
+var
+  Control :TControl;
+  t : TfrMemoView;
+  dx, dy:integer;
+begin
+  Control:=lrDesignAcceptDrag(Source);
+  if Assigned(lrFieldsList) and (Control = lrFieldsList.lbFieldsList) then
+  begin
+
+    Objects.Add(frCreateObject(gtMemo, '', Page));
+    t:=TfrMemoView(Objects.Last);
+    if Assigned(t) then
+    begin
+      t.MonitorFontChanges;
+      t.Memo.Text:='['+lrFieldsList.SelectedField+']';
+
+      t.CreateUniqueName;
+      t.Canvas:=Canvas;
+
+      GetDefaultSize(dx, dy);
+
+      t.x := X;
+      t.y := Y;
+      t.dx := DX;
+      t.dy := DY;
+
+      {$ifdef ppaint}
+      PageView.NPEraseSelection;
+      {$endif}
+      Unselect;
+
+      t.FrameWidth := LastFrameWidth;
+      t.FrameColor := LastFrameColor;
+      t.FillColor  := LastFillColor;
+      t.Selected   := True;
+
+      if t.Typ <> gtBand then
+        t.Frames:=LastFrames;
+
+      t.Font.Name := LastFontName;
+      t.Font.Size := LastFontSize;
+      t.Font.Color := LastFontColor;
+      t.Font.Style := frSetFontStyle(LastFontStyle);
+      t.Adjust := LastAdjust;
+
+      SelNum := 1;
+      PageView.NPRedrawViewCheckBand(t);
+
+      SelectionChanged;
+      AddUndoAction(acInsert);
+
+      if Page is TfrPageReport then
+        OB1.Down := True
+      else
+        OB7.Down := True
+
+    end;
+  end;
+end;
+
+procedure TfrDesignerForm.ScrollBox1DragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+var
+  Control :TControl;
+begin
+  Accept:= false;
+  if Page is TfrPageDialog then Exit;
+  Control:=lrDesignAcceptDrag(Source);
+  if Assigned(lrFieldsList) then
+    Accept:= (Control = lrFieldsList.lbFieldsList);
+end;
+
+procedure TfrDesignerForm.tlsDBFieldsExecute(Sender: TObject);
+begin
+  if Assigned(lrFieldsList) then
+    FreeThenNil(lrFieldsList)
+  else
+    lrFieldsList:=TlrFieldsList.Create(Self);
+  tlsDBFields.Checked:=Assigned(lrFieldsList);
 end;
 
 procedure TfrDesignerForm.GB2Click(Sender: TObject);

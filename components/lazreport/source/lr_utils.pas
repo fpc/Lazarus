@@ -68,6 +68,7 @@ function lrDateTimeToStr(ADate:TDateTime):string;
 function lrStrToDateTime(AValue: string): TDateTime;
 function lrExpandVariables(const S:string):string;
 procedure lrNormalizeLocaleFloats(DisableLocale: boolean);
+function lrConfigFolderName(ACreatePath: boolean): string;
 
 // utf8 tools
 function UTF8Desc(S:string; var Desc: string): Integer;
@@ -81,7 +82,7 @@ function UTF8CountWords(const str:string; out WordCount,SpcCount,SpcSize:Integer
 
 implementation
 
-uses LR_Class, LR_Const, LR_Pars;
+uses LR_Class, LR_Const, LR_Pars, FileUtil, LazUtilsStrConsts;
 
 var
   PreviousFormatSettings: TFormatSettings;
@@ -746,6 +747,14 @@ begin
     DefaultFormatSettings.DecimalSeparator := '.';
   end else
     DefaultFormatSettings := PreviousFormatSettings;
+end;
+
+function lrConfigFolderName(ACreatePath: boolean): string;
+begin
+  Result:=AppendPathDelim(GetAppConfigDirUTF8(false, ACreatePath))+'LazReport';
+
+  if ACreatePath and not ForceDirectoriesUTF8(Result) then
+    raise EInOutError.Create(SysUtils.Format(lrsUnableToCreateConfigDirectoryS,[Result]));
 end;
 
 function UTF8Desc(S: string; var Desc: string): Integer;

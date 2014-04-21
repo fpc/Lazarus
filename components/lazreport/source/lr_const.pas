@@ -565,6 +565,7 @@ resourcestring
   sFRDesignerForm_Line = 'Line style';
   sFRDesignerForm_Modified = 'Modified';
   sFRDesignerExists        = 'You already have one TfrDesigner component';
+  sFRDesignerDataInsp      = 'Data inspector';
 
 //--- InspForm resources ------------------------------------------------------
   sObjectInspector ='Object inspector';
