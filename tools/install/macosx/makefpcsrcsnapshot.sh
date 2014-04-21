@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+#
+# Usage:
+#  ./makefpcsrcsnapshot.sh <FPCSrcDir>
+#
+# FPCSrcDir/fpcsrc  (http://svn.freepascal.org/svn/fpc/tags/release_2_6_4)
+# FPCSrcDir/install (http://svn.freepascal.org/svn/fpcbuild/trunk/install)
+
 
 set -e
 set -x
@@ -8,8 +15,16 @@ UPDATELIST=~/tmp/updatelist
 
 FPCSVNDIR=$1
 if [ ! -d "$FPCSVNDIR" ]; then
-  FPCSVNDIR=~/src/fpcbuild/2.0.4
-  echo "Using default FPCSVNDIR: $FPCSVNDIR"
+  echo "Usage: ./makefpcsrcsnapshot.sh <FPCSrcDir>"
+  exit 1
+fi
+if [ ! -d "$FPCSVNDIR/fpcsrc" ]; then
+  echo "invalid fpc source directory $FPCSVNDIR/fpcsrc"
+  exit 1
+fi
+if [ ! -f "$FPCSVNDIR/install/macosx/resources/ReadMe.txt" ]; then
+  echo "invalid fpc source directory $FPCSVNDIR/install/macosx/resources/ReadMe.txt"
+  exit 1
 fi
 
 PPCARCH=ppcppc
@@ -42,12 +57,27 @@ fi
 TEMPLATEDIR=`dirname $0`
 
 FPCSOURCEDIR=$FPCSVNDIR/fpcsrc
-COMPILER=~/fpc/bin/$PPCARCH
 INSTALLDIR=~/tmp/fpcsrc
 
 DATESTAMP=`date +%Y%m%d`
 PACKPROJ=fpcsrc.packproj.template
 
+# get FPC source version
+echo -n "getting FPC version from local svn ..."
+VersionFile="$FPCSOURCEDIR/compiler/version.pas"
+CompilerVersion=$(cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g')
+CompilerRelease=$(cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g')
+CompilerPatch=$(cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g')
+CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
+FPCVERSION="$CompilerVersion.$CompilerRelease.$CompilerPatch"
+echo " $CompilerVersionStr"
+
+FPCFULLVERSION=$FPCVERSION
+OLDIFS=$IFS
+IFS=.
+FPCMAJORVERSION=`set $FPCVERSION;  echo $1`
+FPCMINORVERSION=`set $FPCVERSION;  echo $2$3`
+IFS=$OLDIFS
 
 # clean installdir: since I am not root and the install dir can contain files owned by root 
 # created by a previous freeze, I just move it out of the way
@@ -66,14 +96,7 @@ fi
 $SVN export $FPCSOURCEDIR/packages $INSTALLDIR/fpcsrc/packages
 
 # fill in packproj template.
-FPCVERSION=`$COMPILER -iV`
-FPCFULLVERSION=`$COMPILER -iW`
-FPCARCH=`$COMPILER -iSP`
-OLDIFS=$IFS
-IFS=.
-FPCMAJORVERSION=`set $FPCVERSION;  echo $1`
-FPCMINORVERSION=`set $FPCVERSION;  echo $2$3`
-IFS=$OLDIFS
+
 sed -e "s|_FPCSRCDIR_|$FPCSVNDIR|g" -e "s|_DATESTAMP_|$DATESTAMP|g" \
   -e "s|_FPCVERSION_|$FPCVERSION|g" -e "s|_FPCFULLVERSION_|$FPCFULLVERSION|g" \
   -e s/_FPCMAJORVERSION_/$FPCMAJORVERSION/g -e s/_FPCMINORVERSION_/$FPCMINORVERSION/g \
@@ -88,6 +111,6 @@ rm -rf $DMGFILE
 $HDIUTIL create -anyowners -volname fpcsrc-$FPCVERSION -imagekey zlib-level=9 -format UDZO -srcfolder $INSTALLDIR/build $DMGFILE
 
 if [ -e $DMGFILE ]; then
-#update lazarus snapshot web page
+  #todo: update lazarus snapshot web page
   echo "$DMGFILE fpcsrc-$FPCFULLVERSION-*-$FPCARCH-macosx.dmg" >> $UPDATELIST
 fi
