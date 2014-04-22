@@ -405,9 +405,10 @@ type
     FIsDefaultTitleFont: boolean;
     FLayout: ^TTextLayout;
     FPrefixOption: TPrefixOption;
+    FMultiline: Boolean;
     procedure FontChanged(Sender: TObject);
     function GetAlignment: TAlignment;
-    function GetCaption: string;
+    function GetCaption: TCaption;
     function GetColor: TColor;
     function GetFont: TFont;
     function GetLayout: TTextLayout;
@@ -422,6 +423,7 @@ type
     procedure SetImageIndex(const AValue: Integer);
     procedure SetImageLayout(const AValue: TButtonLayout);
     procedure SetLayout(const AValue: TTextLayout);
+    procedure SetMultiLine(const AValue: Boolean);
     procedure SetPrefixOption(const AValue: TPrefixOption);
     property IsDefaultFont: boolean read FIsDefaultTitleFont;
   protected
@@ -446,6 +448,7 @@ type
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
     property ImageLayout: TButtonLayout read FImageLayout write SetImageLayout default blGlyphRight;
     property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
+    property MultiLine: Boolean read FMultiLine write SetMultiLine;
     property PrefixOption: TPrefixOption read FPrefixOption write SetPrefixOption default poNone;
   end;
 
@@ -3494,6 +3497,7 @@ var
   AColor: TColor;
   CurrentTextStyle: TTextStyle;
   IsSelected: boolean;
+  gc: TGridColumn;
 begin
   if DefaultDrawing then begin
     Canvas.Pen.Mode := pmCopy;
@@ -3529,6 +3533,8 @@ begin
     CurrentTextStyle.ShowPrefix := ((gdFixed in aState) and (aRow < FFixedRows)) and GetTitleShowPrefix(aCol);
     CurrentTextStyle.RightToLeft := UseRightToLeftReading;
     CurrentTextStyle.EndEllipsis := (goCellEllipsis in Options);
+    gc := ColumnFromGridColumn(aCol);
+    CurrentTextStyle.SingleLine := (gc = nil) or (not gc.Title.MultiLine);
     Canvas.TextStyle := CurrentTextStyle;
   end else begin
     Canvas.TextStyle := DefaultTextStyle;
@@ -10744,7 +10750,7 @@ begin
     result := FAlignment^;
 end;
 
-function TGridColumnTitle.GetCaption: string;
+function TGridColumnTitle.GetCaption: TCaption;
 begin
   if FCaption = nil then
     result := GetDefaultCaption
@@ -10873,6 +10879,13 @@ begin
   end else if FLayout^ = AValue then
     exit;
   FLayout^ := AValue;
+  FColumn.ColumnChanged;
+end;
+
+procedure TGridColumnTitle.SetMultiLine(const AValue: Boolean);
+begin
+  if FMultiLine = AValue then exit;
+  FMultiLine := AValue;
   FColumn.ColumnChanged;
 end;
 
