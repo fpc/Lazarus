@@ -10,7 +10,7 @@ interface
 uses
   // RTL, FCL, LCL
   CocoaAll,
-  Classes, LCLType, SysUtils,
+  Classes, LCLType, SysUtils, Contnrs,
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList,
   // WS
   WSComCtrls,
@@ -75,7 +75,7 @@ type
   TCocoaWSCustomListView = class(TWSCustomListView)
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-(*    // Column
+    // Column
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AColumn: TListColumn): Integer; override;
     class procedure ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); override;
@@ -96,10 +96,10 @@ type
     class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; override;
     class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem); override;
-    class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AChecked: Boolean); override;
+    (*class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AChecked: Boolean); override;
     //class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex, {%H-}AImageIndex: Integer); override;
     //carbon//class function ItemSetPosition(const ALV: TCustomListView; const AIndex: Integer; const ANewPosition: TPoint): Boolean; override;
-    class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
+    class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;*)
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex: Integer; const {%H-}AText: String); override;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const PartialOK: Boolean); override;
 
@@ -107,7 +107,7 @@ type
     //carbon//class procedure BeginUpdate(const ALV: TCustomListView); override;
     //carbon//class procedure EndUpdate(const ALV: TCustomListView); override;
 
-    class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
+    (*class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
     //carbon//class function GetDropTarget(const ALV: TCustomListView): Integer; override;
     class function GetFocused(const ALV: TCustomListView): Integer; override;
     //carbon//class function GetHoverTime(const ALV: TCustomListView): Integer; override;
@@ -162,10 +162,24 @@ type
     //procedure lclClearCallback; override;
   end;
 
-  TCocoaTableListView = objcclass(NSTableView)
+  { TCocoaTableListView }
+
+  TCocoaTableListView = objcclass(NSTableView, NSTableViewDataSourceProtocol)
     callback: ICommonCallback;
+    ListView: TCustomListView;
+    // Owned Pascal classes which need to be released
+    Columns: TObjectList;// NSTableColumn;
+    Items: TStringList; // Object are TStringList for sub-items
+
     //function lclGetCallback: ICommonCallback; override;
     //procedure lclClearCallback; override;
+
+    // NSTableViewDataSourceProtocol
+    function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
+    function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
+    procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
+    //
+    procedure setStringValue_forTableColumn_row(AStr: NSString; col, row: NSInteger); message 'setStringValue:forTableColumn:row:';
   end;
 
   { TCocoaProgressIndicator }
@@ -193,11 +207,58 @@ begin
   end;
 end;
 
+{ TCocoaTableListView }
+
+function TCocoaTableListView.numberOfRowsInTableView(tableView: NSTableView
+  ): NSInteger;
+begin
+  Result := Items.Count;
+end;
+
+function TCocoaTableListView.tableView_objectValueForTableColumn_row(
+  tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id;
+var
+  lStringList: TStringList;
+begin
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn('[TCocoaTableListView.tableView_objectValueForTableColumn_row]');
+  {$ENDIF}
+
+end;
+
+procedure TCocoaTableListView.tableView_setObjectValue_forTableColumn_row(
+  tableView: NSTableView; object_: id; tableColumn: NSTableColumn;
+  row: NSInteger);
+begin
+
+end;
+
+procedure TCocoaTableListView.setStringValue_forTableColumn_row(
+  AStr: NSString; col, row: NSInteger);
+var
+  lStringList: TStringList;
+  lStr: string;
+begin
+  lStr := NSStringToString(AStr);
+  if col = 0 then Items.Strings[row] := lStr
+  else
+  begin
+    lStringList := TStringList(Items.Objects[row]);
+    if lStringList = nil then
+    begin
+      lStringList := TStringList.Create;
+      Items.Objects[row] := lStringList;
+    end;
+    lStringList.Strings[col-1] := lStr;
+  end;
+end;
+
 { TCocoaWSCustomPage }
 
 class function TCocoaWSCustomPage.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   lControl: TCocoaTabPage;
+  sv: NSScrollView;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn('[TCocoaWSCustomPage.CreateHandle]');
@@ -206,9 +267,17 @@ begin
   Result := TLCLIntfHandle(lControl);
   if Result <> 0 then
   begin
-    //lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
+    lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
     lControl.LCLPage := TCustomPage(AWinControl);
     SetProperties(TCustomPage(AWinControl), lControl);
+
+    {sv := NSScrollView.alloc.initWithFrame(
+      TCocoaTabControl(AWinControl.Parent.Handle) .contentRect);
+    sv.setHasVerticalScroller(True);
+    sv.setHasHorizontalScroller(True);
+    sv.setAutohidesScrollers(True);
+    sv.setBorderType(NSNoBorder);
+    lControl.setView(sv);}
   end;
 end;
 
@@ -242,13 +311,13 @@ end;
 
 class function TCocoaWSCustomTabControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
-  lControl: TCocoaTabPage;
+  lControl: TCocoaTabControl;
 begin
   lControl := TCocoaTabControl.alloc.lclInitWithCreateParams(AParams);
   Result := TLCLIntfHandle(lControl);
   if Result <> 0 then
   begin
-    //lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
+    lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
   end;
 end;
 
@@ -339,7 +408,211 @@ end;
 { TCocoaWSCustomListView }
 
 class function TCocoaWSCustomListView.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  lTableLV: TCocoaTableListView;
 begin
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn('[TCocoaWSCustomListView.CreateHandle] AWinControl='+IntToStr(PtrInt(AWinControl)));
+  {$ENDIF}
+  lTableLV := TCocoaTableListView.alloc.lclInitWithCreateParams(AParams);
+  Result := TLCLIntfHandle(lTableLV);
+  if Result <> 0 then
+  begin
+    //lTableLV.callback := TLCLCommonCallback.Create(lTableLV, AWinControl);
+    lTableLV.Columns := TObjectList.Create;
+    lTableLV.Items := TStringList.Create;
+
+    lTableLV.ListView := TCustomListView(AWinControl);
+    lTableLV.setDataSource(lTableLV);
+  end;
+end;
+
+class procedure TCocoaWSCustomListView.ColumnDelete(const ALV: TCustomListView;
+  const AIndex: Integer);
+var
+  lTableLV: TCocoaTableListView;
+  lColumn: NSTableColumn;
+begin
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaWSCustomListView.ColumnDelete] AIndex=%d', [AIndex]));
+  {$ENDIF}
+  if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
+  lTableLV := TCocoaTableListView(ALV.Handle);
+  if (AIndex < 0) or (AIndex >= lTableLV.Columns.Count) then Exit;
+  lColumn := NSTableColumn(lTableLV.Columns.Items[AIndex]);
+  lTableLV.Columns.Remove(TObject(lColumn));
+  lColumn.release;
+end;
+
+class function TCocoaWSCustomListView.ColumnGetWidth(
+  const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn
+  ): Integer;
+var
+  lTableLV: TCocoaTableListView;
+  lColumn: NSTableColumn;
+begin
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaWSCustomListView.ColumnGetWidth] AIndex=%d', [AIndex]));
+  {$ENDIF}
+  if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
+  lTableLV := TCocoaTableListView(ALV.Handle);
+  if (AIndex < 0) or (AIndex >= lTableLV.Columns.Count) then Exit;
+  lColumn := NSTableColumn(lTableLV.Columns.Items[AIndex]);
+  Result := Round(lColumn.width());
+end;
+
+class procedure TCocoaWSCustomListView.ColumnInsert(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn);
+var
+  lTableLV: TCocoaTableListView;
+  lColumn: NSTableColumn;
+  lTitle: NSString;
+begin
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaWSCustomListView.ColumnInsert] AIndex=%d', [AIndex]));
+  {$ENDIF}
+  if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
+  lTableLV := TCocoaTableListView(ALV.Handle);
+  if (AIndex < 0) or (AIndex >= lTableLV.Columns.Count) then Exit;
+  lTitle := NSStringUTF8(AColumn.Caption);
+  lColumn := NSTableColumn.alloc.initWithIdentifier(lTitle);
+  lTableLV.Columns.Insert(AIndex, TObject(lColumn));
+end;
+
+class procedure TCocoaWSCustomListView.ColumnMove(const ALV: TCustomListView;
+  const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
+begin
+  inherited ColumnMove(ALV, AOldIndex, ANewIndex, AColumn);
+end;
+
+class procedure TCocoaWSCustomListView.ColumnSetAlignment(
+  const ALV: TCustomListView; const AIndex: Integer;
+  const AColumn: TListColumn; const AAlignment: TAlignment);
+begin
+  inherited ColumnSetAlignment(ALV, AIndex, AColumn, AAlignment);
+end;
+
+class procedure TCocoaWSCustomListView.ColumnSetAutoSize(
+  const ALV: TCustomListView; const AIndex: Integer;
+  const AColumn: TListColumn; const AAutoSize: Boolean);
+begin
+  inherited ColumnSetAutoSize(ALV, AIndex, AColumn, AAutoSize);
+end;
+
+class procedure TCocoaWSCustomListView.ColumnSetCaption(
+  const ALV: TCustomListView; const AIndex: Integer;
+  const AColumn: TListColumn; const ACaption: String);
+begin
+  inherited ColumnSetCaption(ALV, AIndex, AColumn, ACaption);
+end;
+
+class procedure TCocoaWSCustomListView.ColumnSetImage(
+  const ALV: TCustomListView; const AIndex: Integer;
+  const AColumn: TListColumn; const AImageIndex: Integer);
+begin
+  inherited ColumnSetImage(ALV, AIndex, AColumn, AImageIndex);
+end;
+
+class procedure TCocoaWSCustomListView.ColumnSetMaxWidth(
+  const ALV: TCustomListView; const AIndex: Integer;
+  const AColumn: TListColumn; const AMaxWidth: Integer);
+begin
+  inherited ColumnSetMaxWidth(ALV, AIndex, AColumn, AMaxWidth);
+end;
+
+class procedure TCocoaWSCustomListView.ColumnSetMinWidth(
+  const ALV: TCustomListView; const AIndex: Integer;
+  const AColumn: TListColumn; const AMinWidth: integer);
+begin
+  inherited ColumnSetMinWidth(ALV, AIndex, AColumn, AMinWidth);
+end;
+
+class procedure TCocoaWSCustomListView.ColumnSetWidth(
+  const ALV: TCustomListView; const AIndex: Integer;
+  const AColumn: TListColumn; const AWidth: Integer);
+begin
+  inherited ColumnSetWidth(ALV, AIndex, AColumn, AWidth);
+end;
+
+class procedure TCocoaWSCustomListView.ColumnSetVisible(
+  const ALV: TCustomListView; const AIndex: Integer;
+  const AColumn: TListColumn; const AVisible: Boolean);
+begin
+  inherited ColumnSetVisible(ALV, AIndex, AColumn, AVisible);
+end;
+
+class procedure TCocoaWSCustomListView.ItemDelete(const ALV: TCustomListView;
+  const AIndex: Integer);
+begin
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaWSCustomListView.ItemDelete] AIndex=%d', [AIndex]));
+  {$ENDIF}
+  inherited ItemDelete(ALV, AIndex);
+end;
+
+class function TCocoaWSCustomListView.ItemDisplayRect(
+  const ALV: TCustomListView; const AIndex, ASubItem: Integer;
+  ACode: TDisplayCode): TRect;
+begin
+  Result:=inherited ItemDisplayRect(ALV, AIndex, ASubItem, ACode);
+end;
+
+class function TCocoaWSCustomListView.ItemGetChecked(
+  const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem
+  ): Boolean;
+begin
+  Result:=inherited ItemGetChecked(ALV, AIndex, AItem);
+end;
+
+class function TCocoaWSCustomListView.ItemGetPosition(
+  const ALV: TCustomListView; const AIndex: Integer): TPoint;
+begin
+  Result:=inherited ItemGetPosition(ALV, AIndex);
+end;
+
+class function TCocoaWSCustomListView.ItemGetState(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
+  out AIsSet: Boolean): Boolean;
+begin
+  Result:=inherited ItemGetState(ALV, AIndex, AItem, AState, AIsSet);
+end;
+
+class procedure TCocoaWSCustomListView.ItemInsert(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem);
+var
+  lTableLV: TCocoaTableListView;
+  i, lColumnCount: Integer;
+  lColumn: NSTableColumn;
+  lStr: string;
+  lNSStr: NSString;
+begin
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaWSCustomListView.ItemInsert] AIndex=%d', [AIndex]));
+  {$ENDIF}
+  if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
+  lTableLV := TCocoaTableListView(ALV.Handle);
+  lColumnCount := lTableLV.tableColumns.count();
+  for i := 0 to lColumnCount-1 do
+  begin
+    lColumn := lTableLV.tableColumns.objectAtIndex(i);
+    if i = 0 then lStr := AItem.Caption
+    else lStr := AItem.SubItems.Strings[i-1];
+    lNSStr := NSStringUTF8(lStr);
+    lTableLV.setStringValue_forTableColumn_row(lNSStr, i, AIndex);
+  end;
+end;
+
+class procedure TCocoaWSCustomListView.ItemSetText(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer;
+  const AText: String);
+begin
+  inherited ItemSetText(ALV, AIndex, AItem, ASubIndex, AText);
+end;
+
+class procedure TCocoaWSCustomListView.ItemShow(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
+begin
+  inherited ItemShow(ALV, AIndex, AItem, PartialOK);
 end;
 
 { TCocoaWSProgressBar }
