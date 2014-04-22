@@ -7,7 +7,7 @@ unit LCL;
 interface
 
 uses
-  AllLCLIntfUnits, CocoaProc, CocoaThemes, CocoaWSComCtrls, LazarusPackageIntf;
+  AllLCLIntfUnits, LazarusPackageIntf;
 
 implementation
 
