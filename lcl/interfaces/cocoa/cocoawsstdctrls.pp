@@ -156,9 +156,6 @@ type
   end;
   TLCLListBoxCallBackClass = class of TLCLListBoxCallBack;
 
-
-
-
   { TCocoaWSButton }
 
   TCocoaWSButton = class(TWSButton)
@@ -331,8 +328,6 @@ procedure TLCLListBoxCallback.SelectionChanged;
 begin
   SendSimpleMessage(Target, LM_SELCHANGE);
 end;
-
-
 
 { TLCLCheckBoxCallback }
 

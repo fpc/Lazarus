@@ -10,7 +10,7 @@ interface
 uses
   // RTL, FCL, LCL
   CocoaAll,
-  Classes, LCLType, SysUtils, Contnrs,
+  Classes, LCLType, SysUtils, Contnrs, LCLMessageGlue, LMessages,
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList,
   // WS
   WSComCtrls,
@@ -144,6 +144,13 @@ type
     class procedure SetStyle(const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle); override;
   end;
 
+  { TLCLListViewCallback }
+
+  TLCLListViewCallback = class(TLCLCommonCallback, IListViewCallback)
+  public
+    procedure SelectionChanged; virtual;
+  end;
+  TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
 implementation
 
@@ -160,25 +167,6 @@ type
     callback: ICommonCallback;
     //function lclGetCallback: ICommonCallback; override;
     //procedure lclClearCallback; override;
-  end;
-
-  { TCocoaTableListView }
-
-  TCocoaTableListView = objcclass(NSTableView, NSTableViewDataSourceProtocol)
-    callback: ICommonCallback;
-    ListView: TCustomListView;
-    // Owned Pascal classes which need to be released
-    Items: TStringList; // Object are TStringList for sub-items
-
-    //function lclGetCallback: ICommonCallback; override;
-    //procedure lclClearCallback; override;
-
-    // NSTableViewDataSourceProtocol
-    function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
-    function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
-    procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
-    //
-    procedure setStringValue_forTableColumn_row(AStr: NSString; col, row: NSInteger); message 'setStringValue:forTableColumn:row:';
   end;
 
   { TCocoaProgressIndicator }
@@ -203,93 +191,6 @@ begin
     Result.startAnimation(nil);
     //small constrol size looks like carbon
     //Result.setControlSize(NSSmallControlSize);
-  end;
-end;
-
-{ TCocoaTableListView }
-
-function TCocoaTableListView.numberOfRowsInTableView(tableView: NSTableView
-  ): NSInteger;
-begin
-  {$IFDEF COCOA_DEBUG_TABCONTROL}
-  WriteLn(Format('[TCocoaTableListView.numberOfRowsInTableView] Result=%d', [Items.Count]));
-  {$ENDIF}
-  Result := Items.Count;
-end;
-
-function TCocoaTableListView.tableView_objectValueForTableColumn_row(
-  tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id;
-var
-  lStringList: TStringList;
-  col: NSInteger;
-  StrResult: NSString;
-begin
-  col := tableColumns.indexOfObject(tableColumn);
-  {$IFDEF COCOA_DEBUG_TABCONTROL}
-  WriteLn(Format('[TCocoaTableListView.tableView_objectValueForTableColumn_row] col=%d row=%d Items.Count=%d',
-    [col, row, Items.Count]));
-  {$ENDIF}
-  if row > Items.Count-1 then Exit;
-  if col = 0 then
-    StrResult := NSStringUTF8(Items.Strings[row])
-  else
-  begin
-    lStringList := TStringList(Items.Objects[row]);
-    StrResult := NSStringUTF8(lStringList.Strings[col-1]);
-  end;
-  Result := StrResult;
-end;
-
-procedure TCocoaTableListView.tableView_setObjectValue_forTableColumn_row(
-  tableView: NSTableView; object_: id; tableColumn: NSTableColumn;
-  row: NSInteger);
-begin
-
-end;
-
-procedure TCocoaTableListView.setStringValue_forTableColumn_row(
-  AStr: NSString; col, row: NSInteger);
-var
-  lStringList: TStringList;
-  lStr: string;
-begin
-  lStr := NSStringToString(AStr);
-  {$IFDEF COCOA_DEBUG_TABCONTROL}
-  WriteLn(Format('[TCocoaTableListView.setStringValue_forTableColumn_row] AStr=%s col=%d row=%d Items.Count=%d',
-    [lStr, col, row, Items.Count]));
-  {$ENDIF}
-
-  // make sure we have enough lines
-  while (row >= Items.Count) do
-  begin
-    {$IFDEF COCOA_DEBUG_TABCONTROL}
-    WriteLn(Format('[TCocoaTableListView.setStringValue_forTableColumn_row] Adding line', []));
-    {$ENDIF}
-    Items.AddObject('', TStringList.Create());
-  end;
-
-  // Now write it
-  if col = 0 then
-    Items.Strings[row] := lStr
-  else
-  begin
-    lStringList := TStringList(Items.Objects[row]);
-    if lStringList = nil then
-    begin
-      lStringList := TStringList.Create;
-      Items.Objects[row] := lStringList;
-    end;
-
-    // make sure we have enough columns
-    while (col-1 >= lStringList.Count) do
-    begin
-      {$IFDEF COCOA_DEBUG_TABCONTROL}
-      WriteLn(Format('[TCocoaTableListView.setStringValue_forTableColumn_row] Adding column', []));
-      {$ENDIF}
-      lStringList.Add('');
-    end;
-
-    lStringList.Strings[col-1] := lStr;
   end;
 end;
 
@@ -458,7 +359,7 @@ begin
   Result := TLCLIntfHandle(lTableLV);
   if Result <> 0 then
   begin
-    //lTableLV.callback := TLCLCommonCallback.Create(lTableLV, AWinControl);
+    lTableLV.callback := TLCLListViewCallback.Create(lTableLV, AWinControl);
     lTableLV.Items := TStringList.Create;
 
     lTableLV.ListView := TCustomListView(AWinControl);
@@ -519,6 +420,7 @@ begin
   if (AIndex < 0) or (AIndex >= lTableLV.tableColumns.count()+1) then Exit;
   lTitle := NSStringUTF8(AColumn.Caption);
   lColumn := NSTableColumn.alloc.initWithIdentifier(lTitle);
+  //?/lColumn.setHidden(False);
   lTableLV.addTableColumn(lColumn);
   lTitle.release;
 end;
@@ -760,6 +662,13 @@ procedure TCocoaProgressIndicator.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
+end;
+
+{ TLCLListViewCallback }
+
+procedure TLCLListViewCallback.SelectionChanged;
+begin
+  SendSimpleMessage(Target, LM_SELCHANGE);
 end;
 
 end.

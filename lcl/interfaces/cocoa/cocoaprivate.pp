@@ -27,7 +27,7 @@ uses
   // Libs
   CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
-  LCLType, LCLProc, Controls;
+  LCLType, LCLProc, Controls, ComCtrls;
 
 type
 
@@ -152,9 +152,15 @@ type
     procedure ButtonClick;
   end;
 
-    { IListBoxCallBack }
+  { IListBoxCallBack }
 
   IListBoxCallBack = interface(ICommonCallback)
+    procedure SelectionChanged;
+  end;
+
+  { IListViewCallBack }
+
+  IListViewCallBack = interface(ICommonCallback)
     procedure SelectionChanged;
   end;
 
@@ -478,8 +484,8 @@ type
   TCocoaListBox = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol )
   public
     callback: IListBoxCallback;
+    resultNS: NSString;
     list: TCocoaStringList;
-    resultNS: NSString;  //use to return values to combo
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -517,29 +523,34 @@ type
     function lclIsHandle: Boolean; override;
   end;
 
-  { TCocoaListView }
+  { TCocoaTableListView }
 
-  TCocoaListView = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol )
+  TCocoaTableListView = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
   public
-    callback: IListBoxCallback;
-    list: TCocoaStringList;
-    resultNS: NSString;  //use to return values to combo
+    ListView: TCustomListView; // just reference, don't release
+    callback: IListViewCallback;
+    //list: TCocoaStringList;
+    //resultNS: NSString;  //use to return values to combo
+
+    // Owned Pascal classes which need to be released
+    Items: TStringList; // Object are TStringList for sub-items
+
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    function numberOfRowsInTableView(aTableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
 
+    // NSTableViewDataSourceProtocol
+    function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
     function tableView_shouldEditTableColumn_row(tableView: NSTableView;
       tableColumn: NSTableColumn; row: NSInteger): Boolean;
       message 'tableView:shouldEditTableColumn:row:';
-
-    function tableView_objectValueForTableColumn_row(tableView: NSTableView;
-      objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
-      message 'tableView:objectValueForTableColumn:row:';
-
+    function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
+    //procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
     procedure tableViewSelectionDidChange(notification: NSNotification); message 'tableViewSelectionDidChange:';
+    //
+    procedure setStringValue_forTableColumn_row(AStr: NSString; col, row: NSInteger); message 'setStringValue:forTableColumn:row:';
 
     procedure dealloc; override;
     procedure resetCursorRects; override;
@@ -2023,7 +2034,7 @@ begin
     if row>=list.count then Result:=nil
     else
     begin
-      resultNS.release;  //so we can reuse it
+      resultNS.release;
       resultNS := NSStringUtf8(list[row]);
       Result:= ResultNS;
     end;
@@ -2112,147 +2123,199 @@ begin
     inherited keyUp(event);
 end;
 
-{ TCocoaListView }
+{ TCocoaTableListView }
 
-function TCocoaListView.lclIsHandle: Boolean;
+function TCocoaTableListView.lclIsHandle: Boolean;
 begin
   Result:=true;
 end;
 
-function TCocoaListView.acceptsFirstResponder: Boolean;
+function TCocoaTableListView.acceptsFirstResponder: Boolean;
 begin
   Result := True;
 end;
 
-function TCocoaListView.becomeFirstResponder: Boolean;
+function TCocoaTableListView.becomeFirstResponder: Boolean;
 begin
   Result := inherited becomeFirstResponder;
   callback.BecomeFirstResponder;
 end;
 
-function TCocoaListView.resignFirstResponder: Boolean;
+function TCocoaTableListView.resignFirstResponder: Boolean;
 begin
   Result := inherited resignFirstResponder;
   callback.ResignFirstResponder;
 end;
 
-function TCocoaListView.lclGetCallback: ICommonCallback;
+function TCocoaTableListView.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
 end;
 
-procedure TCocoaListView.lclClearCallback;
+procedure TCocoaTableListView.lclClearCallback;
 begin
   callback := nil;
 end;
 
-function TCocoaListView.numberOfRowsInTableView(aTableView:NSTableView): NSInteger;
+function TCocoaTableListView.numberOfRowsInTableView(TableView:NSTableView): NSInteger;
 begin
-  if Assigned(list) then
-    Result := list.Count
+  if Assigned(Items) then
+    Result := Items.Count
   else
     Result := 0;
 end;
 
 
-function TCocoaListView.tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean;
+function TCocoaTableListView.tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean;
 begin
-result:=false;  // disable cell editing by default
+  result:=false;  // disable cell editing by default
 end;
 
-function TCocoaListView.tableView_objectValueForTableColumn_row(tableView: NSTableView;
-  objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
+function TCocoaTableListView.tableView_objectValueForTableColumn_row(tableView: NSTableView;
+  TableColumn: NSTableColumn; row: NSInteger):id;
+var
+  lStringList: TStringList;
+  col: NSInteger;
+  StrResult: NSString;
 begin
-  if not Assigned(list) then
-    Result:=nil
-  else begin
-    if row>=list.count then Result:=nil
-    else
-    begin
-      resultNS.release;  //so we can reuse it
-      resultNS := NSStringUtf8(list[row]);
-      Result:= ResultNS;
-    end;
+  col := tableColumns.indexOfObject(tableColumn);
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaTableListView.tableView_objectValueForTableColumn_row] col=%d row=%d Items.Count=%d',
+    [col, row, Items.Count]));
+  {$ENDIF}
+  if row > Items.Count-1 then Exit;
+  if col = 0 then
+    StrResult := NSStringUTF8(Items.Strings[row])
+  else
+  begin
+    lStringList := TStringList(Items.Objects[row]);
+    StrResult := NSStringUTF8(lStringList.Strings[col-1]);
   end;
+  Result := StrResult;
 end;
 
-procedure TCocoaListView.dealloc;
+procedure TCocoaTableListView.dealloc;
 begin
-  FreeAndNil(list);
-  resultNS.release;
+  if Assigned(Items) then FreeAndNil(Items);
   inherited dealloc;
 end;
 
-procedure TCocoaListView.resetCursorRects;
+procedure TCocoaTableListView.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
 end;
 
-procedure TCocoaListView.tableViewSelectionDidChange(notification: NSNotification);
+procedure TCocoaTableListView.tableViewSelectionDidChange(notification: NSNotification);
 begin
-   if Assigned(callback) then
-      callback.SelectionChanged;
+  if Assigned(callback) then
+    callback.SelectionChanged;
 end;
 
-procedure TCocoaListView.mouseDown(event: NSEvent);
+procedure TCocoaTableListView.setStringValue_forTableColumn_row(
+  AStr: NSString; col, row: NSInteger);
+var
+  lStringList: TStringList;
+  lStr: string;
+begin
+  lStr := NSStringToString(AStr);
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaTableListView.setStringValue_forTableColumn_row] AStr=%s col=%d row=%d Items.Count=%d',
+    [lStr, col, row, Items.Count]));
+  {$ENDIF}
+
+  // make sure we have enough lines
+  while (row >= Items.Count) do
+  begin
+    {$IFDEF COCOA_DEBUG_TABCONTROL}
+    WriteLn(Format('[TCocoaTableListView.setStringValue_forTableColumn_row] Adding line', []));
+    {$ENDIF}
+    Items.AddObject('', TStringList.Create());
+  end;
+
+  // Now write it
+  if col = 0 then
+    Items.Strings[row] := lStr
+  else
+  begin
+    lStringList := TStringList(Items.Objects[row]);
+    if lStringList = nil then
+    begin
+      lStringList := TStringList.Create;
+      Items.Objects[row] := lStringList;
+    end;
+
+    // make sure we have enough columns
+    while (col-1 >= lStringList.Count) do
+    begin
+      {$IFDEF COCOA_DEBUG_TABCONTROL}
+      WriteLn(Format('[TCocoaTableListView.setStringValue_forTableColumn_row] Adding column', []));
+      {$ENDIF}
+      lStringList.Add('');
+    end;
+
+    lStringList.Strings[col-1] := lStr;
+  end;
+end;
+
+procedure TCocoaTableListView.mouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited mouseDown(event);
 end;
 
-procedure TCocoaListView.rightMouseDown(event: NSEvent);
+procedure TCocoaTableListView.rightMouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited rightMouseDown(event);
 end;
 
-procedure TCocoaListView.rightMouseUp(event: NSEvent);
+procedure TCocoaTableListView.rightMouseUp(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited rightMouseUp(event);
 end;
 
-procedure TCocoaListView.otherMouseDown(event: NSEvent);
+procedure TCocoaTableListView.otherMouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseDown(event);
 end;
 
-procedure TCocoaListView.otherMouseUp(event: NSEvent);
+procedure TCocoaTableListView.otherMouseUp(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseUp(event);
 end;
 
-procedure TCocoaListView.mouseDragged(event: NSEvent);
+procedure TCocoaTableListView.mouseDragged(event: NSEvent);
 begin
 if not Assigned(callback) or not callback.MouseMove(event) then
   inherited mouseDragged(event);
 end;
 
-procedure TCocoaListView.mouseEntered(event: NSEvent);
+procedure TCocoaTableListView.mouseEntered(event: NSEvent);
 begin
   inherited mouseEntered(event);
 end;
 
-procedure TCocoaListView.mouseExited(event: NSEvent);
+procedure TCocoaTableListView.mouseExited(event: NSEvent);
 begin
   inherited mouseExited(event);
 end;
 
-procedure TCocoaListView.mouseMoved(event: NSEvent);
+procedure TCocoaTableListView.mouseMoved(event: NSEvent);
 begin
   inherited mouseMoved(event);
 end;
 
-procedure TCocoaListView.keyDown(event: NSEvent);
+procedure TCocoaTableListView.keyDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.KeyEvent(event) then
     inherited keyDown(event);
 end;
 
-procedure TCocoaListView.keyUp(event: NSEvent);
+procedure TCocoaTableListView.keyUp(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.KeyEvent(event) then
     inherited keyUp(event);

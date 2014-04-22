@@ -832,6 +832,7 @@ begin
     FIsEventRouting:=true;
     // debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(mp)+' Rect'+dbgs(rect));
     obj := GetNSObjectView(NSObject(targetControl.Handle));
+    if obj = nil then Exit;
     callback:=obj.lclGetCallback;
     result:=callback.MouseMove(Event);
     FIsEventRouting:=false;
