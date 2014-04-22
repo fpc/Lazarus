@@ -129,7 +129,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="3"/>
-    <Files Count="429">
+    <Files Count="435">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2135,6 +2135,30 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="LazPangoCairo1"/>
       </Item429>
+      <Item430>
+        <Filename Value="cocoa/cocoalclintf.inc"/>
+        <Type Value="Include"/>
+      </Item430>
+      <Item431>
+        <Filename Value="cocoa/cocoalclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item431>
+      <Item432>
+        <Filename Value="cocoa/cocoaproc.pas"/>
+        <UnitName Value="CocoaProc"/>
+      </Item432>
+      <Item433>
+        <Filename Value="cocoa/cocoathemes.pas"/>
+        <UnitName Value="CocoaThemes"/>
+      </Item433>
+      <Item434>
+        <Filename Value="cocoa/cocoawscomctrls.pas"/>
+        <UnitName Value="CocoaWSComCtrls"/>
+      </Item434>
+      <Item435>
+        <Filename Value="cocoa/mackeycodes.inc"/>
+        <Type Value="Include"/>
+      </Item435>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>

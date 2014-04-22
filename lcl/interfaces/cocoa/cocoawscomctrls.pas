@@ -5,7 +5,7 @@ interface
 {$mode delphi}
 {$modeswitch objectivec1}
 
-{.$DEFINE COCOA_DEBUG_TABCONTROL}
+{$DEFINE COCOA_DEBUG_TABCONTROL}
 
 uses
   // RTL, FCL, LCL
@@ -168,7 +168,6 @@ type
     callback: ICommonCallback;
     ListView: TCustomListView;
     // Owned Pascal classes which need to be released
-    Columns: TObjectList;// NSTableColumn;
     Items: TStringList; // Object are TStringList for sub-items
 
     //function lclGetCallback: ICommonCallback; override;
@@ -212,6 +211,9 @@ end;
 function TCocoaTableListView.numberOfRowsInTableView(tableView: NSTableView
   ): NSInteger;
 begin
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaTableListView.numberOfRowsInTableView] Result=%d', [Items.Count]));
+  {$ENDIF}
   Result := Items.Count;
 end;
 
@@ -219,11 +221,23 @@ function TCocoaTableListView.tableView_objectValueForTableColumn_row(
   tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id;
 var
   lStringList: TStringList;
+  col: NSInteger;
+  StrResult: NSString;
 begin
+  col := tableColumns.indexOfObject(tableColumn);
   {$IFDEF COCOA_DEBUG_TABCONTROL}
-  WriteLn('[TCocoaTableListView.tableView_objectValueForTableColumn_row]');
+  WriteLn(Format('[TCocoaTableListView.tableView_objectValueForTableColumn_row] col=%d row=%d Items.Count=%d',
+    [col, row, Items.Count]));
   {$ENDIF}
-
+  if row > Items.Count-1 then Exit;
+  if col = 0 then
+    StrResult := NSStringUTF8(Items.Strings[row])
+  else
+  begin
+    lStringList := TStringList(Items.Objects[row]);
+    StrResult := NSStringUTF8(lStringList.Strings[col-1]);
+  end;
+  Result := StrResult;
 end;
 
 procedure TCocoaTableListView.tableView_setObjectValue_forTableColumn_row(
@@ -240,7 +254,23 @@ var
   lStr: string;
 begin
   lStr := NSStringToString(AStr);
-  if col = 0 then Items.Strings[row] := lStr
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaTableListView.setStringValue_forTableColumn_row] AStr=%s col=%d row=%d Items.Count=%d',
+    [lStr, col, row, Items.Count]));
+  {$ENDIF}
+
+  // make sure we have enough lines
+  while (row >= Items.Count) do
+  begin
+    {$IFDEF COCOA_DEBUG_TABCONTROL}
+    WriteLn(Format('[TCocoaTableListView.setStringValue_forTableColumn_row] Adding line', []));
+    {$ENDIF}
+    Items.AddObject('', TStringList.Create());
+  end;
+
+  // Now write it
+  if col = 0 then
+    Items.Strings[row] := lStr
   else
   begin
     lStringList := TStringList(Items.Objects[row]);
@@ -249,6 +279,16 @@ begin
       lStringList := TStringList.Create;
       Items.Objects[row] := lStringList;
     end;
+
+    // make sure we have enough columns
+    while (col-1 >= lStringList.Count) do
+    begin
+      {$IFDEF COCOA_DEBUG_TABCONTROL}
+      WriteLn(Format('[TCocoaTableListView.setStringValue_forTableColumn_row] Adding column', []));
+      {$ENDIF}
+      lStringList.Add('');
+    end;
+
     lStringList.Strings[col-1] := lStr;
   end;
 end;
@@ -419,7 +459,6 @@ begin
   if Result <> 0 then
   begin
     //lTableLV.callback := TLCLCommonCallback.Create(lTableLV, AWinControl);
-    lTableLV.Columns := TObjectList.Create;
     lTableLV.Items := TStringList.Create;
 
     lTableLV.ListView := TCustomListView(AWinControl);
@@ -438,10 +477,10 @@ begin
   {$ENDIF}
   if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
   lTableLV := TCocoaTableListView(ALV.Handle);
-  if (AIndex < 0) or (AIndex >= lTableLV.Columns.Count) then Exit;
-  lColumn := NSTableColumn(lTableLV.Columns.Items[AIndex]);
-  lTableLV.Columns.Remove(TObject(lColumn));
-  lColumn.release;
+  if (AIndex < 0) or (AIndex >= lTableLV.tableColumns.count()) then Exit;
+  lColumn := lTableLV.tableColumns.objectAtIndex(AIndex);
+  lTableLV.removeTableColumn(lColumn);
+  if lColumn <> nil then lColumn.release;
 end;
 
 class function TCocoaWSCustomListView.ColumnGetWidth(
@@ -456,8 +495,8 @@ begin
   {$ENDIF}
   if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
   lTableLV := TCocoaTableListView(ALV.Handle);
-  if (AIndex < 0) or (AIndex >= lTableLV.Columns.Count) then Exit;
-  lColumn := NSTableColumn(lTableLV.Columns.Items[AIndex]);
+  if (AIndex < 0) or (AIndex >= lTableLV.tableColumns.count()) then Exit;
+  lColumn := lTableLV.tableColumns.objectAtIndex(AIndex);
   Result := Round(lColumn.width());
 end;
 
@@ -469,14 +508,19 @@ var
   lTitle: NSString;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
-  WriteLn(Format('[TCocoaWSCustomListView.ColumnInsert] AIndex=%d', [AIndex]));
+  WriteLn(Format('[TCocoaWSCustomListView.ColumnInsert] ALV=%x AIndex=%d', [PtrInt(ALV), AIndex]));
   {$ENDIF}
+  ALV.HandleNeeded();
   if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
   lTableLV := TCocoaTableListView(ALV.Handle);
-  if (AIndex < 0) or (AIndex >= lTableLV.Columns.Count) then Exit;
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaWSCustomListView.ColumnInsert]=> tableColumns.count=%d', [lTableLV.tableColumns.count()]));
+  {$ENDIF}
+  if (AIndex < 0) or (AIndex >= lTableLV.tableColumns.count()+1) then Exit;
   lTitle := NSStringUTF8(AColumn.Caption);
   lColumn := NSTableColumn.alloc.initWithIdentifier(lTitle);
-  lTableLV.Columns.Insert(AIndex, TObject(lColumn));
+  lTableLV.addTableColumn(lColumn);
+  lTitle.release;
 end;
 
 class procedure TCocoaWSCustomListView.ColumnMove(const ALV: TCustomListView;
@@ -592,14 +636,23 @@ begin
   if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
   lTableLV := TCocoaTableListView(ALV.Handle);
   lColumnCount := lTableLV.tableColumns.count();
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaWSCustomListView.ItemInsert]=> lColumnCount=%d', [lColumnCount]));
+  {$ENDIF}
   for i := 0 to lColumnCount-1 do
   begin
     lColumn := lTableLV.tableColumns.objectAtIndex(i);
-    if i = 0 then lStr := AItem.Caption
-    else lStr := AItem.SubItems.Strings[i-1];
+    if i = 0 then
+      lStr := AItem.Caption
+    else if (i-1 < AItem.SubItems.Count) then
+      lStr := AItem.SubItems.Strings[i-1]
+    else
+      lStr := '';
     lNSStr := NSStringUTF8(lStr);
     lTableLV.setStringValue_forTableColumn_row(lNSStr, i, AIndex);
+    lNSStr.release;
   end;
+  lTableLV.reloadData();
 end;
 
 class procedure TCocoaWSCustomListView.ItemSetText(const ALV: TCustomListView;
