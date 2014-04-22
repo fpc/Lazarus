@@ -755,7 +755,7 @@ begin
       (TCustomForm(AWinControl).BorderStyle = bsNone) and
       (TCustomForm(AWinControl).PopupParent = nil) then
     begin
-      TempGdkWindow := PGdkWindow(Gtk2WidgetSet.GetForegroundWindow);
+      TempGdkWindow := {%H-}PGdkWindow(Gtk2WidgetSet.GetForegroundWindow);
       if (TempGdkWindow <> nil) and (GdkWindowObject_modal_hint(GDK_WINDOW_OBJECT(TempGdkWindow)^) = 0) then
       begin
         if ((gdk_window_get_state(TempGdkWindow) and GDK_WINDOW_STATE_ABOVE) = GDK_WINDOW_STATE_ABOVE) or
