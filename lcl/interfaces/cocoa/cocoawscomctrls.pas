@@ -104,8 +104,8 @@ type
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const PartialOK: Boolean); override;
 
     // LV
-    //carbon//class procedure BeginUpdate(const ALV: TCustomListView); override;
-    //carbon//class procedure EndUpdate(const ALV: TCustomListView); override;
+    //available in 10.7 only//class procedure BeginUpdate(const ALV: TCustomListView); override;
+    //available in 10.7 only//class procedure EndUpdate(const ALV: TCustomListView); override;
 
     (*class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
     //carbon//class function GetDropTarget(const ALV: TCustomListView): Integer; override;

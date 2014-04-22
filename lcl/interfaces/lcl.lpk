@@ -2145,14 +2145,17 @@ end;"/>
       </Item431>
       <Item432>
         <Filename Value="cocoa/cocoaproc.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaProc"/>
       </Item432>
       <Item433>
         <Filename Value="cocoa/cocoathemes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaThemes"/>
       </Item433>
       <Item434>
         <Filename Value="cocoa/cocoawscomctrls.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSComCtrls"/>
       </Item434>
       <Item435>
