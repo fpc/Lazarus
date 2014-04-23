@@ -37,194 +37,177 @@ unit FPDLoop;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, FpDbgInfo, FpDbgClasses, FpDbgDisasX86, DbgIntfBaseTypes;
+  Classes, SysUtils, FileUtil, FpDbgInfo, FpDbgClasses, FpDbgDisasX86, DbgIntfBaseTypes,
+  CustApp;
 
-procedure DebugLoop;
+type
 
+  { TFPDLoop }
+
+  TFPDLoop = class(TCustomApplication)
+  private
+    FLast: string;
+    procedure ShowDisas;
+    procedure ShowCode;
+    procedure GControllerCreateProcessEvent(var continue: boolean);
+    procedure GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
+  protected
+    Procedure DoRun; override;
+  public
+    procedure Initialize; override;
+  end;
 
 implementation
 
 uses
-  FPDGlobal, FpDbgUtil, FpdMemoryTools;
+  FPDCommand,
+  FpDbgUtil,
+  FPDGlobal;
 
-procedure DebugLoop;
+{ TFPDLoop }
 
-  procedure ShowDisas;
-  var
-    a: TDbgPtr;
-    Code, CodeBytes: String;
-    CodeBin: array[0..20] of Byte;
-    p: pointer;
-    i: integer;
-  begin
-    WriteLN('===');
-    a := GCurrentProcess.GetInstructionPointerRegisterValue;
-    for i := 0 to 5 do
-    begin
-      Write('  [', FormatAddress(a), ']');
-
-      if not GCurrentProcess.ReadData(a,sizeof(CodeBin),CodeBin)
-      then begin
-        Log('Disassemble: Failed to read memory at %s.', [FormatAddress(a)]);
-        Code := '??';
-        CodeBytes := '??';
-        Inc(a);
-        Exit;
-      end;
-      p := @CodeBin;
-
-      Disassemble(p, GMode=dm64, CodeBytes, Code);
-
-      WriteLN(' ', CodeBytes:20, '    ', Code);
-      Inc(a, PtrUInt(p) - PtrUInt(@CodeBin));
-    end;
-  end;
-  
-  procedure ShowCode;
-  var
-    a: TDbgPtr;
-    sym, symproc: TFpDbgSymbol;
-    S: TStringList;
-    Name: String;
-  begin
-    WriteLN('===');
-    a := GCurrentProcess.GetInstructionPointerRegisterValue;
-    sym := GCurrentProcess.FindSymbol(a);
-    if sym = nil
-    then begin
-      WriteLn('  [', FormatAddress(a), '] ???');
-      Exit;
-    end;
-    
-    symproc := sym;
-    while not (symproc.kind in [skProcedure, skFunction]) do
-      symproc := symproc.Parent;
-
-    if sym <> symproc
-    then begin
-      if symproc = nil
-      then WriteLn('???')
-      else begin
-        WriteLn(symproc.FileName, ' ', symproc.Line, ':', symproc.Column, ' ', symproc.Name);
-      end;
-      Write(' ');
-    end;
-
-    WriteLn(sym.FileName, ' ', sym.Line, ':', sym.Column, ' ', sym.Name);
-    Write('  [', FormatAddress(LocToAddrOrNil(sym.Address)), '+', a-LocToAddrOrNil(sym.Address), '] ');
-
-    Name := sym.Filename;
-    if not FileExistsUTF8(Name)
-    then begin
-      if ExtractFilePath(Name) = ''
-      then begin
-        Name := IncludeTrailingPathDelimiter(ExtractFilePath(GFileName)) + Name;
-        if not FileExistsUTF8(Name)
-        then Name := '';
-      end
-      else Name := '';
-    end;
-    
-    if Name = ''
-    then begin
-      WriteLn(' File not found');
-      Exit;
-    end;
-
-    S := TStringList.Create;
-    try
-      S.LoadFromFile(UTF8ToSys(Name));
-      if S.Count < sym.Line
-      then WriteLn('Line not found')
-      else WriteLn(S[sym.Line - 1]);
-    except
-      on E: Exception do WriteLn(E.Message);
-    end;
-    S.Free;
-  end;
-
+procedure TFPDLoop.ShowDisas;
 var
-  AFirstLoop: boolean;
-  AProcessIdentifier: THandle;
-  AThreadIdentifier: THandle;
-  ALib: TDbgLibrary;
-
+  a: TDbgPtr;
+  Code, CodeBytes: String;
+  CodeBin: array[0..20] of Byte;
+  p: pointer;
+  i: integer;
 begin
-  repeat
-    if (GState in [dsStop, dsPause, dsEvent])
+  WriteLN('===');
+  a := GController.CurrentProcess.GetInstructionPointerRegisterValue;
+  for i := 0 to 5 do
+  begin
+    Write('  [', FormatAddress(a), ']');
+
+    if not GController.CurrentProcess.ReadData(a,sizeof(CodeBin),CodeBin)
     then begin
-      GCurrentProcess.Continue(GCurrentProcess, GCurrentThread, GState);
-      GState := dsRun;
+      //Log('Disassemble: Failed to read memory at %s.', [FormatAddress(a)]);
+      Code := '??';
+      CodeBytes := '??';
+      Inc(a);
+      Exit;
     end;
+    p := @CodeBin;
 
-    if not GCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then Continue;
+    Disassemble(p, GMode=dm64, CodeBytes, Code);
 
-    if assigned(GCurrentProcess) and not assigned(GMainProcess) then
-      begin
-      GMainProcess:=GCurrentProcess;
-      AFirstLoop:=true;
-      end
-    else
-      AFirstLoop:=false;
-    GCurrentProcess := nil;
-    GCurrentThread := nil;
-    if not GetProcess(AProcessIdentifier, GCurrentProcess) and not AFirstLoop then Continue;
-
-    if AFirstLoop then
-      GCurrentProcess := GMainProcess;
-
-    if not GCurrentProcess.GetThread(AThreadIdentifier, GCurrentThread)
-    then WriteLN('LOOP: Unable to retrieve current thread');
-
-    GState := dsEvent;
-    begin
-      case GCurrentProcess.ResolveDebugEvent(GCurrentThread) of
-        deException     : GState := dsPause;
-        deCreateProcess :
-          begin
-            GProcessMap.Add(AProcessIdentifier, GCurrentProcess);
-
-            //if AEvent.CreateProcessInfo.lpBaseOfImage <> nil
-            //then DumpPEImage(AEvent.CreateProcessInfo.hProcess, TDbgPtr(AEvent.CreateProcessInfo.lpBaseOfImage));
-
-            if GBreakOnLibraryLoad
-            then GState := dsPause;
-          end;
-        deExitProcess :
-          begin
-            if GCurrentProcess = GMainProcess then GMainProcess := nil;
-            GProcessMap.Delete(AProcessIdentifier);
-
-            GState := dsStop;
-            WriteLN('Process stopped with exitcode: ', GCurrentProcess.ExitCode);
-          end;
-        deLoadLibrary :
-          begin
-            if GCurrentProcess.GetLib(GCurrentProcess.LastEventProcessIdentifier, ALib)
-            and (GImageInfo <> iiNone)
-            then begin
-              WriteLN('Name: ', ALib.Name);
-              //if GImageInfo = iiDetail
-              //then DumpPEImage(Proc.Handle, Lib.BaseAddr);
-            end;
-            if GBreakOnLibraryLoad
-            then GState := dsPause;
-
-          end;
-        deBreakpoint :
-          begin
-            writeln(Format('Reached breakpoint at %s.',[FormatAddress(GCurrentProcess.GetInstructionPointerRegisterValue)]));
-            GState:=dsPause;
-          end;
-      end; {case}
-    end;
-  until (GState in [dsStop, dsPause, dsQuit]);
-
-  if GState = dsPause
-  then begin
-    ShowDisas;
-    ShowCode;
+    WriteLN(' ', CodeBytes:20, '    ', Code);
+    Inc(a, PtrUInt(p) - PtrUInt(@CodeBin));
   end;
 end;
 
+procedure TFPDLoop.ShowCode;
+var
+  a: TDbgPtr;
+  sym, symproc: TFpDbgSymbol;
+  S: TStringList;
+  AName: String;
+begin
+  WriteLN('===');
+  a := GController.CurrentProcess.GetInstructionPointerRegisterValue;
+  sym := GController.CurrentProcess.FindSymbol(a);
+  if sym = nil
+  then begin
+    WriteLn('  [', FormatAddress(a), '] ???');
+    Exit;
+  end;
+
+  symproc := sym;
+  while not (symproc.kind in [skProcedure, skFunction]) do
+    symproc := symproc.Parent;
+
+  if sym <> symproc
+  then begin
+    if symproc = nil
+    then WriteLn('???')
+    else begin
+      WriteLn(symproc.FileName, ' ', symproc.Line, ':', symproc.Column, ' ', symproc.Name);
+    end;
+    Write(' ');
+  end;
+
+  WriteLn(sym.FileName, ' ', sym.Line, ':', sym.Column, ' ', sym.Name);
+  Write('  [', FormatAddress(sym.Address), '+', a-sym.Address.Address, '] ');
+
+  AName := sym.Filename;
+  if not FileExistsUTF8(AName)
+  then begin
+    if ExtractFilePath(AName) = ''
+    then begin
+      AName := IncludeTrailingPathDelimiter(ExtractFilePath(GController.ExecutableFilename)) + AName;
+      if not FileExistsUTF8(AName)
+      then AName := '';
+    end
+    else AName := '';
+  end;
+
+  if AName = ''
+  then begin
+    WriteLn(' File not found');
+    Exit;
+  end;
+
+  S := TStringList.Create;
+  try
+    S.LoadFromFile(UTF8ToSys(AName));
+    if S.Count < sym.Line
+    then WriteLn('Line not found')
+    else WriteLn(S[sym.Line - 1]);
+  except
+    on E: Exception do WriteLn(E.Message);
+  end;
+  S.Free;
+end;
+
+procedure TFPDLoop.GControllerCreateProcessEvent(var continue: boolean);
+begin
+  continue:=false;
+end;
+
+procedure TFPDLoop.GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
+begin
+  if assigned(Breakpoint) then
+  begin
+    ShowCode;
+    ShowDisas;
+    continue:=false;
+  end
+  else
+  begin
+    continue:=true;
+  end;
+end;
+
+procedure TFPDLoop.DoRun;
+var
+  S: String;
+  b: boolean;
+begin
+  Write('FPD>');
+  ReadLn(S);
+  if S <> ''
+  then FLast := S;
+  if FLast <> '' then
+    begin
+    HandleCommand(FLast, b);
+    while b do
+      begin
+      GController.ProcessLoop;
+      GController.SendEvents(b);
+      end;
+    end;
+end;
+
+procedure TFPDLoop.Initialize;
+begin
+  inherited Initialize;
+  GController.OnHitBreakpointEvent:=@GControllerHitBreakpointEvent;
+  GController.OnCreateProcessEvent:=@GControllerCreateProcessEvent;
+end;
+
+initialization
+  CustomApplication:=TFPDLoop.Create(nil);
+finalization
+  CustomApplication.Free;
 end.

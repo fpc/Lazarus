@@ -38,6 +38,7 @@ program fpd;
 {$APPTYPE CONSOLE}
 uses
   SysUtils,
+  CustApp,
 {$ifdef windows}
   Windows,
   FpDbgWinClasses,
@@ -65,14 +66,11 @@ begin
     CTRL_CLOSE_EVENT: begin
       if (GState in [dsRun, dsPause]) and (GMainProcess <> nil)
       then TerminateProcess(GMainProcess.Handle, 0);
-//      GState := dsQuit;
     end;
   end;
 end;
 {$endif}
 
-var
-  S, Last: String;
 begin
   Write('FPDebugger on ', {$I %FPCTARGETOS%}, ' for ', {$I %FPCTARGETCPU%});
   WriteLn(' (', {$I %DATE%}, ' ', {$I %TIME%}, ' FPC: ', {$I %FPCVERSION%}, ')' );
@@ -81,21 +79,15 @@ begin
   
   if ParamCount > 0
   then begin
-    GFileName := ParamStr(1);
-    WriteLN('Using file: ', GFileName);
+    GController.ExecutableFilename := ParamStr(1);
+    WriteLN('Using file: ', GController.ExecutableFilename);
   end;
 
 {$ifdef windows}
   SetConsoleCtrlHandler(@CtrlCHandler, True);
 {$endif}
-  repeat
-    Write('FPD>');
-    ReadLn(S);
-    if S <> ''
-    then Last := S;
-    if Last = '' then Continue;
-    HandleCommand(Last);
-  until GState = dsQuit;
+  CustomApplication.Initialize;
+  CustomApplication.Run;
 {$ifdef windows}
   SetConsoleCtrlHandler(@CtrlCHandler, False);
 {$endif}

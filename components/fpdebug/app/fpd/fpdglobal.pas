@@ -36,39 +36,22 @@ unit FPDGlobal;
 interface
 
 uses
-  SysUtils, Maps, FpDbgUtil, FpDbgClasses;
+  SysUtils,
+  FPDbgController;
 
 type
   TFPDImageInfo = (iiNone, iiName, iiDetail);
 
 var
-  GState: TFPDState;
-  GFileName: String;
   GBreakOnLibraryLoad: Boolean = False;
   GImageInfo: TFPDImageInfo = iiNone;
 
-  GMainProcess: TDbgProcess = nil;
-  GCurrentProcess: TDbgProcess = nil;
-  GCurrentThread: TDbgThread = nil;
-  GProcessMap: TMap;
-  
-
-function GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
+  GController: TDbgController = nil;
 
 implementation
 
-function GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
-begin
-  Result := GProcessMap.GetData(AProcessIdentifier, AProcess) and (AProcess <> nil);
-//  if not Result
-//  then Log('Unknown Process ID %u', [AID]);
-end;
-
 initialization
-  GState := dsStop;
-  GProcessMap := TMap.Create(itu4, SizeOf(TDbgProcess));
-  
+  GController := TDbgController.Create;
 finalization
-  FreeAndNil(GProcessMap)
-
+  GController.Free;
 end.

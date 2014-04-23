@@ -40,21 +40,21 @@ uses
 {$ifdef windows}
   Windows,
 {$endif}
-  LCLProc, FpDbgInfo, FpDbgClasses, DbgIntfBaseTypes, FpDbgUtil;
+  LCLProc, FpDbgInfo, FpDbgClasses, DbgIntfBaseTypes, FpDbgUtil, CustApp;
 
-procedure HandleCommand(ACommand: String);
+procedure HandleCommand(ACommand: String; out CallProcessLoop: boolean);
 
 implementation
 
 uses
-  FPDGlobal, FPDLoop
+  FPDGlobal
 {$ifdef windows}
   , FPDPEImage
 {$endif windows}
   ;
 
 type
-  TFPDCommandHandler = procedure(AParams: String);
+  TFPDCommandHandler = procedure(AParams: String; out CallProcessLoop: boolean);
 
   TFPDCommand = class
   private
@@ -68,6 +68,8 @@ type
     property Help: String read FHelp;
   end;
 
+  { TFPDCommandList }
+
   TFPDCommandList = class
   private
     FCommands: TStringList;
@@ -78,7 +80,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function FindCommand(const ACommand: String): TFPDCommand;
-    procedure HandleCommand(ACommand: String);
+    procedure HandleCommand(ACommand: String; out CallProcessLoop: boolean);
     property Items[const AIndex: Integer]: TFPDCommand read GetItem; default;
   end;
 
@@ -88,17 +90,18 @@ var
   MShowCommands: TFPDCommandList;
   MSetCommands: TFPDCommandList;
 
-procedure HandleCommand(ACommand: String);
+procedure HandleCommand(ACommand: String; out CallProcessLoop: boolean);
 begin
-  MCommands.HandleCommand(ACommand);
+  MCommands.HandleCommand(ACommand, CallProcessLoop);
 end;
 
 
-procedure HandleHelp(AParams: String);
+procedure HandleHelp(AParams: String; out CallProcessLoop: boolean);
 var
   n: Integer;
   cmd: TFPDCommand;
 begin
+  CallProcessLoop:=false;
   if AParams = ''
   then begin
     WriteLN('Available commands:');
@@ -113,28 +116,30 @@ begin
   end;
 end;
 
-procedure HandleFile(AParams: String);
+procedure HandleFile(AParams: String; out CallProcessLoop: boolean);
 begin
   if AParams <> ''
-  then GFileName := AParams;
+  then GController.ExecutableFilename := AParams;
 
+  CallProcessLoop:=false;
   // TODO separate exec from args
 end;
 
-procedure HandleShow(AParams: String);
+procedure HandleShow(AParams: String; out CallProcessLoop: boolean);
 var
   cmd: TFPDCommand;
   S: String;
 begin
+  CallProcessLoop:=false;
   S := GetPart([], [' ', #9], AParams);
   if S = '' then S := 'help';
   cmd := MShowCommands.FindCommand(S);
   if cmd = nil
   then WriteLN('Unknown item: "', S, '"')
-  else cmd.Handler(Trim(AParams));
+  else cmd.Handler(Trim(AParams), CallProcessLoop);
 end;
 
-procedure HandleSet(AParams: String);
+procedure HandleSet(AParams: String; out CallProcessLoop: boolean);
 var
   cmd: TFPDCommand;
   S: String;
@@ -144,35 +149,33 @@ begin
   cmd := MSetCommands.FindCommand(S);
   if cmd = nil
   then WriteLN('Unknown param: "', S, '"')
-  else cmd.Handler(Trim(AParams));
+  else cmd.Handler(Trim(AParams), CallProcessLoop);
 end;
 
-
-procedure HandleRun(AParams: String);
+procedure HandleRun(AParams: String; out CallProcessLoop: boolean);
 begin
-  if GState <> dsStop
+  if Assigned(GController.MainProcess)
   then begin
     WriteLN('The debuggee is already running');
     Exit;
   end;
 
-  if GFileName = ''
+  if GController.ExecutableFilename = ''
   then begin
     WriteLN('No filename set');
     Exit;
   end;
 
-  GCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(GFileName, AParams);
-  if assigned(GCurrentProcess) then
+  if not GController.Run then
     begin
-    WriteLN('Got PID:', GCurrentProcess.ProcessID, ', TID: ', GCurrentProcess.ThreadID);
-
-    GState := dsRun;
-    DebugLoop;
-    end;
+    writeln('Failed to run '+GController.ExecutableFilename);
+    CallProcessLoop:=false;
+    end
+  else
+    CallProcessLoop:=true;
 end;
 
-procedure HandleBreak(AParams: String);
+procedure HandleBreak(AParams: String; out CallProcessLoop: boolean);
 var
   S, P: String;
   Remove: Boolean;
@@ -181,11 +184,12 @@ var
   Line: Cardinal;
   bp: TDbgBreakpoint;
 begin
-  if GCurrentProcess = nil
+  if GController.MainProcess = nil
   then begin
     WriteLN('No Process');
     Exit;
   end;
+  CallProcessLoop:=false;
 
   S := AParams;
   P := GetPart([], [' ', #9], S);
@@ -197,7 +201,7 @@ begin
   then begin
     // current addr
     P := '';
-    Address := GCurrentProcess.GetInstructionPointerRegisterValue;
+    Address := GController.CurrentProcess.GetInstructionPointerRegisterValue;
   end
   else begin
     P := GetPart([], [':'], S);
@@ -217,12 +221,12 @@ begin
     end;
     if Remove
     then begin
-      if GCurrentProcess.RemoveBreak(Address)
+      if GController.CurrentProcess.RemoveBreak(Address)
       then WriteLn('breakpoint removed')
       else WriteLn('remove breakpoint failed');
     end
     else begin
-      if GCurrentProcess.AddBreak(Address) <> nil
+      if GController.CurrentProcess.AddBreak(Address) <> nil
       then WriteLn('breakpoint added')
       else WriteLn('add breakpoint failed');
     end;
@@ -237,13 +241,13 @@ begin
     end;
     if Remove
     then begin
-      if TDbgInstance(GCurrentProcess).RemoveBreak(P, Line)
+      if TDbgInstance(GController.CurrentProcess).RemoveBreak(P, Line)
       then WriteLn('breakpoint removed')
       else WriteLn('remove breakpoint failed');
       Exit;
     end;
 
-    bp := TDbgInstance(GCurrentProcess).AddBreak(P, Line);
+    bp := TDbgInstance(GController.CurrentProcess).AddBreak(P, Line);
     if bp = nil
     then begin
       WriteLn('add breakpoint failed');
@@ -254,52 +258,51 @@ begin
   end;
 end;
 
-procedure HandleContinue(AParams: String);
+procedure HandleContinue(AParams: String; out CallProcessLoop: boolean);
 begin
-  if GState <> dsPause
+  CallProcessLoop:=false;
+  if not assigned(GController.MainProcess)
   then begin
     WriteLN('The process is not paused');
     Exit;
   end;
-  DebugLoop;
+
+  CallProcessLoop:=true;
 end;
 
-procedure HandleKill(AParams: String);
+procedure HandleKill(AParams: String; out CallProcessLoop: boolean);
 begin
-  if not (GState in [dsRun, dsPause]) or (GMainProcess = nil)
+  CallProcessLoop:=false;
+  if not assigned(GController.MainProcess)
   then begin
     WriteLN('No process');
     Exit;
   end;
 
   WriteLN('Terminating ...');
-  GMainProcess.TerminateProcess;
-  if GState = dsPause
-  then DebugLoop; // continue runnig so we can terminate
+  GController.Stop;
+  CallProcessLoop:=true;
 end;
 
-procedure HandleNext(AParams: String);
+procedure HandleNext(AParams: String; out CallProcessLoop: boolean);
 begin
-  if GState <> dsPause
+  CallProcessLoop:=false;
+  if not assigned(GController.MainProcess)
   then begin
     WriteLN('The process is not paused');
     Exit;
   end;
-  if GCurrentThread = nil
-  then begin
-    WriteLN('No current thread');
-    Exit;
-  end;
-  GCurrentThread.SingleStep;
-  DebugLoop;
+  GController.StepOverInstr;
+  CallProcessLoop:=true;
 end;
 
-procedure HandleList(AParams: String);
+procedure HandleList(AParams: String; out CallProcessLoop: boolean);
 begin
   WriteLN('not implemented: list');
+  CallProcessLoop:=false;
 end;
 
-procedure HandleMemory(AParams: String);
+procedure HandleMemory(AParams: String; out CallProcessLoop: boolean);
 // memory [-<size>] [<adress> <count>|<location> <count>]
 var
   P: array[1..3] of String;
@@ -309,7 +312,8 @@ var
   buf: array[0..256*16 - 1] of Byte;
   BytesRead: Cardinal;
 begin
-  if GMainProcess = nil
+  CallProcessLoop:=false;
+  if GController.MainProcess = nil
   then begin
     WriteLN('No process');
     Exit;
@@ -323,7 +327,7 @@ begin
   Count := 1;
   Size := 4;
 
-  Address := GCurrentProcess.GetInstructionPointerRegisterValue;
+  Address := GController.CurrentProcess.GetInstructionPointerRegisterValue;
 
   if P[idx] <> ''
   then begin
@@ -368,7 +372,7 @@ begin
 
 
   BytesRead := Count * Size;
-  if not GMainProcess.ReadData(Address, BytesRead, buf)
+  if not GController.MainProcess.ReadData(Address, BytesRead, buf)
   then begin
     WriteLN('Could not read memory at: ', FormatAddress(Address));
     Exit;
@@ -393,7 +397,7 @@ begin
   then WriteLn;
 end;
 
-procedure HandleWriteMemory(AParams: String);
+procedure HandleWriteMemory(AParams: String; out CallProcessLoop: boolean);
 // memory [<adress> <value>]
 var
   P: array[1..2] of String;
@@ -404,7 +408,8 @@ var
   buf: array[0..256*16 - 1] of Byte;
   BytesRead: Cardinal;
 begin
-  if GMainProcess = nil
+  CallProcessLoop:=false;
+  if GController.MainProcess = nil
   then begin
     WriteLN('No process');
     Exit;
@@ -443,7 +448,7 @@ begin
   end;
 
 
-  if not GMainProcess.WriteData(Address, 4, Value)
+  if not GController.MainProcess.WriteData(Address, 4, Value)
   then begin
     WriteLN('Could not write memory at: ', FormatAddress(Address));
     Exit;
@@ -451,31 +456,35 @@ begin
 end;
 
 
-procedure HandleDisas(AParams: String);
+procedure HandleDisas(AParams: String; out CallProcessLoop: boolean);
 begin
+  CallProcessLoop:=false;
   WriteLN('not implemented: disassemble');
 end;
 
-procedure HandleEval(AParams: String);
+procedure HandleEval(AParams: String; out CallProcessLoop: boolean);
 begin
+  CallProcessLoop:=false;
   WriteLN('not implemented: evaluate');
 end;
 
-procedure HandleQuit(AParams: String);
+procedure HandleQuit(AParams: String; out CallProcessLoop: boolean);
 begin
   WriteLN('Quitting ...');
-  GState := dsQuit;
+  CallProcessLoop := assigned(GController.MainProcess);
+  CustomApplication.Terminate;
 end;
 
 //=================
 // S H O W
 //=================
 
-procedure HandleShowHelp(AParams: String);
+procedure HandleShowHelp(AParams: String; out CallProcessLoop: boolean);
 var
   n: Integer;
   cmd: TFPDCommand;
 begin
+  CallProcessLoop:=false;
   if AParams = ''
   then begin
     WriteLN('Available items:');
@@ -490,12 +499,13 @@ begin
   end;
 end;
 
-procedure HandleShowFile(AParams: String);
+procedure HandleShowFile(AParams: String; out CallProcessLoop: boolean);
 var
   hFile, hMap: THandle;
   FilePtr: Pointer;
 begin
-  if GFileName = ''
+  CallProcessLoop:=false;
+  if GController.ExecutableFilename = ''
   then begin
     WriteLN('No filename set');
     Exit;
@@ -528,24 +538,20 @@ begin
 {$endif windows}
 end;
 
-procedure HandleShowCallStack(AParams: String);
+procedure HandleShowCallStack(AParams: String; out CallProcessLoop: boolean);
 var
   Address, Frame, LastFrame: QWord;
   Size, Count: integer;
 begin
-  if (GMainProcess = nil) or (GCurrentProcess = nil)
+  CallProcessLoop:=false;
+  if (GController.MainProcess = nil)
   then begin
     WriteLN('No process');
     Exit;
   end;
-  if GState <> dsPause
-  then begin
-    WriteLN('Process not paused');
-    Exit;
-  end;
 
-  Address := GCurrentProcess.GetInstructionPointerRegisterValue;
-  Frame := GCurrentProcess.GetStackBasePointerRegisterValue;;
+  Address := GController.CurrentProcess.GetInstructionPointerRegisterValue;
+  Frame := GController.CurrentProcess.GetStackBasePointerRegisterValue;;
   Size := sizeof(pointer);
 
   WriteLN('Callstack:');
@@ -554,11 +560,11 @@ begin
   Count := 25;
   while (Frame <> 0) and (Frame > LastFrame) do
   begin
-    if not GCurrentProcess.ReadData(Frame + Size, Size, Address) or (Address = 0) then Break;
+    if not GController.CurrentProcess.ReadData(Frame + Size, Size, Address) or (Address = 0) then Break;
     WriteLn(' ', FormatAddress(Address));
     Dec(count);
     if Count <= 0 then Exit;
-    if not GCurrentProcess.ReadData(Frame, Size, Frame) then Break;
+    if not GController.CurrentProcess.ReadData(Frame, Size, Frame) then Break;
   end;
 end;
 
@@ -566,11 +572,12 @@ end;
 // S E T
 //=================
 
-procedure HandleSetHelp(AParams: String);
+procedure HandleSetHelp(AParams: String; out CallProcessLoop: boolean);
 var
   n: Integer;
   cmd: TFPDCommand;
 begin
+  CallProcessLoop:=false;
   if AParams = ''
   then begin
     WriteLN('Usage: set param [<value>] When no value is given, the current value is shown.');
@@ -586,10 +593,11 @@ begin
   end;
 end;
 
-procedure HandleSetMode(AParams: String);
+procedure HandleSetMode(AParams: String; out CallProcessLoop: boolean);
 const
   MODE: array[TFPDMode] of String = ('32', '64');
 begin
+  CallProcessLoop:=false;
   if AParams = ''
   then WriteLN(' Mode: ', MODE[GMode])
   else if AParams = '32'
@@ -599,19 +607,21 @@ begin
   else WriteLN('Unknown mode: "', AParams, '"')
 end;
 
-procedure HandleSetBoll(AParams: String);
+procedure HandleSetBoll(AParams: String; out CallProcessLoop: boolean);
 const
   MODE: array[Boolean] of String = ('off', 'on');
 begin
+  CallProcessLoop:=false;
   if AParams = ''
   then WriteLN(' Break on library load: ', MODE[GBreakOnLibraryLoad])
   else GBreakOnLibraryLoad := (Length(Aparams) > 1) and (AParams[2] in ['n', 'N'])
 end;
 
-procedure HandleSetImageInfo(AParams: String);
+procedure HandleSetImageInfo(AParams: String; out CallProcessLoop: boolean);
 const
   MODE: array[TFPDImageInfo] of String = ('none', 'name', 'detail');
 begin
+  CallProcessLoop:=false;
   if AParams = ''
   then WriteLN(' Imageinfo: ', MODE[GImageInfo])
   else begin
@@ -688,7 +698,7 @@ begin
   Result := TFPDCommand(FCommands.Objects[AIndex]);
 end;
 
-procedure TFPDCommandList.HandleCommand(ACommand: String);
+procedure TFPDCommandList.HandleCommand(ACommand: String; out CallProcessLoop: boolean);
 var
   cmd: TFPDCommand;
   S: String;
@@ -697,7 +707,7 @@ begin
   cmd := FindCommand(S);
   if cmd = nil
   then WriteLN('Unknown command: "', S, '"')
-  else cmd.Handler(Trim(ACommand));
+  else cmd.Handler(Trim(ACommand), CallProcessLoop);
 end;
 
 //=================
