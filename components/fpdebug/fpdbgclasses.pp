@@ -561,6 +561,7 @@ var
   Bp: TDbgBreakpoint;
   Iterator: TMapIterator;
 begin
+  FProcessID:=0;
   iterator := TMapIterator.Create(FBreakMap);
   try
     Iterator.First;
@@ -933,7 +934,7 @@ end;
 
 procedure TDbgBreakpoint.ResetBreak;
 begin
-  if FProcess.Handle=0 then
+  if FProcess.ProcessID=0 then
     // The process is already exited.
     Exit;
 
