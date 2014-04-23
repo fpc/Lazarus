@@ -181,26 +181,26 @@ type
     procedure DoEnter; override;
 
     procedure EditChange; virtual;
-    procedure EditClick;
+    procedure EditClick; virtual;
     procedure EditDblClick; virtual;
-    procedure EditDragDrop(Source: TObject; X,Y: Integer);
-    procedure EditDragOver(Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean);
-    procedure EditEditingDone;
-    procedure EditEndDrag(Target: TObject; X,Y: Integer);
+    procedure EditDragDrop(Source: TObject; X,Y: Integer);  virtual;
+    procedure EditDragOver(Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean); virtual;
+    procedure EditEditingDone; virtual;
+    procedure EditEndDrag(Target: TObject; X,Y: Integer); virtual;
     procedure EditEnter; virtual;
     procedure EditExit; virtual;
     procedure EditKeyDown(var Key: word; Shift: TShiftState); virtual;
-    procedure EditKeyPress( var Key: char);
-    procedure EditKeyUp(var Key: word; Shift: TShiftState);
+    procedure EditKeyPress( var Key: char); virtual;
+    procedure EditKeyUp(var Key: word; Shift: TShiftState); virtual;
     procedure EditMouseDown(Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+      Shift: TShiftState; X, Y: Integer); virtual;
     procedure EditMouseUp(Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure EditMouseEnter;
-    procedure EditMouseLeave;
-    procedure EditMouseMove(Shift: TShiftState; X, Y: Integer);
-    procedure EditUtf8KeyPress(var UTF8Key: TUTF8Char);
-    procedure EditStartDrag(var DragObject: TDragObject);
+      Shift: TShiftState; X, Y: Integer); virtual;
+    procedure EditMouseEnter; virtual;
+    procedure EditMouseLeave; virtual;
+    procedure EditMouseMove(Shift: TShiftState; X, Y: Integer); virtual;
+    procedure EditUtf8KeyPress(var UTF8Key: TUTF8Char); virtual;
+    procedure EditStartDrag(var DragObject: TDragObject); virtual;
 
 
     procedure CheckCursor;
