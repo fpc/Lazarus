@@ -252,6 +252,7 @@ type
     property CanUndo: Boolean read GetCanUndo;
     property CaretPos: TPoint read GetCaretPos write SetCaretPos;
     property CharCase: TEditCharCase read GetCharCase write SetCharCase default ecNormal;
+    property ParentColor default False;
     property EchoMode: TEchoMode read GetEchoMode write SetEchoMode default emNormal;
     property HideSelection: Boolean read GetHideSelection write SetHideSelection default False;
     property MaxLength: Integer read GetMaxLength write SetMaxLength;
@@ -739,6 +740,7 @@ type
     property OnResize;
     property OnUTF8KeyPress;
     property ParentBidiMode;
+    property ParentColor;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1545,6 +1547,7 @@ begin
   FButton := TSpeedButton.Create(Self);
   FEdit := TEbEdit.Create(Self);
   inherited Create(AOwner);
+  ParentColor := False;
   FInitialColor := {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
   BorderStyle := bsNone;
   FButtonAlign := BaRight;
