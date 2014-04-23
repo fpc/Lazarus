@@ -1907,10 +1907,7 @@ begin
           {$ifdef dbgGridPaint}
           DbgOut(' Field=%s',[F.FieldName]);
           {$endif}
-          if F.dataType <> ftBlob then
-            S := F.DisplayText
-          else
-            S := '(blob)';
+          S := F.DisplayText;
         end else
           S := '';
         {$ifdef dbggridpaint}
