@@ -130,7 +130,10 @@ end;
 
 procedure TDbgController.Stop;
 begin
-  FMainProcess.TerminateProcess;
+  if assigned(FMainProcess) then
+    FMainProcess.TerminateProcess
+  else
+    raise Exception.Create('Failed to stop debugging. No main process.');
 end;
 
 procedure TDbgController.StepIntoInstr;
@@ -288,7 +291,7 @@ end;
 
 procedure TDbgController.Log(AString: string);
 begin
-  if assigned(@FOnLog) then
+  if assigned(FOnLog) then
     FOnLog(AString)
   else
     DebugLn(AString);
@@ -296,7 +299,7 @@ end;
 
 procedure TDbgController.Log(AString: string; Options: array of const);
 begin
-  OnLog(Format(AString, Options));
+  Log(Format(AString, Options));
 end;
 
 function TDbgController.GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
