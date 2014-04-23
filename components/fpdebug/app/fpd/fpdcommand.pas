@@ -511,10 +511,10 @@ begin
     Exit;
   end;
 {$ifdef windows}
-  hFile := CreateFile(PChar(GFileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, 0);
+  hFile := CreateFile(PChar(GController.ExecutableFilename), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, 0);
   if hFile = INVALID_HANDLE_VALUE
   then begin
-    WriteLN('File "', GFileName, '" does not exist');
+    WriteLN('File "', GController.ExecutableFilename, '" does not exist');
     Exit;
   end;
 

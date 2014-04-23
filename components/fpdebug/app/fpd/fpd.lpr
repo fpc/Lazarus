@@ -57,15 +57,14 @@ begin
   case CtrlType of
     CTRL_C_EVENT,
     CTRL_BREAK_EVENT: begin
-      if GState <> dsRun then Exit;
-      if GMainProcess = nil then Exit;
-      TDbgWinProcess(GMainProcess).Interrupt;
+      if GController.MainProcess = nil then Exit;
+      TDbgWinProcess(GController.MainProcess).Interrupt;
 
       Result := True;
     end;
     CTRL_CLOSE_EVENT: begin
-      if (GState in [dsRun, dsPause]) and (GMainProcess <> nil)
-      then TerminateProcess(GMainProcess.Handle, 0);
+      if (GController.MainProcess <> nil)
+      then TerminateProcess(GController.MainProcess.Handle, 0);
     end;
   end;
 end;
