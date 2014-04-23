@@ -167,15 +167,10 @@ end;
 
 procedure TFPDLoop.GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
 begin
-  if assigned(Breakpoint) then
+  if not continue then
   begin
     ShowCode;
     ShowDisas;
-    continue:=false;
-  end
-  else
-  begin
-    continue:=true;
   end;
 end;
 
