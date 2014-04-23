@@ -47,6 +47,7 @@ function NSStringUtf8(const s: String): NSString;
 function NSStringToString(ns: NSString): String;
 
 function GetNSObjectView(obj: NSObject): NSView;
+function GetNSObjectWindow(obj: NSObject): NSWindow;
 
 procedure SetNSText(text: NSText; const s: String); inline;
 function GetNSText(text: NSText): string; inline;
@@ -229,6 +230,21 @@ begin
     Result:=NSWindow(obj).contentView
   else if obj.isKindOfClass_(NSTabViewItem) then
     Result := NSTabViewItem(obj).view;
+end;
+
+function GetNSObjectWindow(obj: NSObject): NSWindow;
+var
+  lView: NSView;
+begin
+  Result := nil;
+  if not Assigned(obj) then Exit;
+  if obj.isKindOfClass_(NSWindow) then
+    Result := NSWindow(obj)
+  else
+  begin
+    lView := GetNSObjectView(obj);
+    if lView <> nil then Result := lView.window;
+  end;
 end;
 
 function GetNSPoint(x, y: single): NSPoint;

@@ -208,32 +208,30 @@ begin
 end;
 
 procedure TLCLCommonCallback.OffsetMousePos(var Point: NSPoint);
+var
+  lView: NSView;
 begin
+  lView := GetNSObjectView(Owner);
   if Owner.isKindOfClass(NSWindow) then
     Point.y := NSWindow(Owner).contentView.bounds.size.height - Point.y
-  else
-  if Owner.isKindOfClass(NSView) then
+  else if lView <> nil then
   begin
-    Point := NSView(Owner).convertPoint_fromView(Point, nil);
-    Point.y := NSView(Owner).bounds.size.height - Point.y;
+    Point := lView.convertPoint_fromView(Point, nil);
+    Point.y := lView.bounds.size.height - Point.y;
   end;
 end;
 
 procedure TLCLCommonCallback.ScreenMousePos(var Point: NSPoint);
-var f:NSRect;
+var
+  f: NSRect;
+  lWindow: NSWindow;
 begin
-  if Owner.isKindOfClass(NSWindow) then
-    begin
-      f:=NSWindow(Owner).frame;
-      Point.x := Point.x+f.origin.x;
-      Point.y := NSWindow(Owner).screen.frame.size.height- f.origin.y - Point.y;
-    end
-  else
-  if Owner.isKindOfClass(NSView) then
+  lWindow := GetNSObjectWindow(Owner);
+  if lWindow <> nil then
   begin
-     f:=NSView(Owner).window.frame;
-     Point.x := Point.x+f.origin.x;
-     Point.y := NSView(Owner).window.screen.frame.size.height- f.origin.y - Point.y;
+    f := lWindow.frame;
+    Point.x := Point.x+f.origin.x;
+    Point.y := lWindow.screen.frame.size.height- f.origin.y - Point.y;
   end;
 end;
 
@@ -833,9 +831,10 @@ begin
     // debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(mp)+' Rect'+dbgs(rect));
     obj := GetNSObjectView(NSObject(targetControl.Handle));
     if obj = nil then Exit;
-    callback:=obj.lclGetCallback;
-    result:=callback.MouseMove(Event);
-    FIsEventRouting:=false;
+    callback := obj.lclGetCallback;
+    if callback = nil then Exit; // Avoids crashes
+    result := callback.MouseMove(Event);
+    FIsEventRouting := false;
     exit;
   end;
 

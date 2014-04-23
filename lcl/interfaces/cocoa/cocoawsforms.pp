@@ -386,6 +386,7 @@ var
   ns: NSString;
   R: NSRect;
   pool:NSAutoReleasePool;
+  lDestView: NSView;
  begin
   //todo: create TCocoaWindow or TCocoaPanel depending on the border style
   //      if parent is specified neither Window nor Panel needs to be created
@@ -434,15 +435,16 @@ var
   begin
     cnt.callback := TLCLCustomControlCallback.Create(cnt, AWinControl);
     if AParams.WndParent <> 0 then
-      begin
-      NSView(APArams.WndParent).addSubView(cnt);
-      if cnt.window<>nil then
+    begin
+      lDestView := GetNSObjectView(NSObject(AParams.WndParent));
+      lDestView.addSubView(cnt);
+      if cnt.window <> nil then
          cnt.window.setAcceptsMouseMovedEvents(True);
       cnt.callback.IsOpaque:=true;
-    //  todo: We have to find a way to remove the following notifications save before cnt will be released
-    //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didBecomeKeyNotification:'), NSWindowDidBecomeKeyNotification, cnt.window);
-    //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didResignKeyNotification:'), NSWindowDidResignKeyNotification, cnt.window);
-      end;
+      //  todo: We have to find a way to remove the following notifications save before cnt will be released
+      //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didBecomeKeyNotification:'), NSWindowDidBecomeKeyNotification, cnt.window);
+      //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didResignKeyNotification:'), NSWindowDidResignKeyNotification, cnt.window);
+    end;
   end;
 
   pool.release;

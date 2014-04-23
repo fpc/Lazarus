@@ -155,20 +155,6 @@ type
 implementation
 
 type
-
-  TCocoaTabPage = objcclass(NSTabViewItem)
-    callback: ICommonCallback;
-    LCLPage: TCustomPage;
-    //function lclGetCallback: ICommonCallback; override;
-    //procedure lclClearCallback; override;
-  end;
-
-  TCocoaTabControl = objcclass(NSTabView)
-    callback: ICommonCallback;
-    //function lclGetCallback: ICommonCallback; override;
-    //procedure lclClearCallback; override;
-  end;
-
   { TCocoaProgressIndicator }
 
   TCocoaProgressIndicator = objcclass(NSProgressIndicator)

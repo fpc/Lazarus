@@ -157,16 +157,15 @@ function TCocoaWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width,
   Height: Integer): Boolean;
 var
   Obj: NSObject;
+  View: NSView;
 begin
   Result := (Handle <> 0);
   if Result then
   begin
     Obj := NSObject(Handle);
-    if Obj.isKindOfClass(NSView) then
-      Result := CocoaCaret.CreateCaret(NSView(Handle), Bitmap, Width, Height)
-    else
-    if Obj.isKindOfClass(NSWindow) then
-      Result := CocoaCaret.CreateCaret(NSWindow(Handle).contentView, Bitmap, Width, Height)
+    View := GetNSObjectView(Obj);
+    if View <> nil then
+      Result := CocoaCaret.CreateCaret(View, Bitmap, Width, Height)
     else
       Result := False;
   end;
@@ -926,7 +925,7 @@ begin
   if not Result then Exit;
 
   // Call on a window
-  lView := NSView(Handle);
+  lView := GetNSObjectView(NSObject(Handle));
   if lView.isKindOfClass_(TCocoaWindowContent) then
   begin
     if TCocoaWindowContent(handle).isembedded then
@@ -946,16 +945,15 @@ end;
 function TCocoaWidgetSet.HideCaret(Handle: HWND): Boolean;
 var
   Obj: NSObject;
+  lView: NSView;
 begin
   Result := (Handle <> 0);
   if Result then
   begin
     Obj := NSObject(Handle);
-    if Obj.isKindOfClass(NSView) then
-      Result := CocoaCaret.HideCaret(NSView(Handle))
-    else
-    if Obj.isKindOfClass(NSWindow) then
-      Result := CocoaCaret.HideCaret(NSWindow(Handle).contentView)
+    lView := GetNSObjectView(Obj);
+    if lView <> nil then
+      Result := CocoaCaret.HideCaret(lView)
     else
       Result := False;
   end;
@@ -1663,6 +1661,7 @@ end;
 function TCocoaWidgetSet.SetActiveWindow(Handle: HWND): HWND;
 var
   Obj: NSObject;
+  lView: NSView;
 begin
   Obj := NSObject(Handle);
   if Assigned(Obj) and NSApp.isActive then
@@ -1671,10 +1670,13 @@ begin
     if Obj.isKindOfClass(NSWindow) then
       NSwindow(Obj).makeKeyWindow
     else
-    if Obj.isKindOfClass(NSView) then
-      NSView(Obj).window.makeKeyWindow
-    else
-      Result := 0;
+    begin
+      lView := GetNSObjectView(Obj);
+      if lView <> nil then
+        lView.window.makeKeyWindow
+      else
+        Result := 0;
+    end;
   end;
 end;
 
@@ -1795,6 +1797,7 @@ end;
 function TCocoaWidgetSet.SetFocus(Handle: HWND): HWND;
 var
   Obj: NSObject;
+  lView: NSView;
 begin
   if Handle <> 0 then
   begin
@@ -1808,10 +1811,13 @@ begin
       NSWindow(Obj).makeFirstResponder(nil);
     end
     else
-    if Obj.isKindOfClass(NSView) then
     begin
-      NSView(Obj).window.makeKeyWindow;
-      NSView(Obj).window.makeFirstResponder(NSView(Obj));
+      lView := GetNSObjectView(Obj);
+      if lView <> nil then
+      begin
+        lView.window.makeKeyWindow;
+        lView.window.makeFirstResponder(lView);
+      end;
     end;
   end
   else
@@ -1821,6 +1827,7 @@ end;
 function TCocoaWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
 var
   Obj: NSObject;
+  lWin: NSWindow;
   pool: NSAutoreleasePool;
 begin
   Result := HWnd <> 0;
@@ -1829,11 +1836,9 @@ begin
     pool := NSAutoreleasePool.alloc.init;
     NSApp.activateIgnoringOtherApps(True);
     Obj := NSObject(HWnd);
-    if Obj.isKindOfClass(NSWindow) then
-      NSwindow(Obj).makeKeyAndOrderFront(NSApp)
-    else
-    if Obj.isKindOfClass(NSView) then
-      NSView(Obj).window.makeKeyAndOrderFront(NSApp)
+    lWin := GetNSObjectWindow(Obj);
+    if lWin <> nil then
+      lWin.makeKeyAndOrderFront(NSApp)
     else
       Result := False;
     pool.release;
@@ -1889,16 +1894,15 @@ end;
 function TCocoaWidgetSet.ShowCaret(Handle: HWND): Boolean;
 var
   Obj: NSObject;
+  lView: NSView;
 begin
   Result := (Handle <> 0);
   if Result then
   begin
     Obj := NSObject(Handle);
-    if Obj.isKindOfClass(NSView) then
-      Result := CocoaCaret.ShowCaret(NSView(Handle))
-    else
-    if Obj.isKindOfClass(NSWindow) then
-      Result := CocoaCaret.ShowCaret(NSWindow(Handle).contentView)
+    lView := GetNSObjectView(Obj);
+    if lView <> nil then
+      Result := CocoaCaret.ShowCaret(lView)
     else
       Result := False;
   end;

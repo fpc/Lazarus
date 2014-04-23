@@ -523,6 +523,21 @@ type
     function lclIsHandle: Boolean; override;
   end;
 
+  { TCocoaTabPage }
+
+  TCocoaTabPage = objcclass(NSTabViewItem)
+    callback: ICommonCallback;
+    LCLPage: TCustomPage;
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
+  end;
+
+  TCocoaTabControl = objcclass(NSTabView)
+    callback: ICommonCallback;
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
+  end;
+
   { TCocoaTableListView }
 
   TCocoaTableListView = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
@@ -2121,6 +2136,30 @@ procedure TCocoaListBox.keyUp(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.KeyEvent(event) then
     inherited keyUp(event);
+end;
+
+{ TCocoaTabPage }
+
+function TCocoaTabPage.lclGetCallback: ICommonCallback;
+begin
+  Result := callback;
+end;
+
+procedure TCocoaTabPage.lclClearCallback;
+begin
+  callback := nil;
+end;
+
+{ TCocoaTabControl }
+
+function TCocoaTabControl.lclGetCallback: ICommonCallback;
+begin
+  Result := callback;
+end;
+
+procedure TCocoaTabControl.lclClearCallback;
+begin
+  callback := nil;
 end;
 
 { TCocoaTableListView }

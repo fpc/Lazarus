@@ -299,9 +299,10 @@ begin
   Obj := NSObject(Handle);
   if Obj.isKindOfClass(NSWindow) then
     Win := NSWindow(Obj)
-  else
-  if Obj.isKindOfClass(NSView) then
+  else if Obj.isKindOfClass(NSView) then
     Win := NSView(Handle).window
+  else if GetNSObjectView(Obj) <> nil then
+    Win := GetNSObjectView(Obj).window
   else
     Exit(nil);
   Result := NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2(
