@@ -39,7 +39,8 @@ interface
 uses
   Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgWinExtra, FpDbgLoader,
   FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses, DbgIntfBaseTypes, fgl,
-  FpDbgDisasX86;
+  FpDbgDisasX86,
+  FpDbgDwarfDataClasses;
 
 type
   TFPDEvent = (deExitProcess, deBreakpoint, deException, deCreateProcess, deLoadLibrary, deInternalContinue);
@@ -123,6 +124,7 @@ type
     function SingleStep: Boolean; virtual;
     function StepOver: Boolean; virtual;
     function Next: Boolean; virtual;
+    function IntNext: Boolean; virtual;
     function CompareStepInfo: boolean;
     property ID: Integer read FID;
     property Handle: THandle read FHandle;
@@ -803,6 +805,7 @@ function TDbgThread.CompareStepInfo: boolean;
 var
   AnAddr: TDBGPtr;
   Sym: TFpDbgSymbol;
+  CU: TDwarfCompilationUnit;
 begin
   AnAddr := FProcess.GetInstructionPointerRegisterValue;
   sym := FProcess.FindSymbol(AnAddr);
@@ -810,6 +813,17 @@ begin
   begin
     result := (FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=sym.Line) and
               (FStoreStepFuncAddr=sym.Address.Address);
+    if not result and (FStoreStepFuncAddr<>sym.Address.Address) then
+    begin
+      // If the procedure changed, also check if the current instruction
+      // is at the start of a new sourceline. (Dwarf only)
+      if sym is TDbgDwarfSymbolBase then
+      begin
+        CU := TDbgDwarfSymbolBase(sym).CompilationUnit;
+        if cu.GetLineAddress(sym.FileName, sym.Line)<>AnAddr then
+          result := true;
+      end;
+    end;
   end
   else
     result := true;
@@ -836,6 +850,12 @@ end;
 procedure TDbgThread.LoadRegisterValues;
 begin
   // Do nothing
+end;
+
+function TDbgThread.IntNext: Boolean;
+begin
+  result := StepOver;
+  FStepping:=result;
 end;
 
 constructor TDbgThread.Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle);
@@ -897,9 +917,8 @@ end;
 
 function TDbgThread.Next: Boolean;
 begin
-  result := StepOver;
   StoreStepInfo;
-  FStepping:=result;
+  result := IntNext;
 end;
 
 { TDbgBreak }

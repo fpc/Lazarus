@@ -236,7 +236,7 @@ begin
       deInternalContinue :
         begin
           if assigned(FCurrentThread) and FCurrentThread.Stepping then
-            FCurrentThread.Next;
+            FCurrentThread.IntNext;
         end;
     end; {case}
     AExit:=true;
