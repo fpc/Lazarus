@@ -232,24 +232,6 @@ type
     property NumGlyphs: Integer read GetNumGlyps write SetNumGlyphs;
 
     property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
-    property OnClick: TNotifyEvent read FOnEditClick write FOnEditClick;
-    property OnDblClick: TNotifyEvent read FOnEditDblClick write FOnEditDblClick;
-    property OnDragDrop: TDragDropEvent read FOnEditDragDrop write FOnEditDragDrop;
-    property OnDragOver: TDragOverEvent read FOnEditDragOver write FOnEditDragOver;
-    property OnEditingDone: TNotifyEvent read FOnEditEditingDone write FOnEditEditingDone;
-    property OnEndDrag: TEndDragEvent read FOnEditEndDrag write FOnEditEndDrag;
-    property OnEnter: TNotifyEvent read FOnEditEnter write FOnEditEnter;
-    property OnExit: TNotifyEvent read FOnEditExit write FOnEditExit;
-    property OnMouseDown: TMouseEvent read FOnEditMouseDown write FOnEditMouseDown;
-    property OnKeyPress: TKeyPressEvent read FOnEditKeyPress write FOnEditKeyPress;
-    property OnKeyDown: TKeyEvent read FOnEditKeyDown write FOnEditKeyDown;
-    property OnKeyUp: TKeyEvent read FOnEditKeyUp write FOnEditKeyUp;
-    property OnMouseEnter: TNotifyEvent read FOnEditMouseEnter write FOnEditMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnEditMouseLeave write FOnEditMouseLeave;
-    property OnMouseMove: TMouseMoveEvent read FOnEditMouseMove write FOnEditMouseMove;
-    property OnMouseUp: TMouseEvent read FOnEditMouseUp write FOnEditMouseUp;
-    property OnStartDrag: TStartDragEvent read FOnEditStartDrag write FOnEditStartDrag;
-    property OnUtf8KeyPress: TUtf8KeyPressEvent read FOnEditUtf8KeyPress write FOnEditUtf8KeyPress;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -284,6 +266,24 @@ type
     property Text: TCaption read GetText write SetText;
 
     property OnChange: TNotifyEvent read FOnEditChange write FOnEditChange;
+    property OnClick: TNotifyEvent read FOnEditClick write FOnEditClick;
+    property OnDblClick: TNotifyEvent read FOnEditDblClick write FOnEditDblClick;
+    property OnDragDrop: TDragDropEvent read FOnEditDragDrop write FOnEditDragDrop;
+    property OnDragOver: TDragOverEvent read FOnEditDragOver write FOnEditDragOver;
+    property OnEditingDone: TNotifyEvent read FOnEditEditingDone write FOnEditEditingDone;
+    property OnEndDrag: TEndDragEvent read FOnEditEndDrag write FOnEditEndDrag;
+    property OnEnter: TNotifyEvent read FOnEditEnter write FOnEditEnter;
+    property OnExit: TNotifyEvent read FOnEditExit write FOnEditExit;
+    property OnMouseDown: TMouseEvent read FOnEditMouseDown write FOnEditMouseDown;
+    property OnKeyPress: TKeyPressEvent read FOnEditKeyPress write FOnEditKeyPress;
+    property OnKeyDown: TKeyEvent read FOnEditKeyDown write FOnEditKeyDown;
+    property OnKeyUp: TKeyEvent read FOnEditKeyUp write FOnEditKeyUp;
+    property OnMouseEnter: TNotifyEvent read FOnEditMouseEnter write FOnEditMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnEditMouseLeave write FOnEditMouseLeave;
+    property OnMouseMove: TMouseMoveEvent read FOnEditMouseMove write FOnEditMouseMove;
+    property OnMouseUp: TMouseEvent read FOnEditMouseUp write FOnEditMouseUp;
+    property OnStartDrag: TStartDragEvent read FOnEditStartDrag write FOnEditStartDrag;
+    property OnUtf8KeyPress: TUtf8KeyPressEvent read FOnEditUtf8KeyPress write FOnEditUtf8KeyPress;
 
   end;
 
