@@ -51,6 +51,7 @@ type
     procedure StepIntoInstr;
     procedure StepOverInstr;
     procedure Next;
+    procedure StepOut;
     procedure Pause;
     procedure ProcessLoop;
     procedure SendEvents(out continue: boolean);
@@ -151,6 +152,11 @@ begin
   FCurrentThread.Next;
 end;
 
+procedure TDbgController.StepOut;
+begin
+  FCurrentThread.StepOut;
+end;
+
 procedure TDbgController.Pause;
 begin
   FCurrentProcess.Pause;
@@ -198,7 +204,7 @@ begin
       begin
       FCurrentThread.SingleStepping:=false;
       if FPDEvent<>deInternalContinue then
-        FCurrentThread.Stepping := False;
+        FCurrentThread.AfterHitBreak;
       if assigned(FCurrentThread.HiddenBreakpoint) then
         FCurrentThread.ClearHiddenBreakpoint;
       end;

@@ -114,22 +114,25 @@ type
     FStoreStepStackFrame: TDBGPtr;
     FStoreStepFuncAddr: TDBGPtr;
     FHiddenBreakpoint: TDbgBreakpoint;
+    FStepOut: boolean;
     procedure StoreStepInfo;
     procedure LoadRegisterValues; virtual;
   public
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); virtual;
     function ResetInstructionPointerAfterBreakpoint: boolean; virtual; abstract;
+    procedure AfterHitBreak;
     procedure ClearHiddenBreakpoint;
     destructor Destroy; override;
     function SingleStep: Boolean; virtual;
     function StepOver: Boolean; virtual;
     function Next: Boolean; virtual;
+    function StepOut: Boolean; virtual;
     function IntNext: Boolean; virtual;
     function CompareStepInfo: boolean;
     property ID: Integer read FID;
     property Handle: THandle read FHandle;
     property SingleStepping: boolean read FSingleStepping write FSingleStepping;
-    property Stepping: boolean read FStepping write FStepping;
+    property Stepping: boolean read FStepping;
     property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
     property HiddenBreakpoint: TDbgBreakpoint read FHiddenBreakpoint;
   end;
@@ -811,7 +814,7 @@ begin
   sym := FProcess.FindSymbol(AnAddr);
   if assigned(sym) then
   begin
-    result := (FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=sym.Line) and
+    result := (((FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=sym.Line)) or FStepOut) and
               (FStoreStepFuncAddr=sym.Address.Address);
     if not result and (FStoreStepFuncAddr<>sym.Address.Address) then
     begin
@@ -868,6 +871,12 @@ begin
   inherited Create;
 end;
 
+procedure TDbgThread.AfterHitBreak;
+begin
+  FStepping:=false;
+  FStepOut:=false;
+end;
+
 procedure TDbgThread.ClearHiddenBreakpoint;
 begin
   FreeAndNil(FHiddenBreakpoint);
@@ -919,6 +928,12 @@ function TDbgThread.Next: Boolean;
 begin
   StoreStepInfo;
   result := IntNext;
+end;
+
+function TDbgThread.StepOut: Boolean;
+begin
+  result := next;
+  FStepOut := result;
 end;
 
 { TDbgBreak }

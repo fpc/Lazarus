@@ -308,6 +308,18 @@ begin
   CallProcessLoop:=true;
 end;
 
+procedure HandleStepOut(AParams: String; out CallProcessLoop: boolean);
+begin
+  CallProcessLoop:=false;
+  if not assigned(GController.MainProcess)
+  then begin
+    WriteLN('The process is not paused');
+    Exit;
+  end;
+  GController.StepOut;
+  CallProcessLoop:=true;
+end;
+
 procedure HandleStepInst(AParams: String; out CallProcessLoop: boolean);
 begin
   CallProcessLoop:=false;
@@ -751,9 +763,10 @@ begin
   MCommands.AddCommand(['break', 'b'], @HandleBreak,  'break [-d] <adress>|<filename:line>: Set a breakpoint at <adress> or <filename:line>. -d removes');
   MCommands.AddCommand(['continue', 'cont', 'c'], @HandleContinue,  'continue: Continues execution');
   MCommands.AddCommand(['kill', 'k'], @HandleKill,  'kill: Stops execution of the debuggee');
-  MCommands.AddCommand(['step-inst', 'si'], @HandleStepInst,  'step: Steps-into one instruction');
-  MCommands.AddCommand(['next-inst', 'ni'], @HandleNextInst,  'next: Steps-over one instruction');
+  MCommands.AddCommand(['step-inst', 'si'], @HandleStepInst,  'step-inst: Steps-into one instruction');
+  MCommands.AddCommand(['next-inst', 'ni'], @HandleNextInst,  'next-inst: Steps-over one instruction');
   MCommands.AddCommand(['next', 'n'], @HandleNext,  'next: Steps one line');
+  MCommands.AddCommand(['step-out', 'so'], @HandleStepOut,  'step-out: Steps out of current procedure');
   MCommands.AddCommand(['list', 'l'], @HandleList,  'list [<adress>|<location>]: Lists the source for <adress> or <location>');
   MCommands.AddCommand(['memory', 'mem', 'm'], @HandleMemory,  'memory [-<size>] [<adress> <count>|<location> <count>]: Dump <count> (default: 1) from memory <adress> or <location> (default: current) of <size> (default: 4) bytes, where size is 1,2,4,8 or 16.');
   MCommands.AddCommand(['writememory', 'w'], @HandleWriteMemory,  'writememory [<adress> <value>]: Write <value> (with a length of 4 bytes) into memory at address <adress>.');
