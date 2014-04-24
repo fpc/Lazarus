@@ -3149,7 +3149,7 @@ end;
 procedure TSourceEditor.FocusEditor;
 Begin
   DebugLnEnter(SRCED_PAGES, ['>> TSourceEditor.FocusEditor A ',PageName,' ',FEditor.Name]);
-  IDEWindowCreators.ShowForm(SourceNotebook,true);
+  IDEWindowCreators.ShowForm(SourceNotebook, true, vmOnlyMoveOffScreenToVisible);
   if FEditor.IsVisible then begin
     FEditor.SetFocus; // TODO: will cal EditorEnter, which does self.Activate  => maybe lock, and do here?
     FSharedValues.SetActiveSharedEditor(Self);

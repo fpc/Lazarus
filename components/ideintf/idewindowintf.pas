@@ -17,7 +17,7 @@ unit IDEWindowIntf;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, LazConfigStorage, Forms, Controls;
+  Math, Classes, SysUtils, LCLProc, LazConfigStorage, Forms, Controls, LCLIntf;
 
   //----------------------------------------------------------------------------
   // layout settings of modal forms (dialogs) in the IDE
@@ -248,6 +248,11 @@ type
   end;
 
   { TSimpleWindowLayoutList }
+  TLayoutMoveToVisbleMode = (
+    vmAlwaysMoveToVisible,
+    vmNeverMoveToVisible,
+    vmOnlyMoveOffScreenToVisible   // Only make visible, if fully offscreen (no part of the windov is on screen)
+  );
 
   TSimpleWindowLayoutList = class
   private
@@ -260,7 +265,8 @@ type
     procedure Clear;
     procedure Delete(Index: Integer);
     procedure ApplyAndShow(Sender: TObject; AForm: TCustomForm;
-                           BringToFront: boolean);
+                           BringToFront: boolean;
+                           AMoveToVisbleMode: TLayoutMoveToVisbleMode = vmAlwaysMoveToVisible);
     procedure StoreWindowPositions;
     procedure Assign(SrcList: TSimpleWindowLayoutList);
     function Add(ALayout: TSimpleWindowLayout): integer;
@@ -407,7 +413,8 @@ type
     function FindWithName(FormName: string): TIDEWindowCreator;
     function GetForm(aFormName: string; AutoCreate: boolean;
                                DisableAutoSizing: boolean = false): TCustomForm;
-    procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); overload;
+    procedure ShowForm(AForm: TCustomForm; BringToFront: boolean;
+                       AMoveToVisbleMode: TLayoutMoveToVisbleMode = vmAlwaysMoveToVisible); overload;
     function ShowForm(AFormName: string; BringToFront: boolean): TCustomForm; overload;
     procedure CreateForm(var AForm; AFormClass: TCustomFormClass;
                          DoDisableAutoSizing: boolean; TheOwner: TComponent); // utility function to create a form with delayed autosizing
@@ -1523,8 +1530,18 @@ begin
     ALayout.CloseForm;
 end;
 
-procedure TSimpleWindowLayoutList.ApplyAndShow(Sender: TObject;
-  AForm: TCustomForm; BringToFront: boolean);
+procedure TSimpleWindowLayoutList.ApplyAndShow(Sender: TObject; AForm: TCustomForm;
+  BringToFront: boolean; AMoveToVisbleMode: TLayoutMoveToVisbleMode);
+
+  function IsAnyCornerVisible(AForm: TCustomForm): Boolean;
+  var
+    Overlap: TRect;
+  begin
+    IntersectRect(Overlap, AForm.BoundsRect, AForm.Monitor.WorkareaRect);
+    Result := (Overlap.Bottom > Overlap.Top + 1) and
+              (Overlap.Right > Overlap.Left + 1);
+  end;
+
 var
   ALayout: TSimpleWindowLayout;
   NewBounds: TRect;
@@ -1617,6 +1634,7 @@ begin
       NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);
       NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
       AForm.BoundsRect:=NewBounds;
+      AMoveToVisbleMode := vmAlwaysMoveToVisible;
     end;
   finally
     if (AForm.WindowState in [wsNormal,wsMaximized]) and BringToFront then
@@ -1626,7 +1644,11 @@ begin
       if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
         ARestoreVisible := AForm.Visible;
 
-      AForm.EnsureVisible(true);
+      if (AMoveToVisbleMode = vmAlwaysMoveToVisible) or
+         ( (AMoveToVisbleMode = vmOnlyMoveOffScreenToVisible) and
+           (not IsAnyCornerVisible(AForm)) )
+      then
+        AForm.EnsureVisible(true);
 
       if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
         AForm.Visible := ARestoreVisible;
@@ -1643,7 +1665,11 @@ begin
           // issue #19769
           if AForm.Visible and not (fsModal in AForm.FormState) then
             AForm.Visible := False;
-          AForm.EnsureVisible(true);
+          if (AMoveToVisbleMode = vmAlwaysMoveToVisible) or
+             ( (AMoveToVisbleMode = vmOnlyMoveOffScreenToVisible) and
+               (not IsAnyCornerVisible(AForm)) )
+          then
+            AForm.EnsureVisible(true);
         end;
       end;
 
@@ -2000,7 +2026,8 @@ begin
   end;
 end;
 
-procedure TIDEWindowCreatorList.ShowForm(AForm: TCustomForm; BringToFront: boolean);
+procedure TIDEWindowCreatorList.ShowForm(AForm: TCustomForm; BringToFront: boolean;
+  AMoveToVisbleMode: TLayoutMoveToVisbleMode);
 var
   Layout: TSimpleWindowLayout;
 begin
@@ -2021,7 +2048,7 @@ begin
     // show dockable if it has a creator and is not a designer form
     IDEDockMaster.ShowForm(AForm,BringToFront)
   else
-    SimpleLayoutStorage.ApplyAndShow(Self,AForm,BringToFront);
+    SimpleLayoutStorage.ApplyAndShow(Self,AForm,BringToFront,AMoveToVisbleMode);
 end;
 
 function TIDEWindowCreatorList.ShowForm(AFormName: string; BringToFront: boolean
