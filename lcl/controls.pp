@@ -718,9 +718,9 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
     function IsEqual(Spacing: TControlBorderSpacing): boolean;
-    procedure GetSpaceAround(var SpaceAround: TRect);
+    procedure GetSpaceAround(var SpaceAround: TRect); virtual;
     function GetSideSpace(Kind: TAnchorKind): Integer; // Around+GetSpace
-    function GetSpace(Kind: TAnchorKind): Integer;
+    function GetSpace(Kind: TAnchorKind): Integer; virtual;
   public
     property Control: TControl read FControl;
     property Space[Kind: TAnchorKind]: integer read GetSpace write SetSpace;
