@@ -55,6 +55,7 @@ type
   protected
     function CreateLineInfo: TDBGLineInfo; override;
     function CreateWatches: TWatchesSupplier; override;
+    function CreateLocals: TLocalsSupplier; override;
     function  CreateRegisters: TRegisterSupplier; override;
     function CreateDisassembler: TDBGDisassembler; override;
     function CreateBreakPoints: TDBGBreakPoints; override;
@@ -112,6 +113,19 @@ type
     destructor Destroy; override;
   end;
 
+  { TFPLocals }
+
+  TFPLocals = class(TLocalsSupplier)
+  private
+    FPrettyPrinter: TFpPascalPrettyPrinter;
+  protected
+    function  FpDebugger: TFpDebugDebugger;
+  public
+    procedure RequestData(ALocals: TLocals); override;
+    constructor Create(const ADebugger: TDebuggerIntf);
+    destructor Destroy; override;
+  end;
+
   { TFPRegisters }
 
   TFPRegisters = class(TRegisterSupplier)
@@ -162,6 +176,71 @@ uses
 procedure Register;
 begin
   RegisterDebugger(TFpDebugDebugger);
+end;
+
+{ TFPLocals }
+
+function TFPLocals.FpDebugger: TFpDebugDebugger;
+begin
+  Result := TFpDebugDebugger(Debugger);
+end;
+
+procedure TFPLocals.RequestData(ALocals: TLocals);
+var
+  AContext: TFpDbgInfoContext;
+  AController: TDbgController;
+  ProcVal: TFpDbgValue;
+  i: Integer;
+  m: TFpDbgValue;
+  n, v: String;
+begin
+  AController := FpDebugger.FDbgController;
+  if (AController = nil) or (AController.CurrentProcess = nil) or
+     (AController.CurrentProcess.DbgInfo = nil)
+  then begin
+    ALocals.SetDataValidity(ddsInvalid);
+    exit;
+  end;
+  AContext := AController.CurrentProcess.DbgInfo.FindContext(AController.CurrentProcess.GetInstructionPointerRegisterValue);
+
+  if (AContext = nil) or (AContext.SymbolAtAddress = nil) then begin
+    ALocals.SetDataValidity(ddsInvalid);
+    exit;
+  end;
+
+  ProcVal := AContext.ProcedureAtAddress;
+
+  if (ProcVal = nil) then begin
+    ALocals.SetDataValidity(ddsInvalid);
+    exit;
+  end;
+  FPrettyPrinter.AddressSize := AContext.SizeOfAddress;
+
+  ALocals.Clear;
+  for i := 0 to ProcVal.MemberCount - 1 do begin
+    m := ProcVal.Member[i];
+    if m <> nil then begin
+      if m.DbgSymbol <> nil then
+        n := m.DbgSymbol.Name
+      else
+        n := '';
+      FPrettyPrinter.PrintValue(v, m);
+      ALocals.Add(n, v);
+    end;
+  end;
+  ALocals.SetDataValidity(ddsValid);
+end;
+
+constructor TFPLocals.Create(const ADebugger: TDebuggerIntf);
+begin
+  inherited Create(ADebugger);
+  FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
+end;
+
+destructor TFPLocals.Destroy;
+begin
+  inherited Destroy;
+  FPrettyPrinter.Free;
 end;
 
 { TFPBreakpoints }
@@ -495,8 +574,11 @@ var
   AVal: string;
 begin
   AController := FpDebugger.FDbgController;
-
   AContext := AController.CurrentProcess.DbgInfo.FindContext(AController.CurrentProcess.GetInstructionPointerRegisterValue);
+  if AContext = nil then begin
+    AWatchValue.Validity := ddsInvalid;
+    exit;
+  end;
 
   APasExpr := TFpPascalExpression.Create(AWatchValue.Expression, AContext);
   try
@@ -613,6 +695,11 @@ end;
 function TFpDebugDebugger.CreateWatches: TWatchesSupplier;
 begin
   Result := TFPWatches.Create(Self);
+end;
+
+function TFpDebugDebugger.CreateLocals: TLocalsSupplier;
+begin
+  Result := TFPLocals.Create(Self);
 end;
 
 function TFpDebugDebugger.CreateRegisters: TRegisterSupplier;
