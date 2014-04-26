@@ -77,6 +77,7 @@ type
     FlastResult: TFpDbgValue;
   protected
     function GetSymbolAtAddress: TFpDbgSymbol; override;
+    function GetProcedureAtAddress: TFpDbgValue; override;
     function GetAddress: TDbgPtr; override;
     function GetThreadId: Integer; override;
     function GetStackFrame: Integer; override;
@@ -813,6 +814,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TFpDwarfSymbolValueProc = class(TFpDwarfSymbolValue)
   private
     //FCU: TDwarfCompilationUnit;
+    FProcMembers: TRefCntObjList; // Locals
+    FLastMember: TFpDbgSymbol;
     FAddress: TDbgPtr;
     FAddressInfo: PDwarfAddressInfo;
     FStateMachine: TDwarfLineInfoStateMachine;
@@ -820,7 +823,12 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FSelfParameter: TFpDwarfValue;
     function StateMachineValid: Boolean;
     function  ReadVirtuality(out AFlags: TDbgSymbolFlags): Boolean;
+    procedure CreateMembers;
   protected
+    function GetMember(AIndex: Int64): TFpDbgSymbol; override;
+    function GetMemberByName(AIndex: String): TFpDbgSymbol; override;
+    function GetMemberCount: Integer; override;
+
     function  GetFrameBase(ASender: TDwarfLocationExpression): TDbgPtr;
     procedure KindNeeded; override;
     procedure SizeNeeded; override;
@@ -939,6 +947,12 @@ end;
 function TFpDwarfInfoAddressContext.GetSymbolAtAddress: TFpDbgSymbol;
 begin
   Result := FSymbol;
+end;
+
+function TFpDwarfInfoAddressContext.GetProcedureAtAddress: TFpDbgValue;
+begin
+  Result := inherited GetProcedureAtAddress;
+  ApplyContext(Result);
 end;
 
 function TFpDwarfInfoAddressContext.GetAddress: TDbgPtr;
@@ -2989,7 +3003,7 @@ begin
   then begin
     if FMembers = nil then
       FMembers := TFpDbgCircularRefCntObjList.Create;
-    FMembers.Add(Result);
+    FMembers.Add(Result); //TODO: last member only?
   end;
 end;
 
@@ -4359,6 +4373,8 @@ end;
 
 destructor TFpDwarfSymbolValueProc.Destroy;
 begin
+  FreeAndNil(FProcMembers);
+  FLastMember.ReleaseReference(@FLastMember, 'TFpDwarfSymbolValueProc.FLastMember');
   FreeAndNil(FStateMachine);
   if FSelfParameter <> nil then begin
     //TDbgDwarfIdentifier(FSelfParameter.DbgSymbol).ParentTypeInfo := nil;
@@ -4456,6 +4472,68 @@ begin
     DW_VIRTUALITY_virtual:      AFlags := [sfVirtual];
     DW_VIRTUALITY_pure_virtual: AFlags := [sfVirtual];
   end;
+end;
+
+procedure TFpDwarfSymbolValueProc.CreateMembers;
+var
+  Info: TDwarfInformationEntry;
+  Info2: TDwarfInformationEntry;
+  sym: TFpDwarfSymbol;
+begin
+  if FProcMembers <> nil then
+    exit;
+  FProcMembers := TRefCntObjList.Create;
+  Info := InformationEntry.Clone;
+  Info.GoChild;
+
+  while Info.HasValidScope do begin
+    if ((Info.AbbrevTag = DW_TAG_formal_parameter) or (Info.AbbrevTag = DW_TAG_variable)) //and
+       //not(Info.IsArtificial)
+    then begin
+      Info2 := Info.Clone;
+      FProcMembers.Add(Info2);
+      Info2.ReleaseReference;
+    end;
+    Info.GoNext;
+  end;
+
+  Info.ReleaseReference;
+end;
+
+function TFpDwarfSymbolValueProc.GetMember(AIndex: Int64): TFpDbgSymbol;
+begin
+  CreateMembers;
+  FLastMember.ReleaseReference(@FLastMember, 'TFpDwarfSymbolValueProc.FLastMember');
+  FLastMember := TFpDwarfSymbol.CreateSubClass('', TDwarfInformationEntry(FProcMembers[AIndex]));
+  {$IFDEF WITH_REFCOUNT_DEBUG}FLastMember.DbgRenameReference(@FLastMember, 'TFpDwarfSymbolValueProc.FLastMember');{$ENDIF}
+  Result := FLastMember;
+end;
+
+function TFpDwarfSymbolValueProc.GetMemberByName(AIndex: String): TFpDbgSymbol;
+var
+  Info: TDwarfInformationEntry;
+  s, s2: String;
+  i: Integer;
+begin
+  CreateMembers;
+  s2 := LowerCase(AIndex);
+  FLastMember.ReleaseReference(@FLastMember, 'TFpDwarfSymbolValueProc.FLastMember');
+  FLastMember := nil;;
+  for i := 0 to FProcMembers.Count - 1 do begin
+    Info := TDwarfInformationEntry(FProcMembers[i]);
+    if Info.ReadName(s) and (LowerCase(s) = s2) then begin
+      FLastMember := TFpDwarfSymbol.CreateSubClass('', Info);
+      {$IFDEF WITH_REFCOUNT_DEBUG}FLastMember.DbgRenameReference(@FLastMember, 'TFpDwarfSymbolValueProc.FLastMember');{$ENDIF}
+      break;
+    end;
+  end;
+  Result := FLastMember;
+end;
+
+function TFpDwarfSymbolValueProc.GetMemberCount: Integer;
+begin
+  CreateMembers;
+  Result := FProcMembers.Count;
 end;
 
 function TFpDwarfSymbolValueProc.GetFrameBase(ASender: TDwarfLocationExpression): TDbgPtr;

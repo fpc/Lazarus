@@ -79,6 +79,7 @@ type
     function CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; override;
     function CreateLineInfo: TDBGLineInfo; override;
     function  CreateWatches: TWatchesSupplier; override;
+    function  CreateLocals: TLocalsSupplier; override;
     procedure DoState(const OldState: TDBGState); override;
     function  HasDwarf: Boolean;
     procedure LoadDwarf;
@@ -153,6 +154,33 @@ type
   public
   end;
 
+  TFPGDBMILocals = class;
+
+  { TFpGDBMIDebuggerCommandLocals }
+
+  TFpGDBMIDebuggerCommandLocals = class(TGDBMIDebuggerCommand)
+  private
+    FOwner: TFPGDBMILocals;
+    FLocals: TLocals;
+  protected
+    function DoExecute: Boolean; override;
+    procedure DoLockQueueExecute; override;
+    procedure DoUnLockQueueExecute; override;
+  public
+    constructor Create(AOwner: TFPGDBMILocals; ALocals: TLocals);
+  end;
+
+  { TFPGDBMILocals }
+
+  TFPGDBMILocals = class(TGDBMILocals)
+  private
+    procedure ProcessLocals(ALocals: TLocals);
+  protected
+    function  FpDebugger: TFpGDBMIDebugger;
+  public
+    procedure RequestData(ALocals: TLocals); override;
+  end;
+
   { TFpGDBMILineInfo }
 
   TFpGDBMILineInfo = class(TDBGLineInfo) //class(TGDBMILineInfo)
@@ -183,6 +211,8 @@ begin
   UseGDB := (MenuCmd.MenuItem <> nil) and MenuCmd.MenuItem.Checked;
   if (CurrentDebugger <> nil) and (CurrentDebugger.Watches <> nil) then
     CurrentDebugger.Watches.CurrentWatches.ClearValues;
+  if (CurrentDebugger <> nil) and (CurrentDebugger.Locals <> nil) then
+    CurrentDebugger.Locals.CurrentLocalsList.Clear;
 end;
 
 // This Accessor hack is temporarilly needed / the final version will not show gdb data
@@ -191,6 +221,98 @@ procedure MarkWatchValueAsGdb(AWatchValue: TWatchValue);
 begin
   AWatchValue.Value := '{GDB:}' + AWatchValue.Value;
   TWatchValueHack(AWatchValue).DoDataValidityChanged(ddsRequested);
+end;
+
+{ TFpGDBMIDebuggerCommandLocals }
+
+function TFpGDBMIDebuggerCommandLocals.DoExecute: Boolean;
+begin
+  FOwner.ProcessLocals(FLocals);
+  Result := True;
+end;
+
+procedure TFpGDBMIDebuggerCommandLocals.DoLockQueueExecute;
+begin
+  //
+end;
+
+procedure TFpGDBMIDebuggerCommandLocals.DoUnLockQueueExecute;
+begin
+  //
+end;
+
+constructor TFpGDBMIDebuggerCommandLocals.Create(AOwner: TFPGDBMILocals; ALocals: TLocals);
+begin
+  inherited Create(AOwner.FpDebugger);
+  FOwner := AOwner;
+  FLocals := ALocals;
+  Priority := 1; // before watches
+end;
+
+{ TFPGDBMILocals }
+
+procedure TFPGDBMILocals.ProcessLocals(ALocals: TLocals);
+var
+  Ctx: TFpDbgInfoContext;
+  ProcVal: TFpDbgValue;
+  i: Integer;
+  m: TFpDbgValue;
+  n, v: String;
+begin
+  Ctx := FpDebugger.GetInfoContextForContext(ALocals.ThreadId, ALocals.StackFrame);
+  if (Ctx = nil) or (Ctx.SymbolAtAddress = nil) then begin
+    ALocals.SetDataValidity(ddsInvalid);
+    exit;
+  end;
+
+  ProcVal := Ctx.ProcedureAtAddress;
+
+  if (ProcVal = nil) then begin
+    ALocals.SetDataValidity(ddsInvalid);
+    exit;
+  end;
+  FpDebugger.FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
+
+  ALocals.Clear;
+  for i := 0 to ProcVal.MemberCount - 1 do begin
+    m := ProcVal.Member[i];
+    if m <> nil then begin
+      if m.DbgSymbol <> nil then
+        n := m.DbgSymbol.Name
+      else
+        n := '';
+      FpDebugger.FPrettyPrinter.PrintValue(v, m);
+      ALocals.Add(n, v);
+    end;
+  end;
+  ALocals.SetDataValidity(ddsValid);
+end;
+
+function TFPGDBMILocals.FpDebugger: TFpGDBMIDebugger;
+begin
+  Result := TFpGDBMIDebugger(Debugger);
+end;
+
+procedure TFPGDBMILocals.RequestData(ALocals: TLocals);
+var
+  LocalsCmdObj: TFpGDBMIDebuggerCommandLocals;
+begin
+  if UseGDB then begin
+    inherited RequestData(ALocals);
+    exit;
+  end;
+
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
+    Exit;
+  end;
+
+  FpDebugger.Threads.CurrentThreads.Count; // trigger threads, in case
+
+  // Join the queue, registers and threads are needed first
+  LocalsCmdObj := TFpGDBMIDebuggerCommandLocals.Create(Self, ALocals);
+  LocalsCmdObj.Properties := [dcpCancelOnRun];
+  // If a ExecCmd is running, then defer exec until the exec cmd is done
+  FpDebugger.QueueCommand(LocalsCmdObj, ForceQueuing);
 end;
 
 { TFpGDBMIDebuggerCommandEvaluate }
@@ -229,6 +351,7 @@ constructor TFpGDBMIDebuggerCommandEvaluate.Create(AOwner: TFPGDBMIWatches);
 begin
   inherited Create(AOwner.FpDebugger);
   FOwner := AOwner;
+  //Priority := 0;
 end;
 
 { TFpGDBMIAndWin32DbgMemReader }
@@ -475,7 +598,7 @@ begin
     Exit;
   end;
 
-  AWatchValue.AddFreeeNotification(@FpDebugger.DoWatchFreed); // we may call gdb
+  AWatchValue.AddFreeNotification(@FpDebugger.DoWatchFreed); // we may call gdb
   FpDebugger.FWatchEvalList.Add(pointer(AWatchValue));
 
   if FEvaluationCmdObj <> nil then exit;
@@ -1090,6 +1213,11 @@ end;
 function TFpGDBMIDebugger.CreateWatches: TWatchesSupplier;
 begin
   Result := TFPGDBMIWatches.Create(Self);
+end;
+
+function TFpGDBMIDebugger.CreateLocals: TLocalsSupplier;
+begin
+  Result := TFPGDBMILocals.Create(Self);
 end;
 
 class function TFpGDBMIDebugger.Caption: String;

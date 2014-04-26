@@ -646,6 +646,23 @@ type
     destructor Destroy; override;
   end;
 
+  { TGDBMILocals }
+
+  TGDBMILocals = class(TLocalsSupplier)
+  private
+    FCommandList: TList;
+    procedure CancelEvaluation; deprecated;
+    procedure DoEvaluationDestroyed(Sender: TObject);
+  protected
+    procedure CancelAllCommands;
+    function  ForceQueuing: Boolean;
+  public
+    procedure Changed;
+    constructor Create(const ADebugger: TDebuggerIntf);
+    destructor Destroy; override;
+    procedure RequestData(ALocals: TLocals); override;
+  end;
+
   { TGDBMIDebugger }
 
   TGDBMIDebugger = class(TGDBMICmdLineDebugger) // TODO: inherit from TDebugger direct
@@ -949,22 +966,6 @@ type
     constructor Create(AOwner: TGDBMIDebugger; ALocals: TLocals);
     destructor Destroy; override;
     function DebugText: String; override;
-  end;
-
-  { TGDBMILocals }
-
-  TGDBMILocals = class(TLocalsSupplier)
-  private
-    FCommandList: TList;
-    procedure CancelEvaluation; deprecated;
-    procedure DoEvaluationDestroyed(Sender: TObject);
-  protected
-    procedure CancelAllCommands;
-  public
-    procedure Changed;
-    constructor Create(const ADebugger: TDebuggerIntf);
-    destructor Destroy; override;
-    procedure RequestData(ALocals: TLocals); override;
   end;
 
   {%endregion   ^^^^^  Locals  ^^^^^   }
@@ -9925,9 +9926,16 @@ begin
   FCommandList.Clear;
 end;
 
+function TGDBMILocals.ForceQueuing: Boolean;
+begin
+  Result := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
+            and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
+            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued)
+            and (Debugger.State <> dsInternalPause);
+end;
+
 procedure TGDBMILocals.RequestData(ALocals: TLocals);
 var
-  ForceQueue: Boolean;
   EvaluationCmdObj: TGDBMIDebuggerCommandLocals;
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then Exit;
@@ -9936,12 +9944,8 @@ begin
   EvaluationCmdObj.OnDestroy   := @DoEvaluationDestroyed;
   EvaluationCmdObj.Priority := GDCMD_PRIOR_LOCALS;
   EvaluationCmdObj.Properties := [dcpCancelOnRun];
-  ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
-            and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
-            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued)
-            and (Debugger.State <> dsInternalPause);
   FCommandList.add(EvaluationCmdObj);
-  TGDBMIDebugger(Debugger).QueueCommand(EvaluationCmdObj, ForceQueue);
+  TGDBMIDebugger(Debugger).QueueCommand(EvaluationCmdObj, ForceQueuing);
   (* DoEvaluationFinished may be called immediately at this point *)
 end;
 

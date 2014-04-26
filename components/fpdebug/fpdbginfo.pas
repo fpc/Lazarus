@@ -429,9 +429,11 @@ type
   TFpDbgInfoContext = class(TFpDbgAddressContext)
   protected
     function GetSymbolAtAddress: TFpDbgSymbol; virtual;
+    function GetProcedureAtAddress: TFpDbgValue; virtual;
     function GetMemManager: TFpDbgMemManager; virtual;
   public
     property SymbolAtAddress: TFpDbgSymbol read GetSymbolAtAddress;
+    property ProcedureAtAddress: TFpDbgValue read GetProcedureAtAddress;
     // search this, and all parent context
     function FindSymbol(const {%H-}AName: String): TFpDbgValue; virtual;
     property MemManager: TFpDbgMemManager read GetMemManager;
@@ -781,6 +783,11 @@ end;
 function TFpDbgInfoContext.GetMemManager: TFpDbgMemManager;
 begin
   Result := nil;
+end;
+
+function TFpDbgInfoContext.GetProcedureAtAddress: TFpDbgValue;
+begin
+  Result := SymbolAtAddress.Value;
 end;
 
 function TFpDbgInfoContext.GetSymbolAtAddress: TFpDbgSymbol;
