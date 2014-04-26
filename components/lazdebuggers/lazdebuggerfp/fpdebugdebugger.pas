@@ -205,6 +205,7 @@ begin
 
   if (AContext = nil) or (AContext.SymbolAtAddress = nil) then begin
     ALocals.SetDataValidity(ddsInvalid);
+    AContext.ReleaseReference;
     exit;
   end;
 
@@ -212,6 +213,7 @@ begin
 
   if (ProcVal = nil) then begin
     ALocals.SetDataValidity(ddsInvalid);
+    AContext.ReleaseReference;
     exit;
   end;
   FPrettyPrinter.AddressSize := AContext.SizeOfAddress;
@@ -229,6 +231,7 @@ begin
     end;
   end;
   ALocals.SetDataValidity(ddsValid);
+  AContext.ReleaseReference;
 end;
 
 constructor TFPLocals.Create(const ADebugger: TDebuggerIntf);
@@ -600,6 +603,7 @@ begin
       end;
   finally
     APasExpr.Free;
+    AContext.ReleaseReference;
   end;
 end;
 
