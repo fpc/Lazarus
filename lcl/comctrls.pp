@@ -2215,81 +2215,89 @@ type
     property OnStartDrag;
   end;
   
-
   { TCoolBar }
 
+  TGrabStyle = (gsSimple, gsDouble, gsHorLines, gsVerLines, gsGripper, gsButton);
+  TDragBand = (dbNone, dbMove, dbResize);
+
   TCustomCoolBar = class;
+
+  { TCoolBand }
 
   TCoolBand = class(TCollectionItem)
   private
     FCoolBar: TCustomCoolBar;
     FControl: TControl;  // Associated control
-    FTextLabel: TLabel;  // Possible text is shown in a Label
+    FBitmap: TBitmap;
     FBorderStyle: TBorderStyle;
     FBreak: Boolean;
+    FColor: TColor;
+    FFixedBackground: Boolean;
     FFixedSize: Boolean;
-    FVisible: Boolean;
+    FHeight: Integer;
     FHorizontalOnly: Boolean;
     FImageIndex: TImageIndex;
-    FFixedBackground: Boolean;
     FMinHeight: Integer;
     FMinWidth: Integer;
-    FColor: TColor;
-    FParentColor: Boolean;
     FParentBitmap: Boolean;
-    FBitmap: TBitmap;
+    FParentColor: Boolean;
+    FText: TTranslateString;
+    FVisible: Boolean;
+    FWidth: Integer;
+    FLeft: Integer;
     FTop: Integer;
-    fCreatingTextLabel: Boolean;
-    function GetText: string;
-    function GetWidth: Integer;
+    FRealWidth: Integer;
     function IsBitmapStored: Boolean;
     function IsColorStored: Boolean;
-    function GetHeight: Integer;
     function GetVisible: Boolean;
-    procedure SetBorderStyle(aValue: TBorderStyle);
-    procedure SetBreak(aValue: Boolean);
-    procedure SetFixedSize(aValue: Boolean);
-    procedure SetMinHeight(aValue: Integer);
-    procedure SetMinWidth(aValue: Integer);
-    procedure SetVisible(aValue: Boolean);
-    procedure SetHorizontalOnly(aValue: Boolean);
-    procedure SetImageIndex(aValue: TImageIndex);
-    procedure SetFixedBackground(aValue: Boolean);
-    procedure SetColor(aValue: TColor);
-    procedure SetControlWidth;
-    procedure ResetControlProps;
-    procedure UpdControl(aLabelWidth: integer);
-    procedure SetControl(aValue: TControl);
-    procedure SetParentColor(aValue: Boolean);
-    procedure SetParentBitmap(aValue: Boolean);
-    procedure SetBitmap(aValue: TBitmap);
-    procedure SetText(const aValue: string);
-    procedure SetWidth(aValue: Integer);
+    procedure SetBitmap(AValue: TBitmap);
+    procedure SetBorderStyle(AValue: TBorderStyle);
+    procedure SetBreak(AValue: Boolean);
+    procedure SetColor(AValue: TColor);
+    procedure SetControl(AValue: TControl);
+    procedure SetFixedBackground(AValue: Boolean);
+    procedure SetHorizontalOnly(AValue: Boolean);
+    procedure SetImageIndex(AValue: TImageIndex);
+    procedure SetMinHeight(AValue: Integer);
+    procedure SetMinWidth(AValue: Integer);
+    procedure SetParentBitmap(AValue: Boolean);
+    procedure SetParentColor(AValue: Boolean);
+    procedure SetText(const AValue: TTranslateString);
+    procedure SetVisible(AValue: Boolean);
+    procedure SetWidth(AValue: Integer);
+  protected const
+    cDefMinHeight = 25;
+    cDefMinWidth = 100;
+    cDefWidth = 180;
+    cHorSpacing = 7;
+    cVertSpacing = 3;
   protected
+    function CalcPreferredHeight: Integer;
+    function CalcPrefferedWidth: Integer;
     function GetDisplayName: string; override;
-    procedure SetIndex(aValue: Integer); override;
   public
     constructor Create(aCollection: TCollection); override;
     destructor Destroy; override;
+    procedure InvalidateCoolBar(Sender: TObject);
     procedure Assign(aSource: TPersistent); override;
-    property Height: Integer read GetHeight;
+    property Height: Integer read FHeight;
   published
     property Bitmap: TBitmap read FBitmap write SetBitmap stored IsBitmapStored;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
     property Break: Boolean read FBreak write SetBreak default True;
-    property Color: TColor read FColor write SetColor stored IsColorStored default clBtnFace;
+    property Color: TColor read FColor write SetColor stored IsColorStored default clDefault;
     property Control: TControl read FControl write SetControl;
     property FixedBackground: Boolean read FFixedBackground write SetFixedBackground default True;
-    property FixedSize: Boolean read FFixedSize write SetFixedSize default False;
+    property FixedSize: Boolean read FFixedSize write FFixedSize default False;
     property HorizontalOnly: Boolean read FHorizontalOnly write SetHorizontalOnly default False;
-    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
-    property MinHeight: Integer read FMinHeight write SetMinHeight default 25;
-    property MinWidth: Integer read FMinWidth write SetMinWidth default 0;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
+    property MinHeight: Integer read FMinHeight write SetMinHeight default cDefMinHeight;
+    property MinWidth: Integer read FMinWidth write SetMinWidth default cDefMinWidth;
     property ParentColor: Boolean read FParentColor write SetParentColor default True;
     property ParentBitmap: Boolean read FParentBitmap write SetParentBitmap default True;
-    property Text: string read GetText write SetText;
+    property Text: TTranslateString read FText write SetText;
     property Visible: Boolean read GetVisible write SetVisible default True;
-    property Width: Integer read GetWidth write SetWidth;
+    property Width: Integer read FWidth write SetWidth default cDefWidth;
   end;
 
   { TCoolBands }
@@ -2297,21 +2305,18 @@ type
   TCoolBands = class(TCollection)
   private
     FCoolBar: TCustomCoolBar;
-    FVisibleCount: Longword;
     function GetItem(Index: Integer): TCoolBand;
     procedure SetItem(Index: Integer; aValue: TCoolBand);
-    procedure CalcPreferredSize(aAlsoUpdate: Boolean; var aPrefWidth, aPrefHeight: integer);
   protected
     function GetOwner: TPersistent; override;
     procedure Update(aItem: TCollectionItem); override;
     procedure Notify(aItem: TCollectionItem; aAction: TCollectionNotification); override;
   public
-    constructor Create(aCoolBar: TCustomCoolBar);
+    constructor Create(ACoolBar: TCustomCoolBar);
     function Add: TCoolBand;
-    function FindBand(aControl: TControl): TCoolBand;
+    function FindBand(AControl: TControl): TCoolBand;
     property Items[Index: Integer]: TCoolBand read GetItem write SetItem; default;
   end;
-
 
   // BandMaximize is not used now but is needed for Delphi compatibility.
   // It is not used in Delphi's TCoolBar either.
@@ -2327,44 +2332,73 @@ type
     FBitmap: TBitmap;
     FFixedSize: Boolean;
     FFixedOrder: Boolean;
+    FGrabStyle: TGrabStyle;
+    FGrabWidth: Integer;
     FImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
     FShowText: Boolean;
     FVertical: Boolean;
     FOnChange: TNotifyEvent;
-    function GrabLeft: integer;
     function GetAlign: TAlign;
-    procedure SetAlign(aValue: TAlign); reintroduce;
-    procedure SetBands(aValue: TCoolBands);
+    procedure SetBandBorderStyle(AValue: TBorderStyle);
+    procedure SetBands(AValue: TCoolBands);
     procedure SetBitmap(aValue: TBitmap);
-    procedure SetImages(aValue: TCustomImageList);
-    procedure SetShowText(aValue: Boolean);
+    procedure SetGrabStyle(AValue: TGrabStyle);
+    procedure SetGrabWidth(AValue: Integer);
+    procedure SetImages(AValue: TCustomImageList);
+    procedure SetShowText(AValue: Boolean);
     procedure SetVertical(aValue: Boolean);
-    procedure ImageListChange(Sender: TObject);
+  protected const
+    cBorderWidth = 2;
+    cDefGrabStyle = gsDouble;
+    cDefGrabWidth = 10;
   protected
-    procedure AlignControls(aControl: TControl; var aRect: TRect); override;
+    FVisiBands: array of TCoolBand;
+    FDefCursor: TCursor;
+    FDragBand: TDragBand;
+    FDraggedBandIndex: Integer;  // -1 .. space below the last row; other negative .. invalid area
+    FDragInitPos: Integer;       // Initial mouse X - position (for resizing Bands)
+    FPrevHeight: Integer;
+    FPrevWidth: Integer;
+    FTextHeight: Integer;
+    procedure BitmapOrImageListChange(Sender: TObject);
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
-                                     WithThemeSpace: Boolean); override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+                                     {%H-}WithThemeSpace: Boolean); override;
+    procedure CalculateAndAlign;
+    function CalculateRealIndex(AVisibleIndex: Integer): Integer;
+    procedure DoFontChanged;
+    procedure CreateWnd; override;
+    procedure DrawTiledBitmap(ARect: TRect; ABitmap: TBitmap);
+    procedure FontChanged(Sender: TObject); override;
+    function IsRowEnd(ALeft, AVisibleIndex: Integer): Boolean;
     procedure Loaded; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
     procedure Resize; override;
+    procedure SetAlign(aValue: TAlign); reintroduce;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure BeginUpdate; override;
     procedure EndUpdate; override;
+    procedure MouseToBandPos(X, Y: Integer; out ABand: Integer; out AGrabber: Boolean);
     procedure InsertControl(AControl: TControl; Index: integer); override;
     procedure RemoveControl(AControl: TControl); override;
   public
     property Align read GetAlign write SetAlign default alTop;
-    property BandBorderStyle: TBorderStyle read FBandBorderStyle write FBandBorderStyle default bsSingle;
+    property BandBorderStyle: TBorderStyle read FBandBorderStyle write SetBandBorderStyle default bsSingle;
     property BandMaximize: TCoolBandMaximize read FBandMaximize write FBandMaximize default bmClick;
     property Bands: TCoolBands read FBands write SetBands;
+    property Bitmap: TBitmap read FBitmap write SetBitmap;
     property FixedSize: Boolean read FFixedSize write FFixedSize default False;
     property FixedOrder: Boolean read FFixedOrder write FFixedOrder default False;
+    property GrabStyle: TGrabStyle read FGrabStyle write SetGrabStyle default cDefGrabStyle;
+    property GrabWidth: Integer read FGrabWidth write SetGrabWidth default cDefGrabWidth;
     property Images: TCustomImageList read FImages write SetImages;
-    property Bitmap: TBitmap read FBitmap write SetBitmap;
     property ShowText: Boolean read FShowText write SetShowText default True;
     property Vertical: Boolean read FVertical write SetVertical default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -2395,6 +2429,8 @@ type
     property FixedSize;
     property FixedOrder;
     property Font;
+    property GrabStyle;
+    property GrabWidth;
     property Images;
     property ParentColor;
     property ParentFont;
