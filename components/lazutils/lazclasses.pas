@@ -15,10 +15,11 @@ type
   private
     FFreeNotificationList: TMethodList;
   public
-    constructor Create;
     destructor Destroy; override;
-    procedure AddFreeeNotification(ANotification: TNotifyEvent);
-    procedure RemoveFreeeNotification(ANotification: TNotifyEvent);
+    procedure AddFreeeNotification(ANotification: TNotifyEvent); deprecated;
+    procedure RemoveFreeeNotification(ANotification: TNotifyEvent); deprecated;
+    procedure AddFreeNotification(ANotification: TNotifyEvent);
+    procedure RemoveFreeNotification(ANotification: TNotifyEvent);
   end;
 
   { TRefCountedObject }
@@ -66,26 +67,39 @@ uses LazLoggerBase;
 
 { TFreeNotifyingObject }
 
-constructor TFreeNotifyingObject.Create;
-begin
-  FFreeNotificationList := TMethodList.Create;
-  inherited Create;
-end;
-
 destructor TFreeNotifyingObject.Destroy;
 begin
-  FFreeNotificationList.CallNotifyEvents(Self);
+  if FFreeNotificationList <> nil then
+    FFreeNotificationList.CallNotifyEvents(Self);
   inherited Destroy;
   FreeAndNil(FFreeNotificationList);
 end;
 
 procedure TFreeNotifyingObject.AddFreeeNotification(ANotification: TNotifyEvent);
 begin
+  if FFreeNotificationList = nil then
+    FFreeNotificationList := TMethodList.Create;
   FFreeNotificationList.Add(TMethod(ANotification));
 end;
 
 procedure TFreeNotifyingObject.RemoveFreeeNotification(ANotification: TNotifyEvent);
 begin
+  if FFreeNotificationList = nil then
+    exit;
+  FFreeNotificationList.Remove(TMethod(ANotification));
+end;
+
+procedure TFreeNotifyingObject.AddFreeNotification(ANotification: TNotifyEvent);
+begin
+  if FFreeNotificationList = nil then
+    FFreeNotificationList := TMethodList.Create;
+  FFreeNotificationList.Add(TMethod(ANotification));
+end;
+
+procedure TFreeNotifyingObject.RemoveFreeNotification(ANotification: TNotifyEvent);
+begin
+  if FFreeNotificationList = nil then
+    exit;
   FFreeNotificationList.Remove(TMethod(ANotification));
 end;
 
