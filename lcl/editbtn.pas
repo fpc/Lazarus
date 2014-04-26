@@ -106,6 +106,7 @@ type
     function GetModified: Boolean;
     function GetNumbersOnly: Boolean;
     function GetNumGlyps: Integer;
+    function GetParentColor: Boolean;
     function GetPasswordChar: char;
     function GetReadOnly: Boolean;
     function GetSelLength: Integer;
@@ -159,6 +160,7 @@ type
     procedure SetModified(AValue: Boolean);
     procedure SetNumbersOnly(AValue: Boolean);
     procedure SetNumGlyphs(AValue: Integer);
+    procedure SetParentColor(AValue: Boolean);
     procedure SetPasswordChar(AValue: char);
     procedure SetPopupMenu(AValue: TPopupMenu);
     procedure SetReadOnly(AValue: Boolean);
@@ -206,6 +208,7 @@ type
 
 
     procedure CheckCursor;
+    procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
     function  EditCanModify: Boolean; virtual;
     procedure GetSel(out _SelStart: Integer; out _SelStop: Integer);
     procedure SetSel(const _SelStart: Integer; _SelStop: Integer);
@@ -253,7 +256,7 @@ type
     property CanUndo: Boolean read GetCanUndo;
     property CaretPos: TPoint read GetCaretPos write SetCaretPos;
     property CharCase: TEditCharCase read GetCharCase write SetCharCase default ecNormal;
-    property ParentColor default False;
+    property ParentColor: Boolean read GetParentColor write SetParentColor default False;
     property EchoMode: TEchoMode read GetEchoMode write SetEchoMode default emNormal;
     property HideSelection: Boolean read GetHideSelection write SetHideSelection default False;
     property MaxLength: Integer read GetMaxLength write SetMaxLength;
@@ -1218,6 +1221,11 @@ begin
   Result := FButton.NumGlyphs;
 end;
 
+function TCustomEditButton.GetParentColor: Boolean;
+begin
+  Result := FEdit.ParentColor;
+end;
+
 function TCustomEditButton.GetPasswordChar: char;
 begin
   Result := FEdit.PasswordChar;
@@ -1342,6 +1350,11 @@ end;
 procedure TCustomEditButton.SetNumGlyphs(AValue: Integer);
 begin
   FButton.NumGlyphs := AValue;
+end;
+
+procedure TCustomEditButton.SetParentColor(AValue: Boolean);
+begin
+  FEdit.ParentColor := AValue;
 end;
 
 procedure TCustomEditButton.SetPasswordChar(AValue: char);
@@ -1488,6 +1501,15 @@ begin
   FEdit.CheckCursor;
 end;
 
+procedure TCustomEditButton.CMParentColorChanged(var Message: TLMessage);
+begin
+  if inherited ParentColor then
+  begin
+    inherited SetColor(Parent.Color);
+    inherited ParentColor := True;
+  end;
+end;
+
 function TCustomEditButton.EditCanModify: Boolean;
 begin
   Result := FEdit.EditCanModify;
@@ -1513,6 +1535,7 @@ begin
   if GetColor <> FInitialColor then SetColor(FInitialColor);
   CheckButtonVisible;
 end;
+
 
 procedure TCustomEditButton.Reset;
 begin
@@ -1561,7 +1584,7 @@ begin
   FEdit := TEbEdit.Create(Self);
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csNoFocus];
-  ParentColor := False;
+  FEdit.ParentColor := False;
   FInitialColor := {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
   BorderStyle := bsNone;
   FButtonAlign := BaRight;
@@ -1619,6 +1642,7 @@ begin
   end;
   AutoSize := True;
   Color := {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
+  inherited ParentColor := True; //don't want to see the container if Parent's color changes
 end;
 
 destructor TCustomEditButton.Destroy;
