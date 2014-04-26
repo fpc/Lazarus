@@ -279,19 +279,19 @@ function DbgS(const i: int64): string; overload;
 function DbgS(const r: TRect): string; overload;
 function DbgS(const p: TPoint): string; overload;
 function DbgS(const p: pointer): string; overload;
-function DbgS(const e: extended; MaxDecimals: integer = 999): string; overload;
-function DbgS(const b: boolean): string; overload;
+function DbgS(const e: extended; MaxDecimals: integer = 999): string; overload; inline;
+function DbgS(const b: boolean): string; overload; inline;
 function DbgS(const ms: TCustomMemoryStream; Count: PtrInt = -1): string; overload;
-function DbgSName(const p: TObject): string; overload;
-function DbgSName(const p: TClass): string; overload;
-function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; overload;
+function DbgSName(const p: TObject): string; overload; inline;
+function DbgSName(const p: TClass): string; overload; inline;
+function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; inline;
 
-function DbgS(const i1,i2,i3,i4: integer): string; overload;
+function DbgS(const i1,i2,i3,i4: integer): string; overload; inline;
 function DbgStr(const StringWithSpecialChars: string): string; overload;
 function DbgStr(const StringWithSpecialChars: string; StartPos, Len: PtrInt): string; overload;
 function DbgText(const StringWithSpecialChars: string;
-                               KeepLines: boolean = true // true = add LineEnding for each line break
-                               ): string; overload;
+                 KeepLines: boolean = true // true = add LineEnding for each line break
+                 ): string; overload;
 
 function MemSizeString(const s: string): PtrUInt; inline;
 function MemSizeFPList(const List: TFPList): PtrUInt; inline;
@@ -2119,17 +2119,17 @@ end;
 
 function DbgS(const e: extended; MaxDecimals: integer = 999): string;
 begin
-  Result:=copy(FloatToStr(e),1,MaxDecimals);
+  Result:=LazLogger.DbgS(e,MaxDecimals);
 end;
 
 function DbgS(const b: boolean): string;
 begin
-  if b then Result:='True' else Result:='False';
+  Result:=LazLogger.DbgS(b);
 end;
 
 function DbgS(const i1, i2, i3, i4: integer): string;
 begin
-  Result:=dbgs(i1)+','+dbgs(i2)+','+dbgs(i3)+','+dbgs(i4);
+  Result:=LazLogger.DbgS(i1,i2,i3,i4);
 end;
 
 function DbgS(const ms: TCustomMemoryStream; Count: PtrInt): string;
@@ -2151,56 +2151,17 @@ end;
 
 function DbgSName(const p: TObject): string;
 begin
-  if p=nil then
-    Result:='nil'
-  else if p is TComponent then
-    Result:=TComponent(p).Name+':'+p.ClassName
-  else
-    Result:=p.ClassName;
+  Result:=LazLogger.DbgSName(p);
 end;
 
 function DbgSName(const p: TClass): string;
 begin
-  if p=nil then
-    Result:='nil'
-  else
-    Result:=p.ClassName;
+  Result:=LazLogger.DbgSName(p);
 end;
 
 function dbgMemRange(P: PByte; Count: integer; Width: integer): string;
-const
-  HexChars: array[0..15] of char = '0123456789ABCDEF';
-  LineEnd: shortstring = LineEnding;
-var
-  i: Integer;
-  NewLen: Integer;
-  Dest: PChar;
-  Col: Integer;
-  j: Integer;
 begin
-  Result:='';
-  if (p=nil) or (Count<=0) then exit;
-  NewLen:=Count*2;
-  if Width>0 then begin
-    inc(NewLen,(Count div Width)*length(LineEnd));
-  end;
-  SetLength(Result,NewLen);
-  Dest:=PChar(Result);
-  Col:=1;
-  for i:=0 to Count-1 do begin
-    Dest^:=HexChars[PByte(P)[i] shr 4];
-    inc(Dest);
-    Dest^:=HexChars[PByte(P)[i] and $f];
-    inc(Dest);
-    inc(Col);
-    if (Width>0) and (Col>Width) then begin
-      Col:=1;
-      for j:=1 to length(LineEnd) do begin
-        Dest^:=LineEnd[j];
-        inc(Dest);
-      end;
-    end;
-  end;
+  Result:=LazLogger.dbgMemRange(P,Count,Width);
 end;
 
 function DbgStr(const StringWithSpecialChars: string): string;
