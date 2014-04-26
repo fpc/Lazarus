@@ -273,7 +273,7 @@ begin
   end;
   PersistentName:=APersistent.ClassName;
   if APersistent is TComponent then begin
-    PersistentName:=TComponent(APersistent).Name+':'+PersistentName;
+    PersistentName:=TComponent(APersistent).Name+': '+PersistentName;
   end else begin
     ShowAbortMessage(lisCanOnlyChangeTheClassOfTComponents);
     exit;
@@ -340,8 +340,7 @@ begin
   FillAncestorListBox(ThePersistent.ClassType,OldAncestorsListBox);
   if ThePersistent<>nil then begin
     if ThePersistent is TComponent then
-      OldClassLabel.Caption:=
-        TComponent(ThePersistent).Name+':'+ThePersistent.ClassName
+      OldClassLabel.Caption:=TComponent(ThePersistent).Name+': '+ThePersistent.ClassName
     else
       OldClassLabel.Caption:=ThePersistent.ClassName;
     Caption:=Format(lisCCDChangeClassOf, [OldClassLabel.Caption]);
