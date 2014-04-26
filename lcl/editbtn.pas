@@ -111,6 +111,7 @@ type
     function GetSelLength: Integer;
     function GetSelStart: Integer;
     function GetSelText: String;
+    function GetTabStop: Boolean;
     function GetText: TCaption;
     function IsCustomGlyph : Boolean;
 
@@ -164,6 +165,7 @@ type
     procedure SetSelLength(AValue: Integer);
     procedure SetSelStart(AValue: Integer);
     procedure SetSelText(AValue: String);
+    procedure SetTabStop(AValue: Boolean);
     procedure SetText(AValue: TCaption);
   protected
     class function GetControlClassDefaultSize: TSize; override;
@@ -264,6 +266,7 @@ type
     property SelLength: Integer read GetSelLength write SetSelLength;
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;
+    property TabStop: Boolean read GetTabStop write SetTabStop default True;
     property Text: TCaption read GetText write SetText;
 
     property OnChange: TNotifyEvent read FOnEditChange write FOnEditChange;
@@ -1022,6 +1025,11 @@ begin
   Result := FEdit.SelText;
 end;
 
+function TCustomEditButton.GetTabStop: Boolean;
+begin
+  Result := inherited TabStop;
+end;
+
 function TCustomEditButton.GetText: TCaption;
 begin
   Result := FEdit.Text;
@@ -1540,6 +1548,12 @@ begin
   FEdit.SelText := AValue;
 end;
 
+procedure TCustomEditButton.SetTabStop(AValue: Boolean);
+begin
+  inherited TabStop := AValue;
+  FEdit.TabStop := AValue;
+end;
+
 constructor TCustomEditButton.Create(AOwner: TComponent);
 var
   B: TBitmap;
@@ -1554,6 +1568,7 @@ begin
   FButtonOnlyWhenFocused := False;
   FDirectInput := True;
   FIsReadOnly := False;
+  TabStop := True;
 
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
