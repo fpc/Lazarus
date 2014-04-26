@@ -94,16 +94,12 @@ var
   ChangeClassDlg: TChangeClassDlg;
 begin
   Result:=mrCancel;
-  //MessageDlg('Not implemented yet','Not implemented yet',mtInformation,[mbOk],0);
-  //exit;
-  
   ChangeClassDlg:=TChangeClassDlg.Create(nil);
   try
     ChangeClassDlg.ThePersistent:=APersistent;
     ChangeClassDlg.FillNewClassComboBox;
     if ChangeClassDlg.ShowModal=mrOk then begin
-      Result:=ChangePersistentClass(ADesigner,APersistent,
-                                    ChangeClassDlg.NewClass);
+      Result:=ChangePersistentClass(ADesigner,APersistent,ChangeClassDlg.NewClass);
     end;
   finally
     ChangeClassDlg.Free;
@@ -138,8 +134,7 @@ var
     and (TControl(APersistent).Parent<>nil) then begin
       if OldParents=nil then
         OldParents:=TStringList.Create;
-      OldParents.Values[TControl(APersistent).Name]:=
-                                              TControl(APersistent).Parent.Name;
+      OldParents.Values[TControl(APersistent).Name]:=TControl(APersistent).Parent.Name;
     end;
 
     // stream selection
@@ -412,8 +407,7 @@ begin
   AddClass(AClass);
 end;
 
-function TChangeClassDlg.CompareClasses(Tree: TAvgLvlTree; Class1,
-  Class2: TClass): integer;
+function TChangeClassDlg.CompareClasses(Tree: TAvgLvlTree; Class1,Class2: TClass): integer;
 // sort:
 //   transforming ThePersistent to descending classes is easy
 //   transforming ThePersistent to ascending classes is medium
@@ -485,19 +479,21 @@ begin
     IDEComponentPalette.IterateRegisteredClasses(@AddComponentClass);
   // add list of classnames
   List:=TStringList.Create;
-  ANode:=FClasses.FindLowest;
-  while ANode<>nil do begin
-    List.Add(TClass(ANode.Data).ClassName);
-    ANode:=FClasses.FindSuccessor(ANode);
+  try
+    ANode:=FClasses.FindLowest;
+    while ANode<>nil do begin
+      List.Add(TClass(ANode.Data).ClassName);
+      ANode:=FClasses.FindSuccessor(ANode);
+    end;
+    // assign to combobox
+    NewClassComboBox.Items.Assign(List);
+    if (NewClassComboBox.Items.IndexOf(NewClassComboBox.Text)<0)
+    and (NewClassComboBox.Items.Count>0) then
+      NewClassComboBox.Text:=NewClassComboBox.Items[0];
+    UpdateNewInfo;
+  finally
+    List.Free;
   end;
-  // assign to combobox
-  NewClassComboBox.Items.Assign(List);
-  if (NewClassComboBox.Items.IndexOf(NewClassComboBox.Text)<0)
-  and (NewClassComboBox.Items.Count>0) then
-    NewClassComboBox.Text:=NewClassComboBox.Items[0];
-  UpdateNewInfo;
-  // clean up
-  List.Free;
 end;
 
 end.
