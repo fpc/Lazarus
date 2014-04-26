@@ -384,7 +384,7 @@ var
   procedure AddAncestor(CurClass: TClass);
   begin
     if CurClass=nil then exit;
-    List.Insert(0,CurClass.ClassName);
+    List.Add(CurClass.ClassName);
     AddAncestor(CurClass.ClassParent);
   end;
   
