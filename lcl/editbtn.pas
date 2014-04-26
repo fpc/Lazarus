@@ -245,7 +245,6 @@ type
     procedure CutToClipboard; virtual;
     procedure PasteFromClipboard; virtual;
     procedure SelectAll;
-    procedure SetFocus; override;
     procedure Undo; virtual;
     procedure ValidateEdit; virtual;
 
@@ -1561,6 +1560,7 @@ begin
   FButton := TSpeedButton.Create(Self);
   FEdit := TEbEdit.Create(Self);
   inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csNoFocus];
   ParentColor := False;
   FInitialColor := {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
   BorderStyle := bsNone;
@@ -1661,11 +1661,6 @@ begin
   FEdit.SelectAll;
 end;
 
-procedure TCustomEditButton.SetFocus;
-begin
-  inherited SetFocus;
-  FEdit.SetFocus;
-end;
 
 procedure TCustomEditButton.Undo;
 begin
