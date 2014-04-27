@@ -1995,8 +1995,7 @@ begin
 
     Gz := MouseToGridZone(X,Y);
     ButtonColumn := IsMouseOverCellButton(X, Y);
-    P.X:=X;
-    P.Y:=Y;
+    P := MouseToCell(Point(X, Y));
 
     if (gz<>HotGridZone) or (P.x<>HotCell.x) or (P.y<>HotCell.y) then begin
       ResetHotCell;
