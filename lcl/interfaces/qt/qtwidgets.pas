@@ -8427,7 +8427,13 @@ begin
     if Result then
       QEvent_ignore(Event)
     else
-      Result:=inherited EventFilter(Sender, Event);
+    begin
+      // issue #26040
+      if (QEvent_type(Event) = QEventResize) then
+        LCLObject.DoAdjustClientRectChange
+      else
+        Result:=inherited EventFilter(Sender, Event);
+    end;
   end else
     Result:=inherited EventFilter(Sender, Event);
 end;
