@@ -541,7 +541,6 @@ var
   j: integer;
   buttonx: integer;
   CurButton: TSpeedButton;
-  Rows: Integer;
   MaxBtnPerRow: Integer;
   ButtonTree: TAVLTree;
   Node: TAVLTreeNode;
@@ -566,20 +565,18 @@ begin
 
     ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
 
-    MaxBtnPerRow:=((Page.ClientWidth - ButtonX - OVERVIEW_PANEL_WIDTH) div ComponentPaletteBtnWidth);
+    MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
+    // If we need to wrap, make sure we have space for the scrollbar
+    if MaxBtnPerRow < ButtonTree.Count then
+      MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithBar - ButtonX) div ComponentPaletteBtnWidth);
     if MaxBtnPerRow<1 then MaxBtnPerRow:=1;
-    Rows:=((ButtonTree.Count-1) div MaxBtnPerRow)+1;
-    //DebugLn(['TComponentPalette.ReAlignButtons ',DbgSName(Page),' PageIndex=',Page.PageIndex,' ClientRect=',dbgs(Page.ClientRect)]);
-    // automatically set optimal row count and re-position controls to use height optimally
-
-    if Rows <= 0 then Rows:= 1; // avoid division by zero
 
     j:=0;
     Node:=ButtonTree.FindLowest;
     while Node<>nil do begin
       CurButton:=TSpeedbutton(Node.Data);
-      CurButton.SetBounds(ButtonX + (j div Rows) * ComponentPaletteBtnWidth,
-                          (j mod Rows) * ComponentPaletteBtnHeight,
+      CurButton.SetBounds(ButtonX + (j mod MaxBtnPerRow) * ComponentPaletteBtnWidth,
+                          (j div MaxBtnPerRow) * ComponentPaletteBtnHeight,
                           CurButton.Width, CurButton.Height);
       //DebugLn(['TComponentPalette.ReAlignButtons ',CurButton.Name,' ',dbgs(CurButton.BoundsRect)]);
       inc(j);
