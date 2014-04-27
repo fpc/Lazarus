@@ -4374,7 +4374,7 @@ end;
 destructor TFpDwarfSymbolValueProc.Destroy;
 begin
   FreeAndNil(FProcMembers);
-  FLastMember.ReleaseReference(@FLastMember, 'TFpDwarfSymbolValueProc.FLastMember');
+  FLastMember.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLastMember, 'TFpDwarfSymbolValueProc.FLastMember'){$ENDIF};
   FreeAndNil(FStateMachine);
   if FSelfParameter <> nil then begin
     //TDbgDwarfIdentifier(FSelfParameter.DbgSymbol).ParentTypeInfo := nil;
@@ -4503,7 +4503,7 @@ end;
 function TFpDwarfSymbolValueProc.GetMember(AIndex: Int64): TFpDbgSymbol;
 begin
   CreateMembers;
-  FLastMember.ReleaseReference(@FLastMember, 'TFpDwarfSymbolValueProc.FLastMember');
+  FLastMember.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLastMember, 'TFpDwarfSymbolValueProc.FLastMember'){$ENDIF};
   FLastMember := TFpDwarfSymbol.CreateSubClass('', TDwarfInformationEntry(FProcMembers[AIndex]));
   {$IFDEF WITH_REFCOUNT_DEBUG}FLastMember.DbgRenameReference(@FLastMember, 'TFpDwarfSymbolValueProc.FLastMember');{$ENDIF}
   Result := FLastMember;
@@ -4517,7 +4517,7 @@ var
 begin
   CreateMembers;
   s2 := LowerCase(AIndex);
-  FLastMember.ReleaseReference(@FLastMember, 'TFpDwarfSymbolValueProc.FLastMember');
+  FLastMember.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLastMember, 'TFpDwarfSymbolValueProc.FLastMember'){$ENDIF};
   FLastMember := nil;;
   for i := 0 to FProcMembers.Count - 1 do begin
     Info := TDwarfInformationEntry(FProcMembers[i]);
