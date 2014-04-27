@@ -3217,8 +3217,24 @@ begin
   CurReport:=nil;
 
   Rep:=TfrReport.Create(SaveR.Owner);
+
+  Rep.OnBeginBand:=SaveR.OnBeginBand;
+  Rep.OnBeginColumn:=SaveR.OnBeginColumn;
+  Rep.OnBeginDoc:=SaveR.OnBeginDoc;
+  Rep.OnBeginPage:=SaveR.OnBeginPage;
+  Rep.OnEndBand:=SaveR.OnEndBand;
+  Rep.OnEndDoc:=SaveR.OnEndDoc;
+  Rep.OnEndPage:=SaveR.OnEndPage;
+  Rep.OnEnterRect:=SaveR.OnEnterRect;
+  Rep.OnExportFilterSetup:=SaveR.OnExportFilterSetup;
+  Rep.OnGetValue:=SaveR.OnGetValue;
+  Rep.OnManualBuild:=SaveR.OnManualBuild;
   Rep.OnMouseOverObject:=SaveR.OnMouseOverObject;
   Rep.OnObjectClick:=SaveR.OnObjectClick;
+  Rep.OnPrintColumn:=SaveR.OnPrintColumn;
+  Rep.OnProgress:=SaveR.OnProgress;
+  Rep.OnUserFunction:=SaveR.OnUserFunction;
+
   try
     Rep.LoadFromXMLStream(TestRepStream);
     Rep.ShowReport;
