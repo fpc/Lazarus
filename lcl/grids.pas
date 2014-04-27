@@ -4206,7 +4206,8 @@ begin
   if FColumns.Enabled then begin
     FColumns.TitleFontChanged;
     ColumnsChanged(nil);
-  end;
+  end else
+    VisualChange;
 end;
 
 procedure TCustomGrid.ReadColumns(Reader: TReader);
