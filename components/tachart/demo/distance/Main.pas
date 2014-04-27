@@ -214,9 +214,12 @@ begin
     1: AText := Format('Slope: %f', [chFitFitSeries1.Param[1]]);
     2:
       with chFitFitSeries1 do
-        AText := Format('Peak at x=%f y=%f', [
-          -Param[1] / (2 * Param[2]),
-          Param[0] - Sqr(Param[1])/(4 * Param[2])
+        if Param[2] = 0 then
+          AText := ''
+        else
+          AText := Format('Peak at x=%f y=%f', [
+            -Param[1] / (2 * Param[2]),
+            Param[0] - Sqr(Param[1])/(4 * Param[2])
         ]);
   end;
   chFitFitSeries1.Active := true;

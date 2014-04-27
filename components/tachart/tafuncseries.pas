@@ -135,6 +135,7 @@ type
     FPen: TChartPen;
     FStep: TFuncSeriesStep;
 
+    procedure InternalPrepareGraphPoints;
     procedure SetDegree(AValue: TSplineDegree);
     procedure SetPen(AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
@@ -146,6 +147,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    function Calculate(AX: Double): Double;
     procedure Draw(ADrawer: IChartDrawer); override;
   published
     property Active default true;
@@ -449,6 +451,7 @@ end;
 
 procedure TFitSeriesRange.StyleChanged(ASender: TObject);
 begin
+  FSeries.SourceChanged(nil); // reset FState to fpsUnknown
   FSeries.ExecFit;
   inherited;
 end;
@@ -752,6 +755,99 @@ begin
   inherited Assign(ASource);
 end;
 
+function TBSplineSeries.Calculate(AX: Double): Double;
+var
+  p: array of TDoublePoint;
+  startIndex: Integer;
+  splineStart: Integer = 0;
+  splineEnd: Integer = -2;
+  level: Integer = 0;
+  pStart, pEnd: TDoublePoint;
+
+  function CalcSpline(APos: Double): TDoublePoint;
+  var
+    i, d: Integer;
+    w, denom: Double;
+  begin
+    // Duplicate end points Degree times to fix spline to them.
+    for i := 0 to Degree do
+      p[i] := FGraphPoints[
+        EnsureRange(startIndex - Degree + i, splineStart, splineEnd)];
+    // De Boor's algorithm, source points used as control points.
+    // Parametric coordinate is equal to point index.
+    for d := 1 to Degree do begin
+      denom := 1 / (Degree + 1 - d);
+      for i := Degree downto d do begin
+        w := (APos + Degree - i) * denom;
+        p[i].X := WeightedAverage(p[i - 1].X, p[i].X, w);
+        p[i].Y := WeightedAverage(p[i - 1].Y, p[i].Y, w);
+      end;
+    end;
+    Result := p[Degree];
+  end;
+
+  function Interpolate(ATest: Double): TDoublePoint;
+  // calculates the B-Spline at n pivot points of the parametric coordinate t=0..1
+  // and seeks the t for the requested x value (ATest) by means of
+  // interpolating a cubic spline
+  var
+    i,n: Integer;
+    pp: TDoublePoint;
+    xval, yval: array of ArbFloat;
+    coeff: array of ArbFloat;
+    ok: Integer;
+    t: ArbFloat;
+  begin
+    n := 10;
+    SetLength(xval, n+1);
+    SetLength(yval, n+1);
+    SetLength(coeff, n+1);
+    // calculate pivots
+    for i:=0 to n do begin
+      pp := CalcSpline(i/n);
+      xval[i] := pp.X;
+      yval[i] := i/n;
+    end;
+    // calc interpolation spline coefficients
+    ok := 0;
+    ipfisn(N, xval[0], yval[0], coeff[0], ok);
+    // calc interpolation spline value at ATest
+    t := ipfspn(High(coeff), xval[0], yval[0], coeff[0], ATest, ok);
+    // calc B-Spline value at t
+    Result := CalcSpline(t);
+  end;
+
+begin
+  Result := NaN;
+  if IsEmpty then
+    exit;
+
+  if Length(FGraphPoints) = 0 then
+    InternalPrepareGraphPoints;
+
+  SetLength(p, Degree + 1);
+  while NextNumberSeq(FGraphPoints, splineStart, splineEnd) do begin
+    startIndex := splineStart;
+    pStart := CalcSpline(0.0);
+    while startIndex <= splineEnd + Degree - 1 do begin
+      pEnd := CalcSpline(1.0);
+      // find interval
+      if (AX = pStart.X) and (pStart.X = pEnd.X) then
+        Result := pStart.Y
+      else
+      if InRange(AX, pStart.X, pEnd.X) and (pStart.X <> pEnd.X) then begin
+        // calculate B-spline y value by interpolation
+        if SameValue(AX, 15.88, 0.01) then
+          Result := 1;
+        Result := Interpolate(AX).Y;
+        exit;
+      end;
+      pStart := pEnd;
+      inc(startIndex);
+    end;
+  end;
+end;
+
 constructor TBSplineSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -822,19 +918,10 @@ var
     end;
   end;
 
-var
-  ext: TDoubleRect;
 begin
   if IsEmpty then exit;
 
-  with Extent do begin
-    ext.a := AxisToGraph(a);
-    ext.b := AxisToGraph(b);
-  end;
-  NormalizeRect(ext);
-  ExpandRange(ext.a.X, ext.b.X, 1.0);
-  ExpandRange(ext.a.Y, ext.b.Y, 1.0);
-  PrepareGraphPoints(ext, true);
+  InternalPrepareGraphPoints;
 
   SetLength(p, Degree + 1);
   ADrawer.Pen := Pen;
@@ -850,6 +937,20 @@ end;
 procedure TBSplineSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
   AItems.Add(TLegendItemLine.Create(Pen, LegendTextSingle));
+end;
+
+procedure TBSplineSeries.InternalPrepareGraphPoints;
+var
+  ext: TDoubleRect;
+begin
+  with Extent do begin
+    ext.a := AxisToGraph(a);
+    ext.b := AxisToGraph(b);
+  end;
+  NormalizeRect(ext);
+  ExpandRange(ext.a.X, ext.b.X, 1.0);
+  ExpandRange(ext.a.Y, ext.b.Y, 1.0);
+  PrepareGraphPoints(ext, true);
 end;
 
 procedure TBSplineSeries.SetDegree(AValue: TSplineDegree);

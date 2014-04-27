@@ -48,7 +48,7 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
-    function GetCanvas: TCanvas;
+    function GetCanvas: TCanvas; virtual;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
