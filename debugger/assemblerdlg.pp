@@ -315,6 +315,7 @@ begin
     inherited;
     Exit;
   end;
+  pbAsm.Invalidate;
   case Key of
     VK_UP:   begin
       ToolButtonPower.Down := True;
@@ -365,7 +366,6 @@ begin
     else
       inherited;
   end;
-  pbAsm.Invalidate;
 end;
 
 procedure TAssemblerDlg.CopyToClipboardClick(Sender: TObject);
