@@ -2840,9 +2840,10 @@ begin
       // ToDo: fpintres
       FHiddenUsedUnits:=FHiddenUsedUnits+',fpextres';
     end;
-    if (cmsObjpas in CompilerModeSwitches)
-    and (PascalCompiler=pcFPC) then
+    if (cmsObjpas in CompilerModeSwitches) then
       FHiddenUsedUnits:=FHiddenUsedUnits+',ObjPas';
+    if (cmsDefault_unicodestring in CompilerModeSwitches) then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',UUChar';
     if CompilerMode=cmISO then
       FHiddenUsedUnits:=FHiddenUsedUnits+',iso7185';
     if cmsObjectiveC1 in CompilerModeSwitches then
