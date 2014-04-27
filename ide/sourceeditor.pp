@@ -757,6 +757,7 @@ type
     procedure HintTimer(Sender: TObject);
     procedure HideHintTimer(Sender: TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
+    procedure OnApplicationDeactivate(Sender: TObject);
     procedure ShowSynEditHint(const MousePos: TPoint);
 
     procedure NextEditor;
@@ -5733,6 +5734,8 @@ begin
   CreateNotebook;
 
   Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
+  Application.AddOnDeactivateHandler(@OnApplicationDeactivate);
+  Application.AddOnMinimizeHandler(@OnApplicationDeactivate);
 
   FStopBtnIdx := IDEImages.LoadImage(16, 'menu_stop');
 end;
@@ -5754,6 +5757,8 @@ begin
   FreeAndNil(FSrcEditsSortedForFilenames);
 
   Application.RemoveOnUserInputHandler(@OnApplicationUserInput);
+  Application.RemoveOnDeactivateHandler(@OnApplicationDeactivate);
+  Application.RemoveOnMinimizeHandler(@OnApplicationDeactivate);
   FreeThenNil(FMouseHintTimer);
   FreeThenNil(FMouseHideHintTimer);
   FreeThenNil(FHintWindow);
@@ -8047,6 +8052,8 @@ Begin
     SrcEdit:=GetActiveSE;
     if (FHintWindow <> nil) and FHintWindow.Visible then
       HideHint;
+    if (CodeContextFrm<>nil) then
+      CodeContextFrm.Hide;
 
     DebugLn(SRCED_PAGES, ['TSourceNotebook.NotebookPageChanged TempEdit=', DbgSName(SrcEdit)]);
     if SrcEdit <> nil then
@@ -8450,6 +8457,12 @@ begin
   // don't hide hint if Sender is a hint window or child control
   if not Assigned(Sender) or not IsHintControl(FHintWindow) then
     HideHint;
+end;
+
+procedure TSourceNotebook.OnApplicationDeactivate(Sender: TObject);
+begin
+  if (CodeContextFrm<>nil) then
+    CodeContextFrm.Hide;
 end;
 
 procedure TSourceNotebook.EditorKeyDown(Sender: TObject; var Key: Word;
