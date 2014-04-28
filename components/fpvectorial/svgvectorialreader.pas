@@ -79,7 +79,7 @@ type
     function DebugOutTokensAsString: string;
   end;
 
-  TSVGCoordinateKind = (sckUnknown, sckX, sckY);
+  TSVGCoordinateKind = (sckUnknown, sckX, sckY, sckYDelta);
 
   TSVGUnit = (suPX, suMM);
 
@@ -126,6 +126,7 @@ type
     procedure ReadPointsFromString(AStr: string; AData: TvVectorialPage; ADoc: TvVectorialDocument; AClosePath: Boolean);
     function ReadPolyFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadRectFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+    function ReadSymbolFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadTextFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadUseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     //
@@ -1279,8 +1280,9 @@ begin
       end;
       // Sometime entities are also put in the defs
       'circle', 'ellipse', 'g', 'line', 'path',
-      'polygon', 'polyline', 'rect', 'text', 'use':
+      'polygon', 'polyline', 'rect', 'text', 'use', 'symbol':
       begin
+        lLayerName := '';
         lBlock := TvBlock.Create(nil);
 
         // pre-load attribute reader, to get the block name
@@ -1292,6 +1294,22 @@ begin
             lLayerName := lCurNode.Attributes.Item[i].NodeValue;
             lBlock.Name := lLayerName;
           end;
+        end;
+
+        // Skip g without id, create instead items for his sub-items
+        if (lEntityName = 'g') and (lLayerName = '') then
+        begin
+          lCurSubNode := lCurNode.FirstChild;
+          while Assigned(lCurSubNode) do
+          begin
+            lCurEntity := ReadEntityFromNode(lCurSubNode, AData, ADoc);
+            if lCurEntity <> nil then
+              AData.AddEntity(lCurEntity);
+            lCurSubNode := lCurSubNode.NextSibling;
+          end;
+          lBlock.Free;
+          lCurNode := lCurNode.NextSibling;
+          Continue;
         end;
 
         lPreviousLayer := AData.GetCurrentLayer();
@@ -1327,6 +1345,7 @@ begin
     'path': Result := ReadPathFromNode(ANode, AData, ADoc);
     'polygon', 'polyline': Result := ReadPolyFromNode(ANode, AData, ADoc);
     'rect': Result := ReadRectFromNode(ANode, AData, ADoc);
+    'symbol': Result := ReadSymbolFromNode(ANode, AData, ADoc);
     'text': Result := ReadTextFromNode(ANode, AData, ADoc);
     'use': Result := ReadUseFromNode(ANode, AData, ADoc);
   end;
@@ -2376,6 +2395,46 @@ begin
   Result := lRect;
 end;
 
+function TvSVGVectorialReader.ReadSymbolFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+var
+  lBlock: TvBlock;
+  lLayerName: string;
+  lPreviousLayer: TvEntityWithSubEntities;
+  lCurEntity: TvEntity;
+  i: Integer;
+  lAttrName: DOMString;
+  lCurNode: TDOMNode;
+begin
+  lBlock := TvBlock.Create(nil);
+
+  // pre-load attribute reader, to get the block name
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lAttrName := ANode.Attributes.Item[i].NodeName;
+    if lAttrName = 'id' then
+    begin
+      lLayerName := ANode.Attributes.Item[i].NodeValue;
+      lBlock.Name := lLayerName;
+    end;
+  end;
+
+  lPreviousLayer := AData.GetCurrentLayer();
+  AData.AddEntity(lBlock);
+  AData.SetCurrentLayer(lBlock);
+  //
+  lCurNode := ANode.FirstChild;
+  while Assigned(lCurNode) do
+  begin
+    lCurEntity := ReadEntityFromNode(lCurNode, AData, ADoc);
+    if lCurEntity <> nil then
+      AData.AddEntity(lCurEntity);
+    lCurNode := lCurNode.NextSibling;
+  end;
+  //
+  AData.SetCurrentLayer(lPreviousLayer);
+end;
+
 {
  <text x="0" y="15" fill="red" transform="rotate(30 20,40)">I love SVG</text>
 
@@ -2558,21 +2617,27 @@ var
   lXLink: DOMString = '';
   lInsertedEntity: TvEntity;
   i: Integer;
+  lx, ly: Double;
   lNodeName, lNodeValue: DOMString;
 begin
   Result := nil;
+  lx := 0.0;
+  ly := 0.0;
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if lNodeName = 'xlink:href' then
     begin
-      lXLink := ANode.Attributes.Item[i].NodeValue;
+      lXLink := lNodeValue;
       lXLink := Copy(lXLink, 2, Length(lXLink));
-    end;
-{    else if lNodeName = 'y' then
-      ly := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)}
+    end
+    else if lNodeName = 'x' then
+      lx := StringWithUnitToFloat(lNodeValue, sckX)
+    else if lNodeName = 'y' then
+      ly := StringWithUnitToFloat(lNodeValue, sckYDelta);
   end;
 
   if lXLink = '' then Exit; // nothing to insert, so give up
@@ -2582,6 +2647,8 @@ begin
 
   lInsert := TvInsert.Create(nil);
   lInsert.InsertEntity := lInsertedEntity;
+  lInsert.x := lx;
+  lInsert.y := ly;
 
   // Apply the styles
   // read the attributes
@@ -2639,6 +2706,8 @@ begin
       Result := (Result - ViewBox_Left) * Page_Width / ViewBox_Width;
     if ViewBoxAdjustment and (ACoordKind = sckY) then
       Result := Page_Height - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
+    if ViewBoxAdjustment and (ACoordKind = sckYDelta) then
+      Result := - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
   end
   else if LastChar = '%' then
   begin
@@ -2661,6 +2730,8 @@ begin
       Result := (Result - ViewBox_Left) * Page_Width / ViewBox_Width;
     if ViewBoxAdjustment and (ACoordKind = sckY) then
       Result := Page_Height - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
+    if ViewBoxAdjustment and (ACoordKind = sckYDelta) then
+      Result := - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
   end;
 end;
 
