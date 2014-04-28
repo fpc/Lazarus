@@ -874,6 +874,18 @@ begin
     Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPathRelative,[AValue, FQRootPath]);
   end;
 
+  //writeln('RelPath = ',RelPath);
+  if (RelPath = '') then
+  begin
+    //writeln('Root selected');
+    Node := Items.GetFirstVisibleNode;
+    if Assigned(Node) then
+    begin
+      Node.Expanded := True;
+      Node.Selected := True;
+    end;
+    Exit;
+  end;
 
   sl := TStringList.Create;
   sl.Delimiter := PathDelim;
@@ -881,6 +893,8 @@ begin
   sl.DelimitedText := RelPath;
   if (sl.Count > 0) and (sl[0] = '') then  // This happens when root dir is empty
     sl[0] := PathDelim;                    //  and PathDelim was the first char
+  if (sl.Count > 0) and (sl[sl.Count-1] = '') then sl.Delete(sl.Count-1); //remove last empty string
+  if (sl.Count = 0) then Exit;
 
   //for i := 0 to sl.Count - 1 do writeln('sl[',i:2,']="',sl[i],'"');
 
@@ -888,15 +902,22 @@ begin
   BeginUpdate;
   try
     Node := Items.GetFirstVisibleNode;
+    //if assigned(node) then writeln('GetFirstVisibleNode = ',GetAdjustedNodeText(Node));
     //Root node doesn't have Siblings in this case, we need one level deeper
-    if (GetRootPath <> '') and Assigned(Node) then Node := Node.GetFirstVisibleChild;
+    if (GetRootPath <> '') and Assigned(Node) then
+    begin
+      //writeln('Root node doesn''t have Siblings');
+      Node := Node.GetFirstVisibleChild;
+      //writeln('Node = ',GetAdjustedNodeText(Node));
+      if RootIsAbsolute then sl.Delete(0);
+    end;
 
     for i := 0 to sl.Count-1 do
     begin
       {
       write('i=',i,' sl[',i,']=',sl[i],' ');
       if Node <> nil then write('GetAdjustedNodeText = ',GetAdjustedNodeText(Node))
-      else  write('GetAdjustedNodeText = NIL');
+      else  write('Node = NIL');
       writeln;
       }
       while (Node <> Nil) and
@@ -907,11 +928,11 @@ begin
             {$ENDIF}
             do
             begin
+              //write('  i=',i,' "',GetAdjustedNodeText(Node),' <> ',sl[i],' -> GetNextVisibleSibling -> ');
               Node := Node.GetNextVisibleSibling;
               {
-              write('i=',i,' sl[',i,']=',sl[i],' ');
               if Node <> nil then write('GetAdjustedNodeText = ',GetAdjustedNodeText(Node))
-              else  write('GetAdjustedNodeText = NIL');
+              else  write('Node = NIL');
               writeln;
               }
             end;
