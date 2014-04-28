@@ -2395,7 +2395,7 @@ function TvSVGVectorialReader.ReadTextFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
 var
   lx, ly: double;
-  lText: TvText;
+  lName: string;
   lParagraph: TvParagraph;
   lTextSpanStack: TSVGObjectStack; // of TSVGTextSpanStyle
   lCurStyle: TSVGTextSpanStyle;
@@ -2423,6 +2423,7 @@ var
   var
     j: Integer;
     lCurNode: TDOMNode;
+    lText: TvText;
   begin
     lCurNode := ACurNode.FirstChild;
     while lCurNode <> nil do
@@ -2474,6 +2475,7 @@ var
         lText := lParagraph.AddText(lNodeValue);
 
         lText.Font.Size := 10;
+        lText.Name := lName;
         // Apply the layer style
         ApplyLayerStyles(lText);
 
@@ -2510,7 +2512,10 @@ begin
     else if lNodeName = 'y' then
       ly := ly + StringWithUnitToFloat(lNodeValue, sckY, suPX)
     else if lNodeName = 'id' then
-      lText.Name := lNodeValue
+    begin
+      lName := lNodeValue;
+      lParagraph.Name := lName;
+    end
     else if lNodeName = 'style' then
       ReadSVGStyle(lNodeValue, nil, lCurStyle)
     else if IsAttributeFromStyle(lNodeName) then
