@@ -642,8 +642,8 @@ begin
     Result:=false;
     exit;
   end;
-  ExpFile:=TrimFilename(Filename);
-  ExpPath:=AppendPathDelim(TrimFilename(Path));
+  ExpFile:=ResolveDots(Filename);
+  ExpPath:=AppendPathDelim(ResolveDots(Path));
   l:=length(ExpPath);
   Result:=(l>0) and (length(ExpFile)>l) and (ExpFile[l]=PathDelim)
           and (CompareFilenames(ExpPath,LeftStr(ExpFile,l))=0);

@@ -562,9 +562,9 @@ as needed by Windows file names like D:test.
 
 <!-- function Visibility: default -->
 <element name="FileIsInPath">
-<short/>
-<descr>
-</descr>
+<short>Returns true if Filename is below Path</short>
+<descr>Path is a directory, Filename a file or directory. Returns true if Filename is a file or directory somewhere below Path. This is a logical test, so it does not check symlinks.
+For example under Unix the Filename '/usr/lib/fpc' is below Path '/usr/lib', '/usr' and '/'.</descr>
 <errors>
 </errors>
 <seealso>
