@@ -143,6 +143,7 @@ implementation
 class procedure TWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
   const DeltaX, DeltaY: integer);
 begin
+  AWinControl.Invalidate;
 end;
   
 { TWSCustomForm }

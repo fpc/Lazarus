@@ -200,6 +200,7 @@ begin
     // writeln('OldValue ',dbgs(V),' NewValue ',dbgs(NewPos),' upper=',dbgs(Adjustment^.upper - Adjustment^.page_size));
     gtk_adjustment_set_value(Adjustment, NewPos);
   end;
+  AWinControl.Invalidate;
 end;
   
 { TGtk3WSCustomForm }

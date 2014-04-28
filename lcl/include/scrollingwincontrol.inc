@@ -216,7 +216,7 @@ begin
   if HandleAllocated and IsWindowVisible(Handle) then
   begin
     TWSScrollingWinControlClass(WidgetSetClass).ScrollBy(Self, DeltaX, DeltaY);
-    Invalidate;
+    //Invalidate;
   end
   else
     inherited ScrollBy(DeltaX, DeltaY);

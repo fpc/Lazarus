@@ -189,6 +189,7 @@ class procedure TGtkWSScrollingWinControl.ScrollBy(const AWinControl: TScrolling
   const DeltaX, DeltaY: integer);
 begin
   {$IFDEF VerboseGtkToDos}{$note implement me}{$ENDIF}
+  AWinControl.Invalidate;
 end;
 
 class procedure TGtkWSScrollingWinControl.SetColor(

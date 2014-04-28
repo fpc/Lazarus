@@ -142,6 +142,7 @@ begin
   if not CheckHandle(AWinControl, Self, 'ScrollBy') then Exit;
 
   TCarbonWidget(AWinControl.Handle).ScrollBy(DeltaX, DeltaY);
+  AWinControl.Invalidate;
 end;
 
 { TCarbonWSCustomForm }

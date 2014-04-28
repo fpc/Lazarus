@@ -975,6 +975,7 @@ begin
       NewPos := v - DeltaY;
     gtk_adjustment_set_value(Adjustment, NewPos);
   end;
+  AWinControl.Invalidate;
 end;
 
 { TGtk2WSHintWindow }
