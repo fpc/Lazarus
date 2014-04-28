@@ -64,5 +64,10 @@ begin
   inherited Create(AOwner);
 end;
 
+function TMainMenu.GetHeight: Integer;
+begin
+  Result := GetSystemMetrics(SM_CYMENU);
+end;
+
 // included by menus.pp
 

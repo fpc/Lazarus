@@ -359,6 +359,7 @@ type
   TMainMenu = class(TMenu)
   private
     FWindowHandle: HWND;
+    function GetHeight: Integer;
     procedure SetWindowHandle(const AValue: HWND);
   protected
     procedure ItemChanged;
@@ -366,6 +367,7 @@ type
     procedure MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
+    property Height: Integer read GetHeight;
     property WindowHandle: HWND read FWindowHandle write SetWindowHandle;
   published
     property OnChange;
