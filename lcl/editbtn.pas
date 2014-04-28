@@ -217,6 +217,7 @@ type
     procedure SetAutoSize(AValue: Boolean); override;
     procedure SetColor(AValue: TColor); override;
     procedure SetCursor(AValue: TCursor); override;
+    procedure SetFocus; override;
 
     property AutoSelect: Boolean read GetAutoSelect write SetAutoSelect default True;
     property AutoSelected: Boolean read GetAutoSelected write SetAutoSelected;
@@ -1317,6 +1318,11 @@ begin
   inherited SetCursor(AValue);
   FButton.Cursor := AValue;
   FEdit.Cursor := AValue;
+end;
+
+procedure TCustomEditButton.SetFocus;
+begin
+  FEdit.SetFocus;
 end;
 
 procedure TCustomEditButton.SetFlat(AValue: Boolean);
