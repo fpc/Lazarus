@@ -44,6 +44,7 @@ interface
 { $DEFINE VerboseGetStringConstBounds}
 { $DEFINE VerboseCompleteBlock}
 { $DEFINE VerboseCheckLFM}
+{ $DEFINE VerboseFindUnusedUnits}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -1660,7 +1661,6 @@ function TStandardCodeTool.FindUnusedUnits(Units: TStrings): boolean;
 //   'implementation': unit is in implementation uses section
 //   'used': an identifier of the interface is used
 //   'code': unit has non empty initialization/finalization section
-{ $DEFINE VerboseFindUnusedUnits}
 var
   Identifiers: TAVLTree;// all identifiers used in this unit
 
@@ -1756,13 +1756,13 @@ var
 
     function IsNodeVisible(Node: TCodeTreeNode): boolean;
     begin
-      if (Node.Parent=nil)
-      or (Node.Parent.Desc=ctnInterface)
-      or (Node.Parent.Parent=nil)
-      or (Node.Parent.Parent.Desc=ctnInterface) then
-        Result:=true
-      else
-        Result:=false;
+      Result:=false;
+      Node:=Node.Parent;
+      while Node<>nil do begin
+        if Node.Desc=ctnInterface then exit(true);
+        if Node.Desc in AllClasses then exit;
+        Node:=Node.Parent;
+      end;
     end;
 
   var
@@ -1774,7 +1774,7 @@ var
       case Node.Desc of
       ctnEnumIdentifier:
         if IsIdentifierUsed(Node.StartPos) then exit;
-      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition:
+      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnGenericName:
         if IsNodeVisible(Node) and IsIdentifierUsed(Node.StartPos) then exit;
       ctnProcedure:
         if (Node.Parent.Desc=ctnInterface)
