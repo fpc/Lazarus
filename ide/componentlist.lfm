@@ -11,7 +11,7 @@ object ComponentListForm: TComponentListForm
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object PageControl: TPageControl
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = FilterPanel
@@ -51,11 +51,13 @@ object ComponentListForm: TComponentListForm
           Width = 290
           Align = alClient
           DefaultItemHeight = 18
+          ReadOnly = True
           TabOrder = 0
           OnClick = ComponentsClick
           OnCustomDrawItem = TreeCustomDrawItem
           OnDblClick = ComponentsDblClick
           OnKeyDown = TreeKeyDown
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
         end
       end
     end
