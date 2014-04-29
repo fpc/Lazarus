@@ -2500,7 +2500,7 @@ var
       theRect.Right := theRect.Left + LineWidth;
       theRect.Bottom := theRect.Top + NumLines*TM.tmHeight;
       if NumLines>1 then
-        Inc(theRect.Bottom, (NumLines-1)*TM.tmDescent);// space between lines
+        Inc(theRect.Bottom, (NumLines-1)*TM.tmExternalLeading);// space between lines
 
       //debugln('TGtk2WidgetSet.DrawText A ',dbgs(theRect),' TM.tmHeight=',dbgs(TM.tmHeight),' LineWidth=',dbgs(LineWidth),' NumLines=',dbgs(NumLines));
     end;
@@ -2759,7 +2759,7 @@ begin
         DrawLine(Lines[i], l, theRect.Top);
         dec(pIndex,l+length(LineEnding));
       end;
-      Inc(theRect.Top, TM.tmDescent + TM.tmHeight);// space between lines
+      Inc(theRect.Top, TM.tmExternalLeading + TM.tmHeight);// space between lines
     end;
 
   finally
