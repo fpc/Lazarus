@@ -143,7 +143,6 @@ begin
     Exit;
   Widget := TQtCustomControl(AWinControl.Handle);
   Widget.viewport.scroll(DeltaX, DeltaY);
-  AWinControl.Invalidate;
 end;
 
 {------------------------------------------------------------------------------
