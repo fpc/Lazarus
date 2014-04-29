@@ -734,6 +734,8 @@ type
     property DragMode;
     property EchoMode;
     property Enabled;
+    property Flat;
+    property FocusOnButtonClick;
     property Font;
     property MaxLength;
     property OnButtonClick;
