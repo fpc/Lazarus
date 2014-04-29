@@ -62,6 +62,7 @@ type
     FInitialColor: TColor;
     FIsReadOnly: Boolean;
     FFlat: Boolean;
+    FFocusOnButtonClick: Boolean;
     //Forwarded events from FButton
     FOnButtonClick: TNotifyEvent;
     //Forwarded events from FEdit
@@ -116,6 +117,7 @@ type
     function GetText: TCaption;
     function IsCustomGlyph : Boolean;
 
+    procedure FocusAndMaybeSelectAll;
     procedure InternalOnButtonClick(Sender: TObject);
     procedure InternalOnEditClick(Sender: TObject);
     procedure InternalOnEditDblClick(Sender: TObject);
@@ -233,6 +235,7 @@ type
     property EditMask: String read GetEditMask write SetEditMask;
     property EditText: string read GetEditText write SetEditText;
     property Flat: Boolean read FFlat write SetFlat default False;
+    property FocusOnButtonClick: Boolean read FFocusOnButtonClick write FFocusOnButtonClick default False;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
     property IsMasked: Boolean read GetIsMasked;
     property NumGlyphs: Integer read GetNumGlyps write SetNumGlyphs;
@@ -324,6 +327,7 @@ type
     property EchoMode;
     property Enabled;
     property Flat;
+    property FocusOnButtonClick;
     property Font;
     property Glyph;
 //    property HideSelection;
@@ -433,6 +437,7 @@ type
     property ButtonOnlyWhenFocused;
     property NumGlyphs;
     property Flat;
+    property FocusOnButtonClick;
     // Other properties
     property Align;
     property Anchors;
@@ -533,6 +538,7 @@ type
     // property Glyph;
     property NumGlyphs;
     property Flat;
+    property FocusOnButtonClick;
     // Other properties
     property Align;
     property Alignment;
@@ -613,6 +619,7 @@ type
     // property Glyph;
     property NumGlyphs;
     property Flat;
+    property FocusOnButtonClick;
     // Other properties
     property Align;
     property Anchors;
@@ -795,6 +802,7 @@ type
     // property Glyph;
     property NumGlyphs;
     property Flat;
+    property FocusOnButtonClick;
     // Other properties
     property Align;
     property Anchors;
@@ -1090,6 +1098,15 @@ begin
     GlypRes.Free;
     GlypActual.Free;
   end;
+end;
+
+procedure TCustomEditButton.FocusAndMaybeSelectAll;
+begin
+  FEdit.SetFocus;
+  if AutoSelect then
+    FEdit.SelectAll
+  else
+    FEdit.SelStart := MaxInt;
 end;
 
 function TCustomEditButton.GetAlignment: TAlignment;
@@ -1396,6 +1413,13 @@ begin
     Exit;
   if Assigned(FOnButtonClick) then
     FOnButtonClick(Self);
+  //derived controls that override ButtonClick tipically run a dialog after calling inherited,
+  //in that case selecting the text now does not make sense at all (and looks silly)
+  //it's up to the derived control to implement this focus and select if wanted
+  if TMethod(@Self.ButtonClick).Code = Pointer(@TCustomEditButton.ButtonClick) then
+  begin
+    if FocusOnButtonClick then FocusAndMaybeSelectAll;
+  end;
 end;
 
 procedure TCustomEditButton.DoEnter;
@@ -1598,6 +1622,7 @@ begin
   FDirectInput := True;
   FIsReadOnly := False;
   TabStop := True;
+  FocusOnButtonClick := False;
 
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
@@ -1846,6 +1871,7 @@ procedure TCustomControlFilterEdit.ButtonClick;
 begin
   fJustActivated:=False;
   Filter:='';
+  if FocusOnButtonClick then FEdit.SetFocus; //don't SelectAll here
 end;
 
 procedure TCustomControlFilterEdit.ApplyFilter(Immediately: Boolean);
@@ -1991,6 +2017,8 @@ procedure TFileNameEdit.ButtonClick;
 begin
   inherited ButtonClick;
   RunDialog;
+  //Do this after the dialog, otherwise it just looks silly
+  if FocusOnButtonClick then FocusAndMaybeSelectAll;
 end;
 
 function TFileNameEdit.GetDefaultGlyph: TBitmap;
@@ -2074,6 +2102,8 @@ procedure TDirectoryEdit.ButtonClick;
 begin
   inherited ButtonClick;
   RunDialog;
+  //Do this after the dialog, oterwise it just looks silly
+  if FocusOnButtonClick then FocusAndMaybeSelectAll;
 end;
 
 function TDirectoryEdit.GetDefaultGlyph: TBitmap;
@@ -2172,7 +2202,9 @@ begin
   if ADate = NullDate then
     ADate := SysUtils.Date;
   ShowCalendarPopup(PopupOrigin, ADate, CalendarDisplaySettings,
-                    @CalendarPopupReturnDate, @CalendarPopupShowHide)
+                    @CalendarPopupReturnDate, @CalendarPopupShowHide);
+  //Do this after the dialog, otherwise it just looks silly
+  if FocusOnButtonClick then FocusAndMaybeSelectAll;
 end;
 
 procedure TDateEdit.EditDblClick;
@@ -2363,6 +2395,8 @@ procedure TCalcEdit.ButtonClick;
 begin
   inherited ButtonClick;
   RunDialog;
+  //Do this after the dialog, otherwise it just looks silly
+  if FocusOnButtonClick then FocusAndMaybeSelectAll;
 end;
 
 procedure TCalcEdit.RunDialog;
