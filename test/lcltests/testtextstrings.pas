@@ -6,6 +6,7 @@
     ./runtests --format=plain --suite=TestTextStringsBasic
     ./runtests --format=plain --suite=TestTextStringsLists
     ./runtests --format=plain --suite=TestTextStringsTexts
+    ./runtests --format=plain --suite=TestTextStringsExchange
 }
 unit TestTextStrings;
 
@@ -15,7 +16,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, ExtCtrls, TextStrings,
-  fpcunit, testglobals;
+  fpcunit, testglobals, LazLogger;
 
 type
 
@@ -26,6 +27,7 @@ type
     procedure TestTextStringsBasic;
     procedure TestTextStringsLists;
     procedure TestTextStringsTexts;
+    procedure TestTextStringsExchange;
   end;
 
 implementation
@@ -92,6 +94,28 @@ begin
   try
     ts1.Text:='asdasdasd asdasdasdasd asdqawrqwr'#13#10'asdasdasd asdasdasdasd asdqawrqwr'#13#10#13#10'asdasdasd asdasdasdasd asdqawrqwrasdasdasd asdasdasdasd asdqawrqwrasdasdasd asdasdasdasd asdqawrqwrasdasdasd asdasdasdasd asdqawrqwrasdasdasd asdasdasdasd asdqawrqwrasdasdasd asdasdasdasd asdqawrqwrasdasdasd asdasdasdasd asdqawrqwrasdasdasd asdasdasdasd asdqawrqwrasdasdasd asdasdasdasd asdqawrqwrasdasdasd asdasdasdasd asdqawrqwrasdasdasd asdasdasdasd asdqawrqwrasdasdasd asdasdasdasd asdqawrqwrasdasdasd asdasdasdasd asdqawrqwrasdasdasd asdasdasdasd'#13#10;
     AssertEquals('count',4,ts1.Count);
+  finally
+    ts1.Free;
+  end;
+end;
+
+procedure TTestTextStrings.TestTextStringsExchange;
+var
+  ts1: TTextStrings;
+begin
+  ts1:=TTextStrings.Create;
+  try
+    ts1.Clear;
+    ts1.Add('1');
+    ts1.Add('22');
+    ts1.Exchange(0,1);
+    AssertEquals('Exchange 1,22 to 22,1 text','22'+LineEnding+'1'+LineEnding,ts1.Text);
+    AssertEquals('Exchange 1,22 to 22,1 first line','22',ts1[0]);
+    AssertEquals('Exchange 1,22 to 22,1 second line','1',ts1[1]);
+    ts1.Exchange(0,1);
+    AssertEquals('Exchange 22,1 to 1,22 text','1'+LineEnding+'22'+LineEnding,ts1.Text);
+    AssertEquals('Exchange 22,1 to 1,22 first line','1',ts1[0]);
+    AssertEquals('Exchange 22,1 to 1,22 second line','22',ts1[1]);
   finally
     ts1.Free;
   end;
