@@ -42,7 +42,7 @@ const
       BL_TW10  // 17: Class0.Test0Method > Nested0
     );
 
-  BREAK_LINE_TestWatchesUnitArray = 842;
+  BREAK_LINE_TestWatchesUnitArray = 921;
 
 type
 
@@ -589,7 +589,7 @@ end;
 procedure TTestWatches.AddExpectArray_1;
 var
   i, i2: Integer;
-  s,s2: String;
+  s, s2: String;
   r: PWatchExpectation;
 begin
   FCurrentExpect := @ExpectBreakArray_1;
@@ -760,6 +760,128 @@ if not (i in [2,3]) then // open array / TODO
       r := AddSimpleInt(Format('TArrayStatStatInt(%sStatStatInt1%1:s)[-9,1]', [s,s2]),    4091, M_Int);
       if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
 
+      {%region  Pointer }
+      AddSimpleInt(Format('(%sIntPointer%1:s-2)^',    [s,s2]),    5511, M_Int);
+      AddSimpleInt(Format('(%sIntPointer%1:s+(-2))^', [s,s2]),    5511, M_Int);
+      AddSimpleInt(Format('(%sIntPointer%1:s+ArraySub2)^', [s,s2]),    5511, M_Int);
+      AddSimpleInt(Format('(%sIntPointer%1:s-ArrayAdd2)^', [s,s2]),    5511, M_Int);
+      AddSimpleInt(Format('(ArraySub2+%sIntPointer%1:s)^', [s,s2]),    5511, M_Int);
+      AddSimpleInt(Format('(-2+%sIntPointer%1:s)^',   [s,s2]),    5511, M_Int);
+      AddSimpleInt(Format('(-1+%sIntPointer%1:s-1)^', [s,s2]),    5511, M_Int);
+
+      AddSimpleInt(Format('(%sIntPointer%1:s-1)^',    [s,s2]),    5512, M_Int);
+      AddSimpleInt(Format('(%sIntPointer%1:s+(-1))^', [s,s2]),    5512, M_Int);
+      AddSimpleInt(Format('%sIntPointer%1:s^',        [s,s2]),    5513, M_Int);
+      AddSimpleInt(Format('(%sIntPointer%1:s)^',      [s,s2]),    5513, M_Int);
+      AddSimpleInt(Format('(%sIntPointer%1:s+0)^',    [s,s2]),    5513, M_Int);
+      AddSimpleInt(Format('(%sIntPointer%1:s-0)^',    [s,s2]),    5513, M_Int);
+      AddSimpleInt(Format('(%sIntPointer%1:s+1)^',    [s,s2]),    5514, M_Int);
+      AddSimpleInt(Format('(%sIntPointer%1:s+2)^',    [s,s2]),   -5511, M_Int);
+
+      AddSimpleInt(Format('%sIntPointer%1:s[-2]', [s,s2]),    5511, M_Int);
+      AddSimpleInt(Format('%sIntPointer%1:s[ArraySub2]', [s,s2]),    5511, M_Int);
+      AddSimpleInt(Format('%sIntPointer%1:s[-ArrayAdd2]', [s,s2]),    5511, M_Int);
+      AddSimpleInt(Format('%sIntPointer%1:s[-1]', [s,s2]),    5512, M_Int);
+      AddSimpleInt(Format('%sIntPointer%1:s[0]',  [s,s2]),    5513, M_Int);
+      AddSimpleInt(Format('%sIntPointer%1:s[1]',  [s,s2]),    5514, M_Int);
+      AddSimpleInt(Format('%sIntPointer%1:s[2]',  [s,s2]),   -5511, M_Int);
+
+      AddSimpleInt(Format('(PInteger(@%sIntPointer%1:s[-1])-1)^', [s,s2]),    5511, M_Int);
+      AddSimpleInt(Format('(%sIntPointer%1:s-1)[-1]',    [s,s2]),    5511, M_Int);
+      AddSimpleInt(Format('(PInteger(@Pointer(%sIntPointer%1:s)[-4])-1)^', [s,s2]),    5511, M_Int);
+      AddSimpleInt(Format('(PInteger(@Pointer(%sIntPointer%1:s)[-2]-6))^', [s,s2]),    5511, M_Int);
+
+      // add 2 each for word pointer
+      AddSimpleInt(Format('PInteger(%sWordPointer%1:s)^',     [s,s2]),    5513, M_Int);
+      AddSimpleInt(Format('PInteger(%sWordPointer%1:s+0)^',   [s,s2]),    5513, M_Int);
+      AddSimpleInt(Format('PInteger(%sWordPointer%1:s+2)^',   [s,s2]),    5514, M_Int);
+      AddSimpleInt(Format('PInteger(%sWordPointer%1:s+ArrayAdd2)^',   [s,s2]),    5514, M_Int);
+      AddSimpleInt(Format('PInteger(%sWordPointer%1:s-ArraySub2)^',   [s,s2]),    5514, M_Int);
+
+      // add 4 each for pointer
+      AddSimpleInt(Format('PInteger(%sPointer%1:s)^',     [s,s2]),    5513, M_Int);
+      AddSimpleInt(Format('PInteger(%sPointer%1:s+0)^',   [s,s2]),    5513, M_Int);
+      AddSimpleInt(Format('PInteger(%sPointer%1:s+4)^',   [s,s2]),    5514, M_Int);
+
+      // deref generic: error
+      //AddFmtDef(Format('%sPointer%1:s^', [s,s2]), 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+      //AddFmtDef(Format('(%sPointer%1:s)^', [s,s2]), 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+      //AddFmtDef(Format('(%sPointer%1:s+0)^', [s,s2]), 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+      //AddFmtDef(Format('(%sPointer%1:s+4)^', [s,s2]), 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+      //AddFmtDef(Format('(%sPointer%1:s-4)^', [s,s2]), 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+
+
+      if i2 = 0 then begin
+        {%region  address of }
+        r := AddFmtDef(Format('%sIntPointer', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
+        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+        r^.UserData2 := FCurrentExpect;
+        AddFmtDef(Format('@%sDynInt1[2]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+
+        r := AddFmtDef(Format('(%sIntPointer+0)', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
+        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+        r^.UserData2 := FCurrentExpect;
+        AddFmtDef(Format('@%sDynInt1[2]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+
+        r := AddFmtDef(Format('@(%sIntPointer^)', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
+        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+        r^.UserData2 := FCurrentExpect;
+        AddFmtDef(Format('@%sDynInt1[2]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+
+        r := AddFmtDef(Format('(%sIntPointer+1)', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
+        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+        r^.UserData2 := FCurrentExpect;
+        AddFmtDef(Format('@%sDynInt1[3]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+
+        r := AddFmtDef(Format('(%sIntPointer-1)', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
+        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+        r^.UserData2 := FCurrentExpect;
+        AddFmtDef(Format('@%sDynInt1[1]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+
+        // Add/SUb to word pointer
+        r := AddFmtDef(Format('(%sWordPointer+2)', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
+        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+        r^.UserData2 := FCurrentExpect;
+        AddFmtDef(Format('@%sDynInt1[3]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+
+        // Add/SUb to generic pointer
+        r := AddFmtDef(Format('%sPointer', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
+        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+        r^.UserData2 := FCurrentExpect;
+        AddFmtDef(Format('@%sDynInt1[2]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+
+        r := AddFmtDef(Format('%sPointer+4', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
+        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+        r^.UserData2 := FCurrentExpect;
+        AddFmtDef(Format('@%sDynInt1[3]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+
+        r := AddFmtDef(Format('%sPointer-4', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
+        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
+        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
+        r^.UserData2 := FCurrentExpect;
+        AddFmtDef(Format('@%sDynInt1[1]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+
+        {%endregion  address of }
+      end;
+
+      {%endregion  Pointer }
     end; // i2
 
   end; // i

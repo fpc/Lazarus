@@ -1,4 +1,4 @@
-unit TestWatchesUnitArray;
+unit TestWatchesUnitArray; // Array and Pointer
 {$mode objfpc}{$H+}{$NOTES off}
 
 interface
@@ -68,6 +68,10 @@ type
   PArrayStatDynClass  = ^TArrayStatDynClass;
   PArrayStatDynRec    = ^TArrayStatDynRec;
 
+  PInteger = ^Integer;
+  PPInteger = ^PInteger;
+  PWord = ^Word;
+  PPWord = ^PWord;
 
   // TYPES fol param
   TArrayStatIntParam1 = array [4..9] of Integer;
@@ -75,6 +79,7 @@ type
 
   PArrayStatIntParam1 = ^TArrayStatIntParam1;
   PArrayStatIntParam2 = ^TArrayStatIntParam2;
+  PPointer            = ^Pointer;
 
   { TArrayClass1 }
 
@@ -110,6 +115,10 @@ type
     Field_StatDynClass1: TArrayStatDynClass;
     Field_StatDynRec1: TArrayStatDynRec;
 
+    Field_IntPointer: PInteger;
+    Field_WordPointer: PWord;
+    Field_Pointer: Pointer;
+
     // Pointer
     Field_PDynAInt1: PArrayDynInt;
     Field_PStatAInt1: PArrayStatIntParam1;
@@ -139,6 +148,10 @@ type
     Field_PStatDynInt1: PArrayStatDynInt;
     Field_PStatDynClass1: PArrayStatDynClass;
     Field_PStatDynRec1: PArrayStatDynRec;
+
+    Field_PIntPointer: PPInteger;
+    Field_PWordPointer: PPWord;
+    Field_PPointer: PPointer;
 
 
     procedure Test1Method(
@@ -171,6 +184,10 @@ type
       Arg_StatDynClass1: TArrayStatDynClass;
       Arg_StatDynRec1: TArrayStatDynRec;
 
+      Arg_IntPointer: PInteger;
+      Arg_WordPointer: PWord;
+      Arg_Pointer: Pointer;
+
       // Pointer
       Arg_PDynAInt1: PArrayDynInt;
       Arg_PStatAInt1: PArrayStatIntParam1;
@@ -200,6 +217,10 @@ type
       Arg_PStatDynInt1: PArrayStatDynInt;
       Arg_PStatDynClass1: PArrayStatDynClass;
       Arg_PStatDynRec1: PArrayStatDynRec;
+
+      Arg_PIntPointer: PPInteger;
+      Arg_PWordPointer: PPWord;
+      Arg_PPointer: PPointer;
 
 
       var VArg_DynAInt1: array of Integer;
@@ -231,6 +252,10 @@ type
       var VArg_StatDynClass1: TArrayStatDynClass;
       var VArg_StatDynRec1: TArrayStatDynRec;
 
+      var VArg_IntPointer: PInteger;
+      var VArg_WordPointer: PWord;
+      var VArg_Pointer: Pointer;
+
       // Pointer
       var VArg_PDynAInt1: PArrayDynInt;
       var VArg_PStatAInt1: PArrayStatIntParam1;
@@ -259,7 +284,11 @@ type
 
       var VArg_PStatDynInt1: PArrayStatDynInt;
       var VArg_PStatDynClass1: PArrayStatDynClass;
-      var VArg_PStatDynRec1: PArrayStatDynRec
+      var VArg_PStatDynRec1: PArrayStatDynRec;
+
+      var VArg_PIntPointer: PPInteger;
+      var VArg_PWordPointer: PPWord;
+      var VArg_PPointer: PPointer
     );
   end;
 
@@ -293,6 +322,10 @@ var
   ArrayGlob_StatDynClass1: TArrayStatDynClass;
   ArrayGlob_StatDynRec1: TArrayStatDynRec;
 
+  ArrayGlob_IntPointer: PInteger;
+  ArrayGlob_WordPointer: PWord;
+  ArrayGlob_Pointer: Pointer;
+
   // Pointer
   ArrayGlob_PDynAInt1: PArrayDynInt;
   ArrayGlob_PStatAInt1: PArrayStatIntParam1;
@@ -322,6 +355,10 @@ var
   ArrayGlob_PStatDynInt1: PArrayStatDynInt;
   ArrayGlob_PStatDynClass1: PArrayStatDynClass;
   ArrayGlob_PStatDynRec1: PArrayStatDynRec;
+
+  ArrayGlob_PIntPointer: PPInteger;
+  ArrayGlob_PWordPointer: PPWord;
+  ArrayGlob_PPointer: PPointer;
 
   // copy of Pointers, to be used as Var Param
   ArrayGlob_P2DynAInt1: PArrayDynInt;
@@ -353,9 +390,15 @@ var
   ArrayGlob_P2StatDynClass1: PArrayStatDynClass;
   ArrayGlob_P2StatDynRec1: PArrayStatDynRec;
 
+  ArrayGlob_P2IntPointer: PPInteger;
+  ArrayGlob_P2WordPointer: PPWord;
+  ArrayGlob_P2Pointer: PPointer;
+
   // dummy, ensure "pointer" is in debug info
   ArrayGlob_DummyPointer: Pointer;
   ArrayGlob_DummyPInteger: PInteger;
+
+  ArrayAdd0, ArrayAdd1, ArrayAdd2, ArraySub1, ArraySub2 : Int64;
 
 procedure Test1;
 
@@ -374,6 +417,7 @@ procedure TArrayClass1.Test1Method(Arg_DynAInt1: array of Integer;
   Arg_StatStatInt1: TArrayStatStatInt; Arg_StatStatClass1: TArrayStatStatClass;
   Arg_StatStatRec1: TArrayStatStatRec; Arg_StatDynInt1: TArrayStatDynInt;
   Arg_StatDynClass1: TArrayStatDynClass; Arg_StatDynRec1: TArrayStatDynRec;
+  Arg_IntPointer: PInteger; Arg_WordPointer: PWord; Arg_Pointer: Pointer;
   Arg_PDynAInt1: PArrayDynInt; Arg_PStatAInt1: PArrayStatIntParam1;
   Arg_PStatAInt2: PArrayStatIntParam2; Arg_PDynInt1, Arg_PDynInt2: PArrayDynInt;
   Arg_PDynClass1: PArrayDynClass; Arg_PDynRec1: PArrayDynRec; Arg_PDynRec2: PArrayDynRec2;
@@ -384,7 +428,8 @@ procedure TArrayClass1.Test1Method(Arg_DynAInt1: array of Integer;
   Arg_PStatRec1: PArrayStatRec; Arg_PStatStatInt1: PArrayStatStatInt;
   Arg_PStatStatClass1: PArrayStatStatClass; Arg_PStatStatRec1: PArrayStatStatRec;
   Arg_PStatDynInt1: PArrayStatDynInt; Arg_PStatDynClass1: PArrayStatDynClass;
-  Arg_PStatDynRec1: PArrayStatDynRec; var VArg_DynAInt1: array of Integer;
+  Arg_PStatDynRec1: PArrayStatDynRec; Arg_PIntPointer: PPInteger; Arg_PWordPointer: PPWord;
+  Arg_PPointer: PPointer; var VArg_DynAInt1: array of Integer;
   var VArg_StatAInt1: TArrayStatIntParam1; var VArg_StatAInt2: TArrayStatIntParam2;
   var VArg_DynInt1, VArg_DynInt2: TArrayDynInt; var VArg_DynClass1: TArrayDynClass;
   var VArg_DynRec1: TArrayDynRec; var VArg_DynRec2: array of TArrayRec2;
@@ -395,7 +440,8 @@ procedure TArrayClass1.Test1Method(Arg_DynAInt1: array of Integer;
   var VArg_StatRec1: TArrayStatRec; var VArg_StatStatInt1: TArrayStatStatInt;
   var VArg_StatStatClass1: TArrayStatStatClass; var VArg_StatStatRec1: TArrayStatStatRec;
   var VArg_StatDynInt1: TArrayStatDynInt; var VArg_StatDynClass1: TArrayStatDynClass;
-  var VArg_StatDynRec1: TArrayStatDynRec; var VArg_PDynAInt1: PArrayDynInt;
+  var VArg_StatDynRec1: TArrayStatDynRec; var VArg_IntPointer: PInteger;
+  var VArg_WordPointer: PWord; var VArg_Pointer: Pointer; var VArg_PDynAInt1: PArrayDynInt;
   var VArg_PStatAInt1: PArrayStatIntParam1; var VArg_PStatAInt2: PArrayStatIntParam2;
   var VArg_PDynInt1, VArg_PDynInt2: PArrayDynInt; var VArg_PDynClass1: PArrayDynClass;
   var VArg_PDynRec1: PArrayDynRec; var VArg_PDynRec2: PArrayDynRec2;
@@ -406,7 +452,8 @@ procedure TArrayClass1.Test1Method(Arg_DynAInt1: array of Integer;
   var VArg_PStatRec1: PArrayStatRec; var VArg_PStatStatInt1: PArrayStatStatInt;
   var VArg_PStatStatClass1: PArrayStatStatClass; var VArg_PStatStatRec1: PArrayStatStatRec;
   var VArg_PStatDynInt1: PArrayStatDynInt; var VArg_PStatDynClass1: PArrayStatDynClass;
-  var VArg_PStatDynRec1: PArrayStatDynRec);
+  var VArg_PStatDynRec1: PArrayStatDynRec; var VArg_PIntPointer: PPInteger;
+  var VArg_PWordPointer: PPWord; var VArg_PPointer: PPointer);
 var
   Local_DynAInt1: array of Integer;
   Local_StatAInt1: array [4..9] of Integer;
@@ -436,6 +483,10 @@ var
   Local_StatDynInt1: TArrayStatDynInt;
   Local_StatDynClass1: TArrayStatDynClass;
   Local_StatDynRec1: TArrayStatDynRec;
+
+  Local_IntPointer: PInteger;
+  Local_WordPointer: PWord;
+  Local_Pointer: Pointer;
 
   // Pointer
   Local_PDynAInt1: PArrayDynInt;
@@ -467,6 +518,10 @@ var
   Local_PStatDynClass1: PArrayStatDynClass;
   Local_PStatDynRec1: PArrayStatDynRec;
 
+  Local_PIntPointer: PPInteger;
+  Local_PWordPointer: PPWord;
+  Local_PPointer: PPointer;
+
 begin
 
   {%region  Fields }
@@ -496,6 +551,10 @@ begin
     Field_DynInt1[4] := -5511;
     Field_DynInt1[19] := 5500;
   Field_DynInt2 := nil;
+
+  Field_IntPointer := @Field_DynInt1[2];
+  Field_WordPointer := @Field_DynInt1[2];
+  Field_Pointer := @Field_DynInt1[2];
 
   SetLength(Field_DynClass1, 6);
     Field_DynClass1[0] := TArrayClass1.Create;
@@ -618,6 +677,10 @@ begin
   Field_PStatDynClass1   := @Field_StatDynClass1;
   Field_PStatDynRec1     := @Field_StatDynRec1;
 
+  Field_PIntPointer := @Field_IntPointer;
+  Field_PWordPointer := @Field_WordPointer;
+  Field_PPointer := @Field_Pointer;
+
   {%endregion  Fields }
 
 
@@ -648,6 +711,10 @@ begin
     Local_DynInt1[4] := -5511;
     Local_DynInt1[19] := 5500;
   Local_DynInt2 := nil;
+
+  Local_IntPointer := @Local_DynInt1[2];
+  Local_WordPointer := @Local_DynInt1[2];
+  Local_Pointer := @Local_DynInt1[2];
 
   SetLength(Local_DynClass1, 6);
     Local_DynClass1[0] := TArrayClass1.Create;
@@ -770,6 +837,10 @@ begin
   Local_PStatDynClass1   := @Local_StatDynClass1;
   Local_PStatDynRec1     := @Local_StatDynRec1;
 
+  Local_PIntPointer := @Local_IntPointer;
+  Local_PWordPointer := @Local_WordPointer;
+  Local_PPointer := @Local_Pointer;
+
   {%endregion  Local }
 
 
@@ -804,6 +875,10 @@ begin
   Arg_PStatDynInt1     := @Arg_StatDynInt1;
   Arg_PStatDynClass1   := @Arg_StatDynClass1;
   Arg_PStatDynRec1     := @Arg_StatDynRec1;
+
+  Arg_PIntPointer := @Arg_IntPointer;
+  Arg_PWordPointer := @Arg_WordPointer;
+  Arg_PPointer := @Arg_Pointer;
   {%endregion  ARG}
 
   {%region  ARG }
@@ -837,6 +912,10 @@ begin
   VArg_PStatDynInt1     := @VArg_StatDynInt1;
   VArg_PStatDynClass1   := @VArg_StatDynClass1;
   VArg_PStatDynRec1     := @VArg_StatDynRec1;
+
+  VArg_PIntPointer := @VArg_IntPointer;
+  VArg_PWordPointer := @VArg_WordPointer;
+  VArg_PPointer := @VArg_Pointer;
   {%endregion  ARG}
 
   ArrayGlob_DynInt1[9] := -5511; // BREAK
@@ -873,6 +952,10 @@ begin
     ArrayGlob_DynInt1[4] := -5511;
     ArrayGlob_DynInt1[19] := 5500;
   ArrayGlob_DynInt2 := nil;
+
+  ArrayGlob_IntPointer := @ArrayGlob_DynInt1[2];
+  ArrayGlob_WordPointer := @ArrayGlob_DynInt1[2];
+  ArrayGlob_Pointer := @ArrayGlob_DynInt1[2];
 
   SetLength(ArrayGlob_DynClass1, 6);
     ArrayGlob_DynClass1[0] := TArrayClass1.Create;
@@ -995,6 +1078,10 @@ begin
   ArrayGlob_PStatDynClass1   := @ArrayGlob_StatDynClass1;
   ArrayGlob_PStatDynRec1     := @ArrayGlob_StatDynRec1;
 
+  ArrayGlob_PIntPointer := @ArrayGlob_IntPointer;
+  ArrayGlob_PWordPointer := @ArrayGlob_WordPointer;
+  ArrayGlob_PPointer := @ArrayGlob_Pointer;
+
   {%endregion  ArrayGlob }
 
   // copy for var param
@@ -1028,6 +1115,16 @@ begin
   ArrayGlob_P2StatDynClass1  := ArrayGlob_PStatDynClass1;
   ArrayGlob_P2StatDynRec1    := ArrayGlob_PStatDynRec1;
 
+  ArrayGlob_P2IntPointer := ArrayGlob_PIntPointer;
+  ArrayGlob_P2WordPointer := ArrayGlob_PWordPointer;
+  ArrayGlob_P2Pointer := ArrayGlob_PPointer;
+
+
+  ArrayAdd0 := 0;
+  ArrayAdd1 := 1;
+  ArrayAdd2 := 2;
+  ArraySub1 := -1;
+  ArraySub2 := -2;
 
   ArrayClass1 := TArrayClass1.Create;
   ArrayClass1.Test1Method(
@@ -1060,6 +1157,10 @@ begin
     ArrayGlob_StatDynClass1,
     ArrayGlob_StatDynRec1,
 
+    ArrayGlob_IntPointer,
+    ArrayGlob_WordPointer,
+    ArrayGlob_Pointer,
+
     // Pointer
     ArrayGlob_PDynAInt1,
     ArrayGlob_PStatAInt1,
@@ -1091,6 +1192,10 @@ begin
     ArrayGlob_PStatDynClass1,
     ArrayGlob_PStatDynRec1,
 
+    ArrayGlob_PIntPointer,
+    ArrayGlob_PWordPointer,
+    ArrayGlob_PPointer,
+
     // VAR
     ArrayGlob_DynAInt1,
     ArrayGlob_StatAInt1,
@@ -1121,6 +1226,10 @@ begin
     ArrayGlob_StatDynClass1,
     ArrayGlob_StatDynRec1,
 
+    ArrayGlob_IntPointer,
+    ArrayGlob_WordPointer,
+    ArrayGlob_Pointer,
+
     // Pointer
     ArrayGlob_P2DynAInt1,
     ArrayGlob_P2StatAInt1,
@@ -1150,7 +1259,11 @@ begin
 
     ArrayGlob_P2StatDynInt1,
     ArrayGlob_P2StatDynClass1,
-    ArrayGlob_P2StatDynRec1
+    ArrayGlob_P2StatDynRec1,
+
+    ArrayGlob_P2IntPointer,
+    ArrayGlob_P2WordPointer,
+    ArrayGlob_P2Pointer
 
   );
 end;

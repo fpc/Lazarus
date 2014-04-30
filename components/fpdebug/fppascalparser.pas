@@ -1032,15 +1032,6 @@ begin
     end // Kind = skArray
     else
     if (TmpVal.Kind = skPointer) then begin
-      //if (TmpVal.TypeInfo = nil) or (TmpVal.TypeInfo.TypeInfo = nil) or
-      //   (TmpVal.TypeInfo.TypeInfo.Size <= 0)
-      //then begin
-      //  SetError('Can not dereference an untyped pointer');
-      //  TmpVal.ReleaseReference;
-      //  exit;
-      //end;
-      // TODO: check svfDataAddress / readable ? (see normal pointer deref);
-      //ti := TmpVal.TypeInfo.TypeInfo;
       if (svfInteger in TmpIndex.FieldFlags) then
         Offs := TmpIndex.AsInteger
       else
@@ -1058,12 +1049,6 @@ begin
       if IsError(TmpVal.LastError) then
         SetError('Error dereferencing'); // TODO: set correct error
       if TmpVal2 <> nil then TmpVal2.AddReference;
-      //{$PUSH}{$R-}{$Q-} // TODO: check overflow
-      //Offs := Offs * ti.Size;
-      //{$POP}
-      //TmpDeref := TFpPasParserValueDerefPointer.Create(TmpVal, Expression, Offs);
-      //TmpVal2 := ti.TypeCastValue(TmpDeref);
-      //TmpDeref.ReleaseReference;
     end
     else
     if (TmpVal.Kind = skString) then begin
@@ -2333,6 +2318,84 @@ begin
 end;
 
 function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpDbgValue;
+{$PUSH}{$R-}{$Q-}
+  function AddSubValueToPointer(APointerVal, AOtherVal: TFpDbgValue; ADoSubtract: Boolean = False): TFpDbgValue;
+  var
+    Idx: Int64;
+    f: Integer;
+    ti: TFpDbgSymbol;
+    TmpVal: TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+    //  skPointer:  Result := nil;
+      skInteger:  Idx := AOtherVal.AsInteger;
+      skCardinal: begin
+          Idx := AOtherVal.AsInteger;
+          if Idx > High(Int64) then
+            exit; // TODO: error
+        end;
+      else
+        exit; // TODO: error
+    end;
+    if ADoSubtract then begin
+      if Idx < -(High(Int64)) then
+        exit; // TODO: error
+      Idx := -Idx;
+    end;
+    TmpVal := APointerVal.Member[Idx];
+    if IsError(APointerVal.LastError) then begin
+      SetError('Error dereferencing'); // TODO: set correct error
+      exit;
+    end;
+    Result := TFpPasParserValueAddressOf.Create(TmpVal, Expression.Context);
+  end;
+  function AddValueToInt(AIntVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skPointer:  Result := AddSubValueToPointer(AOtherVal, AIntVal);
+      skInteger:  Result := TFpDbgValueConstNumber.Create(AIntVal.AsInteger + AOtherVal.AsInteger, True);
+      skCardinal: Result := TFpDbgValueConstNumber.Create(AIntVal.AsInteger + AOtherVal.AsCardinal, True);
+      else SetError('Addition not supported');
+    end;
+  end;
+  function AddValueToCardinal(ACardinalVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skPointer:  Result := AddSubValueToPointer(AOtherVal, ACardinalVal);
+      skInteger:  Result := TFpDbgValueConstNumber.Create(ACardinalVal.AsCardinal + AOtherVal.AsInteger, True);
+      skCardinal: Result := TFpDbgValueConstNumber.Create(ACardinalVal.AsCardinal + AOtherVal.AsCardinal, False);
+      else SetError('Addition not supported');
+    end;
+  end;
+
+  function SubPointerFromValue(APointerVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;       // Error
+  end;
+  function SubValueFromInt(AIntVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skPointer:  Result := SubPointerFromValue(AOtherVal, AIntVal);
+      skInteger:  Result := TFpDbgValueConstNumber.Create(AIntVal.AsInteger - AOtherVal.AsInteger, True);
+      skCardinal: Result := TFpDbgValueConstNumber.Create(AIntVal.AsInteger - AOtherVal.AsCardinal, True);
+      else SetError('Subtraction not supported');
+    end;
+  end;
+  function SubValueFromCardinal(ACardinalVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skPointer:  Result := SubPointerFromValue(AOtherVal, ACardinalVal);
+      skInteger:  Result := TFpDbgValueConstNumber.Create(ACardinalVal.AsCardinal - AOtherVal.AsInteger, True);
+      skCardinal: Result := TFpDbgValueConstNumber.Create(ACardinalVal.AsCardinal - AOtherVal.AsCardinal, False);
+      else SetError('Subtraction not supported');
+    end;
+  end;
+{$POP}
 var
   tmp1, tmp2: TFpDbgValue;
   IsAdd: Boolean;
@@ -2346,38 +2409,20 @@ begin
   IsAdd := GetText = '+';
   if (tmp1 = nil) or (tmp2 = nil) then exit;
 
-  {$PUSH}{$R-}{$Q-}
   if IsAdd then begin
     case tmp1.Kind of
-      skPointer: ;
-      skInteger: case tmp2.Kind of
-        skPointer: ;
-        skInteger:  Result := TFpDbgValueConstNumber.Create(tmp1.AsInteger + tmp2.AsInteger, True);
-        skCardinal: Result := TFpDbgValueConstNumber.Create(tmp1.AsInteger + tmp2.AsCardinal, True);
-      end;
-      skCardinal: case tmp2.Kind of
-        skPointer: ;
-        skInteger:  Result := TFpDbgValueConstNumber.Create(tmp1.AsCardinal + tmp2.AsInteger, True);
-        skCardinal: Result := TFpDbgValueConstNumber.Create(tmp1.AsCardinal + tmp2.AsCardinal, False);
-      end;
+      skPointer:  Result := AddSubValueToPointer(tmp1, tmp2);
+      skInteger:  Result := AddValueToInt(tmp1, tmp2);
+      skCardinal: Result := AddValueToCardinal(tmp1, tmp2);
     end;
   end
   else begin
     case tmp1.Kind of
-      skPointer: ;
-      skInteger: case tmp2.Kind of
-        skPointer: ;
-        skInteger:  Result := TFpDbgValueConstNumber.Create(tmp1.AsInteger - tmp2.AsInteger, True);
-        skCardinal: Result := TFpDbgValueConstNumber.Create(tmp1.AsInteger - tmp2.AsCardinal, True);
-      end;
-      skCardinal: case tmp2.Kind of
-        skPointer: ;
-        skInteger:  Result := TFpDbgValueConstNumber.Create(tmp1.AsCardinal - tmp2.AsInteger, True);
-        skCardinal: Result := TFpDbgValueConstNumber.Create(tmp1.AsCardinal - tmp2.AsCardinal, True);
-      end;
+      skPointer:  Result := AddSubValueToPointer(tmp1, tmp2, True);
+      skInteger:  Result := SubValueFromInt(tmp1, tmp2);
+      skCardinal: Result := SubValueFromCardinal(tmp1, tmp2);
     end;
   end;
-  {$POP}
 
  {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then
    Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
