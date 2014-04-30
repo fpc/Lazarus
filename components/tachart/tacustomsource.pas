@@ -110,7 +110,7 @@ type
     FUseY: Boolean;
 
     function CountToStep(ACount: Integer): Double; inline;
-    function IsAcceptableStep(AStep: Integer): Boolean; inline;
+    function IsAcceptableStep(AStep: Int64): Boolean; inline;
     procedure RoundToImage(var AValue: Double);
     function ToImage(AX: Double): Integer; inline;
   end;
@@ -248,7 +248,7 @@ begin
   Result := Power(10, Floor(Log10((FMax - FMin) / ACount)));
 end;
 
-function TValuesInRangeParams.IsAcceptableStep(AStep: Integer): Boolean;
+function TValuesInRangeParams.IsAcceptableStep(AStep: Int64): Boolean;
 begin
   with FIntervals do
     Result := not (
