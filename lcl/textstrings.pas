@@ -30,10 +30,10 @@ type
   { TTextStrings }
 
   TTextLineRange = record
-    StartPos: integer; // start of line in Text
-    EndPos: integer; // end of line in Text (= start of newline character(s))
     Line: string; // cached line as string
     TheObject: TObject; // user data
+    StartPos: integer; // start of line in Text
+    EndPos: integer; // end of line in Text (= start of newline character(s))
   end;
   PTextLineRange = ^TTextLineRange;
 
@@ -468,7 +468,7 @@ begin
   // adjust text
   MakeTextBufferUnique;
 
-  if (Index2=FLineCount-1) and (FLineRanges[Index2].EndPos=length(FText))
+  if (Index2=FLineCount-1) and (FLineRanges[Index2].EndPos>length(FText))
   then begin
     // The last line should be exchanged,
     // but Text has no new line character(s) at the end
@@ -498,27 +498,30 @@ begin
   OldBetweenStart:=StartPos1+LineLen1;
   BetweenLength:=StartPos2-OldBetweenStart;
   NewBetweenStart:=StartPos1+LineLen2;
-  if (BetweenLength>0) and (OldBetweenStart<>NewBetweenStart) then
+  Movement:=NewBetweenStart-OldBetweenStart;
+  if (BetweenLength>0) and (Movement<>0) then
     System.Move(FText[OldBetweenStart],FText[NewBetweenStart],BetweenLength);
 
   // move both lines
   if LineLen1>=LineLen2 then begin
     System.Move(FText[StartPos2],FText[StartPos1],LineLen2);
-    System.Move(buf^,FText[StartPos2],LineLen1);
+    System.Move(buf^,FText[StartPos2+Movement],LineLen1);
   end else begin
-    System.Move(FText[StartPos1],FText[StartPos2],LineLen1);
+    System.Move(FText[StartPos1],FText[StartPos2+Movement],LineLen1);
     System.Move(buf^,FText[StartPos1],LineLen2);
   end;
 
   // adjust line ranges
-  Movement:=NewBetweenStart-OldBetweenStart;
-  FLineRanges[Index1].EndPos:=FLineRanges[Index1].StartPos+LineShortLen2;
-  inc(FLineRanges[Index2].StartPos,Movement);
-  FLineRanges[Index2].EndPos:=FLineRanges[Index2].StartPos+LineShortLen1;
-  if (BetweenLength>0) and (OldBetweenStart<>NewBetweenStart) then begin
-    for i:=Index1+1 to Index2-1 do begin
-      inc(FLineRanges[i].StartPos,Movement);
-      inc(FLineRanges[i].EndPos,Movement);
+  if Movement<>0 then
+  begin
+    FLineRanges[Index1].EndPos:=FLineRanges[Index1].StartPos+LineShortLen2;
+    inc(FLineRanges[Index2].StartPos,Movement);
+    FLineRanges[Index2].EndPos:=FLineRanges[Index2].StartPos+LineShortLen1;
+    if (BetweenLength>0) then begin
+      for i:=Index1+1 to Index2-1 do begin
+        inc(FLineRanges[i].StartPos,Movement);
+        inc(FLineRanges[i].EndPos,Movement);
+      end;
     end;
   end;
 
