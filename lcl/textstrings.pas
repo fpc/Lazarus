@@ -445,6 +445,8 @@ var
   Obj: TObject;
   LineShortLen1: LongInt;
   LineShortLen2: LongInt;
+  Line1: PTextLineRange;
+  Line2: PTextLineRange;
 begin
   // check values
   if Index1=Index2 then exit;
@@ -465,10 +467,13 @@ begin
     Index2:=Dummy;
   end;
 
+  Line1:=@FLineRanges[Index1];
+  Line2:=@FLineRanges[Index2];
+
   // adjust text
   MakeTextBufferUnique;
 
-  if (Index2=FLineCount-1) and (FLineRanges[Index2].EndPos>length(FText))
+  if (Index2=FLineCount-1) and (Line2^.EndPos>length(FText))
   then begin
     // The last line should be exchanged,
     // but Text has no new line character(s) at the end
@@ -484,8 +489,8 @@ begin
   LineShortLen2:=GetLineLen(Index2,false);
 
   // save the bigger line
-  StartPos1:=FLineRanges[Index1].StartPos;
-  StartPos2:=FLineRanges[Index2].StartPos;
+  StartPos1:=Line1^.StartPos;
+  StartPos2:=Line2^.StartPos;
   if LineLen1>=LineLen2 then begin
     GetMem(buf,LineLen1);
     System.Move(FText[StartPos1],buf^,LineLen1);
@@ -503,6 +508,8 @@ begin
     System.Move(FText[OldBetweenStart],FText[NewBetweenStart],BetweenLength);
 
   // move both lines
+  Line1^.Line:='';
+  Line2^.Line:='';
   if LineLen1>=LineLen2 then begin
     System.Move(FText[StartPos2],FText[StartPos1],LineLen2);
     System.Move(buf^,FText[StartPos2+Movement],LineLen1);
@@ -514,21 +521,19 @@ begin
   // adjust line ranges
   if Movement<>0 then
   begin
-    FLineRanges[Index1].EndPos:=FLineRanges[Index1].StartPos+LineShortLen2;
-    inc(FLineRanges[Index2].StartPos,Movement);
-    FLineRanges[Index2].EndPos:=FLineRanges[Index2].StartPos+LineShortLen1;
-    if (BetweenLength>0) then begin
-      for i:=Index1+1 to Index2-1 do begin
-        inc(FLineRanges[i].StartPos,Movement);
-        inc(FLineRanges[i].EndPos,Movement);
-      end;
+    Line1^.EndPos:=Line1^.StartPos+LineShortLen2;
+    inc(Line2^.StartPos,Movement);
+    Line2^.EndPos:=Line2^.StartPos+LineShortLen1;
+    for i:=Index1+1 to Index2-1 do begin
+      inc(FLineRanges[i].StartPos,Movement);
+      inc(FLineRanges[i].EndPos,Movement);
     end;
   end;
 
   // exchange TheObject
-  Obj:=FLineRanges[Index1].TheObject;
-  FLineRanges[Index1].TheObject:=FLineRanges[Index2].TheObject;
-  FLineRanges[Index2].TheObject:=Obj;
+  Obj:=Line1^.TheObject;
+  Line1^.TheObject:=Line2^.TheObject;
+  Line2^.TheObject:=Obj;
 
   // clean up
   FreeMem(buf);
