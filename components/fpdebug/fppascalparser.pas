@@ -1014,54 +1014,54 @@ begin
       TmpVal.ReleaseReference;
       exit;
     end;
-    if (TmpVal.Kind = skArray) then begin
-      if (svfInteger in TmpIndex.FieldFlags) then
-        TmpVal2 := TmpVal.Member[TmpIndex.AsInteger]
-      else
-      if (svfOrdinal in TmpIndex.FieldFlags) and
-         (TmpIndex.AsCardinal <= high(Int64))
-      then
-        TmpVal2 := TmpVal.Member[TmpIndex.AsCardinal]
-      else
-      begin
-        SetError('Can not calculate Index');
-        TmpVal.ReleaseReference;
-        exit;
-      end;
-      if TmpVal2 <> nil then TmpVal2.AddReference;
-    end // Kind = skArray
-    else
-    if (TmpVal.Kind = skPointer) then begin
-      if (svfInteger in TmpIndex.FieldFlags) then
-        Offs := TmpIndex.AsInteger
-      else
-      if (svfOrdinal in TmpIndex.FieldFlags) and (TmpIndex.AsCardinal <= high(Int64))
-      then
-        Offs := Int64(TmpIndex.AsCardinal)
-      else
-      begin
-        SetError('Can not calculate Index');
-        TmpVal.ReleaseReference;
-        exit;
-      end;
+    case TmpVal.Kind of
+      skArray: begin
+          if (svfInteger in TmpIndex.FieldFlags) then
+            TmpVal2 := TmpVal.Member[TmpIndex.AsInteger]
+          else
+          if (svfOrdinal in TmpIndex.FieldFlags) and
+             (TmpIndex.AsCardinal <= high(Int64))
+          then
+            TmpVal2 := TmpVal.Member[TmpIndex.AsCardinal]
+          else
+          begin
+            SetError('Can not calculate Index');
+            TmpVal.ReleaseReference;
+            exit;
+          end;
+          if TmpVal2 <> nil then TmpVal2.AddReference;
+        end; // Kind = skArray
+      skPointer: begin
+          if (svfInteger in TmpIndex.FieldFlags) then
+            Offs := TmpIndex.AsInteger
+          else
+          if (svfOrdinal in TmpIndex.FieldFlags) and (TmpIndex.AsCardinal <= high(Int64))
+          then
+            Offs := Int64(TmpIndex.AsCardinal)
+          else
+          begin
+            SetError('Can not calculate Index');
+            TmpVal.ReleaseReference;
+            exit;
+          end;
 
-      TmpVal2 := TmpVal.Member[Offs];
-      if IsError(TmpVal.LastError) then
-        SetError('Error dereferencing'); // TODO: set correct error
-      if TmpVal2 <> nil then TmpVal2.AddReference;
-    end
-    else
-    if (TmpVal.Kind = skString) then begin
-      //TODO
-      SetError('Not implemented');
-      TmpVal.ReleaseReference;
-      exit;
-    end
-    else
-    begin
-      SetError(fpErrCannotDereferenceType, [GetText]);
-      TmpVal.ReleaseReference;
-      exit;
+          TmpVal2 := TmpVal.Member[Offs];
+          if IsError(TmpVal.LastError) then
+            SetError('Error dereferencing'); // TODO: set correct error
+          if TmpVal2 <> nil then TmpVal2.AddReference;
+        end;
+      skString: begin
+          //TODO
+          SetError('Not implemented');
+          TmpVal.ReleaseReference;
+          exit;
+        end
+      else
+        begin
+          SetError(fpErrTypeHasNoIndex, [GetText]);
+          TmpVal.ReleaseReference;
+          exit;
+        end;
     end;
 
     if TmpVal2 = nil then begin
@@ -1206,11 +1206,19 @@ var
 begin
   Result := nil;
 
+  if (Count = 0) then begin
+    SetError(fpErrPasParserInvalidExpression, []);
+    exit;
+  end;
+
+  tmp := Items[0].ResultValue;
+  if (tmp = nil) or (not Expression.Valid) then
+    exit;
+
   if (Count = 2) then begin
     //TODO if tmp is TFpPascalExpressionPartOperatorMakeRef then
     //     AVOID creating the TPasParserSymbolPointer by calling tmp.DbgSymbol
     //     it ran be created in TPasParserSymbolValueCastToPointer if needed.
-    tmp := Items[0].ResultValue;
     if (tmp <> nil) and (tmp.DbgSymbol <> nil) and
        (tmp.DbgSymbol.SymbolType = stType)
     then begin
@@ -1221,9 +1229,13 @@ begin
         //Result := tmp.DbgSymbol.TypeCastValue(tmp2);
       if Result <> nil then
         {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
+
       exit;
     end;
   end;
+
+  // Must be function call
+  SetError('No support for calling functions');
 end;
 
 function TFpPascalExpressionPartBracketArgumentList.DoGetIsTypeCast: Boolean;
@@ -1582,6 +1594,7 @@ procedure TFpPascalExpression.SetError(AnErrorCode: TFpErrorCode; AData: array o
 begin
   FValid := False;
   FError := ErrorHandler.CreateError(AnErrorCode, AData);
+  DebugLn(['Setting error ', ErrorHandler.ErrorAsString(FError)]);
 end;
 
 function TFpPascalExpression.PosFromPChar(APChar: PChar): Integer;
@@ -2223,20 +2236,14 @@ begin
       if Result <> nil then
         Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
 
-      //tmp2 := TFpPasParserValueDerefPointer.Create(tmp, Expression);
-      //if (tmp.TypeInfo.TypeInfo <> nil) then
-      //  Result := tmp.TypeInfo.TypeInfo.TypeCastValue(tmp2)
-      //else
-      //  Result := tmp2;
-      //{$IFDEF WITH_REFCOUNT_DEBUG} if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
-      //if (tmp.TypeInfo.TypeInfo <> nil) then
-      //  tmp2.ReleaseReference;
     end;
   end
   //if tmp.Kind = skArray then // dynarray
   else
+  begin
     Result := nil;
-
+    SetError(fpErrCannotDereferenceType, [GetText]);
+  end;
 end;
 
 function TFpPascalExpressionPartOperatorDeRef.MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
@@ -2460,7 +2467,7 @@ begin
 
   tmp := Items[0].ResultValue;
   if (tmp = nil) then exit;
-  // Todo unit
+
   if (tmp.Kind in [skClass, skRecord, skObject]) then begin
     Result := tmp.MemberByName[Items[1].GetText];
     if Result = nil then begin
@@ -2469,7 +2476,13 @@ begin
     end;
     Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
     Assert((Result.DbgSymbol=nil)or(Result.DbgSymbol.SymbolType=stValue), 'member is value');
+    exit;
   end;
+
+  // Todo unit
+
+  SetError(fpErrorNotAStructure, [Items[1].GetText, Items[0].GetText]);
+
 end;
 
 end.

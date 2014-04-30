@@ -15,11 +15,15 @@ resourcestring
   MsgfpErrAnyError                        = '%1:s';
   MsgfpErrSymbolNotFound                  = 'Identifier not found: "%1:s"';
   MsgfpErrNoMemberWithName                = 'Member not found: %1:s';
+  MsgfpErrorNotAStructure                 = 'Cannot get member "%1:s" from none structure type: %2:s';
+
+  MsgfpErrPasParserInvalidExpression      = 'Invalid Expression';
   MsgfpErrPasParserUnexpectedToken        = 'Unexpected token ''%1:s'' at pos %2:d';
   MsgfpErrPasParserMissingExprAfterComma  = 'Expected Expression after Comma, but found closing bracket %1:s';
   MsgfpErrPasParserMissingIndexExpression = 'Expected Expression but found closing bracket: %1:s';
   MsgfpErrInvalidNumber                   = 'Can''t parse number: %1:s';
   MsgfpErrCannotDereferenceType           = 'Can not dereference Expression "%1:s"';
+  MsgfpErrTypeHasNoIndex                  = 'Not a type or Array. Cannot access indexed element on expression %1:s';
   // 100 memreader error
   MsgfpErrfpErrFailedReadMem              = 'Failed to read data from target mem';
   MsgfpErrCanNotReadInvalidMem            = 'Failed to read data from invalid location';
@@ -37,11 +41,15 @@ const
 
   fpErrSymbolNotFound                  = TFpErrorCode(2);
   fpErrNoMemberWithName                = TFpErrorCode(3);
-  fpErrPasParserUnexpectedToken        = TFpErrorCode(4);
-  fpErrPasParserMissingExprAfterComma  = TFpErrorCode(5);
-  fpErrPasParserMissingIndexExpression = TFpErrorCode(6);
-  fpErrInvalidNumber                   = TFpErrorCode(7);
-  fpErrCannotDereferenceType           = TFpErrorCode(8);
+  fpErrorNotAStructure                 = TFpErrorCode(4);
+
+  fpErrPasParserInvalidExpression      = TFpErrorCode(24);
+  fpErrPasParserUnexpectedToken        = TFpErrorCode(25);
+  fpErrPasParserMissingExprAfterComma  = TFpErrorCode(26);
+  fpErrPasParserMissingIndexExpression = TFpErrorCode(27);
+  fpErrInvalidNumber                   = TFpErrorCode(28);
+  fpErrCannotDereferenceType           = TFpErrorCode(29);
+  fpErrTypeHasNoIndex                  = TFpErrorCode(30);
 
   // 100 memreader error
   fpErrFailedReadMem        = TFpErrorCode(100);
@@ -82,8 +90,8 @@ type
   public
     function CreateError(AnErrorCode: TFpErrorCode; AData: array of const): TFpError;
     function CreateError(AnErrorCode: TFpErrorCode; AnError: TFpError; AData: array of const): TFpError;
-    function ErrorAsString(AnError: TFpError): string;
-    function ErrorAsString(AnErrorCode: TFpErrorCode; AData: array of const): string;
+    function ErrorAsString(AnError: TFpError): string; virtual;
+    function ErrorAsString(AnErrorCode: TFpErrorCode; AData: array of const): string; virtual;
   end;
 
 function GetFpErrorHandler: TFpErrorHandler;
@@ -157,20 +165,24 @@ begin
     fpErrAnyError:         Result := MsgfpErrAnyError;
     fpErrSymbolNotFound:   Result := MsgfpErrSymbolNotFound;
     fpErrNoMemberWithName: Result := MsgfpErrNoMemberWithName;
-    fpErrPasParserUnexpectedToken: Result := MsgfpErrPasParserUnexpectedToken;
-    fpErrPasParserMissingExprAfterComma: Result := MsgfpErrPasParserMissingExprAfterComma;
+    fpErrorNotAStructure: Result := MsgfpErrorNotAStructure;
+
+    fpErrPasParserInvalidExpression:      Result := MsgfpErrPasParserInvalidExpression;
+    fpErrPasParserUnexpectedToken:        Result := MsgfpErrPasParserUnexpectedToken;
+    fpErrPasParserMissingExprAfterComma:  Result := MsgfpErrPasParserMissingExprAfterComma;
     fpErrPasParserMissingIndexExpression: Result := MsgfpErrPasParserMissingIndexExpression;
-    fpErrInvalidNumber:    Result := MsgfpErrInvalidNumber;
-    fpErrCannotDereferenceType: Result := MsgfpErrCannotDereferenceType;
+    fpErrInvalidNumber:                   Result := MsgfpErrInvalidNumber;
+    fpErrCannotDereferenceType:           Result := MsgfpErrCannotDereferenceType;
+    fpErrTypeHasNoIndex: Result := MsgfpErrTypeHasNoIndex;
 
     fpErrCanNotReadInvalidMem: Result := MsgfpErrCanNotReadInvalidMem;
-    fpErrCanNotReadMemAtAddr: Result := MsgfpErrCanNotReadMemAtAddr;
-    fpErrFailedReadMem: Result := MsgfpErrfpErrFailedReadMem;
+    fpErrCanNotReadMemAtAddr:  Result := MsgfpErrCanNotReadMemAtAddr;
+    fpErrFailedReadMem:        Result := MsgfpErrfpErrFailedReadMem;
 
-    fpErrLocationParser: Result := MsgfpErrLocationParser;
-    fpErrLocationParserMemRead: Result := MsgfpErrLocationParserMemRead;
-    fpErrLocationParserInit: Result := MsgfpErrLocationParserInit;
-    fpErrLocationParserMinStack: Result := MsgfpErrLocationParserMinStack;
+    fpErrLocationParser:                 Result := MsgfpErrLocationParser;
+    fpErrLocationParserMemRead:          Result := MsgfpErrLocationParserMemRead;
+    fpErrLocationParserInit:             Result := MsgfpErrLocationParserInit;
+    fpErrLocationParserMinStack:         Result := MsgfpErrLocationParserMinStack;
     fpErrLocationParserNoAddressOnStack: Result := MsgfpErrLocationParserNoAddressOnStack;
   end;
 end;

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, strutils, fpcunit, testutils, testregistry, TestGDBMIControl,
   DbgIntfBaseTypes, DbgIntfDebuggerBase, TestBase, FpGdbmiDebugger, LCLProc, SynRegExpr,
-  TestWatchUtils, GDBMIDebugger;
+  TestWatchUtils, GDBMIDebugger, FpErrorMessages;
 
 const
   BREAK_COUNT_TestWatchesUnitSimple = 17;
@@ -71,6 +71,7 @@ type
                  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
     function AddFmtDef        (AnExpr, AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
     function AddFmtDef        (AnExpr: String; AEvalFlags: TDBGEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+    function AddError         (AnExpr: String; AnErrorCode: Integer = 0; AMtch: string = ''): PWatchExpectation;
 
     function AddSimpleInt(AnExpr: string; AMtch: Int64; ATpNm: string): PWatchExpectation;
     function AddSimpleUInt(AnExpr: string; AMtch: QWord; ATpNm: string): PWatchExpectation;
@@ -86,6 +87,13 @@ type
                             );
   published
     procedure TestWatches;
+  end;
+
+  { TTestFpErrorHandler }
+
+  TTestFpErrorHandler = class(TFpErrorHandler)
+  public
+    function ErrorAsString(AnErrorCode: TFpErrorCode; AData: array of const): string; override;
   end;
 
 implementation
@@ -128,6 +136,15 @@ end;
 function MatchClassNil(TypeName: String): String;
 begin
   Result := '<'+TypeName+'> = nil';
+end;
+
+{ TTestFpErrorHandler }
+
+function TTestFpErrorHandler.ErrorAsString(AnErrorCode: TFpErrorCode;
+  AData: array of const): string;
+begin
+  Result := inherited ErrorAsString(AnErrorCode, AData);
+  Result := 'Error ' + IntToStr(AnErrorCode) + ': ' + Result;
 end;
 
 
@@ -225,6 +242,18 @@ function TTestWatches.AddFmtDef(AnExpr: String; AEvalFlags: TDBGEvaluateFlags; A
   AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
   Result := Add(AnExpr, wdfDefault, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
+end;
+
+function TTestWatches.AddError(AnExpr: String; AnErrorCode: Integer;
+  AMtch: string): PWatchExpectation;
+var
+  s: String;
+begin
+  if AnErrorCode > 0 then
+    s := 'Error '+IntToStr(AnErrorCode) + ': ' + AMtch
+  else
+    s := 'Error ' + AMtch;
+  AddFmtDef(AnExpr, s, skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
 end;
 
 function TTestWatches.AddSimpleInt(AnExpr: string; AMtch: Int64;
@@ -446,6 +475,7 @@ var
   BrkIdx, i, i2, j: Integer;
   s, s1, s2, s2def: String;
   r: PWatchExpectation;
+  ErrCodeNotFound: TFpErrorCode;
 begin
   for BrkIdx := 1 to BREAK_COUNT_TestWatchesUnitSimple do begin
     FCurrentExpect := @ExpectBreakSimple[BrkIdx];
@@ -471,6 +501,11 @@ begin
         // 6: passed in object / var arg object
         // unit.glob
       end;
+      if (i in [5..7]) and not(BrkIdx in [4, 5]) then
+        ErrCodeNotFound := fpErrNoMemberWithName
+      else
+        ErrCodeNotFound := fpErrSymbolNotFound;
+
 
       if i in [0, 5] then begin
         // Some Expressions that will always fail
@@ -490,14 +525,14 @@ begin
             9: begin s1 := 'TSimpleClass1(' + s; s2 := ')'; end;
           end;
 
-          AddFmtDef(Format('%sIDoNotExist%1:s', [s1,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+          AddError(Format('%sIDoNotExist%1:s', [s1,s2]), ErrCodeNotFound); // ERROR
           // procedures
-          AddFmtDef(Format('%sInitFields%1:s', [s1,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
-          AddFmtDef(Format('%sSimple_NoneNested%1:s', [s1,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+          AddError(Format('%sInitFields%1:s', [s1,s2]),  ErrCodeNotFound); // ERROR
+          AddError(Format('%sSimple_NoneNested%1:s', [s1,s2]),  ErrCodeNotFound); // ERROR
           // type
-          AddFmtDef(Format('%sTSimpleClass1%1:s', [s1,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+          AddError(Format('%sTSimpleClass1%1:s', [s1,s2]),  ErrCodeNotFound); // ERROR
           // unit
-          AddFmtDef(Format('%sTestWatchesUnitSimple%1:s', [s1,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+          AddError(Format('%sTestWatchesUnitSimple%1:s', [s1,s2]),  ErrCodeNotFound); // ERROR
         end;
       end;
 
@@ -527,8 +562,8 @@ begin
             s2 := '^';
           end;
 
-          AddFmtDef(Format('%sShort1%1:s', [s,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
-          AddFmtDef(Format('%sInt1%1:s', [s,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+          AddError(Format('%sShort1%1:s', [s,s2]), ErrCodeNotFound); // ERROR
+          AddError(Format('%sInt1%1:s',   [s,s2]), ErrCodeNotFound); // ERROR
         end;
 
         continue;
@@ -577,7 +612,8 @@ begin
         r := AddFmtDef(Format('%sSet2%1:s', [s,s2]),     '^\[\]', skSimple, '', [fTpMtch]);
         UpdExpRes(r, stDwarf, '', skSimple); // no sets in dwarf2
 
-      end; // i2
+        AddError(Format('%sByte1%1:s^', [s,s2]), fpErrCannotDereferenceType); // ERROR
+    end; // i2
 
     end; // i
     {%endregion  Fields }
@@ -636,7 +672,7 @@ if not (i in [2,3]) then
 if (not (i in [2,3])) or (i2=0) then begin // open array / not valid, pointer is pointer to dyn array
       AddSimpleInt(Format('%sDynAInt1%1:s[0]', [s,s2]),    100, M_Int);
       AddSimpleInt(Format('%sDynAInt1%1:s[1]', [s,s2]),    101, M_Int);
-      AddFmtDef(Format('%sDynAInt1%1:s[0][0]', [s,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+      AddError(Format('%sDynAInt1%1:s[0][0]', [s,s2]), fpErrTypeHasNoIndex); // ERROR
 end;
 
 
@@ -729,16 +765,17 @@ if not (i in [2,3]) then // open array / TODO
         '\(.*?FieldByte1 = 220;.*?FieldByte2 = 221;.*?\)',
       skArray, '', [fTpMtch]);
 
-
+      // 1st nested has diff len
       AddFmtDef(Format('%sDynDynInt1%1:s', [s,s2]), '^[\(L].*?'+
-        '\(1000, 1001, 1002\), ' +    '\(1010, 1011, 1012\), ' +    '\(1020, 1021, 1022\)',
+        '\(1000, 1001\), ' +    '\(1010, 1011, 1012\), ' +    '\(1020, 1021, 1022\)',
       skArray, '', [fTpMtch]);
       AddSimpleInt(Format('%sDynDynInt1%1:s[0][0]', [s,s2]),    1000, M_Int);
       AddSimpleInt(Format('%sDynDynInt1%1:s[0,0]', [s,s2]),    1000, M_Int);
       AddSimpleInt(Format('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0], %0:sDynDynInt1%1:s[3,1]]', [s,s2]),    1012, M_Int);
       AddSimpleInt(Format('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0]][%0:sDynDynInt1%1:s[3,1]]', [s,s2]),    1012, M_Int);
 
-      //AddFmtDef(Format('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0].NoMember, %0:sDynDynInt1%1:s[3,1]]', [s,s2]), 'Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+      AddError(Format('%0:sDynDynInt1%1:s[FooNoExistFoo, %0:sDynDynInt1%1:s[3,1]]', [s,s2]), fpErrSymbolNotFound); // ERROR
+      AddError(Format('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0].NoMember, %0:sDynDynInt1%1:s[3,1]]', [s,s2]), fpErrorNotAStructure); // ERROR
 
 
       AddFmtDef(Format('%sDynDynClass1%1:s', [s,s2]), '^[^\(G]*?\('+ // not GDB:
@@ -1026,6 +1063,7 @@ end;
 
 initialization
 
+  ErrorHandler := TTestFpErrorHandler.Create;
   RegisterDbgTest(TTestWatches);
   RegisterTestSelectors(['TTestWatches'
                         ]);

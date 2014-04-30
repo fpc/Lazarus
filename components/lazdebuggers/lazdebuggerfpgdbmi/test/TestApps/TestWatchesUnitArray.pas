@@ -594,9 +594,10 @@ begin
     Field_DynRec2[2].FieldByte2 := 221;
 
   SetLength(Field_DynDynInt1,   5,3);
+  SetLength(Field_DynDynInt1[0],  2);
     Field_DynDynInt1[0][0] := 1000;
     Field_DynDynInt1[0][1] := 1001;
-    Field_DynDynInt1[0][2] := 1002;
+    //Field_DynDynInt1[0][2] := 1002;
     Field_DynDynInt1[1][0] := 1010;
     Field_DynDynInt1[1][1] := 1011;
     Field_DynDynInt1[1][2] := 1012;
@@ -754,9 +755,10 @@ begin
     Local_DynRec2[2].FieldByte2 := 221;
 
   SetLength(Local_DynDynInt1,   5,3);
+  SetLength(Local_DynDynInt1[0],  2);
     Local_DynDynInt1[0][0] := 1000;
     Local_DynDynInt1[0][1] := 1001;
-    Local_DynDynInt1[0][2] := 1002;
+    //Local_DynDynInt1[0][2] := 1002;
     Local_DynDynInt1[1][0] := 1010;
     Local_DynDynInt1[1][1] := 1011;
     Local_DynDynInt1[1][2] := 1012;
@@ -995,9 +997,10 @@ begin
     ArrayGlob_DynRec2[2].FieldByte2 := 221;
 
   SetLength(ArrayGlob_DynDynInt1,   5,3);
+  SetLength(ArrayGlob_DynDynInt1[0],  2);
     ArrayGlob_DynDynInt1[0][0] := 1000;
     ArrayGlob_DynDynInt1[0][1] := 1001;
-    ArrayGlob_DynDynInt1[0][2] := 1002;
+    //ArrayGlob_DynDynInt1[0][2] := 1002;
     ArrayGlob_DynDynInt1[1][0] := 1010;
     ArrayGlob_DynDynInt1[1][1] := 1011;
     ArrayGlob_DynDynInt1[1][2] := 1012;
