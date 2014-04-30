@@ -2693,17 +2693,21 @@ begin
     if SharedEditorCount=0 then exit;
     SrcEdit:=SharedEditors[0].EditorComponent;
     if SrcEdit=nil then exit;
-    if not (SrcEdit.Highlighter is TSynPasSyn) then begin
+    if not (SrcEdit.Highlighter is TSynPasSyn) then
+    begin
       if Filename<>FLastWarnedMainLinkFilename then
-        debugln(['TSourceEditorSharedValues.GetMainLinkScanner not pascal highlighted: ',Filename]);
-      FLastWarnedMainLinkFilename:=CodeBuffer.Filename;
+      begin
+        if FilenameIsPascalSource(Filename) then
+          debugln(['TSourceEditorSharedValues.GetMainLinkScanner not pascal highlighted: ',Filename]);
+      end;
+      FLastWarnedMainLinkFilename:=Filename;
       exit;
     end;
     if not CodeToolBoss.InitCurCodeTool(CodeBuffer) then
     begin
       if Filename<>FLastWarnedMainLinkFilename then
         debugln(['TSourceEditorSharedValues.GetMainLinkScanner failed to find the unit of ',Filename]);
-      FLastWarnedMainLinkFilename:=CodeBuffer.Filename;
+      FLastWarnedMainLinkFilename:=Filename;
       exit;
     end;
     Result:=CodeToolBoss.CurCodeTool.Scanner;
