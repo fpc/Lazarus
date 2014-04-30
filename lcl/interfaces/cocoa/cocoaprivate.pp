@@ -17,6 +17,7 @@ unit CocoaPrivate;
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
 {$interfaces corba}
+{.$DEFINE COCOA_DEBUG_SETBOUNDS}
 
 interface
 
@@ -27,6 +28,7 @@ uses
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
+  LMessages, LCLMessageGlue,
   LCLType, LCLProc, Controls, ComCtrls;
 
 type
@@ -530,12 +532,22 @@ type
     LCLPage: TCustomPage;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
+    function lclFrame: TRect; override;
+    function lclClientFrame: TRect; override;
   end;
 
-  TCocoaTabControl = objcclass(NSTabView)
+  { TCocoaTabControl }
+
+  TCocoaTabControl = objcclass(NSTabView, NSTabViewDelegateProtocol)
+    LCLPageControl: TCustomTabControl;
     callback: ICommonCallback;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
+    // NSTabViewDelegateProtocol
+    function tabView_shouldSelectTabViewItem(tabView: NSTabView; tabViewItem: NSTabViewItem): Boolean; message 'tabView:shouldSelectTabViewItem:';
+    procedure tabView_willSelectTabViewItem(tabView: NSTabView; tabViewItem: NSTabViewItem); message 'tabView:willSelectTabViewItem:';
+    procedure tabView_didSelectTabViewItem(tabView: NSTabView; tabViewItem: NSTabViewItem); message 'tabView:didSelectTabViewItem:';
+    procedure tabViewDidChangeNumberOfTabViewItems(TabView: NSTabView); message 'tabViewDidChangeNumberOfTabViewItems:';
   end;
 
   TCocoaTabPageView = objcclass(NSView)
@@ -1752,10 +1764,11 @@ begin
   end
   else
     pstr := '';
-  WriteLn(Format('[LCLViewExtension.lclInitWithCreateParams] Class=%s Caption=%s ParentClass=%s ParentClassView=%s rect=%d %d %d %d',
+  WriteLn(Format('[LCLViewExtension.lclInitWithCreateParams] Class=%s Caption=%s ParentClass=%s ParentClassView=%s rect=%d %d %d %d Visible=%d',
     [NSStringToString(Self.className), AParams.Caption,
      NSStringToString(NSObject(AParams.WndParent).className), pstr,
-     Round(ns.Origin.x), Round(ns.Origin.y), Round(ns.size.width), Round(ns.size.height)]));
+     Round(ns.Origin.x), Round(ns.Origin.y), Round(ns.size.width), Round(ns.size.height),
+     AParams.Style and WS_VISIBLE]));
   {$ENDIF}
 
   Result := initWithFrame(ns);
@@ -1777,6 +1790,10 @@ end;
 procedure LCLViewExtension.lclSetVisible(AVisible: Boolean);
 begin
   setHidden(not AVisible);
+  {$IFDEF COCOA_DEBUG_SETBOUNDS}
+  WriteLn(Format('LCLViewExtension.lclSetVisible: %s AVisible=%d',
+    [NSStringToString(Self.ClassName), Integer(AVisible)]));
+  {$ENDIF}
 end;
 
 function LCLViewExtension.lclIsPainting: Boolean;
@@ -1864,7 +1881,9 @@ var
 begin
   svHeight := GetNSViewSuperViewHeight(Self);
   if Assigned(superview)  then
+  begin
     LCLToNSRect(r, svHeight, ns)
+  end
   else
     ns := RectToNSRect(r);
   {$IFDEF COCOA_DEBUG_SETBOUNDS}
@@ -2189,6 +2208,20 @@ begin
   callback := nil;
 end;
 
+function TCocoaTabPage.lclFrame: TRect;
+var
+  svh: CGFloat;
+begin
+  svh := tabView.frame.size.height;
+  NSToLCLRect(tabView.contentRect, svh, Result);
+  //WriteLn('[TCocoaTabPage.lclFrame] '+dbgs(Result)+' '+NSStringToString(Self.label_));
+end;
+
+function TCocoaTabPage.lclClientFrame: TRect;
+begin
+  Result := lclFrame();
+end;
+
 { TCocoaTabControl }
 
 function TCocoaTabControl.lclGetCallback: ICommonCallback;
@@ -2199,6 +2232,58 @@ end;
 procedure TCocoaTabControl.lclClearCallback;
 begin
   callback := nil;
+end;
+
+function TCocoaTabControl.tabView_shouldSelectTabViewItem(tabView: NSTabView;
+  tabViewItem: NSTabViewItem): Boolean;
+begin
+
+end;
+
+procedure TCocoaTabControl.tabView_willSelectTabViewItem(tabView: NSTabView;
+  tabViewItem: NSTabViewItem);
+var
+  Msg: TLMNotify;
+  Hdr: TNmHdr;
+begin
+  if LCLPageControl = nil then Exit;
+
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.Msg := LM_NOTIFY;
+  FillChar(Hdr, SizeOf(Hdr), 0);
+
+  Hdr.hwndFrom := HWND(tabview);
+  Hdr.Code := TCN_SELCHANGING;
+  Hdr.idFrom := PtrUInt(tabview.indexOfTabViewItem(tabViewItem));
+  Msg.NMHdr := @Hdr;
+  Msg.Result := 0;
+  LCLMessageGlue.DeliverMessage(LCLPageControl, Msg);
+end;
+
+procedure TCocoaTabControl.tabView_didSelectTabViewItem(tabView: NSTabView;
+  tabViewItem: NSTabViewItem);
+var
+  Msg: TLMNotify;
+  Hdr: TNmHdr;
+begin
+  if LCLPageControl = nil then Exit;
+
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.Msg := LM_NOTIFY;
+  FillChar(Hdr, SizeOf(Hdr), 0);
+
+  Hdr.hwndFrom := HWND(tabview);
+  Hdr.Code := TCN_SELCHANGE;
+  Hdr.idFrom := PtrUInt(tabview.indexOfTabViewItem(tabViewItem));
+  Msg.NMHdr := @Hdr;
+  Msg.Result := 0;
+  LCLMessageGlue.DeliverMessage(LCLPageControl, Msg);
+end;
+
+procedure TCocoaTabControl.tabViewDidChangeNumberOfTabViewItems(
+  TabView: NSTabView);
+begin
+
 end;
 
 { TCocoaTableListView }

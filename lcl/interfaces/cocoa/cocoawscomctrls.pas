@@ -249,6 +249,8 @@ begin
   if Result <> 0 then
   begin
     lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
+    lControl.LCLPageControl := TCustomTabControl(AWinControl);
+    lControl.setDelegate(lControl);
   end;
 end;
 

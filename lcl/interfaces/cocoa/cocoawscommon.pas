@@ -2,6 +2,7 @@ unit CocoaWSCommon;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{.$DEFINE COCOA_DEBUG_SETBOUNDS}
 
 interface
 
@@ -1269,14 +1270,16 @@ begin
 end;
 
 class procedure TCocoaWSWinControl.ShowHide(const AWinControl: TWinControl);
-var pool: NSAutoreleasePool;   // called outside apploop on startup - therefore has to be enframed by pool
+var
+  pool: NSAutoreleasePool;   // called outside apploop on startup - therefore has to be enframed by pool
 begin
+  //WriteLn(Format('[TCocoaWSWinControl.ShowHide] AWinControl=%s %s', [AWinControl.Name, AWinControl.ClassName]));
   if AWinControl.HandleAllocated then
-    begin
+  begin
     pool := NSAutoreleasePool.alloc.init;
     NSObject(AWinControl.Handle).lclSetVisible(AWinControl.HandleObjectShouldBeVisible);
     pool.release;
-    end;
+  end;
 end;
 
 class procedure TCocoaWSWinControl.Invalidate(const AWinControl: TWinControl);
