@@ -25,7 +25,7 @@ uses
   Types, Classes, SysUtils,
   CGGeometry,
   // Libs
-  CocoaAll, CocoaUtils, CocoaGDIObjects,
+  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
   LCLType, LCLProc, Controls, ComCtrls;
 
@@ -538,6 +538,10 @@ type
     procedure lclClearCallback; override;
   end;
 
+  TCocoaTabPageView = objcclass(NSView)
+    tabview: TCocoaTabControl;
+  end;
+
   { TCocoaTableListView }
 
   TCocoaTableListView = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
@@ -603,6 +607,7 @@ type
 
 procedure SetViewDefaults(AView: NSView);
 function CheckMainThread: Boolean;
+function GetNSViewSuperViewHeight(view: NSView): CGFloat;
 
 implementation
 
@@ -615,6 +620,17 @@ end;
 function CheckMainThread: Boolean;
 begin
   Result := NSThread.currentThread.isMainThread;
+end;
+
+function GetNSViewSuperViewHeight(view: NSView): CGFloat;
+begin
+  Result := -1;
+  if not Assigned(view) then Exit;
+  if not Assigned(view.superview) then Exit;
+  if view.superview.isKindOfClass_(TCocoaTabPageView) then
+    Result := TCocoaTabPageView(view.superview).tabview.contentRect.size.height
+  else
+    Result := view.superview.frame.size.height;
 end;
 
 { TCocoaWindowContent }
@@ -1713,18 +1729,34 @@ function LCLViewExtension.lclInitWithCreateParams(const AParams: TCreateParams):
 var
   p: NSView;
   ns: NSRect;
+  {$IFDEF COCOA_DEBUG_SETBOUNDS}
+  pstr: string;
+  {$ENDIF}
 begin
   p := nil;
   if (AParams.WndParent <> 0) then
-  begin
     p := CocoaUtils.GetNSObjectView(NSObject(AParams.WndParent));
-    if (NSObject(AParams.WndParent).isKindOfClass_(NSView)) then
-  end;
-  with AParams do
-    if Assigned(p) then
-      LCLToNSRect(Types.Bounds(X,Y,Width, Height), p.frame.size.height, ns)
-    else
-      ns := GetNSRect(X, Y, Width, Height);
+
+  if Assigned(p) then
+    LCLToNSRect(Types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
+      p.frame.size.height, ns)
+  else
+    ns := GetNSRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
+
+  {$IFDEF COCOA_DEBUG_SETBOUNDS}
+  if Assigned(p) then
+  begin
+    pstr := NSStringToString(p.className);
+    if NSStringToString(NSObject(AParams.WndParent).className) = 'TCocoaTabPage' then
+      pstr := pstr + ' ' + NSStringToString(TCocoaTabPage(AParams.WndParent).label_);
+  end
+  else
+    pstr := '';
+  WriteLn(Format('[LCLViewExtension.lclInitWithCreateParams] Class=%s Caption=%s ParentClass=%s ParentClassView=%s rect=%d %d %d %d',
+    [NSStringToString(Self.className), AParams.Caption,
+     NSStringToString(NSObject(AParams.WndParent).className), pstr,
+     Round(ns.Origin.x), Round(ns.Origin.y), Round(ns.size.width), Round(ns.size.height)]));
+  {$ENDIF}
 
   Result := initWithFrame(ns);
   if not Assigned(Result) then
@@ -1828,11 +1860,18 @@ end;
 procedure LCLViewExtension.lclSetFrame(const r: TRect);
 var
   ns: NSRect;
+  svHeight: CGFloat;
 begin
+  svHeight := GetNSViewSuperViewHeight(Self);
   if Assigned(superview)  then
-    LCLToNSRect(r, superview.frame.size.height, ns)
+    LCLToNSRect(r, svHeight, ns)
   else
     ns := RectToNSRect(r);
+  {$IFDEF COCOA_DEBUG_SETBOUNDS}
+  WriteLn(Format('LCLViewExtension.lclSetFrame: %s Bounds=%s height=%d ns_pos=%d %d ns_size=%d %d',
+    [NSStringToString(Self.ClassName), dbgs(r), Round(svHeight),
+     Round(ns.origin.x), Round(ns.origin.y), Round(ns.size.width), Round(ns.size.height)]));
+  {$ENDIF}
   setFrame(ns);
 end;
 

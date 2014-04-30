@@ -5,7 +5,7 @@ interface
 {$mode delphi}
 {$modeswitch objectivec1}
 
-{$DEFINE COCOA_DEBUG_TABCONTROL}
+{.$DEFINE COCOA_DEBUG_TABCONTROL}
 
 uses
   // RTL, FCL, LCL
@@ -185,7 +185,8 @@ end;
 class function TCocoaWSCustomPage.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   lControl: TCocoaTabPage;
-  sv: NSScrollView;
+  tv: TCocoaTabPageView;
+  tabview: TCocoaTabControl;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn('[TCocoaWSCustomPage.CreateHandle]');
@@ -198,13 +199,16 @@ begin
     lControl.LCLPage := TCustomPage(AWinControl);
     SetProperties(TCustomPage(AWinControl), lControl);
 
-    {sv := NSScrollView.alloc.initWithFrame(
-      TCocoaTabControl(AWinControl.Parent.Handle) .contentRect);
-    sv.setHasVerticalScroller(True);
-    sv.setHasHorizontalScroller(True);
-    sv.setAutohidesScrollers(True);
-    sv.setBorderType(NSNoBorder);
-    lControl.setView(sv);}
+    // Set a special view for the page
+    tabview := TCocoaTabControl(AWinControl.Parent.Handle);
+    tv := TCocoaTabPageView.alloc.initWithFrame(
+      tabview.contentRect);
+    {tv.setHasVerticalScroller(True);
+    tv.setHasHorizontalScroller(True);
+    tv.setAutohidesScrollers(True);
+    tv.setBorderType(NSNoBorder);}
+    tv.tabview := tabview;
+    lControl.setView(tv);
   end;
 end;
 

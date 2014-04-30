@@ -547,10 +547,12 @@ begin
   if ALogFont.lfStrikeOut > 0 then
     include(FStyle, cfs_StrikeOut);
 
+  FontName := NSStringUTF8(FName);
   Attributes := NSDictionary.dictionaryWithObjectsAndKeys(
-        NSStringUTF8(FName), NSFontFamilyAttribute,
+        FontName, NSFontFamilyAttribute,
         NSNumber.numberWithFloat(FSize), NSFontSizeAttribute,
         nil);
+  FontName.release;
 
   Descriptor := NSFontDescriptor.fontDescriptorWithFontAttributes(Attributes);
   FFont := NSFont.fontWithDescriptor_textTransform(Descriptor, nil);
@@ -1048,11 +1050,11 @@ begin
     FText := NewText;
     S := NSStringUTF8(NewText);
     try
-    FTextStorage.beginEditing;
-    FTextStorage.replaceCharactersInRange_withString(GetTextRange, S);
-    updateFont;
-    updateColor;
-    FTextStorage.endEditing;
+      FTextStorage.beginEditing;
+      FTextStorage.replaceCharactersInRange_withString(GetTextRange, S);
+      updateFont;
+      updateColor;
+      FTextStorage.endEditing;
     except
     end;
     S.release;

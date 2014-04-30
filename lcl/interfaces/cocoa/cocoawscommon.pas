@@ -1193,30 +1193,29 @@ end;
 
 class procedure TCocoaWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
-
 begin
   if AWinControl.HandleAllocated then
-    begin
-    //debugln('TCocoaWSWinControl.SetBounds: '+AWinControl.Name+'Bounds='+dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
+  begin
+    {$IFDEF COCOA_DEBUG_SETBOUNDS}
+    writeln('TCocoaWSWinControl.SetBounds: '+AWinControl.Name+'Bounds='+dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
+    {$ENDIF}
     NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
-    end;
+  end;
 end;
 
 class procedure TCocoaWSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
 begin
   //debugln('SetCursor '+AWinControl.name+' '+dbgs(ACursor));
- if CocoaWidgetSet.CurrentCursor<>ACursor then
+  if CocoaWidgetSet.CurrentCursor<>ACursor then
   begin
-  CocoaWidgetSet.CurrentCursor:= ACursor;
+    CocoaWidgetSet.CurrentCursor:= ACursor;
 
-  if ACursor<>0 then
-     TCocoaCursor(ACursor).SetCursor
-     else
-     TCocoaCursor.SetDefaultCursor;
-
+    if ACursor<>0 then
+      TCocoaCursor(ACursor).SetCursor
+    else
+      TCocoaCursor.SetDefaultCursor;
   end;
-
 end;
 
 class procedure TCocoaWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
