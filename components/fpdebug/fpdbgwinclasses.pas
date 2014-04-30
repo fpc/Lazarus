@@ -55,9 +55,13 @@ type
 
   TDbgWinThread = class(TDbgThread)
   protected
+    FThreadContextChanged: boolean;
     procedure LoadRegisterValues; override;
   public
     procedure SetSingleStep;
+    function AddWatchpoint(AnAddr: TDBGPtr): integer; override;
+    function RemoveWatchpoint(AnId: integer): boolean; override;
+    procedure BeforeContinue; override;
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     function ReadThreadState: boolean;
   end;
@@ -101,6 +105,7 @@ type
 
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
+    function GetStackPointerRegisterValue: TDbgPtr; override;
     function Pause: boolean; override;
 
     procedure TerminateProcess; override;
@@ -423,10 +428,14 @@ begin
    EXCEPTION_SINGLE_STEP: begin
      if (AThread.SingleStepping) or assigned(FCurrentBreakpoint) then
        TDbgWinThread(AThread).SetSingleStep;
+     AThread.BeforeContinue;
      Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
    end
-  else
-    Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
+  else begin
+     if assigned(AThread) then
+       AThread.BeforeContinue;
+     Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
+   end;
   end;
   result := true;
 end;
@@ -893,6 +902,15 @@ begin
 {$endif}
 end;
 
+function TDbgWinProcess.GetStackPointerRegisterValue: TDbgPtr;
+begin
+{$ifdef cpui386}
+  Result := GCurrentContext^.Esp;
+{$else}
+//  Result := GCurrentContext^.Rdi;
+{$endif}
+end;
+
 function DebugBreakProcess(Process:HANDLE): WINBOOL; external 'kernel32' name 'DebugBreakProcess';
 
 function TDbgWinProcess.Pause: boolean;
@@ -991,32 +1009,89 @@ begin
 end;
 
 procedure TDbgWinThread.SetSingleStep;
-var
-  _UC: record
-    C: TContext;
-    D: array[1..16] of Byte;
-  end;
-  Context: PContext;
 begin
-  Context := AlignPtr(@_UC, $10);
-  Context^.ContextFlags := CONTEXT_CONTROL;
-  if not GetThreadContext(Handle, Context^)
-  then begin
-    Log('Thread %u: Unable to get context', [ID]);
-    Exit;
-  end;
-
-  Context^.ContextFlags := CONTEXT_CONTROL;
 {$ifdef cpui386}
-  Context^.EFlags := Context^.EFlags or FLAG_TRACE_BIT;
+  GCurrentContext^.EFlags := GCurrentContext^.EFlags or FLAG_TRACE_BIT;
 {$else}
   {$warning singlestep not ready for 64 bit}
 {$endif}
+  FThreadContextChanged:=true;
+end;
 
-  if not SetThreadContext(Handle, Context^)
-  then begin
-    Log('Thread %u: Unable to set context', [ID]);
-    Exit;
+function TDbgWinThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
+var
+  i: integer;
+
+  function SetBreakpoint(var dr: DWORD; ind: byte): boolean;
+  begin
+    if (Dr=0) and ((GCurrentContext^.Dr7 and (1 shl ind))=0) then
+    begin
+      GCurrentContext^.Dr7 := GCurrentContext^.Dr7 or (1 shl (ind*2));
+      GCurrentContext^.Dr7 := GCurrentContext^.Dr7 or ($30000 shl (ind*4));
+      Dr:=AnAddr;
+      FThreadContextChanged:=true;
+      Result := True;
+    end
+    else
+      result := False;
+  end;
+
+begin
+  result := -1;
+  if SetBreakpoint(GCurrentContext^.Dr0, 0) then
+    result := 0
+  else if SetBreakpoint(GCurrentContext^.Dr1, 1) then
+    result := 1
+  else if SetBreakpoint(GCurrentContext^.Dr2, 2) then
+    result := 2
+  else if SetBreakpoint(GCurrentContext^.Dr3, 3) then
+    result := 3
+  else
+    Process.Log('No hardware breakpoint available.');
+end;
+
+function TDbgWinThread.RemoveWatchpoint(AnId: integer): boolean;
+
+  function RemoveBreakpoint(var dr: DWORD; ind: byte): boolean;
+  begin
+    if (Dr<>0) and ((GCurrentContext^.Dr7 and (1 shl (ind*2)))<>0) then
+    begin
+      GCurrentContext^.Dr7 := GCurrentContext^.Dr7 xor (1 shl (ind*2));
+      GCurrentContext^.Dr7 := GCurrentContext^.Dr7 xor ($30000 shl (ind*4));
+      Dr:=0;
+      FThreadContextChanged:=true;
+      Result := True;
+    end
+    else
+    begin
+      result := False;
+      Process.Log('HW watchpoint is not set.');
+    end;
+  end;
+
+begin
+  case AnId of
+    0: result := RemoveBreakpoint(GCurrentContext^.Dr0, 0);
+    1: result := RemoveBreakpoint(GCurrentContext^.Dr1, 1);
+    2: result := RemoveBreakpoint(GCurrentContext^.Dr2, 2);
+    3: result := RemoveBreakpoint(GCurrentContext^.Dr3, 3);
+  end
+end;
+
+procedure TDbgWinThread.BeforeContinue;
+begin
+  if GCurrentContext^.Dr6 <> $ffff0ff0 then
+  begin
+    GCurrentContext^.Dr6:=$ffff0ff0;
+    FThreadContextChanged:=true;
+  end;
+
+  if FThreadContextChanged then
+  begin
+    if SetThreadContext(Handle, GCurrentContext^) then
+      FThreadContextChanged:=false
+    else
+      Log('Thread %u: Unable to set context', [ID])
   end;
 end;
 
@@ -1060,6 +1135,7 @@ begin
     Log('Unable to set context');
     Exit;
   end;
+  FThreadContextChanged:=false;
   Result := True;
 end;
 

@@ -51,6 +51,7 @@ type
     procedure StepIntoInstr;
     procedure StepOverInstr;
     procedure Next;
+    procedure Step;
     procedure StepOut;
     procedure Pause;
     procedure ProcessLoop;
@@ -144,12 +145,17 @@ end;
 
 procedure TDbgController.StepOverInstr;
 begin
-  FCurrentThread.StepOver;
+  FCurrentThread.StepLine;
 end;
 
 procedure TDbgController.Next;
 begin
   FCurrentThread.Next;
+end;
+
+procedure TDbgController.Step;
+begin
+  FCurrentThread.StepInto;
 end;
 
 procedure TDbgController.StepOut;
@@ -203,10 +209,9 @@ begin
     if assigned(FCurrentThread) then
       begin
       FCurrentThread.SingleStepping:=false;
-      if FPDEvent<>deInternalContinue then
+      if not (FPDEvent in [deInternalContinue, deLoadLibrary]) then
         FCurrentThread.AfterHitBreak;
-      if assigned(FCurrentThread.HiddenBreakpoint) then
-        FCurrentThread.ClearHiddenBreakpoint;
+      FCurrentThread.ClearHWBreakpoint;
       end;
     case FPDEvent of
       deCreateProcess :
@@ -222,9 +227,9 @@ begin
           FCurrentProcess.Free;
           FCurrentProcess := nil;
         end;
-      deLoadLibrary :
+{      deLoadLibrary :
         begin
-          {if FCurrentProcess.GetLib(FCurrentProcess.LastEventProcessIdentifier, ALib)
+          if FCurrentProcess.GetLib(FCurrentProcess.LastEventProcessIdentifier, ALib)
           and (GImageInfo <> iiNone)
           then begin
             WriteLN('Name: ', ALib.Name);
@@ -233,13 +238,14 @@ begin
           end;
           if GBreakOnLibraryLoad
           then GState := dsPause;
-          }
-        end;
+
+        end;}
       deBreakpoint :
         begin
           debugln('Reached breakpoint at %s.',[FormatAddress(FCurrentProcess.GetInstructionPointerRegisterValue)]);
         end;
-      deInternalContinue :
+      deInternalContinue,
+      deLoadLibrary:
         begin
           if assigned(FCurrentThread) and FCurrentThread.Stepping then
             FCurrentThread.IntNext;

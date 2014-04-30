@@ -113,19 +113,28 @@ type
     FStoreStepSrcLineNo: integer;
     FStoreStepStackFrame: TDBGPtr;
     FStoreStepFuncAddr: TDBGPtr;
+    FHiddenWatchpointInto: integer;
+    FHiddenWatchpointOut: integer;
     FHiddenBreakpoint: TDbgBreakpoint;
     FStepOut: boolean;
+    FInto: boolean;
+    FIntoDepth: boolean;
     procedure StoreStepInfo;
     procedure LoadRegisterValues; virtual;
+    property Process: TDbgProcess read FProcess;
   public
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); virtual;
     function ResetInstructionPointerAfterBreakpoint: boolean; virtual; abstract;
+    procedure BeforeContinue; virtual;
+    function AddWatchpoint(AnAddr: TDBGPtr): integer; virtual;
+    function RemoveWatchpoint(AnId: integer): boolean; virtual;
     procedure AfterHitBreak;
-    procedure ClearHiddenBreakpoint;
+    procedure ClearHWBreakpoint;
     destructor Destroy; override;
     function SingleStep: Boolean; virtual;
-    function StepOver: Boolean; virtual;
+    function StepLine: Boolean; virtual;
     function Next: Boolean; virtual;
+    function StepInto: Boolean; virtual;
     function StepOut: Boolean; virtual;
     function IntNext: Boolean; virtual;
     function CompareStepInfo: boolean;
@@ -258,6 +267,7 @@ type
 
     function GetInstructionPointerRegisterValue: TDbgPtr; virtual; abstract;
     function GetStackBasePointerRegisterValue: TDbgPtr; virtual; abstract;
+    function GetStackPointerRegisterValue: TDbgPtr; virtual; abstract;
 
     procedure TerminateProcess; virtual; abstract;
     procedure ClearRunToBreakpoint;
@@ -820,7 +830,11 @@ begin
     begin
       // If the procedure changed, also check if the current instruction
       // is at the start of a new sourceline. (Dwarf only)
-      if sym is TDbgDwarfSymbolBase then
+      // Don't do this while stepping into a procedure, only when stepping out.
+      // This because when stepping out of a procedure, the first asm-instruction
+      // could still be part of the instruction-line that made the call to the
+      // procedure in the first place.
+      if (sym is TDbgDwarfSymbolBase) and not FInto then
       begin
         CU := TDbgDwarfSymbolBase(sym).CompilationUnit;
         if cu.GetLineAddress(sym.FileName, sym.Line)<>AnAddr then
@@ -857,7 +871,7 @@ end;
 
 function TDbgThread.IntNext: Boolean;
 begin
-  result := StepOver;
+  result := StepLine;
   FStepping:=result;
 end;
 
@@ -867,19 +881,50 @@ begin
   FHandle := AHandle;
   FProcess := AProcess;
   FRegisterValueList:=TDbgRegisterValueList.Create;
+  FHiddenWatchpointInto:=-1;
+  FHiddenWatchpointOut:=-1;
 
   inherited Create;
+end;
+
+procedure TDbgThread.BeforeContinue;
+begin
+  // Do nothing
+end;
+
+function TDbgThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
+begin
+  FProcess.log('Hardware watchpoints are nog available.');
+  result := -1;
+end;
+
+function TDbgThread.RemoveWatchpoint(AnId: integer): boolean;
+begin
+  FProcess.log('Hardware watchpoints are nog available.');
+  result := false;
 end;
 
 procedure TDbgThread.AfterHitBreak;
 begin
   FStepping:=false;
+  FInto:=false;
+  FIntoDepth:=false;
   FStepOut:=false;
+  FreeAndNil(FHiddenBreakpoint);
 end;
 
-procedure TDbgThread.ClearHiddenBreakpoint;
+procedure TDbgThread.ClearHWBreakpoint;
 begin
-  FreeAndNil(FHiddenBreakpoint);
+  if FHiddenWatchpointOut>-1 then
+    begin
+    if RemoveWatchpoint(FHiddenWatchpointOut) then
+      FHiddenWatchpointOut:=-1;
+    end;
+  if FHiddenWatchpointInto>-1 then
+    begin
+    if RemoveWatchpoint(FHiddenWatchpointInto) then
+      FHiddenWatchpointInto:=-1;
+    end;
 end;
 
 destructor TDbgThread.Destroy;
@@ -895,7 +940,7 @@ begin
   Result := true;
 end;
 
-function TDbgThread.StepOver: Boolean;
+function TDbgThread.StepLine: Boolean;
 
 var
   CodeBin: array[0..20] of byte;
@@ -905,6 +950,14 @@ var
   CallInstr: boolean;
 
 begin
+  if FInto and FIntoDepth then
+  begin
+    FHiddenWatchpointInto := AddWatchpoint(Process.GetStackPointerRegisterValue-4);
+    FHiddenWatchpointOut := AddWatchpoint(Process.GetStackBasePointerRegisterValue+4);
+    result := (FHiddenWatchpointInto<>-1) and (FHiddenWatchpointOut<>-1);
+    Exit;
+  end;
+
   CallInstr:=false;
   if FProcess.ReadData(FProcess.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
   begin
@@ -917,6 +970,11 @@ begin
   if CallInstr then
   begin
     FHiddenBreakpoint := TDbgBreakpoint.Create(FProcess, FProcess.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin)));
+    if FInto then
+    begin
+      FHiddenWatchpointInto := AddWatchpoint(RegisterValueList.FindRegisterByDwarfIndex(4).NumValue-4);
+      FIntoDepth:=true;
+    end;
   end
   else
     SingleStep;
@@ -927,6 +985,14 @@ end;
 function TDbgThread.Next: Boolean;
 begin
   StoreStepInfo;
+  result := IntNext;
+end;
+
+function TDbgThread.StepInto: Boolean;
+begin
+  StoreStepInfo;
+  FInto:=true;
+  FIntoDepth:=false;
   result := IntNext;
 end;
 

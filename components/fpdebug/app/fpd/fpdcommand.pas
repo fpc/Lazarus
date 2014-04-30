@@ -308,6 +308,18 @@ begin
   CallProcessLoop:=true;
 end;
 
+procedure HandleStep(AParams: String; out CallProcessLoop: boolean);
+begin
+  CallProcessLoop:=false;
+  if not assigned(GController.MainProcess)
+  then begin
+    WriteLN('The process is not paused');
+    Exit;
+  end;
+  GController.Step;
+  CallProcessLoop:=true;
+end;
+
 procedure HandleStepOut(AParams: String; out CallProcessLoop: boolean);
 begin
   CallProcessLoop:=false;
@@ -766,6 +778,7 @@ begin
   MCommands.AddCommand(['step-inst', 'si'], @HandleStepInst,  'step-inst: Steps-into one instruction');
   MCommands.AddCommand(['next-inst', 'ni'], @HandleNextInst,  'next-inst: Steps-over one instruction');
   MCommands.AddCommand(['next', 'n'], @HandleNext,  'next: Steps one line');
+  MCommands.AddCommand(['step', 'st'], @HandleStep,  'step: Steps one line into procedure');
   MCommands.AddCommand(['step-out', 'so'], @HandleStepOut,  'step-out: Steps out of current procedure');
   MCommands.AddCommand(['list', 'l'], @HandleList,  'list [<adress>|<location>]: Lists the source for <adress> or <location>');
   MCommands.AddCommand(['memory', 'mem', 'm'], @HandleMemory,  'memory [-<size>] [<adress> <count>|<location> <count>]: Dump <count> (default: 1) from memory <adress> or <location> (default: current) of <size> (default: 4) bytes, where size is 1,2,4,8 or 16.');
