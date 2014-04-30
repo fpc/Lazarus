@@ -447,7 +447,7 @@ begin
   if ANumValue and (1 shl 20) <> 0 then FlagS := FlagS + 'VIP ';
   if ANumValue and (1 shl 21) <> 0 then FlagS := FlagS + 'ID ';
 
-  SetValue(ANumValue, trim(FlagS),4,-1);
+  SetValue(ANumValue, trim(FlagS),4,Cardinal(-1));
 end;
 
 { TDbgInstance }
