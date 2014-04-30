@@ -2272,6 +2272,8 @@ type
     cHorSpacing = 7;
     cVertSpacing = 3;
   protected
+    FControlLeft: Integer;
+    FControlTop: Integer;
     function CalcPreferredHeight: Integer;
     function CalcPrefferedWidth: Integer;
     function GetDisplayName: string; override;
@@ -2361,6 +2363,7 @@ type
     FPrevHeight: Integer;
     FPrevWidth: Integer;
     FTextHeight: Integer;
+    procedure AlignControls(AControl: TControl; var RemainingClientRect: TRect); override;
     procedure BitmapOrImageListChange(Sender: TObject);
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      {%H-}WithThemeSpace: Boolean); override;

@@ -409,6 +409,21 @@ begin
   Invalidate;
 end;
 
+procedure TCustomCoolBar.AlignControls(AControl: TControl; var RemainingClientRect: TRect);
+var i: Integer;
+begin
+  //DebugLn('AlignControls');
+  for i:=0 to Bands.Count-1 do
+    if assigned(Bands[i].FControl) then begin
+      Bands[i].FControl.Align:=alNone;
+      Bands[i].FControl.BorderSpacing.Around:=0;
+      Bands[i].FControl.Anchors:=[akLeft, akTop];
+      Bands[i].FControl.AnchorParallel(akLeft, Bands[i].FControlLeft, self);
+      Bands[i].FControl.AnchorParallel(akTop, Bands[i].FControlTop, self);
+    end;
+  inherited AlignControls(AControl, RemainingClientRect);
+end;
+
 procedure TCustomCoolBar.BitmapOrImageListChange(Sender: TObject);
 begin
   Invalidate;
@@ -470,8 +485,9 @@ begin
       inc(x, aLeft);
       y := aTop+(FVisiBands[i].FHeight-FVisiBands[i].Control.Height) div 2;
       FVisiBands[i].Control.Width:=aWidth;
-      FVisiBands[i].Control.AnchorParallel(akLeft, x-cBorderWidth, self);
-      FVisiBands[i].Control.AnchorParallel(akTop, y-cBorderWidth, self);
+      FVisiBands[i].FControlLeft:=x-cBorderWidth;
+      FVisiBands[i].FControlTop:=y-cBorderWidth;
+      ReAlign;
     end;
     x := FVisiBands[i].Width;
     inc(aLeft, x);
