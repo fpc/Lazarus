@@ -754,7 +754,11 @@ begin
   S := GetPart([], [' ', #9], ACommand);
   cmd := FindCommand(S);
   if cmd = nil
-  then WriteLN('Unknown command: "', S, '"')
+  then
+  begin
+    WriteLN('Unknown command: "', S, '"');
+    CallProcessLoop:=false;
+  end
   else cmd.Handler(Trim(ACommand), CallProcessLoop);
 end;
 
