@@ -381,7 +381,7 @@ begin
     end;
     TaskConfig.pButtons := DialogButtons;
     if Assigned(Buttons.DefaultButton) then
-      TaskConfig.nDefaultButton := Buttons.DefaultButton.Index;
+      TaskConfig.nDefaultButton := Buttons.DefaultButton.ModalResult;
 
     State := SaveApplicationState;
     try
