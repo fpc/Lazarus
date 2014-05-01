@@ -291,9 +291,12 @@ type
     property Request: TGDBPTypeRequest read FRequest;
   end;
 
+const
+  TGDBPTypeReqCacheListCount = 64; // minimum 8
+type
   TGDBPTypeRequestCache = class
   private
-    FList: TFPList;
+    FLists: Array[0..TGDBPTypeReqCacheListCount - 1] of TFPList;
     function GetRequest(Index: Integer): TGDBPTypeRequest;
   public
     constructor Create;
@@ -1974,27 +1977,33 @@ end;
 
 function TGDBPTypeRequestCache.GetRequest(Index: Integer): TGDBPTypeRequest;
 begin
-  Result := TGDBPTypeRequestCacheEntry(FList[Index]).FRequest;
+  Result := TGDBPTypeRequestCacheEntry(FLists[Index mod TGDBPTypeReqCacheListCount][Index div TGDBPTypeReqCacheListCount]).FRequest;
 end;
 
 constructor TGDBPTypeRequestCache.Create;
 begin
-  FList := TFPList.Create;
 end;
 
 destructor TGDBPTypeRequestCache.Destroy;
+var
+  i: Integer;
 begin
   Clear;
   inherited Destroy;
-  FreeAndNil(FList);
+  for i := 0 to high(FLists) do
+    FreeAndNil(FLists[i]);
 end;
 
 procedure TGDBPTypeRequestCache.Clear;
+var
+  i: Integer;
 begin
-  while FList.Count > 0 do begin
-    TGDBPTypeRequestCacheEntry(FList[0]).Free;
-    FList.Delete(0);
-  end;
+  for i := 0 to high(FLists) do
+    if FLists[i] <> nil then
+      while FLists[i].Count > 0 do begin
+        TGDBPTypeRequestCacheEntry(FLists[i][0]).Free;
+        FLists[i].Delete(0);
+      end;
 end;
 
 function TGDBPTypeRequestCache.IndexOf(AThreadId, AStackFrame: Integer;
@@ -2002,16 +2011,27 @@ function TGDBPTypeRequestCache.IndexOf(AThreadId, AStackFrame: Integer;
 var
   e: TGDBPTypeRequestCacheEntry;
   s: String;
+  HashVal: Integer;
 begin
-  Result := FList.Count - 1;
   s := UpperCase(ARequest.Request);
+  // There are usually a couple of dozen entry total. Even if most are the same len the search will be quick
+  // Including stackframe, means nested procedures go in different lists.
+  HashVal := Length(s) mod (TGDBPTypeReqCacheListCount div 8) * 8
+             + AStackFrame mod 4 * 2
+             + ord(ARequest.ReqType);
+  Result := -1;
+  if FLists[HashVal] = nil then
+    exit;
+  Result := FLists[HashVal].Count - 1;
   while Result >= 0 do begin
-    e := TGDBPTypeRequestCacheEntry(FList[Result]);
+    e := TGDBPTypeRequestCacheEntry(FLists[HashVal][Result]);
     if (e.ThreadId = AThreadId) and (e.StackFrame = AStackFrame) and
        (e.Request.Request = s) and
        (e.Request.ReqType = ARequest.ReqType)
-    then
+    then begin
+      Result := Result * TGDBPTypeReqCacheListCount + HashVal;
       exit;
+    end;
     dec(Result);
   end;
 end;
@@ -2020,6 +2040,7 @@ procedure TGDBPTypeRequestCache.Add(AThreadId, AStackFrame: Integer;
   ARequest: TGDBPTypeRequest);
 var
   e: TGDBPTypeRequestCacheEntry;
+  HashVal: Integer;
 begin
   e := TGDBPTypeRequestCacheEntry.Create;
   e.FThreadId := AThreadId;
@@ -2027,7 +2048,12 @@ begin
   e.FRequest := ARequest;
   e.FRequest.Request := UpperCase(e.FRequest.Request);
   e.FRequest.Next := nil;
-  FList.Add(e);
+  HashVal := Length(ARequest.Request) mod (TGDBPTypeReqCacheListCount div 8) * 8
+             + AStackFrame mod 4 * 2
+             + ord(ARequest.ReqType);
+  if FLists[HashVal] = nil then
+    FLists[HashVal] := TFPList.Create;
+  FLists[HashVal].Add(e);
 end;
 
 { TGDBPType }
