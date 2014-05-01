@@ -555,7 +555,7 @@ type
     tabview: TCocoaTabControl;
   end;
 
-  { TCocoaTableListView }
+  { TListView }
 
   TCocoaTableListView = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
   public
@@ -631,6 +631,16 @@ type
     {procedure tableViewColumnDidMove(notification: NSNotification); message 'tableViewColumnDidMove:';
     procedure tableViewColumnDidResize(notification: NSNotification); message 'tableViewColumnDidResize:';
     procedure tableViewSelectionIsChanging(notification: NSNotification); message 'tableViewSelectionIsChanging:';}
+  end;
+
+  TCocoaListView = objcclass(NSScrollView)
+  public
+    ListView: TCustomListView; // just reference, don't release
+    callback: ICommonCallback;
+    // For report style:
+    TableListView: TCocoaTableListView;
+    // For the other styles:
+    // ToDo
   end;
 
   { TCocoaGroupBox }

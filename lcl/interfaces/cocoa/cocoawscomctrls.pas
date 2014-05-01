@@ -349,18 +349,18 @@ end;
 class function TCocoaWSCustomListView.CheckParams(out
   ATableControl: TCocoaTableListView; const ALV: TCustomListView): Boolean;
 var
-  lObject: NSObject;
+  lCocoaListView: TCocoaListView;
 begin
   Result := False;
   ATableControl := nil;
   ALV.HandleNeeded();
   if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
-  lObject := NSObject(ALV.Handle);
+  lCocoaListView := TCocoaListView(ALV.Handle);
 
   // ToDo: Implement for other styles
-  if lObject.isKindOfClass(TCocoaTableListView) then
+  if lCocoaListView.TableListView <> nil then
   begin
-    ATableControl := TCocoaTableListView(lObject);
+    ATableControl := lCocoaListView.TableListView;
     Result := True;
   end;
 end;
@@ -378,7 +378,7 @@ begin
   lObject := NSObject(ALV.Handle);
   if not lObject.isKindOfClass(TCocoaTableListView) then Exit; // in styles other than Report, column have no meaning
 
-  ATableControl := TCocoaTableListView(lObject);
+  ATableControl := TCocoaListView(lObject).TableListView;
   if (AIndex < 0) or (AIndex >= ATableControl.tableColumns.count()) then Exit;
   ANSColumn := NSTableColumn(ATableControl.tableColumns.objectAtIndex(AIndex));
 
@@ -391,21 +391,32 @@ end;
 
 class function TCocoaWSCustomListView.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
+  lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
+  ns: NSRect;
 begin
   {$IFDEF COCOA_DEBUG_LISTVIEW}
   WriteLn('[TCocoaWSCustomListView.CreateHandle] AWinControl='+IntToStr(PtrInt(AWinControl)));
   {$ENDIF}
-  lTableLV := TCocoaTableListView.alloc.lclInitWithCreateParams(AParams);
-  Result := TLCLIntfHandle(lTableLV);
+  lCocoaLV := TCocoaListView.alloc.lclInitWithCreateParams(AParams);
+  ns := GetNSRect(0, 0, AParams.Width, AParams.Height);
+  lTableLV := TCocoaTableListView.alloc.initWithFrame(ns);
+  Result := TLCLIntfHandle(lCocoaLV);
   if Result <> 0 then
   begin
+    lCocoaLV.TableListView := lTableLV;
+    lCocoaLV.ListView := TCustomListView(AWinControl);
+    lCocoaLV.setDocumentView(lTableLV);
+    lCocoaLV.setHasVerticalScroller(True);
+
     lTableLV.callback := TLCLListViewCallback.Create(lTableLV, AWinControl);
     lTableLV.Items := TStringList.Create;
-
     lTableLV.ListView := TCustomListView(AWinControl);
     lTableLV.setDataSource(lTableLV);
     lTableLV.setDelegate(lTableLV);
+    {$IFDEF COCOA_DEBUG_LISTVIEW}
+    WriteLn(Format('[TCocoaWSCustomListView.CreateHandle] headerView=%d', [PtrInt(lTableLV.headerView)]));
+    {$ENDIF}
   end;
 end;
 
@@ -436,7 +447,7 @@ begin
   WriteLn(Format('[TCocoaWSCustomListView.ColumnGetWidth] AIndex=%d', [AIndex]));
   {$ENDIF}
   if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
-  lTableLV := TCocoaTableListView(ALV.Handle);
+  lTableLV := TCocoaListView(ALV.Handle).TableListView;
   if (AIndex < 0) or (AIndex >= lTableLV.tableColumns.count()) then Exit;
 
   lColumn := lTableLV.tableColumns.objectAtIndex(AIndex);
@@ -455,7 +466,7 @@ begin
   {$ENDIF}
   ALV.HandleNeeded();
   if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
-  lTableLV := TCocoaTableListView(ALV.Handle);
+  lTableLV := TCocoaListView(ALV.Handle).TableListView;
   {$IFDEF COCOA_DEBUG_LISTVIEW}
   WriteLn(Format('[TCocoaWSCustomListView.ColumnInsert]=> tableColumns.count=%d', [lTableLV.tableColumns.count()]));
   {$ENDIF}
@@ -626,8 +637,7 @@ begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.ItemInsert] AIndex=%d', [AIndex]));
   {$ENDIF}
-  if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
-  lTableLV := TCocoaTableListView(ALV.Handle);
+  CheckParams(lTableLV, ALV);
   lColumnCount := lTableLV.tableColumns.count();
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.ItemInsert]=> lColumnCount=%d', [lColumnCount]));
@@ -646,6 +656,7 @@ begin
     lNSStr.release;
   end;
   lTableLV.reloadData();
+  lTableLV.sizeToFit();
 end;
 
 class procedure TCocoaWSCustomListView.ItemSetText(const ALV: TCustomListView;
