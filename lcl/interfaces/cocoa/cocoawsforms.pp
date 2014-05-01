@@ -402,10 +402,10 @@ var
     win := TCocoaWindow(TCocoaWindow.alloc);
 
     if not Assigned(win) then
-       begin
-       Result := 0;
-       Exit;
-       end;
+    begin
+      Result := 0;
+      Exit;
+    end;
 
     win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(R, GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
     UpdateWindowIcons(win, GetDesigningBorderStyle(Form), Form.BorderIcons);

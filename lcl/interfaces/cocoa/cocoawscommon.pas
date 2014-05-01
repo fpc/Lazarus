@@ -1016,13 +1016,13 @@ begin
       nsr:=dirty;
       nsr.origin.y:=bounds.size.height-dirty.origin.y-dirty.size.height;
 
-       if FIsOpaque and (Target.Color<>clDefault) then
-          begin
-          FContext.BkMode:=OPAQUE;
-          FContext.BkColor:=Target.Color;
-          FContext.BackgroundFill(nsr);
-          //debugln('Background '+Target.name+Dbgs(NSRectToRect(dirty)));
-          end;
+      if FIsOpaque and (Target.Color<>clDefault) then
+      begin
+        FContext.BkMode:=OPAQUE;
+        FContext.BkColor:=Target.Color;
+        FContext.BackgroundFill(nsr);
+        //debugln('Background '+Target.name+Dbgs(NSRectToRect(dirty)));
+      end;
 
       New(PS);
       try

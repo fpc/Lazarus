@@ -378,11 +378,9 @@ type
   { TCocoaWindowContent }
 
   TCocoaWindowContent = objcclass(TCocoaCustomControl)
-    protected
+  protected
     procedure didBecomeKeyNotification(sender: NSNotification); message 'didBecomeKeyNotification:';
     procedure didResignKeyNotification(sender: NSNotification); message 'didResignKeyNotification:';
-
-
   public
     isembedded: Boolean; // true - if the content is inside of another control, false - if the content is in its own window;
     ownwin: NSWindow;
@@ -528,6 +526,7 @@ type
   { TCocoaTabPage }
 
   TCocoaTabPage = objcclass(NSTabViewItem)
+  public
     callback: ICommonCallback;
     LCLPage: TCustomPage;
     function lclGetCallback: ICommonCallback; override;
@@ -539,6 +538,7 @@ type
   { TCocoaTabControl }
 
   TCocoaTabControl = objcclass(NSTabView, NSTabViewDelegateProtocol)
+  public
     LCLPageControl: TCustomTabControl;
     callback: ICommonCallback;
     function lclGetCallback: ICommonCallback; override;
@@ -550,7 +550,8 @@ type
     procedure tabViewDidChangeNumberOfTabViewItems(TabView: NSTabView); message 'tabViewDidChangeNumberOfTabViewItems:';
   end;
 
-  TCocoaTabPageView = objcclass(NSView)
+  TCocoaTabPageView = objcclass(TCocoaCustomControl)
+  public
     tabview: TCocoaTabControl;
   end;
 
@@ -560,8 +561,6 @@ type
   public
     ListView: TCustomListView; // just reference, don't release
     callback: IListViewCallback;
-    //list: TCocoaStringList;
-    //resultNS: NSString;  //use to return values to combo
 
     // Owned Pascal classes which need to be released
     Items: TStringList; // Object are TStringList for sub-items
@@ -572,16 +571,11 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
 
-    // NSTableViewDataSourceProtocol
-    function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
-    function tableView_shouldEditTableColumn_row(tableView: NSTableView;
-      tableColumn: NSTableColumn; row: NSInteger): Boolean;
-      message 'tableView:shouldEditTableColumn:row:';
-    function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
-    //procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
-    procedure tableViewSelectionDidChange(notification: NSNotification); message 'tableViewSelectionDidChange:';
-    //
+    // Own methods, mostly convenience methods
     procedure setStringValue_forTableColumn_row(AStr: NSString; col, row: NSInteger); message 'setStringValue:forTableColumn:row:';
+    procedure setListViewStringValue_forTableColumn_row(AStr: NSString; col, row: NSInteger); message 'setListViewStringValue:forTableColumn:row:';
+    function getIndexOfColumn(ACol: NSTableColumn): NSInteger; message 'getIndexOfColumn:';
+    procedure reloadDataForRow_column(ARow, ACol: NSInteger); message 'reloadDataForRow:column:';
 
     procedure dealloc; override;
     procedure resetCursorRects; override;
@@ -601,6 +595,42 @@ type
     procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
     function lclIsHandle: Boolean; override;
+
+    // NSTableViewDataSourceProtocol
+    function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
+    function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
+    procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
+    //procedure tableView_sortDescriptorsDidChange(tableView: NSTableView; oldDescriptors: NSArray); message 'tableView:sortDescriptorsDidChange:';
+    //function tableView_writeRowsWithIndexes_toPasteboard(tableView: NSTableView; rowIndexes: NSIndexSet; pboard: NSPasteboard): Boolean; message 'tableView:writeRowsWithIndexes:toPasteboard:';
+    //function tableView_validateDrop_proposedRow_proposedDropOperation(tableView: NSTableView; info: NSDraggingInfoProtocol; row: NSInteger; dropOperation: NSTableViewDropOperation): NSDragOperation; message 'tableView:validateDrop:proposedRow:proposedDropOperation:';
+    //function tableView_acceptDrop_row_dropOperation(tableView: NSTableView; info: NSDraggingInfoProtocol; row: NSInteger; dropOperation: NSTableViewDropOperation): Boolean; message 'tableView:acceptDrop:row:dropOperation:';
+    //function tableView_namesOfPromisedFilesDroppedAtDestination_forDraggedRowsWithIndexes(tableView: NSTableView; dropDestination: NSURL; indexSet: NSIndexSet): NSArray; message 'tableView:namesOfPromisedFilesDroppedAtDestination:forDraggedRowsWithIndexes:';
+
+    // NSTableViewDelegateProtocol
+    //procedure tableView_willDisplayCell_forTableColumn_row(tableView: NSTableView; cell: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:willDisplayCell:forTableColumn:row:';
+    function tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean; message 'tableView:shouldEditTableColumn:row:';
+    {function selectionShouldChangeInTableView(tableView: NSTableView): Boolean; message 'selectionShouldChangeInTableView:';
+    function tableView_shouldSelectRow(tableView: NSTableView; row: NSInteger): Boolean; message 'tableView:shouldSelectRow:';
+    function tableView_selectionIndexesForProposedSelection(tableView: NSTableView; proposedSelectionIndexes: NSIndexSet): NSIndexSet; message 'tableView:selectionIndexesForProposedSelection:';
+    function tableView_shouldSelectTableColumn(tableView: NSTableView; tableColumn: NSTableColumn): Boolean; message 'tableView:shouldSelectTableColumn:';
+    procedure tableView_mouseDownInHeaderOfTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:mouseDownInHeaderOfTableColumn:';
+    procedure tableView_didClickTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:didClickTableColumn:';
+    procedure tableView_didDragTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:didDragTableColumn:';
+    function tableView_toolTipForCell_rect_tableColumn_row_mouseLocation(tableView: NSTableView; cell: NSCell; rect: NSRectPointer; tableColumn: NSTableColumn; row: NSInteger; mouseLocation: NSPoint): NSString; message 'tableView:toolTipForCell:rect:tableColumn:row:mouseLocation:';
+    function tableView_heightOfRow(tableView: NSTableView; row: NSInteger): CGFloat; message 'tableView:heightOfRow:';
+    function tableView_typeSelectStringForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSString; message 'tableView:typeSelectStringForTableColumn:row:';
+    function tableView_nextTypeSelectMatchFromRow_toRow_forString(tableView: NSTableView; startRow: NSInteger; endRow: NSInteger; searchString: NSString): NSInteger; message 'tableView:nextTypeSelectMatchFromRow:toRow:forString:';
+    function tableView_shouldTypeSelectForEvent_withCurrentSearchString(tableView: NSTableView; event: NSEvent; searchString: NSString): Boolean; message 'tableView:shouldTypeSelectForEvent:withCurrentSearchString:';
+    function tableView_shouldShowCellExpansionForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean; message 'tableView:shouldShowCellExpansionForTableColumn:row:';
+    function tableView_shouldTrackCell_forTableColumn_row(tableView: NSTableView; cell: NSCell; tableColumn: NSTableColumn; row: NSInteger): Boolean; message 'tableView:shouldTrackCell:forTableColumn:row:';
+    function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
+    function tableView_isGroupRow(tableView: NSTableView; row: NSInteger): Boolean; message 'tableView:isGroupRow:';
+    function tableView_sizeToFitWidthOfColumn(tableView: NSTableView; column: NSInteger): CGFloat; message 'tableView:sizeToFitWidthOfColumn:';
+    function tableView_shouldReorderColumn_toColumn(tableView: NSTableView; columnIndex: NSInteger; newColumnIndex: NSInteger): Boolean; message 'tableView:shouldReorderColumn:toColumn:';}
+    procedure tableViewSelectionDidChange(notification: NSNotification); message 'tableViewSelectionDidChange:';
+    {procedure tableViewColumnDidMove(notification: NSNotification); message 'tableViewColumnDidMove:';
+    procedure tableViewColumnDidResize(notification: NSNotification); message 'tableViewColumnDidResize:';
+    procedure tableViewSelectionIsChanging(notification: NSNotification); message 'tableViewSelectionIsChanging:';}
   end;
 
   { TCocoaGroupBox }
@@ -2320,43 +2350,6 @@ begin
   callback := nil;
 end;
 
-function TCocoaTableListView.numberOfRowsInTableView(TableView:NSTableView): NSInteger;
-begin
-  if Assigned(Items) then
-    Result := Items.Count
-  else
-    Result := 0;
-end;
-
-
-function TCocoaTableListView.tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean;
-begin
-  result:=false;  // disable cell editing by default
-end;
-
-function TCocoaTableListView.tableView_objectValueForTableColumn_row(tableView: NSTableView;
-  TableColumn: NSTableColumn; row: NSInteger):id;
-var
-  lStringList: TStringList;
-  col: NSInteger;
-  StrResult: NSString;
-begin
-  col := tableColumns.indexOfObject(tableColumn);
-  {$IFDEF COCOA_DEBUG_TABCONTROL}
-  WriteLn(Format('[TCocoaTableListView.tableView_objectValueForTableColumn_row] col=%d row=%d Items.Count=%d',
-    [col, row, Items.Count]));
-  {$ENDIF}
-  if row > Items.Count-1 then Exit;
-  if col = 0 then
-    StrResult := NSStringUTF8(Items.Strings[row])
-  else
-  begin
-    lStringList := TStringList(Items.Objects[row]);
-    StrResult := NSStringUTF8(lStringList.Strings[col-1]);
-  end;
-  Result := StrResult;
-end;
-
 procedure TCocoaTableListView.dealloc;
 begin
   if Assigned(Items) then FreeAndNil(Items);
@@ -2367,12 +2360,6 @@ procedure TCocoaTableListView.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
-end;
-
-procedure TCocoaTableListView.tableViewSelectionDidChange(notification: NSNotification);
-begin
-  if Assigned(callback) then
-    callback.SelectionChanged;
 end;
 
 procedure TCocoaTableListView.setStringValue_forTableColumn_row(
@@ -2419,6 +2406,45 @@ begin
 
     lStringList.Strings[col-1] := lStr;
   end;
+end;
+
+procedure TCocoaTableListView.setListViewStringValue_forTableColumn_row(
+  AStr: NSString; col, row: NSInteger);
+var
+  lSubItems: TStrings;
+  lItem: TListItem;
+  lNewValue: string;
+begin
+  lNewValue := NSStringToString(AStr);
+  if ListView.ReadOnly then Exit;
+
+  if row >= ListView.Items.Count then Exit;
+  lItem := ListView.Items.Item[row];
+
+  if col = 0 then
+  begin
+    lItem.Caption := lNewValue;
+  end
+  else if col > 0 then
+  begin
+    lSubItems := lItem.SubItems;
+    if col >= lSubItems.Count+1 then Exit;
+    lSubItems.Strings[col-1] := lNewValue;
+  end;
+end;
+
+function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): NSInteger;
+begin
+  Result := tableColumns.indexOfObject(ACol);
+end;
+
+procedure TCocoaTableListView.reloadDataForRow_column(ARow, ACol: NSInteger);
+var
+  lRowSet, lColSet: NSIndexSet;
+begin
+  lRowSet := NSIndexSet.indexSetWithIndex(ARow);
+  lColSet := NSIndexSet.indexSetWithIndex(ACol);
+  reloadDataForRowIndexes_columnIndexes(lRowSet, lColSet);
 end;
 
 procedure TCocoaTableListView.mouseDown(event: NSEvent);
@@ -2482,6 +2508,69 @@ procedure TCocoaTableListView.keyUp(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.KeyEvent(event) then
     inherited keyUp(event);
+end;
+
+function TCocoaTableListView.numberOfRowsInTableView(tableView: NSTableView
+  ): NSInteger;
+begin
+  if Assigned(Items) then
+    Result := Items.Count
+  else
+    Result := 0;
+end;
+
+function TCocoaTableListView.tableView_objectValueForTableColumn_row(
+  tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id;
+var
+  lStringList: TStringList;
+  col: NSInteger;
+  StrResult: NSString;
+begin
+  col := tableColumns.indexOfObject(tableColumn);
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaTableListView.tableView_objectValueForTableColumn_row] col=%d row=%d Items.Count=%d',
+    [col, row, Items.Count]));
+  {$ENDIF}
+  if row > Items.Count-1 then Exit;
+  if col = 0 then
+    StrResult := NSStringUTF8(Items.Strings[row])
+  else
+  begin
+    lStringList := TStringList(Items.Objects[row]);
+    StrResult := NSStringUTF8(lStringList.Strings[col-1]);
+  end;
+  Result := StrResult;
+end;
+
+procedure TCocoaTableListView.tableView_setObjectValue_forTableColumn_row(
+  tableView: NSTableView; object_: id; tableColumn: NSTableColumn;
+  row: NSInteger);
+var
+  lColumnIndex: NSInteger;
+  lNewValue: NSString;
+begin
+  //WriteLn('[TCocoaTableListView.tableView_setObjectValue_forTableColumn_row]');
+  lNewValue := NSString(object_);
+  if not NSObject(object_).isKindOfClass(NSString) then Exit;
+  //WriteLn('[TCocoaTableListView.tableView_setObjectValue_forTableColumn_row] A');
+  if ListView.ReadOnly then Exit;
+
+  lColumnIndex := getIndexOfColumn(tableColumn);
+
+  setListViewStringValue_forTableColumn_row(lNewValue, lColumnIndex, row);
+  setStringValue_forTableColumn_row(lNewValue, lColumnIndex, row);
+  reloadDataForRow_column(lColumnIndex, row);
+end;
+
+function TCocoaTableListView.tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean;
+begin
+  Result := not ListView.ReadOnly;
+end;
+
+procedure TCocoaTableListView.tableViewSelectionDidChange(notification: NSNotification);
+begin
+  if Assigned(callback) then
+    callback.SelectionChanged;
 end;
 
 { TCocoaStringList }

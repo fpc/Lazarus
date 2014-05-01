@@ -660,8 +660,25 @@ class procedure TWSCustomListView.SetProperty(const ALV: TCustomListView; const 
 begin
 end;
 
+// Default implementation based on SetProperty
 class procedure TWSCustomListView.SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties);
 begin
+  SetProperty(ALV, lvpAutoArrange, lvpAutoArrange in AProps);
+  SetProperty(ALV, lvpCheckboxes, lvpCheckboxes in AProps);
+  SetProperty(ALV, lvpColumnClick, lvpColumnClick in AProps);
+  SetProperty(ALV, lvpFlatScrollBars, lvpFlatScrollBars in AProps);
+  SetProperty(ALV, lvpFullDrag, lvpFullDrag in AProps);
+  SetProperty(ALV, lvpGridLines, lvpGridLines in AProps);
+  SetProperty(ALV, lvpHideSelection, lvpHideSelection in AProps);
+  SetProperty(ALV, lvpHotTrack, lvpHotTrack in AProps);
+  SetProperty(ALV, lvpMultiSelect, lvpMultiSelect in AProps);
+  SetProperty(ALV, lvpOwnerDraw, lvpOwnerDraw in AProps);
+  SetProperty(ALV, lvpReadOnly, lvpReadOnly in AProps);
+  SetProperty(ALV, lvpRowSelect, lvpRowSelect in AProps);
+  SetProperty(ALV, lvpShowColumnHeaders, lvpShowColumnHeaders in AProps);
+  SetProperty(ALV, lvpShowWorkAreas, lvpShowWorkAreas in AProps);
+  SetProperty(ALV, lvpWrapText, lvpWrapText in AProps);
+  SetProperty(ALV, lvpToolTips, lvpToolTips in AProps);
 end;
 
 class procedure TWSCustomListView.SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle);

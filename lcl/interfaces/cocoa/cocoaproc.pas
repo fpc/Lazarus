@@ -27,6 +27,11 @@ uses
   Classes, SysUtils, Types, LCLType, LCLProc, LCLClasses, LMessages,
   Controls, Forms, Graphics, Math, GraphType;
 
+// Missing things from NSTableColumns.inc
+const
+  NSTableColumnAutoresizingMask = 1 shl 0;
+  NSTableColumnUserResizingMask = 1 shl 1;
+
 {function OSError(AResult: OSStatus; const AMethodName, ACallName: String;
   const AText: String = ''): Boolean;
 function OSError(AResult: OSStatus; const AObject: TObject; const AMethodName, ACallName: String;
