@@ -312,7 +312,7 @@ type
   THintInfo = record
     HintControl: TControl;
     HintWindowClass: TWinControlClass;
-    HintPos: TPoint;
+    HintPos: TPoint; // screen coordinates
     HintMaxWidth: Integer;
     HintColor: TColor;
     CursorRect: TRect;
