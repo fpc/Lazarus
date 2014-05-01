@@ -237,8 +237,8 @@ resourceString
     +' Frame %s';
   rsException = 'Exception';
   rsFormStreamingError = 'Form streaming "%s" error: %s';
-  rsFixedColsTooBig = 'FixedCols can''t be >= ColCount';
-  rsFixedRowsTooBig = 'FixedRows can''t be >= RowCount';
+  rsFixedColsTooBig = 'FixedCols can''t be > ColCount';
+  rsFixedRowsTooBig = 'FixedRows can''t be > RowCount';
   rsGridFileDoesNotExists = 'Grid file doesn''t exists';
   rsNotAValidGridFile = 'Not a valid grid file';
   rsIndexOutOfRange = 'Index Out of range Cell[Col=%d Row=%d]';
