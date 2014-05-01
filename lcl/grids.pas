@@ -7601,13 +7601,20 @@ begin
     begin
       // editor is not in visible area, hide it complety
       // to avoid showing it in fixed cell area
-      with msg.CellRect do
-        Msg.CellRect := Rect(-Right, -Bottom, -Left, -Top);
+      Msg.CellRect := Bounds(-FEditor.Width-10, -FEditor.Height-10, FEditor.Width,FEditor.Height);
     end;
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then begin
       if EditorBorderStyle = bsNone then
           InflateRect(Msg.CellRect, -1, -1);
-      FEditor.BoundsRect := Msg.CellRect;
+      // hide editor if out of visible area
+      if (Msg.CellRect.Right>=0) and (Msg.CellRect.Bottom>=0)
+        and (Msg.CellRect.Left<=ClientWidth) and (Msg.CellRect.Top<=ClientHeight)
+      then begin
+        FEditor.Visible := true;
+        FEditor.BoundsRect := Msg.CellRect;
+      end else begin
+        FEditor.Visible := false;
+      end;
     end else begin
       Msg.LclMsg.msg:=GM_SETBOUNDS;
       Msg.Grid:=Self;
