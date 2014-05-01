@@ -6,7 +6,7 @@ interface
 {$modeswitch objectivec1}
 
 {.$DEFINE COCOA_DEBUG_TABCONTROL}
-{$DEFINE COCOA_DEBUG_LISTVIEW}
+{.$DEFINE COCOA_DEBUG_LISTVIEW}
 
 uses
   // RTL, FCL, LCL
@@ -404,6 +404,10 @@ begin
   Result := TLCLIntfHandle(lCocoaLV);
   if Result <> 0 then
   begin
+    // Unintuitive things about NSTableView which caused a lot of headaches:
+    // 1-> The column header appears only if the NSTableView is inside a NSScrollView
+    // 2-> To get proper scrolling use NSScrollView.setDocumentView instead of addSubview
+    // Source: http://stackoverflow.com/questions/13872642/nstableview-scrolling-does-not-work
     lCocoaLV.TableListView := lTableLV;
     lCocoaLV.ListView := TCustomListView(AWinControl);
     lCocoaLV.setDocumentView(lTableLV);
@@ -473,6 +477,7 @@ begin
   if (AIndex < 0) or (AIndex >= lTableLV.tableColumns.count()+1) then Exit;
   lTitle := NSStringUTF8(AColumn.Caption);
   lNSColumn := NSTableColumn.alloc.initWithIdentifier(lTitle);
+  lNSColumn.headerCell.setStringValue(lTitle);
   lTableLV.addTableColumn(lNSColumn);
   lTitle.release;
 end;
@@ -521,7 +526,8 @@ begin
   if not CheckColumnParams(lTableLV, lNSColumn, ALV, AIndex) then Exit;
 
   lNSCaption := NSStringUtf8(ACaption);
-  lNSColumn.setIdentifier(lNSCaption);
+  lNSColumn.headerCell.setStringValue(lNSCaption);
+  lNSCaption.release;
 end;
 
 class procedure TCocoaWSCustomListView.ColumnSetImage(
@@ -662,8 +668,14 @@ end;
 class procedure TCocoaWSCustomListView.ItemSetText(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer;
   const AText: String);
+var
+  lTableLV: TCocoaTableListView;
+  lStr: NSString;
 begin
-  inherited ItemSetText(ALV, AIndex, AItem, ASubIndex, AText);
+  CheckParams(lTableLV, ALV);
+  lStr := NSStringUTF8(AText);
+  lTableLV.setStringValue_forTableColumn_row(lStr, ASubIndex, AItem.Index);
+  lStr.release;
 end;
 
 class procedure TCocoaWSCustomListView.ItemShow(const ALV: TCustomListView;
