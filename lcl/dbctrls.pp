@@ -125,14 +125,14 @@ Type
     FNullValueKey: TShortcut;
     FHasLookUpField: Boolean;
     FLookUpFieldIsCached: Boolean;
-    FLookupCache: boolean;
+    FLookupCache: Boolean;
+    FInitializing: Boolean;
     procedure ActiveChange(Sender: TObject);
-    procedure ChangeListLinkDataSource(NewDataSource: TDataSource);
     procedure DatasetChange(Sender: TObject);
+    procedure DoInitialize;
     procedure FetchLookupData;
     function GetKeyFieldName: string;
     function GetListSource: TDataSource;
-    procedure ScrollListDataset(const Key: Variant);
     procedure SetKeyFieldName(const Value: string);
     procedure SetListFieldName(const Value: string);
     procedure SetListSource(Value: TDataSource);
