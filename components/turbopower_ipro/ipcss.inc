@@ -669,7 +669,7 @@ end;
 function TCSSReader.FindStatement(out AStatement: String): Boolean;
 var
  Buf: char;
- Buf1: array[0..1023] of char;
+ Buf1: string;
  RCount: Integer;
  FStart, FEnd: Integer;
 begin
@@ -678,6 +678,7 @@ begin
 
   AStatement := '';
 
+  SetLength(Buf1,1023);
   FStart := FStream.Position;
   while not EOF do
   begin
@@ -687,7 +688,9 @@ begin
     if (Buf = '/') and CheckIsComment then
     begin
       FStream.Position := FStart;
-      RCount := FStream.Read(Buf1[0], FEnd-FStart-1);
+      if length(Buf1)<FEnd-FStart then
+        setlength(Buf1,FEnd-FStart);
+      RCount := FStream.Read(Buf1[1], FEnd-FStart-1);
       AStatement := AStatement + Copy(Buf1,0,RCount);
       FStream.Position := FEnd+1;
       EatComment;
@@ -697,7 +700,9 @@ begin
     begin
       Result := True;
       FStream.Position := FStart;
-      RCount := FStream.Read(Buf1[0], FEnd-FStart);
+      if length(Buf1)<FEnd-FStart then
+        setlength(Buf1,FEnd-FStart);
+      RCount := FStream.Read(Buf1[1], FEnd-FStart);
       AStatement := AStatement + Copy(Buf1,0,RCount);
       break;
     end;
