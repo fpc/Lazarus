@@ -1750,7 +1750,7 @@ begin
   if FResultValDone then
     exit;
   FResultValue := DoGetResultValue;
-  {$IFDEF WITH_REFCOUNT_DEBUG}FResultValue.DbgRenameReference(nil, 'DoGetResultValue', @FResultValue, 'DoGetResultValue');{$ENDIF}
+  {$IFDEF WITH_REFCOUNT_DEBUG}if FResultValue <> nil then FResultValue.DbgRenameReference(nil, 'DoGetResultValue', @FResultValue, 'DoGetResultValue');{$ENDIF}
   FResultValDone := True;
   Result := FResultValue;
 end;
