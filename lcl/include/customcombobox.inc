@@ -564,16 +564,6 @@ begin
   end;
 end;
 
-procedure TCustomComboBox.KeyPress(var Key: char);
-begin
-  //First invoke OnKeyPress, or else CharCase may be reverted again
-  inherited KeyPress(Key);
-  //Convert character cases if FCharCase is not ecNormalCase
-  case FCharCase of
-    ecLowerCase: Key := LowerCase(Key);
-    ecUpperCase: Key := UpCase(Key);
-  end;
-end;
 
 procedure TCustomComboBox.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
