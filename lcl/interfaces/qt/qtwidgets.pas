@@ -2840,6 +2840,33 @@ var
       or (AQtKey = QtKey_Up) or (AQtKey = QtKey_Down));
   end;
 
+  function SendChangedKey: boolean;
+  begin
+    if UTF8Char <> UTF8Text then
+      Text := UTF8ToUTF16(Utf8Char)
+    else
+    if Word(AChar) <> CharMsg.CharCode then
+      Text := Char(CharMsg.CharCode);
+
+    AKeyEvent := QKeyEvent_createExtendedKeyEvent(
+      QEvent_type(Event),
+      LCLKeyToQtKey(KeyMsg.CharCode),
+      Modifiers,
+      0,
+      KeyMsg.CharCode,
+      0,
+      @Text,
+      QKeyEvent_isAutoRepeat(QKeyEventH(Event)),
+      QKeyEvent_count(QKeyEventH(Event))
+      );
+    try
+      QObject_event(Sender, AKeyEvent);
+    finally
+      QKeyEvent_destroy(AKeyEvent);
+    end;
+
+  end;
+
 begin
   {$ifdef VerboseQt}
     DebugLn('TQtWidget.SlotKey ', dbgsname(LCLObject));
@@ -3150,20 +3177,28 @@ begin
   begin
     UTF8Text := UTF16ToUTF8(Text);
     UTF8Char := UTF8Text;
-  {$ifdef VerboseQt}
+    {$ifdef VerboseQt}
     WriteLn('sending char ', UTF8Char);
-  {$endif}
+    {$endif}
     if not IsControlKey and LCLObject.IntfUTF8KeyPress(UTF8Char, 1, IsSysKey) then
     begin
       // the LCL has handled the key
-  {$ifdef VerboseQt}
+      {$ifdef VerboseQt}
       WriteLn('handled!');
-  {$endif}
+      {$endif}
       Exit;
     end;
 
     if not CanSendLCLMessage or (Sender = nil) then
       exit;
+
+    if (UTF8Char <> UTF8Text) then
+    begin
+      // process changed key and exit.
+      // issue #26103
+      SendChangedKey;
+      exit;
+    end;
 
     // create the CN_CHAR / CN_SYSCHAR message
     FillChar(CharMsg, SizeOf(CharMsg), 0);
@@ -3173,9 +3208,9 @@ begin
     CharMsg.CharCode := Word(AChar);
 
     //Send message to LCL
-  {$ifdef VerboseQt}
+    {$ifdef VerboseQt}
     WriteLn(' message: ', CharMsg.Msg);
-  {$endif}
+    {$endif}
     NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
 
     if not CanSendLCLMessage or (Sender = nil) then
@@ -3184,9 +3219,9 @@ begin
     if (DeliverMessage(CharMsg, True) <> 0) or (CharMsg.CharCode = VK_UNKNOWN) then
     begin
       // the LCL has handled the key
-  {$ifdef VerboseQt}
+      {$ifdef VerboseQt}
       WriteLn('handled!');
-  {$endif}
+      {$endif}
       Exit;
     end;
 
@@ -3196,9 +3231,9 @@ begin
     //Send a LM_(SYS)CHAR
     CharMsg.Msg := LM_CharMsg[IsSysKey];
 
-  {$ifdef VerboseQt}
+    {$ifdef VerboseQt}
     WriteLn(' message: ', CharMsg.Msg);
-  {$endif}
+    {$endif}
     if not CanSendLCLMessage or (Sender = nil) then
       exit;
 
@@ -3218,27 +3253,8 @@ begin
       (Word(AChar) <> CharMsg.CharCode)) then
   begin
     // data was changed
-    if UTF8Char <> UTF8Text then
-      Text := UTF8ToUTF16(Utf8Char)
-    else
-    if Word(AChar) <> CharMsg.CharCode then
-      Text := Char(CharMsg.CharCode);
-    AKeyEvent := QKeyEvent_createExtendedKeyEvent(
-      QEvent_type(Event),
-      LCLKeyToQtKey(KeyMsg.CharCode),
-      Modifiers,
-      0,
-      KeyMsg.CharCode,
-      0,
-      @Text,
-      QKeyEvent_isAutoRepeat(QKeyEventH(Event)),
-      QKeyEvent_count(QKeyEventH(Event))
-      );
-    try
-      QCoreApplication_sendEvent(Sender, AKeyEvent);
-    finally
-      QKeyEvent_destroy(AKeyEvent);
-    end;
+    // moved to nested proc because of issue #26103
+    SendChangedKey;
   end else
   begin
     Result := KeyMsg.CharCode in KeysToEat;
