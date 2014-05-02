@@ -802,8 +802,11 @@ procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TIdeWatch
     for j := 1 to Length(AValue) do begin
       if (AValue[j]=#13) or (AValue[j]=#10) then begin
         NewLine:=true;
-      end else if Avalue[j]=#32 then begin
-        if not NewLine then begin
+        inc(ow);
+        Result[ow]:=#32; // insert one space instead of new line
+      end
+      else if Avalue[j] in [#9,#32] then begin
+        if not NewLine then begin // strip leading spaces after new line
           inc(ow);
           Result[ow]:=#32;
         end;
