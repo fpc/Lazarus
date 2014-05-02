@@ -198,7 +198,7 @@ begin
 
         if ATabWidget.getTabPosition in [QTabWidgetNorth, QTabWidgetSouth] then
         begin
-          if ATabWidget.TabBar.getVisible then
+          if TCustomTabControl(AWinControl).ShowTabs then
             dy := ATabWidget.TabBar.getHeight
           else
             dy := 0;
@@ -207,7 +207,7 @@ begin
                Max(0, aHeight - dx  - dy));
         end else
         begin
-          if ATabWidget.TabBar.getVisible then
+          if TCustomTabControl(AWinControl).ShowTabs then
             dy := ATabWidget.TabBar.getWidth
           else
             dy := 0;
