@@ -163,7 +163,6 @@ type
   { IListViewCallBack }
 
   IListViewCallBack = interface(ICommonCallback)
-    procedure SelectionChanged;
   end;
 
   { IWindowCallback }
@@ -557,6 +556,8 @@ type
 
   { TListView }
 
+  { TCocoaTableListView }
+
   TCocoaTableListView = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
   public
     ListView: TCustomListView; // just reference, don't release
@@ -572,8 +573,9 @@ type
     procedure lclClearCallback; override;
 
     // Own methods, mostly convenience methods
-    procedure setStringValue_forTableColumn_row(AStr: NSString; col, row: NSInteger); message 'setStringValue:forTableColumn:row:';
-    procedure setListViewStringValue_forTableColumn_row(AStr: NSString; col, row: NSInteger); message 'setListViewStringValue:forTableColumn:row:';
+    procedure setStringValue_forCol_row(AStr: NSString; col, row: NSInteger); message 'setStringValue:forCol:row:';
+    procedure deleteItemForRow(row: NSInteger); message 'deleteItemForRow:';
+    procedure setListViewStringValue_forCol_row(AStr: NSString; col, row: NSInteger); message 'setListViewStringValue:forCol:row:';
     function getIndexOfColumn(ACol: NSTableColumn): NSInteger; message 'getIndexOfColumn:';
     procedure reloadDataForRow_column(ARow, ACol: NSInteger); message 'reloadDataForRow:column:';
 
@@ -2372,7 +2374,7 @@ begin
     inherited resetCursorRects;
 end;
 
-procedure TCocoaTableListView.setStringValue_forTableColumn_row(
+procedure TCocoaTableListView.setStringValue_forCol_row(
   AStr: NSString; col, row: NSInteger);
 var
   lStringList: TStringList;
@@ -2418,7 +2420,16 @@ begin
   end;
 end;
 
-procedure TCocoaTableListView.setListViewStringValue_forTableColumn_row(
+procedure TCocoaTableListView.deleteItemForRow(row: NSInteger);
+var
+  lStringList: TStringList;
+begin
+  lStringList := TStringList(Items.Objects[row]);
+  if lStringList <> nil then lStringList.Free;
+  Items.Delete(row);
+end;
+
+procedure TCocoaTableListView.setListViewStringValue_forCol_row(
   AStr: NSString; col, row: NSInteger);
 var
   lSubItems: TStrings;
@@ -2567,8 +2578,8 @@ begin
 
   lColumnIndex := getIndexOfColumn(tableColumn);
 
-  setListViewStringValue_forTableColumn_row(lNewValue, lColumnIndex, row);
-  setStringValue_forTableColumn_row(lNewValue, lColumnIndex, row);
+  setListViewStringValue_forCol_row(lNewValue, lColumnIndex, row);
+  setStringValue_forCol_row(lNewValue, lColumnIndex, row);
   reloadDataForRow_column(lColumnIndex, row);
 end;
 
@@ -2578,9 +2589,42 @@ begin
 end;
 
 procedure TCocoaTableListView.tableViewSelectionDidChange(notification: NSNotification);
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+  OldSel, NewSel: Integer;
 begin
-  if Assigned(callback) then
-    callback.SelectionChanged;
+  {$IFDEF COCOA_DEBUG_LISTVIEW}
+  WriteLn('[TLCLListViewCallback.SelectionChanged]');
+  {$ENDIF}
+
+  NewSel := Self.selectedRow();
+
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
+
+  Msg.Msg := CN_NOTIFY;
+
+  NMLV.hdr.hwndfrom := ListView.Handle;
+  NMLV.hdr.code := LVN_ITEMCHANGED;
+  NMLV.iSubItem := 0;
+  NMLV.uChanged := LVIF_STATE;
+  Msg.NMHdr := @NMLV.hdr;
+
+  // If there was something previously selected:
+{  if ListView.Selected <> nil then
+  begin
+    OldSel := ListView.Selected.Index;
+    NMLV.iItem := OldSel;
+    NMLV.uNewState := 0;
+    NMLV.uOldState := LVIS_SELECTED;
+    LCLMessageGlue.DeliverMessage(ListView, Msg);
+  end;}
+
+  // Now the new selection
+  NMLV.iItem := NewSel;
+  NMLV.uNewState := LVIS_SELECTED;
+  LCLMessageGlue.DeliverMessage(ListView, Msg);
 end;
 
 { TCocoaStringList }
