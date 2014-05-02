@@ -266,6 +266,7 @@ type
     function GetKind: TDbgSymbolKind; override;
     function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function GetAsBool: Boolean; override;
+    function GetAsCardinal: QWord; override;
   public
     constructor Create(AValue: Boolean);
   end;
@@ -795,12 +796,20 @@ end;
 
 function TFpDbgValueConstBool.GetFieldFlags: TFpDbgValueFieldFlags;
 begin
-  Result := [{svfOrdinal, }svfBoolean];
+  Result := [svfOrdinal, svfBoolean];
 end;
 
 function TFpDbgValueConstBool.GetAsBool: Boolean;
 begin
   Result := FValue;
+end;
+
+function TFpDbgValueConstBool.GetAsCardinal: QWord;
+begin
+  if FValue then
+    Result := 1
+  else
+    Result := 0;
 end;
 
 constructor TFpDbgValueConstBool.Create(AValue: Boolean);

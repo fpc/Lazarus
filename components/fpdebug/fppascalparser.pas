@@ -1357,14 +1357,38 @@ begin
 end;
 
 function TFpPascalExpressionPartIdentifer.DoGetResultValue: TFpDbgValue;
+var
+  s: String;
+  tmp: TFpDbgValueConstAddress;
 begin
-  Result := FExpression.GetDbgSymbolForIdentifier(GetText);
+  s := GetText;
+  Result := FExpression.GetDbgSymbolForIdentifier(s);
   if Result = nil then begin
-    SetError(fpErrSymbolNotFound, [GetText]);
-    exit;
-  end;
+    s := LowerCase(s);
+    if s = 'nil' then begin
+      tmp := TFpDbgValueConstAddress.Create(NilLoc);
+      Result := TFpPasParserValueAddressOf.Create(tmp, Expression.Context);
+      tmp.ReleaseReference;
+      {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+    end
+    else
+    if s = 'true' then begin
+      Result := TFpDbgValueConstBool.Create(True);
+      {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+    end
+    else
+    if s = 'false' then begin
+      Result := TFpDbgValueConstBool.Create(False);
+      {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+    end
+    else begin
+      SetError(fpErrSymbolNotFound, [GetText]);
+      exit;
+    end;
+  end
 
-  Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
+  else
+    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
 function GetFirstToken(AText: PChar): String;
@@ -1530,12 +1554,18 @@ var
           if (TokenEndPtr^ = DecimalSeparator) and (TokenEndPtr[1] <> '.') then begin
             inc(TokenEndPtr);
             while TokenEndPtr^ in ['0'..'9'] do inc(TokenEndPtr);
-            AddPart(TFpPascalExpressionPartConstantNumberFloat);
+            if TokenEndPtr^ in ['a'..'z', 'A'..'Z', '_'] then
+              SetError(fpErrPasParserUnexpectedToken, [GetFirstToken(CurPtr), PosFromPChar(CurPtr)])
+            else
+              AddPart(TFpPascalExpressionPartConstantNumberFloat);
             exit;
           end;
         end;
     end;
-    AddPart(TFpPascalExpressionPartConstantNumber);
+    if TokenEndPtr^ in ['a'..'z', 'A'..'Z', '_'] then
+      SetError(fpErrPasParserUnexpectedToken, [GetFirstToken(CurPtr), PosFromPChar(CurPtr)])
+    else
+      AddPart(TFpPascalExpressionPartConstantNumber);
   end;
 
   procedure HandleComma;
@@ -1720,6 +1750,7 @@ begin
   if FResultValDone then
     exit;
   FResultValue := DoGetResultValue;
+  {$IFDEF WITH_REFCOUNT_DEBUG}FResultValue.DbgRenameReference(nil, 'DoGetResultValue', @FResultValue, 'DoGetResultValue');{$ENDIF}
   FResultValDone := True;
   Result := FResultValue;
 end;
@@ -1866,7 +1897,7 @@ destructor TFpPascalExpressionPart.Destroy;
 begin
   inherited Destroy;
   //FResultType.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultType'){$ENDIF};
-  FResultValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
+  FResultValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FResultValue, 'DoGetResultValue'){$ENDIF};
 end;
 
 function TFpPascalExpressionPart.HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;
