@@ -242,6 +242,34 @@ type
     constructor Create(AValue: QWord; ASigned: Boolean = True);
   end;
 
+  { TFpDbgValueConstFloat }
+
+  TFpDbgValueConstFloat = class(TFpDbgValue)
+  private
+    FValue: Extended;
+  protected
+    property Value: Extended read FValue write FValue;
+    function GetKind: TDbgSymbolKind; override;
+    function GetFieldFlags: TFpDbgValueFieldFlags; override;
+    function GetAsFloat: Extended; override;
+  public
+    constructor Create(AValue: Extended);
+  end;
+
+  { TFpDbgValueConstBool}
+
+  TFpDbgValueConstBool = class(TFpDbgValue)
+  private
+    FValue: Boolean;
+  protected
+    property Value: Boolean read FValue write FValue;
+    function GetKind: TDbgSymbolKind; override;
+    function GetFieldFlags: TFpDbgValueFieldFlags; override;
+    function GetAsBool: Boolean; override;
+  public
+    constructor Create(AValue: Boolean);
+  end;
+
   { TFpDbgValueConstAddress }
 
   TFpDbgValueConstAddress = class(TFpDbgValue)
@@ -733,6 +761,52 @@ begin
   inherited Create;
   FValue := AValue;
   FSigned := ASigned;
+end;
+
+{ TFpDbgValueConstFloat }
+
+function TFpDbgValueConstFloat.GetKind: TDbgSymbolKind;
+begin
+  Result := skFloat;
+end;
+
+function TFpDbgValueConstFloat.GetFieldFlags: TFpDbgValueFieldFlags;
+begin
+  Result := [svfFloat];
+end;
+
+function TFpDbgValueConstFloat.GetAsFloat: Extended;
+begin
+  Result := FValue;
+end;
+
+constructor TFpDbgValueConstFloat.Create(AValue: Extended);
+begin
+  inherited Create;
+  FValue := AValue;
+end;
+
+{ TFpDbgValueConstBool }
+
+function TFpDbgValueConstBool.GetKind: TDbgSymbolKind;
+begin
+  Result := skBoolean;
+end;
+
+function TFpDbgValueConstBool.GetFieldFlags: TFpDbgValueFieldFlags;
+begin
+  Result := [{svfOrdinal, }svfBoolean];
+end;
+
+function TFpDbgValueConstBool.GetAsBool: Boolean;
+begin
+  Result := FValue;
+end;
+
+constructor TFpDbgValueConstBool.Create(AValue: Boolean);
+begin
+  inherited Create;
+  FValue := AValue;
 end;
 
 { TDbgSymbolValueConstAddress }

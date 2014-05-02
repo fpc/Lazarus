@@ -173,6 +173,13 @@ type
     function DoGetResultValue: TFpDbgValue; override;
   end;
 
+  { TFpPascalExpressionPartConstantNumberFloat }
+
+  TFpPascalExpressionPartConstantNumberFloat = class(TFpPascalExpressionPartConstantNumber)
+  protected
+    function DoGetResultValue: TFpDbgValue; override;
+  end;
+
   TFpPascalExpressionPartConstantText = class(TFpPascalExpressionPartConstant)
   end;
 
@@ -361,6 +368,7 @@ type
   TFpPascalExpressionPartOperatorMulDiv = class(TFpPascalExpressionPartBinaryOperator)    // * /
   protected
     procedure Init; override;
+    function DoGetResultValue: TFpDbgValue; override;
   end;
 
   { TFpPascalExpressionPartOperatorMemberOf }
@@ -1393,7 +1401,28 @@ begin
     exit;
   end;
 
-  Result := TFpDbgValueConstNumber.Create(i, False);
+  if FStartChar^ in ['0'..'9'] then
+    Result := TFpDbgValueConstNumber.Create(i, False)
+  else
+    Result := TFpDbgValueConstNumber.Create(Int64(i), True); // hex,oct,bin values default to signed
+  {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
+end;
+
+{ TFpPascalExpressionPartConstantNumberFloat }
+
+function TFpPascalExpressionPartConstantNumberFloat.DoGetResultValue: TFpDbgValue;
+var
+  f: Extended;
+  s: String;
+begin
+  s := GetText;
+  if not TextToFloat(PChar(s), f) then begin
+    Result := nil;
+    SetError(fpErrInvalidNumber, [GetText]);
+    exit;
+  end;
+
+  Result := TFpDbgValueConstFloat.Create(f);
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
@@ -1421,7 +1450,15 @@ var
     while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '_', '0'..'9'] do
       inc(TokenEndPtr);
     // TODO: Check functions not, and, in, as, is ...
-    NewPart := TFpPascalExpressionPartIdentifer.Create(Self, CurPtr, TokenEndPtr-1);
+    case TokenEndPtr - CurPtr of
+      3: case CurPtr^ of
+        'd', 'D':
+          if (CurPtr[1] in ['i', 'I']) and (CurPtr[2] in ['v', 'V']) then
+            NewPart := TFpPascalExpressionPartOperatorMulDiv.Create(Self, CurPtr, TokenEndPtr-1);
+        end;
+    end;
+    if NewPart = nil then
+      NewPart := TFpPascalExpressionPartIdentifer.Create(Self, CurPtr, TokenEndPtr-1);
   end;
 
   procedure HandleDot;
@@ -1487,8 +1524,16 @@ var
           inc(TokenEndPtr, 2);
           while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '0'..'9'] do inc(TokenEndPtr);
         end
-        else
+        else begin
           while TokenEndPtr^ in ['0'..'9'] do inc(TokenEndPtr);
+          // identify "2.", but not "[2..3]"  // CurExpr.IsFloatAllowed
+          if (TokenEndPtr^ = DecimalSeparator) and (TokenEndPtr[1] <> '.') then begin
+            inc(TokenEndPtr);
+            while TokenEndPtr^ in ['0'..'9'] do inc(TokenEndPtr);
+            AddPart(TFpPascalExpressionPartConstantNumberFloat);
+            exit;
+          end;
+        end;
     end;
     AddPart(TFpPascalExpressionPartConstantNumber);
   end;
@@ -2441,6 +2486,126 @@ procedure TFpPascalExpressionPartOperatorMulDiv.Init;
 begin
   FPrecedence := PRECEDENCE_MUL_DIV;
   inherited Init;
+end;
+
+function TFpPascalExpressionPartOperatorMulDiv.DoGetResultValue: TFpDbgValue;
+{$PUSH}{$R-}{$Q-}
+  function MultiplyIntWithValue(AIntVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstNumber.Create(AIntVal.AsInteger * AOtherVal.AsInteger, True);
+      skCardinal: Result := TFpDbgValueConstNumber.Create(AIntVal.AsInteger * AOtherVal.AsCardinal, True);
+      skFloat:    Result := TFpDbgValueConstFloat.Create(AIntVal.AsInteger * AOtherVal.AsFloat);
+      else SetError('Multiply not supported');
+    end;
+  end;
+  function MultiplyCardinalWithValue(ACardinalVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstNumber.Create(ACardinalVal.AsCardinal * AOtherVal.AsInteger, True);
+      skCardinal: Result := TFpDbgValueConstNumber.Create(ACardinalVal.AsCardinal * AOtherVal.AsCardinal, False);
+      skFloat:    Result := TFpDbgValueConstFloat.Create(ACardinalVal.AsCardinal * AOtherVal.AsFloat);
+      else SetError('Multiply not supported');
+    end;
+  end;
+  function MultiplyFloatWithValue(AFloatVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstFloat.Create(AFloatVal.AsFloat * AOtherVal.AsInteger);
+      skCardinal: Result := TFpDbgValueConstFloat.Create(AFloatVal.AsFloat * AOtherVal.AsCardinal);
+      skFloat:    Result := TFpDbgValueConstFloat.Create(AFloatVal.AsFloat * AOtherVal.AsFloat);
+      else SetError('Multiply not supported');
+    end;
+  end;
+
+  function FloatDivIntByValue(AIntVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstFloat.Create(AIntVal.AsInteger / AOtherVal.AsInteger);
+      skCardinal: Result := TFpDbgValueConstFloat.Create(AIntVal.AsInteger / AOtherVal.AsCardinal);
+      skFloat:    Result := TFpDbgValueConstFloat.Create(AIntVal.AsInteger / AOtherVal.AsFloat);
+      else SetError('/ not supported');
+    end;
+  end;
+  function FloatDivCardinalByValue(ACardinalVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstFloat.Create(ACardinalVal.AsCardinal / AOtherVal.AsInteger);
+      skCardinal: Result := TFpDbgValueConstFloat.Create(ACardinalVal.AsCardinal / AOtherVal.AsCardinal);
+      skFloat:    Result := TFpDbgValueConstFloat.Create(ACardinalVal.AsCardinal / AOtherVal.AsFloat);
+      else SetError('/ not supported');
+    end;
+  end;
+  function FloatDivFloatByValue(AFloatVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstFloat.Create(AFloatVal.AsFloat / AOtherVal.AsInteger);
+      skCardinal: Result := TFpDbgValueConstFloat.Create(AFloatVal.AsFloat / AOtherVal.AsCardinal);
+      skFloat:    Result := TFpDbgValueConstFloat.Create(AFloatVal.AsFloat / AOtherVal.AsFloat);
+      else SetError('/ not supported');
+    end;
+  end;
+
+  function NumDivIntByValue(AIntVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstNumber.Create(AIntVal.AsInteger div AOtherVal.AsInteger, True);
+      skCardinal: Result := TFpDbgValueConstNumber.Create(AIntVal.AsInteger div AOtherVal.AsCardinal, True);
+      else SetError('Div not supported');
+    end;
+  end;
+  function NumDivCardinalByValue(ACardinalVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstNumber.Create(ACardinalVal.AsCardinal div AOtherVal.AsInteger, True);
+      skCardinal: Result := TFpDbgValueConstNumber.Create(ACardinalVal.AsCardinal div AOtherVal.AsCardinal, False);
+      else SetError('Div not supported');
+    end;
+  end;
+{$POP}
+var
+  tmp1, tmp2: TFpDbgValue;
+begin
+  Result := nil;
+  if Count <> 2 then exit;
+  assert((GetText = '*') or (GetText = '/') or (LowerCase(GetText) = 'div') , 'TFpPascalExpressionPartOperatorUnaryPlusMinus.DoGetResultValue: (GetText = +) or (GetText = -)');
+
+  tmp1 := Items[0].ResultValue;
+  tmp2 := Items[1].ResultValue;
+  if (tmp1 = nil) or (tmp2 = nil) then exit;
+
+  if GetText = '*' then begin
+    case tmp1.Kind of
+      skInteger:  Result := MultiplyIntWithValue(tmp1, tmp2);
+      skCardinal: Result := MultiplyCardinalWithValue(tmp1, tmp2);
+      skFloat:    Result := MultiplyFloatWithValue(tmp1, tmp2);
+    end;
+  end
+  else
+  if GetText = '/' then begin
+    case tmp1.Kind of
+      skInteger:  Result := FloatDivIntByValue(tmp1, tmp2);
+      skCardinal: Result := FloatDivCardinalByValue(tmp1, tmp2);
+      skFloat:    Result := FloatDivFloatByValue(tmp1, tmp2);
+    end;
+  end
+  else begin // DIV
+    case tmp1.Kind of
+      skInteger:  Result := NumDivIntByValue(tmp1, tmp2);
+      skCardinal: Result := NumDivCardinalByValue(tmp1, tmp2);
+    end;
+  end;
+
+ {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then
+   Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
 end;
 
 { TFpPascalExpressionPartOperatorMemberOf }
