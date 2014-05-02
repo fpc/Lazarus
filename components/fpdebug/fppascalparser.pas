@@ -2458,6 +2458,7 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpDbgValue;
       skPointer:  Result := AddSubValueToPointer(AOtherVal, AIntVal);
       skInteger:  Result := TFpDbgValueConstNumber.Create(AIntVal.AsInteger + AOtherVal.AsInteger, True);
       skCardinal: Result := TFpDbgValueConstNumber.Create(AIntVal.AsInteger + AOtherVal.AsCardinal, True);
+      skFloat:    Result := TFpDbgValueConstFloat.Create(AIntVal.AsInteger + AOtherVal.AsFloat);
       else SetError('Addition not supported');
     end;
   end;
@@ -2468,6 +2469,17 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpDbgValue;
       skPointer:  Result := AddSubValueToPointer(AOtherVal, ACardinalVal);
       skInteger:  Result := TFpDbgValueConstNumber.Create(ACardinalVal.AsCardinal + AOtherVal.AsInteger, True);
       skCardinal: Result := TFpDbgValueConstNumber.Create(ACardinalVal.AsCardinal + AOtherVal.AsCardinal, False);
+      skFloat:    Result := TFpDbgValueConstFloat.Create(ACardinalVal.AsCardinal + AOtherVal.AsFloat);
+      else SetError('Addition not supported');
+    end;
+  end;
+  function AddValueToFloat(AFloatVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstFloat.Create(AFloatVal.AsFloat + AOtherVal.AsInteger);
+      skCardinal: Result := TFpDbgValueConstFloat.Create(AFloatVal.AsFloat + AOtherVal.AsCardinal);
+      skFloat:    Result := TFpDbgValueConstFloat.Create(AFloatVal.AsFloat + AOtherVal.AsFloat);
       else SetError('Addition not supported');
     end;
   end;
@@ -2483,6 +2495,7 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpDbgValue;
       skPointer:  Result := SubPointerFromValue(AOtherVal, AIntVal);
       skInteger:  Result := TFpDbgValueConstNumber.Create(AIntVal.AsInteger - AOtherVal.AsInteger, True);
       skCardinal: Result := TFpDbgValueConstNumber.Create(AIntVal.AsInteger - AOtherVal.AsCardinal, True);
+      skFloat:    Result := TFpDbgValueConstFloat.Create(AIntVal.AsInteger - AOtherVal.AsFloat);
       else SetError('Subtraction not supported');
     end;
   end;
@@ -2493,6 +2506,17 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpDbgValue;
       skPointer:  Result := SubPointerFromValue(AOtherVal, ACardinalVal);
       skInteger:  Result := TFpDbgValueConstNumber.Create(ACardinalVal.AsCardinal - AOtherVal.AsInteger, True);
       skCardinal: Result := TFpDbgValueConstNumber.Create(ACardinalVal.AsCardinal - AOtherVal.AsCardinal, False);
+      skFloat:    Result := TFpDbgValueConstFloat.Create(ACardinalVal.AsCardinal - AOtherVal.AsFloat);
+      else SetError('Subtraction not supported');
+    end;
+  end;
+  function SubValueFromFloat(AFloatVal, AOtherVal: TFpDbgValue): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstFloat.Create(AFloatVal.AsFloat - AOtherVal.AsInteger);
+      skCardinal: Result := TFpDbgValueConstFloat.Create(AFloatVal.AsFloat - AOtherVal.AsCardinal);
+      skFloat:    Result := TFpDbgValueConstFloat.Create(AFloatVal.AsFloat - AOtherVal.AsFloat);
       else SetError('Subtraction not supported');
     end;
   end;
@@ -2515,6 +2539,7 @@ begin
       skPointer:  Result := AddSubValueToPointer(tmp1, tmp2);
       skInteger:  Result := AddValueToInt(tmp1, tmp2);
       skCardinal: Result := AddValueToCardinal(tmp1, tmp2);
+      skFloat:    Result := AddValueToFloat(tmp1, tmp2);
     end;
   end
   else begin
@@ -2522,6 +2547,7 @@ begin
       skPointer:  Result := AddSubValueToPointer(tmp1, tmp2, True);
       skInteger:  Result := SubValueFromInt(tmp1, tmp2);
       skCardinal: Result := SubValueFromCardinal(tmp1, tmp2);
+      skFloat:    Result := SubValueFromFloat(tmp1, tmp2);
     end;
   end;
 
