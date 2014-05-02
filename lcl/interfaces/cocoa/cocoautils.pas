@@ -27,6 +27,7 @@ const
   NSNullRect : NSRect = (origin:(x:0; y:0); size:(width:0; height:0));
 
 function GetNSPoint(x,y: single): NSPoint; inline;
+function LCLToNSPoint(APt: TPoint; ParentHeight: Single): NSPoint;
 
 function GetCGRect(x1, y1, x2, y2: Integer): CGRect; inline;
 function GetCGRectSorted(X1, Y1, X2, Y2: Integer): CGRect;
@@ -251,6 +252,12 @@ function GetNSPoint(x, y: single): NSPoint;
 begin
   Result.x := x;
   Result.y := y;
+end;
+
+function LCLToNSPoint(APt: TPoint; ParentHeight: Single): NSPoint;
+begin
+  Result.X := APt.X;
+  Result.Y := ParentHeight - APt.Y;
 end;
 
 function GetNSRect(x, y, width, height: Integer): NSRect;

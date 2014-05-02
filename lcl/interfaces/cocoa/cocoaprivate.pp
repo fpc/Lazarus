@@ -18,6 +18,7 @@ unit CocoaPrivate;
 {$modeswitch objectivec1}
 {$interfaces corba}
 {.$DEFINE COCOA_DEBUG_SETBOUNDS}
+{.$DEFINE COCOA_DEBUG_LISTVIEW}
 
 interface
 
@@ -28,7 +29,7 @@ uses
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
-  LMessages, LCLMessageGlue,
+  LMessages, LCLMessageGlue, ExtCtrls,
   LCLType, LCLProc, Controls, ComCtrls;
 
 type
@@ -163,6 +164,7 @@ type
   { IListViewCallBack }
 
   IListViewCallBack = interface(ICommonCallback)
+    procedure delayedSelectionDidChange_OnTimer(ASender: TObject);
   end;
 
   { IWindowCallback }
@@ -565,6 +567,7 @@ type
 
     // Owned Pascal classes which need to be released
     Items: TStringList; // Object are TStringList for sub-items
+    Timer: TTimer;
 
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
@@ -578,6 +581,7 @@ type
     procedure setListViewStringValue_forCol_row(AStr: NSString; col, row: NSInteger); message 'setListViewStringValue:forCol:row:';
     function getIndexOfColumn(ACol: NSTableColumn): NSInteger; message 'getIndexOfColumn:';
     procedure reloadDataForRow_column(ARow, ACol: NSInteger); message 'reloadDataForRow:column:';
+    procedure scheduleSelectionDidChange(); message 'scheduleSelectionDidChange';
 
     procedure dealloc; override;
     procedure resetCursorRects; override;
@@ -2468,6 +2472,14 @@ begin
   reloadDataForRowIndexes_columnIndexes(lRowSet, lColSet);
 end;
 
+procedure TCocoaTableListView.scheduleSelectionDidChange;
+begin
+  if Timer = nil then Timer := TTimer.Create(nil);
+  Timer.Interval := 1;
+  Timer.Enabled := True;
+  Timer.OnTimer := @callback.delayedSelectionDidChange_OnTimer;
+end;
+
 procedure TCocoaTableListView.mouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
@@ -2594,11 +2606,10 @@ var
   NMLV: TNMListView;
   OldSel, NewSel: Integer;
 begin
-  {$IFDEF COCOA_DEBUG_LISTVIEW}
-  WriteLn('[TLCLListViewCallback.SelectionChanged]');
-  {$ENDIF}
-
   NewSel := Self.selectedRow();
+  {$IFDEF COCOA_DEBUG_LISTVIEW}
+  WriteLn(Format('[TLCLListViewCallback.SelectionChanged] NewSel=%d', [NewSel]));
+  {$ENDIF}
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
   FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
@@ -2611,19 +2622,18 @@ begin
   NMLV.uChanged := LVIF_STATE;
   Msg.NMHdr := @NMLV.hdr;
 
-  // If there was something previously selected:
-{  if ListView.Selected <> nil then
+  if NewSel >= 0 then
   begin
-    OldSel := ListView.Selected.Index;
-    NMLV.iItem := OldSel;
+    NMLV.iItem := NewSel;
+    NMLV.uNewState := LVIS_SELECTED;
+  end
+  else
+  begin
+    NMLV.iItem := 0;
     NMLV.uNewState := 0;
     NMLV.uOldState := LVIS_SELECTED;
-    LCLMessageGlue.DeliverMessage(ListView, Msg);
-  end;}
+  end;
 
-  // Now the new selection
-  NMLV.iItem := NewSel;
-  NMLV.uNewState := LVIS_SELECTED;
   LCLMessageGlue.DeliverMessage(ListView, Msg);
 end;
 
