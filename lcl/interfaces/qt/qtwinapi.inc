@@ -2604,7 +2604,8 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetClientRect]');
   {$endif}
-
+  if Handle = 0 then
+    Exit(False);
   GetClientBounds(Handle, ARect);
   OffsetRect(ARect, -ARect.Left, -ARect.Top);
 
