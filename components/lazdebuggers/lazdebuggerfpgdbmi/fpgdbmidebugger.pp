@@ -936,6 +936,7 @@ var
   Ctx: TFpDbgInfoContext;
   PasExpr: TFpPascalExpression;
   ResValue: TFpDbgValue;
+  s: String;
 
   function IsWatchValueAlive: Boolean;
   begin
@@ -1180,6 +1181,15 @@ DebugLn(ErrorHandler.ErrorAsString(PasExpr.Error));
       skArray:     DoArray;
     end;
     if not IsWatchValueAlive then exit;
+
+    if PasExpr.HasPCharIndexAccess and not IsError(ResValue.LastError) then begin
+      // TODO: Only dwarf 2
+      PasExpr.FixPCharIndexAccess := True;
+      PasExpr.ResetEvaluation;
+      ResValue := PasExpr.ResultValue;
+      if (ResValue=nil) or (not FPrettyPrinter.PrintValue(s, ResValue, [])) then s := 'Failed';
+      AResText := 'PChar: '+AResText+ LineEnding + 'String: '+s;
+    end;
 
     if ATypeInfo <> nil then begin
       Result := True;

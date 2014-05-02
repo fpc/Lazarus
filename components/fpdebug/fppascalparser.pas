@@ -51,6 +51,8 @@ type
   private
     FError: TFpError;
     FContext: TFpDbgInfoContext;
+    FFixPCharIndexAccess: Boolean;
+    FHasPCharIndexAccess: Boolean;
     FTextExpression: String;
     FExpressionPart: TFpPascalExpressionPart;
     FValid: Boolean;
@@ -67,8 +69,13 @@ type
     constructor Create(ATextExpression: String; AContext: TFpDbgInfoContext);
     destructor Destroy; override;
     function DebugDump(AWithResults: Boolean = False): String;
+    procedure ResetEvaluation;
     property Error: TFpError read FError;
     property Valid: Boolean read FValid;
+    // Set by GetResultValue
+    property HasPCharIndexAccess: Boolean read FHasPCharIndexAccess;
+    // handle pchar as string (adjust index)
+    property FixPCharIndexAccess: Boolean read FFixPCharIndexAccess write FFixPCharIndexAccess;
     // ResultValue
     // - May be a type, if expression is a type
     // - Only valid, as long as the expression is not destroyed
@@ -102,6 +109,7 @@ type
     procedure Init; virtual;
     function  DoGetIsTypeCast: Boolean; virtual; deprecated;
     function  DoGetResultValue: TFpDbgValue; virtual;
+    procedure ResetEvaluation;
 
     Procedure ReplaceInParent(AReplacement: TFpPascalExpressionPart);
     procedure DoHandleEndOfExpression; virtual;
@@ -1014,6 +1022,7 @@ var
   i: Integer;
   Offs: Int64;
   ti: TFpDbgSymbol;
+  IsPChar: Boolean;
 begin
   Result := nil;
   assert(Count >= 2, 'TFpPascalExpressionPartBracketIndex.DoGetResultValue: Count >= 2');
@@ -1060,6 +1069,16 @@ begin
             SetError('Can not calculate Index');
             TmpVal.ReleaseReference;
             exit;
+          end;
+
+          ti := TmpVal.TypeInfo;
+          if (ti <> nil) then ti := ti.TypeInfo;
+          IsPChar := (ti <> nil) and (ti.Kind in [skChar]) and (Offs > 0);
+          if IsPChar then FExpression.FHasPCharIndexAccess := True;
+          if IsPChar and FExpression.FixPCharIndexAccess then begin
+            // fix for string in dwarf 2
+            if Offs > 0 then
+              dec(Offs);
           end;
 
           TmpVal2 := TmpVal.Member[Offs];
@@ -1735,6 +1754,11 @@ begin
       Result := Result + 'ResultValue = ' + LineEnding + DbgSName(ResultValue) + LineEnding ;
 end;
 
+procedure TFpPascalExpression.ResetEvaluation;
+begin
+  FExpressionPart.ResetEvaluation;
+end;
+
 { TFpPascalExpressionPart }
 
 procedure TFpPascalExpressionPart.SetEndChar(AValue: PChar);
@@ -1831,6 +1855,13 @@ end;
 function TFpPascalExpressionPart.DoGetResultValue: TFpDbgValue;
 begin
   Result := nil;
+end;
+
+procedure TFpPascalExpressionPart.ResetEvaluation;
+begin
+  FResultValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FResultValue, 'DoGetResultValue'){$ENDIF};
+  FResultValue := nil;
+  FResultValDone := False;
 end;
 
 procedure TFpPascalExpressionPart.ReplaceInParent(AReplacement: TFpPascalExpressionPart);
