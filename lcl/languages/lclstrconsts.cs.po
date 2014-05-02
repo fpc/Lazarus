@@ -531,11 +531,15 @@ msgid "First"
 msgstr "První"
 
 #: lclstrconsts.rsfixedcolstoobig
-msgid "FixedCols can't be >= ColCount"
+#, fuzzy
+#| msgid "FixedCols can't be >= ColCount"
+msgid "FixedCols can't be > ColCount"
 msgstr "FixedCols nemůže být >= ColCount"
 
 #: lclstrconsts.rsfixedrowstoobig
-msgid "FixedRows can't be >= RowCount"
+#, fuzzy
+#| msgid "FixedRows can't be >= RowCount"
+msgid "FixedRows can't be > RowCount"
 msgstr "FixedRows nemůže být >= RowCount"
 
 #: lclstrconsts.rsformcolorcaption
