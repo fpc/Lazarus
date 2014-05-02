@@ -371,6 +371,14 @@ type
     function DoGetResultValue: TFpDbgValue; override;
   end;
 
+  { TFpPascalExpressionPartOperatorCompare }
+
+  TFpPascalExpressionPartOperatorCompare = class(TFpPascalExpressionPartBinaryOperator)    // = < > <> ><
+  protected
+    procedure Init; override;
+    function DoGetResultValue: TFpDbgValue; override;
+  end;
+
   { TFpPascalExpressionPartOperatorMemberOf }
 
   TFpPascalExpressionPartOperatorMemberOf = class(TFpPascalExpressionPartBinaryOperator)    // struct.member
@@ -394,6 +402,7 @@ const
   PRECEDENCE_UNARY_SIGN = 11;        // -a
   PRECEDENCE_MUL_DIV    = 12;        // a * b
   PRECEDENCE_PLUS_MINUS = 13;        // a + b
+  PRECEDENCE_COMPARE    = 20;        // a <> b // a=b
 
 type
 
@@ -1568,6 +1577,15 @@ var
       AddPart(TFpPascalExpressionPartConstantNumber);
   end;
 
+  procedure HandleCompare;
+  begin
+    if (CurPtr^ = '<') and (TokenEndPtr^ in ['>', '=']) then
+      inc(TokenEndPtr);
+    if (CurPtr^ = '>') and (TokenEndPtr^ in ['<', '=']) then
+      inc(TokenEndPtr);
+    AddPart(TFpPascalExpressionPartOperatorCompare);
+  end;
+
   procedure HandleComma;
   begin
     if not CurPart.HandleSeparator(ppstComma) then
@@ -1606,6 +1624,8 @@ begin
       '[':       HandleSqareBracket;
       ']':       CloseBracket(TFpPascalExpressionPartSquareBracket);
       ',':       HandleComma;
+      '=', '<',
+      '>':       HandleCompare;//TFpPascalExpressionPartOperatorCompare
       '''', '#': AddConstChar;
       '0'..'9',
       '$', '%', '&':  AddConstNumber;
@@ -2405,8 +2425,6 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpDbgValue;
   function AddSubValueToPointer(APointerVal, AOtherVal: TFpDbgValue; ADoSubtract: Boolean = False): TFpDbgValue;
   var
     Idx: Int64;
-    f: Integer;
-    ti: TFpDbgSymbol;
     TmpVal: TFpDbgValue;
   begin
     Result := nil;
@@ -2628,11 +2646,160 @@ begin
       skFloat:    Result := FloatDivFloatByValue(tmp1, tmp2);
     end;
   end
-  else begin // DIV
+  else
+  if LowerCase(GetText) = 'div' then begin
     case tmp1.Kind of
       skInteger:  Result := NumDivIntByValue(tmp1, tmp2);
       skCardinal: Result := NumDivCardinalByValue(tmp1, tmp2);
     end;
+  end;
+
+ {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then
+   Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+end;
+
+{ TFpPascalExpressionPartOperatorCompare }
+
+procedure TFpPascalExpressionPartOperatorCompare.Init;
+begin
+  FPrecedence := PRECEDENCE_COMPARE;
+  inherited Init;
+end;
+
+function TFpPascalExpressionPartOperatorCompare.DoGetResultValue: TFpDbgValue;
+{$PUSH}{$R-}{$Q-}
+  function IntEqualToValue(AIntVal, AOtherVal: TFpDbgValue; ARevert: Boolean = False): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstBool.Create((AIntVal.AsInteger = AOtherVal.AsInteger) xor ARevert);
+      skCardinal: Result := TFpDbgValueConstBool.Create((AIntVal.AsInteger = AOtherVal.AsCardinal) xor ARevert);
+      skFloat:    Result := TFpDbgValueConstBool.Create((AIntVal.AsInteger = AOtherVal.AsFloat) xor ARevert);
+      else SetError('= not supported');
+    end;
+  end;
+  function CardinalEqualToValue(ACardinalVal, AOtherVal: TFpDbgValue; ARevert: Boolean = False): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstBool.Create((ACardinalVal.AsCardinal = AOtherVal.AsInteger) xor ARevert);
+      skCardinal: Result := TFpDbgValueConstBool.Create((ACardinalVal.AsCardinal = AOtherVal.AsCardinal) xor ARevert);
+      skFloat:    Result := TFpDbgValueConstBool.Create((ACardinalVal.AsCardinal = AOtherVal.AsFloat) xor ARevert);
+      else SetError('= not supported');
+    end;
+  end;
+  function FloatEqualToValue(AFloatVal, AOtherVal: TFpDbgValue; ARevert: Boolean = False): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstBool.Create((AFloatVal.AsFloat = AOtherVal.AsInteger) xor ARevert);
+      skCardinal: Result := TFpDbgValueConstBool.Create((AFloatVal.AsFloat = AOtherVal.AsCardinal) xor ARevert);
+      skFloat:    Result := TFpDbgValueConstBool.Create((AFloatVal.AsFloat = AOtherVal.AsFloat) xor ARevert);
+      else SetError('= not supported');
+    end;
+  end;
+
+  function IntGreaterThanValue(AIntVal, AOtherVal: TFpDbgValue; ARevert: Boolean = False): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstBool.Create((AIntVal.AsInteger > AOtherVal.AsInteger) xor ARevert);
+      skCardinal: Result := TFpDbgValueConstBool.Create((AIntVal.AsInteger > AOtherVal.AsCardinal) xor ARevert);
+      skFloat:    Result := TFpDbgValueConstBool.Create((AIntVal.AsInteger > AOtherVal.AsFloat) xor ARevert);
+      else SetError('= not supported');
+    end;
+  end;
+  function CardinalGreaterThanValue(ACardinalVal, AOtherVal: TFpDbgValue; ARevert: Boolean = False): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstBool.Create((ACardinalVal.AsCardinal > AOtherVal.AsInteger) xor ARevert);
+      skCardinal: Result := TFpDbgValueConstBool.Create((ACardinalVal.AsCardinal > AOtherVal.AsCardinal) xor ARevert);
+      skFloat:    Result := TFpDbgValueConstBool.Create((ACardinalVal.AsCardinal > AOtherVal.AsFloat) xor ARevert);
+      else SetError('= not supported');
+    end;
+  end;
+  function FloatGreaterThanValue(AFloatVal, AOtherVal: TFpDbgValue; ARevert: Boolean = False): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstBool.Create((AFloatVal.AsFloat > AOtherVal.AsInteger) xor ARevert);
+      skCardinal: Result := TFpDbgValueConstBool.Create((AFloatVal.AsFloat > AOtherVal.AsCardinal) xor ARevert);
+      skFloat:    Result := TFpDbgValueConstBool.Create((AFloatVal.AsFloat > AOtherVal.AsFloat) xor ARevert);
+      else SetError('= not supported');
+    end;
+  end;
+
+  function IntSmallerThanValue(AIntVal, AOtherVal: TFpDbgValue; ARevert: Boolean = False): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstBool.Create((AIntVal.AsInteger < AOtherVal.AsInteger) xor ARevert);
+      skCardinal: Result := TFpDbgValueConstBool.Create((AIntVal.AsInteger < AOtherVal.AsCardinal) xor ARevert);
+      skFloat:    Result := TFpDbgValueConstBool.Create((AIntVal.AsInteger < AOtherVal.AsFloat) xor ARevert);
+      else SetError('= not supported');
+    end;
+  end;
+  function CardinalSmallerThanValue(ACardinalVal, AOtherVal: TFpDbgValue; ARevert: Boolean = False): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstBool.Create((ACardinalVal.AsCardinal < AOtherVal.AsInteger) xor ARevert);
+      skCardinal: Result := TFpDbgValueConstBool.Create((ACardinalVal.AsCardinal < AOtherVal.AsCardinal) xor ARevert);
+      skFloat:    Result := TFpDbgValueConstBool.Create((ACardinalVal.AsCardinal < AOtherVal.AsFloat) xor ARevert);
+      else SetError('= not supported');
+    end;
+  end;
+  function FloatSmallerThanValue(AFloatVal, AOtherVal: TFpDbgValue; ARevert: Boolean = False): TFpDbgValue;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skInteger:  Result := TFpDbgValueConstBool.Create((AFloatVal.AsFloat < AOtherVal.AsInteger) xor ARevert);
+      skCardinal: Result := TFpDbgValueConstBool.Create((AFloatVal.AsFloat < AOtherVal.AsCardinal) xor ARevert);
+      skFloat:    Result := TFpDbgValueConstBool.Create((AFloatVal.AsFloat < AOtherVal.AsFloat) xor ARevert);
+      else SetError('= not supported');
+    end;
+  end;
+
+{$POP}
+var
+  tmp1, tmp2: TFpDbgValue;
+  s: String;
+begin
+  Result := nil;
+  if Count <> 2 then exit;
+
+  tmp1 := Items[0].ResultValue;
+  tmp2 := Items[1].ResultValue;
+  if (tmp1 = nil) or (tmp2 = nil) then exit;
+  s := GetText;
+
+  if (s = '=') or (s = '<>') then begin
+    case tmp1.Kind of
+      skInteger:  Result := IntEqualToValue(tmp1, tmp2, (s = '<>'));
+      skCardinal: Result := CardinalEqualToValue(tmp1, tmp2, (s = '<>'));
+      skFloat:    Result := FloatEqualToValue(tmp1, tmp2, (s = '<>'));
+    end;
+  end
+  else
+  if (s = '>') or (s = '<=') then begin
+    case tmp1.Kind of
+      skInteger:  Result := IntGreaterThanValue(tmp1, tmp2, (s = '<='));
+      skCardinal: Result := CardinalGreaterThanValue(tmp1, tmp2, (s = '<='));
+      skFloat:    Result := FloatGreaterThanValue(tmp1, tmp2, (s = '<='));
+    end;
+  end
+  else
+  if (s = '<') or (s = '>=') then begin
+    case tmp1.Kind of
+      skInteger:  Result := IntSmallerThanValue(tmp1, tmp2, (s = '>='));
+      skCardinal: Result := CardinalSmallerThanValue(tmp1, tmp2, (s = '>='));
+      skFloat:    Result := FloatSmallerThanValue(tmp1, tmp2, (s = '>='));
+    end;
+  end
+  else
+  if GetText = '><' then begin
+    // compare SET
   end;
 
  {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then
