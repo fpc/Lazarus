@@ -984,6 +984,7 @@ end;
 
 procedure TDbgWinThread.LoadRegisterValues;
 begin
+  {$ifdef cpui386}
   with GCurrentContext^ do
   begin
     FRegisterValueList.DbgRegisterAutoCreate['eax'].SetValue(Eax, IntToStr(Eax),4,0);
@@ -1006,6 +1007,10 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(SegGs, IntToStr(SegGs),4,0);
   end;
   FRegisterValueListValid:=true;
+{$else}
+  FRegisterValueListValid := False;
+  {$warning register not ready for 64 bit}
+{$endif}
 end;
 
 procedure TDbgWinThread.SetSingleStep;
@@ -1038,6 +1043,7 @@ var
 
 begin
   result := -1;
+{$ifdef cpui386}
   if SetBreakpoint(GCurrentContext^.Dr0, 0) then
     result := 0
   else if SetBreakpoint(GCurrentContext^.Dr1, 1) then
@@ -1048,6 +1054,10 @@ begin
     result := 3
   else
     Process.Log('No hardware breakpoint available.');
+{$else}
+  FRegisterValueListValid := False;
+  {$warning watchpoint not ready for 64 bit}
+{$endif}
 end;
 
 function TDbgWinThread.RemoveWatchpoint(AnId: integer): boolean;
@@ -1070,12 +1080,17 @@ function TDbgWinThread.RemoveWatchpoint(AnId: integer): boolean;
   end;
 
 begin
+{$ifdef cpui386}
   case AnId of
     0: result := RemoveBreakpoint(GCurrentContext^.Dr0, 0);
     1: result := RemoveBreakpoint(GCurrentContext^.Dr1, 1);
     2: result := RemoveBreakpoint(GCurrentContext^.Dr2, 2);
     3: result := RemoveBreakpoint(GCurrentContext^.Dr3, 3);
   end
+{$else}
+  FRegisterValueListValid := False;
+  {$warning watchpoint not ready for 64 bit}
+{$endif}
 end;
 
 procedure TDbgWinThread.BeforeContinue;
