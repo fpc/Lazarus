@@ -182,6 +182,13 @@ class function TQtWSCustomTabControl.GetDefaultClientRect(
 var
   dx, dy: integer;
   ATabWidget: TQtTabWidget;
+  ASize: TSize;
+  HSpace: Integer;
+  Overlap: Integer;
+  VSpace: Integer;
+  BaseHeight: Integer;
+  TabOverLap: Integer;
+  ShiftVertical: Integer;
 begin
   Result := False;
   if AWinControl.HandleAllocated then
@@ -189,12 +196,21 @@ begin
     if TQtWidget(AWinControl.Handle).ChildOfComplexWidget <> ccwTTabControl then
     begin
       ATabWidget := TQtTabWidget(AWinControl.Handle);
-      if ATabWidget.testAttribute(QtWA_PendingResizeEvent) then
+      if ATabWidget.testAttribute(QtWA_PendingResizeEvent) or not ATabWidget.testAttribute(QtWA_Mapped) then
       begin
         // we must recalculate aclientrect since we have pending resize event
         // and clientrect won't be accurate.issue #21805
         Result := True;
         dx := GetPixelMetric(QStylePM_DefaultFrameWidth, nil, nil);
+        // HSpace := GetPixelMetric(QStylePM_TabBarTabHSpace, nil, nil);
+        VSpace := GetPixelMetric(QStylePM_TabBarTabVSpace, nil, nil);
+        Overlap := GetPixelMetric(QStylePM_TabBarBaseOverlap, nil, nil);
+        TabOverLap := GetPixelMetric(QStylePM_TabBarTabOverlap, nil, nil);
+        BaseHeight := GetPixelMetric(QStylePM_TabBarBaseHeight, nil, nil);
+        ShiftVertical := GetPixelMetric(QStylePM_TabBarTabShiftVertical, nil, nil);
+
+        // trigger sizing, do not remove
+        ATabWidget.TabBar.sizeHint(@ASize);
 
         if ATabWidget.getTabPosition in [QTabWidgetNorth, QTabWidgetSouth] then
         begin
@@ -202,8 +218,28 @@ begin
             dy := ATabWidget.TabBar.getHeight
           else
             dy := 0;
+
+          if (BaseHeight < ShiftVertical) then
+          begin
+            if (Overlap = 0) then
+            begin
+              BaseHeight := BaseHeight + TabOverLap;
+              dx := dx + (TabOverlap * 2);
+            end else
+            begin
+              BaseHeight := BaseHeight * 2;
+              dx := dx + BaseHeight;
+            end;
+          end;
+
+          if (Overlap > VSpace) then
+            BaseHeight := BaseHeight * 2;
+
+          if (VSpace > TabOverLap) then
+            dx := dx + Overlap;
+
           aClientRect := Rect(0, 0,
-               Max(0, aWidth - (dx * 2)),
+               Max(0, aWidth - (BaseHeight * 2)),
                Max(0, aHeight - dx  - dy));
         end else
         begin
@@ -211,9 +247,25 @@ begin
             dy := ATabWidget.TabBar.getWidth
           else
             dy := 0;
+
+          VSpace := 0;
+          HSpace := 0;
+
+          if BaseHeight < ShiftVertical then
+            VSpace := TabOverLap - BaseHeight;
+          if (Overlap < dx) then
+          begin
+            VSpace := OverLap;
+            if OverLap = 0 then
+            begin
+              VSpace := TabOverLap * 2;
+              HSpace := BaseHeight;
+            end;
+          end;
+
           aClientRect := Rect(0,0,
-               Max(0, aWidth - dx  - dy),
-               Max(0, aHeight - (dx * 2)));
+               Max(0, aWidth - dx  - dy - VSpace),
+               Max(0, aHeight - (dx + Overlap + VSpace + HSpace)));
         end;
       end;
     end;
@@ -300,6 +352,7 @@ begin
   then begin
     ATabWidget := TQtTabWidget(AWinControl.Handle);
     Result := 0;
+    dy := 0;
     ATabWidget.TabBar.preferredSize(dy, Result, False);
     if Result > 0 then
       exit;
@@ -318,6 +371,7 @@ begin
   then begin
     ATabWidget := TQtTabWidget(AWinControl.Handle);
     Result := 0;
+    dy := 0;
     ATabWidget.TabBar.preferredSize(Result, dy, False);
     if Result > 0 then
       exit;
