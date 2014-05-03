@@ -6144,7 +6144,8 @@ end;
 procedure TPropertyEditorHook.AddHandler(HookType: TPropHookType;
   const Handler: TMethod);
 begin
-  if Handler.Code=nil then RaiseGDBException('TPropertyEditorHook.AddHandler');
+  if Handler.Code=nil then
+    RaiseGDBException('TPropertyEditorHook.AddHandler');
   if FHandlers[HookType]=nil then
     FHandlers[HookType]:=TMethodList.Create;
   FHandlers[HookType].Add(Handler);
@@ -6153,18 +6154,27 @@ end;
 procedure TPropertyEditorHook.RemoveHandler(HookType: TPropHookType;
   const Handler: TMethod);
 begin
-  FHandlers[HookType].Remove(Handler);
+  if FHandlers[HookType]<>nil then
+    FHandlers[HookType].Remove(Handler);
 end;
 
 function TPropertyEditorHook.GetHandlerCount(HookType: TPropHookType): integer;
 begin
-  Result:=FHandlers[HookType].Count;
+  if FHandlers[HookType]<>nil then
+    Result:=FHandlers[HookType].Count
+  else
+    Result:=0;
 end;
 
 function TPropertyEditorHook.GetNextHandlerIndex(HookType: TPropHookType;
   var i: integer): boolean;
 begin
-  Result:=FHandlers[HookType].NextDownIndex(i);
+  if FHandlers[HookType]<>nil then
+    Result:=FHandlers[HookType].NextDownIndex(i)
+  else begin
+    i:=-1;
+    Result:=false;
+  end;
 end;
 
 procedure TPropertyEditorHook.Notification(AComponent: TComponent;
