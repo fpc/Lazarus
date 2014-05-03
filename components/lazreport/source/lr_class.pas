@@ -10118,6 +10118,8 @@ begin
   DebugLn('DoPrintReport INIT');
   DebugPrnInfo('=== INIT');
   {$ENDIF}
+  if Prn.UseVirtualPrinter then
+    ChangePrinter(Prn.PrinterIndex, Printer.PrinterIndex);
   Prn.Printer := Printer;
   pgList := TStringList.Create;
 
