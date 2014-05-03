@@ -5,8 +5,8 @@ unit FpPascalBuilder;
 interface
 
 uses
-  Classes, SysUtils, DbgIntfBaseTypes, FpDbgInfo, FpdMemoryTools, FpErrorMessages,
-  LazLoggerBase;
+  Classes, SysUtils, DbgIntfBaseTypes, DbgIntfDebuggerBase, FpDbgInfo, FpdMemoryTools,
+  FpErrorMessages, LazLoggerBase;
 
 type
   TTypeNameFlag = (
@@ -39,18 +39,24 @@ type
   TFpPascalPrettyPrinter = class
   private
     FAddressSize: Integer;
+    FMemManager: TFpDbgMemManager;
     function InternalPrintValue(out APrintedValue: String;
                                 AValue: TFpDbgValue;
                                 AnAddressSize: Integer;
                                 AFlags: TFpPrettyPrintValueFlags;
-                                ANestLevel: Integer; AnIndent: String
+                                ANestLevel: Integer; AnIndent: String;
+                                ADisplayFormat: TWatchDisplayFormat;
+                                ARepaetCount: Integer = -1
                                ): Boolean;
   public
     constructor Create(AnAddressSize: Integer);
     function PrintValue(out APrintedValue: String;
                         AValue: TFpDbgValue;
-                        AFlags: TFpPrettyPrintValueFlags = []): Boolean;
+                        ADisplayFormat: TWatchDisplayFormat = wdfDefault;
+                        ARepaetCount: Integer = -1
+                       ): Boolean;
     property AddressSize: Integer read FAddressSize write FAddressSize;
+    property MemManager: TFpDbgMemManager read FMemManager write FMemManager;
   end;
 
 
@@ -422,7 +428,8 @@ end;
 
 function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   AValue: TFpDbgValue; AnAddressSize: Integer; AFlags: TFpPrettyPrintValueFlags;
-  ANestLevel: Integer; AnIndent: String): Boolean;
+  ANestLevel: Integer; AnIndent: String; ADisplayFormat: TWatchDisplayFormat;
+  ARepaetCount: Integer): Boolean;
 
 
   function ResTypeName: String;
@@ -438,15 +445,29 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     s: String;
     v: QWord;
   begin
-    s := ResTypeName;
-    v := AValue.AsCardinal;
-    if v = 0 then
-      APrintedValue := 'nil'
+    if ((ADisplayFormat = wdfDefault) and (ANestLevel=0)) or // default for unested: with typename
+       (ADisplayFormat = wdfStructure)
+    then
+      s := ResTypeName
     else
-      APrintedValue := '$'+IntToHex(AValue.AsCardinal, AnAddressSize);
+      s := '';
+
+    v := AValue.AsCardinal;
+    case ADisplayFormat of
+      wdfDecimal, wdfUnsigned: APrintedValue := IntToStr(AValue.AsCardinal);
+      wdfHex: APrintedValue := '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2);
+      else begin //wdfPointer/Default ;
+          if v = 0 then
+            APrintedValue := 'nil'
+          else
+            APrintedValue := '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2);
+        end;
+    end;
+
     if s <> '' then
       APrintedValue := s + '(' + APrintedValue + ')';
 
+    if ADisplayFormat = wdfPointer then exit; // no data
     if svfString in AValue.FieldFlags then
       APrintedValue := APrintedValue + ' ' + AValue.AsString;
 
@@ -454,14 +475,50 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   end;
 
   procedure DoInt;
+  var
+    n: Integer;
   begin
-    APrintedValue := IntToStr(AValue.AsInteger);
+    case ADisplayFormat of
+      wdfUnsigned: APrintedValue := IntToStr(QWord(AValue.AsInteger));
+      wdfHex: begin
+          if svfSize in AValue.FieldFlags then
+            n := AValue.Size * 2
+          else begin
+            n := 16;
+            if QWord(AValue.AsInteger) <= high(Cardinal) then n := 8;
+            if QWord(AValue.AsInteger) <= high(Word) then n := 3;
+            if QWord(AValue.AsInteger) <= high(Byte) then n := 2;
+          end;
+          APrintedValue := '$'+IntToHex(QWord(AValue.AsInteger), n);
+        end;
+      // TODO wdfChar:
+      else
+          APrintedValue := IntToStr(AValue.AsInteger);
+    end;
     Result := True;
   end;
 
   procedure DoCardinal;
+  var
+    n: Integer;
   begin
-    APrintedValue := IntToStr(AValue.AsCardinal);
+    case ADisplayFormat of
+      wdfDecimal: APrintedValue := IntToStr(Int64(AValue.AsCardinal));
+      wdfHex: begin
+          if svfSize in AValue.FieldFlags then
+            n := AValue.Size * 2
+          else begin
+            n := 16;
+            if AValue.AsCardinal <= high(Cardinal) then n := 8;
+            if AValue.AsCardinal <= high(Word) then n := 4;
+            if AValue.AsCardinal <= high(Byte) then n := 2;
+          end;
+          APrintedValue := '$'+IntToHex(AValue.AsCardinal, n);
+        end;
+      // TODO wdfChar:
+      else
+          APrintedValue := IntToStr(AValue.AsCardinal);
+    end;
     Result := True;
   end;
 
@@ -546,6 +603,14 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       Result := True;
       exit;
     end;
+    if ADisplayFormat = wdfPointer then begin
+      s := ResTypeName;
+      APrintedValue := '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2);
+      if s <> '' then
+        APrintedValue := s + '(' + APrintedValue + ')';
+      Result := True;
+      exit;
+    end;
 
     if ( (AValue.Kind in [skClass, skObject]) and (ppvSkipClassBody in AFlags) ) or
        ( (AValue.Kind in [skRecord]) and (ppvSkipRecordBody in AFlags) )
@@ -554,7 +619,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       case AValue.Kind of
         skRecord: APrintedValue := '{record:}' + APrintedValue;
         skObject: APrintedValue := '{object:}' + APrintedValue;
-        skClass:  APrintedValue := '{class:}' + APrintedValue + '(' + '$'+IntToHex(AValue.AsCardinal, AnAddressSize) + ')';
+        skClass:  APrintedValue := '{class:}' + APrintedValue + '(' + '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2) + ')';
       end;
       Result := True;
       exit;
@@ -572,7 +637,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       if (m = nil) or (m.Kind in [skProcedure, skFunction]) then
         continue;
       s := '';
-      InternalPrintValue(s, m, AnAddressSize, fl, ANestLevel+1, AnIndent);
+      InternalPrintValue(s, m, AnAddressSize, fl, ANestLevel+1, AnIndent, ADisplayFormat);
       if m.DbgSymbol <> nil then
         s := m.DbgSymbol.Name + ' = ' + s;
       if APrintedValue = ''
@@ -588,46 +653,94 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     s: String;
     i: Integer;
     m: TFpDbgValue;
-    c, d: Integer;
+    Cnt, FullCnt, d: Integer;
   begin
     APrintedValue := '';
-    c := AValue.MemberCount;
-    if (c = 0) and (svfOrdinal in AValue.FieldFlags) then begin  // dyn array
+    Cnt := AValue.MemberCount;
+    FullCnt := Cnt;
+    if (Cnt = 0) and (svfOrdinal in AValue.FieldFlags) then begin  // dyn array
       APrintedValue := 'nil';
       Result := True;
       exit;
     end;
     if (ANestLevel > 2) then begin
       s := ResTypeName;
-      APrintedValue := s+'(...)'; // TODO len and addr (dyn array)
+      APrintedValue := s+'({'+IntToStr(FullCnt)+' elements})'; // TODO len and addr (dyn array)
       Result := True;
       exit;
     end;
-    if      (ANestLevel > 1) and (c > 5) then c := 5
-    else if (ANestLevel > 0) and (c > 15) then c := 15
-    else if (c > 500) then c := 500;
+    if      (ANestLevel > 1) and (Cnt > 3) then Cnt := 3
+    else if (ANestLevel > 0) and (Cnt > 10) then Cnt := 10
+    else if (Cnt > 300) then Cnt := 300;
     d := 0;
     // TODO: use valueobject for bounds
     if (AValue.IndexTypeCount > 0) and AValue.IndexType[0].HasBounds then
       d := AValue.IndexType[0].OrdLowBound;
-    for i := d to d + c - 1 do begin
+    for i := d to d + Cnt - 1 do begin
       m := AValue.Member[i];
       if m <> nil then
-        InternalPrintValue(s, m, AnAddressSize, AFlags, ANestLevel+1, AnIndent)
+        InternalPrintValue(s, m, AnAddressSize, AFlags, ANestLevel+1, AnIndent, ADisplayFormat)
       else
         s := '{error}';
       if APrintedValue = ''
       then APrintedValue := s
       else APrintedValue := APrintedValue + ', ' + s;
     end;
-    if c < AValue.MemberCount then
-      APrintedValue := APrintedValue + ', ...';
+    if Cnt < FullCnt then
+      APrintedValue := APrintedValue + ', {'+IntToStr(FullCnt-Cnt)+' more elements}';
     APrintedValue := '(' + APrintedValue + ')';
     Result := True;
   end;
+var
+  MemAddr: TFpDbgMemLocation;
+  MemSize: Integer;
+  MemDest: array of Byte;
+  i: Integer;
 begin
   if ANestLevel > 0 then begin
     AnIndent := AnIndent + '  ';
+  end;
+
+  if ADisplayFormat = wdfMemDump then begin
+    if FMemManager <> nil then begin
+      MemAddr := UnInitializedLoc;
+      if svfDataAddress in AValue.FieldFlags then begin
+        MemAddr := AValue.DataAddress;
+        MemSize := AValue.DataSize;
+        if MemSize = 0 then MemSize := 256;
+      end
+      else
+      if svfAddress in AValue.FieldFlags then begin
+        MemAddr := AValue.Address;
+        MemSize := AValue.Size;
+      end;
+
+      if IsTargetAddr(MemAddr) then begin
+        if MemSize < 32 then MemSize := 32;
+        SetLength(MemDest, MemSize);
+        if FMemManager.ReadMemory(MemAddr, MemSize, @MemDest[0]) then begin
+          APrintedValue := IntToHex(MemAddr.Address, AnAddressSize*2)+ ':' + LineEnding;
+          for i := 0 to high(MemDest) do begin
+            if (i > 0) and (i mod 16 = 0) then
+              APrintedValue := APrintedValue + LineEnding
+            else
+            if (i > 0) and (i mod 8 = 0) then
+              APrintedValue := APrintedValue + '  '
+            else
+            if (i > 0)  then
+              APrintedValue := APrintedValue + ' ';
+            APrintedValue := APrintedValue + IntToHex(MemDest[i], 2);
+          end;
+        end
+        else begin
+          APrintedValue := 'Cannot read memory at address '+ IntToHex(MemAddr.Address, AnAddressSize*2);
+        end;
+        exit;
+      end;
+    end;
+
+    APrintedValue := 'Cannot read memory for expression';
+    exit
   end;
 
   Result := False;
@@ -666,9 +779,9 @@ begin
 end;
 
 function TFpPascalPrettyPrinter.PrintValue(out APrintedValue: String; AValue: TFpDbgValue;
-  AFlags: TFpPrettyPrintValueFlags): Boolean;
+  ADisplayFormat: TWatchDisplayFormat; ARepaetCount: Integer): Boolean;
 begin
-  InternalPrintValue(APrintedValue, AValue, AddressSize, AFlags, 0, '');
+  InternalPrintValue(APrintedValue, AValue, AddressSize, [], 0, '', ADisplayFormat, ARepaetCount);
 end;
 
 end.

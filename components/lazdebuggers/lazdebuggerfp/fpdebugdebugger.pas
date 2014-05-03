@@ -593,7 +593,7 @@ begin
     else
       begin
       FPrettyPrinter.AddressSize:=AContext.SizeOfAddress;
-      if FPrettyPrinter.PrintValue(AVal, APasExpr.ResultValue, []) then
+      if FPrettyPrinter.PrintValue(AVal, APasExpr.ResultValue) then
         begin
         AWatchValue.Value := AVal; //IntToStr(APasExpr.ResultValue.AsInteger);
         AWatchValue.Validity := ddsValid;

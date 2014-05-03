@@ -937,6 +937,8 @@ var
   PasExpr: TFpPascalExpression;
   ResValue: TFpDbgValue;
   s: String;
+  DispFormat: TWatchDisplayFormat;
+  RepeatCnt: Integer;
 
   function IsWatchValueAlive: Boolean;
   begin
@@ -957,7 +959,7 @@ var
 
   procedure DoPointer;
   begin
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
       exit;
     ATypeInfo := TDBGType.Create(skPointer, ResTypeName);
     ATypeInfo.Value.AsPointer := Pointer(ResValue.AsCardinal); // TODO: no cut off
@@ -966,7 +968,7 @@ var
 
   procedure DoSimple;
   begin
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
       exit;
     ATypeInfo := TDBGType.Create(skSimple, ResTypeName);
     ATypeInfo.Value.AsString := AResText;
@@ -974,7 +976,7 @@ var
 
   procedure DoEnum;
   begin
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
       exit;
     ATypeInfo := TDBGType.Create(skEnum, ResTypeName);
     ATypeInfo.Value.AsString := AResText;
@@ -982,7 +984,7 @@ var
 
   procedure DoSet;
   begin
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
       exit;
     ATypeInfo := TDBGType.Create(skSet, ResTypeName);
     ATypeInfo.Value.AsString := AResText;
@@ -996,7 +998,7 @@ var
     DBGType: TGDBType;
     f: TDBGField;
   begin
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
       exit;
     ATypeInfo := TDBGType.Create(skRecord, ResTypeName);
     ATypeInfo.Value.AsString := AResText;
@@ -1010,7 +1012,7 @@ var
         else
           begin
             DBGType := TGDBType.Create(skSimple, ResTypeName(m));
-            FPrettyPrinter.PrintValue(s2, m, []);
+            FPrettyPrinter.PrintValue(s2, m, DispFormat, RepeatCnt);
             DBGType.Value.AsString := s2;
             n := '';
             if m.DbgSymbol <> nil then n := m.DbgSymbol.Name;
@@ -1033,7 +1035,7 @@ var
     PasExpr2: TFpPascalExpression;
   begin
     if (ResValue.Kind = skClass) and (ResValue.AsCardinal = 0) then begin
-      if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
+      if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
         exit;
       ATypeInfo := TDBGType.Create(skSimple, ResTypeName);
       ATypeInfo.Value.AsString := AResText;
@@ -1042,7 +1044,7 @@ var
     end;
 
     CastName := '';
-    if (defClassAutoCast in EvalFlags) then begin
+    if (defClassAutoCast in EvalFlags) and (ResValue.Kind = skClass) then begin
       if FMemManager.ReadAddress(ResValue.DataAddress, Ctx.SizeOfAddress, ClassAddr) then begin
         ClassAddr.Address := ClassAddr.Address + 3 * Ctx.SizeOfAddress;
         if FMemManager.ReadAddress(ClassAddr, Ctx.SizeOfAddress, CNameAddr) then begin
@@ -1065,7 +1067,7 @@ var
     end;
 
 
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
       exit;
     if CastName <> '' then AResText := CastName + AResText;
     //if PasExpr.ResultValue.Kind = skObject then
@@ -1083,7 +1085,7 @@ var
         else
           begin
             DBGType := TGDBType.Create(skSimple, ResTypeName(m));
-            FPrettyPrinter.PrintValue(s2, m, []);
+            FPrettyPrinter.PrintValue(s2, m, DispFormat, RepeatCnt);
             DBGType.Value.AsString := s2;
             n := '';
             if m.DbgSymbol <> nil then n := m.DbgSymbol.Name;
@@ -1099,7 +1101,7 @@ var
 
   procedure DoArray;
   begin
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, []) then
+    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
       exit;
     ATypeInfo := TDBGType.Create(skArray, ResTypeName);
     ATypeInfo.Value.AsString := AResText;
@@ -1122,14 +1124,21 @@ begin
   //  FMemReader.FStackFrame := CurrentStackFrame;
   end;
 
-  if AWatchValue <> nil then
-    Ctx := GetInfoContextForContext(AWatchValue.ThreadId, AWatchValue.StackFrame)
-  else
+  if AWatchValue <> nil then begin
+    Ctx := GetInfoContextForContext(AWatchValue.ThreadId, AWatchValue.StackFrame);
+    DispFormat := AWatchValue.DisplayFormat;
+    RepeatCnt := AWatchValue.RepeatCount;
+  end
+  else begin
     Ctx := GetInfoContextForContext(CurrentThreadId, CurrentStackFrame);
+    DispFormat := wdfDefault;
+    RepeatCnt := -1;
+  end;
   if Ctx = nil then exit;
 
   FMemManager.DefaultContext := Ctx;
   FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
+  FPrettyPrinter.MemManager := ctx.MemManager;
 
   PasExpr := TFpPascalExpression.Create(AExpression, Ctx);
   try
@@ -1187,7 +1196,8 @@ DebugLn(ErrorHandler.ErrorAsString(PasExpr.Error));
       PasExpr.FixPCharIndexAccess := True;
       PasExpr.ResetEvaluation;
       ResValue := PasExpr.ResultValue;
-      if (ResValue=nil) or (not FPrettyPrinter.PrintValue(s, ResValue, [])) then s := 'Failed';
+      if (ResValue=nil) or (not FPrettyPrinter.PrintValue(s, ResValue, DispFormat, RepeatCnt)) then
+        s := 'Failed';
       AResText := 'PChar: '+AResText+ LineEnding + 'String: '+s;
     end;
 
