@@ -79,7 +79,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MoveNext; override;
     procedure MovePrev; override;
-    function ReturnPressed: Boolean; override;
+    function ReturnKeyHandled: Boolean; override;
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
     function GetDefaultGlyph: TBitmap; override;
@@ -592,7 +592,7 @@ begin
   fFilteredTreeview.MoveToPrevNode;
 end;
 
-function TTreeFilterEdit.ReturnPressed: Boolean;
+function TTreeFilterEdit.ReturnKeyHandled: Boolean;
 // Retuns true if the Return press was forwarded to the Tree
 var
   Key: Char;

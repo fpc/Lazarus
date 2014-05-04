@@ -42,7 +42,7 @@ type
   protected
     procedure MoveNext; override;
     procedure MovePrev; override;
-    function ReturnPressed: Boolean; override;
+    function ReturnKeyHandled: Boolean; override;
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
     function GetDefaultGlyph: TBitmap; override;
@@ -272,7 +272,7 @@ begin
   end;
 end;
 
-function TListFilterEdit.ReturnPressed: Boolean;
+function TListFilterEdit.ReturnKeyHandled: Boolean;
 // Retuns true if the Return press was forwarded to the ListBox
 var
   Key: Char;

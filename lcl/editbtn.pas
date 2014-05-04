@@ -412,7 +412,7 @@ type
     procedure ApplyFilterCore; virtual; abstract;
     procedure MoveNext; virtual; abstract;
     procedure MovePrev; virtual; abstract;
-    function ReturnPressed: Boolean; virtual; abstract;
+    function ReturnKeyHandled: Boolean; virtual; abstract;
     function GetDefaultGlyphName: String; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1840,7 +1840,7 @@ begin
     case Key of
       VK_UP:     begin MovePrev; Handled:=True; end;
       VK_DOWN:   begin MoveNext; Handled:=True; end;
-      VK_RETURN: Handled:=ReturnPressed;
+      VK_RETURN: Handled:=ReturnKeyHandled;
     end;
   if Handled then
     Key:=VK_UNKNOWN
