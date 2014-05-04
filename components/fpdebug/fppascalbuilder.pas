@@ -184,7 +184,7 @@ var
     s: String;
   begin
     s := '';
-    while ADbgSymbol.Kind = skPointer do begin
+    while (ADbgSymbol.Kind = skPointer) and (ADbgSymbol.TypeInfo <> nil) do begin
       ADbgSymbol := ADbgSymbol.TypeInfo;
       s := s + '^';
     end;
