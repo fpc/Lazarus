@@ -887,7 +887,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 implementation
 
 var
-  FPDBG_DWARF_ERRORS, FPDBG_DWARF_WARNINGS, FPDBG_DWARF_SEARCH, FPDBG_DWARF_DATA_WARNINGS: PLazLoggerLogGroup;
+  FPDBG_DWARF_VERBOSE, FPDBG_DWARF_ERRORS, FPDBG_DWARF_WARNINGS, FPDBG_DWARF_SEARCH, FPDBG_DWARF_DATA_WARNINGS: PLazLoggerLogGroup;
 
 { TFpDwarfDefaultSymbolClassMap }
 
@@ -2841,11 +2841,11 @@ begin
   if (AnInitLocParserData <> nil) and IsValidLoc(AnInitLocParserData^.ObjectDataAddress)
   then begin
     if AnInitLocParserData^.ObjectDataAddrPush then begin
-      debugln(FPDBG_DWARF_SEARCH, ['TFpDwarfSymbol.InitLocationParser Push=', dbgs(AnInitLocParserData^.ObjectDataAddress)]);
+      debugln(FPDBG_DWARF_VERBOSE, ['TFpDwarfSymbol.InitLocationParser Push=', dbgs(AnInitLocParserData^.ObjectDataAddress)]);
       ALocationParser.Push(AnInitLocParserData^.ObjectDataAddress, lseValue);
     end
     else begin
-      debugln(FPDBG_DWARF_SEARCH, ['TFpDwarfSymbol.InitLocationParser CurrentObjectAddress=', dbgs(AnInitLocParserData^.ObjectDataAddress)]);
+      debugln(FPDBG_DWARF_VERBOSE, ['TFpDwarfSymbol.InitLocationParser CurrentObjectAddress=', dbgs(AnInitLocParserData^.ObjectDataAddress)]);
       ALocationParser.CurrentObjectAddress := AnInitLocParserData^.ObjectDataAddress;
     end;
   end;
@@ -4723,6 +4723,7 @@ end;
 initialization
   DwarfSymbolClassMapList.SetDefaultMap(TFpDwarfDefaultSymbolClassMap);
 
+  FPDBG_DWARF_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );
   FPDBG_DWARF_ERRORS        := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_ERRORS' {$IFDEF FPDBG_DWARF_ERRORS} , True {$ENDIF} );
   FPDBG_DWARF_WARNINGS      := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_WARNINGS' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );
   FPDBG_DWARF_SEARCH        := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_SEARCH' {$IFDEF FPDBG_DWARF_SEARCH} , True {$ENDIF} );

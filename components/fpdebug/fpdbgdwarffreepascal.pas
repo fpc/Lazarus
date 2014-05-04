@@ -59,6 +59,7 @@ function TFpDwarfFreePascalAddressContext.FindLocalSymbol(const AName: String; P
   PNameLower: PChar; InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpDbgValue): Boolean;
 const
   parentfp: string = 'parentfp';
+  parentfp2: string = '$parentfp';
   selfname: string = 'self';
   // TODO: get reg num via memreader name-to-num
   {$IFDEF cpu64}
@@ -105,8 +106,11 @@ begin
 
   InfoEntry.ScopeIndex := StartScopeIdx;
   if not InfoEntry.GoNamedChildEx(@parentfp[1], @parentfp[1]) then begin
-    FOuterNotFound := True;
-    exit;
+    InfoEntry.ScopeIndex := StartScopeIdx;
+    if not InfoEntry.GoNamedChildEx(@parentfp2[1], @parentfp2[1]) then begin
+      FOuterNotFound := True;
+      exit;
+    end;
   end;
 
   ParentFpSym := TFpDwarfSymbol.CreateSubClass(AName, InfoEntry);
