@@ -36,4 +36,12 @@ Do not specify any "-g..." options.
 You can specify several location each in one section, if you have more than one gdb.
 However this is not needed, one gdb should be fine.
 
+---------------------
+
+You also may want to create a folder "logs" in the test dir.
+
+On none windows it may be necessary to run the test with "Always create logs" checked in the 2nd form.
+
+
+Should the previous run have crashed, it may be needed to delete all exe, in the TestApps/lib folder
 
