@@ -101,6 +101,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     // TCustomSynEdit properties
     property BookMarkOptions;
     property BorderStyle default bsSingle;

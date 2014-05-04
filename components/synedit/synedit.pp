@@ -1186,6 +1186,7 @@ type
 // ToDo Docking
     property OnStartDock;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     // TCustomSynEdit properties
     property BookMarkOptions;
     property BorderStyle default bsSingle;
