@@ -76,6 +76,7 @@ type
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; override;
 
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
+    function GetStackPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
     procedure TerminateProcess; override;
 
@@ -380,10 +381,14 @@ begin
   result := TDbgDarwinThread(FMainThread).FThreadState.__eip;
 end;
 
+function TDbgDarwinProcess.GetStackPointerRegisterValue: TDbgPtr;
+begin
+  result := TDbgDarwinThread(FMainThread).FThreadState.__esp;
+end;
+
 function TDbgDarwinProcess.GetStackBasePointerRegisterValue: TDbgPtr;
 begin
   result := TDbgDarwinThread(FMainThread).FThreadState.__ebp;
-
 end;
 
 procedure TDbgDarwinProcess.TerminateProcess;
