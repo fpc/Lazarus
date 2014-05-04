@@ -2089,6 +2089,7 @@ components/lazdebuggers/lazdebuggerfp/lazdebuggerfp.pas svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfpgdbmi/fpgdbmidebugger.pp svneol=native#text/pascal
 components/lazdebuggers/lazdebuggerfpgdbmi/lazdebuggerfpgdbmi.lpk svneol=native#text/pascal
 components/lazdebuggers/lazdebuggerfpgdbmi/lazdebuggerfpgdbmi.pas svneol=native#text/pascal
+components/lazdebuggers/lazdebuggerfpgdbmi/test/README.txt svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfpgdbmi/test/TestApps/TestWatchesProg.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebuggerfpgdbmi/test/TestApps/TestWatchesUnitArray.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebuggerfpgdbmi/test/TestApps/TestWatchesUnitSimple.pas svneol=native#text/pascal

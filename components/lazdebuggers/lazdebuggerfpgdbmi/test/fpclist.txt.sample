@@ -9,13 +9,16 @@
 [fpc 2.6.2]
 exe=C:\lazarus\fpc\2.6.2\bin\i386-win32\fpc.exe
 symbols=gw,gwset
+version=020604
 
 [fpc 2.6.2 external linker]
 exe=C:\lazarus\fpc\2.6.2\bin\i386-win32\fpc.exe
 symbols=gw,gwset
+version=020604
 opts=-Xe
 
 //[fpc trunk]
 //exe=c:\FPC\trunk\bin\i386-win32\fpc.exe
+//version=020701
 //symbols=gw,gwset
 
