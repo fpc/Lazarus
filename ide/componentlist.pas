@@ -115,6 +115,8 @@ begin
   PageControl.ActivePage := TabSheetList;
   FindAllLazarusComponents;
   UpdateComponentSelection(nil);
+  with ListTree do
+    Selected := Items.GetFirstNode;
   TreeFilterEd.InvalidateFilter;
   IDEComponentPalette.AddHandlerComponentAdded(@ComponentWasAdded);
 end;
@@ -130,7 +132,7 @@ end;
 
 procedure TComponentListForm.FormShow(Sender: TObject);
 var
-  ParentParent: TWinControl;
+  ParentParent: TWinControl;  // Used for checking if the form is anchored.
 begin
   ParentParent := Nil;
   if Assigned(Parent) then
@@ -207,7 +209,7 @@ begin
 end;
 
 procedure TComponentListForm.UpdateComponentSelection(Sender: TObject);
-//Apply the filter and fill the three tabsheets
+// Fill the three tabsheets.
 var
   AComponent: TRegisteredComponent;
   AClassName: string;
