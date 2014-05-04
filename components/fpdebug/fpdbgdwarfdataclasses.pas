@@ -643,6 +643,7 @@ type
   TDwarfLocationExpression = class
   private
     FContext: TFpDbgAddressContext;
+    FCurrentObjectAddress: TFpDbgMemLocation;
     FFrameBase: TDbgPtr;
     FLastError: TFpError;
     FOnFrameBaseNeeded: TNotifyEvent;
@@ -664,7 +665,9 @@ type
     property LastError: TFpError read FLastError;
     property MemManager: TFpDbgMemManager read FMemManager;
     property Context: TFpDbgAddressContext read FContext write FContext;
-  end;
+    // for DW_OP_push_object_address
+    property CurrentObjectAddress: TFpDbgMemLocation read FCurrentObjectAddress write FCurrentObjectAddress;
+    end;
 
 function ULEB128toOrdinal(var p: PByte): QWord;
 function SLEB128toOrdinal(var p: PByte): Int64;
@@ -2103,9 +2106,16 @@ begin
           exit;
         end;
 
+      // dwarf 3
+      DW_OP_push_object_address: begin
+        if not IsValidLoc(FCurrentObjectAddress) then begin
+          SetError;
+          exit;
+        end;
+        Push(FCurrentObjectAddress, lseValue);
+      end;
 (*
   // --- DWARF3 ---
-  DW_OP_push_object_address   = $97;    // 0
   DW_OP_call2                 = $98;    // 1 2-byte offset of DIE
   DW_OP_call4                 = $99;    // 1 4-byte offset of DIE
   DW_OP_call_ref              = $9a;    // 1 4- or 8-byte offset of DIE

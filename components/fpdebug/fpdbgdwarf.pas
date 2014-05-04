@@ -419,7 +419,19 @@ type
 {%endregion Value objects }
 
 {%region Symbol objects }
+
+  TInitLocParserData = record
+    (* DW_AT_data_member_location: Is always pushed on stack
+       DW_AT_data_location: Is avalibale for DW_OP_push_object_address
+    *)
+    ObjectDataAddress: TFpDbgMemLocation;
+    ObjectDataAddrPush: Boolean; // always push ObjectDataAddress on stack: DW_AT_data_member_location
+  end;
+  PInitLocParserData = ^TInitLocParserData;
+
   { TDbgDwarfIdentifier }
+
+  { TFpDwarfSymbol }
 
   TFpDwarfSymbol = class(TDbgDwarfSymbolBase)
   private
@@ -450,15 +462,17 @@ type
     function DataSize: Integer; virtual;
   protected
     function InitLocationParser(const {%H-}ALocationParser: TDwarfLocationExpression;
-                                AValueObj: TFpDwarfValue;
-                                {%H-}AnObjectDataAddress: TFpDbgMemLocation): Boolean; virtual;
+                                AnInitLocParserData: PInitLocParserData = nil): Boolean; virtual;
     function  LocationFromTag(ATag: Cardinal; AValueObj: TFpDwarfValue;
-                              out AnAddress: TFpDbgMemLocation;
-                              AnObjectDataAddress: TFpDbgMemLocation;
-                              AnInformationEntry: TDwarfInformationEntry = nil
+                              var AnAddress: TFpDbgMemLocation; // kept, if tag does not exist
+                              AnInitLocParserData: PInitLocParserData = nil;
+                              AnInformationEntry: TDwarfInformationEntry = nil;
+                              ASucessOnMissingTag: Boolean = False
                              ): Boolean;
     // GetDataAddress: data of a class, or string
     function GetDataAddress(AValueObj: TFpDwarfValue; var AnAddress: TFpDbgMemLocation;
+                            ATargetType: TFpDwarfSymbolType; ATargetCacheIndex: Integer): Boolean;
+    function GetDataAddressNext(AValueObj: TFpDwarfValue; var AnAddress: TFpDbgMemLocation;
                             ATargetType: TFpDwarfSymbolType; ATargetCacheIndex: Integer): Boolean; virtual;
     function HasAddress: Boolean; virtual;
 
@@ -499,8 +513,7 @@ type
   protected
     function GetValueObject: TFpDbgValue; override;
     function InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-                                AValueObj: TFpDwarfValue;
-                                AnObjectDataAddress: TFpDbgMemLocation): Boolean; override;
+                                AnInitLocParserData: PInitLocParserData): Boolean; override;
   end;
 
   { TFpDwarfSymbolType }
@@ -566,7 +579,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure SizeNeeded; override;
     function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpDwarfValue; virtual; // returns refcount=1 for caller, no cached copy kept
     // TODO: flag bounds as cardinal if needed
-    function GetValueBounds(AValueObj: TFpDwarfValue; out ALowBound, AHighBound: Int64): Boolean; virtual;
+    function GetValueBounds({%H-}AValueObj: TFpDwarfValue; out ALowBound, AHighBound: Int64): Boolean; virtual;
   public
     class function CreateTypeSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TFpDwarfSymbolType;
     function TypeCastValue(AValue: TFpDbgValue): TFpDbgValue; override;
@@ -599,7 +612,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   TFpDwarfSymbolTypeRef = class(TFpDwarfSymbolTypeModifier)
   protected
     function GetFlags: TDbgSymbolFlags; override;
-    function GetDataAddress(AValueObj: TFpDwarfValue; var AnAddress: TFpDbgMemLocation;
+    function GetDataAddressNext(AValueObj: TFpDwarfValue; var AnAddress: TFpDbgMemLocation;
                             ATargetType: TFpDwarfSymbolType; ATargetCacheIndex: Integer): Boolean; override;
   end;
 
@@ -661,7 +674,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure KindNeeded; override;
     procedure SizeNeeded; override;
     procedure ForwardToSymbolNeeded; override;
-    function GetDataAddress(AValueObj: TFpDwarfValue; var AnAddress: TFpDbgMemLocation;
+    function GetDataAddressNext(AValueObj: TFpDwarfValue; var AnAddress: TFpDbgMemLocation;
                             ATargetType: TFpDwarfSymbolType; ATargetCacheIndex: Integer): Boolean; override;
     function GetTypedValueObject(ATypeCast: Boolean): TFpDwarfValue; override;
     function DataSize: Integer; override;
@@ -748,9 +761,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
   TFpDwarfSymbolValueMember = class(TFpDwarfSymbolValueWithLocation)
   protected
-    function InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-                                AValueObj: TFpDwarfValue;
-                                AnObjectDataAddress: TFpDbgMemLocation): Boolean; override;
     function GetValueAddress(AValueObj: TFpDwarfValue; out AnAddress: TFpDbgMemLocation): Boolean; override;
     function HasAddress: Boolean; override;
   end;
@@ -775,10 +785,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetMemberByName(AIndex: String): TFpDbgSymbol; override;
     function GetMemberCount: Integer; override;
 
-    function InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-                                AValueObj: TFpDwarfValue;
-                                AnObjectDataAddress: TFpDbgMemLocation): Boolean; override;
-    function GetDataAddress(AValueObj: TFpDwarfValue; var AnAddress: TFpDbgMemLocation;
+    function GetDataAddressNext(AValueObj: TFpDwarfValue; var AnAddress: TFpDbgMemLocation;
                             ATargetType: TFpDwarfSymbolType; ATargetCacheIndex: Integer): Boolean; override;
   public
     destructor Destroy; override;
@@ -2829,14 +2836,26 @@ begin
 end;
 
 function TFpDwarfSymbol.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-  AValueObj: TFpDwarfValue; AnObjectDataAddress: TFpDbgMemLocation): Boolean;
+  AnInitLocParserData: PInitLocParserData): Boolean;
 begin
+  if (AnInitLocParserData <> nil) and IsValidLoc(AnInitLocParserData^.ObjectDataAddress)
+  then begin
+    if AnInitLocParserData^.ObjectDataAddrPush then begin
+      debugln(FPDBG_DWARF_SEARCH, ['TFpDwarfSymbol.InitLocationParser Push=', dbgs(AnInitLocParserData^.ObjectDataAddress)]);
+      ALocationParser.Push(AnInitLocParserData^.ObjectDataAddress, lseValue);
+    end
+    else begin
+      debugln(FPDBG_DWARF_SEARCH, ['TFpDwarfSymbol.InitLocationParser CurrentObjectAddress=', dbgs(AnInitLocParserData^.ObjectDataAddress)]);
+      ALocationParser.CurrentObjectAddress := AnInitLocParserData^.ObjectDataAddress;
+    end;
+  end;
+
   Result := True;
 end;
 
 function TFpDwarfSymbol.LocationFromTag(ATag: Cardinal; AValueObj: TFpDwarfValue;
-  out AnAddress: TFpDbgMemLocation; AnObjectDataAddress: TFpDbgMemLocation;
-  AnInformationEntry: TDwarfInformationEntry): Boolean;
+  var AnAddress: TFpDbgMemLocation; AnInitLocParserData: PInitLocParserData;
+  AnInformationEntry: TDwarfInformationEntry; ASucessOnMissingTag: Boolean): Boolean;
 var
   Val: TByteDynArray;
   LocationParser: TDwarfLocationExpression;
@@ -2844,7 +2863,6 @@ begin
   //debugln(['TDbgDwarfIdentifier.LocationFromTag', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
 
   Result := False;
-  AnAddress := InvalidLoc;
   if AnInformationEntry = nil then
     AnInformationEntry := InformationEntry;
 
@@ -2852,9 +2870,15 @@ begin
   // DW_AT_data_member_location in members [ block or const]
   // DW_AT_location [block or reference] todo: const
   if not AnInformationEntry.ReadValue(ATag, Val) then begin
-    DebugLn('LocationFromTag: failed to read DW_AT_location');
+    Result := ASucessOnMissingTag;
+    if not Result then
+      AnAddress := InvalidLoc;
+    if not Result then
+    DebugLn(['LocationFromTag: failed to read DW_AT_location / ASucessOnMissingTag=', dbgs(ASucessOnMissingTag)]);
     exit;
   end;
+
+  AnAddress := InvalidLoc;
   if Length(Val) = 0 then begin
     DebugLn('LocationFromTag: Warning DW_AT_location empty');
     //exit;
@@ -2862,7 +2886,7 @@ begin
 
   LocationParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), CompilationUnit,
     AValueObj.MemManager, AValueObj.Context);
-  InitLocationParser(LocationParser, AValueObj, AnObjectDataAddress);
+  InitLocationParser(LocationParser, AnInitLocParserData);
   LocationParser.Evaluate;
 
   if IsError(LocationParser.LastError) then
@@ -2888,17 +2912,38 @@ function TFpDwarfSymbol.GetDataAddress(AValueObj: TFpDwarfValue;
   ATargetCacheIndex: Integer): Boolean;
 var
   ti: TFpDwarfSymbolType;
+  InitLocParserData: TInitLocParserData;
 begin
+  InitLocParserData.ObjectDataAddress := AnAddress;
+  InitLocParserData.ObjectDataAddrPush := False;
+  Result := LocationFromTag(DW_AT_data_location, AValueObj, AnAddress, @InitLocParserData, nil, True);
+  if not Result then
+    exit;
+
+
   if ATargetType = Self then begin
     Result := True;
-  end
-  else begin
-    ti := NestedTypeInfo;
-    if ti <> nil then
-      Result := ti.GetDataAddress(AValueObj, AnAddress, ATargetType, ATargetCacheIndex+1)
-    else
-      Result := ATargetType = nil; // end of type chain
+    exit;
   end;
+
+
+  //TODO: Handle AValueObj.DataAddressCache[ATargetCacheIndex];
+  Result := GetDataAddressNext(AValueObj, AnAddress, ATargetType, ATargetCacheIndex);
+  if not Result then
+    exit;
+
+  ti := NestedTypeInfo;
+  if ti <> nil then
+    Result := ti.GetDataAddress(AValueObj, AnAddress, ATargetType, ATargetCacheIndex+1)
+  else
+    Result := ATargetType = nil; // end of type chain
+end;
+
+function TFpDwarfSymbol.GetDataAddressNext(AValueObj: TFpDwarfValue;
+  var AnAddress: TFpDbgMemLocation; ATargetType: TFpDwarfSymbolType;
+  ATargetCacheIndex: Integer): Boolean;
+begin
+  Result := True;
 end;
 
 function TFpDwarfSymbol.HasAddress: Boolean;
@@ -3058,8 +3103,6 @@ begin
 end;
 
 destructor TFpDwarfSymbolValue.Destroy;
-var
-  i: Integer;
 begin
   Assert(not CircleBackRefsActive, 'CircleBackRefsActive can not be is ddestructor');
 
@@ -3089,9 +3132,9 @@ end;
 { TFpDwarfSymbolValueWithLocation }
 
 function TFpDwarfSymbolValueWithLocation.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-  AValueObj: TFpDwarfValue; AnObjectDataAddress: TFpDbgMemLocation): Boolean;
+  AnInitLocParserData: PInitLocParserData): Boolean;
 begin
-  Result := inherited InitLocationParser(ALocationParser, AValueObj, AnObjectDataAddress);
+  Result := inherited InitLocationParser(ALocationParser, AnInitLocParserData);
   ALocationParser.OnFrameBaseNeeded := @FrameBaseNeeded;
 end;
 
@@ -3315,17 +3358,12 @@ begin
   Result := (inherited GetFlags) + [sfInternalRef];
 end;
 
-function TFpDwarfSymbolTypeRef.GetDataAddress(AValueObj: TFpDwarfValue;
+function TFpDwarfSymbolTypeRef.GetDataAddressNext(AValueObj: TFpDwarfValue;
   var AnAddress: TFpDbgMemLocation; ATargetType: TFpDwarfSymbolType;
   ATargetCacheIndex: Integer): Boolean;
 var
   t: TFpDbgMemLocation;
 begin
-  if ATargetType = Self then begin
-    Result := True;
-    exit;
-  end;
-
   t := AValueObj.DataAddressCache[ATargetCacheIndex];
   if IsInitializedLoc(t) then begin
     AnAddress := t;
@@ -3340,7 +3378,7 @@ begin
   Result := IsValidLoc(AnAddress);
 
   if Result then
-    Result := inherited GetDataAddress(AValueObj, AnAddress, ATargetType, ATargetCacheIndex)
+    Result := inherited GetDataAddressNext(AValueObj, AnAddress, ATargetType, ATargetCacheIndex)
   else
   if IsError(AValueObj.MemManager.LastError) then
     SetLastError(AValueObj.MemManager.LastError);
@@ -3673,17 +3711,12 @@ begin
     SetForwardToSymbol(nil); // inherited ForwardToSymbolNeeded;
 end;
 
-function TFpDwarfSymbolTypePointer.GetDataAddress(AValueObj: TFpDwarfValue;
+function TFpDwarfSymbolTypePointer.GetDataAddressNext(AValueObj: TFpDwarfValue;
   var AnAddress: TFpDbgMemLocation; ATargetType: TFpDwarfSymbolType;
   ATargetCacheIndex: Integer): Boolean;
 var
   t: TFpDbgMemLocation;
 begin
-  if ATargetType = Self then begin
-    Result := True;
-    exit;
-  end;
-
   t := AValueObj.DataAddressCache[ATargetCacheIndex];
   if IsInitializedLoc(t) then begin
     AnAddress := t;
@@ -3698,7 +3731,7 @@ begin
   Result := IsValidLoc(AnAddress);
 
   if Result then
-    Result := inherited GetDataAddress(AValueObj, AnAddress, ATargetType, ATargetCacheIndex)
+    Result := inherited GetDataAddressNext(AValueObj, AnAddress, ATargetType, ATargetCacheIndex)
   else
   if IsError(AValueObj.MemManager.LastError) then
     SetLastError(AValueObj.MemManager.LastError);
@@ -3904,40 +3937,42 @@ end;
 
 { TFpDwarfSymbolValueMember }
 
-function TFpDwarfSymbolValueMember.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-  AValueObj: TFpDwarfValue; AnObjectDataAddress: TFpDbgMemLocation): Boolean;
-var
-  BaseAddr: TFpDbgMemLocation;
-begin
-  Result := inherited InitLocationParser(ALocationParser, AValueObj, AnObjectDataAddress);
-  if not Result then
-    exit;
-
-if AValueObj = nil then debugln(['TFpDwarfSymbolValueMember.InitLocationParser: NO VAl Obj !!!!!!!!!!!!!!!'])
-else if AValueObj.StructureValue = nil then debugln(['TFpDwarfSymbolValueMember.InitLocationParser: NO STRUCT Obj !!!!!!!!!!!!!!!']);
-  if (AValueObj <> nil) and (AValueObj.StructureValue <> nil) and (ParentTypeInfo <> nil) then begin
-    Assert((ParentTypeInfo is TFpDwarfSymbol) and (ParentTypeInfo.SymbolType = stType), '');
-    if AValueObj.GetStructureDwarfDataAddress(BaseAddr, TFpDwarfSymbolType(ParentTypeInfo)) then begin
-      ALocationParser.Push(BaseAddr, lseValue);
-      exit
-    end;
-    //TODO: AValueObj.StructureValue.LastError
-  end;
-
-  debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpDwarfSymbolValueMember.InitLocationParser Error: ',ErrorCode(LastError),' ValueObject=', DbgSName(FValueObject)]);
-  if not IsError(LastError) then
-    SetLastError(CreateError(fpErrLocationParserInit));
-  Result := False;
-end;
-
 function TFpDwarfSymbolValueMember.GetValueAddress(AValueObj: TFpDwarfValue; out
   AnAddress: TFpDbgMemLocation): Boolean;
+var
+  BaseAddr: TFpDbgMemLocation;
+  InitLocParserData: TInitLocParserData;
 begin
   AnAddress := AValueObj.DataAddressCache[0];
   Result := IsValidLoc(AnAddress);
   if IsInitializedLoc(AnAddress) then
     exit;
-  Result := LocationFromTag(DW_AT_data_member_location, AValueObj, AnAddress, InvalidLoc);
+
+  if AValueObj = nil then debugln(['TFpDwarfSymbolValueMember.InitLocationParser: NO VAl Obj !!!!!!!!!!!!!!!'])
+  else if AValueObj.StructureValue = nil then debugln(['TFpDwarfSymbolValueMember.InitLocationParser: NO STRUCT Obj !!!!!!!!!!!!!!!']);
+
+  if (AValueObj = nil) or (AValueObj.StructureValue = nil) or (ParentTypeInfo = nil)
+  then begin
+    debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpDwarfSymbolValueMember.InitLocationParser Error: ',ErrorCode(LastError),' ValueObject=', DbgSName(FValueObject)]);
+    Result := False;
+    if not IsError(LastError) then
+      SetLastError(CreateError(fpErrLocationParserInit)); // TODO: error message?
+    exit;
+  end;
+  Assert((ParentTypeInfo is TFpDwarfSymbol) and (ParentTypeInfo.SymbolType = stType), '');
+  if not AValueObj.GetStructureDwarfDataAddress(BaseAddr, TFpDwarfSymbolType(ParentTypeInfo)) then begin
+    debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpDwarfSymbolValueMember.InitLocationParser Error: ',ErrorCode(LastError),' ValueObject=', DbgSName(FValueObject)]);
+    Result := False;
+    if not IsError(LastError) then
+      SetLastError(CreateError(fpErrLocationParserInit)); // TODO: error message?
+    exit;
+  end;
+  //TODO: AValueObj.StructureValue.LastError
+
+  InitLocParserData.ObjectDataAddress := BaseAddr;
+  InitLocParserData.ObjectDataAddrPush := True;
+  Result := LocationFromTag(DW_AT_data_member_location, AValueObj, AnAddress, @InitLocParserData);
+
   AValueObj.DataAddressCache[0] := AnAddress;
 end;
 
@@ -3983,38 +4018,13 @@ begin
   Result := FMembers.Count;
 end;
 
-function TFpDwarfSymbolTypeStructure.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-  AValueObj: TFpDwarfValue; AnObjectDataAddress: TFpDbgMemLocation): Boolean;
-begin
-  Result := inherited InitLocationParser(ALocationParser, AValueObj, AnObjectDataAddress);
-  if not Result then
-    exit;
-
-  // CURRENTLY ONLY USED for DW_AT_data_member_location
-  if IsReadableLoc(AnObjectDataAddress) then begin
-    debugln(FPDBG_DWARF_SEARCH, ['TFpDwarfSymbolTypeStructure.InitLocationParser ', dbgs(AnObjectDataAddress)]);
-    ALocationParser.Push(AnObjectDataAddress, lseValue);
-    exit;
-  end;
-
-  //TODO: error
-  debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpDwarfSymbolTypeStructure.InitLocationParser no ObjectDataAddress ', dbgs(AnObjectDataAddress)]);
-  if not IsError(LastError) then
-    SetLastError(CreateError(fpErrLocationParserInit));
-  Result := False;
-end;
-
-function TFpDwarfSymbolTypeStructure.GetDataAddress(AValueObj: TFpDwarfValue;
+function TFpDwarfSymbolTypeStructure.GetDataAddressNext(AValueObj: TFpDwarfValue;
   var AnAddress: TFpDbgMemLocation; ATargetType: TFpDwarfSymbolType;
   ATargetCacheIndex: Integer): Boolean;
 var
   t: TFpDbgMemLocation;
+  InitLocParserData: TInitLocParserData;
 begin
-  if ATargetType = Self then begin
-    Result := True;
-    exit;
-  end;
-
   t := AValueObj.DataAddressCache[ATargetCacheIndex];
   if IsInitializedLoc(t) then begin
     AnAddress := t;
@@ -4023,14 +4033,19 @@ begin
   else begin
     InitInheritanceInfo;
     //TODO: may be a constant // offset
-    Result := LocationFromTag(DW_AT_data_member_location, AValueObj, t, AnAddress, FInheritanceInfo);
+    InitLocParserData.ObjectDataAddress := AnAddress;
+    InitLocParserData.ObjectDataAddrPush := True;
+    Result := LocationFromTag(DW_AT_data_member_location, AValueObj, t, @InitLocParserData, FInheritanceInfo);
     if not Result then
       exit;
     AnAddress := t;
     AValueObj.DataAddressCache[ATargetCacheIndex] := AnAddress;
+
+    if IsError(AValueObj.MemManager.LastError) then
+      SetLastError(AValueObj.MemManager.LastError);
   end;
 
-  Result := inherited GetDataAddress(AValueObj, AnAddress, ATargetType, ATargetCacheIndex);
+  Result := inherited GetDataAddressNext(AValueObj, AnAddress, ATargetType, ATargetCacheIndex);
 end;
 
 function TFpDwarfSymbolTypeStructure.GetMember(AIndex: Int64): TFpDbgSymbol;
@@ -4478,7 +4493,6 @@ procedure TFpDwarfSymbolValueProc.CreateMembers;
 var
   Info: TDwarfInformationEntry;
   Info2: TDwarfInformationEntry;
-  sym: TFpDwarfSymbol;
 begin
   if FProcMembers <> nil then
     exit;
@@ -4647,7 +4661,7 @@ begin
   Result := IsValidLoc(AnAddress);
   if IsInitializedLoc(AnAddress) then
     exit;
-  Result := LocationFromTag(DW_AT_location, AValueObj, AnAddress, InvalidLoc);
+  Result := LocationFromTag(DW_AT_location, AValueObj, AnAddress);
   AValueObj.DataAddressCache[0] := AnAddress;
 end;
 
@@ -4665,7 +4679,7 @@ begin
   Result := IsValidLoc(AnAddress);
   if IsInitializedLoc(AnAddress) then
     exit;
-  Result := LocationFromTag(DW_AT_location, AValueObj, AnAddress, InvalidLoc);
+  Result := LocationFromTag(DW_AT_location, AValueObj, AnAddress);
   AValueObj.DataAddressCache[0] := AnAddress;
 end;
 
