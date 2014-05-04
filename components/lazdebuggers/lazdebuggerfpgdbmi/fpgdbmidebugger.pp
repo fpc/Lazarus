@@ -939,6 +939,7 @@ var
   s: String;
   DispFormat: TWatchDisplayFormat;
   RepeatCnt: Integer;
+  TiSym: TFpDbgSymbol;
 
   function IsWatchValueAlive: Boolean;
   begin
@@ -1188,6 +1189,23 @@ DebugLn(ErrorHandler.ErrorAsString(PasExpr.Error));
       skClass:     DoClass;
       skInterface: ;
       skArray:     DoArray;
+      skNone: begin
+          // maybe type
+          TiSym := ResValue.DbgSymbol;
+          if (TiSym <> nil) and (TiSym.SymbolType = stType) then begin
+            if GetTypeAsDeclaration(AResText, TiSym) then
+              AResText := Format('{Type=} %1s', [AResText])
+            else
+            if GetTypeName(AResText, TiSym) then
+              AResText := Format('{Type=} %1s', [AResText])
+            else
+              AResText := '{Type=} unknown';
+            Result := True;
+            AWatchValue.Value    := AResText;
+            AWatchValue.Validity := ddsValid; // TODO ddsError ?
+            exit;
+          end;
+        end;
     end;
     if not IsWatchValueAlive then exit;
 
