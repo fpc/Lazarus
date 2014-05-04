@@ -588,8 +588,8 @@ end;
 
 procedure HandleShowCallStack(AParams: String; out CallProcessLoop: boolean);
 var
-  Address, Frame, LastFrame: QWord;
-  Size, Count: integer;
+  ACallStack: TDbgCallstackEntryList;
+  i: Integer;
 begin
   CallProcessLoop:=false;
   if (GController.MainProcess = nil)
@@ -598,21 +598,19 @@ begin
     Exit;
   end;
 
-  Address := GController.CurrentProcess.GetInstructionPointerRegisterValue;
-  Frame := GController.CurrentProcess.GetStackBasePointerRegisterValue;;
-  Size := sizeof(pointer);
-
   WriteLN('Callstack:');
-  WriteLn(' ', FormatAddress(Address));
-  LastFrame := 0;
-  Count := 25;
-  while (Frame <> 0) and (Frame > LastFrame) do
-  begin
-    if not GController.CurrentProcess.ReadData(Frame + Size, Size, Address) or (Address = 0) then Break;
-    WriteLn(' ', FormatAddress(Address));
-    Dec(count);
-    if Count <= 0 then Exit;
-    if not GController.CurrentProcess.ReadData(Frame, Size, Frame) then Break;
+  ACallStack := GController.CurrentProcess.MainThread.CreateCallStackEntryList;
+  try
+    for i := 0 to ACallStack.Count-1 do
+    begin
+      write(' ', FormatAddress(ACallStack.Items[i].AnAddress),' ');
+      if ACallStack.Items[i].SourceFile<>'' then
+        writeln(ACallStack.Items[i].SourceFile,':',ACallStack.Items[i].Line)
+      else
+        writeln('unknown');
+    end;
+  finally
+    ACallStack.Free;
   end;
 end;
 

@@ -80,6 +80,29 @@ type
     function FindRegisterByDwarfIndex(AnIdx: cardinal): TDbgRegisterValue;
   end;
 
+  { TDbgCallstackEntry }
+  TDbgThread = class;
+
+  TDbgCallstackEntry = class
+  private
+    FAnAddress: TDBGPtr;
+    FFrameAdress: TDBGPtr;
+    FThread: TDbgThread;
+    FIsSymbolResolved: boolean;
+    FSymbol: TFpDbgSymbol;
+    function GetSymbol: TFpDbgSymbol;
+    function GetLine: integer;
+    function GetSourceFile: string;
+  public
+    constructor create(AThread: TDbgThread; AFrameAddress, AnAddress: TDBGPtr);
+    property AnAddress: TDBGPtr read FAnAddress;
+    property FrameAdress: TDBGPtr read FFrameAdress;
+    property SourceFile: string read GetSourceFile;
+    property Line: integer read GetLine;
+  end;
+
+  TDbgCallstackEntryList = specialize TFPGObjectList<TDbgCallstackEntry>;
+
   TDbgProcess = class;
 
   { TDbgMemReader }
@@ -128,6 +151,7 @@ type
     procedure BeforeContinue; virtual;
     function AddWatchpoint(AnAddr: TDBGPtr): integer; virtual;
     function RemoveWatchpoint(AnId: integer): boolean; virtual;
+    function CreateCallStackEntryList: TDbgCallstackEntryList; virtual;
     procedure AfterHitBreak;
     procedure ClearHWBreakpoint;
     destructor Destroy; override;
@@ -335,6 +359,44 @@ begin
     {$endif darwin}
     end;
   result := GOSDbgClasses;
+end;
+
+{ TDbgCallstackEntry }
+
+function TDbgCallstackEntry.GetSymbol: TFpDbgSymbol;
+begin
+  if not FIsSymbolResolved then
+    FSymbol := FThread.Process.FindSymbol(FAnAddress);
+  result := FSymbol;
+end;
+
+function TDbgCallstackEntry.GetLine: integer;
+var
+  Symbol: TFpDbgSymbol;
+begin
+  Symbol := GetSymbol;
+  if assigned(Symbol) then
+    result := Symbol.Line
+  else
+    result := -1;
+end;
+
+function TDbgCallstackEntry.GetSourceFile: string;
+var
+  Symbol: TFpDbgSymbol;
+begin
+  Symbol := GetSymbol;
+  if assigned(Symbol) then
+    result := Symbol.FileName
+  else
+    result := '';
+end;
+
+constructor TDbgCallstackEntry.create(AThread: TDbgThread; AFrameAddress, AnAddress: TDBGPtr);
+begin
+  FThread := AThread;
+  FFrameAdress:=AFrameAddress;
+  FAnAddress:=AnAddress;
 end;
 
 { TDbgMemReader }
@@ -902,6 +964,34 @@ function TDbgThread.RemoveWatchpoint(AnId: integer): boolean;
 begin
   FProcess.log('Hardware watchpoints are nog available.');
   result := false;
+end;
+
+function TDbgThread.CreateCallStackEntryList: TDbgCallstackEntryList;
+var
+  Address, Frame, LastFrame: QWord;
+  Size, Count: integer;
+  AnEntry: TDbgCallstackEntry;
+begin
+  Address := Process.GetInstructionPointerRegisterValue;
+  Frame := Process.GetStackBasePointerRegisterValue;;
+  Size := sizeof(pointer);
+
+  result := TDbgCallstackEntryList.Create;
+  result.FreeObjects:=true;
+  AnEntry := TDbgCallstackEntry.create(Self, Frame, Address);
+  Result.Add(AnEntry);
+
+  LastFrame := 0;
+  Count := 25;
+  while (Frame <> 0) and (Frame > LastFrame) do
+  begin
+    if not Process.ReadData(Frame + Size, Size, Address) or (Address = 0) then Break;
+    AnEntry := TDbgCallstackEntry.create(Self, Frame, Address);
+    Result.Add(AnEntry);
+    Dec(count);
+    if Count <= 0 then Break;
+    if not Process.ReadData(Frame, Size, Frame) then Break;
+  end;
 end;
 
 procedure TDbgThread.AfterHitBreak;

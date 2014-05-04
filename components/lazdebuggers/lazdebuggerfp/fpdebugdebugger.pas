@@ -8,6 +8,7 @@ uses
   Classes,
   SysUtils,
   Forms,
+  Maps,
   LazLogger,
   FpDbgClasses,
   FpDbgInfo,
@@ -57,6 +58,7 @@ type
     function CreateWatches: TWatchesSupplier; override;
     function CreateLocals: TLocalsSupplier; override;
     function  CreateRegisters: TRegisterSupplier; override;
+    function CreateCallStack: TCallStackSupplier; override;
     function CreateDisassembler: TDBGDisassembler; override;
     function CreateBreakPoints: TDBGBreakPoints; override;
     function  RequestCommand(const ACommand: TDBGCommand;
@@ -110,6 +112,19 @@ type
     procedure InternalRequestData(AWatchValue: TWatchValue); override;
   public
     constructor Create(const ADebugger: TDebuggerIntf);
+    destructor Destroy; override;
+  end;
+
+  { TFPCallStackSupplier }
+
+  TFPCallStackSupplier = class(TCallStackSupplier)
+  private
+    FCallStack: TDbgCallstackEntryList;
+  protected
+    procedure DoStateLeavePause; override;
+  public
+    procedure RequestCount(ACallstack: TCallStackBase); override;
+    procedure RequestEntries(ACallstack: TCallStackBase); override;
     destructor Destroy; override;
   end;
 
@@ -176,6 +191,68 @@ uses
 procedure Register;
 begin
   RegisterDebugger(TFpDebugDebugger);
+end;
+
+{ TFPCallStackSupplier }
+
+procedure TFPCallStackSupplier.DoStateLeavePause;
+begin
+  FreeAndNil(FCallStack);
+  inherited DoStateLeavePause;
+end;
+
+procedure TFPCallStackSupplier.RequestCount(ACallstack: TCallStackBase);
+var
+  Address, Frame, LastFrame: QWord;
+  Size, Count: integer;
+begin
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
+  then begin
+    ACallstack.SetCountValidity(ddsInvalid);
+    exit;
+  end;
+  if not assigned(FCallStack) then
+    FCallStack := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.CreateCallStackEntryList;
+
+  if FCallStack.Count = 0 then
+  begin
+    ACallstack.SetCountValidity(ddsInvalid);
+    ACallstack.SetHasAtLeastCountInfo(ddsInvalid);
+  end
+  else
+  begin
+    ACallstack.Count := FCallStack.Count;
+    ACallstack.SetCountValidity(ddsValid);
+  end;
+end;
+
+procedure TFPCallStackSupplier.RequestEntries(ACallstack: TCallStackBase);
+var
+  e: TCallStackEntry;
+  It: TMapIterator;
+begin
+  It := TMapIterator.Create(ACallstack.RawEntries);
+
+  if not It.Locate(ACallstack.LowestUnknown )
+  then if not It.EOM
+  then It.Next;
+
+  while (not IT.EOM) and (TCallStackEntry(It.DataPtr^).Index < ACallstack.HighestUnknown)
+  do begin
+    e := TCallStackEntry(It.DataPtr^);
+    if e.Validity = ddsRequested then
+    begin
+      e.Init(FCallStack[e.Index].AnAddress, nil, '', FCallStack[e.Index].SourceFile, '', FCallStack[e.Index].Line, ddsValid);
+    end;
+    It.Next;
+  end;
+  It.Free;
+end;
+
+destructor TFPCallStackSupplier.Destroy;
+begin
+  FCallStack.Free;
+  inherited Destroy;
 end;
 
 { TFPLocals }
@@ -709,6 +786,11 @@ end;
 function TFpDebugDebugger.CreateRegisters: TRegisterSupplier;
 begin
   Result := TFPRegisters.Create(Self);
+end;
+
+function TFpDebugDebugger.CreateCallStack: TCallStackSupplier;
+begin
+  Result:=TFPCallStackSupplier.Create(Self);
 end;
 
 function TFpDebugDebugger.CreateDisassembler: TDBGDisassembler;
