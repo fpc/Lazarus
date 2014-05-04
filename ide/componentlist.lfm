@@ -56,7 +56,7 @@ object ComponentListForm: TComponentListForm
           OnClick = ComponentsClick
           OnCustomDrawItem = TreeCustomDrawItem
           OnDblClick = ComponentsDblClick
-          OnKeyDown = TreeKeyDown
+          OnKeyPress = TreeKeyPress
           Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
         end
       end
@@ -88,7 +88,7 @@ object ComponentListForm: TComponentListForm
           OnClick = ComponentsClick
           OnCustomDrawItem = TreeCustomDrawItem
           OnDblClick = ComponentsDblClick
-          OnKeyDown = TreeKeyDown
+          OnKeyPress = TreeKeyPress
           Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
         end
       end
@@ -119,7 +119,7 @@ object ComponentListForm: TComponentListForm
           OnClick = ComponentsClick
           OnCustomDrawItem = TreeCustomDrawItem
           OnDblClick = ComponentsDblClick
-          OnKeyDown = TreeKeyDown
+          OnKeyPress = TreeKeyPress
           Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
         end
       end
@@ -157,6 +157,7 @@ object ComponentListForm: TComponentListForm
       Height = 25
       Top = 1
       Width = 184
+      OnAfterFilter = TreeFilterEdAfterFilter
       ButtonWidth = 23
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]

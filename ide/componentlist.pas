@@ -67,8 +67,9 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure TreeCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure TreeFilterEdAfterFilter(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
-    procedure TreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure TreeKeyPress(Sender: TObject; var Key: char);
     procedure UpdateComponentSelection(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
@@ -382,6 +383,11 @@ begin
   end;
 end;
 
+procedure TComponentListForm.TreeFilterEdAfterFilter(Sender: TObject);
+begin
+  UpdateButtonState;
+end;
+
 procedure TComponentListForm.ComponentsDblClick(Sender: TObject);
 // This is used for all 3 treeviews
 begin
@@ -399,10 +405,10 @@ begin
   UpdateButtonState;
 end;
 
-procedure TComponentListForm.TreeKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
+procedure TComponentListForm.TreeKeyPress(Sender: TObject; var Key: char);
+// This is used for all 3 treeviews
 begin
-  if Key = VK_RETURN then
+  if Key = Char(VK_RETURN) then
     ComponentsDblClick(Sender);
 end;
 
