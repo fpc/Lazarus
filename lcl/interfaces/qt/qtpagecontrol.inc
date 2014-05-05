@@ -201,13 +201,13 @@ begin
         // we must recalculate aclientrect since we have pending resize event
         // and clientrect won't be accurate.issue #21805
         Result := True;
-        dx := GetPixelMetric(QStylePM_DefaultFrameWidth, nil, nil);
+        dx := GetPixelMetric(QStylePM_DefaultFrameWidth, nil, ATabWidget.Widget);
         // HSpace := GetPixelMetric(QStylePM_TabBarTabHSpace, nil, nil);
-        VSpace := GetPixelMetric(QStylePM_TabBarTabVSpace, nil, nil);
-        Overlap := GetPixelMetric(QStylePM_TabBarBaseOverlap, nil, nil);
-        TabOverLap := GetPixelMetric(QStylePM_TabBarTabOverlap, nil, nil);
-        BaseHeight := GetPixelMetric(QStylePM_TabBarBaseHeight, nil, nil);
-        ShiftVertical := GetPixelMetric(QStylePM_TabBarTabShiftVertical, nil, nil);
+        VSpace := GetPixelMetric(QStylePM_TabBarTabVSpace, nil, ATabWidget.Widget);
+        Overlap := GetPixelMetric(QStylePM_TabBarBaseOverlap, nil, ATabWidget.Widget);
+        TabOverLap := GetPixelMetric(QStylePM_TabBarTabOverlap, nil, ATabWidget.Widget);
+        BaseHeight := GetPixelMetric(QStylePM_TabBarBaseHeight, nil, ATabWidget.Widget);
+        ShiftVertical := GetPixelMetric(QStylePM_TabBarTabShiftVertical, nil, ATabWidget.Widget);
 
         // trigger sizing, do not remove
         ATabWidget.TabBar.sizeHint(@ASize);
