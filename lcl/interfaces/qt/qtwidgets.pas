@@ -6727,6 +6727,14 @@ begin
       if (Result) and (QEvent_type(Event) = QEventDrop) then
         Result := slotDropFiles(Sender, Event);
     end;
+    QEventPaint:
+    begin
+      {do not send paint event to LCL if we are pure TCustomForm,
+       CWEvent or ScrollArea.EventFilter will process it.
+       So call SlotPaint only if we are eg TQtHintWindow.}
+      if (FCentralWidget = nil) or (FCentralWidget = Widget) then
+        Result := inherited EventFilter(Sender, Event);
+    end;
   else
     Result := inherited EventFilter(Sender, Event);
   end;
@@ -6973,6 +6981,7 @@ begin
   if LCLObject <> nil then
   begin
     case QEvent_type(Event) of
+      QEventPaint: Result := inherited EventFilter(Sender, Event);
       QEventResize:
         begin
           {mdi area part begins}
