@@ -57,6 +57,7 @@ type
     FExpressionPart: TFpPascalExpressionPart;
     FValid: Boolean;
     function GetResultValue: TFpDbgValue;
+    function GetValid: Boolean;
     procedure Parse;
     procedure SetError(AMsg: String);  // deprecated;
     procedure SetError(AnErrorCode: TFpErrorCode; AData: array of const);
@@ -71,7 +72,7 @@ type
     function DebugDump(AWithResults: Boolean = False): String;
     procedure ResetEvaluation;
     property Error: TFpError read FError;
-    property Valid: Boolean read FValid;
+    property Valid: Boolean read GetValid;
     // Set by GetResultValue
     property HasPCharIndexAccess: Boolean read FHasPCharIndexAccess;
     // handle pchar as string (adjust index)
@@ -1689,8 +1690,16 @@ function TFpPascalExpression.GetResultValue: TFpDbgValue;
 begin
   if (FExpressionPart = nil) or (not Valid) then
     Result := nil
-  else
+  else begin
     Result := FExpressionPart.ResultValue;
+    if (Result = nil) and (not IsError(FError)) then
+      SetError(fpErrAnyError, ['Internal eval error']);
+  end;
+end;
+
+function TFpPascalExpression.GetValid: Boolean;
+begin
+  Result := FValid and (not IsError(FError));
 end;
 
 procedure TFpPascalExpression.SetError(AMsg: String);
