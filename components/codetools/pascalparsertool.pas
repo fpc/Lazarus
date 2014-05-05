@@ -5046,6 +5046,8 @@ procedure TPascalParserTool.ExtractNextAtom(AddAtom: boolean;
 var
   LastAtomEndPos: integer;
   LastStreamPos: TFPCStreamSeekType;
+  p, StartP, EndP: PChar;
+
 const
   space: char = ' ';
 begin
@@ -5053,8 +5055,23 @@ begin
   if LastAtoms.Count>0 then begin
     LastAtomEndPos:=LastAtoms.GetValueAt(0).EndPos;
     if phpWithComments in Attr then begin
-      // add space/comment between pascal atoms
-      ExtractMemStream.Write(Src[LastAtomEndPos],CurPos.StartPos-LastAtomEndPos);
+      // add space/comment between pascal atoms, but without the
+      // codetools-skip-comment brackets {#3 #3}
+      p:=PChar(Src)+LastAtomEndPos-1;
+      EndP:=PChar(Src)+CurPos.StartPos-1;
+      StartP:=p;
+      repeat
+        if (p>=EndP) then begin
+          ExtractMemStream.Write(StartP^,p-StartP);
+          break;
+        end else if ((p^='{') and (p[1]=#3)) or ((p^=#3) and (p[1]='}')) then
+        begin
+          ExtractMemStream.Write(StartP^,p-StartP);
+          inc(p,2);
+          StartP:=p;
+        end else
+          inc(p);
+      until false;
     end else if (ExtractMemStream.Position>0) then
     begin
       // some space/comments were skipped
