@@ -1996,14 +1996,22 @@ begin
   // set focus policy
   if (LCLObject <> nil) then
   begin
-    if (Self is TQtMainWindow) and (csNoFocus in LCLObject.ControlStyle) then
+    if (Self is TQtMainWindow) and
+      (csNoFocus in LCLObject.ControlStyle) then
     begin
-      setFocusPolicy(QtNoFocus);
+      if LCLObject.TabStop then
+        setFocusPolicy(QtWheelFocus)
+      else
+        setFocusPolicy(QtNoFocus);
     end else
     begin
-      if csNoFocus in LCLObject.ControlStyle then
-        setFocusPolicy(QtNoFocus)
-      else
+      if (csNoFocus in LCLObject.ControlStyle) then
+      begin
+        if LCLObject.TabStop then
+          setFocusPolicy(QtWheelFocus)
+        else
+          setFocusPolicy(QtNoFocus);
+      end else
       if (Self is TQtTabWidget) then
         setFocusPolicy(QtTabFocus)
       else
