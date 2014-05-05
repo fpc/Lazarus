@@ -99,7 +99,7 @@ type
     procedure Interrupt;
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
-    class function StartInstance(AFileName: string; AParams: string): TDbgProcess; override;
+    class function StartInstance(AFileName: string; AParams: TStringList): TDbgProcess; override;
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; override;
@@ -398,7 +398,7 @@ begin
   end;
 end;
 
-class function TDbgWinProcess.StartInstance(AFileName: string; AParams: string): TDbgProcess;
+class function TDbgWinProcess.StartInstance(AFileName: string; AParams: TStringList): TDbgProcess;
 var
   AProcess: TProcess;
 begin
@@ -406,6 +406,7 @@ begin
   try
     AProcess.Options:=[poDebugProcess, poNewProcessGroup];
     AProcess.Executable:=AFilename;
+    AProcess.Parameters:=AParams;
     AProcess.Execute;
 
     result := TDbgWinProcess.Create(AFileName, AProcess.ProcessID, AProcess.ThreadID);

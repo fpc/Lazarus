@@ -33,9 +33,11 @@ type
     FProcessMap: TMap;
     FExitCode: DWord;
     FPDEvent: TFPDEvent;
+    FParams: TStringList;
     procedure SetExecutableFilename(AValue: string);
     procedure SetOnLog(AValue: TOnLog);
     procedure DoOnDebugInfoLoaded(Sender: TObject);
+    procedure SetParams(AValue: TStringList);
   protected
     FMainProcess: TDbgProcess;
     FCurrentProcess: TDbgProcess;
@@ -61,6 +63,7 @@ type
     property OnLog: TOnLog read FOnLog write SetOnLog;
     property CurrentProcess: TDbgProcess read FCurrentProcess;
     property MainProcess: TDbgProcess read FMainProcess;
+    property Params: TStringList read FParams write SetParams;
 
     property OnCreateProcessEvent: TOnCreateProcessEvent read FOnCreateProcessEvent write FOnCreateProcessEvent;
     property OnHitBreakpointEvent: TOnHitBreakpointEvent read FOnHitBreakpointEvent write FOnHitBreakpointEvent;
@@ -77,6 +80,12 @@ procedure TDbgController.DoOnDebugInfoLoaded(Sender: TObject);
 begin
   if Assigned(FOnDebugInfoLoaded) then
     FOnDebugInfoLoaded(Self);
+end;
+
+procedure TDbgController.SetParams(AValue: TStringList);
+begin
+  if FParams=AValue then Exit;
+  FParams.Assign(AValue);
 end;
 
 procedure TDbgController.SetExecutableFilename(AValue: string);
@@ -96,6 +105,7 @@ end;
 destructor TDbgController.Destroy;
 begin
   //FCurrentProcess.Free;
+  FParams.Free;
   inherited Destroy;
 end;
 
@@ -120,7 +130,7 @@ begin
     Exit;
     end;
 
-  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, '');
+  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, FParams);
   if assigned(FCurrentProcess) then
     begin
     FCurrentProcess.OnDebugInfoLoaded := @DoOnDebugInfoLoaded;
@@ -321,6 +331,7 @@ end;
 
 constructor TDbgController.Create;
 begin
+  FParams := TStringList.Create;
   FProcessMap := TMap.Create(itu4, SizeOf(TDbgProcess));
 end;
 

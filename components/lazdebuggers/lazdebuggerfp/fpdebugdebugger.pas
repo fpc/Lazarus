@@ -9,6 +9,7 @@ uses
   SysUtils,
   Forms,
   Maps,
+  process,
   LazLogger,
   FpDbgClasses,
   FpDbgInfo,
@@ -858,6 +859,9 @@ begin
       if not assigned(FDbgController.MainProcess) then
         begin
         FDbgController.ExecutableFilename:=FileName;
+        FDbgController.Params.Clear;
+        if Arguments<>'' then
+          CommandToList(Arguments, FDbgController.Params);
         FFpDebugThread := TFpDebugThread.Create(Self);
         RTLeventWaitFor(FFpDebugThread.DebugLoopStoppedEvent);
         RTLeventResetEvent(FFpDebugThread.DebugLoopStoppedEvent);

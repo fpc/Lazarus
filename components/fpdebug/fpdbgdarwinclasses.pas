@@ -68,7 +68,7 @@ type
   protected
     function InitializeLoader: TDbgImageLoader; override;
   public
-    class function StartInstance(AFileName: string; AParams: string): TDbgProcess; override;
+    class function StartInstance(AFileName: string; AParams: TStringList): TDbgProcess; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer); override;
     destructor Destroy; override;
 
@@ -290,7 +290,7 @@ begin
   inherited Destroy;
 end;
 
-class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams: string): TDbgProcess;
+class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams: TStringList): TDbgProcess;
 var
   PID: TPid;
   stat: longint;
@@ -320,6 +320,7 @@ begin
   try
     AProcess.OnForkEvent:=@OnForkEvent;
     AProcess.Executable:=AnExecutabeFilename;
+    AProcess.Parameters:=AParams;
     AProcess.Execute;
     PID:=AProcess.ProcessID;
 
