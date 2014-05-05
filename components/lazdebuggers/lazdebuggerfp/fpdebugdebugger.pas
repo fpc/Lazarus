@@ -662,6 +662,7 @@ begin
 
   APasExpr := TFpPascalExpression.Create(AWatchValue.Expression, AContext);
   try
+    APasExpr.ResultValue; // trigger full validation
     if not APasExpr.Valid then
       begin
       AWatchValue.Value := ErrorHandler.ErrorAsString(APasExpr.Error);
