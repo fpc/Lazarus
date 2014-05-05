@@ -781,7 +781,7 @@ end;
 function TFpPascalPrettyPrinter.PrintValue(out APrintedValue: String; AValue: TFpDbgValue;
   ADisplayFormat: TWatchDisplayFormat; ARepaetCount: Integer): Boolean;
 begin
-  InternalPrintValue(APrintedValue, AValue, AddressSize, [], 0, '', ADisplayFormat, ARepaetCount);
+  Result := InternalPrintValue(APrintedValue, AValue, AddressSize, [], 0, '', ADisplayFormat, ARepaetCount);
 end;
 
 end.
