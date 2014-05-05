@@ -1997,12 +1997,18 @@ begin
   if (LCLObject <> nil) then
   begin
     if (Self is TQtMainWindow) and
-      (csNoFocus in LCLObject.ControlStyle) then
+      (TQtMainWindow(Self).IsMDIChild or (csNoFocus in LCLObject.ControlStyle)) then
     begin
-      if LCLObject.TabStop then
-        setFocusPolicy(QtWheelFocus)
-      else
-        setFocusPolicy(QtNoFocus);
+      if TQtMainWindow(Self).IsMDIChild then
+      begin
+        QWidget_setFocusPolicy(FCentralWidget, QtNoFocus);
+      end else
+      begin
+        if LCLObject.TabStop then
+          setFocusPolicy(QtWheelFocus)
+        else
+          setFocusPolicy(QtNoFocus);
+      end;
     end else
     begin
       if (csNoFocus in LCLObject.ControlStyle) then

@@ -2952,9 +2952,14 @@ begin
   if W <> nil then
   begin
     Result := HwndFromWidgetH(W);
+    if IsValidHandle(Result) then
+    begin
+      if TQtWidget(Result).getOwner <> nil then
+        Result := HWND(TQtWidget(Result).getOwner);
+    end;
     {$ifdef VerboseFocus}
     Obj := TQtWidget(Result);
-    Write('TQtWidgetSet.GetFocus: WidgetH=',dbghex(ptruint(W)), ' QtWidget=', dbgsname(Obj));
+    WriteLn('TQtWidgetSet.GetFocus: WidgetH=',dbghex(ptruint(W)), ' QtWidget=', dbgsname(Obj));
     if Obj<>nil then
       WriteLn(' LclObject=', dbgsname(Obj.LCLObject))
     else
@@ -5740,7 +5745,7 @@ begin
         W.Activate;
     TQtWidget(hWnd).setFocus;
     {$ifdef VerboseFocus}
-    DebugLn('********* TQtWidgetSet.SetFocus END was %x now is %x',[result,hwnd]);
+    DebugLn('********* TQtWidgetSet.SetFocus END was %x now is %x %s %d',[result,hwnd,dbgsName(TQtWidget(hWnd).LCLObject), GetTickCount]);
     {$endif}
   end;
 end;
