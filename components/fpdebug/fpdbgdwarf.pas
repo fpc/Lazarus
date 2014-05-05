@@ -4196,13 +4196,22 @@ begin
   if didtStrideRead in FDwarfArrayReadFlags then
     exit;
   Include(FDwarfArrayReadFlags, didtStrideRead);
-  if not InformationEntry.ReadValue(DW_AT_bit_stride, FStrideInBits) then begin
-    t := NestedTypeInfo;
-    if t = nil then
-      FStrideInBits := 0
-    else
-      FStrideInBits := t.Size * 8;
+  if InformationEntry.ReadValue(DW_AT_bit_stride, FStrideInBits) then
+    exit;
+
+  CreateMembers; // TODO Can we get here without that already done?
+  if (FMembers.Count > 0) and // TODO: stride for diff member
+     (TDbgDwarfSymbolBase(FMembers[0]).InformationEntry.ReadValue(DW_AT_byte_stride, FStrideInBits))
+  then begin
+    FStrideInBits := FStrideInBits * 8;
+    exit;
   end;
+
+  t := NestedTypeInfo;
+  if t = nil then
+    FStrideInBits := 0 //  TODO error
+  else
+    FStrideInBits := t.Size * 8;
 end;
 
 procedure TFpDwarfSymbolTypeArray.ReadOrdering;
@@ -4284,7 +4293,7 @@ var
 begin
   assert((AValObject is TFpDwarfValueArray), 'TFpDwarfSymbolTypeArray.GetMemberAddress AValObject');
   ReadOrdering;
-  ReadStride;
+  ReadStride; // TODO Stride per member (member = dimension/index)
   Result := InvalidLoc;
   if (FStrideInBits <= 0) or (FStrideInBits mod 8 <> 0) then
     exit;
