@@ -43,6 +43,7 @@ uses
   Windows,
   FpDbgUtil,
   FpDbgClasses,
+  process,
   FpDbgWinExtra,
   FpDbgInfo,
   FpDbgLoader, FpdMemoryTools,
@@ -82,6 +83,7 @@ type
   private
     FInfo: TCreateProcessDebugInfo;
     FPauseRequested: boolean;
+    FProcProcess: TProcess;
   protected
     function GetHandle: THandle; override;
     function GetLastEventProcessIdentifier: THandle; override;
@@ -101,7 +103,7 @@ type
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; override;
-    procedure StartProcess(const AInfo: TCreateProcessDebugInfo);
+    procedure StartProcess(const AThreadID: DWORD; const AInfo: TCreateProcessDebugInfo);
 
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
@@ -231,6 +233,7 @@ destructor TDbgWinProcess.Destroy;
 begin
   CloseHandle(FInfo.hProcess);
   FInfo.hProcess:=0;
+  FProcProcess.Free;
   inherited Destroy;
 end;
 
@@ -397,27 +400,21 @@ end;
 
 class function TDbgWinProcess.StartInstance(AFileName: string; AParams: string): TDbgProcess;
 var
-  StartupInfo: TStartupInfo;
-  ProcessInformation: TProcessInformation;
-  ThreadAttributes: TSecurityAttributes;
+  AProcess: TProcess;
 begin
-  ZeroMemory(@StartUpInfo, SizeOf(StartupInfo));
-  StartUpInfo.cb := SizeOf(StartupInfo);
-  StartUpInfo.dwFlags := {STARTF_USESTDHANDLES or} STARTF_USESHOWWINDOW;
-  StartUpInfo.wShowWindow := SW_SHOWNORMAL or SW_SHOW;
+  AProcess := TProcess.Create(nil);
+  try
+    AProcess.Options:=[poDebugProcess, poNewProcessGroup];
+    AProcess.Executable:=AFilename;
+    AProcess.Execute;
 
-//  ZeroMemory(@ThreadAttributes, SizeOf(ThreadAttributes));
-//  ThreadAttributes.nLength := SizeOf(ThreadAttributes);
-//  ThreadAttributes.lpSecurityDescriptor
-
-  ZeroMemory(@ProcessInformation, SizeOf(ProcessInformation));
-  if CreateProcess(nil, PChar(AFileName), nil, nil, True, DETACHED_PROCESS or DEBUG_PROCESS or CREATE_NEW_PROCESS_GROUP, nil, nil, StartUpInfo, ProcessInformation)
-  then begin
-    result := TDbgWinProcess.Create(AFileName, ProcessInformation.dwProcessId,ProcessInformation.dwThreadId);
-  end else begin
-    DebugLn('Create process failed: ', GetLastErrorText);
-    result := nil;
+    result := TDbgWinProcess.Create(AFileName, AProcess.ProcessID, AProcess.ThreadID);
+  except
+    AProcess.Free;
+    raise;
   end;
+
+  TDbgWinProcess(result).FProcProcess := AProcess;
 end;
 
 
@@ -605,7 +602,7 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
     DebugLn(Format('Debugsize: %d', [AEvent.CreateProcessInfo.nDebugInfoSize]));
     DebugLn(Format('Debugoffset: %d', [AEvent.CreateProcessInfo.dwDebugInfoFileOffset]));
 
-    StartProcess(AEvent.CreateProcessInfo);
+    StartProcess(AEvent.dwThreadId, AEvent.CreateProcessInfo);
   end;
 
   procedure HandleExitThread(const AEvent: TDebugEvent);
@@ -865,7 +862,7 @@ begin
   end;
 end;
 
-procedure TDbgWinProcess.StartProcess(const AInfo: TCreateProcessDebugInfo);
+procedure TDbgWinProcess.StartProcess(const AThreadID: DWORD;const AInfo: TCreateProcessDebugInfo);
 var
   s: string;
 begin
@@ -880,8 +877,8 @@ begin
   if DbgInfo.HasInfo
   then FSymInstances.Add(Self);
 
-  FMainThread := OSDbgClasses.DbgThreadClass.Create(Self, ThreadID, AInfo.hThread);
-  FThreadMap.Add(ThreadID, FMainThread);
+  FMainThread := OSDbgClasses.DbgThreadClass.Create(Self, AThreadID, AInfo.hThread);
+  FThreadMap.Add(FMainThread.ID, FMainThread);
 end;
 
 function TDbgWinProcess.GetInstructionPointerRegisterValue: TDbgPtr;
