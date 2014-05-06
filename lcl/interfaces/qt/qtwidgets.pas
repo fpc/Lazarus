@@ -650,6 +650,7 @@ type
     function MdiChildCount: integer;
     procedure OffsetMousePos(APoint: PQtPoint); override;
     procedure setAcceptDropFiles(AValue: Boolean);
+    procedure setColor(const Value: PQColor); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure SlotActivateWindow(vActivate: Boolean); cdecl;
     procedure slotWindowStateChange; cdecl;
@@ -6888,6 +6889,19 @@ end;
 procedure TQtMainWindow.setAcceptDropFiles(AValue: Boolean);
 begin
   QWidget_setAcceptDrops(Widget, AValue);
+end;
+
+procedure TQtMainWindow.setColor(const Value: PQColor);
+var
+  p: QPaletteH;
+begin
+  inherited setColor(Value);
+  if Assigned(MDIAreaHandle) and Assigned(FCentralWidget) then
+  begin
+    p := QWidget_palette(FCentralWidget);
+    if p <> nil then
+      QMdiArea_setBackground(QMdiAreaH(MdiAreaHandle.Widget), QPalette_background(P));
+  end;
 end;
 
 procedure TQtMainWindow.setFocusPolicy(const APolicy: QtFocusPolicy);
