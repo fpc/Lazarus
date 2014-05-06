@@ -89,7 +89,8 @@ var
 begin
   CodyFindGDBLineDialog:=TCodyFindGDBLineDialog.Create(nil);
   try
-    CodyFindGDBLineDialog.ShowModal;
+    if CodyFindGDBLineDialog.ShowModal<>mrOk then exit;
+    LazarusIDE.DoOpenFileAndJumpToPos(CodyFindGDBLineDialog.SrcFilename,CodyFindGDBLineDialog.SrcXY,-1,-1,-1,[]);
   finally
     CodyFindGDBLineDialog.Free;
   end;
