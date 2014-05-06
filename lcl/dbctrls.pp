@@ -1579,11 +1579,12 @@ procedure TFieldDataLink.UpdateData;
 begin
   if not IsModified then
     exit;
-
-  if Assigned(FOnUpdateData) then
-    FOnUpdateData(Self);
-
-  IsModified := False;
+  try
+    if Assigned(FOnUpdateData) then
+      FOnUpdateData(Self);
+  finally
+    IsModified := False;
+  end;
 end;
 
 { Delphi Help ->
