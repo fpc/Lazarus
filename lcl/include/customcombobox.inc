@@ -564,24 +564,16 @@ begin
   end;
 end;
 
-procedure TCustomComboBox.KeyPress(var Key: char);
-begin
-  //Convert character cases if FCharCase is not ecNormalCase
-  case FCharCase of
-    ecLowerCase: Key := LowerCase(Key);
-    ecUpperCase: Key := UpCase(Key);
-  end;
-  inherited KeyPress(Key);
-end;
 
 procedure TCustomComboBox.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
+  //First invoke OnUtf8KeyPress, or else CharCase may be reverted again
+  inherited UTF8KeyPress(UTF8Key);
   //Convert character cases if FCharCase is not ecNormalCase
   case FCharCase of
     ecLowerCase: UTF8Key := UTF8LowerCase(UTF8Key);
     ecUpperCase: UTF8Key := UTF8UpperCase(UTF8Key);
   end;
-  inherited UTF8KeyPress(UTF8Key);
 end;
 
 procedure TCustomComboBox.MouseUp(Button: TMouseButton; Shift:TShiftState;
