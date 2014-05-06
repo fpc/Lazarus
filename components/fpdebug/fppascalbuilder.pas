@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, DbgIntfBaseTypes, DbgIntfDebuggerBase, FpDbgInfo, FpdMemoryTools,
-  FpErrorMessages, LazLoggerBase;
+  FpErrorMessages, LazLoggerBase, LCLIntf;
 
 type
   TTypeNameFlag = (
@@ -46,14 +46,14 @@ type
                                 AFlags: TFpPrettyPrintValueFlags;
                                 ANestLevel: Integer; AnIndent: String;
                                 ADisplayFormat: TWatchDisplayFormat;
-                                ARepaetCount: Integer = -1
+                                ARepeatCount: Integer = -1
                                ): Boolean;
   public
     constructor Create(AnAddressSize: Integer);
     function PrintValue(out APrintedValue: String;
                         AValue: TFpDbgValue;
                         ADisplayFormat: TWatchDisplayFormat = wdfDefault;
-                        ARepaetCount: Integer = -1
+                        ARepeatCount: Integer = -1
                        ): Boolean;
     property AddressSize: Integer read FAddressSize write FAddressSize;
     property MemManager: TFpDbgMemManager read FMemManager write FMemManager;
@@ -429,7 +429,7 @@ end;
 function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   AValue: TFpDbgValue; AnAddressSize: Integer; AFlags: TFpPrettyPrintValueFlags;
   ANestLevel: Integer; AnIndent: String; ADisplayFormat: TWatchDisplayFormat;
-  ARepaetCount: Integer): Boolean;
+  ARepeatCount: Integer): Boolean;
 
 
   function ResTypeName: String;
@@ -669,9 +669,10 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       Result := True;
       exit;
     end;
-    if      (ANestLevel > 1) and (Cnt > 3) then Cnt := 3
+    If ARepeatCount > 0                     then Cnt := ARepeatCount
+    else if (ANestLevel > 1) and (Cnt > 3)  then Cnt := 3
     else if (ANestLevel > 0) and (Cnt > 10) then Cnt := 10
-    else if (Cnt > 300) then Cnt := 300;
+    else if (Cnt > 300)                     then Cnt := 300;
     d := 0;
     // TODO: use valueobject for bounds
     if (AValue.IndexTypeCount > 0) and AValue.IndexType[0].HasBounds then
@@ -779,9 +780,13 @@ begin
 end;
 
 function TFpPascalPrettyPrinter.PrintValue(out APrintedValue: String; AValue: TFpDbgValue;
-  ADisplayFormat: TWatchDisplayFormat; ARepaetCount: Integer): Boolean;
+  ADisplayFormat: TWatchDisplayFormat; ARepeatCount: Integer): Boolean;
+var
+  x: QWord;
 begin
-  Result := InternalPrintValue(APrintedValue, AValue, AddressSize, [], 0, '', ADisplayFormat, ARepaetCount);
+x:= GetTickCount64;
+  Result := InternalPrintValue(APrintedValue, AValue, AddressSize, [], 0, '', ADisplayFormat, ARepeatCount);
+debugln(['    TFpPascalPrettyPrinter.PrintValue ', (GetTickCount64-x)/1000]);
 end;
 
 end.
