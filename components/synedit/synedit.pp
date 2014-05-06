@@ -1186,6 +1186,7 @@ type
 // ToDo Docking
     property OnStartDock;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     // TCustomSynEdit properties
     property BookMarkOptions;
     property BorderStyle default bsSingle;
@@ -4638,7 +4639,6 @@ procedure TCustomSynEdit.WMKillFocus(var Msg: TWMKillFocus);
 begin
   if fCaret = nil then exit; // This SynEdit is in Destroy
   Exclude(FStateFlags, sfHideCursor);
-  inherited;
   {$IFDEF VerboseFocus}
   DebugLn(['[TCustomSynEdit.WMKillFocus] A ',DbgSName(Self), ' time=', dbgs(Now*86640)]);
   {$ENDIF}
