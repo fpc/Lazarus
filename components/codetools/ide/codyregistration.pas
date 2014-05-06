@@ -112,7 +112,7 @@ begin
     raise Exception.Create('cody: command category '+CommandCategoryViewName+' not found');
 
   // Search menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  FindGDBLineCommand:=RegisterIDECommand(CmdCatSearchReplace, 'ShowPPUList',
+  FindGDBLineCommand:=RegisterIDECommand(CmdCatSearchReplace, 'FindGDBBacktrace',
     crsFindGDBBacktraceLine,
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowFindGDBLineDialog);
   RegisterIDEMenuCommand(itmCodeToolSearches,'FindGDBBacktraceLine',crsFindGDBBacktraceLine,

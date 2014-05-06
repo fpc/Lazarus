@@ -761,7 +761,11 @@ type
       out NewPos: TCodeXYPosition; out NewTopLine: integer;
       IgnoreTypeLess: boolean = false): boolean;
     function FindDeclarationNodeInInterface(const Identifier: string;
-      BuildTheTree: Boolean): TCodeTreeNode;// search for type, const, var
+      BuildTheTree: Boolean): TCodeTreeNode;// search for type, const, var, proc, prop
+    function FindDeclarationNodeInImplementation(Identifier: string;
+      BuildTheTree: Boolean): TCodeTreeNode;// search for type, const, var, proc, prop
+    function FindSubDeclaration(Identifier: string; ParentNode: TCodeTreeNode
+      ): TCodeTreeNode; // search for type, const, var, proc, prop
 
     function FindInitializationSection: TCodeTreeNode; deprecated; // use FindInitializationNode
     function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode;
@@ -1909,6 +1913,43 @@ begin
   CacheEntry:=FInterfaceIdentifierCache.FindIdentifier(PChar(Identifier));
   if CacheEntry=nil then exit;
   Result:=CacheEntry^.Node;
+end;
+
+function TFindDeclarationTool.FindDeclarationNodeInImplementation(
+  Identifier: string; BuildTheTree: Boolean): TCodeTreeNode;
+begin
+  Result:=nil;
+  if Identifier='' then exit;
+  if BuildTheTree then
+    BuildTree(lsrInitializationStart);
+  Result:=FindSubDeclaration(Identifier,FindImplementationNode);
+end;
+
+function TFindDeclarationTool.FindSubDeclaration(Identifier: string;
+  ParentNode: TCodeTreeNode): TCodeTreeNode;
+var
+  LastNode: TCodeTreeNode;
+begin
+  Result:=nil;
+  if ParentNode=nil then exit;
+  if Identifier='' then exit;
+  Identifier:=UpperCaseStr(Identifier);
+  LastNode:=ParentNode.NextSkipChilds;
+  Result:=ParentNode.Next;
+  while Result<>LastNode do begin
+    // ToDo: check enums
+    if Result.Desc in AllIdentifierDefinitions then begin
+      if CompareNodeIdentChars(Result,Identifier)=0 then
+        exit;
+      Result:=Result.NextSkipChilds;
+    end else if Result.Desc=ctnProcedure then begin
+      if CompareIdentifiers(PChar(ExtractProcName(Result,[])),PChar(Pointer(Identifier)))=0 then
+        exit;
+      Result:=Result.NextSkipChilds;
+    end else
+      Result:=Result.Next;
+  end;
+  Result:=nil;
 end;
 
 function TFindDeclarationTool.FindMainUsesSection(UseContainsSection: boolean

@@ -31,9 +31,10 @@ unit CodyFindGDBLine;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazLoggerBase, LazLogger, SynEdit,
-  IDEDialogs, SrcEditorIntf, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, ButtonPanel, CodyStrConsts, CodeCache, CodeToolManager, CodeTree;
+  Classes, SysUtils, FileUtil, LazLoggerBase, LazLogger, SynEdit, IDEDialogs,
+  SrcEditorIntf, LazIDEIntf, ProjectIntf, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, ExtCtrls, ButtonPanel, CodyStrConsts, CodeCache, CodeToolManager,
+  CodeTree, KeywordFuncLists;
 
 type
 
@@ -69,7 +70,8 @@ type
     procedure Jump;
     procedure ParseGDBBacktraceLine(Line: string; out Identifier, TheErrorMsg: string);
     procedure FindGDBIdentifier(GDBIdentifier: string; out TheErrorMsg: string);
-    procedure FindUnit(TheUnitName: string; out aFilename: string);
+    function FindUnit(TheUnitName: string; out aFilename: string): boolean;
+    function FindProgram(TheSrcName: string; out aFilename: string): boolean;
   public
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     property ErrorMsg: string read FErrorMsg;
@@ -339,26 +341,37 @@ end;
 procedure TCodyFindGDBLineDialog.FindGDBIdentifier(GDBIdentifier: string; out
   TheErrorMsg: string);
 { Examples:
-  fpc_raiseexception
-  SYSUTILS_RUNERRORTOEXCEPT$LONGINT$POINTER$POINTER
-  SYSTEM_HANDLEERRORADDRFRAME$LONGINT$POINTER$POINTER
-  ??
-  EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT
-  EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$ANSISTRING$$TMODALRESULT
-  ENVIRONMENTOPTS_TENVIRONMENTOPTIONS_$__LOAD$BOOLEAN
-  MAIN_TMAINIDE_$__LOADGLOBALOPTIONS
-  MAIN_TMAINIDE_$__CREATE$TCOMPONENT$$TMAINIDE
-  PASCALMAIN
-  SYSTEM_FPC_SYSTEMMAIN$LONGINT$PPCHAR$PPCHAR
+  compiler built-in
+    fpc_raiseexception
+    ??
+    PASCALMAIN
+    SYSTEM_FPC_SYSTEMMAIN$LONGINT$PPCHAR$PPCHAR
+
+  unit:
+    procedure
+      SYSUTILS_RUNERRORTOEXCEPT$LONGINT$POINTER$POINTER
+      SYSTEM_HANDLEERRORADDRFRAME$LONGINT$POINTER$POINTER
+    method
+      EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT
+      EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$ANSISTRING$$TMODALRESULT
+      ENVIRONMENTOPTS_TENVIRONMENTOPTIONS_$__LOAD$BOOLEAN
+      MAIN_TMAINIDE_$__LOADGLOBALOPTIONS
+      MAIN_TMAINIDE_$__CREATE$TCOMPONENT$$TMAINIDE
+
+  program:
+    P$TESTSTACKTRACE1_TMAINCLASS_$_TSUBCLASS_$__RAISESOMETHING$ANSISTRING
 }
 var
   p: PChar;
-  TheUnitName: string;
+  TheSrcName: string;
   Code: TCodeBuffer;
   CurIdentifier: string;
   Tool: TCodeTool;
   Node: TCodeTreeNode;
   CodeXY: TCodeXYPosition;
+  SubNode: TCodeTreeNode;
+  ClassNode: TCodeTreeNode;
+  ProcNode: TCodeTreeNode;
 
   procedure ReadIdentifier(out Identifier: string);
   var
@@ -380,19 +393,32 @@ begin
     TheErrorMsg:='compiler built in function "'+GDBIdentifier+'"';
     exit;
   end;
+  TheSrcName:='';
   if p^ in ['A'..'Z'] then begin
-    ReadIdentifier(TheUnitName);
-    debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier first identifier=',TheUnitName]);
-    if p^<>'_' then begin
+    ReadIdentifier(TheSrcName);
+    debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier first identifier=',TheSrcName,' ...']);
+    if p^='$' then begin
+      // P$programname
+      inc(p);
+      if IsIdentStartChar[p^] then
+        ReadIdentifier(TheSrcName);
+      debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier search source of program "',TheSrcName,'" ...']);
+      FindProgram(TheSrcName,FSrcFilename);
+      if (SrcFilename='') then begin
+        TheErrorMsg:='can''t find program "'+TheSrcName+'"';
+        exit;
+      end;
+    end else if p^='_' then begin
+      // a unit name
+      // => search unit
+      FindUnit(TheSrcName,FSrcFilename);
+      if (SrcFilename='') then begin
+        TheErrorMsg:='can''t find unit '+TheSrcName;
+        exit;
+      end;
+    end else if p^<>'_' then begin
       // only one uppercase identifier, e.g. PASCALMAIN
       TheErrorMsg:='compiler built in function "'+GDBIdentifier+'"';
-      exit;
-    end;
-    // a unit name
-    // => search
-    FindUnit(TheUnitName,FSrcFilename);
-    if (SrcFilename='') then begin
-      TheErrorMsg:='can''t find unit '+TheUnitName;
       exit;
     end;
     // load unit source
@@ -406,36 +432,85 @@ begin
     if p^ in ['A'..'Z'] then begin
       ReadIdentifier(CurIdentifier);
       debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier Identifier="',CurIdentifier,'"']);
+
       if not CodeToolBoss.Explore(Code,Tool,false,true) then begin
-        // syntax error in source => use only SrcFilename
-        debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier identifier "',CurIdentifier,'" not found in "',Code.Filename,'" due to syntax error']);
+        debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier parse error']);
+        TheErrorMsg:=CodeToolBoss.ErrorMessage;
         exit;
       end;
 
-      Node:=Tool.FindDeclarationNodeInInterface(CurIdentifier,true);
+      Node:=nil;
+      // search in interface
+      try
+        Node:=Tool.FindDeclarationNodeInInterface(CurIdentifier,true);
+      except
+        on E: Exception do begin
+          CodeToolBoss.HandleException(E);
+          debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier parse error in "',Code.Filename,'": ',E.Message]);
+          TheErrorMsg:=CodeToolBoss.ErrorMessage;
+          exit;
+        end;
+      end;
+      if Node=nil then begin
+        // search in implementation
+        try
+          Node:=Tool.FindDeclarationNodeInImplementation(CurIdentifier,true);
+        except
+          on E: Exception do begin
+            CodeToolBoss.HandleException(E);
+            debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier parse error in "',Code.Filename,'": ',E.Message]);
+            TheErrorMsg:=CodeToolBoss.ErrorMessage;
+            exit;
+          end;
+        end;
+      end;
       if Node=nil then begin
         // identifier not found => use only SrcFilename
         debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier identifier "',CurIdentifier,'" not found in "',Code.Filename,'"']);
+        TheErrorMsg:='identifier "'+CurIdentifier+'" not found in "'+Code.Filename+'"';
         exit;
       end;
-      // identifier found
+
+      while (p^='_') and (p[1]='$') and (p[2]='_') and (p[3]='_') do begin
+        inc(p,4);
+        if p^ in ['A'..'Z'] then begin
+          // _$__identifier => sub identifier
+          ReadIdentifier(CurIdentifier);
+          // find sub identifier
+          SubNode:=Tool.FindSubDeclaration(CurIdentifier,Node);
+          if SubNode=nil then begin
+            debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier SubIdentifier="',CurIdentifier,'" not found']);
+            break;
+          end else begin
+            debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier SubIdentifier="',CurIdentifier,'" found']);
+            Node:=SubNode;
+          end;
+        end else begin
+          break;
+        end;
+      end;
+
+      if Node.Desc=ctnProcedure then begin
+        // proc node => find body
+        debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier AAA1']);
+        ClassNode:=Tool.FindClassOrInterfaceNode(Node);
+        if ClassNode<>nil then begin
+          debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier AAA2']);
+          ProcNode:=Tool.FindCorrespondingProcNode(Node);
+          debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier AAA3 ',ProcNode<>nil]);
+          if ProcNode<>nil then
+            Node:=ProcNode;
+        end;
+      end;
+
+      // (part of) identifier found
       Tool.CleanPosToCaret(Node.StartPos,CodeXY);
       fSrcFilename:=CodeXY.Code.Filename;
       FSrcXY.Y:=CodeXY.Y;
       FSrcXY.X:=CodeXY.X;
-
-      if (p^='_') and (p[1]='$') and (p[2]='_') and (p[3]='_') then begin
-        inc(p,4);
-        if p^ in ['A'..'Z'] then begin
-          ReadIdentifier(CurIdentifier);
-          debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier SubIdentifier="',CurIdentifier,'"']);
-          // find sub identifier
-
-        end;
-      end;
     end;
     // unknown operator => use only SrcFilename
-    debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier unknown operator ',dbgstr(p^)]);
+    debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier operator not yet supported: ',dbgstr(p^)]);
     exit;
   end else begin
     // example: ??
@@ -444,8 +519,8 @@ begin
   TheErrorMsg:='unkown identifier "'+GDBIdentifier+'"';
 end;
 
-procedure TCodyFindGDBLineDialog.FindUnit(TheUnitName: string; out
-  aFilename: string);
+function TCodyFindGDBLineDialog.FindUnit(TheUnitName: string; out
+  aFilename: string): boolean;
 var
   i: Integer;
   SrcEdit: TSourceEditorInterface;
@@ -456,7 +531,7 @@ begin
   aFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
                              '',TheUnitName,InFilename,true);
   if aFilename<>'' then
-    exit;
+    exit(true);
   // search in source editor
   for i:=0 to SourceEditorManagerIntf.SourceEditorCount-1 do begin
     SrcEdit:=SourceEditorManagerIntf.SourceEditors[i];
@@ -464,10 +539,41 @@ begin
     if not FilenameIsPascalUnit(aFileName) then continue;
     if CompareText(ExtractFileNameOnly(aFileName),TheUnitName)<>0 then
       continue;
-    exit;
+    exit(true);
   end;
   // not found
   aFilename:='';
+  Result:=false;
+end;
+
+function TCodyFindGDBLineDialog.FindProgram(TheSrcName: string; out
+  aFilename: string): boolean;
+var
+  aProject: TLazProject;
+  i: Integer;
+  SrcEdit: TSourceEditorInterface;
+begin
+  // check active project
+  aProject:=LazarusIDE.ActiveProject;
+  if (aProject<>nil) and (aProject.MainFile<>nil) then begin
+    aFilename:=aProject.MainFile.Filename;
+    if FilenameIsAbsolute(aFilename)
+    and ((TheSrcName='')
+      or (SysUtils.CompareText(ExtractFileNameOnly(aFilename),TheSrcName)=0))
+    then
+      exit(true);
+  end;
+  // search in source editor
+  for i:=0 to SourceEditorManagerIntf.SourceEditorCount-1 do begin
+    SrcEdit:=SourceEditorManagerIntf.SourceEditors[i];
+    aFilename:=SrcEdit.FileName;
+    if CompareText(ExtractFileNameOnly(aFileName),TheSrcName)<>0 then
+      continue;
+    exit(true);
+  end;
+  // not found
+  aFilename:='';
+  Result:=false;
 end;
 
 procedure TCodyFindGDBLineDialog.FormClose(Sender: TObject;
