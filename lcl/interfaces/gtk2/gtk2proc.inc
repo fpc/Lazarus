@@ -2448,6 +2448,7 @@ begin
               end
               else
                 AEvent^.length := 1;
+              exit;
             end
             else
             begin
