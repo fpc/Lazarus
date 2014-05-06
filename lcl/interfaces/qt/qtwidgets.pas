@@ -1998,9 +1998,14 @@ begin
   if (LCLObject <> nil) then
   begin
     if (Self is TQtMainWindow) and
-      (TQtMainWindow(Self).IsMDIChild or (csNoFocus in LCLObject.ControlStyle)) then
+      (
+      TQtMainWindow(Self).IsMDIChild or
+      Assigned(TQtMainWindow(Self).MDIAreaHandle) or
+       (csNoFocus in LCLObject.ControlStyle)
+      ) then
     begin
-      if TQtMainWindow(Self).IsMDIChild then
+      if TQtMainWindow(Self).IsMDIChild or
+        Assigned(TQtMainWindow(Self).MDIAreaHandle) then
       begin
         QWidget_setFocusPolicy(FCentralWidget, QtNoFocus);
       end else
