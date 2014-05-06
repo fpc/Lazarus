@@ -862,6 +862,8 @@ begin
         FDbgController.Params.Clear;
         if Arguments<>'' then
           CommandToList(Arguments, FDbgController.Params);
+        FDbgController.WorkingDirectory:=WorkingDir;
+        FDbgController.Environment:=Environment;
         FFpDebugThread := TFpDebugThread.Create(Self);
         RTLeventWaitFor(FFpDebugThread.DebugLoopStoppedEvent);
         RTLeventResetEvent(FFpDebugThread.DebugLoopStoppedEvent);

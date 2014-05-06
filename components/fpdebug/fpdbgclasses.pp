@@ -263,7 +263,7 @@ type
     function DoBreak(BreakpointAddress: TDBGPtr; AThreadID: integer): Boolean;
     procedure MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData);
   public
-    class function StartInstance(AFileName: string; AParams: TStringList): TDbgProcess; virtual;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string): TDbgProcess; virtual;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer); virtual;
     destructor Destroy; override;
     function  AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint; overload;
@@ -799,7 +799,7 @@ begin
   FExitCode:=AValue;
 end;
 
-class function TDbgProcess.StartInstance(AFileName: string; AParams: TStringList): TDbgProcess;
+class function TDbgProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string): TDbgProcess;
 begin
   DebugLn('Debug support for this platform is not available.');
   result := nil;

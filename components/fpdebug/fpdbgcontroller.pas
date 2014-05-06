@@ -23,6 +23,7 @@ type
 
   TDbgController = class
   private
+    FEnvironment: TStrings;
     FExecutableFilename: string;
     FOnCreateProcessEvent: TOnCreateProcessEvent;
     FOnDebugInfoLoaded: TNotifyEvent;
@@ -34,6 +35,8 @@ type
     FExitCode: DWord;
     FPDEvent: TFPDEvent;
     FParams: TStringList;
+    FWorkingDirectory: string;
+    procedure SetEnvironment(AValue: TStrings);
     procedure SetExecutableFilename(AValue: string);
     procedure SetOnLog(AValue: TOnLog);
     procedure DoOnDebugInfoLoaded(Sender: TObject);
@@ -64,6 +67,8 @@ type
     property CurrentProcess: TDbgProcess read FCurrentProcess;
     property MainProcess: TDbgProcess read FMainProcess;
     property Params: TStringList read FParams write SetParams;
+    property Environment: TStrings read FEnvironment write SetEnvironment;
+    property WorkingDirectory: string read FWorkingDirectory write FWorkingDirectory;
 
     property OnCreateProcessEvent: TOnCreateProcessEvent read FOnCreateProcessEvent write FOnCreateProcessEvent;
     property OnHitBreakpointEvent: TOnHitBreakpointEvent read FOnHitBreakpointEvent write FOnHitBreakpointEvent;
@@ -94,6 +99,12 @@ begin
   FExecutableFilename:=AValue;
 end;
 
+procedure TDbgController.SetEnvironment(AValue: TStrings);
+begin
+  if FEnvironment=AValue then Exit;
+  FEnvironment.Assign(AValue);
+end;
+
 procedure TDbgController.SetOnLog(AValue: TOnLog);
 begin
   if FOnLog=AValue then Exit;
@@ -106,6 +117,7 @@ destructor TDbgController.Destroy;
 begin
   //FCurrentProcess.Free;
   FParams.Free;
+  FEnvironment.Free;
   inherited Destroy;
 end;
 
@@ -130,7 +142,7 @@ begin
     Exit;
     end;
 
-  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, FParams);
+  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory);
   if assigned(FCurrentProcess) then
     begin
     FCurrentProcess.OnDebugInfoLoaded := @DoOnDebugInfoLoaded;
@@ -332,6 +344,7 @@ end;
 constructor TDbgController.Create;
 begin
   FParams := TStringList.Create;
+  FEnvironment := TStringList.Create;
   FProcessMap := TMap.Create(itu4, SizeOf(TDbgProcess));
 end;
 
