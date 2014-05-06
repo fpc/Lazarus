@@ -1632,6 +1632,7 @@ type
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
     Panels: array of TQtStatusBarPanel;
+    procedure setColor(const Value: PQColor); override;
     procedure showMessage(text: PWideString; timeout: Integer = 0);
     procedure addWidget(AWidget: QWidgetH; AStretch: Integer = 0);
     procedure removeWidget(AWidget: QWidgetH);
@@ -15169,6 +15170,23 @@ begin
   if (QtVersionMajor = 4) and (QtVersionMinor < 6) then
     QWidget_setAutoFillBackground(Result, True);
   Widget := Result;
+end;
+
+procedure TQtStatusBar.setColor(const Value: PQColor);
+var
+  I: Integer;
+  P: QPaletteH;
+  WP: QPaletteH;
+begin
+  inherited setColor(Value);
+  QWidget_setAutoFillBackground(Widget, not EqualTQColor(Palette.CurrentColor, Palette.DefaultColor));
+  for i := 0 to High(self.Panels) do
+  begin
+    P := QWidget_palette(getContainerWidget);
+    WP := QWidget_palette(Panels[i].Widget);
+    QWidget_setAutoFillBackground(Panels[i].Widget, not EqualTQColor(Palette.CurrentColor, Palette.DefaultColor));
+    QPalette_setBrush(WP, QPaletteWindow, QPalette_background(P));
+  end;
 end;
 
 procedure TQtStatusBar.showMessage(text: PWideString; timeout: Integer);
