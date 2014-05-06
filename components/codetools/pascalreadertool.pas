@@ -863,7 +863,7 @@ begin
   if ClassNode<>nil then begin
     //debugln('TPascalReaderTool.FindCorrespondingProcNode Class');
     // in a class definition -> search method body
-    StartNode:=ClassNode.GetTopMostNodeOfType(ctnTypeSection)
+    StartNode:=ClassNode.GetTopMostNodeOfType(ctnTypeSection);
   end else if NodeIsMethodBody(ProcNode) then begin
     //debugln('TPascalReaderTool.FindCorrespondingProcNode Method ',ExtractClassNameOfProcNode(ProcNode));
     // in a method body -> search in class
@@ -890,7 +890,7 @@ begin
   if StartNode=nil then exit;
 
   ProcHead:=ExtractProcHead(ProcNode,Attr);
-  //debugln('TPascalReaderTool.FindCorrespondingProcNode StartNode=',StartNode.DescAsString,' ProcHead=',dbgstr(ProcHead));
+  //debugln('TPascalReaderTool.FindCorrespondingProcNode StartNode=',StartNode.DescAsString,' ProcHead=',dbgstr(ProcHead),' ',dbgs(Attr),' ',StartNode.DescAsString);
   Result:=FindProcNode(StartNode,ProcHead,Attr);
   if Result=ProcNode then begin
     // found itself -> search further

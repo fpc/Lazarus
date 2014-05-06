@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, FileUtil, LazLoggerBase, LazLogger, SynEdit, IDEDialogs,
   SrcEditorIntf, LazIDEIntf, ProjectIntf, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls, ButtonPanel, CodyStrConsts, CodeCache, CodeToolManager,
-  CodeTree, KeywordFuncLists;
+  CodeTree, KeywordFuncLists, PascalParserTool, LinkScanner;
 
 type
 
@@ -492,12 +492,16 @@ begin
 
       if Node.Desc=ctnProcedure then begin
         // proc node => find body
-        debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier AAA1']);
         ClassNode:=Tool.FindClassOrInterfaceNode(Node);
         if ClassNode<>nil then begin
-          debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier AAA2']);
-          ProcNode:=Tool.FindCorrespondingProcNode(Node);
-          debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier AAA3 ',ProcNode<>nil]);
+          try
+            Tool.BuildTree(lsrInitializationStart);
+          except
+            on E: Exception do begin
+              // ignore
+            end;
+          end;
+          ProcNode:=Tool.FindCorrespondingProcNode(Node,[phpAddClassName]);
           if ProcNode<>nil then
             Node:=ProcNode;
         end;
