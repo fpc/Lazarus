@@ -931,7 +931,7 @@ end;
 
 function TToolButton.DialogChar(var Message: TLMKey): boolean;
 begin
-  if IsAccel(Message.CharCode, Caption) and FToolBar.CanFocus then
+  if IsAccel(Message.CharCode, Caption) and FToolBar.ShowCaptions then
   begin
     Click;
     Result := true;
