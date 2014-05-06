@@ -70,6 +70,6 @@ msgid "Leaking Mem Size: %d"
 msgstr ""
 
 #: heaptrcview.strtotalmemalloc
-msgid "Total Mem alloced: %d"
+msgid "Total Mem allocated: %d"
 msgstr ""
 

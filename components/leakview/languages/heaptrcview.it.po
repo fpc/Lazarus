@@ -79,6 +79,8 @@ msgid "Leaking Mem Size: %d"
 msgstr "Dimensione memoria perduta: %d"
 
 #: heaptrcview.strtotalmemalloc
-msgid "Total Mem alloced: %d"
+#, fuzzy
+#| msgid "Total Mem alloced: %d"
+msgid "Total Mem allocated: %d"
 msgstr "Totale memoria ALLOCata: %d"
 

@@ -11,6 +11,7 @@ uses
 
 type
   TJumpProc = procedure (Sender: TObject; const SourceName: string; Line: integer) of object;
+
   { THeapTrcViewForm }
 
   THeapTrcViewForm = class(TForm)
@@ -36,7 +37,6 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure trvTraceInfoDblClick(Sender: TObject);
   private
-    { private declarations }
     Finfo  : TLeakInfo;
     fItems  : TList;
 
@@ -58,12 +58,9 @@ type
   protected
     procedure LazarusJump(Sender: TObject; const SourceFile: string; Line: Integer);
   public
-    { public declarations }
     destructor Destroy; override;
-
   public
     OnJumpProc : TJumpProc; //= procedure (Sender: TObject; const SourceName: string; Line: integer) of object;
-
   end;
 
 resourcestring
@@ -72,7 +69,7 @@ resourcestring
   StackLineFormatWithFile  = '%s file: %s : %d; ';        // stack addr, filename (no path), line number
   StackLineFormat          = '%s';                        // stack addr
 
-  strTotalMemAlloc      = 'Total Mem alloced: %d';
+  strTotalMemAlloc      = 'Total Mem allocated: %d';
   strLeakingMemSize     = 'Leaking Mem Size: %d';
   strLeakingBlocksCount = 'Leaking Blocks Count: %d';
   //
