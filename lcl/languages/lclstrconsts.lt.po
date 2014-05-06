@@ -532,11 +532,15 @@ msgid "First"
 msgstr "Pirmasis"
 
 #: lclstrconsts.rsfixedcolstoobig
-msgid "FixedCols can't be >= ColCount"
+#, fuzzy
+#| msgid "FixedCols can't be >= ColCount"
+msgid "FixedCols can't be > ColCount"
 msgstr "„FixedCols“ reikšmė negali būti lygi ar didesnė nei „ColCount“"
 
 #: lclstrconsts.rsfixedrowstoobig
-msgid "FixedRows can't be >= RowCount"
+#, fuzzy
+#| msgid "FixedRows can't be >= RowCount"
+msgid "FixedRows can't be > RowCount"
 msgstr "„FixedRows“ reikšmė negali būti lygi ar didesnė nei „RowCount“"
 
 #: lclstrconsts.rsformcolorcaption
