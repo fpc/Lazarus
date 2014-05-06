@@ -4831,7 +4831,9 @@ msgid "Published properties without default"
 msgstr "Опубліковані властивості без типових"
 
 #: lazarusidestrconsts.lisceshowcodeobserver
-msgid "Show observerations about"
+#, fuzzy
+#| msgid "Show observerations about"
+msgid "Show observations about"
 msgstr "Показати зауваження з приводу"
 
 #: lazarusidestrconsts.liscestylegroup

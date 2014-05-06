@@ -4964,7 +4964,9 @@ msgid "Published properties without default"
 msgstr "Propiedades Published sin calificador default"
 
 #: lazarusidestrconsts.lisceshowcodeobserver
-msgid "Show observerations about"
+#, fuzzy
+#| msgid "Show observerations about"
+msgid "Show observations about"
 msgstr "Mostrar observaciones acerca de"
 
 #: lazarusidestrconsts.liscestylegroup

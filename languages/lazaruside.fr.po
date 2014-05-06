@@ -4902,7 +4902,9 @@ msgid "Published properties without default"
 msgstr "Propriétés published sans défaut"
 
 #: lazarusidestrconsts.lisceshowcodeobserver
-msgid "Show observerations about"
+#, fuzzy
+#| msgid "Show observerations about"
+msgid "Show observations about"
 msgstr "montre les observations à propos"
 
 #: lazarusidestrconsts.liscestylegroup

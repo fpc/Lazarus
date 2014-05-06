@@ -4671,7 +4671,9 @@ msgid "Published properties without default"
 msgstr "デフォルトのないプロパティの発行"
 
 #: lazarusidestrconsts.lisceshowcodeobserver
-msgid "Show observerations about"
+#, fuzzy
+#| msgid "Show observerations about"
+msgid "Show observations about"
 msgstr "以下の監視を実行"
 
 #: lazarusidestrconsts.liscestylegroup

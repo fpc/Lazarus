@@ -4729,7 +4729,9 @@ msgid "Published properties without default"
 msgstr "Zveřejněné vlastnosti bez výchozích hodnot"
 
 #: lazarusidestrconsts.lisceshowcodeobserver
-msgid "Show observerations about"
+#, fuzzy
+#| msgid "Show observerations about"
+msgid "Show observations about"
 msgstr "Ukázat pozorování o"
 
 #: lazarusidestrconsts.liscestylegroup

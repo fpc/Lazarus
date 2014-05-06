@@ -4658,7 +4658,9 @@ msgid "Published properties without default"
 msgstr "Julkiset ominaisuudet ilman oletusarvoa"
 
 #: lazarusidestrconsts.lisceshowcodeobserver
-msgid "Show observerations about"
+#, fuzzy
+#| msgid "Show observerations about"
+msgid "Show observations about"
 msgstr "Näytä havainnot :"
 
 #: lazarusidestrconsts.liscestylegroup

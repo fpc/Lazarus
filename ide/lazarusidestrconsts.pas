@@ -4898,7 +4898,7 @@ resourcestring
     +'a unit. Please use the File - Save as function to rename a unit.';
   lisRemoveSelectedUnits = 'Remove selected units';
   lisRemoveAllUnits = 'Remove all units';
-  lisCEShowCodeObserver = 'Show observerations about';
+  lisCEShowCodeObserver = 'Show observations about';
   lisCELongProcedures = 'Long procedures';
   lisCEManyParameters = 'Many parameters';
   lisCEUnnamedConstants = 'Unnamed constants';

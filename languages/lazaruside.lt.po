@@ -4859,7 +4859,9 @@ msgid "Published properties without default"
 msgstr "„Published“ savybės, neturinčios „default“"
 
 #: lazarusidestrconsts.lisceshowcodeobserver
-msgid "Show observerations about"
+#, fuzzy
+#| msgid "Show observerations about"
+msgid "Show observations about"
 msgstr "Pateikti pastabas apie"
 
 #: lazarusidestrconsts.liscestylegroup
