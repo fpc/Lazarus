@@ -195,6 +195,7 @@ type
     function slotDropFiles(Sender: QObjectH; Event: QEventH): Boolean;
     function SlotHover(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function SlotKey(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function SlotInputMethod(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function SlotMouse(Sender: QObjectH; Event: QEventH): Boolean; virtual; cdecl;
     procedure SlotNCMouse(Sender: QObjectH; Event: QEventH); cdecl;
     function SlotMouseEnter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
@@ -655,6 +656,7 @@ type
     function MdiChildCount: integer;
     procedure OffsetMousePos(APoint: PQtPoint); override;
     procedure setAcceptDropFiles(AValue: Boolean);
+    procedure setColor(const Value: PQColor); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure SlotActivateWindow(vActivate: Boolean); cdecl;
     procedure slotWindowStateChange; cdecl;
@@ -1631,6 +1633,7 @@ type
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
     Panels: array of TQtStatusBarPanel;
+    procedure setColor(const Value: PQColor); override;
     procedure showMessage(text: PWideString; timeout: Integer = 0);
     procedure addWidget(AWidget: QWidgetH; AStretch: Integer = 0);
     procedure removeWidget(AWidget: QWidgetH);
@@ -1997,14 +2000,33 @@ begin
   // set focus policy
   if (LCLObject <> nil) then
   begin
-    if (Self is TQtMainWindow) and (csNoFocus in LCLObject.ControlStyle) then
+    if (Self is TQtMainWindow) and
+      (
+      TQtMainWindow(Self).IsMDIChild or
+      Assigned(TQtMainWindow(Self).MDIAreaHandle) or
+       (csNoFocus in LCLObject.ControlStyle)
+      ) then
     begin
-      setFocusPolicy(QtNoFocus);
+      if TQtMainWindow(Self).IsMDIChild or
+        Assigned(TQtMainWindow(Self).MDIAreaHandle) then
+      begin
+        QWidget_setFocusPolicy(FCentralWidget, QtNoFocus);
+      end else
+      begin
+        if LCLObject.TabStop then
+          setFocusPolicy(QtWheelFocus)
+        else
+          setFocusPolicy(QtNoFocus);
+      end;
     end else
     begin
-      if csNoFocus in LCLObject.ControlStyle then
-        setFocusPolicy(QtNoFocus)
-      else
+      if (csNoFocus in LCLObject.ControlStyle) then
+      begin
+        if LCLObject.TabStop then
+          setFocusPolicy(QtWheelFocus)
+        else
+          setFocusPolicy(QtNoFocus);
+      end else
       if (Self is TQtTabWidget) then
         setFocusPolicy(QtTabFocus)
       else
@@ -2467,6 +2489,13 @@ begin
               ((LCLObject <> nil) and (LCLObject is TCustomControl));
         end;
 
+      //Dead keys (used to compose chars like "ó" by pressing 'o)  do not trigger EventKeyPress
+      //and therefore no KeyDown,Utf8KeyPress,KeyPress
+      QEventInputMethod:
+        begin
+          Result := SlotInputMethod(Sender, Event);
+        end;
+
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: Result := SlotMouse(Sender, Event);
@@ -2841,6 +2870,33 @@ var
       or (AQtKey = QtKey_Up) or (AQtKey = QtKey_Down));
   end;
 
+  function SendChangedKey: boolean;
+  begin
+    if UTF8Char <> UTF8Text then
+      Text := UTF8ToUTF16(Utf8Char)
+    else
+    if Word(AChar) <> CharMsg.CharCode then
+      Text := Char(CharMsg.CharCode);
+
+    AKeyEvent := QKeyEvent_createExtendedKeyEvent(
+      QEvent_type(Event),
+      LCLKeyToQtKey(KeyMsg.CharCode),
+      Modifiers,
+      0,
+      KeyMsg.CharCode,
+      0,
+      @Text,
+      QKeyEvent_isAutoRepeat(QKeyEventH(Event)),
+      QKeyEvent_count(QKeyEventH(Event))
+      );
+    try
+      QObject_event(Sender, AKeyEvent);
+    finally
+      QKeyEvent_destroy(AKeyEvent);
+    end;
+
+  end;
+
 begin
   {$ifdef VerboseQt}
     DebugLn('TQtWidget.SlotKey ', dbgsname(LCLObject));
@@ -3151,20 +3207,28 @@ begin
   begin
     UTF8Text := UTF16ToUTF8(Text);
     UTF8Char := UTF8Text;
-  {$ifdef VerboseQt}
+    {$ifdef VerboseQt}
     WriteLn('sending char ', UTF8Char);
-  {$endif}
+    {$endif}
     if not IsControlKey and LCLObject.IntfUTF8KeyPress(UTF8Char, 1, IsSysKey) then
     begin
       // the LCL has handled the key
-  {$ifdef VerboseQt}
+      {$ifdef VerboseQt}
       WriteLn('handled!');
-  {$endif}
+      {$endif}
       Exit;
     end;
 
     if not CanSendLCLMessage or (Sender = nil) then
       exit;
+
+    if (UTF8Char <> UTF8Text) then
+    begin
+      // process changed key and exit.
+      // issue #26103
+      SendChangedKey;
+      exit;
+    end;
 
     // create the CN_CHAR / CN_SYSCHAR message
     FillChar(CharMsg, SizeOf(CharMsg), 0);
@@ -3174,9 +3238,9 @@ begin
     CharMsg.CharCode := Word(AChar);
 
     //Send message to LCL
-  {$ifdef VerboseQt}
+    {$ifdef VerboseQt}
     WriteLn(' message: ', CharMsg.Msg);
-  {$endif}
+    {$endif}
     NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
 
     if not CanSendLCLMessage or (Sender = nil) then
@@ -3185,9 +3249,9 @@ begin
     if (DeliverMessage(CharMsg, True) <> 0) or (CharMsg.CharCode = VK_UNKNOWN) then
     begin
       // the LCL has handled the key
-  {$ifdef VerboseQt}
+      {$ifdef VerboseQt}
       WriteLn('handled!');
-  {$endif}
+      {$endif}
       Exit;
     end;
 
@@ -3197,9 +3261,9 @@ begin
     //Send a LM_(SYS)CHAR
     CharMsg.Msg := LM_CharMsg[IsSysKey];
 
-  {$ifdef VerboseQt}
+    {$ifdef VerboseQt}
     WriteLn(' message: ', CharMsg.Msg);
-  {$endif}
+    {$endif}
     if not CanSendLCLMessage or (Sender = nil) then
       exit;
 
@@ -3219,31 +3283,47 @@ begin
       (Word(AChar) <> CharMsg.CharCode)) then
   begin
     // data was changed
-    if UTF8Char <> UTF8Text then
-      Text := UTF8ToUTF16(Utf8Char)
-    else
-    if Word(AChar) <> CharMsg.CharCode then
-      Text := Char(CharMsg.CharCode);
-    AKeyEvent := QKeyEvent_createExtendedKeyEvent(
-      QEvent_type(Event),
-      LCLKeyToQtKey(KeyMsg.CharCode),
-      Modifiers,
-      0,
-      KeyMsg.CharCode,
-      0,
-      @Text,
-      QKeyEvent_isAutoRepeat(QKeyEventH(Event)),
-      QKeyEvent_count(QKeyEventH(Event))
-      );
-    try
-      QCoreApplication_sendEvent(Sender, AKeyEvent);
-    finally
-      QKeyEvent_destroy(AKeyEvent);
-    end;
+    // moved to nested proc because of issue #26103
+    SendChangedKey;
   end else
   begin
     Result := KeyMsg.CharCode in KeysToEat;
   end;
+end;
+
+function TQtWidget.SlotInputMethod(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  InputEvent: QInputMethodEventH;
+  WStr: WideString;
+  UnicodeChar: Cardinal;
+  UnicodeOutLen: integer;
+  KeyEvent: QKeyEventH;
+begin
+  Result := True;
+  if not (QEvent_type(Event) = QEventInputMethod) then Exit;
+  {$ifdef VerboseQt}
+    DebugLn('TQtWidget.SlotInputMethod ', dbgsname(LCLObject));
+  {$endif}
+  InputEvent := QInputMethodEventH(Event);
+  QInputMethodEvent_commitString(InputEvent, @WStr);
+  UnicodeChar := UTF8CharacterToUnicode(PChar(WStr), UnicodeOutLen);
+  {$IFDEF VerboseQtKeys}
+  writeln('> TQtWidget.SlotInputMethod ',dbgsname(LCLObject),' event=QEventInputMethod:');
+  writeln('   commmitString ',WStr,' len ',length(WStr),' UnicodeChar ',UnicodeChar,
+    ' UnicodeLen ',UnicodeOutLen);
+  writeln('   sending QEventKeyPress');
+  {$ENDIF}
+
+  KeyEvent := QKeyEvent_create(QEventKeyPress, PtrInt(UnicodeChar), QApplication_keyboardModifiers, @WStr, False, 1);
+  try
+    // do not send it to queue, just pass it to SlotKey
+    Result := SlotKey(Sender, KeyEvent);
+  finally
+    QKeyEvent_destroy(KeyEvent);
+  end;
+  {$IFDEF VerboseQtKeys}
+  writeln('< TQtWidget.SlotInputMethod End: ',dbgsname(LCLObject),' event=QEventInputMethod, sent QEventKeyPress');
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -6712,6 +6792,14 @@ begin
       if (Result) and (QEvent_type(Event) = QEventDrop) then
         Result := slotDropFiles(Sender, Event);
     end;
+    QEventPaint:
+    begin
+      {do not send paint event to LCL if we are pure TCustomForm,
+       CWEvent or ScrollArea.EventFilter will process it.
+       So call SlotPaint only if we are eg TQtHintWindow.}
+      if (FCentralWidget = nil) or (FCentralWidget = Widget) then
+        Result := inherited EventFilter(Sender, Event);
+    end;
   else
     Result := inherited EventFilter(Sender, Event);
   end;
@@ -6817,6 +6905,19 @@ end;
 procedure TQtMainWindow.setAcceptDropFiles(AValue: Boolean);
 begin
   QWidget_setAcceptDrops(Widget, AValue);
+end;
+
+procedure TQtMainWindow.setColor(const Value: PQColor);
+var
+  p: QPaletteH;
+begin
+  inherited setColor(Value);
+  if Assigned(MDIAreaHandle) and Assigned(FCentralWidget) then
+  begin
+    p := QWidget_palette(FCentralWidget);
+    if p <> nil then
+      QMdiArea_setBackground(QMdiAreaH(MdiAreaHandle.Widget), QPalette_background(P));
+  end;
 end;
 
 procedure TQtMainWindow.setFocusPolicy(const APolicy: QtFocusPolicy);
@@ -6958,6 +7059,7 @@ begin
   if LCLObject <> nil then
   begin
     case QEvent_type(Event) of
+      QEventPaint: Result := inherited EventFilter(Sender, Event);
       QEventResize:
         begin
           {mdi area part begins}
@@ -15056,6 +15158,23 @@ begin
   Widget := Result;
 end;
 
+procedure TQtStatusBar.setColor(const Value: PQColor);
+var
+  I: Integer;
+  P: QPaletteH;
+  WP: QPaletteH;
+begin
+  inherited setColor(Value);
+  QWidget_setAutoFillBackground(Widget, not EqualTQColor(Palette.CurrentColor, Palette.DefaultColor));
+  for i := 0 to High(self.Panels) do
+  begin
+    P := QWidget_palette(getContainerWidget);
+    WP := QWidget_palette(Panels[i].Widget);
+    QWidget_setAutoFillBackground(Panels[i].Widget, not EqualTQColor(Palette.CurrentColor, Palette.DefaultColor));
+    QPalette_setBrush(WP, QPaletteWindow, QPalette_background(P));
+  end;
+end;
+
 procedure TQtStatusBar.showMessage(text: PWideString; timeout: Integer);
 begin
   QStatusBar_showMessage(QStatusBarH(Widget), text, timeout);
@@ -15659,12 +15778,6 @@ begin
 end;
 
 function TQtCustomControl.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-var
-  InputEvent: QInputMethodEventH;
-  WStr: WideString;
-  UnicodeOutLen: Integer;
-  UnicodeChar: Cardinal;
-  KeyEvent: QKeyEventH;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -15681,28 +15794,6 @@ begin
      (ClassType = TQtCustomControl) then
     Result := False
   else
-  if QEvent_type(Event) = QEventInputMethod then
-  begin
-    InputEvent := QInputMethodEventH(Event);
-    QInputMethodEvent_commitString(InputEvent, @WStr);
-    UnicodeChar := UTF8CharacterToUnicode(PChar(WStr), UnicodeOutLen);
-    {$IFDEF VerboseQtKeys}
-    writeln('> TQtCustomControl.EventFilter event=QEventInputMethod');
-    writeln(' commmitString ',WStr,' len ',length(WStr),' UnicodeChar ',UnicodeChar,
-      ' UnicodeLen ',UnicodeOutLen);
-    {$ENDIF}
-
-    KeyEvent := QKeyEvent_create(QEventKeyPress, PtrInt(UnicodeChar), QApplication_keyboardModifiers, @WStr, False, 1);
-    try
-      // do not send it to queue, just pass it to SlotKey
-      Result := SlotKey(Sender, KeyEvent);
-    finally
-      QKeyEvent_destroy(KeyEvent);
-    end;
-    {$IFDEF VerboseQtKeys}
-    writeln('< TQtCustomControl.EventFilter event=QEventInputMethod sent QEventKeyPress');
-    {$ENDIF}
-  end else
   if QEvent_type(Event) = QEventWheel then
   begin
     if not getEnabled then

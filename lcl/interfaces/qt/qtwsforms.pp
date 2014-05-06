@@ -159,6 +159,7 @@ var
   Str: WideString;
   PopupParent: QWidgetH;
   AForm: TCustomForm;
+  AFlags: QtWindowFlags;
 begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSCustomForm.CreateHandle] Height: ', IntToStr(AWinControl.Height),
@@ -228,8 +229,7 @@ begin
   begin
     QMdiArea_addSubWindow(
       QMdiAreaH(TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle.Widget),
-      QtMainWindow.Widget, QtWindow);
-    // needed to take care of tricky focus problem with mdichildren
+      QtMainWindow.Widget, QtMainWindow.windowFlags);
     QtMainWindow.MDIChildArea := TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle;
   end;
 

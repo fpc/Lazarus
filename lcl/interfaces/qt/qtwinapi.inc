@@ -2604,7 +2604,8 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetClientRect]');
   {$endif}
-
+  if Handle = 0 then
+    Exit(False);
   GetClientBounds(Handle, ARect);
   OffsetRect(ARect, -ARect.Left, -ARect.Top);
 
@@ -2951,9 +2952,14 @@ begin
   if W <> nil then
   begin
     Result := HwndFromWidgetH(W);
+    if IsValidHandle(Result) then
+    begin
+      if TQtWidget(Result).getOwner <> nil then
+        Result := HWND(TQtWidget(Result).getOwner);
+    end;
     {$ifdef VerboseFocus}
     Obj := TQtWidget(Result);
-    Write('TQtWidgetSet.GetFocus: WidgetH=',dbghex(ptruint(W)), ' QtWidget=', dbgsname(Obj));
+    WriteLn('TQtWidgetSet.GetFocus: WidgetH=',dbghex(ptruint(W)), ' QtWidget=', dbgsname(Obj));
     if Obj<>nil then
       WriteLn(' LclObject=', dbgsname(Obj.LCLObject))
     else
@@ -3430,6 +3436,7 @@ function TQtWidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
 var
   w: TQtWidget;
   ScrollBar: TQtScrollBar;
+  ASize: TSize;
 begin
 	{$ifdef VerboseQtWinAPI}
   writeln('Trace:> [WinAPI GetScrollBarSize] Handle: ' + dbghex(Handle),' BarKind: ',BarKind);
@@ -3439,14 +3446,13 @@ begin
 
   w := TQtWidget(Handle);
 
-  {TODO: find out what to do with TCustomForm descendants }
   {$IFDEF QTSCROLLABLEFORMS}
   if (w is TQtMainWindow) and Assigned(TQtMainWindow(w).ScrollArea) then
     w := TQtMainWindow(w).ScrollArea;
   {$ENDIF}
   if w is TQtAbstractScrollArea then
   begin
-    if BarKind in [SM_CXVSCROLL, SM_CYVSCROLL] then
+    if BarKind in [SB_VERT, SM_CXVSCROLL, SM_CYVSCROLL] then
       ScrollBar := TQtAbstractScrollArea(w).verticalScrollBar
     else
       ScrollBar := TQtAbstractScrollArea(w).horizontalScrollBar;
@@ -3457,10 +3463,23 @@ begin
     ScrollBar := nil;
   if ScrollBar <> nil then
   begin
-    if BarKind in [SM_CXHSCROLL, SM_CYVSCROLL] then
-      Result := ScrollBar.getWidth
-    else
-      Result := ScrollBar.getHeight;
+    if ScrollBar.getOrientation = QtVertical then
+    begin
+      if not ScrollBar.testAttribute(QtWA_Mapped) then
+      begin
+        ScrollBar.sizeHint(@ASize);
+        Result := ASize.cx;
+      end else
+        Result := ScrollBar.getWidth;
+    end else
+    begin
+      if not ScrollBar.testAttribute(QtWA_Mapped) then
+      begin
+        ScrollBar.sizeHint(@ASize);
+        Result := ASize.cy;
+      end else
+        Result := ScrollBar.getHeight;
+    end;
   end;
 end;
 
@@ -5726,7 +5745,7 @@ begin
         W.Activate;
     TQtWidget(hWnd).setFocus;
     {$ifdef VerboseFocus}
-    DebugLn('********* TQtWidgetSet.SetFocus END was %x now is %x',[result,hwnd]);
+    DebugLn('********* TQtWidgetSet.SetFocus END was %x now is %x %s %d',[result,hwnd,dbgsName(TQtWidget(hWnd).LCLObject), GetTickCount]);
     {$endif}
   end;
 end;
