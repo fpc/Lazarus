@@ -189,6 +189,7 @@ type
     function slotDropFiles(Sender: QObjectH; Event: QEventH): Boolean;
     function SlotHover(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function SlotKey(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function SlotInputMethod(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function SlotMouse(Sender: QObjectH; Event: QEventH): Boolean; virtual; cdecl;
     procedure SlotNCMouse(Sender: QObjectH; Event: QEventH); cdecl;
     function SlotMouseEnter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
@@ -2480,6 +2481,13 @@ begin
               ((LCLObject <> nil) and (LCLObject is TCustomControl));
         end;
 
+      //Dead keys (used to compose chars like "ó" by pressing 'o)  do not trigger EventKeyPress
+      //and therefore no KeyDown,Utf8KeyPress,KeyPress
+      QEventInputMethod:
+        begin
+          Result := SlotInputMethod(Sender, Event);
+        end;
+
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: Result := SlotMouse(Sender, Event);
@@ -3273,6 +3281,41 @@ begin
   begin
     Result := KeyMsg.CharCode in KeysToEat;
   end;
+end;
+
+function TQtWidget.SlotInputMethod(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  InputEvent: QInputMethodEventH;
+  WStr: WideString;
+  UnicodeChar: Cardinal;
+  UnicodeOutLen: integer;
+  KeyEvent: QKeyEventH;
+begin
+  Result := True;
+  if not (QEvent_type(Event) = QEventInputMethod) then Exit;
+  {$ifdef VerboseQt}
+    DebugLn('TQtWidget.SlotInputMethod ', dbgsname(LCLObject));
+  {$endif}
+  InputEvent := QInputMethodEventH(Event);
+  QInputMethodEvent_commitString(InputEvent, @WStr);
+  UnicodeChar := UTF8CharacterToUnicode(PChar(WStr), UnicodeOutLen);
+  {$IFDEF VerboseQtKeys}
+  writeln('> TQtWidget.SlotInputMethod ',dbgsname(LCLObject),' event=QEventInputMethod:');
+  writeln('   commmitString ',WStr,' len ',length(WStr),' UnicodeChar ',UnicodeChar,
+    ' UnicodeLen ',UnicodeOutLen);
+  writeln('   sending QEventKeyPress');
+  {$ENDIF}
+
+  KeyEvent := QKeyEvent_create(QEventKeyPress, PtrInt(UnicodeChar), QApplication_keyboardModifiers, @WStr, False, 1);
+  try
+    // do not send it to queue, just pass it to SlotKey
+    Result := SlotKey(Sender, KeyEvent);
+  finally
+    QKeyEvent_destroy(KeyEvent);
+  end;
+  {$IFDEF VerboseQtKeys}
+  writeln('< TQtWidget.SlotInputMethod End: ',dbgsname(LCLObject),' event=QEventInputMethod, sent QEventKeyPress');
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -15712,12 +15755,6 @@ begin
 end;
 
 function TQtCustomControl.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-var
-  InputEvent: QInputMethodEventH;
-  WStr: WideString;
-  UnicodeOutLen: Integer;
-  UnicodeChar: Cardinal;
-  KeyEvent: QKeyEventH;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -15734,28 +15771,6 @@ begin
      (ClassType = TQtCustomControl) then
     Result := False
   else
-  if QEvent_type(Event) = QEventInputMethod then
-  begin
-    InputEvent := QInputMethodEventH(Event);
-    QInputMethodEvent_commitString(InputEvent, @WStr);
-    UnicodeChar := UTF8CharacterToUnicode(PChar(WStr), UnicodeOutLen);
-    {$IFDEF VerboseQtKeys}
-    writeln('> TQtCustomControl.EventFilter event=QEventInputMethod');
-    writeln(' commmitString ',WStr,' len ',length(WStr),' UnicodeChar ',UnicodeChar,
-      ' UnicodeLen ',UnicodeOutLen);
-    {$ENDIF}
-
-    KeyEvent := QKeyEvent_create(QEventKeyPress, PtrInt(UnicodeChar), QApplication_keyboardModifiers, @WStr, False, 1);
-    try
-      // do not send it to queue, just pass it to SlotKey
-      Result := SlotKey(Sender, KeyEvent);
-    finally
-      QKeyEvent_destroy(KeyEvent);
-    end;
-    {$IFDEF VerboseQtKeys}
-    writeln('< TQtCustomControl.EventFilter event=QEventInputMethod sent QEventKeyPress');
-    {$ENDIF}
-  end else
   if QEvent_type(Event) = QEventWheel then
   begin
     if not getEnabled then
