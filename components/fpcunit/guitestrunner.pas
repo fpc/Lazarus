@@ -1,5 +1,5 @@
 {
-  Copyright (C) 2004 Dean Zobec
+  Copyright (C) 2004-2014 Dean Zobec, contributors
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Library General Public License as published by
@@ -19,6 +19,7 @@
   Modified:
     Graeme Geldenhuys <graemeg@gmail.com>
     Darius Blaszijk <dhkblaszyk@zeelandnet.nl>
+    Reinier Olislagers <reinierolislagers@gmail.com>
 }
 
 unit GuiTestRunner;
@@ -119,6 +120,7 @@ type
     procedure ResetNodeColors;
     procedure PaintNodeError(aNode: TTreeNode);
     procedure PaintNodeFailure(aNode: TTreeNode);
+    procedure PaintNodeIgnore(aNode: TTreeNode);
     procedure PaintNodeNonFailed(aNode: TTreeNode);
     procedure PaintNodeBusy(aNode: TTreeNode);
     procedure MemoLog(LogEntry: string);
@@ -180,6 +182,15 @@ implementation
 uses
   xmlwrite
   ;
+const
+  // TestTreeImageList indexes:
+  imgGreenBall = 0; //success result
+  imgRedBall = 2;
+  imgPurpleBall = 3;
+  imgWarningSign = 4; //failure result
+  imgInfoSign = 11; //error result
+  imgGrayBall = 12; //default
+  imgBlueBall = 13; //busy
 
 type
 
@@ -307,7 +318,7 @@ begin
 end;
 
 
-procedure TGUITestRunner.ActRunHighlightedTestUpdate(Sender: TObject);
+procedure TGUITestRunner.ActRunHighLightedTestUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := ((TestTree.Selected <> nil)
     and (TestTree.Selected.Data <> nil));
@@ -463,8 +474,8 @@ begin
     else
       if TObject(ASuite.Test[i]).InheritsFrom(TTestDecorator) then
         BuildTree(Node, TTestSuite(TTestDecorator(ASuite.Test[i]).Test));
-    node.ImageIndex := 12;
-    node.SelectedIndex := 12;
+    node.ImageIndex := imgGrayBall;
+    node.SelectedIndex := imgGrayBall;
     node.StateIndex := ord(tsChecked);
   end;
   rootNode.Expand(False);
@@ -492,8 +503,8 @@ var
 begin
   for i := 0 to TestTree.Items.Count - 1 do
   begin
-    TestTree.Items[i].ImageIndex := 12;
-    TestTree.Items[i].SelectedIndex := 12;
+    TestTree.Items[i].ImageIndex := imgGrayBall;
+    TestTree.Items[i].SelectedIndex := imgGrayBall;
   end;
 end;
 
@@ -502,11 +513,13 @@ procedure TGUITestRunner.PaintNodeError(aNode: TTreeNode);
 begin
   while Assigned(aNode) do
   begin
-    aNode.ImageIndex := 2;
-    aNode.SelectedIndex := 2;
+    aNode.ImageIndex := imgRedBall;
+    aNode.SelectedIndex := imgRedBall;
     aNode.Expand(True);
     aNode := aNode.Parent;
-    if Assigned(aNode) and ((aNode.ImageIndex in [0, 3, 12, 13]) or (ANode.ImageIndex = -1)) then
+    if Assigned(aNode) and
+      ((aNode.ImageIndex in [imgGreenBall, imgPurpleBall, imgGrayBall, imgBlueBall]) or
+      (ANode.ImageIndex = -1)) then
       PaintNodeError(aNode);
   end;
 end;
@@ -516,16 +529,49 @@ procedure TGUITestRunner.PaintNodeFailure(aNode: TTreeNode);
 begin
   while Assigned(aNode) do
   begin
-    if ((aNode.ImageIndex in [0, 12, 13]) or (ANode.ImageIndex = -1)) then
+    if ((aNode.ImageIndex in [imgGreenBall, imgGrayBall, imgBlueBall]) or
+      (ANode.ImageIndex = -1)) then
     begin
-      aNode.ImageIndex := 3;
-      aNode.SelectedIndex := 3;
+      aNode.ImageIndex := imgPurpleBall;
+      aNode.SelectedIndex := imgPurpleBall;
       aNode.Expand(true);
     end;
     aNode := aNode.Parent;
-    if Assigned(aNode) and ((aNode.ImageIndex in [0, 12, 13]) or (ANode.ImageIndex = -1)) then
+    if Assigned(aNode) and ((aNode.ImageIndex in [imgGreenBall, imgGrayBall, imgBlueBall]) or
+      (ANode.ImageIndex = -1)) then
       PaintNodeFailure(aNode);
   end;
+end;
+
+procedure TGUITestRunner.PaintNodeIgnore(aNode: TTreeNode);
+// Test results with Ignore
+var
+  noFailedSibling: boolean;
+  i: integer;
+begin
+  if Assigned(aNode) then
+  begin
+    if ((aNode.ImageIndex in [imgGrayBall, imgBlueBall]) or
+      (ANode.ImageIndex = -1)) then
+    begin
+      aNode.ImageIndex := imgGreenBall;
+      aNode.SelectedIndex := imgGreenBall;
+    end;
+  end;
+  if Assigned(aNode.Parent) then
+    if aNode.Index = aNode.Parent.Count -1 then
+    begin
+    aNode := aNode.Parent;
+    noFailedSibling := true;
+    for i := 0 to aNode.Count -2 do
+    begin
+      if aNode.Items[i].ImageIndex <> imgGreenBall then
+        noFailedSibling := false;;
+    end;
+    if (aNode.ImageIndex = imgBlueBall) and
+      noFailedSibling then
+      PaintNodeIgnore(aNode);
+    end;
 end;
 
 
@@ -536,10 +582,11 @@ var
 begin
   if Assigned(aNode) then
   begin
-    if ((aNode.ImageIndex in [12, 13]) or (ANode.ImageIndex = -1)) then
+    if ((aNode.ImageIndex in [imgGrayBall, imgBlueBall]) or
+      (ANode.ImageIndex = -1)) then
     begin
-      aNode.ImageIndex := 0;
-      aNode.SelectedIndex := 0;
+      aNode.ImageIndex := imgGreenBall;
+      aNode.SelectedIndex := imgGreenBall;
     end;
   end;
   if Assigned(aNode.Parent) then
@@ -549,10 +596,11 @@ begin
     noFailedSibling := true;
     for i := 0 to aNode.Count -2 do
     begin
-      if aNode.Items[i].ImageIndex <> 0 then
+      if aNode.Items[i].ImageIndex <> imgGreenBall then
         noFailedSibling := false;;
     end;
-    if (aNode.ImageIndex = 13) and noFailedSibling then
+    if (aNode.ImageIndex = imgBlueBall) and
+      noFailedSibling then
       PaintNodeNonFailed(aNode);
     end;
 end;
@@ -565,8 +613,8 @@ var
 begin
   if Assigned(aNode) then
   begin
-    aNode.ImageIndex := 13;
-    aNode.SelectedIndex := 13;
+    aNode.ImageIndex := imgBlueBall;
+    aNode.SelectedIndex := imgBlueBall;
   end;
   if Assigned(aNode.Parent) then
   begin
@@ -576,10 +624,11 @@ begin
       BusySibling := true;
       for i := 0 to aNode.Count -2 do
       begin
-        if aNode.Items[i].ImageIndex <> 0 then
+        if aNode.Items[i].ImageIndex <> imgGreenBall then
           BusySibling := false;;
       end;
-      if (aNode.ImageIndex = 12) and BusySibling then
+      if (aNode.ImageIndex = imgBlueBall) and
+        BusySibling then
         PaintNodeBusy(aNode);
     end;
   end;
@@ -609,18 +658,39 @@ begin
     node := TestTree.Items.AddChild(FailureNode,
       Format(rsMessage, [FirstLine(AFailure.ExceptionMessage)]))
       as TMessageTreeNode;
-    node.Message := AFailure.ExceptionMessage;
-    node.ImageIndex := 4;
-    node.SelectedIndex := 4;
-    node := TestTree.Items.AddChild(FailureNode,
-      Format(rsException, [AFailure.ExceptionClassName])) as TMessageTreeNode;
-    node.ImageIndex := 4;
-    node.SelectedIndex := 4;
-    PaintNodeFailure(FailureNode);
+    if not(AFailure.IsIgnoredTest) then
+    begin
+      // Genuine failure
+      node.Message := AFailure.ExceptionMessage;
+      node.ImageIndex := imgWarningSign;
+      node.SelectedIndex := imgWarningSign;
+      node := TestTree.Items.AddChild(FailureNode,
+        Format(rsException, [AFailure.ExceptionClassName])) as TMessageTreeNode;
+      node.ImageIndex := imgWarningSign;
+      node.SelectedIndex := imgWarningSign;
+      PaintNodeFailure(FailureNode);
+    end
+    else
+    begin
+      // Although reported as a failure, the test was set up
+      // to be ignored so it is actually a success of sorts
+      node.Message := AFailure.ExceptionMessage;
+      node.ImageIndex := imgGreenBall;
+      node.SelectedIndex := imgGreenBall;
+      node := TestTree.Items.AddChild(FailureNode,
+        Format(rsException, [AFailure.ExceptionClassName])) as TMessageTreeNode;
+      node.ImageIndex := imgGreenBall;
+      node.SelectedIndex := imgGreenBall;
+      PaintNodeIgnore(FailureNode);
+    end;
   end;
-  Inc(failureCounter);
-  if errorCounter = 0 then
-    barColor := clFuchsia;
+
+  if not(AFailure.IsIgnoredTest) then
+  begin
+    Inc(failureCounter);
+    if errorCounter = 0 then
+      barColor := clFuchsia;
+  end;
 end;
 
 
@@ -636,28 +706,28 @@ begin
       Format(rsExceptionMes, [FirstLine(AError.ExceptionMessage)]))
       as TMessageTreeNode;
     MessageNode.Message := AError.ExceptionMessage;
-    MessageNode.ImageIndex := 4;
-    MessageNode.SelectedIndex := 4;
+    MessageNode.ImageIndex := imgWarningSign;
+    MessageNode.SelectedIndex := imgWarningSign;
     node := TestTree.Items.AddChild(ErrorNode, Format(rsExceptionCla, [
       AError.ExceptionClassName]));
-    node.ImageIndex := 4;
-    node.SelectedIndex := 4;
+    node.ImageIndex := imgWarningSign;
+    node.SelectedIndex := imgWarningSign;
     if (AError.SourceUnitName <> '') and
       (AError.FailedMethodName <> '')
     then
     begin
       node := TestTree.Items.AddChild(ErrorNode, Format(rsUnitName, [
         AError.SourceUnitName]));
-      node.ImageIndex := 11;
-      node.SelectedIndex := 11;
+      node.ImageIndex := imgInfoSign;
+      node.SelectedIndex := imgInfoSign;
       node := TestTree.Items.AddChild(ErrorNode, Format(rsMethodName, [
         AError.FailedMethodName]));
-      node.ImageIndex := 11;
-      node.SelectedIndex := 11;
+      node.ImageIndex := imgInfoSign;
+      node.SelectedIndex := imgInfoSign;
       node := TestTree.Items.AddChild(ErrorNode, Format(rsLineNumber, [IntToStr(
         AError.LineNumber)]));
-      node.ImageIndex := 11;
-      node.SelectedIndex := 11;
+      node.ImageIndex := imgInfoSign;
+      node.SelectedIndex := imgInfoSign;
     end;
     PaintNodeError(ErrorNode);
   end;
