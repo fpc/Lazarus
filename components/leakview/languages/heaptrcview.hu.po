@@ -80,6 +80,8 @@ msgid "Leaking Mem Size: %d"
 msgstr "Szivárgó memória mérete: %d"
 
 #: heaptrcview.strtotalmemalloc
-msgid "Total Mem alloced: %d"
+#, fuzzy
+#| msgid "Total Mem alloced: %d"
+msgid "Total Mem allocated: %d"
 msgstr "Teljes lefoglalt memória: %d"
 
