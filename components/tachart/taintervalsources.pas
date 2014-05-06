@@ -207,7 +207,7 @@ procedure TIntervalChartSource.CalculateIntervals(
   procedure TryStep(AStep: Double; var ABestCount: Integer);
   var
     m, start: Double;
-    mi, prev, cnt: Integer;
+    mi, prev, cnt: Int64;
   begin
     if AStep <= 0 then exit;
     start := Int(AParams.FMin / AStep) * AStep;
