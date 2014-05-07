@@ -234,6 +234,8 @@ type
 
   TDbgProcess = class(TDbgInstance)
   private
+    FExceptionClass: string;
+    FExceptionMessage: string;
     FExitCode: DWord;
     FOnLog: TOnLog;
     FProcessID: Integer;
@@ -303,6 +305,10 @@ type
     property ExitCode: DWord read FExitCode;
     property CurrentBreakpoint: TDbgBreakpoint read FCurrentBreakpoint;
     property RunToBreakpoint: TDbgBreakpoint read FRunToBreakpoint;
+
+    // Properties valid when last event was an deException
+    property ExceptionMessage: string read FExceptionMessage write FExceptionMessage;
+    property ExceptionClass: string read FExceptionClass write FExceptionClass;
 
     property LastEventProcessIdentifier: THandle read GetLastEventProcessIdentifier;
     property OnLog: TOnLog read FOnLog write FOnLog;

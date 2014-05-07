@@ -16,7 +16,7 @@ type
 
   TOnCreateProcessEvent = procedure(var continue: boolean) of object;
   TOnHitBreakpointEvent = procedure(var continue: boolean; const Breakpoint: TDbgBreakpoint) of object;
-  TOnExceptionEvent = procedure(var continue: boolean) of object;
+  TOnExceptionEvent = procedure(var continue: boolean; const ExceptionClass, ExceptionMessage: string) of object;
   TOnProcessExitEvent = procedure(ExitCode: DWord) of object;
 
   { TDbgController }
@@ -306,7 +306,7 @@ begin
         debugln('Exception');
         continue:=false;
         if assigned(OnExceptionEvent) then
-          OnExceptionEvent(continue);
+          OnExceptionEvent(continue, FCurrentProcess.ExceptionClass, FCurrentProcess.ExceptionMessage );
       end;
     deLoadLibrary:
       begin

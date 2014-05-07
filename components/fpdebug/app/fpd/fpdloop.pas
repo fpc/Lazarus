@@ -49,6 +49,7 @@ type
     FLast: string;
     procedure ShowDisas;
     procedure ShowCode;
+    procedure GControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
     procedure GControllerCreateProcessEvent(var continue: boolean);
     procedure GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
   protected
@@ -65,6 +66,22 @@ uses
   FPDGlobal;
 
 { TFPDLoop }
+
+procedure TFPDLoop.GControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
+begin
+  if not continue then
+  begin
+    ShowCode;
+    ShowDisas;
+  end;
+  if ExceptionMessage<>'' then
+  begin
+    writeln('Program raised exception class '''+ExceptionClass+'''. Exception message:');
+    writeln(ExceptionMessage);
+  end
+  else
+    writeln('Program raised exception class '''+ExceptionClass+'''.');
+end;
 
 procedure TFPDLoop.ShowDisas;
 var
@@ -199,6 +216,7 @@ begin
   inherited Initialize;
   GController.OnHitBreakpointEvent:=@GControllerHitBreakpointEvent;
   GController.OnCreateProcessEvent:=@GControllerCreateProcessEvent;
+  GController.OnExceptionEvent:=@GControllerExceptionEvent;
 end;
 
 initialization

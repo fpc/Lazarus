@@ -472,30 +472,31 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
 
     // in both 32 and 64 case is the exceptioncode the first, so no difference
     case AEvent.Exception.ExceptionRecord.ExceptionCode of
-      EXCEPTION_ACCESS_VIOLATION         : DebugLn('ACCESS_VIOLATION');
-      EXCEPTION_ARRAY_BOUNDS_EXCEEDED    : DebugLn('ARRAY_BOUNDS_EXCEEDED');
-      EXCEPTION_BREAKPOINT               : DebugLn('BREAKPOINT');
-      EXCEPTION_DATATYPE_MISALIGNMENT    : DebugLn('DATATYPE_MISALIGNMENT');
-      EXCEPTION_FLT_DENORMAL_OPERAND     : DebugLn('FLT_DENORMAL_OPERAND');
-      EXCEPTION_FLT_DIVIDE_BY_ZERO       : DebugLn('FLT_DIVIDE_BY_ZERO');
-      EXCEPTION_FLT_INEXACT_RESULT       : DebugLn('FLT_INEXACT_RESULT');
-      EXCEPTION_FLT_INVALID_OPERATION    : DebugLn('FLT_INVALID_OPERATION');
-      EXCEPTION_FLT_OVERFLOW             : DebugLn('FLT_OVERFLOW');
-      EXCEPTION_FLT_STACK_CHECK          : DebugLn('FLT_STACK_CHECK');
-      EXCEPTION_FLT_UNDERFLOW            : DebugLn('FLT_UNDERFLOW');
-      EXCEPTION_ILLEGAL_INSTRUCTION      : DebugLn('ILLEGAL_INSTRUCTION');
-      EXCEPTION_IN_PAGE_ERROR            : DebugLn('IN_PAGE_ERROR');
-      EXCEPTION_INT_DIVIDE_BY_ZERO       : DebugLn('INT_DIVIDE_BY_ZERO');
-      EXCEPTION_INT_OVERFLOW             : DebugLn('INT_OVERFLOW');
-      EXCEPTION_INVALID_DISPOSITION      : DebugLn('INVALID_DISPOSITION');
-      EXCEPTION_INVALID_HANDLE           : DebugLn('EXCEPTION_INVALID_HANDLE');
-      EXCEPTION_NONCONTINUABLE_EXCEPTION : DebugLn('NONCONTINUABLE_EXCEPTION');
-      EXCEPTION_POSSIBLE_DEADLOCK        : DebugLn('EXCEPTION_POSSIBLE_DEADLOCK');
-      EXCEPTION_PRIV_INSTRUCTION         : DebugLn('PRIV_INSTRUCTION');
-      EXCEPTION_SINGLE_STEP              : DebugLn('SINGLE_STEP');
-      EXCEPTION_STACK_OVERFLOW           : DebugLn('STACK_OVERFLOW');
+      EXCEPTION_ACCESS_VIOLATION         : ExceptionClass:='ACCESS VIOLATION';
+      EXCEPTION_ARRAY_BOUNDS_EXCEEDED    : ExceptionClass:='ARRAY BOUNDS EXCEEDED';
+      EXCEPTION_BREAKPOINT               : ExceptionClass:='BREAKPOINT';
+      EXCEPTION_DATATYPE_MISALIGNMENT    : ExceptionClass:='DATATYPE MISALIGNMENT';
+      EXCEPTION_FLT_DENORMAL_OPERAND     : ExceptionClass:='FLT DENORMAL OPERAND';
+      EXCEPTION_FLT_DIVIDE_BY_ZERO       : ExceptionClass:='FLT DIVIDE BY ZERO';
+      EXCEPTION_FLT_INEXACT_RESULT       : ExceptionClass:='FLT INEXACT RESULT';
+      EXCEPTION_FLT_INVALID_OPERATION    : ExceptionClass:='FLT INVALID OPERATION';
+      EXCEPTION_FLT_OVERFLOW             : ExceptionClass:='FLT OVERFLOW';
+      EXCEPTION_FLT_STACK_CHECK          : ExceptionClass:='FLT STACK CHECK';
+      EXCEPTION_FLT_UNDERFLOW            : ExceptionClass:='FLT UNDERFLOW';
+      EXCEPTION_ILLEGAL_INSTRUCTION      : ExceptionClass:='ILLEGAL INSTRUCTION';
+      EXCEPTION_IN_PAGE_ERROR            : ExceptionClass:='IN PAGE ERROR';
+      EXCEPTION_INT_DIVIDE_BY_ZERO       : ExceptionClass:='INT DIVIDE BY ZERO';
+      EXCEPTION_INT_OVERFLOW             : ExceptionClass:='INT OVERFLOW';
+      EXCEPTION_INVALID_DISPOSITION      : ExceptionClass:='INVALID DISPOSITION';
+      EXCEPTION_INVALID_HANDLE           : ExceptionClass:='INVALID HANDLE';
+      EXCEPTION_NONCONTINUABLE_EXCEPTION : ExceptionClass:='NONCONTINUABLE EXCEPTION';
+      EXCEPTION_POSSIBLE_DEADLOCK        : ExceptionClass:='POSSIBLE DEADLOCK';
+      EXCEPTION_PRIV_INSTRUCTION         : ExceptionClass:='PRIV INSTRUCTION';
+      EXCEPTION_SINGLE_STEP              : ExceptionClass:='SINGLE STEP';
+      EXCEPTION_STACK_OVERFLOW           : ExceptionClass:='STACK OVERFLOW';
 
       // add some status - don't know if we can get them here
+      {
       DBG_EXCEPTION_NOT_HANDLED          : DebugLn('DBG_EXCEPTION_NOT_HANDLED');
       STATUS_GUARD_PAGE_VIOLATION        : DebugLn('STATUS_GUARD_PAGE_VIOLATION');
       STATUS_NO_MEMORY                   : DebugLn('STATUS_NO_MEMORY');
@@ -505,8 +506,9 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
       STATUS_REG_NAT_CONSUMPTION         : DebugLn('STATUS_REG_NAT_CONSUMPTION');
       STATUS_SXS_EARLY_DEACTIVATION      : DebugLn('STATUS_SXS_EARLY_DEACTIVATION');
       STATUS_SXS_INVALID_DEACTIVATION    : DebugLn('STATUS_SXS_INVALID_DEACTIVATION');
+      }
     else
-      DebugLn(' Unknown code: $', IntToHex(ExInfo32.ExceptionRecord.ExceptionCode, 8));
+      ExceptionClass := 'Unknown exception code $' + IntToHex(ExInfo32.ExceptionRecord.ExceptionCode, 8);
       DebugLn(' [');
       case ExInfo32.ExceptionRecord.ExceptionCode and $C0000000 of
         STATUS_SEVERITY_SUCCESS       : DebugLn('SEVERITY_ERROR');
@@ -536,6 +538,9 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
       DebugLn(' Code: $', IntToHex((ExInfo32.ExceptionRecord.ExceptionCode and $0000FFFF), 4));
 
     end;
+    ExceptionClass:='External: '+ExceptionClass;
+    DebugLn(ExceptionClass);
+    ExceptionMessage:='';
     if GMode = dm32
     then Info0 := PtrUInt(ExInfo32.ExceptionRecord.ExceptionAddress)
     else Info0 := PtrUInt(ExInfo64.ExceptionRecord.ExceptionAddress);
@@ -564,19 +569,12 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
         Info1Str := FormatAddress(Info1);
 
         case Info0 of
-          EXCEPTION_READ_FAULT: begin
-            DebugLn(' Read of address: ', Info1Str);
-          end;
-          EXCEPTION_WRITE_FAULT: begin
-            DebugLn(' Write of address: ', Info1Str);
-          end;
-          EXCEPTION_EXECUTE_FAULT: begin
-            DebugLn(' Execute of address: ', Info1Str);
-          end;
+          EXCEPTION_READ_FAULT:    ExceptionMessage := 'Access violation reading from address ' + Info1Str +'.';
+          EXCEPTION_WRITE_FAULT:   ExceptionMessage := 'Access violation writing to address ' + Info1Str +'.';
+          EXCEPTION_EXECUTE_FAULT: ExceptionMessage := 'Access violation executing address ' + Info1Str +'.';
         end;
       end;
     end;
-    Debugln('');
 
     DebugLn(' Info: ');
     for n := 0 to EXCEPTION_MAXIMUM_PARAMETERS - 1 do
@@ -813,7 +811,10 @@ begin
           end
         else begin
           HandleException(MDebugEvent);
-          result := deException;
+          if MDebugEvent.Exception.dwFirstChance = 1 then
+            result := deInternalContinue
+          else
+            result := deException;
         end;
         end;
       end;

@@ -51,7 +51,7 @@ type
     procedure FDbgControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: FpDbgClasses.TDbgBreakpoint);
     procedure FDbgControllerCreateProcessEvent(var continue: boolean);
     procedure FDbgControllerProcessExitEvent(AExitCode: DWord);
-    procedure FDbgControllerExceptionEvent(var continue: boolean);
+    procedure FDbgControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
     procedure FDbgControllerDebugInfoLoaded(Sender: TObject);
     function GetDebugInfo: TDbgInfo;
   protected
@@ -753,9 +753,10 @@ begin
   FreeDebugThread;
 end;
 
-procedure TFpDebugDebugger.FDbgControllerExceptionEvent(var continue: boolean);
+procedure TFpDebugDebugger.FDbgControllerExceptionEvent(var continue: boolean;
+  const ExceptionClass, ExceptionMessage: string);
 begin
-  DoException(deInternal, 'unknown', GetLocation, 'Unknown exception', continue);
+  DoException(deExternal, ExceptionClass, GetLocation, ExceptionMessage, continue);
   if not continue then
     begin
     SetState(dsPause);
