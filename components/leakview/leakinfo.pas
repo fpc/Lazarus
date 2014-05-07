@@ -400,7 +400,7 @@ var
   st : TStackTrace;
 begin
   ClearTraceInfo(TraceInfo);
-  if TrcIndex >= Trc.COunt then Exit;
+  if TrcIndex >= Trc.Count then Exit;
   TraceInfo.ExeName := Trc[TrcIndex];
 
   while (TrcIndex < Trc.Count)
