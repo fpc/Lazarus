@@ -565,8 +565,8 @@ begin
 
     ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
 
-    {$IFDEF LCLGTK2}
-    MaxBtnPerRow:=((ScrollBox.ClientWidth - 30 - ButtonX) div ComponentPaletteBtnWidth);
+    {$IF DEFINED(LCLGTK2) OR DEFINED(LCLQT)}
+    MaxBtnPerRow:=((ScrollBox.ClientWidth - ScrollBox.VertScrollBar.Size - ButtonX) div ComponentPaletteBtnWidth);
     {$ELSE}
     MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
     // If we need to wrap, make sure we have space for the scrollbar
