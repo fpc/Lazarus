@@ -40,7 +40,10 @@ uses
 {$ifdef windows}
   Windows,
 {$endif}
-  LCLProc, FpDbgInfo, FpDbgClasses, DbgIntfBaseTypes, FpDbgUtil, CustApp;
+  LCLProc, FpDbgInfo, FpDbgClasses, DbgIntfBaseTypes, FpDbgUtil, CustApp,
+  FpPascalParser,
+  FpPascalBuilder,
+  FpErrorMessages;
 
 procedure HandleCommand(ACommand: String; out CallProcessLoop: boolean);
 
@@ -511,9 +514,55 @@ begin
 end;
 
 procedure HandleEval(AParams: String; out CallProcessLoop: boolean);
+var
+  AContext: TFpDbgInfoContext;
+  APasExpr: TFpPascalExpression;
+  APrettyPrinter: TFpPascalPrettyPrinter;
+  AVal: string;
+  s,p: string;
 begin
+  if GController.MainProcess = nil
+  then begin
+    WriteLN('No Process');
+    Exit;
+  end;
   CallProcessLoop:=false;
-  WriteLN('not implemented: evaluate');
+
+  S := AParams;
+  P := GetPart([], [' ', #9], S);
+
+  AContext := GController.CurrentProcess.DbgInfo.FindContext(GController.CurrentProcess.GetInstructionPointerRegisterValue);
+  if AContext = nil then begin
+    Writeln('Invalid context');
+    exit;
+  end;
+
+  APasExpr := TFpPascalExpression.Create(P, AContext);
+  try
+    APasExpr.ResultValue; // trigger full validation
+    if not APasExpr.Valid then
+      begin
+      writeln(ErrorHandler.ErrorAsString(APasExpr.Error));
+      end
+    else
+      begin
+      APrettyPrinter := TFpPascalPrettyPrinter.Create(4);
+      try
+        APrettyPrinter.AddressSize:=AContext.SizeOfAddress;
+        if APrettyPrinter.PrintValue(AVal, APasExpr.ResultValue) then
+          begin
+          Writeln(AVal)
+          end
+        else
+          writeln('Invalid value');
+      finally
+        APrettyPrinter.Free;
+      end;
+      end;
+  finally
+    APasExpr.Free;
+    AContext.ReleaseReference;
+  end;
 end;
 
 procedure HandleQuit(AParams: String; out CallProcessLoop: boolean);
