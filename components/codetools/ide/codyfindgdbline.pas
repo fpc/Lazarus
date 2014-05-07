@@ -362,6 +362,7 @@ procedure TCodyFindGDBLineDialog.FindGDBIdentifier(GDBIdentifier: string; out
   program:
     P$TESTPROJECT1_DOTEST
     P$TESTPROJECT1_DOTEST_SUBTEST
+    P$TESTPROJECT1_DOTEST$CHAR_SUBTEST$LONGINT
     P$TESTSTACKTRACE1_TMAINCLASS_$_TSUBCLASS_$__RAISESOMETHING$ANSISTRING
 }
 var
@@ -384,6 +385,14 @@ var
     StartP:=p;
     while p^ in ['A'..'Z','0'..'9'] do inc(p);
     Identifier:=copy(GDBIdentifier,StartP-PChar(GDBIdentifier)+1,p-StartP);
+  end;
+
+  procedure ReadParamList;
+  begin
+    if p^='$' then begin
+      // parameter list => skip
+      while (p^ in ['$','A'..'Z','0'..'9']) do inc(p);
+    end;
   end;
 
 begin
@@ -443,6 +452,8 @@ begin
         exit;
       end;
 
+      ReadParamList;
+
       Node:=nil;
       if Tool.GetSourceType=ctnUnit then begin
         // a unit => first search in interface, then in implementation
@@ -491,15 +502,15 @@ begin
         end;
         // _$__identifier => sub identifier
         ReadIdentifier(CurIdentifier);
+        ReadParamList;
         // find sub identifier
         SubNode:=Tool.FindSubDeclaration(CurIdentifier,Node);
         if SubNode=nil then begin
           debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier SubIdentifier="',CurIdentifier,'" not found']);
           break;
-        end else begin
-          debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier SubIdentifier="',CurIdentifier,'" found']);
-          Node:=SubNode;
         end;
+        debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier SubIdentifier="',CurIdentifier,'" found']);
+        Node:=SubNode;
       until false;
 
       if Node.Desc=ctnProcedure then begin
