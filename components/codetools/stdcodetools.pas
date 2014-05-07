@@ -326,7 +326,7 @@ type
           out StartInStringConst, EndInStringConst: boolean): boolean;
           
     // register procedure
-    function HasInterfaceRegisterProc(var HasRegisterProc: boolean): boolean;
+    function HasInterfaceRegisterProc(out HasRegisterProc: boolean): boolean;
     
     // Delphi to Lazarus conversion
     function ConvertDelphiToLazarusSource(AddLRSCode: boolean;
@@ -3885,32 +3885,42 @@ begin
                        FormatParameters,StartInStringConst,EndInStringConst);
 end;
 
-function TStandardCodeTool.HasInterfaceRegisterProc(var HasRegisterProc: boolean
+function TStandardCodeTool.HasInterfaceRegisterProc(out HasRegisterProc: boolean
   ): boolean;
+
+  function IsRegisterProc(ANode: TCodeTreeNode): boolean;
+  begin
+    Result:=false;
+    if ANode=nil then exit;
+    if ANode.Desc=ctnProcedureHead then
+      ANode:=Anode.Parent;
+    if (ANode.Desc<>ctnProcedure) then exit;
+    MoveCursorToNodeStart(ANode);
+    if not ReadNextUpAtomIs('PROCEDURE') then exit;
+    if not ReadNextUpAtomIs('REGISTER') then exit;
+    if CurPos.Flag<>cafSemicolon then exit;
+    HasRegisterProc:=true;
+    Result:=true;
+  end;
+
 var
   InterfaceNode: TCodeTreeNode;
   ANode: TCodeTreeNode;
 begin
   Result:=false;
   HasRegisterProc:=false;
-  BuildTree(lsrImplementationStart);
+  ANode:=FindDeclarationNodeInInterface('Register',true);
+  if ANode=nil then exit;
+  if IsRegisterProc(ANode) then
+    exit(true);
+  // there may be multiple register
   InterfaceNode:=FindInterfaceNode;
-  if InterfaceNode=nil then exit;
   ANode:=InterfaceNode.FirstChild;
   while ANode<>nil do begin
-    if (ANode.Desc=ctnProcedure) then begin
-      MoveCursorToNodeStart(ANode);
-      if ReadNextUpAtomIs('PROCEDURE')
-      and ReadNextUpAtomIs('REGISTER')
-      and ReadNextAtomIsChar(';')
-      then begin
-        HasRegisterProc:=true;
-        break;
-      end;
-    end;
+    if IsRegisterProc(ANode) then
+      exit(true);
     ANode:=ANode.NextBrother;
   end;
-  Result:=true;
 end;
 
 function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
