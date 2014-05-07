@@ -750,6 +750,7 @@ begin
   aStyle.Alignment:=TfrMemoView_(View).Alignment;
   aStyle.Clipping:=false;  // NOTE: there are some interaction between this and roundrect
   aStyle.Layout:=tlTop;    //       background painting, set to false for the moment
+  aStyle.Wordbreak:= TfrMemoView_(View).WordWrap;
 
   gapx := trunc(View.FrameWidth / 2 + 0.5) + 2;
   gapy := trunc(View.FrameWidth / 4 + 0.5) + 1;
