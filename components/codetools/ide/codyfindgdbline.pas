@@ -331,7 +331,7 @@ begin
     exit;
   end;
   StartP:=p;
-  while p^ in ['a'..'z','A'..'Z','_','$','?'] do inc(p);
+  while p^ in ['a'..'z','A'..'Z','0'..'9','_','$','?'] do inc(p);
   Identifier:=copy(Line,StartP-PChar(Line)+1,p-StartP);
   debugln(['TCodyFindGDBLineDialog.ParseGDBBacktraceLine Identifier="',Identifier,'"']);
 
@@ -373,13 +373,14 @@ var
   SubNode: TCodeTreeNode;
   ClassNode: TCodeTreeNode;
   ProcNode: TCodeTreeNode;
+  SectionNode: TCodeTreeNode;
 
   procedure ReadIdentifier(out Identifier: string);
   var
     StartP: PChar;
   begin
     StartP:=p;
-    while p^ in ['A'..'Z'] do inc(p);
+    while p^ in ['A'..'Z','0'..'9'] do inc(p);
     Identifier:=copy(GDBIdentifier,StartP-PChar(GDBIdentifier)+1,p-StartP);
   end;
 
@@ -398,7 +399,7 @@ begin
   if p^ in ['A'..'Z'] then begin
     ReadIdentifier(TheSrcName);
     debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier first identifier=',TheSrcName,' ...']);
-    if p^='$' then begin
+    if (TheSrcName='P') and (p^='$') then begin
       // P$programname
       inc(p);
       if IsIdentStartChar[p^] then
@@ -441,28 +442,30 @@ begin
       end;
 
       Node:=nil;
-      // search in interface
-      try
-        Node:=Tool.FindDeclarationNodeInInterface(CurIdentifier,true);
-      except
-        on E: Exception do begin
-          CodeToolBoss.HandleException(E);
-          debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier parse error in "',Code.Filename,'": ',E.Message]);
-          TheErrorMsg:=CodeToolBoss.ErrorMessage;
-          exit;
+      if Tool.GetSourceType=ctnUnit then begin
+        // a unit => first search in interface, then in implementation
+        SectionNode:=Tool.FindInterfaceNode;
+        if SectionNode<>nil then begin
+          Node:=Tool.FindSubDeclaration(CurIdentifier,SectionNode);
         end;
-      end;
-      if Node=nil then begin
-        // search in implementation
-        try
-          Node:=Tool.FindDeclarationNodeInImplementation(CurIdentifier,true);
-        except
-          on E: Exception do begin
-            CodeToolBoss.HandleException(E);
-            debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier parse error in "',Code.Filename,'": ',E.Message]);
-            TheErrorMsg:=CodeToolBoss.ErrorMessage;
-            exit;
+        if Node=nil then begin
+          // search in implementation
+          try
+            Node:=Tool.FindDeclarationNodeInImplementation(CurIdentifier,true);
+          except
+            on E: Exception do begin
+              CodeToolBoss.HandleException(E);
+              debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier FindDeclarationNodeInImplementation parse error in "',Code.Filename,'": ',E.Message]);
+              TheErrorMsg:=CodeToolBoss.ErrorMessage;
+              exit;
+            end;
           end;
+        end;
+      end else begin
+        // not a unit, e.g. a program
+        SectionNode:=Tool.Tree.Root;
+        if SectionNode<>nil then begin
+          Node:=Tool.FindSubDeclaration(CurIdentifier,SectionNode);
         end;
       end;
       if Node=nil then begin
