@@ -360,6 +360,8 @@ procedure TCodyFindGDBLineDialog.FindGDBIdentifier(GDBIdentifier: string; out
       MAIN_TMAINIDE_$__CREATE$TCOMPONENT$$TMAINIDE
 
   program:
+    P$TESTPROJECT1_DOTEST
+    P$TESTPROJECT1_DOTEST_SUBTEST
     P$TESTSTACKTRACE1_TMAINCLASS_$_TSUBCLASS_$__RAISESOMETHING$ANSISTRING
 }
 var
@@ -475,24 +477,30 @@ begin
         exit;
       end;
 
-      while (p^='_') and (p[1]='$') and (p[2]='_') and (p[3]='_') do begin
-        inc(p,4);
-        if p^ in ['A'..'Z'] then begin
-          // _$__identifier => sub identifier
-          ReadIdentifier(CurIdentifier);
-          // find sub identifier
-          SubNode:=Tool.FindSubDeclaration(CurIdentifier,Node);
-          if SubNode=nil then begin
-            debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier SubIdentifier="',CurIdentifier,'" not found']);
-            break;
-          end else begin
-            debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier SubIdentifier="',CurIdentifier,'" found']);
-            Node:=SubNode;
-          end;
-        end else begin
+      repeat
+        if (p^='_') and (p[1]='$') and (p[2]='_') and (p[3]='_') then begin
+          // sub identifier is method or member
+          inc(p,4);
+        end else if (p^='_') and (p[1] in ['A'..'Z']) then begin
+          // sub identifier is proc
+          inc(p);
+        end else
+          break;
+        if not (p^ in ['A'..'Z']) then begin
           break;
         end;
-      end;
+        // _$__identifier => sub identifier
+        ReadIdentifier(CurIdentifier);
+        // find sub identifier
+        SubNode:=Tool.FindSubDeclaration(CurIdentifier,Node);
+        if SubNode=nil then begin
+          debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier SubIdentifier="',CurIdentifier,'" not found']);
+          break;
+        end else begin
+          debugln(['TCodyFindGDBLineDialog.FindGDBIdentifier SubIdentifier="',CurIdentifier,'" found']);
+          Node:=SubNode;
+        end;
+      until false;
 
       if Node.Desc=ctnProcedure then begin
         // proc node => find body
