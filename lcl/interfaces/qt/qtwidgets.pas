@@ -5908,8 +5908,6 @@ begin
         QtAlignLeft or $0800, PWideString(@AText))
     else
       TextSize := Size(0, 0);
-    PreferredWidth := TextSize.cx;
-    PreferredHeight := TextSize.cy;
     BtnMargin := GetPixelMetric(QStylePM_ButtonMargin, nil, Widget);
     FocusV := GetPixelMetric(QStylePM_FocusFrameVMargin, nil, Widget);
     FocusH := GetPixelMetric(QStylePM_FocusFrameHMargin, nil, Widget);
@@ -5919,8 +5917,8 @@ begin
       ShiftH := FocusH;
     fsh  := (FocusH * 2) + (ShiftH * 2);
     fsvm := (FocusV * 2) + (ShiftV * 2) + BtnMargin;
-    Inc(PreferredWidth, fsh + BtnMargin);
-    Inc(PreferredHeight, fsvm);
+    PreferredWidth  := TextSize.cx + fsh + BtnMargin;
+    PreferredHeight := TextSize.cy + fsvm;
 
     // now check if we have icon
     if Assigned(FIcon) and not QIcon_isNull(FIcon) then
