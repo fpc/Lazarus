@@ -68,7 +68,9 @@ type
   TOnFindDefineProperty = procedure(Sender: TObject;
     const PersistentClassName, AncestorClassName, Identifier: string;
     var IsDefined: boolean) of object;
-    
+  TOnFindGDBSource = procedure(Sender: TObject; SrcType: TCodeTreeNodeDesc;
+    const SrcName: string; out SrcFilename: string) of object;
+
   ECodeToolManagerError = class(Exception);
 
   TCodeToolManagerHandler = (
@@ -826,6 +828,12 @@ type
     function JumpToLinkerIdentifier(Code: TCodeBuffer;
           const SourceFilename: string; SourceLine: integer;
           const MangledFunction, Identifier: string;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
+
+    // gdb stacktraces
+    function FindGBDIdentifier(GDBIdentifier: string; out aComplete: boolean;
+          out aMessage: string; const OnFindSource: TOnFindGDBSource;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
 
@@ -3819,6 +3827,250 @@ begin
   except
     on e: Exception do Result:=HandleException(e);
   end;
+end;
+
+function TCodeToolManager.FindGBDIdentifier(GDBIdentifier: string; out
+  aComplete: boolean; out aMessage: string;
+  const OnFindSource: TOnFindGDBSource; out NewCode: TCodeBuffer; out NewX,
+  NewY, NewTopLine: integer): boolean;
+{ Examples:
+  compiler built-in
+    fpc_raiseexception
+    ??
+    PASCALMAIN
+    SYSTEM_FPC_SYSTEMMAIN$LONGINT$PPCHAR$PPCHAR
+
+  unit:
+    procedure
+      SYSUTILS_RUNERRORTOEXCEPT$LONGINT$POINTER$POINTER
+      SYSTEM_HANDLEERRORADDRFRAME$LONGINT$POINTER$POINTER
+    method
+      EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT
+      EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$ANSISTRING$$TMODALRESULT
+      ENVIRONMENTOPTS_TENVIRONMENTOPTIONS_$__LOAD$BOOLEAN
+      MAIN_TMAINIDE_$__LOADGLOBALOPTIONS
+      MAIN_TMAINIDE_$__CREATE$TCOMPONENT$$TMAINIDE
+
+  program:
+    P$TESTPROJECT1_DOTEST
+    P$TESTPROJECT1_DOTEST_SUBTEST
+    P$TESTPROJECT1_DOTEST$CHAR_SUBTEST$LONGINT
+    P$TESTSTACKTRACE1_TMAINCLASS_$_TSUBCLASS_$__RAISESOMETHING$ANSISTRING
+}
+var
+  p: PChar;
+  TheSrcName: string;
+  Code: TCodeBuffer;
+  CurIdentifier: string;
+  Tool: TCodeTool;
+  Node: TCodeTreeNode;
+  SubNode: TCodeTreeNode;
+  ClassNode: TCodeTreeNode;
+  ProcNode: TCodeTreeNode;
+  SectionNode: TCodeTreeNode;
+  SrcFilename: string;
+  NewPos: TCodeXYPosition;
+
+  procedure ReadIdentifier(out Identifier: string);
+  var
+    StartP: PChar;
+  begin
+    StartP:=p;
+    while p^ in ['A'..'Z','0'..'9'] do inc(p);
+    Identifier:=copy(GDBIdentifier,StartP-PChar(GDBIdentifier)+1,p-StartP);
+  end;
+
+  procedure ReadParamList;
+  begin
+    if p^='$' then begin
+      // parameter list => skip
+      while (p^ in ['$','A'..'Z','0'..'9']) do inc(p);
+    end;
+  end;
+
+  function FindUnit(TheUnitName: string; out aFilename: string): boolean;
+  var
+    InFilename: string;
+  begin
+    // search in main search path
+    InFilename:='';
+    aFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                               '',TheUnitName,InFilename,true);
+    if aFilename<>'' then
+      exit(true);
+
+    // user search
+    if Assigned(OnFindSource) then begin
+      OnFindSource(Self,ctnUnit,TheUnitName,aFilename);
+      Result:=aFilename<>'';
+    end;
+  end;
+
+  function FindProgram(TheSrcName: string; out aFilename: string): boolean;
+  begin
+    aFilename:='';
+    // user search
+    if Assigned(OnFindSource) then begin
+      OnFindSource(Self,ctnProgram,TheSrcName,aFilename);
+    end;
+    Result:=aFilename<>'';
+  end;
+
+begin
+  Result:=false;
+  aComplete:=false;
+  aMessage:='';
+  NewCode:=nil;
+  NewTopLine:=-1;
+  NewX:=-1;
+  NewY:=-1;
+
+  if GDBIdentifier='' then begin
+    aMessage:='missing identifier';
+    exit;
+  end;
+  p:=PChar(GDBIdentifier);
+  if p^ in ['a'..'z'] then begin
+    // lower case unit name means compiler built in function
+    aMessage:='the function "'+GDBIdentifier+'" is a compiler special function without source';
+    exit;
+  end;
+  TheSrcName:='';
+  if p^ in ['A'..'Z'] then begin
+    ReadIdentifier(TheSrcName);
+    debugln(['TCodeToolManager.FindGBDIdentifier first identifier=',TheSrcName,' ...']);
+    if (TheSrcName='P') and (p^='$') then begin
+      // P$programname
+      inc(p);
+      if IsIdentStartChar[p^] then
+        ReadIdentifier(TheSrcName);
+      debugln(['TCodeToolManager.FindGBDIdentifier search source of program "',TheSrcName,'" ...']);
+      if not FindProgram(TheSrcName,SrcFilename) then begin
+        aMessage:='can''t find program "'+TheSrcName+'"';
+        exit;
+      end;
+    end else if p^='_' then begin
+      // a unit name
+      // => search unit
+      if not FindUnit(TheSrcName,SrcFilename) then begin
+        aMessage:='can''t find unit '+TheSrcName;
+        exit;
+      end;
+    end else if p^<>'_' then begin
+      // only one uppercase identifier, e.g. PASCALMAIN
+      aMessage:='compiler built in function "'+GDBIdentifier+'"';
+      exit;
+    end;
+    // load unit source
+    Code:=LoadFile(SrcFilename,true,false);
+    if Code=nil then begin
+      aMessage:='unable to read file "'+SrcFilename+'"';
+      exit;
+    end;
+
+    inc(p);
+    if p^ in ['A'..'Z'] then begin
+      ReadIdentifier(CurIdentifier);
+      debugln(['TCodeToolManager.FindGBDIdentifier Identifier="',CurIdentifier,'"']);
+
+      if not Explore(Code,Tool,false,true) then begin
+        debugln(['TCodeToolManager.FindGBDIdentifier parse error']);
+        aMessage:=CodeToolBoss.ErrorMessage;
+        exit;
+      end;
+
+      ReadParamList;
+
+      Node:=nil;
+      if Tool.GetSourceType=ctnUnit then begin
+        // a unit => first search in interface, then in implementation
+        SectionNode:=Tool.FindInterfaceNode;
+        if SectionNode<>nil then begin
+          Node:=Tool.FindSubDeclaration(CurIdentifier,SectionNode);
+        end;
+        if Node=nil then begin
+          // search in implementation
+          try
+            Node:=Tool.FindDeclarationNodeInImplementation(CurIdentifier,true);
+          except
+            on E: Exception do begin
+              HandleException(E);
+              debugln(['TCodeToolManager.FindGBDIdentifier FindDeclarationNodeInImplementation parse error in "',Code.Filename,'": ',E.Message]);
+              aMessage:=ErrorMessage;
+              exit;
+            end;
+          end;
+        end;
+      end else begin
+        // not a unit, e.g. a program
+        SectionNode:=Tool.Tree.Root;
+        if SectionNode<>nil then begin
+          Node:=Tool.FindSubDeclaration(CurIdentifier,SectionNode);
+        end;
+      end;
+      if Node=nil then begin
+        // identifier not found => use only SrcFilename
+        debugln(['TCodeToolManager.FindGBDIdentifier identifier "',CurIdentifier,'" not found in "',Code.Filename,'"']);
+        aMessage:='identifier "'+CurIdentifier+'" not found in "'+Code.Filename+'"';
+        exit;
+      end;
+
+      repeat
+        if (p^='_') and (p[1]='$') and (p[2]='_') and (p[3]='_') then begin
+          // sub identifier is method or member
+          inc(p,4);
+        end else if (p^='_') and (p[1] in ['A'..'Z']) then begin
+          // sub identifier is proc
+          inc(p);
+        end else
+          break;
+        if not (p^ in ['A'..'Z']) then begin
+          break;
+        end;
+        // _$__identifier => sub identifier
+        ReadIdentifier(CurIdentifier);
+        ReadParamList;
+        // find sub identifier
+        SubNode:=Tool.FindSubDeclaration(CurIdentifier,Node);
+        if SubNode=nil then begin
+          debugln(['TCodeToolManager.FindGBDIdentifier SubIdentifier="',CurIdentifier,'" not found']);
+          break;
+        end;
+        debugln(['TCodeToolManager.FindGBDIdentifier SubIdentifier="',CurIdentifier,'" found']);
+        Node:=SubNode;
+      until false;
+
+      if Node.Desc=ctnProcedure then begin
+        // proc node => find body
+        ClassNode:=Tool.FindClassOrInterfaceNode(Node);
+        if ClassNode<>nil then begin
+          try
+            Tool.BuildTree(lsrInitializationStart);
+          except
+            on E: Exception do begin
+              // ignore
+            end;
+          end;
+          ProcNode:=Tool.FindCorrespondingProcNode(Node,[phpAddClassName]);
+          if ProcNode<>nil then
+            Node:=ProcNode;
+        end;
+      end;
+
+      aComplete:=p^ in [#0,#9,#10,#13,' '];
+      Result:=Tool.JumpToCleanPos(Node.StartPos,-1,-1,NewPos,NewTopLine,false);
+      NewCode:=NewPos.Code;
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+    end;
+    // unknown operator => use only SrcFilename
+    debugln(['TCodeToolManager.FindGBDIdentifier operator not yet supported: ',dbgstr(p^)]);
+    exit;
+  end else begin
+    // example: ??
+  end;
+
+  aMessage:='unkown identifier "'+GDBIdentifier+'"';
 end;
 
 function TCodeToolManager.CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;

@@ -336,7 +336,7 @@ type
     function GetIDEDirectives(DirectiveList: TStrings): boolean;
     function SetIDEDirectives(DirectiveList: TStrings;
           SourceChangeCache: TSourceChangeCache): boolean;
-          
+
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
 
