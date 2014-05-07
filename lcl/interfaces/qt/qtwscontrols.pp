@@ -345,7 +345,7 @@ const
   QtMaxContraint = $FFFFFF;
 var
   Widget: TQtWidget;
-  MaxW, MaxH: Integer;
+  MW, MH: Integer;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'ConstraintsChange') then
     Exit;
@@ -353,16 +353,25 @@ begin
   Widget := TQtWidget(AWinControl.Handle);
   with AWinControl do
   begin
-    Widget.setMinimumSize(Constraints.MinWidth, Constraints.MinHeight);
+    MW := Constraints.MinWidth;
+    MH := Constraints.MinHeight;
+
+    if MW < QtMinimumWidgetSize then
+      MW := 0;
+    if MH < QtMinimumWidgetSize then
+      MH := 0;
+
+    Widget.setMinimumSize(MW, MH);
+
     if Constraints.MaxWidth = 0 then
-      MaxW := QtMaxContraint
+      MW := QtMaxContraint
     else
-      MaxW := Constraints.MaxWidth;
+      MW := Constraints.MaxWidth;
     if Constraints.MaxHeight = 0 then
-      MaxH := QtMaxContraint
+      MH := QtMaxContraint
     else
-      MaxH := Constraints.MaxHeight;
-    Widget.setMaximumSize(MaxW, MaxH);
+      MH := Constraints.MaxHeight;
+    Widget.setMaximumSize(MW, MH);
   end;
 end;
 
