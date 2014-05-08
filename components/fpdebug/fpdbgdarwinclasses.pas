@@ -63,6 +63,7 @@ type
     FTaskPort: mach_port_name_t;
     FProcProcess: TProcess;
     FIsTerminating: boolean;
+    FExceptionSignal: PtrUInt;
     function GetDebugAccessRights: boolean;
     procedure OnForkEvent(Sender : TObject);
   protected
@@ -414,11 +415,11 @@ begin
 {$endif linux}
 {$ifdef darwin}
   if (AThread.SingleStepping) or assigned(FCurrentBreakpoint) then
-    fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), nil)
+    fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), pointer(FExceptionSignal))
   else if FIsTerminating then
     fpPTrace(PTRACE_KILL, ProcessID, pointer(1), nil)
   else
-    fpPTrace(PTRACE_CONT, ProcessID, pointer(1), nil);
+    fpPTrace(PTRACE_CONT, ProcessID, pointer(1), pointer(FExceptionSignal));
 {$endif darwin}
   e := fpgeterrno;
   if e <> 0 then
@@ -473,6 +474,7 @@ var
   ExceptionAddr: TDBGPtr;
 
 begin
+  FExceptionSignal:=0;
   if wifexited(FStatus) or wifsignaled(FStatus) then
     begin
     SetExitCode(wexitStatus(FStatus));
@@ -520,28 +522,42 @@ begin
         end;
       SIGBUS:
         begin
-        writeln('Received SIGBUS');
+        ExceptionClass:='SIGBUS';
+        FExceptionSignal:=SIGBUS;
         result := deException;
         end;
       SIGINT:
         begin
-        writeln('Received SIGINT');
+        ExceptionClass:='SIGINT';
+        FExceptionSignal:=SIGINT;
         result := deException;
         end;
       SIGSEGV:
         begin
-        writeln('Received SIGSEGV');
+        ExceptionClass:='SIGSEGV';
+        FExceptionSignal:=SIGSEGV;
         result := deException;
         end;
       SIGKILL:
         begin
-        writeln('Received SIGKILL');
         if FIsTerminating then
           result := deInternalContinue
         else
+          begin
+          ExceptionClass:='SIGKILL';
+          FExceptionSignal:=SIGKILL;
           result := deException;
+          end;
+        end;
+      else
+        begin
+        ExceptionClass:='Unknown exception code '+inttostr(wstopsig(FStatus));
+        FExceptionSignal:=wstopsig(FStatus);
+        result := deException;
         end;
     end; {case}
+    if result=deException then
+      ExceptionClass:='External: '+ExceptionClass;
     end
   else
     raise exception.CreateFmt('Received unknown status %d from process with pid=%d',[FStatus, ProcessID]);
