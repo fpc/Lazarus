@@ -44,6 +44,8 @@ type
 
   TFpDebugDebugger = class(TDebuggerIntf)
   private
+    FWatchEvalList: TList; // Schedule
+    FWatchAsyncQueued: Boolean;
     FPrettyPrinter: TFpPascalPrettyPrinter;
     FDbgController: TDbgController;
     FFpDebugThread: TFpDebugThread;
@@ -55,7 +57,10 @@ type
     procedure FDbgControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
     procedure FDbgControllerDebugInfoLoaded(Sender: TObject);
     function GetDebugInfo: TDbgInfo;
+    procedure DoWatchFreed(Sender: TObject);
+    procedure ProcessASyncWatches(Data: PtrInt);
   protected
+    procedure ScheduleWatchValueEval(AWatchValue: TWatchValue);
     function EvaluateExpression(AWatchValue: TWatchValue;
                                 AExpression: String;
                                 out AResText: String;
@@ -77,6 +82,7 @@ type
     procedure StartDebugLoop;
     procedure DebugLoopFinished;
     procedure QuickPause;
+    procedure DoState(const OldState: TDBGState); override;
 
     property DebugInfo: TDbgInfo read GetDebugInfo;
   public
@@ -651,11 +657,12 @@ begin
 end;
 
 procedure TFPWatches.InternalRequestData(AWatchValue: TWatchValue);
-var
-  AVal: string;
-  AType: TDBGType;
+//var
+//  AVal: string;
+//  AType: TDBGType;
 begin
-  FpDebugger.EvaluateExpression(AWatchValue, AWatchValue.Expression, AVal, AType);
+  FpDebugger.ScheduleWatchValueEval(AWatchValue);
+  //FpDebugger.EvaluateExpression(AWatchValue, AWatchValue.Expression, AVal, AType);
 end;
 
 { TFpDebugThread }
@@ -729,6 +736,15 @@ begin
   Result := nil;
   if (FDbgController <> nil) and (FDbgController.CurrentProcess<> nil) then
     Result := FDbgController.CurrentProcess.DbgInfo;
+end;
+
+procedure TFpDebugDebugger.ScheduleWatchValueEval(AWatchValue: TWatchValue);
+begin
+  AWatchValue.AddFreeNotification(@DoWatchFreed);
+  FWatchEvalList.Add(pointer(AWatchValue));
+  if not FWatchAsyncQueued then
+    Application.QueueAsyncCall(@ProcessASyncWatches, 0);
+  FWatchAsyncQueued := True;
 end;
 
 function TFpDebugDebugger.EvaluateExpression(AWatchValue: TWatchValue; AExpression: String;
@@ -853,6 +869,33 @@ begin
   if LineInfo <> nil then begin
     TFpLineInfo(LineInfo).DebugInfoChanged;
   end;
+end;
+
+procedure TFpDebugDebugger.DoWatchFreed(Sender: TObject);
+begin
+  FWatchEvalList.Remove(pointer(Sender));
+end;
+
+procedure TFpDebugDebugger.ProcessASyncWatches(Data: PtrInt);
+var
+  WatchValue: TWatchValue;
+  AVal: String;
+  AType: TDBGType;
+begin
+  FWatchAsyncQueued := False;
+  if FWatchEvalList.Count = 0 then
+    exit;
+  WatchValue := TWatchValue(FWatchEvalList[0]);
+  FWatchEvalList.Delete(0);
+  WatchValue.RemoveFreeNotification(@DoWatchFreed);
+
+  EvaluateExpression(WatchValue, WatchValue.Expression, AVal, AType);
+
+  if (not FWatchAsyncQueued) and (FWatchEvalList.Count > 0) then
+    begin
+    Application.QueueAsyncCall(@ProcessASyncWatches, 0);
+    FWatchAsyncQueued := True;
+    end;
 end;
 
 procedure TFpDebugDebugger.FreeDebugThread;
@@ -1033,9 +1076,20 @@ begin
   FDbgController.Pause;
 end;
 
+procedure TFpDebugDebugger.DoState(const OldState: TDBGState);
+begin
+  inherited DoState(OldState);
+  if not (State in [dsPause, dsInternalPause]) then
+    begin
+    FWatchEvalList.Clear;
+    FWatchAsyncQueued := False;
+    end;
+end;
+
 constructor TFpDebugDebugger.Create(const AExternalDebugger: String);
 begin
   inherited Create(AExternalDebugger);
+  FWatchEvalList := TList.Create;
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
   FDbgController := TDbgController.Create;
   FDbgController.OnLog:=@OnLog;
@@ -1052,6 +1106,7 @@ begin
     FreeDebugThread;
   FDbgController.Free;
   FPrettyPrinter.Free;
+  FWatchEvalList.Free;
   inherited Destroy;
 end;
 
