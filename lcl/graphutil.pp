@@ -123,7 +123,7 @@ begin
   // calculate lightness
   cMax := MaxIntValue([R, G, B]);
   cMin := MinIntValue([R, G, B]);
-  L := (cMax + cMin + 1) div 2;
+  L := (integer(cMax) + cMin + 1) div 2;
   diff := cMax - cMin;
 
   if diff = 0
@@ -145,7 +145,7 @@ begin
     Bdelta := (cMax - B);
 
     if R = cMax
-    then H := HUE_000 + integer(Bdelta - Gdelta) * HUE_060 div diff
+    then H := (HUE_000 + integer(Bdelta - Gdelta) * HUE_060 div diff) and $ff
     else if G = cMax
     then H := HUE_120 + integer(Rdelta - Bdelta) * HUE_060 div diff
     else H := HUE_240 + integer(Gdelta - Rdelta) * HUE_060 div diff;
