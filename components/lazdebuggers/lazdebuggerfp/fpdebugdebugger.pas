@@ -44,6 +44,7 @@ type
 
   TFpDebugDebugger = class(TDebuggerIntf)
   private
+    FPrettyPrinter: TFpPascalPrettyPrinter;
     FDbgController: TDbgController;
     FFpDebugThread: TFpDebugThread;
     FQuickPause: boolean;
@@ -55,6 +56,12 @@ type
     procedure FDbgControllerDebugInfoLoaded(Sender: TObject);
     function GetDebugInfo: TDbgInfo;
   protected
+    function EvaluateExpression(AWatchValue: TWatchValue;
+                                AExpression: String;
+                                out AResText: String;
+                                out ATypeInfo: TDBGType;
+                                EvalFlags: TDBGEvaluateFlags = []): Boolean;
+
     function CreateLineInfo: TDBGLineInfo; override;
     function CreateWatches: TWatchesSupplier; override;
     function CreateLocals: TLocalsSupplier; override;
@@ -105,15 +112,11 @@ type
   { TFPWatches }
 
   TFPWatches = class(TWatchesSupplier)
-  private
-    FPrettyPrinter: TFpPascalPrettyPrinter;
   protected
     function  FpDebugger: TFpDebugDebugger;
     //procedure DoStateChange(const AOldState: TDBGState); override;
     procedure InternalRequestData(AWatchValue: TWatchValue); override;
   public
-    constructor Create(const ADebugger: TDebuggerIntf);
-    destructor Destroy; override;
   end;
 
   { TFPCallStackSupplier }
@@ -649,53 +652,10 @@ end;
 
 procedure TFPWatches.InternalRequestData(AWatchValue: TWatchValue);
 var
-  AContext: TFpDbgInfoContext;
-  AController: TDbgController;
-  APasExpr: TFpPascalExpression;
   AVal: string;
+  AType: TDBGType;
 begin
-  AController := FpDebugger.FDbgController;
-  AContext := AController.CurrentProcess.DbgInfo.FindContext(AController.CurrentProcess.GetInstructionPointerRegisterValue);
-  if AContext = nil then begin
-    AWatchValue.Validity := ddsInvalid;
-    exit;
-  end;
-
-  APasExpr := TFpPascalExpression.Create(AWatchValue.Expression, AContext);
-  try
-    APasExpr.ResultValue; // trigger full validation
-    if not APasExpr.Valid then
-      begin
-      AWatchValue.Value := ErrorHandler.ErrorAsString(APasExpr.Error);
-      AWatchValue.Validity := ddsError;
-      end
-    else
-      begin
-      FPrettyPrinter.AddressSize:=AContext.SizeOfAddress;
-      if FPrettyPrinter.PrintValue(AVal, APasExpr.ResultValue) then
-        begin
-        AWatchValue.Value := AVal; //IntToStr(APasExpr.ResultValue.AsInteger);
-        AWatchValue.Validity := ddsValid;
-        end
-      else
-        AWatchValue.Validity := ddsInvalid;
-      end;
-  finally
-    APasExpr.Free;
-    AContext.ReleaseReference;
-  end;
-end;
-
-constructor TFPWatches.Create(const ADebugger: TDebuggerIntf);
-begin
-  inherited Create(ADebugger);
-  FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
-end;
-
-destructor TFPWatches.Destroy;
-begin
-  FPrettyPrinter.Free;
-  inherited Destroy;
+  FpDebugger.EvaluateExpression(AWatchValue, AWatchValue.Expression, AVal, AType);
 end;
 
 { TFpDebugThread }
@@ -769,6 +729,88 @@ begin
   Result := nil;
   if (FDbgController <> nil) and (FDbgController.CurrentProcess<> nil) then
     Result := FDbgController.CurrentProcess.DbgInfo;
+end;
+
+function TFpDebugDebugger.EvaluateExpression(AWatchValue: TWatchValue; AExpression: String;
+  out AResText: String; out ATypeInfo: TDBGType; EvalFlags: TDBGEvaluateFlags): Boolean;
+var
+  AContext: TFpDbgInfoContext;
+  AController: TDbgController;
+  APasExpr: TFpPascalExpression;
+  ADbgInfo: TDbgInfo;
+  DispFormat: TWatchDisplayFormat;
+  RepeatCnt: Integer;
+  Res: Boolean;
+begin
+  Result := False;
+  AResText := '';
+  ATypeInfo := nil;
+
+  AController := FDbgController;
+  ADbgInfo := AController.CurrentProcess.DbgInfo;
+
+  if AWatchValue <> nil then begin
+    // TODO: Address fol frame and thread (Or ensure it can be found via registers)
+    AContext := ADbgInfo.FindContext(AWatchValue.ThreadId, AWatchValue.StackFrame, AController.CurrentProcess.GetInstructionPointerRegisterValue);
+    DispFormat := AWatchValue.DisplayFormat;
+    RepeatCnt := AWatchValue.RepeatCount;
+  end
+  else begin
+    // TODO: frame and thread
+    AContext := ADbgInfo.FindContext(AController.CurrentProcess.GetInstructionPointerRegisterValue);
+    DispFormat := wdfDefault;
+    RepeatCnt := -1;
+  end;
+
+  if AContext = nil then
+    begin
+    if AWatchValue <> nil then
+      AWatchValue.Validity := ddsInvalid;
+    exit;
+    end;
+
+  Result := True;
+  AContext.MemManager.DefaultContext := AContext;
+  APasExpr := TFpPascalExpression.Create(AExpression, AContext);
+  try
+    APasExpr.ResultValue; // trigger full validation
+    if not APasExpr.Valid then
+      begin
+      AResText := ErrorHandler.ErrorAsString(APasExpr.Error);
+      if AWatchValue <> nil then
+        begin
+        AWatchValue.Value := AResText;
+        AWatchValue.Validity := ddsError;
+        end;
+      end
+    else
+      begin
+      FPrettyPrinter.AddressSize:=AContext.SizeOfAddress;
+      FPrettyPrinter.MemManager := AContext.MemManager;
+      if defNoTypeInfo in EvalFlags then
+        Res := FPrettyPrinter.PrintValue(AResText, APasExpr.ResultValue, DispFormat, RepeatCnt)
+      else
+        Res := FPrettyPrinter.PrintValue(AResText, ATypeInfo, APasExpr.ResultValue, DispFormat, RepeatCnt);
+      // TODO: PCHAR/String
+      if Res then
+        begin
+        if AWatchValue <> nil then
+          begin
+          AWatchValue.Value := AResText; //IntToStr(APasExpr.ResultValue.AsInteger);
+          AWatchValue.Validity := ddsValid;
+          end;
+        end
+      else
+        begin
+        AResText := 'Error';
+        if AWatchValue <> nil then
+          AWatchValue.Validity := ddsInvalid;
+        end;
+      end;
+  finally
+    APasExpr.Free;
+    AContext.ReleaseReference;
+  end;
 end;
 
 function TFpDebugDebugger.CreateLineInfo: TDBGLineInfo;
@@ -852,6 +894,8 @@ end;
 
 function TFpDebugDebugger.RequestCommand(const ACommand: TDBGCommand;
   const AParams: array of const): Boolean;
+var
+  EvalFlags: TDBGEvaluateFlags;
 begin
   result := False;
   case ACommand of
@@ -941,6 +985,14 @@ begin
         StartDebugLoop;
         result := true;
       end;
+    dcEvaluate:
+      begin
+        EvalFlags := TDBGEvaluateFlags(AParams[3].VInteger);
+        Result := False;
+        Result := EvaluateExpression(nil, String(AParams[0].VAnsiString),
+          String(AParams[1].VPointer^), TDBGType(AParams[2].VPointer^),
+          EvalFlags);
+      end;
   end; {case}
 end;
 
@@ -984,6 +1036,7 @@ end;
 constructor TFpDebugDebugger.Create(const AExternalDebugger: String);
 begin
   inherited Create(AExternalDebugger);
+  FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
   FDbgController := TDbgController.Create;
   FDbgController.OnLog:=@OnLog;
   FDbgController.OnCreateProcessEvent:=@FDbgControllerCreateProcessEvent;
@@ -998,6 +1051,7 @@ begin
   if assigned(FFpDebugThread) then
     FreeDebugThread;
   FDbgController.Free;
+  FPrettyPrinter.Free;
   inherited Destroy;
 end;
 
@@ -1048,7 +1102,7 @@ end;
 function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result:=[dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr, dcStepOver,
-           dcRunTo, dcPause, dcStepOut, dcStepInto];
+           dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate];
 end;
 
 end.
