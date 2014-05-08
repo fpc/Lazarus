@@ -96,7 +96,7 @@ type
     procedure DoWatchFreed(Sender: TObject);
     function EvaluateExpression(AWatchValue: TWatchValue;
                                 AExpression: String;
-                                var AResText: String;
+                                out AResText: String;
                                 out ATypeInfo: TDBGType;
                                 EvalFlags: TDBGEvaluateFlags = []): Boolean;
     property CurrentThreadId;
@@ -111,6 +111,9 @@ type
 procedure Register;
 
 implementation
+
+var
+  FPGDBDBG_VERBOSE, FPGDBDBG_ERROR: PLazLoggerLogGroup;
 
 type
 
@@ -383,7 +386,7 @@ end;
 procedure TFpGDBMIAndWin32DbgMemReader.OpenProcess(APid: Cardinal);
 begin
   {$IFdef MSWindows}
-  debugln(['OPEN process ',APid]);
+  debugln(FPGDBDBG_VERBOSE, ['OPEN process ',APid]);
   if APid <> 0 then
     hProcess := windows.OpenProcess(PROCESS_CREATE_THREAD or PROCESS_QUERY_INFORMATION or PROCESS_VM_OPERATION or PROCESS_VM_WRITE or PROCESS_VM_READ, False, APid);
   {$ENDIF}
@@ -435,7 +438,7 @@ begin
   MemDump.Free;
   Result := True;
 
-debugln(['TFpGDBMIDbgMemReader.ReadMemory ', dbgs(AnAddress), '  ', dbgMemRange(ADest, ASize)]);
+debugln(FPGDBDBG_VERBOSE, ['TFpGDBMIDbgMemReader.ReadMemory ', dbgs(AnAddress), '  ', dbgMemRange(ADest, ASize)]);
 end;
 
 function TFpGDBMIDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr;
@@ -503,7 +506,7 @@ begin
         else
           v := '';
         if pos(' ', v) > 1 then v := copy(v, 1, pos(' ', v)-1);
-debugln(['TFpGDBMIDbgMemReader.ReadRegister ',rname, '  ', v]);
+debugln(FPGDBDBG_VERBOSE, ['TFpGDBMIDbgMemReader.ReadRegister ',rname, '  ', v]);
         Result := true;
         try
           AValue := StrToQWord(v);
@@ -738,7 +741,7 @@ end;
 procedure TFpGDBMIDebugger.LoadDwarf;
 begin
   UnLoadDwarf;
-  debugln(['TFpGDBMIDebugger.LoadDwarf ']);
+  debugln(FPGDBDBG_VERBOSE, ['TFpGDBMIDebugger.LoadDwarf ']);
   FImageLoader := TDbgImageLoader.Create(FileName);
   if not FImageLoader.IsValid then begin
     FreeAndNil(FImageLoader);
@@ -759,7 +762,7 @@ end;
 
 procedure TFpGDBMIDebugger.UnLoadDwarf;
 begin
-  debugln(['TFpGDBMIDebugger.UnLoadDwarf ']);
+  debugln(FPGDBDBG_VERBOSE, ['TFpGDBMIDebugger.UnLoadDwarf ']);
   FreeAndNil(FDwarfInfo);
   FreeAndNil(FImageLoader);
   FreeAndNil(FMemReader);
@@ -851,7 +854,7 @@ begin
 
   t := Threads.CurrentThreads.EntryById[AThreadId];
   if t = nil then begin
-    DebugLn(['NO Threads']);
+    DebugLn(FPGDBDBG_ERROR, ['NO Threads']);
     exit;
   end;
   if AStackFrame = 0 then begin
@@ -862,12 +865,12 @@ begin
 
   s := CallStack.CurrentCallStackList.EntriesForThreads[AThreadId];
   if s = nil then begin
-    DebugLn(['NO Stackframe list for thread']);
+    DebugLn(FPGDBDBG_ERROR, ['NO Stackframe list for thread']);
     exit;
   end;
   f := s.Entries[AStackFrame];
   if f = nil then begin
-    DebugLn(['NO Stackframe']);
+    DebugLn(FPGDBDBG_ERROR, ['NO Stackframe']);
     exit;
   end;
 
@@ -909,7 +912,7 @@ begin
     exit;
   end;
 
-  DebugLn(['* FDwarfInfo.FindContext ', dbgs(Addr)]);
+  DebugLn(FPGDBDBG_VERBOSE, ['* FDwarfInfo.FindContext ', dbgs(Addr)]);
   Result := FDwarfInfo.FindContext(AThreadId, AStackFrame, Addr);
 
   FLastThread := AThreadId;
@@ -929,9 +932,8 @@ begin
   FWatchEvalList.Remove(pointer(Sender));
 end;
 
-function TFpGDBMIDebugger.EvaluateExpression(AWatchValue: TWatchValue;
-  AExpression: String; var AResText: String; out ATypeInfo: TDBGType;
-  EvalFlags: TDBGEvaluateFlags): Boolean;
+function TFpGDBMIDebugger.EvaluateExpression(AWatchValue: TWatchValue; AExpression: String;
+  out AResText: String; out ATypeInfo: TDBGType; EvalFlags: TDBGEvaluateFlags): Boolean;
 var
   Ctx: TFpDbgInfoContext;
   PasExpr: TFpPascalExpression;
@@ -949,171 +951,11 @@ var
               );
   end;
 
-  function ResTypeName(v: TFpDbgValue = nil): String;
-  begin
-    if v = nil then v := ResValue;
-    if not((v.TypeInfo<> nil) and
-           GetTypeName(Result, v.TypeInfo, []))
-    then
-      Result := '';
-  end;
-
-  procedure DoPointer;
-  begin
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
-      exit;
-    ATypeInfo := TDBGType.Create(skPointer, ResTypeName);
-    ATypeInfo.Value.AsPointer := Pointer(ResValue.AsCardinal); // TODO: no cut off
-    ATypeInfo.Value.AsString := AResText;
-  end;
-
-  procedure DoSimple;
-  begin
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
-      exit;
-    ATypeInfo := TDBGType.Create(skSimple, ResTypeName);
-    ATypeInfo.Value.AsString := AResText;
-  end;
-
-  procedure DoEnum;
-  begin
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
-      exit;
-    ATypeInfo := TDBGType.Create(skEnum, ResTypeName);
-    ATypeInfo.Value.AsString := AResText;
-  end;
-
-  procedure DoSet;
-  begin
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
-      exit;
-    ATypeInfo := TDBGType.Create(skSet, ResTypeName);
-    ATypeInfo.Value.AsString := AResText;
-  end;
-
-  procedure DoRecord;
-  var
-    s2, n: String;
-    m: TFpDbgValue;
-    i: Integer;
-    DBGType: TGDBType;
-    f: TDBGField;
-  begin
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
-      exit;
-    ATypeInfo := TDBGType.Create(skRecord, ResTypeName);
-    ATypeInfo.Value.AsString := AResText;
-
-    if not(defFullTypeInfo in EvalFlags) then exit;
-    for i := 0 to ResValue.MemberCount - 1 do begin
-      m := ResValue.Member[i];
-      if m = nil then Continue; // Todo: procedures.
-      case m.Kind of
-        skProcedure, skFunction: ; //  DBGType := TGDBType.Create(skProcedure, TGDBTypes.CreateFromCSV(Params))
-        else
-          begin
-            DBGType := TGDBType.Create(skSimple, ResTypeName(m));
-            FPrettyPrinter.PrintValue(s2, m, DispFormat, RepeatCnt);
-            DBGType.Value.AsString := s2;
-            n := '';
-            if m.DbgSymbol <> nil then n := m.DbgSymbol.Name;
-            f := TDBGField.Create(n, DBGType, flPublic);
-            ATypeInfo.Fields.Add(f);
-          end;
-      end;
-    end;
-  end;
-
-  procedure DoClass;
-  var
-    m: TFpDbgValue;
-    s, s2, n, CastName: String;
-    DBGType: TGDBType;
-    f: TDBGField;
-    i: Integer;
-    ClassAddr, CNameAddr: TFpDbgMemLocation;
-    NameLen: QWord;
-    PasExpr2: TFpPascalExpression;
-  begin
-    if (ResValue.Kind = skClass) and (ResValue.AsCardinal = 0) then begin
-      if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
-        exit;
-      ATypeInfo := TDBGType.Create(skSimple, ResTypeName);
-      ATypeInfo.Value.AsString := AResText;
-      Result := True;
-      exit;
-    end;
-
-    CastName := '';
-    if (defClassAutoCast in EvalFlags) and (ResValue.Kind = skClass) then begin
-      if FMemManager.ReadAddress(ResValue.DataAddress, Ctx.SizeOfAddress, ClassAddr) then begin
-        ClassAddr.Address := ClassAddr.Address + 3 * Ctx.SizeOfAddress;
-        if FMemManager.ReadAddress(ClassAddr, Ctx.SizeOfAddress, CNameAddr) then begin
-          if (FMemManager.ReadUnsignedInt(CNameAddr, 1, NameLen)) then
-            if NameLen > 0 then begin
-              SetLength(CastName, NameLen);
-              CNameAddr.Address := CNameAddr.Address + 1;
-              FMemManager.ReadMemory(CNameAddr, NameLen, @CastName[1]);
-              PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', Ctx);
-              if PasExpr2.Valid and (PasExpr2.ResultValue <> nil) then begin
-                PasExpr.Free;
-                PasExpr := PasExpr2;
-                ResValue := PasExpr.ResultValue;
-              end
-              else
-                PasExpr2.Free;
-            end;
-        end;
-      end;
-    end;
-
-
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
-      exit;
-    if CastName <> '' then AResText := CastName + AResText;
-    //if PasExpr.ResultValue.Kind = skObject then
-    //  ATypeInfo := TDBGType.Create(skObject, ResTypeName)
-    //else
-      ATypeInfo := TDBGType.Create(skClass, ResTypeName);
-    ATypeInfo.Value.AsString := AResText;
-
-    if not(defFullTypeInfo in EvalFlags) then exit;
-    for i := 0 to ResValue.MemberCount - 1 do begin
-      m := ResValue.Member[i];
-      if m = nil then Continue; // Todo: procedures.
-      case m.Kind of
-        skProcedure, skFunction: ; //  DBGType := TGDBType.Create(skProcedure, TGDBTypes.CreateFromCSV(Params))
-        else
-          begin
-            DBGType := TGDBType.Create(skSimple, ResTypeName(m));
-            FPrettyPrinter.PrintValue(s2, m, DispFormat, RepeatCnt);
-            DBGType.Value.AsString := s2;
-            n := '';
-            if m.DbgSymbol <> nil then n := m.DbgSymbol.Name;
-            s := '';
-            if m.ContextTypeInfo <> nil then s := m.ContextTypeInfo.Name;
-// TODO visibility // flags virtual, constructor
-            f := TDBGField.Create(n, DBGType, flPublic, [], s);
-            ATypeInfo.Fields.Add(f);
-          end;
-      end;
-    end;
-  end;
-
-  procedure DoArray;
-  begin
-    if not FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt) then
-      exit;
-    ATypeInfo := TDBGType.Create(skArray, ResTypeName);
-    ATypeInfo.Value.AsString := AResText;
-    //ATypeInfo.Len;
-    //ATypeInfo.BoundLow;
-    //ATypeInfo.BoundHigh;
-  end;
 
 begin
   Result := False;
   ATypeInfo := nil;
+  AResText := '';
   if AWatchValue <> nil then begin
     EvalFlags := AWatchValue.EvaluateFlags;
     AExpression := AWatchValue.Expression;
@@ -1148,7 +990,7 @@ begin
     if not IsWatchValueAlive then exit;
 
     if not PasExpr.Valid then begin
-DebugLn(ErrorHandler.ErrorAsString(PasExpr.Error));
+DebugLn(FPGDBDBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
       if ErrorCode(PasExpr.Error) <> fpErrAnyError then begin
         Result := True;
         AResText := ErrorHandler.ErrorAsString(PasExpr.Error);;
@@ -1167,28 +1009,6 @@ DebugLn(ErrorHandler.ErrorAsString(PasExpr.Error));
     ResValue := PasExpr.ResultValue;
 
     case ResValue.Kind of
-      skUnit: ;
-      skProcedure: ;
-      skFunction: ;
-      skPointer:  DoPointer;
-      skInteger:  DoSimple;
-      skCardinal: DoSimple;
-      skBoolean:  DoSimple;
-      skChar:     DoSimple;
-      skFloat:    DoSimple;
-      skString: ;
-      skAnsiString: ;
-      skCurrency: ;
-      skVariant: ;
-      skWideString: ;
-      skEnum:      DoEnum;
-      skEnumValue: DoSimple;
-      skSet:       DoSet;
-      skRecord:    DoRecord;
-      skObject:    DoClass;
-      skClass:     DoClass;
-      skInterface: ;
-      skArray:     DoArray;
       skNone: begin
           // maybe type
           TiSym := ResValue.DbgSymbol;
@@ -1206,6 +1026,13 @@ DebugLn(ErrorHandler.ErrorAsString(PasExpr.Error));
             exit;
           end;
         end;
+      else
+      begin
+        if defNoTypeInfo in EvalFlags then
+          FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt)
+        else
+          FPrettyPrinter.PrintValue(AResText, ATypeInfo, ResValue, DispFormat, RepeatCnt);
+      end;
     end;
     if not IsWatchValueAlive then exit;
 
@@ -1219,10 +1046,10 @@ DebugLn(ErrorHandler.ErrorAsString(PasExpr.Error));
       AResText := 'PChar: '+AResText+ LineEnding + 'String: '+s;
     end;
 
-    if ATypeInfo <> nil then begin
+    if (ATypeInfo <> nil) or (AResText <> '') then begin
       Result := True;
-      debugln(['TFPGDBMIWatches.InternalRequestData   GOOOOOOD ', AExpression]);
-      if AWatchValue <> nil then begin;
+      debugln(FPGDBDBG_VERBOSE, ['TFPGDBMIWatches.InternalRequestData   GOOOOOOD ', AExpression]);
+      if AWatchValue <> nil then begin
         AWatchValue.Value    := AResText;
         AWatchValue.TypeInfo := ATypeInfo;
         if IsError(ResValue.LastError) then
@@ -1289,5 +1116,8 @@ begin
 
 end;
 
+initialization
+  FPGDBDBG_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('FPGDBDBG_VERBOSE' {$IFDEF FPGDBDBG_VERBOSE} , True {$ENDIF} );
+  FPGDBDBG_ERROR         := DebugLogger.FindOrRegisterLogGroup('FPGDBDBG_ERROR' {$IFDEF FPGDBDBG_ERROR} , True {$ENDIF} );
 end.
 

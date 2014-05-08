@@ -29,10 +29,17 @@ type
   TTypeDeclarationFlags = set of TTypeDeclarationFlag;
 
   TFpPrettyPrintValueFlag = (
+    ppvCreateDbgType,
     ppvSkipClassBody, ppvSkipRecordBody
   );
   TFpPrettyPrintValueFlags = set of TFpPrettyPrintValueFlag;
 
+const
+  PV_FORWARD_FLAGS = [ppvSkipClassBody, ppvSkipRecordBody];
+
+type
+
+  PDBGType = ^TDBGType;
 
   { TFpPascalPrettyPrinter }
 
@@ -46,11 +53,18 @@ type
                                 AFlags: TFpPrettyPrintValueFlags;
                                 ANestLevel: Integer; AnIndent: String;
                                 ADisplayFormat: TWatchDisplayFormat;
-                                ARepeatCount: Integer = -1
+                                ARepeatCount: Integer = -1;
+                                ADBGTypeInfo: PDBGType = nil
                                ): Boolean;
   public
     constructor Create(AnAddressSize: Integer);
     function PrintValue(out APrintedValue: String;
+                        AValue: TFpDbgValue;
+                        ADisplayFormat: TWatchDisplayFormat = wdfDefault;
+                        ARepeatCount: Integer = -1
+                       ): Boolean;
+    function PrintValue(out APrintedValue: String;
+                        out ADBGTypeInfo: TDBGType;
                         AValue: TFpDbgValue;
                         ADisplayFormat: TWatchDisplayFormat = wdfDefault;
                         ARepeatCount: Integer = -1
@@ -429,13 +443,20 @@ end;
 function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   AValue: TFpDbgValue; AnAddressSize: Integer; AFlags: TFpPrettyPrintValueFlags;
   ANestLevel: Integer; AnIndent: String; ADisplayFormat: TWatchDisplayFormat;
-  ARepeatCount: Integer): Boolean;
+  ARepeatCount: Integer; ADBGTypeInfo: PDBGType): Boolean;
 
 
   function ResTypeName: String;
   begin
     if not((AValue.TypeInfo<> nil) and
            GetTypeName(Result, AValue.TypeInfo, []))
+    then
+      Result := '';
+  end;
+  function ResTypeName(AVal : TFpDbgValue): String;
+  begin
+    if not((AVal.TypeInfo<> nil) and
+           GetTypeName(Result, AVal.TypeInfo, []))
     then
       Result := '';
   end;
@@ -451,6 +472,11 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       s := ResTypeName
     else
       s := '';
+
+    if (ppvCreateDbgType in AFlags) then begin
+      ADBGTypeInfo^ := TDBGType.Create(skPointer, s);
+      ADBGTypeInfo^.Value.AsPointer := Pointer(AValue.AsCardinal); // TODO: no cut off
+    end;
 
     v := AValue.AsCardinal;
     case ADisplayFormat of
@@ -495,6 +521,11 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       else
           APrintedValue := IntToStr(AValue.AsInteger);
     end;
+
+    if (ppvCreateDbgType in AFlags) then begin
+      ADBGTypeInfo^ := TDBGType.Create(skSimple, ResTypeName);
+      //ADBGTypeInfo^.Value.As64Bits := QWord(AValue.AsInteger); // TODO: no cut off
+    end;
     Result := True;
   end;
 
@@ -519,6 +550,11 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       else
           APrintedValue := IntToStr(AValue.AsCardinal);
     end;
+
+    if (ppvCreateDbgType in AFlags) then begin
+      ADBGTypeInfo^ := TDBGType.Create(skSimple, ResTypeName);
+      //ADBGTypeInfo^.Value.As64Bits := QWord(AValue.AsiCardinal); // TODO: no cut off
+    end;
     Result := True;
   end;
 
@@ -531,18 +567,28 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     end
     else
       APrintedValue := 'False';
+
+    if (ppvCreateDbgType in AFlags) then begin
+      ADBGTypeInfo^ := TDBGType.Create(skSimple, ResTypeName);
+    end;
     Result := True;
   end;
 
   procedure DoChar;
   begin
     APrintedValue := '''' + AValue.AsString + ''''; // Todo escape
+    if (ppvCreateDbgType in AFlags) then begin
+      ADBGTypeInfo^ := TDBGType.Create(skSimple, ResTypeName);
+    end;
     Result := True;
   end;
 
   procedure DoFloat;
   begin
     APrintedValue := FloatToStr(AValue.AsFloat);
+    if (ppvCreateDbgType in AFlags) then begin
+      ADBGTypeInfo^ := TDBGType.Create(skSimple, ResTypeName);
+    end;
     Result := True;
   end;
 
@@ -554,6 +600,12 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     if APrintedValue = '' then begin
       s := ResTypeName;
       APrintedValue := s + '(' + IntToStr(AValue.AsCardinal) + ')';
+    end
+    else if (ppvCreateDbgType in AFlags) then
+      s := ResTypeName;
+
+    if (ppvCreateDbgType in AFlags) then begin
+      ADBGTypeInfo^ := TDBGType.Create(skEnum, s);
     end;
     Result := True;
   end;
@@ -564,6 +616,10 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     if APrintedValue <> '' then
       APrintedValue := APrintedValue + ':=';
     APrintedValue := APrintedValue+ IntToStr(AValue.AsCardinal);
+
+    if (ppvCreateDbgType in AFlags) then begin
+      ADBGTypeInfo^ := TDBGType.Create(skSimple, ResTypeName);
+    end;
     Result := True;
   end;
 
@@ -588,30 +644,50 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       else APrintedValue := APrintedValue + ', ' + s;
     end;
     APrintedValue := '[' + APrintedValue + ']';
+
+    if (ppvCreateDbgType in AFlags) then begin
+      ADBGTypeInfo^ := TDBGType.Create(skSet, ResTypeName);
+    end;
     Result := True;
   end;
 
   procedure DoStructure;
   var
-    s, s2: String;
+    s, s2, MbName, MbVal: String;
     i: Integer;
     m: TFpDbgValue;
     fl: TFpPrettyPrintValueFlags;
+    f: TDBGField;
   begin
     if (AValue.Kind = skClass) and (AValue.AsCardinal = 0) then begin
       APrintedValue := 'nil';
-      Result := True;
-      exit;
-    end;
-    if ADisplayFormat = wdfPointer then begin
-      s := ResTypeName;
-      APrintedValue := '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2);
-      if s <> '' then
-        APrintedValue := s + '(' + APrintedValue + ')';
+      if (ppvCreateDbgType in AFlags) then begin
+        ADBGTypeInfo^ := TDBGType.Create(skSimple, ResTypeName);
+      end;
       Result := True;
       exit;
     end;
 
+    if (ppvCreateDbgType in AFlags) then begin
+      s := ResTypeName;
+      case AValue.Kind of
+        skRecord: ADBGTypeInfo^ := TDBGType.Create(skRecord, s);
+        skObject: ADBGTypeInfo^ := TDBGType.Create(skClass, s);
+        skClass:  ADBGTypeInfo^ := TDBGType.Create(skClass, s);
+      end;
+    end;
+
+    if ADisplayFormat = wdfPointer then begin
+      if not (ppvCreateDbgType in AFlags) then
+        s := ResTypeName;
+      APrintedValue := '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2);
+      if s <> '' then
+        APrintedValue := s + '(' + APrintedValue + ')';
+      Result := True;
+      if not (ppvCreateDbgType in AFlags) then
+        exit;
+    end
+    else
     if ( (AValue.Kind in [skClass, skObject]) and (ppvSkipClassBody in AFlags) ) or
        ( (AValue.Kind in [skRecord]) and (ppvSkipRecordBody in AFlags) )
     then begin
@@ -622,7 +698,8 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         skClass:  APrintedValue := '{class:}' + APrintedValue + '(' + '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2) + ')';
       end;
       Result := True;
-      exit;
+      if not (ppvCreateDbgType in AFlags) then
+        exit;
     end;
 
     s2 := LineEnding;
@@ -631,20 +708,39 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     //if ppvSkipClassBody in AFlags then
     //  fl := [ppvSkipClassBody, ppvSkipRecordBody];
 
-    APrintedValue := '';
+    if not Result then
+      APrintedValue := '';
     for i := 0 to AValue.MemberCount-1 do begin
       m := AValue.Member[i];
       if (m = nil) or (m.Kind in [skProcedure, skFunction]) then
         continue;
       s := '';
-      InternalPrintValue(s, m, AnAddressSize, fl, ANestLevel+1, AnIndent, ADisplayFormat);
-      if m.DbgSymbol <> nil then
-        s := m.DbgSymbol.Name + ' = ' + s;
-      if APrintedValue = ''
-      then APrintedValue := s
-      else APrintedValue := APrintedValue + '; ' + s2 + s;
+      InternalPrintValue(MbVal, m, AnAddressSize, fl, ANestLevel+1, AnIndent, ADisplayFormat);
+      if m.DbgSymbol <> nil then begin
+        MbName := m.DbgSymbol.Name;
+        s := MbName + ' = ' + MbVal;
+      end
+      else begin
+        MbName := '';
+        s := MbVal;
+      end;
+
+      if not Result then begin
+        if APrintedValue = ''
+        then APrintedValue := s
+        else APrintedValue := APrintedValue + '; ' + s2 + s;
+      end;
+      if (ppvCreateDbgType in AFlags) then begin
+        s := '';
+        if m.ContextTypeInfo <> nil then s := m.ContextTypeInfo.Name;
+        f := TDBGField.Create(MbName, TDBGType.Create(skSimple, ResTypeName(m)),
+                              flPublic, [], s);
+        f.DBGType.Value.AsString := MbVal;
+        ADBGTypeInfo^.Fields.Add(f);
+      end;
     end;
-    APrintedValue := '(' + APrintedValue + ')';
+    if not Result then
+      APrintedValue := '(' + APrintedValue + ')';
     Result := True;
   end;
 
@@ -656,6 +752,14 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     Cnt, FullCnt, d: Integer;
   begin
     APrintedValue := '';
+
+    if (ppvCreateDbgType in AFlags) then begin
+      ADBGTypeInfo^ := TDBGType.Create(skArray, ResTypeName);
+    //ATypeInfo.Len;
+    //ATypeInfo.BoundLow;
+    //ATypeInfo.BoundHigh;
+    end;
+
     Cnt := AValue.MemberCount;
     FullCnt := Cnt;
     if (Cnt = 0) and (svfOrdinal in AValue.FieldFlags) then begin  // dyn array
@@ -680,7 +784,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     for i := d to d + Cnt - 1 do begin
       m := AValue.Member[i];
       if m <> nil then
-        InternalPrintValue(s, m, AnAddressSize, AFlags, ANestLevel+1, AnIndent, ADisplayFormat)
+        InternalPrintValue(s, m, AnAddressSize, AFlags * PV_FORWARD_FLAGS, ANestLevel+1, AnIndent, ADisplayFormat)
       else
         s := '{error}';
       if APrintedValue = ''
@@ -698,6 +802,7 @@ var
   MemDest: array of Byte;
   i: Integer;
 begin
+  if ADBGTypeInfo <> nil then ADBGTypeInfo^ := nil;
   if ANestLevel > 0 then begin
     AnIndent := AnIndent + '  ';
   end;
@@ -770,6 +875,9 @@ begin
     skArray:     DoArray;
   end;
 
+  if (ADBGTypeInfo <> nil) and (ADBGTypeInfo^ <> nil) then
+    ADBGTypeInfo^.Value.AsString := APrintedValue;
+
   if IsError(AValue.LastError) then
     APrintedValue := ErrorHandler.ErrorAsString(AValue.LastError);
 end;
@@ -781,12 +889,18 @@ end;
 
 function TFpPascalPrettyPrinter.PrintValue(out APrintedValue: String; AValue: TFpDbgValue;
   ADisplayFormat: TWatchDisplayFormat; ARepeatCount: Integer): Boolean;
-var
-  x: QWord;
 begin
-x:= GetTickCount64;
-  Result := InternalPrintValue(APrintedValue, AValue, AddressSize, [], 0, '', ADisplayFormat, ARepeatCount);
-debugln(['    TFpPascalPrettyPrinter.PrintValue ', (GetTickCount64-x)/1000]);
+  Result := InternalPrintValue(APrintedValue, AValue,
+                               AddressSize, [], 0, '', ADisplayFormat, ARepeatCount);
+end;
+
+function TFpPascalPrettyPrinter.PrintValue(out APrintedValue: String; out
+  ADBGTypeInfo: TDBGType; AValue: TFpDbgValue; ADisplayFormat: TWatchDisplayFormat;
+  ARepeatCount: Integer): Boolean;
+begin
+  Result := InternalPrintValue(APrintedValue, AValue,
+                               AddressSize, [ppvCreateDbgType], 0, '',
+                               ADisplayFormat, ARepeatCount, @ADBGTypeInfo);
 end;
 
 end.
