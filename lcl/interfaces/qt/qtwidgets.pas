@@ -9582,7 +9582,15 @@ var
 {$ENDIF}
   ALCLEvent: QLCLMessageEventH;
   ASize: TSize;
-  AResizeEvent: QResizeEventH;
+
+  procedure DelayResizeEvent;
+  var
+    ALCLResizeEvent: QLCLMessageEventH;
+  begin
+    ALCLResizeEvent := QLCLMessageEvent_create(LCLQt_DelayResizeEvent, 0, MakeWParam(Word(ASize.cx), Word(ASize.cy)), 0, 0);
+    QCoreApplication_postEvent(QWidgetH(Sender), ALCLResizeEvent);
+  end;
+
 begin
 
   Result := False;
@@ -9597,25 +9605,16 @@ begin
       ' LCLObject=', dbgsName(LCLObject),
       ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
     {$endif}
-    {
-    main resize event should come from FStackWidget, not from QTabWidget,
-    after FStackWidget is resized by Qt to it's final size.
-    QTabWidget don't send QResizeEvent to LCL.
-    }
-    ASize := getSize;
-    AResizeEvent := QResizeEvent_create(@ASize, @ASize);
-    try
-      SlotResize(AResizeEvent);
-    finally
-      QEvent_destroy(AResizeEvent);
-    end;
-
+    {leave this for debugging purposes}
     exit;
   end;
 
   BeginEventProcessing;
   case QEvent_type(Event) of
-    QEventResize: ; // stackwidget does that, look above
+    QEventResize:
+    begin
+      DelayResizeEvent; // delay resize event since we are complex widget
+    end;
     {$IFDEF QT_ENABLE_LCL_PAINT_TABS}
     QEventPaint:
       begin
