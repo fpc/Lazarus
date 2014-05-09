@@ -178,6 +178,8 @@ type
     function CanChangeFontColor: Boolean; virtual;
     function CanSendLCLMessage: Boolean;
     function CanPaintBackground: Boolean; virtual;
+    {delays resize event of complex widgets or when LCLObject have caspComputingBounds in AutoSizePhases}
+    procedure DelayResizeEvent(AWidget: QWidgetH; ANewSize: TSize);
     function DeliverMessage(var Msg; const AIsInputEvent: Boolean = False): LRESULT; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getAcceptDropFiles: Boolean; virtual;
@@ -2212,6 +2214,14 @@ begin
   Result := False;
 end;
 
+procedure TQtWidget.DelayResizeEvent(AWidget: QWidgetH; ANewSize: TSize);
+var
+  ALCLResizeEvent: QLCLMessageEventH;
+begin
+  ALCLResizeEvent := QLCLMessageEvent_create(LCLQt_DelayResizeEvent, 0, MakeWParam(Word(ANewSize.cx), Word(ANewSize.cy)), 0, 0);
+  QCoreApplication_postEvent(AWidget, ALCLResizeEvent);
+end;
+
 {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents) OR DEFINED(VerboseQtKeys)}
 function EventTypeToStr(Event:QEventH):string;
 // Qt 3 events
@@ -4013,15 +4023,6 @@ var
   Msg: TLMSize;
   NewSize: TSize;
   R: TRect;
-
-  procedure DelayResizeEvent;
-  var
-    ALCLResizeEvent: QLCLMessageEventH;
-  begin
-    ALCLResizeEvent := QLCLMessageEvent_create(LCLQt_DelayResizeEvent, 0, MakeWParam(Word(NewSize.cx), Word(NewSize.cy)), 0, 0);
-    QCoreApplication_postEvent(Widget, ALCLResizeEvent);
-  end;
-
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotResize');
@@ -4060,7 +4061,7 @@ begin
       {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
       DebugLn('WARNING: *TQtWidget.SlotResize caspComputingBounds=true* ! ',dbgsname(LCLObject),' inUpdate=',dbgs(inUpdate),' Time: ',dbgs(GetTickCount));
       {$ENDIF}
-      DelayResizeEvent;
+      DelayResizeEvent(Widget, NewSize);
       exit;
     end else
       LCLObject.DoAdjustClientRectChange;
@@ -9581,16 +9582,7 @@ var
   Pt: TPoint;
 {$ENDIF}
   ALCLEvent: QLCLMessageEventH;
-  ASize: TSize;
-
-  procedure DelayResizeEvent;
-  var
-    ALCLResizeEvent: QLCLMessageEventH;
-  begin
-    ALCLResizeEvent := QLCLMessageEvent_create(LCLQt_DelayResizeEvent, 0, MakeWParam(Word(ASize.cx), Word(ASize.cy)), 0, 0);
-    QCoreApplication_postEvent(QWidgetH(Sender), ALCLResizeEvent);
-  end;
-
+  ANewSize: TSize;
 begin
 
   Result := False;
@@ -9613,7 +9605,8 @@ begin
   case QEvent_type(Event) of
     QEventResize:
     begin
-      DelayResizeEvent; // delay resize event since we are complex widget
+      ANewSize := QResizeEvent_size(QResizeEventH(Event))^;
+      DelayResizeEvent(QWidgetH(Sender), ANewSize); // delay resize event since we are complex widget
     end;
     {$IFDEF QT_ENABLE_LCL_PAINT_TABS}
     QEventPaint:
@@ -16682,19 +16675,33 @@ begin
 end;
 
 function TQtPage.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  ASize: TSize;
 begin
+  Result := False;
+  if LCLObject = nil then
+    exit;
   if (QEvent_type(Event) = QEventResize) then
   begin
-    //behaviour is changed because of issue #21805.
-    if LCLObject.ClientRectNeedsInterfaceUpdate then
+    if (csDestroying in LCLObject.ComponentState) or
+      (csDestroyingHandle in LCLObject.ControlState) then
+        exit;
+    if not testAttribute(QtWA_Mapped) then
     begin
-      {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
-      DebugLn('<*><*> TQtPage resize event invalidating clientrect cache !!!');
+      ASize := QResizeEvent_size(QResizeEventH(Event))^;
+      {$IFDEF VerboseQtResize}
+      DebugLn('TQtPage.EventFilter widget is not mapped, resize event size=',dbgs(ASize));
       {$ENDIF}
-      LCLObject.InvalidateClientRectCache(False);
-
-      if FChildOfComplexWidget = ccwTabWidget then
-        exit(False);
+      if (ASize.cx = 0) and (ASize.cy = 0) then
+      begin
+        ASize.cx := LCLObject.Width;
+        ASize.cy := LCLObject.Height;
+        {$IFDEF VerboseQtResize}
+        DebugLn('TQtPage.EventFilter sending LCL size as size=',dbgs(ASize),' since our size is still 0x0');
+        {$ENDIF}
+      end;
+      DelayResizeEvent(QWidgetH(Sender), ASize);
+      exit;
     end;
   end;
   Result := inherited EventFilter(Sender, Event);
