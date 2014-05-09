@@ -50,6 +50,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Execute; override;
+  published
     property ApplicationName: string read FApplicationNameUTF8 write SetApplicationNameUTF8;
     property CommandLine: string read FCommandLineUTF8 write SetCommandLineUTF8;
     property ConsoleTitle: string read FConsoleTitleUTF8 write SetConsoleTitleUTF8;
