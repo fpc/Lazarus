@@ -27,7 +27,7 @@ uses
   qt4,
   qtobjects, qtwidgets, qtproc,
   // LCL
-  SysUtils, Classes, Controls, LCLType, Forms,
+  SysUtils, Classes, types, Controls, LCLType, Forms,
   {$IFDEF QTSCROLLABLEFORMS}StdCtrls,{$ENDIF}
   // Widgetset
   InterfaceBase, WSForms, WSProc, WSLCLClasses;
@@ -70,6 +70,9 @@ type
     class procedure UpdateWindowFlags(const AWidget: TQtMainWindow;
       ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons; AFormStyle: TFormStyle);
   published
+    class function GetDefaultClientRect(const AWinControl: TWinControl;
+             const {%H-}aLeft, {%H-}aTop, aWidth, aHeight: integer; var aClientRect: TRect
+             ): boolean; override;
     class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
@@ -130,7 +133,9 @@ type
 
 implementation
 
-uses qtint, QtWSControls, LCLIntf;
+uses qtint, QtWSControls, LCLIntf
+  {$IFDEF VerboseQtResize}, LCLProc{$ENDIF}
+  ;
 
 { TQtWSScrollingWinControl }
 
@@ -942,6 +947,34 @@ begin
 
   AWidget.setVisible(AVisible);
   AWidget.EndUpdate;
+end;
+
+class function TQtWSCustomForm.GetDefaultClientRect(
+  const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
+  var aClientRect: TRect): boolean;
+var
+  AWin: TQtMainWindow;
+  ASize: TSize;
+begin
+  Result := False;
+  if AWinControl.HandleAllocated and not
+    TQtMainWindow(AWinControl.Handle).testAttribute(QtWA_Mapped) then
+  begin
+    if Assigned(TCustomForm(AWinControl).Menu) then
+    begin
+      AWin := TQtMainWindow(AWinControl.Handle);
+      if Assigned(AWin.MenuBar) then
+      begin
+        AWin.MenuBar.sizeHint(@ASize);
+        aClientRect := AWin.getClientBounds;
+        dec(AClientRect.Bottom, ASize.cy);
+        {$IFDEF VerboseQtResize}
+        DebugLn(TQtWSCustomForm.getDefaultClientRect ',dbgsName(AWinControl),' ',dbgs(AWin.getClientBounds),' mnuBarHeight ',dbgs(AWin.MenuBar.getHeight),' ASize=',dbgs(ASize),' FINAL=',dbgs(AClientRect));
+        {$ENDIF}
+        Result := True;
+      end;
+    end;
+  end;
 end;
 
 class function TQtWSCustomForm.CanFocus(const AWinControl: TWinControl
