@@ -274,6 +274,8 @@ const
    LCLQt_ItemViewAfterMouseRelease = QEventType(Ord(QEventUser) + $1008);
    // used by TQtTabWidget
    LCLQt_DelayLayoutRequest = QEventType(Ord(QEventUser) + $1009);
+   // delayed resize event if wincontrol is computing bounds
+   LCLQt_DelayResizeEvent = QEventType(Ord(QEventUser) + $1010);
 
 
    QtTextSingleLine            = $0100;
