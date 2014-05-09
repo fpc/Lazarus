@@ -969,7 +969,7 @@ begin
         aClientRect := AWin.getClientBounds;
         dec(AClientRect.Bottom, ASize.cy);
         {$IFDEF VerboseQtResize}
-        DebugLn(TQtWSCustomForm.getDefaultClientRect ',dbgsName(AWinControl),' ',dbgs(AWin.getClientBounds),' mnuBarHeight ',dbgs(AWin.MenuBar.getHeight),' ASize=',dbgs(ASize),' FINAL=',dbgs(AClientRect));
+        DebugLn('TQtWSCustomForm.getDefaultClientRect ',dbgsName(AWinControl),' ',dbgs(AWin.getClientBounds),' mnuBarHeight ',dbgs(AWin.MenuBar.getHeight),' ASize=',dbgs(ASize),' FINAL=',dbgs(AClientRect));
         {$ENDIF}
         Result := True;
       end;
