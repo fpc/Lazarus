@@ -6,7 +6,7 @@ interface
 
 uses
   Classes,
-  SysUtils,
+  SysUtils, fgl,
   Forms,
   Maps,
   process,
@@ -128,14 +128,13 @@ type
   { TFPCallStackSupplier }
 
   TFPCallStackSupplier = class(TCallStackSupplier)
-  private
-    FCallStack: TDbgCallstackEntryList;
   protected
     procedure DoStateLeavePause; override;
   public
     procedure RequestCount(ACallstack: TCallStackBase); override;
     procedure RequestEntries(ACallstack: TCallStackBase); override;
-    destructor Destroy; override;
+    procedure RequestCurrent(ACallstack: TCallStackBase); override;
+    procedure UpdateCurrentIndex; override;
   end;
 
   { TFPLocals }
@@ -207,7 +206,11 @@ end;
 
 procedure TFPCallStackSupplier.DoStateLeavePause;
 begin
-  FreeAndNil(FCallStack);
+  if (TFpDebugDebugger(Debugger).FDbgController <> nil) and
+     (TFpDebugDebugger(Debugger).FDbgController.CurrentProcess <> nil) and
+     (TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread <> nil)
+  then
+    TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.ClearCallStack;
   inherited DoStateLeavePause;
 end;
 
@@ -215,23 +218,24 @@ procedure TFPCallStackSupplier.RequestCount(ACallstack: TCallStackBase);
 var
   Address, Frame, LastFrame: QWord;
   Size, Count: integer;
+  ThreadCallStack: TDbgCallstackEntryList;
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
   then begin
     ACallstack.SetCountValidity(ddsInvalid);
     exit;
   end;
-  if not assigned(FCallStack) then
-    FCallStack := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.CreateCallStackEntryList;
+  TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.PrepareCallStackEntryList;
+  ThreadCallStack := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.CallStackEntryList;
 
-  if FCallStack.Count = 0 then
+  if ThreadCallStack.Count = 0 then
   begin
     ACallstack.SetCountValidity(ddsInvalid);
     ACallstack.SetHasAtLeastCountInfo(ddsInvalid);
   end
   else
   begin
-    ACallstack.Count := FCallStack.Count;
+    ACallstack.Count := ThreadCallStack.Count;
     ACallstack.SetCountValidity(ddsValid);
   end;
 end;
@@ -240,8 +244,11 @@ procedure TFPCallStackSupplier.RequestEntries(ACallstack: TCallStackBase);
 var
   e: TCallStackEntry;
   It: TMapIterator;
+  ThreadCallStack: TDbgCallstackEntryList;
 begin
   It := TMapIterator.Create(ACallstack.RawEntries);
+  //TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.PrepareCallStackEntryList;
+  ThreadCallStack := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.CallStackEntryList;
 
   if not It.Locate(ACallstack.LowestUnknown )
   then if not It.EOM
@@ -252,17 +259,36 @@ begin
     e := TCallStackEntry(It.DataPtr^);
     if e.Validity = ddsRequested then
     begin
-      e.Init(FCallStack[e.Index].AnAddress, nil, '', FCallStack[e.Index].SourceFile, '', FCallStack[e.Index].Line, ddsValid);
+      e.Init(ThreadCallStack[e.Index].AnAddress, nil, '', ThreadCallStack[e.Index].SourceFile, '', ThreadCallStack[e.Index].Line, ddsValid);
     end;
     It.Next;
   end;
   It.Free;
 end;
 
-destructor TFPCallStackSupplier.Destroy;
+procedure TFPCallStackSupplier.RequestCurrent(ACallstack: TCallStackBase);
 begin
-  FCallStack.Free;
-  inherited Destroy;
+  ACallstack.CurrentIndex := 0;
+  ACallstack.SetCurrentValidity(ddsValid);
+end;
+
+procedure TFPCallStackSupplier.UpdateCurrentIndex;
+var
+  tid, idx: Integer;
+  cs: TCallStackBase;
+begin
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
+    exit;
+  end;
+
+  tid := Debugger.Threads.CurrentThreads.CurrentThreadId;
+  cs := TCallStackBase(CurrentCallStackList.EntriesForThreads[tid]);
+  idx := cs.NewCurrentIndex;  // NEW-CURRENT
+
+  if cs <> nil then begin
+    cs.CurrentIndex := idx;
+    cs.SetCurrentValidity(ddsValid);
+  end;
 end;
 
 { TFPLocals }
@@ -757,6 +783,10 @@ var
   DispFormat: TWatchDisplayFormat;
   RepeatCnt: Integer;
   Res: Boolean;
+  AFrame: TDbgCallstackEntry;
+  StackFrame, ThreadId: Integer;
+  RegList: TDbgRegisterValueList;
+  Reg: TDbgRegisterValue;
 begin
   Result := False;
   AResText := '';
@@ -766,17 +796,38 @@ begin
   ADbgInfo := AController.CurrentProcess.DbgInfo;
 
   if AWatchValue <> nil then begin
-    // TODO: Address fol frame and thread (Or ensure it can be found via registers)
-    AContext := ADbgInfo.FindContext(AWatchValue.ThreadId, AWatchValue.StackFrame, AController.CurrentProcess.GetInstructionPointerRegisterValue);
+    StackFrame := AWatchValue.StackFrame;
+    ThreadId := AWatchValue.ThreadId;
     DispFormat := AWatchValue.DisplayFormat;
     RepeatCnt := AWatchValue.RepeatCount;
   end
   else begin
     // TODO: frame and thread
-    AContext := ADbgInfo.FindContext(AController.CurrentProcess.GetInstructionPointerRegisterValue);
+    StackFrame := 0;
+    ThreadId := 1;
     DispFormat := wdfDefault;
     RepeatCnt := -1;
   end;
+
+  if StackFrame > 0 then
+    begin
+    FDbgController.CurrentProcess.MainThread.PrepareCallStackEntryList(StackFrame);
+    AFrame := FDbgController.CurrentProcess.MainThread.CallStackEntryList[StackFrame];
+    if AFrame = nil then
+      begin
+      if AWatchValue <> nil then
+        AWatchValue.Validity := ddsInvalid;
+      exit;
+      end;
+    RegList := AFrame.RegisterValueList;
+    end
+  else
+    RegList := AController.CurrentProcess.MainThread.RegisterValueList;
+  Reg := RegList.FindRegisterByDwarfIndex(8);
+  if Reg <> nil then
+    AContext := ADbgInfo.FindContext(ThreadId, StackFrame, Reg.NumValue)
+  else
+    AContext := nil;
 
   if AContext = nil then
     begin

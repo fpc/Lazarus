@@ -90,15 +90,18 @@ type
     FThread: TDbgThread;
     FIsSymbolResolved: boolean;
     FSymbol: TFpDbgSymbol;
+    FRegisterValueList: TDbgRegisterValueList;
     function GetSymbol: TFpDbgSymbol;
     function GetLine: integer;
     function GetSourceFile: string;
   public
     constructor create(AThread: TDbgThread; AFrameAddress, AnAddress: TDBGPtr);
+    destructor Destroy; override;
     property AnAddress: TDBGPtr read FAnAddress;
     property FrameAdress: TDBGPtr read FFrameAdress;
     property SourceFile: string read GetSourceFile;
     property Line: integer read GetLine;
+    property RegisterValueList: TDbgRegisterValueList read FRegisterValueList;
   end;
 
   TDbgCallstackEntryList = specialize TFPGObjectList<TDbgCallstackEntry>;
@@ -130,6 +133,7 @@ type
     FStepping: Boolean;
     function GetRegisterValueList: TDbgRegisterValueList;
   protected
+    FCallStackEntryList: TDbgCallstackEntryList;
     FRegisterValueListValid: boolean;
     FRegisterValueList: TDbgRegisterValueList;
     FStoreStepSrcFilename: string;
@@ -151,7 +155,8 @@ type
     procedure BeforeContinue; virtual;
     function AddWatchpoint(AnAddr: TDBGPtr): integer; virtual;
     function RemoveWatchpoint(AnId: integer): boolean; virtual;
-    function CreateCallStackEntryList: TDbgCallstackEntryList; virtual;
+    procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); virtual;
+    procedure ClearCallStack;
     procedure AfterHitBreak;
     procedure ClearHWBreakpoint;
     destructor Destroy; override;
@@ -168,6 +173,7 @@ type
     property Stepping: boolean read FStepping;
     property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
     property HiddenBreakpoint: TDbgBreakpoint read FHiddenBreakpoint;
+    property CallStackEntryList: TDbgCallstackEntryList read FCallStackEntryList;
   end;
   TDbgThreadClass = class of TDbgThread;
 
@@ -403,6 +409,13 @@ begin
   FThread := AThread;
   FFrameAdress:=AFrameAddress;
   FAnAddress:=AnAddress;
+  FRegisterValueList := TDbgRegisterValueList.Create;
+end;
+
+destructor TDbgCallstackEntry.Destroy;
+begin
+  FRegisterValueList.Free;
+  inherited Destroy;
 end;
 
 { TDbgMemReader }
@@ -426,8 +439,27 @@ end;
 function TDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean;
 var
   ARegister: TDbgRegisterValue;
+  StackFrame: Integer;
+  AFrame: TDbgCallstackEntry;
 begin
-  ARegister:=FDbgProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
+  // TODO: Thread with ID
+  if AContext <> nil then
+    StackFrame := AContext.StackFrame
+  else
+    StackFrame := 0;
+  if StackFrame = 0 then
+    begin
+    ARegister:=FDbgProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
+    end
+  else
+    begin
+    FDbgProcess.MainThread.PrepareCallStackEntryList(StackFrame);
+    AFrame := FDbgProcess.MainThread.CallStackEntryList[StackFrame];
+    if AFrame <> nil then
+      ARegister:=AFrame.RegisterValueList.FindRegisterByDwarfIndex(ARegNum)
+    else
+      ARegister:=nil;
+    end;
   if assigned(ARegister) then
     begin
     AValue := ARegister.NumValue;
@@ -972,32 +1004,54 @@ begin
   result := false;
 end;
 
-function TDbgThread.CreateCallStackEntryList: TDbgCallstackEntryList;
+procedure TDbgThread.PrepareCallStackEntryList(AFrameRequired: Integer);
 var
   Address, Frame, LastFrame: QWord;
   Size, Count: integer;
   AnEntry: TDbgCallstackEntry;
+  RegList: TDbgRegisterValueList;
+  EIP, ESP: TDbgRegisterValue;
 begin
-  Address := Process.GetInstructionPointerRegisterValue;
-  Frame := Process.GetStackBasePointerRegisterValue;;
-  Size := sizeof(pointer);
+  // TODO: use AFrameRequired // check if already partly done
+  if FCallStackEntryList = nil then
+    FCallStackEntryList := TDbgCallstackEntryList.Create;
+  if (AFrameRequired >= 0) and (AFrameRequired < FCallStackEntryList.Count) then
+    exit;
+  // TODO: remove, using AFrameRequired
+  if FCallStackEntryList.Count > 0 then exit; // allready done
 
-  result := TDbgCallstackEntryList.Create;
-  result.FreeObjects:=true;
+  RegList := GetRegisterValueList;
+  EIP := RegList.FindRegisterByDwarfIndex(8);
+  ESP := RegList.FindRegisterByDwarfIndex(5);
+
+  Address := EIP.NumValue; // Process.GetInstructionPointerRegisterValue;
+  Frame := ESP.NumValue; // Process.GetStackBasePointerRegisterValue;
+  Size := sizeof(pointer); // TODO: Context.AddressSize
+
+  FCallStackEntryList.FreeObjects:=true;
   AnEntry := TDbgCallstackEntry.create(Self, Frame, Address);
-  Result.Add(AnEntry);
+  // Top level entry needs no registerlist / same as GetRegisterValueList
+  FCallStackEntryList.Add(AnEntry);
 
   LastFrame := 0;
   Count := 25;
   while (Frame <> 0) and (Frame > LastFrame) do
   begin
     if not Process.ReadData(Frame + Size, Size, Address) or (Address = 0) then Break;
+    if not Process.ReadData(Frame, Size, Frame) then Break;
     AnEntry := TDbgCallstackEntry.create(Self, Frame, Address);
-    Result.Add(AnEntry);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(Address, IntToStr(Address),Size,8);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['esp'].SetValue(Address, IntToStr(Address),Size,5);
+    FCallStackEntryList.Add(AnEntry);
     Dec(count);
     if Count <= 0 then Break;
-    if not Process.ReadData(Frame, Size, Frame) then Break;
   end;
+end;
+
+procedure TDbgThread.ClearCallStack;
+begin
+  if FCallStackEntryList <> nil then
+    FCallStackEntryList.Clear;
 end;
 
 procedure TDbgThread.AfterHitBreak;
@@ -1027,6 +1081,8 @@ destructor TDbgThread.Destroy;
 begin
   FProcess.ThreadDestroyed(Self);
   FRegisterValueList.Free;
+  ClearCallStack;
+  FCallStackEntryList.Free;
   inherited;
 end;
 
