@@ -4,11 +4,12 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
+"Language: de_DE\n"
 
 #: svnclasses.rsaction
 msgid "Action"
@@ -151,7 +152,9 @@ msgstr "Projekt ist aktiv"
 
 #: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
 msgid "Project is not active in SVN settings, please activate first."
-msgstr "Projekt ist in den SVN-Einstellungen nicht aktiviert, holen Sie das zunächst nach."
+msgstr ""
+"Projekt ist in den SVN-Einstellungen nicht aktiviert, holen Sie das zunächst "
+"nach."
 
 #: svnclasses.rsprojectname
 msgid "Project name"
@@ -203,7 +206,6 @@ msgid "Show Diff of Local Changes"
 msgstr "Zeige Vergleich der lokalen Änderungen"
 
 #: svnclasses.rsshowdiffcountrev
-#, fuzzy
 #| msgid "Show last X commits"
 msgid "Show Last X Commits"
 msgstr "Zeige letzte x Übertragungen"
@@ -232,7 +234,7 @@ msgstr "SVN-Einstellungen"
 
 #: svnclasses.rssvntools
 msgid "SVN tools"
-msgstr "SVN Werkzeuge"
+msgstr "SVN-Werkzeuge"
 
 #: svnclasses.rsupdate
 msgid "Update"
@@ -241,4 +243,3 @@ msgstr "Aktualisierung"
 #: svnclasses.rsupdated
 msgid "Updated"
 msgstr "Aktualisiert"
-
