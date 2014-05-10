@@ -259,7 +259,9 @@ begin
     e := TCallStackEntry(It.DataPtr^);
     if e.Validity = ddsRequested then
     begin
-      e.Init(ThreadCallStack[e.Index].AnAddress, nil, '', ThreadCallStack[e.Index].SourceFile, '', ThreadCallStack[e.Index].Line, ddsValid);
+      e.Init(ThreadCallStack[e.Index].AnAddress, nil,
+        ThreadCallStack[e.Index].FunctionName, ThreadCallStack[e.Index].SourceFile,
+        '', ThreadCallStack[e.Index].Line, ddsValid);
     end;
     It.Next;
   end;

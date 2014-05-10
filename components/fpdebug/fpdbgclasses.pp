@@ -91,6 +91,7 @@ type
     FIsSymbolResolved: boolean;
     FSymbol: TFpDbgSymbol;
     FRegisterValueList: TDbgRegisterValueList;
+    function GetFunctionName: string;
     function GetSymbol: TFpDbgSymbol;
     function GetLine: integer;
     function GetSourceFile: string;
@@ -100,6 +101,7 @@ type
     property AnAddress: TDBGPtr read FAnAddress;
     property FrameAdress: TDBGPtr read FFrameAdress;
     property SourceFile: string read GetSourceFile;
+    property FunctionName: string read GetFunctionName;
     property Line: integer read GetLine;
     property RegisterValueList: TDbgRegisterValueList read FRegisterValueList;
   end;
@@ -380,6 +382,17 @@ begin
   if not FIsSymbolResolved then
     FSymbol := FThread.Process.FindSymbol(FAnAddress);
   result := FSymbol;
+end;
+
+function TDbgCallstackEntry.GetFunctionName: string;
+var
+  Symbol: TFpDbgSymbol;
+begin
+  Symbol := GetSymbol;
+  if assigned(Symbol) then
+    result := Symbol.Name
+  else
+    result := '';
 end;
 
 function TDbgCallstackEntry.GetLine: integer;
