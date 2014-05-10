@@ -312,6 +312,7 @@ var
   AFrame: TDbgCallstackEntry;
   RegList: TDbgRegisterValueList;
   Reg: TDbgRegisterValue;
+  CurStackList: TCallStackBase;
 begin
   AController := FpDebugger.FDbgController;
   if (AController = nil) or (AController.CurrentProcess = nil) or
@@ -322,7 +323,11 @@ begin
   end;
 
   CurThreadId := Debugger.Threads.CurrentThreads.CurrentThreadId;
-  CurStackFrame := Debugger.CallStack.CurrentCallStackList.EntriesForThreads[CurThreadId].CurrentIndex;
+  CurStackList := Debugger.CallStack.CurrentCallStackList.EntriesForThreads[CurThreadId];
+  if CurStackList <> nil then
+    CurStackFrame := Debugger.CallStack.CurrentCallStackList.EntriesForThreads[CurThreadId].CurrentIndex
+  else
+    CurStackFrame := 0;
 
   if CurStackFrame > 0 then
     begin
@@ -814,6 +819,7 @@ var
   StackFrame, ThreadId: Integer;
   RegList: TDbgRegisterValueList;
   Reg: TDbgRegisterValue;
+  StackList: TCallStackBase;
 begin
   Result := False;
   AResText := '';
@@ -829,9 +835,12 @@ begin
     RepeatCnt := AWatchValue.RepeatCount;
   end
   else begin
-    // TODO: frame and thread
-    StackFrame := 0;
-    ThreadId := 1;
+    ThreadId := Threads.CurrentThreads.CurrentThreadId;
+    StackList := CallStack.CurrentCallStackList.EntriesForThreads[ThreadId];
+    if StackList <> nil then
+      StackFrame := CallStack.CurrentCallStackList.EntriesForThreads[ThreadId].CurrentIndex
+    else
+      StackFrame := 0;
     DispFormat := wdfDefault;
     RepeatCnt := -1;
   end;
