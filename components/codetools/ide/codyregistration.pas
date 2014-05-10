@@ -35,7 +35,7 @@ uses
   IDECommands, NewIDEWndDlg,
   CodeToolManager,
   CodyStrConsts, CodyUtils, CodyCtrls, CodyOpts,
-  PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg, CodyFindGDBLine,
+  PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg,
   CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration,
   CodyIdentifiersDlg, CodyMiscOptsFrame;
 
@@ -90,7 +90,6 @@ var
   CmdCatView: TIDECommandCategory;
   ViewCodyWindowCommand: TIDECommand;
   CmdCatSearchReplace: TIDECommandCategory;
-  FindGDBLineCommand: TIDECommand;
 begin
   CodyOptions:=TCodyMiscOptions.Create;
   CodyOptions.LoadSafe;
@@ -110,13 +109,6 @@ begin
   CmdCatView:=IDECommandList.FindCategoryByName(CommandCategoryViewName);
   if CmdCatView=nil then
     raise Exception.Create('cody: command category '+CommandCategoryViewName+' not found');
-
-  // Search menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  FindGDBLineCommand:=RegisterIDECommand(CmdCatSearchReplace, 'FindGDBBacktrace',
-    crsFindGDBBacktraceLine,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowFindGDBLineDialog);
-  RegisterIDEMenuCommand(itmCodeToolSearches,'FindGDBBacktraceLine',crsFindGDBBacktraceLine,
-    nil,nil,FindGDBLineCommand);
 
   // Project menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

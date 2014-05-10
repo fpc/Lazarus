@@ -19,7 +19,7 @@
     <Description Value="IDE extensions using Codetools."/>
     <License Value="GPL2"/>
     <Version Major="1" Minor="1"/>
-    <Files Count="17">
+    <Files Count="16">
       <Item1>
         <Filename Value="ppulistdlg.pas"/>
         <UnitName Value="PPUListDlg"/>
@@ -85,10 +85,6 @@
         <Filename Value="newidewnddlg.pas"/>
         <UnitName Value="NewIDEWndDlg"/>
       </Item16>
-      <Item17>
-        <Filename Value="codyfindgdbline.pas"/>
-        <UnitName Value="codyfindgdbline"/>
-      </Item17>
     </Files>
     <LazDoc Paths="doc"/>
     <i18n>
