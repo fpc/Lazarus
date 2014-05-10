@@ -2361,8 +2361,6 @@ type
     FDragBand: TDragBand;
     FDraggedBandIndex: Integer;  // -1 .. space below the last row; other negative .. invalid area
     FDragInitPos: Integer;       // Initial mouse X - position (for resizing Bands)
-    FPrevHeight: Integer;
-    FPrevWidth: Integer;
     FTextHeight: Integer;
     procedure AlignControls(AControl: TControl; var RemainingClientRect: TRect); override;
     procedure BitmapOrImageListChange(Sender: TObject);
@@ -2383,8 +2381,8 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
-    procedure Resize; override;
     procedure SetAlign(aValue: TAlign); reintroduce;
+    procedure WMSize(var Message: TLMSize); message LM_SIZE;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

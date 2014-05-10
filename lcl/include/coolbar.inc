@@ -504,8 +504,6 @@ begin
     if aCountM1 >= 0 then EnableAutoSizing;
     dec(FUpdateCount);
   end;
-  FPrevWidth := Width;
-  FPrevHeight := Height;
 end;
 
 procedure TCustomCoolBar.CalculatePreferredSize(var PreferredWidth, PreferredHeight: Integer;
@@ -957,19 +955,11 @@ begin
   end;
 end;
 
-procedure TCustomCoolBar.Resize;
-var aWidth, aHeight: Integer;
+procedure TCustomCoolBar.WMSize(var Message: TLMSize);
 begin
-  //DebugLn('Resize');
-  inherited Resize;
-  aWidth := Width;
-  aHeight := Height;
-  if ((aWidth <> FPrevWidth) or (aHeight <> FPrevHeight))
-    and (aWidth*aHeight > 0) and HandleAllocated then
-    begin
-      //DebugLn('Resize calls CalcAndAlign');
-      CalculateAndAlign;
-      Invalidate;  //Required by GTK2
-    end;
+  //DebugLn('WMSize');
+  inherited WMSize(Message);
+  CalculateAndAlign;
+  Invalidate;  //Required by GTK2
 end;
 
