@@ -330,36 +330,41 @@ begin
   Result := False;
 
   s := TrimLeft(SubStr);
-  i := pos('#', s);
-  if (i = 1) or (pos('~"#', s) = 1) then begin
+  if s='' then exit;
+
+  if (LeftStr(s,3) = '~"#') then begin
     // gdb
+    // examples:
+    //   ~"#0 DOHANDLEMOUSEACTION (this=0x14afae00, ANACTIONLIST=0x14a96af8,
+    //   ANINFO=...) at synedit.pp:3000\n"
+    //
+    //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
+    i:=3;
     Result := (i < Length(s)) and (s[i+1] in ['0'..'9']) and
               ( (pos(' at ', s) > 1) or (pos(' from ', s) > 1) );
     Result := Result or CheckOnlyLineStart;
-    exit;
-  end;
-  if copy(s,1,4) = '0000' then begin // leave 3 digits for pos
+  end
+  else if LeftStr(s,4) = '0000' then begin // leave 3 digits for pos
     // mantis mangled gdb ?
     i := pos(':', s);
     Result := (  ((i > 1) and (i < Length(s)) and (s[i+1] in ['0'..'9'])) or
                  (pos(' in ', s) > 1)  ) and
               ( (pos(' at ', s) > 1) or (pos(' from ', s) > 1) );
     Result := Result or CheckOnlyLineStart;
-    exit;
+  end else begin
+    // heaptrc line?
+    i := 1;
+    l := length(SubStr);
+    while (i <= l) and (SubStr[i] = ' ') do inc(i);
+    if (i > l) or (SubStr[i] <> '$') then exit;
+    inc(i);
+    while (i <= l) and
+          ((SubStr[i] in ['0'..'9']) or ((SubStr[i] in ['A'..'F'])) or ((SubStr[i] in ['a'..'f'])))
+    do inc(i);
+    if (i > l) or (SubStr[i] <> ' ') then exit;
+    Result := (Pos('line', SubStr) > 0)
+            or CheckOnlyLineStart;
   end;
-
-  // heaptrc line?
-  i := 1;
-  l := length(SubStr);
-  while (i <= l) and (SubStr[i] = ' ') do inc(i);
-  if (i > l) or (SubStr[i] <> '$') then exit;
-  inc(i);
-  while (i <= l) and
-        ((SubStr[i] in ['0'..'9']) or ((SubStr[i] in ['A'..'F'])) or ((SubStr[i] in ['a'..'f'])))
-  do inc(i);
-  if (i > l) or (SubStr[i] <> ' ') then exit;
-  Result := Pos('line', SubStr) > 0;
-  Result := Result or CheckOnlyLineStart;
 end;
 
 function THeapTrcInfo.IsHeaderLine(const SubStr: string): Boolean;
