@@ -306,6 +306,10 @@ var
   i: Integer;
   m: TFpDbgValue;
   n, v: String;
+  CurThreadId, CurStackFrame: Integer;
+  AFrame: TDbgCallstackEntry;
+  RegList: TDbgRegisterValueList;
+  Reg: TDbgRegisterValue;
 begin
   AController := FpDebugger.FDbgController;
   if (AController = nil) or (AController.CurrentProcess = nil) or
@@ -314,7 +318,28 @@ begin
     ALocals.SetDataValidity(ddsInvalid);
     exit;
   end;
-  AContext := AController.CurrentProcess.DbgInfo.FindContext(AController.CurrentProcess.GetInstructionPointerRegisterValue);
+
+  CurThreadId := Debugger.Threads.CurrentThreads.CurrentThreadId;
+  CurStackFrame := Debugger.CallStack.CurrentCallStackList.EntriesForThreads[CurThreadId].CurrentIndex;
+
+  if CurStackFrame > 0 then
+    begin
+    AController.CurrentProcess.MainThread.PrepareCallStackEntryList(CurStackFrame);
+    AFrame := AController.CurrentProcess.MainThread.CallStackEntryList[CurStackFrame];
+    if AFrame = nil then
+      begin
+      ALocals.SetDataValidity(ddsInvalid);
+      exit;
+      end;
+    RegList := AFrame.RegisterValueList;
+    end
+  else
+    RegList := AController.CurrentProcess.MainThread.RegisterValueList;
+  Reg := RegList.FindRegisterByDwarfIndex(8);
+  if Reg <> nil then
+    AContext := AController.CurrentProcess.DbgInfo.FindContext(ThreadId, CurStackFrame, Reg.NumValue)
+  else
+    AContext := nil;
 
   if (AContext = nil) or (AContext.SymbolAtAddress = nil) then begin
     ALocals.SetDataValidity(ddsInvalid);
