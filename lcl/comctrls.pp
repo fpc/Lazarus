@@ -2342,6 +2342,7 @@ type
     FVertical: Boolean;
     FOnChange: TNotifyEvent;
     function GetAlign: TAlign;
+    function RowEndHelper(ALeft, AVisInd: Integer): Boolean;
     procedure SetBandBorderStyle(AValue: TBorderStyle);
     procedure SetBands(AValue: TCoolBands);
     procedure SetBitmap(aValue: TBitmap);

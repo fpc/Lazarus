@@ -457,9 +457,7 @@ begin
     if (FVisiBands[i].Break or Vertical) or aRowEnd then aLeft := cBorderWidth;
     aHeight := Max(aHeight, FVisiBands[i].CalcPreferredHeight);
     inc(aLeft, FVisiBands[i].Width);
-    aRowEnd := (i = aCountM1) or ((i < aCountM1)
-      and ((FVisiBands[i+1].Break or Vertical)
-      or ((aLeft+FVisiBands[i+1].Width) > (ClientWidth-2*cBorderWidth))));
+    aRowEnd := (i = aCountM1) or ( (i < aCountM1) and RowEndHelper(ALeft, i) );
     //Set all Bands in row to uniform height
     if aRowEnd then begin
       for y := aStartIndex to i do
@@ -590,11 +588,15 @@ begin
   CalculateAndAlign;
 end;
 
+function TCustomCoolBar.RowEndHelper(ALeft, AVisInd: Integer): Boolean;
+begin
+  Result := FVisiBands[AVisInd+1].Break  or Vertical
+    or (ALeft+FVisiBands[AVisInd+1].Width > ClientWidth);
+end;
+
 function TCustomCoolBar.IsRowEnd(ALeft, AVisibleIndex: Integer): Boolean;
 begin
-  Result := (AVisibleIndex < (length(FVisiBands)-1))
-    and ((FVisiBands[AVisibleIndex+1].Break or Vertical)
-    or ((ALeft+FVisiBands[AVisibleIndex+1].Width) > ClientWidth));
+  Result := (AVisibleIndex < length(FVisiBands)-1) and RowEndHelper(ALeft, AVisibleIndex);
 end;
 
 procedure TCustomCoolBar.InsertControl(AControl: TControl; Index: integer);
