@@ -464,7 +464,7 @@ begin
   end;
 
   {$IFDEF QTSCROLLABLEFORMS}
-  if (AWinControl.FCompStyle <> csForm) and Assigned(AWinControl.Parent) and
+  if Assigned(AWinControl.Parent) and
     (AWinControl.Parent.FCompStyle = csForm) then
   begin
     AForm := TCustomForm(AWinControl.Parent);
