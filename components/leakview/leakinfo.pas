@@ -7,19 +7,22 @@ unit leakinfo;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazClasses, DbgInfoReader;
+  Classes, SysUtils, FileUtil, LazClasses, LazLoggerBase, DbgInfoReader,
+  TextTools, LazIDEIntf, ProjectIntf, SrcEditorIntf, CodeToolManager, CodeCache,
+  CodeTree;
 
 type
   { TStackLine }
 
   TStackLine = class(TRefCountedObject)
-    LineNum   : Integer;  // -1 is line is uknown
+    LineNum   : Integer;  // -1 is line is unknown
+    Column    : Integer;  // 0 is unknown
     FileName  : string;   // should be empty if file is unknown
     Addr      : Int64;    // -1 if address is unknown
     RawLineData: string;
     function Equals(ALine: TStackLine): boolean; reintroduce;
     procedure Assign(ALine: TStackLine);
-    procedure AssignLineAndFile(ALine: TStackLine);
+    procedure AssignSourcePos(ALine: TStackLine);
   end;
 
   { TStackLines }
@@ -92,6 +95,7 @@ type
   end;
 
   THeapTrcInfo = class(TLeakInfo)
+  private
   protected
     fTRCFile  : string;
     fTRCText  : string;
@@ -108,10 +112,12 @@ type
     function TrcNumberAfter(var Num: Int64; const AfterSub: string): Boolean;
     function TrcNumberAfter(var Num: Integer; const AfterSub: string): Boolean;
     function TrcNumFirstAndAfter(var FirstNum, AfterNum: Int64; const AfterSub: string): Boolean;
+    procedure OnFindCTSource(Sender: TObject; SrcType: TCodeTreeNodeDesc;
+      const SrcName: string; out SrcFilename: string);
 
+    procedure ParseTraceLine(s: string; var line: TStackLine);
     procedure ParseStackTrace(trace: TStackTrace);
     procedure DoParseTrc(traces: TList);
-
   public
     TraceInfo : THeapTraceInfo;
     constructor Create(const ATRCFile: string);
@@ -232,64 +238,13 @@ begin
   GetNumberAfter(s, AfterNum, AfterStr);
 end;
 
-procedure ParseTraceLine(s: string; var line: TStackLine);
-var
-  i   : integer;
-  {%H-}err : Integer;
-  hex : string;
-begin
-  s := TrimLeft(s);
-  i := Pos('$', s);
-  if i > 0 then begin
-    hex := ExtractHexNumberStr(s, i);
-    Val(hex, line.Addr, err);
-
-    if not GetNumberAfter(s, line.LineNum, 'line ') then begin
-      line.LineNum := -1;
-      line.FileName := '';
-    end else begin
-      i := Pos(' of ', s);
-      if i <= 0 then Exit;
-      inc(i, 4);
-      line.FileName := Copy(s, i, length(s) - i + 1);
-    end;
-  end;
-
-  // gdb line?
-  i := Pos('#', s);
-  if (i < 1) and (copy(s,1,4) = '0000') then i := 4; // mantis mangled line
-  if (i > 0) and (i < 5) and (i < Length(s)) and (s[i+1] in ['0'..'9'])
-  then begin
-    inc(i);
-    while (i <= Length(s)) and (s[i] in ['0'..'9']) do inc(i);
-    while (i <= Length(s)) and (s[i] in [' ', #9]) do inc(i);
-    if (s[i] = '0') and (i < Length(s)) and (s[i+1] = 'x') then begin
-      hex := ExtractHexNumberStr(s, i);
-      Val(hex, line.Addr, err);
-    end;
-    line.LineNum := -1;
-    line.FileName := '';
-
-    i := pos (' at ', s);
-    if i < 1 then
-      exit;
-    while i > 0 do begin // find last " at "
-      delete(s,1,i);
-      i := pos (' at ', s);
-    end;
-    i := pos (':', s);
-    line.FileName := Copy(s, 4, i - 4);
-    GetNumberAfter(s, line.LineNum, ':')
-
-  end;
-end;
-
 { TStackLine }
 
 function TStackLine.Equals(ALine: TStackLine): boolean;
 begin
   Result :=
     (LineNum     = ALine.LineNum) and
+    (Column      = ALine.Column) and
     (FileName    = ALine.FileName) and
     (Addr        = ALine.Addr) and
     (RawLineData = ALine.RawLineData);
@@ -298,18 +253,71 @@ end;
 procedure TStackLine.Assign(ALine: TStackLine);
 begin
   LineNum     := ALine.LineNum;
+  Column      := ALine.Column;
   FileName    := ALine.FileName;
   Addr        := ALine.Addr;
   RawLineData := ALine.RawLineData;
 end;
 
-procedure TStackLine.AssignLineAndFile(ALine: TStackLine);
+procedure TStackLine.AssignSourcePos(ALine: TStackLine);
 begin
   LineNum     := ALine.LineNum;
+  Column      := ALine.Column;
   FileName    := ALine.FileName;
 end;
 
 { THeapTrcInfo }
+
+procedure THeapTrcInfo.OnFindCTSource(Sender: TObject;
+  SrcType: TCodeTreeNodeDesc; const SrcName: string; out SrcFilename: string);
+var
+  aProject: TLazProject;
+  i: Integer;
+  SrcEdit: TSourceEditorInterface;
+  Code: TCodeBuffer;
+  Tool: TCodeTool;
+begin
+  case SrcType of
+  ctnProgram:
+    begin
+      // check active project
+      aProject:=LazarusIDE.ActiveProject;
+      if (aProject<>nil) and (aProject.MainFile<>nil) then begin
+        SrcFilename:=aProject.MainFile.Filename;
+        if FilenameIsAbsolute(SrcFilename)
+        and ((SrcName='')
+          or (SysUtils.CompareText(ExtractFileNameOnly(SrcFilename),SrcName)=0))
+        then
+          exit; // found
+      end;
+    end;
+  end;
+  // search in source editor
+  for i:=0 to SourceEditorManagerIntf.SourceEditorCount-1 do begin
+    SrcEdit:=SourceEditorManagerIntf.SourceEditors[i];
+    SrcFilename:=SrcEdit.FileName;
+    if CompareText(ExtractFileNameOnly(SrcFileName),SrcName)<>0 then
+      continue;
+    case SrcType of
+    ctnUnit:
+      if not FilenameIsPascalUnit(SrcFileName) then
+        continue;
+    else
+      // a pascal program can have any file name
+      // but we don't want to open program.res or program.txt
+      // => check if source is Pascal
+      // => load source and check if codetools can parse at least one node
+      Code:=CodeToolBoss.LoadFile(SrcFilename,true,false);
+      if Code=nil then continue;
+      CodeToolBoss.Explore(Code,Tool,false,true);
+      if (Tool=nil) or (Tool.Tree.Root=nil)  then
+        continue;
+    end;
+    exit; // found
+  end;
+  // not found
+  SrcFilename:='';
+end;
 
 function THeapTrcInfo.PosInTrc(const SubStr: string; CaseSensetive: Boolean): Boolean;
 begin
@@ -323,34 +331,46 @@ begin
 end;
 
 function THeapTrcInfo.IsTraceLine(const SubStr: string; CheckOnlyLineStart: Boolean): Boolean;
+
+  function IsGDBLine(s: string): boolean;
+  begin
+    Result:=false;
+    if REMatches(s,'^#[0-9]+ +0x[0-9a-f]+ in ') then begin
+      // gdb
+      //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
+      Result:=true;
+    end;
+    if REMatches(s,'^#[0-9] .* (at|from) ') then begin
+      // gdb
+      //   #0 DOHANDLEMOUSEACTION (this=0x14afae00, ANACTIONLIST=0x14a96af8,ANINFO=...) at synedit.pp:3000
+      Result:=true;
+    end;
+  end;
+
 var
   i, l: integer;
   s: String;
 begin
   Result := False;
 
-  s := TrimLeft(SubStr);
+  s := Trim(SubStr);
   if s='' then exit;
 
   if (LeftStr(s,3) = '~"#') then begin
     // gdb
-    // examples:
-    //   ~"#0 DOHANDLEMOUSEACTION (this=0x14afae00, ANACTIONLIST=0x14a96af8,
-    //   ANINFO=...) at synedit.pp:3000\n"
-    //
-    //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
-    i:=3;
-    Result := (i < Length(s)) and (s[i+1] in ['0'..'9']) and
-              ( (pos(' at ', s) > 1) or (pos(' from ', s) > 1) );
-    Result := Result or CheckOnlyLineStart;
-  end
-  else if LeftStr(s,4) = '0000' then begin // leave 3 digits for pos
-    // mantis mangled gdb ?
+    Delete(s,1,2);
+    if s[length(s)]='"' then Delete(s,length(s),1);
+    Result:=CheckOnlyLineStart or IsGDBLine(s);
+  end else if LeftStr(s,4) = '0000' then begin // leave 3 digits for pos
+    // mantis mangled gdb
+    //  line format: 0000.*:0.* in .* (at|from) .*
     i := pos(':', s);
     Result := (  ((i > 1) and (i < Length(s)) and (s[i+1] in ['0'..'9'])) or
                  (pos(' in ', s) > 1)  ) and
               ( (pos(' at ', s) > 1) or (pos(' from ', s) > 1) );
     Result := Result or CheckOnlyLineStart;
+  end else if IsGDBLine(s) then begin
+    Result := true;
   end else begin
     // heaptrc line?
     i := 1;
@@ -473,6 +493,159 @@ begin
   inherited Destroy;
 end;
 
+procedure THeapTrcInfo.ParseTraceLine(s: string; var line: TStackLine);
+
+  procedure ReadGDBLine;
+  var
+    p: PChar;
+    StartP: PChar;
+    hex: String;
+    {%H-}err : Integer;
+    i: SizeInt;
+    GDBIdentifier: String;
+    Complete: boolean;
+    TheErrorMsg: string;
+    SrcCode: TCodeBuffer;
+    SrcX, SrcY, SrcTopLine: integer;
+  begin
+    p:=PChar(s);
+    // read stack depth decimal number
+    if not (p^ in ['0'..'9']) then exit;
+    while p^ in ['0'..'9'] do inc(p);
+    if p^<>' ' then exit;
+    while p^=' ' do inc(p);
+    // read address (hex number $000 or 0x000)
+    if p^='$' then
+      inc(p)
+    else if (p^='0') and (p[1]='x') then
+      inc(p,2)
+    else
+      exit;
+    StartP:=p;
+    while p^ in ['0'..'9','a'..'z'] do inc(p);
+    hex:=copy(s,StartP-PChar(s)+1,p-StartP);
+    Val(hex, line.Addr, err);
+
+    line.LineNum := -1;
+    line.FileName := '';
+    Delete(s,1,p-PChar(s));
+
+    i := pos (' at ', s);
+    if i > 0 then
+    begin
+      // ' at <filename>:<line number>'
+      while i > 0 do begin // find last " at "
+        delete(s,1,i);
+        i := pos (' at ', s);
+      end;
+      i := pos (':', s);
+      line.FileName := Copy(s, 4, i - 4);
+      GetNumberAfter(s, line.LineNum, ':')
+    end else if LeftStr(s,4)=' in ' then begin
+      // for example:
+      //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
+      Delete(s,1,4);
+      i:=1;
+      while (i<=length(s)) and (s[i] in ['a'..'z','A'..'Z','0'..'9','_','$','?']) do
+        inc(i);
+      GDBIdentifier:=copy(s,1,i-1);
+      CodeToolBoss.FindGBDIdentifier(GDBIdentifier,Complete,TheErrorMsg,@OnFindCTSource,
+         SrcCode,SrcX,SrcY,SrcTopLine);
+      if SrcCode<>nil then begin
+        line.FileName:=SrcCode.Filename;
+        line.LineNum:=SrcY;
+        line.Column:=SrcX;
+      end;
+    end;
+  end;
+
+var
+  i   : integer;
+  {%H-}err : Integer;
+  hex : string;
+begin
+  //DebugLn(['ParseTraceLine "',s,'"']);
+  s := Trim(s);
+
+  // gdb
+  if (LeftStr(s,3) = '~"#') then begin
+    // gdb
+    Delete(s,1,3);
+    if s[length(s)]='"' then Delete(s,length(s),1);
+    ReadGDBLine;
+  end else if LeftStr(s,4) = '0000' then begin
+    // mantis mangled gdb
+    ReadGDBLine;
+  end else if REMatches(s,'^#[0-9]+ +0x[0-9a-f]+ in ') then begin
+    // gdb
+    //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
+    Delete(s,1,1);
+    ReadGDBLine;
+  end else begin
+    i := Pos('$', s);
+    if i > 0 then begin
+      hex := ExtractHexNumberStr(s, i);
+      Val(hex, line.Addr, err);
+
+      if not GetNumberAfter(s, line.LineNum, 'line ') then begin
+        line.LineNum := -1;
+        line.FileName := '';
+      end else begin
+        i := Pos(' of ', s);
+        if i <= 0 then Exit;
+        inc(i, 4);
+        line.FileName := Copy(s, i, length(s) - i + 1);
+      end;
+    end;
+  end;
+
+  // gdb line?
+  {i := Pos('#', s);
+  if (i < 1) and (copy(s,1,4) = '0000') then i := 4; // mantis mangled line
+  if (i > 0) and (i < 5) and (i < Length(s)) and (s[i+1] in ['0'..'9'])
+  then begin
+    inc(i);
+    // read stack depth (a decimal number)
+    while (i <= Length(s)) and (s[i] in ['0'..'9']) do inc(i);
+    while (i <= Length(s)) and (s[i] in [' ', #9]) do inc(i);
+    // read proc address (a hex number 0x00..00)
+    if (s[i] = '0') and (i < Length(s)) and (s[i+1] = 'x') then begin
+      hex := ExtractHexNumberStr(s, i);
+      Val(hex, line.Addr, err);
+    end;
+    line.LineNum := -1;
+    line.FileName := '';
+
+    i := pos (' at ', s);
+    if i > 0 then
+    begin
+      // ' at <filename>:<line number>'
+      while i > 0 do begin // find last " at "
+        delete(s,1,i);
+        i := pos (' at ', s);
+      end;
+      i := pos (':', s);
+      line.FileName := Copy(s, 4, i - 4);
+      GetNumberAfter(s, line.LineNum, ':')
+    end else if LeftStr(s,4)=' in ' then begin
+      // for example:
+      //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
+      Delete(s,1,4);
+      i:=1;
+      while (i<=length(s)) and (s[i] in ['a'..'z','A'..'Z','0'..'9','_','$','?']) do
+        inc(i);
+      GDBIdentifier:=copy(s,1,i-1);
+      CodeToolBoss.FindGBDIdentifier(GDBIdentifier,Complete,TheErrorMsg,@OnFindCTSource,
+         SrcCode,SrcX,SrcY,SrcTopLine);
+      if SrcCode<>nil then begin
+        line.FileName:=SrcCode.Filename;
+        line.LineNum:=SrcY;
+        line.Column:=SrcX;
+      end;
+    end;
+  end;}
+end;
+
 procedure THeapTrcInfo.ParseStackTrace(trace: TStackTrace);
 var
   i   : integer;
@@ -526,7 +699,6 @@ begin
     end;
   end;
 end;
-
 
 function THeapTrcInfo.GetLeakInfo(out LeakData: TLeakStatus; var Traces: TList): Boolean;
 var
@@ -668,7 +840,7 @@ begin
     if (CurLine.FileName = '') and (CurLine.Addr <> 0) then begin
       j := AnOtherLines.IndexOfAddr(CurLine.Addr);
       if J >= 0 then
-        CurLine.AssignLineAndFile(AnOtherLines.Lines[j]);
+        CurLine.AssignSourcePos(AnOtherLines.Lines[j]);
     end;
   end;
 end;

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <PathDelim Value="\"/>
@@ -53,24 +53,26 @@
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="CodeTools"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="IDEIntf"/>
       </Item2>
       <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+      <Item4>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item3>
+      </Item4>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)\"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>

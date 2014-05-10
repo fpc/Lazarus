@@ -3938,13 +3938,13 @@ begin
   TheSrcName:='';
   if p^ in ['A'..'Z'] then begin
     ReadIdentifier(TheSrcName);
-    debugln(['TCodeToolManager.FindGBDIdentifier first identifier=',TheSrcName,' ...']);
+    //debugln(['TCodeToolManager.FindGBDIdentifier first identifier=',TheSrcName,' ...']);
     if (TheSrcName='P') and (p^='$') then begin
       // P$programname
       inc(p);
       if IsIdentStartChar[p^] then
         ReadIdentifier(TheSrcName);
-      debugln(['TCodeToolManager.FindGBDIdentifier search source of program "',TheSrcName,'" ...']);
+      //debugln(['TCodeToolManager.FindGBDIdentifier search source of program "',TheSrcName,'" ...']);
       if not FindProgram(TheSrcName,SrcFilename) then begin
         aMessage:='can''t find program "'+TheSrcName+'"';
         exit;
@@ -3971,10 +3971,10 @@ begin
     inc(p);
     if p^ in ['A'..'Z'] then begin
       ReadIdentifier(CurIdentifier);
-      debugln(['TCodeToolManager.FindGBDIdentifier Identifier="',CurIdentifier,'"']);
+      //debugln(['TCodeToolManager.FindGBDIdentifier Identifier="',CurIdentifier,'"']);
 
       if not Explore(Code,Tool,false,true) then begin
-        debugln(['TCodeToolManager.FindGBDIdentifier parse error']);
+        //debugln(['TCodeToolManager.FindGBDIdentifier parse error']);
         aMessage:=CodeToolBoss.ErrorMessage;
         exit;
       end;
@@ -3995,7 +3995,7 @@ begin
           except
             on E: Exception do begin
               HandleException(E);
-              debugln(['TCodeToolManager.FindGBDIdentifier FindDeclarationNodeInImplementation parse error in "',Code.Filename,'": ',E.Message]);
+              //debugln(['TCodeToolManager.FindGBDIdentifier FindDeclarationNodeInImplementation parse error in "',Code.Filename,'": ',E.Message]);
               aMessage:=ErrorMessage;
               exit;
             end;
@@ -4010,7 +4010,7 @@ begin
       end;
       if Node=nil then begin
         // identifier not found => use only SrcFilename
-        debugln(['TCodeToolManager.FindGBDIdentifier identifier "',CurIdentifier,'" not found in "',Code.Filename,'"']);
+        //debugln(['TCodeToolManager.FindGBDIdentifier identifier "',CurIdentifier,'" not found in "',Code.Filename,'"']);
         aMessage:='identifier "'+CurIdentifier+'" not found in "'+Code.Filename+'"';
         exit;
       end;
@@ -4033,10 +4033,10 @@ begin
         // find sub identifier
         SubNode:=Tool.FindSubDeclaration(CurIdentifier,Node);
         if SubNode=nil then begin
-          debugln(['TCodeToolManager.FindGBDIdentifier SubIdentifier="',CurIdentifier,'" not found']);
+          //debugln(['TCodeToolManager.FindGBDIdentifier SubIdentifier="',CurIdentifier,'" not found']);
           break;
         end;
-        debugln(['TCodeToolManager.FindGBDIdentifier SubIdentifier="',CurIdentifier,'" found']);
+        //debugln(['TCodeToolManager.FindGBDIdentifier SubIdentifier="',CurIdentifier,'" found']);
         Node:=SubNode;
       until false;
 
@@ -4064,7 +4064,7 @@ begin
       NewY:=NewPos.Y;
     end;
     // unknown operator => use only SrcFilename
-    debugln(['TCodeToolManager.FindGBDIdentifier operator not yet supported: ',dbgstr(p^)]);
+    //debugln(['TCodeToolManager.FindGBDIdentifier operator not yet supported: ',dbgstr(p^)]);
     exit;
   end else begin
     // example: ??
