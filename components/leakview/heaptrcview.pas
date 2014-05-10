@@ -10,7 +10,8 @@ uses
   XMLConf, LCLProc;
 
 type
-  TJumpProc = procedure (Sender: TObject; const SourceName: string; Line: integer) of object;
+  TJumpProc = procedure (Sender: TObject; const SourceName: string;
+                         Line, Column: integer) of object;
 
   { THeapTrcViewForm }
 
@@ -56,7 +57,8 @@ type
 
     procedure AddFileToList(const FileName: AnsiString);
   protected
-    procedure LazarusJump(Sender: TObject; const SourceFile: string; Line: Integer);
+    procedure LazarusJump(Sender: TObject; const SourceFile: string;
+                          Line, Column: Integer);
   public
     destructor Destroy; override;
   public
@@ -347,6 +349,7 @@ var
   searchFile : string;
   idx        : Integer;
   trace      : TStackTrace;
+  StackLine: TStackLine;
 begin
   if not Assigned(@OnJumpProc) then Exit;
   nd := trvTraceInfo.Selected;
@@ -361,8 +364,8 @@ begin
   searchFile := trace.Lines[idx].FileName;
   if searchFile = '' then Exit;
 
-  idx := trace.Lines[idx].LineNum;
-  OnJumpProc(Self,  searchFile, idx);
+  StackLine:= trace.Lines[idx];
+  OnJumpProc(Self,  searchFile, StackLine.LineNum, StackLine.Column);
 end;
 
 procedure THeapTrcViewForm.ChangeTreeText;
@@ -521,7 +524,8 @@ begin
   edtTrcFileName.Items.Insert(0, FileName);
 end;
 
-procedure THeapTrcViewForm.LazarusJump(Sender: TObject; const SourceFile: string; Line: Integer);
+procedure THeapTrcViewForm.LazarusJump(Sender: TObject;
+  const SourceFile: string; Line, Column: Integer);
 var
   nm  : string;
 begin
@@ -531,7 +535,7 @@ begin
       nm := SourceFile;
   end else
     nm := SourceFile;
-  LazarusIDE.DoOpenFileAndJumpToPos(nm, Point(1, Line), -1, -1, -1, [ofOnlyIfExists, ofRegularFile]);
+  LazarusIDE.DoOpenFileAndJumpToPos(nm, Point(Column, Line), -1, -1, -1, [ofOnlyIfExists, ofRegularFile]);
 end;
 
 destructor THeapTrcViewForm.Destroy;
