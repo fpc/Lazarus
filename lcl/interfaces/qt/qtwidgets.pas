@@ -3806,8 +3806,14 @@ begin
       Msg.WheelDelta := -1;
     Msg.WheelDelta := (120 * Msg.WheelDelta) div Mouse.WheelScrollLines;
     if FOwner <> nil then
-      CCtl := TQtAbstractScrollArea(FOwner)
-    else
+    begin
+      {$IFDEF QTSCROLLABLEFORMS}
+      if (FOwner is TQtMainWindow) then
+        CCtl := TQtMainWindow(FOwner).ScrollArea
+      else
+      {$ENDIF}
+        CCtl := TQtAbstractScrollArea(FOwner);
+    end else
       CCtl := TQtAbstractScrollArea(Self);
     //now fix ugly behaviour.
     if (Msg.WheelDelta > 0) and (CCtl.FVScrollbar.getVisible) and
