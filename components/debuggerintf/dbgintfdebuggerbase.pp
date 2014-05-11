@@ -538,7 +538,7 @@ type
     constructor Create(AKind: TDBGSymbolKind; const ATypeName: String);
     constructor Create(AKind: TDBGSymbolKind; const AArguments: TDBGTypes; AResult: TDBGType = nil);
     destructor Destroy; override;
-    property Ancestor: String read FAncestor;
+    property Ancestor: String read FAncestor write FAncestor;
     property Arguments: TDBGTypes read FArguments;
     property Fields: TDBGFields read GetFields;
     property Kind: TDBGSymbolKind read FKind;

@@ -658,6 +658,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     m: TFpDbgValue;
     fl: TFpPrettyPrintValueFlags;
     f: TDBGField;
+    ti: TFpDbgSymbol;
   begin
     if (AValue.Kind = skClass) and (AValue.AsCardinal = 0) then begin
       APrintedValue := 'nil';
@@ -707,6 +708,12 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     fl := [ppvSkipClassBody];
     //if ppvSkipClassBody in AFlags then
     //  fl := [ppvSkipClassBody, ppvSkipRecordBody];
+
+    if (ppvCreateDbgType in AFlags) and (AValue.Kind in [skObject, skClass]) then begin
+      ti := AValue.TypeInfo;
+      if (ti <> nil) and (ti.TypeInfo <> nil) then
+        ADBGTypeInfo^.Ancestor := ti.TypeInfo.Name;
+    end;
 
     if not Result then
       APrintedValue := '';

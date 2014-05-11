@@ -1072,7 +1072,10 @@ DebugLn(FPGDBDBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
       if (ResValue=nil) or (not FPrettyPrinter.PrintValue(s, ResValue, DispFormat, RepeatCnt)) then
         s := 'Failed';
       AResText := 'PChar: '+AResText+ LineEnding + 'String: '+s;
-    end;
+    end
+    else
+    if CastName <> '' then
+      AResText := CastName + AResText;
 
     if (ATypeInfo <> nil) or (AResText <> '') then begin
       Result := True;
