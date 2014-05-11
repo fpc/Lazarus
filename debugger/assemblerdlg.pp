@@ -110,7 +110,7 @@ type
     FCharWidth: Integer;
     FGutterWidth: Integer;
     FUpdating: Boolean;
-    FUpdateNeeded: Boolean;
+    FUpdateNeeded, FVisibleChanged: Boolean;
 
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FCurLineImgIdx: Integer;
@@ -146,7 +146,9 @@ type
     procedure DoEditorOptsChanged(Sender: TObject; Restore: boolean);
   protected
     function GetSourceCodeLine(SrcFileName: string; SrcLineNumber: Integer): string;
-    procedure InitializeWnd; override;
+    procedure VisibleChanged; override;
+    procedure DoBeginUpdate; override;
+    procedure DoEndUpdate; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -536,10 +538,35 @@ begin
   end;
 end;
 
-procedure TAssemblerDlg.InitializeWnd;
+procedure TAssemblerDlg.VisibleChanged;
 begin
-  inherited InitializeWnd;
-  DoEditorOptsChanged(nil, False);
+  inherited VisibleChanged;
+  if IsVisible then begin
+    if IsUpdating then begin
+      FVisibleChanged := True
+    end else begin
+      DoEditorOptsChanged(nil, False);
+      if FCurrentLocation <> 0 then
+        UpdateLocation(FCurrentLocation);
+    end;
+  end;
+end;
+
+procedure TAssemblerDlg.DoBeginUpdate;
+begin
+  FVisibleChanged := False;
+  inherited DoBeginUpdate;
+end;
+
+procedure TAssemblerDlg.DoEndUpdate;
+begin
+  inherited DoEndUpdate;
+  if FVisibleChanged then begin
+    DoEditorOptsChanged(nil, False);
+    if FCurrentLocation <> 0 then
+      UpdateLocation(FCurrentLocation);
+  end;
+  FVisibleChanged := False;
 end;
 
 procedure TAssemblerDlg.pbAsmMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
