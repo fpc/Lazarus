@@ -1485,7 +1485,7 @@ begin
   if Show then
   begin
     CurDialog.BeginUpdate;
-    IDEWindowCreators.ShowForm(CurDialog,BringToFront);
+    IDEWindowCreators.ShowForm(CurDialog,BringToFront, vmOnlyMoveOffScreenToVisible);
     CurDialog.EndUpdate;
   end;
 end;
