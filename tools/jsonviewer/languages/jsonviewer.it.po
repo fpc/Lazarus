@@ -1,4 +1,4 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
+ Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-22 00:08+0200\n"
@@ -57,7 +57,9 @@ msgid "Empty document"
 msgstr "Documento vuoto"
 
 #: msgjsonviewer.serrcreatingconfigdir
-msgid "Could not create the configuration files directory \"s\""
+#, fuzzy
+#| msgid "Could not create the configuration files directory \"s\""
+msgid "Could not create the configuration files directory \"%s\""
 msgstr "Non posso creare la cartella dei file di configurazione \"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
@@ -92,219 +94,220 @@ msgstr "Oggetto (%d membri)"
 msgid "Save the changes"
 msgstr "Salva i cambiamenti"
 
-#: TMAINFORM.ACOPY.CAPTION
+#: tmainform.acopy.caption
 msgid "&Copy"
 msgstr "&Copia"
 
-#: TMAINFORM.ACOPY.HINT
+#: tmainform.acopy.hint
 msgid "Copy selected node to clipboard as JSON"
 msgstr "copia il nodo scelto negli appunti come JSON"
 
-#: TMAINFORM.ACUT.CAPTION
+#: tmainform.acut.caption
 msgid "C&ut"
 msgstr "Taglia"
 
-#: TMAINFORM.ACUT.HINT
+#: tmainform.acut.hint
 msgid "Cut selected node to clipboard as JSON"
 msgstr "Taglia il nodo scelto negli appunti come JSON"
 
-#: TMAINFORM.ADELETEVALUE.CAPTION
+#: tmainform.adeletevalue.caption
 msgid "&Delete value"
 msgstr "&Cancella valore"
 
-#: TMAINFORM.ADELETEVALUE.HINT
+#: tmainform.adeletevalue.hint
 msgid "Delete the selected value"
 msgstr "Cancella il valore selezionato"
 
-#: TMAINFORM.AEXPANDALL.CAPTION
+#: tmainform.aexpandall.caption
 msgid "E&xpand all nodes"
 msgstr "Espandi tutti i nodi"
 
-#: TMAINFORM.AEXPANDALL.HINT
+#: tmainform.aexpandall.hint
 msgid "Expand all nodes in the document"
 msgstr "Espandi tutti i nodi nel documento"
 
-#: TMAINFORM.AEXPANDCURRENTCONTAINER.CAPTION
+#: tmainform.aexpandcurrentcontainer.caption
 msgid "Expand &current object/array"
 msgstr "Espandi l'oggetto/array &corrente"
 
-#: TMAINFORM.AEXPANDCURRENTCONTAINER.HINT
+#: tmainform.aexpandcurrentcontainer.hint
 msgid "Expand all nodes in the current object/array"
 msgstr "Espandi tutti i nodi nell'oggetto/array corrente"
 
-#: TMAINFORM.AFIND.CAPTION
+#: tmainform.afind.caption
 msgid "&Find"
 msgstr "&Trova"
 
-#: TMAINFORM.AFINDNEXT.CAPTION
+#: tmainform.afindnext.caption
 msgid "Find &next occurrence"
 msgstr "Trova la &prossima occorrenza"
 
-#: TMAINFORM.ANEW.CAPTION
+#: tmainform.anew.caption
 msgid "&New"
 msgstr "&Nuovo"
 
-#: TMAINFORM.ANEW.HINT
+#: tmainform.anew.hint
 msgid "Create new JSON document"
 msgstr "Crea un nuovo documento JSON"
 
-#: TMAINFORM.ANEWARRAY.CAPTION
+#: tmainform.anewarray.caption
 msgid "New &Array"
 msgstr "Nuovo &array"
 
-#: TMAINFORM.ANEWARRAY.HINT
+#: tmainform.anewarray.hint
 msgid "Add a new JSON array"
 msgstr "Aggiungi un nuovo array JSON"
 
-#: TMAINFORM.ANEWBOOLEANVALUE.CAPTION
+#: tmainform.anewbooleanvalue.caption
 msgid "New &boolean value"
 msgstr "Nuovo valore &booleano"
 
-#: TMAINFORM.ANEWBOOLEANVALUE.HINT
+#: tmainform.anewbooleanvalue.hint
 msgid "Add a new boolean value"
 msgstr "Aggiungi un nuovo valore booleano"
 
-#: TMAINFORM.ANEWNULLVALUE.CAPTION
+#: tmainform.anewnullvalue.caption
 msgid "New N&ull value"
 msgstr "Nuovo valore n&ull"
 
-#: TMAINFORM.ANEWNULLVALUE.HINT
+#: tmainform.anewnullvalue.hint
 msgid "Add a new null value"
 msgstr "Aggiungi un nuovo valore null"
 
-#: TMAINFORM.ANEWNUMBERVALUE.CAPTION
+#: tmainform.anewnumbervalue.caption
 msgid "&New numerical Value"
 msgstr "&Nuovo valore numerico"
 
-#: TMAINFORM.ANEWNUMBERVALUE.HINT
+#: tmainform.anewnumbervalue.hint
 msgid "Add a new number value"
 msgstr "Aggiungi un nuovo valore numerico"
 
-#: TMAINFORM.ANEWOBJECT.CAPTION
+#: tmainform.anewobject.caption
 msgid "New &Object"
 msgstr "Nuovo &oggetto"
 
-#: TMAINFORM.ANEWOBJECT.HINT
+#: tmainform.anewobject.hint
 msgid "Add a new JSON object"
 msgstr "Aggiungi un nuovo oggetto JSON"
 
-#: TMAINFORM.ANEWSTRINGVALUE.CAPTION
+#: tmainform.anewstringvalue.caption
 msgid "New &string value"
 msgstr "Nuovo valore &stringa"
 
-#: TMAINFORM.ANEWSTRINGVALUE.HINT
+#: tmainform.anewstringvalue.hint
 msgid "Add a new string value"
 msgstr "Aggiungi un nuovo valore stringa"
 
-#: TMAINFORM.AOPEN.CAPTION
+#: tmainform.aopen.caption
 msgid "&Open"
 msgstr "&Apri"
 
-#: TMAINFORM.AOPEN.HINT
+#: tmainform.aopen.hint
 msgid "Open JSON document from file"
 msgstr "Apri documento JSON da file"
 
-#: TMAINFORM.APASTE.CAPTION
+#: tmainform.apaste.caption
 msgid "&Paste"
 msgstr "&Incolla"
 
-#: TMAINFORM.APASTE.HINT
+#: tmainform.apaste.hint
 msgid "Paste JSON data in clipboard as new member"
 msgstr "Incolla dati JSON negli appunti come nuovo membro"
 
-#: TMAINFORM.APASTEASDOCUMENT.CAPTION
+#: tmainform.apasteasdocument.caption
 msgid "Paste as new document"
 msgstr "Incolla come nuovo documento"
 
-#: TMAINFORM.APASTEASDOCUMENT.HINT
+#: tmainform.apasteasdocument.hint
 msgid "Paste JSON data in clipboard as new document"
 msgstr "Incolla dati JSON negli appunti come nuovo documento"
 
-#: TMAINFORM.AQUIT.CAPTION
+#: tmainform.aquit.caption
 msgid "&Quit"
 msgstr "&Esci"
 
-#: TMAINFORM.AQUIT.HINT
+#: tmainform.aquit.hint
 msgid "Exit the program"
 msgstr "Esci dal programma"
 
-#: TMAINFORM.ASAVE.CAPTION
+#: tmainform.asave.caption
 msgid "&Save"
 msgstr "&Salva"
 
-#: TMAINFORM.ASAVE.HINT
+#: tmainform.asave.hint
 msgid "Save the JSON document to file"
 msgstr "Salva il documento JSON nel file"
 
-#: TMAINFORM.ASAVEAS.CAPTION
+#: tmainform.asaveas.caption
 msgid "Save &as"
 msgstr "S&alva con nome"
 
-#: TMAINFORM.ASAVEAS.HINT
+#: tmainform.asaveas.hint
 msgid "Save JSON document with a new name"
 msgstr "Salva il documento JSON con un nuovo nome"
 
-#: TMAINFORM.MAINFORM.CAPTION
+#: tmainform.mainform.caption
 msgctxt "TMAINFORM.MAINFORM.CAPTION"
 msgid "JSON Viewer"
 msgstr "Visualizzatore JSON"
 
-#: TMAINFORM.MEDIT.CAPTION
+#: tmainform.medit.caption
 msgid "&Edit"
 msgstr "&Modifica"
 
-#: TMAINFORM.MENUITEM1.CAPTION
+#: tmainform.menuitem1.caption
 msgctxt "TMAINFORM.MENUITEM1.CAPTION"
 msgid "-"
 msgstr ""
 
-#: TMAINFORM.MENUITEM2.CAPTION
+#: tmainform.menuitem2.caption
 msgctxt "TMAINFORM.MENUITEM2.CAPTION"
 msgid "-"
 msgstr ""
 
-#: TMAINFORM.MENUITEM3.CAPTION
+#: tmainform.menuitem3.caption
 msgctxt "TMAINFORM.MENUITEM3.CAPTION"
 msgid "-"
 msgstr ""
 
-#: TMAINFORM.MENUITEM8.CAPTION
+#: tmainform.menuitem8.caption
 msgctxt "TMAINFORM.MENUITEM8.CAPTION"
 msgid "-"
 msgstr ""
 
-#: TMAINFORM.MFILE.CAPTION
+#: tmainform.mfile.caption
 msgid "&File"
 msgstr "&File"
 
-#: TMAINFORM.MIDOCUMENT.CAPTION
+#: tmainform.midocument.caption
 msgid "&New document with object"
 msgstr "&Nuovo documento con oggetto"
 
-#: TMAINFORM.MIINSERT.CAPTION
+#: tmainform.miinsert.caption
 msgid "&Values"
 msgstr "&Valori"
 
-#: TMAINFORM.MISORTMEMBERS.CAPTION
+#: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Ordina oggetti membri"
 
-#: TMAINFORM.MISTRICT.CAPTION
+#: tmainform.mistrict.caption
 msgid "&Strict JSON"
 msgstr "J&SON rigoroso"
 
-#: TMAINFORM.MOPTIONS.CAPTION
+#: tmainform.moptions.caption
 msgid "&Options"
 msgstr "&Opzioni"
 
-#: TMAINFORM.TBJSON.CAPTION
+#: tmainform.tbjson.caption
 msgid "TBJSON"
 msgstr ""
 
-#: TMAINFORM.TOOLBUTTON1.CAPTION
+#: tmainform.toolbutton1.caption
 msgid "ToolButton1"
 msgstr ""
 
-#: TMAINFORM.TOOLBUTTON4.CAPTION
+#: tmainform.toolbutton4.caption
 msgid "ToolButton4"
 msgstr ""
+

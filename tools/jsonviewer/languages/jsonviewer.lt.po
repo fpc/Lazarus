@@ -1,4 +1,4 @@
-# Valdas Jankunas <zmuogs@gmail.com>, 2012.
+ Valdas Jankunas <zmuogs@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9,8 +9,7 @@ msgstr ""
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.5\n"
 
 #: msgjsonviewer.sarray
@@ -59,7 +58,9 @@ msgid "Empty document"
 msgstr "Tuščias dokumentas"
 
 #: msgjsonviewer.serrcreatingconfigdir
-msgid "Could not create the configuration files directory \"s\""
+#, fuzzy
+#| msgid "Could not create the configuration files directory \"s\""
+msgid "Could not create the configuration files directory \"%s\""
 msgstr "Nepavyko sukurti aplanko „%s“ sąrankos failams"
 
 #: msgjsonviewer.serrinvalidvalue
@@ -94,221 +95,220 @@ msgstr "Objektas (narių: %d)"
 msgid "Save the changes"
 msgstr "Įrašyti pakeitimus"
 
-#: TMAINFORM.ACOPY.CAPTION
+#: tmainform.acopy.caption
 msgid "&Copy"
 msgstr "&Kopijuoti"
 
-#: TMAINFORM.ACOPY.HINT
+#: tmainform.acopy.hint
 msgid "Copy selected node to clipboard as JSON"
 msgstr "Pažymėtą mazgą kopijuoti į iškarpinę kaip JSON"
 
-#: TMAINFORM.ACUT.CAPTION
+#: tmainform.acut.caption
 msgid "C&ut"
 msgstr "Iš&kirpti"
 
-#: TMAINFORM.ACUT.HINT
+#: tmainform.acut.hint
 msgid "Cut selected node to clipboard as JSON"
 msgstr "Pažymėtą mazgą iškirpti į iškarpinę kaip JSON"
 
-#: TMAINFORM.ADELETEVALUE.CAPTION
+#: tmainform.adeletevalue.caption
 msgid "&Delete value"
 msgstr "&Pašalinti vertę"
 
-#: TMAINFORM.ADELETEVALUE.HINT
+#: tmainform.adeletevalue.hint
 msgid "Delete the selected value"
 msgstr "Pašalinti pažymėtą vertę"
 
-#: TMAINFORM.AEXPANDALL.CAPTION
+#: tmainform.aexpandall.caption
 msgid "E&xpand all nodes"
 msgstr "Iš&skleisti visus mazgus"
 
-#: TMAINFORM.AEXPANDALL.HINT
+#: tmainform.aexpandall.hint
 msgid "Expand all nodes in the document"
 msgstr "Išskleisti visus dokumento mazgus"
 
-#: TMAINFORM.AEXPANDCURRENTCONTAINER.CAPTION
+#: tmainform.aexpandcurrentcontainer.caption
 msgid "Expand &current object/array"
 msgstr "Išskleisti &veikiamąjį objektą/masyvą"
 
-#: TMAINFORM.AEXPANDCURRENTCONTAINER.HINT
+#: tmainform.aexpandcurrentcontainer.hint
 msgid "Expand all nodes in the current object/array"
 msgstr "Išskleisti visus veikiamojo objekto/masyvo mazgus"
 
-#: TMAINFORM.AFIND.CAPTION
+#: tmainform.afind.caption
 msgid "&Find"
 msgstr "&Ieškoti"
 
-#: TMAINFORM.AFINDNEXT.CAPTION
+#: tmainform.afindnext.caption
 msgid "Find &next occurrence"
 msgstr "Ieškoti &toliau"
 
-#: TMAINFORM.ANEW.CAPTION
+#: tmainform.anew.caption
 msgid "&New"
 msgstr "&Naujas"
 
-#: TMAINFORM.ANEW.HINT
+#: tmainform.anew.hint
 msgid "Create new JSON document"
 msgstr "Kurti naują JSON dokumentą"
 
-#: TMAINFORM.ANEWARRAY.CAPTION
+#: tmainform.anewarray.caption
 msgid "New &Array"
 msgstr "Naujas mas&yvas"
 
-#: TMAINFORM.ANEWARRAY.HINT
+#: tmainform.anewarray.hint
 msgid "Add a new JSON array"
 msgstr "Įdėti naują JSON masyvą"
 
-#: TMAINFORM.ANEWBOOLEANVALUE.CAPTION
+#: tmainform.anewbooleanvalue.caption
 msgid "New &boolean value"
 msgstr "Nauja l&oginė vertė"
 
-#: TMAINFORM.ANEWBOOLEANVALUE.HINT
+#: tmainform.anewbooleanvalue.hint
 msgid "Add a new boolean value"
 msgstr "Įdėti naują loginę vertę"
 
-#: TMAINFORM.ANEWNULLVALUE.CAPTION
+#: tmainform.anewnullvalue.caption
 msgid "New N&ull value"
 msgstr "Nauja Nu&ll vertė"
 
-#: TMAINFORM.ANEWNULLVALUE.HINT
+#: tmainform.anewnullvalue.hint
 msgid "Add a new null value"
 msgstr "Įdėti naują Null vertę"
 
-#: TMAINFORM.ANEWNUMBERVALUE.CAPTION
+#: tmainform.anewnumbervalue.caption
 msgid "&New numerical Value"
 msgstr "Nauja &skaitinė vertė"
 
-#: TMAINFORM.ANEWNUMBERVALUE.HINT
+#: tmainform.anewnumbervalue.hint
 msgid "Add a new number value"
 msgstr "Įdėti naują skaitinę vertę"
 
-#: TMAINFORM.ANEWOBJECT.CAPTION
+#: tmainform.anewobject.caption
 msgid "New &Object"
 msgstr "Naujas ob&jektas"
 
-#: TMAINFORM.ANEWOBJECT.HINT
+#: tmainform.anewobject.hint
 msgid "Add a new JSON object"
 msgstr "Įdėti naują JSON objektą"
 
-#: TMAINFORM.ANEWSTRINGVALUE.CAPTION
+#: tmainform.anewstringvalue.caption
 msgid "New &string value"
 msgstr "Nauja t&ekstinė vertė"
 
-#: TMAINFORM.ANEWSTRINGVALUE.HINT
+#: tmainform.anewstringvalue.hint
 msgid "Add a new string value"
 msgstr "Įdėti naują tekstinę vertę"
 
-#: TMAINFORM.AOPEN.CAPTION
+#: tmainform.aopen.caption
 msgid "&Open"
 msgstr "At&verti"
 
-#: TMAINFORM.AOPEN.HINT
+#: tmainform.aopen.hint
 msgid "Open JSON document from file"
 msgstr "JSON dokumentą įkelti iš failo"
 
-#: TMAINFORM.APASTE.CAPTION
+#: tmainform.apaste.caption
 msgid "&Paste"
 msgstr "Į&dėti"
 
-#: TMAINFORM.APASTE.HINT
+#: tmainform.apaste.hint
 msgid "Paste JSON data in clipboard as new member"
 msgstr "JSON duomenis kaip naują narį įdėti iš iškarpinės"
 
-#: TMAINFORM.APASTEASDOCUMENT.CAPTION
+#: tmainform.apasteasdocument.caption
 msgid "Paste as new document"
 msgstr "Įdėti kaip naują dokumentą"
 
-#: TMAINFORM.APASTEASDOCUMENT.HINT
+#: tmainform.apasteasdocument.hint
 msgid "Paste JSON data in clipboard as new document"
 msgstr "JSON duomenis įdėti į naujai tam sukurta dokumentą"
 
-#: TMAINFORM.AQUIT.CAPTION
+#: tmainform.aquit.caption
 msgid "&Quit"
 msgstr "&Baigti darbą"
 
-#: TMAINFORM.AQUIT.HINT
+#: tmainform.aquit.hint
 msgid "Exit the program"
 msgstr "Baigti darbą programa"
 
-#: TMAINFORM.ASAVE.CAPTION
+#: tmainform.asave.caption
 msgid "&Save"
 msgstr "Į&rašyti"
 
-#: TMAINFORM.ASAVE.HINT
+#: tmainform.asave.hint
 msgid "Save the JSON document to file"
 msgstr "JSON dokumentą įrašyti į failą"
 
-#: TMAINFORM.ASAVEAS.CAPTION
+#: tmainform.asaveas.caption
 msgid "Save &as"
 msgstr "Įrašyti &kaip"
 
-#: TMAINFORM.ASAVEAS.HINT
+#: tmainform.asaveas.hint
 msgid "Save JSON document with a new name"
 msgstr "JSON dokumentą įrašyti nauju pavadinimu"
 
-#: TMAINFORM.MAINFORM.CAPTION
+#: tmainform.mainform.caption
 msgctxt "TMAINFORM.MAINFORM.CAPTION"
 msgid "JSON Viewer"
 msgstr "JSON žiūryklė"
 
-#: TMAINFORM.MEDIT.CAPTION
+#: tmainform.medit.caption
 msgid "&Edit"
 msgstr "&Taisa"
 
-#: TMAINFORM.MENUITEM1.CAPTION
+#: tmainform.menuitem1.caption
 msgctxt "TMAINFORM.MENUITEM1.CAPTION"
 msgid "-"
 msgstr "-"
 
-#: TMAINFORM.MENUITEM2.CAPTION
+#: tmainform.menuitem2.caption
 msgctxt "TMAINFORM.MENUITEM2.CAPTION"
 msgid "-"
 msgstr "-"
 
-#: TMAINFORM.MENUITEM3.CAPTION
+#: tmainform.menuitem3.caption
 msgctxt "TMAINFORM.MENUITEM3.CAPTION"
 msgid "-"
 msgstr "-"
 
-#: TMAINFORM.MENUITEM8.CAPTION
+#: tmainform.menuitem8.caption
 msgctxt "TMAINFORM.MENUITEM8.CAPTION"
 msgid "-"
 msgstr "-"
 
-#: TMAINFORM.MFILE.CAPTION
+#: tmainform.mfile.caption
 msgid "&File"
 msgstr "&Failas"
 
-#: TMAINFORM.MIDOCUMENT.CAPTION
+#: tmainform.midocument.caption
 msgid "&New document with object"
 msgstr "Naujas dok&umentas su objektu"
 
-#: TMAINFORM.MIINSERT.CAPTION
+#: tmainform.miinsert.caption
 msgid "&Values"
 msgstr "Vertė&s"
 
-#: TMAINFORM.MISORTMEMBERS.CAPTION
+#: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Rikiuoti objekto narius"
 
-#: TMAINFORM.MISTRICT.CAPTION
+#: tmainform.mistrict.caption
 msgid "&Strict JSON"
 msgstr "Griežtas &JSON"
 
-#: TMAINFORM.MOPTIONS.CAPTION
+#: tmainform.moptions.caption
 msgid "&Options"
 msgstr "&Parinktys"
 
-#: TMAINFORM.TBJSON.CAPTION
+#: tmainform.tbjson.caption
 msgid "TBJSON"
 msgstr "TBJSON"
 
-#: TMAINFORM.TOOLBUTTON1.CAPTION
+#: tmainform.toolbutton1.caption
 msgid "ToolButton1"
 msgstr "IrankioMygtukas1"
 
-#: TMAINFORM.TOOLBUTTON4.CAPTION
+#: tmainform.toolbutton4.caption
 msgid "ToolButton4"
 msgstr "IrankioMygtukas4"
-
 

@@ -24,7 +24,7 @@ Resourcestring
   SDuplicateMemberName = 'Duplicate member name "%s".';
   SErrinvalidValue = 'Invalid value or wrong type: "%s"';
   SErrNoValidJSONClipBoard = 'The clipboard does not contain valid JSON data';
-  SErrCreatingConfigDir = 'Could not create the configuration files directory "s"';
+  SErrCreatingConfigDir = 'Could not create the configuration files directory "%s"';
   SNoMoreMatches = 'No nodes match the criterium';
 
   SDiscard = 'Discard changes';
