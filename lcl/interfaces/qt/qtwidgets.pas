@@ -6510,8 +6510,6 @@ begin
   if QtWidgetSet.IsValidHandle(HWND(ScrollArea)) then
   begin
     ScrollArea.DetachEvents;
-    if FOwnWidget and (ScrollArea.Widget <> nil) then
-      QWidget_destroy(ScrollArea.Widget);
     ScrollArea.Widget := nil;
     FreeAndNil(ScrollArea);
   end;
