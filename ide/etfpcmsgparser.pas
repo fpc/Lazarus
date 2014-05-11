@@ -838,10 +838,11 @@ var
   FPCVer: String;
   FPCSrcDir: String;
   aFilename: String;
+  ErrMsg: string;
 begin
   anEnglishFile:=DefaultEnglishFile;
   aTranslationFile:=DefaulTranslationFile;
-  if IsFPCExecutable(CompilerFilename) then
+  if IsFPCExecutable(CompilerFilename,ErrMsg) then
     FPCVer:=CodeToolBoss.FPCDefinesCache.GetFPCVersion(CompilerFilename,TargetOS,TargetCPU,false)
   else
     FPCVer:='';

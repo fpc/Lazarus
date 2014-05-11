@@ -48,7 +48,7 @@ uses
   FileProcs, TransferMacros, LazarusIDEStrConsts, EnvironmentOpts, KeyMapping,
   IDEProcs
   {$IFDEF EnableNewExtTools}
-  ,LazConfigStorage, contnrs
+  ,LazConfigStorage, contnrs, IDEUtils
   {$ELSE}
   ,EditMsgScannersDlg
   {$ENDIF}
