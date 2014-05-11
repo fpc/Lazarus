@@ -957,8 +957,8 @@ var
   ASize: TSize;
 begin
   Result := False;
-  if AWinControl.HandleAllocated and not
-    TQtMainWindow(AWinControl.Handle).testAttribute(QtWA_Mapped) then
+  if AWinControl.HandleAllocated and
+    not TQtMainWindow(AWinControl.Handle).testAttribute(QtWA_Mapped) then
   begin
     if Assigned(TCustomForm(AWinControl).Menu) then
     begin
@@ -966,7 +966,9 @@ begin
       if Assigned(AWin.MenuBar) then
       begin
         AWin.MenuBar.sizeHint(@ASize);
-        aClientRect := AWin.getClientBounds;
+        // we must use real geometry, and then exclude menubar height.
+        aClientRect := AWin.getGeometry;
+        OffsetRect(aClientRect, -aClientRect.Left, -aClientRect.Top);
         dec(AClientRect.Bottom, ASize.cy);
         {$IFDEF VerboseQtResize}
         DebugLn('TQtWSCustomForm.getDefaultClientRect ',dbgsName(AWinControl),' ',dbgs(AWin.getClientBounds),' mnuBarHeight ',dbgs(AWin.MenuBar.getHeight),' ASize=',dbgs(ASize),' FINAL=',dbgs(AClientRect));
