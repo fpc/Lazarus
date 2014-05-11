@@ -95,6 +95,9 @@ After obtaining a CGImageRef, the next step to implement the RawImage_fromDevice
 		<issue name="TColorDialog.Title">
 			<short>Color dialog title is not supported</short>
 		</issue>
+		<issue name="TStatusBar.Color">
+			<short>TStatusBar color is not supported.It's always transparent.</short>
+		</issue>		
 		<issue name="TTrackBar.LineSize">
 			<short>Track bar line size is not supported</short>
 		</issue>
