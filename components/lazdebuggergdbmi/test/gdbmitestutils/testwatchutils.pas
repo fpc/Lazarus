@@ -110,6 +110,7 @@ type
     TestName: String;
     Expression:  string;
     DspFormat: TWatchDisplayFormat;
+    RepeatCount: Integer;
     EvaluateFlags: TDBGEvaluateFlags;
     StackFrame: Integer;
     Result: Array [TSymbolType] of TWatchExpectationResult;
@@ -238,6 +239,7 @@ begin
     TestName     := ATestName;
     Expression   := AnExpr;
     DspFormat    := AFmt;
+    RepeatCount  := 0;
     EvaluateFlags := AEvaluateFlags;
     TheWatch := nil;
     OnBeforeTest := nil;
@@ -419,9 +421,9 @@ begin
 
   // Get Value
   n := Data.TestName;
-  LogToFile('###### ' + n + '###### '+adbg.GetLocation.SrcFile+' '+IntToStr(ADbg.GetLocation.SrcLine) +LineEnding);
-  if n = '' then n := Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ', ' + dbgs(Data.EvaluateFlags) + ')';
+  if n = '' then n := Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ', ' + dbgs(Data.EvaluateFlags) + ' RepCnt=' + dbgs(Data.RepeatCount) + ')';
   Name := Name + ' ' + n + ' ::: '+adbg.GetLocation.SrcFile+' '+IntToStr(ADbg.GetLocation.SrcLine);
+  LogToFile('###### ' + Name + '###### '+LineEnding);
   flag := AWatch <> nil; // test for typeinfo/kind  // Awatch=nil > direct gdb command
   IsValid := True;
   HasTpInfo := True;
@@ -550,6 +552,7 @@ begin
       ExpectList[i].TheWatch := TTestWatch.Create(AWatches);
       ExpectList[i].TheWatch.Expression := ExpectList[i].Expression;
       ExpectList[i].TheWatch.DisplayFormat := ExpectList[i].DspFormat;
+      ExpectList[i].TheWatch.RepeatCount := ExpectList[i].RepeatCount;
       ExpectList[i].TheWatch.EvaluateFlags:= ExpectList[i].EvaluateFlags;
       ExpectList[i].TheWatch.enabled := True;
     end;

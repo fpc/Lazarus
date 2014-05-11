@@ -794,8 +794,10 @@ begin
     CreateLog;
     writeln(FLogFile, s);
   end
-  else
-    FLogBufferText := FLogBufferText + s + LineEnding;
+  else begin
+    if length(FLogBufferText) + length(s) < 50000000 then
+      FLogBufferText := FLogBufferText + s + LineEnding;
+  end;
 
   Handled := True;
 

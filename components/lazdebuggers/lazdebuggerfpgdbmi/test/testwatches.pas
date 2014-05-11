@@ -11,16 +11,16 @@ uses
 
 const
   BREAK_COUNT_TestWatchesUnitSimple = 17;
-  BL_TW1  = 373; // Test1Sub
-  BL_TW2  = 378; // Simple_NoneNested
-  BL_TW3  = 611; // Test1Method
-  BL_TW4  = 507; // Test1Method Nested1
-  BL_TW5  = 641; // Test2Method
-  BL_TW6  = 622; // Test2Method Nested2a
-  BL_TW7  = 628; // Test2Method Nested2b
-  BL_TW8  = 632; // Test2Method Nested2c
-  BL_TW9  = 389; // Test0Method
-  BL_TW10 = 386; // Test0Method Nested0
+  BL_TW1  = 413; // Test1Sub
+  BL_TW2  = 418; // Simple_NoneNested
+  BL_TW3  = 708; // Test1Method
+  BL_TW4  = 576; // Test1Method Nested1
+  BL_TW5  = 738; // Test2Method
+  BL_TW6  = 719; // Test2Method Nested2a
+  BL_TW7  = 729; // Test2Method Nested2b
+  BL_TW8  = 725; // Test2Method Nested2c
+  BL_TW9  = 429; // Test0Method
+  BL_TW10 = 426; // Test0Method Nested0
   BREAK_LINE_TestWatchesUnitSimple: array [1..BREAK_COUNT_TestWatchesUnitSimple] of Integer =
     ( BL_TW1,  // 1:  Test1Sub
       BL_TW3,  // 2:  Class1.Test1Method
@@ -42,7 +42,7 @@ const
       BL_TW10  // 17: Class0.Test0Method > Nested0
     );
 
-  BREAK_LINE_TestWatchesUnitArray = 921;
+  BREAK_LINE_TestWatchesUnitArray = 931;
 
 type
 
@@ -57,6 +57,7 @@ type
     ExpectBreakArray_1: TWatchExpectationArray;
 
     FCurrentExpect: PWatchExpectationArray; // currently added to
+    FLastAddedExp: PWatchExpectation;
 
     FDbgOutPut: String;
     FDbgOutPutEnable: Boolean;
@@ -65,16 +66,33 @@ type
     procedure ClearAllTestArrays;
     function  HasTestArraysData: Boolean;
 
+    // Add to FLastAddedExp
     function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AMtch: string;
                  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
     function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AEvalFlags: TDBGEvaluateFlags; AMtch: string;
                  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
-    function AddFmtDef        (AnExpr, AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
-    function AddFmtDef        (AnExpr: String; AEvalFlags: TDBGEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
-    function AddError         (AnExpr: String; AnErrorCode: Integer = 0; AMtch: string = ''): PWatchExpectation;
+    //
+    function AddFmtDef        (AnExpr: string;
+                               AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+    function AddFmtDef        (AnExpr: string; AnFormatParam: array of const;
+                               AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+    //function AddFmtDef        (AnExpr: String; AEvalFlags: TDBGEvaluateFlags;
+    //                           AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+    function AddFmtDef        (AnExpr: String; AnFormatParam: array of const; AEvalFlags: TDBGEvaluateFlags;
+                               AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
 
-    function AddSimpleInt(AnExpr: string; AMtch: Int64; ATpNm: string): PWatchExpectation;
-    function AddSimpleUInt(AnExpr: string; AMtch: QWord; ATpNm: string): PWatchExpectation;
+    procedure JoinExpectsForHexReplace; // Join the lat 2 additions
+    procedure LastExpectsToPtrReplace(AReplacePtrExpr: String);
+    function Sp2RegEx(s: String): String;
+
+    function AddError         (AnExpr: String; AnErrorCode: Integer = 0; AMtch: string = ''): PWatchExpectation;
+    function AddError         (AnExpr: String; AnFormatParam: array of const; AnErrorCode: Integer = 0; AMtch: string = ''): PWatchExpectation;
+    function AddExpInt(AnExpr: string; AMtch: Int64; ATpNm: string): PWatchExpectation;
+    function AddExpInt(AnExpr: string; AnFormatParam: array of const; AMtch: Int64; ATpNm: string): PWatchExpectation;
+    function AddExpUInt(AnExpr: string; AMtch: QWord; ATpNm: string): PWatchExpectation;
+    function AddExpUInt(AnExpr: string; AnFormatParam: array of const; AMtch: QWord; ATpNm: string): PWatchExpectation;
+    function AddExpPtr(AnExpr: string): PWatchExpectation;
+    function AddExpPtr(AnExpr: string; AnFormatParam: array of const): PWatchExpectation;
 
     procedure AdjustExpectToAddress(AWatchExp: PWatchExpectation); // only ExpectBreakSimple_1
     procedure AdjustArrayExpectToAddress(AWatchExp: PWatchExpectation); // only ExpectBreakSimple_1
@@ -223,6 +241,7 @@ function TTestWatches.Add(AnExpr: string; AFmt: TWatchDisplayFormat; AMtch: stri
   AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
   Result := AddWatchExp(FCurrentExpect^, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs );
+  FLastAddedExp := Result;
 end;
 
 function TTestWatches.Add(AnExpr: string; AFmt: TWatchDisplayFormat;
@@ -230,18 +249,55 @@ function TTestWatches.Add(AnExpr: string; AFmt: TWatchDisplayFormat;
   AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
   Result := AddWatchExp(FCurrentExpect^, AnExpr, AFmt, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
+  FLastAddedExp := Result;
 end;
 
-function TTestWatches.AddFmtDef(AnExpr, AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
-  AFlgs: TWatchExpectationFlags): PWatchExpectation;
+function TTestWatches.AddFmtDef(AnExpr: string; AMtch: string; AKind: TDBGSymbolKind;
+  ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
   Result := Add(AnExpr, wdfDefault, AMtch, AKind, ATpNm, AFlgs );
 end;
 
-function TTestWatches.AddFmtDef(AnExpr: String; AEvalFlags: TDBGEvaluateFlags; AMtch: string;
+function TTestWatches.AddFmtDef(AnExpr: string; AnFormatParam: array of const; AMtch: string;
   AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
-  Result := Add(AnExpr, wdfDefault, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
+  Result := AddFmtDef(Format(AnExpr, AnFormatParam), AMtch, AKind, ATpNm, AFlgs);
+end;
+
+//function TTestWatches.AddFmtDef(AnExpr: String; AEvalFlags: TDBGEvaluateFlags; AMtch: string;
+//  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
+//begin
+//  Result := Add(AnExpr, wdfDefault, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
+//end;
+
+function TTestWatches.AddFmtDef(AnExpr: String; AnFormatParam: array of const;
+  AEvalFlags: TDBGEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+  AFlgs: TWatchExpectationFlags): PWatchExpectation;
+begin
+  Result := Add(Format(AnExpr, AnFormatParam), wdfDefault, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
+end;
+
+procedure TTestWatches.JoinExpectsForHexReplace;
+var
+  i: Integer;
+begin
+  assert(Length(FCurrentExpect^) >= 2, 'TTestWatches.JoinExpectsForHexReplace: Length(FCurrentExpect) >= 2');
+  i := Length(FCurrentExpect^) - 1;
+
+  FCurrentExpect^[i-1].OnBeforeTest := @AdjustArrayExpectToAddress;
+  FCurrentExpect^[i-1].UserData := pointer(ptruint(i));
+  FCurrentExpect^[i-1].UserData2 := FCurrentExpect;
+end;
+
+procedure TTestWatches.LastExpectsToPtrReplace(AReplacePtrExpr: String);
+begin
+  AddExpPtr(AReplacePtrExpr);
+  JoinExpectsForHexReplace;
+end;
+
+function TTestWatches.Sp2RegEx(s: String): String;
+begin
+  Result := AnsiReplaceText(s, ' ', '[ \r\n]');
 end;
 
 function TTestWatches.AddError(AnExpr: String; AnErrorCode: Integer;
@@ -256,16 +312,45 @@ begin
   AddFmtDef(AnExpr, s, skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
 end;
 
-function TTestWatches.AddSimpleInt(AnExpr: string; AMtch: Int64;
+function TTestWatches.AddError(AnExpr: String; AnFormatParam: array of const;
+  AnErrorCode: Integer; AMtch: string): PWatchExpectation;
+begin
+  Result := AddError(Format(AnExpr, AnFormatParam), AnErrorCode, AMtch);
+end;
+
+function TTestWatches.AddExpInt(AnExpr: string; AMtch: Int64;
   ATpNm: string): PWatchExpectation;
 begin
   Result := AddFmtDef(AnExpr, '^'+IntToStr(AMtch), skSimple, ATpNm, [fTpMtch]);
 end;
 
-function TTestWatches.AddSimpleUInt(AnExpr: string; AMtch: QWord;
+function TTestWatches.AddExpInt(AnExpr: string; AnFormatParam: array of const; AMtch: Int64;
+  ATpNm: string): PWatchExpectation;
+begin
+  Result := AddExpInt(Format(AnExpr, AnFormatParam), AMtch, ATpNm);
+end;
+
+function TTestWatches.AddExpUInt(AnExpr: string; AMtch: QWord;
   ATpNm: string): PWatchExpectation;
 begin
   Result := AddFmtDef(AnExpr, '^'+IntToStr(AMtch), skSimple, ATpNm, [fTpMtch]);
+end;
+
+function TTestWatches.AddExpUInt(AnExpr: string; AnFormatParam: array of const; AMtch: QWord;
+  ATpNm: string): PWatchExpectation;
+begin
+  Result := AddExpUInt(Format(AnExpr, AnFormatParam), AMtch, ATpNm);
+end;
+
+function TTestWatches.AddExpPtr(AnExpr: string): PWatchExpectation;
+begin
+  Result := AddFmtDef(AnExpr, '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+end;
+
+function TTestWatches.AddExpPtr(AnExpr: string;
+  AnFormatParam: array of const): PWatchExpectation;
+begin
+  Result := AddExpPtr(Format(AnExpr, AnFormatParam));
 end;
 
 procedure TTestWatches.AddExpectSimple;
@@ -293,110 +378,110 @@ procedure TTestWatches.AddExpectSimple;
       s2 := s2def;
       if s2 = '' then s2 := 'ShortInt';
       if not(i in [3]) then begin
-        AddSimpleInt(Format(s, ['SimpleArg_Short1']),   -92, s2);
-        AddSimpleInt(Format(s, ['SimpleVArg_Short1']),  -91, s2);
+        AddExpInt(s, ['SimpleArg_Short1'],   -92, s2);
+        AddExpInt(s, ['SimpleVArg_Short1'],  -91, s2);
       end else begin
-        AddSimpleUInt(Format(s, ['SimpleArg_Short1']),   QWord(-92), s2);
-        AddSimpleUInt(Format(s, ['SimpleVArg_Short1']),  QWord(-91), s2);
+        AddExpUInt(s, ['SimpleArg_Short1'],   QWord(-92), s2);
+        AddExpUInt(s, ['SimpleVArg_Short1'],  QWord(-91), s2);
       end;
-      AddSimpleInt(Format(s, ['Local_Short1']), 39, s2);
-      AddSimpleInt(Format(s, ['SimpleGlob_Short1 ']), 29, s2);
-      AddSimpleInt(Format(s, ['SimpleGlob_Short2']),  0, s2);
+      AddExpInt(s, ['Local_Short1'], 39, s2);
+      AddExpInt(s, ['SimpleGlob_Short1 '], 29, s2);
+      AddExpInt(s, ['SimpleGlob_Short2'],  0, s2);
       if not(i in [3]) then begin
-        AddSimpleInt(Format(s, ['SimpleGlob_Short3']),  -1, s2);
+        AddExpInt(s, ['SimpleGlob_Short3'],  -1, s2);
       end;
-      AddSimpleInt(Format(s, ['SimpleGlob_Short4']),  high(ShortInt), s2);
+      AddExpInt(s, ['SimpleGlob_Short4'],  high(ShortInt), s2);
       if not(i in [3]) then begin
-        AddSimpleInt(Format(s, ['SimpleGlob_Short5']),  low(ShortInt), s2);
+        AddExpInt(s, ['SimpleGlob_Short5'],  low(ShortInt), s2);
       end;
 
       s2 := s2def;
       if s2 = '' then s2 := 'SmallInt';
       if not(i in [3]) then begin
-        AddSimpleInt(Format(s, ['SimpleArg_Small1']),    -192, s2);
-        AddSimpleInt(Format(s, ['SimpleVArg_Small1']),   -191, s2);
+        AddExpInt(s, ['SimpleArg_Small1'],    -192, s2);
+        AddExpInt(s, ['SimpleVArg_Small1'],   -191, s2);
       end;
-      AddSimpleInt(Format(s, ['Local_Small1']), 391, s2);
-      AddSimpleInt(Format(s, ['SimpleGlob_Small1 ']), 291, s2);
-      AddSimpleInt(Format(s, ['SimpleGlob_Small2']), 0, s2);
+      AddExpInt(s, ['Local_Small1'], 391, s2);
+      AddExpInt(s, ['SimpleGlob_Small1 '], 291, s2);
+      AddExpInt(s, ['SimpleGlob_Small2'], 0, s2);
       if not(i in [3]) then begin
-        AddSimpleInt(Format(s, ['SimpleGlob_Small3']), -1, s2);
+        AddExpInt(s, ['SimpleGlob_Small3'], -1, s2);
       end;
-      AddSimpleInt(Format(s, ['SimpleGlob_Small4']), high(SmallInt), s2);
+      AddExpInt(s, ['SimpleGlob_Small4'], high(SmallInt), s2);
       if not(i in [3]) then begin
-        AddSimpleInt(Format(s, ['SimpleGlob_Small5']), low(SmallInt), s2);
+        AddExpInt(s, ['SimpleGlob_Small5'], low(SmallInt), s2);
       end;
 
       s2 := s2def;
       if s2 = '' then s2 := M_Int;
       if not(i in [3]) then begin
-        AddSimpleInt(Format(s, ['SimpleArg_Int1']),    -1902, s2);
-        AddSimpleInt(Format(s, ['SimpleVArg_Int1']),   -1901, s2);
+        AddExpInt(s, ['SimpleArg_Int1'],    -1902, s2);
+        AddExpInt(s, ['SimpleVArg_Int1'],   -1901, s2);
       end;
-      AddSimpleInt(Format(s, ['Local_Int1']),  3901, s2);
-      AddSimpleInt(Format(s, ['SimpleGlob_Int1']),   2901, s2);
-      AddSimpleInt(Format(s, ['SimpleGlob_Int2']),   0, s2);
+      AddExpInt(s, ['Local_Int1'],  3901, s2);
+      AddExpInt(s, ['SimpleGlob_Int1'],   2901, s2);
+      AddExpInt(s, ['SimpleGlob_Int2'],   0, s2);
       if not(i in [3]) then begin
-        AddSimpleInt(Format(s, ['SimpleGlob_Int3']),   -1, s2);
+        AddExpInt(s, ['SimpleGlob_Int3'],   -1, s2);
       end;
-      AddSimpleInt(Format(s, ['SimpleGlob_Int4']),   2147483647, s2);
+      AddExpInt(s, ['SimpleGlob_Int4'],   2147483647, s2);
       if not(i in [3]) then begin
-        AddSimpleInt(Format(s, ['SimpleGlob_Int5']),   -2147483648, s2);
+        AddExpInt(s, ['SimpleGlob_Int5'],   -2147483648, s2);
       end;
 
       s2 := s2def;
       if s2 = '' then s2 := 'Int64';
       if not(i in [3]) then begin
-        AddSimpleInt(Format(s, ['SimpleArg_QInt1']),    -190000000000002, s2);
-        AddSimpleInt(Format(s, ['SimpleVArg_QInt1']),   -190000000000001, s2);
+        AddExpInt(s, ['SimpleArg_QInt1'],    -190000000000002, s2);
+        AddExpInt(s, ['SimpleVArg_QInt1'],   -190000000000001, s2);
       end;
-      AddSimpleInt(Format(s, ['Local_QInt1']), 39001, s2);
-      AddSimpleInt(Format(s, ['SimpleGlob_QInt1 ']), 29001, s2);
-      AddSimpleInt(Format(s, ['SimpleGlob_QInt2']), 0, s2);
+      AddExpInt(s, ['Local_QInt1'], 39001, s2);
+      AddExpInt(s, ['SimpleGlob_QInt1 '], 29001, s2);
+      AddExpInt(s, ['SimpleGlob_QInt2'], 0, s2);
       if not(i in [3]) then begin
-        AddSimpleInt(Format(s, ['SimpleGlob_QInt3']), -1, s2);
+        AddExpInt(s, ['SimpleGlob_QInt3'], -1, s2);
       end;
-      AddSimpleInt(Format(s, ['SimpleGlob_QInt4']), high(Int64), s2);
+      AddExpInt(s, ['SimpleGlob_QInt4'], high(Int64), s2);
       if not(i in [3]) then begin
-        AddSimpleInt(Format(s, ['SimpleGlob_QInt5']), low(Int64), s2);
+        AddExpInt(s, ['SimpleGlob_QInt5'], low(Int64), s2);
       end;
 
       s2 := s2def;
       if s2 = '' then s2 := 'Byte';
-      AddSimpleUInt(Format(s, ['Local_Byte1']), 59, s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_Byte1 ']), 49, s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_Byte2']), $7f, s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_Byte3']), $80, s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_Byte4']), high(Byte), s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_Byte5']), low(Byte), s2);
+      AddExpUInt(s, ['Local_Byte1'], 59, s2);
+      AddExpUInt(s, ['SimpleGlob_Byte1 '], 49, s2);
+      AddExpUInt(s, ['SimpleGlob_Byte2'], $7f, s2);
+      AddExpUInt(s, ['SimpleGlob_Byte3'], $80, s2);
+      AddExpUInt(s, ['SimpleGlob_Byte4'], high(Byte), s2);
+      AddExpUInt(s, ['SimpleGlob_Byte5'], low(Byte), s2);
 
       s2 := s2def;
       if s2 = '' then s2 := 'Word';
-      AddSimpleUInt(Format(s, ['Local_Word1']), 591, s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_Word1 ']), 491, s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_Word2']), $7fff, s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_Word3']), $8000, s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_Word4']), high(Word), s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_Word5']), low(Word), s2);
+      AddExpUInt(s, ['Local_Word1'], 591, s2);
+      AddExpUInt(s, ['SimpleGlob_Word1 '], 491, s2);
+      AddExpUInt(s, ['SimpleGlob_Word2'], $7fff, s2);
+      AddExpUInt(s, ['SimpleGlob_Word3'], $8000, s2);
+      AddExpUInt(s, ['SimpleGlob_Word4'], high(Word), s2);
+      AddExpUInt(s, ['SimpleGlob_Word5'], low(Word), s2);
 
       s2 := s2def;
       if s2 = '' then s2 := 'LongWord';
-      AddSimpleUInt(Format(s, ['Local_DWord1']), 5901, s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_DWord1 ']), 4901, s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_DWord2']), $7fffffff, s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_DWord3']), $80000000, s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_DWord4']), high(LongWord), s2);
-      AddSimpleUInt(Format(s, ['SimpleGlob_DWord5']), low(LongWord), s2);
+      AddExpUInt(s, ['Local_DWord1'], 5901, s2);
+      AddExpUInt(s, ['SimpleGlob_DWord1 '], 4901, s2);
+      AddExpUInt(s, ['SimpleGlob_DWord2'], $7fffffff, s2);
+      AddExpUInt(s, ['SimpleGlob_DWord3'], $80000000, s2);
+      AddExpUInt(s, ['SimpleGlob_DWord4'], high(LongWord), s2);
+      AddExpUInt(s, ['SimpleGlob_DWord5'], low(LongWord), s2);
 
       s2 := s2def;
       if s2 = '' then s2 := 'QWord';
       if not(i in [2]) then begin
-        AddSimpleUInt(Format(s, ['Local_QWord1']), 59001, s2);
-        AddSimpleUInt(Format(s, ['SimpleGlob_QWord1 ']), 49001, s2);
-        AddSimpleUInt(Format(s, ['SimpleGlob_QWord2']), $7fffffffffffffff, s2);
-        AddSimpleUInt(Format(s, ['SimpleGlob_QWord3']), qword($8000000000000000), s2);
-        AddSimpleUInt(Format(s, ['SimpleGlob_QWord4']), high(QWord), s2);
-        AddSimpleUInt(Format(s, ['SimpleGlob_QWord5']), low(QWord), s2);
+        AddExpUInt(s, ['Local_QWord1'], 59001, s2);
+        AddExpUInt(s, ['SimpleGlob_QWord1 '], 49001, s2);
+        AddExpUInt(s, ['SimpleGlob_QWord2'], $7fffffffffffffff, s2);
+        AddExpUInt(s, ['SimpleGlob_QWord3'], qword($8000000000000000), s2);
+        AddExpUInt(s, ['SimpleGlob_QWord4'], high(QWord), s2);
+        AddExpUInt(s, ['SimpleGlob_QWord5'], low(QWord), s2);
       end;
 
     end;
@@ -404,14 +489,14 @@ procedure TTestWatches.AddExpectSimple;
 
     s2 := 'Byte';
     s := 'Byte(%s)';
-    AddSimpleInt(Format(s, ['SimpleArg_Int1']),    Byte(-1902), s2);
-    AddSimpleInt(Format(s, ['SimpleVArg_Int1']),   Byte(-1901), s2);
-    AddSimpleInt(Format(s, ['Local_Int1']),  Byte(3901), s2);
-    AddSimpleInt(Format(s, ['SimpleGlob_Int1']),   Byte(2901), s2);
-    AddSimpleInt(Format(s, ['SimpleGlob_Int2']),   Byte(0), s2);
-    AddSimpleInt(Format(s, ['SimpleGlob_Int3']),   Byte(-1), s2);
-    AddSimpleInt(Format(s, ['SimpleGlob_Int4']),   Byte(2147483647), s2);
-    AddSimpleInt(Format(s, ['SimpleGlob_Int5']),   Byte(-2147483648), s2);
+    AddExpInt(s, ['SimpleArg_Int1'],    Byte(-1902), s2);
+    AddExpInt(s, ['SimpleVArg_Int1'],   Byte(-1901), s2);
+    AddExpInt(s, ['Local_Int1'],  Byte(3901), s2);
+    AddExpInt(s, ['SimpleGlob_Int1'],   Byte(2901), s2);
+    AddExpInt(s, ['SimpleGlob_Int2'],   Byte(0), s2);
+    AddExpInt(s, ['SimpleGlob_Int3'],   Byte(-1), s2);
+    AddExpInt(s, ['SimpleGlob_Int4'],   Byte(2147483647), s2);
+    AddExpInt(s, ['SimpleGlob_Int5'],   Byte(-2147483648), s2);
 
 
     for i := 0 to 3 do begin
@@ -424,23 +509,23 @@ procedure TTestWatches.AddExpectSimple;
       j := 0;
       if i in [2,3] then j := 100;
 
-      AddSimpleInt(Format(s, ['Field_Short1']),   j+11, 'ShortInt');
-      AddSimpleInt(Format(s, ['Field_Small1']),   j+12, 'SmallInt');
-      AddSimpleInt(Format(s, ['Field_Int1']),     j+13, 'LongInt');
-      AddSimpleInt(Format(s, ['Field_QInt1']),    j+14, 'Int64');
+      AddExpInt(s, ['Field_Short1'],   j+11, 'ShortInt');
+      AddExpInt(s, ['Field_Small1'],   j+12, 'SmallInt');
+      AddExpInt(s, ['Field_Int1'],     j+13, 'LongInt');
+      AddExpInt(s, ['Field_QInt1'],    j+14, 'Int64');
 
-      AddSimpleInt(Format(s, ['Field_Byte1']),     j+15, 'Byte');
-      AddSimpleInt(Format(s, ['Field_Word1']),     j+16, 'Word');
-      AddSimpleInt(Format(s, ['Field_DWord1']),    j+17, 'LongWord');
-      AddSimpleInt(Format(s, ['Field_QWord1']),    j+18, 'QWord');
+      AddExpInt(s, ['Field_Byte1'],     j+15, 'Byte');
+      AddExpInt(s, ['Field_Word1'],     j+16, 'Word');
+      AddExpInt(s, ['Field_DWord1'],    j+17, 'LongWord');
+      AddExpInt(s, ['Field_QWord1'],    j+18, 'QWord');
     end;
     {%endregion}
 
     s := '%s';
-    AddFmtDef(Format(s, ['SimpleGlob_Single1']),   '^99\.(2|19)',  skSimple, '', [fTpMtch]);
-    AddFmtDef(Format(s, ['SimpleGlob_Double1']),   '^199\.(3|29)', skSimple, '', [fTpMtch]);
-    AddFmtDef(Format(s, ['SimpleGlob_Ext1']),      '^299\.(4|39)', skSimple, '', [fTpMtch]);
-    AddSimpleInt(Format(s, ['SimpleGlob_Comp1']),    -2, '');
+    AddFmtDef(s, ['SimpleGlob_Single1'],   '^99\.(2|19)',  skSimple, '', [fTpMtch]);
+    AddFmtDef(s, ['SimpleGlob_Double1'],   '^199\.(3|29)', skSimple, '', [fTpMtch]);
+    AddFmtDef(s, ['SimpleGlob_Ext1'],      '^299\.(4|39)', skSimple, '', [fTpMtch]);
+    AddExpInt(s, ['SimpleGlob_Comp1'],    -2, '');
 
     {%region AddressOf / Var param, hidden pointer}
       //SimplePArg_Int1, SimplePVArg_Int1, SimplePLocal_Int1, SimplePGlob_Int1: PLongInt;
@@ -588,15 +673,15 @@ begin
           s2 := '^';
         end;
 
-        AddSimpleInt(Format('%sShort1%1:s', [s,s2]),   11, 'ShortInt');
-        AddSimpleInt(Format('%sSmall1%1:s', [s,s2]),   112, 'SmallInt');
-        AddSimpleInt(Format('%sInt1%1:s', [s,s2]),     1123, 'LongInt');
-        AddSimpleInt(Format('%sQInt1%1:s', [s,s2]),    11234, 'Int64');
+        AddExpInt(Format('%sShort1%1:s', [s,s2]),   11, 'ShortInt');
+        AddExpInt(Format('%sSmall1%1:s', [s,s2]),   112, 'SmallInt');
+        AddExpInt(Format('%sInt1%1:s', [s,s2]),     1123, 'LongInt');
+        AddExpInt(Format('%sQInt1%1:s', [s,s2]),    11234, 'Int64');
 
-        AddSimpleInt(Format('%sByte1%1:s', [s,s2]),    22, 'Byte');
-        AddSimpleInt(Format('%sWord1%1:s', [s,s2]),    223, 'Word');
-        AddSimpleInt(Format('%sDWord1%1:s', [s,s2]),   2234, 'LongWord');
-        AddSimpleInt(Format('%sQWord1%1:s', [s,s2]),   22345, 'QWord');
+        AddExpInt(Format('%sByte1%1:s', [s,s2]),    22, 'Byte');
+        AddExpInt(Format('%sWord1%1:s', [s,s2]),    223, 'Word');
+        AddExpInt(Format('%sDWord1%1:s', [s,s2]),   2234, 'LongWord');
+        AddExpInt(Format('%sQWord1%1:s', [s,s2]),   22345, 'QWord');
 
         AddFmtDef(Format('%sSingle1%1:s', [s,s2]),  '^0.(5|49)',  skSimple, '', [fTpMtch]);
         AddFmtDef(Format('%sDouble1%1:s', [s,s2]),  '^0.2(5|49)',  skSimple, '', [fTpMtch]);
@@ -626,7 +711,7 @@ procedure TTestWatches.AddExpectArray_1;
 var
   i, i2: Integer;
   s, s2: String;
-  r: PWatchExpectation;
+  SkipParamArgs: Boolean;
 begin
   FCurrentExpect := @ExpectBreakArray_1;
 
@@ -644,19 +729,13 @@ begin
     end;
 
     {%region  address of }
-    r := AddFmtDef(Format('@%sDynInt1', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
-    if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
-    r^.OnBeforeTest := @AdjustArrayExpectToAddress;
-    r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
-    r^.UserData2 := FCurrentExpect;
-    AddFmtDef(Format('%sPDynInt1', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+    AddFmtDef('@%sDynInt1', [s], '\REPLACEME', skPointer, '', [fTpMtch]);
+    if i = 3 then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+    LastExpectsToPtrReplace(Format('%sPDynInt1', [s]));
 
-    r := AddFmtDef(Format('@%sStatInt1', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
-    if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
-    r^.OnBeforeTest := @AdjustArrayExpectToAddress;
-    r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
-    r^.UserData2 := FCurrentExpect;
-    AddFmtDef(Format('%sPStatInt1', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+    AddFmtDef('@%sStatInt1', [s], '\REPLACEME', skPointer, '', [fTpMtch]);
+    if i = 3 then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+    LastExpectsToPtrReplace(Format('%sPStatInt1', [s]));
     {%endregion  address of }
 
 
@@ -667,118 +746,146 @@ begin
         s2 := '^';
       end;
 
-if not (i in [2,3]) then
-      AddFmtDef(Format('%sDynAInt1%1:s', [s,s2]), '^[\(L].*?100, 101, 102', skArray, '', [fTpMtch]);
-if (not (i in [2,3])) or (i2=0) then begin // open array / not valid, pointer is pointer to dyn array
-      AddSimpleInt(Format('%sDynAInt1%1:s[0]', [s,s2]),    100, M_Int);
-      AddSimpleInt(Format('%sDynAInt1%1:s[1]', [s,s2]),    101, M_Int);
-      AddError(Format('%sDynAInt1%1:s[0][0]', [s,s2]), fpErrTypeHasNoIndex); // ERROR
-end;
+      SkipParamArgs := (i in [2,3]);
 
-
-      AddFmtDef(Format('%sStatAInt1%1:s', [s,s2]), '^[\(L].*?6600, 6601, 6602',
-                skArray, '', [fTpMtch]);
-      AddSimpleInt(Format('%sStatAInt1%1:s[4]', [s,s2]),    6600, M_Int);
-      AddSimpleInt(Format('%sStatAInt1%1:s[9]', [s,s2]),    6699, M_Int);
-      AddFmtDef(Format('%sStatAInt1%1:s[3]', [s,s2]), '', skSimple, M_Int, [fTpMtch]); // Just do not crash
-      AddFmtDef(Format('%sStatAInt1%1:s[10]', [s,s2]), '', skSimple, M_Int, [fTpMtch]); // Just do not crash
-      AddFmtDef(Format('%sStatAInt1%1:s[-1]', [s,s2]), '', skSimple, M_Int, [fTpMtch]); // Just do not crash
-
-
-      AddFmtDef(Format('%sStatAInt2%1:s', [s,s2]), '^[\(L].*?3300, 3301, 3302',
-                skArray, '', [fTpMtch]);
-      AddSimpleInt(Format('%sStatAInt2%1:s[-4]', [s,s2]),    3300, M_Int);
-      AddSimpleInt(Format('%sStatAInt2%1:s[0]', [s,s2]),    3304, M_Int);
-
-
-      AddFmtDef(Format('%sDynInt1%1:s', [s,s2]), '^[\(L].*?5511, 5512, 5513, 5514, -5511',
-                skArray, '', [fTpMtch]);
-      AddSimpleInt(Format('%sDynInt1%1:s[0]', [s,s2]),    5511, M_Int);
-      AddSimpleInt(Format('%sDynInt1%1:s[19]', [s,s2]),    5500, M_Int);
-      // typecast for dynarray
-      r := AddFmtDef(Format('TArrayDynInt(%sDynInt1%1:s)', [s,s2]), '^[\(L].*?5511, 5512, 5513, 5514, -5511',
-                skArray, '', [fTpMtch]);
-      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
-      r := AddSimpleInt(Format('TArrayDynInt(%sDynInt1%1:s)[0]', [s,s2]),    5511, M_Int);
-      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
-      // typecast for dynarray
-      r := AddFmtDef(Format('TArrayDynInt(Pointer(%sDynInt1%1:s))', [s,s2]), '^[\(L].*?5511, 5512, 5513, 5514, -5511',
-                skArray, '', [fTpMtch]);
-      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
-      r := AddSimpleInt(Format('TArrayDynInt(Pointer(%sDynInt1%1:s))[0]', [s,s2]),    5511, M_Int);
-      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
-      // typecast for dynarray
-      r := AddFmtDef(Format('TArrayDynInt(QWord(%sDynInt1%1:s))', [s,s2]), '^[\(L].*?5511, 5512, 5513, 5514, -5511',
-                skArray, '', [fTpMtch]);
-      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
-      r := AddSimpleInt(Format('TArrayDynInt(QWord(%sDynInt1%1:s))[0]', [s,s2]),    5511, M_Int);
-      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
-      // typecast for dynarray
-      if (i2 = 0) and (i <> 3) then begin
-        r := AddFmtDef(Format('TArrayDynInt(REPLACEME)', [s,s2]), '^[\(L].*?5511, 5512, 5513, 5514, -5511',
-                  skArray, '', [fTpMtch]);
-        //      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
-        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
-        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
-        r^.UserData2 := FCurrentExpect;
-        AddFmtDef(Format('Pointer(%sDynInt1%1:s)', [s,s2]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
-        r := AddSimpleInt(Format('TArrayDynInt(REPLACEME)[0]', [s,s2]),    5511, M_Int);
-        //if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
-        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
-        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
-        r^.UserData2 := FCurrentExpect;
-        AddFmtDef(Format('Pointer(%sDynInt1%1:s)', [s,s2]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+      // Test: Simple Array of int
+      if not SkipParamArgs then begin
+        AddFmtDef('%sDynAInt1%1:s', [s,s2], '^[\(L].*?100, 101, 102, 103, 104\)', skArray, '', [fTpMtch]);
+        // RepeatCount
+        AddFmtDef('%sDynAInt1%1:s', [s,s2], '^[\(L].*?100, 101, 102, 103, 104,', skArray, '', [fTpMtch]);
+        FLastAddedExp^.RepeatCount := 6;
+      end;
+      if (not SkipParamArgs) or (i2=0) then begin // open array / not valid, pointer is pointer to dyn array
+        AddExpInt('%sDynAInt1%1:s[0]', [s,s2],    100, M_Int);
+        AddExpInt('%sDynAInt1%1:s[1]', [s,s2],    101, M_Int);
+        AddError ('%sDynAInt1%1:s[0][0]', [s,s2], fpErrTypeHasNoIndex); // ERROR
       end;
 
 
-      AddFmtDef(Format('%sDynInt2%1:s', [s,s2]), '^nil', skArray, '', [fTpMtch]);
-      r := AddFmtDef(Format('TArrayDynInt(%sDynInt2%1:s)', [s,s2]), '^nil', skArray, '', [fTpMtch]);
-      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
-      r := AddSimpleInt(Format('QWord(%sDynInt2%1:s)', [s,s2]),   0, 'QWord');
-      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+      AddFmtDef('%sStatAInt1%1:s', [s,s2], '^[\(L].*?6600, 6601, 6602, 6603, 6604, 6699\)', skArray, '', [fTpMtch]);
+      // RepeatCount
+      AddFmtDef('%sStatAInt1%1:s', [s,s2], '^[\(L].*?6600, 6601, 6602, 6603, 6604, 6699,', skArray, '', [fTpMtch]);
+      FLastAddedExp^.RepeatCount := 7;
+      AddExpInt('%sStatAInt1%1:s[4]', [s,s2],    6600, M_Int);
+      AddExpInt('%sStatAInt1%1:s[9]', [s,s2],    6699, M_Int);
+      AddFmtDef('%sStatAInt1%1:s[3]', [s,s2], '', skSimple, M_Int, [fTpMtch]); // Just do not crash
+      AddFmtDef('%sStatAInt1%1:s[10]', [s,s2], '', skSimple, M_Int, [fTpMtch]); // Just do not crash
+      AddFmtDef('%sStatAInt1%1:s[-1]', [s,s2], '', skSimple, M_Int, [fTpMtch]); // Just do not crash
+      AddError ('%sStatAInt1%1:s[0][0]', [s,s2], fpErrTypeHasNoIndex); // ERROR
 
 
-      AddFmtDef(Format('%sDynClass1%1:s', [s,s2]), '^[\(L].*?'+
+      AddFmtDef('%sStatAInt2%1:s', [s,s2], '^[\(L].*?3300, 3301, 3302', skArray, '', [fTpMtch]);
+      AddExpInt('%sStatAInt2%1:s[-4]', [s,s2],    3300, M_Int);
+      AddExpInt('%sStatAInt2%1:s[0]', [s,s2],    3304, M_Int);
+
+
+      AddFmtDef('%sDynInt1%1:s', [s,s2], '^[\(L].*?5511, 5512, 5513, 5514, -5511', skArray, '', [fTpMtch]);
+      AddExpInt('%sDynInt1%1:s[0]', [s,s2],    5511, M_Int);
+      AddExpInt('%sDynInt1%1:s[19]', [s,s2],    5500, M_Int);
+
+      // Test: wdfMemDump
+//TODO: DynArray.Size / check for end after last element.
+      if not SkipParamArgs then begin
+        // 5511 = $1587 / -5511=$FFFFEA79 / 5500=$157c
+        AddFmtDef('%sDynInt1%1:s', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *(00 00 )?((15 87)|(87 15)) +00 00 +([0-9A-F][0-9A-F] +)*00 ((15 7C)|(7C 15))'), skArray, '', [fTpMtch]);
+        FLastAddedExp^.DspFormat := wdfMemDump;
+        AddFmtDef('%sDynInt1%1:s[1]', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 15 88)|(88 15 00 00)) *$'), skArray, '', [fTpMtch]);
+        FLastAddedExp^.DspFormat := wdfMemDump;
+      end;
+
+      // 6600 = $19C8 / 6699=$1A2B
+      AddFmtDef('%sStatAInt1%1:s', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *(00 00 )?((19 C8)|(C8 19)) +00 00 +([0-9A-F][0-9A-F] +)*00 ((1A 2B)|(2B 1A))'), skArray, '', [fTpMtch]);
+      FLastAddedExp^.DspFormat := wdfMemDump;
+      AddFmtDef('%sStatAInt1%1:s[5]', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 19 C9)|(C9 19 00 00)) *$'), skArray, '', [fTpMtch]);
+      FLastAddedExp^.DspFormat := wdfMemDump;
+
+      // Test: typecast dynarray to dynarray
+      AddFmtDef('TArrayDynInt(%sDynInt1%1:s)', [s,s2], '^[\(L].*?5511, 5512, 5513, 5514, -5511', skArray, '', [fTpMtch]);
+      if i in [3] then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+      AddExpInt('TArrayDynInt(%sDynInt1%1:s)[0]', [s,s2],    5511, M_Int);
+      if i in [3] then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+      // typecast for dynarray
+      AddFmtDef('TArrayDynInt(Pointer(%sDynInt1%1:s))', [s,s2], '^[\(L].*?5511, 5512, 5513, 5514, -5511',
+                skArray, '', [fTpMtch]);
+      if i in [3] then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+      AddExpInt('TArrayDynInt(Pointer(%sDynInt1%1:s))[0]', [s,s2],    5511, M_Int);
+      if i in [3] then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+      // typecast for dynarray
+      AddFmtDef('TArrayDynInt(QWord(%sDynInt1%1:s))', [s,s2], '^[\(L].*?5511, 5512, 5513, 5514, -5511',
+                skArray, '', [fTpMtch]);
+      if i in [3] then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+      AddExpInt('TArrayDynInt(QWord(%sDynInt1%1:s))[0]', [s,s2],    5511, M_Int);
+      if i in [3] then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+
+      // Test: typecast Address to array
+      if (i2 = 0) and (i <> 3) then begin
+        AddFmtDef('TArrayDynInt(REPLACEME)', [s,s2], '^[\(L].*?5511, 5512, 5513, 5514, -5511',
+                  skArray, '', [fTpMtch]);
+        //      if i in [3] then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+        LastExpectsToPtrReplace(Format('Pointer(%sDynInt1%1:s)', [s,s2]));
+
+        AddExpInt('TArrayDynInt(REPLACEME)[0]', [s,s2],    5511, M_Int);
+        //if i in [3] then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+        LastExpectsToPtrReplace(Format('Pointer(%sDynInt1%1:s)', [s,s2]));
+
+        //AddError('TArrayStatInt(REPLACEME)', [s,s2]);
+        //LastExpectsToPtrReplace(Format('Pointer(@%sStatInt1%1:s[-2])', [s,s2]));
+        //AddError('TArrayStatInt(REPLACEME)[0]', [s,s2]);
+        //LastExpectsToPtrReplace(Format('Pointer(@%sStatInt1%1:s[-2])', [s,s2]));
+      end;
+
+
+      // Test: Empty DynArray = nil
+      AddFmtDef('%sDynInt2%1:s', [s,s2], '^nil', skArray, '', [fTpMtch]);
+      AddFmtDef('TArrayDynInt(%sDynInt2%1:s)', [s,s2], '^nil', skArray, '', [fTpMtch]);
+      if i in [3] then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+      AddExpInt('QWord(%sDynInt2%1:s)', [s,s2],   0, 'QWord');
+      if i in [3] then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+
+
+      // Test: Array of structure // nested array
+      AddFmtDef('%sDynClass1%1:s', [s,s2], '^[\(L].*?'+
         '\(.*?Field_INT1 = 98700;.*?Field_INT2 = 98701;.*?Field_DYNAINT1 = \(9900, 9901\);.*?\), ' +
         '\(.*?Field_INT1 = 88700;.*?Field_INT2 = 88701;.*?Field_DYNAINT1 = \(8900, 8901\);.*?\), ' +
         '\(.*?Field_INT1 = 78700;.*?Field_INT2 = 78701;.*?Field_DYNAINT1 = \(7900, 7901, 7902\);.*?\)',
-      skArray, '', [fTpMtch]);
+        skArray, '', [fTpMtch]);
       AddFmtDef(Format('%sDynClass1%1:s[0]', [s,s2]),
         '\(.*?Field_INT1 = 98700;.*?Field_INT2 = 98701;.*?Field_DYNAINT1 = \(9900, 9901\);.*?\), ',
-      skClass, 'TArrayClass1', [fTpMtch]);
+        skClass, 'TArrayClass1', [fTpMtch]);
       AddFmtDef(Format('%sDynClass1%1:s[1]', [s,s2]),
         '\(.*?Field_INT1 = 88700;.*?Field_INT2 = 88701;.*?Field_DYNAINT1 = \(8900, 8901\);.*?\), ',
-      skClass, 'TArrayClass1', [fTpMtch]);
-      AddSimpleInt(Format('%sDynClass1%1:s[0].Field_INT1', [s,s2]),  98700, M_Int);
+        skClass, 'TArrayClass1', [fTpMtch]);
+      AddExpInt('%sDynClass1%1:s[0].Field_INT1', [s,s2],  98700, M_Int);
 
 
-      AddFmtDef(Format('%sDynRec1%1:s', [s,s2]), '^[\(L].*?'+
+      AddFmtDef('%sDynRec1%1:s', [s,s2], '^[\(L].*?'+
         '\(.*?FieldINT1 = 200;.*?FieldINT2 = 201;.*?\), ' +
         '\(.*?FieldINT1 = 210;.*?FieldINT2 = 211;.*?\), ' +
         '\(.*?FieldINT1 = 220;.*?FieldINT2 = 221;.*?\)',
       skArray, '', [fTpMtch]);
 
-if not (i in [2,3]) then // open array / TODO
-      AddFmtDef(Format('%sDynRec2%1:s', [s,s2]), '^[\(L].*?'+
-        '\(.*?FieldByte1 = 200;.*?FieldByte2 = 201;.*?\), ' +
-        '\(.*?FieldByte1 = 210;.*?FieldByte2 = 211;.*?\), ' +
-        '\(.*?FieldByte1 = 220;.*?FieldByte2 = 221;.*?\)',
-      skArray, '', [fTpMtch]);
+      if not SkipParamArgs then // open array / TODO
+        AddFmtDef('%sDynRec2%1:s', [s,s2], '^[\(L].*?'+
+          '\(.*?FieldByte1 = 200;.*?FieldByte2 = 201;.*?\), ' +
+          '\(.*?FieldByte1 = 210;.*?FieldByte2 = 211;.*?\), ' +
+          '\(.*?FieldByte1 = 220;.*?FieldByte2 = 221;.*?\)',
+        skArray, '', [fTpMtch]);
 
+      // Test: Nested Array
       // 1st nested has diff len
-      AddFmtDef(Format('%sDynDynInt1%1:s', [s,s2]), '^[\(L].*?'+
+      AddFmtDef('%sDynDynInt1%1:s', [s,s2], '^[\(L].*?'+
         '\(1000, 1001\), ' +    '\(1010, 1011, 1012\), ' +    '\(1020, 1021, 1022\)',
       skArray, '', [fTpMtch]);
-      AddSimpleInt(Format('%sDynDynInt1%1:s[0][0]', [s,s2]),    1000, M_Int);
-      AddSimpleInt(Format('%sDynDynInt1%1:s[0,0]', [s,s2]),    1000, M_Int);
-      AddSimpleInt(Format('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0], %0:sDynDynInt1%1:s[3,1]]', [s,s2]),    1012, M_Int);
-      AddSimpleInt(Format('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0]][%0:sDynDynInt1%1:s[3,1]]', [s,s2]),    1012, M_Int);
+      AddExpInt('%sDynDynInt1%1:s[0][0]', [s,s2],    1000, M_Int);
+      AddExpInt('%sDynDynInt1%1:s[0,0]', [s,s2],    1000, M_Int);
+      AddExpInt('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0], %0:sDynDynInt1%1:s[3,1]]', [s,s2],    1012, M_Int);
+      AddExpInt('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0]][%0:sDynDynInt1%1:s[3,1]]', [s,s2],    1012, M_Int);
 
-      AddError(Format('%0:sDynDynInt1%1:s[FooNoExistFoo, %0:sDynDynInt1%1:s[3,1]]', [s,s2]), fpErrSymbolNotFound); // ERROR
-      AddError(Format('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0].NoMember, %0:sDynDynInt1%1:s[3,1]]', [s,s2]), fpErrorNotAStructure); // ERROR
+      AddError('%0:sDynDynInt1%1:s[FooNoExistFoo, %0:sDynDynInt1%1:s[3,1]]', [s,s2], fpErrSymbolNotFound); // ERROR
+      AddError('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0].NoMember, %0:sDynDynInt1%1:s[3,1]]', [s,s2], fpErrorNotAStructure); // ERROR
 
 
-      AddFmtDef(Format('%sDynDynClass1%1:s', [s,s2]), '^[^\(G]*?\('+ // not GDB:
+      AddFmtDef('%sDynDynClass1%1:s', [s,s2], '^[^\(G]*?\('+ // not GDB:
         '\(\(.*?Field_INT1 = 5000;.*?\), \(.*?Field_INT1 = 5001;.*?\)\), ' +
         '\(nil, \(.*?Field_INT1 = 5011;.*?\)\), ' +
         '\(nil, nil\)',
@@ -786,134 +893,107 @@ if not (i in [2,3]) then // open array / TODO
 
 
       ////
-      AddFmtDef(Format('%sStatStatInt1%1:s', [s,s2]), '^[\(L].*?'+
+      AddFmtDef('%sStatStatInt1%1:s', [s,s2], '^[\(L].*?'+
         '\(4091, 4092, 4093\), ' +    '\(4081, 4082, 4083\), ' +    '\(4071, 4072, 4073\), ',
       skArray, '', [fTpMtch]);
-      AddSimpleInt(Format('%sStatStatInt1%1:s[-9,1]', [s,s2]),    4091, M_Int);
-      r := AddFmtDef(Format('TArrayStatStatInt(%sStatStatInt1%1:s)', [s,s2]), '^[\(L].*?'+
+      AddExpInt('%sStatStatInt1%1:s[-9,1]', [s,s2],    4091, M_Int);
+      AddFmtDef('TArrayStatStatInt(%sStatStatInt1%1:s)', [s,s2], '^[\(L].*?'+
         '\(4091, 4092, 4093\), ' +    '\(4081, 4082, 4083\), ' +    '\(4071, 4072, 4073\), ',
       skArray, '', [fTpMtch]);
-      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
-      r := AddSimpleInt(Format('TArrayStatStatInt(%sStatStatInt1%1:s)[-9,1]', [s,s2]),    4091, M_Int);
-      if i in [3] then UpdResMinFpc(r, stSymAll, 020600);
+      if i in [3] then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+      AddExpInt('TArrayStatStatInt(%sStatStatInt1%1:s)[-9,1]', [s,s2],    4091, M_Int);
+      if i in [3] then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
 
       {%region  Pointer }
-      AddSimpleInt(Format('(%sIntPointer%1:s-2)^',    [s,s2]),    5511, M_Int);
-      AddSimpleInt(Format('(%sIntPointer%1:s+(-2))^', [s,s2]),    5511, M_Int);
-      AddSimpleInt(Format('(%sIntPointer%1:s+ArraySub2)^', [s,s2]),    5511, M_Int);
-      AddSimpleInt(Format('(%sIntPointer%1:s-ArrayAdd2)^', [s,s2]),    5511, M_Int);
-      AddSimpleInt(Format('(ArraySub2+%sIntPointer%1:s)^', [s,s2]),    5511, M_Int);
-      AddSimpleInt(Format('(-2+%sIntPointer%1:s)^',   [s,s2]),    5511, M_Int);
-      AddSimpleInt(Format('(-1+%sIntPointer%1:s-1)^', [s,s2]),    5511, M_Int);
+      AddExpInt('(%sIntPointer%1:s-2)^',    [s,s2],    5511, M_Int);
+      AddExpInt('(%sIntPointer%1:s+(-2))^', [s,s2],    5511, M_Int);
+      AddExpInt('(%sIntPointer%1:s+ArraySub2)^', [s,s2],    5511, M_Int);
+      AddExpInt('(%sIntPointer%1:s-ArrayAdd2)^', [s,s2],    5511, M_Int);
+      AddExpInt('(ArraySub2+%sIntPointer%1:s)^', [s,s2],    5511, M_Int);
+      AddExpInt('(-2+%sIntPointer%1:s)^',   [s,s2],    5511, M_Int);
+      AddExpInt('(-1+%sIntPointer%1:s-1)^', [s,s2],    5511, M_Int);
 
-      AddSimpleInt(Format('(%sIntPointer%1:s-1)^',    [s,s2]),    5512, M_Int);
-      AddSimpleInt(Format('(%sIntPointer%1:s+(-1))^', [s,s2]),    5512, M_Int);
-      AddSimpleInt(Format('%sIntPointer%1:s^',        [s,s2]),    5513, M_Int);
-      AddSimpleInt(Format('(%sIntPointer%1:s)^',      [s,s2]),    5513, M_Int);
-      AddSimpleInt(Format('(%sIntPointer%1:s+0)^',    [s,s2]),    5513, M_Int);
-      AddSimpleInt(Format('(%sIntPointer%1:s-0)^',    [s,s2]),    5513, M_Int);
-      AddSimpleInt(Format('(%sIntPointer%1:s+1)^',    [s,s2]),    5514, M_Int);
-      AddSimpleInt(Format('(%sIntPointer%1:s+2)^',    [s,s2]),   -5511, M_Int);
+      AddExpInt('(%sIntPointer%1:s-1)^',    [s,s2],    5512, M_Int);
+      AddExpInt('(%sIntPointer%1:s+(-1))^', [s,s2],    5512, M_Int);
+      AddExpInt('%sIntPointer%1:s^',        [s,s2],    5513, M_Int);
+      AddExpInt('(%sIntPointer%1:s)^',      [s,s2],    5513, M_Int);
+      AddExpInt('(%sIntPointer%1:s+0)^',    [s,s2],    5513, M_Int);
+      AddExpInt('(%sIntPointer%1:s-0)^',    [s,s2],    5513, M_Int);
+      AddExpInt('(%sIntPointer%1:s+1)^',    [s,s2],    5514, M_Int);
+      AddExpInt('(%sIntPointer%1:s+2)^',    [s,s2],   -5511, M_Int);
 
-      AddSimpleInt(Format('%sIntPointer%1:s[-2]', [s,s2]),    5511, M_Int);
-      AddSimpleInt(Format('%sIntPointer%1:s[ArraySub2]', [s,s2]),    5511, M_Int);
-      AddSimpleInt(Format('%sIntPointer%1:s[-ArrayAdd2]', [s,s2]),    5511, M_Int);
-      AddSimpleInt(Format('%sIntPointer%1:s[-1]', [s,s2]),    5512, M_Int);
-      AddSimpleInt(Format('%sIntPointer%1:s[0]',  [s,s2]),    5513, M_Int);
-      AddSimpleInt(Format('%sIntPointer%1:s[1]',  [s,s2]),    5514, M_Int);
-      AddSimpleInt(Format('%sIntPointer%1:s[2]',  [s,s2]),   -5511, M_Int);
+      AddExpInt('%sIntPointer%1:s[-2]', [s,s2],    5511, M_Int);
+      AddExpInt('%sIntPointer%1:s[ArraySub2]', [s,s2],    5511, M_Int);
+      AddExpInt('%sIntPointer%1:s[-ArrayAdd2]', [s,s2],    5511, M_Int);
+      AddExpInt('%sIntPointer%1:s[-1]', [s,s2],    5512, M_Int);
+      AddExpInt('%sIntPointer%1:s[0]',  [s,s2],    5513, M_Int);
+      AddExpInt('%sIntPointer%1:s[1]',  [s,s2],    5514, M_Int);
+      AddExpInt('%sIntPointer%1:s[2]',  [s,s2],   -5511, M_Int);
 
-      AddSimpleInt(Format('(PInteger(@%sIntPointer%1:s[-1])-1)^', [s,s2]),    5511, M_Int);
-      AddSimpleInt(Format('(%sIntPointer%1:s-1)[-1]',    [s,s2]),    5511, M_Int);
-      AddSimpleInt(Format('(PInteger(@Pointer(%sIntPointer%1:s)[-4])-1)^', [s,s2]),    5511, M_Int);
-      AddSimpleInt(Format('(PInteger(@Pointer(%sIntPointer%1:s)[-2]-6))^', [s,s2]),    5511, M_Int);
+      AddExpInt('(PInteger(@%sIntPointer%1:s[-1])-1)^', [s,s2],    5511, M_Int);
+      AddExpInt('(%sIntPointer%1:s-1)[-1]',    [s,s2],    5511, M_Int);
+      AddExpInt('(PInteger(@Pointer(%sIntPointer%1:s)[-4])-1)^', [s,s2],    5511, M_Int);
+      AddExpInt('(PInteger(@Pointer(%sIntPointer%1:s)[-2]-6))^', [s,s2],    5511, M_Int);
 
       // add 2 each for word pointer
-      AddSimpleInt(Format('PInteger(%sWordPointer%1:s)^',     [s,s2]),    5513, M_Int);
-      AddSimpleInt(Format('PInteger(%sWordPointer%1:s+0)^',   [s,s2]),    5513, M_Int);
-      AddSimpleInt(Format('PInteger(%sWordPointer%1:s+2)^',   [s,s2]),    5514, M_Int);
-      AddSimpleInt(Format('PInteger(%sWordPointer%1:s+ArrayAdd2)^',   [s,s2]),    5514, M_Int);
-      AddSimpleInt(Format('PInteger(%sWordPointer%1:s-ArraySub2)^',   [s,s2]),    5514, M_Int);
+      AddExpInt('PInteger(%sWordPointer%1:s)^',     [s,s2],    5513, M_Int);
+      AddExpInt('PInteger(%sWordPointer%1:s+0)^',   [s,s2],    5513, M_Int);
+      AddExpInt('PInteger(%sWordPointer%1:s+2)^',   [s,s2],    5514, M_Int);
+      AddExpInt('PInteger(%sWordPointer%1:s+ArrayAdd2)^',   [s,s2],    5514, M_Int);
+      AddExpInt('PInteger(%sWordPointer%1:s-ArraySub2)^',   [s,s2],    5514, M_Int);
 
       // add 4 each for pointer
-      AddSimpleInt(Format('PInteger(%sPointer%1:s)^',     [s,s2]),    5513, M_Int);
-      AddSimpleInt(Format('PInteger(%sPointer%1:s+0)^',   [s,s2]),    5513, M_Int);
-      AddSimpleInt(Format('PInteger(%sPointer%1:s+4)^',   [s,s2]),    5514, M_Int);
+      AddExpInt('PInteger(%sPointer%1:s)^',     [s,s2],    5513, M_Int);
+      AddExpInt('PInteger(%sPointer%1:s+0)^',   [s,s2],    5513, M_Int);
+      AddExpInt('PInteger(%sPointer%1:s+4)^',   [s,s2],    5514, M_Int);
 
       // deref generic: error
-      //AddFmtDef(Format('%sPointer%1:s^', [s,s2]), 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
-      //AddFmtDef(Format('(%sPointer%1:s)^', [s,s2]), 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
-      //AddFmtDef(Format('(%sPointer%1:s+0)^', [s,s2]), 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
-      //AddFmtDef(Format('(%sPointer%1:s+4)^', [s,s2]), 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
-      //AddFmtDef(Format('(%sPointer%1:s-4)^', [s,s2]), 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+      //AddFmtDef('%sPointer%1:s^', [s,s2], 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+      //AddFmtDef('(%sPointer%1:s)^', [s,s2], 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+      //AddFmtDef('(%sPointer%1:s+0)^', [s,s2], 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+      //AddFmtDef('(%sPointer%1:s+4)^', [s,s2], 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
+      //AddFmtDef('(%sPointer%1:s-4)^', [s,s2], 'GDB|Error', skNone, '', [fTpMtch, IgnKind, fTExpectError]); // ERROR
 
 
       if i2 = 0 then begin
         {%region  address of }
-        r := AddFmtDef(Format('%sIntPointer', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
-        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
-        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
-        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
-        r^.UserData2 := FCurrentExpect;
-        AddFmtDef(Format('@%sDynInt1[2]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+        AddFmtDef('%sIntPointer', [s], '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+        LastExpectsToPtrReplace(Format('@%sDynInt1[2]', [s]));
 
-        r := AddFmtDef(Format('(%sIntPointer+0)', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
-        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
-        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
-        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
-        r^.UserData2 := FCurrentExpect;
-        AddFmtDef(Format('@%sDynInt1[2]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+        AddFmtDef('(%sIntPointer+0)', [s], '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+        LastExpectsToPtrReplace(Format('@%sDynInt1[2]', [s]));
 
-        r := AddFmtDef(Format('@(%sIntPointer^)', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
-        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
-        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
-        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
-        r^.UserData2 := FCurrentExpect;
-        AddFmtDef(Format('@%sDynInt1[2]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+        AddFmtDef('@(%sIntPointer^)', [s], '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+        LastExpectsToPtrReplace(Format('@%sDynInt1[2]', [s]));
 
-        r := AddFmtDef(Format('(%sIntPointer+1)', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
-        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
-        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
-        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
-        r^.UserData2 := FCurrentExpect;
-        AddFmtDef(Format('@%sDynInt1[3]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+        AddFmtDef('(%sIntPointer+1)', [s], '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+        LastExpectsToPtrReplace(Format('@%sDynInt1[3]', [s]));
 
-        r := AddFmtDef(Format('(%sIntPointer-1)', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
-        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
-        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
-        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
-        r^.UserData2 := FCurrentExpect;
-        AddFmtDef(Format('@%sDynInt1[1]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+        AddFmtDef('(%sIntPointer-1)', [s], '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+        LastExpectsToPtrReplace(Format('@%sDynInt1[1]', [s]));
 
         // Add/SUb to word pointer
-        r := AddFmtDef(Format('(%sWordPointer+2)', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
-        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
-        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
-        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
-        r^.UserData2 := FCurrentExpect;
-        AddFmtDef(Format('@%sDynInt1[3]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+        AddFmtDef('(%sWordPointer+2)', [s], '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+        LastExpectsToPtrReplace(Format('@%sDynInt1[3]', [s]));
 
         // Add/SUb to generic pointer
-        r := AddFmtDef(Format('%sPointer', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
-        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
-        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
-        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
-        r^.UserData2 := FCurrentExpect;
-        AddFmtDef(Format('@%sDynInt1[2]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+        AddFmtDef('%sPointer', [s], '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+        LastExpectsToPtrReplace(Format('@%sDynInt1[2]', [s]));
 
-        r := AddFmtDef(Format('%sPointer+4', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
-        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
-        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
-        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
-        r^.UserData2 := FCurrentExpect;
-        AddFmtDef(Format('@%sDynInt1[3]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+        AddFmtDef('%sPointer+4', [s], '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+        LastExpectsToPtrReplace(Format('@%sDynInt1[3]', [s]));
 
-        r := AddFmtDef(Format('%sPointer-4', [s]), '\REPLACEME', skPointer, '', [fTpMtch]);
-        if i = 3 then UpdResMinFpc(r, stSymAll, 020600);
-        r^.OnBeforeTest := @AdjustArrayExpectToAddress;
-        r^.UserData := pointer(ptruint(Length(FCurrentExpect^)));
-        r^.UserData2 := FCurrentExpect;
-        AddFmtDef(Format('@%sDynInt1[1]', [s]), '\$[0-9A-F]', skPointer, '', [fTpMtch]);
+        AddFmtDef('%sPointer-4', [s], '\REPLACEME', skPointer, '', [fTpMtch]);
+        if i = 3 then UpdResMinFpc(FLastAddedExp, stSymAll, 020600);
+        LastExpectsToPtrReplace(Format('@%sDynInt1[1]', [s]));
 
         {%endregion  address of }
       end;
@@ -925,13 +1005,13 @@ if not (i in [2,3]) then // open array / TODO
   {%endregion  Fields }
 
 //TODO
-  AddSimpleInt('PInteger(Field_DynInt1)[0]',  5511, M_Int);
-  AddSimpleInt('PInteger(Field_DynInt1)[1]',  5512, M_Int);
-  AddSimpleInt('PInteger(Field_DynInt1)[2]',  5513, M_Int);
+  AddExpInt('PInteger(Field_DynInt1)[0]',  5511, M_Int);
+  AddExpInt('PInteger(Field_DynInt1)[1]',  5512, M_Int);
+  AddExpInt('PInteger(Field_DynInt1)[2]',  5513, M_Int);
 
-  AddSimpleInt('^LongInt(Field_DynInt1)[0]',  5511, M_Int);
-  AddSimpleInt('^LongInt(Field_DynInt1)[1]',  5512, M_Int);
-  AddSimpleInt('^LongInt(Field_DynInt1)[2]',  5513, M_Int);
+  AddExpInt('^LongInt(Field_DynInt1)[0]',  5511, M_Int);
+  AddExpInt('^LongInt(Field_DynInt1)[1]',  5512, M_Int);
+  AddExpInt('^LongInt(Field_DynInt1)[2]',  5513, M_Int);
 
 end;
 

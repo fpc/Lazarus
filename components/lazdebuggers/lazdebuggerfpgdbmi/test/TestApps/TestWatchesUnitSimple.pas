@@ -19,6 +19,8 @@ type
   PSimpleEnum1 = ^TSimpleEnum1;
   PSimpleSet1 = ^TSimpleSet1;
 
+  TString25 = String[25];
+  PString25 = ^TString25;
   { TSimpleClass0 }
 
   TSimpleClass0 = class
@@ -45,10 +47,14 @@ type
     Field_Double1: Double;
     Field_Ext1: Extended;
     Field_Comp1: Comp;
+    Field_Currency1, Field_Currency2: Currency;
 
     Field_Bool1, Field_Bool2: Boolean;
     Field_Enum1, Field_Enum2: TSimpleEnum1;
     Field_Set1, Field_Set2: TSimpleSet1;
+
+    Field_SString1, Field_SString2: TString25;
+    Field_AString1, Field_AString2: AnsiString;
 
 
     Field_PShort1: PShortInt;
@@ -65,10 +71,14 @@ type
     Field_PDouble1: PDouble;
     Field_PExt1: PExtended;
     Field_PComp1: PComp;
+    Field_PCurrency1, Field_PCurrency2: PCurrency;
 
     Field_PBool1, Field_PBool2: PBoolean;
     Field_PEnum1, Field_PEnum2: PSimpleEnum1;
     Field_PSet1, Field_PSet2: PSimpleSet1;
+
+    Field_PSString1, Field_PSString2: PString25;
+    Field_PAString1, Field_PAString2: PAnsiString;
     {%endregion Fields}
 
     procedure InitFields;
@@ -88,10 +98,14 @@ type
       Arg_Double1: Double;
       Arg_Ext1: Extended;
       Arg_Comp1: Comp;
+      Arg_Currency1, Arg_Currency2: Currency;
 
       Arg_Bool1, Arg_Bool2: Boolean;
       Arg_Enum1, Arg_Enum2: TSimpleEnum1;
       Arg_Set1, Arg_Set2: TSimpleSet1;
+
+      Arg_SString1, Arg_SString2: TString25;
+      Arg_AString1, Arg_AString2: AnsiString;
 
 
       Arg_PShort1: PShortInt;
@@ -108,10 +122,14 @@ type
       Arg_PDouble1: PDouble;
       Arg_PExt1: PExtended;
       Arg_PComp1: PComp;
+      Arg_PCurrency1, Arg_PCurrency2: PCurrency;
 
       Arg_PBool1, Arg_PBool2: PBoolean;
       Arg_PEnum1, Arg_PEnum2: PSimpleEnum1;
       Arg_PSet1, Arg_PSet2: PSimpleSet1;
+
+      Arg_PSString1, Arg_PSString2: PString25;
+      Arg_PAString1, Arg_PAString2: PAnsiString;
 
 
       var VArg_Short1: ShortInt;
@@ -128,10 +146,14 @@ type
       var VArg_Double1: Double;
       var VArg_Ext1: Extended;
       var VArg_Comp1: Comp;
+      var VArg_Currency1, VArg_Currency2: Currency;
 
       var VArg_Bool1, VArg_Bool2: Boolean;
       var VArg_Enum1, VArg_Enum2: TSimpleEnum1;
       var VArg_Set1, VArg_Set2: TSimpleSet1;
+
+      var VArg_SString1, VArg_SString2: TString25;
+      var VArg_AString1, VArg_AString2: AnsiString;
 
 
       var VArg_PShort1: PShortInt;
@@ -148,10 +170,14 @@ type
       var VArg_PDouble1: PDouble;
       var VArg_PExt1: PExtended;
       var VArg_PComp1: PComp;
+      var VArg_PCurrency1, VArg_PCurrency2: PCurrency;
 
       var VArg_PBool1, VArg_PBool2: PBoolean;
       var VArg_PEnum1, VArg_PEnum2: PSimpleEnum1;
-      var VArg_PSet1, VArg_PSet2: PSimpleSet1
+      var VArg_PSet1, VArg_PSet2: PSimpleSet1;
+
+      var VArg_PSString1, VArg_PSString2: PString25;
+      var VArg_PAString1, VArg_PAString2: PAnsiString
       {%endregion Param}
     );
   end;
@@ -178,10 +204,14 @@ var
   SimpleGlob_Double1: Double;
   SimpleGlob_Ext1: Extended;
   SimpleGlob_Comp1: Comp;
+  SimpleGlob_Currency1, SimpleGlob_Currency2: Currency;
 
   SimpleGlob_Bool1, SimpleGlob_Bool2: Boolean;
   SimpleGlob_Enum1, SimpleGlob_Enum2: TSimpleEnum1;
   SimpleGlob_Set1, SimpleGlob_Set2: TSimpleSet1;
+
+  SimpleGlob_SString1, SimpleGlob_SString2: TString25;
+  SimpleGlob_AString1, SimpleGlob_AString2: AnsiString;
 
 
   SimpleGlob_PShort1: PShortInt;
@@ -198,10 +228,14 @@ var
   SimpleGlob_PDouble1: PDouble;
   SimpleGlob_PExt1: PExtended;
   SimpleGlob_PComp1: PComp;
+  SimpleGlob_PCurrency1, SimpleGlob_PCurrency2: PCurrency;
 
   SimpleGlob_PBool1, SimpleGlob_PBool2: PBoolean;
   SimpleGlob_PEnum1, SimpleGlob_PEnum2: PSimpleEnum1;
   SimpleGlob_PSet1, SimpleGlob_PSet2: PSimpleSet1;
+
+  SimpleGlob_PSString1, SimpleGlob_PSString2: PString25;
+  SimpleGlob_PAString1, SimpleGlob_PAString2: PAnsiString;
 
   // Copy of pointers for var param
   SimpleGlob_P2Short1: PShortInt;
@@ -218,10 +252,14 @@ var
   SimpleGlob_P2Double1: PDouble;
   SimpleGlob_P2Ext1: PExtended;
   SimpleGlob_P2Comp1: PComp;
+  SimpleGlob_P2Currency1, SimpleGlob_P2Currency2: PCurrency;
 
   SimpleGlob_P2Bool1, SimpleGlob_P2Bool2: PBoolean;
   SimpleGlob_P2Enum1, SimpleGlob_P2Enum2: PSimpleEnum1;
   SimpleGlob_P2Set1, SimpleGlob_P2Set2: PSimpleSet1;
+
+  SimpleGlob_P2SString1, SimpleGlob_P2SString2: PString25;
+  SimpleGlob_P2AString1, SimpleGlob_P2AString2: PAnsiString;
   {%endregion Global}
 
 
@@ -363,6 +401,8 @@ begin
   SimpleGlob_Double1 := 199.3;
   SimpleGlob_Ext1    := 299.4;
   SimpleGlob_Comp1   := -2;
+  SimpleGlob_Currency1 := -2.30;
+  SimpleGlob_Currency2 := 1.92;
 
 
   SimplePArg_Int1   := @SimpleArg_Int1;
@@ -409,6 +449,8 @@ begin
   Field_Double1   := 0.25;
   Field_Ext1      := 0.75;
   Field_Comp1     := -9;
+  Field_Currency1 := -2.30;
+  Field_Currency2 := 1.92;
 
   Field_Bool1      := True;
   Field_Bool2      := False;
@@ -416,6 +458,11 @@ begin
   Field_Enum2     := (eval1);
   Field_Set1      := [eval2];
   Field_Set2      := [];
+
+  Field_SString1 := 'stest';
+  Field_SString2 := '';
+  Field_AString1 := 'atest';
+  Field_AString2 := '';
 
 
   Field_PShort1   := @Field_Short1;
@@ -432,6 +479,8 @@ begin
   Field_PDouble1  := @Field_Double1;
   Field_PExt1     := @Field_Ext1;
   Field_PComp1    := @Field_Comp1;
+  Field_PCurrency1 := @Field_Currency1;
+  Field_PCurrency2 := @Field_Currency2;
 
   Field_PBool1     := @Field_Bool1;
   Field_PBool2     := @Field_Bool2;
@@ -439,29 +488,41 @@ begin
   Field_PEnum2    := @Field_Enum2;
   Field_PSet1     := @Field_Set1;
   Field_PSet2     := @Field_Set2;
+
+  Field_PSString1 := @Field_SString1;
+  Field_PSString2 := @Field_SString2;
+  Field_PAString1 := @Field_AString1;
+  Field_PAString2 := @Field_AString2;
   {%endregion Field }
 end;
 
 procedure TSimpleClass1.Test1Method(Arg_Short1: ShortInt; Arg_Small1: Smallint;
   Arg_Int1: LongInt; Arg_QInt1: Int64; Arg_Byte1: Byte; Arg_Word1: Word; Arg_DWord1: LongWord;
   Arg_QWord1: QWord; Arg_Single1: Single; Arg_Double1: Double; Arg_Ext1: Extended;
-  Arg_Comp1: Comp; Arg_Bool1, Arg_Bool2: Boolean; Arg_Enum1, Arg_Enum2: TSimpleEnum1;
-  Arg_Set1, Arg_Set2: TSimpleSet1; Arg_PShort1: PShortInt; Arg_PSmall1: PSmallint;
-  Arg_PInt1: PLongInt; Arg_PQInt1: PInt64; Arg_PByte1: PByte; Arg_PWord1: PWord;
-  Arg_PDWord1: PLongWord; Arg_PQWord1: PQWord; Arg_PSingle1: PSingle; Arg_PDouble1: PDouble;
-  Arg_PExt1: PExtended; Arg_PComp1: PComp; Arg_PBool1, Arg_PBool2: PBoolean; Arg_PEnum1,
-  Arg_PEnum2: PSimpleEnum1; Arg_PSet1, Arg_PSet2: PSimpleSet1; var VArg_Short1: ShortInt;
-  var VArg_Small1: Smallint; var VArg_Int1: LongInt; var VArg_QInt1: Int64;
-  var VArg_Byte1: Byte; var VArg_Word1: Word; var VArg_DWord1: LongWord;
-  var VArg_QWord1: QWord; var VArg_Single1: Single; var VArg_Double1: Double;
-  var VArg_Ext1: Extended; var VArg_Comp1: Comp; var VArg_Bool1, VArg_Bool2: Boolean;
-  var VArg_Enum1, VArg_Enum2: TSimpleEnum1; var VArg_Set1, VArg_Set2: TSimpleSet1;
+  Arg_Comp1: Comp; Arg_Currency1, Arg_Currency2: Currency; Arg_Bool1, Arg_Bool2: Boolean;
+  Arg_Enum1, Arg_Enum2: TSimpleEnum1; Arg_Set1, Arg_Set2: TSimpleSet1; Arg_SString1,
+  Arg_SString2: TString25; Arg_AString1, Arg_AString2: AnsiString; Arg_PShort1: PShortInt;
+  Arg_PSmall1: PSmallint; Arg_PInt1: PLongInt; Arg_PQInt1: PInt64; Arg_PByte1: PByte;
+  Arg_PWord1: PWord; Arg_PDWord1: PLongWord; Arg_PQWord1: PQWord; Arg_PSingle1: PSingle;
+  Arg_PDouble1: PDouble; Arg_PExt1: PExtended; Arg_PComp1: PComp; Arg_PCurrency1,
+  Arg_PCurrency2: PCurrency; Arg_PBool1, Arg_PBool2: PBoolean; Arg_PEnum1,
+  Arg_PEnum2: PSimpleEnum1; Arg_PSet1, Arg_PSet2: PSimpleSet1; Arg_PSString1,
+  Arg_PSString2: PString25; Arg_PAString1, Arg_PAString2: PAnsiString;
+  var VArg_Short1: ShortInt; var VArg_Small1: Smallint; var VArg_Int1: LongInt;
+  var VArg_QInt1: Int64; var VArg_Byte1: Byte; var VArg_Word1: Word;
+  var VArg_DWord1: LongWord; var VArg_QWord1: QWord; var VArg_Single1: Single;
+  var VArg_Double1: Double; var VArg_Ext1: Extended; var VArg_Comp1: Comp; var VArg_Currency1,
+  VArg_Currency2: Currency; var VArg_Bool1, VArg_Bool2: Boolean; var VArg_Enum1,
+  VArg_Enum2: TSimpleEnum1; var VArg_Set1, VArg_Set2: TSimpleSet1; var VArg_SString1,
+  VArg_SString2: TString25; var VArg_AString1, VArg_AString2: AnsiString;
   var VArg_PShort1: PShortInt; var VArg_PSmall1: PSmallint; var VArg_PInt1: PLongInt;
   var VArg_PQInt1: PInt64; var VArg_PByte1: PByte; var VArg_PWord1: PWord;
   var VArg_PDWord1: PLongWord; var VArg_PQWord1: PQWord; var VArg_PSingle1: PSingle;
   var VArg_PDouble1: PDouble; var VArg_PExt1: PExtended; var VArg_PComp1: PComp;
-  var VArg_PBool1, VArg_PBool2: PBoolean; var VArg_PEnum1, VArg_PEnum2: PSimpleEnum1;
-  var VArg_PSet1, VArg_PSet2: PSimpleSet1);
+  var VArg_PCurrency1, VArg_PCurrency2: PCurrency; var VArg_PBool1, VArg_PBool2: PBoolean;
+  var VArg_PEnum1, VArg_PEnum2: PSimpleEnum1; var VArg_PSet1, VArg_PSet2: PSimpleSet1;
+  var VArg_PSString1, VArg_PSString2: PString25; var VArg_PAString1,
+  VArg_PAString2: PAnsiString);
 var
   Local_Short1: ShortInt;
   Local_Small1: Smallint;
@@ -477,10 +538,14 @@ var
   Local_Double1: Double;
   Local_Ext1: Extended;
   Local_Comp1: Comp;
+  Local_Currency1, Local_Currency2: Currency;
 
   Local_Bool1, Local_Bool2: Boolean;
   Local_Enum1, Local_Enum2: TSimpleEnum1;
   Local_Set1, Local_Set2: TSimpleSet1;
+
+  Local_SString1, Local_SString2: TString25;
+  Local_AString1, Local_AString2: AnsiString;
 
 
   Local_PShort1: PShortInt;
@@ -497,10 +562,14 @@ var
   Local_PDouble1: PDouble;
   Local_PExt1: PExtended;
   Local_PComp1: PComp;
+  Local_PCurrency1, Local_PCurrency2: PCurrency;
 
   Local_PBool1, Local_PBool2: PBoolean;
   Local_PEnum1, Local_PEnum2: PSimpleEnum1;
   Local_PSet1, Local_PSet2: PSimpleSet1;
+
+  Local_PSString1, Local_PSString2: PString25;
+  Local_PAString1, Local_PAString2: PAnsiString;
 
   procedure Nested1;
   begin
@@ -525,6 +594,8 @@ begin
   Local_Double1   := 0.25;
   Local_Ext1      := 0.75;
   Local_Comp1     := -9;
+  Local_Currency1 := -2.30;
+  Local_Currency2 := 1.92;
 
   Local_Bool1      := True;
   Local_Bool2      := False;
@@ -532,6 +603,11 @@ begin
   Local_Enum2     := (eval1);
   Local_Set1      := [eval2];
   Local_Set2      := [];
+
+  Local_SString1 := 'stest';
+  Local_SString2 := '';
+  Local_AString1 := 'atest';
+  Local_AString2 := '';
 
 
   Local_PShort1   := @Local_Short1;
@@ -548,6 +624,8 @@ begin
   Local_PDouble1  := @Local_Double1;
   Local_PExt1     := @Local_Ext1;
   Local_PComp1    := @Local_Comp1;
+  Local_PCurrency1 := @Local_Currency1;
+  Local_PCurrency2 := @Local_Currency2;
 
   Local_PBool1     := @Local_Bool1;
   Local_PBool2     := @Local_Bool2;
@@ -555,6 +633,11 @@ begin
   Local_PEnum2    := @Local_Enum2;
   Local_PSet1     := @Local_Set1;
   Local_PSet2     := @Local_Set2;
+
+  Local_PSString1 := @Local_SString1;
+  Local_PSString2 := @Local_SString2;
+  Local_PAString1 := @Local_AString1;
+  Local_PAString2 := @Local_AString2;
   {%endregion local }
 
   {%region ARG}
@@ -573,6 +656,8 @@ begin
   Arg_PDouble1  := @Arg_Double1;
   Arg_PExt1     := @Arg_Ext1;
   Arg_PComp1    := @Arg_Comp1;
+  Arg_PCurrency1 := @Arg_Currency1;
+  Arg_PCurrency2 := @Arg_Currency2;
 
   Arg_PBool1    := @Arg_Bool1;
   Arg_PBool2    := @Arg_Bool2;
@@ -580,6 +665,11 @@ begin
   Arg_PEnum2    := @Arg_Enum2;
   Arg_PSet1     := @Arg_Set1;
   Arg_PSet2     := @Arg_Set2;
+
+  Arg_PSString1 := @Arg_SString1;
+  Arg_PSString2 := @Arg_SString2;
+  Arg_PAString1 := @Arg_AString1;
+  Arg_PAString2 := @Arg_AString2;
   {%endregion ARG}
 
   {%region VARG}
@@ -598,6 +688,8 @@ begin
   VArg_PDouble1  := @VArg_Double1;
   VArg_PExt1     := @VArg_Ext1;
   VArg_PComp1    := @VArg_Comp1;
+  VArg_PCurrency1 := @VArg_Currency1;
+  VArg_PCurrency2 := @VArg_Currency2;
 
   VArg_PBool1     := @VArg_Bool1;
   VArg_PBool2     := @VArg_Bool2;
@@ -605,6 +697,11 @@ begin
   VArg_PEnum2    := @VArg_Enum2;
   VArg_PSet1     := @VArg_Set1;
   VArg_PSet2     := @VArg_Set2;
+
+  VArg_PSString1 := @VArg_SString1;
+  VArg_PSString2 := @VArg_SString2;
+  VArg_PAString1 := @VArg_AString1;
+  VArg_PAString2 := @VArg_AString2;
   {%endregion VARG}
 
 
@@ -730,6 +827,8 @@ begin
   SimpleGlob_Double1   := 0.25;
   SimpleGlob_Ext1      := 0.75;
   SimpleGlob_Comp1     := -9;
+  SimpleGlob_Currency1 := -2.30;
+  SimpleGlob_Currency2 := 1.92;
 
   SimpleGlob_Bool1      := True;
   SimpleGlob_Bool2      := False;
@@ -737,6 +836,11 @@ begin
   SimpleGlob_Enum2     := (eval1);
   SimpleGlob_Set1      := [eval2];
   SimpleGlob_Set2      := [];
+
+  SimpleGlob_SString1 := 'stest';
+  SimpleGlob_SString2 := '';
+  SimpleGlob_AString1 := 'atest';
+  SimpleGlob_AString2 := '';
 
 
   SimpleGlob_PShort1   := @SimpleGlob_Short1;
@@ -753,6 +857,8 @@ begin
   SimpleGlob_PDouble1  := @SimpleGlob_Double1;
   SimpleGlob_PExt1     := @SimpleGlob_Ext1;
   SimpleGlob_PComp1    := @SimpleGlob_Comp1;
+  SimpleGlob_PCurrency1 := @SimpleGlob_Currency1;
+  SimpleGlob_PCurrency2 := @SimpleGlob_Currency2;
 
   SimpleGlob_PBool1     := @SimpleGlob_Bool1;
   SimpleGlob_PBool2     := @SimpleGlob_Bool2;
@@ -760,6 +866,11 @@ begin
   SimpleGlob_PEnum2    := @SimpleGlob_Enum2;
   SimpleGlob_PSet1     := @SimpleGlob_Set1;
   SimpleGlob_PSet2     := @SimpleGlob_Set2;
+
+  SimpleGlob_PSString1 := @SimpleGlob_SString1;
+  SimpleGlob_PSString2 := @SimpleGlob_SString2;
+  SimpleGlob_PAString1 := @SimpleGlob_AString1;
+  SimpleGlob_PAString2 := @SimpleGlob_AString2;
   {%endregion global }
 
   // Copy of pointers for var param
@@ -777,6 +888,8 @@ begin
   SimpleGlob_P2Double1 := @SimpleGlob_Double1;
   SimpleGlob_P2Ext1    := @SimpleGlob_Ext1;
   SimpleGlob_P2Comp1   := @SimpleGlob_Comp1;
+  SimpleGlob_P2Currency1 := @SimpleGlob_Currency1;
+  SimpleGlob_P2Currency2 := @SimpleGlob_Currency2;
 
   SimpleGlob_P2Bool1     := @SimpleGlob_Bool1;
   SimpleGlob_P2Bool2     := @SimpleGlob_Bool2;
@@ -784,6 +897,11 @@ begin
   SimpleGlob_P2Enum2    := @SimpleGlob_Enum2;
   SimpleGlob_P2Set1     := @SimpleGlob_Set1;
   SimpleGlob_P2Set2     := @SimpleGlob_Set2;
+
+  SimpleGlob_P2SString1 := @SimpleGlob_SString1;
+  SimpleGlob_P2SString2 := @SimpleGlob_SString2;
+  SimpleGlob_P2AString1 := @SimpleGlob_AString1;
+  SimpleGlob_P2AString2 := @SimpleGlob_AString2;
 
   SimpleGlob_Class1.Test1Method(
     SimpleGlob_Short1,
@@ -800,10 +918,14 @@ begin
     SimpleGlob_Double1,
     SimpleGlob_Ext1,
     SimpleGlob_Comp1,
+    SimpleGlob_Currency1, SimpleGlob_Currency2,
 
     SimpleGlob_Bool1, SimpleGlob_Bool2,
     SimpleGlob_Enum1, SimpleGlob_Enum2,
     SimpleGlob_Set1, SimpleGlob_Set2,
+
+    SimpleGlob_SString1, SimpleGlob_SString2,
+    SimpleGlob_AString1, SimpleGlob_AString2,
 
 
     SimpleGlob_PShort1,
@@ -820,10 +942,14 @@ begin
     SimpleGlob_PDouble1,
     SimpleGlob_PExt1,
     SimpleGlob_PComp1,
+    SimpleGlob_PCurrency1, SimpleGlob_PCurrency2,
 
     SimpleGlob_PBool1, SimpleGlob_PBool2,
     SimpleGlob_PEnum1, SimpleGlob_PEnum2,
     SimpleGlob_PSet1, SimpleGlob_PSet2,
+
+    SimpleGlob_PSString1, SimpleGlob_PSString2,
+    SimpleGlob_PAString1, SimpleGlob_PAString2,
 
 
     SimpleGlob_Short1,
@@ -840,10 +966,14 @@ begin
     SimpleGlob_Double1,
     SimpleGlob_Ext1,
     SimpleGlob_Comp1,
+    SimpleGlob_Currency1, SimpleGlob_Currency2,
 
     SimpleGlob_Bool1, SimpleGlob_Bool2,
     SimpleGlob_Enum1, SimpleGlob_Enum2,
     SimpleGlob_Set1, SimpleGlob_Set2,
+
+    SimpleGlob_SString1, SimpleGlob_SString2,
+    SimpleGlob_AString1, SimpleGlob_AString2,
 
 
     SimpleGlob_P2Short1,
@@ -860,10 +990,14 @@ begin
     SimpleGlob_P2Double1,
     SimpleGlob_P2Ext1,
     SimpleGlob_P2Comp1,
+    SimpleGlob_P2Currency1, SimpleGlob_P2Currency2,
 
     SimpleGlob_P2Bool1, SimpleGlob_P2Bool2,
     SimpleGlob_P2Enum1, SimpleGlob_P2Enum2,
-    SimpleGlob_P2Set1, SimpleGlob_P2Set2
+    SimpleGlob_P2Set1, SimpleGlob_P2Set2,
+
+    SimpleGlob_PSString1, SimpleGlob_PSString2,
+    SimpleGlob_PAString1, SimpleGlob_PAString2
 
   );
 

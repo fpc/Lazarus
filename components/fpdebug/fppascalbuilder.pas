@@ -813,16 +813,16 @@ begin
       if svfDataAddress in AValue.FieldFlags then begin
         MemAddr := AValue.DataAddress;
         MemSize := AValue.DataSize;
-        if MemSize = 0 then MemSize := 256;
       end
       else
       if svfAddress in AValue.FieldFlags then begin
         MemAddr := AValue.Address;
         MemSize := AValue.Size;
       end;
+      if MemSize < ARepeatCount then MemSize := ARepeatCount;
+      if MemSize <= 0 then MemSize := 256;
 
       if IsTargetAddr(MemAddr) then begin
-        if MemSize < 32 then MemSize := 32;
         SetLength(MemDest, MemSize);
         if FMemManager.ReadMemory(MemAddr, MemSize, @MemDest[0]) then begin
           APrintedValue := IntToHex(MemAddr.Address, AnAddressSize*2)+ ':' + LineEnding;

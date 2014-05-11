@@ -86,11 +86,11 @@ type
   TArrayClass1 = class
   public
     Field_Int1, Field_Int2: Integer;
-    Field_DynAInt1: array of Integer;
+    Field_DynAInt1: array of Integer;  // SetLength(Field_DynAInt1,   5);
     Field_StatAInt1: array [4..9] of Integer;
     Field_StatAInt2: array [-4..9] of Integer;
 
-    Field_DynInt1, Field_DynInt2: TArrayDynInt;
+    Field_DynInt1, Field_DynInt2: TArrayDynInt; // SetLength(Field_DynInt1,20);
     Field_DynClass1: TArrayDynClass;
     Field_DynRec1: TArrayDynRec;
     Field_DynRec2: array of TArrayRec2;
@@ -529,10 +529,14 @@ begin
     Field_DynAInt1[0] := 100;
     Field_DynAInt1[1] := 101;
     Field_DynAInt1[2] := 102;
+    Field_DynAInt1[3] := 103;
+    Field_DynAInt1[4] := 104;
 
   Field_StatAInt1[4] := 6600;
   Field_StatAInt1[5] := 6601;
   Field_StatAInt1[6] := 6602;
+  Field_StatAInt1[7] := 6603;
+  Field_StatAInt1[8] := 6604;
   Field_StatAInt1[9] := 6699;
 
   Field_StatAInt2[-4] := 3300;
@@ -690,10 +694,14 @@ begin
     Local_DynAInt1[0] := 100;
     Local_DynAInt1[1] := 101;
     Local_DynAInt1[2] := 102;
+    Local_DynAInt1[3] := 103;
+    Local_DynAInt1[4] := 104;
 
   Local_StatAInt1[4] := 6600;
   Local_StatAInt1[5] := 6601;
   Local_StatAInt1[6] := 6602;
+  Local_StatAInt1[7] := 6603;
+  Local_StatAInt1[8] := 6604;
   Local_StatAInt1[9] := 6699;
 
   Local_StatAInt2[-4] := 3300;
@@ -932,10 +940,14 @@ begin
     ArrayGlob_DynAInt1[0] := 100;
     ArrayGlob_DynAInt1[1] := 101;
     ArrayGlob_DynAInt1[2] := 102;
+    ArrayGlob_DynAInt1[3] := 103;
+    ArrayGlob_DynAInt1[4] := 104;
 
   ArrayGlob_StatAInt1[4] := 6600;
   ArrayGlob_StatAInt1[5] := 6601;
   ArrayGlob_StatAInt1[6] := 6602;
+  ArrayGlob_StatAInt1[7] := 6603;
+  ArrayGlob_StatAInt1[8] := 6604;
   ArrayGlob_StatAInt1[9] := 6699;
 
   ArrayGlob_StatAInt2[-4] := 3300;
