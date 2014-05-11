@@ -1,14 +1,15 @@
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
-"Language-Team: \n"
+"Language-Team: Magyar (Hungarian)\n"
 "X-Generator: Poedit 1.5.4\n"
+"Language: hu\n"
 
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
@@ -37,7 +38,7 @@ msgstr "Áthaladás-szám oszlop"
 
 #: debuggerstrconst.drscolwidthbrkpointimg
 msgid "Break indication column"
-msgstr ""
+msgstr "Megszakítás jelzés oszlop"
 
 #: debuggerstrconst.drscolwidthexpression
 msgid "Expression column"
@@ -118,7 +119,7 @@ msgstr "Metódus neve oszlop"
 
 #: debuggerstrconst.drsinspectcolwidthmethreturns
 msgid "Method returns column"
-msgstr ""
+msgstr "Metódus visszatérési érték oszlop"
 
 #: debuggerstrconst.drsinspectcolwidthmethtype
 msgid "Method type column"
@@ -134,7 +135,7 @@ msgstr "Osztálypéldány-típus használata"
 
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"
-msgstr ""
+msgstr "Ellenőrző tábla"
 
 #: debuggerstrconst.dsrevalhistorydown
 msgid "Append result at bottom of history"

@@ -1,16 +1,15 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Lazarus\n"
+"Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
-"Language-Team: Magyar (Hungarian) <lazarus-hun@primlista.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
-"Language: hu_HU\n"
-"X-Poedit-SourceCharset: UTF-8\n"
+"Language: hu\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
@@ -75,12 +74,14 @@ msgid "Clear"
 msgstr "Törlés"
 
 #: lclstrconsts.ifsvk_cmd
+#, fuzzy
 msgid "Cmd"
-msgstr ""
+msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_control
+#, fuzzy
 msgid "Control"
-msgstr ""
+msgstr "Control"
 
 #: lclstrconsts.ifsvk_convert
 msgid "Convert"
@@ -175,8 +176,9 @@ msgid "Next"
 msgstr "Következő"
 
 #: lclstrconsts.ifsvk_nonconvert
+#, fuzzy
 msgid "Nonconvert"
-msgstr ""
+msgstr "Nonconvert"
 
 #: lclstrconsts.ifsvk_numlock
 msgid "Numlock"
@@ -532,20 +534,18 @@ msgid "First"
 msgstr "Első"
 
 #: lclstrconsts.rsfixedcolstoobig
-#, fuzzy
 #| msgid "FixedCols can't be >= ColCount"
 msgid "FixedCols can't be > ColCount"
-msgstr "FixedCols nem lehet >= ColCount"
+msgstr "FixedCols nem lehet > ColCount"
 
 #: lclstrconsts.rsfixedrowstoobig
-#, fuzzy
 #| msgid "FixedRows can't be >= RowCount"
 msgid "FixedRows can't be > RowCount"
-msgstr "FixedRows nem lehet >= RowCount"
+msgstr "FixedRows nem lehet > RowCount"
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
-msgstr ""
+msgstr "Form"
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
@@ -553,7 +553,7 @@ msgstr "Az űrlap forrása (%s) nem található. Forrásfájl nélküli űrlapok
 
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
-msgstr ""
+msgstr "Form adatfolyam \"%s\" hiba: %s"
 
 #: lclstrconsts.rsforward
 msgid "Forward"
@@ -832,7 +832,7 @@ msgstr "Hibás dátum: %s. %s és %s között kell lennie."
 
 #: lclstrconsts.rsinvalidformobjectstream
 msgid "invalid Form object stream"
-msgstr ""
+msgstr "érvénytelen Form objektum adatfolyam"
 
 #: lclstrconsts.rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -1037,7 +1037,7 @@ msgstr "Portable PixMap"
 #: lclstrconsts.rspostrecordhint
 #, fuzzy
 msgid "Post"
-msgstr "Küldés"
+msgstr "Elküldés"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."

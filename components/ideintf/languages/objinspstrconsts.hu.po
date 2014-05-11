@@ -1,17 +1,16 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Lazarus\n"
+"Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
-"Language-Team: Magyar (Hungarian) <lazarus-hun@primlista.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
-"Language: hu_HU\n"
-"X-Poedit-SourceCharset: UTF-8\n"
+"Language: hu\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -152,8 +151,9 @@ msgid "&Data"
 msgstr "A&datok"
 
 #: objinspstrconsts.fesdataset
+#, fuzzy
 msgid "&Dataset:"
-msgstr ""
+msgstr "&Dataset:"
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields ..."
@@ -532,7 +532,7 @@ msgstr "Integer"
 
 #: objinspstrconsts.oisinterface
 msgid "Interface"
-msgstr ""
+msgstr "Felület"
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"
@@ -617,7 +617,7 @@ msgstr "Maszk fájl megnyitása (*.dem)"
 
 #: objinspstrconsts.oisoptions
 msgid "Options"
-msgstr "Opciók"
+msgstr "Beállítások"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
@@ -1232,7 +1232,7 @@ msgstr "Középre"
 #: objinspstrconsts.sccsiledtclear
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear"
-msgstr "&Törlés"
+msgstr "&Kiürítés"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
@@ -1508,8 +1508,9 @@ msgid "New Button"
 msgstr "Új gomb"
 
 #: objinspstrconsts.tbcenewcheckbutton
+#, fuzzy
 msgid "New CheckButton"
-msgstr ""
+msgstr "Új beragadó-gomb"
 
 #: objinspstrconsts.tbcenewdivider
 msgid "New Divider"

@@ -7,8 +7,9 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
-"Language-Team: \n"
+"Language-Team: Magyar (Hungarian)\n"
 "X-Generator: Poedit 1.5.4\n"
+"Language: hu\n"
 
 #: projecttemplates.sbtncancel
 msgid "Cancel"

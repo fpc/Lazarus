@@ -1,14 +1,15 @@
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
-"Language-Team: \n"
+"Language-Team: Magyar (Hungarian)\n"
 "X-Generator: Poedit 1.5.4\n"
+"Language: hu\n"
 
 #: heaptrcview.rsdtimes
 msgid " (%d times)"
@@ -20,7 +21,7 @@ msgstr "Hiba a nyomkövetési fájl kiértékelésekor"
 
 #: heaptrcview.rsleakview
 msgid "Find source lines for leak/stack-traces"
-msgstr ""
+msgstr "Forrás sorainak megkeresése a szivárgás/verem követéséhez"
 
 #: heaptrcview.sbtnclipbrd
 msgid "Paste Clipboard"
@@ -49,7 +50,7 @@ msgstr "LeakView - HeapTrc kimenet megjelenítő"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
 msgid "Select File with debug info"
-msgstr "Hibakeresési infókkal rendelkező fájl választása"
+msgstr "Válasszon fájlt hibakeresési infókkal!"
 
 #: heaptrcview.slbltrace
 msgid ".trc file"

@@ -1,0 +1,65 @@
+#
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: hu\n"
+
+#: editortoolbar_str.rsadddivider
+msgid "Add Divider"
+msgstr "Elválasztó hozzáadása"
+
+#: editortoolbar_str.rsaddselected
+msgid "Add selected item to toolbar"
+msgstr "A kijelölt elem hozzáadása az eszköztárhoz"
+
+#: editortoolbar_str.rscancel
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: editortoolbar_str.rsconfiguretoo
+msgid "Configure Toolbar"
+msgstr "Eszköztár beállítása"
+
+#: editortoolbar_str.rseditortoolbarconfigform
+msgid "Editor Toolbar Configuration"
+msgstr "Szerkesztő Eszköztár Beállítása"
+
+#: editortoolbar_str.rsjumpto
+msgid "Jump To"
+msgstr "Ugrás ide:"
+
+#: editortoolbar_str.rsmenutree
+msgid "Available Menu Items"
+msgstr "Elérhető menüelemek"
+
+#: editortoolbar_str.rsmoveselecteddown
+msgid "Move selected toolbar item down"
+msgstr "A kijelöl eszköztárelem mozgatása lefelé"
+
+#: editortoolbar_str.rsmoveselectedup
+msgid "Move selected toolbar item up"
+msgstr "A kijelöl eszköztárelem mozgatása felfelé"
+
+#: editortoolbar_str.rsok
+msgid "OK"
+msgstr "OK"
+
+#: editortoolbar_str.rsremoveselected
+msgid "Remove selected item from toolbar"
+msgstr "A kijelölt elem eltávolítása az eszköztárról"
+
+#: editortoolbar_str.rstoolbar
+msgid "Toolbar Items"
+msgstr "Eszköztár elemek"
+
+#: editortoolbar_str.serrcouldnotfind
+msgid "Could not find <%s>"
+msgstr "Nem található: <%s>"
