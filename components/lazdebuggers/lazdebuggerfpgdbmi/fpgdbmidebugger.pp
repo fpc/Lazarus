@@ -936,7 +936,7 @@ function TFpGDBMIDebugger.EvaluateExpression(AWatchValue: TWatchValue; AExpressi
   out AResText: String; out ATypeInfo: TDBGType; EvalFlags: TDBGEvaluateFlags): Boolean;
 var
   Ctx: TFpDbgInfoContext;
-  PasExpr: TFpPascalExpression;
+  PasExpr, PasExpr2: TFpPascalExpression;
   ResValue: TFpDbgValue;
   s: String;
   DispFormat: TWatchDisplayFormat;
@@ -951,7 +951,10 @@ var
               );
   end;
 
-
+var
+  CastName: String;
+  ClassAddr, CNameAddr: TFpDbgMemLocation;
+  NameLen: QWord;
 begin
   Result := False;
   ATypeInfo := nil;
@@ -1007,6 +1010,31 @@ DebugLn(FPGDBDBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
     if not IsWatchValueAlive then exit;
 
     ResValue := PasExpr.ResultValue;
+
+    if (ResValue.Kind = skClass) and (ResValue.AsCardinal <> 0) and (defClassAutoCast in EvalFlags)
+    then begin
+      CastName := '';
+      if FMemManager.ReadAddress(ResValue.DataAddress, Ctx.SizeOfAddress, ClassAddr) then begin
+        ClassAddr.Address := ClassAddr.Address + 3 * Ctx.SizeOfAddress;
+        if FMemManager.ReadAddress(ClassAddr, Ctx.SizeOfAddress, CNameAddr) then begin
+          if (FMemManager.ReadUnsignedInt(CNameAddr, 1, NameLen)) then
+            if NameLen > 0 then begin
+              SetLength(CastName, NameLen);
+              CNameAddr.Address := CNameAddr.Address + 1;
+              FMemManager.ReadMemory(CNameAddr, NameLen, @CastName[1]);
+              PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', Ctx);
+              PasExpr2.ResultValue;
+              if PasExpr2.Valid then begin
+                PasExpr.Free;
+                PasExpr := PasExpr2;
+                ResValue := PasExpr.ResultValue;
+              end
+              else
+                PasExpr2.Free;
+            end;
+        end;
+      end;
+    end;
 
     case ResValue.Kind of
       skNone: begin
