@@ -179,7 +179,7 @@ begin
   //   clNone: load image opaque (*)
   //   otherwise: use TransparentColor as transparent color
   //
-  //   (*) these are Lazarus extentions
+  //   (*) these are Lazarus extensions
 
   if (TransparentMode = tmAuto) or (TransparentColor = clDefault)
   then begin

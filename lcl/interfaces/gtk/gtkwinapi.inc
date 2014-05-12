@@ -1672,7 +1672,7 @@ begin
       // SetWidthName := '*';
       {$IFDEF OLD_ROTATION}
       if AddStyleName='*' then begin
-        // calculate Style name extentions (=rotation)
+        // calculate Style name extensions (=rotation)
         //        API                 XLFD
         // --------------------- --------------
         // Orientation 1/10 deg  1/64 deg

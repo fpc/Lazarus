@@ -349,7 +349,7 @@ begin
   // ToDO: NORMAL, CONDENSED, NARROW, WIDE, EXPANDED
 
   GetNextItem; // 7. read AddStyleName
-  // calculate Style name extentions (=rotation)
+  // calculate Style name extensions (=rotation)
   //        API                 XLFD
   // --------------------- --------------
   // Orientation 1/10 deg  1/64 deg

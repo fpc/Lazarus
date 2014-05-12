@@ -349,7 +349,7 @@ type
   
   
   { ILazImageReader }
-  { Extention to TFPCustomImageReader to initialize a TRawImgeDescription based
+  { Extension to TFPCustomImageReader to initialize a TRawImgeDescription based
     on the image to be read
   }
   
@@ -362,7 +362,7 @@ type
   end;
 
   { ILazImageWriter }
-  { Extention to TFPCustomImageWriter to initialize the writer based
+  { Extension to TFPCustomImageWriter to initialize the writer based
     on the intfimage data. To be able to write different formats, the writer
     should initialize itself
   }
