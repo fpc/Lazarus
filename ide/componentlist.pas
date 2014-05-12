@@ -67,8 +67,9 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure TreeCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure TreeFilterEdAfterFilter(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
-    procedure TreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure TreeKeyPress(Sender: TObject; var Key: char);
     procedure UpdateComponentSelection(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
@@ -114,6 +115,8 @@ begin
   PageControl.ActivePage := TabSheetList;
   FindAllLazarusComponents;
   UpdateComponentSelection(nil);
+  with ListTree do
+    Selected := Items.GetFirstNode;
   TreeFilterEd.InvalidateFilter;
   IDEComponentPalette.AddHandlerComponentAdded(@ComponentWasAdded);
 end;
@@ -129,7 +132,7 @@ end;
 
 procedure TComponentListForm.FormShow(Sender: TObject);
 var
-  ParentParent: TWinControl;
+  ParentParent: TWinControl;  // Used for checking if the form is anchored.
 begin
   ParentParent := Nil;
   if Assigned(Parent) then
@@ -206,7 +209,7 @@ begin
 end;
 
 procedure TComponentListForm.UpdateComponentSelection(Sender: TObject);
-//Apply the filter and fill the three tabsheets
+// Fill the three tabsheets.
 var
   AComponent: TRegisteredComponent;
   AClassName: string;
@@ -382,6 +385,11 @@ begin
   end;
 end;
 
+procedure TComponentListForm.TreeFilterEdAfterFilter(Sender: TObject);
+begin
+  UpdateButtonState;
+end;
+
 procedure TComponentListForm.ComponentsDblClick(Sender: TObject);
 // This is used for all 3 treeviews
 begin
@@ -399,10 +407,10 @@ begin
   UpdateButtonState;
 end;
 
-procedure TComponentListForm.TreeKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
+procedure TComponentListForm.TreeKeyPress(Sender: TObject; var Key: char);
+// This is used for all 3 treeviews
 begin
-  if Key = VK_RETURN then
+  if Key = Char(VK_RETURN) then
     ComponentsDblClick(Sender);
 end;
 
