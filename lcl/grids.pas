@@ -2512,9 +2512,19 @@ var
   ACase: Integer;
 begin
 
+  result := false;
   with FSizing do begin
 
     OrgIndex := FGCache.ClickCell.X;
+    if OrgIndex<0 then begin
+      // invalid starting cell
+      if not AllowOutBoundEvents and (Cursor=crHSplit) then
+        // resizing still allowed if mouse is within "resizeable region"
+        OrgIndex := Index
+      else
+        exit;
+    end;
+
     Index := OrgIndex;
     ColRowToOffset(true, true, Index, OffIni, OffEnd);
 
