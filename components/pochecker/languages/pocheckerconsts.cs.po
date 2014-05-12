@@ -1,14 +1,17 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: \n"
+"Project-Id-Version: PoChecker\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
-"Language-Team: \n"
+"Last-Translator: Václav Valíček <valicek1994@gmail.com>\n"
+"Language-Team:  <vaclav@valicek.name>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Language: cs\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: pocheckerconsts.rspochecker
 msgid "PO File Checker"
@@ -49,6 +52,7 @@ msgstr "Zkontrolovat počet položek"
 #: pocheckerconsts.scheckstatistics
 msgid "Check percentage of (un)translated and fuzzy strings"
 msgstr ""
+"Zkontrolovat procentuelní zastoupení (ne)přeložených a nepřesných řetězců"
 
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
@@ -165,15 +169,15 @@ msgstr "Originál"
 
 #: pocheckerconsts.spercfuzzy
 msgid "Fuzzy strings: %2.0f%%."
-msgstr ""
+msgstr "Nepřesné řetězce: %2.0f%%."
 
 #: pocheckerconsts.sperctranslated
 msgid "Translated strings: %2.0f%%."
-msgstr ""
+msgstr "Přeložené řetězce: %2.0f%%."
 
 #: pocheckerconsts.spercuntranslated
 msgid "Untranslated strings: %2.0f%%."
-msgstr ""
+msgstr "Nepřeložené řetězce: %2.0f%%."
 
 #: pocheckerconsts.sresults
 msgid "Results"
@@ -217,5 +221,4 @@ msgstr "Překlad"
 
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation statistics for:"
-msgstr ""
-
+msgstr "Statistiky překladu pro:"
