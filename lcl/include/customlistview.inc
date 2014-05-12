@@ -1214,14 +1214,10 @@ var
   function GetItemStatesInternal(AItem: TListItem): TListItemStates;
   begin
     Result := [];
-    if AItem.GetState(Ord(lisCut)) then
-      ;
-    if AItem.GetState(Ord(lisDropTarget)) then
-      ;
-    if AItem.GetState(Ord(lisSelected)) then
-      ;
-    if AItem.GetState(Ord(lisFocused)) then
-      ;
+    if AItem.GetState(Ord(lisCut)) then ;
+    if AItem.GetState(Ord(lisDropTarget)) then ;
+    if AItem.GetState(Ord(lisSelected)) then ;
+    if AItem.GetState(Ord(lisFocused)) then ;
     Result := AItem.FStates;
   end;
 
@@ -1232,32 +1228,44 @@ begin
     AIndex := StartItem.Index;
     ACount := Items.Count;
     case Direction of
-      sdAbove: if (AIndex -1) >= 0 then Result := Items[AIndex - 1];
-      sdBelow: if (Aindex + 1) < ACount then Result := Items[AIndex + 1];
+      sdAbove:
+        while AIndex>0 do
+        begin
+          dec(AIndex);
+          if States <= GetItemStatesInternal(Items[AIndex]) then
+          begin
+            Result := Items[AIndex];
+            exit;
+         end;
+        end;
+      sdBelow:
+        while AIndex < ACount-1 do
+        begin
+          inc(AIndex);
+          if States <= GetItemStatesInternal(Items[AIndex]) then
+          begin
+            Result := Items[AIndex];
+            exit;
+          end;
+        end;
       sdAll:
         while True do
         begin
           inc(AIndex);
-          if AIndex = StartItem.Index then
+          if AIndex = StartItem.Index then Exit;
+          if AIndex > ACount-1 then
           begin
-            Result := nil;
-            Exit;
-          end;
-          if AIndex >= ACount then
             AIndex := -1;
-          if (AIndex >= 0) and (AIndex < ACount) then
+            continue;
+          end;
+          if States <= GetItemStatesInternal(Items[AIndex]) then
           begin
             Result := Items[AIndex];
-            if GetItemStatesInternal(Result) - States = [] then
-              Exit;
+            exit;
           end;
         end;
     end;
-    if Result = nil then
-      exit;
-    if (GetItemStatesInternal(Result) * States = []) then
-      Result := nil;
-  end
+  end;
 end;
 
 procedure TCustomListView.ClearSelection;
