@@ -445,6 +445,7 @@ class procedure TQtWSWinControl.SetBounds(const AWinControl: TWinControl;
 var
   R: TRect;
   Box: TQtWidget;
+  AForm: TCustomForm;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetBounds') then
     Exit;
@@ -462,6 +463,23 @@ begin
       ATop - TQtCustomControl(Box).verticalScrollBar.getValue, AWidth, AHeight);
   end;
 
+  {$IFDEF QTSCROLLABLEFORMS}
+  if Assigned(AWinControl.Parent) and
+    (AWinControl.Parent.FCompStyle = csForm) then
+  begin
+    AForm := TCustomForm(AWinControl.Parent);
+    if Assigned(TQtMainWindow(AForm.Handle).ScrollArea) then
+    begin
+      Box := TQtMainWindow(AForm.Handle).ScrollArea;
+      R := Rect(ALeft - TQtWindowArea(Box).horizontalScrollBar.getValue,
+        ATop - TQtWindowArea(Box).verticalScrollBar.getValue, AWidth, AHeight);
+    end;
+  end;
+  {$ENDIF}
+
+  {$IFDEF VerboseQtResize}
+  DebugLn('>TQtWSWinControl.SetBounds(',dbgsName(AWinControl),') NewBounds=',dbgs(R));
+  {$ENDIF}
   TQtWidget(AWinControl.Handle).BeginUpdate;
   with R do
   begin
@@ -469,6 +487,9 @@ begin
     TQtWidget(AWinControl.Handle).resize(Right, Bottom);
   end;
   TQtWidget(AWinControl.Handle).EndUpdate;
+  {$IFDEF VerboseQtResize}
+  DebugLn('<TQtWSWinControl.SetBounds(',dbgsName(AWinControl),') NewBounds=',dbgs(R));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

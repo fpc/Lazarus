@@ -2219,7 +2219,7 @@ procedure TQtWidget.DelayResizeEvent(AWidget: QWidgetH; ANewSize: TSize);
 var
   ALCLResizeEvent: QLCLMessageEventH;
 begin
-  ALCLResizeEvent := QLCLMessageEvent_create(LCLQt_DelayResizeEvent, 0, MakeWParam(Word(ANewSize.cx), Word(ANewSize.cy)), 0, 0);
+  ALCLResizeEvent := QLCLMessageEvent_create(LCLQt_DelayResizeEvent, 0, PtrUInt(ANewSize.cx), PtrUInt(ANewSize.cy), 0);
   QCoreApplication_postEvent(AWidget, ALCLResizeEvent);
 end;
 
@@ -2404,8 +2404,8 @@ begin
     case QEvent_type(Event) of
       LCLQt_DelayResizeEvent:
       begin
-        ANewSize.cx := Lo(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event)));
-        ANewSize.cy := Hi(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event)));
+        ANewSize.cx := LongInt(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event)));
+        ANewSize.cy := LongInt(QLCLMessageEvent_getLParam(QLCLMessageEventH(Event)));
         AResizeEvent := QResizeEvent_create(@ANewSize, @ANewSize);
         try
           {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
@@ -3807,8 +3807,14 @@ begin
       Msg.WheelDelta := -1;
     Msg.WheelDelta := (120 * Msg.WheelDelta) div Mouse.WheelScrollLines;
     if FOwner <> nil then
-      CCtl := TQtAbstractScrollArea(FOwner)
-    else
+    begin
+      {$IFDEF QTSCROLLABLEFORMS}
+      if (FOwner is TQtMainWindow) then
+        CCtl := TQtMainWindow(FOwner).ScrollArea
+      else
+      {$ENDIF}
+        CCtl := TQtAbstractScrollArea(FOwner);
+    end else
       CCtl := TQtAbstractScrollArea(Self);
     //now fix ugly behaviour.
     if (Msg.WheelDelta > 0) and (CCtl.FVScrollbar.getVisible) and
@@ -6523,8 +6529,6 @@ begin
   if QtWidgetSet.IsValidHandle(HWND(ScrollArea)) then
   begin
     ScrollArea.DetachEvents;
-    if FOwnWidget and (ScrollArea.Widget <> nil) then
-      QWidget_destroy(ScrollArea.Widget);
     ScrollArea.Widget := nil;
     FreeAndNil(ScrollArea);
   end;
