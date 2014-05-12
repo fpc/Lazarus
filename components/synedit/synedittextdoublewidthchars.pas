@@ -84,6 +84,8 @@ begin
         end;
       #$e3:
         case Line[1] of
+          #$80:
+            if (Line[2] >= #$80) and (Line[2] <= #$be) then PWidths^ := 2;
           #$81:
             if (Line[2] >= #$81) then PWidths^ := 2;
           #$82..#$8e:
