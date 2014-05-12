@@ -1646,7 +1646,9 @@ begin
          ( (AMoveToVisbleMode = vmOnlyMoveOffScreenToVisible) and
            (not IsAnyCornerVisible(AForm)) )
       then
-        AForm.EnsureVisible(true);
+        AForm.EnsureVisible(true)
+      else
+        AForm.ShowOnTop;
 
       if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
         AForm.Visible := ARestoreVisible;
@@ -1667,7 +1669,9 @@ begin
              ( (AMoveToVisbleMode = vmOnlyMoveOffScreenToVisible) and
                (not IsAnyCornerVisible(AForm)) )
           then
-            AForm.EnsureVisible(true);
+            AForm.EnsureVisible(true)
+          else
+            AForm.ShowOnTop;
         end;
       end;
 
