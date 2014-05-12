@@ -1,0 +1,56 @@
+#
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: hu\n"
+
+#: tlazconverterform.button1.caption
+msgid "Path"
+msgstr "Útvonal"
+
+#: tlazconverterform.button2.caption
+msgid "Search"
+msgstr "Keresés"
+
+#: tlazconverterform.button3.caption
+msgid "Convert"
+msgstr "Átalakítás"
+
+#: tlazconverterform.caption
+msgctxt "TLAZCONVERTERFORM.CAPTION"
+msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
+msgstr ""
+"Codepage LazConverter v0.0.6 a következő fájtípusokhoz: PAS, LFM, LRS, LRT, "
+"INC"
+
+#: tlazconverterform.label1.caption
+msgid "Path to your project:"
+msgstr "A projekt útvonala:"
+
+#: tlazconverterform.label2.caption
+msgid "Convert From:"
+msgstr "Átalakítás erről:"
+
+#: tlazconverterform.label3.caption
+msgid "Convert To:"
+msgstr "Átalakítás erre:"
+
+#: tlazconverterform.label6.caption
+msgid "Ready..."
+msgstr "Kész..."
+
+#: tlazconverterform.menuitem1.caption
+msgid "Remove from conversion"
+msgstr "Eltávolítás az átalakítandók közül"
+
+#: tlazconverterform.selectdirectorydialog1.title
+msgid "Select Directory"
+msgstr "Könyvtár kiválasztása"

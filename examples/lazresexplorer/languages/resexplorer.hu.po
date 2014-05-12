@@ -1,0 +1,105 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: hu\n"
+
+#: reconstsunit.sabout
+msgid "About..."
+msgstr "Névjegy..."
+
+#: reconstsunit.sbuilddate
+msgid "Build date : "
+msgstr "Építés dátuma:"
+
+#: reconstsunit.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr "Carbon elemkészlet"
+
+#: reconstsunit.sexit
+msgid "Exit"
+msgstr "Kilépés"
+
+#: reconstsunit.sfile
+msgid "File"
+msgstr "Fájl"
+
+#: reconstsunit.sfpcversion
+msgid "FPC version : "
+msgstr "FPC változat:"
+
+#: reconstsunit.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr "FpGUI elemkészlet"
+
+#: reconstsunit.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr "GTK 2 elemkészlet"
+
+#: reconstsunit.sgtkwidgetset
+msgid "GTK widget set"
+msgstr "GTK elemkészlet"
+
+#: reconstsunit.shelp
+msgid "Help"
+msgstr "Súgó"
+
+#: reconstsunit.simage
+msgid "Image"
+msgstr "Kép"
+
+#: reconstsunit.slclversion
+msgid "LCL Version: "
+msgstr "LCL változat:"
+
+#: reconstsunit.slicense
+msgid "This program is free software under GNU GPL 2 license, see COPYING file"
+msgstr "Ez a program szabad szoftver GNU GPL 2 licenc alatt, lásd a COPYING fájlt!"
+
+#: reconstsunit.sopen
+msgid "Open..."
+msgstr "Megnyitás..."
+
+#: reconstsunit.sotherguiwidgetset
+msgid "Other gui"
+msgstr "Egyéb GUI"
+
+#: reconstsunit.sqtwidgetset
+msgid "QT widget set"
+msgstr "QT elemkészlet"
+
+#: reconstsunit.sresourceexplorer
+msgid "Resource explorer"
+msgstr "Erőforrás böngésző"
+
+#: reconstsunit.ssaveresource
+msgid "Save resource..."
+msgstr "Erőforrás mentése..."
+
+#: reconstsunit.sstrings
+msgid "Strings"
+msgstr "Karakterláncok"
+
+#: reconstsunit.stargetcpu
+msgid "Target CPU : "
+msgstr "Cél CPU:"
+
+#: reconstsunit.stargetos
+msgid "Target OS : "
+msgstr "Cél OS:"
+
+#: reconstsunit.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr "Win32/Win64 elemkészlet"
+
+#: reconstsunit.swincewidgetset
+msgid "WinCE widget set"
+msgstr "WinCE elemkészlet"
+

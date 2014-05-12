@@ -1,0 +1,33 @@
+#
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: lrdbzeosconst.slreditparamsform_caption
+msgid "Edit query param list"
+msgstr "Lekérdezés paraméterlista szerkesztése"
+
+#: lrdbzeosconst.slreditparamsform_paramslist
+msgid "Params list"
+msgstr "Paraméterek listája"
+
+#: lrdbzeosconst.slreditparamsform_paramtype
+msgid "Param type"
+msgstr "Paraméter típusa"
+
+#: lrdbzeosconst.slreditparamsform_paramvalue
+msgid "Param value"
+msgstr "Paraméter értéke"
+
+#: lrdbzeosconst.slreditparamsform_selectexpresion
+#, fuzzy
+msgid "Select expresion"
+msgstr "Kifejezés választása"

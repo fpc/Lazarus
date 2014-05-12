@@ -9,17 +9,9 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
 "Language-Team: Magyar (Hungarian)\n"
-"X-Generator: Poedit 1.5.4\n"
 "Language: hu\n"
+"X-Generator: Poedit 1.5.4\n"
 
-#: idelogger.ideloggerapply
-msgid "&Apply"
-msgstr "&Alkalmazás"
-
-#: idelogger.ideloggercaption
-msgid "Logging"
-msgstr "Naplózás"
-
-#: idelogger.ideloggermenucaption
-msgid "Logging ..."
-msgstr "Naplózás ..."
+#: synhighlighterunixshellscript.langname
+msgid "UNIX Shell Script"
+msgstr "Unix Shell parancsfájl"

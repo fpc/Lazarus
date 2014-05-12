@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -11,15 +12,6 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 "Language: hu\n"
 
-#: idetemplateproject.snewfromtemplate
-msgid "New project from template"
-msgstr "Új projekt sablonból"
-
-#: idetemplateproject.sprojecttemplatesettings
-msgid "Project templates options ..."
-msgstr "Projekt sablonok beállításai ..."
-
-#: idetemplateproject.stemplatecategory
-msgid "Template projects"
-msgstr "Sablon projektek"
-
+#: synunireg.sedituni
+msgid "Edit ..."
+msgstr "Szerkesztés ..."

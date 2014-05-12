@@ -45,7 +45,7 @@ msgid "Empty document"
 msgstr ""
 
 #: msgjsonviewer.serrcreatingconfigdir
-msgid "Could not create the configuration files directory \"s\""
+msgid "Could not create the configuration files directory \"%s\""
 msgstr ""
 
 #: msgjsonviewer.serrinvalidvalue
@@ -80,220 +80,220 @@ msgstr ""
 msgid "Save the changes"
 msgstr ""
 
-#: TMAINFORM.ACOPY.CAPTION
+#: tmainform.acopy.caption
 msgid "&Copy"
 msgstr ""
 
-#: TMAINFORM.ACOPY.HINT
+#: tmainform.acopy.hint
 msgid "Copy selected node to clipboard as JSON"
 msgstr ""
 
-#: TMAINFORM.ACUT.CAPTION
+#: tmainform.acut.caption
 msgid "C&ut"
 msgstr ""
 
-#: TMAINFORM.ACUT.HINT
+#: tmainform.acut.hint
 msgid "Cut selected node to clipboard as JSON"
 msgstr ""
 
-#: TMAINFORM.ADELETEVALUE.CAPTION
+#: tmainform.adeletevalue.caption
 msgid "&Delete value"
 msgstr ""
 
-#: TMAINFORM.ADELETEVALUE.HINT
+#: tmainform.adeletevalue.hint
 msgid "Delete the selected value"
 msgstr ""
 
-#: TMAINFORM.AEXPANDALL.CAPTION
+#: tmainform.aexpandall.caption
 msgid "E&xpand all nodes"
 msgstr ""
 
-#: TMAINFORM.AEXPANDALL.HINT
+#: tmainform.aexpandall.hint
 msgid "Expand all nodes in the document"
 msgstr ""
 
-#: TMAINFORM.AEXPANDCURRENTCONTAINER.CAPTION
+#: tmainform.aexpandcurrentcontainer.caption
 msgid "Expand &current object/array"
 msgstr ""
 
-#: TMAINFORM.AEXPANDCURRENTCONTAINER.HINT
+#: tmainform.aexpandcurrentcontainer.hint
 msgid "Expand all nodes in the current object/array"
 msgstr ""
 
-#: TMAINFORM.AFIND.CAPTION
+#: tmainform.afind.caption
 msgid "&Find"
 msgstr ""
 
-#: TMAINFORM.AFINDNEXT.CAPTION
+#: tmainform.afindnext.caption
 msgid "Find &next occurrence"
 msgstr ""
 
-#: TMAINFORM.ANEW.CAPTION
+#: tmainform.anew.caption
 msgid "&New"
 msgstr ""
 
-#: TMAINFORM.ANEW.HINT
+#: tmainform.anew.hint
 msgid "Create new JSON document"
 msgstr ""
 
-#: TMAINFORM.ANEWARRAY.CAPTION
+#: tmainform.anewarray.caption
 msgid "New &Array"
 msgstr ""
 
-#: TMAINFORM.ANEWARRAY.HINT
+#: tmainform.anewarray.hint
 msgid "Add a new JSON array"
 msgstr ""
 
-#: TMAINFORM.ANEWBOOLEANVALUE.CAPTION
+#: tmainform.anewbooleanvalue.caption
 msgid "New &boolean value"
 msgstr ""
 
-#: TMAINFORM.ANEWBOOLEANVALUE.HINT
+#: tmainform.anewbooleanvalue.hint
 msgid "Add a new boolean value"
 msgstr ""
 
-#: TMAINFORM.ANEWNULLVALUE.CAPTION
+#: tmainform.anewnullvalue.caption
 msgid "New N&ull value"
 msgstr ""
 
-#: TMAINFORM.ANEWNULLVALUE.HINT
+#: tmainform.anewnullvalue.hint
 msgid "Add a new null value"
 msgstr ""
 
-#: TMAINFORM.ANEWNUMBERVALUE.CAPTION
+#: tmainform.anewnumbervalue.caption
 msgid "&New numerical Value"
 msgstr ""
 
-#: TMAINFORM.ANEWNUMBERVALUE.HINT
+#: tmainform.anewnumbervalue.hint
 msgid "Add a new number value"
 msgstr ""
 
-#: TMAINFORM.ANEWOBJECT.CAPTION
+#: tmainform.anewobject.caption
 msgid "New &Object"
 msgstr ""
 
-#: TMAINFORM.ANEWOBJECT.HINT
+#: tmainform.anewobject.hint
 msgid "Add a new JSON object"
 msgstr ""
 
-#: TMAINFORM.ANEWSTRINGVALUE.CAPTION
+#: tmainform.anewstringvalue.caption
 msgid "New &string value"
 msgstr ""
 
-#: TMAINFORM.ANEWSTRINGVALUE.HINT
+#: tmainform.anewstringvalue.hint
 msgid "Add a new string value"
 msgstr ""
 
-#: TMAINFORM.AOPEN.CAPTION
+#: tmainform.aopen.caption
 msgid "&Open"
 msgstr ""
 
-#: TMAINFORM.AOPEN.HINT
+#: tmainform.aopen.hint
 msgid "Open JSON document from file"
 msgstr ""
 
-#: TMAINFORM.APASTE.CAPTION
+#: tmainform.apaste.caption
 msgid "&Paste"
 msgstr ""
 
-#: TMAINFORM.APASTE.HINT
+#: tmainform.apaste.hint
 msgid "Paste JSON data in clipboard as new member"
 msgstr ""
 
-#: TMAINFORM.APASTEASDOCUMENT.CAPTION
+#: tmainform.apasteasdocument.caption
 msgid "Paste as new document"
 msgstr ""
 
-#: TMAINFORM.APASTEASDOCUMENT.HINT
+#: tmainform.apasteasdocument.hint
 msgid "Paste JSON data in clipboard as new document"
 msgstr ""
 
-#: TMAINFORM.AQUIT.CAPTION
+#: tmainform.aquit.caption
 msgid "&Quit"
 msgstr ""
 
-#: TMAINFORM.AQUIT.HINT
+#: tmainform.aquit.hint
 msgid "Exit the program"
 msgstr ""
 
-#: TMAINFORM.ASAVE.CAPTION
+#: tmainform.asave.caption
 msgid "&Save"
 msgstr ""
 
-#: TMAINFORM.ASAVE.HINT
+#: tmainform.asave.hint
 msgid "Save the JSON document to file"
 msgstr ""
 
-#: TMAINFORM.ASAVEAS.CAPTION
+#: tmainform.asaveas.caption
 msgid "Save &as"
 msgstr ""
 
-#: TMAINFORM.ASAVEAS.HINT
+#: tmainform.asaveas.hint
 msgid "Save JSON document with a new name"
 msgstr ""
 
-#: TMAINFORM.MAINFORM.CAPTION
+#: tmainform.mainform.caption
 msgctxt "TMAINFORM.MAINFORM.CAPTION"
 msgid "JSON Viewer"
 msgstr ""
 
-#: TMAINFORM.MEDIT.CAPTION
+#: tmainform.medit.caption
 msgid "&Edit"
 msgstr ""
 
-#: TMAINFORM.MENUITEM1.CAPTION
+#: tmainform.menuitem1.caption
 msgctxt "TMAINFORM.MENUITEM1.CAPTION"
 msgid "-"
 msgstr ""
 
-#: TMAINFORM.MENUITEM2.CAPTION
+#: tmainform.menuitem2.caption
 msgctxt "TMAINFORM.MENUITEM2.CAPTION"
 msgid "-"
 msgstr ""
 
-#: TMAINFORM.MENUITEM3.CAPTION
+#: tmainform.menuitem3.caption
 msgctxt "TMAINFORM.MENUITEM3.CAPTION"
 msgid "-"
 msgstr ""
 
-#: TMAINFORM.MENUITEM8.CAPTION
+#: tmainform.menuitem8.caption
 msgctxt "TMAINFORM.MENUITEM8.CAPTION"
 msgid "-"
 msgstr ""
 
-#: TMAINFORM.MFILE.CAPTION
+#: tmainform.mfile.caption
 msgid "&File"
 msgstr ""
 
-#: TMAINFORM.MIDOCUMENT.CAPTION
+#: tmainform.midocument.caption
 msgid "&New document with object"
 msgstr ""
 
-#: TMAINFORM.MIINSERT.CAPTION
+#: tmainform.miinsert.caption
 msgid "&Values"
 msgstr ""
 
-#: TMAINFORM.MISORTMEMBERS.CAPTION
+#: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr ""
 
-#: TMAINFORM.MISTRICT.CAPTION
+#: tmainform.mistrict.caption
 msgid "&Strict JSON"
 msgstr ""
 
-#: TMAINFORM.MOPTIONS.CAPTION
+#: tmainform.moptions.caption
 msgid "&Options"
 msgstr ""
 
-#: TMAINFORM.TBJSON.CAPTION
+#: tmainform.tbjson.caption
 msgid "TBJSON"
 msgstr ""
 
-#: TMAINFORM.TOOLBUTTON1.CAPTION
+#: tmainform.toolbutton1.caption
 msgid "ToolButton1"
 msgstr ""
 
-#: TMAINFORM.TOOLBUTTON4.CAPTION
+#: tmainform.toolbutton4.caption
 msgid "ToolButton4"
 msgstr ""
 

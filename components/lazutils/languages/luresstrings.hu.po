@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -11,15 +12,11 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 "Language: hu\n"
 
-#: idetemplateproject.snewfromtemplate
-msgid "New project from template"
-msgstr "Új projekt sablonból"
+#: luresstrings.ctsfiledoesnotexist
+msgctxt "luresstrings.ctsfiledoesnotexist"
+msgid "file \"%s\" does not exist"
+msgstr "a(z) \"%s\" fájl  nem létezik"
 
-#: idetemplateproject.sprojecttemplatesettings
-msgid "Project templates options ..."
-msgstr "Projekt sablonok beállításai ..."
-
-#: idetemplateproject.stemplatecategory
-msgid "Template projects"
-msgstr "Sablon projektek"
-
+#: luresstrings.ctsfileisnotexecutable
+msgid "%s is not executable"
+msgstr "a(z) %s nem futtatható"
