@@ -3982,7 +3982,7 @@ begin
   begin
     FSelTimer.TimerEnabled := False;
     RptEvent :=  QLCLMessageEvent_create(LCLQt_ClipboardPrimarySelection,
-       Ord(ctPrimarySelection), FSelFmtCount, 0, 0);
+       PtrUInt(Ord(ctPrimarySelection)), PtrUInt(FSelFmtCount), 0, 0);
     QCoreApplication_postEvent(ClipBoard, RptEvent);
   end;
 end;
@@ -4220,7 +4220,7 @@ function TQtClipboard.GetOwnerShip(ClipboardType: TClipboardType;
     begin
       FSelFmtCount := FormatCount;
       Event :=  QLCLMessageEvent_create(LCLQt_ClipboardPrimarySelection,
-         Ord(ClipboardType), FormatCount, PtrUInt(QApplication_keyboardModifiers()), 0);
+         PtrUInt(Ord(ClipboardType)), PtrUInt(FormatCount), PtrUInt(QApplication_keyboardModifiers()), 0);
       QCoreApplication_postEvent(ClipBoard, Event);
       exit;
     end;
