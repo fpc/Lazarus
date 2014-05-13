@@ -459,9 +459,9 @@ begin
   Field_Set1      := [eval2];
   Field_Set2      := [];
 
-  Field_SString1 := 'stest';
+  Field_SString1 := 'stest ü1'+#27+'';
   Field_SString2 := '';
-  Field_AString1 := 'atest';
+  Field_AString1 := 'atest ü1'+#27+'';
   Field_AString2 := '';
 
 
@@ -604,9 +604,9 @@ begin
   Local_Set1      := [eval2];
   Local_Set2      := [];
 
-  Local_SString1 := 'stest';
+  Local_SString1 := 'stest ü1'+#27+'';
   Local_SString2 := '';
-  Local_AString1 := 'atest';
+  Local_AString1 := 'atest ü1'+#27+'';
   Local_AString2 := '';
 
 
@@ -837,9 +837,9 @@ begin
   SimpleGlob_Set1      := [eval2];
   SimpleGlob_Set2      := [];
 
-  SimpleGlob_SString1 := 'stest';
+  SimpleGlob_SString1 := 'stest ü1'+#27+'';
   SimpleGlob_SString2 := '';
-  SimpleGlob_AString1 := 'atest';
+  SimpleGlob_AString1 := 'atest ü1'+#27+'';
   SimpleGlob_AString2 := '';
 
 

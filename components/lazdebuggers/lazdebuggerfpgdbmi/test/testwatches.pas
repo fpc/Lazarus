@@ -791,6 +791,9 @@ begin
         FLastAddedExp^.DspFormat := wdfMemDump;
         AddFmtDef('%sDynInt1%1:s[1]', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 15 88)|(88 15 00 00)) *$'), skArray, '', [fTpMtch]);
         FLastAddedExp^.DspFormat := wdfMemDump;
+        AddFmtDef('%sDynInt1%1:s[1]', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 15 88)|(88 15 00 00)) +[0-9A-F][0-9A-F]'), skArray, '', [fTpMtch]);
+        FLastAddedExp^.DspFormat := wdfMemDump;
+        FLastAddedExp^.RepeatCount := 5;
       end;
 
       // 6600 = $19C8 / 6699=$1A2B
@@ -798,6 +801,9 @@ begin
       FLastAddedExp^.DspFormat := wdfMemDump;
       AddFmtDef('%sStatAInt1%1:s[5]', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 19 C9)|(C9 19 00 00)) *$'), skArray, '', [fTpMtch]);
       FLastAddedExp^.DspFormat := wdfMemDump;
+      AddFmtDef('%sStatAInt1%1:s[5]', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 19 C9)|(C9 19 00 00)) +[0-9A-F][0-9A-F]'), skArray, '', [fTpMtch]);
+      FLastAddedExp^.DspFormat := wdfMemDump;
+      FLastAddedExp^.RepeatCount := 5;
 
       // Test: typecast dynarray to dynarray
       AddFmtDef('TArrayDynInt(%sDynInt1%1:s)', [s,s2], '^[\(L].*?5511, 5512, 5513, 5514, -5511', skArray, '', [fTpMtch]);
