@@ -56,8 +56,9 @@ type
     //--------------------------------------------------------------------------
     skArray,
     //--------------------------------------------------------------------------
-    skRegister       // the Address member is the register number
+    skRegister,       // the Address member is the register number
     //--------------------------------------------------------------------------
+    skAddress       // untyped data at an address (differs from pointer, when being typecasted)
   );
 
 

@@ -278,7 +278,7 @@ type
     FAddress: TFpDbgMemLocation;
   protected
     property Address: TFpDbgMemLocation read FAddress write FAddress;
-    //function GetKind: TDbgSymbolKind; override; // no kind
+    function GetKind: TDbgSymbolKind; override; // skAddress
     function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function GetAddress: TFpDbgMemLocation; override;
   public
@@ -819,6 +819,11 @@ begin
 end;
 
 { TDbgSymbolValueConstAddress }
+
+function TFpDbgValueConstAddress.GetKind: TDbgSymbolKind;
+begin
+  Result := skAddress;
+end;
 
 function TFpDbgValueConstAddress.GetFieldFlags: TFpDbgValueFieldFlags;
 begin
