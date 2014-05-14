@@ -15,8 +15,12 @@ unit IDEExternToolIntf;
 interface
 
 uses
-  Classes, SysUtils, typinfo, contnrs, UTF8Process, AvgLvlTree,
-  LazMethodList, LazLogger, LazFileUtils, LazFileCache, Menus, LCLProc;
+  Classes, SysUtils, typinfo, UTF8Process, AvgLvlTree,
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
+  LazMethodList, contnrs,
+  {$ENDIF}
+  LazLogger, LazFileUtils, LazFileCache, Menus, LCLProc;
 
 const
   SubToolFPC = 'FPC';

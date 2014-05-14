@@ -898,12 +898,15 @@ procedure TIDEFPCParser.Init;
   procedure LoadMsgFile(aFilename: string; var List: TFPCMsgFilePoolItem);
   begin
     //debugln(['TFPCParser.Init load Msg filename=',aFilename]);
-    if (aFilename<>'') and (List=nil) then begin
+    if aFilename='' then
+      debugln(['WARNING: TFPCParser.Init missing msg file'])
+    else if (aFilename<>'') and (List=nil) then begin
       try
         List:=FPCMsgFilePool.LoadFile(aFilename,true,nil);
+        debugln(['LoadMsgFile successfully read ',aFilename]);
       except
         on E: Exception do begin
-          debugln(['TFPCParser.Init failed to load file '+aFilename+': '+E.Message]);
+          debugln(['WARNING: TFPCParser.Init failed to load file '+aFilename+': '+E.Message]);
         end;
       end;
     end;
@@ -936,7 +939,8 @@ begin
   end;
 
   LoadMsgFile(MsgFilename,MsgFile);
-  LoadMsgFile(TranslationFilename,TranslationFile);
+  if TranslationFilename<>'' then
+    LoadMsgFile(TranslationFilename,TranslationFile);
 end;
 
 procedure TIDEFPCParser.InitReading;
@@ -1015,7 +1019,11 @@ function TIDEFPCParser.CheckForGeneralMessage(p: PChar): boolean;
 { check for
   Fatal: message
   Hint: (11030) Start of reading config file /etc/fpc.cfg
+  Error: /usr/bin/ppc386 returned an error exitcode
 }
+const
+  MsgIDCompilationAborted = 1018;
+  FrontEndFPCExitCodeError = 'returned an error exitcode';
 var
   MsgLine: TMessageLine;
   MsgType: TMessageLineUrgency;
@@ -1024,15 +1032,33 @@ var
   TranslatedItem: TFPCMsgItem;
   MsgItem: TFPCMsgItem;
   TranslatedMsg: String;
+
+  procedure CheckFinalNote;
+  begin
+    i:=Tool.WorkerMessages.Count-1;
+    if (i>=0) and (Tool.WorkerMessages[i].Urgency>=MsgType) then begin
+      // the last message already explains that the compilation aborted
+      MsgType:=mluVerbose;
+    end;
+  end;
+
 begin
   Result:=false;
   MsgType:=mluNone;
-  if ReadString(p,'Fatal: ') then
-    MsgType:=mluFatal
+  if ReadString(p,'Fatal: ') then begin
+    MsgType:=mluFatal;
+    MsgItem:=MsgFile.GetMsg(MsgIDCompilationAborted);
+    if (MsgItem<>nil) and ReadString(p,MsgItem.Pattern) then
+      CheckFinalNote;
+  end
   else if ReadString(p,'Panic') then
     MsgType:=mluPanic
-  else if ReadString(p,'Error: ') then
-    MsgType:=mluError
+  else if ReadString(p,'Error: ') then begin
+    TranslatedMsg:=p;
+    MsgType:=mluError;
+    if Pos(FrontEndFPCExitCodeError,TranslatedMsg)>0 then
+      CheckFinalNote;
+  end
   else if ReadString(p,'Warn: ') then
     MsgType:=mluWarning
   else if ReadString(p,'Note: ') then
@@ -1075,13 +1101,9 @@ begin
         end;
       end;
 
-      if (fMsgID=1018) // fatal: Compilation aborted
+      if (fMsgID=MsgIDCompilationAborted) // fatal: Compilation aborted
       then begin
-        i:=Tool.WorkerMessages.Count-1;
-        if (i>=0) and (Tool.WorkerMessages[i].Urgency>=MsgType) then begin
-          // the last message already explains that the compilation aborted
-          MsgType:=mluVerbose;
-        end;
+        CheckFinalNote;
       end;
     end;
   end;

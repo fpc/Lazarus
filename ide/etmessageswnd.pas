@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, IDEMsgIntf, IDEImagesIntf, IDEExternToolIntf,
-  LazIDEIntf, Forms, Controls, Graphics, Dialogs, etMessageFrame,
+  LazIDEIntf, Forms, Controls, Graphics, Dialogs, LCLProc, etMessageFrame,
   etSrcEditMarks, etQuickFixes;
 
 type
@@ -62,6 +62,7 @@ type
     function GetSelectedLine: TMessageLine; override;
     function GetView(aCaption: string; CreateIfNotExist: boolean
       ): TExtToolView; override;
+    function CreateView(aCaptionPrefix: string): TExtToolView; override;
     function IndexOfView(View: TExtToolView): integer; override;
     procedure SelectMsgLine(Msg: TMessageLine); override;
     function SelectFirstUrgentMessage(aMinUrgency: TMessageLineUrgency;
@@ -69,6 +70,7 @@ type
     function SelectNextUrgentMessage(aMinUrgency: TMessageLineUrgency;
       WithSrcPos, Downwards: boolean): boolean; override;
     function ViewCount: integer; override;
+    procedure ApplyIDEOptions;
     property DblClickJumps: boolean read GetDblClickJumps write SetDblClickJumps;
     property HideMessagesIcons: boolean read GetHideMessagesIcons write SetHideMessagesIcons;
   end;
@@ -153,9 +155,9 @@ end;
 procedure TMessagesView.SetHideMessagesIcons(AValue: boolean);
 begin
   if AValue then
-    MessagesFrame1.MessagesCtrl.Options:=MessagesFrame1.MessagesCtrl.Options+[]
+    MessagesFrame1.MessagesCtrl.Options:=MessagesFrame1.MessagesCtrl.Options-[mcoShowMsgIcons]
   else
-    MessagesFrame1.MessagesCtrl.Options:=MessagesFrame1.MessagesCtrl.Options-[];
+    MessagesFrame1.MessagesCtrl.Options:=MessagesFrame1.MessagesCtrl.Options+[mcoShowMsgIcons];
 end;
 
 function TMessagesView.GetViews(Index: integer): TExtToolView;
@@ -203,6 +205,29 @@ begin
   Result:=MessagesFrame1.GetView(aCaption,CreateIfNotExist);
 end;
 
+function TMessagesView.CreateView(aCaptionPrefix: string): TExtToolView;
+
+  function TryCaption(aCaption: string; var View: TExtToolView): boolean;
+  begin
+    if GetView(aCaption,false)<>nil then exit(false);
+    View:=GetView(aCaption,true);
+    Result:=true;
+  end;
+
+var
+  i: Integer;
+begin
+  if TryCaption(aCaptionPrefix,Result) then exit;
+  if (aCaptionPrefix<>'') and (aCaptionPrefix[length(aCaptionPrefix)] in ['0'..'9'])
+  then
+    aCaptionPrefix+='_';
+  i:=2;
+  repeat
+    if TryCaption(aCaptionPrefix+IntToStr(i),Result) then exit;
+    inc(i);
+  until false;
+end;
+
 function TMessagesView.IndexOfView(View: TExtToolView): integer;
 begin
   if View is TLMsgWndView then
@@ -231,6 +256,11 @@ end;
 function TMessagesView.ViewCount: integer;
 begin
   Result:=MessagesFrame1.ViewCount;
+end;
+
+procedure TMessagesView.ApplyIDEOptions;
+begin
+  MessagesFrame1.ApplyIDEOptions;
 end;
 
 function TMessagesView.GetDblClickJumps: boolean;

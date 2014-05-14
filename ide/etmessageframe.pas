@@ -37,7 +37,7 @@ uses
   LResources, Forms, Buttons, ExtCtrls, Controls, LMessages, LCLType, Graphics,
   LCLIntf, Themes, ImgList, GraphType, Menus, Clipbrd, Dialogs, StdCtrls,
   IDEExternToolIntf, IDEImagesIntf, MenuIntf, etSrcEditMarks, etQuickFixes,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, EnvironmentOpts;
 
 const
   CustomViewCaption = '------------------------------';
@@ -199,7 +199,8 @@ type
     );
   TMsgCtrlOptions = set of TMsgCtrlOption;
 const
-  MCDefaultOptions = [mcoShowStats,mcoShowTranslated,mcoAutoOpenFirstError,mcoShowMsgIcons];
+  MCDefaultOptions = [mcoShowStats,mcoShowTranslated,
+                      mcoAutoOpenFirstError,mcoShowMsgIcons];
 
 type
 
@@ -432,6 +433,8 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
+    procedure ApplyIDEOptions;
+
     // Views
     function ViewCount: integer;
     property Views[Index: integer]: TLMsgWndView read GetViews;
@@ -444,7 +447,7 @@ type
     // source marks
     procedure CreateMarksForFile(aSynEdit: TSynEdit; aFilename: string;
       DeleteOld: boolean);
-    procedure ApplySrcChangeds(Changes: TETSrcChanges);
+    procedure ApplySrcChanges(Changes: TETSrcChanges);
 
     // message lines
     procedure SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
@@ -2577,7 +2580,7 @@ function TMessagesCtrl.GetHeaderText(View: TLMsgWndView): string;
 begin
   Result:=View.Caption;
   if View.SummaryMsg<>'' then
-    Result+=' '+View.SummaryMsg;
+    Result+=', '+View.SummaryMsg;
   if mcoShowStats in Options then begin
     Result+=GetStats(View.Lines);
   end;
@@ -3520,18 +3523,18 @@ begin
     Parent:=Self;
 
     UrgencyStyles[mluNone].SetValues('?',ImgIDInfo,clDefault);
-    UrgencyStyles[mluProgress].SetValues('Fortschritt',ImgIDInfo,clDefault);
+    UrgencyStyles[mluProgress].SetValues('Progress',ImgIDInfo,clDefault);
     UrgencyStyles[mluDebug].SetValues('Debug',ImgIDInfo,clDefault);
-    UrgencyStyles[mluVerbose3].SetValues('ExtAusfuehrlich',ImgIDInfo,clDefault);
-    UrgencyStyles[mluVerbose2].SetValues('SehrAusfuerhlich',ImgIDInfo,clDefault);
-    UrgencyStyles[mluVerbose].SetValues('Ausfuerhlich',ImgIDInfo,clDefault);
-    UrgencyStyles[mluHint].SetValues('Hinweis',ImgIDHint,clDefault);
+    UrgencyStyles[mluVerbose3].SetValues('Extremely Verbose',ImgIDInfo,clDefault);
+    UrgencyStyles[mluVerbose2].SetValues('Very Verbose',ImgIDInfo,clDefault);
+    UrgencyStyles[mluVerbose].SetValues('Verbose',ImgIDInfo,clDefault);
+    UrgencyStyles[mluHint].SetValues('Hint',ImgIDHint,clDefault);
     UrgencyStyles[mluNote].SetValues('Note',ImgIDNote,clDefault);
-    UrgencyStyles[mluWarning].SetValues('Warnung',ImgIDWarning,clDefault);
-    UrgencyStyles[mluImportant].SetValues('Sonstiges',ImgIDInfo,clDefault);
-    UrgencyStyles[mluError].SetValues('Fehler',ImgIDError,clDefault);
+    UrgencyStyles[mluWarning].SetValues('Warning',ImgIDWarning,clDefault);
+    UrgencyStyles[mluImportant].SetValues('Important',ImgIDInfo,clDefault);
+    UrgencyStyles[mluError].SetValues('Error',ImgIDError,clDefault);
     UrgencyStyles[mluFatal].SetValues('Fatal',ImgIDFatal,clDefault);
-    UrgencyStyles[mluPanic].SetValues('Panik',ImgIDFatal,clDefault);
+    UrgencyStyles[mluPanic].SetValues('Panic',ImgIDFatal,clDefault);
     Images:=IDEImages.Images_12;
     PopupMenu:=MsgCtrlPopupMenu;
   end;
@@ -3552,6 +3555,18 @@ begin
   MessagesCtrl.BeginUpdate;
   ClearViews;
   inherited Destroy;
+end;
+
+procedure TMessagesFrame.ApplyIDEOptions;
+begin
+  if EnvironmentOptions.MsgViewDblClickJumps then
+    MessagesCtrl.Options:=MessagesCtrl.Options-[mcoSingleClickOpensFile]
+  else
+    MessagesCtrl.Options:=MessagesCtrl.Options+[mcoSingleClickOpensFile];
+  if EnvironmentOptions.HideMessagesIcons then
+    MessagesCtrl.Options:=MessagesCtrl.Options-[mcoShowMsgIcons]
+  else
+    MessagesCtrl.Options:=MessagesCtrl.Options+[mcoShowMsgIcons];
 end;
 
 function TMessagesFrame.ViewCount: integer;
@@ -3591,7 +3606,7 @@ begin
   MessagesCtrl.CreateMarksForFile(aSynEdit,aFilename,DeleteOld);
 end;
 
-procedure TMessagesFrame.ApplySrcChangeds(Changes: TETSrcChanges);
+procedure TMessagesFrame.ApplySrcChanges(Changes: TETSrcChanges);
 begin
   MessagesCtrl.ApplySrcChanges(Changes);
 end;

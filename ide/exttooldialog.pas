@@ -23,8 +23,7 @@
   Abstract:
     Defines the TExternalToolList which stores the settings of all external
     tools. (= Programfilename and parameters)
-    And provides TExternalToolDlg which is a dialog for editing a
-    TExternalToolList;
+    And provides TExternalToolDlg which is a dialog for editing this list.
 }
 unit ExtToolDialog;
 
@@ -143,33 +142,33 @@ type
     procedure ListboxClick(Sender: TObject);
   private
     {$IFDEF EnableNewExtTools}
-    fExtToolList: TExternalToolMenuItems;
+    fExtToolList: TExternalUserTools;
     {$ELSE}
     fExtToolList: TExternalToolList;
     {$ENDIF}
     fTransferMacros: TTransferMacroList;
     procedure Load;
-    procedure SetExtToolList(NewExtToolList: {$IFDEF EnableNewExtTools}TExternalToolMenuItems{$ELSE}TExternalToolList{$ENDIF});
+    procedure SetExtToolList(NewExtToolList: {$IFDEF EnableNewExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF});
     procedure SetTransferMacros(NewMacros: TTransferMacroList);
     function ToolDescription(Index: integer): string;
     procedure EnableButtons;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
-    property ExtToolList: {$IFDEF EnableNewExtTools}TExternalToolMenuItems{$ELSE}TExternalToolList{$ENDIF}
+    property ExtToolList: {$IFDEF EnableNewExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF}
       read fExtToolList write SetExtToolList;
     property TransferMacros: TTransferMacroList
                                    read fTransferMacros write SetTransferMacros;
   end;
   
-function ShowExtToolDialog(ExtToolList: {$IFDEF EnableNewExtTools}TExternalToolMenuItems{$ELSE}TExternalToolList{$ENDIF};
+function ShowExtToolDialog(ExtToolList: {$IFDEF EnableNewExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF};
   TransferMacros: TTransferMacroList):TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowExtToolDialog(ExtToolList: {$IFDEF EnableNewExtTools}TExternalToolMenuItems{$ELSE}TExternalToolList{$ENDIF};
+function ShowExtToolDialog(ExtToolList: {$IFDEF EnableNewExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF};
   TransferMacros: TTransferMacroList):TModalResult;
 var
   ExternalToolDialog: TExternalToolDialog;
@@ -581,7 +580,7 @@ begin
   MoveDownButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
 
   {$IFDEF EnableNewExtTools}
-  fExtToolList:=TExternalToolMenuItems.Create;
+  fExtToolList:=TExternalUserTools.Create;
   {$ELSE}
   fExtToolList:=TExternalToolList.Create;
   {$ENDIF}
@@ -593,7 +592,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TExternalToolDialog.SetExtToolList(NewExtToolList: {$IFDEF EnableNewExtTools}TExternalToolMenuItems{$ELSE}TExternalToolList{$ENDIF});
+procedure TExternalToolDialog.SetExtToolList(NewExtToolList: {$IFDEF EnableNewExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF});
 begin
   if fExtToolList=NewExtToolList then exit;
   fExtToolList.Assign(NewExtToolList);
@@ -636,7 +635,7 @@ procedure TExternalToolDialog.AddButtonClick(Sender: TObject);
 var
   MsgResult: TModalResult;
   {$IFDEF EnableNewExtTools}
-  NewTool: TExternalToolMenuItem;
+  NewTool: TExternalUserTool;
   {$ELSE}
   NewTool: TExternalToolOptions;
   {$ENDIF}
@@ -648,7 +647,7 @@ begin
     exit;
   end;
   {$IFDEF EnableNewExtTools}
-  NewTool:=TExternalToolMenuItem.Create(nil);
+  NewTool:=TExternalUserTool.Create(nil);
   MsgResult:=ShowExtToolOptionDlg(fTransferMacros, NewTool, EditorOpts.KeyMap);
   {$ELSE}
   NewTool:=TExternalToolOptions.Create;
@@ -673,7 +672,7 @@ end;
 procedure TExternalToolDialog.MenuItemCloneClick(Sender: TObject);
 var
   {$IFDEF EnableNewExtTools}
-  NewTool, OldTool: TExternalToolMenuItem;
+  NewTool, OldTool: TExternalUserTool;
   {$ELSE}
   NewTool, OldTool: TExternalToolOptions;
   {$ENDIF}
@@ -682,7 +681,7 @@ begin
     OldTool := fExtToolList.Items[Listbox.ItemIndex];
     If Assigned(OldTool) Then Begin
       {$IFDEF EnableNewExtTools}
-      NewTool:=TExternalToolMenuItem.Create(nil);
+      NewTool:=TExternalUserTool.Create(nil);
       {$ELSE}
       NewTool:=TExternalToolOptions.Create;
       {$ENDIF}
@@ -716,14 +715,14 @@ procedure TExternalToolDialog.MenuItemImportClick(Sender: TObject);
 Var
   FileConfig: TXMLOptionsStorage;
   {$IFDEF EnableNewExtTools}
-  NewToolList: TExternalToolMenuItems;
+  NewToolList: TExternalUserTools;
   {$ELSE}
   NewToolList : TExternalToolList;
   {$ENDIF}
 begin
   If OpenDialog1.Execute Then Begin
     {$IFDEF EnableNewExtTools}
-    NewToolList := TExternalToolMenuItems.Create;
+    NewToolList := TExternalUserTools.Create;
     {$ELSE}
     NewToolList := TExternalToolList.Create;
     {$ENDIF}

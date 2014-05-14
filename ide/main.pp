@@ -359,7 +359,6 @@ type
     // see pkgmanager.pas
 
     // tools menu
-    procedure mnuToolConfigureClicked(Sender: TObject);
     procedure mnuToolDiffClicked(Sender: TObject);
     procedure mnuToolConvertDFMtoLFMClicked(Sender: TObject);
     procedure mnuToolCheckLFMClicked(Sender: TObject);
@@ -371,7 +370,8 @@ type
     procedure mnuToolBuildLazarusClicked(Sender: TObject);
     procedure mnuToolBuildAdvancedLazarusClicked(Sender: TObject);
     procedure mnuToolConfigBuildLazClicked(Sender: TObject);
-    procedure mnuCustomExtToolClick(Sender: TObject);
+    procedure mnuToolConfigureUserExtToolsClicked(Sender: TObject);
+    procedure mnuExternalUserToolClick(Sender: TObject);
 
     // options menu
     procedure mnuEnvGeneralOptionsClicked(Sender: TObject);
@@ -836,7 +836,7 @@ type
     procedure DoCommand(ACommand: integer); override;
     procedure DoSourceEditorCommand(EditorCommand: integer;
       CheckFocus: boolean = true; FocusEditor: boolean = true);
-    procedure UpdateCustomToolsInMenu;
+    procedure UpdateExternalUserToolsInMenu;
 
     // external tools
     function PrepareForCompile: TModalResult; override;
@@ -1362,8 +1362,8 @@ begin
   EditorOpts.Load;
 
   {$IFDEF EnableNewExtTools}
-  ExternalToolMenuItems:=TExternalToolMenuItems(EnvironmentOptions.ExternalToolMenuItems);
-  ExternalToolMenuItems.LoadShortCuts(EditorOpts.KeyMap);
+  ExternalUserTools:=TExternalUserTools(EnvironmentOptions.ExternalToolMenuItems);
+  ExternalUserTools.LoadShortCuts(EditorOpts.KeyMap);
   {$ELSE}
   ExternalTools.LoadShortCuts(EditorOpts.KeyMap);
   {$ENDIF}
@@ -1742,7 +1742,9 @@ end;
 procedure TMainIDE.CreateOftenUsedForms;
 begin
   MessagesView:=TMessagesView.Create(nil);
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableNewExtTools}
+  MessagesView.ApplyIDEOptions;
+  {$ELSE}
   MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
   {$ENDIF}
 
@@ -2837,7 +2839,7 @@ begin
     itmEnvCodeTemplates.OnClick := @mnuEnvCodeTemplatesClicked;
     itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
 
-    itmToolConfigure.OnClick := @mnuToolConfigureClicked;
+    itmToolConfigure.OnClick := @mnuToolConfigureUserExtToolsClicked;
     itmToolDiff.OnClick := @mnuToolDiffClicked;
 
     itmToolCheckLFM.OnClick := @mnuToolCheckLFMClicked;
@@ -2854,7 +2856,7 @@ begin
       itmToolBuildLazarus.Caption:=
         Format(lisMenuBuildLazarusProf, [MiscellaneousOptions.BuildLazOpts.Name]);
   end;
-  UpdateCustomToolsInMenu;
+  UpdateExternalUserToolsInMenu;
 end;
 
 procedure TMainIDE.SetupWindowsMenu;
@@ -4427,20 +4429,17 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TMainIDE.mnuToolConfigureClicked(Sender: TObject);
+procedure TMainIDE.mnuToolConfigureUserExtToolsClicked(Sender: TObject);
 begin
   if ShowExtToolDialog(
-    {$IFDEF EnableNewExtTools}ExternalToolMenuItems{$ELSE}ExternalTools{$ENDIF},
+    {$IFDEF EnableNewExtTools}ExternalUserTools{$ELSE}ExternalTools{$ENDIF},
     GlobalMacroList)=mrOk then
   begin
     // save to environment options
     SaveEnvironment(true);
     // save shortcuts to editor options
-    {$IFDEF EnableNewExtTools}ExternalToolMenuItems{$ELSE}ExternalTools{$ENDIF}.SaveShortCuts(EditorOpts.KeyMap);
-    EditorOpts.Save;
-    UpdateHighlighters(True);
-    SourceEditorManager.ReloadEditorOptions;
-    UpdateCustomToolsInMenu;
+    {$IFDEF EnableNewExtTools}ExternalUserTools{$ELSE}ExternalTools{$ENDIF}.SaveShortCuts(EditorOpts.KeyMap);
+    UpdateExternalUserToolsInMenu;
   end;
 end;
 
@@ -4676,7 +4675,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.mnuCustomExtToolClick(Sender: TObject);
+procedure TMainIDE.mnuExternalUserToolClick(Sender: TObject);
 // Handler for clicking on a menuitem for a custom external tool.
 var
   Index: integer;
@@ -4685,11 +4684,14 @@ begin
   Index:=itmCustomTools.IndexOf(TIDEMenuItem(Sender))-1;
   if (Index<0)
   {$IFDEF EnableNewExtTools}
-  or (Index>=ExternalToolMenuItems.Count)
+  or (Index>=ExternalUserTools.Count)
   {$ELSE}
   or (Index>=ExternalTools.Count)
   {$ENDIF}
   then exit;
+  {$IFDEF EnableNewExtTools}
+  IDEMessagesWindow.Clear;
+  {$ENDIF}
   DoRunExternalTool(Index,false);
 end;
 
@@ -4729,7 +4731,7 @@ begin
     TheEnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
   {$IFDEF EnableNewExtTools}
   if MessagesView<>nil then
-    MessagesView.DblClickJumps:=TheEnvironmentOptions.MsgViewDblClickJumps;
+    MessagesView.ApplyIDEOptions;
   {$ENDIF}
 end;
 
@@ -4861,8 +4863,7 @@ var
   procedure UpdateMessagesView;
   begin
     {$IFDEF EnableNewExtTools}
-    MessagesView.HideMessagesIcons:=EnvironmentOptions.HideMessagesIcons;
-    MessagesView.DblClickJumps:=EnvironmentOptions.MsgViewDblClickJumps;
+    MessagesView.ApplyIDEOptions;
     {$ENDIF}
   end;
 
@@ -7546,7 +7547,7 @@ function TMainIDE.DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalR
 begin
   SourceEditorManager.ClearErrorLines;
   {$IFDEF EnableNewExtTools}
-  Result:=ExternalToolMenuItems.Run(Index,ShowAbort);
+  Result:=ExternalUserTools.Run(Index,ShowAbort);
   {$ELSE}
   Result:=ExternalTools.Run(Index,GlobalMacroList,ShowAbort);
   {$ENDIF}
@@ -8129,11 +8130,11 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  procedure TMainIDE.UpdateCustomToolsInMenu;
+  procedure TMainIDE.UpdateExternalUserToolsInMenu;
 
   Creates a TMenuItem for each custom external tool.
 -------------------------------------------------------------------------------}
-procedure TMainIDE.UpdateCustomToolsInMenu;
+procedure TMainIDE.UpdateExternalUserToolsInMenu;
 var
   ToolCount: integer;
 
@@ -8154,35 +8155,31 @@ var
   procedure SetToolMenuItems;
   var
     CurMenuItem: TIDEMenuItem;
-    i, Index: integer;
+    i: Integer;
     {$IFDEF EnableNewExtTools}
-    ExtTool: TExternalToolMenuItem;
+    ExtTool: TExternalUserTool;
     {$ELSE}
     ExtTool: TExternalToolOptions;
     {$ENDIF}
   begin
-    i:=1;
-    Index:=0;
-    while (i<itmCustomTools.Count) do begin
-      CurMenuItem:=itmCustomTools[i];
+    for i:=0 to ToolCount-1 do begin
+      CurMenuItem:=itmCustomTools[i+1]; // Note: the first menu item is the "Configure"
       {$IFDEF EnableNewExtTools}
-      ExtTool:=ExternalToolMenuItems[Index];
+      ExtTool:=ExternalUserTools[i];
       {$ELSE}
-      ExtTool:=ExternalTools[Index];
+      ExtTool:=ExternalTools[i];
       {$ENDIF}
       CurMenuItem.Caption:=ExtTool.Title;
       if CurMenuItem is TIDEMenuCommand then
         TIDEMenuCommand(CurMenuItem).Command:=
-          EditorOpts.KeyMap.FindIDECommand(ecExtToolFirst+Index);
-      CurMenuItem.OnClick:=@mnuCustomExtToolClick;
-      inc(i);
-      inc(Index);
+          EditorOpts.KeyMap.FindIDECommand(ecExtToolFirst+i);
+      CurMenuItem.OnClick:=@mnuExternalUserToolClick;
     end;
   end;
 
 begin
   {$IFDEF EnableNewExtTools}
-  ToolCount:=ExternalToolMenuItems.Count;
+  ToolCount:=ExternalUserTools.Count;
   {$ELSE}
   ToolCount:=ExternalTools.Count;
   {$ENDIF}
@@ -9262,7 +9259,7 @@ procedure TMainIDE.DoShowMessagesView(BringToFront: boolean);
 begin
   //debugln('TMainIDE.DoShowMessagesView');
   {$IFDEF EnableNewExtTools}
-  MessagesView.HideMessagesIcons:=EnvironmentOptions.HideMessagesIcons;
+  MessagesView.ApplyIDEOptions;
   {$ELSE}
   if EnvironmentOptions.HideMessagesIcons then
     MessagesView.MessageTreeView.Images := nil

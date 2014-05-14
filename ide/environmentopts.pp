@@ -173,14 +173,15 @@ const
 
 {$IFDEF EnableNewExtTools}
 type
-  TBaseExternalToolMenuItems = class
+  TBaseExternalUserTools = class
   public
+    constructor Create; virtual; abstract;
     function Load(Config: TConfigStorage; const Path: string): TModalResult; virtual; abstract;
     function Save(Config: TConfigStorage; const Path: string): TModalResult; virtual; abstract;
   end;
-  TExternalToolMenuItemsClass = class of TBaseExternalToolMenuItems;
+  TExternalUserToolsClass = class of TBaseExternalUserTools;
 var
-  ExternalToolMenuItemsClass: TExternalToolMenuItemsClass; // set by ExtToolEditDlg to TExternalToolMenuItems
+  ExternalUserToolsClass: TExternalUserToolsClass; // set by ExtToolEditDlg to TExternalUserTools
 {$ELSE}
 type
   TBaseExternalToolList = class(TList)
@@ -353,7 +354,7 @@ type
     
     // external tools
     {$IFDEF EnableNewExtTools}
-    fExternalToolMenuItems: TBaseExternalToolMenuItems; // see ExtToolEditDlg.TExternalToolMenuItems
+    fExternalUserTools: TBaseExternalUserTools; // see ExtToolEditDlg.TExternalUserTools
     {$ELSE}
     fExternalTools: TBaseExternalToolList;
     {$ENDIF}
@@ -646,7 +647,7 @@ type
        
     // external tools
     {$IFDEF EnableNewExtTools}
-    property ExternalToolMenuItems: TBaseExternalToolMenuItems read fExternalToolMenuItems;
+    property ExternalToolMenuItems: TBaseExternalUserTools read fExternalUserTools;
     {$ELSE}
     property ExternalTools: TBaseExternalToolList read fExternalTools
                                                   write fExternalTools;
@@ -675,8 +676,8 @@ type
     
     // messages view
     property MsgViewDblClickJumps: boolean read fMsgViewDblClickJumps
-                                           write fMsgViewDblClickJumps;
-    property MsgViewFocus: boolean read fMsgViewFocus write fMsgViewFocus;
+                                           write fMsgViewDblClickJumps; // true=dbl click jump to error, false=single click jumps
+    property MsgViewFocus: boolean read fMsgViewFocus write fMsgViewFocus; // when showing the message window, focus it
 
     // glyphs
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
@@ -958,8 +959,8 @@ begin
   
   // external tools
   {$IFDEF EnableNewExtTools}
-  fExternalToolMenuItems:=ExternalToolMenuItemsClass.Create;
-  debugln(['TEnvironmentOptions.Create ',DbgSName(fExternalToolMenuItems),' Class=',DbgSName(ExternalToolMenuItemsClass)]);
+  fExternalUserTools:=ExternalUserToolsClass.Create;
+  debugln(['TEnvironmentOptions.Create ',DbgSName(fExternalUserTools),' Class=',DbgSName(ExternalUserToolsClass),' ',dbgs(Pointer(fExternalUserTools))]);
   {$ELSE}
   fExternalTools:=ExternalToolListClass.Create;
   {$ENDIF}
@@ -985,7 +986,7 @@ var
 begin
   FreeAndNil(FBuildMatrixOptions);
   {$IFDEF EnableNewExtTools}
-  FreeAndNil(fExternalToolMenuItems);
+  FreeAndNil(fExternalUserTools);
   {$ELSE}
   FreeAndNil(fExternalTools);
   {$ENDIF}
@@ -1392,7 +1393,8 @@ begin
 
       // external tools
       {$IFDEF EnableNewExtTools}
-      fExternalToolMenuItems.Load(FConfigStore,Path+'ExternalTools/');
+      debugln(['TEnvironmentOptions.Load fExternalToolMenuItems']);
+      fExternalUserTools.Load(FConfigStore,Path+'ExternalTools/');
       {$ELSE}
       fExternalTools.Load(FConfigStore,Path+'ExternalTools/');
       {$ENDIF}
@@ -1752,7 +1754,7 @@ begin
 
       // external tools
       {$IFDEF EnableNewExtTools}
-      fExternalToolMenuItems.Save(FConfigStore,Path+'ExternalTools/');
+      fExternalUserTools.Save(FConfigStore,Path+'ExternalTools/');
       {$ELSE}
       fExternalTools.Save(FConfigStore,Path+'ExternalTools/');
       {$ENDIF}

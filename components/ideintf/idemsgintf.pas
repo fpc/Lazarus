@@ -19,7 +19,11 @@ interface
 
 uses
   Classes, SysUtils, contnrs, Forms, Menus,
-  TextTools, IDECommands, IDEExternToolIntf, MenuIntf;
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
+  TextTools,
+  {$ENDIF}
+  IDECommands, IDEExternToolIntf, MenuIntf;
 
 type
   TMsgQuickFixes = class;
@@ -71,6 +75,7 @@ type
     function ViewCount: integer; virtual; abstract;
     property Views[Index: integer]: TExtToolView read GetViews;
     function GetView(aCaption: string; CreateIfNotExist: boolean): TExtToolView; virtual; abstract;
+    function CreateView(aCaptionPrefix: string): TExtToolView; virtual; abstract;
     function FindUnfinishedView: TExtToolView; virtual; abstract;
     procedure DeleteView(View: TExtToolView); virtual; abstract; // free view
     function IndexOfView(View: TExtToolView): integer; virtual; abstract;
