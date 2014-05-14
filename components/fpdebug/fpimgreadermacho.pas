@@ -5,7 +5,8 @@ unit FpImgReaderMacho;
 interface
 
 uses
-  Classes, SysUtils, macho, FpImgReaderMachoFile, FpImgReaderBase, LazLoggerBase; //, stabs;
+  Classes, SysUtils, macho, FpImgReaderMachoFile, FpImgReaderBase, LazLoggerBase,
+  fpDbgSymTable;
 
 type
 
@@ -17,20 +18,21 @@ type
     FSections: TStringList;
     fOwnSource  : Boolean;
     fFile       : TMachoFile;
-    isStabs     : Boolean;
+    hasSymTable : Boolean;
     StabsCmd    : symtab_command;
     fileRead    : Boolean;
     function GetSectionInfo(const SectionName: AnsiString; var Size: int64): Boolean;
     function GetSectionData(const SectionName: AnsiString; Offset, {%H-}Size: Int64; var Buf: array of byte): Int64;
   protected
     procedure ReadFile;
-    function GetStabSectionInfo({%H-}StabStr: Boolean; var {%H-}SectionOffset, {%H-}SectionSize: Int64): Boolean;
+    function GetSymTableSectionInfo({%H-}StabStr: Boolean; var {%H-}SectionOffset, {%H-}SectionSize: Int64): Boolean;
     function GetSectionIndex(const SectionName: AnsiString): Integer;
 
     function GetSection(const AName: String): PDbgImageSection; override;
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; override;
     class function UserName: AnsiString; override;
+    procedure ParseSymbolTable(AfpSymbolInfo: TfpSymbolList); override;
   public
     constructor Create(ASource: TDbgFileLoader; OwnSource: Boolean); override;
     destructor Destroy; override;
@@ -38,10 +40,14 @@ type
 
 implementation
 
+type
+  PnlistArray = ^TnlistArray;
+  TnlistArray = array[0..maxSmallint] of nlist;
+
 const
-  //StabSectoinName
-  _stab    = '.stab';
-  _stabstr = '.stabstr';
+  // Symbol-map section name
+  _symbol        = '.symbols';
+  _symbolstrings = '.symbolsstrings';
 
 
 function isValidMachoStream(ASource: TDbgFileLoader): Boolean;
@@ -82,6 +88,37 @@ begin
   Result:='mach-o file';
 end;
 
+procedure TDbgMachoDataSource.ParseSymbolTable(AfpSymbolInfo: TfpSymbolList);
+var
+  p: PDbgImageSection;
+  ps: PDbgImageSection;
+  SymbolArr: PnlistArray;
+  SymbolStr: pointer;
+  i: integer;
+  SymbolCount: integer;
+begin
+  p := Section[_symbol];
+  ps := Section[_symbolstrings];
+  if assigned(p) and assigned(ps) then
+  begin
+    SymbolArr:=PDbgImageSectionEx(p)^.Sect.RawData;
+    SymbolStr:=PDbgImageSectionEx(ps)^.Sect.RawData;
+    SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(nlist);
+    for i := 0 to SymbolCount-1 do
+    begin
+      if (SymbolArr^[i].n_type and $e0)<>0 then
+        // This is a stabs-entry. Ignore.
+        Continue;
+      if (SymbolArr^[i].n_type and $0e)=$e then
+      begin
+        // Section-index is ignored for now...
+        AfpSymbolInfo.AddObject(pchar(SymbolStr+SymbolArr^[i].n_un.n_strx), TObject(SymbolArr^[i].n_value));
+      end
+    end;
+  end;
+
+end;
+
 procedure TDbgMachoDataSource.ReadFile;
 var
   i : Integer;
@@ -90,8 +127,8 @@ begin
   fFile:=TMachOFile.Create;
   fFile.LoadFromFile(fSource);
   for i := 0 to fFile.header.ncmds - 1 do begin
-    isStabs := fFile.commands[i]^.cmd = LC_SYMTAB;
-    if isStabs then begin
+    hasSymTable := fFile.commands[i]^.cmd = LC_SYMTAB;
+    if hasSymTable then begin
       StabsCmd := psymtab_command(fFile.commands[i])^;
       Break;
     end;
@@ -99,20 +136,18 @@ begin
   fileRead := true;
 end;
 
-function TDbgMachoDataSource.GetStabSectionInfo(StabStr: Boolean; var SectionOffset, SectionSize: Int64): Boolean;
+function TDbgMachoDataSource.GetSymTableSectionInfo(StabStr: Boolean;
+  var SectionOffset, SectionSize: Int64): Boolean;
 begin
-exit(false);
-(*
-  Result := isStabs;
+  Result := hasSymTable;
   if not Result then Exit;
   if StabStr then begin
     SectionOffset := StabsCmd.stroff;
     SectionSize := StabsCmd.strsize;
   end else begin
     SectionOffset := StabsCmd.symoff;
-    SectionSize := Int64(StabsCmd.nsyms * sizeof(TStabSym));
+    SectionSize := Int64(StabsCmd.nsyms * sizeof(nlist));
   end;
-*)
 end;
 
 function TDbgMachoDataSource.GetSectionIndex(const SectionName: AnsiString): Integer;
@@ -152,11 +187,15 @@ begin
 end;
 
 constructor TDbgMachoDataSource.Create(ASource: TDbgFileLoader; OwnSource: Boolean);
+const
+  SymbolsSectionName : array [Boolean] of AnsiString = (_symbol, _symbolstrings);
 var
   p: PDbgImageSectionEx;
   fs: TMachOsection;
   i: Integer;
   Name: String;
+  soffset: int64;
+  ssize: int64;
 begin
   fSource := ASource;
   fOwnSource := OwnSource;
@@ -187,6 +226,24 @@ DebugLn(Name);
     p^.Sect.VirtualAddress := 0; // Todo?
     p^.Loaded := False;
     FSections.AddObject(Name, TObject(p));
+  end;
+
+  if GetSymTableSectionInfo(false, soffset, ssize) then begin
+    new(p);
+    p^.Offs:=soffset;
+    p^.Sect.Size:=ssize;
+    p^.Sect.VirtualAddress:=0;
+    p^.Loaded:=false;
+    FSections.AddObject(SymbolsSectionName[false], TObject(p));
+  end;
+
+  if GetSymTableSectionInfo(true, soffset, ssize) then begin
+    new(p);
+    p^.Offs:=soffset;
+    p^.Sect.Size:=ssize;
+    p^.Sect.VirtualAddress:=0;
+    p^.Loaded:=false;
+    FSections.AddObject(SymbolsSectionName[true], TObject(p));
   end;
 
   inherited Create(ASource, OwnSource);
@@ -272,14 +329,14 @@ end;}
 function TDbgMachoDataSource.GetSectionInfo(const SectionName: AnsiString; var Size: int64): Boolean;
 var
   idx     : integer;
-  stabstr : Boolean;
+  symtablestr : Boolean;
   dummy   : int64;
 begin
   if not fileRead then ReadFile;
 
-  stabstr := (SectionName = _stabstr);
-  if stabstr or (SectionName = _stab) then
-    Result := GetStabSectionInfo(stabstr, dummy, Size)
+  symtablestr := (SectionName = _symbolstrings);
+  if symtablestr or (SectionName = _symbol) then
+    Result := GetSymTableSectionInfo(symtablestr, dummy, Size)
   else begin
     idx := GetSectionIndex(SectionName);
     Result := idx >= 0;
@@ -297,16 +354,16 @@ var
   idx     : Integer;
   sofs    : int64;
   ssize   : int64;
-  stabstr : Boolean;
+  symstr : Boolean;
   sz      : Int64;
   s       : TMachOsection;
 begin
   if not fileRead then ReadFile;
 
   Result := 0;
-  stabstr := SectionName = _stabstr;
-  if stabstr or (SectionName = _stab)  then begin
-    if not GetStabSectionInfo(stabstr, sofs, ssize) then
+  symstr := SectionName = _symbolstrings;
+  if symstr or (SectionName = _symbol)  then begin
+    if not GetSymTableSectionInfo(symstr, sofs, ssize) then
       Exit;
   end else begin
     idx := GetSectionIndex(SectionName);

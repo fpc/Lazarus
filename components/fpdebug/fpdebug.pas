@@ -12,7 +12,8 @@ uses
   FpImgReaderElfTypes, FpImgReaderBase, FpPascalParser, macho, 
   FpImgReaderMachoFile, FpImgReaderMacho, FpPascalBuilder, FpDbgInfo, 
   FpdMemoryTools, FpErrorMessages, FPDbgController, FpDbgDwarfVerbosePrinter, 
-  FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, LazarusPackageIntf;
+  FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, fpDbgSymTableContext, 
+  fpDbgSymTable, LazarusPackageIntf;
 
 implementation
 

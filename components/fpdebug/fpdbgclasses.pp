@@ -40,6 +40,7 @@ uses
   Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgWinExtra, FpDbgLoader,
   FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses, DbgIntfBaseTypes, fgl,
   FpDbgDisasX86,
+  fpDbgSymTableContext,
   FpDbgDwarfDataClasses;
 
 type
@@ -205,6 +206,7 @@ type
     FOnDebugInfoLoaded: TNotifyEvent;
     FProcess: TDbgProcess;
     FDbgInfo: TDbgInfo;
+    FSymbolTableInfo: TFpSymbolInfo;
     FLoader: TDbgImageLoader;
 
   protected
@@ -222,6 +224,7 @@ type
 
     property Process: TDbgProcess read FProcess;
     property DbgInfo: TDbgInfo read FDbgInfo;
+    property SymbolTableInfo: TFpSymbolInfo read FSymbolTableInfo;
     property OnDebugInfoLoaded: TNotifyEvent read FOnDebugInfoLoaded write FOnDebugInfoLoaded;
   end;
 
@@ -601,6 +604,7 @@ end;
 destructor TDbgInstance.Destroy;
 begin
   FreeAndNil(FDbgInfo);
+  FreeAndNil(FSymbolTableInfo);
   FreeAndNil(FLoader);
   inherited;
 end;
@@ -608,6 +612,8 @@ end;
 function TDbgInstance.FindSymbol(AAdress: TDbgPtr): TFpDbgSymbol;
 begin
   Result := FDbgInfo.FindSymbol(AAdress + AddrOffset);
+  if not assigned(Result) then
+    result := FSymbolTableInfo.FindSymbol(AAdress + AddrOffset);
 end;
 
 procedure TDbgInstance.LoadInfo;
@@ -615,6 +621,7 @@ begin
   FLoader := InitializeLoader;
   FDbgInfo := TFpDwarfInfo.Create(FLoader);
   TFpDwarfInfo(FDbgInfo).LoadCompilationUnits;
+  FSymbolTableInfo := TFpSymbolInfo.Create(FLoader);
   if Assigned(FOnDebugInfoLoaded) then
     FOnDebugInfoLoaded(Self);
 end;

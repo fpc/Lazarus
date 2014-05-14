@@ -42,6 +42,7 @@ interface
 uses
   LCLType,
   FpImgReaderBase, FpImgReaderWinPE, FpImgReaderElf, FpImgReaderMacho,
+  fpDbgSymTable,
   Classes, SysUtils;
 
 type
@@ -65,6 +66,7 @@ type
   public
     constructor Create; virtual;
     constructor Create(AFileName: String);
+    procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);
     {$ifdef USE_WIN_FILE_MAPPING}
     constructor Create(AFileHandle: THandle);
     {$endif}
@@ -98,6 +100,11 @@ constructor TDbgImageLoader.Create(AFileName: String);
 begin
   FFileLoader := TDbgFileLoader.Create(AFileName);
   FImgReader := GetImageReader(FFileLoader, True);
+end;
+
+procedure TDbgImageLoader.ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);
+begin
+  FImgReader.ParseSymbolTable(AFpSymbolInfo);
 end;
 
 {$ifdef USE_WIN_FILE_MAPPING}

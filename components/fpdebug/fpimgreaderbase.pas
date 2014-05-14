@@ -8,6 +8,7 @@ uses
   {$ifdef windows}
   Windows, // After LCLType
   {$endif}
+  fpDbgSymTable,
   Classes, SysUtils, LazUTF8Classes;
 
 type
@@ -64,6 +65,7 @@ type
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; virtual; abstract;
     class function UserName: AnsiString; virtual; abstract;
+    procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
     constructor Create({%H-}ASource: TDbgFileLoader; {%H-}OwnSource: Boolean); virtual;
 
     property ImageBase: QWord read FImageBase;
@@ -232,6 +234,12 @@ end;
 procedure TDbgImageReader.SetImage64Bit(AValue: Boolean);
 begin
   FImage64Bit := AValue;
+end;
+
+procedure TDbgImageReader.ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);
+begin
+  // The format of the symbol-table-section(s) can be different on each
+  // platform. That's why parsing the data is done in TDbgImageReader.
 end;
 
 constructor TDbgImageReader.Create(ASource: TDbgFileLoader; OwnSource: Boolean);
