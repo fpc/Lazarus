@@ -108,6 +108,7 @@ type
   TObjectClickEvent = procedure(View: TfrView) of object;
   TMouseOverObjectEvent = procedure(View: TfrView; var ACursor: TCursor) of object;
   TPrintReportEvent = procedure(sender: TfrReport) of object;
+  TFormPageBookmarksEvent = procedure(sender: TfrReport; Backup: boolean) of object;
 
   TfrHighlightAttr = packed record
     FontStyle: Word;
@@ -975,6 +976,7 @@ type
     FMouseOverObject: TMouseOverObjectEvent;
     FObjectClick: TObjectClickEvent;
     FOnExportFilterSetup: TExportFilterSetup;
+    fOnFormPageBookmarks: TFormPageBookmarksEvent;
     FPages: TfrPages;
     FEMFPages: TfrEMFPages;
     FReportAutor: string;
@@ -1185,6 +1187,7 @@ type
     property OnDBImageRead: TOnDBImageRead read FOnDBImageRead write FOnDBImageRead;
     property OnObjectClick: TObjectClickEvent read FObjectClick write FObjectClick;
     property OnMouseOverObject: TMouseOverObjectEvent read FMouseOverObject write FMouseOverObject;
+    property OnFormPageBookmarks: TFormPageBookmarksEvent read fOnFormPageBookmarks write fOnFormPageBookmarks;
   end;
 
   TfrCompositeReport = class(TfrReport)
@@ -7327,19 +7330,23 @@ var
     end;
   end;
 
-  procedure BackupBookmark(b: TfrBand);
+  procedure BackupBookmarks;
   var
-    n: Integer;
+    b: TfrBand;
+    i, n: Integer;
   begin
-    if b.Dataset <> nil then
+    SetLength(BooksBkUp, 0);
+    for i := 1 to MAXBNDS do
     begin
-      n := Length(BooksBkUp);
-      SetLength(BooksBkUp, n+1);
-      BooksBkUp[n].Dataset := b.Dataset;
-      BooksBkUp[n].Bookmark := b.Dataset.GetBookmark;
+      b := Bands[Bnds[i, bpData]];
+      if BandExists(b) and (b.DataSet<>nil) then
+      begin
+        n := Length(BooksBkUp);
+        SetLength(BooksBkUp, n+1);
+        BooksBkUp[n].Dataset := b.Dataset;
+        BooksBkUp[n].Bookmark := b.Dataset.GetBookmark;
+      end;
     end;
-    if b.Typ in [btDetailData,btSubDetailData] then
-      inc(DetailCount);
   end;
 
   procedure RestoreBookmarks;
@@ -7350,19 +7357,32 @@ var
     with BooksBkUp[n] do begin
       Dataset.GotoBookMark(Bookmark);
       Dataset.FreeBookMark(Bookmark);
-      if DetailCount=0 then
-        Dataset.EnableControls;
     end;
     SetLength(BooksBkUp, 0);
   end;
 
   procedure DisableControls;
   var
-    n: Integer;
+    i: Integer;
   begin
     if DetailCount=0 then
-    for n:=0 to Length(BooksBkUp)-1 do
-      BooksBkUp[n].Dataset.DisableControls;
+      for i := 1 to MAXBNDS do
+      begin
+        if BandExists(Bands[Bnds[i, bpData]]) then
+          Bands[Bnds[i, bpData]].DataSet.DisableControls;
+      end;
+  end;
+
+  procedure EnableControls;
+  var
+    i: Integer;
+  begin
+    if DetailCount=0 then
+      for i := 1 to MAXBNDS do
+      begin
+        if BandExists(Bands[Bnds[i, bpData]]) then
+          Bands[Bnds[i, bpData]].DataSet.EnableControls;
+      end;
   end;
 
   procedure ShowStack;
@@ -7598,16 +7618,19 @@ begin
   end;
 
   BndStackTop := 0;
-  SetLength(BooksBkUp, 0);
   DetailCount := 0;
   for i := 1 to MAXBNDS do
-  begin
-    if BandExists(Bands[Bnds[i, bpData]]) then
-    begin
+    if BandExists(Bands[Bnds[i, bpData]]) then begin
       MaxLevel := i;
-      BackupBookmark(Bands[Bnds[i, bpData]]);
+      if Bands[Bnds[i, bpData]].Typ in [btDetailData,btSubDetailData] then
+        inc(DetailCount);
     end;
-  end;
+
+  if Assigned(MasterReport.OnFormPageBookmarks) then
+    MasterReport.OnFormPageBookmarks(MasterReport, true)
+  else
+    BackupBookmarks;
+
   HasGroups := Bands[btGroupHeader].Objects.Count > 0;
   {$IFDEF DebugLR}
   DebugLn('GroupsCount=%d MaxLevel=%d doing DoLoop(1)',[
@@ -7615,7 +7638,12 @@ begin
   {$ENDIF}
   DisableControls;
   DoLoop(1);
-  RestoreBookmarks; // this also enablecontrols
+  if Assigned(MasterReport.OnFormPageBookmarks) then
+    MasterReport.OnFormPageBookmarks(MasterReport, false)
+  else
+    RestoreBookmarks; // this also enablecontrols
+  EnableControls;
+
   if Mode = pmNormal then
   begin
     if not RowsLayout then
