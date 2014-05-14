@@ -1049,8 +1049,11 @@ DebugLn(FPGDBDBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
             else
               AResText := '{Type=} unknown';
             Result := True;
-            AWatchValue.Value    := AResText;
-            AWatchValue.Validity := ddsValid; // TODO ddsError ?
+            if AWatchValue <> nil then begin
+              if not IsWatchValueAlive then exit;
+              AWatchValue.Value    := AResText;
+              AWatchValue.Validity := ddsValid; // TODO ddsError ?
+            end;
             exit;
           end;
         end;
