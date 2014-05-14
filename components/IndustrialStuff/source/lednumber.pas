@@ -38,8 +38,16 @@ uses
 
 type
   TSegmentSize = 2..10;
+  TLedNumberBorderStyle = (lnbNone, lnbSingle, lnbSunken, lnbRaised);
+
+  { TCustomLEDNumber }
 
   TCustomLEDNumber = class(TGraphicControl)
+  private
+    FBorderStyle: TLedNumberBorderStyle;
+    FTransparent: boolean;
+    procedure SetBorderStyle(AValue: TLedNumberBorderStyle);
+    procedure SetTransparent(AValue: boolean);
   protected{private}
     FBgColor   : TColor;
     FOffColor  : TColor;
@@ -72,12 +80,14 @@ type
     destructor Destroy; override;
     {properties}
     property Version: string  read GetAbout write SetAbout stored False;
+    property BorderStyle: TLedNumberBorderStyle read FBorderStyle write SetBorderStyle default lnbNone; {Draws border around segments.}
     property Columns: Integer read FColumns write SetColumns default 10;
     property Rows: Integer    read FRows write SetRows default 1;
     property BgColor: TColor  read FbgColor write SetbgColor default clBlack;
     property OffColor: TColor read FOffColor write SetOffColor default $00104E4A;
     property OnColor: TColor  read FOnColor write SetOnColor default clYellow;
     property Size: TSegmentSize read FSize write SetSize default 2;
+    property Transparent: boolean read FTransparent write SetTransparent default false; {Draws segments with transparent background.BgColor is used as mask color.}
     {Inherited properties}
     property Caption;
     property OnClick;
@@ -97,6 +107,7 @@ type
   TLEDNumber = class(TCustomLEDNumber)
   published
     property Version;
+    property BorderStyle;
     property Caption;
     property Columns;
     property Rows;
@@ -115,6 +126,7 @@ type
     property PopupMenu;
     property Size;
     property ShowHint;
+    property Transparent;
     property Visible;
   end;
 
@@ -231,12 +243,13 @@ const
 constructor TCustomLEDNumber.Create(AOwner:TComponent);
 begin
   inherited Create(AOwner);
+  FTransparent := False;
+  FBorderStyle := lnbNone;
   ControlStyle := [csCaptureMouse,
                    csOpaque,
                    csSetCaption,
                    csClickEvents,
                    csDoubleClicks];
-  lbDrawBmp := TBitmap.Create;
   Width := 170;
   Height := 30;
   FOnColor := clLime;
@@ -246,6 +259,7 @@ begin
   FRows := 1;
   FColumns := 10;
   Caption := 'LED-LABEL';
+  lbDrawBmp := TBitmap.Create;
 end;
 {=====}
 
@@ -269,6 +283,22 @@ begin
 end;
 {=====}
 
+procedure TCustomLEDNumber.SetTransparent(AValue: boolean);
+begin
+  if FTransparent=AValue then Exit;
+  FTransparent:=AValue;
+  lbDrawBmp.Transparent := FTransparent;
+  lbDrawBmp.TransparentColor := FBgColor;
+  Invalidate;
+end;
+
+procedure TCustomLEDNumber.SetBorderStyle(AValue: TLedNumberBorderStyle);
+begin
+  if FBorderStyle=AValue then Exit;
+  FBorderStyle:=AValue;
+  Invalidate;
+end;
+
 procedure TCustomLEDNumber.CMTextChanged(var Message: TLMessage);
 begin
   inherited;
@@ -287,7 +317,7 @@ begin
 end;
 {=====}
 
-function TCustomLEDNumber.NewOffset(xOry:char;oldOffset:integer):integer;
+function TCustomLEDNumber.NewOffset(xOry: char; OldOffset: Integer): Integer;
 begin
   if (xOry = 'x')then
     newOffset := oldOffset + 17 * (FSize - 1)
@@ -299,6 +329,7 @@ end;
 procedure TCustomLEDNumber.Paint;
 var
   Points: array[0..MAX_POINTS] of TPoint;
+  ARect: TRect;
 begin
   lbDrawBMP.Width := Width;
   lbDrawBMP.Height := Height;
@@ -309,7 +340,25 @@ begin
   ProcessCaption(Points);
 
   Canvas.CopyMode := cmSrcCopy;
-  Canvas.Draw(0, 0, lbDrawBMP);
+  if BorderStyle <> lnbNone then
+  begin
+    ARect := ClientRect;
+    case BorderStyle of
+      lnbSingle:
+      begin
+        Canvas.Pen.Color := cl3DDkShadow;
+        Canvas.Frame(ARect);
+      end;
+      lnbSunken: Canvas.Frame3D(ARect, cl3DDkShadow, clBtnHiLight, 1);
+      lnbRaised: Canvas.Frame3D(ARect, clBtnHiLight, cl3DDkShadow, 1);
+    end;
+    inc(ARect.Left, 1);
+    inc(ARect.Top, 1);
+    inc(ARect.Right, 1);
+    inc(ARect.Bottom, 1);
+    Canvas.StretchDraw(ARect, lbDrawBMP);
+  end else
+    Canvas.Draw(0, 0, lbDrawBMP);
 end;
 {=====}
 
@@ -330,8 +379,8 @@ begin
 end;
 {=====}
 
-procedure TCustomLEDNumber.SelectSegments(Segment: word; Points: array of TPoint;
-  OffsetX, OffsetY: Integer);
+procedure TCustomLEDNumber.SelectSegments(Segment: Word;
+  Points: array of TPoint; OffsetX, OffsetY: Integer);
 var
   I     : integer;
   Bit   : word;
@@ -475,7 +524,7 @@ begin
 end;
 {=====}
 
-procedure TCustomLEDNumber.SetBgColor(Value:TColor);
+procedure TCustomLEDNumber.SetbgColor(Value: TColor);
 begin
   if FBgColor <> Value then begin
     FBgColor := Value;
