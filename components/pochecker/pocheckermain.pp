@@ -247,9 +247,9 @@ begin
       end
       else if not FileExistsUtf8(FChosenMasterName) then
       begin
+        ShowError(Format(sCannotFindMaster,[ExtractFileName(FChosenMasterName), ShortFn]));
         FChosenMasterName := '';
         FChosenChildName := '';
-        ShowError(Format(sCannotFindMaster,[ShortFn]));
       end;
     end;
     OK := (FChosenMasterName <> '');
