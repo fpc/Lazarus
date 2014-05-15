@@ -31,11 +31,11 @@ msgstr ""
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
-msgstr "Zkontrolovat výskyt duplikátních nepřeložených hodnot"
+msgstr "Zkontrolovat výskyt duplicitních nepřeložených hodnot"
 
 #: pocheckerconsts.scheckforincompatibleformatarguments
 msgid "Check for incompatible format arguments"
-msgstr "Zkontrolovat výskyt nekompatibilních argumentů fce format"
+msgstr "Zkontrolovat výskyt nekompatibilních argumentů funkce format"
 
 #: pocheckerconsts.scheckformismatchesinuntranslatedstrings
 msgid "Check for mismatches in untranslated strings"
@@ -51,8 +51,7 @@ msgstr "Zkontrolovat počet položek"
 
 #: pocheckerconsts.scheckstatistics
 msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr ""
-"Zkontrolovat procentuelní zastoupení (ne)přeložených a nepřesných řetězců"
+msgstr "Spočítat procentuální zastoupení (ne)přeložených a nepřesných řetězců"
 
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
@@ -60,7 +59,7 @@ msgstr "Kopírovat do schránky"
 
 #: pocheckerconsts.scurrentpofile
 msgid "Current po-file:"
-msgstr "Aktuální PO soubor:"
+msgstr "Současný PO soubor:"
 
 #: pocheckerconsts.scurrenttest
 msgid "Current Test:"
@@ -80,7 +79,7 @@ msgid ""
 "%s\n"
 "Please close the program\n"
 msgstr ""
-"Stala se neopravitelná chyba\n"
+"Nastala fatální chyba\n"
 "%s\n"
 "Prosím ukončete program\n"
 
@@ -89,12 +88,12 @@ msgid ""
 "Error creating an instance of TPoFamily:\n"
 "%s\n"
 msgstr ""
-"Chyba vytváření instance z TPoRodiny:\n"
+"Chyba vytváření instance z TPoFamily:\n"
 "%s\n"
 
 #: pocheckerconsts.serrorsbytest
 msgid "Errors / warnings reported by %s for:"
-msgstr "Chyby / varování nahlášená %s pro:"
+msgstr "Chyby / varování nahlášené %s pro:"
 
 #: pocheckerconsts.sfindalltranslatedpofiles
 msgid "Find all translated po-files"
@@ -169,15 +168,15 @@ msgstr "Originál"
 
 #: pocheckerconsts.spercfuzzy
 msgid "Fuzzy strings: %2.0f%%."
-msgstr "Nepřesné řetězce: %2.0f%%."
+msgstr "Nepřesné překlady: %2.0f%%."
 
 #: pocheckerconsts.sperctranslated
 msgid "Translated strings: %2.0f%%."
-msgstr "Přeložené řetězce: %2.0f%%."
+msgstr "Přeloženo:          %2.0f%%."
 
 #: pocheckerconsts.spercuntranslated
 msgid "Untranslated strings: %2.0f%%."
-msgstr "Nepřeložené řetězce: %2.0f%%."
+msgstr "Nepřeloženo:       %2.0f%%."
 
 #: pocheckerconsts.sresults
 msgid "Results"

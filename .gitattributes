@@ -237,6 +237,7 @@ components/activex/activexcontainer.pas svneol=native#text/plain
 components/activex/activexstrconsts.pas svneol=native#text/pascal
 components/activex/importtypelib.lfm svneol=native#text/plain
 components/activex/importtypelib.pas svneol=native#text/plain
+components/activex/languages/activexstrconsts.cs.po svneol=native#text/plain
 components/activex/languages/activexstrconsts.fi.po svneol=native#text/plain
 components/activex/languages/activexstrconsts.po svneol=native#text/plain
 components/activex/languages/activexstrconsts.ru.po svneol=native#text/plain
