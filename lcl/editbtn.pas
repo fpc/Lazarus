@@ -1657,6 +1657,7 @@ begin
     OnDblClick := @InternalOnEditDblClick;
     OnDragDrop := @InternalOnEditDragDrop;
     OnDragOver := @InternalOnEditDragOver;
+    OnEditingDone := @InternalOnEditEditingDone;
     OnEndDrag := @InternalOnEditEndDrag;
     OnExit := @InternalOnEditExit;
     OnEnter := @InternalOnEditEnter;
