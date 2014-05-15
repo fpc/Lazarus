@@ -1034,10 +1034,11 @@ var
   TranslatedMsg: String;
 
   procedure CheckFinalNote;
+  // check if there was already a message of this urgency
+  // if yes, then downgrade this message to a mluVerbose
   begin
     i:=Tool.WorkerMessages.Count-1;
     if (i>=0) and (Tool.WorkerMessages[i].Urgency>=MsgType) then begin
-      // the last message already explains that the compilation aborted
       MsgType:=mluVerbose;
     end;
   end;
@@ -1047,6 +1048,7 @@ begin
   MsgType:=mluNone;
   if ReadString(p,'Fatal: ') then begin
     MsgType:=mluFatal;
+    // check for "Fatal: compilation aborted"
     MsgItem:=MsgFile.GetMsg(MsgIDCompilationAborted);
     if (MsgItem<>nil) and ReadString(p,MsgItem.Pattern) then
       CheckFinalNote;
@@ -1054,10 +1056,13 @@ begin
   else if ReadString(p,'Panic') then
     MsgType:=mluPanic
   else if ReadString(p,'Error: ') then begin
+    // check for fpc frontend message "Error: /usr/bin/ppc386 returned an error exitcode"
     TranslatedMsg:=p;
     MsgType:=mluError;
-    if Pos(FrontEndFPCExitCodeError,TranslatedMsg)>0 then
+    if Pos(FrontEndFPCExitCodeError,TranslatedMsg)>0 then begin
+      fMsgID:=MsgIDCompilationAborted;
       CheckFinalNote;
+    end;
   end
   else if ReadString(p,'Warn: ') then
     MsgType:=mluWarning
@@ -1071,6 +1076,7 @@ begin
     exit;
   end;
   if MsgType=mluNone then exit;
+
   Result:=true;
   while p^ in [' ',#9] do inc(p);
   TranslatedMsg:='';
@@ -1101,11 +1107,11 @@ begin
         end;
       end;
 
-      if (fMsgID=MsgIDCompilationAborted) // fatal: Compilation aborted
-      then begin
-        CheckFinalNote;
-      end;
     end;
+  end;
+  if (MsgType>=mluError) and (fMsgID=MsgIDCompilationAborted) // fatal: Compilation aborted
+  then begin
+    CheckFinalNote;
   end;
   MsgLine:=CreateMsgLine;
   MsgLine.Urgency:=MsgType;
