@@ -2191,8 +2191,8 @@ var
 
     // find a parent for the new component
     NewParent:=nil;
-    PropertyEditorHook.AddClicked(Self,MouseDownComponent,Button,Shift,
-      MouseUpPos.X,MouseUpPos.Y,NewComponentClass,NewParent);
+    if not PropertyEditorHook.AddClicked(Self,MouseDownComponent,Button,Shift,
+      MouseUpPos.X,MouseUpPos.Y,NewComponentClass,NewParent) then exit;
     if Mediator<>nil then begin
       // mediator, non LCL components
       if NewParent=nil then
