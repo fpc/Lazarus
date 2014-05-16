@@ -2545,7 +2545,7 @@ begin
         if LCLObject.ClientRectNeedsInterfaceUpdate then
         begin
           {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
-          DebugLn('WARNING: QEventContentsRectChange adjusting rect for ',dbgsName(LCLObject),' PHASE ? ',dbgs(caspComputingBounds in LCLObject.AutoSizePhases),' inUpdate=',dbgs(inUpdate),' Time: ',dbgs(GetTickCount));
+          DebugLn('WARNING: QEventContentsRectChange adjusting rect for ',dbgsName(LCLObject),' PHASE ? ',dbgs(caspComputingBounds in LCLObject.AutoSizePhases),' inUpdate=',dbgs(inUpdate),' Time: ',dbgs(GetTickCount),' Mapped ',dbgs(testAttribute(QtWA_Mapped)));
           {$ENDIF}
           if not (caspComputingBounds in LCLObject.AutoSizePhases) then
             LCLObject.DoAdjustClientRectChange(True);
@@ -7426,8 +7426,11 @@ begin
   QLayout_setContentsMargins(ALayout, LeftMargin, TopMargin, RightMargin, BottomMargin);
   QLayout_invalidate(ALayout);
 
-  if LCLObject <> nil then
+  if (LCLObject <> nil) then
   begin
+    {$IFDEF VerboseQtResize}
+    DebugLn('TQtGroupBox.setLayoutThemeMargins: ',dbgsName(LCLObject),' casp: ',dbgs(caspComputingBounds in LCLObject.AutoSizePhases),' mapped ',dbgs(testAttribute(QtWA_Mapped)));
+    {$ENDIF}
     LCLObject.DoAdjustClientRectChange(False);
     LCLObject.InvalidateClientRectCache(True);
   end;
@@ -7513,6 +7516,9 @@ begin
     QEventStyleChange: setLayoutThemeMargins(QWidget_layout(Widget), Widget);
     QEventShow:
       begin
+        {$IFDEF VerboseQtResize}
+        DebugLn('TQtGroupBox.QEventShow: ',dbgsName(LCLObject),' casp=',dbgs(caspComputingBounds in LCLObject.AutoSizePhases),' mapped=',dbgs(testAttribute(QtWA_Mapped)));
+        {$ENDIF}
         LCLObject.DoAdjustClientRectChange(False);
         SlotShow(True);
         {send dummy LM_SIZE to LCL}
