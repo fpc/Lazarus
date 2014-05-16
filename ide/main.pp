@@ -13402,8 +13402,14 @@ end;
 
 function TMainIDE.OnPropHookBeforeAddPersistent(Sender: TObject;
   APersistentClass: TPersistentClass; AParent: TPersistent): boolean;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  Code: TCodeBuffer;
+  Tool: TCodeTool;
 begin
   Result:=false;
+
   if (not (AParent is TControl))
   and (APersistentClass.InheritsFrom(TControl)) then begin
     IDEMessageDialog(lisCodeToolsDefsInvalidParent,
@@ -13413,6 +13419,15 @@ begin
     UpdateIDEComponentPalette;
     exit;
   end;
+
+  // check for syntax errors in unit interface
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[])
+  then exit;
+  Code:=ActiveUnitInfo.Source;
+  if not CodeToolBoss.Explore(Code,Tool,false,true) then begin
+    if JumpToCodetoolErrorAndAskToAbort(true)=mrAbort then exit;
+  end;
+
   Result:=true;
 end;
 
