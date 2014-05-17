@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="LCL">
     <!--
@@ -8154,21 +8154,17 @@ dmFindTarget: find child control under the mouse
       <!-- property Visibility: public -->
       <element name="TControl.OnResize">
         <short>Notification handler for a resize of the control.</short>
-        <descr>
-          <p>This event is triggered after the Width, Height, ClientWidth or ClientHeight of the control has changed.
+        <descr><p>This event is triggered after the Width, Height, ClientWidth or ClientHeight of the control has changed, and before the LCL sends the new size to the widgetset.
+The size of the underlying widget (e.g. unit LCLIntf function GetWindowSize and GetClientRect) may differ from the control's Width/Height/ClientRect during OnResize.
             During autosize the size can change multiple times, but only the last change triggers the OnResize.
-          </p>
-          <p>Use OnResize to react on size changes.
+          </p><p>Use OnResize to react on size changes.
             To also react on moves, use the OnChangeBounds event.
-          </p>
-          <p>If you want to customize the resize behaviour, use OnConstrainedResize instead.
-          </p>
-          <p>Common mistake:
+          </p><p>If you want to customize the resize behaviour, use OnConstrainedResize instead.
+          </p><p>Common mistake:
             Keep in mind that ClientWidth and ClientHeight can change even when Width, Height stays the same.
             For example when the theme changes, the Width and Height remain the same, but the changed frame reduces the ClientWidth and ClientHeight.
             This does not happen that often under Windows, but it happens quite often on other platforms.
-          </p>
-          <p>Especially it is not sufficient to write only a TForm.OnResize handler to resize all controls on the form. This is a common bug in Delphi applications.
+          </p><p>Especially it is not sufficient to write only a TForm.OnResize handler to resize all controls on the form. This is a common bug in Delphi applications.
           </p>
         </descr>
         <seealso>
