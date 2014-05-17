@@ -6474,7 +6474,7 @@ function TQtWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
 var
   SrcQDC: TQtDeviceContext absolute SrcDC;
   DstQDC: TQtDeviceContext absolute DestDC;
-  SrcRect, DstRect, MaskRect, NewSrcRect: TRect;
+  SrcRect, DstRect, MaskRect: TRect;
   Image, TmpImage, QMask, TmpMask: QImageH;
   TmpPixmap: QPixmapH;
   SrcMatrix: QTransformH;
@@ -6625,13 +6625,8 @@ begin
         if (SrcRect.Left < DstRect.Left) or (SrcRect.Top < DstRect.Top) and
           DstQDC.getClipping and DstQDC.getClipRegion.containsRect(SrcRect) then
         begin
-          NewSrcRect := DstRect;
-          OffsetRect(NewSrcRect, -DstRect.Left, -DstRect.Top);
-          RestoreClip := not EqualRect(NewSrcRect, SrcRect);
-          if not RestoreClip then
-            SrcRect := DstRect
-          else
-            DstQDC.setClipping(False);
+          RestoreClip := True;
+          DstQDC.setClipping(False);
         end;
         DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
         if RestoreClip then
