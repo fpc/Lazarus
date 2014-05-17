@@ -54,8 +54,8 @@ function UnicodeToUTF8SkipErrors(CodePoint: cardinal; Buf: PChar): integer;
 function UnicodeToUTF8Inline(CodePoint: cardinal; Buf: PChar): integer; inline;
 function UTF8ToDoubleByteString(const s: string): string;
 function UTF8ToDoubleByte(UTF8Str: PChar; Len: PtrInt; DBStr: PByte): PtrInt;
-function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
-                                  BytePos: integer): integer;
+function UTF8FindNearestCharStart(UTF8Str: PChar; Len: SizeInt;
+                                  BytePos: SizeInt): SizeInt;
 // find the n-th UTF8 character, ignoring BIDI
 function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar;
 // find the byte index of the n-th UTF8 character, ignoring BIDI (byte len of substr)
@@ -484,8 +484,8 @@ end;
 
 { Find the start of the UTF8 character which contains BytePos,
   Len is length in byte, BytePos starts at 0 }
-function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
-  BytePos: integer): integer;
+function UTF8FindNearestCharStart(UTF8Str: PChar; Len: SizeInt; BytePos: SizeInt
+  ): SizeInt;
 begin
   Result:=0;
   if (UTF8Str<>nil) and (Len>0) and (BytePos>=0) then begin
