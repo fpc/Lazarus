@@ -3658,10 +3658,9 @@ begin
   if not CompareRect(@R, @FAdjustClientRectRealized) then
   begin
     // client rect changed since last AlignControl
-    {$IF defined(VerboseAllAutoSize) or defined(VerboseClientRectBugFix) or defined(VerboseIntfSizing)}
-    DebugLn('TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
-      ' Old=',Dbgs(FAdjustClientRectRealized.Right),'x',DbgS(FAdjustClientRectRealized.Bottom),
-      ' New=',DbgS(r.Right),'x',DbgS(r.Bottom));
+    {$IF defined(VerboseAllAutoSize) or defined(VerboseClientRectBugFix) or defined(VerboseIntfSizing) or defined(VerboseOnResize)}
+    DebugLn(['TWinControl.DoAdjustClientRectChange ClientRect changed ',DbgSName(Self),
+      ' Old=',Dbgs(FAdjustClientRectRealized),' New=',DbgS(R)]);
     {$ENDIF}
     FAdjustClientRectRealized := R;
     AdjustSize;
@@ -7499,6 +7498,9 @@ begin
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.InitializeWnd'){$ENDIF};
   end;
   // send pending OnResize
+  {$IFDEF VerboseOnResize}
+  debugln(['TWinControl.InitializeWnd ',DbgSName(Self),' calling Resize ...']);
+  {$ENDIF}
   Resize;
 end;
 
@@ -8270,22 +8272,26 @@ begin
   {$ENDIF}
 
   {$IFDEF VerboseIntfSizing}
-  if (Visible) then begin
+  if Visible then begin
     DebugLn('[TWinControl.DoSendBoundsToInterface] A ',DbgSName(Self),
     ' OldRelBounds=',dbgs(FBoundsRealized),
     ' -> NewBounds=',dbgs(NewBounds));
   end;
   {$ENDIF}
   FBoundsRealized := NewBounds;
-  OldClientRect := ClientRect;
+  OldClientRect := ClientRect; // during a resize this is the anticipated new ClientRect
   Include(FWinControlFlags, wcfBoundsRealized); // Note: set before calling widgetset, because used in WMSize
   //if Parent=nil then DebugLn(['TWinControl.DoSendBoundsToInterface ',DbgSName(Self),' ',dbgs(BoundsRect)]);
   // this can trigger WMSize messages
   TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
   NewClientRect := ClientRect;
-  if not CompareRect(@OldClientRect,@NewClientRect) then
+  if Visible and (not CompareRect(@OldClientRect,@NewClientRect)) then
   begin
-    // the widgetset has changed the clientrect
+    // the widgetset has changed the clientrect in an unexpected way
+    {$IFDEF VerboseIntfSizing}
+    debugln(['TWinControl.DoSendBoundsToInterface WS has changed ClientRect in an unexpected way: ',
+      DbgSName(Self),' Bounds=',dbgs(BoundsRect),' ExpectedClientRect=',dbgs(OldClientRect),' New=',dbgs(NewClientRect)]);
+    {$ENDIF}
     //DebugLn(['TWinControl.DoSendBoundsToInterface ',DbgSName(Self),' Bounds=',dbgs(BoundsRect),' OldClientRect=',dbgs(OldClientRect),' NewClientRect=',dbgs(NewClientRect)]);
     AdjustSize;
   end;

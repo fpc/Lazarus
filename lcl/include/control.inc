@@ -2837,9 +2837,9 @@ procedure TControl.DoAllAutoSize;
   end;
 
   function CallAllOnResize(AControl: TControl): boolean;
-  // the OnResize event is called for Delphi compatibility after child resizes
-  // call all OnResize events so they will probably only invoke one more
-  // loop, instead of one per OnResize
+  // The OnResize event is called for Delphi compatibility after child resizes.
+  // Call all OnResize events so they will hopefully only invoke one more
+  // loop, instead of one per OnResize.
   var
     AWinControl: TWinControl;
     i: Integer;
@@ -2852,6 +2852,9 @@ procedure TControl.DoAllAutoSize;
       for i := 0 to AWinControl.ControlCount - 1 do
         if AWinControl.Controls[i].IsControlVisible and not CallAllOnResize(AWinControl.Controls[i]) then Exit;
     end;
+    {$IFDEF VerboseOnResize}
+    debugln(['TControl.DoAllAutoSize ',DbgSName(AControl),' calling Resize ...']);
+    {$ENDIF}
     AControl.Resize;
     Result := True;
   end;
@@ -3594,6 +3597,9 @@ procedure TControl.LoadedAll;
 begin
   AdjustSize;
 
+  {$IFDEF VerboseOnResize}
+  debugln(['TControl.LoadedAll ',DbgSName(Self),' calling Resize ...']);
+  {$ENDIF}
   Resize;
   CheckOnChangeBounds;
 end;
