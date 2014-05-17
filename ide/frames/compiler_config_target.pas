@@ -28,8 +28,8 @@ unit compiler_config_target;
 interface
 
 uses
-  Classes, SysUtils, strutils, FileUtil, Controls, Dialogs, StdCtrls, LCLProc,
-  IDEOptionsIntf, IDEDialogs, CompilerOptions, LazarusIDEStrConsts,
+  Classes, SysUtils, strutils, FileUtil, Controls, Dialogs, Graphics, StdCtrls,
+  LCLProc, IDEOptionsIntf, IDEDialogs, CompilerOptions, LazarusIDEStrConsts,
   TransferMacros, PackageDefs, compiler_parsing_options;
 
 type
@@ -42,17 +42,21 @@ type
     chkWin32GraphicApp: TCheckBox;
     edtConfigPath: TEdit;
     grbTargetOptions: TGroupBox;
-    grpConfigFile: TGroupBox;
-    grpTargetPlatform: TGroupBox;
+    grbConfigFile: TGroupBox;
+    grbTargetPlatform: TGroupBox;
     lblTargetCPU: TLabel;
     lblTargetOS: TLabel;
     lblTargetProc: TLabel;
+    LCLWidgetTypeLabel: TLabel;
     TargetCPUComboBox: TComboBox;
     TargetOSComboBox: TComboBox;
     TargetProcComboBox: TComboBox;
     procedure chkCustomConfigFileClick(Sender: TObject);
     procedure TargetOSComboBoxSelect(Sender: TObject);
     procedure TargetCPUComboBoxSelect(Sender: TObject);
+    procedure LCLWidgetTypeLabelClick(Sender: TObject);
+    procedure LCLWidgetTypeLabelMouseEnter(Sender: TObject);
+    procedure LCLWidgetTypeLabelMouseLeave(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
     FCompOptions: TBaseCompilerOptions;
@@ -197,6 +201,10 @@ begin
   DebugLn(['TCompilerConfigTargetFrame.UpdateTargetSpecific: TargetOS=',aTargetOS,DbgMsg]);
   // Now hide/show the whole GroupBox because there is only one setting.
   grbTargetOptions.Visible := AnsiStartsText('Win', aTargetOS);
+  if grbTargetOptions.Visible then
+    LCLWidgetTypeLabel.AnchorSideTop.Control := grbTargetOptions
+  else
+    LCLWidgetTypeLabel.AnchorSideTop.Control := grbTargetPlatform;
 end;
 
 procedure TCompilerConfigTargetFrame.UpdateByTargetCPU(aTargetCPU: string);
@@ -299,13 +307,13 @@ begin
   FDialog := ADialog;
 
   // Config
-  grpConfigFile.Caption := dlgConfigFiles;
+  grbConfigFile.Caption := dlgConfigFiles;
   chkConfigFile.Caption := dlgUseFpcCfg + ' (If not checked: -n)';
   chkCustomConfigFile.Caption := dlgUseCustomConfig + ' (@)';
   edtConfigPath.Text := '';
 
   // Target platform
-  grpTargetPlatform.Caption := dlgTargetPlatform;
+  grbTargetPlatform.Caption := dlgTargetPlatform;
   lblTargetOS.Caption := dlgTargetOS + ' (-T)';
   with TargetOSComboBox do
   begin
@@ -364,6 +372,7 @@ begin
   end;
 
   lblTargetProc.Caption := dlgTargetProc;
+  LCLWidgetTypeLabel.Caption := lisSelectAnotherLCLWidgetSetMacroLCLWidgetType;
 
   // Target options
   grbTargetOptions.Caption := dlgTargetSpecificOptions;
@@ -385,14 +394,15 @@ begin
     edtConfigPath.Enabled := chkCustomConfigFile.Checked;
     edtConfigPath.Text := ConfigFilePath;
     if fIsPackage then begin
-      grpTargetPlatform.Visible:=false;
+      grbTargetPlatform.Visible:=false;
       TargetOSComboBox.ItemIndex := 0;
       TargetOSComboBox.Text := 'default';
       TargetCPUComboBox.ItemIndex := 0;
       TargetCPUComboBox.Text := 'default';
       TargetProcComboBox.Text := 'default';
+      LCLWidgetTypeLabel.Visible:=false;
     end else begin
-      grpTargetPlatform.Visible:=true;
+      grbTargetPlatform.Visible:=true;
       // Target OS
       i := TargetOSComboBox.Items.IndexOf(TargetOS);
       if i < 0 then
@@ -407,6 +417,7 @@ begin
       UpdateByTargetCPU(TargetCPU);
       UpdateByTargetOS(TargetOS);
       TargetProcComboBox.Text := ProcessorToCaption(TargetProcessor);
+      LCLWidgetTypeLabel.Visible:=true;
     end;
     chkWin32GraphicApp.Checked := Win32GraphicApp;
     chkWin32GraphicApp.Enabled := NeedsLinkerOpts;
@@ -471,6 +482,23 @@ begin
   else
     s := cb.Text;
   UpdateByTargetCPU(s);
+end;
+
+procedure TCompilerConfigTargetFrame.LCLWidgetTypeLabelClick(Sender: TObject);
+begin
+  FDialog.OpenEditor(GroupCompiler,CompilerOptionsAdditionsAndOverrides);
+end;
+
+procedure TCompilerConfigTargetFrame.LCLWidgetTypeLabelMouseEnter(Sender: TObject);
+begin
+  (Sender as TLabel).Font.Underline := True;
+  (Sender as TLabel).Font.Color := clRed;
+end;
+
+procedure TCompilerConfigTargetFrame.LCLWidgetTypeLabelMouseLeave(Sender: TObject);
+begin
+  (Sender as TLabel).Font.Underline := False;
+  (Sender as TLabel).Font.Color := clBlue;
 end;
 
 class function TCompilerConfigTargetFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
