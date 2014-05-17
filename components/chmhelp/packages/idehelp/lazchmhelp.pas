@@ -283,6 +283,9 @@ begin
   //  Exit;
 
   Proc := TProcessUTF8.Create(nil);
+  {$if FPC_FULLVERSION<20400}
+  Proc.InheritHandles := false;
+  {$endif}
   {$if (fpc_version=2) and (fpc_release<5)}
   Proc.CommandLine := Lazbuild+' '+WS+' '+PCP+' '+LHelpProject;
   {$else}
