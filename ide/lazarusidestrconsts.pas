@@ -4579,7 +4579,7 @@ resourcestring
   lisOpenSymlink = 'Open symlink';
   lisFileLinkError = 'File link error';
   lisWriteErrorFile = 'Write error: %s%sFile: %s%s%s';
-  lisTheCodetoolsFoundAnError = 'The codetools found an error:%s%s%s';
+  lisTheCodetoolsFoundAnError = 'The Codetools found an error:%s%s%s';
   lisIgnoreAndContinue = 'Ignore and continue';
   lisNotImplemented = 'Not implemented';
   lisNotImplementedYet = 'Not implemented yet:%s%s';
