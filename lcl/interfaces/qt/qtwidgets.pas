@@ -642,6 +642,7 @@ type
     function getAcceptDropFiles: Boolean; override;
     function GetContainerWidget: QWidgetH; override;
     procedure grabMouse; override;
+    function getClientBounds: TRect; override;
     function getClientOffset: TPoint; override;
 
     function getText: WideString; override;
@@ -4511,23 +4512,68 @@ begin
 end;
 
 function TQtWidget.getClientBounds: TRect;
+{$IFDEF VerboseQtResizeError}
+var
+  R: TRect;
+{$ENDIF}
 begin
   QWidget_contentsRect(getContainerWidget, @Result);
+  {only when FOwner implements it's own getClientBounds !
+   Valid for FOwner: TQtTabWidget, TQtAbstractScrollArea and it's successors}
+  if (FOwner <> nil) and
+    not (ChildOfComplexWidget in [ccwComboBox]) then
+  begin
+    {$IFDEF VerboseQtResizeError}
+    R := FOwner.getClientBounds;
+    if not EqualRect(R, Result) then
+      DebugLn('WARNING: Providing wrong clientRect ',dbgs(Result),' for ',dbgsName(LCLObject),' from ',dbgsName(Self),' FOwner ',dbgsName(FOwner),' ==>',dbgs(R));
+    Result := R;
+    {$ELSE}
+    Result := FOwner.getClientBounds;
+    {$ENDIF}
+  end;
 end;
 
 function TQtWidget.getClientOffset: TPoint;
 var
   P: TQtPoint;
   R: TRect;
+  {$IFDEF VerboseQtResizeError}
+  Pt: TPoint;
+  {$ENDIF}
 begin
   // we need an offset of container inside widget, but if container = widget then
   // offset = 0
+  {$IFDEF VerboseQtResizeError}
   if Widget <> GetContainerWidget then
     QWidget_pos(GetContainerWidget, @P)
   else
     P := QtPoint(0, 0);
   R := getClientBounds;
   Result := Point(P.x + R.Left, P.y + R.Top);
+  if (FOwner <> nil) and
+    not (ChildOfComplexWidget in [ccwComboBox]) then
+  begin
+    Pt := FOwner.getClientOffset;
+    if (Pt.x <> Result.x) or (Pt.y <> Result.y) then
+      DebugLn('WARNING: Providing wrong clientOffset ',dbgs(Result),' for ',dbgsName(LCLObject),' from ',dbgsName(Self),' FOwner ',dbgsName(FOwner),' ==>',dbgs(Pt));
+    Result := Pt;
+  end;
+  {$ELSE}
+  if (FOwner <> nil) and
+    not (ChildOfComplexWidget in [ccwComboBox]) then
+  begin
+    Result := FOwner.getClientOffset;
+  end else
+  begin
+    if Widget <> GetContainerWidget then
+      QWidget_pos(GetContainerWidget, @P)
+    else
+      P := QtPoint(0, 0);
+    R := getClientBounds;
+    Result := Point(P.x + R.Left, P.y + R.Top);
+  end;
+  {$ENDIF}
 end;
 
 procedure TQtWidget.grabMouse;
@@ -6637,6 +6683,20 @@ begin
   {$ELSE}
   inherited grabMouse;
   {$ENDIF}
+end;
+
+function TQtMainWindow.getClientBounds: TRect;
+begin
+  {$IFDEF QTSCROLLABLEFORMS}
+  if Assigned(ScrollArea) and
+    {forms which have parent eg.docked must always provide
+     ScrollArea clientRect, while others provide such info
+     only when they are mapped.}
+    (testAttribute(QtWA_Mapped) or (LCLObject.Parent <> nil)) then
+      Result := ScrollArea.getClientBounds
+  else
+  {$ENDIF}
+  Result:=inherited getClientBounds;
 end;
 
 function TQtMainWindow.getClientOffset: TPoint;
