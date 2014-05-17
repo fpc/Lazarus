@@ -3931,7 +3931,6 @@ function TWinControl.GetClientRect: TRect;
         {$IFDEF VerboseClientRectBugFix}
         DebugLn(['StoreClientRect ',DbgSName(Self),' ',FClientWidth,',',FClientHeight,' HandleAllocated=',HandleAllocated,' wcfBoundsRealized=',wcfBoundsRealized in FWinControlFlags]);
         {$ENDIF}
-        FAdjustClientRectRealized:=Rect(0,0,0,0);
         Exclude(FWinControlFlags,wcfAdjustedLogicalClientRectValid);
       end;
       Exclude(FWinControlFlags,wcfClientRectNeedsUpdate);
