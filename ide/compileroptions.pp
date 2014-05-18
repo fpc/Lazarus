@@ -438,9 +438,6 @@ const
   DefaultMsgFileName = '$(FPCMsgFile)';
 
 type
-
-  TBaseCompilerOptions = class;
-
   { TBaseCompilerOptions }
 
   TBaseCompilerOptions = class(TLazCompilerOptions)
@@ -517,8 +514,7 @@ type
     function CreateDiff(CompOpts: TBaseCompilerOptions;
                         Tool: TCompilerDiffTool = nil): boolean; virtual;// true if differ
 
-    procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean
-      ); override;
+    procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); override;
 
     function MakeOptionsString(Flags: TCompilerCmdLineOptions): String;
     function MakeOptionsString(const MainSourceFileName: string;
