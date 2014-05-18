@@ -46,40 +46,44 @@ type
   { TCompOptModeMatrixFrame }
 
   TCompOptModeMatrixFrame = class(TAbstractIDEOptionsEditor)
+    BMMAddLclWidgetPopupMenu: TPopupMenu;
     BMMatrixToolBar: TToolBar;
-    BMMDeleteToolButton: TToolButton;
-    BMMMoveDownToolButton: TToolButton;
-    BMMMoveUpToolButton: TToolButton;
+    BMMDeleteButton: TToolButton;
+    BMMMoveDownButton: TToolButton;
+    BMMMoveUpButton: TToolButton;
+    BMMLCLWidgetTypeMenuItem: TMenuItem;
     BMMRedoToolButton: TToolButton;
-    BMMUndoToolButton: TToolButton;
+    BMMUndoButton: TToolButton;
     BMMNewCustomOptionMenuItem: TMenuItem;
-    BMMAddPopupMenu: TPopupMenu;
+    BMMAddOtherPopupMenu: TPopupMenu;
     BMMNewTargetMenuItem: TMenuItem;
-    BMMAddToolButton: TToolButton;
+    BMMAddOtherButton: TToolButton;
     BMMNewIDEMacroMenuItem: TMenuItem;
     BMMNewOutDirMenuItem: TMenuItem;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
-    procedure BMMDeleteToolButtonClick(Sender: TObject);
-    procedure BMMMoveDownToolButtonClick(Sender: TObject);
-    procedure BMMMoveUpToolButtonClick(Sender: TObject);
-    procedure BMMAddPopupMenuPopup(Sender: TObject);
+    BMMAddLclWidgetButton: TToolButton;
+    ToolButton4: TToolButton;
+    procedure BMMDeleteButtonClick(Sender: TObject);
+    procedure BMMMoveDownButtonClick(Sender: TObject);
+    procedure BMMMoveUpButtonClick(Sender: TObject);
     procedure BMMNewIDEMacroMenuItemClick(Sender: TObject);
     procedure BMMNewOutDirMenuItemClick(Sender: TObject);
     procedure BMMRedoToolButtonClick(Sender: TObject);
-    procedure BMMUndoToolButtonClick(Sender: TObject);
+    procedure BMMUndoButtonClick(Sender: TObject);
     procedure BMMNewCustomOptionMenuItemClick(Sender: TObject);
     procedure BMMNewTargetMenuItemClick(Sender: TObject);
-    procedure BMMAddToolButtonClick(Sender: TObject);
+    procedure BMMAddLclWidgetButtonClick(Sender: TObject);
+    procedure BMMAddOtherButtonClick(Sender: TObject);
     procedure GridEditingDone(Sender: TObject);
     procedure GridGetCellHightlightColor(Sender: TObject; aCol, aRow: integer;
       var aColor: TColor);
     procedure GridSelection(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer);
-    procedure GridSetEditText(Sender: TObject; ACol, ARow: Integer;
-      const Value: string);
+    procedure GridSetEditText(Sender: TObject; ACol, ARow: Integer; const Value: string);
     procedure GridShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure OnAddMacroMenuItemClick(Sender: TObject);
+    procedure OnAddLCLWidgetTypeClick(Sender: TObject);
   private
     FErrorColor: TColor;
     FGrid: TGroupedMatrixControl;
@@ -95,7 +99,10 @@ type
     fOldSessionOptions: TBuildMatrixOptions;
     fCaptionPatternMacroName: string;
     fCaptionPatternMacroValue: string;
+    procedure AddLCLWidgetTypeValues(ParentMenu: TPopupMenu; Mcr: TLazBuildMacro);
+    procedure AddMacroValues(ParentMI: TMenuItem; Mcr: TLazBuildMacro);
     procedure DoWriteSettings;
+    procedure FillMenus;
     procedure MoveRow(Direction: integer);
     procedure UpdateButtons;
     function AddTarget(StorageGroup: TGroupedMatrixGroup): TGroupedMatrixGroup;
@@ -395,8 +402,8 @@ begin
   UpdateButtons;
 end;
 
-procedure TCompOptModeMatrixFrame.GridSetEditText(Sender: TObject; ACol,
-  ARow: Integer; const Value: string);
+procedure TCompOptModeMatrixFrame.GridSetEditText(Sender: TObject; ACol, ARow: Integer;
+  const Value: string);
 var
   MatRow: TGroupedMatrixRow;
   ValueRow: TGroupedMatrixValue;
@@ -476,12 +483,22 @@ begin
   CreateNewOption(BuildMatrixOptionTypeCaption(bmotIDEMacro),MacroName+':='+Value);
 end;
 
+procedure TCompOptModeMatrixFrame.OnAddLCLWidgetTypeClick(Sender: TObject);
+var
+  ValueMenuItem: TMenuItem;
+  Value: String;
+begin
+  ValueMenuItem:=Sender as TMenuItem;
+  Value:=GetCaptionValue(ValueMenuItem.Caption,fCaptionPatternMacroValue);
+  CreateNewOption(BuildMatrixOptionTypeCaption(bmotIDEMacro),'LCLWidgetType:='+Value);
+end;
+
 procedure TCompOptModeMatrixFrame.BMMNewCustomOptionMenuItemClick(Sender: TObject);
 begin
   CreateNewOption(BuildMatrixOptionTypeCaption(bmotCustom),BuildMatrixDefaultValue(bmotCustom));
 end;
 
-procedure TCompOptModeMatrixFrame.BMMUndoToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMUndoButtonClick(Sender: TObject);
 begin
   Grid.Undo;
   UpdateGridStorageGroups;
@@ -493,12 +510,20 @@ begin
   CreateNewTarget;
 end;
 
-procedure TCompOptModeMatrixFrame.BMMAddToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMAddLclWidgetButtonClick(Sender: TObject);
 var
   p: TPoint;
 begin
-  p:=BMMAddToolButton.ClientToScreen(Point(0,BMMAddToolButton.Height));
-  BMMAddPopupMenu.PopUp(p.x,p.y);
+  p:=BMMAddLclWidgetButton.ClientToScreen(Point(0,BMMAddLclWidgetButton.Height));
+  BMMAddLclWidgetPopupMenu.PopUp(p.x,p.y);
+end;
+
+procedure TCompOptModeMatrixFrame.BMMAddOtherButtonClick(Sender: TObject);
+var
+  p: TPoint;
+begin
+  p:=BMMAddOtherButton.ClientToScreen(Point(0,BMMAddOtherButton.Height));
+  BMMAddOtherPopupMenu.PopUp(p.x,p.y);
 end;
 
 procedure TCompOptModeMatrixFrame.GridEditingDone(Sender: TObject);
@@ -545,52 +570,84 @@ begin
   UpdateButtons;
 end;
 
-procedure TCompOptModeMatrixFrame.BMMMoveUpToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMMoveUpButtonClick(Sender: TObject);
 begin
   MoveRow(-1);
 end;
 
-procedure TCompOptModeMatrixFrame.BMMAddPopupMenuPopup(Sender: TObject);
+procedure TCompOptModeMatrixFrame.AddLCLWidgetTypeValues(ParentMenu: TPopupMenu; Mcr: TLazBuildMacro);
 var
   i: Integer;
+  ValueMI: TMenuItem;
+begin
+  if Mcr.Values<>nil then begin
+    for i:=0 to Mcr.Values.Count-1 do begin
+      if i=ParentMenu.Items.Count then
+        ParentMenu.Items.Add(TMenuItem.Create(Self));
+      ValueMI:=ParentMenu.Items[i];
+      ValueMI.Caption:=Format(fCaptionPatternMacroValue,[Mcr.Values[i]]);
+      ValueMI.OnClick:=@OnAddLCLWidgetTypeClick;
+    end;
+  end;
+end;
+
+procedure TCompOptModeMatrixFrame.AddMacroValues(ParentMI: TMenuItem; Mcr: TLazBuildMacro);
+var
+  i: Integer;
+  ValueMI: TMenuItem;
+begin
+  if Mcr.Values<>nil then begin
+    for i:=0 to Mcr.Values.Count-1 do begin
+      if i=ParentMI.Count then
+        ParentMI.Add(TMenuItem.Create(Self));
+      ValueMI:=ParentMI.Items[i];
+      ValueMI.Caption:=Format(fCaptionPatternMacroValue,[Mcr.Values[i]]);
+      ValueMI.OnClick:=@OnAddMacroMenuItemClick;
+    end;
+  end;
+end;
+
+procedure TCompOptModeMatrixFrame.FillMenus;
+var
+  i, j: Integer;
   Pkg: TLazPackage;
   Macros: TLazBuildMacros;
-  j: Integer;
   Macro: TLazBuildMacro;
+  LCLWidgetTypeMacro: TLazBuildMacro;
   List: TStringList;
   MenuIndex: Integer;
   MacroMenuItem: TMenuItem;
-  ValueMenuItem: TMenuItem;
 begin
+  LCLWidgetTypeMacro:=Nil;
   List:=TStringList.Create;
   try
+    // First collect all macros from all used packages to a sorted list.
     for i:=0 to PackageGraph.Count-1 do begin
       Pkg:=PackageGraph[i];
       Macros:=Pkg.CompilerOptions.BuildMacros;
       for j:=0 to Macros.Count-1 do begin
         Macro:=Macros[j];
-        if not IsValidIdent(Macro.Identifier) then continue;
-        List.AddObject(Macro.Identifier,Macro);
+        if Macro.Identifier = 'LCLWidgetType' then
+          LCLWidgetTypeMacro:=Macro
+        else if IsValidIdent(Macro.Identifier) then
+          List.AddObject(Macro.Identifier,Macro);
       end;
     end;
     List.Sort;
+    // LCLWidgetType gets its own button.
+    BMMAddLclWidgetButton.Visible:=Assigned(LCLWidgetTypeMacro);
+    if Assigned(LCLWidgetTypeMacro) then
+      AddLCLWidgetTypeValues(BMMAddLclWidgetPopupMenu, LCLWidgetTypeMacro);
+    // Place other macros to the popup menu opened from "Add" button.
     MenuIndex:=BMMNewTargetMenuItem.MenuIndex;
     for i:=0 to List.Count-1 do begin
       inc(MenuIndex);
       Macro:=TLazBuildMacro(List.Objects[i]);
-      if BMMAddPopupMenu.Items.Count=MenuIndex then
-        BMMAddPopupMenu.Items.Add(TMenuItem.Create(Self));
-      MacroMenuItem:=BMMAddPopupMenu.Items[MenuIndex];
+      if BMMAddOtherPopupMenu.Items.Count=MenuIndex then
+        BMMAddOtherPopupMenu.Items.Add(TMenuItem.Create(Self));
+      MacroMenuItem:=BMMAddOtherPopupMenu.Items[MenuIndex];
       MacroMenuItem.Caption:=Format(fCaptionPatternMacroName,[Macro.Identifier]);
-      if Macro.Values<>nil then begin
-        for j:=0 to Macro.Values.Count-1 do begin
-          if j=MacroMenuItem.Count then
-            MacroMenuItem.Add(TMenuItem.Create(Self));
-          ValueMenuItem:=MacroMenuItem.Items[j];
-          ValueMenuItem.Caption:=Format(fCaptionPatternMacroValue,[Macro.Values[j]]);
-          ValueMenuItem.OnClick:=@OnAddMacroMenuItemClick;
-        end;
-      end;
+      AddMacroValues(MacroMenuItem, Macro);
     end;
   finally
     List.Free;
@@ -607,12 +664,12 @@ begin
   CreateNewOption(BuildMatrixOptionTypeCaption(bmotOutDir),BuildMatrixDefaultValue(bmotOutDir));
 end;
 
-procedure TCompOptModeMatrixFrame.BMMMoveDownToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMMoveDownButtonClick(Sender: TObject);
 begin
   MoveRow(1);
 end;
 
-procedure TCompOptModeMatrixFrame.BMMDeleteToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMDeleteButtonClick(Sender: TObject);
 var
   aRow: Integer;
   MatRow: TGroupedMatrixRow;
@@ -640,15 +697,15 @@ begin
     MatRow:=nil;
 
   // allow to delete targets and value rows
-  BMMDeleteToolButton.Enabled:=(MatRow<>nil) and (MatRow.Group<>nil);
+  BMMDeleteButton.Enabled:=(MatRow<>nil) and (MatRow.Group<>nil);
   //
-  BMMUndoToolButton.Enabled:=Grid.CanUndo;
+  BMMUndoButton.Enabled:=Grid.CanUndo;
   BMMRedoToolButton.Enabled:=Grid.CanRedo;
   // move up/down
-  BMMMoveUpToolButton.Enabled:=(MatRow<>nil) and (MatRow.Group<>nil)
+  BMMMoveUpButton.Enabled:=(MatRow<>nil) and (MatRow.Group<>nil)
                         and ((MatRow.GetPreviousSibling<>nil)
                            or (MatRow.GetTopLvlItem.GetPreviousSibling<>nil));
-  BMMMoveDownToolButton.Enabled:=(MatRow<>nil) and (MatRow.Group<>nil)
+  BMMMoveDownButton.Enabled:=(MatRow<>nil) and (MatRow.Group<>nil)
                         and  (MatRow.GetNextSkipChildren<>nil);
 end;
 
@@ -1059,24 +1116,22 @@ begin
 
   BMMatrixToolBar.Images:=IDEImages.Images_16;
 
-  BMMMoveUpToolButton.ShowCaption:=false;
-  BMMMoveUpToolButton.ImageIndex:=IDEImages.LoadImage(16,'arrow_up');
-  BMMMoveUpToolButton.Hint:=lisMMMoveSelectedItemUp;
+  BMMMoveUpButton.ShowCaption:=false;
+  BMMMoveUpButton.ImageIndex:=IDEImages.LoadImage(16,'arrow_up');
+  BMMMoveUpButton.Hint:=lisMMMoveSelectedItemUp;
 
-  BMMMoveDownToolButton.ShowCaption:=false;
-  BMMMoveDownToolButton.ImageIndex:=IDEImages.LoadImage(16,'arrow_down');
-  BMMMoveDownToolButton.Hint:=lisMMMoveSelectedItemDown;
+  BMMMoveDownButton.ShowCaption:=false;
+  BMMMoveDownButton.ImageIndex:=IDEImages.LoadImage(16,'arrow_down');
+  BMMMoveDownButton.Hint:=lisMMMoveSelectedItemDown;
 
-  BMMUndoToolButton.Caption:=lisUndo;
-  BMMUndoToolButton.Hint:=lisMMUndoLastChangeToThisGrid;
+  BMMUndoButton.Caption:=lisUndo;
+  BMMUndoButton.Hint:=lisMMUndoLastChangeToThisGrid;
 
   BMMRedoToolButton.Caption:=lisRedo;
   BMMRedoToolButton.Hint:=lisMMRedoLastUndoToThisGrid;
 
-  BMMAddToolButton.Caption:=lisAdd;
-
-  BMMDeleteToolButton.Caption:=lisDelete;
-  BMMDeleteToolButton.Hint:=lisMMDeleteTheSelectedTargetOrOption;
+  BMMDeleteButton.Caption:=lisDelete;
+  BMMDeleteButton.Hint:=lisMMDeleteTheSelectedTargetOrOption;
 
   BMMNewTargetMenuItem.Caption:=lisMMNewTarget;
   BMMNewTargetMenuItem.Hint:=lisMMCreateANewGroupOfOptions;
@@ -1088,7 +1143,11 @@ begin
   fCaptionPatternMacroName:=lisMMSetS;
   fCaptionPatternMacroValue:=lisMMValueS;
 
+  BMMAddLclWidgetButton.Caption:=Format(fCaptionPatternMacroName,['LCLWidgetType']);
+  BMMAddOtherButton.Caption:=lisAdd;
+
   UpdateButtons;
+  FillMenus;
 end;
 
 destructor TCompOptModeMatrixFrame.Destroy;
