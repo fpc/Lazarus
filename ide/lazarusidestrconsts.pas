@@ -5497,23 +5497,19 @@ resourcestring
   lisAlpha = 'Alpha';
   lisMMAppendArbitraryFpcOptionsEGO1GhtlDFlag = 'Append arbitrary fpc options,'
     +' e.g. -O1 -ghtl -dFlag';
-  lisMMOverrideOutputDirectoryFUOfTarget = 'Override output directory -FU of '
-    +'target';
-  lisMMSetAnIDEMacroEGLCLWidgetTypeWin32 = 'Set an IDE macro, e.g.: '
-    +'LCLWidgetType:=win32';
+  lisMMOverrideOutputDirectoryFUOfTarget = 'Override output directory -FU of target';
+  lisMMSetAnIDEMacroEGLCLWidgetTypeWin32 = 'Set an IDE macro, e.g.: LCLWidgetType:=win32';
   lisMMMissingMacroName = 'missing macro name';
   lisMMExpectedMacroNameButFound = 'expected macro name, but found "%s"';
   lisMMInvalidCharacterInMacroValue = 'invalid character in macro value "%s"';
-  lisMMExpectedAfterMacroNameButFound = 'expected ":=" after macro name, but '
-    +'found "%s"';
+  lisMMExpectedAfterMacroNameButFound = 'expected ":=" after macro name, but found "%s"';
   lisMMApplyToAllPackages = 'Apply to all packages.';
   lisMMTargets = 'Targets: ';
   lisMMApplyToAllPackagesAndProjects = 'Apply to all packages and projects.';
   lisMMApplyToProject = 'Apply to project.';
   lisMMApplyToAllPackagesMatching = 'Apply to all packages matching name "%s"';
   lisMMExcludeAllPackagesMatching = 'Exclude all packages matching name "%s"';
-  lisMMStoredInIDEEnvironmentoptionsXml = 'Stored in IDE (environmentoptions.'
-    +'xml)';
+  lisMMStoredInIDEEnvironmentoptionsXml = 'Stored in IDE (environmentoptions.xml)';
   lisMMStoredInProjectLpi = 'Stored in project (.lpi)';
   lisMMStoredInSessionOfProjectLps = 'Stored in session of project (.lps)';
   lisMMMoveSelectedItemUp = 'Move selected item up';
@@ -5554,8 +5550,7 @@ resourcestring
   lisUDShowNodesForDirectories = 'Show nodes for directories';
   lisUDShowNodesForProjectAndPackages = 'Show nodes for project and packages';
   lisUDSearchNextOccurrenceOfThisPhrase = 'Find next occurrence of this phrase';
-  lisUDSearchPreviousOccurrenceOfThisPhrase = 'Find previous occurrence of '
-    +'this phrase';
+  lisUDSearchPreviousOccurrenceOfThisPhrase = 'Find previous occurrence of this phrase';
   lisUDSelectedUnits = 'Selected units';
   lisUDSearchNextUnitOfThisPhrase = 'Find next unit with this phrase';
   lisUDSearchPreviousUnitOfThisPhrase = 'Find previous unit with this phrase';
@@ -5566,8 +5561,7 @@ resourcestring
   lisUDSearch = '(Search)';
   lisUDUnits2 = 'Units: %s';
   lisCTOUpdateAllMethodSignatures = 'Update all method signatures';
-  lisCTOUpdateMultipleProcedureSignatures = 'Update multiple procedure '
-    +'signatures';
+  lisCTOUpdateMultipleProcedureSignatures = 'Update multiple procedure signatures';
   lisUpdateOtherProcedureSignaturesWhenOnlyLetterCaseHa = 'Update other '
     +'procedure signatures when only letter case has changed';
   lisTemplateFile = 'Template file';
