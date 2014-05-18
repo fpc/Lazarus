@@ -41,9 +41,6 @@ begin
 
   if GetAutoScroll then
   begin
-    if FAutoRange < 0 then
-      AutoCalcRange;
-
     if Value > FAutoRange then
     begin
       {$IFDEF VerboseScrollingWinControl}
@@ -210,64 +207,6 @@ begin
   FSmooth := AValue;
 end;
 
-procedure TControlScrollBar.AutoCalcRange;
-
-  function IsNonAligned(Control: TControl): boolean;
-  begin
-    Result:=(Control.Align in [alNone,alCustom])
-      and (Control.Anchors=[akLeft,akTop])
-      and (Control.AnchorSide[akLeft].Control=nil)
-      and (Control.AnchorSide[akTop].Control=nil);
-  end;
-
-  procedure GetPreferredClientRect(out PreferredWidth, PreferredHeight: integer);
-  var
-    CurClientRect: TRect;
-  begin
-    PreferredWidth:=0;
-    PreferredHeight:=0;
-    FControl.GetPreferredSize(PreferredWidth,PreferredHeight,true,false);
-    //DebugLn(['GetPreferredClientRect ',DbgSName(FControl),' PrefSize=',PreferredWidth,'x',PreferredHeight]);
-    CurClientRect := FControl.ClientRect;
-    if PreferredWidth>0 then
-      PreferredWidth:=Max(0,PreferredWidth-(FControl.Width-CurClientRect.Right));
-    if PreferredHeight>0 then
-      PreferredHeight:=Max(0,PreferredHeight-(FControl.Height-CurClientRect.Bottom));
-    //DebugLn(['GetPreferredClientRect ',DbgSName(FControl),' PrefClient=',PreferredWidth,'x',PreferredHeight,' Client=',dbgs(CurClientRect),' Size=',dbgs(FControl.BoundsRect)]);
-  end;
-
-  procedure AutoCalcVRange;
-  var
-    PreferredWidth: Integer;
-    PreferredHeight: Integer;
-  begin
-    GetPreferredClientRect(PreferredWidth,PreferredHeight);
-    //DebugLn(['AutoCalcVRange ',DbgSName(FControl),' AutoSize=',FControl.AutoSize,' Bounds=',dbgs(FControl.BoundsRect),' Client=',dbgs(FControl.ClientRect),' ' pref=',PreferredWidth,'x',PreferredHeight]);
-    InternalSetRange(PreferredHeight);
-  end;
-
-  procedure AutoCalcHRange;
-  var
-    PreferredWidth: Integer;
-    PreferredHeight: Integer;
-  begin
-    GetPreferredClientRect(PreferredWidth,PreferredHeight);
-    //if FControl.ClassName='TEditorCodetoolsOptionsFrame' then
-      //DebugLn(['AutoCalcHRange ',DbgSName(FControl),' AutoSize=',FControl.AutoSize,' Bounds=',dbgs(FControl.BoundsRect),' Client=',dbgs(FControl.ClientRect),' pref=',PreferredWidth,'x',PreferredHeight]);
-    InternalSetRange(PreferredWidth);
-  end;
-
-begin
-  if GetAutoScroll then
-  begin
-    FVisible := True;
-    if Kind = sbVertical then
-      AutoCalcVRange
-    else
-      AutoCalcHRange;
-  end;
-end;
-
 procedure TControlScrollBar.UpdateScrollBar;
 var
   ScrollInfo: TScrollInfo;
@@ -296,8 +235,8 @@ begin
     end;
     ShowScrollBar(FControl.Handle, IntfBarKind[Kind], NewVisible);
     {$IFDEF VerboseScrollingWinControl}
-    if DebugCondition then
-      DebugLn(['TControlScrollBar.UpdateScrollBar ',DbgSName(FControl),' ',DbgSName(Self),' FVisible=',FVisible,' Range=',FRange,' FPosition=',FPosition,' FPage=',FPage,' FAutoRange=',FAutoRange,' ShouldVisible=',NewVisible]);
+    //if DebugCondition then
+      DebugLn(['TControlScrollBar.UpdateScrollBar ',DbgSName(FControl),' ',DbgSName(Self),' ',dbgs(Kind),' FVisible=',FVisible,' Range=',FRange,' FPosition=',FPosition,' FPage=',FPage,' FAutoRange=',FAutoRange,' ShouldVisible=',NewVisible]);
     {$ENDIF}
   end;
 
@@ -498,14 +437,14 @@ function TControlScrollBar.ClientSizeWithBar: integer;
 begin
   Result := ClientSize;
   if not IsScrollBarVisible then
-    dec(Result, GetSize);
+    dec(Result, GetSize+3);
 end;
 
 function TControlScrollBar.ClientSizeWithoutBar: integer;
 begin
   Result:=ClientSize;
   if IsScrollBarVisible then
-    inc(Result, GetSize);
+    inc(Result, GetSize+3);
 end;
 
 function TControlScrollBar.GetHorzScrollBar: TControlScrollBar;

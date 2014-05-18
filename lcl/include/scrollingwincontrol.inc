@@ -13,11 +13,6 @@ procedure TScrollingWinControl.SetAutoScroll(Value: Boolean);
 begin
   if FAutoScroll = Value then Exit;
   FAutoScroll := Value;
-  if Value then
-  begin
-    HorzScrollBar.AutoCalcRange;
-    VertScrollBar.AutoCalcRange;
-  end;
   UpdateScrollBars;
 end;
 
@@ -26,11 +21,6 @@ begin
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TScrollingWinControl.CreateWnd'){$ENDIF};
   try
     inherited CreateWnd;
-    if AutoScroll then
-    begin
-      HorzScrollBar.AutoCalcRange;
-      VertScrollBar.AutoCalcRange;
-    end;
     UpdateScrollBars;
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TScrollingWinControl.CreateWnd'){$ENDIF};
@@ -71,8 +61,6 @@ begin
     if (HorzScrollBar = nil) or (VertScrollBar = nil) then Exit;
     inherited AlignControls(AControl, ARect);
 
-    HorzScrollBar.AutoCalcRange;
-    VertScrollBar.AutoCalcRange;
     UpdateScrollBars;
   end
   else
@@ -84,6 +72,34 @@ begin
   Result := not (AutoSize or (DockSite and UseDockManager));
 end;
 
+procedure TScrollingWinControl.CalculateAutoRanges;
+
+  procedure GetPreferredClientRect(out PreferredWidth, PreferredHeight: integer);
+  var
+    CurClientRect: TRect;
+  begin
+    PreferredWidth:=0;
+    PreferredHeight:=0;
+    GetPreferredSize(PreferredWidth,PreferredHeight,true,false);
+    //DebugLn(['GetPreferredClientRect ',DbgSName(FControl),' PrefSize=',PreferredWidth,'x',PreferredHeight]);
+    CurClientRect := ClientRect;
+    if PreferredWidth>0 then
+      PreferredWidth:=Max(0,PreferredWidth-(Width-CurClientRect.Right));
+    if PreferredHeight>0 then
+      PreferredHeight:=Max(0,PreferredHeight-(Height-CurClientRect.Bottom));
+    //DebugLn(['GetPreferredClientRect ',DbgSName(FControl),' PrefClient=',PreferredWidth,'x',PreferredHeight,' Client=',dbgs(CurClientRect),' Size=',dbgs(FControl.BoundsRect)]);
+  end;
+
+var
+  PreferredWidth: Integer;
+  PreferredHeight: Integer;
+begin
+  GetPreferredClientRect(PreferredWidth,PreferredHeight);
+  //DebugLn(['TScrollingWinControl.CalculateAutoRanges ',DbgSName(Self),' AutoSize=',AutoSize,' Bounds=',dbgs(BoundsRect),' Client=',dbgs(ClientRect),' pref=',PreferredWidth,'x',PreferredHeight]);
+  HorzScrollBar.InternalSetRange(PreferredWidth);
+  VertScrollBar.InternalSetRange(PreferredHeight);
+end;
+
 procedure TScrollingWinControl.DoOnResize;
 begin
   inherited DoOnResize;
@@ -91,7 +107,8 @@ begin
   if AutoScroll then
   begin
     if (HorzScrollBar = nil) or (VertScrollBar = nil) then Exit;
-    if HorzScrollBar.Visible or VertScrollBar.Visible then UpdateScrollBars;
+    if HorzScrollBar.Visible or VertScrollBar.Visible then
+      UpdateScrollBars;
   end;
 end;
 
@@ -136,54 +153,47 @@ begin
   //
 end;
 
-function TScrollingWinControl.ComputeScrollbars: Boolean;
-// true if something changed
-// update Page, AutoRange, IsScrollBarVisible
+procedure TScrollingWinControl.ComputeScrollbars;
+// true if something has changed
+// update Page, AutoRange
 
-  function UpdateRange(p_Bar: TControlScrollBar): Boolean;
-  var
-    SBSize: Longint;
-    OtherScrollbar: TControlScrollBar;
-    OldAutoRange: LongInt;
+  procedure UpdateBar(aBar: TControlScrollBar; aClientSize: integer);
   begin
-    Result := False;
-    OldAutoRange := p_Bar.FAutoRange;
-    p_Bar.FAutoRange := 0;
-    OtherScrollbar := p_Bar.GetOtherScrollBar;
-    SBSize := OtherScrollbar.ClientSize;
-    if (p_Bar.FRange > SBSize) and (SBSize > 0) then
-      p_Bar.FAutoRange := (p_Bar.FRange - SBSize)
-    else
-      p_Bar.FAutoRange := 0;
+    // page (must be smaller than Range but at least 1)
+    aBar.FPage := Max(1,Min(Min(aBar.Range,aClientSize), High(HorzScrollbar.FPage)));
+    aBar.FAutoRange := Max(0, aBar.Range - aClientSize);
     {$IFDEF VerboseScrollingWinControl}
-    if p_Bar.DebugCondition then
-      DebugLn(['UpdateRange p_Bar.fRange=',p_Bar.FRange,' SBSize=',SBSize,' ClientWidth=',ClientWidth,' FAutoRange=',p_Bar.FAutoRange]);
+    debugln(['TScrollingWinControl.ComputeScrollbars ',DbgSName(Self),' ',dbgs(aBar.Kind),' Page=',aBar.Page,' Range=',aBar.Range,' ClientSize=',aClientSize]);
     {$ENDIF}
-    if OldAutoRange <> p_Bar.FAutoRange then
-      Result := True;
   end;
   
 var
-  NewPage: Integer;
+  ClientW: Integer;
+  ClientH: Integer;
 begin
-  Result := False;
+  CalculateAutoRanges;
 
-  // page (must be smaller than Range but at least 1)
-  NewPage := Max(1,Min(VertScrollbar.ClientSize, High(HorzScrollbar.FPage)));
-  if NewPage <> HorzScrollbar.FPage then
+  ClientW:=VertScrollBar.ClientSizeWithoutBar;
+  ClientH:=HorzScrollBar.ClientSizeWithoutBar;
+  if VertScrollBar.Range > ClientH then
   begin
-    HorzScrollbar.FPage := NewPage;
-    Result := True;
+    // vertical does not fit -> vertical scrollbar will be shown
+    ClientW:=VertScrollBar.ClientSizeWithBar;
   end;
-  NewPage := Max(1,Min(HorzScrollbar.ClientSize, High(VertScrollbar.FPage)));
-  if NewPage <> VertScrollbar.FPage then
+  if HorzScrollBar.Range > ClientW then
   begin
-    VertScrollbar.FPage := NewPage;
-    Result := True;
+    // horizontal does not fit -> horizontal scrollbar will be shown
+    ClientH:=HorzScrollBar.ClientSizeWithBar;
+    if VertScrollBar.Range > ClientH then
+    begin
+      // vertical does not fit, because of the other scrollbar
+      // -> vertical scrollbar will be shown too
+      ClientW:=VertScrollBar.ClientSizeWithBar;
+    end;
   end;
-  // range
-  if UpdateRange(HorzScrollbar) then Result:=true;
-  if UpdateRange(VertScrollbar) then Result:=true;
+
+  UpdateBar(HorzScrollBar,ClientW);
+  UpdateBar(VertScrollBar,ClientH);
 end;
 
 procedure TScrollingWinControl.UpdateScrollbars;
