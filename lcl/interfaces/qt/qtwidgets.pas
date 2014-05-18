@@ -102,6 +102,7 @@ type
 
   TQtWidget = class(TQtObject, IUnknown)
   private
+    FInResizeEvent: boolean;
     FWidgetState: TQtWidgetStates;
     FWidgetDefaultFont: TQtFont;
     FWidgetLCLFont: TQtFont;
@@ -303,6 +304,7 @@ type
     property Context: HDC read GetContext;
     property HasCaret: Boolean read FHasCaret write SetHasCaret;
     property HasPaint: Boolean read FHasPaint write FHasPaint;
+    property InResizeEvent: boolean read FInResizeEvent write FInResizeEvent;
     property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
     property LastCaretPos: TQtPoint read FLastCaretPos write SetLastCaretPos;
     property ScrolledOffset: TPoint read getScrolledOffset;
@@ -376,6 +378,8 @@ type
 
   TQtScrollBar = class(TQtAbstractSlider)
   private
+    FInHide: boolean;
+    FInShow: boolean;
     FTrackPos: Integer;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
@@ -386,6 +390,8 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure AttachEvents; override;
     property TrackPos: Integer read FTrackPos write FTrackPos;
+    property InShow: boolean read FInShow write FInShow;
+    property InHide: boolean read FInHide write FInHide;
   end;
 
   { TQtFrame }
@@ -406,16 +412,13 @@ type
 
   TQtAbstractScrollArea = class(TQtFrame)
   private
-    FScrollPolicyChangeRect: TRect;
-    FScrollPolicyChange: boolean;
     function getScrollBarsPolicy(AIndex: Boolean): QtScrollBarPolicy;
   protected
     FHScrollbar: TQtScrollBar;
     FVScrollbar: TQtScrollbar;
     procedure setScrollBarPolicy(AIndex: Boolean;
-      const AValue: QtScrollBarPolicy); virtual;
+      const AValue: QtScrollBarPolicy);
   public
-    procedure InitializeWidget; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure grabMouse; override;
     function GetContainerWidget: QWidgetH; override;
@@ -437,7 +440,6 @@ type
     procedure UpdateRegion(ARgn: QRegionH); override;
     procedure Repaint(ARect: PRect = nil); override;
     property ScrollBarPolicy[AIndex: Boolean]: QtScrollBarPolicy read getScrollBarsPolicy write setScrollBarPolicy;
-    property ScrollPolicyChange: boolean read FScrollPolicyChange write FScrollPolicyChange;
   end;
 
   { TQtCustomControl }
@@ -449,8 +451,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     function ProcessArrowKeys: Boolean; override;
-    procedure setScrollBarPolicy(AIndex: Boolean;
-      const AValue: QtScrollBarPolicy); override;
   public
     destructor Destroy; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -1964,6 +1964,7 @@ end;
 
 procedure TQtWidget.InitializeWidget;
 begin
+  FInResizeEvent := False;
   // default states
   FWidgetState := [];
   // default color roles
@@ -2556,14 +2557,14 @@ begin
         end;
         if LCLObject.ClientRectNeedsInterfaceUpdate then
         begin
-          {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
+          {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
           if ChildOfComplexWidget = ccwScrollingWinControl then
           begin
             if Self is TQtViewport then
               QWidget_rect(Widget, @R)
             else
               QWidget_rect(TQtAbstractScrollArea(Self).viewportWidget, @R);
-            DebugLn('WARNING: QEventContentsRectChange(',dbgsName(Self),') adjusting rect for ',dbgsName(LCLObject),' PHASE ? ',dbgs(caspComputingBounds in LCLObject.AutoSizePhases),' inUpdate=',dbgs(inUpdate),' Time: ',dbgs(GetTickCount),' Mapped ',dbgs(testAttribute(QtWA_Mapped)),' SCROLLINGWIN R=',dbgs(R),' LCLObject R=',dbgs(LCLObject.ClientRect));
+            DebugLn('WARNING: QEventContentsRectChange(',dbgsName(Self),') adjusting rect for ',dbgsName(LCLObject),' PHASE ? ',dbgs(caspComputingBounds in LCLObject.AutoSizePhases),' inUpdate=',dbgs(inUpdate),' Time: ',dbgs(GetTickCount),' Mapped ',dbgs(testAttribute(QtWA_Mapped)),' SCROLLINGWIN R=',dbgs(R),' LCLObject R=',dbgs(LCLObject.ClientRect),' ***InResize=',dbgs(InResizeEvent or (Assigned(FOwner) and FOwner.InResizeEvent)));
           end else
             DebugLn('WARNING: QEventContentsRectChange(',dbgsName(Self),') adjusting rect for ',dbgsName(LCLObject),' PHASE ? ',dbgs(caspComputingBounds in LCLObject.AutoSizePhases),' inUpdate=',dbgs(inUpdate),' Time: ',dbgs(GetTickCount),' Mapped ',dbgs(testAttribute(QtWA_Mapped)),' clientRect=',dbgs(getClientBounds));
           {$ENDIF}
@@ -2572,13 +2573,17 @@ begin
             {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
             DebugLn('  QEventContentsRectChange(',dbgsName(LCLObject),' call DoAdjustClientRectChange !');
             {$ENDIF}
-            LCLObject.DoAdjustClientRectChange(True);
+            if InResizeEvent or (Assigned(FOwner) and FOwner.InResizeEvent) then
+            else
+              LCLObject.DoAdjustClientRectChange(True);
           end else
           begin
             {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
             DebugLn('  QEventContentsRectChange(',dbgsName(LCLObject),' call InvalidatePrefferedSize !');
             {$ENDIF}
-            LCLObject.InvalidatePreferredSize;
+            if InResizeEvent or (Assigned(FOwner) and FOwner.InResizeEvent) then
+            else
+              LCLObject.InvalidatePreferredSize;
           end;
         end;
       end;
@@ -4073,77 +4078,106 @@ begin
 
   // return size w/o frame
   NewSize := QResizeEvent_size(QResizeEventH(Event))^;
-{
-  WriteLn('SlotResize: ', dbgsName(LCLObject),
-    ' AOldWidth = ', LCLObject.Width, ' AOldHeight = ', LCLObject.Height,
-    ' ANewWidth = ', NewSize.cx, ' ANewHeight = ', NewSize.cy
-  );
-}
+
   if not Assigned(LCLObject) then exit;
 
-  // do not loop with LCL but do not apply it to TQtMainWindow !
-  if not (csDesigning in LCLObject.ComponentState) then
-    if not (ClassType = TQtMainWindow) and InUpdate then
+  if InResizeEvent or (Assigned(FOwner) and FOwner.InResizeEvent) then
   begin
-    AQtClientRect := Rect(0, 0, 0, 0);
-    if FOwner <> nil then
-      B := GetClientRect(HWND(Self.FOwner), AQtClientRect)
-    else
-      B := GetClientRect(HWND(Self), AQtClientRect);
-    if B and EqualRect(LCLObject.ClientRect, AQtClientRect) then
+    {$IFDEF VerboseQtResizeError}
+    if not InUpdate then
     begin
-      {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
-      DebugLn('==========',dbgsName(LCLObject),'.SlotResize inUpdate.LCLObject.ClientRect is ok,do not send LMSize');
-      {$ENDIF}
-      exit;
-    end else
-    begin
-      {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
-      DebugLn('====***====',dbgsName(LCLObject),'.SlotResize inUpdate but LCL.ClientRect isn''t adjusted. CanAdjust=',dbgs(CanAdjustClientRectOnResize));
-      {$ENDIF}
+      DebugLn('============================================================================');
+      DebugLn('W A R N I N G !    W A R N I N G !    W A R N I N G !    W A R N I N G !');
+      DebugLn(dbgsName(LCLObject),' self=',dbgsName(Self),' already in SlotResize needClientRectAdjust',dbgs(LCLObject.ClientRectNeedsInterfaceUpdate),
+      ' casp=',dbgs(caspComputingBounds in LCLObject.AutoSizePhases));
+      R := getClientBounds;
+      DebugLn('LCL CACHED CLIENT WxH=',dbgs(LCLObject.CachedClientWidth),'x',dbgs(LCLObject.CachedClientHeight),
+      ' QtClient=',dbgs(R));
+      DebugLn('============================================================================');
     end;
+    {$ENDIF}
+    exit;
   end;
-
-  {keep LCL value while designing pageControl}
-  if (csDesigning in LCLObject.ComponentState) and InUpdate and
-    ((Self is TQtPage) or (Self is TQtTabWidget)) then
-      exit;
-
-  if CanAdjustClientRectOnResize and
-    LCLObject.ClientRectNeedsInterfaceUpdate then
-  begin
-    // postpone resize event if we are computingbounds otherwise
-    // we can run into infinite size loop.
-    if (caspComputingBounds in LCLObject.AutoSizePhases) then
+  if Assigned(FOwner) then
+    FOwner.InResizeEvent := True;
+  InResizeEvent := True;
+  try
+    // do not loop with LCL but do not apply it to TQtMainWindow !
+    if not (csDesigning in LCLObject.ComponentState) then
+      if not (ClassType = TQtMainWindow) and InUpdate then
     begin
-      {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
-      DebugLn('WARNING: *TQtWidget.SlotResize caspComputingBounds=true* ! ',dbgsname(LCLObject),':',dbgsName(Self),' inUpdate=',dbgs(inUpdate),' Time: ',dbgs(GetTickCount));
-      {$ENDIF}
-      if ChildOfComplexWidget <> ccwScrollingWinControl then
-        DelayResizeEvent(Widget, NewSize);
-      exit;
-    end else
-      LCLObject.DoAdjustClientRectChange;
+      AQtClientRect := Rect(0, 0, 0, 0);
+      if FOwner <> nil then
+        B := GetClientRect(HWND(Self.FOwner), AQtClientRect)
+      else
+        B := GetClientRect(HWND(Self), AQtClientRect);
+      if B and EqualRect(LCLObject.ClientRect, AQtClientRect) then
+      begin
+        {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
+        DebugLn('==========',dbgsName(LCLObject),'.SlotResize inUpdate.LCLObject.ClientRect is ok,do not send LMSize');
+        {$ENDIF}
+        exit;
+      end else
+      begin
+        {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
+        DebugLn('====***====',dbgsName(LCLObject),'.SlotResize inUpdate but LCL.ClientRect isn''t adjusted. CanAdjust=',dbgs(CanAdjustClientRectOnResize),' CAPS=',dbgs(caspComputingBounds in LCLObject.AutoSizePhases),' NeedUpd ',dbgs(LCLObject.ClientRectNeedsInterfaceUpdate));
+        {$ENDIF}
+        if LCLObject.ClientRectNeedsInterfaceUpdate and
+          not (caspComputingBounds in LCLObject.AutoSizePhases) then
+        begin
+          LCLObject.DoAdjustClientRectChange(True);
+          exit;
+        end;
+      end;
+    end;
+
+    {keep LCL value while designing pageControl}
+    if (csDesigning in LCLObject.ComponentState) and InUpdate and
+      ((Self is TQtPage) or (Self is TQtTabWidget)) then
+        exit;
+
+    if CanAdjustClientRectOnResize and
+      LCLObject.ClientRectNeedsInterfaceUpdate then
+    begin
+      // postpone resize event if we are computingbounds otherwise
+      // we can run into infinite size loop.
+      if (caspComputingBounds in LCLObject.AutoSizePhases) then
+      begin
+        {$IF DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
+        DebugLn('WARNING: *TQtWidget.SlotResize caspComputingBounds=true* ! ',dbgsname(LCLObject),':',dbgsName(Self),' inUpdate=',dbgs(inUpdate),' Time: ',dbgs(GetTickCount));
+        {$ENDIF}
+        if ChildOfComplexWidget <> ccwScrollingWinControl then
+          DelayResizeEvent(Widget, NewSize);
+        exit;
+      end else
+      begin
+        LCLObject.DoAdjustClientRectChange;
+      end;
+    end;
+
+    FillChar(Msg, SizeOf(Msg), #0);
+
+    Msg.Msg := LM_SIZE;
+
+    case getWindowState of
+      QtWindowMinimized: Msg.SizeType := SIZE_MINIMIZED;
+      QtWindowMaximized: Msg.SizeType := SIZE_MAXIMIZED;
+      QtWindowFullScreen: Msg.SizeType := SIZE_FULLSCREEN;
+    else
+      Msg.SizeType := SIZE_RESTORED;
+    end;
+
+    Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
+
+    Msg.Width := Word(NewSize.cx);
+    Msg.Height := Word(NewSize.cy);
+
+    DeliverMessage(Msg);
+  finally
+    if ASsigned(FOwner) then
+      FOwner.InResizeEvent := False;
+    InResizeEvent := False;
   end;
-
-  FillChar(Msg, SizeOf(Msg), #0);
-
-  Msg.Msg := LM_SIZE;
-
-  case getWindowState of
-    QtWindowMinimized: Msg.SizeType := SIZE_MINIMIZED;
-    QtWindowMaximized: Msg.SizeType := SIZE_MAXIMIZED;
-    QtWindowFullScreen: Msg.SizeType := SIZE_FULLSCREEN;
-  else
-    Msg.SizeType := SIZE_RESTORED;
-  end;
-
-  Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
-
-  Msg.Width := Word(NewSize.cx);
-  Msg.Height := Word(NewSize.cy);
-
-  DeliverMessage(Msg);
 end;
 
 function TQtWidget.SlotContextMenu(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
@@ -8277,6 +8311,8 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtScrollBar.Create');
   {$endif}
+  FInHide := False;
+  FInShow := False;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -8413,15 +8449,19 @@ begin
     end;
     QEventHide, QEventShow:
     begin
-      {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
       if (FOwner <> nil) then
       begin
+        if QEvent_type(Event) = QEventHide then
+          InHide := True
+        else
+          InShow := True;
+        {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
         if (QEvent_type(Event) = QEventShow) then
           DebugLn('> TQtScrollbar QEventShow orientation=',dbgs(getOrientation),' ',dbgsName(LCLObject),' TIME=',dbgs(GetTickCount))
         else
           DebugLn('> TQtScrollbar QEventHide orientation=',dbgs(getOrientation),' ',dbgsName(LCLObject),' TIME=',dbgs(GetTickCount));
+        {$ENDIF}
       end;
-      {$ENDIF}
 
       {$IFDEF QTSCROLLABLEFORMS}
       if Assigned(FOwner) and (FOwner is TQtWindowArea) then
@@ -8449,69 +8489,33 @@ begin
           begin
             ASize := FOwner.getSize;
             {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
-            DebugLn('    Sending delayResizeEvent from TQtScrollbar show/hide mapped ? ',dbgs(FOwner.testAttribute(QtWA_Mapped)),
-            ' casp ',dbgs(caspComputingBounds in LCLObject.AutoSizePhases),' ASize=',dbgs(ASize));
+            DebugLn(' ===> Sending delayResizeEvent from TQtScrollbar show/hide mapped ? ',dbgs(FOwner.testAttribute(QtWA_Mapped)),
+            ' casp ',dbgs(caspComputingBounds in LCLObject.AutoSizePhases),' ASize=',dbgs(ASize),
+            ' INRESIZEVENT ? ',dbgs(FOwner.InResizeEvent or InResizeEvent));
             {$ENDIF}
-            DelayResizeEvent(Widget, ASize);
+            // DelayResizeEvent(Widget, ASize);
+            if (FOwner.InResizeEvent or InResizeEvent) then
+            else
+            if LCLObject.ClientRectNeedsInterfaceUpdate then
+              LCLObject.DoAdjustClientRectChange(True);
           end;
         end;
       end;
-      {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
       if (FOwner <> nil) then
       begin
+        if QEvent_type(Event) = QEventHide then
+          InHide := False
+        else
+          InShow := False;
+        {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
         if (QEvent_type(Event) = QEventShow) then
           DebugLn('< TQtScrollbar QEventShow orientation=',dbgs(getOrientation),' ',dbgsName(LCLObject),' TIME=',dbgs(GetTickCount))
         else
           DebugLn('< TQtScrollbar QEventHide orientation=',dbgs(getOrientation),' ',dbgsName(LCLObject),' TIME=',dbgs(GetTickCount));
+        {$ENDIF}
       end;
-      {$ENDIF}
       if FOwnWidget then
         Result := inherited EventFilter(Sender, Event);
-    end;
-    LCLQt_DelayResizeEvent:
-    begin
-      if (FOwner <> nil) and (FOwner.ChildOfComplexWidget = ccwScrollingWinControl) and
-        FOwner.testAttribute(QtWA_Mapped) then
-      begin
-        {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
-        DebugLn('>LCLQt_DelayResizeEvent TQtScrollBar of ',dbgsName(LCLObject),' !!!');
-        {$ENDIF}
-        ASize := FOwner.getSize;
-        AResizeEvent := QResizeEvent_create(@ASize, @ASize);
-        try
-          SlotResize(AResizeEvent);
-        finally
-          QEvent_destroy(AResizeEvent);
-        end;
-        {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
-        DebugLn('<LCLQt_DelayResizeEvent TQtScrollBar of (',dbgsName(LCLObject),' !!!');
-        {$ENDIF}
-      end;
-    end;
-    QEventResize:
-    begin
-      if (FOwner <> nil) and FOwner.testAttribute(QtWA_Mapped) and getVisible then
-      begin
-        if (FOwner is TQtAbstractScrollArea) then
-        begin
-          if TQtAbstractScrollArea(FOwner).ScrollPolicyChange then
-            exit;
-        end;
-        ASize := QResizeEvent_size(QResizeEventH(Event))^;
-        {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
-        DebugLn('>TQtScrollBar: QEventResize for ',dbgsName(LCLObject),' from orientation=',dbgs(getOrientation),' TIME=',dbgs(GetTickCount),' SIZE=',dbgs(ASize),' Visible=',dbgs(getVisible));
-        {$ENDIF}
-        ASize := FOwner.getSize;
-        AResizeEvent := QResizeEvent_create(@ASize, @ASize);
-        try
-          SlotResize(AResizeEvent);
-        finally
-          QEvent_destroy(AResizeEvent);
-        end;
-        {$IFDEF VerboseQtResize}
-        DebugLn('<TQtScrollBar: QEventResize for ',dbgsName(LCLObject),' from orientation=',dbgs(getOrientation),' TIME=',dbgs(GetTickCount));
-        {$ENDIF}
-      end;
     end;
 
     QEventMouseButtonRelease:
@@ -15649,7 +15653,7 @@ begin
         ASize := FOwner.getSize;
         AResizeEvent := QResizeEvent_create(@ASize, @ASize);
         try
-          SlotResize(AResizeEvent);
+          FOwner.SlotResize(AResizeEvent);
         finally
           QEvent_destroy(AResizeEvent);
         end;
@@ -15746,13 +15750,6 @@ begin
   end;
 end;
 
-procedure TQtAbstractScrollArea.InitializeWidget;
-begin
-  FScrollPolicyChange := False;
-  FScrollPolicyChangeRect := Rect(0, 0, 0, 0);
-  inherited InitializeWidget;
-end;
-
 function TQtAbstractScrollArea.EventFilter(Sender: QObjectH; Event: QEventH
   ): Boolean; cdecl;
 begin
@@ -15802,6 +15799,7 @@ function TQtAbstractScrollArea.getClientBounds: TRect;
 var
   HaveBar: Boolean;
   AOldRect: TRect;
+  AOffset: Integer;
 begin
   if not getVisible or
     QWidget_testAttribute(viewportWidget, QtWA_PendingResizeEvent) then
@@ -15820,19 +15818,42 @@ begin
     end;
   end else
   begin
-    if ScrollPolicyChange and not IsRectEmpty(FScrollPolicyChangeRect) then
+    if (ChildOfComplexWidget = ccwScrollingWinControl) and
+      testAttribute(QtWA_Mapped) then
     begin
       QWidget_rect(viewportWidget, @AOldRect);
-      Result := FScrollPolicyChangeRect;
-      {$IFDEF VerboseQtResize}
-      DebugLn('TQtAbstractScrollArea.GetClientBounds(** CACHE **): ',dbgsName(LCLObject),' ',dbgs(Result),' viewport=',dbgs(AOldRect),' ChildComplex=',dbgs(Ord(ChildOfComplexWidget)));
+      Result := AOldRect;
+
+      AOffset := getScrollFrameOffset;
+      {EVIL ! Themes like oxygen have negative offset.
+      With correct negative AOffset LCL raises size loop (while
+      clientRect is correct),so we'll choose less troubles
+      in this case: say to lcl that we are AOffset div 2 pixel off.
+      Usually on oxygen new AOffset will be -1, so won't raise size loop
+      error.}
+      if AOffset < 0 then
+        AOffset := AOffset div 2;
+
+      if horizontalScrollBar.InShow then
+        dec(Result.Bottom, horizontalScrollBar.getHeight + AOffset)
+      else
+      if horizontalScrollbar.InHide then
+        inc(Result.Bottom, horizontalScrollBar.getHeight + AOffset);
+
+      if verticalScrollBar.InShow then
+        dec(Result.Right, verticalScrollBar.getWidth + AOffset)
+      else
+      if verticalScrollBar.InHide then
+        inc(Result.Right, verticalScrollBar.getWidth + AOffset);
+
+      {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
+      DebugLn('TQtAbstractScrollArea.GetClientBounds(** COUNTED **): ',dbgsName(LCLObject),' ',dbgs(Result),' from scammed viewport=',dbgs(AOldRect));
       {$ENDIF}
-      FScrollPolicyChangeRect := Rect(0, 0, 0, 0);
     end else
     begin
       QWidget_rect(viewportWidget, @Result);
-      {$IFDEF VerboseQtResize}
-      DebugLn('TQtAbstractScrollArea.GetClientBounds(**** OK ***): ',dbgsName(LCLObject),' ',dbgs(Result),' ChildComplex=',dbgs(Ord(ChildOfComplexWidget)));
+      {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
+      // DebugLn('TQtAbstractScrollArea.GetClientBounds(**** OK ***): ',dbgsName(LCLObject),' ',dbgs(Result),' ChildComplex=',dbgs(Ord(ChildOfComplexWidget)));
       {$ENDIF}
     end;
   end;
@@ -15882,6 +15903,8 @@ begin
     FHScrollBar.ChildOfComplexWidget := ccwAbstractScrollArea;
     FHScrollBar.FOwner := Self;
     FHScrollBar.setFocusPolicy(QtNoFocus);
+    FHScrollBar.InHide := False;
+    FHScrollBar.InShow := False;
 
     if not FHScrollBar.CanChangeFontColor then
     begin
@@ -15918,6 +15941,8 @@ begin
     FVScrollBar.ChildOfComplexWidget := ccwAbstractScrollArea;
     FVScrollBar.FOwner := Self;
     FVScrollBar.setFocusPolicy(QtNoFocus);
+    FVScrollBar.InHide := False;
+    FVScrollBar.InShow := False;
     if not FVScrollBar.CanChangeFontColor then
     begin
       with FVScrollBar do
@@ -16107,59 +16132,6 @@ end;
 function TQtCustomControl.ProcessArrowKeys: Boolean;
 begin
   Result := True;
-end;
-
-procedure TQtCustomControl.setScrollBarPolicy(AIndex: Boolean;
-  const AValue: QtScrollBarPolicy);
-var
-  Area: QAbstractScrollAreaH;
-  B: Boolean;
-  BUpdate: Boolean;
-begin
-  Area := QAbstractScrollAreaH(Widget);
-  B := False;
-  BUpdate := False;
-  if getScrollBarsPolicy(AIndex) <> AValue then
-  begin
-    B := (getScrollFrameOffset <> 0) and testAttribute(QtWA_Mapped);
-    if B then
-    begin
-      {$IF DEFINED(VerboseIntfSizing) OR DEFINED(VerboseSizeMsg) OR DEFINED(VerboseQtResize)}
-      if ScrollPolicyChange then
-      begin
-        DebugLn('========================= QT  W A R N I N G ========================');
-        DebugLn(' CHANGING SCROLLBAR POLICY WHILE ALREADY INSIDE PROC ',dbgsName(LCLObject),' ... expect trouble');
-      end;
-      {$ENDIF}
-      FScrollPolicyChangeRect := getClientBounds;
-      ScrollPolicyChange := True;
-    end;
-    if AIndex then
-    begin
-      BUpdate := True;
-      if B then
-        setUpdatesEnabled(False);
-      QAbstractScrollArea_setVerticalScrollBarPolicy(Area, AValue);
-    end else
-    begin
-      BUpdate := True;
-      if B then
-        setUpdatesEnabled(False);
-      QAbstractScrollArea_setHorizontalScrollBarPolicy(Area, AValue);
-    end;
-    if B then
-    begin
-      if BUpdate then
-      begin
-        if B then
-          setUpdatesEnabled(True);
-        QWidget_updateGeometry(Widget);
-        //update(nil);
-        LCLObject.InvalidatePreferredSize;
-      end;
-      ScrollPolicyChange := False;
-    end;
-  end;
 end;
 
 {------------------------------------------------------------------------------
