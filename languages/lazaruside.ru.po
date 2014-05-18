@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-05-07 03:08+0400\n"
+"PO-Revision-Date: 2014-05-18 16:40+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -15258,7 +15258,8 @@ msgid "The class %s%s%s is a TControl and cannot be pasted onto a non control.%s
 msgstr "Класс %s%s%s имеет тип TControl и может быть вставлен только в управляющий элемент.%sНевозможно вставить."
 
 #: lazarusidestrconsts.listhecodetoolsfoundanerror
-msgid "The codetools found an error:%s%s%s"
+#| msgid "The codetools found an error:%s%s%s"
+msgid "The Codetools found an error:%s%s%s"
 msgstr "Средством CodeTools найдена ошибка:%s%s%s"
 
 #: lazarusidestrconsts.listhecommandafterisnotexecutable

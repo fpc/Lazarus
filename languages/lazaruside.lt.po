@@ -15248,7 +15248,9 @@ msgid "The class %s%s%s is a TControl and cannot be pasted onto a non control.%s
 msgstr "Klasė %s%s%s yra „TControl“ tipo, todėl jos neis įdėti ne į valdiklį.%sĮdėti nepavyks."
 
 #: lazarusidestrconsts.listhecodetoolsfoundanerror
-msgid "The codetools found an error:%s%s%s"
+#, fuzzy
+#| msgid "The codetools found an error:%s%s%s"
+msgid "The Codetools found an error:%s%s%s"
 msgstr "CodeTools rado klaidą:%s%s%s"
 
 #: lazarusidestrconsts.listhecommandafterisnotexecutable
