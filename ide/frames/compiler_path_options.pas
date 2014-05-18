@@ -286,6 +286,8 @@ end;
 
 procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelClick(Sender: TObject);
 begin
+  // Make sure the "Additions And Overrides" page is visible, then move there.
+  FDialog.ResetFilter;
   FDialog.OpenEditor(GroupCompiler,CompilerOptionsAdditionsAndOverrides);
 end;
 

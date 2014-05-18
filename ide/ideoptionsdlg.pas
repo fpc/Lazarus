@@ -107,6 +107,7 @@ type
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; override;
     function FindEditor(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditor; override;
     function FindEditorClass(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditorClass; override;
+    function ResetFilter: Boolean; override;
     procedure ReadAll;
     procedure WriteAll(Restore: boolean);
   public
@@ -729,6 +730,12 @@ begin
       exit;
     end;
   end;
+end;
+
+function TIDEOptionsDialog.ResetFilter: Boolean;
+begin
+  Result := FilterEdit.Filter <> '';
+  FilterEdit.Reset;
 end;
 
 end.
