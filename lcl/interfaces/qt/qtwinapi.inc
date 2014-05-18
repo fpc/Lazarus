@@ -6625,8 +6625,11 @@ begin
         if (SrcRect.Left < DstRect.Left) or (SrcRect.Top < DstRect.Top) and
           DstQDC.getClipping and DstQDC.getClipRegion.containsRect(SrcRect) then
         begin
-          RestoreClip := True;
-          DstQDC.setClipping(False);
+          if DstQDC.getClipRegion.containsPoint(DstRect.Left, DstRect.Top) then
+          begin
+            RestoreClip := True;
+            DstQDC.setClipping(False);
+          end;
         end;
         DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
         if RestoreClip then
