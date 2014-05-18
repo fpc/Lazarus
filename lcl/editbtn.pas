@@ -418,7 +418,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure InvalidateFilter;
-    procedure Reset;
+    procedure ResetFilter;
     function ForceFilter(AFilter: String) : String;
     procedure StoreSelection; virtual; abstract;
     procedure RestoreSelection; virtual; abstract;
@@ -1902,7 +1902,7 @@ begin
   IdleConnected:=true;
 end;
 
-procedure TCustomControlFilterEdit.Reset;
+procedure TCustomControlFilterEdit.ResetFilter;
 begin
   Filter := '';
 end;

@@ -735,7 +735,7 @@ end;
 function TIDEOptionsDialog.ResetFilter: Boolean;
 begin
   Result := FilterEdit.Filter <> '';
-  FilterEdit.Reset;
+  FilterEdit.ResetFilter;
 end;
 
 end.
